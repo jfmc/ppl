@@ -4,7 +4,7 @@ a C++ library for software timeouts.
 
 To be continued...
 
-See http://www.cs.unipr.it/Software/ for more information on the PWL.
+See http://www.cs.unipr.it/ppl/ for more information on the PWL.
 See the file COPYING for licensing information.
 See the file INSTALL for build and installation instructions.
 See the file NEWS for recent project news.
@@ -12,10 +12,10 @@ See the file BUGS for known bugs and how to report new ones.
 See the file CREDITS for a list of people and organizations that
 contributed to the PWL.
 
-Here is the contents of the PWL 0.6 source distribution
-(2 directories, 56 files):
+Here is the contents of the PWL 0.7 source distribution
+(5 directories, 97 files):
 
-Watchdog
+pwl-0.7
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -29,14 +29,51 @@ Watchdog
 |-- compile
 |-- config.guess
 |-- config.h.in
+|-- config.rpath
 |-- config.sub
 |-- configure
 |-- configure.ac
 |-- depcomp
+|-- doc
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- README.doc
+|   |-- devref.doxyconf-html.in
+|   |-- devref.doxyconf-latex.in
+|   |-- devref.tex
+|   |-- fdl.dox
+|   |-- fdl.pdf
+|   |-- fdl.ps.gz
+|   |-- fdl.tex
+|   |-- fdl.txt
+|   |-- gpl.dox
+|   |-- gpl.pdf
+|   |-- gpl.ps.gz
+|   |-- gpl.tex
+|   |-- gpl.txt
+|   |-- pwl-user-0.7-html.tar.gz
+|   |-- pwl-user-0.7.pdf
+|   |-- pwl-user-0.7.ps.gz
+|   |-- pwl.sty
+|   |-- user.doxyconf-html.in
+|   |-- user.doxyconf-latex.in
+|   `-- user.tex
 |-- install-sh
 |-- ltmain.sh
+|-- m4
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- lib-ld.m4
+|   |-- lib-link.m4
+|   |-- libtool.m4
+|   |-- ltoptions.m4
+|   |-- ltsugar.m4
+|   |-- ltversion.m4
+|   `-- lt~obsolete.m4
 |-- missing
 |-- mkinstalldirs
+|-- pwl-config.h.in
+|-- pwl-config.sed
 |-- src
 |   |-- Doubly_Linked_Object.defs.hh
 |   |-- Doubly_Linked_Object.inlines.hh
@@ -70,14 +107,22 @@ Watchdog
 |   |-- Watchdog.types.hh
 |   |-- pwl.hh.dist
 |   `-- pwl_header.hh
+|-- tests
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- pwl_test.cc
+|   |-- pwl_test.hh
+|   |-- simple1.cc
+|   `-- valgrind_suppressions
 `-- utils
     |-- Makefile.am
     |-- Makefile.in
     `-- build_header.in
 
+
 --------
 
-Copyright (C) 2002-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 The Parma Watchdog Library is free software; you can redistribute it
 and/or modify it under the terms of the GNU General Public License as

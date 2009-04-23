@@ -1,5 +1,5 @@
 /* Test Box::Box(const Generator_System&).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -31,7 +31,7 @@ test01() {
 
   Rational_Box known_result(0, EMPTY);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -101,7 +101,7 @@ test04() {
   known_result.add_constraint(D >= 4);
   known_result.add_constraint(D <= 5);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -135,7 +135,7 @@ test05() {
   known_result.add_constraint(D <= 10);
 
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -162,7 +162,7 @@ test06() {
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C < 7);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 

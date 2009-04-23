@@ -1,5 +1,5 @@
 /* MIP_Problem class implementation: non-inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl-config.h>
 #include "MIP_Problem.defs.hh"
 #include "globals.defs.hh"
+#include "Checked_Number.defs.hh"
 #include "Row.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
@@ -37,10 +38,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifndef PPL_NOISY_SIMPLEX
 #define PPL_NOISY_SIMPLEX 0
-#endif
-
-#ifndef PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
-#define PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT 1
 #endif
 
 #ifndef PPL_SIMPLEX_USE_MIP_HEURISTIC
@@ -70,6 +67,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim)
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
+    pricing(PRICING_STEEPEST_EDGE_FLOAT),
     initialized(false),
     input_cs(),
     first_pending_constraint(0),
@@ -97,6 +95,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
+    pricing(PRICING_STEEPEST_EDGE_FLOAT),
     initialized(false),
     input_cs(),
     first_pending_constraint(0),
@@ -233,13 +232,13 @@ PPL::MIP_Problem::is_satisfiable() const {
       // find a feasible point.
       x.i_variables.clear();
       x.is_lp_satisfiable();
-         if (is_mip_satisfiable(x, p, this_variables_set)) {
+      if (is_mip_satisfiable(x, p, this_variables_set)) {
 	x.last_generator = p;
 	x.status = SATISFIABLE;
 	// Restore i_variables;
     	x.i_variables = this_variables_set;
 	return true;
-	 }
+      }
       else {
 	x.status = UNSATISFIABLE;
 	// Restore i_variables;
@@ -295,7 +294,7 @@ PPL::MIP_Problem::solve() const{
 	x.i_variables = this_variables_set;
 	return UNFEASIBLE_MIP_PROBLEM;
       }
-      DIRTY_TEMP0(mpq_class, incumbent_solution);
+      PPL_DIRTY_TEMP0(mpq_class, incumbent_solution);
       Generator g = point();
       bool have_incumbent_solution = false;
 
@@ -384,7 +383,7 @@ PPL::MIP_Problem::merge_split_variables(dimension_type var_index,
     // In the following case the negative side of the split variable is
     // in base: this means that the constraint will be nonfeasible.
     if (base[i] == mapping[var_index].second) {
-      // CHECKME: I do not know if is possible that the positive and
+      // CHECKME: we do not know if is possible that the positive and
       // the negative part of a split variable can be together in
       // base: it seems that this case is not possible. The algorithm
       // requires that condition.
@@ -500,7 +499,7 @@ PPL::MIP_Problem::parse_constraints(dimension_type& tableau_num_rows,
     bool found_many_nonzero_coeffs = false;
     dimension_type nonzero_coeff_column_index = 0;
     for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
-      if (cs_i.coefficient(Variable(sd)) != 0)
+      if (cs_i.coefficient(Variable(sd)) != 0) {
 	if (found_a_nonzero_coeff) {
 	  found_many_nonzero_coeffs = true;
 	  if (cs_i.is_inequality())
@@ -511,6 +510,7 @@ PPL::MIP_Problem::parse_constraints(dimension_type& tableau_num_rows,
 	  nonzero_coeff_column_index = sd + 1;
 	  found_a_nonzero_coeff = true;
 	}
+      }
     }
     // If more than one coefficient is nonzero,
     // continue with next constraint.
@@ -729,10 +729,10 @@ PPL::MIP_Problem::process_pending_constraints() {
 	// If the constraint is already satisfied, we will not use artificial
 	// variables to compute a feasible base: this to speed up
 	// the algorithm.
-	  if (satisfied_ineqs[i]) {
-	    base[k] = slack_index;
-	    worked_out_row[k] = true;
-	  }
+        if (satisfied_ineqs[i]) {
+          base[k] = slack_index;
+          worked_out_row[k] = true;
+        }
       }
       for (dimension_type j = base_size; j-- > 0; )
 	if (k != j && tableau_k[base[j]] != 0 && base[j] != 0)
@@ -798,7 +798,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   // is only delimited by non-negativity constraints. Therefore,
   // the problem is unbounded as soon as the cost function has
   // a variable with a positive coefficient.
- if (tableau_num_rows == 0) {
+  if (tableau_num_rows == 0) {
     const dimension_type input_obj_function_size
       = input_obj_function.space_dimension();
     for (dimension_type i = input_obj_function_size; i-- > 0; )
@@ -830,7 +830,10 @@ PPL::MIP_Problem::process_pending_constraints() {
   }
 
   // Now we are ready to solve the first phase.
-  bool first_phase_succesful = compute_simplex();
+  bool first_phase_succesful
+    = (get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_FLOAT)
+    ? compute_simplex_using_steepest_edge_float()
+    : compute_simplex_using_exact_pricing();
 
 #if PPL_NOISY_SIMPLEX
   std::cout << "MIP_Problem::solve: 1st phase ended at iteration "
@@ -851,10 +854,26 @@ PPL::MIP_Problem::process_pending_constraints() {
   assert(OK());
   return true;
 }
-#if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+
+namespace {
+
+inline void
+assign(double& d, const mpz_class& c) {
+  d = c.get_d();
+}
+
+template <typename T, typename Policy>
+inline void
+assign(double& d,
+       const Parma_Polyhedra_Library::Checked_Number<T, Policy>& c) {
+  d = raw_value(c);
+}
+
+} // namespace
+
 PPL::dimension_type
-PPL::MIP_Problem::steepest_edge_entering_index() const {
-  DIRTY_TEMP0(mpq_class, real_coeff);
+PPL::MIP_Problem::steepest_edge_float_entering_index() const {
+  PPL_DIRTY_TEMP0(mpq_class, real_coeff);
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
   double challenger_num = 0.0;
@@ -867,7 +886,7 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
     if (sgn(cost_j) == cost_sign) {
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
-      assign_r(challenger_num, cost_j, ROUND_IGNORE);
+      assign(challenger_num, cost_j);
       challenger_num = fabs(challenger_num);
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
@@ -881,11 +900,11 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
 	  assign_r(real_coeff.get_den(), tableau_i[base[i]], ROUND_NOT_NEEDED);
 	  real_coeff.canonicalize();
 	  double float_tableau_value;
-	  assign_r(float_tableau_value, real_coeff, ROUND_IGNORE);
+	  assign(float_tableau_value, real_coeff);
 	  challenger_den += float_tableau_value * float_tableau_value;
 	}
       }
-      double challenger_value = challenger_num / sqrt(challenger_den);
+      double challenger_value = sqrt(challenger_den);
       // Initialize `current_value' during the first iteration.
       // Otherwise update if the challenger wins.
       if (entering_index == 0 || challenger_value > current_value) {
@@ -897,18 +916,17 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
   return entering_index;
 }
 
-#else
 PPL::dimension_type
-PPL::MIP_Problem::steepest_edge_entering_index() const {
+PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
   // The square of the lcm of all the coefficients of variables in base.
-  TEMP_INTEGER(squared_lcm_basis);
+  PPL_DIRTY_TEMP_COEFFICIENT(squared_lcm_basis);
   // The normalization factor for each coefficient in the tableau.
   std::vector<Coefficient> norm_factor(tableau_num_rows);
   {
     // Compute the lcm of all the coefficients of variables in base.
-    TEMP_INTEGER(lcm_basis);
+    PPL_DIRTY_TEMP_COEFFICIENT(lcm_basis);
     lcm_basis = 1;
     for (dimension_type i = tableau_num_rows; i-- > 0; )
       lcm_assign(lcm_basis, lcm_basis, tableau[i][base[i]]);
@@ -922,14 +940,14 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
   }
 
   // Defined here to avoid repeated (de-)allocations.
-  TEMP_INTEGER(challenger_num);
-  TEMP_INTEGER(scalar_value);
-  TEMP_INTEGER(challenger_den);
-  TEMP_INTEGER(challenger_value);
-  TEMP_INTEGER(current_value);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(scalar_value);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger_value);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_value);
 
-  TEMP_INTEGER(current_num);
-  TEMP_INTEGER(current_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_den);
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
@@ -943,11 +961,12 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
       challenger_den = squared_lcm_basis;
       for (dimension_type i = tableau_num_rows; i-- > 0; ) {
 	const Coefficient& tableau_ij = tableau[i][j];
-	// FIXME: the test seems to speed up the GMP computation.
+	// The test against 0 gives rise to a consistent speed up: see
+        // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
 	if (tableau_ij != 0) {
 	  scalar_value = tableau_ij * norm_factor[i];
 	  add_mul_assign(challenger_den, scalar_value, scalar_value);
-	}
+        }
       }
       // Initialization during the first loop.
       if (entering_index == 0) {
@@ -968,7 +987,7 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
   }
   return entering_index;
 }
-#endif // PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+
 
 // See page 47 of [PapadimitriouS98].
 PPL::dimension_type
@@ -999,21 +1018,18 @@ PPL::MIP_Problem::linear_combine(Row& x,
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-  TEMP_INTEGER(normalized_x_k);
-  TEMP_INTEGER(normalized_y_k);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x[k], y[k], normalized_x_k, normalized_y_k);
   for (dimension_type i = x.size(); i-- > 0; )
     if (i != k) {
       Coefficient& x_i = x[i];
       x_i *= normalized_y_k;
-#if 1
-      // FIXME: the test seems to speed up the GMP computation.
+      // The test against 0 gives rise to a consistent speed up: see
+      // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
       const Coefficient& y_i = y[i];
       if (y_i != 0)
 	sub_mul_assign(x_i, y_i, normalized_x_k);
-#else
-      sub_mul_assign(x_i, y[i], normalized_x_k);
-#endif // 1
     }
   x[k] = 0;
   x.normalize();
@@ -1063,9 +1079,9 @@ PPL::MIP_Problem
     return tableau_num_rows;
 
   // Reaching this point means that a variable will definitely exit the base.
-  TEMP_INTEGER(lcm);
-  TEMP_INTEGER(current_min);
-  TEMP_INTEGER(challenger);
+  PPL_DIRTY_TEMP_COEFFICIENT(lcm);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_min);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger);
   for (dimension_type i = exiting_base_index + 1; i < tableau_num_rows; ++i) {
     const Row& t_i = tableau[i];
     const Coefficient& t_ie = t_i[entering_var_index];
@@ -1092,17 +1108,19 @@ PPL::MIP_Problem
 }
 
 // See page 49 of [PapadimitriouS98].
-#if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 bool
-PPL::MIP_Problem::compute_simplex() {
+PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
+  // We may need to temporarily switch to the textbook pricing.
   const unsigned long allowed_non_increasing_loops = 200;
   unsigned long non_increased_times = 0;
-  bool call_textbook = false;
-  TEMP_INTEGER(cost_sgn_coeff);
-  TEMP_INTEGER(current_num);
-  TEMP_INTEGER(current_den);
-  TEMP_INTEGER(challenger);
-  TEMP_INTEGER(current);
+  bool textbook_pricing = false;
+
+  PPL_DIRTY_TEMP_COEFFICIENT(cost_sgn_coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger);
+  PPL_DIRTY_TEMP_COEFFICIENT(current);
+
   cost_sgn_coeff = working_cost[working_cost.size()-1];
   current_num = working_cost[0];
   if (cost_sgn_coeff < 0)
@@ -1110,10 +1128,13 @@ PPL::MIP_Problem::compute_simplex() {
   abs_assign(current_den, cost_sgn_coeff);
   assert(tableau.num_columns() == working_cost.size());
   const dimension_type tableau_num_rows = tableau.num_rows();
+
   while (true) {
     // Choose the index of the variable entering the base, if any.
-    const dimension_type entering_var_index = call_textbook
-      ? textbook_entering_index() : steepest_edge_entering_index();
+    const dimension_type entering_var_index
+      = textbook_pricing
+      ? textbook_entering_index()
+      : steepest_edge_float_entering_index();
 
     // If no entering index was computed, the problem is solved.
     if (entering_var_index == 0)
@@ -1152,7 +1173,7 @@ PPL::MIP_Problem::compute_simplex() {
       std::cout << "Primal Simplex: iteration "
 		<< num_iterations << "." << std::endl;
 #endif
-     //  If the following condition fails, probably there's a bug.
+    // If the following condition fails, probably there's a bug.
     assert(challenger >= current);
     // If the value of the objective function does not improve,
     // keep track of that.
@@ -1161,13 +1182,13 @@ PPL::MIP_Problem::compute_simplex() {
       // In the following case we will proceed using the `textbook'
       // technique, until the objective function is not improved.
       if (non_increased_times > allowed_non_increasing_loops)
-	call_textbook = true;
+	textbook_pricing = true;
     }
-    // The objective function has an improvement, reset `non_increased_times'.
+    // The objective function has an improvement:
+    // reset `non_increased_times' and `textbook_pricing'.
     else {
       non_increased_times = 0;
-      if (call_textbook)
-	call_textbook = false;
+      textbook_pricing = false;
     }
     current_num = working_cost[0];
     if (cost_sgn_coeff < 0)
@@ -1176,14 +1197,22 @@ PPL::MIP_Problem::compute_simplex() {
   }
 }
 
-#else
 bool
-PPL::MIP_Problem::compute_simplex() {
+PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
   assert(tableau.num_columns() == working_cost.size());
+  assert(get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_EXACT
+         || get_control_parameter(PRICING) == PRICING_TEXTBOOK);
+
   const dimension_type tableau_num_rows = tableau.num_rows();
+  const bool textbook_pricing
+    = (PRICING_TEXTBOOK == get_control_parameter(PRICING));
+
   while (true) {
     // Choose the index of the variable entering the base, if any.
-    const dimension_type entering_var_index = steepest_edge_entering_index();
+    const dimension_type entering_var_index
+      = textbook_pricing
+      ? textbook_entering_index()
+      : steepest_edge_exact_entering_index();
     // If no entering index was computed, the problem is solved.
     if (entering_var_index == 0)
       return true;
@@ -1212,7 +1241,6 @@ PPL::MIP_Problem::compute_simplex() {
 #endif
   }
 }
-#endif // PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 
 
 // See pages 55-56 of [PapadimitriouS98].
@@ -1283,10 +1311,10 @@ PPL::MIP_Problem::compute_generator() const {
   std::vector<Coefficient> den(external_space_dim);
   dimension_type row = 0;
 
-  TEMP_INTEGER(lcm);
+  PPL_DIRTY_TEMP_COEFFICIENT(lcm);
   // Speculatively allocate temporaries out of loop.
-  TEMP_INTEGER(split_num);
-  TEMP_INTEGER(split_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(split_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(split_den);
 
   // We start to compute num[] and den[].
   for (dimension_type i = external_space_dim; i-- > 0; ) {
@@ -1406,7 +1434,10 @@ PPL::MIP_Problem::second_phase() {
       linear_combine(working_cost, tableau[i], base_i);
   }
   // Solve the second phase problem.
-  bool second_phase_successful = compute_simplex();
+  bool second_phase_successful
+    = (get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_FLOAT)
+    ? compute_simplex_using_steepest_edge_float()
+    : compute_simplex_using_exact_pricing();
   compute_generator();
 #if PPL_NOISY_SIMPLEX
   std::cout << "MIP_Problem::solve: 2nd phase ended at iteration "
@@ -1436,12 +1467,13 @@ PPL::MIP_Problem
   const dimension_type working_space_dim
     = std::min(ep_space_dim, input_obj_function.space_dimension());
   // Compute the optimal value of the cost function.
-  ext_n = input_obj_function.inhomogeneous_term();
+  const Coefficient& divisor = evaluating_point.divisor();
+  ext_n = input_obj_function.inhomogeneous_term() * divisor;
   for (dimension_type i = working_space_dim; i-- > 0; )
     ext_n += evaluating_point.coefficient(Variable(i))
       * input_obj_function.coefficient(Variable(i));
   // Numerator and denominator should be coprime.
-  normalize2(ext_n, evaluating_point.divisor(), ext_n, ext_d);
+  normalize2(ext_n, divisor, ext_n, ext_d);
 }
 
 bool
@@ -1452,9 +1484,8 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
   switch (status) {
   case UNSATISFIABLE:
     return false;
-    break;
   case SATISFIABLE:
-   // Intentionally fall through.
+    // Intentionally fall through.
   case UNBOUNDED:
     // Intentionally fall through.
   case OPTIMIZED:
@@ -1462,28 +1493,28 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
     return true;
   case PARTIALLY_SATISFIABLE:
     {
-    MIP_Problem& x = const_cast<MIP_Problem&>(*this);
-  // This code tries to handle the case that happens if the tableau is
-  // empty, so it must be initialized.
-  if (tableau.num_columns() == 0) {
-    // Add two columns, the first that handles the inhomogeneous term and
-    // the second that represent the `sign'.
-    x.tableau.add_zero_columns(2);
-    // Sync `mapping' for the inhomogeneous term.
-    x.mapping.push_back(std::make_pair(0, 0));
-    // The internal data structures are ready, so prepare for more
-    // assertion to be checked.
-    x.initialized = true;
-  }
+      MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+      // This code tries to handle the case that happens if the tableau is
+      // empty, so it must be initialized.
+      if (tableau.num_columns() == 0) {
+        // Add two columns, the first that handles the inhomogeneous term and
+        // the second that represent the `sign'.
+        x.tableau.add_zero_columns(2);
+        // Sync `mapping' for the inhomogeneous term.
+        x.mapping.push_back(std::make_pair(0, 0));
+        // The internal data structures are ready, so prepare for more
+        // assertion to be checked.
+        x.initialized = true;
+      }
 
-  // Apply incrementality to the pending constraint system.
-  x.process_pending_constraints();
-  // Update `first_pending_constraint': no more pending.
-  x.first_pending_constraint = input_cs.size();
-  // Update also `internal_space_dim'.
-  x.internal_space_dim = x.external_space_dim;
-  assert(OK());
-  return (status != UNSATISFIABLE);
+      // Apply incrementality to the pending constraint system.
+      x.process_pending_constraints();
+      // Update `first_pending_constraint': no more pending.
+      x.first_pending_constraint = input_cs.size();
+      // Update also `internal_space_dim'.
+      x.internal_space_dim = x.external_space_dim;
+      assert(OK());
+      return (status != UNSATISFIABLE);
     }
   }
   // We should not be here!
@@ -1506,11 +1537,11 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   else
     return UNFEASIBLE_MIP_PROBLEM;
 
-  DIRTY_TEMP0(mpq_class, tmp_rational);
+  PPL_DIRTY_TEMP0(mpq_class, tmp_rational);
 
   Generator p = point();
-  TEMP_INTEGER(tmp_coeff1);
-  TEMP_INTEGER(tmp_coeff2);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff1);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff2);
 
   if (lp_status == UNBOUNDED_MIP_PROBLEM)
     p = lp.last_generator;
@@ -1532,7 +1563,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   }
 
   bool found_satisfiable_generator = true;
-  TEMP_INTEGER(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   const Coefficient& p_divisor = p.divisor();
   dimension_type nonint_dim;
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
@@ -1561,8 +1592,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
       incumbent_solution_point = p;
       have_incumbent_solution = true;
 #if PPL_NOISY_SIMPLEX
-      TEMP_INTEGER(num);
-      TEMP_INTEGER(den);
+      PPL_DIRTY_TEMP_COEFFICIENT(num);
+      PPL_DIRTY_TEMP_COEFFICIENT(den);
       lp.evaluate_objective_function(p, num, den);
       std::cerr << "new value found: " << num << "/" << den << std::endl;
 #endif
@@ -1601,7 +1632,7 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
   const Coefficient& last_generator_divisor = last_generator.divisor();
   Variables_Set candidate_variables;
 
-  TEMP_INTEGER(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   for (Variables_Set::const_iterator v_it = i_vars.begin(),
 	 v_end = i_vars.end(); v_it != v_end; ++v_it) {
     gcd_assign(gcd,
@@ -1651,10 +1682,10 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   // Solve the problem as a non MIP one, it must be done internally.
   if (!lp.is_lp_satisfiable())
     return false;
-  DIRTY_TEMP0(mpq_class, tmp_rational);
+  PPL_DIRTY_TEMP0(mpq_class, tmp_rational);
 
-  TEMP_INTEGER(tmp_coeff1);
-  TEMP_INTEGER(tmp_coeff2);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff1);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff2);
   p = lp.last_generator;
 
   bool found_satisfiable_generator = true;
@@ -1665,7 +1696,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   found_satisfiable_generator
     = choose_branching_variable(lp, i_vars, nonint_dim);
 #else
-  TEMP_INTEGER(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
@@ -1769,7 +1800,7 @@ PPL::MIP_Problem::OK() const {
     // Check that every integer declared variable is really integer.
     // in the solution found.
     if (!i_variables.empty()) {
-      TEMP_INTEGER(gcd);
+      PPL_DIRTY_TEMP_COEFFICIENT(gcd);
       for (Variables_Set::const_iterator v_it = i_variables.begin(),
 	     v_end = i_variables.end(); v_it != v_end; ++v_it) {
 	gcd_assign(gcd, last_generator.coefficient(Variable(*v_it)),
@@ -1874,6 +1905,21 @@ PPL::MIP_Problem::ascii_dump(std::ostream& s) const {
   s << "\nopt_mode "
     << (opt_mode == MAXIMIZATION ? "MAXIMIZATION" : "MINIMIZATION") << "\n";
 
+  s << "\ninitialized: " << (initialized ? "YES" : "NO") << "\n";
+  s << "\npricing: ";
+  switch (pricing) {
+  case PRICING_STEEPEST_EDGE_FLOAT:
+    s << "PRICING_STEEPEST_EDGE_FLOAT";
+    break;
+  case PRICING_STEEPEST_EDGE_EXACT:
+    s << "PRICING_STEEPEST_EDGE_EXACT";
+    break;
+  case PRICING_TEXTBOOK:
+    s << "PRICING_TEXTBOOK";
+    break;
+  }
+  s << "\n";
+
   s << "\nstatus: ";
   switch (status) {
   case UNSATISFIABLE:
@@ -1922,19 +1968,19 @@ PPL_OUTPUT_DEFINITIONS(MIP_Problem)
 bool
 PPL::MIP_Problem::ascii_load(std::istream& s) {
   std::string str;
-if (!(s >> str) || str != "external_space_dim:")
+  if (!(s >> str) || str != "external_space_dim:")
     return false;
 
-if (!(s >> external_space_dim))
+  if (!(s >> external_space_dim))
     return false;
 
-if (!(s >> str) || str != "internal_space_dim:")
+  if (!(s >> str) || str != "internal_space_dim:")
     return false;
 
-if (!(s >> internal_space_dim))
+  if (!(s >> internal_space_dim))
     return false;
 
- if (!(s >> str) || str != "input_cs(")
+  if (!(s >> str) || str != "input_cs(")
     return false;
 
   dimension_type input_cs_size;
@@ -1977,6 +2023,30 @@ if (!(s >> internal_space_dim))
       return false;
     set_optimization_mode(MINIMIZATION);
   }
+
+  if (!(s >> str) || str != "initialized:")
+    return false;
+  if (!(s >> str))
+    return false;
+  if (str == "YES")
+    initialized = true;
+  else if (str == "NO")
+    initialized = false;
+  else
+    return false;
+
+  if (!(s >> str) || str != "pricing:")
+    return false;
+  if (!(s >> str))
+    return false;
+  if (str == "PRICING_STEEPEST_EDGE_FLOAT")
+    pricing = PRICING_STEEPEST_EDGE_FLOAT;
+  else if (str == "PRICING_STEEPEST_EDGE_EXACT")
+    pricing = PRICING_STEEPEST_EDGE_EXACT;
+  else if (str == "PRICING_TEXTBOOK")
+    pricing = PRICING_TEXTBOOK;
+  else
+    return false;
 
   if (!(s >> str) || str != "status:")
     return false;

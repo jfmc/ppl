@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -107,16 +107,16 @@ Polyhedron::swap(Polyhedron& y) {
   std::swap(space_dim, y.space_dim);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-/*! \relates Parma_Polyhedra_Library::Polyhedron */
-inline void
-std::swap(Parma_Polyhedra_Library::Polyhedron& x,
-	  Parma_Polyhedra_Library::Polyhedron& y) {
-  x.swap(y);
+inline bool
+Polyhedron::can_recycle_constraint_systems() {
+  return true;
 }
 
-namespace Parma_Polyhedra_Library {
+
+inline bool
+Polyhedron::can_recycle_congruence_systems() {
+  return false;
+}
 
 inline bool
 Polyhedron::marked_empty() const {
@@ -354,7 +354,7 @@ Polyhedron::simplified_constraints() const {
 
 inline Congruence_System
 Polyhedron::congruences() const {
-  return Congruence_System(constraints());
+  return Congruence_System(minimized_constraints());
 }
 
 inline Congruence_System
@@ -368,14 +368,8 @@ Polyhedron::minimized_grid_generators() const {
 }
 
 inline void
-Polyhedron::add_grid_generator(const Grid_Generator& g) const {
-  used(g);
-}
-
-inline bool
-Polyhedron::add_grid_generator_and_minimize(const Grid_Generator& g) const {
-  used(g);
-  return !is_empty();
+Polyhedron::add_recycled_congruences(Congruence_System& cgs) {
+  add_congruences(cgs);
 }
 
 /*! \relates Polyhedron */
@@ -390,6 +384,26 @@ Polyhedron::strictly_contains(const Polyhedron& y) const {
   return x.contains(y) && !y.contains(x);
 }
 
+namespace Interfaces {
+
+inline bool
+is_necessarily_closed_for_interfaces(const Polyhedron& ph) {
+  return ph.is_necessarily_closed();
+}
+
+} // namespace Interfaces
+
 } // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+/*! \relates Parma_Polyhedra_Library::Polyhedron */
+inline void
+swap(Parma_Polyhedra_Library::Polyhedron& x,
+     Parma_Polyhedra_Library::Polyhedron& y) {
+  x.swap(y);
+}
+
+} // namespace std
 
 #endif // !defined(PPL_Polyhedron_inlines_hh)

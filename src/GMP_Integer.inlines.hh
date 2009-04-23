@@ -1,5 +1,5 @@
 /* GMP_Integer class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,6 +22,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifndef PPL_GMP_Integer_inlines_hh
 #define PPL_GMP_Integer_inlines_hh 1
+
+#include <cassert>
 
 namespace Parma_Polyhedra_Library {
 
@@ -102,16 +104,6 @@ raw_value(const GMP_Integer& x) {
 inline mpz_class&
 raw_value(GMP_Integer& x) {
   return x;
-}
-
-inline memory_size_type
-external_memory_in_bytes(const GMP_Integer& x) {
-  return x.get_mpz_t()[0]._mp_alloc * PPL_SIZEOF_MP_LIMB_T;
-}
-
-inline memory_size_type
-total_memory_in_bytes(const GMP_Integer& x) {
-  return sizeof(x) + external_memory_in_bytes(x);
 }
 
 } // namespace Parma_Polyhedra_Library

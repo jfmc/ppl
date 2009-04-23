@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::generalized_affine_image().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -68,7 +68,7 @@ test02() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct, "*** oct.generalized_affine_image(6, "
-		    "EQUAL, x-4) ***");
+                    "EQUAL, x-4) ***");
 
   return ok;
 }
@@ -121,7 +121,7 @@ test04() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct, "*** oct.generalized_affine_image(A+5, "
-		    "EQUAL, 4) ***");
+                    "EQUAL, 4) ***");
 
   return ok;
 }
@@ -210,7 +210,7 @@ test07() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(C+1, EQUAL, A+2) ***");
+                    "*** oct.generalized_affine_image(C+1, EQUAL, A+2) ***");
 
   return ok;
 }

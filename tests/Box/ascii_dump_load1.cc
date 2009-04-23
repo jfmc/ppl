@@ -1,5 +1,5 @@
 /* Test Box::ascii_dump() and Box::ascii_load().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -36,9 +36,6 @@ const char* my_file = "ascii_dump_load1.dat";
 
 bool
 test01() {
-
-  nout << "test01()" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -55,7 +52,7 @@ test01() {
   string str;
   do
     f >> str;
-  while (str != "-EM");
+  while (str != "-EUP");
   f.seekp(0, ios_base::cur);
   f << " A";
   close(f);
@@ -70,9 +67,6 @@ test01() {
 
 bool
 test02() {
-
-  nout << "test02()" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -89,7 +83,7 @@ test02() {
   string str;
   do
     f >> str;
-  while (str != "+ZE");
+  while (str != "-EM");
   f.seekp(0, ios_base::cur);
   f << "A";
   close(f);
@@ -104,9 +98,6 @@ test02() {
 
 bool
 test03() {
-
-  nout << "test03()" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -123,7 +114,7 @@ test03() {
   string str;
   do
     f >> str;
-  while (str != "-SPC");
+  while (str != "-UN");
   f.seekp(0, ios_base::cur);
   f << "A";
   close(f);
@@ -138,15 +129,14 @@ test03() {
 
 bool
 test04() {
-
-  nout << "test04()" << endl;
-
   Variable A(0);
   Variable B(1);
 
   TBox box(2);
-  box.add_constraint(A >= 0);
+  box.add_constraint(A >= -10);
+  box.add_constraint(A <= 10);
   box.add_constraint(B >= 3);
+  box.add_constraint(B <= 6);
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -157,9 +147,9 @@ test04() {
   string str;
   do
     f >> str;
-  while (str != "+inf");
+  while (str != "lower");
   f.seekp(0, ios_base::cur);
-  f << "A";
+  f << "Z(";
   close(f);
 
   open(f, my_file, ios_base::in);
@@ -172,48 +162,11 @@ test04() {
 
 bool
 test05() {
-
-  nout << "test05()" << endl;
-
-  Variable A(0);
-  Variable B(1);
-
-  TBox box(2);
-  box.add_constraint(A >= 0);
-  box.add_constraint(B >= 3);
-
-  fstream f;
-  open(f, my_file, ios_base::out);
-  box.ascii_dump(f);
-  close(f);
-
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
-  do
-    f >> str;
-  while (str != "+inf");
-  do
-    f >> str;
-  while (str != "+inf");
-  f.seekp(0, ios_base::cur);
-  f << " 3 ";
-  close(f);
-
-  open(f, my_file, ios_base::in);
-  TBox box2;
-  bool ok = !box2.ascii_load(f);
-  close(f);
-
-  return ok;
-}
-
-bool
-test06() {
   Variable A(0);
   Variable B(1);
 
   TBox box1(3);
-  box1.add_constraint(A - B >= 2);
+  box1.add_constraint(A >= 2);
   box1.add_constraint(B >= 0);
 
   fstream f;
@@ -223,13 +176,67 @@ test06() {
 
   open(f, my_file, ios_base::in);
   TBox box2;
-  box2.ascii_load(f);
+  bool ok = box2.ascii_load(f);
   close(f);
+
+  if (!ok) {
+    nout << "ascii_load() failed" << endl;
+    return false;
+  }
+
+  ok = (box1 == box2);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  bool ok = (box1 == box2);
+  return ok;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs;
+  cs.insert(3*C == 5);
+  TBox box1(cs);
+
+  print_constraints(box1, "*** box1(cs) ***");
+
+  TBox box1_copy(box1);
+
+  box1.difference_assign(box1_copy);
+
+  print_constraints(box1, "*** box1.difference_assign(box1_copy) ***");
+
+  box1.concatenate_assign(box1_copy);
+
+  print_constraints(box1, "*** box1.concatenate_assign(box1_copy) ***");
+
+  nout << "box1.space_dimension() = " << box1.space_dimension() << endl;
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  box1.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  TBox box2;
+  bool ok = box2.ascii_load(f);
+  close(f);
+
+  if (!ok) {
+    nout << "ascii_load() failed" << endl;
+    return false;
+  }
+
+  ok = (box1 == box2);
+
+  nout << "box2.space_dimension() = " << box2.space_dimension() << endl;
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
 
   return ok;
 }

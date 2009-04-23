@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::generalized_affine_preimage().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -44,8 +44,8 @@ test01() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "GREATER_OR_EQUAL, -1) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, -1) ***");
 
   return ok;
 }
@@ -68,8 +68,8 @@ test02() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -1) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -1) ***");
 
   return ok;
 }
@@ -94,8 +94,8 @@ test03() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -B+1) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -B+1) ***");
 
   return ok;
 }
@@ -120,8 +120,8 @@ test04() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, B+1) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, B+1) ***");
 
   return ok;
 }
@@ -146,8 +146,8 @@ test05() {
   bool ok = check_result(oct, known_result, "9.54e-8", "9.54e-8", "9.54e-8");
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, 2*B+1) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, 2*B+1) ***");
 
   return ok;
 }
@@ -172,8 +172,8 @@ test06() {
   bool ok = check_result(oct, known_result, "9.54e-8", "9.54e-8", "9.54e-8");
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -2*B+1) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -2*B+1) ***");
 
   return ok;
 }
@@ -198,8 +198,8 @@ test07() {
   bool ok = check_result(oct, known_result, "1.98e-6", "9.26e-7", "5.25e-7");
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, 3*A-2*B+1) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, 3*A-2*B+1) ***");
 
   return ok;
 }
@@ -224,8 +224,8 @@ test08() {
   bool ok = check_result(oct, known_result, "1.98e-6", "9.26e-7", "5.25e-7");
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -3*A-2*B+1) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+1) ***");
 
   return ok;
 }
@@ -255,8 +255,8 @@ test09() {
   bool ok = check_result(oct, known_result, "7.39e-5", "4.07e-5", "2.55e-5");
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
 
   return ok;
 }
@@ -266,7 +266,7 @@ test10() {
   // If the Coefficient type is not wide enough, do nothing.
   if (std::numeric_limits<Coefficient>::is_bounded
       && (std::numeric_limits<Coefficient>::min() > -203
-	  || std::numeric_limits<Coefficient>::max() < 629))
+          || std::numeric_limits<Coefficient>::max() < 629))
     return true;
 
   Variable A(0);
@@ -296,8 +296,8 @@ test10() {
   bool ok = check_result(oct, known_result, "7.39e-5", "4.07e-5", "2.55e-5");
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
 
   return ok;
 }
@@ -324,8 +324,8 @@ test11() {
   bool ok = check_result(oct, known_result, "1.98e-6", "9.26e-7", "5.25e-7");
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
 
   return ok;
 }
@@ -357,8 +357,8 @@ test12() {
   bool ok = check_result(oct, known_result, "1.16e-5", "5.04e-6", "3.50e-6");
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }
@@ -388,8 +388,8 @@ test13() {
   bool ok = check_result(oct, known_result, "7.39e-5", "4.07e-5", "2.55e-5");
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "GREATER_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
 
   return ok;
 }
@@ -423,8 +423,8 @@ test14() {
   bool ok = check_result(oct, known_result, "7.39e-6", "4.07e-6", "2.55e-6");
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }
@@ -453,8 +453,8 @@ test15() {
   bool ok = check_result(oct, known_result, "1.98e-6", "9.26e-7", "5.25e-7");
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }
@@ -483,8 +483,8 @@ test16() {
   bool ok = check_result(oct, known_result, "1.98e-6", "9.26e-7", "5.25e-7");
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "EQUAL, -1) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "EQUAL, -1) ***");
 
   return ok;
 }
@@ -508,8 +508,8 @@ test17() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "GREATER_OR_EQUAL, -1) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, -1) ***");
 
   return ok;
 }
@@ -535,8 +535,8 @@ test18() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "EQUAL, 3*A+2) ***");
+                    "*** oct.generalized_affine_preimage(B, "
+                    "EQUAL, 3*A+2) ***");
 
   return ok;
 }
@@ -560,8 +560,8 @@ test19() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(A, "
-		    "LESS_OR_EQUAL, B, 5) ***");
+                    "*** oct.generalized_affine_preimage(A, "
+                    "LESS_OR_EQUAL, B, 5) ***");
 
   return ok;
 }
@@ -585,8 +585,8 @@ test20() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(A, "
-		    "LESS_OR_EQUAL, B + 3, 2) ***");
+                    "*** oct.generalized_affine_preimage(A, "
+                    "LESS_OR_EQUAL, B + 3, 2) ***");
 
   return ok;
 }

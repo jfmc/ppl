@@ -1,137 +1,137 @@
-*** ppl_lpsol -s -n  -oobtained egout.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -n  egout.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -s -n  -oobtained ex1.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -n  ex1.mps
 Feasible problem.
-*** ppl_lpsol -s -n  -oobtained lseu.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -s -n  -oobtained markshare1.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -s -n  -oobtained markshare2.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -s -n  -oobtained mip.mps
-Feasible problem.
-*** ppl_lpsol -s -n  -oobtained noswot.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -s -n  -oobtained opt1217.mps
-Feasible problem.
-*** ppl_lpsol -s -n  -oobtained p0033.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -n  lseu.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -s -n  -oobtained pk1.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -s -n  -oobtained rout.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -n  markshare1.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -s -n  -oobtained unboundedmin.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -n  markshare2.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -n  mip.mps
 Feasible problem.
-*** ppl_lpsol -s -m -oobtained ex1.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -n  noswot.mps
+PPL error code -6: Negative overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -n  opt1217.mps
+Feasible problem.
+*** ./ppl_lpsol -s -p1 -c -oobtained -n  p0033.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -n  pk1.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -n  rout.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -n  unboundedmin.mps
+Feasible problem.
+*** ./ppl_lpsol -s -p1 -c -oobtained -m ex1.mps
 Optimum value: -3
 Optimum location:
 x1 = 1
 x2 = 2
-*** ppl_lpsol -s -M -oobtained ex1.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -M ex1.mps
 Optimum value: 2
 Optimum location:
 x1 = 2
 x2 = 0
-*** ppl_lpsol -s -m -oobtained mip.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -m mip.mps
 Optimum value: 24.33333333
 Optimum location:
 X1 = 2.666666667
 X2 = 2
 X3 = 1
 X4 = 3.333333333
-*** ppl_lpsol -s -M -oobtained mip.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -M mip.mps
 Optimum value: 43
 Optimum location:
 X1 = 4
 X2 = 4
 X3 = 0
 X4 = 3
-*** ppl_lpsol -s -m -oobtained p0033.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -s -M -oobtained p0033.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -m p0033.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -s -m -oobtained unboundedmin.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -M p0033.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -m unboundedmin.mps
 Unbounded problem.
-*** ppl_lpsol -s -M -oobtained unboundedmin.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -M unboundedmin.mps
 Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
-*** ppl_lpsol -r -s -m -oobtained adlittle.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m adlittle.mps
 PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -M -oobtained adlittle.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M adlittle.mps
 PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -m -oobtained afiro.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m afiro.mps
 PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -M -oobtained afiro.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M afiro.mps
 PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -m -oobtained bgprtr.mps
-Unfeasible problem.
-*** ppl_lpsol -r -s -M -oobtained bgprtr.mps
-Unfeasible problem.
-*** ppl_lpsol -r -s -m -oobtained blend.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m bgprtr.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M bgprtr.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m blend.mps
 PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -M -oobtained blend.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M blend.mps
 PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -m -oobtained boeing1.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m boeing1.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -M -oobtained boeing1.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M boeing1.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -m -oobtained boeing2.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m boeing2.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -M -oobtained boeing2.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M boeing2.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -m -oobtained egout.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m egout.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -M -oobtained egout.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M egout.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -m -oobtained ex1.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m ex1.mps
 Optimum value: -3.75
 Optimum location:
 x1 = 1.25
 x2 = 2.5
-*** ppl_lpsol -r -s -M -oobtained ex1.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M ex1.mps
 Optimum value: 2.5
 Optimum location:
 x1 = 2.5
 x2 = 0
-*** ppl_lpsol -r -s -m -oobtained kb2.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m kb2.mps
 PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -M -oobtained kb2.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M kb2.mps
 PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -m -oobtained lseu.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -M -oobtained lseu.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -m -oobtained markshare1.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -M -oobtained markshare1.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -m -oobtained markshare2.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -M -oobtained markshare2.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -m -oobtained mip.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m lseu.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M lseu.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m markshare1.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M markshare1.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m markshare2.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M markshare2.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m mip.mps
 Optimum value: 24.07692308
 Optimum location:
 X1 = 2.615384615
 X2 = 2
 X3 = 0.7692307692
 X4 = 3
-*** ppl_lpsol -r -s -M -oobtained mip.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M mip.mps
 Optimum value: 46.42857143
 Optimum location:
 X1 = 4
 X2 = 4.571428571
 X3 = 0.5714285714
 X4 = 3
-*** ppl_lpsol -r -s -m -oobtained noswot.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m noswot.mps
 PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -M -oobtained noswot.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M noswot.mps
 PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -m -oobtained opt1217.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m opt1217.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -M -oobtained opt1217.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M opt1217.mps
 Optimum value: 0
 Optimum location:
 x1 = 0
@@ -903,45 +903,45 @@ x766 = 0
 x767 = 1
 x768 = 1
 x769 = 1
-*** ppl_lpsol -r -s -m -oobtained p0033.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -M -oobtained p0033.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m p0033.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -m -oobtained pk1.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -M -oobtained pk1.mps
-PPL error code -6: Negative overflow.
-*** ppl_lpsol -r -s -m -oobtained rout.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M p0033.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -M -oobtained rout.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m pk1.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -m -oobtained sample.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M pk1.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m rout.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M rout.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m sample.mps
 Optimum value: -733.3333333
 Optimum location:
 x1 = 33.33333333
 x2 = 66.66666667
 x3 = 0
-*** ppl_lpsol -r -s -M -oobtained sample.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M sample.mps
 Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
 x3 = 0
-*** ppl_lpsol -r -s -m -oobtained sc105.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m sc105.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -M -oobtained sc105.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M sc105.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -m -oobtained sc50a.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m sc50a.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -M -oobtained sc50a.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M sc50a.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -m -oobtained sc50b.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m sc50b.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -M -oobtained sc50b.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M sc50b.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -m -oobtained unboundedmin.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m unboundedmin.mps
 Unbounded problem.
-*** ppl_lpsol -r -s -M -oobtained unboundedmin.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M unboundedmin.mps
 Optimum value: 0
 Optimum location:
 x1 = 0
@@ -973,21 +973,21 @@ Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
-*** ppl_lpsol -r -s -m -oobtained mas74.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m mas74.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas74.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M -c0.000123 mas74.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -n -s -oobtained mas74.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -n mas74.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -m -oobtained mas76.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m mas76.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas76.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M -c0.000123 mas76.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -n -s -oobtained mas76.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -n mas76.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -m -c0.0000002 -oobtained modglob.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m -c0.0000002 modglob.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -r -s -M -c0.000003 -oobtained modglob.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M -c0.000003 modglob.mps
 PPL error code -6: Positive overflow.
-*** ppl_lpsol -n -s -oobtained modglob.mps
+*** ./ppl_lpsol -s -p1 -c -oobtained -n modglob.mps
 PPL error code -6: Positive overflow.

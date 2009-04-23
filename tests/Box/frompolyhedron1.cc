@@ -1,5 +1,5 @@
 /* Test Box::Box(const Polyhedron&, Complexity_Class).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -371,8 +371,8 @@ test12() {
   known_result.add_constraint(5*B >= -18);
 
   bool ok = (sbox == nbox
-	     && check_result(sbox, known_result,
-			     "7.50e-7", "4.89e-7", "4.34e-7"));
+             && check_result(sbox, known_result,
+                             "7.50e-7", "4.89e-7", "4.34e-7"));
 
   print_constraints(sbox, "*** sbox ***");
   print_constraints(nbox, "*** nbox ***");
@@ -446,10 +446,10 @@ test14() {
   cs.insert(X02 - Coefficient("3152519739159347")*X14 >= 0);
   cs.insert(X06 + X07 + X08 + X09 - X14 - X15 == 0);
   cs.insert(Coefficient("2386907802506363")*X06
-	    + Coefficient("2386907802506363")*X07
-	    + Coefficient("1080863910568919")*X08
-	    + Coefficient("7746191359077253")*X09
-	    - X16 == 0);
+            + Coefficient("2386907802506363")*X07
+            + Coefficient("1080863910568919")*X08
+            + Coefficient("7746191359077253")*X09
+            - X16 == 0);
   cs.insert(-X06 + X10 >= -80);
   cs.insert(-X07 + X11 >= 0);
   cs.insert(-X08 + X12 >= 0);
@@ -459,30 +459,30 @@ test14() {
   cs.insert(-X22 >= -500);
   cs.insert(X23 - Coefficient("3152519739159347")*X36 >= 0);
   cs.insert(Coefficient("7746191359077253")*X28
-	    + Coefficient("7746191359077253")*X29
-	    + Coefficient("3512807709348987")*X30
-	    + Coefficient("3332663724254167")*X31
-	    - X38 == 0);
+            + Coefficient("7746191359077253")*X29
+            + Coefficient("3512807709348987")*X30
+            + Coefficient("3332663724254167")*X31
+            - X38 == 0);
   cs.insert(X28 + X29 + X30 + X31 - X36 + X37 + X39 == 44);
   cs.insert(-X28 + X32 >= -500);
   cs.insert(-X29 + X33 >= 0);
   cs.insert(-X30 + X34 >= 0);
   cs.insert(-X31 + X35 >= 0);
   cs.insert(Coefficient("-2661627379775963")*X10
-	    - Coefficient("2686397177726501")*X11
-	    - Coefficient("5422333951354077")*X12
-	    - Coefficient("5469621747441467")*X13
-	    + X25
-	    - Coefficient("2466846695892189")*X32
-	    - Coefficient("4996743786567565")*X33
-	    - Coefficient("5064297780978123")*X34
-	    - Coefficient("641481471923585")*X35 >= 0);
+            - Coefficient("2686397177726501")*X11
+            - Coefficient("5422333951354077")*X12
+            - Coefficient("5469621747441467")*X13
+            + X25
+            - Coefficient("2466846695892189")*X32
+            - Coefficient("4996743786567565")*X33
+            - Coefficient("5064297780978123")*X34
+            - Coefficient("641481471923585")*X35 >= 0);
   cs.insert(X03 - Coefficient("7854277750134145")*X22 >= 0);
   cs.insert(X15
-	    - Coefficient("7854277750134145")*X28
-	    - Coefficient("7782220156096217")*X29
-	    - Coefficient("7782220156096217")*X30
-	    - Coefficient("7710162562058289")*X31 >= 0);
+            - Coefficient("7854277750134145")*X28
+            - Coefficient("7782220156096217")*X29
+            - Coefficient("7782220156096217")*X30
+            - Coefficient("7710162562058289")*X31 >= 0);
   cs.insert(Coefficient("-5422333951354077")*X01 + X24 >= 0);
   cs.insert(X21 >= 2);
   cs.insert(-X16 - X38 >= -300);

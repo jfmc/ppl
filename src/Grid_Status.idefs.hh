@@ -1,5 +1,5 @@
 /* Grid::Status class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Grid_Status_defs_hh
-#define PPL_Grid_Status_defs_hh 1
+#ifndef PPL_Grid_Status_idefs_hh
+#define PPL_Grid_Status_idefs_hh 1
 
 #ifndef PPL_IN_Grid_CLASS
 #error "Do not include Grid_Status.idefs.hh directly; use Grid.defs.hh instead."
@@ -164,4 +164,4 @@ private:
   void reset(flags_t mask);
 };
 
-#endif // !defined(PPL_Grid_Status_defs_hh)
+#endif // !defined(PPL_Grid_Status_idefs_hh)

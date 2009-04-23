@@ -1,5 +1,5 @@
 /* Constraint class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -391,13 +391,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
@@ -476,12 +474,16 @@ private:
   friend Constraint
   operator==(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Constraint
+  operator==(Variable v1, Variable v2);
+  friend Constraint
   operator==(const Linear_Expression& e, Coefficient_traits::const_reference n);
   friend Constraint
   operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
   friend Constraint
   operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
+  friend Constraint
+  operator>=(Variable v1, Variable v2);
   friend Constraint
   operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
   friend Constraint
@@ -496,6 +498,8 @@ private:
 
   friend Constraint
   operator>(const Linear_Expression& e1, const Linear_Expression& e2);
+  friend Constraint
+  operator>(Variable v1, Variable v2);
   friend Constraint
   operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
   friend Constraint

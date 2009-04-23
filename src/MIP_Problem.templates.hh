@@ -1,5 +1,5 @@
 /* MIP_Problem class implementation: non-inline template functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -41,6 +41,7 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
+    pricing(PRICING_STEEPEST_EDGE_FLOAT),
     initialized(false),
     input_cs(),
     first_pending_constraint(0),
@@ -108,6 +109,7 @@ MIP_Problem::MIP_Problem(dimension_type dim,
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
+    pricing(PRICING_STEEPEST_EDGE_FLOAT),
     initialized(false),
     input_cs(),
     first_pending_constraint(0),

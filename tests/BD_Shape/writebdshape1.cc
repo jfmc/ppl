@@ -1,5 +1,5 @@
 /* Test operator<<(ostream&, const BD_Shape&).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -34,44 +34,44 @@ test01() {
   std::stringstream s;
   using namespace IO_Operators;
 
-  TBD_Shape bd(3, UNIVERSE);
+  TBD_Shape bds(3, UNIVERSE);
 
-  s << bd;
+  s << bds;
   if (s.str() != "true")
     return false;
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
   s.str("");
 
-  bd.add_constraint(x <= 3);
+  bds.add_constraint(x <= 3);
 
-  s << bd;
+  s << bds;
   if (s.str() != "A <= 3")
     return false;
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
   s.str("");
 
-  bd.add_constraint(x - y <= 4);
+  bds.add_constraint(x - y <= 4);
 
-  s << bd;
+  s << bds;
   if (s.str() != "A <= 3, A - B <= 4")
     return false;
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
   s.str("");
 
-  bd.add_constraint(-y <= -2);
+  bds.add_constraint(-y <= -2);
 
-  s << bd;
+  s << bds;
   if (s.str() != "A <= 3, B >= 2, A - B <= 4")
     return false;
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
   s.str("");
 
-  bd.add_constraint(x-z <= 0);
+  bds.add_constraint(x-z <= 0);
 
-  s << bd;
+  s << bds;
   if (s.str() != "A <= 3, B >= 2, A - B <= 4, A - C <= 0")
     return false;
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
   s.str("");
 
   return true;
@@ -82,36 +82,36 @@ test02() {
   std::stringstream s;
   using namespace IO_Operators;
 
-  TBD_Shape bd1(0, EMPTY);
+  TBD_Shape bds1(0, EMPTY);
 
-  s << bd1;
+  s << bds1;
   if (s.str() != "false")
     return false;
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds1, "*** bds1 ***");
   s.str("");
 
-  TBD_Shape bd2(0, UNIVERSE);
+  TBD_Shape bds2(0, UNIVERSE);
 
-  s << bd2;
+  s << bds2;
   if (s.str() != "true")
     return false;
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds2, "*** bds2 ***");
   s.str("");
 
-  TBD_Shape bd3(1, EMPTY);
+  TBD_Shape bds3(1, EMPTY);
 
-  s << bd3;
+  s << bds3;
   if (s.str() != "false")
     return false;
-  print_constraints(bd3, "*** bd3 ***");
+  print_constraints(bds3, "*** bds3 ***");
   s.str("");
 
-  TBD_Shape bd4(1, UNIVERSE);
+  TBD_Shape bds4(1, UNIVERSE);
 
-  s << bd4;
+  s << bds4;
   if (s.str() != "true")
     return false;
-  print_constraints(bd4, "*** bd4 ***");
+  print_constraints(bds4, "*** bds4 ***");
   s.str("");
 
   return true;

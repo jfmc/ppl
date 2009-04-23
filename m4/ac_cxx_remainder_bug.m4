@@ -1,5 +1,5 @@
 dnl A function to check whether the C++ compiler has the `remainder' bug.
-dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -32,27 +32,26 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <climits>
 
 int minus_one(int n) {
-   return (n+1)*(n-1)-n*n;
+  return (n+1)*(n-1)-n*n;
 }
 
 int p(int x, int y) {
-   int z = x % y;
-   return z;
+  int z = x % y;
+  return z;
 }
 
 int main(int argc, char** argv) {
-   if (p(INT_MIN, minus_one(argc)) != 0)
-     return 1;
-   else
-     return 0;
+  if (p(INT_MIN, minus_one(argc)) != 0)
+    return 1;
+  else
+    return 0;
 }
-
 ]])],
   AC_MSG_RESULT(no)
   ac_cv_cxx_has_remainder_bug=no,
   AC_MSG_RESULT(yes)
   ac_cv_cxx_has_remainder_bug=yes,
-  AC_MSG_RESULT(yes)
+  AC_MSG_RESULT([assuming yes])
   ac_cv_cxx_has_remainder_bug=yes)
 
 if test x"$ac_cv_cxx_has_remainder_bug" = xyes
@@ -61,7 +60,7 @@ then
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(CXX_HAS_REMAINDER_BUG, $value,
+AC_DEFINE_UNQUOTED(PPL_CXX_HAS_REMAINDER_BUG, $value,
   [Not zero if the C++ compiler has the remainder bug.])
 
 AC_LANG_POP(C++)

@@ -1,5 +1,5 @@
 /* Test Grid::congruences().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -185,7 +185,7 @@ test08() {
 
   // Empty the grid.  The idea is to check that `cgs' still refers to
   // a congruence system that matches the grid.
-  gr1.add_congruence_and_minimize(Congruence::zero_dim_false());
+  gr1.add_congruence(Congruence::zero_dim_false());
 
   Grid known_gr = gr1;
 
@@ -199,44 +199,11 @@ test08() {
   return ok;
 }
 
-#if 0
-// Congruence_System::concatenate is now private.
-
-// Concatenate two 1D universe (empty) congruence systems
-// to give a 2D universe.
-bool
-test09() {
-  Variable A(0);
-
-  Grid gr1(1);
-  Congruence_System cgs1 = gr1.congruences();
-  print_congruences(cgs1, "*** cgs1 ***");
-
-  Congruence_System cgs2 = gr1.congruences();
-  print_congruences(cgs2, "*** cgs1 ***");
-
-  cgs1.concatenate(cgs2);
-  print_congruences(cgs1, "*** cgs1.concatenate(cgs1) ***");
-
-  Grid gr(cgs1);
-  print_congruences(gr, "*** gr(cgs1) ***");
-
-  Grid known_gr(2);
-  print_congruences(known_gr, "*** known_gr ***");
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr(cgs1) ***");
-
-  return ok;
-}
-#endif
-
 // add congruence systems to a congruence system with smaller space
 // dimension.
 // This test showed a bug in Congruence_System insert(), now corrected.
 bool
-test10() {
+test09() {
   Variable A(0);
   Variable B(1);
 
@@ -267,7 +234,7 @@ test10() {
 // add congruence systems to a congruence system
 // with larger space dimension.
 bool
-test11() {
+test10() {
   Variable A(0);
   Variable B(1);
 
@@ -298,7 +265,7 @@ test11() {
 
 // Test is_equal_to() for same congruence systems.
 bool
-test12() {
+test11() {
   Variable A(0);
   Variable B(1);
 
@@ -317,7 +284,7 @@ test12() {
 // numbers of congruences.
 // This test showed a bug in Congruence_System is_equal_to(), now corrected.
 bool
-test13() {
+test12() {
   Variable A(0);
   Variable B(1);
 
@@ -337,7 +304,7 @@ test13() {
 // Test is_equal_to() for different congruence systems with the same
 // number of congruences.
 bool
-test14() {
+test13() {
   Variable A(0);
   Variable B(1);
 
@@ -356,7 +323,7 @@ test14() {
 
 // Test has_linear_equalities() for congruence systems.
 bool
-test15() {
+test14() {
   Variable A(0);
   Variable B(1);
 
@@ -374,7 +341,7 @@ test15() {
 
 // Test num_equalities() for congruence systems.
 bool
-test16() {
+test15() {
   Variable A(0);
   Variable B(1);
 
@@ -391,10 +358,9 @@ test16() {
 
 // Add to a non-empty congruence system a nonempty constraint system
 bool
-test17() {
+test16() {
   Variable A(0);
   Variable B(1);
-
 
   Congruence_System cgs;
   cgs.insert(A %= 0);
@@ -414,38 +380,6 @@ test17() {
   return ok;
 }
 
-#if 0
-// Congruence_System::concatenate is now private.
-
-// Concatenate two 1D universe congruence systems each with
-// a single trivial congruence to give a 2D universe.
-bool
-test18() {
-  Variable A(0);
-
-  Congruence_System cgs1(0*A == 0);
-  print_congruences(cgs1, "*** cgs1 ***");
-
-  Congruence_System cgs2(0*A == 0);
-  print_congruences(cgs2, "*** cgs2 ***");
-
-  cgs1.concatenate(cgs2);
-  print_congruences(cgs1, "*** cgs1.concatenate(cgs1) ***");
-
-  Grid gr(cgs1);
-  print_congruences(gr, "*** gr(cgs1) ***");
-
-  Grid known_gr(2);
-  print_congruences(known_gr, "*** known_gr ***");
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr(cgs1) ***");
-
-  return ok;
-}
-#endif
-
 } // namespace
 
 BEGIN_MAIN
@@ -457,7 +391,7 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
-  //DO_TEST(test09);
+  DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
@@ -465,6 +399,4 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
-  DO_TEST(test17);
-  //DO_TEST(test18);
 END_MAIN

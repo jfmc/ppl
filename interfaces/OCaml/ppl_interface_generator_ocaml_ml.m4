@@ -1,5 +1,10 @@
-m4_define(`dnl', `m4_dnl')
-dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file generates the file ppl_ocaml.ml
+dnl using the code in ppl_interface_generator_ocaml_ml_code.m4.
+
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -20,49 +25,37 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_prolog.icc.
-dnl
 dnl Include files defining macros that generate the non-fixed part.
-m4_include(`ppl_interface_generator_ocaml_ml_code.m4')dnl
-m4_include(`ppl_interface_generator_common.m4')dnl
-m4_include(`ppl_interface_generator_common_dat.m4')dnl
-m4_include(`ppl_interface_generator_ocaml_dat.m4')dnl
-dnl
-m4_divert(-1)dnl
-
-dnl m4_pre_all_classes_code
-dnl
-dnl Definition for converting a term to a class handle code for all
-dnl classes must be placed before all the generated code so that one class
-dnl can be copied from another.
-m4_define(`m4_pre_all_classes_code', `')
-
-
-dnl m4_pre_extra_class_code(Class_Counter)
-dnl Prefix extra code for each class.
-m4_define(`m4_pre_extra_class_code', `dnl
-m4_ifelse(m4_interface_class$1, Polyhedron,
-type c_`'m4_downcase(m4_interface_class$1)
-type nnc_`'m4_downcase(m4_interface_class$1),
-type m4_downcase(m4_interface_class$1))
-
-')
+m4_include(`ppl_interface_generator_ocaml_ml_code.m4')
+m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
 
 m4_divert`'dnl
-dnl
+(* OCaml interface code.
+m4_include(`ppl_interface_generator_copyright')`'dnl
+*)
 
-include Ppl_ocaml_globals
-include Ppl_ocaml_types
 open Gmp
+include Ppl_ocaml_globals
 
-exception Error of string
-let _ = Callback.register_exception "PPL_arithmetic_overflow" (Error "any string")
-let _ = Callback.register_exception "PPL_internal_error" (Error "any string")
-let _ = Callback.register_exception "PPL_unknown_standard_exception" (Error "any string")
-let _ = Callback.register_exception "PPL_not_an_unsigned_exception" (Error "any string")
+m4_divert(-1)
+m4_pushdef(`m4_one_class_code', `type m4_downcase(m4_interface_class$1)
+')
 
-let _ = Callback.register_exception "PPL_unexpected_error" (Error "any string")
+dnl -----------------------------------------------------------------
+dnl Generate type declarations for all the classes.
+dnl -----------------------------------------------------------------
+m4_divert`'dnl
+m4_all_code
+m4_divert(-1)
+m4_popdef(`m4_one_class_code')
+
+dnl -----------------------------------------------------------------
+dnl Generate the main class-dependent code.
+dnl -----------------------------------------------------------------
+dnl Ensure any schematic procedure macro that is not defined
+dnl in the code file outputs a warning message.
+m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
+m4_divert`'dnl
+m4_all_code
 dnl
-dnl Generate the non-fixed part of the file.
-m4_all_code`'dnl
-dnl
+dnl End of file generation.

@@ -1,5 +1,5 @@
 /* Pointset_Powerset class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -61,14 +61,106 @@ Pointset_Powerset<PS>::Pointset_Powerset(dimension_type num_dimensions,
 
 template <typename PS>
 inline
-Pointset_Powerset<PS>::Pointset_Powerset(const Pointset_Powerset& y)
+Pointset_Powerset<PS>::Pointset_Powerset(const Pointset_Powerset& y,
+                                         Complexity_Class)
   : Base(y), space_dim(y.space_dim) {
 }
 
 template <typename PS>
 inline
-Pointset_Powerset<PS>::Pointset_Powerset(const PS& ph)
-  : Base(ph), space_dim(ph.space_dimension()) {
+Pointset_Powerset<PS>::Pointset_Powerset(const C_Polyhedron& ph,
+                                         Complexity_Class complexity)
+  : Base(), space_dim(ph.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (complexity == ANY_COMPLEXITY) {
+    if (ph.is_empty())
+      return;
+  }
+  else
+    x.reduced = false;
+  x.sequence.push_back(Determinate<PS>(PS(ph, complexity)));
+  x.reduced = false;
+  assert(OK());
+}
+
+template <typename PS>
+inline
+Pointset_Powerset<PS>::Pointset_Powerset(const NNC_Polyhedron& ph,
+                                         Complexity_Class complexity)
+  : Base(), space_dim(ph.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (complexity == ANY_COMPLEXITY) {
+    if (ph.is_empty())
+      return;
+  }
+  else
+    x.reduced = false;
+  x.sequence.push_back(Determinate<PS>(PS(ph, complexity)));
+  assert(OK());
+}
+
+template <typename PS>
+inline
+Pointset_Powerset<PS>::Pointset_Powerset(const Grid& gr,
+                                         Complexity_Class)
+  : Base(), space_dim(gr.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (!gr.is_empty()) {
+    x.sequence.push_back(Determinate<PS>(PS(gr)));
+  }
+  assert(OK());
+}
+
+template <typename PS>
+template <typename QH1, typename QH2, typename R>
+inline
+Pointset_Powerset<PS>
+::Pointset_Powerset(const Partially_Reduced_Product<QH1, QH2, R>& prp,
+                    Complexity_Class complexity)
+  : Base(), space_dim(prp.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (complexity == ANY_COMPLEXITY) {
+    if (prp.is_empty())
+      return;
+  }
+  else
+    x.reduced = false;
+  x.sequence.push_back(Determinate<PS>(PS(prp, complexity)));
+  x.reduced = false;
+  assert(OK());
+}
+
+template <typename PS>
+template <typename Interval>
+Pointset_Powerset<PS>::Pointset_Powerset(const Box<Interval>& box,
+                                         Complexity_Class)
+  : Base(), space_dim(box.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (!box.is_empty())
+    x.sequence.push_back(Determinate<PS>(PS(box)));
+  assert(OK());
+}
+
+template <typename PS>
+template <typename T>
+Pointset_Powerset<PS>::Pointset_Powerset(const Octagonal_Shape<T>& os,
+                                         Complexity_Class)
+  : Base(), space_dim(os.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (!os.is_empty())
+    x.sequence.push_back(Determinate<PS>(PS(os)));
+  assert(OK());
+}
+
+template <typename PS>
+template <typename T>
+Pointset_Powerset<PS>::Pointset_Powerset(const BD_Shape<T>& bds,
+                                         Complexity_Class)
+  : Base(), space_dim(bds.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (!bds.is_empty())
+    x.sequence.push_back(Determinate<PS>(PS(bds)));
+  assert(OK());
 }
 
 template <typename PS>
@@ -132,7 +224,7 @@ template <typename PS>
 inline bool
 Pointset_Powerset<PS>
 ::geometrically_covers(const Pointset_Powerset& y) const {
-  // FIXME: this is buggy when PS is not an abstraction of NNC_Polyhedron.
+  // This code is only used when PS is an abstraction of NNC_Polyhedron.
   const Pointset_Powerset<NNC_Polyhedron> xx(*this);
   const Pointset_Powerset<NNC_Polyhedron> yy(y);
   return xx.geometrically_covers(yy);
@@ -142,7 +234,7 @@ template <typename PS>
 inline bool
 Pointset_Powerset<PS>
 ::geometrically_equals(const Pointset_Powerset& y) const {
-  // FIXME: this is buggy when PS is not an abstraction of NNC_Polyhedron.
+  // This code is only used when PS is an abstraction of NNC_Polyhedron.
   const Pointset_Powerset<NNC_Polyhedron> xx(*this);
   const Pointset_Powerset<NNC_Polyhedron> yy(y);
   return xx.geometrically_covers(yy) && yy.geometrically_covers(xx);
@@ -177,13 +269,19 @@ Pointset_Powerset<PS>::total_memory_in_bytes() const {
 }
 
 template <typename PS>
+inline int32_t
+Pointset_Powerset<PS>::hash_code() const {
+  return space_dimension() & 0x7fffffff;
+}
+
+template <typename PS>
 inline void
 Pointset_Powerset<PS>
-::poly_difference_assign(const Pointset_Powerset& y) {
-  // FIXME: can this become more accurate for, e.g., Grid instances?
+::difference_assign(const Pointset_Powerset& y) {
+  // This code is only used when PS is an abstraction of NNC_Polyhedron.
   Pointset_Powerset<NNC_Polyhedron> nnc_this(*this);
   Pointset_Powerset<NNC_Polyhedron> nnc_y(y);
-  nnc_this.poly_difference_assign(nnc_y);
+  nnc_this.difference_assign(nnc_y);
   *this = nnc_this;
 }
 
@@ -191,7 +289,7 @@ Pointset_Powerset<PS>
 template <typename PS>
 inline bool
 check_containment(const PS& ph, const Pointset_Powerset<PS>& ps) {
-  // FIXME: this is buggy when PS is not an abstraction of NNC_Polyhedron.
+  // This code is only used when PS is an abstraction of NNC_Polyhedron.
   const NNC_Polyhedron pph = NNC_Polyhedron(ph.constraints());
   const Pointset_Powerset<NNC_Polyhedron> pps(ps);
   return check_containment(pph, pps);

@@ -1,5 +1,5 @@
 /* Test Polyhedron::ascii_dump() and Polyhedron::ascii_load().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -262,7 +262,7 @@ test08() {
   string str;
   do
     f >> str;
-  while (str != "(not_up-to-date)" );
+  while (str != "(not_up-to-date)");
   f.seekp(0, ios_base::cur);
   f << "A\n";
   close(f);
@@ -390,7 +390,7 @@ test12() {
   string str;
   do
     f >> str;
-  while (str != "(not_up-to-date)" );
+  while (str != "(not_up-to-date)");
   f.seekp(0, ios_base::cur);
   f << "\nA";
   close(f);

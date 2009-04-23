@@ -1,5 +1,5 @@
 /* OR_Matrix class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ .  */
 #define PPL_OR_Matrix_defs_hh 1
 
 #include "globals.defs.hh"
-#include "Ptr_Iterator.defs.hh"
 #include "OR_Matrix.types.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.defs.hh"
@@ -126,14 +125,18 @@ private:
     //! Subscript operator.
     U& operator[](dimension_type k) const;
 
-    // FIXME!!!
-    //private:
-  public:
-    //! Holds a reference to the beginning of this row.
-    U* first;
-
-    //! Default constructor: creates a past-the-end object.
+    //! Default constructor: creates an invalid object that has to be assigned.
     Pseudo_Row();
+
+    //! Assignment operator.
+    Pseudo_Row& operator=(const Pseudo_Row& y);
+
+#if !defined(__GNUC__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 0)
+  private:
+#else
+  // Work around a bug of GCC 4.0.x (and, likely, previous versions).
+  public:
+#endif
 
 #if PPL_OR_MATRIX_EXTRA_DEBUG
 
@@ -147,8 +150,14 @@ private:
 
 #endif // !PPL_OR_MATRIX_EXTRA_DEBUG
 
-    //! Assignment operator.
-    Pseudo_Row& operator=(const Pseudo_Row& y);
+    //! Holds a reference to the beginning of this row.
+    U* first;
+
+#if !defined(__GNUC__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 0)
+#else
+  // Work around a bug of GCC 4.0.x (and, likely, previous versions).
+  private:
+#endif
 
 #if PPL_OR_MATRIX_EXTRA_DEBUG
 
@@ -160,8 +169,19 @@ private:
 
 #endif // PPL_OR_MATRIX_EXTRA_DEBUG
 
+    // FIXME: the EDG-based compilers (such as Comeau and Intel)
+    // are here in wild disagreement with GCC: what is a legal friend
+    // declaration for one, is illegal for the others.
+#ifdef __EDG__
+    template <typename V> template<typename W>
+    friend class OR_Matrix<V>::Pseudo_Row;
+    template <typename V> template<typename W>
+    friend class OR_Matrix<V>::any_row_iterator;
+#else
     template <typename V> friend class Pseudo_Row;
     template <typename V> friend class any_row_iterator;
+#endif
+
     friend class OR_Matrix;
   }; // class Pseudo_Row
 
@@ -286,7 +306,15 @@ private:
     //! Internal index: <CODE>i = (e+1)*(e+1)/2</CODE>.
     dimension_type i;
 
+    // FIXME: the EDG-based compilers (such as Comeau and Intel)
+    // are here in wild disagreement with GCC: what is a legal friend
+    // declaration for one, is illegal for the others.
+#ifdef __EDG__
+    template <typename V> template<typename W>
+    friend class OR_Matrix<V>::any_row_iterator;
+#else
     template <typename V> friend class any_row_iterator;
+#endif
   }; // class any_row_iterator
 
 public:

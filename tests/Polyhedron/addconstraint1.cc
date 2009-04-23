@@ -1,5 +1,5 @@
 /* Test Polyhedron::add_constraint().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -83,7 +83,7 @@ test03() {
 
   print_constraints(ph, "*** ph ***");
 
-  ph.add_constraint_and_minimize(B >= 1);
+  ph.add_constraint(B >= 1);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
@@ -92,8 +92,7 @@ test03() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph,
-		    "*** after ph.add_constraint_and_minimize(B >= 1) ***");
+  print_constraints(ph, "*** after ph.add_constraint(B >= 1) ***");
   return ok;
 }
 

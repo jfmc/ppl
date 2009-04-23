@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Erases all files listed in the cutting markers found on stdin.
-# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -24,7 +24,7 @@
 
 CUTTING_MARKER_PREFIX="%<--%<--%<-- "
 
-while read line
+while IFS= read -r line
 do
   case "$line" in
       $CUTTING_MARKER_PREFIX*)

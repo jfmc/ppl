@@ -1,4 +1,10 @@
-dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file defines macros needed for generating
+dnl the Prolog system-dependent code files.
+
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -19,10 +25,9 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_divert(-1)
-m4_include(`ppl_interface_generator_common.m4')dnl
-m4_include(`ppl_interface_generator_prolog_dat.m4')dnl
-dnl
+m4_include(`ppl_interface_generator_common.m4')
+m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')
+
 dnl m4_separator(String)
 dnl
 dnl String is returned unless if it is empty, then use `,'
@@ -45,8 +50,8 @@ dnl changing the separator from the default `,'.
 m4_define(`m4_term_sequence',
   `m4_ifelse(`$1', 0, ,
      `$2(1)`'m4_ifelse(`$1', 1, ,
-       `m4_forloop(`i', 2, `$1', `m4_separator(`$3') $2(i)')')')')`'dnl
-dnl
+       `m4_forloop(`i', 2, `$1', `m4_separator(`$3') $2(i)')')')')
+
 dnl m4_library_names_to_code(Class_Kind,
 dnl                            Procedure_Name1, Procedure_Name2, ...)
 dnl
@@ -59,8 +64,8 @@ m4_ifelse($#, 0, ,$#, 1, ,$#, 2, m4_get_schematic_code($2, $1),
 m4_get_schematic_code($2, $1)`'dnl
 m4_library_names_to_code(m4_incr($1), m4_shift(m4_shift($@)))`'dnl
 ')`'dnl
-')`'dnl
-dnl
+')
+
 dnl ppl_prolog_sys_code
 dnl
 dnl For each recognised class in the "classes" list,
@@ -70,5 +75,4 @@ dnl a macro that sets the class and the schema(s).
 m4_define(`ppl_prolog_sys_code', `dnl
 m4_library_names_to_code(0, m4_library_predicate_list)`'dnl
 m4_all_code`'dnl
-')`'dnl
-m4_divert`'dnl
+')

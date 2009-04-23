@@ -1,5 +1,5 @@
 /* DB_Row class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -423,8 +423,8 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  // FIXME: the following was "private:", not "public:".
-public:
+private:
+  friend class DB_Row<T>;
 
   //! The number of coefficients in the row.
   dimension_type size_;

@@ -1,5 +1,5 @@
 /* GMP_Integer class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -45,12 +45,16 @@ mpz_class& raw_value(GMP_Integer& x);
 //! \name Memory Size Inspection Functions
 //@{
 
+#ifndef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns the total size in bytes of the memory occupied by \p x.
 /*! \relates GMP_Integer */
+#endif // !defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 memory_size_type total_memory_in_bytes(const GMP_Integer& x);
 
+#ifndef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns the size in bytes of the memory managed by \p x.
 /*! \relates GMP_Integer */
+#endif // !defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 memory_size_type external_memory_in_bytes(const GMP_Integer& x);
 
 //@} // Memory Size Inspection Functions

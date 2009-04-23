@@ -1,5 +1,5 @@
 /* Test class Grid_Generator.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -422,32 +422,9 @@ test20() {
   return ok;
 }
 
-#if 0 // scale_to_divisor is now private.
-// Exception in method scale_to_divisor.
-static bool
-test21() {
-  Variable C(2);
-
-  Grid_Generator a = grid_point(2*C, 3);
-
-  print_generator(a, "*** a ***");
-
-  try {
-    a.scale_to_divisor(0);
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
-}
-#endif
-
 // Exception when trying to get the divisor of a line.
 static bool
-test22() {
+test21() {
   Variable C(2);
 
   Grid_Generator a = grid_line(2*C);
@@ -468,7 +445,7 @@ test22() {
 
 // Method zero_dim_point.
 static bool
-test23() {
+test22() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -503,7 +480,6 @@ BEGIN_MAIN
   DO_TEST(test18);
   DO_TEST(test19);
   DO_TEST(test20);
-  //DO_TEST(test21);
+  DO_TEST(test21);
   DO_TEST(test22);
-  DO_TEST(test23);
 END_MAIN

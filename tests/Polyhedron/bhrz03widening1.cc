@@ -1,5 +1,5 @@
 /* Test Polyhedron::BHRZ03_widening_assign().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -357,7 +357,7 @@ test09() {
     print_generators(p_i.generators(), "*** New stuff ***");
 
     C_Polyhedron q_i = q_i_minus_1;
-    q_i.poly_hull_assign(p_i);
+    q_i.upper_bound_assign(p_i);
     print_generators(q_i.generators(),
 		     "*** Poly-hull of previous with new ***");
 

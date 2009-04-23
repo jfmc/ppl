@@ -1,5 +1,5 @@
 /* Test Grid::generalized_affine_image(lhs, rhs, modulus).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -323,8 +323,8 @@ test12() {
   Variable A(0);
 
   Grid gr(1);
-  gr.add_congruence(A == 0);
-  gr.add_congruence(A == 3);
+  gr.add_constraint(A == 0);
+  gr.add_constraint(A == 3);
 
   print_congruences(gr, "*** gr ***");
 
@@ -420,7 +420,7 @@ test16() {
   Variable C(2);
 
   Grid gr(3);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
   gr.add_congruence((C %= 0) / 3);
 
   print_congruences(gr, "*** gr ***");
@@ -448,7 +448,7 @@ test17() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
 
   print_congruences(gr, "*** gr ***");
 
@@ -500,15 +500,15 @@ test19() {
   Variable C(2);
 
   Grid gr(3);
-  gr.add_congruence(C == 0);
-  gr.add_congruence(A + 3*B == 2);
+  gr.add_constraint(C == 0);
+  gr.add_constraint(A + 3*B == 2);
 
   print_congruences(gr, "*** gr ***");
 
   gr.generalized_affine_image(A - C, EQUAL, B + 3, 0);
 
   Grid known_gr(3);
-  known_gr.add_congruence(A - C == B + 3);
+  known_gr.add_constraint(A - C == B + 3);
 
   bool ok = (gr == known_gr);
 

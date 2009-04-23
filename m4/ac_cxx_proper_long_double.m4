@@ -1,6 +1,6 @@
 dnl A function to check whether the C++ compiler provides long double
 dnl numbers that have bigger range or precision than double.
-dnl Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -34,17 +34,18 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 long double f = 0.0;
 
 int main() {
-  return ((LDBL_MAX <= DBL_MAX) && (DBL_EPSILON <= LDBL_EPSILON)
-	  && (LDBL_MAX_EXP <= DBL_MAX_EXP) && (LDBL_MANT_DIG <= DBL_MANT_DIG))
-    ? 1
-    : 0;
+  if ((LDBL_MAX <= DBL_MAX) && (DBL_EPSILON <= LDBL_EPSILON)
+      && (LDBL_MAX_EXP <= DBL_MAX_EXP) && (LDBL_MANT_DIG <= DBL_MANT_DIG))
+    return 1;
+  else
+    return 0;
 }
 ]])],
   AC_MSG_RESULT(yes)
   ac_cxx_provides_proper_long_double=yes,
   AC_MSG_RESULT(no)
   ac_cxx_provides_proper_long_double=no,
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT([assuming not])
   ac_cxx_provides_proper_long_double=no)
 
 if test x"$ac_cxx_provides_proper_long_double" = xyes
@@ -53,7 +54,7 @@ then
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(CXX_PROVIDES_PROPER_LONG_DOUBLE, $value,
+AC_DEFINE_UNQUOTED(PPL_CXX_PROVIDES_PROPER_LONG_DOUBLE, $value,
   [Not zero if the C++ compiler provides long double numbers that have bigger range or precision than double.])
 
 AC_LANG_POP(C++)

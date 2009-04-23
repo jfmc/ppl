@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -14,8 +14,12 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
+namespace Test {
+
 class Partial_Function;
 
-}
+} // namespace Test
+
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Partial_Function_types_hh)

@@ -1,5 +1,5 @@
 /* Test Polyhedron::relation_with(c) and Polyhedron::relation_with(g).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -118,6 +118,100 @@ test04() {
   return ok;
 }
 
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs1;
+  gs1.insert(point());
+  gs1.insert(line(A + B));
+  C_Polyhedron ph1(gs1);
+
+  Generator_System gs2;
+  gs2.insert(ray(A));
+  gs2.insert(point(B));
+  gs2.insert(point(-B));
+  C_Polyhedron ph2(gs2);
+
+  Poly_Con_Relation rel1 = ph1.relation_with((A %= 0) / 5);
+  Poly_Con_Relation rel2 = ph2.relation_with((A %= 0) / 5);
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+  nout << "ph1.relation_with((A %= 0) / 5) == " << rel1 << endl;
+  nout << "ph2.relation_with((A %= 0) / 5) == " << rel2 << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+  return rel1 == known_result && rel2 == known_result;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs;
+  gs.insert(point(A));
+  C_Polyhedron ph(gs);
+
+  Poly_Con_Relation rel = ph.relation_with(A %= 0);
+
+  print_generators(ph, "*** ph ***");
+  nout << "ph.relation_with(A %= 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
+    && Poly_Con_Relation::is_included();
+  return rel == known_result;
+}
+
+bool
+test07() {
+  Variable A(0);
+
+  C_Polyhedron ph(2);
+  ph.generators();
+  ph.add_constraint(A >= 2);
+  ph.add_constraint(A <= 4);
+
+  Poly_Con_Relation rel = ph.relation_with((A %= 1) / 4);
+
+  Poly_Con_Relation known_rel = Poly_Con_Relation::is_disjoint();
+
+  bool ok = (rel == known_rel);
+
+  print_constraints(ph, "*** ph ***");
+  print_generators(ph, "*** ph ***");
+  nout << "ph.relation_with((A %= 1) / 4) == " << rel << endl;
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, EMPTY);
+  ph.add_generator(point(2*A, 3));
+//  ph.add_generator(point(-A));
+  ph.add_generator(ray(B));
+
+  Poly_Con_Relation rel1 = ph.relation_with(A %= 0);
+
+  Poly_Con_Relation rel2 = ph.relation_with((A %= 1) / 5);
+
+  Poly_Con_Relation known_rel = Poly_Con_Relation::is_disjoint();
+
+  bool ok = (rel1 == known_rel && rel2 == known_rel);
+
+  print_constraints(ph, "*** ph ***");
+  nout << "ph.relation_with(A %= 0) == " << rel1 << endl;
+  nout << "ph.relation_with((A %= 1) / 5) == " << rel2 << endl;
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -125,4 +219,8 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN

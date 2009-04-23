@@ -1,5 +1,5 @@
 /* This is the header file of the Parma Polyhedra Library.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,17 +24,79 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_ppl_hh 1
 
 #ifdef NDEBUG
-# define PPL_SAVE_NDEBUG 1
+# define PPL_SAVE_NDEBUG NDEBUG
 # undef NDEBUG
+#endif
+
+#ifdef __STDC_LIMIT_MACROS
+# define PPL_SAVE_STDC_LIMIT_MACROS __STDC_LIMIT_MACROS
 #endif
 
 #include "ppl-config.h"
 #include "version.hh"
 #include "ppl_include_files.hh"
 
+#undef PPL_SPECIALIZE_ABS
+#undef PPL_SPECIALIZE_ADD
+#undef PPL_SPECIALIZE_ADD_MUL
+#undef PPL_SPECIALIZE_ASSIGN
+#undef PPL_SPECIALIZE_ASSIGN_SPECIAL
+#undef PPL_SPECIALIZE_CEIL
+#undef PPL_SPECIALIZE_CLASSIFY
+#undef PPL_SPECIALIZE_CMP
+#undef PPL_SPECIALIZE_CONSTRUCT
+#undef PPL_SPECIALIZE_CONSTRUCT_SPECIAL
+#undef PPL_SPECIALIZE_COPY
+#undef PPL_SPECIALIZE_DIV
+#undef PPL_SPECIALIZE_DIV2EXP
+#undef PPL_SPECIALIZE_FLOOR
+#undef PPL_SPECIALIZE_FUN1_0_0
+#undef PPL_SPECIALIZE_FUN1_0_1
+#undef PPL_SPECIALIZE_FUN1_0_2
+#undef PPL_SPECIALIZE_FUN1_0_3
+#undef PPL_SPECIALIZE_FUN1_1_1
+#undef PPL_SPECIALIZE_FUN1_1_2
+#undef PPL_SPECIALIZE_FUN1_2_2
+#undef PPL_SPECIALIZE_FUN2_0_0
+#undef PPL_SPECIALIZE_FUN2_0_1
+#undef PPL_SPECIALIZE_FUN2_0_2
+#undef PPL_SPECIALIZE_FUN3_0_1
+#undef PPL_SPECIALIZE_FUN5_0_1
+#undef PPL_SPECIALIZE_GCD
+#undef PPL_SPECIALIZE_GCDEXT
+#undef PPL_SPECIALIZE_IDIV
+#undef PPL_SPECIALIZE_INPUT
+#undef PPL_SPECIALIZE_IS_INT
+#undef PPL_SPECIALIZE_IS_MINF
+#undef PPL_SPECIALIZE_IS_NAN
+#undef PPL_SPECIALIZE_IS_PINF
+#undef PPL_SPECIALIZE_LCM
+#undef PPL_SPECIALIZE_MUL
+#undef PPL_SPECIALIZE_MUL2EXP
+#undef PPL_SPECIALIZE_NEG
+#undef PPL_SPECIALIZE_OUTPUT
+#undef PPL_SPECIALIZE_REM
+#undef PPL_SPECIALIZE_SGN
+#undef PPL_SPECIALIZE_SQRT
+#undef PPL_SPECIALIZE_SUB
+#undef PPL_SPECIALIZE_SUB_MUL
+#undef PPL_SPECIALIZE_TRUNC
+
+#undef PPL_COMPILE_TIME_CHECK
+#undef PPL_COMPILE_TIME_CHECK_AUX
+#undef PPL_COMPILE_TIME_CHECK_NAME
+
+#ifdef __STDC_LIMIT_MACROS
+# undef __STDC_LIMIT_MACROS
+#endif
+#ifdef PPL_SAVE_STDC_LIMIT_MACROS
+# define __STDC_LIMIT_MACROS PPL_SAVE_STDC_LIMIT_MACROS
+# undef PPL_SAVE_STDC_LIMIT_MACROS
+#endif
+
 #ifdef PPL_SAVE_NDEBUG
 # ifndef NDEBUG
-#  define NDEBUG 1
+#  define NDEBUG PPL_SAVE_NDEBUG
 # endif
 # undef PPL_SAVE_NDEBUG
 #else
@@ -43,5 +105,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 # endif
 #endif
 #include <cassert>
+
+#ifdef PPL_NO_AUTOMATIC_INITIALIZATION
+ #undef PPL_NO_AUTOMATIC_INITIALIZATION
+#endif
 
 #endif

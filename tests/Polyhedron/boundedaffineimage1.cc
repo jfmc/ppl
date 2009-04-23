@@ -1,5 +1,5 @@
 /* Test Polyhedron::bounded_affine_image().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -84,6 +84,8 @@ test02() {
 
   print_generators(ph,
 		   "*** ph.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3) ***");
+  print_generators(kr1,
+		   "*** kr1.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3) ***");
 
   return ok;
 }
@@ -111,10 +113,137 @@ test03() {
   return ok;
 }
 
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+
+  ph.add_constraint(x <= 1);
+  ph.add_constraint(x >= 0);
+  ph.add_constraint(y <= 2);
+  ph.add_constraint(y >= -1);
+
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron kr1(ph);
+  C_Polyhedron kr2(ph);
+
+  ph.bounded_affine_image(x, -2*x + y + 1, -2*x + y + 1, -1);
+
+  kr1.generalized_affine_image(x, GREATER_OR_EQUAL, -2*x + y + 1, -1);
+  kr2.generalized_affine_image(x, LESS_OR_EQUAL, -2*x + y + 1, -1);
+  kr1.intersection_assign(kr2);
+
+  bool ok = (kr1 == ph);
+
+  print_constraints(ph,
+		    "*** ph.bounded_affine_image("
+		    "x, -2*x+y+1, -2*x+y+1, -1) ***");
+  print_constraints(kr1,
+		    "*** kr1 ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+
+  ph.add_constraint(x <= 1);
+  ph.add_constraint(x >= 0);
+  ph.add_constraint(y <= 2);
+  ph.add_constraint(y >= -1);
+
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron kr1(ph);
+  C_Polyhedron kr2(ph);
+
+  ph.bounded_affine_image(x, 2*x + y + 1, 2*x + y + 1, -1);
+
+  kr1.generalized_affine_image(x, GREATER_OR_EQUAL, 2*x + y + 1, -1);
+  kr2.generalized_affine_image(x, LESS_OR_EQUAL, 2*x + y + 1, -1);
+  kr1.intersection_assign(kr2);
+
+  bool ok = (kr1 == ph);
+
+  print_constraints(ph,
+		    "*** ph.bounded_affine_image("
+		    "x, 2*x+y+1, 2*x+y+1, -1) ***");
+  print_constraints(kr1,
+		    "*** kr1 ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+
+  ph.add_constraint(x <= 1);
+  ph.add_constraint(x >= 0);
+  ph.add_constraint(y <= 2);
+  ph.add_constraint(y >= -1);
+
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron kr1(ph);
+  C_Polyhedron kr2(ph);
+
+  ph.bounded_affine_image(x, -2*x + y + 1, -2*x + y + 1);
+
+  kr1.generalized_affine_image(x, GREATER_OR_EQUAL, -2*x + y + 1);
+  kr2.generalized_affine_image(x, LESS_OR_EQUAL, -2*x + y + 1);
+  kr1.intersection_assign(kr2);
+
+  bool ok = (kr1 == ph);
+
+  print_constraints(ph,
+		    "*** ph.bounded_affine_image("
+		    "x, -2*x+y+1, -2*x+y+1) ***");
+  print_constraints(kr1,
+		    "*** kr1 ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 1);
+  ph.add_constraint(A <= 0);
+
+  print_constraints(ph, "*** ph ***");
+
+  ph.bounded_affine_image(A, A, 2*A, 3);
+
+  C_Polyhedron kr1(1, EMPTY);
+
+  bool ok = (ph == kr1);
+
+  print_generators(ph, "*** ph.bounded_affine_image(A, A, 2*A, 3) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST_F8(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN

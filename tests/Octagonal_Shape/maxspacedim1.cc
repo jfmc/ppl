@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::max_space_dimension().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,7 +26,8 @@ namespace {
 
 bool
 test01() {
-  nout << Octagonal_Shape<signed char>::max_space_dimension() << " (signed char)"
+  nout << Octagonal_Shape<signed char>::max_space_dimension()
+       << " (signed char)"
        << endl
        << Octagonal_Shape<short>::max_space_dimension() << " (short)"
        << endl
@@ -36,12 +37,19 @@ test01() {
        << endl
        << Octagonal_Shape<long long>::max_space_dimension() << " (long long)"
        << endl
+#if PPL_SUPPORTED_FLOAT
        << Octagonal_Shape<float>::max_space_dimension() << " (float)"
        << endl
+#endif
+#if PPL_SUPPORTED_DOUBLE
        << Octagonal_Shape<double>::max_space_dimension() << " (double)"
        << endl
-       << Octagonal_Shape<long double>::max_space_dimension() << " (long double)"
+#endif
+#if PPL_SUPPORTED_LONG_DOUBLE
+       << Octagonal_Shape<long double>::max_space_dimension()
+       << " (long double)"
        << endl
+#endif
        << Octagonal_Shape<mpz_class>::max_space_dimension() << " (mpz_class)"
        << endl
        << Octagonal_Shape<mpq_class>::max_space_dimension() << " (mpq_class)"
@@ -63,13 +71,17 @@ test01() {
       < Octagonal_Shape<long long>::max_space_dimension())
     return false;
 
+#if PPL_SUPPORTED_FLOAT && PPL_SUPPORTED_DOUBLE
   if (Octagonal_Shape<float>::max_space_dimension()
       < Octagonal_Shape<double>::max_space_dimension())
     return false;
+#endif
 
+#if PPL_SUPPORTED_DOUBLE && PPL_SUPPORTED_LONG_DOUBLE
   if (Octagonal_Shape<double>::max_space_dimension()
       < Octagonal_Shape<long double>::max_space_dimension())
     return false;
+#endif
 
   if (2*Octagonal_Shape<mpz_class>::max_space_dimension()
       < Octagonal_Shape<mpq_class>::max_space_dimension())

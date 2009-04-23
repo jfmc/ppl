@@ -1,5 +1,5 @@
 /* Null floating point unit related functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -20,24 +20,33 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_fpu_none_inlines_hh
+#define PPL_fpu_none_inlines_hh 1
+
 #include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
 
-inline int
+inline void
+fpu_initialize_control_functions() {
+  throw std::logic_error("PPL::fpu_initialize_control_functions():"
+			 " cannot control the FPU");
+}
+
+inline fpu_rounding_direction_type
 fpu_get_rounding_direction() {
   throw std::logic_error("PPL::fpu_get_rounding_direction():"
 			 " cannot control the FPU");
 }
 
 inline void
-fpu_set_rounding_direction(int dir) {
+fpu_set_rounding_direction(int) {
   throw std::logic_error("PPL::fpu_set_rounding_direction():"
 			 " cannot control the FPU");
 }
 
 inline int
-fpu_save_rounding_direction(int dir) {
+fpu_save_rounding_direction(int) {
   throw std::logic_error("PPL::fpu_save_rounding_direction():"
 			 " cannot control the FPU");
 }
@@ -49,7 +58,7 @@ fpu_reset_inexact() {
 }
 
 inline void
-fpu_restore_rounding_direction(int dir) {
+fpu_restore_rounding_direction(int) {
   throw std::logic_error("PPL::fpu_restore_rounding_direction():"
 			 " cannot control the FPU");
 }
@@ -61,3 +70,5 @@ fpu_check_inexact() {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_fpu_none_inlines_hh)

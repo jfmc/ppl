@@ -1,5 +1,5 @@
 /* Test operator<<(std::ostream&, const Polyhedron&).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,19 +22,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#include "files.hh"
-#include <fstream>
-
-using std::fstream;
-using std::ios_base;
-
 using namespace IO_Operators;
 
 namespace {
 
 bool
 test01() {
-  const char* my_file = "writepolyhedron1.dat";
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -46,27 +39,26 @@ test01() {
   ph.add_constraint(  A - B + 3*C >= 3);
   ph.add_constraint(3*A     + 2*C >= 3);
 
-  fstream f;
-  open(f, my_file, ios_base::out);
-  f << ph << endl;
-  close(f);
-  // FIXME.
-  return true;
+  std::stringstream s;
+  s << ph;
+
+  nout << "*** s << ph ***" << endl << "`" << s.str() << "'" << endl;
+
+  return s.str() == "false";
 }
 
 bool
 test02() {
-  const char* my_file = "writepolyhedron1.dat";
   NNC_Polyhedron ph1;
 
   C_Polyhedron ph(ph1.constraints());
 
-  fstream f;
-  open(f, my_file, ios_base::out);
-  f << ph << endl;
-  close(f);
-  // FIXME.
-  return true;
+  std::stringstream s;
+  s << ph;
+
+  nout << "*** s << ph ***" << endl << "`" << s.str() << "'" << endl;
+
+  return s.str() == "true";
 }
 
 } // namespace

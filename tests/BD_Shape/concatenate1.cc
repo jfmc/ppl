@@ -1,5 +1,5 @@
 /* Test BD_Shape::concatenate_assign().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -36,20 +36,20 @@ test01() {
   Variable x8(7);
   Variable x9(8);
 
-  TBD_Shape bd1(6);
-  bd1.add_constraint(x2 - x3 <= 0);
-  bd1.add_constraint(x3 <= 2);
-  bd1.add_constraint(x6 - x5 <= 2);
-  bd1.add_constraint(x5 <= 3);
+  TBD_Shape bds1(6);
+  bds1.add_constraint(x2 - x3 <= 0);
+  bds1.add_constraint(x3 <= 2);
+  bds1.add_constraint(x6 - x5 <= 2);
+  bds1.add_constraint(x5 <= 3);
 
-  TBD_Shape bd2(3);
-  bd2.add_constraint(x2 - x3 <= 2);
-  bd2.add_constraint(x3 <= 7);
+  TBD_Shape bds2(3);
+  bds2.add_constraint(x2 - x3 <= 2);
+  bds2.add_constraint(x3 <= 7);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.concatenate_assign(bd2);
+  bds1.concatenate_assign(bds2);
 
   BD_Shape<mpq_class> known_result(9);
   known_result.add_constraint(x2 - x3 <= 0);
@@ -59,9 +59,9 @@ test01() {
   known_result.add_constraint(x8 - x9 <= 2);
   known_result.add_constraint(x9 <= 7);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1, "*** bd1.concatenate_assign(bd2) ***");
+  print_constraints(bds1, "*** bds1.concatenate_assign(bds2) ***");
 
   return ok;
 }
@@ -71,22 +71,22 @@ test02() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(x <= 3);
-  bd1.add_constraint(x - y <= 4);
+  TBD_Shape bds1(2);
+  bds1.add_constraint(x <= 3);
+  bds1.add_constraint(x - y <= 4);
 
-  TBD_Shape bd2(0, EMPTY);
+  TBD_Shape bds2(0, EMPTY);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd2.concatenate_assign(bd1);
+  bds2.concatenate_assign(bds1);
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
-  print_constraints(bd2, "*** bd2.concatenate_assign(bd1) ***");
+  print_constraints(bds2, "*** bds2.concatenate_assign(bds1) ***");
 
   return ok;
 }
@@ -101,24 +101,24 @@ test03() {
   cs.insert(y == 3);
   cs.insert(3*x - 3*y <= 5);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraints(cs);
+  TBD_Shape bds1(2);
+  bds1.add_constraints(cs);
 
-  TBD_Shape bd2(0);
+  TBD_Shape bds2(0);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.concatenate_assign(bd2);
+  bds1.concatenate_assign(bds2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 0);
   known_result.add_constraint(y == 3);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1, "*** bd1.concatenate_assign(bd2) ***");
+  print_constraints(bds1, "*** bds1.concatenate_assign(bds2) ***");
 
   return ok;
 }
@@ -131,23 +131,23 @@ test04() {
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(A >= 0);
-  bd1.add_constraint(B >= 0);
-  bd1.add_constraint_and_minimize(C >= 0);
+  TBD_Shape bds1(3);
+  bds1.add_constraint(A >= 0);
+  bds1.add_constraint(B >= 0);
+  bds1.add_constraint(C >= 0);
 
-  TBD_Shape bd2(2);
-  bd2.add_constraint(A >= 0);
-  bd2.add_constraint(A <= 1);
-  bd2.add_constraint(B >= 0);
-  bd2.add_constraint(B <= 2);
-  bd2.add_constraint(A - B <= 0);
-  bd2.add_constraint_and_minimize(B - A <= 1);
+  TBD_Shape bds2(2);
+  bds2.add_constraint(A >= 0);
+  bds2.add_constraint(A <= 1);
+  bds2.add_constraint(B >= 0);
+  bds2.add_constraint(B <= 2);
+  bds2.add_constraint(A - B <= 0);
+  bds2.add_constraint(B - A <= 1);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.concatenate_assign(bd2);
+  bds1.concatenate_assign(bds2);
 
   BD_Shape<mpq_class> known_result(5);
   known_result.add_constraint(A >= 0);
@@ -160,9 +160,9 @@ test04() {
   known_result.add_constraint(D - E <= 0);
   known_result.add_constraint(E - D <= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1, "*** bd1.concatenate_assign(bd2) ***");
+  print_constraints(bds1, "*** bds1.concatenate_assign(bds2) ***");
 
   return ok;
 }
@@ -172,22 +172,22 @@ test05() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(x <= 3);
-  bd1.add_constraint(x - y <= 4);
+  TBD_Shape bds1(2);
+  bds1.add_constraint(x <= 3);
+  bds1.add_constraint(x - y <= 4);
 
-  TBD_Shape bd2(0, EMPTY);
+  TBD_Shape bds2(0, EMPTY);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.concatenate_assign(bd2);
+  bds1.concatenate_assign(bds2);
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1, "*** bd1.concatenate_assign(bd2) ***");
+  print_constraints(bds1, "*** bds1.concatenate_assign(bds2) ***");
 
   return ok;
 }

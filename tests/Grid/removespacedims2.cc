@@ -1,5 +1,5 @@
 /* Test Grid::remove_higher_space_dimensions().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -125,7 +125,7 @@ test05() {
   Grid gr(3, EMPTY);
   gr.add_grid_generator(grid_point());
   gr.add_grid_generator(grid_point(A));
-  gr.add_grid_generator_and_minimize(grid_point(B));
+  gr.add_grid_generator(grid_point(B));
   gr.add_grid_generator(grid_line(C));
   print_generators(gr, "*** gr ***");
 
@@ -150,7 +150,7 @@ test06() {
   Grid gr(3, EMPTY);
   gr.add_grid_generator(grid_point());
   gr.add_grid_generator(grid_point(A));
-  gr.add_grid_generator_and_minimize(grid_point(B));
+  gr.add_grid_generator(grid_point(B));
   gr.add_grid_generator(grid_line(C));
   print_generators(gr, "*** gr ***");
 
@@ -165,62 +165,9 @@ test06() {
   return ok;
 }
 
-#if 0
-// Grid_Generator_System::remove_higher_space_dimensions is now private.
-
-// Remove all space dimensions from a nonempty generator system.
-bool
-test07() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid_Generator_System ggs;
-  ggs.insert(grid_point());
-  ggs.insert(grid_point(A));
-  ggs.insert(grid_point(B));
-  ggs.insert(grid_line(C));
-  print_generators(ggs, "*** ggs ***");
-
-  ggs.remove_higher_space_dimensions(0);
-  print_generators(ggs, "*** ggs.remove_higher_space_dimensions(0) ***");
-
-  Grid gr(ggs);
-
-  Grid known_gr(0);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr.remove_higher_space_dimensions(0) ***");
-
-  return ok;
-}
-
-// Remove all space dimensions from an empty generator system.
-// Showed a bug in remove_higher_space_dimensions() which is now corrected.
-bool
-test08() {
-  Grid_Generator_System ggs;
-  print_generators(ggs, "*** ggs ***");
-
-  ggs.remove_higher_space_dimensions(0);
-  print_generators(ggs, "*** ggs.remove_higher_space_dimensions(0) ***");
-
-  Grid gr(ggs);
-
-  Grid known_gr(0, EMPTY);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr.remove_higher_space_dimensions(0) ***");
-
-  return ok;
-}
-#endif
-
 // Space dimension exception.
 bool
-test09() {
+test07() {
   Grid gr(1, EMPTY);
   print_generators(gr, "*** gr ***");
 
@@ -238,15 +185,15 @@ test09() {
 
 // From congruences.
 bool
-test10() {
+test08() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
   Grid gr(3);
-  gr.add_congruence(B - C == 0);
+  gr.add_constraint(B - C == 0);
   gr.add_congruence(B %= 0);
-  gr.add_congruence(A == 4);
+  gr.add_constraint(A == 4);
   print_congruences(gr, "*** gr ***");
 
   gr.remove_higher_space_dimensions(2);
@@ -266,15 +213,15 @@ test10() {
 
 // From congruences.
 bool
-test11() {
+test09() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
   Grid gr(3);
-  gr.add_congruence(B - C == 0);
+  gr.add_constraint(B - C == 0);
   gr.add_congruence(B %= 0);
-  gr.add_congruence(A == 4);
+  gr.add_constraint(A == 4);
   print_congruences(gr, "*** gr ***");
 
   gr.remove_higher_space_dimensions(1);
@@ -294,7 +241,7 @@ test11() {
 // Where the redundant row with the lowest dim_kinds entry is a
 // congruence or equality.
 bool
-test12() {
+test10() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -325,10 +272,8 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-  //DO_TEST(test07);
-  //DO_TEST(test08);
+  DO_TEST(test07);
+  DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
 END_MAIN

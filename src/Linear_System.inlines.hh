@@ -1,5 +1,5 @@
 /* Linear_System class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -158,14 +158,14 @@ Linear_System::resize_no_copy(const dimension_type new_n_rows,
 inline void
 Linear_System::set_necessarily_closed() {
   row_topology = NECESSARILY_CLOSED;
-  if (!empty())
+  if (!has_no_rows())
     set_rows_topology();
 }
 
 inline void
 Linear_System::set_not_necessarily_closed() {
   row_topology = NOT_NECESSARILY_CLOSED;
-  if (!empty())
+  if (!has_no_rows())
     set_rows_topology();
 }
 

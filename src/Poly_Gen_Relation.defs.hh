@@ -1,5 +1,5 @@
 /* Poly_Gen_Relation class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -111,8 +111,8 @@ private:
 public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Access the internal flags: this is needed for some foreign
-    language interfaces.
+    Access the internal flags: this is needed for some language
+    interfaces.
   */
 #endif
   flags_t get_flags() const;

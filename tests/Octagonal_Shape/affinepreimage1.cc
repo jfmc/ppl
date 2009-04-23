@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::affine_preimage().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -259,7 +259,7 @@ test10() {
   Variable B(1);
   Variable C(2);
 
-  Octagonal_Shape<float> oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A <= -1);
 
   print_constraints(oc, "*** oc ***");
@@ -270,7 +270,7 @@ test10() {
   mpq_known_result.add_constraint(3*A <= -2);
 
   bool ok = check_result(oc, mpq_known_result,
-			 "9.54e-8", "9.54e-8", "9.54e-8");
+                         "9.54e-8", "9.54e-8", "9.54e-8");
 
   print_constraints(oc, "*** oc.affine_preimage(A, 3*A, 2) ***");
 

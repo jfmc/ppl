@@ -1,7 +1,7 @@
 /* Test Octagonal_Shape::constraints(): we compute the system of
    constraints of an octagon  that is defined by a system of
    constraints that contains only a trivially false constraint.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -304,6 +304,56 @@ test12() {
   return ok;
 }
 
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(3);
+
+  oct.refine_with_constraint(A > 0);
+  oct.refine_with_constraint(B < 0);
+  oct.refine_with_constraint(A + B > 1);
+  oct.refine_with_constraint(A + 2*B > 1);
+
+  Octagonal_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B <= 0);
+  known_result.add_constraint(A + B >= 1);
+
+  bool ok = check_result(oct, known_result);
+
+  print_constraints(oct, "*** oct ***");
+
+  return ok;
+}
+
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A > 0);
+  cs.insert(B < 0);
+  cs.insert(A + B > 1);
+  cs.insert(A + 2*B > 1);
+
+  TOctagonal_Shape oct(3);
+  oct.refine_with_constraints(cs);
+
+  Octagonal_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B <= 0);
+  known_result.add_constraint(A + B >= 1);
+
+  bool ok = check_result(oct, known_result);
+
+  print_constraints(oct, "*** oct ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -319,5 +369,7 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
 END_MAIN
 

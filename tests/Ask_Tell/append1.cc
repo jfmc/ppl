@@ -1,5 +1,5 @@
 /* Test Ask_Tell<D>.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -238,7 +238,7 @@ test03() {
 
     current.upper_bound_assign(previous);
 
-    print_constraints(current, "*** after poly_hull_assign_and_minimize***");
+    print_constraints(current, "*** after upper_bound_assign ***");
 
   } while (current != previous);
 

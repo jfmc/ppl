@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -20,19 +20,26 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = ppl_java jni . tests
+SUBDIRS = parma_polyhedra_library jni . tests
 
 EXTRA_DIST = \
-ppl_interface_generator_java_dat.m4
+ppl_interface_generator_java_procedure_generators.m4 \
+README.java
 
-if BUILD_JAVA_INTERFACE
+interface_generator_dependencies = \
+../ppl_interface_generator_common.m4 \
+../ppl_interface_generator_common_dat.m4 \
+../ppl_interface_generator_copyright \
+../ppl_interface_generator_common_procedure_generators.m4 \
+ppl_interface_generator_java_procedure_generators.m4
 
 jardir = $(pkglibdir)
 jar_DATA = ppl_java.jar
 
-ppl_java.jar: ppl_java/java_classes.stamp
-	$(JAR) cf ppl_java.jar ppl_java/*.class
-
-endif BUILD_JAVA_INTERFACE
+ppl_java.jar: parma_polyhedra_library/java_classes.stamp
+	$(JAR) cf ppl_java.jar parma_polyhedra_library/*.class
 
 CLEANFILES = ppl_java.jar
+
+parma_polyhedra_library/java_classes.stamp:
+	$(MAKE) $(AM_MAKEFLAGS) -C parma_polyhedra_library java_classes.stamp

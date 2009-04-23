@@ -1,5 +1,5 @@
 /* Box class implementation (non-inline functions).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -38,7 +38,7 @@ PPL::extract_interval_constraint(const Constraint& c,
   assert(c_num_vars == 0 && c_only_var == 0);
   // Collect the non-zero components of `c'.
   for (dimension_type i = c_space_dim; i-- > 0; )
-    if (c.coefficient(Variable(i)) != 0)
+    if (c.coefficient(Variable(i)) != 0) {
       if (c_num_vars == 0) {
 	c_only_var = i;
 	++c_num_vars;
@@ -46,5 +46,31 @@ PPL::extract_interval_constraint(const Constraint& c,
       else
 	// Constraint `c' is not an interval constraint.
 	return false;
+    }
+  return true;
+}
+
+bool
+PPL::extract_interval_congruence(const Congruence& cg,
+			 	 const dimension_type cg_space_dim,
+				 dimension_type& cg_num_vars,
+				 dimension_type& cg_only_var) {
+  // Check for preconditions.
+  assert(cg.space_dimension() == cg_space_dim);
+  assert(cg_num_vars == 0 && cg_only_var == 0);
+  // Only equality congruences can be intervals.
+  assert(cg.is_equality());
+
+  // Collect the non-zero components of `cg'.
+  for (dimension_type i = cg_space_dim; i-- > 0; )
+    if (cg.coefficient(Variable(i)) != 0) {
+      if (cg_num_vars == 0) {
+	cg_only_var = i;
+	++cg_num_vars;
+      }
+      else
+	// Congruence `cg' is not an interval congruence.
+	return false;
+    }
   return true;
 }

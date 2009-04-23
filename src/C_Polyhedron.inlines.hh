@@ -1,5 +1,5 @@
 /* C_Polyhedron class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,6 +27,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
+
+inline
+C_Polyhedron::~C_Polyhedron() {
+}
 
 inline
 C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
@@ -92,37 +96,9 @@ C_Polyhedron::C_Polyhedron(Generator_System& gs, Recycle_Input)
 	       Recycle_Input()) {
 }
 
-inline
-C_Polyhedron::C_Polyhedron(const Grid_Generator_System& ggs)
-  : Polyhedron(NECESSARILY_CLOSED,
-	       ggs.space_dimension() <= max_space_dimension()
-	       ? ggs.space_dimension()
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(ggs)",
-						 "the space dimension of ggs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
-	       UNIVERSE) {
-  // FIXME: is this implementation complete?
-}
-
-inline
-C_Polyhedron::C_Polyhedron(Grid_Generator_System& ggs, Recycle_Input)
-  : Polyhedron(NECESSARILY_CLOSED,
-	       ggs.space_dimension() <= max_space_dimension()
-	       ? ggs.space_dimension()
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(ggs, recycle)",
-						 "the space dimension of ggs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
-	       UNIVERSE) {
-  // FIXME: is this implementation complete?
-}
-
 template <typename Interval>
 inline
-C_Polyhedron::C_Polyhedron(const Box<Interval>& box)
+C_Polyhedron::C_Polyhedron(const Box<Interval>& box, Complexity_Class)
   : Polyhedron(NECESSARILY_CLOSED,
 	       box.space_dimension() <= max_space_dimension()
 	       ? box
@@ -133,8 +109,38 @@ C_Polyhedron::C_Polyhedron(const Box<Interval>& box)
 						 "space dimension"), box)) {
 }
 
+template <typename U>
 inline
-C_Polyhedron::C_Polyhedron(const C_Polyhedron& y)
+C_Polyhedron::C_Polyhedron(const BD_Shape<U>& bd, Complexity_Class)
+  : Polyhedron(NECESSARILY_CLOSED,
+	       bd.space_dimension() <= max_space_dimension()
+	       ? bd.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(bd): ",
+						 "the space dimension of bd "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+               UNIVERSE) {
+  add_constraints(bd.constraints());
+}
+
+template <typename U>
+inline
+C_Polyhedron::C_Polyhedron(const Octagonal_Shape<U>& os, Complexity_Class)
+  : Polyhedron(NECESSARILY_CLOSED,
+	       os.space_dimension() <= max_space_dimension()
+	       ? os.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(os): ",
+						 "the space dimension of os "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+               UNIVERSE) {
+  add_constraints(os.constraints());
+}
+
+inline
+C_Polyhedron::C_Polyhedron(const C_Polyhedron& y, Complexity_Class)
   : Polyhedron(y) {
 }
 
@@ -149,10 +155,6 @@ C_Polyhedron::operator=(const NNC_Polyhedron& y) {
   C_Polyhedron c_y(y);
   swap(c_y);
   return *this;
-}
-
-inline
-C_Polyhedron::~C_Polyhedron() {
 }
 
 inline bool

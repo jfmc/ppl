@@ -1,5 +1,5 @@
 /* Test the total_memory_in_bytes() and external_memory_in_bytes() methods.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -121,7 +121,6 @@ test01() {
   add_constraint(oct, -x + 1 >= 0);
 
   add_constraint(oct, -x - z + 5 <= 0);
-  add_constraint(oct, -4*x - 2*y + 8 <= 0);
   add_constraint(oct, -x - y + 5 <= 0);
   add_constraint(oct, -x - y +13 <= 0);
 
@@ -151,7 +150,7 @@ test01() {
 
   memory_size_type cs_elements_size = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i)
+         cs_end = cs.end(); i != cs_end; ++i)
     cs_elements_size += i->total_memory_in_bytes();
 
   nout << "Sum of sizes of contained constraints = " << cs_elements_size
@@ -200,7 +199,7 @@ bool test02() {
   Pointset_Powerset<TOctagonal_Shape> pqoct(qoct);
 
   Pointset_Powerset<TOctagonal_Shape> proct = pqoct;
-  proct.poly_difference_assign(poct);
+  proct.difference_assign(poct);
 
   const memory_size_type poct_total_size = poct.total_memory_in_bytes();
   const memory_size_type poct_external_size = poct.external_memory_in_bytes();

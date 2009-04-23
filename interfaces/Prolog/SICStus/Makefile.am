@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -27,9 +27,8 @@ ppl_interface_generator_sicstus_sd_cc.m4 \
 $(SICSTUS_CFLI_FILES) \
 ppl_sicstus.pl \
 sp_clpq.pl \
-sp_pl_check.pl
-
-if BUILD_SICSTUS_PROLOG_INTERFACE
+sp_pl_check.pl \
+sp_prolog_generated_test.pl
 
 if BUILD_WATCHDOG_LIBRARY
 
@@ -41,26 +40,26 @@ WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
 endif BUILD_WATCHDOG_LIBRARY
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
+-I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 $(WATCHDOG_INCLUDE_OPTIONS) \
 $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
-
-BUILT_SOURCES = \
-ppl_sicstus_sd.cc
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
-../ppl_interface_generator_prolog_dat.m4 \
+../../ppl_interface_generator_common_procedure_generators.m4 \
+../ppl_interface_generator_prolog_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_sicstus_sd_cc.m4
 
-ppl_sicstus_sd.cc: $(interface_generator_dependencies) Makefile
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+ppl_sicstus_sd.cc: $(interface_generator_dependencies)
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_sicstus_sd_cc.m4 > $@
 
 bin_PROGRAMS = ppl_sicstus
@@ -71,12 +70,15 @@ if ENABLE_SHARED
 
 pkglib_DATA = ppl_sicstus.pl ppl_sicstus.s.o
 
-ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY) .libs/ppl_sicstus_sd.o
+ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY) libppl_sicstus.la
 	$(LIBTOOL) --mode=link --tag=CXX \
-	splfr $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o -o $@ \
-		$(top_builddir)/src/libppl.la \
-		$(WATCHDOG_LIBRARY) \
-		@extra_libraries@
+		splfr --cflag="$(AM_CPPFLAGS)" -o $@ \
+			$(srcdir)/ppl_sicstus.pl \
+			libppl_sicstus.la \
+			$(WATCHDOG_LIBRARY) \
+			@extra_libraries@
+
+#			@required_instantiations_prolog_cxx_objects@
 
 install-data-local: ppl_sicstus.so
 	$(LIBTOOL) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) \
@@ -88,28 +90,138 @@ pkglib_DATA = ppl_sicstus.pl
 
 endif !ENABLE_SHARED
 
-noinst_LTLIBRARIES = ppl_sicstus_sd.la
-nodist_ppl_sicstus_sd_la_SOURCES = ppl_sicstus_sd.cc
-ppl_sicstus_sd_la_LDFLAGS = -module -avoid-version
+noinst_LTLIBRARIES = libppl_sicstus.la
+
+libppl_sicstus_la_SOURCES = \
+ppl_prolog_sysdep.hh \
+sicstus_efli.hh \
+sicstus_efli.cc
+
+nodist_libppl_sicstus_la_SOURCES = \
+ppl_sicstus_sd.cc \
+../ppl_prolog_common.cc
+
+nodist_EXTRA_libppl_sicstus_la_SOURCES = \
+../ppl_prolog_Int8_Box.cc \
+../ppl_prolog_Int16_Box.cc \
+../ppl_prolog_Int32_Box.cc \
+../ppl_prolog_Int64_Box.cc \
+../ppl_prolog_Uint8_Box.cc \
+../ppl_prolog_Uint16_Box.cc \
+../ppl_prolog_Uint32_Box.cc \
+../ppl_prolog_Uint64_Box.cc \
+../ppl_prolog_Float_Box.cc \
+../ppl_prolog_Double_Box.cc \
+../ppl_prolog_Long_Double_Box.cc \
+../ppl_prolog_Rational_Box.cc \
+../ppl_prolog_Z_Box.cc \
+../ppl_prolog_BD_Shape_int8_t.cc \
+../ppl_prolog_BD_Shape_int16_t.cc \
+../ppl_prolog_BD_Shape_int32_t.cc \
+../ppl_prolog_BD_Shape_int64_t.cc \
+../ppl_prolog_BD_Shape_float.cc \
+../ppl_prolog_BD_Shape_double.cc \
+../ppl_prolog_BD_Shape_long_double.cc \
+../ppl_prolog_BD_Shape_mpq_class.cc \
+../ppl_prolog_BD_Shape_mpz_class.cc \
+../ppl_prolog_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Octagonal_Shape_float.cc \
+../ppl_prolog_Octagonal_Shape_double.cc \
+../ppl_prolog_Octagonal_Shape_long_double.cc \
+../ppl_prolog_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Polyhedron.cc \
+../ppl_prolog_Grid.cc \
+../ppl_prolog_Pointset_Powerset_Int8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Float_Box.cc \
+../ppl_prolog_Pointset_Powerset_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Long_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Rational_Box.cc \
+../ppl_prolog_Pointset_Powerset_Z_Box.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_C_Polyhedron.cc \
+../ppl_prolog_Pointset_Powerset_NNC_Polyhedron.cc \
+../ppl_prolog_Pointset_Powerset_Grid.cc \
+../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_NNC_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_Grid_C_Polyhedron.cc \
+../ppl_prolog_Constraints_Product_Grid_NNC_Polyhedron.cc
+
+if NO_UNDEFINED
+
+NO_UNDEFINED_FLAG = -no-undefined
+
+endif NO_UNDEFINED
+
+libppl_sicstus_la_LIBADD = \
+@required_instantiations_prolog_cxx_objects@ \
+$(top_builddir)/src/libppl.la \
+$(WATCHDOG_LIBRARY) \
+@extra_libraries@
+
+libppl_sicstus_la_DEPENDENCIES = \
+@required_instantiations_prolog_cxx_objects@
+
+libppl_sicstus_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
+-module \
+-avoid-version
 
 ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY)
 	$(LIBTOOL) --mode=link --tag=CXX \
-	spld --main=prolog \
-		--cflag=`echo '$(AM_CXXFLAGS) $(CXXFLAGS)' | tr " " ","` \
-		--resources=ppl_sicstus.s.o -o $@ \
-		$(top_builddir)/src/libppl.la \
-		$(WATCHDOG_LIBRARY) \
-		@extra_libraries@
+		spld --main=prolog \
+			--cflag=`echo '$(AM_CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)' | tr " " ","` \
+			--resources=ppl_sicstus.s.o -o $@ \
+			$(top_builddir)/src/libppl.la \
+			$(WATCHDOG_LIBRARY) \
+			@extra_libraries@
 
 if ENABLE_STATIC
 
-ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o
-	splfr --static $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o
+ppl_sicstus.s.o: ppl_sicstus.pl libppl_sicstus.la
+	splfr --static --cflag="$(AM_CPPFLAGS)" -o $@ \
+		$(srcdir)/ppl_sicstus.pl \
+		ppl_sicstus_sd.o \
+		sicstus_efli.o \
+		ppl_prolog_common.o \
+		`echo @required_instantiations_prolog_cxx_objects@ | $(SED) -e "s/\.lo/.o/g"`
 
 else !ENABLE_STATIC
 
-ppl_sicstus.s.o: ppl_sicstus.pl .libs/ppl_sicstus_sd.o
-	splfr --static $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o
+ppl_sicstus.s.o: ppl_sicstus.pl libppl_sicstus.la
+	splfr --cflag="$(AM_CPPFLAGS)" -o $@ \
+		$(srcdir)/ppl_sicstus.pl \
+		.libs/ppl_sicstus_sd.o \
+		.libs/sicstus_efli.o \
+		.libs/ppl_prolog_common.o \
+		`echo @required_instantiations_prolog_cxx_objects@ | $(SED) -e "s/\([^. ]*\)\.lo/.libs\/\1.o/g"`
 
 endif !ENABLE_STATIC
 
@@ -143,7 +255,7 @@ EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: pl_check_test clpq_test clpq2_test
+check-local: pl_check_test clpq_test clpq2_test ppl_prolog_generated_test
 
 pl_check_test: ppl_sicstus ppl_sicstus.pl sp_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	if [ $(srcdir) != `pwd` ]; then \
@@ -160,11 +272,12 @@ pl_check_test: ppl_sicstus ppl_sicstus.pl sp_pl_check.pl ../tests/pl_check.pl $(
 	fi
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
+$(CLPQ_TESTS):
+	cp -f $(srcdir)/../tests/$@ .
+
 # FIXME: the last prerequisite is to get around a bug of `spld': see
 # http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007610.html
-clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECTED_CLPQ) | pl_check_test
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECTED_CLPQ) $(CLPQ_TESTS) | pl_check_test
 	$(LIBTOOL) --mode=execute \
 	  -dlopen ../../../src/libppl.la \
 	  $(WATCHDOG_DLOPEN) \
@@ -175,9 +288,7 @@ clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/scrip
 
 # FIXME: the last prerequisite is to get around a bug of `spld': see
 # http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007610.html
-clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EXPECTED_CLPQ2) | clpq_test
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EXPECTED_CLPQ2) $(CLPQ_TESTS) | clpq_test
 	$(LIBTOOL) --mode=execute \
           -dlopen ../../../src/libppl.la \
 	  $(WATCHDOG_DLOPEN) \
@@ -186,12 +297,51 @@ clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/scr
 	      <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
-endif BUILD_SICSTUS_PROLOG_INTERFACE
+ppl_prolog_generated_test: ppl_sicstus ppl_sicstus.pl sp_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl ../tests/expected_pgt
+	if [ $(srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
+	fi
+	cp -f ../tests/ppl_prolog_generated_test_main.pl . ; \
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		$(WATCHDOG_DLOPEN) \
+		./ppl_sicstus -l $(srcdir)/sp_prolog_generated_test.pl \
+        --goal "main."  \
+			>obtained_pgt
+	if [ $(srcdir) != `pwd` ]; then \
+	  rm -f ppl_prolog_generated_test_common.pl; \
+        fi
+	rm -f ppl_prolog_generated_test_main.pl; \
+	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
-DISTCLEANFILES = \
+CLEANFILES = \
 ppl_sicstus_sd.cc
 
 MOSTLYCLEANFILES = \
+@required_instantiations_prolog_cxx_objects@ \
 ppl_sicstus.s.o ppl_sicstus.so \
 $(CLPQ_TESTS) \
-obtained_clpq obtained_clpq2 obtained_pchk
+obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_prolog_domains.cc.stamp' in parent's directory
+# makefile.
+$(nodist_EXTRA_libppl_sicstus_la_SOURCES):
+../tests/ppl_prolog_generated_test_main.pl:
+
+# FIXME: check whether the dependencies from `libppl.la' in this Makefile.am
+# are actually required.
+$(top_builddir)/src/libppl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
+
+if BUILD_WATCHDOG_LIBRARY
+
+# FIXME: check whether the dependencies from `libpwl.la' in this Makefile.am
+# are actually required.
+$(top_builddir)/Watchdog/src/libpwl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/Watchdog/src libpwl.la
+
+endif BUILD_WATCHDOG_LIBRARY

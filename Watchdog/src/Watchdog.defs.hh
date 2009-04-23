@@ -1,5 +1,5 @@
 /* Watchdog and associated classes' declaration and inline functions.
-   Copyright (C) 2002-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
-For the most up-to-date information see
-http://www.cs.unipr.it/Software/ . */
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
 
 #ifndef PWL_Watchdog_defs_hh
 #define PWL_Watchdog_defs_hh 1
@@ -109,7 +109,7 @@ private:
   // Whether we are changing data that is also changed by the signal handler.
   static volatile bool in_critical_section;
 
-  friend void Parma_Watchdog_Library::PWL_handle_timeout(int signum);
+  friend void PWL_handle_timeout(int signum);
 };
 
 class Init {

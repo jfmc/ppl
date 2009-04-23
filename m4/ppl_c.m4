@@ -1,7 +1,7 @@
 dnl A function to test for the existence and usability of particular
 dnl versions of the C interface of the PPL, defining macros containing
 dnl the required paths.
-dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl Copyright (C) 1997 Owen Taylor
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -156,7 +156,7 @@ main() {
 
   if (!min_ppl_version_ok) {
     printf("illegal version string '$min_ppl_version'\n");
-    exit(1);
+    return 1;
   }
 
   ppl_version(&version_string);
@@ -177,12 +177,12 @@ main() {
            "\n*** to point to the correct copy of ppl-config,"
            " and remove the file config.cache"
            "\n*** before re-running configure.\n");
-    exit(1);
+    return 1;
   }
   else if (strcmp(PPL_VERSION, version_string) != 0) {
     printf("\n*** PPL header file (version " PPL_VERSION ") does not match"
            "\n*** library (version %s)\n", version_string);
-    exit(1);
+    return 1;
   }
   else if (PPL_VERSION_MAJOR < min_ppl_major
            || (PPL_VERSION_MAJOR == min_ppl_major
@@ -212,7 +212,7 @@ main() {
              "\n*** modify your LD_LIBRARY_PATH enviroment"
              " variable or edit /etc/ld.so.conf"
              "\n*** so that the correct libraries are found at run-time.)\n");
-      exit(1);
+      return 1;
   }
   return 0;
 }

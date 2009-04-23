@@ -1,5 +1,5 @@
 /* Test Box::relation_with().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -178,7 +178,6 @@ test09() {
   Constraint_System cs;
   cs.insert(A >= 1);
   cs.insert(B >= 0);
-  cs.insert(A - B <= 3);
 
   TBox box(cs);
 
@@ -397,25 +396,23 @@ test19() {
 
 bool
 test20() {
+  // The relation is on a variable (B) other than the first.
   Variable A(0);
   Variable B(1);
-  Variable C(2);
 
-  TBox box(3);
-  box.add_constraint(A >= 1);
+  TBox box(2);
+  box.add_constraint(A >= 0);
+  box.add_constraint(B >= 0);
 
-  try {
-    // This is an incorrect use of method Box::relation_with(c):
-    // it is illegal to use a non-interval constraint.
-    Poly_Con_Relation rel = box.relation_with(A - C - B <= 2);
-  }
-  catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
+  Poly_Con_Relation rel = box.relation_with(B > 0);
+
+  print_constraints(box, "*** box ***");
+  using namespace IO_Operators;
+  nout << "box.relation_with(B > 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
 }
 
 } // namespace

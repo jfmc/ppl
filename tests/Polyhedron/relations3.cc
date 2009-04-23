@@ -1,5 +1,5 @@
 /* Test Polyhedron::relation_with(c) and Polyhedron::relation_with(g).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -277,6 +277,27 @@ test11() {
   return rel == known_result;
 }
 
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  C_Polyhedron ph(3);
+  ph.add_constraint(A >= B);
+  ph.add_generator(point());
+  ph.generators();
+  ph.add_constraint(A <= B-1);
+
+  Poly_Gen_Relation rel = ph.relation_with(line(C));
+
+  print_constraints(ph, "*** ph ***");
+  nout << "ph.relation_with(line(C)) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::subsumes();
+  return rel == known_result;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -291,4 +312,5 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN

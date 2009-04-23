@@ -1,5 +1,5 @@
 /* Test Grid::limited_generator_extrapolation_assign().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -59,8 +59,8 @@ test02() {
   Variable A(0);
 
   Grid gr1(1);
-  gr1.add_congruence(A == 0);
-  gr1.add_congruence(A == 1);
+  gr1.add_constraint(A == 0);
+  gr1.add_constraint(A == 1);
   print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(1);
@@ -87,12 +87,12 @@ test03() {
   Variable B(1);
 
   Grid gr1(2);
-  gr1.add_congruence(A == 0);
-  gr1.add_congruence(B == 1);
+  gr1.add_constraint(A == 0);
+  gr1.add_constraint(B == 1);
   print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
-  gr2.add_congruence(A == 0);
+  gr2.add_constraint(A == 0);
   gr2.add_congruence(B %= 1);
   print_congruences(gr2, "*** gr2 ***");
 

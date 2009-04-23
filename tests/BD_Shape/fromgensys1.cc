@@ -1,5 +1,5 @@
 /* Test BD_Shape::BD_Shape(const Generator_System&).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,13 +27,13 @@ namespace {
 bool
 test01() {
   Generator_System gs;
-  TBD_Shape bd(gs);
+  TBD_Shape bds(gs);
 
   BD_Shape<mpq_class> known_result(0, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   return ok;
 }
@@ -48,7 +48,7 @@ test02() {
   try {
     // It is illegal to build a BD_Shape starting from a non-empty
     // generator system having no points.
-    TBD_Shape bd(gs);
+    TBD_Shape bds(gs);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << e.what() << endl;
@@ -69,7 +69,7 @@ test03() {
   try {
     // It is illegal to build a BD_Shape starting from a non-empty
     // generator system having no points.
-    TBD_Shape bd(gs);
+    TBD_Shape bds(gs);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << e.what() << endl;
@@ -91,7 +91,7 @@ test04() {
   gs.insert(ray(A + B));
   gs.insert(point(1*A + 2*B + 3*C + 4*D));
   gs.insert(point(2*A + 3*B + 4*C + 5*D));
-  TBD_Shape bd(gs);
+  TBD_Shape bds(gs);
 
   BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(A >= 1);
@@ -104,9 +104,9 @@ test04() {
   known_result.add_constraint(C == D-1);
   known_result.add_constraint(C <= A+2);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   return ok;
 }
@@ -125,7 +125,7 @@ test05() {
   ph.add_constraint(D >= 4);
   ph.add_constraint(A-D <= 50);
 
-  TBD_Shape bd(ph.generators());
+  TBD_Shape bds(ph.generators());
 
   BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(C <= 30);
@@ -137,9 +137,9 @@ test05() {
   known_result.add_constraint(C - D <= 23);
   known_result.add_constraint(C - D >= 8);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   return ok;
 }

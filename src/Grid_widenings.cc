@@ -1,6 +1,6 @@
 /* Grid class implementation
    (non-inline widening-related member functions).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -216,7 +216,7 @@ PPL::Grid::limited_congruence_extrapolation_assign(const Grid& y,
 	new_cgs.insert(cg);
     }
     x.congruence_widening_assign(y, tp);
-    x.add_congruences(new_cgs);
+    x.add_recycled_congruences(new_cgs);
   }
   else
     // There are tokens, so widening will leave the grid the same.
@@ -300,7 +300,7 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.generators_are_up_to_date()) {
     if (!x.generators_are_minimized()) {
       simplify(x.gen_sys, x.dim_kinds);
-      assert(!x.gen_sys.empty());
+      assert(!x.gen_sys.has_no_rows());
       x.set_generators_minimized();
     }
   }
@@ -314,7 +314,7 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   if (y.generators_are_up_to_date()) {
     if (!y.generators_are_minimized()) {
       simplify(y.gen_sys, y.dim_kinds);
-      assert(!y.gen_sys.empty());
+      assert(!y.gen_sys.has_no_rows());
       y.set_generators_minimized();
     }
   }
@@ -418,7 +418,7 @@ PPL::Grid::limited_generator_extrapolation_assign(const Grid& y,
 	new_cgs.insert(cg);
     }
     x.generator_widening_assign(y, tp);
-    x.add_congruences(new_cgs);
+    x.add_recycled_congruences(new_cgs);
   }
   else
     // There are tokens, so widening will leave the grid the same.
@@ -524,7 +524,7 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
 	new_cgs.insert(cg);
     }
     x.widening_assign(y, tp);
-    x.add_congruences(new_cgs);
+    x.add_recycled_congruences(new_cgs);
   }
   else
     // There are tokens, so widening will leave the grid the same.

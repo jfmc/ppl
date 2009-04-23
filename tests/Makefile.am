@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -20,7 +20,18 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = . Polynomial_Space Box Ask_Tell MIP_Problem Octagonal_Shape BD_Shape Polyhedron Grid
+SUBDIRS = \
+. \
+Polynomial_Space \
+Powerset \
+Partially_Reduced_Product \
+Box \
+MIP_Problem \
+Octagonal_Shape \
+BD_Shape \
+Polyhedron \
+Grid
+#Ask_Tell
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
 
@@ -29,19 +40,16 @@ check_LIBRARIES = libppl_tests.a
 libppl_tests_a_SOURCES = \
 files.hh \
 files.cc \
-print.hh \
-print.cc \
 ppl_test.cc \
-FCAIBVP.cc \
 Partial_Function.cc
 
-LDADD = $(top_builddir)/src/libppl.la libppl_tests.a -lppl @extra_libraries@
+LDADD = \
+$(top_builddir)/src/libppl.la \
+libppl_tests.a \
+@extra_libraries@
 
 noinst_HEADERS = \
 ppl_test.hh \
-FCAIBVP.defs.hh \
-FCAIBVP.inlines.hh \
-FCAIBVP.types.hh \
 Partial_Function.defs.hh \
 Partial_Function.inlines.hh \
 Partial_Function.types.hh \
@@ -49,4 +57,4 @@ Random_Number_Generator.defs.hh \
 Random_Number_Generator.inlines.hh \
 Random_Number_Generator.types.hh
 
-MOSTLYCLEANFILES =
+EXTRA_DIST = valgrind_suppressions

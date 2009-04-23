@@ -1,5 +1,5 @@
 /* Powerset class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Powerset_defs_hh
 
 #include "Powerset.types.hh"
+#include "globals.types.hh"
 #include "iterator_to_const.defs.hh"
 #include <iosfwd>
 #include <iterator>
@@ -349,6 +350,15 @@ public:
     The result will be the least upper bound of \p *this and \p y.
   */
   void upper_bound_assign(const Powerset& y);
+
+  /*! \brief
+    Assigns to \p *this the least upper bound of \p *this and \p y
+    and returns \c true.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  bool upper_bound_assign_if_exact(const Powerset& y);
 
   //! Assigns to \p *this the meet of \p *this and \p y.
   void meet_assign(const Powerset& y);

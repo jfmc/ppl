@@ -1,5 +1,5 @@
 /* Different ways of creating an empty BD_Shape.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -30,26 +30,26 @@ test01() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd1(4);
-  TBD_Shape bd2(4);
+  TBD_Shape bds1(4);
+  TBD_Shape bds2(4);
 
-  bd1.add_constraint(-x <= 4);
-  bd1.add_constraint(y - x <= 0);
-  bd1.add_constraint(x - y <= -5);
+  bds1.add_constraint(-x <= 4);
+  bds1.add_constraint(y - x <= 0);
+  bds1.add_constraint(x - y <= -5);
 
-  bool empty = bd1.is_empty();
+  bool empty = bds1.is_empty();
 
-  nout << "*** bd1.is_empty() ***" << endl;
+  nout << "*** bds1.is_empty() ***" << endl;
   nout << (empty ? "true" : "false ") << endl;
 
-  bd2.add_constraint(-x <= 4);
-  bd2.add_constraint(y - x <= 0);
-  bd2.add_constraint(x - y <= 5);
-  bd2.add_constraint(z - x <= 1);
+  bds2.add_constraint(-x <= 4);
+  bds2.add_constraint(y - x <= 0);
+  bds2.add_constraint(x - y <= 5);
+  bds2.add_constraint(z - x <= 1);
 
-  bool empty1 = bd2.is_empty();
+  bool empty1 = bds2.is_empty();
 
-  nout << "*** bd2.is_empty() ***" << endl;
+  nout << "*** bds2.is_empty() ***" << endl;
   nout << (empty1 ? "true" : "false") << endl;
 
   return !empty1 && empty;
@@ -62,28 +62,28 @@ test02() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd1(4);
-  TBD_Shape bd2(4);
+  TBD_Shape bds1(4);
+  TBD_Shape bds2(4);
 
-  bd1.add_constraint(-x <= 2);
-  bd1.add_constraint(y - x <= -9);
-  bd1.add_constraint(x - y <= -7);
+  bds1.add_constraint(-x <= 2);
+  bds1.add_constraint(y - x <= -9);
+  bds1.add_constraint(x - y <= -7);
 
-  bool empty = bd1.is_empty();
+  bool empty = bds1.is_empty();
 
-  print_constraints(bd1, "*** bd1 ***");
-  nout << "*** bd1.is_empty() ***" << endl;
+  print_constraints(bds1, "*** bds1 ***");
+  nout << "*** bds1.is_empty() ***" << endl;
   nout << (empty ? "true" : "false") << endl;
 
-  bd2.add_constraint(-x <= 7);
-  bd2.add_constraint(y - x <= 1);
-  bd2.add_constraint(-y <= 2);
-  bd2.add_constraint(z - x <= 1);
+  bds2.add_constraint(-x <= 7);
+  bds2.add_constraint(y - x <= 1);
+  bds2.add_constraint(-y <= 2);
+  bds2.add_constraint(z - x <= 1);
 
-  bool empty1 = bd2.is_empty();
+  bool empty1 = bds2.is_empty();
 
-  print_constraints(bd2, "*** bd2 ***");
-  nout << "*** bd2.is_empty() ***" << endl;
+  print_constraints(bds2, "*** bds2 ***");
+  nout << "*** bds2.is_empty() ***" << endl;
   nout << (empty1 ? "true" : "false") << endl;
 
   return !empty1 && empty;
@@ -98,43 +98,43 @@ test03() {
   Variable x5(4);
   // Variable x6(5);
 
-  TBD_Shape bd1(6);
-  TBD_Shape bd2(6);
+  TBD_Shape bds1(6);
+  TBD_Shape bds2(6);
 
-  bd1.add_constraint(x1 <= 3);
-  bd1.add_constraint(x4 <= 3);
-  bd1.add_constraint(x2 - x1 <= 0);
-  bd1.add_constraint(x3 - x1 <= -2);
-  bd1.add_constraint(x5 - x1 <= 2);
-  bd1.add_constraint(-x2 <= 0);
-  bd1.add_constraint(x3 - x2 <= 5);
-  bd1.add_constraint(x4 - x3 <= -6);
-  bd1.add_constraint(x1 - x4 <= 5);
-  bd1.add_constraint(x5 - x4 <= 2);
-  bd1.add_constraint(-x5 <= -5);
-  bd1.add_constraint(x3 - x5 <= 7);
+  bds1.add_constraint(x1 <= 3);
+  bds1.add_constraint(x4 <= 3);
+  bds1.add_constraint(x2 - x1 <= 0);
+  bds1.add_constraint(x3 - x1 <= -2);
+  bds1.add_constraint(x5 - x1 <= 2);
+  bds1.add_constraint(-x2 <= 0);
+  bds1.add_constraint(x3 - x2 <= 5);
+  bds1.add_constraint(x4 - x3 <= -6);
+  bds1.add_constraint(x1 - x4 <= 5);
+  bds1.add_constraint(x5 - x4 <= 2);
+  bds1.add_constraint(-x5 <= -5);
+  bds1.add_constraint(x3 - x5 <= 7);
 
-  bool empty = bd1.is_empty();
+  bool empty = bds1.is_empty();
 
-  nout << "*** bd1.is_empty() ***" << endl;
+  nout << "*** bds1.is_empty() ***" << endl;
   nout << (empty ? "true" : "false") << endl;
 
-  bd2.add_constraint(x1 <= 3);
-  bd2.add_constraint(x4 <= 3);
-  bd2.add_constraint(x2 - x1 <= 0);
-  bd2.add_constraint(x3 - x1 <= 2);
-  bd2.add_constraint(x5 - x1 <= 2);
-  bd2.add_constraint(-x2 <= 0);
-  bd2.add_constraint(x3 - x2 <= 5);
-  bd2.add_constraint(x4 - x3 <= 6);
-  bd2.add_constraint(x1 - x4 <= 5);
-  bd2.add_constraint(x5 - x4 <= 2);
-  bd2.add_constraint(-x5 <= 5);
-  bd2.add_constraint(x3 - x5 <= 7);
+  bds2.add_constraint(x1 <= 3);
+  bds2.add_constraint(x4 <= 3);
+  bds2.add_constraint(x2 - x1 <= 0);
+  bds2.add_constraint(x3 - x1 <= 2);
+  bds2.add_constraint(x5 - x1 <= 2);
+  bds2.add_constraint(-x2 <= 0);
+  bds2.add_constraint(x3 - x2 <= 5);
+  bds2.add_constraint(x4 - x3 <= 6);
+  bds2.add_constraint(x1 - x4 <= 5);
+  bds2.add_constraint(x5 - x4 <= 2);
+  bds2.add_constraint(-x5 <= 5);
+  bds2.add_constraint(x3 - x5 <= 7);
 
-  bool empty1 = bd2.is_empty();
+  bool empty1 = bds2.is_empty();
 
-  nout << "*** bd2.is_empty() ***" << endl;
+  nout << "*** bds2.is_empty() ***" << endl;
   nout << (empty1 ? "true" : "false") << endl;
 
   return !empty1 && empty;
@@ -146,16 +146,16 @@ test04() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
+  TBD_Shape bds(3);
 
-  bd.add_constraint(A == 0);
-  bd.add_constraint(C >= 0);
-  bd.add_constraint(B - C >= 1);
+  bds.add_constraint(A == 0);
+  bds.add_constraint(C >= 0);
+  bds.add_constraint(B - C >= 1);
 
-  bool empty = bd.is_empty();
+  bool empty = bds.is_empty();
 
-  print_constraints(bd, "*** bd ***");
-  nout << "*** bd.is_empty() ***"
+  print_constraints(bds, "*** bds ***");
+  nout << "*** bds.is_empty() ***"
        << endl
        << (empty ? "true" : "false") << endl;
 
@@ -170,7 +170,7 @@ test05() {
   Variable x4(3);
   Variable x5(4);
 
-  TBD_Shape bd(5);
+  TBD_Shape bds(5);
 
   Coefficient a;
   if (std::numeric_limits<Coefficient>::is_bounded)
@@ -178,17 +178,17 @@ test05() {
   else
     a = 1300000000;
 
-  bd.add_constraint(x1 - x2 <= -a);
-  bd.add_constraint(x2 - x3 <= -a);
-  bd.add_constraint(x3 - x4 <= a);
-  bd.add_constraint(x4 - x5 <= a);
-  bd.add_constraint(x5 - x1 <= a);
+  bds.add_constraint(x1 - x2 <= -a);
+  bds.add_constraint(x2 - x3 <= -a);
+  bds.add_constraint(x3 - x4 <= a);
+  bds.add_constraint(x4 - x5 <= a);
+  bds.add_constraint(x5 - x1 <= a);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool empty = bd.is_empty();
+  bool empty = bds.is_empty();
 
-  nout << "*** bd.is_empty() ***" << endl;
+  nout << "*** bds.is_empty() ***" << endl;
   nout << (empty ? "true" : "false") << endl;
 
   return !empty;

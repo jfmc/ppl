@@ -1,5 +1,5 @@
 dnl A function to detect the binary format used by C++ floats.
-dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -27,10 +27,12 @@ ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([the binary format of C++ floats])
-ac_cxx_float_binary_format=unknown
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <limits>
 #ifdef HAVE_STDINT_H
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS 1
+#endif
 #include <stdint.h>
 #endif
 #ifdef HAVE_INTTYPES_H
@@ -52,12 +54,18 @@ convert(uint32_t x) {
 
 int
 main() {
-  return std::numeric_limits<float>::is_iec559
-    && (convert(0xaaacccaaUL)
-	== -3.069535185924732179074680971098132431507110595703125e-13
-    &&  convert(0xcccaaaccUL)
-	== -106255968)
-  ? 0 : 1;
+  if (std::numeric_limits<float>::is_iec559
+      && (   convert(0xaaacccaaU)
+          == -3.069535185924732179074680971098132431507110595703125e-13
+          && convert(0xcccaaaccU)
+          == -106255968
+          && convert(0x00000001U)
+          == 1.40129846432481707092372958328991613128026194187651577175706828388979108268586060148663818836212158203125e-45
+          && convert(0x80000001U)
+          == -1.40129846432481707092372958328991613128026194187651577175706828388979108268586060148663818836212158203125e-45))
+    return 0;
+  else
+    return 1;
 }
 
 #else // SIZEOF_FLOAT != 4
@@ -69,20 +77,24 @@ main() {
 
 #endif // SIZEOF_FLOAT != 4
 ]])],
-  AC_DEFINE(CXX_FLOAT_BINARY_FORMAT, float_ieee754_single,
+  AC_DEFINE(PPL_CXX_FLOAT_BINARY_FORMAT, PPL_FLOAT_IEEE754_SINGLE,
     [The binary format of C++ floats, if supported; undefined otherwise.])
-  ac_cxx_float_binary_format="IEEE754 Single Precision")
+  ac_cxx_float_binary_format="IEEE754 Single Precision",
+  ac_cxx_float_binary_format=unknown,
+  ac_cxx_float_binary_format=unknown)
 
 AC_MSG_RESULT($ac_cxx_float_binary_format)
 
-if test x"$ac_cxx_float_binary_format" = x"unknown"
+AC_CXX_FLOAT_EXACT_OUTPUT
+
+if test x"$ac_cxx_float_binary_format" = x"unknown" || test $ac_cxx_float_exact_output = 0 || test $ac_cv_can_control_fpu = 0
 then
   ac_supported_float=0
 else
   ac_supported_float=1
 fi
 AM_CONDITIONAL(SUPPORTED_FLOAT, test $ac_supported_float = 1)
-AC_DEFINE_UNQUOTED(SUPPORTED_FLOAT, $ac_supported_float,
+AC_DEFINE_UNQUOTED(PPL_SUPPORTED_FLOAT, $ac_supported_float,
   [Not zero if floats are supported.])
 
 AC_LANG_POP(C++)

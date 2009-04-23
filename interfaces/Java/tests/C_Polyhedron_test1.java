@@ -1,6 +1,6 @@
 /* Test C_Polyhedron Java test class of the Parma Polyhedra Library Java
    interface.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Vector;
-import ppl_java.*;
+import parma_polyhedra_library.*;
 
 public class C_Polyhedron_test1 {
 static {
@@ -39,7 +39,7 @@ static {
 }
 
     // This code tests the method `map_space_dimension(pfunc)'.
-    public static boolean test01() {
+    public static Boolean test01() {
 	Test_Partial_Function partial_function = new Test_Partial_Function();
 	partial_function.insert(0, 2);
 	partial_function.insert(2, 0);
@@ -81,37 +81,27 @@ static {
 	known_gs.add(Generator.ray(le_c_plus_a));
 
 	C_Polyhedron known_result = new C_Polyhedron(known_gs);
-	return known_result.equals(poly1);
+	return new Boolean(known_result.equals(poly1));
     }
 
-    public static boolean test02() {
+
+    public static Boolean test02() {
+	// Test if `minimized_constraints' returns an empty Constraint_System
+	// if the Polyhedron is built from universe with a dimension greater
+	// than zero.
 	Variable X = new Variable(0);
 	Variable Y = new Variable(1);
 	Variable Z = new Variable(2);
-	NNC_Polyhedron ph = new NNC_Polyhedron(3, Degenerate_Element.UNIVERSE);
-	Linear_Expression le_X = new Linear_Expression_Variable(X);
-	Linear_Expression le_Y = new Linear_Expression_Variable(Y);
-	Linear_Expression le_Z = new Linear_Expression_Variable(Z);
-	Linear_Expression le_2Y = le_Y.times(new Coefficient(2));
-	Linear_Expression le_5Z = le_Z.times(new Coefficient(5));
-	Linear_Expression le_7
-	    = new Linear_Expression_Coefficient(new Coefficient(7));
-	Linear_Expression le_5
-	    = new Linear_Expression_Coefficient(new Coefficient(5));
-	Linear_Expression lhs1 = le_X.sum(le_2Y.sum(le_5Z));
-	NNC_Polyhedron ph1 = new NNC_Polyhedron(3,
-						Degenerate_Element.UNIVERSE);
-	ph1.add_constraint(new Constraint(lhs1,
-					 Relation_Symbol.GREATER_OR_EQUAL,
-					 le_7));
-	ph1.add_constraint(new Constraint(le_X, Relation_Symbol.LESS_THAN,
-					  le_5Z));
-	System.out.println(ph1.constraints().toString());
-	return true;
+	C_Polyhedron ph = new C_Polyhedron(3, Degenerate_Element.UNIVERSE);
+	Constraint_System cs = ph.minimized_constraints();
+	return new Boolean(cs.isEmpty());
     }
 
     public static void main(String[] args) {
-	test01();
-	test02();
+	boolean test_result_ok =
+	    Test_Executor.executeTests(C_Polyhedron_test1.class);
+	if (!test_result_ok)
+	    System.exit(1);
+	System.exit(0);
     }
 }

@@ -1,5 +1,5 @@
 /* Linear_System class implementation (non-inline functions).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -152,7 +152,7 @@ PPL::Linear_System::ascii_load(std::istream& s) {
   dimension_type ncols;
   if (!(s >> nrows))
     return false;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> ncols))
     return false;
@@ -200,16 +200,14 @@ PPL::Linear_System::insert(const Linear_Row& r) {
       swap_columns(old_num_columns - 1, r_size - 1);
     add_row(r);
   }
-  else if (r_size < old_num_columns)
-    if (is_necessarily_closed() || old_num_rows == 0)
-      add_row(Linear_Row(r, old_num_columns, row_capacity));
-    else {
-      // Create a resized copy of the row (and move the epsilon
-      // coefficient to its last position).
-      Linear_Row tmp_row(r, old_num_columns, row_capacity);
+  else if (r_size < old_num_columns) {
+    // Create a resized copy of the row.
+    Linear_Row tmp_row(r, old_num_columns, row_capacity);
+    // If needed, move the epsilon coefficient to the last position.
+    if (!is_necessarily_closed())
       std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
-      add_row(tmp_row);
-    }
+    add_row(tmp_row);
+  }
   else
     // Here r_size == old_num_columns.
     add_row(r);
@@ -289,11 +287,11 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
   assert(num_pending_rows() == 0);
 
   // Adding no rows is a no-op.
-  if (y.empty())
+  if (y.has_no_rows())
     return;
 
   // Check if sortedness is preserved.
-  if (is_sorted())
+  if (is_sorted()) {
     if (!y.is_sorted() || y.num_pending_rows() > 0)
       set_sorted(false);
     else {
@@ -302,6 +300,7 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
       if (n_rows > 0)
 	set_sorted(compare((*this)[n_rows-1], y[0]) <= 0);
     }
+  }
 
   // Add the rows of `y' as if they were pending.
   add_pending_rows(y);
@@ -453,28 +452,31 @@ PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
 void
 PPL::Linear_System::normalize() {
   Linear_System& x = *this;
+  const dimension_type nrows = x.num_rows();
   // We normalize also the pending rows.
-  for (dimension_type i = num_rows(); i-- > 0; )
+  for (dimension_type i = nrows; i-- > 0; )
     x[i].normalize();
-  set_sorted(false);
+  set_sorted(nrows <= 1);
 }
 
 void
 PPL::Linear_System::strong_normalize() {
   Linear_System& x = *this;
+  const dimension_type nrows = x.num_rows();
   // We strongly normalize also the pending rows.
-  for (dimension_type i = num_rows(); i-- > 0; )
+  for (dimension_type i = nrows; i-- > 0; )
     x[i].strong_normalize();
-  set_sorted(false);
+  set_sorted(nrows <= 1);
 }
 
 void
 PPL::Linear_System::sign_normalize() {
   Linear_System& x = *this;
+  const dimension_type nrows = x.num_rows();
   // We sign-normalize also the pending rows.
   for (dimension_type i = num_rows(); i-- > 0; )
     x[i].sign_normalize();
-  set_sorted(false);
+  set_sorted(nrows <= 1);
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_System */
@@ -594,6 +596,7 @@ PPL::Linear_System
   // lines or equalities, all of which occur before the first ray
   // or point or inequality.
   assert(x.OK(true));
+  assert(x.num_columns() >= 1);
   assert(x.num_pending_rows() == 0);
   assert(n_lines_or_equalities <= x.num_lines_or_equalities());
 #ifndef NDEBUG
@@ -672,7 +675,7 @@ PPL::Linear_System
   }
 
   // Trying to keep sortedness.
-  for (dimension_type i = 0; still_sorted && i < nrows-1; ++i)
+  for (dimension_type i = 0; still_sorted && i+1 < nrows; ++i)
     if (check_for_sortedness[i])
       // Have to check sortedness of `x[i]' with respect to `x[i+1]'.
       still_sorted = (compare(x[i], x[i+1]) <= 0);
@@ -844,7 +847,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
 
   // An empty system is OK,
   // unless it is an NNC system with exactly one column.
-  if (empty())
+  if (has_no_rows()) {
     if (is_necessarily_closed() || num_columns() != 1)
       return true;
     else {
@@ -853,6 +856,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
 #endif
       return false;
     }
+  }
 
   // A non-empty system will contain constraints or generators; in
   // both cases it must have at least one column for the inhomogeneous

@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::map_space_dimensions().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -142,14 +142,6 @@ test05() {
 
   Octagonal_Shape<mpq_class> known_result(1);
   known_result.add_constraint(x <= 4);
-
-#if 0
-  cout << "oc1" << endl;
-  oc1.ascii_dump(cout);
-
-  cout << "result" << endl;
-  known_result.ascii_dump(cout);
-#endif
 
   bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 

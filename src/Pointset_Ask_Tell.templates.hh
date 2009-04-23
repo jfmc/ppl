@@ -1,5 +1,5 @@
 /* Pointset_Ask_Tell class implementation: non-inline template functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -88,11 +88,9 @@ Pointset_Ask_Tell<C_Polyhedron>
     x.sequence.push_back(Pair(c_ask, c_tell));
   }
 
-  // FIXME: the following comment should be rephrased!
-  // Note: this might be non-reduced even when `y' is known to be
-  // omega-reduced, because the constructor of C_Polyhedron, by
-  // enforcing topological closure, may have made different elements
-  // comparable.
+  // Note: in general, normalization of `y' does not propagate to `x',
+  // because the approximation potentially introduced by the conversion
+  // may have made uncomparable elements in `y' to become comparable in `x'.
   x.normalized = false;
   assert(x.OK());
 }
@@ -126,22 +124,6 @@ Pointset_Ask_Tell<PS>::add_constraint(const Constraint& c) {
 }
 
 template <typename PS>
-bool
-Pointset_Ask_Tell<PS>::add_constraint_and_minimize(const Constraint& c) {
-  Pointset_Ask_Tell& x = *this;
-  for (Sequence_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; )
-    if (!si->element().add_constraint_and_minimize(c))
-      si = x.sequence.erase(si);
-    else {
-      x.reduced = false;
-      ++si;
-    }
-  assert(x.OK());
-  return !x.empty();
-}
-
-template <typename PS>
 void
 Pointset_Ask_Tell<PS>::add_constraints(const Constraint_System& cs) {
   Pointset_Ask_Tell& x = *this;
@@ -153,20 +135,25 @@ Pointset_Ask_Tell<PS>::add_constraints(const Constraint_System& cs) {
 }
 
 template <typename PS>
-bool
-Pointset_Ask_Tell<PS>::
-add_constraints_and_minimize(const Constraint_System& cs) {
+void
+Pointset_Ask_Tell<PS>::unconstrain(const Variable var) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; )
-    if (!si->element().add_constraints_and_minimize(cs))
-      si = x.sequence.erase(si);
-    else {
-      x.reduced = false;
-      ++si;
-    }
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().unconstrain(var);
+  x.reduced = false;
   assert(x.OK());
-  return !x.empty();
+}
+
+template <typename PS>
+void
+Pointset_Ask_Tell<PS>::unconstrain(const Variables_Set& to_be_unconstrained) {
+  Pointset_Ask_Tell& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().unconstrain(to_be_unconstrained);
+  x.reduced = false;
+  assert(x.OK());
 }
 
 template <typename PS>

@@ -1,5 +1,5 @@
 /* Specialized "checked" functions for GMP's mpz_class numbers.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,8 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <> struct Is_Native<mpz_class> : public True { };
-
 namespace Checked {
 
 template <typename Policy>
@@ -51,10 +49,9 @@ round_gt_mpz(mpz_class& to, Rounding_Dir dir) {
   return V_GT;
 }
 
-// FIXME: change this when Autoconf will support AC_C_TYPEOF.
-#ifdef __GNUC__
+#ifdef PPL_HAVE_TYPEOF
 //! Type of the _mp_size field of GMP's __mpz_struct.
-typedef __typeof__(__mpz_struct()._mp_size) mp_size_field_t;
+typedef typeof(__mpz_struct()._mp_size) mp_size_field_t;
 #else
 //! This is assumed to be the type of the _mp_size field of GMP's __mpz_struct.
 typedef int mp_size_field_t;
@@ -93,7 +90,7 @@ classify_mpz(const mpz_class& v, bool nan, bool inf, bool sign) {
   return VC_NORMAL;
 }
 
-SPECIALIZE_CLASSIFY(classify_mpz, mpz_class)
+PPL_SPECIALIZE_CLASSIFY(classify_mpz, mpz_class)
 
 template <typename Policy>
 inline bool
@@ -102,7 +99,7 @@ is_nan_mpz(const mpz_class& v) {
     && get_mp_size(v) == C_Integer<mp_size_field_t>::min + 1;
 }
 
-SPECIALIZE_IS_NAN(is_nan_mpz, mpz_class)
+PPL_SPECIALIZE_IS_NAN(is_nan_mpz, mpz_class)
 
 template <typename Policy>
 inline bool
@@ -111,7 +108,7 @@ is_minf_mpz(const mpz_class& v) {
     && get_mp_size(v) == C_Integer<mp_size_field_t>::min;
 }
 
-SPECIALIZE_IS_MINF(is_minf_mpz, mpz_class)
+PPL_SPECIALIZE_IS_MINF(is_minf_mpz, mpz_class)
 
 template <typename Policy>
 inline bool
@@ -120,7 +117,7 @@ is_pinf_mpz(const mpz_class& v) {
     && get_mp_size(v) == C_Integer<mp_size_field_t>::max;
 }
 
-SPECIALIZE_IS_PINF(is_pinf_mpz, mpz_class)
+PPL_SPECIALIZE_IS_PINF(is_pinf_mpz, mpz_class)
 
 template <typename Policy>
 inline bool
@@ -128,11 +125,11 @@ is_int_mpz(const mpz_class& v) {
   return !is_nan<Policy>(v);
 }
 
-SPECIALIZE_IS_INT(is_int_mpz, mpz_class)
+PPL_SPECIALIZE_IS_INT(is_int_mpz, mpz_class)
 
 template <typename Policy>
 inline Result
-set_special_mpz(mpz_class& v, Result r) {
+assign_special_mpz(mpz_class& v, Result r, Rounding_Dir) {
   Result c = classify(r);
   if (Policy::has_nan && c == VC_NAN)
     set_mp_size(v, C_Integer<mp_size_field_t>::min + 1);
@@ -151,7 +148,7 @@ set_special_mpz(mpz_class& v, Result r) {
   return r;
 }
 
-SPECIALIZE_SET_SPECIAL(set_special_mpz, mpz_class)
+PPL_SPECIALIZE_ASSIGN_SPECIAL(assign_special_mpz, mpz_class)
 
 template <typename To_Policy, typename From_Policy>
 inline void
@@ -167,7 +164,7 @@ copy_mpz(mpz_class& to, const mpz_class& from) {
   set_mp_size(to, get_mp_size(from));
 }
 
-SPECIALIZE_COPY(copy_mpz, mpz_class)
+PPL_SPECIALIZE_COPY(copy_mpz, mpz_class)
 
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
@@ -176,58 +173,50 @@ construct_mpz_base(mpz_class& to, const From from, Rounding_Dir) {
     return V_EQ;
 }
 
-SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, signed char)
-SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, signed short)
-SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, signed int)
-SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, signed long)
-SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned char)
-SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned short)
-SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned int)
-SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned long)
+PPL_SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, signed char)
+PPL_SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, signed short)
+PPL_SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, signed int)
+PPL_SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, signed long)
+PPL_SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned char)
+PPL_SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned short)
+PPL_SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned int)
+PPL_SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned long)
 
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
-construct_mpz_float(mpz_class& to, const From& from, Rounding_Dir) {
-  if (is_nan<From_Policy>(from)) {
-    if (To_Policy::has_nan) {
-      new (&to) mpz_class();
-      return set_special<To_Policy>(to, VC_NAN);
-    }
-    else
-      return VC_NAN;
+construct_mpz_float(mpz_class& to, const From& from, Rounding_Dir dir) {
+  if (is_nan<From_Policy>(from))
+    return construct_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  else if (is_minf<From_Policy>(from))
+    return construct_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
+  else if (is_pinf<From_Policy>(from))
+    return construct_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
+  if (round_ignore(dir)) {
+    new (&to) mpz_class(from);
+    return V_LGE;
   }
-  else if (is_minf<From_Policy>(from)) {
-    if (To_Policy::has_infinity) {
-      new (&to) mpz_class();
-      return set_special<To_Policy>(to, VC_MINUS_INFINITY);
-    }
-    else
-      return VC_MINUS_INFINITY;
-  }
-  else if (is_pinf<From_Policy>(from)) {
-    if (To_Policy::has_infinity) {
-      new (&to) mpz_class();
-      return set_special<To_Policy>(to, VC_PLUS_INFINITY);
-    }
-    else
-      return VC_PLUS_INFINITY;
-  }
-  new (&to) mpz_class(from);
-  return V_EQ;
+  From n = rint(from);
+  new (&to) mpz_class(n);
+  if (from < n)
+    return round_lt_mpz<To_Policy>(to, dir);
+  else if (from > n)
+    return round_gt_mpz<To_Policy>(to, dir);
+  else
+    return V_EQ;
 }
 
-SPECIALIZE_CONSTRUCT(construct_mpz_float, mpz_class, float)
-SPECIALIZE_CONSTRUCT(construct_mpz_float, mpz_class, double)
+PPL_SPECIALIZE_CONSTRUCT(construct_mpz_float, mpz_class, float)
+PPL_SPECIALIZE_CONSTRUCT(construct_mpz_float, mpz_class, double)
 
-SPECIALIZE_ASSIGN(assign_exact, mpz_class, mpz_class)
-SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed char)
-SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed short)
-SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed int)
-SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed long)
-SPECIALIZE_ASSIGN(assign_exact, mpz_class, unsigned char)
-SPECIALIZE_ASSIGN(assign_exact, mpz_class, unsigned short)
-SPECIALIZE_ASSIGN(assign_exact, mpz_class, unsigned int)
-SPECIALIZE_ASSIGN(assign_exact, mpz_class, unsigned long)
+PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, mpz_class)
+PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed char)
+PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed short)
+PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed int)
+PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed long)
+PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, unsigned char)
+PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, unsigned short)
+PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, unsigned int)
+PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, unsigned long)
 
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
@@ -247,7 +236,7 @@ assign_mpz_signed_int(mpz_class& to, const From from, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(assign_mpz_signed_int, mpz_class, signed long long)
+PPL_SPECIALIZE_ASSIGN(assign_mpz_signed_int, mpz_class, signed long long)
 
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
@@ -259,17 +248,17 @@ assign_mpz_unsigned_int(mpz_class& to, const From from, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(assign_mpz_unsigned_int, mpz_class, unsigned long long)
+PPL_SPECIALIZE_ASSIGN(assign_mpz_unsigned_int, mpz_class, unsigned long long)
 
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
   if (is_nan<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_NAN);
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   else if (is_minf<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+    return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
   else if (is_pinf<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+    return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
   if (round_ignore(dir)) {
     to = from;
     return V_LGE;
@@ -284,28 +273,31 @@ assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
     return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(assign_mpz_float, mpz_class, float)
-SPECIALIZE_ASSIGN(assign_mpz_float, mpz_class, double)
+PPL_SPECIALIZE_ASSIGN(assign_mpz_float, mpz_class, float)
+PPL_SPECIALIZE_ASSIGN(assign_mpz_float, mpz_class, double)
 
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 assign_mpz_long_double(mpz_class& to, const From& from, Rounding_Dir dir) {
   if (is_nan<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_NAN);
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   else if (is_minf<From_Policy>(from))
-    return assign<To_Policy, Special_Float_Policy>(to, MINUS_INFINITY, dir);
+    return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
   else if (is_pinf<From_Policy>(from))
-    return assign<To_Policy, Special_Float_Policy>(to, PLUS_INFINITY, dir);
+    return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
   // FIXME: this is an incredibly inefficient implementation!
   std::stringstream ss;
   output<From_Policy>(ss, from, Numeric_Format(), dir);
-  DIRTY_TEMP0(mpq_class, tmp);
-  Result r = input_mpq(tmp, ss);
+  PPL_DIRTY_TEMP0(mpq_class, tmp);
+#ifndef NDEBUG
+  Result r =
+#endif
+    input_mpq(tmp, ss);
   assert(r == V_EQ);
   return assign<To_Policy, From_Policy>(to, tmp, dir);
 }
 
-SPECIALIZE_ASSIGN(assign_mpz_long_double, mpz_class, long double)
+PPL_SPECIALIZE_ASSIGN(assign_mpz_long_double, mpz_class, long double)
 
 template <typename To_Policy, typename From_Policy>
 inline Result
@@ -327,11 +319,11 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
   }
 }
 
-SPECIALIZE_ASSIGN(assign_mpz_mpq, mpz_class, mpq_class)
+PPL_SPECIALIZE_ASSIGN(assign_mpz_mpq, mpz_class, mpq_class)
 
-SPECIALIZE_FLOOR(assign_exact, mpz_class, mpz_class)
-SPECIALIZE_CEIL(assign_exact, mpz_class, mpz_class)
-SPECIALIZE_TRUNC(assign_exact, mpz_class, mpz_class)
+PPL_SPECIALIZE_FLOOR(assign_exact, mpz_class, mpz_class)
+PPL_SPECIALIZE_CEIL(assign_exact, mpz_class, mpz_class)
+PPL_SPECIALIZE_TRUNC(assign_exact, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result
@@ -340,7 +332,7 @@ neg_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_NEG(neg_mpz, mpz_class, mpz_class)
+PPL_SPECIALIZE_NEG(neg_mpz, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
@@ -349,7 +341,7 @@ add_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_ADD(add_mpz, mpz_class, mpz_class, mpz_class)
+PPL_SPECIALIZE_ADD(add_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
@@ -358,7 +350,7 @@ sub_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_SUB(sub_mpz, mpz_class, mpz_class, mpz_class)
+PPL_SPECIALIZE_SUB(sub_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
@@ -367,20 +359,28 @@ mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_MUL(mul_mpz, mpz_class, mpz_class, mpz_class)
+PPL_SPECIALIZE_MUL(mul_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
 div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
 	Rounding_Dir dir) {
   if (CHECK_P(To_Policy::check_div_zero, ::sgn(y) == 0))
-    return set_special<To_Policy>(to, V_DIV_ZERO);
+    return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
   mpz_srcptr n = x.get_mpz_t();
   mpz_srcptr d = y.get_mpz_t();
   if (round_ignore(dir)) {
-    // FIXME: is this correct?
+#if 0
+    // FIXME: we need to reconsider Rounding_Dir argument to clarify if
+    // client code intention is to have approximate result without any interest
+    // in knowing the direction of rounding or to grant to called function
+    // that result will be exact.
     mpz_divexact(to.get_mpz_t(), n, d);
     return V_LGE;
+#else
+    mpz_cdiv_q(to.get_mpz_t(), n, d);
+    return V_LE;
+#endif
   }
   if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
@@ -393,32 +393,32 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
   }
 }
 
-SPECIALIZE_DIV(div_mpz, mpz_class, mpz_class, mpz_class)
+PPL_SPECIALIZE_DIV(div_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
 idiv_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
 	Rounding_Dir) {
   if (CHECK_P(To_Policy::check_div_zero, ::sgn(y) == 0))
-    return set_special<To_Policy>(to, V_DIV_ZERO);
+    return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
   mpz_srcptr n = x.get_mpz_t();
   mpz_srcptr d = y.get_mpz_t();
   mpz_tdiv_q(to.get_mpz_t(), n, d);
   return V_EQ;
 }
 
-SPECIALIZE_IDIV(idiv_mpz, mpz_class, mpz_class, mpz_class)
+PPL_SPECIALIZE_IDIV(idiv_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
 rem_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   if (CHECK_P(To_Policy::check_div_zero, ::sgn(y) == 0))
-    return set_special<To_Policy>(to, V_MOD_ZERO);
+    return assign_special<To_Policy>(to, V_MOD_ZERO, ROUND_IGNORE);
   to = x % y;
   return V_EQ;
 }
 
-SPECIALIZE_REM(rem_mpz, mpz_class, mpz_class, mpz_class)
+PPL_SPECIALIZE_REM(rem_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result
@@ -429,7 +429,7 @@ mul2exp_mpz(mpz_class& to, const mpz_class& x, int exp, Rounding_Dir dir) {
   return V_EQ;
 }
 
-SPECIALIZE_MUL2EXP(mul2exp_mpz, mpz_class, mpz_class)
+PPL_SPECIALIZE_MUL2EXP(mul2exp_mpz, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result
@@ -452,7 +452,7 @@ div2exp_mpz(mpz_class& to, const mpz_class& x, int exp, Rounding_Dir dir) {
   }
 }
 
-SPECIALIZE_DIV2EXP(div2exp_mpz, mpz_class, mpz_class)
+PPL_SPECIALIZE_DIV2EXP(div2exp_mpz, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result
@@ -461,7 +461,7 @@ abs_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_ABS(abs_mpz, mpz_class, mpz_class)
+PPL_SPECIALIZE_ABS(abs_mpz, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
@@ -471,7 +471,7 @@ add_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
   return V_EQ;
 }
 
-SPECIALIZE_ADD_MUL(add_mul_mpz, mpz_class, mpz_class, mpz_class)
+PPL_SPECIALIZE_ADD_MUL(add_mul_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
@@ -481,7 +481,7 @@ sub_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
   return V_EQ;
 }
 
-SPECIALIZE_SUB_MUL(sub_mul_mpz, mpz_class, mpz_class, mpz_class)
+PPL_SPECIALIZE_SUB_MUL(sub_mul_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
@@ -490,7 +490,7 @@ gcd_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_GCD(gcd_mpz, mpz_class, mpz_class, mpz_class)
+PPL_SPECIALIZE_GCD(gcd_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
@@ -502,7 +502,7 @@ gcdext_mpz(mpz_class& to, mpz_class& s, mpz_class& t,
   return V_EQ;
 }
 
-SPECIALIZE_GCDEXT(gcdext_mpz, mpz_class, mpz_class, mpz_class, mpz_class, mpz_class)
+PPL_SPECIALIZE_GCDEXT(gcdext_mpz, mpz_class, mpz_class, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
@@ -511,25 +511,25 @@ lcm_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_LCM(lcm_mpz, mpz_class, mpz_class, mpz_class)
+PPL_SPECIALIZE_LCM(lcm_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result
 sqrt_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir dir) {
   if (CHECK_P(To_Policy::check_sqrt_neg, from < 0))
-    return set_special<To_Policy>(to, V_SQRT_NEG);
+    return assign_special<To_Policy>(to, V_SQRT_NEG, ROUND_IGNORE);
   if (round_ignore(dir)) {
     to = sqrt(from);
     return V_GE;
   }
-  DIRTY_TEMP0(mpz_class, r);
+  PPL_DIRTY_TEMP0(mpz_class, r);
   mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());
   if (r == 0)
     return V_EQ;
   return round_gt_mpz<To_Policy>(to, dir);
 }
 
-SPECIALIZE_SQRT(sqrt_mpz, mpz_class, mpz_class)
+PPL_SPECIALIZE_SQRT(sqrt_mpz, mpz_class, mpz_class)
 
 template <typename Policy, typename Type>
 inline Result
@@ -538,8 +538,8 @@ sgn_mp(const Type& x) {
   return i > 0 ? V_GT : i == 0 ? V_EQ : V_LT;
 }
 
-SPECIALIZE_SGN(sgn_mp, mpz_class)
-SPECIALIZE_SGN(sgn_mp, mpq_class)
+PPL_SPECIALIZE_SGN(sgn_mp, mpz_class)
+PPL_SPECIALIZE_SGN(sgn_mp, mpq_class)
 
 template <typename Policy1, typename Policy2, typename Type>
 inline Result
@@ -548,8 +548,8 @@ cmp_mp(const Type& x, const Type& y) {
   return i > 0 ? V_GT : i == 0 ? V_EQ : V_LT;
 }
 
-SPECIALIZE_CMP(cmp_mp, mpz_class, mpz_class)
-SPECIALIZE_CMP(cmp_mp, mpq_class, mpq_class)
+PPL_SPECIALIZE_CMP(cmp_mp, mpz_class, mpz_class)
+PPL_SPECIALIZE_CMP(cmp_mp, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
@@ -559,13 +559,8 @@ output_mpz(std::ostream& os, const mpz_class& from, const Numeric_Format&,
   return V_EQ;
 }
 
-SPECIALIZE_INPUT(input_generic, mpz_class)
-SPECIALIZE_OUTPUT(output_mpz, mpz_class)
-
-inline memory_size_type
-external_memory_in_bytes(const mpz_class& x) {
-  return x.get_mpz_t()[0]._mp_alloc * PPL_SIZEOF_MP_LIMB_T;
-}
+PPL_SPECIALIZE_INPUT(input_generic, mpz_class)
+PPL_SPECIALIZE_OUTPUT(output_mpz, mpz_class)
 
 } // namespace Checked
 

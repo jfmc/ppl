@@ -1,5 +1,5 @@
 /* Test Box::contains().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -92,10 +92,8 @@ test04() {
   Variable y(1);
 
   TBox box1(3);
-  box1.add_constraint(x - y >= 0);
 
   TBox box2(2);
-  box2.add_constraint(x - y == 0);
 
   try {
     // This is an invalid use of Polyhedron::contains(): it is
@@ -130,7 +128,6 @@ test05() {
   print_constraints(box1, "*** box1 ***");
 
   TBox box2(cs);
-  box2.add_constraint(A - B >= 0);
 
   print_constraints(box2, "*** box2 ***");
 

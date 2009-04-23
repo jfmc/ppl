@@ -1,5 +1,5 @@
 /* Implementation of global objects: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_globals_inlines_hh
 #define PPL_globals_inlines_hh 1
 
-#include "Coefficient.defs.hh"
 #include <limits>
 #include <cassert>
 
@@ -58,89 +57,39 @@ compute_capacity(const dimension_type requested_size,
   //   : maximum_size;
 }
 
-// FIXME!!!
-inline dimension_type
-compute_capacity(const dimension_type requested_size) {
-  // Speculation factor 2.
-  return 2*(requested_size + 1);
-  // Speculation factor 1.5.
-  // return requested_size + requested_size/2 + 1;
-}
-
-inline void
-normalize2(Coefficient_traits::const_reference x,
-	   Coefficient_traits::const_reference y,
-	   Coefficient& nx, Coefficient& ny) {
-  TEMP_INTEGER(gcd);
-  gcd_assign(gcd, x, y);
-  exact_div_assign(nx, x, gcd);
-  exact_div_assign(ny, y, gcd);
+template <typename T>
+inline typename
+Enable_If<Is_Native<T>::value, memory_size_type>::type
+external_memory_in_bytes(const T&) {
+  return 0;
 }
 
 template <typename T>
-inline T
-low_bits_mask(const unsigned n) {
-  assert(n < unsigned(std::numeric_limits<T>::digits));
-  return n == 0 ? 0 : ~(~(T(0u)) << n);
+inline typename
+Enable_If<Is_Native<T>::value, memory_size_type>::type
+total_memory_in_bytes(const T&) {
+  return sizeof(T);
 }
 
-template <typename T, typename Policy>
-inline void
-numer_denom(const Checked_Number<T, Policy>& from,
-	    Coefficient& num, Coefficient& den) {
-  assert(!is_not_a_number(from)
-	 && !is_minus_infinity(from)
-	 && !is_plus_infinity(from));
-  DIRTY_TEMP0(mpq_class, q);
-  assign_r(q, from, ROUND_NOT_NEEDED);
-  num = q.get_num();
-  den = q.get_den();
+inline memory_size_type
+external_memory_in_bytes(const mpz_class& x) {
+  return x.get_mpz_t()[0]._mp_alloc * PPL_SIZEOF_MP_LIMB_T;
 }
 
-template <typename T, typename Policy>
-inline void
-div_round_up(Checked_Number<T, Policy>& to,
-	     Coefficient_traits::const_reference x,
-	     Coefficient_traits::const_reference y) {
-  DIRTY_TEMP0(mpq_class, qx);
-  DIRTY_TEMP0(mpq_class, qy);
-  // Note: this code assumes that a Coefficient is always convertible
-  // to an mpq_class without loss of precision.
-  assign_r(qx, x, ROUND_NOT_NEEDED);
-  assign_r(qy, y, ROUND_NOT_NEEDED);
-  div_assign_r(qx, qx, qy, ROUND_NOT_NEEDED);
-  assign_r(to, qx, ROUND_UP);
+inline memory_size_type
+total_memory_in_bytes(const mpz_class& x) {
+  return sizeof(x) + external_memory_in_bytes(x);
 }
 
-template <typename N>
-inline void
-min_assign(N& x, const N& y) {
-  if (x > y)
-    x = y;
+inline memory_size_type
+external_memory_in_bytes(const mpq_class& x) {
+  return external_memory_in_bytes(x.get_num())
+    + external_memory_in_bytes(x.get_den());
 }
 
-template <typename N>
-inline void
-max_assign(N& x, const N& y) {
-  if (x < y)
-    x = y;
-}
-
-template <typename T, typename Policy>
-inline bool
-is_even(const Checked_Number<T, Policy>& x) {
-  Checked_Number<T, Policy> half_x;
-  return div2exp_assign_r(half_x, x, 1, ROUND_DIRECT) == V_EQ
-    && is_integer(half_x);
-}
-
-template <typename T, typename Policy>
-inline bool
-is_additive_inverse(const Checked_Number<T, Policy>& x,
-		    const Checked_Number<T, Policy>& y) {
-  Checked_Number<T, Policy> negated_x;
-  return neg_assign_r(negated_x, x, ROUND_DIRECT) == V_EQ
-    && negated_x == y;
+inline memory_size_type
+total_memory_in_bytes(const mpq_class& x) {
+  return sizeof(x) + external_memory_in_bytes(x);
 }
 
 } // namespace Parma_Polyhedra_Library

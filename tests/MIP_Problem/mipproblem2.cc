@@ -1,5 +1,5 @@
 /* Test the MIP_Problem class with instances that require a watchdog timer.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 #include "pwl.hh"
+#include <limits>
 
 namespace {
 
@@ -138,10 +139,20 @@ bool test01() {
     nout << "timeout, as expected" << endl;
     return true;
   }
-  catch (const std::overflow_error&) {
+  catch (const std::overflow_error& e) {
     abandon_expensive_computations = 0;
-    // Overflow errors should be propagated.
-    throw;
+    if (std::numeric_limits<Coefficient>::is_integer
+        && std::numeric_limits<Coefficient>::is_bounded
+        && std::numeric_limits<Coefficient>::radix == 2
+        && std::numeric_limits<Coefficient>::digits == 7) {
+      // Overflow is OK with 8-bit coefficients.
+      nout << "arithmetic overflow (" << e.what() << "),"
+        " possible with 8-bit coefficients" << endl;
+      return true;
+    }
+    else
+      // Overflow errors should be propagated in all other cases.
+      throw;
   }
   catch (...) {
     abandon_expensive_computations = 0;
@@ -153,5 +164,5 @@ bool test01() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST_F8(test01);
+  DO_TEST(test01);
 END_MAIN

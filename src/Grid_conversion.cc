@@ -1,5 +1,5 @@
 /* Grid class implementation: conversion().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -165,7 +165,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // the left-right order of the dimensions, while the congruence
   // system rows have a bottom-up ordering.
   dimension_type dest_num_rows = 0;
-  TEMP_INTEGER(diagonal_lcm);
+  PPL_DIRTY_TEMP_COEFFICIENT(diagonal_lcm);
   diagonal_lcm = 1;
   const dimension_type dims = source.space_dimension() + 1;
   dimension_type source_index = source.num_rows();
@@ -236,7 +236,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // `dest'.
   source_index = source.num_rows();
   dest_index = 0;
-  TEMP_INTEGER(multiplier);
+  PPL_DIRTY_TEMP_COEFFICIENT(multiplier);
 
   for (dimension_type dim = dims; dim-- > 0; ) {
     if (dim_kinds[dim] != GEN_VIRTUAL) {
@@ -300,13 +300,14 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
   assert(lower_triangular(dest, dim_kinds));
 
-#ifdef STRONG_REDUCTION
+  // Since we are reducing the system to "strong minimal form",
+  // reduce the coefficients in the congruence system
+  // using "diagonal" values.
   for (dimension_type dim = dims, i = 0; dim-- > 0; )
     if (dim_kinds[dim] != CON_VIRTUAL)
       // Factor the "diagonal" congruence out of the preceding rows.
       reduce_reduced<Congruence_System, Congruence>
 	(dest, dim, i++, 0, dim, dim_kinds, false);
-#endif
 }
 
 void
@@ -320,7 +321,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // Initialize matrix row number counters and compute the LCM of the
   // diagonal entries of the proper congruences in `source'.
   dimension_type source_num_rows = 0, dest_num_rows = 0;
-  TEMP_INTEGER(diagonal_lcm);
+  PPL_DIRTY_TEMP_COEFFICIENT(diagonal_lcm);
   diagonal_lcm = 1;
   dimension_type dims = source.num_columns() - 1;
   for (dimension_type dim = dims; dim-- > 0; )
@@ -393,7 +394,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // `dest'.
   source_index = source_num_rows;
   dest_index = 0;
-  TEMP_INTEGER(reduced_source_dim);
+  PPL_DIRTY_TEMP_COEFFICIENT(reduced_source_dim);
 
   for (dimension_type dim = 0; dim < dims; ++dim) {
     if (dim_kinds[dim] != CON_VIRTUAL) {
@@ -450,13 +451,14 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
   assert(upper_triangular(dest, dim_kinds));
 
-#ifdef STRONG_REDUCTION
+  // Since we are reducing the system to "strong minimal form",
+  // reduce the coordinates in the grid_generator system
+  // using "diagonal" values.
   for (dimension_type dim = 0, i = 0; dim < dims; ++dim)
     if (dim_kinds[dim] != GEN_VIRTUAL)
       // Factor the "diagonal" generator out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
 	(dest, dim, i++, dim, dims - 1, dim_kinds);
-#endif
 
   // Ensure that the parameter divisors are the same as the divisor of
   // the point.

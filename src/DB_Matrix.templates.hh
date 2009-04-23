@@ -1,5 +1,5 @@
 /* DB_Matrix class implementation: non-inline template functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -232,9 +232,8 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
   DB_Matrix& x = *this;
   for (dimension_type i = 0; i < nrows;  ++i)
     for (dimension_type j = 0; j < nrows; ++j) {
-      Result r = input(x[i][j], s, ROUND_UP);
-      // FIXME: V_CVT_STR_UNK is probably not the only possible error.
-      if (!s || r == V_CVT_STR_UNK)
+      Result r = input(x[i][j], s, ROUND_CHECK);
+      if (r != V_EQ || is_minus_infinity(x[i][j]))
 	return false;
     }
 
@@ -298,7 +297,7 @@ DB_Matrix<T>::OK() const {
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \relates Parma_Polyhedra_Library::DB_Matrix */  //FIXME!!
+/*! \relates Parma_Polyhedra_Library::DB_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 std::ostream&

@@ -1,5 +1,5 @@
 /* Test Box::bounded_affine_image().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,159 +24,150 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+// Affine image variable is neither expression, denominator 1.
 bool
 test01() {
   Variable x(0);
   Variable y(1);
 
-  TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  TBox box(3);
+  box.add_constraint(x <= 2);
+  box.add_constraint(y <= 2);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.bounded_affine_image(x, y, y);
+  box.bounded_affine_image(x, y, y);
 
   Rational_Box known_result(3);
   known_result.add_constraint(y <= 2);
-  known_result.add_constraint(x - y == 0);
+  known_result.add_constraint(x <= 2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.bounded_affine_image(x, y, y) ***");
+  print_constraints(box, "*** box.bounded_affine_image(x, y, y) ***");
 
   return ok;
 }
 
+// Affine image variable is in neither ub_expr nor lb_expr, negative
+// denominator.
 bool
 test02() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
 
-  TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  TBox box(5);
+  box.add_constraint(A <= 0);
+  box.add_constraint(B <= 1);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.bounded_affine_image(x, x + 4, x + 4);
+  box.bounded_affine_image(B, 3*E - 5*D + A - 3*B, 4*A -2*C + 3, -3);
 
-  Rational_Box known_result(3);
-  known_result.add_constraint(y <= 2);
-  known_result.add_constraint(x - y <= 7);
-  known_result.add_constraint(x <= 6);
+  Rational_Box known_result(5);
+  known_result.add_constraint(A <= 0);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.bounded_affine_image(x, x + 4, x + 4) ***");
+  print_constraints(box, "*** box.bounded_affine_image(B, "
+                        "3*E - 5*D + A - 3*B, 4*A - 2*C + 3, -3) ***");
 
   return ok;
 }
 
+// Affine image variable is in lb_expr but not ub_expr, negative denominator.
 bool
 test03() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
 
-  TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  TBox box(5);
+  box.add_constraint(A <= 1);
+  box.add_constraint(B <= 1);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.bounded_affine_image(x, Linear_Expression(4), Linear_Expression(4));
+  box.bounded_affine_image(C, 3*D - E, 2*C + 1, -5);
 
-  Rational_Box known_result(3);
-  known_result.add_constraint(y <= 2);
-  known_result.add_constraint(x == 4);
+  Rational_Box known_result(5);
+  known_result.add_constraint(B <= 1);
+  known_result.add_constraint(A <= 1);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.bounded_affine_image(x, 4, 4) ***");
+  print_constraints(box, "*** box.bounded_affine_image(C, "
+                        "3*D - E, 2*C + 1, -5) ***");
 
   return ok;
 }
 
+// Affine image variable is in ub_expr but not lb_expr, positive denominator.
 bool
 test04() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
 
-  TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  TBox box(5);
+  box.add_constraint(A <= 0);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  Rational_Box known_result(box1);
+  box.bounded_affine_image(B, -B - 2, 7*D - E + 5, 3);
 
-  box1.bounded_affine_image(x, x, x);
+  Rational_Box known_result(5);
+  known_result.add_constraint(A <= 0);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.bounded_affine_image(x, x, x) ***");
+  print_constraints(box, "*** box.bounded_affine_image(B, "
+                        "-B - 2, 7*D - E + 5, 3) ***");
 
   return ok;
 }
 
+// Affine image variable is in ub_expr but not lb_expr, negative denominator.
 bool
 test05() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable F(5);
 
-  TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  TBox box(6);
+  box.add_constraint(A <= 4);
+  box.add_constraint(A >= -6);
+  box.add_constraint(B == 0);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.bounded_affine_image(x, 2*x - 2, 2*x - 2, 2);
+  box.bounded_affine_image(A, -A - 3, B - C + 6*D + F, -1);
 
-  Rational_Box known_result(3);
-  known_result.add_constraint(x <= 1);
-  known_result.add_constraint(y <= 2);
-  known_result.add_constraint(x - y <= 2);
+  Rational_Box known_result(6);
+  known_result.add_constraint(A >= -3);
+  known_result.add_constraint(B == 0);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1,
-		    "*** box1.bounded_affine_image(x, 2*x-2, 2*x-2, 2) ***");
+  print_constraints(box, "*** box.bounded_affine_image(A, "
+                        "-A - 3, B - C + 6*D + F, -1) ***");
 
   return ok;
 }
 
+// Affine image variable is in both expressions, the ub_expr and
+// lb_expr are bounded by the box.
 bool
 test06() {
-  Variable x(0);
-  Variable y(1);
-
-  TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
-
-  print_constraints(box1, "*** box1 ***");
-
-  box1.bounded_affine_image(y, 2*x, 2*x, 2);
-
-  Rational_Box known_result(3);
-  known_result.add_constraint(x <= 2);
-  known_result.add_constraint(y - x == 0);
-
-  bool ok = (Rational_Box(box1) == known_result);
-
-  print_constraints(box1, "*** box1.bounded_affine_image(y, 2*x, 2*x, 2) ***");
-
-  return ok;
-}
-
-bool
-test07() {
   Variable x(0);
   Variable y(1);
 
@@ -195,167 +186,187 @@ test07() {
   known_result.add_constraint(x >= -2);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
-  known_result.add_constraint(x - y <= 1);
-  known_result.add_constraint(x - y >= -1);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box,
-		    "*** box.bounded_affine_image(x, -2*x+y+1, -2*x+y+1) ***");
+                    "*** box.bounded_affine_image(x, -2*x+y+1, -2*x+y+1) ***");
 
   return ok;
 }
 
+// Affine image variable is in both expressions, the ub_expr and
+// lb_expr are bounded by the box, negative denominator.
+bool
+test07() {
+  Variable x(0);
+  Variable y(1);
+
+  TBox box(2);
+  box.add_constraint(x <= 1);
+  box.add_constraint(x >= 0);
+  box.add_constraint(y <= 2);
+  box.add_constraint(y >= -1);
+
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
+  box.bounded_affine_image(x, -2*x + y + 1, -2*x + y + 1, -1);
+  ph.bounded_affine_image(x, -2*x + y + 1, -2*x + y + 1, -1);
+
+  Rational_Box known_result(2);
+  known_result.add_constraint(x <= 2);
+  known_result.add_constraint(x >= -3);
+  known_result.add_constraint(y <= 2);
+  known_result.add_constraint(y >= -1);
+
+  bool ok = check_result(box, known_result);
+
+  print_constraints(box,
+                    "*** box.bounded_affine_image("
+                    "x, -2*x+y+1, -2*x+y+1, -1) ***");
+  print_constraints(ph,
+                    "*** ph.bounded_affine_image("
+                    "x, -2*x+y+1, -2*x+y+1, -1) ***");
+
+  return ok;
+}
+
+// Affine image variable is in both expressions, the ub_expr and
+// lb_expr are bounded by the box, lower is open.
 bool
 test08() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-  Variable E(4);
+  Variable x(0);
+  Variable y(1);
 
-  TBox box(5);
-  box.add_constraint(A >= 0);
-  box.add_constraint(A <= 4);
-  box.add_constraint(B <= 5);
-  box.add_constraint(A - B <= 0);
-  box.add_constraint(B - C == 2);
-  box.add_constraint(C - A <= -2);
+  TBox box(2);
+  box.add_constraint(x <= 1);
+  box.add_constraint(x > 0);
+  box.add_constraint(y <= 2);
+  box.add_constraint(y >= -1);
 
   print_constraints(box, "*** box ***");
 
-  box.bounded_affine_image(B, Linear_Expression(-1), D + E);
+  box.bounded_affine_image(x, -2*x + y + 1, -2*x + y + 1);
 
-  Rational_Box known_result(5);
-  known_result.add_constraint(A >= 0);
-  known_result.add_constraint(A <= 4);
-  known_result.add_constraint(A - C == 2);
-  known_result.add_constraint(C >= -2);
-  known_result.add_constraint(C <= 2);
-  known_result.add_constraint(B >= -1);
+  Rational_Box known_result(2);
+  known_result.add_constraint(x < 3);
+  known_result.add_constraint(x >= -2);
+  known_result.add_constraint(y <= 2);
+  known_result.add_constraint(y >= -1);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box, "*** box.bounded_affine_image(B, -1, D + E) ***");
+  print_constraints(box,
+                    "*** box.bounded_affine_image("
+                    "x, -2*x+y+1, -2*x+y+1) ***");
 
   return ok;
 }
 
+// Affine image variable is in both expressions, the ub_expr has a
+// maximum value but the lb_expr has no minimum, negative denominator.
 bool
 test09() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-  Variable E(4);
+  Variable x(0);
+  Variable y(1);
 
-  TBox box(5);
-  box.add_constraint(A - B == 0);
-  box.add_constraint(B <= 1);
-  box.add_constraint(C - A <= 2);
+  TBox box(3);
+  box.add_constraint(3*x <= 2);
+  box.add_constraint(y <= 2);
 
   print_constraints(box, "*** box ***");
+  box.bounded_affine_image(x, x + 4, x + 4, -1);
 
-  box.bounded_affine_image(C, 3*D - E, 2*C + 1, 5);
+  Rational_Box known_result(3);
+  known_result.add_constraint(y <= 2);
+  known_result.add_constraint(3*x >= -14);
 
-  Rational_Box known_result(5);
-  known_result.add_constraint(A - B == 0);
-  known_result.add_constraint(B <= 1);
-  known_result.add_constraint(5*C <= 7);
-  known_result.add_constraint(A <= 1);
+  bool ok = check_result(box, known_result, "3.18e-7", "3.18e-7", "3.18e-7");
 
-  bool ok = check_result(box, known_result, "9.54e-8", "9.54e-8", "9.54e-8");
-
-  print_constraints(box, "*** box.bounded_affine_image(C, "
-                        "3*D - E, 2*C + 1, 5) ***");
+  print_constraints(box,
+                    "*** box.bounded_affine_image("
+                    "x, x + 4, x + 4, -1) ***");
 
   return ok;
 }
 
+// Affine image variable is in both expressions, the ub_expr has a
+// maximum value (which is open) but the lb_expr has no minimum.
 bool
 test10() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-  Variable F(5);
+  Variable x(0);
+  Variable y(1);
 
-  TBox box(6);
-  box.add_constraint(A <= 4);
-  box.add_constraint(A >= -6);
-  box.add_constraint(B == 0);
+  TBox box(3);
+  box.add_constraint(3*x < 2);
+  box.add_constraint(y <= 2);
 
   print_constraints(box, "*** box ***");
+  box.bounded_affine_image(x, x + 4, x + 4);
 
-  box.bounded_affine_image(A, -A - 3, B - C + 6*D + F);
+  Rational_Box known_result(3);
+  known_result.add_constraint(y <= 2);
+  known_result.add_constraint(3*x < 14);
 
-  Rational_Box known_result(6);
-  known_result.add_constraint(A >= -7);
-  known_result.add_constraint(B == 0);
+  bool ok = check_result(box, known_result, "3.18e-7", "3.18e-7", "3.18e-7");
 
-  bool ok = (Rational_Box(box) == known_result);
-
-  print_constraints(box, "*** box.bounded_affine_image(A, "
-		        "-A - 3, B - C + 6*D + F) ***");
+  print_constraints(box,
+                    "*** box.bounded_affine_image(x, x + 4, x + 4) ***");
 
   return ok;
 }
 
+// Affine image variable is in both expressions, the ub_expr has a
+// maximum value but the lb_expr has no minimum. Box is closed
+// and the affine image has a denominator > 1.
 bool
 test11() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-  Variable E(4);
+  Variable x(0);
+  Variable y(1);
 
-  TBox box(5);
-  box.add_constraint(A - B == 0);
-  box.add_constraint(B <= 1);
-  box.add_constraint(C - A <= 2);
+  TBox box(3);
+  box.add_constraint(x <= 2);
+  box.add_constraint(y <= 2);
 
   print_constraints(box, "*** box ***");
 
-  box.bounded_affine_image(B, -B - 2, 7*D - E + 5, 3);
+  box.bounded_affine_image(y, 2*x, 2*x, 2);
 
-  Rational_Box known_result(5);
-  known_result.add_constraint(B >= -1);
-  known_result.add_constraint(C - A <= 2);
-  known_result.add_constraint(A <= 1);
+  Rational_Box known_result(3);
+  known_result.add_constraint(x <= 2);
+  known_result.add_constraint(y <= 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box, "*** box.bounded_affine_image(B, "
-                        "-B - 2, 7*D - E + 5, 3) ***");
+  print_constraints(box, "*** box.bounded_affine_image(y, 2*x, 2*x, 2) ***");
 
   return ok;
 }
 
+// Affine image variable is in both expressions, the ub_expr has a
+// maximum value but the lb_expr has no minimum. Box is not closed
+// and the affine image has a denominator > 1.
 bool
 test12() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-  Variable E(4);
+  Variable x(0);
+  Variable y(1);
 
-  TBox box(5);
-  box.add_constraint(A - B == 0);
-  box.add_constraint(B <= 1);
-  box.add_constraint(C - A <= 2);
+  TBox box(3);
+  box.add_constraint(x < 2);
+  box.add_constraint(y <= 2);
 
   print_constraints(box, "*** box ***");
 
-  box.bounded_affine_image(B, 3*E - 5*D + A - 3*B, 4*A -2*C + 3, -3);
+  box.bounded_affine_image(x, 2*x - 2, 2*x - 2, 2);
 
-  Rational_Box known_result(5);
-  known_result.add_constraint(A <= 1);
-  known_result.add_constraint(C - A <= 2);
+  Rational_Box known_result(3);
+  known_result.add_constraint(x < 1);
+  known_result.add_constraint(y <= 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box, "*** box.bounded_affine_image(B, "
-                        "3*E - 5*D + A - 3*B, 4*A - 2*C + 3, -3) ***");
+  print_constraints(box,
+                    "*** box.bounded_affine_image(x, 2*x-2, 2*x-2, 2) ***");
 
   return ok;
 }
@@ -367,7 +378,7 @@ test13() {
   Variable z(2);
 
   TBox box(2);
-  box.add_constraint(x >= y);
+  box.add_constraint(x >= 1);
 
   try {
     // This is an incorrect use of the method
@@ -392,7 +403,7 @@ test14() {
   Variable z(2);
 
   TBox box(2);
-  box.add_constraint(x >= y);
+  box.add_constraint(x >= 1);
 
   try {
     // This is an incorrect use of the method
@@ -416,7 +427,7 @@ test15() {
   Variable y(1);
 
   TBox box(2);
-  box.add_constraint(x >= y);
+  box.add_constraint(x >= 1);
 
   try {
     // This is an incorrect use of the method
@@ -459,6 +470,26 @@ test16() {
   return false;
 }
 
+bool
+test17() {
+  Variable x(0);
+
+  TBox box(1);
+
+  print_constraints(box, "*** box ***");
+  box.bounded_affine_image(x, 3*x, 3*x);
+
+  Rational_Box known_result(1);
+
+  bool ok = check_result(box, known_result);
+
+  print_constraints(box,
+                    "*** box.bounded_affine_image(x, 3*x, 3*x) ***");
+
+  return ok;
+
+}
+
 
 
 } // namespace
@@ -472,12 +503,13 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
-  DO_TEST(test09);
-  DO_TEST(test10);
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test09, TBox);
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test10, TBox);
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN

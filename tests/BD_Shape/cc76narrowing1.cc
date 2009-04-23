@@ -1,5 +1,5 @@
 /* Test BD_Shape::CC76_narrowing_assign().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,21 +29,21 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(x <= 1);
-  bd1.add_constraint(y - x <= 7);
-  bd1.add_constraint(x - y <= 6);
+  TBD_Shape bds1(3);
+  bds1.add_constraint(x <= 1);
+  bds1.add_constraint(y - x <= 7);
+  bds1.add_constraint(x - y <= 6);
 
-  TBD_Shape bd2(3);
-  bd2.add_constraint(-x <= 3);
-  bd2.add_constraint(y - x <= 2);
-  bd2.add_constraint(x - y <= 5);
-  bd2.add_constraint(x <= 0);
+  TBD_Shape bds2(3);
+  bds2.add_constraint(-x <= 3);
+  bds2.add_constraint(y - x <= 2);
+  bds2.add_constraint(x - y <= 5);
+  bds2.add_constraint(x <= 0);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd2.CC76_narrowing_assign(bd1);
+  bds2.CC76_narrowing_assign(bds1);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 1);
@@ -53,9 +53,9 @@ test01() {
   known_result.add_constraint(-y <= 8);
   known_result.add_constraint(y <= 8);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
-  print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
+  print_constraints(bds2, "*** bds2.CC76_narrowing_assign(bds1) ***");
 
   return ok;
 }
@@ -66,20 +66,20 @@ test02() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd1(4);
-  bd1.add_constraint(z <= 1);
+  TBD_Shape bds1(4);
+  bds1.add_constraint(z <= 1);
 
-  TBD_Shape bd2(4);
-  bd2.add_constraint(-y <= 3);
-  bd2.add_constraint(-x <= 2);
-  bd2.add_constraint(x <= 3);
-  bd2.add_constraint(y - x <= 4);
-  bd2.add_constraint(z <= 0);
+  TBD_Shape bds2(4);
+  bds2.add_constraint(-y <= 3);
+  bds2.add_constraint(-x <= 2);
+  bds2.add_constraint(x <= 3);
+  bds2.add_constraint(y - x <= 4);
+  bds2.add_constraint(z <= 0);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd2.CC76_narrowing_assign(bd1);
+  bds2.CC76_narrowing_assign(bds1);
 
   BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(z <= 1);
@@ -92,9 +92,9 @@ test02() {
   known_result.add_constraint(z - y <= 3);
   known_result.add_constraint(z - x <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
-  print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
+  print_constraints(bds2, "*** bds2.CC76_narrowing_assign(bds1) ***");
 
   return ok;
 }
@@ -105,26 +105,26 @@ test03() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd1(3);
-  TBD_Shape bd2(3);
+  TBD_Shape bds1(3);
+  TBD_Shape bds2(3);
 
-  bd1.add_constraint(z <= 1);
+  bds1.add_constraint(z <= 1);
   BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  bd2.add_constraint(-y <= 3);
-  bd2.add_constraint(x >= 4);
-  bd2.add_constraint(x <= 3);
-  bd2.add_constraint(y - x <= 4);
-  bd2.add_constraint(z <= 0);
+  bds2.add_constraint(-y <= 3);
+  bds2.add_constraint(x >= 4);
+  bds2.add_constraint(x <= 3);
+  bds2.add_constraint(y - x <= 4);
+  bds2.add_constraint(z <= 0);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd2.CC76_narrowing_assign(bd1);
+  bds2.CC76_narrowing_assign(bds1);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
-  print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
+  print_constraints(bds2, "*** bds2.CC76_narrowing_assign(bds1) ***");
 
   return ok;
 }
@@ -135,45 +135,45 @@ test04() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(z <= 1);
-  bd1.add_constraint(z >= 3);
+  TBD_Shape bds1(3);
+  bds1.add_constraint(z <= 1);
+  bds1.add_constraint(z >= 3);
 
-  TBD_Shape bd2(3);
-  bd2.add_constraint(-y <= 3);
-  bd2.add_constraint(x >= 4);
-  bd2.add_constraint(x <= 3);
-  bd2.add_constraint(y - x <= 4);
-  bd2.add_constraint(z <= 0);
+  TBD_Shape bds2(3);
+  bds2.add_constraint(-y <= 3);
+  bds2.add_constraint(x >= 4);
+  bds2.add_constraint(x <= 3);
+  bds2.add_constraint(y - x <= 4);
+  bds2.add_constraint(z <= 0);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd2.CC76_narrowing_assign(bd1);
+  bds2.CC76_narrowing_assign(bds1);
 
   BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
-  print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
+  print_constraints(bds2, "*** bds2.CC76_narrowing_assign(bds1) ***");
 
   return ok;
 }
 
 bool
 test05() {
-  TBD_Shape bd1;
-  TBD_Shape bd2(0, EMPTY);
-  BD_Shape<mpq_class> known_result(bd2);
+  TBD_Shape bds1;
+  TBD_Shape bds2(0, EMPTY);
+  BD_Shape<mpq_class> known_result(bds2);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd2.CC76_narrowing_assign(bd1);
+  bds2.CC76_narrowing_assign(bds1);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
-  print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
+  print_constraints(bds2, "*** bds2.CC76_narrowing_assign(bds1) ***");
 
   return ok;
 }
@@ -182,18 +182,18 @@ bool
 test06() {
   Variable y(1);
 
-  TBD_Shape bd1(1);
-  TBD_Shape bd2(2);
+  TBD_Shape bds1(1);
+  TBD_Shape bds2(2);
 
   Constraint_System cs;
   cs.insert(y >= 6);
 
   try {
     // This is an invalid use of the method
-    // BD_Shape::CC76_narrowing_assign(bd2, cs): it is
+    // BD_Shape::CC76_narrowing_assign(bds2, cs): it is
     // illegal to apply this method to two polyhedra that are not
     // dimension-compatible.
-    bd2.CC76_narrowing_assign(bd1);
+    bds2.CC76_narrowing_assign(bds1);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

@@ -1,4 +1,4 @@
-# Doxyfile 1.5.3
+# Doxyfile 1.5.7.1
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -21,17 +21,22 @@ SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
 QT_AUTOBRIEF           = NO
 MULTILINE_CPP_IS_BRIEF = NO
-DETAILS_AT_TOP         = NO
 INHERIT_DOCS           = YES
 SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 8
 ALIASES                = 
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
+OPTIMIZE_FOR_FORTRAN   = NO
+OPTIMIZE_OUTPUT_VHDL   = NO
 BUILTIN_STL_SUPPORT    = NO
 CPP_CLI_SUPPORT        = NO
+SIP_SUPPORT            = NO
+IDL_PROPERTY_SUPPORT   = YES
 DISTRIBUTE_GROUP_DOC   = NO
 SUBGROUPING            = YES
+TYPEDEF_HIDES_STRUCT   = NO
+SYMBOL_CACHE_SIZE      = 0
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------
@@ -52,6 +57,7 @@ SHOW_INCLUDE_FILES     = YES
 INLINE_INFO            = YES
 SORT_MEMBER_DOCS       = YES
 SORT_BRIEF_DOCS        = NO
+SORT_GROUP_NAMES       = NO
 SORT_BY_SCOPE_NAME     = NO
 GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = YES
@@ -61,7 +67,10 @@ ENABLED_SECTIONS       = Include_Implementation_Details
 MAX_INITIALIZER_LINES  = 5
 SHOW_USED_FILES        = YES
 SHOW_DIRECTORIES       = NO
+SHOW_FILES             = YES
+SHOW_NAMESPACES        = YES
 FILE_VERSION_FILTER    = 
+LAYOUT_FILE            = 
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
 #---------------------------------------------------------------------------
@@ -104,15 +113,22 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/checked.cc \
                          @srcdir@/../src/Init.types.hh \
                          @srcdir@/../src/Init.defs.hh \
+                         @srcdir@/../src/Init.inlines.hh \
                          @srcdir@/../src/Init.cc \
                          @srcdir@/../src/initializer.hh \
                          @srcdir@/../src/globals.types.hh \
                          @srcdir@/../src/globals.defs.hh \
                          @srcdir@/../src/globals.inlines.hh \
                          @srcdir@/../src/globals.cc \
+                         @srcdir@/../src/math_utilities.defs.hh \
+                         @srcdir@/../src/math_utilities.inlines.hh \
                          @srcdir@/../src/distances.types.hh \
                          @srcdir@/../src/distances.defs.hh \
                          @srcdir@/../src/distances.inlines.hh \
+                         @srcdir@/../src/stdiobuf.types.hh \
+                         @srcdir@/../src/stdiobuf.defs.hh \
+                         @srcdir@/../src/stdiobuf.inlines.hh \
+                         @srcdir@/../src/stdiobuf.cc \
                          @srcdir@/../src/Topology.hh \
                          @srcdir@/../src/Row.types.hh \
                          @srcdir@/../src/Row.defs.hh \
@@ -146,6 +162,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Variable.defs.hh \
                          @srcdir@/../src/Variable.inlines.hh \
                          @srcdir@/../src/Variable.cc \
+                         @srcdir@/../src/Variables_Set.types.hh \
+                         @srcdir@/../src/Variables_Set.defs.hh \
+                         @srcdir@/../src/Variables_Set.inlines.hh \
+                         @srcdir@/../src/Variables_Set.cc \
                          @srcdir@/../src/Linear_Expression.types.hh \
                          @srcdir@/../src/Linear_Expression.defs.hh \
                          @srcdir@/../src/Linear_Expression.inlines.hh \
@@ -262,15 +282,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Pointset_Powerset.inlines.hh \
                          @srcdir@/../src/Pointset_Powerset.templates.hh \
                          @srcdir@/../src/Pointset_Powerset.cc \
-                         @srcdir@/../src/Ask_Tell.types.hh \
-                         @srcdir@/../src/Ask_Tell.defs.hh \
-                         @srcdir@/../src/Ask_Tell.inlines.hh \
-                         @srcdir@/../src/Ask_Tell.templates.hh \
-                         @srcdir@/../src/Pointset_Ask_Tell.types.hh \
-                         @srcdir@/../src/Pointset_Ask_Tell.defs.hh \
-                         @srcdir@/../src/Pointset_Ask_Tell.inlines.hh \
-                         @srcdir@/../src/Pointset_Ask_Tell.templates.hh \
-                         @srcdir@/../src/Pointset_Ask_Tell.cc \
+                         @srcdir@/../src/Partially_Reduced_Product.types.hh \
+                         @srcdir@/../src/Partially_Reduced_Product.defs.hh \
+                         @srcdir@/../src/Partially_Reduced_Product.inlines.hh \
+                         @srcdir@/../src/Partially_Reduced_Product.templates.hh \
                          @srcdir@/../src/algorithms.hh \
                          @srcdir@/../src/Box.types.hh \
                          @srcdir@/../src/Box.defs.hh \
@@ -331,7 +346,7 @@ VERBATIM_HEADERS       = YES
 #---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
-ALPHABETICAL_INDEX     = YES
+ALPHABETICAL_INDEX     = NO
 COLS_IN_ALPHA_INDEX    = 5
 IGNORE_PREFIX          = 
 #---------------------------------------------------------------------------
@@ -344,17 +359,27 @@ HTML_HEADER            =
 HTML_FOOTER            = 
 HTML_STYLESHEET        = 
 HTML_ALIGN_MEMBERS     = YES
-GENERATE_HTMLHELP      = NO
 HTML_DYNAMIC_SECTIONS  = NO
+GENERATE_DOCSET        = NO
+DOCSET_FEEDNAME        = "Doxygen generated docs"
+DOCSET_BUNDLE_ID       = org.doxygen.Project
+GENERATE_HTMLHELP      = NO
 CHM_FILE               = 
 HHC_LOCATION           = 
 GENERATE_CHI           = NO
+CHM_INDEX_ENCODING     = 
 BINARY_TOC             = NO
 TOC_EXPAND             = NO
+GENERATE_QHP           = NO
+QCH_FILE               = 
+QHP_NAMESPACE          = org.doxygen.Project
+QHP_VIRTUAL_FOLDER     = doc
+QHG_LOCATION           = 
 DISABLE_INDEX          = NO
 ENUM_VALUES_PER_LINE   = 4
 GENERATE_TREEVIEW      = YES
 TREEVIEW_WIDTH         = 250
+FORMULA_FONTSIZE       = 10
 #---------------------------------------------------------------------------
 # configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
@@ -432,6 +457,9 @@ CLASS_DIAGRAMS         = YES
 MSCGEN_PATH            = 
 HIDE_UNDOC_RELATIONS   = YES
 HAVE_DOT               = YES
+DOT_FONTNAME           = FreeSans
+DOT_FONTSIZE           = 10
+DOT_FONTPATH           = 
 CLASS_GRAPH            = YES
 COLLABORATION_GRAPH    = YES
 GROUP_GRAPHS           = YES

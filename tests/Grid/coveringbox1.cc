@@ -1,5 +1,5 @@
 /* Test Grid(Box& box, From_Covering_Box()).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -57,8 +57,8 @@ test02() {
   Grid gr(box, From_Covering_Box());
 
   Grid known_gr(SPACE_DIM);
-  known_gr.add_congruence(A == 0);
-  known_gr.add_congruence(B == 0);
+  known_gr.add_constraint(A == 0);
+  known_gr.add_constraint(B == 0);
 
   bool ok = (gr == known_gr);
 
@@ -215,7 +215,7 @@ test09() {
   Grid gr(box, From_Covering_Box());
 
   Grid known_gr(2);
-  known_gr.add_congruence(A == 0);
+  known_gr.add_constraint(A == 0);
   known_gr.add_congruence(2*B %= 0);
 
   bool ok = (gr == known_gr);
@@ -239,7 +239,7 @@ test10() {
   Grid gr(box, From_Covering_Box());
 
   Grid known_gr(2);
-  known_gr.add_congruence(7*A == 3);
+  known_gr.add_constraint(7*A == 3);
   known_gr.add_congruence(2*B %= 0);
 
   bool ok = (gr == known_gr);

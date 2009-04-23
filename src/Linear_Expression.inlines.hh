@@ -1,5 +1,5 @@
 /* Linear_Expression class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -42,19 +42,6 @@ Linear_Expression::Linear_Expression()
 inline
 Linear_Expression::Linear_Expression(dimension_type sz, bool)
   : Linear_Row(sz, Linear_Row::Flags()) {
-}
-
-inline
-Linear_Expression::Linear_Expression(const Variable v)
-  : Linear_Row(v.space_dimension() <= max_space_dimension()
-	       ? v.id() + 2
-	       : (throw std::length_error("PPL::Linear_Expression::"
-					  "Linear_Expression(v):\n"
-					  "v exceeds the maximum allowed "
-					  "space dimension."),
-		  v.id() + 2)
-	       , Linear_Row::Flags()) {
-  (*this)[v.id() + 1] = 1;
 }
 
 inline
@@ -125,20 +112,6 @@ operator+(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 /*! \relates Linear_Expression */
 inline Linear_Expression
-operator+(const Variable v, const Variable w) {
-  // FIXME: provide a better implementation.
-  return Linear_Expression(v) + Linear_Expression(w);
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
-operator+(const Variable v, const Linear_Expression& e) {
-  // FIXME: provide a better implementation.
-  return e + Linear_Expression(v);
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
 operator+(const Linear_Expression& e, const Variable v) {
   return v + e;
 }
@@ -152,22 +125,7 @@ operator-(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 /*! \relates Linear_Expression */
 inline Linear_Expression
 operator-(const Variable v, const Variable w) {
-  // FIXME: provide a better implementation.
-  return Linear_Expression(v) - Linear_Expression(w);
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
-operator-(const Variable v, const Linear_Expression& e) {
-  // FIXME: provide a better implementation.
-  return Linear_Expression(v) - e;
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
-operator-(const Linear_Expression& e, const Variable v) {
-  // FIXME: provide a better implementation.
-  return e - Linear_Expression(v);
+  return Linear_Expression(v, w);
 }
 
 /*! \relates Linear_Expression */

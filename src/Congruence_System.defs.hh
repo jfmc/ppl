@@ -1,5 +1,5 @@
 /* Congruence_System class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -46,13 +46,6 @@ std::ostream&
 operator<<(std::ostream& s, const Congruence_System& cgs);
 
 } // namespace IO_Operators
-
-// Put this in the namespace here to declare it a friend later.
-
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
-/*! \relates Congruence_System */
-bool
-operator==(const Congruence_System& x, const Congruence_System& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -322,13 +315,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.

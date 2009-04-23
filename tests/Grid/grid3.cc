@@ -1,5 +1,5 @@
 /* Test construction of grids from constraints.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,17 +29,14 @@ bool
 test01() {
   Variable A(0);
   Variable B(1);
-  Variable C(2);
 
   Constraint_System cs;
   cs.insert(B == 0);
-  cs.insert(A >= 0);
-  cs.insert(C > 0);
 
   Grid gr(cs);
 
-  Grid known_gr(3);
-  known_gr.add_congruence(B == 0);
+  Grid known_gr(2);
+  known_gr.add_constraint(B == 0);
 
   bool ok = (gr == known_gr);
 
@@ -48,7 +45,8 @@ test01() {
   return ok;
 }
 
-// Grid(cs), resulting grid universe.
+
+// Building from an inequality exception.
 bool
 test02() {
   Variable A(0);
@@ -56,19 +54,19 @@ test02() {
   Variable C(2);
 
   Constraint_System cs;
-  cs.insert(B < 0);
-  cs.insert(A >= 0);
-  cs.insert(C > 0);
 
-  Grid gr(cs);
+  cs.insert(A >= B);
 
-  Grid known_gr(3);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr(cs) ***");
-
-  return ok;
+  try {
+    Grid gr(cs);
+   }
+  catch (const std::invalid_argument& e) {
+    nout << "cs contains an inequality constraint: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
 }
 
 // Grid(cs), cs empty and resulting grid universe.
@@ -98,15 +96,14 @@ test04() {
 
   Constraint_System cs;
   cs.insert(2*B == A);
-  cs.insert(A >= 0);
-  cs.insert(C > 0);
+  cs.insert(0*C == 0);
 
   const Constraint_System ccs = cs;
 
   Grid gr(ccs);
 
   Grid known_gr(3);
-  known_gr.add_congruence(2*B == A);
+  known_gr.add_constraint(2*B == A);
 
   bool ok = (gr == known_gr);
 
@@ -123,19 +120,20 @@ test05() {
   Variable C(2);
 
   Constraint_System cs;
-  cs.insert(2*B >= A);
-  cs.insert(A >= 0);
-  cs.insert(C > 0);
+  cs.insert(2*B == A);
+  cs.insert(2*B == 0);
+  cs.insert(A == 1);
+  cs.insert(C == 4);
 
-  const Constraint_System ccs = cs;
+  const Congruence_System cgs(cs);
 
-  Grid gr(ccs);
+  Grid gr(cgs);
 
-  Grid known_gr(3);
+  Grid known_gr(3, EMPTY);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(ccs) ***");
+  print_congruences(gr, "*** gr(cgs) ***");
 
   return ok;
 }

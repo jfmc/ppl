@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -20,10 +20,20 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-CHECKER =
-#CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/tests/valgrind_suppressions
+if VALGRIND_TESTS_ENABLED
 
-TESTS_ENVIRONMENT = CHECKER="$(CHECKER)"
+CHECKER = \
+$(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
+--num-callers=100 --leak-resolution=high \
+--suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+else !VALGRIND_TESTS_ENABLED
+
+CHECKER =
+
+endif !VALGRIND_TESTS_ENABLED
+
+TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
 $(TEST_CPPFLAGS) \
@@ -58,15 +68,22 @@ cc76extrapolation1 \
 cc76narrowing1 \
 chinainit \
 concatenate1 \
+congruences1 \
+constrains1 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
+difference1 \
 discrete1 \
 disjoint1 \
 empty1 \
 expandspacedim1 \
 foldspacedims1 \
+frombdshape1 \
+frombox1 \
 fromgensys1 \
+fromgrid1 \
+fromoctagonalshape1 \
 frompolyhedron1 \
 fromspacedim1 \
 generalizedaffineimage1 \
@@ -78,6 +95,7 @@ generalizedaffinepreimage1 \
 generalizedaffinepreimage2 \
 generalizedaffinepreimage3 \
 generalizedaffinepreimage4 \
+integerupperboundifexact1 \
 intersection1 \
 limitedbhmz05extrapolation1 \
 limitedcc76extrapolation1 \
@@ -87,14 +105,17 @@ max_min2 \
 maxspacedim1 \
 membytes1 \
 minconstraints1 \
-octdifference1 \
-octhull1 \
 relatwithcons1 \
 relatwithcons2 \
+relatwithcons3 \
 relatwithgen1 \
 removespacedims1 \
+simplifyusingcontext1 \
 timeelapse1 \
+unconstrain1 \
 universe1 \
+upperbound1 \
+upperboundifexact1 \
 writeoctagon1
 
 
@@ -105,8 +126,9 @@ dist_check_SCRIPTS = run_tests
 
 TESTS = run_tests.stamp
 
+.PHONY: run_tests.stamp
 run_tests.stamp: run_tests
-	+$(srcdir)/run_tests
+	+MAKE=$(MAKE) $(srcdir)/run_tests
 	echo "true" >run_tests.stamp
 	chmod +x run_tests.stamp
 
@@ -176,11 +198,17 @@ chinainit_SOURCES = chinainit.cc
 
 concatenate1_SOURCES = concatenate1.cc
 
+congruences1_SOURCES = congruences1.cc
+
+constrains1_SOURCES = constrains1.cc
+
 constraints1_SOURCES = constraints1.cc
 
 contains1_SOURCES = contains1.cc
 
 containsintegerpoint1_SOURCES = containsintegerpoint1.cc
+
+difference1_SOURCES = difference1.cc
 
 discrete1_SOURCES = discrete1.cc
 
@@ -192,7 +220,15 @@ expandspacedim1_SOURCES = expandspacedim1.cc
 
 foldspacedims1_SOURCES = foldspacedims1.cc
 
+frombdshape1_SOURCES = frombdshape1.cc
+
+frombox1_SOURCES = frombox1.cc
+
 fromgensys1_SOURCES = fromgensys1.cc
+
+fromgrid1_SOURCES = fromgrid1.cc
+
+fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
 
 frompolyhedron1_SOURCES = frompolyhedron1.cc
 
@@ -208,6 +244,8 @@ generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
 generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
 generalizedaffinepreimage4_SOURCES = generalizedaffinepreimage4.cc
+
+integerupperboundifexact1_SOURCES = integerupperboundifexact1.cc
 
 intersection1_SOURCES = intersection1.cc
 
@@ -226,20 +264,25 @@ membytes1_SOURCES = membytes1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 
-octdifference1_SOURCES = octdifference1.cc
-
-octhull1_SOURCES = octhull1.cc
-
 relatwithcons1_SOURCES = relatwithcons1.cc
 relatwithcons2_SOURCES = relatwithcons2.cc
+relatwithcons3_SOURCES = relatwithcons3.cc
 
 relatwithgen1_SOURCES = relatwithgen1.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 
+simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
+
 timeelapse1_SOURCES = timeelapse1.cc
 
+unconstrain1_SOURCES = unconstrain1.cc
+
 universe1_SOURCES = universe1.cc
+
+upperbound1_SOURCES = upperbound1.cc
+
+upperboundifexact1_SOURCES = upperboundifexact1.cc
 
 writeoctagon1_SOURCES = writeoctagon1.cc
 
@@ -247,5 +290,17 @@ writeoctagon1_SOURCES = writeoctagon1.cc
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
 
-DISTCLEANFILES = \
+CLEANFILES = \
 run_tests.stamp
+
+DISTCLEANFILES = \
+dirty_marker
+
+$(top_builddir)/utils/libppl_utils.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
+
+$(top_builddir)/tests/libppl_tests.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/tests libppl_tests.a
+
+$(top_builddir)/src/libppl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la

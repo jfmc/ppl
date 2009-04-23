@@ -1,5 +1,5 @@
 /* NNC_Polyhedron class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,6 +26,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.defs.hh"
 
 namespace Parma_Polyhedra_Library {
+
+inline
+NNC_Polyhedron::~NNC_Polyhedron() {
+}
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(dimension_type num_dimensions,
@@ -91,36 +95,9 @@ NNC_Polyhedron::NNC_Polyhedron(Generator_System& gs, Recycle_Input)
 	       Recycle_Input()) {
 }
 
-inline
-NNC_Polyhedron::NNC_Polyhedron(const Grid_Generator_System& gs)
-  : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       gs.space_dimension() <= max_space_dimension()
-	       ? gs.space_dimension()
-	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
-						 "NNC_Polyhedron(ggs)",
-						 "the space dimension of ggs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
-	       UNIVERSE) {
-}
-
-inline
-NNC_Polyhedron::NNC_Polyhedron(Grid_Generator_System& ggs, Recycle_Input)
-  : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       ggs.space_dimension() <= max_space_dimension()
-	       ? ggs.space_dimension()
-	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
-						 "NNC_Polyhedron"
-						 "(ggs, recycle)",
-						 "the space dimension of ggs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
-	       UNIVERSE) {
-}
-
 template <typename Interval>
 inline
-NNC_Polyhedron::NNC_Polyhedron(const Box<Interval>& box)
+NNC_Polyhedron::NNC_Polyhedron(const Box<Interval>& box, Complexity_Class)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
 	       box.space_dimension() <= max_space_dimension()
 	       ? box
@@ -131,8 +108,38 @@ NNC_Polyhedron::NNC_Polyhedron(const Box<Interval>& box)
 						 "space dimension"), box)) {
 }
 
+template <typename U>
 inline
-NNC_Polyhedron::NNC_Polyhedron(const NNC_Polyhedron& y)
+NNC_Polyhedron::NNC_Polyhedron(const BD_Shape<U>& bd, Complexity_Class)
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       bd.space_dimension() <= max_space_dimension()
+	       ? bd.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "NNC_Polyhedron(bd): ",
+						 "the space dimension of bd "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+               UNIVERSE) {
+  add_constraints(bd.constraints());
+}
+
+template <typename U>
+inline
+NNC_Polyhedron::NNC_Polyhedron(const Octagonal_Shape<U>& os, Complexity_Class)
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       os.space_dimension() <= max_space_dimension()
+	       ? os.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "NNC_Polyhedron(os): ",
+						 "the space dimension of os "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+               UNIVERSE) {
+  add_constraints(os.constraints());
+}
+
+inline
+NNC_Polyhedron::NNC_Polyhedron(const NNC_Polyhedron& y, Complexity_Class)
   : Polyhedron(y) {
 }
 
@@ -147,10 +154,6 @@ NNC_Polyhedron::operator=(const C_Polyhedron& y) {
   NNC_Polyhedron nnc_y(y);
   swap(nnc_y);
   return *this;
-}
-
-inline
-NNC_Polyhedron::~NNC_Polyhedron() {
 }
 
 inline bool

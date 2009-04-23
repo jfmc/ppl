@@ -1,5 +1,5 @@
 /* Congruence class implementation (non-inline functions).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -140,14 +140,15 @@ PPL::Congruence::throw_dimension_incompatible(const char* method,
   std::ostringstream s;
   s << "this->space_dimension() == " << space_dimension() << ", "
     << v_name << ".space_dimension() == " << v.space_dimension() << ".";
-  throw_invalid_argument(method, s.str().c_str());
+  std::string str = s.str();
+  throw_invalid_argument(method, str.c_str());
 }
 
 /*! \relates Parma_Polyhedra_Library::Congruence */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
   const dimension_type num_variables = c.space_dimension();
-  TEMP_INTEGER(cv);
+  PPL_DIRTY_TEMP_COEFFICIENT(cv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
     cv = c.coefficient(Variable(v));
@@ -178,7 +179,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
 }
 
 bool
-PPL::Congruence::is_trivial_true() const {
+PPL::Congruence::is_tautological() const {
   if ((is_equality() && inhomogeneous_term() == 0)
       || (is_proper_congruence()
 	  && (inhomogeneous_term() % modulus() == 0))) {
@@ -191,7 +192,7 @@ PPL::Congruence::is_trivial_true() const {
 }
 
 bool
-PPL::Congruence::is_trivial_false() const {
+PPL::Congruence::is_inconsistent() const {
   if (inhomogeneous_term() == 0
       || (is_proper_congruence()
 	  && ((inhomogeneous_term() % modulus()) == 0)))
@@ -239,7 +240,7 @@ PPL::Congruence::ascii_load(std::istream& s) {
     for (dimension_type col = 0; col < new_size - 1; ++col)
       if (!(s >> x[col]))
 	return false;
-    if (!(s >> str) || (str.compare("m") != 0))
+    if (!(s >> str) || str != "m")
       return false;
     if (!(s >> x[new_size-1]))
       return false;

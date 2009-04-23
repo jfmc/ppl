@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -14,10 +14,10 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename BT>
+template <typename T>
 class DB_Row_Impl_Handler;
 
-template <typename BT>
+template <typename T>
 class DB_Row;
 
 } // namespace Parma_Polyhedra_Library

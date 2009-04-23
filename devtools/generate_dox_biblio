@@ -1,0 +1,10 @@
+#!/bin/sh
+if [ $# -ne 1  ]; then
+        echo "Usage: `basename $0` file.bib" 1>&2
+        exit 1
+fi
+# Note: this has been tested with bibtex2html version 1.92.
+bibtex2html -no-header -quiet -sort-as-bibtex -nodoc -noabstract \
+            -nobibsource -style alpha --output - \
+            -named-field SOURCE "Source code" $1 \
+    | sed -f generate_dox_biblio.sed >`basename $1 .bib`.dox

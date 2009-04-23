@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -20,8 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-abs_srcdir = @abs_srcdir@
-
 CIAO_CFLI_FILES = ciao_cfli.hh
 
 EXTRA_DIST = \
@@ -29,9 +27,9 @@ ppl_interface_generator_ciao_pl.m4 \
 $(CIAO_CFLI_FILES) \
 ciao_clpq.pl \
 ciao_clpq2.pl \
-ciao_pl_check.pl
-
-if BUILD_CIAO_PROLOG_INTERFACE
+ciao_pl_check.pl \
+ppl_interface_generator_ciao_prolog_generated_test_pl.m4 \
+README.ciao
 
 if BUILD_WATCHDOG_LIBRARY
 
@@ -45,9 +43,12 @@ endif BUILD_WATCHDOG_LIBRARY
 if ENABLE_SHARED
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
+-I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 $(WATCHDOG_INCLUDE_OPTIONS) \
+$(CIAO_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 interface_generator_dependencies = \
@@ -55,30 +56,132 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
-../ppl_interface_generator_prolog_dat.m4 \
+../../ppl_interface_generator_common_procedure_generators.m4 \
+../ppl_interface_generator_prolog_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
-ppl_interface_generator_ciao_pl.m4
+ppl_interface_generator_ciao_pl.m4 \
+ppl_interface_generator_ciao_prolog_generated_test_pl.m4
 
 pkglib_LTLIBRARIES = libppl_ciao.la
-libppl_ciao_la_SOURCES = ppl_ciao.cc
+
+libppl_ciao_la_SOURCES = \
+ppl_prolog_sysdep.hh \
+ciao_efli.hh \
+ciao_efli.cc
+
+nodist_libppl_ciao_la_SOURCES = \
+../ppl_prolog_common.cc
+
+nodist_EXTRA_libppl_ciao_la_SOURCES = \
+../ppl_prolog_Int8_Box.cc \
+../ppl_prolog_Int16_Box.cc \
+../ppl_prolog_Int32_Box.cc \
+../ppl_prolog_Int64_Box.cc \
+../ppl_prolog_Uint8_Box.cc \
+../ppl_prolog_Uint16_Box.cc \
+../ppl_prolog_Uint32_Box.cc \
+../ppl_prolog_Uint64_Box.cc \
+../ppl_prolog_Float_Box.cc \
+../ppl_prolog_Double_Box.cc \
+../ppl_prolog_Long_Double_Box.cc \
+../ppl_prolog_Rational_Box.cc \
+../ppl_prolog_Z_Box.cc \
+../ppl_prolog_BD_Shape_int8_t.cc \
+../ppl_prolog_BD_Shape_int16_t.cc \
+../ppl_prolog_BD_Shape_int32_t.cc \
+../ppl_prolog_BD_Shape_int64_t.cc \
+../ppl_prolog_BD_Shape_float.cc \
+../ppl_prolog_BD_Shape_double.cc \
+../ppl_prolog_BD_Shape_long_double.cc \
+../ppl_prolog_BD_Shape_mpq_class.cc \
+../ppl_prolog_BD_Shape_mpz_class.cc \
+../ppl_prolog_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Octagonal_Shape_float.cc \
+../ppl_prolog_Octagonal_Shape_double.cc \
+../ppl_prolog_Octagonal_Shape_long_double.cc \
+../ppl_prolog_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Polyhedron.cc \
+../ppl_prolog_Grid.cc \
+../ppl_prolog_Pointset_Powerset_Int8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Float_Box.cc \
+../ppl_prolog_Pointset_Powerset_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Long_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Rational_Box.cc \
+../ppl_prolog_Pointset_Powerset_Z_Box.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_C_Polyhedron.cc \
+../ppl_prolog_Pointset_Powerset_NNC_Polyhedron.cc \
+../ppl_prolog_Pointset_Powerset_Grid.cc \
+../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_NNC_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_Grid_C_Polyhedron.cc \
+../ppl_prolog_Constraints_Product_Grid_NNC_Polyhedron.cc
+
+if NO_UNDEFINED
+
+NO_UNDEFINED_FLAG = -no-undefined
+
+endif NO_UNDEFINED
+
 libppl_ciao_la_LIBADD = \
+@required_instantiations_prolog_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
 $(WATCHDOG_LIBRARY) \
 @extra_libraries@
-libppl_ciao_la_LDFLAGS = -module -avoid-version
+
+libppl_ciao_la_DEPENDENCIES = \
+@required_instantiations_prolog_cxx_objects@
+
+libppl_ciao_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
+-module \
+-avoid-version
 
 pkglib_DATA = ppl_ciao.po
 
-ppl_ciao.pl: $(interface_generator_dependencies) Makefile
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+ppl_ciao.pl: $(interface_generator_dependencies)
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_ciao_pl.m4 > $@
+
+ciao_prolog_generated_test.pl: $(interface_generator_dependencies)
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_ciao_prolog_generated_test_pl.m4 > $@
 
 ppl_ciao.po: ppl_ciao.pl
 	ciaoc -c ppl_ciao.pl
 
-# All the invocations of `ciaoc' to build `ciao_pl_check', `ciao_clpq'
-# and `ciao_clpq2' will try to build identical glue files (e.g.,
-# `ppl_ciao_LINUXi86.so').  On parallel builds, this may cause errors.
+# All the invocations of `ciaoc' to build `ciao_pl_check', `ciao_clpq',
+# `ciao_clpq2' and 'ciao_prolog_generated_test' will try to build
+# identical glue files (e.g., `ppl_ciao_LINUXi86.so').
+# On parallel builds, this may cause errors.
 # This is why we make `ciao_clpq' and `ciao_clpq2' depend on `ciao_pl_check':
 # building the latter will build the glue files once and for all;  after
 # that, `ciao_clpq' and `ciao_clpq2' can be built in parallel.
@@ -116,6 +219,17 @@ ciao_clpq2: .libs/libppl_ciao.so ppl_ciao.po ciao_clpq.pl ../tests/clpq2.pl | ci
 	rm -f clpq2.pl
 
 
+ciao_prolog_generated_test: .libs/libppl_ciao.so ppl_ciao.po ciao_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl | ciao_pl_check
+	if [ $(srcdir) != `pwd` ]; then \
+          cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl .; \
+	fi
+	cp -f ../tests/ppl_prolog_generated_test_main.pl .
+	ciaoc -o $@ ciao_prolog_generated_test.pl
+	if [ $(srcdir) != `pwd` ]; then \
+          rm -f ppl_prolog_generated_test_common.pl; \
+	fi
+	rm -f ppl_prolog_generated_test_main.pl
+
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
 ackn.clpq \
@@ -146,7 +260,7 @@ EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: pl_check_test clpq_test clpq2_test
+check-local: ppl_prolog_generated_test
 
 pl_check_test: ciao_pl_check$(EXEEXT) .libs/libppl_ciao.so $(EXPECTED_PCHK)
 	$(LIBTOOL) --mode=execute \
@@ -157,9 +271,10 @@ pl_check_test: ciao_pl_check$(EXEEXT) .libs/libppl_ciao.so $(EXPECTED_PCHK)
 			 >obtained_pchk
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-clpq_test: ciao_clpq$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq $(EXPECTED_CLPQ)
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+$(CLPQ_TESTS):
+	cp -f $(srcdir)/../tests/$@ .
+
+clpq_test: ciao_clpq$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq $(EXPECTED_CLPQ) $(CLPQ_TESTS)
 	GLOBALSTKSIZE=1000000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
@@ -169,9 +284,7 @@ clpq_test: ciao_clpq$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq $(EXPECT
 			<$(srcdir)/../tests/script_clpq >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
-clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXPECTED_CLPQ2)
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXPECTED_CLPQ2) $(CLPQ_TESTS)
 	GLOBALSTKSIZE=100000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
@@ -181,14 +294,36 @@ clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXP
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
-endif ENABLE_SHARED
-endif BUILD_CIAO_PROLOG_INTERFACE
+ppl_prolog_generated_test: ciao_prolog_generated_test$(EXEEXT) .libs/libppl_ciao.so ../tests/expected_pgt
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		$(WATCHDOG_DLOPEN) \
+		-dlopen libppl_ciao.la \
+		./ciao_prolog_generated_test \
+			 >obtained_pgt
+	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
-DISTCLEANFILES = \
+endif ENABLE_SHARED
+
+CLEANFILES = \
 ppl_ciao.pl
 
 MOSTLYCLEANFILES = \
+@required_instantiations_prolog_cxx_objects@ \
 *.itf *.po *.c *.so \
-ciao_clpq ciao_clpq2 ciao_pl_check \
-obtained_clpq obtained_clpq2 obtained_pchk \
+ciao_clpq ciao_clpq2 ciao_pl_check ciao_prolog_generated_test \
+obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt \
 $(CLPQ_TESTS)
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_prolog_domains.cc.stamp' in parent's directory
+# makefile.
+$(nodist_EXTRA_libppl_ciao_la_SOURCES):
+../tests/ppl_prolog_generated_test_main.pl:
+
+# FIXME: the dependencies from .libs/libppl_ciao.so in this Makefile.am
+# are probably all wrong.
+.libs/libppl_ciao.so: libppl_ciao.la

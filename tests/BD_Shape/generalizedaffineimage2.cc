@@ -1,5 +1,5 @@
 /* Test BD_Shape::generalized_affine_image().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,23 +29,23 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x <= 4);
-  bd.add_constraint(x >= -6);
-  bd.add_constraint(y == 0);
+  TBD_Shape bds(2);
+  bds.add_constraint(x <= 4);
+  bds.add_constraint(x >= -6);
+  bds.add_constraint(y == 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_image(y, LESS_OR_EQUAL, -y + 1);
+  bds.generalized_affine_image(y, LESS_OR_EQUAL, -y + 1);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 4);
   known_result.add_constraint(x >= -6);
   known_result.add_constraint(y <= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd.generalized_affine_image(y, "
+  print_constraints(bds, "*** bds.generalized_affine_image(y, "
                         "LESS_OR_EQUAL, -y + 1) ***");
 
   return ok;
@@ -56,23 +56,23 @@ test02() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x <= 4);
-  bd.add_constraint(x >= -6);
-  bd.add_constraint(y == 0);
+  TBD_Shape bds(2);
+  bds.add_constraint(x <= 4);
+  bds.add_constraint(x >= -6);
+  bds.add_constraint(y == 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_image(x, GREATER_OR_EQUAL, -x - 3);
+  bds.generalized_affine_image(x, GREATER_OR_EQUAL, -x - 3);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x >= -7);
   known_result.add_constraint(y == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd.generalized_affine_image(x, "
-		        "GREATER_OR_EQUAL, -x - 3) ***");
+  print_constraints(bds, "*** bds.generalized_affine_image(x, "
+                        "GREATER_OR_EQUAL, -x - 3) ***");
 
   return ok;
 }
@@ -82,22 +82,22 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B <= 1);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B <= 1);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_image(B, LESS_OR_EQUAL, 3*B + 1, 2);
+  bds.generalized_affine_image(B, LESS_OR_EQUAL, 3*B + 1, 2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd.generalized_affine_image(B, "
-		        "LESS_OR_EQUAL, 3*B + 1, 2) ***");
+  print_constraints(bds, "*** bds.generalized_affine_image(B, "
+                        "LESS_OR_EQUAL, 3*B + 1, 2) ***");
 
   return ok;
 }
@@ -107,22 +107,22 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A == 0);
-  bd.add_constraint(B >= 1);
+  TBD_Shape bds(2);
+  bds.add_constraint(A == 0);
+  bds.add_constraint(B >= 1);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_image(B, GREATER_OR_EQUAL, B - 2);
+  bds.generalized_affine_image(B, GREATER_OR_EQUAL, B - 2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A == 0);
   known_result.add_constraint(B >= -1);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd.generalized_affine_image(B, "
-		        "GREATER_OR_EQUAL, B - 2) ***");
+  print_constraints(bds, "*** bds.generalized_affine_image(B, "
+                        "GREATER_OR_EQUAL, B - 2) ***");
 
   return ok;
 }
@@ -132,22 +132,22 @@ test05() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(B <= 1);
-  bd.add_constraint(A - B == 0);
+  TBD_Shape bds(2);
+  bds.add_constraint(B <= 1);
+  bds.add_constraint(A - B == 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_image(A, GREATER_OR_EQUAL, 2*A + 3, 2);
+  bds.generalized_affine_image(A, GREATER_OR_EQUAL, 2*A + 3, 2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B <= 1);
   known_result.add_constraint(2*B - 2*A <= -3);
 
-  bool ok = check_result(bd, known_result, "7.63e-17", "3.82e-17", "1.91e-17");
+  bool ok = check_result(bds, known_result, "7.63e-17", "3.82e-17", "1.91e-17");
 
-  print_constraints(bd, "*** bd.generalized_affine_image(A, "
-		        "GREATER_OR_EQUAL, 2*A + 3, 2) ***");
+  print_constraints(bds, "*** bds.generalized_affine_image(A, "
+                        "GREATER_OR_EQUAL, 2*A + 3, 2) ***");
 
   return ok;
 }
@@ -158,14 +158,14 @@ test06() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(A - B == 0);
-  bd.add_constraint(B <= 1);
-  bd.add_constraint(C - A <= 2);
+  TBD_Shape bds(3);
+  bds.add_constraint(A - B == 0);
+  bds.add_constraint(B <= 1);
+  bds.add_constraint(C - A <= 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_image(C, LESS_OR_EQUAL, 2*C + 1, 5);
+  bds.generalized_affine_image(C, LESS_OR_EQUAL, 2*C + 1, 5);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A - B == 0);
@@ -173,9 +173,9 @@ test06() {
   known_result.add_constraint(5*C <= 7);
   known_result.add_constraint(A <= 1);
 
-  bool ok = check_result(bd, known_result, "9.54e-8", "9.54e-8", "9.54e-8");
+  bool ok = check_result(bds, known_result, "9.54e-8", "9.54e-8", "9.54e-8");
 
-  print_constraints(bd, "*** bd.generalized_affine_image(C, "
+  print_constraints(bds, "*** bds.generalized_affine_image(C, "
                         "LESS_OR_EQUAL, 2*C + 1, 5) ***");
 
   return ok;
@@ -187,23 +187,23 @@ test07() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(A - B == 0);
-  bd.add_constraint(B <= 1);
-  bd.add_constraint(C - A <= 2);
+  TBD_Shape bds(3);
+  bds.add_constraint(A - B == 0);
+  bds.add_constraint(B <= 1);
+  bds.add_constraint(C - A <= 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  BD_Shape<mpq_class> known_result(bd);
+  BD_Shape<mpq_class> known_result(bds);
 
-  bd.generalized_affine_image(C, EQUAL, 5*C - 3, 4);
+  bds.generalized_affine_image(C, EQUAL, 5*C - 3, 4);
 
   known_result.affine_image(C, 5*C - 3, 4);
 
-  bool ok = check_result(bd, known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd.generalized_affine_image(C, "
-		        "EQUAL, 5*C - 3, 4) ***");
+  print_constraints(bds, "*** bds.generalized_affine_image(C, "
+                        "EQUAL, 5*C - 3, 4) ***");
 
   return ok;
 }
@@ -214,23 +214,23 @@ test08() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(A - B == 0);
-  bd.add_constraint(B <= 1);
-  bd.add_constraint(C - A <= 2);
+  TBD_Shape bds(3);
+  bds.add_constraint(A - B == 0);
+  bds.add_constraint(B <= 1);
+  bds.add_constraint(C - A <= 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_image(B, GREATER_OR_EQUAL, -B - 2, 3);
+  bds.generalized_affine_image(B, GREATER_OR_EQUAL, -B - 2, 3);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(B >= -1);
   known_result.add_constraint(C - A <= 2);
   known_result.add_constraint(A <= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd.generalized_affine_image(B, "
+  print_constraints(bds, "*** bds.generalized_affine_image(B, "
                         "GREATER_OR_EQUAL, -B - 2, 3) ***");
 
   return ok;
@@ -242,22 +242,22 @@ test09() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(A - B == 0);
-  bd.add_constraint(B <= 1);
-  bd.add_constraint(C - A <= 2);
+  TBD_Shape bds(3);
+  bds.add_constraint(A - B == 0);
+  bds.add_constraint(B <= 1);
+  bds.add_constraint(C - A <= 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_image(B, LESS_OR_EQUAL, 4*A -2*C + 3, -3);
+  bds.generalized_affine_image(B, LESS_OR_EQUAL, 4*A -2*C + 3, -3);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= 1);
   known_result.add_constraint(C - A <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd.generalized_affine_image(B, "
+  print_constraints(bds, "*** bds.generalized_affine_image(B, "
                         "LESS_OR_EQUAL, 4*A - 2*C + 3, -3) ***");
 
   return ok;
@@ -269,23 +269,23 @@ test10() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(A - B == 0);
-  bd.add_constraint(B <= 1);
-  bd.add_constraint(C - A <=2);
+  TBD_Shape bds(3);
+  bds.add_constraint(A - B == 0);
+  bds.add_constraint(B <= 1);
+  bds.add_constraint(C - A <=2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  BD_Shape<mpq_class> known_result(bd);
+  BD_Shape<mpq_class> known_result(bds);
 
-  bd.generalized_affine_image(B, EQUAL, 2*A - 4*B + C + 3, 3);
+  bds.generalized_affine_image(B, EQUAL, 2*A - 4*B + C + 3, 3);
 
   known_result.affine_image(B, 2*A - 4*B + C + 3, 3);
 
-  bool ok = check_result(bd, known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd.generalized_affine_image(B, "
-		        "EQUAL, 2*A - 4*B + C + 3, 3) ***");
+  print_constraints(bds, "*** bds.generalized_affine_image(B, "
+                        "EQUAL, 2*A - 4*B + C + 3, 3) ***");
 
   return ok;
 }
@@ -297,22 +297,22 @@ test11() {
   Linear_Expression e1(A);
   Linear_Expression e2(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(B <= 5);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(B <= 5);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_image(e1, EQUAL, e2);
+  bds.generalized_affine_image(e1, EQUAL, e2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A == 1);
   known_result.add_constraint(B <= 5);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd.generalized_affine_image(A, EQUAL, 1) ***");
+  print_constraints(bds, "*** bds.generalized_affine_image(A, EQUAL, 1) ***");
 
   return ok;
 }
@@ -324,24 +324,24 @@ test12() {
   Linear_Expression e1(B - 3);
   Linear_Expression e2(B + 1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(B <= 5);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(B <= 5);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_image(e1, EQUAL, e2);
+  bds.generalized_affine_image(e1, EQUAL, e2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B <= 9);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_image(B-3, EQUAL, B+1) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_image(B-3, EQUAL, B+1) ***");
 
   return ok;
 }
@@ -351,14 +351,14 @@ test13() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
+  TBD_Shape bds(2);
+  bds.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the method
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to use a strict relation symbol.
-    bd.generalized_affine_image(x, LESS_THAN, x + 1);
+    bds.generalized_affine_image(x, LESS_THAN, x + 1);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -374,14 +374,14 @@ test14() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
+  TBD_Shape bds(2);
+  bds.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the method
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to use a strict relation symbol.
-    bd.generalized_affine_image(x, GREATER_THAN, x + 1);
+    bds.generalized_affine_image(x, GREATER_THAN, x + 1);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -397,8 +397,8 @@ test15() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
+  TBD_Shape bds(2);
+  bds.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the method
@@ -406,7 +406,7 @@ test15() {
     // to apply it to a expression with the denominator
     // equal to zero.
     Coefficient d = 0;
-    bd.generalized_affine_image(x, LESS_OR_EQUAL, x + 1, d);
+    bds.generalized_affine_image(x, LESS_OR_EQUAL, x + 1, d);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -423,15 +423,15 @@ test16() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
+  TBD_Shape bds(2);
+  bds.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the method
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply it to an expression whose space dimension is
     // greater than the BDS's space dimension.
-    bd.generalized_affine_image(y, GREATER_OR_EQUAL, z);
+    bds.generalized_affine_image(y, GREATER_OR_EQUAL, z);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -448,8 +448,8 @@ test17() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
 
   try {
     // This is an incorrect use of the method
@@ -457,7 +457,7 @@ test17() {
     // it is illegal to use a variable in the `rhs' expression that
     // does not appear in the BDS.
 
-    bd.generalized_affine_image(A + B, GREATER_OR_EQUAL, B + C);
+    bds.generalized_affine_image(A + B, GREATER_OR_EQUAL, B + C);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -474,15 +474,15 @@ test18() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 1);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 1);
 
   try {
     // This is an incorrect use of method
     // BD_Shape::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the BDS.
-    bd.generalized_affine_image(B + C, LESS_OR_EQUAL, A + 1);
+    bds.generalized_affine_image(B + C, LESS_OR_EQUAL, A + 1);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

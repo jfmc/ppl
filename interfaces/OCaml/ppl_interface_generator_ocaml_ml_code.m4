@@ -1,4 +1,9 @@
-dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl  -*- Tuareg -*-
+sm4_divert(-1)
+
+This m4 file contains the program code for generating ppl_ocaml.ml
+
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -19,440 +24,525 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_divert(-1)dnl
+dnl No code is needed for these procedure schemas in the OCaml interface.
+dnl
+m4_define(`ppl_delete_@CLASS@_code', `')
+m4_define(`ppl_delete_@CLASS@_iterator_code', `')
+
+dnl There is no code at present for these procedures in the OCaml interface.
+dnl Remove the macro if its definition is added.
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
 external ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension:
-  int -> degenerate_element -> @LTOPOLOGY@@LCLASS@ = "ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension"
+  int -> degenerate_element -> @!CLASS@
+  = "ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension"
 
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `dnl
 external ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s:
-  @BUILD_REPRESENT@_system -> @LTOPOLOGY@@LCLASS@ = "ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s"
+  @BUILD_REPRESENT@_system -> @!CLASS@
+  = "ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s"
 
 ')
 
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_relation_with_@RELATION_REPRESENT@:
-      @LTOPOLOGY@@LCLASS@ -> linear_@RELATION_REPRESENT@ -> poly_@ALT_RELATION_REPRESENT@_relation list
-	  = "ppl_@TOPOLOGY@@CLASS@_relation_with_@RELATION_REPRESENT@"
+external ppl_@CLASS@_relation_with_@RELATION_REPRESENT@:
+  @!CLASS@ -> linear_@RELATION_REPRESENT@
+  -> poly_@A_RELATION_REPRESENT@_relation list
+  = "ppl_@CLASS@_relation_with_@RELATION_REPRESENT@"
 
 ')
 
 m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_@DIMENSION@:
-  @LTOPOLOGY@@LCLASS@ -> int = "ppl_@TOPOLOGY@@CLASS@_@DIMENSION@"
+external ppl_@CLASS@_@DIMENSION@:
+	    @!CLASS@ -> int = "ppl_@CLASS@_@DIMENSION@"
 ')
 
 m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_@HAS_PROPERTY@:
-  @LTOPOLOGY@@LCLASS@ -> bool = "ppl_@TOPOLOGY@@CLASS@_@HAS_PROPERTY@"
+external ppl_@CLASS@_@HAS_PROPERTY@:
+  @!CLASS@ -> bool = "ppl_@CLASS@_@HAS_PROPERTY@"
+
+
+')
+
+m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
+`dnl
+external ppl_@CLASS@_@SIMPLIFY@:
+  @!CLASS@ -> unit = "ppl_@CLASS@_@SIMPLIFY@"
 
 
 ')
 
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_bounds_from_@ABOVEBELOW@:
-  @LTOPOLOGY@@LCLASS@ -> linear_expression -> bool = "ppl_@TOPOLOGY@@CLASS@_bounds_from_@ABOVEBELOW@"
+external ppl_@CLASS@_bounds_from_@ABOVEBELOW@:
+  @!CLASS@ -> linear_expression -> bool
+  = "ppl_@CLASS@_bounds_from_@ABOVEBELOW@"
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@:
-  @LTOPOLOGY@@LCLASS@ -> linear_@ADD_REPRESENT@ -> unit = "ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@"
+external ppl_@CLASS@_add_@CLASS_REPRESENT@:
+  @!CLASS@ -> linear_@CLASS_REPRESENT@ -> unit
+  = "ppl_@CLASS@_add_@CLASS_REPRESENT@"
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@_and_minimize:
-  @LTOPOLOGY@@LCLASS@ -> linear_@ADD_REPRESENT@ -> unit
-      = "ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@_and_minimize"
-')
-
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
-`dnl
-external ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@s:
-  @LTOPOLOGY@@LCLASS@ -> @ADD_REPRESENT@_system -> unit
-      = "ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@s"
+external ppl_@CLASS@_add_@CLASS_REPRESENT@s:
+  @!CLASS@ -> @CLASS_REPRESENT@_system -> unit
+  = "ppl_@CLASS@_add_@CLASS_REPRESENT@s"
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@s_and_minimize:
-  @LTOPOLOGY@@LCLASS@ -> @ADD_REPRESENT@_system -> unit
-      = "ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@s_and_minimize"
+external ppl_@CLASS@_refine_with_@REFINE_REPRESENT@:
+  @!CLASS@ -> linear_@REFINE_REPRESENT@ -> unit
+  = "ppl_@CLASS@_refine_with_@REFINE_REPRESENT@"
+
+')
+
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+`dnl
+external ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s:
+  @!CLASS@ -> @REFINE_REPRESENT@_system -> unit
+  = "ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s"
 
 ')
 
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_@COMPARISON@_@TOPOLOGY@@CLASS@:
-  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
-      = "ppl_@TOPOLOGY@@CLASS@_@COMPARISON@_@TOPOLOGY@@CLASS@"
+external ppl_@CLASS@_@COMPARISON@_@CLASS@:
+  @!CLASS@ -> @!CLASS@ -> bool
+  = "ppl_@CLASS@_@COMPARISON@_@CLASS@"
 
 ')
 
 m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_equals_@TOPOLOGY@@CLASS@:
-  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
-      = "ppl_@TOPOLOGY@@CLASS@_equals_@TOPOLOGY@@CLASS@"
+external ppl_@CLASS@_equals_@CLASS@:
+  @!CLASS@ -> @!CLASS@ -> bool
+  = "ppl_@CLASS@_equals_@CLASS@"
 
 ')
 
 
 m4_define(`ppl_@CLASS@_@BINOP@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_@BINOP@:
-   @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> unit
-       = "ppl_@TOPOLOGY@@CLASS@_@BINOP@"
+external ppl_@CLASS@_@BINOP@:
+  @!CLASS@ -> @!CLASS@ -> unit
+  = "ppl_@CLASS@_@BINOP@"
 
 ')
 
-m4_define(`ppl_@CLASS@_@BINMINOP@_code',
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_@BINMINOP@:
-   @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
-       = "ppl_@TOPOLOGY@@CLASS@_@BINMINOP@"
+external ppl_@CLASS@_simplify_using_context_assign:
+  @!CLASS@ -> @!CLASS@ -> bool
+  = "ppl_@CLASS@_simplify_using_context_assign"
 
 ')
 
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_add_space_dimensions_@EMBEDPROJECT@:
-  @LTOPOLOGY@@LCLASS@ -> int -> unit = "ppl_@TOPOLOGY@@CLASS@_add_space_dimensions_@EMBEDPROJECT@"
+external ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@:
+  @!CLASS@ -> int -> unit
+  = "ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@"
 
 ')
 
 m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_remove_space_dimensions:
-     @LTOPOLOGY@@LCLASS@ -> int list -> unit
-	 = "ppl_@TOPOLOGY@@CLASS@_remove_space_dimensions"
+external ppl_@CLASS@_remove_space_dimensions:
+  @!CLASS@ -> int list -> unit
+  = "ppl_@CLASS@_remove_space_dimensions"
 
 ')
 
 m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_remove_higher_space_dimensions:
-  @LTOPOLOGY@@LCLASS@ -> int -> unit = "ppl_@TOPOLOGY@@CLASS@_remove_higher_space_dimensions"
+external ppl_@CLASS@_remove_higher_space_dimensions:
+  @!CLASS@ -> int -> unit
+  = "ppl_@CLASS@_remove_higher_space_dimensions"
 
 ')
 
 m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_fold_space_dimensions:
-     @LTOPOLOGY@@LCLASS@ -> int list -> int -> unit
-	 = "ppl_@TOPOLOGY@@CLASS@_fold_space_dimensions"
+external ppl_@CLASS@_fold_space_dimensions:
+  @!CLASS@ -> int list -> int -> unit
+  = "ppl_@CLASS@_fold_space_dimensions"
 
 ')
 
 m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_map_space_dimensions:
- @LTOPOLOGY@@LCLASS@ -> (int*int) list -> unit = "ppl_@TOPOLOGY@@CLASS@_map_space_dimensions"
+external ppl_@CLASS@_map_space_dimensions:
+  @!CLASS@ -> (int*int) list -> unit
+  = "ppl_@CLASS@_map_space_dimensions"
 
 ')
 
 m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_expand_space_dimension:
- @LTOPOLOGY@@LCLASS@ -> int -> int -> unit = "ppl_@TOPOLOGY@@CLASS@_expand_space_dimension"
+external ppl_@CLASS@_expand_space_dimension:
+  @!CLASS@ -> int -> int -> unit
+  = "ppl_@CLASS@_expand_space_dimension"
 
 ')
 
-m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_get_@GET_REPRESENT@s:
-@LTOPOLOGY@@LCLASS@ -> @GET_REPRESENT@_system = "ppl_@TOPOLOGY@@CLASS@_get_@GET_REPRESENT@s"
+external ppl_@CLASS@_get_@CLASS_REPRESENT@s:
+  @!CLASS@ -> @CLASS_REPRESENT@_system
+  = "ppl_@CLASS@_get_@CLASS_REPRESENT@s"
 
 ')
 
-m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_get_minimized_@GET_REPRESENT@s:
-   @LTOPOLOGY@@LCLASS@ -> @GET_REPRESENT@_system = "ppl_@TOPOLOGY@@CLASS@_get_minimized_@GET_REPRESENT@s"
+external ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s:
+  @!CLASS@ -> @CLASS_REPRESENT@_system
+  = "ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s"
+
+')
+
+m4_define(`ppl_@CLASS@_constrains_code',
+`dnl
+external ppl_@CLASS@_constrains:
+  @!CLASS@ -> int -> bool
+  = "ppl_@CLASS@_constrains"
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
+`dnl
+external ppl_@CLASS@_unconstrain_space_dimension:
+  @!CLASS@ -> int -> unit
+  = "ppl_@CLASS@_unconstrain_space_dimension"
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`dnl
+external ppl_@CLASS@_unconstrain_space_dimensions:
+  @!CLASS@ -> int list -> unit
+  = "ppl_@CLASS@_unconstrain_space_dimensions"
 
 ')
 
 m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_bounded_@AFFIMAGE@:
-  @LTOPOLOGY@@LCLASS@ -> int -> linear_expression -> linear_expression
-      -> Z.t -> unit = "ppl_@TOPOLOGY@@CLASS@_bounded_@AFFIMAGE@"
+external ppl_@CLASS@_bounded_@AFFIMAGE@:
+  @!CLASS@ -> int -> linear_expression
+  -> linear_expression -> Z.t -> unit
+  = "ppl_@CLASS@_bounded_@AFFIMAGE@"
 
 ')
 
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_@AFFIMAGE@:
-  @LTOPOLOGY@@LCLASS@ -> int -> linear_expression -> Z.t -> unit
-      = "ppl_@TOPOLOGY@@CLASS@_@AFFIMAGE@"
+external ppl_@CLASS@_@AFFIMAGE@:
+  @!CLASS@ -> int -> linear_expression -> Z.t -> unit
+  = "ppl_@CLASS@_@AFFIMAGE@"
 
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@_lhs_rhs:
-  @LTOPOLOGY@@LCLASS@ -> linear_expression -> relation_symbol -> linear_expression
-    -> unit
-      = "ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@1"
+external ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs:
+  @!CLASS@ -> linear_expression
+  -> relation_symbol -> linear_expression -> unit
+  = "ppl_@CLASS@_generalized_@AFFIMAGE@1"
 
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@:
-  @LTOPOLOGY@@LCLASS@ -> int -> relation_symbol -> linear_expression
-      -> Z.t -> unit
-      = "ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@2"
+external ppl_@CLASS@_generalized_@AFFIMAGE@:
+  @!CLASS@ -> int -> relation_symbol
+  -> linear_expression -> Z.t -> unit
+  = "ppl_@CLASS@_generalized_@AFFIMAGE@2"
 
 ')
 
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
+`dnl
+external ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence:
+  @!CLASS@ -> int -> relation_symbol
+  -> linear_expression -> Z.t -> Z.t -> unit
+  = "ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence_bytecode" "ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence"
+
+')
+
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
+`dnl
+external ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence:
+  @!CLASS@ -> linear_expression -> relation_symbol
+  -> linear_expression -> Z.t -> unit
+  = "ppl_@CLASS@_generalized_@AFFIMAGE@1_lhs_rhs_with_congruence"
+
+')
 
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign:
- @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> unit
-     = "ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign"
+external ppl_@CLASS@_@WIDEN@_widening_assign:
+  @!CLASS@ -> @!CLASS@ -> unit
+  = "ppl_@CLASS@_@WIDEN@_widening_assign"
 
 ')
 
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign_with_tokens:
- @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> int -> int
-     = "ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign_with_tokens"
+external ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens:
+  @!CLASS@ -> @!CLASS@ -> int -> int
+  = "ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens"
+
+')
+
+m4_define(`ppl_@CLASS@_widening_assign_code',
+`dnl
+external ppl_@CLASS@_widening_assign:
+  @!CLASS@ -> @!CLASS@ -> unit
+  = "ppl_@CLASS@_widening_assign"
+
+')
+
+m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code',
+`dnl
+external ppl_@CLASS@_widening_assign_with_tokens:
+  @!CLASS@ -> @!CLASS@ -> int -> int
+  = "ppl_@CLASS@_widening_assign_with_tokens"
 
 ')
 
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign:
- @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> constraint_system -> int -> int
-     = "ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign"
-
-')
-
-m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
-`dnl
-external ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign:
- @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> constraint_system -> unit
-     = "ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign"
+external ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign:
+  @!CLASS@ -> @!CLASS@ -> @CONSTRAINER@_system -> unit
+  = "ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign"
 
 ')
 
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens:
- @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> constraint_system -> int -> int
-     = "ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens"
+external ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens:
+  @!CLASS@ -> @!CLASS@ -> @CONSTRAINER@_system -> int -> int
+  = "ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens"
 
 ')
 
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_@MAXMIN@:
- @LTOPOLOGY@@LCLASS@ -> linear_expression -> bool * Z.t * Z.t * bool * linear_generator
-     = "ppl_@TOPOLOGY@@CLASS@_@MAXMIN@"
+external ppl_@CLASS@_@MAXMIN@:
+  @!CLASS@ -> linear_expression
+  -> bool * Z.t * Z.t * bool
+  = "ppl_@CLASS@_@MAXMIN@"
+
+')
+
+m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
+`dnl
+external ppl_@CLASS@_@MAXMIN@_with_point:
+  @!CLASS@ -> linear_expression
+  -> bool * Z.t * Z.t * bool * linear_generator
+  = "ppl_@CLASS@_@MAXMIN@_with_point"
 
 ')
 
 m4_define(`ppl_@CLASS@_OK_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_OK:
- @LTOPOLOGY@@LCLASS@ -> bool = "ppl_@TOPOLOGY@@CLASS@_OK"
+external ppl_@CLASS@_OK:
+  @!CLASS@ -> bool = "ppl_@CLASS@_OK"
 
 ')
 
+
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
+ `
+external ppl_@CLASS@_@MEMBYTES@:
+  @!CLASS@  -> int = "ppl_@CLASS@_@MEMBYTES@"
+
+')
 
 m4_define(`ppl_@CLASS@_swap_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_swap:
-@LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> unit = "ppl_@TOPOLOGY@@CLASS@_swap"
+external ppl_@CLASS@_swap:
+  @!CLASS@ -> @!CLASS@ -> unit
+  = "ppl_@CLASS@_swap"
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
-external ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@:
-@LINTOPOLOGY@@LFRIEND@ -> @LTOPOLOGY@@LCLASS@ =
-"ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@"
+external ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@:
+  @!A_FRIEND@ -> @!CLASS@
+  = "ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@"
 
 ')
 
-
-m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@:
-@LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool =
-"ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@"
+external ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity:
+  @!A_FRIEND@ -> complexity_class -> @!CLASS@
+  = "ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@"
 
 ')
 
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
+ `dnl
+ external ppl_@CLASS@_@UB_EXACT@:
+   @!CLASS@ -> @!CLASS@ -> bool
+   = "ppl_@CLASS@_@UB_EXACT@"
 
- m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+ ')
+
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
  `dnl
  external ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens:
- @LTOPOLOGY@@LCLASS@ -> int -> int =
- "ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens"
+   @!CLASS@ -> @!CLASS@ -> int -> int
+   = "ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens"
 
  ')
 
 
- m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
  `dnl
  external ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign:
- @LTOPOLOGY@@LCLASS@ -> unit =
- "ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign"
+   @!CLASS@ -> @!CLASS@ -> unit
+   = "ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign"
 
  ')
 
  m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
  `dnl
  external ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign:
- @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@ -> unit =
- "ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign"
+   @!CLASS@  -> @!CLASS@ -> unit
+   = "ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign"
 
  ')
 
- m4_define(`ppl_@CLASS@_type_constructor_code',
- `dnl
- type @LCLASS@_iterator
-
- ')
-
- m4_define(`ppl_@CLASS@_begin_iterator_code',
+ m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
  `
- external ppl_@CLASS@_begin_iterator:
- @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@_iterator =
-"ppl_@CLASS@_begin_iterator"
-
-')
-
-m4_define(`ppl_@CLASS@_end_iterator_code',
- `
- external ppl_@CLASS@_end_iterator:
- @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@_iterator =
-"ppl_@CLASS@_end_iterator"
+external ppl_@CLASS@_@BEGINEND@_iterator:
+  @!CLASS@  -> @!CLASS@_iterator
+  = "ppl_@CLASS@_@BEGINEND@_iterator"
 
 ')
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
  `
- external ppl_@CLASS@_iterator_get_disjunct:
- @LTOPOLOGY@@LCLASS@_iterator  ->  @LALT_CPP_DISJUNCT@ =
- "ppl_@CLASS@_iterator_get_disjunct"
-
+external ppl_@CLASS@_get_disjunct:
+   @!CLASS@_iterator  -> @!DISJUNCT@
+   = "ppl_@CLASS@_get_disjunct"
 
 ')
 
 m4_define(`ppl_@CLASS@_add_disjunct_code',
  `
- external ppl_@CLASS@_add_disjunct:
- @LTOPOLOGY@@LCLASS@  ->  @LALT_CPP_DISJUNCT@ -> unit =
- "ppl_@CLASS@_add_disjunct"
-
+external ppl_@CLASS@_add_disjunct:
+   @!CLASS@  -> @!DISJUNCT@ -> unit
+   = "ppl_@CLASS@_add_disjunct"
 
 ')
 
 m4_define(`ppl_@CLASS@_drop_disjunct_code',
  `
  external ppl_@CLASS@_drop_disjunct:
- @LTOPOLOGY@@LCLASS@  ->  @LTOPOLOGY@@LCLASS@_iterator -> unit =
- "ppl_@CLASS@_drop_disjunct"
-
+   @!CLASS@  ->  @!CLASS@_iterator -> unit
+   = "ppl_@CLASS@_drop_disjunct"
 
 ')
 
-m4_define(`ppl_@CLASS@_size_code',
+m4_define(`ppl_@CLASS@_drop_disjuncts_code',
  `
- external ppl_@CLASS@_size:
- @LTOPOLOGY@@LCLASS@  -> int =
- "ppl_@CLASS@_size"
+ external ppl_@CLASS@_drop_disjuncts:
+   @!CLASS@  ->  @!CLASS@_iterator -> @!CLASS@_iterator -> unit
+   = "ppl_@CLASS@_drop_disjuncts"
 
 ')
 
-m4_define(`ppl_@CLASS@_decrement_iterator_code',
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
+`
+type @!CLASS@_iterator
+
+external ppl_new_@CLASS@_iterator_from_iterator:
+  @!CLASS@_iterator -> @!CLASS@_iterator
+  = "ppl_new_@CLASS@_iterator_from_iterator"
+
+')
+
+m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
  `
- external ppl_@CLASS@_iterator_decrement:
- @LTOPOLOGY@@LCLASS@_iterator -> unit =
- "ppl_@CLASS@_iterator_decrement"
-
-
-')
-
-
-m4_define(`ppl_@CLASS@_increment_iterator_code',
- `
- external ppl_@CLASS@_iterator_increment:
- @LTOPOLOGY@@LCLASS@_iterator -> unit =
- "ppl_@CLASS@_iterator_increment"
-
+ external ppl_@CLASS@_@INCDEC@_iterator:
+   @!CLASS@_iterator -> unit
+   = "ppl_@CLASS@_@INCDEC@_iterator"
 
 ')
+
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
  `
 external ppl_@CLASS@_iterator_equals_iterator:
- @LTOPOLOGY@@LCLASS@_iterator ->  @LTOPOLOGY@@LCLASS@_iterator -> bool =
-"ppl_@CLASS@_iterator_equals_iterator"
+  @!CLASS@_iterator ->  @!CLASS@_iterator -> bool
+  = "ppl_@CLASS@_iterator_equals_iterator"
 
 ')
 
-# m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
-# `dnl
-# external ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@:
-# @LINTOPOLOGY@@LFRIEND@ -> @LTOPOLOGY@@LCLASS@ =
-# "ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@"
+m4_define(`ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+`dnl
+external ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign:
+  @!CLASS@ -> @!CLASS@ -> unit
+  = "ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign"
 
-# ')
+')
 
-# m4_define(`ppl_@CLASS@_get_disjuncts_code',
-# `dnl
-# external ppl_@CLASS@_get_disjuncts:
-# @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool =
-# "ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@"
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
+`dnl
+external ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign:
+  @!CLASS@ -> @!CLASS@ -> int -> unit
+  = "ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign"
 
-# ')
+')
 
-# m4_define(`ppl_@CLASS@_get_bounding_box_code',
-# `dnl
-# external ppl_@CLASS@_get_bounding_box:
-# @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool =
-# "ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@"
+m4_define(`ppl_@CLASS@_ascii_dump_code',
+`dnl
+external ppl_@CLASS@_ascii_dump:
+  @!CLASS@ -> string = "ppl_@CLASS@_ascii_dump"
 
-# ')
+')
 
-# m4_define(`ppl_@CLASS@_get_covering_box_code',
-# `dnl
-# external ppl_@CLASS@_get_covering_box:
-# @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool =
-# "ppl_@CLASS@_get_covering_box"
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
+`dnl
+external ppl_@CLASS@_linear_@PARTITION@:
+ @!CLASS@ -> @!CLASS@ -> @!CLASS@ * pointset_powerset_nnc_polyhedron
+ = "ppl_@CLASS@_linear_partition"
 
-# ')
+')
 
-external test_linear_expression:
-  linear_expression -> unit = "test_linear_expression"
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
+`dnl
+external ppl_@CLASS@_approximate_@PARTITION@:
+ @!CLASS@ -> @!CLASS@ ->
+   @!CLASS@ * pointset_powerset_grid * bool
+ = "ppl_@CLASS@_approximate_partition"
 
-external test_linear_constraint:
-  linear_constraint -> unit = "test_linear_constraint"
+')
 
-external test_linear_generator:
-  linear_generator -> unit = "test_linear_generator"
+m4_define(`ppl_@CLASS@_@MAXMIN@_code',
+`dnl
+external ppl_@CLASS@_@MAXMIN@:
+  @!CLASS@ -> linear_expression
+  -> bool * Z.t * Z.t * bool
+  = "ppl_@CLASS@_@MAXMIN@"
 
-external test_constraint_system:
-  constraint_system -> unit = "test_constraint_system"
-
-external test_generator_system:
-  generator_system -> unit = "test_generator_system"
+')

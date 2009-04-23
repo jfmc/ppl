@@ -1,5 +1,5 @@
 /* Grid_Generator_System class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -227,6 +227,12 @@ Grid_Generator_System::empty() const {
   return Generator_System::empty();
 }
 
+inline
+Grid_Generator_System
+::const_iterator::const_iterator(const Generator_System::const_iterator& y)
+  : Generator_System::const_iterator::const_iterator(y) {
+}
+
 inline Grid_Generator_System::const_iterator
 Grid_Generator_System::begin() const {
   return static_cast<Grid_Generator_System::const_iterator>
@@ -237,12 +243,6 @@ inline Grid_Generator_System::const_iterator
 Grid_Generator_System::end() const {
   return static_cast<Grid_Generator_System::const_iterator>
     (Generator_System::end());
-}
-
-inline
-Grid_Generator_System
-::const_iterator::const_iterator(const Generator_System::const_iterator& y)
-  : Generator_System::const_iterator::const_iterator(y) {
 }
 
 inline bool

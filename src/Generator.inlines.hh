@@ -1,5 +1,5 @@
 /* Generator class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -207,6 +207,180 @@ Generator::ascii_load(std::istream& s) {
 inline void
 Generator::swap(Generator& y) {
   Linear_Row::swap(y);
+}
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Generator */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename Specialization, typename Temp, typename To>
+inline bool
+l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+		    const Generator& x,
+		    const Generator& y,
+		    const Rounding_Dir dir,
+		    Temp& tmp0,
+		    Temp& tmp1,
+		    Temp& tmp2) {
+  // Generator kind compatibility check: we only compute distances
+  // between (closure) points.
+  if (x.is_line_or_ray() || y.is_line_or_ray())
+    return false;
+  const dimension_type x_space_dim = x.space_dimension();
+  // Dimension-compatibility check.
+  if (x_space_dim != y.space_dimension())
+    return false;
+
+  // All zero-dim generators have distance zero.
+  if (x_space_dim == 0) {
+    assign_r(r, 0, ROUND_NOT_NEEDED);
+    return true;
+  }
+
+  PPL_DIRTY_TEMP0(mpq_class, x_coord);
+  PPL_DIRTY_TEMP0(mpq_class, y_coord);
+  PPL_DIRTY_TEMP0(mpq_class, x_div);
+  PPL_DIRTY_TEMP0(mpq_class, y_div);
+  assign_r(x_div, x.divisor(), ROUND_NOT_NEEDED);
+  assign_r(y_div, y.divisor(), ROUND_NOT_NEEDED);
+
+  assign_r(tmp0, 0, ROUND_NOT_NEEDED);
+  for (dimension_type i = x_space_dim; i-- > 0; ) {
+    assign_r(x_coord, x.coefficient(Variable(i)), ROUND_NOT_NEEDED);
+    div_assign_r(x_coord, x_coord, x_div, ROUND_NOT_NEEDED);
+    assign_r(y_coord, y.coefficient(Variable(i)), ROUND_NOT_NEEDED);
+    div_assign_r(y_coord, y_coord, y_div, ROUND_NOT_NEEDED);
+    const Temp* tmp1p;
+    const Temp* tmp2p;
+
+    if (x_coord > y_coord) {
+      maybe_assign(tmp1p, tmp1, x_coord, dir);
+      maybe_assign(tmp2p, tmp2, y_coord, inverse(dir));
+    }
+    else {
+      maybe_assign(tmp1p, tmp1, y_coord, dir);
+      maybe_assign(tmp2p, tmp2, x_coord, inverse(dir));
+    }
+    sub_assign_r(tmp1, *tmp1p, *tmp2p, dir);
+    assert(sgn(tmp1) >= 0);
+    Specialization::combine(tmp0, tmp1, dir);
+  }
+  Specialization::finalize(tmp0, dir);
+  assign_r(r, tmp0, dir);
+  return true;
+}
+
+/*! \relates Generator */
+template <typename Temp, typename To>
+inline bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const Generator& x,
+			    const Generator& y,
+			    const Rounding_Dir dir,
+			    Temp& tmp0,
+			    Temp& tmp1,
+			    Temp& tmp2) {
+  return l_m_distance_assign<Rectilinear_Distance_Specialization<Temp> >
+    (r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Generator */
+template <typename Temp, typename To>
+inline bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const Generator& x,
+			    const Generator& y,
+			    const Rounding_Dir dir) {
+  typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
+  return rectilinear_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Generator */
+template <typename To>
+inline bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const Generator& x,
+			    const Generator& y,
+			    const Rounding_Dir dir) {
+  return rectilinear_distance_assign<To, To>(r, x, y, dir);
+}
+
+/*! \relates Generator */
+template <typename Temp, typename To>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const Generator& x,
+			  const Generator& y,
+			  const Rounding_Dir dir,
+			  Temp& tmp0,
+			  Temp& tmp1,
+			  Temp& tmp2) {
+  return l_m_distance_assign<Euclidean_Distance_Specialization<Temp> >
+    (r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Generator */
+template <typename Temp, typename To>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const Generator& x,
+			  const Generator& y,
+			  const Rounding_Dir dir) {
+  typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
+  return euclidean_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Generator */
+template <typename To>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const Generator& x,
+			  const Generator& y,
+			  const Rounding_Dir dir) {
+  return euclidean_distance_assign<To, To>(r, x, y, dir);
+}
+
+/*! \relates Generator */
+template <typename Temp, typename To>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const Generator& x,
+			   const Generator& y,
+			   const Rounding_Dir dir,
+			   Temp& tmp0,
+			   Temp& tmp1,
+			   Temp& tmp2) {
+  return l_m_distance_assign<L_Infinity_Distance_Specialization<Temp> >
+    (r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Generator */
+template <typename Temp, typename To>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const Generator& x,
+			   const Generator& y,
+			   const Rounding_Dir dir) {
+  typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
+  return l_infinity_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Generator */
+template <typename To>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const Generator& x,
+			   const Generator& y,
+			   const Rounding_Dir dir) {
+  return l_infinity_distance_assign<To, To>(r, x, y, dir);
 }
 
 } // namespace Parma_Polyhedra_Library

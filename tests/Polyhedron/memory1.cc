@@ -1,5 +1,5 @@
 /* Test the allocation error recovery facility of the library.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -20,10 +20,14 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+// Note: we cannot know, at this stage whether
+// PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK evaluates to true.
+#define PPL_NO_AUTOMATIC_INITIALIZATION
 #include "ppl_test.hh"
 #include <new>
 #include <cstring>
 #include <cerrno>
+#include <cstdlib>
 
 #ifdef PPL_HAVE_SYS_TYPES_H
 # include <sys/types.h>
@@ -43,14 +47,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 # include <unistd.h>
 #endif
 
-// If GMP does not support exceptions the test is pointless.
-// Cygwin has an almost dummy definition of setrlimit().
-// For some reason, this test does not work on Alpha machines.
-#if !PPL_GMP_SUPPORTS_EXCEPTIONS					\
-  || defined(__CYGWIN__)					\
-  || defined(__alpha)						\
-  || !(PPL_HAVE_DECL_RLIMIT_DATA || PPL_HAVE_DECL_RLIMIT_RSS	\
-       || PPL_HAVE_DECL_RLIMIT_VMEM || PPL_HAVE_DECL_RLIMIT_AS)
+// If GMP does not support exceptions, or if we are unable to limit
+// the memory available to processes using setrlimit(), the test is
+// pointless.
+//
+// On the Itanium the test fails because of the bug reported in
+// http://www.cs.unipr.it/pipermail/ppl-devel/2008-September/012943.html
+//
+// On s390x-linux the test fails, we do not know why (and without access
+// to such a machine there is little we can do).
+// See http://www.cs.unipr.it/pipermail/ppl-devel/2009-April/014489.html
+#if !PPL_GMP_SUPPORTS_EXCEPTIONS || !PPL_CXX_SUPPORTS_LIMITING_MEMORY \
+  || defined(__ia64) || defined(__s390x__)
 
 int
 main() TRY {
@@ -130,31 +138,45 @@ guarded_compute_open_hypercube_generators(dimension_type dimension,
 
 extern "C" void*
 cxx_malloc(size_t size) {
-  return ::operator new(size);
+  void* p = malloc(size);
+  if (p != 0 || size == 0)
+    return p;
+
+  throw std::bad_alloc();
 }
 
 extern "C" void*
-cxx_realloc(void* p, size_t old_size, size_t new_size) {
-  if (new_size <= old_size)
+cxx_realloc(void* q, size_t, size_t new_size) {
+  void* p = realloc(q, new_size);
+  if (p != 0 || new_size == 0)
     return p;
-  else {
-    void* new_p = ::operator new(new_size);
-    memcpy(new_p, p, old_size);
-    ::operator delete(p);
-    return new_p;
-  }
+
+  throw std::bad_alloc();
 }
 
 extern "C" void
 cxx_free(void* p, size_t) {
-  ::operator delete(p);
+  free(p);
 }
 
 #define INIT_MEMORY 3*1024*1024
 
+#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
+extern "C" void
+ppl_set_GMP_memory_allocation_functions(void) {
+  mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
+}
+#endif // PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
+
 int
 main() TRY {
+#if !PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
   mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
+#endif // !PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
+
+  // Note: we have included <ppl.hh> under the definition of
+  // PPL_NO_AUTOMATIC_INITIALIZATION.
+  Parma_Polyhedra_Library::initialize();
 
   set_handlers();
 
@@ -163,16 +185,14 @@ main() TRY {
   do {
     ++dimension;
     nout << "Trying dimension " << dimension << endl;
-  }
-  while (guarded_compute_open_hypercube_generators(dimension, INIT_MEMORY));
+  } while (guarded_compute_open_hypercube_generators(dimension, INIT_MEMORY));
 
   // Now find an upper bound to the memory necessary to compute it.
   unsigned long upper_bound = INIT_MEMORY;
   do {
     upper_bound *= 2;
     nout << "Trying upper bound " << upper_bound << endl;
-  }
-  while (!guarded_compute_open_hypercube_generators(dimension, upper_bound));
+  } while (!guarded_compute_open_hypercube_generators(dimension, upper_bound));
 
   // Search the "exact" amount of memory.
   int lower_bound = upper_bound/2;
@@ -187,6 +207,10 @@ main() TRY {
 
   nout << "Estimated memory for dimension " << dimension
        << ": " << (lower_bound+upper_bound)/2 << " bytes" << endl;
+
+  // Note: we have included <ppl.hh> under the definition of
+  // PPL_NO_AUTOMATIC_INITIALIZATION.
+  Parma_Polyhedra_Library::finalize();
 
   return 0;
 }

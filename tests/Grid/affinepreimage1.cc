@@ -1,5 +1,5 @@
 /* Test Grid::affine_preimage().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -132,7 +132,7 @@ test04() {
 }
 
 // Simple invertible transformation with denominator and modulus.
-// Congruences are out-of-date
+// Congruences are out-of-date.
 bool
 test05() {
   Variable A(0);
@@ -161,7 +161,7 @@ test05() {
 }
 
 // Simple invertible transformation with denominator and modulus.
-// Congruences are up-to-date
+// Congruences are up-to-date.
 bool
 test06() {
   Variable A(0);
@@ -189,7 +189,7 @@ test06() {
 }
 
 // Invertible transformation which changes the modulus.
-// Congruences are out-of-date
+// Congruences are out-of-date.
 bool
 test07() {
   Variable A(0);
@@ -217,7 +217,7 @@ test07() {
 }
 
 // Invertible transformation which changes the modulus.
-// Congruences are up-to-date
+// Congruences are up-to-date.
 bool
 test08() {
   Variable A(0);
@@ -244,7 +244,7 @@ test08() {
 }
 
 // One dimension.
-// Congruences are out-of-date
+// Congruences are out-of-date.
 bool
 test09() {
   Variable A(0);
@@ -269,7 +269,7 @@ test09() {
 }
 
 // One dimension.
-// Congruences are up-to-date
+// Congruences are up-to-date.
 bool
 test10() {
   Variable A(0);
@@ -294,7 +294,7 @@ test10() {
 
 // The first affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
-// Congruences are out-of-date
+// Congruences are out-of-date.
 bool
 test11() {
   Variable A(0);
@@ -323,17 +323,15 @@ test11() {
 
 // The first affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
-// Congruences are up-to-date
+// Congruences are up-to-date.
 bool
 test12() {
   Variable A(0);
   Variable B(1);
 
   Grid gr = Grid(2);
-  // TODO: Confirm that this should fail when BE_LAZY in
-  //       Grid_nonpublic.cc is 0.
 
-  //gr.add_congruence((3*A - 6*B %= 3) / 9);
+  gr.add_congruence((3*A - 6*B %= 3) / 9);
   gr.add_congruence((A - 2*B %= 1) / 9);
   gr.add_congruence((B %= 0) / 3);
 
@@ -355,7 +353,7 @@ test12() {
 
 // The second affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
-// Congruences are out-of-date
+// Congruences are out-of-date.
 bool
 test13() {
   Variable A(0);
@@ -383,7 +381,7 @@ test13() {
 
 // The second affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
-// Congruences are up-to-date
+// Congruences are up-to-date.
 bool
 test14() {
   Variable A(0);

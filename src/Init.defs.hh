@@ -1,5 +1,5 @@
 /* Init class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,6 +26,30 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Init.types.hh"
 #include "fpu.types.hh"
 
+namespace Parma_Polyhedra_Library {
+
+/*! \brief
+  Sets the FPU rounding mode so that the PPL abstractions based on
+  floating point numbers work correctly.
+
+  This is performed automatically at initialization-time.  Calling
+  this function is needed only if restore_pre_PPL_rounding() has been
+  previously called.
+*/
+void set_rounding_for_PPL();
+
+/*! \brief
+  Sets the FPU rounding mode as it was before initialization of the PPL.
+
+  After calling this function it is absolutely necessary to call
+  set_rounding_for_PPL() before using any PPL abstractions based on
+  floating point numbers.
+  This is performed automatically at finalization-time.
+*/
+void restore_pre_PPL_rounding();
+
+} // namespace Parma_Polyhedra_Library
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Class for initialization and finalization.
 /*! \ingroup PPL_CXX_interface
@@ -39,19 +63,24 @@ site: http://www.cs.unipr.it/ppl/ . */
   the library.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 class Parma_Polyhedra_Library::Init {
-private:
-  //! Count the number of objects created.
-  static unsigned int count;
-  static fpu_rounding_direction_type old_rounding_direction;
-
 public:
   //! Initializes the PPL.
   Init();
 
   //! Finalizes the PPL.
   ~Init();
+
+private:
+  //! Count the number of objects created.
+  static unsigned int count;
+  static fpu_rounding_direction_type old_rounding_direction;
+
+  friend void set_rounding_for_PPL();
+  friend void restore_pre_PPL_rounding();
 };
+
+#include "Init.inlines.hh"
+
 
 #endif // !defined(PPL_Init_defs_hh)

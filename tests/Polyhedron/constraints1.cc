@@ -1,5 +1,5 @@
 /* Test Polyhedron::constraints().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -31,7 +31,7 @@ test01() {
   C_Polyhedron ph1(2);
   ph1.add_constraint(0*A == 1);
 
-  print_constraints(ph1, "*** ph constraints ***");
+  print_constraints(ph1, "*** ph1 constraints ***");
 
   C_Polyhedron known_result = ph1;
 
@@ -135,7 +135,7 @@ test06() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint_and_minimize(A >= 0);
+  ph.add_constraint(A >= 0);
   ph.add_constraint(B >= 0);
 
   print_constraints(ph, "*** ph ***");

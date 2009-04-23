@@ -1,5 +1,5 @@
 dnl A function to check for the existence and usability of GMP.
-dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -45,12 +45,53 @@ AC_LANG_PUSH(C++)
 AC_MSG_CHECKING([for the GMP library version 4.1.3 or above])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <gmpxx.h>
+#include <climits>
+#include <string>
+#include <sstream>
+#include <iostream>
 
 #if __GNU_MP_VERSION < 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR < 1) || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR == 1 && __GNU_MP_VERSION_PATCHLEVEL < 3)
-#error "GMP version 4.1.3 or higher is required"
+#GMP version 4.1.3 or higher is required
 #endif
 
-int main() {
+int
+main() {
+  std::string header_version;
+  {
+    std::ostringstream s(header_version);
+    s << __GNU_MP_VERSION << "." << __GNU_MP_VERSION_MINOR;
+    // Starting from GMP version 4.3.0, the gmp_version variable
+    // always contains three parts.  In previous versions the
+    // patchlevel was omitted if it was 0.
+    if (__GNU_MP_VERSION_PATCHLEVEL != 0
+        || __GNU_MP_VERSION > 4
+        || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR >= 3))
+      s << "." << __GNU_MP_VERSION_PATCHLEVEL;
+    header_version = s.str();
+  }
+
+  std::string library_version = gmp_version;
+
+  if (header_version != library_version) {
+    std::cerr
+      << "GMP header (gmp.h) and library (ligmp.*) version mismatch:\n"
+      << "header gives " << header_version << ";\n"
+      << "library gives " << library_version << "." << std::endl;
+    return 1;
+  }
+
+  if (sizeof(mp_limb_t)*CHAR_BIT != GMP_LIMB_BITS
+      || GMP_LIMB_BITS != mp_bits_per_limb) {
+    std::cerr
+      << "GMP header (gmp.h) and library (ligmp.*) bits-per-limb mismatch:\n"
+      << "header gives " << __GMP_BITS_PER_MP_LIMB << ";\n"
+      << "library gives " << mp_bits_per_limb << ".\n"
+      << "This probably means you are on a bi-arch system and\n"
+      << "you are compiling with the wrong header or linking with\n"
+      << "the wrong library." << std::endl;
+    return 1;
+  }
+
   mpz_class n("3141592653589793238462643383279502884");
   return 0;
 }
@@ -59,15 +100,29 @@ int main() {
   ac_cv_have_gmp=yes,
   AC_MSG_RESULT(no)
   ac_cv_have_gmp=no,
-  AC_MSG_RESULT(no)
-  ac_cv_have_gmp=no)
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <gmpxx.h>
+
+#if __GNU_MP_VERSION < 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR < 1) || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR == 1 && __GNU_MP_VERSION_PATCHLEVEL < 3)
+#GMP version 4.1.3 or higher is required
+#endif
+
+int
+main() {
+  return 0;
+}
+]])],
+    AC_MSG_RESULT(yes)
+    ac_cv_have_gmp=yes,
+    AC_MSG_RESULT(no)
+    ac_cv_have_gmp=no))
 
 have_gmp=${ac_cv_have_gmp}
 
 if test x"$ac_cv_have_gmp" = xyes
 then
 
-AC_CHECK_SIZEOF(mp_limb_t, , [#include <gmp.h>])
+AC_CHECK_SIZEOF(mp_limb_t, , [#include <gmpxx.h>])
 
 AC_MSG_CHECKING([whether GMP has been compiled with support for exceptions])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
@@ -104,7 +159,7 @@ int main() {
   ac_cv_gmp_supports_exceptions=yes,
   AC_MSG_RESULT(no)
   ac_cv_gmp_supports_exceptions=no,
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT([assuming not])
   ac_cv_gmp_supports_exceptions=no)
 
 gmp_supports_exceptions=${ac_cv_gmp_supports_exceptions}
@@ -114,7 +169,7 @@ then
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(GMP_SUPPORTS_EXCEPTIONS, $value,
+AC_DEFINE_UNQUOTED(PPL_GMP_SUPPORTS_EXCEPTIONS, $value,
   [Not zero if GMP has been compiled with support for exceptions.])
 
 fi

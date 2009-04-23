@@ -1,5 +1,5 @@
 /* Checked_Number class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "checked.defs.hh"
 #include "meta_programming.hh"
 #include "Slow_Copy.hh"
+#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -74,8 +75,6 @@ struct Extended_Number_Policy {
   // const_bool_nodef(convertible, false);
   const_bool_nodef(fpu_check_inexact, true);
   const_bool_nodef(check_nan_result, true);
-  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
-  static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
   // Do not uncomment the following.
   // The compile time error is the expected behavior.
   // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
@@ -105,8 +104,6 @@ struct WRD_Extended_Number_Policy {
   // const_bool_nodef(convertible, false);
   const_bool_nodef(fpu_check_inexact, true);
   const_bool_nodef(check_nan_result, false);
-  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
-  static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
   // Do not uncomment the following.
   // The compile time error is the expected behavior.
   // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
@@ -286,6 +283,10 @@ public:
   //! Direct initialization from a C string and rounding mode.
   Checked_Number(const char* y, Rounding_Dir dir);
 
+  //! Direct initialization from special and rounding mode.
+  template <typename From>
+  Checked_Number(const From&, Rounding_Dir dir, typename Enable_If<Is_Special<From>::value, bool>::type ignored = false);
+
   //! Direct initialization from a Checked_Number, default rounding mode.
   template <typename From, typename From_Policy>
   explicit Checked_Number(const Checked_Number<From, From_Policy>& y);
@@ -338,6 +339,11 @@ public:
   //! Direct initialization from a C string, default rounding mode.
   Checked_Number(const char* y);
 
+  //! Direct initialization from special, default rounding mode
+  template <typename From>
+  Checked_Number(const From&, typename Enable_If<Is_Special<From>::value, bool>::type ignored = false);
+
+
   //@} // Constructors
 
   //! \name Accessors and Conversions
@@ -360,7 +366,7 @@ public:
   //! Classifies *this.
   /*!
     Returns the appropriate Result characterizing:
-    - whether \p *this is NAN,
+    - whether \p *this is NaN,
       if \p nan is <CODE>true</CODE>;
     - whether \p *this is a (positive or negative) infinity,
       if \p inf is <CODE>true</CODE>;
@@ -374,10 +380,6 @@ public:
 
   //! Assignment operator.
   Checked_Number& operator=(const Checked_Number& y);
-
-  //! Assignment operator.
-  template <typename From, typename From_Policy>
-  Checked_Number& operator=(const Checked_Number<From, From_Policy>& y);
 
   //! Assignment operator.
   template <typename From>
@@ -505,6 +507,16 @@ typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_integer(const T& x);
 
 /*! \relates Checked_Number */
+template <typename To, typename From>
+typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Special<From>::value, Result>::type
+construct(To& to, const From& x, Rounding_Dir dir);
+
+/*! \relates Checked_Number */
+template <typename To, typename From>
+typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Special<From>::value, Result>::type
+assign_r(To& to, const From& x, Rounding_Dir dir);
+
+/*! \relates Checked_Number */
 template <typename To>
 typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
 assign_r(To& to, const char* x, Rounding_Dir dir);
@@ -598,7 +610,7 @@ total_memory_in_bytes(const Checked_Number<T, Policy>& x);
 //! Returns the size in bytes of the memory managed by \p x.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
-size_t
+memory_size_type
 external_memory_in_bytes(const Checked_Number<T, Policy>& x);
 
 //@} // Memory Size Inspection Functions
@@ -885,6 +897,11 @@ template <typename T, typename Policy>
 std::ostream&
 operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
 
+//! Ascii dump for native or checked.
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
+ascii_dump(std::ostream& s, const T& t);
+
 //! Input function.
 /*!
   \relates Checked_Number
@@ -1016,6 +1033,11 @@ template <typename T, typename Policy>
 std::istream&
 operator>>(std::istream& is, Checked_Number<T, Policy>& x);
 
+//! Ascii load for native or checked.
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
+ascii_load(std::ostream& s, T& t);
+
 //@} // Input-Output Operators
 
 void throw_result_exception(Result r);
@@ -1050,5 +1072,6 @@ int maybe_check_fpu_inexact();
 
 #include "Checked_Number.inlines.hh"
 #include "checked_numeric_limits.hh"
+#include "Checked_Number.templates.hh"
 
 #endif // !defined(PPL_Checked_Number_defs_hh)

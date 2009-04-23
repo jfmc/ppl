@@ -1,5 +1,5 @@
 /* Interval_Info class declaration and implementation.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Boundary.defs.hh"
 #include "Interval_Restriction.defs.hh"
 
+#include <iostream>
 
 namespace Parma_Polyhedra_Library {
 
@@ -90,7 +91,7 @@ get_bits(T& bits, unsigned int start, unsigned int len) {
   return (bits >> start) & ((static_cast<T>(1) << len) - 1);
 }
 
-}
+} // namespace Interval_NS
 
 using namespace Interval_NS;
 using namespace Boundary_NS;
@@ -130,6 +131,9 @@ public:
 
   //! Swaps \p *this with \p y.
   void swap(Interval_Info_Null& y);
+
+  void ascii_dump(std::ostream& s) const;
+  bool ascii_load(std::istream& s);
 };
 
 template <typename Policy>
@@ -147,6 +151,10 @@ public:
       return Boundary_NS::Property::unsupported_value;
     }
   }
+
+  void ascii_dump(std::ostream& s) const;
+  bool ascii_load(std::istream& s);
+
 private:
   bool open;
 };
@@ -175,7 +183,8 @@ public:
   const_int_nodef(cardinality_1_bit, cardinality_0_bit + cache_empty);
   const_int_nodef(next_bit, cardinality_1_bit + cache_singleton);
   Interval_Info_Bitset() {
-    // FIXME: we'd have speed benefits with uninitialized info? (Dirty_Temp)
+    // FIXME: would we have speed benefits with uninitialized info?
+    // (Dirty_Temp)
     clear();
   }
 
@@ -276,6 +285,9 @@ public:
 
   //! Swaps \p *this with \p y.
   void swap(Interval_Info_Bitset& y);
+
+  void ascii_dump(std::ostream& s) const;
+  bool ascii_load(std::istream& s);
 
 protected:
   T bitset;

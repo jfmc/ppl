@@ -1,6 +1,6 @@
 /* Test Box::add_space_dimensions_and_embed():
    we add two variables to a Box.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -43,11 +43,11 @@ test01() {
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(z <= 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box,
-		    "*** box.add_space_dimensions_and_embed(2) "
-		    "and box.add_constraint(z <= 2) ***");
+                    "*** box.add_space_dimensions_and_embed(2) "
+                    "and box.add_constraint(z <= 2) ***");
 
   return ok;
 }
@@ -73,17 +73,17 @@ test02() {
 
 bool
 test03() {
-  TBox box1(0, UNIVERSE);
+  TBox box(0, UNIVERSE);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.add_space_dimensions_and_embed(3);
+  box.add_space_dimensions_and_embed(3);
 
   Rational_Box known_result(3, UNIVERSE);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.add_space_dimension_and_embed(3) ***");
+  print_constraints(box, "*** box.add_space_dimension_and_embed(3) ***");
 
   return ok;
 }
@@ -95,11 +95,11 @@ test04() {
   Variable C(2);
   Variable D(3);
 
-  TBox box1(0);
+  TBox box(0);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.add_space_dimensions_and_project(4);
+  box.add_space_dimensions_and_project(4);
 
   Rational_Box known_result(4);
   known_result.add_constraint(A == 0);
@@ -107,9 +107,9 @@ test04() {
   known_result.add_constraint(C == 0);
   known_result.add_constraint(D == 0);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.add_space_dimensions_and_project(4) ***");
+  print_constraints(box, "*** box.add_space_dimensions_and_project(4) ***");
 
   return ok;
 }
@@ -120,19 +120,18 @@ test05() {
   Variable B(1);
   Variable C(2);
 
-  TBox box1(3);
-  box1.add_constraint(A == 1);
-  box1.add_constraint(C - B >= 9);
+  TBox box(3);
+  box.add_constraint(A == 1);
 
-  Rational_Box known_result(box1);
+  Rational_Box known_result(box);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.add_space_dimensions_and_project(0);
+  box.add_space_dimensions_and_project(0);
 
-  print_constraints(box1, "*** box1.add_space_dimensions_and_project(0) ***");
+  print_constraints(box, "*** box.add_space_dimensions_and_project(0) ***");
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
   return ok;
 }
@@ -144,20 +143,20 @@ test06() {
   Variable C(2);
   Variable D(3);
 
-  TBox box1(1);
+  TBox box(1);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.add_space_dimensions_and_project(3);
+  box.add_space_dimensions_and_project(3);
 
   Rational_Box known_result(4);
   known_result.add_constraint(B == 0);
   known_result.add_constraint(C == 0);
   known_result.add_constraint(D == 0);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.add_space_dimensions_and_project(3) ***");
+  print_constraints(box, "*** box.add_space_dimensions_and_project(3) ***");
 
   return ok;
 }
@@ -191,7 +190,7 @@ test08() {
   known_result.add_constraint(w == 0);
   known_result.add_constraint(z == 0);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.add_space_dimensions_and_project(2) ***");
 
@@ -219,17 +218,17 @@ test09() {
 
 bool
 test10() {
-  TBox box1(0, EMPTY);
+  TBox box(0, EMPTY);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.add_space_dimensions_and_project(3);
+  box.add_space_dimensions_and_project(3);
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.add_space_dimension_and_project(3) ***");
+  print_constraints(box, "*** box.add_space_dimension_and_project(3) ***");
 
   return ok;
 }
@@ -241,11 +240,11 @@ test11() {
   Variable C(2);
   Variable D(3);
 
-  TBox box1(0);
+  TBox box(0);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.add_space_dimensions_and_project(4);
+  box.add_space_dimensions_and_project(4);
 
   Rational_Box known_result(4);
   known_result.add_constraint(A == 0);
@@ -253,9 +252,9 @@ test11() {
   known_result.add_constraint(C == 0);
   known_result.add_constraint(D == 0);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.add_space_dimensions_and_project(4) ***");
+  print_constraints(box, "*** box.add_space_dimensions_and_project(4) ***");
 
   return ok;
 }
@@ -305,11 +304,11 @@ test13() {
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(z <= 2);
 
-  bool ok = (Rational_Box(box) == known_result) ;
+  bool ok = check_result(box, known_result) ;
 
   print_constraints(box,
-		    "*** box.add_space_dimensions_and_embed(2) "
-		    "and box.add_constraint(z <= 2) ***");
+                    "*** box.add_space_dimensions_and_embed(2) "
+                    "and box.add_constraint(z <= 2) ***");
 
   return ok;
 }

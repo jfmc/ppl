@@ -1,5 +1,5 @@
 /* Test BD_Shape::is_bounded().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,12 +29,12 @@ test01() {
   Variable x(0);
 
   // This is a non-bounded BDS.
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= 0);
+  TBD_Shape bds(2);
+  bds.add_constraint(x >= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  return !bd.is_bounded();
+  return !bds.is_bounded();
 }
 
 bool
@@ -43,46 +43,46 @@ test02() {
   Variable y(1);
 
   // This is a bounded BDS (it is a square);
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= 2);
-  bd.add_constraint(y >= 2);
-  bd.add_constraint(x <= 4);
-  bd.add_constraint(y <= 4);
+  TBD_Shape bds(2);
+  bds.add_constraint(x >= 2);
+  bds.add_constraint(y >= 2);
+  bds.add_constraint(x <= 4);
+  bds.add_constraint(y <= 4);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  return bd.is_bounded();
+  return bds.is_bounded();
 }
 
 bool
 test03() {
   // This is a universal, zero-dimensional BDS.
-  TBD_Shape bd;
+  TBD_Shape bds;
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  return bd.is_bounded();
+  return bds.is_bounded();
 }
 
 bool
 test04() {
   // This is an empty, zero-dimensional BDS.
-  TBD_Shape bd;
-  bd.add_constraint(Linear_Expression(-3) >= 0);
+  TBD_Shape bds;
+  bds.add_constraint(Linear_Expression(-3) >= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  return bd.is_bounded();
+  return bds.is_bounded();
 }
 
 bool
 test05() {
   // This is an empty BDS.
-  TBD_Shape bd(4, EMPTY);
+  TBD_Shape bds(4, EMPTY);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  return bd.is_bounded();
+  return bds.is_bounded();
 }
 
 } // namespace

@@ -1,5 +1,5 @@
 /* Test Box::expand_space_dimension().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -28,17 +28,17 @@ bool
 test01() {
   Variable A(0);
 
-  TBox box1(3);
+  TBox box(3);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.expand_space_dimension(A, 1);
+  box.expand_space_dimension(A, 1);
 
   TBox known_result(4);
 
-  bool ok = (box1 == known_result);
+  bool ok = (box == known_result);
 
-  print_constraints(box1, "*** after box1.expand_space_dimension(A, 1) ***");
+  print_constraints(box, "*** after box.expand_space_dimension(A, 1) ***");
 
   return ok;
 }
@@ -48,17 +48,17 @@ test02() {
   //  Variable A(0);
   Variable B(1);
 
-  TBox box1(3, EMPTY);
+  TBox box(3, EMPTY);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.expand_space_dimension(B, 1);
+  box.expand_space_dimension(B, 1);
 
   TBox known_result(4, EMPTY);
 
-  bool ok = (box1 == known_result);
+  bool ok = (box == known_result);
 
-  print_constraints(box1, "*** box1.expand_space_dimension(B, 1) ***");
+  print_constraints(box, "*** box.expand_space_dimension(B, 1) ***");
 
   return ok;
 }
@@ -71,21 +71,19 @@ test03() {
   Variable D(3);
   Variable E(4);
 
-  TBox box1(2);
-  box1.add_constraint(A >= 0);
-  box1.add_constraint(A - B <= 2);
+  TBox box(2);
+  box.add_constraint(A >= 0);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.expand_space_dimension(A, 0);
+  box.expand_space_dimension(A, 0);
 
   TBox known_result(2);
   known_result.add_constraint(A >= 0);
-  known_result.add_constraint(A - B <= 2);
 
-  bool ok = (box1 == known_result);
+  bool ok = (box == known_result);
 
-  print_constraints(box1, "*** box1.expand_space_dimension(A, 0) ***");
+  print_constraints(box, "*** box.expand_space_dimension(A, 0) ***");
 
   return ok;
 }
@@ -96,18 +94,18 @@ test04() {
   Variable B(1);
   Variable C(2);
 
-  TBox box1(2, EMPTY);
-  box1.add_constraint(B >= 0);
+  TBox box(2, EMPTY);
+  box.add_constraint(B >= 0);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.expand_space_dimension(A, 1);
+  box.expand_space_dimension(A, 1);
 
   TBox known_result(3, EMPTY);
 
-  bool ok = (box1 == known_result);
+  bool ok = (box == known_result);
 
-  print_constraints(box1, "*** box1.expand_space_dimension(A, 1) ***");
+  print_constraints(box, "*** box.expand_space_dimension(A, 1) ***");
 
   return ok;
 }
@@ -118,23 +116,20 @@ test05() {
   Variable B(1);
   Variable C(2);
 
-  TBox box1(2);
-  box1.add_constraint(A >= 0);
-  box1.add_constraint(A - B <= 2);
+  TBox box(2);
+  box.add_constraint(A >= 0);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.expand_space_dimension(A, 1);
+  box.expand_space_dimension(A, 1);
 
   TBox known_result(3);
   known_result.add_constraint(A >= 0);
-  known_result.add_constraint(A - B <= 2);
   known_result.add_constraint(C >= 0);
-  known_result.add_constraint(C - B <= 2);
 
-  bool ok = (box1 == known_result);
+  bool ok = (box == known_result);
 
-  print_constraints(box1, "*** box1.expand_space_dimension(A, 1) ***");
+  print_constraints(box, "*** box.expand_space_dimension(A, 1) ***");
 
   return ok;
 }
@@ -146,25 +141,21 @@ test06() {
   Variable C(2);
   Variable D(3);
 
-  TBox box1(2);
-  box1.add_constraint(A >= 0);
-  box1.add_constraint(A - B <= 2);
+  TBox box(2);
+  box.add_constraint(A >= 0);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.expand_space_dimension(A, 2);
+  box.expand_space_dimension(A, 2);
 
   TBox known_result(4);
   known_result.add_constraint(A >= 0);
-  known_result.add_constraint(A - B <= 2);
   known_result.add_constraint(C >= 0);
-  known_result.add_constraint(C - B <= 2);
   known_result.add_constraint(D >= 0);
-  known_result.add_constraint(D - B <= 2);
 
-  bool ok = (box1 == known_result);
+  bool ok = (box == known_result);
 
-  print_constraints(box1, "*** box1.expand_space_dimension(A, 2) ***");
+  print_constraints(box, "*** box.expand_space_dimension(A, 2) ***");
 
   return ok;
 }
@@ -177,31 +168,28 @@ test07() {
   Variable D(3);
   Variable E(4);
 
-  TBox box1(3);
-  box1.add_constraint(A <= 1);
-  box1.add_constraint(C == 1);
-  box1.add_constraint(A - B >= 1);
-  box1.add_constraint(B <= 1);
+  TBox box(3);
+  box.add_constraint(A <= 1);
+  box.add_constraint(C == 1);
+  box.add_constraint(B <= 1);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.expand_space_dimension(A, 1);
-  box1.expand_space_dimension(C, 1);
+  box.expand_space_dimension(A, 1);
+  box.expand_space_dimension(C, 1);
 
   TBox known_result(5);
   known_result.add_constraint(A <= 1);
-  known_result.add_constraint(A - B >= 1);
   known_result.add_constraint(C == 1);
   known_result.add_constraint(E == 1);
   known_result.add_constraint(B <= 1);
   known_result.add_constraint(D <= 1);
-  known_result.add_constraint(D - B >= 1);
 
-  bool ok = (box1 == known_result);
+  bool ok = (box == known_result);
 
-  print_constraints(box1,
-		    "*** box1.expand_space_dimension(A, 1);"
-		    " box1.expand_space_dimension(C, 1) ***");
+  print_constraints(box,
+                    "*** box.expand_space_dimension(A, 1);"
+                    " box.expand_space_dimension(C, 1) ***");
 
   return ok;
 }
@@ -212,20 +200,19 @@ test08() {
   Variable B(1);
   Variable C(2);
 
-  TBox box1(2, EMPTY);
-  box1.add_constraint(A <= 2);
-  box1.add_constraint(A - B >= 1);
-  box1.add_constraint(B <= 1);
+  TBox box(2, EMPTY);
+  box.add_constraint(A <= 2);
+  box.add_constraint(B <= 1);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.expand_space_dimension(B, 1);
+  box.expand_space_dimension(B, 1);
 
   TBox known_result(3, EMPTY);
 
-  bool ok = (box1 == known_result);
+  bool ok = (box == known_result);
 
-  print_constraints(box1, "*** box1.expand_space_dimension(A, 2) ***");
+  print_constraints(box, "*** box.expand_space_dimension(A, 2) ***");
 
   return ok;
 }

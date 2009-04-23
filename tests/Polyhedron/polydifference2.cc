@@ -1,5 +1,5 @@
-/* Test Polyhedron::poly_difference_assign().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test Polyhedron::difference_assign().
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -48,7 +48,7 @@ test01() {
 
   NNC_Polyhedron computed_result = ph1;
 
-  computed_result.poly_difference_assign(ph2);
+  computed_result.difference_assign(ph2);
 
   Generator_System gs_known_result;
   gs_known_result.insert(closure_point(0*x + 0*y));
@@ -60,7 +60,7 @@ test01() {
 
   bool ok = (computed_result == known_result);
 
-  print_generators(computed_result, "*** after poly_difference_assign ***");
+  print_generators(computed_result, "*** after difference_assign ***");
   print_generators(known_result, "*** known_result ***");
 
   return ok;
@@ -82,7 +82,7 @@ test02() {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 
-  ph1.poly_difference_assign(ph2);
+  ph1.difference_assign(ph2);
 
   NNC_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
@@ -91,7 +91,7 @@ test02() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.difference_assign(ph2) ***");
 
   return ok;
 }
@@ -124,7 +124,7 @@ test03() {
   print_constraints(ph2, "*** ph2 ***");
 
   C_Polyhedron computed_result = ph1;
-  computed_result.poly_difference_assign(ph2);
+  computed_result.difference_assign(ph2);
 
   Generator_System gs_known_result;
   gs_known_result.insert(point(0*x + 5*y));
@@ -135,7 +135,7 @@ test03() {
 
   bool ok = (computed_result == known_result);
 
-  print_constraints(computed_result, "*** after poly_difference_assign ***");
+  print_constraints(computed_result, "*** after difference_assign ***");
   print_constraints(known_result, "*** known_result ***");
 
   return ok;
@@ -154,13 +154,13 @@ test04() {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 
-  ph1.poly_difference_assign(ph2);
+  ph1.difference_assign(ph2);
 
   C_Polyhedron known_result(1);
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.difference_assign(ph2) ***");
 
   return ok;
 }

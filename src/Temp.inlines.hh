@@ -1,5 +1,5 @@
 /* Temp_* classes implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -28,18 +28,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
+inline
 Temp_Item<T>::Temp_Item()
   : item_() {
 }
 
 template <typename T>
-T&
+inline T&
 Temp_Item<T>::item() {
     return item_;
 }
 
 template <typename T>
-Temp_Item<T>&
+inline Temp_Item<T>&
 Temp_Item<T>::obtain() {
   if (free_list_head != 0) {
     Temp_Item* p = free_list_head;
@@ -51,59 +52,62 @@ Temp_Item<T>::obtain() {
 }
 
 template <typename T>
-void
+inline void
 Temp_Item<T>::release(Temp_Item& p) {
   p.next = free_list_head;
   free_list_head = &p;
 }
 
 template <typename T>
+inline
 Temp_Reference_Holder<T>::Temp_Reference_Holder(Temp_Item<T>& p)
   : held(p) {
 }
 
 template <typename T>
+inline
 Temp_Reference_Holder<T>::~Temp_Reference_Holder() {
   Temp_Item<T>::release(held);
 }
 
 template <typename T>
-T&
+inline T&
 Temp_Reference_Holder<T>::item() {
   return held.item();
 }
 
 template <typename T>
+inline
 Temp_Value_Holder<T>::Temp_Value_Holder() {
 }
 
 template <typename T>
-T
+inline T
 Temp_Value_Holder<T>::item() {
   return item_;
 }
 
 template <typename T>
-typename Temp_From_Free_List<T>::holder_type
+inline typename Temp_From_Free_List<T>::holder_type
 Temp_From_Free_List<T>::obtain_holder() {
   return Temp_Reference_Holder<T>(Temp_Item<T>::obtain());
 }
 
 template <typename T>
-typename Temp_From_Local_Variable<T>::holder_type
+inline typename Temp_From_Local_Variable<T>::holder_type
 Temp_From_Local_Variable<T>::obtain_holder() {
   return Temp_Value_Holder<T>();
 }
 
 } // namespace Parma_Polyhedra_Library
 
-#define DIRTY_TEMP(T, id)						\
+#define PPL_DIRTY_TEMP(T, id)						\
   typename Parma_Polyhedra_Library::Dirty_Temp<T>::holder_type holder ## id = \
     Parma_Polyhedra_Library::Dirty_Temp<T>::obtain_holder();		\
   typename Parma_Polyhedra_Library::Dirty_Temp<T>::type id =		\
     holder ## id.item()
 
-#define DIRTY_TEMP0(T, id)						\
+#define PPL_DIRTY_TEMP0(T, id)						\
   Parma_Polyhedra_Library::Dirty_Temp<T>::holder_type holder ## id =	\
     Parma_Polyhedra_Library::Dirty_Temp<T>::obtain_holder();		\
   Parma_Polyhedra_Library::Dirty_Temp<T>::type id = holder ## id.item()

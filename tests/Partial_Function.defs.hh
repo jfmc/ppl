@@ -1,5 +1,5 @@
 /* Partial_Function class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,13 +24,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Partial_Function_defs_hh 1
 
 #include "Partial_Function.types.hh"
-#include "ppl.hh"
+#include <cstddef>
 #include <map>
 #include <iosfwd>
 
-class Parma_Polyhedra_Library::Partial_Function {
+namespace Parma_Polyhedra_Library {
+
+namespace Test {
+
+class Partial_Function {
 private:
-  typedef dimension_type dim_t;
+  typedef size_t dim_t;
 
 public:
   Partial_Function();
@@ -43,10 +47,14 @@ public:
   void insert(dim_t x, dim_t y);
 
 private:
-  typedef std::map<unsigned, unsigned, std::less<dim_t> > Map;
+  typedef std::map<dim_t, dim_t, std::less<dim_t> > Map;
   Map map;
   dim_t max;
 };
+
+} // namespace Test
+
+} // namespace Parma_Polyhedra_Library
 
 #include "Partial_Function.inlines.hh"
 

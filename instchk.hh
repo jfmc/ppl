@@ -1,6 +1,6 @@
 /* Fake declarations to test the validity of the arguments of the
    --enabled-instantiations option defined in configure.ac.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -37,7 +37,24 @@ public:
   static bool valid_instantiation() {
     return true;
   }
+};
+
+class C_Polyhedron {
+public:
   static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class NNC_Polyhedron {
+public:
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
     return true;
   }
 };
@@ -49,6 +66,192 @@ public:
   }
   static bool valid_Pointset_Powerset_argument() {
     return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Rational_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Z_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+#if PPL_SUPPORTED_FLOAT
+class Float_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+#endif // PPL_SUPPORTED_FLOAT
+
+#if PPL_SUPPORTED_DOUBLE
+class Double_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+#endif // PPL_SUPPORTED_DOUBLE
+
+#if PPL_SUPPORTED_LONG_DOUBLE
+class Long_Double_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+#endif // PPL_SUPPORTED_LONG_DOUBLE
+
+class Int8_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Int16_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Int32_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Int64_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Uint8_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Uint16_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Uint32_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Uint64_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+template <typename PS>
+class Pointset_Powerset {
+public:
+  static bool valid_instantiation() {
+    return PS::valid_Pointset_Powerset_argument();
   }
 };
 
@@ -86,6 +289,30 @@ valid_BD_Shape_argument<long long>() {
   return true;
 }
 
+#if PPL_SUPPORTED_FLOAT
+template <>
+bool
+valid_BD_Shape_argument<float>() {
+  return true;
+}
+#endif // PPL_SUPPORTED_FLOAT
+
+#if PPL_SUPPORTED_DOUBLE
+template <>
+bool
+valid_BD_Shape_argument<double>() {
+  return true;
+}
+#endif // PPL_SUPPORTED_DOUBLE
+
+#if PPL_SUPPORTED_LONG_DOUBLE
+template <>
+bool
+valid_BD_Shape_argument<long double>() {
+  return true;
+}
+#endif // PPL_SUPPORTED_LONG_DOUBLE
+
 template <>
 bool
 valid_BD_Shape_argument<mpz_class>() {
@@ -107,6 +334,9 @@ public:
   static bool valid_Pointset_Powerset_argument() {
     return true;
   }
+  static bool valid_Product_argument() {
+    return true;
+  }
 };
 
 template <typename T>
@@ -118,13 +348,32 @@ public:
   static bool valid_Pointset_Powerset_argument() {
     return true;
   }
+  static bool valid_Product_argument() {
+    return true;
+  }
 };
 
-template <typename PH>
-class Pointset_Powerset {
+template <typename D1, typename D2>
+class Direct_Product {
 public:
   static bool valid_instantiation() {
-    return PH::valid_Pointset_Powerset_argument();
+    return D1::valid_Product_argument() && D2::valid_Product_argument();
+  }
+};
+
+template <typename D1, typename D2>
+class Smash_Product {
+public:
+  static bool valid_instantiation() {
+    return D1::valid_Product_argument() && D2::valid_Product_argument();
+  }
+};
+
+template <typename D1, typename D2>
+class Constraints_Product {
+public:
+  static bool valid_instantiation() {
+    return D1::valid_Product_argument() && D2::valid_Product_argument();
   }
 };
 

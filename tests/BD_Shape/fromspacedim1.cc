@@ -1,5 +1,5 @@
 /* Test BD_Shape::BD_Shape(dimension_type, Degenerate_Element).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,44 +26,44 @@ namespace {
 
 bool
 test01() {
-  TBD_Shape bd(0, EMPTY);
+  TBD_Shape bds(0, EMPTY);
 
-  bool ok = (bd.OK() && bd.is_empty() && bd.space_dimension() == 0);
+  bool ok = (bds.OK() && bds.is_empty() && bds.space_dimension() == 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   return ok;
 }
 
 bool
 test02() {
-  TBD_Shape bd(0, UNIVERSE);
+  TBD_Shape bds(0, UNIVERSE);
 
-  bool ok = (bd.OK() && bd.is_universe() && bd.space_dimension() == 0);
+  bool ok = (bds.OK() && bds.is_universe() && bds.space_dimension() == 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   return ok;
 }
 
 bool
 test03() {
-  TBD_Shape bd(4, EMPTY);
+  TBD_Shape bds(4, EMPTY);
 
-  bool ok = (bd.OK() && bd.is_empty() && bd.space_dimension() == 4);
+  bool ok = (bds.OK() && bds.is_empty() && bds.space_dimension() == 4);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   return ok;
 }
 
 bool
 test04() {
-  TBD_Shape bd(4, UNIVERSE);
+  TBD_Shape bds(4, UNIVERSE);
 
-  bool ok = (bd.OK() && bd.is_universe() && bd.space_dimension() == 4);
+  bool ok = (bds.OK() && bds.is_universe() && bds.space_dimension() == 4);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   return ok;
 }
@@ -74,17 +74,17 @@ test05() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(4);
-  bd.add_constraint(A <= -1);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B <= 1);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(C <= 2);
-  bd.add_constraint(C >= 1);
+  TBD_Shape bds(4);
+  bds.add_constraint(A <= -1);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B <= 1);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(C <= 2);
+  bds.add_constraint(C >= 1);
 
-  bool ok = (bd.OK() && bd.is_empty() && bd.space_dimension() == 4);
+  bool ok = (bds.OK() && bds.is_empty() && bds.space_dimension() == 4);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   return ok;
 }
@@ -95,17 +95,17 @@ test06() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(A <= 1);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B <= 1);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(C <= 2);
-  bd.add_constraint(C >= 1);
+  TBD_Shape bds(3);
+  bds.add_constraint(A <= 1);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B <= 1);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(C <= 2);
+  bds.add_constraint(C >= 1);
 
-  bool ok = (bd.OK() && bd.space_dimension() == 3);
+  bool ok = (bds.OK() && bds.space_dimension() == 3);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   return ok;
 }

@@ -1,5 +1,5 @@
 /* Generator_System class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -180,7 +180,7 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
     will be available, where original generators may have been
     reordered, removed (if they are duplicate or redundant), etc.
 */
-class Parma_Polyhedra_Library::Generator_System : private Linear_System {
+class Parma_Polyhedra_Library::Generator_System : protected Linear_System {
 public:
   //! Default constructor: builds an empty system of generators.
   Generator_System();
@@ -332,7 +332,6 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
@@ -342,7 +341,6 @@ public:
     read from \p s, then initializes the coordinates of each generator
     and its type reading the contents from \p s.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.

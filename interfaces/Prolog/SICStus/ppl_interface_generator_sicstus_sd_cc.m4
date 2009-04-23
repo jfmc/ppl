@@ -1,5 +1,9 @@
-m4_define(`dnl', `m4_dnl')
-dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file generates the file ppl_sicstus_sd.cc.
+
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -20,109 +24,15 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_sicstus_sd.cc.
-/* SICStus Prolog interface: system-dependent part.
+dnl Include common macros for generating system dependent code.
+m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
+
+m4_divert`'dnl
+/* SICStus Prolog interface.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
-#include "ppl.hh"
-#include "sicstus_cfli.h"
-#include "../exceptions.hh"
-#include <cassert>
-#include <sstream>
-
-namespace PPL = Parma_Polyhedra_Library;
-
-namespace {
-
-/*!
-  True if and only if the Prolog engine supports unbounded integers.
-*/
-bool Prolog_has_unbounded_integers;
-
-/*!
-  If \p Prolog_has_unbounded_integers is false, holds the minimum
-  integer value representable by a Prolog integer.
-  Holds zero otherwise.
-*/
-long Prolog_min_integer;
-
-/*!
-  If \p Prolog_has_unbounded_integers is false, holds the maximum
-  integer value representable by a Prolog integer.
-  Holds zero otherwise.
-*/
-long Prolog_max_integer;
-
-/*!
-  Performs system-dependent initialization.
-*/
-void
-ppl_Prolog_sysdep_init() {
-  Prolog_has_unbounded_integers = true;
-  Prolog_min_integer = 0;
-  Prolog_max_integer = 0;
-}
-
-/*!
-  Perform system-dependent de-itialization.
-*/
-void
-ppl_Prolog_sysdep_deinit() {
-}
-
-int
-Prolog_get_Coefficient(Prolog_term_ref t, PPL::Coefficient& n) {
-  assert(SP_is_integer(t));
-  long v;
-  if (SP_get_integer(t, &v) == SP_SUCCESS)
-    n = v;
-  else {
-#if SICSTUS_MAJOR_VERSION == 3
-    char* s;
-    if (SP_get_number_chars(t, &s) == SP_SUCCESS)
-      n = PPL::Coefficient(s);
-    else
-      return SP_FAILURE;
-#else
-    const char* s;
-    if (SP_get_number_codes(t, &s) == SP_SUCCESS)
-      n = PPL::Coefficient(s);
-    else
-      return SP_FAILURE;
-#endif
-  }
-  return SP_SUCCESS;
-}
-
-int
-Prolog_put_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
-  long l = 0;
-  if (PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED) == PPL::V_EQ)
-    return SP_put_integer(t, l);
-  else {
-    std::ostringstream s;
-    s << n;
-#if SICSTUS_MAJOR_VERSION == 3
-    return SP_put_number_chars(t, s.str().c_str());
-#else
-    return SP_put_number_codes(t, s.str().c_str());
-#endif
-  }
-}
-
-int
-Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
-  Prolog_term_ref u = Prolog_new_term_ref();
-  if (Prolog_put_Coefficient(u, n) == SP_SUCCESS)
-    return SP_unify(t, u);
-  else
-    return SP_FAILURE;
-}
-
-} // namespace
-
-#include "../ppl_prolog.icc"
+#include "../ppl_prolog_domains.hh"
 
 #define SP_STUB_0(name) \
 extern "C" Prolog_foreign_return_type \
@@ -236,9 +146,7 @@ m4_divert(1)
 extern "C" void
 ppl_sicstus_init(int /* when */) {
   ppl_initialize();
-  for (size_t i = 0;
-       i < sizeof(prolog_interface_atoms)/sizeof(prolog_interface_atoms[0]);
-       ++i) {
+  for (size_t i = 0; prolog_interface_atoms[i].p_atom != 0; ++i) {
     if (SP_register_atom(*prolog_interface_atoms[i].p_atom) == 0) {
       Prolog_term_ref et = Prolog_new_term_ref();
       Prolog_put_atom_chars(et, "Cannot initialize the PPL interface");
@@ -251,9 +159,7 @@ m4_divert(2)dnl
 
 extern "C" void
 ppl_sicstus_deinit(int /* when */) {
-  for (size_t i = 0;
-       i < sizeof(prolog_interface_atoms)/sizeof(prolog_interface_atoms[0]);
-       ++i)
+  for (size_t i = 0; prolog_interface_atoms[i].p_atom != 0; ++i)
     // SP_unregister_atom can fail.
     // We ignore such failures: what else can we do?
     (void) SP_unregister_atom(*prolog_interface_atoms[i].p_atom);
@@ -262,26 +168,24 @@ ppl_sicstus_deinit(int /* when */) {
 dnl
 m4_divert`'dnl
 dnl
-dnl Include common macros for generating system dependent code.
-m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
-dnl
-dnl Redefine m4_extension to generate SICStus stubs.
-dnl m4_extension(Predicate_Name, Arity)
-m4_define(`m4_extension', `dnl
+dnl Redefine m4_expanded_procedure_schema to generate SICStus stubs.
+dnl m4_expanded_procedure_schema(Predicate_Name, Arity)
+m4_define(`m4_expanded_procedure_schema', `dnl
 SP_STUB_$2($1)
 ')dnl
 dnl Generate stubs.
 ppl_prolog_sys_code`'dnl
 m4_undivert(1)`'dnl
-dnl
-m4_divert`'dnl
-dnl
+m4_divert(-1)
+
 dnl Redefine m4_extension to generate SICStus user predicates.
 dnl m4_extension(Predicate_Name, Arity)
-m4_define(`m4_extension', `dnl
+m4_define(`m4_expanded_procedure_schema', `dnl
   SP_DEFINE_C_PREDICATE($1, $2);
-')dnl
+')
+
 dnl Generate user predicates.
+m4_divert`'dnl
 ppl_prolog_sys_code`'dnl
 dnl
 dnl End of file generation.

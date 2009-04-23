@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::contains_integer_point().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -84,7 +84,7 @@ test03() {
   cs.insert(3*y <= 2);
   cs.insert(3*y >= 1);
 
-  Octagonal_Shape<float> oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraints(cs);
 
   print_constraints(oct, "*** oct ***");
@@ -94,7 +94,10 @@ test03() {
   nout << "oct.contains_integer_point() == "
        << (contains ? "true" : "false") << endl;
 
-  return !contains;
+  // NOTE: results depends on whether or not the rational constraints
+  // on y have been approximated as integral constraints.
+  typedef TOctagonal_Shape::coefficient_type_base T;
+  return (std::numeric_limits<T>::is_integer ? contains : !contains);
 }
 
 bool
@@ -137,7 +140,7 @@ test05() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.add_constraint_and_minimize(x <= 0);
+  oct.add_constraint(x <= 0);
 
   print_constraints(oct, "*** oct ***");
 
@@ -161,7 +164,7 @@ test06() {
   cs.insert(3*y <= 2);
   cs.insert(3*y >= 1);
 
-  Octagonal_Shape<float> oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraints(cs);
 
   print_constraints(oct, "*** oct ***");

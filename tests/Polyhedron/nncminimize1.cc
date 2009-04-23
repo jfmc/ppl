@@ -1,5 +1,5 @@
 /* Test minimization of NNC polyhedra.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -50,7 +50,7 @@ test01() {
   cs.insert(x - y < 6);
   cs.insert(x - y > -6);
 
-  ph.add_constraints_and_minimize(cs);
+  ph.add_constraints(cs);
 
   nout << "After vertices removal:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
@@ -107,7 +107,7 @@ test02() {
   cs.insert(x - y < 1);
   cs.insert(x - y > -1);
 
-  ph.add_constraints_and_minimize(cs);
+  ph.add_constraints(cs);
 
   nout << "After vertices removal:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
@@ -168,7 +168,7 @@ test03() {
   cs.insert(x - y < 1);
   cs.insert(x - y > -1);
 
-  ph.add_constraints_and_minimize(cs);
+  ph.add_constraints(cs);
 
   nout << "After vertices removal:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
@@ -286,7 +286,8 @@ test05() {
 
   NNC_Polyhedron ph2(cs);
 
-  ph1.poly_hull_assign_and_minimize(ph2);
+  ph1.upper_bound_assign(ph2);
+  (void) ph1.is_empty();
 
   nout << "(Weakly) minimized poly hull" << endl;
   print_constraints(ph1.constraints(), "*** ph1 constraints ***");

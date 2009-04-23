@@ -1,5 +1,5 @@
 /* Test Box::affine_image().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,21 +29,21 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  TBox box1(3);
-  box1.add_constraint(A <= 2);
-  box1.add_constraint(B <= 4);
+  TBox box(3);
+  box.add_constraint(A <= 2);
+  box.add_constraint(B <= 4);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.affine_image(A, B);
+  box.affine_image(A, B);
 
   Rational_Box known_result(3);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B <= 4);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.affine_image(A, B) ***");
+  print_constraints(box, "*** box.affine_image(A, B) ***");
 
   return ok;
 }
@@ -53,23 +53,21 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  TBox box1(3);
-  box1.add_constraint(A <= 2);
-  box1.add_constraint(A - B <= 3);
-  box1.add_constraint(B <= 2);
+  TBox box(3);
+  box.add_constraint(A <= 2);
+  box.add_constraint(B <= 2);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.affine_image(A, A + 4);
+  box.affine_image(A, A + 4);
 
   Rational_Box known_result(3);
   known_result.add_constraint(B <= 2);
-  known_result.add_constraint(A - B <= 7);
   known_result.add_constraint(A <= 6);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.affine_image(A, A + 4) ***");
+  print_constraints(box, "*** box.affine_image(A, A + 4) ***");
 
   return ok;
 }
@@ -79,22 +77,21 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  TBox box1(3);
-  box1.add_constraint(A <= 2);
-  box1.add_constraint(A - B <= 3);
-  box1.add_constraint(B <= 2);
+  TBox box(3);
+  box.add_constraint(A <= 2);
+  box.add_constraint(B <= 2);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.affine_image(A, Linear_Expression(4));
+  box.affine_image(A, Linear_Expression(4));
 
   Rational_Box known_result(3);
   known_result.add_constraint(B <= 2);
   known_result.add_constraint(A == 4);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.affine_image(A, 4) ***");
+  print_constraints(box, "*** box.affine_image(A, 4) ***");
 
   return ok;
 }
@@ -104,20 +101,19 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  TBox box1(3);
-  box1.add_constraint(A <= 2);
-  box1.add_constraint(A - B <= 3);
-  box1.add_constraint(B <= 2);
+  TBox box(3);
+  box.add_constraint(A <= 2);
+  box.add_constraint(B <= 2);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  Rational_Box known_result(box1);
+  Rational_Box known_result(box);
 
-  box1.affine_image(A, A);
+  box.affine_image(A, A);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.affine_image(A, A) ***");
+  print_constraints(box, "*** box.affine_image(A, A) ***");
 
   return ok;
 }
@@ -127,23 +123,21 @@ test05() {
   Variable A(0);
   Variable B(1);
 
-  TBox box1(3);
-  box1.add_constraint(A <= 2);
-  box1.add_constraint(A - B <= 3);
-  box1.add_constraint(B <= 2);
+  TBox box(3);
+  box.add_constraint(A <= 2);
+  box.add_constraint(B <= 2);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.affine_image(A, 2*A - 2, 2);
+  box.affine_image(A, 2*A - 2, 2);
 
   Rational_Box known_result(3);
   known_result.add_constraint(A <= 1);
   known_result.add_constraint(B <= 2);
-  known_result.add_constraint(A - B <= 2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.affine_image(A, 2*A - 2, 2) ***");
+  print_constraints(box, "*** box.affine_image(A, 2*A - 2, 2) ***");
 
   return ok;
 }
@@ -153,21 +147,21 @@ test06() {
   Variable A(0);
   Variable B(1);
 
-  TBox box1(3);
-  box1.add_constraint(A <= 2);
-  box1.add_constraint(B <= 4);
+  TBox box(3);
+  box.add_constraint(A <= 2);
+  box.add_constraint(B <= 4);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.affine_image(B, 2*A, 2);
+  box.affine_image(B, 2*A, 2);
 
   Rational_Box known_result(3);
   known_result.add_constraint(A <= 2);
   known_result.add_constraint(B <= 2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.affine_image(B, 2*A, 2) ***");
+  print_constraints(box, "*** box.affine_image(B, 2*A, 2) ***");
 
   return ok;
 }
@@ -177,21 +171,21 @@ test07() {
   Variable A(0);
   Variable B(1);
 
-  TBox box1(3);
-  box1.add_constraint(A <= 2);
-  box1.add_constraint(B <= 4);
+  TBox box(3);
+  box.add_constraint(A <= 2);
+  box.add_constraint(B <= 4);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.affine_image(B, 3*A + 3, 3);
+  box.affine_image(B, 3*A + 3, 3);
 
   Rational_Box known_result(3);
   known_result.add_constraint(A <= 2);
   known_result.add_constraint(B <= 3);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.affine_image(B, 3*A + 3, 3) ***");
+  print_constraints(box, "*** box.affine_image(B, 3*A + 3, 3) ***");
 
   return ok;
 }
@@ -275,7 +269,6 @@ test10() {
   known_result.add_constraint(B >= 1);
   known_result.add_constraint(C <= 0);
   known_result.add_constraint(D == 3);
-  known_result.add_constraint(3*B - 3*A <= 5);
 
   bool ok = check_result(box, known_result, "7.95e-8", "7.95e-8", "7.95e-8");
 
@@ -301,7 +294,7 @@ test11() {
   Rational_Box known_result(3);
   known_result.add_constraint(B <= 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_image(A, 2*B + C + 2, 4) ***");
 
@@ -314,7 +307,6 @@ test12() {
   Variable B(1);
 
   TBox box(2);
-  box.add_constraint(A - B >= 0);
   box.add_constraint(A >= 0);
   box.add_constraint(A <= 2);
 
@@ -393,7 +385,6 @@ test15() {
   Variable B(1);
 
   TBox box(2);
-  box.add_constraint(A - B >= 0);
   box.add_constraint(A >= 0);
   box.add_constraint(A <= 2);
 

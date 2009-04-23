@@ -1,5 +1,5 @@
 /* Congruence class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -215,7 +215,7 @@ public:
   //! Copy-constructs (modulo 0) from equality constraint \p c.
   /*!
     \exception std::invalid_argument
-    Thrown if \p c is a relation.
+    Thrown if \p c is an inequality.
   */
   explicit Congruence(const Constraint& c);
 
@@ -254,27 +254,27 @@ public:
   operator/=(Coefficient_traits::const_reference k);
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is a trivially
-    true congruence.
+    Returns <CODE>true</CODE> if and only if \p *this is a tautology
+    (i.e., an always true congruence).
 
-    Trivially true congruences are of one the following two forms:
+    A tautological congruence has one the following two forms:
     - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + 0 == 0\f$; or
     - a proper congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0 / m\f$,
-    where n is the space dimension and m is the modulus.
+      where \f$b = 0 \pmod{m}\f$.
   */
-  bool is_trivial_true() const;
+  bool is_tautological() const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is a trivially
-    false congruence.
+    Returns <CODE>true</CODE> if and only if
+    \p *this is inconsistent (i.e., an always false congruence).
 
-    Trivially false congruences have one of the following two forms:
+    An inconsistent congruence has one of the following two forms:
     - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + b == 0\f$
       where \f$b \neq 0\f$; or
-    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0 / m\f$,
+    - a proper congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0 / m\f$,
       where \f$b \neq 0 \pmod{m}\f$.
   */
-  bool is_trivial_false() const;
+  bool is_inconsistent() const;
 
   //! Returns <CODE>true</CODE> if the modulus is greater than zero.
   /*!
@@ -337,12 +337,10 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation of the internal
     representation of \p *this.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.

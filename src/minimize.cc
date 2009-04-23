@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: minimize() and add_and_minimize().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -77,7 +77,7 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   // the positive constraint. It also cannot be an empty generator system,
   // since this function is always called starting from a non-empty
   // polyhedron.
-  assert(!source.empty());
+  assert(!source.has_no_rows());
 
   // Sort the source system, if necessary.
   if (!source.is_sorted())
@@ -236,7 +236,7 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
 				  Bit_Matrix& sat,
 				  const Linear_System& source2) {
   // `source1' and `source2' cannot be empty.
-  assert(!source1.empty() && !source2.empty());
+  assert(!source1.has_no_rows() && !source2.has_no_rows());
   // `source1' and `source2' must have the same number of columns
   // to be merged.
   assert(source1.num_columns() == source2.num_columns());

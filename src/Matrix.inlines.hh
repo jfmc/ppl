@@ -1,5 +1,5 @@
 /* Matrix class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -97,7 +97,7 @@ Matrix::const_iterator::operator!=(const const_iterator& y) const {
 }
 
 inline bool
-Matrix::empty() const {
+Matrix::has_no_rows() const {
   return rows.empty();
 }
 

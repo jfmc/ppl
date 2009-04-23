@@ -1,5 +1,5 @@
 /* Checked_Number class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Checked_Number_inlines_hh
 #define PPL_Checked_Number_inlines_hh 1
 
+#include "globals.defs.hh"
 #include <stdexcept>
 #include <sstream>
 
@@ -46,6 +47,10 @@ check_result(Result r, Rounding_Dir dir) {
 #ifdef DEBUG_ROUND_NOT_NEEDED
     // FIXME: this is wrong. If an overflow happens the Result may be
     // V_LT or V_GT. What's the better way to cope with that?
+
+    // To solve this we need to clarify if ROUND_NOT_NEEDED is
+    // specified to grant library that the result will be exact _and_
+    // not overflowing or the result will be exact _or_ overflowling.
     assert(r == V_EQ);
 #else
     return V_EQ;
@@ -87,7 +92,7 @@ Checked_Number<T, Policy>::Checked_Number()
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Checked_Number& y) {
-  // TODO: avoid default construction of value member
+  // TODO: avoid default construction of value member.
   Checked::copy<Policy, Policy>(v, y.raw_value());
 }
 
@@ -97,7 +102,7 @@ inline
 Checked_Number<T, Policy>
 ::Checked_Number(const Checked_Number<From, From_Policy>& y,
 		 Rounding_Dir dir) {
-  // TODO: avoid default construction of value member
+  // TODO: avoid default construction of value member.
   Policy::handle_result(check_result(Checked::assign_ext<Policy, From_Policy>
 				     (v,
 				      y.raw_value(),
@@ -111,7 +116,7 @@ template <typename From, typename From_Policy>
 inline
 Checked_Number<T, Policy>
 ::Checked_Number(const Checked_Number<From, From_Policy>& y) {
-  // TODO: avoid default construction of value member
+  // TODO: avoid default construction of value member.
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;
   Policy::handle_result(check_result(Checked::assign_ext<Policy, From_Policy>
 				     (v,
@@ -120,7 +125,7 @@ Checked_Number<T, Policy>
 				     dir));
 }
 
-// TODO: avoid default construction of value member
+// TODO: avoid default construction of value member.
 #define DEF_CTOR(type) \
 template <typename T, typename Policy> \
 inline \
@@ -140,10 +145,10 @@ Checked_Number<T, Policy>::Checked_Number(const type x) {		\
 		  dir));						\
 }
 
-#define COND_0(...)
-#define COND_1(...) __VA_ARGS__
-#define COND_(if, ...) COND_##if(__VA_ARGS__)
-#define COND(if, ...) COND_(if, __VA_ARGS__)
+#define PPL_COND_0(...)
+#define PPL_COND_1(...) __VA_ARGS__
+#define PPL_COND_(if, ...) PPL_COND_##if(__VA_ARGS__)
+#define PPL_COND(if, ...) PPL_COND_(if, __VA_ARGS__)
 
 DEF_CTOR(signed char)
 DEF_CTOR(signed short)
@@ -155,13 +160,18 @@ DEF_CTOR(unsigned short)
 DEF_CTOR(unsigned int)
 DEF_CTOR(unsigned long)
 DEF_CTOR(unsigned long long)
-COND(PPL_SUPPORTED_FLOAT, DEF_CTOR(float))
-COND(PPL_SUPPORTED_DOUBLE, DEF_CTOR(double))
-COND(PPL_SUPPORTED_LONG_DOUBLE, DEF_CTOR(long double))
+PPL_COND(PPL_SUPPORTED_FLOAT, DEF_CTOR(float))
+PPL_COND(PPL_SUPPORTED_DOUBLE, DEF_CTOR(double))
+PPL_COND(PPL_SUPPORTED_LONG_DOUBLE, DEF_CTOR(long double))
 DEF_CTOR(mpq_class&)
 DEF_CTOR(mpz_class&)
 
 #undef DEF_CTOR
+
+#undef PPL_COND
+#undef PPL_COND_
+#undef PPL_COND_1
+#undef PPL_COND_0
 
 template <typename T, typename Policy>
 inline
@@ -182,6 +192,47 @@ Checked_Number<T, Policy>::Checked_Number(const char* x) {
 							    s,
 							    rounding_dir(dir)),
 				     dir));
+}
+
+template <typename T, typename Policy>
+template <typename From>
+inline
+Checked_Number<T, Policy>::Checked_Number(const From&, Rounding_Dir dir, typename Enable_If<Is_Special<From>::value, bool>::type) {
+  Policy::handle_result(check_result(Checked::assign_special<Policy>(v,
+							    From::code,
+							    rounding_dir(dir)),
+				     dir));
+}
+
+template <typename T, typename Policy>
+template <typename From>
+inline
+Checked_Number<T, Policy>::Checked_Number(const From&, typename Enable_If<Is_Special<From>::value, bool>::type) {
+  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;
+  Policy::handle_result(check_result(Checked::assign_special<Policy>(v,
+							    From::code,
+							    rounding_dir(dir)),
+				     dir));
+}
+
+template <typename To, typename From>
+inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Special<From>::value, Result>::type
+assign_r(To& to, const From&, Rounding_Dir dir) {
+  return check_result(Checked::assign_special<typename Native_Checked_To_Wrapper<To>
+		      ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),
+				From::code,
+				rounding_dir(dir)),
+		      dir);
+}
+
+template <typename To, typename From>
+inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Special<From>::value, Result>::type
+construct(To& to, const From&, Rounding_Dir dir) {
+  return check_result(Checked::construct_special<typename Native_Checked_To_Wrapper<To>
+		      ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),
+				From::code,
+				rounding_dir(dir)),
+		      dir);
 }
 
 template <typename T>
@@ -285,14 +336,14 @@ is_plus_infinity(const Checked_Number<T, Policy>& x) {
 template <typename T, typename Policy>
 inline memory_size_type
 total_memory_in_bytes(const Checked_Number<T, Policy>& x) {
-  return Checked::total_memory_in_bytes(x.raw_value());
+  return total_memory_in_bytes(x.raw_value());
 }
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline memory_size_type
 external_memory_in_bytes(const Checked_Number<T, Policy>& x) {
-  return Checked::external_memory_in_bytes(x.raw_value());
+  return external_memory_in_bytes(x.raw_value());
 }
 
 
@@ -452,14 +503,6 @@ Checked_Number<T, Policy>::operator=(const Checked_Number<T, Policy>& y) {
   return *this;
 }
 template <typename T, typename Policy>
-template <typename From, typename From_Policy>
-inline Checked_Number<T, Policy>&
-Checked_Number<T, Policy>
-::operator=(const Checked_Number<From, From_Policy>& y) {
-  Policy::handle_result(assign_r(*this, y, Policy::ROUND_DEFAULT_OPERATOR));
-  return *this;
-}
-template <typename T, typename Policy>
 template <typename From>
 inline Checked_Number<T, Policy>&
 Checked_Number<T, Policy>::operator=(const From& y) {
@@ -595,21 +638,21 @@ operator-(const Checked_Number<T, Policy>& x) {
   return r;
 }
 
-#define DEF_ASSIGN_FUN2_1(f, fun) \
+#define PPL_DEF_ASSIGN_FUN2_1(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x) { \
   Policy::handle_result(fun(x, x, Policy::ROUND_DEFAULT_FUNCTION));	\
 }
 
-#define DEF_ASSIGN_FUN2_2(f, fun) \
+#define PPL_DEF_ASSIGN_FUN2_2(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   Policy::handle_result(fun(x, y, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-#define DEF_ASSIGN_FUN3_3(f, fun) \
+#define PPL_DEF_ASSIGN_FUN3_3(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, \
@@ -617,7 +660,7 @@ f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, \
   Policy::handle_result(fun(x, y, z, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-#define DEF_ASSIGN_FUN5_5(f, fun)					\
+#define PPL_DEF_ASSIGN_FUN5_5(f, fun)					\
 template <typename T, typename Policy>					\
 inline void								\
 f(Checked_Number<T, Policy>& x,						\
@@ -627,39 +670,40 @@ f(Checked_Number<T, Policy>& x,						\
   Policy::handle_result(fun(x, s, t, y, z, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt_assign_r)
 
-DEF_ASSIGN_FUN2_1(floor_assign, floor_assign_r)
-DEF_ASSIGN_FUN2_2(floor_assign, floor_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(floor_assign, floor_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(floor_assign, floor_assign_r)
 
-DEF_ASSIGN_FUN2_1(ceil_assign, ceil_assign_r)
-DEF_ASSIGN_FUN2_2(ceil_assign, ceil_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(ceil_assign, ceil_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(ceil_assign, ceil_assign_r)
 
-DEF_ASSIGN_FUN2_1(trunc_assign, trunc_assign_r)
-DEF_ASSIGN_FUN2_2(trunc_assign, trunc_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(trunc_assign, trunc_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(trunc_assign, trunc_assign_r)
 
-DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
-DEF_ASSIGN_FUN2_2(neg_assign, neg_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(neg_assign, neg_assign_r)
 
-DEF_ASSIGN_FUN2_1(abs_assign, abs_assign_r)
-DEF_ASSIGN_FUN2_2(abs_assign, abs_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(abs_assign, abs_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(abs_assign, abs_assign_r)
 
-DEF_ASSIGN_FUN3_3(add_mul_assign, add_mul_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(add_mul_assign, add_mul_assign_r)
 
-DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul_assign_r)
 
-DEF_ASSIGN_FUN3_3(rem_assign, rem_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(rem_assign, rem_assign_r)
 
-DEF_ASSIGN_FUN3_3(gcd_assign, gcd_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(gcd_assign, gcd_assign_r)
 
-DEF_ASSIGN_FUN5_5(gcdext_assign, gcdext_assign_r)
+PPL_DEF_ASSIGN_FUN5_5(gcdext_assign, gcdext_assign_r)
 
-DEF_ASSIGN_FUN3_3(lcm_assign, lcm_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(lcm_assign, lcm_assign_r)
 
-#undef DEF_ASSIGN_FUN2_1
-#undef DEF_ASSIGN_FUN2_2
-#undef DEF_ASSIGN_FUN3_2
-#undef DEF_ASSIGN_FUN3_3
+#undef PPL_DEF_ASSIGN_FUN2_1
+#undef PPL_DEF_ASSIGN_FUN2_2
+#undef PPL_DEF_ASSIGN_FUN3_2
+#undef PPL_DEF_ASSIGN_FUN3_3
+#undef PPL_DEF_ASSIGN_FUN5_5
 
 template <typename T, typename Policy>
 inline void
@@ -794,8 +838,6 @@ maybe_check_fpu_inexact() {
   else
     return 0;
 }
-
-
 
 } // namespace Parma_Polyhedra_Library
 

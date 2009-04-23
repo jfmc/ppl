@@ -1,5 +1,5 @@
 /* Test BD_Shape::bounded_affine_preimage().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,24 +29,24 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(B <= 4);
-  bd.add_constraint(A - B <= 2);
-  bd.add_constraint(A - B >= -2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(B <= 4);
+  bds.add_constraint(A - B <= 2);
+  bds.add_constraint(A - B >= -2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.bounded_affine_preimage(A, Linear_Expression(7), Linear_Expression(3));
+  bds.bounded_affine_preimage(A, Linear_Expression(7), Linear_Expression(3));
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 7, 3) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_preimage(A, 7, 3) ***");
 
   return ok;
 }
@@ -56,26 +56,26 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(B <= 4);
-  bd.add_constraint(A - B <= 2);
-  bd.add_constraint(A - B >= -2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(B <= 4);
+  bds.add_constraint(A - B <= 2);
+  bds.add_constraint(A - B >= -2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B >= 1);
   known_result.add_constraint(B <= 4);
 
-  bd.bounded_affine_preimage(A, Linear_Expression(3), Linear_Expression(7));
+  bds.bounded_affine_preimage(A, Linear_Expression(3), Linear_Expression(7));
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 3, 7) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_preimage(A, 3, 7) ***");
 
   return ok;
 }
@@ -85,25 +85,25 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(B <= 4);
-  bd.add_constraint(A - B <= 2);
-  bd.add_constraint(A - B >= -2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(B <= 4);
+  bds.add_constraint(A - B <= 2);
+  bds.add_constraint(A - B >= -2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bd.bounded_affine_preimage(A, Linear_Expression(3), Linear_Expression(7),
-			      -1);
+  bds.bounded_affine_preimage(A, Linear_Expression(3), Linear_Expression(7),
+                              -1);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 3, 7, -1) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_preimage(A, 3, 7, -1) ***");
 
   return ok;
 }
@@ -113,25 +113,25 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(B <= 4);
-  bd.add_constraint(A - B <= 2);
-  bd.add_constraint(A - B >= -2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(B <= 4);
+  bds.add_constraint(A - B <= 2);
+  bds.add_constraint(A - B >= -2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bd.bounded_affine_preimage(A, Linear_Expression(7),
-			      Linear_Expression(3), -1);
+  bds.bounded_affine_preimage(A, Linear_Expression(7),
+                              Linear_Expression(3), -1);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 7, 3, -1) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_preimage(A, 7, 3, -1) ***");
 
   return ok;
 }
@@ -141,15 +141,15 @@ test05() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(B <= 4);
-  bd.add_constraint(A - B <= 2);
-  bd.add_constraint(A - B >= -2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(B <= 4);
+  bds.add_constraint(A - B <= 2);
+  bds.add_constraint(A - B >= -2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
 
   BD_Shape<mpq_class> known_result(2);
@@ -158,12 +158,12 @@ test05() {
   known_result.add_constraint(B <= 4);
   known_result.add_constraint(B - A <= 3);
 
-  bd.bounded_affine_preimage(A, Linear_Expression(3), A+2);
+  bds.bounded_affine_preimage(A, Linear_Expression(3), A+2);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 3, A+2) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_preimage(A, 3, A+2) ***");
 
   return ok;
 }
@@ -173,27 +173,27 @@ test06() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(B <= 4);
-  bd.add_constraint(A - B <= 2);
-  bd.add_constraint(A - B >= -2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(B <= 4);
+  bds.add_constraint(A - B <= 2);
+  bds.add_constraint(A - B >= -2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A <= -1);
   known_result.add_constraint(B >= 1);
   known_result.add_constraint(B <= 4);
 
-  bd.bounded_affine_preimage(A, Linear_Expression(3), -A+2);
+  bds.bounded_affine_preimage(A, Linear_Expression(3), -A+2);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 3, -A+2) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_preimage(A, 3, -A+2) ***");
 
   return ok;
 }
@@ -203,26 +203,26 @@ test07() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(B <= 4);
-  bd.add_constraint(A - B <= 2);
-  bd.add_constraint(A - B >= -2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(B <= 4);
+  bds.add_constraint(A - B <= 2);
+  bds.add_constraint(A - B >= -2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B >= 1);
   known_result.add_constraint(B <= 4);
 
-  bd.bounded_affine_preimage(A, Linear_Expression(3), B+5);
+  bds.bounded_affine_preimage(A, Linear_Expression(3), B+5);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 3, B+5) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_preimage(A, 3, B+5) ***");
 
   return ok;
 }
@@ -232,26 +232,26 @@ test08() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(B <= 4);
-  bd.add_constraint(A - B <= 2);
-  bd.add_constraint(A - B >= -2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(B <= 4);
+  bds.add_constraint(A - B <= 2);
+  bds.add_constraint(A - B >= -2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(2*B <= 8);
 
-  bd.bounded_affine_preimage(A, Linear_Expression(3), B-5, -1);
+  bds.bounded_affine_preimage(A, Linear_Expression(3), B-5, -1);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 3, B-5, -1) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_preimage(A, 3, B-5, -1) ***");
 
   return ok;
 }
@@ -261,15 +261,15 @@ test09() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(B <= 4);
-  bd.add_constraint(A - B <= 2);
-  bd.add_constraint(A - B >= -2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(B <= 4);
+  bds.add_constraint(A - B <= 2);
+  bds.add_constraint(A - B >= -2);
 
-  print_constraints(bd, "*** bd ***");;
+  print_constraints(bds, "*** bds ***");;
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(4*A >= -5);
@@ -277,12 +277,12 @@ test09() {
   known_result.add_constraint(B <= 4);
   known_result.add_constraint(4*(B - A) <= 21);
 
-  bd.bounded_affine_preimage(A, Linear_Expression(2), 4*A + 3*B - 5);
+  bds.bounded_affine_preimage(A, Linear_Expression(2), 4*A + 3*B - 5);
 
-  bool ok = check_result(bd, known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 2, 4*A + 3*B - 5) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_preimage(A, 2, 4*A + 3*B - 5) ***");
 
   return ok;
 }
@@ -292,28 +292,28 @@ test10() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(B <= 4);
-  bd.add_constraint(A - B <= 2);
-  bd.add_constraint(A - B >= -2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(B <= 4);
+  bds.add_constraint(A - B <= 2);
+  bds.add_constraint(A - B >= -2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(4*A <= 5);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 4);
 
-  bd.bounded_affine_preimage(A, Linear_Expression(2), 4*A + 3*B - 5, -2);
+  bds.bounded_affine_preimage(A, Linear_Expression(2), 4*A + 3*B - 5, -2);
 
-  bool ok = check_result(bd, known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 2, "
-		    "4*A + 3*B - 5, -2) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_preimage(A, 2, "
+                    "4*A + 3*B - 5, -2) ***");
 
   return ok;
 }
@@ -322,22 +322,22 @@ bool
 test11() {
   Variable A(0);
 
-  TBD_Shape bd(1);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
+  TBD_Shape bds(1);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   BD_Shape<mpq_class> known_result(1);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 4);
 
-  bd.bounded_affine_preimage(A, A, A);
+  bds.bounded_affine_preimage(A, A, A);
 
-  bool ok = check_result(bd, known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, A, A) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_preimage(A, A, A) ***");
 
   return ok;
 }

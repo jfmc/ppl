@@ -1,5 +1,5 @@
 /* Test Grid::generalized_affine_preimage(lhs, rhs, modulus).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -85,7 +85,7 @@ test03() {
   Variable C(2);
 
   Grid gr(3);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
   gr.add_congruence((C %= 0) / 3);
 
   print_congruences(gr, "*** gr ***");
@@ -112,14 +112,14 @@ test04() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
 
   print_congruences(gr, "*** gr ***");
 
   gr.generalized_affine_preimage(A - B, EQUAL, A, 0);
 
   Grid known_gr(2);
-  known_gr.add_congruence(A == 0);
+  known_gr.add_constraint(A == 0);
 
   bool ok = (gr == known_gr);
 
@@ -164,7 +164,7 @@ test06() {
 
   Grid gr(3);
   gr.add_congruence((C %= 0) / 3);
-  gr.add_congruence(A - 2*B == 1);
+  gr.add_constraint(A - 2*B == 1);
 
   print_congruences(gr, "*** gr ***");
 
@@ -188,7 +188,7 @@ test07() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
 
   print_congruences(gr, "*** gr ***");
 
@@ -213,7 +213,7 @@ test08() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
 
   print_congruences(gr, "*** gr ***");
 
@@ -286,7 +286,7 @@ test11() {
 
   Grid gr(3);
   gr.add_congruence((C %= 0) / 3);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
 
   print_congruences(gr, "*** gr ***");
 

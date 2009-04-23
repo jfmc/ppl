@@ -1,5 +1,5 @@
 /* SPARC floating point unit related functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -20,15 +20,22 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_fpu_sparc_inlines_hh
+#define PPL_fpu_sparc_inlines_hh 1
+
 #ifdef PPL_HAVE_IEEEFP_H
 #include <ieeefp.h>
 
-#define FPU_TONEAREST ((int) FP_RN)
-#define FPU_UPWARD ((int) FP_RP)
-#define FPU_DOWNWARD ((int) FP_RM)
-#define FPU_TOWARDZERO ((int) FP_RZ)
+#define PPL_FPU_TONEAREST  ((int) FP_RN)
+#define PPL_FPU_UPWARD     ((int) FP_RP)
+#define PPL_FPU_DOWNWARD   ((int) FP_RM)
+#define PPL_FPU_TOWARDZERO ((int) FP_RZ)
 
 namespace Parma_Polyhedra_Library {
+
+inline void
+fpu_initialize_control_functions() {
+}
 
 inline fpu_rounding_direction_type
 fpu_get_rounding_direction() {
@@ -65,3 +72,5 @@ fpu_check_inexact() {
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_HAVE_IEEEFP_H)
+
+#endif // !defined(PPL_fpu_sparc_inlines_hh)

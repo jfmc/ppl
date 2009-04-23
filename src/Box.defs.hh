@@ -1,5 +1,5 @@
 /* Box class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,22 +25,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Box.types.hh"
 #include "globals.types.hh"
-#include "Interval.defs.hh"
 #include "Coefficient.defs.hh"
 #include "Variable.types.hh"
 #include "Variables_Set.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
+#include "Constraint.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator.types.hh"
 #include "Generator_System.types.hh"
+#include "Congruence.types.hh"
+#include "Congruence_System.types.hh"
 #include "BD_Shape.types.hh"
 #include "Octagonal_Shape.types.hh"
 #include "Poly_Con_Relation.types.hh"
 #include "Poly_Gen_Relation.types.hh"
 #include "Polyhedron.types.hh"
 #include "Grid.types.hh"
-#include "Direct_Product.types.hh"
+#include "Partially_Reduced_Product.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -51,23 +53,23 @@ namespace Parma_Polyhedra_Library {
   Note that \p x and \p y may be dimension-incompatible boxes:
   in this case, the value <CODE>false</CODE> is returned.
 */
-template <typename Interval>
-bool operator==(const Box<Interval>& x, const Box<Interval>& y);
+template <typename ITV>
+bool operator==(const Box<ITV>& x, const Box<ITV>& y);
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y aren't the same box.
 /*! \relates Box
   Note that \p x and \p y may be dimension-incompatible boxes:
   in this case, the value <CODE>true</CODE> is returned.
 */
-template <typename Interval>
-bool operator!=(const Box<Interval>& x, const Box<Interval>& y);
+template <typename ITV>
+bool operator!=(const Box<ITV>& x, const Box<ITV>& y);
 
 namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Box */
-template <typename Interval>
-std::ostream& operator<<(std::ostream& s, const Box<Interval>& box);
+template <typename ITV>
+std::ostream& operator<<(std::ostream& s, const Box<ITV>& box);
 
 } // namespace IO_Operators
 
@@ -82,11 +84,11 @@ std::ostream& operator<<(std::ostream& s, const Box<Interval>& box);
   All computations are performed using variables of type
   Checked_Number<To, Extended_Number_Policy>.
 */
-template <typename To, typename Interval>
+template <typename To, typename ITV>
 bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Box<Interval>& x,
-			    const Box<Interval>& y,
+			    const Box<ITV>& x,
+			    const Box<ITV>& y,
 			    Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
@@ -100,11 +102,11 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using variables of type
   Checked_Number<Temp, Extended_Number_Policy>.
 */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Box<Interval>& x,
-			    const Box<Interval>& y,
+			    const Box<ITV>& x,
+			    const Box<ITV>& y,
 			    Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
@@ -118,11 +120,11 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Box<Interval>& x,
-			    const Box<Interval>& y,
+			    const Box<ITV>& x,
+			    const Box<ITV>& y,
 			    Rounding_Dir dir,
 			    Temp& tmp0,
 			    Temp& tmp1,
@@ -139,11 +141,11 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using variables of type
   Checked_Number<To, Extended_Number_Policy>.
 */
-template <typename To, typename Interval>
+template <typename To, typename ITV>
 bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Box<Interval>& x,
-			  const Box<Interval>& y,
+			  const Box<ITV>& x,
+			  const Box<ITV>& y,
 			  Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
@@ -157,11 +159,11 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using variables of type
   Checked_Number<Temp, Extended_Number_Policy>.
 */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Box<Interval>& x,
-			  const Box<Interval>& y,
+			  const Box<ITV>& x,
+			  const Box<ITV>& y,
 			  Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
@@ -175,11 +177,11 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Box<Interval>& x,
-			  const Box<Interval>& y,
+			  const Box<ITV>& x,
+			  const Box<ITV>& y,
 			  Rounding_Dir dir,
 			  Temp& tmp0,
 			  Temp& tmp1,
@@ -196,11 +198,11 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using variables of type
   Checked_Number<To, Extended_Number_Policy>.
 */
-template <typename To, typename Interval>
+template <typename To, typename ITV>
 bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Box<Interval>& x,
-			   const Box<Interval>& y,
+			   const Box<ITV>& x,
+			   const Box<ITV>& y,
 			   Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
@@ -214,11 +216,11 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using variables of type
   Checked_Number<Temp, Extended_Number_Policy>.
 */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Box<Interval>& x,
-			   const Box<Interval>& y,
+			   const Box<ITV>& x,
+			   const Box<ITV>& y,
 			   Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
@@ -232,11 +234,11 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Box<Interval>& x,
-			   const Box<Interval>& y,
+			   const Box<ITV>& x,
+			   const Box<ITV>& y,
 			   Rounding_Dir dir,
 			   Temp& tmp0,
 			   Temp& tmp1,
@@ -248,10 +250,10 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Specialization,
-	  typename Temp, typename To, typename Interval>
+	  typename Temp, typename To, typename ITV>
 bool
 l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-		    const Box<Interval>& x, const Box<Interval>& y,
+		    const Box<ITV>& x, const Box<ITV>& y,
 		    Rounding_Dir dir,
 		    Temp& tmp0, Temp& tmp1, Temp& tmp2);
 
@@ -259,19 +261,47 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 //! A not necessarily closed, iso-oriented hyperrectangle.
 /*! \ingroup PPL_CXX_interface
-  A Box object represents the Cartesian product of \f$n\f$
+  A Box object represents the smash product of \f$n\f$
   not necessarily closed and possibly unbounded intervals
-  represented by objects of class \p Interval,
+  represented by objects of class \p ITV,
   where \f$n\f$ is the space dimension of the box.
+
+  An <EM>interval constraint</EM> (resp., <EM>interval congruence</EM>)
+  is a syntactic constraint (resp., congruence) that only mentions
+  a single space dimension.
+
+  The Box domain <EM>optimally supports</EM>:
+    - tautological and inconsistent constraints and congruences;
+    - the interval constraints that are optimally supported by
+      the template argument class \c ITV;
+    - the interval congruences that are optimally supported by
+      the template argument class \c ITV.
+
+  Depending on the method, using a constraint or congruence that is not
+  optimally supported by the domain will either raise an exception or
+  result in a (possibly non-optimal) upward approximation.
+
+  The user interface for the Box domain is meant to be as similar
+  as possible to the one developed for the polyhedron class C_Polyhedron.
 */
-template <typename Interval>
+template <typename ITV>
 class Parma_Polyhedra_Library::Box {
 public:
   //! The type of intervals used to implement the box.
-  typedef Interval interval_type;
+  typedef ITV interval_type;
 
   //! Returns the maximum space dimension that a Box can handle.
   static dimension_type max_space_dimension();
+
+  /*! \brief
+    Returns false indicating that this domain does not recycle constraints
+  */
+  static bool can_recycle_constraint_systems();
+
+  /*! \brief
+    Returns false indicating that this domain does not recycle congruences
+  */
+  static bool can_recycle_congruence_systems();
 
   //! \name Constructors, Assignment, Swap and Destructor
   //@{
@@ -288,11 +318,19 @@ public:
 	       Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
-  Box(const Box& y);
+  /*!
+    The complexity argument is ignored.
+  */
+  Box(const Box& y,
+      Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a conservative, upward approximation of \p y.
-  template <typename Other_Interval>
-  explicit Box(const Box<Other_Interval>& y);
+  /*!
+    The complexity argument is ignored.
+  */
+  template <typename Other_ITV>
+  explicit Box(const Box<Other_ITV>& y,
+               Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a box from the system of constraints \p cs.
   /*!
@@ -300,7 +338,7 @@ public:
 
     \param cs
     A system of constraints: constraints that are not
-    \ref bounding_boxes "interval constraints"
+    \ref intervals "interval constraints"
     are ignored (even though they may have contributed
     to the space dimension).
   */
@@ -312,7 +350,7 @@ public:
 
     \param cs
     A system of constraints: constraints that are not
-    \ref bounding_boxes "interval constraints"
+    \ref intervals "interval constraints"
     are ignored (even though they may have contributed
     to the space dimension).
 
@@ -348,6 +386,34 @@ public:
     Thrown if the system of generators is not empty but has no points.
   */
   Box(const Generator_System& gs, Recycle_Input dummy);
+
+  /*!
+    Builds the smallest box containing the grid defined by a
+    system of congruences \p cgs.
+    The box inherits the space dimension of \p cgs.
+
+    \param cgs
+    A system of congruences: congruences that are not
+    non-relational equality constraints are ignored
+    (though they may have contributed to the space dimension).
+  */
+  explicit Box(const Congruence_System& cgs);
+
+  /*!
+    Builds the smallest box containing the grid defined by a
+    system of congruences \p cgs, recycling \p cgs.
+    The box inherits the space dimension of \p cgs.
+
+    \param cgs
+    A system of congruences: congruences that are not
+    non-relational equality constraints are ignored
+    (though they will contribute to the space dimension).
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+  */
+  Box(const Congruence_System& cgs, Recycle_Input dummy);
 
   //! Builds a box containing the BDS \p bds.
   /*!
@@ -385,13 +451,13 @@ public:
   explicit Box(const Grid& ph,
 	       Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
 
-  //! Builds a box containing the direct product \p dp.
+  //! Builds a box containing the partially reduced product \p dp.
   /*!
     Builds a box containing \p ph using algorithms whose complexity
     does not exceed the one specified by \p complexity.
   */
-  template <typename D1, typename D2>
-  explicit Box(const Direct_Product<D1, D2>& dp,
+  template <typename D1, typename D2, typename R>
+  explicit Box(const Partially_Reduced_Product<D1, D2, R>& dp,
 	       Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
@@ -445,13 +511,28 @@ public:
   */
   bool contains_integer_point() const;
 
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p var is constrained in
+    \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  bool constrains(Variable var) const;
+
   //! Returns the relations holding between \p *this and the constraint \p c.
   /*!
     \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible
-    or if \p c is not a box constraint.
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
   */
   Poly_Con_Relation relation_with(const Constraint& c) const;
+
+  //! Returns the relations holding between \p *this and the congruence \p cg.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p cg are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Congruence& cg) const;
 
   //! Returns the relations holding between \p *this and the generator \p g.
   /*!
@@ -632,30 +713,92 @@ public:
   //@{
 
   /*! \brief
-    Use the constraint \p c to refine \p *this.
-    FIXME: this is not true.
+    Adds a copy of constraint \p c to the system of constraints
+    defining \p *this.
 
     \param c
-    The constraint to be added. If it is not an interval constraint, it
-    will be simply ignored.
+    The constraint to be added.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p c are dimension-incompatible.
+    Thrown if \p *this and constraint \p c are dimension-incompatible,
+    or \p c is not optimally supported by the Box domain.
   */
   void add_constraint(const Constraint& c);
 
   /*! \brief
-     Use the constraints in \p cs to refine \p *this.
-     FIXME: this is not true.
+    Adds the constraints in \p cs to the system of constraints
+    defining \p *this.
 
-     \param  cs
-     The constraints to be added. Constraints that are not interval
-     constraints will be simply ignored.
+    \param  cs
+    The constraints to be added.
 
-     \exception std::invalid_argument
-     Thrown if \p *this and \p cs are dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible,
+    or \p cs contains a constraint which is not optimally supported
+    by the box domain.
   */
   void add_constraints(const Constraint_System& cs);
+
+  /*! \brief
+    Adds the constraints in \p cs to the system of constraints
+    defining \p *this.
+
+    \param  cs
+    The constraints to be added. They may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible,
+    or \p cs contains a constraint which is not optimally supported
+    by the box domain.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_constraints(Constraint_System& cs);
+
+  /*! \brief
+    Adds to \p *this a constraint equivalent to the congruence \p cg.
+
+    \param cg
+    The congruence to be added.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible,
+    or \p cg is not optimally supported by the box domain.
+  */
+  void add_congruence(const Congruence& cg);
+
+  /*! \brief
+    Adds to \p *this constraints equivalent to the congruences in \p cgs.
+
+    \param cgs
+    The congruences to be added.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    or \p cgs contains a congruence which is not optimally supported
+    by the box domain.
+  */
+  void add_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Adds to \p *this constraints equivalent to the congruences in \p cgs.
+
+    \param cgs
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    or \p cgs contains a congruence which is not optimally supported
+    by the box domain.
+
+    \warning
+    The only assumption that can be made on \p cgs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_congruences(Congruence_System& cgs);
 
   /*! \brief
     Use the constraint \p c to refine \p *this.
@@ -666,18 +809,88 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p c are dimension-incompatible.
   */
-  void refine(const Constraint& c);
+  void refine_with_constraint(const Constraint& c);
 
   /*! \brief
     Use the constraints in \p cs to refine \p *this.
 
     \param  cs
-    The constraints to be used for refinement.
+     The constraints to be used for refinement.
+
+     \exception std::invalid_argument
+     Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void refine_with_constraints(const Constraint_System& cs);
+
+  /*! \brief
+    Use the congruence \p cg to refine \p *this.
+
+    \param cg
+    The congruence to be used for refinement.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
+    Thrown if \p *this and \p cg are dimension-incompatible.
   */
-  void refine(const Constraint_System& cs);
+  void refine_with_congruence(const Congruence& cg);
+
+  /*! \brief
+    Use the congruences in \p cgs to refine \p *this.
+
+    \param  cgs
+    The congruences to be used for refinement.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void refine_with_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Use the constraint \p c for constraint propagation on \p *this.
+
+    \param c
+    The constraint to be used for constraint propagation.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  void propagate_constraint(const Constraint& c);
+
+  /*! \brief
+    Use the constraints in \p cs for constraint propagagion on \p *this.
+
+    \param  cs
+     The constraints to be used for constraint propagation.
+
+     \exception std::invalid_argument
+     Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void propagate_constraints(const Constraint_System& cs);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  void unconstrain(Variable var);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  void unconstrain(const Variables_Set& to_be_unconstrained);
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
@@ -687,28 +900,22 @@ public:
   void intersection_assign(const Box& y);
 
   /*! \brief
-    Assigns to \p *this the smallest box containing the convex union
+    Assigns to \p *this the smallest box containing the union
     of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void box_hull_assign(const Box& y);
-
-  //! Same as box_hull_assign.
   void upper_bound_assign(const Box& y);
 
   /*! \brief
-    If the box-hull of \p *this and \p y is exact, it is assigned
+    If the upper bound of \p *this and \p y is exact, it is assigned
     to \p *this and <CODE>true</CODE> is returned,
     otherwise <CODE>false</CODE> is returned.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool box_hull_assign_if_exact(const Box& y);
-
-  //! Same as box_hull_assign_if_exact.
   bool upper_bound_assign_if_exact(const Box& y);
 
   /*! \brief
@@ -717,10 +924,17 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void box_difference_assign(const Box& y);
-
-  //! Same as box_difference_assign.
   void difference_assign(const Box& y);
+
+  /*! \brief
+    Assigns to \p *this a \ref Meet_Preserving_Simplification
+    "meet-preserving simplification" of \p *this with respect to \p y.
+    If \c false is returned, then the intersection is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  bool simplify_using_context_assign(const Box& y);
 
   /*! \brief
     Assigns to \p *this the
@@ -949,12 +1163,15 @@ public:
   */
   void time_elapse_assign(const Box& y);
 
+  //! Assigns to \p *this its topological closure.
+  void topological_closure_assign();
+
   /*! \brief
     Assigns to \p *this the result of computing the
     \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
 
     \param y
-    A bounding box that <EM>must</EM> be contained in \p *this.
+    A box that <EM>must</EM> be contained in \p *this.
 
     \param tp
     An optional pointer to an unsigned variable storing the number of
@@ -971,7 +1188,7 @@ public:
     \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
 
     \param y
-    A bounding box that <EM>must</EM> be contained in \p *this.
+    A box that <EM>must</EM> be contained in \p *this.
 
     \param first
     An iterator that points to the first stop-point.
@@ -985,6 +1202,9 @@ public:
   template <typename Iterator>
   void CC76_widening_assign(const Box& y,
 			    Iterator first, Iterator last);
+
+  //! Same as CC76_widening_assign(y, tp).
+  void widening_assign(const Box& y, unsigned* tp = 0);
 
   /*! \brief
     Improves the result of the \ref CC76_extrapolation "CC76-extrapolation"
@@ -1221,15 +1441,15 @@ public:
     \exception std::invalid_argument
     Thrown if \p var is not a space dimension of \p *this.
   */
-  const Interval& get_interval(Variable var) const;
+  const ITV& get_interval(Variable var) const;
 
   /*! \brief
-    Returns a reference the interval that bounds \p var.
+    Sets to \p i the interval that bounds \p var.
 
     \exception std::invalid_argument
     Thrown if \p var is not a space dimension of \p *this.
   */
-  void set_interval(Variable var, const Interval& i);
+  void set_interval(Variable var, const ITV& i);
 
   /*! \brief
     If the <CODE>k</CODE>-th space dimension is unbounded below, returns
@@ -1276,14 +1496,23 @@ public:
   bool get_upper_bound(dimension_type k, bool& closed,
 		       Coefficient& n, Coefficient& d) const;
 
-  //! Causes the box to become empty, i.e., to represent the empty set.
-  void set_empty();
-
   //! Returns a system of constraints defining \p *this.
   Constraint_System constraints() const;
 
   //! Returns a minimized system of constraints defining \p *this.
   Constraint_System minimized_constraints() const;
+
+  //! Returns a system of congruences approximating \p *this.
+  Congruence_System congruences() const;
+
+  //! Returns a minimized system of congruences approximating \p *this.
+  Congruence_System minimized_congruences() const;
+
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
 
   PPL_OUTPUT_DECLARATIONS
 
@@ -1297,29 +1526,15 @@ public:
   bool ascii_load(std::istream& s);
 
 private:
-  template <typename Other_Interval>
+  template <typename Other_ITV>
   friend class Parma_Polyhedra_Library::Box;
 
   friend bool
-  operator==<Interval>(const Box<Interval>& x, const Box<Interval>& y);
+  operator==<ITV>(const Box<ITV>& x, const Box<ITV>& y);
 
-#ifdef __ICC
-  // Work around bug of the Intel compiler: use `interval_type'
-  // instead of `Interval'.
   friend std::ostream&
   Parma_Polyhedra_Library
-  ::IO_Operators::operator<<<>(std::ostream& s, const Box<interval_type>& box);
-#elif !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
-  friend std::ostream&
-  Parma_Polyhedra_Library
-  ::IO_Operators::operator<<<>(std::ostream& s, const Box<Interval>& box);
-#else
-  // This is too lax than wanted.
-  template <typename U>
-  friend std::ostream&
-  Parma_Polyhedra_Library
-  ::IO_Operators::operator<<(std::ostream& s, const Box<U>& box);
-#endif
+  ::IO_Operators::operator<<<>(std::ostream& s, const Box<ITV>& box);
 
   template <typename Specialization, typename Temp, typename To, typename I>
   friend bool Parma_Polyhedra_Library::l_m_distance_assign
@@ -1328,32 +1543,45 @@ private:
    Temp& tmp0, Temp& tmp1, Temp& tmp2);
 
   //! The type of sequence used to implement the box.
-  typedef std::vector<Interval> Sequence;
+  typedef std::vector<ITV> Sequence;
 
   /*! \brief
     The type of intervals used by inner computations when trying to limit
     the cumulative effect of approximation errors.
   */
-  typedef Interval Tmp_Interval_Type;
+  typedef ITV Tmp_Interval_Type;
 
   //! A sequence of intervals, one for each dimension of the vector space.
   Sequence seq;
 
-  //! Returns <CODE>true</CODE> if and only if the box is known to be empty.
-  /*!
+#define PPL_IN_Box_CLASS
+#include "Box_Status.idefs.hh"
+#undef PPL_IN_Box_CLASS
+
+  //! The status flags to keep track of the internal state.
+  Status status;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the box is known to be empty.
+
     The return value <CODE>false</CODE> does not necessarily
     implies that \p *this is non-empty.
   */
-  bool marked_empty()const;
+  bool marked_empty() const;
 
-  /*! \brief
-    A Boolean flag indicating emptiness of the box.
-    Only meaningful when \p empty_up_to_date is <CODE>true</CODE>.
-  */
-  mutable bool empty;
+public:
+  //! Causes the box to become empty, i.e., to represent the empty set.
+  void set_empty();
 
-  //! Tells whether or not the flag \p empty is meaningful.
-  mutable bool empty_up_to_date;
+private:
+  //! Marks \p *this as definitely not empty.
+  void set_nonempty();
+
+  //! Asserts the validity of the empty flag of \p *this.
+  void set_empty_up_to_date();
+
+  //! Invalidates empty flag of \p *this.
+  void reset_empty_up_to_date();
 
   /*! \brief
     Checks the hard way whether \p *this is an empty box:
@@ -1365,38 +1593,101 @@ private:
      Returns a reference the interval that bounds
      the box on the <CODE>k</CODE>-th space dimension.
    */
-  const Interval& operator[](dimension_type k) const;
+  const ITV& operator[](dimension_type k) const;
 
   /*! \brief
-    Use the constraint \p c to refine \p *this.
-    FIXME: this is not true.
+    WRITE ME.
+  */
+  void
+  add_interval_constraint_no_check(dimension_type var_id,
+                                   Constraint::Type type,
+                                   Coefficient_traits::const_reference num,
+                                   Coefficient_traits::const_reference den);
 
-    \param c
-    The constraint to be added. If it is not an interval constraint, it
-    will be simply ignored.  If it is dimension-incompatible with \p *this,
-    the behavior is undefined.
+  /*! \brief
+    WRITE ME.
   */
   void add_constraint_no_check(const Constraint& c);
 
   /*! \brief
-    Use the constraints in \p cs to refine \p *this.
-    FIXME: this is not true.
-
-    \param  cs
-    The constraints to be added. Constraints that are not interval
-    constraints will be simply ignored.  If it is
-    dimension-incompatible with \p *this, the behavior is undefined.
+    WRITE ME.
   */
   void add_constraints_no_check(const Constraint_System& cs);
 
   /*! \brief
-    Use the constraint \p c to refine \p *this.
+    WRITE ME.
+  */
+  void add_congruence_no_check(const Congruence& cg);
+
+  /*! \brief
+    WRITE ME.
+  */
+  void add_congruences_no_check(const Congruence_System& cgs);
+
+  /*! \brief
+    Uses the constraint \p c to refine \p *this.
 
     \param c
-    The constraint to be added. If it is dimension-incompatible with
-    \p *this, the behavior is undefined.
+    The constraint to be added.
+    Non-interval constraints are ignored.
 
-    FIXME: mention the possibility of non-termination.
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Constraint& c);
+
+  /*! \brief
+    Uses the constraints in \p cs to refine \p *this.
+
+    \param cs
+    The constraints to be added.
+    Non-interval constraints are ignored.
+
+    \warning
+    If \p cs and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Constraint_System& cs);
+
+  /*! \brief
+    Uses the congruence \p cg to refine \p *this.
+
+    \param cg
+    The congruence to be added.
+    Nontrivial proper congruences are ignored.
+
+    \warning
+    If \p cg and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Congruence& cg);
+
+  /*! \brief
+    Uses the congruences in \p cgs to refine \p *this.
+
+    \param cgs
+    The congruences to be added.
+    Nontrivial proper congruences are ignored.
+
+    \warning
+    If \p cgs and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Congruence_System& cgs);
+
+  /*! \brief
+    Propagates the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be propagated.
+
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+
+    \warning
+    This method may lead to non-termination.
 
     \if Include_Implementation_Details
 
@@ -1545,18 +1836,22 @@ private:
     \f$i \in N \setdiff \{ k \}\f$, or if the computation is inexact.
     \endif
   */
-  void refine_no_check(const Constraint& c);
+  void propagate_constraint_no_check(const Constraint& c);
 
   /*! \brief
-    Use the constraints in \p cs to refine \p *this.
+    Propagates the constraints in \p cs to refine \p *this.
 
     \param  cs
-    The constraints to be added. If it is dimension-incompatible with
-    \p *this, the behavior is undefined.
+    The constraints to be propagated.
 
-    FIXME: mention the possibility of non-termination.
+    \warning
+    If \p cs and \p *this are dimension-incompatible,
+    the behavior is undefined.
+
+    \warning
+    This method may lead to non-termination.
   */
-  void refine_no_check(const Constraint_System& cs);
+  void propagate_constraints_no_check(const Constraint_System& cs);
 
   //! Checks if and how \p expr is bounded in \p *this.
   /*!
@@ -1593,7 +1888,7 @@ private:
 
     \param included
     <CODE>true</CODE> if and only if the extremum of \p expr can
-    actually be reached in \p * this;
+    actually be reached in \p *this;
 
     \param g
     When maximization or minimization succeeds, will be assigned
@@ -1641,6 +1936,13 @@ private:
 	       bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
 
+  /*! \brief
+    Adds to \p limiting_box the interval constraints in \p cs
+    that are satisfied by \p *this.
+  */
+  void get_limiting_box(const Constraint_System& cs,
+                        Box& limiting_box) const;
+
   //! \name Exception Throwers
   //@{
   void throw_dimension_incompatible(const char* method,
@@ -1653,7 +1955,13 @@ private:
 				    const Constraint& c) const;
 
   void throw_dimension_incompatible(const char* method,
+				    const Congruence& cg) const;
+
+  void throw_dimension_incompatible(const char* method,
 				    const Constraint_System& cs) const;
+
+  void throw_dimension_incompatible(const char* method,
+				    const Congruence_System& cgs) const;
 
   void throw_dimension_incompatible(const char* method,
 				    const Generator& g) const;
@@ -1677,11 +1985,41 @@ private:
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  Returns the relations holding between an interval and
+  an interval constraint.
+
+  \param i
+  The interval;
+
+  \param constraint_type
+  The constraint type;
+
+  \param num
+  The numerator of the constraint bound;
+
+  \param den
+  The denominator of the constraint bound
+
+  The interval constraint has the form
+  <CODE>den * Variable(0) relsym num</CODE>
+  where relsym is  <CODE>==</CODE>,  <CODE>></CODE> or  <CODE>>=</CODE>
+  depending on the <CODE>constraint_type</CODE>.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename ITV>
+Poly_Con_Relation
+interval_relation(const ITV& i,
+                  const Constraint::Type constraint_type,
+                  Coefficient_traits::const_reference num,
+                  Coefficient_traits::const_reference den = 1);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as an interval constraint.
 /*! \relates Box
   \return
   <CODE>true</CODE> if the constraint \p c is an
-  \ref bounding_boxes "interval constraint";
+  \ref intervals "interval constraint";
   <CODE>false</CODE> otherwise.
 
   \param c
@@ -1707,8 +2045,14 @@ bool extract_interval_constraint(const Constraint& c,
 				 dimension_type& c_num_vars,
 				 dimension_type& c_only_var);
 
+bool extract_interval_congruence(const Congruence& cg,
+				 dimension_type cg_space_dim,
+				 dimension_type& cg_num_vars,
+				 dimension_type& cg_only_var);
+
 } // namespace Parma_Polyhedra_Library
 
+#include "Box_Status.inlines.hh"
 #include "Box.inlines.hh"
 #include "Box.templates.hh"
 

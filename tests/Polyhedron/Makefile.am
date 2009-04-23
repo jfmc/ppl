@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -20,12 +20,23 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+if VALGRIND_TESTS_ENABLED
+
+CHECKER = \
+$(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
+--num-callers=100 --leak-resolution=high \
+--suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+else !VALGRIND_TESTS_ENABLED
+
 CHECKER =
-#CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+endif !VALGRIND_TESTS_ENABLED
 
 TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/src \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/utils \
 -I$(top_srcdir)/tests \
@@ -52,7 +63,7 @@ affinepreimage1 \
 affinetrans \
 append1 append2 \
 ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 \
-bgp99extrapolation1 \
+bgp99extrapolation1 bgp99extrapolation2 \
 bhrz03widening1 bhrz03widening2 bhrz03widening3 \
 bhz03widening1 \
 bounded1 \
@@ -64,6 +75,7 @@ bounds1 \
 cnncconversion1 \
 concatenate1 \
 congruences1 \
+constrains1 \
 constraints1 \
 contains1 contains2 \
 containsintegerpoint1 \
@@ -74,17 +86,21 @@ equals1 \
 exceptions1 exceptions2  exceptions3 \
 expandspacedim1 expandspacedim2 \
 foldspacedims1 foldspacedims2 \
+frombdshape1 \
 frombox1 frombox2 \
+fromgrid1 \
+fromoctagonalshape1 \
 generalizedaffineimage1 generalizedaffineimage2 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generators1 \
 geomcovers1 \
 h79widening1 h79widening2 \
 intersection1 \
+simplifyusingcontext1 \
 limitedbhrz03extrapolation1 \
 limitedh79extrapolation1 \
 linearpartition1 \
-linexpression1 \
+linearexpression1 \
 linearsystem1 \
 mapspacedims1 \
 matrix1 \
@@ -92,7 +108,7 @@ max_min1 \
 maxspacedim1 \
 mc91 \
 membytes1 \
-memory1 memory2 \
+memory2 \
 minconstraints1 minconstraints2 \
 mingenerators1 mingenerators2 \
 nncminimize1 nncminimize2 \
@@ -101,15 +117,19 @@ onepoint \
 permute \
 polydifference1 polydifference2 \
 polyhull1 polyhull2 \
-pointsetpowerset1 \
-powerset1 \
+polyhullifexact1 polyhullifexact2 \
 randphull1 \
+refinewithconstraint1 \
+refinewithconstraints1 \
+refinewithcongruence1 \
+refinewithcongruences1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
 smm1 \
 timeelapse1 timeelapse2 \
 topclosed1 \
 topclosure1 \
+unconstrain1 \
 universe1 universe2 \
 variablesset1 \
 writeconsys1 \
@@ -141,6 +161,7 @@ nnc_boundedh79extrapolation1 \
 nnc_bounds1 \
 nnc_concatenate1 \
 nnc_congruences1 \
+nnc_constrains1 \
 nnc_constraints1 \
 nnc_contains1 \
 nnc_containsintegerpoint1 \
@@ -150,13 +171,17 @@ nnc_equals1 \
 nnc_exceptions1 nnc_exceptions3 \
 nnc_expandspacedim1 \
 nnc_foldspacedims1 \
+nnc_frombdshape1 \
 nnc_frombox1 \
+nnc_fromgrid1 \
+nnc_fromoctagonalshape1 \
 nnc_generalizedaffineimage1 \
 nnc_generalizedaffinepreimage1 \
 nnc_generators1 \
 nnc_geomcovers1 \
 nnc_h79widening1 \
 nnc_intersection1 \
+nnc_simplifyusingcontext1 \
 nnc_limitedbhrz03extrapolation1 \
 nnc_limitedh79extrapolation1 \
 nnc_linearpartition1 \
@@ -170,11 +195,13 @@ nnc_onepoint \
 nnc_permute \
 nnc_polydifference1 \
 nnc_polyhull1 \
+nnc_polyhullifexact1 \
 nnc_randphull1 \
 nnc_relations1 nnc_relations2 \
 nnc_removespacedims1 \
 nnc_smm1 \
 nnc_timeelapse1 \
+nnc_unconstrain1 \
 nnc_universe1 \
 nnc_writepolyhedron1
 
@@ -217,6 +244,7 @@ ascii_dump_load2_SOURCES = ascii_dump_load2.cc
 ascii_dump_load3_SOURCES = ascii_dump_load3.cc
 
 bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
+bgp99extrapolation2_SOURCES = bgp99extrapolation2.cc
 
 bhrz03widening1_SOURCES = bhrz03widening1.cc
 bhrz03widening2_SOURCES = bhrz03widening2.cc
@@ -241,6 +269,8 @@ cnncconversion1_SOURCES = cnncconversion1.cc
 concatenate1_SOURCES = concatenate1.cc
 
 congruences1_SOURCES = congruences1.cc
+
+constrains1_SOURCES = constrains1.cc
 
 constraints1_SOURCES = constraints1.cc
 
@@ -268,8 +298,14 @@ expandspacedim2_SOURCES = expandspacedim2.cc
 foldspacedims1_SOURCES = foldspacedims1.cc
 foldspacedims2_SOURCES = foldspacedims2.cc
 
+frombdshape1_SOURCES = frombdshape1.cc
+
 frombox1_SOURCES = frombox1.cc
 frombox2_SOURCES = frombox2.cc
+
+fromgrid1_SOURCES = fromgrid1.cc
+
+fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
@@ -286,13 +322,15 @@ h79widening2_SOURCES = h79widening2.cc
 
 intersection1_SOURCES = intersection1.cc
 
+simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
+
 limitedbhrz03extrapolation1_SOURCES = limitedbhrz03extrapolation1.cc
 
 limitedh79extrapolation1_SOURCES = limitedh79extrapolation1.cc
 
 linearpartition1_SOURCES = linearpartition1.cc
 
-linexpression1_SOURCES = linexpression1.cc
+linearexpression1_SOURCES = linearexpression1.cc
 
 linearsystem1_SOURCES = linearsystem1.cc
 
@@ -308,7 +346,6 @@ mc91_SOURCES = mc91.cc
 
 membytes1_SOURCES = membytes1.cc
 
-memory1_SOURCES = memory1.cc
 memory2_SOURCES = memory2.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
@@ -332,12 +369,16 @@ polydifference2_SOURCES = polydifference2.cc
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
 
-pointsetpowerset1_SOURCES = pointsetpowerset1.cc
-
-powerset1_SOURCES = powerset1.cc
+polyhullifexact1_SOURCES = polyhullifexact1.cc
+polyhullifexact2_SOURCES = polyhullifexact2.cc
 
 randphull1_SOURCES = randphull1.cc
 randphull1_LDADD = $(LDADD) -lm
+
+refinewithconstraint1_SOURCES = refinewithconstraint1.cc
+refinewithconstraints1_SOURCES = refinewithconstraints1.cc
+refinewithcongruence1_SOURCES = refinewithcongruence1.cc
+refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
@@ -354,6 +395,8 @@ timeelapse2_SOURCES = timeelapse2.cc
 topclosed1_SOURCES = topclosed1.cc
 
 topclosure1_SOURCES = topclosure1.cc
+
+unconstrain1_SOURCES = unconstrain1.cc
 
 universe1_SOURCES = universe1.cc
 universe2_SOURCES = universe2.cc
@@ -449,6 +492,9 @@ nnc_concatenate1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_congruences1_SOURCES = congruences1.cc
 nnc_congruences1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_constrains1_SOURCES = constrains1.cc
+nnc_constrains1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_constraints1_SOURCES = constraints1.cc
 nnc_constraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
@@ -478,8 +524,17 @@ nnc_expandspacedim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_foldspacedims1_SOURCES = foldspacedims1.cc
 nnc_foldspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_frombdshape1_SOURCES = frombdshape1.cc
+nnc_frombdshape1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_frombox1_SOURCES = frombox1.cc
 nnc_frombox1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_fromgrid1_SOURCES = fromgrid1.cc
+nnc_fromgrid1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
+nnc_fromoctagonalshape1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 nnc_generalizedaffineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -498,6 +553,9 @@ nnc_h79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_intersection1_SOURCES = intersection1.cc
 nnc_intersection1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
+nnc_simplifyusingcontext1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_limitedbhrz03extrapolation1_SOURCES = limitedbhrz03extrapolation1.cc
 nnc_limitedbhrz03extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -538,6 +596,9 @@ nnc_polydifference1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_polyhull1_SOURCES = polyhull1.cc
 nnc_polyhull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_polyhullifexact1_SOURCES = polyhullifexact1.cc
+nnc_polyhullifexact1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_randphull1_SOURCES = randphull1.cc
 nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_randphull1_LDADD = $(LDADD) -lm
@@ -556,13 +617,30 @@ nnc_smm1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_timeelapse1_SOURCES = timeelapse1.cc
 nnc_timeelapse1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_unconstrain1_SOURCES = unconstrain1.cc
+nnc_unconstrain1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_universe1_SOURCES = universe1.cc
 nnc_universe1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_writepolyhedron1_SOURCES = writepolyhedron1.cc
 nnc_writepolyhedron1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+#
+# Sources for the special tests.
+#
+
+memory1_SRCS = memory1.cc
+
 watchdog1_SRCS = watchdog1.cc
+
+if !VALGRIND_TESTS_ENABLED
+VALGRIND_BRITTLE_TESTS = memory1
+
+memory1_SOURCES = $(memory1_SRCS)
+
+endif !VALGRIND_TESTS_ENABLED
+
 
 if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = watchdog1
@@ -576,13 +654,17 @@ watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
 
 endif BUILD_WATCHDOG_LIBRARY
 
-TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
+TESTS = \
+$(ORIGINAL_TESTS) \
+$(DERIVED_TESTS) \
+$(VALGRIND_BRITTLE_TESTS) \
+$(WATCHDOG_TESTS)
 
 XFAIL_TESTS =
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
-EXTRA_DIST = $(watchdog1_SRCS)
+EXTRA_DIST = $(memory1_SRCS) $(watchdog1_SRCS)
 
 BUGS =
 
@@ -596,3 +678,15 @@ writegensys1.dat \
 writepolyhedron1.dat \
 writepolyhedron2.dat \
 writevariable1.dat
+
+$(top_builddir)/utils/libppl_utils.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
+
+$(top_builddir)/tests/libppl_tests.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/tests libppl_tests.a
+
+$(top_builddir)/src/libppl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
+
+$(top_builddir)/Watchdog/src/libpwl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/Watchdog/src libpwl.la

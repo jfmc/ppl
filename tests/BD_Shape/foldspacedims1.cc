@@ -1,5 +1,5 @@
 /* Test BD_Shape::fold_space_dimensions().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,21 +29,21 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd1(3);
+  TBD_Shape bds(3);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
   to_fold.insert(A);
 
-  bd1.fold_space_dimensions(to_fold, B);
+  bds.fold_space_dimensions(to_fold, B);
 
   TBD_Shape known_result(2);
 
-  bool ok = (bd1 == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** after folding {A} into B ***");
+  print_constraints(bds, "*** after folding {A} into B ***");
 
   return ok;
 }
@@ -53,21 +53,21 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd1(3, EMPTY);
+  TBD_Shape bds(3, EMPTY);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
   to_fold.insert(A);
 
-  bd1.fold_space_dimensions(to_fold, B);
+  bds.fold_space_dimensions(to_fold, B);
 
   TBD_Shape known_result(2, EMPTY);
 
-  bool ok = (bd1 == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** after folding {A} into B ***");
+  print_constraints(bds, "*** after folding {A} into B ***");
 
   return ok;
 }
@@ -78,24 +78,24 @@ test03() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(A >= 0);
-  bd1.add_constraint(A - C <= 2);
+  TBD_Shape bds(3);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A - C <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
 
-  bd1.fold_space_dimensions(to_fold, B);
+  bds.fold_space_dimensions(to_fold, B);
 
   TBD_Shape known_result(3);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A - C <= 2);
 
-  bool ok = (bd1 == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** after folding {} into B ***");
+  print_constraints(bds, "*** after folding {} into B ***");
 
   return ok;
 }
@@ -105,27 +105,27 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(A >= 1);
-  bd1.add_constraint(A <= 3);
-  bd1.add_constraint(B >= 7);
-  bd1.add_constraint(B <= 12);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 1);
+  bds.add_constraint(A <= 3);
+  bds.add_constraint(B >= 7);
+  bds.add_constraint(B <= 12);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
   to_fold.insert(A);
 
-  bd1.fold_space_dimensions(to_fold, B);
+  bds.fold_space_dimensions(to_fold, B);
 
   TBD_Shape known_result(1);
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(A <= 12);
 
-  bool ok = (bd1 == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** after folding {A} into B ***");
+  print_constraints(bds, "*** after folding {A} into B ***");
 
   return ok;
 }
@@ -136,29 +136,29 @@ test05() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(A >= 1);
-  bd1.add_constraint(A <= 3);
-  bd1.add_constraint(B >= 7);
-  bd1.add_constraint(B <= 12);
-  bd1.add_constraint(C == 15);
+  TBD_Shape bds(3);
+  bds.add_constraint(A >= 1);
+  bds.add_constraint(A <= 3);
+  bds.add_constraint(B >= 7);
+  bds.add_constraint(B <= 12);
+  bds.add_constraint(C == 15);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
   to_fold.insert(A);
   to_fold.insert(B);
 
-  bd1.fold_space_dimensions(to_fold, C);
+  bds.fold_space_dimensions(to_fold, C);
 
   TBD_Shape known_result(1);
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(A <= 15);
 
-  bool ok = (bd1 == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** after folding {A, B} into C ***");
+  print_constraints(bds, "*** after folding {A, B} into C ***");
 
   return ok;
 }
@@ -171,30 +171,30 @@ test06() {
   Variable C(2);
   Variable D(3);
 
-  TBD_Shape bd1(4);
-  bd1.add_constraint(A >= 0);
-  bd1.add_constraint(A - B <= 2);
-  bd1.add_constraint(C >= 0);
-  bd1.add_constraint(C - B <= 2);
-  bd1.add_constraint(D >= 0);
-  bd1.add_constraint(D - B <= 2);
+  TBD_Shape bds(4);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A - B <= 2);
+  bds.add_constraint(C >= 0);
+  bds.add_constraint(C - B <= 2);
+  bds.add_constraint(D >= 0);
+  bds.add_constraint(D - B <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
   to_fold.insert(C);
   to_fold.insert(D);
 
-  bd1.fold_space_dimensions(to_fold, A);
+  bds.fold_space_dimensions(to_fold, A);
 
   TBD_Shape known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A - B <= 2);
 
-  bool ok = (bd1 == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** after folding {C, D} into A ***");
+  print_constraints(bds, "*** after folding {C, D} into A ***");
 
   return ok;
 }
@@ -206,23 +206,23 @@ test07() {
   Variable C(2);
   Variable D(3);
 
-  TBD_Shape bd1(4);
-  bd1.add_constraint(A >= 0);
-  bd1.add_constraint(B == 0);
-  bd1.add_constraint(A - B <= 2);
-  bd1.add_constraint(C >= 0);
-  bd1.add_constraint(C - B <= 2);
-  bd1.add_constraint(D >= 0);
-  bd1.add_constraint(D - B <= 2);
+  TBD_Shape bds(4);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B == 0);
+  bds.add_constraint(A - B <= 2);
+  bds.add_constraint(C >= 0);
+  bds.add_constraint(C - B <= 2);
+  bds.add_constraint(D >= 0);
+  bds.add_constraint(D - B <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
   to_fold.insert(B);
   to_fold.insert(D);
 
-  bd1.fold_space_dimensions(to_fold, C);
+  bds.fold_space_dimensions(to_fold, C);
 
   TBD_Shape known_result(2);
   known_result.add_constraint(A >= 0);
@@ -230,9 +230,9 @@ test07() {
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 2);
 
-  bool ok = (bd1 == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** after folding {B, D} into C ***");
+  print_constraints(bds, "*** after folding {B, D} into C ***");
 
   return ok;
 }
@@ -243,26 +243,26 @@ test08() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(A >= 0);
-  bd1.add_constraint(A <= -1);
-  bd1.add_constraint(A - B <= 2);
-  bd1.add_constraint(C >= 0);
-  bd1.add_constraint(C - B <= 2);
+  TBD_Shape bds(3);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= -1);
+  bds.add_constraint(A - B <= 2);
+  bds.add_constraint(C >= 0);
+  bds.add_constraint(C - B <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
   to_fold.insert(B);
 
-  bd1.fold_space_dimensions(to_fold, A);
+  bds.fold_space_dimensions(to_fold, A);
 
   TBD_Shape known_result(2, EMPTY);
 
-  bool ok = (bd1 == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** after folding {B, D} into C ***");
+  print_constraints(bds, "*** after folding {B, D} into C ***");
 
   return ok;
 }
@@ -272,23 +272,23 @@ test09() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd1(2, EMPTY);
+  TBD_Shape bds(2, EMPTY);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
   to_fold.insert(A);
 
-  bd1.OK();
+  bds.OK();
 
-  bd1.fold_space_dimensions(to_fold, B);
+  bds.fold_space_dimensions(to_fold, B);
 
   TBD_Shape known_result(1, EMPTY);
 
-  bool ok = (bd1 == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** after folding {A} into B ***");
+  print_constraints(bds, "*** after folding {A} into B ***");
 
   return ok;
 }
@@ -298,25 +298,25 @@ test10() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd1(1, EMPTY);
+  TBD_Shape bds(1, EMPTY);
 
-  bd1.add_space_dimensions_and_embed(1);
+  bds.add_space_dimensions_and_embed(1);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
   to_fold.insert(A);
 
-  bd1.OK();
+  bds.OK();
 
-  bd1.fold_space_dimensions(to_fold, B);
+  bds.fold_space_dimensions(to_fold, B);
 
   TBD_Shape known_result(1, EMPTY);
 
-  bool ok = (bd1 == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** after folding {A} into B ***");
+  print_constraints(bds, "*** after folding {A} into B ***");
 
   return ok;
 }

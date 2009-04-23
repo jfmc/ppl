@@ -1,5 +1,5 @@
 /* An example of iteration to a post-fixpoint.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -88,9 +88,10 @@ test01() {
 
     print_constraints(current, "*** after remove_space_dimensions ***");
 
-    current.poly_hull_assign_and_minimize(previous);
+    current.upper_bound_assign(previous);
+    (void) current.is_empty();
 
-    print_constraints(current, "*** after poly_hull_assign_and_minimize ***");
+    print_constraints(current, "*** after upper_bound_assign ***");
 
   } while (current != previous);
 

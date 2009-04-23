@@ -1,5 +1,5 @@
 /* Test C_Polyhedron(Congruence_System&).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -143,11 +143,7 @@ test06() {
   C_Polyhedron ph2(3);
   ph2.add_congruences(cgs);
 
-  bool ok = (ph2 != known_ph);
-
-  ph2.add_constraint(A + B == 3);
-
-  ok &= (ph2 == known_ph);
+  bool ok = (ph2 == known_ph);
 
   print_congruences(cgs, "*** cgs ***");
   print_constraints(ph2, "*** ph2(cgs) ***");
@@ -287,7 +283,7 @@ bool test13() {
   Variable y(1);
 
   Congruence_System cgs;
-  cgs.insert(x %= 3);
+  cgs.insert(0*x %= 3);
   cgs.insert(y == 3);
 
   C_Polyhedron ph(cgs);
@@ -304,20 +300,65 @@ bool test13() {
   return ok;
 }
 
+bool test14() {
+  Variable x(0);
+  Variable y(1);
+
+  Congruence_System cgs;
+  cgs.insert((2*y %= 2) / 3);
+
+  Constraint_System cs(cgs);
+  print_constraints(cs, "*** cs ***");
+
+  cs.insert(0*x > -1);
+  print_constraints(cs, "*** cs.insert(0*x > -1) ***");
+
+  C_Polyhedron ph(cs);
+
+  bool ok = ph.is_universe();
+
+  print_constraints(ph, "*** ph(cs) ***");
+
+  return ok;
+}
+
+// A similar test to the previous test but with 0 dimensions.
+bool test15() {
+  Variable x(0);
+
+  Congruence_System cgs;
+
+  Constraint_System cs(cgs);
+  print_constraints(cs, "*** cs ***");
+
+  cs.insert(0*x > -1);
+  print_constraints(cs, "*** cs.insert(0*x > -1) ***");
+
+  C_Polyhedron ph(cs);
+
+  bool ok = ph.is_universe();
+
+  print_constraints(ph, "*** ph(cs) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
-DO_TEST(test01);
-DO_TEST(test02);
-DO_TEST(test03);
-DO_TEST(test04);
-DO_TEST(test05);
-DO_TEST(test06);
-DO_TEST(test07);
-DO_TEST(test08);
-DO_TEST(test09);
-DO_TEST(test10);
-DO_TEST(test11);
-DO_TEST(test12);
-DO_TEST(test13);
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

@@ -1,5 +1,5 @@
 /* C99 Floating point unit related functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -20,23 +20,38 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_fpu_c99_inlines_hh
+#define PPL_fpu_c99_inlines_hh 1
+
 #ifdef PPL_HAVE_FENV_H
 #include <fenv.h>
+#include <stdexcept>
 
 #ifdef FE_TONEAREST
-#define FPU_TONEAREST FE_TONEAREST
+#define PPL_FPU_TONEAREST FE_TONEAREST
 #endif
 #ifdef FE_UPWARD
-#define FPU_UPWARD FE_UPWARD
+#define PPL_FPU_UPWARD FE_UPWARD
 #endif
 #ifdef FE_DOWNWARD
-#define FPU_DOWNWARD FE_DOWNWARD
+#define PPL_FPU_DOWNWARD FE_DOWNWARD
 #endif
 #ifdef FE_TOWARDZERO
-#define FPU_TOWARDZERO FE_TOWARDZERO
+#define PPL_PPL_FPU_TOWARDZERO FE_TOWARDZERO
 #endif
 
 namespace Parma_Polyhedra_Library {
+
+inline void
+fpu_initialize_control_functions() {
+  int old = fegetround();
+  if (fesetround(PPL_FPU_DOWNWARD) != 0
+      || fesetround(PPL_FPU_UPWARD) != 0
+      || fesetround(old) != 0)
+    throw std::logic_error("PPL configuration error:"
+			   " PPL_CAN_CONTROL_FPU evaluates to true,"
+			   " but fesetround() returns nonzero.");
+}
 
 inline fpu_rounding_direction_type
 fpu_get_rounding_direction() {
@@ -58,7 +73,9 @@ fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
 
 inline void
 fpu_reset_inexact() {
+#if PPL_CXX_SUPPORTS_IEEE_INEXACT_FLAG
   feclearexcept(FE_INEXACT);
+#endif
 }
 
 inline void
@@ -68,9 +85,15 @@ fpu_restore_rounding_direction(fpu_rounding_control_word_type w) {
 
 inline int
 fpu_check_inexact() {
+#if PPL_CXX_SUPPORTS_IEEE_INEXACT_FLAG
   return fetestexcept(FE_INEXACT) != 0;
+#else
+  return -1;
+#endif
 }
 
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_HAVE_FENV_H)
+
+#endif // !defined(PPL_fpu_c99_inlines_hh)

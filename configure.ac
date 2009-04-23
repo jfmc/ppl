@@ -1,5 +1,5 @@
 # Autoconf source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -20,23 +20,26 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-# Process this file with autoconf to produce a configure script.
+# Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10pre10],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library], [0.11pre1], [ppl-devel@cs.unipr.it], [ppl])
 
-# Minimum autoconf version required.
-AC_PREREQ(2.59)
+# Minimum Autoconf version required.
+AC_PREREQ(2.61)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
+
+# Specify the location of additional local Autoconf macros.
+AC_CONFIG_MACRO_DIR([m4])
 
 # Determine the system type and set output variables to the names of
 # the canonical system types.
 AC_CANONICAL_HOST
 
 # Use Automake.
-AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip 1.7.3])
+AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip tar-ustar 1.9])
 
 AC_SUBST(VERSION)
 
@@ -64,62 +67,80 @@ AC_SUBST(PPL_VERSION_MINOR)
 AC_SUBST(PPL_VERSION_REVISION)
 AC_SUBST(PPL_VERSION_BETA)
 
-AC_DEFINE_UNQUOTED(CONFIGURE_OPTIONS, "$ac_configure_args", [This contains the options with which `configure' was invoked.])
+AC_DEFINE_UNQUOTED(PPL_CONFIGURE_OPTIONS, "$ac_configure_args", [This contains the options with which `configure' was invoked.])
 PPL_CONFIGURE_OPTIONS="\"$ac_configure_args\""
 AC_SUBST(CONFIGURE_OPTIONS)
 
-# Installation directories.
-AC_SUBST([docdir], ['${datadir}/doc/ppl'])
-
 # Generate a configuration header file.
-AC_CONFIG_HEADER(config.h)
-
-# Generate prefixed defines.
-AX_PREFIX_CONFIG_H
+AC_CONFIG_HEADER([config.h])
 
 ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
 
+AH_TOP([
+/* Unique (nonzero) code for the IEEE 754 Single Precision
+   floating point format.  */
+#define PPL_FLOAT_IEEE754_SINGLE 1
+
+/* Unique (nonzero) code for the IEEE 754 Double Precision
+   floating point format.  */
+#define PPL_FLOAT_IEEE754_DOUBLE 2
+
+/* Unique (nonzero) code for the IEEE 754 Quad Precision
+   floating point format.  */
+#define PPL_FLOAT_IEEE754_QUAD 3
+
+/* Unique (nonzero) code for the Intel Double-Extended
+   floating point format.  */
+#define PPL_FLOAT_INTEL_DOUBLE_EXTENDED 4
+])
+
 AH_BOTTOM([
-/*
-  In order for the definition of `int64_t' to be seen by Comeau C/C++,
-  we must make sure <stdint.h> is included before <sys/types.hh> is
-  (even indirectly) included.
-*/
-#ifdef PPL_HAVE_STDINT_H
-#include <stdint.h>
-#endif
-#ifdef PPL_HAVE_INTTYPES_H
-#include <inttypes.h>
+#if defined(PPL_NDEBUG) && !defined(NDEBUG)
+# define NDEBUG PPL_NDEBUG
 #endif
 
-#ifdef PPL_NDEBUG
-# define NDEBUG PPL_NDEBUG
+/* In order for the definition of `int64_t' to be seen by Comeau C/C++,
+   we must make sure <stdint.h> is included before <sys/types.hh> is
+   (even indirectly) included.  Moreover we need to define
+   __STDC_LIMIT_MACROS before the first inclusion of <stdint.h>
+   in order to have the macros defined also in C++.  */
+
+#ifdef PPL_HAVE_STDINT_H
+# ifndef __STDC_LIMIT_MACROS
+#  define __STDC_LIMIT_MACROS 1
+# endif
+# include <stdint.h>
+#endif
+
+#ifdef PPL_HAVE_INTTYPES_H
+# include <inttypes.h>
 #endif
 ])
 
 
-# C compiler
+# C compiler.
 
 AC_ARG_WITH(cc,
-  AC_HELP_STRING([--with-cc=XXX],
-    [use XXX as the C compiler]),
+  AS_HELP_STRING([--with-cc=XXX], [use XXX as the C compiler]),
   CC=$with_cc)
 
-# C++ compiler
+# C++ compiler.
 
 AC_ARG_WITH(cxx,
-  AC_HELP_STRING([--with-cxx=XXX],
-    [use XXX as the C++ compiler]),
+  AS_HELP_STRING([--with-cxx=XXX], [use XXX as the C++ compiler]),
   CXX=$with_cxx)
 
 # Checks for programs.
+
 # Note that AC_PROG_CC must precede the first use of $GCC abd AC_PROG_CXX
 # must precede the first use of $GXX.  Note also that we do not allow
 # AC_PROG_CC and AC_PROG_CXX to affect CFLAGS and CXXFLAGS.
 save_CFLAGS="$CFLAGS"
 AC_PROG_CC
 CFLAGS="$save_CFLAGS"
+
+AM_CONDITIONAL(GCC, test x"$GCC" = xyes)
 
 # The Intel C compiler masquerades as gcc, but we want to know.
 if test x"$GCC" = xyes
@@ -163,12 +184,14 @@ choke me
   AC_LANG_POP(C++)
 fi
 
+AC_PROG_FGREP
 AC_PROG_EGREP
+AC_PROG_SED
 AC_PROG_CXXCPP
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
-# Compilation flags
+# Compilation flags.
 
 COMP_FLAGS=""
 OPT_FLAGS=""
@@ -176,8 +199,7 @@ OPT_FLAGS=""
 enableval=yes
 AC_MSG_CHECKING([whether to compile with debug info])
 AC_ARG_ENABLE(debugging,
-  AC_HELP_STRING([--enable-debugging],
-    [compile with debugging information]))
+  AS_HELP_STRING([--enable-debugging], [compile with debugging information]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -190,12 +212,12 @@ no)
   AC_MSG_ERROR([bad value ${enableval} for --enable-debugging, needs yes or no])
   ;;
 esac
+AM_CONDITIONAL(DEBUGGING_ENABLED, test x"$enableval" = xyes)
 
 enableval=no
 AC_MSG_CHECKING([whether to compile for profiling])
 AC_ARG_ENABLE(profiling,
-  AC_HELP_STRING([--enable-profiling],
-    [compile for profiling]))
+  AS_HELP_STRING([--enable-profiling], [compile for profiling]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -213,8 +235,7 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether to compile for test coverage])
 AC_ARG_ENABLE(coverage,
-  AC_HELP_STRING([--enable-coverage],
-    [compile for test coverage]))
+  AS_HELP_STRING([--enable-coverage], [compile for test coverage]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -232,8 +253,7 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether to enable checking of run-time assertions])
 AC_ARG_ENABLE(assertions,
-  AC_HELP_STRING([--enable-assertions],
-    [check run-time assertions]))
+  AS_HELP_STRING([--enable-assertions], [check run-time assertions]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -250,8 +270,8 @@ enable_assertions=${enableval}
 enableval=no
 AC_MSG_CHECKING([whether to enable even more run-time assertions])
 AC_ARG_ENABLE(more-assertions,
-  AC_HELP_STRING([--enable-more-assertions],
-    [break the ABI to check even more run-time assertions]))
+  AS_HELP_STRING([--enable-more-assertions],
+                 [break the ABI to check even more run-time assertions]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -268,12 +288,14 @@ enable_more_assertions=${enableval}
 if test x"$enable_more_assertions" = xyes
 then
   enable_assertions=yes
-  AC_DEFINE(ABI_BREAKING_EXTRA_DEBUG, 1, [ABI-breaking extra assertions are enabled when this is defined.])
+  AC_DEFINE(PPL_ABI_BREAKING_EXTRA_DEBUG, 1, [ABI-breaking extra assertions are enabled when this is defined.])
+  AC_DEFINE(_GLIBCXX_DEBUG, 1, [When defined and libstdc++ is used, it is used in debug mode.])
+  AC_DEFINE(_GLIBCXX_DEBUG_PEDANTIC, 1, [When defined and libstdc++ is used, it is used in pedantic debug mode.])
 fi
 
 if test x"$enable_assertions" = xno
 then
-  AC_DEFINE(NDEBUG, 1, [Assertions are disabled when this is defined.])
+  AC_DEFINE(PPL_NDEBUG, 1, [Assertions are disabled when this is defined.])
   debug_flag="-DNDEBUG=1"
 fi
 
@@ -284,8 +306,8 @@ arch=no
 enableval=standard
 AC_MSG_CHECKING([whether to enable optimizations])
 AC_ARG_ENABLE(optimization,
-  AC_HELP_STRING([--enable-optimization],
-    [enable compiler optimizations]))
+  AS_HELP_STRING([--enable-optimization@<:@=LEVEL@:>@],
+                 [enable compiler optimizations]))
 case "${enableval}" in
 sspeed)
   AC_MSG_RESULT(sspeed)
@@ -325,8 +347,8 @@ esac
 enableval=$arch
 AC_MSG_CHECKING([for which architecture to optimize])
 AC_ARG_ENABLE(arch,
-  AC_HELP_STRING([--enable-arch@<:@=ARCH@:>@],
-    [optimize for architecture ARCH]))
+  AS_HELP_STRING([--enable-arch@<:@=ARCH@:>@],
+                 [optimize for architecture ARCH]))
 case "${enableval}" in
 yes)
   m=`uname -m`
@@ -354,8 +376,8 @@ fpmath_may_use_387=yes
 fpmath_may_use_sse=yes
 AC_MSG_CHECKING([whether to select specific floating point arithmetics])
 AC_ARG_ENABLE(fpmath,
-  AC_HELP_STRING([--enable-fpmath],
-    [select floating point arithmetics]))
+  AS_HELP_STRING([--enable-fpmath=INSTRUCTION_SET],
+                 [select floating point arithmetics]))
 case "${enableval}" in
 sse)
   AC_MSG_RESULT(sse)
@@ -399,12 +421,12 @@ esac
 
 if test x"$fpmath_may_use_387" = xyes
 then
-  AC_DEFINE(FPMATH_MAY_USE_387, 1, [Defined if floating point arithmetics may use the 387 unit.])
+  AC_DEFINE(PPL_FPMATH_MAY_USE_387, 1, [Defined if floating point arithmetics may use the 387 unit.])
 fi
 
 if test x"$fpmath_may_use_sse" = xyes
 then
-  AC_DEFINE(FPMATH_MAY_USE_SSE, 1, [Defined if floating point arithmetics may use the SSE instruction set.])
+  AC_DEFINE(PPL_FPMATH_MAY_USE_SSE, 1, [Defined if floating point arithmetics may use the SSE instruction set.])
 fi
 
 # Disable all transformations and optimizations that assume default
@@ -422,8 +444,8 @@ fi
 enableval=no
 AC_MSG_CHECKING([whether to use precompiled headers])
 AC_ARG_ENABLE(pch,
-  AC_HELP_STRING([--enable-pch],
-    [use precompiled headers, if available]))
+  AS_HELP_STRING([--enable-pch],
+                 [use precompiled headers, if available]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -441,11 +463,65 @@ AM_CONDITIONAL(USE_PRECOMPILED_HEADERS, test x"$enableval" = xyes)
 CFLAGS="$COMP_FLAGS $OPT_FLAGS $CFLAGS"
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS $CXXFLAGS"
 
+# System-dependent adjustments.
+cygwin=no
+mingw=no
+darwin=no
+solaris=no
+x86_64=no
+no_undefined=no
+
+case "${host_cpu}" in
+alpha*)
+  if test x"$GCC" = xyes
+  then
+    CFLAGS="$CFLAGS -mfp-rounding-mode=d -mieee-with-inexact"
+    CXXFLAGS="$CXXFLAGS -mfp-rounding-mode=d -mieee-with-inexact"
+  else
+    CFLAGS="$CFLAGS -fprm d -ieee_with_inexact"
+    CXXFLAGS="$CXXFLAGS -fprm d -ieee_with_inexact"
+  fi
+  ;;
+x86_64*)
+  x86_64=yes
+  ;;
+*)
+  ;;
+esac
+
+case "${host_os}" in
+cygwin)
+  cygwin=yes
+  no_undefined=yes
+  ;;
+darwin*)
+  darwin=yes
+  ;;
+mingw*)
+  mingw=yes
+  ;;
+solaris*)
+  solaris=yes
+  ;;
+*)
+  ;;
+esac
+
+AM_CONDITIONAL(HOST_OS_CYGWIN, test x$cygwin = xyes)
+AM_CONDITIONAL(HOST_OS_DARWIN, test x$darwin = xyes)
+AM_CONDITIONAL(HOST_OS_MINGW, test x$mingw = xyes)
+AM_CONDITIONAL(HOST_OS_SOLARIS, test x$solaris = xyes)
+
+AM_CONDITIONAL(HOST_CPU_X86_64, test x$x86_64 = xyes)
+
+AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
+
+
 enableval=mpz
 AC_MSG_CHECKING([the type of integral values to use as coefficients])
 AC_ARG_ENABLE(coefficients,
-  AC_HELP_STRING([--enable-coefficients],
-    [select the type of the coefficients]))
+  AS_HELP_STRING([--enable-coefficients=TYPE],
+                 [select the type of the coefficients]))
 case "${enableval}" in
 native-int8)
   AC_MSG_RESULT([native 8 bits integers])
@@ -518,32 +594,32 @@ AM_CONDITIONAL(USE_INT64, test x"$coefficient_bits" = x64)
 if test x"$coefficient_kind" = xnative
 then
   coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t, Checked_Number_Transparent_Policy>"
-  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $coefficient_type, [The integral type used to represent coefficients.])
-  AC_DEFINE_UNQUOTED(COEFFICIENT_BITS, $coefficient_bits, [The number of bits of coefficients; 0 if unbounded.])
-  AC_DEFINE(NATIVE_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a native one.])
+  AC_DEFINE_UNQUOTED(PPL_COEFFICIENT_TYPE, $coefficient_type, [The integral type used to represent coefficients.])
+  AC_DEFINE_UNQUOTED(PPL_COEFFICIENT_BITS, $coefficient_bits, [The number of bits of coefficients; 0 if unbounded.])
+  AC_DEFINE(PPL_NATIVE_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a native one.])
 elif test x"$coefficient_kind" = xchecked
 then
   coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t>"
-  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $coefficient_type)
-  AC_DEFINE_UNQUOTED(COEFFICIENT_BITS, $coefficient_bits)
-  AC_DEFINE(CHECKED_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a checked one.])
+  AC_DEFINE_UNQUOTED(PPL_COEFFICIENT_TYPE, $coefficient_type)
+  AC_DEFINE_UNQUOTED(PPL_COEFFICIENT_BITS, $coefficient_bits)
+  AC_DEFINE(PPL_CHECKED_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a checked one.])
 elif test x"$coefficient_kind" = xunbounded
 then
-  AC_DEFINE(COEFFICIENT_TYPE, mpz_class)
-  AC_DEFINE(COEFFICIENT_BITS, 0)
-  AC_DEFINE(GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
+  AC_DEFINE(PPL_COEFFICIENT_TYPE, mpz_class)
+  AC_DEFINE(PPL_COEFFICIENT_BITS, 0)
+  AC_DEFINE(PPL_GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
 fi
 
-# Allow additions to C and C++ compilation flags
+# Allow additions to C and C++ compilation flags.
 
 AC_ARG_WITH(cflags,
-  AC_HELP_STRING([--with-cflags=XXX],
-    [add XXX to the options for the C compiler]),
+  AS_HELP_STRING([--with-cflags=XXX],
+                 [add XXX to the options for the C compiler]),
   CFLAGS="$CFLAGS $with_cflags")
 
 AC_ARG_WITH(cxxflags,
-  AC_HELP_STRING([--with-cxxflags=XXX],
-    [add XXX to the options for the C++ compiler]),
+  AS_HELP_STRING([--with-cxxflags=XXX],
+                 [add XXX to the options for the C++ compiler]),
   CXXFLAGS="$CXXFLAGS $with_cxxflags")
 
 # Check for Perl.
@@ -556,6 +632,7 @@ AC_LANG(C)
 AC_C_CONST
 AC_C_INLINE
 AC_C_BIGENDIAN
+AC_C_TYPEOF
 
 # Checks for C type sizes.
 AC_CHECK_SIZEOF(char)
@@ -567,6 +644,11 @@ AC_CHECK_SIZEOF(size_t)
 AC_CHECK_SIZEOF(float)
 AC_CHECK_SIZEOF(double)
 AC_CHECK_SIZEOF(long double)
+# The following are required to validate an horrible kludge working
+# around an horrible bug in <gprolog.h> (see
+# http://www.cs.unipr.it/pipermail/ppl-devel/2008-August/012277.html).
+AC_CHECK_SIZEOF([int*])
+AC_CHECK_SIZEOF([fp], [], [typedef int *(*fp)();])
 
 # Use C++ for the remaining checks.
 AC_LANG(C++)
@@ -586,17 +668,44 @@ AC_CXX_DOUBLE_BINARY_FORMAT
 # Detect the binary format used by C++ long doubles.
 AC_CXX_LONG_DOUBLE_BINARY_FORMAT
 
+# Check whether the C++ run-time systems provides exact output for
+# floats.
+#AC_CXX_FLOAT_EXACT_OUTPUT
+
+# Check whether the C++ run-time systems provides exact output for
+# doubles.
+#AC_CXX_DOUBLE_EXACT_OUTPUT
+
+# Check whether the C++ run-time systems provides exact output for
+# long doubles.
+#AC_CXX_LONG_DOUBLE_EXACT_OUTPUT
+
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
-# Check whether the C++ compiler has the remainder bug
+# Check whether the IEEE inexact flag is supported in C++.
+AC_CXX_SUPPORTS_IEEE_INEXACT_FLAG
+
+# Check whether the C++ compiler has the remainder bug.
 AC_CXX_HAS_REMAINDER_BUG
 
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
 
+# Checks for header files.
+AC_CHECK_HEADERS([fenv.h ieeefp.h getopt.h signal.h string.h strings.h sys/resource.h sys/time.h sys/types.h unistd.h])
+
 # Checks for the availability of C library functions in C++.
-AC_CHECK_DECLS([ffs], , , [#include <strings.h>])
+AC_CHECK_DECLS([ffs],
+               ,
+               ,
+               [
+#if defined(HAVE_STRINGS_H)
+# include <strings.h>
+#elif defined(HAVE_STRING_H)
+# include <string.h>
+#endif
+               ])
 AC_CHECK_DECLS([getenv,strtof,strtod,strtold,strtoll,strtoull], , , [#include <cstdlib>])
 AC_CHECK_DECLS([fma,fmaf,fmal,rintf,rintl], , , [#include <cmath>])
 
@@ -606,7 +715,7 @@ AC_CHECK_TYPES([int_fast16_t,int_fast32_t,int_fast64_t,uint_fast16_t,uint_fast32
 # Must link everything with libm.
 extra_libraries="${extra_libraries} -lm"
 
-# GMP library
+# GMP library.
 
 AC_CHECK_GMP
 if test x"$have_gmp" = xno
@@ -646,11 +755,48 @@ fi
 extra_includes="${extra_includes}${extra_includes:+ }${gmp_includes_option}"
 extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
 
-enableval=yes
+# setitimer() is a strong requisite for the PWL.
+AC_CHECK_FUNCS([setitimer], [have_setitimer=yes], [have_setitimer=no])
+
+enableval=default
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
-  AC_HELP_STRING([--enable-watchdog],
-    [build also the Parma Watchdog Library]))
+  AS_HELP_STRING([--enable-watchdog],
+                 [build also the Parma Watchdog Library]))
+case "${enableval}" in
+yes)
+  if test x"$have_setitimer" = xyes
+  then
+    build_watchdog_library=yes
+  else
+    AC_MSG_ERROR([CANNOT BUILD THE WATCHDOG LIBRARY
+*** THE SYSTEM DOES NOT PROVIDE THE SETITIMER FUNCTION.])
+  fi
+  ;;
+default)
+  build_watchdog_library=$have_setitimer
+  ;;
+no)
+  build_watchdog_library=no
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-watchdog, needs yes or no])
+  ;;
+esac
+AC_MSG_RESULT($build_watchdog_library)
+AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
+if test x"$build_watchdog_library" = xyes
+then
+  AC_DEFINE(PPL_WATCHDOG_LIBRARY_ENABLED, 1, [Defined if the Parma Watchdog Library is enabled.])
+fi
+
+# Enabled or not, the Watchdog subdirectory must be configured.
+AC_CONFIG_SUBDIRS(Watchdog)
+
+enableval=yes
+AC_MSG_CHECKING([whether to build the ppl_lcdd program])
+AC_ARG_ENABLE(ppl_lcdd,
+  AS_HELP_STRING([--enable-ppl_lcdd], [build the ppl_lcdd program]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -659,31 +805,43 @@ no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} for --enable-watchdog, needs yes or no])
+  AC_MSG_ERROR([bad value ${enableval} for --enable-ppl_lcdd, needs yes or no])
   ;;
 esac
-build_watchdog_library=$enableval
-AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
-if test x"$build_watchdog_library" = xyes
-then
-  AC_DEFINE(WATCHDOG_LIBRARY_ENABLED, 1, [Defined if the Parma Watchdog Library is enabled.])
-fi
+build_ppl_lcdd=$enableval
+AM_CONDITIONAL(BUILD_PPL_LCDD, test x"$build_ppl_lcdd" = xyes)
 
-# Enabled or not, the Watchdog subdirectory must be configured.
-AC_CONFIG_SUBDIRS(Watchdog)
+enableval=yes
+AC_MSG_CHECKING([whether to build the ppl_lpsol program])
+AC_ARG_ENABLE(ppl_lpsol,
+  AS_HELP_STRING([--enable-ppl_lpsol], [build the ppl_lpsol program]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-ppl_lpsol, needs yes or no])
+  ;;
+esac
+build_ppl_lpsol=$enableval
+AM_CONDITIONAL(BUILD_PPL_LPSOL, test x"$build_ppl_lpsol" = xyes)
 
-# This is the list of available interfaces: lowercase and blank-separated.
-available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml java"
+# Define lists of available interfaces: lowercase and blank-separated.
+non_prolog_interfaces="cxx c ocaml java"
+prolog_interfaces="ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog"
+available_interfaces="${non_prolog_interfaces} ${prolog_interfaces}"
 
 # This is the list of interfaces that are enabled by default.
-#default_interfaces="cxx c swi_prolog"
 default_interfaces=${available_interfaces}
 
 enableval=not_specified
 AC_MSG_CHECKING([which interfaces are enabled])
 AC_ARG_ENABLE(interfaces,
-  AC_HELP_STRING([--enable-interfaces],
-    [enable some or all the library interfaces]))
+  AS_HELP_STRING([--enable-interfaces=INTERFACES],
+                 [enable some or all the library interfaces]))
 case x"${enableval}" in
 xyes | x)
   AC_MSG_ERROR([--enable-interfaces needs at least one argument chosen among ${available_interfaces}, none and all])
@@ -737,42 +895,54 @@ xall)
   ;;
 esac
 
-# Set an Automake conditional to build or not to build the C interface.
-AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes)
+# Perl is needed to build the C++ interface.
+if test x${cxx_interface_enabled} = xyes \
+&& test x"$PERL" != xno
+then
+  build_cxx_interface=yes
+fi
+AM_CONDITIONAL(BUILD_CXX_INTERFACE, test x$build_cxx_interface = xyes)
+
+# Perl is needed to build the C interface.
+if test x${c_interface_enabled} = xyes \
+&& test x"$PERL" != xno
+then
+  build_c_interface=yes
+fi
+AM_CONDITIONAL(BUILD_C_INTERFACE, test x$build_c_interface = xyes)
 
 # Checks for systems for which the interface is enabled.
 
-# Set the optional Java SDK directory.
+# Allow to specify the Java SDK installation directory.
 AC_ARG_WITH(java,
-	AC_HELP_STRING([--with-java=dir],
-       [use dir as Java SDK root directory]),
-       [JAVA_HOME=$with_java])
+  AS_HELP_STRING([--with-java=DIR], [use the Java SDK installed in DIR]),
+  java_dir=$with_java)
 
 case "${host_os}" in
 # On Darwin the JDK, if present, is installed in /Library/Java/Home .
 darwin*)
-  if test "x$JAVA_HOME" = x
+  if test "x$java_dir" = x
   then
-    JAVA_HOME="/Library/Java/Home"
+    java_dir="/Library/Java/Home"
   fi
   ;;
-# On Fedora Core systems the JDK is usually in /usr/java/default .
+# On Fedora 9 systems the JDK is usually in /usr/lib/jvm/java .
 linux*)
-  if test "x$JAVA_HOME" = x
+  if test "x$java_dir" = x
   then
-    JAVA_HOME="/usr/java/default"
+    java_dir="/usr/lib/jvm/java"
   fi
   ;;
 *)
   ;;
 esac
 
-if test ! "x$JAVA_HOME" = x
+if test "x$java_dir" != x
 then
-  JAVAPREFIX="${JAVA_HOME}/bin"
+  JAVAPREFIX="${java_dir}/bin"
 fi
 
-# Java
+# Checks for Java.
 if test x${java_interface_enabled} = xyes
 then
   # Check for Java programs. Order here is important: check first
@@ -781,48 +951,117 @@ then
   AC_PROG_JAVA
   AC_PROG_JAR
   AC_PROG_JAVAH
+
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS $JNIFLAGS"
+  AC_LANG_PUSH(C++)
+  AC_MSG_CHECKING([whether jlong can contain data pointers])
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include <jni.h>
+
+    int
+    main() {
+      if (sizeof(jlong) >= sizeof(void*))
+        return 0;
+      else
+        return 1;
+    }
+  ]])],
+  ac_jlong_can_contain_pointers=yes
+  AC_MSG_RESULT(yes),
+  ac_jlong_can_contain_pointers=no
+  AC_MSG_RESULT(no),
+  ac_jlong_can_contain_pointers=no
+  AC_MSG_RESULT([assuming it cannot]))
+  AC_LANG_POP(C++)
+  CPPFLAGS="$ac_save_CPPFLAGS"
 fi
 
-# All the Java programs are required to build the Java interface and if
-# the Java interface is enabled.
-AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test ! "x$JAVA" = xno &&  test ! "x$ac_cv_javac_supports_enums" = xno && test ! "x$JAR" = xno && test ! "x$JAVAH" = xno && test x${java_interface_enabled} = xyes)
+# In order to build the Java interface, it must be enabled and all the
+# Java tools must be available.
+if test x${java_interface_enabled} = xyes \
+&& test "x$JAVA" != xno \
+&& test "x$ac_cv_javac_supports_enums" != xno \
+&& test "x$JAR" != xno \
+&& test "x$JAVAH" != xno \
+&& test x${ac_jlong_can_contain_pointers} = xyes
+then
+  build_java_interface=yes
+fi
+AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test x$build_java_interface = xyes)
 
-# OCaml
+
+# Allow to specify the ML GMP installation directory.
+AC_ARG_WITH(mlgmp,
+  AS_HELP_STRING([--with-mlgmp=DIR],
+                 [use the ML GMP package installed in DIR]),
+  mlgmp_dir=$with_mlgmp,
+  mlgmp_dir=+gmp)
+
+# Checks for OCaml.
 if test x${ocaml_interface_enabled} = xyes
 then
+  # Check for the bytecode compiler.
   AC_CHECK_PROG(OCAMLC, ocamlc, ocamlc)
-  ocamlgmp="no"
+  ocamlc_gmp="no"
   if test x"$OCAMLC" = xocamlc
   then
      ocamlc_root=`ocamlc -where`
-     # checking for OCaml GMP
-     AC_MSG_CHECKING(for Caml-GMP module gmp.cma)
-     if test -f ${ocamlc_root}/gmp/gmp.cma -a -f ${ocamlc_root}/gmp/libmlgmp.a;
+     # Check for the bytecode version of ML GMP.
+     AC_MSG_CHECKING([for ML GMP bytecode module gmp.cma])
+     if ( test ${mlgmp_dir} = +gmp && test -f ${ocamlc_root}/gmp/gmp.cma ) \
+        || test -f ${mlgmp_dir}/gmp.cma;
      then
          AC_MSG_RESULT(yes)
-	 ocamlgmp="yes"
+	 ocamlc_gmp="yes"
      else
          AC_MSG_RESULT(no)
-	 ocamlgmp="no"
+	 ocamlc_gmp="no"
+     fi
+  fi
+  # Check for the native compiler.
+  AC_CHECK_PROG(OCAMLOPT, ocamlopt, ocamlopt)
+  ocamlopt_gmp="no"
+  if test x"$OCAMLOPT" = xocamlopt
+  then
+     ocamlopt_root=`ocamlopt -where`
+     # Check for the native version of ML GMP.
+     AC_MSG_CHECKING([for ML GMP native module gmp.cmxa])
+     if ( test ${mlgmp_dir} = +gmp && test -f ${ocamlopt_root}/gmp/gmp.cmxa ) \
+        || test -f ${mlgmp_dir}/gmp.cmxa;
+     then
+         AC_MSG_RESULT(yes)
+	 ocamlopt_gmp="yes"
+     else
+         AC_MSG_RESULT(no)
+	 ocamlopt_gmp="no"
      fi
   fi
 fi
-AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc && test x$ocamlgmp = xyes)
+AM_CONDITIONAL(HAVE_OCAMLC, test x$ocamlc_gmp = xyes)
+AM_CONDITIONAL(HAVE_OCAMLOPT, test x$ocamlopt_gmp = xyes)
 
-# Ciao Prolog
+if test x${ocaml_interface_enabled} = xyes \
+&& (test x$ocamlc_gmp = xyes || test x$ocamlopt_gmp = xyes)
+then
+  build_ocaml_interface=yes
+fi
+AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$build_ocaml_interface = xyes)
+
+# Checks for Ciao Prolog.
 if test x${ciao_prolog_interface_enabled} = xyes
 then
-  AC_CHECK_PROG(CIAO_PROLOG, ciao, ciao)
-  if test x"$CIAO_PROLOG" = xciao
-  then
-  AC_CHECK_HEADER(ciao_prolog.h,
-                  [],
-                  CIAO_PROLOG="")
-  fi
+  AC_CHECK_CIAO_PROLOG
 fi
-AM_CONDITIONAL(BUILD_CIAO_PROLOG_INTERFACE, test x$CIAO_PROLOG = xciao)
 
-# GNU Prolog
+if test x${ciao_prolog_interface_enabled} = xyes \
+&& test x$have_ciao_prolog = xyes
+then
+  build_ciao_prolog_interface=yes
+fi
+AM_CONDITIONAL(BUILD_CIAO_PROLOG_INTERFACE,
+               test x$build_ciao_prolog_interface = xyes)
+
+# Checks for GNU Prolog.
 if test x${gnu_prolog_interface_enabled} = xyes
 then
   AC_CHECK_PROG(GNU_PROLOG, gprolog, gprolog)
@@ -833,30 +1072,61 @@ then
                     GNU_PROLOG="")
   fi
 fi
-AM_CONDITIONAL(BUILD_GNU_PROLOG_INTERFACE, test x$GNU_PROLOG = xgprolog)
 
-# SICStus
+if test x${gnu_prolog_interface_enabled} = xyes \
+&& test x$GNU_PROLOG = xgprolog
+then
+  build_gnu_prolog_interface=yes
+fi
+AM_CONDITIONAL(BUILD_GNU_PROLOG_INTERFACE,
+               test x$build_gnu_prolog_interface = xyes)
+
+# Checks for SICStus.
 if test x${sicstus_prolog_interface_enabled} = xyes
 then
   AC_CHECK_SICSTUS_PROLOG
 fi
-AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE, test x$have_sicstus_prolog = xyes)
 
-# SWI Prolog
+if test x${sicstus_prolog_interface_enabled} = xyes \
+&& test x$have_sicstus_prolog = xyes
+then
+  build_sicstus_prolog_interface=yes
+fi
+AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE,
+               test x$build_sicstus_prolog_interface = xyes)
+
+# Checks for SWI-Prolog.
 if test x${swi_prolog_interface_enabled} = xyes
 then
   AC_CHECK_SWI_PROLOG
 fi
-AM_CONDITIONAL(BUILD_SWI_PROLOG_INTERFACE, test x$have_swi_prolog = xyes)
 
-# XSB
+# Under Cygwin, SWI-Prolog does not work with foreign code:
+# see http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007838.html
+if test x${swi_prolog_interface_enabled} = xyes \
+&& test x$have_swi_prolog = xyes \
+&& test x"${host_os}" != xcygwin
+then
+  build_swi_prolog_interface=yes
+fi
+AM_CONDITIONAL(BUILD_SWI_PROLOG_INTERFACE,
+               test x$build_swi_prolog_interface = xyes)
+
+# Checks for XSB.
 if test x${xsb_prolog_interface_enabled} = xyes
 then
   AC_CHECK_XSB_PROLOG
 fi
-AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE, test x$have_xsb_prolog = xyes)
 
-# YAP
+if test x${xsb_prolog_interface_enabled} = xyes \
+&& test x$have_xsb_prolog = xyes
+then
+  build_xsb_prolog_interface=yes
+fi
+AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE,
+               test x$build_xsb_prolog_interface = xyes)
+
+# Checks for YAP.
 if test x${yap_prolog_interface_enabled} = xyes
 then
   AC_CHECK_PROG(YAP_PROLOG, yap, yap)
@@ -867,41 +1137,139 @@ then
                     YAP_PROLOG="")
   fi
 fi
-AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE, test x$YAP_PROLOG = xyap)
+
+if test x${yap_prolog_interface_enabled} = xyes \
+&& test x$YAP_PROLOG = xyap
+then
+  build_yap_prolog_interface=yes
+fi
+AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE,
+               test x$build_yap_prolog_interface = xyes)
 
 # Test if *any* Prolog system has to be built.
-if test x${CIAO_PROLOG} = xciao \
-|| test x${GNU_PROLOG} = xgprolog \
-|| test x${have_sicstus_prolog} = xyes \
-|| test x${have_swi_prolog} = xyes \
-|| test x${have_xsb_prolog} = xyes \
-|| test x${YAP_PROLOG} = xyap
+if test x$build_ciao_prolog_interface = xyes \
+|| test x$build_gnu_prolog_interface = xyes \
+|| test x$build_sicstus_prolog_interface = xyes \
+|| test x$build_swi_prolog_interface = xyes \
+|| test x$build_xsb_prolog_interface = xyes \
+|| test x$build_yap_prolog_interface = xyes
 then
-  SOME_PROLOG=yes
+  build_some_prolog_interfaces=yes
 fi
-AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES, test x$SOME_PROLOG = xyes)
+AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES,
+               test x$build_some_prolog_interfaces = xyes)
 
-# This is the list of interfaces that are enabled by default.
+if test x$build_c_interface = xyes \
+|| test x$build_java_interface = xyes \
+|| test x$build_ocaml_interface = xyes \
+|| test x$build_some_prolog_interfaces = xyes
+then
+  # Look for a recent enough version of GNU M4.
+  AC_PROG_GNU_M4
+fi
+
+# Define the list of instantiations that are enabled by default.
 # Different instantiations are separated by a '@' character.
-default_instantiations="Polyhedron @ Grid @ BD_Shape<int8_t>"
+di="        Polyhedron @ Grid"
+di="${di} @ Rational_Box"
+di="${di} @ BD_Shape<mpz_class> @ BD_Shape<mpq_class>"
+di="${di} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class>"
+di="${di} @ Constraints_Product<C_Polyhedron, Grid>"
+di="${di} @ Pointset_Powerset<C_Polyhedron>"
+di="${di} @ Pointset_Powerset<NNC_Polyhedron>"
+if test $ac_supported_double = 1
+then
+  di="${di} @ Double_Box @ BD_Shape<double> @ Octagonal_Shape<double>"
+fi
+default_instantiations="${di}"
+
+# Define the list of all instantiations.
+# Different instantiations are separated by a '@' character.
+ai="        Int8_Box @ Int16_Box @ Int32_Box @ Int64_Box"
+ai="${ai} @ Uint8_Box @ Uint16_Box @ Uint32_Box @ Uint64_Box"
+ai="${ai} @ Z_Box @ Rational_Box"
+ai="${ai} @ BD_Shape<int8_t> @ BD_Shape<int16_t>"
+ai="${ai} @ BD_Shape<int32_t> @ BD_Shape<int64_t>"
+ai="${ai} @ BD_Shape<mpz_class> @ BD_Shape<mpq_class>"
+ai="${ai} @ Octagonal_Shape<int8_t> @ Octagonal_Shape<int16_t>"
+ai="${ai} @ Octagonal_Shape<int32_t> @ Octagonal_Shape<int64_t>"
+ai="${ai} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class>"
+ai="${ai} @ Polyhedron @ Grid"
+ai="${ai} @ Pointset_Powerset<Int8_Box> @ Pointset_Powerset<Int16_Box>"
+ai="${ai} @ Pointset_Powerset<Int32_Box> @ Pointset_Powerset<Int64_Box>"
+ai="${ai} @ Pointset_Powerset<Uint8_Box> @ Pointset_Powerset<Uint16_Box>"
+ai="${ai} @ Pointset_Powerset<Uint32_Box> @ Pointset_Powerset<Uint64_Box>"
+ai="${ai} @ Pointset_Powerset<Rational_Box> @ Pointset_Powerset<Z_Box>"
+ai="${ai} @ Pointset_Powerset<BD_Shape<int8_t> >"
+ai="${ai} @ Pointset_Powerset<BD_Shape<int16_t> >"
+ai="${ai} @ Pointset_Powerset<BD_Shape<int32_t> >"
+ai="${ai} @ Pointset_Powerset<BD_Shape<int64_t> >"
+ai="${ai} @ Pointset_Powerset<BD_Shape<mpq_class> >"
+ai="${ai} @ Pointset_Powerset<BD_Shape<mpz_class> >"
+ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int8_t> >"
+ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int16_t> >"
+ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int32_t> >"
+ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int64_t> >"
+ai="${ai} @ Pointset_Powerset<Octagonal_Shape<mpq_class> >"
+ai="${ai} @ Pointset_Powerset<Octagonal_Shape<mpz_class> >"
+ai="${ai} @ Pointset_Powerset<C_Polyhedron>"
+ai="${ai} @ Pointset_Powerset<NNC_Polyhedron>"
+ai="${ai} @ Pointset_Powerset<Grid>"
+ai="${ai} @ Constraints_Product<C_Polyhedron, Grid>"
+ai="${ai} @ Constraints_Product<NNC_Polyhedron, Grid>"
+ai="${ai} @ Constraints_Product<Grid, C_Polyhedron>"
+ai="${ai} @ Constraints_Product<Grid, NNC_Polyhedron>"
+if test $ac_supported_float = 1
+then
+  ai="${ai} @ Float_Box @ BD_Shape<float>"
+  ai="${ai} @ Octagonal_Shape<float>"
+  ai="${ai} @ Pointset_Powerset<Float_Box>"
+  ai="${ai} @ Pointset_Powerset<BD_Shape<float> >"
+  ai="${ai} @ Pointset_Powerset<Octagonal_Shape<float> >"
+fi
+if test $ac_supported_double = 1
+then
+  ai="${ai} @ Double_Box @ BD_Shape<double>"
+  ai="${ai} @ Octagonal_Shape<double>"
+  ai="${ai} @ Pointset_Powerset<Double_Box>"
+  ai="${ai} @ Pointset_Powerset<BD_Shape<double> >"
+  ai="${ai} @ Pointset_Powerset<Octagonal_Shape<double> >"
+fi
+if test $ac_supported_long_double = 1
+then
+  ai="${ai} @ Long_Double_Box @ BD_Shape<long double>"
+  ai="${ai} @ Octagonal_Shape<long double>"
+  ai="${ai} @ Pointset_Powerset<Long_Double_Box>"
+  ai="${ai} @ Pointset_Powerset<BD_Shape<long double> >"
+  ai="${ai} @ Pointset_Powerset<Octagonal_Shape<long double> >"
+fi
+available_instantiations=${ai}
 
 enableval=not_specified
 AC_MSG_CHECKING([which instantiations are enabled])
 AC_ARG_ENABLE(instantiations,
-  AC_HELP_STRING([--enable-instantiations],
-    [enable instantiations for the non-C++ interfaces]))
+  AS_HELP_STRING([--enable-instantiations=INSTANTIATIONS],
+                 [enable instantiations for the non-C++ interfaces]))
 case x"${enableval}" in
 xyes | x)
-  AC_MSG_ERROR([--enable-instantiations needs at least one argument])
+  ai_one_per_line=`echo "${available_instantiations}" | sed -e 's/ *@ */\n/g' -e 's/ *\([[A-Z]]\)/\1/g'`
+  AC_MSG_ERROR([
+--enable-instantiations needs at least one argument chosen among none,
+all, and an @-separated list of instantiation specifiers included
+in the following list:
+${ai_one_per_line}])
   ;;
 xno | xnone)
-  enabled_instantiations=
+  enableval=
   AC_MSG_RESULT(none)
   ;;
 *)
   if test x"${enableval}" = xnot_specified
   then
     enableval=${default_instantiations}
+  elif test x"${enableval}" = xall
+  then
+    enableval=${available_instantiations}
   fi
   # Avoid extra blanks.
   required_instantiations=`echo "${enableval}" | sed -e 's/[[	 ]][[	 ]]*/ /g' -e 's/[[ ]]*\([[@<>,]]\)[[ ]]*/\1/g' -e 's/>>/> >/g' -e 's/^[[ ]]//g' -e 's/[[ ]]$//g'`
@@ -930,20 +1298,81 @@ bool valid = ${instantiation}::valid_instantiation();
   done
   CPPFLAGS="$ac_save_CPPFLAGS"
   required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ,]]/_/g'`
-  required_instantiations_java_sources=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' | sed -e 's/Pointset_Powerset_[[a-zA-Z_]]*/&@&_Iterator/g' | sed -e 's/@/.java /g' -e 's/$/.java/g'`
-  required_instantiations_java_cxx_headers=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/ppl_java.\1/g'`
-  required_instantiations_java_cxx_headers_sources=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/ppl_java_\1.h/g'`
+
+  required_instantiations_c_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g'`
+  required_instantiations_c_cxx_objects=`echo "${required_instantiations_c_source_names}" | sed -e 's/@/.lo /g' -e 's/$/.lo/g' | sed -e 's/\([[^. ]]*\)\.lo/ppl_c_\1.lo/g'`
+  required_instantiations_c_cxx_sources=`echo "${required_instantiations_c_cxx_objects}" | sed -e 's/\([[^. ]]*\)\.lo/\1.cc/g'`
+  required_instantiations_c_cxx_headers=`echo "${required_instantiations_c_cxx_sources}" | sed -e 's/\.cc/.hh/g'`
+
+  required_instantiations_prolog_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g'`
+  required_instantiations_prolog_cxx_objects=`echo "${required_instantiations_prolog_source_names}" | sed -e 's/@/.lo /g' -e 's/$/.lo/g' | sed -e 's/\([[^. ]]*\)\.lo/ppl_prolog_\1.lo/g'`
+  required_instantiations_prolog_cxx_sources=`echo "${required_instantiations_prolog_cxx_objects}" | sed -e 's/\([[^. ]]*\)\.lo/\1.cc/g'`
+  required_instantiations_prolog_cxx_headers=`echo "${required_instantiations_prolog_cxx_sources}" | sed -e 's/\.cc/.hh/g'`
+  required_instantiations_prolog_generated_test_sources=`echo "${required_instantiations_prolog_source_names}" | sed -e 's/@/.pl /g' -e 's/$/.pl/g' | sed -e 's/\([[^. ]]*\)\.pl/ppl_prolog_generated_test_\1.pl/g'`
+
+  required_instantiations_java_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' | sed -e 's/Pointset_Powerset_[[a-zA-Z0-9_]]*/&@&_Iterator/g'`
+  required_instantiations_java_sources=`echo "${required_instantiations_java_source_names}" | sed -e 's/@/.java /g' -e 's/$/.java/g'`
+  required_instantiations_java_classes=`echo "${required_instantiations_java_sources}" | sed -e 's/\.java/.class/g'`
+  required_instantiations_java_cxx_headers=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\)\.java/parma_polyhedra_library.\1/g'`
+  required_instantiations_java_cxx_headers_sources=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\)\.java/parma_polyhedra_library_\1.h/g'`
+  required_instantiations_java_cxx_objects=`echo "${required_instantiations_canonical_names}" | sed -e 's/@/.lo /g' -e 's/$/.lo/g' | sed -e 's/\([[^. ]]*\)\.lo/ppl_java_\1.lo/g'`
+  required_instantiations_java_cxx_sources=`echo "${required_instantiations_java_cxx_objects}" | sed -e 's/\([[^. ]]*\)\.lo/\1.cc/g'`
+
+  required_instantiations_ocaml_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g'`
+  required_instantiations_ocaml_cxx_objects=`echo "${required_instantiations_ocaml_source_names}" | sed -e 's/@/.o /g' -e 's/$/.o/g' | sed -e 's/\([[^. ]]*\)\.o/ppl_ocaml_\1.o/g'`
+  required_instantiations_ocaml_cxx_sources=`echo "${required_instantiations_ocaml_cxx_objects}" | sed -e 's/\([[^. ]]*\)\.o/\1.cc/g'`
+  required_instantiations_ocaml_cxx_headers=`echo "${required_instantiations_ocaml_cxx_sources}" | sed -e 's/\.cc/.hh/g'`
+
   AC_MSG_RESULT([${required_instantiations}])
   ;;
 esac
-#sed -e 's/Pointset_Powerset_[a-zA-Z_]*/&@&_Iterator/g
+
+enableval=no
+AC_MSG_CHECKING([whether tests should be run under Valgrind])
+AC_ARG_ENABLE(valgrind-tests,
+  AS_HELP_STRING([--enable-valgrind-tests],
+                 [run library tests under Valgrind]))
+case "${enableval}" in
+yes)
+  AC_CHECK_PROG(VALGRIND, valgrind, valgrind)
+  if test x"$VALGRIND" = xvalgrind
+  then
+    AC_MSG_RESULT(yes)
+    enable_valgrind_tests=yes
+  else
+    AC_MSG_ERROR([bad value ${enableval} for --enable-valgrind-tests, cannot find Valgrind])
+  fi
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  enable_valgrind_tests=no
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-valgrind-tests, needs yes or no])
+  ;;
+esac
+AM_CONDITIONAL(VALGRIND_TESTS_ENABLED, test x"$enable_valgrind_tests" = xyes)
+
+enableval=thorough
+AC_MSG_CHECKING([whether `make check' does a thorough or quick check])
+AC_ARG_ENABLE(check,
+  AS_HELP_STRING([--enable-check=KIND],
+                 [select thorough or quick `make check']))
+case "${enableval}" in
+thorough)
+  AC_MSG_RESULT(thorough)
+  ;;
+quick)
+  AC_MSG_RESULT(quick)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-check, needs thorough or quick])
+  ;;
+esac
+AM_CONDITIONAL(THOROUGH_MAKE_CHECK, test x"$enableval" = xthorough)
+
 # Libtool.
-# Turn off shared libraries during beta-testing, since they
-# make debugging harder and the build process takes too long.
-#AC_DISABLE_SHARED
-AC_LIBTOOL_DLOPEN
-AC_LIBTOOL_WIN32_DLL
-AC_PROG_LIBTOOL
+LT_INIT([dlopen])
 AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
 AM_CONDITIONAL(ENABLE_STATIC, test x"$enable_static" = xyes)
 
@@ -963,27 +1392,49 @@ if test x$have_glpk = xyes
 then
   ac_save_LIBS="$LIBS"
   LIBS="$LIBS -lglpk"
-  AC_CHECK_FUNC(lib_set_print_hook,
-                AC_DEFINE(GLPK_HAS_LIB_SET_PRINT_HOOK,
+  AC_CHECK_DECL(lib_set_print_hook,
+                AC_DEFINE(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK,
                           1,
-                          [Defined if GLPK provides lib_set_print_hook().]))
+                          [Defined if GLPK provides lib_set_print_hook().]),
+                ,
+                [
+#if defined(HAVE_GLPK_GLPK_H)
+#include <glpk/glpk.h>
+#elif defined(HAVE_GLPK_H)
+#include <glpk.h>
+#endif
+                ])
   AC_CHECK_FUNC(_glp_lib_print_hook,
-                AC_DEFINE(GLPK_HAS__GLP_LIB_PRINT_HOOK,
+                AC_DEFINE(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK,
                           1,
                           [Defined if GLPK provides _glp_lib_print_hook().]))
-  AC_CHECK_FUNC(glp_term_out,
-                AC_DEFINE(GLPK_HAS_GLP_TERM_OUT,
+  AC_CHECK_DECL(glp_term_out,
+                AC_DEFINE(PPL_GLPK_HAS_GLP_TERM_OUT,
                           1,
-                          [Defined if GLPK provides glp_term_out().]))
-  AC_CHECK_FUNC(glp_term_hook,
-                AC_DEFINE(GLPK_HAS_GLP_TERM_HOOK,
+                          [Defined if GLPK provides glp_term_out().]),
+                ,
+                [
+#if defined(HAVE_GLPK_GLPK_H)
+#include <glpk/glpk.h>
+#elif defined(HAVE_GLPK_H)
+#include <glpk.h>
+#endif
+                ])
+  AC_CHECK_DECL(glp_term_hook,
+                AC_DEFINE(PPL_GLPK_HAS_GLP_TERM_HOOK,
                           1,
-                          [Defined if GLPK provides glp_term_hook().]))
+                          [Defined if GLPK provides glp_term_hook().]),
+                ,
+                [
+#if defined(HAVE_GLPK_GLPK_H)
+#include <glpk/glpk.h>
+#elif defined(HAVE_GLPK_H)
+#include <glpk.h>
+#endif
+                ])
+  LIBS="$ac_save_LIBS"
 fi
 AC_LANG_POP(C)
-
-# Checks for header files.
-AC_CHECK_HEADERS([fenv.h ieeefp.h getopt.h signal.h sys/resource.h sys/time.h sys/types.h unistd.h])
 
 # Checks for header declarations.
 AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
@@ -993,7 +1444,7 @@ AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
 #ifdef HAVE_SYS_RESOURCE_H
 # include <sys/resource.h>
 #endif
-])
+               ])
 
 AC_CHECK_DECLS([getrusage],
                ,
@@ -1009,6 +1460,13 @@ AC_CHECK_DECLS([getrusage],
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_TYPES([timeval])
+AC_CHECK_TYPES([siginfo_t], [], [], [[
+#include <signal.h>
+]])
+
+# Check whether the IEEE inexact flag is supported and available to
+# C++ programs.
+AC_CXX_SUPPORTS_LIMITING_MEMORY
 
 # Checks for library functions.
 # Nothing for the time being.
@@ -1019,7 +1477,7 @@ if test x"$GCC" = xyes
 then
   if test x"$ICC" = xyes
   then
-    CFLAGS="$CFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418"
+    CFLAGS="$CFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418,1419,1572"
   else
     CFLAGS="$CFLAGS -W -Wall"
   fi
@@ -1028,94 +1486,55 @@ if test x"$GXX" = xyes
 then
   if test x"$ICPC" = xyes
   then
-    CXXFLAGS="$CXXFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418"
+    CXXFLAGS="$CXXFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418,1419,1572"
   else
     CXXFLAGS="$CXXFLAGS -W -Wall"
   fi
 fi
 
-# System-dependent adjustments.
-cygwin=no
-darwin=no
-solaris=no
-x86_64=no
-no_undefined=no
-
-case "${host_cpu}" in
-alpha*)
-  if test x"$GCC" = xyes
-  then
-    CFLAGS="$CFLAGS -mfp-rounding-mode=d -mieee"
-    CXXFLAGS="$CXXFLAGS -mfp-rounding-mode=d -mieee"
-  else
-    CFLAGS="$CFLAGS -fprm d -ieee -underflow_to_zero"
-    CXXFLAGS="$CXXFLAGS -fprm d -ieee -underflow_to_zero"
-  fi
-  ;;
-x86_64*)
-  x86_64=yes
-  ;;
-*)
-  ;;
-esac
-
-case "${host_os}" in
-cygwin)
-  cygwin=yes
-  no_undefined=yes
-  ;;
-darwin*)
-  darwin=yes
-  if test x"$GCC" = xyes
-  then
-    CFLAGS="$CFLAGS -Wno-long-double"
-    CXXFLAGS="$CXXFLAGS -Wno-long-double"
-  fi
-  ;;
-solaris*)
-  solaris=yes
-  ;;
-*)
-  ;;
-esac
-
-AM_CONDITIONAL(HOST_OS_CYGWIN, test x$cygwin = xyes)
-AM_CONDITIONAL(HOST_OS_DARWIN, test x$darwin = xyes)
-AM_CONDITIONAL(HOST_OS_SOLARIS, test x$solaris = xyes)
-
-AM_CONDITIONAL(HOST_CPU_X86_64, test x$x86_64 = xyes)
-
-AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
-
+AC_SUBST(LIBEXT, [$libext])
+AC_SUBST(SHREXT, [$shrext_cmds])
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
 AC_SUBST(coefficient_mnemonic)
 AC_SUBST(required_instantiations)
 AC_SUBST(required_instantiations_canonical_names)
+AC_SUBST(required_instantiations_c_cxx_headers)
+AC_SUBST(required_instantiations_c_cxx_sources)
+AC_SUBST(required_instantiations_c_cxx_objects)
+AC_SUBST(required_instantiations_prolog_cxx_headers)
+AC_SUBST(required_instantiations_prolog_cxx_sources)
+AC_SUBST(required_instantiations_prolog_cxx_objects)
+AC_SUBST(required_instantiations_prolog_generated_test_sources)
 AC_SUBST(required_instantiations_java_sources)
+AC_SUBST(required_instantiations_java_classes)
 AC_SUBST(required_instantiations_java_cxx_headers)
+# FIXME: rename headers_sources into sources.
 AC_SUBST(required_instantiations_java_cxx_headers_sources)
+AC_SUBST(required_instantiations_java_cxx_sources)
+AC_SUBST(required_instantiations_java_cxx_objects)
+AC_SUBST(required_instantiations_ocaml_cxx_headers)
+AC_SUBST(required_instantiations_ocaml_cxx_sources)
+AC_SUBST(required_instantiations_ocaml_cxx_objects)
 AC_SUBST(ocamlc_root)
+AC_SUBST(mlgmp_dir)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm
-                debian/Makefile
-                debian/libppl.copyright
-                debian/libppl-pwl.copyright
-		fedora/Makefile
                 src/Makefile
                 src/version.hh
                 src/ppl-config.cc
                 tests/Makefile
-                tests/Ask_Tell/Makefile
                 tests/BD_Shape/Makefile
                 tests/Box/Makefile
                 tests/Grid/Makefile
                 tests/MIP_Problem/Makefile
                 tests/Octagonal_Shape/Makefile
+                tests/Partially_Reduced_Product/Makefile
                 tests/Polyhedron/Makefile
                 tests/Polynomial_Space/Makefile
+                tests/Powerset/Makefile
                 utils/Makefile
                 m4/Makefile
                 demos/Makefile
@@ -1128,22 +1547,18 @@ AC_CONFIG_FILES(Makefile
                 doc/devref.doxyconf-latex
                 doc/user.doxyconf-html
                 doc/devref.doxyconf-html
-                doc/user-c-interface.doxyconf-latex
-                doc/devref-c-interface.doxyconf-latex
-                doc/user-c-interface.doxyconf-html
-                doc/devref-c-interface.doxyconf-html
-                doc/user-prolog-interface.doxyconf-latex
-                doc/devref-prolog-interface.doxyconf-latex
-                doc/user-prolog-interface.doxyconf-html
-                doc/devref-prolog-interface.doxyconf-html
+                doc/user-language-interface.doxyconf
+                doc/devref-language-interface.doxyconf
                 interfaces/Makefile
                 interfaces/C/Makefile
                 interfaces/C/ppl_c_version.h
+                interfaces/C/tests/Makefile
                	interfaces/Java/Makefile
 		interfaces/Java/jni/Makefile
 		interfaces/Java/tests/Makefile
-                interfaces/Java/ppl_java/Makefile
+                interfaces/Java/parma_polyhedra_library/Makefile
 		interfaces/OCaml/Makefile
+		interfaces/OCaml/tests/Makefile
                 interfaces/Prolog/Makefile
                 interfaces/Prolog/Ciao/Makefile
                 interfaces/Prolog/GNU/Makefile
@@ -1151,7 +1566,9 @@ AC_CONFIG_FILES(Makefile
                 interfaces/Prolog/SWI/Makefile
                 interfaces/Prolog/XSB/Makefile
                 interfaces/Prolog/YAP/Makefile
-                interfaces/Prolog/tests/Makefile)
+                interfaces/Prolog/tests/Makefile
+                )
+#               tests/Ask_Tell/Makefile
 AC_OUTPUT
 
 if test x"$gmp_supports_exceptions" = xno
@@ -1168,13 +1585,23 @@ fi
 
 if test x"$PERL" = xno
 then
-  AC_MSG_WARN([PERL UNAVAILABLE:
+  if test x${c_interface_enabled} = xyes
+  then
+    AC_MSG_ERROR([PERL UNAVAILABLE:
+***  CANNOT BUILD THE C_INTERFACE.
+*** Perl could not be found on your system, so that the C interface cannot
+*** be built.  You should either disable the generation of the C interface
+*** (with the `--enable-interfaces' configure option) or add Perl to your
+*** development environment: see http://www.perl.org/ for more information.])
+  else
+    AC_MSG_WARN([PERL UNAVAILABLE:
 ***  CANNOT REBUILD SOME FILES IF SOURCES ARE CHANGED.
 *** Perl could not be found on your system.  This is OK, if you only plan
 *** to build the PPL without modifying the sources and without trying to
 *** build a distribution out of a CVS working copy.  If this is not the case,
 *** then you need to add Perl to your development environment:
 *** see http://www.perl.org/ for more information.])
+  fi
 fi
 
 if test x"$coefficient_kind" = xnative

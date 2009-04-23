@@ -1,5 +1,5 @@
 /* Test BD_Shape<T>::minimized_constraints().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,54 +29,54 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 1);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(A - B >= -2);
-  bd.add_constraint(A >= -3);
-  bd.add_constraint(A <= 1);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 1);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(A - B >= -2);
+  bds.add_constraint(A >= -3);
+  bds.add_constraint(A <= 1);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  const Constraint_System cs = bd.minimized_constraints();
+  const Constraint_System cs = bds.minimized_constraints();
 
   using namespace IO_Operators;
-  nout << "*** bd.minimized_constraints() ***" << endl;
+  nout << "*** bds.minimized_constraints() ***" << endl;
 
   dimension_type num_constraints = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
-	 iend = cs.end(); i != iend; ++i) {
+         iend = cs.end(); i != iend; ++i) {
     nout << *i << endl;
     ++num_constraints;
   }
 
   nout << "num_constraints == " << num_constraints << endl;
 
-  C_Polyhedron ph_bd(cs);
+  C_Polyhedron ph_bds(cs);
   C_Polyhedron known_result(2);
   known_result.add_constraint(A == 1);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 3);
 
-  bool ok = (num_constraints == 3 && known_result == ph_bd);
+  bool ok = (num_constraints == 3 && ph_bds == known_result);
 
   return ok;
 }
 
 bool
 test02() {
-  TBD_Shape bd(0, UNIVERSE);
+  TBD_Shape bds(0, UNIVERSE);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  const Constraint_System cs = bd.minimized_constraints();
+  const Constraint_System cs = bds.minimized_constraints();
 
   using namespace IO_Operators;
-  nout << "*** bd.minimized_constraints() ***" << endl;
+  nout << "*** bds.minimized_constraints() ***" << endl;
 
   dimension_type num_constraints = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
-	 iend = cs.end(); i != iend; ++i) {
+         iend = cs.end(); i != iend; ++i) {
     nout << *i << endl;
     ++num_constraints;
   }

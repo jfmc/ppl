@@ -1,5 +1,5 @@
 /* Test BD_Shape::bounded_affine_image().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,22 +29,22 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(x <= 2);
-  bd1.add_constraint(x - y <= 3);
-  bd1.add_constraint(y <= 2);
+  TBD_Shape bds(3);
+  bds.add_constraint(x <= 2);
+  bds.add_constraint(x - y <= 3);
+  bds.add_constraint(y <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd1.bounded_affine_image(x, y, y);
+  bds.bounded_affine_image(x, y, y);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** bd1.bounded_affine_image(x, y, y) ***");
+  print_constraints(bds, "*** bds.bounded_affine_image(x, y, y) ***");
 
   return ok;
 }
@@ -54,23 +54,23 @@ test02() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(x <= 2);
-  bd1.add_constraint(x - y <= 3);
-  bd1.add_constraint(y <= 2);
+  TBD_Shape bds(3);
+  bds.add_constraint(x <= 2);
+  bds.add_constraint(x - y <= 3);
+  bds.add_constraint(y <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd1.bounded_affine_image(x, x + 4, x + 4);
+  bds.bounded_affine_image(x, x + 4, x + 4);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y <= 7);
   known_result.add_constraint(x <= 6);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** bd1.bounded_affine_image(x, x + 4, x + 4) ***");
+  print_constraints(bds, "*** bds.bounded_affine_image(x, x + 4, x + 4) ***");
 
   return ok;
 }
@@ -80,22 +80,22 @@ test03() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(x <= 2);
-  bd1.add_constraint(x - y <= 3);
-  bd1.add_constraint(y <= 2);
+  TBD_Shape bds(3);
+  bds.add_constraint(x <= 2);
+  bds.add_constraint(x - y <= 3);
+  bds.add_constraint(y <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd1.bounded_affine_image(x, Linear_Expression(4), Linear_Expression(4));
+  bds.bounded_affine_image(x, Linear_Expression(4), Linear_Expression(4));
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x == 4);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** bd1.bounded_affine_image(x, 4, 4) ***");
+  print_constraints(bds, "*** bds.bounded_affine_image(x, 4, 4) ***");
 
   return ok;
 }
@@ -105,20 +105,20 @@ test04() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(x <= 2);
-  bd1.add_constraint(x - y <= 3);
-  bd1.add_constraint(y <= 2);
+  TBD_Shape bds(3);
+  bds.add_constraint(x <= 2);
+  bds.add_constraint(x - y <= 3);
+  bds.add_constraint(y <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
-  BD_Shape<mpq_class> known_result(bd1);
+  BD_Shape<mpq_class> known_result(bds);
 
-  bd1.bounded_affine_image(x, x, x);
+  bds.bounded_affine_image(x, x, x);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** bd1.bounded_affine_image(x, x, x) ***");
+  print_constraints(bds, "*** bds.bounded_affine_image(x, x, x) ***");
 
   return ok;
 }
@@ -128,24 +128,24 @@ test05() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(x <= 2);
-  bd1.add_constraint(x - y <= 3);
-  bd1.add_constraint(y <= 2);
+  TBD_Shape bds(3);
+  bds.add_constraint(x <= 2);
+  bds.add_constraint(x - y <= 3);
+  bds.add_constraint(y <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd1.bounded_affine_image(x, 2*x - 2, 2*x - 2, 2);
+  bds.bounded_affine_image(x, 2*x - 2, 2*x - 2, 2);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.bounded_affine_image(x, 2*x-2, 2*x-2, 2) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_image(x, 2*x-2, 2*x-2, 2) ***");
 
   return ok;
 }
@@ -155,22 +155,22 @@ test06() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(x <= 2);
-  bd1.add_constraint(x - y <= 3);
-  bd1.add_constraint(y <= 2);
+  TBD_Shape bds(3);
+  bds.add_constraint(x <= 2);
+  bds.add_constraint(x - y <= 3);
+  bds.add_constraint(y <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd1.bounded_affine_image(y, 2*x, 2*x, 2);
+  bds.bounded_affine_image(y, 2*x, 2*x, 2);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y - x == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd1, "*** bd1.bounded_affine_image(y, 2*x, 2*x, 2) ***");
+  print_constraints(bds, "*** bds.bounded_affine_image(y, 2*x, 2*x, 2) ***");
 
   return ok;
 }
@@ -180,15 +180,15 @@ test07() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x <= 1);
-  bd.add_constraint(x >= 0);
-  bd.add_constraint(y <= 2);
-  bd.add_constraint(y >= -1);
+  TBD_Shape bds(2);
+  bds.add_constraint(x <= 1);
+  bds.add_constraint(x >= 0);
+  bds.add_constraint(y <= 2);
+  bds.add_constraint(y >= -1);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.bounded_affine_image(x, -2*x + y + 1, -2*x + y + 1);
+  bds.bounded_affine_image(x, -2*x + y + 1, -2*x + y + 1);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 3);
@@ -198,10 +198,10 @@ test07() {
   known_result.add_constraint(x - y <= 1);
   known_result.add_constraint(x - y >= -1);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.bounded_affine_image(x, -2*x+y+1, -2*x+y+1) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_image(x, -2*x+y+1, -2*x+y+1) ***");
 
   return ok;
 }
@@ -214,17 +214,17 @@ test08() {
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd(5);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(B <= 5);
-  bd.add_constraint(A - B <= 0);
-  bd.add_constraint(B - C == 2);
-  bd.add_constraint(C - A <= -2);
+  TBD_Shape bds(5);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(B <= 5);
+  bds.add_constraint(A - B <= 0);
+  bds.add_constraint(B - C == 2);
+  bds.add_constraint(C - A <= -2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.bounded_affine_image(B, Linear_Expression(-1), D + E);
+  bds.bounded_affine_image(B, Linear_Expression(-1), D + E);
 
   BD_Shape<mpq_class> known_result(5);
   known_result.add_constraint(A >= 0);
@@ -234,9 +234,9 @@ test08() {
   known_result.add_constraint(C <= 2);
   known_result.add_constraint(B >= -1);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd.bounded_affine_image(B, -1, D + E) ***");
+  print_constraints(bds, "*** bds.bounded_affine_image(B, -1, D + E) ***");
 
   return ok;
 }
@@ -249,14 +249,14 @@ test09() {
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd(5);
-  bd.add_constraint(A - B == 0);
-  bd.add_constraint(B <= 1);
-  bd.add_constraint(C - A <= 2);
+  TBD_Shape bds(5);
+  bds.add_constraint(A - B == 0);
+  bds.add_constraint(B <= 1);
+  bds.add_constraint(C - A <= 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.bounded_affine_image(C, 3*D - E, 2*C + 1, 5);
+  bds.bounded_affine_image(C, 3*D - E, 2*C + 1, 5);
 
   BD_Shape<mpq_class> known_result(5);
   known_result.add_constraint(A - B == 0);
@@ -264,10 +264,11 @@ test09() {
   known_result.add_constraint(5*C <= 7);
   known_result.add_constraint(A <= 1);
 
-  bool ok = check_result(bd, known_result, "9.54e-8", "9.54e-8", "9.54e-8");
+  bool ok = check_result(bds, known_result, "9.54e-8", "9.54e-8", "9.54e-8");
 
-  print_constraints(bd, "*** bd.bounded_affine_image(C, "
-                        "3*D - E, 2*C + 1, 5) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_image(C, "
+                    "3*D - E, 2*C + 1, 5) ***");
 
   return ok;
 }
@@ -280,23 +281,24 @@ test10() {
   Variable D(3);
   Variable F(5);
 
-  TBD_Shape bd(6);
-  bd.add_constraint(A <= 4);
-  bd.add_constraint(A >= -6);
-  bd.add_constraint(B == 0);
+  TBD_Shape bds(6);
+  bds.add_constraint(A <= 4);
+  bds.add_constraint(A >= -6);
+  bds.add_constraint(B == 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.bounded_affine_image(A, -A - 3, B - C + 6*D + F);
+  bds.bounded_affine_image(A, -A - 3, B - C + 6*D + F);
 
   BD_Shape<mpq_class> known_result(6);
   known_result.add_constraint(A >= -7);
   known_result.add_constraint(B == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd.bounded_affine_image(A, "
-		        "-A - 3, B - C + 6*D + F) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_image(A, "
+                    "-A - 3, B - C + 6*D + F) ***");
 
   return ok;
 }
@@ -309,24 +311,25 @@ test11() {
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd(5);
-  bd.add_constraint(A - B == 0);
-  bd.add_constraint(B <= 1);
-  bd.add_constraint(C - A <= 2);
+  TBD_Shape bds(5);
+  bds.add_constraint(A - B == 0);
+  bds.add_constraint(B <= 1);
+  bds.add_constraint(C - A <= 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.bounded_affine_image(B, -B - 2, 7*D - E + 5, 3);
+  bds.bounded_affine_image(B, -B - 2, 7*D - E + 5, 3);
 
   BD_Shape<mpq_class> known_result(5);
   known_result.add_constraint(B >= -1);
   known_result.add_constraint(C - A <= 2);
   known_result.add_constraint(A <= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd.bounded_affine_image(B, "
-                        "-B - 2, 7*D - E + 5, 3) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_image(B, "
+                    "-B - 2, 7*D - E + 5, 3) ***");
 
   return ok;
 }
@@ -339,23 +342,24 @@ test12() {
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd(5);
-  bd.add_constraint(A - B == 0);
-  bd.add_constraint(B <= 1);
-  bd.add_constraint(C - A <= 2);
+  TBD_Shape bds(5);
+  bds.add_constraint(A - B == 0);
+  bds.add_constraint(B <= 1);
+  bds.add_constraint(C - A <= 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.bounded_affine_image(B, 3*E - 5*D + A - 3*B, 4*A -2*C + 3, -3);
+  bds.bounded_affine_image(B, 3*E - 5*D + A - 3*B, 4*A -2*C + 3, -3);
 
   BD_Shape<mpq_class> known_result(5);
   known_result.add_constraint(A <= 1);
   known_result.add_constraint(C - A <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd, "*** bd.bounded_affine_image(B, "
-                        "3*E - 5*D + A - 3*B, 4*A - 2*C + 3, -3) ***");
+  print_constraints(bds,
+                    "*** bds.bounded_affine_image(B, "
+                    "3*E - 5*D + A - 3*B, 4*A - 2*C + 3, -3) ***");
 
   return ok;
 }
@@ -366,15 +370,15 @@ test13() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
+  TBD_Shape bds(2);
+  bds.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the method
     // BD_Shape::bounded_affine_image(v, lb_expr, ub_expr, d): it is illegal
     // to apply it to an expression whose space dimension is
     // greater than the BDS's space dimension.
-    bd.bounded_affine_image(y, x, z);
+    bds.bounded_affine_image(y, x, z);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -391,15 +395,15 @@ test14() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
+  TBD_Shape bds(2);
+  bds.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the method
     // BD_Shape::bounded_affine_image(v, lb_expr, ub_expr, d): it is illegal
     // to apply it to an expression whose space dimension is
     // greater than the BDS's space dimension.
-    bd.bounded_affine_image(y, z, x);
+    bds.bounded_affine_image(y, z, x);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -415,8 +419,8 @@ test15() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
+  TBD_Shape bds(2);
+  bds.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the method
@@ -424,7 +428,7 @@ test15() {
     // to apply it to a expression with the denominator
     // equal to zero.
     Coefficient d = 0;
-    bd.bounded_affine_image(x, Linear_Expression(0), x + 1, d);
+    bds.bounded_affine_image(x, Linear_Expression(0), x + 1, d);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -440,15 +444,15 @@ test16() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd(1);
-  bd.add_constraint(x >= 1);
+  TBD_Shape bds(1);
+  bds.add_constraint(x >= 1);
 
   try {
     // This is an invalid used of the method
     // BD_Shape::bounded_affine_image(v, lb_expr, ub_epxr, d): it is illegal to
     // apply the method to a variable that is not in the space of
     // the polyhedron.
-    bd.bounded_affine_image(y, x + 1, Linear_Expression(8));
+    bds.bounded_affine_image(y, x + 1, Linear_Expression(8));
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

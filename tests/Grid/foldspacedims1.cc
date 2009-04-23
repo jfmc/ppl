@@ -1,5 +1,5 @@
 /* Test Grid::fold_space_dimensions().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -291,9 +291,9 @@ test11() {
   Variable C(2);
 
   Grid gr(3);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
   gr.add_congruence(A %= 0);
-  gr.add_congruence(C == 0);
+  gr.add_constraint(C == 0);
   print_congruences(gr, "*** gr ***");
 
   Variables_Set to_fold;

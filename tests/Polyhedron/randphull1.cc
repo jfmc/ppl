@@ -1,5 +1,5 @@
 /* Compute poly-hulls of random polytopes.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -61,7 +61,8 @@ test01() {
     const Coefficient cx = mpz_class(rg.get_z_range(maxc));
     const Coefficient cy = mpz_class(rg.get_z_range(maxc));
     const Coefficient cz = mpz_class(rg.get_z_range(maxc));
-    if (!ph.add_generator_and_minimize(point(cx*x + cy*y + cz*z)))
+    ph.add_generator(point(cx*x + cy*y + cz*z));
+    if (ph.is_empty())
       return false;
     nout << test01_namespace::count_points(ph) << endl;
   }
@@ -115,6 +116,13 @@ random_polytope(C_Polyhedron& ph,
 		unsigned num_points,
 		float radius = 1.0) {
   assert(dimension >= 2);
+
+  // This setting and resetting of the rounding mode was prompted by
+  // the GLIBC bug http://sources.redhat.com/bugzilla/show_bug.cgi?id=6869 .
+  // However, even when this bug will be fixed, we want to keep this
+  // rounding mode setting/resetting code, so that it gets tested.
+  restore_pre_PPL_rounding();
+
   std::vector<float> theta(dimension-1);
   std::vector<float> coordinate(dimension);
 
@@ -128,17 +136,34 @@ random_polytope(C_Polyhedron& ph,
     point_on_the_unit_n_sphere(dimension, theta, coordinate);
 
     Linear_Expression le;
-    for (unsigned i = dimension; i-- > 0; )
+    for (unsigned i = dimension; i-- > 0; ) {
+#if 0
       le += Variable(i)*Coefficient(coordinate[i]*1000000.0);
+#else
+      // FIXME: this is a temporary workaround for machines
+      // where we cannot control the FPU.
+      mpz_class z = coordinate[i]*1000000.0;
+      le += Variable(i)*Coefficient(z);
+#endif
+    }
     ph.add_generator(point(le));
   }
+
+  // Restore the rounding mode as needed by the PPL.
+  set_rounding_for_PPL();
 }
 
 } // namespace test02_namespace
 
 bool
 test02() {
-  for (unsigned dimension = 2; dimension <= 6; ++dimension) {
+  for (unsigned dimension = 2;
+#ifdef NDEBUG
+       dimension <= 6;
+#else
+       dimension <= 4;
+#endif
+       ++dimension) {
     C_Polyhedron ph(dimension, EMPTY);
     test02_namespace::random_polytope(ph, dimension, dimension*dimension);
     // Count the number of constraints.

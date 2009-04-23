@@ -1,5 +1,5 @@
 /* Matrix class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -141,7 +141,15 @@ public:
   };
 
   //! Returns <CODE>true</CODE> if and only if \p *this has no rows.
-  bool empty() const;
+  /*!
+    \note
+    The unusual naming for this method is \em intentional:
+    we do not want it to be named \c empty because this would cause
+    an error prone name clash with the corresponding methods in derived
+    classes Constraint_System and Congruence_System (which have a
+    different semantics).
+  */
+  bool has_no_rows() const;
 
   /*! \brief
     Returns the const_iterator pointing to the first row, if \p *this is

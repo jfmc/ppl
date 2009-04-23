@@ -1,5 +1,5 @@
 /* Test Grid::is_disjoint_from().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -147,7 +147,7 @@ test07() {
 
   Grid gr2(3);
   gr2.add_congruence(A - B %= 0);
-  gr2.add_congruence(C == 0);
+  gr2.add_constraint(C == 0);
 
   bool ok = (gr1.is_disjoint_from(gr2));
   print_congruences(gr1, "*** gr1 ***");
@@ -169,7 +169,7 @@ test08() {
 
   Grid gr2(3);
   gr2.add_congruence(A - B %= 0);
-  gr2.add_congruence(C == 0);
+  gr2.add_constraint(C == 0);
 
   bool ok = (!gr1.is_disjoint_from(gr2));
   print_congruences(gr1, "*** gr1 ***");

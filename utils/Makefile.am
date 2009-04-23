@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -46,14 +46,14 @@ dist-hook: $(noinst_SCRIPTS)
 generated_automatically = Generated automatically: \
 do not modify; modify the .in file instead.
 
-do_subst = sed -e 's,[@]PERL[@],$(PERL),g' \
+do_subst = $(SED) -e 's,[@]PERL[@],$(PERL),g' \
 	-e 's,[@]generated_automatically[@],$(generated_automatically),g'
 
-build_header: build_header.in Makefile
+build_header: build_header.in
 	$(do_subst) < $(srcdir)/build_header.in > build_header
 	chmod +x build_header
 
-text2cxxarray: text2cxxarray.in Makefile
+text2cxxarray: text2cxxarray.in
 	$(do_subst) < $(srcdir)/text2cxxarray.in > text2cxxarray
 	chmod +x text2cxxarray
 

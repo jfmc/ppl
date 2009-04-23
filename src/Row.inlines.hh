@@ -1,5 +1,5 @@
 /* Row class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,8 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Row_inlines_hh
 #define PPL_Row_inlines_hh 1
 
-#include "globals.defs.hh"
+#include "math_utilities.defs.hh"
 #include <cassert>
+#include <cstddef>
+#include <limits>
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {
@@ -93,7 +95,7 @@ Row_Impl_Handler::Impl::operator delete(void* p, dimension_type) {
 
 inline dimension_type
 Row_Impl_Handler::Impl::max_size() {
-  return size_t(-1)/sizeof(Coefficient);
+  return std::numeric_limits<size_t>::max() / sizeof(Coefficient);
 }
 
 inline dimension_type

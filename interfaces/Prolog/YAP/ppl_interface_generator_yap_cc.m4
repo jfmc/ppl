@@ -1,5 +1,8 @@
-m4_define(`dnl', `m4_dnl')
-dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file generates the file ppl_yap.cc.
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -20,102 +23,14 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_yap.cc.
-/* YAP Prolog interface: system-dependent part.
+m4_include(`ppl_interface_generator_prolog_systems.m4')
+
+m4_divert`'dnl
+/* YAP Prolog interface.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
-#include "ppl.hh"
-#include "pwl.hh"
-#include "yap_cfli.hh"
-#include "../exceptions.hh"
-#include <cassert>
-#include <climits>
-
-namespace PPL = Parma_Polyhedra_Library;
-
-namespace {
-
-Prolog_atom a_throw;
-
-/*!
-  True if and only if the Prolog engine supports unbounded integers.
-*/
-bool Prolog_has_unbounded_integers;
-
-/*!
-  If \p Prolog_has_unbounded_integers is false, holds the minimum
-  integer value representable by a Prolog integer.
-  Holds zero otherwise.
-*/
-long Prolog_min_integer;
-
-/*!
-  If \p Prolog_has_unbounded_integers is false, holds the maximum
-  integer value representable by a Prolog integer.
-  Holds zero otherwise.
-*/
-long Prolog_max_integer;
-
-/*!
-  Temporary used to communicate big integers between C++ and Prolog.
-*/
-mpz_class tmp_mpz_class;
-
-/*!
-  Performs system-dependent initialization.
-*/
-void
-ppl_Prolog_sysdep_init() {
-  Prolog_has_unbounded_integers = true;
-  Prolog_min_integer = 0;
-  Prolog_max_integer = 0;
-
-  a_throw = YAP_LookupAtom("throw");
-}
-
-/*!
-  Perform system-dependent de-itialization.
-*/
-void
-ppl_Prolog_sysdep_deinit() {
-}
-
-int
-Prolog_get_Coefficient(Prolog_term_ref t, PPL::Coefficient& n) {
-  assert(Prolog_is_integer(t));
-  if (YAP_IsBigNumTerm(t) != FALSE) {
-    YAP_BigNumOfTerm(t, tmp_mpz_class.get_mpz_t());
-    n = tmp_mpz_class;
-  }
-  else
-    n = YAP_IntOfTerm(t);
-  return 1;
-}
-
-int
-Prolog_put_Coefficient(Prolog_term_ref& t, const PPL::Coefficient& n) {
-  if (n >= LONG_MIN && n <= LONG_MAX) {
-    long l = 0;
-    PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED);
-    t = YAP_MkIntTerm(l);
-  }
-  else {
-    PPL::assign_r(tmp_mpz_class, n, PPL::ROUND_NOT_NEEDED);
-    t = YAP_MkBigNumTerm(tmp_mpz_class.get_mpz_t());
-  }
-  return 1;
-}
-
-int
-Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
-  Prolog_term_ref u = Prolog_new_term_ref();
-  return Prolog_put_Coefficient(u, n) && YAP_Unify(t, u);
-}
-
-} // namespace
-
-#include "../ppl_prolog.icc"
+#include "../ppl_prolog_domains.hh"
 
 #define YAP_STUB_0(name) \
 extern "C" Prolog_foreign_return_type \
@@ -200,26 +115,23 @@ m4_divert(2)dnl
 dnl
 m4_divert`'dnl
 dnl
-dnl Include common macros for generating system dependent code.
-m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
-dnl
-dnl Redefine m4_extension to generate YAP stubs.
-dnl m4_extension(Predicate_Name, Arity)
-m4_define(`m4_extension', `dnl
+dnl Redefine m4_expanded_procedure_schema to generate YAP stubs.
+dnl m4_expanded_procedure_schema(Predicate_Name, Arity)
+m4_define(`m4_expanded_procedure_schema', `dnl
 YAP_STUB_$2($1)
-')dnl
+')`'dnl
 dnl Generate stubs.
 ppl_prolog_sys_code`'dnl
-m4_undivert(1)`'dnl
-dnl
-m4_divert`'dnl
-dnl
-dnl Redefine m4_extension to generate YAP user predicates.
-dnl m4_extension(Predicate_Name, Arity)
-m4_define(`m4_extension', `dnl
+m4_undivert(1)
+
+dnl Redefine m4_expanded_procedure_schema to generate YAP user predicates.
+dnl m4_expanded_procedure_schema(Predicate_Name, Arity)
+m4_define(`m4_expanded_procedure_schema', `dnl
   YAP_USER_C_PREDICATE($1, $2);
-')dnl
+')
+
 dnl Generate user predicates.
+m4_divert`'dnl
 ppl_prolog_sys_code`'dnl
 dnl
 dnl End of file generation.

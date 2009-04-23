@@ -1,5 +1,5 @@
 /* Test Box::concatenate_assign().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -37,13 +37,10 @@ test01() {
   Variable x9(8);
 
   TBox box1(6);
-  box1.add_constraint(x2 - x3 <= 0);
   box1.add_constraint(x3 <= 2);
-  box1.add_constraint(x6 - x5 <= 2);
   box1.add_constraint(x5 <= 3);
 
   TBox box2(3);
-  box2.add_constraint(x2 - x3 <= 2);
   box2.add_constraint(x3 <= 7);
 
   print_constraints(box1, "*** box1 ***");
@@ -52,14 +49,11 @@ test01() {
   box1.concatenate_assign(box2);
 
   Rational_Box known_result(9);
-  known_result.add_constraint(x2 - x3 <= 0);
   known_result.add_constraint(x3 <= 2);
-  known_result.add_constraint(x6 - x5 <= 2);
   known_result.add_constraint(x5 <= 3);
-  known_result.add_constraint(x8 - x9 <= 2);
   known_result.add_constraint(x9 <= 7);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
 
@@ -73,7 +67,6 @@ test02() {
 
   TBox box1(2);
   box1.add_constraint(x <= 3);
-  box1.add_constraint(x - y <= 4);
 
   TBox box2(0, EMPTY);
 
@@ -84,7 +77,7 @@ test02() {
 
   Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.concatenate_assign(box1) ***");
 
@@ -102,7 +95,7 @@ test03() {
   cs.insert(3*x - 3*y <= 5);
 
   TBox box1(2);
-  box1.add_constraints(cs);
+  box1.refine_with_constraints(cs);
 
   TBox box2(0);
 
@@ -114,9 +107,8 @@ test03() {
   Rational_Box known_result(2);
   known_result.add_constraint(x <= 0);
   known_result.add_constraint(y == 3);
-  known_result.add_constraint(x - y <= 2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
 
@@ -141,8 +133,6 @@ test04() {
   box2.add_constraint(A <= 1);
   box2.add_constraint(B >= 0);
   box2.add_constraint(B <= 2);
-  box2.add_constraint(A - B <= 0);
-  box2.add_constraint(B - A <= 1);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -157,10 +147,8 @@ test04() {
   known_result.add_constraint(D <= 1);
   known_result.add_constraint(E >= 0);
   known_result.add_constraint(E <= 2);
-  known_result.add_constraint(D - E <= 0);
-  known_result.add_constraint(E - D <= 1);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
 
@@ -174,7 +162,6 @@ test05() {
 
   TBox box1(2);
   box1.add_constraint(x <= 3);
-  box1.add_constraint(x - y <= 4);
 
   TBox box2(0, EMPTY);
 
@@ -185,7 +172,40 @@ test05() {
 
   Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
+
+  print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
+
+  return ok;
+}
+
+/* Concatenate an empty box to a universe */
+/*
+   This shows a bug in either concatenate_assign() or OK()
+   When executing box1.concatenate_assign(box2),
+   the assertion `box1.OK()' fails.
+*/
+bool
+test06() {
+  Variable x(0);
+
+  TBox box1(1);
+
+  TBox box2(1);
+  box2.add_constraint(x <= 0);
+  box2.add_constraint(x >= 1);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  box1.OK();
+  box2.OK();
+
+  box1.concatenate_assign(box2);
+
+  Rational_Box known_result(2, EMPTY);
+
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
 
@@ -200,4 +220,5 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN

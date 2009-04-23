@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::Octagonal_Shape(const C_Polyhedron&).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -49,8 +49,8 @@ test01() {
   known_result.add_constraint(11*A + 11*B <= 58);
 
   bool ok = (oct1 == oct2
-	     && check_result(oct1, known_result,
-			     "1.21e-6", "5.76e-7", "3.91e-7"));
+             && check_result(oct1, known_result,
+                             "1.21e-6", "5.76e-7", "3.91e-7"));
 
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
@@ -71,7 +71,7 @@ test02() {
   Octagonal_Shape<mpq_class> known_result(2, EMPTY);
 
   bool ok = (oct1 == oct2
-	     && check_result(oct1, known_result));
+             && check_result(oct1, known_result));
 
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
@@ -89,7 +89,7 @@ test03() {
   Octagonal_Shape<mpq_class> known_result(0);
 
   bool ok = (oct1 == oct2
-	     && check_result(oct1, known_result));
+             && check_result(oct1, known_result));
 
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
@@ -112,7 +112,7 @@ test04() {
   Octagonal_Shape<mpq_class> known_result(4);
 
   bool ok = (oct1 == oct2
-	     && check_result(oct1, known_result));
+             && check_result(oct1, known_result));
 
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
@@ -137,7 +137,7 @@ test05() {
   Octagonal_Shape<mpq_class> known_result(2, EMPTY);
 
   bool ok = (oct1 == oct2
-	     && check_result(oct1, known_result));
+             && check_result(oct1, known_result));
 
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
@@ -173,7 +173,7 @@ test06() {
   known_result.add_constraint(C + D <= 0);
 
   bool ok = (oct1 == oct2
-	     && check_result(oct1, known_result));
+             && check_result(oct1, known_result));
 
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
@@ -222,7 +222,7 @@ test08() {
   Octagonal_Shape<mpq_class> known_result(2, EMPTY);
 
   bool ok = (oct1 == oct2
-	     && Octagonal_Shape<mpq_class>(oct1) == known_result);
+             && Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");

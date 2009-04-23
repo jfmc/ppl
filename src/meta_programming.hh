@@ -1,5 +1,5 @@
 /* Metaprogramming utilities.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,6 +22,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifndef PPL_meta_programming_hh
 #define PPL_meta_programming_hh 1
+
+#include <gmpxx.h>
 
 namespace Parma_Polyhedra_Library {
 
@@ -112,11 +114,11 @@ template <>
 struct Compile_Time_Check<true> {
 };
 
-#define COMPILE_TIME_CHECK_NAME(suffix) compile_time_check_ ## suffix
-#define COMPILE_TIME_CHECK_AUX(e, suffix)				\
+#define PPL_COMPILE_TIME_CHECK_NAME(suffix) compile_time_check_ ## suffix
+#define PPL_COMPILE_TIME_CHECK_AUX(e, suffix)				\
   enum {								\
     /* If e evaluates to false, then the sizeof cannot be compiled. */  \
-    COMPILE_TIME_CHECK_NAME(suffix)					\
+    PPL_COMPILE_TIME_CHECK_NAME(suffix)					\
     = sizeof(Parma_Polyhedra_Library::					\
 	     Compile_Time_Check<static_cast<bool>(e)>)			\
   }
@@ -128,7 +130,7 @@ struct Compile_Time_Check<true> {
   \ingroup PPL_CXX_interface
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-#define COMPILE_TIME_CHECK(e, msg) COMPILE_TIME_CHECK_AUX(e, __LINE__)
+#define PPL_COMPILE_TIME_CHECK(e, msg) PPL_COMPILE_TIME_CHECK_AUX(e, __LINE__)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -238,8 +240,9 @@ struct Is_Same_Or_Derived {
   //! A function obtaining a const reference to a \p Derived object.
   static const Derived& derived_object();
 
-  COMPILE_TIME_CHECK(sizeof(char) != sizeof(double),
-		     "architecture with sizeof(char) == sizeof(double) (!?)");
+  PPL_COMPILE_TIME_CHECK(sizeof(char) != sizeof(double),
+                         "architecture with sizeof(char) == sizeof(double)"
+                         " (!?)");
 
   enum {
     /*!
@@ -301,6 +304,35 @@ template <typename T>
 struct Enable_If<true, T> {
   typedef T type;
 };
+
+template <typename T>
+struct Is_Native : public False {
+};
+
+template <> struct Is_Native<signed char> : public True { };
+template <> struct Is_Native<signed short> : public True { };
+template <> struct Is_Native<signed int> : public True { };
+template <> struct Is_Native<signed long> : public True { };
+template <> struct Is_Native<signed long long> : public True { };
+template <> struct Is_Native<unsigned char> : public True { };
+template <> struct Is_Native<unsigned short> : public True { };
+template <> struct Is_Native<unsigned int> : public True { };
+template <> struct Is_Native<unsigned long> : public True { };
+template <> struct Is_Native<unsigned long long> : public True { };
+
+#if PPL_SUPPORTED_FLOAT
+template <> struct Is_Native<float> : public True { };
+#endif
+#if PPL_SUPPORTED_DOUBLE
+template <> struct Is_Native<double> : public True { };
+#endif
+#if PPL_SUPPORTED_LONG_DOUBLE
+template <> struct Is_Native<long double> : public True { };
+#endif
+
+template <> struct Is_Native<mpz_class> : public True { };
+
+template <> struct Is_Native<mpq_class> : public True { };
 
 } // namespace Parma_Polyhedra_Library
 

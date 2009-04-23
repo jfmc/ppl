@@ -1,5 +1,5 @@
 /* Test Box::intersection_assign().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -31,11 +31,9 @@ test01() {
 
   TBox box1(3);
   box1.add_constraint(x <= 3);
-  box1.add_constraint(x - y <= 4);
 
   TBox box2(3);
   box2.add_constraint(-y <= -2);
-  box2.add_constraint(x - y <= 5);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -45,9 +43,8 @@ test01() {
   Rational_Box known_result(3);
   known_result.add_constraint(x <= 3);
   known_result.add_constraint(-y <= -2);
-  known_result.add_constraint(x - y <= 4);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -61,14 +58,10 @@ test02() {
   Variable z(2);
 
   TBox box1(4);
-  box1.add_constraint(x - y <= 4);
   box1.add_constraint(x <= 3);
 
   TBox box2(4);
-  box2.add_constraint(x - y <= 5);
   box2.add_constraint(-y <= -2);
-  box2.add_constraint(z - x <= 0);
-  box2.add_constraint(y - z <= -1);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -76,13 +69,10 @@ test02() {
   box1.intersection_assign(box2);
 
   Rational_Box known_result(4);
-  known_result.add_constraint(x - y <= 4);
   known_result.add_constraint(x <= 3);
   known_result.add_constraint(-y <= -2);
-  known_result.add_constraint(z - x <= 0);
-  known_result.add_constraint(y - z <= -1);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -100,10 +90,8 @@ test03() {
   box1.add_constraint(-x <= -1);
   box1.add_constraint(y <= 3);
   box1.add_constraint(-y <= -1);
-  box1.add_constraint(x - y <= 1);
 
   TBox box2(3);
-  box2.add_constraint(y - x <= -1);
   box2.add_constraint(x <= 3);
   box2.add_constraint(-y <= 5);
 
@@ -117,10 +105,8 @@ test03() {
   known_result.add_constraint(-x <= -1);
   known_result.add_constraint(y <= 3);
   known_result.add_constraint(-y <= -1);
-  known_result.add_constraint(y - x <= -1);
-  known_result.add_constraint(x - y <= 1);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -138,10 +124,8 @@ test04() {
   box1.add_constraint(x >= 5);
   box1.add_constraint(y <= 3);
   box1.add_constraint(y >= 1);
-  box1.add_constraint(x - y <= 1);
 
   TBox box2(3);
-  box2.add_constraint(y - x <= -1);
   box2.add_constraint(x <= 3);
   box2.add_constraint(y >= -5);
 
@@ -152,7 +136,7 @@ test04() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -170,10 +154,8 @@ test05() {
   box1.add_constraint(x >= 5);
   box1.add_constraint(y <= 3);
   box1.add_constraint(y >= 1);
-  box1.add_constraint(x - y <= 1);
 
   TBox box2(3);
-  box2.add_constraint(y - x <= -1);
   box2.add_constraint(x <= 3);
   box2.add_constraint(y >= -5);
 
@@ -184,7 +166,7 @@ test05() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.intersection_assign(box1) ***");
 
@@ -203,7 +185,7 @@ test06() {
 
   Rational_Box known_result;
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -219,7 +201,6 @@ test07() {
   TBox box1(3);
 
   TBox box2(3);
-  box2.add_constraint(y - x <= -1);
   box2.add_constraint(x <= 3);
   box2.add_constraint(y >= -5);
 
@@ -230,7 +211,7 @@ test07() {
 
   box1.intersection_assign(box2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -245,7 +226,6 @@ test08() {
 
   TBox box1(3);
   TBox box2(3);
-  box2.add_constraint(y - x <= -1);
   box2.add_constraint(x <= 3);
   box2.add_constraint(y >= -5);
 
@@ -256,7 +236,7 @@ test08() {
 
   box1.intersection_assign(box2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -269,7 +249,6 @@ test09() {
   Variable y(1);
 
   TBox box1(2);
-  box1.add_constraint(x >= y);
 
   TBox box2(3);
 
@@ -320,7 +299,7 @@ test11() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result) ;
+  bool ok = check_result(box1, known_result) ;
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -339,7 +318,7 @@ test12() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result) ;
+  bool ok = check_result(box1, known_result) ;
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -375,6 +354,72 @@ test13() {
   return ok;
 }
 
+bool
+test14() {
+  Variable x(0);
+
+  TBox box1(1);
+  box1.add_constraint(x > 0);
+  box1.add_constraint(x <= 1);
+
+  TBox box2(1);
+  box2.add_constraint(x == 0);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  if (box1.is_empty())
+    return false;
+
+  box1.intersection_assign(box2);
+  bool non_empty = !box1.is_empty();
+
+  TBox known_result(1, EMPTY);
+
+  bool ok = (known_result == box1) && !non_empty;
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+bool
+test15() {
+  Variable x(0);
+  Variable y(1);
+
+  TBox box1(2);
+  box1.add_constraint(x >= 0);
+  box1.add_constraint(x <= 2);
+  box1.add_constraint(y <= 2);
+
+  TBox box2(2);
+  box2.add_constraint(x == 1);
+  box2.add_constraint(y >= 1);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  if (box1.is_empty())
+    return false;
+
+  box1.intersection_assign(box2);
+  bool non_empty = !box1.is_empty();
+
+  TBox known_result(2);
+  known_result.add_constraint(x == 1);
+  known_result.add_constraint(y >= 1);
+  known_result.add_constraint(y <= 2);
+
+  bool ok = (known_result == box1) && non_empty;
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+
 } // namespace
 
 BEGIN_MAIN
@@ -391,4 +436,6 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

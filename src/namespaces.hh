@@ -1,5 +1,5 @@
 /* Documentation for used namespaces.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_namespaces_hh 1
 
 //! The entire library is confined to this namespace.
-/*! \ingroup PPL_CXX_interface */
 namespace Parma_Polyhedra_Library {
 
 //! All input/output operators are confined to this namespace.
@@ -72,6 +71,92 @@ namespace Checked {
 namespace Implementation {
 } // namespace Implementation
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Data and functions related to language interfaces.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+namespace Interfaces {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Data and functions related to the C language interface.
+/*! \ingroup PPL_C_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+namespace C {
+
+} // namespace C
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Data and functions related to the Java language interface.
+/*! \ingroup PPL_Java_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+namespace Java {
+
+} // namespace Java
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Data and functions related to the OCaml language interface.
+/*! \ingroup PPL_OCaml_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+namespace OCaml {
+
+} // namespace OCaml
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Data and functions related to the Prolog language interfaces.
+/*! \ingroup PPL_Prolog_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+namespace Prolog {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Data and functions related to the Ciao Prolog language interface.
+/*! \ingroup PPL_Prolog_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+namespace Ciao {
+
+} // namespace Ciao
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Data and functions related to the GNU Prolog language interface.
+/*! \ingroup PPL_Prolog_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+namespace GNU {
+
+} // namespace GNU
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Data and functions related to the SICStus language interface.
+/*! \ingroup PPL_Prolog_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+namespace SICStus {
+
+} // namespace SICStus
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Data and functions related to the SWI-Prolog language interface.
+/*! \ingroup PPL_Prolog_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+namespace SWI {
+
+} // namespace SWI
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Data and functions related to the XSB language interface.
+/*! \ingroup PPL_Prolog_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+namespace XSB {
+
+} // namespace XSB
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Data and functions related to the YAP language interface.
+/*! \ingroup PPL_Prolog_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+namespace YAP {
+
+} // namespace YAP
+
+} // namespace Prolog
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
 

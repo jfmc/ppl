@@ -1,5 +1,5 @@
 /* Header file for test programs.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,9 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_ppl_test_hh
 #define PPL_ppl_test_hh 1
 
-#include "ppl.hh"
-#include "print.hh"
-#include "FCAIBVP.defs.hh"
+#include "ppl_header.hh"
 #include "Partial_Function.defs.hh"
 #include "Random_Number_Generator.defs.hh"
 #include <stdexcept>
@@ -33,10 +31,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <list>
 #include <iterator>
 #include <string>
+#include <iostream>
 #include <algorithm>
+#include <typeinfo>
+#include <cstdlib>
 
-void
-set_handlers();
+#ifndef NOISY
+#define NOISY 0
+#endif
+
+#ifndef VERY_NOISY
+#define VERY_NOISY 0
+#endif
 
 #define TRY try
 
@@ -85,7 +91,7 @@ catch (const std::exception& e) {					\
 }
 
 #define ANNOUNCE_TEST(test)		 \
-  nout << "\n=== " #test " ===" << endl
+  nout << "\n=== " #test " ===" << std::endl
 
 #define RUN_TEST(test)							\
   try {									\
@@ -146,6 +152,15 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+
 #elif PPL_COEFFICIENT_BITS == 64
 
 #ifdef NDEBUG
@@ -159,7 +174,24 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
-#else
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+
+#else // PPL_COEFFICIENT_BITS == 64 && !defined(NDEBUG)
 
 #define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
@@ -169,6 +201,23 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
+
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
 
 #endif // !defined(NDEBUG)
 
@@ -185,7 +234,24 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
-#else
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+
+#else // PPL_COEFFICIENT_BITS == 32 && !defined(NDEBUG)
 
 #define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
@@ -195,6 +261,23 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
+
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
 
 #endif // !defined(NDEBUG)
 
@@ -211,7 +294,24 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
-#else
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+
+#else // PPL_COEFFICIENT_BITS == 16 && !defined(NDEBUG)
 
 #define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
@@ -221,6 +321,23 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F16A(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
+
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
 
 #endif // !defined(NDEBUG)
 
@@ -237,7 +354,24 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F8(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
-#else
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+
+#else // PPL_COEFFICIENT_BITS == 8 && !defined(NDEBUG)
 
 #define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
@@ -247,6 +381,23 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F16A(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8A(test) DO_TEST_OVERFLOW(test)
+
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
 
 #endif // !defined(NDEBUG)
 
@@ -258,11 +409,6 @@ catch (const std::exception& e) {					\
 
 // Turn the expansion of s into a string: PPL_TEST_XSTR(x) => "s expanded".
 #define PPL_TEST_XSTR(s) PPL_TEST_STR(s)
-
-// These using directive and declaration are just to avoid the
-// corresponding namespace qualifications in all the tests.
-using namespace Parma_Polyhedra_Library;
-using std::endl;
 
 
 #ifdef DERIVED_TEST
@@ -281,7 +427,64 @@ using std::endl;
 #define OCTAGONAL_SHAPE_INSTANCE mpq_class
 #endif
 
+// These using directive and declaration are just to avoid the
+// corresponding namespace qualifications in all the tests.
+using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::Test;
+using std::endl;
+
 namespace Parma_Polyhedra_Library {
+
+namespace Test {
+
+static bool
+check_noisy(const char*
+#if PPL_HAVE_DECL_GETENV || NOISY || VERY_NOISY
+            environment_variable
+#endif
+) {
+#if PPL_HAVE_DECL_GETENV
+  return getenv(environment_variable) != 0;
+#else
+#if NOISY
+  if (strcmp(environment_variable, "PPL_NOISY_TESTS") == 0)
+    return true;
+#endif
+#if VERY_NOISY
+  if (strcmp(environment_variable, "PPL_VERY_NOISY_TESTS") == 0)
+    return true;
+#endif
+  return false;
+#endif
+}
+
+template<typename CharT, typename Traits = std::char_traits<CharT> >
+class nullbuf : public std::basic_streambuf<CharT, Traits> {
+protected:
+  virtual typename Traits::int_type overflow(typename Traits::int_type c) {
+    return Traits::not_eof(c);
+  }
+};
+
+template <class CharT, class Traits = std::char_traits<CharT> >
+class noisy_ostream : public std::basic_ostream<CharT, Traits> {
+private:
+  nullbuf<CharT, Traits> black_hole;
+
+public:
+  noisy_ostream(const std::basic_ostream<CharT, Traits>& os,
+		const char* environment_variable)
+    : std::basic_ostream<CharT, Traits>(check_noisy(environment_variable)
+					? os.rdbuf()
+					: &black_hole) {
+  }
+};
+
+static noisy_ostream<char> nout(std::cout, "PPL_NOISY_TESTS");
+static noisy_ostream<char> vnout(std::cout, "PPL_VERY_NOISY_TESTS");
+
+void
+set_handlers();
 
 //! Utility typedef to allow a macro argument to denote the long double type.
 typedef long double long_double;
@@ -358,11 +561,11 @@ check_result_i(const BD_Shape<T>& computed_result,
 	       const char* max_r_d_s,
 	       const char* max_e_d_s,
 	       const char* max_l_d_s) {
-  using namespace IO_Operators;
   BD_Shape<mpq_class> q_computed_result(computed_result);
   // Handle in a more efficient way the case where equality is expected.
   if (max_r_d_s == 0 && max_e_d_s == 0 && max_l_d_s == 0) {
     if (q_computed_result != known_result) {
+      using IO_Operators::operator<<;
       nout << "Equality does not hold:"
 	   << "\ncomputed result is\n"
 	   << q_computed_result
@@ -376,6 +579,7 @@ check_result_i(const BD_Shape<T>& computed_result,
   }
 
   if (!q_computed_result.contains(known_result)) {
+    using IO_Operators::operator<<;
     nout << "Containment does not hold:"
 	 << "\ncomputed result is\n"
 	 << q_computed_result
@@ -396,6 +600,7 @@ check_result_i(const BD_Shape<T>& computed_result,
   bool ok_l = check_distance(l_d, max_l_d_s, "l_infinity");
   bool ok = ok_r && ok_e && ok_l;
   if (!ok) {
+    using IO_Operators::operator<<;
     nout << "Computed result is\n"
 	 << q_computed_result
 	 << "\nknown result is\n"
@@ -419,15 +624,22 @@ check_result(const BD_Shape<T>& computed_result,
 		     max_r_d_s, max_e_d_s, max_l_d_s);
 }
 
-template <>
-inline bool
-check_result(const BD_Shape<mpq_class>& computed_result,
-	     const BD_Shape<mpq_class>& known_result,
-	     const char*,
-	     const char*,
-	     const char*) {
-  return check_result_i(computed_result, known_result,
-			0, 0, 0);
+template <typename T>
+bool
+check_result(const BD_Shape<T>& computed_result,
+	     const BD_Shape<T>& known_result) {
+  if (computed_result == known_result)
+    return true;
+  else {
+    using IO_Operators::operator<<;
+    nout << "Equality does not hold:"
+         << "\ncomputed result is\n"
+         << computed_result
+         << "\nknown result is\n"
+         << known_result
+         << endl;
+    return false;
+  }
 }
 
 template <typename T>
@@ -439,6 +651,10 @@ check_result(const BD_Shape<T>& computed_result,
     : check_result_i(computed_result, known_result, 0, 0, 0);
 }
 
+bool
+check_result(const BD_Shape<mpq_class>& computed_result,
+	     const BD_Shape<mpq_class>& known_result);
+
 template <typename T>
 bool
 check_result_i(const Octagonal_Shape<T>& computed_result,
@@ -446,16 +662,16 @@ check_result_i(const Octagonal_Shape<T>& computed_result,
 	       const char* max_r_d_s,
 	       const char* max_e_d_s,
 	       const char* max_l_d_s) {
-  using namespace IO_Operators;
   Octagonal_Shape<mpq_class> q_computed_result(computed_result);
   // Handle in a more efficient way the case where equality is expected.
   if (max_r_d_s == 0 && max_e_d_s == 0 && max_l_d_s == 0) {
     if (q_computed_result != known_result) {
+      using IO_Operators::operator<<;
       nout << "Equality does not hold:"
 	   << "\ncomputed result is\n"
-	   << q_computed_result
+           << q_computed_result
 	   << "\nknown result is\n"
-	   << known_result
+           << known_result
 	   << endl;
       return false;
     }
@@ -464,6 +680,7 @@ check_result_i(const Octagonal_Shape<T>& computed_result,
   }
 
   if (!q_computed_result.contains(known_result)) {
+    using IO_Operators::operator<<;
     nout << "Containment does not hold:"
 	 << "\ncomputed result is\n"
 	 << q_computed_result
@@ -484,6 +701,7 @@ check_result_i(const Octagonal_Shape<T>& computed_result,
   bool ok_l = check_distance(l_d, max_l_d_s, "l_infinity");
   bool ok = ok_r && ok_e && ok_l;
   if (!ok) {
+    using IO_Operators::operator<<;
     nout << "Computed result is\n"
 	 << q_computed_result
 	 << "\nknown result is\n"
@@ -535,11 +753,11 @@ check_result_i(const Box<Interval>& computed_result,
 	       const char* max_r_d_s,
 	       const char* max_e_d_s,
 	       const char* max_l_d_s) {
-  using namespace IO_Operators;
   Rational_Box q_computed_result(computed_result);
   // Handle in a more efficient way the case where equality is expected.
   if (max_r_d_s == 0 && max_e_d_s == 0 && max_l_d_s == 0) {
     if (q_computed_result != known_result) {
+      using IO_Operators::operator<<;
       nout << "Equality does not hold:"
 	   << "\ncomputed result is\n"
 	   << q_computed_result
@@ -553,6 +771,7 @@ check_result_i(const Box<Interval>& computed_result,
   }
 
   if (!q_computed_result.contains(known_result)) {
+    using IO_Operators::operator<<;
     nout << "Containment does not hold:"
 	 << "\ncomputed result is\n"
 	 << q_computed_result
@@ -562,12 +781,15 @@ check_result_i(const Box<Interval>& computed_result,
     nout << "Individual dimensions where containment does not hold"
 	 << "\n(Variable: computed-result known-result):\n";
     for (dimension_type i = 0; i < computed_result.space_dimension(); ++i) {
-      if (!q_computed_result.get_interval(Variable(i)).contains(known_result.get_interval(Variable(i))))
+      if (!q_computed_result.get_interval(Variable(i))
+          .contains(known_result.get_interval(Variable(i)))) {
+        using IO_Operators::operator<<;
 	nout << Variable(i) << ": "
 	     << q_computed_result.get_interval(Variable(i))
 	     << ' '
 	     << known_result.get_interval(Variable(i))
 	     << endl;
+      }
     }
     return false;
   }
@@ -583,6 +805,7 @@ check_result_i(const Box<Interval>& computed_result,
   bool ok_l = check_distance(l_d, max_l_d_s, "l_infinity");
   bool ok = ok_r && ok_e && ok_l;
   if (!ok) {
+    using IO_Operators::operator<<;
     nout << "Computed result is\n"
 	 << q_computed_result
 	 << "\nknown result is\n"
@@ -606,15 +829,22 @@ check_result(const Box<Interval>& computed_result,
 		     max_r_d_s, max_e_d_s, max_l_d_s);
 }
 
-template <>
-inline bool
-check_result(const Rational_Box& computed_result,
-	     const Rational_Box& known_result,
-	     const char*,
-	     const char*,
-	     const char*) {
-  return check_result_i(computed_result, known_result,
-			0, 0, 0);
+template <typename Interval>
+bool
+check_result(const Box<Interval>& computed_result,
+	     const Box<Interval>& known_result) {
+  if (computed_result == known_result)
+    return true;
+  else {
+    using IO_Operators::operator<<;
+    nout << "Equality does not hold:"
+         << "\ncomputed result is\n"
+         << computed_result
+         << "\nknown result is\n"
+         << known_result
+         << endl;
+    return false;
+  }
 }
 
 template <typename Interval>
@@ -625,6 +855,331 @@ check_result(const Box<Interval>& computed_result,
     ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
     : check_result_i(computed_result, known_result, 0, 0, 0);
 }
+
+bool
+check_result(const Rational_Box& computed_result,
+	     const Rational_Box& known_result);
+
+bool
+check_result(const Generator& computed_result,
+             const Generator& known_result,
+             const char* max_r_d_s,
+             const char* max_e_d_s,
+             const char* max_l_d_s);
+
+bool
+check_result(const Checked_Number<mpq_class, Extended_Number_Policy>& computed,
+             const Checked_Number<mpq_class, Extended_Number_Policy>& known,
+             const char* max_r_d_s);
+
+class FCAIBVP;
+
+bool
+operator==(const FCAIBVP& x, const FCAIBVP& y);
+
+bool
+operator!=(const FCAIBVP& x, const FCAIBVP& y);
+
+std::ostream&
+operator<<(std::ostream& s, const FCAIBVP& x);
+
+/*! \brief
+  A class for representing Finite Conjunctions of Attribute
+  Independent Boolean Variable Properties.
+*/
+class FCAIBVP {
+private:
+  typedef size_t dim_t;
+
+  typedef std::set<dim_t> Set;
+
+  Set set;
+
+public:
+  FCAIBVP();
+
+  explicit FCAIBVP(const Variable& x);
+
+  explicit FCAIBVP(const Variables_Set& y);
+
+  FCAIBVP(const FCAIBVP& y, unsigned offset);
+
+  memory_size_type total_memory_in_bytes() const;
+
+  memory_size_type external_memory_in_bytes() const;
+
+  bool is_top() const;
+
+  bool is_bottom() const;
+
+  bool definitely_entails(const FCAIBVP& y) const;
+
+  void upper_bound_assign(const FCAIBVP& y);
+
+  void difference_assign(const FCAIBVP& y);
+
+  void meet_assign(const FCAIBVP& y);
+
+  void weakening_assign(const FCAIBVP& y);
+
+  static bool has_nontrivial_weakening();
+
+  bool OK() const;
+
+  friend std::ostream&
+  Parma_Polyhedra_Library::Test::operator<<(std::ostream& s,
+                                            const FCAIBVP& x);
+};
+
+inline
+FCAIBVP::FCAIBVP()
+  : set() {
+}
+
+inline
+FCAIBVP::FCAIBVP(const Variable& x)
+  : set() {
+  set.insert(x.id());
+}
+
+inline
+FCAIBVP::FCAIBVP(const Variables_Set& y)
+  : set() {
+  for (Variables_Set::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    set.insert(*i);
+}
+
+inline
+FCAIBVP::FCAIBVP(const FCAIBVP& y, unsigned offset)
+  : set() {
+  for (Set::const_iterator i = y.set.begin(),
+	 y_set_end = y.set.end(); i != y_set_end; ++i)
+    set.insert(*i + offset);
+}
+
+inline memory_size_type
+FCAIBVP::total_memory_in_bytes() const {
+  return 1;
+}
+
+inline bool
+FCAIBVP::is_top() const {
+  return set.empty();
+}
+
+inline bool
+FCAIBVP::is_bottom() const {
+  return false;
+}
+
+inline bool
+FCAIBVP::definitely_entails(const FCAIBVP& y) const{
+  const FCAIBVP& x = *this;
+  return std::includes(x.set.begin(), x.set.end(),
+		       y.set.begin(), y.set.end());
+}
+
+inline void
+FCAIBVP::upper_bound_assign(const FCAIBVP& y) {
+  FCAIBVP& x = *this;
+  FCAIBVP z;
+  std::set_intersection(x.set.begin(), x.set.end(),
+			y.set.begin(), y.set.end(),
+			std::inserter(z.set, z.set.begin()));
+  std::swap(x, z);
+}
+
+inline void
+FCAIBVP::difference_assign(const FCAIBVP& y) {
+  FCAIBVP& x = *this;
+  FCAIBVP z;
+  std::set_difference(x.set.begin(), x.set.end(),
+		      y.set.begin(), y.set.end(),
+		      std::inserter(z.set, z.set.begin()));
+  std::swap(x, z);
+}
+
+inline void
+FCAIBVP::meet_assign(const FCAIBVP& y) {
+  set.insert(y.set.begin(), y.set.end());
+}
+
+inline void
+FCAIBVP::weakening_assign(const FCAIBVP& y) {
+  difference_assign(y);
+}
+
+inline bool
+FCAIBVP::has_nontrivial_weakening() {
+  return true;
+}
+
+inline bool
+FCAIBVP::OK() const {
+  return true;
+}
+
+inline bool
+operator==(const FCAIBVP& x, const FCAIBVP& y) {
+  return x.definitely_entails(y) && y.definitely_entails(x);
+}
+
+inline bool
+operator!=(const FCAIBVP& x, const FCAIBVP& y) {
+  return !(x == y);
+}
+
+void
+print_constraint(const Constraint& c,
+		 const std::string& intro = "",
+		 std::ostream& s = nout);
+
+void
+print_constraints(const Constraint_System& cs,
+		  const std::string& intro = "",
+		  std::ostream& s = nout);
+
+void
+print_constraints(const Polyhedron& ph,
+		  const std::string& intro = "",
+		  std::ostream& s = nout);
+
+template <typename Interval>
+void
+print_constraints(const Box<Interval>& box,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  if (!intro.empty())
+    s << intro << std::endl;
+  using IO_Operators::operator<<;
+  s << box << std::endl;
+}
+
+template <typename T>
+void
+print_constraints(const BD_Shape<T>& bd,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  if (!intro.empty())
+    s << intro << std::endl;
+  using IO_Operators::operator<<;
+  s << bd << std::endl;
+}
+
+template <typename T>
+void
+print_constraints(const Octagonal_Shape<T>& oc,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  if (!intro.empty())
+    s << intro << std::endl;
+  using IO_Operators::operator<<;
+  s << oc << std::endl;
+}
+
+template <typename PH>
+void
+print_constraints(const Pointset_Powerset<PH>& pps,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  if (!intro.empty())
+    s << intro << std::endl;
+  using IO_Operators::operator<<;
+  s << pps << std::endl;
+}
+
+template <typename PH>
+void
+print_congruences(const Pointset_Powerset<PH>& pps,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  if (!intro.empty())
+    s << intro << std::endl;
+  using IO_Operators::operator<<;
+  s << pps << std::endl;
+}
+
+/*
+template <typename PH>
+void
+print_constraints(const Pointset_Ask_Tell<PH>& pat,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  if (!intro.empty())
+    s << intro << std::endl;
+  using IO_Operators::operator<<;
+  s << pat << std::endl;
+}
+*/
+
+void
+print_congruence(const Congruence& c,
+		 const std::string& intro = "",
+		 std::ostream& s = nout);
+
+void
+print_congruences(const Congruence_System& cgs,
+		  const std::string& intro = "",
+		  std::ostream& s = nout);
+
+void
+print_congruences(const Grid& gr,
+		  const std::string& intro = "",
+		  std::ostream& s = nout);
+
+void
+print_generator(const Generator& g,
+		const std::string& intro = "",
+		std::ostream& s = nout);
+
+void
+print_generator(const Grid_Generator& g,
+		const std::string& intro = "",
+		std::ostream& s = nout);
+
+void
+print_generators(const Generator_System& gs,
+		 const std::string& intro = "",
+		 std::ostream& s = nout);
+
+void
+print_generators(const Grid_Generator_System& gs,
+		 const std::string& intro = "",
+		 std::ostream& s = nout);
+
+void
+print_generators(const Polyhedron& ph,
+		 const std::string& intro = "",
+		 std::ostream& s = nout);
+
+void
+print_generators(const Grid& gr,
+		 const std::string& intro = "",
+		 std::ostream& s = nout);
+
+template <typename D1, typename D2, typename R>
+void
+print_constraints(const Partially_Reduced_Product<D1, D2, R>& pd,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  print_constraints(pd.constraints(), intro, s);
+}
+
+template <typename D1, typename D2, typename R>
+void
+print_congruences(const Partially_Reduced_Product<D1, D2, R>& pd,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  print_congruences(pd.congruences(), intro, s);
+}
+
+void
+print_function(const Parma_Polyhedra_Library::Test::Partial_Function& function,
+	       const std::string& intro = "",
+	       std::ostream& s = nout);
+
+} // namespace Test
 
 } // namespace Parma_Polyhedra_Library
 

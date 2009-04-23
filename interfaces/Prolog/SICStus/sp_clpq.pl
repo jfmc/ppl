@@ -1,5 +1,5 @@
 /* Main program for the toy PPL/SICStus-Prolog CLP(Q) interpreter.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -20,15 +20,24 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-:- set_prolog_flag(language, iso).
-
 :- ensure_loaded('ppl_sicstus.pl').
-:- use_module(library(lists), [append/3, member/2]).
+
+version_dependent_declarations :-
+	prolog_flag(version, V),
+	atom_codes(V, VList),
+	VList = [_S, _I, _C, _S, _t, _u, _s, _, N|_],
+	(N is "4" ->
+	    true
+	;
+	    set_prolog_flag(language, iso),
+	    use_module(library(lists), [append/3, member/2])
+	).
 
 eat_eol :-
 	get_code(user_input, _EOL).
 
 main(CLPQ) :-
-    ensure_loaded(CLPQ),
-    set_prolog_flag(fileerrors, off),
-    common_main.
+	version_dependent_declarations,
+	ensure_loaded(CLPQ),
+	set_prolog_flag(fileerrors, off),
+	common_main.

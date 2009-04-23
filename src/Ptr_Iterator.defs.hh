@@ -1,5 +1,5 @@
 /* Ptr_Iterator class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -160,12 +160,10 @@ private:
   Parma_Polyhedra_Library::Implementation::
   operator-(const Ptr_Iterator<Q>& x, const Ptr_Iterator<R>& y);
 
-#ifndef __INTEL_COMPILER
   friend Ptr_Iterator<P>
   Parma_Polyhedra_Library::Implementation::
   operator+<>(typename Ptr_Iterator<P>::difference_type m,
 	      const Ptr_Iterator<P>& y);
-#endif
 };
 
 #include "Ptr_Iterator.inlines.hh"

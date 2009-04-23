@@ -1,5 +1,5 @@
 /* Pointset_Ask_Tell class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -30,9 +30,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.types.hh"
 #include "Congruence.types.hh"
 #include "Congruence_System.types.hh"
-#include "C_Polyhedron.types.hh"
-#include "NNC_Polyhedron.types.hh"
-#include "Polyhedron.defs.hh"
+#include "C_Polyhedron.defs.hh"
+#include "NNC_Polyhedron.defs.hh"
 #include "Variables_Set.types.hh"
 #include "Determinate.defs.hh"
 #include "Ask_Tell.defs.hh"
@@ -180,17 +179,6 @@ public:
   */
   void add_constraint(const Constraint& c);
 
-  //! Intersects \p *this with the constraint \p c, minimizing the result.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p c are topology-incompatible or
-    dimension-incompatible.
-  */
-  bool add_constraint_and_minimize(const Constraint& c);
-
   //! Intersects \p *this with the constraints in \p cs.
   /*!
     \param cs
@@ -203,22 +191,6 @@ public:
   void add_constraints(const Constraint_System& cs);
 
   /*! \brief
-    Intersects \p *this with the constraints in \p cs,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraints to intersect with.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-  */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
-
-  /*! \brief
     Assign to \p *this the result of (recursively) merging together
     the pairs of polyhedra whose poly-hull is the same as their
     set-theoretical union.
@@ -227,6 +199,58 @@ public:
     in \p *this, we have \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
   */
   void pairwise_reduce();
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  void unconstrain(Variable var);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  void unconstrain(const Variables_Set& to_be_unconstrained);
+
+  //! Assigns to \p *this the intersection of \p *this and \p y.
+  /*!
+    The result is obtained by intersecting each polyhedron in \p *this
+    with each polyhedron in \p y and collecting all these intersections.
+  */
+  void intersection_assign(const Pointset_Ask_Tell& y);
+
+  //! Assigns to \p *this the difference of \p *this and \p y.
+  /*!
+    The result is obtained by computing the
+    \ref Convex_Polyhedral_Difference "poly-difference" of each polyhedron
+    in \p *this with each polyhedron in \p y and collecting all these
+    differences.
+  */
+  void poly_difference_assign(const Pointset_Ask_Tell& y);
+
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
+
+    The result is obtained by computing the pairwise
+    \ref Time_Elapse_Operator "time elapse" of each polyhedron
+    in \p *this with each polyhedron in \p y.
+  */
+  void time_elapse_assign(const Pointset_Ask_Tell& y);
 
   /*! \brief
     Assigns to \p *this the result of applying the
@@ -328,22 +352,6 @@ public:
   */
   void add_space_dimensions_and_project(dimension_type m);
 
-  //! Assigns to \p *this the intersection of \p *this and \p y.
-  /*!
-    The result is obtained by intersecting each polyhedron in \p *this
-    with each polyhedron in \p y and collecting all these intersections.
-  */
-  void intersection_assign(const Pointset_Ask_Tell& y);
-
-  //! Assigns to \p *this the difference of \p *this and \p y.
-  /*!
-    The result is obtained by computing the
-    \ref Convex_Polyhedral_Difference "poly-difference" of each polyhedron
-    in \p *this with each polyhedron in \p y and collecting all these
-    differences.
-  */
-  void poly_difference_assign(const Pointset_Ask_Tell& y);
-
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
     The result is obtained by computing the pairwise
@@ -351,16 +359,6 @@ public:
     in \p *this with each polyhedron in \p y.
   */
   void concatenate_assign(const Pointset_Ask_Tell& y);
-
-  /*! \brief
-    Assigns to \p *this the result of computing the
-    \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
-
-    The result is obtained by computing the pairwise
-    \ref Time_Elapse_Operator "time elapse" of each polyhedron
-    in \p *this with each polyhedron in \p y.
-  */
-  void time_elapse_assign(const Pointset_Ask_Tell& y);
 
   //! Removes all the specified space dimensions.
   /*!
@@ -405,13 +403,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
 private:

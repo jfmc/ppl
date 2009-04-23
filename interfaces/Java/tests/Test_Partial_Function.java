@@ -1,6 +1,6 @@
 /* Test_Partial_Function Java class of the Parma Polyhedra Library Java
    interface.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,11 +22,11 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 import java.util.TreeMap;
-import ppl_java.*;
+import parma_polyhedra_library.*;
 
 
 // This class implements the Partial_Function interface defined
-// in the ppl_java package.
+// in the parma_polyhedra_library package.
 public class Test_Partial_Function implements Partial_Function {
 
     private TreeMap<Long, Long> map;

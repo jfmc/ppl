@@ -1,5 +1,5 @@
 /* Powerset class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -202,6 +202,13 @@ template <typename D>
 inline void
 Powerset<D>::upper_bound_assign(const Powerset& y) {
   least_upper_bound_assign(y);
+}
+
+template <typename D>
+inline bool
+Powerset<D>::upper_bound_assign_if_exact(const Powerset& y) {
+  least_upper_bound_assign(y);
+  return true;
 }
 
 template <typename D>

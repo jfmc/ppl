@@ -1,5 +1,5 @@
 /* Test Pointset_Powerset<Box>::geometrically_covers().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -35,7 +35,9 @@ test01() {
   cs2.insert(x <= 6);
   cs3.insert(x >= 1);
   cs3.insert(x <= 5);
-  TBox box1(cs1), box2(cs2), box3(cs3);
+  TBox box1(cs1);
+  TBox box2(cs2);
+  TBox box3(cs3);
 
   Pointset_Powerset<TBox> ps12(1, EMPTY);
   ps12.add_disjunct(box1);

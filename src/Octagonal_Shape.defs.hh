@@ -1,5 +1,5 @@
 /* Octagonal_Shape class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
+#include "Congruence.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
@@ -36,6 +37,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "Polyhedron.types.hh"
 #include "Box.types.hh"
+#include "Grid.types.hh"
+#include "BD_Shape.types.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.types.hh"
 #include "Checked_Number.defs.hh"
@@ -95,9 +98,9 @@ bool operator!=(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y);
 */
 template <typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				 const Octagonal_Shape<T>& x,
-				 const Octagonal_Shape<T>& y,
-				 Rounding_Dir dir);
+                                 const Octagonal_Shape<T>& x,
+                                 const Octagonal_Shape<T>& y,
+                                 Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -112,9 +115,9 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				 const Octagonal_Shape<T>& x,
-				 const Octagonal_Shape<T>& y,
-				 Rounding_Dir dir);
+                                 const Octagonal_Shape<T>& x,
+                                 const Octagonal_Shape<T>& y,
+                                 Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -129,12 +132,12 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				 const Octagonal_Shape<T>& x,
-				 const Octagonal_Shape<T>& y,
-				 Rounding_Dir dir,
-				 Temp& tmp0,
-				 Temp& tmp1,
-				 Temp& tmp2);
+                                 const Octagonal_Shape<T>& x,
+                                 const Octagonal_Shape<T>& y,
+                                 Rounding_Dir dir,
+                                 Temp& tmp0,
+                                 Temp& tmp1,
+                                 Temp& tmp2);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -149,9 +152,9 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			       const Octagonal_Shape<T>& x,
-			       const Octagonal_Shape<T>& y,
-			       Rounding_Dir dir);
+                               const Octagonal_Shape<T>& x,
+                               const Octagonal_Shape<T>& y,
+                               Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -166,9 +169,9 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			       const Octagonal_Shape<T>& x,
-			       const Octagonal_Shape<T>& y,
-			       Rounding_Dir dir);
+                               const Octagonal_Shape<T>& x,
+                               const Octagonal_Shape<T>& y,
+                               Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -183,12 +186,12 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			       const Octagonal_Shape<T>& x,
-			       const Octagonal_Shape<T>& y,
-			       Rounding_Dir dir,
-			       Temp& tmp0,
-			       Temp& tmp1,
-			       Temp& tmp2);
+                               const Octagonal_Shape<T>& x,
+                               const Octagonal_Shape<T>& y,
+                               Rounding_Dir dir,
+                               Temp& tmp0,
+                               Temp& tmp1,
+                               Temp& tmp2);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -203,9 +206,9 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				const Octagonal_Shape<T>& x,
-				const Octagonal_Shape<T>& y,
-				Rounding_Dir dir);
+                                const Octagonal_Shape<T>& x,
+                                const Octagonal_Shape<T>& y,
+                                Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -220,9 +223,9 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				const Octagonal_Shape<T>& x,
-				const Octagonal_Shape<T>& y,
-				Rounding_Dir dir);
+                                const Octagonal_Shape<T>& x,
+                                const Octagonal_Shape<T>& y,
+                                Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -237,12 +240,12 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				const Octagonal_Shape<T>& x,
-				const Octagonal_Shape<T>& y,
-				Rounding_Dir dir,
-				Temp& tmp0,
-				Temp& tmp1,
-				Temp& tmp2);
+                                const Octagonal_Shape<T>& x,
+                                const Octagonal_Shape<T>& y,
+                                Rounding_Dir dir,
+                                Temp& tmp0,
+                                Temp& tmp1,
+                                Temp& tmp2);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as an octagonal difference.
@@ -285,12 +288,12 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool extract_octagonal_difference(const Constraint& c,
-				  dimension_type c_space_dim,
-				  dimension_type& c_num_vars,
-				  dimension_type& c_first_var,
-				  dimension_type& c_second_var,
-				  Coefficient& c_coeff,
-				  Coefficient& c_term);
+                                  dimension_type c_space_dim,
+                                  dimension_type& c_num_vars,
+                                  dimension_type& c_first_var,
+                                  dimension_type& c_second_var,
+                                  Coefficient& c_coeff,
+                                  Coefficient& c_term);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns the index coherent to \p i.
@@ -301,7 +304,7 @@ dimension_type coherent_index(dimension_type i);
 } // namespace Parma_Polyhedra_Library
 
 //! An octagonal shape.
-/*!
+/*! \ingroup PPL_CXX_interface
   The class template Octagonal_Shape<T> allows for the efficient
   representation of a restricted kind of <EM>topologically closed</EM>
   convex polyhedra called <EM>octagonal shapes</EM> (OSs, for short).
@@ -327,21 +330,30 @@ dimension_type coherent_index(dimension_type i);
       (i.e., \c mpz_class or \c mpq_class).
 
   The user interface for OSs is meant to be as similar as possible to
-  the one developed for the polyhedron class C_Polyhedron.  At the
-  interface level, octagonal constraints are specified using objects of
-  type Constraint: such a constraint is an octagonal constraint if it is
-  of the form
+  the one developed for the polyhedron class C_Polyhedron.
+
+  The OS domain <EM>optimally supports</EM>:
+    - tautological and inconsistent constraints and congruences;
+    - octagonal constraints;
+    - non-proper congruences (i.e., equalities) that are expressible
+      as octagonal constraints.
+
+  Depending on the method, using a constraint or congruence that is not
+  optimally supported by the domain will either raise an exception or
+  result in a (possibly non-optimal) upward approximation.
+
+  A constraint is octagonal if it has the form
     \f[
       \pm a_i x_i \pm a_j x_j \relsym b
     \f]
   where \f$\mathord{\relsym} \in \{ \leq, =, \geq \}\f$ and
   \f$a_i\f$, \f$a_j\f$, \f$b\f$ are integer coefficients such that
   \f$a_i = 0\f$, or \f$a_j = 0\f$, or \f$a_i = a_j\f$.
-  The user is warned that the above Constraint object will be mapped
-  into a <EM>correct</EM> approximation that, depending on the expressive
-  power of the chosen template argument \p T, may loose some precision.
-  In particular, constraint objects that do not encode an octagonal
-  constraint will be simply (and safely) ignored.
+  The user is warned that the above octagonal Constraint object
+  will be mapped into a \e correct and \e optimal approximation that,
+  depending on the expressive power of the chosen template argument \p T,
+  may loose some precision.
+  Also note that strict constraints are not octagonal.
 
   For instance, a Constraint object encoding \f$3x + 3y \leq 1\f$ will be
   approximated by:
@@ -353,13 +365,13 @@ dimension_type coherent_index(dimension_type i);
       if \p T is a floating point type (having no exact representation
       for \f$\frac{1}{3}\f$).
 
-  On the other hand, a Constraint object encoding \f$3x - y \leq 1\f$
-  will be safely ignored in all of the above cases.
+  On the other hand, depending from the context, a Constraint object
+  encoding \f$3x - y \leq 1\f$ will be either upward approximated
+  (e.g., by safely ignoring it) or it will cause an exception.
 
   In the following examples it is assumed that the type argument \p T
   is one of the possible instances listed above and that variables
-  <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE> are defined
-  (where they are used) as follows:
+  \c x, \c y and \c z are defined (where they are used) as follows:
   \code
     Variable x(0);
     Variable y(1);
@@ -379,10 +391,8 @@ dimension_type coherent_index(dimension_type i);
     cs.insert(z <= 3);
     Octagonal_Shape<T> oct(cs);
   \endcode
-  Since only those constraints having the syntactic form of an
-  <EM>octagonal constraint</EM> are considered, the following code
-  will build the same OS as above (i.e., the constraints 7, 8, and 9
-  are ignored):
+  In contrast, the following code will raise an exception,
+  since constraints 7, 8, and 9 are not octagonal:
   \code
     Constraint_System cs;
     cs.insert(x >= 0);
@@ -423,6 +433,16 @@ public:
   //! Returns the maximum space dimension that an OS can handle.
   static dimension_type max_space_dimension();
 
+  /*! \brief
+    Returns false indicating that this domain cannot recycle constraints
+  */
+  static bool can_recycle_constraint_systems();
+
+  /*! \brief
+    Returns false indicating that this domain cannot recycle congruences
+  */
+  static bool can_recycle_congruence_systems();
+
   //! \name Constructors, Assignment, Swap and Destructor
   //@{
 
@@ -435,14 +455,22 @@ public:
     Specifies whether the universe or the empty OS has to be built.
   */
   explicit Octagonal_Shape(dimension_type num_dimensions = 0,
-			   Degenerate_Element kind = UNIVERSE);
+                           Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
-  Octagonal_Shape(const Octagonal_Shape& x);
+  /*!
+    The complexity argument is ignored.
+  */
+  Octagonal_Shape(const Octagonal_Shape& x,
+                  Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a conservative, upward approximation of \p y.
+  /*!
+    The complexity argument is ignored.
+  */
   template <typename U>
-  explicit Octagonal_Shape(const Octagonal_Shape<U>& y);
+  explicit Octagonal_Shape(const Octagonal_Shape<U>& y,
+                           Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds an OS from the system of constraints \p cs.
   /*!
@@ -486,7 +514,66 @@ public:
     smallest one containing \p ph.
   */
   explicit Octagonal_Shape(const Polyhedron& ph,
-			   Complexity_Class complexity = ANY_COMPLEXITY);
+                           Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds an OS out of a box.
+  /*!
+    The OS inherits the space dimension of the box.
+    The built OS is the most precise OS that includes the box.
+
+    \param box
+    The box representing the BDS to be built.
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p box exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename Interval>
+  explicit Octagonal_Shape(const Box<Interval>& box,
+                           Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds an OS that approximates a grid.
+  /*!
+    The OS inherits the space dimension of the grid.
+    The built OS is the most precise OS that includes the grid.
+
+    \param grid
+    The grid used to build the OS.
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p grid exceeds the maximum
+    allowed space dimension.
+  */
+  explicit Octagonal_Shape(const Grid& grid,
+                           Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds an OS from a BD shape.
+  /*!
+    The OS inherits the space dimension of the BD shape.
+    The built OS is the most precise OS that includes the BD shape.
+
+    \param bd
+    The BD shape used to build the OS.
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p bd exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename U>
+  explicit Octagonal_Shape(const BD_Shape<U>& bd,
+                           Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.
@@ -524,6 +611,15 @@ public:
   //! Returns a minimized system of constraints defining \p *this.
   Constraint_System minimized_constraints() const;
 
+  //! Returns a system of (equality) congruences satisfied by \p *this.
+  Congruence_System congruences() const;
+
+  /*! \brief
+    Returns a minimal system of (equality) congruences
+    satisfied by \p *this with the same affine dimension as \p *this.
+  */
+  Congruence_System minimized_congruences() const;
+
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
     \exception std::invalid_argument
@@ -550,11 +646,17 @@ public:
     Returns the relations holding between \p *this and the constraint \p c.
 
     \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible
-    or if \p c is a strict inequality or if \p c is not an octagonal
-    constraint.
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
   */
   Poly_Con_Relation relation_with(const Constraint& c) const;
+
+  /*! \brief
+    Returns the relations holding between \p *this and the congruence \p cg.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cg are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Congruence& cg) const;
 
   /*! \brief
     Returns the relations holding between \p *this and the generator \p g.
@@ -590,6 +692,15 @@ public:
     contains (at least) an integer point.
   */
   bool contains_integer_point() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p var is constrained in
+    \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  bool constrains(Variable var) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
@@ -634,7 +745,7 @@ public:
     and \p maximum are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+                Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -665,8 +776,8 @@ public:
     and \p g are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Generator& g) const;
+                Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+                Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -693,7 +804,7 @@ public:
     and \p minimum are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+                Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -724,8 +835,8 @@ public:
     and \p g are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Generator& g) const;
+                Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+                Generator& g) const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -740,62 +851,166 @@ public:
     defining \p *this.
 
     \param c
-    The constraint to be added. If it is not an octagonal constraint, it
-    will be simply ignored.
+    The constraint to be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible,
-    or \p c is a strict inequality.
+    or \p c is not optimally supported by the OS domain.
   */
   void add_constraint(const Constraint& c);
-
-  /*! \brief
-    Adds a copy of constraint \p c to the system of constraints
-    defining \p *this.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param c
-    The constraint to be added. If it is not an octagonal constraint, it
-    will be simply ignored.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible
-    or \p c is a strict inequality.
-  */
-  bool add_constraint_and_minimize(const Constraint& c);
 
   /*! \brief
     Adds the constraints in \p cs to the system of constraints
     defining \p *this.
 
     \param  cs
-    The constraints that will be added. Constraints that are not octagonal
-    constraints will be simply ignored.
+    The constraints that will be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
-    or if \p cs contains a strict inequality.
+    or \p cs contains a constraint which is not optimally supported
+    by the OS domain.
   */
   void add_constraints(const Constraint_System& cs);
 
   /*! \brief
     Adds the constraints in \p cs to the system of constraints
-    defining \p *this.
+    of \p *this.
 
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param  cs
-    The constraints that will be added. Constraints that are not octagonal
-    constraints will be simply ignored.
+    \param cs
+    The constraint system to be added to \p *this.  The constraints in
+    \p cs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
-    or if there is in \p cs a strict inequality.
+    or \p cs contains a constraint which is not optimally supported
+    by the OS domain.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
   */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
+  void add_recycled_constraints(Constraint_System& cs);
+
+  /*! \brief
+    Adds to \p *this a constraint equivalent to the congruence \p cg.
+
+    \param cg
+    The congruence to be added.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible,
+    or \p cg is not optimally supported by the OS domain.
+  */
+  void add_congruence(const Congruence& cg);
+
+  /*! \brief
+    Adds to \p *this constraints equivalent to the congruences in \p cgs.
+
+    \param cgs
+    The congruences to be added.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    or \p cgs contains a congruence which is not optimally supported
+    by the OS domain.
+  */
+  void add_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Adds to \p *this constraints equivalent to the congruences in \p cgs.
+
+    \param cgs
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    or \p cgs contains a congruence which is not optimally supported
+    by the OS domain.
+
+    \warning
+    The only assumption that can be made on \p cgs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_congruences(Congruence_System& cgs);
+
+  /*! \brief
+    Uses a copy of constraint \p c to refine the system of octagonal
+    constraints defining \p *this.
+
+    \param c
+    The constraint. If it is not a octagonal constraint, it will be ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
+  */
+  void refine_with_constraint(const Constraint& c);
+
+  /*! \brief
+    Uses a copy of congruence \p cg to refine the system of
+    octagonal constraints  of \p *this.
+
+    \param cg
+    The congruence. If it is not a octagonal equality, it
+    will be ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+  */
+  void refine_with_congruence(const Congruence& cg);
+
+  /*! \brief
+    Uses a copy of the constraints in \p cs to refine the system of
+    octagonal constraints defining \p *this.
+
+    \param  cs
+    The constraint system to be used. Constraints that are not octagonal
+    are ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void refine_with_constraints(const Constraint_System& cs);
+
+  /*! \brief
+    Uses a copy of the congruences in \p cgs to refine the system of
+    octagonal constraints defining \p *this.
+
+    \param  cgs
+    The congruence system to be used. Congruences that are not octagonal
+    equalities are ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void refine_with_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  void unconstrain(Variable var);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  void unconstrain(const Variables_Set& to_be_unconstrained);
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
@@ -804,16 +1019,6 @@ public:
   */
   void intersection_assign(const Octagonal_Shape& y);
 
-  //! Assigns to \p *this the intersection of \p *this and \p y.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  bool intersection_assign_and_minimize(const Octagonal_Shape& y);
-
   /*! \brief
     Assigns to \p *this the smallest OS that contains
     the convex union of \p *this and \p y.
@@ -821,47 +1026,62 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void oct_hull_assign(const Octagonal_Shape& y);
-
-  /*! \brief
-    Assigns to \p *this the smallest OS that contains
-    the convex union of \p *this and \p y.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  bool oct_hull_assign_and_minimize(const Octagonal_Shape& y);
-
-  //! Same as oct_hull_assign.
   void upper_bound_assign(const Octagonal_Shape& y);
 
   /*! \brief
-    If the oct-hull of \p *this and \p y is exact, it is assigned
+    If the upper bound of \p *this and \p y is exact, it is assigned
     to \p *this and <CODE>true</CODE> is returned,
     otherwise <CODE>false</CODE> is returned.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  bool oct_hull_assign_if_exact(const Octagonal_Shape& y);
 
-  //! Same as oct_hull_assign_if_exact.
+    Implementation is based on Theorem 6.3 of \ref BHZ09b "[BHZ09b]".
+  */
   bool upper_bound_assign_if_exact(const Octagonal_Shape& y);
 
   /*! \brief
-    Assigns to \p *this the smallest octagon containing the set difference
-    of \p *this and \p y.
+    If the \e integer upper bound of \p *this and \p y is exact,
+    it is assigned to \p *this and <CODE>true</CODE> is returned;
+    otherwise <CODE>false</CODE> is returned.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+
+    \note
+    This operator is only available when the class template parameter
+    \c T is bound to an integer datatype.
+
+    \note
+    The integer upper bound of two rational BDS is the smallest
+    rational BDS containing all the integral points in the two arguments.
+    In general, the result is \e not an upper bound for the two input
+    arguments, as it may cut away non-integral portions of the two
+    rational shapes.
+
+    Implementation is based on Theorem 6.8 of \ref BHZ09b "[BHZ09b]".
+  */
+  bool integer_upper_bound_assign_if_exact(const Octagonal_Shape& y);
+
+  /*! \brief
+    Assigns to \p *this the smallest octagon containing
+    the set difference of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void oct_difference_assign(const Octagonal_Shape& y);
-
-  //! Same as oct_difference_assign.
   void difference_assign(const Octagonal_Shape& y);
+
+  /*! \brief
+    Assigns to \p *this a \ref Meet_Preserving_Simplification
+    "meet-preserving simplification" of \p *this with respect to \p y.
+    If \c false is returned, then the intersection is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool simplify_using_context_assign(const Octagonal_Shape& y);
 
   /*! \brief
     Assigns to \p *this the \ref affine_relation "affine image"
@@ -882,9 +1102,9 @@ public:
     are dimension-incompatible or if \p var is not a dimension of \p *this.
   */
   void affine_image(Variable var,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference  denominator
-		    = Coefficient_one());
+                    const Linear_Expression& expr,
+                    Coefficient_traits::const_reference  denominator
+                    = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the \ref affine_relation "affine preimage"
@@ -905,9 +1125,9 @@ public:
     are dimension-incompatible or if \p var is not a dimension of \p *this.
   */
   void affine_preimage(Variable var,
-		       const Linear_Expression& expr,
-		       Coefficient_traits::const_reference denominator
-		       = Coefficient_one());
+                       const Linear_Expression& expr,
+                       Coefficient_traits::const_reference denominator
+                       = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -934,10 +1154,10 @@ public:
     or if \p relsym is a strict relation symbol.
   */
   void generalized_affine_image(Variable var,
-				Relation_Symbol relsym,
-				const Linear_Expression& expr,
-				Coefficient_traits::const_reference denominator
-				= Coefficient_one());
+                                Relation_Symbol relsym,
+                                const Linear_Expression& expr,
+                                Coefficient_traits::const_reference denominator
+                                = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -959,8 +1179,8 @@ public:
     or if \p relsym is a strict relation symbol.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-				Relation_Symbol relsym,
-				const Linear_Expression& rhs);
+                                Relation_Symbol relsym,
+                                const Linear_Expression& rhs);
 
     /*!
     \brief
@@ -989,10 +1209,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_image(Variable var,
-			    const Linear_Expression& lb_expr,
-			    const Linear_Expression& ub_expr,
-			    Coefficient_traits::const_reference denominator
-			    = Coefficient_one());
+                            const Linear_Expression& lb_expr,
+                            const Linear_Expression& ub_expr,
+                            Coefficient_traits::const_reference denominator
+                            = Coefficient_one());
 
 /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1019,10 +1239,10 @@ public:
     of \p *this or if \p relsym is a strict relation symbol.
   */
   void generalized_affine_preimage(Variable var,
-				   Relation_Symbol relsym,
-				   const Linear_Expression& expr,
-				   Coefficient_traits::const_reference
-				   denominator = Coefficient_one());
+                                   Relation_Symbol relsym,
+                                   const Linear_Expression& expr,
+                                   Coefficient_traits::const_reference
+                                   denominator = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1044,8 +1264,8 @@ public:
     or if \p relsym is a strict relation symbol.
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
-				   Relation_Symbol relsym,
-				   const Linear_Expression& rhs);
+                                   Relation_Symbol relsym,
+                                   const Linear_Expression& rhs);
 
   /*!
     \brief
@@ -1053,9 +1273,9 @@ public:
     \ref Single_Update_Bounded_Affine_Relations "bounded affine relation"
     \f$\frac{\mathrm{lb\_expr}}{\mathrm{denominator}}
          \leq \mathrm{var}'
-	 \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
+         \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
 
-	 \param var
+         \param var
     The variable updated by the affine relation;
 
     \param lb_expr
@@ -1074,10 +1294,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_preimage(Variable var,
-			       const Linear_Expression& lb_expr,
-			       const Linear_Expression& ub_expr,
-			       Coefficient_traits::const_reference denominator
-			       = Coefficient_one());
+                               const Linear_Expression& lb_expr,
+                               const Linear_Expression& ub_expr,
+                               Coefficient_traits::const_reference denominator
+                               = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1131,8 +1351,8 @@ public:
   */
   template <typename Iterator>
   void CC76_extrapolation_assign(const Octagonal_Shape& y,
-				 Iterator first, Iterator last,
-				 unsigned* tp = 0);
+                                 Iterator first, Iterator last,
+                                 unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1150,6 +1370,9 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void BHMZ05_widening_assign(const Octagonal_Shape& y, unsigned* tp = 0);
+
+  //! Same as BHMZ05_widening_assign(y, tp).
+  void widening_assign(const Octagonal_Shape& y, unsigned* tp = 0);
 
   /*! \brief
     Improves the result of the \ref BHMZ05_widening "BHMZ05-widening"
@@ -1172,8 +1395,8 @@ public:
     if there is in \p cs a strict inequality.
   */
   void limited_BHMZ05_extrapolation_assign(const Octagonal_Shape& y,
-					   const Constraint_System& cs,
-					   unsigned* tp = 0);
+                                           const Constraint_System& cs,
+                                           unsigned* tp = 0);
 
   /*! \brief
     Restores from \p y the constraints of \p *this, lost by
@@ -1208,8 +1431,8 @@ public:
     if \p cs contains a strict inequality.
   */
   void limited_CC76_extrapolation_assign(const Octagonal_Shape& y,
-					 const Constraint_System& cs,
-					 unsigned* tp = 0);
+                                         const Constraint_System& cs,
+                                         unsigned* tp = 0);
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
 
@@ -1381,13 +1604,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -1446,6 +1667,9 @@ private:
   //! The status flags to keep track of the internal state.
   Status status;
 
+  //! Returns <CODE>true</CODE> if the OS is the zero-dimensional universe.
+  bool marked_zero_dim_univ() const;
+
   //! Returns <CODE>true</CODE> if the OS is known to be empty.
   /*!
     The return value <CODE>false</CODE> does not necessarily
@@ -1468,19 +1692,51 @@ private:
   //! Turns \p *this into an empty OS.
   void set_empty();
 
+  //! Marks \p *this as strongly closed.
+  void set_strongly_closed();
+
+  //! Marks \p *this as possibly not strongly closed.
+  void reset_strongly_closed();
+
   N& matrix_at(dimension_type i, dimension_type j);
   const N& matrix_at(dimension_type i, dimension_type j) const;
 
+  /*! \brief
+    Uses the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added. Non-octagonal constraints are ignored.
+
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Constraint& c);
+
+  /*! \brief
+    Uses the congruence \p cg to refine \p *this.
+
+    \param cg
+    The congruence to be added.
+    Nontrivial proper congruences are ignored.
+    Non-octagonal equalities are ignored.
+
+    \warning
+    If \p cg and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Congruence& cg);
+
   //! Adds the constraint <CODE>matrix[i][j] <= k</CODE>.
   void add_octagonal_constraint(dimension_type i,
-				dimension_type j,
-				const N& k);
+                                dimension_type j,
+                                const N& k);
 
   //! Adds the constraint <CODE>matrix[i][j] <= num/den</CODE>.
   void add_octagonal_constraint(dimension_type i,
-				dimension_type j,
-				Coefficient_traits::const_reference num,
-				Coefficient_traits::const_reference den);
+                                dimension_type j,
+                                Coefficient_traits::const_reference num,
+                                Coefficient_traits::const_reference den);
 
   /*! \brief
     Adds to the Octagonal_Shape the constraint
@@ -1489,10 +1745,10 @@ private:
     Note that the coefficient of \p var in \p expr is null.
   */
   void refine(Variable var,
-	      Relation_Symbol relsym,
-	      const Linear_Expression& expr,
-	      Coefficient_traits::const_reference denominator
-	      = Coefficient_one());
+              Relation_Symbol relsym,
+              const Linear_Expression& expr,
+              Coefficient_traits::const_reference denominator
+              = Coefficient_one());
 
   //! Removes all the constraints on variable \p v_id.
   void forget_all_octagonal_constraints(dimension_type v_id);
@@ -1528,10 +1784,10 @@ private:
         <CODE>v + u \<= ub_v + ((-q)*lb_u + (1+q)*ub_u)</CODE>.
   */
   void deduce_v_pm_u_bounds(dimension_type v_id,
-			    dimension_type last_id,
-			    const Linear_Expression& sc_expr,
-			    Coefficient_traits::const_reference sc_den,
-			    const N& ub_v);
+                            dimension_type last_id,
+                            const Linear_Expression& sc_expr,
+                            Coefficient_traits::const_reference sc_den,
+                            const N& ub_v);
 
   //! An helper function for the computation of affine relations.
   /*!
@@ -1562,17 +1818,17 @@ private:
         <CODE>-v - u \<= -lb_v - ((-q)*ub_u + (1+q)*lb_u)</CODE>.
   */
   void deduce_minus_v_pm_u_bounds(dimension_type v,
-				  dimension_type last_v,
-				  const Linear_Expression& sc_expr,
-				  Coefficient_traits::const_reference sc_den,
-				  const N& minus_lb_v);
+                                  dimension_type last_v,
+                                  const Linear_Expression& sc_expr,
+                                  Coefficient_traits::const_reference sc_den,
+                                  const N& minus_lb_v);
 
   /*! \brief
     Adds to \p limiting_octagon the octagonal differences in \p cs
     that are satisfied by \p *this.
   */
   void get_limiting_octagon(const Constraint_System& cs,
-			    Octagonal_Shape& limiting_octagon) const;
+                            Octagonal_Shape& limiting_octagon) const;
   //! Compute the (zero-equivalence classes) successor relation.
   /*!
     It is assumed that the octagon is not empty and strongly closed.
@@ -1584,15 +1840,24 @@ private:
     It is assumed that the OS is not empty and strongly closed.
   */
   void compute_leaders(std::vector<dimension_type>& successor,
-		       std::vector<dimension_type>& no_sing_leaders,
-		       bool& exist_sing_class,
-		       dimension_type& sing_leader) const;
+                       std::vector<dimension_type>& no_sing_leaders,
+                       bool& exist_sing_class,
+                       dimension_type& sing_leader) const;
 
   //! Compute the leaders of zero-equivalence classes.
   /*!
     It is assumed that the OS is not empty and strongly closed.
   */
   void compute_leaders(std::vector<dimension_type>& leaders) const;
+
+  /*! \brief
+    Stores into \p non_redundant information about the matrix entries
+    that are non-redundant (i.e., will occur in strongly reduced matrix).
+
+    It is assumed that the OS is not empty and strongly closed;
+    moreover, argument \p non_redundant is assumed to be empty.
+  */
+  void non_redundant_matrix_entries(std::vector<Bit_Row>& non_redundant) const;
 
   //! Removes the redundant constraints from \c this->matrix.
   void strong_reduction_assign() const;
@@ -1623,14 +1888,26 @@ private:
   //! Applies the strong-coherence step to \c this->matrix.
   void strong_coherence_assign();
 
-  //! Puts in \p *this all implicit constraints and computes the tighter ones.
+  //! Assigns to \c this->matrix its tight closure.
   /*!
-    \param var
-    The variable of the altered constraints.
+    \note
+    This is \e not marked as a <code>const</code> method,
+    as it may modify the rational-valued geometric shape by cutting away
+    non-integral points. The method is only available if the template
+    parameter \c T is bound to an integer datatype.
+  */
+  void tight_closure_assign();
 
-    The octagon `*this' was transitively closed except for the constraint on
-    variable `var'. This operation costs only \f$O(n^2)\f$.
+  /*! \brief
+    Incrementally computes strong closure, assuming that only
+    constraints affecting variable \p var need to be considered.
 
+    \note
+    It is assumed that \c *this, which was strongly closed, has only been
+    modified by adding constraints affecting variable \p var. If this
+    assumption is not satisfied, i.e., if a non-redundant constraint not
+    affecting variable \p var has been added, the behavior is undefined.
+    Worst-case complexity is \f$O(n^2)\f$.
   */
   void incremental_strong_closure_assign(Variable var) const;
 
@@ -1680,8 +1957,8 @@ private:
     \p included are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       bool maximize,
-	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
+               bool maximize,
+               Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
 
   //! Maximizes or minimizes \p expr subject to \p *this.
   /*!
@@ -1715,44 +1992,39 @@ private:
     \p included and \p g are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       bool maximize,
-	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
-	       Generator& g) const;
+               bool maximize,
+               Coefficient& ext_n, Coefficient& ext_d, bool& included,
+               Generator& g) const;
 
-#if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators
   ::operator<<<>(std::ostream& s, const Octagonal_Shape<T>& c);
-#else
-  // This is too lax than wanted.
-  template <typename S>
-  friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators
-  ::operator<<(std::ostream& s, const Octagonal_Shape<S>& c);
-#endif
 
   //! \name Exception Throwers
   //@{
   void throw_dimension_incompatible(const char* method,
-				    const Octagonal_Shape& x) const;
+                                    const Octagonal_Shape& x) const;
 
   void throw_dimension_incompatible(const char* method,
-				    dimension_type required_dim) const;
+                                    dimension_type required_dim) const;
 
   void throw_dimension_incompatible(const char* method,
-				    const Constraint& c) const;
+                                    const Constraint& c) const;
 
   void throw_dimension_incompatible(const char* method,
-				    const Generator& g) const;
+                                    const Congruence& cg) const;
 
   void throw_dimension_incompatible(const char* method,
-				    const char* name_row,
-				    const Linear_Expression& y) const;
+                                    const Generator& g) const;
+
+  void throw_dimension_incompatible(const char* method,
+                                    const char* name_row,
+                                    const Linear_Expression& y) const;
 
   void throw_constraint_incompatible(const char* method) const;
 
   void throw_expression_too_complex(const char* method,
-				    const Linear_Expression& e) const;
+                                    const Linear_Expression& e) const;
 
   void throw_generic(const char* method, const char* reason) const;
   //@} // Exception Throwers
@@ -1766,7 +2038,7 @@ namespace std {
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
 template <typename T>
 void swap(Parma_Polyhedra_Library::Octagonal_Shape<T>& x,
-	  Parma_Polyhedra_Library::Octagonal_Shape<T>& y);
+          Parma_Polyhedra_Library::Octagonal_Shape<T>& y);
 
 } // namespace std
 

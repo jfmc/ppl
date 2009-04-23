@@ -1,5 +1,5 @@
 /* Test IO_Operators::operator<<(s, gr).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -95,7 +95,7 @@ test04() {
   ss1 << gr1;
 
   Grid gr2(4);
-  gr2.add_congruence(3*A == 0);
+  gr2.add_constraint(3*A == 0);
 
   std::stringstream ss2;
   ss2 << gr2;
@@ -119,7 +119,7 @@ test05() {
   ss1 << gr1;
 
   Grid gr2(4);
-  gr2.add_congruence(3*A == 0);
+  gr2.add_constraint(3*A == 0);
 
   std::stringstream ss2;
   ss2 << gr2;

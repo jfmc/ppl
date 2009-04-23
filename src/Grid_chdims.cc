@@ -1,6 +1,6 @@
 /* Grid class implementation
    (non-inline operators that may change the dimension of the vector space).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -242,7 +242,8 @@ PPL::Grid::concatenate_assign(const Grid& y) {
     return;
   }
 
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   con_sys.concatenate(y.congruences());
 
@@ -435,7 +436,7 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
 				      / cg.modulus());
     }
   }
-  add_congruences(new_congruences);
+  add_recycled_congruences(new_congruences);
   assert(OK());
 }
 
@@ -462,12 +463,20 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
   if (to_be_folded.find(var.id()) != to_be_folded.end())
     throw_invalid_argument("fold_space_dimensions(tbf, v)",
 			   "v should not occur in tbf");
-
-  for (Variables_Set::const_iterator i = to_be_folded.begin(),
-	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
-    Grid copy = *this;
-    copy.affine_image(var, Linear_Expression(Variable(*i)));
-    join_assign(copy);
+  // All of the affine images we are going to compute are not invertible,
+  // hence we will need to compute the grid generators of the polyhedron.
+  // Since we keep taking copies, make sure that a single conversion
+  // from congruences to grid generators is computed.
+  (void) grid_generators();
+  // Having grid generators, we now know if the grid is empty:
+  // in that case, folding is equivalent to just removing space dimensions.
+  if (!marked_empty()) {
+    for (Variables_Set::const_iterator i = to_be_folded.begin(),
+           tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
+      Grid copy = *this;
+      copy.affine_image(var, Linear_Expression(Variable(*i)));
+      upper_bound_assign(copy);
+    }
   }
   remove_space_dimensions(to_be_folded);
   assert(OK());

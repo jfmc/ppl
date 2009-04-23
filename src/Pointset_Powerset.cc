@@ -1,5 +1,5 @@
 /* Pointset_Powerset class implementation: non-inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -30,7 +30,7 @@ namespace PPL = Parma_Polyhedra_Library;
 template <>
 void
 PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
-::poly_difference_assign(const Pointset_Powerset& y) {
+::difference_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
   // Ensure omega-reduction.
   x.omega_reduce();
@@ -110,7 +110,7 @@ PPL::check_containment(const NNC_Polyhedron& ph,
 
 namespace {
 
-#if PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Uses the congruence \p c to approximately partition the grid \p qq.
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset
   On exit, the intersection of \p qq and congruence \p c is stored
@@ -126,14 +126,14 @@ approximate_partition_aux(const PPL::Congruence& c,
   using namespace PPL;
   const Coefficient& c_modulus = c.modulus();
   Grid qq_copy(qq);
-
-  if (!qq.add_congruence_and_minimize(c)) {
+  qq.add_congruence(c);
+  if (qq.is_empty()) {
     r.add_disjunct(qq_copy);
     return true;
   }
 
   Congruence_System cgs = qq.congruences();
-  Congruence_System cgs_copy = qq_copy.minimized_congruences();
+  Congruence_System cgs_copy = qq_copy.congruences();
   // When c is an equality, not satisfied by Grid qq
   // then add qq to the set r. There is no finite
   // partition in this case.
@@ -159,13 +159,16 @@ approximate_partition_aux(const PPL::Congruence& c,
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
   Linear_Expression le(c);
   le -= c_inhomogeneous_term;
-  TEMP_INTEGER(n);
+  PPL_DIRTY_TEMP_COEFFICIENT(n);
   rem_assign(n, c_inhomogeneous_term, c_modulus);
-  TEMP_INTEGER(i);
+  if (n < 0)
+    n += c_modulus;
+  PPL_DIRTY_TEMP_COEFFICIENT(i);
   for (i = c_modulus; i-- > 0; )
     if (i != n) {
       Grid qqq(qq_copy);
-      if (qqq.add_congruence_and_minimize((le+i %= 0) / c_modulus))
+      qqq.add_congruence((le+i %= 0) / c_modulus);
+      if (!qqq.is_empty())
 	r.add_disjunct(qqq);
     }
   return true;
@@ -180,6 +183,9 @@ PPL::approximate_partition(const Grid& p, const Grid& q,
   using namespace PPL;
   finite_partition = true;
   Pointset_Powerset<Grid> r(p.space_dimension(), EMPTY);
+  // Ensure that the congruence system of q is minimized
+  // before copying and calling approximate_partition_aux().
+  (void) q.minimized_congruences();
   Grid qq = q;
   const Congruence_System& pcs = p.congruences();
   for (Congruence_System::const_iterator i = pcs.begin(),
@@ -248,7 +254,7 @@ PPL::check_containment(const Grid& ph,
 template <>
 void
 PPL::Pointset_Powerset<PPL::Grid>
-::poly_difference_assign(const Pointset_Powerset& y) {
+::difference_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
   // Ensure omega-reduction.
   x.omega_reduce();
@@ -287,7 +293,8 @@ PPL::Pointset_Powerset<PPL::Grid>
 template <>
 template <>
 PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y)
+::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y,
+                    Complexity_Class)
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Powerset& x = *this;
   for (Pointset_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
@@ -300,8 +307,24 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
 
 template <>
 template <>
+PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<Grid>& y,
+                    Complexity_Class)
+  : Base(), space_dim(y.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  for (Pointset_Powerset<Grid>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    x.sequence.push_back(Determinate<NNC_Polyhedron>
+			 (NNC_Polyhedron(i->element())));
+  x.reduced = false;
+  assert(x.OK());
+}
+
+template <>
+template <>
 PPL::Pointset_Powerset<PPL::C_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y)
+::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y,
+                    Complexity_Class)
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Powerset& x = *this;
   for (Pointset_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),

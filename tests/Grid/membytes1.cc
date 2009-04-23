@@ -1,6 +1,6 @@
 /* Test Grid::total_memory_in_bytes() and
    Grid::external_memory_in_bytes().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -209,10 +209,10 @@ test02() {
   Variable z(2);
 
   Grid gr1(3);
-  gr1.add_constraint(4*x - 2*y - z + 14 >= 0);
-  gr1.add_constraint(4*x + 2*y - z + 2 >= 0);
-  gr1.add_constraint(x + y - 1 >= 0);
-  gr1.add_constraint(x + y + 2*z - 5 >= 0);
+  gr1.refine_with_constraint(4*x - 2*y - z + 14 >= 0);
+  gr1.refine_with_constraint(4*x + 2*y - z + 2 >= 0);
+  gr1.refine_with_constraint(x + y - 1 >= 0);
+  gr1.refine_with_constraint(x + y + 2*z - 5 >= 0);
 
   const memory_size_type gr1_total_size = gr1.total_memory_in_bytes();
   const memory_size_type gr1_external_size = gr1.external_memory_in_bytes();
@@ -234,29 +234,23 @@ test02() {
   Pointset_Powerset<Grid> pgr1(gr1);
 
   Grid gr2(3);
-  gr2.add_constraint(x >= 0);
-  gr2.add_constraint(y >= 0);
-  gr2.add_constraint(z >= 0);
-  gr2.add_constraint(x <= 1);
-  gr2.add_constraint(y <= 1);
-  gr2.add_constraint(z <= 1);
+  gr2.refine_with_constraint(x >= 0);
+  gr2.refine_with_constraint(y >= 0);
+  gr2.refine_with_constraint(z >= 0);
+  gr2.refine_with_constraint(x <= 1);
+  gr2.refine_with_constraint(y <= 1);
+  gr2.refine_with_constraint(z <= 1);
   Pointset_Powerset<Grid> pgr2(gr2);
 
-  // TODO: Include these sections when poly_difference_assign is
-  //       defined for Grid.
-#if 0
   Pointset_Powerset<Grid> p2gr2 = pgr2;
-  p2gr2.poly_difference_assign(pgr1);
-#endif
+  p2gr2.difference_assign(pgr1);
 
   const memory_size_type pgr1_total_size = pgr1.total_memory_in_bytes();
   const memory_size_type pgr1_external_size = pgr1.external_memory_in_bytes();
   const memory_size_type pgr2_total_size = pgr2.total_memory_in_bytes();
   const memory_size_type pgr2_external_size = pgr2.external_memory_in_bytes();
-#if 0
   const memory_size_type p2gr2_total_size = p2gr2.total_memory_in_bytes();
   const memory_size_type p2gr2_external_size = p2gr2.external_memory_in_bytes();
-#endif
 
   nout << "pgr1.total_memory_in_bytes() = " << pgr1_total_size
        << endl
@@ -265,12 +259,10 @@ test02() {
        << "pgr2.total_memory_in_bytes() = " << pgr2_total_size
        << endl
        << "pgr2.external_memory_in_bytes() = " << pgr2_external_size
-#if 0
        << endl
        << "p2gr2.total_memory_in_bytes() = " << p2gr2_total_size
        << endl
        << "p2gr2.external_memory_in_bytes() = " << p2gr2_external_size
-#endif
        << endl;
 
   return true;

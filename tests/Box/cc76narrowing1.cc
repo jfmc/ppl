@@ -1,5 +1,5 @@
 /* Test Box::CC76_narrowing_assign().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -51,7 +51,7 @@ test01() {
   known_result.add_constraint(-y <= 6);
   known_result.add_constraint(y <= 7);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 
@@ -84,7 +84,7 @@ test02() {
   known_result.add_constraint(-x <= 2);
   known_result.add_constraint(x <= 3);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 
@@ -106,7 +106,6 @@ test03() {
   box2.add_constraint(-y <= 3);
   box2.add_constraint(x >= 4);
   box2.add_constraint(x <= 3);
-  box2.add_constraint(y - x <= 4);
   box2.add_constraint(z <= 0);
 
   print_constraints(box1, "*** box1 ***");
@@ -114,7 +113,7 @@ test03() {
 
   box2.CC76_narrowing_assign(box1);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 
@@ -135,7 +134,6 @@ test04() {
   box2.add_constraint(-y <= 3);
   box2.add_constraint(x >= 4);
   box2.add_constraint(x <= 3);
-  box2.add_constraint(y - x <= 4);
   box2.add_constraint(z <= 0);
 
   print_constraints(box1, "*** box1 ***");
@@ -145,7 +143,7 @@ test04() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 
@@ -163,7 +161,7 @@ test05() {
 
   box2.CC76_narrowing_assign(box1);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 

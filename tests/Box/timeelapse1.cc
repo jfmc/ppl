@@ -1,5 +1,5 @@
-/* Test time_elapse_assign() for particular polyhedra.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test Box<Interval>::time_elapse_assign().
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -42,8 +42,7 @@ test01() {
 
   box3.time_elapse_assign(box4);
 
-  bool ok = (box1.is_empty()
-		&& box3.is_empty());
+  bool ok = (box1.is_empty() && box3.is_empty());
 
   print_constraints(box1, "*** box1_time_elapse_assign(box2) ***");
   print_constraints(box3, "*** box3_time_elapse_assign(box4) ***");
@@ -59,7 +58,6 @@ test02() {
   TBox box1(2);
   box1.add_constraint(x >= 0);
   box1.add_constraint(y >= 0);
-  box1.add_constraint(x + y - 2 <= 0);
 
   TBox box2(2);
   box2.add_constraint(x >= 2);
@@ -75,7 +73,7 @@ test02() {
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(y >= 0);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1_time_elapse_assign(box2) ***");
 
@@ -104,7 +102,7 @@ test03() {
   Rational_Box known_result(2);
   known_result.add_constraint(y >= 1);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1_time_elapse_assign(box2) ***");
 
@@ -131,7 +129,7 @@ test04() {
 
   Rational_Box known_result(3);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1_time_elapse_assign(box2) ***");
 
@@ -165,7 +163,7 @@ test05() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.time_elapse_assign(box2) ***");
 
@@ -182,9 +180,8 @@ test06() {
   TBox box2(2);
 
   try {
-    // This is an invalid use of the method
-    // Box::time_elapse_assign(box2): it is
-    // illegal to apply the method to two polyhedra that are not
+    // This is an invalid use of the method Box::time_elapse_assign(box2):
+    // it is illegal to apply the method to two boxes that are not
     // dimension-compatible.
     box1.time_elapse_assign(box2);
   }

@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::is_discrete().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -137,7 +137,7 @@ test07() {
   oct.add_constraint(B <= 7);
 
   print_constraints(oct, "*** oct ***");
- 
+
   bool ok = oct.is_discrete();
 
   return !ok;

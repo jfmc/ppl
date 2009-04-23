@@ -1,0 +1,8 @@
+#!/bin/sh
+temp_file=`mktemp /tmp/bump_copyright_years.XXXXXXXXXX` || exit 1
+for k in `find . -type f`
+do
+  sed -e "s/Copyright (C) 2001-2009 Roberto Bagnara/Copyright (C) 2001-2009 Roberto Bagnara/g" <$k >$temp_file
+  chmod --reference=$k $temp_file
+  mv -f $temp_file $k
+done

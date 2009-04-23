@@ -1,5 +1,5 @@
 /* Any_Pointset class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,9 +26,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Any_Pointset.types.hh"
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
+#include "Grid.defs.hh"
+#include "Box.defs.hh"
 #include "BD_Shape.defs.hh"
 #include "Octagonal_Shape.defs.hh"
-#include "Grid.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -72,6 +73,7 @@ bool operator!=(const Any_Pointset& x, const Any_Pointset& y);
 
 
 //! Any PPL pointset.
+/*! \ingroup PPL_CXX_interface */
 class Parma_Polyhedra_Library::Any_Pointset {
 public:
 #if 0
@@ -409,6 +411,32 @@ public:
 #endif
 
   /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  virtual void unconstrain(Variable var) = 0;
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  virtual void unconstrain(const Variables_Set& to_be_unconstrained) = 0;
+
+  /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.
     The result is not guaranteed to be minimized.
 
@@ -649,7 +677,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
     dimension-incompatible or if \p var is not a space dimension of \p *this
-    or if \p *this is a C_Any_Pointset and \p relsym is a strict
+    or if \p *this is a Any_Pointset and \p relsym is a strict
     relation symbol.
   */
   virtual
@@ -1012,6 +1040,7 @@ public:
   */
   template <typename Partial_Function>
   void map_space_dimensions(const Partial_Function& pfunc);
+#endif
 
   //! Creates \p m copies of the space dimension corresponding to \p var.
   /*!
@@ -1063,6 +1092,7 @@ public:
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
+#if 0
   friend bool Parma_Polyhedra_Library::operator==(const Any_Pointset& x,
 						  const Any_Pointset& y);
 #endif
@@ -1084,13 +1114,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -1130,6 +1158,18 @@ class WRAPPER_NAME : public Any_Pointset {				\
     : x(y) {								\
   }									\
   explicit WRAPPER_NAME(const NNC_Polyhedron& y)			\
+    : x(y) {								\
+  }									\
+  template <typename U>							\
+  explicit WRAPPER_NAME(const Box<U>& y)				\
+    : x(y) {								\
+  }									\
+  template <typename U>							\
+  explicit WRAPPER_NAME(const BD_Shape<U>& y)				\
+    : x(y) {								\
+  }									\
+  template <typename U>					                \
+  explicit WRAPPER_NAME(const Octagonal_Shape<U>& y)			\
     : x(y) {								\
   }									\
 									\
@@ -1324,6 +1364,7 @@ PPL_ANY_POINTSET_WRAPPER_CLASS(, C_Polyhedron_Pointset, C_Polyhedron)
 PPL_ANY_POINTSET_WRAPPER_CLASS(, NNC_Polyhedron_Pointset, NNC_Polyhedron)
 //PPL_ANY_POINTSET_WRAPPER_CLASS(, Grid_Pointset, Grid)
 
+PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, Box_Pointset, Box<T>)
 PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, BD_Shape_Pointset, BD_Shape<T>)
 PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, Octagonal_Shape_Pointset, Octagonal_Shape<T>)
 

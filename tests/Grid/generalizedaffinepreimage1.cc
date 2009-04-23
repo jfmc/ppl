@@ -1,5 +1,5 @@
 /* Test Grid::generalized_affine_preimage(var, ...).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -313,8 +313,8 @@ test09() {
   Variable A(0);
 
   Grid gr(1);
-  gr.add_congruence(A == 0);
-  gr.add_congruence(A == 3);
+  gr.add_constraint(A == 0);
+  gr.add_constraint(A == 3);
 
   print_congruences(gr, "*** gr ***");
 

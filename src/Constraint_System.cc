@@ -1,5 +1,5 @@
 /* Constraint_System class implementation (non-inline functions).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -56,7 +56,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
   dimension_type cols_to_be_added = new_space_dim - old_space_dim;
 
   // Dealing with empty constraint systems first.
-  if (empty()) {
+  if (num_rows() == 0) {
     if (num_columns() == 0)
       if (new_topology == NECESSARILY_CLOSED) {
 	add_zero_columns(++cols_to_be_added);
@@ -183,7 +183,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     }
   else
     // Here `cols_to_be_added == 0'.
-    if (old_topology != new_topology)
+    if (old_topology != new_topology) {
       if (new_topology == NECESSARILY_CLOSED) {
 	// A NOT_NECESSARILY_CLOSED constraint system
 	// can be converted to a NECESSARILY_CLOSED one
@@ -199,6 +199,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	add_zero_columns(1);
 	set_not_necessarily_closed();
       }
+    }
   // We successfully adjusted space dimensions and topology.
   assert(OK());
   return true;
@@ -517,7 +518,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
   dimension_type ncols;
   if (!(s >> nrows))
     return false;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> ncols))
       return false;
@@ -543,8 +544,10 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
       return false;
     if (str == "=")
       x[i].set_is_equality();
-    else
+    else if (str == ">=" || str == ">")
       x[i].set_is_inequality();
+    else
+      return false;
 
     // Checking for equality of actual and declared types.
     switch (x[i].type()) {

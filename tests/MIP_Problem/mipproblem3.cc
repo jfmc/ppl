@@ -1,5 +1,5 @@
 /* Test the MIP_Problem class.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -145,6 +145,7 @@ test05() {
   // Feasible region.
   Constraint_System cs;
   cs.insert(A >= 0);
+  cs.insert(A <= 3);
   cs.insert(B >= 0);
   cs.insert(-A - B >= -8);
   cs.insert(-A - 3*B >= -18);
@@ -167,7 +168,7 @@ test05() {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   nout << pg << endl;
 
-  return pg == point(6*A + 2*B);
+  return pg == point(3*A + 5*B);
 }
 
 bool
@@ -188,6 +189,10 @@ test06() {
 
   MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end(), cost,
 		  MAXIMIZATION);
+  // Disallow floating point based steepest-edge pricing, so that
+  // predictable overflow behavior is obtained when configured
+  // to use checked 8-bit integers as coefficients.
+  mip.set_control_parameter(MIP_Problem::PRICING_STEEPEST_EDGE_EXACT);
 
   if (mip.solve() != OPTIMIZED_MIP_PROBLEM)
     return false;
@@ -752,7 +757,7 @@ test08() {
   Coefficient num_kr = -5;
   Coefficient den_kr = 1;
 
-  return pg == point(-2*A - B - C - D)
+  return pg == point(-A - 2*B - C - D)
     && num == num_kr && den == den_kr;
 }
 
@@ -886,9 +891,9 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
-  DO_TEST(test06);
+  DO_TEST_F8(test06);
   DO_TEST(test07);
   DO_TEST_F64(test08);
-  DO_TEST_F32(test09);
+  DO_TEST_F64(test09);
   DO_TEST_F64(test10);
 END_MAIN

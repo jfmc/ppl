@@ -1,5 +1,5 @@
 /* Linear_Expression class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -251,7 +251,7 @@ public:
   explicit Linear_Expression(Coefficient_traits::const_reference n);
 
   //! Builds the linear expression corresponding to the variable \p v.
-  /*! \relates Linear_Expression
+  /*!
     \exception std::length_error
     Thrown if the space dimension of \p v exceeds
     <CODE>Linear_Expression::max_space_dimension()</CODE>.
@@ -336,13 +336,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
@@ -394,12 +392,26 @@ private:
   */
   Linear_Expression(dimension_type sz, bool);
 
+  /*! \brief
+    Builds the linear expression corresponding to the difference of
+    \p v and \p w.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p v or the one of \p w exceed
+    <CODE>Linear_Expression::max_space_dimension()</CODE>.
+  */
+  Linear_Expression(Variable v, Variable w);
+
   friend Linear_Expression
   operator+(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Linear_Expression
   operator+(Coefficient_traits::const_reference n, const Linear_Expression& e);
   friend Linear_Expression
   operator+(const Linear_Expression& e, Coefficient_traits::const_reference n);
+  friend Linear_Expression
+  operator+(Variable v, const Linear_Expression& e);
+  friend Linear_Expression
+  operator+(Variable v, Variable w);
 
   friend Linear_Expression
   operator-(const Linear_Expression& e);
@@ -407,9 +419,15 @@ private:
   friend Linear_Expression
   operator-(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Linear_Expression
+  operator-(Variable v, Variable w);
+  friend Linear_Expression
   operator-(Coefficient_traits::const_reference n, const Linear_Expression& e);
   friend Linear_Expression
   operator-(const Linear_Expression& e, Coefficient_traits::const_reference n);
+  friend Linear_Expression
+  operator-(Variable v, const Linear_Expression& e);
+  friend Linear_Expression
+  operator-(const Linear_Expression& e, Variable v);
 
   friend Linear_Expression
   operator*(Coefficient_traits::const_reference n, const Linear_Expression& e);

@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::affine_preimage().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -400,7 +400,7 @@ test14() {
   bool ok = check_result(oc, known_result, "1.98e-6", "9.26e-7", "5.25e-7");
 
   print_constraints(oc,
-		    "*** oc.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3) ***");
+                    "*** oc.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3) ***");
 
  return ok;
 }

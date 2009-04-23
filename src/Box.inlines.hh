@@ -1,5 +1,5 @@
 /* Box class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,88 +26,134 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Boundary.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
+#include "Congruence_System.defs.hh"
+#include "Congruence_System.inlines.hh"
 #include "distances.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
-template <typename Interval>
-inline
-Box<Interval>::Box(const Box& y)
-  : seq(y.seq), empty(y.empty), empty_up_to_date(y.empty_up_to_date) {
+template <typename ITV>
+inline bool
+Box<ITV>::marked_empty() const {
+  return status.test_empty_up_to_date() && status.test_empty();
 }
 
-template <typename Interval>
-inline Box<Interval>&
-Box<Interval>::operator=(const Box& y) {
+template <typename ITV>
+inline void
+Box<ITV>::set_empty() {
+  status.set_empty();
+  status.set_empty_up_to_date();
+}
+
+template <typename ITV>
+inline void
+Box<ITV>::set_nonempty() {
+  status.reset_empty();
+  status.set_empty_up_to_date();
+}
+
+template <typename ITV>
+inline void
+Box<ITV>::set_empty_up_to_date() {
+  status.set_empty_up_to_date();
+}
+
+template <typename ITV>
+inline void
+Box<ITV>::reset_empty_up_to_date() {
+  return status.reset_empty_up_to_date();
+}
+
+template <typename ITV>
+inline
+Box<ITV>::Box(const Box& y, Complexity_Class)
+  : seq(y.seq), status(y.status) {
+}
+
+template <typename ITV>
+inline Box<ITV>&
+Box<ITV>::operator=(const Box& y) {
   seq = y.seq;
-  empty = y.empty;
-  empty_up_to_date = y.empty_up_to_date;
+  status = y.status;
   return *this;
 }
 
-template <typename Interval>
+template <typename ITV>
 inline void
-Box<Interval>::swap(Box& y) {
+Box<ITV>::swap(Box& y) {
   Box& x = *this;
   std::swap(x.seq, y.seq);
-  std::swap(x.empty, y.empty);
-  std::swap(x.empty_up_to_date, y.empty_up_to_date);
+  std::swap(x.status, y.status);
 }
 
-template <typename Interval>
+template <typename ITV>
 inline
-Box<Interval>::Box(const Constraint_System& cs, Recycle_Input) {
+Box<ITV>::Box(const Constraint_System& cs, Recycle_Input) {
   // Recycling is useless: just delegate.
-  Box<Interval> tmp(cs);
+  Box<ITV> tmp(cs);
   this->swap(tmp);
 }
 
-template <typename Interval>
+template <typename ITV>
 inline
-Box<Interval>::Box(const Generator_System& gs, Recycle_Input) {
+Box<ITV>::Box(const Generator_System& gs, Recycle_Input) {
   // Recycling is useless: just delegate.
-  Box<Interval> tmp(gs);
+  Box<ITV> tmp(gs);
   this->swap(tmp);
 }
 
-template <typename Interval>
+template <typename ITV>
+inline
+Box<ITV>::Box(const Congruence_System& cgs, Recycle_Input) {
+  // Recycling is useless: just delegate.
+  Box<ITV> tmp(cgs);
+  this->swap(tmp);
+}
+
+template <typename ITV>
+inline memory_size_type
+Box<ITV>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+template <typename ITV>
 inline dimension_type
-Box<Interval>::space_dimension() const {
+Box<ITV>::space_dimension() const {
   return seq.size();
 }
 
-template <typename Interval>
+template <typename ITV>
 inline dimension_type
-Box<Interval>::max_space_dimension() {
+Box<ITV>::max_space_dimension() {
   // One dimension is reserved to have a value of type dimension_type
   // that does not represent a legal dimension.
   return Sequence().max_size() - 1;
 }
 
-template <typename Interval>
-inline const Interval&
-Box<Interval>::operator[](const dimension_type k) const {
+template <typename ITV>
+inline const ITV&
+Box<ITV>::operator[](const dimension_type k) const {
   assert(k < seq.size());
   return seq[k];
 }
 
-template <typename Interval>
-inline const Interval&
-Box<Interval>::get_interval(const Variable var) const {
+template <typename ITV>
+inline const ITV&
+Box<ITV>::get_interval(const Variable var) const {
   if (space_dimension() < var.space_dimension())
     throw_dimension_incompatible("get_interval(v)", "v", var);
 
   if (is_empty()) {
-    static Interval empty_interval(EMPTY);
+    static ITV empty_interval(EMPTY);
     return empty_interval;
   }
 
   return seq[var.id()];
 }
 
-template <typename Interval>
+template <typename ITV>
 inline void
-Box<Interval>::set_interval(const Variable var, const Interval& i) {
+Box<ITV>::set_interval(const Variable var, const ITV& i) {
   const dimension_type space_dim = space_dimension();
   if (space_dim < var.space_dimension())
     throw_dimension_incompatible("set_interval(v, i)", "v", var);
@@ -118,99 +164,72 @@ Box<Interval>::set_interval(const Variable var, const Interval& i) {
     return;
 
   seq[var.id()] = i;
-  empty_up_to_date = false;
+  reset_empty_up_to_date();
 
   assert(OK());
 }
 
-template <typename Interval>
+template <typename ITV>
 inline bool
-Box<Interval>::marked_empty() const {
-  return empty_up_to_date && empty;
+Box<ITV>::is_empty() const {
+  return marked_empty() || check_empty();
 }
 
-template <typename Interval>
+template <typename ITV>
 inline bool
-Box<Interval>::is_empty() const {
-  return empty_up_to_date ? empty : check_empty();
-}
-
-template <typename Interval>
-inline bool
-Box<Interval>::bounds_from_above(const Linear_Expression& expr) const {
+Box<ITV>::bounds_from_above(const Linear_Expression& expr) const {
   return bounds(expr, true);
 }
 
-template <typename Interval>
+template <typename ITV>
 inline bool
-Box<Interval>::bounds_from_below(const Linear_Expression& expr) const {
+Box<ITV>::bounds_from_below(const Linear_Expression& expr) const {
   return bounds(expr, false);
 }
 
-template <typename Interval>
+template <typename ITV>
 inline bool
-Box<Interval>::maximize(const Linear_Expression& expr,
-			Coefficient& sup_n, Coefficient& sup_d,
-			bool& maximum) const {
+Box<ITV>::maximize(const Linear_Expression& expr,
+                   Coefficient& sup_n, Coefficient& sup_d,
+                   bool& maximum) const {
   return max_min(expr, true, sup_n, sup_d, maximum);
 }
 
-template <typename Interval>
+template <typename ITV>
 inline bool
-Box<Interval>::maximize(const Linear_Expression& expr,
-			Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-			Generator& g) const {
+Box<ITV>::maximize(const Linear_Expression& expr,
+                   Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+                   Generator& g) const {
   return max_min(expr, true, sup_n, sup_d, maximum, g);
 }
 
-template <typename Interval>
+template <typename ITV>
 inline bool
-Box<Interval>::minimize(const Linear_Expression& expr,
-			Coefficient& inf_n, Coefficient& inf_d,
-			bool& minimum) const {
+Box<ITV>::minimize(const Linear_Expression& expr,
+                   Coefficient& inf_n, Coefficient& inf_d,
+                   bool& minimum) const {
   return max_min(expr, false, inf_n, inf_d, minimum);
 }
 
-template <typename Interval>
+template <typename ITV>
 inline bool
-Box<Interval>::minimize(const Linear_Expression& expr,
-			Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-			Generator& g) const {
+Box<ITV>::minimize(const Linear_Expression& expr,
+                   Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+                   Generator& g) const {
   return max_min(expr, false, inf_n, inf_d, minimum, g);
 }
 
-template <typename Interval>
-bool
-Box<Interval>::strictly_contains(const Box& y) const {
+template <typename ITV>
+inline bool
+Box<ITV>::strictly_contains(const Box& y) const {
   const Box& x = *this;
   return x.contains(y) && !y.contains(x);
 }
 
-template <typename Interval>
+template <typename ITV>
 inline void
-Box<Interval>::upper_bound_assign(const Box& y) {
-  Box& x = *this;
-  x.box_hull_assign(y);
-}
-
-template <typename Interval>
-inline bool
-Box<Interval>::box_hull_assign_if_exact(const Box&) {
-  // TODO: this must be properly implemented.
-  return false;
-}
-
-template <typename Interval>
-inline bool
-Box<Interval>::upper_bound_assign_if_exact(const Box& y) {
-  Box& x = *this;
-  return x.box_hull_assign_if_exact(y);
-}
-
-template <typename Interval>
-inline void
-Box<Interval>::expand_space_dimension(const Variable var,
-				      const dimension_type m) {
+Box<ITV>::expand_space_dimension(const Variable var,
+                                 const dimension_type m) {
   const dimension_type space_dim = space_dimension();
   // `var' should be one of the dimensions of the vector space.
   if (var.space_dimension() > space_dim)
@@ -229,25 +248,25 @@ Box<Interval>::expand_space_dimension(const Variable var,
   assert(OK());
 }
 
-template <typename Interval>
+template <typename ITV>
 inline bool
-operator!=(const Box<Interval>& x, const Box<Interval>& y) {
+operator!=(const Box<ITV>& x, const Box<ITV>& y) {
   return !(x == y);
 }
 
-template <typename Interval>
+template <typename ITV>
 inline bool
-Box<Interval>::get_lower_bound(const dimension_type k, bool& closed,
-			       Coefficient& n, Coefficient& d) const {
+Box<ITV>::get_lower_bound(const dimension_type k, bool& closed,
+                          Coefficient& n, Coefficient& d) const {
   assert(k < seq.size());
-  const Interval& seq_k = seq[k];
+  const ITV& seq_k = seq[k];
 
   if (seq_k.lower_is_unbounded())
     return false;
 
   closed = !seq_k.lower_is_open();
 
-  DIRTY_TEMP0(mpq_class, lr);
+  PPL_DIRTY_TEMP0(mpq_class, lr);
   assign_r(lr, seq_k.lower(), ROUND_NOT_NEEDED);
   n = lr.get_num();
   d = lr.get_den();
@@ -255,19 +274,19 @@ Box<Interval>::get_lower_bound(const dimension_type k, bool& closed,
   return true;
 }
 
-template <typename Interval>
+template <typename ITV>
 inline bool
-Box<Interval>::get_upper_bound(const dimension_type k, bool& closed,
-			       Coefficient& n, Coefficient& d) const {
+Box<ITV>::get_upper_bound(const dimension_type k, bool& closed,
+                          Coefficient& n, Coefficient& d) const {
   assert(k < seq.size());
-  const Interval& seq_k = seq[k];
+  const ITV& seq_k = seq[k];
 
   if (seq_k.upper_is_unbounded())
     return false;
 
   closed = !seq_k.upper_is_open();
 
-  DIRTY_TEMP0(mpq_class, ur);
+  PPL_DIRTY_TEMP0(mpq_class, ur);
   assign_r(ur, seq_k.upper(), ROUND_NOT_NEEDED);
   n = ur.get_num();
   d = ur.get_den();
@@ -275,37 +294,20 @@ Box<Interval>::get_upper_bound(const dimension_type k, bool& closed,
   return true;
 }
 
-template <typename Interval>
+template <typename ITV>
 inline void
-Box<Interval>::set_empty() {
-  empty = empty_up_to_date = true;
-}
-
-template <typename Interval>
-inline void
-Box<Interval>::difference_assign(const Box& y) {
-  Box& x = *this;
-  x.box_difference_assign(y);
-}
-
-template <typename Interval>
-inline void
-Box<Interval>::add_constraint(const Constraint& c) {
+Box<ITV>::add_constraint(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
   if (c_space_dim > space_dimension())
     throw_dimension_incompatible("add_constraint(c)", c);
 
-  // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
-    return;
-
   add_constraint_no_check(c);
 }
 
-template <typename Interval>
+template <typename ITV>
 inline void
-Box<Interval>::add_constraints(const Constraint_System& cs) {
+Box<ITV>::add_constraints(const Constraint_System& cs) {
   // Dimension-compatibility check.
   if (cs.space_dimension() > space_dimension())
     throw_dimension_incompatible("add_constraints(cs)", cs);
@@ -313,13 +315,112 @@ Box<Interval>::add_constraints(const Constraint_System& cs) {
   add_constraints_no_check(cs);
 }
 
-template <typename Interval>
+template <typename T>
 inline void
-Box<Interval>::refine(const Constraint& c) {
+Box<T>::add_recycled_constraints(Constraint_System& cs) {
+  add_constraints(cs);
+}
+
+template <typename ITV>
+inline void
+Box<ITV>::add_congruence(const Congruence& cg) {
+  const dimension_type cg_space_dim = cg.space_dimension();
+  // Dimension-compatibility check.
+  if (cg_space_dim > space_dimension())
+    throw_dimension_incompatible("add_congruence(cg)", cg);
+
+  add_congruence_no_check(cg);
+}
+
+template <typename ITV>
+inline void
+Box<ITV>::add_congruences(const Congruence_System& cgs) {
+  if (cgs.space_dimension() > space_dimension())
+    throw_dimension_incompatible("add_congruences(cgs)", cgs);
+  add_congruences_no_check(cgs);
+}
+
+template <typename T>
+inline void
+Box<T>::add_recycled_congruences(Congruence_System& cgs) {
+  add_congruences(cgs);
+}
+
+template <typename T>
+inline bool
+Box<T>::can_recycle_constraint_systems() {
+  return false;
+}
+
+template <typename T>
+inline bool
+Box<T>::can_recycle_congruence_systems() {
+  return false;
+}
+
+template <typename T>
+inline void
+Box<T>::widening_assign(const Box& y, unsigned* tp) {
+  CC76_widening_assign(y, tp);
+}
+
+template <typename ITV>
+inline Congruence_System
+Box<ITV>::minimized_congruences() const {
+  // Only equalities can be congruences and these are already minimized.
+  return congruences();
+}
+
+template <typename ITV>
+inline void
+Box<ITV>
+::add_interval_constraint_no_check(const dimension_type var_id,
+                                   const Constraint::Type type,
+                                   Coefficient_traits::const_reference num,
+                                   Coefficient_traits::const_reference den) {
+  assert(!marked_empty());
+  assert(var_id < space_dimension());
+  assert(den != 0);
+
+  // The interval constraint is of the form
+  // `Variable(var_id) + num / den rel 0', where
+  // `rel' is either the relation `==', `>=', or `>'.
+  // For the purpose of refining the interval, this is
+  // (morally) turned into `Variable(var_id) rel -num/den'.
+  PPL_DIRTY_TEMP0(mpq_class, q);
+  assign_r(q.get_num(), num, ROUND_NOT_NEEDED);
+  assign_r(q.get_den(), den, ROUND_NOT_NEEDED);
+  q.canonicalize();
+  // Turn `num/den' into `-num/den'.
+  q = -q;
+
+  ITV& seq_v = seq[var_id];
+  switch (type) {
+  case Constraint::EQUALITY:
+    seq_v.refine_existential(EQUAL, q);
+    break;
+  case Constraint::NONSTRICT_INEQUALITY:
+    seq_v.refine_existential((den > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL, q);
+    assert(seq_v.OK());
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    seq_v.refine_existential((den > 0) ? GREATER_THAN : LESS_THAN, q);
+    break;
+  }
+  // FIXME: do check the value returned by `refine_existential' and
+  // set `empty' and `empty_up_to_date' as appropriate.
+  // This has to be done after reimplementation of intervals.
+  reset_empty_up_to_date();
+  assert(OK());
+}
+
+template <typename ITV>
+inline void
+Box<ITV>::refine_with_constraint(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
   if (c_space_dim > space_dimension())
-    throw_dimension_incompatible("add_constraint(c)", c);
+    throw_dimension_incompatible("refine_with_constraint(c)", c);
 
   // If the box is already empty, there is nothing left to do.
   if (marked_empty())
@@ -328,12 +429,12 @@ Box<Interval>::refine(const Constraint& c) {
   refine_no_check(c);
 }
 
-template <typename Interval>
+template <typename ITV>
 inline void
-Box<Interval>::refine(const Constraint_System& cs) {
+Box<ITV>::refine_with_constraints(const Constraint_System& cs) {
   // Dimension-compatibility check.
   if (cs.space_dimension() > space_dimension())
-    throw_dimension_incompatible("add_constraints(cs)", cs);
+    throw_dimension_incompatible("refine_with_constraints(cs)", cs);
 
   // If the box is already empty, there is nothing left to do.
   if (marked_empty())
@@ -342,12 +443,91 @@ Box<Interval>::refine(const Constraint_System& cs) {
   refine_no_check(cs);
 }
 
+template <typename ITV>
+inline void
+Box<ITV>::refine_with_congruence(const Congruence& cg) {
+  const dimension_type cg_space_dim = cg.space_dimension();
+  // Dimension-compatibility check.
+  if (cg_space_dim > space_dimension())
+    throw_dimension_incompatible("refine_with_congruence(cg)", cg);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  refine_no_check(cg);
+}
+
+template <typename ITV>
+inline void
+Box<ITV>::refine_with_congruences(const Congruence_System& cgs) {
+  // Dimension-compatibility check.
+  if (cgs.space_dimension() > space_dimension())
+    throw_dimension_incompatible("refine_with_congruences(cgs)", cgs);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  refine_no_check(cgs);
+}
+
+template <typename ITV>
+inline void
+Box<ITV>::propagate_constraint(const Constraint& c) {
+  const dimension_type c_space_dim = c.space_dimension();
+  // Dimension-compatibility check.
+  if (c_space_dim > space_dimension())
+    throw_dimension_incompatible("propagate_constraint(c)", c);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  propagate_constraint_no_check(c);
+}
+
+template <typename ITV>
+inline void
+Box<ITV>::propagate_constraints(const Constraint_System& cs) {
+  // Dimension-compatibility check.
+  if (cs.space_dimension() > space_dimension())
+    throw_dimension_incompatible("propagate_constraints(cs)", cs);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  propagate_constraints_no_check(cs);
+}
+
+template <typename ITV>
+inline void
+Box<ITV>::unconstrain(const Variable var) {
+  const dimension_type dim = var.id();
+  // Dimension-compatibility check.
+  if (dim > space_dimension())
+    throw_dimension_incompatible("unconstrain(var)", dim);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+  // Here the box might still be empty (but we haven't detected it yet):
+  // check emptiness of the interval for `var' before cylindrification.
+  ITV& seq_var = seq[dim];
+  if (seq_var.is_empty())
+    set_empty();
+  else
+    seq_var.assign(UNIVERSE);
+  assert(OK());
+}
+
 /*! \relates Box */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Box<Interval>& x,
-			    const Box<Interval>& y,
+			    const Box<ITV>& x,
+			    const Box<ITV>& y,
 			    const Rounding_Dir dir,
 			    Temp& tmp0,
 			    Temp& tmp1,
@@ -357,35 +537,38 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 }
 
 /*! \relates Box */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Box<Interval>& x,
-			    const Box<Interval>& y,
+			    const Box<ITV>& x,
+			    const Box<ITV>& y,
 			    const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return rectilinear_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
 /*! \relates Box */
-template <typename To, typename Interval>
+template <typename To, typename ITV>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Box<Interval>& x,
-			    const Box<Interval>& y,
+			    const Box<ITV>& x,
+			    const Box<ITV>& y,
 			    const Rounding_Dir dir) {
-  return rectilinear_distance_assign<To, To, Interval>(r, x, y, dir);
+  // FIXME: the following qualification is only to work around a bug
+  // in the Intel C/C++ compiler version 10.1.x.
+  return Parma_Polyhedra_Library
+    ::rectilinear_distance_assign<To, To, ITV>(r, x, y, dir);
 }
 
 /*! \relates Box */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Box<Interval>& x,
-			  const Box<Interval>& y,
+			  const Box<ITV>& x,
+			  const Box<ITV>& y,
 			  const Rounding_Dir dir,
 			  Temp& tmp0,
 			  Temp& tmp1,
@@ -395,35 +578,38 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 }
 
 /*! \relates Box */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Box<Interval>& x,
-			  const Box<Interval>& y,
+			  const Box<ITV>& x,
+			  const Box<ITV>& y,
 			  const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return euclidean_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
 /*! \relates Box */
-template <typename To, typename Interval>
+template <typename To, typename ITV>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Box<Interval>& x,
-			  const Box<Interval>& y,
+			  const Box<ITV>& x,
+			  const Box<ITV>& y,
 			  const Rounding_Dir dir) {
-  return euclidean_distance_assign<To, To, Interval>(r, x, y, dir);
+  // FIXME: the following qualification is only to work around a bug
+  // in the Intel C/C++ compiler version 10.1.x.
+  return Parma_Polyhedra_Library
+    ::euclidean_distance_assign<To, To, ITV>(r, x, y, dir);
 }
 
 /*! \relates Box */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Box<Interval>& x,
-			   const Box<Interval>& y,
+			   const Box<ITV>& x,
+			   const Box<ITV>& y,
 			   const Rounding_Dir dir,
 			   Temp& tmp0,
 			   Temp& tmp1,
@@ -433,27 +619,30 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 }
 
 /*! \relates Box */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Box<Interval>& x,
-			   const Box<Interval>& y,
+			   const Box<ITV>& x,
+			   const Box<ITV>& y,
 			   const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return l_infinity_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
 /*! \relates Box */
-template <typename To, typename Interval>
+template <typename To, typename ITV>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Box<Interval>& x,
-			   const Box<Interval>& y,
+			   const Box<ITV>& x,
+			   const Box<ITV>& y,
 			   const Rounding_Dir dir) {
-  return l_infinity_distance_assign<To, To, Interval>(r, x, y, dir);
+  // FIXME: the following qualification is only to work around a bug
+  // in the Intel C/C++ compiler version 10.1.x.
+  return Parma_Polyhedra_Library
+    ::l_infinity_distance_assign<To, To, ITV>(r, x, y, dir);
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -1,6 +1,6 @@
 /* Test Octagonal_Shape::relation_with(g): we verify that a generator
    is not subsumed by an empty octagon.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -197,11 +197,11 @@ test09() {
   Variable A(0);
   Variable B(1);
 
-  TOctagonal_Shape oct	(2);
+  TOctagonal_Shape oct  (2);
   oct.add_constraint(A <= 0);
   oct.add_constraint(B == 2);
 
-  print_constraints(oct	, "*** oct	 ***");
+  print_constraints(oct , "*** oct       ***");
 
   Poly_Gen_Relation rel = oct.relation_with(closure_point(A));
 

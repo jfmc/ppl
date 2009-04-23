@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::limited_CC76_extrapolation_assign().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -58,7 +58,7 @@ test01() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
    return ok;
 }
@@ -82,7 +82,7 @@ test02() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
    return ok;
 }
@@ -116,7 +116,7 @@ test03() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
    return ok;
 }
@@ -149,7 +149,7 @@ test04() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
    return ok;
 }
@@ -184,7 +184,7 @@ test05() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
    return ok;
 }
@@ -219,7 +219,7 @@ test06() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
    return ok;
 }
@@ -255,7 +255,7 @@ test07() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
    return ok;
 }
@@ -291,7 +291,7 @@ test08() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
    return ok;
 }
@@ -328,7 +328,7 @@ test09() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
    return ok;
 }
@@ -369,7 +369,7 @@ test10() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
    return ok;
 }
@@ -406,7 +406,7 @@ test11() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
    return ok;
 }
@@ -439,7 +439,7 @@ test12() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
    return ok;
 }
@@ -477,7 +477,7 @@ test13() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
    return ok;
 }
@@ -601,7 +601,7 @@ test17() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
   return ok;
 }
@@ -612,7 +612,7 @@ test18() {
   Variable B(1);
 
   TOctagonal_Shape oct1(3);
-  oct1.add_constraint_and_minimize(A - B <= 1);
+  oct1.add_constraint(A - B <= 1);
 
   TOctagonal_Shape oct2(3, EMPTY);
 
@@ -630,7 +630,7 @@ test18() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
 
   return ok;
 }

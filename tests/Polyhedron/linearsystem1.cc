@@ -1,5 +1,5 @@
 /* Test some functionality of class Linear_System.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -47,7 +47,6 @@ test01() {
 #define COLS 3
 
   Linear_System ls1(NOT_NECESSARILY_CLOSED);
-  TEMP_INTEGER(tem);
   for (dimension_type rowi = 0; rowi < ROWS; ++rowi) {
     Linear_Row row(COLS,
 		   Linear_Row::Flags(NOT_NECESSARILY_CLOSED,

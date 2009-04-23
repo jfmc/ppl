@@ -1,5 +1,5 @@
 /* Test Box::add_constraints().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -30,20 +30,21 @@ test01() {
   Variable B(1);
 
   Constraint_System cs;
+  cs.insert(B >= 0);
   cs.insert(A >= 0);
   cs.insert(B == 5);
+  cs.insert(B <= 7);
 
-  TBox box1(2);
-  box1.add_constraints(cs);
+  TBox box(2);
+  box.add_constraints(cs);
 
-  print_constraints(box1, "*** box1.add_constraints(cs) ***");
+  print_constraints(box, "*** box.add_constraints(cs) ***");
 
   Rational_Box known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B == 5);
-  known_result.add_constraint(B - A <= 5);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(known_result, "*** known_result ***");
 
@@ -56,14 +57,14 @@ test02() {
   Variable y(1);
   Variable z(2);
 
-  TBox box1(2);
+  TBox box(2);
 
   try {
     // This is an invalid use of method
     // Box::add_constraint: it is illegal
     // to add a constraint with bigger dimension.
-    box1.add_constraint(x <= 0);
-    box1.add_constraint(y - x + z >= 0);
+    box.add_constraint(x <= 0);
+    box.add_constraint(y - x + z >= 0);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -146,6 +147,132 @@ test05() {
   return false;
 }
 
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B >= 5);
+  cs.insert(B <= 5);
+
+  TBox box(2);
+  box.add_constraints(cs);
+  bool ok = !box.is_empty();
+
+  Rational_Box known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B == 5);
+
+  ok = ok && check_result(box, known_result);
+
+  print_constraints(box, "*** box.add_constraints(cs) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B >= 5);
+  cs.insert(B <= 5);
+
+  TBox box(2);
+  box.add_recycled_constraints(cs);
+
+  Rational_Box known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B == 5);
+
+  bool ok = check_result(box, known_result);
+
+  print_constraints(box, "*** box.add_constraints(cs) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B >= 5);
+  cs.insert(B <= 5);
+
+  TBox box(2);
+  box.add_recycled_constraints(cs);
+  bool ok = !box.is_empty();
+
+  Rational_Box known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B == 5);
+
+  ok = ok && check_result(box, known_result);
+
+  print_constraints(box, "*** box.add_constraints(cs) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B >= 5);
+  cs.insert(B <= 4);
+
+  TBox box(2);
+  box.add_constraints(cs);
+  bool ok = box.is_empty();
+
+  Rational_Box known_result(2, EMPTY);
+
+  ok = ok && check_result(box, known_result);
+
+  print_constraints(box, "*** box.add_constraints(cs) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B >= 5);
+  cs.insert(B <= 5);
+  cs.insert(A + 3 <= 2);
+
+  TBox box(2);
+  box.add_recycled_constraints(cs);
+  bool ok = box.is_empty();
+
+  Rational_Box known_result(2, EMPTY);
+
+  ok = ok && check_result(box, known_result);
+
+  print_constraints(box, "*** box.add_constraints(cs) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -154,4 +281,9 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

@@ -1,5 +1,5 @@
 /* C integers info.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_C_Integer_hh
 #define PPL_C_Integer_hh 1
 
+#include "meta_programming.hh"
 #include <climits>
 
 // C99 defines LLONG_MIN, LLONG_MAX and ULLONG_MAX, but this part of
@@ -55,7 +56,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 namespace Parma_Polyhedra_Library {
-
 
 template <typename T>
 struct C_Integer : public False { };

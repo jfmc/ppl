@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::generalized_affine_image().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -72,8 +72,8 @@ test02() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(x, "
-		    "GREATER_OR_EQUAL, -x - 3) ***");
+                    "*** oct.generalized_affine_image(x, "
+                    "GREATER_OR_EQUAL, -x - 3) ***");
 
   return ok;
 }
@@ -123,7 +123,7 @@ test04() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct, "*** oct.generalized_affine_image(B, "
-		    "GREATER_OR_EQUAL, B - 2) ***");
+                    "GREATER_OR_EQUAL, B - 2) ***");
 
   return ok;
 }
@@ -150,7 +150,7 @@ test05() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct, "*** oct.generalized_affine_image(A, "
-		    "GREATER_OR_EQUAL, 2*A + 3, 2) ***");
+                    "GREATER_OR_EQUAL, 2*A + 3, 2) ***");
 
   return ok;
 }
@@ -205,7 +205,7 @@ test07() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct, "*** oct.generalized_affine_image(C, "
-		    "EQUAL, 5*C - 3, 4) ***");
+                    "EQUAL, 5*C - 3, 4) ***");
 
   return ok;
 }
@@ -286,7 +286,7 @@ test10() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct, "*** oct.generalized_affine_image(B, "
-		         "EQUAL, 2*A - 4*B + C + 3, 3) ***");
+                         "EQUAL, 2*A - 4*B + C + 3, 3) ***");
 
   return ok;
 }
@@ -526,8 +526,8 @@ test19() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(B, "
-		    "GREATER_OR_EQUAL, C + 3, -1) ***");
+                    "*** oct.generalized_affine_image(B, "
+                    "GREATER_OR_EQUAL, C + 3, -1) ***");
 
   return ok;
 }
@@ -560,8 +560,8 @@ test20() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(B, "
-		    "GREATER_OR_EQUAL, C + 3) ***");
+                    "*** oct.generalized_affine_image(B, "
+                    "GREATER_OR_EQUAL, C + 3) ***");
 
   return ok;
 }
@@ -579,6 +579,8 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+#ifndef __alpha__
+  // Exception handling is broken in GCC on the Alpha.
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
@@ -587,6 +589,7 @@ BEGIN_MAIN
   DO_TEST(test16);
   DO_TEST(test17);
   DO_TEST(test18);
+#endif
   DO_TEST(test19);
   DO_TEST(test20);
 END_MAIN

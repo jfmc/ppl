@@ -1,5 +1,5 @@
 /* GNU Prolog Common Foreign Language Interface.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,27 +23,84 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PCFLI_gprolog_cfli_hh
 #define PCFLI_gprolog_cfli_hh 1
 
+#if SIZEOF_FP == SIZEOF_INTP
+// Horrible kludge working around an horrible bug in <gprolog.h> (see
+// http://www.cs.unipr.it/pipermail/ppl-devel/2008-August/012277.html).
+#define byte_code byte_code(void)
+#define last_read_line last_read_line(void)
+#define last_read_col last_read_col(void)
 #include <gprolog.h>
+#undef byte_code
+#undef last_read_line
+#undef last_read_col
+#else
+#include <gprolog.h>
+#endif
+
+#if defined(__GPROLOG_VERSION__) && __GPROLOG_VERSION__ >= 10301
+#define PPL_GPROLOG_H_IS_CLEAN
+#endif
+
+#ifndef PPL_GPROLOG_H_IS_CLEAN
+// <gprolog.h> pollutes the namespace: try to clean up
+// (see http://www.cs.unipr.it/pipermail/ppl-devel/2004-April/004270.html).
+#ifdef B
+#undef B
+#endif
+#ifdef H
+#undef H
+#endif
+#ifdef CP
+#undef CP
+#endif
+#ifdef E
+#undef E
+#endif
+#ifdef CS
+#undef CS
+#endif
+#ifdef S
+#undef S
+#endif
+#ifdef STAMP
+#undef STAMP
+#endif
+#endif
+
 #include <cassert>
+#include <cstdlib>
 
 typedef PlTerm Prolog_term_ref;
 typedef int Prolog_atom;
+#ifndef PPL_GPROLOG_H_IS_CLEAN
 typedef Bool Prolog_foreign_return_type;
 
 const Prolog_foreign_return_type PROLOG_SUCCESS = TRUE;
 const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
+#else
+typedef PlBool Prolog_foreign_return_type;
+
+const Prolog_foreign_return_type PROLOG_SUCCESS = PL_TRUE;
+const Prolog_foreign_return_type PROLOG_FAILURE = PL_FALSE;
+#endif
 
 namespace {
 
 inline Prolog_atom
 a_dollar_address() {
-  static Prolog_atom a = Create_Allocate_Atom("$address");
-  return a;
+  // We use the `name' variable, instead of directly using the string
+  // literal, in order to avoid a compiler warning.
+  static char name[] = "$address";
+  static Prolog_atom atom = Create_Allocate_Atom(name);
+  return atom;
 }
 
 inline Prolog_atom
 a_throw() {
-  static Prolog_atom a = Find_Atom("throw");
+  // We use the `name' variable, instead of directly using the string
+  // literal, in order to avoid a compiler warning.
+  static char name[] = "throw";
+  static Prolog_atom a = Find_Atom(name);
   return a;
 }
 
@@ -115,12 +172,10 @@ Prolog_put_atom(Prolog_term_ref& t, Prolog_atom a) {
 /*!
   Return an atom whose name is given by the null-terminated string \p s.
 */
-Prolog_atom
+inline Prolog_atom
 Prolog_atom_from_string(const char* s) {
   return Create_Allocate_Atom(const_cast<char*>(s));
 }
-
-Prolog_term_ref args[4];
 
 /*!
   Assign to \p t a compound term whose principal functor is \p f
@@ -129,6 +184,7 @@ Prolog_term_ref args[4];
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1) {
+  Prolog_term_ref args[1];
   args[0] = a1;
   t = Mk_Compound(f, 1, args);
   return 1;
@@ -141,6 +197,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
+  Prolog_term_ref args[2];
   args[0] = a1;
   args[1] = a2;
   t = Mk_Compound(f, 2, args);
@@ -155,6 +212,7 @@ inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3) {
+  Prolog_term_ref args[3];
   args[0] = a1;
   args[1] = a2;
   args[2] = a3;
@@ -170,6 +228,7 @@ inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
+  Prolog_term_ref args[4];
   args[0] = a1;
   args[1] = a2;
   args[2] = a3;
@@ -184,6 +243,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 inline int
 Prolog_construct_cons(Prolog_term_ref& c,
 		      Prolog_term_ref h, Prolog_term_ref t) {
+  Prolog_term_ref args[2];
   args[0] = h;
   args[1] = t;
   c = Mk_List(args);
@@ -196,12 +256,22 @@ Prolog_construct_cons(Prolog_term_ref& c,
 inline int
 Prolog_put_address(Prolog_term_ref& t, void* p) {
   union {
-    unsigned long l;
-    unsigned short s[2];
+    void* l;
+    unsigned short s[sizeof(void*)/sizeof(unsigned short)];
   } u;
-  u.l = reinterpret_cast<unsigned long>(p);
-  return Prolog_construct_compound(t, a_dollar_address(),
-				   Mk_Positive(u.s[0]), Mk_Positive(u.s[1]));
+  u.l = reinterpret_cast<void*>(p);
+  if (sizeof(unsigned short)*2 == sizeof(void*))
+    return Prolog_construct_compound(t, a_dollar_address(),
+                                     Mk_Positive(u.s[0]),
+                                     Mk_Positive(u.s[1]));
+  else if (sizeof(unsigned short)*4 == sizeof(void*))
+    return Prolog_construct_compound(t, a_dollar_address(),
+                                     Mk_Positive(u.s[0]),
+                                     Mk_Positive(u.s[1]),
+                                     Mk_Positive(u.s[2]),
+                                     Mk_Positive(u.s[3]));
+  else
+    abort();
 }
 
 /*!
@@ -280,9 +350,10 @@ Prolog_is_address(Prolog_term_ref t) {
   Prolog_atom name;
   int arity;
   Prolog_term_ref* a = Rd_Compound_Check(t, &name, &arity);
-  if (name != a_dollar_address() || arity != 2)
+  if (name != a_dollar_address()
+      || sizeof(unsigned short)*arity != sizeof(void*))
     return 0;
-  for (int i = 0; i <= 1; ++i) {
+  for (unsigned i = 0; i < sizeof(void*)/sizeof(unsigned short); ++i) {
     if (!Prolog_is_integer(a[i]))
       return 0;
     long l;
@@ -306,11 +377,17 @@ Prolog_get_address(Prolog_term_ref t, void** vpp) {
   static int dummy_arity;
   Prolog_term_ref* a = Rd_Compound_Check(t, &dummy_name, &dummy_arity);
   union {
-    unsigned long l;
-    unsigned short s[2];
+    void* l;
+    unsigned short s[sizeof(void*)/sizeof(unsigned short)];
   } u;
+  assert(dummy_arity >= 2);
   u.s[0] = Rd_Integer_Check(a[0]);
   u.s[1] = Rd_Integer_Check(a[1]);
+  if (sizeof(unsigned short)*4 == sizeof(void*)) {
+    assert(dummy_arity == 4);
+    u.s[2] = Rd_Integer_Check(a[2]);
+    u.s[3] = Rd_Integer_Check(a[3]);
+  }
   *vpp = reinterpret_cast<void*>(u.l);
   return 1;
 }
@@ -373,7 +450,11 @@ Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref& h, Prolog_term_ref& t) {
 */
 inline int
 Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
+#ifndef PPL_GPROLOG_H_IS_CLEAN
   return Unify(t, u) != FALSE;
+#else
+  return Pl_Unif(t, u) != PL_FALSE;
+#endif
 }
 
 #endif // !defined(PCFLI_gprolog_cfli_hh)

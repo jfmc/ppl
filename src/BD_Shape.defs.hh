@@ -1,5 +1,5 @@
 /* BD_Shape class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
+#include "Congruence.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
@@ -35,6 +36,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.types.hh"
 #include "Polyhedron.types.hh"
 #include "Box.types.hh"
+#include "Grid.types.hh"
+#include "Octagonal_Shape.types.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.types.hh"
 #include "DB_Matrix.defs.hh"
@@ -92,9 +95,9 @@ bool operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y);
 */
 template <typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				 const BD_Shape<T>& x,
-				 const BD_Shape<T>& y,
-				 Rounding_Dir dir);
+                                 const BD_Shape<T>& x,
+                                 const BD_Shape<T>& y,
+                                 Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -109,9 +112,9 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				 const BD_Shape<T>& x,
-				 const BD_Shape<T>& y,
-				 Rounding_Dir dir);
+                                 const BD_Shape<T>& x,
+                                 const BD_Shape<T>& y,
+                                 Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -126,12 +129,12 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				 const BD_Shape<T>& x,
-				 const BD_Shape<T>& y,
-				 Rounding_Dir dir,
-				 Temp& tmp0,
-				 Temp& tmp1,
-				 Temp& tmp2);
+                                 const BD_Shape<T>& x,
+                                 const BD_Shape<T>& y,
+                                 Rounding_Dir dir,
+                                 Temp& tmp0,
+                                 Temp& tmp1,
+                                 Temp& tmp2);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -146,9 +149,9 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			       const BD_Shape<T>& x,
-			       const BD_Shape<T>& y,
-			       Rounding_Dir dir);
+                               const BD_Shape<T>& x,
+                               const BD_Shape<T>& y,
+                               Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -163,9 +166,9 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			       const BD_Shape<T>& x,
-			       const BD_Shape<T>& y,
-			       Rounding_Dir dir);
+                               const BD_Shape<T>& x,
+                               const BD_Shape<T>& y,
+                               Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -180,12 +183,12 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			       const BD_Shape<T>& x,
-			       const BD_Shape<T>& y,
-			       Rounding_Dir dir,
-			       Temp& tmp0,
-			       Temp& tmp1,
-			       Temp& tmp2);
+                               const BD_Shape<T>& x,
+                               const BD_Shape<T>& y,
+                               Rounding_Dir dir,
+                               Temp& tmp0,
+                               Temp& tmp1,
+                               Temp& tmp2);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -200,9 +203,9 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				const BD_Shape<T>& x,
-				const BD_Shape<T>& y,
-				Rounding_Dir dir);
+                                const BD_Shape<T>& x,
+                                const BD_Shape<T>& y,
+                                Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -217,9 +220,9 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				const BD_Shape<T>& x,
-				const BD_Shape<T>& y,
-				Rounding_Dir dir);
+                                const BD_Shape<T>& x,
+                                const BD_Shape<T>& y,
+                                Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -234,12 +237,12 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				const BD_Shape<T>& x,
-				const BD_Shape<T>& y,
-				Rounding_Dir dir,
-				Temp& tmp0,
-				Temp& tmp1,
-				Temp& tmp2);
+                                const BD_Shape<T>& x,
+                                const BD_Shape<T>& y,
+                                Rounding_Dir dir,
+                                Temp& tmp0,
+                                Temp& tmp1,
+                                Temp& tmp2);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as a bounded difference.
@@ -278,18 +281,18 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool extract_bounded_difference(const Constraint& c,
-				dimension_type c_space_dim,
-				dimension_type& c_num_vars,
-				dimension_type& c_first_var,
-				dimension_type& c_second_var,
-				Coefficient& c_coeff);
+                                dimension_type c_space_dim,
+                                dimension_type& c_num_vars,
+                                dimension_type& c_first_var,
+                                dimension_type& c_second_var,
+                                Coefficient& c_coeff);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Extracts leader indices from the predecessor relation.
 /*! \relates BD_Shape */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void compute_leader_indices(const std::vector<dimension_type>& predecessor,
-			    std::vector<dimension_type>& indices);
+                            std::vector<dimension_type>& indices);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -315,21 +318,30 @@ void compute_leader_indices(const std::vector<dimension_type>& predecessor,
       (i.e., \c mpz_class or \c mpq_class).
 
   The user interface for BDSs is meant to be as similar as possible to
-  the one developed for the polyhedron class C_Polyhedron.  At the
-  interface level, bounded differences are specified using objects of
-  type Constraint: such a constraint is a bounded difference if it is
-  of the form
+  the one developed for the polyhedron class C_Polyhedron.
+
+  The domain of BD shapes <EM>optimally supports</EM>:
+    - tautological and inconsistent constraints and congruences;
+    - bounded difference constraints;
+    - non-proper congruences (i.e., equalities) that are expressible
+      as bounded-difference constraints.
+
+  Depending on the method, using a constraint or congruence that is not
+  optimally supported by the domain will either raise an exception or
+  result in a (possibly non-optimal) upward approximation.
+
+  A constraint is a bounded difference if it has the form
     \f[
       a_i x_i - a_j x_j \relsym b
     \f]
   where \f$\mathord{\relsym} \in \{ \leq, =, \geq \}\f$ and
   \f$a_i\f$, \f$a_j\f$, \f$b\f$ are integer coefficients such that
   \f$a_i = 0\f$, or \f$a_j = 0\f$, or \f$a_i = a_j\f$.
-  The user is warned that the above Constraint object will be mapped
-  into a <EM>correct</EM> approximation that, depending on the expressive
-  power of the chosen template argument \p T, may loose some precision.
-  In particular, constraint objects that do not encode a bounded difference
-  will be simply (and safely) ignored.
+  The user is warned that the above bounded difference Constraint object
+  will be mapped into a \e correct and \e optimal approximation that,
+  depending on the expressive power of the chosen template argument \p T,
+  may loose some precision. Also note that strict constraints are not
+  bounded differences.
 
   For instance, a Constraint object encoding \f$3x - 3y \leq 1\f$ will be
   approximated by:
@@ -341,8 +353,9 @@ void compute_leader_indices(const std::vector<dimension_type>& predecessor,
       if \p T is a floating point type (having no exact representation
       for \f$\frac{1}{3}\f$).
 
-  On the other hand, a Constraint object encoding \f$3x - y \leq 1\f$
-  will be safely ignored in all of the above cases.
+  On the other hand, depending from the context, a Constraint object
+  encoding \f$3x - y \leq 1\f$ will be either upward approximated
+  (e.g., by safely ignoring it) or it will cause an exception.
 
   In the following examples it is assumed that the type argument \p T
   is one of the possible instances listed above and that variables
@@ -368,9 +381,8 @@ void compute_leader_indices(const std::vector<dimension_type>& predecessor,
     BD_Shape<T> bd(cs);
   \endcode
   Since only those constraints having the syntactic form of a
-  <EM>bounded difference</EM> are considered, the following code
-  will build the same BDS as above (i.e., the constraints 7, 8, and 9
-  are ignored):
+  <EM>bounded difference</EM> are optimally supported, the following code
+  will throw an exception (caused by constraints 7, 8 and 9):
   \code
     Constraint_System cs;
     cs.insert(x >= 0);
@@ -407,6 +419,16 @@ public:
   //! Returns the maximum space dimension that a BDS can handle.
   static dimension_type max_space_dimension();
 
+  /*! \brief
+    Returns \c false indicating that this domain cannot recycle constraints.
+  */
+  static bool can_recycle_constraint_systems();
+
+  /*! \brief
+    Returns \c false indicating that this domain cannot recycle congruences.
+  */
+  static bool can_recycle_congruence_systems();
+
   //! \name Constructors, Assignment, Swap and Destructor
   //@{
 
@@ -419,14 +441,22 @@ public:
     Specifies whether the universe or the empty BDS has to be built.
   */
   explicit BD_Shape(dimension_type num_dimensions = 0,
-		    Degenerate_Element kind = UNIVERSE);
+                    Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
-  BD_Shape(const BD_Shape& y);
+  /*!
+    The complexity argument is ignored.
+  */
+  BD_Shape(const BD_Shape& y,
+           Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a conservative, upward approximation of \p y.
+  /*!
+    The complexity argument is ignored.
+  */
   template <typename U>
-  explicit BD_Shape(const BD_Shape<U>& y);
+  explicit BD_Shape(const BD_Shape<U>& y,
+                    Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a BDS from the system of constraints \p cs.
   /*!
@@ -439,7 +469,8 @@ public:
     to the space dimension).
 
     \exception std::invalid_argument
-    Thrown if the system of constraints \p cs contains strict inequalities.
+    Thrown if \p cs contains a constraint which is not optimally supported
+    by the BD shape domain.
   */
   explicit BD_Shape(const Constraint_System& cs);
 
@@ -470,7 +501,66 @@ public:
     smallest one containing \p ph.
   */
   explicit BD_Shape(const Polyhedron& ph,
-		    Complexity_Class complexity = ANY_COMPLEXITY);
+                    Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a BDS out of a box.
+  /*!
+    The BDS inherits the space dimension of the box.
+    The built BDS is the most precise BDS that includes the box.
+
+    \param box
+    The box representing the BDS to be built.
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p box exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename Interval>
+  explicit BD_Shape(const Box<Interval>& box,
+                    Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a BDS out of a grid.
+  /*!
+    The BDS inherits the space dimension of the grid.
+    The built BDS is the most precise BDS that includes the grid.
+
+    \param grid
+    The grid used to build the BDS.
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p grid exceeds the maximum
+    allowed space dimension.
+  */
+  explicit BD_Shape(const Grid& grid,
+                    Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a BDS from an octagonal shape.
+  /*!
+    The BDS inherits the space dimension of the octagonal shape.
+    The built BDS is the most precise BDS that includes the octagonal shape.
+
+    \param os
+    The octagonal shape used to build the BDS.
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p os exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename U>
+  explicit BD_Shape(const Octagonal_Shape<U>& os,
+                    Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator
@@ -507,6 +597,15 @@ public:
 
   //! Returns a minimized system of constraints defining \p *this.
   Constraint_System minimized_constraints() const;
+
+  //! Returns a system of (equality) congruences satisfied by \p *this.
+  Congruence_System congruences() const;
+
+  /*! \brief
+    Returns a minimal system of (equality) congruences
+    satisfied by \p *this with the same affine dimension as \p *this.
+  */
+  Congruence_System minimized_congruences() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
@@ -551,7 +650,7 @@ public:
     and \p maximum are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+                Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -582,8 +681,8 @@ public:
     and \p g are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Generator& g) const;
+                Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+                Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -610,7 +709,7 @@ public:
     and \p minimum are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+                Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -641,8 +740,8 @@ public:
     and \p g are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Generator& g) const;
+                Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+                Generator& g) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -669,11 +768,16 @@ public:
   //! Returns the relations holding between \p *this and the constraint \p c.
   /*!
     \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible
-    or if \p c is a strict inequality or if \p c is not a bounded
-    difference constraint.
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
   */
   Poly_Con_Relation relation_with(const Constraint& c) const;
+
+  //! Returns the relations holding between \p *this and the congruence \p cg.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Congruence& cg) const;
 
   //! Returns the relations holding between \p *this and the generator \p g.
   /*!
@@ -707,6 +811,15 @@ public:
   bool contains_integer_point() const;
 
   /*! \brief
+    Returns <CODE>true</CODE> if and only if \p var is constrained in
+    \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  bool constrains(Variable var) const;
+
+  /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this satisfies
     all its invariants.
   */
@@ -727,26 +840,21 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible,
-    or if \p c is a strict inequality.
+    or \p c is not optimally supported by the BD shape domain.
   */
   void add_constraint(const Constraint& c);
 
   /*! \brief
-    Adds a copy of constraint \p c to the system of bounded differences
-    defining \p *this.
+    Adds a copy of congruence \p cg to the system of congruences of \p *this.
 
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param c
-    The constraint to be added. If it is not a bounded difference, it
-    will be simply ignored.
+    \param cg
+    The congruence to be added.
 
     \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible,
-    or if \p c is a strict inequality.
+    Thrown if \p *this and congruence \p cg are dimension-incompatible,
+    or \p cg is not optimally supported by the BD shape domain.
   */
-  bool add_constraint_and_minimize(const Constraint& c);
+  void add_congruence(const Congruence& cg);
 
   /*! \brief
     Adds the constraints in \p cs to the system of bounded differences
@@ -758,21 +866,23 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
-    or if \p cs contains a strict inequality.
+    or \p cs contains a constraint which is not optimally supported
+    by the BD shape domain.
   */
   void add_constraints(const Constraint_System& cs);
 
   /*! \brief
     Adds the constraints in \p cs to the system of constraints
-    of \p *this (without minimizing the result).
+    of \p *this.
 
     \param cs
     The constraint system to be added to \p *this.  The constraints in
     \p cs may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cs are dimension-incompatible,
+    or \p cs contains a constraint which is not optimally supported
+    by the BD shape domain.
 
     \warning
     The only assumption that can be made on \p cs upon successful or
@@ -781,42 +891,113 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
-    Adds the constraints in \p cs to the system of bounded differences
-    defining \p *this.
+    Adds to \p *this constraints equivalent to the congruences in \p cgs.
 
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param  cs
-    The constraints that will be added. Constraints that are not bounded
-    differences will be simply ignored.
+    \param cgs
+    Contains the congruences that will be added to the system of
+    constraints of \p *this.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible,
-    or if \p cs contains a strict inequality.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    or \p cgs contains a congruence which is not optimally supported
+    by the BD shape domain.
   */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
+  void add_congruences(const Congruence_System& cgs);
 
   /*! \brief
-    Adds the constraints in \p cs to the system of constraints
-    of \p *this, minimizing the result.
+    Adds to \p *this constraints equivalent to the congruences in \p cgs.
 
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraint system to be added to \p *this.  The constraints in
-    \p cs may be recycled.
+    \param cgs
+    Contains the congruences that will be added to the system of
+    constraints of \p *this. Its elements may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    or \p cgs contains a congruence which is not optimally supported
+    by the BD shape domain.
 
     \warning
-    The only assumption that can be made on \p cs upon successful or
+    The only assumption that can be made on \p cgs upon successful or
     exceptional return is that it can be safely destroyed.
   */
-  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
+  void add_recycled_congruences(Congruence_System& cgs);
+
+  /*! \brief
+    Uses a copy of constraint \p c to refine the system of bounded differences
+    defining \p *this.
+
+    \param c
+    The constraint. If it is not a bounded difference, it will be ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
+  */
+  void refine_with_constraint(const Constraint& c);
+
+  /*! \brief
+    Uses a copy of congruence \p cg to refine the system of
+    bounded differences  of \p *this.
+
+    \param cg
+    The congruence. If it is not a bounded difference equality, it
+    will be ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+  */
+  void refine_with_congruence(const Congruence& cg);
+
+  /*! \brief
+    Uses a copy of the constraints in \p cs to refine the system of
+    bounded differences defining \p *this.
+
+    \param  cs
+    The constraint system to be used. Constraints that are not bounded
+    differences are ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void refine_with_constraints(const Constraint_System& cs);
+
+  /*! \brief
+    Uses a copy of the congruences in \p cgs to refine the system of
+    bounded differences defining \p *this.
+
+    \param  cgs
+    The congruence system to be used. Congruences that are not bounded
+    difference equalities are ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void refine_with_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  void unconstrain(Variable var);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  void unconstrain(const Variables_Set& to_be_unconstrained);
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
@@ -825,65 +1006,60 @@ public:
   */
   void intersection_assign(const BD_Shape& y);
 
-  //! Assigns to \p *this the intersection of \p *this and \p y.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  bool intersection_assign_and_minimize(const BD_Shape& y);
-
   /*! \brief
-    Assigns to \p *this the smallest BDS containing the convex union
+    Assigns to \p *this the smallest BDS containing the union
     of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void bds_hull_assign(const BD_Shape& y);
-
-  /*! \brief
-    Assigns to \p *this the smallest BDS containing the convex union
-    of \p *this and \p y.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  bool bds_hull_assign_and_minimize(const BD_Shape& y);
-
-  //! Same as bds_hull_assign.
   void upper_bound_assign(const BD_Shape& y);
 
   /*! \brief
-    If the bds-hull of \p *this and \p y is exact, it is assigned
+    If the upper bound of \p *this and \p y is exact, it is assigned
     to \p *this and <CODE>true</CODE> is returned,
     otherwise <CODE>false</CODE> is returned.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool bds_hull_assign_if_exact(const BD_Shape& y);
-
-  //! Same as bds_hull_assign_if_exact.
   bool upper_bound_assign_if_exact(const BD_Shape& y);
 
   /*! \brief
-    Assigns to \p *this
-    the \ref Convex_Polyhedral_Difference "poly-difference"
-    of \p *this and \p y.
+    If the \e integer upper bound of \p *this and \p y is exact,
+    it is assigned to \p *this and <CODE>true</CODE> is returned;
+    otherwise <CODE>false</CODE> is returned.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+
+    \note
+    The integer upper bound of two rational BDS is the smallest rational
+    BDS containing all the integral points of the two arguments.
+    This method requires that the coefficient type parameter \c T is
+    an integral type.
+  */
+  bool integer_upper_bound_assign_if_exact(const BD_Shape& y);
+
+  /*! \brief
+    Assigns to \p *this the smallest BD shape containing
+    the set difference of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void bds_difference_assign(const BD_Shape& y);
-
-  //! Same as bds_difference_assign.
   void difference_assign(const BD_Shape& y);
+
+  /*! \brief
+    Assigns to \p *this a \ref Meet_Preserving_Simplification
+    "meet-preserving simplification" of \p *this with respect to \p y.
+    If \c false is returned, then the intersection is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool simplify_using_context_assign(const BD_Shape& y);
 
   /*! \brief
     Assigns to \p *this the
@@ -905,9 +1081,9 @@ public:
     are dimension-incompatible or if \p var is not a dimension of \p *this.
   */
   void affine_image(Variable var,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator
-		    = Coefficient_one());
+                    const Linear_Expression& expr,
+                    Coefficient_traits::const_reference denominator
+                    = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the
@@ -929,9 +1105,9 @@ public:
     are dimension-incompatible or if \p var is not a dimension of \p *this.
   */
   void affine_preimage(Variable var,
-		       const Linear_Expression& expr,
-		       Coefficient_traits::const_reference denominator
-		       = Coefficient_one());
+                       const Linear_Expression& expr,
+                       Coefficient_traits::const_reference denominator
+                       = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -958,10 +1134,10 @@ public:
     of \p *this or if \p relsym is a strict relation symbol.
   */
   void generalized_affine_image(Variable var,
-				Relation_Symbol relsym,
-				const Linear_Expression& expr,
-				Coefficient_traits::const_reference denominator
-				= Coefficient_one());
+                                Relation_Symbol relsym,
+                                const Linear_Expression& expr,
+                                Coefficient_traits::const_reference denominator
+                                = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -983,8 +1159,8 @@ public:
     or if \p relsym is a strict relation symbol.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-				Relation_Symbol relsym,
-				const Linear_Expression& rhs);
+                                Relation_Symbol relsym,
+                                const Linear_Expression& rhs);
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1011,10 +1187,10 @@ public:
     of \p *this or if \p relsym is a strict relation symbol.
   */
   void generalized_affine_preimage(Variable var,
-				   Relation_Symbol relsym,
-				   const Linear_Expression& expr,
-				   Coefficient_traits::const_reference
-				   denominator = Coefficient_one());
+                                   Relation_Symbol relsym,
+                                   const Linear_Expression& expr,
+                                   Coefficient_traits::const_reference
+                                   denominator = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1036,8 +1212,8 @@ public:
     or if \p relsym is a strict relation symbol.
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
-				   Relation_Symbol relsym,
-				   const Linear_Expression& rhs);
+                                   Relation_Symbol relsym,
+                                   const Linear_Expression& rhs);
 
   /*!
     \brief
@@ -1066,10 +1242,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_image(Variable var,
-			    const Linear_Expression& lb_expr,
-			    const Linear_Expression& ub_expr,
-			    Coefficient_traits::const_reference denominator
-			    = Coefficient_one());
+                            const Linear_Expression& lb_expr,
+                            const Linear_Expression& ub_expr,
+                            Coefficient_traits::const_reference denominator
+                            = Coefficient_one());
 
   /*!
     \brief
@@ -1098,10 +1274,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_preimage(Variable var,
-			       const Linear_Expression& lb_expr,
-			       const Linear_Expression& ub_expr,
-			       Coefficient_traits::const_reference denominator
-			       = Coefficient_one());
+                               const Linear_Expression& lb_expr,
+                               const Linear_Expression& ub_expr,
+                               Coefficient_traits::const_reference denominator
+                               = Coefficient_one());
   /*! \brief
     Assigns to \p *this the result of computing the
     \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
@@ -1154,8 +1330,8 @@ public:
   */
   template <typename Iterator>
   void CC76_extrapolation_assign(const BD_Shape& y,
-				 Iterator first, Iterator last,
-				 unsigned* tp = 0);
+                                 Iterator first, Iterator last,
+                                 unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1195,8 +1371,8 @@ public:
     if \p cs contains a strict inequality.
   */
   void limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
-					   const Constraint_System& cs,
-					   unsigned* tp = 0);
+                                           const Constraint_System& cs,
+                                           unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of restoring in \p y the constraints
@@ -1240,8 +1416,8 @@ public:
     if \p cs contains a strict inequality.
   */
   void limited_CC76_extrapolation_assign(const BD_Shape& y,
-					 const Constraint_System& cs,
-					 unsigned* tp = 0);
+                                         const Constraint_System& cs,
+                                         unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1259,6 +1435,9 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void H79_widening_assign(const BD_Shape& y, unsigned* tp = 0);
+
+  //! Same as H79_widening_assign(y, tp).
+  void widening_assign(const BD_Shape& y, unsigned* tp = 0);
 
   /*! \brief
     Improves the result of the \ref H79_widening "H79-widening"
@@ -1280,8 +1459,8 @@ public:
     Thrown if \p *this, \p y and \p cs are dimension-incompatible.
   */
   void limited_H79_extrapolation_assign(const BD_Shape& y,
-					const Constraint_System& cs,
-					unsigned* tp = 0);
+                                        const Constraint_System& cs,
+                                        unsigned* tp = 0);
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
 
@@ -1454,13 +1633,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -1512,8 +1689,12 @@ private:
   //! A matrix indicating which constraints are redundant.
   Bit_Matrix redundancy_dbm;
 
-  //! Returns <CODE>true</CODE> if the BDS is known to be empty.
-  /*!
+  //! Returns <CODE>true</CODE> if the BDS is the zero-dimensional universe.
+  bool marked_zero_dim_univ() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if the BDS is known to be empty.
+
     The return value <CODE>false</CODE> does not necessarily
     implies that \p *this is non-empty.
   */
@@ -1543,6 +1724,18 @@ private:
   //! Turns \p *this into an zero-dimensional universe BDS.
   void set_zero_dim_univ();
 
+  //! Marks \p *this as shortest-path closed.
+  void set_shortest_path_closed();
+
+  //! Marks \p *this as shortest-path closed.
+  void set_shortest_path_reduced();
+
+  //! Marks \p *this as possibly not shortest-path closed.
+  void reset_shortest_path_closed();
+
+  //! Marks \p *this as possibly not shortest-path reduced.
+  void reset_shortest_path_reduced();
+
   //! Assigns to <CODE>this->dbm</CODE> its shortest-path closure.
   void shortest_path_closure_assign() const;
 
@@ -1559,6 +1752,19 @@ private:
     correctly flags the redundant entries in <CODE>this->dbm</CODE>.
   */
   bool is_shortest_path_reduced() const;
+
+  /*! \brief
+    Incrementally computes shortest-path closure, assuming that only
+    constraints affecting variable \p var need to be considered.
+
+    \note
+    It is assumed that \c *this, which was shortest-path closed,
+    has only been modified by adding constraints affecting variable
+    \p var. If this assumption is not satisfied, i.e., if a non-redundant
+    constraint not affecting variable \p var has been added, the behavior
+    is undefined.
+  */
+  void incremental_shortest_path_closure_assign(Variable var) const;
 
   //! Checks if and how \p expr is bounded in \p *this.
   /*!
@@ -1611,9 +1817,9 @@ private:
     \p included and \p g are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       bool maximize,
-	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
-	       Generator& g) const;
+               bool maximize,
+               Coefficient& ext_n, Coefficient& ext_d, bool& included,
+               Generator& g) const;
 
   //! Maximizes or minimizes \p expr subject to \p *this.
   /*!
@@ -1642,16 +1848,77 @@ private:
     \p included and \p point are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       bool maximize,
-	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
+               bool maximize,
+               Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
+
+  /*! \brief
+    If the upper bound of \p *this and \p y is exact it is assigned
+    to \p *this and \c true is returned, otherwise \c false is returned.
+
+    Current implementation is based on a variant of Algorithm 4.1 in
+      A. Bemporad, K. Fukuda, and F. D. Torrisi
+      <em>Convexity Recognition of the Union of Polyhedra</em>
+      Technical Report AUT00-13, ETH Zurich, 2000
+    tailored to the special case of BD shapes.
+
+    \note
+    It is assumed that \p *this and \p y are dimension-compatible;
+    if the assumption does not hold, the behavior is undefined.
+  */
+  bool BFT00_upper_bound_assign_if_exact(const BD_Shape& y);
+
+  /*! \brief
+    If the upper bound of \p *this and \p y is exact it is assigned
+    to \p *this and \c true is returned, otherwise \c false is returned.
+
+    Implementation for the rational (resp., integer) case is based on
+    Theorem 5.2 (resp. Theorem 5.3) of \ref BHZ09b "[BHZ09b]".
+    The Boolean template parameter \c integer_upper_bound allows for
+    choosing between the rational and integer upper bound algorithms.
+
+    \note
+    It is assumed that \p *this and \p y are dimension-compatible;
+    if the assumption does not hold, the behavior is undefined.
+
+    \note
+    The integer case is only enabled if T is an integer datatype.
+  */
+  template <bool integer_upper_bound>
+  bool BHZ09_upper_bound_assign_if_exact(const BD_Shape& y);
+
+  /*! \brief
+    Uses the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added. Non BD constraints are ignored.
+
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Constraint& c);
+
+  /*! \brief
+    Uses the congruence \p cg to refine \p *this.
+
+    \param cg
+    The congruence to be added.
+    Nontrivial proper congruences are ignored.
+    Non BD equalities are ignored.
+
+    \warning
+    If \p cg and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Congruence& cg);
 
   //! Adds the constraint <CODE>dbm[i][j] \<= k</CODE>.
   void add_dbm_constraint(dimension_type i, dimension_type j, const N& k);
 
   //! Adds the constraint <CODE>dbm[i][j] \<= num/den</CODE>.
   void add_dbm_constraint(dimension_type i, dimension_type j,
-			  Coefficient_traits::const_reference num,
-			  Coefficient_traits::const_reference den);
+                          Coefficient_traits::const_reference num,
+                          Coefficient_traits::const_reference den);
 
   /*! \brief
     Adds to the BDS the constraint
@@ -1660,9 +1927,9 @@ private:
     Note that the coefficient of \p var in \p expr is null.
   */
   void refine(Variable var, Relation_Symbol relsym,
-	      const Linear_Expression& expr,
-	      Coefficient_traits::const_reference denominator
-	      = Coefficient_one());
+              const Linear_Expression& expr,
+              Coefficient_traits::const_reference denominator
+              = Coefficient_one());
 
   //! Removes all the constraints on row/column \p v.
   void forget_all_dbm_constraints(dimension_type v);
@@ -1685,10 +1952,10 @@ private:
         <CODE>v - u \<= ub_v - (q*ub_u + (1-q)*lb_u)</CODE>.
   */
   void deduce_v_minus_u_bounds(dimension_type v,
-			       dimension_type last_v,
-			       const Linear_Expression& sc_expr,
-			       Coefficient_traits::const_reference sc_den,
-			       const N& ub_v);
+                               dimension_type last_v,
+                               const Linear_Expression& sc_expr,
+                               Coefficient_traits::const_reference sc_den,
+                               const N& ub_v);
 
   //! An helper function for the computation of affine relations.
   /*!
@@ -1707,17 +1974,17 @@ private:
         <CODE>u - v \<= (q*lb_u + (1-q)*ub_u) - lb_v</CODE>.
   */
   void deduce_u_minus_v_bounds(dimension_type v,
-			       dimension_type last_v,
-			       const Linear_Expression& sc_expr,
-			       Coefficient_traits::const_reference sc_den,
-			       const N& minus_lb_v);
+                               dimension_type last_v,
+                               const Linear_Expression& sc_expr,
+                               Coefficient_traits::const_reference sc_den,
+                               const N& minus_lb_v);
 
   /*! \brief
     Adds to \p limiting_shape the bounded differences in \p cs
     that are satisfied by \p *this.
   */
   void get_limiting_shape(const Constraint_System& cs,
-			  BD_Shape& limiting_shape) const;
+                          BD_Shape& limiting_shape) const;
 
   //! Compute the (zero-equivalence classes) predecessor relation.
   /*!
@@ -1731,40 +1998,33 @@ private:
   */
   void compute_leaders(std::vector<dimension_type>& leaders) const;
 
-#if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators::operator<<<>(std::ostream& s,
-						      const BD_Shape<T>& c);
-#else
-  // This is too lax than wanted.
-  template <typename U>
-  friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    const BD_Shape<U>& c);
-#endif
+  Parma_Polyhedra_Library::IO_Operators
+  ::operator<<<>(std::ostream& s, const BD_Shape<T>& c);
 
   //! \name Exception Throwers
   //@{
   void throw_dimension_incompatible(const char* method,
-				    const BD_Shape& x) const;
+                                    const BD_Shape& x) const;
 
   void throw_dimension_incompatible(const char* method,
-				    dimension_type required_dim) const;
+                                    dimension_type required_dim) const;
 
   void throw_dimension_incompatible(const char* method,
-				    const Constraint& c) const;
+                                    const Constraint& c) const;
 
   void throw_dimension_incompatible(const char* method,
-				    const Generator& g) const;
+                                    const Congruence& cg) const;
 
   void throw_dimension_incompatible(const char* method,
-				    const char* name_row,
-				    const Linear_Expression& y) const;
+                                    const Generator& g) const;
 
-  static void throw_constraint_incompatible(const char* method);
+  void throw_dimension_incompatible(const char* method,
+                                    const char* name_row,
+                                    const Linear_Expression& y) const;
 
   static void throw_expression_too_complex(const char* method,
-					   const Linear_Expression& e);
+                                           const Linear_Expression& e);
 
   static void throw_generic(const char* method, const char* reason);
   //@} // Exception Throwers
@@ -1777,7 +2037,7 @@ namespace std {
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
 template <typename T>
 void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
-	  Parma_Polyhedra_Library::BD_Shape<T>& y);
+          Parma_Polyhedra_Library::BD_Shape<T>& y);
 
 } // namespace std
 

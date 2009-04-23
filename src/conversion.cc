@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: conversion().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Scalar_Products.defs.hh"
 #include "Temp.defs.hh"
 #include <cstddef>
+#include <climits>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -375,8 +376,8 @@ PPL::Polyhedron::conversion(Linear_System& source,
   // constraints seen so far, to be used as a displacement when swapping rows.
   dimension_type source_num_redundant = 0;
 
-  TEMP_INTEGER(normalized_sp_i);
-  TEMP_INTEGER(normalized_sp_o);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_sp_i);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_sp_o);
 
   // Converting the sub-system of `source' having rows with indexes
   // from `start' to the last one (i.e., `source_num_rows' - 1).
@@ -399,7 +400,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
     // constraint `source_k' and the generator `dest[i]'.  This
     // product is 0 if and only if the generator saturates the
     // constraint.
-    DIRTY_TEMP0(std::vector<Coefficient>, scalar_prod);
+    PPL_DIRTY_TEMP0(std::vector<Coefficient>, scalar_prod);
     const int needed_space = dest_num_rows - scalar_prod.size();
     if (needed_space > 0)
       scalar_prod.insert(scalar_prod.end(), needed_space, Coefficient_zero());
@@ -669,15 +670,15 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	      // If there exist another generator that saturates
 	      // all the constraints saturated by both `dest[i]' and
 	      // `dest[j]', then they are NOT adjacent.
-	      Bit_Row new_satrow;
 	      assert(sat[i].last() == ULONG_MAX || sat[i].last() < k);
 	      assert(sat[j].last() == ULONG_MAX || sat[j].last() < k);
+
 	      // Being the union of `sat[i]' and `sat[j]',
 	      // `new_satrow' corresponds to a ray that saturates all the
 	      // constraints saturated by both `dest[i]' and `dest[j]'.
-	      set_union(sat[i], sat[j], new_satrow);
+	      Bit_Row new_satrow(sat[i], sat[j]);
 
-	      // Computing the number of common saturators.
+	      // Compute the number of common saturators.
 	      // NOTE: this number has to be less than `k' because
 	      // we are treating the `k'-th constraint.
 	      const dimension_type
@@ -719,10 +720,11 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		    // Make room for one more row.
 		    dest.add_pending_row(Linear_Row::Flags(dest.topology(),
 							   Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-		    sat.add_row(new_satrow);
+		    sat.add_recycled_row(new_satrow);
 		  }
 		  else
-		    sat[dest_num_rows] = new_satrow;
+                    sat[dest_num_rows].swap(new_satrow);
+
 		  Linear_Row& new_row = dest[dest_num_rows];
 		  // The following fragment optimizes the computation of
 		  //

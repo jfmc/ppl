@@ -1,5 +1,5 @@
 /* Octagonal_Shape class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "C_Polyhedron.defs.hh"
+#include "Grid.defs.hh"
+#include "BD_Shape.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include <cassert>
@@ -38,7 +40,7 @@ namespace Parma_Polyhedra_Library {
 /*! \relates Octagonal_Shape */
 inline dimension_type
 coherent_index(const dimension_type i) {
-  return (i%2) ? i-1 : i+1;
+  return (i % 2 != 0) ? i-1 : i+1;
 }
 
 template <typename T>
@@ -49,22 +51,8 @@ Octagonal_Shape<T>::max_space_dimension() {
 
 template <typename T>
 inline bool
-Octagonal_Shape<T>::marked_empty() const {
-  return status.test_empty();
-}
-
-template <typename T>
-inline void
-Octagonal_Shape<T>::set_empty() {
-  status.set_empty();
-  assert(OK());
-  assert(is_empty());
-}
-
-template <typename T>
-inline void
-Octagonal_Shape<T>::set_zero_dim_univ() {
-  status.set_zero_dim_univ();
+Octagonal_Shape<T>::marked_zero_dim_univ() const {
+  return status.test_zero_dim_univ();
 }
 
 template <typename T>
@@ -74,33 +62,68 @@ Octagonal_Shape<T>::marked_strongly_closed() const {
 }
 
 template <typename T>
+inline bool
+Octagonal_Shape<T>::marked_empty() const {
+  return status.test_empty();
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::set_zero_dim_univ() {
+  status.set_zero_dim_univ();
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::set_empty() {
+  status.set_empty();
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::set_strongly_closed() {
+  status.set_strongly_closed();
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::reset_strongly_closed() {
+  status.reset_strongly_closed();
+}
+
+template <typename T>
 inline
 Octagonal_Shape<T>::Octagonal_Shape(const dimension_type num_dimensions,
 				    const Degenerate_Element kind)
   : matrix(num_dimensions), space_dim(num_dimensions), status() {
   if (kind == EMPTY)
-    status.set_empty();
+    set_empty();
   else if (num_dimensions > 0)
     // A (non zero-dim) universe octagon is strongly closed.
-    status.set_strongly_closed();
+    set_strongly_closed();
   assert(OK());
 }
 
 template <typename T>
 inline
-Octagonal_Shape<T>::Octagonal_Shape(const Octagonal_Shape& y)
+Octagonal_Shape<T>::Octagonal_Shape(const Octagonal_Shape& y, Complexity_Class)
   : matrix(y.matrix), space_dim(y.space_dim), status(y.status) {
 }
 
 template <typename T>
 template <typename U>
 inline
-Octagonal_Shape<T>::Octagonal_Shape(const Octagonal_Shape<U>& y)
-  : matrix(y.matrix), space_dim(y.space_dim), status() {
+Octagonal_Shape<T>::Octagonal_Shape(const Octagonal_Shape<U>& y,
+                                    Complexity_Class)
+  // For maximum precision, enforce shortest-path closure
+  // before copying the DB matrix.
+  : matrix((y.strong_closure_assign(), y.matrix)),
+    space_dim(y.space_dim),
+    status() {
   // TODO: handle flags properly, possibly taking special cases into account.
   if (y.marked_empty())
     set_empty();
-  else if (y.status.test_zero_dim_univ())
+  else if (y.marked_zero_dim_univ())
     set_zero_dim_univ();
 }
 
@@ -111,9 +134,77 @@ Octagonal_Shape<T>::Octagonal_Shape(const Constraint_System& cs)
     space_dim(cs.space_dimension()),
     status() {
   if (cs.space_dimension() > 0)
-    // A (non zero-dim) universe octagon is strong closed.
-    status.set_strongly_closed();
+    // A (non zero-dim) universe octagon is strongly closed.
+    set_strongly_closed();
   add_constraints(cs);
+}
+
+template <typename T>
+inline
+Octagonal_Shape<T>::Octagonal_Shape(const Congruence_System& cgs)
+  : matrix(cgs.space_dimension()),
+    space_dim(cgs.space_dimension()),
+    status() {
+  if (cgs.space_dimension() > 0)
+    // A (non zero-dim) universe octagon is strongly closed.
+    set_strongly_closed();
+  add_congruences(cgs);
+}
+
+template <typename T>
+template <typename Interval>
+inline
+Octagonal_Shape<T>::Octagonal_Shape(const Box<Interval>& box,
+                                    Complexity_Class)
+  : matrix(box.space_dimension()),
+    space_dim(box.space_dimension()),
+    status() {
+  // Check for emptyness for maximum precision.
+  if (box.is_empty())
+    set_empty();
+  else if (box.space_dimension() > 0) {
+    // A (non zero-dim) universe OS is strongly closed.
+    set_strongly_closed();
+    refine_with_constraints(box.constraints());
+  }
+}
+
+template <typename T>
+inline
+Octagonal_Shape<T>::Octagonal_Shape(const Grid& grid,
+                                    Complexity_Class)
+  : matrix(grid.space_dimension()),
+    space_dim(grid.space_dimension()),
+    status() {
+  if (grid.space_dimension() > 0)
+    // A (non zero-dim) universe OS is strongly closed.
+    set_strongly_closed();
+  // Taking minimized congruences ensures maximum precision.
+  refine_with_congruences(grid.minimized_congruences());
+}
+
+template <typename T>
+template <typename U>
+inline
+Octagonal_Shape<T>::Octagonal_Shape(const BD_Shape<U>& bd,
+                                    Complexity_Class)
+  : matrix(bd.space_dimension()),
+    space_dim(bd.space_dimension()),
+    status() {
+  // Check for emptyness for maximum precision.
+  if (bd.is_empty())
+    set_empty();
+  else if (bd.space_dimension() > 0) {
+    // A (non zero-dim) universe OS is strongly closed.
+    set_strongly_closed();
+    refine_with_constraints(bd.constraints());
+  }
+}
+
+template <typename T>
+inline Congruence_System
+Octagonal_Shape<T>::congruences() const {
+  return minimized_congruences();
 }
 
 template <typename T>
@@ -225,11 +316,12 @@ operator==(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y) {
     return false;
 
   // Zero-dim OSs are equal if and only if they are both empty or universe.
-  if (x.space_dim == 0)
+  if (x.space_dim == 0) {
     if (x.marked_empty())
       return y.marked_empty();
     else
       return !y.marked_empty();
+  }
 
   x.strong_closure_assign();
   y.strong_closure_assign();
@@ -292,7 +384,7 @@ Octagonal_Shape<T>::add_octagonal_constraint(const dimension_type i,
   if (r_i_j > k) {
     r_i_j = k;
     if (marked_strongly_closed())
-      status.reset_strongly_closed();
+      reset_strongly_closed();
   }
 }
 
@@ -310,17 +402,116 @@ Octagonal_Shape<T>
   assert(j < m_i.row_size());
   assert(den != 0);
 #endif
-  DIRTY_TEMP(N, k);
+  PPL_DIRTY_TEMP(N, k);
   div_round_up(k, num, den);
   add_octagonal_constraint(i, j, k);
 }
 
 template <typename T>
-inline bool
-Octagonal_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
+inline void
+Octagonal_Shape<T>::add_constraints(const Constraint_System& cs) {
+  for (Constraint_System::const_iterator i = cs.begin(),
+         i_end = cs.end(); i != i_end; ++i)
+    add_constraint(*i);
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::add_recycled_constraints(Constraint_System& cs) {
   add_constraints(cs);
-  strong_closure_assign();
-  return !marked_empty();
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::add_recycled_congruences(Congruence_System& cgs) {
+  add_congruences(cgs);
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::add_congruences(const Congruence_System& cgs) {
+  for (Congruence_System::const_iterator i = cgs.begin(),
+         cgs_end = cgs.end(); i != cgs_end; ++i)
+    add_congruence(*i);
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::refine_with_constraint(const Constraint& c) {
+  // Dimension-compatibility check.
+  if (c.space_dimension() > space_dimension())
+    throw_dimension_incompatible("refine_with_constraint(c)", c);
+
+  if (!marked_empty())
+    refine_no_check(c);
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::refine_with_constraints(const Constraint_System& cs) {
+  // Dimension-compatibility check.
+  if (cs.space_dimension() > space_dimension())
+    throw_generic("refine_with_constraints(cs)",
+                  "cs and *this are space-dimension incompatible");
+
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
+    refine_no_check(*i);
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::refine_with_congruence(const Congruence& cg) {
+  const dimension_type cg_space_dim = cg.space_dimension();
+  // Dimension-compatibility check.
+  if (cg_space_dim > space_dimension())
+    throw_dimension_incompatible("refine_with_congruence(cg)", cg);
+
+  if (!marked_empty())
+    refine_no_check(cg);
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>::refine_with_congruences(const Congruence_System& cgs) {
+  // Dimension-compatibility check.
+  if (cgs.space_dimension() > space_dimension())
+    throw_generic("refine_with_congruences(cgs)",
+                  "cgs and *this are space-dimension incompatible");
+
+  for (Congruence_System::const_iterator i = cgs.begin(),
+	 cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)
+    refine_no_check(*i);
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::refine_no_check(const Congruence& cg) {
+  assert(!marked_empty());
+  assert(cg.space_dimension() <= space_dimension());
+
+  if (cg.is_proper_congruence()) {
+    if (cg.is_inconsistent())
+      set_empty();
+    // Other proper congruences are just ignored.
+    return;
+  }
+
+  assert(cg.is_equality());
+  Constraint c(cg);
+  refine_no_check(c);
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>::can_recycle_constraint_systems() {
+  return false;
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>::can_recycle_congruence_systems() {
+  return false;
 }
 
 template <typename T>
@@ -350,12 +541,9 @@ Octagonal_Shape<T>
 }
 
 template <typename T>
-inline bool
-Octagonal_Shape<T>
-::intersection_assign_and_minimize(const Octagonal_Shape& y) {
-  intersection_assign(y);
-  strong_closure_assign();
-  return !(marked_empty());
+inline void
+Octagonal_Shape<T>::widening_assign(const Octagonal_Shape& y, unsigned* tp) {
+  BHMZ05_widening_assign(y, tp);
 }
 
 template <typename T>
@@ -396,39 +584,6 @@ inline bool
 Octagonal_Shape<T>::strictly_contains(const Octagonal_Shape& y) const {
   const Octagonal_Shape<T>& x = *this;
   return x.contains(y) && !y.contains(x);
-}
-
-template <typename T>
-inline bool
-Octagonal_Shape<T>::oct_hull_assign_and_minimize(const Octagonal_Shape& y) {
-  oct_hull_assign(y);
-  return !marked_empty();
-}
-
-
-template <typename T>
-inline void
-Octagonal_Shape<T>::upper_bound_assign(const Octagonal_Shape& y) {
-  oct_hull_assign(y);
-}
-
-template <typename T>
-inline bool
-Octagonal_Shape<T>::oct_hull_assign_if_exact(const Octagonal_Shape&) {
-  // TODO: this must be properly implemented.
-  return false;
-}
-
-template <typename T>
-inline bool
-Octagonal_Shape<T>::upper_bound_assign_if_exact(const Octagonal_Shape& y) {
-  return oct_hull_assign_if_exact(y);
-}
-
-template <typename T>
-inline void
-Octagonal_Shape<T>::difference_assign(const Octagonal_Shape& y) {
-  oct_difference_assign(y);
 }
 
 /*! \relates Octagonal_Shape */
@@ -480,9 +635,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			    const Octagonal_Shape<T>& y,
 			    const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return rectilinear_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -545,9 +700,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			  const Octagonal_Shape<T>& y,
 			  const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return euclidean_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -610,9 +765,9 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			   const Octagonal_Shape<T>& y,
 			   const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return l_infinity_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 

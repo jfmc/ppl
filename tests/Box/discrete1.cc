@@ -1,5 +1,5 @@
 /* Test Box::is_discrete().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -124,7 +124,6 @@ test07() {
 
   TBox box(4);
   box.add_constraint(A <= 1);
-  box.add_constraint(A - D == 8);
   box.add_constraint(B <= 7);
 
   print_constraints(box, "*** box ***");
@@ -144,7 +143,6 @@ test08() {
   TBox box(5);
   box.add_constraint(A == 1);
   box.add_constraint(E == 1);
-  box.add_constraint(A - D == 8);
   box.add_constraint(B <= 7);
 
   print_constraints(box, "*** box ***");

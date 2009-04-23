@@ -1,5 +1,5 @@
 /* Test operator<<(std::ostream&, const Generator_System&).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,11 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include "files.hh"
-#include <fstream>
-
-using std::fstream;
-using std::ios_base;
 
 using namespace IO_Operators;
 
@@ -33,7 +28,6 @@ namespace {
 
 bool
 test01() {
-  const char* my_file = "writegensys1.dat";
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -45,32 +39,30 @@ test01() {
   gs.insert(ray(B + C));
   gs.insert(line(C));
 
-  fstream f;
-  open(f, my_file, ios_base::out);
-  f << gs << endl;
-  close(f);
-  // FIXME.
-  return true;
+  std::stringstream s;
+  s << gs;
+
+  nout << "*** s << gs ***" << endl << "`" << s.str() << "'" << endl;
+
+  return s.str() == "p(0), p(A - B), p(A + C), r(B + C), l(C)";
 }
 
 bool
 test02() {
-  const char* my_file = "writegensys1.dat";
   C_Polyhedron ph(3, EMPTY);
 
   Generator_System gs = ph.generators();
 
-  fstream f;
-  open(f, my_file, ios_base::out);
-  f << gs << endl;
-  close(f);
-  // FIXME.
-  return true;
+  std::stringstream s;
+  s << gs;
+
+  nout << "*** s << gs ***" << endl << "`" << s.str() << "'" << endl;
+
+  return s.str() == "false";
 }
 
 bool
 test03() {
-  const char* my_file = "writegensys1.dat";
   Variable A(0);
   Variable B(1);
 
@@ -80,12 +72,12 @@ test03() {
   gs.insert(ray(e1));
   gs.insert(point(3*A + B, 2));
 
-  fstream f;
-  open(f, my_file, ios_base::out);
-  f << gs << endl;
-  close(f);
-  // FIXME.
-  return true;
+  std::stringstream s;
+  s << gs;
+
+  nout << "*** s << gs ***" << endl << "`" << s.str() << "'" << endl;
+
+  return s.str() == "r(2*A + B), p((3*A + B)/2)";
 }
 
 } // namespace

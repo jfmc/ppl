@@ -1,5 +1,5 @@
 dnl A function to check for the existence and usability of SWI-Prolog.
-dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -38,10 +38,16 @@ if test x$swi_prolog != x
 then
   swi_prolog_base=`$swi_prolog -dump-runtime-variables | grep PLBASE= | sed 's/PLBASE="\(.*\)";/\1/'`
   swi_prolog_version=`$swi_prolog -dump-runtime-variables | grep PLVERSION= | sed 's/PLVERSION="\(.*\)";/\1/'`
+  swi_prolog_arch=`$swi_prolog -dump-runtime-variables | grep PLARCH= | sed 's/PLARCH="\(.*\)";/\1/'`
+  swi_prolog_libs=`$swi_prolog -dump-runtime-variables | grep PLLIBS= | sed 's/PLLIBS="\(.*\)";/\1/'`
+  swi_prolog_lib=`$swi_prolog -dump-runtime-variables | grep PLLIB= | sed 's/PLLIB="\(.*\)";/\1/'`
 
   dnl Additional version checks could be inserted here, if necessary.
 
-  SWI_PROLOG_INCLUDE_OPTIONS="-I${swi_prolog_base}/include"
+  # In Fedora, SWI-Prolog.h is installed only in /usr/include/pl, which,
+  # IMHO, is a bug (https://bugzilla.redhat.com/show_bug.cgi?id=471071).
+  SWI_PROLOG_INCLUDE_OPTIONS="-I${swi_prolog_base}/include -I/usr/include/pl"
+  SWI_PROLOG_LD_OPTIONS="-L${swi_prolog_base}/lib/${swi_prolog_arch} ${swi_prolog_lib} ${swi_prolog_libs}"
   ac_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $SWI_PROLOG_INCLUDE_OPTIONS"
   AC_LANG_PUSH(C++)
@@ -67,7 +73,10 @@ main() {
                   swi_prolog="")
   AC_LANG_POP(C++)
   CPPFLAGS="$ac_save_CPPFLAGS"
+  SWI_PROLOG="$swi_prolog"
+  AC_SUBST(SWI_PROLOG)
   AC_SUBST(SWI_PROLOG_INCLUDE_OPTIONS)
+  AC_SUBST(SWI_PROLOG_LD_OPTIONS)
 fi
 
 if test x$swi_prolog != x

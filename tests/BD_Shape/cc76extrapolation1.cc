@@ -1,5 +1,5 @@
 /* Test BD_Shape::CC76_extrapolation_assign().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,29 +29,29 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(x <= 1);
-  bd1.add_constraint(x - y <= 2);
-  bd1.add_constraint(y - x <= 7);
+  TBD_Shape bds1(3);
+  bds1.add_constraint(x <= 1);
+  bds1.add_constraint(x - y <= 2);
+  bds1.add_constraint(y - x <= 7);
 
-  TBD_Shape bd2(3);
-  bd2.add_constraint(x - y <= 2);
-  bd2.add_constraint(-x <= 3);
-  bd2.add_constraint(x <= 0);
-  bd2.add_constraint(y - x <= 2);
+  TBD_Shape bds2(3);
+  bds2.add_constraint(x - y <= 2);
+  bds2.add_constraint(-x <= 3);
+  bds2.add_constraint(x <= 0);
+  bds2.add_constraint(y - x <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.CC76_extrapolation_assign(bd2);
+  bds1.CC76_extrapolation_assign(bds2);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1, "*** bd1.CC76_extrapolation_assign(bd2) ***");
+  print_constraints(bds1, "*** bds1.CC76_extrapolation_assign(bds2) ***");
 
   return ok;
 }
@@ -63,40 +63,40 @@ test02() {
   Variable C(2);
   Variable D(3);
 
-  TBD_Shape bd1(4);
-  bd1.add_constraint(A >= 0);
-  bd1.add_constraint(B >= 0);
-  bd1.add_constraint(B <= 25);
-  bd1.add_constraint(C >= 0);
-  bd1.add_constraint(C <= 29);
-  bd1.add_constraint(D >= 0);
-  bd1.add_constraint(D <= 27);
-  bd1.add_constraint(B - A <= 25);
-  bd1.add_constraint(C - A <= 29);
-  bd1.add_constraint(D - A <= 27);
-  bd1.add_constraint(B - C <= 2);
-  bd1.add_constraint(C - B <= 6);
-  bd1.add_constraint(B - D <= 2);
-  bd1.add_constraint(D - B <= 4);
-  bd1.add_constraint(C - D <= 4);
-  bd1.add_constraint(D - C <= 4);
+  TBD_Shape bds1(4);
+  bds1.add_constraint(A >= 0);
+  bds1.add_constraint(B >= 0);
+  bds1.add_constraint(B <= 25);
+  bds1.add_constraint(C >= 0);
+  bds1.add_constraint(C <= 29);
+  bds1.add_constraint(D >= 0);
+  bds1.add_constraint(D <= 27);
+  bds1.add_constraint(B - A <= 25);
+  bds1.add_constraint(C - A <= 29);
+  bds1.add_constraint(D - A <= 27);
+  bds1.add_constraint(B - C <= 2);
+  bds1.add_constraint(C - B <= 6);
+  bds1.add_constraint(B - D <= 2);
+  bds1.add_constraint(D - B <= 4);
+  bds1.add_constraint(C - D <= 4);
+  bds1.add_constraint(D - C <= 4);
 
-  TBD_Shape bd2(4);
-  bd2.add_constraint(A >= 0);
-  bd2.add_constraint(B >= 0);
-  bd2.add_constraint(B <= 26);
-  bd2.add_constraint(C >= 3);
-  bd2.add_constraint(C <= 29);
-  bd2.add_constraint(D >= 2);
-  bd2.add_constraint(D <= 28);
-  bd2.add_constraint(B - A <= 26);
-  bd2.add_constraint(C - A <= 29);
-  bd2.add_constraint(D - A <= 28);
-  bd2.add_constraint(B - C <= 0);
-  bd2.add_constraint(C - B <= 6);
-  bd2.add_constraint(B - D == 2);
-  bd2.add_constraint(C - D <= 4);
-  bd2.add_constraint(D - C <= 2);
+  TBD_Shape bds2(4);
+  bds2.add_constraint(A >= 0);
+  bds2.add_constraint(B >= 0);
+  bds2.add_constraint(B <= 26);
+  bds2.add_constraint(C >= 3);
+  bds2.add_constraint(C <= 29);
+  bds2.add_constraint(D >= 2);
+  bds2.add_constraint(D <= 28);
+  bds2.add_constraint(B - A <= 26);
+  bds2.add_constraint(C - A <= 29);
+  bds2.add_constraint(D - A <= 28);
+  bds2.add_constraint(B - C <= 0);
+  bds2.add_constraint(C - B <= 6);
+  bds2.add_constraint(B - D == 2);
+  bds2.add_constraint(C - D <= 4);
+  bds2.add_constraint(D - C <= 2);
 
   Constraint_System cs;
   cs.insert(A >= 0);
@@ -104,13 +104,13 @@ test02() {
   cs.insert(C >= 0);
   cs.insert(D >= 0);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
   print_constraints(cs, "*** cs ***");
 
-  bd1.bds_hull_assign(bd2);
+  bds1.upper_bound_assign(bds2);
 
-  bd1.limited_CC76_extrapolation_assign(bd2, cs);
+  bds1.limited_CC76_extrapolation_assign(bds2, cs);
 
   BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(A >= 0);
@@ -123,10 +123,10 @@ test02() {
   known_result.add_constraint(B - D <= 2);
   known_result.add_constraint(C - D <= 4);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
+  print_constraints(bds1,
+                    "bds1.limited_CC76_extrapolation_assign(bds2, cs) ***");
 
   return ok;
 }
@@ -138,44 +138,44 @@ test03() {
   Variable C(2);
   Variable D(3);
 
-  TBD_Shape bd1(4);
-  bd1.add_constraint(A >= 0);
-  bd1.add_constraint(B >= 0);
-  bd1.add_constraint(B <= 39);
-  bd1.add_constraint(C >= 0);
-  bd1.add_constraint(C <= 40);
-  bd1.add_constraint(D >= 0);
-  bd1.add_constraint(D <= 40);
-  bd1.add_constraint(B - A <= 39);
-  bd1.add_constraint(C - A <= 40);
-  bd1.add_constraint(D - A <= 40);
-  bd1.add_constraint(B - C <= 0);
-  bd1.add_constraint(C - B <= 1);
-  bd1.add_constraint(B - D <= 0);
-  bd1.add_constraint(D - B <= 2);
-  bd1.add_constraint(C - D <= 0);
-  bd1.add_constraint(D - C <= 1);
+  TBD_Shape bds1(4);
+  bds1.add_constraint(A >= 0);
+  bds1.add_constraint(B >= 0);
+  bds1.add_constraint(B <= 39);
+  bds1.add_constraint(C >= 0);
+  bds1.add_constraint(C <= 40);
+  bds1.add_constraint(D >= 0);
+  bds1.add_constraint(D <= 40);
+  bds1.add_constraint(B - A <= 39);
+  bds1.add_constraint(C - A <= 40);
+  bds1.add_constraint(D - A <= 40);
+  bds1.add_constraint(B - C <= 0);
+  bds1.add_constraint(C - B <= 1);
+  bds1.add_constraint(B - D <= 0);
+  bds1.add_constraint(D - B <= 2);
+  bds1.add_constraint(C - D <= 0);
+  bds1.add_constraint(D - C <= 1);
 
-  TBD_Shape bd2(4);
-  bd2.add_constraint(A >= 0);
-  bd2.add_constraint(B >= 0);
-  bd2.add_constraint(B <= 38);
-  bd2.add_constraint(C >= 0);
-  bd2.add_constraint(C <= 39);
-  bd2.add_constraint(D >= 0);
-  bd2.add_constraint(D <= 40);
-  bd2.add_constraint(B - A <= 38);
-  bd2.add_constraint(C - A <= 39);
-  bd2.add_constraint(D - A <= 40);
-  bd2.add_constraint(B - C <= 0);
-  bd2.add_constraint(C - B <= 1);
-  bd2.add_constraint(B - D <= 0);
-  bd2.add_constraint(D - B <= 2);
-  bd2.add_constraint(C - D <= 0);
-  bd2.add_constraint(D - C <= 1);
+  TBD_Shape bds2(4);
+  bds2.add_constraint(A >= 0);
+  bds2.add_constraint(B >= 0);
+  bds2.add_constraint(B <= 38);
+  bds2.add_constraint(C >= 0);
+  bds2.add_constraint(C <= 39);
+  bds2.add_constraint(D >= 0);
+  bds2.add_constraint(D <= 40);
+  bds2.add_constraint(B - A <= 38);
+  bds2.add_constraint(C - A <= 39);
+  bds2.add_constraint(D - A <= 40);
+  bds2.add_constraint(B - C <= 0);
+  bds2.add_constraint(C - B <= 1);
+  bds2.add_constraint(B - D <= 0);
+  bds2.add_constraint(D - B <= 2);
+  bds2.add_constraint(C - D <= 0);
+  bds2.add_constraint(D - C <= 1);
 
-  // Force the closure of `bd1'.
-  bd1 == bd2;
+  // Force the closure of `bds1'.
+  bds1 == bds2;
 
   BD_Shape<mpq_class> known_widening(4);
   known_widening.add_constraint(A >= 0);
@@ -191,19 +191,19 @@ test03() {
   known_widening.add_constraint(C - D <= 0);
   known_widening.add_constraint(D - C <= 1);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.CC76_extrapolation_assign(bd2);
+  bds1.CC76_extrapolation_assign(bds2);
 
-  print_constraints(bd1, "*** bd1.CC76_extrapolation_assign(bd2) ***");
+  print_constraints(bds1, "*** bds1.CC76_extrapolation_assign(bds2) ***");
 
-  // Force the closure of `bd1'.
-  bd1 == bd2;
+  // Force the closure of `bds1'.
+  bds1 == bds2;
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_widening);
+  bool ok = (BD_Shape<mpq_class>(bds1) == known_widening);
 
-  print_constraints(bd1, "*** bd1.closure_assign() ***");
+  print_constraints(bds1, "*** bds1.closure_assign() ***");
 
   return ok;
 }
@@ -213,57 +213,57 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(A <= 0);
-  bd1.add_constraint(B >= 0);
-  bd1.add_constraint(B <= 2);
-  bd1.add_constraint(B - A <= 2);
+  TBD_Shape bds1(2);
+  bds1.add_constraint(A <= 0);
+  bds1.add_constraint(B >= 0);
+  bds1.add_constraint(B <= 2);
+  bds1.add_constraint(B - A <= 2);
 
-  TBD_Shape bd2(2);
-  bd2.add_constraint(A <= 0);
-  bd2.add_constraint(B >= 0);
-  bd2.add_constraint(B <= 1);
-  bd2.add_constraint(B - A <= 1);
+  TBD_Shape bds2(2);
+  bds2.add_constraint(A <= 0);
+  bds2.add_constraint(B >= 0);
+  bds2.add_constraint(B <= 1);
+  bds2.add_constraint(B - A <= 1);
 
-  BD_Shape<mpq_class> known_result(bd1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.CC76_extrapolation_assign(bd2);
+  bds1.CC76_extrapolation_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1, "*** bd1.CC76_extrapolation_assign(bd2) ***");
+  print_constraints(bds1, "*** bds1.CC76_extrapolation_assign(bds2) ***");
 
   return ok;
 }
 
 TBD_Shape
 aux_test05(int i, Variable a, Variable b, Variable c) {
-  TBD_Shape bd(3);
+  TBD_Shape bds(3);
   if (i == 0) {
-    bd.add_constraint(0 <= a-b);
-    bd.add_constraint(     a-b <= 0);
-    bd.add_constraint(-1 <= b-c);
-    bd.add_constraint(      b-c <= 1);
+    bds.add_constraint(0 <= a-b);
+    bds.add_constraint(     a-b <= 0);
+    bds.add_constraint(-1 <= b-c);
+    bds.add_constraint(      b-c <= 1);
   }
   else {
-    bd.add_constraint(-i <= a-b);
-    bd.add_constraint(      a-b <= i);
-    bd.add_constraint(-1 <= b-c);
-    bd.add_constraint(      b-c <= 1);
-    bd.add_constraint(-i <= a-c);
-    bd.add_constraint(      a-c <= i);
+    bds.add_constraint(-i <= a-b);
+    bds.add_constraint(      a-b <= i);
+    bds.add_constraint(-1 <= b-c);
+    bds.add_constraint(      b-c <= 1);
+    bds.add_constraint(-i <= a-c);
+    bds.add_constraint(      a-c <= i);
   }
 
   using namespace IO_Operators;
   nout << "*** n_" << i << " ***" << endl
-       << bd << endl;
+       << bds << endl;
 
   // Force closure.
-  (void) (bd == bd);
-  return bd;
+  (void) (bds == bds);
+  return bds;
 }
 
 bool
@@ -278,18 +278,18 @@ test05() {
 
     using namespace IO_Operators;
     nout << "*** m_" << i << " ***" << endl
-	 << m_i << endl;
+         << m_i << endl;
 
     m_i_next = aux_test05(++i, a, b, c);
     TBD_Shape::coefficient_type_base* no_stop_points = 0;
     m_i_next.CC76_extrapolation_assign(m_i, no_stop_points, no_stop_points);
-    m_i_next.bds_hull_assign(m_i);
+    m_i_next.upper_bound_assign(m_i);
     // Force closure.
     (void) (m_i_next == m_i_next);
     if (m_i == m_i_next) {
 
       nout << "*** m_" << i << " (fixpoint) ***" << endl
-	   << m_i << endl;
+           << m_i << endl;
 
       return false;
     }
@@ -300,40 +300,40 @@ test05() {
 
 bool
 test06() {
-  TBD_Shape bd1(0);
+  TBD_Shape bds1(0);
 
-  TBD_Shape bd2(0, EMPTY);
+  TBD_Shape bds2(0, EMPTY);
 
-  BD_Shape<mpq_class> known_result(bd1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.CC76_extrapolation_assign(bd2);
+  bds1.CC76_extrapolation_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.CC76_extrapolation_assign(bd2) ***");
+  print_constraints(bds1,
+                    "*** bds1.CC76_extrapolation_assign(bds2) ***");
 
   return ok;
 }
 
 bool
 test07() {
-  TBD_Shape bd1(2, EMPTY);
-  TBD_Shape bd2(2, EMPTY);
-  BD_Shape<mpq_class> known_result(bd2);
+  TBD_Shape bds1(2, EMPTY);
+  TBD_Shape bds2(2, EMPTY);
+  BD_Shape<mpq_class> known_result(bds2);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd2.CC76_extrapolation_assign(bd1);
+  bds2.CC76_extrapolation_assign(bds1);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
-  print_constraints(bd2,
-		    "*** bd2.CC76_extrapolation_assign(bd1) ***");
+  print_constraints(bds2,
+                    "*** bds2.CC76_extrapolation_assign(bds1) ***");
 
   return ok;
 }
@@ -344,27 +344,27 @@ test08() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(A - B >= 2);
-  bd1.add_constraint(B - C >= -1);
-  bd1.add_constraint(C - A >= -3);
+  TBD_Shape bds1(3);
+  bds1.add_constraint(A - B >= 2);
+  bds1.add_constraint(B - C >= -1);
+  bds1.add_constraint(C - A >= -3);
 
-  TBD_Shape bd2(3);
-  bd2.add_constraint(A - B >= 2);
-  bd2.add_constraint(B - C >= 1);
-  bd2.add_constraint(C - A >= 3);
+  TBD_Shape bds2(3);
+  bds2.add_constraint(A - B >= 2);
+  bds2.add_constraint(B - C >= 1);
+  bds2.add_constraint(C - A >= 3);
 
-  BD_Shape<mpq_class> known_result(bd1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.CC76_extrapolation_assign(bd2);
+  bds1.CC76_extrapolation_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.CC76_extrapolation_assign(bd2) ***");
+  print_constraints(bds1,
+                    "*** bds1.CC76_extrapolation_assign(bds2) ***");
 
   return ok;
 }
@@ -374,24 +374,24 @@ test09() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(A <= 2);
+  TBD_Shape bds1(2);
+  bds1.add_constraint(A <= 2);
 
-  TBD_Shape bd2(2);
-  bd2.add_constraint(A <= 1);
-  bd2.add_constraint(B == -1);
+  TBD_Shape bds2(2);
+  bds2.add_constraint(A <= 1);
+  bds2.add_constraint(B == -1);
 
-  BD_Shape<mpq_class> known_result(bd1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.CC76_extrapolation_assign(bd2);
+  bds1.CC76_extrapolation_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.CC76_extrapolation_assign(bd2) ***");
+  print_constraints(bds1,
+                    "*** bds1.CC76_extrapolation_assign(bds2) ***");
 
   return ok;
 }
@@ -402,43 +402,43 @@ test10() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(C <= 4);
-  bd1.add_constraint(B >= 2);
+  TBD_Shape bds1(3);
+  bds1.add_constraint(C <= 4);
+  bds1.add_constraint(B >= 2);
 
-  TBD_Shape bd2(3);
-  bd2.add_constraint(C == 3);
-  bd2.add_constraint(A - C >= 0);
-  bd2.add_constraint(B - A >= 1);
+  TBD_Shape bds2(3);
+  bds2.add_constraint(C == 3);
+  bds2.add_constraint(A - C >= 0);
+  bds2.add_constraint(B - A >= 1);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(B >= 2);
   known_result.add_constraint(C - B <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.CC76_extrapolation_assign(bd2);
+  bds1.CC76_extrapolation_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.CC76_extrapolation_assign(bd2) ***");
+  print_constraints(bds1,
+                    "*** bds1.CC76_extrapolation_assign(bds2) ***");
 
   return ok;
 }
 
 bool
 test11() {
-  TBD_Shape bd1(1);
-  TBD_Shape bd2(2);
+  TBD_Shape bds1(1);
+  TBD_Shape bds2(2);
 
   try {
     // This is an invalid use of the method
-    // BD_Shape::CC76_extrapolation_assign(bd): it is
+    // BD_Shape::CC76_extrapolation_assign(bds): it is
     // illegal to apply this method to two polyhedra that are not
     // dimension-compatible.
-    bd2.CC76_extrapolation_assign(bd1);
+    bds2.CC76_extrapolation_assign(bds1);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -451,15 +451,15 @@ test11() {
 
 bool
 test12() {
-  TBD_Shape bd1(5);
-  TBD_Shape bd2(10);
+  TBD_Shape bds1(5);
+  TBD_Shape bds2(10);
 
   try {
     // This is an invalid use of the method
-    // BD_Shape::CC76_widening_assign(bd2): it is illegal to apply
+    // BD_Shape::CC76_widening_assign(bds2): it is illegal to apply
     // this method to two polyhedra that are not dimensional
     // compatible.
-    bd2.CC76_extrapolation_assign(bd1);
+    bds2.CC76_extrapolation_assign(bds1);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

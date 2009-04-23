@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -25,12 +25,10 @@ GPROLOG_CFLI_FILES = gprolog_cfli.hh
 EXTRA_DIST = \
 ppl_interface_generator_gprolog_pl.m4 \
 $(GPROLOG_CFLI_FILES) \
-ppl_gprolog_sd.cc \
 gp_clpq.pl \
 gnu_pl_check.pl \
+gnu_prolog_generated_test.pl \
 README.gprolog
-
-if BUILD_GNU_PROLOG_INTERFACE
 
 if BUILD_WATCHDOG_LIBRARY
 
@@ -42,46 +40,150 @@ WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
 endif BUILD_WATCHDOG_LIBRARY
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
+-I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 $(WATCHDOG_INCLUDE_OPTIONS) \
 @extra_includes@
-
-bin_PROGRAMS = ppl_gprolog
-ppl_gprolog_SOURCES =
-
-pkglib_LTLIBRARIES = libppl_gprolog.la
-nodist_libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
-libppl_gprolog_la_LIBADD = \
-$(top_builddir)/src/libppl.la \
-$(WATCHDOG_LIBRARY) \
-@extra_libraries@
-libppl_gprolog_la_LDFLAGS = -module -avoid-version
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
-../ppl_interface_generator_prolog_dat.m4 \
+../../ppl_interface_generator_common_procedure_generators.m4 \
+../ppl_interface_generator_prolog_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_gprolog_pl.m4
 
-ppl_gprolog.pl: $(interface_generator_dependencies) Makefile
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+pkglib_LTLIBRARIES = libppl_gprolog.la
+
+libppl_gprolog_la_SOURCES = \
+ppl_prolog_sysdep.hh \
+gprolog_efli.hh \
+gprolog_efli.cc
+
+nodist_libppl_gprolog_la_SOURCES = \
+../ppl_prolog_common.cc
+
+nodist_EXTRA_libppl_gprolog_la_SOURCES = \
+../ppl_prolog_Int8_Box.cc \
+../ppl_prolog_Int16_Box.cc \
+../ppl_prolog_Int32_Box.cc \
+../ppl_prolog_Int64_Box.cc \
+../ppl_prolog_Uint8_Box.cc \
+../ppl_prolog_Uint16_Box.cc \
+../ppl_prolog_Uint32_Box.cc \
+../ppl_prolog_Uint64_Box.cc \
+../ppl_prolog_Float_Box.cc \
+../ppl_prolog_Double_Box.cc \
+../ppl_prolog_Long_Double_Box.cc \
+../ppl_prolog_Rational_Box.cc \
+../ppl_prolog_Z_Box.cc \
+../ppl_prolog_BD_Shape_int8_t.cc \
+../ppl_prolog_BD_Shape_int16_t.cc \
+../ppl_prolog_BD_Shape_int32_t.cc \
+../ppl_prolog_BD_Shape_int64_t.cc \
+../ppl_prolog_BD_Shape_float.cc \
+../ppl_prolog_BD_Shape_double.cc \
+../ppl_prolog_BD_Shape_long_double.cc \
+../ppl_prolog_BD_Shape_mpq_class.cc \
+../ppl_prolog_BD_Shape_mpz_class.cc \
+../ppl_prolog_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Octagonal_Shape_float.cc \
+../ppl_prolog_Octagonal_Shape_double.cc \
+../ppl_prolog_Octagonal_Shape_long_double.cc \
+../ppl_prolog_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Polyhedron.cc \
+../ppl_prolog_Grid.cc \
+../ppl_prolog_Pointset_Powerset_Int8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Float_Box.cc \
+../ppl_prolog_Pointset_Powerset_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Long_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Rational_Box.cc \
+../ppl_prolog_Pointset_Powerset_Z_Box.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_C_Polyhedron.cc \
+../ppl_prolog_Pointset_Powerset_NNC_Polyhedron.cc \
+../ppl_prolog_Pointset_Powerset_Grid.cc \
+../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_NNC_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_Grid_C_Polyhedron.cc \
+../ppl_prolog_Constraints_Product_Grid_NNC_Polyhedron.cc
+
+if NO_UNDEFINED
+
+NO_UNDEFINED_FLAG = -no-undefined
+
+endif NO_UNDEFINED
+
+libppl_gprolog_la_LIBADD = \
+@required_instantiations_prolog_cxx_objects@ \
+$(top_builddir)/src/libppl.la \
+$(WATCHDOG_LIBRARY) \
+@extra_libraries@
+
+libppl_gprolog_la_DEPENDENCIES = \
+@required_instantiations_prolog_cxx_objects@
+
+libppl_gprolog_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
+-module \
+-avoid-version
+
+ppl_gprolog.pl: $(interface_generator_dependencies)
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_gprolog_pl.m4 > $@
 
 pkglib_DATA = ppl_gprolog.pl
 
-if ENABLE_SHARED
+bin_PROGRAMS = ppl_gprolog
 
-LIBPPL_GPROLOG = .libs/libppl_gprolog.so
+ppl_gprolog_SOURCES =
 
-else !ENABLE_SHARED
+
+# Note: since `libppl_gprolog' is a pkglib, we prefer statically
+# linking it into `ppl_pl'.  Otherwise `ppl_pl' would not work unless
+# the user instructs the dynamic linker to look into the pkglib
+# directory.
+if ENABLE_STATIC
 
 LIBPPL_GPROLOG = .libs/libppl_gprolog.a
 
-endif !ENABLE_SHARED
+else !ENABLE_STATIC
+
+LIBPPL_GPROLOG = .libs/libppl_gprolog.so
+
+endif !ENABLE_STATIC
 
 ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
 	gplc --c-compiler $(CXX) -o $@ \
@@ -142,7 +244,7 @@ EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: pl_check_test clpq_test clpq2_test
+check-local: pl_check_test clpq_test clpq2_test ppl_prolog_generated_test
 
 pl_check_test: gnu_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	echo "['$(srcdir)/../tests/pl_check.pl', '$(srcdir)/gnu_pl_check.pl']." \
@@ -155,9 +257,10 @@ pl_check_test: gnu_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 		./ppl_gprolog <script_pchk
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-clpq_test: gp_clpq ../tests/script_clpq $(EXPECTED_CLPQ) 
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+$(CLPQ_TESTS):
+	cp -f $(srcdir)/../tests/$@ .
+
+clpq_test: gp_clpq ../tests/script_clpq $(EXPECTED_CLPQ) $(CLPQ_TESTS)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
@@ -165,9 +268,7 @@ clpq_test: gp_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
 		./gp_clpq <$(SCRIPT_CLPQ) >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
-clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2) $(CLPQ_TESTS)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
@@ -175,13 +276,42 @@ clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 		./gp_clpq2 <$(SCRIPT_CLPQ2) >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
-endif BUILD_GNU_PROLOG_INTERFACE
+ppl_prolog_generated_test: gnu_prolog_generated_test.pl  ../tests/ppl_prolog_generated_test_main.pl ../tests/expected_pgt
+	if [ $(srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
+          cp -f $(srcdir)/gnu_prolog_generated_test.pl . ; \
+	fi
+	cp -f ../tests/ppl_prolog_generated_test_main.pl . ; \
+	echo "['ppl_prolog_generated_test_main.pl', 'gnu_prolog_generated_test.pl']." \
+		>script_pgt
+	echo "main." >>script_pgt
+	GLOBALSZ=65536 $(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		$(WATCHDOG_DLOPEN) \
+		-dlopen libppl_gprolog.la \
+		./ppl_gprolog <script_pgt
+	if [ $(srcdir) != `pwd` ]; then \
+	  rm -f ppl_prolog_generated_test_common.pl; \
+	  rm -f gnu_prolog_generated_test.pl; \
+        fi
+	rm -f ppl_prolog_generated_test_main.pl; \
+	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
-DISTCLEANFILES = \
+CLEANFILES = \
 ppl_gprolog.pl
 
 MOSTLYCLEANFILES = \
+@required_instantiations_prolog_cxx_objects@ \
 gp_clpq gp_clpq2 \
-obtained_clpq obtained_clpq2 obtained_pchk \
+obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt \
 $(CLPQ_TESTS) \
-script_pchk
+script_pchk script_pgt
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_prolog_domains.cc.stamp' in parent's directory
+# makefile.
+$(nodist_EXTRA_libppl_gprolog_la_SOURCES):
+../tests/ppl_prolog_generated_test_main.pl:

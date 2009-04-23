@@ -1,5 +1,5 @@
 /* Test Grid::add_space_dimensions_and_embed().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -498,9 +498,9 @@ test19() {
   gr.add_space_dimensions_and_project(2);
 
   Grid known_gr(4);
-  known_gr.add_congruence(B == 0);
-  known_gr.add_congruence(C == 0);
-  known_gr.add_congruence(D == 0);
+  known_gr.add_constraint(B == 0);
+  known_gr.add_constraint(C == 0);
+  known_gr.add_constraint(D == 0);
 
   bool ok = (gr == known_gr);
 

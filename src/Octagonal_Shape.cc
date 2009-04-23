@@ -1,5 +1,5 @@
 /* Octagonal_Shape class implementation (non-inline functions).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -44,12 +44,13 @@ PPL::extract_octagonal_difference(const Constraint& c,
   dimension_type non_zero_index[2] = { 0, 0 };
   // Collect the non-zero components of `c'.
   for (dimension_type i = c_space_dim; i-- > 0; )
-    if (c.coefficient(Variable(i)) != 0)
+    if (c.coefficient(Variable(i)) != 0) {
       if (c_num_vars <= 1)
 	non_zero_index[c_num_vars++] = i;
       else
 	// Constraint `c' is not an octagonal difference.
 	return false;
+    }
 
   // Make sure that `c' is indeed an octagonal difference,
   // i.e., it has one of the following forms:

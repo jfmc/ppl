@@ -1,5 +1,5 @@
 /* Polyhedron::Status class implementation (non-inline functions).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -85,7 +85,7 @@ PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Polyhedron::Status)
 
 bool
 PPL::Polyhedron::Status::ascii_load(std::istream& s) {
-  bool positive;
+  PPL_UNINITIALIZED(bool, positive);
 
   if (!get_field(s, zero_dim_univ, positive))
     return false;

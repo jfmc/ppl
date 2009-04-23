@@ -1,6 +1,6 @@
 /* Test Box::maximize(const Linear_Expression&, ...)
    and Box::minimize(const Linear_Expression&, ...).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -82,8 +82,8 @@ test03() {
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE;
-  bool ok = box.maximize(LE, num, den, included, g)
+  Linear_Expression le;
+  bool ok = box.maximize(le, num, den, included, g)
     && num == 0 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -98,7 +98,7 @@ test03() {
   if (!ok)
     return false;
 
-  ok = box.minimize(LE, num, den, included, g)
+  ok = box.minimize(le, num, den, included, g)
     && num == 0 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -128,13 +128,13 @@ test04() {
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE(A + B);
-  bool ok = !box.maximize(LE, num, den, included, g);
+  Linear_Expression le(A + B);
+  bool ok = !box.maximize(le, num, den, included, g);
 
   if (!ok)
     return false;
 
-  ok = box.minimize(LE, num, den, included, g)
+  ok = box.minimize(le, num, den, included, g)
     && num == 2 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -157,7 +157,6 @@ test05() {
   TBox box(2);
   box.add_constraint(A <= 0);
   box.add_constraint(B >= 0);
-  box.add_constraint(A - B <= 0);
 
   print_constraints(box, "*** box ***");
 
@@ -165,8 +164,8 @@ test05() {
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE(A - B);
-  bool ok = box.maximize(LE, num, den, included, g)
+  Linear_Expression le(A - B);
+  bool ok = box.maximize(le, num, den, included, g)
     && num == 0 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -181,7 +180,7 @@ test05() {
   if (!ok)
     return false;
 
-  ok = !box.minimize(LE, num, den, included, g);
+  ok = !box.minimize(le, num, den, included, g);
 
   return ok;
 }
@@ -203,8 +202,8 @@ test06() {
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE(A + B - C);
-  bool ok = box.maximize(LE, num, den, included, g)
+  Linear_Expression le(A + B - C);
+  bool ok = box.maximize(le, num, den, included, g)
     && num == 0 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -219,7 +218,7 @@ test06() {
   if (!ok)
     return false;
 
-  ok = !box.minimize(LE, num, den, included, g);
+  ok = !box.minimize(le, num, den, included, g);
 
   return ok;
 }
@@ -240,8 +239,8 @@ test07() {
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE(12*A);
-  bool ok = box.maximize(LE, num, den, included, g)
+  Linear_Expression le(12*A);
+  bool ok = box.maximize(le, num, den, included, g)
       // FIXME: check the result for floating point computations.
       //    && num == 4 && den == 1 && included
       && g.is_point()
@@ -257,7 +256,7 @@ test07() {
   if (!ok)
     return false;
 
-  ok = box.minimize(LE, num, den, included, g);
+  ok = box.minimize(le, num, den, included, g);
 
   return ok;
 }
@@ -277,14 +276,14 @@ test08() {
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE(12*A);
+  Linear_Expression le(12*A);
 
-  bool ok = box.maximize(LE, num, den, included, g);
+  bool ok = box.maximize(le, num, den, included, g);
 
   if (!ok)
     return false;
 
-  ok = box.minimize(LE, num, den, included, g)
+  ok = box.minimize(le, num, den, included, g)
     // FIXME: check the result for floating point computations.
     //    && num == 4 && den == 1 && included
     && g.is_point()
@@ -310,9 +309,6 @@ test09() {
 
   TBox box(5);
   box.add_constraint(A >= 0);
-  box.add_constraint(B - C >= 0);
-  box.add_constraint(B - C <= -1);
-  box.add_constraint(E - D >= 0);
 
   print_constraints(box, "*** box ***");
 
@@ -320,9 +316,9 @@ test09() {
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE(A + B - C + 2*E - 2*D);
-  bool ok = !box.maximize(LE, num, den, included, g)
-    && ! box.minimize(LE, num, den, included, g);
+  Linear_Expression le(A + B - C + 2*E - 2*D);
+  bool ok = !box.maximize(le, num, den, included, g)
+    && ! box.minimize(le, num, den, included, g);
 
   return ok;
 }
@@ -337,8 +333,6 @@ test10() {
 
   TBox box(5);
   box.add_constraint(A >= 0);
-  box.add_constraint(B - C >= 0);
-  box.add_constraint(E - D >= 0);
 
   print_constraints(box, "*** box ***");
 
@@ -346,8 +340,8 @@ test10() {
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE(Linear_Expression(3));
-  bool ok = box.maximize(LE, num, den, included, g)
+  Linear_Expression le(Linear_Expression(3));
+  bool ok = box.maximize(le, num, den, included, g)
     && num == 3 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -362,7 +356,7 @@ test10() {
   if (!ok)
     return false;
 
-  ok = box.minimize(LE, num, den, included, g)
+  ok = box.minimize(le, num, den, included, g)
     && num == 3 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -384,20 +378,19 @@ test11() {
   Variable z(2);
 
   TBox box(2);
-  box.add_constraint(x >= y);
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE(z);
+  Linear_Expression le(z);
 
   try {
     // This is an incorrect use of the method
-    // Box::minimize(LE, num, den, included, g): it is illegal
+    // Box::minimize(le, num, den, included, g): it is illegal
     // to apply it to an expression whose space dimension is
     // greater than the space dimension of the BOXS.
-    box.minimize(LE, num, den, included, g);
+    box.minimize(le, num, den, included, g);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -415,20 +408,19 @@ test12() {
   Variable z(2);
 
   TBox box(2);
-  box.add_constraint(x >= y);
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE(z);
+  Linear_Expression le(z);
 
   try {
     // This is an incorrect use of the method
-    // Box::maximize(LE, num, den, included, g): it is illegal
+    // Box::maximize(le, num, den, included, g): it is illegal
     // to apply it to an expression whose space dimension is
     // greater than the space dimension of the BOXS.
-    box.maximize(LE, num, den, included, g);
+    box.maximize(le, num, den, included, g);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -449,8 +441,6 @@ test13() {
   box.add_constraint(A <= 5);
   box.add_constraint(B <= 3);
   box.add_constraint(B >= -5);
-  box.add_constraint(A - B <= 6);
-  box.add_constraint(B - A <= 2);
 
   print_constraints(box, "*** box ***");
 
@@ -489,8 +479,6 @@ test14() {
   box.add_constraint(A <= 5);
   box.add_constraint(B <= 3);
   box.add_constraint(B >= -5);
-  box.add_constraint(A - B <= 6);
-  box.add_constraint(B - A <= 2);
 
   print_constraints(box, "*** box ***");
 
@@ -761,7 +749,10 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+#ifndef __alpha__
+  // Exception handling is broken in GCC on the Alpha.
   DO_TEST(test12);
+#endif
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);

@@ -1,5 +1,5 @@
 # Automake source file for the Parma Watchdog Library.
-# Copyright (C) 2002-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
 #
@@ -17,8 +17,8 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
-# For the most up-to-date information see the CS@Parma software
-# site: http://www.cs.unipr.it/Software/ . */
+# For the most up-to-date information see the Parma Polyhedra Library
+# site: http://www.cs.unipr.it/ppl/ . */
 
 # M4 macro files to be used by the client applications with Autoconf.
 m4datadir = $(datadir)/aclocal
@@ -26,6 +26,12 @@ m4data_DATA =
 
 # M4 macro files for internal use.
 m4macros = \
-ax_prefix_config_h.m4
+lib-ld.m4 \
+lib-link.m4 \
+libtool.m4 \
+ltoptions.m4 \
+ltsugar.m4 \
+ltversion.m4 \
+lt~obsolete.m4
 
 EXTRA_DIST = $(m4macros) $(m4data_DATA)

@@ -17,7 +17,7 @@
 # COPYLEFT
 #
 #   Copyright (C) 2002      Luc Maisonobe <luc@spaceroots.org>
-#   Copyright (C) 2006-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+#   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 #   Copying and distribution of this file, with or without
 #   modification, are permitted in any medium without royalty provided

@@ -1,5 +1,5 @@
-/* Test Grid::add_grid_generator*().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test Grid::add_grid_generator().
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-// grid1.cc also tests add_grid_generator_and_minimize.
+// grid1.cc also tests add_grid_generator.
 
 // One dimension.
 bool
@@ -150,36 +150,9 @@ test05() {
   return ok;
 }
 
-// add_grid_generator_and_minimize
-bool
-test06() {
-  Variable A(0);
-  Variable B(1);
-
-  Grid gr(2, EMPTY);
-  gr.add_grid_generator(grid_point());
-  gr.add_grid_generator(grid_point(2*A + 2*B));
-
-  print_congruences(gr, "*** gr ***");
-
-  gr.add_grid_generator(grid_point(8*A + 8*B));
-
-  gr.add_grid_generator_and_minimize(grid_line(A));
-
-  Grid known_gr(2);
-  known_gr.add_congruence((B %= 0) / 2);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr,
-		    "*** gr.add_grid_generator_and_minimize(grid_line(A)) ***");
-
-  return ok;
-}
-
 // Add a generator to a universe grid.
 bool
-test07() {
+test06() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -201,10 +174,9 @@ test07() {
   return ok;
 }
 
-// add_grid_generator_and_minimize, adding a generator with a divisor
-// to a grid of many generators.
+// adding a generator with a divisor to a grid of many generators.
 bool
-test08() {
+test07() {
   Variable A(0);
   Variable B(1);
 
@@ -217,7 +189,7 @@ test08() {
 
   // Minimize the grid.
 
-  gr.add_grid_generator_and_minimize(grid_point(B, 3));
+  gr.add_grid_generator(grid_point(B, 3));
 
   Grid known_gr(2);
   known_gr.add_congruence(A %= 0);
@@ -226,14 +198,14 @@ test08() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_grid_generator_and_minimize(grid_point(B, 3)) ***");
+		    "*** gr.add_grid_generator(grid_point(B, 3)) ***");
 
   return ok;
 }
 
 // Space dimension exception.
 bool
-test09() {
+test08() {
   Variable A(0);
   Variable C(2);
 
@@ -253,7 +225,7 @@ test09() {
 
 // Zero dimensions empty.
 bool
-test10() {
+test09() {
   Grid gr(0, EMPTY);
 
   print_congruences(gr, "*** gr ***");
@@ -271,7 +243,7 @@ test10() {
 
 // Zero dimension universe.
 bool
-test11() {
+test10() {
   Grid gr(0);
 
   print_congruences(gr, "*** gr ***");
@@ -289,7 +261,7 @@ test11() {
 
 // Space dimension exception.
 bool
-test12() {
+test11() {
   Variable A(0);
 
   Grid gr(2, EMPTY);
@@ -308,7 +280,7 @@ test12() {
 
 // Try add parameter to empty grid.
 bool
-test13() {
+test12() {
   Grid gr(2, EMPTY);
 
   try {
@@ -325,7 +297,7 @@ test13() {
 
 // Try add parameter to zero dimension empty grid.
 bool
-test14() {
+test13() {
   Grid gr(0, EMPTY);
 
   try {
@@ -354,5 +326,4 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
-  DO_TEST(test14);
 END_MAIN

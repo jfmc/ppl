@@ -1,5 +1,5 @@
 /* NNC_Polyhedron class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
 #include "Polyhedron.defs.hh"
+#include "Grid.types.hh"
 
 //! A not necessarily closed convex polyhedron.
 /*! \ingroup PPL_CXX_interface
@@ -141,53 +142,87 @@ public:
   */
   NNC_Polyhedron(Congruence_System& cgs, Recycle_Input dummy);
 
-  //! Builds an NNC polyhedron from a system of grid generators.
-  /*!
-    The polyhedron inherits the space dimension of the generator system.
-
-    \param ggs
-    The system of generators defining the polyhedron.
-
-    \exception std::invalid_argument
-    Thrown if the system of generators is not empty but has no points.
-  */
-  explicit NNC_Polyhedron(const Grid_Generator_System& ggs);
-
-  //! Builds an NNC polyhedron recycling a system of grid generators.
-  /*!
-    The polyhedron inherits the space dimension of the generator system.
-
-    \param ggs
-    The system of generators defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures may be
-    recycled to build the polyhedron.
-
-    \param dummy
-    A dummy tag to syntactically differentiate this one
-    from the other constructors.
-
-    \exception std::invalid_argument
-    Thrown if the system of generators is not empty but has no points.
-  */
-  NNC_Polyhedron(Grid_Generator_System& ggs, Recycle_Input dummy);
-
   //! Builds an NNC polyhedron from the C polyhedron \p y.
-  explicit NNC_Polyhedron(const C_Polyhedron& y);
+  /*!
+    \param y
+    The C polyhedron to be used;
+
+    \param complexity
+    This argument is ignored.
+  */
+  explicit NNC_Polyhedron(const C_Polyhedron& y,
+                          Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds an NNC polyhedron out of a box.
   /*!
+    The polyhedron inherits the space dimension of the box
+    and is the most precise that includes the box.
+
     \param box
-    The bounding box representing the polyhedron to be built;
+    The box representing the polyhedron to be built;
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
 
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum allowed
     space dimension.
   */
   template <typename Interval>
-  explicit NNC_Polyhedron(const Box<Interval>& box);
+  explicit NNC_Polyhedron(const Box<Interval>& box,
+                          Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds an NNC polyhedron out of a grid.
+  /*!
+    The polyhedron inherits the space dimension of the grid
+    and is the most precise that includes the grid.
+
+    \param grid
+    The grid used to build the polyhedron.
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+  */
+  explicit NNC_Polyhedron(const Grid& grid,
+                          Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a NNC polyhedron out of a BD shape.
+  /*!
+    The polyhedron inherits the space dimension of the BD shape
+    and is the most precise that includes the BD shape.
+
+    \param bd
+    The BD shape used to build the polyhedron.
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+  */
+  template <typename U>
+  explicit NNC_Polyhedron(const BD_Shape<U>& bd,
+                          Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a NNC polyhedron out of an octagonal shape.
+  /*!
+    The polyhedron inherits the space dimension of the octagonal shape
+    and is the most precise that includes the octagonal shape.
+
+    \param os
+    The octagonal shape used to build the polyhedron.
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+  */
+  template <typename U>
+  explicit NNC_Polyhedron(const Octagonal_Shape<U>& os,
+                          Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Ordinary copy-constructor.
-  NNC_Polyhedron(const NNC_Polyhedron& y);
+  NNC_Polyhedron(const NNC_Polyhedron& y,
+                 Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.

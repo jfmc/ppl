@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::generalized_affine_image().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -54,8 +54,8 @@ test01() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(B, "
-		    "LESS_OR_EQUAL, -2*A - 3*C + 3, 4) ***");
+                    "*** oct.generalized_affine_image(B, "
+                    "LESS_OR_EQUAL, -2*A - 3*C + 3, 4) ***");
 
   return ok;
 }
@@ -84,8 +84,8 @@ test02() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(B, "
-		    "LESS_OR_EQUAL, A + 2*C + 3, 2) ***");
+                    "*** oct.generalized_affine_image(B, "
+                    "LESS_OR_EQUAL, A + 2*C + 3, 2) ***");
 
   return ok;
 }
@@ -114,8 +114,8 @@ test03() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(B, "
-		    "LESS_OR_EQUAL, 4*A - 3*C + 3, 4) ***");
+                    "*** oct.generalized_affine_image(B, "
+                    "LESS_OR_EQUAL, 4*A - 3*C + 3, 4) ***");
 
   return ok;
 }
@@ -144,8 +144,8 @@ test04() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(B, "
-		    "LESS_OR_EQUAL, A + 2*C + 3, -2) ***");
+                    "*** oct.generalized_affine_image(B, "
+                    "LESS_OR_EQUAL, A + 2*C + 3, -2) ***");
 
   return ok;
 }
@@ -174,8 +174,8 @@ test05() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(B, "
-		    "LESS_OR_EQUAL, -4*A - 3*C + 3, 4) ***");
+                    "*** oct.generalized_affine_image(B, "
+                    "LESS_OR_EQUAL, -4*A - 3*C + 3, 4) ***");
 
   return ok;
 }
@@ -204,8 +204,8 @@ test06() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(B, "
-		    "GREATER_OR_EQUAL, 4*A - 3*C + 3, 4) ***");
+                    "*** oct.generalized_affine_image(B, "
+                    "GREATER_OR_EQUAL, 4*A - 3*C + 3, 4) ***");
 
   return ok;
 }
@@ -234,8 +234,8 @@ test07() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(B, "
-		    "GREATER_OR_EQUAL, A + 2*C + 3, 2) ***");
+                    "*** oct.generalized_affine_image(B, "
+                    "GREATER_OR_EQUAL, A + 2*C + 3, 2) ***");
 
   return ok;
 }
@@ -261,8 +261,8 @@ test08() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(B, "
-		    "GREATER_OR_EQUAL, A + 2*C + 3, 2) ***");
+                    "*** oct.generalized_affine_image(B, "
+                    "GREATER_OR_EQUAL, A + 2*C + 3, 2) ***");
 
   return ok;
 }
@@ -291,8 +291,8 @@ test09() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(B, "
-		    "GREATER_OR_EQUAL, 4*A - 3*C + 3, -4) ***");
+                    "*** oct.generalized_affine_image(B, "
+                    "GREATER_OR_EQUAL, 4*A - 3*C + 3, -4) ***");
 
   return ok;
 }
@@ -321,8 +321,8 @@ test10() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.generalized_affine_image(B, "
-		    "GREATER_OR_EQUAL, A - 2*C + 3, 2) ***");
+                    "*** oct.generalized_affine_image(B, "
+                    "GREATER_OR_EQUAL, A - 2*C + 3, 2) ***");
 
   return ok;
 }

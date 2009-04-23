@@ -1,5 +1,5 @@
 /* IEC 559 floating point format related functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,19 +23,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Float_defs_hh
 #define PPL_Float_defs_hh 1
 
+#include "meta_programming.hh"
 #include "compiler.hh"
 #include <gmp.h>
 #include <cassert>
 #include <cmath>
-#ifdef PPL_HAVE_STDINT_H
-#include <stdint.h>
-#endif
-#ifdef PPL_HAVE_INTTYPES_H
-#include <inttypes.h>
-#endif
 
-#ifndef NAN
-#define NAN (HUGE_VAL - HUGE_VAL)
+#ifdef NAN
+#define PPL_NAN NAN
+#else
+#define PPL_NAN (HUGE_VAL - HUGE_VAL)
 #endif
 
 namespace Parma_Polyhedra_Library {
@@ -69,6 +66,12 @@ struct float_ieee754_single {
   void set_max(bool negative);
   void build(bool negative, mpz_t mantissa, int exponent);
 };
+
+#ifdef WORDS_BIGENDIAN
+#ifndef PPL_WORDS_BIGENDIAN
+#define PPL_WORDS_BIGENDIAN
+#endif
+#endif
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
@@ -189,13 +192,23 @@ struct float_ieee754_quad {
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-class Float;
+class Float : public False { };
 
 #if PPL_SUPPORTED_FLOAT
 template <>
-class Float<float> {
+class Float<float> : public True {
 public:
-  typedef PPL_CXX_FLOAT_BINARY_FORMAT Binary;
+#if PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+  typedef float_ieee754_single Binary;
+#elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
+  typedef float_ieee754_double Binary;
+#elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
+  typedef float_ieee754_quad Binary;
+#elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
+  typedef float_intel_double_extended Binary;
+#else
+#error "invalid value for PPL_CXX_FLOAT_BINARY_FORMAT"
+#endif
   union {
     float number;
     Binary binary;
@@ -208,9 +221,19 @@ public:
 
 #if PPL_SUPPORTED_DOUBLE
 template <>
-class Float<double> {
+class Float<double> : public True {
 public:
-  typedef PPL_CXX_DOUBLE_BINARY_FORMAT Binary;
+#if PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+  typedef float_ieee754_single Binary;
+#elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
+  typedef float_ieee754_double Binary;
+#elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
+  typedef float_ieee754_quad Binary;
+#elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
+  typedef float_intel_double_extended Binary;
+#else
+#error "invalid value for PPL_CXX_DOUBLE_BINARY_FORMAT"
+#endif
   union {
     double number;
     Binary binary;
@@ -223,9 +246,19 @@ public:
 
 #if PPL_SUPPORTED_LONG_DOUBLE
 template <>
-class Float<long double> {
+class Float<long double> : public True {
 public:
-  typedef PPL_CXX_LONG_DOUBLE_BINARY_FORMAT Binary;
+#if PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+  typedef float_ieee754_single Binary;
+#elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
+  typedef float_ieee754_double Binary;
+#elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
+  typedef float_ieee754_quad Binary;
+#elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
+  typedef float_intel_double_extended Binary;
+#else
+#error "invalid value for PPL_CXX_LONG_DOUBLE_BINARY_FORMAT"
+#endif
   union {
     long double number;
     Binary binary;

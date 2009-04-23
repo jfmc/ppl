@@ -1,5 +1,5 @@
 /* NNC_Polyhedron class implementation (non-inline functions).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,11 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "NNC_Polyhedron.defs.hh"
 #include "C_Polyhedron.defs.hh"
+#include "Grid.defs.hh"
 #include "algorithms.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::NNC_Polyhedron::NNC_Polyhedron(const C_Polyhedron& y)
+PPL::NNC_Polyhedron::NNC_Polyhedron(const C_Polyhedron& y, Complexity_Class)
   : Polyhedron(NOT_NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
   add_constraints(y.constraints());
   assert(OK());
@@ -45,6 +46,7 @@ PPL::NNC_Polyhedron::NNC_Polyhedron(const Congruence_System& cgs)
 						 "space dimension"), 0),
 	       UNIVERSE) {
   add_congruences(cgs);
+  assert(OK());
 }
 
 PPL::NNC_Polyhedron::NNC_Polyhedron(Congruence_System& cgs, Recycle_Input)
@@ -59,9 +61,32 @@ PPL::NNC_Polyhedron::NNC_Polyhedron(Congruence_System& cgs, Recycle_Input)
 						 "space dimension"), 0),
 	       UNIVERSE) {
   add_congruences(cgs);
+  assert(OK());
+}
+
+PPL::NNC_Polyhedron::NNC_Polyhedron(const Grid& grid, Complexity_Class)
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       grid.space_dimension() <= max_space_dimension()
+	       ? grid.space_dimension()
+	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
+						 "C_Polyhedron(grid)",
+						 "the space dimension of grid "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
+  add_constraints(grid.constraints());
 }
 
 bool
 PPL::NNC_Polyhedron::poly_hull_assign_if_exact(const NNC_Polyhedron& y) {
+#define USE_BHZ09 1
+#if USE_BHZ09 // [BagnaraHZ09]
+  // Dimension-compatibility check.
+  if (space_dimension() != y.space_dimension())
+    throw_dimension_incompatible("poly_hull_assign_if_exact(y)", "y", y);
+  return BHZ09_poly_hull_assign_if_exact(y);
+#else // Old implementation.
   return PPL::poly_hull_assign_if_exact(*this, y);
+#endif
+#undef USE_BHZ09
 }

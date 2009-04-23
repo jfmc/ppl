@@ -1,5 +1,5 @@
 /* Ask_Tell class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Ask_Tell.types.hh"
 #include "iterator_to_const.defs.hh"
+#include "globals.types.hh"
 #include <iosfwd>
 #include <list>
 
@@ -55,6 +56,7 @@ operator<<(std::ostream&, const Ask_Tell<D>&);
 } // namespace Parma_Polyhedra_Library
 
 //! A pair of <EM>ask</EM> and <EM>tell</EM> descriptions.
+/*! \ingroup PPL_CXX_interface */
 template <typename D>
 class Parma_Polyhedra_Library::Ask_Tell_Pair {
 public:

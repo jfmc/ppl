@@ -1,5 +1,5 @@
 /* Test the *::max_space_dimension() methods.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,9 +22,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#define test01_DO_CLASS(T)			\
-  nout << #T "::max_space_dimension() = "	\
-	  << T::max_space_dimension() << endl
+#define test01_DO_CLASS(T)				\
+  nout << #T "::max_space_dimension() = "		\
+    << T::max_space_dimension() << endl;		\
+  if (T::max_space_dimension() < max_space_dimension())	\
+    return false
+
+#if PPL_SUPPORTED_FLOAT
+#define test01_DO_WRD_FLOAT(WRD) test01_DO_CLASS(WRD<float>)
+#else
+#define test01_DO_WRD_FLOAT(WRD)
+#endif
+#if PPL_SUPPORTED_DOUBLE
+#define test01_DO_WRD_DOUBLE(WRD) test01_DO_CLASS(WRD<double>)
+#else
+#define test01_DO_WRD_DOUBLE(WRD)
+#endif
+#if PPL_SUPPORTED_LONG_DOUBLE
+#define test01_DO_WRD_LONG_DOUBLE(WRD) test01_DO_CLASS(WRD<long double>)
+#else
+#define test01_DO_WRD_LONG_DOUBLE(WRD)
+#endif
 
 #define test01_DO_WRD(WRD)			\
   test01_DO_CLASS(WRD<int8_t>);			\
@@ -33,13 +51,34 @@ site: http://www.cs.unipr.it/ppl/ . */
   test01_DO_CLASS(WRD<int64_t>);		\
   test01_DO_CLASS(WRD<mpz_class>);		\
   test01_DO_CLASS(WRD<mpq_class>);		\
-  test01_DO_CLASS(WRD<float>);			\
-  test01_DO_CLASS(WRD<double>);			\
-  test01_DO_CLASS(WRD<long double>)
+  test01_DO_WRD_FLOAT(WRD);                     \
+  test01_DO_WRD_DOUBLE(WRD);                    \
+  test01_DO_WRD_LONG_DOUBLE(WRD)
 
 #define test01_DO_CONSTR_CLASS(CONSTR, T)				\
   nout << #CONSTR "<" #T ">::max_space_dimension() = "			\
-	  << CONSTR<T>::max_space_dimension() << endl
+       << CONSTR<T>::max_space_dimension() << endl;			\
+  if (CONSTR<T>::max_space_dimension() < max_space_dimension())		\
+    return false
+
+#if PPL_SUPPORTED_FLOAT
+#define test01_DO_CONSTR_WRD_FLOAT(CONSTR, WRD) \
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<float>)
+#else
+#define test01_DO_CONSTR_WRD_FLOAT(CONSTR, WRD)
+#endif
+#if PPL_SUPPORTED_DOUBLE
+#define test01_DO_CONSTR_WRD_DOUBLE(CONSTR, WRD)        \
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<double>)
+#else
+#define test01_DO_CONSTR_WRD_DOUBLE(CONSTR, WRD)
+#endif
+#if PPL_SUPPORTED_LONG_DOUBLE
+#define test01_DO_CONSTR_WRD_LONG_DOUBLE(CONSTR, WRD)   \
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<long double>)
+#else
+#define test01_DO_CONSTR_WRD_LONG_DOUBLE(CONSTR, WRD)
+#endif
 
 #define test01_DO_CONSTR_WRD(CONSTR, WRD)			\
   test01_DO_CONSTR_CLASS(CONSTR, WRD<int8_t>);			\
@@ -48,9 +87,9 @@ site: http://www.cs.unipr.it/ppl/ . */
   test01_DO_CONSTR_CLASS(CONSTR, WRD<int64_t>);			\
   test01_DO_CONSTR_CLASS(CONSTR, WRD<mpz_class>);		\
   test01_DO_CONSTR_CLASS(CONSTR, WRD<mpq_class>);		\
-  test01_DO_CONSTR_CLASS(CONSTR, WRD<float>);			\
-  test01_DO_CONSTR_CLASS(CONSTR, WRD<double>);			\
-  test01_DO_CONSTR_CLASS(CONSTR, WRD<long double>)
+  test01_DO_CONSTR_WRD_FLOAT(CONSTR, WRD);                      \
+  test01_DO_CONSTR_WRD_DOUBLE(CONSTR, WRD);                     \
+  test01_DO_CONSTR_WRD_LONG_DOUBLE(CONSTR, WRD)
 
 bool
 test01() {
@@ -68,6 +107,8 @@ test01() {
   test01_DO_CLASS(C_Polyhedron);
   test01_DO_CLASS(NNC_Polyhedron);
   test01_DO_CLASS(Grid);
+  // FIXME: what about all other boxes?
+  test01_DO_CLASS(Rational_Box);
   test01_DO_WRD(BD_Shape);
   test01_DO_WRD(Octagonal_Shape);
   test01_DO_CONSTR_CLASS(Pointset_Powerset, C_Polyhedron);
@@ -75,17 +116,18 @@ test01() {
   test01_DO_CONSTR_CLASS(Pointset_Powerset, Grid);
   test01_DO_CONSTR_WRD(Pointset_Powerset, BD_Shape);
   test01_DO_CONSTR_WRD(Pointset_Powerset, Octagonal_Shape);
-  test01_DO_CONSTR_CLASS(Pointset_Ask_Tell, C_Polyhedron);
-  test01_DO_CONSTR_CLASS(Pointset_Ask_Tell, NNC_Polyhedron);
-  test01_DO_CONSTR_CLASS(Pointset_Ask_Tell, Grid);
-  test01_DO_CONSTR_WRD(Pointset_Ask_Tell, BD_Shape);
-  test01_DO_CONSTR_WRD(Pointset_Ask_Tell, Octagonal_Shape);
+  //test01_DO_CONSTR_CLASS(Pointset_Ask_Tell, C_Polyhedron);
+  //test01_DO_CONSTR_CLASS(Pointset_Ask_Tell, NNC_Polyhedron);
+  //test01_DO_CONSTR_CLASS(Pointset_Ask_Tell, Grid);
+  //test01_DO_CONSTR_WRD(Pointset_Ask_Tell, BD_Shape);
+  //test01_DO_CONSTR_WRD(Pointset_Ask_Tell, Octagonal_Shape);
 
   nout << "Parma_Polyhedra_Library::max_space_dimension() = "
        << max_space_dimension() << endl;
 
-  // FIXME: we are not testing very much.
-  return true;
+  // 9458 is the value of max_space_dimension()
+  // computed on a 32bit architecture.
+  return (max_space_dimension() >= 9458);
 }
 
 BEGIN_MAIN

@@ -1,5 +1,5 @@
 /* Test Box::Box(const Grid&, Complexity_Class).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -264,7 +264,7 @@ test09() {
   Grid gr(3);
   gr.add_congruence((A + 2*C %= 0) / 2);
   gr.add_congruence((A %= 0) / 5);
-  gr.add_congruence(2*B == 3);
+  gr.add_constraint(2*B == 3);
 
   print_congruences(gr, "*** gr before ***");
 
@@ -465,6 +465,30 @@ test15() {
   return ok;
 }
 
+// Simple grid, with a divisor and 2 points.
+bool
+test16() {
+  Variable A(0);
+
+  Grid gr(1, EMPTY);
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(A, 2));
+  print_generators(gr, "*** gr before ***");
+
+  Rational_Box box(gr);
+
+  Rational_Box known_box(1, UNIVERSE);
+
+  bool ok = (box == known_box);
+
+  print_constraints(box, "*** box ***");
+  print_generators(gr, "*** gr after ***");
+  print_congruences(gr, "*** gr after ***");
+  print_constraints(known_box, "*** known_box ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -483,4 +507,5 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN

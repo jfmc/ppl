@@ -1,5 +1,5 @@
 /* Congruence class implementation: inline functions.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -53,6 +53,14 @@ Congruence::Congruence(const Congruence& cg,
 
 inline
 Congruence::~Congruence() {
+}
+
+inline
+Congruence::Congruence(Linear_Expression& le,
+		       Coefficient_traits::const_reference m) {
+  Row::swap(static_cast<Row&>(le));
+  assert(m >= 0);
+  (*this)[size()-1] = m;
 }
 
 inline Congruence
@@ -207,14 +215,6 @@ Congruence::external_memory_in_bytes() const {
 inline memory_size_type
 Congruence::total_memory_in_bytes() const {
   return Row::total_memory_in_bytes();
-}
-
-inline
-Congruence::Congruence(Linear_Expression& le,
-		       Coefficient_traits::const_reference m) {
-  Row::swap(static_cast<Row&>(le));
-  assert(m >= 0);
-  (*this)[size()-1] = m;
 }
 
 inline void

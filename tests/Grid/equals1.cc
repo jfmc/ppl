@@ -1,6 +1,6 @@
 /* Test operator==(const Grid&, const Grid&)
    and operator!=(const Grid&, const Grid&).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -142,7 +142,7 @@ test05() {
   Variable B(1);
 
   Grid gr1(3);
-  gr1.add_congruence(A == 0);
+  gr1.add_constraint(A == 0);
 
   gr1.minimized_congruences();
 

@@ -1,5 +1,5 @@
 /* Bit_Row class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Bit_Row.types.hh"
 #include "globals.types.hh"
 #include <iosfwd>
-#include <gmp.h>
+#include <gmpxx.h>
 #include <vector>
 
 namespace Parma_Polyhedra_Library {
@@ -90,6 +90,18 @@ bool strict_subset(const Bit_Row& x, const Bit_Row& y);
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Set-theoretic intersection.
+/*! \relates Bit_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void set_intersection(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Set-theoretic difference.
+/*! \relates Bit_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void set_difference(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
+
 } // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -103,6 +115,12 @@ public:
 
   //! Copy-constructor.
   Bit_Row(const Bit_Row& y);
+
+  //! Set-union constructor.
+  /*!
+    Constructs an object containing the set-union of \p y and \p z.
+  */
+  Bit_Row(const Bit_Row& y, const Bit_Row& z);
 
   //! Destructor.
   ~Bit_Row();
@@ -139,6 +157,8 @@ public:
 			      bool& strict_subset);
   friend bool strict_subset(const Bit_Row& x, const Bit_Row& y);
   friend void set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
+  friend void set_intersection(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
+  friend void set_difference(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
 
   //! Returns the index of the first set bit or ULONG_MAX if no bit is set.
   unsigned long first() const;
@@ -177,11 +197,12 @@ private:
   //! Bit-vector representing the row.
   mpz_t vec;
 
-  //! Assuming \p w is nonzero, returns the index of the first set bit in \p w.
-  static unsigned int first_one(mp_limb_t w);
-
-  //! Assuming \p w is nonzero, returns the index of the last set bit in \p w.
-  static unsigned int last_one(mp_limb_t w);
+  //! Assigns to \p *this the union of \p y and \p z.
+  /*!
+    The size of \p y must be be less than or equal to the size of \p z.
+    Upon entry, \p vec must have allocated enough space to contain the result.
+  */
+  void union_helper(const Bit_Row& x, const Bit_Row& y);
 };
 
 namespace std {

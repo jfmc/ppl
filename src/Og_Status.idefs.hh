@@ -1,5 +1,5 @@
 /* Octagonal_Shape<T>::Status class declaration.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Og_Status_defs_hh
-#define PPL_Og_Status_defs_hh 1
+#ifndef PPL_Og_Status_idefs_hh
+#define PPL_Og_Status_idefs_hh 1
 
 #ifndef PPL_IN_Octagonal_Shape_CLASS
 #error "Do not include Og_Status.idefs.hh directly; use Octagonal_Shape.defs.hh instead."
@@ -31,7 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 //! A conjunctive assertion about a Octagonal_Shape<T> object.
 /*!
   The assertions supported are:
-  - <EM>zero-dim universe</EM>: the polyhedron is the zero-dimension
+  - <EM>zero-dim universe</EM>: the polyhedron is the zero-dimensional
     vector space \f$\Rset^0 = \{\cdot\}\f$;
   - <EM>empty</EM>: the polyhedron is the empty set;
   - <EM>strongly closed</EM>: the Octagonal_Shape object is strongly
@@ -65,15 +65,17 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
   void ascii_dump(std::ostream& s) const;
 
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by
-  //! ascii_dump(std::ostream&) const) and sets \p *this accordingly.
-  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
   bool ascii_load(std::istream& s);
 
 private:
@@ -107,4 +109,4 @@ private:
 
 };
 
-#endif // !defined(PPL_Og_Status_defs_hh)
+#endif // !defined(PPL_Og_Status_idefs_hh)

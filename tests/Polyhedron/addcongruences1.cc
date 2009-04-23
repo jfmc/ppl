@@ -1,5 +1,5 @@
 /* Test Polyhedron::add_congruences().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -35,7 +35,7 @@ test01() {
   gs.insert(ray(x + y));
 
   Congruence_System cgs;
-  cgs.insert(x %= 3);
+  cgs.insert(0*x %= 0);
   cgs.insert(y == 3);
 
   C_Polyhedron ph(gs);
@@ -64,7 +64,7 @@ test02() {
   C_Polyhedron ph1(2, EMPTY);
 
   Congruence_System cgs;
-  cgs.insert(A - B %= 0);
+  cgs.insert(Linear_Expression(0) %= 0);
   cgs.insert(B == 7);
 
   print_constraints(ph1, "*** ph1 ***");
@@ -90,14 +90,14 @@ test03() {
   ph.add_constraint(A >= 0);
   ph.add_constraint(B >= 0);
 
-  Constraint_System cs;
+  Congruence_System cgs;
 
   print_constraints(ph, "*** ph ***");
-  print_constraints(cs, "*** cs ***");
+  print_congruences(cgs, "*** cgs ***");
 
   C_Polyhedron known_result(ph);
 
-  ph.add_constraints(cs);
+  ph.add_congruences(cgs);
 
   bool ok = (ph == known_result);
 
@@ -154,6 +154,87 @@ bool test05() {
   return ok;
 }
 
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+
+  Congruence_System cgs;
+  cgs.insert((Linear_Expression(26) %= 0) / 13);
+  cgs.insert(B == 7);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_congruences(cgs, "*** cgs ***");
+
+  ph1.add_congruences(cgs);
+
+  C_Polyhedron known_result(cgs);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** after ph1.add_congruences(cgs) ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+
+  Congruence_System cgs;
+  cgs.insert(Linear_Expression(0) %= 0);
+  cgs.insert(B == 7);
+
+  Congruence_System cgs_copy = cgs;
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_congruences(cgs, "*** cgs ***");
+
+  ph1.add_recycled_congruences(cgs);
+
+  C_Polyhedron known_result(cgs_copy);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** after ph1.add_congruences(cgs) ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+
+  Congruence_System cgs;
+  cgs.insert((Linear_Expression(18) %= 3) / 5);
+  cgs.insert(A == 0);
+  cgs.insert(A + B == 7);
+  cgs.insert(B == 7);
+
+  Congruence_System cgs_copy = cgs;
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_congruences(cgs, "*** cgs ***");
+
+  ph1.add_recycled_congruences(cgs);
+
+  C_Polyhedron known_result(cgs_copy);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** after ph1.add_congruences(cgs) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -162,5 +243,8 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN
 

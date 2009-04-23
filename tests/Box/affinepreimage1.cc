@@ -1,5 +1,5 @@
 /* Test Box::affine_preimage().
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,21 +29,20 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  TBox box(3);
+  box.add_constraint(x <= 2);
+  box.add_constraint(y <= 2);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.affine_preimage(x, y);
+  box.affine_preimage(x, y);
 
   Rational_Box known_result(3);
   known_result.add_constraint(y <= 2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result);
 
-  print_constraints(box1, "*** box1.affine_preimage(x, y) ***");
+  print_constraints(box, "*** box.affine_preimage(x, y) ***");
 
   return ok;
 }
@@ -56,7 +55,6 @@ test02() {
   TBox box(2);
   box.add_constraint(A >= 0);
   box.add_constraint(B >= 0);
-  box.add_constraint(A - B - 3 >= 0);
 
   print_constraints(box, "*** box ***");
 
@@ -65,7 +63,7 @@ test02() {
   Rational_Box known_result(2);
   known_result.add_constraint(B >= 0);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_preimage(A, B-1) ***");
 
@@ -89,7 +87,7 @@ test03() {
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(B >= 0);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_preimage(A, 2*A + 2, 2) ***");
 
@@ -112,7 +110,7 @@ test04() {
   Rational_Box known_result(2);
   known_result.add_constraint(A >= 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_preimage(B, 3) ***");
 
@@ -125,7 +123,6 @@ test05() {
   Variable y(1);
 
   TBox box(2);
-  box.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the method
@@ -151,7 +148,6 @@ test06() {
   Variable z(2);
 
   TBox box(2);
-  box.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the method
