@@ -119,26 +119,26 @@ bool_to_j_boolean(JNIEnv* env, const bool value);
 
 //! Returns the Java int stored in Java Integer \p j_integer.
 jint
-j_integer_to_j_int(JNIEnv* env, const jobject& j_integer);
+j_integer_to_j_int(JNIEnv* env, jobject j_integer);
 
 //! Builds a Java Integer from Java int \p value.
 jobject
-j_int_to_j_integer(JNIEnv* env, const jint& value);
+j_int_to_j_integer(JNIEnv* env, jint value);
 
 //! Returns the Java long stored in Java Long \p j_long.
 jlong
-j_long_class_to_j_long(JNIEnv* env, const jobject& j_long);
+j_long_class_to_j_long(JNIEnv* env, jobject j_long);
 
 //! Builds a Java Long from Java long \p value.
 jobject
-j_long_to_j_long_class(JNIEnv* env, const jlong& value);
+j_long_to_j_long_class(JNIEnv* env, jlong value);
 
 /*! \brief
   Returns \c true if and only if the Java object \p ppl_object
   refers to a C++ object.
 */
 bool
-is_java_marked(JNIEnv* env, const jobject& ppl_object);
+is_java_marked(JNIEnv* env, jobject ppl_object);
 
 
 /*! \brief
@@ -160,7 +160,7 @@ build_java_poly_con_relation(JNIEnv* env, Poly_Con_Relation& r);
   from Java parma_polyhedra_library::Variables_Set \p v_set.
 */
 Variables_Set
-build_cxx_variables_set(JNIEnv* env, const jobject& v_set);
+build_cxx_variables_set(JNIEnv* env, jobject v_set);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Variables_Set
@@ -174,14 +174,14 @@ build_java_variables_set(JNIEnv* env, const Variables_Set& v_set);
   from Java parma_polyhedra_library::Relation_Symbol \p j_relsym.
 */
 Relation_Symbol
-build_cxx_relsym(JNIEnv* env, const jobject& j_relsym);
+build_cxx_relsym(JNIEnv* env, jobject j_relsym);
 
 /*! \brief
   Builds a C++ Optimization_Mode
   from Java parma_polyhedra_library::Optimization_Mode \p j_opt_mode.
 */
 Optimization_Mode
-build_cxx_optimization_mode(JNIEnv* env, const jobject& j_opt_mode);
+build_cxx_optimization_mode(JNIEnv* env, jobject j_opt_mode);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Optimization_Mode
@@ -195,7 +195,7 @@ build_java_optimization_mode(JNIEnv* env, const Optimization_Mode& opt_mode);
   from Java parma_polyhedra_library::Control_Parameter_Name \p j_cp_name.
 */
 MIP_Problem::Control_Parameter_Name
-build_cxx_control_parameter_name(JNIEnv* env, const jobject& j_cp_name);
+build_cxx_control_parameter_name(JNIEnv* env, jobject j_cp_name);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Control_Parameter_Name
@@ -210,7 +210,7 @@ build_java_control_parameter_name
   from Java parma_polyhedra_library::Control_Parameter_Value \p j_cp_value.
 */
 MIP_Problem::Control_Parameter_Value
-build_cxx_control_parameter_value(JNIEnv* env, const jobject& j_cp_value);
+build_cxx_control_parameter_value(JNIEnv* env, jobject j_cp_value);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Control_Parameter_Value
@@ -232,7 +232,7 @@ build_java_mip_status(JNIEnv* env, const MIP_Problem_Status& mip_status);
   from Java parma_polyhedra_library::Variable \p j_var.
 */
 Variable
-build_cxx_variable(JNIEnv* env, const jobject& j_var);
+build_cxx_variable(JNIEnv* env, jobject j_var);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Variable
@@ -246,7 +246,7 @@ build_java_variable(JNIEnv* env, const Variable& var);
   from Java parma_polyhedra_library::Coefficient \p j_coeff.
 */
 Coefficient
-build_cxx_coeff(JNIEnv* env, const jobject& j_coeff);
+build_cxx_coeff(JNIEnv* env, jobject j_coeff);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Coefficient
@@ -260,63 +260,63 @@ build_java_coeff(JNIEnv* env, const Coefficient& ppl_coeff);
   from Java parma_polyhedra_library::Constraint \p j_constraint.
 */
 Constraint
-build_cxx_constraint(JNIEnv* env, const jobject& j_constraint);
+build_cxx_constraint(JNIEnv* env, jobject j_constraint);
 
 /*! \brief
   Builds a C++ Linear_Expression
   from Java parma_polyhedra_library::Linear_Expression \p j_le.
 */
 Linear_Expression
-build_cxx_linear_expression(JNIEnv* env, const jobject& j_le);
+build_cxx_linear_expression(JNIEnv* env, jobject j_le);
 
 /*! \brief
   Builds a C++ Congruence
   from Java parma_polyhedra_library::Congruence \p j_cg.
 */
 Congruence
-build_cxx_congruence(JNIEnv* env, const jobject& j_cg);
+build_cxx_congruence(JNIEnv* env, jobject j_cg);
 
 /*! \brief
   Builds a C++ Generator
   from Java parma_polyhedra_library::Generator \p j_g.
 */
 Generator
-build_cxx_generator(JNIEnv* env, const jobject& j_g);
+build_cxx_generator(JNIEnv* env, jobject j_g);
 
 /*! \brief
   Builds a C++ Grid_Generator
   from Java parma_polyhedra_library::Grid_Generator \p j_g.
 */
 Grid_Generator
-build_cxx_grid_generator(JNIEnv* env, const jobject& j_g);
+build_cxx_grid_generator(JNIEnv* env, jobject j_g);
 
 /*! \brief
   Builds a C++ Grid_Generator_System
   from Java parma_polyhedra_library::Grid_Generator_System \p j_gs.
 */
 Grid_Generator_System
-build_cxx_grid_generator_system(JNIEnv* env, const jobject& j_gs);
+build_cxx_grid_generator_system(JNIEnv* env, jobject j_gs);
 
 /*! \brief
   Builds a C++ Constraint_System
   from Java parma_polyhedra_library::Constraint_System \p j_cs.
 */
 Constraint_System
-build_cxx_constraint_system(JNIEnv* env, const jobject& j_cs);
+build_cxx_constraint_system(JNIEnv* env, jobject j_cs);
 
 /*! \brief
   Builds a C++ Generator_System
   from Java parma_polyhedra_library::Generator_System \p j_gs.
 */
 Generator_System
-build_cxx_generator_system(JNIEnv* env, const jobject& j_gs);
+build_cxx_generator_system(JNIEnv* env, jobject j_gs);
 
 /*! \brief
   Builds a C++ Congruence_System
   from Java parma_polyhedra_library::Congruence_System \p j_cgs.
 */
 Congruence_System
-build_cxx_congruence_system(JNIEnv* env, const jobject& j_cgs);
+build_cxx_congruence_system(JNIEnv* env, jobject j_cgs);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Constraint
@@ -358,8 +358,7 @@ build_java_constraint_system(JNIEnv* env, const Constraint_System& cs);
   from C++ Grid_Generator_System \p gs.
 */
 jobject
-build_java_grid_generator_system(JNIEnv* env,
-                                 const Grid_Generator_System& gs);
+build_java_grid_generator_system(JNIEnv* env, const Grid_Generator_System& gs);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Generator_System
@@ -380,51 +379,46 @@ build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs);
   from C++ Coefficient \p coeff.
 */
 jobject
-build_java_linear_expression_coefficient(JNIEnv* env,
-                                         const Coefficient& coeff);
+build_java_linear_expression_coefficient(JNIEnv* env, const Coefficient& coeff);
 
 /*! \brief
   Sets Java reference \p to_be_set
   to the parma_polyhedra_library::Generator object \p gen.
 */
 void
-set_generator(JNIEnv* env, jobject& to_be_set,
-              const jobject& gen);
+set_generator(JNIEnv* env, jobject& to_be_set, jobject gen);
 
 /*! \brief
   Sets Java reference \p to_be_set
   to the parma_polyhedra_library::Grid_Generator object \p g_gen.
 */
 void
-set_grid_generator(JNIEnv* env, jobject& to_be_set,
-                   const jobject& g_gen);
+set_grid_generator(JNIEnv* env, jobject& to_be_set, jobject g_gen);
 
 /*! \brief
   Sets Java reference \p to_be_set
   to the parma_polyhedra_library::Coefficient object \p c.
 */
 void
-set_coefficient(JNIEnv* env, jobject& to_be_set,
-                const jobject& c);
+set_coefficient(JNIEnv* env, jobject& to_be_set, jobject c);
 
 /*! \brief
   Modifies parma_polyhedra_library::By_Reference object \p by_ref_to_be_set
   so that it references object \p to_insert.
 */
 void
-set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set,
-                 const jobject& to_insert);
+set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set, jobject to_insert);
 
 /*! \brief
   Returns the object referenced by
   parma_polyhedra_library::By_Reference object \p by_reference.
 */
 jobject
-get_by_reference(JNIEnv* env, const jobject& by_reference);
+get_by_reference(JNIEnv* env, jobject by_reference);
 
 
 /*! \brief
-  Assigns \p obj_to_insert to one of the fields of
+  Assigns \p to_insert to one of the fields of
   parma_polyhedra_library::Pair object \p pair_to_be_set.
 
   If \p arg is 0, the first element of \p pair_to_be_set is overwritten;
@@ -434,8 +428,8 @@ get_by_reference(JNIEnv* env, const jobject& by_reference);
   Thrown if \p arg is neither 0 nor 1.
 */
 void
-set_pair_element(JNIEnv* env, jobject& pair_to_be_set, int arg,
-                 const jobject& obj_to_insert);
+set_pair_element(JNIEnv* env, jobject& pair_to_be_set,
+                 int arg, jobject to_insert);
 
 /*! \brief
   Returns one of the fields of the
@@ -447,19 +441,21 @@ set_pair_element(JNIEnv* env, jobject& pair_to_be_set, int arg,
   \exception std::runtime_error
   Thrown if \p arg is neither 0 nor 1.
 */
-jobject get_pair_element(JNIEnv* env, int arg, const jobject& pair);
+jobject
+get_pair_element(JNIEnv* env, int arg, jobject pair);
 
 //! Returns \c true if and only if \p obj is a null Java reference.
-jboolean is_null(JNIEnv* env, jobject obj);
+jboolean
+is_null(JNIEnv* env, jobject obj);
 
 //! Returns a pointer to the C++ object wrapped by \p ppl_object.
 void*
-get_ptr(JNIEnv* env, const jobject& ppl_object);
+get_ptr(JNIEnv* env, jobject ppl_object);
 
 //! Sets the pointer of the underlying C++ object in the Java object.
 template <typename T>
 void
-set_ptr(JNIEnv* env, const jobject& ppl_object,
+set_ptr(JNIEnv* env, jobject ppl_object,
 	const T* address, bool to_be_marked = false);
 
 /*! \brief
