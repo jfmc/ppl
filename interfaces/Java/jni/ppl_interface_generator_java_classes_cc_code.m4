@@ -81,8 +81,11 @@ Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_@BEGINEND@_1iterator
       = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
     jclass j_it_class
       = env->FindClass("parma_polyhedra_library/@TOPOLOGY@@CLASS@_Iterator");
+    CHECK_RESULT_ASSERT(env, j_it_class);
     jmethodID j_it_ctr_id = env->GetMethodID(j_it_class, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_it_ctr_id);
     jobject j_it = env->NewObject(j_it_class, j_it_ctr_id);
+    CHECK_RESULT_RETURN(env, j_it, 0);
     @TOPOLOGY@@CPP_CLASS@::iterator* ppl_it
       = new @TOPOLOGY@@CPP_CLASS@::iterator(this_ptr->@BEGINEND@());
     set_ptr(env, j_it, ppl_it);
@@ -148,8 +151,11 @@ Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_1Iterator_get_1disjunct
     @TOPOLOGY@@CPP_CLASS@::iterator* this_ptr
       = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(get_ptr(env, j_this));
     jclass j_class = env->FindClass("parma_polyhedra_library/@DISJUNCT_TOPOLOGY@@DISJUNCT@");
+    CHECK_RESULT_ASSERT(env, j_class);
     jmethodID j_ctr_id = env->GetMethodID(j_class, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id);
     jobject j_obj = env->NewObject(j_class, j_ctr_id);
+    CHECK_RESULT_RETURN(env, j_obj, 0);
     set_ptr(env, j_obj,  &((*this_ptr)->element()), true);
     return j_obj;
   }
@@ -215,10 +221,13 @@ Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__JLparma_1
   dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(j_dim);
   jclass degenerate_element_class
     = env->FindClass("parma_polyhedra_library/Degenerate_Element");
+  CHECK_RESULT_ASSERT(env, degenerate_element_class);
   jmethodID degenerate_element_ordinal_id
     = env->GetMethodID(degenerate_element_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, degenerate_element_ordinal_id);
   jint j_degenerate_element_int
     = env->CallIntMethod(j_degenerate_element, degenerate_element_ordinal_id);
+  CHECK_EXCEPTION_ASSERT(env);
   @TOPOLOGY@@CPP_CLASS@* this_ptr;
   switch (j_degenerate_element_int) {
   case 0:
@@ -228,7 +237,8 @@ Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__JLparma_1
     this_ptr = new @TOPOLOGY@@CPP_CLASS@(ppl_dim, EMPTY);
     break;
   default:
-    throw std::runtime_error("PPL Java interface internal error");
+    assert(false);
+    break;
   }
   set_ptr(env, j_this, this_ptr);
 }
@@ -259,10 +269,13 @@ Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lparma_1p
     = reinterpret_cast<@B_FRIEND@*>(get_ptr(env, j_y));
   jclass complexity_class
     = env->FindClass("parma_polyhedra_library/Complexity_Class");
+  CHECK_RESULT_ASSERT(env, complexity_class);
   jmethodID complexity_ordinal_id
     = env->GetMethodID(complexity_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, complexity_ordinal_id);
   jint j_complexity_int
     = env->CallIntMethod(j_complexity, complexity_ordinal_id);
+  CHECK_EXCEPTION_ASSERT(env);
   @TOPOLOGY@@CPP_CLASS@* this_ptr;
   switch (j_complexity_int) {
   case 0:
@@ -275,7 +288,8 @@ Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lparma_1p
     this_ptr = new @TOPOLOGY@@CPP_CLASS@(*y_ptr, ANY_COMPLEXITY);
     break;
   default:
-    throw std::runtime_error("PPL Java interface internal error");
+    assert(false);
+    break;
   }
   set_ptr(env, j_this, this_ptr);
 }
@@ -1178,17 +1192,26 @@ Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_linear_1@PARTITION@
     r2->swap(r.second);
 
     jclass j_pair_class = env->FindClass("parma_polyhedra_library/Pair");
+    CHECK_RESULT_ASSERT(env, j_pair_class);
     jmethodID j_ctr_id_pair = env->GetMethodID(j_pair_class, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_pair);
     jobject j_pair_obj = env->NewObject(j_pair_class, j_ctr_id_pair);
+    CHECK_RESULT_RETURN(env, j_pair_obj, 0);
 
     jclass j_class_r1 = env->FindClass("parma_polyhedra_library/@TOPOLOGY@@CLASS@");
+    CHECK_RESULT_ASSERT(env, j_class_r1);
     jmethodID j_ctr_id_r1 = env->GetMethodID(j_class_r1, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_r1);
     jobject j_obj_r1 = env->NewObject(j_class_r1, j_ctr_id_r1);
+    CHECK_RESULT_RETURN(env, j_obj_r1, 0);
     set_ptr(env, j_obj_r1, r1);
 
     jclass j_class_r2 = env->FindClass("parma_polyhedra_library/Pointset_Powerset_NNC_Polyhedron");
+    CHECK_RESULT_ASSERT(env, j_class_r2);
     jmethodID j_ctr_id_r2 = env->GetMethodID(j_class_r2, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_r2);
     jobject j_obj_r2 = env->NewObject(j_class_r2, j_ctr_id_r2);
+    CHECK_RESULT_RETURN(env, j_obj_r2, 0);
     set_ptr(env, j_obj_r2, r2);
     set_pair_element(env, j_pair_obj, 0, j_obj_r1);
     set_pair_element(env, j_pair_obj, 1, j_obj_r2);
@@ -1221,18 +1244,27 @@ Java_parma_1polyhedra_1library_@1CLASS@_approximate_1@PARTITION@
 
     jclass j_pair_class
       = env->FindClass("parma_polyhedra_library/Pair");
+    CHECK_RESULT_ASSERT(env, j_pair_class);
     jmethodID j_ctr_id_pair = env->GetMethodID(j_pair_class, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_pair);
     jobject j_pair_obj = env->NewObject(j_pair_class, j_ctr_id_pair);
+    CHECK_RESULT_RETURN(env, j_pair_obj, 0);
 
     jclass j_class_r1 = env->FindClass("parma_polyhedra_library/@CLASS@");
+    CHECK_RESULT_ASSERT(env, j_class_r1);
     jmethodID j_ctr_id_r1 = env->GetMethodID(j_class_r1, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_r1);
     jobject j_obj_r1 = env->NewObject(j_class_r1, j_ctr_id_r1);
+    CHECK_RESULT_RETURN(env, j_obj_r1, 0);
     set_ptr(env, j_obj_r1, r1);
 
     jclass j_class_r2
       = env->FindClass("parma_polyhedra_library/Pointset_Powerset_Grid");
+    CHECK_RESULT_ASSERT(env, j_class_r2);
     jmethodID j_ctr_id_r2 = env->GetMethodID(j_class_r2, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_r2);
     jobject j_obj_r2 = env->NewObject(j_class_r2, j_ctr_id_r2);
+    CHECK_RESULT_RETURN(env, j_obj_r2, 0);
     set_ptr(env, j_obj_r2, r2);
     set_pair_element(env, j_pair_obj, 0, j_obj_r1);
     set_pair_element(env, j_pair_obj, 1, j_obj_r2);

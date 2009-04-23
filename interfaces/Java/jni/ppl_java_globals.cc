@@ -134,16 +134,20 @@ Java_parma_1polyhedra_1library_MIP_1Problem_objective_1function
   try {
     jclass j_le_coeff_class
       = env->FindClass("parma_polyhedra_library/Linear_Expression_Coefficient");
+    CHECK_RESULT_ASSERT(env, j_le_coeff_class);
     jclass j_le_class
       = env->FindClass("parma_polyhedra_library/Linear_Expression");
+    CHECK_RESULT_ASSERT(env, j_le_class);
     jmethodID j_le_sum_id
       = env->GetMethodID(j_le_class,
 			 "sum",
 			 "(Lparma_polyhedra_library/Linear_Expression;)"
 			 "Lparma_polyhedra_library/Linear_Expression;");
+    CHECK_RESULT_ASSERT(env, j_le_sum_id);
     jmethodID j_le_coeff_ctr_id
       = env->GetMethodID(j_le_coeff_class, "<init>",
 			 "(Lparma_polyhedra_library/Coefficient;)V");
+    CHECK_RESULT_ASSERT(env, j_le_coeff_ctr_id);
 
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
@@ -153,6 +157,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_objective_1function
       = build_java_coeff(env, inhomogeneous_term);
     jobject j_le_coeff = env->NewObject(j_le_coeff_class, j_le_coeff_ctr_id,
 					j_coeff_inhomogeneous_term);
+    CHECK_RESULT_RETURN(env, j_le_coeff, 0);
 
     jobject j_le = build_linear_expression(env, mip->objective_function());
     return env->CallObjectMethod(j_le, j_le_sum_id, j_le_coeff);
@@ -213,10 +218,14 @@ Java_parma_1polyhedra_1library_MIP_1Problem_constraints
   try {
     jclass j_cs_class
       = env->FindClass("parma_polyhedra_library/Constraint_System");
+    CHECK_RESULT_ASSERT(env, j_cs_class);
     jmethodID j_cs_ctr_id = env->GetMethodID(j_cs_class, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_cs_ctr_id);
     jmethodID j_cs_add_id = env->GetMethodID(j_cs_class, "add",
 					     "(Ljava/lang/Object;)Z");
+    CHECK_RESULT_ASSERT(env, j_cs_add_id);
     jobject j_cs = env->NewObject(j_cs_class, j_cs_ctr_id);
+    CHECK_RESULT_RETURN(env, j_cs, 0);
 
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
@@ -224,6 +233,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_constraints
 	   cs_end = mip->constraints_end(); cs_it != cs_end; ++cs_it) {
       jobject j_constraint = build_java_constraint(env, *cs_it);
       env->CallBooleanMethod(j_cs, j_cs_add_id, j_constraint);
+      CHECK_EXCEPTION_RETURN(env, 0);
     }
     return j_cs;
   }
@@ -725,8 +735,7 @@ Java_parma_1polyhedra_1library_IO_wrap_1string
     unsigned pfll = jtype_to_unsigned<unsigned int>(preferred_first_line_length);
     unsigned pll = jtype_to_unsigned<unsigned int>(preferred_line_length);
     const char* chars = env->GetStringUTFChars(str, 0);
-    if (!chars)
-      return 0;
+    CHECK_RESULT_RETURN(env, chars, 0);
     using namespace Parma_Polyhedra_Library::IO_Operators;
     std::string s = wrap_string(chars, ind, pfll, pll);
     env->ReleaseStringUTFChars(str, chars);

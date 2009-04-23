@@ -29,6 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "marked_pointers.hh"
 
 #define CATCH_ALL \
+  catch(const Java_ExceptionOccurred& e) { \
+  } \
   catch(const std::overflow_error& e) { \
     handle_exception(env, e); \
   } \
@@ -54,11 +56,25 @@ site: http://www.cs.unipr.it/ppl/ . */
     handle_exception(env); \
   }
 
+#define CHECK_EXCEPTION_ASSERT(env) assert(!env->ExceptionOccurred())
+#define CHECK_EXCEPTION_THROW(env) do { if (env->ExceptionOccurred()) throw Java_ExceptionOccurred(); } while (0)
+#define CHECK_EXCEPTION_RETURN(env, val) do { if (env->ExceptionOccurred()) return val; } while (0)
+#define CHECK_EXCEPTION_RETURN_VOID(env) do { if (env->ExceptionOccurred()) return; } while (0)
+#define CHECK_RESULT_ABORT(env, result) do { if (!result) abort(); } while (0)
+#define CHECK_RESULT_ASSERT(env, result) assert(result)
+#define CHECK_RESULT_THROW(env, result) do { if (!result) throw Java_ExceptionOccurred(); } while (0)
+#define CHECK_RESULT_RETURN(env, result, val) do { if (!result) return val; } while (0)
+#define CHECK_RESULT_RETURN_VOID(env, result) do { if (!result) return; } while (0)
+
+
 namespace Parma_Polyhedra_Library {
 
 namespace Interfaces {
 
 namespace Java {
+
+struct Java_ExceptionOccurred : public std::exception {
+};
 
 void
 handle_exception(JNIEnv* env, const std::logic_error& e);
