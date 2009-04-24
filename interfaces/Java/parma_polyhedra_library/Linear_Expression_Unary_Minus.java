@@ -45,5 +45,9 @@ public class Linear_Expression_Unary_Minus
         return new Linear_Expression_Unary_Minus(arg.clone());
     }
 
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }
 

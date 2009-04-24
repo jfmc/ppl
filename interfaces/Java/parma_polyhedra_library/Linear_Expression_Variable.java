@@ -43,5 +43,14 @@ extends Linear_Expression {
     public Linear_Expression_Variable clone() {
 	return new Linear_Expression_Variable(new Variable(arg.id()));
     }
+
+    private int var_id() {
+        return arg.id();
+    }
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }
 

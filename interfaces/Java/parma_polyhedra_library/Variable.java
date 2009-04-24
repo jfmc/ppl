@@ -65,5 +65,10 @@ public class Variable implements Comparable<Variable> {
    */
     public int compareTo(Variable v) {
         return varid - v.varid;
-        }
+    }
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

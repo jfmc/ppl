@@ -37,4 +37,9 @@ public class PPL_Object {
     protected PPL_Object() {
 	ptr = 0;
     }
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

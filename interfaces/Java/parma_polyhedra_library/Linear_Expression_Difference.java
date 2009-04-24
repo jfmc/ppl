@@ -57,4 +57,9 @@ public class Linear_Expression_Difference
     public Linear_Expression_Difference clone() {
 	return new Linear_Expression_Difference(lhs.clone(), rhs.clone());
     }
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

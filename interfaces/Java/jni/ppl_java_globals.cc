@@ -20,26 +20,52 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "parma_polyhedra_library_Parma_Polyhedra_Library.h"
-#include "parma_polyhedra_library_Coefficient.h"
 #include "ppl_java_common.defs.hh"
-#include "parma_polyhedra_library_MIP_Problem.h"
-#include "parma_polyhedra_library_Linear_Expression.h"
-#include "parma_polyhedra_library_Linear_Expression_Coefficient.h"
-#include "parma_polyhedra_library_Constraint.h"
-#include "parma_polyhedra_library_Constraint_System.h"
+#include "parma_polyhedra_library_By_Reference.h"
+#include "parma_polyhedra_library_Coefficient.h"
 #include "parma_polyhedra_library_Congruence.h"
 #include "parma_polyhedra_library_Congruence_System.h"
+#include "parma_polyhedra_library_Constraint.h"
+#include "parma_polyhedra_library_Constraint_System.h"
 #include "parma_polyhedra_library_Generator.h"
 #include "parma_polyhedra_library_Generator_System.h"
+#include "parma_polyhedra_library_Generator_Type.h"
 #include "parma_polyhedra_library_Grid_Generator.h"
 #include "parma_polyhedra_library_Grid_Generator_System.h"
+#include "parma_polyhedra_library_Grid_Generator_Type.h"
+#include "parma_polyhedra_library_Linear_Expression.h"
+#include "parma_polyhedra_library_Linear_Expression_Coefficient.h"
+#include "parma_polyhedra_library_Linear_Expression_Difference.h"
+#include "parma_polyhedra_library_Linear_Expression_Sum.h"
+#include "parma_polyhedra_library_Linear_Expression_Times.h"
+#include "parma_polyhedra_library_Linear_Expression_Unary_Minus.h"
+#include "parma_polyhedra_library_Linear_Expression_Variable.h"
+#include "parma_polyhedra_library_MIP_Problem.h"
+#include "parma_polyhedra_library_MIP_Problem_Status.h"
+#include "parma_polyhedra_library_Optimization_Mode.h"
+#include "parma_polyhedra_library_Parma_Polyhedra_Library.h"
 #include "parma_polyhedra_library_Poly_Con_Relation.h"
 #include "parma_polyhedra_library_Poly_Gen_Relation.h"
+#include "parma_polyhedra_library_PPL_Object.h"
+#include "parma_polyhedra_library_Relation_Symbol.h"
+#include "parma_polyhedra_library_Variable.h"
 #include "parma_polyhedra_library_IO.h"
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::Java;
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_By_1Reference_initIDs
+(JNIEnv* env, jclass j_by_ref_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_by_ref_class, "obj", "Ljava/lang/Object;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.By_Reference_obj_ID = fID;
+  jmethodID mID;
+  mID = env->GetMethodID(j_by_ref_class, "<init>", "(Ljava/lang/Object;)V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.By_Reference_init_ID = mID;
+}
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Coefficient_initIDs
@@ -51,6 +77,192 @@ Java_parma_1polyhedra_1library_Coefficient_initIDs
   mID = env->GetMethodID(j_coeff_class, "toString", "()Ljava/lang/String;");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Coefficient_toString_ID = mID;
+  // Boolean.
+  jclass Boolean_class = env->FindClass("java/lang/Boolean");
+  CHECK_RESULT_ASSERT(env, Boolean_class);
+  mID = env->GetStaticMethodID(Boolean_class, "valueOf",
+                               "(Z)Ljava/lang/Boolean;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Boolean_valueOf_ID = mID;
+  // Integer.
+  jclass Integer_class = env->FindClass("java/lang/Integer");
+  CHECK_RESULT_ASSERT(env, Integer_class);
+  mID = env->GetStaticMethodID(Integer_class, "valueOf",
+                               "(I)Ljava/lang/Integer;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Integer_valueOf_ID = mID;
+  mID = env->GetMethodID(Integer_class, "intValue", "()I");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Integer_intValue_ID = mID;
+  // Long.
+  jclass Long_class = env->FindClass("java/lang/Long");
+  CHECK_RESULT_ASSERT(env, Long_class);
+  mID = env->GetStaticMethodID(Long_class, "valueOf", "(J)Ljava/lang/Long;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Long_valueOf_ID = mID;
+  mID = env->GetMethodID(Long_class, "longValue", "()J");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Long_longValue_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Congruence_initIDs
+(JNIEnv* env, jclass j_congruence_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_congruence_class, "modulus",
+                        "Lparma_polyhedra_library/Coefficient;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Congruence_modulus_ID = fID;
+  fID = env->GetFieldID(j_congruence_class, "lhs",
+                        "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Congruence_lhs_ID = fID;
+  fID = env->GetFieldID(j_congruence_class, "rhs",
+                        "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Congruence_rhs_ID = fID;
+  jmethodID mID;
+  mID = env->GetMethodID(j_congruence_class, "<init>",
+                         "(Lparma_polyhedra_library/Linear_Expression;"
+                         "Lparma_polyhedra_library/Linear_Expression;"
+                         "Lparma_polyhedra_library/Coefficient;)V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Congruence_init_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Congruence_1System_initIDs
+(JNIEnv* env, jclass j_con_sys_class) {
+  jmethodID mID;
+  mID = env->GetMethodID(j_con_sys_class, "<init>", "()V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Congruence_System_init_ID = mID;
+  mID = env->GetMethodID(j_con_sys_class, "add", "(Ljava/lang/Object;)Z");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Congruence_System_add_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Constraint_initIDs
+(JNIEnv* env, jclass j_constraint_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_constraint_class, "lhs",
+                        "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Constraint_lhs_ID = fID;
+  fID = env->GetFieldID(j_constraint_class, "rhs",
+                        "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Constraint_rhs_ID = fID;
+  fID = env->GetFieldID(j_constraint_class, "kind",
+                        "Lparma_polyhedra_library/Relation_Symbol;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Constraint_kind_ID = fID;
+  jmethodID mID;
+  mID = env->GetMethodID(j_constraint_class, "<init>",
+                         "(Lparma_polyhedra_library/Linear_Expression;"
+                         "Lparma_polyhedra_library/Relation_Symbol;"
+                         "Lparma_polyhedra_library/Linear_Expression;)V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Constraint_init_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Constraint_1System_initIDs
+(JNIEnv* env, jclass j_con_sys_class) {
+  jmethodID mID;
+  mID = env->GetMethodID(j_con_sys_class, "<init>", "()V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Constraint_System_init_ID = mID;
+  mID = env->GetMethodID(j_con_sys_class, "add", "(Ljava/lang/Object;)Z");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Constraint_System_add_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Generator_initIDs
+(JNIEnv* env, jclass j_generator_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_generator_class, "gt",
+                        "Lparma_polyhedra_library/Generator_Type;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Generator_gt_ID = fID;
+  fID = env->GetFieldID(j_generator_class, "le",
+                        "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Generator_le_ID = fID;
+  fID = env->GetFieldID(j_generator_class, "div",
+                        "Lparma_polyhedra_library/Coefficient;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Generator_div_ID = fID;
+//   jmethodID mID;
+//   mID = env->GetMethodID(j_generator_class, "<init>", "()V");
+//   CHECK_RESULT_ASSERT(env, mID);
+//   cached_FMIDs.Generator_init_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Generator_1System_initIDs
+(JNIEnv* env, jclass j_gen_sys_class) {
+  jmethodID mID;
+  mID = env->GetMethodID(j_gen_sys_class, "<init>", "()V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Generator_System_init_ID = mID;
+  mID = env->GetMethodID(j_gen_sys_class, "add", "(Ljava/lang/Object;)Z");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Generator_System_add_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Generator_1Type_initIDs
+(JNIEnv* env, jclass j_gen_type_class) {
+  jmethodID mID;
+  mID = env->GetMethodID(j_gen_type_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Generator_Type_ordinal_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Grid_1Generator_initIDs
+(JNIEnv* env, jclass j_grid_generator_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_grid_generator_class, "gt",
+                        "Lparma_polyhedra_library/Grid_Generator_Type;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Grid_Generator_gt_ID = fID;
+  fID = env->GetFieldID(j_grid_generator_class, "le",
+                        "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Grid_Generator_le_ID = fID;
+  fID = env->GetFieldID(j_grid_generator_class, "div",
+                        "Lparma_polyhedra_library/Coefficient;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Grid_Generator_div_ID = fID;
+//   jmethodID mID;
+//   mID = env->GetMethodID(j_grid_generator_class, "<init>", "()V");
+//   CHECK_RESULT_ASSERT(env, mID);
+//   cached_FMIDs.Grid_Generator_init_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Grid_1Generator_1System_initIDs
+(JNIEnv* env, jclass j_gen_sys_class) {
+  jmethodID mID;
+  mID = env->GetMethodID(j_gen_sys_class, "<init>", "()V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Grid_Generator_System_init_ID = mID;
+  mID = env->GetMethodID(j_gen_sys_class, "add", "(Ljava/lang/Object;)Z");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Grid_Generator_System_add_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Grid_1Generator_1Type_initIDs
+(JNIEnv* env, jclass j_grid_gen_type_class) {
+  jmethodID mID;
+  mID = env->GetMethodID(j_grid_gen_type_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Grid_Generator_Type_ordinal_ID = mID;
 }
 
 JNIEXPORT void JNICALL
@@ -72,11 +284,141 @@ Java_parma_1polyhedra_1library_Linear_1Expression_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_1Coefficient_initIDs
 (JNIEnv* env, jclass j_le_coeff_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_le_coeff_class, "coeff",
+                        "Lparma_polyhedra_library/Coefficient;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Linear_Expression_Coefficient_coeff_ID = fID;
   jmethodID mID;
   mID = env->GetMethodID(j_le_coeff_class, "<init>",
 			 "(Lparma_polyhedra_library/Coefficient;)V");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Linear_Expression_Coefficient_init_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Linear_1Expression_1Difference_initIDs
+(JNIEnv* env, jclass j_le_diff_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_le_diff_class, "lhs",
+                        "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Linear_Expression_Difference_lhs_ID = fID;
+  fID = env->GetFieldID(j_le_diff_class, "rhs",
+                        "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Linear_Expression_Difference_rhs_ID = fID;
+//   jmethodID mID;
+//   mID = env->GetMethodID(j_le_diff_class, "<init>",
+// 			 "(Lparma_polyhedra_library/Coefficient;)V");
+//   CHECK_RESULT_ASSERT(env, mID);
+//   cached_FMIDs.Linear_Expression_Difference_init_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Linear_1Expression_1Sum_initIDs
+(JNIEnv* env, jclass j_le_sum_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_le_sum_class, "lhs",
+                        "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Linear_Expression_Sum_lhs_ID = fID;
+  fID = env->GetFieldID(j_le_sum_class, "rhs",
+                        "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Linear_Expression_Sum_rhs_ID = fID;
+//   jmethodID mID;
+//   mID = env->GetMethodID(j_le_sum_class, "<init>",
+// 			 "(Lparma_polyhedra_library/Coefficient;)V");
+//   CHECK_RESULT_ASSERT(env, mID);
+//   cached_FMIDs.Linear_Expression_Sum_init_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Linear_1Expression_1Times_initIDs
+(JNIEnv* env, jclass j_le_times_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_le_times_class, "lhs",
+                        "Lparma_polyhedra_library/Linear_Expression_Coefficient;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Linear_Expression_Times_lhs_ID = fID;
+  fID = env->GetFieldID(j_le_times_class, "rhs",
+                        "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Linear_Expression_Times_rhs_ID = fID;
+//   jmethodID mID;
+//   mID = env->GetMethodID(j_le_times_class, "<init>",
+// 			 "(Lparma_polyhedra_library/Coefficient;)V");
+//   CHECK_RESULT_ASSERT(env, mID);
+//   cached_FMIDs.Linear_Expression_Times_init_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Linear_1Expression_1Unary_1Minus_initIDs
+(JNIEnv* env, jclass j_le_uminus_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_le_uminus_class, "arg",
+                        "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Linear_Expression_Unary_Minus_arg_ID = fID;
+//   jmethodID mID;
+//   mID = env->GetMethodID(j_le_uminus_class, "<init>",
+// 			 "(Lparma_polyhedra_library/Linear_Expression;)V");
+//   CHECK_RESULT_ASSERT(env, mID);
+//   cached_FMIDs.Linear_Expression_Unary_Minus_init_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Linear_1Expression_1Variable_initIDs
+(JNIEnv* env, jclass j_le_var_class) {
+  jmethodID mID;
+  mID = env->GetMethodID(j_le_var_class, "<init>",
+			 "(Lparma_polyhedra_library/Variable;)V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Linear_Expression_Variable_init_ID = mID;
+  mID = env->GetMethodID(j_le_var_class, "var_id", "()I");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Linear_Expression_Variable_var_id_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_MIP_1Problem_1Status_initIDs
+(JNIEnv* env, jclass j_mip_status_class) {
+  jfieldID fID;
+  fID = env->GetStaticFieldID(j_mip_status_class, "UNFEASIBLE_MIP_PROBLEM",
+                              "Lparma_polyhedra_library/MIP_Problem_Status;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.MIP_Problem_Status_UNFEASIBLE_MIP_PROBLEM_ID = fID;
+  fID = env->GetStaticFieldID(j_mip_status_class, "UNBOUNDED_MIP_PROBLEM",
+                              "Lparma_polyhedra_library/MIP_Problem_Status;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.MIP_Problem_Status_UNBOUNDED_MIP_PROBLEM_ID = fID;
+  fID = env->GetStaticFieldID(j_mip_status_class, "OPTIMIZED_MIP_PROBLEM",
+                              "Lparma_polyhedra_library/MIP_Problem_Status;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.MIP_Problem_Status_OPTIMIZED_MIP_PROBLEM_ID = fID;
+  jmethodID mID;
+  mID = env->GetMethodID(j_mip_status_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.MIP_Problem_Status_ordinal_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Optimization_1Mode_initIDs
+(JNIEnv* env, jclass j_opt_mode_class) {
+  jfieldID fID;
+  fID = env->GetStaticFieldID(j_opt_mode_class, "MAXIMIZATION",
+                              "Lparma_polyhedra_library/Optimization_Mode;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Optimization_Mode_MAXIMIZATION_ID = fID;
+  fID = env->GetStaticFieldID(j_opt_mode_class, "MINIMIZATION",
+                              "Lparma_polyhedra_library/Optimization_Mode;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Optimization_Mode_MINIMIZATION_ID = fID;
+  jmethodID mID;
+  mID = env->GetMethodID(j_opt_mode_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Optimization_Mode_ordinal_ID = mID;
 }
 
 JNIEXPORT void JNICALL
@@ -95,6 +437,47 @@ Java_parma_1polyhedra_1library_Poly_1Gen_1Relation_initIDs
   mID = env->GetMethodID(j_poly_gen_relation_class, "<init>", "(I)V");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Poly_Gen_Relation_init_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PPL_1Object_initIDs
+(JNIEnv* env, jclass j_ppl_object_class) {
+  jfieldID fID = env->GetFieldID(j_ppl_object_class, "ptr", "J");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.PPL_Object_ptr_ID = fID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Relation_1Symbol_initIDs
+(JNIEnv* env, jclass j_rel_sym_class) {
+  jfieldID fID;
+  fID = env->GetStaticFieldID(j_rel_sym_class, "EQUAL",
+                              "Lparma_polyhedra_library/Relation_Symbol;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Relation_Symbol_EQUAL_ID = fID;
+  fID = env->GetStaticFieldID(j_rel_sym_class, "GREATER_THAN",
+                              "Lparma_polyhedra_library/Relation_Symbol;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Relation_Symbol_GREATER_THAN_ID = fID;
+  fID = env->GetStaticFieldID(j_rel_sym_class, "GREATER_OR_EQUAL",
+                              "Lparma_polyhedra_library/Relation_Symbol;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Relation_Symbol_GREATER_OR_EQUAL_ID = fID;
+  jmethodID mID;
+  mID = env->GetMethodID(j_rel_sym_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Relation_Symbol_ordinal_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Variable_initIDs
+(JNIEnv* env, jclass j_variable_class) {
+  jfieldID fID = env->GetFieldID(j_variable_class, "varid", "I");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Variable_varid_ID = fID;
+  jmethodID mID = env->GetMethodID(j_variable_class, "<init>", "(I)V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Variable_init_ID = mID;
 }
 
 
@@ -193,27 +576,25 @@ JNIEXPORT jobject JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_objective_1function
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
-    jclass j_le_coeff_class
-      = env->FindClass("parma_polyhedra_library/Linear_Expression_Coefficient");
-    CHECK_RESULT_ASSERT(env, j_le_coeff_class);
-    jmethodID j_le_sum_id = cached_FMIDs.Linear_Expression_sum_ID;
-    jmethodID j_le_coeff_ctr_id
-      = env->GetMethodID(j_le_coeff_class, "<init>",
-			 "(Lparma_polyhedra_library/Coefficient;)V");
-    CHECK_RESULT_ASSERT(env, j_le_coeff_ctr_id);
-
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     PPL_DIRTY_TEMP_COEFFICIENT(inhomogeneous_term);
     inhomogeneous_term = mip->objective_function().inhomogeneous_term();
     jobject j_coeff_inhomogeneous_term
       = build_java_coeff(env, inhomogeneous_term);
-    jobject j_le_coeff = env->NewObject(j_le_coeff_class, j_le_coeff_ctr_id,
-					j_coeff_inhomogeneous_term);
+    jclass j_le_coeff_class
+      = env->FindClass("parma_polyhedra_library/Linear_Expression_Coefficient");
+    CHECK_RESULT_ASSERT(env, j_le_coeff_class);
+    jobject j_le_coeff
+      = env->NewObject(j_le_coeff_class,
+                       cached_FMIDs.Linear_Expression_Coefficient_init_ID,
+                       j_coeff_inhomogeneous_term);
     CHECK_RESULT_RETURN(env, j_le_coeff, 0);
 
     jobject j_le = build_linear_expression(env, mip->objective_function());
-    return env->CallObjectMethod(j_le, j_le_sum_id, j_le_coeff);
+    return env->CallObjectMethod(j_le,
+                                 cached_FMIDs.Linear_Expression_sum_ID,
+                                 j_le_coeff);
   }
   CATCH_ALL;
   jobject null = 0;

@@ -43,4 +43,8 @@ public class By_Reference<T> {
 	return obj;
     }
 
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

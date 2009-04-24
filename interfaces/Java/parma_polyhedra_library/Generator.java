@@ -37,14 +37,14 @@ import javax.management.RuntimeErrorException;
   - a closure point.
 */
 public class Generator {
-    //! The divisor (valid if the generator is a point or a closure point).
-    private Coefficient div;
-
     //! The generator type.
     private Generator_Type gt;
 
     //! The linear expression.
     private Linear_Expression le;
+
+    //! The divisor (valid if the generator is a point or a closure point).
+    private Coefficient div;
 
     /*! \brief
       Builds a generator of type \p g_type,
@@ -129,8 +129,8 @@ public class Generator {
 
     //! Allows to copy the fields from \p g to \p this.
     private void set(Generator g) {
-        this.le = g.le;
         this.gt = g.gt;
+        this.le = g.le;
         this.div = g.div;
     }
 
@@ -139,4 +139,9 @@ public class Generator {
 
     //! Returns a string representation of \p this.
     public native String toString();
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

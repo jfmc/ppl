@@ -54,4 +54,9 @@ public class Linear_Expression_Times
 	return new Linear_Expression_Times(rhs.clone(),
 					   new Coefficient(lhs.argument()));
     }
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

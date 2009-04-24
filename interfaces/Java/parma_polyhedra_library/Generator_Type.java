@@ -32,5 +32,10 @@ public enum Generator_Type {
     //! The generator is a point.
     POINT,
     //! The generator is a closure point.
-    CLOSURE_POINT
+    CLOSURE_POINT;
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

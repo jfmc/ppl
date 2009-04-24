@@ -28,5 +28,10 @@ public enum Optimization_Mode {
     //! Minimization is requested.
     MINIMIZATION,
     //! Maximization is requested.
-    MAXIMIZATION
+    MAXIMIZATION;
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

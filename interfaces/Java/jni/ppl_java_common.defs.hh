@@ -131,20 +131,88 @@ void
 handle_exception(JNIEnv* env);
 
 
-// Declare field/method ID caches.
-
+//! A cache for Java classes field/method IDs.
 struct Java_FMID_Cache {
-  // Coefficient.
+  // By_Reference.
+  jfieldID By_Reference_obj_ID;
+  jmethodID By_Reference_init_ID;
+  // Coefficient (and basic-types related IDs).
   jmethodID Coefficient_init_from_String_ID;
   jmethodID Coefficient_toString_ID;
+  jmethodID Boolean_valueOf_ID;
+  jmethodID Integer_valueOf_ID;
+  jmethodID Integer_intValue_ID;
+  jmethodID Long_valueOf_ID;
+  jmethodID Long_longValue_ID;
+  // Congruence.
+  jfieldID Congruence_modulus_ID;
+  jfieldID Congruence_lhs_ID;
+  jfieldID Congruence_rhs_ID;
+  jmethodID Congruence_init_ID;
+  // Constraint.
+  jfieldID Constraint_lhs_ID;
+  jfieldID Constraint_rhs_ID;
+  jfieldID Constraint_kind_ID;
+  jmethodID Constraint_init_ID;
+  // Generator.
+  jfieldID Generator_gt_ID;
+  jfieldID Generator_le_ID;
+  jfieldID Generator_div_ID;
+  jmethodID Generator_init_ID;
+  // Grid_Generator.
+  jfieldID Grid_Generator_gt_ID;
+  jfieldID Grid_Generator_le_ID;
+  jfieldID Grid_Generator_div_ID;
+  jmethodID Grid_Generator_init_ID;
+  // (Grid_) Generator_Type.
+  jmethodID Generator_Type_ordinal_ID;
+  jmethodID Grid_Generator_Type_ordinal_ID;
+  // Systems of Constraint, Congruence, Generator and Grid_Generator.
+  jmethodID Constraint_System_init_ID;
+  jmethodID Constraint_System_add_ID;
+  jmethodID Congruence_System_init_ID;
+  jmethodID Congruence_System_add_ID;
+  jmethodID Generator_System_init_ID;
+  jmethodID Generator_System_add_ID;
+  jmethodID Grid_Generator_System_init_ID;
+  jmethodID Grid_Generator_System_add_ID;
   // Linear_Expression.
   jmethodID Linear_Expression_sum_ID;
   jmethodID Linear_Expression_times_ID;
   // Classes extending Linear_Expression.
+  jfieldID Linear_Expression_Coefficient_coeff_ID;
   jmethodID Linear_Expression_Coefficient_init_ID;
+  jfieldID Linear_Expression_Difference_lhs_ID;
+  jfieldID Linear_Expression_Difference_rhs_ID;
+  jfieldID Linear_Expression_Sum_lhs_ID;
+  jfieldID Linear_Expression_Sum_rhs_ID;
+  jfieldID Linear_Expression_Times_lhs_ID;
+  jfieldID Linear_Expression_Times_rhs_ID;
+  jfieldID Linear_Expression_Unary_Minus_arg_ID;
+  jmethodID Linear_Expression_Variable_init_ID;
+  jmethodID Linear_Expression_Variable_var_id_ID;
+  // MIP_Problem_Status.
+  jfieldID MIP_Problem_Status_UNFEASIBLE_MIP_PROBLEM_ID;
+  jfieldID MIP_Problem_Status_UNBOUNDED_MIP_PROBLEM_ID;
+  jfieldID MIP_Problem_Status_OPTIMIZED_MIP_PROBLEM_ID;
+  jmethodID MIP_Problem_Status_ordinal_ID;
+  // Optmization_Mode.
+  jfieldID Optimization_Mode_MAXIMIZATION_ID;
+  jfieldID Optimization_Mode_MINIMIZATION_ID;
+  jmethodID Optimization_Mode_ordinal_ID;
   // Poly_Con_Relation and Poly_Gen_Relation.
   jmethodID Poly_Con_Relation_init_ID;
   jmethodID Poly_Gen_Relation_init_ID;
+  // PPL_Object.
+  jfieldID PPL_Object_ptr_ID;
+  // Relation_Symbol.
+  jfieldID Relation_Symbol_EQUAL_ID;
+  jfieldID Relation_Symbol_GREATER_OR_EQUAL_ID;
+  jfieldID Relation_Symbol_GREATER_THAN_ID;
+  jmethodID Relation_Symbol_ordinal_ID;
+  // Variable.
+  jfieldID Variable_varid_ID;
+  jmethodID Variable_init_ID;
 };
 extern Java_FMID_Cache cached_FMIDs;
 

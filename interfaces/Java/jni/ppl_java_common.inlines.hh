@@ -49,13 +49,10 @@ template <typename T>
 void
 set_ptr(JNIEnv* env, jobject ppl_object,
 	const T* address, bool to_be_marked) {
-  jclass ppl_object_class = env->GetObjectClass(ppl_object);
-  jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
-  CHECK_RESULT_ASSERT(env, pointer_field);
   const T* ptr = (to_be_marked ? mark(address) : address);
   jlong pointer_value = reinterpret_cast<jlong>(ptr);
   assert(reinterpret_cast<const T*>(pointer_value) == ptr);
-  env->SetLongField(ppl_object, pointer_field, pointer_value);
+  env->SetLongField(ppl_object, cached_FMIDs.PPL_Object_ptr_ID, pointer_value);
 }
 
 template <typename R>
@@ -70,21 +67,17 @@ build_linear_expression(JNIEnv* env, const R& r) {
   jclass j_variable_class
     = env->FindClass("parma_polyhedra_library/Variable");
   CHECK_RESULT_ASSERT(env, j_variable_class);
+
   PPL_DIRTY_TEMP_COEFFICIENT(coefficient);
   dimension_type varid = 0;
   dimension_type space_dimension = r.space_dimension();
   jobject j_le_term;
-  jmethodID j_variable_ctr_id
-    = env->GetMethodID(j_variable_class,
-		       "<init>",
-		       "(I)V");
-  CHECK_RESULT_ASSERT(env, j_variable_ctr_id);
-  jmethodID j_le_variable_ctr_id
-    = env->GetMethodID(j_le_variable_class,
-		       "<init>",
-		       "(Lparma_polyhedra_library/Variable;)V");
-  CHECK_RESULT_ASSERT(env, j_le_variable_ctr_id);
 
+  jmethodID j_variable_ctr_id = cached_FMIDs.Variable_init_ID;
+  jmethodID j_le_variable_ctr_id
+    = cached_FMIDs.Linear_Expression_Variable_init_ID;
+  jmethodID j_le_coeff_ctr_id
+    = cached_FMIDs.Linear_Expression_Coefficient_init_ID;
   jmethodID j_le_sum_id = cached_FMIDs.Linear_Expression_sum_ID;
   jmethodID j_le_times_id = cached_FMIDs.Linear_Expression_times_ID;
 
@@ -93,26 +86,25 @@ build_linear_expression(JNIEnv* env, const R& r) {
     ++varid;
   if (varid >= space_dimension) {
     jobject j_coefficient_zero = build_java_coeff(env, Coefficient(0));
-    jmethodID j_le_coeff_ctr_id
-      = env->GetMethodID(j_le_coeff_class, "<init>",
-			 "(Lparma_polyhedra_library/Coefficient;)V");
-    CHECK_RESULT_ASSERT(env, j_le_coeff_ctr_id);
-    jobject ret = env->NewObject(j_le_coeff_class, j_le_coeff_ctr_id,
-				 j_coefficient_zero);
+    jobject ret = env->NewObject(j_le_coeff_class,
+                                 j_le_coeff_ctr_id,
+                                 j_coefficient_zero);
     CHECK_RESULT_THROW(env, ret);
     return ret;
   }
   else {
     jobject j_coefficient = build_java_coeff(env, coefficient);
-    jobject j_variable = env->NewObject(j_variable_class, j_variable_ctr_id,
-					varid);
+    jobject j_variable = env->NewObject(j_variable_class,
+                                        j_variable_ctr_id,
+                                        varid);
     CHECK_RESULT_THROW(env, j_variable);
     jobject j_le_variable = env->NewObject(j_le_variable_class,
-					   j_le_variable_ctr_id,
-					   j_variable);
+                                           j_le_variable_ctr_id,
+                                           j_variable);
     CHECK_RESULT_THROW(env, j_le_variable);
-    j_le_term =  env->CallObjectMethod(j_le_variable,
-				       j_le_times_id, j_coefficient);
+    j_le_term = env->CallObjectMethod(j_le_variable,
+                                      j_le_times_id,
+                                      j_coefficient);
     CHECK_EXCEPTION_THROW(env);
     while (true) {
       ++varid;
@@ -187,14 +179,9 @@ Partial_Function::maps(dimension_type i, dimension_type& j) const {
   jclass j_by_reference_class
     = env->FindClass("parma_polyhedra_library/By_Reference");
   CHECK_RESULT_ASSERT(env, j_by_reference_class);
-  jmethodID j_by_reference_ctr_id
-    = env->GetMethodID(j_by_reference_class,
-                       "<init>",
-                       "(Ljava/lang/Object;)V");
-  CHECK_RESULT_ASSERT(env, j_by_reference_ctr_id);
   jobject coeff = j_long_to_j_long_class(env, 0);
   jobject new_by_ref = env->NewObject(j_by_reference_class,
-                                      j_by_reference_ctr_id,
+                                      cached_FMIDs.By_Reference_init_ID,
                                       coeff);
   CHECK_RESULT_THROW(env, new_by_ref);
   jmethodID j_maps_id = env->GetMethodID(j_partial_function_class,

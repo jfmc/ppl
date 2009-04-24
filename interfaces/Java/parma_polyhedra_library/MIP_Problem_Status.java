@@ -30,5 +30,10 @@ public enum MIP_Problem_Status {
     //! The problem is unbounded.
     UNBOUNDED_MIP_PROBLEM,
     //! The problem has an optimal solution.
-    OPTIMIZED_MIP_PROBLEM
+    OPTIMIZED_MIP_PROBLEM;
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }
