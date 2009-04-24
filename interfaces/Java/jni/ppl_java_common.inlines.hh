@@ -55,6 +55,25 @@ set_ptr(JNIEnv* env, jobject ppl_object,
   env->SetLongField(ppl_object, cached_FMIDs.PPL_Object_ptr_ID, pointer_value);
 }
 
+inline void
+set_coefficient(JNIEnv* env, jobject dst, jobject src) {
+  jobject src_bi
+    = env->GetObjectField(src, cached_FMIDs.Coefficient_value_ID);
+  env->SetObjectField(dst, cached_FMIDs.Coefficient_value_ID, src_bi);
+}
+
+inline void
+set_by_reference(JNIEnv* env, jobject by_ref_dst, jobject src) {
+  env->SetObjectField(by_ref_dst,
+                      cached_FMIDs.By_Reference_obj_ID,
+                      src);
+}
+
+inline jobject
+get_by_reference(JNIEnv* env, jobject by_reference) {
+  return env->GetObjectField(by_reference, cached_FMIDs.By_Reference_obj_ID);
+}
+
 template <typename R>
 jobject
 build_linear_expression(JNIEnv* env, const R& r) {
@@ -147,9 +166,7 @@ Partial_Function::has_empty_codomain() const {
     = env->FindClass("parma_polyhedra_library/Partial_Function");
   CHECK_RESULT_ASSERT(env, j_partial_function_class);
   jmethodID j_has_empty_codomain_id
-    = env->GetMethodID(j_partial_function_class,
-                       "has_empty_codomain",
-                       "()Z");
+    = env->GetMethodID(j_partial_function_class, "has_empty_codomain", "()Z");
   CHECK_RESULT_ASSERT(env, j_has_empty_codomain_id);
   bool ret = env->CallBooleanMethod(j_p_func, j_has_empty_codomain_id);
   CHECK_EXCEPTION_THROW(env);
@@ -162,9 +179,7 @@ Partial_Function::max_in_codomain() const {
     = env->FindClass("parma_polyhedra_library/Partial_Function");
   CHECK_RESULT_ASSERT(env, j_partial_function_class);
   jmethodID j_max_in_codomain_id
-    = env->GetMethodID(j_partial_function_class,
-                       "max_in_codomain",
-                       "()J");
+    = env->GetMethodID(j_partial_function_class, "max_in_codomain", "()J");
   CHECK_RESULT_ASSERT(env, j_max_in_codomain_id);
   jlong value = env->CallLongMethod(j_p_func, j_max_in_codomain_id);
   CHECK_EXCEPTION_THROW(env);
@@ -184,9 +199,9 @@ Partial_Function::maps(dimension_type i, dimension_type& j) const {
                                       cached_FMIDs.By_Reference_init_ID,
                                       coeff);
   CHECK_RESULT_THROW(env, new_by_ref);
-  jmethodID j_maps_id = env->GetMethodID(j_partial_function_class,
-                                         "maps",
-                                         "(Ljava/lang/Long;Lparma_polyhedra_library/By_Reference;)Z");
+  jmethodID j_maps_id
+    = env->GetMethodID(j_partial_function_class, "maps",
+                       "(Ljava/lang/Long;Lparma_polyhedra_library/By_Reference;)Z");
   CHECK_RESULT_ASSERT(env, j_maps_id);
   jboolean b = env->CallBooleanMethod(j_p_func, j_maps_id,
 				      j_long_to_j_long_class(env, i),

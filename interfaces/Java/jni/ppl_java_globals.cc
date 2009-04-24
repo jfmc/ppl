@@ -70,6 +70,10 @@ Java_parma_1polyhedra_1library_By_1Reference_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Coefficient_initIDs
 (JNIEnv* env, jclass j_coeff_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_coeff_class, "value", "Ljava/math/BigInteger;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Coefficient_value_ID = fID;
   jmethodID mID;
   mID = env->GetMethodID(j_coeff_class, "<init>", "(Ljava/lang/String;)V");
   CHECK_RESULT_ASSERT(env, mID);
@@ -195,10 +199,29 @@ Java_parma_1polyhedra_1library_Generator_initIDs
                         "Lparma_polyhedra_library/Coefficient;");
   CHECK_RESULT_ASSERT(env, fID);
   cached_FMIDs.Generator_div_ID = fID;
-//   jmethodID mID;
-//   mID = env->GetMethodID(j_generator_class, "<init>", "()V");
-//   CHECK_RESULT_ASSERT(env, mID);
-//   cached_FMIDs.Generator_init_ID = mID;
+  jmethodID mID;
+  mID = env->GetStaticMethodID(j_generator_class, "line",
+                               "(Lparma_polyhedra_library/Linear_Expression;)"
+                               "Lparma_polyhedra_library/Generator;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Generator_line_ID = mID;
+  mID = env->GetStaticMethodID(j_generator_class, "ray",
+                               "(Lparma_polyhedra_library/Linear_Expression;)"
+                               "Lparma_polyhedra_library/Generator;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Generator_ray_ID = mID;
+  mID = env->GetStaticMethodID(j_generator_class, "point",
+                               "(Lparma_polyhedra_library/Linear_Expression;"
+                               "Lparma_polyhedra_library/Coefficient;)"
+                               "Lparma_polyhedra_library/Generator;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Generator_point_ID = mID;
+  mID = env->GetStaticMethodID(j_generator_class, "closure_point",
+                               "(Lparma_polyhedra_library/Linear_Expression;"
+                               "Lparma_polyhedra_library/Coefficient;)"
+                               "Lparma_polyhedra_library/Generator;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Generator_closure_point_ID = mID;
 }
 
 JNIEXPORT void JNICALL
@@ -238,10 +261,24 @@ Java_parma_1polyhedra_1library_Grid_1Generator_initIDs
                         "Lparma_polyhedra_library/Coefficient;");
   CHECK_RESULT_ASSERT(env, fID);
   cached_FMIDs.Grid_Generator_div_ID = fID;
-//   jmethodID mID;
-//   mID = env->GetMethodID(j_grid_generator_class, "<init>", "()V");
-//   CHECK_RESULT_ASSERT(env, mID);
-//   cached_FMIDs.Grid_Generator_init_ID = mID;
+  jmethodID mID;
+  mID = env->GetStaticMethodID(j_grid_generator_class, "grid_line",
+                               "(Lparma_polyhedra_library/Linear_Expression;)"
+                               "Lparma_polyhedra_library/Grid_Generator;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Grid_Generator_grid_line_ID = mID;
+  mID = env->GetStaticMethodID(j_grid_generator_class, "parameter",
+                               "(Lparma_polyhedra_library/Linear_Expression;"
+                               "Lparma_polyhedra_library/Coefficient;)"
+                               "Lparma_polyhedra_library/Grid_Generator;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Grid_Generator_parameter_ID = mID;
+  mID = env->GetStaticMethodID(j_grid_generator_class, "grid_point",
+                               "(Lparma_polyhedra_library/Linear_Expression;"
+                               "Lparma_polyhedra_library/Coefficient;)"
+                               "Lparma_polyhedra_library/Grid_Generator;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Grid_Generator_grid_point_ID = mID;
 }
 
 JNIEXPORT void JNICALL
@@ -785,16 +822,14 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_solve
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_evaluate_1objective_1function
-(JNIEnv* env, jobject j_this_mip_problem, jobject j_gen, jobject j_coeff_num,
- jobject j_coeff_den) {
+(JNIEnv* env, jobject j_this_mip_problem, jobject j_gen,
+ jobject j_coeff_num, jobject j_coeff_den) {
   try {
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     Generator g = build_cxx_generator(env, j_gen);
     PPL_DIRTY_TEMP_COEFFICIENT(num);
     PPL_DIRTY_TEMP_COEFFICIENT(den);
-    num = build_cxx_coeff(env, j_coeff_num);
-    den = build_cxx_coeff(env, j_coeff_den);
     mip->evaluate_objective_function(g, num, den);
     set_coefficient(env, j_coeff_num, build_java_coeff(env, num));
     set_coefficient(env, j_coeff_den, build_java_coeff(env, den));
@@ -832,19 +867,16 @@ Java_parma_1polyhedra_1library_MIP_1Problem_optimizing_1point
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_optimal_1value
-(JNIEnv* env, jobject j_this_mip_problem, jobject j_coeff_num,
- jobject j_coeff_den) {
+(JNIEnv* env, jobject j_this_mip_problem,
+ jobject j_coeff_num, jobject j_coeff_den) {
   try {
     PPL_DIRTY_TEMP_COEFFICIENT(coeff_num);
     PPL_DIRTY_TEMP_COEFFICIENT(coeff_den);
-
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     mip->optimal_value(coeff_num, coeff_den);
-    jobject j_coeff_num_result = build_java_coeff(env, coeff_num);
-    jobject j_coeff_den_result = build_java_coeff(env, coeff_den);
-    set_coefficient(env, j_coeff_num, j_coeff_num_result);
-    set_coefficient(env, j_coeff_den, j_coeff_den_result);
+    set_coefficient(env, j_coeff_num, build_java_coeff(env, coeff_num));
+    set_coefficient(env, j_coeff_den, build_java_coeff(env, coeff_den));
   }
   CATCH_ALL;
 }

@@ -536,10 +536,8 @@ Java_parma_1polyhedra_1library_@1CLASS@_@1MAXMIN@__Lparma_1polyhedra_1library_Li
     Linear_Expression le = build_cxx_linear_expression(env, j_le);
     bool b_value;
     if (this_ptr->@MAXMIN@(le, num, den, b_value)) {
-      jobject j_num_result = build_java_coeff(env, num);
-      jobject j_den_result = build_java_coeff(env, den);
-      set_coefficient(env, j_num, j_num_result);
-      set_coefficient(env, j_den, j_den_result);
+      set_coefficient(env, j_num, build_java_coeff(env, num));
+      set_coefficient(env, j_den, build_java_coeff(env, den));
       jobject j_boolean = bool_to_j_boolean(env, b_value);
       set_by_reference(env, j_ref_boolean, j_boolean);
       return true;
@@ -569,13 +567,11 @@ Java_parma_1polyhedra_1library_@1CLASS@_@1MAXMIN@__Lparma_1polyhedra_1library_Li
     bool b_value;
     Generator g = point();
     if (this_ptr->@MAXMIN@(le, num, den, b_value, g)) {
-      jobject j_num_result = build_java_coeff(env, num);
-      jobject j_den_result = build_java_coeff(env, den);
-      jobject j_g_result = build_java_generator(env, g);
-      set_coefficient(env, j_num, j_num_result);
-      set_coefficient(env, j_den, j_den_result);
+      set_coefficient(env, j_num, build_java_coeff(env, num));
+      set_coefficient(env, j_den, build_java_coeff(env, den));
       jobject j_boolean = bool_to_j_boolean(env, b_value);
       set_by_reference(env, j_ref_boolean, j_boolean);
+      jobject j_g_result = build_java_generator(env, g);
       set_generator(env, j_g, j_g_result);
       return true;
     }

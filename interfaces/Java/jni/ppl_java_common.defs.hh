@@ -137,6 +137,7 @@ struct Java_FMID_Cache {
   jfieldID By_Reference_obj_ID;
   jmethodID By_Reference_init_ID;
   // Coefficient (and basic-types related IDs).
+  jfieldID Coefficient_value_ID;
   jmethodID Coefficient_init_from_String_ID;
   jmethodID Coefficient_toString_ID;
   jmethodID Boolean_valueOf_ID;
@@ -158,12 +159,17 @@ struct Java_FMID_Cache {
   jfieldID Generator_gt_ID;
   jfieldID Generator_le_ID;
   jfieldID Generator_div_ID;
-  jmethodID Generator_init_ID;
+  jmethodID Generator_line_ID;
+  jmethodID Generator_ray_ID;
+  jmethodID Generator_point_ID;
+  jmethodID Generator_closure_point_ID;
   // Grid_Generator.
   jfieldID Grid_Generator_gt_ID;
   jfieldID Grid_Generator_le_ID;
   jfieldID Grid_Generator_div_ID;
-  jmethodID Grid_Generator_init_ID;
+  jmethodID Grid_Generator_grid_line_ID;
+  jmethodID Grid_Generator_parameter_ID;
+  jmethodID Grid_Generator_grid_point_ID;
   // (Grid_) Generator_Type.
   jmethodID Generator_Type_ordinal_ID;
   jmethodID Grid_Generator_Type_ordinal_ID;
@@ -498,25 +504,24 @@ jobject
 build_java_linear_expression_coefficient(JNIEnv* env, const Coefficient& coeff);
 
 /*! \brief
-  Sets Java reference \p to_be_set
-  to the parma_polyhedra_library::Generator object \p gen.
+  Sets Java parma_polyhedra_library::Generator \p dst
+  to have the same value as \p src.
 */
 void
-set_generator(JNIEnv* env, jobject& to_be_set, jobject gen);
+set_generator(JNIEnv* env, jobject dst, jobject src);
 
 /*! \brief
-  Sets Java reference \p to_be_set
-  to the parma_polyhedra_library::Coefficient object \p c.
+  Sets Java Coefficient \p dst to have the same value as \p src.
 */
 void
-set_coefficient(JNIEnv* env, jobject& to_be_set, jobject c);
+set_coefficient(JNIEnv* env, jobject dst, jobject src);
 
 /*! \brief
-  Modifies parma_polyhedra_library::By_Reference object \p by_ref_to_be_set
-  so that it references object \p to_insert.
+  Modifies parma_polyhedra_library::By_Reference object \p by_ref_dst
+  so that it references object \p src.
 */
 void
-set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set, jobject to_insert);
+set_by_reference(JNIEnv* env, jobject by_ref_dst, jobject src);
 
 /*! \brief
   Returns the object referenced by
@@ -527,18 +532,17 @@ get_by_reference(JNIEnv* env, jobject by_reference);
 
 
 /*! \brief
-  Assigns \p to_insert to one of the fields of
-  parma_polyhedra_library::Pair object \p pair_to_be_set.
+  Assigns \p src to one of the fields of
+  parma_polyhedra_library::Pair object \p dst_pair.
 
-  If \p arg is 0, the first element of \p pair_to_be_set is overwritten;
-  if \p arg is 1, the second element of \p pair_to_be_set is overwritten.
+  If \p arg is 0, the first element of \p dst_pair is overwritten;
+  if \p arg is 1, the second element of \p dst_pair is overwritten.
 
   \exception std::runtime_error
   Thrown if \p arg is neither 0 nor 1.
 */
 void
-set_pair_element(JNIEnv* env, jobject& pair_to_be_set,
-                 int arg, jobject to_insert);
+set_pair_element(JNIEnv* env, jobject dst_pair, int arg, jobject src);
 
 /*! \brief
   Returns one of the fields of the

@@ -125,13 +125,6 @@ public class Generator {
 	throw new RuntimeErrorException(cause);
     }
 
-    //! Allows to copy the fields from \p g to \p this.
-    private void set(Generator g) {
-        this.gt = g.gt;
-        this.le = g.le;
-        this.div = g.div;
-    }
-
     //! Returns an ascii formatted internal representation of \p this.
     public native String ascii_dump();
 

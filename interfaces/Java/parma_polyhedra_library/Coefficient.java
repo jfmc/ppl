@@ -74,10 +74,6 @@ public class Coefficient {
 	return value;
     }
 
-    private void set(Coefficient c) {
-        value = c.value;
-    }
-
     private static native void initIDs();
     static {
         initIDs();
