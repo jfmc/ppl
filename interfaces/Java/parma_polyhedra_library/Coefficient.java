@@ -64,6 +64,11 @@ public class Coefficient {
 	value = new BigInteger(c.value.toString());
     }
 
+    //! Returns a String representation of \p this.
+    public String toString() {
+	return value.toString();
+    }
+
     //! Returns the value held by \p this.
     public BigInteger getBigInteger() {
 	return value;
@@ -71,5 +76,10 @@ public class Coefficient {
 
     private void set(Coefficient c) {
         value = c.getBigInteger();
+    }
+
+    private static native void initIDs();
+    static {
+        initIDs();
     }
 }

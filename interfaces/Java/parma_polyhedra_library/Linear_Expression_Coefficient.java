@@ -44,5 +44,10 @@ public class Linear_Expression_Coefficient
     public Linear_Expression_Coefficient clone() {
 	return new Linear_Expression_Coefficient(new Coefficient(coeff));
     }
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }
 

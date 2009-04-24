@@ -21,9 +21,11 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "parma_polyhedra_library_Parma_Polyhedra_Library.h"
+#include "parma_polyhedra_library_Coefficient.h"
 #include "ppl_java_common.defs.hh"
 #include "parma_polyhedra_library_MIP_Problem.h"
 #include "parma_polyhedra_library_Linear_Expression.h"
+#include "parma_polyhedra_library_Linear_Expression_Coefficient.h"
 #include "parma_polyhedra_library_Constraint.h"
 #include "parma_polyhedra_library_Constraint_System.h"
 #include "parma_polyhedra_library_Congruence.h"
@@ -32,10 +34,69 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "parma_polyhedra_library_Generator_System.h"
 #include "parma_polyhedra_library_Grid_Generator.h"
 #include "parma_polyhedra_library_Grid_Generator_System.h"
+#include "parma_polyhedra_library_Poly_Con_Relation.h"
+#include "parma_polyhedra_library_Poly_Gen_Relation.h"
 #include "parma_polyhedra_library_IO.h"
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::Java;
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Coefficient_initIDs
+(JNIEnv* env, jclass j_coeff_class) {
+  jmethodID mID;
+  mID = env->GetMethodID(j_coeff_class, "<init>", "(Ljava/lang/String;)V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Coefficient_init_from_String_ID = mID;
+  mID = env->GetMethodID(j_coeff_class, "toString", "()Ljava/lang/String;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Coefficient_toString_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Linear_1Expression_initIDs
+(JNIEnv* env, jclass j_le_class) {
+  jmethodID mID;
+  mID = env->GetMethodID(j_le_class, "sum",
+                         "(Lparma_polyhedra_library/Linear_Expression;)"
+                         "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Linear_Expression_sum_ID = mID;
+  mID = env->GetMethodID(j_le_class, "times",
+                         "(Lparma_polyhedra_library/Coefficient;)"
+                         "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Linear_Expression_times_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Linear_1Expression_1Coefficient_initIDs
+(JNIEnv* env, jclass j_le_coeff_class) {
+  jmethodID mID;
+  mID = env->GetMethodID(j_le_coeff_class, "<init>",
+			 "(Lparma_polyhedra_library/Coefficient;)V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Linear_Expression_Coefficient_init_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Poly_1Con_1Relation_initIDs
+(JNIEnv* env, jclass j_poly_con_relation_class) {
+  jmethodID mID;
+  mID = env->GetMethodID(j_poly_con_relation_class, "<init>", "(I)V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Poly_Con_Relation_init_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Poly_1Gen_1Relation_initIDs
+(JNIEnv* env, jclass j_poly_gen_relation_class) {
+  jmethodID mID;
+  mID = env->GetMethodID(j_poly_gen_relation_class, "<init>", "(I)V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Poly_Gen_Relation_init_ID = mID;
+}
+
 
 JNIEXPORT jint JNICALL
 Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_version_1major
@@ -135,15 +196,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_objective_1function
     jclass j_le_coeff_class
       = env->FindClass("parma_polyhedra_library/Linear_Expression_Coefficient");
     CHECK_RESULT_ASSERT(env, j_le_coeff_class);
-    jclass j_le_class
-      = env->FindClass("parma_polyhedra_library/Linear_Expression");
-    CHECK_RESULT_ASSERT(env, j_le_class);
-    jmethodID j_le_sum_id
-      = env->GetMethodID(j_le_class,
-			 "sum",
-			 "(Lparma_polyhedra_library/Linear_Expression;)"
-			 "Lparma_polyhedra_library/Linear_Expression;");
-    CHECK_RESULT_ASSERT(env, j_le_sum_id);
+    jmethodID j_le_sum_id = cached_FMIDs.Linear_Expression_sum_ID;
     jmethodID j_le_coeff_ctr_id
       = env->GetMethodID(j_le_coeff_class, "<init>",
 			 "(Lparma_polyhedra_library/Coefficient;)V");

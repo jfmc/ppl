@@ -62,4 +62,9 @@ public abstract class Linear_Expression implements Cloneable {
 
     //! Returns a string representation of \p this.
     public native String toString();
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

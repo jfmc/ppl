@@ -64,9 +64,6 @@ build_linear_expression(JNIEnv* env, const R& r) {
   jclass j_le_coeff_class
     = env->FindClass("parma_polyhedra_library/Linear_Expression_Coefficient");
   CHECK_RESULT_ASSERT(env, j_le_coeff_class);
-  jclass j_le_class
-    = env->FindClass("parma_polyhedra_library/Linear_Expression");
-  CHECK_RESULT_ASSERT(env, j_le_class);
   jclass j_le_variable_class
     = env->FindClass("parma_polyhedra_library/Linear_Expression_Variable");
   CHECK_RESULT_ASSERT(env, j_le_variable_class);
@@ -88,11 +85,8 @@ build_linear_expression(JNIEnv* env, const R& r) {
 		       "(Lparma_polyhedra_library/Variable;)V");
   CHECK_RESULT_ASSERT(env, j_le_variable_ctr_id);
 
-  jmethodID j_le_times_id
-    = env->GetMethodID(j_le_class,
-		       "times",
-		       "(Lparma_polyhedra_library/Coefficient;)Lparma_polyhedra_library/Linear_Expression;");
-  CHECK_RESULT_ASSERT(env, j_le_times_id);
+  jmethodID j_le_sum_id = cached_FMIDs.Linear_Expression_sum_ID;
+  jmethodID j_le_times_id = cached_FMIDs.Linear_Expression_times_ID;
 
   while (varid < space_dimension
  	 && (coefficient = r.coefficient(Variable(varid))) == 0)
@@ -141,12 +135,6 @@ build_linear_expression(JNIEnv* env, const R& r) {
 						   j_le_times_id,
 						   j_coefficient);
 	CHECK_EXCEPTION_THROW(env);
-  	jmethodID j_le_sum_id
-  	  = env->GetMethodID(j_le_class,
-  			     "sum",
-  			     "(Lparma_polyhedra_library/Linear_Expression;)"
-			     "Lparma_polyhedra_library/Linear_Expression;");
- 	CHECK_RESULT_ASSERT(env, j_le_sum_id);
  	j_le_term = env->CallObjectMethod(j_le_term, j_le_sum_id, j_le_term2);
 	CHECK_EXCEPTION_THROW(env);
       }

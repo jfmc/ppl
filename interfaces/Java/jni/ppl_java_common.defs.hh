@@ -56,15 +56,45 @@ site: http://www.cs.unipr.it/ppl/ . */
     handle_exception(env); \
   }
 
-#define CHECK_EXCEPTION_ASSERT(env) assert(!env->ExceptionOccurred())
-#define CHECK_EXCEPTION_THROW(env) do { if (env->ExceptionOccurred()) throw Java_ExceptionOccurred(); } while (0)
-#define CHECK_EXCEPTION_RETURN(env, val) do { if (env->ExceptionOccurred()) return val; } while (0)
-#define CHECK_EXCEPTION_RETURN_VOID(env) do { if (env->ExceptionOccurred()) return; } while (0)
-#define CHECK_RESULT_ABORT(env, result) do { if (!result) abort(); } while (0)
-#define CHECK_RESULT_ASSERT(env, result) assert(result)
-#define CHECK_RESULT_THROW(env, result) do { if (!result) throw Java_ExceptionOccurred(); } while (0)
-#define CHECK_RESULT_RETURN(env, result, val) do { if (!result) return val; } while (0)
-#define CHECK_RESULT_RETURN_VOID(env, result) do { if (!result) return; } while (0)
+#define CHECK_EXCEPTION_ASSERT(env)      \
+  assert(!env->ExceptionOccurred())
+#define CHECK_EXCEPTION_THROW(env)       \
+  do {                                   \
+    if (env->ExceptionOccurred())        \
+      throw Java_ExceptionOccurred();    \
+  } while (0)
+#define CHECK_EXCEPTION_RETURN(env, val) \
+  do {                                   \
+    if (env->ExceptionOccurred())        \
+      return val;                        \
+  } while (0)
+#define CHECK_EXCEPTION_RETURN_VOID(env) \
+  do {                                   \
+    if (env->ExceptionOccurred())        \
+      return;                            \
+  } while (0)
+#define CHECK_RESULT_ABORT(env, result)  \
+  do {                                   \
+    if (!result)                         \
+      abort();                           \
+  } while (0)
+#define CHECK_RESULT_ASSERT(env, result) \
+  assert(result)
+#define CHECK_RESULT_THROW(env, result)  \
+  do {                                   \
+    if (!result)                         \
+      throw Java_ExceptionOccurred();    \
+  } while (0)
+#define CHECK_RESULT_RETURN(env, result, val) \
+  do {                                        \
+    if (!result)                              \
+      return val;                             \
+  } while (0)
+#define CHECK_RESULT_RETURN_VOID(env, result) \
+  do {                                        \
+    if (!result)                              \
+      return;                                 \
+  } while (0)
 
 
 namespace Parma_Polyhedra_Library {
@@ -99,6 +129,24 @@ handle_exception(JNIEnv* env, const std::exception& e);
 
 void
 handle_exception(JNIEnv* env);
+
+
+// Declare field/method ID caches.
+
+struct Java_FMID_Cache {
+  // Coefficient.
+  jmethodID Coefficient_init_from_String_ID;
+  jmethodID Coefficient_toString_ID;
+  // Linear_Expression.
+  jmethodID Linear_Expression_sum_ID;
+  jmethodID Linear_Expression_times_ID;
+  // Classes extending Linear_Expression.
+  jmethodID Linear_Expression_Coefficient_init_ID;
+  // Poly_Con_Relation and Poly_Gen_Relation.
+  jmethodID Poly_Con_Relation_init_ID;
+  jmethodID Poly_Gen_Relation_init_ID;
+};
+extern Java_FMID_Cache cached_FMIDs;
 
 /*! \brief
   Builds an unsigned C++ number from the Java native number \p value.

@@ -28,6 +28,9 @@ namespace Interfaces {
 
 namespace Java {
 
+// Define field/method ID cache.
+Java_FMID_Cache cached_FMIDs;
+
 void
 handle_exception(JNIEnv* env, const std::overflow_error& e) {
   jclass newExcCls
@@ -100,13 +103,6 @@ handle_exception(JNIEnv* env) {
 
 jobject
 build_java_poly_gen_relation(JNIEnv* env, Poly_Gen_Relation& r) {
-  jclass j_poly_gen_relation_class
-    = env->FindClass("parma_polyhedra_library/Poly_Gen_Relation");
-  CHECK_RESULT_ASSERT(env, j_poly_gen_relation_class);
-  jmethodID j_poly_gen_relation_ctr_id
-    = env->GetMethodID(j_poly_gen_relation_class, "<init>", "(I)V");
-  CHECK_RESULT_ASSERT(env, j_poly_gen_relation_ctr_id);
-
   jint j_value = 0;
   while (r != Poly_Gen_Relation::nothing()) {
     if (r.implies(Poly_Gen_Relation::subsumes())) {
@@ -114,21 +110,18 @@ build_java_poly_gen_relation(JNIEnv* env, Poly_Gen_Relation& r) {
       r = r - Poly_Gen_Relation::subsumes();
     }
   }
+  jclass j_poly_gen_relation_class
+    = env->FindClass("parma_polyhedra_library/Poly_Gen_Relation");
+  CHECK_RESULT_ASSERT(env, j_poly_gen_relation_class);
   jobject ret = env->NewObject(j_poly_gen_relation_class,
-			       j_poly_gen_relation_ctr_id, j_value);
+			       cached_FMIDs.Poly_Gen_Relation_init_ID,
+                               j_value);
   CHECK_RESULT_THROW(env, ret);
   return ret;
 }
 
 jobject
 build_java_poly_con_relation(JNIEnv* env, Poly_Con_Relation& r) {
-  jclass j_poly_con_relation_class
-    = env->FindClass("parma_polyhedra_library/Poly_Con_Relation");
-  CHECK_RESULT_ASSERT(env, j_poly_con_relation_class);
-  jmethodID j_poly_con_relation_ctr_id
-    = env->GetMethodID(j_poly_con_relation_class, "<init>", "(I)V");
-  CHECK_RESULT_ASSERT(env, j_poly_con_relation_ctr_id);
-
   jint j_value = 0;
   while (r != Poly_Con_Relation::nothing()) {
     if (r.implies(Poly_Con_Relation::is_disjoint())) {
@@ -148,8 +141,12 @@ build_java_poly_con_relation(JNIEnv* env, Poly_Con_Relation& r) {
       r = r - Poly_Con_Relation::saturates();
     }
   }
+  jclass j_poly_con_relation_class
+    = env->FindClass("parma_polyhedra_library/Poly_Con_Relation");
+  CHECK_RESULT_ASSERT(env, j_poly_con_relation_class);
   jobject ret = env->NewObject(j_poly_con_relation_class,
-			       j_poly_con_relation_ctr_id, j_value);
+			       cached_FMIDs.Poly_Con_Relation_init_ID,
+                               j_value);
   CHECK_RESULT_THROW(env, ret);
   return ret;
 }
@@ -258,18 +255,8 @@ j_integer_to_j_int(JNIEnv* env, jobject j_integer) {
   return ret;
 }
 
-// bool
-// j_boolean_to_bool(JNIEnv* env, jobject j_boolean) {
-//   jclass boolean_class = env->GetObjectClass(j_boolean);
-//   jmethodID booleanvalue_method_id = env->GetMethodID(boolean_class,
-// 						      "booleanValue",
-// 						      "()Z");
-//   return env->CallBooleanMethod(j_boolean, booleanvalue_method_id);
-// }
-
 Variables_Set
-build_cxx_variables_set(JNIEnv* env,
-			jobject j_v_set) {
+build_cxx_variables_set(JNIEnv* env, jobject j_v_set) {
   jclass variables_set_class = env->GetObjectClass(j_v_set);
   jclass iterator_java_class = env->FindClass("java/util/Iterator");
   CHECK_RESULT_ASSERT(env, iterator_java_class);
@@ -564,16 +551,9 @@ build_java_control_parameter_value
 
 Coefficient
 build_cxx_coeff(JNIEnv* env, jobject j_coeff) {
-  jclass j_coeff_class = env->GetObjectClass(j_coeff);
-  jfieldID fid = env->GetFieldID(j_coeff_class, "value",
-				 "Ljava/math/BigInteger;");
-  CHECK_RESULT_ASSERT(env, fid);
-  jobject bi = env->GetObjectField(j_coeff, fid);
-  jclass big_integer_class = env->GetObjectClass(bi);
-  jmethodID bi_to_string = env->GetMethodID(big_integer_class, "toString",
-					    "()Ljava/lang/String;");
-  CHECK_RESULT_ASSERT(env, bi_to_string);
-  jstring bi_string = (jstring) env->CallObjectMethod(bi, bi_to_string);
+  jstring bi_string
+    = (jstring) env->CallObjectMethod(j_coeff,
+                                      cached_FMIDs.Coefficient_toString_ID);
   CHECK_EXCEPTION_THROW(env);
   const char *nativeString = env->GetStringUTFChars(bi_string, 0);
   CHECK_RESULT_THROW(env, nativeString);
@@ -587,18 +567,15 @@ jobject
 build_java_coeff(JNIEnv* env, const Coefficient& ppl_coeff) {
   std::ostringstream s;
   s << ppl_coeff;
-  jclass j_coefficient_class =
-    env->FindClass("parma_polyhedra_library/Coefficient");
-  CHECK_RESULT_ASSERT(env, j_coefficient_class);
-  jmethodID j_coefficient_ctr_id = env->GetMethodID(j_coefficient_class,
-						    "<init>",
-						    "(Ljava/lang/String;)V");
-  CHECK_RESULT_ASSERT(env, j_coefficient_ctr_id);
   std::string str = s.str();
   jstring coeff_string = env->NewStringUTF(str.c_str());
   CHECK_RESULT_THROW(env, coeff_string);
-  jobject ret = env->NewObject(j_coefficient_class, j_coefficient_ctr_id,
-			       coeff_string);
+  jclass j_coeff_class =
+    env->FindClass("parma_polyhedra_library/Coefficient");
+  CHECK_RESULT_ASSERT(env, j_coeff_class);
+  jobject ret = env->NewObject(j_coeff_class,
+                               cached_FMIDs.Coefficient_init_from_String_ID,
+                               coeff_string);
   CHECK_RESULT_THROW(env, ret);
   return ret;
 }

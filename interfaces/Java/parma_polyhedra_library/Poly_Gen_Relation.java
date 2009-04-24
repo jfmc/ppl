@@ -54,4 +54,9 @@ public class Poly_Gen_Relation {
     public boolean implies(Poly_Gen_Relation y) {
 	return (this.mask_value & y.mask_value) ==  y.mask_value;
     }
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }
