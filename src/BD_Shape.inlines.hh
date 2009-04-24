@@ -1,11 +1,11 @@
 /* BD_Shape class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -26,106 +26,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "C_Polyhedron.defs.hh"
+#include "Grid.defs.hh"
+#include "Octagonal_Shape.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
+#include "Temp.defs.hh"
+#include "meta_programming.hh"
 #include <cassert>
 #include <vector>
 #include <iostream>
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {
-
-namespace Implementation {
-
-namespace BD_Shapes {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Extract the numerator and denominator components of \p from.
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename T, typename Policy>
-inline void
-numer_denom(const Checked_Number<T, Policy>& from,
-	    Coefficient& num, Coefficient& den) {
-  assert(!is_not_a_number(from)
-	 && !is_minus_infinity(from)
-	 && !is_plus_infinity(from));
-  mpq_class q;
-  assign_r(q, from, ROUND_NOT_NEEDED);
-  num = q.get_num();
-  den = q.get_den();
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Divides \p x by \p y into \p to, rounding the result towards plus infinity.
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename T, typename Policy>
-inline void
-div_round_up(Checked_Number<T, Policy>& to,
-	     Coefficient_traits::const_reference x,
-	     Coefficient_traits::const_reference y) {
-  mpq_class qx;
-  mpq_class qy;
-  // Note: this code assumes that a Coefficient is always convertible
-  // to an mpq_class without loss of precision.
-  assign_r(qx, x, ROUND_NOT_NEEDED);
-  assign_r(qy, y, ROUND_NOT_NEEDED);
-  div_assign_r(qx, qx, qy, ROUND_NOT_NEEDED);
-  assign_r(to, qx, ROUND_UP);
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Assigns to \p x the minimum between \p x and \p y.
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename N>
-inline void
-min_assign(N& x, const N& y) {
-  if (x > y)
-    x = y;
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Assigns to \p x the maximum between \p x and \p y.
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename N>
-inline void
-max_assign(N& x, const N& y) {
-  if (x < y)
-    x = y;
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns <CODE>true</CODE> if and only if \p x is an even number.
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename T, typename Policy>
-inline bool
-is_even(const Checked_Number<T, Policy>& x) {
-  Checked_Number<T, Policy> half_x;
-  return div2exp_assign_r(half_x, x, 1, ROUND_DIRECT) == V_EQ
-    && is_integer(half_x);
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns <CODE>true</CODE> if and only if \f$x = -y\f$.
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename T, typename Policy>
-inline bool
-is_additive_inverse(const Checked_Number<T, Policy>& x,
-		    const Checked_Number<T, Policy>& y) {
-  Checked_Number<T, Policy> negated_x;
-  return neg_assign_r(negated_x, x, ROUND_DIRECT) == V_EQ
-    && negated_x == y;
-}
-
-} // namespace BD_Shapes
-
-} // namespace Implementation
-
 
 template <typename T>
 inline dimension_type
@@ -138,22 +50,14 @@ BD_Shape<T>::max_space_dimension() {
 
 template <typename T>
 inline bool
+BD_Shape<T>::marked_zero_dim_univ() const {
+  return status.test_zero_dim_univ();
+}
+
+template <typename T>
+inline bool
 BD_Shape<T>::marked_empty() const {
   return status.test_empty();
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::set_empty() {
-  status.set_empty();
-  assert(OK());
-  assert(marked_empty());
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::set_zero_dim_univ() {
-  status.set_zero_dim_univ();
 }
 
 template <typename T>
@@ -169,6 +73,42 @@ BD_Shape<T>::marked_shortest_path_reduced() const {
 }
 
 template <typename T>
+inline void
+BD_Shape<T>::set_zero_dim_univ() {
+  status.set_zero_dim_univ();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::set_empty() {
+  status.set_empty();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::set_shortest_path_closed() {
+  status.set_shortest_path_closed();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::set_shortest_path_reduced() {
+  status.set_shortest_path_reduced();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::reset_shortest_path_closed() {
+  status.reset_shortest_path_closed();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::reset_shortest_path_reduced() {
+  status.reset_shortest_path_reduced();
+}
+
+template <typename T>
 inline
 BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
 		      const Degenerate_Element kind)
@@ -178,14 +118,14 @@ BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
   else {
     if (num_dimensions > 0)
       // A (non zero-dim) universe BDS is closed.
-      status.set_shortest_path_closed();
-    assert(OK());
+      set_shortest_path_closed();
   }
+  assert(OK());
 }
 
 template <typename T>
 inline
-BD_Shape<T>::BD_Shape(const BD_Shape& y)
+BD_Shape<T>::BD_Shape(const BD_Shape& y, Complexity_Class)
   : dbm(y.dbm), status(y.status), redundancy_dbm() {
   if (y.marked_shortest_path_reduced())
     redundancy_dbm = y.redundancy_dbm;
@@ -194,21 +134,23 @@ BD_Shape<T>::BD_Shape(const BD_Shape& y)
 template <typename T>
 template <typename U>
 inline
-BD_Shape<T>::BD_Shape(const BD_Shape<U>& y)
-  : dbm(y.dbm), status(), redundancy_dbm() {
+BD_Shape<T>::BD_Shape(const BD_Shape<U>& y, Complexity_Class)
+  // For maximum precision, enforce shortest-path closure
+  // before copying the DB matrix.
+  : dbm((y.shortest_path_closure_assign(), y.dbm)),
+    status(),
+    redundancy_dbm() {
   // TODO: handle flags properly, possibly taking special cases into account.
   if (y.marked_empty())
     set_empty();
-  else if (y.status.test_zero_dim_univ())
+  else if (y.marked_zero_dim_univ())
     set_zero_dim_univ();
 }
 
 template <typename T>
-inline bool
-BD_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
-  add_constraint(c);
-  shortest_path_closure_assign();
-  return !marked_empty();
+inline Congruence_System
+BD_Shape<T>::congruences() const {
+  return minimized_congruences();
 }
 
 template <typename T>
@@ -217,15 +159,6 @@ BD_Shape<T>::add_constraints(const Constraint_System& cs) {
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
     add_constraint(*i);
-  assert(OK());
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
-  add_constraints(cs);
-  shortest_path_closure_assign();
-  return !marked_empty();
 }
 
 template <typename T>
@@ -235,9 +168,98 @@ BD_Shape<T>::add_recycled_constraints(Constraint_System& cs) {
 }
 
 template <typename T>
+inline void
+BD_Shape<T>::add_congruences(const Congruence_System& cgs) {
+  for (Congruence_System::const_iterator i = cgs.begin(),
+	 cgs_end = cgs.end(); i != cgs_end; ++i)
+    add_congruence(*i);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::add_recycled_congruences(Congruence_System& cgs) {
+  add_congruences(cgs);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::refine_with_constraint(const Constraint& c) {
+  const dimension_type c_space_dim = c.space_dimension();
+  // Dimension-compatibility check.
+  if (c_space_dim > space_dimension())
+    throw_dimension_incompatible("refine_with_constraint(c)", c);
+
+  if (!marked_empty())
+    refine_no_check(c);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::refine_with_constraints(const Constraint_System& cs) {
+  // Dimension-compatibility check.
+  if (cs.space_dimension() > space_dimension())
+    throw_generic("refine_with_constraints(cs)",
+                  "cs and *this are space-dimension incompatible");
+
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
+    refine_no_check(*i);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::refine_with_congruence(const Congruence& cg) {
+  const dimension_type cg_space_dim = cg.space_dimension();
+  // Dimension-compatibility check.
+  if (cg_space_dim > space_dimension())
+    throw_dimension_incompatible("refine_with_congruence(cg)", cg);
+
+  if (!marked_empty())
+    refine_no_check(cg);
+}
+
+template <typename T>
+void
+BD_Shape<T>::refine_with_congruences(const Congruence_System& cgs) {
+  // Dimension-compatibility check.
+  if (cgs.space_dimension() > space_dimension())
+    throw_generic("refine_with_congruences(cgs)",
+                  "cgs and *this are space-dimension incompatible");
+
+  for (Congruence_System::const_iterator i = cgs.begin(),
+	 cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)
+    refine_no_check(*i);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::refine_no_check(const Congruence& cg) {
+  assert(!marked_empty());
+  assert(cg.space_dimension() <= space_dimension());
+
+  if (cg.is_proper_congruence()) {
+    if (cg.is_inconsistent())
+      set_empty();
+    // Other proper congruences are just ignored.
+    return;
+  }
+
+  assert(cg.is_equality());
+  Constraint c(cg);
+  refine_no_check(c);
+}
+
+template <typename T>
 inline bool
-BD_Shape<T>::add_recycled_constraints_and_minimize(Constraint_System& cs) {
-  return add_constraints_and_minimize(cs);
+BD_Shape<T>::can_recycle_constraint_systems() {
+  return false;
+}
+
+
+template <typename T>
+inline bool
+BD_Shape<T>::can_recycle_congruence_systems() {
+  return false;
 }
 
 template <typename T>
@@ -246,8 +268,55 @@ BD_Shape<T>::BD_Shape(const Constraint_System& cs)
   : dbm(cs.space_dimension() + 1), status(), redundancy_dbm() {
   if (cs.space_dimension() > 0)
     // A (non zero-dim) universe BDS is shortest-path closed.
-    status.set_shortest_path_closed();
+    set_shortest_path_closed();
   add_constraints(cs);
+}
+
+template <typename T>
+template <typename Interval>
+inline
+BD_Shape<T>::BD_Shape(const Box<Interval>& box,
+                      Complexity_Class)
+  : dbm(box.space_dimension() + 1), status(), redundancy_dbm() {
+  // Check for emptyness for maximum precision.
+  if (box.is_empty())
+    set_empty();
+  else if (box.space_dimension() > 0) {
+    // A (non zero-dim) universe BDS is shortest-path closed.
+    set_shortest_path_closed();
+    refine_with_constraints(box.constraints());
+  }
+}
+
+template <typename T>
+inline
+BD_Shape<T>::BD_Shape(const Grid& grid,
+                      Complexity_Class)
+  : dbm(grid.space_dimension() + 1), status(), redundancy_dbm() {
+  if (grid.space_dimension() > 0)
+    // A (non zero-dim) universe BDS is shortest-path closed.
+    set_shortest_path_closed();
+  // Taking minimized congruences ensures maximum precision.
+  refine_with_congruences(grid.minimized_congruences());
+}
+
+template <typename T>
+template <typename U>
+inline
+BD_Shape<T>::BD_Shape(const Octagonal_Shape<U>& os,
+                      Complexity_Class)
+  : dbm(os.space_dimension() + 1), status(), redundancy_dbm() {
+  // Check for emptyness for maximum precision.
+  if (os.is_empty())
+    set_empty();
+  else if (os.space_dimension() > 0) {
+    // A (non zero-dim) universe BDS is shortest-path closed.
+    set_shortest_path_closed();
+    refine_with_constraints(os.constraints());
+    // After refining, shortest-path closure is possibly lost
+    // (even when `os' was strongly closed: recall that U
+    // is possibly different from T).
+  }
 }
 
 template <typename T>
@@ -359,11 +428,12 @@ operator==(const BD_Shape<T>& x, const BD_Shape<T>& y) {
     return false;
 
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
-  if (x_space_dim == 0)
+  if (x_space_dim == 0) {
     if (x.marked_empty())
       return y.marked_empty();
     else
       return !y.marked_empty();
+  }
 
   // The exact equivalence test requires shortest-path closure.
   x.shortest_path_closure_assign();
@@ -407,7 +477,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
-      r = PLUS_INFINITY;
+      assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
     return true;
   }
 
@@ -421,7 +491,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
    if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
-      r = PLUS_INFINITY;
+      assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
    return true;
   }
 
@@ -435,9 +505,10 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			    const BD_Shape<T>& x,
 			    const BD_Shape<T>& y,
 			    const Rounding_Dir dir) {
-  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
-  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
-  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return rectilinear_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -471,7 +542,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
-      r = PLUS_INFINITY;
+      assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
     return true;
   }
 
@@ -485,7 +556,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
    if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
-      r = PLUS_INFINITY;
+      assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
    return true;
   }
 
@@ -499,9 +570,10 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			  const BD_Shape<T>& x,
 			  const BD_Shape<T>& y,
 			  const Rounding_Dir dir) {
-  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
-  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
-  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return euclidean_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -535,7 +607,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
-      r = PLUS_INFINITY;
+      assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
     return true;
   }
 
@@ -549,7 +621,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
    if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
-      r = PLUS_INFINITY;
+      assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
    return true;
   }
 
@@ -563,9 +635,10 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			   const BD_Shape<T>& x,
 			   const BD_Shape<T>& y,
 			   const Rounding_Dir dir) {
-  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
-  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
-  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return l_infinity_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -583,14 +656,14 @@ template <typename T>
 inline void
 BD_Shape<T>::add_dbm_constraint(const dimension_type i,
 				const dimension_type j,
-				N k) {
+				const N& k) {
   // Private method: the caller has to ensure the following.
   assert(i <= space_dimension() && j <= space_dimension() && i != j);
   N& dbm_ij = dbm[i][j];
   if (dbm_ij > k) {
     dbm_ij = k;
     if (marked_shortest_path_closed())
-      status.reset_shortest_path_closed();
+      reset_shortest_path_closed();
   }
 }
 
@@ -603,9 +676,24 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
   // Private method: the caller has to ensure the following.
   assert(i <= space_dimension() && j <= space_dimension() && i != j);
   assert(den != 0);
-  N k;
-  Implementation::BD_Shapes::div_round_up(k, num, den);
+  PPL_DIRTY_TEMP(N, k);
+  div_round_up(k, num, den);
   add_dbm_constraint(i, j, k);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
+  // Dimension-compatibility check.
+  if (space_dimension() != y.space_dimension())
+    throw_dimension_incompatible("time_elapse_assign(y)", y);
+  // See the polyhedra documentation.
+  C_Polyhedron px(constraints());
+  C_Polyhedron py(y.constraints());
+  px.time_elapse_assign(py);
+  BD_Shape<T> x(px);
+  swap(x);
+  assert(OK());
 }
 
 template <typename T>
@@ -617,36 +705,27 @@ BD_Shape<T>::strictly_contains(const BD_Shape& y) const {
 
 template <typename T>
 inline bool
-BD_Shape<T>::bds_hull_assign_and_minimize(const BD_Shape& y) {
-  bds_hull_assign(y);
-  assert(marked_empty()
-	 || space_dimension() == 0 || marked_shortest_path_closed());
-  return !marked_empty();
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::upper_bound_assign(const BD_Shape& y) {
-  bds_hull_assign(y);
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::bds_hull_assign_if_exact(const BD_Shape&) {
-  // TODO: this must be properly implemented.
-  return false;
-}
-
-template <typename T>
-inline bool
 BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
-  return bds_hull_assign_if_exact(y);
+  if (space_dimension() != y.space_dimension())
+    throw_dimension_incompatible("upper_bound_assign_if_exact(y)", y);
+#if 0
+  return BFT00_upper_bound_assign_if_exact(y);
+#else
+  const bool integer_upper_bound = false;
+  return BHZ09_upper_bound_assign_if_exact<integer_upper_bound>(y);
+#endif
 }
 
 template <typename T>
-inline void
-BD_Shape<T>::difference_assign(const BD_Shape& y) {
-  bds_difference_assign(y);
+inline bool
+BD_Shape<T>::integer_upper_bound_assign_if_exact(const BD_Shape& y) {
+  PPL_COMPILE_TIME_CHECK(std::numeric_limits<T>::is_integer,
+                         "BD_Shape<T>::integer_upper_bound_assign_if_exact(y):"
+                         " T in not an integer datatype.");
+  if (space_dimension() != y.space_dimension())
+    throw_dimension_incompatible("integer_upper_bound_assign_if_exact(y)", y);
+  const bool integer_upper_bound = true;
+  return BHZ09_upper_bound_assign_if_exact<integer_upper_bound>(y);
 }
 
 template <typename T>
@@ -673,21 +752,13 @@ BD_Shape<T>::remove_higher_space_dimensions(const dimension_type new_dim) {
   // Shortest-path closure is maintained.
   // TODO: see whether or not reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
-    status.reset_shortest_path_reduced();
+    reset_shortest_path_reduced();
 
   // If we removed _all_ dimensions from a non-empty BDS,
   // the zero-dim universe BDS has been obtained.
   if (new_dim == 0 && !marked_empty())
     set_zero_dim_univ();
   assert(OK());
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::intersection_assign_and_minimize(const BD_Shape& y) {
-  intersection_assign(y);
-  shortest_path_closure_assign();
-  return !marked_empty();
 }
 
 template <typename T>
@@ -721,6 +792,12 @@ BD_Shape<T>::H79_widening_assign(const BD_Shape& y, unsigned* tp) {
 
 template <typename T>
 inline void
+BD_Shape<T>::widening_assign(const BD_Shape& y, unsigned* tp) {
+  H79_widening_assign(y, tp);
+}
+
+template <typename T>
+inline void
 BD_Shape<T>::limited_H79_extrapolation_assign(const BD_Shape& y,
 					      const Constraint_System& cs,
 					      unsigned* tp) {
@@ -734,24 +811,15 @@ BD_Shape<T>::limited_H79_extrapolation_assign(const BD_Shape& y,
 }
 
 template <typename T>
-inline void
-BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
-  // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
-    throw_dimension_incompatible("time_elapse_assign(y)", y);
-  // See the documentation for polyhedra.
-  C_Polyhedron px(constraints());
-  C_Polyhedron py(y.constraints());
-  px.time_elapse_assign(py);
-  BD_Shape x(px);
-  swap(x);
-  assert(OK());
-}
-
-template <typename T>
 inline memory_size_type
 BD_Shape<T>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
+}
+
+template <typename T>
+inline int32_t
+BD_Shape<T>::hash_code() const {
+  return space_dimension() & 0x7fffffff;
 }
 
 } // namespace Parma_Polyhedra_Library

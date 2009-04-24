@@ -1,11 +1,11 @@
 /* Test minimization of NNC polyhedra.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -50,9 +50,9 @@ test01() {
   cs.insert(x - y < 6);
   cs.insert(x - y > -6);
 
-  ph.add_constraints_and_minimize(cs);
+  ph.add_constraints(cs);
 
-  nout << "After vertices removal" << endl;
+  nout << "After vertices removal:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 
@@ -75,7 +75,7 @@ test01() {
   const Generator_System& min_gs = ph.minimized_generators();
   bool ok1 = (std::distance(min_gs.begin(), min_gs.end()) == 8);
 
-  nout << "After NNC minimization" << endl;
+  nout << "After NNC minimization:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 
@@ -107,9 +107,9 @@ test02() {
   cs.insert(x - y < 1);
   cs.insert(x - y > -1);
 
-  ph.add_constraints_and_minimize(cs);
+  ph.add_constraints(cs);
 
-  nout << "After vertices removal" << endl;
+  nout << "After vertices removal:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 
@@ -132,7 +132,7 @@ test02() {
   const Generator_System& min_gs = ph.minimized_generators();
   bool ok1 = (std::distance(min_gs.begin(), min_gs.end()) == 8);
 
-  nout << "After NNC minimization" << endl;
+  nout << "After NNC minimization:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
   nout << endl;
@@ -168,9 +168,9 @@ test03() {
   cs.insert(x - y < 1);
   cs.insert(x - y > -1);
 
-  ph.add_constraints_and_minimize(cs);
+  ph.add_constraints(cs);
 
-  nout << "After vertices removal" << endl;
+  nout << "After vertices removal:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 
@@ -184,7 +184,7 @@ test03() {
 
   ph.intersection_assign(ph2);
 
-  nout << "After intersection" << endl;
+  nout << "After intersection:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 
@@ -202,7 +202,7 @@ test03() {
   const Generator_System& min_gs = ph.minimized_generators();
   bool ok1 = (std::distance(min_gs.begin(), min_gs.end()) == 4);
 
-  nout << "After NNC minimization" << endl;
+  nout << "After NNC minimization:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 
@@ -237,13 +237,13 @@ test04() {
 
   NNC_Polyhedron ph(gs);
 
-  nout << endl << "Before NNC minimization" << endl;
+  nout << endl << "Before NNC minimization:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 
   ph.minimized_constraints();
 
-  nout << endl << "After NNC minimization" << endl;
+  nout << endl << "After NNC minimization:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 
@@ -286,7 +286,8 @@ test05() {
 
   NNC_Polyhedron ph2(cs);
 
-  ph1.poly_hull_assign_and_minimize(ph2);
+  ph1.upper_bound_assign(ph2);
+  (void) ph1.is_empty();
 
   nout << "(Weakly) minimized poly hull" << endl;
   print_constraints(ph1.constraints(), "*** ph1 constraints ***");
@@ -301,7 +302,7 @@ test05() {
   const int num_minimized_constraints = std::distance(ph1_min_cs.begin(),
 						      ph1_min_cs.end());
 
-  print_constraints(ph1, "*** After ph1.minimized_constraints() ***");
+  print_constraints(ph1, "*** after ph1.minimized_constraints() ***");
   nout << "num_constraints = " << num_constraints << endl;
   nout << "num_minimized_constraints = "
        << num_minimized_constraints << endl;
@@ -324,7 +325,7 @@ test05() {
 	     && num_points == num_minimized_points + 1);
 
   print_generators(copy_ph1,
-		   "*** After copy_ph1_minimized_generators() ***");
+		   "*** after copy_ph1_minimized_generators() ***");
   nout << "num_points = " << num_points << endl;
   nout << "num_minimized_points = "
        << num_minimized_points << endl;
@@ -347,7 +348,7 @@ test06() {
 
   ph.add_constraints(cs);
 
-  nout << endl << "Before NNC minimization" << endl;
+  nout << endl << "Before NNC minimization:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 
@@ -359,7 +360,7 @@ test06() {
 
   bool ok = (ph == known_result);
 
-  nout << endl << "After NNC minimization" << endl;
+  nout << endl << "After NNC minimization:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 

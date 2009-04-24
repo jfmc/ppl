@@ -1,11 +1,11 @@
 /* Test BD_Shape::bounds_from_below() and BD_Shape::bounds_from_above().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -28,14 +28,14 @@ bool
 test01() {
   Variable A(0);
 
-  TBD_Shape bd1;
-  TBD_Shape bd2(2, EMPTY);
+  TBD_Shape bds1;
+  TBD_Shape bds2(2, EMPTY);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bool ok = bd1.bounds_from_above(Linear_Expression(3))
-    && bd2.bounds_from_below(A);
+  bool ok = bds1.bounds_from_above(Linear_Expression(3))
+    && bds2.bounds_from_below(A);
 
   return ok;
 }
@@ -45,13 +45,13 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 1);
-  bd.add_constraint(B >= 1);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 1);
+  bds.add_constraint(B >= 1);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool ok = !bd.bounds_from_above(A + B) && bd.bounds_from_below(A + B);
+  bool ok = !bds.bounds_from_above(A + B) && bds.bounds_from_below(A + B);
 
   return ok;
 }
@@ -61,14 +61,14 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A <= 0);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(A - B <= 0);
+  TBD_Shape bds(2);
+  bds.add_constraint(A <= 0);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(A - B <= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool ok = bd.bounds_from_above(A - B) && !bd.bounds_from_below(A - B);
+  bool ok = bds.bounds_from_above(A - B) && !bds.bounds_from_below(A - B);
 
   return ok;
 }
@@ -79,14 +79,14 @@ test04() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(A <= 0);
-  bd.add_constraint(B - C <= 0);
+  TBD_Shape bds(3);
+  bds.add_constraint(A <= 0);
+  bds.add_constraint(B - C <= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool ok = bd.bounds_from_above(A + B - C)
-    && !bd.bounds_from_below(A + B - C);
+  bool ok = bds.bounds_from_above(A + B - C)
+    && !bds.bounds_from_below(A + B - C);
 
   return ok;
 }
@@ -99,15 +99,15 @@ test05() {
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd(5);
-  bd.add_constraint(A <= 0);
-  bd.add_constraint(B - C <= 0);
-  bd.add_constraint(E - D <= 0);
+  TBD_Shape bds(5);
+  bds.add_constraint(A <= 0);
+  bds.add_constraint(B - C <= 0);
+  bds.add_constraint(E - D <= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool ok = bd.bounds_from_above(A + B - C + 2*E - 2*D)
-    && !bd.bounds_from_below(A + B - C + 2*E - 2*D);
+  bool ok = bds.bounds_from_above(A + B - C + 2*E - 2*D)
+    && !bds.bounds_from_below(A + B - C + 2*E - 2*D);
 
   return ok;
 }
@@ -120,15 +120,15 @@ test06() {
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd(5);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B - C >= 0);
-  bd.add_constraint(E - D >= 0);
+  TBD_Shape bds(5);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B - C >= 0);
+  bds.add_constraint(E - D >= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool ok = !bd.bounds_from_above(A + B - C + 2*E - 2*D)
-    && bd.bounds_from_below(A + B - C + 2*E - 2*D);
+  bool ok = !bds.bounds_from_above(A + B - C + 2*E - 2*D)
+    && bds.bounds_from_below(A + B - C + 2*E - 2*D);
 
   return ok;
 }
@@ -141,16 +141,16 @@ test07() {
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd(5);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B - C >= 0);
-  bd.add_constraint(B - C <= -1);
-  bd.add_constraint(E - D >= 0);
+  TBD_Shape bds(5);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B - C >= 0);
+  bds.add_constraint(B - C <= -1);
+  bds.add_constraint(E - D >= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool ok = bd.bounds_from_above(A + B - C + 2*E - 2*D)
-    && bd.bounds_from_below(A + B - C + 2*E - 2*D);
+  bool ok = bds.bounds_from_above(A + B - C + 2*E - 2*D)
+    && bds.bounds_from_below(A + B - C + 2*E - 2*D);
 
   return ok;
 }
@@ -163,15 +163,15 @@ test08() {
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd(5);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B - C >= 0);
-  bd.add_constraint(E - D >= 0);
+  TBD_Shape bds(5);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B - C >= 0);
+  bds.add_constraint(E - D >= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool ok = bd.bounds_from_above(Linear_Expression(3))
-    && bd.bounds_from_below(Linear_Expression(3));
+  bool ok = bds.bounds_from_above(Linear_Expression(3))
+    && bds.bounds_from_below(Linear_Expression(3));
 
   return ok;
 }
@@ -182,15 +182,15 @@ test09() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
+  TBD_Shape bds(2);
+  bds.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the method
     // BD_Shape::bounds_from_below(expr): it is illegal
     // to apply it to an expression whose space dimension is
     // greater than the space dimension of the BDS.
-    bd.bounds_from_below(z);
+    bds.bounds_from_below(z);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -207,15 +207,15 @@ test10() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
+  TBD_Shape bds(2);
+  bds.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the method
     // BD_Shape::bounds_from_below(expr): it is illegal
     // to apply it to an expression whose space dimension is
     // greater than the space dimension of the BDS.
-    bd.bounds_from_above(z);
+    bds.bounds_from_above(z);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -231,11 +231,11 @@ test11() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
+  TBD_Shape bds(2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool ok = !bd.bounds_from_above(A - B) && !bd.bounds_from_below(A - B);
+  bool ok = !bds.bounds_from_above(A - B) && !bds.bounds_from_below(A - B);
 
   return ok;
 }
@@ -245,11 +245,11 @@ test12() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
+  TBD_Shape bds(2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool ok = !bd.bounds_from_above(A + B) && !bd.bounds_from_below(A + B);
+  bool ok = !bds.bounds_from_above(A + B) && !bds.bounds_from_below(A + B);
 
   return ok;
 }

@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -52,21 +52,31 @@
 #	    0.8			    5:0:0
 #	    0.9			    6:0:0
 #	    0.10		    7:0:0
+#	    0.10.1		    8:0:1
+#	    0.10.2		    8:0:1
+#	    0.11		    9:0:0
 
-LIBPPL_LT_CURRENT =  7
+LIBPPL_LT_CURRENT =  9
 LIBPPL_LT_REVISION = 0
 LIBPPL_LT_AGE =      0
 
-AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
+AM_CPPFLAGS = \
+-I$(top_builddir) \
+-I$(top_srcdir)/src \
+@extra_includes@
 
 lib_LTLIBRARIES = libppl.la
 
 bin_PROGRAMS = ppl-config
+
 ppl_config_SOURCES = \
-ppl-config.cc \
 BUGS.cc \
 COPYING.cc \
 CREDITS.cc
+
+nodist_ppl_config_SOURCES = \
+ppl-config.cc \
+ppl.hh
 
 ppl_config_LDADD = \
 libppl.la
@@ -103,15 +113,27 @@ INCLUDE_FILES = \
 namespaces.hh \
 compiler.hh \
 Serializer.types.hh \
+meta_programming.hh \
+Slow_Copy.hh \
+Has_Assign_Or_Swap.hh \
+assign_or_swap.hh \
+mp_std_bits.defs.hh \
+mp_std_bits.inlines.hh \
+Temp.defs.hh \
+Temp.inlines.hh \
+Temp.templates.hh \
 Coefficient_traits_template.hh \
 Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
+stdiobuf.types.hh \
+c_streambuf.types.hh \
 globals.types.hh \
 iterator_to_const.types.hh \
 distances.types.hh \
+Interval_Info.types.hh \
 Interval.types.hh \
-Bounding_Box.types.hh \
+Box.types.hh \
 Constraint.types.hh \
 Generator.types.hh \
 Grid_Generator.types.hh \
@@ -150,7 +172,7 @@ Octagonal_Shape.types.hh \
 fpu.types.hh \
 Float.defs.hh \
 Float.inlines.hh \
-Limits.hh \
+C_Integer.hh \
 fpu.defs.hh \
 fpu-c99.inlines.hh \
 fpu-ia32.inlines.hh \
@@ -170,26 +192,42 @@ checked_mpq.inlines.hh \
 checked_ext.inlines.hh \
 Checked_Number.defs.hh \
 Checked_Number.inlines.hh \
-mp_numeric_limits.hh \
+Checked_Number.templates.hh \
 checked_numeric_limits.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \
 Coefficient.inlines.hh \
+stdiobuf.defs.hh \
+stdiobuf.inlines.hh \
+c_streambuf.defs.hh \
+c_streambuf.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
+math_utilities.defs.hh \
+math_utilities.inlines.hh \
 iterator_to_const.defs.hh \
 iterator_to_const.inlines.hh \
 distances.defs.hh \
 distances.inlines.hh \
+Boundary.defs.hh \
+Interval_Info.defs.hh \
+Interval_Info.inlines.hh \
+Interval_Restriction.defs.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
-Bounding_Box.defs.hh \
-Bounding_Box.inlines.hh \
+Interval.templates.hh \
+Box.defs.hh \
+Box_Status.inlines.hh \
+Box.inlines.hh \
+Box.templates.hh \
+Rational_Interval.hh \
+Rational_Box.hh \
 Variable.defs.hh \
 Variable.inlines.hh \
 Variables_Set.defs.hh \
 Variables_Set.inlines.hh \
 Init.defs.hh \
+Init.inlines.hh \
 initializer.hh \
 Topology.hh \
 Row.defs.hh \
@@ -282,38 +320,41 @@ Pointset_Powerset.types.hh \
 Pointset_Powerset.defs.hh \
 Pointset_Powerset.inlines.hh \
 Pointset_Powerset.templates.hh \
-Ask_Tell.types.hh \
-Ask_Tell.defs.hh \
-Ask_Tell.inlines.hh \
-Ask_Tell.templates.hh \
-Pointset_Ask_Tell.types.hh \
-Pointset_Ask_Tell.defs.hh \
-Pointset_Ask_Tell.inlines.hh \
-Pointset_Ask_Tell.templates.hh \
-Direct_Product.types.hh \
-Direct_Product.defs.hh \
-Direct_Product.inlines.hh \
-Direct_Product.templates.hh \
-Any_Pointset.types.hh \
-Any_Pointset.defs.hh \
-Any_Pointset.inlines.hh \
+Partially_Reduced_Product.types.hh \
+Partially_Reduced_Product.defs.hh \
+Partially_Reduced_Product.inlines.hh \
+Partially_Reduced_Product.templates.hh \
 max_space_dimension.hh \
 algorithms.hh \
 Serializer.defs.hh \
-Serializer.inlines.hh
+Serializer.inlines.hh \
+wrap.hh
+#Any_Pointset.types.hh \
+#Any_Pointset.defs.hh \
+#Any_Pointset.inlines.hh \
+#Ask_Tell.types.hh \
+#Ask_Tell.defs.hh \
+#Ask_Tell.inlines.hh \
+#Ask_Tell.templates.hh \
+#Pointset_Ask_Tell.types.hh \
+#Pointset_Ask_Tell.defs.hh \
+#Pointset_Ask_Tell.inlines.hh \
+#Pointset_Ask_Tell.templates.hh
 
 NESTED_INCLUDE_FILES = \
 Ph_Status.idefs.hh \
 Grid_Status.idefs.hh \
+Box_Status.idefs.hh \
 BDS_Status.idefs.hh \
 Og_Status.idefs.hh
 
 libppl_la_SOURCES = \
 Serializer.cc \
-Bounding_Box.cc \
+Box.cc \
 checked.cc \
 Checked_Number.cc \
 Float.cc \
+fpu-ia32.cc \
 Constraint.cc \
 Constraint_System.cc \
 Congruence.cc \
@@ -324,7 +365,6 @@ Generator.cc \
 Grid_Generator.cc \
 Init.cc \
 Coefficient.cc \
-Interval.cc \
 Linear_Expression.cc \
 Linear_System.cc \
 Matrix.cc \
@@ -348,7 +388,6 @@ Grid_widenings.cc \
 BD_Shape.cc \
 Octagonal_Shape.cc \
 Pointset_Powerset.cc \
-Pointset_Ask_Tell.cc \
 Row.cc \
 Linear_Row.cc \
 Bit_Matrix.cc \
@@ -362,12 +401,16 @@ minimize.cc \
 simplify.cc \
 Grid_conversion.cc \
 Grid_simplify.cc \
+stdiobuf.cc \
+c_streambuf.cc \
 globals.cc \
-mp_numeric_limits.cc \
+mp_std_bits.cc \
 version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
-swapping_sort.icc
+swapping_sort.icc \
+wrap.cc
+#Pointset_Ask_Tell.cc
 
 if NO_UNDEFINED
 
@@ -376,26 +419,35 @@ NO_UNDEFINED_FLAG = -no-undefined
 endif NO_UNDEFINED
 
 libppl_la_LIBADD = @extra_libraries@
+
 libppl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
+if BUILD_CXX_INTERFACE
+
 include_HEADERS = ppl.hh
+
+else !BUILD_CXX_INTERFACE
+
+noinst_HEADERS = ppl.hh
+
+endif !BUILD_CXX_INTERFACE
 
 nodist_noinst_HEADERS = ppl_include_files.hh
 
 ppl_include_files.hh: $(INCLUDE_FILES) Makefile
-	rm -f $@
-	for file in $(INCLUDE_FILES); \
+	for file in $(INCLUDE_FILES) ; \
 	do \
-	  printf "#include \"%s\"\n" $$file >>$@; \
-	done
+	  i="#include \"$$file\"" ; \
+	  ( cd $(top_srcdir)/src ; $(FGREP) -q "$$i" $(INCLUDE_FILES) ) || echo "$$i" ; \
+	done > $@
 
 EXTRA_DIST = ppl_header.hh ppl-config.cc.in version.hh.in
 
 if HAVE_PERL
 
-ppl.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(INCLUDE_FILES) $(NESTED_INCLUDE_FILES) Makefile $(top_builddir)/utils/build_header
+ppl.hh:	$(top_builddir)/ppl-config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(INCLUDE_FILES) $(NESTED_INCLUDE_FILES) Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/ppl_header.hh >$@
@@ -454,4 +506,13 @@ dist-hook:
 	mv -f $(distdir)/COPYING.cc $(distdir)/COPYING.cc.dist
 	mv -f $(distdir)/CREDITS.cc $(distdir)/CREDITS.cc.dist
 
-MOSTLYCLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES)
+
+$(top_builddir)/utils/build_header:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils build_header
+
+$(top_builddir)/utils/text2cxxarray:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils text2cxxarray
+
+$(top_builddir)/ppl-config.h:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir) ppl-config.h

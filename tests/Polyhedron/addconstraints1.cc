@@ -1,11 +1,11 @@
 /* Test Polyhedron::add_constrains().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -29,17 +29,17 @@ test01() {
   // For const-correctness, making a copy is required.
   Constraint_System cs1 = Constraint_System::zero_dim_empty();
   C_Polyhedron ph1;
-  ph1.add_constraints_and_minimize(cs1);
+  ph1.add_constraints(cs1);
 
   Constraint_System cs2;
   cs2.insert(Linear_Expression::zero() >= 7);
   C_Polyhedron ph2;
-  ph2.add_constraints_and_minimize(cs2);
+  ph2.add_constraints(cs2);
 
   Constraint_System cs3;
   cs3.insert(Linear_Expression::zero() >= -3);
   C_Polyhedron ph3;
-  ph3.add_constraints_and_minimize(cs3);
+  ph3.add_constraints(cs3);
 
   C_Polyhedron empty_result(0, EMPTY);
   C_Polyhedron univ_result;
@@ -102,7 +102,7 @@ test03() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.add_constraints(cs2) ***");
+  print_constraints(ph, "*** after ph.add_constraints(cs2) ***");
 
   return ok;
 }
@@ -120,12 +120,11 @@ test04() {
 
   C_Polyhedron computed_result(ph);
 
-  computed_result.add_constraints_and_minimize(cs);
+  computed_result.add_constraints(cs);
 
   bool ok = (computed_result == ph);
 
-  print_constraints(computed_result,
-		    "*** After add_constraints_and_minimize ***");
+  print_constraints(computed_result, "*** after add_constraints ***");
 
   return ok;
 }
@@ -142,13 +141,13 @@ test05() {
   print_constraints(ph, "*** ph ***");
   print_constraints(cs, "*** cs ***");
 
-  ph.add_constraints_and_minimize(cs);
+  ph.add_constraints(cs);
 
   C_Polyhedron computed_result(3, EMPTY);
 
   bool ok = (ph == computed_result);
 
-  print_constraints(ph, "*** After add_constraints_and_minimize(cs) ***");
+  print_constraints(ph, "*** after add_constraints(cs) ***");
 
   return ok;
 }
@@ -167,7 +166,7 @@ test06() {
   print_constraints(ph, "*** ph ***");
   print_constraints(cs, "*** cs ***");
 
-  ph.add_constraints_and_minimize(cs);
+  ph.add_constraints(cs);
 
   C_Polyhedron known_result(3);
   known_result.add_constraint(x >= 4);
@@ -175,7 +174,7 @@ test06() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After add_constraints_and_minimize(cs) ***");
+  print_constraints(ph, "*** after add_constraints(cs) ***");
 
   return ok;
 }
@@ -195,13 +194,13 @@ test07() {
   print_constraints(ph, "*** ph ***");
   print_constraints(cs, "*** cs ***");
 
-  ph.add_constraints_and_minimize(cs);
+  ph.add_constraints(cs);
 
   C_Polyhedron known_result(3, EMPTY);
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After add_constraints_and_minimize(cs) ***");
+  print_constraints(ph, "*** after add_constraints(cs) ***");
 
   return ok;
 }
@@ -223,7 +222,7 @@ test08() {
 
   bool ok = (known_result == ph);
 
-  print_constraints(ph, "*** After add_constraints ***");
+  print_constraints(ph, "*** after add_constraints ***");
 
   return ok;
 }
@@ -255,7 +254,7 @@ test09() {
 
   bool ok = (known_result == ph);
 
-  print_constraints(ph, "*** After add_constraints ***");
+  print_constraints(ph, "*** after add_constraints ***");
 
   return ok;
 }
@@ -279,7 +278,7 @@ test10() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.add_constraints(cs) ***");
+  print_constraints(ph1, "*** after ph1.add_constraints(cs) ***");
 
   return ok;
 }
@@ -300,13 +299,12 @@ test11() {
   Constraint_System cs2(cs1);
 
   ph.add_constraints(cs1);
-  copy_ph.add_constraints_and_minimize(cs2);
+  copy_ph.add_constraints(cs2);
 
   bool ok = (ph == copy_ph);
 
-  print_constraints(ph, "*** After ph.add_constraints(cs1) ***");
-  print_constraints(ph,
-		    "*** After copy_ph.add_constraints_and_minimize(cs2) ***");
+  print_constraints(ph, "*** after ph.add_constraints(cs1) ***");
+  print_constraints(ph, "*** after copy_ph.add_constraints(cs2) ***");
   return ok;
 }
 
@@ -334,13 +332,12 @@ test12() {
   Constraint_System cs2 = ph2.constraints();
 
   ph1.add_constraints(cs1);
-  copy_ph1.add_constraints_and_minimize(cs2);
+  copy_ph1.add_constraints(cs2);
 
   bool ok = (ph1 == copy_ph1);
 
-  print_constraints(ph1, "*** After add_constraints_assign ***");
-  print_constraints(copy_ph1,
-		    "*** After add_constraints_and_minimize ***");
+  print_constraints(ph1, "*** after add_constraints_assign ***");
+  print_constraints(copy_ph1, "*** after add_constraints ***");
 
   return ok;
 }

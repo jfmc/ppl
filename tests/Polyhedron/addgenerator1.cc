@@ -1,11 +1,11 @@
 /* Test Polyhedron::add_generator().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -38,7 +38,7 @@ test01() {
 
   print_generators(ph, "*** ph ***");
 
-  ph.add_generator_and_minimize(ray(A));
+  ph.add_generator(ray(A));
 
   Generator_System known_gs;
   known_gs.insert(point());
@@ -48,8 +48,7 @@ test01() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph,
-		    "*** After ph.add_generator_and_minimize(ray(A)) ***");
+  print_generators(ph, "*** after ph.add_generator(ray(A)) ***");
 
   return ok;
 }
@@ -93,9 +92,26 @@ test02() {
   return ok;
 }
 
+bool
+test03() {
+  C_Polyhedron ph(0, EMPTY);
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron known_result(0, UNIVERSE);
+  print_constraints(known_result, "*** known_result ***");
+
+  ph.add_generator(point());
+
+  bool ok = (ph == known_result);
+  print_constraints(ph, "*** ph.add_generator(point()) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
+  DO_TEST(test03);
 END_MAIN

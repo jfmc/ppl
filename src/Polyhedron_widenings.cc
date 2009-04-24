@@ -1,12 +1,12 @@
 /* Polyhedron class implementation
    (non-inline widening-related member functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -21,12 +21,11 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Polyhedron.defs.hh"
-
 #include "BHRZ03_Certificate.defs.hh"
-#include "Bounding_Box.defs.hh"
+#include "Rational_Box.hh"
 #include "Scalar_Products.defs.hh"
 #include <cassert>
 #include <iostream>
@@ -81,6 +80,14 @@ PPL::Polyhedron
 	 && y.constraints_are_minimized()
 	 && y.generators_are_up_to_date());
 
+  // FIXME: this is a workaround for NNC polyhedra.
+  if (!y.is_necessarily_closed()) {
+    // Force strong minimization of constraints.
+    y.strongly_minimize_constraints();
+    // Recompute generators (without compromising constraint minimization).
+    y.update_generators();
+  }
+
   // Obtain a sorted copy of `y.sat_g'.
   if (!y.sat_g_is_up_to_date())
     y.update_sat_g();
@@ -116,7 +123,7 @@ PPL::Polyhedron
   // it will not appear in the resulting constraint system,
   // because `tmp_sat_g' is built starting from a minimized polyhedron.
 
-  // The size of `buffer' will reach sat.num_columns() bit.
+  // The size of `buffer' will reach sat.num_columns() bits.
   Bit_Row buffer;
   // Note: the loop index `i' goes upward to avoid reversing
   // the ordering of the chosen constraints.
@@ -129,7 +136,10 @@ PPL::Polyhedron
     for (dimension_type j = y.gen_sys.num_rows(); j-- > 0; ) {
       const int sp_sgn = Scalar_Products::sign(ci, y.gen_sys[j]);
       // We are assuming that `y <= x'.
-      assert(sp_sgn >= 0);
+      assert(sp_sgn >= 0
+	     || (!is_necessarily_closed()
+		 && ci.is_strict_inequality()
+		 && y.gen_sys[j].is_point()));
       if (sp_sgn > 0)
 	buffer.set(j);
     }
@@ -183,8 +193,9 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     // to also hold for the corresponding eps-representations:
     // this is obtained by intersecting the two eps-representations.
     Polyhedron& yy = const_cast<Polyhedron&>(y);
-    if (!yy.intersection_assign_and_minimize(x))
-      // `y' is empty: the result is `x'.
+    yy.intersection_assign(x);
+    if (yy.is_empty())
+      // The result is `x'.
       return;
   }
 
@@ -245,7 +256,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   Constraint_System x_minus_H79_cs(topol);
   x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
 
-  if (x_minus_H79_cs.num_rows() == 0)
+  if (x_minus_H79_cs.has_no_rows())
     // We selected all of the constraints of `x',
     // thus the result of the widening is `x'.
     return;
@@ -352,7 +363,7 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
       new_cs.insert(c);
   }
   x.H79_widening_assign(y, tp);
-  x.add_constraints(new_cs);
+  x.add_recycled_constraints(new_cs);
   assert(OK());
 }
 
@@ -360,16 +371,12 @@ void
 PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
 						  const Constraint_System& cs,
 						  unsigned* tp) {
-  const dimension_type space_dim = space_dimension();
-  Bounding_Box x_box(space_dim);
-  Bounding_Box y_box(space_dim);
-  shrink_bounding_box(x_box, ANY_COMPLEXITY);
-  y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
+  Rational_Box x_box(*this, ANY_COMPLEXITY);
+  Rational_Box y_box(y, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
   limited_H79_extrapolation_assign(y, cs, tp);
-  // TODO: see if some copies can be avoided.
-  // add_recycled_constraints(x_box.constraints());
-  add_constraints(x_box.constraints());
+  Constraint_System x_box_cs = x_box.constraints();
+  add_recycled_constraints(x_box_cs);
 }
 
 bool
@@ -452,11 +459,12 @@ PPL::Polyhedron
 	    e += Linear_Expression(combining_cs[h]);
 	  }
 
-	  if (!e.all_homogeneous_terms_are_zero())
+	  if (!e.all_homogeneous_terms_are_zero()) {
 	    if (strict_inequality)
 	      new_cs.insert(e > 0);
 	    else
 	      new_cs.insert(e >= 0);
+	  }
 	}
       }
     }
@@ -477,7 +485,9 @@ PPL::Polyhedron
   // The resulting polyhedron is obtained by adding the constraints
   // in `new_cs' to polyhedron `H79'.
   Polyhedron result = H79;
-  result.add_recycled_constraints_and_minimize(new_cs);
+  result.add_recycled_constraints(new_cs);
+  // Force minimization.
+  result.minimize();
 
   // Check for stabilization with respect to `y_cert' and improvement
   // over `H79'.
@@ -544,8 +554,10 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 
   // Be non-intrusive.
   Polyhedron result = x;
-  result.add_recycled_generators_and_minimize(candidate_rays);
-  result.intersection_assign_and_minimize(H79);
+  result.add_recycled_generators(candidate_rays);
+  result.intersection_assign(H79);
+  // Force minimization.
+  result.minimize();
 
   // Check for stabilization with respect to `y_cert' and improvement
   // over `H79'.
@@ -582,7 +594,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 
   // Candidate rays are kept in a temporary generator system.
   Generator_System candidate_rays;
-  TEMP_INTEGER(tmp);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     const Generator& x_g = x.gen_sys[i];
     // We choose a ray of `x' that does not belong to `y'.
@@ -627,15 +639,15 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   }
 
   // If there are no candidate rays, we cannot obtain stabilization.
-  if (candidate_rays.num_rows() == 0)
+  if (candidate_rays.has_no_rows())
     return false;
 
   // Be non-intrusive.
   Polyhedron result = x;
-  // Add to `result' the rays in `candidate_rays'
-  result.add_recycled_generators_and_minimize(candidate_rays);
-  // Intersect with `H79'.
-  result.intersection_assign_and_minimize(H79);
+  result.add_recycled_generators(candidate_rays);
+  result.intersection_assign(H79);
+  // Force minimization.
+  result.minimize();
 
   // Check for stabilization with respect to `y' and improvement over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
@@ -673,28 +685,12 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   if (x.space_dim == 0 || x.marked_empty() || y.marked_empty())
     return;
 
+  // `y.con_sys' and `y.gen_sys' should be in minimal form.
+  if (!y.minimize())
+    // `y' is empty: the result is `x'.
+    return;
   // `x.con_sys' and `x.gen_sys' should be in minimal form.
   x.minimize();
-
-  // `y.con_sys' and `y.gen_sys' should be in minimal form.
-  if (y.is_necessarily_closed()) {
-    if (!y.minimize())
-      // `y' is empty: the result is `x'.
-      return;
-  }
-  else {
-    // Dealing with a NNC polyhedron.
-    // To obtain a correct reasoning when comparing
-    // the constraints of `x' with the generators of `y',
-    // we enforce the inclusion relation holding between
-    // the two NNC polyhedra `x' and `y' (i.e., `y <= x')
-    // to also hold for the corresponding eps-representations:
-    // this is obtained by intersecting the two eps-representations.
-    Polyhedron& yy = const_cast<Polyhedron&>(y);
-    if (!yy.intersection_assign_and_minimize(x))
-      // `y' is empty: the result is `x'.
-      return;
-  }
 
   // Compute certificate info for polyhedron `y'.
   BHRZ03_Certificate y_cert(y);
@@ -726,11 +722,13 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // We cannot have selected all of the rows, since otherwise
   // the iteration should have been immediately stabilizing.
-  assert(x_minus_H79_cs.num_rows() > 0);
+  assert(!x_minus_H79_cs.has_no_rows());
   // Be careful to obtain the right space dimension
   // (because `H79_cs' may be empty).
   Polyhedron H79(topol, x.space_dim, UNIVERSE);
-  H79.add_recycled_constraints_and_minimize(H79_cs);
+  H79.add_recycled_constraints(H79_cs);
+  // Force minimization.
+  H79.minimize();
 
   // NOTE: none of the following widening heuristics is intrusive:
   // they will modify `x' only when returning successfully.
@@ -755,7 +753,6 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
 #ifndef NDEBUG
   // The H79 widening is always stabilizing.
-  x.minimize();
   assert(y_cert.is_stabilizing(x));
 #endif
 }
@@ -840,7 +837,7 @@ PPL::Polyhedron
       new_cs.insert(c);
   }
   x.BHRZ03_widening_assign(y, tp);
-  x.add_constraints(new_cs);
+  x.add_recycled_constraints(new_cs);
   assert(OK());
 }
 
@@ -849,14 +846,10 @@ PPL::Polyhedron
 ::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
 				      const Constraint_System& cs,
 				      unsigned* tp) {
-  const dimension_type space_dim = space_dimension();
-  Bounding_Box x_box(space_dim);
-  Bounding_Box y_box(space_dim);
-  shrink_bounding_box(x_box, ANY_COMPLEXITY);
-  y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
+  Rational_Box x_box(*this, ANY_COMPLEXITY);
+  Rational_Box y_box(y, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
   limited_BHRZ03_extrapolation_assign(y, cs, tp);
-  // TODO: see if some copies can be avoided.
-  // add_recycled_constraints(x_box.constraints());
-  add_constraints(x_box.constraints());
+  Constraint_System x_box_cs = x_box.constraints();
+  add_recycled_constraints(x_box_cs);
 }

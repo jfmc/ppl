@@ -1,11 +1,11 @@
 /* Test operator<<(ostream&, const BD_Shape&).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <sstream>
 
 namespace {
 
@@ -28,44 +29,91 @@ bool
 test01() {
   Variable x(0);
   Variable y(1);
+  Variable z(2);
 
-  TBD_Shape bd1(3);
-  TBD_Shape bd2(3);
+  std::stringstream s;
+  using namespace IO_Operators;
 
-  bd1.add_constraint(x <= 3);
-  bd1.add_constraint(x - y <= 4);
+  TBD_Shape bds(3, UNIVERSE);
 
-  bd2.add_constraint(x - y <= 5);
-  bd2.add_constraint(-y <= -2);
+  s << bds;
+  if (s.str() != "true")
+    return false;
+  print_constraints(bds, "*** bds ***");
+  s.str("");
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  bds.add_constraint(x <= 3);
 
-  // FIXME!!!
+  s << bds;
+  if (s.str() != "A <= 3")
+    return false;
+  print_constraints(bds, "*** bds ***");
+  s.str("");
+
+  bds.add_constraint(x - y <= 4);
+
+  s << bds;
+  if (s.str() != "A <= 3, A - B <= 4")
+    return false;
+  print_constraints(bds, "*** bds ***");
+  s.str("");
+
+  bds.add_constraint(-y <= -2);
+
+  s << bds;
+  if (s.str() != "A <= 3, B >= 2, A - B <= 4")
+    return false;
+  print_constraints(bds, "*** bds ***");
+  s.str("");
+
+  bds.add_constraint(x-z <= 0);
+
+  s << bds;
+  if (s.str() != "A <= 3, B >= 2, A - B <= 4, A - C <= 0")
+    return false;
+  print_constraints(bds, "*** bds ***");
+  s.str("");
+
   return true;
 }
 
 bool
 test02() {
-  Variable x(0);
-  Variable y(1);
+  std::stringstream s;
+  using namespace IO_Operators;
 
-  TBD_Shape bd1(0, EMPTY);
-  TBD_Shape bd2(3);
-  TBD_Shape bd3(3);
+  TBD_Shape bds1(0, EMPTY);
 
-  bd2.add_constraint(x - y <= 5);
-  bd2.add_constraint(-y <= -2);
+  s << bds1;
+  if (s.str() != "false")
+    return false;
+  print_constraints(bds1, "*** bds1 ***");
+  s.str("");
 
-  bd3.add_constraint(x <= 0);
-  bd3.add_constraint(-x <= -1);
-  bd3.add_constraint(y <= 3);
+  TBD_Shape bds2(0, UNIVERSE);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
-  print_constraints(bd3, "*** bd3 ***");
+  s << bds2;
+  if (s.str() != "true")
+    return false;
+  print_constraints(bds2, "*** bds2 ***");
+  s.str("");
 
-  // FIXME!!!
+  TBD_Shape bds3(1, EMPTY);
+
+  s << bds3;
+  if (s.str() != "false")
+    return false;
+  print_constraints(bds3, "*** bds3 ***");
+  s.str("");
+
+  TBD_Shape bds4(1, UNIVERSE);
+
+  s << bds4;
+  if (s.str() != "true")
+    return false;
+  print_constraints(bds4, "*** bds4 ***");
+  s.str("");
+
   return true;
 }
 

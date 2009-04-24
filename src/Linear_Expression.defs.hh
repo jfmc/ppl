@@ -1,11 +1,11 @@
 /* Linear_Expression class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -251,7 +251,7 @@ public:
   explicit Linear_Expression(Coefficient_traits::const_reference n);
 
   //! Builds the linear expression corresponding to the variable \p v.
-  /*! \relates Linear_Expression
+  /*!
     \exception std::length_error
     Thrown if the space dimension of \p v exceeds
     <CODE>Linear_Expression::max_space_dimension()</CODE>.
@@ -316,6 +316,12 @@ public:
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   //! Returns the (zero-dimension space) constant 0.
   static const Linear_Expression& zero();
 
@@ -330,13 +336,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
@@ -346,6 +350,12 @@ public:
   void swap(Linear_Expression& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the (zero-dimension space) constant 0.
+  */
+  static const Linear_Expression* zero_p;
+
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
@@ -382,59 +392,64 @@ private:
   */
   Linear_Expression(dimension_type sz, bool);
 
-  friend Linear_Expression
-  Parma_Polyhedra_Library::operator+(const Linear_Expression& e1,
-				     const Linear_Expression& e2);
-  friend Linear_Expression
-  Parma_Polyhedra_Library::operator+(Coefficient_traits::const_reference n,
-				     const Linear_Expression& e);
-  friend Linear_Expression
-  Parma_Polyhedra_Library::operator+(const Linear_Expression& e,
-				     Coefficient_traits::const_reference n);
+  /*! \brief
+    Builds the linear expression corresponding to the difference of
+    \p v and \p w.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p v or the one of \p w exceed
+    <CODE>Linear_Expression::max_space_dimension()</CODE>.
+  */
+  Linear_Expression(Variable v, Variable w);
 
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator-(const Linear_Expression& e);
+  operator+(const Linear_Expression& e1, const Linear_Expression& e2);
+  friend Linear_Expression
+  operator+(Coefficient_traits::const_reference n, const Linear_Expression& e);
+  friend Linear_Expression
+  operator+(const Linear_Expression& e, Coefficient_traits::const_reference n);
+  friend Linear_Expression
+  operator+(Variable v, const Linear_Expression& e);
+  friend Linear_Expression
+  operator+(Variable v, Variable w);
 
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator-(const Linear_Expression& e1,
-				     const Linear_Expression& e2);
-  friend Linear_Expression
-  Parma_Polyhedra_Library::operator-(Coefficient_traits::const_reference n,
-				     const Linear_Expression& e);
-  friend Linear_Expression
-  Parma_Polyhedra_Library::operator-(const Linear_Expression& e,
-				     Coefficient_traits::const_reference n);
+  operator-(const Linear_Expression& e);
 
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator*(Coefficient_traits::const_reference n,
-				     const Linear_Expression& e);
+  operator-(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator*(const Linear_Expression& e,
-				     Coefficient_traits::const_reference n);
+  operator-(Variable v, Variable w);
+  friend Linear_Expression
+  operator-(Coefficient_traits::const_reference n, const Linear_Expression& e);
+  friend Linear_Expression
+  operator-(const Linear_Expression& e, Coefficient_traits::const_reference n);
+  friend Linear_Expression
+  operator-(Variable v, const Linear_Expression& e);
+  friend Linear_Expression
+  operator-(const Linear_Expression& e, Variable v);
+
+  friend Linear_Expression
+  operator*(Coefficient_traits::const_reference n, const Linear_Expression& e);
+  friend Linear_Expression
+  operator*(const Linear_Expression& e, Coefficient_traits::const_reference n);
 
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator+=(Linear_Expression& e1,
-				      const Linear_Expression& e2);
+  operator+=(Linear_Expression& e1, const Linear_Expression& e2);
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator+=(Linear_Expression& e,
-				      Variable v);
+  operator+=(Linear_Expression& e, Variable v);
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator+=(Linear_Expression& e,
-				      Coefficient_traits::const_reference n);
+  operator+=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator-=(Linear_Expression& e1,
-				      const Linear_Expression& e2);
+  operator-=(Linear_Expression& e1, const Linear_Expression& e2);
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator-=(Linear_Expression& e,
-				      Variable v);
+  operator-=(Linear_Expression& e, Variable v);
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator-=(Linear_Expression& e,
-				      Coefficient_traits::const_reference n);
+  operator-=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator*=(Linear_Expression& e,
-				      Coefficient_traits::const_reference n);
+  operator*=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators

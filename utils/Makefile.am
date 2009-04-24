@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -29,13 +29,13 @@ timings.cc
 
 dist_noinst_SCRIPTS = \
 build_header.in \
-text2cxxarray.in
+text2cxxarray.in \
+cm_cleaner.sh \
+cm_splitter.sh
 
 noinst_SCRIPTS = \
 build_header \
-text2cxxarray \
-cm_cleaner.sh \
-cm_splitter.sh
+text2cxxarray
 
 # Even if the scripts listed in noinst_SCRIPTS are not distributed
 # (only the corresponding *.in files are), we need them to actually
@@ -46,14 +46,14 @@ dist-hook: $(noinst_SCRIPTS)
 generated_automatically = Generated automatically: \
 do not modify; modify the .in file instead.
 
-do_subst = sed -e 's,[@]PERL[@],$(PERL),g' \
+do_subst = $(SED) -e 's,[@]PERL[@],$(PERL),g' \
 	-e 's,[@]generated_automatically[@],$(generated_automatically),g'
 
-build_header: build_header.in Makefile
+build_header: build_header.in
 	$(do_subst) < $(srcdir)/build_header.in > build_header
 	chmod +x build_header
 
-text2cxxarray: text2cxxarray.in Makefile
+text2cxxarray: text2cxxarray.in
 	$(do_subst) < $(srcdir)/text2cxxarray.in > text2cxxarray
 	chmod +x text2cxxarray
 

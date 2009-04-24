@@ -1,11 +1,11 @@
 /* OR_Matrix class declaration.
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -25,23 +25,34 @@ site: http://www.cs.unipr.it/ppl/ .  */
 #define PPL_OR_Matrix_defs_hh 1
 
 #include "globals.defs.hh"
-#include "Ptr_Iterator.defs.hh"
 #include "OR_Matrix.types.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.defs.hh"
 #include <cstddef>
 #include <iosfwd>
 
-#ifndef EXTRA_ROW_DEBUG
-#define EXTRA_ROW_DEBUG 1
-#endif
+#ifndef PPL_OR_MATRIX_EXTRA_DEBUG
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  When PPL_OR_MATRIX_EXTRA_DEBUG evaluates to <CODE>true</CODE>, each
+  instance of the class OR_Matrix::Pseudo_Row carries its own size;
+  this enables extra consistency checks to be performed.
+  \ingroup PPL_CXX_interface
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+#define PPL_OR_MATRIX_EXTRA_DEBUG 1
+#else // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
+#define PPL_OR_MATRIX_EXTRA_DEBUG 0
+#endif // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
+#endif // !defined(PPL_OR_MATRIX_EXTRA_DEBUG)
 
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 bool operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y);
 
@@ -50,7 +61,7 @@ namespace IO_Operators {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 std::ostream&
 operator<<(std::ostream& s, const OR_Matrix<T>& m);
@@ -88,7 +99,7 @@ operator<<(std::ostream& s, const OR_Matrix<T>& m);
   It provides row_iterators for the access to the rows
   and element_iterators for the access to the elements.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 template <typename T>
 class Parma_Polyhedra_Library::OR_Matrix {
@@ -114,31 +125,41 @@ private:
     //! Subscript operator.
     U& operator[](dimension_type k) const;
 
-    // FIXME!!!
-    //private:
-  public:
-    //! Holds a reference to the beginning of this row.
-    U* first;
-
-    //! Default constructor: creates a past-the-end object.
+    //! Default constructor: creates an invalid object that has to be assigned.
     Pseudo_Row();
-
-#if EXTRA_ROW_DEBUG
-
-    //! Private constructor for a Pseudo_Row with size \p s beginning at \p y.
-    Pseudo_Row(U& y, dimension_type s);
-
-#else // !EXTRA_ROW_DEBUG
-
-    //! Private constructor for a Pseudo_Row beginning at \p y.
-    explicit Pseudo_Row(U& y);
-
-#endif // !EXTRA_ROW_DEBUG
 
     //! Assignment operator.
     Pseudo_Row& operator=(const Pseudo_Row& y);
 
-#if EXTRA_ROW_DEBUG
+#if !defined(__GNUC__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 0)
+  private:
+#else
+  // Work around a bug of GCC 4.0.x (and, likely, previous versions).
+  public:
+#endif
+
+#if PPL_OR_MATRIX_EXTRA_DEBUG
+
+    //! Private constructor for a Pseudo_Row with size \p s beginning at \p y.
+    Pseudo_Row(U& y, dimension_type s);
+
+#else // !PPL_OR_MATRIX_EXTRA_DEBUG
+
+    //! Private constructor for a Pseudo_Row beginning at \p y.
+    explicit Pseudo_Row(U& y);
+
+#endif // !PPL_OR_MATRIX_EXTRA_DEBUG
+
+    //! Holds a reference to the beginning of this row.
+    U* first;
+
+#if !defined(__GNUC__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 0)
+#else
+  // Work around a bug of GCC 4.0.x (and, likely, previous versions).
+  private:
+#endif
+
+#if PPL_OR_MATRIX_EXTRA_DEBUG
 
     //! The size of the row.
     dimension_type size_;
@@ -146,10 +167,21 @@ private:
     //! Returns the size of the row.
     dimension_type size() const;
 
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_OR_MATRIX_EXTRA_DEBUG
 
+    // FIXME: the EDG-based compilers (such as Comeau and Intel)
+    // are here in wild disagreement with GCC: what is a legal friend
+    // declaration for one, is illegal for the others.
+#ifdef __EDG__
+    template <typename V> template<typename W>
+    friend class OR_Matrix<V>::Pseudo_Row;
+    template <typename V> template<typename W>
+    friend class OR_Matrix<V>::any_row_iterator;
+#else
     template <typename V> friend class Pseudo_Row;
     template <typename V> friend class any_row_iterator;
+#endif
+
     friend class OR_Matrix;
   }; // class Pseudo_Row
 
@@ -274,7 +306,15 @@ private:
     //! Internal index: <CODE>i = (e+1)*(e+1)/2</CODE>.
     dimension_type i;
 
+    // FIXME: the EDG-based compilers (such as Comeau and Intel)
+    // are here in wild disagreement with GCC: what is a legal friend
+    // declaration for one, is illegal for the others.
+#ifdef __EDG__
+    template <typename V> template<typename W>
+    friend class OR_Matrix<V>::any_row_iterator;
+#else
     template <typename V> friend class any_row_iterator;
+#endif
   }; // class any_row_iterator
 
 public:
@@ -322,7 +362,7 @@ private:
 
   //! Contains the rows of the matrix.
   /*!
-    Creates a DB_Row which contains the rows of the OR_Matrix
+    A DB_Row which contains the rows of the OR_Matrix
     inserting each successive row to the end of the vec.
     To contain all the elements of OR_Matrix the size of the DB_Row
     is 2*n*(n+1), where the n is the characteristic parameter of
@@ -382,15 +422,12 @@ public:
     \param new_dim
     The new dimension of the resized matrix.
 
-    If the new dimension is greater than the old one, it
-    adds new rows of right dimension to the end if
-    there is enough capacity; otherwise, it creates a new matrix,
-    with the specified dimension, copying the old elements
-    in the upper part of the new matrix, which is
-    then assigned to \p *this. In this case each element is
-    initialized to plus infinity.
-    If the new dimension is less than the old one, it erase
-    from matrix to the end the rows with index greater than 2*new_dim-1
+    If the new dimension is greater than the old one, it adds new rows
+    of right dimension to the end if there is enough capacity; otherwise,
+    it creates a new matrix, with the specified dimension, which is
+    then assigned to \p *this.
+    If the new dimension is less than the old one, it erase from the matrix
+    the rows having index greater than 2*new_dim-1
   */
   void resize_no_copy(dimension_type new_dim);
 
@@ -468,8 +505,7 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  friend bool Parma_Polyhedra_Library::operator==<T>(const OR_Matrix<T>& x,
-						     const OR_Matrix<T>& y);
+  friend bool operator==<T>(const OR_Matrix<T>& x, const OR_Matrix<T>& y);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -480,7 +516,7 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 void swap(Parma_Polyhedra_Library::OR_Matrix<T>& x,
 	  Parma_Polyhedra_Library::OR_Matrix<T>& y);
@@ -493,7 +529,7 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 bool operator!=(const OR_Matrix<T>& x, const OR_Matrix<T>& y);
 
@@ -509,12 +545,12 @@ bool operator!=(const OR_Matrix<T>& x, const OR_Matrix<T>& y);
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const OR_Matrix<T>& x,
 				 const OR_Matrix<T>& y,
-				 const Rounding_Dir dir,
+				 Rounding_Dir dir,
 				 Temp& tmp0,
 				 Temp& tmp1,
 				 Temp& tmp2);
@@ -531,12 +567,12 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const OR_Matrix<T>& x,
 			       const OR_Matrix<T>& y,
-			       const Rounding_Dir dir,
+			       Rounding_Dir dir,
 			       Temp& tmp0,
 			       Temp& tmp1,
 			       Temp& tmp2);
@@ -553,12 +589,12 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const OR_Matrix<T>& x,
 				 const OR_Matrix<T>& y,
-				 const Rounding_Dir dir,
+				 Rounding_Dir dir,
 				 Temp& tmp0,
 				 Temp& tmp1,
 				 Temp& tmp2);

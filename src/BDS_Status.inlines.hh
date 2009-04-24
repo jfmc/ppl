@@ -1,11 +1,11 @@
 /* BD_Shape<T>::Status class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_BD_Status_inlines_hh
-#define PPL_BD_Status_inlines_hh 1
+#ifndef PPL_BDS_Status_inlines_hh
+#define PPL_BDS_Status_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -161,7 +161,7 @@ BD_Shape<T>::Status::OK() const {
   }
 
   // Shortest-path reduction implies shortest-path closure.
-  if (test_shortest_path_reduced())
+  if (test_shortest_path_reduced()) {
     if (test_shortest_path_closed())
       return true;
     else {
@@ -172,6 +172,7 @@ BD_Shape<T>::Status::OK() const {
 #endif
       return false;
     }
+  }
 
   // Any other case is OK.
   return true;
@@ -230,7 +231,7 @@ template <typename T>
 bool
 BD_Shape<T>::Status::ascii_load(std::istream& s) {
   using namespace Implementation::BD_Shapes;
-  bool positive;
+  PPL_UNINITIALIZED(bool, positive);
 
   if (!get_field(s, zero_dim_univ, positive))
     return false;
@@ -263,4 +264,4 @@ BD_Shape<T>::Status::ascii_load(std::istream& s) {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_BD_Status_inlines_hh)
+#endif // !defined(PPL_BDS_Status_inlines_hh)

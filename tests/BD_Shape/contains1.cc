@@ -1,11 +1,11 @@
 /* Test BD_Shape::contains().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -30,21 +30,21 @@ test01() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(x - y <= 1);
+  TBD_Shape bds1(3);
+  bds1.add_constraint(x - y <= 1);
 
   // The BD_Shape is empty, because it has got a negative cycle.
-  TBD_Shape bd2(3);
-  bd2.add_constraint(x - y <= 2);
-  bd2.add_constraint(y - z <= 2);
-  bd2.add_constraint(z - x <= -5);
+  TBD_Shape bds2(3);
+  bds2.add_constraint(x - y <= 2);
+  bds2.add_constraint(y - z <= 2);
+  bds2.add_constraint(z - x <= -5);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bool ok = bd1.contains(bd2);
+  bool ok = bds1.contains(bds2);
 
-  nout << "*** bd1.contains(bd2) ***"
+  nout << "*** bds1.contains(bds2) ***"
        << endl
        << (ok ? "true" : "false")
        << endl;
@@ -54,15 +54,15 @@ test01() {
 
 bool
 test02() {
-  TBD_Shape bd1;
-  TBD_Shape bd2(0, EMPTY);
+  TBD_Shape bds1;
+  TBD_Shape bds2(0, EMPTY);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bool ok = bd1.contains(bd2);
+  bool ok = bds1.contains(bds2);
 
-  nout << "*** bd1.contains(bd2) ***"
+  nout << "*** bds1.contains(bds2) ***"
        << endl
        << (ok ? "true" : "false")
        << endl;
@@ -72,15 +72,15 @@ test02() {
 
 bool
 test03() {
-  TBD_Shape bd1(0, EMPTY);
-  TBD_Shape bd2(0, EMPTY);
+  TBD_Shape bds1(0, EMPTY);
+  TBD_Shape bds2(0, EMPTY);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bool ok = bd1.contains(bd2);
+  bool ok = bds1.contains(bds2);
 
-  nout << "*** bd1.contains(bd2) ***"
+  nout << "*** bds1.contains(bds2) ***"
        << endl
        << (ok ? "true" : "false")
        << endl;
@@ -93,17 +93,17 @@ test04() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(x - y >= 0);
+  TBD_Shape bds1(3);
+  bds1.add_constraint(x - y >= 0);
 
-  TBD_Shape bd2(2);
-  bd2.add_constraint(x - y == 0);
+  TBD_Shape bds2(2);
+  bds2.add_constraint(x - y == 0);
 
   try {
     // This is an invalid use of Polyhedron::contains(): it is
     // illegal to apply this method to two polyhedra that are not
     // dimension-compatible.
-    bd1.contains(bd2);
+    bds1.contains(bds2);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -127,18 +127,18 @@ test05() {
   cs.insert(B <= 0);
   cs.insert(A >= 0);
 
-  TBD_Shape bd1(cs);
+  TBD_Shape bds1(cs);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds1, "*** bds1 ***");
 
-  TBD_Shape bd2(cs);
-  bd2.add_constraint(A - B >= 0);
+  TBD_Shape bds2(cs);
+  bds2.add_constraint(A - B >= 0);
 
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bool contained = bd1.contains(bd2);
+  bool contained = bds1.contains(bds2);
 
-  nout << "*** bd1.contains(bd2) ***" << endl;
+  nout << "*** bds1.contains(bds2) ***" << endl;
   nout << (contained ? "true" : "false") << endl;
 
   return contained;
@@ -150,22 +150,22 @@ test06() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(C <= 0);
-  bd1.add_constraint(B - C <= 1);
+  TBD_Shape bds1(3);
+  bds1.add_constraint(C <= 0);
+  bds1.add_constraint(B - C <= 1);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds1, "*** bds1 ***");
 
-  TBD_Shape bd2(3);
-  bd2.add_constraint(A == 0);
-  bd2.add_constraint(C <= 0);
-  bd2.add_constraint(B - C <= 2);
+  TBD_Shape bds2(3);
+  bds2.add_constraint(A == 0);
+  bds2.add_constraint(C <= 0);
+  bds2.add_constraint(B - C <= 2);
 
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bool contained = bd1.contains(bd2);
+  bool contained = bds1.contains(bds2);
 
-  nout << "*** bd1.contains(bd2) ***" << endl;
+  nout << "*** bds1.contains(bds2) ***" << endl;
   nout << (!contained ? "true" : "false") << endl;
 
   return !contained;

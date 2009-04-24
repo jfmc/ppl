@@ -1,11 +1,11 @@
 /* Test Grid::bounds_from_above() and Grid::bounds_from_below().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -70,14 +70,14 @@ test04() {
   Variable B(1);
 
   Grid gr_gs_min(2, EMPTY);
-  gr_gs_min.add_grid_generator_and_minimize(grid_point(3*A + 2*B, 3));
+  gr_gs_min.add_grid_generator(grid_point(3*A + 2*B, 3));
 
   Grid gr_gs_needs_min(2, EMPTY);
   gr_gs_needs_min.add_grid_generator(grid_point(3*A + 2*B, 3));
 
   Grid gr_cgs_needs_min(2);
-  gr_cgs_needs_min.add_congruence(A == 1);
-  gr_cgs_needs_min.add_congruence(3*B == 2);
+  gr_cgs_needs_min.add_constraint(A == 1);
+  gr_cgs_needs_min.add_constraint(3*B == 2);
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.
@@ -105,14 +105,14 @@ test05() {
 
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_grid_generator(grid_point());
-  gr_gs_min.add_grid_generator_and_minimize(grid_line(B));
+  gr_gs_min.add_grid_generator(grid_line(B));
 
   Grid gr_gs_needs_min(2, EMPTY);
   gr_gs_needs_min.add_grid_generator(grid_point());
   gr_gs_needs_min.add_grid_generator(grid_line(B));
 
   Grid gr_cgs_needs_min(2);
-  gr_cgs_needs_min.add_congruence(A == 0);
+  gr_cgs_needs_min.add_constraint(A == 0);
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.
@@ -141,14 +141,14 @@ test06() {
 
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_grid_generator(grid_point());
-  gr_gs_min.add_grid_generator_and_minimize(grid_line(2*A + B));
+  gr_gs_min.add_grid_generator(grid_line(2*A + B));
 
   Grid gr_gs_needs_min(2, EMPTY);
   gr_gs_needs_min.add_grid_generator(grid_point());
   gr_gs_needs_min.add_grid_generator(grid_line(2*A + B));
 
   Grid gr_cgs_needs_min(2);
-  gr_cgs_needs_min.add_congruence(A - 2*B == 0);
+  gr_cgs_needs_min.add_constraint(A - 2*B == 0);
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.
@@ -176,14 +176,14 @@ test07() {
 
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_grid_generator(grid_point());
-  gr_gs_min.add_grid_generator_and_minimize(grid_line(A + 2*B));
+  gr_gs_min.add_grid_generator(grid_line(A + 2*B));
 
   Grid gr_gs_needs_min(2, EMPTY);
   gr_gs_needs_min.add_grid_generator(grid_point());
   gr_gs_needs_min.add_grid_generator(grid_line(A + 2*B));
 
   Grid gr_cgs_needs_min(2);
-  gr_cgs_needs_min.add_congruence(2*A - B == 0);
+  gr_cgs_needs_min.add_constraint(2*A - B == 0);
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.
@@ -212,14 +212,14 @@ test08() {
 
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_grid_generator(grid_point());
-  gr_gs_min.add_grid_generator_and_minimize(grid_point(A + 2*B));
+  gr_gs_min.add_grid_generator(grid_point(A + 2*B));
 
   Grid gr_gs_needs_min(2, EMPTY);
   gr_gs_needs_min.add_grid_generator(grid_point());
   gr_gs_needs_min.add_grid_generator(grid_point(A + 2*B));
 
   Grid gr_cgs_needs_min(2);
-  gr_cgs_needs_min.add_congruence(2*A - B == 0);
+  gr_cgs_needs_min.add_constraint(2*A - B == 0);
   gr_cgs_needs_min.add_congruence((B %= 0) / 2);
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
@@ -249,7 +249,7 @@ test09() {
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_grid_generator(grid_point());
   gr_gs_min.add_grid_generator(grid_line(A));
-  gr_gs_min.add_grid_generator_and_minimize(grid_line(B));
+  gr_gs_min.add_grid_generator(grid_line(B));
 
   Grid gr_gs_needs_min(2, EMPTY);
   gr_gs_needs_min.add_grid_generator(grid_point());
@@ -287,7 +287,7 @@ test10() {
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_grid_generator(grid_point());
   gr_gs_min.add_grid_generator(grid_line(A));
-  gr_gs_min.add_grid_generator_and_minimize(grid_point(B + C));
+  gr_gs_min.add_grid_generator(grid_point(B + C));
 
   Grid gr_gs_needs_min(3, EMPTY);
   gr_gs_needs_min.add_grid_generator(grid_point());
@@ -295,7 +295,7 @@ test10() {
   gr_gs_needs_min.add_grid_generator(grid_point(B + C));
 
   Grid gr_cgs_needs_min(3);
-  gr_cgs_needs_min.add_congruence(B - C == 0);
+  gr_cgs_needs_min.add_constraint(B - C == 0);
   gr_cgs_needs_min.add_congruence(B %= 0);
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
@@ -326,7 +326,7 @@ test11() {
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_grid_generator(grid_point());
   gr_gs_min.add_grid_generator(grid_line(3*B + C));
-  gr_gs_min.add_grid_generator_and_minimize(grid_line(A - 2*B));
+  gr_gs_min.add_grid_generator(grid_line(A - 2*B));
 
   Grid gr_gs_needs_min(3, EMPTY);
   gr_gs_needs_min.add_grid_generator(grid_point());
@@ -334,7 +334,7 @@ test11() {
   gr_gs_needs_min.add_grid_generator(grid_line(A - 2*B));
 
   Grid gr_cgs_needs_min(3);
-  gr_cgs_needs_min.add_congruence(2*A + B - 3*C == 0);
+  gr_cgs_needs_min.add_constraint(2*A + B - 3*C == 0);
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.
@@ -365,18 +365,18 @@ test12() {
   Variable F(5);
 
   Grid gr_gs_min(6, EMPTY);
-  gr_gs_min.add_grid_generator_and_minimize(grid_point(7*A - 11*B + 19*F));
+  gr_gs_min.add_grid_generator(grid_point(7*A - 11*B + 19*F));
 
   Grid gr_gs_needs_min(6, EMPTY);
   gr_gs_needs_min.add_grid_generator(grid_point(7*A - 11*B + 19*F));
 
   Grid gr_cgs_needs_min(6);
-  gr_cgs_needs_min.add_congruence(A == 7);
-  gr_cgs_needs_min.add_congruence(B == -11);
-  gr_cgs_needs_min.add_congruence(C == 0);
-  gr_cgs_needs_min.add_congruence(D == 0);
-  gr_cgs_needs_min.add_congruence(E == 0);
-  gr_cgs_needs_min.add_congruence(F == 19);
+  gr_cgs_needs_min.add_constraint(A == 7);
+  gr_cgs_needs_min.add_constraint(B == -11);
+  gr_cgs_needs_min.add_constraint(C == 0);
+  gr_cgs_needs_min.add_constraint(D == 0);
+  gr_cgs_needs_min.add_constraint(E == 0);
+  gr_cgs_needs_min.add_constraint(F == 19);
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.
@@ -422,6 +422,22 @@ test13() {
   return false;
 }
 
+// The generator system is up-to-date but not minimized.
+bool
+test14() {
+  Variable A(0);
+
+  Grid gr(1, EMPTY);
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(A, 2));
+  print_generators(gr, "*** gr generators before ***");
+
+  bool ok = !gr.bounds_from_above(A) && !gr.bounds_from_below(A);
+  print_generators(gr, "*** gr generators after ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -438,4 +454,5 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
 END_MAIN

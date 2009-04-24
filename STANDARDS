@@ -250,6 +250,27 @@ Note that:
     the inline directive is specified.
 
 
+Standards for Writing the Makefile.am Files
+===========================================
+
+How to clean what
+-----------------
+
+Cleaning in this context means removing files from the build directory.
+In order to clean files, they must be listed in one of three variables:
+MOSTLYCLEANFILES, CLEANFILES and DISTCLEANFILES.  The rules (believed to
+have been first formulated by Francois Pinard) are:
+
+  - If `make' built the file, and it is commonly something that one would
+    want to rebuild (such as an object file), then list the file in
+    MOSTLYCLEANFILES.
+  - Otherwise, if `make' built the file, then list it in CLEANFILES.
+  - Otherwise, if `configure' built the file, then list it in DISTCLEANFILES.
+
+When cleaning is more complex than a simple deletion, you can use the hooks
+mostlyclean-local, clean-local and distclean-local.
+
+
 Standards for Documenting the Project with Doxygen
 ==================================================
 
@@ -426,7 +447,7 @@ o  The test functions should be written
 
         // Comment describing the test...
         bool
-          test10() {
+        test10() {
             // ... test code ...
         }
 
@@ -449,6 +470,44 @@ o  Following all the test functions, include:
         END_MAIN
 
    where every test function in the program is included in the list.
+
+o  If any of the tests is known to fail due to an overflow when the
+   library is configured to use some of the bounded-precision checked
+   integers, then the corresponding test function should be called,
+   e.g., as follows
+
+          DO_TEST_F32(test07);
+
+   where the subscript "_F32" means that the overflow is expected for
+   all checked integers having 32 bits at most (i.e., 64 bits checked
+   integers are not expected to overflow). As an alternative,
+
+          DO_TEST_F32A(test07);
+
+   means that the overflow is expected, as before, for all checked
+   integers having less than 32 bits but in the case of 32 bits checked
+   integers the overflow occurs only if assertions are enabled.
+   Hence, the possible subscripts for DO_TEST are:
+
+          _F8A, _F8, _F16A, _F16, _F32A, _F32, _F64A, _F64.
+
+o  If any of the tests _may_ fail due to an overflow (when the library
+   is configured to use some of the bounded-precision checked integers)
+   when a templatic shape domain is instantiated using inexact
+   coefficients (e.g., the typedef TBD_Shape stands for BD_Shape<float>),
+   then the corresponding test function should be called as follows
+
+          DO_TEST_MAY_OVERFLOW_IF_INEXACT(test07, TBD_Shape);
+
+o  If a definite overflow (i.e., independent from exactness) is expected
+   for some of the coefficient sizes, then the two macro names above
+   can be combined, e.g., as follows
+
+          DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test07, TBD_Shape);
+
+   meaning that the overflow is expected for 16 (or fewer) bits
+   configurations, while it may occur for configurations using more bits
+   if the shape domain is instantiated usng inexact coefficients.
 
 o  Normally, test code should produce no output at all (independently from
    whether the test succeeded or failed). Output is only meant to help
@@ -496,3 +555,61 @@ o  Refer to the existing tests for examples. Many tests are written along
      b) create a second object in a different (maybe simpler) way, having
         as value the expected result of the computations done in point a);
      c) check for equivalence of the two objects.
+
+o  Ideally the tests should exercise every line of code in the library.
+   To help ensure that, the test-coverage facilities provided by GCC
+   are very useful.  They are described in Chapter 9 of the GCC manual
+   ("`gcov'---a Test Coverage Program").  For a shorter introduction,
+   the build tree under test must be configured with the
+   `--enable-coverage' and `--disable-optimization options' (and possibly
+   also with --enable-profiling).  For example:
+
+     $ configure --enable-coverage --disable-optimization \
+                 --enable-profiling \
+                 --enable-assertions --enable-more-assertions
+
+   Running the tests (with `make check') produces many .gcno and .gcda
+   files in src/.libs and in the test directories.  These are data
+   files for the `gcov' program.  The `gcov' program produces coverage
+   information.  For example:
+
+     $ cd src
+     $ gcov -o .libs Grid_public.cc
+
+   will produce a file called Grid_public.cc.gcov containing the
+   coverage information for Grid_public.cc.  In a similar way
+
+     $ cd tests/Grid
+     $ gcov *.cc
+
+   will produce a file call tests/Grid/ppl.hh.gcov containing coverage
+   information for the header files.
+
+   Below is a section from a .gcov file.  The first column is the
+   number of times the line was run, the second is the line number of the
+   line in the source file.  Line 1006 has been run 48245 times.  Lines
+   1007, 1002 and 1013 have yet to be run.  It would be very difficult
+   to run line 1007, since this requires a Linear_System that does not
+   satisfy the invariants for its class and the PPL does everything it
+   can to make that impossible without fiddling with memory using raw
+   memory pointers.  Similarly for line 1013.  However, the fact that
+   line 1012 has never been run is suspicious and may indicate an area
+   that needs testing.
+
+        -: 1001:bool
+    48245: 1002:PPL::Generator_System::OK() const {
+        -: 1003:  // A Generator_System must be a valid Linear_System; do not check for
+        -: 1004:  // strong normalization, since this will be done when
+        -: 1005:  // checking each individual generator.
+    48245: 1006:  if (!Linear_System::OK(false))
+    #####: 1007:    return false;
+        -: 1008:
+        -: 1009:  // Checking each generator in the system.
+    48245: 1010:  const Generator_System& x = *this;
+    96490: 1011:  for (dimension_type i = num_rows(); i-- > 0; )
+    #####: 1012:    if (!x[i].OK())
+    #####: 1013:      return false;
+        -: 1014:
+        -: 1015:  // All checks passed.
+    48245: 1016:  return true;
+        -: 1017:}

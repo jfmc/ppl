@@ -1,11 +1,11 @@
 /* Test Polyhedron::BHRZ03_widening_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -57,7 +57,7 @@ test01() {
 
   bool ok = (ph1 == ph1_copy);
 
-  print_constraints(ph1, "*** After BHRZ03_widening_assign ***");
+  print_constraints(ph1, "*** after BHRZ03_widening_assign ***");
 
   return ok;
 }
@@ -83,7 +83,7 @@ test02() {
 
   bool ok = (ph1 == ph1_copy);
 
-  print_constraints(ph1, "*** After BHRZ03_widening_assign ***");
+  print_constraints(ph1, "*** after BHRZ03_widening_assign ***");
 
   return ok;
 }
@@ -115,7 +115,7 @@ test03() {
 
   bool ok = (ph1 == ph1_copy);
 
-  print_constraints(ph1, "*** After BHRZ03_widening_assign ***");
+  print_constraints(ph1, "*** after BHRZ03_widening_assign ***");
 
   return ok;
 }
@@ -148,7 +148,7 @@ test04() {
 
   bool ok = (ph2 == known_result);
 
-  print_constraints(ph2, "*** After BHRZ03_widening_assign ***");
+  print_constraints(ph2, "*** after BHRZ03_widening_assign ***");
 
   return ok;
 }
@@ -180,7 +180,7 @@ test05() {
 
   bool ok = (ph2 == known_result);
 
-  print_constraints(ph2, "*** After BHRZ03_widening_assign ***");
+  print_constraints(ph2, "*** after BHRZ03_widening_assign ***");
 
   return ok;
 }
@@ -209,7 +209,7 @@ test06() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After BHRZ03_widening_assign ***");
+  print_constraints(ph1, "*** after BHRZ03_widening_assign ***");
 
   return ok;
 }
@@ -246,7 +246,7 @@ test07() {
 
   bool ok = (ph2 == known_result);
 
-  print_constraints(ph2, "*** After BHRZ03_widening_assign ***");
+  print_constraints(ph2, "*** after BHRZ03_widening_assign ***");
 
   return ok;
 }
@@ -282,7 +282,7 @@ test08() {
 
   bool ok = (ph2 == known_result);
 
-  print_constraints(ph2, "*** After BHRZ03_widening_assign ***");
+  print_constraints(ph2, "*** after BHRZ03_widening_assign ***");
 
   return ok;
 }
@@ -357,7 +357,7 @@ test09() {
     print_generators(p_i.generators(), "*** New stuff ***");
 
     C_Polyhedron q_i = q_i_minus_1;
-    q_i.poly_hull_assign(p_i);
+    q_i.upper_bound_assign(p_i);
     print_generators(q_i.generators(),
 		     "*** Poly-hull of previous with new ***");
 
@@ -401,7 +401,7 @@ test10() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.H79_widening_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.H79_widening_assign(ph2) ***");
 
   return ok;
 }
@@ -427,7 +427,7 @@ test11() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.BHRZ03_widening_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.BHRZ03_widening_assign(ph2) ***");
 
   return ok;
 }
@@ -460,7 +460,7 @@ test12() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -493,7 +493,7 @@ test13() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -526,7 +526,7 @@ test14() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -559,7 +559,7 @@ test15() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -592,7 +592,7 @@ test16() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -625,7 +625,7 @@ test17() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -658,7 +658,7 @@ test18() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -691,7 +691,7 @@ test19() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -723,7 +723,7 @@ test20() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }

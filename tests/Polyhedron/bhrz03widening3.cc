@@ -1,11 +1,11 @@
 /* Test Polyhedron::BHRZ03_widening_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -49,7 +49,7 @@ test01() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After BHRZ03_widening_assign ***");
+  print_constraints(ph1, "*** after BHRZ03_widening_assign ***");
 
   return ok;
 }
@@ -88,7 +88,7 @@ test02() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After BHRZ03_widening_assign ***");
+  print_constraints(ph1, "*** after BHRZ03_widening_assign ***");
 
   return ok;
 }
@@ -167,7 +167,7 @@ test03() {
     print_generators(p_i.generators(), "*** New stuff ***");
 
     C_Polyhedron q_i = q_i_minus_1;
-    q_i.poly_hull_assign(p_i);
+    q_i.upper_bound_assign(p_i);
     print_generators(q_i.generators(),
 		     "*** Poly-hull of previous with new ***");
 
@@ -289,7 +289,7 @@ test04() {
     print_generators(p_i.generators(), "*** New stuff ***");
 
     C_Polyhedron q_i = q_i_minus_1;
-    q_i.poly_hull_assign(p_i);
+    q_i.upper_bound_assign(p_i);
     print_generators(q_i.generators(),
 		     "*** Poly-hull of previous with new ***");
 
@@ -415,7 +415,7 @@ test05() {
     print_generators(p_i, "*** New stuff ***");
 
     C_Polyhedron q_i = q_i_minus_1;
-    q_i.poly_hull_assign(p_i);
+    q_i.upper_bound_assign(p_i);
     print_generators(q_i, "*** Poly-hull of previous with new ***");
 
     q_i.BHRZ03_widening_assign(q_i_minus_1);
@@ -467,7 +467,7 @@ test06() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -502,7 +502,7 @@ test07() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -550,8 +550,8 @@ test08() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
-  print_constraints(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
+  print_constraints(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -587,7 +587,45 @@ test09() {
 
   bool ok = (ph2 == known_result);
 
-  print_constraints(ph2, "*** After  ph2.BHRZ03_widening_assign(ph1) ***");
+  print_constraints(ph2, "*** after  ph2.BHRZ03_widening_assign(ph1) ***");
+
+  return ok;
+}
+
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs;
+  gs.insert(point());
+  gs.insert(point(B));
+  gs.insert(point(A + 2*B));
+  gs.insert(point(A + B));
+  NNC_Polyhedron ph(gs);
+
+  gs.clear();
+  gs.insert(point());
+  gs.insert(point(B));
+  gs.insert(point(A + 2*B));
+  gs.insert(closure_point(A));
+  NNC_Polyhedron ph1(gs);
+
+  print_constraints(ph, "*** ph ***");
+  print_constraints(ph1, "*** ph1 ***");
+
+  ph1.BHRZ03_widening_assign(ph);
+
+  gs.clear();
+  gs.insert(point());
+  gs.insert(point(B));
+  gs.insert(point(A + 2*B));
+  gs.insert(ray(-B));
+  NNC_Polyhedron known_result(gs);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** ph1.BHRZ03_widening_assin(ph) ***");
 
   return ok;
 }
@@ -604,4 +642,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST_F8(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

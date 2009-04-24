@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,15 +20,24 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+if VALGRIND_TESTS_ENABLED
+
+CHECKER = \
+$(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
+--num-callers=100 --leak-resolution=high \
+--suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+else !VALGRIND_TESTS_ENABLED
+
 CHECKER =
-#CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+endif !VALGRIND_TESTS_ENABLED
 
 TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/src \
 -I$(top_builddir)/src \
--I$(top_builddir)/Watchdog \
--I$(top_builddir)/Watchdog/src \
 -I$(top_srcdir)/utils \
 -I$(top_srcdir)/tests \
 @extra_includes@ \
@@ -43,7 +52,12 @@ $(top_builddir)/src/libppl.la \
 TESTS = \
 ascii_dump_load1 \
 exceptions1 \
-mipproblem1
+mipproblem1 \
+mipproblem3
+
+XFAIL_TESTS =
+
+BUGS =
 
 #
 # Sources for the tests
@@ -55,63 +69,40 @@ exceptions1_SOURCES = exceptions1.cc
 
 mipproblem1_SOURCES = mipproblem1.cc
 
+mipproblem2_SRCS = mipproblem2.cc
 
-XFAIL_ALWAYS =
+mipproblem3_SOURCES = mipproblem3.cc
 
-XFAIL_WITH_INT64 = \
-$(XFAIL_ALWAYS)
+if BUILD_WATCHDOG_LIBRARY
+WATCHDOG_TESTS = mipproblem2
 
-XFAIL_WITH_INT32 = \
-$(XFAIL_WITH_INT64)
+mipproblem2_SOURCES = $(mipproblem2_SRCS)
+mipproblem2_CPPFLAGS = \
+$(AM_CPPFLAGS) \
+-I$(top_builddir)/Watchdog \
+-I$(top_builddir)/Watchdog/src
+mipproblem2_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
 
-XFAIL_WITH_INT16 = \
-$(XFAIL_WITH_INT32)
+endif BUILD_WATCHDOG_LIBRARY
 
-XFAIL_WITH_INT8 = \
-$(XFAIL_WITH_INT16)
+check_PROGRAMS = \
+$(TESTS) \
+$(WATCHDOG_TESTS) \
+$(BUGS)
 
-XFAIL_WITH_INT8_A = \
-$(XFAIL_WITH_INT8)
-
-if USE_INT64
-
-XFAIL_SET = $(XFAIL_WITH_INT64)
-
-else !USE_INT64
-if USE_INT32
-
-XFAIL_SET = $(XFAIL_WITH_INT32)
-
-else !USE_INT32
-if USE_INT16
-
-XFAIL_SET = $(XFAIL_WITH_INT16)
-
-else !USE_INT16
-if USE_INT8
-
-if ASSERTIONS_ENABLED
-
-XFAIL_SET = $(XFAIL_WITH_INT8_A)
-
-else !ASSERTIONS_ENABLED
-
-XFAIL_SET = $(XFAIL_WITH_INT8)
-
-endif !ASSERTIONS_ENABLED
-
-else !USE_INT8
-
-XFAIL_SET = $(XFAIL_ALWAYS)
-
-endif !USE_INT8
-endif !USE_INT16
-endif !USE_INT32
-endif !USE_INT64
-
-XFAIL_TESTS = $(XFAIL_SET)
-
-check_PROGRAMS = $(TESTS) $(BUGS)
+EXTRA_DIST = $(mipproblem2_SRCS)
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
+
+$(top_builddir)/utils/libppl_utils.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
+
+$(top_builddir)/tests/libppl_tests.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/tests libppl_tests.a
+
+$(top_builddir)/src/libppl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
+
+$(top_builddir)/Watchdog/src/libpwl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/Watchdog/src libpwl.la

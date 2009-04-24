@@ -1,11 +1,11 @@
 /* Grid::Status class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Grid.defs.hh"
 #include <iostream>
@@ -86,7 +86,7 @@ PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Grid::Status)
 
 bool
 PPL::Grid::Status::ascii_load(std::istream& s) {
-  bool positive;
+  PPL_UNINITIALIZED(bool, positive);
 
   if (!get_field(s, zero_dim_univ, positive))
     return false;

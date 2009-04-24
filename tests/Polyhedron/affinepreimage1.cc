@@ -1,11 +1,11 @@
 /* Test Polyhedron::affine_preimage().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -36,7 +36,7 @@ test01() {
 
   C_Polyhedron ph(gs);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
 
   ph.affine_preimage(A, A+2);
 
@@ -49,7 +49,7 @@ test01() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after ph.affine_preimage(A, A+2) ---");
+  print_generators(ph, "*** ph after ph.affine_preimage(A, A+2) ***");
 
   return ok;
 }
@@ -65,7 +65,7 @@ test02() {
   ph.add_constraint(A + B >= 0);
   ph.add_constraint(A + B - 1 >= 0);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   ph.affine_preimage(A, A + B);
 
@@ -76,7 +76,7 @@ test02() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "--- ph after ph.affine_preimage(A, A+B) ---");
+  print_constraints(ph, "*** ph after ph.affine_preimage(A, A+B) ***");
 
   return ok;
 }
@@ -91,7 +91,7 @@ test03() {
   ph.add_constraint(B >= 0);
   ph.add_constraint(A + B - 3 >= 0);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   ph.affine_preimage(A, B+1);
 
@@ -102,7 +102,7 @@ test03() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after ph.affine_preimage(A, B+2) ---");
+  print_generators(ph, "*** ph after ph.affine_preimage(A, B+2) ***");
 
   return ok;
 }
@@ -128,7 +128,7 @@ test04() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After affine_preimage(x, y+1) ***");
+  print_constraints(ph, "*** after affine_preimage(x, y+1) ***");
 
   return ok;
 }
@@ -152,7 +152,7 @@ test05() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.affine_preimage(A, A + 1, 2) ***");
+  print_constraints(ph, "*** after ph.affine_preimage(A, A + 1, 2) ***");
 
   return ok;
 }
@@ -174,7 +174,7 @@ test06() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.affine_preimage(B, A + 1, 2) ***");
+  print_constraints(ph, "*** after ph.affine_preimage(B, A + 1, 2) ***");
 
   return ok;
 }
@@ -200,7 +200,7 @@ test07() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.affine_preimage(B, A - B, -1) ***");
+  print_constraints(ph, "*** after ph.affine_preimage(B, A - B, -1) ***");
 
   return ok;
 }
@@ -220,7 +220,7 @@ test08() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.affine_preimage(A, 2*A + B + 1) ***");
+  print_constraints(ph, "*** after ph.affine_preimage(A, 2*A + B + 1) ***");
 
   return ok;
 }
@@ -246,7 +246,7 @@ test09() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.affine_preimage(A, -A - 1, -1) ***");
+  print_constraints(ph, "*** after ph.affine_preimage(A, -A - 1, -1) ***");
 
   return ok;
 }
@@ -271,7 +271,7 @@ test10() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.affine_preimage(B, -A - 1, -1) ***");
+  print_constraints(ph, "*** after ph.affine_preimage(B, -A - 1, -1) ***");
 
   return ok;
 }
@@ -294,9 +294,9 @@ test11() {
 
   bool ok = (ph == copy_ph);
 
-  print_generators(ph, "*** After ph.affine_preimage(A, A + 1) ***");
+  print_generators(ph, "*** after ph.affine_preimage(A, A + 1) ***");
   print_generators(copy_ph,
-		   "*** After copy_ph.affine_preimage(A, -A - 1, -1) ***");
+		   "*** after copy_ph.affine_preimage(A, -A - 1, -1) ***");
   return ok;
 }
 
@@ -318,9 +318,9 @@ test12() {
 
   bool ok = (ph == copy_ph);
 
-  print_generators(ph, "*** After ph.affine_preimage(B, A + 1) ***");
+  print_generators(ph, "*** after ph.affine_preimage(B, A + 1) ***");
   print_generators(copy_ph,
-		   "*** After copy_ph.affine_preimage(B, -A - 1, -1) ***");
+		   "*** after copy_ph.affine_preimage(B, -A - 1, -1) ***");
   return ok;
 }
 
@@ -336,7 +336,7 @@ test13() {
 
   C_Polyhedron ph(gs);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
 
   ph.affine_preimage(B, Linear_Expression(1));
 
@@ -349,7 +349,7 @@ test13() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after ph.affine_preimage(B, 1) ---");
+  print_generators(ph, "*** ph after ph.affine_preimage(B, 1) ***");
 
   return ok;
 }
@@ -369,17 +369,17 @@ test14() {
 
   C_Polyhedron known_result = ph;
 
-  print_generators(ph, "--- ph before ph.affine_image(A, A + 2*B + 4) ---");
+  print_generators(ph, "*** ph before ph.affine_image(A, A + 2*B + 4) ***");
 
   ph.affine_image(A, A + 2*B + 4);
 
-  print_generators(ph, "--- ph after ph.affine_image(A, A + 2*B + 4) ---");
+  print_generators(ph, "*** ph after ph.affine_image(A, A + 2*B + 4) ***");
 
   ph.affine_preimage(A, A + 2*B + 4);
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after ph.affine_preimage(A, A + 2*B + 4) ---");
+  print_generators(ph, "*** ph after ph.affine_preimage(A, A + 2*B + 4) ***");
 
   return ok;
 }
@@ -397,11 +397,11 @@ test15() {
 
   C_Polyhedron ph(gs);
 
-  print_generators(ph, "--- ph before ph.affine_image(A, B) ---");
+  print_generators(ph, "*** ph before ph.affine_image(A, B) ***");
 
   ph.affine_image(A, B);
 
-  print_generators(ph, "--- ph after ph.affine_image(A, B) ---");
+  print_generators(ph, "*** ph after ph.affine_image(A, B) ***");
 
   ph.affine_preimage(A, B);
 
@@ -411,7 +411,7 @@ test15() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after ph.affine_preimage(A, B) ---");
+  print_generators(ph, "*** ph after ph.affine_preimage(A, B) ***");
 
   return ok;
 }

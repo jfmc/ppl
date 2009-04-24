@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,8 +20,18 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+if VALGRIND_TESTS_ENABLED
+
+CHECKER = \
+$(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
+--num-callers=100 --leak-resolution=high \
+--suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+else !VALGRIND_TESTS_ENABLED
+
 CHECKER =
-#CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+endif !VALGRIND_TESTS_ENABLED
 
 TESTS_ENVIRONMENT = $(CHECKER)
 
@@ -43,66 +53,13 @@ $(top_builddir)/src/libppl.la \
 TESTS = \
 append1
 
+XFAIL_TESTS =
+
 #
 # Sources for the tests
 #
 
 append1_SOURCES = append1.cc
-
-XFAIL_ALWAYS =
-
-XFAIL_WITH_INT64 = \
-$(XFAIL_ALWAYS)
-
-XFAIL_WITH_INT32 = \
-$(XFAIL_WITH_INT64)
-
-XFAIL_WITH_INT16 = \
-$(XFAIL_WITH_INT32)
-
-XFAIL_WITH_INT8 = \
-$(XFAIL_WITH_INT16)
-
-XFAIL_WITH_INT8_A = \
-$(XFAIL_WITH_INT8)
-
-if USE_INT64
-
-XFAIL_SET = $(XFAIL_WITH_INT64)
-
-else !USE_INT64
-if USE_INT32
-
-XFAIL_SET = $(XFAIL_WITH_INT32)
-
-else !USE_INT32
-if USE_INT16
-
-XFAIL_SET = $(XFAIL_WITH_INT16)
-
-else !USE_INT16
-if USE_INT8
-
-if ASSERTIONS_ENABLED
-
-XFAIL_SET = $(XFAIL_WITH_INT8_A)
-
-else !ASSERTIONS_ENABLED
-
-XFAIL_SET = $(XFAIL_WITH_INT8)
-
-endif !ASSERTIONS_ENABLED
-
-else !USE_INT8
-
-XFAIL_SET = $(XFAIL_ALWAYS)
-
-endif !USE_INT8
-endif !USE_INT16
-endif !USE_INT32
-endif !USE_INT64
-
-XFAIL_TESTS = $(XFAIL_SET)
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 

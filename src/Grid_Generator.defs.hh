@@ -1,11 +1,11 @@
 /* Grid_Generator class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -327,6 +327,12 @@ public:
   */
   Coefficient_traits::const_reference divisor() const;
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Grid_Generator& zero_dim_point();
 
@@ -365,13 +371,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
@@ -391,6 +395,12 @@ public:
   void coefficient_swap(Grid_Generator& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the origin of the zero-dimensional space \f$\Rset^0\f$.
+  */
+  static const Grid_Generator* zero_dim_point_p;
+
   /*! \brief
     Scales \p *this to be represented with a divisor of \p d (if
     \*this is a parameter or point).
@@ -463,7 +473,6 @@ private:
   //        divisor() access in Grid::conversion, Grid::simplify,
   //        Grid::relation_with(c) and Grid::Grid(box, *).
   friend class Grid;
-
   friend class Grid_Generator_System;
   friend class Grid_Generator_System::const_iterator;
   friend class Congruence_System;

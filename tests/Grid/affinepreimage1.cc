@@ -1,11 +1,11 @@
 /* Test Grid::affine_preimage().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -48,8 +48,7 @@ test01() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_preimage(B, A + 2, 1) ***");
+  print_generators(gr, "*** gr.affine_preimage(B, A + 2, 1) ***");
 
   return ok;
 }
@@ -75,8 +74,7 @@ test02() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, A + B + 1) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, A + B + 1) ***");
 
   return ok;
 }
@@ -102,8 +100,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, A + 1, 2) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, A + 1, 2) ***");
 
   return ok;
 }
@@ -129,14 +126,13 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, A + 1, 3) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, A + 1, 3) ***");
 
   return ok;
 }
 
 // Simple invertible transformation with denominator and modulus.
-// Congruences are out-of-date
+// Congruences are out-of-date.
 bool
 test05() {
   Variable A(0);
@@ -159,14 +155,13 @@ test05() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_preimage(A, A + 1, 3) ***");
+  print_generators(gr, "*** gr.affine_preimage(A, A + 1, 3) ***");
 
   return ok;
 }
 
 // Simple invertible transformation with denominator and modulus.
-// Congruences are up-to-date
+// Congruences are up-to-date.
 bool
 test06() {
   Variable A(0);
@@ -188,14 +183,13 @@ test06() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, A + 1, 3) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, A + 1, 3) ***");
 
   return ok;
 }
 
 // Invertible transformation which changes the modulus.
-// Congruences are out-of-date
+// Congruences are out-of-date.
 bool
 test07() {
   Variable A(0);
@@ -217,14 +211,13 @@ test07() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_preimage(A, 3*A + 2*B + 4) ***");
+  print_generators(gr, "*** gr.affine_preimage(A, 3*A + 2*B + 4) ***");
 
   return ok;
 }
 
 // Invertible transformation which changes the modulus.
-// Congruences are up-to-date
+// Congruences are up-to-date.
 bool
 test08() {
   Variable A(0);
@@ -245,14 +238,13 @@ test08() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, 3*A + 2*B + 4) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, 3*A + 2*B + 4) ***");
 
   return ok;
 }
 
 // One dimension.
-// Congruences are out-of-date
+// Congruences are out-of-date.
 bool
 test09() {
   Variable A(0);
@@ -271,14 +263,13 @@ test09() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_preimage(A, 2*A) ***");
+  print_generators(gr, "*** gr.affine_preimage(A, 2*A) ***");
 
   return ok;
 }
 
 // One dimension.
-// Congruences are up-to-date
+// Congruences are up-to-date.
 bool
 test10() {
   Variable A(0);
@@ -296,15 +287,14 @@ test10() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, 2*A) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, 2*A) ***");
 
   return ok;
 }
 
 // The first affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
-// Congruences are out-of-date
+// Congruences are out-of-date.
 bool
 test11() {
   Variable A(0);
@@ -326,25 +316,22 @@ test11() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_preimage(A, 3*A + 2*B + 1) ***");
+  print_generators(gr, "*** gr.affine_preimage(A, 3*A + 2*B + 1) ***");
 
   return ok;
 }
 
 // The first affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
-// Congruences are up-to-date
+// Congruences are up-to-date.
 bool
 test12() {
   Variable A(0);
   Variable B(1);
 
   Grid gr = Grid(2);
-  // TODO: Confirm that this should fail when BE_LAZY in
-  //       Grid_nonpublic.cc is 0.
 
-  //gr.add_congruence((3*A - 6*B %= 3) / 9);
+  gr.add_congruence((3*A - 6*B %= 3) / 9);
   gr.add_congruence((A - 2*B %= 1) / 9);
   gr.add_congruence((B %= 0) / 3);
 
@@ -359,15 +346,14 @@ test12() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, 3*A + 2*B + 1) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, 3*A + 2*B + 1) ***");
 
   return ok;
 }
 
 // The second affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
-// Congruences are out-of-date
+// Congruences are out-of-date.
 bool
 test13() {
   Variable A(0);
@@ -388,15 +374,14 @@ test13() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "***  ***");
+  print_generators(gr, "*** gr ***");
 
   return ok;
 }
 
 // The second affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
-// Congruences are up-to-date
+// Congruences are up-to-date.
 bool
 test14() {
   Variable A(0);
@@ -417,8 +402,7 @@ test14() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, B) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, B) ***");
 
   return ok;
 }

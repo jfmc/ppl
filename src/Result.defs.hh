@@ -1,11 +1,11 @@
 /* Result enum and supporting function declarations.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -28,8 +28,6 @@ namespace Parma_Polyhedra_Library {
 //! Possible outcomes of a checked arithmetic computation.
 /*! \ingroup PPL_CXX_interface */
 enum Result {
-
-  VC_MASK = 48,
 
   //! \hideinitializer Ordinary result class.
   VC_NORMAL = 0,
@@ -104,7 +102,9 @@ enum Result {
   V_UNKNOWN_POS_OVERFLOW = 59,
 
   //! \hideinitializer Unordered comparison.
-  V_UNORD_COMP = 60
+  V_UNORD_COMP = 60,
+
+  VC_MASK = 48
 };
 
 //! Extracts the class part of \p r (normal, minus/plus infinity or nan).

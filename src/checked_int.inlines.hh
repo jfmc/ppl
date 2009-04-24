@@ -1,11 +1,11 @@
 /* Specialized "checked" functions for native integer numbers.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -23,24 +23,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_int_inlines_hh
 #define PPL_checked_int_inlines_hh 1
 
-#include "Limits.hh"
+#include "C_Integer.hh"
 #include <cerrno>
 #include <cstdlib>
 #include <climits>
 #include <string>
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
-#ifdef HAVE_INTTYPES_H
-#include <inttypes.h>
-#endif
 
-#if !HAVE_DECL_STRTOLL
+#if !PPL_HAVE_DECL_STRTOLL
 signed long long
 strtoll(const char* nptr, char** endptr, int base);
 #endif
 
-#if !HAVE_DECL_STRTOULL
+#if !PPL_HAVE_DECL_STRTOULL
 unsigned long long
 strtoull(const char* nptr, char** endptr, int base);
 #endif
@@ -49,57 +43,57 @@ namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
-#ifndef HAVE_INT_FAST16_T
+#ifndef PPL_HAVE_INT_FAST16_T
 typedef int16_t int_fast16_t;
 #endif
 
-#ifndef HAVE_INT_FAST32_T
+#ifndef PPL_HAVE_INT_FAST32_T
 typedef int32_t int_fast32_t;
 #endif
 
-#ifndef HAVE_INT_FAST64_T
+#ifndef PPL_HAVE_INT_FAST64_T
 typedef int64_t int_fast64_t;
 #endif
 
-#ifndef HAVE_UINT_FAST16_T
+#ifndef PPL_HAVE_UINT_FAST16_T
 typedef uint16_t uint_fast16_t;
 #endif
 
-#ifndef HAVE_UINT_FAST32_T
+#ifndef PPL_HAVE_UINT_FAST32_T
 typedef uint32_t uint_fast32_t;
 #endif
 
-#ifndef HAVE_UINT_FAST64_T
+#ifndef PPL_HAVE_UINT_FAST64_T
 typedef uint64_t uint_fast64_t;
 #endif
 
 template <typename Policy, typename Type>
 struct Extended_Int {
-  static const Type plus_infinity = Limits<Type>::max;
-  static const Type minus_infinity = (Limits<Type>::min >= 0
-				      ? Limits<Type>::max - 1
-				      : Limits<Type>::min);
-  static const Type not_a_number = (Limits<Type>::min >= 0
-				    ? Limits<Type>::max - Policy::handle_infinity * 2
-				    : Limits<Type>::min + Policy::handle_infinity);
-  static const Type min = (Limits<Type>::min
-			   + (Limits<Type>::min >= 0 ? 0
-			      : (Policy::handle_infinity + Policy::handle_nan)));
-  static const Type max = (Limits<Type>::max
-			   - (Limits<Type>::min >= 0
-			      ? (2 * Policy::handle_infinity + Policy::handle_nan)
-			      : Policy::handle_infinity));
+  static const Type plus_infinity = C_Integer<Type>::max;
+  static const Type minus_infinity = (C_Integer<Type>::min >= 0
+				      ? C_Integer<Type>::max - 1
+				      : C_Integer<Type>::min);
+  static const Type not_a_number = (C_Integer<Type>::min >= 0
+				    ? C_Integer<Type>::max - Policy::has_infinity * 2
+				    : C_Integer<Type>::min + Policy::has_infinity);
+  static const Type min = (C_Integer<Type>::min
+			   + (C_Integer<Type>::min >= 0 ? 0
+			      : (Policy::has_infinity + Policy::has_nan)));
+  static const Type max = (C_Integer<Type>::max
+			   - (C_Integer<Type>::min >= 0
+			      ? (2 * Policy::has_infinity + Policy::has_nan)
+			      : Policy::has_infinity));
 };
 
 template <typename Policy, typename To>
 inline Result
 set_neg_overflow_int(To& to, Rounding_Dir dir) {
-  if (dir == ROUND_UP) {
+  if (round_up(dir)) {
     to = Extended_Int<Policy, To>::min;
     return V_LT;
   }
   else {
-    if (Policy::handle_infinity) {
+    if (Policy::has_infinity) {
       to = Extended_Int<Policy, To>::minus_infinity;
       return V_GT;
     }
@@ -110,12 +104,12 @@ set_neg_overflow_int(To& to, Rounding_Dir dir) {
 template <typename Policy, typename To>
 inline Result
 set_pos_overflow_int(To& to, Rounding_Dir dir) {
-  if (dir == ROUND_DOWN) {
+  if (round_down(dir)) {
     to = Extended_Int<Policy, To>::max;
     return V_GT;
   }
   else {
-    if (Policy::handle_infinity) {
+    if (Policy::has_infinity) {
       to = Extended_Int<Policy, To>::plus_infinity;
       return V_LT;
     }
@@ -126,7 +120,7 @@ set_pos_overflow_int(To& to, Rounding_Dir dir) {
 template <typename Policy, typename To>
 inline Result
 round_lt_int_no_overflow(To& to, Rounding_Dir dir) {
-  if (dir == ROUND_DOWN) {
+  if (round_down(dir)) {
     --to;
     return V_GT;
   }
@@ -136,7 +130,7 @@ round_lt_int_no_overflow(To& to, Rounding_Dir dir) {
 template <typename Policy, typename To>
 inline Result
 round_gt_int_no_overflow(To& to, Rounding_Dir dir) {
-  if (dir == ROUND_UP) {
+  if (round_up(dir)) {
     ++to;
     return V_LT;
   }
@@ -146,9 +140,9 @@ round_gt_int_no_overflow(To& to, Rounding_Dir dir) {
 template <typename Policy, typename To>
 inline Result
 round_lt_int(To& to, Rounding_Dir dir) {
-  if (dir == ROUND_DOWN) {
+  if (round_down(dir)) {
     if (to == Extended_Int<Policy, To>::min) {
-      if (Policy::handle_infinity) {
+      if (Policy::has_infinity) {
 	to = Extended_Int<Policy, To>::minus_infinity;
 	return V_GT;
       }
@@ -165,9 +159,9 @@ round_lt_int(To& to, Rounding_Dir dir) {
 template <typename Policy, typename To>
 inline Result
 round_gt_int(To& to, Rounding_Dir dir) {
-  if (dir == ROUND_UP) {
+  if (round_up(dir)) {
     if (to == Extended_Int<Policy, To>::max) {
-      if (Policy::handle_infinity) {
+      if (Policy::has_infinity) {
 	to = Extended_Int<Policy, To>::plus_infinity;
 	return V_LT;
       }
@@ -181,27 +175,27 @@ round_gt_int(To& to, Rounding_Dir dir) {
   return V_GT;
 }
 
-SPECIALIZE_COPY(generic, signed char)
-SPECIALIZE_COPY(generic, signed short)
-SPECIALIZE_COPY(generic, signed int)
-SPECIALIZE_COPY(generic, signed long)
-SPECIALIZE_COPY(generic, signed long long)
-SPECIALIZE_COPY(generic, unsigned char)
-SPECIALIZE_COPY(generic, unsigned short)
-SPECIALIZE_COPY(generic, unsigned int)
-SPECIALIZE_COPY(generic, unsigned long)
-SPECIALIZE_COPY(generic, unsigned long long)
+PPL_SPECIALIZE_COPY(copy_generic, signed char)
+PPL_SPECIALIZE_COPY(copy_generic, signed short)
+PPL_SPECIALIZE_COPY(copy_generic, signed int)
+PPL_SPECIALIZE_COPY(copy_generic, signed long)
+PPL_SPECIALIZE_COPY(copy_generic, signed long long)
+PPL_SPECIALIZE_COPY(copy_generic, unsigned char)
+PPL_SPECIALIZE_COPY(copy_generic, unsigned short)
+PPL_SPECIALIZE_COPY(copy_generic, unsigned int)
+PPL_SPECIALIZE_COPY(copy_generic, unsigned long)
+PPL_SPECIALIZE_COPY(copy_generic, unsigned long long)
 
 template <typename Policy, typename Type>
 inline Result
 classify_int(const Type v, bool nan, bool inf, bool sign) {
-  if (Policy::handle_nan
+  if (Policy::has_nan
       && (nan || sign)
       && v == Extended_Int<Policy, Type>::not_a_number)
     return VC_NAN;
   if (!inf & !sign)
     return VC_NORMAL;
-  if (Policy::handle_infinity) {
+  if (Policy::has_infinity) {
     if (v == Extended_Int<Policy, Type>::minus_infinity)
       return inf ? VC_MINUS_INFINITY : V_LT;
     if (v == Extended_Int<Policy, Type>::plus_infinity)
@@ -217,69 +211,69 @@ classify_int(const Type v, bool nan, bool inf, bool sign) {
   return VC_NORMAL;
 }
 
-SPECIALIZE_CLASSIFY(int, signed char)
-SPECIALIZE_CLASSIFY(int, signed short)
-SPECIALIZE_CLASSIFY(int, signed int)
-SPECIALIZE_CLASSIFY(int, signed long)
-SPECIALIZE_CLASSIFY(int, signed long long)
-SPECIALIZE_CLASSIFY(int, unsigned char)
-SPECIALIZE_CLASSIFY(int, unsigned short)
-SPECIALIZE_CLASSIFY(int, unsigned int)
-SPECIALIZE_CLASSIFY(int, unsigned long)
-SPECIALIZE_CLASSIFY(int, unsigned long long)
+PPL_SPECIALIZE_CLASSIFY(classify_int, signed char)
+PPL_SPECIALIZE_CLASSIFY(classify_int, signed short)
+PPL_SPECIALIZE_CLASSIFY(classify_int, signed int)
+PPL_SPECIALIZE_CLASSIFY(classify_int, signed long)
+PPL_SPECIALIZE_CLASSIFY(classify_int, signed long long)
+PPL_SPECIALIZE_CLASSIFY(classify_int, unsigned char)
+PPL_SPECIALIZE_CLASSIFY(classify_int, unsigned short)
+PPL_SPECIALIZE_CLASSIFY(classify_int, unsigned int)
+PPL_SPECIALIZE_CLASSIFY(classify_int, unsigned long)
+PPL_SPECIALIZE_CLASSIFY(classify_int, unsigned long long)
 
 template <typename Policy, typename Type>
 inline bool
 is_nan_int(const Type v) {
-  return Policy::handle_nan && v == Extended_Int<Policy, Type>::not_a_number;
+  return Policy::has_nan && v == Extended_Int<Policy, Type>::not_a_number;
 }
 
-SPECIALIZE_IS_NAN(int, signed char)
-SPECIALIZE_IS_NAN(int, signed short)
-SPECIALIZE_IS_NAN(int, signed int)
-SPECIALIZE_IS_NAN(int, signed long)
-SPECIALIZE_IS_NAN(int, signed long long)
-SPECIALIZE_IS_NAN(int, unsigned char)
-SPECIALIZE_IS_NAN(int, unsigned short)
-SPECIALIZE_IS_NAN(int, unsigned int)
-SPECIALIZE_IS_NAN(int, unsigned long)
-SPECIALIZE_IS_NAN(int, unsigned long long)
+PPL_SPECIALIZE_IS_NAN(is_nan_int, signed char)
+PPL_SPECIALIZE_IS_NAN(is_nan_int, signed short)
+PPL_SPECIALIZE_IS_NAN(is_nan_int, signed int)
+PPL_SPECIALIZE_IS_NAN(is_nan_int, signed long)
+PPL_SPECIALIZE_IS_NAN(is_nan_int, signed long long)
+PPL_SPECIALIZE_IS_NAN(is_nan_int, unsigned char)
+PPL_SPECIALIZE_IS_NAN(is_nan_int, unsigned short)
+PPL_SPECIALIZE_IS_NAN(is_nan_int, unsigned int)
+PPL_SPECIALIZE_IS_NAN(is_nan_int, unsigned long)
+PPL_SPECIALIZE_IS_NAN(is_nan_int, unsigned long long)
 
 template <typename Policy, typename Type>
 inline bool
 is_minf_int(const Type v) {
-  return Policy::handle_infinity
+  return Policy::has_infinity
     && v == Extended_Int<Policy, Type>::minus_infinity;
 }
 
-SPECIALIZE_IS_MINF(int, signed char)
-SPECIALIZE_IS_MINF(int, signed short)
-SPECIALIZE_IS_MINF(int, signed int)
-SPECIALIZE_IS_MINF(int, signed long)
-SPECIALIZE_IS_MINF(int, signed long long)
-SPECIALIZE_IS_MINF(int, unsigned char)
-SPECIALIZE_IS_MINF(int, unsigned short)
-SPECIALIZE_IS_MINF(int, unsigned int)
-SPECIALIZE_IS_MINF(int, unsigned long)
-SPECIALIZE_IS_MINF(int, unsigned long long)
+PPL_SPECIALIZE_IS_MINF(is_minf_int, signed char)
+PPL_SPECIALIZE_IS_MINF(is_minf_int, signed short)
+PPL_SPECIALIZE_IS_MINF(is_minf_int, signed int)
+PPL_SPECIALIZE_IS_MINF(is_minf_int, signed long)
+PPL_SPECIALIZE_IS_MINF(is_minf_int, signed long long)
+PPL_SPECIALIZE_IS_MINF(is_minf_int, unsigned char)
+PPL_SPECIALIZE_IS_MINF(is_minf_int, unsigned short)
+PPL_SPECIALIZE_IS_MINF(is_minf_int, unsigned int)
+PPL_SPECIALIZE_IS_MINF(is_minf_int, unsigned long)
+PPL_SPECIALIZE_IS_MINF(is_minf_int, unsigned long long)
 
 template <typename Policy, typename Type>
 inline bool
 is_pinf_int(const Type v) {
-  return Policy::handle_infinity
+  return Policy::has_infinity
     && v == Extended_Int<Policy, Type>::plus_infinity;
 }
 
-SPECIALIZE_IS_PINF(int, signed char)
-SPECIALIZE_IS_PINF(int, signed short)
-SPECIALIZE_IS_PINF(int, signed int)
-SPECIALIZE_IS_PINF(int, signed long)
-SPECIALIZE_IS_PINF(int, signed long long)
-SPECIALIZE_IS_PINF(int, unsigned char)
-SPECIALIZE_IS_PINF(int, unsigned short)
-SPECIALIZE_IS_PINF(int, unsigned int)
-SPECIALIZE_IS_PINF(int, unsigned long)
-SPECIALIZE_IS_PINF(int, unsigned long long)
+PPL_SPECIALIZE_IS_PINF(is_pinf_int, signed char)
+PPL_SPECIALIZE_IS_PINF(is_pinf_int, signed short)
+PPL_SPECIALIZE_IS_PINF(is_pinf_int, signed int)
+PPL_SPECIALIZE_IS_PINF(is_pinf_int, signed long)
+PPL_SPECIALIZE_IS_PINF(is_pinf_int, signed long long)
+PPL_SPECIALIZE_IS_PINF(is_pinf_int, unsigned char)
+PPL_SPECIALIZE_IS_PINF(is_pinf_int, unsigned short)
+PPL_SPECIALIZE_IS_PINF(is_pinf_int, unsigned int)
+PPL_SPECIALIZE_IS_PINF(is_pinf_int, unsigned long)
+PPL_SPECIALIZE_IS_PINF(is_pinf_int, unsigned long long)
 
 template <typename Policy, typename Type>
 inline bool
@@ -287,251 +281,290 @@ is_int_int(const Type v) {
   return !is_nan<Policy>(v);
 }
 
-SPECIALIZE_IS_INT(int, signed char)
-SPECIALIZE_IS_INT(int, signed short)
-SPECIALIZE_IS_INT(int, signed int)
-SPECIALIZE_IS_INT(int, signed long)
-SPECIALIZE_IS_INT(int, signed long long)
-SPECIALIZE_IS_INT(int, unsigned char)
-SPECIALIZE_IS_INT(int, unsigned short)
-SPECIALIZE_IS_INT(int, unsigned int)
-SPECIALIZE_IS_INT(int, unsigned long)
-SPECIALIZE_IS_INT(int, unsigned long long)
+PPL_SPECIALIZE_IS_INT(is_int_int, signed char)
+PPL_SPECIALIZE_IS_INT(is_int_int, signed short)
+PPL_SPECIALIZE_IS_INT(is_int_int, signed int)
+PPL_SPECIALIZE_IS_INT(is_int_int, signed long)
+PPL_SPECIALIZE_IS_INT(is_int_int, signed long long)
+PPL_SPECIALIZE_IS_INT(is_int_int, unsigned char)
+PPL_SPECIALIZE_IS_INT(is_int_int, unsigned short)
+PPL_SPECIALIZE_IS_INT(is_int_int, unsigned int)
+PPL_SPECIALIZE_IS_INT(is_int_int, unsigned long)
+PPL_SPECIALIZE_IS_INT(is_int_int, unsigned long long)
 
 template <typename Policy, typename Type>
 inline Result
-set_special_int(Type& v, Result r) {
+assign_special_int(Type& v, Result r, Rounding_Dir dir) {
   Result t = classify(r);
-  if (Policy::handle_nan && t == VC_NAN)
-    v = Extended_Int<Policy, Type>::not_a_number;
-  else if (Policy::handle_infinity) {
-    switch (t) {
-    case VC_MINUS_INFINITY:
+  switch (t) {
+  case VC_NAN:
+    if (Policy::has_nan)
+      v = Extended_Int<Policy, Type>::not_a_number;
+    break;
+  case VC_MINUS_INFINITY:
+    if (Policy::has_infinity) {
       v = Extended_Int<Policy, Type>::minus_infinity;
-      break;
-    case VC_PLUS_INFINITY:
-      v = Extended_Int<Policy, Type>::plus_infinity;
-      break;
-    default:
-      break;
+      return V_EQ;
     }
+    if (round_up(dir)) {
+      v = Extended_Int<Policy, Type>::min;
+      return V_LT;
+    }
+    break;
+  case VC_PLUS_INFINITY:
+    if (Policy::has_infinity) {
+      v = Extended_Int<Policy, Type>::plus_infinity;
+      return V_EQ;
+    }
+    if (round_down(dir)) {
+      v = Extended_Int<Policy, Type>::max;
+      return V_GT;
+    }
+    break;
+  default:
+    assert(0);
+    break;
   }
   return r;
 }
 
-SPECIALIZE_SET_SPECIAL(int, signed char)
-SPECIALIZE_SET_SPECIAL(int, signed short)
-SPECIALIZE_SET_SPECIAL(int, signed int)
-SPECIALIZE_SET_SPECIAL(int, signed long)
-SPECIALIZE_SET_SPECIAL(int, signed long long)
-SPECIALIZE_SET_SPECIAL(int, unsigned char)
-SPECIALIZE_SET_SPECIAL(int, unsigned short)
-SPECIALIZE_SET_SPECIAL(int, unsigned int)
-SPECIALIZE_SET_SPECIAL(int, unsigned long)
-SPECIALIZE_SET_SPECIAL(int, unsigned long long)
+PPL_SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, signed char)
+PPL_SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, signed short)
+PPL_SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, signed int)
+PPL_SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, signed long)
+PPL_SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, signed long long)
+PPL_SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, unsigned char)
+PPL_SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, unsigned short)
+PPL_SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, unsigned int)
+PPL_SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, unsigned long)
+PPL_SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, unsigned long long)
 
-template <typename Policy, typename To, typename From>
+template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_signed_int_signed_int(To& to, const From from, Rounding_Dir dir) {
-  if (sizeof(To) <= sizeof(From)) {
-    if (CHECK_P(Policy::check_overflow,
-		from < static_cast<From>(Extended_Int<Policy, To>::min)))
-      return set_neg_overflow_int<Policy>(to, dir);
-    if (CHECK_P(Policy::check_overflow,
-		from > static_cast<From>(Extended_Int<Policy, To>::max)))
-      return set_pos_overflow_int<Policy>(to, dir);
+  if (sizeof(To) < sizeof(From)
+      || (sizeof(To) == sizeof(From)
+	  && (Extended_Int<To_Policy, To>::min > Extended_Int<From_Policy, From>::min
+	      || Extended_Int<To_Policy, To>::max < Extended_Int<From_Policy, From>::max))) {
+    if (CHECK_P(To_Policy::check_overflow,
+		from < static_cast<From>(Extended_Int<To_Policy, To>::min)))
+      return set_neg_overflow_int<To_Policy>(to, dir);
+    if (CHECK_P(To_Policy::check_overflow,
+		from > static_cast<From>(Extended_Int<To_Policy, To>::max)))
+      return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = To(from);
   return V_EQ;
 }
 
-template <typename Policy, typename To, typename From>
+template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_signed_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
   if (sizeof(To) <= sizeof(From)) {
-    if (CHECK_P(Policy::check_overflow,
-		from > static_cast<From>(Extended_Int<Policy, To>::max)))
-      return set_pos_overflow_int<Policy>(to, dir);
+    if (CHECK_P(To_Policy::check_overflow,
+		from > static_cast<From>(Extended_Int<To_Policy, To>::max)))
+      return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = To(from);
   return V_EQ;
 }
 
-template <typename Policy, typename To, typename From>
+template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_unsigned_int_signed_int(To& to, const From from, Rounding_Dir dir) {
-  if (CHECK_P(Policy::check_overflow, from < 0))
-    return set_neg_overflow_int<Policy>(to, dir);
+  if (CHECK_P(To_Policy::check_overflow, from < 0))
+    return set_neg_overflow_int<To_Policy>(to, dir);
   if (sizeof(To) < sizeof(From)) {
-    if (CHECK_P(Policy::check_overflow,
-		from > static_cast<From>(Extended_Int<Policy, To>::max)))
-      return set_pos_overflow_int<Policy>(to, dir);
+    if (CHECK_P(To_Policy::check_overflow,
+		from > static_cast<From>(Extended_Int<To_Policy, To>::max)))
+      return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = To(from);
   return V_EQ;
 }
 
-template <typename Policy, typename To, typename From>
+template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_unsigned_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
-  if (sizeof(To) <= sizeof(From)) {
-    if (CHECK_P(Policy::check_overflow,
-		from > static_cast<From>(Extended_Int<Policy, To>::max)))
-      return set_pos_overflow_int<Policy>(to, dir);
+  if (sizeof(To) < sizeof(From)
+      || (sizeof(To) == sizeof(From)
+	  && Extended_Int<To_Policy, To>::max < Extended_Int<From_Policy, From>::max)) {
+    if (CHECK_P(To_Policy::check_overflow,
+		from > static_cast<From>(Extended_Int<To_Policy, To>::max)))
+      return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = To(from);
   return V_EQ;
 }
 
 
-#define ASSIGN2_SIGNED_SIGNED(Smaller, Larger) \
-SPECIALIZE_ASSIGN(signed_int_signed_int, Smaller, Larger) \
-SPECIALIZE_ASSIGN(signed_int_signed_int, Larger, Smaller)
+#define PPL_ASSIGN2_SIGNED_SIGNED(Smaller, Larger) \
+PPL_SPECIALIZE_ASSIGN(assign_signed_int_signed_int, Smaller, Larger) \
+PPL_SPECIALIZE_ASSIGN(assign_signed_int_signed_int, Larger, Smaller)
 
-#define ASSIGN2_UNSIGNED_UNSIGNED(Smaller, Larger) \
-SPECIALIZE_ASSIGN(unsigned_int_unsigned_int, Smaller, Larger) \
-SPECIALIZE_ASSIGN(unsigned_int_unsigned_int, Larger, Smaller)
+#define PPL_ASSIGN2_UNSIGNED_UNSIGNED(Smaller, Larger) \
+PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_unsigned_int, Smaller, Larger) \
+PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_unsigned_int, Larger, Smaller)
 
-#define ASSIGN2_UNSIGNED_SIGNED(Smaller, Larger) \
-SPECIALIZE_ASSIGN(unsigned_int_signed_int, Smaller, Larger) \
-SPECIALIZE_ASSIGN(signed_int_unsigned_int, Larger, Smaller)
+#define PPL_ASSIGN2_UNSIGNED_SIGNED(Smaller, Larger) \
+PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_signed_int, Smaller, Larger) \
+PPL_SPECIALIZE_ASSIGN(assign_signed_int_unsigned_int, Larger, Smaller)
 
-#define ASSIGN2_SIGNED_UNSIGNED(Smaller, Larger) \
-SPECIALIZE_ASSIGN(signed_int_unsigned_int, Smaller, Larger) \
-SPECIALIZE_ASSIGN(unsigned_int_signed_int, Larger, Smaller)
+#define PPL_ASSIGN2_SIGNED_UNSIGNED(Smaller, Larger) \
+PPL_SPECIALIZE_ASSIGN(assign_signed_int_unsigned_int, Smaller, Larger) \
+PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_signed_int, Larger, Smaller)
 
-#define ASSIGN_SIGNED(Type) \
-SPECIALIZE_ASSIGN(signed_int_signed_int, Type, Type)
-#define ASSIGN_UNSIGNED(Type) \
-SPECIALIZE_ASSIGN(unsigned_int_unsigned_int, Type, Type)
+#define PPL_ASSIGN_SIGNED(Type) \
+PPL_SPECIALIZE_ASSIGN(assign_signed_int_signed_int, Type, Type)
+#define PPL_ASSIGN_UNSIGNED(Type) \
+PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_unsigned_int, Type, Type)
 
-ASSIGN_SIGNED(signed char)
-ASSIGN_SIGNED(signed short)
-ASSIGN_SIGNED(signed int)
-ASSIGN_SIGNED(signed long)
-ASSIGN_SIGNED(signed long long)
-ASSIGN_UNSIGNED(unsigned char)
-ASSIGN_UNSIGNED(unsigned short)
-ASSIGN_UNSIGNED(unsigned int)
-ASSIGN_UNSIGNED(unsigned long)
-ASSIGN_UNSIGNED(unsigned long long)
+PPL_ASSIGN_SIGNED(signed char)
+PPL_ASSIGN_SIGNED(signed short)
+PPL_ASSIGN_SIGNED(signed int)
+PPL_ASSIGN_SIGNED(signed long)
+PPL_ASSIGN_SIGNED(signed long long)
+PPL_ASSIGN_UNSIGNED(unsigned char)
+PPL_ASSIGN_UNSIGNED(unsigned short)
+PPL_ASSIGN_UNSIGNED(unsigned int)
+PPL_ASSIGN_UNSIGNED(unsigned long)
+PPL_ASSIGN_UNSIGNED(unsigned long long)
 
-ASSIGN2_SIGNED_SIGNED(signed char, signed short)
-ASSIGN2_SIGNED_SIGNED(signed char, signed int)
-ASSIGN2_SIGNED_SIGNED(signed char, signed long)
-ASSIGN2_SIGNED_SIGNED(signed char, signed long long)
-ASSIGN2_SIGNED_SIGNED(signed short, signed int)
-ASSIGN2_SIGNED_SIGNED(signed short, signed long)
-ASSIGN2_SIGNED_SIGNED(signed short, signed long long)
-ASSIGN2_SIGNED_SIGNED(signed int, signed long)
-ASSIGN2_SIGNED_SIGNED(signed int, signed long long)
-ASSIGN2_SIGNED_SIGNED(signed long, signed long long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned short)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned int)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned long long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned int)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned long long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned int, unsigned long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned int, unsigned long long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned long, unsigned long long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed short)
-ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed int)
-ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed long long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned short, signed int)
-ASSIGN2_UNSIGNED_SIGNED(unsigned short, signed long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned short, signed long long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned int, signed long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned int, signed long long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned long, signed long long)
-ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned char)
-ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned short)
-ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned int)
-ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned long)
-ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned long long)
-ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned short)
-ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned int)
-ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned long)
-ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned long long)
-ASSIGN2_SIGNED_UNSIGNED(signed int, unsigned int)
-ASSIGN2_SIGNED_UNSIGNED(signed int, unsigned long)
-ASSIGN2_SIGNED_UNSIGNED(signed int, unsigned long long)
-ASSIGN2_SIGNED_UNSIGNED(signed long, unsigned long)
-ASSIGN2_SIGNED_UNSIGNED(signed long, unsigned long long)
-ASSIGN2_SIGNED_UNSIGNED(signed long long, unsigned long long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed char, signed short)
+PPL_ASSIGN2_SIGNED_SIGNED(signed char, signed int)
+PPL_ASSIGN2_SIGNED_SIGNED(signed char, signed long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed char, signed long long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed short, signed int)
+PPL_ASSIGN2_SIGNED_SIGNED(signed short, signed long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed short, signed long long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed int, signed long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed int, signed long long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed long, signed long long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned short)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned int)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned long long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned int)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned long long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned int, unsigned long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned int, unsigned long long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned long, unsigned long long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed short)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed int)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed long long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned short, signed int)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned short, signed long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned short, signed long long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned int, signed long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned int, signed long long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned long, signed long long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned char)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned short)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned int)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned long long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned short)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned int)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned long long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed int, unsigned int)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed int, unsigned long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed int, unsigned long long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed long, unsigned long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed long, unsigned long long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed long long, unsigned long long)
 
-template <typename Policy, typename To, typename From>
+template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_int_float(To& to, const From from, Rounding_Dir dir) {
-  if (CHECK_P(Policy::check_overflow, (from < Extended_Int<Policy, To>::min)))
-    return set_neg_overflow_int<Policy>(to, dir);
-  if (CHECK_P(Policy::check_overflow, (from > Extended_Int<Policy, To>::max)))
-    return set_pos_overflow_int<Policy>(to, dir);
-  to = static_cast<To>(from);
-  if (dir == ROUND_IGNORE)
+  if (is_nan<From_Policy>(from))
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  else if (is_minf<From_Policy>(from))
+    return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
+  else if (is_pinf<From_Policy>(from))
+    return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
+#if 0
+  // FIXME: this is correct but it is inefficient and breaks the build
+  // for the missing definition of static const members (a problem present
+  // also in other areas of the PPL).
+  if (CHECK_P(To_Policy::check_overflow, lt(from, Extended_Int<To_Policy, To>::min)))
+    return set_neg_overflow_int<To_Policy>(to, dir);
+  if (CHECK_P(To_Policy::check_overflow, !le(from, Extended_Int<To_Policy, To>::max)))
+    return set_pos_overflow_int<To_Policy>(to, dir);
+#else
+  if (CHECK_P(To_Policy::check_overflow, (from < Extended_Int<To_Policy, To>::min)))
+    return set_neg_overflow_int<To_Policy>(to, dir);
+  if (CHECK_P(To_Policy::check_overflow, (from > Extended_Int<To_Policy, To>::max)))
+    return set_pos_overflow_int<To_Policy>(to, dir);
+#endif
+  From i_from = rint(from);
+  to = static_cast<To>(i_from);
+  if (round_ignore(dir))
     return V_LGE;
-  if (from < to)
-    return round_lt_int<Policy>(to, dir);
-  else if (from > to)
-    return round_gt_int<Policy>(to, dir);
+  if (from < i_from)
+    return round_lt_int<To_Policy>(to, dir);
+  else if (from > i_from)
+    return round_gt_int<To_Policy>(to, dir);
   else
     return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(int_float, signed char, float)
-SPECIALIZE_ASSIGN(int_float, signed short, float)
-SPECIALIZE_ASSIGN(int_float, signed int, float)
-SPECIALIZE_ASSIGN(int_float, signed long, float)
-SPECIALIZE_ASSIGN(int_float, signed long long, float)
-SPECIALIZE_ASSIGN(int_float, unsigned char, float)
-SPECIALIZE_ASSIGN(int_float, unsigned short, float)
-SPECIALIZE_ASSIGN(int_float, unsigned int, float)
-SPECIALIZE_ASSIGN(int_float, unsigned long, float)
-SPECIALIZE_ASSIGN(int_float, unsigned long long, float)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed char, float)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed short, float)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed int, float)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed long, float)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed long long, float)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned char, float)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned short, float)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned int, float)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned long, float)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned long long, float)
 
-SPECIALIZE_ASSIGN(int_float, signed char, double)
-SPECIALIZE_ASSIGN(int_float, signed short, double)
-SPECIALIZE_ASSIGN(int_float, signed int, double)
-SPECIALIZE_ASSIGN(int_float, signed long, double)
-SPECIALIZE_ASSIGN(int_float, signed long long, double)
-SPECIALIZE_ASSIGN(int_float, unsigned char, double)
-SPECIALIZE_ASSIGN(int_float, unsigned short, double)
-SPECIALIZE_ASSIGN(int_float, unsigned int, double)
-SPECIALIZE_ASSIGN(int_float, unsigned long, double)
-SPECIALIZE_ASSIGN(int_float, unsigned long long, double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed char, double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed short, double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed int, double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed long, double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed long long, double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned char, double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned short, double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned int, double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned long, double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned long long, double)
 
-SPECIALIZE_ASSIGN(int_float, signed char, long double)
-SPECIALIZE_ASSIGN(int_float, signed short, long double)
-SPECIALIZE_ASSIGN(int_float, signed int, long double)
-SPECIALIZE_ASSIGN(int_float, signed long, long double)
-SPECIALIZE_ASSIGN(int_float, signed long long, long double)
-SPECIALIZE_ASSIGN(int_float, unsigned char, long double)
-SPECIALIZE_ASSIGN(int_float, unsigned short, long double)
-SPECIALIZE_ASSIGN(int_float, unsigned int, long double)
-SPECIALIZE_ASSIGN(int_float, unsigned long, long double)
-SPECIALIZE_ASSIGN(int_float, unsigned long long, long double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed char, long double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed short, long double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed int, long double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed long, long double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, signed long long, long double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned char, long double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned short, long double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned int, long double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned long, long double)
+PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned long long, long double)
 
-#undef ASSIGN2_SIGNED_SIGNED
-#undef ASSIGN2_UNSIGNED_UNSIGNED
-#undef ASSIGN2_UNSIGNED_SIGNED
-#undef ASSIGN2_SIGNED_UNSIGNED
+#undef PPL_ASSIGN_SIGNED
+#undef PPL_ASSIGN_UNSIGNED
+#undef PPL_ASSIGN2_SIGNED_SIGNED
+#undef PPL_ASSIGN2_UNSIGNED_UNSIGNED
+#undef PPL_ASSIGN2_UNSIGNED_SIGNED
+#undef PPL_ASSIGN2_SIGNED_UNSIGNED
 
-template <typename Policy, typename To>
+template <typename To_Policy, typename From_Policy, typename To>
 inline Result
 assign_signed_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
   if (sizeof(To) <= sizeof(signed long)) {
-    if (!Policy::check_overflow) {
+    if (!To_Policy::check_overflow) {
       to = from.get_si();
       return V_EQ;
     }
     if (from.fits_slong_p()) {
       signed long v = from.get_si();
-      if (v < Limits<To>::min)
-	return set_neg_overflow_int<Policy>(to, dir);
-      if (v > Limits<To>::max)
-	return set_pos_overflow_int<Policy>(to, dir);
+      if (v < C_Integer<To>::min)
+	return set_neg_overflow_int<To_Policy>(to, dir);
+      if (v > C_Integer<To>::max)
+	return set_pos_overflow_int<To_Policy>(to, dir);
       to = v;
       return V_EQ;
     }
@@ -548,37 +581,37 @@ assign_signed_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
       mpz_export(&v, 0, -1, sizeof(To), 0, 0, m);
       if (v >= 0) {
 	if (::sgn(from) < 0)
-	  return neg<Policy>(to, v, dir);
+	  return neg<To_Policy, To_Policy>(to, v, dir);
 	to = v;
 	return V_EQ;
       }
     }
   }
   return ::sgn(from) < 0
-    ? set_neg_overflow_int<Policy>(to, dir)
-    : set_pos_overflow_int<Policy>(to, dir);
+    ? set_neg_overflow_int<To_Policy>(to, dir)
+    : set_pos_overflow_int<To_Policy>(to, dir);
 }
 
-SPECIALIZE_ASSIGN(signed_int_mpz, signed char, mpz_class)
-SPECIALIZE_ASSIGN(signed_int_mpz, signed short, mpz_class)
-SPECIALIZE_ASSIGN(signed_int_mpz, signed int, mpz_class)
-SPECIALIZE_ASSIGN(signed_int_mpz, signed long, mpz_class)
-SPECIALIZE_ASSIGN(signed_int_mpz, signed long long, mpz_class)
+PPL_SPECIALIZE_ASSIGN(assign_signed_int_mpz, signed char, mpz_class)
+PPL_SPECIALIZE_ASSIGN(assign_signed_int_mpz, signed short, mpz_class)
+PPL_SPECIALIZE_ASSIGN(assign_signed_int_mpz, signed int, mpz_class)
+PPL_SPECIALIZE_ASSIGN(assign_signed_int_mpz, signed long, mpz_class)
+PPL_SPECIALIZE_ASSIGN(assign_signed_int_mpz, signed long long, mpz_class)
 
-template <typename Policy, typename To>
+template <typename To_Policy, typename From_Policy, typename To>
 inline Result
 assign_unsigned_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
-  if (CHECK_P(Policy::check_overflow, ::sgn(from) < 0))
-    return set_neg_overflow_int<Policy>(to, dir);
+  if (CHECK_P(To_Policy::check_overflow, ::sgn(from) < 0))
+    return set_neg_overflow_int<To_Policy>(to, dir);
   if (sizeof(To) <= sizeof(unsigned long)) {
-    if (!Policy::check_overflow) {
+    if (!To_Policy::check_overflow) {
       to = from.get_ui();
       return V_EQ;
     }
     if (from.fits_ulong_p()) {
       unsigned long v = from.get_ui();
-      if (v > Limits<To>::max)
-	return set_pos_overflow_int<Policy>(to, dir);
+      if (v > C_Integer<To>::max)
+	return set_pos_overflow_int<To_Policy>(to, dir);
       to = v;
       return V_EQ;
     }
@@ -594,25 +627,25 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
       return V_EQ;
     }
   }
-  return set_pos_overflow_int<Policy>(to, dir);
+  return set_pos_overflow_int<To_Policy>(to, dir);
 }
 
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned char, mpz_class)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned short, mpz_class)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned int, mpz_class)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned long, mpz_class)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned long long, mpz_class)
+PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_mpz, unsigned char, mpz_class)
+PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_mpz, unsigned short, mpz_class)
+PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_mpz, unsigned int, mpz_class)
+PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_mpz, unsigned long, mpz_class)
+PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_mpz, unsigned long long, mpz_class)
 
-template <typename Policy, typename To>
+template <typename To_Policy, typename From_Policy, typename To>
 inline Result
 assign_int_mpq(To& to, const mpq_class& from, Rounding_Dir dir) {
   mpz_srcptr n = from.get_num().get_mpz_t();
   mpz_srcptr d = from.get_den().get_mpz_t();
-  mpz_class q;
+  PPL_DIRTY_TEMP0(mpz_class, q);
   mpz_ptr _q = q.get_mpz_t();
-  if (dir == ROUND_IGNORE) {
+  if (round_ignore(dir)) {
     mpz_tdiv_q(_q, n, d);
-    Result r = assign<Policy>(to, q, dir);
+    Result r = assign<To_Policy, void>(to, q, dir);
     if (r != V_EQ)
       return r;
     return V_LGE;
@@ -623,100 +656,29 @@ assign_int_mpq(To& to, const mpq_class& from, Rounding_Dir dir) {
   mpz_tdiv_qr(_q, rem, n, d);
   sign = mpz_sgn(rem);
   mpz_clear(rem);
-  Result r = assign<Policy>(to, q, dir);
+  Result r = assign<To_Policy, void>(to, q, dir);
   if (r != V_EQ)
     return r;
   switch (sign) {
   case -1:
-    return round_lt_int<Policy>(to, dir);
+    return round_lt_int<To_Policy>(to, dir);
   case 1:
-    return round_gt_int<Policy>(to, dir);
+    return round_gt_int<To_Policy>(to, dir);
   default:
     return V_EQ;
   }
 }
 
-SPECIALIZE_ASSIGN(int_mpq, signed char, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, signed short, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, signed int, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, signed long, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, signed long long, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, unsigned char, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, unsigned short, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, unsigned int, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, unsigned long, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, unsigned long long, mpq_class)
-
-template <typename Policy, typename To>
-inline Result
-assign_int_minf(To& to, const Minus_Infinity&, Rounding_Dir dir) {
-  if (Policy::handle_infinity) {
-    to = Extended_Int<Policy, To>::minus_infinity;
-    return V_EQ;
-  }
-  if (dir == ROUND_UP) {
-    to = Extended_Int<Policy, To>::min;
-    return V_LT;
-  }
-  return VC_MINUS_INFINITY;
-}
-
-template <typename Policy, typename To>
-inline Result
-assign_int_pinf(To& to, const Plus_Infinity&, Rounding_Dir dir) {
-  if (Policy::handle_infinity) {
-    to = Extended_Int<Policy, To>::plus_infinity;
-    return V_EQ;
-  }
-  if (dir == ROUND_DOWN) {
-    to = Extended_Int<Policy, To>::max;
-    return V_GT;
-  }
-  return VC_PLUS_INFINITY;
-}
-
-template <typename Policy, typename To>
-inline Result
-assign_int_nan(To& to, const Not_A_Number&, Rounding_Dir) {
-  if (Policy::handle_nan) {
-    to = Extended_Int<Policy, To>::not_a_number;
-    return V_EQ;
-  }
-  return VC_NAN;
-}
-
-SPECIALIZE_ASSIGN(int_minf, signed char, Minus_Infinity)
-SPECIALIZE_ASSIGN(int_minf, signed short, Minus_Infinity)
-SPECIALIZE_ASSIGN(int_minf, signed int, Minus_Infinity)
-SPECIALIZE_ASSIGN(int_minf, signed long, Minus_Infinity)
-SPECIALIZE_ASSIGN(int_minf, signed long long, Minus_Infinity)
-SPECIALIZE_ASSIGN(int_minf, unsigned char, Minus_Infinity)
-SPECIALIZE_ASSIGN(int_minf, unsigned short, Minus_Infinity)
-SPECIALIZE_ASSIGN(int_minf, unsigned int, Minus_Infinity)
-SPECIALIZE_ASSIGN(int_minf, unsigned long, Minus_Infinity)
-SPECIALIZE_ASSIGN(int_minf, unsigned long long, Minus_Infinity)
-
-SPECIALIZE_ASSIGN(int_pinf, signed char, Plus_Infinity)
-SPECIALIZE_ASSIGN(int_pinf, signed short, Plus_Infinity)
-SPECIALIZE_ASSIGN(int_pinf, signed int, Plus_Infinity)
-SPECIALIZE_ASSIGN(int_pinf, signed long, Plus_Infinity)
-SPECIALIZE_ASSIGN(int_pinf, signed long long, Plus_Infinity)
-SPECIALIZE_ASSIGN(int_pinf, unsigned char, Plus_Infinity)
-SPECIALIZE_ASSIGN(int_pinf, unsigned short, Plus_Infinity)
-SPECIALIZE_ASSIGN(int_pinf, unsigned int, Plus_Infinity)
-SPECIALIZE_ASSIGN(int_pinf, unsigned long, Plus_Infinity)
-SPECIALIZE_ASSIGN(int_pinf, unsigned long long, Plus_Infinity)
-
-SPECIALIZE_ASSIGN(int_nan, signed char, Not_A_Number)
-SPECIALIZE_ASSIGN(int_nan, signed short, Not_A_Number)
-SPECIALIZE_ASSIGN(int_nan, signed int, Not_A_Number)
-SPECIALIZE_ASSIGN(int_nan, signed long, Not_A_Number)
-SPECIALIZE_ASSIGN(int_nan, signed long long, Not_A_Number)
-SPECIALIZE_ASSIGN(int_nan, unsigned char, Not_A_Number)
-SPECIALIZE_ASSIGN(int_nan, unsigned short, Not_A_Number)
-SPECIALIZE_ASSIGN(int_nan, unsigned int, Not_A_Number)
-SPECIALIZE_ASSIGN(int_nan, unsigned long, Not_A_Number)
-SPECIALIZE_ASSIGN(int_nan, unsigned long long, Not_A_Number)
+PPL_SPECIALIZE_ASSIGN(assign_int_mpq, signed char, mpq_class)
+PPL_SPECIALIZE_ASSIGN(assign_int_mpq, signed short, mpq_class)
+PPL_SPECIALIZE_ASSIGN(assign_int_mpq, signed int, mpq_class)
+PPL_SPECIALIZE_ASSIGN(assign_int_mpq, signed long, mpq_class)
+PPL_SPECIALIZE_ASSIGN(assign_int_mpq, signed long long, mpq_class)
+PPL_SPECIALIZE_ASSIGN(assign_int_mpq, unsigned char, mpq_class)
+PPL_SPECIALIZE_ASSIGN(assign_int_mpq, unsigned short, mpq_class)
+PPL_SPECIALIZE_ASSIGN(assign_int_mpq, unsigned int, mpq_class)
+PPL_SPECIALIZE_ASSIGN(assign_int_mpq, unsigned long, mpq_class)
+PPL_SPECIALIZE_ASSIGN(assign_int_mpq, unsigned long long, mpq_class)
 
 #if UCHAR_MAX == 0xff
 #define CHAR_BITS 8
@@ -762,243 +724,243 @@ struct Larger;
 
 template <>
 struct Larger<signed char> {
-  static const bool use_for_neg = true;
-  static const bool use_for_add = true;
-  static const bool use_for_sub = true;
-  static const bool use_for_mul = true;
-  typedef int_fast16_t Type_For_Neg;
-  typedef int_fast16_t  Type_For_Add;
-  typedef int_fast16_t  Type_For_Sub;
-  typedef int_fast16_t  Type_For_Mul;
+  const_bool_nodef(use_for_neg, true);
+  const_bool_nodef(use_for_add, true);
+  const_bool_nodef(use_for_sub, true);
+  const_bool_nodef(use_for_mul, true);
+  typedef int_fast16_t type_for_neg;
+  typedef int_fast16_t type_for_add;
+  typedef int_fast16_t type_for_sub;
+  typedef int_fast16_t type_for_mul;
 };
 
 template <>
 struct Larger<unsigned char> {
-  static const bool use_for_neg = true;
-  static const bool use_for_add = true;
-  static const bool use_for_sub = true;
-  static const bool use_for_mul = true;
-  typedef int_fast16_t Type_For_Neg;
-  typedef uint_fast16_t Type_For_Add;
-  typedef int_fast16_t Type_For_Sub;
-  typedef uint_fast16_t Type_For_Mul;
+  const_bool_nodef(use_for_neg, true);
+  const_bool_nodef(use_for_add, true);
+  const_bool_nodef(use_for_sub, true);
+  const_bool_nodef(use_for_mul, true);
+  typedef int_fast16_t type_for_neg;
+  typedef uint_fast16_t type_for_add;
+  typedef int_fast16_t type_for_sub;
+  typedef uint_fast16_t type_for_mul;
 };
 
 template <>
 struct Larger<signed short> {
-  static const bool use_for_neg = true;
-  static const bool use_for_add = true;
-  static const bool use_for_sub = true;
-  static const bool use_for_mul = true;
-  typedef int_fast32_t Type_For_Neg;
-  typedef int_fast32_t Type_For_Add;
-  typedef int_fast32_t Type_For_Sub;
-  typedef int_fast32_t Type_For_Mul;
+  const_bool_nodef(use_for_neg, true);
+  const_bool_nodef(use_for_add, true);
+  const_bool_nodef(use_for_sub, true);
+  const_bool_nodef(use_for_mul, true);
+  typedef int_fast32_t type_for_neg;
+  typedef int_fast32_t type_for_add;
+  typedef int_fast32_t type_for_sub;
+  typedef int_fast32_t type_for_mul;
 };
 
 template <>
 struct Larger<unsigned short> {
-  static const bool use_for_neg = true;
-  static const bool use_for_add = true;
-  static const bool use_for_sub = true;
-  static const bool use_for_mul = true;
-  typedef int_fast32_t Type_For_Neg;
-  typedef uint_fast32_t Type_For_Add;
-  typedef int_fast32_t Type_For_Sub;
-  typedef uint_fast32_t Type_For_Mul;
+  const_bool_nodef(use_for_neg, true);
+  const_bool_nodef(use_for_add, true);
+  const_bool_nodef(use_for_sub, true);
+  const_bool_nodef(use_for_mul, true);
+  typedef int_fast32_t type_for_neg;
+  typedef uint_fast32_t type_for_add;
+  typedef int_fast32_t type_for_sub;
+  typedef uint_fast32_t type_for_mul;
 };
 
 template <>
 struct Larger<signed int> {
-  static const bool use_for_neg = (LONG_BITS == 64);
-  static const bool use_for_add = (LONG_BITS == 64);
-  static const bool use_for_sub = (LONG_BITS == 64);
-  static const bool use_for_mul = true;
-  typedef int_fast64_t Type_For_Neg;
-  typedef int_fast64_t Type_For_Add;
-  typedef int_fast64_t Type_For_Sub;
-  typedef int_fast64_t Type_For_Mul;
+  const_bool_nodef(use_for_neg, (LONG_BITS == 64));
+  const_bool_nodef(use_for_add, (LONG_BITS == 64));
+  const_bool_nodef(use_for_sub, (LONG_BITS == 64));
+  const_bool_nodef(use_for_mul, true);
+  typedef int_fast64_t type_for_neg;
+  typedef int_fast64_t type_for_add;
+  typedef int_fast64_t type_for_sub;
+  typedef int_fast64_t type_for_mul;
 };
 
 template <>
 struct Larger<unsigned int> {
-  static const bool use_for_neg = (LONG_BITS == 64);
-  static const bool use_for_add = (LONG_BITS == 64);
-  static const bool use_for_sub = (LONG_BITS == 64);
-  static const bool use_for_mul = true;
-  typedef int_fast64_t Type_For_Neg;
-  typedef uint_fast64_t Type_For_Add;
-  typedef int_fast64_t Type_For_Sub;
-  typedef uint_fast64_t Type_For_Mul;
+  const_bool_nodef(use_for_neg, (LONG_BITS == 64));
+  const_bool_nodef(use_for_add, (LONG_BITS == 64));
+  const_bool_nodef(use_for_sub, (LONG_BITS == 64));
+  const_bool_nodef(use_for_mul, true);
+  typedef int_fast64_t type_for_neg;
+  typedef uint_fast64_t type_for_add;
+  typedef int_fast64_t type_for_sub;
+  typedef uint_fast64_t type_for_mul;
 };
 
 template <>
 struct Larger<signed long> {
-  static const bool use_for_neg = false;
-  static const bool use_for_add = false;
-  static const bool use_for_sub = false;
-  static const bool use_for_mul = (LONG_BITS == 32);
-  typedef int_fast64_t Type_For_Neg;
-  typedef int_fast64_t Type_For_Add;
-  typedef int_fast64_t Type_For_Sub;
-  typedef int_fast64_t Type_For_Mul;
+  const_bool_nodef(use_for_neg, false);
+  const_bool_nodef(use_for_add, false);
+  const_bool_nodef(use_for_sub, false);
+  const_bool_nodef(use_for_mul, (LONG_BITS == 32));
+  typedef int_fast64_t type_for_neg;
+  typedef int_fast64_t type_for_add;
+  typedef int_fast64_t type_for_sub;
+  typedef int_fast64_t type_for_mul;
 };
 
 template <>
 struct Larger<unsigned long> {
-  static const bool use_for_neg = false;
-  static const bool use_for_add = false;
-  static const bool use_for_sub = false;
-  static const bool use_for_mul = (LONG_BITS == 32);
-  typedef int_fast64_t Type_For_Neg;
-  typedef uint_fast64_t Type_For_Add;
-  typedef int_fast64_t Type_For_Sub;
-  typedef uint_fast64_t Type_For_Mul;
+  const_bool_nodef(use_for_neg, false);
+  const_bool_nodef(use_for_add, false);
+  const_bool_nodef(use_for_sub, false);
+  const_bool_nodef(use_for_mul, (LONG_BITS == 32));
+  typedef int_fast64_t type_for_neg;
+  typedef uint_fast64_t type_for_add;
+  typedef int_fast64_t type_for_sub;
+  typedef uint_fast64_t type_for_mul;
 };
 
 template <>
 struct Larger<signed long long> {
-  static const bool use_for_neg = false;
-  static const bool use_for_add = false;
-  static const bool use_for_sub = false;
-  static const bool use_for_mul = false;
-  typedef int_fast64_t Type_For_Neg;
-  typedef int_fast64_t Type_For_Add;
-  typedef int_fast64_t Type_For_Sub;
-  typedef int_fast64_t Type_For_Mul;
+  const_bool_nodef(use_for_neg, false);
+  const_bool_nodef(use_for_add, false);
+  const_bool_nodef(use_for_sub, false);
+  const_bool_nodef(use_for_mul, false);
+  typedef int_fast64_t type_for_neg;
+  typedef int_fast64_t type_for_add;
+  typedef int_fast64_t type_for_sub;
+  typedef int_fast64_t type_for_mul;
 };
 
 template <>
 struct Larger<unsigned long long> {
-  static const bool use_for_neg = false;
-  static const bool use_for_add = false;
-  static const bool use_for_sub = false;
-  static const bool use_for_mul = false;
-  typedef int_fast64_t Type_For_Neg;
-  typedef uint_fast64_t Type_For_Add;
-  typedef int_fast64_t Type_For_Sub;
-  typedef uint_fast64_t Type_For_Mul;
+  const_bool_nodef(use_for_neg, false);
+  const_bool_nodef(use_for_add, false);
+  const_bool_nodef(use_for_sub, false);
+  const_bool_nodef(use_for_mul, false);
+  typedef int_fast64_t type_for_neg;
+  typedef uint_fast64_t type_for_add;
+  typedef int_fast64_t type_for_sub;
+  typedef uint_fast64_t type_for_mul;
 };
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 neg_int_larger(Type& to, const Type x, Rounding_Dir dir) {
-  typename Larger<Type>::Type_For_Neg l = x;
+  typename Larger<Type>::type_for_neg l = x;
   l = -l;
-  return assign<Policy>(to, l, dir);
+  return assign<To_Policy, To_Policy>(to, l, dir);
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 add_int_larger(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  typename Larger<Type>::Type_For_Add l = x;
+  typename Larger<Type>::type_for_add l = x;
   l += y;
-  return assign<Policy>(to, l, dir);
+  return assign<To_Policy, To_Policy>(to, l, dir);
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 sub_int_larger(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  typename Larger<Type>::Type_For_Sub l = x;
+  typename Larger<Type>::type_for_sub l = x;
   l -= y;
-  return assign<Policy>(to, l, dir);
+  return assign<To_Policy, To_Policy>(to, l, dir);
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 mul_int_larger(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  typename Larger<Type>::Type_For_Mul l = x;
+  typename Larger<Type>::type_for_mul l = x;
   l *= y;
-  return assign<Policy>(to, l, dir);
+  return assign<To_Policy, To_Policy>(to, l, dir);
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 neg_signed_int(Type& to, const Type from, Rounding_Dir dir) {
-  if (Policy::check_overflow && Larger<Type>::use_for_neg)
-    return neg_int_larger<Policy>(to, from, dir);
-  if (CHECK_P(Policy::check_overflow,
-	      (from < -Extended_Int<Policy, Type>::max)))
-    return set_pos_overflow_int<Policy>(to, dir);
+  if (To_Policy::check_overflow && Larger<Type>::use_for_neg)
+    return neg_int_larger<To_Policy, From_Policy>(to, from, dir);
+  if (CHECK_P(To_Policy::check_overflow,
+	      (from < -Extended_Int<To_Policy, Type>::max)))
+    return set_pos_overflow_int<To_Policy>(to, dir);
   to = -from;
   return V_EQ;
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 neg_unsigned_int(Type& to, const Type from, Rounding_Dir dir) {
-  if (Policy::check_overflow && Larger<Type>::use_for_neg)
-    return neg_int_larger<Policy>(to, from, dir);
-  if (CHECK_P(Policy::check_overflow, from != 0))
-    return set_neg_overflow_int<Policy>(to, dir);
+  if (To_Policy::check_overflow && Larger<Type>::use_for_neg)
+    return neg_int_larger<To_Policy, From_Policy>(to, from, dir);
+  if (CHECK_P(To_Policy::check_overflow, from != 0))
+    return set_neg_overflow_int<To_Policy>(to, dir);
   to = from;
   return V_EQ;
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 add_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (Policy::check_overflow && Larger<Type>::use_for_add)
-    return add_int_larger<Policy>(to, x, y, dir);
-  if (Policy::check_overflow) {
+  if (To_Policy::check_overflow && Larger<Type>::use_for_add)
+    return add_int_larger<To_Policy, From1_Policy, From2_Policy>(to, x, y, dir);
+  if (To_Policy::check_overflow) {
     if (y >= 0) {
-      if (x > Extended_Int<Policy, Type>::max - y)
-	return set_pos_overflow_int<Policy>(to, dir);
+      if (x > Extended_Int<To_Policy, Type>::max - y)
+	return set_pos_overflow_int<To_Policy>(to, dir);
     }
-    else if (x < Extended_Int<Policy, Type>::min - y)
-	return set_neg_overflow_int<Policy>(to, dir);
+    else if (x < Extended_Int<To_Policy, Type>::min - y)
+	return set_neg_overflow_int<To_Policy>(to, dir);
   }
   to = x + y;
   return V_EQ;
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 add_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (Policy::check_overflow && Larger<Type>::use_for_add)
-    return add_int_larger<Policy>(to, x, y, dir);
-  if (CHECK_P(Policy::check_overflow,
-	      (x > Extended_Int<Policy, Type>::max - y)))
-    return set_pos_overflow_int<Policy>(to, dir);
+  if (To_Policy::check_overflow && Larger<Type>::use_for_add)
+    return add_int_larger<To_Policy, From1_Policy, From2_Policy>(to, x, y, dir);
+  if (CHECK_P(To_Policy::check_overflow,
+	      (x > Extended_Int<To_Policy, Type>::max - y)))
+    return set_pos_overflow_int<To_Policy>(to, dir);
   to = x + y;
   return V_EQ;
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 sub_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (Policy::check_overflow && Larger<Type>::use_for_sub)
-    return sub_int_larger<Policy>(to, x, y, dir);
-  if (Policy::check_overflow) {
+  if (To_Policy::check_overflow && Larger<Type>::use_for_sub)
+    return sub_int_larger<To_Policy, From1_Policy, From2_Policy>(to, x, y, dir);
+  if (To_Policy::check_overflow) {
     if (y >= 0) {
-      if (x < Extended_Int<Policy, Type>::min + y)
-	return set_neg_overflow_int<Policy>(to, dir);
+      if (x < Extended_Int<To_Policy, Type>::min + y)
+	return set_neg_overflow_int<To_Policy>(to, dir);
     }
-    else if (x > Extended_Int<Policy, Type>::max + y)
-	return set_pos_overflow_int<Policy>(to, dir);
+    else if (x > Extended_Int<To_Policy, Type>::max + y)
+	return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = x - y;
   return V_EQ;
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 sub_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (Policy::check_overflow && Larger<Type>::use_for_sub)
-    return sub_int_larger<Policy>(to, x, y, dir);
-  if (CHECK_P(Policy::check_overflow,
-	      (x < Extended_Int<Policy, Type>::min + y)))
-    return set_neg_overflow_int<Policy>(to, dir);
+  if (To_Policy::check_overflow && Larger<Type>::use_for_sub)
+    return sub_int_larger<To_Policy, From1_Policy, From2_Policy>(to, x, y, dir);
+  if (CHECK_P(To_Policy::check_overflow,
+	      (x < Extended_Int<To_Policy, Type>::min + y)))
+    return set_neg_overflow_int<To_Policy>(to, dir);
   to = x - y;
   return V_EQ;
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 mul_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (Policy::check_overflow && Larger<Type>::use_for_mul)
-    return mul_int_larger<Policy>(to, x, y, dir);
-  if (!Policy::check_overflow) {
+  if (To_Policy::check_overflow && Larger<Type>::use_for_mul)
+    return mul_int_larger<To_Policy, From1_Policy, From2_Policy>(to, x, y, dir);
+  if (!To_Policy::check_overflow) {
     to = x * y;
     return V_EQ;
   }
@@ -1007,37 +969,37 @@ mul_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     return V_EQ;
   }
   if (y == -1)
-    return neg_signed_int<Policy>(to, x, dir);
+    return neg_signed_int<To_Policy, From1_Policy>(to, x, dir);
   if (x >= 0) {
     if (y > 0) {
-      if (x > Extended_Int<Policy, Type>::max / y)
-	return set_pos_overflow_int<Policy>(to, dir);
+      if (x > Extended_Int<To_Policy, Type>::max / y)
+	return set_pos_overflow_int<To_Policy>(to, dir);
     }
     else {
-      if (x > Extended_Int<Policy, Type>::min / y)
-	return set_neg_overflow_int<Policy>(to, dir);
+      if (x > Extended_Int<To_Policy, Type>::min / y)
+	return set_neg_overflow_int<To_Policy>(to, dir);
     }
   }
   else {
     if (y < 0) {
-      if (x < Extended_Int<Policy, Type>::max / y)
-	return set_pos_overflow_int<Policy>(to, dir);
+      if (x < Extended_Int<To_Policy, Type>::max / y)
+	return set_pos_overflow_int<To_Policy>(to, dir);
     }
     else {
-      if (x < Extended_Int<Policy, Type>::min / y)
-	return set_neg_overflow_int<Policy>(to, dir);
+      if (x < Extended_Int<To_Policy, Type>::min / y)
+	return set_neg_overflow_int<To_Policy>(to, dir);
     }
   }
   to = x * y;
   return V_EQ;
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 mul_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (Policy::check_overflow && Larger<Type>::use_for_mul)
-    return mul_int_larger<Policy>(to, x, y, dir);
-  if (!Policy::check_overflow) {
+  if (To_Policy::check_overflow && Larger<Type>::use_for_mul)
+    return mul_int_larger<To_Policy, From1_Policy, From2_Policy>(to, x, y, dir);
+  if (!To_Policy::check_overflow) {
     to = x * y;
     return V_EQ;
   }
@@ -1045,95 +1007,124 @@ mul_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     to = 0;
     return V_EQ;
   }
-  if (x > Extended_Int<Policy, Type>::max / y)
-    return set_pos_overflow_int<Policy>(to, dir);
+  if (x > Extended_Int<To_Policy, Type>::max / y)
+    return set_pos_overflow_int<To_Policy>(to, dir);
   to = x * y;
   return V_EQ;
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 div_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (CHECK_P(Policy::check_div_zero, y == 0))
-    return set_special<Policy>(to, V_DIV_ZERO);
-  if (Policy::check_overflow && y == -1)
-    return neg_signed_int<Policy>(to, x, dir);
+  if (CHECK_P(To_Policy::check_div_zero, y == 0))
+    return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
+  if (To_Policy::check_overflow && y == -1)
+    return neg_signed_int<To_Policy, From1_Policy>(to, x, dir);
   to = x / y;
-  if (dir == ROUND_IGNORE)
+  if (round_ignore(dir))
     return V_LGE;
   Type m = x % y;
   if (m < 0)
-    return round_lt_int_no_overflow<Policy>(to, dir);
+    return round_lt_int_no_overflow<To_Policy>(to, dir);
   else if (m > 0)
-    return round_gt_int_no_overflow<Policy>(to, dir);
+    return round_gt_int_no_overflow<To_Policy>(to, dir);
   else
     return V_EQ;
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 div_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (CHECK_P(Policy::check_div_zero, y == 0))
-    return set_special<Policy>(to, V_DIV_ZERO);
+  if (CHECK_P(To_Policy::check_div_zero, y == 0))
+    return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
   to = x / y;
-  if (dir == ROUND_IGNORE)
+  if (round_ignore(dir))
     return V_GE;
   Type m = x % y;
   if (m == 0)
     return V_EQ;
-  return round_gt_int<Policy>(to, dir);
+  return round_gt_int<To_Policy>(to, dir);
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
-rem_int(Type& to, const Type x, const Type y, Rounding_Dir) {
-  if (CHECK_P(Policy::check_div_zero, y == 0))
-    return set_special<Policy>(to, V_MOD_ZERO);
+idiv_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
+  if (CHECK_P(To_Policy::check_div_zero, y == 0))
+    return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
+  if (To_Policy::check_overflow && y == -1)
+    return neg_signed_int<To_Policy, From1_Policy>(to, x, dir);
+  to = x / y;
+  return V_EQ;
+}
+
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
+inline Result
+idiv_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir) {
+  if (CHECK_P(To_Policy::check_div_zero, y == 0))
+    return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
+  to = x / y;
+  return V_EQ;
+}
+
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
+inline Result
+rem_signed_int(Type& to, const Type x, const Type y, Rounding_Dir) {
+  if (CHECK_P(To_Policy::check_div_zero, y == 0))
+    return assign_special<To_Policy>(to, V_MOD_ZERO, ROUND_IGNORE);
   to = x % y;
   return V_EQ;
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
+inline Result
+rem_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir) {
+  if (CHECK_P(To_Policy::check_div_zero, y == 0))
+    return assign_special<To_Policy>(to, V_MOD_ZERO, ROUND_IGNORE);
+  to = x % y;
+  return V_EQ;
+}
+
+template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 div2exp_unsigned_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (exp < 0)
-    return mul2exp<Policy>(to, x, -exp, dir);
+    return mul2exp<To_Policy, From_Policy>(to, x, -exp, dir);
   if (static_cast<unsigned int>(exp) >= sizeof(Type) * 8) {
     to = 0;
-    if (dir == ROUND_IGNORE)
+    if (round_ignore(dir))
       return V_GE;
     if (x == 0)
       return V_EQ;
-    return round_gt_int_no_overflow<Policy>(to, dir);
+    return round_gt_int_no_overflow<To_Policy>(to, dir);
   }
   to = x >> exp;
-  if (dir == ROUND_IGNORE)
+  if (round_ignore(dir))
     return V_GE;
   if (x & ((static_cast<Type>(1) << exp) - 1))
-    return round_gt_int_no_overflow<Policy>(to, dir);
+    return round_gt_int_no_overflow<To_Policy>(to, dir);
   else
     return V_EQ;
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 div2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (exp < 0)
-    return mul2exp<Policy>(to, x, -exp, dir);
+    return mul2exp<To_Policy, From_Policy>(to, x, -exp, dir);
   if (static_cast<unsigned int>(exp) >= sizeof(Type) * 8) {
   zero:
     to = 0;
-    if (dir == ROUND_IGNORE)
+    if (round_ignore(dir))
       return V_LGE;
     if (x < 0)
-      return round_lt_int_no_overflow<Policy>(to, dir);
+      return round_lt_int_no_overflow<To_Policy>(to, dir);
     else if (x > 0)
-      return round_gt_int_no_overflow<Policy>(to, dir);
+      return round_gt_int_no_overflow<To_Policy>(to, dir);
     else
       return V_EQ;
   }
   if (static_cast<unsigned int>(exp) >= sizeof(Type) * 8 - 1) {
-    if (x == Limits<Type>::min) {
+    if (x == C_Integer<Type>::min) {
       to = -1;
       return V_EQ;
     }
@@ -1141,32 +1132,32 @@ div2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
   }
 #if 0
   to = x / (static_cast<Type>(1) << exp);
-  if (dir == ROUND_IGNORE)
+  if (round_ignore(dir))
     return V_GE;
   Type r = x % (static_cast<Type>(1) << exp);
   if (r < 0)
-    return round_lt_int_no_overflow<Policy>(to, dir);
+    return round_lt_int_no_overflow<To_Policy>(to, dir);
   else if (r > 0)
-    return round_gt_int_no_overflow<Policy>(to, dir);
+    return round_gt_int_no_overflow<To_Policy>(to, dir);
   else
     return V_EQ;
 #else
   // Faster but compiler implementation dependent (see C++98 5.8.3)
   to = x >> exp;
-  if (dir == ROUND_IGNORE)
+  if (round_ignore(dir))
     return V_GE;
   if (x & ((static_cast<Type>(1) << exp) - 1))
-    return round_gt_int_no_overflow<Policy>(to, dir);
+    return round_gt_int_no_overflow<To_Policy>(to, dir);
   return V_EQ;
 #endif
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 mul2exp_unsigned_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (exp < 0)
-    return div2exp<Policy>(to, x, -exp, dir);
-  if (!Policy::check_overflow) {
+    return div2exp<To_Policy, From_Policy>(to, x, -exp, dir);
+  if (!To_Policy::check_overflow) {
     to = x << exp;
     return V_EQ;
   }
@@ -1175,31 +1166,31 @@ mul2exp_unsigned_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
       to = 0;
       return V_EQ;
     }
-    return set_pos_overflow_int<Policy>(to, dir);
+    return set_pos_overflow_int<To_Policy>(to, dir);
   }
   if (x & (((static_cast<Type>(1) << exp) - 1) << (sizeof(Type) * 8 - exp)))
-    return set_pos_overflow_int<Policy>(to, dir);
+    return set_pos_overflow_int<To_Policy>(to, dir);
   Type n = x << exp;
-  if (n > Extended_Int<Policy, Type>::max)
-    return set_pos_overflow_int<Policy>(to, dir);
+  if (n > Extended_Int<To_Policy, Type>::max)
+    return set_pos_overflow_int<To_Policy>(to, dir);
   to = n;
   return V_EQ;
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 mul2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (exp < 0)
-    return div2exp<Policy>(to, x, -exp, dir);
-  if (!Policy::check_overflow) {
+    return div2exp<To_Policy, From_Policy>(to, x, -exp, dir);
+  if (!To_Policy::check_overflow) {
     to = x << exp;
     return V_EQ;
   }
   if (static_cast<unsigned int>(exp) >= sizeof(Type) * 8 - 1) {
     if (x < 0)
-      return set_neg_overflow_int<Policy>(to, dir);
+      return set_neg_overflow_int<To_Policy>(to, dir);
     else if (x > 0)
-      return set_pos_overflow_int<Policy>(to, dir);
+      return set_pos_overflow_int<To_Policy>(to, dir);
     else {
       to = 0;
       return V_EQ;
@@ -1210,17 +1201,17 @@ mul2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
   Type n;
   if (x < 0) {
     if ((x & mask) != mask)
-      return set_neg_overflow_int<Policy>(to, dir);
+      return set_neg_overflow_int<To_Policy>(to, dir);
     n = x << exp;
-    if (n < Extended_Int<Policy, Type>::min)
-      return set_neg_overflow_int<Policy>(to, dir);
+    if (n < Extended_Int<To_Policy, Type>::min)
+      return set_neg_overflow_int<To_Policy>(to, dir);
   }
   else {
     if (x & mask)
-      return set_pos_overflow_int<Policy>(to, dir);
+      return set_pos_overflow_int<To_Policy>(to, dir);
     n = x << exp;
-    if (n > Extended_Int<Policy, Type>::max)
-      return set_pos_overflow_int<Policy>(to, dir);
+    if (n > Extended_Int<To_Policy, Type>::max)
+      return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = n;
   return V_EQ;
@@ -1242,31 +1233,31 @@ isqrtrem(Type& q, Type& r, const Type from) {
   }
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 sqrt_unsigned_int(Type& to, const Type from, Rounding_Dir dir) {
   Type rem;
   isqrtrem(to, rem, from);
-  if (dir == ROUND_IGNORE)
+  if (round_ignore(dir))
     return V_GE;
   if (rem == 0)
     return V_EQ;
-  return round_gt_int<Policy>(to, dir);
+  return round_gt_int<To_Policy>(to, dir);
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 sqrt_signed_int(Type& to, const Type from, Rounding_Dir dir) {
-  if (CHECK_P(Policy::check_sqrt_neg, from < 0))
-    return set_special<Policy>(to, V_SQRT_NEG);
-  return sqrt_unsigned_int<Policy>(to, from, dir);
+  if (CHECK_P(To_Policy::check_sqrt_neg, from < 0))
+    return assign_special<To_Policy>(to, V_SQRT_NEG, ROUND_IGNORE);
+  return sqrt_unsigned_int<To_Policy, From_Policy>(to, from, dir);
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 add_mul_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   Type z;
-  Result r = mul<Policy>(z, x, y, dir);
+  Result r = mul<To_Policy, From1_Policy, From2_Policy>(z, x, y, dir);
   switch (r) {
   case V_NEG_OVERFLOW:
   case V_LT:
@@ -1274,37 +1265,37 @@ add_mul_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
       to = z;
       return r;
     }
-    return set_special<Policy>(to, V_UNKNOWN_NEG_OVERFLOW);
+    return assign_special<To_Policy>(to, V_UNKNOWN_NEG_OVERFLOW, ROUND_IGNORE);
   case V_POS_OVERFLOW:
   case V_GT:
     if (to >= 0) {
       to = z;
       return r;
     }
-    return set_special<Policy>(to, V_UNKNOWN_POS_OVERFLOW);
+    return assign_special<To_Policy>(to, V_UNKNOWN_POS_OVERFLOW, ROUND_IGNORE);
   default:
-    return add<Policy>(to, to, z, dir);
+    return add<To_Policy, To_Policy, To_Policy>(to, to, z, dir);
   }
 }
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 sub_mul_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   Type z;
-  Result r = mul<Policy>(z, x, y, dir);
+  Result r = mul<To_Policy, From1_Policy, From2_Policy>(z, x, y, dir);
   switch (r) {
   case V_NEG_OVERFLOW:
   case V_LT:
     if (to >= 0)
-      return set_pos_overflow_int<Policy>(to, dir);
+      return set_pos_overflow_int<To_Policy>(to, dir);
     return V_UNKNOWN_NEG_OVERFLOW;
   case V_POS_OVERFLOW:
   case V_GT:
     if (to <= 0)
-      return set_neg_overflow_int<Policy>(to, dir);
+      return set_neg_overflow_int<To_Policy>(to, dir);
     return V_UNKNOWN_POS_OVERFLOW;
   default:
-    return sub<Policy>(to, to, z, dir);
+    return sub<To_Policy, To_Policy, To_Policy>(to, to, z, dir);
   }
 }
 
@@ -1312,7 +1303,7 @@ template <typename Policy, typename Type>
 inline Result
 output_char(std::ostream& os, Type& from,
 	    const Numeric_Format&, Rounding_Dir) {
-  os << (int) from;
+  os << static_cast<int>(from);
   return V_EQ;
 }
 
@@ -1323,214 +1314,258 @@ output_int(std::ostream& os, Type& from, const Numeric_Format&, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_NEG(signed_int, signed char, signed char)
-SPECIALIZE_NEG(signed_int, signed short, signed short)
-SPECIALIZE_NEG(signed_int, signed int, signed int)
-SPECIALIZE_NEG(signed_int, signed long, signed long)
-SPECIALIZE_NEG(signed_int, signed long long, signed long long)
-SPECIALIZE_NEG(unsigned_int, unsigned char, unsigned char)
-SPECIALIZE_NEG(unsigned_int, unsigned short, unsigned short)
-SPECIALIZE_NEG(unsigned_int, unsigned int, unsigned int)
-SPECIALIZE_NEG(unsigned_int, unsigned long, unsigned long)
-SPECIALIZE_NEG(unsigned_int, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_FLOOR(assign_signed_int_signed_int, signed char, signed char)
+PPL_SPECIALIZE_FLOOR(assign_signed_int_signed_int, signed short, signed short)
+PPL_SPECIALIZE_FLOOR(assign_signed_int_signed_int, signed int, signed int)
+PPL_SPECIALIZE_FLOOR(assign_signed_int_signed_int, signed long, signed long)
+PPL_SPECIALIZE_FLOOR(assign_signed_int_signed_int, signed long long, signed long long)
+PPL_SPECIALIZE_FLOOR(assign_unsigned_int_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_FLOOR(assign_unsigned_int_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_FLOOR(assign_unsigned_int_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_FLOOR(assign_unsigned_int_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_FLOOR(assign_unsigned_int_unsigned_int, unsigned long long, unsigned long long)
 
-SPECIALIZE_ADD(signed_int, signed char, signed char, signed char)
-SPECIALIZE_ADD(signed_int, signed short, signed short, signed short)
-SPECIALIZE_ADD(signed_int, signed int, signed int, signed int)
-SPECIALIZE_ADD(signed_int, signed long, signed long, signed long)
-SPECIALIZE_ADD(signed_int, signed long long, signed long long, signed long long)
-SPECIALIZE_ADD(unsigned_int, unsigned char, unsigned char, unsigned char)
-SPECIALIZE_ADD(unsigned_int, unsigned short, unsigned short, unsigned short)
-SPECIALIZE_ADD(unsigned_int, unsigned int, unsigned int, unsigned int)
-SPECIALIZE_ADD(unsigned_int, unsigned long, unsigned long, unsigned long)
-SPECIALIZE_ADD(unsigned_int, unsigned long long, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_CEIL(assign_signed_int_signed_int, signed char, signed char)
+PPL_SPECIALIZE_CEIL(assign_signed_int_signed_int, signed short, signed short)
+PPL_SPECIALIZE_CEIL(assign_signed_int_signed_int, signed int, signed int)
+PPL_SPECIALIZE_CEIL(assign_signed_int_signed_int, signed long, signed long)
+PPL_SPECIALIZE_CEIL(assign_signed_int_signed_int, signed long long, signed long long)
+PPL_SPECIALIZE_CEIL(assign_unsigned_int_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_CEIL(assign_unsigned_int_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_CEIL(assign_unsigned_int_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_CEIL(assign_unsigned_int_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_CEIL(assign_unsigned_int_unsigned_int, unsigned long long, unsigned long long)
 
-SPECIALIZE_SUB(signed_int, signed char, signed char, signed char)
-SPECIALIZE_SUB(signed_int, signed short, signed short, signed short)
-SPECIALIZE_SUB(signed_int, signed int, signed int, signed int)
-SPECIALIZE_SUB(signed_int, signed long, signed long, signed long)
-SPECIALIZE_SUB(signed_int, signed long long, signed long long, signed long long)
-SPECIALIZE_SUB(unsigned_int, unsigned char, unsigned char, unsigned char)
-SPECIALIZE_SUB(unsigned_int, unsigned short, unsigned short, unsigned short)
-SPECIALIZE_SUB(unsigned_int, unsigned int, unsigned int, unsigned int)
-SPECIALIZE_SUB(unsigned_int, unsigned long, unsigned long, unsigned long)
-SPECIALIZE_SUB(unsigned_int, unsigned long long, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_TRUNC(assign_signed_int_signed_int, signed char, signed char)
+PPL_SPECIALIZE_TRUNC(assign_signed_int_signed_int, signed short, signed short)
+PPL_SPECIALIZE_TRUNC(assign_signed_int_signed_int, signed int, signed int)
+PPL_SPECIALIZE_TRUNC(assign_signed_int_signed_int, signed long, signed long)
+PPL_SPECIALIZE_TRUNC(assign_signed_int_signed_int, signed long long, signed long long)
+PPL_SPECIALIZE_TRUNC(assign_unsigned_int_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_TRUNC(assign_unsigned_int_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_TRUNC(assign_unsigned_int_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_TRUNC(assign_unsigned_int_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_TRUNC(assign_unsigned_int_unsigned_int, unsigned long long, unsigned long long)
 
-SPECIALIZE_MUL(signed_int, signed char, signed char, signed char)
-SPECIALIZE_MUL(signed_int, signed short, signed short, signed short)
-SPECIALIZE_MUL(signed_int, signed int, signed int, signed int)
-SPECIALIZE_MUL(signed_int, signed long, signed long, signed long)
-SPECIALIZE_MUL(signed_int, signed long long, signed long long, signed long long)
-SPECIALIZE_MUL(unsigned_int, unsigned char, unsigned char, unsigned char)
-SPECIALIZE_MUL(unsigned_int, unsigned short, unsigned short, unsigned short)
-SPECIALIZE_MUL(unsigned_int, unsigned int, unsigned int, unsigned int)
-SPECIALIZE_MUL(unsigned_int, unsigned long, unsigned long, unsigned long)
-SPECIALIZE_MUL(unsigned_int, unsigned long long, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_NEG(neg_signed_int, signed char, signed char)
+PPL_SPECIALIZE_NEG(neg_signed_int, signed short, signed short)
+PPL_SPECIALIZE_NEG(neg_signed_int, signed int, signed int)
+PPL_SPECIALIZE_NEG(neg_signed_int, signed long, signed long)
+PPL_SPECIALIZE_NEG(neg_signed_int, signed long long, signed long long)
+PPL_SPECIALIZE_NEG(neg_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_NEG(neg_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_NEG(neg_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_NEG(neg_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_NEG(neg_unsigned_int, unsigned long long, unsigned long long)
 
-SPECIALIZE_DIV(signed_int, signed char, signed char, signed char)
-SPECIALIZE_DIV(signed_int, signed short, signed short, signed short)
-SPECIALIZE_DIV(signed_int, signed int, signed int, signed int)
-SPECIALIZE_DIV(signed_int, signed long, signed long, signed long)
-SPECIALIZE_DIV(signed_int, signed long long, signed long long, signed long long)
-SPECIALIZE_DIV(unsigned_int, unsigned char, unsigned char, unsigned char)
-SPECIALIZE_DIV(unsigned_int, unsigned short, unsigned short, unsigned short)
-SPECIALIZE_DIV(unsigned_int, unsigned int, unsigned int, unsigned int)
-SPECIALIZE_DIV(unsigned_int, unsigned long, unsigned long, unsigned long)
-SPECIALIZE_DIV(unsigned_int, unsigned long long, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_ADD(add_signed_int, signed char, signed char, signed char)
+PPL_SPECIALIZE_ADD(add_signed_int, signed short, signed short, signed short)
+PPL_SPECIALIZE_ADD(add_signed_int, signed int, signed int, signed int)
+PPL_SPECIALIZE_ADD(add_signed_int, signed long, signed long, signed long)
+PPL_SPECIALIZE_ADD(add_signed_int, signed long long, signed long long, signed long long)
+PPL_SPECIALIZE_ADD(add_unsigned_int, unsigned char, unsigned char, unsigned char)
+PPL_SPECIALIZE_ADD(add_unsigned_int, unsigned short, unsigned short, unsigned short)
+PPL_SPECIALIZE_ADD(add_unsigned_int, unsigned int, unsigned int, unsigned int)
+PPL_SPECIALIZE_ADD(add_unsigned_int, unsigned long, unsigned long, unsigned long)
+PPL_SPECIALIZE_ADD(add_unsigned_int, unsigned long long, unsigned long long, unsigned long long)
 
-SPECIALIZE_REM(int, signed char, signed char, signed char)
-SPECIALIZE_REM(int, signed short, signed short, signed short)
-SPECIALIZE_REM(int, signed int, signed int, signed int)
-SPECIALIZE_REM(int, signed long, signed long, signed long)
-SPECIALIZE_REM(int, signed long long, signed long long, signed long long)
-SPECIALIZE_REM(int, unsigned char, unsigned char, unsigned char)
-SPECIALIZE_REM(int, unsigned short, unsigned short, unsigned short)
-SPECIALIZE_REM(int, unsigned int, unsigned int, unsigned int)
-SPECIALIZE_REM(int, unsigned long, unsigned long, unsigned long)
-SPECIALIZE_REM(int, unsigned long long, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_SUB(sub_signed_int, signed char, signed char, signed char)
+PPL_SPECIALIZE_SUB(sub_signed_int, signed short, signed short, signed short)
+PPL_SPECIALIZE_SUB(sub_signed_int, signed int, signed int, signed int)
+PPL_SPECIALIZE_SUB(sub_signed_int, signed long, signed long, signed long)
+PPL_SPECIALIZE_SUB(sub_signed_int, signed long long, signed long long, signed long long)
+PPL_SPECIALIZE_SUB(sub_unsigned_int, unsigned char, unsigned char, unsigned char)
+PPL_SPECIALIZE_SUB(sub_unsigned_int, unsigned short, unsigned short, unsigned short)
+PPL_SPECIALIZE_SUB(sub_unsigned_int, unsigned int, unsigned int, unsigned int)
+PPL_SPECIALIZE_SUB(sub_unsigned_int, unsigned long, unsigned long, unsigned long)
+PPL_SPECIALIZE_SUB(sub_unsigned_int, unsigned long long, unsigned long long, unsigned long long)
 
-SPECIALIZE_MUL2EXP(signed_int, signed char, signed char)
-SPECIALIZE_MUL2EXP(signed_int, signed short, signed short)
-SPECIALIZE_MUL2EXP(signed_int, signed int, signed int)
-SPECIALIZE_MUL2EXP(signed_int, signed long, signed long)
-SPECIALIZE_MUL2EXP(signed_int, signed long long, signed long long)
-SPECIALIZE_MUL2EXP(unsigned_int, unsigned char, unsigned char)
-SPECIALIZE_MUL2EXP(unsigned_int, unsigned short, unsigned short)
-SPECIALIZE_MUL2EXP(unsigned_int, unsigned int, unsigned int)
-SPECIALIZE_MUL2EXP(unsigned_int, unsigned long, unsigned long)
-SPECIALIZE_MUL2EXP(unsigned_int, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_MUL(mul_signed_int, signed char, signed char, signed char)
+PPL_SPECIALIZE_MUL(mul_signed_int, signed short, signed short, signed short)
+PPL_SPECIALIZE_MUL(mul_signed_int, signed int, signed int, signed int)
+PPL_SPECIALIZE_MUL(mul_signed_int, signed long, signed long, signed long)
+PPL_SPECIALIZE_MUL(mul_signed_int, signed long long, signed long long, signed long long)
+PPL_SPECIALIZE_MUL(mul_unsigned_int, unsigned char, unsigned char, unsigned char)
+PPL_SPECIALIZE_MUL(mul_unsigned_int, unsigned short, unsigned short, unsigned short)
+PPL_SPECIALIZE_MUL(mul_unsigned_int, unsigned int, unsigned int, unsigned int)
+PPL_SPECIALIZE_MUL(mul_unsigned_int, unsigned long, unsigned long, unsigned long)
+PPL_SPECIALIZE_MUL(mul_unsigned_int, unsigned long long, unsigned long long, unsigned long long)
 
-SPECIALIZE_DIV2EXP(signed_int, signed char, signed char)
-SPECIALIZE_DIV2EXP(signed_int, signed short, signed short)
-SPECIALIZE_DIV2EXP(signed_int, signed int, signed int)
-SPECIALIZE_DIV2EXP(signed_int, signed long, signed long)
-SPECIALIZE_DIV2EXP(signed_int, signed long long, signed long long)
-SPECIALIZE_DIV2EXP(unsigned_int, unsigned char, unsigned char)
-SPECIALIZE_DIV2EXP(unsigned_int, unsigned short, unsigned short)
-SPECIALIZE_DIV2EXP(unsigned_int, unsigned int, unsigned int)
-SPECIALIZE_DIV2EXP(unsigned_int, unsigned long, unsigned long)
-SPECIALIZE_DIV2EXP(unsigned_int, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_DIV(div_signed_int, signed char, signed char, signed char)
+PPL_SPECIALIZE_DIV(div_signed_int, signed short, signed short, signed short)
+PPL_SPECIALIZE_DIV(div_signed_int, signed int, signed int, signed int)
+PPL_SPECIALIZE_DIV(div_signed_int, signed long, signed long, signed long)
+PPL_SPECIALIZE_DIV(div_signed_int, signed long long, signed long long, signed long long)
+PPL_SPECIALIZE_DIV(div_unsigned_int, unsigned char, unsigned char, unsigned char)
+PPL_SPECIALIZE_DIV(div_unsigned_int, unsigned short, unsigned short, unsigned short)
+PPL_SPECIALIZE_DIV(div_unsigned_int, unsigned int, unsigned int, unsigned int)
+PPL_SPECIALIZE_DIV(div_unsigned_int, unsigned long, unsigned long, unsigned long)
+PPL_SPECIALIZE_DIV(div_unsigned_int, unsigned long long, unsigned long long, unsigned long long)
 
-SPECIALIZE_SQRT(signed_int, signed char, signed char)
-SPECIALIZE_SQRT(signed_int, signed short, signed short)
-SPECIALIZE_SQRT(signed_int, signed int, signed int)
-SPECIALIZE_SQRT(signed_int, signed long, signed long)
-SPECIALIZE_SQRT(signed_int, signed long long, signed long long)
-SPECIALIZE_SQRT(unsigned_int, unsigned char, unsigned char)
-SPECIALIZE_SQRT(unsigned_int, unsigned short, unsigned short)
-SPECIALIZE_SQRT(unsigned_int, unsigned int, unsigned int)
-SPECIALIZE_SQRT(unsigned_int, unsigned long, unsigned long)
-SPECIALIZE_SQRT(unsigned_int, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_IDIV(idiv_signed_int, signed char, signed char, signed char)
+PPL_SPECIALIZE_IDIV(idiv_signed_int, signed short, signed short, signed short)
+PPL_SPECIALIZE_IDIV(idiv_signed_int, signed int, signed int, signed int)
+PPL_SPECIALIZE_IDIV(idiv_signed_int, signed long, signed long, signed long)
+PPL_SPECIALIZE_IDIV(idiv_signed_int, signed long long, signed long long, signed long long)
+PPL_SPECIALIZE_IDIV(idiv_unsigned_int, unsigned char, unsigned char, unsigned char)
+PPL_SPECIALIZE_IDIV(idiv_unsigned_int, unsigned short, unsigned short, unsigned short)
+PPL_SPECIALIZE_IDIV(idiv_unsigned_int, unsigned int, unsigned int, unsigned int)
+PPL_SPECIALIZE_IDIV(idiv_unsigned_int, unsigned long, unsigned long, unsigned long)
+PPL_SPECIALIZE_IDIV(idiv_unsigned_int, unsigned long long, unsigned long long, unsigned long long)
 
-SPECIALIZE_ABS(generic, signed char, signed char)
-SPECIALIZE_ABS(generic, signed short, signed short)
-SPECIALIZE_ABS(generic, signed int, signed int)
-SPECIALIZE_ABS(generic, signed long, signed long)
-SPECIALIZE_ABS(generic, signed long long, signed long long)
-SPECIALIZE_ABS(generic, unsigned char, unsigned char)
-SPECIALIZE_ABS(generic, unsigned short, unsigned short)
-SPECIALIZE_ABS(generic, unsigned int, unsigned int)
-SPECIALIZE_ABS(generic, unsigned long, unsigned long)
-SPECIALIZE_ABS(generic, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_REM(rem_signed_int, signed char, signed char, signed char)
+PPL_SPECIALIZE_REM(rem_signed_int, signed short, signed short, signed short)
+PPL_SPECIALIZE_REM(rem_signed_int, signed int, signed int, signed int)
+PPL_SPECIALIZE_REM(rem_signed_int, signed long, signed long, signed long)
+PPL_SPECIALIZE_REM(rem_signed_int, signed long long, signed long long, signed long long)
+PPL_SPECIALIZE_REM(rem_unsigned_int, unsigned char, unsigned char, unsigned char)
+PPL_SPECIALIZE_REM(rem_unsigned_int, unsigned short, unsigned short, unsigned short)
+PPL_SPECIALIZE_REM(rem_unsigned_int, unsigned int, unsigned int, unsigned int)
+PPL_SPECIALIZE_REM(rem_unsigned_int, unsigned long, unsigned long, unsigned long)
+PPL_SPECIALIZE_REM(rem_unsigned_int, unsigned long long, unsigned long long, unsigned long long)
 
-SPECIALIZE_GCD(exact, signed char, signed char, signed char)
-SPECIALIZE_GCD(exact, signed short, signed short, signed short)
-SPECIALIZE_GCD(exact, signed int, signed int, signed int)
-SPECIALIZE_GCD(exact, signed long, signed long, signed long)
-SPECIALIZE_GCD(exact, signed long long, signed long long, signed long long)
-SPECIALIZE_GCD(exact, unsigned char, unsigned char, unsigned char)
-SPECIALIZE_GCD(exact, unsigned short, unsigned short, unsigned short)
-SPECIALIZE_GCD(exact, unsigned int, unsigned int, unsigned int)
-SPECIALIZE_GCD(exact, unsigned long, unsigned long, unsigned long)
-SPECIALIZE_GCD(exact, unsigned long long, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_MUL2EXP(mul2exp_signed_int, signed char, signed char)
+PPL_SPECIALIZE_MUL2EXP(mul2exp_signed_int, signed short, signed short)
+PPL_SPECIALIZE_MUL2EXP(mul2exp_signed_int, signed int, signed int)
+PPL_SPECIALIZE_MUL2EXP(mul2exp_signed_int, signed long, signed long)
+PPL_SPECIALIZE_MUL2EXP(mul2exp_signed_int, signed long long, signed long long)
+PPL_SPECIALIZE_MUL2EXP(mul2exp_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_MUL2EXP(mul2exp_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_MUL2EXP(mul2exp_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_MUL2EXP(mul2exp_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_MUL2EXP(mul2exp_unsigned_int, unsigned long long, unsigned long long)
 
-SPECIALIZE_GCDEXT(exact, signed char, signed char, signed char, signed char, signed char)
-SPECIALIZE_GCDEXT(exact, signed short, signed short, signed short, signed short, signed short)
-SPECIALIZE_GCDEXT(exact, signed int, signed int, signed int, signed int, signed int)
-SPECIALIZE_GCDEXT(exact, signed long, signed long, signed long, signed long, signed long)
-SPECIALIZE_GCDEXT(exact, signed long long, signed long long, signed long long, signed long long, signed long long)
-SPECIALIZE_GCDEXT(exact, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char)
-SPECIALIZE_GCDEXT(exact, unsigned short, unsigned short, unsigned short, unsigned short, unsigned short)
-SPECIALIZE_GCDEXT(exact, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)
-SPECIALIZE_GCDEXT(exact, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long)
-SPECIALIZE_GCDEXT(exact, unsigned long long, unsigned long long, unsigned long long, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_DIV2EXP(div2exp_signed_int, signed char, signed char)
+PPL_SPECIALIZE_DIV2EXP(div2exp_signed_int, signed short, signed short)
+PPL_SPECIALIZE_DIV2EXP(div2exp_signed_int, signed int, signed int)
+PPL_SPECIALIZE_DIV2EXP(div2exp_signed_int, signed long, signed long)
+PPL_SPECIALIZE_DIV2EXP(div2exp_signed_int, signed long long, signed long long)
+PPL_SPECIALIZE_DIV2EXP(div2exp_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_DIV2EXP(div2exp_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_DIV2EXP(div2exp_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_DIV2EXP(div2exp_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_DIV2EXP(div2exp_unsigned_int, unsigned long long, unsigned long long)
 
-SPECIALIZE_LCM(gcd_exact, signed char, signed char, signed char)
-SPECIALIZE_LCM(gcd_exact, signed short, signed short, signed short)
-SPECIALIZE_LCM(gcd_exact, signed int, signed int, signed int)
-SPECIALIZE_LCM(gcd_exact, signed long, signed long, signed long)
-SPECIALIZE_LCM(gcd_exact, signed long long, signed long long, signed long long)
-SPECIALIZE_LCM(gcd_exact, unsigned char, unsigned char, unsigned char)
-SPECIALIZE_LCM(gcd_exact, unsigned short, unsigned short, unsigned short)
-SPECIALIZE_LCM(gcd_exact, unsigned int, unsigned int, unsigned int)
-SPECIALIZE_LCM(gcd_exact, unsigned long, unsigned long, unsigned long)
-SPECIALIZE_LCM(gcd_exact, unsigned long long, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_SQRT(sqrt_signed_int, signed char, signed char)
+PPL_SPECIALIZE_SQRT(sqrt_signed_int, signed short, signed short)
+PPL_SPECIALIZE_SQRT(sqrt_signed_int, signed int, signed int)
+PPL_SPECIALIZE_SQRT(sqrt_signed_int, signed long, signed long)
+PPL_SPECIALIZE_SQRT(sqrt_signed_int, signed long long, signed long long)
+PPL_SPECIALIZE_SQRT(sqrt_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_SQRT(sqrt_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_SQRT(sqrt_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_SQRT(sqrt_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_SQRT(sqrt_unsigned_int, unsigned long long, unsigned long long)
 
-SPECIALIZE_SGN(generic, signed char)
-SPECIALIZE_SGN(generic, signed short)
-SPECIALIZE_SGN(generic, signed int)
-SPECIALIZE_SGN(generic, signed long)
-SPECIALIZE_SGN(generic, signed long long)
-SPECIALIZE_SGN(generic, unsigned char)
-SPECIALIZE_SGN(generic, unsigned short)
-SPECIALIZE_SGN(generic, unsigned int)
-SPECIALIZE_SGN(generic, unsigned long)
-SPECIALIZE_SGN(generic, unsigned long long)
+PPL_SPECIALIZE_ABS(abs_generic, signed char, signed char)
+PPL_SPECIALIZE_ABS(abs_generic, signed short, signed short)
+PPL_SPECIALIZE_ABS(abs_generic, signed int, signed int)
+PPL_SPECIALIZE_ABS(abs_generic, signed long, signed long)
+PPL_SPECIALIZE_ABS(abs_generic, signed long long, signed long long)
+PPL_SPECIALIZE_ABS(assign_unsigned_int_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_ABS(assign_unsigned_int_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_ABS(assign_unsigned_int_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_ABS(assign_unsigned_int_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_ABS(assign_unsigned_int_unsigned_int, unsigned long long, unsigned long long)
 
-SPECIALIZE_CMP(generic, signed char, signed char)
-SPECIALIZE_CMP(generic, signed short, signed short)
-SPECIALIZE_CMP(generic, signed int, signed int)
-SPECIALIZE_CMP(generic, signed long, signed long)
-SPECIALIZE_CMP(generic, signed long long, signed long long)
-SPECIALIZE_CMP(generic, unsigned char, unsigned char)
-SPECIALIZE_CMP(generic, unsigned short, unsigned short)
-SPECIALIZE_CMP(generic, unsigned int, unsigned int)
-SPECIALIZE_CMP(generic, unsigned long, unsigned long)
-SPECIALIZE_CMP(generic, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_GCD(gcd_exact, signed char, signed char, signed char)
+PPL_SPECIALIZE_GCD(gcd_exact, signed short, signed short, signed short)
+PPL_SPECIALIZE_GCD(gcd_exact, signed int, signed int, signed int)
+PPL_SPECIALIZE_GCD(gcd_exact, signed long, signed long, signed long)
+PPL_SPECIALIZE_GCD(gcd_exact, signed long long, signed long long, signed long long)
+PPL_SPECIALIZE_GCD(gcd_exact, unsigned char, unsigned char, unsigned char)
+PPL_SPECIALIZE_GCD(gcd_exact, unsigned short, unsigned short, unsigned short)
+PPL_SPECIALIZE_GCD(gcd_exact, unsigned int, unsigned int, unsigned int)
+PPL_SPECIALIZE_GCD(gcd_exact, unsigned long, unsigned long, unsigned long)
+PPL_SPECIALIZE_GCD(gcd_exact, unsigned long long, unsigned long long, unsigned long long)
 
-SPECIALIZE_ADD_MUL(int, signed char, signed char, signed char)
-SPECIALIZE_ADD_MUL(int, signed short, signed short, signed short)
-SPECIALIZE_ADD_MUL(int, signed int, signed int, signed int)
-SPECIALIZE_ADD_MUL(int, signed long, signed long, signed long)
-SPECIALIZE_ADD_MUL(int, signed long long, signed long long, signed long long)
-SPECIALIZE_ADD_MUL(int, unsigned char, unsigned char, unsigned char)
-SPECIALIZE_ADD_MUL(int, unsigned short, unsigned short, unsigned short)
-SPECIALIZE_ADD_MUL(int, unsigned int, unsigned int, unsigned int)
-SPECIALIZE_ADD_MUL(int, unsigned long, unsigned long, unsigned long)
-SPECIALIZE_ADD_MUL(int, unsigned long long, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact, signed char, signed char, signed char, signed char, signed char)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact, signed short, signed short, signed short, signed short, signed short)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact, signed int, signed int, signed int, signed int, signed int)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact, signed long, signed long, signed long, signed long, signed long)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact, signed long long, signed long long, signed long long, signed long long, signed long long)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact, unsigned short, unsigned short, unsigned short, unsigned short, unsigned short)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact, unsigned long long, unsigned long long, unsigned long long, unsigned long long, unsigned long long)
 
-SPECIALIZE_SUB_MUL(int, signed char, signed char, signed char)
-SPECIALIZE_SUB_MUL(int, signed short, signed short, signed short)
-SPECIALIZE_SUB_MUL(int, signed int, signed int, signed int)
-SPECIALIZE_SUB_MUL(int, signed long, signed long, signed long)
-SPECIALIZE_SUB_MUL(int, signed long long, signed long long, signed long long)
-SPECIALIZE_SUB_MUL(int, unsigned char, unsigned char, unsigned char)
-SPECIALIZE_SUB_MUL(int, unsigned short, unsigned short, unsigned short)
-SPECIALIZE_SUB_MUL(int, unsigned int, unsigned int, unsigned int)
-SPECIALIZE_SUB_MUL(int, unsigned long, unsigned long, unsigned long)
-SPECIALIZE_SUB_MUL(int, unsigned long long, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_LCM(lcm_gcd_exact, signed char, signed char, signed char)
+PPL_SPECIALIZE_LCM(lcm_gcd_exact, signed short, signed short, signed short)
+PPL_SPECIALIZE_LCM(lcm_gcd_exact, signed int, signed int, signed int)
+PPL_SPECIALIZE_LCM(lcm_gcd_exact, signed long, signed long, signed long)
+PPL_SPECIALIZE_LCM(lcm_gcd_exact, signed long long, signed long long, signed long long)
+PPL_SPECIALIZE_LCM(lcm_gcd_exact, unsigned char, unsigned char, unsigned char)
+PPL_SPECIALIZE_LCM(lcm_gcd_exact, unsigned short, unsigned short, unsigned short)
+PPL_SPECIALIZE_LCM(lcm_gcd_exact, unsigned int, unsigned int, unsigned int)
+PPL_SPECIALIZE_LCM(lcm_gcd_exact, unsigned long, unsigned long, unsigned long)
+PPL_SPECIALIZE_LCM(lcm_gcd_exact, unsigned long long, unsigned long long, unsigned long long)
 
-SPECIALIZE_INPUT(generic, signed char)
-SPECIALIZE_INPUT(generic, signed short)
-SPECIALIZE_INPUT(generic, signed int)
-SPECIALIZE_INPUT(generic, signed long)
-SPECIALIZE_INPUT(generic, signed long long)
-SPECIALIZE_INPUT(generic, unsigned char)
-SPECIALIZE_INPUT(generic, unsigned short)
-SPECIALIZE_INPUT(generic, unsigned int)
-SPECIALIZE_INPUT(generic, unsigned long)
-SPECIALIZE_INPUT(generic, unsigned long long)
+PPL_SPECIALIZE_SGN(sgn_generic, signed char)
+PPL_SPECIALIZE_SGN(sgn_generic, signed short)
+PPL_SPECIALIZE_SGN(sgn_generic, signed int)
+PPL_SPECIALIZE_SGN(sgn_generic, signed long)
+PPL_SPECIALIZE_SGN(sgn_generic, signed long long)
+PPL_SPECIALIZE_SGN(sgn_generic, unsigned char)
+PPL_SPECIALIZE_SGN(sgn_generic, unsigned short)
+PPL_SPECIALIZE_SGN(sgn_generic, unsigned int)
+PPL_SPECIALIZE_SGN(sgn_generic, unsigned long)
+PPL_SPECIALIZE_SGN(sgn_generic, unsigned long long)
 
-SPECIALIZE_OUTPUT(char, signed char)
-SPECIALIZE_OUTPUT(int, signed short)
-SPECIALIZE_OUTPUT(int, signed int)
-SPECIALIZE_OUTPUT(int, signed long)
-SPECIALIZE_OUTPUT(int, signed long long)
-SPECIALIZE_OUTPUT(char, unsigned char)
-SPECIALIZE_OUTPUT(int, unsigned short)
-SPECIALIZE_OUTPUT(int, unsigned int)
-SPECIALIZE_OUTPUT(int, unsigned long)
-SPECIALIZE_OUTPUT(int, unsigned long long)
+PPL_SPECIALIZE_CMP(cmp_generic, signed char, signed char)
+PPL_SPECIALIZE_CMP(cmp_generic, signed short, signed short)
+PPL_SPECIALIZE_CMP(cmp_generic, signed int, signed int)
+PPL_SPECIALIZE_CMP(cmp_generic, signed long, signed long)
+PPL_SPECIALIZE_CMP(cmp_generic, signed long long, signed long long)
+PPL_SPECIALIZE_CMP(cmp_generic, unsigned char, unsigned char)
+PPL_SPECIALIZE_CMP(cmp_generic, unsigned short, unsigned short)
+PPL_SPECIALIZE_CMP(cmp_generic, unsigned int, unsigned int)
+PPL_SPECIALIZE_CMP(cmp_generic, unsigned long, unsigned long)
+PPL_SPECIALIZE_CMP(cmp_generic, unsigned long long, unsigned long long)
+
+PPL_SPECIALIZE_ADD_MUL(add_mul_int, signed char, signed char, signed char)
+PPL_SPECIALIZE_ADD_MUL(add_mul_int, signed short, signed short, signed short)
+PPL_SPECIALIZE_ADD_MUL(add_mul_int, signed int, signed int, signed int)
+PPL_SPECIALIZE_ADD_MUL(add_mul_int, signed long, signed long, signed long)
+PPL_SPECIALIZE_ADD_MUL(add_mul_int, signed long long, signed long long, signed long long)
+PPL_SPECIALIZE_ADD_MUL(add_mul_int, unsigned char, unsigned char, unsigned char)
+PPL_SPECIALIZE_ADD_MUL(add_mul_int, unsigned short, unsigned short, unsigned short)
+PPL_SPECIALIZE_ADD_MUL(add_mul_int, unsigned int, unsigned int, unsigned int)
+PPL_SPECIALIZE_ADD_MUL(add_mul_int, unsigned long, unsigned long, unsigned long)
+PPL_SPECIALIZE_ADD_MUL(add_mul_int, unsigned long long, unsigned long long, unsigned long long)
+
+PPL_SPECIALIZE_SUB_MUL(sub_mul_int, signed char, signed char, signed char)
+PPL_SPECIALIZE_SUB_MUL(sub_mul_int, signed short, signed short, signed short)
+PPL_SPECIALIZE_SUB_MUL(sub_mul_int, signed int, signed int, signed int)
+PPL_SPECIALIZE_SUB_MUL(sub_mul_int, signed long, signed long, signed long)
+PPL_SPECIALIZE_SUB_MUL(sub_mul_int, signed long long, signed long long, signed long long)
+PPL_SPECIALIZE_SUB_MUL(sub_mul_int, unsigned char, unsigned char, unsigned char)
+PPL_SPECIALIZE_SUB_MUL(sub_mul_int, unsigned short, unsigned short, unsigned short)
+PPL_SPECIALIZE_SUB_MUL(sub_mul_int, unsigned int, unsigned int, unsigned int)
+PPL_SPECIALIZE_SUB_MUL(sub_mul_int, unsigned long, unsigned long, unsigned long)
+PPL_SPECIALIZE_SUB_MUL(sub_mul_int, unsigned long long, unsigned long long, unsigned long long)
+
+PPL_SPECIALIZE_INPUT(input_generic, signed char)
+PPL_SPECIALIZE_INPUT(input_generic, signed short)
+PPL_SPECIALIZE_INPUT(input_generic, signed int)
+PPL_SPECIALIZE_INPUT(input_generic, signed long)
+PPL_SPECIALIZE_INPUT(input_generic, signed long long)
+PPL_SPECIALIZE_INPUT(input_generic, unsigned char)
+PPL_SPECIALIZE_INPUT(input_generic, unsigned short)
+PPL_SPECIALIZE_INPUT(input_generic, unsigned int)
+PPL_SPECIALIZE_INPUT(input_generic, unsigned long)
+PPL_SPECIALIZE_INPUT(input_generic, unsigned long long)
+
+PPL_SPECIALIZE_OUTPUT(output_char, signed char)
+PPL_SPECIALIZE_OUTPUT(output_int, signed short)
+PPL_SPECIALIZE_OUTPUT(output_int, signed int)
+PPL_SPECIALIZE_OUTPUT(output_int, signed long)
+PPL_SPECIALIZE_OUTPUT(output_int, signed long long)
+PPL_SPECIALIZE_OUTPUT(output_char, unsigned char)
+PPL_SPECIALIZE_OUTPUT(output_int, unsigned short)
+PPL_SPECIALIZE_OUTPUT(output_int, unsigned int)
+PPL_SPECIALIZE_OUTPUT(output_int, unsigned long)
+PPL_SPECIALIZE_OUTPUT(output_int, unsigned long long)
 
 } // namespace Checked
 

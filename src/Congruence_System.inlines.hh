@@ -1,11 +1,11 @@
 /* Congruence_System class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -105,8 +105,8 @@ Congruence_System::resize_no_copy(const dimension_type new_num_rows,
 
 inline const Congruence_System&
 Congruence_System::zero_dim_empty() {
-  static const Congruence_System zdf(Congruence::zero_dim_false());
-  return zdf;
+  assert(zero_dim_empty_p != 0);
+  return *zero_dim_empty_p;
 }
 
 inline
@@ -182,6 +182,11 @@ inline Congruence_System::const_iterator
 Congruence_System::end() const {
   const const_iterator i(Matrix::end(), *this);
   return i;
+}
+
+inline bool
+Congruence_System::empty() const {
+  return begin() == end();
 }
 
 inline void

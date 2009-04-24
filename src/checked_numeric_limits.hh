@@ -1,11 +1,11 @@
 /* Specializations of std::numeric_limits for "checked" types.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -25,42 +25,43 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Checked_Number.defs.hh"
 #include "checked_int.inlines.hh"
-#include "mp_numeric_limits.hh"
 #include <limits>
 
 namespace std {
 
+using namespace Parma_Polyhedra_Library;
+
 #define PPL_SPECIALIZE_LIMITS_INT(T)					\
 /*! \brief Partial specialization of std::numeric_limits. */		\
 template <typename Policy>						\
-class numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
+ class numeric_limits<Checked_Number<T, Policy> >                       \
   : public numeric_limits<T> {						\
  private:								\
-  typedef Parma_Polyhedra_Library::Checked_Number<T, Policy> Type;	\
+  typedef Checked_Number<T, Policy> Type;                               \
 									\
  public:								\
-  static const bool has_infinity = Policy::handle_infinity;		\
-  static const bool has_quiet_NaN =  Policy::handle_nan;		\
-									\
+  static const bool has_infinity = Policy::has_infinity;		\
+  static const bool has_quiet_NaN =  Policy::has_nan;                   \
+                                                                        \
   static Type min() {							\
-    return Parma_Polyhedra_Library::Checked::Extended_Int<Policy, T>::min; \
+    return Checked::Extended_Int<Policy, T>::min;                       \
   }									\
-									\
+                                                                        \
   static Type max() {							\
-    return Parma_Polyhedra_Library::Checked::Extended_Int<Policy, T>::max; \
+    return Checked::Extended_Int<Policy, T>::max;                       \
   }									\
 									\
   static Type infinity() {						\
     return								\
-      Policy::handle_infinity						\
-      ? Parma_Polyhedra_Library::PLUS_INFINITY				\
+      Policy::has_infinity						\
+      ? PLUS_INFINITY                                                   \
       : static_cast<Type>(0);						\
   }									\
 									\
   static Type quiet_NaN() {						\
     return								\
-      Policy::handle_nan						\
-      ? Parma_Polyhedra_Library::NOT_A_NUMBER				\
+      Policy::has_nan                                                   \
+      ? NOT_A_NUMBER                                                    \
       : static_cast<Type>(0);						\
   }									\
 };
@@ -82,7 +83,7 @@ PPL_SPECIALIZE_LIMITS_INT(unsigned long long)
 #define PPL_SPECIALIZE_LIMITS_FLOAT(T)					\
 /*! \brief Partial specialization of std::numeric_limits. */		\
 template <typename Policy>						\
-struct numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
+struct numeric_limits<Checked_Number<T, Policy> > \
   : public numeric_limits<T> {						\
 };
 
@@ -100,58 +101,58 @@ PPL_SPECIALIZE_LIMITS_FLOAT(long double)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Partial specialization of std::numeric_limits.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Policy>
 class
-numeric_limits<Parma_Polyhedra_Library::Checked_Number<mpz_class, Policy> >
+numeric_limits<Checked_Number<mpz_class, Policy> >
   : public numeric_limits<mpz_class> {
 private:
-  typedef Parma_Polyhedra_Library::Checked_Number<mpz_class, Policy> Type;
+  typedef Checked_Number<mpz_class, Policy> Type;
 
 public:
-  static const bool has_infinity = Policy::handle_infinity;
-  static const bool has_quiet_NaN =  Policy::handle_nan;
+  static const bool has_infinity = Policy::has_infinity;
+  static const bool has_quiet_NaN =  Policy::has_nan;
 
   static Type infinity() {
     return
-      Policy::handle_infinity
-      ? Parma_Polyhedra_Library::PLUS_INFINITY
+      Policy::has_infinity
+      ? PLUS_INFINITY
       : static_cast<Type>(0);
   }
 
   static Type quiet_NaN() {
     return
-      Policy::handle_nan
-      ? Parma_Polyhedra_Library::NOT_A_NUMBER
+      Policy::has_nan
+      ? NOT_A_NUMBER
       : static_cast<Type>(0);
   }
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Partial specialization of std::numeric_limits.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Policy>
 class
-numeric_limits<Parma_Polyhedra_Library::Checked_Number<mpq_class, Policy> >
+numeric_limits<Checked_Number<mpq_class, Policy> >
 : public numeric_limits<mpq_class> {
 private:
-  typedef Parma_Polyhedra_Library::Checked_Number<mpq_class, Policy> Type;
+  typedef Checked_Number<mpq_class, Policy> Type;
 
 public:
-  static const bool has_infinity = Policy::handle_infinity;
-  static const bool has_quiet_NaN =  Policy::handle_nan;
+  static const bool has_infinity = Policy::has_infinity;
+  static const bool has_quiet_NaN =  Policy::has_nan;
 
   static Type infinity() {
     return
-      Policy::handle_infinity
-      ? Parma_Polyhedra_Library::PLUS_INFINITY
+      Policy::has_infinity
+      ? PLUS_INFINITY
       : static_cast<Type>(0);
   }
 
   static Type quiet_NaN() {
     return
-      Policy::handle_nan
-      ? Parma_Polyhedra_Library::NOT_A_NUMBER
+      Policy::has_nan
+      ? NOT_A_NUMBER
       : static_cast<Type>(0);
   }
 };

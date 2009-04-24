@@ -1,11 +1,11 @@
 /* Test Grid::relation_with(cg).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -121,7 +121,8 @@ test06() {
 
   bool ok = (gr.relation_with((B %= 0) / 2)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()));
+		 && Poly_Con_Relation::is_disjoint()
+		 && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -144,16 +145,20 @@ test07() {
        == Poly_Con_Relation::is_disjoint()
        // Proper congruence.
        && gr.relation_with(Linear_Expression(1) %= 1)
-       == Poly_Con_Relation::is_included()
+       == (Poly_Con_Relation::is_included()
+	   && Poly_Con_Relation::saturates())
        // Proper congruence.
        && gr.relation_with((Linear_Expression(5) %= 1) / 4)
-       == Poly_Con_Relation::is_included()
+       == (Poly_Con_Relation::is_included()
+	   && Poly_Con_Relation::saturates())
        // Equality.
        && gr.relation_with(Linear_Expression(1) %= 1)
-       == Poly_Con_Relation::is_included()
+       == (Poly_Con_Relation::is_included()
+	   && Poly_Con_Relation::saturates())
        // Integrality congruence.
        && gr.relation_with(Congruence::zero_dim_integrality())
-       == Poly_Con_Relation::is_included());
+       == (Poly_Con_Relation::is_included()
+	   && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -205,7 +210,8 @@ test10() {
     = (gr.relation_with((A %= 3) / 0)
        == Poly_Con_Relation::is_disjoint()
        && gr.relation_with((2*A %= 1) / 0)
-       == Poly_Con_Relation::is_included()
+       == (Poly_Con_Relation::is_included()
+	   && Poly_Con_Relation::saturates())
        && gr.relation_with(2*A %= 1)
        == Poly_Con_Relation::is_included());
 
@@ -290,14 +296,15 @@ test15() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A == 1);
-  gr.add_congruence(A == 2);
+  gr.add_constraint(A == 1);
+  gr.add_constraint(A == 2);
   print_generators(gr, "*** gr ***");
 
   bool ok
     = (gr.relation_with((B %= 0) / 2)
        == (Poly_Con_Relation::is_included()
-	   && Poly_Con_Relation::is_disjoint()));
+	   && Poly_Con_Relation::is_disjoint()
+	   && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -368,7 +375,8 @@ test19() {
   bool ok
     = (gr.relation_with((A %= 0) / 8)
        == (Poly_Con_Relation::is_included()
-	   && Poly_Con_Relation::is_disjoint()));
+	   && Poly_Con_Relation::is_disjoint()
+	   && Poly_Con_Relation::saturates()));
 
   return ok;
 }

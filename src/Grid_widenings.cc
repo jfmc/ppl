@@ -1,12 +1,12 @@
 /* Grid class implementation
    (non-inline widening-related member functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -21,7 +21,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Grid.defs.hh"
 
@@ -216,7 +216,7 @@ PPL::Grid::limited_congruence_extrapolation_assign(const Grid& y,
 	new_cgs.insert(cg);
     }
     x.congruence_widening_assign(y, tp);
-    x.add_congruences(new_cgs);
+    x.add_recycled_congruences(new_cgs);
   }
   else
     // There are tokens, so widening will leave the grid the same.
@@ -300,7 +300,7 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.generators_are_up_to_date()) {
     if (!x.generators_are_minimized()) {
       simplify(x.gen_sys, x.dim_kinds);
-      assert(x.gen_sys.num_generators() > 0);
+      assert(!x.gen_sys.has_no_rows());
       x.set_generators_minimized();
     }
   }
@@ -314,14 +314,14 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   if (y.generators_are_up_to_date()) {
     if (!y.generators_are_minimized()) {
       simplify(y.gen_sys, y.dim_kinds);
-      assert(y.gen_sys.num_generators() > 0);
+      assert(!y.gen_sys.has_no_rows());
       y.set_generators_minimized();
     }
   }
   else
     y.update_generators();
 
-  if (gen_sys.num_generators() > y.gen_sys.num_generators())
+  if (gen_sys.num_rows() > y.gen_sys.num_rows())
     return;
 
   if (gen_sys.num_lines() > y.gen_sys.num_lines())
@@ -418,7 +418,7 @@ PPL::Grid::limited_generator_extrapolation_assign(const Grid& y,
 	new_cgs.insert(cg);
     }
     x.generator_widening_assign(y, tp);
-    x.add_congruences(new_cgs);
+    x.add_recycled_congruences(new_cgs);
   }
   else
     // There are tokens, so widening will leave the grid the same.
@@ -524,7 +524,7 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
 	new_cgs.insert(cg);
     }
     x.widening_assign(y, tp);
-    x.add_congruences(new_cgs);
+    x.add_recycled_congruences(new_cgs);
   }
   else
     // There are tokens, so widening will leave the grid the same.

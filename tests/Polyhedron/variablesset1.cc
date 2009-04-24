@@ -1,11 +1,11 @@
 /* Test the Variables_Set class.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -38,8 +38,14 @@ test01() {
   v_set.insert(C);
   v_set.insert(B);
   v_set.insert(G);
-  // FIXME: Here, and in the other test, use operator==.
-  return v_set.size() == Variables_Set(A, G).size();
+
+  Variables_Set known_result(A, G);
+
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  nout << "*** v_set ***" << endl << v_set << endl;
+  nout << "*** known_result ***" << endl << known_result << endl;
+
+  return v_set == known_result;
 }
 
 bool
@@ -52,6 +58,10 @@ test02() {
   Variable F(5);
 
   Variables_Set v_set(F, A);
+
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  nout << "*** v_set ***" << endl << v_set << endl;
+
   return v_set.empty();
 }
 
@@ -59,7 +69,12 @@ bool
 test03() {
   Variable first(Variable::max_space_dimension()-1);
   Variable last(0);
+
   Variables_Set v_set(first, last);
+
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  nout << "*** v_set ***" << endl << v_set << endl;
+
   return v_set.empty();
 }
 
@@ -76,27 +91,39 @@ test04() {
   Variable I(8);
 
   Variables_Set vs1(A, C);
-  Variables_Set vs2(E, I);
+  Variables_Set vs2(C, I);
+
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  nout << "*** vs1 ***" << endl << vs1 << endl;
+  nout << "*** vs2 ***" << endl << vs2 << endl;
+
   Variables_Set vs_union;
   Variables_Set vs_difference;
   Variables_Set vs_intersection;
+
   std::set_union(vs1.begin(), vs1.end(),
 		 vs2.begin(), vs2.end(),
 		 std::inserter(vs_union, vs_union.begin()));
-  if (vs_union.size() != 8)
+  nout << "*** vs_union ***" << endl << vs_union << endl;
+  if (vs_union != Variables_Set(A, I))
     return false;
 
   std::set_difference(vs1.begin(), vs1.end(),
 		      vs2.begin(), vs2.end(),
 		      std::inserter(vs_difference, vs_difference.begin()));
-  if (vs_difference.size() != 3)
+  nout << "*** vs_difference ***" << endl << vs_difference << endl;
+  if (vs_difference != Variables_Set(A, B))
     return false;
 
   std::set_intersection(vs1.begin(), vs1.end(),
 			vs2.begin(), vs2.end(),
 			std::inserter(vs_intersection,
 				      vs_intersection.begin()));
-  return vs_intersection.empty();
+  nout << "*** vs_intersection ***" << endl << vs_intersection << endl;
+  if (vs_intersection != Variables_Set(C))
+    return false;
+
+  return true;
 }
 
 
@@ -114,6 +141,10 @@ test05() {
     return false;
 
   v_set.insert(Variable(Variable::max_space_dimension()-1));
+
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  nout << "*** v_set ***" << endl << v_set << endl;
+
   return v_set.space_dimension() == Variable::max_space_dimension();
 }
 

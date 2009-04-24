@@ -1,11 +1,11 @@
 /* Floating point unit related functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -24,8 +24,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_fpu_defs_hh 1
 
 #include "fpu.types.hh"
+#include "compiler.hh"
 
 namespace Parma_Polyhedra_Library {
+
+//! Initializes the FPU control functions.
+void
+fpu_initialize_control_functions();
 
 //! Returns the current FPU rounding direction.
 fpu_rounding_direction_type
@@ -69,17 +74,25 @@ fpu_check_inexact();
 
 } // namespace Parma_Polyhedra_Library
 
-#if defined(__i386__)
+#if PPL_CAN_CONTROL_FPU
+
+#if defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
 #include "fpu-ia32.inlines.hh"
-#elif defined(HAVE_FENV_H)
-#include "fpu-c99.inlines.hh"
-#elif defined(HAVE_IEEEFP_H)						\
+#elif defined(PPL_HAVE_IEEEFP_H)					\
   && (defined(__sparc)							\
       || defined(sparc)							\
       || defined(__sparc__))
 #include "fpu-sparc.inlines.hh"
+#elif defined(PPL_HAVE_FENV_H)
+#include "fpu-c99.inlines.hh"
 #else
-#include "fpu-none.inlines.hh"
+#error "PPL_CAN_CONTROL_FPU evaluates to true, but why?"
 #endif
+
+#else // !PPL_CAN_CONTROL_FPU
+
+#include "fpu-none.inlines.hh"
+
+#endif // !PPL_CAN_CONTROL_FPU
 
 #endif // !defined(PPL_fpu_defs_hh)

@@ -1,11 +1,11 @@
 /* Coefficient class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -25,17 +25,36 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#if defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 inline Coefficient_traits::const_reference
 Coefficient_zero() {
-  static Coefficient z(0);
-  return z;
+  // FIXME: is there a way to avoid this static variable?
+  static Coefficient zero(0);
+  return zero;
 }
 
 inline Coefficient_traits::const_reference
 Coefficient_one() {
-  static Coefficient o(1);
-  return o;
+  // FIXME: is there a way to avoid this static variable?
+  static Coefficient one(1);
+  return one;
 }
+#endif
+
+#ifdef PPL_GMP_INTEGERS
+inline Coefficient_traits::const_reference
+Coefficient_zero() {
+  extern const Coefficient* Coefficient_zero_p;
+  return *Coefficient_zero_p;
+}
+
+inline Coefficient_traits::const_reference
+Coefficient_one() {
+  extern const Coefficient* Coefficient_one_p;
+  assert(*Coefficient_one_p != 0);
+  return *Coefficient_one_p;
+}
+#endif
 
 } // namespace Parma_Polyhedra_Library
 

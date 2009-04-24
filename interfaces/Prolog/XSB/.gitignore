@@ -1,0 +1,14 @@
+*.clpq
+*.la
+*.so
+*.xwam
+clpq.pl
+clpq2.pl
+obtained_clpq
+obtained_clpq2
+obtained_pchk
+obtained_pgt
+ppl_xsb.H
+ppl_xsb.cc
+ppl_xsb.hh
+xsb_prolog_generated_test.P

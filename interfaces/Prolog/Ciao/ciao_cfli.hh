@@ -1,11 +1,11 @@
 /* Ciao Prolog Common Foreign Language Interface.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -71,7 +71,9 @@ Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
   else {
     std::ostringstream s;
     s << ul;
-    t = ciao_put_number_chars(const_cast<char*>(s.str().c_str()));
+    std::string str = s.str();
+    // TODO: remove the const_cast when the Ciao people fix ciao_prolog.h.
+    t = ciao_put_number_chars(const_cast<char*>(str.c_str()));
   }
   return 1;
 }
@@ -107,12 +109,10 @@ Prolog_put_address(Prolog_term_ref& t, void* p) {
 /*!
   Return an atom whose name is given by the null-terminated string \p s.
 */
-Prolog_atom
+inline Prolog_atom
 Prolog_atom_from_string(const char* s) {
   return ciao_atom_name(ciao_atom(s));
 }
-
-static Prolog_term_ref args[4];
 
 /*!
   Assign to \p t a compound term whose principal functor is \p f
@@ -121,6 +121,7 @@ static Prolog_term_ref args[4];
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1) {
+  Prolog_term_ref args[1];
   args[0] = a1;
   t = ciao_structure_a(f, 1, args);
   return 1;
@@ -133,6 +134,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
+  Prolog_term_ref args[2];
   args[0] = a1;
   args[1] = a2;
   t = ciao_structure_a(f, 2, args);
@@ -147,6 +149,7 @@ inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3) {
+  Prolog_term_ref args[3];
   args[0] = a1;
   args[1] = a2;
   args[2] = a3;
@@ -162,6 +165,7 @@ inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
+  Prolog_term_ref args[4];
   args[0] = a1;
   args[1] = a2;
   args[2] = a3;
@@ -229,7 +233,7 @@ Prolog_is_compound(Prolog_term_ref t) {
 }
 
 /*!
-  Return true if \p t is a Prolog list, false otherwise.
+  Return true if \p t is a Prolog cons (list constructor), false otherwise.
 */
 inline int
 Prolog_is_cons(Prolog_term_ref t) {

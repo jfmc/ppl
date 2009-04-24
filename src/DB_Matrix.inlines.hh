@@ -1,11 +1,11 @@
 /* DB_Matrix class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -166,7 +166,7 @@ DB_Matrix<T>::num_rows() const {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline bool
 operator!=(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
@@ -201,7 +201,7 @@ DB_Matrix<T>::operator=(const DB_Matrix& y) {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Specialization, typename Temp, typename To, typename T>
 inline bool
 l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -226,7 +226,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 	  continue;
 	else {
 	pinf:
-	  r = PLUS_INFINITY;
+	  assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
 	  return true;
 	}
       }
@@ -244,7 +244,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 	maybe_assign(tmp2p, tmp2, x_i_j, inverse(dir));
       }
       sub_assign_r(tmp1, *tmp1p, *tmp2p, dir);
-      assert(tmp1 >= 0);
+      assert(sgn(tmp1) >= 0);
       Specialization::combine(tmp0, tmp1, dir);
     }
   }
@@ -255,7 +255,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -276,7 +276,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -296,7 +296,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -320,7 +320,7 @@ namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline void
 swap(Parma_Polyhedra_Library::DB_Matrix<T>& x,

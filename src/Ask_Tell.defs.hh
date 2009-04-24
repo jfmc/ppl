@@ -1,11 +1,11 @@
 /* Ask_Tell class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Ask_Tell.types.hh"
 #include "iterator_to_const.defs.hh"
+#include "globals.types.hh"
 #include <iosfwd>
 #include <list>
 
@@ -55,6 +56,7 @@ operator<<(std::ostream&, const Ask_Tell<D>&);
 } // namespace Parma_Polyhedra_Library
 
 //! A pair of <EM>ask</EM> and <EM>tell</EM> descriptions.
+/*! \ingroup PPL_CXX_interface */
 template <typename D>
 class Parma_Polyhedra_Library::Ask_Tell_Pair {
 public:
@@ -163,6 +165,14 @@ public:
     managed by \p *this.
   */
   memory_size_type external_memory_in_bytes() const;
+
+  /*! \brief
+    Returns a 32-bit hash code for \p *this.
+
+    If \p x and \p y are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
+  */
+  int32_t hash_code() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

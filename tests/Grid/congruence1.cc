@@ -1,11 +1,11 @@
 /* Test class Congruence.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -226,7 +226,7 @@ test09() {
   return ok;
 }
 
-// is_trivial_true and is_trivial_false.
+// is_tautological and is_inconsistent.
 static bool
 test10() {
   Variable A(0);
@@ -235,49 +235,49 @@ test10() {
 
   Test_Congruence a(0*A + 0*B + 0*C %= 17);
 
-  bool ok = (a.is_trivial_true()) && (!a.is_trivial_false());
+  bool ok = (a.is_tautological()) && (!a.is_inconsistent());
 
   print_congruence(a,
     "*** a(0*A + 0*B + 0*C %= 17) ***");
 
   a = Test_Congruence((0*A + 0*B + 0*C %= 0) / 3);
-  ok &= a.is_trivial_true()
-    && !a.is_trivial_false();
+  ok &= a.is_tautological()
+    && !a.is_inconsistent();
 
   a = Test_Congruence((0*A + 0*B + 8 %= 0) / 4);
-  ok &= a.is_trivial_true()
-    && !a.is_trivial_false();
+  ok &= a.is_tautological()
+    && !a.is_inconsistent();
 
   print_congruence(a,
     "*** a = Test_Congruence((0*A + 0*B + 8 %= 0) / 4) ***");
 
   a = Test_Congruence(0*A + 0*B %= 17);
   a /= 0;
-  ok &= !a.is_trivial_true()
-    && a.is_trivial_false();
+  ok &= !a.is_tautological()
+    && a.is_inconsistent();
 
   print_congruence(a,
     "*** a = Test_Congruence(0*A + 0*B %= 17) ***");
 
   a = Test_Congruence((0*A + 0*B + 3 %= 0) / 0);
   a.strong_normalize();
-  ok &= !a.is_trivial_true()
-    && a.is_trivial_false();
+  ok &= !a.is_tautological()
+    && a.is_inconsistent();
 
   print_congruence(a,
     "*** a = Test_Congruence((0*A + 0*B + 3 %= 0) / 0) ***");
 
   a = Test_Congruence((0*A + 0*B + 4 %= 0) / 3);
   a.strong_normalize();
-  ok &= !a.is_trivial_true()
-    && a.is_trivial_false();
+  ok &= !a.is_tautological()
+    && a.is_inconsistent();
 
   print_congruence(a,
     "*** a = Test_Congruence((0*A + 0*B + 4 %= 0) / 3) ***");
 
   a = Test_Congruence((0*A + 1*B %= 1) / 3);
-  ok &= !a.is_trivial_true()
-    && !a.is_trivial_false();
+  ok &= !a.is_tautological()
+    && !a.is_inconsistent();
 
   print_congruence(a,
     "*** a = Test_Congruence((0*A + 1*B %= 1) / 3) ***");
@@ -407,6 +407,34 @@ test16() {
   return false;
 }
 
+// Check if the congruences are equivalent.
+static bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Test_Congruence a((A + 2*B + 3*C %= 5) / 7);
+
+  Test_Congruence b((A + 2*B + 3*C %= 12) / 7);
+
+  Test_Congruence c((2*A + 4*B + 6*C %= 10) / 14);
+
+  bool ok = (a == b);
+  ok &= (a == c);
+
+  Test_Congruence d((2*A + 4*B + 6*C %= 10) / 7);
+
+  ok &= (a != d);
+
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+  print_congruence(c, "*** c ***");
+  print_congruence(d, "*** d ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -426,4 +454,5 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN

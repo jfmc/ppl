@@ -1,11 +1,11 @@
 /* Constraint class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -328,6 +328,12 @@ public:
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   //! The unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
   static const Constraint& zero_dim_false();
 
@@ -385,13 +391,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
@@ -401,6 +405,32 @@ public:
   void swap(Constraint& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
+  */
+  static const Constraint* zero_dim_false_p;
+
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the true (zero-dimension space) constraint \f$0 \leq 1\f$, also
+    known as <EM>positivity constraint</EM>.
+  */
+  static const Constraint* zero_dim_positivity_p;
+
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the zero-dimension space constraint \f$\epsilon \geq 0\f$.
+  */
+  static const Constraint* epsilon_geq_zero_p;
+
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the zero-dimension space constraint \f$\epsilon \leq 1\f$
+    (used to implement NNC polyhedra).
+  */
+  static const Constraint* epsilon_leq_one_p;
+
   friend class Parma_Polyhedra_Library::Congruence;
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
@@ -442,54 +472,45 @@ private:
 			       Variable v) const;
 
   friend Constraint
-  Parma_Polyhedra_Library::operator==(const Linear_Expression& e1,
-				      const Linear_Expression& e2);
+  operator==(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator==(const Linear_Expression& e,
-				      Coefficient_traits::const_reference n);
+  operator==(Variable v1, Variable v2);
   friend Constraint
-  Parma_Polyhedra_Library::operator==(Coefficient_traits::const_reference n,
-				      const Linear_Expression& e);
+  operator==(const Linear_Expression& e, Coefficient_traits::const_reference n);
+  friend Constraint
+  operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
   friend Constraint
-  Parma_Polyhedra_Library::operator>=(const Linear_Expression& e1,
-				      const Linear_Expression& e2);
+  operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator>=(const Linear_Expression& e,
-				      Coefficient_traits::const_reference n);
+  operator>=(Variable v1, Variable v2);
   friend Constraint
-  Parma_Polyhedra_Library::operator>=(Coefficient_traits::const_reference n,
-				      const Linear_Expression& e);
+  operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+  friend Constraint
+  operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
   friend Constraint
-  Parma_Polyhedra_Library::operator<=(const Linear_Expression& e1,
-				      const Linear_Expression& e2);
+  operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator<=(const Linear_Expression& e,
-				      Coefficient_traits::const_reference n);
+  operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator<=(Coefficient_traits::const_reference n,
-				      const Linear_Expression& e);
+  operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
   friend Constraint
-  Parma_Polyhedra_Library::operator>(const Linear_Expression& e1,
-				     const Linear_Expression& e2);
+  operator>(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator>(const Linear_Expression& e,
-				     Coefficient_traits::const_reference n);
+  operator>(Variable v1, Variable v2);
   friend Constraint
-  Parma_Polyhedra_Library::operator>(Coefficient_traits::const_reference n,
-				     const Linear_Expression& e);
+  operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
+  friend Constraint
+  operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
   friend Constraint
-  Parma_Polyhedra_Library::operator<(const Linear_Expression& e1,
-				     const Linear_Expression& e2);
+  operator<(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator<(const Linear_Expression& e,
-				     Coefficient_traits::const_reference n);
+  operator<(const Linear_Expression& e, Coefficient_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator<(Coefficient_traits::const_reference n,
-				     const Linear_Expression& e);
+  operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
   //! Copy-constructor with given size.
   Constraint(const Constraint& c, dimension_type sz);

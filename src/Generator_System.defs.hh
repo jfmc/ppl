@@ -1,11 +1,11 @@
 /* Generator_System class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -180,7 +180,7 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
     will be available, where original generators may have been
     reordered, removed (if they are duplicate or redundant), etc.
 */
-class Parma_Polyhedra_Library::Generator_System : private Linear_System {
+class Parma_Polyhedra_Library::Generator_System : protected Linear_System {
 public:
   //! Default constructor: builds an empty system of generators.
   Generator_System();
@@ -215,9 +215,14 @@ public:
   */
   void insert(const Generator& g);
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   /*! \brief
-    Returns the singleton system containing only
-    Generator::zero_dim_point().
+    Returns the singleton system containing only Generator::zero_dim_point().
   */
   static const Generator_System& zero_dim_univ();
 
@@ -305,6 +310,9 @@ public:
     void skip_forward();
   };
 
+  //! Returns <CODE>true</CODE> if and only if \p *this has no generators.
+  bool empty() const;
+
   /*! \brief
     Returns the const_iterator pointing to the first generator,
     if \p *this is not empty;
@@ -324,7 +332,6 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
@@ -334,7 +341,6 @@ public:
     read from \p s, then initializes the coordinates of each generator
     and its type reading the contents from \p s.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -347,14 +353,18 @@ public:
   void swap(Generator_System& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the singleton system containing only Generator::zero_dim_point().
+  */
+  static const Generator_System* zero_dim_univ_p;
+
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Grid_Generator_System;
   friend class Serializer;
 
-  friend bool
-  Parma_Polyhedra_Library::operator==(const Polyhedron& x,
-				      const Polyhedron& y);
+  friend bool operator==(const Polyhedron& x, const Polyhedron& y);
 
   //! Builds an empty system of generators having the specified topology.
   explicit Generator_System(Topology topol);

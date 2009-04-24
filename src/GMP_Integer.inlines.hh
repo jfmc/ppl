@@ -1,11 +1,11 @@
 /* GMP_Integer class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -22,6 +22,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifndef PPL_GMP_Integer_inlines_hh
 #define PPL_GMP_Integer_inlines_hh 1
+
+#include <cassert>
 
 namespace Parma_Polyhedra_Library {
 
@@ -56,9 +58,8 @@ rem_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
 }
 
 inline void
-gcdext_assign(GMP_Integer& x,
-	      const GMP_Integer& y, const GMP_Integer& z,
-	      GMP_Integer& s, GMP_Integer& t) {
+gcdext_assign(GMP_Integer& x, GMP_Integer& s, GMP_Integer& t,
+	      const GMP_Integer& y, const GMP_Integer& z) {
   mpz_gcdext(x.get_mpz_t(),
 	     s.get_mpz_t(), t.get_mpz_t(),
 	     y.get_mpz_t(), z.get_mpz_t());
@@ -105,23 +106,6 @@ raw_value(GMP_Integer& x) {
   return x;
 }
 
-inline memory_size_type
-external_memory_in_bytes(const GMP_Integer& x) {
-  return x.get_mpz_t()[0]._mp_alloc * SIZEOF_MP_LIMB_T;
-}
-
-inline memory_size_type
-total_memory_in_bytes(const GMP_Integer& x) {
-  return sizeof(x) + external_memory_in_bytes(x);
-}
-
 } // namespace Parma_Polyhedra_Library
-
-/*! \relates Parma_Polyhedra_Library::GMP_Integer */
-inline void
-std::swap(Parma_Polyhedra_Library::GMP_Integer& x,
-	  Parma_Polyhedra_Library::GMP_Integer& y) {
-  mpz_swap(x.get_mpz_t(), y.get_mpz_t());
-}
 
 #endif // !defined(PPL_GMP_Integer_inlines_hh)

@@ -1,11 +1,11 @@
 /* Constraint_System class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -168,9 +168,14 @@ public:
   */
   void insert(const Constraint& c);
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   /*! \brief
-    Returns the singleton system containing only
-    Constraint::zero_dim_false().
+    Returns the singleton system containing only Constraint::zero_dim_false().
   */
   static const Constraint_System& zero_dim_empty();
 
@@ -249,6 +254,9 @@ public:
     void skip_forward();
   };
 
+  //! Returns <CODE>true</CODE> if and only if \p *this has no constraints.
+  bool empty() const;
+
   /*! \brief
     Returns the const_iterator pointing to the first constraint,
     if \p *this is not empty;
@@ -265,18 +273,16 @@ public:
     Returns <CODE>true</CODE> if and only if \p *this is a valid
     Linear_System and each row in the system is a valid Constraint.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool OK() const;
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -289,13 +295,17 @@ public:
   void swap(Constraint_System& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the singleton system containing only Constraint::zero_dim_false().
+  */
+  static const Constraint_System* zero_dim_empty_p;
+
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Serializer;
 
-  friend bool
-  Parma_Polyhedra_Library::operator==(const Polyhedron& x,
-				      const Polyhedron& y);
+  friend bool operator==(const Polyhedron& x, const Polyhedron& y);
 
   //! Builds an empty system of constraints having the specified topology.
   explicit Constraint_System(Topology topol);

@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -14,14 +14,14 @@ PURPOSE. */
 
 #include "Checked_Number.defs.hh"
 
-#if defined(CHECKED_INTEGERS) || defined(NATIVE_INTEGERS)
+#if defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Coefficient traits specialization for 8 bits checked integers.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Policy>
 struct Coefficient_traits_template<Checked_Number<int8_t, Policy> > {
   //! The type used for references to const 8 bit checked integers.
@@ -31,7 +31,7 @@ struct Coefficient_traits_template<Checked_Number<int8_t, Policy> > {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Coefficient traits specialization for 16 bits checked integers.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Policy>
 struct Coefficient_traits_template<Checked_Number<int16_t, Policy> > {
   //! The type used for references to const 16 bit checked integers.
@@ -41,7 +41,7 @@ struct Coefficient_traits_template<Checked_Number<int16_t, Policy> > {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Coefficient traits specialization for 32 bits checked integers.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Policy>
 struct Coefficient_traits_template<Checked_Number<int32_t, Policy> > {
   //! The type used for references to const 32 bit checked integers.
@@ -51,7 +51,7 @@ struct Coefficient_traits_template<Checked_Number<int32_t, Policy> > {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Coefficient traits specialization for 64 bits checked integers.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Policy>
 struct Coefficient_traits_template<Checked_Number<int64_t, Policy> > {
   //! The type used for references to const 64 bit checked integers.
@@ -60,9 +60,9 @@ struct Coefficient_traits_template<Checked_Number<int64_t, Policy> > {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // defined(CHECKED_INTEGERS) || defined(NATIVE_INTEGERS)
+#endif // defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 
-#ifdef GMP_INTEGERS
+#ifdef PPL_GMP_INTEGERS
 #include "GMP_Integer.types.hh"
 #endif
 
@@ -86,12 +86,12 @@ namespace Parma_Polyhedra_Library {
       for native integral types with no overflow detection
       (available template instances are as above).
 */
-typedef COEFFICIENT_TYPE Coefficient;
+typedef PPL_COEFFICIENT_TYPE Coefficient;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An alias for easily naming the coefficient traits.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 typedef Coefficient_traits_template<Coefficient> Coefficient_traits;
 
 } // namespace Parma_Polyhedra_Library

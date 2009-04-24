@@ -1,11 +1,11 @@
 /* Test Polyhedron::fold_space_dimensions() for non-closed polyhedra.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -44,7 +44,7 @@ test01() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After folding {A} into B ***");
+  print_constraints(ph1, "*** after folding {A} into B ***");
 
   return ok;
 }
@@ -73,7 +73,7 @@ test02() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After folding {} into B ***");
+  print_constraints(ph1, "*** after folding {} into B ***");
 
   return ok;
 }
@@ -104,7 +104,7 @@ test03() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "***  After folding {A} into B ***");
+  print_constraints(ph1, "*** after folding {A} into B ***");
 
   return ok;
 }
@@ -138,7 +138,7 @@ test04() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "***  After folding {A,B} into C ***");
+  print_constraints(ph1, "*** after folding {A,B} into C ***");
 
   return ok;
 }
@@ -174,7 +174,7 @@ test05() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "***  After folding {C,D} into A ***");
+  print_constraints(ph1, "*** after folding {C,D} into A ***");
 
   return ok;
 }
@@ -213,7 +213,7 @@ test06() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "***  After folding {B,D} into C ***");
+  print_constraints(ph1, "*** after folding {B,D} into C ***");
 
   return ok;
 }

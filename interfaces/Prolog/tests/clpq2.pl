@@ -1,13 +1,13 @@
 % A toy, non-ground meta-interpreter for CLP(Q)
 % for testing the Parma Polyhedra Library and its Prolog interface.
 %
-% Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+% Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 %
 % This file is part of the Parma Polyhedra Library (PPL).
 %
 % The PPL is free software; you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by the
-% Free Software Foundation; either version 2 of the License, or (at your
+% Free Software Foundation; either version 3 of the License, or (at your
 % option) any later version.
 %
 % The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -124,8 +124,10 @@ solve(_, { Constraints }, [Poly|Polys], [Poly|Polys]) :-
   % and check we do have constraints.
   constraints2list(Constraints, Constraints_List),
 
-  % Fails if `Poly' becomes empty.
-  ppl_Polyhedron_add_constraints_and_minimize(Poly, Constraints_List).
+  ppl_Polyhedron_add_constraints(Poly, Constraints_List),
+
+  % Fail if `Poly' became empty.
+  \+ ppl_Polyhedron_is_empty(Poly).
 
 % Built-ins may be added here.
 
@@ -167,7 +169,8 @@ solve(Topology, Atom, [Poly|Polys], Polys_Out) :-
   ppl_Polyhedron_add_space_dimensions_and_embed(Poly_Copy, Added_Dims),
 
   % First solve the parameter passing equations.
-  ppl_Polyhedron_add_constraints_and_minimize(Poly_Copy, Binding_Constraints),
+  ppl_Polyhedron_add_constraints(Poly_Copy, Binding_Constraints),
+  \+ ppl_Polyhedron_is_empty(Poly_Copy),
   % Then solve the body.
   solve(Topology, Body, [Poly_Copy, Poly|Polys], Polys_Soln_Out),
 
@@ -592,7 +595,9 @@ write_termexpr('$VAR'(N), Var_List) :-
 write_termexpr(Term, _Var_List) :-
   int_expr(Term),
   !,
-  N is Term,
+  % FIXME: restore the original `N is Term' as soon as XSB is fixed.
+  % See http://www.cs.unipr.it/pipermail/ppl-devel/2007-September/011126.html
+  call(N is Term),
   write(N).
 write_termexpr(Term, Var_List) :-
   Term = [_|_],
@@ -1109,7 +1114,7 @@ POSSIBILITY OF SUCH DAMAGES.\n').
 
 common_main :-
   write('\
-Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>\n\
+Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>\n\
 this program is free software, covered by the GNU General Public License,\n\
 and you are welcome to change it and/or distribute copies of it\n\
 under certain conditions.\n\

@@ -1,12 +1,12 @@
 /* Grid class implementation
    (non-inline operators that may change the dimension of the vector space).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -21,18 +21,16 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Grid.defs.hh"
 #include "Variables_Set.defs.hh"
 #include <cassert>
 
-#define BE_LAZY 1
-
 namespace PPL = Parma_Polyhedra_Library;
 
 // Used for add_space_dimensions_and_embed.
-inline void
+void
 PPL::Grid::add_space_dimensions(Congruence_System& cgs,
 				Grid_Generator_System& gs,
 				const dimension_type dims) {
@@ -51,7 +49,7 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
 }
 
 // Used for add_space_dimensions_and_project.
-inline void
+void
 PPL::Grid::add_space_dimensions(Grid_Generator_System& gs,
 				Congruence_System& cgs,
 				const dimension_type dims) {
@@ -244,7 +242,8 @@ PPL::Grid::concatenate_assign(const Grid& y) {
     return;
   }
 
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   con_sys.concatenate(y.congruences());
 
@@ -344,7 +343,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
 	dim_kinds[row] == GEN_VIRTUAL || ++num_redundant;
       if (num_redundant > 0) {
 	// Chop zero rows from end of system, to keep minimal form.
-	gen_sys.erase_to_end(gen_sys.num_generators() - num_redundant);
+	gen_sys.erase_to_end(gen_sys.num_rows() - num_redundant);
 	gen_sys.unset_pending_rows();
       }
       dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
@@ -437,7 +436,7 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
 				      / cg.modulus());
     }
   }
-  add_congruences(new_congruences);
+  add_recycled_congruences(new_congruences);
   assert(OK());
 }
 
@@ -464,12 +463,20 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
   if (to_be_folded.find(var.id()) != to_be_folded.end())
     throw_invalid_argument("fold_space_dimensions(tbf, v)",
 			   "v should not occur in tbf");
-
-  for (Variables_Set::const_iterator i = to_be_folded.begin(),
-	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
-    Grid copy = *this;
-    copy.affine_image(var, Linear_Expression(Variable(*i)));
-    join_assign(copy);
+  // All of the affine images we are going to compute are not invertible,
+  // hence we will need to compute the grid generators of the polyhedron.
+  // Since we keep taking copies, make sure that a single conversion
+  // from congruences to grid generators is computed.
+  (void) grid_generators();
+  // Having grid generators, we now know if the grid is empty:
+  // in that case, folding is equivalent to just removing space dimensions.
+  if (!marked_empty()) {
+    for (Variables_Set::const_iterator i = to_be_folded.begin(),
+           tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
+      Grid copy = *this;
+      copy.affine_image(var, Linear_Expression(Variable(*i)));
+      upper_bound_assign(copy);
+    }
   }
   remove_space_dimensions(to_be_folded);
   assert(OK());

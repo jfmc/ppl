@@ -1,11 +1,11 @@
 /* Polyhedron class implementation: minimize() and add_and_minimize().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
 #include "Bit_Matrix.defs.hh"
@@ -77,7 +77,7 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   // the positive constraint. It also cannot be an empty generator system,
   // since this function is always called starting from a non-empty
   // polyhedron.
-  assert(source.num_rows() > 0);
+  assert(!source.has_no_rows());
 
   // Sort the source system, if necessary.
   if (!source.is_sorted())
@@ -236,7 +236,7 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
 				  Bit_Matrix& sat,
 				  const Linear_System& source2) {
   // `source1' and `source2' cannot be empty.
-  assert(source1.num_rows() > 0 && source2.num_rows() > 0);
+  assert(!source1.has_no_rows() && !source2.has_no_rows());
   // `source1' and `source2' must have the same number of columns
   // to be merged.
   assert(source1.num_columns() == source2.num_columns());

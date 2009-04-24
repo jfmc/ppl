@@ -1,11 +1,11 @@
 /* iterator_to_const and const_iterator_to_const class declarations.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -25,7 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "iterator_to_const.types.hh"
 #include "Powerset.types.hh"
-#include "Ask_Tell.types.hh"
+//#include "Ask_Tell.types.hh"
+#include <iterator>
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An iterator on a sequence of read-only objects.
@@ -44,7 +45,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   For any developers' need, suitable friend declarations allow for
   accessing the low-level iterators on the sequence of objects.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Container>
 class Parma_Polyhedra_Library::iterator_to_const {
 private:
@@ -63,7 +64,7 @@ private:
 
   friend class const_iterator_to_const<Container>;
   template <typename T> friend class Powerset;
-  template <typename T> friend class Ask_Tell;
+  //template <typename T> friend class Ask_Tell;
 
 public:
   // Same traits of the const_iterator, therefore
@@ -118,7 +119,7 @@ public:
   on a read-only sequence of objects, ensures interoperability
   with template class iterator_to_const.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Container>
 class Parma_Polyhedra_Library::const_iterator_to_const {
 private:
@@ -136,7 +137,7 @@ private:
 
   friend class iterator_to_const<Container>;
   template <typename T> friend class Powerset;
-  template <typename T> friend class Ask_Tell;
+  //template <typename T> friend class Ask_Tell;
 
 public:
   // Same traits of the underlying const_iterator.
@@ -195,7 +196,7 @@ namespace Parma_Polyhedra_Library {
 
   \relates const_iterator_to_const
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Container>
 bool
 operator==(const iterator_to_const<Container>& x,
@@ -208,7 +209,7 @@ operator==(const iterator_to_const<Container>& x,
 
   \relates const_iterator_to_const
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Container>
 bool
 operator!=(const iterator_to_const<Container>& x,

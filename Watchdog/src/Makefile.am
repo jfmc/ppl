@@ -1,11 +1,11 @@
 # Automake source file for the Parma Watchdog Library.
-# Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
 #
 # The PWL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PWL is distributed in the hope that it will be useful, but WITHOUT
@@ -17,8 +17,8 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
-# For the most up-to-date information see the CS@Parma software
-# site: http://www.cs.unipr.it/Software/ . */
+# For the most up-to-date information see the Parma Polyhedra Library
+# site: http://www.cs.unipr.it/ppl/ . */
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
@@ -58,8 +58,6 @@ EXTRA_DIST = \
 $(SOURCE_FILES) \
 pwl_header.hh
 
-if BUILD_WATCHDOG_LIBRARY
-
 # Libtool -version-info for libpwl.la.
 #
 #  1. Start with version information of `0:0:0' for each Libtool library.
@@ -86,8 +84,14 @@ if BUILD_WATCHDOG_LIBRARY
 #	    0.2			0.5		    1:0:0
 #	    0.3			0.6		    2:0:0
 #	    0.4			0.7		    3:0:0
+#	    0.4			0.8		    3:0:0
+#	    0.5			0.9		    3:0:0
+#	    0.6			0.10		    4:0:0
+#	    0.7			0.10.1		    4:0:0
+#	    0.7			0.10.2		    4:0:0
+#	    0.7			0.11		    4:0:0
 
-LIBPWL_LT_CURRENT =  3
+LIBPWL_LT_CURRENT =  4
 LIBPWL_LT_REVISION = 0
 LIBPWL_LT_AGE =      0
 
@@ -117,7 +121,7 @@ pwl_include_files.hh: $(INCLUDE_FILES) Makefile
 
 if HAVE_PERL
 
-pwl.hh:	$(top_builddir)/config.h pwl_header.hh pwl_include_files.hh Makefile $(top_builddir)/utils/build_header
+pwl.hh:	$(top_builddir)/pwl-config.h pwl_header.hh pwl_include_files.hh $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/pwl_header.hh >$@
@@ -138,6 +142,10 @@ $(nodist_noinst_HEADERS)
 dist-hook:
 	mv -f $(distdir)/pwl.hh $(distdir)/pwl.hh.dist
 
-MOSTLYCLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES)
 
-endif BUILD_WATCHDOG_LIBRARY
+$(top_builddir)/utils/build_header:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils build_header
+
+$(top_builddir)/pwl-config.h:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir) pwl-config.h

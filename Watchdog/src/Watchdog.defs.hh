@@ -1,11 +1,11 @@
 /* Watchdog and associated classes' declaration and inline functions.
-   Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
 The PWL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PWL is distributed in the hope that it will be useful, but WITHOUT
@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
-For the most up-to-date information see
-http://www.cs.unipr.it/Software/ . */
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
 
 #ifndef PWL_Watchdog_defs_hh
 #define PWL_Watchdog_defs_hh 1
@@ -29,7 +29,7 @@ http://www.cs.unipr.it/Software/ . */
 #include "Pending_List.defs.hh"
 #include <cassert>
 
-#ifdef HAVE_SYS_TIME_H
+#ifdef PWL_HAVE_SYS_TIME_H
 # include <sys/time.h>
 #endif
 
@@ -109,7 +109,7 @@ private:
   // Whether we are changing data that is also changed by the signal handler.
   static volatile bool in_critical_section;
 
-  friend void Parma_Watchdog_Library::PWL_handle_timeout(int signum);
+  friend void PWL_handle_timeout(int signum);
 };
 
 class Init {

@@ -1,11 +1,11 @@
 /* Test Polyhedron::relation_with(g) and Polyhedron::relation_with(c).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -55,10 +55,10 @@ test02() {
   Variable x(0);
 
   C_Polyhedron ph(2, EMPTY);
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   Generator g = point(x);
-  print_generator(g, "--- g ---");
+  print_generator(g, "*** g ***");
 
   Poly_Gen_Relation rel = ph.relation_with(g);
 
@@ -73,10 +73,10 @@ test02() {
 bool
 test03() {
   C_Polyhedron ph;
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   Generator g = point();
-  print_generator(g, "--- g ---");
+  print_generator(g, "*** g ***");
 
   Poly_Gen_Relation rel = ph.relation_with(g);
 
@@ -98,10 +98,10 @@ test04() {
   gs.insert(ray(y));
   gs.insert(line(x));
   C_Polyhedron ph(gs);
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
 
   Generator g = point(x + y);
-  print_generator(g, "--- g ---");
+  print_generator(g, "*** g ***");
 
   Poly_Gen_Relation rel = ph.relation_with(g);
 
@@ -121,7 +121,7 @@ test05() {
   Generator_System gs;
   gs.insert(point(1*A + 1*B));
   C_Polyhedron ph(gs);
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
 
   Poly_Con_Relation rel = ph.relation_with(A >= 0);
 
@@ -138,10 +138,10 @@ test06() {
   Variable y(1);
 
   C_Polyhedron ph(2, EMPTY);
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
 
   Constraint c(y >= 0);
-  print_constraint(c, "--- c ---");
+  print_constraint(c, "*** c ***");
 
   Poly_Con_Relation rel = ph.relation_with(c);
 
@@ -161,11 +161,11 @@ test07() {
   Poly_Con_Relation known_result = Poly_Con_Relation::nothing();
 
   C_Polyhedron ph;
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
 
   // A false inequality constraint.
   Constraint c_false1(Linear_Expression(-1) >= 0);
-  print_constraint(c_false1, "--- c_false1 ---");
+  print_constraint(c_false1, "*** c_false1 ***");
 
   rel = ph.relation_with(c_false1);
 
@@ -176,7 +176,7 @@ test07() {
 
   // A false equality constraint.
   Constraint c_false2(Linear_Expression(5) == -2);
-  print_constraint(c_false2, "--- c_false2 ---");
+  print_constraint(c_false2, "*** c_false2 ***");
 
   rel = ph.relation_with(c_false2);
 
@@ -187,7 +187,7 @@ test07() {
 
   // A saturated inequality.
   Constraint c_saturated1(Linear_Expression(3) >= 3);
-  print_constraint(c_saturated1, "--- c_saturated1 ---");
+  print_constraint(c_saturated1, "*** c_saturated1 ***");
 
   rel = ph.relation_with(c_saturated1);
 
@@ -199,7 +199,7 @@ test07() {
 
   // A saturated equality.
   Constraint c_saturated2(Linear_Expression(1) == 1);
-  print_constraint(c_saturated2, "--- c_saturated2 ---");
+  print_constraint(c_saturated2, "*** c_saturated2 ***");
 
   rel = ph.relation_with(c_saturated2);
 
@@ -211,7 +211,7 @@ test07() {
 
   // A satisfied inequality which is not saturated.
   Constraint c_satisfied(Linear_Expression(7) >= 5);
-  print_constraint(c_satisfied, "--- c_satisfied ---");
+  print_constraint(c_satisfied, "*** c_satisfied ***");
 
   rel = ph.relation_with(c_satisfied);
 
@@ -234,12 +234,12 @@ test08() {
 
   C_Polyhedron ph(cs);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
 
   // An equality constraint non-intersecting the polyhedron.
   Constraint c(y == -1);
 
-  print_constraint(c, "--- c ---");
+  print_constraint(c, "*** c ***");
 
   Poly_Con_Relation rel = ph.relation_with(c);
 
@@ -255,7 +255,7 @@ test09() {
   C_Polyhedron ph;
   Poly_Con_Relation rel = ph.relation_with(Linear_Expression(0) > 0);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
   nout << "ph.relation_with(0 > 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
@@ -270,7 +270,7 @@ test10() {
   C_Polyhedron ph;
   Poly_Con_Relation rel = ph.relation_with(Linear_Expression(0) > 1);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
   nout << "ph.relation_with(0 > 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
@@ -284,7 +284,7 @@ test11() {
   C_Polyhedron ph;
   Poly_Con_Relation rel = ph.relation_with(Linear_Expression(1) > 0);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
   nout << "ph.relation_with(1 > 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
@@ -300,7 +300,7 @@ test12() {
   Variable A(0);
   Poly_Con_Relation rel = ph.relation_with(A > 0);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
   nout << "ph.relation_with(A > 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
@@ -319,7 +319,7 @@ test13() {
 
   Poly_Con_Relation rel = ph.relation_with(A + B > 3);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
   nout << "ph.relation_with(A + B > 3) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
@@ -337,7 +337,7 @@ test14() {
 
   Poly_Con_Relation rel = ph.relation_with(A + B > 3);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
   nout << "ph.relation_with(A + B > 3) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
@@ -357,7 +357,7 @@ test15() {
 
   Poly_Con_Relation rel = ph.relation_with(A + 2*B < 10);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
   nout << "ph.relation_with(A + 2*B < 10) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
@@ -377,7 +377,7 @@ test16() {
 
   Poly_Con_Relation rel = ph.relation_with(A + B > 1);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
   nout << "ph.relation_with(A + B > 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
@@ -394,7 +394,7 @@ test17() {
 
   Poly_Gen_Relation rel = ph.relation_with(point(2*A));
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
   nout << "ph.relation_with(point(2*A)) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();

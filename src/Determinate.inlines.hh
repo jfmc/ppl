@@ -1,11 +1,11 @@
 /* Determinate class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -27,105 +27,105 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename PH>
+template <typename PS>
 inline
-Determinate<PH>::Rep::Rep(dimension_type num_dimensions,
+Determinate<PS>::Rep::Rep(dimension_type num_dimensions,
 			  Degenerate_Element kind)
   : references(0), ph(num_dimensions, kind) {
 }
 
-template <typename PH>
+template <typename PS>
 inline
-Determinate<PH>::Rep::Rep(const PH& p)
+Determinate<PS>::Rep::Rep(const PS& p)
   : references(0), ph(p) {
 }
 
-template <typename PH>
+template <typename PS>
 inline
-Determinate<PH>::Rep::Rep(const Constraint_System& cs)
+Determinate<PS>::Rep::Rep(const Constraint_System& cs)
   : references(0), ph(cs) {
 }
 
-template <typename PH>
+template <typename PS>
 inline
-Determinate<PH>::Rep::Rep(const Congruence_System& cgs)
+Determinate<PS>::Rep::Rep(const Congruence_System& cgs)
   : references(0), ph(cgs) {
 }
 
-template <typename PH>
+template <typename PS>
 inline
-Determinate<PH>::Rep::~Rep() {
+Determinate<PS>::Rep::~Rep() {
   assert(references == 0);
 }
 
-template <typename PH>
+template <typename PS>
 inline void
-Determinate<PH>::Rep::new_reference() const {
+Determinate<PS>::Rep::new_reference() const {
   ++references;
 }
 
-template <typename PH>
+template <typename PS>
 inline bool
-Determinate<PH>::Rep::del_reference() const {
+Determinate<PS>::Rep::del_reference() const {
   return --references == 0;
 }
 
-template <typename PH>
+template <typename PS>
 inline bool
-Determinate<PH>::Rep::is_shared() const {
+Determinate<PS>::Rep::is_shared() const {
   return references > 1;
 }
 
-template <typename PH>
+template <typename PS>
 inline memory_size_type
-Determinate<PH>::Rep::external_memory_in_bytes() const {
+Determinate<PS>::Rep::external_memory_in_bytes() const {
   return ph.external_memory_in_bytes();
 }
 
-template <typename PH>
+template <typename PS>
 inline memory_size_type
-Determinate<PH>::Rep::total_memory_in_bytes() const {
+Determinate<PS>::Rep::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-template <typename PH>
+template <typename PS>
 inline
-Determinate<PH>::Determinate(const PH& ph)
+Determinate<PS>::Determinate(const PS& ph)
   : prep(new Rep(ph)) {
   prep->new_reference();
 }
 
-template <typename PH>
+template <typename PS>
 inline
-Determinate<PH>::Determinate(const Constraint_System& cs)
+Determinate<PS>::Determinate(const Constraint_System& cs)
   : prep(new Rep(cs)) {
   prep->new_reference();
 }
 
-template <typename PH>
+template <typename PS>
 inline
-Determinate<PH>::Determinate(const Congruence_System& cgs)
+Determinate<PS>::Determinate(const Congruence_System& cgs)
   : prep(new Rep(cgs)) {
   prep->new_reference();
 }
 
-template <typename PH>
+template <typename PS>
 inline
-Determinate<PH>::Determinate(const Determinate& y)
+Determinate<PS>::Determinate(const Determinate& y)
   : prep(y.prep) {
   prep->new_reference();
 }
 
-template <typename PH>
+template <typename PS>
 inline
-Determinate<PH>::~Determinate() {
+Determinate<PS>::~Determinate() {
   if (prep->del_reference())
     delete prep;
 }
 
-template <typename PH>
-inline Determinate<PH>&
-Determinate<PH>::operator=(const Determinate& y) {
+template <typename PS>
+inline Determinate<PS>&
+Determinate<PS>::operator=(const Determinate& y) {
   y.prep->new_reference();
   if (prep->del_reference())
     delete prep;
@@ -133,15 +133,15 @@ Determinate<PH>::operator=(const Determinate& y) {
   return *this;
 }
 
-template <typename PH>
+template <typename PS>
 inline void
-Determinate<PH>::swap(Determinate& y) {
+Determinate<PS>::swap(Determinate& y) {
   std::swap(prep, y.prep);
 }
 
-template <typename PH>
+template <typename PS>
 inline void
-Determinate<PH>::mutate() {
+Determinate<PS>::mutate() {
   if (prep->is_shared()) {
     Rep* new_prep = new Rep(prep->ph);
     (void) prep->del_reference();
@@ -150,99 +150,103 @@ Determinate<PH>::mutate() {
   }
 }
 
-template <typename PH>
-inline const PH&
-Determinate<PH>::element() const {
+template <typename PS>
+inline const PS&
+Determinate<PS>::element() const {
   return prep->ph;
 }
 
-template <typename PH>
-inline PH&
-Determinate<PH>::element() {
+template <typename PS>
+inline PS&
+Determinate<PS>::element() {
   mutate();
   return prep->ph;
 }
 
-template <typename PH>
+template <typename PS>
 inline void
-Determinate<PH>::upper_bound_assign(const Determinate& y) {
+Determinate<PS>::upper_bound_assign(const Determinate& y) {
   element().upper_bound_assign(y.element());
 }
 
-template <typename PH>
+template <typename PS>
 inline void
-Determinate<PH>::meet_assign(const Determinate& y) {
+Determinate<PS>::meet_assign(const Determinate& y) {
   element().intersection_assign(y.element());
 }
 
-template <typename PH>
+template <typename PS>
 inline bool
-Determinate<PH>::has_nontrivial_weakening() {
-  // FIXME
-  return true;
+Determinate<PS>::has_nontrivial_weakening() {
+  // FIXME: the following should be turned into a query to PS.  This
+  // can be postponed until the time the ask-and-tell construction is
+  // revived.
+  return false;
 }
 
-template <typename PH>
+template <typename PS>
 inline void
-Determinate<PH>::weakening_assign(const Determinate& y) {
-  // FIXME
+Determinate<PS>::weakening_assign(const Determinate& y) {
+  // FIXME: the following should be turned into a proper
+  // implementation.  This can be postponed until the time the
+  // ask-and-tell construction is revived.
   element().difference_assign(y.element());
 }
 
-template <typename PH>
+template <typename PS>
 inline void
-Determinate<PH>::concatenate_assign(const Determinate& y) {
+Determinate<PS>::concatenate_assign(const Determinate& y) {
   element().concatenate_assign(y.element());
 }
 
-template <typename PH>
+template <typename PS>
 inline bool
-Determinate<PH>::definitely_entails(const Determinate& y) const {
+Determinate<PS>::definitely_entails(const Determinate& y) const {
   return prep == y.prep || y.prep->ph.contains(prep->ph);
 }
 
-template <typename PH>
+template <typename PS>
 inline bool
-Determinate<PH>::is_definitely_equivalent_to(const Determinate& y) const {
+Determinate<PS>::is_definitely_equivalent_to(const Determinate& y) const {
   return prep == y.prep || prep->ph == y.prep->ph;
 }
 
-template <typename PH>
+template <typename PS>
 inline bool
-Determinate<PH>::is_top() const {
+Determinate<PS>::is_top() const {
   return prep->ph.is_universe();
 }
 
-template <typename PH>
+template <typename PS>
 inline bool
-Determinate<PH>::is_bottom() const {
+Determinate<PS>::is_bottom() const {
   return prep->ph.is_empty();
 }
 
-template <typename PH>
+template <typename PS>
 inline memory_size_type
-Determinate<PH>::external_memory_in_bytes() const {
+Determinate<PS>::external_memory_in_bytes() const {
   return prep->total_memory_in_bytes();
 }
 
-template <typename PH>
+template <typename PS>
 inline memory_size_type
-Determinate<PH>::total_memory_in_bytes() const {
+Determinate<PS>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-template <typename PH>
+template <typename PS>
 inline bool
-Determinate<PH>::OK() const {
+Determinate<PS>::OK() const {
   return prep->ph.OK();
 }
 
 namespace IO_Operators {
 
 /*! \relates Parma_Polyhedra_Library::Determinate */
-template <typename PH>
+template <typename PS>
 inline std::ostream&
-operator<<(std::ostream& s, const Determinate<PH>& x) {
+operator<<(std::ostream& s, const Determinate<PS>& x) {
   s << x.element();
   return s;
 }
@@ -250,40 +254,40 @@ operator<<(std::ostream& s, const Determinate<PH>& x) {
 } // namespace IO_Operators
 
 /*! \relates Determinate */
-template <typename PH>
+template <typename PS>
 inline bool
-operator==(const Determinate<PH>& x, const Determinate<PH>& y) {
+operator==(const Determinate<PS>& x, const Determinate<PS>& y) {
   return x.prep == y.prep || x.prep->ph == y.prep->ph;
 }
 
 /*! \relates Determinate */
-template <typename PH>
+template <typename PS>
 inline bool
-operator!=(const Determinate<PH>& x, const Determinate<PH>& y) {
+operator!=(const Determinate<PS>& x, const Determinate<PS>& y) {
   return x.prep != y.prep && x.prep->ph != y.prep->ph;
 }
 
-template <typename PH>
+template <typename PS>
 template <typename Binary_Operator_Assign>
 inline
-Determinate<PH>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>::
+Determinate<PS>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>::
 Binary_Operator_Assign_Lifter(Binary_Operator_Assign op_assign)
   : op_assign_(op_assign) {
 }
 
-template <typename PH>
+template <typename PS>
 template <typename Binary_Operator_Assign>
 inline void
-Determinate<PH>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>::
+Determinate<PS>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>::
 operator()(Determinate& x, const Determinate& y) const {
   op_assign_(x.element(), y.element());
 }
 
-template <typename PH>
+template <typename PS>
 template <typename Binary_Operator_Assign>
 inline
-Determinate<PH>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>
-Determinate<PH>::lift_op_assign(Binary_Operator_Assign op_assign) {
+Determinate<PS>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>
+Determinate<PS>::lift_op_assign(Binary_Operator_Assign op_assign) {
   return Binary_Operator_Assign_Lifter<Binary_Operator_Assign>(op_assign);
 }
 
@@ -293,10 +297,10 @@ Determinate<PH>::lift_op_assign(Binary_Operator_Assign op_assign) {
 namespace std {
 
 /*! \relates Parma_Polyhedra_Library::Determinate */
-template <typename PH>
+template <typename PS>
 inline void
-swap(Parma_Polyhedra_Library::Determinate<PH>& x,
-     Parma_Polyhedra_Library::Determinate<PH>& y) {
+swap(Parma_Polyhedra_Library::Determinate<PS>& x,
+     Parma_Polyhedra_Library::Determinate<PS>& y) {
   x.swap(y);
 }
 

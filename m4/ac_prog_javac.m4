@@ -1,11 +1,11 @@
 dnl A function to check whether the Java compiler supports enums.
-dnl Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
 dnl The PPL is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU General Public License as published by the
-dnl Free Software Foundation; either version 2 of the License, or (at your
+dnl Free Software Foundation; either version 3 of the License, or (at your
 dnl option) any later version.
 dnl
 dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -19,10 +19,9 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
-dnl
 
 AC_DEFUN([AC_JAVAC_SUPPORTS_ENUMS],[
-AC_CACHE_CHECK([whether$JAVAC supports enums], ac_cv_javac_supports_enums, [
+AC_CACHE_CHECK([whether $JAVAC supports enums], ac_cv_javac_supports_enums, [
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
@@ -32,11 +31,11 @@ public enum Relation_Symbol {
     /*! Less than. */
     LESS_THAN,
     /*! Less than or equal to. */
-    LESS_THAN_OR_EQUAL,
+    LESS_OR_EQUAL,
     /*! Equal to. */
     EQUAL,
     /*! Greater than or equal to. */
-    GREATER_THAN_OR_EQUAL,
+    GREATER_OR_EQUAL,
     /*! Greater than. */
     GREATER_THAN,
  }
@@ -45,8 +44,8 @@ EOF
 if AC_TRY_COMMAND($JAVAC $JAVACFLAGS $JAVA_TEST) >/dev/null 2>&1; then
   ac_cv_javac_supports_enums=yes
 else
-  echo "configure: failed program was:" >&AC_FD_CC
-  cat $JAVA_TEST >&AC_FD_CC
+  echo "configure: failed program was:" >&AS_MESSAGE_LOG_FD
+  cat $JAVA_TEST >&AS_MESSAGE_LOG_FD
   ac_cv_javac_supports_enums=no
 fi
 
@@ -96,8 +95,8 @@ AC_PROVIDE([$0])dnl
 #
 # COPYLEFT
 #
-#   Copyright (c) 2000 Stephane Bortzmeyer <bortzmeyer@pasteur.fr>
-#   Copyright (C) 2006 Roberto Bagnara <bagnara@cs.unipr.it>
+#   Copyright (c) 2000      Stephane Bortzmeyer <bortzmeyer@pasteur.fr>
+#   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 #   This program is free software; you can redistribute it and/or
 #   modify it under the terms of the GNU General Public License as

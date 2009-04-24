@@ -1,11 +1,11 @@
 /* Test the total_memory_in_bytes() and external_memory_in_bytes() methods.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -27,11 +27,11 @@ namespace {
 namespace test01_namespace {
 
 void
-add_constraint(TBD_Shape& bd, const Constraint& c) {
-  const memory_size_type bd_memory_before = bd.total_memory_in_bytes();
+add_constraint(TBD_Shape& bds, const Constraint& c) {
+  const memory_size_type bd_memory_before = bds.total_memory_in_bytes();
   const memory_size_type c_memory = c.total_memory_in_bytes();
-  bd.add_constraint(c);
-  const memory_size_type bd_memory_after = bd.total_memory_in_bytes();
+  bds.add_constraint(c);
+  const memory_size_type bd_memory_after = bds.total_memory_in_bytes();
 
   nout << bd_memory_before
        << " + " << c_memory
@@ -40,10 +40,10 @@ add_constraint(TBD_Shape& bd, const Constraint& c) {
 }
 
 void
-minimize(TBD_Shape& bd) {
-  const memory_size_type bd_memory_before = bd.total_memory_in_bytes();
-  (void) bd.minimized_constraints();
-  const memory_size_type bd_memory_after = bd.total_memory_in_bytes();
+minimize(TBD_Shape& bds) {
+  const memory_size_type bd_memory_before = bds.total_memory_in_bytes();
+  (void) bds.minimized_constraints();
+  const memory_size_type bd_memory_after = bds.total_memory_in_bytes();
 
   nout << bd_memory_before
        << " -m-> " << bd_memory_after
@@ -111,36 +111,31 @@ test01() {
 
   nout << "*** Adding constraints to a bounded difference shape ***" << endl;
 
-  TBD_Shape bd(3);
-  add_constraint(bd, 2*x - 2*y >= 0);
-  add_constraint(bd, 4*x - 2*y - z + 2 >= 0);
-  add_constraint(bd, x - y - 1 <= 0);
-  add_constraint(bd, x >= 0);
-  minimize(bd);
-  add_constraint(bd, x + 1 >= 0);
-  add_constraint(bd, x - z - 1 >= 0);
-  add_constraint(bd, 2*x - 2*z + 7 >= 0);
-  add_constraint(bd, y - 2*z + 1 >= 0);
-  minimize(bd);
-  add_constraint(bd, x - y + 5 >= 0);
-  add_constraint(bd, 2*x - 2*z + 13 >= 0);
-  add_constraint(bd, -2*x + 2*z + 1 >= 0);
-  add_constraint(bd, -x + y - 1 >= 0);
-  minimize(bd);
-  add_constraint(bd, -x + y + 7 >= 0);
-  add_constraint(bd, -4*x + 4*y - 4 >= 0);
-  add_constraint(bd, -2*x + 2*z - 5 >= 0);
-  add_constraint(bd, -x + 1 >= 0);
-  minimize(bd);
-  add_constraint(bd, -x - z + 5 >= 0);
-  add_constraint(bd, -4*x - 2*y + z + 8 >= 0);
-  add_constraint(bd, -x + y + 5 >= 0);
-  add_constraint(bd, -x - y -2*z +13 >= 0);
-  minimize(bd);
+  TBD_Shape bds(3);
+  add_constraint(bds, 2*x - 2*y >= 0);
+  add_constraint(bds, x - y - 1 <= 0);
+  add_constraint(bds, x >= 0);
+  minimize(bds);
+  add_constraint(bds, x + 1 >= 0);
+  add_constraint(bds, x - z - 1 >= 0);
+  add_constraint(bds, 2*x - 2*z + 7 >= 0);
+  minimize(bds);
+  add_constraint(bds, x - y + 5 >= 0);
+  add_constraint(bds, 2*x - 2*z + 13 >= 0);
+  add_constraint(bds, -2*x + 2*z + 1 >= 0);
+  add_constraint(bds, -x + y - 1 >= 0);
+  minimize(bds);
+  add_constraint(bds, -x + y + 7 >= 0);
+  add_constraint(bds, -4*x + 4*y - 4 >= 0);
+  add_constraint(bds, -2*x + 2*z - 5 >= 0);
+  add_constraint(bds, -x + 1 >= 0);
+  minimize(bds);
+  add_constraint(bds, -x + y + 5 >= 0);
+  minimize(bds);
 
-  const memory_size_type bd_total_size = bd.total_memory_in_bytes();
-  const memory_size_type bd_external_size = bd.external_memory_in_bytes();
-  const Constraint_System& cs = bd.constraints();
+  const memory_size_type bd_total_size = bds.total_memory_in_bytes();
+  const memory_size_type bd_external_size = bds.external_memory_in_bytes();
+  const Constraint_System& cs = bds.constraints();
   const memory_size_type cs_total_size = cs.total_memory_in_bytes();
   const memory_size_type cs_external_size = cs.external_memory_in_bytes();
 
@@ -148,11 +143,11 @@ test01() {
 
   nout << "*** Size of the user-visible polyhedra components ***"
        << endl
-       << "bd.total_memory_in_bytes() = " << bd_total_size
+       << "bds.total_memory_in_bytes() = " << bd_total_size
        << endl
        << "cs.total_memory_in_bytes() = " << cs_total_size
        << endl
-       << "bd.external_memory_in_bytes() = " << bd_external_size
+       << "bds.external_memory_in_bytes() = " << bd_external_size
        << endl
        << "cs.external_memory_in_bytes() = " << cs_external_size
        << endl << endl;
@@ -164,7 +159,7 @@ test01() {
 
   memory_size_type cs_elements_size = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i)
+         cs_end = cs.end(); i != cs_end; ++i)
     cs_elements_size += i->total_memory_in_bytes();
 
   nout << "Sum of sizes of contained constraints = " << cs_elements_size
@@ -178,61 +173,60 @@ bool test02() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(4*x - 4*y + 14 >= 0);
-  bd.add_constraint(x - z + 2 >= 0);
-  bd.add_constraint(x + y - 1 >= 0);
-  bd.add_constraint(y - z - 5 >= 0);
+  TBD_Shape bds(3);
+  bds.add_constraint(4*x - 4*y + 14 >= 0);
+  bds.add_constraint(x - z + 2 >= 0);
+  bds.add_constraint(y - z - 5 >= 0);
 
-  const memory_size_type bd_total_size = bd.total_memory_in_bytes();
-  const memory_size_type bd_external_size = bd.external_memory_in_bytes();
+  const memory_size_type bd_total_size = bds.total_memory_in_bytes();
+  const memory_size_type bd_external_size = bds.external_memory_in_bytes();
 
-  Determinate<TBD_Shape> dbd(bd);
+  Determinate<TBD_Shape> dbds(bds);
 
-  const memory_size_type dbd_total_size = dbd.total_memory_in_bytes();
-  const memory_size_type dbd_external_size = dbd.external_memory_in_bytes();
+  const memory_size_type dbd_total_size = dbds.total_memory_in_bytes();
+  const memory_size_type dbd_external_size = dbds.external_memory_in_bytes();
 
-  nout << "bd.total_memory_in_bytes() = " << bd_total_size
+  nout << "bds.total_memory_in_bytes() = " << bd_total_size
        << endl
-       << "bd.external_memory_in_bytes() = " << bd_external_size
+       << "bds.external_memory_in_bytes() = " << bd_external_size
        << endl
-       << "dbd.total_memory_in_bytes() = " << dbd_total_size
+       << "dbds.total_memory_in_bytes() = " << dbd_total_size
        << endl
-       << "dbd.external_memory_in_bytes() = " << dbd_external_size
+       << "dbds.external_memory_in_bytes() = " << dbd_external_size
        << endl;
 
-  Pointset_Powerset<TBD_Shape> pbd(bd);
+  Pointset_Powerset<TBD_Shape> pbds(bds);
 
-  TBD_Shape qbd(3);
-  qbd.add_constraint(x >= 0);
-  qbd.add_constraint(y >= 0);
-  qbd.add_constraint(z >= 0);
-  qbd.add_constraint(x <= 1);
-  qbd.add_constraint(y <= 1);
-  qbd.add_constraint(z <= 1);
-  Pointset_Powerset<TBD_Shape> pqbd(qbd);
+  TBD_Shape qbds(3);
+  qbds.add_constraint(x >= 0);
+  qbds.add_constraint(y >= 0);
+  qbds.add_constraint(z >= 0);
+  qbds.add_constraint(x <= 1);
+  qbds.add_constraint(y <= 1);
+  qbds.add_constraint(z <= 1);
+  Pointset_Powerset<TBD_Shape> pqbds(qbds);
 
-  Pointset_Powerset<TBD_Shape> prbd = pqbd;
-  prbd.poly_difference_assign(pbd);
+  Pointset_Powerset<TBD_Shape> prbds = pqbds;
+  prbds.difference_assign(pbds);
 
-  const memory_size_type pbd_total_size = pbd.total_memory_in_bytes();
-  const memory_size_type pbd_external_size = pbd.external_memory_in_bytes();
-  const memory_size_type pqbd_total_size = pqbd.total_memory_in_bytes();
-  const memory_size_type pqbd_external_size = pqbd.external_memory_in_bytes();
-  const memory_size_type prbd_total_size = prbd.total_memory_in_bytes();
-  const memory_size_type prbd_external_size = prbd.external_memory_in_bytes();
+  const memory_size_type pbd_total_size = pbds.total_memory_in_bytes();
+  const memory_size_type pbd_external_size = pbds.external_memory_in_bytes();
+  const memory_size_type pqbd_total_size = pqbds.total_memory_in_bytes();
+  const memory_size_type pqbd_external_size = pqbds.external_memory_in_bytes();
+  const memory_size_type prbd_total_size = prbds.total_memory_in_bytes();
+  const memory_size_type prbd_external_size = prbds.external_memory_in_bytes();
 
-  nout << "pbd.total_memory_in_bytes() = " << pbd_total_size
+  nout << "pbds.total_memory_in_bytes() = " << pbd_total_size
        << endl
-       << "pbd.external_memory_in_bytes() = " << pbd_external_size
+       << "pbds.external_memory_in_bytes() = " << pbd_external_size
        << endl
-       << "pqbd.total_memory_in_bytes() = " << pqbd_total_size
+       << "pqbds.total_memory_in_bytes() = " << pqbd_total_size
        << endl
-       << "pqbd.external_memory_in_bytes() = " << pqbd_external_size
+       << "pqbds.external_memory_in_bytes() = " << pqbd_external_size
        << endl
-       << "prbd.total_memory_in_bytes() = " << prbd_total_size
+       << "prbds.total_memory_in_bytes() = " << prbd_total_size
        << endl
-       << "prbd.external_memory_in_bytes() = " << prbd_external_size
+       << "prbds.external_memory_in_bytes() = " << prbd_external_size
        << endl;
 
   return true;

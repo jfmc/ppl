@@ -1,11 +1,11 @@
 /* Test Octagonal_Shape::limited_BHMZ05_extrapolation_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -35,7 +35,7 @@ test01() {
   cs1.insert(y == 0);
 
   TOctagonal_Shape oct1(cs1);
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
 
   Constraint_System cs2;
   cs2.insert(x <= 1);
@@ -43,13 +43,13 @@ test01() {
   cs2.insert(y - x <= 0);
 
   TOctagonal_Shape oct2(cs2);
-  print_constraints(oct2, "*** oct2 ****");
+  print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(y <= -1);
   cs.insert(x <= 5);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct2.limited_BHMZ05_extrapolation_assign(oct1, cs);
 
@@ -62,7 +62,7 @@ test01() {
   bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(oct2,
-		    "*** oct2.limited_BHMZ05_extrapolation_assign(oct1) ***");
+                    "*** oct2.limited_BHMZ05_extrapolation_assign(oct1) ***");
 
    return ok;
 }
@@ -80,8 +80,8 @@ test02() {
   cs2.insert(x == 0);
   TOctagonal_Shape oct2(cs2);
 
-  print_constraints(oct1, "*** oct1 ****");
-  print_constraints(oct2, "*** oct2 ****");
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -95,7 +95,7 @@ test02() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
 
   return ok;
 }
@@ -105,8 +105,8 @@ test03() {
   TOctagonal_Shape oct1(0, EMPTY);
   TOctagonal_Shape oct2(0, EMPTY);
 
-  print_constraints(oct1, "*** oct1 ****");
-  print_constraints(oct2, "*** oct2 ****");
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
 
@@ -117,7 +117,7 @@ test03() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
 
   return ok;
 }
@@ -130,8 +130,8 @@ test04() {
   TOctagonal_Shape oct1(3, EMPTY);
   TOctagonal_Shape oct2(3, EMPTY);
 
-  print_constraints(oct1, "*** oct1 ****");
-  print_constraints(oct2, "*** oct2 ****");
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A + B <= 0);
@@ -143,7 +143,7 @@ test04() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
 
   return ok;
 }
@@ -155,12 +155,12 @@ test05() {
   Variable C(2);
 
   TOctagonal_Shape oct1(3);
-  oct1.add_constraint_and_minimize(A - B <= 1);
+  oct1.add_constraint(A - B <= 1);
 
   TOctagonal_Shape oct2(3, EMPTY);
 
-  print_constraints(oct1, "*** oct1 ****");
-  print_constraints(oct2, "*** oct2 ****");
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A - B <= 2);
@@ -173,7 +173,7 @@ test05() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
 
   return ok;
 }
@@ -202,8 +202,8 @@ test06() {
   oct2.add_constraint(D - E == 0);
   oct2.add_constraint(G + F == 0);
 
-  print_constraints(oct1, "*** oct1 ****");
-  print_constraints(oct2, "*** oct2 ****");
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(C - B <= 2);
@@ -220,7 +220,7 @@ test06() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
 
   return ok;
 }

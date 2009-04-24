@@ -1,11 +1,11 @@
 /* Test Polyhedron::generalized_affine_image().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -35,9 +35,9 @@ test01() {
   ph.add_constraint(B <= 5);
   ph.add_constraint(A <= B);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
-  ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, A+2);
+  ph.generalized_affine_image(B, GREATER_OR_EQUAL, A+2);
 
   C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(2*B));
@@ -46,9 +46,9 @@ test01() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after "
-		   "ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, A+2)"
-		   " ---");
+  print_generators(ph, "*** ph after "
+		   "ph.generalized_affine_image(B, GREATER_OR_EQUAL, A+2)"
+		   " ***");
 
   return ok;
 }
@@ -64,9 +64,9 @@ test02() {
   ph.add_constraint(B <= 5);
   ph.add_constraint(A <= B);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
-  ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, A+2, -2);
+  ph.generalized_affine_image(B, GREATER_OR_EQUAL, A+2, -2);
 
   C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(-B));
@@ -75,9 +75,9 @@ test02() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after "
-		   "ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL,"
-		   " A+2, -2) ---");
+  print_generators(ph, "*** ph after "
+		   "ph.generalized_affine_image(B, GREATER_OR_EQUAL,"
+		   " A+2, -2) ***");
 
   return ok;
 }
@@ -93,9 +93,9 @@ test03() {
   ph.add_constraint(3*B >= 1);
   ph.add_constraint(2*A >= B);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
 
-  ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL, A-B+2, -3);
+  ph.generalized_affine_image(B, LESS_OR_EQUAL, A-B+2, -3);
 
   C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(9*A - B, 6));
@@ -104,9 +104,9 @@ test03() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after "
-		   "ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL,"
-		   " A-B+2, -3) ---");
+  print_generators(ph, "*** ph after "
+		   "ph.generalized_affine_image(B, LESS_OR_EQUAL,"
+		   " A-B+2, -3) ***");
 
   return ok;
 }
@@ -131,7 +131,7 @@ test04() {
   bool ok = (ph == known_result);
 
   print_generators(ph,
-		   "*** After ph.generalized_affine_image"
+		   "*** after ph.generalized_affine_image"
 		   "(A, EQUAL, A + 2) ***");
 
   return ok;
@@ -153,13 +153,13 @@ test05() {
   C_Polyhedron known_result(2);
   known_result.add_constraint(A + B >= 1);
 
-  ph.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, 2*A - B + 2);
+  ph.generalized_affine_image(A + B, GREATER_OR_EQUAL, 2*A - B + 2);
 
   bool ok = (ph == known_result);
 
   print_generators(ph,
-		   "*** After ph.generalized_affine_image"
-		   "(A + B, GREATER_THAN_OR_EQUAL, 2*A - B + 2) ***");
+		   "*** after ph.generalized_affine_image"
+		   "(A + B, GREATER_OR_EQUAL, 2*A - B + 2) ***");
 
   return ok;
 }
@@ -173,14 +173,14 @@ test06() {
 
   print_constraints(ph1, "*** ph1 ***");
 
-  ph1.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B + 1);
+  ph1.generalized_affine_image(A, LESS_OR_EQUAL, B + 1);
 
   C_Polyhedron known_result(2, EMPTY);
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.generalized_affine_image"
-		    "(A, LESS_THAN_OR_EQUAL, B + 1) ***");
+  print_constraints(ph1, "*** after ph1.generalized_affine_image"
+		    "(A, LESS_OR_EQUAL, B + 1) ***");
 
   return ok;
 }
@@ -194,14 +194,14 @@ test07() {
 
   print_constraints(ph1, "*** ph1 ***");
 
-  ph1.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, A + B + 1);
+  ph1.generalized_affine_image(A + B, GREATER_OR_EQUAL, A + B + 1);
 
   C_Polyhedron known_result(2, EMPTY);
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.generalized_affine_image"
-		    "(A + B, GREATER_THAN_OR_EQUAL, A + B + 1) ***");
+  print_constraints(ph1, "*** after ph1.generalized_affine_image"
+		    "(A + B, GREATER_OR_EQUAL, A + B + 1) ***");
 
   return ok;
 }
@@ -214,17 +214,17 @@ test08() {
   ph.add_constraint(A >= 0);
   ph.add_constraint(A <= -2);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
-  ph.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, A+2);
+  ph.generalized_affine_image(A, GREATER_OR_EQUAL, A+2);
 
   C_Polyhedron known_result(1, EMPTY);
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after "
-		   "ph.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, A+2)"
-		   " ---");
+  print_generators(ph, "*** ph after "
+		   "ph.generalized_affine_image(A, GREATER_OR_EQUAL, A+2)"
+		   " ***");
 
   return ok;
 }
@@ -237,18 +237,18 @@ test09() {
   ph.add_constraint(A >= 0);
   ph.add_constraint(A <= -2);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
-  ph.generalized_affine_image(A+1, GREATER_THAN_OR_EQUAL, A+2);
+  ph.generalized_affine_image(A+1, GREATER_OR_EQUAL, A+2);
 
   C_Polyhedron known_result(1, EMPTY);
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after "
+  print_generators(ph, "*** ph after "
 		   "ph.generalized_affine_image"
-                   "(A+1, GREATER_THAN_OR_EQUAL, A+2)"
-		   " ---");
+                   "(A+1, GREATER_OR_EQUAL, A+2)"
+		   " ***");
 
   return ok;
 }

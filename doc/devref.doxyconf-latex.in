@@ -1,14 +1,14 @@
-# Doxyfile 1.4.7-20060810
+# Doxyfile 1.5.7.1
 
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
+DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = PPL
 PROJECT_NUMBER         = @VERSION@
 OUTPUT_DIRECTORY       = .
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
-USE_WINDOWS_ENCODING   = NO
 BRIEF_MEMBER_DESC      = YES
 REPEAT_BRIEF           = YES
 ABBREVIATE_BRIEF       = 
@@ -19,17 +19,24 @@ STRIP_FROM_PATH        =
 STRIP_FROM_INC_PATH    = 
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
+QT_AUTOBRIEF           = NO
 MULTILINE_CPP_IS_BRIEF = NO
-DETAILS_AT_TOP         = NO
 INHERIT_DOCS           = YES
 SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 8
 ALIASES                = 
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
+OPTIMIZE_FOR_FORTRAN   = NO
+OPTIMIZE_OUTPUT_VHDL   = NO
 BUILTIN_STL_SUPPORT    = NO
+CPP_CLI_SUPPORT        = NO
+SIP_SUPPORT            = NO
+IDL_PROPERTY_SUPPORT   = YES
 DISTRIBUTE_GROUP_DOC   = NO
 SUBGROUPING            = YES
+TYPEDEF_HIDES_STRUCT   = NO
+SYMBOL_CACHE_SIZE      = 0
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------
@@ -38,6 +45,7 @@ EXTRACT_PRIVATE        = YES
 EXTRACT_STATIC         = YES
 EXTRACT_LOCAL_CLASSES  = YES
 EXTRACT_LOCAL_METHODS  = NO
+EXTRACT_ANON_NSPACES   = NO
 HIDE_UNDOC_MEMBERS     = NO
 HIDE_UNDOC_CLASSES     = NO
 HIDE_FRIEND_COMPOUNDS  = NO
@@ -49,6 +57,7 @@ SHOW_INCLUDE_FILES     = YES
 INLINE_INFO            = YES
 SORT_MEMBER_DOCS       = YES
 SORT_BRIEF_DOCS        = NO
+SORT_GROUP_NAMES       = NO
 SORT_BY_SCOPE_NAME     = NO
 GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = YES
@@ -58,7 +67,10 @@ ENABLED_SECTIONS       = Include_Implementation_Details
 MAX_INITIALIZER_LINES  = 5
 SHOW_USED_FILES        = YES
 SHOW_DIRECTORIES       = NO
+SHOW_FILES             = YES
+SHOW_NAMESPACES        = YES
 FILE_VERSION_FILTER    = 
+LAYOUT_FILE            = 
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
 #---------------------------------------------------------------------------
@@ -67,7 +79,7 @@ WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = NO
-WARN_FORMAT            = "$file:$line: $text"
+WARN_FORMAT            = "$file:$line: $text "
 WARN_LOGFILE           = 
 #---------------------------------------------------------------------------
 # configuration options related to the input files
@@ -76,6 +88,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/namespaces.hh \
                          ../src/version.hh \
                          @srcdir@/../src/version.cc \
+                         @srcdir@/../src/meta_programming.hh \
                          @srcdir@/../src/Float.defs.hh \
                          @srcdir@/../src/Float.inlines.hh \
                          @srcdir@/../src/Float.cc \
@@ -91,7 +104,6 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Coefficient.defs.hh \
                          @srcdir@/../src/Coefficient.inlines.hh \
                          @srcdir@/../src/Coefficient.cc \
-                         @srcdir@/../src/Limits.hh \
                          @srcdir@/../src/checked.defs.hh \
                          @srcdir@/../src/checked.inlines.hh \
                          @srcdir@/../src/checked_float.inlines.hh \
@@ -101,15 +113,22 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/checked.cc \
                          @srcdir@/../src/Init.types.hh \
                          @srcdir@/../src/Init.defs.hh \
+                         @srcdir@/../src/Init.inlines.hh \
                          @srcdir@/../src/Init.cc \
                          @srcdir@/../src/initializer.hh \
                          @srcdir@/../src/globals.types.hh \
                          @srcdir@/../src/globals.defs.hh \
                          @srcdir@/../src/globals.inlines.hh \
                          @srcdir@/../src/globals.cc \
+                         @srcdir@/../src/math_utilities.defs.hh \
+                         @srcdir@/../src/math_utilities.inlines.hh \
                          @srcdir@/../src/distances.types.hh \
                          @srcdir@/../src/distances.defs.hh \
                          @srcdir@/../src/distances.inlines.hh \
+                         @srcdir@/../src/stdiobuf.types.hh \
+                         @srcdir@/../src/stdiobuf.defs.hh \
+                         @srcdir@/../src/stdiobuf.inlines.hh \
+                         @srcdir@/../src/stdiobuf.cc \
                          @srcdir@/../src/Topology.hh \
                          @srcdir@/../src/Row.types.hh \
                          @srcdir@/../src/Row.defs.hh \
@@ -143,6 +162,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Variable.defs.hh \
                          @srcdir@/../src/Variable.inlines.hh \
                          @srcdir@/../src/Variable.cc \
+                         @srcdir@/../src/Variables_Set.types.hh \
+                         @srcdir@/../src/Variables_Set.defs.hh \
+                         @srcdir@/../src/Variables_Set.inlines.hh \
+                         @srcdir@/../src/Variables_Set.cc \
                          @srcdir@/../src/Linear_Expression.types.hh \
                          @srcdir@/../src/Linear_Expression.defs.hh \
                          @srcdir@/../src/Linear_Expression.inlines.hh \
@@ -215,14 +238,13 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Poly_Gen_Relation.defs.hh \
                          @srcdir@/../src/Poly_Gen_Relation.inlines.hh \
                          @srcdir@/../src/Poly_Gen_Relation.cc \
+                         @srcdir@/../src/Interval_Restriction.defs.hh \
+                         @srcdir@/../src/Interval_Info.types.hh \
+                         @srcdir@/../src/Interval_Info.defs.hh \
+                         @srcdir@/../src/Interval_Info.inlines.hh \
                          @srcdir@/../src/Interval.types.hh \
                          @srcdir@/../src/Interval.defs.hh \
                          @srcdir@/../src/Interval.inlines.hh \
-                         @srcdir@/../src/Interval.cc \
-                         @srcdir@/../src/Bounding_Box.types.hh \
-                         @srcdir@/../src/Bounding_Box.defs.hh \
-                         @srcdir@/../src/Bounding_Box.inlines.hh \
-                         @srcdir@/../src/Bounding_Box.cc \
                          @srcdir@/../src/C_Polyhedron.types.hh \
                          @srcdir@/../src/C_Polyhedron.defs.hh \
                          @srcdir@/../src/C_Polyhedron.inlines.hh \
@@ -260,16 +282,16 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Pointset_Powerset.inlines.hh \
                          @srcdir@/../src/Pointset_Powerset.templates.hh \
                          @srcdir@/../src/Pointset_Powerset.cc \
-                         @srcdir@/../src/Ask_Tell.types.hh \
-                         @srcdir@/../src/Ask_Tell.defs.hh \
-                         @srcdir@/../src/Ask_Tell.inlines.hh \
-                         @srcdir@/../src/Ask_Tell.templates.hh \
-                         @srcdir@/../src/Pointset_Ask_Tell.types.hh \
-                         @srcdir@/../src/Pointset_Ask_Tell.defs.hh \
-                         @srcdir@/../src/Pointset_Ask_Tell.inlines.hh \
-                         @srcdir@/../src/Pointset_Ask_Tell.templates.hh \
-                         @srcdir@/../src/Pointset_Ask_Tell.cc \
+                         @srcdir@/../src/Partially_Reduced_Product.types.hh \
+                         @srcdir@/../src/Partially_Reduced_Product.defs.hh \
+                         @srcdir@/../src/Partially_Reduced_Product.inlines.hh \
+                         @srcdir@/../src/Partially_Reduced_Product.templates.hh \
                          @srcdir@/../src/algorithms.hh \
+                         @srcdir@/../src/Box.types.hh \
+                         @srcdir@/../src/Box.defs.hh \
+                         @srcdir@/../src/Box.inlines.hh \
+                         @srcdir@/../src/Box.templates.hh \
+                         @srcdir@/../src/Box.cc \
                          @srcdir@/../src/DB_Row.types.hh \
                          @srcdir@/../src/DB_Row.defs.hh \
                          @srcdir@/../src/DB_Row.inlines.hh \
@@ -294,6 +316,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Octagonal_Shape.cc \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox
+INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.hh \
                          *.cc \
                          *.dox
@@ -301,6 +324,7 @@ RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
+EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = 
 EXAMPLE_RECURSIVE      = NO
@@ -322,7 +346,7 @@ VERBATIM_HEADERS       = YES
 #---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
-ALPHABETICAL_INDEX     = YES
+ALPHABETICAL_INDEX     = NO
 COLS_IN_ALPHA_INDEX    = 5
 IGNORE_PREFIX          = 
 #---------------------------------------------------------------------------
@@ -335,16 +359,27 @@ HTML_HEADER            =
 HTML_FOOTER            = 
 HTML_STYLESHEET        = 
 HTML_ALIGN_MEMBERS     = YES
+HTML_DYNAMIC_SECTIONS  = NO
+GENERATE_DOCSET        = NO
+DOCSET_FEEDNAME        = "Doxygen generated docs"
+DOCSET_BUNDLE_ID       = org.doxygen.Project
 GENERATE_HTMLHELP      = NO
 CHM_FILE               = 
 HHC_LOCATION           = 
 GENERATE_CHI           = NO
+CHM_INDEX_ENCODING     = 
 BINARY_TOC             = NO
 TOC_EXPAND             = NO
+GENERATE_QHP           = NO
+QCH_FILE               = 
+QHP_NAMESPACE          = org.doxygen.Project
+QHP_VIRTUAL_FOLDER     = doc
+QHG_LOCATION           = 
 DISABLE_INDEX          = NO
 ENUM_VALUES_PER_LINE   = 4
 GENERATE_TREEVIEW      = YES
 TREEVIEW_WIDTH         = 250
+FORMULA_FONTSIZE       = 10
 #---------------------------------------------------------------------------
 # configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
@@ -419,8 +454,12 @@ PERL_PATH              = @PERL@
 # Configuration options related to the dot tool   
 #---------------------------------------------------------------------------
 CLASS_DIAGRAMS         = YES
+MSCGEN_PATH            = 
 HIDE_UNDOC_RELATIONS   = YES
 HAVE_DOT               = YES
+DOT_FONTNAME           = FreeSans
+DOT_FONTSIZE           = 10
+DOT_FONTPATH           = 
 CLASS_GRAPH            = YES
 COLLABORATION_GRAPH    = YES
 GROUP_GRAPHS           = YES
@@ -435,8 +474,7 @@ DIRECTORY_GRAPH        = NO
 DOT_IMAGE_FORMAT       = png
 DOT_PATH               = 
 DOTFILE_DIRS           = 
-MAX_DOT_GRAPH_WIDTH    = 1024
-MAX_DOT_GRAPH_HEIGHT   = 1024
+DOT_GRAPH_MAX_NODES    = 50
 MAX_DOT_GRAPH_DEPTH    = 0
 DOT_TRANSPARENT        = NO
 DOT_MULTI_TARGETS      = NO

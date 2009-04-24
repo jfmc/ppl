@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -14,9 +14,7 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-class Boundary;
-class LBoundary;
-class UBoundary;
+template <typename Boundary, typename Info>
 class Interval;
 
 } // namespace Parma_Polyhedra_Library

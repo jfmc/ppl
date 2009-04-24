@@ -1,11 +1,11 @@
 /* Test approximate_partition().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -47,11 +47,6 @@ test01() {
   nout << "  === p inters q === " << endl << "  " << result.first << endl;
   nout << "  ===    rest    === " << endl << "  " << result.second << endl;
 
-#if 0
-  if (!aux_test03(p, q, result))
-    return false;
-#endif
-
   if (!finite_partition)
     return false;
 
@@ -60,10 +55,6 @@ test01() {
   nout << "*** p partition ***" << endl;
   nout << "  === q inters p === " << endl << "  " << result.first << endl;
   nout << "  ===    rest    === " << endl << "  " << result.second << endl;
-
-#if 0
-  return aux_test03(q, p, result);
-#endif
 
   return finite_partition;
 }

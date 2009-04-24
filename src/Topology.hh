@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -17,7 +17,7 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Kinds of polyhedra domains.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 enum Topology {
   NECESSARILY_CLOSED = 0,
   NOT_NECESSARILY_CLOSED = 1

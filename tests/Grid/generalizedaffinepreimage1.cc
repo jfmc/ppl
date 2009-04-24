@@ -1,11 +1,11 @@
 /* Test Grid::generalized_affine_preimage(var, ...).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -48,8 +48,7 @@ test01() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1,
-    "*** gr1.generalized_affine_preimage(B, EQUAL, Linear_Expression::zero(), 1, 0 ***");
+  print_congruences(gr1, "*** gr1.generalized_affine_preimage(B, EQUAL, Linear_Expression::zero(), 1, 0 ***");
 
   if (ok) {
     print_congruences(gr2, "*** gr2 ***");
@@ -59,8 +58,7 @@ test01() {
     ok = (gr2 == known_gr);
   }
 
-  print_congruences(gr2,
-    "*** gr2.generalized_affine_preimage(B, EQUAL, Linear_Expression::zero(), 1, 2) ***");
+  print_congruences(gr2, "*** gr2.generalized_affine_preimage(B, EQUAL, Linear_Expression::zero(), 1, 2) ***");
 
   return ok;
 }
@@ -89,8 +87,7 @@ test02() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1,
-    "*** gr1.generalized_affine_preimage(B, EQUAL, Linear_Expression::zero(), 1) ***");
+  print_congruences(gr1, "*** gr1.generalized_affine_preimage(B, EQUAL, Linear_Expression::zero(), 1) ***");
 
   if (ok) {
     print_congruences(gr2, "*** gr2 ***");
@@ -100,8 +97,7 @@ test02() {
     ok = (gr2 == known_gr);
   }
 
-  print_congruences(gr2,
-    "*** gr2.generalized_affine_preimage(B, EQUAL, Linear_Expression::zero(), 1, 3) ***");
+  print_congruences(gr2, "*** gr2.generalized_affine_preimage(B, EQUAL, Linear_Expression::zero(), 1, 3) ***");
 
   return ok;
 }
@@ -130,8 +126,7 @@ test03() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1,
-        "*** gr1.generalized_affine_preimage(B, EQUAL, A + 1, 1, 0) ***");
+  print_congruences(gr1, "*** gr1.generalized_affine_preimage(B, EQUAL, A + 1, 1, 0) ***");
 
   if (ok) {
     print_congruences(gr2, "*** gr2 ***");
@@ -143,8 +138,7 @@ test03() {
     ok = (gr2 == known_gr);
   }
 
-  print_congruences(gr2,
-    "*** gr2.generalized_affine_preimage(B, EQUAL, A + 1, 1, -7) ***");
+  print_congruences(gr2, "*** gr2.generalized_affine_preimage(B, EQUAL, A + 1, 1, -7) ***");
 
   return ok;
 }
@@ -173,8 +167,7 @@ test04() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1,
-        "*** gr1.generalized_affine_preimage(B, EQUAL, A + 1, 2, 0) ***");
+  print_congruences(gr1, "*** gr1.generalized_affine_preimage(B, EQUAL, A + 1, 2, 0) ***");
 
   if (ok) {
     print_congruences(gr2, "*** gr2 ***");
@@ -186,8 +179,7 @@ test04() {
     ok = (gr2 == known_gr);
   }
 
-  print_congruences(gr2,
-    "*** gr2.generalized_affine_preimage(B, EQUAL, A + 1, 2, 3) ***");
+  print_congruences(gr2, "*** gr2.generalized_affine_preimage(B, EQUAL, A + 1, 2, 3) ***");
 
   return ok;
 }
@@ -216,8 +208,7 @@ test05() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1,
-        "*** gr1.generalized_affine_preimage(B, EQUAL, A + 2, -2, 0) ***");
+  print_congruences(gr1, "*** gr1.generalized_affine_preimage(B, EQUAL, A + 2, -2, 0) ***");
 
   if (ok) {
     print_congruences(gr2, "*** gr2 ***");
@@ -229,8 +220,7 @@ test05() {
     ok = (gr2 == known_gr);
   }
 
-  print_congruences(gr2,
-    "*** gr2.generalized_affine_preimage(B, EQUAL, A + 2, -2, 1) ***");
+  print_congruences(gr2, "*** gr2.generalized_affine_preimage(B, EQUAL, A + 2, -2, 1) ***");
 
   return ok;
 }
@@ -260,7 +250,7 @@ test06() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A, EQUAL, A - C + 2, 1, 5) ***");
+		    "*** gr.generalized_affine_preimage(A, EQUAL, A - C + 2, 1, 5) ***");
 
   return ok;
 }
@@ -289,7 +279,7 @@ test07() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A, EQUAL, A - C + 2, 1, 0) ***");
+		    "*** gr.generalized_affine_preimage(A, EQUAL, A - C + 2, 1, 0) ***");
 
   return ok;
 }
@@ -312,7 +302,7 @@ test08() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A, EQUAL, A - 2*C + 3, 4, 7) ***");
+		    "*** gr.generalized_affine_preimage(A, EQUAL, A - 2*C + 3, 4, 7) ***");
 
   return ok;
 }
@@ -323,8 +313,8 @@ test09() {
   Variable A(0);
 
   Grid gr(1);
-  gr.add_congruence(A == 0);
-  gr.add_congruence(A == 3);
+  gr.add_constraint(A == 0);
+  gr.add_constraint(A == 3);
 
   print_congruences(gr, "*** gr ***");
 
@@ -335,7 +325,7 @@ test09() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A, EQUAL, A + 2, 1, 1) ***");
+		    "*** gr.generalized_affine_preimage(A, EQUAL, A + 2, 1, 1) ***");
 
   return ok;
 }
@@ -356,7 +346,7 @@ test10() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A, EQUAL, A + 2, 1, 1) ***");
+		    "*** gr.generalized_affine_preimage(A, EQUAL, A + 2, 1, 1) ***");
 
   return ok;
 }
@@ -456,7 +446,7 @@ test14() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(B, EQUAL, A + B, 1, 0) ***");
+		    "*** gr.generalized_affine_preimage(B, EQUAL, A + B, 1, 0) ***");
 
   return ok;
 }
@@ -485,7 +475,7 @@ test15() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(B, EQUAL, A + B, 1, -7) ***");
+		    "*** gr.generalized_affine_preimage(B, EQUAL, A + B, 1, -7) ***");
 
   return ok;
 }
@@ -520,7 +510,7 @@ test16() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A + 2*B, EQUAL, A - B, 3) ***");
+		    "*** gr.generalized_affine_preimage(A + 2*B, EQUAL, A - B, 3) ***");
 
   return ok;
 }

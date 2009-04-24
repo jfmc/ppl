@@ -1,11 +1,11 @@
 /* Test the MIP_Problem class.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -1337,7 +1337,8 @@ test05() {
   return true;
 }
 
-bool test06() {
+bool
+test06() {
   Variable A(0);
   Variable B(1);
   Linear_Expression cost(A + B);
@@ -1346,6 +1347,7 @@ bool test06() {
   cs.insert(-A - 3*B >= -18);
   cs.insert(-A + B >= -4);
   cs.insert(A >= 0);
+  cs.insert(A <= 3);
   cs.insert(B >= 0);
 
   MIP_Problem mip = MIP_Problem(cs.space_dimension(), cs, cost, MAXIMIZATION);
@@ -1363,7 +1365,7 @@ bool test06() {
 
   nout << "Optimizing point = ";
   print_generator(pg);
-  Generator pg_kr = point(6*A + 2*B);
+  Generator pg_kr = point(3*A + 5*B);
   if (pg != pg_kr)
     return false;
 
@@ -1395,7 +1397,8 @@ bool test06() {
   return true;
 }
 
-bool test07() {
+bool
+test07() {
   Variable A(0);
   Variable B(1);
   Linear_Expression cost(A + B);
@@ -1457,7 +1460,8 @@ bool test07() {
   return true;
 }
 
-bool test08() {
+bool
+test08() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1572,7 +1576,8 @@ bool test08() {
   return true;
 }
 
-bool test09() {
+bool
+test09() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1645,93 +1650,8 @@ bool test09() {
   return true;
 }
 
-// FIXME: this test is disabled: it loops if all the variables are constrained
-// to be integer.
-bool test10() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-
-  Linear_Expression cost(10*A + 3*B);
-  Constraint_System cs;
-  cs.insert(A + B >= 0);
-  cs.insert(B >= 0);
-  cs.insert(B == 3);
-  cs.insert(2*C + 2*D == 9);
-
-  MIP_Problem mip = MIP_Problem(cs.space_dimension(), cs, cost, MINIMIZATION);
-  Coefficient num_kr = -21;
-  Coefficient den_kr = 1;
-  Coefficient num;
-  Coefficient den;
-  Generator pg = mip.optimizing_point();
-  mip.evaluate_objective_function(pg, num, den);
-  nout << "Optimum value = " << num << "/" << den << endl;
-  if (num != num_kr || den != den_kr)
-    return false;
-  nout << "Optimizing point = ";
-  print_generator(pg);
-  Generator pg_kr = point(-6*A + 6*B + 9*D, 2);
-  if (pg != pg_kr)
-    return false;
-
-  // Set Variable A to be constrained to have an integer value.
-  mip.add_to_integer_space_dimensions(Variables_Set(A));
-  pg = mip.optimizing_point();
-  mip.evaluate_objective_function(pg, num, den);
-
-  nout << "Optimum value = " << num << "/" << den << endl;
-  if (num != num_kr || den != den_kr)
-    return false;
-  nout << "Optimizing point = ";
-  print_generator(pg);
-  if (pg != pg_kr)
-    return false;
-
-  // Set Variable B to be constrained to have an integer value.
-  mip.add_to_integer_space_dimensions(Variables_Set(B));
-  pg = mip.optimizing_point();
-  mip.evaluate_objective_function(pg, num, den);
-
-  nout << "Optimum value = " << num << "/" << den << endl;
-  if (num != num_kr || den != den_kr)
-    return false;
-  nout << "Optimizing point = ";
-  print_generator(pg);
-  if (pg != pg_kr)
-    return false;
-
-  // Set Variable C to be constrained to have an integer value.
-  mip.add_to_integer_space_dimensions(Variables_Set(C));
-  pg = mip.optimizing_point();
-  mip.evaluate_objective_function(pg, num, den);
-
-  nout << "Optimum value = " << num << "/" << den << endl;
-  if (num != num_kr || den != den_kr)
-    return false;
-  nout << "Optimizing point = ";
-  print_generator(pg);
-  if (pg != pg_kr)
-    return false;
-  // Set Variable D to be constrained to have an integer value.
-  mip.add_to_integer_space_dimensions(Variables_Set(D));
-  pg = mip.optimizing_point();
-  mip.evaluate_objective_function(pg, num, den);
-
-  nout << "Optimum value = " << num << "/" << den << endl;
-  if (num != num_kr || den != den_kr)
-    return false;
-  nout << "Optimizing point = ";
-  print_generator(pg);
-  if (pg != pg_kr)
-    return false;
-
-  return true;
-}
-
 bool
-test11() {
+test10() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1751,122 +1671,18 @@ test11() {
   MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end(), ivs, cost,
 		  MINIMIZATION);
 
-  mip.solve();
-
-  Generator pg = mip.optimizing_point();
-  nout << "Optimizing point = ";
-  using namespace Parma_Polyhedra_Library::IO_Operators;
-  nout << pg << endl;
-
-  return true;
-}
-
-bool
-test12() {
-  Variable A(0);
-  Variable B(1);
-
-  // Feasible region.
-  Constraint_System cs;
-  cs.insert(-2*A - B >= -5);
-  cs.insert(4*A -4*B >= -5);
-  cs.insert(A >= 0);
-  cs.insert(B >= 0);
-
-  // All integer variables.
-  Variables_Set ivs(A, B);
-
-  // Objective function.
-  Linear_Expression cost(A - 2*B);
-
-  MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end(), ivs, cost,
-		  MAXIMIZATION);
-  mip.solve();
-
-  Generator pg = mip.optimizing_point();
-  nout << "Optimizing point = ";
-  using namespace Parma_Polyhedra_Library::IO_Operators;
-  nout << pg << endl;
-
-  mip.set_optimization_mode(MINIMIZATION);
-  mip.solve();
-
-  pg = mip.optimizing_point();
-  nout << "Optimizing point = ";
-  using namespace Parma_Polyhedra_Library::IO_Operators;
-  nout << pg << endl;
-
-  return true;
-}
-
-bool
-test13() {
-  Variable A(0);
-  Variable B(1);
-  Constraint_System cs;
-  cs.insert(Coefficient("-3152519739159347")*A
-	    - Coefficient("4503599627370496")*B
-	    >= Coefficient("-2837267765243412480"));
-  cs.insert(Coefficient("-14411518807585588")*A
-	    - Coefficient("3602879701896397")*B
-	    >= Coefficient("-19455550390240542720"));
-  cs.insert(Coefficient("6325070415853456823515479584966165845298645305129441198653167438357198111499854590373761990669910140474596183259900372230931523043306046152094168748148078435047419508642698792639590866940413010663742739952273283392562733857021646831815729864036236135650314266011211548510419206725953204130822734645187695728365866909171712")*A
-	    >= Coefficient("134217729"));
-  cs.insert(B >= 20);
-  cs.insert(-B >= -500);
-
-  // Integer variables.
-  Variables_Set ivs(A);
-
-  // Cost function
-  Linear_Expression cost(-4*A - B);
-
-  MIP_Problem mip = MIP_Problem(cs.space_dimension(),
-				cs.begin(), cs.end(),
-				ivs,
-				cost,
-				MINIMIZATION);
-
-  Generator pg = mip.optimizing_point();
-  nout << "Optimizing point = ";
-  print_generator(pg);
-
-  Coefficient num;
-  Coefficient den;
-  mip.evaluate_objective_function(pg, num, den);
-  nout << "Optimum value = " << num << "/" << den << endl;
-
-  return true;
-}
-
-bool
-test14() {
-  MIP_Problem mip = MIP_Problem();
-  mip.solve();
-  Generator pg = mip.optimizing_point();
-  nout << "Optimizing point = ";
-  print_generator(pg);
-  Generator pg_kr = point();
-  if (pg != pg_kr)
+  if (mip.solve() != OPTIMIZED_MIP_PROBLEM)
     return false;
+
+  Generator pg = mip.optimizing_point();
+  nout << "Optimizing point = ";
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  nout << pg << endl;
+
   return true;
 }
-bool
 
-test15() {
-  MIP_Problem mip = MIP_Problem();
-  mip.add_constraint(Linear_Expression::zero() <= 1);
-  mip.solve();
-  Generator pg = mip.optimizing_point();
-  Generator pg_kr = point();
-  if (pg != pg_kr)
-    return false;
-  mip.add_constraint(Linear_Expression::zero() >= 1);
-  return (!mip.is_satisfiable());
-}
-
-}
-// namespace
+} // namespace
 
 BEGIN_MAIN
   DO_TEST_F64(test01);
@@ -1878,10 +1694,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST_F64(test08);
   DO_TEST(test09);
-  // DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST_F64(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
+  DO_TEST(test10);
 END_MAIN

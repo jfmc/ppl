@@ -1,11 +1,11 @@
 /* Linear_Expression class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -42,19 +42,6 @@ Linear_Expression::Linear_Expression()
 inline
 Linear_Expression::Linear_Expression(dimension_type sz, bool)
   : Linear_Row(sz, Linear_Row::Flags()) {
-}
-
-inline
-Linear_Expression::Linear_Expression(const Variable v)
-  : Linear_Row(v.space_dimension() <= max_space_dimension()
-	       ? v.id() + 2
-	       : (throw std::length_error("PPL::Linear_Expression::"
-					  "Linear_Expression(v):\n"
-					  "v exceeds the maximum allowed "
-					  "space dimension."),
-		  v.id() + 2)
-	       , Linear_Row::Flags()) {
-  (*this)[v.id() + 1] = 1;
 }
 
 inline
@@ -97,8 +84,8 @@ Linear_Expression::inhomogeneous_term() const {
 
 inline const Linear_Expression&
 Linear_Expression::zero() {
-  static Linear_Expression z = Linear_Expression(Coefficient_zero());
-  return z;
+  assert(zero_p != 0);
+  return *zero_p;
 }
 
 inline memory_size_type
@@ -125,20 +112,6 @@ operator+(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 /*! \relates Linear_Expression */
 inline Linear_Expression
-operator+(const Variable v, const Variable w) {
-  // FIXME: provide a better implementation.
-  return Linear_Expression(v) + Linear_Expression(w);
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
-operator+(const Variable v, const Linear_Expression& e) {
-  // FIXME: provide a better implementation.
-  return e + Linear_Expression(v);
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
 operator+(const Linear_Expression& e, const Variable v) {
   return v + e;
 }
@@ -152,22 +125,7 @@ operator-(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 /*! \relates Linear_Expression */
 inline Linear_Expression
 operator-(const Variable v, const Variable w) {
-  // FIXME: provide a better implementation.
-  return Linear_Expression(v) - Linear_Expression(w);
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
-operator-(const Variable v, const Linear_Expression& e) {
-  // FIXME: provide a better implementation.
-  return Linear_Expression(v) - e;
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
-operator-(const Linear_Expression& e, const Variable v) {
-  // FIXME: provide a better implementation.
-  return e - Linear_Expression(v);
+  return Linear_Expression(v, w);
 }
 
 /*! \relates Linear_Expression */

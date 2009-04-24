@@ -1,4 +1,4 @@
-% Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+% Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 %
 % This document describes the Parma Polyhedra Library (PPL).
 %
@@ -11,7 +11,7 @@
 %
 % The PPL is free software; you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by the
-% Free Software Foundation; either version 2 of the License, or (at your
+% Free Software Foundation; either version 3 of the License, or (at your
 % option) any later version.  The license is included, in various
 % formats, in the `doc' subdirectory of each distribution of the PPL in
 % files are called `gpl.*'.
@@ -25,32 +25,37 @@
 % site: http://www.cs.unipr.it/ppl/ .
 
 \documentclass[a4paper]{article}
-\nonstopmode
 \usepackage{a4wide}
 \usepackage{makeidx}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
+\usepackage{multicol}
 \usepackage{float}
+\usepackage{textcomp}
 \usepackage{alltt}
-\usepackage{doxygen}
 \usepackage{times}
-\ifx\pdfoutput\undefined
-\usepackage[ps2pdf,
-            pagebackref=true,
-            colorlinks=true,
-            linkcolor=blue
-           ]{hyperref}
-\usepackage{pspicture}
-\else
+\usepackage{ifpdf}
+\ifpdf
 \usepackage[pdftex,
             pagebackref=true,
             colorlinks=true,
-            linkcolor=blue
+            linkcolor=blue,
+            unicode
            ]{hyperref}
+\else
+\usepackage[ps2pdf,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue,
+            unicode
+           ]{hyperref}
+\usepackage{pspicture}
 \fi
+\usepackage[utf8]{inputenc}
+\usepackage{doxygen}
 \usepackage{ppl}
 \makeindex
-\setcounter{tocdepth}{1}
+\setcounter{tocdepth}{2}
 \renewcommand{\footrulewidth}{0.4pt}
 
 \rfoot[\fancyplain{}{\scriptsize The Parma Polyhedra Library Developer's Manual (version $projectnumber). See \url{http://www.cs.unipr.it/ppl/} for more information.}]{}
@@ -74,7 +79,11 @@ Developer's Manual\thanks{This work
   MURST project
     ``Constraint Based Verification of Reactive Systems'';
   MURST project
-    ``Abstract Interpretation: Design and Applications''.
+    ``Abstract Interpretation: Design and Applications'';
+  EPSRC project
+    ``Numerical Domains for Software Analysis'';
+  EPSRC project
+    ``Geometric Abstractions for Scalable Program Analyzers''.
   } \\
 (version $projectnumber)
 }
@@ -100,7 +109,7 @@ Tatiana Zolo
 \maketitle
 
 \newpage
-Copyright \copyright\ 2001--2006 Roberto Bagnara (bagnara@cs.unipr.it).
+Copyright \copyright\ 2001--2009 Roberto Bagnara (bagnara@cs.unipr.it).
 
 This document describes the Parma Polyhedra Library (PPL).
 
@@ -110,14 +119,14 @@ or any later version published by the
 \href{http://www.fsf.org}{Free Software Foundation};
 with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
 A copy of the license is included in the section entitled
-``\hyperlink{GFDL}{GNU Free Documentation License}''.
+``\hyperlink{GFDL_GFDL}{GNU Free Documentation License}''.
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-\href{http://www.fsf.org}{Free Software Foundation}; either version 2
+\href{http://www.fsf.org}{Free Software Foundation}; either version 3
 of the License, or (at your option) any later version.
 A copy of the license is included in the section entitled
-``\hyperlink{GPL}{GNU GENERAL PUBLIC LICENSE}''.
+``\hyperlink{GPL_GPL}{GNU GENERAL PUBLIC LICENSE}''.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or

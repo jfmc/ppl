@@ -1,11 +1,11 @@
 /* Linear_Row class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Linear_Row.defs.hh"
 #include "Coefficient.defs.hh"
@@ -108,8 +108,8 @@ PPL::Linear_Row::linear_combine(const Linear_Row& y, const dimension_type k) {
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-  TEMP_INTEGER(normalized_x_k);
-  TEMP_INTEGER(normalized_y_k);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x[k], y[k], normalized_x_k, normalized_y_k);
   for (dimension_type i = size(); i-- > 0; )
     if (i != k) {
@@ -167,7 +167,7 @@ PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
     if (!(s >> str))
       return false;
     if (str[0] == '+')
-      set_bits(1 << Row::Flags::first_free_bit + bit);
+      set_bits(1 << (Row::Flags::first_free_bit + bit));
     else if (str[0] != '-')
       return false;
     if (str.compare(1, strlen(bit_names[bit]), bit_names[bit]) != 0)
@@ -211,7 +211,7 @@ PPL::Linear_Row::ascii_load(std::istream& s) {
   for (dimension_type col = 0; col < new_size; ++col)
     if (!(s >> x[col]))
       return false;
-  if (!(s >> str) || (str.compare("f") != 0))
+  if (!(s >> str) || str != "f")
     return false;
   return flags().ascii_load(s);
 }

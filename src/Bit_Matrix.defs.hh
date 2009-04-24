@@ -1,11 +1,11 @@
 /* Bit_Matrix class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A matrix of bits.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Bit_Matrix {
 public:
   //! Default constructor.
@@ -94,7 +94,13 @@ public:
   bool sorted_contains(const Bit_Row& row) const;
 
   //! Adds \p row to \p *this.
-  void add_row(const Bit_Row& row);
+  /*!
+    \param row
+    The row whose implementation will be recycled.
+
+    The only thing that can be done with \p row upon return is destruction.
+  */
+  void add_recycled_row(Bit_Row& row);
 
   //! Erases the rows from the \p first_to_erase -th to the last one.
   void rows_erase_to_end(dimension_type first_to_erase);
@@ -153,13 +159,13 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
 /*! \relates Bit_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator==(const Bit_Matrix& x, const Bit_Matrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are not equal.
 /*! \relates Bit_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Bit_Matrix& x, const Bit_Matrix& y);
 
 } // namespace Parma_Polyhedra_Library
@@ -169,7 +175,7 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Bit_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Bit_Matrix& x,
 	  Parma_Polyhedra_Library::Bit_Matrix& y);
 

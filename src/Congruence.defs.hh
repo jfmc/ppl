@@ -1,11 +1,11 @@
 /* Congruence class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -215,7 +215,7 @@ public:
   //! Copy-constructs (modulo 0) from equality constraint \p c.
   /*!
     \exception std::invalid_argument
-    Thrown if \p c is a relation.
+    Thrown if \p c is an inequality.
   */
   explicit Congruence(const Constraint& c);
 
@@ -254,27 +254,27 @@ public:
   operator/=(Coefficient_traits::const_reference k);
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is a trivially
-    true congruence.
+    Returns <CODE>true</CODE> if and only if \p *this is a tautology
+    (i.e., an always true congruence).
 
-    Trivially true congruences are of one the following two forms:
+    A tautological congruence has one the following two forms:
     - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + 0 == 0\f$; or
     - a proper congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0 / m\f$,
-    where n is the space dimension and m is the modulus.
+      where \f$b = 0 \pmod{m}\f$.
   */
-  bool is_trivial_true() const;
+  bool is_tautological() const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is a trivially
-    false congruence.
+    Returns <CODE>true</CODE> if and only if
+    \p *this is inconsistent (i.e., an always false congruence).
 
-    Trivially false congruences have one of the following two forms:
+    An inconsistent congruence has one of the following two forms:
     - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + b == 0\f$
       where \f$b \neq 0\f$; or
-    - a congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0 / m\f$,
+    - a proper congruence: \f$\sum_{i=0}^{n-1} 0 x_i + b \%= 0 / m\f$,
       where \f$b \neq 0 \pmod{m}\f$.
   */
-  bool is_trivial_false() const;
+  bool is_inconsistent() const;
 
   //! Returns <CODE>true</CODE> if the modulus is greater than zero.
   /*!
@@ -294,6 +294,12 @@ public:
   */
   bool is_equal_at_dimension(dimension_type dim,
 			     const Congruence& cg) const;
+
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
 
   /*! \brief
     Returns a reference to the true (zero-dimension space) congruence
@@ -331,12 +337,10 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation of the internal
     representation of \p *this.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
@@ -367,6 +371,18 @@ protected:
   void strong_normalize();
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the false (zero-dimension space) congruence \f$0 = 1 \pmod{0}\f$.
+  */
+  static const Congruence* zero_dim_false_p;
+
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the true (zero-dimension space) congruence \f$0 = 1 \pmod{1}\f$,
+    also known as the <EM>integrality congruence</EM>.
+  */
+  static const Congruence* zero_dim_integrality_p;
 
   //! Marks this congruence as a linear equality.
   void set_is_equality();
@@ -429,20 +445,15 @@ private:
 			       Variable v) const;
 
   friend Congruence
-  Parma_Polyhedra_Library::operator/(const Congruence& cg,
-		 Coefficient_traits::const_reference k);
-
+  operator/(const Congruence& cg, Coefficient_traits::const_reference k);
   friend Congruence
-  Parma_Polyhedra_Library::operator/(const Constraint& c,
-		 Coefficient_traits::const_reference m);
+  operator/(const Constraint& c, Coefficient_traits::const_reference m);
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const Congruence& x,
-				      const Congruence& y);
+  operator==(const Congruence& x, const Congruence& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator!=(const Congruence& x,
-				      const Congruence& y);
+  operator!=(const Congruence& x, const Congruence& y);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators

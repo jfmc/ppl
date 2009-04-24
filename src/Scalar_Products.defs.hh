@@ -1,11 +1,11 @@
 /* Scalar_Products class definition.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -40,7 +40,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   that the space dimension of the first object <CODE>x</CODE> is less
   than or equal to the space dimension of the second object <CODE>y</CODE>.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Scalar_Products {
 public:
   //! Computes the scalar product of \p x and \p y and assigns it to \p z.
@@ -171,7 +171,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Scalar product sign function object depending on topology.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign {
 public:
   //! Constructs the function object according to the topology of \p c.

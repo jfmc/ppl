@@ -1,11 +1,11 @@
 /* Test Polyhedron::add_generators().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -40,7 +40,7 @@ test01() {
   Generator_System gs2;
   gs2.insert(point());
 
-  ph1.add_generators_and_minimize(gs2);
+  ph1.add_generators(gs2);
 
   C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point());
@@ -49,7 +49,7 @@ test01() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "*** add_generators_and_minimize ***");
+  print_generators(ph1, "*** add_generators ***");
 
   return ok;
 }
@@ -91,13 +91,13 @@ test03() {
 
   print_generators(gs, "*** gs ***");
 
-  ph.add_generators_and_minimize(gs);
+  ph.add_generators(gs);
 
   C_Polyhedron known_result;
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After add_generators ***");
+  print_generators(ph, "*** after add_generators ***");
 
   return ok;
 }
@@ -127,7 +127,7 @@ test04() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After add_generators ***");
+  print_generators(ph, "*** after add_generators ***");
 
   return ok;
 }
@@ -147,9 +147,9 @@ test05() {
   gs.insert(ray(x + y));
   gs.insert(point());
 
-  print_generators(gs, "--- gs ---");
+  print_generators(gs, "*** gs ***");
 
-  ph.add_generators_and_minimize(gs);
+  ph.add_generators(gs);
 
   Generator_System gs_known_result;
   gs_known_result.insert(point());
@@ -158,7 +158,7 @@ test05() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After add_generators_and_minimize ***");
+  print_generators(ph, "*** after add_generators ***");
 
   return ok;
 }
@@ -180,7 +180,7 @@ test06() {
   gs2.insert(ray(x));
   gs2.insert(point());
 
-  print_generators(gs2, "--- gs2 ---");
+  print_generators(gs2, "*** gs2 ***");
 
   ph.add_generators(gs2);
 
@@ -191,7 +191,7 @@ test06() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After add_generators ***");
+  print_generators(ph, "*** after add_generators ***");
 
   return ok;
 }
@@ -208,11 +208,11 @@ test07() {
   C_Polyhedron known_result(ph);
 
   Generator_System gs;
-  ph.add_generators_and_minimize(gs);
+  ph.add_generators(gs);
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After ph .add_generators_and_minimize(gs)***");
+  print_generators(ph, "*** after ph .add_generators(gs) ***");
 
   return ok;
 }
@@ -234,7 +234,7 @@ test08() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After ph.add_generators(gs); ***");
+  print_generators(ph, "*** after ph.add_generators(gs); ***");
 
   return ok;
 }
@@ -254,13 +254,12 @@ test09() {
   Generator_System gs2(gs1);
 
   ph.add_generators(gs1);
-  copy_ph.add_generators_and_minimize(gs2);
+  copy_ph.add_generators(gs2);
 
   bool ok = (ph == copy_ph);
 
-  print_generators(ph, "*** After ph.add_generators(gs1) ***");
-  print_generators(ph,
-		   "*** After copy_ph.add_generators_and_minimize(gs2) ***");
+  print_generators(ph, "*** after ph.add_generators(gs1) ***");
+  print_generators(copy_ph, "*** after copy_ph.add_generators(gs2) ***");
 
   return ok;
 }
@@ -289,13 +288,12 @@ test10() {
   Generator_System gs2 = ph2.generators();
 
   ph1.add_generators(gs1);
-  copy_ph1.add_generators_and_minimize(gs2);
+  copy_ph1.add_generators(gs2);
 
   bool ok = (ph1 == copy_ph1);
 
-  print_generators(ph1, "*** After add_generators_assign ***");
-  print_generators(copy_ph1,
-		   "*** After add_generators_and_minimize ***");
+  print_generators(ph1, "*** after add_generators ***");
+  print_generators(copy_ph1, "*** after add_generators ***");
 
   return ok;
 }
@@ -314,7 +312,25 @@ test11() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** add_generators_and_minimize ***");
+  print_generators(ph, "*** add_generators ***");
+
+  return ok;
+}
+
+bool
+test12() {
+  C_Polyhedron ph(0, EMPTY);
+  print_constraints(ph, "*** ph ***");
+
+  Generator_System gs(point());
+  print_generators(gs, "*** gs ***");
+
+  C_Polyhedron known_result(0, UNIVERSE);
+
+  ph.add_generators(gs);
+
+  bool ok = (ph == known_result);
+  print_constraints(ph, "*** ph.add_generators(gs) ***");
 
   return ok;
 }
@@ -333,4 +349,5 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN

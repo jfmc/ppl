@@ -1,11 +1,11 @@
 /* Partial_Function class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -25,6 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+namespace Test {
+
 inline
 Partial_Function::Partial_Function()
   : max(0) {
@@ -34,6 +36,8 @@ inline bool
 Partial_Function::has_empty_codomain() const {
   return map.empty();
 }
+
+} // namespace Test
 
 } // namespace Parma_Polyhedra_Library
 

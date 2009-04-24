@@ -1,12 +1,12 @@
 /* Test operator<<(std::ostream& s, const Poly_Con_Relation& r)
    and operator<<(std::ostream& s, const Poly_Gen_Relation& r).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -22,67 +22,77 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include "files.hh"
-#include <string>
-#include <fstream>
-
-using std::fstream;
-using std::ios_base;
-
-using namespace IO_Operators;
 
 namespace {
 
 bool
 test01() {
-  const char* my_file = "writerelation1.dat";
-  Poly_Con_Relation rel(Poly_Con_Relation::nothing());
-
-  fstream f;
-  open(f, my_file, ios_base::out);
-  f << rel << endl;
-  close(f);
-  // FIXME.
-  return true;
+  Poly_Con_Relation rel = Poly_Con_Relation::nothing();
+  std::stringstream s;
+  using namespace IO_Operators;
+  s << rel;
+  nout << s.str() << endl;
+  return s.str() == "NOTHING";
 }
 
 bool
 test02() {
-  const char* my_file = "writerelation1.dat";
-  Poly_Gen_Relation rel(Poly_Gen_Relation::nothing());
-
-  fstream f;
-  open(f, my_file, ios_base::out);
-  f << rel << endl;
-  close(f);
-  // FIXME.
-  return true;
+  Poly_Con_Relation rel = Poly_Con_Relation::is_disjoint();
+  std::stringstream s;
+  using namespace IO_Operators;
+  s << rel;
+  nout << s.str() << endl;
+  return s.str() == "IS_DISJOINT";
 }
 
 bool
 test03() {
-  const char* my_file = "writerelation1.dat";
-  Poly_Con_Relation rel(Poly_Con_Relation::is_disjoint());
-
-  fstream f;
-  open(f, my_file, ios_base::out);
-  f << rel << endl;
-  close(f);
-  // FIXME.
-  return true;
+  Poly_Con_Relation rel = Poly_Con_Relation::strictly_intersects();
+  std::stringstream s;
+  using namespace IO_Operators;
+  s << rel;
+  nout << s.str() << endl;
+  return s.str() == "STRICTLY_INTERSECTS";
 }
 
 bool
 test04() {
-  const char* my_file = "writerelation1.dat";
-  Poly_Gen_Relation rel(Poly_Gen_Relation::subsumes());
+  Poly_Con_Relation rel = Poly_Con_Relation::is_included();
+  std::stringstream s;
+  using namespace IO_Operators;
+  s << rel;
+  nout << s.str() << endl;
+  return s.str() == "IS_INCLUDED";
+}
 
-  fstream f;
-  open(f, my_file, ios_base::out);
-  f << rel << endl;
-  close(f);
-  // FIXME.
-  return true;
+bool
+test05() {
+  Poly_Con_Relation rel = Poly_Con_Relation::saturates();
+  std::stringstream s;
+  using namespace IO_Operators;
+  s << rel;
+  nout << s.str() << endl;
+  return s.str() == "SATURATES";
+}
+
+bool
+test06() {
+  Poly_Gen_Relation rel = Poly_Gen_Relation::nothing();
+  std::stringstream s;
+  using namespace IO_Operators;
+  s << rel;
+  nout << s.str() << endl;
+  return s.str() == "NOTHING";
+}
+
+bool
+test07() {
+  Poly_Gen_Relation rel = Poly_Gen_Relation::subsumes();
+  std::stringstream s;
+  using namespace IO_Operators;
+  s << rel;
+  nout << s.str() << endl;
+  return s.str() == "SUBSUMES";
 }
 
 } // namespace
@@ -92,4 +102,7 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN

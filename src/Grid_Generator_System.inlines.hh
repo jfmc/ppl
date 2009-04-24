@@ -1,11 +1,11 @@
 /* Grid_Generator_System class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -66,7 +66,7 @@ Grid_Generator_System
 }
 
 inline bool
-Grid_Generator_System::is_equal_to(const Grid_Generator_System y) const {
+Grid_Generator_System::is_equal_to(const Grid_Generator_System& y) const {
   return operator==(static_cast<const Generator_System&>(*this),
 		    static_cast<const Generator_System&>(y));
 }
@@ -121,8 +121,8 @@ Grid_Generator_System::space_dimension() const {
 
 inline const Grid_Generator_System&
 Grid_Generator_System::zero_dim_univ() {
-  static const Grid_Generator_System zdu(Grid_Generator::zero_dim_point());
-  return zdu;
+  assert(zero_dim_univ_p != 0);
+  return *zero_dim_univ_p;
 }
 
 inline void
@@ -150,7 +150,7 @@ Grid_Generator_System::total_memory_in_bytes() const {
 }
 
 inline dimension_type
-Grid_Generator_System::num_generators() const {
+Grid_Generator_System::num_rows() const {
   return Generator_System::num_rows();
 }
 
@@ -222,6 +222,17 @@ Grid_Generator_System
   return Generator_System::const_iterator::operator!=(y);
 }
 
+inline bool
+Grid_Generator_System::empty() const {
+  return Generator_System::empty();
+}
+
+inline
+Grid_Generator_System
+::const_iterator::const_iterator(const Generator_System::const_iterator& y)
+  : Generator_System::const_iterator::const_iterator(y) {
+}
+
 inline Grid_Generator_System::const_iterator
 Grid_Generator_System::begin() const {
   return static_cast<Grid_Generator_System::const_iterator>
@@ -232,12 +243,6 @@ inline Grid_Generator_System::const_iterator
 Grid_Generator_System::end() const {
   return static_cast<Grid_Generator_System::const_iterator>
     (Generator_System::end());
-}
-
-inline
-Grid_Generator_System
-::const_iterator::const_iterator(const Generator_System::const_iterator& y)
-  : Generator_System::const_iterator::const_iterator(y) {
 }
 
 inline bool

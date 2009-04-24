@@ -1,11 +1,11 @@
 /* Determinate class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -39,8 +39,8 @@ namespace Parma_Polyhedra_Library {
 
   \relates Determinate
 */
-template <typename PH>
-bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
+template <typename PS>
+bool operator==(const Determinate<PS>& x, const Determinate<PS>& y);
 
 /*! \brief
   Returns <CODE>true</CODE> if and only if
@@ -48,16 +48,16 @@ bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 
   \relates Determinate
 */
-template <typename PH>
-bool operator!=(const Determinate<PH>& x, const Determinate<PH>& y);
+template <typename PS>
+bool operator!=(const Determinate<PS>& x, const Determinate<PS>& y);
 
 namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Determinate */
-template <typename PH>
+template <typename PS>
 std::ostream&
-operator<<(std::ostream&, const Determinate<PH>&);
+operator<<(std::ostream&, const Determinate<PS>&);
 
 } // namespace IO_Operators
 
@@ -65,7 +65,7 @@ operator<<(std::ostream&, const Determinate<PH>&);
 
 //! Wraps a PPL class into a determinate constraint system interface.
 /*! \ingroup PPL_CXX_interface */
-template <typename PH>
+template <typename PS>
 class Parma_Polyhedra_Library::Determinate {
 public:
   //! \name Constructors and Destructor
@@ -75,7 +75,7 @@ public:
     Injection operator: builds the determinate constraint system element
     corresponding to the base-level element \p p.
   */
-  Determinate(const PH& p);
+  Determinate(const PS& p);
 
   /*! \brief
     Injection operator: builds the determinate constraint system element
@@ -100,7 +100,7 @@ public:
   //@{
 
   //! Returns a const reference to the embedded element.
-  const PH& element() const;
+  const PS& element() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is the top of the
@@ -166,14 +166,14 @@ public:
   void concatenate_assign(const Determinate& y);
 
   //! Returns a reference to the embedded element.
-  PH& element();
+  PS& element();
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     On return from this method, the representation of \p *this
     is not shared by different Determinate objects.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   void mutate();
 
   //! Assignment operator.
@@ -188,17 +188,17 @@ public:
   //! A function adapter for the Determinate class.
   /*! \ingroup PPL_CXX_interface
     It lifts a Binary_Operator_Assign function object, taking arguments
-    of type PH, producing the corresponding function object taking
-    arguments of type Determinate<PH>.
+    of type PS, producing the corresponding function object taking
+    arguments of type Determinate<PS>.
 
     The template parameter Binary_Operator_Assign is supposed to
     implement an <EM>apply and assign</EM> function, i.e., a function
-    having signature <CODE>void foo(PH& x, const PH& y)</CODE> that
+    having signature <CODE>void foo(PS& x, const PS& y)</CODE> that
     applies an operator to \c x and \c y and assigns the result to \c x.
     For instance, such a function object is obtained by
     <CODE>std::mem_fun_ref(&C_Polyhedron::intersection_assign)</CODE>.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   template <typename Binary_Operator_Assign>
   class Binary_Operator_Assign_Lifter {
   public:
@@ -219,7 +219,7 @@ public:
     Helper function returning a Binary_Operator_Assign_Lifter object,
     also allowing for the deduction of template arguments.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   template <typename Binary_Operator_Assign>
   static Binary_Operator_Assign_Lifter<Binary_Operator_Assign>
   lift_op_assign(Binary_Operator_Assign op_assign);
@@ -252,7 +252,7 @@ private:
 
   public:
     //! A possibly shared base-level domain element.
-    PH ph;
+    PS ph;
 
     /*! \brief
       Builds a new representation by creating a domain element
@@ -261,7 +261,7 @@ private:
     Rep(dimension_type num_dimensions, Degenerate_Element kind);
 
     //! Builds a new representation by copying base-level element \p p.
-    Rep(const PH& p);
+    Rep(const PS& p);
 
     //! Builds a new representation by copying the constraints in \p cs.
     Rep(const Constraint_System& cs);
@@ -304,9 +304,9 @@ private:
   Rep* prep;
 
   friend bool
-  operator==<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
+  operator==<PS>(const Determinate<PS>& x, const Determinate<PS>& y);
   friend bool
-  operator!=<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
+  operator!=<PS>(const Determinate<PS>& x, const Determinate<PS>& y);
 };
 
 
@@ -314,9 +314,9 @@ namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Determinate */
-template <typename PH>
-void swap(Parma_Polyhedra_Library::Determinate<PH>& x,
-	  Parma_Polyhedra_Library::Determinate<PH>& y);
+template <typename PS>
+void swap(Parma_Polyhedra_Library::Determinate<PS>& x,
+	  Parma_Polyhedra_Library::Determinate<PS>& y);
 
 } // namespace std
 

@@ -1,11 +1,11 @@
 /* Test BD_Shape::BD_Shape(const C_Polyhedron&).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -37,8 +37,8 @@ test01() {
   cs.insert(3*A - 5*B <= 18);
   C_Polyhedron ph(cs);
 
-  TBD_Shape bd1(ph, SIMPLEX_COMPLEXITY);
-  TBD_Shape bd2(ph, ANY_COMPLEXITY);
+  TBD_Shape bds1(ph, SIMPLEX_COMPLEXITY);
+  TBD_Shape bds2(ph, ANY_COMPLEXITY);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 0);
@@ -47,12 +47,12 @@ test01() {
   known_result.add_constraint(5*B >= -18);
   known_result.add_constraint(11*A - 11*B <= 64);
 
-  bool ok = (bd1 == bd2
-	     && check_result(bd1, known_result,
-			     "7.50e-7", "4.89e-7", "4.34e-7"));
+  bool ok = (bds1 == bds2
+             && check_result(bds1, known_result,
+                             "7.50e-7", "4.89e-7", "4.34e-7"));
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
   return ok;
 }

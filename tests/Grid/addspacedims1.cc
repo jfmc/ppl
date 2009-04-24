@@ -1,11 +1,11 @@
 /* Test Grid::add_space_dimensions_and_embed().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -45,8 +45,7 @@ test01() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "***  ***");
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -64,8 +63,7 @@ test02() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(3) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(3) ***");
 
   return ok;
 }
@@ -83,8 +81,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(4) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(4) ***");
 
   return ok;
 }
@@ -116,8 +113,7 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(2) ***");
 
   return ok;
 }
@@ -149,8 +145,7 @@ test05() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(2) ***");
 
   return ok;
 }
@@ -185,8 +180,7 @@ test07() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(13) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(13) ***");
 
   return ok;
 }
@@ -210,8 +204,7 @@ test08() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(2) ***");
 
   return ok;
 }
@@ -241,8 +234,7 @@ test09() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(2) ***");
 
   return ok;
 }
@@ -273,8 +265,7 @@ test10() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(2) ***");
 
   return ok;
 }
@@ -292,8 +283,7 @@ test11() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(3) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(3) ***");
 
   return ok;
 }
@@ -322,8 +312,7 @@ test12() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(4) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(4) ***");
 
   return ok;
 }
@@ -348,8 +337,7 @@ test13() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "***  ***");
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -384,8 +372,7 @@ test14() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(2) ***");
 
   return ok;
 }
@@ -424,8 +411,7 @@ test15() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(2) ***");
 
   return ok;
 }
@@ -460,8 +446,7 @@ test17() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(13) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(13) ***");
 
   return ok;
 }
@@ -488,8 +473,7 @@ test18() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(2) ***");
 
   return ok;
 }
@@ -514,14 +498,13 @@ test19() {
   gr.add_space_dimensions_and_project(2);
 
   Grid known_gr(4);
-  known_gr.add_congruence(B == 0);
-  known_gr.add_congruence(C == 0);
-  known_gr.add_congruence(D == 0);
+  known_gr.add_constraint(B == 0);
+  known_gr.add_constraint(C == 0);
+  known_gr.add_constraint(D == 0);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(2) ***");
 
   return ok;
 }

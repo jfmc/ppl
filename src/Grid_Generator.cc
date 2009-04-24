@@ -1,11 +1,11 @@
 /* Grid_Generator class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Grid_Generator.defs.hh"
 #include <iostream>
@@ -252,7 +252,7 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
       throw std::invalid_argument("PPL::Grid_Generator::scale_to_divisor(d):\n"
 				  "d == 0.");
 
-    TEMP_INTEGER(factor);
+    PPL_DIRTY_TEMP_COEFFICIENT(factor);
     exact_div_assign(factor, d, divisor());
     set_divisor(d);
     assert(factor > 0);
@@ -260,6 +260,22 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
       for (dimension_type col = size() - 2; col >= 1; --col)
 	Generator::operator[](col) *= factor;
   }
+}
+
+const PPL::Grid_Generator* PPL::Grid_Generator::zero_dim_point_p = 0;
+
+void
+PPL::Grid_Generator::initialize() {
+  assert(zero_dim_point_p == 0);
+  zero_dim_point_p
+    = new Grid_Generator(grid_point());
+}
+
+void
+PPL::Grid_Generator::finalize() {
+  assert(zero_dim_point_p != 0);
+  delete zero_dim_point_p;
+  zero_dim_point_p = 0;
 }
 
 /*! \relates Parma_Polyhedra_Library::Grid_Generator */
@@ -295,7 +311,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
     break;
   }
 
-  TEMP_INTEGER(gv);
+  PPL_DIRTY_TEMP_COEFFICIENT(gv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
     gv = g[v+1];

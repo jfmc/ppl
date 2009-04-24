@@ -1,11 +1,11 @@
 /* MIP_Problem class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -48,6 +48,7 @@ MIP_Problem::MIP_Problem(const MIP_Problem& y)
     mapping(y.mapping),
     base(y.base),
     status(y.status),
+    pricing(y.pricing),
     initialized(y.initialized),
     input_cs(y.input_cs),
     first_pending_constraint(y.first_pending_constraint),
@@ -104,6 +105,18 @@ MIP_Problem::integer_space_dimensions() const {
   return i_variables;
 }
 
+inline MIP_Problem::Control_Parameter_Value
+MIP_Problem::get_control_parameter(Control_Parameter_Name name) const {
+  used(name);
+  assert(name == PRICING);
+  return pricing;
+}
+
+inline void
+MIP_Problem::set_control_parameter(Control_Parameter_Value value) {
+  pricing = value;
+}
+
 inline void
 MIP_Problem::swap(MIP_Problem& y) {
   std::swap(external_space_dim, y.external_space_dim);
@@ -114,6 +127,7 @@ MIP_Problem::swap(MIP_Problem& y) {
   std::swap(initialized, y.initialized);
   std::swap(base, y.base);
   std::swap(status, y.status);
+  std::swap(pricing, y.pricing);
   std::swap(input_cs, y.input_cs);
   std::swap(first_pending_constraint, y.first_pending_constraint);
   std::swap(input_obj_function, y.input_obj_function);

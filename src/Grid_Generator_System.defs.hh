@@ -1,11 +1,11 @@
 /* Grid_Generator_System class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -229,6 +229,12 @@ public:
   */
   void recycling_insert(Grid_Generator_System& gs);
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   /*! \brief
     Returns the singleton system containing only
     Grid_Generator::zero_dim_point().
@@ -307,6 +313,9 @@ public:
     const_iterator(const Generator_System::const_iterator& y);
   };
 
+  //! Returns <CODE>true</CODE> if and only if \p *this has no generators.
+  bool empty() const;
+
   /*! \brief
     Returns the const_iterator pointing to the first generator, if \p
     *this is not empty; otherwise, returns the past-the-end
@@ -317,8 +326,8 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
-  //! Returns the number of generators in the system.
-  dimension_type num_generators() const;
+  //! Returns the number of rows (generators) in the system.
+  dimension_type num_rows() const;
 
   //! Returns the number of parameters in the system.
   dimension_type num_parameters() const;
@@ -333,7 +342,7 @@ public:
   bool has_points() const;
 
   //! Returns <CODE>true</CODE> if \p *this is identical to \p y.
-  bool is_equal_to(const Grid_Generator_System y) const;
+  bool is_equal_to(const Grid_Generator_System& y) const;
 
   //! Checks if all the invariants are satisfied.
   /*!
@@ -344,7 +353,6 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
@@ -354,7 +362,6 @@ public:
     read from \p s, then initializes the coordinates of each generator
     and its type reading the contents from \p s.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -367,11 +374,16 @@ public:
   void swap(Grid_Generator_System& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the singleton system containing only Grid_Generator::zero_dim_point().
+  */
+  static const Grid_Generator_System* zero_dim_univ_p;
+
   friend class Grid;
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const Grid_Generator_System& x,
-				      const Grid_Generator_System& y);
+  operator==(const Grid_Generator_System& x, const Grid_Generator_System& y);
 
   //! Sets the sortedness flag of the system to \p b.
   void set_sorted(bool b);
@@ -430,10 +442,11 @@ private:
     positive.
 
     Turns the \f$r \times c\f$ matrix \f$A\f$ into the \f$(r+dims)
-    \times (c+dims)\f$ matrix \f$\bigl({A \atop 0}{0 \atop B}\bigr)\f$
-    where \f$B\f$ is the \f$dims \times dims\f$ unit matrix of the
-    form \f$\bigl({1 \atop 0}{0 \atop 1}\bigr)\f$.  The matrix is
-    expanded avoiding reallocation whenever possible.
+    \times (c+dims)\f$ matrix
+    \f$\bigl(\genfrac{}{}{0pt}{}{A}{0} \genfrac{}{}{0pt}{}{0}{B}\bigr)\f$
+    where \f$B\f$ is the \f$dims \times dims\f$ unit matrix of the form
+    \f$\bigl(\genfrac{}{}{0pt}{}{1}{0} \genfrac{}{}{0pt}{}{0}{1}\bigr)\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_universe_rows_and_columns(dimension_type dims);
 
@@ -452,7 +465,7 @@ private:
     The value of \p new_dimension must be at most the space dimension
     of \p *this.
   */
-  void remove_higher_space_dimensions(const dimension_type new_dimension);
+  void remove_higher_space_dimensions(dimension_type new_dimension);
 
   //! Resizes the system without worrying about the old contents.
   /*!

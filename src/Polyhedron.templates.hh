@@ -1,11 +1,11 @@
 /* Polyhedron class implementation: non-inline template functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Polyhedron_templates_hh
 #define PPL_Polyhedron_templates_hh 1
 
-#include "Interval.defs.hh"
 #include "Generator.defs.hh"
 #include "MIP_Problem.defs.hh"
 #include <algorithm>
@@ -31,8 +30,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename Box>
-Polyhedron::Polyhedron(Topology topol, const Box& box)
+template <typename Interval>
+Polyhedron::Polyhedron(Topology topol,
+                       const Box<Interval>& box,
+                       Complexity_Class)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -57,49 +58,73 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   // this constraint will be removed at the end.
   con_sys.insert(Variable(space_dim - 1) >= 0);
 
-  for (dimension_type k = space_dim; k-- > 0; ) {
-    // See if we have a valid lower bound.
-    bool l_closed = false;
-    TEMP_INTEGER(l_n);
-    TEMP_INTEGER(l_d);
-    bool l_bounded = box.get_lower_bound(k, l_closed, l_n, l_d);
-    if (l_bounded && topol == NECESSARILY_CLOSED && !l_closed)
-      throw_invalid_argument("C_Polyhedron(const Box& box):",
-			     " box has an open lower bound");
-    // See if we have a valid upper bound.
-    bool u_closed = false;
-    TEMP_INTEGER(u_n);
-    TEMP_INTEGER(u_d);
-    bool u_bounded = box.get_upper_bound(k, u_closed, u_n, u_d);
-    if (u_bounded && topol == NECESSARILY_CLOSED && !u_closed)
-      throw_invalid_argument("C_Polyhedron(const Box& box):",
-			     " box has an open upper bound");
+  PPL_DIRTY_TEMP_COEFFICIENT(l_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(l_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(u_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(u_d);
 
-    // See if we have an implicit equality constraint.
-    if (l_bounded && u_bounded
-	&& l_closed && u_closed
-	&& l_n == u_n && l_d == u_d) {
-      // Add the constraint `l_d*v_k == l_n'.
-      con_sys.insert(l_d * Variable(k) == l_n);
-    }
-    else {
-      // Check if a lower bound constraint is required.
-      if (l_bounded) {
-       if (l_closed)
-	 // Add the constraint `l_d*v_k >= l_n'.
-	 con_sys.insert(l_d * Variable(k) >= l_n);
-       else
-	 // Add the constraint `l_d*v_k > l_n'.
-	 con_sys.insert(l_d * Variable(k) > l_n);
+  if (topol == NECESSARILY_CLOSED) {
+    for (dimension_type k = space_dim; k-- > 0; ) {
+      // See if we have a valid lower bound.
+      bool l_closed = false;
+      bool l_bounded = box.get_lower_bound(k, l_closed, l_n, l_d);
+      // See if we have a valid upper bound.
+      bool u_closed = false;
+      bool u_bounded = box.get_upper_bound(k, u_closed, u_n, u_d);
+
+      // See if we have an implicit equality constraint.
+      if (l_bounded && u_bounded
+          && l_closed && u_closed
+          && l_n == u_n && l_d == u_d) {
+        // Add the constraint `l_d*v_k == l_n'.
+        con_sys.insert(l_d * Variable(k) == l_n);
       }
-      // Check if an upper bound constraint is required.
-      if (u_bounded) {
-       if (u_closed)
-	 // Add the constraint `u_d*v_k <= u_n'.
-	 con_sys.insert(u_d * Variable(k) <= u_n);
-       else
-	 // Add the constraint `u_d*v_k < u_n'.
-	 con_sys.insert(u_d * Variable(k) < u_n);
+      else {
+        if (l_bounded)
+          // Add the constraint `l_d*v_k >= l_n'.
+          con_sys.insert(l_d * Variable(k) >= l_n);
+        if (u_bounded)
+          // Add the constraint `u_d*v_k <= u_n'.
+          con_sys.insert(u_d * Variable(k) <= u_n);
+      }
+    }
+  }
+  else {
+    // topol == NOT_NECESSARILY_CLOSED
+    for (dimension_type k = space_dim; k-- > 0; ) {
+      // See if we have a valid lower bound.
+      bool l_closed = false;
+      bool l_bounded = box.get_lower_bound(k, l_closed, l_n, l_d);
+      // See if we have a valid upper bound.
+      bool u_closed = false;
+      bool u_bounded = box.get_upper_bound(k, u_closed, u_n, u_d);
+
+      // See if we have an implicit equality constraint.
+      if (l_bounded && u_bounded
+          && l_closed && u_closed
+          && l_n == u_n && l_d == u_d) {
+        // Add the constraint `l_d*v_k == l_n'.
+        con_sys.insert(l_d * Variable(k) == l_n);
+      }
+      else {
+        // Check if a lower bound constraint is required.
+        if (l_bounded) {
+          if (l_closed)
+            // Add the constraint `l_d*v_k >= l_n'.
+            con_sys.insert(l_d * Variable(k) >= l_n);
+          else
+            // Add the constraint `l_d*v_k > l_n'.
+            con_sys.insert(l_d * Variable(k) > l_n);
+        }
+        // Check if an upper bound constraint is required.
+        if (u_bounded) {
+          if (u_closed)
+            // Add the constraint `u_d*v_k <= u_n'.
+            con_sys.insert(u_d * Variable(k) <= u_n);
+          else
+            // Add the constraint `u_d*v_k < u_n'.
+            con_sys.insert(u_d * Variable(k) < u_n);
+        }
       }
     }
   }
@@ -117,247 +142,6 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   // Constraints are up-to-date.
   set_constraints_up_to_date();
   assert(OK());
-}
-
-template <typename Box>
-void
-Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
-  bool reduce_complexity = (complexity != ANY_COMPLEXITY);
-  if (!reduce_complexity
-      || (!has_something_pending() && constraints_are_minimized())) {
-    // If the constraint system is minimized, the test `is_universe()'
-    // is not exponential.
-    if (is_universe())
-      return;
-  }
-  if (reduce_complexity) {
-    if (marked_empty()
-	|| (generators_are_up_to_date() && gen_sys.num_rows() == 0)) {
-      box.set_empty();
-      return;
-    }
-    else if (constraints_are_up_to_date()) {
-      // See if there is at least one inconsistent constraint in `con_sys'.
-      for (Constraint_System::const_iterator i = con_sys.begin(),
-	     cs_end = con_sys.end(); i != cs_end; ++i)
-	if (i->is_inconsistent()) {
-	  box.set_empty();
-	  return;
-	}
-      // If `complexity' allows it, use the MIP_Problem solver to determine
-      // whether or not the polyhedron is empty.
-      if (complexity == SIMPLEX_COMPLEXITY
-	  // TODO: find a workaround for NNC polyhedra.
-	  && is_necessarily_closed()) {
-	MIP_Problem lp(con_sys.space_dimension(), con_sys);
-	if (!lp.is_satisfiable()) {
-	  box.set_empty();
-	  return;
-	}
-      }
-    }
-  }
-  else
-    // The flag `reduce_complexity' is `false'.
-    // Note that the test `is_empty()' is exponential in the worst case.
-    if (is_empty()) {
-      box.set_empty();
-      return;
-    }
-
-  if (space_dim == 0)
-    return;
-
-  // The following vectors will store the lower and upper bound
-  // for each dimension.
-  // Lower bounds are initialized to open plus infinity.
-  std::vector<LBoundary>
-    lower_bound(space_dim,
-		LBoundary(ERational(PLUS_INFINITY), LBoundary::OPEN));
-  // Upper bounds are initialized to open minus infinity.
-  std::vector<UBoundary>
-    upper_bound(space_dim,
-		UBoundary(ERational(MINUS_INFINITY), UBoundary::OPEN));
-
-  if (!reduce_complexity && has_something_pending())
-    process_pending();
-
-  // TODO: use simplex to derive variable bounds, if the complexity
-  // is SIMPLEX_COMPLEXITY.
-
-  if (reduce_complexity &&
-       (!generators_are_up_to_date() || has_pending_constraints())) {
-    // Extract easy-to-find bounds from constraints.
-    assert(constraints_are_up_to_date());
-
-    // We must copy `con_sys' to a temporary matrix,
-    // as we need to simplify all of the matrix
-    // (not just the non-pending part of it).
-    Constraint_System cs(con_sys);
-    if (cs.num_pending_rows() > 0)
-      cs.unset_pending_rows();
-    if (has_pending_constraints() || !constraints_are_minimized())
-      cs.simplify();
-
-    const Constraint_System::const_iterator cs_begin = cs.begin();
-    const Constraint_System::const_iterator cs_end = cs.end();
-
-    for (Constraint_System::const_iterator i = cs_begin; i != cs_end; ++i) {
-      dimension_type varid = space_dim;
-      const Constraint& c = *i;
-      // After `simplify()' some constraints may have become inconsistent.
-      if (c.is_inconsistent()) {
-	box.set_empty();
-	return;
-      }
-      for (dimension_type j = space_dim; j-- > 0; ) {
-	// We look for constraints of the form `Variable(j) == k',
-	// `Variable(j) >= k', and `Variable(j) > k'.
-	if (c.coefficient(Variable(j)) != 0)
-	  if (varid != space_dim) {
-	    varid = space_dim;
-	    break;
-	  }
-	  else
-	    varid = j;
-      }
-      if (varid != space_dim) {
-	const Coefficient& d = c.coefficient(Variable(varid));
-	const Coefficient& n = c.inhomogeneous_term();
-	// The constraint `c' is of the form
-	// `Variable(varid) + n / d rel 0', where
-	// `rel' is either the relation `==', `>=', or `>'.
-	// For the purpose of shrinking intervals, this is
-	// (morally) turned into `Variable(varid) rel -n/d'.
-	mpq_class q;
-	assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
-	assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-	q.canonicalize();
-	// Turn `n/d' into `-n/d'.
-	q = -q;
-	const ERational r(q, ROUND_NOT_NEEDED);
-	const Constraint::Type c_type = c.type();
-	switch (c_type) {
-	case Constraint::EQUALITY:
-	  lower_bound[varid] = LBoundary(r, LBoundary::CLOSED);
-	  upper_bound[varid] = UBoundary(r, UBoundary::CLOSED);
-	  break;
-	case Constraint::NONSTRICT_INEQUALITY:
-	case Constraint::STRICT_INEQUALITY:
-	  if (d > 0)
-	  // If `d' is strictly positive, we have a constraint of the
-	  // form `Variable(varid) >= k' or `Variable(varid) > k'.
-	    lower_bound[varid]
-	      = LBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY
-			      ? LBoundary::CLOSED
-			      : LBoundary::OPEN));
-	  else {
-	    // Otherwise, we are sure that `d' is strictly negative
-	    // and, in this case, we have a constraint of the form
-	    // `Variable(varid) <= k' or `Variable(varid) < k'.
-	    assert(d < 0);
-	    upper_bound[varid]
-	      = UBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY
-			      ? UBoundary::CLOSED
-			      : UBoundary::OPEN));
-	  }
-	  break;
-	}
-      }
-    }
-  }
-  else {
-    // We are in the case where either the generators are up-to-date
-    // or reduced complexity is not required.
-    // Get the generators for *this.
-
-    // We have not to copy `gen_sys', because in this case
-    // we only read the generators.
-    const Generator_System& gs = gen_sys;
-
-    // We first need to identify those axes that are unbounded below
-    // and/or above.
-    for (Generator_System::const_iterator i = gs.begin(),
-	   gs_end = gs.end(); i != gs_end; ++i) {
-      // Note: using an iterator, we read also the pending part of the matrix.
-      const Generator& g = *i;
-      Generator::Type g_type = g.type();
-      switch (g_type) {
-      case Generator::LINE:
-	// Any axes `j' in which the coefficient is non-zero is unbounded
-	// both below and above.
-	for (dimension_type j = space_dim; j-- > 0; )
-	  if (g.coefficient(Variable(j)) != 0) {
-	    lower_bound[j] = LBoundary(ERational(MINUS_INFINITY),
-				       LBoundary::OPEN);
-	    upper_bound[j] = UBoundary(ERational(PLUS_INFINITY),
-				       UBoundary::OPEN);
-	  }
-	break;
-      case Generator::RAY:
-	// Axes in which the coefficient is negative are unbounded below.
-	// Axes in which the coefficient is positive are unbounded above.
-	for (dimension_type j = space_dim; j-- > 0; ) {
-	  int sign = sgn(g.coefficient(Variable(j)));
-	  if (sign < 0)
-	    lower_bound[j] = LBoundary(ERational(MINUS_INFINITY),
-				       LBoundary::OPEN);
-	  else if (sign > 0)
-	    upper_bound[j] = UBoundary(ERational(PLUS_INFINITY),
-				       UBoundary::OPEN);
-	}
-	break;
-      case Generator::POINT:
-      case Generator::CLOSURE_POINT:
-	{
-	  const Coefficient& d = g.divisor();
-	  for (dimension_type j = space_dim; j-- > 0; ) {
-	    const Coefficient& n = g.coefficient(Variable(j));
-	    mpq_class q;
-	    assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
-	    assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-	    q.canonicalize();
-	    const ERational r(q, ROUND_NOT_NEEDED);
-	    LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
-			    ? LBoundary::OPEN
-			    : LBoundary::CLOSED));
-	    if (lb < lower_bound[j])
-	      lower_bound[j] = lb;
-	    UBoundary ub(r, (g_type == Generator::CLOSURE_POINT
-			     ? UBoundary::OPEN
-			     : UBoundary::CLOSED));
-	    if (ub > upper_bound[j])
-	      upper_bound[j] = ub;
-	  }
-	}
-	break;
-      }
-    }
-  }
-
-  TEMP_INTEGER(n);
-  TEMP_INTEGER(d);
-
-  // Now shrink the bounded axes.
-  for (dimension_type j = space_dim; j-- > 0; ) {
-    // Lower bound.
-    const LBoundary& lb = lower_bound[j];
-    const ERational& lr = lb.bound();
-    if (!is_plus_infinity(lr) && !is_minus_infinity(lr)) {
-      n = raw_value(lr).get_num();
-      d = raw_value(lr).get_den();
-      box.raise_lower_bound(j, lb.is_closed(), n, d);
-    }
-
-    // Upper bound.
-    const UBoundary& ub = upper_bound[j];
-    const ERational& ur = ub.bound();
-    if (!is_plus_infinity(ur) && !is_minus_infinity(ur)) {
-      n = raw_value(ur).get_num();
-      d = raw_value(ur).get_den();
-      box.lower_upper_bound(j, ub.is_closed(), n, d);
-    }
-  }
 }
 
 template <typename Partial_Function>
@@ -456,7 +240,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   // If there are pending constraints, using `generators()' we process them.
   const Generator_System& old_gensys = generators();
 
-  if (old_gensys.num_rows() == 0) {
+  if (old_gensys.has_no_rows()) {
     // The polyhedron is empty.
     Polyhedron new_polyhedron(topology(), new_space_dimension, EMPTY);
     std::swap(*this, new_polyhedron);

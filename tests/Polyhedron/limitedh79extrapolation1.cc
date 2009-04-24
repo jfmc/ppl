@@ -1,11 +1,11 @@
 /* Test Polyhedron::limited_H79_extrapolation_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -37,7 +37,7 @@ test01() {
 
   C_Polyhedron ph1(cs1);
 
-  print_constraints(ph1, "*** ph1 ****");
+  print_constraints(ph1, "*** ph1 ***");
 
   Constraint_System cs2;
   cs2.insert(x >= 0);
@@ -47,7 +47,7 @@ test01() {
 
   C_Polyhedron ph2(cs2);
 
-  print_constraints(ph2, "*** ph2 ****");
+  print_constraints(ph2, "*** ph2 ***");
 
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -55,7 +55,7 @@ test01() {
   cs.insert(x <= 5);
   cs.insert(y <= 5);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   C_Polyhedron computed_result = ph2;
   computed_result.limited_H79_extrapolation_assign(ph1, cs);
@@ -66,7 +66,7 @@ test01() {
   known_result.add_constraint(x <= 5);
 
   print_constraints(computed_result,
-		    "*** After limited_H79_extrapolation_assign ****");
+		    "*** after limited_H79_extrapolation_assign ***");
 
   return computed_result == known_result;
 }
@@ -83,7 +83,7 @@ test02() {
 
   C_Polyhedron ph1(cs1);
 
-  print_constraints(ph1, "*** ph1 ****");
+  print_constraints(ph1, "*** ph1 ***");
 
   Constraint_System cs2;
   cs2.insert(x <= 2);
@@ -92,13 +92,13 @@ test02() {
 
   C_Polyhedron ph2(cs2);
 
-  print_constraints(ph2, "*** ph2 ****");
+  print_constraints(ph2, "*** ph2 ***");
 
   Constraint_System cs;
   cs.insert(y <= -1);
   cs.insert(x <= 5);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   C_Polyhedron computed_result = ph2;
   computed_result.limited_H79_extrapolation_assign(ph1, cs);
@@ -108,7 +108,7 @@ test02() {
   known_result.add_generator(point(5*x + 5*y));
 
   print_constraints(computed_result,
-		    "*** After limited_H79_extrapolation_assign ****");
+		    "*** after limited_H79_extrapolation_assign ***");
 
   return computed_result == known_result;
 }
@@ -122,18 +122,18 @@ test03() {
   cs1.insert(x <= 1);
   C_Polyhedron ph1(cs1);
 
-  print_constraints(ph1, "*** ph1 ****");
+  print_constraints(ph1, "*** ph1 ***");
 
   Constraint_System cs2;
   cs2.insert(x == 0);
   C_Polyhedron ph2(cs2);
 
-  print_constraints(ph2, "*** ph2 ****");
+  print_constraints(ph2, "*** ph2 ***");
 
   Constraint_System cs;
   cs.insert(x >= 0);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   C_Polyhedron computed_result = ph1;
   computed_result.limited_H79_extrapolation_assign(ph2, cs);
@@ -141,7 +141,7 @@ test03() {
   C_Polyhedron known_result(cs);
 
   print_constraints(computed_result,
-		    "*** After limited_H79_extrapolation_assign ****");
+		    "*** after limited_H79_extrapolation_assign ***");
 
   return computed_result == known_result;
 }
@@ -172,7 +172,7 @@ test04() {
   bool ok = (ph2 == known_result);
 
   print_constraints(ph2,
-		    "*** After ph2.limited_H79_extrapolation_assign(ph1, cs)"
+		    "*** after ph2.limited_H79_extrapolation_assign(ph1, cs)"
 		    " ***");
   return ok;
 }
@@ -199,7 +199,7 @@ test05() {
   bool ok = (ph2 == known_result);
 
   print_constraints(ph2,
-		    "*** After ph2.limited_H79_extrapolation_assign(ph1, cs)"
+		    "*** after ph2.limited_H79_extrapolation_assign(ph1, cs)"
 		    " ***");
   return ok;
 }
@@ -224,7 +224,7 @@ test06() {
   bool ok = (ph2 == known_result);
 
   print_constraints(ph2,
-		    "*** After ph2.limited_H79_extrapolation_assign(ph1, cs)"
+		    "*** after ph2.limited_H79_extrapolation_assign(ph1, cs)"
 		    " ***");
   return ok;
 }
@@ -255,7 +255,7 @@ test07() {
   bool ok = (ph2 == known_result);
 
   print_constraints(ph2,
-		    "*** After ph2.limited_H79_extrapolation_assign(ph1, cs)"
+		    "*** after ph2.limited_H79_extrapolation_assign(ph1, cs)"
 		    " ***");
   return ok;
 }

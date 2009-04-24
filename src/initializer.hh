@@ -1,11 +1,11 @@
 /* Nifty counter object for the initialization of the library.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -25,10 +25,41 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Init.defs.hh"
 
+#ifndef PPL_NO_AUTOMATIC_INITIALIZATION
 namespace {
 
 Parma_Polyhedra_Library::Init Parma_Polyhedra_Library_initializer;
 
 } // namespace
+#else
+namespace {
+
+Parma_Polyhedra_Library::Init* Parma_Polyhedra_Library_initializer_p;
+
+} // namespace
+#endif
+
+namespace Parma_Polyhedra_Library {
+
+//! Initializes the library.
+inline void
+initialize() {
+#ifdef PPL_NO_AUTOMATIC_INITIALIZATION
+  if (Parma_Polyhedra_Library_initializer_p == 0)
+    Parma_Polyhedra_Library_initializer_p = new Init();
+#endif
+}
+
+//! Finalizes the library.
+inline void
+finalize() {
+#ifdef PPL_NO_AUTOMATIC_INITIALIZATION
+  assert(Parma_Polyhedra_Library_initializer_p != 0);
+  delete Parma_Polyhedra_Library_initializer_p;
+  Parma_Polyhedra_Library_initializer_p = 0;
+#endif
+}
+
+} //namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_initializer_hh)

@@ -1,11 +1,11 @@
 /* Congruence class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -55,6 +55,14 @@ inline
 Congruence::~Congruence() {
 }
 
+inline
+Congruence::Congruence(Linear_Expression& le,
+		       Coefficient_traits::const_reference m) {
+  Row::swap(static_cast<Row&>(le));
+  assert(m >= 0);
+  (*this)[size()-1] = m;
+}
+
 inline Congruence
 Congruence::create(const Linear_Expression& e,
 		   Coefficient_traits::const_reference n) {
@@ -96,15 +104,12 @@ operator/(const Congruence& cg, Coefficient_traits::const_reference k) {
 
 inline const Congruence&
 Congruence::zero_dim_integrality() {
-  static const Congruence zdi(Linear_Expression::zero() %= Coefficient(-1));
-  return zdi;
+  return *zero_dim_integrality_p;
 }
 
 inline const Congruence&
 Congruence::zero_dim_false() {
-  static const Congruence
-    zdf((Linear_Expression::zero() %= Coefficient(-1)) / 0);
-  return zdf;
+  return *zero_dim_false_p;
 }
 
 inline Congruence&
@@ -171,7 +176,7 @@ Congruence::inhomogeneous_term() const {
 
 inline Coefficient_traits::const_reference
 Congruence::modulus() const {
-  assert(size() > 0);
+  assert(size() > 1);
   return (*this)[size()-1];
 }
 
@@ -210,14 +215,6 @@ Congruence::external_memory_in_bytes() const {
 inline memory_size_type
 Congruence::total_memory_in_bytes() const {
   return Row::total_memory_in_bytes();
-}
-
-inline
-Congruence::Congruence(Linear_Expression& le,
-		       Coefficient_traits::const_reference m) {
-  Row::swap(static_cast<Row&>(le));
-  assert(m >= 0);
-  (*this)[size()-1] = m;
 }
 
 inline void

@@ -1,11 +1,11 @@
 /* Congruence_System class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
@@ -52,7 +52,7 @@ increase_space_dimension(const dimension_type new_space_dim) {
 
   const dimension_type cols_to_add = new_space_dim - space_dimension();
 
-  if (cols_to_add)
+  if (cols_to_add) {
     if (num_rows()) {
       const dimension_type old_num_columns = num_columns();
       add_zero_columns(cols_to_add);
@@ -62,6 +62,7 @@ increase_space_dimension(const dimension_type new_space_dim) {
     else
       // Empty system.
       add_zero_columns(cols_to_add);
+  }
 
   assert(OK());
   return true;
@@ -75,7 +76,7 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
   if (cg_size > old_num_columns) {
     // Resize the system, if necessary.
     add_zero_columns(cg_size - old_num_columns);
-    if (num_rows() != 0)
+    if (!has_no_rows())
       // Move the moduli to the last column.
       swap_columns(old_num_columns - 1, cg_size - 1);
     add_row(cg);
@@ -107,7 +108,7 @@ PPL::Congruence_System::insert(const Constraint& c) {
     if (cg_size > old_num_columns) {
       // Resize the system, if necessary.
       add_zero_columns(cg_size - old_num_columns);
-      if (num_rows() != 0)
+      if (!has_no_rows())
 	// Move the moduli to the last column.
 	swap_columns(old_num_columns - 1, cg_size - 1);
     }
@@ -186,7 +187,7 @@ PPL::Congruence_System::normalize_moduli() {
   dimension_type row = num_rows();
   if (row > 0) {
     // Calculate the LCM of all the moduli.
-    TEMP_INTEGER(lcm);
+    PPL_DIRTY_TEMP_COEFFICIENT(lcm);
     // Find last proper congruence.
     while (true) {
       lcm = operator[](--row).modulus();
@@ -203,7 +204,7 @@ PPL::Congruence_System::normalize_moduli() {
     }
 
     // Represent every row using the LCM as the modulus.
-    TEMP_INTEGER(factor);
+    PPL_DIRTY_TEMP_COEFFICIENT(factor);
     dimension_type row_size = operator[](0).size();
     for (row = num_rows(); row-- > 0; ) {
       const Coefficient& modulus = operator[](row).modulus();
@@ -245,7 +246,7 @@ PPL::Congruence_System::has_linear_equalities() const {
 void
 PPL::Congruence_System::const_iterator::skip_forward() {
   const Matrix::const_iterator csp_end = csp->end();
-  while (i != csp_end && (*this)->is_trivial_true())
+  while (i != csp_end && (*this)->is_tautological())
     ++i;
 }
 
@@ -277,7 +278,7 @@ satisfies_all_congruences(const Grid_Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
 
   const Congruence_System& cgs = *this;
-  TEMP_INTEGER(sp);
+  PPL_DIRTY_TEMP_COEFFICIENT(sp);
   if (g.is_line())
     for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
       const Congruence& cg = cgs[i];
@@ -407,7 +408,7 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
   dimension_type num_columns;
   if (!(s >> num_rows))
     return false;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> num_columns))
     return false;
@@ -421,6 +422,22 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
   // Check invariants.
   assert(OK());
   return true;
+}
+
+const PPL::Congruence_System* PPL::Congruence_System::zero_dim_empty_p = 0;
+
+void
+PPL::Congruence_System::initialize() {
+  assert(zero_dim_empty_p == 0);
+  zero_dim_empty_p
+    = new Congruence_System(Congruence::zero_dim_false());
+}
+
+void
+PPL::Congruence_System::finalize() {
+  assert(zero_dim_empty_p != 0);
+  delete zero_dim_empty_p;
+  zero_dim_empty_p = 0;
 }
 
 bool

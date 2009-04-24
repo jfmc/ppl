@@ -1,11 +1,11 @@
 /* Testing Polyhedron::intersection_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -60,7 +60,7 @@ test01() {
   column.add_constraint(x <= 1);
 
   C_Polyhedron computed_result = icosahedron;
-  computed_result.intersection_assign_and_minimize(column);
+  computed_result.intersection_assign(column);
 
   C_Polyhedron known_result(3);
   known_result.add_constraint(-4*x - 2*y + z >= -8);
@@ -145,7 +145,7 @@ test02() {
     hyper_space_above.add_constraint(z >= ph_nv[i].plane_height);
 
     C_Polyhedron computed_result = pyramid;
-    computed_result.intersection_assign_and_minimize(hyper_space_above);
+    computed_result.intersection_assign(hyper_space_above);
 
     if (ok
 	&& aux_test02(computed_result) != ph_nv[i].num_points_above)
@@ -159,7 +159,7 @@ test02() {
     hyper_space_below.add_constraint(z <= ph_nv[i].plane_height);
 
     computed_result = pyramid;
-    computed_result.intersection_assign_and_minimize(hyper_space_below);
+    computed_result.intersection_assign(hyper_space_below);
 
     if (ok
 	&& aux_test02(computed_result) != ph_nv[i].num_points_below)
@@ -202,7 +202,7 @@ test03() {
 
   bool ok = (computed_result == known_result);
 
-  print_constraints(computed_result, "*** After intersection_assign ***");
+  print_constraints(computed_result, "*** after intersection_assign ***");
 
   return ok;
 }
@@ -222,7 +222,7 @@ test04() {
   print_constraints(ph2, "*** ph2 ***");
 
   C_Polyhedron computed_result1(ph1);
-  computed_result1.intersection_assign_and_minimize(ph2);
+  computed_result1.intersection_assign(ph2);
 
   Constraint_System cs_computed_result2 = ph1.constraints();
   C_Polyhedron computed_result2(cs_computed_result2);
@@ -233,9 +233,8 @@ test04() {
   bool ok = (computed_result1 == known_result
 	     && computed_result2 == known_result);
 
-  print_constraints(computed_result1,
-		    "*** After intersection_assign_and_minimize ***");
-  print_constraints(computed_result2, "*** After intersection_assign ***");
+  print_constraints(computed_result1, "*** after intersection_assign ***");
+  print_constraints(computed_result2, "*** after intersection_assign ***");
 
   return ok;
 }
@@ -256,7 +255,7 @@ test05() {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 
-  ph1.intersection_assign_and_minimize(ph2);
+  ph1.intersection_assign(ph2);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(y >= 0);
@@ -264,7 +263,7 @@ test05() {
 
   bool ok = (known_result == ph1);
 
-  print_constraints(ph1, "*** After intersection_assign_and_minimize ***");
+  print_constraints(ph1, "*** after intersection_assign ***");
 
   return ok;
 }
@@ -301,7 +300,7 @@ test06() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After intersection_assign ***");
+  print_constraints(ph1, "*** after intersection_assign ***");
 
   return ok;
 }
@@ -315,9 +314,9 @@ aux_test07(C_Polyhedron& ph1,
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 
-  ph1.intersection_assign_and_minimize(ph2);
+  ph1.intersection_assign(ph2);
 
-  print_generators(ph1, "*** After intersection_assign ***");
+  print_generators(ph1, "*** after intersection_assign ***");
 
   return ph1 == known_result;
 }
@@ -361,12 +360,11 @@ test08() {
 
   C_Polyhedron known_result(ph1);
 
-  ph1.intersection_assign_and_minimize(ph2);
+  ph1.intersection_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1,
-		    "*** After ph1.intersection_assign_and_minimize(ph2) ***");
+  print_constraints(ph1, "*** after ph1.intersection_assign(ph2) ***");
 
   return ok;
 }
@@ -382,12 +380,11 @@ test09() {
 
   C_Polyhedron known_result = ph1;
 
-  ph1.intersection_assign_and_minimize(ph2);
+  ph1.intersection_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1,
-		    "*** After ph1.intersection_assign_and_minimize(ph2) ***");
+  print_constraints(ph1, "*** after ph1.intersection_assign(ph2) ***");
 
   return ok;
 }
@@ -410,7 +407,7 @@ test10() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.intersection_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.intersection_assign(ph2) ***");
 
   return ok;
 }
@@ -429,7 +426,7 @@ test11() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.intersection_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.intersection_assign(ph2) ***");
 
   return ok;
 }
@@ -453,13 +450,12 @@ test12() {
   print_constraints(ph2, "*** ph2 ***");
 
   ph1.intersection_assign(ph2);
-  copy_ph1.intersection_assign_and_minimize(copy_ph2);
+  copy_ph1.intersection_assign(copy_ph2);
 
   bool ok = (ph1 == copy_ph1);
 
-  print_constraints(ph1, "*** After intersection_assign ***");
-  print_constraints(copy_ph1,
-		    "*** After intersection_assign_and_minimize ***");
+  print_constraints(ph1, "*** after intersection_assign ***");
+  print_constraints(copy_ph1, "*** after intersection_assign ***");
 
   return ok;
 }
@@ -487,13 +483,12 @@ test13() {
   print_generators(ph2, "*** ph2 ***");
 
   ph1.intersection_assign(ph2);
-  copy_ph1.intersection_assign_and_minimize(copy_ph2);
+  copy_ph1.intersection_assign(copy_ph2);
 
   bool ok = (ph1 == copy_ph1);
 
-  print_constraints(ph1, "*** After intersection_assign ***");
-  print_constraints(copy_ph1,
-		    "*** After intersection_assign_and_minimize ***");
+  print_constraints(ph1, "*** after intersection_assign ***");
+  print_constraints(copy_ph1, "*** after intersection_assign ***");
 
   return ok;
 }

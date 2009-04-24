@@ -1,11 +1,11 @@
 /* Pointset_Powerset class implementation: non-inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 #include "Pointset_Powerset.defs.hh"
 #include "Grid.defs.hh"
 #include <utility>
@@ -30,7 +30,7 @@ namespace PPL = Parma_Polyhedra_Library;
 template <>
 void
 PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
-::poly_difference_assign(const Pointset_Powerset& y) {
+::difference_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
   // Ensure omega-reduction.
   x.omega_reduce();
@@ -110,7 +110,7 @@ PPL::check_containment(const NNC_Polyhedron& ph,
 
 namespace {
 
-#if PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Uses the congruence \p c to approximately partition the grid \p qq.
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset
   On exit, the intersection of \p qq and congruence \p c is stored
@@ -118,7 +118,7 @@ namespace {
   contains the intersection of \p qq with the negation of \p c
   is added, as a set of new disjuncts, to the powerset \p r.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool
 approximate_partition_aux(const PPL::Congruence& c,
 			  PPL::Grid& qq,
@@ -126,14 +126,14 @@ approximate_partition_aux(const PPL::Congruence& c,
   using namespace PPL;
   const Coefficient& c_modulus = c.modulus();
   Grid qq_copy(qq);
-
-  if (!qq.add_congruence_and_minimize(c)) {
+  qq.add_congruence(c);
+  if (qq.is_empty()) {
     r.add_disjunct(qq_copy);
     return true;
   }
 
   Congruence_System cgs = qq.congruences();
-  Congruence_System cgs_copy = qq_copy.minimized_congruences();
+  Congruence_System cgs_copy = qq_copy.congruences();
   // When c is an equality, not satisfied by Grid qq
   // then add qq to the set r. There is no finite
   // partition in this case.
@@ -159,13 +159,16 @@ approximate_partition_aux(const PPL::Congruence& c,
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
   Linear_Expression le(c);
   le -= c_inhomogeneous_term;
-  TEMP_INTEGER(n);
+  PPL_DIRTY_TEMP_COEFFICIENT(n);
   rem_assign(n, c_inhomogeneous_term, c_modulus);
-  TEMP_INTEGER(i);
+  if (n < 0)
+    n += c_modulus;
+  PPL_DIRTY_TEMP_COEFFICIENT(i);
   for (i = c_modulus; i-- > 0; )
     if (i != n) {
       Grid qqq(qq_copy);
-      if (qqq.add_congruence_and_minimize((le+i %= 0) / c_modulus))
+      qqq.add_congruence((le+i %= 0) / c_modulus);
+      if (!qqq.is_empty())
 	r.add_disjunct(qqq);
     }
   return true;
@@ -173,12 +176,16 @@ approximate_partition_aux(const PPL::Congruence& c,
 
 } // namespace
 
+/*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
 std::pair<PPL::Grid, PPL::Pointset_Powerset<PPL::Grid> >
 PPL::approximate_partition(const Grid& p, const Grid& q,
-                                  bool& finite_partition) {
+			   bool& finite_partition) {
   using namespace PPL;
   finite_partition = true;
   Pointset_Powerset<Grid> r(p.space_dimension(), EMPTY);
+  // Ensure that the congruence system of q is minimized
+  // before copying and calling approximate_partition_aux().
+  (void) q.minimized_congruences();
   Grid qq = q;
   const Congruence_System& pcs = p.congruences();
   for (Congruence_System::const_iterator i = pcs.begin(),
@@ -191,6 +198,7 @@ PPL::approximate_partition(const Grid& p, const Grid& q,
   return std::make_pair(qq, r);
 }
 
+/*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
 bool
 PPL::check_containment(const Grid& ph,
 		       const Pointset_Powerset<Grid>& ps) {
@@ -246,7 +254,7 @@ PPL::check_containment(const Grid& ph,
 template <>
 void
 PPL::Pointset_Powerset<PPL::Grid>
-::poly_difference_assign(const Pointset_Powerset& y) {
+::difference_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
   // Ensure omega-reduction.
   x.omega_reduce();
@@ -280,4 +288,54 @@ PPL::Pointset_Powerset<PPL::Grid>
     if (!check_containment(yi->element(), x))
       return false;
   return true;
+}
+
+template <>
+template <>
+PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y,
+                    Complexity_Class)
+  : Base(), space_dim(y.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    x.sequence.push_back(Determinate<NNC_Polyhedron>
+			 (NNC_Polyhedron(i->element())));
+  x.reduced = y.reduced;
+  assert(x.OK());
+}
+
+template <>
+template <>
+PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<Grid>& y,
+                    Complexity_Class)
+  : Base(), space_dim(y.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  for (Pointset_Powerset<Grid>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    x.sequence.push_back(Determinate<NNC_Polyhedron>
+			 (NNC_Polyhedron(i->element())));
+  x.reduced = false;
+  assert(x.OK());
+}
+
+template <>
+template <>
+PPL::Pointset_Powerset<PPL::C_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y,
+                    Complexity_Class)
+  : Base(), space_dim(y.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  for (Pointset_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    x.sequence.push_back(Determinate<C_Polyhedron>
+			 (C_Polyhedron(i->element())));
+
+  // Note: this might be non-reduced even when `y' is known to be
+  // omega-reduced, because the constructor of C_Polyhedron, by
+  // enforcing topological closure, may have made different elements
+  // comparable.
+  x.reduced = false;
+  assert(x.OK());
 }

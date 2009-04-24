@@ -1,11 +1,11 @@
 /* Test Polyhedron::is_universe().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -27,7 +27,7 @@ namespace {
 bool
 test01() {
   C_Polyhedron ph(3);
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   bool universe = ph.is_universe();
 
@@ -48,7 +48,7 @@ test02() {
   ph.add_constraint(x >= z);
   ph.add_constraint(z == 3);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   bool universe = ph.is_universe();
 
@@ -71,7 +71,7 @@ test03() {
   ph.add_constraint(x <= 3);
 
   Constraint_System cs = ph.constraints();
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   bool universe = ph.is_universe();
 
@@ -95,7 +95,7 @@ test04() {
   ph.add_constraint(y <= 4);
 
   Constraint_System cs = ph.constraints();
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   bool universe = ph.is_universe();
 
@@ -116,7 +116,7 @@ test05() {
   C_Polyhedron ph(3);
   ph.add_constraint(x - y - z >= 0);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   bool universe = ph.is_universe();
 
@@ -140,7 +140,7 @@ test06() {
   gs.insert(ray(x - y));
 
   C_Polyhedron ph(gs);
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
 
   bool universe = ph.is_universe();
 

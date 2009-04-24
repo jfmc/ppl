@@ -1,11 +1,11 @@
 /* OR_Matrix class implementation: non-inline template functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -92,9 +92,8 @@ OR_Matrix<T>::ascii_load(std::istream& s) {
     row_reference_type r_i = *i;
     const dimension_type rs = i.row_size();
     for (dimension_type j = 0; j < rs; ++j) {
-      Result r = input(r_i[j], s, ROUND_UP);
-      // FIXME: V_CVT_STR_UNK is probably not the only possible error.
-      if (!s || r == V_CVT_STR_UNK)
+      Result r = input(r_i[j], s, ROUND_CHECK);
+      if (r != V_EQ || is_minus_infinity(r_i[j]))
 	return false;
     }
   }
@@ -102,7 +101,9 @@ OR_Matrix<T>::ascii_load(std::istream& s) {
   return true;
 }
 
-/*! \relates Parma_Polyhedra_Library::OR_Matrix */  //FIXME!!
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Parma_Polyhedra_Library::OR_Matrix */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const OR_Matrix<T>& m) {

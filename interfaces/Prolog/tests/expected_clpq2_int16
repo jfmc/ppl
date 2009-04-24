@@ -1,4 +1,4 @@
-Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 this program is free software, covered by the GNU General Public License,
 and you are welcome to change it and/or distribute copies of it
 under certain conditions.
@@ -20,7 +20,7 @@ PPL clpq ?- Y = 8
  more? yes
 PPL clpq ?- yes
 PPL clpq ?- 
-Error: an overflow has been detected by the PPL: Unknown result due to negative overflow.
+Error: an overflow has been detected by the PPL: Negative overflow.
 no
 PPL clpq ?- yes
 PPL clpq ?- X = 10

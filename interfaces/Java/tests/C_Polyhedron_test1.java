@@ -1,12 +1,12 @@
 /* Test C_Polyhedron Java test class of the Parma Polyhedra Library Java
    interface.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -24,15 +24,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Vector;
-import ppl_java.*;
+import parma_polyhedra_library.*;
 
 public class C_Polyhedron_test1 {
-  static {
-	System.loadLibrary("ppl_java");
+static {
+    try {
+        System.loadLibrary("ppl_java");
     }
 
+   catch (UnsatisfiedLinkError  e) {
+       System.out.println("Unable to load the library");
+       System.exit(-1);
+   }
+}
+
     // This code tests the method `map_space_dimension(pfunc)'.
-    public static boolean test01() {
+    public static Boolean test01() {
 	Test_Partial_Function partial_function = new Test_Partial_Function();
 	partial_function.insert(0, 2);
 	partial_function.insert(2, 0);
@@ -74,9 +81,27 @@ public class C_Polyhedron_test1 {
 	known_gs.add(Generator.ray(le_c_plus_a));
 
 	C_Polyhedron known_result = new C_Polyhedron(known_gs);
-	return known_result.equals(poly1);
+	return new Boolean(known_result.equals(poly1));
     }
+
+
+    public static Boolean test02() {
+	// Test if `minimized_constraints' returns an empty Constraint_System
+	// if the Polyhedron is built from universe with a dimension greater
+	// than zero.
+	Variable X = new Variable(0);
+	Variable Y = new Variable(1);
+	Variable Z = new Variable(2);
+	C_Polyhedron ph = new C_Polyhedron(3, Degenerate_Element.UNIVERSE);
+	Constraint_System cs = ph.minimized_constraints();
+	return new Boolean(cs.isEmpty());
+    }
+
     public static void main(String[] args) {
-	test01();
+	boolean test_result_ok =
+	    Test_Executor.executeTests(C_Polyhedron_test1.class);
+	if (!test_result_ok)
+	    System.exit(1);
+	System.exit(0);
     }
 }

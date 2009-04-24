@@ -1,11 +1,11 @@
 /* Test the allocation error recovery facility of the library.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -22,10 +22,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 #include <new>
+#include <cstdlib>
 #include <limits>
 
 // If GMP does not support exceptions the test is pointless.
-#if !GMP_SUPPORTS_EXCEPTIONS
+#if !PPL_GMP_SUPPORTS_EXCEPTIONS
 
 int
 main() TRY {
@@ -33,9 +34,11 @@ main() TRY {
 }
 CATCH
 
-#else // GMP_SUPPORTS_EXCEPTIONS
+#else // PPL_GMP_SUPPORTS_EXCEPTIONS
 
 namespace {
+
+bool before_main;
 
 unsigned long mallocated = 0;
 unsigned long reallocated = 0;
@@ -71,49 +74,73 @@ cxx_malloc(size_t size) {
     nout << "std::bad_alloc thrown from cxx_malloc()" << endl;
     throw std::bad_alloc();
   }
-  void* p = ::operator new(size);
-  vnout << "allocated " << size << " @ " << p << endl;
-  ++mallocated;
-  return p;
+
+  void* p = malloc(size);
+  if (p != 0 || size == 0) {
+    if (!before_main)
+      vnout << "allocated " << size << " @ " << p << endl;
+    ++mallocated;
+    return p;
+  }
+
+  nout << "malloc() returned 0: std::bad_alloc thrown from cxx_malloc()"
+       << endl;
+  throw std::bad_alloc();
 }
 
 extern "C" void
 cxx_free(void* p, size_t) {
-  vnout << "freed " << p << endl;
-  ::operator delete(p);
+  free(p);
+  if (!before_main)
+    vnout << "freed " << p << endl;
   ++freed;
 }
 
 extern "C" void*
-cxx_realloc(void* p, size_t old_size, size_t new_size) {
-  if (p == 0)
+cxx_realloc(void* q, size_t old_size, size_t new_size) {
+  if (q == 0)
     return cxx_malloc(new_size);
 
   if (new_size == 0) {
-    cxx_free(p, old_size);
+    cxx_free(q, old_size);
     return 0;
   }
 
   if (new_size <= old_size) {
-  vnout << "reallocated " << old_size << " @ " << p
-	<< " down to " << new_size << " @ " << p
-	<< endl;
+    void* p = realloc(q, new_size);
+    if (p != 0 || new_size == 0) {
+      if (!before_main)
+        vnout << "reallocated " << old_size << " @ " << p
+              << " down to " << new_size << " @ " << p
+              << endl;
+      return p;
+    }
+
+    nout << "malloc() returned 0: std::bad_alloc thrown from cxx_malloc()"
+         << endl;
+    throw std::bad_alloc();
+  }
+
+  assert(new_size > old_size);
+  if (reallocated >= realloc_threshold) {
+    if (!before_main)
+      nout << "std::bad_alloc thrown from cxx_realloc()" << endl;
+    throw std::bad_alloc();
+  }
+
+  void* p = realloc(q, new_size);
+  if (p != 0 || new_size == 0) {
+    if (!before_main)
+      vnout << "reallocated " << old_size << " @ " << q
+            << " up to " << new_size << " @ " << p
+            << endl;
+    ++reallocated;
     return p;
   }
-  else {
-    if (reallocated >= realloc_threshold) {
-      nout << "std::bad_alloc thrown from cxx_realloc()" << endl;
-      throw std::bad_alloc();
-    }
-    void* new_p = ::operator new(new_size);
-    memcpy(new_p, p, old_size);
-    ::operator delete(p);
-    vnout << "reallocated " << old_size << " @ " << p
-	  << " up to " << new_size << " @ " << new_p
-	  << endl;
-    ++reallocated;
-    return new_p;
-  }
+
+  nout << "malloc() returned 0: std::bad_alloc thrown from cxx_malloc()"
+       << endl;
+  throw std::bad_alloc();
 }
 
 void
@@ -196,16 +223,25 @@ test3() {
 
 } // namespace
 
-#define IGNORE_OVERFLOWS(fun) \
-try { \
-  fun; \
-} \
-catch (const std::overflow_error&) { \
+#define IGNORE_OVERFLOWS(fun)			\
+  try {						\
+    fun;					\
+  }						\
+  catch (const std::overflow_error&) {		\
+  }
+
+extern "C" void
+ppl_set_GMP_memory_allocation_functions() {
+  before_main = true;
+  // Allow the static coefficients of the library to be allocated
+  // without any limit.
+  reset_allocators(ULONG_MAX, ULONG_MAX);
+  mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
 }
 
 int
 main() TRY {
-  mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
+  before_main = false;
 
   set_handlers();
 
@@ -219,4 +255,4 @@ main() TRY {
 }
 CATCH
 
-#endif // GMP_SUPPORTS_EXCEPTIONS
+#endif // PPL_GMP_SUPPORTS_EXCEPTIONS

@@ -1,11 +1,11 @@
 /* Test Grid::ascii_dump() and Grid::ascii_load().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -244,7 +244,7 @@ test07() {
   string str;
   do
     f >> str;
-  while (str != "(not_up-to-date)" );
+  while (str != "(not_up-to-date)");
   f.seekp(0, ios_base::cur);
   f << "A\n";
   close(f);
@@ -308,7 +308,7 @@ test09() {
   string str;
   do
     f >> str;
-  while (str != "(not_up-to-date)" );
+  while (str != "(not_up-to-date)");
   f.seekp(0, ios_base::cur);
   f << "\nA";
   close(f);
@@ -400,7 +400,7 @@ test14() {
   Grid gr1(3);
   gr1.add_congruence((A - B %= 2) / 5);
   gr1.add_congruence(B %= 0);
-  gr1.add_congruence(C == 4);
+  gr1.add_congruence((C == 4) / 0);
 
   gr1.minimized_grid_generators();
 

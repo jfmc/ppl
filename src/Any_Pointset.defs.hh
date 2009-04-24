@@ -1,11 +1,11 @@
 /* Any_Pointset class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -26,9 +26,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Any_Pointset.types.hh"
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
+#include "Grid.defs.hh"
+#include "Box.defs.hh"
 #include "BD_Shape.defs.hh"
 #include "Octagonal_Shape.defs.hh"
-#include "Grid.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -72,6 +73,7 @@ bool operator!=(const Any_Pointset& x, const Any_Pointset& y);
 
 
 //! Any PPL pointset.
+/*! \ingroup PPL_CXX_interface */
 class Parma_Polyhedra_Library::Any_Pointset {
 public:
 #if 0
@@ -319,77 +321,6 @@ public:
   */
   virtual bool is_disjoint_from(const Any_Pointset& y) const = 0;
 
-#if 0
-  /*! \brief
-    Uses \p *this to shrink a generic, interval-based bounding box.
-    Assigns to \p box the intersection of \p box with the smallest
-    bounding box containing \p *this.
-
-    \param box
-    The bounding box to be shrunk;
-
-    \param complexity
-    The complexity class of the algorithm to be used.
-
-    If the pointset \p *this or \p box is empty, then the empty box
-    is returned.
-
-    If \p *this and \p box are non-empty, then, for
-    each space dimension \f$k\f$ with variable \f$\mathrm{var}\f$, let
-    \f$u\f$ be the upper and \f$l\f$ the lower bound of the smallest
-    interval containing \p *this.
-
-    If \f$l\f$ is infinite, then \p box is unaltered; if \f$l\f$ is
-    finite, then the \p box interval for space dimension \f$k\f$ is
-    (destructively) intersected with \f$[l, +\mathrm{infty})\f$ if a
-    point of \p *this satisfies \f$\mathrm{var} == l\f$ and with
-    \f$(l, +\mathrm{infty})\f$ otherwise.
-
-    Similarly, if \f$u\f$ is infinite, then \p box is unaltered; if
-    \f$u\f$ is finite, then the \p box interval for space dimension
-    \f$k\f$ is (destructively) intersected with \f$(-\mathrm{infty},
-    u]\f$ if a point of \p *this satisfies \f$\mathrm{var} == u\f$ and
-    with \f$(-\mathrm{infty}, u)\f$ otherwise.
-
-    The template class Box must provide the following methods, whose
-    return values, if any, are simply ignored.
-    \code
-      set_empty()
-    \endcode
-    causes the box to become empty, i.e., to represent the empty set.
-    \code
-      raise_lower_bound(dimension_type k, bool closed,
-                        Coefficient_traits::const_reference n,
-                        Coefficient_traits::const_reference d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension
-    with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
-    with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
-    \code
-      lower_upper_bound(dimension_type k, bool closed,
-                        Coefficient_traits::const_reference n,
-                        Coefficient_traits::const_reference d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension
-    with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
-    with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
-    is <CODE>false</CODE>.
-
-    The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
-    will be called at most once for each possible value for <CODE>k</CODE>
-    and for all such calls the fraction \f$n/d\f$ will be in canonical form,
-    that is, \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$
-    is positive, \f$0/1\f$ being the unique representation for zero.
-    The same guarantee is offered for the function
-    <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
-  */
-  template <typename Box>
-  void shrink_bounding_box(Box& box,
-			   Complexity_Class complexity = ANY_COMPLEXITY) const;
-#endif
-
   //! Checks if all the invariants are satisfied.
   virtual bool OK() const = 0;
 
@@ -478,6 +409,32 @@ public:
   */
   virtual void add_congruences(const Congruence_System& cgs) = 0;
 #endif
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  virtual void unconstrain(Variable var) = 0;
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  virtual void unconstrain(const Variables_Set& to_be_unconstrained) = 0;
 
   /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.
@@ -720,12 +677,12 @@ public:
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
     dimension-incompatible or if \p var is not a space dimension of \p *this
-    or if \p *this is a C_Any_Pointset and \p relsym is a strict
+    or if \p *this is a Any_Pointset and \p relsym is a strict
     relation symbol.
   */
   virtual
   void generalized_affine_image(Variable var,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& expr,
 				Coefficient_traits::const_reference denominator
 				= Coefficient_one()) = 0;
@@ -758,7 +715,7 @@ public:
   */
   virtual void
   generalized_affine_preimage(Variable var,
-			      const Relation_Symbol relsym,
+			      Relation_Symbol relsym,
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference denominator
 			      = Coefficient_one()) = 0;
@@ -784,7 +741,7 @@ public:
     relation symbol.
   */
   virtual void generalized_affine_image(const Linear_Expression& lhs,
-					const Relation_Symbol relsym,
+					Relation_Symbol relsym,
 					const Linear_Expression& rhs) = 0;
 
   /*! \brief
@@ -808,7 +765,7 @@ public:
     relation symbol.
   */
   virtual void generalized_affine_preimage(const Linear_Expression& lhs,
-					   const Relation_Symbol relsym,
+					   Relation_Symbol relsym,
 					   const Linear_Expression& rhs) = 0;
 
   /*!
@@ -1083,6 +1040,7 @@ public:
   */
   template <typename Partial_Function>
   void map_space_dimensions(const Partial_Function& pfunc);
+#endif
 
   //! Creates \p m copies of the space dimension corresponding to \p var.
   /*!
@@ -1134,6 +1092,7 @@ public:
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
+#if 0
   friend bool Parma_Polyhedra_Library::operator==(const Any_Pointset& x,
 						  const Any_Pointset& y);
 #endif
@@ -1155,13 +1114,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -1169,6 +1126,14 @@ public:
 
   //! Returns the size in bytes of the memory managed by \p *this.
   virtual memory_size_type external_memory_in_bytes() const = 0;
+
+  /*! \brief
+    Returns a 32-bit hash code for \p *this.
+
+    If \p x and \p y are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
+  */
+  virtual int32_t hash_code() const = 0;
 
   //@} // Miscellaneous Member Functions
 };
@@ -1193,6 +1158,18 @@ class WRAPPER_NAME : public Any_Pointset {				\
     : x(y) {								\
   }									\
   explicit WRAPPER_NAME(const NNC_Polyhedron& y)			\
+    : x(y) {								\
+  }									\
+  template <typename U>							\
+  explicit WRAPPER_NAME(const Box<U>& y)				\
+    : x(y) {								\
+  }									\
+  template <typename U>							\
+  explicit WRAPPER_NAME(const BD_Shape<U>& y)				\
+    : x(y) {								\
+  }									\
+  template <typename U>					                \
+  explicit WRAPPER_NAME(const Octagonal_Shape<U>& y)			\
     : x(y) {								\
   }									\
 									\
@@ -1298,7 +1275,7 @@ class WRAPPER_NAME : public Any_Pointset {				\
     x.affine_image(var, expr, denominator);				\
   }									\
   void generalized_affine_image(Variable var,				\
-				const Relation_Symbol relsym,		\
+				Relation_Symbol relsym,			\
 				const Linear_Expression& expr,		\
 				Coefficient_traits::const_reference	\
 				denominator = Coefficient_one()) {	\
@@ -1306,19 +1283,19 @@ class WRAPPER_NAME : public Any_Pointset {				\
   }									\
   void									\
   generalized_affine_preimage(Variable var,				\
-			      const Relation_Symbol relsym,		\
+			      Relation_Symbol relsym,			\
 			      const Linear_Expression& expr,		\
 			      Coefficient_traits::const_reference denominator \
 			      = Coefficient_one()) {			\
     x.generalized_affine_preimage(var, relsym, expr, denominator);	\
   }									\
   virtual void generalized_affine_image(const Linear_Expression& lhs,	\
-					const Relation_Symbol relsym,	\
+					Relation_Symbol relsym,		\
 					const Linear_Expression& rhs) { \
     x.generalized_affine_image(lhs, relsym, rhs);			\
   }									\
   void generalized_affine_preimage(const Linear_Expression& lhs,	\
-				   const Relation_Symbol relsym,	\
+				   Relation_Symbol relsym,		\
 				   const Linear_Expression& rhs) {	\
     x.generalized_affine_preimage(lhs, relsym, rhs);			\
   }									\
@@ -1372,6 +1349,10 @@ class WRAPPER_NAME : public Any_Pointset {				\
     return x.total_memory_in_bytes();					\
   }									\
 									\
+  int32_t hash_code() const {						\
+    return x.hash_code();						\
+  }									\
+									\
   bool OK() const {							\
     return x.OK();							\
   }									\
@@ -1383,6 +1364,7 @@ PPL_ANY_POINTSET_WRAPPER_CLASS(, C_Polyhedron_Pointset, C_Polyhedron)
 PPL_ANY_POINTSET_WRAPPER_CLASS(, NNC_Polyhedron_Pointset, NNC_Polyhedron)
 //PPL_ANY_POINTSET_WRAPPER_CLASS(, Grid_Pointset, Grid)
 
+PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, Box_Pointset, Box<T>)
 PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, BD_Shape_Pointset, BD_Shape<T>)
 PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, Octagonal_Shape_Pointset, Octagonal_Shape<T>)
 

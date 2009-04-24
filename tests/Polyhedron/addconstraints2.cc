@@ -1,11 +1,11 @@
 /* Test Polyhedron::add_constrains().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -41,7 +41,7 @@ test01() {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(cs, "*** cs ***");
 
-  ph1.add_constraints_and_minimize(cs);
+  ph1.add_constraints(cs);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A == 0);
@@ -49,7 +49,7 @@ test01() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.add_constraints_and_minimize(cs) ***");
+  print_constraints(ph1, "*** after ph1.add_constraints(cs) ***");
 
   return ok;
 }
@@ -71,7 +71,7 @@ test02() {
   print_constraints(cs, "*** cs ***");
   print_constraints(ph2, "*** ph2 ***");
 
-  ph2.add_constraints_and_minimize(cs);
+  ph2.add_constraints(cs);
 
   C_Polyhedron known_result(3);
   known_result.add_constraint(A >= 0);

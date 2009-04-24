@@ -1,11 +1,11 @@
 /* Bit_Row class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,78 +20,13 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Bit_Row.defs.hh"
 #include <cassert>
 #include <climits>
 
 namespace PPL = Parma_Polyhedra_Library;
-
-#define BITS_PER_GMP_LIMB (SIZEOF_MP_LIMB_T*CHAR_BIT)
-
-#if !HAVE_DECL_FFS || SIZEOF_MP_LIMB_T != SIZEOF_INT
-unsigned int
-PPL::Bit_Row::first_one(mp_limb_t w) {
-  unsigned int r = 0;
-  w = w & -w;
-#if SIZEOF_MP_LIMB_T == 8
-  if ((w & 0xffffffff) == 0) {
-    w >>= 32;
-    r += 32;
-  }
-#elif SIZEOF_MP_LIMB_T != 4
-#error "Size of mp_limb_t not supported by Bit_Row::first_one(mp_limb_t w)."
-#endif
-  if ((w & 0xffff) == 0) {
-    w >>= 16;
-    r += 16;
-  }
-  if ((w & 0xff) == 0) {
-    w >>= 8;
-    r += 8;
-  }
-  if (w & 0xf0)
-    r += 4;
-  if (w & 0xcc)
-    r += 2;
-  if (w & 0xaa)
-    r += 1;
-  return r;
-}
-#endif // !HAVE_DECL_FFS || SIZEOF_MP_LIMB_T != SIZEOF_INT
-
-unsigned int
-PPL::Bit_Row::last_one(mp_limb_t w) {
-  unsigned int r = 0;
-#if SIZEOF_MP_LIMB_T == 8
-  if (w & 0xffffffff00000000) {
-    w >>= 32;
-    r += 32;
-  }
-#elif SIZEOF_MP_LIMB_T != 4
-#error "Size of mp_limb_t not supported by Bit_Row::last_one(mp_limb_t w)."
-#endif
-  if (w & 0xffff0000) {
-    w >>= 16;
-    r += 16;
-  }
-  if (w & 0xff00) {
-    w >>= 8;
-    r += 8;
-  }
-  if (w & 0xf0) {
-    w >>= 4;
-    r += 4;
-  }
-  if (w & 0xc) {
-    w >>= 2;
-    r += 2;
-  }
-  if (w & 0x2)
-    r += 1;
-  return r;
-}
 
 unsigned long
 PPL::Bit_Row::first() const {
@@ -102,7 +37,7 @@ PPL::Bit_Row::first() const {
   for (; li < vec_size; ++li, ++p) {
     const mp_limb_t limb = *p;
     if (limb != 0)
-      return li*BITS_PER_GMP_LIMB + first_one(limb);
+      return li*PPL_BITS_PER_GMP_LIMB + Implementation::first_one(limb);
   }
   return ULONG_MAX;
 }
@@ -118,7 +53,7 @@ PPL::Bit_Row::next(unsigned long position) const {
   // unsigned long r = mpz_scan1(vec, position);
   // return (r == ULONG_MAX) ? -1 : r;
 
-  mp_size_t li = position / BITS_PER_GMP_LIMB;
+  mp_size_t li = position / PPL_BITS_PER_GMP_LIMB;
   const mp_size_t vec_size = vec->_mp_size;
   assert(vec_size >= 0);
   if (li >= vec_size)
@@ -128,11 +63,11 @@ PPL::Bit_Row::next(unsigned long position) const {
   mp_srcptr p = vec->_mp_d + li;
 
   // Mask off any bits before `position' in the first limb.
-  mp_limb_t limb = *p & (~(mp_limb_t) 0) << (position % BITS_PER_GMP_LIMB);
+  mp_limb_t limb = *p & (~(mp_limb_t) 0) << (position % PPL_BITS_PER_GMP_LIMB);
 
   while (true) {
     if (limb != 0)
-      return li*BITS_PER_GMP_LIMB + first_one(limb);
+      return li*PPL_BITS_PER_GMP_LIMB + Implementation::first_one(limb);
     ++li;
     if (li == vec_size)
       break;
@@ -152,7 +87,7 @@ PPL::Bit_Row::last() const {
   const mp_srcptr p = vec->_mp_d + li;
   const mp_limb_t limb = *p;
   assert(limb != 0);
-  return li*BITS_PER_GMP_LIMB + last_one(limb);
+  return li*PPL_BITS_PER_GMP_LIMB + Implementation::last_one(limb);
 }
 
 unsigned long
@@ -164,7 +99,7 @@ PPL::Bit_Row::prev(unsigned long position) const {
 
   const mp_size_t vec_size = vec->_mp_size;
   assert(vec_size > 0);
-  mp_size_t li = position / BITS_PER_GMP_LIMB;
+  mp_size_t li = position / PPL_BITS_PER_GMP_LIMB;
 
   mp_limb_t limb;
   mp_srcptr p = vec->_mp_d;
@@ -178,14 +113,14 @@ PPL::Bit_Row::prev(unsigned long position) const {
   else {
     const mp_limb_t mask
       = (~(mp_limb_t) 0)
-      >> (BITS_PER_GMP_LIMB - 1 - position % BITS_PER_GMP_LIMB);
+      >> (PPL_BITS_PER_GMP_LIMB - 1 - position % PPL_BITS_PER_GMP_LIMB);
     p += li;
     limb = *p & mask;
   }
 
   while (true) {
     if (limb != 0)
-      return li*BITS_PER_GMP_LIMB + last_one(limb);
+      return li*PPL_BITS_PER_GMP_LIMB + Implementation::last_one(limb);
     if (li == 0)
       break;
     --li;
@@ -206,6 +141,13 @@ PPL::Bit_Row::operator[](const unsigned long k) const {
 
   mp_limb_t limb = *(vec->_mp_d + i);
   return (limb >> (k % GMP_NUMB_BITS)) & 1;
+}
+
+void
+PPL::Bit_Row::set_until(unsigned long k) {
+  // FIXME, TODO: this is an inefficient implementation.
+  while (k-- > 0)
+    mpz_setbit(vec, k);
 }
 
 /*! \relates Parma_Polyhedra_Library::Bit_Row */
@@ -266,19 +208,37 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
   assert(y_size >= 0);
   if (x_size > y_size)
     return false;
-  strict_subset = (x_size < y_size);
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
-  while (x_size > 0) {
-    const mp_limb_t xl = *xp;
-    const mp_limb_t yl = *yp;
-    if (xl & ~yl)
-      return false;
-    if (!strict_subset && xl != yl)
-      strict_subset = true;
-    ++xp;
-    ++yp;
-    --x_size;
+  strict_subset = (x_size < y_size);
+  mp_limb_t xl;
+  mp_limb_t yl;
+  if (strict_subset) {
+    while (x_size > 0) {
+      xl = *xp;
+      yl = *yp;
+      if (xl & ~yl)
+	return false;
+    strict_subset_next:
+      ++xp;
+      ++yp;
+      --x_size;
+    }
+  }
+  else {
+    while (x_size > 0) {
+      xl = *xp;
+      yl = *yp;
+      if (xl != yl) {
+	if (xl & ~yl)
+	  return false;
+	strict_subset = true;
+	goto strict_subset_next;
+      }
+      ++xp;
+      ++yp;
+      --x_size;
+    }
   }
   return true;
 }
@@ -344,4 +304,30 @@ PPL::Bit_Row::OK() const {
   return vec_size >= 0
     && vec_alloc >= vec_size
     && (vec_size == 0 || mpz_getlimbn(vec, vec_size-1) != 0);
+}
+
+void
+PPL::Bit_Row::union_helper(const Bit_Row& y, const Bit_Row& z) {
+  mp_size_t y_size = y.vec->_mp_size;
+  mp_size_t z_size = z.vec->_mp_size;
+  assert(y_size <= z_size);
+  assert(vec->_mp_alloc >= z_size);
+  vec->_mp_size = z_size;
+  mp_srcptr yp = y.vec->_mp_d;
+  mp_srcptr zp = z.vec->_mp_d;
+  mp_ptr p = vec->_mp_d;
+  z_size -= y_size;
+  while (y_size > 0) {
+    *p = *yp | * zp;
+    ++yp;
+    ++zp;
+    ++p;
+    --y_size;
+  }
+  while (z_size > 0) {
+    *p = *zp;
+    ++zp;
+    ++p;
+    --z_size;
+  }
 }

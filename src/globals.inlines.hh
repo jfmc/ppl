@@ -1,11 +1,11 @@
 /* Implementation of global objects: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_globals_inlines_hh
 #define PPL_globals_inlines_hh 1
 
-#include "Coefficient.defs.hh"
 #include <limits>
 #include <cassert>
 
@@ -58,30 +57,39 @@ compute_capacity(const dimension_type requested_size,
   //   : maximum_size;
 }
 
-// FIXME!!!
-inline dimension_type
-compute_capacity(const dimension_type requested_size) {
-  // Speculation factor 2.
-  return 2*(requested_size + 1);
-  // Speculation factor 1.5.
-  // return requested_size + requested_size/2 + 1;
-}
-
-inline void
-normalize2(Coefficient_traits::const_reference x,
-	   Coefficient_traits::const_reference y,
-	   Coefficient& nx, Coefficient& ny) {
-  TEMP_INTEGER(gcd);
-  gcd_assign(gcd, x, y);
-  exact_div_assign(nx, x, gcd);
-  exact_div_assign(ny, y, gcd);
+template <typename T>
+inline typename
+Enable_If<Is_Native<T>::value, memory_size_type>::type
+external_memory_in_bytes(const T&) {
+  return 0;
 }
 
 template <typename T>
-inline T
-low_bits_mask(const unsigned n) {
-  assert(n < unsigned(std::numeric_limits<T>::digits));
-  return n == 0 ? 0 : ~(~(T(0u)) << n);
+inline typename
+Enable_If<Is_Native<T>::value, memory_size_type>::type
+total_memory_in_bytes(const T&) {
+  return sizeof(T);
+}
+
+inline memory_size_type
+external_memory_in_bytes(const mpz_class& x) {
+  return x.get_mpz_t()[0]._mp_alloc * PPL_SIZEOF_MP_LIMB_T;
+}
+
+inline memory_size_type
+total_memory_in_bytes(const mpz_class& x) {
+  return sizeof(x) + external_memory_in_bytes(x);
+}
+
+inline memory_size_type
+external_memory_in_bytes(const mpq_class& x) {
+  return external_memory_in_bytes(x.get_num())
+    + external_memory_in_bytes(x.get_den());
+}
+
+inline memory_size_type
+total_memory_in_bytes(const mpq_class& x) {
+  return sizeof(x) + external_memory_in_bytes(x);
 }
 
 } // namespace Parma_Polyhedra_Library

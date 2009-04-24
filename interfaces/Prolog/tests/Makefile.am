@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -39,7 +39,9 @@ clpq.pl script_clpq \
 clpq2.pl script_clpq2 script_clpq2_int8 \
 $(CLPQ_TESTS) \
 pl_check.pl \
-pl_grid_check.pl \
+ppl_prolog_generated_test_common.pl \
+ppl_interface_generator_prolog_generated_test_pl.m4 \
+ppl_interface_generator_prolog_generated_test_pl_code.m4 \
 expected_clpq_mpz expected_clpq2_mpz expected_pchk_mpz \
 expected_clpq_int8 expected_clpq2_int8 expected_pchk_int8 \
 expected_clpq_int16 expected_clpq2_int16 expected_pchk_int16 \
@@ -50,27 +52,35 @@ expected_clpq_int8_a expected_clpq2_int8_a expected_pchk_int8_a \
 expected_clpq_int16_a expected_clpq2_int16_a expected_pchk_int16_a \
 expected_clpq_int32_a expected_clpq2_int32_a expected_pchk_int32_a \
 expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a \
-ppl_predicate_check_common.pl \
-ppl_interface_generator_predicate_check_pl.m4 \
-ppl_interface_generator_predicate_check_code.m4
+expected_pgt
 
-BUILT_SOURCES = \
-ppl_predicate_check.pl
+check-local: ppl_prolog_generated_test.stamp
 
 interface_generator_dependencies = \
-../../ppl_interface_instantiations.m4 \
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
-../ppl_interface_generator_prolog_dat.m4 \
+../../ppl_interface_generator_common_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
-ppl_interface_generator_predicate_check_pl.m4 \
-ppl_interface_generator_predicate_check_code.m4
+../ppl_interface_generator_prolog_procedure_generators.m4 \
+ppl_interface_generator_prolog_generated_test_pl.m4 \
+ppl_interface_generator_prolog_generated_test_pl_code.m4
 
-ppl_predicate_check.pl: $(interface_generator_dependencies) Makefile
-	m4 --prefix-builtin -I../.. -I$(srcdir) -I$(srcdir)/.. \
-	   -I$(srcdir)/../.. \
-           $(srcdir)/ppl_interface_generator_predicate_check_pl.m4 > $@
+ppl_prolog_generated_test.stamp: $(interface_generator_dependencies)
+	$(M4) --prefix-builtin -I../.. \
+		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
+		$(srcdir)/ppl_interface_generator_prolog_generated_test_pl.m4 \
+			> ppl_prolog_generated_test_blob
+	$(top_srcdir)/utils/cm_cleaner.sh < ppl_prolog_generated_test_blob
+	$(top_srcdir)/utils/cm_splitter.sh < ppl_prolog_generated_test_blob
+	rm -f ppl_prolog_generated_test_blob
+	echo timestamp >$@
 
-DISTCLEANFILES = \
-ppl_predicate_check.pl
+CLEANFILES = \
+@required_instantiations_prolog_generated_test_sources@ \
+ppl_prolog_generated_test.stamp \
+ppl_prolog_generated_test_main.pl
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4

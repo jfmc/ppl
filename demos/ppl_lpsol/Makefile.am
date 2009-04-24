@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -38,17 +38,31 @@ expected_int64_a
 if BUILD_C_INTERFACE
 if HAVE_GLPK
 
-AM_CPPFLAGS = -I$(top_builddir)/interfaces/C @extra_includes@
+AM_CPPFLAGS = \
+-I$(top_builddir)/interfaces/C \
+@extra_includes@
+
+if GCC
+
+# We cannot use -std=c89 because of the definition of sigaction in <signal.h>.
+AM_CFLAGS = -pedantic -std=gnu89 -Werror
+
+endif GCC
 
 bin_PROGRAMS = ppl_lpsol
+
 # dummy.cc serves the only purpose to force linking using the C++ compiler.
 ppl_lpsol_SOURCES = \
 ppl_lpsol.c \
 dummy.cc
+
 ppl_lpsol_LDADD = \
 -lglpk \
 $(top_builddir)/interfaces/C/libppl_c.la \
 @extra_libraries@
+
+dist_man_MANS = \
+ppl_lpsol.1
 
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
@@ -113,7 +127,6 @@ $(TOUGH_EXAMPLES_FOR_SIMPLEX_IF_ASSERTIONS_ENABLED)
 TOUGH_EXAMPLES_FOR_BB_SATISFIABILITY = \
 $(TOUGH_EXAMPLES_FOR_BB_SATISFIABILTY_IF_ASSERTIONS_ENABLED)
 
-#FIXME: ex11.mps must be removed from this list.
 TOUGH_EXAMPLES_FOR_BB_OPTIMALITY = \
 egout.mps \
 lseu.mps \
@@ -141,8 +154,13 @@ sc50a.mps \
 sc50b.mps \
 ship08l.mps
 
+DO_NOT_OUTPUT_OPTIMUM_LOCATION_PROBLEMS = \
+adlittle.mps \
+boeing1.mps \
+boeing2.mps \
+rout.mps
+
 DO_NOT_CHECK_PROBLEMS = \
-ex11.mps \
 ex12.mps \
 mas74.mps \
 mas76.mps \
@@ -151,8 +169,8 @@ modglob.mps
 if HOST_OS_CYGWIN
 
 DIFF_COMMAND = \
-grep "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
-&& grep "^Optimum value: " obtained >obtained_optima \
+$(EGREP) "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
+&& $(EGREP) "^Optimum value: " obtained >obtained_optima \
 && diff -u expected_optima obtained_optima
 
 else !HOST_OS_CYGWIN
@@ -160,8 +178,8 @@ else !HOST_OS_CYGWIN
 if HOST_OS_DARWIN
 
 DIFF_COMMAND = \
-grep "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
-&& grep "^Optimum value: " obtained >obtained_optima \
+$(EGREP) "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
+&& $(EGREP) "^Optimum value: " obtained >obtained_optima \
 && diff -u expected_optima obtained_optima
 
 else !HOST_OS_DARWIN
@@ -169,15 +187,26 @@ else !HOST_OS_DARWIN
 if HOST_OS_SOLARIS
 
 DIFF_COMMAND = \
-grep "^Optimum value: " $(srcdir)/$(EXPECTED) \
-| sed -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >expected_optima \
-&& grep "^Optimum value: " obtained \
-| sed -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >obtained_optima \
+$(EGREP) "^Optimum value: " $(srcdir)/$(EXPECTED) \
+| $(SED) -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >expected_optima \
+&& $(EGREP) "^Optimum value: " obtained \
+| $(SED) -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >obtained_optima \
 && diff -u expected_optima obtained_optima
 
 else !HOST_OS_SOLARIS
 
+if HOST_OS_MINGW
+
+DIFF_COMMAND = \
+tr -d '\015' <obtained \
+| sed -e "s/ppl_lpsol.exe/ppl_lpsol/g" -e "s/1e+012/1e+12/g" \
+| diff $(srcdir)/$(EXPECTED) -
+
+else !HOST_OS_MINGW
+
 DIFF_COMMAND = diff -u $(srcdir)/$(EXPECTED) obtained
+
+endif !HOST_OS_MINGW
 
 endif !HOST_OS_SOLARIS
 
@@ -185,83 +214,97 @@ endif !HOST_OS_DARWIN
 
 endif !HOST_OS_CYGWIN
 
-check-local: ppl_lpsol
+# NOTE: use exact steepest-edge pricing (-p1) instead float-based one.
+# This has an efficiency penalty, but it guarantees deterministic
+# results across different architectures.
+SIMPLEX = ./ppl_lpsol$(EXEEXT) -s -p1 $(CHECK_OPTION) -oobtained
+SIMPLEX_NOCHECK = ./ppl_lpsol$(EXEEXT) -s -p1 -oobtained
+ECHO_SIMPLEX = echo "***" $(SIMPLEX)
+ECHO_SIMPLEX_NOCHECK = echo "***" $(SIMPLEX_NOCHECK)
+
+check-local: ppl_lpsol$(EXEEXT)
 	echo $(ECHO_N) "$(ECHO_C)" >obtained
 	echo $(LP_PROBLEMS) >lp_problems
 	echo $(DO_NOT_CHECK_PROBLEMS) >do_not_check_problems
-	LANG=C; \
+	export LC_ALL=C; \
 	echo $(TOUGH_EXAMPLES_FOR_BB_SATISFIABILITY) >tough_examples
 	-for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
-	  grep $$file lp_problems >/dev/null 2>&1 && continue; \
-	  grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
-	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
-	  echo "*** ppl_lpsol -s -n $$m -oobtained $$file" >>obtained; \
-	  ./ppl_lpsol -s -n $(CHECK_OPTION) -oobtained $$path >/dev/null; \
+	  $(FGREP) $$file lp_problems >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
+	  $(ECHO_SIMPLEX) "-n $$m $$file" >>obtained; \
+	  $(SIMPLEX) -n $$path >/dev/null; \
 	done
-	echo $(LP_PROBLEMS) >lp_problems
 	echo $(TOUGH_EXAMPLES_FOR_BB_OPTIMALITY) >tough_examples
 	-for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
-	  grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
-	  grep $$file lp_problems >/dev/null 2>&1 && continue; \
-	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file lp_problems >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  for m in -m -M; \
 	  do \
-	    echo "*** ppl_lpsol -s $$m -oobtained $$file" >>obtained; \
-	    ./ppl_lpsol -s $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
+	    $(ECHO_SIMPLEX) "$$m $$file" >>obtained; \
+	    $(SIMPLEX) $$m $$path >/dev/null; \
 	  done \
 	done
 	echo $(TOUGH_EXAMPLES_FOR_SIMPLEX) >tough_examples
+	echo $(DO_NOT_OUTPUT_OPTIMUM_LOCATION_PROBLEMS) >do_not_output_location
 	-for path in $(srcdir)/examples/*.mps; \
 	do \
-	  file=`basename $$path`; \
-	 grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
-	 grep $$file tough_examples >/dev/null 2>&1 && continue; \
+	 file=`basename $$path`; \
+	 $(FGREP) $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	 $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
+	 verbosity=''; \
+	 $(FGREP) $$file do_not_output_location >/dev/null 2>&1 && verbosity='-v 2'; \
 	 for m in -m -M; \
 	 do \
-	    echo "*** ppl_lpsol -r -s $$m -oobtained $$file" >>obtained; \
-	    ./ppl_lpsol -r -s $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
+	    $(ECHO_SIMPLEX) "-r $$m $$file" >>obtained; \
+	    $(SIMPLEX) -r $$verbosity $$m $$path >/dev/null; \
 	  done \
 	done
 	echo $(TOUGH_EXAMPLES_FOR_ENUM) >tough_examples
 	-for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
-	  grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
-	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  echo "*** ppl_lpsol -e -r $$m -oobtained $$file" >>obtained; \
-	  ./ppl_lpsol -e -r $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
+	  ./ppl_lpsol$(EXEEXT) -e -r $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	done
-	echo "*** ppl_lpsol -r -s -m -oobtained mas74.mps" >>obtained
-	-./ppl_lpsol -r -s -m $(CHECK_OPTION) $(srcdir)/examples/mas74.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas74.mps" >>obtained
-	-./ppl_lpsol -r -s -M -c0.000123 $(srcdir)/examples/mas74.mps $$m -oobtained >/dev/null
-	echo "*** ppl_lpsol -n -s -oobtained mas74.mps" >>obtained
-	-./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/mas74.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -r -s -m -oobtained mas76.mps" >>obtained
-	-./ppl_lpsol -r -s -m $(CHECK_OPTION) $(srcdir)/examples/mas76.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas76.mps" >>obtained
-	-./ppl_lpsol -r -s -M -c0.000123 $(srcdir)/examples/mas76.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -n -s -oobtained mas76.mps" >>obtained
-	-./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/mas76.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -r -s -m -c0.0000002 -oobtained modglob.mps" >>obtained
-	-./ppl_lpsol -r -s -m -c0.0000002 $(srcdir)/examples/modglob.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -r -s -M -c0.000003 -oobtained modglob.mps" >>obtained
-	-./ppl_lpsol -r -s -M -c0.000003 $(srcdir)/examples/modglob.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -n -s -oobtained modglob.mps" >>obtained
-	-./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/modglob.mps -oobtained >/dev/null
+	$(ECHO_SIMPLEX) "-r -m mas74.mps" >>obtained
+	-$(SIMPLEX) -r -m $(srcdir)/examples/mas74.mps >/dev/null
+	$(ECHO_SIMPLEX_NOCHECK) "-r -M -c0.000123 mas74.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -M -c0.000123 $(srcdir)/examples/mas74.mps $$m >/dev/null
+	$(ECHO_SIMPLEX) "-n mas74.mps" >>obtained
+	-$(SIMPLEX) -n $(srcdir)/examples/mas74.mps >/dev/null
+	$(ECHO_SIMPLEX) "-r -m mas76.mps" >>obtained
+	-$(SIMPLEX) -r -m $(srcdir)/examples/mas76.mps >/dev/null
+	$(ECHO_SIMPLEX) "-r -M -c0.000123 mas76.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -M -c0.000123 $(srcdir)/examples/mas76.mps >/dev/null
+	$(ECHO_SIMPLEX) "-n mas76.mps" >>obtained
+	-$(SIMPLEX) -n $(srcdir)/examples/mas76.mps >/dev/null
+	$(ECHO_SIMPLEX_NOCHECK) "-r -m -c0.0000002 modglob.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -m -c0.0000002 $(srcdir)/examples/modglob.mps >/dev/null
+	$(ECHO_SIMPLEX_NOCHECK) "-r -M -c0.000003 modglob.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -M -c0.000003 $(srcdir)/examples/modglob.mps >/dev/null
+	$(ECHO_SIMPLEX) "-n modglob.mps" >>obtained
+	-$(SIMPLEX) -n $(srcdir)/examples/modglob.mps >/dev/null
 	$(DIFF_COMMAND)
-
-MOSTLYCLEANFILES = \
-do_not_check_problems \
-tough_examples \
-obtained \
-expected_optima \
-obtained_optima \
-lp_problems
 
 endif HAVE_GLPK
 endif BUILD_C_INTERFACE
+
+MOSTLYCLEANFILES = \
+do_not_check_problems \
+do_not_output_location \
+expected_optima \
+lp_problems \
+obtained \
+obtained_optima \
+tough_examples
+
+$(top_builddir)/interfaces/C/libppl_c.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces/C libppl_c.la

@@ -1,11 +1,11 @@
 /* Test Octagonal_Shape::CC76_extrapolation_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -262,8 +262,8 @@ test08() {
 
 bool
 test09() {
-  typedef TOctagonal_Shape::base_type bt;
-  bt stop_points[] = { bt(-2), bt(-1), bt(0), bt(1), bt(2) };
+  typedef TOctagonal_Shape::coefficient_type_base ctb;
+  ctb stop_points[] = { ctb(-2), ctb(-1), ctb(0), ctb(1), ctb(2) };
 
   Variable x(0);
   Variable y(1);
@@ -284,9 +284,9 @@ test09() {
   print_constraints(oct2, "*** oct2 ***");
 
   oct1.CC76_extrapolation_assign(oct2,
-				 stop_points,
-				 stop_points
-				 + sizeof(stop_points)/sizeof(stop_points[0]));
+                                 stop_points,
+                                 stop_points
+                                 + sizeof(stop_points)/sizeof(stop_points[0]));
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 1);
@@ -508,10 +508,12 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+#ifndef __alpha__
+  // Exception handling is broken in GCC on the Alpha.
   DO_TEST(test10);
+#endif
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
 END_MAIN
-

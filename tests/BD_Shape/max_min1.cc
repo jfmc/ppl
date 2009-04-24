@@ -1,12 +1,12 @@
 /* Test BD_Shape::maximize(const Linear_Expression&, ...)
    and BD_Shape::minimize(const Linear_Expression&, ...).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -30,20 +30,20 @@ test01() {
   Variable x1(0);
   Variable x2(1);
 
-  TBD_Shape bd(2);
+  TBD_Shape bds(2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
-  bool ok = !bd.maximize(x1-2*x2, num, den, included, g);
+  bool ok = !bds.maximize(x1-2*x2, num, den, included, g);
 
   if (!ok)
     return false;
 
-  ok = !bd.minimize(x1-2*x2, num, den, included, g);
+  ok = !bds.minimize(x1-2*x2, num, den, included, g);
 
   return ok;
 }
@@ -53,20 +53,20 @@ test02() {
   Variable x1(0);
   Variable x2(1);
 
-  TBD_Shape bd(2, EMPTY);
+  TBD_Shape bds(2, EMPTY);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
-  bool ok = !bd.maximize(-10*x1-6*x2+4, num, den, included, g);
+  bool ok = !bds.maximize(-10*x1-6*x2+4, num, den, included, g);
 
   if (!ok)
     return false;
 
-  ok = !bd.minimize(-10*x1-6*x2+4, num, den, included, g);
+  ok = !bds.minimize(-10*x1-6*x2+4, num, den, included, g);
 
   return ok;
 }
@@ -74,16 +74,16 @@ test02() {
 bool
 test03() {
 
-  TBD_Shape bd(0);
+  TBD_Shape bds(0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
   Linear_Expression LE;
-  bool ok = bd.maximize(LE, num, den, included, g)
+  bool ok = bds.maximize(LE, num, den, included, g)
     && num == 0 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -98,7 +98,7 @@ test03() {
   if (!ok)
     return false;
 
-  ok = bd.minimize(LE, num, den, included, g)
+  ok = bds.minimize(LE, num, den, included, g)
     && num == 0 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -118,23 +118,23 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 1);
-  bd.add_constraint(B >= 1);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 1);
+  bds.add_constraint(B >= 1);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
   Linear_Expression LE(A + B);
-  bool ok = !bd.maximize(LE, num, den, included, g);
+  bool ok = !bds.maximize(LE, num, den, included, g);
 
   if (!ok)
     return false;
 
-  ok = bd.minimize(LE, num, den, included, g)
+  ok = bds.minimize(LE, num, den, included, g)
     && num == 2 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -154,19 +154,19 @@ test05() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A <= 0);
-  bd.add_constraint(B >= 0);
-  bd.add_constraint(A - B <= 0);
+  TBD_Shape bds(2);
+  bds.add_constraint(A <= 0);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(A - B <= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
   Linear_Expression LE(A - B);
-  bool ok = bd.maximize(LE, num, den, included, g)
+  bool ok = bds.maximize(LE, num, den, included, g)
     && num == 0 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -181,7 +181,7 @@ test05() {
   if (!ok)
     return false;
 
-  ok = !bd.minimize(LE, num, den, included, g);
+  ok = !bds.minimize(LE, num, den, included, g);
 
   return ok;
 }
@@ -192,18 +192,18 @@ test06() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(A <= 0);
-  bd.add_constraint(B - C <= 0);
+  TBD_Shape bds(3);
+  bds.add_constraint(A <= 0);
+  bds.add_constraint(B - C <= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
   Linear_Expression LE(A + B - C);
-  bool ok = bd.maximize(LE, num, den, included, g)
+  bool ok = bds.maximize(LE, num, den, included, g)
     && num == 0 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -218,7 +218,7 @@ test06() {
   if (!ok)
     return false;
 
-  ok = !bd.minimize(LE, num, den, included, g);
+  ok = !bds.minimize(LE, num, den, included, g);
 
   return ok;
 }
@@ -231,19 +231,19 @@ test07() {
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd(5);
-  bd.add_constraint(A <= 0);
-  bd.add_constraint(B - C <= 0);
-  bd.add_constraint(E - D <= 0);
+  TBD_Shape bds(5);
+  bds.add_constraint(A <= 0);
+  bds.add_constraint(B - C <= 0);
+  bds.add_constraint(E - D <= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
   Linear_Expression LE(A + B - C + 2*E - 2*D);
-  bool ok = bd.maximize(LE, num, den, included, g)
+  bool ok = bds.maximize(LE, num, den, included, g)
     && num == 0 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -258,7 +258,7 @@ test07() {
   if (!ok)
     return false;
 
-  ok = !bd.minimize(LE, num, den, included, g);
+  ok = !bds.minimize(LE, num, den, included, g);
 
   return ok;
 }
@@ -271,24 +271,24 @@ test08() {
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd(5);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B - C >= 0);
-  bd.add_constraint(E - D >= 0);
+  TBD_Shape bds(5);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B - C >= 0);
+  bds.add_constraint(E - D >= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
   Linear_Expression LE(A + B - C + 2*E - 2*D);
-  bool ok = !bd.maximize(LE, num, den, included, g);
+  bool ok = !bds.maximize(LE, num, den, included, g);
 
   if (!ok)
     return false;
 
-  ok = bd.minimize(LE, num, den, included, g)
+  ok = bds.minimize(LE, num, den, included, g)
     && num == 0 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -311,21 +311,21 @@ test09() {
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd(5);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B - C >= 0);
-  bd.add_constraint(B - C <= -1);
-  bd.add_constraint(E - D >= 0);
+  TBD_Shape bds(5);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B - C >= 0);
+  bds.add_constraint(B - C <= -1);
+  bds.add_constraint(E - D >= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
   Linear_Expression LE(A + B - C + 2*E - 2*D);
-  bool ok = !bd.maximize(LE, num, den, included, g)
-    && ! bd.minimize(LE, num, den, included, g);
+  bool ok = !bds.maximize(LE, num, den, included, g)
+    && ! bds.minimize(LE, num, den, included, g);
 
   return ok;
 }
@@ -338,19 +338,19 @@ test10() {
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd(5);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B - C >= 0);
-  bd.add_constraint(E - D >= 0);
+  TBD_Shape bds(5);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B - C >= 0);
+  bds.add_constraint(E - D >= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
   Linear_Expression LE(Linear_Expression(3));
-  bool ok = bd.maximize(LE, num, den, included, g)
+  bool ok = bds.maximize(LE, num, den, included, g)
     && num == 3 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -365,7 +365,7 @@ test10() {
   if (!ok)
     return false;
 
-  ok = bd.minimize(LE, num, den, included, g)
+  ok = bds.minimize(LE, num, den, included, g)
     && num == 3 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -386,8 +386,8 @@ test11() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
+  TBD_Shape bds(2);
+  bds.add_constraint(x >= y);
 
   Coefficient num;
   Coefficient den;
@@ -400,7 +400,7 @@ test11() {
     // BD_Shape::minimize(LE, num, den, included, g): it is illegal
     // to apply it to an expression whose space dimension is
     // greater than the space dimension of the BDS.
-    bd.minimize(LE, num, den, included, g);
+    bds.minimize(LE, num, den, included, g);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -417,8 +417,8 @@ test12() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
+  TBD_Shape bds(2);
+  bds.add_constraint(x >= y);
 
   Coefficient num;
   Coefficient den;
@@ -431,7 +431,7 @@ test12() {
     // BD_Shape::maximize(LE, num, den, included, g): it is illegal
     // to apply it to an expression whose space dimension is
     // greater than the space dimension of the BDS.
-    bd.maximize(LE, num, den, included, g);
+    bds.maximize(LE, num, den, included, g);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -447,20 +447,20 @@ test13() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 1);
-  bd.add_constraint(A <= 5);
-  bd.add_constraint(B <= 3);
-  bd.add_constraint(B >= -5);
-  bd.add_constraint(A - B <= 6);
-  bd.add_constraint(B - A <= 2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 1);
+  bds.add_constraint(A <= 5);
+  bds.add_constraint(B <= 3);
+  bds.add_constraint(B >= -5);
+  bds.add_constraint(A - B <= 6);
+  bds.add_constraint(B - A <= 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
-  bool ok = bd.maximize(A-2, num, den, included)
+  bool ok = bds.maximize(A-2, num, den, included)
     && num == 3 && den == 1 && included;
 
   nout << (included ? "maximum" : "supremum") << " = " << num;
@@ -471,7 +471,7 @@ test13() {
   if (!ok)
     return false;
 
-  ok = bd.minimize(A-2, num, den, included)
+  ok = bds.minimize(A-2, num, den, included)
     && num == -1 && den == 1 && included;
 
   nout << (included ? "minimum" : "infimum") << " = " << num;
@@ -487,20 +487,20 @@ test14() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 1);
-  bd.add_constraint(A <= 5);
-  bd.add_constraint(B <= 3);
-  bd.add_constraint(B >= -5);
-  bd.add_constraint(A - B <= 6);
-  bd.add_constraint(B - A <= 2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 1);
+  bds.add_constraint(A <= 5);
+  bds.add_constraint(B <= 3);
+  bds.add_constraint(B >= -5);
+  bds.add_constraint(A - B <= 6);
+  bds.add_constraint(B - A <= 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
-  bool ok = bd.maximize(A+2, num, den, included)
+  bool ok = bds.maximize(A+2, num, den, included)
     && num == 7 && den == 1 && included;
 
   nout << (included ? "maximum" : "supremum") << " = " << num;
@@ -511,7 +511,7 @@ test14() {
   if (!ok)
     return false;
 
-  ok = bd.minimize(A+2, num, den, included)
+  ok = bds.minimize(A+2, num, den, included)
     && num == 3 && den == 1 && included;
 
   nout << (included ? "minimum" : "infimum") << " = " << num;
@@ -527,18 +527,18 @@ test15() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 100);
-  bd.add_constraint(B <= 55);
-  bd.add_constraint(B >= 0);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 100);
+  bds.add_constraint(B <= 55);
+  bds.add_constraint(B >= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
-  bool ok = bd.maximize(-A+2, num, den, included)
+  bool ok = bds.maximize(-A+2, num, den, included)
     && num == 2 && den == 1 && included;
 
   nout << (included ? "maximum" : "supremum") << " = " << num;
@@ -549,7 +549,7 @@ test15() {
   if (!ok)
     return false;
 
-  ok = bd.minimize(-A+2, num, den, included)
+  ok = bds.minimize(-A+2, num, den, included)
     && num == -98 && den == 1 && included;
 
   nout << (included ? "minimum" : "infimum") << " = " << num;
@@ -565,18 +565,18 @@ test16() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 100);
-  bd.add_constraint(B <= 55);
-  bd.add_constraint(B >= 0);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 100);
+  bds.add_constraint(B <= 55);
+  bds.add_constraint(B >= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
-  bool ok = bd.maximize(-A-2, num, den, included)
+  bool ok = bds.maximize(-A-2, num, den, included)
     && num == -2 && den == 1 && included;
 
   nout << (included ? "maximum" : "supremum") << " = " << num;
@@ -587,7 +587,7 @@ test16() {
   if (!ok)
     return false;
 
-  ok = bd.minimize(-A-2, num, den, included)
+  ok = bds.minimize(-A-2, num, den, included)
     && num == -102 && den == 1 && included;
 
   nout << (included ? "minimum" : "infimum") << " = " << num;
@@ -603,20 +603,20 @@ test17() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 1);
-  bd.add_constraint(A <= 5);
-  bd.add_constraint(B <= 3);
-  bd.add_constraint(B >= -5);
-  bd.add_constraint(A - B <= 6);
-  bd.add_constraint(B - A <= 2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 1);
+  bds.add_constraint(A <= 5);
+  bds.add_constraint(B <= 3);
+  bds.add_constraint(B >= -5);
+  bds.add_constraint(A - B <= 6);
+  bds.add_constraint(B - A <= 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
-  bool ok = bd.maximize(A - B - 2, num, den, included)
+  bool ok = bds.maximize(A - B - 2, num, den, included)
     && num == 4 && den == 1 && included;
 
   nout << (included ? "maximum" : "supremum") << " = " << num;
@@ -627,7 +627,7 @@ test17() {
   if (!ok)
     return false;
 
-  ok = bd.minimize(A - B - 2, num, den, included)
+  ok = bds.minimize(A - B - 2, num, den, included)
     && num == -4 && den == 1 && included;
 
   nout << (included ? "minimum" : "infimum") << " = " << num;
@@ -643,20 +643,20 @@ test18() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 1);
-  bd.add_constraint(A <= 5);
-  bd.add_constraint(B <= 3);
-  bd.add_constraint(B >= -5);
-  bd.add_constraint(A - B <= 6);
-  bd.add_constraint(B - A <= 2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 1);
+  bds.add_constraint(A <= 5);
+  bds.add_constraint(B <= 3);
+  bds.add_constraint(B >= -5);
+  bds.add_constraint(A - B <= 6);
+  bds.add_constraint(B - A <= 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
-  bool ok = bd.maximize(A - B + 2, num, den, included)
+  bool ok = bds.maximize(A - B + 2, num, den, included)
     && num == 8 && den == 1 && included;
 
   nout << (included ? "maximum" : "supremum") << " = " << num;
@@ -667,7 +667,7 @@ test18() {
   if (!ok)
     return false;
 
-  ok = bd.minimize(A - B + 2, num, den, included)
+  ok = bds.minimize(A - B + 2, num, den, included)
     && num == 0 && den == 1 && included;
 
   nout << (included ? "minimum" : "infimum") << " = " << num;
@@ -683,18 +683,18 @@ test19() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 100);
-  bd.add_constraint(B <= 55);
-  bd.add_constraint(B >= 0);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 100);
+  bds.add_constraint(B <= 55);
+  bds.add_constraint(B >= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
-  bool ok = bd.maximize(-A + B + 2, num, den, included)
+  bool ok = bds.maximize(-A + B + 2, num, den, included)
     && num == 57 && den == 1 && included;
 
   nout << (included ? "maximum" : "supremum") << " = " << num;
@@ -705,7 +705,7 @@ test19() {
   if (!ok)
     return false;
 
-  ok = bd.minimize(-A + B + 2, num, den, included)
+  ok = bds.minimize(-A + B + 2, num, den, included)
     && num == -98 && den == 1 && included;
 
   nout << (included ? "minimum" : "infimum") << " = " << num;
@@ -721,18 +721,18 @@ test20() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(A <= 100);
-  bd.add_constraint(B <= 55);
-  bd.add_constraint(B >= 0);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(A <= 100);
+  bds.add_constraint(B <= 55);
+  bds.add_constraint(B >= 0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Coefficient num;
   Coefficient den;
   bool included;
-  bool ok = bd.maximize(-A + B - 2, num, den, included)
+  bool ok = bds.maximize(-A + B - 2, num, den, included)
     && num == 53 && den == 1 && included;
 
   nout << (included ? "maximum" : "supremum") << " = " << num;
@@ -743,7 +743,7 @@ test20() {
   if (!ok)
     return false;
 
-  ok = bd.minimize(-A + B - 2, num, den, included)
+  ok = bds.minimize(-A + B - 2, num, den, included)
     && num == -102 && den == 1 && included;
 
   nout << (included ? "minimum" : "infimum") << " = " << num;

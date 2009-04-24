@@ -1,12 +1,12 @@
 /* Test Octagonal_Shape::relation_with(g): we verify that a generator
    is not subsumed by an empty octagon.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -31,11 +31,11 @@ test01() {
 
   TOctagonal_Shape oct(2, EMPTY);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Generator g = point(x);
 
-  print_generator(g, "--- g ---");
+  print_generator(g, "*** g ***");
 
   Poly_Gen_Relation rel = oct.relation_with(g);
 
@@ -50,11 +50,11 @@ test01() {
 bool
 test02() {
   TOctagonal_Shape oct;
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Generator g = point();
 
-  print_generator(g, "--- g ---");
+  print_generator(g, "*** g ***");
 
   Poly_Gen_Relation rel = oct.relation_with(g);
 
@@ -73,7 +73,7 @@ test03() {
   TOctagonal_Shape oct(2);
   oct.add_constraint(A == 0);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Gen_Relation rel = oct.relation_with(point(2*A));
 
@@ -197,11 +197,11 @@ test09() {
   Variable A(0);
   Variable B(1);
 
-  TOctagonal_Shape oct	(2);
+  TOctagonal_Shape oct  (2);
   oct.add_constraint(A <= 0);
   oct.add_constraint(B == 2);
 
-  print_constraints(oct	, "*** oct	 ***");
+  print_constraints(oct , "*** oct       ***");
 
   Poly_Gen_Relation rel = oct.relation_with(closure_point(A));
 
@@ -437,8 +437,8 @@ test20() {
   Generator g = point();
   Poly_Gen_Relation rel = oct.relation_with(g);
 
-  print_constraints(oct, "--- oct ---");
-  print_generator(g, "--- g ---");
+  print_constraints(oct, "*** oct ***");
+  print_generator(g, "*** g ***");
   using namespace IO_Operators;
   nout << "oct.relation_with(v()) == " << rel << endl;
 
@@ -458,8 +458,8 @@ test21() {
   Generator g = point();
   Poly_Gen_Relation rel = oct.relation_with(g);
 
-  print_constraints(oct, "--- oct ---");
-  print_generator(g, "--- g ---");
+  print_constraints(oct, "*** oct ***");
+  print_generator(g, "*** g ***");
   using namespace IO_Operators;
   nout << "oct.relation_with(v()) == " << rel << endl;
 

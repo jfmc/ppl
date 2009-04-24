@@ -1,11 +1,11 @@
 /* Test Octagonal_Shape::bounded_affine_image().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -46,7 +46,7 @@ test01() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, 7, 3) ***");
+                    "*** oct.bounded_affine_image(A, 7, 3) ***");
 
   return ok;
 }
@@ -77,7 +77,7 @@ test02() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, 3, 7) ***");
+                    "*** oct.bounded_affine_image(A, 3, 7) ***");
 
   return ok;
 }
@@ -104,7 +104,7 @@ test03() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, 3, 7, -1) ***");
+                    "*** oct.bounded_affine_image(A, 3, 7, -1) ***");
 
   return ok;
 }
@@ -135,7 +135,7 @@ test04() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, 7, 3, -1) ***");
+                    "*** oct.bounded_affine_image(A, 7, 3, -1) ***");
 
   return ok;
 }
@@ -167,7 +167,7 @@ test05() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, 3, A+2) ***");
+                    "*** oct.bounded_affine_image(A, 3, A+2) ***");
 
   return ok;
 }
@@ -194,7 +194,7 @@ test06() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, 3, -A+2) ***");
+                    "*** oct.bounded_affine_image(A, 3, -A+2) ***");
 
   return ok;
 }
@@ -220,15 +220,14 @@ test07() {
 
   oct.bounded_affine_image(A, Linear_Expression(3), B+5);
 
-  oct1.generalized_affine_image(A, GREATER_THAN_OR_EQUAL,
-				Linear_Expression(3));
-  oct2.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B+5);
+  oct1.generalized_affine_image(A, GREATER_OR_EQUAL, Linear_Expression(3));
+  oct2.generalized_affine_image(A, LESS_OR_EQUAL, B+5);
   oct1.intersection_assign(oct2);
 
   bool ok = (oct == oct1);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, 3, B+5) ***");
+                    "*** oct.bounded_affine_image(A, 3, B+5) ***");
 
   return ok;
 }
@@ -260,7 +259,7 @@ test08() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, 3, B-5, -1) ***");
+                    "*** oct.bounded_affine_image(A, 3, B-5, -1) ***");
 
   return ok;
 }
@@ -292,7 +291,7 @@ test09() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, 2, 4*A + 3*B - 5) ***");
+                    "*** oct.bounded_affine_image(A, 2, 4*A + 3*B - 5) ***");
 
   return ok;
 }
@@ -324,8 +323,8 @@ test10() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, 2, "
-		    "4*A + 3*B - 5, -2) ***");
+                    "*** oct.bounded_affine_image(A, 2, "
+                    "4*A + 3*B - 5, -2) ***");
 
   return ok;
 }
@@ -358,8 +357,8 @@ test11() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, 4*A + 3*B - 5, "
-		    "4*A + 3*B - 5) ***");
+                    "*** oct.bounded_affine_image(A, 4*A + 3*B - 5, "
+                    "4*A + 3*B - 5) ***");
 
   return ok;
 }
@@ -402,8 +401,8 @@ test12() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, 4*A + 4, "
-		    "9) ***");
+                    "*** oct.bounded_affine_image(A, 4*A + 4, "
+                    "9) ***");
 
   return ok;
 }
@@ -446,8 +445,8 @@ test13() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, 4*C + 3, "
-		    "9) ***");
+                    "*** oct.bounded_affine_image(A, 4*C + 3, "
+                    "9) ***");
 
   return ok;
 }
@@ -474,7 +473,7 @@ test14() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
-		    "*** oct.bounded_affine_image(A, A, A) ***");
+                    "*** oct.bounded_affine_image(A, A, A) ***");
 
   return ok;
 }
@@ -596,7 +595,10 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+#ifndef __alpha__
+  // Exception handling is broken in GCC on the Alpha.
   DO_TEST(test16);
   DO_TEST(test17);
+#endif
   DO_TEST(test18);
 END_MAIN

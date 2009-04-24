@@ -1,11 +1,11 @@
 /* Polyhedron class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.types.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.types.hh"
-#include "Linear_Expression.defs.hh"
+#include "Linear_Expression.types.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "Generator_System.defs.hh"
@@ -37,12 +37,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator_System.defs.hh"
 #include "Grid_Generator_System.inlines.hh"
 #include "Bit_Matrix.defs.hh"
+#include "Constraint.types.hh"
 #include "Generator.types.hh"
-#include "Congruence.defs.hh"
+#include "Congruence.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "BHRZ03_Certificate.types.hh"
 #include "H79_Certificate.types.hh"
+#include "Box.types.hh"
 #include "BD_Shape.types.hh"
 #include "Octagonal_Shape.types.hh"
 #include <vector>
@@ -86,6 +88,18 @@ bool operator==(const Polyhedron& x, const Polyhedron& y);
 */
 bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
+namespace Interfaces {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  Returns \c true if and only if
+  <code>ph.topology() == NECESSARILY_CLOSED</code>.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+bool is_necessarily_closed_for_interfaces(const Polyhedron& ph);
+
+} // namespace Interfaces
+
 } // namespace Parma_Polyhedra_Library
 
 
@@ -102,11 +116,6 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   and vice versa.
   These systems can contain redundant members: in this case we say
   that they are not in the minimal form.
-  Most operators on polyhedra are provided with two implementations:
-  one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
-  also enforces the minimization of the representations,
-  and returns the Boolean value <CODE>false</CODE> whenever
-  the resulting polyhedron turns out to be empty.
 
   Two key attributes of any polyhedron are its topological kind
   (recording whether it is a C_Polyhedron or an NNC_Polyhedron object)
@@ -354,8 +363,28 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
 class Parma_Polyhedra_Library::Polyhedron {
 public:
+  //! The numeric type of coefficients.
+  typedef Coefficient coefficient_type;
+
   //! Returns the maximum space dimension all kinds of Polyhedron can handle.
   static dimension_type max_space_dimension();
+
+  /*! \brief
+    Returns \c true indicating that this domain has methods that
+    can recycle constraints.
+  */
+  static bool can_recycle_constraint_systems();
+
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
+  /*! \brief
+    Returns \c false indicating that this domain cannot recycle congruences.
+  */
+  static bool can_recycle_congruence_systems();
 
 protected:
   //! Builds a polyhedron having the specified properties.
@@ -374,7 +403,11 @@ protected:
 	     Degenerate_Element kind);
 
   //! Ordinary copy-constructor.
-  Polyhedron(const Polyhedron& y);
+  /*!
+    The complexity argument is ignored.
+  */
+  Polyhedron(const Polyhedron& y,
+             Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a polyhedron from a system of constraints.
   /*!
@@ -450,63 +483,23 @@ protected:
   */
   Polyhedron(Topology topol, Generator_System& gs, Recycle_Input dummy);
 
-  //! Builds a polyhedron out of a generic, interval-based bounding box.
+  //! Builds a polyhedron from a box.
   /*!
+    This will use an algorithm whose complexity is polynomial and build
+    the smallest polyhedron with topology \p topol containing \p box.
+
     \param topol
     The topology of the polyhedron;
 
     \param box
-    The bounding box representing the polyhedron to be built.
+    The box representing the polyhedron to be built;
 
-    \exception std::invalid_argument
-    Thrown if \p box has intervals that are incompatible with \p topol.
-
-    The template class Box must provide the following methods.
-    \code
-      dimension_type space_dimension() const
-    \endcode
-    returns the dimension of the vector space enclosing the polyhedron
-    represented by the bounding box.
-    \code
-      bool is_empty() const
-    \endcode
-    returns <CODE>true</CODE> if and only if the bounding box
-    describes the empty set.
-    The <CODE>is_empty()</CODE> method will always be called before the
-    methods below.  However, if <CODE>is_empty()</CODE> returns
-    <CODE>true</CODE>, none of the functions below will be called.
-    \code
-      bool get_lower_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from below, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.  The fraction
-    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
-    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
-    the unique representation for zero.
-    \code
-      bool get_upper_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from above, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the least upper bound of \f$I\f$.
+    \param complexity
+    This argument is ignored.
   */
-  template <typename Box>
-  Polyhedron(Topology topol, const Box& box);
+  template <typename Interval>
+  Polyhedron(Topology topol, const Box<Interval>& box,
+             Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.
@@ -540,12 +533,13 @@ public:
   //! Returns the system of generators, with no redundant generator.
   const Generator_System& minimized_generators() const;
 
-  //! Returns a system of congruences created from the constraints.
+  //! Returns a system of (equality) congruences satisfied by \p *this.
   Congruence_System congruences() const;
 
   /*! \brief
-    Returns a system of congruences created from the minimized
-    constraints.
+    Returns a system of (equality) congruences satisfied by \p *this,
+    with no redundant congruences and having the same affine dimension
+    as \p *this.
   */
   Congruence_System minimized_congruences() const;
 
@@ -572,6 +566,15 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
   Poly_Gen_Relation relation_with(const Generator& g) const;
+
+  /*! \brief
+    Returns the relations holding between the polyhedron \p *this
+    and the congruence \p c.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p c are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Congruence& cg) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is
@@ -613,6 +616,15 @@ public:
     contains at least one integer point.
   */
   bool contains_integer_point() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p var is constrained in
+    \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  bool constrains(Variable var) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
@@ -766,75 +778,6 @@ public:
   */
   bool strictly_contains(const Polyhedron& y) const;
 
-  /*! \brief
-    Uses \p *this to shrink a generic, interval-based bounding box.
-    Assigns to \p box the intersection of \p box with the smallest
-    bounding box containing \p *this.
-
-    \param box
-    The bounding box to be shrunk;
-
-    \param complexity
-    The complexity class of the algorithm to be used.
-
-    If the polyhedron \p *this or \p box is empty, then the empty box
-    is returned.
-
-    If \p *this and \p box are non-empty, then, for
-    each space dimension \f$k\f$ with variable \f$\mathrm{var}\f$, let
-    \f$u\f$ be the upper and \f$l\f$ the lower bound of the smallest
-    interval containing \p *this.
-
-    If \f$l\f$ is infinite, then \p box is unaltered; if \f$l\f$ is
-    finite, then the \p box interval for space dimension \f$k\f$ is
-    (destructively) intersected with \f$[l, +\mathrm{infty})\f$ if a
-    point of \p *this satisfies \f$\mathrm{var} == l\f$ and with
-    \f$(l, +\mathrm{infty})\f$ otherwise.
-
-    Similarly, if \f$u\f$ is infinite, then \p box is unaltered; if
-    \f$u\f$ is finite, then the \p box interval for space dimension
-    \f$k\f$ is (destructively) intersected with \f$(-\mathrm{infty},
-    u]\f$ if a point of \p *this satisfies \f$\mathrm{var} == u\f$ and
-    with \f$(-\mathrm{infty}, u)\f$ otherwise.
-
-    The template class Box must provide the following methods, whose
-    return values, if any, are simply ignored.
-    \code
-      set_empty()
-    \endcode
-    causes the box to become empty, i.e., to represent the empty set.
-    \code
-      raise_lower_bound(dimension_type k, bool closed,
-                        Coefficient_traits::const_reference n,
-                        Coefficient_traits::const_reference d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension
-    with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
-    with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
-    \code
-      lower_upper_bound(dimension_type k, bool closed,
-                        Coefficient_traits::const_reference n,
-                        Coefficient_traits::const_reference d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension
-    with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
-    with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
-    is <CODE>false</CODE>.
-
-    The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
-    will be called at most once for each possible value for <CODE>k</CODE>
-    and for all such calls the fraction \f$n/d\f$ will be in canonical form,
-    that is, \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$
-    is positive, \f$0/1\f$ being the unique representation for zero.
-    The same guarantee is offered for the function
-    <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
-  */
-  template <typename Box>
-  void shrink_bounding_box(Box& box,
-			   Complexity_Class complexity = ANY_COMPLEXITY) const;
-
   //! Checks if all the invariants are satisfied.
   /*!
     \return
@@ -863,24 +806,15 @@ public:
     Adds a copy of constraint \p c to the system of constraints
     of \p *this (without minimizing the result).
 
+    \param c
+    The constraint that will be added to the system of
+    constraints of \p *this.
+
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are topology-incompatible
     or dimension-incompatible.
   */
   void add_constraint(const Constraint& c);
-
-  /*! \brief
-    Adds a copy of constraint \p c to the system of constraints
-    of \p *this, minimizing the result
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are topology-incompatible
-    or dimension-incompatible.
-  */
-  bool add_constraint_and_minimize(const Constraint& c);
 
   /*! \brief
     Adds a copy of generator \p g to the system of generators
@@ -894,32 +828,13 @@ public:
   void add_generator(const Generator& g);
 
   /*! \brief
-    Adds a copy of generator \p g to the system of generators
-    of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
+    Adds a copy of congruence \p cg to \p *this,
+    if \p cg can be exactly represented by a polyhedron.
 
     \exception std::invalid_argument
-    Thrown if \p *this and generator \p g are topology-incompatible or
-    dimension-incompatible, or if \p *this is an empty polyhedron and
-    \p g is not a point.
-  */
-  bool add_generator_and_minimize(const Generator& g);
-
-  //! Domain compatibility method.
-  void add_grid_generator(const Grid_Generator& g) const;
-
-  //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
-  bool add_grid_generator_and_minimize(const Grid_Generator& g) const;
-
-  /*! \brief
-    Adds a copy of congruence \p cg to the system of congruences of \p
-    *this (without minimizing the result).
-
-    \exception std::invalid_argument
-    Thrown if \p *this and congruence \p cg are topology-incompatible
-    or dimension-incompatible.
+    Thrown if \p *this and congruence \p cg are dimension-incompatible,
+    of if \p cg is a proper congruence which is neither a tautology,
+    nor a contradiction.
   */
   void add_congruence(const Congruence& cg);
 
@@ -956,44 +871,6 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
-    Adds a copy of the constraints in \p cs to the system
-    of constraints of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    Contains the constraints that will be added to the system of
-    constraints of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-  */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
-
-  /*! \brief
-    Adds the constraints in \p cs to the system of constraints
-    of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraint system to be added to \p *this.  The constraints in
-    \p cs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-
-    \warning
-    The only assumption that can be made on \p cs upon successful or
-    exceptional return is that it can be safely destroyed.
-  */
-  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
-
-  /*! \brief
     Adds a copy of the generators in \p gs to the system
     of generators of \p *this (without minimizing the result).
 
@@ -1028,58 +905,102 @@ public:
   void add_recycled_generators(Generator_System& gs);
 
   /*! \brief
-    Adds a copy of the generators in \p gs to the system
-    of generators of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param gs
-    Contains the generators that will be added to the system of
-    generators of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are topology-incompatible or
-    dimension-incompatible, or if \p *this is empty and the the system
-    of generators \p gs is not empty, but has no points.
-  */
-  bool add_generators_and_minimize(const Generator_System& gs);
-
-  /*! \brief
-    Adds the generators in \p gs to the system of generators
-    of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param gs
-    The generator system to be added to \p *this.  The generators in
-    \p gs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are topology-incompatible or
-    dimension-incompatible, or if \p *this is empty and the the system
-    of generators \p gs is not empty, but has no points.
-
-    \warning
-    The only assumption that can be made on \p gs upon successful or
-    exceptional return is that it can be safely destroyed.
-  */
-  bool add_recycled_generators_and_minimize(Generator_System& gs);
-
-  /*! \brief
-    Adds to \p *this constraints equivalent to the congruences in \p
-    cgs (without minimizing the result).
+    Adds a copy of the congruences in \p cgs to \p *this,
+    if all the congruences can be exactly represented by a polyhedron.
 
     \param cgs
-    Contains the congruences that will be added to the system of
+    The congruences to be added.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    of if there exists in \p cgs a proper congruence which is
+    neither a tautology, nor a contradiction.
+  */
+  void add_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Adds the congruences in \p cgs to \p *this,
+    if all the congruences can be exactly represented by a polyhedron.
+
+    \param cgs
+    The congruences to be added. Its elements may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    of if there exists in \p cgs a proper congruence which is
+    neither a tautology, nor a contradiction
+
+    \warning
+    The only assumption that can be made on \p cgs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_congruences(Congruence_System& cgs);
+
+  /*! \brief
+    Uses a copy of constraint \p c to refine \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
+  */
+  void refine_with_constraint(const Constraint& c);
+
+  /*! \brief
+    Uses a copy of congruence \p cg to refine \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+  */
+  void refine_with_congruence(const Congruence& cg);
+
+  /*! \brief
+    Uses a copy of the constraints in \p cs to refine \p *this.
+
+    \param cs
+    Contains the constraints used to refine the system of
     constraints of \p *this.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cs are dimension-incompatible.
   */
-  void add_congruences(const Congruence_System& cgs);
+  void refine_with_constraints(const Constraint_System& cs);
+
+  /*! \brief
+    Uses a copy of the congruences in \p cgs to refine \p *this.
+
+    \param cgs
+    Contains the congruences used to refine the system of
+    constraints of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void refine_with_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  void unconstrain(Variable var);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  void unconstrain(const Variables_Set& to_be_unconstrained);
 
   /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.
@@ -1092,19 +1013,6 @@ public:
   void intersection_assign(const Polyhedron& y);
 
   /*! \brief
-    Assigns to \p *this the intersection of \p *this and \p y,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
-  */
-  bool intersection_assign_and_minimize(const Polyhedron& y);
-
-  /*! \brief
     Assigns to \p *this the poly-hull of \p *this and \p y.
     The result is not guaranteed to be minimized.
 
@@ -1113,19 +1021,6 @@ public:
     dimension-incompatible.
   */
   void poly_hull_assign(const Polyhedron& y);
-
-  /*! \brief
-    Assigns to \p *this the poly-hull of \p *this and \p y,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
-  */
-  bool poly_hull_assign_and_minimize(const Polyhedron& y);
 
   //! Same as poly_hull_assign(y).
   void upper_bound_assign(const Polyhedron& y);
@@ -1143,6 +1038,17 @@ public:
 
   //! Same as poly_difference_assign(y).
   void difference_assign(const Polyhedron& y);
+
+  /*! \brief
+    Assigns to \p *this a \ref Meet_Preserving_Simplification
+    "meet-preserving simplification" of \p *this with respect to \p y.
+    If \c false is returned, then the intersection is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool simplify_using_context_assign(const Polyhedron& y);
 
   /*! \brief
     Assigns to \p *this the
@@ -1357,10 +1263,10 @@ public:
     relation symbol.
   */
   void generalized_affine_image(Variable var,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& expr,
 				Coefficient_traits::const_reference denominator
-				  = Coefficient_one());
+				= Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1390,7 +1296,7 @@ public:
   */
   void
   generalized_affine_preimage(Variable var,
-			      const Relation_Symbol relsym,
+			      Relation_Symbol relsym,
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference denominator
 			      = Coefficient_one());
@@ -1416,7 +1322,7 @@ public:
     relation symbol.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& rhs);
 
   /*! \brief
@@ -1440,7 +1346,7 @@ public:
     relation symbol.
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
-				   const Relation_Symbol relsym,
+				   Relation_Symbol relsym,
 				   const Linear_Expression& rhs);
 
   /*!
@@ -1539,9 +1445,10 @@ public:
   void BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
   /*! \brief
-    Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
-    computation by also enforcing those constraints in \p cs that are
-    satisfied by all the points of \p *this.
+    Assigns to \p *this the result of computing the
+    \ref limited_extrapolation "limited extrapolation"
+    between \p *this and \p y using the \ref BHRZ03_widening
+    "BHRZ03-widening" operator.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -1563,11 +1470,10 @@ public:
 					   unsigned* tp = 0);
 
   /*! \brief
-    Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
-    computation by also enforcing those constraints in \p cs that are
-    satisfied by all the points of \p *this, plus all the constraints
-    of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
-    \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
+    Assigns to \p *this the result of computing the
+    \ref bounded_extrapolation "bounded extrapolation"
+    between \p *this and \p y using the \ref BHRZ03_widening
+    "BHRZ03-widening" operator.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -1590,7 +1496,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the result of computing the
-    \ref H79_widening "H79-widening" between \p *this and \p y.
+    \ref H79_widening "H79_widening" between \p *this and \p y.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -1610,9 +1516,10 @@ public:
   void widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
   /*! \brief
-    Improves the result of the \ref H79_widening "H79-widening"
-    computation by also enforcing those constraints in \p cs that are
-    satisfied by all the points of \p *this.
+    Assigns to \p *this the result of computing the
+    \ref limited_extrapolation "limited extrapolation"
+    between \p *this and \p y using the \ref H79_widening
+    "H79-widening" operator.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -1634,11 +1541,10 @@ public:
 					unsigned* tp = 0);
 
   /*! \brief
-    Improves the result of the \ref H79_widening "H79-widening"
-    computation by also enforcing those constraints in \p cs that are
-    satisfied by all the points of \p *this, plus all the constraints
-    of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
-    \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
+    Assigns to \p *this the result of computing the
+    \ref bounded_extrapolation "bounded extrapolation"
+    between \p *this and \p y using the \ref H79_widening
+    "H79-widening" operator.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -1846,8 +1752,7 @@ public:
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
-  friend bool Parma_Polyhedra_Library::operator==(const Polyhedron& x,
-						  const Polyhedron& y);
+  friend bool operator==(const Polyhedron& x, const Polyhedron& y);
 
   //! \name Miscellaneous Member Functions
   //@{
@@ -1866,13 +1771,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -1880,6 +1783,14 @@ public:
 
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
+
+  /*! \brief
+    Returns a 32-bit hash code for \p *this.
+
+    If \p x and \p y are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
+  */
+  int32_t hash_code() const;
 
   //@} // Miscellaneous Member Functions
 
@@ -1914,6 +1825,19 @@ private:
     is necessarily closed.
   */
   bool is_necessarily_closed() const;
+
+  friend bool
+  Parma_Polyhedra_Library::Interfaces
+  ::is_necessarily_closed_for_interfaces(const Polyhedron&);
+
+  /*! \brief
+    Uses a copy of constraint \p c to refine the system of constraints
+    of \p *this.
+
+    \param c The constraint to be added. If it is dimension-incompatible
+    with \p *this, the behavior is undefined.
+  */
+  void refine_no_check(const Constraint& c);
 
   //! \name Private Verifiers: Verify if Individual Flags are Set
   //@{
@@ -2246,6 +2170,9 @@ private:
   */
   bool strongly_minimize_generators() const;
 
+  //! If constraints are up-to-date, obtain a simplified copy of them.
+  Constraint_System simplified_constraints() const;
+
   //@} // Weak and Strong Minimization of Descriptions
 
   enum Three_Valued_Boolean {
@@ -2311,7 +2238,7 @@ private:
     \p included and \p g are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       const bool maximize,
+	       bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
 	       Generator& g) const;
 
@@ -2425,18 +2352,62 @@ private:
     <CODE>conversion()</CODE>.
   */
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Linear_System& mat, Bit_Matrix& sat);
+  static dimension_type simplify(Linear_System& mat, Bit_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 
+  /*! \brief
+    Pointer to an array used by simplify().
+
+    Holds (between class initialization and finalization) a pointer to
+    an array, allocated with operator new[](), of
+    simplify_num_saturators_size elements.
+  */
+  static dimension_type* simplify_num_saturators_p;
+
+  /*! \brief
+    Dimension of an array used by simplify().
+
+    Holds (between class initialization and finalization) the size of the
+    array pointed to by simplify_num_saturators_p.
+  */
+  static size_t simplify_num_saturators_size;
+
+  template <typename Interval> friend class Parma_Polyhedra_Library::Box;
   template <typename T> friend class Parma_Polyhedra_Library::BD_Shape;
   template <typename T> friend class Parma_Polyhedra_Library::Octagonal_Shape;
+  friend class Parma_Polyhedra_Library::Grid;
   friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
   friend class Parma_Polyhedra_Library::H79_Certificate;
   friend class Serializer;
 
+protected:
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    If the poly-hull of \p *this and \p y is exact it is assigned
+    to \p *this and \c true is returned, otherwise \c false is returned.
+
+    Current implementation is based on (a variant of) Algorithm 8.1 in
+      A. Bemporad, K. Fukuda, and F. D. Torrisi
+      <em>Convexity Recognition of the Union of Polyhedra</em>
+      Technical Report AUT00-13, ETH Zurich, 2000
+
+    \note
+    It is assumed that \p *this and \p y are topologically closed
+    and dimension-compatible;
+    if the assumption does not hold, the behavior is undefined.
+  */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+  bool BFT00_poly_hull_assign_if_exact(const Polyhedron& y);
+
+  bool BHZ09_poly_hull_assign_if_exact(const Polyhedron& y);
+  bool BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y);
+  bool BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \name Exception Throwers
   //@{
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 protected:
   void throw_runtime_error(const char* method) const;
   void throw_invalid_argument(const char* method, const char* reason) const;
@@ -2486,7 +2457,7 @@ protected:
 				    const Congruence_System& cgs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* var_name,
-				    const Variable var) const;
+				    Variable var) const;
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
 
@@ -2500,7 +2471,9 @@ protected:
 			       const char* g_name) const;
   void throw_invalid_generators(const char* method,
 				const char* gs_name) const;
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //@} // Exception Throwers
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 };
 

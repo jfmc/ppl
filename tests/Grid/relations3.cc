@@ -1,11 +1,11 @@
 /* Test Grid::relation_with(const Constraint&).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -81,7 +81,8 @@ test03() {
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(B == 1)
-	     == Poly_Con_Relation::is_included());
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -97,10 +98,12 @@ test04() {
 
   bool ok = (gr.relation_with(B == 0)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint())
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates())
 	     && gr.relation_with(B > 0)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()));
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -114,9 +117,16 @@ test05() {
   bool ok = (// False.
 	     gr.relation_with(Linear_Expression(1) == 0)
 	     == Poly_Con_Relation::is_disjoint()
+	     && gr.relation_with(Linear_Expression(0) > 0)
+	     == (Poly_Con_Relation::saturates()
+		 && Poly_Con_Relation::is_disjoint())
 	     // True.
 	     && gr.relation_with(Linear_Expression(1) == 1)
-	     == Poly_Con_Relation::is_included()
+	     == (Poly_Con_Relation::saturates()
+		 && Poly_Con_Relation::is_included())
+	     && gr.relation_with(Linear_Expression(0) >= 0)
+	     == (Poly_Con_Relation::saturates()
+		 && Poly_Con_Relation::is_included())
 	     // False.
 	     && gr.relation_with(Linear_Expression(1) < 0)
 	     == Poly_Con_Relation::is_disjoint()
@@ -160,11 +170,13 @@ test07() {
   bool ok = (gr.relation_with(A == 3)
 	     == Poly_Con_Relation::is_disjoint()
 	     && gr.relation_with(2*A == 1)
-	     == Poly_Con_Relation::is_included()
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates())
 	     && gr.relation_with(2*A < 1)
 	     == Poly_Con_Relation::is_disjoint()
 	     && gr.relation_with(2*A >= 1)
-	     == Poly_Con_Relation::is_included());
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -198,9 +210,11 @@ test09() {
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(Linear_Expression(10) == 10)
-	     == Poly_Con_Relation::is_included()
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates())
 	     && gr.relation_with(Linear_Expression(10) >= 10)
-	     == Poly_Con_Relation::is_included());
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -252,16 +266,18 @@ test12() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A == 1);
-  gr.add_congruence(A == 2);
+  gr.add_constraint(A == 1);
+  gr.add_constraint(A == 2);
   print_congruences(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(B == 0)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint())
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates())
 	     && gr.relation_with(B >= 0)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()));
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -331,10 +347,12 @@ test16() {
 
   bool ok = (gr.relation_with(A + B == 8)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint())
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates())
 	     && gr.relation_with(A + B > 8)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()));
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -383,7 +401,8 @@ test18() {
 	     && gr.relation_with(A == 0)
 	     == Poly_Con_Relation::strictly_intersects()
 	     && gr.relation_with(Linear_Expression(0) == 0)
-	     == Poly_Con_Relation::is_included());
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -397,19 +416,23 @@ test19() {
   bool ok = (// False.
 	     gr.relation_with(Linear_Expression(1) == 0)
 	     == (Poly_Con_Relation::is_disjoint()
-		 && Poly_Con_Relation::is_included())
+		 && Poly_Con_Relation::is_included()
+	         && Poly_Con_Relation::saturates())
 	     // True.
 	     && gr.relation_with(Linear_Expression(1) == 1)
 	     == (Poly_Con_Relation::is_disjoint()
-		 && Poly_Con_Relation::is_included())
+		 && Poly_Con_Relation::is_included()
+	         && Poly_Con_Relation::saturates())
 	     // False.
 	     && gr.relation_with(Linear_Expression(1) < 0)
 	     == (Poly_Con_Relation::is_disjoint()
-		 && Poly_Con_Relation::is_included())
+		 && Poly_Con_Relation::is_included()
+	         && Poly_Con_Relation::saturates())
 	     // True.
 	     && gr.relation_with(Linear_Expression(1) >= 0)
 	     == (Poly_Con_Relation::is_disjoint()
-		 && Poly_Con_Relation::is_included()));
+		 && Poly_Con_Relation::is_included()
+	         && Poly_Con_Relation::saturates()));
 
   return ok;
 }

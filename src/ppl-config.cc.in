@@ -1,12 +1,12 @@
 /* A program to enquire about the configuration of the PPL  -*- C++ -*-
    and of the applications using it.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -38,15 +38,30 @@ namespace PPL = Parma_Polyhedra_Library;
 #include <stdexcept>
 #include <string>
 
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
 #include <getopt.h>
+
+// Try to accommodate non-GNU implementations of `getopt()'.
+#if !defined(no_argument) && defined(NO_ARG)
+#define no_argument NO_ARG
 #endif
 
-#ifdef HAVE_UNISTD_H
+#if !defined(required_argument) && defined(REQUIRED_ARG)
+#define required_argument REQUIRED_ARG
+#endif
+
+#if !defined(optional_argument) && defined(OPTIONAL_ARG)
+#define optional_argument OPTIONAL_ARG
+#endif
+
+#endif // defined(PPL_HAVE_GETOPT_H)
+
+#ifdef PPL_HAVE_UNISTD_H
 // Include this for `getopt()': especially important if we do not have
 // <getopt.h>.
 #include <unistd.h>
 #endif
+
 
 namespace {
 
@@ -76,7 +91,7 @@ Format required_format = NO_FORMAT;
 
 Interface required_interface = NO_INTERFACE;
 
-#define PPL_LICENSE "GNU GENERAL PUBLIC LICENSE, Version 2"
+#define PPL_LICENSE "GNU GENERAL PUBLIC LICENSE, Version 3"
 
 std::string prefix;
 std::string exec_prefix;
@@ -111,7 +126,7 @@ bool required_credits = false;
 
 unsigned num_required_items = 0;
 
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
 struct option long_options[] = {
   {"help",              no_argument,       0, 'h'},
   {"format",            required_argument, 0, 'F'},
@@ -144,7 +159,10 @@ struct option long_options[] = {
 #endif
 
 static const char* usage_string
-= "Usage: %s [OPTION]...\n\n"
+= "Usage: %s [OPTION]...\n"
+"Displays information, in various formats, about an installation\n"
+"of the Parma Polyhedra Library.\n\n"
+"Options:\n"
 "  -h, --help               prints this help text to stdout\n"
 "  -FFMT, --format=FMT      sets the output format to FMT\n"
 "                           (one of `plain', `makefile', `sh' or `csh')\n"
@@ -176,7 +194,7 @@ static const char* usage_string
 "  -c, --copying            prints detailed licensing information\n"
 "  -u, --bugs               prints bug reporting information\n"
 "  -r, --credits            prints credits\n"
-#ifndef HAVE_GETOPT_H
+#ifndef PPL_HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
 #endif
@@ -198,6 +216,8 @@ fatal(const char* format, ...) {
   exit(1);
 }
 
+// Currently unused, but we may want to use it in the future.
+/*
 void
 warning(const char* format, ...) {
   va_list ap;
@@ -207,6 +227,7 @@ warning(const char* format, ...) {
   fprintf(stderr, "\n");
   va_end(ap);
 }
+*/
 
 void internal_error() {
   fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
@@ -227,7 +248,7 @@ strcaseeq(const char* s1, const char* s2) {
 void
 process_options(int argc, char* argv[]) {
   while (true) {
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
     int option_index = 0;
     int c = getopt_long(argc, argv, OPTION_LETTERS, long_options,
 			&option_index);

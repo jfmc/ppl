@@ -1,11 +1,11 @@
 /* Test BD_Shape::limited_BHMZ05_extrapolation_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -37,26 +37,26 @@ test01() {
   cs2.insert(x <= 0);
   cs2.insert(y >= 5);
 
-  TBD_Shape bd1(cs1);
-  TBD_Shape bd2(cs2);
+  TBD_Shape bds1(cs1);
+  TBD_Shape bds2(cs2);
 
   Constraint_System cs;
   cs.insert(x >= 20);
   cs.insert(y >= 3);
 
-  print_constraints(bd1, "*** bd1 ****");
-  print_constraints(bd2, "*** bd2 ****");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
   print_constraints(cs, "*** cs ***");
 
-  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+  bds1.limited_BHMZ05_extrapolation_assign(bds2, cs);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(y >= 3);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ****");
+  print_constraints(bds1,
+                    "*** bds1.limited_BHMZ05_extrapolation_assign(bds2) ***");
 
   return ok;
 }
@@ -78,8 +78,8 @@ test02() {
   cs2.insert(y >= 0);
   cs2.insert(x - y >= 0);
 
-  TBD_Shape bd1(cs1);
-  TBD_Shape bd2(cs2);
+  TBD_Shape bds1(cs1);
+  TBD_Shape bds2(cs2);
 
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -87,11 +87,11 @@ test02() {
   cs.insert(x <= 5);
   cs.insert(y <= 5);
 
-  print_constraints(bd1, "*** bd1 ****");
-  print_constraints(bd2, "*** bd2 ****");
-  print_constraints(cs, "*** cs ****");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(cs, "*** cs ***");
 
-  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+  bds1.limited_BHMZ05_extrapolation_assign(bds2, cs);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(y >= 0);
@@ -99,10 +99,10 @@ test02() {
   known_result.add_constraint(y - x <= 0);
   known_result.add_constraint(x >= 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+  print_constraints(bds1,
+                    "*** bds1.limited_BHMZ05_extrapolation_assign(bds2) ***");
 
   return ok;
 }
@@ -124,8 +124,8 @@ test03() {
   cs2.insert(y >= 0);
   cs2.insert(x - y >= 0);
 
-  TBD_Shape bd1(cs1);
-  TBD_Shape bd2(cs2);
+  TBD_Shape bds1(cs1);
+  TBD_Shape bds2(cs2);
 
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -133,18 +133,18 @@ test03() {
   cs.insert(x <= 5);
   cs.insert(y <= 5);
 
-  print_constraints(bd1, "*** bd1 ****");
-  print_constraints(bd2, "*** bd2 ****");
-  print_constraints(cs, "*** cs ****");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(cs, "*** cs ***");
 
-  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+  bds1.limited_BHMZ05_extrapolation_assign(bds2, cs);
 
-  BD_Shape<mpq_class> known_result(bd2);
+  BD_Shape<mpq_class> known_result(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+  print_constraints(bds1,
+                    "*** bds1.limited_BHMZ05_extrapolation_assign(bds2) ***");
 
   return ok;
 }
@@ -174,42 +174,42 @@ test04() {
   cs.insert(x <= 5);
   cs.insert(y <= 5);
 
-  TBD_Shape bd1(cs1);
-  TBD_Shape bd2(cs2);
-  BD_Shape<mpq_class> known_result(bd1);
+  TBD_Shape bds1(cs1);
+  TBD_Shape bds2(cs2);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  print_constraints(bd1, "*** bd1 ****");
-  print_constraints(bd2, "*** bd2 ****");
-  print_constraints(cs, "*** cs ****");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(cs, "*** cs ***");
 
-  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+  bds1.limited_BHMZ05_extrapolation_assign(bds2, cs);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+  print_constraints(bds1,
+                    "*** bds1.limited_BHMZ05_extrapolation_assign(bds2) ***");
 
   return ok;
 }
 
 bool
 test05() {
-  TBD_Shape bd1;
-  TBD_Shape bd2;
+  TBD_Shape bds1;
+  TBD_Shape bds2;
   Constraint_System cs;
 
-  print_constraints(bd1, "*** bd1 ****");
-  print_constraints(bd2, "*** bd2 ****");
-  print_constraints(cs, "*** cs ****");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(cs, "*** cs ***");
 
-  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+  bds1.limited_BHMZ05_extrapolation_assign(bds2, cs);
 
   BD_Shape<mpq_class> known_result;
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+  print_constraints(bds1,
+                    "*** bds1.limited_BHMZ05_extrapolation_assign(bds2) ***");
 
   return ok;
 }
@@ -234,8 +234,8 @@ test06() {
   cs2.insert(x - y >= 0);
   cs2.insert(z <= 0);
 
-  TBD_Shape bd1(cs1);
-  TBD_Shape bd2(cs2);
+  TBD_Shape bds1(cs1);
+  TBD_Shape bds2(cs2);
 
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -244,11 +244,11 @@ test06() {
   cs.insert(y <= 5);
   cs.insert(x - y + z <= 5);
 
-  print_constraints(bd1, "*** bd1 ****");
-  print_constraints(bd2, "*** bd2 ****");
-  print_constraints(cs, "*** cs ****");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(cs, "*** cs ***");
 
-  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+  bds1.limited_BHMZ05_extrapolation_assign(bds2, cs);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y >= 0);
@@ -257,10 +257,10 @@ test06() {
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(z <= 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+  print_constraints(bds1,
+                    "*** bds1.limited_BHMZ05_extrapolation_assign(bds2) ***");
 
   return ok;
 }
@@ -283,8 +283,8 @@ test07() {
   cs2.insert(x - y >= 0);
   cs2.insert(z <= -1);
 
-  TBD_Shape bd1(cs1);
-  TBD_Shape bd2(cs2);
+  TBD_Shape bds1(cs1);
+  TBD_Shape bds2(cs2);
 
   Constraint_System cs;
   cs.insert(x == 0);
@@ -292,21 +292,21 @@ test07() {
   cs.insert(y <= 5);
   cs.insert(x - y + z <= 5);
 
-  print_constraints(bd1, "*** bd1 ****");
-  print_constraints(bd2, "*** bd2 ****");
-  print_constraints(cs, "*** cs ****");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(cs, "*** cs ***");
 
-  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+  bds1.limited_BHMZ05_extrapolation_assign(bds2, cs);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(y - x <= 0);
   known_result.add_constraint(x == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+  print_constraints(bds1,
+                    "*** bds1.limited_BHMZ05_extrapolation_assign(bds2) ***");
 
   return ok;
 }
@@ -331,8 +331,8 @@ test08() {
   cs2.insert(x - y >= 0);
   cs2.insert(z <= 0);
 
-  TBD_Shape bd1(cs1);
-  TBD_Shape bd2(cs2);
+  TBD_Shape bds1(cs1);
+  TBD_Shape bds2(cs2);
 
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -341,11 +341,11 @@ test08() {
   cs.insert(y <= 5);
   cs.insert(2*x - 3*y <= 5);
 
-  print_constraints(bd1, "*** bd1 ****");
-  print_constraints(bd2, "*** bd2 ****");
-  print_constraints(cs, "*** cs ****");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(cs, "*** cs ***");
 
-  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+  bds1.limited_BHMZ05_extrapolation_assign(bds2, cs);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y >= 0);
@@ -354,10 +354,10 @@ test08() {
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(z <= 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+  print_constraints(bds1,
+                    "*** bds1.limited_BHMZ05_extrapolation_assign(bds2) ***");
 
   return ok;
 }
@@ -382,8 +382,8 @@ test09() {
   cs2.insert(x - y >= 0);
   cs2.insert(z <= 0);
 
-  TBD_Shape bd1(cs1);
-  TBD_Shape bd2(cs2);
+  TBD_Shape bds1(cs1);
+  TBD_Shape bds2(cs2);
 
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -392,11 +392,11 @@ test09() {
   cs.insert(y <= 5);
   cs.insert(x - y >= 0);
 
-  print_constraints(bd1, "*** bd1 ****");
-  print_constraints(bd2, "*** bd2 ****");
-  print_constraints(cs, "*** cs ****");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(cs, "*** cs ***");
 
-  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+  bds1.limited_BHMZ05_extrapolation_assign(bds2, cs);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y >= 0);
@@ -405,10 +405,10 @@ test09() {
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(z <= 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+  print_constraints(bds1,
+                    "*** bds1.limited_BHMZ05_extrapolation_assign(bds2) ***");
 
   return ok;
 }
@@ -419,25 +419,25 @@ test10() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(x - y >= 0);
-  bd1.add_constraint(x >= 0);
-  bd1.add_constraint(x <= 2);
+  TBD_Shape bds1(2);
+  bds1.add_constraint(x - y >= 0);
+  bds1.add_constraint(x >= 0);
+  bds1.add_constraint(x <= 2);
 
-  TBD_Shape bd2(2);
-  bd2.add_constraint(x - y >= 0);
-  bd2.add_constraint(x >= 0);
-  bd2.add_constraint(x <= 5);
+  TBD_Shape bds2(2);
+  bds2.add_constraint(x - y >= 0);
+  bds2.add_constraint(x >= 0);
+  bds2.add_constraint(x <= 5);
 
   Constraint_System cs;
   cs.insert(z <= 5);
 
   try {
     // This is an invalid use of the method
-    // BD_Shape::limited_BHMZ05_extrapolation_assign(bd, cs): it is
+    // BD_Shape::limited_BHMZ05_extrapolation_assign(bds, cs): it is
     // illegal to apply the method to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
-    bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
+    bds2.limited_BHMZ05_extrapolation_assign(bds1, cs);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -452,18 +452,18 @@ bool
 test11() {
   Variable y(1);
 
-  TBD_Shape bd1(1);
-  TBD_Shape bd2(2);
+  TBD_Shape bds1(1);
+  TBD_Shape bds2(2);
 
   Constraint_System cs;
   cs.insert(y <= 9);
 
   try {
     // This is an invalid use of the method
-    // BD_Shape::limited_BHMZ05_extrapolation_assign(bd2, cs): it is
+    // BD_Shape::limited_BHMZ05_extrapolation_assign(bds2, cs): it is
     // illegal to apply the method to two polyhedra that are not
     // dimension-compatible.
-    bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
+    bds2.limited_BHMZ05_extrapolation_assign(bds1, cs);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -479,25 +479,25 @@ test12() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(x - y >= 0);
-  bd1.add_constraint(x >= 0);
-  bd1.add_constraint(x <= 2);
+  TBD_Shape bds1(2);
+  bds1.add_constraint(x - y >= 0);
+  bds1.add_constraint(x >= 0);
+  bds1.add_constraint(x <= 2);
 
-  TBD_Shape bd2(2);
-  bd2.add_constraint(x - y >= 0);
-  bd2.add_constraint(x >= 0);
-  bd2.add_constraint(x <= 5);
+  TBD_Shape bds2(2);
+  bds2.add_constraint(x - y >= 0);
+  bds2.add_constraint(x >= 0);
+  bds2.add_constraint(x <= 5);
 
   Constraint_System cs;
   cs.insert(x < 5);
 
   try {
     // This is an invalid use of the method
-    // BD_Shape::limited_BHMZ05_extrapolation_assign(bd, cs): it is
+    // BD_Shape::limited_BHMZ05_extrapolation_assign(bds, cs): it is
     // illegal to apply the method to a system of constraints that
     // has a strict-inequality.
-    bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
+    bds2.limited_BHMZ05_extrapolation_assign(bds1, cs);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

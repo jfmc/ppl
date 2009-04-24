@@ -12,12 +12,12 @@
 #
 # LAST MODIFICATION
 #
-#   2006-11-07
+#   2006-12-20
 #
 # COPYLEFT
 #
-#   Copyright (C) 2002 Luc Maisonobe <luc@spaceroots.org>
-#   Copyright (C) 2006 Roberto Bagnara <bagnara@cs.unipr.it>
+#   Copyright (C) 2002      Luc Maisonobe <luc@spaceroots.org>
+#   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 #   Copying and distribution of this file, with or without
 #   modification, are permitted in any medium without royalty provided
@@ -33,15 +33,17 @@ else
 fi
 
 if test x"`eval 'echo $ac_cv_path_JAVAH'`" != xno ; then
-  AC_TRY_CPP([#include <jni.h>],,[
+  AC_PREPROC_IFELSE([#include <jni.h> ] ,,[
     ac_save_CPPFLAGS="$CPPFLAGS"
 changequote(, )dnl
     ac_dir=`echo $ac_cv_path_JAVAH | sed 's,\(.*\)/[^/]*/[^/]*$,\1/include,'`
     ac_machdep=`echo $build_os | sed 's,[-0-9].*,,' | sed 's,cygwin,win32,'`
 changequote([, ])dnl
-    CPPFLAGS="$ac_save_CPPFLAGS -I$ac_dir -I$ac_dir/$ac_machdep"
-    AC_TRY_CPP([#include <jni.h>],
-               ac_save_CPPFLAGS="$CPPFLAGS",
+    JNIFLAGS="-I$ac_dir -I$ac_dir/$ac_machdep"
+    CPPFLAGS="$ac_save_CPPFLAGS $JNIFLAGS"
+    AC_SUBST(JNIFLAGS)
+    AC_PREPROC_IFELSE([#include <jni.h>],
+               CPPFLAGS="$ac_save_CPPFLAGS",
                AC_MSG_WARN([unable to include <jni.h>])
 	       JAVAH=no)
     CPPFLAGS="$ac_save_CPPFLAGS"])

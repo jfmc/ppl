@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -12,14 +12,14 @@ PURPOSE. */
 #ifndef PPL_fpu_types_hh
 #define PPL_fpu_types_hh 1
 
-#ifdef HAVE_IEEEFP_H
+#ifdef PPL_HAVE_IEEEFP_H
 #include <ieeefp.h>
 #endif
 
 namespace Parma_Polyhedra_Library {
 
-typedef int fpu_rounding_direction_type;
-typedef int fpu_rounding_control_word_type;
+enum fpu_rounding_direction_type {};
+enum fpu_rounding_control_word_type {};
 
 } // namespace Parma_Polyhedra_Library
 

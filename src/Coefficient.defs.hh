@@ -1,11 +1,11 @@
 /* Coefficient class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -26,18 +26,31 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Coefficient.types.hh"
 #include <iosfwd>
 
-#if defined(CHECKED_INTEGERS) || defined(NATIVE_INTEGERS)
+#if defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 #include "Checked_Number.defs.hh"
 #include "checked_int.inlines.hh"
 #endif
 
-#ifdef GMP_INTEGERS
+#ifdef PPL_GMP_INTEGERS
 #include "GMP_Integer.defs.hh"
 #endif
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Initializes the Coefficient constants.
+#endif
+void Coefficient_constants_initialize();
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Finalizes the Coefficient constants.
+#endif
+void Coefficient_constants_finalize();
+
+//! Returns a const reference to a Coefficient with value 0.
 Coefficient_traits::const_reference Coefficient_zero();
+
+//! Returns a const reference to a Coefficient with value 1.
 Coefficient_traits::const_reference Coefficient_one();
 
 } // namespace Parma_Polyhedra_Library

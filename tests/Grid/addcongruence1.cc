@@ -1,11 +1,11 @@
 /* Test methods which add a single congruence to a grid.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// Test add_congruence_and_minimize.
+// Add to the universe grid.
 bool
 test01() {
   Variable A(0);
@@ -39,10 +39,7 @@ test01() {
 
   gr.add_congruence((A + B %= 0) / 6);
 
-  print_congruences(gr,
-		    "*** gr.add_congruence((A + B %= 0) / 6) ***");
-
-  gr.add_congruence_and_minimize((A + B %= 0) / 3);
+  print_congruences(gr, "*** gr.add_congruence((A + B %= 0) / 6) ***");
 
   Grid known_gr(2);
   known_gr.add_congruence((A + B %= 0) / 6);
@@ -50,7 +47,7 @@ test01() {
   bool ok = (gr == known_gr) ;
 
   print_congruences(gr,
-	"*** gr.add_congruence_and_minimize((A + B %= 0) / 3) ***");
+		    "*** gr.add_congruence((A + B %= 0) / 3) ***");
 
   return ok;
 }
@@ -101,33 +98,9 @@ test03() {
   return ok;
 }
 
-// Add a congruence and minimize with less dimensions than the grid.
-bool
-test04() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid gr(3);
-  gr.add_congruence((B %= 0) / 7);
-  gr.add_congruence_and_minimize((A %= 0) / 7);
-
-  Grid known_gr(3, EMPTY);
-  known_gr.add_grid_generator(grid_point());
-  known_gr.add_grid_generator(parameter(7*A));
-  known_gr.add_grid_generator(parameter(7*B));
-  known_gr.add_grid_generator(grid_line(C));
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "***  gr.add_congruence((A %= 0) / 7) ***");
-
-  return ok;
-}
-
 // Space dimension exception.
 static bool
-test05() {
+test04() {
   Variable A(0);
   Variable C(2);
 
@@ -152,5 +125,4 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST(test05);
 END_MAIN

@@ -1,11 +1,11 @@
 /* Test operator<<(std::ostream&, const Polyhedron&).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -22,19 +22,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#include "files.hh"
-#include <fstream>
-
-using std::fstream;
-using std::ios_base;
-
 using namespace IO_Operators;
 
 namespace {
 
 bool
 test01() {
-  const char* my_file = "writepolyhedron2.dat";
   Variable x1(0);
   Variable x2(1);
   Variable x3(2);
@@ -56,12 +49,14 @@ test01() {
   ph.add_constraint(+  x1          <  1);
   ph.add_constraint(+  x1-x2+x3+x4 <= 2);
 
-  fstream f;
-  open(f, my_file, ios_base::out);
-  f << ph << endl;
-  close(f);
-  // FIXME.
-  return true;
+  std::stringstream s;
+  s << ph;
+
+  nout << "*** s << ph ***" << endl << "`" << s.str() << "'" << endl;
+
+  return s.str() == "-A > -1, -A + C + D >= 0, -A + B - C - D >= -2, -B >= -1,"
+    " -B + C + D >= 0, -C > -1, -D >= -1, 2*A - B - C + D > 0, C > 0, B > 0,"
+    " A - B - C >= -1, A - C + D > 0, A >= 0";
 }
 
 } // namespace

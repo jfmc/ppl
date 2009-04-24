@@ -1,11 +1,11 @@
 /* OR_Matrix class implementation: inline functions.
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -43,10 +43,10 @@ OR_Matrix<T>::row_first_element_index(const dimension_type k) {
 template <typename T>
 inline dimension_type
 OR_Matrix<T>::row_size(const dimension_type k) {
-  return (k+2) & ~dimension_type(1);
+  return k + 2 - k%2;
 }
 
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
 
 template <typename T>
 template <typename U>
@@ -55,30 +55,29 @@ OR_Matrix<T>::Pseudo_Row<U>::size() const {
   return size_;
 }
 
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_OR_MATRIX_EXTRA_DEBUG
 
 template <typename T>
 template <typename U>
 inline
 OR_Matrix<T>::Pseudo_Row<U>::Pseudo_Row()
   : first(0)
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
   , size_(0)
 #endif
 {
-  // FIXME: is zeroing necessary/wanted?
 }
 
 template <typename T>
 template <typename U>
 inline
 OR_Matrix<T>::Pseudo_Row<U>::Pseudo_Row(U& y
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
 		, dimension_type s
 #endif
 		)
   : first(&y)
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
   , size_(s)
 #endif
 {
@@ -90,7 +89,7 @@ template <typename V>
 inline
 OR_Matrix<T>::Pseudo_Row<U>::Pseudo_Row(const Pseudo_Row<V>& y)
   : first(y.first)
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
     , size_(y.size_)
 #endif
 {
@@ -101,7 +100,7 @@ template <typename U>
 inline OR_Matrix<T>::Pseudo_Row<U>&
 OR_Matrix<T>::Pseudo_Row<U>::operator=(const Pseudo_Row& y) {
   first = y.first;
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
   size_ = y.size_;
 #endif
   return *this;
@@ -117,7 +116,7 @@ template <typename T>
 template <typename U>
 inline U&
 OR_Matrix<T>::Pseudo_Row<U>::operator[](const dimension_type k) const {
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
   assert(k < size_);
 #endif
   return *(first + k);
@@ -128,15 +127,14 @@ template <typename U>
 inline
 OR_Matrix<T>::any_row_iterator<U>
 ::any_row_iterator(const dimension_type n_rows)
-#if 0
-  : e(n_rows)
-#else
   : value(),
-    e(n_rows),
-    // This zeroing will just silence an annoying compiler warning.
-    i(0)
-#endif
+    e(n_rows)
+    // Field `i' is intentionally not initialized here.
 {
+#if PPL_OR_MATRIX_EXTRA_DEBUG
+  // Turn `value' into a valid object.
+  value.size_ = OR_Matrix::row_size(e);
+#endif
 }
 
 template <typename T>
@@ -144,7 +142,7 @@ template <typename U>
 inline
 OR_Matrix<T>::any_row_iterator<U>::any_row_iterator(U& base)
   :  value(base
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
 	   , OR_Matrix<T>::row_size(0)
 #endif
 	   ),
@@ -194,12 +192,13 @@ inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator++() {
   ++e;
   dimension_type increment = e;
-  if (e % 2) {
+  if (e % 2 != 0)
     ++increment;
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
+  else {
     value.size_ += 2;
-#endif
   }
+#endif
   i += increment;
   value.first += increment;
   return *this;
@@ -220,9 +219,9 @@ inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator--() {
   dimension_type decrement = e + 1;
   --e;
-  if (e % 2) {
+  if (e % 2 != 0) {
     ++decrement;
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
     value.size_ -= 2;
 #endif
   }
@@ -243,16 +242,15 @@ OR_Matrix<T>::any_row_iterator<U>::operator--(int) {
 template <typename T>
 template <typename U>
 inline typename OR_Matrix<T>::template any_row_iterator<U>&
-OR_Matrix<T>::any_row_iterator<U>::operator+=(difference_type m) {
+OR_Matrix<T>::any_row_iterator<U>::operator+=(const difference_type m) {
   difference_type increment = m + m*m/2 + m*e;
-  if (e%2 == 0 && m%2 == 1)
+  if (e % 2 == 0 && m % 2 != 0)
     ++increment;
   e += m;
   i += increment;
   value.first += increment;
-#if EXTRA_ROW_DEBUG
-  // FIXME!!!
-  value.size_ = OR_Matrix::row_size(e);
+#if PPL_OR_MATRIX_EXTRA_DEBUG
+  value.size_ += (m - m%2);
 #endif
   return *this;
 }
@@ -339,7 +337,7 @@ template <typename T>
 template <typename U>
 inline dimension_type
 OR_Matrix<T>::any_row_iterator<U>::row_size() const {
-  return (e+2) & ~dimension_type(1);
+  return OR_Matrix::row_size(e);
 }
 
 template <typename T>
@@ -423,11 +421,10 @@ isqrt(unsigned long x) {
 template <typename T>
 inline dimension_type
 OR_Matrix<T>::max_num_rows() {
-  // Compute the maximum number of rows that
-  // are contained in a DB_Row that allocates
-  // a pseudo-triangular matrix.
+  // Compute the maximum number of rows that are contained in a DB_Row
+  // that allocates a pseudo-triangular matrix.
   dimension_type k = isqrt(2*DB_Row<T>::max_size() + 1);
-  return (k-1) & ~dimension_type(1);
+  return (k - 1) - (k - 1)%2;
 }
 
 template <typename T>
@@ -453,7 +450,7 @@ template <typename T>
 inline typename OR_Matrix<T>::row_reference_type
 OR_Matrix<T>::operator[](dimension_type k) {
   return row_reference_type(vec[row_first_element_index(k)]
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
 			    , row_size(k)
 #endif
 			    );
@@ -463,7 +460,7 @@ template <typename T>
 inline typename OR_Matrix<T>::const_row_reference_type
 OR_Matrix<T>::operator[](dimension_type k) const {
   return const_row_reference_type(vec[row_first_element_index(k)]
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
 				  , row_size(k)
 #endif
 				  );
@@ -489,7 +486,7 @@ OR_Matrix<T>::clear() {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline bool
 operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y) {
@@ -498,7 +495,7 @@ operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y) {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline bool
 operator!=(const OR_Matrix<T>& x, const OR_Matrix<T>& y) {
@@ -510,7 +507,8 @@ inline
 OR_Matrix<T>::OR_Matrix(const OR_Matrix& y)
   : vec(y.vec),
     space_dim(y.space_dim),
-    vec_capacity(compute_capacity(y.vec.size())) {
+    vec_capacity(compute_capacity(y.vec.size(),
+                                  DB_Row<T>::max_size())) {
 }
 
 template <typename T>
@@ -519,7 +517,8 @@ inline
 OR_Matrix<T>::OR_Matrix(const OR_Matrix<U>& y)
   : vec(),
     space_dim(y.space_dim),
-    vec_capacity(compute_capacity(y.vec.size())) {
+    vec_capacity(compute_capacity(y.vec.size(),
+                                  DB_Row<T>::max_size())) {
   vec.construct_upward_approximation(y.vec, vec_capacity);
   assert(OK());
 }
@@ -529,7 +528,7 @@ inline OR_Matrix<T>&
 OR_Matrix<T>::operator=(const OR_Matrix& y) {
   vec = y.vec;
   space_dim = y.space_dim;
-  vec_capacity = compute_capacity(y.vec.size());
+  vec_capacity = compute_capacity(y.vec.size(), DB_Row<T>::max_size());
   return *this;
 }
 
@@ -545,17 +544,13 @@ OR_Matrix<T>::grow(const dimension_type new_dim) {
       space_dim = new_dim;
     }
     else {
-      // We cannot even recycle the old vec.
+      // We cannot recycle the old vec.
       OR_Matrix<T> new_matrix(new_dim);
       element_iterator j = new_matrix.element_begin();
       for (element_iterator i = element_begin(),
 	     mend = element_end(); i != mend; ++i, ++j)
-	// FIXME: this assignment is costly when using mpz_class or
-	// mpq_class. Provide a "copy_or_swap()" method that swaps
-	// the implementation of coefficients when appropriate.
-      	*j = *i;
+	assign_or_swap(*j, *i);
       swap(new_matrix);
-      return;
     }
   }
 }
@@ -572,16 +567,26 @@ OR_Matrix<T>::shrink(const dimension_type new_dim) {
 template <typename T>
 inline void
 OR_Matrix<T>::resize_no_copy(const dimension_type new_dim) {
-  if (new_dim > space_dim)
-    // FIXME: here we might unnecessarily copy!
-    grow(new_dim);
+  if (new_dim > space_dim) {
+    const dimension_type new_size = 2*new_dim*(new_dim + 1);
+    if (new_size <= vec_capacity) {
+      // We can recycle the old vec.
+      vec.expand_within_capacity(new_size);
+      space_dim = new_dim;
+    }
+    else {
+      // We cannot recycle the old vec.
+      OR_Matrix<T> new_matrix(new_dim);
+      swap(new_matrix);
+    }
+  }
   else if (new_dim < space_dim)
     shrink(new_dim);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Specialization, typename Temp, typename To, typename T>
 inline bool
 l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -604,7 +609,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 	continue;
       else {
       pinf:
-	r = PLUS_INFINITY;
+	assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
 	return true;
       }
     }
@@ -622,7 +627,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
       maybe_assign(tmp2p, tmp2, x_i, inverse(dir));
     }
     sub_assign_r(tmp1, *tmp1p, *tmp2p, dir);
-    assert(tmp1 >= 0);
+    assert(sgn(tmp1) >= 0);
     Specialization::combine(tmp0, tmp1, dir);
   }
 
@@ -634,7 +639,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -654,7 +659,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -674,7 +679,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,

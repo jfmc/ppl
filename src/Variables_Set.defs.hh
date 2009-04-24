@@ -1,11 +1,11 @@
 /* Variables_Set class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -81,6 +81,14 @@ public:
   // other `insert' method of std::set.
   using Base::insert;
 
+
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+  bool ascii_load(std::istream& s);
+
   //! Returns the total size in bytes of the memory occupied by \p *this.
   memory_size_type total_memory_in_bytes() const;
 
@@ -89,6 +97,8 @@ public:
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
+
+  PPL_OUTPUT_DECLARATIONS
 };
 
 #include "Variables_Set.inlines.hh"

@@ -1,11 +1,11 @@
 /* Test Grid::affine_image().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -44,8 +44,7 @@ test01() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(B, A + 2, 1) ***");
+  print_congruences(gr, "*** gr.affine_image(B, A + 2, 1) ***");
 
   return ok;
 }
@@ -72,8 +71,7 @@ test02() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_image(A, A + B + 1) ***");
+  print_generators(gr, "*** gr.affine_image(A, A + B + 1) ***");
 
   return ok;
 }
@@ -99,8 +97,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, A + 1, 2) ***");
+  print_congruences(gr, "*** gr.affine_image(A, A + 1, 2) ***");
 
   return ok;
 }
@@ -128,8 +125,7 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, A + 1, 3) ***");
+  print_congruences(gr, "*** gr.affine_image(A, A + 1, 3) ***");
 
   return ok;
 }
@@ -157,8 +153,7 @@ test05() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, A + 1, 3) ***");
+  print_congruences(gr, "*** gr.affine_image(A, A + 1, 3) ***");
 
   return ok;
 }
@@ -186,8 +181,7 @@ test06() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, A + 1, 3) ***");
+  print_congruences(gr, "*** gr.affine_image(A, A + 1, 3) ***");
 
   return ok;
 }
@@ -215,8 +209,7 @@ test07() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, 3*A + 2*B + 4) ***");
+  print_congruences(gr, "*** gr.affine_image(A, 3*A + 2*B + 4) ***");
 
   return ok;
 }
@@ -243,8 +236,7 @@ test08() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, 3*A + 2*B + 4) ***");
+  print_congruences(gr, "*** gr.affine_image(A, 3*A + 2*B + 4) ***");
 
   return ok;
 }
@@ -268,8 +260,7 @@ test09() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, 2*A) ***");
+  print_congruences(gr, "*** gr.affine_image(A, 2*A) ***");
 
   return ok;
 }
@@ -292,8 +283,7 @@ test10() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, 2*A) ***");
+  print_congruences(gr, "*** gr.affine_image(A, 2*A) ***");
 
   return ok;
 }
@@ -323,8 +313,7 @@ test11() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, 3*A + 2*B + 1) ***");
+  print_congruences(gr, "*** gr.affine_image(A, 3*A + 2*B + 1) ***");
 
   return ok;
 }
@@ -350,8 +339,7 @@ test12() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_image(A, B) ***");
+  print_generators(gr, "*** gr.affine_image(A, B) ***");
 
   return ok;
 }
@@ -377,8 +365,7 @@ test13() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, B) ***");
+  print_congruences(gr, "*** gr.affine_image(A, B) ***");
 
   return ok;
 }

@@ -1,13 +1,13 @@
 dnl A function to test for the existence and usability of particular
 dnl versions of the PPL, defining macros containing the required paths.
-dnl Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl Copyright (C) 1997 Owen Taylor
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
 dnl The PPL is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU General Public License as published by the
-dnl Free Software Foundation; either version 2 of the License, or (at your
+dnl Free Software Foundation; either version 3 of the License, or (at your
 dnl option) any later version.
 dnl
 dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -21,7 +21,6 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
-dnl
 
 dnl AM_PATH_PPL([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl Test for PPL, and define PPL_CPPFLAGS, PPL_LDFLAGS, ... what else?
@@ -89,6 +88,8 @@ else
 dnl Now check if the installed PPL is sufficiently new.
 dnl (Also sanity checks the results of ppl-config to some extent.)
 
+    AC_LANG_PUSH(C++)
+
     rm -f conf.ppltest
     AC_TRY_RUN([
 #include <ppl.hh>
@@ -132,7 +133,7 @@ main() {
       if (min_ppl_beta == 0)
         min_ppl_version_ok = false;
       else
-        min_ppl_revision = 0; 
+        min_ppl_revision = 0;
     }
     else if (n == 2) {
       n = sscanf("$min_ppl_version",
@@ -141,7 +142,7 @@ main() {
       if (n != 2)
         min_ppl_version_ok = false;
       else {
-        min_ppl_revision = 0; 
+        min_ppl_revision = 0;
         min_ppl_beta = 0;
       }
     }
@@ -154,10 +155,10 @@ main() {
   if (!min_ppl_version_ok) {
     cout << "illegal version string '$min_ppl_version'"
          << endl;
-    exit(1);
+    return 1;
   }
 
-  if (strcmp("$ppl_config_version", PPL::version()) != 0)
+  if (strcmp("$ppl_config_version", PPL::version()) != 0) {
     cout << "\n*** 'ppl-config --version' returned $ppl_config_version, "
             "but PPL version "
          << PPL::version()
@@ -173,24 +174,27 @@ main() {
             " PPL_CONFIG"
             "\n*** to point to the correct copy of ppl-config,"
             " and remove the file config.cache"
-            "\n*** before re-running configure"
+            "\n*** before re-running configure."
          << endl;
-  else if (strcmp(PPL_VERSION, PPL::version()) != 0)
+      return 1;
+  }
+  else if (strcmp(PPL_VERSION, PPL::version()) != 0) {
     cout << "\n*** PPL header file (version " PPL_VERSION ") does not match"
          << "\n*** library (version " << PPL::version() << ")"
          << endl;
-  else {
-    if (PPL_VERSION_MAJOR < min_ppl_major
-        || (PPL_VERSION_MAJOR == min_ppl_major
-           && PPL_VERSION_MINOR < min_ppl_minor)
-        || (PPL_VERSION_MAJOR == min_ppl_major
-           && PPL_VERSION_MINOR == min_ppl_minor
-           && PPL_VERSION_REVISION < min_ppl_revision)
-        || (PPL_VERSION_MAJOR == min_ppl_major
-           && PPL_VERSION_MINOR == min_ppl_minor
-           && PPL_VERSION_REVISION == min_ppl_revision
-           && PPL_VERSION_BETA < min_ppl_beta)) {
-      cout << "\n*** An old version of PPL (" PPL_VERSION ") was found"
+      return 1;
+  }
+  else if (PPL_VERSION_MAJOR < min_ppl_major
+           || (PPL_VERSION_MAJOR == min_ppl_major
+              && PPL_VERSION_MINOR < min_ppl_minor)
+           || (PPL_VERSION_MAJOR == min_ppl_major
+              && PPL_VERSION_MINOR == min_ppl_minor
+              && PPL_VERSION_REVISION < min_ppl_revision)
+           || (PPL_VERSION_MAJOR == min_ppl_major
+              && PPL_VERSION_MINOR == min_ppl_minor
+              && PPL_VERSION_REVISION == min_ppl_revision
+              && PPL_VERSION_BETA < min_ppl_beta)) {
+      cout << "\n*** An old version of PPL (" PPL_VERSION ") was found."
               "\n*** You need at least PPL version $min_ppl_version."
               "  The latest version of"
               "\n*** PPL is always available from ftp://ftp.cs.unipr.it/ppl/ ."
@@ -209,20 +213,23 @@ main() {
               " variable or edit /etc/ld.so.conf"
               "\n*** so that the correct libraries are found at run-time.)"
            << endl;
-      exit(1);
-    }
+      return 1;
   }
   return 0;
 }
 ],, no_ppl=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
-       CPPFLAGS="$ac_save_CPPFLAGS"
-       LDFLAGS="$ac_save_LDFLAGS"
+
+    AC_LANG_POP
+
+    CPPFLAGS="$ac_save_CPPFLAGS"
+    LDFLAGS="$ac_save_LDFLAGS"
   fi
 fi
+
 if test "x$no_ppl" = x
 then
   AC_MSG_RESULT(yes)
-  ifelse([$2], , :, [$2])     
+  ifelse([$2], , :, [$2])
 else
   AC_MSG_RESULT(no)
   if test x"$PPL_CONFIG" = xno
@@ -253,7 +260,7 @@ using namespace Parma_Polyhedra_Library;
   echo "*** wrong version of the PPL.  If it is not finding the PPL, you will"
   echo "*** need to set your LD_LIBRARY_PATH environment variable, or edit"
   echo "*** /etc/ld.so.conf to point to the installed location.  Also, make"
-  echo "*** sure you have run ldconfig if that is required on your system"
+  echo "*** sure you have run ldconfig if that is required on your system."
   echo "***"
   echo "*** If you have an old version installed, it is best to remove it,"
   echo "*** although you may also be able to get things to work by modifying"
@@ -261,7 +268,7 @@ using namespace Parma_Polyhedra_Library;
 ],
 [
   echo "*** The test program failed to compile or link. See the file"
-  echo "*** config.log for the exact error that occured.  This usually"
+  echo "*** config.log for the exact error that occured.  This usually means"
   echo "*** the PPL was incorrectly installed or that someone moved the PPL"
   echo "*** since it was installed.  In both cases you should reinstall"
   echo "*** the library."

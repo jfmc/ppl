@@ -1,11 +1,11 @@
 /* Congruence_System class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -46,13 +46,6 @@ std::ostream&
 operator<<(std::ostream& s, const Congruence_System& cgs);
 
 } // namespace IO_Operators
-
-// Put this in the namespace here to declare it a friend later.
-
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
-/*! \relates Congruence_System */
-bool
-operator==(const Congruence_System& x, const Congruence_System& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -213,6 +206,12 @@ public:
   */
   void recycling_insert(Congruence_System& cgs);
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   //! Returns the system containing only Congruence::zero_dim_false().
   static const Congruence_System& zero_dim_empty();
 
@@ -291,6 +290,9 @@ public:
     void skip_forward();
   };
 
+  //! Returns <CODE>true</CODE> if and only if \p *this has no congruences.
+  bool empty() const;
+
   /*! \brief
     Returns the const_iterator pointing to the first congruence, if \p
     *this is not empty; otherwise, returns the past-the-end
@@ -308,18 +310,16 @@ public:
     Matrix, each row in the system is a valid Congruence and the
     number of columns is consistent with the number of congruences.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool OK() const;
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -346,10 +346,11 @@ public:
     positive.
 
     Turns the \f$r \times c\f$ matrix \f$A\f$ into the \f$(r+dims) \times
-    (c+dims)\f$ matrix \f$\bigl({0 \atop A}{B \atop A}\bigr)\f$ where
-    \f$B\f$ is the \f$dims \times dims\f$ unit matrix of the form
-    \f$\bigl({0 \atop 1}{1 \atop 0}\bigr)\f$.  The matrix is expanded
-    avoiding reallocation whenever possible.
+    (c+dims)\f$ matrix
+    \f$\bigl(\genfrac{}{}{0pt}{}{0}{A} \genfrac{}{}{0pt}{}{B}{A}\bigr)\f$
+    where \f$B\f$ is the \f$dims \times dims\f$ unit matrix of the form
+    \f$\bigl(\genfrac{}{}{0pt}{}{0}{1} \genfrac{}{}{0pt}{}{1}{0}\bigr)\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_unit_rows_and_columns(dimension_type dims);
 
@@ -359,9 +360,14 @@ protected:
   bool satisfies_all_congruences(const Grid_Generator& g) const;
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the singleton system containing only Congruence::zero_dim_false().
+  */
+  static const Congruence_System* zero_dim_empty_p;
 
   //! Builds an empty (i.e. zero rows) system of dimension \p d.
-  explicit Congruence_System(const dimension_type d);
+  explicit Congruence_System(dimension_type d);
 
   /*! \brief
     Concatenates copies of the congruences from \p cgs onto \p *this.
@@ -385,7 +391,7 @@ private:
     \p new_space_dim must at least equal to the current space
     dimension.
   */
-  bool increase_space_dimension(const dimension_type new_space_dim);
+  bool increase_space_dimension(dimension_type new_space_dim);
 
   /*! \brief
     Inserts in \p *this an exact copy of the congruence \p cg,
@@ -404,8 +410,7 @@ private:
 			Parma_Polyhedra_Library::Congruence_System& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const Congruence_System& x,
-				      const Congruence_System& y);
+  operator==(const Congruence_System& x, const Congruence_System& y);
 
   //! Returns the \p k- th congruence of the system.
   Congruence& operator[](dimension_type k);
@@ -473,7 +478,7 @@ private:
     The value of \p new_dimension must be at most the space dimension
     of \p *this.
   */
-  void remove_higher_space_dimensions(const dimension_type new_dimension);
+  void remove_higher_space_dimensions(dimension_type new_dimension);
 
   //! Resizes the system without worrying about the old contents.
   /*!

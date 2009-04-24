@@ -1,11 +1,11 @@
 /* Test that the right exceptions are thrown in case of incorrect uses.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -86,9 +86,9 @@ test03() {
   C_Polyhedron ph2(gs);
   try {
     // This is an incorrect use of function
-    // C_Polyhedron::poly_hull_assign(p): it is illegal to use
+    // C_Polyhedron::upper_bound_assign(p): it is illegal to use
     // it with two polyhedra of different dimensions.
-    ph1.poly_hull_assign_and_minimize(ph2);
+    ph1.upper_bound_assign(ph2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -299,10 +299,10 @@ test11() {
   C_Polyhedron ph2(3);
 
   try {
-    // This is an invalid use of function
-    // C_Polyhedron::intersection_assign_and_minimize(ph2): it is illegal
+    // This is an invalid use of method
+    // C_Polyhedron::intersection_assign(ph2): it is illegal
     // to apply this function to two polyhedra of different dimensions.
-    ph1.intersection_assign_and_minimize(ph2);
+    ph1.intersection_assign(ph2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -322,7 +322,7 @@ test12() {
   try {
     // This is an invalid use of the function
     // C_Polyhedron::intersection_assign(ph2): it is illegal to apply
-    // this function to two polyhedron of different dimensions.
+    // this function to two polyhedra of different dimensions.
     ph1.intersection_assign(ph2);
   }
   catch (std::invalid_argument& e) {
@@ -342,12 +342,12 @@ test13() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::add_generators_and_minimize(gs): it is illegal
+    // C_Polyhedron::add_generators(gs): it is illegal
     // to add a system of generator that is not dimension-compatible
     // with the polyhedron.
     Generator_System gs;
     gs.insert(point(w));
-    ph.add_generators_and_minimize(gs);
+    ph.add_generators(gs);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -386,12 +386,12 @@ test15() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::add_constraints_and_minimize(cs): it is illegal to
+    // C_Polyhedron::add_constraints(cs): it is illegal to
     // add a system of constraints that is not dimensional incompatible
     // with the polyhedron.
     Constraint_System cs;
     cs.insert(x - y >= 0);
-    ph.add_constraints_and_minimize(cs);
+    ph.add_constraints(cs);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -468,9 +468,9 @@ test18() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::poly_hull_assign(ph2): it is illegal to apply
+    // C_Polyhedron::upper_bound_assign(ph2): it is illegal to apply
     // this function to two polyhedra with different dimensions.
-    ph1.poly_hull_assign(ph2);
+    ph1.upper_bound_assign(ph2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -744,13 +744,13 @@ test29() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::add_generators_and_minimize(gs): it is illegal
+    // C_Polyhedron::add_generators(gs): it is illegal
     // to apply this function with a system of generators with no
     // points to an empty polyhedron.
     Generator_System gs;
     gs.insert(line(x));
     gs.insert(line(y));
-    ph.add_generators_and_minimize(gs);
+    ph.add_generators(gs);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -769,9 +769,9 @@ test30() {
 
   try {
     // This is an incorrect use of function
-    // C_Polyhedron::poly_difference_assign(ph2): it is impossible to apply
+    // C_Polyhedron::difference_assign(ph2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
-    ph1.poly_difference_assign(ph2);
+    ph1.difference_assign(ph2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -894,10 +894,10 @@ test35() {
 
   try {
     // This is an invalid used of the function
-    // `add_generators_and_minimize(gs)': it is illegal to
+    // `add_generators(gs)': it is illegal to
     // add a system of generators that does not contain points
     // to an empty polyhedron.
-    ph.add_generators_and_minimize(gs);
+    ph.add_generators(gs);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -972,7 +972,7 @@ test38() {
     // applying the function with a linear expression with the denominator
     // equal to zero.
     Coefficient d = 0;
-    ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, B + 2, d);
+    ph.generalized_affine_image(B, GREATER_OR_EQUAL, B + 2, d);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -995,7 +995,7 @@ test39() {
     // This is an incorrect use of function
     // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal to
     // use a variable in the expression that does not appear in the polyhedron.
-    ph.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, B);
+    ph.generalized_affine_image(A, GREATER_OR_EQUAL, B);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -1019,7 +1019,7 @@ test40() {
     // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal to
     // apply this function to a variable that is not in the space of
     // the polyhedron.
-    ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL, A + 1);
+    ph.generalized_affine_image(B, LESS_OR_EQUAL, A + 1);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -1044,7 +1044,7 @@ test41() {
     // C_Polyhedron::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `rhs' expression that
     // does not appear in the polyhedron.
-    ph.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, B + C);
+    ph.generalized_affine_image(A + B, GREATER_OR_EQUAL, B + C);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -1069,7 +1069,7 @@ test42() {
     // C_Polyhedron::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the polyhedron.
-    ph.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
+    ph.generalized_affine_image(B + C, LESS_OR_EQUAL, A + 1);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -1306,7 +1306,101 @@ test52() {
   return false;
 }
 
-} // namespace
+bool
+test53() {
+  Variable y(1);
+
+  C_Polyhedron ph(1);
+
+  try {
+    // This is an invalid use of the function
+    // C_Polyhedron::refine_with_constraint(c): it is illegal to insert a
+    // constraint that contains a variable that is not in the space
+    // of the polyhedron.
+    ph.refine_with_constraint(y >= 0);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test54() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(1);
+
+  try {
+    // This is an invalid use of the function
+    // C_Polyhedron::refine_with_constraints(cs): it is illegal to
+    // refine with a system of constraints that is dimensionally
+    // incompatible with the polyhedron.
+    Constraint_System cs;
+    cs.insert(x - y == 0);
+    ph.refine_with_constraints(cs);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+}
+bool
+test55() {
+  Variable y(1);
+
+  C_Polyhedron ph(1);
+
+  try {
+    // This is an invalid use of the function
+    // C_Polyhedron::refine_with_congruence(cg): it is illegal to insert a
+    // congruence that contains a variable that is not in the space
+    // of the polyhedron.
+    ph.refine_with_congruence(y %= 0);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test56() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(1);
+
+  try {
+    // This is an invalid use of the function
+    // C_Polyhedron::refine_with_congruences(cgs): it is illegal to
+    // refine with a system of congruences that is dimensionally
+    // incompatible with the polyhedron.
+    Congruence_System cgs;
+    cgs.insert(x - y == 0);
+    ph.refine_with_congruences(cgs);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+ // namespace
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
@@ -1360,4 +1454,8 @@ BEGIN_MAIN
   DO_TEST(test50);
   DO_TEST(test51);
   DO_TEST(test52);
+  DO_TEST(test53);
+  DO_TEST(test54);
+  DO_TEST(test55);
+  DO_TEST(test56);
 END_MAIN

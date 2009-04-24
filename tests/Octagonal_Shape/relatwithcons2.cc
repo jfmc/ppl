@@ -1,11 +1,11 @@
 /* Test Octagonal_Shape::relation_with(c).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -29,7 +29,7 @@ test01() {
   // The zero-dim universe octagon.
   TOctagonal_Shape oct(0);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Con_Relation rel = oct.relation_with(Linear_Expression(0) > 0);
 
@@ -47,7 +47,7 @@ test02() {
   // The zero-dim universe octagon.
   TOctagonal_Shape oct(0);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Con_Relation rel = oct.relation_with(Linear_Expression(0) > 1);
 
@@ -64,7 +64,7 @@ test03() {
   // The zero-dim universe octagon.
   TOctagonal_Shape oct(0);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Con_Relation rel = oct.relation_with(Linear_Expression(1) > 0);
 
@@ -83,7 +83,7 @@ test04() {
   // An empty octagon.
   TOctagonal_Shape oct(1, EMPTY);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Con_Relation rel = oct.relation_with(A > 0);
 
@@ -104,7 +104,7 @@ test05() {
   Constraint_System cs(A + B == 3);
   TOctagonal_Shape oct(cs);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Con_Relation rel = oct.relation_with(A + B > 3);
 
@@ -124,7 +124,7 @@ test06() {
   Constraint_System cs(A + B <= 3);
   TOctagonal_Shape oct(cs);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Con_Relation rel = oct.relation_with(A + B > 3);
 
@@ -147,7 +147,7 @@ test07() {
   cs.insert(A + B <= 3);
   TOctagonal_Shape oct(cs);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Con_Relation rel = oct.relation_with(A + B < 10);
 
@@ -170,7 +170,7 @@ test08() {
   cs.insert(A + B <= 3);
   TOctagonal_Shape oct(cs);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Con_Relation rel = oct.relation_with(A + B > 1);
 
@@ -193,7 +193,7 @@ test09() {
   cs.insert(A + B <= 3);
   TOctagonal_Shape oct(cs);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Con_Relation rel = oct.relation_with(B - A > 1);
 
@@ -212,7 +212,7 @@ test10() {
   TOctagonal_Shape oct(1);
   oct.add_constraint(A >= 0);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Con_Relation rel = oct.relation_with(Linear_Expression(1) >= 1);
 
@@ -234,7 +234,7 @@ test11() {
   oct.add_constraint(A == 1);
   oct.add_constraint(B >= 2);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Con_Relation rel = oct.relation_with(Linear_Expression(1) > 1);
 
@@ -258,7 +258,7 @@ test12() {
   oct.add_constraint(B >= 2);
   oct.add_constraint(C <= 1);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Con_Relation rel = oct.relation_with(Linear_Expression(1) == 1);
 
@@ -278,7 +278,7 @@ test13() {
   TOctagonal_Shape oct(1);
   oct.add_constraint(A >= 0);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Con_Relation rel = oct.relation_with(Linear_Expression(0) >= -1);
 
@@ -326,11 +326,11 @@ test15() {
   oct.add_constraint(A <= 4);
   oct.add_constraint(B >= 2);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Constraint c(A + B == 3);
 
-  print_constraint(c, "--- c ---");
+  print_constraint(c, "*** c ***");
 
   Poly_Con_Relation rel = oct.relation_with(c);
 
@@ -352,7 +352,7 @@ test16() {
 
   Poly_Con_Relation rel = oct.relation_with(A == 0);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
   nout << "oct.relation_with(A == 0) == " << rel << endl;
 
@@ -360,6 +360,93 @@ test16() {
 
   return rel == known_result;
 }
+
+bool
+test17() {
+  // A single point does not subsume another (different) point.
+  Variable A(0);
+
+  Octagonal_Shape<mpz_class> oc(1);
+  oc.add_constraint(A >= 0);
+  oc.add_constraint(A <= 1);
+
+  Constraint c(2*A == 1);
+  Poly_Con_Relation rel = oc.relation_with(c);
+
+  print_constraints(oc, "--- oc ---");
+  print_constraint(c, "--- c ---");
+  using namespace IO_Operators;
+  nout << "oc.relation_with(c) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
+bool
+test18() {
+  Variable A(0);
+
+  TOctagonal_Shape oc(1);
+  oc.add_constraint(A >= 0);
+  oc.add_constraint(A <= 1);
+
+  Constraint c(Linear_Expression(1) == 0);
+  Poly_Con_Relation rel = oc.relation_with(c);
+
+  print_constraints(oc, "--- oc ---");
+  print_constraint(c, "--- c ---");
+  using namespace IO_Operators;
+  nout << "oc.relation_with(1 == 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
+}
+
+bool
+test19() {
+  Variable A(0);
+
+  TOctagonal_Shape oc(1);
+  oc.add_constraint(A >= 0);
+  oc.add_constraint(A <= 1);
+
+  Congruence cg((A %= 0) / 0);
+  Poly_Con_Relation rel = oc.relation_with(cg);
+
+  print_constraints(oc, "--- oc ---");
+  print_congruence(cg, "--- cg ---");
+  using namespace IO_Operators;
+  nout << "oc.relation_with(A == 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oc(2);
+  oc.add_constraint(A >= 0);
+  oc.add_constraint(A - B <= 1);
+
+  Congruence cg((A + 3*B %= 0) / 1);
+  Poly_Con_Relation rel = oc.relation_with(cg);
+
+  print_constraints(oc, "--- oc ---");
+  print_congruence(cg, "--- cg ---");
+  using namespace IO_Operators;
+  nout << "oc.relation_with((A %= 0)/1) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
 
 } // namespace
 
@@ -380,5 +467,9 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN
 

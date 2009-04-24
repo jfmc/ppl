@@ -1,12 +1,12 @@
 /* Test Polyhedron::add_space_dimensions_and_project()
    and  Polyhedron::add_space_dimensions_and_embed().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -50,7 +50,7 @@ test01() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After add_space_dimensions_and_project ***");
+  print_generators(ph, "*** after add_space_dimensions_and_project ***");
 
   return ok;
 }
@@ -99,7 +99,7 @@ test03() {
 
   ph.add_space_dimensions_and_embed(2);
 
-  print_generators(ph, "*** After add_space_dimensions_and_embed(2) ***");
+  print_generators(ph, "*** after add_space_dimensions_and_embed(2) ***");
 
   ph.add_space_dimensions_and_embed(2);
 
@@ -126,7 +126,7 @@ test04() {
 
   ph1.add_space_dimensions_and_project(3);
 
-  print_generators(ph1, "*** After add_space_dimensions_and_project(3) ***");
+  print_generators(ph1, "*** after add_space_dimensions_and_project(3) ***");
 
   C_Polyhedron ph2;
   Constraint_System cs = ph2.constraints();
@@ -137,7 +137,7 @@ test04() {
 
   bool ok = (ph1 == ph2);
 
-  print_generators(ph2, "*** After add_space_dimensions_and_project(3) ***");
+  print_generators(ph2, "*** after add_space_dimensions_and_project(3) ***");
 
   return ok;
 }
@@ -158,7 +158,7 @@ test05() {
   bool ok = (ph == known_result);
 
   print_constraints(ph,
-		    "*** After ph.add_space_dimensions_and_project(1) ***");
+		    "*** after ph.add_space_dimensions_and_project(1) ***");
 
   return ok;
 }
@@ -182,9 +182,9 @@ test06() {
   bool ok = (ph1 == ph2);
 
   print_constraints(ph1,
-		    "*** After ph1.add_space_dimensions_and_embed(0) ***");
+		    "*** after ph1.add_space_dimensions_and_embed(0) ***");
   print_constraints(ph2,
-		    "*** After ph2.add_space_dimensions_and_project(0) ***");
+		    "*** after ph2.add_space_dimensions_and_project(0) ***");
 
   return ok;
 }

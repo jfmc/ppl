@@ -1,11 +1,11 @@
 /* Row class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -23,8 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Row_inlines_hh
 #define PPL_Row_inlines_hh 1
 
-#include "globals.defs.hh"
+#include "math_utilities.defs.hh"
 #include <cassert>
+#include <cstddef>
+#include <limits>
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {
@@ -73,7 +75,7 @@ Row::Flags::operator!=(const Flags& y) const {
 inline void*
 Row_Impl_Handler::Impl::operator new(const size_t fixed_size,
 				     const dimension_type capacity) {
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   return ::operator new(fixed_size + capacity*sizeof(Coefficient));
 #else
   assert(capacity >= 1);
@@ -93,7 +95,7 @@ Row_Impl_Handler::Impl::operator delete(void* p, dimension_type) {
 
 inline dimension_type
 Row_Impl_Handler::Impl::max_size() {
-  return size_t(-1)/sizeof(Coefficient);
+  return std::numeric_limits<size_t>::max() / sizeof(Coefficient);
 }
 
 inline dimension_type
@@ -148,7 +150,7 @@ Row_Impl_Handler::Impl::total_memory_in_bytes(dimension_type capacity) const {
   return
     sizeof(*this)
     + capacity*sizeof(Coefficient)
-#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
     - 1*sizeof(Coefficient)
 #endif
     + external_memory_in_bytes();
@@ -181,7 +183,7 @@ Row::flags() {
   return impl->flags();
 }
 
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
 inline dimension_type
 Row::capacity() const {
   return capacity_;
@@ -191,7 +193,7 @@ Row::capacity() const {
 inline
 Row_Impl_Handler::Row_Impl_Handler()
   : impl(0) {
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   capacity_ = 0;
 #endif
 }
@@ -208,19 +210,19 @@ Row::Row()
 
 inline void
 Row::allocate(
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 	       const
 #endif
 	       dimension_type capacity,
 	       const Flags f) {
   assert(capacity <= max_size());
-#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity == 0)
     ++capacity;
 #endif
   assert(impl == 0);
   impl = new (capacity) Impl(f);
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   assert(capacity_ == 0);
   capacity_ = capacity;
 #endif
@@ -229,7 +231,7 @@ Row::allocate(
 inline void
 Row::expand_within_capacity(const dimension_type new_size) {
   assert(impl);
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   assert(new_size <= capacity_);
 #endif
   impl->expand_within_capacity(new_size);
@@ -238,7 +240,7 @@ Row::expand_within_capacity(const dimension_type new_size) {
 inline void
 Row::copy_construct_coefficients(const Row& y) {
   assert(impl && y.impl);
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   assert(y.size() <= capacity_);
 #endif
   impl->copy_construct_coefficients(*(y.impl));
@@ -316,7 +318,7 @@ Row::shrink(const dimension_type new_size) {
 inline void
 Row::swap(Row& y) {
   std::swap(impl, y.impl);
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   std::swap(capacity_, y.capacity_);
 #endif
 }
@@ -324,7 +326,7 @@ Row::swap(Row& y) {
 inline void
 Row::assign(Row& y) {
   impl = y.impl;
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   capacity_ = y.capacity_;
 #endif
 }
@@ -363,7 +365,7 @@ Row::total_memory_in_bytes(dimension_type capacity) const {
 
 inline memory_size_type
 Row::external_memory_in_bytes() const {
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   return impl->total_memory_in_bytes(capacity_);
 #else
   return impl->total_memory_in_bytes();

@@ -1,11 +1,11 @@
 /* Test Grid::time_elapse_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -140,11 +140,11 @@ test06() {
   Variable A(0);
 
   Grid gr1(1);
-  gr1.add_congruence(A == 2);
+  gr1.add_constraint(A == 2);
   print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(1);
-  gr2.add_congruence(A == 1);
+  gr2.add_constraint(A == 1);
   print_congruences(gr2, "*** gr2 ***");
 
   gr1.time_elapse_assign(gr2);
@@ -165,7 +165,7 @@ test07() {
   Variable A(0);
 
   Grid gr1(1);
-  gr1.add_congruence(A == 2);
+  gr1.add_constraint(A == 2);
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(1);
@@ -196,7 +196,7 @@ test08() {
 
   Grid gr2(2);
   gr2.add_congruence((A %= 0) / 2);
-  gr2.add_congruence(B == 0);
+  gr2.add_constraint(B == 0);
   print_congruences(gr2, "*** gr2 ***");
 
   gr1.time_elapse_assign(gr2);
@@ -251,7 +251,7 @@ test10() {
   Variable A(0);
 
   Grid gr1(1);
-  gr1.add_congruence(A == 2);
+  gr1.add_constraint(A == 2);
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(1);

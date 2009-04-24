@@ -1,11 +1,11 @@
 /* A sort of clone of the cddlib test program `lcdd'.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -44,15 +44,15 @@ namespace PPL = Parma_Polyhedra_Library;
 
 typedef PPL::C_Polyhedron POLYHEDRON_TYPE;
 
-#if !CXX_SUPPORTS_ATTRIBUTE_WEAK
+#if !PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
 extern "C" void
-set_GMP_memory_allocation_functions(void) {
+ppl_set_GMP_memory_allocation_functions(void) {
 }
 #endif
 
 #elif defined(USE_POLKA)
 
-#include <config.h>
+#include <ppl-config.h>
 #include <gmp.h>
 
 extern "C" {
@@ -73,7 +73,7 @@ typedef poly_t* POLYHEDRON_TYPE;
 
 #elif defined(USE_POLYLIB)
 
-#include <config.h>
+#include <ppl-config.h>
 #include <gmp.h>
 
 extern "C" {
@@ -91,6 +91,8 @@ typedef Polyhedron* POLYHEDRON_TYPE;
 #include <gmpxx.h>
 #include <vector>
 #include <set>
+#include <limits>
+#include <cassert>
 #include <cstdarg>
 #include <csignal>
 #include <cerrno>
@@ -102,29 +104,48 @@ typedef Polyhedron* POLYHEDRON_TYPE;
 #include <sstream>
 #include <stdexcept>
 
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
 #include <getopt.h>
+
+// Try to accommodate non-GNU implementations of `getopt()'.
+#if !defined(no_argument) && defined(NO_ARG)
+#define no_argument NO_ARG
 #endif
 
-#ifdef HAVE_UNISTD_H
+#if !defined(required_argument) && defined(REQUIRED_ARG)
+#define required_argument REQUIRED_ARG
+#endif
+
+#if !defined(optional_argument) && defined(OPTIONAL_ARG)
+#define optional_argument OPTIONAL_ARG
+#endif
+
+#endif // defined(PPL_HAVE_GETOPT_H)
+
+#ifdef PPL_HAVE_UNISTD_H
 // Include this for `getopt()': especially important if we do not have
 // <getopt.h>.
 # include <unistd.h>
 #endif
 
-#ifdef HAVE_SYS_TIME_H
+#ifdef PPL_HAVE_SYS_TIME_H
 # include <sys/time.h>
 #endif
 
-#ifdef HAVE_SYS_RESOURCE_H
+#ifdef PPL_HAVE_SYS_RESOURCE_H
 // This should be included after <time.h> and <sys/time.h> so as to make
 // sure we have the definitions for, e.g., `ru_utime'.
 # include <sys/resource.h>
 #endif
 
+#if defined(PPL_HAVE_SYS_RESOURCE_H) \
+  && (defined(SA_ONESHOT) || defined(SA_RESETHAND))
+# define PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
+#endif
+
 namespace {
 
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
 struct option long_options[] = {
   {"max-cpu",        required_argument, 0, 'C'},
   {"max-memory",     required_argument, 0, 'R'},
@@ -141,8 +162,14 @@ struct option long_options[] = {
 #endif
 
 static const char* usage_string
-= "Usage: %s [OPTION]... [FILE]...\n\n"
+= "Usage: %s [OPTION]... [FILE]\n"
+"Reads an H-representation (resp., a V-representation) of a polyhedron\n"
+"and generates a V-representation (resp., an H-representation) of\n"
+"the same polyhedron.\n\n"
+"Options:\n"
+#ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
+#endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
 "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
@@ -152,7 +179,7 @@ static const char* usage_string
 "  -V, --version           prints version information to stdout\n"
 "  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n"
 #endif
-#ifndef HAVE_GETOPT_H
+#ifndef PPL_HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
 #endif
@@ -167,7 +194,10 @@ static const char* usage_string
 
 const char* program_name = 0;
 
+#ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
 unsigned long max_seconds_of_cpu_time = 0;
+#endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
+
 unsigned long max_bytes_of_virtual_memory = 0;
 bool print_timings = false;
 bool verbose = false;
@@ -263,6 +293,8 @@ warning(const char* format, ...) {
   va_end(ap);
 }
 
+#ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
+
 extern "C" typedef void (*sig_handler_type)(int);
 
 void
@@ -278,7 +310,7 @@ set_alarm_on_cpu_time(const unsigned seconds, sig_handler_type handler) {
 #elif defined(SA_RESETHAND)
   s.sa_flags = SA_RESETHAND;
 #else
-  #error "Either SA_ONESHOT or SA_RESETHAND must be defined."
+# error "Either SA_ONESHOT or SA_RESETHAND must be defined."
 #endif
 
   if (sigaction(SIGXCPU, &s, 0) != 0)
@@ -295,7 +327,10 @@ set_alarm_on_cpu_time(const unsigned seconds, sig_handler_type handler) {
   }
 }
 
-#if HAVE_DECL_RLIMIT_AS
+#endif // PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
+
+#if PPL_HAVE_DECL_RLIMIT_AS
+
 void
 limit_virtual_memory(const unsigned bytes) {
   struct rlimit t;
@@ -309,11 +344,14 @@ limit_virtual_memory(const unsigned bytes) {
       fatal("setrlimit failed: %s", strerror(errno));
   }
 }
+
 #else
+
 void
 limit_virtual_memory(unsigned) {
 }
-#endif // !HAVE_DECL_RLIMIT_AS
+
+#endif // !PPL_HAVE_DECL_RLIMIT_AS
 
 extern "C" void
 timeout(int) {
@@ -338,7 +376,7 @@ timeout(int) {
 void
 process_options(int argc, char* argv[]) {
   while (true) {
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
     int option_index = 0;
     int c = getopt_long(argc, argv, OPTION_LETTERS, long_options,
 			&option_index);
@@ -361,6 +399,8 @@ process_options(int argc, char* argv[]) {
       exit(0);
       break;
 
+#ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
+
     case 'C':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
@@ -368,6 +408,8 @@ process_options(int argc, char* argv[]) {
       else
 	max_seconds_of_cpu_time = l;
       break;
+
+#endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
 
     case 'R':
       l = strtol(optarg, &endptr, 10);
@@ -1137,8 +1179,12 @@ main(int argc, char* argv[]) try {
   // Process command line options.
   process_options(argc, argv);
 
+#ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
+
   if (max_seconds_of_cpu_time > 0)
     set_alarm_on_cpu_time(max_seconds_of_cpu_time, timeout);
+
+#endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
 
   if (max_bytes_of_virtual_memory > 0)
     limit_virtual_memory(max_bytes_of_virtual_memory);

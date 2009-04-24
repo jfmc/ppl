@@ -1,11 +1,11 @@
 /* Test Polyhedron::generalized_affine_preimage().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -35,9 +35,9 @@ test01() {
   ph.add_constraint(B <= 5);
   ph.add_constraint(A <= B);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
-  ph.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, A+2);
+  ph.generalized_affine_preimage(B, GREATER_OR_EQUAL, A+2);
 
   C_Polyhedron known_result(2, UNIVERSE);
   known_result.add_constraint(0 <= A);
@@ -45,9 +45,9 @@ test01() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after "
+  print_generators(ph, "*** ph after "
 		   "ph.generalized_affine_preimage"
-		   "(B, GREATER_THAN_OR_EQUAL, A+2) ---");
+		   "(B, GREATER_OR_EQUAL, A+2) ***");
 
   return ok;
 }
@@ -63,9 +63,9 @@ test02() {
   ph.add_constraint(B <= 5);
   ph.add_constraint(A <= B);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
-  ph.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, A+2, -2);
+  ph.generalized_affine_preimage(B, GREATER_OR_EQUAL, A+2, -2);
 
   C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point());
@@ -74,9 +74,9 @@ test02() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after "
+  print_generators(ph, "*** ph after "
 		   "ph.generalized_affine_preimage"
-                   "(B, GREATER_THAN_OR_EQUAL, A+2, -2) ---");
+                   "(B, GREATER_OR_EQUAL, A+2, -2) ***");
 
   return ok;
 }
@@ -92,7 +92,7 @@ test03() {
   ph.add_constraint(3*B >= 1);
   ph.add_constraint(2*A >= B);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
 
   // A longer way of computing the generalized affine preimage below.
   C_Polyhedron known_result(ph);
@@ -103,13 +103,13 @@ test03() {
   vset.insert(B);
   known_result.remove_space_dimensions(vset);
 
-  ph.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, A-B+2, -3);
+  ph.generalized_affine_preimage(B, LESS_OR_EQUAL, A-B+2, -3);
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after "
+  print_generators(ph, "*** ph after "
 		   "ph.generalized_affine_preimage"
-		   "(B, LESS_THAN_OR_EQUAL, A-B+2, -3) ---");
+		   "(B, LESS_OR_EQUAL, A-B+2, -3) ***");
 
   return ok;
 }

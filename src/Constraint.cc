@@ -1,11 +1,11 @@
 /* Constraint class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Constraint.defs.hh"
 #include "Variable.defs.hh"
@@ -60,38 +60,37 @@ PPL::Constraint::construct_epsilon_geq_zero() {
 
 PPL::Constraint::Constraint(const Congruence& cg)
   : Linear_Row(cg.is_equality()
-	       // Extra columns for inhomogeneous term and epsilon
-	       // coefficient.
-	       ? cg.space_dimension() + 2
+	       // Size includes extra column for the inhomogeneous term.
+	       ? cg.space_dimension() + 1
 	       : (throw_invalid_argument("Constraint(cg)",
 					 "congruence cg must be an equality."),
 		  0),
+	       // Capacity also includes a column for the epsilon coefficient.
 	       compute_capacity(cg.space_dimension() + 2, Row::max_size()),
-	       Flags(NOT_NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
-  // Copy coefficients.
-  assert(cg.space_dimension() > 0);
-  dimension_type i = cg.space_dimension();
-  operator[](i) = cg[i];
-  while (i-- > 0)
-    operator[](i) = cg[i];
+	       Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+  Constraint& c = *this;
+  // Copy coefficients and inhomogeneous term.
+  for (dimension_type i = cg.space_dimension() + 1; i-- > 0; )
+    c[i] = cg[i];
   // Enforce normalization.
   strong_normalize();
 }
 
 PPL::Constraint::Constraint(const Congruence& cg,
-		       dimension_type sz,
-		       dimension_type capacity)
+			    dimension_type sz,
+			    dimension_type capacity)
   : Linear_Row(cg.is_equality()
 	       ? sz
 	       : (throw_invalid_argument("Constraint(cg, sz, c)",
 					 "congruence cg must be an equality."),
 		  0),
 	       capacity,
-	       Flags(NOT_NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+	       Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+  Constraint& c = *this;
   // Copy coefficients.
   assert(sz > 0);
   while (sz-- > 0)
-    operator[](sz) = cg[sz];
+    c[sz] = cg[sz];
 }
 
 bool
@@ -217,11 +216,54 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
   return true;
 }
 
+const PPL::Constraint* PPL::Constraint::zero_dim_false_p = 0;
+const PPL::Constraint* PPL::Constraint::zero_dim_positivity_p = 0;
+const PPL::Constraint* PPL::Constraint::epsilon_geq_zero_p = 0;
+const PPL::Constraint* PPL::Constraint::epsilon_leq_one_p = 0;
+
+void
+PPL::Constraint::initialize() {
+  assert(zero_dim_false_p == 0);
+  zero_dim_false_p
+    = new Constraint(Linear_Expression::zero() == Coefficient_one());
+
+  assert(zero_dim_positivity_p == 0);
+  zero_dim_positivity_p
+    = new Constraint(Linear_Expression::zero() <= Coefficient_one());
+
+  assert(epsilon_geq_zero_p == 0);
+  epsilon_geq_zero_p
+    = new Constraint(construct_epsilon_geq_zero());
+
+  assert(epsilon_leq_one_p == 0);
+  epsilon_leq_one_p
+    = new Constraint(Linear_Expression::zero() < Coefficient_one());
+}
+
+void
+PPL::Constraint::finalize() {
+  assert(zero_dim_false_p != 0);
+  delete zero_dim_false_p;
+  zero_dim_false_p = 0;
+
+  assert(zero_dim_positivity_p != 0);
+  delete zero_dim_positivity_p;
+  zero_dim_positivity_p = 0;
+
+  assert(epsilon_geq_zero_p != 0);
+  delete epsilon_geq_zero_p;
+  epsilon_geq_zero_p = 0;
+
+  assert(epsilon_leq_one_p != 0);
+  delete epsilon_leq_one_p;
+  epsilon_leq_one_p = 0;
+}
+
 /*! \relates Parma_Polyhedra_Library::Constraint */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
   const dimension_type num_variables = c.space_dimension();
-  TEMP_INTEGER(cv);
+  PPL_DIRTY_TEMP_COEFFICIENT(cv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
     cv = c.coefficient(Variable(v));

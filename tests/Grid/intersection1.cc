@@ -1,11 +1,11 @@
 /* Test Grid::intersection_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -278,209 +278,9 @@ test09() {
   return false;
 }
 
-// intersection_assign_and_minimize: Simple grids, one dimension.
-bool
-test10() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Congruence_System cgs1;
-  cgs1.insert((A + 0*C %= 0) / 2);
-
-  Congruence_System cgs2;
-  cgs2.insert((2*A + 0*C %= 0) / 2);
-
-  Grid gr1(cgs1);
-  print_congruences(gr1, "*** gr1 ***");
-  Grid gr2(cgs2);
-  print_congruences(gr2, "*** gr2 ***");
-
-  gr1.intersection_assign_and_minimize(gr2);
-
-  Congruence_System known_cgs;
-  known_cgs.insert((A + 0*C %= 0) / 2);
-  known_cgs.insert((2*A %= 0) / 2);
-
-  Grid known_gr(known_cgs);
-
-  bool ok = (gr1 == known_gr);
-
-  print_congruences(gr1, "*** gr1.intersection_assign_and_minimize(gr2) ***");
-
-  return ok;
-}
-
-// intersection_assign_and_minimize: First grid empty.
-bool
-test11() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Congruence_System cgs;
-  cgs.insert((A + B + C %= 0) / 2);
-
-  Grid gr1(3, EMPTY);
-  print_congruences(gr1, "*** gr1 ***");
-  Grid gr2(cgs);
-
-  gr1.intersection_assign_and_minimize(gr2);
-
-  Grid known_gr(3, EMPTY);
-
-  bool ok = (gr1 == known_gr);
-
-  print_congruences(gr1, "*** gr1.intersection_assign_and_minimize(gr2) ***");
-
-  return ok;
-}
-
-// intersection_assign_and_minimize: Second grid empty.
-bool
-test12() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Congruence_System cgs;
-  cgs.insert((A + B + C %= 0) / 2);
-
-  Grid gr1(cgs);
-  print_congruences(gr1, "*** gr1 ***");
-  Grid gr2(3, EMPTY);
-
-  gr1.intersection_assign_and_minimize(gr2);
-
-  Grid known_gr(3, EMPTY);
-
-  bool ok = (gr1 == known_gr);
-
-  print_congruences(gr1, "*** gr1.intersection_assign_and_minimize(gr2) ***");
-
-  return ok;
-}
-
-// intersection_assign_and_minimize: First grid universe.
-bool
-test13() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Congruence_System cgs;
-  cgs.insert((  A +   B + C %= 7) / 9);
-  cgs.insert((5*A + 3*B + C %= 7) / 9);
-
-  Grid gr1(3, UNIVERSE);
-  print_congruences(gr1, "*** gr1 ***");
-  Grid gr2(cgs);
-
-  gr1.intersection_assign_and_minimize(gr2);
-
-  Congruence_System known_cgs;
-  known_cgs.insert((  A +   B + C %= 7) / 9);
-  known_cgs.insert((5*A + 3*B + C %= 7) / 9);
-
-  Grid known_gr(known_cgs);
-
-  bool ok = (gr1 == known_gr);
-
-  print_congruences(gr1, "*** gr1.intersection_assign_and_minimize(gr2) ***");
-
-  return ok;
-}
-
-// intersection_assign_and_minimize: Second grid universe.
-bool
-test14() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Congruence_System cgs;
-  cgs.insert((2*B + 2*C %= 1) / 3);
-  cgs.insert((2*B %= 1) / 3);
-
-  Grid gr1(cgs);
-  print_congruences(gr1, "*** gr1 ***");
-  Grid gr2(3, UNIVERSE);
-
-  gr1.intersection_assign_and_minimize(gr2);
-
-  Congruence_System known_cgs;
-  known_cgs.insert((2*B + 2*C %= 1) / 3);
-  known_cgs.insert((2*B %= 1) / 3);
-
-  Grid known_gr(known_cgs);
-
-  bool ok = (gr1 == known_gr);
-
-  print_congruences(gr1, "*** gr1.intersection_assign_and_minimize(gr2) ***");
-
-  return ok;
-}
-
-// intersection_assign_and_minimize: Zero dimension grids.
-bool
-test15() {
-  Grid gr1(0);
-  print_congruences(gr1, "*** gr1 ***");
-  Grid gr2(0);
-  print_congruences(gr2, "*** gr2 ***");
-
-  gr1.intersection_assign_and_minimize(gr2);
-
-  Grid known_gr(0);
-
-  bool ok = (gr1 == known_gr);
-
-  print_congruences(gr1, "*** gr1.intersection_assign_and_minimize(gr2) ***");
-
-  return ok;
-}
-
-// intersection_assign_and_minimize: Many dimension grids from generators.
-bool
-test16() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid_Generator_System gs1;
-  gs1.insert(grid_point(A + C));
-  gs1.insert(grid_point(A + 2*C));
-
-  Grid_Generator_System gs2;
-  gs2.insert(grid_point(A));
-  gs2.insert(grid_point(A + B));
-
-  Grid gr1(gs1);
-  print_generators(gr1, "*** gr1 ***");
-
-  Grid gr2(3, EMPTY);
-  gr2.add_grid_generators(gs2);
-  print_generators(gr2, "*** gr2 ***");
-
-  gr1.intersection_assign_and_minimize(gr2);
-
-  Congruence_System known_cgs;
-  known_cgs.insert((C == 0) / 0);
-  known_cgs.insert((A == 1) / 0);
-  known_cgs.insert((B == 0) / 0);
-
-  Grid known_gr(known_cgs);
-
-  bool ok = (gr1 == known_gr);
-
-  print_generators(gr1, "*** gr1.intersection_assign_and_minimize(gr2) ***");
-
-  return ok;
-}
-
 // Both empty and both not in minimal form.
 bool
-test17() {
+test10() {
   Variable A(0);
   Grid gr1(1);
   gr1.add_congruence((A %= 1) / 2);
@@ -490,7 +290,9 @@ test17() {
   gr2.add_congruence((A %= 1) / 2);
   gr2.add_congruence((A %= 0) / 2);
 
-  bool ok = (!gr1.intersection_assign_and_minimize(gr2));
+  gr1.intersection_assign(gr2);
+  bool ok = (gr1.is_empty());
+
   print_congruences(gr1, "*** gr1 ***");
   print_congruences(gr2, "*** gr2 ***");
 
@@ -510,11 +312,4 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
 END_MAIN

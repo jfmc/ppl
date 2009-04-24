@@ -1,11 +1,11 @@
 /* Generator class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -34,6 +34,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "Grid_Generator.types.hh"
 #include "Grid_Generator_System.types.hh"
+#include "Checked_Number.defs.hh"
+#include "distances.defs.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -319,7 +321,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Returns <CODE>true</CODE> if and only if \p *this is a line or a ray.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool is_line_or_ray() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is a point.
@@ -342,6 +344,12 @@ public:
     Thrown if \p *this is neither a point nor a closure point.
   */
   Coefficient_traits::const_reference divisor() const;
+
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
 
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_point();
@@ -371,13 +379,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
@@ -387,6 +393,18 @@ public:
   void swap(Generator& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the origin of the zero-dimensional space \f$\Rset^0\f$.
+  */
+  static const Generator* zero_dim_point_p;
+
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the origin of the zero-dimensional space \f$\Rset^0\f$, as a closure point.
+  */
+  static const Generator* zero_dim_closure_point_p;
+
   /*! \brief
     Builds a generator of type \p type and topology \p topology,
     stealing the coefficients from \p e.
@@ -492,6 +510,203 @@ bool operator==(const Generator& x, const Generator& y);
 /*! \relates Generator */
 bool operator!=(const Generator& x, const Generator& y);
 
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*! \relates Generator
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+
+  \note
+  Distances are \e only defined between generators that are points and/or
+  closure points; for rays or lines, \c false is returned.
+*/
+template <typename To>
+bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                                 const Generator& x,
+                                 const Generator& y,
+                                 Rounding_Dir dir);
+
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*! \relates Generator
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+
+  \note
+  Distances are \e only defined between generators that are points and/or
+  closure points; for rays or lines, \c false is returned.
+*/
+template <typename Temp, typename To>
+bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                                 const Generator& x,
+                                 const Generator& y,
+                                 Rounding_Dir dir);
+
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*! \relates Generator
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+
+  \note
+  Distances are \e only defined between generators that are points and/or
+  closure points; for rays or lines, \c false is returned.
+*/
+template <typename Temp, typename To>
+bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                                 const Generator& x,
+                                 const Generator& y,
+                                 Rounding_Dir dir,
+                                 Temp& tmp0,
+                                 Temp& tmp1,
+                                 Temp& tmp2);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*! \relates Generator
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+
+  \note
+  Distances are \e only defined between generators that are points and/or
+  closure points; for rays or lines, \c false is returned.
+*/
+template <typename To>
+bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                               const Generator& x,
+                               const Generator& y,
+                               Rounding_Dir dir);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*! \relates Generator
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+
+  \note
+  Distances are \e only defined between generators that are points and/or
+  closure points; for rays or lines, \c false is returned.
+*/
+template <typename Temp, typename To>
+bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                                 const Generator& x,
+                                 const Generator& y,
+                                 Rounding_Dir dir);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*! \relates Generator
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+
+  \note
+  Distances are \e only defined between generators that are points and/or
+  closure points; for rays or lines, \c false is returned.
+*/
+template <typename Temp, typename To>
+bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                               const Generator& x,
+                               const Generator& y,
+                               Rounding_Dir dir,
+                               Temp& tmp0,
+                               Temp& tmp1,
+                               Temp& tmp2);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*! \relates Generator
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+
+  \note
+  Distances are \e only defined between generators that are points and/or
+  closure points; for rays or lines, \c false is returned.
+*/
+template <typename To>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                                const Generator& x,
+                                const Generator& y,
+                                Rounding_Dir dir);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*! \relates Generator
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+
+  \note
+  Distances are \e only defined between generators that are points and/or
+  closure points; for rays or lines, \c false is returned.
+*/
+template <typename Temp, typename To>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                                const Generator& x,
+                                const Generator& y,
+                                Rounding_Dir dir);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*! \relates Generator
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+
+  \note
+  Distances are \e only defined between generators that are points and/or
+  closure points; for rays or lines, \c false is returned.
+*/
+template <typename Temp, typename To>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                                const Generator& x,
+                                const Generator& y,
+                                Rounding_Dir dir,
+                                Temp& tmp0,
+                                Temp& tmp1,
+                                Temp& tmp2);
 
 namespace IO_Operators {
 

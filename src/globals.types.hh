@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -39,13 +39,15 @@ enum Relation_Symbol {
   //! Less than.
   LESS_THAN,
   //! Less than or equal to.
-  LESS_THAN_OR_EQUAL,
+  LESS_OR_EQUAL,
   //! Equal to.
   EQUAL,
   //! Greater than or equal to.
-  GREATER_THAN_OR_EQUAL,
+  GREATER_OR_EQUAL,
   //! Greater than.
-  GREATER_THAN
+  GREATER_THAN,
+  //! Not equal to.
+  NOT_EQUAL
 };
 
 //! Complexity pseudo-classes.

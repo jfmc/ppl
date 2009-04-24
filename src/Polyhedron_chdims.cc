@@ -1,12 +1,12 @@
 /* Polyhedron class implementation
    (non-inline operators that may change the dimension of the vector space).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -21,7 +21,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Polyhedron.defs.hh"
 #include "Variables_Set.defs.hh"
@@ -206,7 +206,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   }
 
   if (space_dim == 0) {
-    assert(status.test_zero_dim_univ() && gen_sys.num_rows() == 0);
+    assert(status.test_zero_dim_univ() && gen_sys.has_no_rows());
     // The system of generators for this polyhedron has only
     // the origin as a point.
     // In an NNC polyhedron, all points have to be accompanied
@@ -290,13 +290,12 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 
   // The space dimension of the resulting polyhedron should not
   // overflow the maximum allowed space dimension.
-  if (y.space_dim > max_space_dimension() - space_dimension())
+  const dimension_type added_columns = y.space_dim;
+  if (added_columns > max_space_dimension() - space_dim)
     throw_space_dimension_overflow(topology(),
 				   "concatenate_assign(y)",
 				   "concatenation exceeds the maximum "
 				   "allowed space dimension");
-
-  const dimension_type added_columns = y.space_dim;
 
   // If `*this' or `y' are empty polyhedra, it is sufficient to adjust
   // the dimension of the space.
@@ -350,8 +349,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   for (dimension_type i = added_rows; i-- > 0; ) {
     Constraint& c_old = cs[i];
     Constraint& c_new = con_sys[old_num_rows + i];
-    // Method `add_zero_rows_and_columns', by default, added
-    // inequalities.
+    // Method `add_zero_rows_and_columns', by default, added inequalities.
     if (c_old.is_equality())
       c_new.set_is_equality();
     // The inhomogeneous term is not displaced.
@@ -597,7 +595,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
 				: (e > 0)));
     }
   }
-  add_constraints(new_constraints);
+  add_recycled_constraints(new_constraints);
   assert(OK());
 }
 
@@ -625,11 +623,20 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
     throw_invalid_argument("fold_space_dimensions(tbf, v)",
 			   "v should not occur in tbf");
 
-  for (Variables_Set::const_iterator i = to_be_folded.begin(),
-	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
-    Polyhedron copy = *this;
-    copy.affine_image(var, Linear_Expression(Variable(*i)));
-    poly_hull_assign(copy);
+  // All of the affine images we are going to compute are not invertible,
+  // hence we will need to compute the generators of the polyehdron.
+  // Since we keep taking copies, make sure that a single conversion
+  // from constraints to generators is computed.
+  (void) generators();
+  // Having generators, we now know if the polyhedron is empty:
+  // in that case, folding is equivalent to just removing space dimensions.
+  if (!marked_empty()) {
+    for (Variables_Set::const_iterator i = to_be_folded.begin(),
+           tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
+      Polyhedron copy = *this;
+      copy.affine_image(var, Linear_Expression(Variable(*i)));
+      poly_hull_assign(copy);
+    }
   }
   remove_space_dimensions(to_be_folded);
   assert(OK());

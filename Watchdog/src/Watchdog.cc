@@ -1,11 +1,11 @@
 /* Watchdog and associated classes' implementation (non-inline functions).
-   Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
 The PWL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PWL is distributed in the hope that it will be useful, but WITHOUT
@@ -17,10 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
-For the most up-to-date information see the CS@Parma software
-site: http://www.cs.unipr.it/Software/ . */
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <pwl-config.h>
 
 #include "Watchdog.defs.hh"
 
@@ -31,11 +31,11 @@ site: http://www.cs.unipr.it/Software/ . */
 #include <string>
 #include <string.h>
 
-#ifdef TIME_WITH_SYS_TIME
+#ifdef PWL_TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <ctime>
 #else
-# ifdef HAVE_SYS_TIME_H
+# ifdef PWL_HAVE_SYS_TIME_H
 #  include <sys/time.h>
 # else
 #  include <ctime>
@@ -44,7 +44,7 @@ site: http://www.cs.unipr.it/Software/ . */
 
 // Cygwin only supports ITIMER_REAL.
 // Profiling does not work on programs that use the ITIMER_PROF timer.
-#if defined(__CYGWIN__) || defined(PROFILING)
+#if defined(__CYGWIN__) || defined(PWL_PROFILING)
 #define THE_TIMER  ITIMER_REAL
 #define THE_SIGNAL SIGALRM
 #else

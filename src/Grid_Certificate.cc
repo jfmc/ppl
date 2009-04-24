@@ -1,12 +1,12 @@
 /* Grid_Certificate class implementation
    (non-inline member functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -21,7 +21,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Grid_Certificate.defs.hh"
 
@@ -49,8 +49,7 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
 	// Calculate number of congruences from generators.
  	num_proper_congruences
 	  = gr.gen_sys.num_parameters() + 1 /* Integrality cg. */;
-	num_equalities
-	  = gr.space_dimension() + 1 - gr.gen_sys.num_generators();
+	num_equalities = gr.space_dimension() + 1 - gr.gen_sys.num_rows();
       }
       else {
 	// Minimize gr congruence system.  As in Polyhedron assume
@@ -74,25 +73,26 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
       Grid::simplify(gr.gen_sys, gr.dim_kinds);
       // If gen_sys contained rows before being reduced, it should
       // contain at least a single point afterward.
-      assert(gr.gen_sys.num_generators() > 0);
+      assert(!gr.gen_sys.empty());
       gr.set_generators_minimized();
     }
     // Calculate number of congruences from generators.
     num_proper_congruences
       = gr.gen_sys.num_parameters() + 1 /* Integrality cg. */;
     num_equalities
-      = gr.space_dimension() + 1 - gr.gen_sys.num_generators();
+      = gr.space_dimension() + 1 - gr.gen_sys.num_rows();
   }
 }
 
 int
 PPL::Grid_Certificate::compare(const Grid_Certificate& y) const {
   assert(OK() && y.OK());
-  if (num_equalities == y.num_equalities)
+  if (num_equalities == y.num_equalities) {
     if (num_proper_congruences == y.num_proper_congruences)
       return 0;
     else
       return num_proper_congruences > y.num_proper_congruences ? 1 : -1;
+  }
   return num_equalities > y.num_equalities ? 1 : -1;
 }
 

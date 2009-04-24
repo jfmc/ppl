@@ -1,11 +1,11 @@
 /* Linear_Expression class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -21,7 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
@@ -55,6 +55,21 @@ PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
     e[i] = g[i];
 }
 
+const PPL::Linear_Expression* PPL::Linear_Expression::zero_p = 0;
+
+void
+PPL::Linear_Expression::initialize() {
+  assert(zero_p == 0);
+  zero_p = new Linear_Expression(Coefficient_zero());
+}
+
+void
+PPL::Linear_Expression::finalize() {
+  assert(zero_p != 0);
+  delete zero_p;
+  zero_p = 0;
+}
+
 PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
   : Linear_Row(cg.space_dimension() + 1, Linear_Row::Flags()) {
   Linear_Expression& e = *this;
@@ -62,6 +77,34 @@ PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
     e[i] = cg[i];
 }
 
+PPL::Linear_Expression::Linear_Expression(const Variable v)
+  : Linear_Row(v.space_dimension() <= max_space_dimension()
+	       ? v.space_dimension() + 1
+	       : (throw std::length_error("PPL::Linear_Expression::"
+					  "Linear_Expression(v):\n"
+					  "v exceeds the maximum allowed "
+					  "space dimension."),
+		  v.space_dimension() + 1)
+	       , Linear_Row::Flags()) {
+  ++((*this)[v.space_dimension()]);
+}
+
+PPL::Linear_Expression::Linear_Expression(const Variable v, const Variable w)
+  : Linear_Row() {
+  const dimension_type v_space_dim = v.space_dimension();
+  const dimension_type w_space_dim = w.space_dimension();
+  const dimension_type space_dim = std::max(v_space_dim, w_space_dim);
+  if (space_dim > max_space_dimension())
+    throw std::length_error("PPL::Linear_Expression::"
+                            "Linear_Expression(v, w):\n"
+                            "v or w exceed the maximum allowed "
+                            "space dimension.");
+  construct(space_dim+1, Linear_Row::Flags());
+  if (v_space_dim != w_space_dim) {
+    ++((*this)[v_space_dim]);
+    --((*this)[w_space_dim]);
+  }
+}
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
@@ -96,12 +139,44 @@ PPL::operator+(const Linear_Expression& e1, const Linear_Expression& e2) {
   return r;
 }
 
+/*! \relates Linear_Expression */
+PPL::Linear_Expression
+PPL::operator+(const Variable v, const Linear_Expression& e) {
+  const dimension_type v_space_dim = v.space_dimension();
+  if (v_space_dim > Linear_Expression::max_space_dimension())
+    throw std::length_error("Linear_Expression "
+                            "PPL::operator+(v, e):\n"
+                            "v exceeds the maximum allowed "
+                            "space dimension.");
+  const dimension_type space_dim = std::max(v_space_dim, e.space_dimension());
+  Linear_Expression r(e, space_dim+1);
+  ++r[v_space_dim];
+  return r;
+}
+
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator+(Coefficient_traits::const_reference n,
 	       const Linear_Expression& e) {
   Linear_Expression r(e);
   r[0] += n;
+  return r;
+}
+
+/*! \relates Linear_Expression */
+PPL::Linear_Expression
+PPL::operator+(const Variable v, const Variable w) {
+  const dimension_type v_space_dim = v.space_dimension();
+  const dimension_type w_space_dim = w.space_dimension();
+  const dimension_type space_dim = std::max(v_space_dim, w_space_dim);
+  if (space_dim > Linear_Expression::max_space_dimension())
+    throw std::length_error("Linear_Expression "
+                            "PPL::operator+(v, w):\n"
+                            "v or w exceed the maximum allowed "
+                            "space dimension.");
+  Linear_Expression r(space_dim+1, true);
+  ++r[v_space_dim];
+  ++r[w_space_dim];
   return r;
 }
 
@@ -149,13 +224,45 @@ PPL::operator-(const Linear_Expression& e1, const Linear_Expression& e2) {
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
+PPL::operator-(const Variable v, const Linear_Expression& e) {
+  const dimension_type v_space_dim = v.space_dimension();
+  if (v_space_dim > Linear_Expression::max_space_dimension())
+    throw std::length_error("Linear_Expression "
+                            "PPL::operator-(v, e):\n"
+                            "v exceeds the maximum allowed "
+                            "space dimension.");
+  const dimension_type e_space_dim = e.space_dimension();
+  const dimension_type space_dim = std::max(v_space_dim, e_space_dim);
+  Linear_Expression r(e, space_dim+1);
+  for (dimension_type i = e.size(); i-- > 0; )
+    neg_assign(r[i]);
+  ++r[v_space_dim];
+  return r;
+}
+
+/*! \relates Linear_Expression */
+PPL::Linear_Expression
+PPL::operator-(const Linear_Expression& e, const Variable v) {
+  const dimension_type v_space_dim = v.space_dimension();
+  if (v_space_dim > Linear_Expression::max_space_dimension())
+    throw std::length_error("Linear_Expression "
+                            "PPL::operator-(e, v):\n"
+                            "v exceeds the maximum allowed "
+                            "space dimension.");
+  const dimension_type space_dim = std::max(v_space_dim, e.space_dimension());
+  Linear_Expression r(e, space_dim+1);
+  --r[v_space_dim];
+  return r;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+PPL::Linear_Expression
 PPL::operator-(Coefficient_traits::const_reference n,
 	       const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
     neg_assign(r[i]);
   r[0] += n;
-
   return r;
 }
 
@@ -191,7 +298,8 @@ PPL::Linear_Expression&
 PPL::operator+=(Linear_Expression& e, const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
   if (v_space_dim > Linear_Expression::max_space_dimension())
-    throw std::length_error("PPL::operator+=(e, v):\n"
+    throw std::length_error("Linear_Expression& "
+                            "PPL::operator+=(e, v):\n"
 			    "v exceeds the maximum allowed space dimension.");
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
@@ -224,7 +332,8 @@ PPL::Linear_Expression&
 PPL::operator-=(Linear_Expression& e, const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
   if (v_space_dim > Linear_Expression::max_space_dimension())
-    throw std::length_error("PPL::operator-=(e, v):\n"
+    throw std::length_error("Linear_Expression& "
+                            "PPL::operator-=(e, v):\n"
 			    "v exceeds the maximum allowed space dimension.");
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
@@ -253,7 +362,7 @@ PPL::Linear_Expression::OK() const {
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
   const dimension_type num_variables = e.space_dimension();
-  TEMP_INTEGER(ev);
+  PPL_DIRTY_TEMP_COEFFICIENT(ev);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
     ev = e[v+1];
@@ -276,7 +385,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
     }
   }
   // Inhomogeneous term.
-  TEMP_INTEGER(it);
+  PPL_DIRTY_TEMP_COEFFICIENT(it);
   it = e[0];
   if (it != 0) {
     if (!first) {

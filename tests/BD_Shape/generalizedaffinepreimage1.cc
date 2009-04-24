@@ -1,11 +1,11 @@
 /* Test BD_Shape::generalized_affine_preimage().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -30,23 +30,22 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(2*A == 1);
-  bd.add_constraint(B >= 5);
+  TBD_Shape bds(2);
+  bds.add_constraint(2*A == 1);
+  bds.add_constraint(B >= 5);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL,
-				 Linear_Expression(-1));
+  bds.generalized_affine_preimage(B, GREATER_OR_EQUAL, Linear_Expression(-1));
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(2*A == 1);
 
-  bool ok = check_result(bd, known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, -1) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, -1) ***");
 
   return ok;
 }
@@ -56,21 +55,21 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(2*A == 1);
-  bd.add_constraint(B >= 5);
+  TBD_Shape bds(2);
+  bds.add_constraint(2*A == 1);
+  bds.add_constraint(B >= 5);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, Linear_Expression(-1));
+  bds.generalized_affine_preimage(B, LESS_OR_EQUAL, Linear_Expression(-1));
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -1) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -1) ***");
 
   return ok;
 }
@@ -80,23 +79,23 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(4*A == 1);
-  bd.add_constraint(B >= 5);
+  TBD_Shape bds(2);
+  bds.add_constraint(4*A == 1);
+  bds.add_constraint(B >= 5);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -B+1);
+  bds.generalized_affine_preimage(B, LESS_OR_EQUAL, -B+1);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(4*A == 1);
   known_result.add_constraint(-B >= 4);
 
-  bool ok = check_result(bd, known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -B+1) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -B+1) ***");
 
   return ok;
 }
@@ -106,23 +105,23 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(4*A == 1);
-  bd.add_constraint(B >= 5);
+  TBD_Shape bds(2);
+  bds.add_constraint(4*A == 1);
+  bds.add_constraint(B >= 5);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, B+1);
+  bds.generalized_affine_preimage(B, LESS_OR_EQUAL, B+1);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(4*A == 1);
   known_result.add_constraint(B >= 4);
 
-  bool ok = check_result(bd, known_result);
+  bool ok = check_result(bds, known_result);
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, B+1) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, B+1) ***");
 
   return ok;
 }
@@ -132,23 +131,23 @@ test05() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(7*A == 1);
-  bd.add_constraint(B >= 5);
+  TBD_Shape bds(2);
+  bds.add_constraint(7*A == 1);
+  bds.add_constraint(B >= 5);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 2*B+1);
+  bds.generalized_affine_preimage(B, LESS_OR_EQUAL, 2*B+1);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(7*A == 1);
   known_result.add_constraint(B >= 2);
 
-  bool ok = check_result(bd, known_result, "2.13e-8", "1.25e-8", "8.52e-9");
+  bool ok = check_result(bds, known_result, "2.13e-8", "1.25e-8", "8.52e-9");
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, 2*B+1) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, 2*B+1) ***");
 
   return ok;
 }
@@ -158,23 +157,23 @@ test06() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(5*A == 1);
-  bd.add_constraint(B >= 5);
+  TBD_Shape bds(2);
+  bds.add_constraint(5*A == 1);
+  bds.add_constraint(B >= 5);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -2*B+1);
+  bds.generalized_affine_preimage(B, LESS_OR_EQUAL, -2*B+1);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(5*A == 1);
   known_result.add_constraint(-B >= 2);
 
-  bool ok = check_result(bd, known_result, "2.69e-8", "1.72e-8", "1.20e-8");
+  bool ok = check_result(bds, known_result, "2.69e-8", "1.72e-8", "1.20e-8");
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -2*B+1) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -2*B+1) ***");
 
   return ok;
 }
@@ -184,23 +183,23 @@ test07() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(3*A == 1);
-  bd.add_constraint(B >= 5);
+  TBD_Shape bds(2);
+  bds.add_constraint(3*A == 1);
+  bds.add_constraint(B >= 5);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 3*A-2*B+1);
+  bds.generalized_affine_preimage(B, LESS_OR_EQUAL, 3*A-2*B+1);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(-2*B >= 3);
 
-  bool ok = check_result(bd, known_result, "2.89e-7", "1.85e-7", "1.40e-7");
+  bool ok = check_result(bds, known_result, "2.89e-7", "1.85e-7", "1.40e-7");
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, 3*A-2*B+1) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, 3*A-2*B+1) ***");
 
   return ok;
 }
@@ -210,23 +209,23 @@ test08() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(3*A == 1);
-  bd.add_constraint(B >= 5);
+  TBD_Shape bds(2);
+  bds.add_constraint(3*A == 1);
+  bds.add_constraint(B >= 5);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+1);
+  bds.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+1);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(-2*B >= 5);
 
-  bool ok = check_result(bd, known_result, "5.27e-7", "3.53e-7", "2.59e-7");
+  bool ok = check_result(bds, known_result, "5.27e-7", "3.53e-7", "2.59e-7");
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B+1) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+1) ***");
 
   return ok;
 }
@@ -237,14 +236,14 @@ test09() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(3*A == 1);
-  bd.add_constraint(2*B >= 7);
-  bd.add_constraint(3*C <= 7);
+  TBD_Shape bds(3);
+  bds.add_constraint(3*A == 1);
+  bds.add_constraint(2*B >= 7);
+  bds.add_constraint(3*C <= 7);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, 2);
+  bds.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -253,11 +252,11 @@ test09() {
   known_result.add_constraint(3*B - 3*C <= 7);
   known_result.add_constraint(3*C <= 7);
 
-  bool ok = check_result(bd, known_result, "5.48e-6", "2.97e-6", "1.77e-6");
+  bool ok = check_result(bds, known_result, "5.48e-6", "2.97e-6", "1.77e-6");
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
 
   return ok;
 }
@@ -267,22 +266,22 @@ test10() {
   // If the Coefficient type is not wide enough, do nothing.
   if (std::numeric_limits<Coefficient>::is_bounded
       && (std::numeric_limits<Coefficient>::min() > -203
-	  || std::numeric_limits<Coefficient>::max() < 629))
+          || std::numeric_limits<Coefficient>::max() < 629))
     return true;
 
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(3*A == 1);
-  bd.add_constraint(2*B >= 7);
-  bd.add_constraint(3*C <= 7);
-  bd.add_constraint(5*C >= 7);
+  TBD_Shape bds(3);
+  bds.add_constraint(3*A == 1);
+  bds.add_constraint(2*B >= 7);
+  bds.add_constraint(3*C <= 7);
+  bds.add_constraint(5*C >= 7);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, 3);
+  bds.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -292,11 +291,11 @@ test10() {
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  bool ok = check_result(bd, known_result, "4.48e-6", "2.36e-6", "1.36e-6");
+  bool ok = check_result(bds, known_result, "4.48e-6", "2.36e-6", "1.36e-6");
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
 
   return ok;
 }
@@ -307,24 +306,24 @@ test11() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(3*A == 1);
-  bd.add_constraint(2*B >= 7);
-  bd.add_constraint(3*C <= 7);
+  TBD_Shape bds(3);
+  bds.add_constraint(3*A == 1);
+  bds.add_constraint(2*B >= 7);
+  bds.add_constraint(3*C <= 7);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2);
+  bds.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(3*C <= 7);
 
-  bool ok = check_result(bd, known_result, "3.68e-7", "2.41e-7", "1.79e-7");
+  bool ok = check_result(bds, known_result, "3.68e-7", "2.41e-7", "1.79e-7");
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
 
   return ok;
 }
@@ -335,15 +334,15 @@ test12() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(3*A == 1);
-  bd.add_constraint(2*B >= 7);
-  bd.add_constraint(3*C <= 7);
-  bd.add_constraint(5*C >= 7);
+  TBD_Shape bds(3);
+  bds.add_constraint(3*A == 1);
+  bds.add_constraint(2*B >= 7);
+  bds.add_constraint(3*C <= 7);
+  bds.add_constraint(5*C >= 7);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, -3);
+  bds.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -353,11 +352,11 @@ test12() {
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  bool ok = check_result(bd, known_result, "5.13e-6", "2.73e-6", "1.67e-6");
+  bool ok = check_result(bds, known_result, "5.13e-6", "2.73e-6", "1.67e-6");
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }
@@ -368,14 +367,14 @@ test13() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(3*A == 1);
-  bd.add_constraint(2*B <= 7);
-  bd.add_constraint(3*C <= 7);
+  TBD_Shape bds(3);
+  bds.add_constraint(3*A == 1);
+  bds.add_constraint(2*B <= 7);
+  bds.add_constraint(3*C <= 7);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2);
+  bds.generalized_affine_preimage(B, GREATER_OR_EQUAL, -3*A-2*B+7*C+1, -2);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -384,11 +383,11 @@ test13() {
   known_result.add_constraint(3*B - 3*C <= 28);
   known_result.add_constraint(3*C <= 7);
 
-  bool ok = check_result(bd, known_result, "7.39e-6", "4.07e-6", "2.55e-6");
+  bool ok = check_result(bds, known_result, "7.39e-6", "4.07e-6", "2.55e-6");
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
 
   return ok;
 }
@@ -399,15 +398,15 @@ test14() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(3*A == 1);
-  bd.add_constraint(2*B <= 7);
-  bd.add_constraint(3*C <= 7);
-  bd.add_constraint(5*C >= 7);
+  TBD_Shape bds(3);
+  bds.add_constraint(3*A == 1);
+  bds.add_constraint(2*B <= 7);
+  bds.add_constraint(3*C <= 7);
+  bds.add_constraint(5*C >= 7);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3);
+  bds.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -417,11 +416,11 @@ test14() {
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  bool ok = check_result(bd, known_result, "1.98e-6", "9.26e-7", "5.25e-7");
+  bool ok = check_result(bds, known_result, "1.98e-6", "9.26e-7", "5.25e-7");
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }
@@ -432,26 +431,26 @@ test15() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(3*A == 1);
-  bd.add_constraint(2*B >= 7);
-  bd.add_constraint(3*C <= 7);
-  bd.add_constraint(5*C >= 7);
+  TBD_Shape bds(3);
+  bds.add_constraint(3*A == 1);
+  bds.add_constraint(2*B >= 7);
+  bds.add_constraint(3*C <= 7);
+  bds.add_constraint(5*C >= 7);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3);
+  bds.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  bool ok = check_result(bd, known_result, "4.26e-7", "2.44e-7", "1.79e-7");
+  bool ok = check_result(bds, known_result, "4.26e-7", "2.44e-7", "1.79e-7");
 
-  print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
+  print_constraints(bds,
+                    "*** bds.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }

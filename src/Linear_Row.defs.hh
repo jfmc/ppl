@@ -1,11 +1,11 @@
 /* Linear_Row class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -119,7 +119,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   \f$[0, a_0, \ldots, a_{d-1}]_{(c,=)}\f$, which represents the
   linear expression \f$\sum_{i=0}^{d-1} a_i x_i\f$.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 class Parma_Polyhedra_Library::Linear_Row : public Row {
 public:
@@ -139,7 +139,7 @@ public:
     or not) and the kind (line/equality or ray/point/inequality)
     of a Linear_Row object.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   class Flags : public Row::Flags {
   public:
     //! Default constructor: builds an object where all flags are invalid.
@@ -435,7 +435,7 @@ bool operator!=(const Linear_Row& x, const Linear_Row& y);
   - +1, if \p y is smaller than \p x and they \e are parallel;
   - +2, if \p y is smaller than \p x and they are \e not parallel.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 int compare(const Linear_Row& x, const Linear_Row& y);
 
 } // namespace Parma_Polyhedra_Library
@@ -446,14 +446,14 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Linear_Row& x,
 	  Parma_Polyhedra_Library::Linear_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::iter_swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void iter_swap(std::vector<Parma_Polyhedra_Library::Linear_Row>::iterator x,
 	       std::vector<Parma_Polyhedra_Library::Linear_Row>::iterator y);
 

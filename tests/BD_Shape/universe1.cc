@@ -1,11 +1,11 @@
 /* Test BD_Shape::is_universe().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -29,15 +29,15 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd(4);
+  TBD_Shape bds(4);
 
-  bd.add_constraint(-x <= 4);
-  bd.add_constraint(y - x <= 0);
-  bd.add_constraint(x - y <= -5);
+  bds.add_constraint(-x <= 4);
+  bds.add_constraint(y - x <= 0);
+  bds.add_constraint(x - y <= -5);
 
-  bool universe = bd.is_universe();
+  bool universe = bds.is_universe();
 
-  nout << "*** bd.is_universe() ***" << endl;
+  nout << "*** bds.is_universe() ***" << endl;
   nout << (universe ? "true" : "false") << endl;
 
   return !universe;
@@ -45,11 +45,11 @@ test01() {
 
 bool
 test02() {
-  TBD_Shape bd(4);
+  TBD_Shape bds(4);
 
-  bool universe = bd.is_universe();
+  bool universe = bds.is_universe();
 
-  nout << "*** bd.is_universe() ***" << endl;
+  nout << "*** bds.is_universe() ***" << endl;
   nout << (universe ? "true" : "false") << endl;
 
   return universe;
@@ -57,11 +57,11 @@ test02() {
 
 bool
 test03() {
-  TBD_Shape bd(0);
+  TBD_Shape bds(0);
 
-  bool universe = bd.is_universe();
+  bool universe = bds.is_universe();
 
-  nout << "*** bd.is_universe() ***" << endl;
+  nout << "*** bds.is_universe() ***" << endl;
   nout << (universe ? "true" : "false") << endl;
 
   return universe;
@@ -69,11 +69,11 @@ test03() {
 
 bool
 test04() {
-  TBD_Shape bd(20, EMPTY);
+  TBD_Shape bds(20, EMPTY);
 
-  bool universe = bd.is_universe();
+  bool universe = bds.is_universe();
 
-  nout << "*** bd.is_universe() ***" << endl;
+  nout << "*** bds.is_universe() ***" << endl;
   nout << (universe ? "true" : "false") << endl;
 
   return !universe;

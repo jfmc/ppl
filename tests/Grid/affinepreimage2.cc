@@ -1,11 +1,11 @@
 /* Test Grid::affine_preimage().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -50,8 +50,7 @@ test01() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_preimage(A, 2*A, 5) ***");
+  print_generators(gr, "*** gr.affine_preimage(A, 2*A, 5) ***");
 
   return ok;
 }
@@ -75,8 +74,7 @@ test02() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_preimage(A, B + 2, -3) ***");
+  print_generators(gr, "*** gr.affine_preimage(A, B + 2, -3) ***");
 
   return ok;
 }
@@ -97,8 +95,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, 11*A - B + 1) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, 11*A - B + 1) ***");
 
   return ok;
 }
@@ -123,8 +120,7 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_preimage(B, A - B, -1) ***");
+  print_generators(gr, "*** gr.affine_preimage(B, A - B, -1) ***");
 
   return ok;
 }
@@ -150,8 +146,7 @@ test05() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(B, A - B, -1) ***");
+  print_congruences(gr, "*** gr.affine_preimage(B, A - B, -1) ***");
 
   return ok;
 }
@@ -176,8 +171,7 @@ test06() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, A + 3) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, A + 3) ***");
 
   return ok;
 }
@@ -201,8 +195,7 @@ test07() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, A + B) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, A + B) ***");
 
   return ok;
 }
@@ -226,8 +219,7 @@ test08() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, B) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, B) ***");
 
   return ok;
 }
@@ -239,8 +231,8 @@ test09() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A == 3);
-  gr.add_congruence(B == 0);
+  gr.add_congruence((A == 3) / 0);
+  gr.add_congruence((B == 0) / 0);
 
   print_congruences(gr, "*** gr ***");
 
@@ -250,8 +242,7 @@ test09() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(B, A) ***");
+  print_congruences(gr, "*** gr.affine_preimage(B, A) ***");
 
   return ok;
 }
@@ -263,20 +254,19 @@ test10() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A == 3);
-  gr.add_congruence(B == 3);
+  gr.add_congruence((A == 3) / 0);
+  gr.add_congruence((B == 3) / 0);
 
   print_congruences(gr, "*** gr ***");
 
   gr.affine_preimage(B, A);
 
   Grid known_gr(2);
-  known_gr.add_congruence(A == 3);
+  known_gr.add_congruence((A == 3) / 0);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(B, A) ***");
+  print_congruences(gr, "*** gr.affine_preimage(B, A) ***");
 
   return ok;
 }

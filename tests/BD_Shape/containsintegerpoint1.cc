@@ -1,11 +1,11 @@
 /* Test BD_Shape::contains_integer_point().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -36,14 +36,14 @@ test01() {
   cs.insert(3*y <= 2);
   cs.insert(3*y >= 1);
 
-  BD_Shape<mpz_class> bd(3);
-  bd.add_constraints(cs);
+  BD_Shape<mpz_class> bds(3);
+  bds.add_constraints(cs);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool contains = bd.contains_integer_point();
+  bool contains = bds.contains_integer_point();
 
-  nout << "bd.contains_integer_point() == "
+  nout << "bds.contains_integer_point() == "
        << (contains ? "true" : "false") << endl;
 
   return contains;
@@ -61,14 +61,14 @@ test02() {
   cs.insert(3*y <= 2);
   cs.insert(3*y >= 1);
 
-  BD_Shape<mpq_class> bd(3);
-  bd.add_constraints(cs);
+  BD_Shape<mpq_class> bds(3);
+  bds.add_constraints(cs);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool contains = bd.contains_integer_point();
+  bool contains = bds.contains_integer_point();
 
-  nout << "bd.contains_integer_point() == "
+  nout << "bds.contains_integer_point() == "
        << (contains ? "true" : "false") << endl;
 
   return !contains;
@@ -86,17 +86,20 @@ test03() {
   cs.insert(3*y <= 2);
   cs.insert(3*y >= 1);
 
-  BD_Shape<float> bd(3);
-  bd.add_constraints(cs);
+  TBD_Shape bds(3);
+  bds.add_constraints(cs);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool contains = bd.contains_integer_point();
+  bool contains = bds.contains_integer_point();
 
-  nout << "bd.contains_integer_point() == "
+  nout << "bds.contains_integer_point() == "
        << (contains ? "true" : "false") << endl;
 
-  return !contains;
+  // NOTE: results depends on whether or not the rational constraints
+  // on y have been approximated as integral constraints.
+  typedef TBD_Shape::coefficient_type_base T;
+  return (std::numeric_limits<T>::is_integer ? contains : !contains);
 }
 
 bool
@@ -111,14 +114,14 @@ test04() {
   cs.insert(3*y - 3*z <= 2);
   cs.insert(8*z - 8*y >= 7);
 
-  BD_Shape<mpq_class> bd(3);
-  bd.add_constraints(cs);
+  BD_Shape<mpq_class> bds(3);
+  bds.add_constraints(cs);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool contains = bd.contains_integer_point();
+  bool contains = bds.contains_integer_point();
 
-  nout << "bd.contains_integer_point() == "
+  nout << "bds.contains_integer_point() == "
        << (contains ? "true" : "false") << endl;
 
   return contains;

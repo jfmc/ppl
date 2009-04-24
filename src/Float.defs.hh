@@ -1,11 +1,11 @@
 /* IEC 559 floating point format related functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -23,26 +23,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Float_defs_hh
 #define PPL_Float_defs_hh 1
 
+#include "meta_programming.hh"
 #include "compiler.hh"
 #include <gmp.h>
 #include <cassert>
 #include <cmath>
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
-#ifdef HAVE_INTTYPES_H
-#include <inttypes.h>
-#endif
 
-#ifndef NAN
-#define NAN (HUGE_VAL - HUGE_VAL)
+#ifdef NAN
+#define PPL_NAN NAN
+#else
+#define PPL_NAN (HUGE_VAL - HUGE_VAL)
 #endif
 
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 struct float_ieee754_single {
   uint32_t word;
@@ -70,12 +67,18 @@ struct float_ieee754_single {
   void build(bool negative, mpz_t mantissa, int exponent);
 };
 
+#ifdef WORDS_BIGENDIAN
+#ifndef PPL_WORDS_BIGENDIAN
+#define PPL_WORDS_BIGENDIAN
+#endif
+#endif
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 struct float_ieee754_double {
-#ifdef WORDS_BIGENDIAN
+#ifdef PPL_WORDS_BIGENDIAN
   uint32_t msp;
   uint32_t lsp;
 #else
@@ -110,10 +113,10 @@ struct float_ieee754_double {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 struct float_intel_double_extended {
-#ifdef WORDS_BIGENDIAN
+#ifdef PPL_WORDS_BIGENDIAN
   uint32_t msp;
   uint64_t lsp;
 #else
@@ -149,10 +152,10 @@ struct float_intel_double_extended {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 struct float_ieee754_quad {
-#ifdef WORDS_BIGENDIAN
+#ifdef PPL_WORDS_BIGENDIAN
   uint64_t msp;
   uint64_t lsp;
 #else
@@ -187,18 +190,25 @@ struct float_ieee754_quad {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-class Float {
-public:
-  static const bool fpu_related = false;
-};
+class Float : public False { };
 
 #if PPL_SUPPORTED_FLOAT
 template <>
-class Float<float> {
+class Float<float> : public True {
 public:
-  typedef CXX_FLOAT_BINARY_FORMAT Binary;
+#if PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+  typedef float_ieee754_single Binary;
+#elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
+  typedef float_ieee754_double Binary;
+#elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
+  typedef float_ieee754_quad Binary;
+#elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
+  typedef float_intel_double_extended Binary;
+#else
+#error "invalid value for PPL_CXX_FLOAT_BINARY_FORMAT"
+#endif
   union {
     float number;
     Binary binary;
@@ -206,15 +216,24 @@ public:
   Float();
   Float(float v);
   float value();
-  static const bool fpu_related = true;
 };
 #endif
 
 #if PPL_SUPPORTED_DOUBLE
 template <>
-class Float<double> {
+class Float<double> : public True {
 public:
-  typedef CXX_DOUBLE_BINARY_FORMAT Binary;
+#if PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+  typedef float_ieee754_single Binary;
+#elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
+  typedef float_ieee754_double Binary;
+#elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
+  typedef float_ieee754_quad Binary;
+#elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
+  typedef float_intel_double_extended Binary;
+#else
+#error "invalid value for PPL_CXX_DOUBLE_BINARY_FORMAT"
+#endif
   union {
     double number;
     Binary binary;
@@ -222,15 +241,24 @@ public:
   Float();
   Float(double v);
   double value();
-  static const bool fpu_related = true;
 };
 #endif
 
 #if PPL_SUPPORTED_LONG_DOUBLE
 template <>
-class Float<long double> {
+class Float<long double> : public True {
 public:
-  typedef CXX_LONG_DOUBLE_BINARY_FORMAT Binary;
+#if PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+  typedef float_ieee754_single Binary;
+#elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
+  typedef float_ieee754_double Binary;
+#elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
+  typedef float_ieee754_quad Binary;
+#elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
+  typedef float_intel_double_extended Binary;
+#else
+#error "invalid value for PPL_CXX_LONG_DOUBLE_BINARY_FORMAT"
+#endif
   union {
     long double number;
     Binary binary;
@@ -238,7 +266,6 @@ public:
   Float();
   Float(long double v);
   long double value();
-  static const bool fpu_related = true;
 };
 #endif
 

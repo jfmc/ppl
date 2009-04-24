@@ -1,11 +1,11 @@
 /* Test BD_Shape::max_space_dimension().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -26,62 +26,65 @@ namespace {
 
 bool
 test01() {
-  BD_Shape<mpq_class> bd1(1);
-  BD_Shape<long> bd2(1);
-  BD_Shape<int> bd3(1);
-  BD_Shape<signed char> bd4(1);
-
-  dimension_type max_spacedim1 = bd1.max_space_dimension();
-  dimension_type max_spacedim2 = bd2.max_space_dimension();
-  dimension_type max_spacedim3 = bd3.max_space_dimension();
-  dimension_type max_spacedim4 = bd4.max_space_dimension();
-
-  nout << endl
-       << "The maximum space-dimension of a system of bounded differences "
+  nout << BD_Shape<signed char>::max_space_dimension() << " (signed char)"
        << endl
-       << "of Rational is: "
+       << BD_Shape<short>::max_space_dimension() << " (short)"
        << endl
-       << max_spacedim1
+       << BD_Shape<int>::max_space_dimension() << " (int)"
+       << endl
+       << BD_Shape<long>::max_space_dimension() << " (long)"
+       << endl
+       << BD_Shape<long long>::max_space_dimension() << " (long long)"
+       << endl
+#if PPL_SUPPORTED_FLOAT
+       << BD_Shape<float>::max_space_dimension() << " (float)"
+       << endl
+#endif
+#if PPL_SUPPORTED_DOUBLE
+       << BD_Shape<double>::max_space_dimension() << " (double)"
+       << endl
+#endif
+#if PPL_SUPPORTED_LONG_DOUBLE
+       << BD_Shape<long double>::max_space_dimension() << " (long double)"
+       << endl
+#endif
+       << BD_Shape<mpz_class>::max_space_dimension() << " (mpz_class)"
+       << endl
+       << BD_Shape<mpq_class>::max_space_dimension() << " (mpq_class)"
        << endl;
 
-  nout << endl
-       << "The maximum space-dimension of a system of bounded differences "
-       << endl
-       << "of long: "
-       << endl
-       << max_spacedim2
-       << endl;
+  if (BD_Shape<signed char>::max_space_dimension()
+      < BD_Shape<short>::max_space_dimension())
+    return false;
 
-  nout << endl
-       << "The maximum space-dimension of a system of bounded differences "
-       << endl
-       << "of int: "
-       << endl
-       << max_spacedim3
-       << endl;
+  if (BD_Shape<short>::max_space_dimension()
+      < BD_Shape<int>::max_space_dimension())
+    return false;
 
-  nout << endl
-       << "The maximum space-dimension of a system of bounded differences "
-       << endl
-       << "of signed char"
-       << endl
-       << max_spacedim4
-       << endl;
+  if (BD_Shape<int>::max_space_dimension()
+      < BD_Shape<long>::max_space_dimension())
+    return false;
 
-  if (max_spacedim1 < max_spacedim2) {
+  if (BD_Shape<long>::max_space_dimension()
+      < BD_Shape<long long>::max_space_dimension())
+    return false;
 
-    print_constraints(bd1, "*** bd1 ***");
-    print_constraints(bd2, "*** bd2 ***");
+#if PPL_SUPPORTED_FLOAT && PPL_SUPPORTED_DOUBLE
+  if (BD_Shape<float>::max_space_dimension()
+      < BD_Shape<double>::max_space_dimension())
+    return false;
+#endif
 
-  }
+#if PPL_SUPPORTED_DOUBLE && PPL_SUPPORTED_LONG_DOUBLE
+  if (BD_Shape<double>::max_space_dimension()
+      < BD_Shape<long double>::max_space_dimension())
+    return false;
+#endif
 
-  if (max_spacedim3 < max_spacedim4) {
+  if (2*BD_Shape<mpz_class>::max_space_dimension()
+      < BD_Shape<mpq_class>::max_space_dimension())
+    return false;
 
-    print_constraints(bd3, "*** bd3 ***");
-    print_constraints(bd4, "*** bd4 ***");
-
-  }
-  // FIXME!!!
   return true;
 }
 

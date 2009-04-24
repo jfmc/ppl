@@ -1,4 +1,11 @@
-/*! \page GFDL GNU Free Documentation License
+/*!
+\if PPL_HTML_Tag_Documentation_of_Interfaces
+\page GFDL_different_HTML_tag GNU Free Documentation License
+\else
+\page GFDL GNU Free Documentation License
+\endif
+
+\anchor GFDL
 
 Version 1.2, November 2002
 

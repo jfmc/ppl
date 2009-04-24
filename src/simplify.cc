@@ -1,11 +1,11 @@
 /* Polyhedron class implementation: simplify().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,12 +20,14 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
+#include <cstddef>
+#include <limits>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -77,10 +79,11 @@ namespace PPL = Parma_Polyhedra_Library;
   \f]
   where \f$\lambda_1, \lambda_2\f$ can be any real number.
 */
-int
+PPL::dimension_type
 PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
   // This method is only applied to a well-formed system `sys'.
   assert(sys.OK(true));
+  assert(sys.num_columns() >= 1);
 
   dimension_type num_rows = sys.num_rows();
   const dimension_type num_columns = sys.num_columns();
@@ -94,8 +97,17 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
 
   // `num_saturators[i]' will contain the number of generators
   // that saturate the constraint `sys[i]'.
-  static std::vector<dimension_type> num_saturators;
-  num_saturators.reserve(num_rows);
+  if (num_rows > simplify_num_saturators_size) {
+    delete [] simplify_num_saturators_p;
+    simplify_num_saturators_p = 0;
+    simplify_num_saturators_size = 0;
+    const size_t max_size
+      = std::numeric_limits<size_t>::max() / sizeof(dimension_type);
+    const size_t new_size = compute_capacity(num_rows, max_size);
+    simplify_num_saturators_p = new dimension_type[new_size];
+    simplify_num_saturators_size = new_size;
+  }
+  dimension_type* num_saturators = simplify_num_saturators_p;
 
   // Computing the number of saturators for each inequality,
   // possibly identifying and swapping those that happen to be

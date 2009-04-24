@@ -1,11 +1,11 @@
 /* Test Polyhedron::H79_widening_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -38,7 +38,7 @@ test01() {
   ph4.add_constraint(4*A <= 3);
 
   NNC_Polyhedron ph = ph4;
-  ph.intersection_assign_and_minimize(ph1);
+  ph.intersection_assign(ph1);
   // At this point, ph and ph4 are two different representations
   // of the same NNC polyhedron.
 
@@ -51,7 +51,7 @@ test01() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After H79_widening_assign ***");
+  print_constraints(ph, "*** after H79_widening_assign ***");
 
   return ok;
 }

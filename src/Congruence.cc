@@ -1,11 +1,11 @@
 /* Congruence class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Congruence.defs.hh"
 
@@ -41,7 +41,6 @@ PPL::Congruence::Congruence(const Constraint& c)
 	   c),
 	c.space_dimension() + 2,
 	compute_capacity(c.space_dimension() + 2, Row::max_size())) {
-
   (*this)[size()-1] = 0;
 }
 
@@ -54,7 +53,7 @@ PPL::Congruence::Congruence(const Constraint& c,
 	   c),
 	sz,
 	capacity) {
-
+  assert(sz > 1);
   (*this)[sz-1] = 0;
 }
 
@@ -141,14 +140,15 @@ PPL::Congruence::throw_dimension_incompatible(const char* method,
   std::ostringstream s;
   s << "this->space_dimension() == " << space_dimension() << ", "
     << v_name << ".space_dimension() == " << v.space_dimension() << ".";
-  throw_invalid_argument(method, s.str().c_str());
+  std::string str = s.str();
+  throw_invalid_argument(method, str.c_str());
 }
 
 /*! \relates Parma_Polyhedra_Library::Congruence */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
   const dimension_type num_variables = c.space_dimension();
-  TEMP_INTEGER(cv);
+  PPL_DIRTY_TEMP_COEFFICIENT(cv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
     cv = c.coefficient(Variable(v));
@@ -179,7 +179,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
 }
 
 bool
-PPL::Congruence::is_trivial_true() const {
+PPL::Congruence::is_tautological() const {
   if ((is_equality() && inhomogeneous_term() == 0)
       || (is_proper_congruence()
 	  && (inhomogeneous_term() % modulus() == 0))) {
@@ -192,7 +192,7 @@ PPL::Congruence::is_trivial_true() const {
 }
 
 bool
-PPL::Congruence::is_trivial_false() const {
+PPL::Congruence::is_inconsistent() const {
   if (inhomogeneous_term() == 0
       || (is_proper_congruence()
 	  && ((inhomogeneous_term() % modulus()) == 0)))
@@ -240,7 +240,7 @@ PPL::Congruence::ascii_load(std::istream& s) {
     for (dimension_type col = 0; col < new_size - 1; ++col)
       if (!(s >> x[col]))
 	return false;
-    if (!(s >> str) || (str.compare("m") != 0))
+    if (!(s >> str) || str != "m")
       return false;
     if (!(s >> x[new_size-1]))
       return false;
@@ -265,4 +265,29 @@ PPL::Congruence::OK() const {
 
   // All tests passed.
   return true;
+}
+
+const PPL::Congruence* PPL::Congruence::zero_dim_false_p = 0;
+const PPL::Congruence* PPL::Congruence::zero_dim_integrality_p = 0;
+
+void
+PPL::Congruence::initialize() {
+  assert(zero_dim_false_p == 0);
+  zero_dim_false_p
+    = new Congruence((Linear_Expression::zero() %= Coefficient(-1)) / 0);
+
+  assert(zero_dim_integrality_p == 0);
+  zero_dim_integrality_p
+    = new Congruence(Linear_Expression::zero() %= Coefficient(-1));
+}
+
+void
+PPL::Congruence::finalize() {
+  assert(zero_dim_false_p != 0);
+  delete zero_dim_false_p;
+  zero_dim_false_p = 0;
+
+  assert(zero_dim_integrality_p != 0);
+  delete zero_dim_integrality_p;
+  zero_dim_integrality_p = 0;
 }

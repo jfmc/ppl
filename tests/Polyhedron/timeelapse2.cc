@@ -1,11 +1,11 @@
 /* Test time_elapse_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -41,8 +41,8 @@ test01() {
   ph2.add_constraint(x < 4);
   ph2.add_constraint(y == 3);
 
-  print_constraints(ph1, "**** ph1 ****");
-  print_constraints(ph2, "**** ph2 ****");
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
 
   ph1.time_elapse_assign(ph2);
 
@@ -57,7 +57,7 @@ test01() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
+  print_generators(ph1, "*** ph1_time_elapse_assign(ph2) ***");
 
   return ok;
 }
@@ -78,14 +78,14 @@ test02() {
   gs.insert(point(x + y));
   NNC_Polyhedron ph2(gs);
 
-  print_constraints(ph1, "**** ph1 ****");
-  print_generators(ph2, "**** ph2 ****");
+  print_constraints(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
 
   ph1.time_elapse_assign(ph2);
 
   bool ok = (ph1 == ph);
 
-  print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
+  print_generators(ph1, "*** ph1_time_elapse_assign(ph2) ***");
 
  return ok;
 }
@@ -103,8 +103,8 @@ test03() {
   ph2.add_constraint(x > 3);
   ph2.add_constraint(y > 2);
 
-  print_constraints(ph1, "**** ph1 ****");
-  print_constraints(ph2, "**** ph2 ****");
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
 
   ph1.time_elapse_assign(ph2);
 
@@ -118,7 +118,7 @@ test03() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
+  print_generators(ph1, "*** ph1_time_elapse_assign(ph2) ***");
 
   return ok;
 }

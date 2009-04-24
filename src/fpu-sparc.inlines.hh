@@ -1,11 +1,11 @@
 /* SPARC floating point unit related functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,19 +20,26 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifdef HAVE_IEEEFP_H
+#ifndef PPL_fpu_sparc_inlines_hh
+#define PPL_fpu_sparc_inlines_hh 1
+
+#ifdef PPL_HAVE_IEEEFP_H
 #include <ieeefp.h>
 
-#define FPU_TONEAREST ((int) FP_RN)
-#define FPU_UPWARD ((int) FP_RP)
-#define FPU_DOWNWARD ((int) FP_RM)
-#define FPU_TOWARDZERO ((int) FP_RZ)
+#define PPL_FPU_TONEAREST  ((int) FP_RN)
+#define PPL_FPU_UPWARD     ((int) FP_RP)
+#define PPL_FPU_DOWNWARD   ((int) FP_RM)
+#define PPL_FPU_TOWARDZERO ((int) FP_RZ)
 
 namespace Parma_Polyhedra_Library {
 
+inline void
+fpu_initialize_control_functions() {
+}
+
 inline fpu_rounding_direction_type
 fpu_get_rounding_direction() {
-  return fpgetround();
+  return static_cast<fpu_rounding_direction_type>(fpgetround());
 }
 
 inline void
@@ -42,7 +49,7 @@ fpu_set_rounding_direction(fpu_rounding_direction_type dir) {
 
 inline fpu_rounding_control_word_type
 fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
-  return fpsetround((fp_rnd) dir);
+  return static_cast<fpu_rounding_control_word_type>(fpsetround((fp_rnd) dir));
 }
 
 inline void
@@ -50,12 +57,6 @@ fpu_reset_inexact() {
   fp_except except = fpgetmask();
   except &= ~FP_X_IMP;
   fpsetmask(except);
-}
-
-inline fpu_rounding_control_word_type
-fpu_save_rounding_direction_reset_inexact(fpu_rounding_direction_type dir) {
-  fpu_reset_inexact();
-  return fpu_save_rounding_direction((fp_rnd) dir);
 }
 
 inline void
@@ -70,4 +71,6 @@ fpu_check_inexact() {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(HAVE_IEEEFP_H)
+#endif // !defined(PPL_HAVE_IEEEFP_H)
+
+#endif // !defined(PPL_fpu_sparc_inlines_hh)

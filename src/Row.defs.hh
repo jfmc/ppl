@@ -1,11 +1,11 @@
 /* Row class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -29,20 +29,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <limits>
 
-#ifndef EXTRA_ROW_DEBUG
+#ifndef PPL_ROW_EXTRA_DEBUG
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*!
   \brief
   Enables extra debugging information for class Row.
 
   \ingroup PPL_CXX_interface
-  When <CODE>EXTRA_ROW_DEBUG</CODE> evaluates to <CODE>true</CODE>,
+  When <CODE>PPL_ROW_EXTRA_DEBUG</CODE> evaluates to <CODE>true</CODE>,
   each instance of the class Row carries its own capacity; this enables
   extra consistency checks to be performed.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-#define EXTRA_ROW_DEBUG 0
-#endif
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+#define PPL_ROW_EXTRA_DEBUG 1
+#else // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
+#define PPL_ROW_EXTRA_DEBUG 0
+#endif // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
+#endif // !defined(PPL_ROW_EXTRA_DEBUG)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The handler of the actual Row implementation.
@@ -50,7 +54,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   Exception-safety is the only responsibility of this class: it has
   to ensure that its \p impl member is correctly deallocated.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Row_Impl_Handler {
 public:
   //! Default constructor.
@@ -64,10 +68,10 @@ public:
   //! A pointer to the actual implementation.
   Impl* impl;
 
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   //! The capacity of \p impl (only available during debugging).
   dimension_type capacity_;
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_ROW_EXTRA_DEBUG
 
 private:
   //! Private and unimplemented: copy construction is not allowed.
@@ -80,7 +84,7 @@ private:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A finite sequence of coefficients.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Row : private Row_Impl_Handler {
 public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -89,7 +93,7 @@ public:
     unsigned integral type.
     \ingroup PPL_CXX_interface
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   class Flags {
   public:
     //! Constructs an object with all the flags unset.
@@ -336,10 +340,11 @@ private:
   //! Exception-safe copy construction mechanism for coefficients.
   void copy_construct_coefficients(const Row& y);
 
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   //! Returns the capacity of the row (only available during debugging).
   dimension_type capacity() const;
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_ROW_EXTRA_DEBUG
+
  friend class Serializer;
 };
 
@@ -361,14 +366,14 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Row& x,
 	  Parma_Polyhedra_Library::Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::iter_swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void iter_swap(std::vector<Parma_Polyhedra_Library::Row>::iterator x,
 	       std::vector<Parma_Polyhedra_Library::Row>::iterator y);
 
@@ -382,7 +387,7 @@ void iter_swap(std::vector<Parma_Polyhedra_Library::Row>::iterator x,
   objects and, in particular, of the corresponding memory allocation
   functions.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Row_Impl_Handler::Impl {
 public:
   //! \name Custom allocator and deallocator
@@ -485,7 +490,7 @@ private:
 
   //! The vector of coefficients.
   Coefficient vec_[
-#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 	       1
 #endif
   ];

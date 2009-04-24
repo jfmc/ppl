@@ -1,11 +1,11 @@
 /* Octagonal_Shape class implementation (non-inline functions).
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -21,14 +21,14 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 #include "Octagonal_Shape.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool
 PPL::extract_octagonal_difference(const Constraint& c,
 				  const dimension_type c_space_dim,
@@ -44,12 +44,13 @@ PPL::extract_octagonal_difference(const Constraint& c,
   dimension_type non_zero_index[2] = { 0, 0 };
   // Collect the non-zero components of `c'.
   for (dimension_type i = c_space_dim; i-- > 0; )
-    if (c.coefficient(Variable(i)) != 0)
+    if (c.coefficient(Variable(i)) != 0) {
       if (c_num_vars <= 1)
 	non_zero_index[c_num_vars++] = i;
       else
 	// Constraint `c' is not an octagonal difference.
 	return false;
+    }
 
   // Make sure that `c' is indeed an octagonal difference,
   // i.e., it has one of the following forms:

@@ -1,44 +1,44 @@
-*** ppl_lpsol -s -n  -oobtained egout.mps
+*** ./ppl_lpsol -s -p1 -oobtained -n  egout.mps
 Feasible problem.
-*** ppl_lpsol -s -n  -oobtained ex1.mps
+*** ./ppl_lpsol -s -p1 -oobtained -n  ex1.mps
 Feasible problem.
-*** ppl_lpsol -s -n  -oobtained lseu.mps
+*** ./ppl_lpsol -s -p1 -oobtained -n  lseu.mps
 Feasible problem.
-*** ppl_lpsol -s -n  -oobtained markshare1.mps
+*** ./ppl_lpsol -s -p1 -oobtained -n  markshare1.mps
 Feasible problem.
-*** ppl_lpsol -s -n  -oobtained markshare2.mps
+*** ./ppl_lpsol -s -p1 -oobtained -n  markshare2.mps
 Feasible problem.
-*** ppl_lpsol -s -n  -oobtained mip.mps
+*** ./ppl_lpsol -s -p1 -oobtained -n  mip.mps
 Feasible problem.
-*** ppl_lpsol -s -n  -oobtained p0033.mps
+*** ./ppl_lpsol -s -p1 -oobtained -n  p0033.mps
 Feasible problem.
-*** ppl_lpsol -s -n  -oobtained unboundedmin.mps
+*** ./ppl_lpsol -s -p1 -oobtained -n  unboundedmin.mps
 Feasible problem.
-*** ppl_lpsol -s -m -oobtained ex1.mps
+*** ./ppl_lpsol -s -p1 -oobtained -m ex1.mps
 Optimum value: -3
 Optimum location:
 x1 = 1
 x2 = 2
-*** ppl_lpsol -s -M -oobtained ex1.mps
+*** ./ppl_lpsol -s -p1 -oobtained -M ex1.mps
 Optimum value: 2
 Optimum location:
 x1 = 2
 x2 = 0
-*** ppl_lpsol -s -m -oobtained mip.mps
+*** ./ppl_lpsol -s -p1 -oobtained -m mip.mps
 Optimum value: 24.33333333
 Optimum location:
 X1 = 2.666666667
 X2 = 2
 X3 = 1
 X4 = 3.333333333
-*** ppl_lpsol -s -M -oobtained mip.mps
+*** ./ppl_lpsol -s -p1 -oobtained -M mip.mps
 Optimum value: 43
 Optimum location:
 X1 = 4
 X2 = 4
 X3 = 0
 X4 = 3
-*** ppl_lpsol -s -m -oobtained p0033.mps
+*** ./ppl_lpsol -s -p1 -oobtained -m p0033.mps
 Optimum value: 3089
 Optimum location:
 C157 = 1
@@ -74,7 +74,7 @@ C186 = 1
 C187 = 0
 C188 = 0
 C189 = 0
-*** ppl_lpsol -s -M -oobtained p0033.mps
+*** ./ppl_lpsol -s -p1 -oobtained -M p0033.mps
 Optimum value: 5201
 Optimum location:
 C157 = 1
@@ -110,116 +110,18 @@ C186 = 1
 C187 = 0
 C188 = 1
 C189 = 1
-*** ppl_lpsol -s -m -oobtained unboundedmin.mps
+*** ./ppl_lpsol -s -p1 -oobtained -m unboundedmin.mps
 Unbounded problem.
-*** ppl_lpsol -s -M -oobtained unboundedmin.mps
+*** ./ppl_lpsol -s -p1 -oobtained -M unboundedmin.mps
 Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
-*** ppl_lpsol -r -s -m -oobtained adlittle.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m adlittle.mps
 Optimum value: 225494.9632
-Optimum location:
-...100 = 22.85454545
-...101 = 0.5454545455
-...102 = 4.62693727
-...103 = 0
-...104 = 0
-...105 = 35.10714286
-...106 = 4.793014706
-...107 = 2.942801288
-...108 = 0
-...109 = 35.64417997
-...110 = 0
-...111 = 18.64568467
-...112 = 0
-...113 = 0
-...114 = 108
-...115 = 0
-...116 = 0
-...117 = 0
-...118 = 0
-...119 = 5.051913646
-...120 = 7.948086354
-...121 = 0
-...122 = 0
-...123 = 0
-...124 = 49.55317285
-...125 = 19.3797644
-...126 = 196.0670628
-...127 = 0
-...128 = 0
-...129 = 109.3391662
-...130 = 3.803724425
-...131 = 3.920125575
-...132 = 134
-...133 = 0
-...134 = 0
-...135 = 0
-...136 = 0
-...137 = 31
-...138 = 0
-...139 = 60
-...140 = 0
-...141 = 0
-...142 = 111.7272727
-...143 = 0
-...144 = 51.90909091
-...145 = 34
-...146 = 0
-...147 = 0
-...148 = 0
-...149 = 41.5
-...150 = 0
-...151 = 15.4788166
-...152 = 0
-...153 = 15
-...154 = 0
-...155 = 0
-...156 = 3.1
-...157 = 0
-...158 = 0.6909090909
-...159 = 0
-...160 = 0
-...161 = 175.4447167
-...162 = 0
-...163 = 9.806141065
-...164 = 0
-...165 = 0
-...166 = 33.46836966
-...167 = 9.531630344
-...168 = 10.29307503
-...169 = 8.906924975
-...170 = 0
-...171 = 0
-...172 = 6.1
-...173 = 0
-...174 = 9.792857143
-...175 = 313.1973528
-...176 = 55.43167804
-...177 = 264.5552833
-...178 = 0
-...179 = 13.2
-...180 = 0
-...181 = 1.314479773
-...182 = 0.5032608696
-...183 = 0
-...184 = 0
-...185 = 0
-...186 = 0
-...187 = 0
-...188 = 0
-...189 = 0
-...190 = 0
-...191 = 13.5
-...192 = 8.737073136
-...193 = 0
-...194 = 31.2
-...195 = 0
-...196 = 0
-*** ppl_lpsol -r -s -M -oobtained adlittle.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M adlittle.mps
 Unbounded problem.
-*** ppl_lpsol -r -s -m -oobtained afiro.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m afiro.mps
 Optimum value: -464.7531429
 Optimum location:
 X01 = 80
@@ -254,7 +156,7 @@ X36 = 339.9428571
 X37 = 17.50496094
 X38 = 157.5682954
 X39 = 0
-*** ppl_lpsol -r -s -M -oobtained afiro.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M afiro.mps
 Optimum value: 3438.2921
 Optimum location:
 X01 = 54.5
@@ -289,11 +191,11 @@ X36 = 345.4253571
 X37 = 0
 X38 = 0
 X39 = 389.4253571
-*** ppl_lpsol -r -s -m -oobtained bgprtr.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m bgprtr.mps
 Unfeasible problem.
-*** ppl_lpsol -r -s -M -oobtained bgprtr.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M bgprtr.mps
 Unfeasible problem.
-*** ppl_lpsol -r -s -m -oobtained blend.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m blend.mps
 Optimum value: -30.81214985
 Optimum location:
 1 = 20.94480195
@@ -310,12 +212,12 @@ Optimum location:
 12 = 10.10117614
 13 = 0
 14 = 11.78035507
-15 = 0.4067430357
-16 = 0
+15 = 0
+16 = 0.4067430357
 17 = 0
 18 = 2.173256964
-19 = 1.61181687
-20 = 5.25
+19 = 2.018559906
+20 = 4.843256964
 21 = 3.079217438
 22 = 0.05896569207
 23 = 1.149909949
@@ -379,1075 +281,17 @@ Optimum location:
 81 = 0.8033012352
 82 = 26.03036862
 83 = 87.09497412
-*** ppl_lpsol -r -s -M -oobtained blend.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M blend.mps
 Unbounded problem.
-*** ppl_lpsol -r -s -m -oobtained boeing1.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m boeing1.mps
 Optimum value: -335.2135675
-Optimum location:
-PBOSHNL0 = 0
-PBOSHNL1 = 12
-PBOSHNL7 = 0
-PBOSHNL8 = 0
-PBOSLAX0 = 14
-PBOSLAX1 = 0
-PBOSLAX7 = 0
-PBOSSEA0 = 0
-PBOSSEA1 = 0
-PBOSSEA2 = 49
-PBOSSFO0 = 60
-PBOSSFO1 = 73
-PBOSTPE1 = 1
-PBOSTPE2 = 0
-PBOSTYO1 = 3
-PBOSTYO2 = 0
-PBOSYUL0 = 28.13380282
-PBOSYUL1 = 347.7678621
-PBOSYUL2 = 0.325
-PBOSYUL3 = 336.7733351
-PBOSYUL4 = 0
-PBOSYVR0 = 0
-PBOSYVR1 = 0
-PBOSYVR2 = 26
-PBOSYWG0 = 0
-PBOSYWG1 = 0
-PBOSYWG7 = 37
-PBOSYYZ0 = 19.03169014
-PBOSYYZ1 = 195.9683099
-PBUROAK0 = 11
-PBUROAK1 = 16
-PBURSEA0 = 83
-PBURSEA1 = 0
-PBURSFO0 = 278
-PHNLLAX0 = 104.0482353
-PHNLLAX1 = 33.04
-PHNLLAX2 = 68.20588235
-PHNLLAX3 = 98
-PHNLLON0 = 0
-PHNLLON6 = 5
-PHNLPAR0 = 0
-PHNLPAR6 = 1
-PHNLSEA0 = 0
-PHNLSEA1 = 157.7943925
-PHNLSEA2 = 0
-PHNLSFO0 = 35
-PHNLSFO1 = 0
-PHNLSFO7 = 0
-PHNLYVR0 = 94.20560748
-PHNLYVR1 = 0
-PHNLYVR7 = 39.79439252
-PLASSEA0 = 33.01327253
-PLASSEA1 = 342.9867275
-PLASYVR0 = 37
-PLASYVR6 = 0
-PLAXOAK0 = 32
-PLAXOAK1 = 0
-PLAXOAK2 = 46
-PLAXSEA0 = 0
-PLAXSEA1 = 0
-PLAXSEA2 = 0
-PLAXSEA3 = 546.0147059
-PLAXSEA4 = 3.720588235
-PLAXSEA5 = 139
-PLAXSEA6 = 66.26744186
-PLAXSEA7 = 0
-PLAXSEA8 = 75
-PLAXSEA9 = 5.415868673
-PLAXSFO0 = 33.04
-PLAXSFO1 = 260.8488372
-PLAXSFO2 = 839.9632721
-PLAXSFO3 = 87.90697674
-PLAXSFO4 = 168
-PLAXSFO5 = 98
-PLAXSFO6 = 1464.240914
-PLAXTPE0 = 8.581395349
-PLAXTPE1 = 0
-PLAXTPE2 = 0
-PLAXTPE8 = 22.41860465
-PLAXTYO0 = 41
-PLAXTYO1 = 0
-PLAXTYO2 = 0
-PLAXTYO8 = 0
-PLAXYVR0 = 0
-PLAXYVR1 = 153.755814
-PLAXYVR2 = 39.24418605
-PLONPAR0 = 0
-PLONPAR1 = 0
-PLONPAR2 = 2
-PLONSEA0 = 0
-PLONSEA1 = 151
-PLONYVR0 = 0
-PLONYVR1 = 0
-PLONYVR7 = 51
-POAKONT0 = 0
-POAKONT1 = 13
-POAKSEA0 = 37.89108456
-POAKSEA1 = 77.15303309
-POAKSEA2 = 6.955882353
-PONTSFO0 = 177
-PONTSEA0 = 23.10431985
-PONTSEA1 = 24.89568015
-PONTSEA2 = 0
-PPARSEA0 = 0
-PPARSEA1 = 68
-PPARYVR0 = 0
-PPARYVR1 = 0
-PPARYVR7 = 24
-PRNOSEA0 = 0
-PRNOSEA1 = 291
-PRNOYVR0 = 67
-PSEASFO0 = 0
-PSEASFO1 = 839.9632721
-PSEASFO2 = 146.6809139
-PSEASFO3 = 236.6
-PSEASFO4 = 0
-PSEASFO5 = 50.75581395
-PSEASFO6 = 145
-PSEATPE0 = 0
-PSEATPE1 = 0
-PSEATPE2 = 0
-PSEATPE3 = 77.41860465
-PSEATYO0 = 75.80232558
-PSEATYO1 = 0
-PSEATYO2 = 0
-PSEATYO3 = 62.19767442
-PSEAYVR0 = 164.8598131
-PSEAYVR1 = 0
-PSEAYVR2 = 0
-PSEAYVR3 = 392
-PSEAYVR4 = 0
-PSEAYVR5 = 33.01327253
-PSEAYVR6 = 0
-PSEAYVR7 = 50.75581395
-PSEAYVR8 = 47.16549296
-PSFOTPE0 = 0
-PSFOTPE1 = 0
-PSFOTPE2 = 6
-PSFOTPE8 = 0
-PSFOTYO0 = 0
-PSFOTYO1 = 0
-PSFOTYO2 = 17
-PSFOTYO8 = 0
-PSFOYVR0 = 260.8488372
-PSFOYVR1 = 37.15116279
-PTPETYO0 = 111
-PTPETYO1 = 0
-PTPETYO2 = 0
-PTPETYO3 = 0
-PTPEYVR0 = 57
-PTYOYVR0 = 91
-PYULYVR0 = 36.4084507
-PYULYVR1 = 134.1343917
-PYULYVR2 = 139.6904909
-PYULYVR3 = 4.766666667
-PYULYWG0 = 0
-PYULYWG1 = 271.3172923
-PYULYWG2 = 0
-PYULYWG3 = 178.6827077
-PYULYYZ0 = 0
-PYULYYZ1 = 266.6818464
-PYULYYZ2 = 0
-PYULYYZ3 = 431.9057717
-PYULYYZ4 = 1913.412382
-PYVRYWG0 = 14.67957746
-PYVRYWG1 = 271.3172923
-PYVRYWG2 = 138.0031303
-PYVRYYZ0 = 4.352112676
-PYVRYYZ1 = 241.2835753
-PYVRYYZ2 = 126.3643121
-PYWGYYZ0 = 14.67957746
-PYWGYYZ1 = 138.0031303
-PYWGYYZ2 = 0
-PYWGYYZ3 = 125.3172923
-PBOSOAK0 = 11
-PBOSOAK6 = 0
-PBOSBUR1 = 7
-PBOSBUR2 = 0
-PBOSONT1 = 4
-PBOSONT2 = 0
-PBURYVR1 = 26
-PBURTYO1 = 2
-PBURTPE1 = 1
-PBURHNL0 = 11
-PBURHNL6 = 0
-PHNLOAK0 = 0
-PHNLOAK1 = 24
-PHNLOAK2 = 0
-PHNLOAK8 = 0
-PHNLONT0 = 9.705882353
-PHNLONT6 = 6.294117647
-PHNLYWG1 = 3
-PHNLYYZ1 = 24
-PHNLYUL1 = 40
-PLASTYO1 = 5
-PLASTPE1 = 1
-PLAXLON0 = 13
-PLAXLON6 = 0
-PLAXLON7 = 0
-PLAXPAR0 = 8
-PLAXPAR6 = 0
-PLAXPAR7 = 0
-PBURLON1 = 1
-PBURPAR1 = 1
-PLONONT1 = 1
-PLONOAK1 = 1
-POAKPAR1 = 2
-POAKTYO1 = 7
-POAKTPE1 = 2
-PONTPAR1 = 2
-PONTTYO1 = 2
-PONTTPE1 = 1
-PPARSFO1 = 2
-PRNOTYO1 = 5
-PRNOTPE1 = 2
-PTPEYWG1 = 21
-PTPEYYZ1 = 13
-PTPEYUL1 = 6
-PTYOYUL1 = 7
-PTYOYYZ1 = 17
-PTYOYWG1 = 25
-PLAXONT0 = 6.294117647
-GRDTIMO1 = 0
-GRDTIMN1 = -49.01286158
-GRDTIMO2 = 0
-GRDTIMN2 = 0
-GRDTIMO3 = 0
-GRDTIMN3 = -47
-GRDTIMO4 = 0
-GRDTIMN4 = 0
-GRDTIMO5 = 0
-GRDTIMN5 = -47.24353963
-GRDTIMO6 = 0
-GRDTIMN6 = -81
-N1001AC1 = 0
-N1001AC2 = 0
-N1001AC3 = 0
-N1002AC1 = 0
-N1002AC2 = 0
-N1002AC3 = 2.355140187
-N1003AC1 = 0
-N1003AC2 = 0.1603208556
-N1003AC3 = 0.7214438503
-N1004AC1 = 0.28
-N1004AC2 = 0
-N1004AC3 = 0
-N1005AC3 = 0.0859375
-N1105AC3 = 0.8382352941
-N1006AC3 = 0.07582720588
-N1007AC1 = 0
-N1007AC2 = 0
-N1007AC3 = 0
-N1008AC1 = 0
-N1008AC2 = 0
-N1008AC3 = 0
-N1008AC4 = 0
-N1008AC5 = 0
-N1008AC6 = 4.65801495
-N1009AC1 = 0
-N1009AC2 = 0.07488107822
-N1009AC3 = 0
-N1009AC4 = 0
-N1009AC5 = 1.921947674
-N1010AC1 = 0
-N1010AC2 = 0
-N1010AC3 = 0
-N1010AC4 = 0
-N1010AC5 = 0
-N1010AC6 = 7
-N1011AC1 = 0
-N1011AC2 = 3.085065997
-N1011AC3 = 0.6951730225
-N1011AC4 = 0
-N1011AC5 = 3.897217245
-N1011AC6 = 0
-N1012AC1 = 1.510832058
-N1012AC2 = 0
-N1012AC3 = 0
-N1012AC4 = 0
-N1012AC5 = 2.417331293
-N1013AC3 = 0
-N1013AC4 = 0
-N1013AC5 = 0
-N1013AC6 = 0.9241727941
-N1014AC3 = 0
-N1014AC4 = 0
-N1014AC5 = 1.691245404
-N1014AC6 = 0.2228170956
-N1015AC3 = 0
-N1015AC4 = 0.7048194146
-N1015AC5 = 0.1595430366
-N1015AC6 = 2.135637549
-N1016AC3 = 0
-N1016AC4 = 0
-N1016AC5 = 0.7
-N1016AC6 = 3.3
-N1017AC3 = 0
-N1017AC4 = 0
-N1017AC5 = 0
-N1017AC6 = 0.1617647059
-N1018AC1 = 0
-N1018AC2 = 0
-N1018AC3 = 0
-N1018AC4 = 0
-N1018AC5 = 0
-N1018AC6 = 1.196428571
-N1019AC1 = 0
-N1019AC2 = 0
-N1019AC3 = 0
-N1019AC4 = 0.2345133807
-N1019AC5 = 0.7654866193
-N1020AC1 = 0.2228332753
-N1020AC2 = 0
-N1020AC3 = 0
-N1020AC4 = 0
-N1020AC5 = 3.200696136
-N1020AC6 = 0
-N1021AC1 = 0.664202377
-N1021AC2 = 0
-N1021AC3 = 0
-N1021AC4 = 0
-N1021AC5 = 2.453858782
-N1022AC1 = 0
-N1023AC1 = 0
-N1026AC1 = 1
-N1027AC1 = 0.476744186
-N1028AC1 = 0
-N1029AC1 = 0.523255814
-N1030AC1 = 1
-N1032AC1 = 0
-N1032AC2 = 0
-N1032AC3 = 0
-N1032AC4 = 0.8274647887
-N1032AC5 = 0
-N1033AC1 = 0.4860357966
-N1033AC2 = 0.500476922
-N1033AC3 = 0
-N1033AC4 = 0
-N1033AC5 = 2.061996183
-N1034AC1 = 0
-N1034AC2 = 0
-N1034AC3 = 3.174783885
-N1035AC1 = 0.6827679474
-N1035AC2 = 0
-N1035AC3 = 0
-N1035AC4 = 0.7269371829
-N1035AC5 = 0.2529831862
-N1036AC1 = 0.1083333333
-N1036AC2 = 0
-N1036AC3 = 0
-N1037AC4 = 0
-N1037AC5 = 0
-N1038AC4 = 0.2383968781
-N1038AC5 = 1.271450017
-N1039AC4 = 0
-N1039AC5 = 2.077705904
-N1040AC4 = 0
-N1040AC5 = 0
-N1040AC6 = 9.513243659
-N1041AC4 = 8.856901224
-N1041AC5 = 0
-N1041AC6 = 20
-N1042AC4 = 0
-N1042AC5 = 0
-N1042AC6 = 0
-N1043AC1 = 0.1725352113
-N1043AC2 = 0
-N1043AC3 = 0
-N1044AC1 = 0
-N1044AC2 = 0
-N1044AC3 = 1
-N1046AC3 = 1
-N1047AC1 = 0
-N1047AC2 = 0
-N1047AC3 = 1
-N1050AC3 = 0
-N1050AC4 = 0
-N1050AC5 = 0.0731874145
-N1051AC1 = 0
-N1051AC2 = 0
-N1051AC3 = 0
-N1051AC4 = 0
-N1051AC5 = 4.651904242
-N1051AC6 = 20
-*** ppl_lpsol -r -s -M -oobtained boeing1.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M boeing1.mps
 Optimum value: 286.9746573
-Optimum location:
-PBOSHNL0 = 0
-PBOSHNL1 = 10
-PBOSHNL7 = 0
-PBOSHNL8 = 0
-PBOSLAX0 = 0
-PBOSLAX1 = 0
-PBOSLAX7 = 12
-PBOSSEA0 = 0
-PBOSSEA1 = 40
-PBOSSEA2 = 0
-PBOSSFO0 = 48
-PBOSSFO1 = 73
-PBOSTPE1 = 0
-PBOSTPE2 = 0
-PBOSTYO1 = 0
-PBOSTYO2 = 0
-PBOSYUL0 = 575
-PBOSYUL1 = 33
-PBOSYUL2 = 0
-PBOSYUL3 = 0
-PBOSYUL4 = 0
-PBOSYVR0 = 0
-PBOSYVR1 = 23
-PBOSYVR2 = 0
-PBOSYWG0 = 0
-PBOSYWG1 = 33
-PBOSYWG7 = 0
-PBOSYYZ0 = 0
-PBOSYYZ1 = 193
-PBUROAK0 = 9
-PBUROAK1 = 15
-PBURSEA0 = 69
-PBURSEA1 = 0
-PBURSFO0 = 243
-PHNLLAX0 = 0
-PHNLLAX1 = 126.296875
-PHNLLAX2 = 100.03125
-PHNLLAX3 = 104.4375
-PHNLLON0 = 0
-PHNLLON6 = 0
-PHNLPAR0 = 0
-PHNLPAR6 = 0
-PHNLSEA0 = 0
-PHNLSEA1 = 135.2523364
-PHNLSEA2 = 0
-PHNLSFO0 = 0
-PHNLSFO1 = 0
-PHNLSFO7 = 31
-PHNLYVR0 = 80.74766355
-PHNLYVR1 = 0
-PHNLYVR7 = 35.25233645
-PLASSEA0 = 365
-PLASSEA1 = 0
-PLASYVR0 = 0
-PLASYVR6 = 33
-PLAXOAK0 = 42.765625
-PLAXOAK1 = 0
-PLAXOAK2 = 46
-PLAXSEA0 = 486.96875
-PLAXSEA1 = 0
-PLAXSEA2 = 0
-PLAXSEA3 = 0
-PLAXSEA4 = 6
-PLAXSEA5 = 139
-PLAXSEA6 = 0
-PLAXSEA7 = 48
-PLAXSEA8 = 39
-PLAXSEA9 = 12.03125
-PLAXSFO0 = 164.828125
-PLAXSFO1 = 842
-PLAXSFO2 = 0
-PLAXSFO3 = 168
-PLAXSFO4 = 168
-PLAXSFO5 = 144
-PLAXSFO6 = 1212.171875
-PLAXTPE0 = 0
-PLAXTPE1 = 18
-PLAXTPE2 = 9
-PLAXTPE8 = 0
-PLAXTYO0 = 0
-PLAXTYO1 = 9
-PLAXTYO2 = 27
-PLAXTYO8 = 0
-PLAXYVR0 = 173
-PLAXYVR1 = 0
-PLAXYVR2 = 0
-PLONPAR0 = 0
-PLONPAR1 = 0
-PLONPAR2 = 0
-PLONSEA0 = 0
-PLONSEA1 = 127
-PLONYVR0 = 0
-PLONYVR1 = 0
-PLONYVR7 = 45
-POAKONT0 = 0
-POAKONT1 = 11
-POAKSEA0 = 41
-POAKSEA1 = 57
-POAKSEA2 = 0
-PONTSFO0 = 155
-PONTSEA0 = 25
-PONTSEA1 = 12
-PONTSEA2 = 0
-PPARSEA0 = 0
-PPARSEA1 = 53
-PPARYVR0 = 0
-PPARYVR1 = 0
-PPARYVR7 = 21
-PRNOSEA0 = 255
-PRNOSEA1 = 0
-PRNOYVR0 = 60
-PSEASFO0 = 574
-PSEASFO1 = 0
-PSEASFO2 = 156
-PSEASFO3 = 224
-PSEASFO4 = 0
-PSEASFO5 = 168
-PSEASFO6 = 168
-PSEATPE0 = 0
-PSEATPE1 = 0
-PSEATPE2 = 42
-PSEATPE3 = 0
-PSEATYO0 = 0
-PSEATYO1 = 0
-PSEATYO2 = 117
-PSEATYO3 = 0
-PSEAYVR0 = 220.0373832
-PSEAYVR1 = 429.2149533
-PSEAYVR2 = 0
-PSEAYVR3 = 0
-PSEAYVR4 = 0
-PSEAYVR5 = 0
-PSEAYVR6 = 0
-PSEAYVR7 = 0
-PSEAYVR8 = 0
-PSFOTPE0 = 0
-PSFOTPE1 = 0
-PSFOTPE2 = 0
-PSFOTPE8 = 0
-PSFOTYO0 = 0
-PSFOTYO1 = 0
-PSFOTYO2 = 0
-PSFOTYO8 = 15
-PSFOYVR0 = 268
-PSFOYVR1 = 0
-PTPETYO0 = 0
-PTPETYO1 = 0
-PTPETYO2 = 0
-PTPETYO3 = 99
-PTPEYVR0 = 44
-PTYOYVR0 = 74
-PYULYVR0 = 182
-PYULYVR1 = 88
-PYULYVR2 = 0
-PYULYVR3 = 0
-PYULYWG0 = 194.3018868
-PYULYWG1 = 145
-PYULYWG2 = 31.69811321
-PYULYWG3 = 0
-PYULYYZ0 = 328.6981132
-PYULYYZ1 = 0
-PYULYYZ2 = 245.3018868
-PYULYYZ3 = 1776
-PYULYYZ4 = 0
-PYVRYWG0 = 194.3018868
-PYVRYWG1 = 178
-PYVRYWG2 = 4.698113208
-PYVRYYZ0 = 328.6981132
-PYVRYYZ1 = 0
-PYVRYYZ2 = 4.301886792
-PYWGYYZ0 = 0
-PYWGYYZ1 = 4.698113208
-PYWGYYZ2 = 245.3018868
-PYWGYYZ3 = 0
-PBOSOAK0 = 9
-PBOSOAK6 = 0
-PBOSBUR1 = 0
-PBOSBUR2 = 0
-PBOSONT1 = 0
-PBOSONT2 = 0
-PBURYVR1 = 23
-PBURTYO1 = 0
-PBURTPE1 = 0
-PBURHNL0 = 9
-PBURHNL6 = 0
-PHNLOAK0 = 0
-PHNLOAK1 = 2.234375
-PHNLOAK2 = 0
-PHNLOAK8 = 18.765625
-PHNLONT0 = 0
-PHNLONT6 = 14
-PHNLYWG1 = 0
-PHNLYYZ1 = 21
-PHNLYUL1 = 35
-PLASTYO1 = 0
-PLASTPE1 = 0
-PLAXLON0 = 11
-PLAXLON6 = 0
-PLAXLON7 = 0
-PLAXPAR0 = 0
-PLAXPAR6 = 0
-PLAXPAR7 = 0
-PBURLON1 = 0
-PBURPAR1 = 0
-PLONONT1 = 0
-PLONOAK1 = 0
-POAKPAR1 = 0
-POAKTYO1 = 0
-POAKTPE1 = 0
-PONTPAR1 = 0
-PONTTYO1 = 0
-PONTTPE1 = 0
-PPARSFO1 = 0
-PRNOTYO1 = 0
-PRNOTPE1 = 0
-PTPEYWG1 = 18
-PTPEYYZ1 = 11
-PTPEYUL1 = 0
-PTYOYUL1 = 0
-PTYOYYZ1 = 15
-PTYOYWG1 = 22
-PLAXONT0 = 14
-GRDTIMO1 = 0
-GRDTIMN1 = -105
-GRDTIMO2 = 0
-GRDTIMN2 = -91
-GRDTIMO3 = 0
-GRDTIMN3 = -47
-GRDTIMO4 = 0
-GRDTIMN4 = -43.5
-GRDTIMO5 = 0
-GRDTIMN5 = -87
-GRDTIMO6 = 0
-GRDTIMN6 = -81
-N1001AC1 = 0
-N1001AC2 = 0
-N1001AC3 = 0
-N1002AC1 = 0
-N1002AC2 = 2.018691589
-N1002AC3 = 0
-N1003AC1 = 0
-N1003AC2 = 0
-N1003AC3 = 0
-N1004AC1 = 0
-N1004AC2 = 1.0703125
-N1004AC3 = 0
-N1005AC3 = 0.0703125
-N1105AC3 = 0.9296875
-N1006AC3 = 0
-N1007AC1 = 0
-N1007AC2 = 0
-N1007AC3 = 0
-N1008AC1 = 5.28156777
-N1008AC2 = 0
-N1008AC3 = 1.986798017
-N1008AC4 = 0
-N1008AC5 = 0
-N1008AC6 = 0
-N1009AC1 = 0
-N1009AC2 = 0
-N1009AC3 = 0
-N1009AC4 = 0
-N1009AC5 = 0
-N1010AC1 = 7
-N1010AC2 = 7
-N1010AC3 = 7
-N1010AC4 = 7
-N1010AC5 = 7
-N1010AC6 = 7
-N1011AC1 = 0
-N1011AC2 = 0
-N1011AC3 = 0
-N1011AC4 = 0
-N1011AC5 = 0
-N1011AC6 = 0
-N1012AC1 = 0
-N1012AC2 = 0
-N1012AC3 = 0
-N1012AC4 = 0
-N1012AC5 = 0
-N1013AC3 = 0
-N1013AC4 = 0
-N1013AC5 = 0
-N1013AC6 = 1
-N1014AC3 = 0
-N1014AC4 = 0
-N1014AC5 = 0
-N1014AC6 = 1.909090909
-N1015AC3 = 0
-N1015AC4 = 0
-N1015AC5 = 0
-N1015AC6 = 3
-N1016AC3 = 0
-N1016AC4 = 0
-N1016AC5 = 0
-N1016AC6 = 4
-N1017AC3 = 0
-N1017AC4 = 0
-N1017AC5 = 0
-N1017AC6 = 0.09090909091
-N1018AC1 = 3.782713662
-N1018AC2 = 6.749720383
-N1018AC3 = 7
-N1018AC4 = 0
-N1018AC5 = 4.039001304
-N1018AC6 = 0
-N1019AC1 = 0
-N1019AC2 = 1.412371134
-N1019AC3 = 0
-N1019AC4 = 2.587628866
-N1019AC5 = 0
-N1020AC1 = 0
-N1020AC2 = 0
-N1020AC3 = 0
-N1020AC4 = 0
-N1020AC5 = 0
-N1020AC6 = 0
-N1021AC1 = 0
-N1021AC2 = 0
-N1021AC3 = 0
-N1021AC4 = 0
-N1021AC5 = 0
-N1022AC1 = 0
-N1023AC1 = 0
-N1026AC1 = 1
-N1027AC1 = 0
-N1028AC1 = 0
-N1029AC1 = 1
-N1030AC1 = 1
-N1032AC1 = 1
-N1032AC2 = 1
-N1032AC3 = 1
-N1032AC4 = 1
-N1032AC5 = 1
-N1033AC1 = 0
-N1033AC2 = 1.371681416
-N1033AC3 = 0
-N1033AC4 = 0.6283185841
-N1033AC5 = 0
-N1034AC1 = 0
-N1034AC2 = 0
-N1034AC3 = 0
-N1035AC1 = 0
-N1035AC2 = 0.04608448823
-N1035AC3 = 0
-N1035AC4 = 0.01051928536
-N1035AC5 = 0
-N1036AC1 = 0
-N1036AC2 = 0
-N1036AC3 = 0
-N1037AC4 = 0
-N1037AC5 = 3.220930233
-N1038AC4 = 0
-N1038AC5 = 0
-N1039AC4 = 0
-N1039AC5 = 0
-N1040AC4 = 10
-N1040AC5 = 10
-N1040AC6 = 10
-N1041AC4 = 5.793776249
-N1041AC5 = 20
-N1041AC6 = 20
-N1042AC4 = 20
-N1042AC5 = 20
-N1042AC6 = 20
-N1043AC1 = 0
-N1043AC2 = 0
-N1043AC3 = 0
-N1044AC1 = 0
-N1044AC2 = 1
-N1044AC3 = 0
-N1046AC3 = 1
-N1047AC1 = 0
-N1047AC2 = 1
-N1047AC3 = 0
-N1050AC3 = 0.109375
-N1050AC4 = 0
-N1050AC5 = 0
-N1051AC1 = 20
-N1051AC2 = 20
-N1051AC3 = 20
-N1051AC4 = 0
-N1051AC5 = 20
-N1051AC6 = 11.52971853
-*** ppl_lpsol -r -s -m -oobtained boeing2.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m boeing2.mps
 Optimum value: -315.018728
-Optimum location:
-PBOSORD0 = 302
-PBOSORD1 = 0
-PBOSORD2 = 0
-PBOSORD3 = 0
-PBOSORD4 = 0
-PBOSLGA0 = 712
-PBOSLGA1 = 268
-PBOSLGA2 = 0
-PBOSLGA3 = 1372
-PBOSCLE0 = 4.108024927
-PBOSCLE1 = 137.8919751
-PBOSCLE2 = 0
-PBOSCLE3 = 0
-PORDBOS0 = 34
-PORDBOS1 = 0
-PORDBOS2 = 0
-PORDBOS3 = 268
-PORDBOS4 = 0
-PORDLGA0 = 0
-PORDLGA1 = 515
-PORDLGA2 = 0
-PORDLGA3 = 0
-PORDCLE0 = 12.29468599
-PORDCLE1 = 148.705314
-PORDCLE2 = 458
-PORDCLE3 = 0
-PLGABOS0 = 913
-PLGABOS1 = 458
-PLGABOS2 = 0
-PLGABOS3 = 0
-PLGABOS4 = 0
-PLGABOS5 = 1372
-PLGAORD0 = 712
-PLGAORD1 = 0
-PLGAORD2 = 0
-PLGAORD3 = 0
-PLGACLE0 = 0
-PLGACLE1 = 249
-PLGACLE2 = 268
-PCLEBOS0 = 131
-PCLEBOS1 = 0
-PCLEBOS2 = 0
-PCLEBOS3 = 0
-PCLEBOS4 = 0
-PCLEORD0 = 178.5972891
-PCLEORD1 = 249
-PCLEORD2 = 16.40271092
-PCLEORD3 = 268
-PCLEORD4 = 0
-PCLELGA0 = 409
-PCLELGA1 = 0
-PCLELGA2 = 0
-PCLELGA3 = 0
-BBOSORD0 = 0
-BBOSORD1 = 0
-BBOSCLE0 = 0.1616272102
-BBOSCLE1 = 7.026778587
-BORDBOS0 = 7.188405797
-CBOSORD0 = 12
-CBOSORD1 = 0
-CBOSORD2 = 0
-CBOSORD3 = 0
-CBOSORD4 = 0
-CBOSCLE0 = 0
-CBOSCLE1 = 8.811594203
-CBOSCLE2 = 0
-CBOSCLE3 = 0
-CORDBOS0 = 16.8115942
-CORDBOS1 = 0
-CORDBOS2 = 0
-CORDBOS3 = 0
-CORDBOS4 = 0
-CORDLGA0 = 13
-CORDLGA1 = 0
-CORDLGA2 = 0
-CORDLGA3 = 0
-CLGAORD0 = 22.5
-CLGAORD1 = 22.5
-CLGAORD2 = 0
-CLGAORD3 = 0
-CLGACLE0 = 16
-CLGACLE1 = 0
-CLGACLE2 = 0
-CCLELGA0 = 0
-CCLELGA1 = 5
-CCLELGA2 = 0
-CCLELGA3 = 0
-GRDTIMO1 = 0
-GRDTIMN1 = 0
-GRDTIMO2 = 0
-GRDTIMN2 = -76.79770851
-GRDTIMN3 = -10.27177739
-GRDTIMN4 = -21.60844089
-N1003AC1 = 0
-N1003AC2 = 6.724489796
-N1003AC3 = 0.4
-N1003AC4 = 0
-N1005AC1 = 0.01346893419
-N1005AC2 = 0
-N1005AC3 = 0
-N1005AC4 = 0
-N1011AC1 = 0.5855648822
-N1011AC2 = 0
-N1011AC3 = 0.2937198068
-N1011AC4 = 0
-N1013AC2 = 7.265306122
-N1013AC4 = 2
-N1015AC2 = 0
-N1015AC4 = 1.422222222
-N1017AC2 = 0
-N1017AC4 = 2
-N1019AC2 = 2.540816327
-N1019AC4 = 0
-N1021AC1 = 0.01346893419
-N1021AC2 = 0.1254559795
-N1021AC3 = 0
-N1021AC4 = 0
-N1002AC1 = 0
-N1002AC2 = 0.1254559795
-N1002AC3 = 0
-N1002AC4 = 0
-N1004AC2 = 2.540816327
-N1004AC4 = 2
-N1006AC1 = 0.5990338164
-N1006AC2 = 0
-N1006AC3 = 0.6937198068
-N1006AC4 = 0
-N1008AC2 = 9.316326531
-N1008AC4 = 2
-N1010AC2 = 4.673469388
-N1010AC4 = 0
-N1012AC2 = 0
-N1012AC4 = 1.422222222
-N1014AC2 = 0
-N1014AC4 = 0
-N1100AC2 = 2.734693878
-N1100AC4 = 0
-N1102AC2 = 0
-N1102AC4 = 0
-N1200AC2 = 14
-N1200AC4 = 0
-N1201AC2 = 14
-N1201AC4 = 0
-*** ppl_lpsol -r -s -M -oobtained boeing2.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M boeing2.mps
 Optimum value: -73.36896911
-Optimum location:
-PBOSORD0 = 28
-PBOSORD1 = 0
-PBOSORD2 = 0
-PBOSORD3 = 0
-PBOSORD4 = 249
-PBOSLGA0 = 258.2518987
-PBOSLGA1 = 686
-PBOSLGA2 = 35.74810133
-PBOSLGA3 = 1372
-PBOSCLE0 = 0
-PBOSCLE1 = 0
-PBOSCLE2 = 0
-PBOSCLE3 = 142
-PORDBOS0 = 302
-PORDBOS1 = 0
-PORDBOS2 = 0
-PORDBOS3 = 0
-PORDBOS4 = 0
-PORDLGA0 = 0
-PORDLGA1 = 0
-PORDLGA2 = 515
-PORDLGA3 = 0
-PORDCLE0 = 619
-PORDCLE1 = 0
-PORDCLE2 = 0
-PORDCLE3 = 0
-PLGABOS0 = 0
-PLGABOS1 = 712
-PLGABOS2 = 517
-PLGABOS3 = 686
-PLGABOS4 = 426.7481013
-PLGABOS5 = 401.2518987
-PLGAORD0 = 258.2518987
-PLGAORD1 = 0
-PLGAORD2 = 453.7481013
-PLGAORD3 = 0
-PLGACLE0 = 517
-PLGACLE1 = 0
-PLGACLE2 = 0
-PCLEBOS0 = 131
-PCLEBOS1 = 0
-PCLEBOS2 = 0
-PCLEBOS3 = 0
-PCLEBOS4 = 0
-PCLEORD0 = 0
-PCLEORD1 = 0
-PCLEORD2 = 712
-PCLEORD3 = 0
-PCLEORD4 = 0
-PCLELGA0 = 0
-PCLELGA1 = 0
-PCLELGA2 = 267
-PCLELGA3 = 142
-BBOSORD0 = 0
-BBOSORD1 = 0
-BBOSCLE0 = 0
-BBOSCLE1 = 0
-BORDBOS0 = 19.2
-CBOSORD0 = 0
-CBOSORD1 = 0
-CBOSORD2 = 0
-CBOSORD3 = 0
-CBOSORD4 = 0
-CBOSCLE0 = 0
-CBOSCLE1 = 0
-CBOSCLE2 = 12.8
-CBOSCLE3 = 0
-CORDBOS0 = 0
-CORDBOS1 = 0
-CORDBOS2 = 0
-CORDBOS3 = 0
-CORDBOS4 = 0
-CORDLGA0 = 0
-CORDLGA1 = 0
-CORDLGA2 = 10.4
-CORDLGA3 = 0
-CLGAORD0 = 0
-CLGAORD1 = 0
-CLGAORD2 = 22.5
-CLGAORD3 = 13.5
-CLGACLE0 = 0
-CLGACLE1 = 0
-CLGACLE2 = 12.8
-CCLELGA0 = 0
-CCLELGA1 = 0
-CCLELGA2 = 0
-CCLELGA3 = 0
-GRDTIMO1 = 73.01076
-GRDTIMN1 = -100
-GRDTIMO2 = 0
-GRDTIMN2 = -90
-GRDTIMN3 = -45
-GRDTIMN4 = -45
-N1003AC1 = 7
-N1003AC2 = 0
-N1003AC3 = 0.6856076556
-N1003AC4 = 0
-N1005AC1 = 0
-N1005AC2 = 0
-N1005AC3 = 0
-N1005AC4 = 0
-N1011AC1 = 0
-N1011AC2 = 0
-N1011AC3 = 1.314392344
-N1011AC4 = 0
-N1013AC2 = 2.635223456
-N1013AC4 = 0
-N1015AC2 = 5.275510204
-N1015AC4 = 0.9244444444
-N1017AC2 = 0
-N1017AC4 = 0
-N1019AC2 = 4.630082667
-N1019AC4 = 2
-N1021AC1 = 7
-N1021AC2 = 0
-N1021AC3 = 2
-N1021AC4 = 0.9244444444
-N1002AC1 = 7
-N1002AC2 = 0
-N1002AC3 = 2
-N1002AC4 = 2
-N1004AC2 = 0
-N1004AC4 = 0
-N1006AC1 = 7
-N1006AC2 = 0
-N1006AC3 = 2
-N1006AC4 = 0
-N1008AC2 = 0
-N1008AC4 = 0
-N1010AC2 = 7.265306122
-N1010AC4 = 0.9244444444
-N1012AC2 = 0
-N1012AC4 = 2
-N1014AC2 = 5.275510204
-N1014AC4 = 0
-N1100AC2 = 7
-N1100AC4 = 5.274621909
-N1102AC2 = 4.354572463
-N1102AC4 = 0
-N1200AC2 = 14
-N1200AC4 = 0.9244444444
-N1201AC2 = 4.094407129
-N1201AC4 = 0
-*** ppl_lpsol -r -s -m -oobtained egout.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m egout.mps
 Optimum value: 149.5887662
 Optimum location:
 I.001... = 0.02093301435
@@ -1591,7 +435,7 @@ F.041... = 5.08
 F.040041 = 0
 F.041042 = 0
 F.042... = 6.44
-*** ppl_lpsol -r -s -M -oobtained egout.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M egout.mps
 Optimum value: 964.30053
 Optimum location:
 I.001... = 1
@@ -1735,17 +579,17 @@ F.041... = 0
 F.040041 = 105.52
 F.041042 = 110.6
 F.042... = 117.04
-*** ppl_lpsol -r -s -m -oobtained ex1.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m ex1.mps
 Optimum value: -3.75
 Optimum location:
 x1 = 1.25
 x2 = 2.5
-*** ppl_lpsol -r -s -M -oobtained ex1.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M ex1.mps
 Optimum value: 2.5
 Optimum location:
 x1 = 2.5
 x2 = 0
-*** ppl_lpsol -r -s -m -oobtained kb2.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m kb2.mps
 Optimum value: -1749.90013
 Optimum location:
 BAL.3EBW = 0.8118235251
@@ -1789,7 +633,7 @@ WMO73PBW = 1770.361014
 WRO73PBW = 2009.742955
 WMO73RBW = 5651.99315
 WRO73RBW = 6262.646874
-*** ppl_lpsol -r -s -M -oobtained kb2.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M kb2.mps
 Optimum value: 0
 Optimum location:
 BAL.3EBW = 0
@@ -1833,7 +677,7 @@ WMO73PBW = 0
 WRO73PBW = 0
 WMO73RBW = 0
 WRO73RBW = 0
-*** ppl_lpsol -r -s -m -oobtained lseu.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m lseu.mps
 Optimum value: 834.6823529
 Optimum location:
 C101 = 1
@@ -1925,7 +769,7 @@ C186 = 0
 C187 = 0
 C188 = 0
 C189 = 0
-*** ppl_lpsol -r -s -M -oobtained lseu.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M lseu.mps
 Optimum value: 7167.482759
 Optimum location:
 C101 = 0
@@ -1958,9 +802,9 @@ C127 = 0
 C128 = 0
 C129 = 0
 C130 = 0
-C131 = 0.3428571429
+C131 = 0
 C132 = 0
-C133 = 0.6571428571
+C133 = 1
 C134 = 0
 C135 = 1
 C136 = 0
@@ -2017,7 +861,7 @@ C186 = 0
 C187 = 0
 C188 = 1
 C189 = 1
-*** ppl_lpsol -r -s -m -oobtained markshare1.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m markshare1.mps
 Optimum value: 0
 Optimum location:
 x1 = 0
@@ -2082,7 +926,7 @@ x59 = 0
 x60 = 1
 x61 = 0
 x62 = 0.2898890259
-*** ppl_lpsol -r -s -M -oobtained markshare1.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M markshare1.mps
 Optimum value: 7286
 Optimum location:
 x1 = 1116
@@ -2147,7 +991,7 @@ x59 = 0
 x60 = 0
 x61 = 0
 x62 = 0
-*** ppl_lpsol -r -s -m -oobtained markshare2.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m markshare2.mps
 Optimum value: 0
 Optimum location:
 x1 = 0
@@ -2224,7 +1068,7 @@ x71 = 0
 x72 = 1
 x73 = 0.6098932051
 x74 = 1
-*** ppl_lpsol -r -s -M -oobtained markshare2.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M markshare2.mps
 Optimum value: 10512
 Optimum location:
 x1 = 1324
@@ -2301,21 +1145,21 @@ x71 = 0
 x72 = 0
 x73 = 0
 x74 = 0
-*** ppl_lpsol -r -s -m -oobtained mip.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m mip.mps
 Optimum value: 24.07692308
 Optimum location:
 X1 = 2.615384615
 X2 = 2
 X3 = 0.7692307692
 X4 = 3
-*** ppl_lpsol -r -s -M -oobtained mip.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M mip.mps
 Optimum value: 46.42857143
 Optimum location:
 X1 = 4
 X2 = 4.571428571
 X3 = 0.5714285714
 X4 = 3
-*** ppl_lpsol -r -s -m -oobtained noswot.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m noswot.mps
 Optimum value: -43
 Optimum location:
 x1 = 0
@@ -2446,7 +1290,7 @@ x125 = 0
 x126 = 0
 x127 = 0
 x128 = 0
-*** ppl_lpsol -r -s -M -oobtained noswot.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M noswot.mps
 Optimum value: -5
 Optimum location:
 x1 = 0
@@ -2577,7 +1421,7 @@ x125 = 0
 x126 = 0
 x127 = 0
 x128 = 0
-*** ppl_lpsol -r -s -m -oobtained p0033.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m p0033.mps
 Optimum value: 2520.571739
 Optimum location:
 C157 = 0
@@ -2613,7 +1457,7 @@ C186 = 0.5
 C187 = 0
 C188 = 1
 C189 = 0.175
-*** ppl_lpsol -r -s -M -oobtained p0033.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M p0033.mps
 Optimum value: 5299.698868
 Optimum location:
 C157 = 1
@@ -2649,7 +1493,7 @@ C186 = 0.72
 C187 = 0
 C188 = 1
 C189 = 1
-*** ppl_lpsol -r -s -m -oobtained pk1.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m pk1.mps
 Optimum value: 0
 Optimum location:
 x1 = 0
@@ -2738,21 +1582,21 @@ x83 = 0
 x84 = 0
 x85 = 0
 x86 = 0
-*** ppl_lpsol -r -s -M -oobtained pk1.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M pk1.mps
 Unbounded problem.
-*** ppl_lpsol -r -s -m -oobtained sample.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m sample.mps
 Optimum value: -733.3333333
 Optimum location:
 x1 = 33.33333333
 x2 = 66.66666667
 x3 = 0
-*** ppl_lpsol -r -s -M -oobtained sample.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M sample.mps
 Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
 x3 = 0
-*** ppl_lpsol -r -s -m -oobtained sc105.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m sc105.mps
 Optimum value: -52.20206121
 Optimum location:
 COL00001 = 0
@@ -2858,7 +1702,7 @@ COL00100 = 26.37637065
 COL00101 = 26.37637065
 COL00102 = 123.0897297
 COL00103 = 123.0897297
-*** ppl_lpsol -r -s -M -oobtained sc105.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M sc105.mps
 Optimum value: 0
 Optimum location:
 COL00001 = 0
@@ -2964,7 +1808,7 @@ COL00100 = 0
 COL00101 = 0
 COL00102 = 0
 COL00103 = 0
-*** ppl_lpsol -r -s -m -oobtained sc50a.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m sc50a.mps
 Optimum value: -64.57507706
 Optimum location:
 COL00001 = 0
@@ -3015,7 +1859,7 @@ COL00045 = 20.25950793
 COL00046 = 20.25950793
 COL00047 = 94.54437032
 COL00048 = 94.54437032
-*** ppl_lpsol -r -s -M -oobtained sc50a.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M sc50a.mps
 Optimum value: 0
 Optimum location:
 COL00001 = 0
@@ -3066,7 +1910,7 @@ COL00045 = 0
 COL00046 = 0
 COL00047 = 0
 COL00048 = 0
-*** ppl_lpsol -r -s -m -oobtained sc50b.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m sc50b.mps
 Optimum value: -70
 Optimum location:
 COL00001 = 30
@@ -3117,7 +1961,7 @@ COL00045 = 43.923
 COL00046 = 40.9948
 COL00047 = 61.4922
 COL00048 = 102.487
-*** ppl_lpsol -r -s -M -oobtained sc50b.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M sc50b.mps
 Optimum value: 0
 Optimum location:
 COL00001 = 0
@@ -3168,9 +2012,9 @@ COL00045 = 0
 COL00046 = 0
 COL00047 = 0
 COL00048 = 0
-*** ppl_lpsol -r -s -m -oobtained unboundedmin.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m unboundedmin.mps
 Unbounded problem.
-*** ppl_lpsol -r -s -M -oobtained unboundedmin.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M unboundedmin.mps
 Optimum value: 0
 Optimum location:
 x1 = 0
@@ -3200,7 +2044,7 @@ Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
-*** ppl_lpsol -r -s -m -oobtained mas74.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m mas74.mps
 Optimum value: 10482.79528
 Optimum location:
 x1 = 0
@@ -3354,7 +2198,7 @@ x148 = 0
 x149 = 0.973369113
 x150 = 0.5192990175
 x151 = 10482.79508
-*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas74.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M -c0.000123 mas74.mps
 Optimum value: 1e+12
 Optimum location:
 x1 = 0
@@ -3508,9 +2352,9 @@ x148 = 0
 x149 = 0
 x150 = 0
 x151 = 1e+12
-*** ppl_lpsol -n -s -oobtained mas74.mps
+*** ./ppl_lpsol -s -p1 -oobtained -n mas74.mps
 Feasible problem.
-*** ppl_lpsol -r -s -m -oobtained mas76.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m mas76.mps
 Optimum value: 38893.90364
 Optimum location:
 x1 = 0
@@ -3664,7 +2508,7 @@ x148 = 0.8642716954
 x149 = 0
 x150 = 0.03629410147
 x151 = 38893.90349
-*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas76.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M -c0.000123 mas76.mps
 Optimum value: 1e+12
 Optimum location:
 x1 = 0
@@ -3818,9 +2662,9 @@ x148 = 0
 x149 = 0
 x150 = 0
 x151 = 1e+12
-*** ppl_lpsol -n -s -oobtained mas76.mps
+*** ./ppl_lpsol -s -p1 -oobtained -n mas76.mps
 Feasible problem.
-*** ppl_lpsol -r -s -m -c0.0000002 -oobtained modglob.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m -c0.0000002 modglob.mps
 Optimum value: 20430947.62
 Optimum location:
 x1 = 0
@@ -4245,7 +3089,7 @@ x419 = 0
 x420 = 0
 x421 = 0
 x422 = 0
-*** ppl_lpsol -r -s -M -c0.000003 -oobtained modglob.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M -c0.000003 modglob.mps
 Optimum value: 742543789.3
 Optimum location:
 x1 = 0
@@ -4670,5 +3514,5 @@ x419 = 0
 x420 = 0
 x421 = 0
 x422 = 0
-*** ppl_lpsol -n -s -oobtained modglob.mps
+*** ./ppl_lpsol -s -p1 -oobtained -n modglob.mps
 Feasible problem.

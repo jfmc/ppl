@@ -1,11 +1,11 @@
 /* Definitions of simple functions for printing timings.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "timings.hh"
 #include <cassert>
@@ -29,12 +29,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iomanip>
 #include <cstring>
 #include <cerrno>
+#include <cstdlib>
 
-#ifdef HAVE_SYS_TIME_H
+#ifdef PPL_HAVE_SYS_TIME_H
 # include <sys/time.h>
 #endif
 
-#ifdef HAVE_SYS_RESOURCE_H
+#ifdef PPL_HAVE_SYS_RESOURCE_H
 // This should be included after <time.h> and <sys/time.h> so as to make
 // sure we have the definitions for, e.g., `ru_utime'.
 # include <sys/resource.h>
@@ -42,11 +43,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace std;
 
+#ifdef PPL_HAVE_TIMEVAL
 // To save the time when start_clock is called.
 static struct timeval saved_ru_utime;
+#endif
 
 void
 start_clock() {
+#if defined(PPL_HAVE_DECL_GETRUSAGE) && defined(PPL_HAVE_TIMEVAL)
   struct rusage rsg;
   if (getrusage(RUSAGE_SELF, &rsg) != 0) {
     cerr << "getrusage failed: " << strerror(errno) << endl;
@@ -54,10 +58,12 @@ start_clock() {
   }
   else
     saved_ru_utime = rsg.ru_utime;
+#endif
 }
 
 void
 print_clock(ostream& s) {
+#if defined(PPL_HAVE_DECL_GETRUSAGE) && defined(PPL_HAVE_TIMEVAL)
   struct rusage rsg;
   if (getrusage(RUSAGE_SELF, &rsg) != 0) {
     cerr << "getrusage failed: " << strerror(errno) << endl;
@@ -90,4 +96,7 @@ print_clock(ostream& s) {
     s << secs << "." << setfill('0') << setw(2) << hsecs;
     s.fill(fill_char);
   }
+#else
+  s << "(no clock available)";
+#endif
 }

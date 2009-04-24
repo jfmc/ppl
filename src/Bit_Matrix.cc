@@ -1,11 +1,11 @@
 /* Bit_Matrix class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,12 +20,13 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Bit_Matrix.defs.hh"
 #include "globals.defs.hh"
 #include <iostream>
 #include <string>
+#include <climits>
 
 #include "swapping_sort.icc"
 
@@ -54,7 +55,7 @@ PPL::Bit_Matrix::sort_rows() {
 }
 
 void
-PPL::Bit_Matrix::add_row(const Bit_Row& row) {
+PPL::Bit_Matrix::add_recycled_row(Bit_Row& row) {
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
@@ -63,7 +64,7 @@ PPL::Bit_Matrix::add_row(const Bit_Row& row) {
     new_rows.insert(new_rows.end(), new_rows_size, Bit_Row());
     // Put the new row in place.
     dimension_type i = new_rows_size-1;
-    new_rows[i] = row;
+    new_rows[i].swap(row);
     // Steal the old rows.
     while (i-- > 0)
       new_rows[i].swap(rows[i]);
@@ -71,8 +72,9 @@ PPL::Bit_Matrix::add_row(const Bit_Row& row) {
     std::swap(rows, new_rows);
   }
   else
-    // Reallocation will NOT take place: append a new empty row.
-    rows.push_back(row);
+    // Reallocation will NOT take place: append an empty row
+    // and swap it with the new row.
+    rows.insert(rows.end(), Bit_Row())->swap(row);
   assert(OK());
 }
 
@@ -160,7 +162,7 @@ PPL::Bit_Matrix::ascii_load(std::istream& s) {
   std::string str;
   if (!(s >> nrows))
     return false;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> ncols))
     return false;

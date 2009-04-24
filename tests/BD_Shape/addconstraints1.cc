@@ -1,11 +1,11 @@
-/* Test BD_Shape::add_constraints_and_minimize().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BD_Shape::add_constraints().
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -33,17 +33,17 @@ test01() {
   cs.insert(A >= 0);
   cs.insert(B == 5);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraints_and_minimize(cs);
+  TBD_Shape bds(2);
+  bds.add_constraints(cs);
 
-  print_constraints(bd1, "*** bd1.add_constraints_and_minimize(cs) ***");
+  print_constraints(bds, "*** bds.add_constraints(cs) ***");
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B == 5);
   known_result.add_constraint(B - A <= 5);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(known_result, "*** known_result ***");
 
@@ -55,14 +55,14 @@ test02() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(2);
+  TBD_Shape bds(2);
 
   try {
     // This is an invalid use of method
     // BD_Shape::add_constraint: it is illegal
     // to add a strict inequality.
-    bd1.add_constraint(x <= 0);
-    bd1.add_constraint(y < 0);
+    bds.add_constraint(x <= 0);
+    bds.add_constraint(y < 0);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -79,14 +79,14 @@ test03() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd1(2);
+  TBD_Shape bds(2);
 
   try {
     // This is an invalid use of method
     // BD_Shape::add_constraint: it is illegal
     // to add a constraint with bigger dimension.
-    bd1.add_constraint(x <= 0);
-    bd1.add_constraint(y - x + z >= 0);
+    bds.add_constraint(x <= 0);
+    bds.add_constraint(y - x + z >= 0);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -102,16 +102,16 @@ test04() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd(1);
+  TBD_Shape bds(1);
 
   try {
     // This is an invalid use of the method
-    // BD_Shape::add_constraints_and_minimize(cs): it is illegal to
+    // BD_Shape::add_constraints(cs): it is illegal to
     // add a system of constraints that is not dimensional incompatible
     // with the polyhedron.
     Constraint_System cs;
     cs.insert(x - y >= 0);
-    bd.add_constraints_and_minimize(cs);
+    bds.add_constraints(cs);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -126,14 +126,14 @@ bool
 test05() {
   Variable y(1);
 
-  TBD_Shape bd(1);
+  TBD_Shape bds(1);
 
   try {
     // This is an invalid use of the method
     // BD_Shape::add_constraint(c): it is illegal to insert a
     // constraints that contains a variable that is not in the space
     // of the polyhedron.
-    bd.add_constraint(y >= 0);
+    bds.add_constraint(y >= 0);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -149,7 +149,7 @@ test06() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd(1);
+  TBD_Shape bds(1);
 
   try {
     // This is an invalid use of the method
@@ -158,7 +158,7 @@ test06() {
     // polyhedron.
     Constraint_System cs;
     cs.insert(x - y == 0);
-    bd.add_constraints(cs);
+    bds.add_constraints(cs);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

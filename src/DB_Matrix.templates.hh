@@ -1,11 +1,11 @@
 /* DB_Matrix class implementation: non-inline template functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -96,6 +96,7 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
       // Copy the old rows.
       ++i;
       while (i-- > 0) {
+	// FIXME: copying may be unnecessarily costly.
 	DB_Row<T> new_row(rows[i],
 			  new_matrix.row_size,
 			  new_matrix.row_capacity);
@@ -119,6 +120,7 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
       const dimension_type new_row_capacity
 	= compute_capacity(new_n_rows, max_num_columns());
       for (dimension_type i = old_n_rows; i-- > 0; ) {
+	// FIXME: copying may be unnecessarily costly.
 	DB_Row<T> new_row(rows[i], new_n_rows, new_row_capacity);
 	std::swap(rows[i], new_row);
       }
@@ -230,9 +232,8 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
   DB_Matrix& x = *this;
   for (dimension_type i = 0; i < nrows;  ++i)
     for (dimension_type j = 0; j < nrows; ++j) {
-      Result r = input(x[i][j], s, ROUND_UP);
-      // FIXME: V_CVT_STR_UNK is probably not the only possible error.
-      if (!s || r == V_CVT_STR_UNK)
+      Result r = input(x[i][j], s, ROUND_CHECK);
+      if (r != V_EQ || is_minus_infinity(x[i][j]))
 	return false;
     }
 
@@ -243,7 +244,7 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 bool
 operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
@@ -296,8 +297,8 @@ DB_Matrix<T>::OK() const {
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \relates Parma_Polyhedra_Library::DB_Matrix */  //FIXME!!
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Parma_Polyhedra_Library::DB_Matrix */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const DB_Matrix<T>& c) {

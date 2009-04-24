@@ -1,11 +1,11 @@
 /* DB_Row class implementation: non-inline template functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_DB_Row_templates_hh
 #define PPL_DB_Row_templates_hh 1
 
+#include "globals.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
@@ -30,13 +32,13 @@ template <typename U>
 void
 DB_Row_Impl_Handler<T>::Impl::construct_upward_approximation(const U& y) {
   const dimension_type y_size = y.size();
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0; i < y_size; ++i) {
     construct(vec_[i], y[i], ROUND_UP);
     bump_size();
   }
-#else // CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#else // PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   assert(y_size > 0);
   if (y_size > 0) {
     vec_[0] = y[0];
@@ -47,7 +49,7 @@ DB_Row_Impl_Handler<T>::Impl::construct_upward_approximation(const U& y) {
       bump_size();
     }
   }
-#endif // CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#endif // PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 }
 
 template <typename T>
@@ -55,14 +57,14 @@ void
 DB_Row_Impl_Handler<T>::
 Impl::expand_within_capacity(const dimension_type new_size) {
   assert(size() <= new_size && new_size <= max_size());
-#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   // vec_[0] is already constructed.
   if (size() == 0 && new_size > 0)
     bump_size();
 #endif
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = size(); i < new_size; ++i) {
-    new (&vec_[i]) T(PLUS_INFINITY);
+    new (&vec_[i]) T(PLUS_INFINITY, ROUND_NOT_NEEDED);
     bump_size();
   }
 }
@@ -74,7 +76,7 @@ DB_Row_Impl_Handler<T>::Impl::shrink(dimension_type new_size) {
   assert(new_size <= old_size);
   // Since ~T() does not throw exceptions, nothing here does.
   set_size(new_size);
-#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   // Make sure we do not try to destroy vec_[0].
   if (new_size == 0)
     ++new_size;
@@ -89,13 +91,13 @@ template <typename T>
 void
 DB_Row_Impl_Handler<T>::Impl::copy_construct_coefficients(const Impl& y) {
   const dimension_type y_size = y.size();
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0; i < y_size; ++i) {
     new (&vec_[i]) T(y.vec_[i]);
     bump_size();
   }
-#else // CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#else // PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   assert(y_size > 0);
   if (y_size > 0) {
     vec_[0] = y.vec_[0];
@@ -106,7 +108,7 @@ DB_Row_Impl_Handler<T>::Impl::copy_construct_coefficients(const Impl& y) {
       bump_size();
     }
   }
-#endif // CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#endif // PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 }
 
 template <typename T>
@@ -122,7 +124,7 @@ template <typename T>
 bool
 DB_Row<T>::OK(const dimension_type row_size,
 	      const dimension_type
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
 	      row_capacity
 #endif
 	      ) const {
@@ -134,8 +136,8 @@ DB_Row<T>::OK(const dimension_type row_size,
   const DB_Row<T>& x = *this;
   bool is_broken = false;
 
-#if EXTRA_ROW_DEBUG
-# if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if PPL_DB_ROW_EXTRA_DEBUG
+# if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (x.capacity_ == 0) {
     cerr << "Illegal row capacity: is 0, should be at least 1"
 	 << endl;
@@ -145,14 +147,14 @@ DB_Row<T>::OK(const dimension_type row_size,
     // This is fine.
     ;
   else
-# endif // !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+# endif // !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (x.capacity_ != row_capacity) {
     cerr << "DB_Row capacity mismatch: is " << x.capacity_
 	 << ", should be " << row_capacity << "."
 	 << endl;
     is_broken = true;
   }
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_DB_ROW_EXTRA_DEBUG
 
   if (x.size() != row_size) {
 #ifndef NDEBUG
@@ -163,7 +165,7 @@ DB_Row<T>::OK(const dimension_type row_size,
     is_broken = true;
   }
 
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   if (x.capacity_ < x.size()) {
 #ifndef NDEBUG
     cerr << "DB_Row is completely broken: capacity is " << x.capacity_
@@ -172,7 +174,7 @@ DB_Row<T>::OK(const dimension_type row_size,
 #endif
     is_broken = true;
   }
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_DB_ROW_EXTRA_DEBUG
 
   for (dimension_type i = x.size(); i-- > 0; ) {
     const T& element = x[i];

@@ -1,11 +1,11 @@
 /* Constraint class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -155,10 +155,9 @@ operator==(const Linear_Expression& e1, const Linear_Expression& e2) {
 /*! \relates Constraint */
 inline Constraint
 operator==(const Variable v1, const Variable v2) {
-  // TODO: this is just an executable specification.
-  // As this is frequently used by client code, it is important
-  // to provide a more efficient implementation.
-  return Linear_Expression(v1) == Linear_Expression(v2);
+  Linear_Expression diff
+    = (v1.space_dimension() < v2.space_dimension()) ? v1-v2 : v2-v1;
+  return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
@@ -174,10 +173,8 @@ operator>=(const Linear_Expression& e1, const Linear_Expression& e2) {
 /*! \relates Constraint */
 inline Constraint
 operator>=(const Variable v1, const Variable v2) {
-  // TODO: this is just an executable specification.
-  // As this is frequently used by client code, it is important
-  // to provide a more efficient implementation.
-  return Linear_Expression(v1) >= Linear_Expression(v2);
+  Linear_Expression diff = v1-v2;
+  return Constraint(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
@@ -202,10 +199,11 @@ operator>(const Linear_Expression& e1, const Linear_Expression& e2) {
 /*! \relates Constraint */
 inline Constraint
 operator>(const Variable v1, const Variable v2) {
-  // TODO: this is just an executable specification.
-  // As this is frequently used by client code, it is important
-  // to provide a more efficient implementation.
-  return Linear_Expression(v1) > Linear_Expression(v2);
+  Linear_Expression diff = v1-v2;
+  diff -= Variable(std::max(v1.space_dimension(), v2.space_dimension()));
+  return Constraint(diff,
+                    Constraint::STRICT_INEQUALITY,
+                    NOT_NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
@@ -328,27 +326,26 @@ operator<(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 inline const Constraint&
 Constraint::zero_dim_false() {
-  static const Constraint zdf(Linear_Expression::zero() == Coefficient_one());
-  return zdf;
+  assert(zero_dim_false_p != 0);
+  return *zero_dim_false_p;
 }
 
 inline const Constraint&
 Constraint::zero_dim_positivity() {
-  static const Constraint zdp(Linear_Expression::zero() <= Coefficient_one());
-  return zdp;
+  assert(zero_dim_positivity_p != 0);
+  return *zero_dim_positivity_p;
 }
 
 inline const Constraint&
 Constraint::epsilon_geq_zero() {
-  static const Constraint eps_geq_zero = construct_epsilon_geq_zero();
-  return eps_geq_zero;
+  assert(epsilon_geq_zero_p != 0);
+  return *epsilon_geq_zero_p;
 }
 
 inline const Constraint&
 Constraint::epsilon_leq_one() {
-  static const Constraint
-    eps_leq_one(Linear_Expression::zero() < Coefficient_one());
-  return eps_leq_one;
+  assert(epsilon_leq_one_p != 0);
+  return *epsilon_leq_one_p;
 }
 
 inline void

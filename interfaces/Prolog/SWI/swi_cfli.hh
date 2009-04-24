@@ -1,11 +1,11 @@
-/* SWI Prolog Common Foreign Language Interface.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+/* SWI-Prolog Common Foreign Language Interface.
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -30,18 +30,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <SWI-Prolog.h>
 #include <cassert>
 #include <climits>
-
-#if !defined(__STDC_LIMIT_MACROS)
-#define __STDC_LIMIT_MACROS
-#endif
-
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
-
-#ifdef HAVE_INTTYPES_H
-#include <inttypes.h>
-#endif
 
 typedef term_t Prolog_term_ref;
 typedef atom_t Prolog_atom;
@@ -253,7 +241,7 @@ Prolog_is_compound(Prolog_term_ref t) {
 }
 
 /*!
-  Return true if \p t is a Prolog list, false otherwise.
+  Return true if \p t is a Prolog cons (list constructor), false otherwise.
 */
 inline int
 Prolog_is_cons(Prolog_term_ref t) {

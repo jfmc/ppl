@@ -1,11 +1,11 @@
 /* Grid_Generator_System class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 #include "Grid_Generator_System.defs.hh"
 #include "Grid_Generator_System.inlines.hh"
 #include "Scalar_Products.defs.hh"
@@ -176,7 +176,7 @@ PPL::Grid_Generator_System
 
   // Compute the numerator of the affine transformation and assign it
   // to the column of `*this' indexed by `v'.
-  TEMP_INTEGER(numerator);
+  PPL_DIRTY_TEMP_COEFFICIENT(numerator);
   for (dimension_type i = num_rows; i-- > 0; ) {
     Grid_Generator& row = x[i];
     Scalar_Products::assign(numerator, expr, row);
@@ -218,7 +218,7 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
   if (!(s >> num_rows))
     return false;
   std::string str;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> num_columns))
       return false;
@@ -236,6 +236,23 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
   assert(OK());
 
   return true;
+}
+
+const PPL::Grid_Generator_System*
+PPL::Grid_Generator_System::zero_dim_univ_p = 0;
+
+void
+PPL::Grid_Generator_System::initialize() {
+  assert(zero_dim_univ_p == 0);
+  zero_dim_univ_p
+    = new Grid_Generator_System(Grid_Generator::zero_dim_point());
+}
+
+void
+PPL::Grid_Generator_System::finalize() {
+  assert(zero_dim_univ_p != 0);
+  delete zero_dim_univ_p;
+  zero_dim_univ_p = 0;
 }
 
 bool

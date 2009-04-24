@@ -1,11 +1,11 @@
 /* Grid class implementation: conversion().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Grid.defs.hh"
 #include <cstddef>
@@ -74,7 +74,7 @@ bool
 Grid::upper_triangular(const Grid_Generator_System& sys,
 		       const Dimension_Kinds& dim_kinds) {
   dimension_type num_columns = sys.space_dimension() + 1;
-  dimension_type row = sys.num_generators();
+  dimension_type row = sys.num_rows();
 
   // Check for easy square fail case.
   if (row > num_columns)
@@ -100,7 +100,7 @@ Grid::upper_triangular(const Grid_Generator_System& sys,
   return num_columns == row;
 }
 
-inline void
+void
 Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
 		    Grid_Generator_System& dest, const dimension_type num_rows,
 		    const dimension_type num_dims) {
@@ -123,7 +123,7 @@ Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
   }
 }
 
-inline void
+void
 Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
 		    Congruence_System& dest, const dimension_type num_rows,
 		    const dimension_type num_dims) {
@@ -165,10 +165,10 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // the left-right order of the dimensions, while the congruence
   // system rows have a bottom-up ordering.
   dimension_type dest_num_rows = 0;
-  TEMP_INTEGER(diagonal_lcm);
+  PPL_DIRTY_TEMP_COEFFICIENT(diagonal_lcm);
   diagonal_lcm = 1;
   const dimension_type dims = source.space_dimension() + 1;
-  dimension_type source_index = source.num_generators();
+  dimension_type source_index = source.num_rows();
   for (dimension_type dim = dims; dim-- > 0; )
     if (dim_kinds[dim] == GEN_VIRTUAL)
       // Virtual generators map to equalities.
@@ -198,7 +198,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // the diagonal elements to the inverse ratio of the `source'
   // diagonal elements.
   dimension_type dest_index = 0;
-  source_index = source.num_generators();
+  source_index = source.num_rows();
   for (dimension_type dim = dims; dim-- > 0; ) {
     if (dim_kinds[dim] == LINE)
       --source_index;
@@ -234,9 +234,9 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // reverse of the order in `source', so the rows are iterated from
   // last to first (index 0) in `source' and from first to last in
   // `dest'.
-  source_index = source.num_generators();
+  source_index = source.num_rows();
   dest_index = 0;
-  TEMP_INTEGER(multiplier);
+  PPL_DIRTY_TEMP_COEFFICIENT(multiplier);
 
   for (dimension_type dim = dims; dim-- > 0; ) {
     if (dim_kinds[dim] != GEN_VIRTUAL) {
@@ -300,13 +300,14 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
   assert(lower_triangular(dest, dim_kinds));
 
-#ifdef STRONG_REDUCTION
+  // Since we are reducing the system to "strong minimal form",
+  // reduce the coefficients in the congruence system
+  // using "diagonal" values.
   for (dimension_type dim = dims, i = 0; dim-- > 0; )
     if (dim_kinds[dim] != CON_VIRTUAL)
       // Factor the "diagonal" congruence out of the preceding rows.
       reduce_reduced<Congruence_System, Congruence>
 	(dest, dim, i++, 0, dim, dim_kinds, false);
-#endif
 }
 
 void
@@ -320,7 +321,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // Initialize matrix row number counters and compute the LCM of the
   // diagonal entries of the proper congruences in `source'.
   dimension_type source_num_rows = 0, dest_num_rows = 0;
-  TEMP_INTEGER(diagonal_lcm);
+  PPL_DIRTY_TEMP_COEFFICIENT(diagonal_lcm);
   diagonal_lcm = 1;
   dimension_type dims = source.num_columns() - 1;
   for (dimension_type dim = dims; dim-- > 0; )
@@ -393,7 +394,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // `dest'.
   source_index = source_num_rows;
   dest_index = 0;
-  TEMP_INTEGER(reduced_source_dim);
+  PPL_DIRTY_TEMP_COEFFICIENT(reduced_source_dim);
 
   for (dimension_type dim = 0; dim < dims; ++dim) {
     if (dim_kinds[dim] != CON_VIRTUAL) {
@@ -450,18 +451,19 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
   assert(upper_triangular(dest, dim_kinds));
 
-#ifdef STRONG_REDUCTION
+  // Since we are reducing the system to "strong minimal form",
+  // reduce the coordinates in the grid_generator system
+  // using "diagonal" values.
   for (dimension_type dim = 0, i = 0; dim < dims; ++dim)
     if (dim_kinds[dim] != GEN_VIRTUAL)
       // Factor the "diagonal" generator out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
 	(dest, dim, i++, dim, dims - 1, dim_kinds);
-#endif
 
   // Ensure that the parameter divisors are the same as the divisor of
   // the point.
   const Coefficient& system_divisor = dest[0][0];
-  for (dimension_type row = dest.num_generators() - 1, dim = dims;
+  for (dimension_type row = dest.num_rows() - 1, dim = dims;
        dim-- > 1; )
     switch (dim_kinds[dim]) {
     case PARAMETER:

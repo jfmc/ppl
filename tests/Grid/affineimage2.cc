@@ -1,11 +1,11 @@
 /* Test Grid::affine_image().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -50,8 +50,7 @@ test01() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_image(A, 2*A, 5) ***");
+  print_generators(gr, "*** gr.affine_image(A, 2*A, 5) ***");
 
   return ok;
 }
@@ -74,8 +73,7 @@ test02() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_image(A, B + 2, -3) ***");
+  print_generators(gr, "*** gr.affine_image(A, B + 2, -3) ***");
 
   return ok;
 }
@@ -96,8 +94,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, 2*A + B + 1) ***");
+  print_congruences(gr, "*** gr.affine_image(A, 2*A + B + 1) ***");
 
   return ok;
 }
@@ -123,8 +120,7 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, A + 3) ***");
+  print_congruences(gr, "*** gr.affine_image(A, A + 3) ***");
 
   return ok;
 }
@@ -150,8 +146,7 @@ test05() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, A + B) ***");
+  print_congruences(gr, "*** gr.affine_image(A, A + B) ***");
 
   return ok;
 }
@@ -172,13 +167,12 @@ test06() {
   gr.affine_image(A, B);
 
   Grid known_gr(2);
-  known_gr.add_congruence(A - B == 0);
+  known_gr.add_congruence((A - B == 0) / 0);
   known_gr.add_congruence((A %= 0) / 2);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, B) ***");
+  print_congruences(gr, "*** gr.affine_image(A, B) ***");
 
   return ok;
 }
@@ -281,12 +275,11 @@ test10() {
   gr2.affine_image(A, 225*A);
                   // third grid - 2 passes through procedure
 
-  gr.join_assign(gr1); // join of gr0 and gr1
+  gr.upper_bound_assign(gr1); // join of gr0 and gr1
 
-  print_congruences(gr,
-        "*** gr.join_assign(gr1) ***");
+  print_congruences(gr, "*** gr.upper_bound_assign(gr1) ***");
 
-  gr.join_assign(gr2); // join of gr0, gr1 and gr2
+  gr.upper_bound_assign(gr2); // join of gr0, gr1 and gr2
 
   Grid known_gr(2);
 
@@ -295,8 +288,7 @@ test10() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.join_assign(gr2) ***");
+  print_congruences(gr, "*** gr.upper_bound_assign(gr2) ***");
 
   return ok;
 }
@@ -315,7 +307,7 @@ test11() {
   Grid gr(2, EMPTY);
 
   for(int j = 0; j < 4; j++) {
-    gr.add_grid_generators_and_minimize(ggs);
+    gr.add_grid_generators(ggs);
 
     for(int i = 0; i < j; i++) {
       gr.affine_image(A, 3*A);
@@ -325,10 +317,10 @@ test11() {
       gr.affine_image(A, 5*A);
       gr.affine_image(B, B + A);
     }
-    gr1.join_assign(gr);
+    gr1.upper_bound_assign(gr);
   }
 
-  gr.add_grid_generators_and_minimize(ggs);
+  gr.add_grid_generators(ggs);
 
   bool ok = (gr == gr1);
 
@@ -360,7 +352,7 @@ test12() {
   Grid gr(2, EMPTY);
 
   for(int j = 0; j < 3; j++) {
-    gr.add_grid_generators_and_minimize(ggs);
+    gr.add_grid_generators(ggs);
 
     for(int i = 0; i < j; i++) {
       gr.affine_image(A, *tem1*A);
@@ -370,10 +362,10 @@ test12() {
       gr.affine_image(A, *tem2*A);
       gr.affine_image(B, B + A);
     }
-    gr1.join_assign(gr);
+    gr1.upper_bound_assign(gr);
   }
 
-  gr.add_grid_generators_and_minimize(ggs);
+  gr.add_grid_generators(ggs);
 
   delete tem1; delete tem2; delete tem3;
 
@@ -400,6 +392,6 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST_F16A(test10);
-  DO_TEST_F16(test11);
+  DO_TEST_F32(test11);
   DO_TEST_F64(test12);
 END_MAIN

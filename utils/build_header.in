@@ -6,13 +6,13 @@ eval 'case $# in 0) exec @PERL@ -S "$0";; *) exec @PERL@ -S "$0" "$@";; esac'
     if 0;
 
 # Builds a self-contained C++ header file by performing recursive inclusion.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -56,7 +56,7 @@ sub filter($$$$) {
 	}
 	if ($level > 0) {
 	    if ($print_from) {
-		print "// Automatically generated from PPL source file $file line $.\n";
+		print "/* Automatically generated from PPL source file $file line $.. */\n";
 		$print_from = 0;
 	    }
 	    next if ($line =~ '^\s*#ifndef\s+PPL_[A-Za-z0-9_]+_hh\s*$');

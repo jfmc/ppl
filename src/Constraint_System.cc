@@ -1,11 +1,11 @@
 /* Constraint_System class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
@@ -37,13 +37,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Constraint_System::Constraint_System(const Congruence_System& cgs)
-  : Linear_System(NOT_NECESSARILY_CLOSED) {
-  insert(Constraint::zero_dim_positivity());
+  : Linear_System(NECESSARILY_CLOSED, 0, cgs.space_dimension() + 1) {
   for (Congruence_System::const_iterator i = cgs.begin(),
 	 cgs_end = cgs.end(); i != cgs_end; ++i)
     if (i->is_equality())
-      // TODO: Consider adding a recycling_insert to save the extra
-      //       copy here.
+      // TODO: Consider adding a recycling_insert to save the extra copy here.
       insert(Constraint(*i));
 }
 
@@ -100,7 +98,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     return true;
   }
 
-  // Here `num_rows() > 0'.
+  // Here the constraint system is not empty.
   if (cols_to_be_added > 0)
     if (old_topology != new_topology)
       if (new_topology == NECESSARILY_CLOSED) {
@@ -185,7 +183,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     }
   else
     // Here `cols_to_be_added == 0'.
-    if (old_topology != new_topology)
+    if (old_topology != new_topology) {
       if (new_topology == NECESSARILY_CLOSED) {
 	// A NOT_NECESSARILY_CLOSED constraint system
 	// can be converted to a NECESSARILY_CLOSED one
@@ -201,6 +199,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	add_zero_columns(1);
 	set_not_necessarily_closed();
       }
+    }
   // We successfully adjusted space dimensions and topology.
   assert(OK());
   return true;
@@ -519,7 +518,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
   dimension_type ncols;
   if (!(s >> nrows))
     return false;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> ncols))
       return false;
@@ -545,8 +544,10 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
       return false;
     if (str == "=")
       x[i].set_is_equality();
-    else
+    else if (str == ">=" || str == ">")
       x[i].set_is_inequality();
+    else
+      return false;
 
     // Checking for equality of actual and declared types.
     switch (x[i].type()) {
@@ -569,6 +570,22 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
   // Check invariants.
   assert(OK());
   return true;
+}
+
+const PPL::Constraint_System* PPL::Constraint_System::zero_dim_empty_p = 0;
+
+void
+PPL::Constraint_System::initialize() {
+  assert(zero_dim_empty_p == 0);
+  zero_dim_empty_p
+    = new Constraint_System(Constraint::zero_dim_false());
+}
+
+void
+PPL::Constraint_System::finalize() {
+  assert(zero_dim_empty_p != 0);
+  delete zero_dim_empty_p;
+  zero_dim_empty_p = 0;
 }
 
 bool

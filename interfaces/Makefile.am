@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,23 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = C Java OCaml Prolog
+if BUILD_C_INTERFACE
+C_SUBDIR = C
+endif BUILD_C_INTERFACE
+
+if BUILD_JAVA_INTERFACE
+JAVA_SUBDIR = Java
+endif BUILD_JAVA_INTERFACE
+
+if BUILD_OCAML_INTERFACE
+OCAML_SUBDIR = OCaml
+endif BUILD_OCAML_INTERFACE
+
+if BUILD_SOME_PROLOG_INTERFACES
+PROLOG_SUBDIR = Prolog
+endif BUILD_SOME_PROLOG_INTERFACES
+
+SUBDIRS = . $(C_SUBDIR) $(JAVA_SUBDIR) $(OCAML_SUBDIR) $(PROLOG_SUBDIR)
 
 REQUIRED_INSTANTIATIONS = \
 @required_instantiations@
@@ -34,10 +50,15 @@ ppl_interface_instantiations.m4: Makefile
 	echo "m4_define(\`m4_interface_classes_names', \`$(REQUIRED_INSTANTIATIONS_CANONICAL_NAMES)')" > $@
 	echo "m4_define(\`m4_cplusplus_classes_names', \`$(REQUIRED_INSTANTIATIONS)')" >> $@
 
+noinst_HEADERS = \
+interfaced_boxes.hh \
+marked_pointers.hh
+
 EXTRA_DIST = \
 ppl_interface_generator_common.m4 \
 ppl_interface_generator_common_dat.m4 \
+ppl_interface_generator_common_procedure_generators.m4 \
 ppl_interface_generator_copyright
 
-DISTCLEANFILES = \
+CLEANFILES = \
 ppl_interface_instantiations.m4

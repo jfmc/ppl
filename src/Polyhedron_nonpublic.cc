@@ -1,12 +1,12 @@
 /* Polyhedron class implementation
    (non-inline private or protected functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -21,7 +21,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
@@ -41,7 +41,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   we collect enough information to decide which is the better
   implementation alternative.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define BE_LAZY 1
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -67,7 +67,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
   assert(OK());
 }
 
-PPL::Polyhedron::Polyhedron(const Polyhedron& y)
+PPL::Polyhedron::Polyhedron(const Polyhedron& y, Complexity_Class)
   : con_sys(y.topology()),
     gen_sys(y.topology()),
     status(y.status),
@@ -193,7 +193,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
   Generator_System gs = cgs;
 
   // An empty set of generators defines the empty polyhedron.
-  if (gs.num_rows() == 0) {
+  if (gs.has_no_rows()) {
     space_dim = gs.space_dimension();
     status.set_empty();
     assert(OK());
@@ -255,7 +255,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
   assert(gs.space_dimension() <= max_space_dimension());
 
   // An empty set of generators defines the empty polyhedron.
-  if (gs.num_rows() == 0) {
+  if (gs.has_no_rows()) {
     space_dim = gs.space_dimension();
     status.set_empty();
     assert(OK());
@@ -566,7 +566,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
 				  : "minimize(e, ...)"), "e", expr);
 
   // Deal with zero-dim polyhedra first.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     if (marked_empty())
       return false;
     else {
@@ -576,6 +576,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
       g = point();
       return true;
     }
+  }
 
   // For an empty polyhedron we simply return false.
   if (marked_empty()
@@ -586,20 +587,18 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
   // The polyhedron has updated, possibly pending generators.
   // The following loop will iterate through the generator
   // to find the extremum.
-  mpq_class extremum;
+  PPL_DIRTY_TEMP0(mpq_class, extremum);
 
   // True if we have no other candidate extremum to compare with.
   bool first_candidate = true;
 
   // To store the position of the current candidate extremum.
-  // Initialized only to avoid a compiler warning.
-  dimension_type ext_position = 0;
+  PPL_UNINITIALIZED(dimension_type, ext_position);
 
   // Whether the current candidate extremum is included or not.
-  // Initialized only to avoid a compiler warning.
-  bool ext_included = false;
+  PPL_UNINITIALIZED(bool, ext_included);
 
-  TEMP_INTEGER(sp);
+  PPL_DIRTY_TEMP_COEFFICIENT(sp);
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& gen_sys_i = gen_sys[i];
     Scalar_Products::homogeneous_assign(sp, expr, gen_sys_i);
@@ -618,7 +617,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
       assert(gen_sys_i.is_point() || gen_sys_i.is_closure_point());
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the extremum as soon as we find it.
-      mpq_class candidate;
+      PPL_DIRTY_TEMP0(mpq_class, candidate);
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
       assign_r(candidate.get_den(), gen_sys_i[0], ROUND_NOT_NEEDED);
       candidate.canonicalize();
@@ -644,13 +643,20 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
   }
 
   // Add in the constant term in `expr'.
-  mpz_class n;
+  PPL_DIRTY_TEMP0(mpz_class, n);
   assign_r(n, expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
   extremum += n;
 
   // The polyhedron is bounded in the right direction and we have
   // computed the extremum: write the result into the caller's structures.
   assert(!first_candidate);
+  // FIXME: avoid these temporaries, if possible.
+  // This can be done adding an `assign' function working on native
+  // and checked or an operator= that have on one side a checked and
+  // on the other a native or checked.
+  // The reason why now we can't use operator= is the fact that we
+  // still can have Coefficient defined to mpz_class (and not
+  // Checked_Number<mpz_class>).
   ext_n = Coefficient(extremum.get_num());
   ext_d = Coefficient(extremum.get_den());
   included = ext_included;
@@ -908,7 +914,7 @@ PPL::Polyhedron::obtain_sorted_constraints() const {
   assert(constraints_are_up_to_date());
   // `con_sys' will be sorted up to `index_first_pending'.
   Polyhedron& x = const_cast<Polyhedron&>(*this);
-  if (!x.con_sys.is_sorted())
+  if (!x.con_sys.is_sorted()) {
     if (x.sat_g_is_up_to_date()) {
       // Sorting constraints keeping `sat_g' consistent.
       x.con_sys.sort_and_remove_with_sat(x.sat_g);
@@ -926,6 +932,7 @@ PPL::Polyhedron::obtain_sorted_constraints() const {
       // If neither `sat_g' nor `sat_c' are up-to-date,
       // we just sort the constraints.
       x.con_sys.sort_rows();
+  }
 
   assert(con_sys.check_sorted());
 }
@@ -935,7 +942,7 @@ PPL::Polyhedron::obtain_sorted_generators() const {
   assert(generators_are_up_to_date());
   // `gen_sys' will be sorted up to `index_first_pending'.
   Polyhedron& x = const_cast<Polyhedron&>(*this);
-  if (!x.gen_sys.is_sorted())
+  if (!x.gen_sys.is_sorted()) {
     if (x.sat_c_is_up_to_date()) {
       // Sorting generators keeping 'sat_c' consistent.
       x.gen_sys.sort_and_remove_with_sat(x.sat_c);
@@ -953,6 +960,7 @@ PPL::Polyhedron::obtain_sorted_generators() const {
       // If neither `sat_g' nor `sat_c' are up-to-date, we just sort
       // the generators.
       x.gen_sys.sort_rows();
+  }
 
   assert(gen_sys.check_sorted());
 }
@@ -1114,15 +1122,9 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       throw std::runtime_error("PPL internal error: "
 			       "strongly_minimize_constraints.");
     }
-  Bit_Row sat_lines_and_rays;
-  set_union(sat_all_but_points, sat_all_but_closure_points,
-	    sat_lines_and_rays);
-  Bit_Row sat_lines_and_closure_points;
-  set_union(sat_all_but_rays, sat_all_but_points,
-	    sat_lines_and_closure_points);
-  Bit_Row sat_lines;
-  set_union(sat_lines_and_rays, sat_lines_and_closure_points,
-	    sat_lines);
+  Bit_Row sat_lines_and_rays(sat_all_but_points, sat_all_but_closure_points);
+  Bit_Row sat_lines_and_closure_points(sat_all_but_rays, sat_all_but_points);
+  Bit_Row sat_lines(sat_lines_and_rays, sat_lines_and_closure_points);
 
   // These flags are maintained to later decide if we have to add the
   // eps_leq_one constraint and whether or not the constraint system
@@ -1296,8 +1298,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
     if (gs[i].is_point()) {
       // Compute the Bit_Row corresponding to the candidate point
       // when strict inequality constraints are ignored.
-      Bit_Row sat_gi;
-      set_union(sat[i], sat_all_but_strict_ineq, sat_gi);
+      Bit_Row sat_gi(sat[i], sat_all_but_strict_ineq);
       // Check if the candidate point is actually eps-redundant:
       // namely, if there exists another point that saturates
       // all the non-strict inequalities saturated by the candidate.
@@ -1345,6 +1346,682 @@ PPL::Polyhedron::strongly_minimize_generators() const {
     x.clear_constraints_up_to_date();
   }
 
+  assert(OK());
+  return true;
+}
+
+void
+PPL::Polyhedron::refine_no_check(const Constraint& c) {
+  assert(!marked_empty());
+  assert(space_dim >= c.space_dimension());
+
+  // Dealing with a zero-dimensional space polyhedron first.
+  if (space_dim == 0) {
+    if (c.is_inconsistent())
+      set_empty();
+    return;
+  }
+
+  // The constraints (possibly with pending rows) are required.
+  if (has_pending_generators())
+    process_pending_generators();
+  else if (!constraints_are_up_to_date())
+    update_constraints();
+
+  const bool adding_pending = can_have_something_pending();
+
+  if (c.is_necessarily_closed() || !is_necessarily_closed())
+    // Since `con_sys' is not empty, the topology and space dimension
+    // of the inserted constraint are automatically adjusted.
+    if (adding_pending)
+      con_sys.insert_pending(c);
+    else
+      con_sys.insert(c);
+  else {
+    // Here we know that the system of constraints has at least a row.
+    // However, by barely invoking `con_sys.insert(c)' we would
+    // cause a change in the topology of `con_sys', which is wrong.
+    // Thus, we insert a "topology corrected" copy of `c'.
+    Linear_Expression nc_expr = Linear_Expression(c);
+    if (c.is_equality())
+      if (adding_pending)
+        con_sys.insert_pending(nc_expr == 0);
+      else
+        con_sys.insert(nc_expr == 0);
+    else
+      if (adding_pending)
+        con_sys.insert_pending(nc_expr >= 0);
+      else
+        con_sys.insert(nc_expr >= 0);
+  }
+
+  if (adding_pending)
+    set_constraints_pending();
+  else {
+    // Constraints are not minimized and generators are not up-to-date.
+    clear_constraints_minimized();
+    clear_generators_up_to_date();
+  }
+
+  // Note: the constraint system may have become unsatisfiable, thus
+  // we do not check for satisfiability.
+  assert(OK());
+}
+
+bool
+PPL::Polyhedron::BHZ09_poly_hull_assign_if_exact(const Polyhedron& y) {
+  Polyhedron& x = *this;
+
+  // Private method: the caller must ensure the following.
+  assert(x.topology() == y.topology());
+  assert(x.space_dim == y.space_dim);
+
+  // The zero-dim case is trivial.
+  if (x.space_dim == 0) {
+    x.upper_bound_assign(y);
+    return true;
+  }
+
+  // If `x' or `y' are (known to be) empty, the upper bound is exact.
+  if (x.marked_empty()) {
+    x = y;
+    return true;
+  }
+  else if (y.is_empty())
+    return true;
+  else if (x.is_empty()) {
+    x = y;
+    return true;
+  }
+
+  if (x.is_necessarily_closed())
+    return x.BHZ09_C_poly_hull_assign_if_exact(y);
+  else
+    return x.BHZ09_NNC_poly_hull_assign_if_exact(y);
+}
+
+bool
+PPL::Polyhedron::BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y) {
+  Polyhedron& x = *this;
+  // Private method: the caller must ensure the following.
+  assert(x.is_necessarily_closed() && y.is_necessarily_closed());
+  assert(x.space_dim > 0 && x.space_dim == y.space_dim);
+  assert(!x.is_empty() && !y.is_empty());
+
+  // Minimization is not really required, but it is probably the best
+  // way of getting constraints, generators and saturation matrices
+  // up-to-date; it also removes redundant constraints/generators.
+  (void) x.minimize();
+  (void) y.minimize();
+
+  // Handle a special case: for topologically closed polyhedra P and Q,
+  // if the affine dimension of P is greater than that of Q, then
+  // their upper bound is exact if and only if P includes Q.
+  const dimension_type x_affine_dim = x.affine_dimension();
+  const dimension_type y_affine_dim = y.affine_dimension();
+  if (x_affine_dim > y_affine_dim)
+    return (y.is_included_in(x));
+  else if (x_affine_dim < y_affine_dim) {
+    if (x.is_included_in(y)) {
+      x = y;
+      return true;
+    }
+    else
+      return false;
+  }
+
+  const Constraint_System& x_cs = x.con_sys;
+  const Generator_System& x_gs = x.gen_sys;
+  const Generator_System& y_gs = y.gen_sys;
+  const dimension_type x_gs_num_rows = x_gs.num_rows();
+  const dimension_type y_gs_num_rows = y_gs.num_rows();
+
+  // Step 1: generators of `x' that are redundant in `y', and vice versa.
+  Bit_Row x_gs_red_in_y;
+  dimension_type num_x_gs_red_in_y = 0;
+  for (dimension_type i = x_gs_num_rows; i-- > 0; )
+    if (y.relation_with(x_gs[i]).implies(Poly_Gen_Relation::subsumes())) {
+      x_gs_red_in_y.set(i);
+      ++num_x_gs_red_in_y;
+    }
+  Bit_Row y_gs_red_in_x;
+  dimension_type num_y_gs_red_in_x = 0;
+  for (dimension_type i = y_gs_num_rows; i-- > 0; )
+    if (x.relation_with(y_gs[i]).implies(Poly_Gen_Relation::subsumes())) {
+      y_gs_red_in_x.set(i);
+      ++num_y_gs_red_in_x;
+    }
+
+  // Step 2: filter away special cases.
+
+  // Step 2.1: inclusion tests.
+  if (num_y_gs_red_in_x == y_gs_num_rows)
+    // `y' is included into `x': upper bound `x' is exact.
+    return true;
+  if (num_x_gs_red_in_y == x_gs_num_rows) {
+    // `x' is included into `y': upper bound `y' is exact.
+    x = y;
+    return true;
+  }
+
+  // Step 2.2: if no generator of `x' is redundant for `y', then
+  // (as by 2.1 there exists a constraint of `x' non-redundant for `y')
+  // the upper bound is not exact; the same if exchanging `x' and `y'.
+  if (num_x_gs_red_in_y == 0 || num_y_gs_red_in_x == 0)
+    return false;
+
+  // Step 3: see if `x' has a non-redundant constraint `c_x' that is not
+  // satisfied by `y' and a non-redundant generator in `y' (see Step 1)
+  // saturating `c_x'. If so, the upper bound is not exact.
+
+  // Make sure the saturation matrix for `x' is up to date.
+  // Any sat matrix would do: we choose `sat_g' because it matches
+  // the two nested loops (constraints on rows and generators on columns).
+  if (!x.sat_g_is_up_to_date())
+    x.update_sat_g();
+  const Bit_Matrix& x_sat = x.sat_g;
+
+  Bit_Row all_ones;
+  all_ones.set_until(x_gs_num_rows);
+  Bit_Row row_union;
+  for (dimension_type i = x_cs.num_rows(); i-- > 0; ) {
+    const bool included
+      = y.relation_with(x_cs[i]).implies(Poly_Con_Relation::is_included());
+    if (!included) {
+      set_union(x_gs_red_in_y, x_sat[i], row_union);
+      if (row_union != all_ones)
+        return false;
+    }
+  }
+
+  // Here we know that the upper bound is exact: compute it.
+  for (dimension_type j = y_gs_num_rows; j-- > 0; )
+    if (!y_gs_red_in_x[j])
+      add_generator(y_gs[j]);
+
+  assert(OK());
+  return true;
+}
+
+bool
+PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
+  const Polyhedron& x = *this;
+  // Private method: the caller must ensure the following.
+  assert(!x.is_necessarily_closed() && !y.is_necessarily_closed());
+  assert(x.space_dim > 0 && x.space_dim == y.space_dim);
+  assert(!x.is_empty() && !y.is_empty());
+
+  // Minimization is not really required, but it is probably the best
+  // way of getting constraints, generators and saturation matrices
+  // up-to-date; it also removes redundant constraints/generators.
+  (void) x.minimize();
+  (void) y.minimize();
+
+  const Generator_System& x_gs = x.gen_sys;
+  const Generator_System& y_gs = y.gen_sys;
+  const dimension_type x_gs_num_rows = x_gs.num_rows();
+  const dimension_type y_gs_num_rows = y_gs.num_rows();
+
+  // Compute generators of `x' that are non-redundant in `y' ...
+  Bit_Row x_gs_nonred_in_y;
+  Bit_Row x_points_nonred_in_y;
+  Bit_Row x_closure_points;
+  dimension_type num_x_gs_nonred_in_y = 0;
+  for (dimension_type i = x_gs_num_rows; i-- > 0; ) {
+    const Generator& x_gs_i = x_gs[i];
+    if (x_gs_i.is_closure_point())
+      x_closure_points.set(i);
+    if (y.relation_with(x_gs[i]).implies(Poly_Gen_Relation::subsumes()))
+      continue;
+    x_gs_nonred_in_y.set(i);
+    ++num_x_gs_nonred_in_y;
+    if (x_gs_i.is_point())
+      x_points_nonred_in_y.set(i);
+  }
+
+  // If `x' is included into `y', the upper bound `y' is exact.
+  if (num_x_gs_nonred_in_y == 0) {
+    *this = y;
+    return true;
+  }
+
+  // ... and vice versa, generators of `y' that are non-redundant in `x'.
+  Bit_Row y_gs_nonred_in_x;
+  Bit_Row y_points_nonred_in_x;
+  Bit_Row y_closure_points;
+  dimension_type num_y_gs_nonred_in_x = 0;
+  for (dimension_type i = y_gs_num_rows; i-- > 0; ) {
+    const Generator& y_gs_i = y_gs[i];
+    if (y_gs_i.is_closure_point())
+      y_closure_points.set(i);
+    if (x.relation_with(y_gs_i).implies(Poly_Gen_Relation::subsumes()))
+      continue;
+    y_gs_nonred_in_x.set(i);
+    ++num_y_gs_nonred_in_x;
+    if (y_gs_i.is_point())
+      y_points_nonred_in_x.set(i);
+  }
+
+  // If `y' is included into `x', the upper bound `x' is exact.
+  if (num_y_gs_nonred_in_x == 0)
+    return true;
+
+  Bit_Row x_nonpoints_nonred_in_y;
+  set_difference(x_gs_nonred_in_y, x_points_nonred_in_y,
+                 x_nonpoints_nonred_in_y);
+
+  const Constraint_System& x_cs = x.con_sys;
+  const Constraint_System& y_cs = y.con_sys;
+  const dimension_type x_cs_num_rows = x_cs.num_rows();
+  const dimension_type y_cs_num_rows = y_cs.num_rows();
+
+  // Filter away the points of `x_gs' that would be redundant
+  // in the topological closure of `y'.
+  Bit_Row x_points_nonred_in_y_closure;
+  for (dimension_type i = x_points_nonred_in_y.first();
+       i != ULONG_MAX; i = x_points_nonred_in_y.next(i)) {
+    const Generator& x_p = x_gs[i];
+    assert(x_p.is_point());
+    // NOTE: we cannot use Constraint_System::relation_with()
+    // as we need to treat strict inequalities as if they were nonstrict.
+    for (dimension_type j = y_cs_num_rows; j-- > 0; ) {
+      const Constraint& y_c = y_cs[j];
+      const int sp_sign = Scalar_Products::reduced_sign(y_c, x_p);
+      if (sp_sign < 0 || (y_c.is_equality() && sp_sign > 0)) {
+        x_points_nonred_in_y_closure.set(i);
+        break;
+      }
+    }
+  }
+
+  // Make sure the saturation matrix for `x' is up to date.
+  // Any sat matrix would do: we choose `sat_g' because it matches
+  // the two nested loops (constraints on rows and generators on columns).
+  if (!x.sat_g_is_up_to_date())
+    x.update_sat_g();
+  const Bit_Matrix& x_sat = x.sat_g;
+
+  Bit_Row x_gs_condition_3;
+  Bit_Row all_ones;
+  all_ones.set_until(x_gs_num_rows);
+  Bit_Row saturators;
+  Bit_Row tmp_set;
+  for (dimension_type i = x_cs_num_rows; i-- > 0; ) {
+    const Constraint& x_c = x_cs[i];
+    // Skip constraint if it is not violated by `y'.
+    if (y.relation_with(x_c).implies(Poly_Con_Relation::is_included()))
+      continue;
+    set_difference(all_ones, x_sat[i], saturators);
+    // Check condition 1.
+    set_intersection(x_nonpoints_nonred_in_y, saturators, tmp_set);
+    if (!tmp_set.empty())
+      return false;
+    if (x_c.is_strict_inequality()) {
+      // Postpone check for condition 3.
+      set_intersection(x_closure_points, saturators, tmp_set);
+      set_union(x_gs_condition_3, tmp_set, x_gs_condition_3);
+    }
+    else {
+      // Check condition 2.
+      set_intersection(x_points_nonred_in_y_closure, saturators, tmp_set);
+      if (!tmp_set.empty())
+        return false;
+    }
+  }
+
+  // Now exchange the roles of `x' and `y'
+  // (the statement of the NNC theorem in BHZ09 is symmetric).
+
+  Bit_Row y_nonpoints_nonred_in_x;
+  set_difference(y_gs_nonred_in_x, y_points_nonred_in_x,
+                 y_nonpoints_nonred_in_x);
+
+  // Filter away the points of `y_gs' that would be redundant
+  // in the topological closure of `x'.
+  Bit_Row y_points_nonred_in_x_closure;
+  for (dimension_type i = y_points_nonred_in_x.first();
+       i != ULONG_MAX; i = y_points_nonred_in_x.next(i)) {
+    const Generator& y_p = y_gs[i];
+    assert(y_p.is_point());
+    // NOTE: we cannot use Constraint_System::relation_with()
+    // as we need to treat strict inequalities as if they were nonstrict.
+    for (dimension_type j = x_cs_num_rows; j-- > 0; ) {
+      const Constraint& x_c = x_cs[j];
+      const int sp_sign = Scalar_Products::reduced_sign(x_c, y_p);
+      if (sp_sign < 0 || (x_c.is_equality() && sp_sign > 0)) {
+        y_points_nonred_in_x_closure.set(i);
+        break;
+      }
+    }
+  }
+
+  // Make sure the saturation matrix `sat_g' for `y' is up to date.
+  if (!y.sat_g_is_up_to_date())
+    y.update_sat_g();
+  const Bit_Matrix& y_sat = y.sat_g;
+
+  Bit_Row y_gs_condition_3;
+  all_ones.clear();
+  all_ones.set_until(y_gs_num_rows);
+  for (dimension_type i = y_cs_num_rows; i-- > 0; ) {
+    const Constraint& y_c = y_cs[i];
+    // Skip constraint if it is not violated by `x'.
+    if (x.relation_with(y_c).implies(Poly_Con_Relation::is_included()))
+      continue;
+    set_difference(all_ones, y_sat[i], saturators);
+    // CHECKME: do we really need to re-check condition 1?
+    // Check condition 1.
+    set_intersection(y_nonpoints_nonred_in_x, saturators, tmp_set);
+    if (!tmp_set.empty())
+      return false;
+    if (y_c.is_strict_inequality()) {
+      // Postpone check for condition 3.
+      set_intersection(y_closure_points, saturators, tmp_set);
+      set_union(y_gs_condition_3, tmp_set, y_gs_condition_3);
+    }
+    else {
+      // Check condition 2.
+      set_intersection(y_points_nonred_in_x_closure, saturators, tmp_set);
+      if (!tmp_set.empty())
+        return false;
+    }
+  }
+
+  // Now check condition 3 on `x_gs_condition_3' and `y_gs_condition_3'.
+
+  // Filter away from `x_gs_condition_3' those closure points
+  // that, when considered as points, would belong to `y',
+  // i.e., those that violate no strict constraint in `y_cs'.
+  Bit_Row x_gs_condition_3_not_in_y;
+  for (dimension_type i = y_cs_num_rows; i-- > 0; ) {
+    const Constraint& y_c = y_cs[i];
+    if (y_c.is_strict_inequality()) {
+      for (dimension_type j = x_gs_condition_3.first();
+           j != ULONG_MAX; j = x_gs_condition_3.next(j)) {
+        const Generator& x_cp = x_gs[j];
+        assert(x_cp.is_closure_point());
+        const int sp_sign = Scalar_Products::reduced_sign(y_c, x_cp);
+        assert(sp_sign >= 0);
+        if (sp_sign == 0) {
+          x_gs_condition_3.clear(j);
+          x_gs_condition_3_not_in_y.set(j);
+        }
+      }
+      if (x_gs_condition_3.empty())
+        break;
+    }
+  }
+
+  // Symmetrically, filter away from `y_gs_condition_3' those
+  // closure points that, when considered as points, would belong to `x',
+  // i.e., those that violate no strict constraint in `x_cs'.
+  Bit_Row y_gs_condition_3_not_in_x;
+  for (dimension_type i = x_cs_num_rows; i-- > 0; ) {
+    if (x_cs[i].is_strict_inequality()) {
+      const Constraint& x_c = x_cs[i];
+      for (dimension_type j = y_gs_condition_3.first();
+           j != ULONG_MAX; j = y_gs_condition_3.next(j)) {
+        const Generator& y_cp = y_gs[j];
+        assert(y_cp.is_closure_point());
+        const int sp_sign = Scalar_Products::reduced_sign(x_c, y_cp);
+        assert(sp_sign >= 0);
+        if (sp_sign == 0) {
+          y_gs_condition_3.clear(j);
+          y_gs_condition_3_not_in_x.set(j);
+        }
+      }
+      if (y_gs_condition_3.empty())
+        break;
+    }
+  }
+
+  if (x_gs_condition_3_not_in_y.empty()
+      && y_gs_condition_3_not_in_x.empty()) {
+    // The hull is exact: compute it.
+    for (dimension_type j = y_gs_num_rows; j-- > 0; )
+      if (y_gs_nonred_in_x[j])
+        add_generator(y_gs[j]);
+    return true;
+  }
+
+  // We have anyway to compute the upper bound and its constraints too.
+  Polyhedron ub(x);
+  for (dimension_type j = y_gs_num_rows; j-- > 0; )
+    if (y_gs_nonred_in_x[j])
+      ub.add_generator(y_gs[j]);
+  (void) ub.minimize();
+  assert(!ub.is_empty());
+
+  // Check if there exists a closure point in `x_gs_condition_3_not_in_y'
+  // or `y_gs_condition_3_not_in_x' that belongs (as point) to the hull.
+  // If so, the hull is not exact.
+  const Constraint_System& ub_cs = ub.constraints();
+  for (dimension_type i = ub_cs.num_rows(); i-- > 0; ) {
+    if (ub_cs[i].is_strict_inequality()) {
+      const Constraint& ub_c = ub_cs[i];
+      for (dimension_type j = x_gs_condition_3_not_in_y.first();
+           j != ULONG_MAX; j = x_gs_condition_3_not_in_y.next(j)) {
+        const Generator& x_cp = x_gs[j];
+        assert(x_cp.is_closure_point());
+        const int sp_sign = Scalar_Products::reduced_sign(ub_c, x_cp);
+        assert(sp_sign >= 0);
+        if (sp_sign == 0)
+          x_gs_condition_3_not_in_y.clear(j);
+      }
+      for (dimension_type j = y_gs_condition_3_not_in_x.first();
+           j != ULONG_MAX; j = y_gs_condition_3_not_in_x.next(j)) {
+        const Generator& y_cp = y_gs[j];
+        assert(y_cp.is_closure_point());
+        const int sp_sign = Scalar_Products::reduced_sign(ub_c, y_cp);
+        assert(sp_sign >= 0);
+        if (sp_sign == 0)
+          y_gs_condition_3_not_in_x.clear(j);
+      }
+    }
+  }
+
+  if (x_gs_condition_3_not_in_y.empty()
+      && y_gs_condition_3_not_in_x.empty()) {
+    // No closure point satisfies condition 3, hence the hull is exact.
+    swap(ub);
+    return true;
+  }
+  else
+    // The hull is not exact.
+    return false;
+}
+
+bool
+PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
+  // Declare a const reference to *this (to avoid accidental modifications).
+  const Polyhedron& x = *this;
+  // Private method: the caller must ensure the following.
+  assert(x.is_necessarily_closed());
+  assert(x.topology() == y.topology());
+  assert(x.space_dim == y.space_dim);
+
+  // The zero-dim case is trivial.
+  if (x.space_dim == 0) {
+    upper_bound_assign(y);
+    return true;
+  }
+  // If `x' or `y' is (known to be) empty, the convex union is exact.
+  if (x.marked_empty()) {
+    *this = y;
+    return true;
+  }
+  else if (y.is_empty())
+    return true;
+  else if (x.is_empty()) {
+    *this = y;
+    return true;
+  }
+
+  // Here both `x' and `y' are known to be non-empty.
+
+  // Implementation based on Algorithm 8.1 (page 15) in [BemporadFT00TR],
+  // generalized so as to also allow for unbounded polyhedra.
+  // The extension to unbounded polyhedra is obtained by mimicking
+  // what done in Algorithm 8.2 (page 19) wrt Algorithm 6.2 (page 13).
+  // We also apply a couple of improvements (see steps 2.1, 3.1, 6.1, 7.1)
+  // so as to quickly handle special cases and avoid the splitting
+  // of equalities/lines into pairs of inequalities/rays.
+
+  (void) x.minimize();
+  (void) y.minimize();
+  const Constraint_System& x_cs = x.con_sys;
+  const Constraint_System& y_cs = y.con_sys;
+  const Generator_System& x_gs = x.gen_sys;
+  const Generator_System& y_gs = y.gen_sys;
+  const dimension_type x_gs_num_rows = x_gs.num_rows();
+  const dimension_type y_gs_num_rows = y_gs.num_rows();
+
+  // Step 1: generators of `x' that are redundant in `y', and vice versa.
+  std::vector<bool> x_gs_red_in_y(x_gs_num_rows, false);
+  dimension_type num_x_gs_red_in_y = 0;
+  for (dimension_type i = x_gs_num_rows; i-- > 0; )
+    if (y.relation_with(x_gs[i]).implies(Poly_Gen_Relation::subsumes())) {
+      x_gs_red_in_y[i] = true;
+      ++num_x_gs_red_in_y;
+    }
+  std::vector<bool> y_gs_red_in_x(y_gs_num_rows, false);
+  dimension_type num_y_gs_red_in_x = 0;
+  for (dimension_type i = y_gs_num_rows; i-- > 0; )
+    if (x.relation_with(y_gs[i]).implies(Poly_Gen_Relation::subsumes())) {
+      y_gs_red_in_x[i] = true;
+      ++num_y_gs_red_in_x;
+    }
+
+  // Step 2: if no redundant generator has been identified,
+  // then the union is not convex. CHECKME: why?
+  if (num_x_gs_red_in_y == 0 && num_y_gs_red_in_x == 0)
+    return false;
+
+  // Step 2.1: while at it, also perform quick inclusion tests.
+  if (num_y_gs_red_in_x == y_gs_num_rows)
+    // `y' is included into `x': union is convex.
+    return true;
+  if (num_x_gs_red_in_y == x_gs_num_rows) {
+    // `x' is included into `y': union is convex.
+    *this = y;
+    return true;
+  }
+
+  // Here we know that `x' is not included in `y', and vice versa.
+
+  // Step 3: constraints of `x' that are satisfied by `y', and vice versa.
+  const dimension_type x_cs_num_rows = x_cs.num_rows();
+  std::vector<bool> x_cs_red_in_y(x_cs_num_rows, false);
+  for (dimension_type i = x_cs_num_rows; i-- > 0; ) {
+    const Constraint& x_cs_i = x_cs[i];
+    if (y.relation_with(x_cs_i).implies(Poly_Con_Relation::is_included()))
+      x_cs_red_in_y[i] = true;
+    else if (x_cs_i.is_equality())
+      // Step 3.1: `x' has an equality not satified by `y':
+      // union is not convex (recall that `y' does not contain `x').
+      // NOTE: this would be false for NNC polyhedra.
+      // Example: x = { A == 0 }, y = { 0 < A <= 1 }.
+      return false;
+  }
+  const dimension_type y_cs_num_rows = y_cs.num_rows();
+  std::vector<bool> y_cs_red_in_x(y_cs_num_rows, false);
+  for (dimension_type i = y_cs_num_rows; i-- > 0; ) {
+    const Constraint& y_cs_i = y_cs[i];
+    if (x.relation_with(y_cs_i).implies(Poly_Con_Relation::is_included()))
+      y_cs_red_in_x[i] = true;
+    else if (y_cs_i.is_equality())
+      // Step 3.1: `y' has an equality not satified by `x':
+      // union is not convex (see explanation above).
+      return false;
+  }
+
+  // Loop in steps 5-9: for each pair of non-redundant generators,
+  // compute their "mid-point" and check if it is both in `x' and `y'.
+
+  // Note: reasoning at the polyhedral cone level.
+  // CHECKME, FIXME: Polyhedron is a (deprecated) friend of Generator.
+  // Here below we systematically exploit such a friendship, so as to
+  // freely reinterpret a Generator as a Linear_Row and vice versa.
+  Linear_Row mid_row;
+  const Generator& mid_g = static_cast<const Generator&>(mid_row);
+
+  for (dimension_type i = x_gs_num_rows; i-- > 0; ) {
+    if (x_gs_red_in_y[i])
+      continue;
+    const Linear_Row& x_row = static_cast<const Linear_Row&>(x_gs[i]);
+    const dimension_type row_sz = x_row.size();
+    const bool x_row_is_line = x_row.is_line_or_equality();
+    for (dimension_type j = y_gs_num_rows; j-- > 0; ) {
+      if (y_gs_red_in_x[j])
+        continue;
+      const Linear_Row& y_row = static_cast<const Linear_Row&>(y_gs[j]);
+      const bool y_row_is_line = y_row.is_line_or_equality();
+
+      // Step 6: compute mid_row = x_row + y_row.
+      // NOTE: no need to actually compute the "mid-point",
+      // since any strictly positive combination would do.
+      mid_row = x_row;
+      for (dimension_type k = row_sz; k-- > 0; )
+        mid_row[k] += y_row[k];
+      // A zero ray is not a well formed generator.
+      const bool illegal_ray
+        = (mid_row[0] == 0 && mid_row.all_homogeneous_terms_are_zero());
+      // A zero ray cannot be generated from a line: this holds
+      // because x_row (resp., y_row) is not subsumed by y (resp., x).
+      assert(!(illegal_ray && (x_row_is_line || y_row_is_line)));
+      if (illegal_ray)
+        continue;
+      if (x_row_is_line) {
+        mid_row.normalize();
+        if (y_row_is_line)
+          // mid_row is a line too: sign normalization is needed.
+          mid_row.sign_normalize();
+        else
+          // mid_row is a ray/point.
+          mid_row.set_is_ray_or_point_or_inequality();
+      }
+
+      // Step 7: check if mid_g is in the union of x and y.
+      if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
+          && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
+        return false;
+
+      // If either x_row or y_row is a line, we should use its
+      // negation to produce another generator to be tested too.
+      // NOTE: exclusive-or is meant.
+      if (!x_row_is_line && y_row_is_line) {
+        // Step 6.1: (re-)compute mid_row = x_row - y_row.
+        mid_row = x_row;
+        for (dimension_type k = row_sz; k-- > 0; )
+          mid_row[k] -= y_row[k];
+        mid_row.normalize();
+        // Step 7.1: check if mid_g is in the union of x and y.
+        if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
+            && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
+          return false;
+      }
+      else if (x_row_is_line && !y_row_is_line) {
+        // Step 6.1: (re-)compute mid_row = - x_row + y_row.
+        mid_row = y_row;
+        for (dimension_type k = row_sz; k-- > 0; )
+          mid_row[k] -= x_row[k];
+        mid_row.normalize();
+        // Step 7.1: check if mid_g is in the union of x and y.
+        if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
+            && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
+          return false;
+      }
+    }
+  }
+
+  // Here we know that the union of x and y is convex.
+  // TODO: exploit knowledge on the cardinality of non-redudnant
+  // constraints/generators to improve the convex-hull computation.
+  // Using generators allows for exploiting incrementality.
+  for (dimension_type j = 0; j < y_gs_num_rows; ++j) {
+    if (!y_gs_red_in_x[j])
+      add_generator(y_gs[j]);
+  }
   assert(OK());
   return true;
 }

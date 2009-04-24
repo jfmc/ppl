@@ -1,11 +1,11 @@
 /* Polyhedron::Status class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Status_defs_hh
-#define PPL_Status_defs_hh 1
+#ifndef PPL_Status_idefs_hh
+#define PPL_Status_idefs_hh 1
 
 #ifndef PPL_IN_Polyhedron_CLASS
 #error "Do not include Ph_Status.idefs.hh directly; use Polyhedron.defs.hh instead."
@@ -181,4 +181,4 @@ private:
   friend class Serializer;
 };
 
-#endif // !defined(PPL_Status_defs_hh)
+#endif // !defined(PPL_Status_idefs_hh)

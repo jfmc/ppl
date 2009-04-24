@@ -1,11 +1,11 @@
 /* Test Grid::minimized_congruences().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -73,6 +73,10 @@ test03() {
 
   Congruence_System cgs = gr1.minimized_congruences();
 
+  gr1.OK();
+
+  print_congruences(gr1, "*** gr1(cgs) ***");
+
   Grid gr2(cgs);
 
   bool ok = (gr2 == known_gr);
@@ -91,6 +95,10 @@ test04() {
   Grid known_gr = gr1;
 
   Congruence_System cgs = gr1.minimized_congruences();
+
+  gr1.OK();
+
+  print_congruences(gr1, "*** gr1(cgs) ***");
 
   Grid gr2(cgs);
 
@@ -182,8 +190,8 @@ test08() {
   Variable A(0);
 
   Grid gr1(4);
-  gr1.add_congruence(A == 1);
-  gr1.add_congruence(A == 0);
+  gr1.add_constraint(A == 1);
+  gr1.add_constraint(A == 0);
   print_congruences(gr1, "*** gr1 ***");
 
   Grid known_gr(4, EMPTY);

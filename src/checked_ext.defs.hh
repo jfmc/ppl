@@ -1,11 +1,11 @@
 /* Checked extended arithmetic functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -79,12 +79,12 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 Result gcd_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To1_Policy, typename From1_Policy, typename From2_Policy,
-	  typename To2_Policy, typename To3_Policy,
-	  typename To1, typename From1, typename From2,
-	  typename To3, typename To4>
-Result gcdext_ext(To1& to, const From1& x, const From2& y,
-		  const To2& s, const To3& t, Rounding_Dir dir);
+template <typename To1_Policy, typename To2_Policy, typename To3_Policy,
+	  typename From1_Policy, typename From2_Policy,
+	  typename To1, typename To2, typename To3,
+	  typename From1, typename From2>
+Result gcdext_ext(To1& to, To2& s, To3& t, const From1& x, const From2& y,
+		  Rounding_Dir dir);
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>

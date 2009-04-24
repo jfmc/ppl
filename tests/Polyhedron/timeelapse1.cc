@@ -1,11 +1,11 @@
 /* Test Polyhedron::time_elapse_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -38,8 +38,8 @@ test01() {
   C_Polyhedron ph2(2);
   ph2.add_constraint(y == 5);
 
-  print_constraints(ph1, "**** ph1 ****");
-  print_constraints(ph2, "**** ph2 ****");
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
 
   ph1.time_elapse_assign(ph2);
 
@@ -50,7 +50,7 @@ test01() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
+  print_generators(ph1, "*** ph1_time_elapse_assign(ph2) ***");
 
   return ok;
 }
@@ -60,32 +60,32 @@ test02() {
   C_Polyhedron ph1(0, EMPTY);
   C_Polyhedron ph2;
 
-  print_constraints(ph1, "**** ph1 ****");
-  print_constraints(ph2, "**** ph2 ****");
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
 
   ph1.time_elapse_assign(ph2);
 
   C_Polyhedron ph3(2, EMPTY);
   C_Polyhedron ph4(2);
 
-  print_constraints(ph3, "**** ph3 ****");
-  print_constraints(ph4, "**** ph4 ****");
+  print_constraints(ph3, "*** ph3 ***");
+  print_constraints(ph4, "*** ph4 ***");
 
   ph3.time_elapse_assign(ph4);
 
   C_Polyhedron ph5(2);
   C_Polyhedron ph6(2, EMPTY);
 
-  print_constraints(ph5, "**** ph5 ****");
-  print_constraints(ph6, "**** ph6 ****");
+  print_constraints(ph5, "*** ph5 ***");
+  print_constraints(ph6, "*** ph6 ***");
 
   ph5.time_elapse_assign(ph6);
 
   bool ok = ph1.is_empty() && ph3.is_empty() && ph5.is_empty();
 
-  print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
-  print_generators(ph3, "**** ph3_time_elapse_assign(ph4) ****");
-  print_generators(ph5, "**** ph5_time_elapse_assign(ph6) ****");
+  print_generators(ph1, "*** ph1_time_elapse_assign(ph2) ***");
+  print_generators(ph3, "*** ph3_time_elapse_assign(ph4) ***");
+  print_generators(ph5, "*** ph5_time_elapse_assign(ph6) ***");
 
   return ok;
 }
@@ -132,7 +132,7 @@ test04() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.time_elapse_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.time_elapse_assign(ph2) ***");
 
   return ok;
 }
@@ -171,8 +171,8 @@ test05() {
 
   bool ok = (ph1 ==  ph3);
 
-  print_generators(ph1, "*** After ph1.time_elapse_assign(ph2) ***");
-  print_generators(ph3, "*** After ph3.time_elapse_assign(ph4) ***");
+  print_generators(ph1, "*** after ph1.time_elapse_assign(ph2) ***");
+  print_generators(ph3, "*** after ph3.time_elapse_assign(ph4) ***");
 
   return ok;
 }
@@ -206,8 +206,8 @@ test06() {
   Pointset_Powerset<C_Polyhedron> ps2(2, EMPTY);
   ps2.add_disjunct(ph3);
 
-  print_constraints(ps1, "=== ps1 ===");
-  print_constraints(ps2, "=== ps2 ===");
+  print_constraints(ps1, "*** ps1 ***");
+  print_constraints(ps2, "*** ps2 ***");
 
   ps1.time_elapse_assign(ps2);
 
@@ -233,7 +233,7 @@ test06() {
 
   bool ok = (ps1 == known_result);
 
-  print_constraints(ps1, "=== ps1.time_elapse_assign(ps2) ===");
+  print_constraints(ps1, "*** ps1.time_elapse_assign(ps2) ***");
 
   return ok;
 }

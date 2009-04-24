@@ -1,11 +1,11 @@
 /* Test Grid::generalized_affine_image(var, ...).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -34,8 +34,7 @@ test01() {
   gr.add_congruence(A %= 0);
   gr.add_congruence((B %= 0) / 2);
 
-  gr.generalized_affine_image(B, LESS_THAN_OR_EQUAL,
-                Linear_Expression::zero());
+  gr.generalized_affine_image(B, LESS_OR_EQUAL, Linear_Expression::zero());
 
   Grid known_gr(2, EMPTY);
   known_gr.add_grid_generator(grid_point());
@@ -45,7 +44,7 @@ test01() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_image(B, LESS_THAN_OR_EQUAL, Linear_Expression::zero()) ***");
+		    "*** gr.generalized_affine_image(B, LESS_OR_EQUAL, Linear_Expression::zero()) ***");
 
   return ok;
 }
@@ -62,14 +61,14 @@ test02() {
 
   print_generators(gr, "*** gr ***");
 
-  gr.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, A - 2*C + 3, 4);
+  gr.generalized_affine_image(A, GREATER_OR_EQUAL, A - 2*C + 3, 4);
 
   Grid known_gr(5, EMPTY);
 
   bool ok = (gr == known_gr);
 
   print_generators(gr,
-    "*** gr.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, A - 2*C + 3, 4) ***");
+		   "*** gr.generalized_affine_image(A, GREATER_OR_EQUAL, A - 2*C + 3, 4) ***");
 
   return ok;
 }
@@ -80,8 +79,8 @@ test03() {
   Variable A(0);
 
   Grid gr(1);
-  gr.add_congruence(A == 0);
-  gr.add_congruence(A == 3);
+  gr.add_constraint(A == 0);
+  gr.add_constraint(A == 3);
 
   print_congruences(gr, "*** gr ***");
 
@@ -92,7 +91,7 @@ test03() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_image(A, LESS_THAN, A + 2, 1, 0) ***");
+		    "*** gr.generalized_affine_image(A, LESS_THAN, A + 2, 1, 0) ***");
 
   return ok;
 }
@@ -109,7 +108,7 @@ test04() {
   gr.add_congruence((A ==  0) / 0);
 
   try {
-    gr.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, A + 2, 0);
+    gr.generalized_affine_image(B, GREATER_OR_EQUAL, A + 2, 0);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -133,7 +132,7 @@ test05() {
   gr.add_congruence((A ==  0) / 0);
 
   try {
-    gr.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, D + 2, 1);
+    gr.generalized_affine_image(B, GREATER_OR_EQUAL, D + 2, 1);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -157,7 +156,7 @@ test06() {
   gr.add_congruence((A ==  0) / 0);
 
   try {
-    gr.generalized_affine_image(D, GREATER_THAN_OR_EQUAL, A + 2, 1);
+    gr.generalized_affine_image(D, GREATER_OR_EQUAL, A + 2, 1);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -180,7 +179,7 @@ test07() {
   gr.add_congruence((A ==  0) / 0);
 
   try {
-    gr.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, A + 2, 1, 1);
+    gr.generalized_affine_image(A, GREATER_OR_EQUAL, A + 2, 1, 1);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -200,7 +199,7 @@ test08() {
 
   Grid gr(3);
   gr.add_congruence((C %= 0) / 3);
-  gr.add_congruence(A - 2*B == 1);
+  gr.add_constraint(A - 2*B == 1);
 
   print_congruences(gr, "*** gr ***");
 
@@ -211,8 +210,7 @@ test08() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
- "*** gr.generalized_affine_image(A - B + C, GREATER_THAN, 2*A - B - C) ***"
-                   );
+		    "*** gr.generalized_affine_image(A - B + C, GREATER_THAN, 2*A - B - C) ***");
 
   return ok;
 }
@@ -225,20 +223,20 @@ test09() {
   Variable C(2);
 
   Grid gr(3);
-  gr.add_congruence(A - B == 0);
-  gr.add_congruence(C == 0);
+  gr.add_constraint(A - B == 0);
+  gr.add_constraint(C == 0);
 
   print_congruences(gr, "*** gr ***");
 
   gr.generalized_affine_image(A - B, GREATER_THAN, 2*A - 2*B, 0);
 
   Grid known_gr(3);
-  known_gr.add_congruence(C == 0);
+  known_gr.add_constraint(C == 0);
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_image(A - B, GREATER_THAN, 2*A - 2*B, 0) ***");
+		    "*** gr.generalized_affine_image(A - B, GREATER_THAN, 2*A - 2*B, 0) ***");
 
   return ok;
 }
@@ -306,7 +304,7 @@ test12() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_image(A,GREATER_THAN , A + 2, 1, 1) ***");
+		    "*** gr.generalized_affine_image(A, GREATER_THAN , A + 2, 1, 1) ***");
 
   return ok;
 }
@@ -341,8 +339,8 @@ test14() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A == 0);
-  gr.add_congruence(A == 3);
+  gr.add_constraint(A == 0);
+  gr.add_constraint(A == 3);
 
   print_congruences(gr, "*** gr ***");
 
@@ -353,7 +351,7 @@ test14() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_image(A, LESS_THAN, A + 2) ***");
+		    "*** gr.generalized_affine_image(A, LESS_THAN, A + 2) ***");
 
   return ok;
 }

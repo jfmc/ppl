@@ -1,11 +1,11 @@
 /* Test Grid::generalized_affine_preimage(lhs, rhs, modulus).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -46,7 +46,7 @@ test01() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_preimage(Linear_Expression::zero(), EQUAL, Linear_Expression(1), 1) ***");
+		    "*** gr.generalized_affine_preimage(Linear_Expression::zero(), EQUAL, Linear_Expression(1), 1) ***");
 
   return ok;
 }
@@ -72,7 +72,7 @@ test02() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_preimage(Linear_Expression::zero(), EQUAL, A - B, 5) ***");
+		    "*** gr.generalized_affine_preimage(Linear_Expression::zero(), EQUAL, A - B, 5) ***");
 
   return ok;
 }
@@ -85,7 +85,7 @@ test03() {
   Variable C(2);
 
   Grid gr(3);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
   gr.add_congruence((C %= 0) / 3);
 
   print_congruences(gr, "*** gr ***");
@@ -100,8 +100,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "***  ***");
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -113,19 +112,19 @@ test04() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
 
   print_congruences(gr, "*** gr ***");
 
   gr.generalized_affine_preimage(A - B, EQUAL, A, 0);
 
   Grid known_gr(2);
-  known_gr.add_congruence(A == 0);
+  known_gr.add_constraint(A == 0);
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A - B, EQUAL, A, 0) ***");
+		    "*** gr.generalized_affine_preimage(A - B, EQUAL, A, 0) ***");
 
   return ok;
 }
@@ -151,8 +150,7 @@ test05() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "***  ***");
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -166,7 +164,7 @@ test06() {
 
   Grid gr(3);
   gr.add_congruence((C %= 0) / 3);
-  gr.add_congruence(A - 2*B == 1);
+  gr.add_constraint(A - 2*B == 1);
 
   print_congruences(gr, "*** gr ***");
 
@@ -177,7 +175,7 @@ test06() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-   "*** gr.generalized_affine_preimage(A - B + C, EQUAL, 2*A - B - C, 5) ***");
+		    "*** gr.generalized_affine_preimage(A - B + C, EQUAL, 2*A - B - C, 5) ***");
 
   return ok;
 }
@@ -190,7 +188,7 @@ test07() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
 
   print_congruences(gr, "*** gr ***");
 
@@ -202,7 +200,7 @@ test07() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A - B, EQUAL, 2*A - 2*B, 5) ***");
+		    "*** gr.generalized_affine_preimage(A - B, EQUAL, 2*A - 2*B, 5) ***");
 
   return ok;
 }
@@ -215,7 +213,7 @@ test08() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
 
   print_congruences(gr, "*** gr ***");
 
@@ -227,7 +225,7 @@ test08() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(2*A - 2*B, EQUAL, A - B, 5) ***");
+		    "*** gr.generalized_affine_preimage(2*A - 2*B, EQUAL, A - B, 5) ***");
 
   return ok;
 }
@@ -288,7 +286,7 @@ test11() {
 
   Grid gr(3);
   gr.add_congruence((C %= 0) / 3);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
 
   print_congruences(gr, "*** gr ***");
 
@@ -300,7 +298,7 @@ test11() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A - B, EQUAL, C, -5) ***");
+		    "*** gr.generalized_affine_preimage(A - B, EQUAL, C, -5) ***");
 
   return ok;
 }

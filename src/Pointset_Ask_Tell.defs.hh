@@ -1,11 +1,11 @@
 /* Pointset_Ask_Tell class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -30,9 +30,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.types.hh"
 #include "Congruence.types.hh"
 #include "Congruence_System.types.hh"
-#include "C_Polyhedron.types.hh"
-#include "NNC_Polyhedron.types.hh"
-#include "Polyhedron.defs.hh"
+#include "C_Polyhedron.defs.hh"
+#include "NNC_Polyhedron.defs.hh"
 #include "Variables_Set.types.hh"
 #include "Determinate.defs.hh"
 #include "Ask_Tell.defs.hh"
@@ -40,21 +39,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <list>
 #include <map>
 
-//! The powerset construction instantiated on PPL polyhedra.
+//! The ask-and-tell construction instantiated on PPL polyhedra.
 /*! \ingroup PPL_CXX_interface */
-template <typename PH>
+template <typename PS>
 class Parma_Polyhedra_Library::Pointset_Ask_Tell
   : public Parma_Polyhedra_Library::Ask_Tell
-<Parma_Polyhedra_Library::Determinate<PH> > {
+<Parma_Polyhedra_Library::Determinate<PS> > {
 public:
-  typedef PH element_type;
+  typedef PS element_type;
 
 private:
-  typedef Determinate<PH> CS;
+  typedef Determinate<PS> CS;
   typedef Ask_Tell<CS> Base;
+  typedef typename Base::Pair Pair;
 
 public:
-  //! Returns the maximum space dimension a Pointset_Ask_Tell<PH> can handle.
+  //! Returns the maximum space dimension a Pointset_Ask_Tell<PS> can handle.
   static dimension_type max_space_dimension();
 
   //! \name Constructors
@@ -70,7 +70,7 @@ public:
   */
   explicit
   Pointset_Ask_Tell(dimension_type num_dimensions = 0,
-		     Degenerate_Element kind = UNIVERSE);
+		    Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
   Pointset_Ask_Tell(const Pointset_Ask_Tell& y);
@@ -79,7 +79,7 @@ public:
     If \p ph is nonempty, builds a powerset containing only \p ph.
     Builds the empty powerset otherwise.
   */
-  explicit Pointset_Ask_Tell(const PH& ph);
+  explicit Pointset_Ask_Tell(const PS& ph);
 
   /*! \brief
     Copy-constructor allowing a source powerset with elements of a
@@ -94,8 +94,10 @@ public:
   */
   explicit Pointset_Ask_Tell(const Constraint_System& cs);
 
-  //! Creates a Pointset_Ask_Tell with a single polyhedron
-  //! with the same information contents as \p cgs.
+  /*! \brief
+    Creates a Pointset_Ask_Tell with a single polyhedron
+    with the same information contents as \p cgs.
+  */
   explicit Pointset_Ask_Tell(const Congruence_System& cgs);
 
   //@} // Constructors and Destructor
@@ -146,6 +148,14 @@ public:
   */
   memory_size_type external_memory_in_bytes() const;
 
+  /*! \brief
+    Returns a 32-bit hash code for \p *this.
+
+    If \p x and \p y are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
+  */
+  int32_t hash_code() const;
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
@@ -159,7 +169,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p ph are dimension-incompatible.
   */
-  void add_disjunct(const PH& ph);
+  void add_disjunct(const PS& ph);
 
   //! Intersects \p *this with constraint \p c.
   /*!
@@ -168,17 +178,6 @@ public:
     or dimension-incompatible.
   */
   void add_constraint(const Constraint& c);
-
-  //! Intersects \p *this with the constraint \p c, minimizing the result.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p c are topology-incompatible or
-    dimension-incompatible.
-  */
-  bool add_constraint_and_minimize(const Constraint& c);
 
   //! Intersects \p *this with the constraints in \p cs.
   /*!
@@ -192,22 +191,6 @@ public:
   void add_constraints(const Constraint_System& cs);
 
   /*! \brief
-    Intersects \p *this with the constraints in \p cs,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraints to intersect with.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-  */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
-
-  /*! \brief
     Assign to \p *this the result of (recursively) merging together
     the pairs of polyhedra whose poly-hull is the same as their
     set-theoretical union.
@@ -216,6 +199,58 @@ public:
     in \p *this, we have \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
   */
   void pairwise_reduce();
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  void unconstrain(Variable var);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  void unconstrain(const Variables_Set& to_be_unconstrained);
+
+  //! Assigns to \p *this the intersection of \p *this and \p y.
+  /*!
+    The result is obtained by intersecting each polyhedron in \p *this
+    with each polyhedron in \p y and collecting all these intersections.
+  */
+  void intersection_assign(const Pointset_Ask_Tell& y);
+
+  //! Assigns to \p *this the difference of \p *this and \p y.
+  /*!
+    The result is obtained by computing the
+    \ref Convex_Polyhedral_Difference "poly-difference" of each polyhedron
+    in \p *this with each polyhedron in \p y and collecting all these
+    differences.
+  */
+  void poly_difference_assign(const Pointset_Ask_Tell& y);
+
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
+
+    The result is obtained by computing the pairwise
+    \ref Time_Elapse_Operator "time elapse" of each polyhedron
+    in \p *this with each polyhedron in \p y.
+  */
+  void time_elapse_assign(const Pointset_Ask_Tell& y);
 
   /*! \brief
     Assigns to \p *this the result of applying the
@@ -317,22 +352,6 @@ public:
   */
   void add_space_dimensions_and_project(dimension_type m);
 
-  //! Assigns to \p *this the intersection of \p *this and \p y.
-  /*!
-    The result is obtained by intersecting each polyhedron in \p *this
-    with each polyhedron in \p y and collecting all these intersections.
-  */
-  void intersection_assign(const Pointset_Ask_Tell& y);
-
-  //! Assigns to \p *this the difference of \p *this and \p y.
-  /*!
-    The result is obtained by computing the
-    \ref Convex_Polyhedral_Difference "poly-difference" of each polyhedron
-    in \p *this with each polyhedron in \p y and collecting all these
-    differences.
-  */
-  void poly_difference_assign(const Pointset_Ask_Tell& y);
-
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
     The result is obtained by computing the pairwise
@@ -340,16 +359,6 @@ public:
     in \p *this with each polyhedron in \p y.
   */
   void concatenate_assign(const Pointset_Ask_Tell& y);
-
-  /*! \brief
-    Assigns to \p *this the result of computing the
-    \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
-
-    The result is obtained by computing the pairwise
-    \ref Time_Elapse_Operator "time elapse" of each polyhedron
-    in \p *this with each polyhedron in \p y.
-  */
-  void time_elapse_assign(const Pointset_Ask_Tell& y);
 
   //! Removes all the specified space dimensions.
   /*!
@@ -394,13 +403,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
 private:
@@ -433,14 +440,10 @@ private:
 				    y_cert_ms) const;
 
   // FIXME: here it should be enough to befriend the template constructor
-  //   template <typename QH>
-  //   Pointset_Ask_Tell(const Pointset_Ask_Tell<QH>&)
+  // template <typename QH>
+  // Pointset_Ask_Tell(const Pointset_Ask_Tell<QH>&),
   // but, apparently, this cannot be done.
-  // As a workaround, we could use
-  //   friend class Pointset_Ask_Tell<NNC_Polyhedron>
-  // but GCC 3.3.3 has a bug that causes its rejection.
-  // So, temporarily, we make all Pointset_Ask_Tell's friends of each other.
-  template <typename QH> friend class Pointset_Ask_Tell;
+  friend class Pointset_Ask_Tell<NNC_Polyhedron>;
 };
 
 
@@ -493,9 +496,9 @@ namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Pointset_Ask_Tell */
-template <typename PH>
-void swap(Parma_Polyhedra_Library::Pointset_Ask_Tell<PH>& x,
-	  Parma_Polyhedra_Library::Pointset_Ask_Tell<PH>& y);
+template <typename PS>
+void swap(Parma_Polyhedra_Library::Pointset_Ask_Tell<PS>& x,
+	  Parma_Polyhedra_Library::Pointset_Ask_Tell<PS>& y);
 
 } // namespace std
 
