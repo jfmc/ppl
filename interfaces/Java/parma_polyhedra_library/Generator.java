@@ -60,17 +60,15 @@ public class Generator {
       \exception RuntimeErrorException
       Thrown if \p d is zero.
     */
-    public static Generator closure_point(Linear_Expression e,
-                                          Coefficient d) {
+    public static Generator closure_point(Linear_Expression e, Coefficient d) {
         if (d.getBigInteger().equals(java.math.BigInteger.ZERO)) {
             Error cause = new Error("parma_polyhedra_library.Generator::"
                                     + "Generator(e, d):\n"
 				    + "the divisor can not be zero.");
             throw new RuntimeErrorException(cause);
         }
-
         Generator g = new Generator(e, Generator_Type.CLOSURE_POINT);
-        g.div = d;
+        g.div = new Coefficient(d);
         return g;
     }
 
@@ -98,7 +96,7 @@ public class Generator {
         }
 
         Generator g = new Generator(e, Generator_Type.POINT);
-        g.div = d;
+        g.div = new Coefficient(d);
         return g;
     }
 

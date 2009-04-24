@@ -41,7 +41,7 @@ extends Linear_Expression {
 
     //! Builds a copy of this.
     public Linear_Expression_Variable clone() {
-	return new Linear_Expression_Variable(new Variable(arg.id()));
+	return new Linear_Expression_Variable(arg);
     }
 
     private int var_id() {

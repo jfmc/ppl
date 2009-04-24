@@ -35,7 +35,7 @@ public class Linear_Expression_Times
 
     //! Builds an object cloning the input arguments.
     public Linear_Expression_Times(Linear_Expression l, Coefficient c) {
-	lhs = new Linear_Expression_Coefficient(new Coefficient(c));
+	lhs = new Linear_Expression_Coefficient(c);
 	rhs = l.clone();
     }
 
@@ -51,8 +51,7 @@ public class Linear_Expression_Times
 
     //! Builds a copy of this.
     public Linear_Expression_Times clone() {
-	return new Linear_Expression_Times(rhs.clone(),
-					   new Coefficient(lhs.argument()));
+	return new Linear_Expression_Times(rhs, lhs.argument());
     }
 
     private static native void initIDs();
