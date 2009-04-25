@@ -193,7 +193,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 $(interface_generator_files)
 
 ppl_ocaml.cma: ppl_ocaml_globals.cmo ppl_ocaml.cmo libppl_ocaml.a
-	$(OCAMLC_ENV) ocamlc -o $@ -a -custom \
+	$(OCAMLC_ENV) $(OCAMLC) -o $@ -a -custom \
 		ppl_ocaml_globals.cmo ppl_ocaml.cmo \
 		$(OCAMLC_COMPILE_FLAGS) -cclib -lppl_ocaml \
 		$(OCAMLC_LINK_FLAGS)
@@ -201,7 +201,7 @@ ppl_ocaml.cma: ppl_ocaml_globals.cmo ppl_ocaml.cmo libppl_ocaml.a
 ppl_ocaml.cmxa: \
 	ppl_ocaml_globals.cmx ppl_ocaml_globals.o \
 	ppl_ocaml.cmx ppl_ocaml.o libppl_ocaml.a
-	$(OCAMLOPT_ENV) ocamlopt -o $@ -a \
+	$(OCAMLOPT_ENV) $(OCAMLOPT) -o $@ -a \
 		ppl_ocaml_globals.cmx ppl_ocaml.cmx \
 		$(OCAMLOPT_COMPILE_FLAGS) -cclib -lppl_ocaml \
 		$(OCAMLOPT_LINK_FLAGS)
@@ -213,10 +213,10 @@ ppl_ocaml.a: ppl_ocaml.cmxa
 	fi
 
 ppl_ocaml.cmo: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_globals.cmi
-	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) ppl_ocaml.ml
+	$(OCAMLC_ENV) $(OCAMLC) -o $@ -c $(OCAMLC_COMPILE_FLAGS) ppl_ocaml.ml
 
 ppl_ocaml.cmx: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_globals.cmi
-	$(OCAMLOPT_ENV) ocamlopt -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) \
+	$(OCAMLOPT_ENV) $(OCAMLOPT) -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) \
 		ppl_ocaml.ml
 
 ppl_ocaml.o: ppl_ocaml.cmx
@@ -226,15 +226,15 @@ ppl_ocaml.o: ppl_ocaml.cmx
 	fi
 
 ppl_ocaml.cmi: ppl_ocaml.mli
-	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
+	$(OCAMLC_ENV) $(OCAMLC) -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
 
 ppl_ocaml_globals.cmo: ppl_ocaml_globals.ml ppl_ocaml_globals.cmi
-	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) \
+	$(OCAMLC_ENV) $(OCAMLC) -o $@ -c $(OCAMLC_COMPILE_FLAGS) \
 		$(srcdir)/ppl_ocaml_globals.ml
 
 ppl_ocaml_globals.cmx: \
 	ppl_ocaml_globals.ml ppl_ocaml_globals.cmi
-	$(OCAMLOPT_ENV) ocamlopt -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) \
+	$(OCAMLOPT_ENV) $(OCAMLOPT) -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) \
 		$(srcdir)/ppl_ocaml_globals.ml
 
 ppl_ocaml_globals.o: ppl_ocaml_globals.cmx
@@ -244,7 +244,7 @@ ppl_ocaml_globals.o: ppl_ocaml_globals.cmx
 	fi
 
 ppl_ocaml_globals.cmi: ppl_ocaml_globals.mli
-	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
+	$(OCAMLC_ENV) $(OCAMLC) -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
 
 ppl_ocaml.ml: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
