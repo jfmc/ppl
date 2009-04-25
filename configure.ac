@@ -1000,12 +1000,11 @@ AC_ARG_WITH(mlgmp,
 # Checks for OCaml.
 if test x${ocaml_interface_enabled} = xyes
 then
-  # Check for the bytecode compiler.
-  AC_CHECK_PROG(OCAMLC, ocamlc, ocamlc)
-  ocamlc_gmp="no"
-  if test x"$OCAMLC" = xocamlc
+  # Detect which tools of the OCaml toolchain are available.
+  AC_PROG_OCAML
+  if test x"$OCAMLC" != xno
   then
-     ocamlc_root=`ocamlc -where`
+     ocamlc_root=`${OCAMLC} -where`
      # Check for the bytecode version of ML GMP.
      AC_MSG_CHECKING([for ML GMP bytecode module gmp.cma])
      if ( test ${mlgmp_dir} = +gmp && test -f ${ocamlc_root}/gmp/gmp.cma ) \
@@ -1018,12 +1017,9 @@ then
 	 ocamlc_gmp="no"
      fi
   fi
-  # Check for the native compiler.
-  AC_CHECK_PROG(OCAMLOPT, ocamlopt, ocamlopt)
-  ocamlopt_gmp="no"
-  if test x"$OCAMLOPT" = xocamlopt
+  if test x"$OCAMLOPT" != xno
   then
-     ocamlopt_root=`ocamlopt -where`
+     ocamlopt_root=`${OCAMLOPT} -where`
      # Check for the native version of ML GMP.
      AC_MSG_CHECKING([for ML GMP native module gmp.cmxa])
      if ( test ${mlgmp_dir} = +gmp && test -f ${ocamlopt_root}/gmp/gmp.cmxa ) \
