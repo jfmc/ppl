@@ -171,14 +171,12 @@ OCAMLC_COMPILE_FLAGS = \
 OCAMLC_LINK_FLAGS = \
 `echo " $(extra_libraries) " | $(SED) -e "s/ -R[^ ]*//g" -e "s/ -/ -cclib -/g"`
 
-OCAMLC_ROOT = @ocamlc_root@
-
 OCAMLOPT_ENV = $(OCAMLC_ENV)
 OCAMLOPT_COMPILE_FLAGS = $(OCAMLC_COMPILE_FLAGS)
 OCAMLOPT_LINK_FLAGS = $(OCAMLC_LINK_FLAGS)
 
 AM_CPPFLAGS = \
--I$(OCAMLC_ROOT) \
+-I$(OCAMLLIB) \
 -I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/src \
 -I$(top_builddir)/src \

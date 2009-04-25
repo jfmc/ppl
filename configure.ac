@@ -1004,10 +1004,9 @@ then
   AC_PROG_OCAML
   if test x"$OCAMLC" != xno
   then
-     ocamlc_root=`${OCAMLC} -where`
      # Check for the bytecode version of ML GMP.
      AC_MSG_CHECKING([for ML GMP bytecode module gmp.cma])
-     if ( test ${mlgmp_dir} = +gmp && test -f ${ocamlc_root}/gmp/gmp.cma ) \
+     if ( test ${mlgmp_dir} = +gmp && test -f ${OCAMLLIB}/gmp/gmp.cma ) \
         || test -f ${mlgmp_dir}/gmp.cma;
      then
          AC_MSG_RESULT(yes)
@@ -1513,7 +1512,6 @@ AC_SUBST(required_instantiations_java_cxx_objects)
 AC_SUBST(required_instantiations_ocaml_cxx_headers)
 AC_SUBST(required_instantiations_ocaml_cxx_sources)
 AC_SUBST(required_instantiations_ocaml_cxx_objects)
-AC_SUBST(ocamlc_root)
 AC_SUBST(mlgmp_dir)
 
 AC_CONFIG_FILES(Makefile
