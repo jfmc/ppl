@@ -28,5 +28,10 @@ public enum Degenerate_Element {
     //! The universe element, i.e., the whole vector space.
     UNIVERSE,
     //! The empty element, i.e., the empty set.
-    EMPTY
+    EMPTY;
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

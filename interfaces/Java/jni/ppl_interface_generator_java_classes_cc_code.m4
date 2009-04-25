@@ -219,14 +219,9 @@ JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__JLparma_1polyhedra_1library_Degenerate_1Element_2
 (JNIEnv* env, jobject j_this, jlong j_dim, jobject j_degenerate_element) try {
   dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(j_dim);
-  jclass degenerate_element_class
-    = env->FindClass("parma_polyhedra_library/Degenerate_Element");
-  CHECK_RESULT_ASSERT(env, degenerate_element_class);
-  jmethodID degenerate_element_ordinal_id
-    = env->GetMethodID(degenerate_element_class, "ordinal", "()I");
-  CHECK_RESULT_ASSERT(env, degenerate_element_ordinal_id);
   jint j_degenerate_element_int
-    = env->CallIntMethod(j_degenerate_element, degenerate_element_ordinal_id);
+    = env->CallIntMethod(j_degenerate_element,
+                         cached_FMIDs.Degenerate_Element_ordinal_ID);
   CHECK_EXCEPTION_ASSERT(env);
   @TOPOLOGY@@CPP_CLASS@* this_ptr;
   switch (j_degenerate_element_int) {
@@ -267,14 +262,9 @@ Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lparma_1p
 (JNIEnv* env, jobject j_this, jobject j_y, jobject j_complexity) try {
   @B_FRIEND@* y_ptr
     = reinterpret_cast<@B_FRIEND@*>(get_ptr(env, j_y));
-  jclass complexity_class
-    = env->FindClass("parma_polyhedra_library/Complexity_Class");
-  CHECK_RESULT_ASSERT(env, complexity_class);
-  jmethodID complexity_ordinal_id
-    = env->GetMethodID(complexity_class, "ordinal", "()I");
-  CHECK_RESULT_ASSERT(env, complexity_ordinal_id);
   jint j_complexity_int
-    = env->CallIntMethod(j_complexity, complexity_ordinal_id);
+    = env->CallIntMethod(j_complexity,
+                         cached_FMIDs.Complexity_Class_ordinal_ID);
   CHECK_EXCEPTION_ASSERT(env);
   @TOPOLOGY@@CPP_CLASS@* this_ptr;
   switch (j_complexity_int) {
@@ -1238,8 +1228,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_approximate_1@PARTITION@
     r1->swap(r.first);
     r2->swap(r.second);
 
-    jclass j_pair_class
-      = env->FindClass("parma_polyhedra_library/Pair");
+    jclass j_pair_class = env->FindClass("parma_polyhedra_library/Pair");
     CHECK_RESULT_ASSERT(env, j_pair_class);
     jmethodID j_ctr_id_pair = env->GetMethodID(j_pair_class, "<init>", "()V");
     CHECK_RESULT_ASSERT(env, j_ctr_id_pair);

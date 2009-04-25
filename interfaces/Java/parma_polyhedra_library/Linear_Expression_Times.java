@@ -34,6 +34,12 @@ public class Linear_Expression_Times
     protected Linear_Expression rhs;
 
     //! Builds an object cloning the input arguments.
+    public Linear_Expression_Times(Coefficient c, Variable v) {
+	lhs = new Linear_Expression_Coefficient(c);
+	rhs = new Linear_Expression_Variable(v);
+    }
+
+    //! Builds an object cloning the input arguments.
     public Linear_Expression_Times(Linear_Expression l, Coefficient c) {
 	lhs = new Linear_Expression_Coefficient(c);
 	rhs = l.clone();

@@ -77,54 +77,36 @@ get_by_reference(JNIEnv* env, jobject by_reference) {
 template <typename R>
 jobject
 build_linear_expression(JNIEnv* env, const R& r) {
-  jclass j_le_coeff_class
-    = env->FindClass("parma_polyhedra_library/Linear_Expression_Coefficient");
-  CHECK_RESULT_ASSERT(env, j_le_coeff_class);
-  jclass j_le_variable_class
-    = env->FindClass("parma_polyhedra_library/Linear_Expression_Variable");
-  CHECK_RESULT_ASSERT(env, j_le_variable_class);
-  jclass j_variable_class
-    = env->FindClass("parma_polyhedra_library/Variable");
-  CHECK_RESULT_ASSERT(env, j_variable_class);
-
+  jobject j_ret;
   PPL_DIRTY_TEMP_COEFFICIENT(coefficient);
   dimension_type varid = 0;
   dimension_type space_dimension = r.space_dimension();
-  jobject j_le_term;
-
-  jmethodID j_variable_ctr_id = cached_FMIDs.Variable_init_ID;
-  jmethodID j_le_variable_ctr_id
-    = cached_FMIDs.Linear_Expression_Variable_init_ID;
-  jmethodID j_le_coeff_ctr_id
-    = cached_FMIDs.Linear_Expression_Coefficient_init_ID;
-  jmethodID j_le_sum_id = cached_FMIDs.Linear_Expression_sum_ID;
-  jmethodID j_le_times_id = cached_FMIDs.Linear_Expression_times_ID;
-
   while (varid < space_dimension
  	 && (coefficient = r.coefficient(Variable(varid))) == 0)
     ++varid;
   if (varid >= space_dimension) {
+    jclass j_le_coeff_class;
+    PPL_JNI_FIND_CLASS(j_le_coeff_class, env, Linear_Expression_Coefficient,
+                       "parma_polyhedra_library/Linear_Expression_Coefficient");
     jobject j_coefficient_zero = build_java_coeff(env, Coefficient(0));
-    jobject ret = env->NewObject(j_le_coeff_class,
-                                 j_le_coeff_ctr_id,
-                                 j_coefficient_zero);
-    CHECK_RESULT_THROW(env, ret);
-    return ret;
+    j_ret = env->NewObject(j_le_coeff_class,
+                           cached_FMIDs.Linear_Expression_Coefficient_init_ID,
+                           j_coefficient_zero);
+    CHECK_RESULT_THROW(env, j_ret);
   }
   else {
+    jclass j_le_times_class;
+    PPL_JNI_FIND_CLASS(j_le_times_class, env, Linear_Expression_Times,
+                       "parma_polyhedra_library/Linear_Expression_Times");
+    jmethodID coeff_var_init_ID
+      = cached_FMIDs.Linear_Expression_Times_init_from_coeff_var_ID;
     jobject j_coefficient = build_java_coeff(env, coefficient);
-    jobject j_variable = env->NewObject(j_variable_class,
-                                        j_variable_ctr_id,
-                                        varid);
-    CHECK_RESULT_THROW(env, j_variable);
-    jobject j_le_variable = env->NewObject(j_le_variable_class,
-                                           j_le_variable_ctr_id,
-                                           j_variable);
-    CHECK_RESULT_THROW(env, j_le_variable);
-    j_le_term = env->CallObjectMethod(j_le_variable,
-                                      j_le_times_id,
-                                      j_coefficient);
+    jobject j_variable = build_java_variable(env, Variable(varid));
+    jobject j_coeff_var = env->NewObject(j_le_times_class,
+                                         coeff_var_init_ID,
+                                         j_coefficient, j_variable);
     CHECK_EXCEPTION_THROW(env);
+    j_ret = j_coeff_var;
     while (true) {
       ++varid;
       while (varid < space_dimension
@@ -134,24 +116,19 @@ build_linear_expression(JNIEnv* env, const R& r) {
 	break;
       else {
  	j_coefficient = build_java_coeff(env, coefficient);
- 	j_variable = env->NewObject(j_variable_class,
-				    j_variable_ctr_id,
-				    varid);
-  	CHECK_RESULT_THROW(env, j_variable);
-  	j_le_variable = env->NewObject(j_le_variable_class,
-				       j_le_variable_ctr_id,
-				       j_variable);
- 	CHECK_RESULT_THROW(env, j_le_variable);
- 	jobject j_le_term2 = env->CallObjectMethod(j_le_variable,
-						   j_le_times_id,
-						   j_coefficient);
+        j_variable = build_java_variable(env, Variable(varid));
+        j_coeff_var = env->NewObject(j_le_times_class,
+                                     coeff_var_init_ID,
+                                     j_coefficient, j_variable);
 	CHECK_EXCEPTION_THROW(env);
- 	j_le_term = env->CallObjectMethod(j_le_term, j_le_sum_id, j_le_term2);
+        j_ret = env->CallObjectMethod(j_ret,
+                                      cached_FMIDs.Linear_Expression_sum_ID,
+                                      j_coeff_var);
 	CHECK_EXCEPTION_THROW(env);
       }
     }
   }
-  return j_le_term;
+  return j_ret;
 }
 
 inline
@@ -191,9 +168,9 @@ Partial_Function::maps(dimension_type i, dimension_type& j) const {
   jclass j_partial_function_class
     = env->FindClass("parma_polyhedra_library/Partial_Function");
   CHECK_RESULT_ASSERT(env, j_partial_function_class);
-  jclass j_by_reference_class
-    = env->FindClass("parma_polyhedra_library/By_Reference");
-  CHECK_RESULT_ASSERT(env, j_by_reference_class);
+  jclass j_by_reference_class;
+  PPL_JNI_FIND_CLASS(j_by_reference_class, env, By_Reference,
+                     "parma_polyhedra_library/By_Reference");
   jobject coeff = j_long_to_j_long_class(env, 0);
   jobject new_by_ref = env->NewObject(j_by_reference_class,
                                       cached_FMIDs.By_Reference_init_ID,

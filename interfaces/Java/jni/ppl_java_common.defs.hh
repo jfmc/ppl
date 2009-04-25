@@ -146,6 +146,8 @@ struct Java_FMID_Cache {
   jmethodID Long_valueOf_ID;
   jmethodID Long_longValue_ID;
   // Congruence.
+  jmethodID Complexity_Class_ordinal_ID;
+  // Congruence.
   jfieldID Congruence_modulus_ID;
   jfieldID Congruence_lhs_ID;
   jfieldID Congruence_rhs_ID;
@@ -155,6 +157,8 @@ struct Java_FMID_Cache {
   jfieldID Constraint_rhs_ID;
   jfieldID Constraint_kind_ID;
   jmethodID Constraint_init_ID;
+  // Degenerate_Element.
+  jmethodID Degenerate_Element_ordinal_ID;
   // Generator.
   jfieldID Generator_gt_ID;
   jfieldID Generator_le_ID;
@@ -194,6 +198,7 @@ struct Java_FMID_Cache {
   jfieldID Linear_Expression_Sum_rhs_ID;
   jfieldID Linear_Expression_Times_lhs_ID;
   jfieldID Linear_Expression_Times_rhs_ID;
+  jmethodID Linear_Expression_Times_init_from_coeff_var_ID;
   jfieldID Linear_Expression_Unary_Minus_arg_ID;
   jmethodID Linear_Expression_Variable_init_ID;
   jmethodID Linear_Expression_Variable_var_id_ID;
@@ -219,8 +224,72 @@ struct Java_FMID_Cache {
   // Variable.
   jfieldID Variable_varid_ID;
   jmethodID Variable_init_ID;
+  // Variables_Set.
+  jmethodID Variables_Set_init_ID;
+  jmethodID Variables_Set_add_ID;
+  jmethodID Variables_Set_iterator_ID;
 };
 extern Java_FMID_Cache cached_FMIDs;
+
+//! A cache for Java classes.
+struct Java_Class_Cache {
+  jclass By_Reference;
+  jclass Coefficient;
+  jclass Boolean;
+  jclass Integer;
+  jclass Long;
+  jclass Congruence;
+  jclass Constraint;
+  jclass Generator;
+  jclass Grid_Generator;
+  jclass Generator_Type;
+  jclass Grid_Generator_Type;
+  jclass Constraint_System;
+  jclass Congruence_System;
+  jclass Generator_System;
+  jclass Grid_Generator_System;
+  jclass Linear_Expression;
+  jclass Linear_Expression_Coefficient;
+  jclass Linear_Expression_Difference;
+  jclass Linear_Expression_Sum;
+  jclass Linear_Expression_Times;
+  jclass Linear_Expression_Unary_Minus;
+  jclass Linear_Expression_Variable;
+  jclass MIP_Problem_Status;
+  jclass Optimization_Mode;
+  jclass Poly_Con_Relation;
+  jclass Poly_Gen_Relation;
+  jclass PPL_Object;
+  jclass Relation_Symbol;
+  jclass Variable;
+  jclass Variables_Set;
+};
+extern Java_Class_Cache cached_classes;
+
+#define PPL_GET_JNI_CLASS_CACHE(jni_class, field)  \
+  do {                                             \
+    jni_class = cached_classes.field);             \
+    assert(jni_class);                             \
+  } while (0)
+
+#define PPL_SET_JNI_CLASS_CACHE(env, field, jni_class)             \
+  do {                                                             \
+    if (cached_classes.field != NULL)                              \
+      env->DeleteGlobalRef(cached_classes.field);                  \
+    cached_classes.field = (jclass) env->NewGlobalRef(jni_class);  \
+    CHECK_RESULT_ASSERT(env, cached_classes.field);                \
+  } while (0)
+
+#define PPL_JNI_FIND_CLASS(jni_class, env, field, name)  \
+  do {                                                   \
+    jni_class = cached_classes.field;                    \
+    if (jni_class == NULL) {                             \
+      jni_class = env->FindClass(name);                  \
+      CHECK_RESULT_ASSERT(env, jni_class);               \
+      PPL_SET_JNI_CLASS_CACHE(env, field, jni_class);    \
+    }                                                    \
+  } while (0)
+
 
 /*! \brief
   Builds an unsigned C++ number from the Java native number \p value.
