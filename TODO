@@ -17,8 +17,6 @@ Enhancements for PPL 0.11
 - Intervals are best instantiated with checked numbers with
   particular policies: review all the interfaced boxes,
   augment the testsuite, and update the documentation.
-- DO_TEST_F should not cause the output "failed tests" to appear,
-  but "tests unexpectedly succeeded".
 - Reduce the number of FIXMEs to no more than 20.
 - Switch to the latest versions of Autoconf and Automake (in beta test
   at the time of writing): they provide features we have been looking
