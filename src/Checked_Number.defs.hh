@@ -550,8 +550,8 @@ typename Enable_If<Is_Native_Or_Checked<To>::value \
                    Result>::type \
 name(To& to, const From& x, int exp, Rounding_Dir dir);
 
-FUNC1(mul2exp_assign_r)
-FUNC1(div2exp_assign_r)
+FUNC1(mul_2exp_assign_r)
+FUNC1(div_2exp_assign_r)
 
 #undef FUNC1
 
@@ -734,6 +734,22 @@ void
 lcm_assign(Checked_Number<T, Policy>& x,
 	   const Checked_Number<T, Policy>& y,
 	   const Checked_Number<T, Policy>& z);
+
+//! Assigns to \p x the value \f$ y \cdot 2^\mathtt{exp} \f$.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+mul_2exp_assign(Checked_Number<T, Policy>& x,
+                const Checked_Number<T, Policy>& y,
+                unsigned int exp);
+
+//! Assigns to \p x the value \f$ y / 2^\mathtt{exp} \f$.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+div_2exp_assign(Checked_Number<T, Policy>& x,
+	       const Checked_Number<T, Policy>& y,
+	       unsigned int exp);
 
 /*! \brief
   If \p z divides \p y, assigns to \p x the quotient of the integer
