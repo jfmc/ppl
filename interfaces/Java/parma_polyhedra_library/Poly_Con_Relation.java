@@ -84,4 +84,9 @@ public class Poly_Con_Relation {
     public boolean implies(Poly_Con_Relation y) {
 	return (this.mask_value & y.mask_value) ==  y.mask_value;
     }
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

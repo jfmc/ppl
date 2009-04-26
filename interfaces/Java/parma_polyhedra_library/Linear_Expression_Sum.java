@@ -51,6 +51,11 @@ public class Linear_Expression_Sum
 
     //! Builds a copy of this.
     public Linear_Expression_Sum clone() {
-	return new Linear_Expression_Sum(lhs.clone(), rhs.clone());
+	return new Linear_Expression_Sum(lhs, rhs);
+    }
+
+    private static native void initIDs();
+    static {
+        initIDs();
     }
 }

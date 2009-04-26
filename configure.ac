@@ -1000,15 +1000,13 @@ AC_ARG_WITH(mlgmp,
 # Checks for OCaml.
 if test x${ocaml_interface_enabled} = xyes
 then
-  # Check for the bytecode compiler.
-  AC_CHECK_PROG(OCAMLC, ocamlc, ocamlc)
-  ocamlc_gmp="no"
-  if test x"$OCAMLC" = xocamlc
+  # Detect which tools of the OCaml toolchain are available.
+  AC_PROG_OCAML
+  if test x"$OCAMLC" != xno
   then
-     ocamlc_root=`ocamlc -where`
      # Check for the bytecode version of ML GMP.
      AC_MSG_CHECKING([for ML GMP bytecode module gmp.cma])
-     if ( test ${mlgmp_dir} = +gmp && test -f ${ocamlc_root}/gmp/gmp.cma ) \
+     if ( test ${mlgmp_dir} = +gmp && test -f ${OCAMLLIB}/gmp/gmp.cma ) \
         || test -f ${mlgmp_dir}/gmp.cma;
      then
          AC_MSG_RESULT(yes)
@@ -1018,12 +1016,9 @@ then
 	 ocamlc_gmp="no"
      fi
   fi
-  # Check for the native compiler.
-  AC_CHECK_PROG(OCAMLOPT, ocamlopt, ocamlopt)
-  ocamlopt_gmp="no"
-  if test x"$OCAMLOPT" = xocamlopt
+  if test x"$OCAMLOPT" != xno
   then
-     ocamlopt_root=`ocamlopt -where`
+     ocamlopt_root=`${OCAMLOPT} -where`
      # Check for the native version of ML GMP.
      AC_MSG_CHECKING([for ML GMP native module gmp.cmxa])
      if ( test ${mlgmp_dir} = +gmp && test -f ${ocamlopt_root}/gmp/gmp.cmxa ) \
@@ -1517,7 +1512,6 @@ AC_SUBST(required_instantiations_java_cxx_objects)
 AC_SUBST(required_instantiations_ocaml_cxx_headers)
 AC_SUBST(required_instantiations_ocaml_cxx_sources)
 AC_SUBST(required_instantiations_ocaml_cxx_objects)
-AC_SUBST(ocamlc_root)
 AC_SUBST(mlgmp_dir)
 
 AC_CONFIG_FILES(Makefile

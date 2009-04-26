@@ -42,8 +42,12 @@ public class Linear_Expression_Unary_Minus
 
     //! Builds a copy of this.
     public Linear_Expression_Unary_Minus clone() {
-        return new Linear_Expression_Unary_Minus(arg.clone());
+        return new Linear_Expression_Unary_Minus(arg);
     }
 
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }
 

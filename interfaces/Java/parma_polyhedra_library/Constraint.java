@@ -48,7 +48,7 @@ public class Constraint {
       relation symbol.
     */
     public Constraint(Linear_Expression le1, Relation_Symbol rel_sym,
-            Linear_Expression le2) {
+                      Linear_Expression le2) {
 	lhs = le1.clone();
 	rhs = le2.clone();
 	kind = rel_sym;
@@ -74,4 +74,9 @@ public class Constraint {
 
     //! Returns a string representation of \p this.
     public native String toString();
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

@@ -30,5 +30,10 @@ public enum Complexity_Class {
     //! Worst-case exponential complexity but typically polynomial behavior.
     SIMPLEX_COMPLEXITY,
     //! Any complexity.
-    ANY_COMPLEXITY
+    ANY_COMPLEXITY;
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

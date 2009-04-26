@@ -33,32 +33,72 @@ ppl_interface_generator_java_classes_java.m4 \
 ppl_interface_generator_java_classes_java_code.m4
 
 fixed_java_cxx_headers = \
+parma_polyhedra_library.By_Reference \
+parma_polyhedra_library.Coefficient \
+parma_polyhedra_library.Complexity_Class \
 parma_polyhedra_library.Congruence \
 parma_polyhedra_library.Congruence_System \
 parma_polyhedra_library.Constraint \
 parma_polyhedra_library.Constraint_System \
+parma_polyhedra_library.Degenerate_Element \
 parma_polyhedra_library.Generator \
 parma_polyhedra_library.Generator_System \
+parma_polyhedra_library.Generator_Type \
 parma_polyhedra_library.Grid_Generator \
 parma_polyhedra_library.Grid_Generator_System \
+parma_polyhedra_library.Grid_Generator_Type \
 parma_polyhedra_library.IO \
 parma_polyhedra_library.Linear_Expression \
+parma_polyhedra_library.Linear_Expression_Coefficient \
+parma_polyhedra_library.Linear_Expression_Difference \
+parma_polyhedra_library.Linear_Expression_Sum \
+parma_polyhedra_library.Linear_Expression_Times \
+parma_polyhedra_library.Linear_Expression_Unary_Minus \
+parma_polyhedra_library.Linear_Expression_Variable \
 parma_polyhedra_library.MIP_Problem \
-parma_polyhedra_library.Parma_Polyhedra_Library
+parma_polyhedra_library.MIP_Problem_Status \
+parma_polyhedra_library.Optimization_Mode \
+parma_polyhedra_library.Parma_Polyhedra_Library \
+parma_polyhedra_library.Poly_Con_Relation \
+parma_polyhedra_library.Poly_Gen_Relation \
+parma_polyhedra_library.PPL_Object \
+parma_polyhedra_library.Relation_Symbol \
+parma_polyhedra_library.Variable \
+parma_polyhedra_library.Variables_Set
 
 fixed_java_cxx_headers_sources = \
+parma_polyhedra_library_By_Reference.h \
+parma_polyhedra_library_Coefficient.h \
+parma_polyhedra_library_Complexity_Class.h \
 parma_polyhedra_library_Congruence.h \
 parma_polyhedra_library_Congruence_System.h \
 parma_polyhedra_library_Constraint.h \
 parma_polyhedra_library_Constraint_System.h \
+parma_polyhedra_library.Degenerate_Element.h \
 parma_polyhedra_library_Generator.h \
 parma_polyhedra_library_Generator_System.h \
+parma_polyhedra_library_Generator_Type.h \
 parma_polyhedra_library_Grid_Generator.h \
 parma_polyhedra_library_Grid_Generator_System.h \
+parma_polyhedra_library_Grid_Generator_Type.h \
 parma_polyhedra_library_IO.h \
 parma_polyhedra_library_Linear_Expression.h \
+parma_polyhedra_library_Linear_Expression_Coefficient.h \
+parma_polyhedra_library_Linear_Expression_Difference.h \
+parma_polyhedra_library_Linear_Expression_Sum.h \
+parma_polyhedra_library_Linear_Expression_Times.h \
+parma_polyhedra_library_Linear_Expression_Unary_Minus.h \
+parma_polyhedra_library_Linear_Expression_Variable.h \
 parma_polyhedra_library_MIP_Problem.h \
-parma_polyhedra_library_Parma_Polyhedra_Library.h
+parma_polyhedra_library_MIP_Problem_Status.h \
+parma_polyhedra_library_Optimization_Mode.h \
+parma_polyhedra_library_Parma_Polyhedra_Library.h \
+parma_polyhedra_library_Poly_Con_Relation.h \
+parma_polyhedra_library_Poly_Gen_Relation.h \
+parma_polyhedra_library_PPL_Object.h \
+parma_polyhedra_library_Relation_Symbol.h \
+parma_polyhedra_library_Variable.h \
+parma_polyhedra_library_Variables_Set.h
 
 # NOTE: do _NOT_ add Fake_Class_for_Doxygen.java to this list.
 fixed_java_sources = \
@@ -193,12 +233,12 @@ MIP_Problem.class \
 MIP_Problem_Status.class \
 Optimization_Mode.class \
 Overflow_Error_Exception.class \
-PPL_Object.class \
 Parma_Polyhedra_Library.class \
 Pair.class \
 Partial_Function.class \
 Poly_Con_Relation.class \
 Poly_Gen_Relation.class \
+PPL_Object.class \
 Relation_Symbol.class \
 Variable.class \
 Variables_Set.class

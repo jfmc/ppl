@@ -42,4 +42,9 @@ public class Grid_Generator_System extends java.util.Vector<Grid_Generator> {
 
     //! Returns a string representation of \p this.
     public native String toString();
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

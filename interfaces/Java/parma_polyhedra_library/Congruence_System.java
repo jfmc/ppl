@@ -40,4 +40,9 @@ public class Congruence_System extends java.util.Vector<Congruence> {
 
     //! Returns a string representation of \p this.
     public native String toString();
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

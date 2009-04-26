@@ -12,9 +12,11 @@ New and Changed Features
 
 o  Implementation of general (NNC) polyhedra speeded up.
 
+o  When the PPL has been configured with
+   CPPFLAGS="-DPPL_ARM_CAN_CONTROL_FPU=1", the library initialization
+   procedure checks that the FPU can indeed be controlled and fails if
+   that is not the case.
 
-New and Changed Features
-========================
 
 Deprecated and removed methods
 ------------------------------

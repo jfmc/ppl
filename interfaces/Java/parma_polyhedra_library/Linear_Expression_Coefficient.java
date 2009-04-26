@@ -42,7 +42,12 @@ public class Linear_Expression_Coefficient
 
     //! Builds a copy of this.
     public Linear_Expression_Coefficient clone() {
-	return new Linear_Expression_Coefficient(new Coefficient(coeff));
+	return new Linear_Expression_Coefficient(coeff);
+    }
+
+    private static native void initIDs();
+    static {
+        initIDs();
     }
 }
 

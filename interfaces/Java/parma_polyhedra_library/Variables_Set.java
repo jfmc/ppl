@@ -28,4 +28,9 @@ public class Variables_Set extends java.util.TreeSet<Variable>{
     //! Builds the empty set of variable indexes.
     public Variables_Set() {
     }
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

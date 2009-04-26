@@ -50,14 +50,18 @@ Bit_Row::Bit_Row(const Bit_Row& y) {
 inline
 Bit_Row::Bit_Row(const Bit_Row& y, const Bit_Row& z) {
   const mp_size_t y_size = y.vec->_mp_size;
+  assert(y_size >= 0);
   const mp_size_t z_size = z.vec->_mp_size;
+  assert(z_size >= 0);
   if (y_size < z_size) {
-    assert(z_size <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
+    assert(static_cast<unsigned long>(z_size)
+           <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
     mpz_init2(vec, z_size * PPL_BITS_PER_GMP_LIMB);
     union_helper(y, z);
   }
   else {
-    assert(y_size <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
+    assert(static_cast<unsigned long>(y_size)
+           <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
     mpz_init2(vec, y_size * PPL_BITS_PER_GMP_LIMB);
     union_helper(z, y);
   }
@@ -125,14 +129,18 @@ Bit_Row::total_memory_in_bytes() const {
 inline void
 set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
   const mp_size_t x_size = x.vec->_mp_size;
+  assert(x_size >= 0);
   const mp_size_t y_size = y.vec->_mp_size;
+  assert(y_size >= 0);
   if (x_size < y_size) {
-    assert(y_size <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
+    assert(static_cast<unsigned long>(y_size)
+           <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
     mpz_realloc2(z.vec, y_size * PPL_BITS_PER_GMP_LIMB);
     z.union_helper(x, y);
   }
   else {
-    assert(x_size <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
+    assert(static_cast<unsigned long>(x_size)
+           <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
     mpz_realloc2(z.vec, x_size * PPL_BITS_PER_GMP_LIMB);
     z.union_helper(y, x);
   }

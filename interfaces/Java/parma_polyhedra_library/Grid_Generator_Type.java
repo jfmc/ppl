@@ -30,5 +30,10 @@ public enum Grid_Generator_Type {
     //! The generator is a parameter.
     PARAMETER,
     //! The generator is a point.
-    POINT
+    POINT;
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }
