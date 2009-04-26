@@ -26,7 +26,21 @@ namespace {
 
 bool
 test01() {
-  // FIXME: to be written.
+  Variable x(0);
+  Variable y(1);
+  C_Polyhedron ph(2, UNIVERSE);
+  ph.add_constraint(x + 1024 == 8*y);
+  ph.add_constraint(-64 <= x);
+  ph.add_constraint(x <= 448);
+
+  print_constraints(ph, "*** ph ***");
+
+  Variables_Set vars(x, y);
+
+  ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, true, 10);
+
+  print_constraints(ph.minimized_constraints(), "*** ph.wrap_assign(...) ***");
+
   bool ok = true;
 
   return ok;
