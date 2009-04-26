@@ -115,6 +115,10 @@ void sub_mul_assign(GMP_Integer& x,
 /*! \relates GMP_Integer */
 void mul_2exp_assign(GMP_Integer& x, const GMP_Integer& y, unsigned int exp);
 
+//! Assigns to \p x the value \f$ y / 2^\mathtt{exp} \f$.
+/*! \relates GMP_Integer */
+void div_2exp_assign(GMP_Integer& x, const GMP_Integer& y, unsigned int exp);
+
 /*! \brief
   If \p z divides \p y, assigns to \p x the quotient of the integer
   division of \p y and \p z.
