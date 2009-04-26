@@ -327,7 +327,7 @@ PPL_SPECIALIZE_REM(rem_mpq, mpq_class, mpq_class, mpq_class)
 template <typename To_Policy, typename From_Policy>
 inline Result
 mul_2exp_mpq(mpq_class& to, const mpq_class& x, unsigned int exp,
-             Rounding_Dir dir) {
+             Rounding_Dir) {
   mpz_mul_2exp(to.get_num().get_mpz_t(), x.get_num().get_mpz_t(), exp);
   to.get_den() = x.get_den();
   to.canonicalize();
