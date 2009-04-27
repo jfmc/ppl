@@ -28,7 +28,7 @@ bool
 test01() {
   Variable x(0);
   Variable y(1);
-  C_Polyhedron ph(2, UNIVERSE);
+  C_Polyhedron ph(2);
   ph.add_constraint(x + 1024 == 8*y);
   ph.add_constraint(-64 <= x);
   ph.add_constraint(x <= 448);
@@ -37,19 +37,50 @@ test01() {
 
   Variables_Set vars(x, y);
 
-  ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, true, 10);
+  ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
 
-  print_constraints(ph.minimized_constraints(), "*** ph.wrap_assign(...) ***");
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(x >= 0);
+  known_result.add_constraint(x <= 255);
+  known_result.add_constraint(x + 24*y >= 3072);
+  known_result.add_constraint(193*x + 504*y <= 129792);
+  known_result.add_constraint(x - 8*y >= -1280);
+  known_result.add_constraint(x - 8*y <= -768);
 
-  bool ok = true;
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** ph.wrap_assign(...) ***");
 
   return ok;
 }
 
 bool
 test02() {
-  // FIXME: to be written.
-  bool ok = true;
+  Variable x(0);
+  Variable y(1);
+  C_Polyhedron ph(2);
+  ph.add_constraint(x + 1024 == 8*y);
+  ph.add_constraint(-64 <= x);
+  ph.add_constraint(x <= 448);
+
+  print_constraints(ph, "*** ph ***");
+
+  Variables_Set vars(x, y);
+
+  Constraint_System cs;
+  cs.insert(x <= y);
+
+  ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(x >= 0);
+  known_result.add_constraint(x <= y);
+  known_result.add_constraint(x - 8*y >= -1280);
+  known_result.add_constraint(x - 8*y <= -1024);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** ph.wrap_assign(...) ***");
 
   return ok;
 }

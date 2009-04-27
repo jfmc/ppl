@@ -1443,14 +1443,22 @@ public:
     The overflow behavior of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
-    \param wrap_individually
-    <CODE>true</CODE> if the dimensions should be wrapped individually
-    (something that results in greater efficiency to the detriment of
-    precision).
+    \param pcs
+    Possibly null pointer to a constraint system.  When non-null,
+    the pointed-to constraint system is assumed to represent the
+    guard with respect to which wrapping is performed.  Passing
+    a constraint system in this way can be more precise then
+    adding the constraints in <CODE>*pcs</CODE> to the result
+    of the wrapping operation.
 
     \param k_threshold
     A precision parameter of the \ref Wrap_Operator "wrapping operator":
     higher values result in possibly improved precision.
+
+    \param wrap_individually
+    <CODE>true</CODE> if the dimensions should be wrapped individually
+    (something that results in greater efficiency to the detriment of
+    precision).
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
@@ -1460,8 +1468,9 @@ public:
                    Bounded_Integer_Type_Width w,
                    Bounded_Integer_Type_Signedness s,
                    Bounded_Integer_Type_Overflow o,
-                   bool wrap_individually = true,
-                   unsigned k_threshold = 16);
+                   const Constraint_System* pcs = 0,
+                   unsigned k_threshold = 16,
+                   bool wrap_individually = true);
 
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();

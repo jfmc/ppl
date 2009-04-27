@@ -3681,8 +3681,9 @@ PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
                              Bounded_Integer_Type_Width w,
                              Bounded_Integer_Type_Signedness s,
                              Bounded_Integer_Type_Overflow o,
-                             bool wrap_individually,
-                             unsigned k_threshold) {
+                             const Constraint_System* pcs,
+                             unsigned k_threshold,
+                             bool wrap_individually) {
   // Wrapping no variable is a no-op.
   if (vars.empty())
     return;
@@ -3696,10 +3697,10 @@ PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
   if (is_empty())
     return;
 
-  // Bound low and bound high assignment.
+  // Set `min_value' and `max_value' to the minimum and maximum values
+  // a variable of width `w' and signedness `s' can take.
   PPL_DIRTY_TEMP_COEFFICIENT(min_value);
   PPL_DIRTY_TEMP_COEFFICIENT(max_value);
-
   if (s == UNSIGNED) {
     min_value = 0;
     mul_2exp_assign(max_value, Coefficient_one(), w);
@@ -3716,8 +3717,8 @@ PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
   //std::cout << "max_value = " << max_value << std::endl;
 
   if (wrap_individually) {
-    // We use this to delay conversions when this does not negatively
-    // affect precision.
+    // We use `full_range_bounds' to delay conversions whenever
+    // this delay does not negatively affect precision.
     Constraint_System full_range_bounds;
 
     PPL_DIRTY_TEMP_COEFFICIENT(ln);
@@ -3755,20 +3756,29 @@ PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
       un -= min_value;
       div_2exp_assign_r(ln, ln, w, ROUND_DOWN);
       div_2exp_assign_r(un, un, w, ROUND_DOWN);
-      if (un - ln > k_threshold)
-        goto set_full_range;
 
       //std::cout << "ln = " << ln << std::endl;
       //std::cout << "un = " << un << std::endl;
+
+      // Special case: this variable does not need wrapping.
+      if (un == 0 && ln == 0)
+        continue;
+
+      if (un - ln > k_threshold)
+        goto set_full_range;
 
       Polyhedron hull(topology(), space_dimension(), EMPTY);
       for ( ; ln <= un; ++ln) {
         Polyhedron p(*this);
         //std::cout << "p: " << p << std::endl;
-        mul_2exp_assign(ld, ln, w);
-        //std::cout << "ld = " << ld << std::endl;
-        p.affine_image(x, x - ld, 1);
-        //std::cout << "affine_image: " << p << std::endl;
+        if (ln != 0) {
+          mul_2exp_assign(ld, ln, w);
+          //std::cout << "ld = " << ld << std::endl;
+          p.affine_image(x, x - ld, 1);
+          //std::cout << "affine_image: " << p << std::endl;
+        }
+        if (pcs != 0)
+          p.add_constraints(*pcs);
         p.add_constraint(min_value <= x);
         p.add_constraint(x <= max_value);
         hull.poly_hull_assign(p);
@@ -3776,6 +3786,8 @@ PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
       }
       swap(hull);
     }
+    if (pcs != 0)
+      add_constraints(*pcs);
     add_constraints(full_range_bounds);
   }
   else
