@@ -46,13 +46,31 @@ jtype_to_unsigned(const V& value) {
 }
 
 template <typename T>
-void
+inline void
 set_ptr(JNIEnv* env, jobject ppl_object,
 	const T* address, bool to_be_marked) {
   const T* ptr = (to_be_marked ? mark(address) : address);
   jlong pointer_value = reinterpret_cast<jlong>(ptr);
   assert(reinterpret_cast<const T*>(pointer_value) == ptr);
   env->SetLongField(ppl_object, cached_FMIDs.PPL_Object_ptr_ID, pointer_value);
+}
+
+inline void*
+get_ptr(JNIEnv* env, jobject ppl_object) {
+  jlong pointer_value
+    = env->GetLongField(ppl_object, cached_FMIDs.PPL_Object_ptr_ID);
+  void* ptr = reinterpret_cast<void*>(pointer_value);
+  assert(reinterpret_cast<jlong>(ptr) == pointer_value);
+  return unmark(ptr);
+}
+
+inline bool
+is_java_marked(JNIEnv* env, jobject ppl_object) {
+  jlong pointer_value
+    = env->GetLongField(ppl_object, cached_FMIDs.PPL_Object_ptr_ID);
+  const void* ptr = reinterpret_cast<const void*>(pointer_value);
+  assert(reinterpret_cast<jlong>(ptr) == pointer_value);
+  return marked(ptr);
 }
 
 inline void
@@ -130,6 +148,113 @@ build_linear_expression(JNIEnv* env, const R& r) {
   }
   return j_ret;
 }
+
+inline Variable
+build_cxx_variable(JNIEnv* env, jobject j_var) {
+  return Variable(env->GetIntField(j_var, cached_FMIDs.Variable_varid_ID));
+}
+
+inline jobject
+build_java_variable(JNIEnv* env, const Variable& var) {
+  jclass variable_class;
+  PPL_JNI_FIND_CLASS(variable_class, env, Variable,
+                     "parma_polyhedra_library/Variable");
+  jobject ret = env->NewObject(variable_class,
+                               cached_FMIDs.Variable_init_ID,
+			       var.id());
+  CHECK_RESULT_THROW(env, ret);
+  return ret;
+}
+
+inline Coefficient
+build_cxx_coeff(JNIEnv* env, jobject j_coeff) {
+  jstring bi_string
+    = (jstring) env->CallObjectMethod(j_coeff,
+                                      cached_FMIDs.Coefficient_toString_ID);
+  CHECK_EXCEPTION_THROW(env);
+  const char *nativeString = env->GetStringUTFChars(bi_string, 0);
+  CHECK_RESULT_THROW(env, nativeString);
+  PPL_DIRTY_TEMP_COEFFICIENT(ppl_coeff);
+  ppl_coeff = Coefficient(nativeString);
+  env->ReleaseStringUTFChars(bi_string, nativeString);
+  return ppl_coeff;
+}
+
+inline jobject
+build_java_coeff(JNIEnv* env, const Coefficient& ppl_coeff) {
+  std::ostringstream s;
+  s << ppl_coeff;
+  std::string str = s.str();
+  jstring coeff_string = env->NewStringUTF(str.c_str());
+  CHECK_RESULT_THROW(env, coeff_string);
+  jclass j_coeff_class;
+  PPL_JNI_FIND_CLASS(j_coeff_class, env, Coefficient,
+                     "parma_polyhedra_library/Coefficient");
+  jobject ret = env->NewObject(j_coeff_class,
+                               cached_FMIDs.Coefficient_init_from_String_ID,
+                               coeff_string);
+  CHECK_RESULT_THROW(env, ret);
+  return ret;
+}
+
+template <typename System, typename Elem_Builder>
+System
+build_cxx_system(JNIEnv* env, jobject j_iterable, Elem_Builder build_cxx_elem) {
+  // Get the iterator.
+  jclass j_iterable_class = env->GetObjectClass(j_iterable);
+  jmethodID iterator_mID
+    = env->GetMethodID(j_iterable_class, "iterator", "()Ljava/util/Iterator;");
+  CHECK_RESULT_ASSERT(env, iterator_mID);
+  jobject j_iter = env->CallObjectMethod(j_iterable, iterator_mID);
+  CHECK_EXCEPTION_THROW(env);
+  // Get the iterator method IDs.
+  jclass j_iter_class;
+  PPL_JNI_FIND_CLASS(j_iter_class, env, Iterator, "java/util/Iterator");
+  jmethodID has_next_mID;
+  PPL_JNI_GET_METHOD_ID(has_next_mID, env, Iterator_has_next_ID, j_iter,
+                        "hasNext", "()Z");
+  jmethodID next_mID;
+  PPL_JNI_GET_METHOD_ID(next_mID, env, Iterator_next_ID, j_iter,
+                        "next", "()Ljava/lang/Object;");
+  // Initialize an empty system.
+  System cxx_sys;
+  jobject j_element;
+  jboolean has_next_value = env->CallBooleanMethod(j_iter, has_next_mID);
+  CHECK_EXCEPTION_ASSERT(env);
+  while (has_next_value) {
+    j_element = env->CallObjectMethod(j_iter, next_mID);
+    CHECK_EXCEPTION_ASSERT(env);
+    cxx_sys.insert(build_cxx_elem(env, j_element));
+    has_next_value = env->CallBooleanMethod(j_iter, has_next_mID);
+    CHECK_EXCEPTION_ASSERT(env);
+  }
+  return cxx_sys;
+}
+
+inline Congruence_System
+build_cxx_congruence_system(JNIEnv* env, jobject j_iterable) {
+  return
+    build_cxx_system<Congruence_System>(env, j_iterable, build_cxx_congruence);
+}
+
+inline Constraint_System
+build_cxx_constraint_system(JNIEnv* env, jobject j_iterable) {
+  return
+    build_cxx_system<Constraint_System>(env, j_iterable, build_cxx_constraint);
+}
+
+inline Generator_System
+build_cxx_generator_system(JNIEnv* env, jobject j_iterable) {
+  return
+    build_cxx_system<Generator_System>(env, j_iterable, build_cxx_generator);
+}
+
+inline Grid_Generator_System
+build_cxx_grid_generator_system(JNIEnv* env, jobject j_iterable) {
+  return build_cxx_system<Grid_Generator_System> (env, j_iterable,
+                                                  build_cxx_grid_generator);
+}
+
 
 inline
 Partial_Function::Partial_Function(jobject j_p_func, JNIEnv* env)

@@ -172,9 +172,10 @@ jobject
 bool_to_j_boolean(JNIEnv* env, const bool value) {
   jclass Boolean_class;
   PPL_JNI_FIND_CLASS(Boolean_class, env, Boolean, "java/lang/Boolean");
-  jobject ret = env->CallStaticObjectMethod(Boolean_class,
-					    cached_FMIDs.Boolean_valueOf_ID,
-					    value);
+  jmethodID mID;
+  PPL_JNI_GET_STATIC_METHOD_ID(mID, env, Boolean_valueOf_ID, Boolean_class,
+                               "valueOf", "(Z)Ljava/lang/Boolean;");
+  jobject ret = env->CallStaticObjectMethod(Boolean_class, mID, value);
   CHECK_EXCEPTION_ASSERT(env);
   return ret;
 }
@@ -183,17 +184,20 @@ jobject
 j_long_to_j_long_class(JNIEnv* env, jlong jlong_value) {
   jclass Long_class;
   PPL_JNI_FIND_CLASS(Long_class, env, Long, "java/lang/Long");
-  jobject ret = env->CallStaticObjectMethod(Long_class,
-					    cached_FMIDs.Long_valueOf_ID,
-					    jlong_value);
+  jmethodID mID;
+  PPL_JNI_GET_STATIC_METHOD_ID(mID, env, Long_valueOf_ID, Long_class,
+                               "valueOf", "(Z)Ljava/lang/Long;");
+  jobject ret = env->CallStaticObjectMethod(Long_class, mID, jlong_value);
   CHECK_EXCEPTION_THROW(env);
   return ret;
 }
 
 jlong
 j_long_class_to_j_long(JNIEnv* env, jobject j_long) {
-  // FIXME: make sure class Coefficient is loaded.
-  jlong ret = env->CallLongMethod(j_long, cached_FMIDs.Long_longValue_ID);
+  jmethodID mID;
+  PPL_JNI_GET_METHOD_ID(mID, env, Long_longValue_ID, j_long,
+                        "longValue", "()J");
+  jlong ret = env->CallLongMethod(j_long, mID);
   CHECK_EXCEPTION_ASSERT(env);
   return ret;
 }
@@ -202,44 +206,42 @@ jobject
 j_int_to_j_integer(JNIEnv* env, jint jint_value) {
   jclass Integer_class;
   PPL_JNI_FIND_CLASS(Integer_class, env, Integer, "java/lang/Integer");
-  jobject ret = env->CallStaticObjectMethod(Integer_class,
-					    cached_FMIDs.Integer_valueOf_ID,
-					    jint_value);
+  jmethodID mID;
+  PPL_JNI_GET_STATIC_METHOD_ID(mID, env, Integer_valueOf_ID, Integer_class,
+                               "valueOf", "(Z)Ljava/lang/Integer;");
+  jobject ret = env->CallStaticObjectMethod(Integer_class, mID, jint_value);
   CHECK_EXCEPTION_THROW(env);
   return ret;
 }
 
 jint
 j_integer_to_j_int(JNIEnv* env, jobject j_integer) {
-  // FIXME: make sure class Coefficient is loaded.
-  jint ret = env->CallIntMethod(j_integer, cached_FMIDs.Integer_intValue_ID);
+  jmethodID mID;
+  PPL_JNI_GET_METHOD_ID(mID, env, Integer_intValue_ID, j_integer,
+                        "intValue", "()I");
+  jint ret = env->CallIntMethod(j_integer, mID);
   CHECK_EXCEPTION_ASSERT(env);
   return ret;
 }
 
 Variables_Set
 build_cxx_variables_set(JNIEnv* env, jobject j_v_set) {
-  Variables_Set v_set;
-  jobject j_iterator
+  // Get the iterator.
+  jobject j_iter
     = env->CallObjectMethod(j_v_set, cached_FMIDs.Variables_Set_iterator_ID);
   CHECK_EXCEPTION_THROW(env);
-  jclass j_v_set_class = env->GetObjectClass(j_v_set);
-  jclass j_iterator_class = env->GetObjectClass(j_iterator);
-  jmethodID has_next_method_id
-    = env->GetMethodID(j_iterator_class, "hasNext", "()Z");
-  CHECK_RESULT_ASSERT(env, has_next_method_id);
-  jboolean has_next_value
-    = env->CallBooleanMethod(j_iterator, has_next_method_id);
-  CHECK_EXCEPTION_ASSERT(env);
-  jmethodID next_method_id
-    = env->GetMethodID(j_iterator_class, "next", "()Ljava/lang/Object;");
-  CHECK_RESULT_ASSERT(env, next_method_id);
-
+  // Get method IDs from cache.
+  jmethodID has_next_ID = cached_FMIDs.Variables_Set_Iterator_has_next_ID;
+  jmethodID next_ID = cached_FMIDs.Variables_Set_Iterator_next_ID;
+  // Initialize an empty set of variables.
+  Variables_Set v_set;
+  jobject j_variable;
+  jboolean has_next_value = env->CallBooleanMethod(j_iter, has_next_ID);
   while (has_next_value) {
-    jobject j_variable = env->CallObjectMethod(j_iterator, next_method_id);
+    j_variable = env->CallObjectMethod(j_iter, next_ID);
     CHECK_EXCEPTION_ASSERT(env);
     v_set.insert(build_cxx_variable(env, j_variable));
-    has_next_value = env->CallBooleanMethod(j_iterator, has_next_method_id);
+    has_next_value = env->CallBooleanMethod(j_iter, has_next_ID);
     CHECK_EXCEPTION_ASSERT(env);
   }
   return v_set;
@@ -263,23 +265,6 @@ build_java_variables_set(JNIEnv* env, const Variables_Set& v_set) {
     CHECK_EXCEPTION_THROW(env);
   }
   return j_vs;
-}
-
-Variable
-build_cxx_variable(JNIEnv* env, jobject j_var) {
-  return Variable(env->GetIntField(j_var, cached_FMIDs.Variable_varid_ID));
-}
-
-jobject
-build_java_variable(JNIEnv* env, const Variable& var) {
-  jclass variable_class;
-  PPL_JNI_FIND_CLASS(variable_class, env, Variable,
-                     "parma_polyhedra_library/Variable");
-  jobject ret = env->NewObject(variable_class,
-                               cached_FMIDs.Variable_init_ID,
-			       var.id());
-  CHECK_RESULT_THROW(env, ret);
-  return ret;
 }
 
 Relation_Symbol
@@ -448,37 +433,6 @@ build_java_control_parameter_value
                                        "Lparma_polyhedra_library/Control_Parameter_Value;");
   CHECK_RESULT_ASSERT(env, fID);
   return env->GetStaticObjectField(j_cp_value_class, fID);
-}
-
-Coefficient
-build_cxx_coeff(JNIEnv* env, jobject j_coeff) {
-  jstring bi_string
-    = (jstring) env->CallObjectMethod(j_coeff,
-                                      cached_FMIDs.Coefficient_toString_ID);
-  CHECK_EXCEPTION_THROW(env);
-  const char *nativeString = env->GetStringUTFChars(bi_string, 0);
-  CHECK_RESULT_THROW(env, nativeString);
-  PPL_DIRTY_TEMP_COEFFICIENT(ppl_coeff);
-  ppl_coeff = Coefficient(nativeString);
-  env->ReleaseStringUTFChars(bi_string, nativeString);
-  return ppl_coeff;
-}
-
-jobject
-build_java_coeff(JNIEnv* env, const Coefficient& ppl_coeff) {
-  std::ostringstream s;
-  s << ppl_coeff;
-  std::string str = s.str();
-  jstring coeff_string = env->NewStringUTF(str.c_str());
-  CHECK_RESULT_THROW(env, coeff_string);
-  jclass j_coeff_class;
-  PPL_JNI_FIND_CLASS(j_coeff_class, env, Coefficient,
-                     "parma_polyhedra_library/Coefficient");
-  jobject ret = env->NewObject(j_coeff_class,
-                               cached_FMIDs.Coefficient_init_from_String_ID,
-                               coeff_string);
-  CHECK_RESULT_THROW(env, ret);
-  return ret;
 }
 
 Constraint
@@ -651,156 +605,6 @@ build_cxx_grid_generator(JNIEnv* env, jobject j_grid_generator) {
     assert(false);
     throw std::runtime_error("PPL Java interface internal error");
   }
-}
-
-void*
-get_ptr(JNIEnv* env, jobject ppl_object) {
-  jlong pointer_value
-    = env->GetLongField(ppl_object, cached_FMIDs.PPL_Object_ptr_ID);
-  void* ptr = reinterpret_cast<void*>(pointer_value);
-  assert(reinterpret_cast<jlong>(ptr) == pointer_value);
-  return unmark(ptr);
-}
-
-bool
-is_java_marked(JNIEnv* env, jobject ppl_object) {
-  jlong pointer_value
-    = env->GetLongField(ppl_object, cached_FMIDs.PPL_Object_ptr_ID);
-  const void* ptr = reinterpret_cast<const void*>(pointer_value);
-  assert(reinterpret_cast<jlong>(ptr) == pointer_value);
-  return marked(ptr);
-}
-
-Grid_Generator_System
-build_cxx_grid_generator_system(JNIEnv* env, jobject j_iterable) {
-  jclass j_iterable_class = env->GetObjectClass(j_iterable);
-  jclass iterator_java_class = env->FindClass("java/util/Iterator");
-  CHECK_RESULT_ASSERT(env, iterator_java_class);
-  Grid_Generator_System ggs;
-  jmethodID iterator_method_id
-    = env->GetMethodID(j_iterable_class, "iterator", "()Ljava/util/Iterator;");
-  CHECK_RESULT_ASSERT(env, iterator_method_id);
-  jobject j_iterator = env->CallObjectMethod(j_iterable, iterator_method_id);
-  CHECK_EXCEPTION_THROW(env);
-  jmethodID has_next_method_id
-    = env->GetMethodID(iterator_java_class, "hasNext", "()Z");
-  CHECK_RESULT_ASSERT(env, has_next_method_id);
-  jboolean has_next_value
-    = env->CallBooleanMethod(j_iterator, has_next_method_id);
-  CHECK_EXCEPTION_ASSERT(env);
-  jmethodID next_method_id
-    = env->GetMethodID(iterator_java_class, "next", "()Ljava/lang/Object;");
-  CHECK_RESULT_ASSERT(env, next_method_id);
-
-  while (has_next_value) {
-    jobject j_grid_generator = env->CallObjectMethod(j_iterator,
-                                                     next_method_id);
-    CHECK_EXCEPTION_ASSERT(env);
-    ggs.insert(build_cxx_grid_generator(env, j_grid_generator));
-    has_next_value = env->CallBooleanMethod(j_iterator,
-					    has_next_method_id);
-    CHECK_EXCEPTION_ASSERT(env);
-  }
-  return ggs;
-}
-
-Constraint_System
-build_cxx_constraint_system(JNIEnv* env, jobject j_iterable) {
-  jclass j_iterable_class = env->GetObjectClass(j_iterable);
-  jclass iterator_java_class = env->FindClass("java/util/Iterator");
-  CHECK_RESULT_ASSERT(env, iterator_java_class);
-  Constraint_System cs;
-  jmethodID iterator_method_id
-    = env->GetMethodID(j_iterable_class, "iterator", "()Ljava/util/Iterator;");
-  CHECK_RESULT_ASSERT(env, iterator_method_id);
-  jobject j_iterator = env->CallObjectMethod(j_iterable, iterator_method_id);
-  CHECK_EXCEPTION_THROW(env);
-  jmethodID has_next_method_id
-    = env->GetMethodID(iterator_java_class, "hasNext", "()Z");
-  CHECK_RESULT_ASSERT(env, has_next_method_id);
-  jboolean has_next_value
-    = env->CallBooleanMethod(j_iterator, has_next_method_id);
-  CHECK_EXCEPTION_ASSERT(env);
-  jmethodID next_method_id
-    = env->GetMethodID(iterator_java_class, "next", "()Ljava/lang/Object;");
-  CHECK_RESULT_ASSERT(env, next_method_id);
-
-  while (has_next_value) {
-    jobject j_constraint = env->CallObjectMethod(j_iterator,
-						 next_method_id);
-    CHECK_EXCEPTION_ASSERT(env);
-    cs.insert(build_cxx_constraint(env, j_constraint));
-    has_next_value = env->CallBooleanMethod(j_iterator,
-					    has_next_method_id);
-    CHECK_EXCEPTION_ASSERT(env);
-  }
-  return cs;
-}
-
-Generator_System
-build_cxx_generator_system(JNIEnv* env, jobject j_iterable) {
-  jclass j_iterable_class = env->GetObjectClass(j_iterable);
-  jclass iterator_java_class = env->FindClass("java/util/Iterator");
-  CHECK_RESULT_ASSERT(env, iterator_java_class);
-  Generator_System gs;
-  jmethodID iterator_method_id
-    = env->GetMethodID(j_iterable_class, "iterator", "()Ljava/util/Iterator;");
-  CHECK_RESULT_ASSERT(env, iterator_method_id);
-  jobject j_iterator = env->CallObjectMethod(j_iterable, iterator_method_id);
-  CHECK_EXCEPTION_THROW(env);
-  jmethodID has_next_method_id
-    = env->GetMethodID(iterator_java_class, "hasNext", "()Z");
-  CHECK_RESULT_ASSERT(env, has_next_method_id);
-  jboolean has_next_value
-    = env->CallBooleanMethod(j_iterator, has_next_method_id);
-  CHECK_EXCEPTION_ASSERT(env);
-  jmethodID next_method_id
-    = env->GetMethodID(iterator_java_class, "next", "()Ljava/lang/Object;");
-  CHECK_RESULT_ASSERT(env, next_method_id);
-
-  while (has_next_value) {
-    jobject j_constraint = env->CallObjectMethod(j_iterator,
-						 next_method_id);
-    CHECK_EXCEPTION_ASSERT(env);
-    gs.insert(build_cxx_generator(env, j_constraint));
-    has_next_value = env->CallBooleanMethod(j_iterator,
-					    has_next_method_id);
-    CHECK_EXCEPTION_ASSERT(env);
-  }
-  return gs;
-}
-
-Congruence_System
-build_cxx_congruence_system(JNIEnv* env, jobject j_iterable) {
-  jclass j_iterable_class = env->GetObjectClass(j_iterable);
-  jclass iterator_java_class = env->FindClass("java/util/Iterator");
-  CHECK_RESULT_ASSERT(env, iterator_java_class);
-  Congruence_System cgs;
-  jmethodID iterator_method_id
-    = env->GetMethodID(j_iterable_class, "iterator", "()Ljava/util/Iterator;");
-  CHECK_RESULT_ASSERT(env, iterator_method_id);
-  jobject j_iterator = env->CallObjectMethod(j_iterable, iterator_method_id);
-  CHECK_EXCEPTION_THROW(env);
-  jmethodID has_next_method_id
-    = env->GetMethodID(iterator_java_class, "hasNext", "()Z");
-  CHECK_RESULT_ASSERT(env, has_next_method_id);
-  jboolean has_next_value = env->CallBooleanMethod(j_iterator,
-						   has_next_method_id);
-  CHECK_EXCEPTION_ASSERT(env);
-  jmethodID next_method_id
-    = env->GetMethodID(iterator_java_class, "next", "()Ljava/lang/Object;");
-  CHECK_RESULT_ASSERT(env, next_method_id);
-
-  while (has_next_value) {
-    jobject j_congruence = env->CallObjectMethod(j_iterator,
-						 next_method_id);
-    CHECK_EXCEPTION_ASSERT(env);
-    cgs.insert(build_cxx_congruence(env, j_congruence));
-    has_next_value = env->CallBooleanMethod(j_iterator,
-					    has_next_method_id);
-    CHECK_EXCEPTION_ASSERT(env);
-  }
-  return cgs;
 }
 
 jobject

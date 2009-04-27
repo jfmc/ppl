@@ -133,18 +133,21 @@ handle_exception(JNIEnv* env);
 
 //! A cache for Java classes field/method IDs.
 struct Java_FMID_Cache {
-  // By_Reference.
-  jfieldID By_Reference_obj_ID;
-  jmethodID By_Reference_init_ID;
-  // Coefficient (and basic-types related IDs).
-  jfieldID Coefficient_value_ID;
-  jmethodID Coefficient_init_from_String_ID;
-  jmethodID Coefficient_toString_ID;
+  // Non-PPL type method IDs.
   jmethodID Boolean_valueOf_ID;
   jmethodID Integer_valueOf_ID;
   jmethodID Integer_intValue_ID;
+  jmethodID Iterator_has_next_ID;
+  jmethodID Iterator_next_ID;
   jmethodID Long_valueOf_ID;
   jmethodID Long_longValue_ID;
+  // By_Reference.
+  jfieldID By_Reference_obj_ID;
+  jmethodID By_Reference_init_ID;
+  // Coefficient.
+  jfieldID Coefficient_value_ID;
+  jmethodID Coefficient_init_from_String_ID;
+  jmethodID Coefficient_toString_ID;
   // Congruence.
   jmethodID Complexity_Class_ordinal_ID;
   // Congruence.
@@ -228,16 +231,22 @@ struct Java_FMID_Cache {
   jmethodID Variables_Set_init_ID;
   jmethodID Variables_Set_add_ID;
   jmethodID Variables_Set_iterator_ID;
+  // Iterator on Variables_Set.
+  jmethodID Variables_Set_Iterator_has_next_ID;
+  jmethodID Variables_Set_Iterator_next_ID;
 };
 extern Java_FMID_Cache cached_FMIDs;
 
 //! A cache for Java classes.
 struct Java_Class_Cache {
-  jclass By_Reference;
-  jclass Coefficient;
+  // Non-PPL types.
   jclass Boolean;
   jclass Integer;
   jclass Long;
+  jclass Iterator;
+  // PPL types.
+  jclass By_Reference;
+  jclass Coefficient;
   jclass Congruence;
   jclass Constraint;
   jclass Generator;
@@ -266,13 +275,8 @@ struct Java_Class_Cache {
 };
 extern Java_Class_Cache cached_classes;
 
-#define PPL_GET_JNI_CLASS_CACHE(jni_class, field)  \
-  do {                                             \
-    jni_class = cached_classes.field);             \
-    assert(jni_class);                             \
-  } while (0)
 
-#define PPL_SET_JNI_CLASS_CACHE(env, field, jni_class)             \
+#define PPL_JNI_SET_CLASS_IN_CACHE(env, field, jni_class)             \
   do {                                                             \
     if (cached_classes.field != NULL)                              \
       env->DeleteGlobalRef(cached_classes.field);                  \
@@ -286,10 +290,32 @@ extern Java_Class_Cache cached_classes;
     if (jni_class == NULL) {                             \
       jni_class = env->FindClass(name);                  \
       CHECK_RESULT_ASSERT(env, jni_class);               \
-      PPL_SET_JNI_CLASS_CACHE(env, field, jni_class);    \
+      PPL_JNI_SET_CLASS_IN_CACHE(env, field, jni_class); \
     }                                                    \
   } while (0)
 
+#define PPL_JNI_GET_METHOD_ID(mID, env, field, jni_object, \
+                              name, signature)             \
+  do {                                                     \
+    mID = cached_FMIDs.field;                              \
+    if (mID == NULL) {                                     \
+      jclass jni_class = env->GetObjectClass(jni_object);  \
+      mID = env->GetMethodID(jni_class, name, signature);  \
+      CHECK_RESULT_ASSERT(env, mID);                       \
+      cached_FMIDs.field = mID;                            \
+    }                                                      \
+  } while (0)
+
+#define PPL_JNI_GET_STATIC_METHOD_ID(mID, env, field, jni_class, \
+                                     name, signature)            \
+  do {                                                           \
+    mID = cached_FMIDs.field;                                    \
+    if (mID == NULL) {                                           \
+      mID = env->GetStaticMethodID(jni_class, name, signature);  \
+      CHECK_RESULT_ASSERT(env, mID);                             \
+      cached_FMIDs.field = mID;                                  \
+    }                                                            \
+  } while (0)
 
 /*! \brief
   Builds an unsigned C++ number from the Java native number \p value.
