@@ -1367,6 +1367,7 @@ esac
 AM_CONDITIONAL(THOROUGH_MAKE_CHECK, test x"$enableval" = xthorough)
 
 # Libtool.
+LT_PREREQ([1.5.24])
 LT_INIT([dlopen])
 AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
 AM_CONDITIONAL(ENABLE_STATIC, test x"$enable_static" = xyes)
