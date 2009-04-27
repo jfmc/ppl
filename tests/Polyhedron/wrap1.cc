@@ -85,9 +85,70 @@ test02() {
   return ok;
 }
 
+bool
+test03() {
+  Variable x(0);
+  Variable y(1);
+  C_Polyhedron ph(2);
+  ph.add_constraint(x + 1024 == 8*y);
+  ph.add_constraint(-64 <= x);
+  ph.add_constraint(x <= 448);
+
+  print_constraints(ph, "*** ph ***");
+
+  Variables_Set vars(x, y);
+
+  ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_UNDEFINED);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(x >= 0);
+  known_result.add_constraint(x <= 255);
+  known_result.add_constraint(y >= 120);
+  known_result.add_constraint(y <= 184);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** ph.wrap_assign(...) ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
+  C_Polyhedron ph(2);
+  ph.add_constraint(x + 1024 == 8*y);
+  ph.add_constraint(-64 <= x);
+  ph.add_constraint(x <= 448);
+
+  print_constraints(ph, "*** ph ***");
+
+  Variables_Set vars(x, y);
+
+  Constraint_System cs;
+  cs.insert(x <= y);
+
+  ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_UNDEFINED, &cs);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(x >= 0);
+  known_result.add_constraint(y >= 120);
+  known_result.add_constraint(y <= 184);
+  known_result.add_constraint(x <= y);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** ph.wrap_assign(...) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN

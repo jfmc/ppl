@@ -3764,7 +3764,7 @@ PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
       if (un == 0 && ln == 0)
         continue;
 
-      if (un - ln > k_threshold)
+      if (o == OVERFLOW_UNDEFINED || un - ln > k_threshold)
         goto set_full_range;
 
       Polyhedron hull(topology(), space_dimension(), EMPTY);
