@@ -3761,8 +3761,17 @@ PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
       //std::cout << "un = " << un << std::endl;
 
       // Special case: this variable does not need wrapping.
-      if (un == 0 && ln == 0)
+      if (ln == 0 && un == 0)
         continue;
+
+      // If overflow is impossible, try not to add useless constraints.
+      if (o == OVERFLOW_IMPOSSIBLE) {
+        if (ln < 0)
+          full_range_bounds.insert(min_value <= x);
+        if (un > 0)
+          full_range_bounds.insert(x <= max_value);
+        continue;
+      }
 
       if (o == OVERFLOW_UNDEFINED || un - ln > k_threshold)
         goto set_full_range;
