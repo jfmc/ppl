@@ -1668,6 +1668,38 @@
               Polyhedra."
 }
 
+@Inproceedings{LogozzoF08,
+  Author = "F. Logozzo and M. F{\"a}hndrich",
+  Title = "Pentagons: A Weakly Relational Abstract Domain for the
+           Efficient Validation of Array Accesses",
+  Booktitle = "Proceedings of the 2008 ACM Symposium on Applied Computing
+               (SAC 2008)",
+  Address = "Fortaleza, Cear\'a, Brazil",
+  Aditor = "R. L. Wainwright and H. Haddad",
+  Year = 2008,
+  Pages = "184--188",
+  Publisher = "ACM Press",
+  ISBN = "978-1-59593-753-7",
+  Abstract = "We introduce Pentagons (\textsf{Pntg}), a weakly
+              relational numerical abstract domain useful for the
+              validation of array accesses in byte-code and
+              intermediate languages (IL). This abstract domain
+              captures properties of the form of
+              $x \in [a. b] \wedge x < y$. It is more precise than the
+              well known Interval domain, but it is less precise than
+              the Octagon domain.  The goal of \textsf{Pntg} is to be
+              a lightweight numerical domain useful for adaptive
+              static analysis, where \textsf{Pntg} is used to quickly
+              prove the safety of most array accesses, restricting the
+              use of more precise (but also more expensive) domains to
+              only a small fraction of the code.  We implemented the
+              \textsf{Pntg} abstract domain in \texttt{Clousot}, a
+              generic abstract interpreter for .NET assemblies. Using
+              it, we were able to validate 83\% of array accesses in
+              the core runtime library \texttt{mscorlib.dll} in less
+              than 8 minutes."
+}
+
 @Inproceedings{MakhloufK06,
   Author = "I. B. Makhlouf and S. Kowalewski",
   Title = "An Evaluation of Two Recent Reachability Analysis Tools
