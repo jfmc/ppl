@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -90,6 +90,7 @@ generalizedaffinepreimage1 \
 geomcovers1 \
 intersection1 \
 interval1 \
+limitedcc76extrapolation1 \
 mapspacedims1 \
 max_min1 \
 maxspacedim1 \
@@ -101,11 +102,13 @@ refinewithconstraint1 refinewithconstraint2 \
 refinewithconstraints1 \
 refinewithcongruences1 \
 removespacedims1 \
+simplifyusingcontext1 \
 timeelapse1 \
 topclosed1 \
 unconstrain1 \
 universe1 \
 upperbound1 \
+upperboundifexact1 \
 writebox1
 
 DERIVED_TESTS = \
@@ -120,8 +123,9 @@ dist_check_SCRIPTS = run_tests
 
 TESTS = run_tests.stamp
 
+.PHONY: run_tests.stamp
 run_tests.stamp: run_tests
-	+$(srcdir)/run_tests
+	+MAKE=$(MAKE) $(srcdir)/run_tests
 	echo "true" >run_tests.stamp
 	chmod +x run_tests.stamp
 
@@ -231,6 +235,8 @@ intersection1_SOURCES = intersection1.cc
 
 interval1_SOURCES = interval1.cc
 
+limitedcc76extrapolation1_SOURCES = limitedcc76extrapolation1.cc
+
 mapspacedims1_SOURCES = mapspacedims1.cc
 
 max_min1_SOURCES = max_min1.cc
@@ -258,6 +264,8 @@ refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 
+simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
+
 timeelapse1_SOURCES = timeelapse1.cc
 
 topclosed1_SOURCES = topclosed1.cc
@@ -267,6 +275,8 @@ unconstrain1_SOURCES = unconstrain1.cc
 universe1_SOURCES = universe1.cc
 
 upperbound1_SOURCES = upperbound1.cc
+
+upperboundifexact1_SOURCES = upperboundifexact1.cc
 
 writebox1_SOURCES = writebox1.cc
 
@@ -307,3 +317,15 @@ run_tests.stamp
 
 DISTCLEANFILES = \
 dirty_marker
+
+$(top_builddir)/utils/libppl_utils.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
+
+$(top_builddir)/tests/libppl_tests.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/tests libppl_tests.a
+
+$(top_builddir)/src/libppl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
+
+$(top_builddir)/Watchdog/src/libpwl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/Watchdog/src libpwl.la

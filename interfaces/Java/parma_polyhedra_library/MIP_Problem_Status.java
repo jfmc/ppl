@@ -1,5 +1,5 @@
 /* MIP_Problem_Status enum declaration.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -30,5 +30,10 @@ public enum MIP_Problem_Status {
     //! The problem is unbounded.
     UNBOUNDED_MIP_PROBLEM,
     //! The problem has an optimal solution.
-    OPTIMIZED_MIP_PROBLEM
+    OPTIMIZED_MIP_PROBLEM;
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

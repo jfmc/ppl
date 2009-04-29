@@ -1,11 +1,11 @@
-Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 See below for the copying conditions.
 
 
-Parma Polyhedra Library (Release 0.10)
-=====================================
+Parma Polyhedra Library (Release 0.11)
+======================================
 
-This is the release 0.10 of the Parma Polyhedra Library:
+This is the release 0.11 of the Parma Polyhedra Library:
 a C++ library for (not necessarily closed) convex polyhedra
 and other numerical abstractions.
 
@@ -64,9 +64,9 @@ For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.10 source distribution
-(41 directories, 1409 files):
+(41 directories, 1446 files):
 
-ppl-0.10
+ppl-0.11
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -102,9 +102,7 @@ ppl-0.10
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
 |   |   |-- README.doc
-|   |   |-- devref.doxyconf-html
 |   |   |-- devref.doxyconf-html.in
-|   |   |-- devref.doxyconf-latex
 |   |   |-- devref.doxyconf-latex.in
 |   |   |-- devref.tex
 |   |   |-- fdl.dox
@@ -121,9 +119,7 @@ ppl-0.10
 |   |   |-- pwl-user-0.5.pdf
 |   |   |-- pwl-user-0.5.ps.gz
 |   |   |-- pwl.sty
-|   |   |-- user.doxyconf-html
 |   |   |-- user.doxyconf-html.in
-|   |   |-- user.doxyconf-latex
 |   |   |-- user.doxyconf-latex.in
 |   |   `-- user.tex
 |   |-- install-sh
@@ -131,7 +127,6 @@ ppl-0.10
 |   |-- m4
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
-|   |   |-- ax_prefix_config_h.m4
 |   |   |-- lib-ld.m4
 |   |   |-- lib-link.m4
 |   |   |-- libtool.m4
@@ -141,6 +136,8 @@ ppl-0.10
 |   |   `-- lt~obsolete.m4
 |   |-- missing
 |   |-- mkinstalldirs
+|   |-- pwl-config.h.in
+|   |-- pwl-config.sed
 |   |-- src
 |   |   |-- Doubly_Linked_Object.defs.hh
 |   |   |-- Doubly_Linked_Object.inlines.hh
@@ -377,12 +374,9 @@ ppl-0.10
 |   |-- Makefile.in
 |   |-- README.doc
 |   |-- definitions.dox
-|   |-- devref-language-interface.doxyconf
 |   |-- devref-language-interface.doxyconf.in
 |   |-- devref-language-interface.tex
-|   |-- devref.doxyconf-html
 |   |-- devref.doxyconf-html.in
-|   |-- devref.doxyconf-latex
 |   |-- devref.doxyconf-latex.in
 |   |-- devref.tex
 |   |-- fdl.dox
@@ -400,28 +394,25 @@ ppl-0.10
 |   |-- libppl.3
 |   |-- libppl_c.3
 |   |-- ppl-config.1
-|   |-- ppl-user-0.10-html.tar.gz
-|   |-- ppl-user-0.10.pdf
-|   |-- ppl-user-0.10.ps.gz
-|   |-- ppl-user-c-interface-0.10-html.tar.gz
-|   |-- ppl-user-c-interface-0.10.pdf
-|   |-- ppl-user-c-interface-0.10.ps.gz
-|   |-- ppl-user-java-interface-0.10-html.tar.gz
-|   |-- ppl-user-java-interface-0.10.pdf
-|   |-- ppl-user-java-interface-0.10.ps.gz
-|   |-- ppl-user-ocaml-interface-0.10-html.tar.gz
-|   |-- ppl-user-ocaml-interface-0.10.pdf
-|   |-- ppl-user-ocaml-interface-0.10.ps.gz
-|   |-- ppl-user-prolog-interface-0.10-html.tar.gz
-|   |-- ppl-user-prolog-interface-0.10.pdf
-|   |-- ppl-user-prolog-interface-0.10.ps.gz
+|   |-- ppl-user-0.11-html.tar.gz
+|   |-- ppl-user-0.11.pdf
+|   |-- ppl-user-0.11.ps.gz
+|   |-- ppl-user-c-interface-0.11-html.tar.gz
+|   |-- ppl-user-c-interface-0.11.pdf
+|   |-- ppl-user-c-interface-0.11.ps.gz
+|   |-- ppl-user-java-interface-0.11-html.tar.gz
+|   |-- ppl-user-java-interface-0.11.pdf
+|   |-- ppl-user-java-interface-0.11.ps.gz
+|   |-- ppl-user-ocaml-interface-0.11-html.tar.gz
+|   |-- ppl-user-ocaml-interface-0.11.pdf
+|   |-- ppl-user-ocaml-interface-0.11.ps.gz
+|   |-- ppl-user-prolog-interface-0.11-html.tar.gz
+|   |-- ppl-user-prolog-interface-0.11.pdf
+|   |-- ppl-user-prolog-interface-0.11.ps.gz
 |   |-- ppl.sty
-|   |-- user-language-interface.doxyconf
 |   |-- user-language-interface.doxyconf.in
 |   |-- user-language-interface.tex
-|   |-- user.doxyconf-html
 |   |-- user.doxyconf-html.in
-|   |-- user.doxyconf-latex
 |   |-- user.doxyconf-latex.in
 |   `-- user.tex
 |-- install-sh
@@ -445,10 +436,10 @@ ppl-0.10
 |   |   `-- tests
 |   |       |-- Makefile.am
 |   |       |-- Makefile.in
-|   |       |-- cxxoutput.c
+|   |       |-- formatted_output.c
 |   |       |-- ppl_c_test.cc
 |   |       |-- ppl_c_test.h
-|   |       |-- print_to_buffer.cc
+|   |       |-- print_to_buffer.c
 |   |       `-- print_to_buffer.h
 |   |-- Java
 |   |   |-- Makefile.am
@@ -482,6 +473,7 @@ ppl-0.10
 |   |   |   |-- Grid_Generator.java
 |   |   |   |-- Grid_Generator_System.java
 |   |   |   |-- Grid_Generator_Type.java
+|   |   |   |-- IO.java
 |   |   |   |-- Invalid_Argument_Exception.java
 |   |   |   |-- Length_Error_Exception.java
 |   |   |   |-- Linear_Expression.java
@@ -735,7 +727,6 @@ ppl-0.10
 |   |-- ac_prog_javac.m4
 |   |-- ac_prog_javah.m4
 |   |-- ac_text_md5sum.m4
-|   |-- ax_prefix_config_h.m4
 |   |-- lib-ld.m4
 |   |-- lib-link.m4
 |   |-- lib-prefix.m4
@@ -744,10 +735,13 @@ ppl-0.10
 |   |-- ltsugar.m4
 |   |-- ltversion.m4
 |   |-- lt~obsolete.m4
+|   |-- m4.m4
 |   |-- ppl.m4
 |   `-- ppl_c.m4
 |-- missing
 |-- mkinstalldirs
+|-- ppl-config.h.in
+|-- ppl-config.sed
 |-- ppl.lsm.in
 |-- src
 |   |-- BDS_Status.idefs.hh
@@ -984,6 +978,10 @@ ppl-0.10
 |   |-- Widening_Function.types.hh
 |   |-- algorithms.hh
 |   |-- assign_or_swap.hh
+|   |-- c_streambuf.cc
+|   |-- c_streambuf.defs.hh
+|   |-- c_streambuf.inlines.hh
+|   |-- c_streambuf.types.hh
 |   |-- checked.cc
 |   |-- checked.defs.hh
 |   |-- checked.inlines.hh
@@ -1022,7 +1020,6 @@ ppl-0.10
 |   |-- mp_std_bits.defs.hh
 |   |-- mp_std_bits.inlines.hh
 |   |-- namespaces.hh
-|   |-- ppl-config.cc
 |   |-- ppl-config.cc.in
 |   |-- ppl.hh.dist
 |   |-- ppl_header.hh
@@ -1033,7 +1030,9 @@ ppl-0.10
 |   |-- stdiobuf.types.hh
 |   |-- swapping_sort.icc
 |   |-- version.cc
-|   `-- version.hh.in
+|   |-- version.hh.in
+|   |-- wrap.cc
+|   `-- wrap.hh
 |-- tests
 |   |-- BD_Shape
 |   |   |-- Makefile.am
@@ -1092,17 +1091,18 @@ ppl-0.10
 |   |   |-- maxspacedim1.cc
 |   |   |-- membytes1.cc
 |   |   |-- minconstraints1.cc
-|   |   |-- pointsetpowerset1.cc
 |   |   |-- relations1.cc
 |   |   |-- relations2.cc
 |   |   |-- relations3.cc
 |   |   |-- relations4.cc
 |   |   |-- removespacedims1.cc
 |   |   |-- run_tests
+|   |   |-- simplifyusingcontext1.cc
 |   |   |-- timeelapse1.cc
 |   |   |-- unconstrain1.cc
 |   |   |-- universe1.cc
 |   |   |-- upperbound1.cc
+|   |   |-- upperboundifexact1.cc
 |   |   `-- writebdshape1.cc
 |   |-- Box
 |   |   |-- Makefile.am
@@ -1147,13 +1147,12 @@ ppl-0.10
 |   |   |-- geomcovers1.cc
 |   |   |-- intersection1.cc
 |   |   |-- interval1.cc
+|   |   |-- limitedcc76extrapolation1.cc
 |   |   |-- mapspacedims1.cc
 |   |   |-- max_min1.cc
 |   |   |-- maxspacedim1.cc
 |   |   |-- membytes1.cc
 |   |   |-- minconstraints1.cc
-|   |   |-- pointsetpowerset1.cc
-|   |   |-- pointsetpowerset2.cc
 |   |   |-- propagateconstraints1.cc
 |   |   |-- propagateconstraints2.cc
 |   |   |-- refinewithcongruences1.cc
@@ -1167,11 +1166,13 @@ ppl-0.10
 |   |   |-- relations4.cc
 |   |   |-- removespacedims1.cc
 |   |   |-- run_tests
+|   |   |-- simplifyusingcontext1.cc
 |   |   |-- timeelapse1.cc
 |   |   |-- topclosed1.cc
 |   |   |-- unconstrain1.cc
 |   |   |-- universe1.cc
 |   |   |-- upperbound1.cc
+|   |   |-- upperboundifexact1.cc
 |   |   `-- writebox1.cc
 |   |-- Grid
 |   |   |-- Makefile.am
@@ -1248,7 +1249,6 @@ ppl-0.10
 |   |   |-- outputoperator2.cc
 |   |   |-- outputoperator3.cc
 |   |   |-- partition1.cc
-|   |   |-- pointsetpowerset1.cc
 |   |   |-- powersetdifference1.cc
 |   |   |-- powersetgeometricallycovers1.cc
 |   |   |-- powersetgeometricallyequals1.cc
@@ -1259,6 +1259,7 @@ ppl-0.10
 |   |   |-- relations3.cc
 |   |   |-- removespacedims1.cc
 |   |   |-- removespacedims2.cc
+|   |   |-- simplifyusingcontext1.cc
 |   |   |-- timeelapse1.cc
 |   |   |-- topclosed1.cc
 |   |   |-- topclosure1.cc
@@ -1335,17 +1336,18 @@ ppl-0.10
 |   |   |-- maxspacedim1.cc
 |   |   |-- membytes1.cc
 |   |   |-- minconstraints1.cc
-|   |   |-- pointsetpowerset1.cc
 |   |   |-- relatwithcons1.cc
 |   |   |-- relatwithcons2.cc
 |   |   |-- relatwithcons3.cc
 |   |   |-- relatwithgen1.cc
 |   |   |-- removespacedims1.cc
 |   |   |-- run_tests
+|   |   |-- simplifyusingcontext1.cc
 |   |   |-- timeelapse1.cc
 |   |   |-- unconstrain1.cc
 |   |   |-- universe1.cc
 |   |   |-- upperbound1.cc
+|   |   |-- upperboundifexact1.cc
 |   |   `-- writeoctagon1.cc
 |   |-- Partial_Function.cc
 |   |-- Partial_Function.defs.hh
@@ -1389,6 +1391,7 @@ ppl-0.10
 |   |   |-- ascii_dump_load2.cc
 |   |   |-- ascii_dump_load3.cc
 |   |   |-- bgp99extrapolation1.cc
+|   |   |-- bgp99extrapolation2.cc
 |   |   |-- bhrz03widening1.cc
 |   |   |-- bhrz03widening2.cc
 |   |   |-- bhrz03widening3.cc
@@ -1436,9 +1439,9 @@ ppl-0.10
 |   |   |-- intersection1.cc
 |   |   |-- limitedbhrz03extrapolation1.cc
 |   |   |-- limitedh79extrapolation1.cc
+|   |   |-- linearexpression1.cc
 |   |   |-- linearpartition1.cc
 |   |   |-- linearsystem1.cc
-|   |   |-- linexpression1.cc
 |   |   |-- mapspacedims1.cc
 |   |   |-- matrix1.cc
 |   |   |-- max_min1.cc
@@ -1460,6 +1463,8 @@ ppl-0.10
 |   |   |-- polydifference2.cc
 |   |   |-- polyhull1.cc
 |   |   |-- polyhull2.cc
+|   |   |-- polyhullifexact1.cc
+|   |   |-- polyhullifexact2.cc
 |   |   |-- randphull1.cc
 |   |   |-- refinewithcongruence1.cc
 |   |   |-- refinewithcongruences1.cc
@@ -1490,15 +1495,47 @@ ppl-0.10
 |   |-- Powerset
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
-|   |   |-- pointsetpowerset1.cc
-|   |   |-- pointsetpowerset2.cc
-|   |   |-- pointsetpowerset3.cc
-|   |   |-- pointsetpowerset4.cc
-|   |   |-- pointsetpowerset5.cc
-|   |   |-- pointsetpowerset6.cc
+|   |   |-- addcongruences1.cc
+|   |   |-- addconstraints1.cc
+|   |   |-- affinedimension1.cc
+|   |   |-- affineimage1.cc
+|   |   |-- affinepreimage1.cc
+|   |   |-- bounded1.cc
+|   |   |-- bounds1.cc
+|   |   |-- closed1.cc
+|   |   |-- closure1.cc
+|   |   |-- collapse1.cc
+|   |   |-- concatenate1.cc
+|   |   |-- contains1.cc
+|   |   |-- containsintegerpoint1.cc
+|   |   |-- difference1.cc
+|   |   |-- discrete1.cc
+|   |   |-- disjoint1.cc
+|   |   |-- disjunct1.cc
+|   |   |-- empty1.cc
+|   |   |-- entails1.cc
+|   |   |-- equals1.cc
+|   |   |-- frombdshape1.cc
+|   |   |-- frombox1.cc
+|   |   |-- fromcongruences1.cc
+|   |   |-- fromconstraints1.cc
+|   |   |-- fromgrid1.cc
+|   |   |-- fromoctagonalshape1.cc
+|   |   |-- frompolyhedron1.cc
+|   |   |-- fromspacedimension1.cc
+|   |   |-- intersection1.cc
+|   |   |-- maxmin1.cc
+|   |   |-- meet1.cc
+|   |   |-- membytes1.cc
 |   |   |-- powerset1.cc
-|   |   |-- product1.cc
-|   |   `-- simplifyusingcontext1.cc
+|   |   |-- reduce1.cc
+|   |   |-- refinewith1.cc
+|   |   |-- relationwith1.cc
+|   |   |-- simplifyusingcontext1.cc
+|   |   |-- size1.cc
+|   |   |-- spacedims1.cc
+|   |   |-- universe1.cc
+|   |   `-- upperbound1.cc
 |   |-- README
 |   |-- Random_Number_Generator.defs.hh
 |   |-- Random_Number_Generator.inlines.hh
@@ -1521,7 +1558,7 @@ ppl-0.10
 
 --------
 
-Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

@@ -1,5 +1,5 @@
 /* By_Reference Java class declaration and implementation.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -43,10 +43,8 @@ public class By_Reference<T> {
 	return obj;
     }
 
-    // FIXME: this must be moved in another place.
-    static boolean is_null(java.lang.Object obj) {
-        if (obj == null)
-              return true;
-        return false;
+    private static native void initIDs();
+    static {
+        initIDs();
     }
 }

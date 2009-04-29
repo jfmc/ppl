@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -34,8 +34,7 @@ CHECKER =
 endif !VALGRIND_TESTS_ENABLED
 
 TESTS_ENVIRONMENT = \
-	$(LIBTOOL) --mode=execute \
-		 -dlopen ../../../src/libppl.la $(WATCHDOG_DLOPEN) $(CHECKER)
+	$(LIBTOOL) --mode=execute $(PPL_DLOPEN) $(PWL_DLOPEN) $(CHECKER)
 
 interface_generator_files = \
 ppl_interface_generator_ocaml_test_ml.m4 \
@@ -62,7 +61,7 @@ ppl_ocaml_tests_common
 OCAMLC_ENV = OCAMLRUNPARAM='l=1M'
 
 OCAMLC_COMPILE_FLAGS = \
--I +gmp -I .. -ccopt -g
+-I @mlgmp_dir@ -I .. -ccopt -g
 
 OCAMLC_LINK_FLAGS = \
 -cclib -lmlgmp -cclib -lmpfr \
@@ -74,21 +73,33 @@ OCAMLOPT_LINK_FLAGS = $(OCAMLC_LINK_FLAGS)
 
 if ENABLE_SHARED
 
-BUILT_PPL = \
-$(top_builddir)/src/.libs/libppl$(SHREXT)
+BUILT_PPL_FLAGS = -cclib $(top_builddir)/src/.libs/libppl$(SHREXT)
+
+if BUILD_WATCHDOG_LIBRARY
+BUILT_PWL_FLAGS = -cclib $(top_builddir)/Watchdog/src/.libs/libpwl$(SHREXT)
+endif BUILD_WATCHDOG_LIBRARY
 
 else !ENABLE_SHARED
 
-BUILT_PPL = \
-$(top_builddir)/src/.libs/libppl.$(LIBEXT)
+BUILT_PPL_FLAGS = -cclib $(top_builddir)/src/.libs/libppl.$(LIBEXT)
+
+if BUILD_WATCHDOG_LIBRARY
+BUILT_PWL_FLAGS = -cclib $(top_builddir)/Watchdog/src/.libs/libpwl.$(LIBEXT)
+endif BUILD_WATCHDOG_LIBRARY
 
 endif !ENABLE_SHARED
 
+PPL_DLOPEN = -dlopen ../../../src/libppl.la
+
+if BUILD_WATCHDOG_LIBRARY
+PWL_DLOPEN = -dlopen ../../../Watchdog/src/libpwl.la
+endif BUILD_WATCHDOG_LIBRARY
+
 .ml.cmo:
-	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
+	$(OCAMLC_ENV) $(OCAMLC) -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
 
 .ml.cmx:
-	$(OCAMLOPT_ENV) ocamlopt -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) $<
+	$(OCAMLOPT_ENV) $(OCAMLOPT) -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) $<
 
 if HAVE_OCAMLC
 
@@ -113,17 +124,17 @@ check_PROGRAMS = $(TESTS)
 test1_SOURCES = test1.ml
 
 test1$(EXEEXT): test1.cmo ../ppl_ocaml.cma
-	$(OCAMLC_ENV) ocamlc -o $@ \
+	$(OCAMLC_ENV) $(OCAMLC) -o $@ \
 		-cc "$(CXX)" $(OCAMLC_COMPILE_FLAGS) \
-		-cclib $(BUILT_PPL) $(OCAMLC_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLC_LINK_FLAGS) \
 		ppl_ocaml.cma $<
 
 test1_opt_SOURCES = test1.ml
 
 test1_opt$(EXEEXT): test1.cmx ../ppl_ocaml.cmxa
-	$(OCAMLOPT_ENV) ocamlopt -o $@ \
+	$(OCAMLOPT_ENV) $(OCAMLOPT) -o $@ \
 		-cc "$(CXX)" $(OCAMLOPT_COMPILE_FLAGS) \
-		-cclib $(BUILT_PPL) $(OCAMLOPT_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLOPT_LINK_FLAGS) \
 		ppl_ocaml.cmxa $<
 
 
@@ -132,23 +143,23 @@ nodist_ppl_ocaml_generated_test_SOURCES = ppl_ocaml_generated_test.ml
 nodist_ppl_ocaml_generated_test_opt_SOURCES = ppl_ocaml_generated_test.ml
 
 ppl_ocaml_generated_test.ml: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. \
+	$(M4) --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_ocaml_test_ml.m4 \
 			> $@
 
 ppl_ocaml_generated_test$(EXEEXT): \
 ppl_ocaml_generated_test.cmo ../ppl_ocaml.cma
-	$(OCAMLC_ENV) ocamlc -o $@ \
+	$(OCAMLC_ENV) $(OCAMLC) -o $@ \
 		-cc "$(CXX)" $(OCAMLC_COMPILE_FLAGS) \
-		-cclib $(BUILT_PPL) $(OCAMLC_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLC_LINK_FLAGS) \
 		ppl_ocaml.cma $<
 
 ppl_ocaml_generated_test_opt$(EXEEXT): \
 ppl_ocaml_generated_test.cmx ../ppl_ocaml.cmxa
-	$(OCAMLOPT_ENV) ocamlopt -o $@ \
+	$(OCAMLOPT_ENV) $(OCAMLOPT) -o $@ \
 		-cc "$(CXX)" $(OCAMLOPT_COMPILE_FLAGS) \
-		-cclib $(BUILT_PPL) $(OCAMLOPT_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLOPT_LINK_FLAGS) \
 		ppl_ocaml.cmxa $<
 
 MOSTLYCLEANFILES = \
@@ -166,3 +177,13 @@ ppl_ocaml_generated_test \
 ppl_ocaml_generated_test_opt
 
 CLEANFILES = ppl_ocaml_generated_test.ml
+
+../ppl_ocaml.cma:
+	$(MAKE) $(AM_MAKEFLAGS) -C .. ppl_ocaml.cma
+
+../ppl_ocaml.cmxa:
+	$(MAKE) $(AM_MAKEFLAGS) -C .. ppl_ocaml.cmxa
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+

@@ -1,5 +1,5 @@
 /* Interval_Restriction class declaration.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,6 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "meta_programming.hh"
 #include "Slow_Copy.hh"
 #include "assign_or_swap.hh"
+#include "Result.defs.hh"
+#include "Rounding_Dir.defs.hh"
+#include "Checked_Number.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -49,7 +52,7 @@ public:
   void normalize() const {
   }
   template <typename T>
-  Result restrict(T&, Result dir) const {
+  Result restrict(Rounding_Dir, T&, Result dir) const {
     return dir;
   }
 };
@@ -158,22 +161,22 @@ public:
   void normalize() const {
   }
   template <typename T>
-  Result restrict(T& x, Result dir) const {
+  Result restrict(Rounding_Dir rdir, T& x, Result dir) const {
     if (!has_restriction())
       return dir;
     switch (dir) {
     case V_GT:
       if (is_integer(x))
-	return add_assign_r(x, x, static_cast<T>(1), ROUND_DOWN);
+	return add_assign_r(x, x, static_cast<T>(1), rdir);
       /* Fall through */
     case V_GE:
-      return ceil_assign_r(x, x, ROUND_DOWN);
+      return ceil_assign_r(x, x, rdir);
     case V_LT:
       if (is_integer(x))
-	sub_assign_r(x, x, static_cast<T>(1), ROUND_UP);
+	return sub_assign_r(x, x, static_cast<T>(1), rdir);
       /* Fall through */
     case V_LE:
-      return floor_assign_r(x, x, ROUND_UP);
+      return floor_assign_r(x, x, rdir);
     default:
       assert(false);
       return dir;
@@ -332,7 +335,7 @@ public:
   void normalize() const {
   }
   template <typename V>
-  Result restrict(V& x, Result dir) const {
+  Result restrict(Rounding_Dir rdir, V& x, Result dir) const {
     if (!has_restriction())
       return dir;
     PPL_DIRTY_TEMP(V, n);
@@ -349,36 +352,36 @@ public:
       if (s >= 0) {
 	r = sub_assign_r(n, div, n, ROUND_NOT_NEEDED);
 	assert(r == V_EQ);
-	return add_assign_r(x, x, n, ROUND_DOWN);
+	return add_assign_r(x, x, n, rdir);
       }
       else
-	return sub_assign_r(x, x, n, ROUND_DOWN);
+	return sub_assign_r(x, x, n, rdir);
     case V_GE:
       if (s > 0) {
 	r = sub_assign_r(n, div, n, ROUND_NOT_NEEDED);
 	assert(r == V_EQ);
-	return add_assign_r(x, x, n, ROUND_DOWN);
+	return add_assign_r(x, x, n, rdir);
       }
       else if (s < 0)
-	return sub_assign_r(x, x, n, ROUND_DOWN);
+	return sub_assign_r(x, x, n, rdir);
       else
 	return V_EQ;
     case V_LT:
       if (s <= 0) {
 	r = add_assign_r(n, div, n, ROUND_NOT_NEEDED);
 	assert(r == V_EQ);
-	return sub_assign_r(x, x, n, ROUND_UP);
+	return sub_assign_r(x, x, n, rdir);
       }
       else
-	return sub_assign_r(x, x, n, ROUND_UP);
+	return sub_assign_r(x, x, n, rdir);
     case V_LE:
       if (s < 0) {
 	r = add_assign_r(n, div, n, ROUND_NOT_NEEDED);
 	assert(r == V_EQ);
-	return sub_assign_r(x, x, n, ROUND_UP);
+	return sub_assign_r(x, x, n, rdir);
       }
       else if (s > 0)
-	return sub_assign_r(x, x, n, ROUND_UP);
+	return sub_assign_r(x, x, n, rdir);
       else
 	return V_EQ;
     default:

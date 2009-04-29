@@ -1,5 +1,5 @@
 /* Domain-independent part of the OCaml interface: declarations.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,6 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_ppl_ocaml_common_defs_hh 1
 
 #include "ppl.hh"
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+#include "pwl.hh"
+#endif
 #include "interfaced_boxes.hh"
 #include "marked_pointers.hh"
 
@@ -47,7 +50,17 @@ namespace Interfaces {
 
 namespace OCaml {
 
-void check_int_is_unsigned(int i);
+template <typename U_Int>
+U_Int value_to_unsigned(value v);
+
+value
+ppl_dimension_to_value(dimension_type dim);
+
+dimension_type
+value_to_ppl_dimension(value dim);
+
+Variable
+build_ppl_Variable(value var);
 
 Degenerate_Element
 build_ppl_Degenerate_Element(value de);
@@ -145,6 +158,20 @@ private:
   std::vector<dimension_type> vec;
 };
 
+class timeout_exception : public Parma_Polyhedra_Library::Throwable {
+public:
+  void throw_me() const {
+    throw *this;
+  }
+  int priority() const {
+    return 0;
+  }
+  timeout_exception() {
+  }
+};
+
+void reset_timeout();
+
 } // namespace OCaml
 
 } // namespace Interfaces
@@ -154,25 +181,29 @@ private:
 #define CATCH_ALL							\
 catch(std::bad_alloc&) {						\
   caml_raise_out_of_memory();						\
- }									\
- catch(std::invalid_argument& e) {					\
-   caml_invalid_argument(const_cast<char*>(e.what()));			\
- }									\
- catch(std::overflow_error& e) {					\
-   caml_raise_with_string(*caml_named_value("PPL_arithmetic_overflow"), \
-                          (const_cast<char*>(e.what())));		\
- }									\
- catch(std::runtime_error& e) {                                         \
-   caml_raise_with_string(*caml_named_value("PPL_internal_error"),	\
-                          (const_cast<char*>(e.what())));		\
- }									\
- catch(std::exception& e) {						\
-   caml_raise_with_string(*caml_named_value("PPL_unknown_standard_exception"), \
-                          (const_cast<char*>(e.what())));		\
- }									\
- catch(...) {								\
-   caml_raise_constant(*caml_named_value("PPL_unexpected_error"));	\
- }
+}									\
+catch(std::invalid_argument& e) {					\
+  caml_invalid_argument(const_cast<char*>(e.what()));			\
+}									\
+catch(std::overflow_error& e) {					        \
+  caml_raise_with_string(*caml_named_value("PPL_arithmetic_overflow"),  \
+                         (const_cast<char*>(e.what())));		\
+}									\
+catch(std::runtime_error& e) {                                          \
+  caml_raise_with_string(*caml_named_value("PPL_internal_error"),	\
+                         (const_cast<char*>(e.what())));		\
+}									\
+catch(std::exception& e) {						\
+  caml_raise_with_string(*caml_named_value("PPL_unknown_standard_exception"), \
+                         (const_cast<char*>(e.what())));		\
+}									\
+catch(timeout_exception&) {                                             \
+  reset_timeout();                                                      \
+  caml_raise_constant(*caml_named_value("PPL_timeout_exception"));      \
+}                                                                       \
+catch(...) {								\
+  caml_raise_constant(*caml_named_value("PPL_unexpected_error"));	\
+}
 
 #include "ppl_ocaml_common.inlines.hh"
 

@@ -6,7 +6,7 @@ dnl - the list in the imported file and any Prolog specific predicates;
 dnl   ppl_interface_generator_common_procedure_generators.m4;
 dnl - the list of library predicates needed for the system dependent files.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -77,11 +77,8 @@ ppl_MIP_Problem_feasible_point/2,
 ppl_MIP_Problem_optimizing_point/2,
 ppl_MIP_Problem_optimal_value/3,
 ppl_MIP_Problem_evaluate_objective_function/4,
-ppl_MIP_Problem_OK/1`'dnl
+ppl_MIP_Problem_OK/1
+ppl_MIP_Problem_ascii_dump/1`'dnl
 ')
 
-m4_define(`m4_procedure_list', `m4_echo_unquoted(`m4_common_procedure_list',
-ppl_@CLASS@_@BINMINOP@/2 +polyhedron,
-ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize/2 +polyhedron,
-ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize/2 +polyhedron)
-')
+m4_define(`m4_procedure_list', `m4_common_procedure_list')

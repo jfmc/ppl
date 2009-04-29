@@ -1,5 +1,5 @@
 /* Box class implementation: non-inline template functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -505,12 +505,9 @@ Box<ITV>::add_space_dimensions_and_embed(const dimension_type m) {
   // Adding no dimensions is a no-op.
   if (m == 0)
     return;
-
   // To embed an n-dimension space box in a (n+m)-dimension space,
   // we just add `m' new universe elements to the sequence.
-  seq.insert(seq.end(), m, ITV());
-  for (dimension_type sz = seq.size(), i = sz - m; i < sz; ++i)
-    seq[i].assign(UNIVERSE);
+  seq.insert(seq.end(), m, ITV(UNIVERSE));
   assert(OK());
 }
 
@@ -520,12 +517,8 @@ Box<ITV>::add_space_dimensions_and_project(const dimension_type m) {
   // Adding no dimensions is a no-op.
   if (m == 0)
     return;
-
-  // A add `m' new zero elements to the sequence.
-  seq.insert(seq.end(), m, ITV());
-  for (dimension_type sz = seq.size(), i = sz - m; i < sz; ++i)
-    seq[i].assign(0);
-
+  // Add `m' new zero elements to the sequence.
+  seq.insert(seq.end(), m, ITV(0));
   assert(OK());
 }
 
@@ -1193,6 +1186,55 @@ Box<ITV>::is_disjoint_from(const Box& y) const {
 }
 
 template <typename ITV>
+inline bool
+Box<ITV>::upper_bound_assign_if_exact(const Box& y) {
+  Box& x = *this;
+
+  // Dimension-compatibility check.
+  if (x.space_dimension() != y.space_dimension())
+    x.throw_dimension_incompatible("upper_bound_assign_if_exact(y)", y);
+
+  // The lub of a box with an empty box is equal to the first box.
+  if (y.marked_empty())
+    return true;
+  if (x.marked_empty()) {
+    x = y;
+    return true;
+  }
+
+  bool x_j_does_not_contain_y_j = false;
+  bool y_j_does_not_contain_x_j = false;
+
+  for (dimension_type i = x.seq.size(); i-- > 0; ) {
+    const ITV& x_seq_i = x.seq[i];
+    const ITV& y_seq_i = y.seq[i];
+
+    if (!x_seq_i.can_be_exactly_joined_to(y_seq_i))
+      return false;
+
+    // Note: the use of `y_i_does_not_contain_x_i' is needed
+    // because we want to temporarily preserve the old value
+    // of `y_j_does_not_contain_x_j'.
+    bool y_i_does_not_contain_x_i = !y_seq_i.contains(x_seq_i);
+    if (y_i_does_not_contain_x_i && x_j_does_not_contain_y_j)
+      return false;
+    if (!x_seq_i.contains(y_seq_i)) {
+      if (y_j_does_not_contain_x_j)
+        return false;
+      else
+        x_j_does_not_contain_y_j = true;
+    }
+    if (y_i_does_not_contain_x_i)
+      y_j_does_not_contain_x_j = true;
+  }
+
+  // The upper bound is exact: compute it into *this.
+  for (dimension_type k = x.seq.size(); k-- > 0; )
+    x.seq[k].join_assign(y.seq[k]);
+  return true;
+}
+
+template <typename ITV>
 bool
 Box<ITV>::OK() const {
   if (status.test_empty_up_to_date() && !status.test_empty()) {
@@ -1442,7 +1484,7 @@ Box<ITV>::concatenate_assign(const Box& y) {
   // If `x' is marked empty, then it is sufficient to adjust
   // the dimension of the vector space.
   if (x.marked_empty()) {
-    x.seq.insert(x.seq.end(), y_space_dim, ITV());
+    x.seq.insert(x.seq.end(), y_space_dim, ITV(EMPTY));
     assert(x.OK());
     return;
   }
@@ -1519,8 +1561,76 @@ Box<ITV>::difference_assign(const Box& y) {
 template <typename ITV>
 bool
 Box<ITV>::simplify_using_context_assign(const Box& y) {
-  // FIXME(0.10.1): provide a real implementation.
-  used(y);
+  Box& x = *this;
+  const dimension_type num_dims = x.space_dimension();
+  // Dimension-compatibility check.
+  if (num_dims != y.space_dimension())
+    x.throw_dimension_incompatible("simplify_using_context_assign(y)", y);
+
+  // Filter away the zero-dimensional case.
+  if (num_dims == 0) {
+    if (y.marked_empty()) {
+      x.set_nonempty();
+      return false;
+    }
+    else
+      return !x.marked_empty();
+  }
+
+  // Filter away the case when `y' is empty.
+  if (y.is_empty()) {
+    for (dimension_type i = num_dims; i-- > 0; )
+      x.seq[i].assign(UNIVERSE);
+    x.set_nonempty();
+    return false;
+  }
+
+  if (x.is_empty()) {
+    // Find in `y' a non-universe interval, if any.
+    for (dimension_type i = 0; i < num_dims; ++i) {
+      if (y.seq[i].is_universe())
+        x.seq[i].assign(UNIVERSE);
+      else {
+        // Set x.seq[i] so as to contradict y.seq[i], if possible.
+        ITV& seq_i = x.seq[i];
+        seq_i.empty_intersection_assign(y.seq[i]);
+        if (seq_i.is_empty()) {
+          // We were not able to assign to `seq_i' a non-empty interval:
+          // reset `seq_i' to the universe interval and keep searching.
+          seq_i.assign(UNIVERSE);
+          continue;
+        }
+        // We assigned to `seq_i' a non-empty interval:
+        // set the other intervals to universe and return.
+        for (++i; i < num_dims; ++i)
+          x.seq[i].assign(UNIVERSE);
+        x.set_nonempty();
+        assert(x.OK());
+        return false;
+      }
+    }
+    // All intervals in `y' are universe or could not be contradicted:
+    // simplification can leave the empty box `x' as is.
+    assert(x.OK() && x.is_empty());
+    return false;
+  }
+
+  // Loop index `i' is intentionally going upwards.
+  dimension_type i = 0;
+  for ( ; i < num_dims; ++i) {
+    if (!x.seq[i].simplify_using_context_assign(y.seq[i])) {
+      assert(!x.seq[i].is_empty());
+      // The intersection of `x' and `y' is empty due to the i-th interval:
+      // reset other intervals to UNIVERSE.
+      for (dimension_type j = num_dims; j-- > i; )
+        x.seq[j].assign(UNIVERSE);
+      for (dimension_type j = i; j-- > 0; )
+        x.seq[j].assign(UNIVERSE);
+      assert(x.OK());
+      return false;
+    }
+  }
+  assert(x.OK());
   return true;
 }
 
@@ -1822,6 +1932,8 @@ Box<ITV>::refine_no_check(const Constraint& c) {
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
   // Non-interval constraints are ignored.
+  // FIXME: instead of ignoring, safely use propagate_no_check()
+  // (i.e., ensuring that no termination problem can arise).
   if (!extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var))
     return;
 
@@ -1830,7 +1942,7 @@ Box<ITV>::refine_no_check(const Constraint& c) {
     // Dealing with a trivial constraint.
     if (n < 0
         || (c.is_equality() && n != 0)
-	|| (c.is_strict_inequality() && n == 0))
+        || (c.is_strict_inequality() && n == 0))
       set_empty();
     return;
   }
@@ -3231,13 +3343,81 @@ Box<ITV>::CC76_widening_assign(const Box& y, unsigned* tp) {
 
 template <typename ITV>
 void
+Box<ITV>::get_limiting_box(const Constraint_System& cs,
+                           Box& limiting_box) const {
+  const dimension_type cs_space_dim = cs.space_dimension();
+  // Private method: the caller has to ensure the following.
+  assert(cs_space_dim <= space_dimension());
+
+  for (Constraint_System::const_iterator cs_i = cs.begin(),
+         cs_end = cs.end(); cs_i != cs_end; ++cs_i) {
+    const Constraint& c = *cs_i;
+    dimension_type c_num_vars = 0;
+    dimension_type c_only_var = 0;
+    // Constraints that are not interval constraints are ignored.
+    if (!extract_interval_constraint(c, cs_space_dim, c_num_vars, c_only_var))
+      continue;
+    // Trivial constraints are ignored.
+    if (c_num_vars != 0) {
+      // c is a non-trivial interval constraint.
+      // add interval constraint to limiting box
+      const Coefficient& n = c.inhomogeneous_term();
+      const Coefficient& d = c.coefficient(Variable(c_only_var));
+      if (interval_relation(seq[c_only_var], c.type(), n, d)
+          == Poly_Con_Relation::is_included())
+        limiting_box.add_interval_constraint_no_check(c_only_var, c.type(),
+                                                      n, d);
+    }
+  }
+}
+
+template <typename ITV>
+void
 Box<ITV>::limited_CC76_extrapolation_assign(const Box& y,
                                             const Constraint_System& cs,
                                             unsigned* tp) {
-  // FIXME(0.10.1): should take into account cs.
-  used(cs);
   Box& x = *this;
+  const dimension_type space_dim = x.space_dimension();
+
+  // Dimension-compatibility check.
+  if (space_dim != y.space_dimension())
+    throw_dimension_incompatible("limited_CC76_extrapolation_assign(y, cs)",
+                                 y);
+  // `cs' must be dimension-compatible with the two boxes.
+  const dimension_type cs_space_dim = cs.space_dimension();
+  if (space_dim < cs_space_dim)
+    throw_constraint_incompatible("limited_CC76_extrapolation_assign(y, cs)");
+
+  // The limited CC76-extrapolation between two boxes in a
+  // zero-dimensional space is also a zero-dimensional box
+  if (space_dim == 0)
+    return;
+
+#ifndef NDEBUG
+  {
+    // We assume that `y' is contained in or equal to `*this'.
+    const Box x_copy = *this;
+    const Box y_copy = y;
+    assert(x_copy.contains(y_copy));
+  }
+#endif
+
+  // If `*this' is empty, since `*this' contains `y', `y' is empty too.
+  if (marked_empty())
+    return;
+  // If `y' is empty, we return.
+  if (y.marked_empty())
+    return;
+
+  // Build a limiting box using all the constraints in cs
+  // that are satisfied by *this.
+  Box limiting_box(space_dim, UNIVERSE);
+  get_limiting_box(cs, limiting_box);
+
   x.CC76_widening_assign(y, tp);
+
+  // Intersect the widened box with the limiting box.
+  intersection_assign(limiting_box);
 }
 
 template <typename ITV>

@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -52,8 +52,11 @@
 #	    0.8			    5:0:0
 #	    0.9			    6:0:0
 #	    0.10		    7:0:0
+#	    0.10.1		    8:0:1
+#	    0.10.2		    8:0:1
+#	    0.11		    9:0:0
 
-LIBPPL_LT_CURRENT =  7
+LIBPPL_LT_CURRENT =  9
 LIBPPL_LT_REVISION = 0
 LIBPPL_LT_AGE =      0
 
@@ -72,7 +75,8 @@ COPYING.cc \
 CREDITS.cc
 
 nodist_ppl_config_SOURCES = \
-ppl-config.cc
+ppl-config.cc \
+ppl.hh
 
 ppl_config_LDADD = \
 libppl.la
@@ -122,6 +126,7 @@ Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
 stdiobuf.types.hh \
+c_streambuf.types.hh \
 globals.types.hh \
 iterator_to_const.types.hh \
 distances.types.hh \
@@ -193,6 +198,8 @@ Coefficient.defs.hh \
 Coefficient.inlines.hh \
 stdiobuf.defs.hh \
 stdiobuf.inlines.hh \
+c_streambuf.defs.hh \
+c_streambuf.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
 math_utilities.defs.hh \
@@ -317,7 +324,8 @@ Partially_Reduced_Product.defs.hh \
 Partially_Reduced_Product.inlines.hh \
 Partially_Reduced_Product.templates.hh \
 max_space_dimension.hh \
-algorithms.hh
+algorithms.hh \
+wrap.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
@@ -390,12 +398,14 @@ simplify.cc \
 Grid_conversion.cc \
 Grid_simplify.cc \
 stdiobuf.cc \
+c_streambuf.cc \
 globals.cc \
 mp_std_bits.cc \
 version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
-swapping_sort.icc
+swapping_sort.icc \
+wrap.cc
 #Pointset_Ask_Tell.cc
 
 if NO_UNDEFINED
@@ -423,11 +433,11 @@ endif !BUILD_CXX_INTERFACE
 nodist_noinst_HEADERS = ppl_include_files.hh
 
 ppl_include_files.hh: $(INCLUDE_FILES) Makefile
-	rm -f $@
-	for file in $(INCLUDE_FILES); \
+	for file in $(INCLUDE_FILES) ; \
 	do \
-	  printf "#include \"%s\"\n" $$file >>$@; \
-	done
+	  i="#include \"$$file\"" ; \
+	  ( cd $(top_srcdir)/src ; $(FGREP) -q "$$i" $(INCLUDE_FILES) ) || echo "$$i" ; \
+	done > $@
 
 EXTRA_DIST = ppl_header.hh ppl-config.cc.in version.hh.in
 
@@ -493,3 +503,12 @@ dist-hook:
 	mv -f $(distdir)/CREDITS.cc $(distdir)/CREDITS.cc.dist
 
 CLEANFILES = $(BUILT_SOURCES)
+
+$(top_builddir)/utils/build_header:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils build_header
+
+$(top_builddir)/utils/text2cxxarray:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils text2cxxarray
+
+$(top_builddir)/ppl-config.h:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir) ppl-config.h

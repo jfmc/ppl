@@ -1,5 +1,5 @@
 /* Implementation of the C interface: variables and non-inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -1991,6 +1991,18 @@ ppl_io_fprint_variable(FILE* stream, ppl_dimension_type var) try {
 }
 CATCH_ALL
 
+int
+ppl_io_asprint_variable(char** strp, ppl_dimension_type var) try {
+  const char* b = c_variable_output_function(var);
+  if (b == 0)
+    return PPL_STDIO_ERROR;
+  *strp = strdup(b);
+  if (*strp == 0)
+    return PPL_ERROR_OUT_OF_MEMORY;
+  return 0;
+}
+CATCH_ALL
+
 /* No ascii dump for Coefficient. */
 DEFINE_PRINT_FUNCTIONS(Coefficient)
 
@@ -2013,6 +2025,17 @@ DEFINE_OUTPUT_FUNCTIONS(Grid_Generator)
 DEFINE_OUTPUT_FUNCTIONS(Grid_Generator_System)
 
 DEFINE_OUTPUT_FUNCTIONS(MIP_Problem)
+
+char*
+ppl_io_wrap_string(const char* src,
+		   unsigned indent_depth,
+		   unsigned preferred_first_line_length,
+		   unsigned preferred_line_length) {
+  using namespace IO_Operators;
+  return strdup(wrap_string(src, indent_depth,
+			    preferred_first_line_length,
+			    preferred_line_length).c_str());
+}
 
 int
 ppl_io_set_variable_output_function(ppl_io_variable_output_function_type* p)

@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -1041,10 +1041,10 @@ $(srcdir)/../interfaces/OCaml/ppl_ocaml_common.inlines.hh \
 $(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 OCAMLDOC_HTML_OPTIONS = \
--I +gmp -I $(top_builddir)/interfaces/OCaml -html
+-I @mlgmp_dir@ -I $(top_builddir)/interfaces/OCaml -html
 
 OCAMLDOC_LATEX_OPTIONS = \
--I +gmp -I $(top_builddir)/interfaces/OCaml \
+-I @mlgmp_dir@ -I $(top_builddir)/interfaces/OCaml \
 -latex -noheader -notrailer -notoc
 
 user-ocaml-interface.latex-dir: \
@@ -1058,7 +1058,7 @@ $(USER_OCAML_INTERFACE_STUFF)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_USER)"'|' \
 	  $<  > Doxyfile.user-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-ocaml-interface-latex
-	ocamldoc $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
+	$(OCAMLDOC) $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
 		$(srcdir)/../interfaces/OCaml/ppl_ocaml_globals.mli
 
 devref-ocaml-interface.latex-dir: \
@@ -1072,7 +1072,7 @@ $(DEVREF_OCAML_INTERFACE_STUFF)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_DEVREF)"'|' \
 	  $<  > Doxyfile.devref-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-ocaml-interface-latex
-	ocamldoc $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
+	$(OCAMLDOC) $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
 		$(srcdir)/../interfaces/OCaml/ppl_ocaml_globals.mli
 
 ppl-user-ocaml-interface-@VERSION@.pdf: user-ocaml-interface.latex-dir
@@ -1095,7 +1095,7 @@ $(USER_OCAML_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	(cd $@; $(INSTALLDOX) \
 		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
 	mkdir $@/ocamldoc
-	ocamldoc $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
+	$(OCAMLDOC) $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
 		$(srcdir)/../interfaces/OCaml/ppl_ocaml_globals.mli
 
 ppl-devref-ocaml-interface-@VERSION@-html: \
@@ -1112,7 +1112,7 @@ $(DEVREF_OCAML_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	(cd $@; $(INSTALLDOX) \
 		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
 	mkdir $@/ocamldoc
-	ocamldoc $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
+	$(OCAMLDOC) $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
 		$(srcdir)/../interfaces/OCaml/ppl_ocaml_globals.mli
 
 # Java Language Interface Targets
@@ -1392,7 +1392,7 @@ $(USER_CONFIGURED_OCAML_INTERFACE_STUFF)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_USER)"'|' \
 	  $<  > Doxyfile.user-configured-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-ocaml-interface-latex
-	ocamldoc $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
+	$(OCAMLDOC) $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
 		../interfaces/OCaml/ppl_ocaml.mli
 
 devref-configured-ocaml-interface.latex-dir: \
@@ -1406,7 +1406,7 @@ $(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_DEVREF)"'|' \
 	  $<  > Doxyfile.devref-configured-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-ocaml-interface-latex
-	ocamldoc $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
+	$(OCAMLDOC) $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
 		../interfaces/OCaml/ppl_ocaml.mli
 
 ppl-user-configured-ocaml-interface-@VERSION@.pdf: \
@@ -1431,7 +1431,7 @@ $(USER_CONFIGURED_OCAML_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	(cd $@; $(INSTALLDOX) \
 		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
 	mkdir $@/ocamldoc
-	ocamldoc $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
+	$(OCAMLDOC) $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
 		../interfaces/OCaml/ppl_ocaml.mli
 
 ppl-devref-configured-ocaml-interface-@VERSION@-html: \
@@ -1448,7 +1448,7 @@ $(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	(cd $@; $(INSTALLDOX) \
 		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
 	mkdir $@/ocamldoc
-	ocamldoc $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
+	$(OCAMLDOC) $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
 		../interfaces/OCaml/ppl_ocaml.mli
 
 endif BUILD_OCAML_INTERFACE
@@ -1559,22 +1559,22 @@ $(USER_CORE_HTML_MANUAL): user.doxyconf-html $(USER_CORE_STUFF)
 	$(MAKE) $(AM_MAKEFLAGS) $(USER_CORE_HTML_DIR)
 	tar c $(USER_CORE_HTML_DIR) | gzip --best --force > $@
 
-$(USER_C_INTERFACE_HTML_MANUAL): user.doxyconf-html $(USER_CORE_STUFF) \
+$(USER_C_INTERFACE_HTML_MANUAL): $(USER_CORE_HTML_MANUAL) \
 user-language-interface.doxyconf $(USER_C_INTERFACE_STUFF)
 	$(MAKE) $(AM_MAKEFLAGS) $(USER_C_INTERFACE_HTML_DIR)
 	tar c $(USER_C_INTERFACE_HTML_DIR) | gzip --best --force > $@
 
-$(USER_PROLOG_INTERFACE_HTML_MANUAL): user.doxyconf-html $(USER_CORE_STUFF) \
+$(USER_PROLOG_INTERFACE_HTML_MANUAL): $(USER_CORE_HTML_MANUAL) \
 user-language-interface.doxyconf $(USER_PROLOG_INTERFACE_STUFF)
 	$(MAKE) $(AM_MAKEFLAGS) $(USER_PROLOG_INTERFACE_HTML_DIR)
 	tar c $(USER_PROLOG_INTERFACE_HTML_DIR) | gzip --best --force > $@
 
-$(USER_OCAML_INTERFACE_HTML_MANUAL): user.doxyconf-html $(USER_CORE_STUFF) \
+$(USER_OCAML_INTERFACE_HTML_MANUAL): $(USER_CORE_HTML_MANUAL) \
 user-language-interface.doxyconf $(USER_OCAML_INTERFACE_STUFF)
 	$(MAKE) $(AM_MAKEFLAGS) $(USER_OCAML_INTERFACE_HTML_DIR)
 	tar c $(USER_OCAML_INTERFACE_HTML_DIR) | gzip --best --force > $@
 
-$(USER_JAVA_INTERFACE_HTML_MANUAL): user.doxyconf-html $(USER_CORE_STUFF) \
+$(USER_JAVA_INTERFACE_HTML_MANUAL): $(USER_CORE_HTML_MANUAL) \
 user-language-interface.doxyconf $(USER_JAVA_INTERFACE_STUFF)
 	$(MAKE) $(AM_MAKEFLAGS) $(USER_JAVA_INTERFACE_HTML_DIR)
 	tar c $(USER_JAVA_INTERFACE_HTML_DIR) | gzip --best --force > $@
@@ -1632,3 +1632,6 @@ mostlyclean-local:
 CLEANFILES = \
 $(USER_CORE_HTML_DIR).tag \
 $(DEVREF_CORE_HTML_DIR).tag
+
+../src/ppl_include_files.hh:
+	$(MAKE) $(AM_MAKEFLAGS) -C ../src ppl_include_files.hh

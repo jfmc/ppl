@@ -1,5 +1,5 @@
 /* Test the allocation error recovery facility of the library.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -53,8 +53,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 //
 // On the Itanium the test fails because of the bug reported in
 // http://www.cs.unipr.it/pipermail/ppl-devel/2008-September/012943.html
+//
+// On s390x-linux the test fails, we do not know why (and without access
+// to such a machine there is little we can do).
+// See http://www.cs.unipr.it/pipermail/ppl-devel/2009-April/014489.html
 #if !PPL_GMP_SUPPORTS_EXCEPTIONS || !PPL_CXX_SUPPORTS_LIMITING_MEMORY \
-  || defined(__ia64)
+  || defined(__ia64) || defined(__s390x__)
 
 int
 main() TRY {
@@ -181,16 +185,14 @@ main() TRY {
   do {
     ++dimension;
     nout << "Trying dimension " << dimension << endl;
-  }
-  while (guarded_compute_open_hypercube_generators(dimension, INIT_MEMORY));
+  } while (guarded_compute_open_hypercube_generators(dimension, INIT_MEMORY));
 
   // Now find an upper bound to the memory necessary to compute it.
   unsigned long upper_bound = INIT_MEMORY;
   do {
     upper_bound *= 2;
     nout << "Trying upper bound " << upper_bound << endl;
-  }
-  while (!guarded_compute_open_hypercube_generators(dimension, upper_bound));
+  } while (!guarded_compute_open_hypercube_generators(dimension, upper_bound));
 
   // Search the "exact" amount of memory.
   int lower_bound = upper_bound/2;

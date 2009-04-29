@@ -1,5 +1,5 @@
 /* Common part of the Prolog interfaces: declarations.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -789,11 +789,14 @@ ppl_MIP_Problem_evaluate_objective_function(Prolog_term_ref t_mip,
 					    Prolog_term_ref t_n,
 					    Prolog_term_ref t_d);
 
-using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::Interfaces::Prolog;
-
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_OK(Prolog_term_ref t_mip);
+
+extern "C" Prolog_foreign_return_type
+ppl_MIP_Problem_ascii_dump(Prolog_term_ref t_mip);
+
+using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::Interfaces::Prolog;
 
 class Partial_Function {
 private:

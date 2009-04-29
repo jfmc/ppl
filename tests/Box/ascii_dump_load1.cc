@@ -1,5 +1,5 @@
 /* Test Box::ascii_dump() and Box::ascii_load().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -161,7 +161,7 @@ test04() {
 }
 
 bool
-test06() {
+test05() {
   Variable A(0);
   Variable B(1);
 
@@ -193,24 +193,26 @@ test06() {
 }
 
 bool
-test07() {
+test06() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
   Constraint_System cs;
-  cs.insert(3*A + C == 5);
+  cs.insert(3*C == 5);
   TBox box1(cs);
 
   print_constraints(box1, "*** box1(cs) ***");
 
-  box1.difference_assign(box1);
+  TBox box1_copy(box1);
 
-  print_constraints(box1, "*** box1.difference_assign(box1) ***");
+  box1.difference_assign(box1_copy);
 
-  box1.concatenate_assign(box1);
+  print_constraints(box1, "*** box1.difference_assign(box1_copy) ***");
 
-  print_constraints(box1, "*** box1.concatenate_assign(box1) ***");
+  box1.concatenate_assign(box1_copy);
+
+  print_constraints(box1, "*** box1.concatenate_assign(box1_copy) ***");
 
   nout << "box1.space_dimension() = " << box1.space_dimension() << endl;
 
@@ -242,12 +244,10 @@ test07() {
 } // namespace
 
 BEGIN_MAIN
-// FIXME(0.10.1): finish and uncomment all these tests.
-//   DO_TEST(test01);
-//   DO_TEST(test02);
-//   DO_TEST(test03);
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
   DO_TEST(test04);
-//  DO_TEST(test05);
-//   DO_TEST(test06);
-//   DO_TEST(test07);
+  DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN

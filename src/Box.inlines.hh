@@ -1,5 +1,5 @@
 /* Box class implementation: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -227,13 +227,6 @@ Box<ITV>::strictly_contains(const Box& y) const {
 }
 
 template <typename ITV>
-inline bool
-Box<ITV>::upper_bound_assign_if_exact(const Box&) {
-  // TODO: this must be properly implemented.
-  return false;
-}
-
-template <typename ITV>
 inline void
 Box<ITV>::expand_space_dimension(const Variable var,
                                  const dimension_type m) {
@@ -408,15 +401,15 @@ Box<ITV>
     break;
   case Constraint::NONSTRICT_INEQUALITY:
     seq_v.refine_existential((den > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL, q);
-    // FIXME(0.10.1): this assertion fails due to a bug in refine.
     assert(seq_v.OK());
     break;
   case Constraint::STRICT_INEQUALITY:
     seq_v.refine_existential((den > 0) ? GREATER_THAN : LESS_THAN, q);
     break;
   }
-  // FIXME(0.10.1): do check the value returned by `refine_existential' and
+  // FIXME: do check the value returned by `refine_existential' and
   // set `empty' and `empty_up_to_date' as appropriate.
+  // This has to be done after reimplementation of intervals.
   reset_empty_up_to_date();
   assert(OK());
 }

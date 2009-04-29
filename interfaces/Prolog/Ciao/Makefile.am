@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -168,11 +168,11 @@ $(NO_UNDEFINED_FLAG) \
 pkglib_DATA = ppl_ciao.po
 
 ppl_ciao.pl: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_ciao_pl.m4 > $@
 
 ciao_prolog_generated_test.pl: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_ciao_prolog_generated_test_pl.m4 > $@
 
 ppl_ciao.po: ppl_ciao.pl
@@ -271,9 +271,10 @@ pl_check_test: ciao_pl_check$(EXEEXT) .libs/libppl_ciao.so $(EXPECTED_PCHK)
 			 >obtained_pchk
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-clpq_test: ciao_clpq$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq $(EXPECTED_CLPQ)
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+$(CLPQ_TESTS):
+	cp -f $(srcdir)/../tests/$@ .
+
+clpq_test: ciao_clpq$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq $(EXPECTED_CLPQ) $(CLPQ_TESTS)
 	GLOBALSTKSIZE=1000000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
@@ -283,9 +284,7 @@ clpq_test: ciao_clpq$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq $(EXPECT
 			<$(srcdir)/../tests/script_clpq >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
-clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXPECTED_CLPQ2)
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXPECTED_CLPQ2) $(CLPQ_TESTS)
 	GLOBALSTKSIZE=100000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
@@ -315,3 +314,16 @@ MOSTLYCLEANFILES = \
 ciao_clpq ciao_clpq2 ciao_pl_check ciao_prolog_generated_test \
 obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt \
 $(CLPQ_TESTS)
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_prolog_domains.cc.stamp' in parent's directory
+# makefile.
+$(nodist_EXTRA_libppl_ciao_la_SOURCES):
+../tests/ppl_prolog_generated_test_main.pl:
+
+# FIXME: the dependencies from .libs/libppl_ciao.so in this Makefile.am
+# are probably all wrong.
+.libs/libppl_ciao.so: libppl_ciao.la

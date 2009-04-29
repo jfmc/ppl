@@ -1,5 +1,5 @@
 /* OR_Matrix class implementation: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -43,7 +43,7 @@ OR_Matrix<T>::row_first_element_index(const dimension_type k) {
 template <typename T>
 inline dimension_type
 OR_Matrix<T>::row_size(const dimension_type k) {
-  return (k+2) & ~dimension_type(1);
+  return k + 2 - k%2;
 }
 
 #if PPL_OR_MATRIX_EXTRA_DEBUG
@@ -66,7 +66,6 @@ OR_Matrix<T>::Pseudo_Row<U>::Pseudo_Row()
   , size_(0)
 #endif
 {
-  // FIXME(0.10.1): is zeroing necessary/wanted?
 }
 
 template <typename T>
@@ -132,6 +131,10 @@ OR_Matrix<T>::any_row_iterator<U>
     e(n_rows)
     // Field `i' is intentionally not initialized here.
 {
+#if PPL_OR_MATRIX_EXTRA_DEBUG
+  // Turn `value' into a valid object.
+  value.size_ = OR_Matrix::row_size(e);
+#endif
 }
 
 template <typename T>
@@ -189,12 +192,13 @@ inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator++() {
   ++e;
   dimension_type increment = e;
-  if (e % 2) {
+  if (e % 2 != 0)
     ++increment;
 #if PPL_OR_MATRIX_EXTRA_DEBUG
+  else {
     value.size_ += 2;
-#endif
   }
+#endif
   i += increment;
   value.first += increment;
   return *this;
@@ -215,7 +219,7 @@ inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator--() {
   dimension_type decrement = e + 1;
   --e;
-  if (e % 2) {
+  if (e % 2 != 0) {
     ++decrement;
 #if PPL_OR_MATRIX_EXTRA_DEBUG
     value.size_ -= 2;
@@ -238,16 +242,15 @@ OR_Matrix<T>::any_row_iterator<U>::operator--(int) {
 template <typename T>
 template <typename U>
 inline typename OR_Matrix<T>::template any_row_iterator<U>&
-OR_Matrix<T>::any_row_iterator<U>::operator+=(difference_type m) {
+OR_Matrix<T>::any_row_iterator<U>::operator+=(const difference_type m) {
   difference_type increment = m + m*m/2 + m*e;
-  if (e%2 == 0 && m%2 == 1)
+  if (e % 2 == 0 && m % 2 != 0)
     ++increment;
   e += m;
   i += increment;
   value.first += increment;
 #if PPL_OR_MATRIX_EXTRA_DEBUG
-  // FIXME(0.10.1)!!!
-  value.size_ = OR_Matrix::row_size(e);
+  value.size_ += (m - m%2);
 #endif
   return *this;
 }
@@ -334,7 +337,7 @@ template <typename T>
 template <typename U>
 inline dimension_type
 OR_Matrix<T>::any_row_iterator<U>::row_size() const {
-  return (e+2) & ~dimension_type(1);
+  return OR_Matrix::row_size(e);
 }
 
 template <typename T>
@@ -418,11 +421,10 @@ isqrt(unsigned long x) {
 template <typename T>
 inline dimension_type
 OR_Matrix<T>::max_num_rows() {
-  // Compute the maximum number of rows that
-  // are contained in a DB_Row that allocates
-  // a pseudo-triangular matrix.
+  // Compute the maximum number of rows that are contained in a DB_Row
+  // that allocates a pseudo-triangular matrix.
   dimension_type k = isqrt(2*DB_Row<T>::max_size() + 1);
-  return (k-1) & ~dimension_type(1);
+  return (k - 1) - (k - 1)%2;
 }
 
 template <typename T>

@@ -1,4 +1,4 @@
-Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 See below for the copying conditions.
 
 
@@ -15,7 +15,8 @@ Contents
 5. Configuring the Language Interfaces
 6. Configuring for Optimized Performance
 7. Configuring for Debugging
-8. Using the CVS Sources
+8. Programs that Come with the Library
+9. Using the CVS Sources
 
 
 1. The Standard Thing (configure, make, make install)
@@ -240,6 +241,10 @@ or any space-separated list of interface specifiers chosen among
   xsb_prolog,      the XSB interface;
   yap_prolog,      the YAP interface.
 
+Note that, in order to build any interface different from the C++ one,
+a recent enough version of GNU M4 is required (the configuration script
+searches for one and gives an error if it cannot find it).
+
 The instantiations for the domains for interfaces other than the main
 C++ interface can be customized via the `instantiations' option for
 the PPL `configure' shell script which is described below. Some
@@ -258,6 +263,11 @@ information is given in a README.* file.  Presently we have:
 For the Java interface, the `--with-java=DIR' configure option allows
 to select the Java SDK root directory.  We have tested the Java interface
 with the Java SE Development Kit 6 and OpenJDK 1.6.
+
+For the OCaml interface, the `--with-mlgmp=DIR' configure option allows
+to specify the installation directory of the ML GMP package (which allows
+to use GMP numbers in OCaml programs).  By default, ML GMP is searched
+in the `gmp' subdirectory of the OCaml standard library directory.
 
 The C++ interface provides access to all the numerical abstractions
 provided by the PPL.  The majority of these (we are talking about
@@ -392,7 +402,35 @@ In order to assess the coverage of the PPL test suite, the
 code to be used in conjunction with the `gcov' coverage testing tool.
 
 
-8. Using the CVS Sources
+8. Programs that Come with the Library
+--------------------------------------
+
+The PPL is shipped with two programs that are interesting per se, and
+allow to sanity-check the build as well as to obtain performance
+comparisons.  The first such program is `ppl_lpsol', which offers some
+of the functionality of GLPK's `glpsol' using the service of the
+PPL, including its simplex solver.  Since `ppl_lpsol' uses GLPK's
+input routines, it is only built if a suitable version of GLPK is
+available.  If you prefer `ppl_lpsol' not to be built, use the
+configure option
+
+  --disable-ppl_lpsol
+
+Another program that is built by default and is used for regression
+testing and build validation is `ppl_lcdd'.  This is a program for
+vertex/facet enumeration, accepting the same input format as the
+similar programs shipped with cddlib and lrslib.  If you prefer `ppl_lcdd'
+not to be built, use the configure option
+
+  --disable-ppl_lcdd
+
+Disabling these programs will shorten the compilation time by a few
+seconds, and the time spent in `make check' by a dozen of minutes.
+In exchange, you will give up an important opportunity to discover
+whether the version of PPL you have built has been miscompiled.
+
+
+9. Using the CVS Sources
 ------------------------
 
 If you use the CVS sources, then you need recent versions of Autoconf
@@ -404,7 +442,7 @@ you cannot explain otherwise, use `autoreconf -f'.
 
 --------
 
-Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

@@ -1,5 +1,5 @@
 /* Header file for test programs.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_ppl_test_hh
 #define PPL_ppl_test_hh 1
 
-#include "ppl.hh"
+#include "ppl_header.hh"
 #include "Partial_Function.defs.hh"
 #include "Random_Number_Generator.defs.hh"
 #include <stdexcept>
@@ -59,24 +59,33 @@ catch (const std::exception& e) { \
   exit(1); \
 }
 
-#define BEGIN_MAIN				\
-int						\
-main() try {					\
-  set_handlers();				\
-  bool succeeded = false;			\
-  bool overflow = false;			\
-  std::list<std::string> failed_tests;
+#define BEGIN_MAIN                                       \
+int                                                      \
+main() try {                                             \
+  set_handlers();                                        \
+  bool succeeded = false;                                \
+  bool overflow = false;                                 \
+  std::list<std::string> failed_tests;                   \
+  std::list<std::string> unexpectedly_succeeded_tests;
 
 #define END_MAIN							\
-  if (failed_tests.empty())						\
-    return 0;								\
-  else {								\
-    std::cerr << "failed tests: ";					\
-    std::copy(failed_tests.begin(), failed_tests.end(),			\
+  if (!failed_tests.empty()) {						\
+    std::cerr << "tests failed: ";					\
+    std::copy(failed_tests.begin(),                                     \
+              failed_tests.end(),                                       \
 	      std::ostream_iterator<std::string>(std::cerr, " "));	\
     std::cerr << std::endl;						\
     return 1;								\
   }									\
+  if (!unexpectedly_succeeded_tests.empty()) {				\
+    std::cerr << "tests unexpectedly succeeded: ";                      \
+    std::copy(unexpectedly_succeeded_tests.begin(),                     \
+              unexpectedly_succeeded_tests.end(),                       \
+	      std::ostream_iterator<std::string>(std::cerr, " "));	\
+    std::cerr << std::endl;						\
+    return 1;								\
+  }									\
+  return 0;								\
 }									\
 catch (const std::overflow_error& e) {					\
   std::cerr << "arithmetic overflow (" << e.what() << ")"		\
@@ -122,16 +131,18 @@ catch (const std::exception& e) {					\
   if (!succeeded)			 \
     failed_tests.push_back(#test);
 
-#define DO_TEST_F(test)			 \
-  ANNOUNCE_TEST(test);			 \
-  RUN_TEST(test);			 \
-  if (succeeded)			 \
-    failed_tests.push_back(#test);
+#define DO_TEST_F(test)                                 \
+  ANNOUNCE_TEST(test);                                  \
+  RUN_TEST(test);                                       \
+  if (succeeded)                                        \
+    unexpectedly_succeeded_tests.push_back(#test);
 
-#define DO_TEST_OVERFLOW(test)		 \
-  ANNOUNCE_TEST(test);			 \
-  RUN_TEST(test);			 \
-  if (succeeded || !overflow)		 \
+#define DO_TEST_OVERFLOW(test)                          \
+  ANNOUNCE_TEST(test);                                  \
+  RUN_TEST(test);                                       \
+  if (succeeded)                                        \
+    unexpectedly_succeeded_tests.push_back(#test);      \
+  else if (!overflow)                                   \
     failed_tests.push_back(#test);
 
 #define DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)			\

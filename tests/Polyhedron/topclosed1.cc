@@ -1,5 +1,5 @@
 /* Test Polyhedron::is_topologically_closed().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -56,7 +56,7 @@ test02() {
   gs1.insert(point(A));
   gs1.insert(closure_point());
   gs1.insert(closure_point(A));
-  ph1.add_generators_and_minimize(gs1);
+  ph1.add_generators(gs1);
 
   bool ok = !ph1.is_topologically_closed();
 

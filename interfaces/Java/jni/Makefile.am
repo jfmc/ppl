@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -162,7 +162,7 @@ libppl_java_la_DEPENDENCIES = \
 @required_instantiations_java_cxx_objects@
 
 ppl_java_implementation_domains.cc.stamp: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. \
+	$(M4) --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_classes_cc_files.m4 \
                 > ppl_java_cc_blob
@@ -174,3 +174,10 @@ ppl_java_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 CLEANFILES = \
 @required_instantiations_java_cxx_sources@ \
 ppl_java_implementation_domains.cc.stamp
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_java_implementation_domains.cc.stamp' target.
+$(nodist_EXTRA_libppl_java_la_SOURCES):

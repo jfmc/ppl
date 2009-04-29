@@ -1,8 +1,8 @@
 #%define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 
 Name:           ppl
-Version:        0.10
-Release:        4%{?dist}
+Version:        0.10.2
+Release:        1%{?dist}
 
 Summary:        The Parma Polyhedra Library: a library of numerical abstractions
 Group:          Development/Libraries
@@ -12,8 +12,8 @@ Source0:        ftp://ftp.cs.unipr.it/pub/ppl/releases/%{version}/%{name}-%{vers
 Source1:        ppl.hh
 Source2:        ppl_c.h
 Source3:        pwl.hh
-#Patch0:        none
-#Patch1:        none
+Patch0:         ppl-0.10.2-Makefile.patch
+#Patch1:
 #Icon:
 #Requires:
 Requires(post): /sbin/ldconfig
@@ -60,7 +60,7 @@ BuildRequires:  glpk-devel >= 4.13
 This package contains the mixed integer linear programming solver ppl_lpsol
 and the program ppl_lcdd for vertex/facet enumeration of convex polyhedra.
 
-%ifnarch ppc64
+%ifnarch ia64 ppc64 s390 s390x
 %package gprolog
 # The `gprolog' package is not available on ppc64:
 # the GNU Prolog interface must thus be disabled for that architecture.
@@ -73,7 +73,7 @@ This package adds GNU Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in GNU Prolog programs.
 %endif
 
-%ifnarch ppc64
+%ifnarch ia64 ppc64 s390 s390x
 %package gprolog-static
 Summary:        The static archive for the GNU Prolog interface of the Parma Polyhedra Library
 Group:          Development/Libraries
@@ -106,6 +106,7 @@ Summary:        The YAP Prolog interface of the Parma Polyhedra Library
 Group:          Development/Libraries
 BuildRequires:  yap-devel >= 5.1.1
 Requires:       %{name} = %{version}-%{release}, %{name}-pwl = %{version}-%{release}, yap >= 5.1.1
+Obsoletes:      ppl-yap-static
 %description yap
 This package adds YAP Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in YAP Prolog programs.
@@ -198,16 +199,16 @@ Install this package if you want to program with the PWL.
 
 %prep
 %setup -q
-#%patch0 -p1
+%patch0 -p1
 #%patch1 -p1
 
 %build
 CPPFLAGS="-I%{_includedir}/glpk"
-%ifnarch ppc64
+%ifnarch ia64 ppc64 s390 s390x
 CPPFLAGS="$CPPFLAGS -I%{_libdir}/gprolog-`gprolog --version 2>&1 | head -1 | sed -e "s/.* \([^ ]*\)$/\1/g"`/include"
 %endif
 CPPFLAGS="$CPPFLAGS -I%{_includedir}/Yap"
-%configure --enable-shared --disable-rpath --enable-interfaces="c++ c gnu_prolog swi_prolog yap_prolog java" CPPFLAGS="$CPPFLAGS"
+%configure --docdir=%{_datadir}/doc/%{name}-%{version} --enable-shared --disable-rpath --enable-interfaces="c++ c gnu_prolog swi_prolog yap_prolog java" CPPFLAGS="$CPPFLAGS"
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' Watchdog/libtool
@@ -226,13 +227,17 @@ rm -f %{buildroot}%{_libdir}/*.la %{buildroot}%{_libdir}/%{name}/*.la
 # the architecture for which the compiler is compiling.
 
 # Since our header files only depend on the sizeof things, we smash
-# ix86 onto i386 and arm* onto arm.
+# ix86 onto i386 and arm* onto arm.  For the SuperH RISC engine family,
+# we smash sh3 and sh4 onto sh.
 normalized_arch=%{_arch}
 %ifarch %{ix86}
 normalized_arch=i386
 %endif
 %ifarch %{arm}
 normalized_arch=arm
+%endif
+%ifarch sh3 sh4
+normalized_arch=sh
 %endif
 
 mv %{buildroot}/%{_includedir}/ppl.hh %{buildroot}/%{_includedir}/ppl-${normalized_arch}.hh
@@ -245,26 +250,25 @@ install -m644 %{SOURCE3} %{buildroot}/%{_includedir}/pwl.hh
 # Install the Javadocs for ppl-java.
 mkdir -p %{buildroot}%{_javadocdir}
 mv \
-%{buildroot}/%{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}-html \
+%{buildroot}/%{_datadir}/doc/%{name}-%{version}/ppl-user-java-interface-%{version}-html \
 %{buildroot}%{_javadocdir}/%{name}-java
 
 %files
 %defattr(-,root,root,-)
-%doc %{_datadir}/doc/%{name}/BUGS
-%doc %{_datadir}/doc/%{name}/COPYING
-%doc %{_datadir}/doc/%{name}/CREDITS
-%doc %{_datadir}/doc/%{name}/ChangeLog
-%doc %{_datadir}/doc/%{name}/NEWS
-%doc %{_datadir}/doc/%{name}/README
-%doc %{_datadir}/doc/%{name}/README.configure
-%doc %{_datadir}/doc/%{name}/TODO
-%doc %{_datadir}/doc/%{name}/gpl.*
+%doc %{_datadir}/doc/%{name}-%{version}/BUGS
+%doc %{_datadir}/doc/%{name}-%{version}/COPYING
+%doc %{_datadir}/doc/%{name}-%{version}/CREDITS
+%doc %{_datadir}/doc/%{name}-%{version}/NEWS
+%doc %{_datadir}/doc/%{name}-%{version}/README
+%doc %{_datadir}/doc/%{name}-%{version}/README.configure
+%doc %{_datadir}/doc/%{name}-%{version}/TODO
+%doc %{_datadir}/doc/%{name}-%{version}/gpl.txt
 %{_libdir}/libppl.so.*
 %{_libdir}/libppl_c.so.*
 %{_bindir}/ppl-config
 %{_mandir}/man1/ppl-config.1.gz
 %dir %{_libdir}/%{name}
-%dir %{_datadir}/doc/%{name}
+%dir %{_datadir}/doc/%{name}-%{version}
 
 %files devel
 %defattr(-,root,root,-)
@@ -289,7 +293,7 @@ mv \
 %{_mandir}/man1/ppl_lcdd.1.gz
 %{_mandir}/man1/ppl_lpsol.1.gz
 
-%ifnarch ppc64
+%ifnarch ia64 ppc64 s390 s390x
 %files gprolog
 %defattr(-,root,root,-)
 %doc interfaces/Prolog/GNU/README.gprolog
@@ -298,7 +302,7 @@ mv \
 %{_libdir}/%{name}/libppl_gprolog.so
 %endif
 
-%ifnarch ppc64
+%ifnarch ia64 ppc64 s390 s390x
 %files gprolog-static
 %defattr(-,root,root,-)
 %{_libdir}/%{name}/libppl_gprolog.a
@@ -345,34 +349,36 @@ mv \
 
 %files docs
 %defattr(-,root,root,-)
-%doc %{_datadir}/doc/%{name}/README.doc
-%doc %{_datadir}/doc/%{name}/fdl.*
-%doc %{_datadir}/doc/%{name}/ppl-user-%{version}-html/
-%doc %{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}-html/
-#%doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}-html/
-%doc %{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}-html/
-%doc %{_datadir}/doc/%{name}/ppl-user-%{version}.pdf
-%doc %{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}.pdf
-%doc %{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}.pdf
-#%doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}.pdf
-%doc %{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}.pdf
-%doc %{_datadir}/doc/%{name}/ppl-user-%{version}.ps.gz
-%doc %{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}.ps.gz
-%doc %{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}.ps.gz
-#%doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}.ps.gz
-%doc %{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}.ps.gz
+%doc %{_datadir}/doc/%{name}-%{version}/ChangeLog*
+%doc %{_datadir}/doc/%{name}-%{version}/README.doc
+%doc %{_datadir}/doc/%{name}-%{version}/fdl.*
+%doc %{_datadir}/doc/%{name}-%{version}/gpl.pdf
+%doc %{_datadir}/doc/%{name}-%{version}/gpl.ps.gz
+%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-%{version}-html/
+%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-c-interface-%{version}-html/
+#%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-ocaml-interface-%{version}-html/
+%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-prolog-interface-%{version}-html/
+%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-%{version}.pdf
+%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-c-interface-%{version}.pdf
+%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-java-interface-%{version}.pdf
+#%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-ocaml-interface-%{version}.pdf
+%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-prolog-interface-%{version}.pdf
+%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-%{version}.ps.gz
+%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-c-interface-%{version}.ps.gz
+%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-java-interface-%{version}.ps.gz
+#%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-ocaml-interface-%{version}.ps.gz
+%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-prolog-interface-%{version}.ps.gz
 
 %files pwl
 %defattr(-,root,root,-)
-%doc %{_datadir}/doc/pwl/BUGS
-%doc %{_datadir}/doc/pwl/COPYING
-%doc %{_datadir}/doc/pwl/CREDITS
-%doc %{_datadir}/doc/pwl/ChangeLog
-%doc %{_datadir}/doc/pwl/NEWS
-%doc %{_datadir}/doc/pwl/README
-%doc %{_datadir}/doc/pwl/gpl.*
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/BUGS
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/COPYING
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/CREDITS
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/NEWS
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/README
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/gpl.txt
 %{_libdir}/libpwl.so.*
-%dir %{_datadir}/doc/pwl
+%dir %{_datadir}/doc/%{name}-%{version}/pwl
 
 %files pwl-devel
 %defattr(-,root,root,-)
@@ -386,11 +392,14 @@ mv \
 
 %files pwl-docs
 %defattr(-,root,root,-)
-%doc %{_datadir}/doc/pwl/README.doc
-%doc %{_datadir}/doc/pwl/fdl.*
-%doc %{_datadir}/doc/pwl/pwl-user-0.5-html/
-%doc %{_datadir}/doc/pwl/pwl-user-0.5.pdf
-%doc %{_datadir}/doc/pwl/pwl-user-0.5.ps.gz
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/ChangeLog*
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/README.doc
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/fdl.*
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/gpl.ps.gz
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/gpl.pdf
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/pwl-user-0.7-html/
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/pwl-user-0.7.pdf
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/pwl-user-0.7.ps.gz
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -401,6 +410,37 @@ mv \
 rm -rf %{buildroot}
 
 %changelog
+* Sat Apr 18 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10.2-1
+- Updated for PPL 0.10.2.
+
+* Tue Apr 14 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10.1-1
+- Updated for PPL 0.10.1.
+
+* Sun Mar 29 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-11
+- Moved changelogs and PostScript and PDF versions of the GPL to the
+  `docs' subpackages. This saves considerable space on the live media.
+
+* Tue Mar 24 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-10
+- There are no GNU Prolog packages available on ia64: disable the GNU Prolog
+  interface also on those platforms (besides ppc64, s390 and s390x).
+
+* Thu Feb 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.10-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild.
+
+* Wed Feb 18 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-8
+- Install the documentation according to the Fedora packaging conventions.
+
+* Wed Feb 17 2009 Karsten Hopp <karsten@redhat.comt> 0.10-7
+- There are no GNU Prolog packages available on s390 and s390x: disable
+  the GNU Prolog interface also on those platforms (besides ppc64).
+
+* Wed Feb 04 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-6
+- Better workaround for the bug affecting PPL 0.10 on big-endian
+  architectures.
+
+* Tue Feb 03 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-5
+- Work around the bug affecting PPL 0.10 on big-endian architectures.
+
 * Fri Dec 05 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-4
 - Added `%%dir %%{_datadir}/doc/pwl' to the `%%files' section
   of the `ppl-pwl' package.

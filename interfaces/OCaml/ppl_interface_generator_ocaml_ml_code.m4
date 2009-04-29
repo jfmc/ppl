@@ -3,7 +3,7 @@ sm4_divert(-1)
 
 This m4 file contains the program code for generating ppl_ocaml.ml
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -514,11 +514,12 @@ external ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign:
 
 ')
 
-m4_define(`ppl_@CLASS@_ascii_dump_code', `
+m4_define(`ppl_@CLASS@_ascii_dump_code',
+`dnl
 external ppl_@CLASS@_ascii_dump:
   @!CLASS@ -> string = "ppl_@CLASS@_ascii_dump"
 
-' )
+')
 
 m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `dnl

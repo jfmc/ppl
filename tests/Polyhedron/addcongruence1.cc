@@ -1,5 +1,5 @@
 /* Test Polyhedron::add_congruence().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -125,7 +125,8 @@ test06() {
 
   C_Polyhedron ph(2);
   ph.add_congruence(0*A %= 0);
-  bool b = ph.add_congruence_and_minimize((B == 5) / 0);
+  ph.add_congruence((B == 5) / 0);
+  bool b = !ph.is_empty();
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(B == 5);
@@ -145,7 +146,8 @@ test07() {
   C_Polyhedron ph(2);
 
   ph.add_congruence((Linear_Expression(0) %= 8) / 4);
-  bool b = ph.add_congruence_and_minimize((A == -1) / 0);
+  ph.add_congruence((A == -1) / 0);
+  bool b = !ph.is_empty();
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A == -1);
@@ -169,7 +171,8 @@ test08() {
   C_Polyhedron known_result(ph);
 
   ph.add_congruence((A - B == 0) / 0);
-  bool b = ph.add_congruence_and_minimize((Linear_Expression(0) %= 1) / 2);
+  ph.add_congruence((Linear_Expression(0) %= 1) / 2);
+  bool b = !ph.is_empty();
 
   bool ok = !b && (ph == known_result);
 
@@ -186,8 +189,8 @@ test09() {
 
   C_Polyhedron known_result(0);
 
-  bool b =
-    ph.add_congruence_and_minimize((Linear_Expression::zero() %= 0) / 2);
+  ph.add_congruence((Linear_Expression::zero() %= 0) / 2);
+  bool b = !ph.is_empty();
 
   bool ok = b && (ph == known_result);
 
@@ -202,8 +205,8 @@ test10() {
 
   print_constraints(ph, "*** ph ***");
 
-  bool b =
-    ph.add_congruence_and_minimize((Linear_Expression::zero() %= 1) / 0);
+  ph.add_congruence((Linear_Expression::zero() %= 1) / 0);
+  bool b = !ph.is_empty();
 
   C_Polyhedron known_result(0, EMPTY);
 

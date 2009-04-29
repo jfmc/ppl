@@ -1,6 +1,6 @@
 /* Test MIP_Problem Java test class of the Parma Polyhedra Library Java
    interface.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -233,8 +233,8 @@ static {
         expected_ov_ph.add_constraint(c_a_geq_1);
         ok = (ov_ph.equals(expected_ov_ph));
 
-        PPL_Test.println_if_noisy("Testing toString(): ");
-        PPL_Test.println_if_noisy(mip1.toString());
+        PPL_Test.println_if_noisy("Testing toString() and wrap_string(): ");
+        PPL_Test.println_if_noisy(IO.wrap_string(mip1.toString(), 4, 64, 60));
         PPL_Test.println_if_noisy();
 
         PPL_Test.print_if_noisy("Testing max_space_dimension(): ");

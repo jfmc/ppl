@@ -5,7 +5,7 @@ This m4 file contains the program implementation code for generating the
 files ppl_ocaml_DOMAIN.cc for each interface domain DOMAIN
 in ppl_interface instantiations.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -66,10 +66,10 @@ extern "C"
 CAMLprim value
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(value d, value caml_de) try {
   CAMLparam2(d, caml_de);
-  int dd = Int_val(d);
-  check_int_is_unsigned(dd);
+  dimension_type dd = value_to_ppl_dimension(d);
   Degenerate_Element ppl_de = build_ppl_Degenerate_Element(caml_de);
-  CAMLreturn(val_p_@CLASS@(*new @TOPOLOGY@@CPP_CLASS@(dd, ppl_de)));
+  @TOPOLOGY@@CPP_CLASS@& ppl_value = *new @TOPOLOGY@@CPP_CLASS@(dd, ppl_de);
+  CAMLreturn(unregistered_value_p_@CLASS@(ppl_value));
 }
 CATCH_ALL
 
@@ -82,7 +82,8 @@ CAMLprim value
 ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(value cl) try {
   CAMLparam1(cl);
   @!BUILD_REPRESENT@_System cs = build_ppl_@!BUILD_REPRESENT@_System(cl);
-  CAMLreturn(val_p_@CLASS@(*new @TOPOLOGY@@CPP_CLASS@(cs)));
+  @TOPOLOGY@@CPP_CLASS@& ppl_value = *new @TOPOLOGY@@CPP_CLASS@(cs);
+  CAMLreturn(unregistered_value_p_@CLASS@(ppl_value));
 }
 CATCH_ALL
 
@@ -111,9 +112,7 @@ ppl_@CLASS@_@DIMENSION@(value ph) try {
   CAMLparam1(ph);
   const @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   dimension_type d = pph.@DIMENSION@();
-  if (d > INT_MAX)
-    abort();
-  CAMLreturn(Val_int(d));
+  CAMLreturn(ppl_dimension_to_value(d));
 }
 CATCH_ALL
 
@@ -135,12 +134,12 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@SIMPLIFY@(value ph) try {
   CAMLparam1(ph);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.@SIMPLIFY@();
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -163,13 +162,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_add_@CLASS_REPRESENT@(value ph, value c) try {
   CAMLparam2(ph, c);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   @!CLASS_REPRESENT@ pc = build_ppl_@!CLASS_REPRESENT@(c);
   pph.add_@CLASS_REPRESENT@(pc);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -178,13 +177,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_add_@CLASS_REPRESENT@s(value ph, value cs) try {
   CAMLparam2(ph, cs);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   @!CLASS_REPRESENT@_System pcs = build_ppl_@!CLASS_REPRESENT@_System(cs);
   pph.add_@CLASS_REPRESENT@s(pcs);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -193,13 +192,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@(value ph, value c) try {
   CAMLparam2(ph, c);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   @!REFINE_REPRESENT@ pc = build_ppl_@!REFINE_REPRESENT@(c);
   pph.refine_with_@REFINE_REPRESENT@(pc);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -208,13 +207,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s(value ph, value cs) try {
   CAMLparam2(ph, cs);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   @!REFINE_REPRESENT@_System pcs = build_ppl_@!REFINE_REPRESENT@_System(cs);
   pph.refine_with_@REFINE_REPRESENT@s(pcs);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -251,13 +250,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@BINOP@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@BINOP@(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.@BINOP@(pph2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -280,15 +279,14 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@
 (value ph, value d) try {
   CAMLparam2(ph, d);
-  int dd = Int_val(d);
-  check_int_is_unsigned(dd);
+  dimension_type dd = value_to_ppl_dimension(d);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.add_space_dimensions_and_embed(dd);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -297,12 +295,12 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_remove_space_dimensions(value ph, value caml_vset) try {
   CAMLparam2(ph, caml_vset);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.remove_space_dimensions(build_ppl_Variables_Set(caml_vset));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -311,14 +309,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_remove_higher_space_dimensions(value ph, value d) try {
   CAMLparam2(ph, d);
-  int dd = Int_val(d);
-  check_int_is_unsigned(dd);
+  dimension_type dd = value_to_ppl_dimension(d);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.remove_higher_space_dimensions(dd);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -327,7 +324,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_fold_space_dimensions
 (value ph, value caml_vset, value caml_dim) try {
   CAMLparam1(ph);
@@ -335,7 +332,7 @@ ppl_@CLASS@_fold_space_dimensions
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   Variables_Set ppl_vset;
   if (Int_val(caml_vset) == 0)
-    CAMLreturn0;
+    CAMLreturn(Val_unit);
   while (true) {
     ppl_vset.insert(Int_val(Field(caml_vset, 0)));
     if (Int_val(Field(caml_vset, 1)) == 0)
@@ -343,7 +340,7 @@ ppl_@CLASS@_fold_space_dimensions
     caml_vset = Field(caml_vset, 1);
   }
   pph.fold_space_dimensions(ppl_vset, Variable(ppl_dim));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -352,20 +349,21 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_map_space_dimensions(value ph, value caml_mapped_dims) try {
   CAMLparam2(ph, caml_mapped_dims);
+  CAMLlocal1(head);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   Partial_Function pfunc;
-  while (caml_mapped_dims != Val_int(0)) {
-    int domain_value = Int_val(Field(Field(caml_mapped_dims, 0),0));
-    int codomain_value = Int_val(Field(Field(caml_mapped_dims, 0),1));
-    pfunc.insert(domain_value,
-		 codomain_value);
+  while (caml_mapped_dims != Val_emptylist) {
+    head = Field(caml_mapped_dims, 0);
+    dimension_type domain_dim = value_to_ppl_dimension(Field(head, 0));
+    dimension_type codomain_dim = value_to_ppl_dimension(Field(head, 1));
+    pfunc.insert(domain_dim, codomain_dim);
     caml_mapped_dims = Field(caml_mapped_dims, 1);
   }
   pph.map_space_dimensions(pfunc);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -375,16 +373,15 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 `dnl
 extern "C"
-void
-ppl_@CLASS@_expand_space_dimension(value ph,
-						     value var_index,
-						     value m) try {
+CAMLprim value
+ppl_@CLASS@_expand_space_dimension
+(value ph, value var_index, value m) try {
   CAMLparam3(ph, var_index, m);
-  int c_m = Int_val(m);
-  check_int_is_unsigned(c_m);
+  Variable var = build_ppl_Variable(var_index);
+  dimension_type c_m = value_to_ppl_dimension(m);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
-  pph.expand_space_dimension(build_ppl_Variable(var_index), c_m);
-  CAMLreturn0;
+  pph.expand_space_dimension(var, c_m);
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -433,12 +430,12 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_unconstrain_space_dimension(value ph, value var) try {
   CAMLparam2(ph, var);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.unconstrain(build_ppl_Variable(var));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -447,12 +444,12 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_unconstrain_space_dimensions(value ph, value caml_vset) try {
   CAMLparam2(ph, caml_vset);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.unconstrain(build_ppl_Variables_Set(caml_vset));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -461,7 +458,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_bounded_@AFFIMAGE@(value ph, value var, value lb_expr,
 				    value ub_expr, value coeff) try {
   CAMLparam5(ph, var, lb_expr, ub_expr, coeff);
@@ -470,7 +467,7 @@ ppl_@CLASS@_bounded_@AFFIMAGE@(value ph, value var, value lb_expr,
 			   build_ppl_Linear_Expression(lb_expr),
  			   build_ppl_Linear_Expression(ub_expr),
  			   build_ppl_Coefficient(coeff));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -479,7 +476,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@AFFIMAGE@
 (value ph, value var, value expr, value coeff) try {
   CAMLparam4(ph, var, expr, coeff);
@@ -488,7 +485,7 @@ ppl_@CLASS@_@AFFIMAGE@
   pph.@AFFIMAGE@(build_ppl_Variable(var),
 		   build_ppl_Linear_Expression(expr),
 		   build_ppl_Coefficient(coeff));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -497,7 +494,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_generalized_@AFFIMAGE@1
 (value ph, value le1, value rel_sym, value le2) try {
   CAMLparam4(ph, le1, rel_sym, le2);
@@ -506,7 +503,7 @@ ppl_@CLASS@_generalized_@AFFIMAGE@1
   pph.generalized_@AFFIMAGE@(build_ppl_Linear_Expression(le1),
 			       build_ppl_relsym(rel_sym),
 			       build_ppl_Linear_Expression(le2));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -515,7 +512,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_generalized_@AFFIMAGE@2
 (value ph, value int_val, value rel_sym, value le, value caml_coeff) try {
   CAMLparam5(ph, int_val, rel_sym, le, caml_coeff);
@@ -524,7 +521,7 @@ ppl_@CLASS@_generalized_@AFFIMAGE@2
 			       build_ppl_relsym(rel_sym),
 			       build_ppl_Linear_Expression(le),
 			       build_ppl_Coefficient(caml_coeff));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -533,7 +530,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence
 (value ph, value int_val, value rel_sym, value le,
  value caml_coeff, value caml_modulus) try {
@@ -546,12 +543,12 @@ ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence
 			       build_ppl_Linear_Expression(le),
 			       build_ppl_Coefficient(caml_coeff),
 			       build_ppl_Coefficient(caml_modulus));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence_bytecode
 (value* argv, int /*argn*/) try {
   return ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence
@@ -564,7 +561,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_generalized_@AFFIMAGE@1_lhs_rhs_with_congruence
 (value ph, value le1, value rel_sym, value le2, value caml_modulus) try {
   CAMLparam5(ph, le1, rel_sym, le2, caml_modulus);
@@ -574,7 +571,7 @@ ppl_@CLASS@_generalized_@AFFIMAGE@1_lhs_rhs_with_congruence
 			     build_ppl_relsym(rel_sym),
 			     build_ppl_Linear_Expression(le2),
 			     build_ppl_Coefficient(caml_modulus));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -583,13 +580,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@WIDEN@_widening_assign(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.@WIDEN@_widening_assign(pph2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -601,15 +598,13 @@ m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 extern "C"
 CAMLprim value
 ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
-(value ph1, value ph2, value integer) try {
-  CAMLparam3(ph1, ph2, integer);
+(value ph1, value ph2, value tokens) try {
+  CAMLparam3(ph1, ph2, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  int cpp_int = Val_int(integer);
-  check_int_is_unsigned(cpp_int);
-  unsigned int unsigned_value = cpp_int;
-  pph1.@WIDEN@_widening_assign(pph2, &unsigned_value);
-  CAMLreturn(Int_val(unsigned_value));
+  unsigned u_tokens = value_to_unsigned<unsigned>(tokens);
+  pph1.@WIDEN@_widening_assign(pph2, &u_tokens);
+  CAMLreturn(Val_long(u_tokens));
 }
 CATCH_ALL
 
@@ -618,13 +613,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_widening_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_widening_assign(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.widening_assign(pph2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -635,16 +630,14 @@ m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code',
 `dnl
 extern "C"
 CAMLprim value
-ppl_@CLASS@_widening_assign_with_tokens(value ph1, value ph2,
-					value integer) try {
-  CAMLparam3(ph1, ph2, integer);
+ppl_@CLASS@_widening_assign_with_tokens
+(value ph1, value ph2, value tokens) try {
+  CAMLparam3(ph1, ph2, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  int cpp_int = Val_int(integer);
-  check_int_is_unsigned(cpp_int);
-  unsigned int unsigned_value = cpp_int;
-  pph1.widening_assign(pph2, &unsigned_value);
-  CAMLreturn(Int_val(unsigned_value));
+  unsigned u_tokens = value_to_unsigned<unsigned>(tokens);
+  pph1.widening_assign(pph2, &u_tokens);
+  CAMLreturn(Val_long(u_tokens));
 }
 CATCH_ALL
 
@@ -654,20 +647,16 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_to
 `dnl
 extern "C"
 CAMLprim value
-ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens(value ph1,
-						   value ph2,
-						   value caml_cs,
-						   value integer) try {
-  CAMLparam4(ph1, ph2, caml_cs, integer);
+ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
+(value ph1, value ph2, value caml_cs, value tokens) try {
+  CAMLparam4(ph1, ph2, caml_cs, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   @!CONSTRAINER@_System ppl_cs = build_ppl_@!CONSTRAINER@_System(caml_cs);
-  int cpp_int = Val_int(integer);
-  check_int_is_unsigned(cpp_int);
-  unsigned int unsigned_value = cpp_int;
+  unsigned u_tokens = value_to_unsigned<unsigned>(tokens);
   pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs,
-							 &unsigned_value);
-  CAMLreturn(Int_val(unsigned_value));
+							 &u_tokens);
+  CAMLreturn(Val_long(u_tokens));
 }
 CATCH_ALL
 
@@ -676,7 +665,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(value ph1,
 						   value ph2,
 						   value caml_cs) try {
@@ -685,7 +674,7 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(value ph1,
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   @!CONSTRAINER@_System ppl_cs = build_ppl_@!CONSTRAINER@_System(caml_cs);
   pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -697,17 +686,18 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_@MAXMIN@(value ph, value caml_le) try {
   CAMLparam2(ph, caml_le);
+  CAMLlocal1(caml_return_value);
   PPL_DIRTY_TEMP_COEFFICIENT(num);
   PPL_DIRTY_TEMP_COEFFICIENT(den);
   bool is_supremum = false;
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   bool ppl_return_value = pph.@MAXMIN@(build_ppl_Linear_Expression(caml_le),
 				      num, den, is_supremum);
-  value caml_return_value = caml_alloc(4, 0);
-  Field(caml_return_value, 0) = Val_bool(ppl_return_value);
-  Field(caml_return_value, 1) = build_ocaml_coefficient(num);
-  Field(caml_return_value, 2) = build_ocaml_coefficient(den);
-  Field(caml_return_value, 3) = Val_bool(is_supremum);
+  caml_return_value = caml_alloc(4, 0);
+  Store_field(caml_return_value, 0, Val_bool(ppl_return_value));
+  Store_field(caml_return_value, 1, build_ocaml_coefficient(num));
+  Store_field(caml_return_value, 2, build_ocaml_coefficient(den));
+  Store_field(caml_return_value, 3, Val_bool(is_supremum));
   CAMLreturn(caml_return_value);
 }
 CATCH_ALL
@@ -720,6 +710,7 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_@MAXMIN@_with_point(value ph, value caml_le) try {
   CAMLparam2(ph, caml_le);
+  CAMLlocal1(caml_return_value);
   PPL_DIRTY_TEMP_COEFFICIENT(num);
   PPL_DIRTY_TEMP_COEFFICIENT(den);
   bool is_supremum = false;
@@ -727,12 +718,12 @@ ppl_@CLASS@_@MAXMIN@_with_point(value ph, value caml_le) try {
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   bool ppl_return_value = pph.@MAXMIN@(build_ppl_Linear_Expression(caml_le),
 				      num, den, is_supremum, g);
-  value caml_return_value = caml_alloc(5, 0);
-  Field(caml_return_value, 0) = Val_bool(ppl_return_value);
-  Field(caml_return_value, 1) = build_ocaml_coefficient(num);
-  Field(caml_return_value, 2) = build_ocaml_coefficient(den);
-  Field(caml_return_value, 3) = Val_bool(is_supremum);
-  Field(caml_return_value, 4) = build_ocaml_generator(g);
+  caml_return_value = caml_alloc(5, 0);
+  Store_field(caml_return_value, 0, Val_bool(ppl_return_value));
+  Store_field(caml_return_value, 1, build_ocaml_coefficient(num));
+  Store_field(caml_return_value, 2, build_ocaml_coefficient(den));
+  Store_field(caml_return_value, 3, Val_bool(is_supremum));
+  Store_field(caml_return_value, 4, build_ocaml_generator(g));
   CAMLreturn(caml_return_value);
 }
 CATCH_ALL
@@ -759,7 +750,7 @@ CAMLprim value
 ppl_@CLASS@_@MEMBYTES@(value ph) try {
   CAMLparam1(ph);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
-  CAMLreturn(Val_int(pph.@MEMBYTES@()));
+  CAMLreturn(Val_long(pph.@MEMBYTES@()));
 }
 CATCH_ALL
 
@@ -768,13 +759,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_swap_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_swap(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.swap(pph2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -787,7 +778,9 @@ CAMLprim value
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@(value ph) try {
   CAMLparam1(ph);
   @B_FRIEND@& pph = *(reinterpret_cast<@B_FRIEND@*>( p_@A_FRIEND@_val(ph)));
-  CAMLreturn(val_p_@CLASS@(*(reinterpret_cast<@CPP_CLASS@*>(new @TOPOLOGY@@CPP_CLASS@(pph)))));
+  @CPP_CLASS@& ppl_value
+    = *(reinterpret_cast<@CPP_CLASS@*>(new @TOPOLOGY@@CPP_CLASS@(pph)));
+  CAMLreturn(unregistered_value_p_@CLASS@(ppl_value));
 }
 CATCH_ALL
 
@@ -801,7 +794,9 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity(value ph, value caml_cc)
   CAMLparam1(ph);
   @B_FRIEND@& pph = *(reinterpret_cast<@B_FRIEND@*>( p_@A_FRIEND@_val(ph)));
   Complexity_Class ppl_cc = build_ppl_Complexity_Class(caml_cc);
-  CAMLreturn(val_p_@CLASS@(*(reinterpret_cast<@CPP_CLASS@*>(new @TOPOLOGY@@CPP_CLASS@(pph, ppl_cc)))));
+  @CPP_CLASS@& ppl_value
+    = *(reinterpret_cast<@CPP_CLASS@*>(new @TOPOLOGY@@CPP_CLASS@(pph, ppl_cc)));
+  CAMLreturn(unregistered_value_p_@CLASS@(ppl_value));
 }
 CATCH_ALL
 
@@ -852,14 +847,14 @@ m4_define(`m4_ub_exact_for_non_polyhedron_domains',
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign
 (value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.@EXTRAPOLATION@_extrapolation_assign(pph2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -870,17 +865,14 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
 `dnl
 extern "C"
 CAMLprim value
-ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens(
-                                                     value ph1, value ph2,
-						     value integer) try {
-  CAMLparam3(ph1, ph2, integer);
+ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens
+(value ph1, value ph2, value tokens) try {
+  CAMLparam3(ph1, ph2, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  int cpp_int = Val_int(integer);
-  check_int_is_unsigned(cpp_int);
-  unsigned int unsigned_value = cpp_int;
-  pph1.@EXTRAPOLATION@_extrapolation_assign(pph2, &unsigned_value);
-  CAMLreturn(Val_int(unsigned_value));
+  unsigned u_tokens = value_to_unsigned<unsigned>(tokens);
+  pph1.@EXTRAPOLATION@_extrapolation_assign(pph2, &u_tokens);
+  CAMLreturn(Val_long(u_tokens));
 }
 CATCH_ALL
 
@@ -889,14 +881,14 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign(value ph1,
                                                        value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   const @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.@EXTRAPOLATION@_narrowing_assign(pph2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -909,7 +901,9 @@ CAMLprim value
 ppl_@CLASS@_@BEGINEND@_iterator(value t_pps) try {
   CAMLparam1(t_pps);
   @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
-  CAMLreturn(val_p_@CLASS@_iterator(*new @CPP_CLASS@::iterator(pps.@BEGINEND@())));
+  @CPP_CLASS@::iterator& ppl_value
+    = *new @CPP_CLASS@::iterator(pps.@BEGINEND@());
+  CAMLreturn(unregistered_value_p_@CLASS@_iterator(ppl_value));
 }
 CATCH_ALL
 
@@ -922,11 +916,12 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_get_disjunct(value caml_it) try {
   CAMLparam1(caml_it);
+  CAMLlocal1(caml_return_value);
   @CPP_CLASS@::iterator& cpp_it  = *p_@CLASS@_iterator_val(caml_it);
   @DISJUNCT_TOPOLOGY@@A_DISJUNCT@ disjunct = cpp_it->element();
-  value value_to_return = val_p_@DISJUNCT@(disjunct);
-  actual_p_@DISJUNCT@_val(value_to_return) = mark(&disjunct);
-  CAMLreturn(value_to_return);
+  caml_return_value = unregistered_value_p_@DISJUNCT@(disjunct);
+  actual_p_@DISJUNCT@_val(caml_return_value) = mark(&disjunct);
+  CAMLreturn(caml_return_value);
 }
 CATCH_ALL
 
@@ -935,7 +930,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_add_disjunct_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_add_disjunct(value t_pps, value caml_item_to_add) try {
   CAMLparam2(t_pps, caml_item_to_add);
   @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
@@ -943,7 +938,7 @@ ppl_@CLASS@_add_disjunct(value t_pps, value caml_item_to_add) try {
     = *(reinterpret_cast<@DISJUNCT_TOPOLOGY@@A_DISJUNCT@*>
           (p_@DISJUNCT@_val(caml_item_to_add)));
   pps.add_disjunct(item);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -952,13 +947,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_drop_disjunct_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_drop_disjunct(value t_pps, value caml_item_to_drop) try {
   CAMLparam2(t_pps, caml_item_to_drop);
   @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
   @CPP_CLASS@::iterator& itr = *p_@CLASS@_iterator_val(caml_item_to_drop);
-  pps.drop_disjunct(itr);
-  CAMLreturn0;
+  itr = pps.drop_disjunct(itr);
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -967,7 +962,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_drop_disjuncts_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_drop_disjuncts
 (value t_pps, value caml_item1_to_drop, value caml_item2_to_drop) try {
   CAMLparam3(t_pps, caml_item1_to_drop, caml_item2_to_drop);
@@ -975,7 +970,7 @@ ppl_@CLASS@_drop_disjuncts
   @CPP_CLASS@::iterator& itr1 = *p_@CLASS@_iterator_val(caml_item1_to_drop);
   @CPP_CLASS@::iterator& itr2 = *p_@CLASS@_iterator_val(caml_item2_to_drop);
   pps.drop_disjuncts(itr1, itr2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -1004,11 +999,11 @@ struct custom_operations @CLASS@_iterator_custom_operations = {
 };
 
 inline value
-val_p_@CLASS@_iterator(const @CPP_CLASS@::iterator& ph) {
+unregistered_value_p_@CLASS@_iterator(const @CPP_CLASS@::iterator& ph) {
   value v = caml_alloc_custom(&@CLASS@_iterator_custom_operations,
-			      sizeof(@CPP_CLASS@::iterator*), 0, 1);
+                              sizeof(@CPP_CLASS@::iterator*), 0, 1);
   p_@CLASS@_iterator_val(v) = const_cast<@CPP_CLASS@::iterator*>(&ph);
-  return(v);
+  return v;
 }
 
 extern "C"
@@ -1017,7 +1012,9 @@ ppl_new_@CLASS@_iterator_from_iterator(value y) try {
   CAMLparam1(y);
   @CPP_CLASS@::iterator& yy
     = *(reinterpret_cast<@CPP_CLASS@::iterator*>( p_@CLASS@_iterator_val(y)));
-  CAMLreturn(val_p_@CLASS@_iterator(*(reinterpret_cast<@CPP_CLASS@::iterator*>(new @CPP_CLASS@::iterator(yy)))));
+  @CPP_CLASS@::iterator& ppl_value
+    = *(reinterpret_cast<@CPP_CLASS@::iterator*>(new @CPP_CLASS@::iterator(yy)));
+  CAMLreturn(unregistered_value_p_@CLASS@_iterator(ppl_value));
 }
 CATCH_ALL
 
@@ -1026,12 +1023,12 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@INCDEC@_iterator(value caml_itr) try {
   CAMLparam1(caml_itr);
   @CPP_CLASS@::iterator& itr = *p_@CLASS@_iterator_val(caml_itr);
   m4_@INCDEC@_cpp_name()itr;
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -1061,7 +1058,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign
 (value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
@@ -1070,7 +1067,7 @@ ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign
   pph1.BHZ03_widening_assign<@A_DISJUNCT_WIDEN@_Certificate>
     (pph2,
      widen_fun_ref(&@DISJUNCT_TOPOLOGY@@A_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign));;
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -1079,25 +1076,27 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign
-(value ph1, value ph2, value integer) try {
+(value ph1, value ph2, value max_disj) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  int cpp_int = Val_int(integer);
-  check_int_is_unsigned(cpp_int);
+  unsigned cpp_max_disj
+    = value_to_unsigned<unsigned>(max_disj);
   pph1.BGP99_extrapolation_assign
     (pph2,
-     widen_fun_ref(&@DISJUNCT_TOPOLOGY@@A_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign), cpp_int);
-  CAMLreturn0;
+     widen_fun_ref(&@DISJUNCT_TOPOLOGY@@A_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign),
+     cpp_max_disj);
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 ')
 
 
-m4_define(`ppl_@CLASS@_ascii_dump_code', `
+m4_define(`ppl_@CLASS@_ascii_dump_code',
+`dnl
 extern "C"
 CAMLprim value
 ppl_@CLASS@_ascii_dump(value ph1) try {
@@ -1105,26 +1104,29 @@ ppl_@CLASS@_ascii_dump(value ph1) try {
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   std::ostringstream s;
   pph1.ascii_dump(s);
-  std::string str = s.str();
-  CAMLreturn(caml_copy_string(str.c_str()));
+  CAMLreturn(caml_copy_string(s.str().c_str()));
 }
 CATCH_ALL
 
 ')
+
 
 m4_define(`ppl_@CLASS@_linear_@PARTITION@_code', `
 extern "C"
 CAMLprim value
 ppl_@CLASS@_linear_@PARTITION@(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
+  CAMLlocal1(caml_return_value);
   @CPP_CLASS@* rfh;
   Pointset_Powerset<NNC_Polyhedron>* rsh;
 `m4_ifelse(m4_current_interface, `Polyhedron',
            `m4_linear_partition_for_polyhedron_domains',
            `m4_linear_partition_for_non_polyhedron_domains')'dnl
-  value caml_return_value = caml_alloc(2, 0);
-  Field(caml_return_value, 0) = val_p_@CLASS@(*rfh);
-  Field(caml_return_value, 1) = val_p_Pointset_Powerset_NNC_Polyhedron(*rsh);
+  caml_return_value = caml_alloc(2, 0);
+  Store_field(caml_return_value, 0,
+              unregistered_value_p_@CLASS@(*rfh));
+  Store_field(caml_return_value, 1,
+              unregistered_value_p_Pointset_Powerset_NNC_Polyhedron(*rsh));
   CAMLreturn(caml_return_value);
 }
 CATCH_ALL
@@ -1179,6 +1181,7 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_approximate_@PARTITION@(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
+  CAMLlocal1(caml_return_value);
   @CPP_CLASS@& pph1
     = reinterpret_cast<@CPP_CLASS@&>(*p_@CPP_CLASS@_val(ph1));
   @CPP_CLASS@& pph2
@@ -1190,10 +1193,12 @@ ppl_@CLASS@_approximate_@PARTITION@(value ph1, value ph2) try {
   Pointset_Powerset<Grid>* rsh = new Pointset_Powerset<Grid>(0, EMPTY);
   rfh->swap(r.first);
   rsh->swap(r.second);
-  value caml_return_value = caml_alloc(3, 0);
-  Field(caml_return_value, 0) = val_p_@CLASS@(*rfh);
-  Field(caml_return_value, 1) = val_p_Pointset_Powerset_Grid(*rsh);
-  Field(caml_return_value, 2) = Val_bool(is_finite);
+  caml_return_value = caml_alloc(3, 0);
+  Store_field(caml_return_value, 0,
+              unregistered_value_p_@CLASS@(*rfh));
+  Store_field(caml_return_value, 1,
+              unregistered_value_p_Pointset_Powerset_Grid(*rsh));
+  Store_field(caml_return_value, 2, Val_bool(is_finite));
   CAMLreturn(caml_return_value);
 }
 CATCH_ALL

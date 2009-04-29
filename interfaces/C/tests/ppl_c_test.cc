@@ -1,6 +1,6 @@
 /* Implementation of utility functions used in test programs
    of the C interface.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,6 +22,18 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl-config.h"
+
+// The following inclusion of <cstdio> prior to "ppl_c_test.h" is to
+// work around a bug whereby some versions of <stdio.h> do not obey
+// clause D.5.2 of the C++ standard: "Each C header, whose name has
+// the form name.h, behaves as if each name placed in the Standard
+// library namespace by the corresponding cname header is also placed
+// within the namespace scope of the namespace std and is followed by
+// an explicit using-declaration (7.3.3)."  By including <cstdio>
+// prior to "ppl_c_test.h" we ensure std::FILE is defined at the time
+// when "ppl_c.h" will include <gmp.h>.
+#include <cstdio>
+
 #include "ppl_c_test.h"
 #include <cstdlib>
 

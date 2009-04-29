@@ -1,5 +1,5 @@
 
-This is the release 0.5 of the Parma Watchdog Library:
+This is the release 0.6 of the Parma Watchdog Library:
 a C++ library for software timeouts.
 
 To be continued...
@@ -12,10 +12,10 @@ See the file BUGS for known bugs and how to report new ones.
 See the file CREDITS for a list of people and organizations that
 contributed to the PWL.
 
-Here is the contents of the PWL 0.5 source distribution
-(5 directories, 100 files):
+Here is the contents of the PWL 0.7 source distribution
+(5 directories, 97 files):
 
-pwl-0.5
+pwl-0.7
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -38,9 +38,7 @@ pwl-0.5
 |   |-- Makefile.am
 |   |-- Makefile.in
 |   |-- README.doc
-|   |-- devref.doxyconf-html
 |   |-- devref.doxyconf-html.in
-|   |-- devref.doxyconf-latex
 |   |-- devref.doxyconf-latex.in
 |   |-- devref.tex
 |   |-- fdl.dox
@@ -53,13 +51,11 @@ pwl-0.5
 |   |-- gpl.ps.gz
 |   |-- gpl.tex
 |   |-- gpl.txt
-|   |-- pwl-user-0.5-html.tar.gz
-|   |-- pwl-user-0.5.pdf
-|   |-- pwl-user-0.5.ps.gz
+|   |-- pwl-user-0.7-html.tar.gz
+|   |-- pwl-user-0.7.pdf
+|   |-- pwl-user-0.7.ps.gz
 |   |-- pwl.sty
-|   |-- user.doxyconf-html
 |   |-- user.doxyconf-html.in
-|   |-- user.doxyconf-latex
 |   |-- user.doxyconf-latex.in
 |   `-- user.tex
 |-- install-sh
@@ -67,7 +63,6 @@ pwl-0.5
 |-- m4
 |   |-- Makefile.am
 |   |-- Makefile.in
-|   |-- ax_prefix_config_h.m4
 |   |-- lib-ld.m4
 |   |-- lib-link.m4
 |   |-- libtool.m4
@@ -77,6 +72,8 @@ pwl-0.5
 |   `-- lt~obsolete.m4
 |-- missing
 |-- mkinstalldirs
+|-- pwl-config.h.in
+|-- pwl-config.sed
 |-- src
 |   |-- Doubly_Linked_Object.defs.hh
 |   |-- Doubly_Linked_Object.inlines.hh
@@ -125,7 +122,7 @@ pwl-0.5
 
 --------
 
-Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 The Parma Watchdog Library is free software; you can redistribute it
 and/or modify it under the terms of the GNU General Public License as

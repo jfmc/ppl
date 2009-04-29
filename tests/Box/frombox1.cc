@@ -1,5 +1,5 @@
 /* Test Box<Interval>::Box(const Box<Other_Interval>&).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -78,8 +78,9 @@ test04() {
 
 bool
 test05() {
+  const int DIM = 10;
   typedef Checked_Number<mpq_class> Q;
-  Rational_Box src(10, UNIVERSE);
+  Rational_Box src(DIM, UNIVERSE);
   Q k;
   Q a;
   k = 2;
@@ -96,7 +97,7 @@ test05() {
   Q s;
   Q m;
   Q d;
-  for (int n = 1; n <= 10; ++n) {
+  for (int n = 0; n < DIM; ++n) {
     s = y;
     s *= s;
     s *= s;
@@ -129,18 +130,18 @@ test05() {
     // Now s ~= y*(1 + y + y^2).
     k = 1ULL << (2*n+3);
     s *= k;
-    a *= s;
+    a -= s;
     m = 1;
     m /= a;
     Coefficient num;
     Coefficient den;
     numer_denom(m, num, den);
-    src.add_constraint(den*Variable(n-1) == num);
+    src.add_constraint(den*Variable(n) == num);
   }
 
   TBox dst(src);
 
-  bool ok = check_result(dst, src, "1.91e-6", "1.35e-6", "9.66e-7");
+  bool ok = check_result(dst, src, "2.39e-6", "5.51e-7", "1.51e-7");
 
   print_constraints(src, "*** src ***");
   print_constraints(dst, "*** dst ***");

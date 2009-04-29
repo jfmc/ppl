@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -95,6 +95,7 @@ generalizedaffinepreimage1 \
 generalizedaffinepreimage2 \
 generalizedaffinepreimage3 \
 generalizedaffinepreimage4 \
+integerupperboundifexact1 \
 intersection1 \
 limitedbhmz05extrapolation1 \
 limitedcc76extrapolation1 \
@@ -109,10 +110,12 @@ relatwithcons2 \
 relatwithcons3 \
 relatwithgen1 \
 removespacedims1 \
+simplifyusingcontext1 \
 timeelapse1 \
 unconstrain1 \
 universe1 \
 upperbound1 \
+upperboundifexact1 \
 writeoctagon1
 
 
@@ -123,8 +126,9 @@ dist_check_SCRIPTS = run_tests
 
 TESTS = run_tests.stamp
 
+.PHONY: run_tests.stamp
 run_tests.stamp: run_tests
-	+$(srcdir)/run_tests
+	+MAKE=$(MAKE) $(srcdir)/run_tests
 	echo "true" >run_tests.stamp
 	chmod +x run_tests.stamp
 
@@ -241,6 +245,8 @@ generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
 generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
 generalizedaffinepreimage4_SOURCES = generalizedaffinepreimage4.cc
 
+integerupperboundifexact1_SOURCES = integerupperboundifexact1.cc
+
 intersection1_SOURCES = intersection1.cc
 
 limitedbhmz05extrapolation1_SOURCES = limitedbhmz05extrapolation1.cc
@@ -266,6 +272,8 @@ relatwithgen1_SOURCES = relatwithgen1.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 
+simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
+
 timeelapse1_SOURCES = timeelapse1.cc
 
 unconstrain1_SOURCES = unconstrain1.cc
@@ -273,6 +281,8 @@ unconstrain1_SOURCES = unconstrain1.cc
 universe1_SOURCES = universe1.cc
 
 upperbound1_SOURCES = upperbound1.cc
+
+upperboundifexact1_SOURCES = upperboundifexact1.cc
 
 writeoctagon1_SOURCES = writeoctagon1.cc
 
@@ -285,3 +295,12 @@ run_tests.stamp
 
 DISTCLEANFILES = \
 dirty_marker
+
+$(top_builddir)/utils/libppl_utils.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
+
+$(top_builddir)/tests/libppl_tests.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/tests libppl_tests.a
+
+$(top_builddir)/src/libppl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la

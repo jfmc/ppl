@@ -1,5 +1,5 @@
 /* Linear_Expression class implementation: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -42,37 +42,6 @@ Linear_Expression::Linear_Expression()
 inline
 Linear_Expression::Linear_Expression(dimension_type sz, bool)
   : Linear_Row(sz, Linear_Row::Flags()) {
-}
-
-inline
-Linear_Expression::Linear_Expression(const Variable v)
-  : Linear_Row(v.space_dimension() <= max_space_dimension()
-	       ? v.id() + 2
-	       : (throw std::length_error("PPL::Linear_Expression::"
-					  "Linear_Expression(v):\n"
-					  "v exceeds the maximum allowed "
-					  "space dimension."),
-		  v.id() + 2)
-	       , Linear_Row::Flags()) {
-  (*this)[v.id() + 1] = 1;
-}
-
-inline
-Linear_Expression::Linear_Expression(const Variable v, const Variable w)
-  : Linear_Row() {
-  const dimension_type v_space_dim = v.space_dimension();
-  const dimension_type w_space_dim = w.space_dimension();
-  const dimension_type space_dim = std::max(v_space_dim, w_space_dim);
-  if (space_dim > max_space_dimension())
-    throw std::length_error("PPL::Linear_Expression::"
-                            "Linear_Expression(v, w):\n"
-                            "v or w exceed the maximum allowed "
-                            "space dimension.");
-  construct(space_dim+1, Linear_Row::Flags());
-  if (v_space_dim != w_space_dim) {
-    (*this)[v_space_dim] = 1;
-    (*this)[w_space_dim] = -1;
-  }
 }
 
 inline
@@ -143,20 +112,6 @@ operator+(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 /*! \relates Linear_Expression */
 inline Linear_Expression
-operator+(const Variable v, const Variable w) {
-  // FIXME(0.10.1): provide a better implementation.
-  return Linear_Expression(v) + Linear_Expression(w);
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
-operator+(const Variable v, const Linear_Expression& e) {
-  // FIXME(0.10.1): provide a better implementation.
-  return e + Linear_Expression(v);
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
 operator+(const Linear_Expression& e, const Variable v) {
   return v + e;
 }
@@ -171,20 +126,6 @@ operator-(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 inline Linear_Expression
 operator-(const Variable v, const Variable w) {
   return Linear_Expression(v, w);
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
-operator-(const Variable v, const Linear_Expression& e) {
-  // FIXME(0.10.1): provide a better implementation.
-  return Linear_Expression(v) - e;
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
-operator-(const Linear_Expression& e, const Variable v) {
-  // FIXME(0.10.1): provide a better implementation.
-  return e - Linear_Expression(v);
 }
 
 /*! \relates Linear_Expression */

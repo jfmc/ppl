@@ -1,5 +1,5 @@
 /* Documentation for the OCaml interface.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 /*!
   \defgroup PPL_OCaml_interface OCaml Language Interface
-  \brief
+
   The Parma Polyhedra Library comes equipped with an interface for the
   OCaml language.
 */
@@ -133,11 +133,11 @@ on the use of the OCaml interface.
   intended version(s) of the library are ever used.
   Functions
 \code
-  ppl_version_major/1,
-  ppl_version_minor/1,
-  ppl_version_revision/1,
-  ppl_version_beta/1,
-  ppl_version/1,
+  ppl_version_major,
+  ppl_version_minor,
+  ppl_version_revision,
+  ppl_version_beta,
+  ppl_version,
   ppl_banner.
 \endcode
   allow run-time checking of information about the version being used.
@@ -149,66 +149,85 @@ Below is a short description of many of the interface functions.
 For full definitions of terminology used here, see the main PPL user manual.
 
 \anchor di_functions
-<H3> Domain Independent Functions </H3>
+<H1> Domain Independent Functions </H1>
 
 First we describe some domain independent functions
 included with all instantiations of the OCaml interfaces.
 
-<H2><CODE> ppl_version_major</CODE></H2>
+<H2><CODE> ppl_version_major </CODE></H2>
   Returns the major number of the PPL version.
 
-<H2><CODE> ppl_version_minor</CODE></H2>
+<H2><CODE> ppl_version_minor </CODE></H2>
   Returns the minor number of the PPL version.
 
-<H2><CODE> ppl_version_revision</CODE></H2>
+<H2><CODE> ppl_version_revision </CODE></H2>
   Returns the revision number of the PPL version.
 
-<H2><CODE> ppl_version_beta</CODE></H2>
+<H2><CODE> ppl_version_beta </CODE></H2>
   Returns the beta number of the PPL version.
 
-<H2><CODE> ppl_version</CODE></H2>
+<H2><CODE> ppl_version </CODE></H2>
   Returns the PPL version.
 
-<H2><CODE> ppl_banner</CODE></H2>
+<H2><CODE> ppl_banner </CODE></H2>
   Returns information about the PPL version, the licensing, the lack of any
   warranty whatsoever, the C++ compiler used to build the library,
   where to report bugs and where to look for further information.
 
-<H2><CODE> ppl_Coefficient_is_bounded</CODE></H2>
-  Returns true if and only if the Coefficients in the C++ interface
+<H2><CODE> ppl_max_space_dimension </CODE></H2>
+  Returns the maximum space dimension the C++ interface can handle.
+
+<H2><CODE> ppl_Coefficient_is_bounded </CODE></H2>
+  Returns true if and only if the coefficients in the C++ interface
   are bounded.
 
-<H2><CODE> ppl_Coefficient_max</CODE></H2>
-  Returns the maximum coefficient the C++ interface can handle.
+<H2><CODE> ppl_Coefficient_max </CODE></H2>
+  If the coefficients are bounded, returns the maximum coefficient
+  the C++ interface can handle.
 
-<H2><CODE> ppl_Coefficient_min</CODE></H2>
-  Returns the minimum coefficient the C++ interface can handle.
+<H2><CODE> ppl_Coefficient_min </CODE></H2>
+  If the coefficients are bounded, returns the minimum coefficient
+  the C++ interface can handle.
 
-<H2><CODE> ppl_max_space_dimension</CODE></H2>
-  Returns the maximum space dimension this library can handle.
+<H2><CODE> ppl_io_wrap_string source_string indent_depth
+             preferred_first_line_length preferred_line_length </CODE></H2>
+  Utility function for the wrapping of lines of text.
+  The function wraps the lines of text stored in its first string argument
+  according to the next three integer arguments, which are interpreted as
+  the indentation depth, the preferred length for the first line and the
+  preferred length for all the other lines, respecively; it returns a
+  string containing the wrapped text.
 
-<H2><CODE> ppl_set_timeout_exception_atom name </CODE></H2>
-   Sets the term to be thrown by timeout exceptions
-   to <CODE>name</CODE>.
-   The default value is <CODE>time_out</CODE>.
-
-<H2><CODE> ppl_timeout_exception_atom</CODE></H2>
-   Returns the name to be thrown by timeout exceptions
-
-<H2><CODE> ppl_set_timeout c_unsigned </CODE></H2>
-   Computations taking exponential time will be interrupted
-   some time after <CODE>c_unsigned</CODE> ms after that call.
-   If the computation is interrupted that way, the current timeout
-   exception atom will be thrown.
-   <CODE>c_unsigned</CODE> must be strictly greater than zero.
+<H2><CODE> ppl_set_timeout hsecs </CODE></H2>
+   Computations taking exponential time will be interrupted some time
+   after <CODE>hsecs</CODE> hundreths of seconds after that call.
+   If the computation is interrupted that way, a timeout exception
+   will be thrown.
+   An exception is immediately thrown if <CODE>hsecs</CODE> is not strictly
+   greater than zero, or if the PPL Watchdog library is not enabled.
 
 <H2><CODE> ppl_reset_timeout </CODE></H2>
    Resets the timeout time so that the computation is not interrupted.
+   An exception is thrown if the PPL Watchdog library is not enabled.
+
+<H2><CODE> ppl_set_rounding_for_PPL </CODE></H2>
+   Sets the FPU rounding mode so that the PPL abstractions based on
+   floating point numbers work correctly.
+   This is performed automatically at initialization-time.  Calling
+   this function is needed only if <CODE>restore_pre_PPL_rounding</CODE>
+   has previously been called.
+
+<H2><CODE> ppl_restore_pre_PPL_rounding </CODE></H2>
+   Sets the FPU rounding mode as it was before initialization of the PPL.
+   After calling this function it is absolutely necessary to call
+   <CODE>set_rounding_for_PPL</CODE> before using any PPL abstractions
+   based on floating point numbers.
+   This is performed automatically at finalization-time.
 
 <BR>
 
 \anchor OCaml_mip_functions
-<H3> MIP Functions </H3>
+<H1> MIP Functions </H1>
 Here we describe some functions available for PPL objects
 defining mixed integer (linear) programming problems.
 
@@ -220,12 +239,22 @@ defining mixed integer (linear) programming problems.
    objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
 
 <H2><CODE>
-  ppl_new_MIP_Problem constraint_system lin_expr optimization_mode
+  ppl_new_MIP_Problem dimension constraint_system lin_expr optimization_mode
 </CODE></H2>
-   Return a handle to an MIP Problem \f$\mathrm{MIP}\f$ with the
-   feasible region represented by <CODE>constraint_system</CODE>,
-   objective function <CODE>lin_expr</CODE> and optimization mode
-   <CODE>optimization_mode</CODE>.
+   Return a handle to an MIP Problem \f$\mathrm{MIP}\f$ having space
+   dimension <CODE>dimension</CODE>, a feasible region represented by
+   <CODE>constraint_system</CODE>, objective function <CODE>lin_expr</CODE>
+   and optimization mode <CODE>optimization_mode</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_get_control_parameter handle param_name
+</CODE></H2>
+   Returns the value of the control parameter named <CODE>param_name</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_set_control_parameter handle param_value
+</CODE></H2>
+   Sets control parameter value <CODE>param_value</CODE>.
 
 <H2><CODE>
   ppl_MIP_Problem_swap handle_1 handle_2
@@ -363,14 +392,19 @@ defining mixed integer (linear) programming problems.
    satisfies all its implementation invariants and false,
    otherwise.  Useful for debugging purposes.
 
+<H2><CODE>
+  ppl_MIP_Problem_ascii_dump handle
+</CODE></H2>
+   Returns a string containing an ASCII dump of the internal representation
+   of the MIP_Problem referenced by <CODE>handle</CODE>. Useful for
+   debugging purposes.
+
 <BR>
 
 \anchor main_OCaml_C_polyhedron_functions
-<H3> C_Polyhedron Functions </H3>
+<H1> C_Polyhedron Functions </H1>
 Here we describe the main functions available for PPL objects
-defining convex and closed polyhedra. A list of the available
-PPL functions for convex polyhedra for the OCaml interface is given in
-Section \ref OCamldoc_Documentation "OCamldoc Documentation".
+defining convex and closed polyhedra.
 
 <H2><CODE>
   ppl_new_C_Polyhedron_from_space_dimension space_dimension universe_or_empty
@@ -912,18 +946,38 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    Mapping the Dimensions of the Vector Space}
    of the main PPL user manual.
 
+<H2><CODE>
+  ppl_Polyhedron_ascii_dump handle
+</CODE></H2>
+   Returns a string containing an ASCII dump of the internal representation
+   of the polyhedron referenced by <CODE>handle</CODE>. Useful for
+   debugging purposes.
+
 
 \anchor OCamldoc_Documentation
-\latexonly
-\input ocamldoc.tex
-\endlatexonly
-\htmlonly
 <H1>OCamldoc Documentation</H1>
 
+\htmlonly
 For a list of the PPL functions available to the generated domains
 for the OCaml interface, see the
 <A HREF="ocamldoc/index.html">OCamldoc-generated documentation</a>.
+<P>
 \endhtmlonly
+
+<strong>NOTE:</strong>
+the complete documentation for module <code>Ppl_ocaml</code>, including
+all the types and functions that were enabled at configuration time, is
+only available in the <em>configuration dependent</em> OCamldoc
+documentation.
+The configuration independent OCamldoc documentation only contains
+those types and functions that are always enabled, which are grouped
+into module <code>Ppl_ocaml_globals</code>.
+Also note that module <code>Ppl_ocaml</code> automatically includes
+module <code>Ppl_ocaml_globals</code>.
+
+\latexonly
+\input ocamldoc.tex
+\endlatexonly
 
 \anchor OI_Compilation
 <H1>Compilation and Installation</H1>

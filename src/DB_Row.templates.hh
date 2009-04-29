@@ -1,5 +1,5 @@
 /* DB_Row class implementation: non-inline template functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,6 +22,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifndef PPL_DB_Row_templates_hh
 #define PPL_DB_Row_templates_hh 1
+
+#include "globals.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

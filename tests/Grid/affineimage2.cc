@@ -1,5 +1,5 @@
 /* Test Grid::affine_image().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -307,7 +307,7 @@ test11() {
   Grid gr(2, EMPTY);
 
   for(int j = 0; j < 4; j++) {
-    gr.add_grid_generators_and_minimize(ggs);
+    gr.add_grid_generators(ggs);
 
     for(int i = 0; i < j; i++) {
       gr.affine_image(A, 3*A);
@@ -320,7 +320,7 @@ test11() {
     gr1.upper_bound_assign(gr);
   }
 
-  gr.add_grid_generators_and_minimize(ggs);
+  gr.add_grid_generators(ggs);
 
   bool ok = (gr == gr1);
 
@@ -352,7 +352,7 @@ test12() {
   Grid gr(2, EMPTY);
 
   for(int j = 0; j < 3; j++) {
-    gr.add_grid_generators_and_minimize(ggs);
+    gr.add_grid_generators(ggs);
 
     for(int i = 0; i < j; i++) {
       gr.affine_image(A, *tem1*A);
@@ -365,7 +365,7 @@ test12() {
     gr1.upper_bound_assign(gr);
   }
 
-  gr.add_grid_generators_and_minimize(ggs);
+  gr.add_grid_generators(ggs);
 
   delete tem1; delete tem2; delete tem3;
 
@@ -392,6 +392,6 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST_F16A(test10);
-  DO_TEST_F16(test11);
+  DO_TEST_F32(test11);
   DO_TEST_F64(test12);
 END_MAIN

@@ -1,5 +1,5 @@
 /* Parma_Polyhedra_Library Java class declaration and implementation.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 /*!
   \defgroup PPL_Java_interface Java Language Interface
-  \brief
+
   The Parma Polyhedra Library comes equipped with an interface for the
   Java language.
 */

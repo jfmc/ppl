@@ -3,7 +3,7 @@ m4_divert(-1)
 
 This m4 file contains the code for generating files <CLASS_NAME>.java
 
-Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -183,7 +183,7 @@ m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
     public native void
-      unconstrain_space_dimensions(Variables_Set to_be_constrained);
+      unconstrain_space_dimensions(Variables_Set to_be_unconstrained);
 
 ')
 
@@ -549,7 +549,7 @@ m4_define(`ppl_@CLASS@_constrains_code',
 m4_define(`ppl_@CLASS@_ascii_dump_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-  public native String ascii_dump();
+    public native String ascii_dump();
 
 ')
 

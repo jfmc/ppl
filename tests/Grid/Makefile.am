@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -112,6 +112,7 @@ refinewithcongruences1 \
 refinewithconstraints1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
+simplifyusingcontext1 \
 timeelapse1 \
 topclosed1 \
 topclosure1 \
@@ -264,6 +265,8 @@ relations3_SOURCES = relations3.cc
 removespacedims1_SOURCES = removespacedims1.cc
 removespacedims2_SOURCES = removespacedims2.cc
 
+simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
+
 timeelapse1_SOURCES = timeelapse1.cc
 
 topclosed1_SOURCES = topclosed1.cc
@@ -291,3 +294,12 @@ ascii_dump_load4.dat \
 ascii_dump_load5.dat \
 ascii_dump_load6.dat \
 ascii_dump_load7.dat
+
+$(top_builddir)/utils/libppl_utils.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
+
+$(top_builddir)/tests/libppl_tests.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/tests libppl_tests.a
+
+$(top_builddir)/src/libppl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la

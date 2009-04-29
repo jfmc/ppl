@@ -1,5 +1,5 @@
 /* Interval class implementation: non-inline template functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -61,7 +61,7 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
     if (y_lb > x_lb) {
       Iterator k = std::lower_bound(first, last, x_lb);
       if (k != last) {
-	if (x_lb < *k) { 
+	if (x_lb < *k) {
 	  if (k != first)
 	    x_lb = *--k;
 	  else
@@ -201,6 +201,39 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
 			   upper_bound);
   }
   return is;
+}
+
+template <typename Boundary, typename Info>
+template <typename From>
+typename Enable_If<Is_Interval<From>::value, bool>::type
+Interval<Boundary, Info>::simplify_using_context_assign(const From& y) {
+  // FIXME: the following code wrongly assumes that intervals are closed
+  // and have no restrictions. It must be generalized.
+  if (lt(UPPER, upper(), info(), LOWER, f_lower(y), f_info(y))) {
+    lower_set(UNBOUNDED);
+    return false;
+  }
+  if (gt(LOWER, lower(), info(), UPPER, f_upper(y), f_info(y))) {
+    upper_set(UNBOUNDED);
+    return false;
+  }
+  // Weakening the upper bound.
+  if (!upper_is_unbounded() && !y.upper_is_unbounded()
+      && y.upper() <= upper())
+    upper_set(UNBOUNDED);
+  // Weakening the lower bound.
+  if (!lower_is_unbounded() && !y.lower_is_unbounded()
+      && y.lower() >= lower())
+    lower_set(UNBOUNDED);
+  return true;
+}
+
+template <typename Boundary, typename Info>
+template <typename From>
+typename Enable_If<Is_Interval<From>::value, void>::type
+Interval<Boundary, Info>::empty_intersection_assign(const From&) {
+  // FIXME: write me.
+  assign(EMPTY);
 }
 
 } // namespace Parma_Polyhedra_Library

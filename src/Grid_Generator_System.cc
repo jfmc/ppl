@@ -1,5 +1,5 @@
 /* Grid_Generator_System class implementation (non-inline functions).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -218,7 +218,7 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
   if (!(s >> num_rows))
     return false;
   std::string str;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> num_columns))
       return false;

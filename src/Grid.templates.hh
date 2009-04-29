@@ -1,5 +1,5 @@
 /* Grid class implementation: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -120,11 +120,15 @@ Grid::Grid(const Box& box, From_Covering_Box)
   PPL_DIRTY_TEMP_COEFFICIENT(l_n);
   PPL_DIRTY_TEMP_COEFFICIENT(l_d);
 
-  // Check that all bounds are closed.  This check must be done before
+  // FIXME: consider whether or not covering boxes supporting open
+  // boundaries should be disabled at compile time. If that is not
+  // the case, consider if the test !box.is_topologically_closed()
+  // can replace the whole loop here below.
+
+  // Check that no finite bounds is open. This check must be done before
   // the empty test below, as an open bound might mean an empty box.
   for (dimension_type k = space_dim; k-- > 0; ) {
     bool closed = false;
-    // FIXME(0.10.1): Perhaps introduce Box::is_bounded_and_closed.
     if (box.get_lower_bound(k, closed, l_n, l_d) && !closed)
       throw_invalid_argument("Grid(box, from_covering_box)", "box");
     if (box.get_upper_bound(k, closed, l_n, l_d) && !closed)

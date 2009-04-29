@@ -1,5 +1,5 @@
 /* Test Polyhedron::bounded_affine_image().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -78,7 +78,7 @@ test02() {
 
   kr1.generalized_affine_image(A, GREATER_OR_EQUAL, 7-3*A+2*B);
   kr2.generalized_affine_image(A, LESS_OR_EQUAL, B+5*A-3);
-  kr1.intersection_assign_and_minimize(kr2);
+  kr1.intersection_assign(kr2);
 
   bool ok = (ph == kr1);
 
@@ -134,7 +134,7 @@ test04() {
 
   kr1.generalized_affine_image(x, GREATER_OR_EQUAL, -2*x + y + 1, -1);
   kr2.generalized_affine_image(x, LESS_OR_EQUAL, -2*x + y + 1, -1);
-  kr1.intersection_assign_and_minimize(kr2);
+  kr1.intersection_assign(kr2);
 
   bool ok = (kr1 == ph);
 
@@ -168,7 +168,7 @@ test05() {
 
   kr1.generalized_affine_image(x, GREATER_OR_EQUAL, 2*x + y + 1, -1);
   kr2.generalized_affine_image(x, LESS_OR_EQUAL, 2*x + y + 1, -1);
-  kr1.intersection_assign_and_minimize(kr2);
+  kr1.intersection_assign(kr2);
 
   bool ok = (kr1 == ph);
 
@@ -202,7 +202,7 @@ test06() {
 
   kr1.generalized_affine_image(x, GREATER_OR_EQUAL, -2*x + y + 1);
   kr2.generalized_affine_image(x, LESS_OR_EQUAL, -2*x + y + 1);
-  kr1.intersection_assign_and_minimize(kr2);
+  kr1.intersection_assign(kr2);
 
   bool ok = (kr1 == ph);
 

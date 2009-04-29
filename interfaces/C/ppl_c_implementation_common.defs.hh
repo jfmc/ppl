@@ -1,5 +1,5 @@
 /* Implementation of the C interface: declarations.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -162,6 +162,20 @@ catch (...) {						     \
     os << *to_const(x);                                                 \
     if (!os)                                                            \
       return PPL_STDIO_ERROR;                                           \
+    return 0;                                                           \
+  }                                                                     \
+  CATCH_ALL                                                             \
+                                                                        \
+  int                                                                   \
+  ppl_io_asprint_##Type(char** strp, ppl_const_##Type##_t x) try {      \
+    using namespace IO_Operators;                                       \
+    std::ostringstream os;                                              \
+    os << *to_const(x);                                                 \
+    if (!os)                                                            \
+      return PPL_STDIO_ERROR;                                           \
+    *strp = strdup(os.str().c_str());                                   \
+    if (*strp == 0)                                                     \
+      return PPL_ERROR_OUT_OF_MEMORY;                                   \
     return 0;                                                           \
   }                                                                     \
   CATCH_ALL

@@ -1,5 +1,5 @@
 dnl A function to detect the binary format used by C++ floats.
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -27,7 +27,6 @@ ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([the binary format of C++ floats])
-ac_cxx_float_binary_format=unknown
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <limits>
 #ifdef HAVE_STDINT_H
@@ -78,9 +77,11 @@ main() {
 
 #endif // SIZEOF_FLOAT != 4
 ]])],
-  AC_DEFINE(CXX_FLOAT_BINARY_FORMAT, PPL_FLOAT_IEEE754_SINGLE,
+  AC_DEFINE(PPL_CXX_FLOAT_BINARY_FORMAT, PPL_FLOAT_IEEE754_SINGLE,
     [The binary format of C++ floats, if supported; undefined otherwise.])
-  ac_cxx_float_binary_format="IEEE754 Single Precision")
+  ac_cxx_float_binary_format="IEEE754 Single Precision",
+  ac_cxx_float_binary_format=unknown,
+  ac_cxx_float_binary_format=unknown)
 
 AC_MSG_RESULT($ac_cxx_float_binary_format)
 
@@ -93,7 +94,7 @@ else
   ac_supported_float=1
 fi
 AM_CONDITIONAL(SUPPORTED_FLOAT, test $ac_supported_float = 1)
-AC_DEFINE_UNQUOTED(SUPPORTED_FLOAT, $ac_supported_float,
+AC_DEFINE_UNQUOTED(PPL_SUPPORTED_FLOAT, $ac_supported_float,
   [Not zero if floats are supported.])
 
 AC_LANG_POP(C++)

@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -27,13 +27,21 @@ TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
 -I$(top_builddir)/interfaces/C \
--I$(top_builddir)/src \
 @extra_includes@ \
 @debug_flag@
 
 if GCC
 
+if HOST_OS_MINGW
+
+# MinGW's <stdlib.h> cannot be compiled in c89 mode.
+AM_CFLAGS = -pedantic -std=gnu89 -Werror
+
+else !HOST_OS_MINGW
+
 AM_CFLAGS = -pedantic -std=c89 -Werror
+
+endif !HOST_OS_MINGW
 
 endif GCC
 
@@ -42,20 +50,35 @@ check_LIBRARIES = libppl_c_tests.a
 libppl_c_tests_a_SOURCES = \
 ppl_c_test.cc
 
+# Dummy C++ source to cause C++ linking.
+nodist_EXTRA_libppl_c_tests_a_SOURCES = \
+dummy.cc
+
+libppl_c_tests_a_CPPFLAGS = \
+-I$(top_builddir)/interfaces/C \
+@extra_includes@
+
 LDADD = \
-$(top_builddir)/src/libppl.la \
-$(top_builddir)/interfaces/C/libppl_c.la \
 libppl_c_tests.a \
+$(top_builddir)/interfaces/C/libppl_c.la \
 @extra_libraries@
 
 NORMAL_TESTS = \
-cxxoutput
+formatted_output
 
 #
 # Sources for the tests
 #
 
-cxxoutput_SOURCES = cxxoutput.c print_to_buffer.h print_to_buffer.cc
+formatted_output_SOURCES = \
+formatted_output.c \
+print_to_buffer.h \
+print_to_buffer.c
+
+# Dummy C++ source to cause C++ linking.
+# FIXME: why isn't enough to do this for libppl_c_tests.a?
+nodist_EXTRA_formatted_output_SOURCES = \
+dummy.cc
 
 #watchdog1_SRCS = watchdog1.cc
 
@@ -88,3 +111,6 @@ check_PROGRAMS = $(TESTS) $(BUGS)
 EXTRA_DIST = $(watchdog1_SRCS)
 
 BUGS =
+
+$(top_builddir)/interfaces/C/libppl_c.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces/C libppl_c.la

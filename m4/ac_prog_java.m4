@@ -22,7 +22,7 @@
 # COPYLEFT
 #
 #   Copyright (c) 2000      Stephane Bortzmeyer <bortzmeyer@pasteur.fr>
-#   Copyright (C) 2006-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+#   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 #   This program is free software; you can redistribute it and/or
 #   modify it under the terms of the GNU General Public License as
@@ -84,9 +84,9 @@ EOF
 if uudecode$EXEEXT Test.uue; then
         ac_cv_prog_uudecode_base64=yes
 else
-        echo "configure: __oline__: uudecode had trouble decoding base 64 file 'Test.uue'" >&AC_FD_CC
-        echo "configure: failed file was:" >&AC_FD_CC
-        cat Test.uue >&AC_FD_CC
+        echo "configure: __oline__: uudecode had trouble decoding base 64 file 'Test.uue'" >&AS_MESSAGE_LOG_FD
+        echo "configure: failed file was:" >&AS_MESSAGE_LOG_FD
+        cat Test.uue >&AS_MESSAGE_LOG_FD
         ac_cv_prog_uudecode_base64=no
 fi
 rm -f Test.uue])
@@ -114,8 +114,8 @@ if test x$ac_cv_prog_uudecode_base64 != xyes; then
         if AC_TRY_COMMAND($JAVAC $JAVACFLAGS $JAVA_TEST) && test -s $CLASS_TEST; then
                 :
         else
-          echo "configure: failed program was:" >&AC_FD_CC
-          cat $JAVA_TEST >&AC_FD_CC
+          echo "configure: failed program was:" >&AS_MESSAGE_LOG_FD
+          cat $JAVA_TEST >&AS_MESSAGE_LOG_FD
           AC_MSG_WARN(The Java compiler $JAVAC failed (see config.log, check the CLASSPATH?))
         fi
 fi
@@ -127,8 +127,8 @@ else
 if AC_TRY_COMMAND($JAVA $JAVAFLAGS $TEST) >/dev/null 2>&1; then
   ac_cv_prog_java_works=yes
 else
-  echo "configure: failed program was:" >&AC_FD_CC
-  cat $JAVA_TEST >&AC_FD_CC
+  echo "configure: failed program was:" >&AS_MESSAGE_LOG_FD
+  cat $JAVA_TEST >&AS_MESSAGE_LOG_FD
   AC_MSG_WARN(The Java VM $JAVA failed (see config.log, check the CLASSPATH?))
   fi
 fi
@@ -219,7 +219,7 @@ AC_PROVIDE([$0])dnl
 # COPYLEFT
 #
 #   Copyright (c) 2000      Stephane Bortzmeyer <bortzmeyer@pasteur.fr>
-#   Copyright (C) 2006-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+#   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 #   This program is free software; you can redistribute it and/or
 #   modify it under the terms of the GNU General Public License as

@@ -5,7 +5,7 @@ This m4 file contains the program code for generating the
 files ppl_prolog_DOMAIN.cc for each interface domain DOMAIN
 in ppl_interface instantiations.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -403,7 +403,7 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
     PPL_CHECK(it);
 
     @CPP_CLASS@::iterator& i = *it;
-    pps->drop_disjunct(i);
+    i = pps->drop_disjunct(i);
 
     return PROLOG_SUCCESS;
   }
@@ -936,22 +936,6 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize(Prolog_term_ref t_ph,
-                                               Prolog_term_ref t_c) {
-  static const char* where = "ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize/2";
-  try {
-    @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
-    PPL_CHECK(ph);
-    if (ph->add_@CLASS_REPRESENT@_and_minimize(build_@CLASS_REPRESENT@(t_c, where)))
-      return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
-')
-
 m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_add_@CLASS_REPRESENT@s(Prolog_term_ref t_ph,
@@ -1006,33 +990,6 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize(Prolog_term_ref t_ph,
-                                                Prolog_term_ref t_clist) {
-  static const char* where = "ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize/2";
-  try {
-    @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
-    PPL_CHECK(ph);
-    @!CLASS_REPRESENT@_System cs;
-    Prolog_term_ref c = Prolog_new_term_ref();
-
-    while (Prolog_is_cons(t_clist)) {
-      Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_@CLASS_REPRESENT@(c, where));
-    }
-
-    // Check the list is properly terminated.
-    check_nil_terminating(t_clist, where);
-
-    if (ph->add_@CLASS_REPRESENT@s_and_minimize(cs))
-      return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
-')
-
 m4_define(`bop_assign_code',
 `namespace Parma_Polyhedra_Library {
 
@@ -1052,23 +1009,6 @@ bop_assign(Prolog_term_ref t_lhs,
     PPL_CHECK(rhs);
     (lhs->*bop_assign)(*rhs);
     return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
-Prolog_foreign_return_type
-bop_assign_and_minimize(Prolog_term_ref t_lhs,
-                        Prolog_term_ref t_rhs,
-                        bool (@CPP_CLASS@::*
-                              bop_assign_and_minimize)(const @CPP_CLASS@&),
-                        const char* where) {
-  try {
-    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
-    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
-    PPL_CHECK(lhs);
-    PPL_CHECK(rhs);
-    if ((lhs->*bop_assign_and_minimize)(*rhs))
-      return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
@@ -1095,24 +1035,6 @@ m4_define(`ppl_@CLASS@_@BINOP@_code',
     PPL_CHECK(rhs);
     lhs->@BINOP@(*rhs);
     return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
-')
-
-m4_define(`ppl_@CLASS@_@BINMINOP@_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_@BINMINOP@
-  (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
-  static const char* where = "ppl_@CLASS@_@BINMINOP@";
-  try {
-    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
-    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
-    PPL_CHECK(lhs);
-    PPL_CHECK(rhs);
-    if (lhs->@BINMINOP@(*rhs))
-      return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }

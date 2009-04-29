@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::unconstrain().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -222,7 +222,10 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+#ifndef __alpha__
+  // Exception handling is broken in GCC on the Alpha.
   DO_TEST(test07);
+#endif
   DO_TEST(test08);
   DO_TEST(test09);
 END_MAIN

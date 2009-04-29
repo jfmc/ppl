@@ -1,5 +1,5 @@
 /* Pointset_Powerset class implementation: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -210,14 +210,6 @@ Pointset_Powerset<PS>::intersection_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
   x.pairwise_apply_assign
     (y, CS::lift_op_assign(std::mem_fun_ref(&PS::intersection_assign)));
-}
-
-template <typename PS>
-inline bool
-Pointset_Powerset<PS>
-::intersection_assign_and_minimize(const Pointset_Powerset& y) {
-  intersection_assign(y);
-  return !is_empty();
 }
 
 template <typename PS>

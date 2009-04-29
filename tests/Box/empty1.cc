@@ -1,5 +1,5 @@
 /* Different ways of creating an empty Box.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -34,25 +34,25 @@ test01() {
   TBox box2(4);
 
   box1.add_constraint(-x <= 4);
-  box1.add_constraint(y - x <= 0);
-  box1.add_constraint(x - y <= -5);
+  box1.add_constraint(y <= 0);
+  box1.add_constraint(z >= 0);
+  box1.add_constraint(y >= 5);
 
-  bool empty = box1.is_empty();
+  bool empty1 = box1.is_empty();
 
   nout << "*** box1.is_empty() ***" << endl;
-  nout << (empty ? "true" : "false ") << endl;
+  nout << (empty1 ? "true" : "false ") << endl;
 
   box2.add_constraint(-x <= 4);
-  box2.add_constraint(y - x <= 0);
-  box2.add_constraint(x - y <= 5);
-  box2.add_constraint(z - x <= 1);
+  box2.add_constraint(y <= 0);
+  box2.add_constraint(z >= 0);
 
-  bool empty1 = box2.is_empty();
+  bool empty2 = box2.is_empty();
 
   nout << "*** box2.is_empty() ***" << endl;
-  nout << (empty1 ? "true" : "false") << endl;
+  nout << (empty2 ? "true" : "false") << endl;
 
-  return !empty1 && empty;
+  return empty1 && !empty2;
 
 }
 
@@ -65,28 +65,28 @@ test02() {
   TBox box1(4);
   TBox box2(4);
 
-  box1.add_constraint(-x <= 2);
-  box1.add_constraint(y - x <= -9);
-  box1.add_constraint(x - y <= -7);
+  box1.add_constraint(-5*x <= 2);
+  box1.add_constraint(6*y <= -7);
+  box1.add_constraint(6*y >= -5);
 
-  bool empty = box1.is_empty();
+  bool empty1 = box1.is_empty();
 
   print_constraints(box1, "*** box1 ***");
   nout << "*** box1.is_empty() ***" << endl;
-  nout << (empty ? "true" : "false") << endl;
+  nout << (empty1 ? "true" : "false") << endl;
 
-  box2.add_constraint(-x <= 7);
-  box2.add_constraint(y - x <= 1);
-  box2.add_constraint(-y <= 2);
-  box2.add_constraint(z - x <= 1);
+  box2.add_constraint(-5*x <= 7);
+  box2.add_constraint(6*y <= 1);
+  box2.add_constraint(-6*y <= 2);
+  box2.add_constraint(z <= 1);
 
-  bool empty1 = box2.is_empty();
+  bool empty2 = box2.is_empty();
 
   print_constraints(box2, "*** box2 ***");
   nout << "*** box2.is_empty() ***" << endl;
-  nout << (empty1 ? "true" : "false") << endl;
+  nout << (empty2 ? "true" : "false") << endl;
 
-  return !empty1 && empty;
+  return empty1 && !empty2;
 }
 
 bool
@@ -103,41 +103,41 @@ test03() {
 
   box1.add_constraint(x1 <= 3);
   box1.add_constraint(x4 <= 3);
-  box1.add_constraint(x2 - x1 <= 0);
-  box1.add_constraint(x3 - x1 <= -2);
-  box1.add_constraint(x5 - x1 <= 2);
+  box1.add_constraint(x2 <= 0);
+  box1.add_constraint(x3 <= -2);
+  box1.add_constraint(x5 <= 2);
   box1.add_constraint(-x2 <= 0);
-  box1.add_constraint(x3 - x2 <= 5);
-  box1.add_constraint(x4 - x3 <= -6);
-  box1.add_constraint(x1 - x4 <= 5);
-  box1.add_constraint(x5 - x4 <= 2);
+  box1.add_constraint(x3 <= 5);
+  box1.add_constraint(x4 <= -6);
+  box1.add_constraint(x1 <= 5);
+  box1.add_constraint(3*x5 <= 2);
   box1.add_constraint(-x5 <= -5);
-  box1.add_constraint(x3 - x5 <= 7);
+  box1.add_constraint(-x5 <= 7);
 
-  bool empty = box1.is_empty();
+  bool empty1 = box1.is_empty();
 
   nout << "*** box1.is_empty() ***" << endl;
-  nout << (empty ? "true" : "false") << endl;
+  nout << (empty1 ? "true" : "false") << endl;
 
   box2.add_constraint(x1 <= 3);
   box2.add_constraint(x4 <= 3);
-  box2.add_constraint(x2 - x1 <= 0);
-  box2.add_constraint(x3 - x1 <= 2);
-  box2.add_constraint(x5 - x1 <= 2);
+  box2.add_constraint(x2 <= 0);
+  box2.add_constraint(x3 <= 2);
+  box2.add_constraint(x5 <= 2);
   box2.add_constraint(-x2 <= 0);
-  box2.add_constraint(x3 - x2 <= 5);
-  box2.add_constraint(x4 - x3 <= 6);
-  box2.add_constraint(x1 - x4 <= 5);
-  box2.add_constraint(x5 - x4 <= 2);
+  box2.add_constraint(x3 <= 5);
+  box2.add_constraint(x4 <= 6);
+  box2.add_constraint(x1 <= 5);
+  box2.add_constraint(x5 <= 2);
   box2.add_constraint(-x5 <= 5);
-  box2.add_constraint(x3 - x5 <= 7);
+  box2.add_constraint(x3 <= 7);
 
-  bool empty1 = box2.is_empty();
+  bool empty2 = box2.is_empty();
 
   nout << "*** box2.is_empty() ***" << endl;
-  nout << (empty1 ? "true" : "false") << endl;
+  nout << (empty2 ? "true" : "false") << endl;
 
-  return !empty1 && empty;
+  return empty1 && !empty2;
 }
 
 bool
@@ -150,7 +150,7 @@ test04() {
 
   box.add_constraint(A == 0);
   box.add_constraint(C >= 0);
-  box.add_constraint(B - C >= 1);
+  box.add_constraint(B >= 1);
 
   bool empty = box.is_empty();
 
@@ -178,11 +178,11 @@ test05() {
   else
     a = 1300000000;
 
-  box.add_constraint(x1 - x2 <= -a);
-  box.add_constraint(x2 - x3 <= -a);
-  box.add_constraint(x3 - x4 <= a);
-  box.add_constraint(x4 - x5 <= a);
-  box.add_constraint(x5 - x1 <= a);
+  box.add_constraint(2*x1 >= -a);
+  box.add_constraint(3*x2 >= -a);
+  box.add_constraint(5*x3 <= a);
+  box.add_constraint(7*x4 <= a);
+  box.add_constraint(11*x5 <= a);
 
   print_constraints(box, "*** box ***");
 
@@ -215,12 +215,11 @@ test06() {
 } // namespace
 
 BEGIN_MAIN
-// FIXME(0.10.1): finish and uncomment all these tests.
-  //DO_TEST(test01);
-  //DO_TEST(test02);
-  //DO_TEST(test03);
-  //DO_TEST(test04);
-  //DO_TEST(test05);
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
   DO_TEST(test06);
 END_MAIN
 

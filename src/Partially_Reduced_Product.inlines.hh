@@ -1,5 +1,5 @@
 /* Partially_Reduced_Product class implementation: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,7 +23,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Partially_Reduced_Product_inlines_hh
 #define PPL_Partially_Reduced_Product_inlines_hh 1
 
-#include "compiler.hh"
+#include "Constraint_System.defs.hh"
+#include "Congruence_System.defs.hh"
+#include "C_Polyhedron.defs.hh"
+#include "NNC_Polyhedron.defs.hh"
+#include "Grid.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -658,7 +662,6 @@ Partially_Reduced_Product<D1, D2, R>::set_reduced_flag() const {
   const_cast<Partially_Reduced_Product&>(*this).reduced = true;
 }
 
-// FIXME(0.10.1): Improve this name.
 PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(D1, D2, R, Partially_Reduced_Product)
 
 template <typename D1, typename D2, typename R>

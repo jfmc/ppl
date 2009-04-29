@@ -1,5 +1,5 @@
 /* Test Grid::ascii_dump() and Grid::ascii_load().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -244,7 +244,7 @@ test07() {
   string str;
   do
     f >> str;
-  while (str != "(not_up-to-date)" );
+  while (str != "(not_up-to-date)");
   f.seekp(0, ios_base::cur);
   f << "A\n";
   close(f);
@@ -308,7 +308,7 @@ test09() {
   string str;
   do
     f >> str;
-  while (str != "(not_up-to-date)" );
+  while (str != "(not_up-to-date)");
   f.seekp(0, ios_base::cur);
   f << "\nA";
   close(f);

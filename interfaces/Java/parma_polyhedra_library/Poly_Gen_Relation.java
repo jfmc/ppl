@@ -1,5 +1,5 @@
 /* Poly_Gen_Relation Java class declaration and implementation.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -53,5 +53,10 @@ public class Poly_Gen_Relation {
     //! True if and only if \p *this implies \p y.
     public boolean implies(Poly_Gen_Relation y) {
 	return (this.mask_value & y.mask_value) ==  y.mask_value;
+    }
+
+    private static native void initIDs();
+    static {
+        initIDs();
     }
 }

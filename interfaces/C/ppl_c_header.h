@@ -1,5 +1,5 @@
 /* This is the header file of the C interface of the Parma Polyhedra Library.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 /*!
   \defgroup PPL_C_interface C Language Interface
-  \brief
+
   The Parma Polyhedra Library comes equipped with an interface
   for the C language.
 */
@@ -354,13 +354,24 @@ ppl_max_space_dimension PPL_PROTO((ppl_dimension_type* m));
 int
 ppl_not_a_dimension PPL_PROTO((ppl_dimension_type* m));
 
-/*! \brief Pretty-prints \p var to <CODE>stdout</CODE>. */
+/*! \brief
+  Pretty-prints \p var to <CODE>stdout</CODE>.
+*/
 int
 ppl_io_print_variable PPL_PROTO((ppl_dimension_type var));
 
-/*! \brief Pretty-prints \p var to the given output \p stream. */
+/*! \brief
+  Pretty-prints \p var to the given output \p stream.
+*/
 int
 ppl_io_fprint_variable PPL_PROTO((FILE* stream, ppl_dimension_type var));
+
+/*! \brief
+  Pretty-prints \p var to a malloc-allocated string, a pointer to which
+  is returned via \p strp.
+*/
+int
+ppl_io_asprint_variable PPL_PROTO((char** strp, ppl_dimension_type var));
 
 /*! \brief
   The type of output functions used for printing variables.
@@ -386,6 +397,29 @@ ppl_io_set_variable_output_function(ppl_io_variable_output_function_type* p);
 */
 int
 ppl_io_get_variable_output_function(ppl_io_variable_output_function_type** pp);
+
+/*! \brief Utility function for the wrapping of lines of text.
+
+  \param src
+  The source string holding the text to wrap.
+
+  \param indent_depth
+  The indentation depth.
+
+  \param preferred_first_line_length
+  The preferred length for the first line of text.
+
+  \param preferred_line_length
+  The preferred length for all the lines but the first one.
+
+  \return
+  The wrapped string in a malloc-allocated buffer.
+*/
+char*
+ppl_io_wrap_string(const char* src,
+		   unsigned indent_depth,
+		   unsigned preferred_first_line_length,
+		   unsigned preferred_line_length);
 
 /*@}*/ /* Datatypes */
 
@@ -562,7 +596,10 @@ int                                                                     \
 ppl_io_print_##Type PPL_PROTO((ppl_const_##Type##_t x));                \
 /*! \relates ppl_##Type##_tag */                                        \
 int                                                                     \
-ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x));
+ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x)); \
+/*! \relates ppl_##Type##_tag */                                        \
+int                                                                     \
+ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x));
 
 #define PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type) \
 /*! \relates ppl_##Type##_tag */                    \
@@ -584,7 +621,10 @@ int                                                                     \
 ppl_io_print_##Type PPL_PROTO((ppl_const_##Type##_t x));                \
 /*! \relates ppl_##Type##_tag \brief Prints \p x to the given output \p stream. */ \
 int                                                                     \
-ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x));
+ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x)); \
+/*! \relates ppl_##Type##_tag \brief Prints \p x to a malloc-allocated string, a pointer to which is returned via \p strp. */ \
+int                                                                     \
+ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x));
 
 
 #define PPL_DECLARE_AND_DOCUMENT_ASCII_DUMP_LOAD_FUNCTIONS(Type) \
@@ -598,14 +638,14 @@ ppl_##Type##_ascii_load                                          \
 PPL_PROTO((ppl_##Type##_t x, FILE* stream));
 
 #define PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Type)      \
-/*! \name Input/Output Functions */                      \
+/*! \brief \name Input/Output Functions */               \
 /*@{*/                                                   \
 PPL_DECLARE_AND_DOCUMENT_PRINT_FUNCTIONS(Type)           \
 PPL_DECLARE_AND_DOCUMENT_ASCII_DUMP_LOAD_FUNCTIONS(Type) \
 /*@}*/ /* Input/Output Functions */
 
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Coefficient_tag \brief
@@ -651,9 +691,9 @@ PPL_PROTO((ppl_Coefficient_t dst, ppl_const_Coefficient_t src));
 int
 ppl_delete_Coefficient PPL_PROTO((ppl_const_Coefficient_t c));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Read-Only Accessor Functions */
+/*! \brief \name Read-Only Accessor Functions */
 /*@{*/
 
 /*! \relates ppl_Coefficient_tag \brief
@@ -691,16 +731,16 @@ ppl_Coefficient_min PPL_PROTO((mpz_t min));
 int
 ppl_Coefficient_max PPL_PROTO((mpz_t max));
 
-/*@}*/ /* \name Read-Only Accessor Functions */
+/*@}*/ /* Read-Only Accessor Functions */
 
 /* No ascii dump for Coefficient */
-/*! \name I/O Functions */
+/*! \brief \name I/O Functions */
 /*@{*/
 PPL_DECLARE_AND_DOCUMENT_PRINT_FUNCTIONS(Coefficient)
 /*@}*/ /* I/O Functions */
 
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Linear_Expression_tag \brief
@@ -774,9 +814,9 @@ PPL_PROTO((ppl_Linear_Expression_t dst, ppl_const_Linear_Expression_t src));
 int
 ppl_delete_Linear_Expression PPL_PROTO((ppl_const_Linear_Expression_t le));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Functions that Do Not Modify the Linear Expression */
+/*! \brief \name Functions that Do Not Modify the Linear Expression */
 /*@{*/
 
 /*! \relates ppl_Linear_Expression_tag \brief
@@ -812,7 +852,7 @@ ppl_Linear_Expression_OK PPL_PROTO((ppl_const_Linear_Expression_t le));
 
 /*@}*/ /* Functions that Do Not Modify the Linear Expression */
 
-/*! \name Functions that May Modify the Linear Expression */
+/*! \brief \name Functions that May Modify the Linear Expression */
 /*@{*/
 
 /*! \relates ppl_Linear_Expression_tag \brief
@@ -854,7 +894,7 @@ int
 ppl_multiply_Linear_Expression_by_Coefficient
 PPL_PROTO((ppl_Linear_Expression_t le, ppl_const_Coefficient_t n));
 
-/*@}*/ /* \name Functions that May Modify the Linear Expression */
+/*@}*/ /* Functions that May Modify the Linear Expression */
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Linear_Expression)
 
@@ -874,7 +914,7 @@ enum ppl_enum_Constraint_Type {
   PPL_CONSTRAINT_TYPE_GREATER_THAN
 };
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Constraint_tag \brief
@@ -924,9 +964,9 @@ ppl_assign_Constraint_from_Constraint PPL_PROTO((ppl_Constraint_t dst,
 int
 ppl_delete_Constraint PPL_PROTO((ppl_const_Constraint_t c));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Functions that Do Not Modify the Constraint */
+/*! \brief \name Functions that Do Not Modify the Constraint */
 /*@{*/
 
 /*! \relates ppl_Constraint_tag \brief
@@ -966,12 +1006,12 @@ ppl_Constraint_inhomogeneous_term PPL_PROTO((ppl_const_Constraint_t c,
 int
 ppl_Constraint_OK PPL_PROTO((ppl_const_Constraint_t c));
 
-/*@}*/ /* \name Functions that Do Not Modify the Constraint */
+/*@}*/ /* Functions that Do Not Modify the Constraint */
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Constraint)
 
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Constraint_System_tag \brief
@@ -1020,9 +1060,9 @@ PPL_PROTO((ppl_Constraint_System_t dst, ppl_const_Constraint_System_t src));
 int
 ppl_delete_Constraint_System PPL_PROTO((ppl_const_Constraint_System_t cs));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Functions that Do Not Modify the Constraint System */
+/*! \brief \name Functions that Do Not Modify the Constraint System */
 /*@{*/
 
 /*! \relates ppl_Constraint_System_tag \brief
@@ -1076,7 +1116,7 @@ ppl_Constraint_System_OK PPL_PROTO((ppl_const_Constraint_System_t cs));
 
 /*@}*/ /* Functions that Do Not Modify the Constraint System */
 
-/*! \name Functions that May Modify the Constraint System */
+/*! \brief \name Functions that May Modify the Constraint System */
 /*@{*/
 
 /*! \relates ppl_Constraint_System_tag \brief
@@ -1094,12 +1134,12 @@ int
 ppl_Constraint_System_insert_Constraint PPL_PROTO((ppl_Constraint_System_t cs,
 						   ppl_const_Constraint_t c));
 
-/*@}*/ /* \name Functions that May Modify the Constraint System */
+/*@}*/ /* Functions that May Modify the Constraint System */
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Constraint_System)
 
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Constraint_System_const_iterator_tag \brief
@@ -1135,9 +1175,9 @@ int
 ppl_delete_Constraint_System_const_iterator
 PPL_PROTO((ppl_const_Constraint_System_const_iterator_t cit));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Dereferencing, Incrementing and Equality Testing */
+/*! \brief \name Dereferencing, Incrementing and Equality Testing */
 /*@{*/
 
 /*! \relates ppl_Constraint_System_const_iterator_tag \brief
@@ -1165,7 +1205,7 @@ ppl_Constraint_System_const_iterator_equal_test
 PPL_PROTO((ppl_const_Constraint_System_const_iterator_t x,
 	   ppl_const_Constraint_System_const_iterator_t y));
 
-/*@}*/ /* \name Dereferencing, Incrementing and Equality Testing */
+/*@}*/ /* Dereferencing, Incrementing and Equality Testing */
 
 
 /*! \brief \ingroup Datatypes
@@ -1182,7 +1222,7 @@ enum ppl_enum_Generator_Type {
   PPL_GENERATOR_TYPE_CLOSURE_POINT
 };
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Generator_tag \brief
@@ -1237,9 +1277,9 @@ ppl_assign_Generator_from_Generator PPL_PROTO((ppl_Generator_t dst,
 int
 ppl_delete_Generator PPL_PROTO((ppl_const_Generator_t g));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Functions that Do Not Modify the Generator */
+/*! \brief \name Functions that Do Not Modify the Generator */
 /*@{*/
 
 /*! \relates ppl_Generator_tag \brief
@@ -1278,12 +1318,12 @@ ppl_Generator_divisor PPL_PROTO((ppl_const_Generator_t g,
 int
 ppl_Generator_OK PPL_PROTO((ppl_const_Generator_t g));
 
-/*@}*/ /* \name Functions that Do Not Modify the Generator */
+/*@}*/ /* Functions that Do Not Modify the Generator */
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Generator)
 
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Generator_System_tag \brief
@@ -1333,9 +1373,9 @@ PPL_PROTO((ppl_Generator_System_t dst, ppl_const_Generator_System_t src));
 int
 ppl_delete_Generator_System PPL_PROTO((ppl_const_Generator_System_t gs));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Functions that Do Not Modify the Generator System */
+/*! \brief \name Functions that Do Not Modify the Generator System */
 /*@{*/
 
 /*! \relates ppl_Generator_System_tag \brief
@@ -1381,7 +1421,7 @@ ppl_Generator_System_OK PPL_PROTO((ppl_const_Generator_System_t gs));
 
 /*@}*/ /* Functions that Do Not Modify the Generator System */
 
-/*! \name Functions that May Modify the Generator System */
+/*! \brief \name Functions that May Modify the Generator System */
 /*@{*/
 
 /*! \relates ppl_Generator_System_tag \brief
@@ -1399,12 +1439,12 @@ int
 ppl_Generator_System_insert_Generator PPL_PROTO((ppl_Generator_System_t gs,
 						 ppl_const_Generator_t g));
 
-/*@}*/ /* \name Functions that May Modify the Generator System */
+/*@}*/ /* Functions that May Modify the Generator System */
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Generator_System)
 
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Generator_System_const_iterator_tag \brief
@@ -1440,9 +1480,9 @@ int
 ppl_delete_Generator_System_const_iterator
 PPL_PROTO((ppl_const_Generator_System_const_iterator_t git));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Dereferencing, Incrementing and Equality Testing */
+/*! \brief \name Dereferencing, Incrementing and Equality Testing */
 /*@{*/
 
 /*! \relates ppl_Generator_System_const_iterator_tag \brief
@@ -1470,10 +1510,10 @@ ppl_Generator_System_const_iterator_equal_test
 PPL_PROTO((ppl_const_Generator_System_const_iterator_t x,
 	   ppl_const_Generator_System_const_iterator_t y));
 
-/*@}*/ /* \name Dereferencing, Incrementing and Equality Testing */
+/*@}*/ /* Dereferencing, Incrementing and Equality Testing */
 
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Congruence_tag \brief
@@ -1523,9 +1563,9 @@ ppl_assign_Congruence_from_Congruence PPL_PROTO((ppl_Congruence_t dst,
 int
 ppl_delete_Congruence PPL_PROTO((ppl_const_Congruence_t c));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Functions that Do Not Modify the Congruence */
+/*! \brief \name Functions that Do Not Modify the Congruence */
 /*@{*/
 
 /*! \relates ppl_Congruence_tag \brief
@@ -1566,12 +1606,12 @@ ppl_Congruence_modulus PPL_PROTO((ppl_const_Congruence_t c,
 int
 ppl_Congruence_OK PPL_PROTO((ppl_const_Congruence_t c));
 
-/*@}*/ /* \name Functions that Do Not Modify the Congruence */
+/*@}*/ /* Functions that Do Not Modify the Congruence */
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Congruence)
 
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Congruence_System_tag \brief
@@ -1620,9 +1660,9 @@ PPL_PROTO((ppl_Congruence_System_t dst, ppl_const_Congruence_System_t src));
 int
 ppl_delete_Congruence_System PPL_PROTO((ppl_const_Congruence_System_t cs));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Functions that Do Not Modify the Congruence System */
+/*! \brief \name Functions that Do Not Modify the Congruence System */
 /*@{*/
 
 /*! \relates ppl_Congruence_System_tag \brief
@@ -1668,7 +1708,7 @@ ppl_Congruence_System_OK PPL_PROTO((ppl_const_Congruence_System_t cs));
 
 /*@}*/ /* Functions that Do Not Modify the Congruence System */
 
-/*! \name Functions that May Modify the Congruence System */
+/*! \brief \name Functions that May Modify the Congruence System */
 /*@{*/
 
 /*! \relates ppl_Congruence_System_tag \brief
@@ -1686,12 +1726,12 @@ int
 ppl_Congruence_System_insert_Congruence PPL_PROTO((ppl_Congruence_System_t cs,
 						   ppl_const_Congruence_t c));
 
-/*@}*/ /* \name Functions that May Modify the Congruence System */
+/*@}*/ /* Functions that May Modify the Congruence System */
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Congruence_System)
 
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Congruence_System_const_iterator_tag \brief
@@ -1727,9 +1767,9 @@ int
 ppl_delete_Congruence_System_const_iterator
 PPL_PROTO((ppl_const_Congruence_System_const_iterator_t cit));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Dereferencing, Incrementing and Equality Testing */
+/*! \brief \name Dereferencing, Incrementing and Equality Testing */
 /*@{*/
 
 /*! \relates ppl_Congruence_System_const_iterator_tag \brief
@@ -1757,7 +1797,7 @@ ppl_Congruence_System_const_iterator_equal_test
 PPL_PROTO((ppl_const_Congruence_System_const_iterator_t x,
 	   ppl_const_Congruence_System_const_iterator_t y));
 
-/*@}*/ /* \name Dereferencing, Incrementing and Equality Testing */
+/*@}*/ /* Dereferencing, Incrementing and Equality Testing */
 
 
 /*! \brief \ingroup Datatypes
@@ -1772,7 +1812,7 @@ enum ppl_enum_Grid_Generator_Type {
   PPL_GRID_GENERATOR_TYPE_POINT
 };
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Grid_Generator_tag \brief
@@ -1820,9 +1860,9 @@ PPL_PROTO((ppl_Grid_Generator_t dst,
 int
 ppl_delete_Grid_Generator PPL_PROTO((ppl_const_Grid_Generator_t g));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Functions that Do Not Modify the Grid Generator */
+/*! \brief \name Functions that Do Not Modify the Grid Generator */
 /*@{*/
 
 /*! \relates ppl_Grid_Generator_tag \brief
@@ -1862,12 +1902,12 @@ ppl_Grid_Generator_divisor PPL_PROTO((ppl_const_Grid_Generator_t g,
 int
 ppl_Grid_Generator_OK PPL_PROTO((ppl_const_Grid_Generator_t g));
 
-/*@}*/ /* \name Functions that Do Not Modify the Generator */
+/*@}*/ /* Functions that Do Not Modify the Generator */
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Grid_Generator)
 
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Grid_Generator_System_tag \brief
@@ -1921,9 +1961,9 @@ int
 ppl_delete_Grid_Generator_System
 PPL_PROTO((ppl_const_Grid_Generator_System_t gs));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Functions that Do Not Modify the Grid Generator System */
+/*! \brief \name Functions that Do Not Modify the Grid Generator System */
 /*@{*/
 
 /*! \relates ppl_Grid_Generator_System_tag \brief
@@ -1969,7 +2009,7 @@ ppl_Grid_Generator_System_OK PPL_PROTO((ppl_const_Grid_Generator_System_t gs));
 
 /*@}*/ /* Functions that Do Not Modify the Grid Generator System */
 
-/*! \name Functions that May Modify the Grid Generator System */
+/*! \brief \name Functions that May Modify the Grid Generator System */
 /*@{*/
 
 /*! \relates ppl_Grid_Generator_System_tag \brief
@@ -1988,12 +2028,12 @@ ppl_Grid_Generator_System_insert_Grid_Generator
 PPL_PROTO((ppl_Grid_Generator_System_t gs,
 	   ppl_const_Grid_Generator_t g));
 
-/*@}*/ /* \name Functions that May Modify the Grid Generator System */
+/*@}*/ /* Functions that May Modify the Grid Generator System */
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Grid_Generator_System)
 
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_Grid_Generator_System_const_iterator_tag \brief
@@ -2029,9 +2069,9 @@ int
 ppl_delete_Grid_Generator_System_const_iterator
 PPL_PROTO((ppl_const_Grid_Generator_System_const_iterator_t git));
 
-/*@}*/ /* \name Constructors, Assignment and Destructor */
+/*@}*/ /* Constructors, Assignment and Destructor */
 
-/*! \name Dereferencing, Incrementing and Equality Testing */
+/*! \brief \name Dereferencing, Incrementing and Equality Testing */
 /*@{*/
 
 /*! \relates ppl_Grid_Generator_System_const_iterator_tag \brief
@@ -2059,7 +2099,7 @@ ppl_Grid_Generator_System_const_iterator_equal_test
 PPL_PROTO((ppl_const_Grid_Generator_System_const_iterator_t x,
 	   ppl_const_Grid_Generator_System_const_iterator_t y));
 
-/*@}*/ /* \name Dereferencing, Incrementing and Equality Testing */
+/*@}*/ /* Dereferencing, Incrementing and Equality Testing */
 
 
 /*! \brief \ingroup Datatypes
@@ -2109,7 +2149,7 @@ extern unsigned int PPL_POLY_CON_RELATION_SATURATES;
 extern unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
 
 
-/*! \name Symbolic Constants */
+/*! \brief \name Symbolic Constants */
 /*@{*/
 
 /*! \relates ppl_MIP_Problem_tag \brief
@@ -2157,9 +2197,9 @@ extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_EXACT;
 */
 extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_FLOAT;
 
-/*@}*/ /* \name Symbolic Constants */
+/*@}*/ /* Symbolic Constants */
 
-/*! \name Constructors, Assignment and Destructor */
+/*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_MIP_Problem_tag \brief
@@ -2206,7 +2246,7 @@ ppl_delete_MIP_Problem PPL_PROTO((ppl_const_MIP_Problem_t mip));
 
 /*@}*/ /* Constructors, Assignment and Destructor for MIP_Problem */
 
-/*! \name Functions that Do Not Modify the MIP_Problem */
+/*! \brief \name Functions that Do Not Modify the MIP_Problem */
 /*@{*/
 
 /*! \relates ppl_MIP_Problem_tag \brief
@@ -2271,9 +2311,9 @@ ppl_MIP_Problem_optimization_mode PPL_PROTO((ppl_const_MIP_Problem_t mip));
 int
 ppl_MIP_Problem_OK PPL_PROTO((ppl_const_MIP_Problem_t mip));
 
-/*@}*/ /* \name Functions that Do Not Modify the MIP_Problem */
+/*@}*/ /* Functions that Do Not Modify the MIP_Problem */
 
-/*! \name Functions that May Modify the MIP_Problem */
+/*! \brief \name Functions that May Modify the MIP_Problem */
 /*@{*/
 
 /*! \relates ppl_MIP_Problem_tag \brief
@@ -2329,9 +2369,9 @@ int
 ppl_MIP_Problem_set_optimization_mode PPL_PROTO((ppl_MIP_Problem_t mip,
 						 int mode));
 
-/*@}*/ /* \name Functions that May Modify the MIP_Problem */
+/*@}*/ /* Functions that May Modify the MIP_Problem */
 
-/*! \name Computing the Solution of the MIP_Problem */
+/*! \brief \name Computing the Solution of the MIP_Problem */
 /*@{*/
 
 /*! \relates ppl_MIP_Problem_tag \brief
@@ -2408,9 +2448,9 @@ ppl_MIP_Problem_optimal_value
 PPL_PROTO((ppl_const_MIP_Problem_t mip,
 	   ppl_Coefficient_t num, ppl_Coefficient_t den));
 
-/*@}*/ /* \name Computing the Solution of the MIP_Problem */
+/*@}*/ /* Computing the Solution of the MIP_Problem */
 
-/*! \name Querying/Setting Control Parameters */
+/*! \brief \name Querying/Setting Control Parameters */
 /*@{*/
 
 /*! \relates ppl_MIP_Problem_tag \brief
@@ -2427,7 +2467,7 @@ int
 ppl_MIP_Problem_set_control_parameter
 PPL_PROTO((ppl_MIP_Problem_t mip, int value));
 
-/*@}*/ /* \name Querying/Setting Control Parameters */
+/*@}*/ /* Querying/Setting Control Parameters */
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(MIP_Problem)
 

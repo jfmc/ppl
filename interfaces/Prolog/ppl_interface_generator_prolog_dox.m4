@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file generates the file Prolog_configured_interface.dox
 dnl and Prolog_interface.dox
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -62,7 +62,7 @@ dnl The Preamble.
 dnl =================================================================
 /*!
   \defgroup PPL_Prolog_interface Prolog Language Interface
-  \brief
+
   The Parma Polyhedra Library comes equipped with an interface
   for the Prolog language.
 */

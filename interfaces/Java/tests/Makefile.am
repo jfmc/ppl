@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -77,10 +77,13 @@ check-local: ppl_java_generated_tests.java
 	$(java_test_environment) Parma_Polyhedra_Library_test1
 
 ppl_java_generated_tests.java: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. \
+	$(M4) --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_test_java.m4 \
 			> $@
 
 CLEANFILES = \
 ppl_java_generated_tests.java
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4

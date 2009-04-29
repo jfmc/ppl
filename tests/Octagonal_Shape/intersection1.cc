@@ -1,5 +1,5 @@
 /* Test Octagonal_Shape::intersection_assign().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -201,47 +201,8 @@ test06() {
   return ok;
 }
 
-// CHECKME: is this now duplicating test01?
-// (was originally testing *_and_minimize)
 bool
 test07() {
-  Variable x(0);
-  Variable y(1);
-
-  TOctagonal_Shape oc1(3);
-  oc1.add_constraint(x <= 3);
-  oc1.add_constraint(x - y <= 4);
-  oc1.add_constraint(x + y <= 6);
-
-  print_constraints(oc1, "*** oc1 ***");
-
-  TOctagonal_Shape oc2(3);
-  oc2.add_constraint(-y <= -2);
-  oc2.add_constraint(x - y <= 5);
-  oc2.add_constraint(x + y <= 7);
-
-  print_constraints(oc2, "*** oc2 ***");
-
-  oc1.intersection_assign(oc2);
-
-  Constraint_System cs;
-  cs.insert(x <= 3);
-  cs.insert(-y <= -2);
-  cs.insert(x - y <= 4);
-  cs.insert(x + y <= 6);
-
-  Octagonal_Shape<mpq_class> known_result(3);
-  known_result.add_constraints(cs);
-
-  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
-
-  print_constraints(oc1, "*** oc1.intersection_assign(oc2) ***");
-
-  return ok;
-}
-
-bool
-test08() {
   Variable x(0);
   Variable y(1);
 
@@ -266,35 +227,8 @@ test08() {
   return false;
 }
 
-// CHECKME: is this now duplicating test08?
-// (was originally testing *_and_minimize)
 bool
-test09() {
-  Variable x(0);
-  Variable y(1);
-
-  TOctagonal_Shape oc1(7);
-
-  TOctagonal_Shape oc2(15);
-
-  try {
-    // This is an invalid use of method
-    // Octagonal_Shape::intersection_assign(oc2): it is illegal
-    // to apply this method to two polyhedra of different dimensions.
-    oc1.intersection_assign(oc2);
-  }
-  catch (std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-    return true;
-  }
-  catch (...) {
-    return false;
-  }
-  return false;
-}
-
-bool
-test10() {
+test08() {
   Variable A(0);
   Variable B(1);
   // Variable C(2);
@@ -322,7 +256,7 @@ test10() {
 }
 
 bool
-test11() {
+test09() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -371,6 +305,4 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-  DO_TEST(test10);
-  DO_TEST(test11);
 END_MAIN

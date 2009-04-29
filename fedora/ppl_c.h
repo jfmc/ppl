@@ -1,5 +1,5 @@
 /* Header file switcher for the C interface.  -*- C -*-
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -38,6 +38,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_c-s390x.h"
 #elif defined(__s390__)
 #include "ppl_c-s390.h"
+#elif defined(__sh__)
+#include "ppl_c-sh.h"
+#elif defined(__sparc__) && defined(__arch64__)
+#include "ppl_c-sparc64.h"
+#elif defined(__sparc__)
+#include "ppl_c-sparc.h"
 #else
 #error "This architecture is not supported by the currently installed ppl-devel packages."
 #endif

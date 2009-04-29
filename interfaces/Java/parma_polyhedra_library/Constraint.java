@@ -1,5 +1,5 @@
 /* Constraint Java class declaration and implementation.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,6 +21,9 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
+
+import java.io.Writer;
+import java.io.IOException;
 
 //! A linear equality or inequality.
 /*! \ingroup PPL_Java_interface
@@ -45,7 +48,7 @@ public class Constraint {
       relation symbol.
     */
     public Constraint(Linear_Expression le1, Relation_Symbol rel_sym,
-            Linear_Expression le2) {
+                      Linear_Expression le2) {
 	lhs = le1.clone();
 	rhs = le2.clone();
 	kind = rel_sym;
@@ -66,6 +69,14 @@ public class Constraint {
 	return kind;
     }
 
+    //! Returns an ascii formatted internal representation of \p this.
+    public native String ascii_dump();
+
     //! Returns a string representation of \p this.
     public native String toString();
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

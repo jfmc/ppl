@@ -1,5 +1,5 @@
 # Automake source file for the Parma Watchdog Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
 #
@@ -85,8 +85,11 @@ pwl_header.hh
 #	    0.3			0.6		    2:0:0
 #	    0.4			0.7		    3:0:0
 #	    0.4			0.8		    3:0:0
-#	    0.4			0.9		    3:0:0
-#	    0.5			0.10		    4:0:0
+#	    0.5			0.9		    3:0:0
+#	    0.6			0.10		    4:0:0
+#	    0.7			0.10.1		    4:0:0
+#	    0.7			0.10.2		    4:0:0
+#	    0.7			0.11		    4:0:0
 
 LIBPWL_LT_CURRENT =  4
 LIBPWL_LT_REVISION = 0
@@ -118,7 +121,7 @@ pwl_include_files.hh: $(INCLUDE_FILES) Makefile
 
 if HAVE_PERL
 
-pwl.hh:	$(top_builddir)/config.h pwl_header.hh pwl_include_files.hh $(top_builddir)/utils/build_header
+pwl.hh:	$(top_builddir)/pwl-config.h pwl_header.hh pwl_include_files.hh $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/pwl_header.hh >$@
@@ -140,3 +143,9 @@ dist-hook:
 	mv -f $(distdir)/pwl.hh $(distdir)/pwl.hh.dist
 
 CLEANFILES = $(BUILT_SOURCES)
+
+$(top_builddir)/utils/build_header:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils build_header
+
+$(top_builddir)/pwl-config.h:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir) pwl-config.h

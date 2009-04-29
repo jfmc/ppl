@@ -1,5 +1,5 @@
 /* Linear_Expression_Variable class definition and implementation.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -41,7 +41,16 @@ extends Linear_Expression {
 
     //! Builds a copy of this.
     public Linear_Expression_Variable clone() {
-	return new Linear_Expression_Variable(new Variable(arg.id()));
+	return new Linear_Expression_Variable(arg);
+    }
+
+    private int var_id() {
+        return arg.id();
+    }
+
+    private static native void initIDs();
+    static {
+        initIDs();
     }
 }
 

@@ -1,5 +1,5 @@
 /* Configuration Independent Documentation for Prolog.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 /*!
   \defgroup PPL_Prolog_interface Prolog Language Interface
-  \brief
+
   The Parma Polyhedra Library comes equipped with an interface
   for the Prolog language.
 */
@@ -423,13 +423,13 @@ that are included with all instantiations of the Prolog interfaces.
    <EM>The atom to be thrown by timeout exceptions
    is unified with <CODE>Atom</CODE>.</EM>
 
-<P><CODE> ppl_set_timeout(+C_unsigned) </CODE><BR>
+<P><CODE> ppl_set_timeout(+Hsecs) </CODE><BR>
 
    <EM>Computations taking exponential time will be interrupted
-   some time after <CODE>C_unsigned</CODE> ms after that call.
+   some time after <CODE>Hsecs</CODE> hundreths of seconds after that call.
    If the computation is interrupted that way, the current timeout
    exception atom will be thrown.
-   <CODE>C_unsigned</CODE> must be strictly greater than zero.</EM>
+   <CODE>Hsecs</CODE> must be strictly greater than zero.</EM>
 
 <P><CODE> ppl_reset_timeout </CODE><BR>
 
@@ -444,7 +444,7 @@ that are included with all instantiations of the Prolog interfaces.
   previously been called.</EM>
 
 
-<P><CODE> ppl_restore_rounding_for_PPL </CODE><BR>
+<P><CODE> ppl_restore_pre_PPL_rounding </CODE><BR>
 
    <EM>Sets the FPU rounding mode as it was before initialization of the PPL.
   After calling this function it is absolutely necessary to call

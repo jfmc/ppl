@@ -1,5 +1,5 @@
 /* BD_Shape class declaration.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -845,26 +845,6 @@ public:
   void add_constraint(const Constraint& c);
 
   /*! \brief
-    Adds a copy of constraint \p c to the system of bounded differences
-    defining \p *this.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param c
-    The constraint to be added. If it is not a bounded difference, it
-    will be simply ignored.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible,
-    or \p c is not optimally supported by the BD shape domain.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_constraint_and_minimize(const Constraint& c);
-
-  /*! \brief
     Adds a copy of congruence \p cg to the system of congruences of \p *this.
 
     \param cg
@@ -875,25 +855,6 @@ public:
     or \p cg is not optimally supported by the BD shape domain.
   */
   void add_congruence(const Congruence& cg);
-
-  /*! \brief
-    Adds a copy of congruence \p cg to the system of congruences
-    of \p *this, minimizing the result
-
-    \param cg
-    The congruence to be added.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and congruence \p cg are dimension-incompatible,
-    or \p cg is not optimally supported by the BD shape domain.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_congruence_and_minimize(const Congruence& cg);
 
   /*! \brief
     Adds the constraints in \p cs to the system of bounded differences
@@ -930,51 +891,6 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
-    Adds the constraints in \p cs to the system of bounded differences
-    defining \p *this.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param  cs
-    The constraints that will be added.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible,
-    or \p cs contains a constraint which is not optimally supported
-    by the BD shape domain.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
-
-  /*! \brief
-    Adds the constraints in \p cs to the system of constraints
-    of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraint system to be added to \p *this.  The constraints in
-    \p cs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible,
-    or \p cs contains a constraint which is not optimally supported
-    by the BD shape domain.
-
-    \warning
-    The only assumption that can be made on \p cs upon successful or
-    exceptional return is that it can be safely destroyed.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
-
-  /*! \brief
     Adds to \p *this constraints equivalent to the congruences in \p cgs.
 
     \param cgs
@@ -987,16 +903,6 @@ public:
     by the BD shape domain.
   */
   void add_congruences(const Congruence_System& cgs);
-
-  /*! \brief
-    Behaves as add_congruences(const Congruence_System&),
-    but minimizes the resulting BD shape, returning \c false
-    if and only if the result is empty.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_congruences_and_minimize(const Congruence_System& cgs);
 
   /*! \brief
     Adds to \p *this constraints equivalent to the congruences in \p cgs.
@@ -1015,16 +921,6 @@ public:
     exceptional return is that it can be safely destroyed.
   */
   void add_recycled_congruences(Congruence_System& cgs);
-
-  /*! \brief
-    Behaves as \c add_recycled_congruences, but minimizes the
-    resulting BD shape, returning \c false if and only if
-    the result is empty.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
   /*! \brief
     Uses a copy of constraint \p c to refine the system of bounded differences
@@ -1110,19 +1006,6 @@ public:
   */
   void intersection_assign(const BD_Shape& y);
 
-  //! Assigns to \p *this the intersection of \p *this and \p y.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool intersection_assign_and_minimize(const BD_Shape& y);
-
   /*! \brief
     Assigns to \p *this the smallest BDS containing the union
     of \p *this and \p y.
@@ -1133,21 +1016,6 @@ public:
   void upper_bound_assign(const BD_Shape& y);
 
   /*! \brief
-    Assigns to \p *this the smallest BDS containing the convex union
-    of \p *this and \p y.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool upper_bound_assign_and_minimize(const BD_Shape& y);
-
-  /*! \brief
     If the upper bound of \p *this and \p y is exact, it is assigned
     to \p *this and <CODE>true</CODE> is returned,
     otherwise <CODE>false</CODE> is returned.
@@ -1156,6 +1024,22 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool upper_bound_assign_if_exact(const BD_Shape& y);
+
+  /*! \brief
+    If the \e integer upper bound of \p *this and \p y is exact,
+    it is assigned to \p *this and <CODE>true</CODE> is returned;
+    otherwise <CODE>false</CODE> is returned.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+
+    \note
+    The integer upper bound of two rational BDS is the smallest rational
+    BDS containing all the integral points of the two arguments.
+    This method requires that the coefficient type parameter \c T is
+    an integral type.
+  */
+  bool integer_upper_bound_assign_if_exact(const BD_Shape& y);
 
   /*! \brief
     Assigns to \p *this the smallest BD shape containing
@@ -1982,6 +1866,25 @@ private:
     if the assumption does not hold, the behavior is undefined.
   */
   bool BFT00_upper_bound_assign_if_exact(const BD_Shape& y);
+
+  /*! \brief
+    If the upper bound of \p *this and \p y is exact it is assigned
+    to \p *this and \c true is returned, otherwise \c false is returned.
+
+    Implementation for the rational (resp., integer) case is based on
+    Theorem 5.2 (resp. Theorem 5.3) of \ref BHZ09b "[BHZ09b]".
+    The Boolean template parameter \c integer_upper_bound allows for
+    choosing between the rational and integer upper bound algorithms.
+
+    \note
+    It is assumed that \p *this and \p y are dimension-compatible;
+    if the assumption does not hold, the behavior is undefined.
+
+    \note
+    The integer case is only enabled if T is an integer datatype.
+  */
+  template <bool integer_upper_bound>
+  bool BHZ09_upper_bound_assign_if_exact(const BD_Shape& y);
 
   /*! \brief
     Uses the constraint \p c to refine \p *this.

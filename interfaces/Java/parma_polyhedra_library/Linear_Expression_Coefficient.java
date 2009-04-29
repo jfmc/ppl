@@ -1,5 +1,5 @@
 /* Linear_Expression_Coefficient class definition and implementation.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -42,7 +42,12 @@ public class Linear_Expression_Coefficient
 
     //! Builds a copy of this.
     public Linear_Expression_Coefficient clone() {
-	return new Linear_Expression_Coefficient(new Coefficient(coeff));
+	return new Linear_Expression_Coefficient(coeff);
+    }
+
+    private static native void initIDs();
+    static {
+        initIDs();
     }
 }
 

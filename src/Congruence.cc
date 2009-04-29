@@ -1,5 +1,5 @@
 /* Congruence class implementation (non-inline functions).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -240,7 +240,7 @@ PPL::Congruence::ascii_load(std::istream& s) {
     for (dimension_type col = 0; col < new_size - 1; ++col)
       if (!(s >> x[col]))
 	return false;
-    if (!(s >> str) || (str.compare("m") != 0))
+    if (!(s >> str) || str != "m")
       return false;
     if (!(s >> x[new_size-1]))
       return false;

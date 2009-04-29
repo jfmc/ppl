@@ -1,5 +1,5 @@
 /* Matrix class implementation (non-inline functions).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -303,7 +303,7 @@ PPL::Matrix::ascii_load(std::istream& s) {
   dimension_type x_num_cols;
   if (!(s >> x_num_rows))
     return false;
-  if (!(s >> str) || (str.compare("x") != 0))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> x_num_cols))
     return false;

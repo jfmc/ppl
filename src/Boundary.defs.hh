@@ -1,5 +1,5 @@
 /* Interval boundary functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -196,14 +196,15 @@ set_boundary_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
 
 template <typename T, typename Info>
 inline Result
-shrink(Boundary_Type type, T& x, Info& info) {
+shrink(Boundary_Type type, T& x, Info& info, bool check) {
   Result r;
+  assert(!info.get_boundary_property(type, SPECIAL));
   if (type == LOWER) {
-    r = info.restrict(x, V_GT);
+    r = info.restrict(round_dir_check(type, check), x, V_GT);
     if (r != V_GT)
       return r;
   } else {
-    r = info.restrict(x, V_LT);
+    r = info.restrict(round_dir_check(type, check), x, V_LT);
     if (r != V_LT)
       return r;
   }
@@ -442,7 +443,7 @@ adjust_boundary(Boundary_Type type, T& x, Info& info,
     case V_GE:
     case V_EQ:
       if (open)
-	shrink(type, x, info);
+	shrink(type, x, info, false);
       // FIXME: what to return?
       return r;
     default:
@@ -467,7 +468,7 @@ adjust_boundary(Boundary_Type type, T& x, Info& info,
     case V_LE:
     case V_EQ:
       if (open)
-	shrink(type, x, info);
+	shrink(type, x, info, false);
       // FIXME: what to return?
       return r;
     default:

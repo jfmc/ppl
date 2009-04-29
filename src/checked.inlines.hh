@@ -1,5 +1,5 @@
 /* Abstract checked arithmetic functions: fall-backs.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -19,6 +19,9 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
+
+#ifndef PPL_checked_inlines_hh
+#define PPL_checked_inlines_hh 1
 
 #include "globals.types.hh"
 #include "meta_programming.hh"
@@ -509,11 +512,10 @@ inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 eq(const T1& x, const T2& y) {
   PPL_DIRTY_TEMP(T1, tmp);
   Result r = assign_r(tmp, y, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
-  // FIXME(0.10.1): Can we do any better?
-  // We can do this also without fpu inexact check using
-  // a conversion back and forth and then testing equality.
-  // We should code this in checked_float.inlines.hh, probably
-  // it's faster also if fpu supports inexact check.
+  // FIXME: We can do this also without fpu inexact check using a
+  // conversion back and forth and then testing equality.  We should
+  // code this in checked_float.inlines.hh, probably it's faster also
+  // if fpu supports inexact check.
   assert(r != V_LE && r != V_GE && r != V_LGE);
   return r == V_EQ && x == tmp;
 }
@@ -560,8 +562,7 @@ le(const T1& x, const T2& y) {
   case V_LE:
   case V_GE:
   case V_LGE:
-    // FIXME(0.10.1): Can we do any better?
-    // See comment above.
+    // FIXME: See comment above.
     assert(0);
   default:
     return false;
@@ -616,3 +617,5 @@ input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_checked_inlines_hh)

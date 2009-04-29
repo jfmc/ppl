@@ -1,5 +1,5 @@
 dnl A function to detect the binary format used by C++ doubles.
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -23,13 +23,12 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 AC_DEFUN([AC_CXX_DOUBLE_BINARY_FORMAT],
 [
 AC_REQUIRE([AC_C_BIGENDIAN])
-AC_REQUIRE([AC_CHECK_FPU_CONTROL])
 ac_save_CPPFLAGS="$CPPFLAGS"
 ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([the binary format of C++ doubles])
-ac_cxx_double_binary_format=unknown
+
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <limits>
 #ifdef HAVE_STDINT_H
@@ -89,9 +88,11 @@ main() {
 
 #endif // SIZEOF_DOUBLE != 8
 ]])],
-  AC_DEFINE(CXX_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_DOUBLE,
+  AC_DEFINE(PPL_CXX_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_DOUBLE,
     [The unique code of the binary format of C++ doubles, if supported; undefined otherwise.])
-  ac_cxx_double_binary_format="IEEE754 Double Precision")
+  ac_cxx_double_binary_format="IEEE754 Double Precision",
+  ac_cxx_double_binary_format=unknown,
+  ac_cxx_double_binary_format=unknown)
 
 AC_MSG_RESULT($ac_cxx_double_binary_format)
 
@@ -104,7 +105,7 @@ else
   ac_supported_double=1
 fi
 AM_CONDITIONAL(SUPPORTED_DOUBLE, test $ac_supported_double = 1)
-AC_DEFINE_UNQUOTED(SUPPORTED_DOUBLE, $ac_supported_double,
+AC_DEFINE_UNQUOTED(PPL_SUPPORTED_DOUBLE, $ac_supported_double,
   [Not zero if doubles are supported.])
 
 AC_LANG_POP(C++)

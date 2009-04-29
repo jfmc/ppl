@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file generates the file ppl_ocaml.ml
 dnl using the code in ppl_interface_generator_ocaml_ml_code.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -36,14 +36,6 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 
 open Gmp
 include Ppl_ocaml_globals
-
-exception Error of string
-let _ = Callback.register_exception "PPL_arithmetic_overflow" (Error "any string")
-let _ = Callback.register_exception "PPL_internal_error" (Error "any string")
-let _ = Callback.register_exception "PPL_unknown_standard_exception" (Error "any string")
-let _ = Callback.register_exception "PPL_not_an_unsigned_exception" (Error "any string")
-
-let _ = Callback.register_exception "PPL_unexpected_error" (Error "any string")
 
 m4_divert(-1)
 m4_pushdef(`m4_one_class_code', `type m4_downcase(m4_interface_class$1)

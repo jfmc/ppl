@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -92,6 +92,7 @@ generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generalizedaffinepreimage3 \
 geomcovers1 \
 h79widening1 \
+integerupperboundifexact1 \
 intersection1 \
 limitedbhmz05extrapolation1 \
 limitedcc76extrapolation1 \
@@ -103,6 +104,7 @@ membytes1 \
 minconstraints1 \
 relations1 relations2 relations3 relations4 \
 removespacedims1 \
+simplifyusingcontext1 \
 timeelapse1 \
 unconstrain1 \
 universe1 \
@@ -117,8 +119,9 @@ dist_check_SCRIPTS = run_tests
 
 TESTS = run_tests.stamp
 
+.PHONY: run_tests.stamp
 run_tests.stamp: run_tests
-	+$(srcdir)/run_tests
+	+MAKE=$(MAKE) $(srcdir)/run_tests
 	echo "true" >run_tests.stamp
 	chmod +x run_tests.stamp
 
@@ -240,6 +243,8 @@ geomcovers1_SOURCES = geomcovers1.cc
 
 h79widening1_SOURCES = h79widening1.cc
 
+integerupperboundifexact1_SOURCES = integerupperboundifexact1.cc
+
 intersection1_SOURCES = intersection1.cc
 
 limitedbhmz05extrapolation1_SOURCES = limitedbhmz05extrapolation1.cc
@@ -266,6 +271,8 @@ relations4_SOURCES = relations4.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 
+simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
+
 timeelapse1_SOURCES = timeelapse1.cc
 
 unconstrain1_SOURCES = unconstrain1.cc
@@ -287,3 +294,13 @@ run_tests.stamp
 
 DISTCLEANFILES = \
 dirty_marker
+
+$(top_builddir)/utils/libppl_utils.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
+
+$(top_builddir)/tests/libppl_tests.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/tests libppl_tests.a
+
+$(top_builddir)/src/libppl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
+

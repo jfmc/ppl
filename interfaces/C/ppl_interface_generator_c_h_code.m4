@@ -4,7 +4,7 @@ m4_divert(-1)
 This m4 file contains the program header code for generating the
 files ppl_c_domains.h.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -267,15 +267,6 @@ PPL_PROTO((ppl_@CLASS@_t x,
 
 ')
 
-m4_define(`ppl_@CLASS@_@BINMINOP@_code',
-`/*! \relates ppl_@CLASS@_tag */
-int
-ppl_@CLASS@_@BINMINOP@
-PPL_PROTO((ppl_@CLASS@_t x,
-           ppl_const_@CLASS@_t y));
-
-')
-
 m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
 `/*! \relates ppl_@CLASS@_tag */
 int
@@ -312,15 +303,6 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_code',
-`/*! \relates ppl_@CLASS@_tag */
-int
-ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize
-PPL_PROTO((ppl_@CLASS@_t ph,
-           ppl_const_@!CLASS_REPRESENT@_t c));
-
-')
-
 m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
 `/*! \relates ppl_@CLASS@_tag */
 int
@@ -336,15 +318,6 @@ int
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_const_@!REFINE_REPRESENT@_System_t cs));
-
-')
-
-m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize_code',
-`/*! \relates ppl_@CLASS@_tag */
-int
-ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize
-PPL_PROTO((ppl_@CLASS@_t ph,
-           ppl_const_@!CLASS_REPRESENT@_System_t cs));
 
 ')
 

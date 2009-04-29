@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -104,22 +104,29 @@ mit71-61.ine \
 mit90-86.ine \
 $(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 
-check-local: ppl_lcdd
+check-local: ppl_lcdd$(EXEEXT)
 	echo $(TOUGH_EXAMPLES) >tough_examples
 	echo $(ECHO_N) "$(ECHO_C)" >obtained
-	LANG=C; \
+	export LC_ALL=C; \
 	for path in $(srcdir)/examples/*.ext $(srcdir)/examples/*.ine; \
 	do \
 	  file=`basename $$path`; \
-	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  echo $(ECHO_N) $$file " $(ECHO_C)" >>obtained; \
-	  echo ppl_lcdd $$path; \
-	  ./ppl_lcdd $$path | $(TEXT_MD5SUM) >>obtained; \
+	  echo ppl_lcdd$(EXEEXT) $$path; \
+	  ./ppl_lcdd$(EXEEXT) $$path | tr -d '\015' | $(TEXT_MD5SUM) \
+            >>obtained; \
 	done
-	diff -u $(srcdir)/$(EXPECTED) obtained
+	diff obtained $(srcdir)/$(EXPECTED)
 
 MOSTLYCLEANFILES = \
 tough_examples \
 obtained
 
 endif HAVE_MD5SUM
+
+$(top_builddir)/utils/libppl_utils.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
+
+$(top_builddir)/src/libppl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la

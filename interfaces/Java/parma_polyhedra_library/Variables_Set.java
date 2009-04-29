@@ -1,5 +1,5 @@
 /* Variables_Set Java class declaration and implementation.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,5 +27,10 @@ public class Variables_Set extends java.util.TreeSet<Variable>{
 
     //! Builds the empty set of variable indexes.
     public Variables_Set() {
+    }
+
+    private static native void initIDs();
+    static {
+        initIDs();
     }
 }

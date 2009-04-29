@@ -1,5 +1,5 @@
 /* Octagonal_Shape class implementation: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -40,7 +40,7 @@ namespace Parma_Polyhedra_Library {
 /*! \relates Octagonal_Shape */
 inline dimension_type
 coherent_index(const dimension_type i) {
-  return (i%2) ? i-1 : i+1;
+  return (i % 2 != 0) ? i-1 : i+1;
 }
 
 template <typename T>
@@ -584,14 +584,6 @@ inline bool
 Octagonal_Shape<T>::strictly_contains(const Octagonal_Shape& y) const {
   const Octagonal_Shape<T>& x = *this;
   return x.contains(y) && !y.contains(x);
-}
-
-template <typename T>
-inline bool
-Octagonal_Shape<T>::upper_bound_assign_if_exact(const Octagonal_Shape& y) {
-  // FIXME(0.10.1): this must be properly implemented.
-  used(y);
-  return false;
 }
 
 /*! \relates Octagonal_Shape */

@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -52,19 +52,19 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ppl_interface_generator_xsb_prolog_generated_test_P.m4
 
 ppl_xsb.H: $(interface_generator_dependencies) ppl_interface_generator_xsb_H.m4
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_H.m4 > $@
 
 ppl_xsb.hh: $(interface_generator_dependencies) ppl_interface_generator_xsb_hh.m4
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_hh.m4 > $@
 
 ppl_xsb.cc: $(interface_generator_dependencies) ppl_interface_generator_xsb_cc.m4
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_cc.m4 > $@
 
 xsb_prolog_generated_test.P: $(interface_generator_dependencies) ppl_interface_generator_xsb_prolog_generated_test_P.m4
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_prolog_generated_test_P.m4 > $@
 
 AM_CPPFLAGS = \
@@ -228,9 +228,10 @@ EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: libppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clpq2.P ../tests/clpq2.pl ../tests/script_clpq2 pl_check_test ppl_prolog_generated_test
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+$(CLPQ_TESTS):
+	cp -f $(srcdir)/../tests/$@ .
+
+check-local: libppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clpq2.P ../tests/clpq2.pl ../tests/script_clpq2 pl_check_test ppl_prolog_generated_test $(CLPQ_TESTS)
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_clpq.P . ; \
 	fi
@@ -309,3 +310,12 @@ ppl_xsb.xwam ppl_xsb.so \
 xsb_efli.lo xsb_efli.o \
 xsb_clpq.xwam xsb_clpq2.xwam xsb_pl_check.xwam xsb_prolog_generated_test.xwam \
 $(CLPQ_TESTS) obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_prolog_domains.cc.stamp' in parent's directory
+# makefile.
+$(nodist_EXTRA_libppl_xsb_la_SOURCES):
+../tests/ppl_prolog_generated_test_main.pl:

@@ -1,5 +1,5 @@
 dnl A function to detect whether C++ provides exact output for long doubles.
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -29,7 +29,6 @@ ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([whether C++ provides exact output for long doubles])
-ac_cxx_long_double_exact_output=unknown
 
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <limits>
@@ -90,7 +89,7 @@ convert(uint32_t msp, uint64_t lsp) {
   return u.value;
 }
 
-#if CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
+#if PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
 
 int
 main() {
@@ -107,14 +106,14 @@ main() {
     return 1;
 }
 
-#else // CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_INTEL_DOUBLE_EXTENDED
+#else // PPL_CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_INTEL_DOUBLE_EXTENDED
 
 int
 main() {
   return 1;
 }
 
-#endif // CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_INTEL_DOUBLE_EXTENDED
+#endif // PPL_CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_INTEL_DOUBLE_EXTENDED
 
 #elif SIZEOF_LONG_DOUBLE == 16
 
@@ -138,7 +137,7 @@ convert(uint64_t msp, uint64_t lsp) {
   return u.value;
 }
 
-#if CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
+#if PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
 
 int
 main() {
@@ -155,7 +154,7 @@ main() {
     return 1;
 }
 
-#elif CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
+#elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
 
 int
 main() {
@@ -172,14 +171,14 @@ main() {
     return 1;
 }
 
-#else // CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_INTEL_DOUBLE_EXTENDED
+#else // PPL_CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_INTEL_DOUBLE_EXTENDED
 
 int
 main() {
   return 1;
 }
 
-#endif // CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_INTEL_DOUBLE_EXTENDED
+#endif // PPL_CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_INTEL_DOUBLE_EXTENDED
 
 #elif SIZEOF_LONG_DOUBLE == 8
 
@@ -203,7 +202,7 @@ convert(uint32_t msp, uint32_t lsp) {
   return u.value;
 }
 
-#if CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
+#if PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
 
 int
 main() {
@@ -220,14 +219,14 @@ main() {
     return 1;
 }
 
-#else // CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_IEEE754_DOUBLE
+#else // PPL_CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_IEEE754_DOUBLE
 
 int
 main() {
   return 1;
 }
 
-#endif // CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_IEEE754_DOUBLE
+#endif // PPL_CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_IEEE754_DOUBLE
 
 #else // SIZEOF_LONG_DOUBLE != 8
 
@@ -241,9 +240,11 @@ main() {
   AC_MSG_RESULT(yes)
   ac_cxx_long_double_exact_output=1,
   AC_MSG_RESULT(no)
+  ac_cxx_long_double_exact_output=0,
+  AC_MSG_RESULT([assuming not])
   ac_cxx_long_double_exact_output=0)
 
-AC_DEFINE_UNQUOTED(CXX_LONG_DOUBLE_EXACT_OUTPUT, $ac_cxx_long_double_exact_output,
+AC_DEFINE_UNQUOTED(PPL_CXX_LONG_DOUBLE_EXACT_OUTPUT, $ac_cxx_long_double_exact_output,
   [Not zero if C++ supports exact output for long doubles.])
 
 AC_LANG_POP(C++)

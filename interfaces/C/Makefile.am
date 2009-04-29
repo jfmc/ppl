@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -68,14 +68,17 @@ C_interface.dox
 #	    0.8			    1:0:1
 #	    0.9			    1:0:1
 #	    0.10		    2:0:0
+#	    0.10.1		    2:0:0 (was not updated by mistake)
+#	    0.10.2		    3:0:1
+#	    0.11		    4:0:0
 
-LIBPPL_C_LT_CURRENT =  2
+LIBPPL_C_LT_CURRENT =  4
 LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      0
 
 ppl_c.h: ppl_c_header.h ppl_c_version.h ppl_c_domains.h Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
-		-I $(top_builddir)/interfaces/C \
+		-I $(top_builddir)/interfaces/C -I $(top_srcdir)/src \
 		$(top_srcdir)/interfaces/C/ppl_c_header.h >$@
 
 BUILT_SOURCES = \
@@ -92,11 +95,11 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 $(interface_generator_files)
 
 ppl_c_domains.h: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_h.m4 > $@
 
 ppl_c_implementation_domains.cc.stamp: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_cc_files.m4 \
                 > ppl_c_cc_blob
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_c_cc_blob
@@ -105,7 +108,7 @@ ppl_c_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 	echo timestamp >$@
 
 ppl_c_implementation_domains.hh: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_hh_files.m4 \
                 > ppl_c_hh_blob
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_c_hh_blob
@@ -237,3 +240,13 @@ ppl_c_implementation_domains.cc.stamp
 
 DISTCLEANFILES = \
 ppl_c_version.h
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+$(top_builddir)/utils/build_header:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils build_header
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_c_implementation_domains.cc.stamp' target.
+$(nodist_EXTRA_libppl_c_la_SOURCES):

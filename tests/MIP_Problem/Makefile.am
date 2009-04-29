@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -36,9 +36,8 @@ endif !VALGRIND_TESTS_ENABLED
 TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/src \
 -I$(top_builddir)/src \
--I$(top_builddir)/Watchdog \
--I$(top_builddir)/Watchdog/src \
 -I$(top_srcdir)/utils \
 -I$(top_srcdir)/tests \
 @extra_includes@ \
@@ -95,3 +94,15 @@ EXTRA_DIST = $(mipproblem2_SRCS)
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
+
+$(top_builddir)/utils/libppl_utils.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
+
+$(top_builddir)/tests/libppl_tests.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/tests libppl_tests.a
+
+$(top_builddir)/src/libppl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
+
+$(top_builddir)/Watchdog/src/libpwl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/Watchdog/src libpwl.la

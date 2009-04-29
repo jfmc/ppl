@@ -1,5 +1,5 @@
 /* Determinate class implementation: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -178,14 +178,18 @@ Determinate<PS>::meet_assign(const Determinate& y) {
 template <typename PS>
 inline bool
 Determinate<PS>::has_nontrivial_weakening() {
-  // FIXME(0.10.1)
-  return true;
+  // FIXME: the following should be turned into a query to PS.  This
+  // can be postponed until the time the ask-and-tell construction is
+  // revived.
+  return false;
 }
 
 template <typename PS>
 inline void
 Determinate<PS>::weakening_assign(const Determinate& y) {
-  // FIXME(0.10.1)
+  // FIXME: the following should be turned into a proper
+  // implementation.  This can be postponed until the time the
+  // ask-and-tell construction is revived.
   element().difference_assign(y.element());
 }
 

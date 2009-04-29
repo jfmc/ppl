@@ -1,5 +1,5 @@
 (* Simple program testing the PPL OCaml interface on a few random things.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -203,7 +203,6 @@ let e3 =
   -/
   (linear_expression_of_int 7)
 ;;
-
 print_linear_expression e3; print_string_if_noisy "\n" ;;
 
 (* Probably the most convenient thing for the user will be to use the
@@ -220,7 +219,7 @@ let congruence1 = (e2, e2 , (Z.from_int 1));;
 let congruences1 = [e3, e2 , (Z.from_int 20)];;
 let grid_generator1 = Grid_Point (e3, (Z.from_int 1));;
 
-let mip1 =  ppl_new_MIP_Problem 10 constraints1 e3 Maximization;;
+let mip1 = ppl_new_MIP_Problem 10 constraints1 e3 Maximization;;
 let objective_func = ppl_MIP_Problem_objective_function mip1;;
 print_string_if_noisy "\n";;
 print_linear_expression objective_func;;
@@ -248,9 +247,27 @@ for i = 6 downto 0 do
 done;;
 print_string_if_noisy "\n";;
 
+let c1 = (a  >=/ linear_expression_of_int 0);;
+let c2 = (a  <=/ linear_expression_of_int 2);;
+let c2a = (a  <=/ linear_expression_of_int 3);;
+let c3 = (b  >=/ linear_expression_of_int 0);;
+let c4 = (b  <=/ linear_expression_of_int 2);;
+let cs1 = [c1; c2; c3; c4];;
+let cs2 = [c1; c2a; c3; c4];;
+let poly1 = ppl_new_C_Polyhedron_from_constraints(cs1);;
+let poly2 = ppl_new_C_Polyhedron_from_constraints(cs2);;
+
 let polyhedron1 = ppl_new_C_Polyhedron_from_constraints(constraints1);;
 let polyhedron2 = ppl_new_C_Polyhedron_from_generators(generators1);;
 let result =  ppl_Polyhedron_bounds_from_above polyhedron1 e2;;
+let p = Ppl_ocaml.ppl_new_C_Polyhedron_from_constraints [];;
+let u = Ppl_ocaml.ppl_Polyhedron_add_constraints p [];;
+let out = if (u == ())
+  then "ppl_Polyhedron_add_constraints returns unit"
+  else "ppl_Polyhedron_add_constraints does not return unit"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+
 ppl_Polyhedron_add_constraint polyhedron1 constraint1;;
 ppl_Polyhedron_add_generator polyhedron1 generator1;;
 let b = ppl_Polyhedron_is_disjoint_from_Polyhedron
@@ -259,17 +276,32 @@ ppl_Polyhedron_concatenate_assign polyhedron1 polyhedron2;;
 let congruences = ppl_Polyhedron_get_congruences polyhedron1 in
 List.iter print_congruence congruences;;
 print_string_if_noisy "\n";;
+
+print_string_if_noisy "\nTesting affine transformations \n";;
 ppl_Polyhedron_bounded_affine_preimage polyhedron1 1 e1 e2 (Z.from_int 10);;
 ppl_Polyhedron_bounded_affine_preimage polyhedron1 1 e1 e2 (Z.from_int 10);;
 ppl_Polyhedron_affine_image polyhedron1 1 e1 (Z.from_int 10);;
-let a = ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
+
+print_string_if_noisy "\nTesting widenings and extrapolations \n";;
+let tokens_l_BHRZ03 =
+  ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
   polyhedron1 polyhedron1 constraints1 10;;
-let b = ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
+let tokens_b_BHRZ03 =
+  ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
   polyhedron1 polyhedron1 constraints1 10;;
-let b = ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
+let tokens_b_H79 = ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
   polyhedron1 polyhedron1 constraints1 10;;
- ppl_Polyhedron_H79_widening_assign polyhedron1 ;;
-print_int_if_noisy b;;
+let tokens_H79 = ppl_Polyhedron_H79_widening_assign_with_tokens poly2 poly1 2;;
+ppl_Polyhedron_H79_widening_assign polyhedron1 polyhedron1 ;;
+print_string_if_noisy "tokens b_H79 = ";;
+print_int_if_noisy tokens_b_H79;;
+print_string_if_noisy "\n";;
+print_string_if_noisy "tokens b_BHRZ03 = ";;
+print_int_if_noisy tokens_b_BHRZ03;;
+print_string_if_noisy "\n";;
+print_string_if_noisy "tokens H79 = ";;
+print_int_if_noisy tokens_H79;;
+print_string_if_noisy "\n";;
 
 let b = ppl_Polyhedron_OK polyhedron1;;
 ppl_Polyhedron_generalized_affine_preimage_lhs_rhs
@@ -341,7 +373,80 @@ let b = ppl_banner ();;
 print_string_if_noisy "\n";;
 print_string_if_noisy "Banner is: ";
 print_string_if_noisy(b);;
+print_string_if_noisy "\n\n";;
+print_string_if_noisy "PPL Coefficient integer datatype is " ;;
+if (ppl_Coefficient_is_bounded())
+then print_string_if_noisy "bounded\n"
+else print_string_if_noisy "unbounded\n" ;;
+print_string_if_noisy "Maximum space dimension is: ";
+let i = ppl_max_space_dimension()
+in print_int_if_noisy i;;
 print_string_if_noisy "\n";;
+
+(* Testing exceptions *)
+try
+  let _ = ppl_new_MIP_Problem_from_space_dimension (-10)
+  in print_string_if_noisy "Exception test failed"
+with Invalid_argument what ->
+  print_string_if_noisy "Exception test succeeded; caught exception is:\n";
+  print_string_if_noisy what;
+  print_string_if_noisy "\n";;
+
+(* Testing timeouts *)
+let lower = Coefficient(Gmp.Z.of_int 0)
+and upper = Coefficient(Gmp.Z.of_int 1)
+in let rec hypercube_cs dim =
+  if dim < 0
+  then []
+  else Greater_Or_Equal(Variable dim, lower)
+         :: Less_Or_Equal(Variable dim, upper)
+           :: hypercube_cs (dim-1)
+and hypercube_ph dim =
+  ppl_new_C_Polyhedron_from_constraints (hypercube_cs dim)
+and compute_timeout_hypercube dim_in dim_out =
+  if dim_in < dim_out then (
+    let _ = ppl_Polyhedron_get_minimized_constraints (hypercube_ph dim_in)
+    in (
+        print_string_if_noisy "Built hypercube of dimension ";
+        print_int_if_noisy dim_in;
+        print_string_if_noisy "\n"
+    );
+    compute_timeout_hypercube (dim_in + 1) dim_out
+  )
+in (
+  begin
+    try
+      print_string_if_noisy "\nStarting ppl_reset_timeout test:\n";
+      ppl_set_timeout 100;
+      compute_timeout_hypercube 0 2;
+      ppl_reset_timeout ();
+      print_string_if_noisy "ppl_reset_timeout test succeeded.\n"
+    with
+    | PPL_timeout_exception ->
+      print_string_if_noisy "ppl_reset_timeout test seems to be failed:\n";
+      print_string_if_noisy "Unexpected PPL timeout exception caught.\n"
+    | _ ->
+      print_string_if_noisy "ppl_reset_timeout test seems to be failed.";
+      (* FIXME: print the contents of the exception. *)
+      print_string_if_noisy "\n"
+  end;
+  begin
+    try
+      print_string_if_noisy "\nStarting ppl_set_timeout test:\n";
+      ppl_set_timeout 100;
+      compute_timeout_hypercube 0 100;
+      ppl_reset_timeout ();
+      print_string_if_noisy "ppl_set_timeout test seems to be failed!\n"
+    with
+    | PPL_timeout_exception ->
+      print_string_if_noisy "ppl_set_timeout test succeded\n";
+      print_string_if_noisy "Expected PPL timeout exception caught.\n"
+    | _ ->
+      print_string_if_noisy "ppl_set_timeout test failed:\n";
+      print_string_if_noisy "generic exception caught.\n"
+  end
+);;
+
 (* Pointset_Powersed_Grid is not enabled by default, the following code is *)
 (* commented *)
 (* let pps = ppl_new_Pointset_Powerset_Grid_from_space_dimension 3;; *)

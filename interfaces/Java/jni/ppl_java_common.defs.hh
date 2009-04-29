@@ -1,5 +1,5 @@
 /* Domain-independent part of the Java interface: declarations.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,6 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "marked_pointers.hh"
 
 #define CATCH_ALL \
+  catch(const Java_ExceptionOccurred& e) { \
+  } \
   catch(const std::overflow_error& e) { \
     handle_exception(env, e); \
   } \
@@ -52,13 +54,57 @@ site: http://www.cs.unipr.it/ppl/ . */
   } \
   catch (...) { \
     handle_exception(env); \
-  };
+  }
+
+#define CHECK_EXCEPTION_ASSERT(env)      \
+  assert(!env->ExceptionOccurred())
+#define CHECK_EXCEPTION_THROW(env)       \
+  do {                                   \
+    if (env->ExceptionOccurred())        \
+      throw Java_ExceptionOccurred();    \
+  } while (0)
+#define CHECK_EXCEPTION_RETURN(env, val) \
+  do {                                   \
+    if (env->ExceptionOccurred())        \
+      return val;                        \
+  } while (0)
+#define CHECK_EXCEPTION_RETURN_VOID(env) \
+  do {                                   \
+    if (env->ExceptionOccurred())        \
+      return;                            \
+  } while (0)
+#define CHECK_RESULT_ABORT(env, result)  \
+  do {                                   \
+    if (!result)                         \
+      abort();                           \
+  } while (0)
+#define CHECK_RESULT_ASSERT(env, result) \
+  assert(result)
+#define CHECK_RESULT_THROW(env, result)  \
+  do {                                   \
+    if (!result)                         \
+      throw Java_ExceptionOccurred();    \
+  } while (0)
+#define CHECK_RESULT_RETURN(env, result, val) \
+  do {                                        \
+    if (!result)                              \
+      return val;                             \
+  } while (0)
+#define CHECK_RESULT_RETURN_VOID(env, result) \
+  do {                                        \
+    if (!result)                              \
+      return;                                 \
+  } while (0)
+
 
 namespace Parma_Polyhedra_Library {
 
 namespace Interfaces {
 
 namespace Java {
+
+struct Java_ExceptionOccurred : public std::exception {
+};
 
 void
 handle_exception(JNIEnv* env, const std::logic_error& e);
@@ -84,6 +130,193 @@ handle_exception(JNIEnv* env, const std::exception& e);
 void
 handle_exception(JNIEnv* env);
 
+
+//! A cache for Java classes field/method IDs.
+struct Java_FMID_Cache {
+  // Non-PPL type method IDs.
+  jmethodID Boolean_valueOf_ID;
+  jmethodID Integer_valueOf_ID;
+  jmethodID Integer_intValue_ID;
+  jmethodID Iterator_has_next_ID;
+  jmethodID Iterator_next_ID;
+  jmethodID Long_valueOf_ID;
+  jmethodID Long_longValue_ID;
+  // By_Reference.
+  jfieldID By_Reference_obj_ID;
+  jmethodID By_Reference_init_ID;
+  // Coefficient.
+  jfieldID Coefficient_value_ID;
+  jmethodID Coefficient_init_from_String_ID;
+  jmethodID Coefficient_toString_ID;
+  // Congruence.
+  jmethodID Complexity_Class_ordinal_ID;
+  // Congruence.
+  jfieldID Congruence_modulus_ID;
+  jfieldID Congruence_lhs_ID;
+  jfieldID Congruence_rhs_ID;
+  jmethodID Congruence_init_ID;
+  // Constraint.
+  jfieldID Constraint_lhs_ID;
+  jfieldID Constraint_rhs_ID;
+  jfieldID Constraint_kind_ID;
+  jmethodID Constraint_init_ID;
+  // Degenerate_Element.
+  jmethodID Degenerate_Element_ordinal_ID;
+  // Generator.
+  jfieldID Generator_gt_ID;
+  jfieldID Generator_le_ID;
+  jfieldID Generator_div_ID;
+  jmethodID Generator_line_ID;
+  jmethodID Generator_ray_ID;
+  jmethodID Generator_point_ID;
+  jmethodID Generator_closure_point_ID;
+  // Grid_Generator.
+  jfieldID Grid_Generator_gt_ID;
+  jfieldID Grid_Generator_le_ID;
+  jfieldID Grid_Generator_div_ID;
+  jmethodID Grid_Generator_grid_line_ID;
+  jmethodID Grid_Generator_parameter_ID;
+  jmethodID Grid_Generator_grid_point_ID;
+  // (Grid_) Generator_Type.
+  jmethodID Generator_Type_ordinal_ID;
+  jmethodID Grid_Generator_Type_ordinal_ID;
+  // Systems of Constraint, Congruence, Generator and Grid_Generator.
+  jmethodID Constraint_System_init_ID;
+  jmethodID Constraint_System_add_ID;
+  jmethodID Congruence_System_init_ID;
+  jmethodID Congruence_System_add_ID;
+  jmethodID Generator_System_init_ID;
+  jmethodID Generator_System_add_ID;
+  jmethodID Grid_Generator_System_init_ID;
+  jmethodID Grid_Generator_System_add_ID;
+  // Linear_Expression.
+  jmethodID Linear_Expression_sum_ID;
+  jmethodID Linear_Expression_times_ID;
+  // Classes extending Linear_Expression.
+  jfieldID Linear_Expression_Coefficient_coeff_ID;
+  jmethodID Linear_Expression_Coefficient_init_ID;
+  jfieldID Linear_Expression_Difference_lhs_ID;
+  jfieldID Linear_Expression_Difference_rhs_ID;
+  jfieldID Linear_Expression_Sum_lhs_ID;
+  jfieldID Linear_Expression_Sum_rhs_ID;
+  jfieldID Linear_Expression_Times_lhs_ID;
+  jfieldID Linear_Expression_Times_rhs_ID;
+  jmethodID Linear_Expression_Times_init_from_coeff_var_ID;
+  jfieldID Linear_Expression_Unary_Minus_arg_ID;
+  jmethodID Linear_Expression_Variable_init_ID;
+  jmethodID Linear_Expression_Variable_var_id_ID;
+  // MIP_Problem_Status.
+  jfieldID MIP_Problem_Status_UNFEASIBLE_MIP_PROBLEM_ID;
+  jfieldID MIP_Problem_Status_UNBOUNDED_MIP_PROBLEM_ID;
+  jfieldID MIP_Problem_Status_OPTIMIZED_MIP_PROBLEM_ID;
+  jmethodID MIP_Problem_Status_ordinal_ID;
+  // Optmization_Mode.
+  jfieldID Optimization_Mode_MAXIMIZATION_ID;
+  jfieldID Optimization_Mode_MINIMIZATION_ID;
+  jmethodID Optimization_Mode_ordinal_ID;
+  // Poly_Con_Relation and Poly_Gen_Relation.
+  jmethodID Poly_Con_Relation_init_ID;
+  jmethodID Poly_Gen_Relation_init_ID;
+  // PPL_Object.
+  jfieldID PPL_Object_ptr_ID;
+  // Relation_Symbol.
+  jfieldID Relation_Symbol_EQUAL_ID;
+  jfieldID Relation_Symbol_GREATER_OR_EQUAL_ID;
+  jfieldID Relation_Symbol_GREATER_THAN_ID;
+  jmethodID Relation_Symbol_ordinal_ID;
+  // Variable.
+  jfieldID Variable_varid_ID;
+  jmethodID Variable_init_ID;
+  // Variables_Set.
+  jmethodID Variables_Set_init_ID;
+  jmethodID Variables_Set_add_ID;
+  jmethodID Variables_Set_iterator_ID;
+  // Iterator on Variables_Set.
+  jmethodID Variables_Set_Iterator_has_next_ID;
+  jmethodID Variables_Set_Iterator_next_ID;
+};
+extern Java_FMID_Cache cached_FMIDs;
+
+//! A cache for Java classes.
+struct Java_Class_Cache {
+  // Non-PPL types.
+  jclass Boolean;
+  jclass Integer;
+  jclass Long;
+  jclass Iterator;
+  // PPL types.
+  jclass By_Reference;
+  jclass Coefficient;
+  jclass Congruence;
+  jclass Constraint;
+  jclass Generator;
+  jclass Grid_Generator;
+  jclass Generator_Type;
+  jclass Grid_Generator_Type;
+  jclass Constraint_System;
+  jclass Congruence_System;
+  jclass Generator_System;
+  jclass Grid_Generator_System;
+  jclass Linear_Expression;
+  jclass Linear_Expression_Coefficient;
+  jclass Linear_Expression_Difference;
+  jclass Linear_Expression_Sum;
+  jclass Linear_Expression_Times;
+  jclass Linear_Expression_Unary_Minus;
+  jclass Linear_Expression_Variable;
+  jclass MIP_Problem_Status;
+  jclass Optimization_Mode;
+  jclass Poly_Con_Relation;
+  jclass Poly_Gen_Relation;
+  jclass PPL_Object;
+  jclass Relation_Symbol;
+  jclass Variable;
+  jclass Variables_Set;
+};
+extern Java_Class_Cache cached_classes;
+
+
+#define PPL_JNI_SET_CLASS_IN_CACHE(env, field, jni_class)             \
+  do {                                                             \
+    if (cached_classes.field != NULL)                              \
+      env->DeleteGlobalRef(cached_classes.field);                  \
+    cached_classes.field = (jclass) env->NewGlobalRef(jni_class);  \
+    CHECK_RESULT_ASSERT(env, cached_classes.field);                \
+  } while (0)
+
+#define PPL_JNI_FIND_CLASS(jni_class, env, field, name)  \
+  do {                                                   \
+    jni_class = cached_classes.field;                    \
+    if (jni_class == NULL) {                             \
+      jni_class = env->FindClass(name);                  \
+      CHECK_RESULT_ASSERT(env, jni_class);               \
+      PPL_JNI_SET_CLASS_IN_CACHE(env, field, jni_class); \
+    }                                                    \
+  } while (0)
+
+#define PPL_JNI_GET_METHOD_ID(mID, env, field, jni_object, \
+                              name, signature)             \
+  do {                                                     \
+    mID = cached_FMIDs.field;                              \
+    if (mID == NULL) {                                     \
+      jclass jni_class = env->GetObjectClass(jni_object);  \
+      mID = env->GetMethodID(jni_class, name, signature);  \
+      CHECK_RESULT_ASSERT(env, mID);                       \
+      cached_FMIDs.field = mID;                            \
+    }                                                      \
+  } while (0)
+
+#define PPL_JNI_GET_STATIC_METHOD_ID(mID, env, field, jni_class, \
+                                     name, signature)            \
+  do {                                                           \
+    mID = cached_FMIDs.field;                                    \
+    if (mID == NULL) {                                           \
+      mID = env->GetStaticMethodID(jni_class, name, signature);  \
+      CHECK_RESULT_ASSERT(env, mID);                             \
+      cached_FMIDs.field = mID;                                  \
+    }                                                            \
+  } while (0)
+
 /*! \brief
   Builds an unsigned C++ number from the Java native number \p value.
 
@@ -103,26 +336,26 @@ bool_to_j_boolean(JNIEnv* env, const bool value);
 
 //! Returns the Java int stored in Java Integer \p j_integer.
 jint
-j_integer_to_j_int(JNIEnv* env, const jobject& j_integer);
+j_integer_to_j_int(JNIEnv* env, jobject j_integer);
 
 //! Builds a Java Integer from Java int \p value.
 jobject
-j_int_to_j_integer(JNIEnv* env, const jint& value);
+j_int_to_j_integer(JNIEnv* env, jint value);
 
 //! Returns the Java long stored in Java Long \p j_long.
 jlong
-j_long_class_to_j_long(JNIEnv* env, const jobject& j_long);
+j_long_class_to_j_long(JNIEnv* env, jobject j_long);
 
 //! Builds a Java Long from Java long \p value.
 jobject
-j_long_to_j_long_class(JNIEnv* env, const jlong& value);
+j_long_to_j_long_class(JNIEnv* env, jlong value);
 
 /*! \brief
   Returns \c true if and only if the Java object \p ppl_object
   refers to a C++ object.
 */
 bool
-is_java_marked(JNIEnv* env, const jobject& ppl_object);
+is_java_marked(JNIEnv* env, jobject ppl_object);
 
 
 /*! \brief
@@ -144,7 +377,7 @@ build_java_poly_con_relation(JNIEnv* env, Poly_Con_Relation& r);
   from Java parma_polyhedra_library::Variables_Set \p v_set.
 */
 Variables_Set
-build_cxx_variables_set(JNIEnv* env, const jobject& v_set);
+build_cxx_variables_set(JNIEnv* env, jobject v_set);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Variables_Set
@@ -158,14 +391,14 @@ build_java_variables_set(JNIEnv* env, const Variables_Set& v_set);
   from Java parma_polyhedra_library::Relation_Symbol \p j_relsym.
 */
 Relation_Symbol
-build_cxx_relsym(JNIEnv* env, const jobject& j_relsym);
+build_cxx_relsym(JNIEnv* env, jobject j_relsym);
 
 /*! \brief
   Builds a C++ Optimization_Mode
   from Java parma_polyhedra_library::Optimization_Mode \p j_opt_mode.
 */
 Optimization_Mode
-build_cxx_optimization_mode(JNIEnv* env, const jobject& j_opt_mode);
+build_cxx_optimization_mode(JNIEnv* env, jobject j_opt_mode);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Optimization_Mode
@@ -179,7 +412,7 @@ build_java_optimization_mode(JNIEnv* env, const Optimization_Mode& opt_mode);
   from Java parma_polyhedra_library::Control_Parameter_Name \p j_cp_name.
 */
 MIP_Problem::Control_Parameter_Name
-build_cxx_control_parameter_name(JNIEnv* env, const jobject& j_cp_name);
+build_cxx_control_parameter_name(JNIEnv* env, jobject j_cp_name);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Control_Parameter_Name
@@ -194,7 +427,7 @@ build_java_control_parameter_name
   from Java parma_polyhedra_library::Control_Parameter_Value \p j_cp_value.
 */
 MIP_Problem::Control_Parameter_Value
-build_cxx_control_parameter_value(JNIEnv* env, const jobject& j_cp_value);
+build_cxx_control_parameter_value(JNIEnv* env, jobject j_cp_value);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Control_Parameter_Value
@@ -216,7 +449,7 @@ build_java_mip_status(JNIEnv* env, const MIP_Problem_Status& mip_status);
   from Java parma_polyhedra_library::Variable \p j_var.
 */
 Variable
-build_cxx_variable(JNIEnv* env, const jobject& j_var);
+build_cxx_variable(JNIEnv* env, jobject j_var);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Variable
@@ -230,7 +463,7 @@ build_java_variable(JNIEnv* env, const Variable& var);
   from Java parma_polyhedra_library::Coefficient \p j_coeff.
 */
 Coefficient
-build_cxx_coeff(JNIEnv* env, const jobject& j_coeff);
+build_cxx_coeff(JNIEnv* env, jobject j_coeff);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Coefficient
@@ -244,63 +477,63 @@ build_java_coeff(JNIEnv* env, const Coefficient& ppl_coeff);
   from Java parma_polyhedra_library::Constraint \p j_constraint.
 */
 Constraint
-build_cxx_constraint(JNIEnv* env, const jobject& j_constraint);
+build_cxx_constraint(JNIEnv* env, jobject j_constraint);
 
 /*! \brief
   Builds a C++ Linear_Expression
   from Java parma_polyhedra_library::Linear_Expression \p j_le.
 */
 Linear_Expression
-build_cxx_linear_expression(JNIEnv* env, const jobject& j_le);
+build_cxx_linear_expression(JNIEnv* env, jobject j_le);
 
 /*! \brief
   Builds a C++ Congruence
   from Java parma_polyhedra_library::Congruence \p j_cg.
 */
 Congruence
-build_cxx_congruence(JNIEnv* env, const jobject& j_cg);
+build_cxx_congruence(JNIEnv* env, jobject j_cg);
 
 /*! \brief
   Builds a C++ Generator
   from Java parma_polyhedra_library::Generator \p j_g.
 */
 Generator
-build_cxx_generator(JNIEnv* env, const jobject& j_g);
+build_cxx_generator(JNIEnv* env, jobject j_g);
 
 /*! \brief
   Builds a C++ Grid_Generator
   from Java parma_polyhedra_library::Grid_Generator \p j_g.
 */
 Grid_Generator
-build_cxx_grid_generator(JNIEnv* env, const jobject& j_g);
+build_cxx_grid_generator(JNIEnv* env, jobject j_g);
 
 /*! \brief
   Builds a C++ Grid_Generator_System
   from Java parma_polyhedra_library::Grid_Generator_System \p j_gs.
 */
 Grid_Generator_System
-build_cxx_grid_generator_system(JNIEnv* env, const jobject& j_gs);
+build_cxx_grid_generator_system(JNIEnv* env, jobject j_gs);
 
 /*! \brief
   Builds a C++ Constraint_System
   from Java parma_polyhedra_library::Constraint_System \p j_cs.
 */
 Constraint_System
-build_cxx_constraint_system(JNIEnv* env, const jobject& j_cs);
+build_cxx_constraint_system(JNIEnv* env, jobject j_cs);
 
 /*! \brief
   Builds a C++ Generator_System
   from Java parma_polyhedra_library::Generator_System \p j_gs.
 */
 Generator_System
-build_cxx_generator_system(JNIEnv* env, const jobject& j_gs);
+build_cxx_generator_system(JNIEnv* env, jobject j_gs);
 
 /*! \brief
   Builds a C++ Congruence_System
   from Java parma_polyhedra_library::Congruence_System \p j_cgs.
 */
 Congruence_System
-build_cxx_congruence_system(JNIEnv* env, const jobject& j_cgs);
+build_cxx_congruence_system(JNIEnv* env, jobject j_cgs);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Constraint
@@ -342,8 +575,7 @@ build_java_constraint_system(JNIEnv* env, const Constraint_System& cs);
   from C++ Grid_Generator_System \p gs.
 */
 jobject
-build_java_grid_generator_system(JNIEnv* env,
-                                 const Grid_Generator_System& gs);
+build_java_grid_generator_system(JNIEnv* env, const Grid_Generator_System& gs);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Generator_System
@@ -364,62 +596,48 @@ build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs);
   from C++ Coefficient \p coeff.
 */
 jobject
-build_java_linear_expression_coefficient(JNIEnv* env,
-                                         const Coefficient& coeff);
+build_java_linear_expression_coefficient(JNIEnv* env, const Coefficient& coeff);
 
 /*! \brief
-  Sets Java reference \p to_be_set
-  to the parma_polyhedra_library::Generator object \p gen.
+  Sets Java parma_polyhedra_library::Generator \p dst
+  to have the same value as \p src.
 */
 void
-set_generator(JNIEnv* env, jobject& to_be_set,
-              const jobject& gen);
+set_generator(JNIEnv* env, jobject dst, jobject src);
 
 /*! \brief
-  Sets Java reference \p to_be_set
-  to the parma_polyhedra_library::Grid_Generator object \p g_gen.
+  Sets Java Coefficient \p dst to have the same value as \p src.
 */
 void
-set_grid_generator(JNIEnv* env, jobject& to_be_set,
-                   const jobject& g_gen);
+set_coefficient(JNIEnv* env, jobject dst, jobject src);
 
 /*! \brief
-  Sets Java reference \p to_be_set
-  to the parma_polyhedra_library::Coefficient object \p c.
+  Modifies parma_polyhedra_library::By_Reference object \p by_ref_dst
+  so that it references object \p src.
 */
 void
-set_coefficient(JNIEnv* env, jobject& to_be_set,
-                const jobject& c);
-
-/*! \brief
-  Modifies parma_polyhedra_library::By_Reference object \p by_ref_to_be_set
-  so that it references object \p to_insert.
-*/
-void
-set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set,
-                 const jobject& to_insert);
+set_by_reference(JNIEnv* env, jobject by_ref_dst, jobject src);
 
 /*! \brief
   Returns the object referenced by
   parma_polyhedra_library::By_Reference object \p by_reference.
 */
 jobject
-get_by_reference(JNIEnv* env, const jobject& by_reference);
+get_by_reference(JNIEnv* env, jobject by_reference);
 
 
 /*! \brief
-  Assigns \p obj_to_insert to one of the fields of
-  parma_polyhedra_library::Pair object \p pair_to_be_set.
+  Assigns \p src to one of the fields of
+  parma_polyhedra_library::Pair object \p dst_pair.
 
-  If \p arg is 0, the first element of \p pair_to_be_set is overwritten;
-  if \p arg is 1, the second element of \p pair_to_be_set is overwritten.
+  If \p arg is 0, the first element of \p dst_pair is overwritten;
+  if \p arg is 1, the second element of \p dst_pair is overwritten.
 
   \exception std::runtime_error
   Thrown if \p arg is neither 0 nor 1.
 */
 void
-set_pair_element(JNIEnv* env, jobject& pair_to_be_set, int arg,
-                 const jobject& obj_to_insert);
+set_pair_element(JNIEnv* env, jobject dst_pair, int arg, jobject src);
 
 /*! \brief
   Returns one of the fields of the
@@ -431,19 +649,17 @@ set_pair_element(JNIEnv* env, jobject& pair_to_be_set, int arg,
   \exception std::runtime_error
   Thrown if \p arg is neither 0 nor 1.
 */
-jobject get_pair_element(JNIEnv* env, int arg, const jobject& pair);
-
-//! Returns \c true if and only if \p obj is a null Java reference.
-jboolean is_null(JNIEnv* env, jobject obj);
+jobject
+get_pair_element(JNIEnv* env, int arg, jobject pair);
 
 //! Returns a pointer to the C++ object wrapped by \p ppl_object.
 void*
-get_ptr(JNIEnv* env, const jobject& ppl_object);
+get_ptr(JNIEnv* env, jobject ppl_object);
 
 //! Sets the pointer of the underlying C++ object in the Java object.
 template <typename T>
 void
-set_ptr(JNIEnv* env, const jobject& ppl_object,
+set_ptr(JNIEnv* env, jobject ppl_object,
 	const T* address, bool to_be_marked = false);
 
 /*! \brief

@@ -1,5 +1,5 @@
 /* Coefficient Java class declaration and implementation.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -35,14 +35,14 @@ public class Coefficient {
     //! Holds the value of \p this.
     private BigInteger value;
 
-    //! Builds a coefficient values \p i.
+    //! Builds a coefficient valued \p i.
     public Coefficient(int i) {
-	value = new BigInteger(Integer.toString(i));
+        value = BigInteger.valueOf(i);
     }
 
     //! Builds a coefficient valued \p l.
     public Coefficient(long l) {
-	value = new BigInteger(Long.toString(l));
+	value = BigInteger.valueOf(l);
     }
 
     //! Builds a coefficient valued \p bi.
@@ -61,7 +61,12 @@ public class Coefficient {
 
     //! Builds a copy of \p c.
     public Coefficient(Coefficient c) {
-	value = new BigInteger(c.value.toString());
+	value = c.value;
+    }
+
+    //! Returns a String representation of \p this.
+    public String toString() {
+	return value.toString();
     }
 
     //! Returns the value held by \p this.
@@ -69,7 +74,8 @@ public class Coefficient {
 	return value;
     }
 
-    private void set(Coefficient c) {
-        value = c.getBigInteger();
+    private static native void initIDs();
+    static {
+        initIDs();
     }
 }

@@ -1,5 +1,5 @@
 /* Grid class declaration.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -1011,21 +1011,6 @@ public:
   void add_congruence(const Congruence& cg);
 
   /*! \brief
-    Adds a copy of congruence \p cg to the system of congruences of \p
-    *this, reducing the result
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and congruence \p cg are dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_congruence_and_minimize(const Congruence& c);
-
-  /*! \brief
     Adds a copy of grid generator \p g to the system of generators of
     \p *this.
 
@@ -1034,22 +1019,6 @@ public:
     or if \p *this is an empty grid and \p g is not a point.
   */
   void add_grid_generator(const Grid_Generator& g);
-
-  /*! \brief
-    Adds a copy of grid generator \p g to the system of generators of
-    \p *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and generator \p g are dimension-incompatible,
-    or if \p *this is an empty grid and \p g is not a point.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_grid_generator_and_minimize(const Grid_Generator& g);
 
   //! Adds a copy of each congruence in \p cgs to \p *this.
   /*!
@@ -1078,48 +1047,6 @@ public:
   void add_recycled_congruences(Congruence_System& cgs);
 
   /*! \brief
-    Adds a copy of the congruences in \p cgs to the system of
-    congruences of \p *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cgs
-    Contains the congruences that will be added to the system of
-    congruences of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_congruences_and_minimize(const Congruence_System& cgs);
-
-  /*! \brief
-    Adds the congruences in \p cgs to the system of congruences of \p
-    *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cgs
-    The congruence system to be added to \p *this.  The congruences in
-    \p cgs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
-
-    \warning
-    The only assumption that can be made about \p cgs upon successful
-    or exceptional return is that it can be safely destroyed.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
-
-  /*! \brief
     Adds to \p *this a congruence equivalent to constraint \p c.
 
     \param c
@@ -1130,25 +1057,6 @@ public:
     or if constraint \p c is not optimally supported by the grid domain.
   */
   void add_constraint(const Constraint& c);
-
-  /*! \brief
-    Adds to \p *this a congruence equivalent to constraint \p c,
-    also minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param c
-    The constraint to be added.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p c are dimension-incompatible
-    or if constraint \p c is not optimally supported by the grid domain.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_constraint_and_minimize(const Constraint& c);
 
   /*! \brief
     Adds to \p *this congruences equivalent to the constraints in \p cs.
@@ -1162,26 +1070,6 @@ public:
     by the grid domain.
   */
   void add_constraints(const Constraint_System& cs);
-
-  /*! \brief
-    Adds to \p *this congruences equivalent to the constraints in \p cs,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraints to be added.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible
-    or if \p cs contains a constraint whcih is not optimally supported
-    by the grid domain.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
 
   /*! \brief
     Adds to \p *this congruences equivalent to the constraints in \p cs.
@@ -1199,30 +1087,6 @@ public:
     or exceptional return is that it can be safely destroyed.
   */
   void add_recycled_constraints(Constraint_System& cs);
-
-  /*! \brief
-    Adds to \p *this congruences equivalent to the constraints in \p cs,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraints to be added. They may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible
-    or if \p cs contains a constraint whcih is not optimally supported
-    by the grid domain.
-
-    \warning
-    The only assumption that can be made about \p cs upon successful
-    or exceptional return is that it can be safely destroyed.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
   //! Uses a copy of the congruence \p cg to refine \p *this.
   /*!
@@ -1298,50 +1162,6 @@ public:
   void add_recycled_grid_generators(Grid_Generator_System& gs);
 
   /*! \brief
-    Adds a copy of the generators in \p gs to the system of generators
-    of \p *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param gs
-    Contains the generators that will be added to the system of
-    generators of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if \p
-    *this is empty and the system of generators \p gs is not empty,
-    but has no points.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_grid_generators_and_minimize(const Grid_Generator_System& gs);
-
-  /*! \brief
-    Adds the generators in \p gs to the system of generators of \p
-    *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param gs
-    The generator system to be added to \p *this.  The generators in
-    \p gs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible.
-
-    \warning
-    The only assumption that can be made about \p gs upon successful
-    or exceptional return is that it can be safely destroyed.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs);
-
-  /*! \brief
     Computes the \ref Cylindrification "cylindrification" of \p *this with
     respect to space dimension \p var, assigning the result to \p *this.
 
@@ -1376,42 +1196,12 @@ public:
   void intersection_assign(const Grid& y);
 
   /*! \brief
-    Assigns to \p *this the intersection of \p *this and \p y,
-    reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool intersection_assign_and_minimize(const Grid& y);
-
-  /*! \brief
     Assigns to \p *this the least upper bound of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void upper_bound_assign(const Grid& y);
-
-  /*! \brief
-    Assigns to \p *this the least upper bound of \p *this and \p y,
-    reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool upper_bound_assign_and_minimize(const Grid& y);
 
   /*! \brief
     If the upper bound of \p *this and \p y is exact it is assigned to \p

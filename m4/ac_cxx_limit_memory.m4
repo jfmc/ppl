@@ -1,6 +1,6 @@
 dnl A function to check whether it is possible to limit the memory
 dnl available to processes using setrlimit().
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -98,7 +98,7 @@ main() try {
   ac_cxx_supports_limiting_memory=yes,
   AC_MSG_RESULT(no)
   ac_cxx_supports_limiting_memory=no,
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT([assuming not])
   ac_cxx_supports_limiting_memory=no)
 
 if test x"$ac_cxx_supports_limiting_memory" = xyes
@@ -107,7 +107,7 @@ then
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(CXX_SUPPORTS_LIMITING_MEMORY, $value,
+AC_DEFINE_UNQUOTED(PPL_CXX_SUPPORTS_LIMITING_MEMORY, $value,
   [Not zero if it is possible to limit memory using setrlimit().])
 
 AC_LANG_POP(C++)

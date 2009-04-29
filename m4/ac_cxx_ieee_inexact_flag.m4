@@ -1,6 +1,6 @@
 dnl A function to check whether the IEEE inexact flag is supported and
 dnl available to C++ programs.
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -114,7 +114,7 @@ int main() {
   ac_cxx_supports_ieee_inexact_flag=yes,
   AC_MSG_RESULT(no)
   ac_cxx_supports_ieee_inexact_flag=no,
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT([assuming not])
   ac_cxx_supports_ieee_inexact_flag=no)
 
 if test x"$ac_cxx_supports_ieee_inexact_flag" = xyes
@@ -123,7 +123,7 @@ then
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(CXX_SUPPORTS_IEEE_INEXACT_FLAG, $value,
+AC_DEFINE_UNQUOTED(PPL_CXX_SUPPORTS_IEEE_INEXACT_FLAG, $value,
   [Not zero if the the IEEE inexact flag is supported in C++.])
 
 AC_LANG_POP(C++)

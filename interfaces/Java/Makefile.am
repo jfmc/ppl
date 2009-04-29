@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -40,3 +40,6 @@ ppl_java.jar: parma_polyhedra_library/java_classes.stamp
 	$(JAR) cf ppl_java.jar parma_polyhedra_library/*.class
 
 CLEANFILES = ppl_java.jar
+
+parma_polyhedra_library/java_classes.stamp:
+	$(MAKE) $(AM_MAKEFLAGS) -C parma_polyhedra_library java_classes.stamp

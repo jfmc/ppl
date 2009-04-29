@@ -1,5 +1,5 @@
 (* OCaml interface: module inteface.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,6 +21,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . *)
 
 open Gmp
+
+exception PPL_arithmetic_overflow of string
+exception PPL_timeout_exception
+exception PPL_internal_error of string
+exception PPL_unknown_standard_exception of string
+exception PPL_unexpected_error of string
 
 type degenerate_element =
     Universe
@@ -116,23 +122,47 @@ val ppl_version:
 val ppl_banner:
   unit -> string
 
+val ppl_io_wrap_string:
+  string -> int -> int -> int -> string
+
+val ppl_max_space_dimension:
+  unit -> int
+
+val ppl_Coefficient_is_bounded:
+  unit -> bool
+
+val ppl_Coefficient_max:
+  unit -> Z.t
+
+val ppl_Coefficient_min:
+  unit -> Z.t
+
 val ppl_set_rounding_for_PPL:
-unit -> unit
+  unit -> unit
 
 val ppl_restore_pre_PPL_rounding:
-unit -> unit
+  unit -> unit
+
+val ppl_set_timeout:
+  int -> unit
+
+val ppl_reset_timeout:
+  unit -> unit
 
 type mip_problem
 
 val ppl_new_MIP_Problem_from_space_dimension:
-int -> mip_problem
+  int -> mip_problem
 
 val ppl_new_MIP_Problem:
-      int -> constraint_system -> linear_expression
-	-> optimization_mode -> mip_problem
+  int -> constraint_system -> linear_expression
+    -> optimization_mode -> mip_problem
 
 val ppl_MIP_Problem_space_dimension:
   mip_problem -> int
+
+val ppl_MIP_Problem_integer_space_dimensions:
+  mip_problem -> int list
 
 val ppl_MIP_Problem_constraints:
   mip_problem -> constraint_system
@@ -193,3 +223,6 @@ val ppl_MIP_Problem_get_control_parameter:
 
 val ppl_MIP_Problem_swap:
   mip_problem -> mip_problem -> unit
+
+val ppl_MIP_Problem_ascii_dump:
+  mip_problem -> string

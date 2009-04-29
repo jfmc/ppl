@@ -1,5 +1,5 @@
 dnl A function to detect the binary format used by C++ long doubles.
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -22,12 +22,12 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 AC_DEFUN([AC_CXX_LONG_DOUBLE_BINARY_FORMAT],
 [
+AC_REQUIRE([AC_C_BIGENDIAN])
 ac_save_CPPFLAGS="$CPPFLAGS"
 ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([the binary format of C++ long doubles])
-ac_cxx_long_double_binary_format=unknown
 
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <limits>
@@ -88,9 +88,11 @@ main() {
 
 #endif // SIZEOF_LONG_DOUBLE != 12
 ]])],
-  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_INTEL_DOUBLE_EXTENDED,
+  AC_DEFINE(PPL_CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_INTEL_DOUBLE_EXTENDED,
   [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
-  ac_cxx_long_double_binary_format="Intel Double-Extended")
+  ac_cxx_long_double_binary_format="Intel Double-Extended",
+  ac_cxx_long_double_binary_format=unknown,
+  ac_cxx_long_double_binary_format=unknown)
 
 if test x"$ac_cxx_long_double_binary_format" = x"unknown"
 then
@@ -166,9 +168,11 @@ main() {
 
 #endif // SIZEOF_LONG_DOUBLE != 16
 ]])],
-  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_QUAD,
+  AC_DEFINE(PPL_CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_QUAD,
   [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
-  ac_cxx_long_double_binary_format="IEEE754 Quad Precision")
+  ac_cxx_long_double_binary_format="IEEE754 Quad Precision",
+  ac_cxx_long_double_binary_format=unknown,
+  ac_cxx_long_double_binary_format=unknown)
 fi
 
 if test x"$ac_cxx_long_double_binary_format" = x"unknown"
@@ -232,9 +236,11 @@ main() {
 
 #endif // SIZEOF_LONG_DOUBLE != 16
 ]])],
-  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_INTEL_DOUBLE_EXTENDED,
+  AC_DEFINE(PPL_CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_INTEL_DOUBLE_EXTENDED,
     [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
-  ac_cxx_long_double_binary_format="Intel Double-Extended")
+  ac_cxx_long_double_binary_format="Intel Double-Extended",
+  ac_cxx_long_double_binary_format=unknown,
+  ac_cxx_long_double_binary_format=unknown)
 fi
 
 if test x"$ac_cxx_long_double_binary_format" = x"unknown"
@@ -298,9 +304,11 @@ main() {
 
 #endif // SIZEOF_LONG_DOUBLE != 8
 ]])],
-  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_DOUBLE,
+  AC_DEFINE(PPL_CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_DOUBLE,
     [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
-  ac_cxx_long_double_binary_format="IEEE754 Double Precision")
+  ac_cxx_long_double_binary_format="IEEE754 Double Precision",
+  ac_cxx_long_double_binary_format=unknown,
+  ac_cxx_long_double_binary_format=unknown)
 fi
 
 AC_MSG_RESULT($ac_cxx_long_double_binary_format)
@@ -314,7 +322,7 @@ else
   ac_supported_long_double=1
 fi
 AM_CONDITIONAL(SUPPORTED_LONG_DOUBLE, test $ac_supported_long_double = 1)
-AC_DEFINE_UNQUOTED(SUPPORTED_LONG_DOUBLE, $ac_supported_long_double,
+AC_DEFINE_UNQUOTED(PPL_SUPPORTED_LONG_DOUBLE, $ac_supported_long_double,
   [Not zero if long doubles are supported.])
 
 AC_LANG_POP(C++)

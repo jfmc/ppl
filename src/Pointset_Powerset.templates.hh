@@ -1,5 +1,5 @@
 /* Pointset_Powerset class implementation: non-inline template functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -65,8 +65,18 @@ Pointset_Powerset<NNC_Polyhedron>
 	 y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(Determinate<NNC_Polyhedron>
 			 (NNC_Polyhedron(i->element(), complexity)));
-  // FIXME(0.10.1): the following is a bug!
+
+  // FIXME: If the domain elements can be represented _exactly_ as NNC
+  // polyhedra, then having x.reduced = y.reduced is correct. This is
+  // the case if the domains are both linear and convex which holds
+  // for all the currently supported instantiations except for
+  // Grids; for this reason the Grid specialization has a
+  // separate implementation.  For any non-linear or non-convex
+  // domains (e.g., a domain of Intervals with restrictions or a
+  // domain of circles) that may be supported in the future, the
+  // assignment x.reduced = y.reduced will be a bug.
   x.reduced = y.reduced;
+
   assert(x.OK());
 }
 
@@ -136,22 +146,6 @@ Pointset_Powerset<PS>::add_constraint(const Constraint& c) {
 }
 
 template <typename PS>
-bool
-Pointset_Powerset<PS>::add_constraint_and_minimize(const Constraint& c) {
-  Pointset_Powerset& x = *this;
-  for (Sequence_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; )
-    if (!si->element().add_constraint_and_minimize(c))
-      si = x.sequence.erase(si);
-    else {
-      x.reduced = false;
-      ++si;
-    }
-  assert(x.OK());
-  return !x.empty();
-}
-
-template <typename PS>
 void
 Pointset_Powerset<PS>::refine_with_constraint(const Constraint& c) {
   Pointset_Powerset& x = *this;
@@ -171,23 +165,6 @@ Pointset_Powerset<PS>::add_constraints(const Constraint_System& cs) {
     si->element().add_constraints(cs);
   x.reduced = false;
   assert(x.OK());
-}
-
-template <typename PS>
-bool
-Pointset_Powerset<PS>::
-add_constraints_and_minimize(const Constraint_System& cs) {
-  Pointset_Powerset& x = *this;
-  for (Sequence_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; )
-    if (!si->element().add_constraints_and_minimize(cs))
-      si = x.sequence.erase(si);
-    else {
-      x.reduced = false;
-      ++si;
-    }
-  assert(x.OK());
-  return !x.empty();
 }
 
 template <typename PS>
@@ -224,22 +201,6 @@ Pointset_Powerset<PS>::refine_with_congruence(const Congruence& cg) {
 }
 
 template <typename PS>
-bool
-Pointset_Powerset<PS>::add_congruence_and_minimize(const Congruence& c) {
-  Pointset_Powerset& x = *this;
-  for (Sequence_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; )
-    if (!si->element().add_congruence_and_minimize(c))
-      si = x.sequence.erase(si);
-    else {
-      x.reduced = false;
-      ++si;
-    }
-  assert(x.OK());
-  return !x.empty();
-}
-
-template <typename PS>
 void
 Pointset_Powerset<PS>::add_congruences(const Congruence_System& cs) {
   Pointset_Powerset& x = *this;
@@ -259,23 +220,6 @@ Pointset_Powerset<PS>::refine_with_congruences(const Congruence_System& cgs) {
     si->element().refine_with_congruences(cgs);
   x.reduced = false;
   assert(x.OK());
-}
-
-template <typename PS>
-bool
-Pointset_Powerset<PS>::
-add_congruences_and_minimize(const Congruence_System& cs) {
-  Pointset_Powerset& x = *this;
-  for (Sequence_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; )
-    if (!si->element().add_congruences_and_minimize(cs))
-      si = x.sequence.erase(si);
-    else {
-      x.reduced = false;
-      ++si;
-    }
-  assert(x.OK());
-  return !x.empty();
 }
 
 template <typename PS>
@@ -1199,8 +1143,6 @@ Pointset_Powerset<PS>::pairwise_reduce() {
 	const PS& pj = sj->element();
 	if (pi.upper_bound_assign_if_exact(pj)) {
 	  marked[si_index] = marked[sj_index] = true;
-	  // FIXME(0.10.1): check whether the preservation of reduction was
-	  // actually meant here.
 	  new_x.add_non_bottom_disjunct_preserve_reduction(pi);
 	  ++deleted;
 	  goto next;
@@ -1255,8 +1197,6 @@ BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf) {
       if (pi.contains(pj)) {
 	PS pi_copy = pi;
 	wf(pi_copy, pj);
-	// FIXME(0.10.1): check whether the preservation of reduction was
-	// actually meant here.
 	new_x.add_non_bottom_disjunct_preserve_reduction(pi_copy);
 	marked[i_index] = true;
       }

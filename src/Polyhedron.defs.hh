@@ -1,5 +1,5 @@
 /* Polyhedron class declaration.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -817,26 +817,6 @@ public:
   void add_constraint(const Constraint& c);
 
   /*! \brief
-    Adds a copy of constraint \p c to the system of constraints
-    of \p *this, minimizing the result
-
-    \param c
-    The constraint that will be added to the system of
-    constraints of \p *this.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are topology-incompatible
-    or dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_constraint_and_minimize(const Constraint& c);
-
-  /*! \brief
     Adds a copy of generator \p g to the system of generators
     of \p *this (without minimizing the result).
 
@@ -848,23 +828,6 @@ public:
   void add_generator(const Generator& g);
 
   /*! \brief
-    Adds a copy of generator \p g to the system of generators
-    of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and generator \p g are topology-incompatible or
-    dimension-incompatible, or if \p *this is an empty polyhedron and
-    \p g is not a point.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_generator_and_minimize(const Generator& g);
-
-  /*! \brief
     Adds a copy of congruence \p cg to \p *this,
     if \p cg can be exactly represented by a polyhedron.
 
@@ -874,24 +837,6 @@ public:
     nor a contradiction.
   */
   void add_congruence(const Congruence& cg);
-
-  /*! \brief
-    Adds a copy of congruence \p cg to \p *this,
-    if \p cg can be exactly represented by a polyhedron,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and congruence \p cg are dimension-incompatible,
-    of if \p cg is a proper congruence which is neither a tautology,
-    nor a contradiction.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_congruence_and_minimize(const Congruence& cg);
 
   /*! \brief
     Adds a copy of the constraints in \p cs to the system
@@ -924,50 +869,6 @@ public:
     exceptional return is that it can be safely destroyed.
   */
   void add_recycled_constraints(Constraint_System& cs);
-
-  /*! \brief
-    Adds a copy of the constraints in \p cs to the system
-    of constraints of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    Contains the constraints that will be added to the system of
-    constraints of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
-
-  /*! \brief
-    Adds the constraints in \p cs to the system of constraints
-    of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraint system to be added to \p *this.  The constraints in
-    \p cs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-
-    \warning
-    The only assumption that can be made on \p cs upon successful or
-    exceptional return is that it can be safely destroyed.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
   /*! \brief
     Adds a copy of the generators in \p gs to the system
@@ -1004,52 +905,6 @@ public:
   void add_recycled_generators(Generator_System& gs);
 
   /*! \brief
-    Adds a copy of the generators in \p gs to the system
-    of generators of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param gs
-    Contains the generators that will be added to the system of
-    generators of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are topology-incompatible or
-    dimension-incompatible, or if \p *this is empty and the the system
-    of generators \p gs is not empty, but has no points.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_generators_and_minimize(const Generator_System& gs);
-
-  /*! \brief
-    Adds the generators in \p gs to the system of generators
-    of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param gs
-    The generator system to be added to \p *this.  The generators in
-    \p gs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are topology-incompatible or
-    dimension-incompatible, or if \p *this is empty and the the system
-    of generators \p gs is not empty, but has no points.
-
-    \warning
-    The only assumption that can be made on \p gs upon successful or
-    exceptional return is that it can be safely destroyed.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_recycled_generators_and_minimize(Generator_System& gs);
-
-  /*! \brief
     Adds a copy of the congruences in \p cgs to \p *this,
     if all the congruences can be exactly represented by a polyhedron.
 
@@ -1062,27 +917,6 @@ public:
     neither a tautology, nor a contradiction.
   */
   void add_congruences(const Congruence_System& cgs);
-
-  /*! \brief
-    Adds a copy of the congruences in \p cgs to \p *this,
-    if all the congruences can be exactly represented by a polyhedron,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cgs
-    The congruences to be added.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible,
-    of if there exists in \p cgs a proper congruence which is
-    neither a tautology, nor a contradiction
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_congruences_and_minimize(const Congruence_System& cgs);
 
   /*! \brief
     Adds the congruences in \p cgs to \p *this,
@@ -1101,31 +935,6 @@ public:
     exceptional return is that it can be safely destroyed.
   */
   void add_recycled_congruences(Congruence_System& cgs);
-
-  /*! \brief
-    Adds the congruences in \p cgs to \p *this,
-    if all the congruences can be exactly represented by a polyhedron,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cgs
-    The congruences to be added. Its elements may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible,
-    of if there exists in \p cgs a proper congruence which is
-    neither a tautology, nor a contradiction
-
-    \warning
-    The only assumption that can be made on \p cgs upon successful or
-    exceptional return is that it can be safely destroyed.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
   /*! \brief
     Uses a copy of constraint \p c to refine \p *this.
@@ -1204,22 +1013,6 @@ public:
   void intersection_assign(const Polyhedron& y);
 
   /*! \brief
-    Assigns to \p *this the intersection of \p *this and \p y,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool intersection_assign_and_minimize(const Polyhedron& y);
-
-  /*! \brief
     Assigns to \p *this the poly-hull of \p *this and \p y.
     The result is not guaranteed to be minimized.
 
@@ -1228,22 +1021,6 @@ public:
     dimension-incompatible.
   */
   void poly_hull_assign(const Polyhedron& y);
-
-  /*! \brief
-    Assigns to \p *this the poly-hull of \p *this and \p y,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool poly_hull_assign_and_minimize(const Polyhedron& y);
 
   //! Same as poly_hull_assign(y).
   void upper_bound_assign(const Polyhedron& y);
@@ -2613,15 +2390,18 @@ protected:
       A. Bemporad, K. Fukuda, and F. D. Torrisi
       <em>Convexity Recognition of the Union of Polyhedra</em>
       Technical Report AUT00-13, ETH Zurich, 2000
-    generalized to also work on NNC polyhedra.
 
     \note
-    It is assumed that \p *this and \p y are dimension-compatible;
+    It is assumed that \p *this and \p y are topologically closed
+    and dimension-compatible;
     if the assumption does not hold, the behavior is undefined.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool BFT00_poly_hull_assign_if_exact(const Polyhedron& y);
 
+  bool BHZ09_poly_hull_assign_if_exact(const Polyhedron& y);
+  bool BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y);
+  bool BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \name Exception Throwers

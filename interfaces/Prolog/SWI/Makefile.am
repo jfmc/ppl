@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -74,7 +74,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ppl_interface_generator_swiprolog_cc.m4
 
 ppl_swiprolog.cc: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_swiprolog_cc.m4 > $@
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la
@@ -285,9 +285,10 @@ pl_check_test: swi_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	fi
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-clpq_test: pl_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+$(CLPQ_TESTS):
+	cp -f $(srcdir)/../tests/$@ .
+
+clpq_test: pl_clpq ../tests/script_clpq $(EXPECTED_CLPQ) $(CLPQ_TESTS)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
@@ -295,9 +296,7 @@ clpq_test: pl_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
 		$(CHECKER) ./pl_clpq <$(srcdir)/../tests/script_clpq >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
-clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2) $(CLPQ_TESTS)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
@@ -331,3 +330,12 @@ pl_clpq pl_clpq2 \
 obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt \
 $(CLPQ_TESTS) \
 script_pchk script_pgt
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_prolog_domains.cc.stamp' in parent's directory
+# makefile.
+$(nodist_EXTRA_libppl_swiprolog_la_SOURCES):
+../tests/ppl_prolog_generated_test_main.pl:

@@ -1,5 +1,5 @@
 /* Test Polyhedron::simplify_using_context_assign().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -309,32 +309,12 @@ test08() {
 
 bool
 test09() {
-  C_Polyhedron ph1(0, EMPTY);
-  C_Polyhedron ph2;
-
-  print_constraints(ph1, "*** ph1 ***");
-  print_constraints(ph2, "*** ph2 ***");
-
-  C_Polyhedron known_result = ph1;
-
-  ph1.simplify_using_context_assign(ph2);
-
-  bool ok = (ph1 == known_result);
-
-  print_constraints(ph1,
-            "*** after ph1.simplify_using_context_assign(ph2) ***");
-
-  return ok;
-}
-
-bool
-test10() {
   Variable A(0);
 
   C_Polyhedron ph1(1);
   C_Polyhedron ph2(1);
 
-  ph2.add_constraint( A == 0);
+  ph2.add_constraint(A == 0);
 
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
@@ -352,7 +332,7 @@ test10() {
 }
 
 bool
-test11() {
+test10() {
   Variable i(0);
   Variable j(1);
   Variable k(2);
@@ -383,10 +363,114 @@ test11() {
   return ok;
 }
 
+bool
+test11() {
+  C_Polyhedron ph1(0, EMPTY);
+  C_Polyhedron ph2;
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result = ph1;
+
+  ph1.simplify_using_context_assign(ph2);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1,
+            "*** after ph1.simplify_using_context_assign(ph2) ***");
+
+  return ok;
+}
+
+bool
+test12() {
+
+  C_Polyhedron ph1(0, EMPTY);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  C_Polyhedron ph2(0, EMPTY);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(0, UNIVERSE);
+
+  bool ok = !ph1.simplify_using_context_assign(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1,
+                   "*** ph1.simplify_using_context_assign(ph2) ***");
+  return ok;
+}
+
+bool
+test13() {
+
+  C_Polyhedron ph1(0, EMPTY);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  C_Polyhedron ph2(0, UNIVERSE);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(0, EMPTY);
+
+  bool ok = !ph1.simplify_using_context_assign(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1,
+                   "*** ph1.simplify_using_context_assign(ph2) ***");
+  return ok;
+}
+
+bool
+test14() {
+
+  C_Polyhedron ph1(0, UNIVERSE);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  C_Polyhedron ph2(0, EMPTY);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(0, UNIVERSE);
+
+  bool ok = !ph1.simplify_using_context_assign(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1,
+                   "*** ph1.simplify_using_context_assign(ph2) ***");
+  return ok;
+}
+
+bool
+test15() {
+
+  C_Polyhedron ph1(0, UNIVERSE);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  C_Polyhedron ph2(0, UNIVERSE);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(0, UNIVERSE);
+
+  bool ok = ph1.simplify_using_context_assign(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1,
+                   "*** ph1.simplify_using_context_assign(ph2) ***");
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
+  DO_TEST_F8A(test01);
   DO_TEST_F8(test02);
   DO_TEST(test03);
   DO_TEST(test04);
@@ -397,4 +481,8 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

@@ -5,7 +5,7 @@ This m4 file contains the program implementation code for generating the
 files ppl_c_DOMAIN.cc for each interface domain DOMAIN
 in ppl_interface instantiations.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -362,19 +362,6 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@BINMINOP@_code',
-`int
-ppl_@CLASS@_@BINMINOP@
-(ppl_@CLASS@_t x,
- ppl_const_@CLASS@_t y) try {
-  @CPP_CLASS@& xx = *to_nonconst(x);
-  const @CPP_CLASS@& yy = *to_const(y);
-  return xx.@BINMINOP@(yy);
-}
-CATCH_ALL
-
-')
-
 m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
 `int
 ppl_@CLASS@_@UB_EXACT@
@@ -448,19 +435,6 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_code',
-`int
-ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize
-(ppl_@CLASS@_t ph,
- ppl_const_@!CLASS_REPRESENT@_t c) try {
-  @CPP_CLASS@& pph = *to_nonconst(ph);
-  const @!CLASS_REPRESENT@& cc = *to_const(c);
-  return pph.add_@CLASS_REPRESENT@_and_minimize(cc) ? 1 : 0;
-}
-CATCH_ALL
-
-')
-
 m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
 `int
 ppl_@CLASS@_add_@CLASS_REPRESENT@s
@@ -484,19 +458,6 @@ ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s
   const @!REFINE_REPRESENT@_System& ccs = *to_const(cs);
   pph.refine_with_@REFINE_REPRESENT@s(ccs);
   return 0;
-}
-CATCH_ALL
-
-')
-
-m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize_code',
-`int
-ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize
-(ppl_@CLASS@_t ph,
- ppl_const_@!CLASS_REPRESENT@_System_t cs) try {
-  @CPP_CLASS@& pph = *to_nonconst(ph);
-  const @!CLASS_REPRESENT@_System& ccs = *to_const(cs);
-  return pph.add_@CLASS_REPRESENT@s_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
 

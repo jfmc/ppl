@@ -1,5 +1,5 @@
 dnl A function to detect whether C++ provides exact output for doubles.
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -22,13 +22,13 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 AC_DEFUN([AC_CXX_DOUBLE_EXACT_OUTPUT],
 [
+AC_REQUIRE([AC_C_BIGENDIAN])
 dnl AC_REQUIRE([AC_CXX_DOUBLE_BINARY_FORMAT])
 ac_save_CPPFLAGS="$CPPFLAGS"
 ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([whether C++ provides exact output for doubles])
-ac_cxx_double_exact_output=unknown
 
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <limits>
@@ -89,7 +89,7 @@ convert(uint32_t msp, uint32_t lsp) {
   return u.value;
 }
 
-#if CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
+#if PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
 
 int
 main() {
@@ -106,14 +106,14 @@ main() {
     return 1;
 }
 
-#else // CXX_DOUBLE_EXACT_OUTPUT != FLOAT_IEEE754_DOUBLE
+#else // PPL_CXX_DOUBLE_BINARY_FORMAT != PPL_FLOAT_IEEE754_DOUBLE
 
 int
 main() {
   return 1;
 }
 
-#endif // CXX_DOUBLE_EXACT_OUTPUT != FLOAT_IEEE754_DOUBLE
+#endif // PPL_CXX_DOUBLE_BINARY_FORMAT != PPL_FLOAT_IEEE754_DOUBLE
 
 #else // SIZEOF_DOUBLE != 8
 
@@ -127,9 +127,11 @@ main() {
   AC_MSG_RESULT(yes)
   ac_cxx_double_exact_output=1,
   AC_MSG_RESULT(no)
+  ac_cxx_double_exact_output=0,
+  AC_MSG_RESULT([assuming not])
   ac_cxx_double_exact_output=0)
 
-AC_DEFINE_UNQUOTED(CXX_DOUBLE_EXACT_OUTPUT, $ac_cxx_double_exact_output,
+AC_DEFINE_UNQUOTED(PPL_CXX_DOUBLE_EXACT_OUTPUT, $ac_cxx_double_exact_output,
   [Not zero if C++ supports exact output for doubles.])
 
 AC_LANG_POP(C++)

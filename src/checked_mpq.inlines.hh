@@ -1,5 +1,5 @@
 /* Specialized "checked" functions for GMP's mpq_class numbers.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -386,16 +386,22 @@ inline Result
 sqrt_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir dir) {
   if (CHECK_P(To_Policy::check_sqrt_neg, from < 0))
     return assign_special<To_Policy>(to, V_SQRT_NEG, ROUND_IGNORE);
-  const unsigned long k = rational_sqrt_precision_parameter;
-  mpz_class& to_num = to.get_num();
-  mul2exp<To_Policy, From_Policy>(to_num, from.get_num(), 2*k, dir);
+  if (from == 0) {
+    to = 0;
+    return V_EQ;
+  }
+  bool gt1 = from.get_num() > from.get_den();
+  const mpz_class& from_a = gt1 ? from.get_num() : from.get_den();
+  const mpz_class& from_b = gt1 ? from.get_den() : from.get_num();
+  mpz_class& to_a = gt1 ? to.get_num() : to.get_den();
+  mpz_class& to_b = gt1 ? to.get_den() : to.get_num();
+  Rounding_Dir rdir = gt1 ? dir : inverse(dir);
+  mul2exp<To_Policy, From_Policy>(to_a, from_a, 2*rational_sqrt_precision_parameter, ROUND_IGNORE);
   Result rdiv
-    = div<To_Policy, To_Policy, To_Policy>(to_num,
-					   to_num, from.get_den(), dir);
-  Result rsqrt = sqrt<To_Policy, To_Policy>(to_num, to_num, dir);
-  mpz_class& to_den = to.get_den();
-  to_den = 1;
-  mul2exp<To_Policy, To_Policy>(to_den, to_den, k, dir);
+    = div<To_Policy, To_Policy, To_Policy>(to_a, to_a, from_b, rdir);
+  Result rsqrt = sqrt<To_Policy, To_Policy>(to_a, to_a, rdir);
+  to_b = 1;
+  mul2exp<To_Policy, To_Policy>(to_b, to_b, rational_sqrt_precision_parameter, ROUND_IGNORE);
   to.canonicalize();
   return rdiv != V_EQ ? rdiv : rsqrt;
 }
@@ -456,7 +462,8 @@ rational_sqrt_precision_parameter() {
 }
 
 //! Sets the precision parameter used for rational square root calculations.
-/*!
+/*! The lesser between numerator and denominator is limited to 2**\p p.
+
   If \p p is less than or equal to <CODE>INT_MAX</CODE>, sets the
   precision parameter used for rational square root calculations to \p p.
 

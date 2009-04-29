@@ -1,5 +1,5 @@
 /* Variable Java class declaration and implementation.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -65,5 +65,10 @@ public class Variable implements Comparable<Variable> {
    */
     public int compareTo(Variable v) {
         return varid - v.varid;
-        }
+    }
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }

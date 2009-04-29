@@ -1,5 +1,5 @@
 /* SPARC floating point unit related functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -19,6 +19,9 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
+
+#ifndef PPL_fpu_sparc_inlines_hh
+#define PPL_fpu_sparc_inlines_hh 1
 
 #ifdef PPL_HAVE_IEEEFP_H
 #include <ieeefp.h>
@@ -69,3 +72,5 @@ fpu_check_inexact() {
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_HAVE_IEEEFP_H)
+
+#endif // !defined(PPL_fpu_sparc_inlines_hh)

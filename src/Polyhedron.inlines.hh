@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -367,26 +367,9 @@ Polyhedron::minimized_grid_generators() const {
   return grid_generators();
 }
 
-inline bool
-Polyhedron::add_congruence_and_minimize(const Congruence& cg) {
-  add_congruence(cg);
-  return minimize();
-}
-
-inline bool
-Polyhedron::add_congruences_and_minimize(const Congruence_System& cgs) {
-  add_congruences(cgs);
-  return minimize();
-}
-
 inline void
 Polyhedron::add_recycled_congruences(Congruence_System& cgs) {
   add_congruences(cgs);
-}
-
-inline bool
-Polyhedron::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
-  return add_congruences_and_minimize(cgs);
 }
 
 /*! \relates Polyhedron */

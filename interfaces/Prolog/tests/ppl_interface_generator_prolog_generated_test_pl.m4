@@ -5,7 +5,7 @@ dnl This m4 file generates the test files
 dnl ppl_prolog_generated_test_<CLASS_NAME>.pl using the code in
 dnl ppl_interface_generator_prolog_generated_test_pl_code.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl

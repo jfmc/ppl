@@ -1,0 +1,12 @@
+*.clpq
+*.la
+obtained_clpq
+obtained_clpq2
+obtained_pchk
+obtained_pgt
+ppl_prolog_generated_test_common.pl
+ppl_yap.cc
+script_clpq
+script_clpq2
+script_pchk
+script_pgt
