@@ -1803,8 +1803,6 @@ public:
 
   friend class Parma_Polyhedra_Library::Grid_Certificate;
 
-  template <typename Interval> friend class Parma_Polyhedra_Library::Box;
-
   //! \name Miscellaneous Member Functions
   //@{
 
