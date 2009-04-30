@@ -127,6 +127,17 @@ package parma_polyhedra_library;
 /*! \ingroup PPL_Java_interface */
 public class Parma_Polyhedra_Library {
 
+    //! \name Library initialization and finalization
+    //@{
+
+    //! Initializes the library.
+    public static native void initialize_library();
+
+    //! Finalizes the library.
+    public static native void finalize_library();
+
+    //@} // Library initialization and finalization
+
     //! \name Version Checking
     //@{
 
