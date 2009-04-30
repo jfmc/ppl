@@ -74,7 +74,7 @@ parma_polyhedra_library_Congruence.h \
 parma_polyhedra_library_Congruence_System.h \
 parma_polyhedra_library_Constraint.h \
 parma_polyhedra_library_Constraint_System.h \
-parma_polyhedra_library.Degenerate_Element.h \
+parma_polyhedra_library_Degenerate_Element.h \
 parma_polyhedra_library_Generator.h \
 parma_polyhedra_library_Generator_System.h \
 parma_polyhedra_library_Generator_Type.h \
@@ -202,11 +202,10 @@ java_cxx_headers.stamp \
 source_generation.stamp \
 By_Reference.class \
 Coefficient.class \
-Congruence.class \
 Complexity_Class.class \
+Congruence.class \
 Congruence_System.class \
 Constraint.class \
-Constraint_System.class \
 Constraint_System.class \
 Control_Parameter_Name.class \
 Control_Parameter_Value.class \

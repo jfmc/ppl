@@ -556,77 +556,6 @@ public:
   explicit Grid(const Octagonal_Shape<U>& os,
                 Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a grid out of a generic, interval-based covering box.
-  /*!
-    The covering box is a set of upper and lower values for each
-    dimension.  When a covering box is tiled onto empty space the
-    corners of the tiles form a rectilinear grid.
-
-    A box interval with only one bound fixes the values of all grid
-    points in the dimension associated with the box to the value of
-    the bound.  A box interval which has upper and lower bounds of
-    equal value allows all grid points with any value in the dimension
-    associated with the interval.  The presence of a universe interval
-    results in the empty grid.  The empty box produces the empty grid
-    of the same dimension as the box.
-
-    \param box
-    The covering box representing the grid to be built;
-
-    \param dummy
-    A dummy tag to make this constructor syntactically unique.
-
-    \exception std::length_error
-    Thrown if the space dimension of \p box exceeds the maximum
-    allowed space dimension.
-
-    \exception std::invalid_argument
-    Thrown if \p box contains any topologically open bounds.
-
-    The template class Box must provide the following methods.
-    \code
-      dimension_type space_dimension() const
-    \endcode
-    returns the dimension of the vector space enclosing the grid
-    represented by the covering box.
-    \code
-      bool is_empty() const
-    \endcode
-    returns <CODE>true</CODE> if and only if the covering box
-    describes the empty set.
-    \code
-      bool get_lower_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from below, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the lower boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.  The fraction
-    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
-    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
-    the unique representation for zero.
-    \code
-      bool get_upper_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from above, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the upper boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the least upper bound of \f$I\f$.
-  */
-  template <typename Box>
-  Grid(const Box& box, From_Covering_Box dummy);
-
   /*! \brief
     Builds a grid from a polyhedron using algorithms whose complexity
     does not exceed the one specified by \p complexity.
@@ -947,36 +876,6 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool strictly_contains(const Grid& y) const;
-
-  //! Writes the covering box for \p *this into \p box.
-  /*!
-    The covering box is a set of upper and lower values for each
-    dimension.  When the covering box written into \p box is tiled
-    onto empty space the corners of the tiles form the sparsest
-    rectilinear grid that includes \p *this.
-
-    The value of the lower bound of each interval of the resulting \p
-    box are as close as possible to the origin, with positive values
-    taking preference when the lowest positive value equals the lowest
-    negative value.
-
-    If all the points have a single value in a particular dimension of
-    the grid then there is only a lower bound on the interval produced
-    in \p box, and the lower bound denotes the single value for the
-    dimension.  If the coordinates of the points in a particular
-    dimension include every value then the upper and lower bounds of
-    the associated interval in \p box are set equal.  The empty grid
-    produces the empty \p box.  The zero dimension universe grid
-    produces the zero dimension universe box.
-
-    \param box
-    The Box into which the covering box is written.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p box are dimension-incompatible.
-  */
-  template <typename Interval>
-  void get_covering_box(Box<Interval>& box) const;
 
   //! Checks if all the invariants are satisfied.
   /*!

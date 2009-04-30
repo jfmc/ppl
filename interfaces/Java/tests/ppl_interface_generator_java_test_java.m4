@@ -44,6 +44,7 @@ m4_include(`ppl_interface_generator_copyright') */
 m4_include(`ppl_java_tests_common')
 
     public static void main(String[] args) {
+	Parma_Polyhedra_Library.initialize_library();
 	ppl_java_generated_tests test1 = new ppl_java_generated_tests();
         // Initialize output variables.
         PPL_Test.initialize();
@@ -54,6 +55,7 @@ dnl Add test statements (one for each domain instantiation.
 dnl ==================================================================
 	// Here generated tests are called.
 m4_divert(1)
+	Parma_Polyhedra_Library.finalize_library();
     }
 
 dnl ==================================================================
