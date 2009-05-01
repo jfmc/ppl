@@ -364,7 +364,6 @@ Grid::strictly_contains(const Grid& y) const {
 
 inline void
 Grid::topological_closure_assign() {
-  return;
 }
 
 } // namespace Parma_Polyhedra_Library
