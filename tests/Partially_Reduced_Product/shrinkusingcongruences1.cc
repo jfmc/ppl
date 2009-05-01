@@ -27,6 +27,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 typedef NNC_Polyhedron Poly;
 
 typedef Domain_Product<Poly, Grid>::Shrink_Using_Congruences_Product SUCProduct;
+// typedef Domain_Product<Poly, Grid>::Direct_Product SUCProduct;
 namespace {
 
 // Shrink_Using_Congruences_Reduction with non-strict constraints and
@@ -55,7 +56,6 @@ test01() {
 
   if (ok) {
     ok = ok && sucp == known_sucp;
-
     print_congruences(sucp, "*** after known_sucp check: sucp congruences ***");
     print_constraints(sucp, "*** after known_sucp check: sucp constraints ***");
   }
@@ -227,13 +227,36 @@ test06() {
   return ok;
 }
 
+// Shows a problem with this reduction
+bool
+test07() {
+  Variable A(0);
+
+  SUCProduct sucp(1);
+  Constraint_System cs;
+  cs.insert(A >= 1);
+  cs.insert(A <= 2);
+  sucp.refine_with_constraints(cs);
+  sucp.refine_with_congruence((A %= 0)/ 2);
+
+  bool ok = sucp.OK();
+
+  sucp.ascii_dump();
+  Constraint_System cs1 = sucp.constraints();
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
+/*
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+*/
+  DO_TEST(test07);
 END_MAIN
