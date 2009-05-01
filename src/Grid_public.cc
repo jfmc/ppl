@@ -1980,7 +1980,8 @@ generalized_affine_image(const Variable var,
   assert(OK());
 }
 
-void PPL::Grid::
+void
+PPL::Grid::
 generalized_affine_preimage(const Variable var,
 			    const Relation_Symbol relsym,
 			    const Linear_Expression& expr,
@@ -2206,7 +2207,8 @@ generalized_affine_image(const Linear_Expression& lhs,
   assert(OK());
 }
 
-void PPL::Grid::
+void
+PPL::Grid::
 generalized_affine_preimage(const Linear_Expression& lhs,
 			    const Relation_Symbol relsym,
 			    const Linear_Expression& rhs,
