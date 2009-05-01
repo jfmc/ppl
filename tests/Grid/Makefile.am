@@ -76,7 +76,6 @@ congruences2 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
-coveringbox1 coveringbox2 \
 discrete1 \
 disjoint1 \
 equals1 \
@@ -215,9 +214,6 @@ generator1_SOURCES = generator1.cc
 
 generators1_SOURCES = generators1.cc
 generators2_SOURCES = generators2.cc
-
-coveringbox1_SOURCES = coveringbox1.cc
-coveringbox2_SOURCES = coveringbox2.cc
 
 grid1_SOURCES = grid1.cc
 grid2_SOURCES = grid2.cc
