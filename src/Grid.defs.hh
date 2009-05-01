@@ -937,7 +937,7 @@ public:
     \p cgs may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible.
 
     \warning
     The only assumption that can be made about \p cgs upon successful
@@ -1554,7 +1554,7 @@ public:
     \ref Grid_Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
-    Thrown if \p *this, \p y and \p cs are dimension-incompatible.
+    Thrown if \p *this, \p y and \p cgs are dimension-incompatible.
   */
   void limited_congruence_extrapolation_assign(const Grid& y,
 					       const Congruence_System& cgs,
@@ -1578,7 +1578,7 @@ public:
     \ref Grid_Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
-    Thrown if \p *this, \p y and \p cs are dimension-incompatible.
+    Thrown if \p *this, \p y and \p cgs are dimension-incompatible.
   */
   void limited_generator_extrapolation_assign(const Grid& y,
 					      const Congruence_System& cgs,
@@ -1601,7 +1601,7 @@ public:
     \ref Grid_Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
-    Thrown if \p *this, \p y and \p cs are dimension-incompatible.
+    Thrown if \p *this, \p y and \p cgs are dimension-incompatible.
   */
   void limited_extrapolation_assign(const Grid& y,
 				    const Congruence_System& cgs,
@@ -2443,9 +2443,9 @@ protected:
 					     const char* reason);
 
   void throw_invalid_constraint(const char* method,
-			       const char* c_name) const;
+                                const char* c_name) const;
   void throw_invalid_constraints(const char* method,
-				const char* cs_name) const;
+                                 const char* cs_name) const;
   void throw_invalid_generator(const char* method,
 			       const char* g_name) const;
   void throw_invalid_generators(const char* method,

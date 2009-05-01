@@ -303,8 +303,6 @@ Octagonal_Shape<T>::is_topologically_closed() const {
 template <typename T>
 inline void
 Octagonal_Shape<T>::topological_closure_assign() {
-  // Nothing to be done.
-  return;
 }
 
 /*! \relates Octagonal_Shape */
