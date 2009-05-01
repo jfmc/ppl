@@ -147,11 +147,11 @@ Pointset_Ask_Tell<PS>::unconstrain(const Variable var) {
 
 template <typename PS>
 void
-Pointset_Ask_Tell<PS>::unconstrain(const Variables_Set& to_be_unconstrained) {
+Pointset_Ask_Tell<PS>::unconstrain(const Variables_Set& vars) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().unconstrain(to_be_unconstrained);
+    si->element().unconstrain(vars);
   x.reduced = false;
   assert(x.OK());
 }
@@ -181,16 +181,16 @@ Pointset_Ask_Tell<PS>::add_space_dimensions_and_project(dimension_type m) {
 template <typename PS>
 void
 Pointset_Ask_Tell<PS>::
-remove_space_dimensions(const Variables_Set& to_be_removed) {
+remove_space_dimensions(const Variables_Set& vars) {
   Pointset_Ask_Tell& x = *this;
-  Variables_Set::size_type num_removed = to_be_removed.size();
+  Variables_Set::size_type num_removed = vars.size();
   if (num_removed > 0) {
     for (Sequence_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ) {
       PS& ask = si->ask().element();
       PS& tell = si->tell().element();
-      ask.remove_space_dimensions(to_be_removed);
-      tell.remove_space_dimensions(to_be_removed);
+      ask.remove_space_dimensions(vars);
+      tell.remove_space_dimensions(vars);
       if (tell.contains(ask)) {
 	si = x.sequence.erase(si);
 	s_end = x.sequence.end();

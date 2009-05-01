@@ -1,6 +1,8 @@
 Prolog_configured_interface.dox
 ppl_prolog_[A-Z]*.cc
 ppl_prolog_[A-Z]*.hh
+ppl_prolog_cc_blob
 ppl_prolog_domains.cc
-ppl_prolog_domains.hh
 ppl_prolog_domains.cc.stamp
+ppl_prolog_domains.hh
+ppl_prolog_hh_blob

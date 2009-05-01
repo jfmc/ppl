@@ -258,21 +258,21 @@ PPL::Grid::concatenate_assign(const Grid& y) {
 }
 
 void
-PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
+PPL::Grid::remove_space_dimensions(const Variables_Set& vars) {
   // The removal of no dimensions from any grid is a no-op.  This case
   // also captures the only legal removal of dimensions from a grid in
   // a 0-dim space.
-  if (to_be_removed.empty()) {
+  if (vars.empty()) {
     assert(OK());
     return;
   }
 
   // Dimension-compatibility check.
-  const dimension_type min_space_dim = to_be_removed.space_dimension();
+  const dimension_type min_space_dim = vars.space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
-  const dimension_type new_space_dim = space_dim - to_be_removed.size();
+  const dimension_type new_space_dim = space_dim - vars.size();
 
   if (marked_empty()
       || (!generators_are_up_to_date() && !update_generators())) {
@@ -290,7 +290,7 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  gen_sys.remove_space_dimensions(to_be_removed);
+  gen_sys.remove_space_dimensions(vars);
 
   clear_congruences_up_to_date();
   clear_generators_minimized();
@@ -441,28 +441,27 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
 }
 
 void
-PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
-				 Variable var) {
+PPL::Grid::fold_space_dimensions(const Variables_Set& vars, Variable dest) {
   // TODO: this implementation is _really_ an executable specification.
 
-  // `var' should be one of the dimensions of the grid.
-  if (var.space_dimension() > space_dim)
-    throw_dimension_incompatible("fold_space_dimensions(tbf, v)", "v", var);
+  // `dest' should be one of the dimensions of the grid.
+  if (dest.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(vs, v)", "v", dest);
 
   // Folding only has effect if dimensions are given.
-  if (to_be_folded.empty())
+  if (vars.empty())
     return;
 
-  // All variables in `to_be_folded' must be dimensions of the grid.
-  if (to_be_folded.space_dimension() > space_dim)
-    throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
-				 "tbf.space_dimension()",
-				 to_be_folded.space_dimension());
+  // All variables in `vars' must be dimensions of the grid.
+  if (vars.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(vs, v)",
+				 "vs.space_dimension()",
+				 vars.space_dimension());
 
-  // Moreover, `var.id()' must not occur in `to_be_folded'.
-  if (to_be_folded.find(var.id()) != to_be_folded.end())
-    throw_invalid_argument("fold_space_dimensions(tbf, v)",
-			   "v should not occur in tbf");
+  // Moreover, `dest.id()' must not occur in `vars'.
+  if (vars.find(dest.id()) != vars.end())
+    throw_invalid_argument("fold_space_dimensions(vs, v)",
+			   "v should not occur in vs");
   // All of the affine images we are going to compute are not invertible,
   // hence we will need to compute the grid generators of the polyhedron.
   // Since we keep taking copies, make sure that a single conversion
@@ -471,13 +470,13 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
   // Having grid generators, we now know if the grid is empty:
   // in that case, folding is equivalent to just removing space dimensions.
   if (!marked_empty()) {
-    for (Variables_Set::const_iterator i = to_be_folded.begin(),
-           tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
+    for (Variables_Set::const_iterator i = vars.begin(),
+           vs_end = vars.end(); i != vs_end; ++i) {
       Grid copy = *this;
-      copy.affine_image(var, Linear_Expression(Variable(*i)));
+      copy.affine_image(dest, Linear_Expression(Variable(*i)));
       upper_bound_assign(copy);
     }
   }
-  remove_space_dimensions(to_be_folded);
+  remove_space_dimensions(vars);
   assert(OK());
 }

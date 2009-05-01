@@ -329,10 +329,10 @@ bool is_necessarily_closed_for_interfaces(const Polyhedron& ph);
   Generator_System gs;
   gs.insert(point(3*x + y +0*z + 2*w));
   C_Polyhedron ph(gs);
-  Variables_Set to_be_removed;
-  to_be_removed.insert(y);
-  to_be_removed.insert(z);
-  ph.remove_space_dimensions(to_be_removed);
+  Variables_Set vars;
+  vars.insert(y);
+  vars.insert(z);
+  ph.remove_space_dimensions(vars);
   \endcode
   The starting polyhedron is the singleton set
   \f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$, while
@@ -345,16 +345,16 @@ bool is_necessarily_closed_for_interfaces(const Polyhedron& ph);
   For instance, by using the following code we would obtain
   a different result:
   \code
-  set<Variable> to_be_removed1;
-  to_be_removed1.insert(y);
-  ph.remove_space_dimensions(to_be_removed1);
-  set<Variable> to_be_removed2;
-  to_be_removed2.insert(z);
-  ph.remove_space_dimensions(to_be_removed2);
+  set<Variable> vars1;
+  vars1.insert(y);
+  ph.remove_space_dimensions(vars1);
+  set<Variable> vars2;
+  vars2.insert(z);
+  ph.remove_space_dimensions(vars2);
   \endcode
   In this case, the result is the polyhedron
   \f$\bigl\{(3, 0)^\transpose \bigr\} \sseq \Rset^2\f$:
-  when removing the set of dimensions \p to_be_removed2
+  when removing the set of dimensions \p vars2
   we are actually removing variable \f$w\f$ of the original polyhedron.
   For the same reason, the operator \p remove_space_dimensions
   is not idempotent: removing twice the same non-empty set of dimensions
@@ -990,17 +990,17 @@ public:
 
   /*! \brief
     Computes the \ref Cylindrification "cylindrification" of \p *this with
-    respect to the set of space dimensions \p to_be_unconstrained,
+    respect to the set of space dimensions \p vars,
     assigning the result to \p *this.
 
-    \param to_be_unconstrained
+    \param vars
     The set of space dimension that will be unconstrained.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p to_be_removed.
+    Variable objects contained in \p vars.
   */
-  void unconstrain(const Variables_Set& to_be_unconstrained);
+  void unconstrain(const Variables_Set& vars);
 
   /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.
@@ -1688,15 +1688,15 @@ public:
 
   //! Removes all the specified dimensions from the vector space.
   /*!
-    \param to_be_removed
+    \param vars
     The set of Variable objects corresponding to the space dimensions
     to be removed.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p to_be_removed.
+    Variable objects contained in \p vars.
   */
-  void remove_space_dimensions(const Variables_Set& to_be_removed);
+  void remove_space_dimensions(const Variables_Set& vars);
 
   /*! \brief
     Removes the higher dimensions of the vector space so that
@@ -1774,30 +1774,30 @@ public:
   */
   void expand_space_dimension(Variable var, dimension_type m);
 
-  //! Folds the space dimensions in \p to_be_folded into \p var.
+  //! Folds the space dimensions in \p vars into \p dest.
   /*!
-    \param to_be_folded
+    \param vars
     The set of Variable objects corresponding to the space dimensions
     to be folded;
 
-    \param var
+    \param dest
     The variable corresponding to the space dimension that is the
     destination of the folding operation.
 
     \exception std::invalid_argument
-    Thrown if \p *this is dimension-incompatible with \p var or with
-    one of the Variable objects contained in \p to_be_folded.
-    Also thrown if \p var is contained in \p to_be_folded.
+    Thrown if \p *this is dimension-incompatible with \p dest or with
+    one of the Variable objects contained in \p vars.
+    Also thrown if \p dest is contained in \p vars.
 
     If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
-    <CODE>var</CODE> has space dimension \f$k \leq n\f$,
-    \p to_be_folded is a set of variables whose maximum space dimension
-    is also less than or equal to \f$n\f$, and \p var is not a member
-    of \p to_be_folded, then the space dimensions corresponding to
-    variables in \p to_be_folded are \ref fold_space_dimensions "folded"
+    <CODE>dest</CODE> has space dimension \f$k \leq n\f$,
+    \p vars is a set of variables whose maximum space dimension
+    is also less than or equal to \f$n\f$, and \p dest is not a member
+    of \p vars, then the space dimensions corresponding to
+    variables in \p vars are \ref fold_space_dimensions "folded"
     into the \f$k\f$-th space dimension.
   */
-  void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
+  void fold_space_dimensions(const Variables_Set& vars, Variable dest);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 

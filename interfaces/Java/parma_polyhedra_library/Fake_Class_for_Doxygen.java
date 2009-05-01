@@ -708,18 +708,17 @@ public class Polyhedron extends PPL_Object {
 
     /*! \brief
       Computes the \extref{Cylindrification, cylindrification} of \p this
-      with respect to the set of space dimensions \p to_be_unconstrained,
+      with respect to the set of space dimensions \p vars,
       assigning the result to \p this.
 
-      \param to_be_unconstrained
+      \param vars
       The set of space dimension that will be unconstrained.
 
       \exception Invalid_Argument_Exception
       Thrown if \p this is dimension-incompatible with one of the
-      Variable objects contained in \p to_be_removed.
+      Variable objects contained in \p vars.
     */
-    public native void
-        unconstrain_space_dimensions(Variables_Set to_be_unconstrained);
+    public native void unconstrain_space_dimensions(Variables_Set vars);
 
     /*! \brief
       Assigns to \p this the result of computing the
@@ -795,15 +794,15 @@ public class Polyhedron extends PPL_Object {
 
     //! Removes all the specified dimensions from the vector space.
     /*!
-      \param to_be_removed
+      \param vars
       The set of Variable objects corresponding to the space dimensions
       to be removed.
 
       \exception Invalid_Argument_Exception
       Thrown if \p this is dimension-incompatible with one of the
-      Variable objects contained in \p to_be_removed.
+      Variable objects contained in \p vars.
     */
-    public native void remove_space_dimensions(Variables_Set to_be_removed);
+    public native void remove_space_dimensions(Variables_Set vars);
 
     /*! \brief
       Removes the higher dimensions of the vector space so that
@@ -833,23 +832,23 @@ public class Polyhedron extends PPL_Object {
     */
     public native void expand_space_dimension(Variable var, long m);
 
-    //! Folds the space dimensions in \p to_be_folded into \p var.
+    //! Folds the space dimensions in \p vars into \p dest.
     /*!
-      \param to_be_folded
+      \param vars
       The set of Variable objects corresponding to the space dimensions
       to be folded;
 
-      \param var
+      \param dest
       The variable corresponding to the space dimension that is the
       destination of the folding operation.
 
       \exception Invalid_Argument_Exception
-      Thrown if \p this is dimension-incompatible with \p var or with
-      one of the Variable objects contained in \p to_be_folded.
-      Also thrown if \p var is contained in \p to_be_folded.
+      Thrown if \p this is dimension-incompatible with \p dest or with
+      one of the Variable objects contained in \p vars.
+      Also thrown if \p dest is contained in \p vars.
     */
-    public native void fold_space_dimensions(Variables_Set to_be_folded,
-					     Variable var);
+    public native void fold_space_dimensions(Variables_Set vars,
+					     Variable dest);
 
     /*! \brief
       Remaps the dimensions of the vector space according to

@@ -1364,15 +1364,15 @@ Box<ITV>::constrains(Variable var) const {
 
 template <typename ITV>
 void
-Box<ITV>::unconstrain(const Variables_Set& to_be_unconstrained) {
+Box<ITV>::unconstrain(const Variables_Set& vars) {
   // The cylindrification wrt no dimensions is a no-op.
   // This case also captures the only legal cylindrification
   // of a box in a 0-dim space.
-  if (to_be_unconstrained.empty())
+  if (vars.empty())
     return;
 
   // Dimension-compatibility check.
-  const dimension_type min_space_dim = to_be_unconstrained.space_dimension();
+  const dimension_type min_space_dim = vars.space_dimension();
   if (space_dimension() < min_space_dim)
     throw_dimension_incompatible("unconstrain(vs)", min_space_dim);
 
@@ -1382,12 +1382,12 @@ Box<ITV>::unconstrain(const Variables_Set& to_be_unconstrained) {
 
   // Here the box might still be empty (but we haven't detected it yet):
   // check emptiness of the interval for each of the variables in
-  // `to_be_unconstrained' before cylindrification.
-  for (Variables_Set::const_iterator tbu = to_be_unconstrained.begin(),
-         tbu_end = to_be_unconstrained.end(); tbu != tbu_end; ++tbu) {
-    ITV& seq_tbu = seq[*tbu];
-    if (!seq_tbu.is_empty())
-      seq_tbu.assign(UNIVERSE);
+  // `vars' before cylindrification.
+  for (Variables_Set::const_iterator vsi = vars.begin(),
+         vsi_end = vars.end(); vsi != vsi_end; ++vsi) {
+    ITV& seq_vsi = seq[*vsi];
+    if (!seq_vsi.is_empty())
+      seq_vsi.assign(UNIVERSE);
     else {
       set_empty();
       break;
@@ -1674,11 +1674,11 @@ Box<ITV>::time_elapse_assign(const Box& y) {
 
 template <typename ITV>
 inline void
-Box<ITV>::remove_space_dimensions(const Variables_Set& to_be_removed) {
+Box<ITV>::remove_space_dimensions(const Variables_Set& vars) {
   // The removal of no dimensions from any box is a no-op.
   // Note that this case also captures the only legal removal of
   // space dimensions from a box in a zero-dimensional space.
-  if (to_be_removed.empty()) {
+  if (vars.empty()) {
     assert(OK());
     return;
   }
@@ -1686,12 +1686,12 @@ Box<ITV>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   const dimension_type old_space_dim = space_dimension();
 
   // Dimension-compatibility check.
-  const dimension_type tbr_space_dim = to_be_removed.space_dimension();
-  if (old_space_dim < tbr_space_dim)
+  const dimension_type vsi_space_dim = vars.space_dimension();
+  if (old_space_dim < vsi_space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)",
-				 tbr_space_dim);
+				 vsi_space_dim);
 
-  const dimension_type new_space_dim = old_space_dim - to_be_removed.size();
+  const dimension_type new_space_dim = old_space_dim - vars.size();
 
   // If the box is empty (this must be detected), then resizing is all
   // what is needed.  If it is not empty and we are removing _all_ the
@@ -1704,14 +1704,14 @@ Box<ITV>::remove_space_dimensions(const Variables_Set& to_be_removed) {
 
   // For each variable to be removed, we fill the corresponding interval
   // by shifting left those intervals that will not be removed.
-  Variables_Set::const_iterator tbr = to_be_removed.begin();
-  Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst = *tbr;
+  Variables_Set::const_iterator vsi = vars.begin();
+  Variables_Set::const_iterator vsi_end = vars.end();
+  dimension_type dst = *vsi;
   dimension_type src = dst + 1;
-  for (++tbr; tbr != tbr_end; ++tbr) {
-    const dimension_type tbr_next = *tbr;
+  for (++vsi; vsi != vsi_end; ++vsi) {
+    const dimension_type vsi_next = *vsi;
     // All intervals in between are moved to the left.
-    while (src < tbr_next)
+    while (src < vsi_next)
       seq[dst++].swap(seq[src++]);
     ++src;
   }
@@ -1782,37 +1782,37 @@ Box<ITV>::map_space_dimensions(const Partial_Function& pfunc) {
 
 template <typename ITV>
 void
-Box<ITV>::fold_space_dimensions(const Variables_Set& to_be_folded,
-                                const Variable var) {
+Box<ITV>::fold_space_dimensions(const Variables_Set& vars,
+                                const Variable dest) {
   const dimension_type space_dim = space_dimension();
-  // `var' should be one of the dimensions of the box.
-  if (var.space_dimension() > space_dim)
-    throw_dimension_incompatible("fold_space_dimensions(tbf, v)", "v", var);
+  // `dest' should be one of the dimensions of the box.
+  if (dest.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(vs, v)", "v", dest);
 
   // The folding of no dimensions is a no-op.
-  if (to_be_folded.empty())
+  if (vars.empty())
     return;
 
-  // All variables in `to_be_folded' should be dimensions of the box.
-  if (to_be_folded.space_dimension() > space_dim)
-    throw_dimension_incompatible("fold_space_dimensions(tbf, ...)",
-				 to_be_folded.space_dimension());
+  // All variables in `vars' should be dimensions of the box.
+  if (vars.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(vs, v)",
+				 vars.space_dimension());
 
-  // Moreover, `var.id()' should not occur in `to_be_folded'.
-  if (to_be_folded.find(var.id()) != to_be_folded.end())
-    throw_generic("fold_space_dimensions(tbf, v)",
-		  "v should not occur in tbf");
+  // Moreover, `dest.id()' should not occur in `vars'.
+  if (vars.find(dest.id()) != vars.end())
+    throw_generic("fold_space_dimensions(vs, v)",
+		  "v should not occur in vs");
 
   // Note: the check for emptiness is needed for correctness.
   if (!is_empty()) {
-    // Join the interval corresponding to variable `var' with the intervals
-    // corresponding to the variables in `to_be_folded'.
-    ITV& seq_v = seq[var.id()];
-    for (Variables_Set::const_iterator i = to_be_folded.begin(),
-	   tbf_end = to_be_folded.end(); i != tbf_end; ++i)
+    // Join the interval corresponding to variable `dest' with the intervals
+    // corresponding to the variables in `vars'.
+    ITV& seq_v = seq[dest.id()];
+    for (Variables_Set::const_iterator i = vars.begin(),
+	   vs_end = vars.end(); i != vs_end; ++i)
       seq_v.join_assign(seq[*i]);
   }
-  remove_space_dimensions(to_be_folded);
+  remove_space_dimensions(vars);
 }
 
 template <typename ITV>

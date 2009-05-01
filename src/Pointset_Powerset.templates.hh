@@ -236,11 +236,11 @@ Pointset_Powerset<PS>::unconstrain(const Variable var) {
 
 template <typename PS>
 void
-Pointset_Powerset<PS>::unconstrain(const Variables_Set& to_be_unconstrained) {
+Pointset_Powerset<PS>::unconstrain(const Variables_Set& vars) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    si->element().unconstrain(to_be_unconstrained);
+    si->element().unconstrain(vars);
     x.reduced = false;
   }
   assert(x.OK());
@@ -270,14 +270,13 @@ Pointset_Powerset<PS>::add_space_dimensions_and_project(dimension_type m) {
 
 template <typename PS>
 void
-Pointset_Powerset<PS>::
-remove_space_dimensions(const Variables_Set& to_be_removed) {
+Pointset_Powerset<PS>::remove_space_dimensions(const Variables_Set& vars) {
   Pointset_Powerset& x = *this;
-  Variables_Set::size_type num_removed = to_be_removed.size();
+  Variables_Set::size_type num_removed = vars.size();
   if (num_removed > 0) {
     for (Sequence_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->element().remove_space_dimensions(to_be_removed);
+      si->element().remove_space_dimensions(vars);
       x.reduced = false;
     }
     x.space_dim -= num_removed;
@@ -340,14 +339,14 @@ Pointset_Powerset<PS>::expand_space_dimension(Variable var,
 
 template <typename PS>
 void
-Pointset_Powerset<PS>::fold_space_dimensions(const Variables_Set& to_be_folded,
-                                             Variable var) {
+Pointset_Powerset<PS>::fold_space_dimensions(const Variables_Set& vars,
+                                             Variable dest) {
   Pointset_Powerset& x = *this;
-  Variables_Set::size_type num_folded = to_be_folded.size();
+  Variables_Set::size_type num_folded = vars.size();
   if (num_folded > 0) {
     for (Sequence_iterator si = x.sequence.begin(),
            s_end = x.sequence.end(); si != s_end; ++si)
-      si->element().fold_space_dimensions(to_be_folded, var);
+      si->element().fold_space_dimensions(vars, dest);
   }
   x.space_dim -= num_folded;
   assert(x.OK());
@@ -635,10 +634,10 @@ Pointset_Powerset<PS>::topological_closure_assign() {
 template <typename PS>
 bool
 Pointset_Powerset<PS>
-::intersection_preserving_enlarge_element(PS& to_be_enlarged) const {
+::intersection_preserving_enlarge_element(PS& dest) const {
   // FIXME: this is just an executable specification.
   const Pointset_Powerset& context = *this;
-  assert(context.space_dimension() == to_be_enlarged.space_dimension());
+  assert(context.space_dimension() == dest.space_dimension());
   bool nonempty_intersection = false;
   // TODO: maybe use a *sorted* constraint system?
   PS enlarged(context.space_dimension(), UNIVERSE);
@@ -646,13 +645,13 @@ Pointset_Powerset<PS>
          s_end = context.sequence.end(); si != s_end; ++si) {
     PS context_i(si->element());
     context_i.intersection_assign(enlarged);
-    PS enlarged_i(to_be_enlarged);
+    PS enlarged_i(dest);
     nonempty_intersection
       |= enlarged_i.simplify_using_context_assign(context_i);
     // TODO: merge the sorted constraints of `enlarged' and `enlarged_i'?
     enlarged.intersection_assign(enlarged_i);
   }
-  to_be_enlarged.swap(enlarged);
+  dest.swap(enlarged);
   return nonempty_intersection;
 }
 
