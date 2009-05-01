@@ -325,10 +325,10 @@ ppl_@CLASS@_unconstrain_space_dimensions
  ppl_dimension_type ds[],
  size_t n) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  Variables_Set to_be_unconstrained;
+  Variables_Set vars;
   for (ppl_dimension_type i = n; i-- > 0; )
-    to_be_unconstrained.insert(ds[i]);
-  pph.unconstrain(to_be_unconstrained);
+    vars.insert(ds[i]);
+  pph.unconstrain(vars);
   return 0;
 }
 CATCH_ALL
@@ -770,10 +770,10 @@ ppl_@CLASS@_remove_space_dimensions
  ppl_dimension_type ds[],
  size_t n) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  Variables_Set to_be_removed;
+  Variables_Set vars;
   for (ppl_dimension_type i = n; i-- > 0; )
-    to_be_removed.insert(ds[i]);
-  pph.remove_space_dimensions(to_be_removed);
+    vars.insert(ds[i]);
+  pph.remove_space_dimensions(vars);
   return 0;
 }
 CATCH_ALL
@@ -830,10 +830,10 @@ ppl_@CLASS@_fold_space_dimensions
  size_t n,
  ppl_dimension_type d) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  Variables_Set to_be_folded;
+  Variables_Set vars;
   for (ppl_dimension_type i = n; i-- > 0; )
-    to_be_folded.insert(ds[i]);
-  pph.fold_space_dimensions(to_be_folded, Variable(d));
+    vars.insert(ds[i]);
+  pph.fold_space_dimensions(vars, Variable(d));
   return 0;
 }
 CATCH_ALL

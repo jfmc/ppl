@@ -1328,15 +1328,15 @@ PPL::Grid::unconstrain(const Variable var) {
 }
 
 void
-PPL::Grid::unconstrain(const Variables_Set& to_be_unconstrained) {
+PPL::Grid::unconstrain(const Variables_Set& vars) {
   // The cylindrification wrt no dimensions is a no-op.
   // This case also captures the only legal cylindrification
   // of a grid in a 0-dim space.
-  if (to_be_unconstrained.empty())
+  if (vars.empty())
     return;
 
   // Dimension-compatibility check.
-  const dimension_type min_space_dim = to_be_unconstrained.space_dimension();
+  const dimension_type min_space_dim = vars.space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("unconstrain(vs)", min_space_dim);
 
@@ -1349,9 +1349,9 @@ PPL::Grid::unconstrain(const Variables_Set& to_be_unconstrained) {
   assert(generators_are_up_to_date());
   // Since `gen_sys' is not empty, the space dimension of the inserted
   // generators are automatically adjusted.
-  for (Variables_Set::const_iterator tbu = to_be_unconstrained.begin(),
-         tbu_end = to_be_unconstrained.end(); tbu != tbu_end; ++tbu) {
-    Grid_Generator l = grid_line(Variable(*tbu));
+  for (Variables_Set::const_iterator vsi = vars.begin(),
+         vsi_end = vars.end(); vsi != vsi_end; ++vsi) {
+    Grid_Generator l = grid_line(Variable(*vsi));
     gen_sys.recycling_insert(l);
   }
   // Constraints are no longer up-to-date.

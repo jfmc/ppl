@@ -1845,10 +1845,10 @@ ppl_MIP_Problem_add_to_integer_space_dimensions(ppl_MIP_Problem_t mip,
 					        ppl_dimension_type ds[],
 					        size_t n) try {
   MIP_Problem& mmip = *to_nonconst(mip);
-  Variables_Set to_be_set;
+  Variables_Set vars;
   for (ppl_dimension_type i = n; i-- > 0; )
-    to_be_set.insert(ds[i]);
-  mmip.add_to_integer_space_dimensions(to_be_set);
+    vars.insert(ds[i]);
+  mmip.add_to_integer_space_dimensions(vars);
   return 0;
 }
 CATCH_ALL
