@@ -332,7 +332,7 @@ test10() {
 
   open(f, my_file, ios_base::in);
   Grid gr2;
-  bool ok =! gr2.ascii_load(f);
+  bool ok = !gr2.ascii_load(f);
   close(f);
 
   return ok;
@@ -349,7 +349,7 @@ test11() {
 
   open(f, my_file, ios_base::in);
   Grid gr2;
-  bool ok =! gr2.ascii_load(f);
+  bool ok = !gr2.ascii_load(f);
   close(f);
 
   return ok;
@@ -366,7 +366,7 @@ test12() {
 
   open(f, my_file, ios_base::in);
   Grid gr2;
-  bool ok =! gr2.ascii_load(f);
+  bool ok = !gr2.ascii_load(f);
   close(f);
 
   return ok;

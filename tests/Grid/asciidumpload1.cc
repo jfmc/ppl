@@ -188,7 +188,7 @@ test06() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -205,7 +205,7 @@ test07() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -223,7 +223,7 @@ test08() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -242,7 +242,7 @@ test09() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -261,7 +261,7 @@ test10() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -280,7 +280,7 @@ test11() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -300,7 +300,7 @@ test12() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -323,7 +323,7 @@ test13() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -346,7 +346,7 @@ test14() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -369,7 +369,7 @@ test15() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -393,7 +393,7 @@ test16() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -419,7 +419,7 @@ test17() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -446,7 +446,7 @@ test18() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -473,7 +473,7 @@ test19() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -500,7 +500,7 @@ test20() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -519,7 +519,7 @@ test21() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -538,7 +538,7 @@ test22() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -557,7 +557,7 @@ test23() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -576,7 +576,7 @@ test24() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
@@ -595,7 +595,7 @@ test25() {
 
   open(f, my_file, ios_base::in);
   Grid gr;
-  bool ok =! gr.ascii_load(f);
+  bool ok = !gr.ascii_load(f);
   close(f);
 
   return ok;
