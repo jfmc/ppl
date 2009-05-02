@@ -1451,13 +1451,13 @@ public:
     adding the constraints in <CODE>*pcs</CODE> to the result
     of the wrapping operation.
 
-    \param k_threshold
+    \param complexity_threshold
     A precision parameter of the \ref Wrap_Operator "wrapping operator":
     higher values result in possibly improved precision.
 
     \param wrap_individually
     <CODE>true</CODE> if the dimensions should be wrapped individually
-    (something that results in greater efficiency to the detriment of
+    (something that results in much greater efficiency to the detriment of
     precision).
 
     \exception std::invalid_argument
@@ -1469,7 +1469,7 @@ public:
                    Bounded_Integer_Type_Signedness s,
                    Bounded_Integer_Type_Overflow o,
                    const Constraint_System* pcs = 0,
-                   unsigned k_threshold = 16,
+                   unsigned complexity_threshold = 16,
                    bool wrap_individually = true);
 
   //! Assigns to \p *this its topological closure.

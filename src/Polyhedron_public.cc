@@ -22,8 +22,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 #include "Polyhedron.defs.hh"
+#include "C_Polyhedron.defs.hh"
+#include "NNC_Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include "MIP_Problem.defs.hh"
+#include "wrap_assign.hh"
 #include <cstdlib>
 #include <cassert>
 #include <iostream>
@@ -3666,6 +3669,24 @@ PPL::Polyhedron::external_memory_in_bytes() const {
     + sat_g.external_memory_in_bytes();
 }
 
+void
+PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
+                             Bounded_Integer_Type_Width w,
+                             Bounded_Integer_Type_Signedness s,
+                             Bounded_Integer_Type_Overflow o,
+                             const Constraint_System* pcs,
+                             unsigned complexity_threshold,
+                             bool wrap_individually) {
+  if (is_necessarily_closed())
+    Implementation::wrap_assign(static_cast<C_Polyhedron&>(*this),
+                                vars, w, s, o, pcs,
+                                complexity_threshold, wrap_individually);
+  else
+    Implementation::wrap_assign(static_cast<NNC_Polyhedron&>(*this),
+                                vars, w, s, o, pcs,
+                                complexity_threshold, wrap_individually);
+}
+
 /*! \relates Parma_Polyhedra_Library::Polyhedron */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Polyhedron& ph) {
@@ -3674,131 +3695,4 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Polyhedron& ph) {
   else
     s << ph.minimized_constraints();
   return s;
-}
-
-void
-PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
-                             Bounded_Integer_Type_Width w,
-                             Bounded_Integer_Type_Signedness s,
-                             Bounded_Integer_Type_Overflow o,
-                             const Constraint_System* pcs,
-                             unsigned k_threshold,
-                             bool wrap_individually) {
-  // Wrapping no variable is a no-op.
-  if (vars.empty())
-    return;
-
-  // Dimension-compatibility check.
-  const dimension_type min_space_dim = vars.space_dimension();
-  if (space_dim < min_space_dim)
-    throw_dimension_incompatible("wrap_assign(vs, ...)", min_space_dim);
-
-  // Wrapping an empty polyhedron is a no-op.
-  if (is_empty())
-    return;
-
-  // Set `min_value' and `max_value' to the minimum and maximum values
-  // a variable of width `w' and signedness `s' can take.
-  PPL_DIRTY_TEMP_COEFFICIENT(min_value);
-  PPL_DIRTY_TEMP_COEFFICIENT(max_value);
-  if (s == UNSIGNED) {
-    min_value = 0;
-    mul_2exp_assign(max_value, Coefficient_one(), w);
-    --max_value;
-  }
-  else {
-    assert(s == SIGNED_2_COMPLEMENT);
-    mul_2exp_assign(max_value, Coefficient_one(), w-1);
-    neg_assign(min_value, max_value);
-    --max_value;
-  }
-
-  //std::cout << "min_value = " << min_value << std::endl;
-  //std::cout << "max_value = " << max_value << std::endl;
-
-  if (wrap_individually) {
-    // We use `full_range_bounds' to delay conversions whenever
-    // this delay does not negatively affect precision.
-    Constraint_System full_range_bounds;
-
-    PPL_DIRTY_TEMP_COEFFICIENT(ln);
-    PPL_DIRTY_TEMP_COEFFICIENT(ld);
-    PPL_DIRTY_TEMP_COEFFICIENT(un);
-    PPL_DIRTY_TEMP_COEFFICIENT(ud);
-
-    //using namespace IO_Operators;
-
-    for (Variables_Set::const_iterator i = vars.begin(),
-           vars_end = vars.end(); i != vars.end(); ++i) {
-
-      const Variable x = Variable(*i);
-      //std::cout << "Wrapping " << x << std::endl;
-
-      bool extremum;
-
-      if (!minimize(x, ln, ld, extremum)) {
-      set_full_range:
-        unconstrain(x);
-        full_range_bounds.insert(min_value <= x);
-        full_range_bounds.insert(x <= max_value);
-        continue;
-      }
-
-      if (!maximize(x, un, ud, extremum))
-        goto set_full_range;
-
-      //std::cout << "min = " << ln << "/" << ld << std::endl;
-      //std::cout << "max = " << un << "/" << ud << std::endl;
-
-      div_assign_r(ln, ln, ld, ROUND_DOWN);
-      div_assign_r(un, un, ud, ROUND_DOWN);
-      ln -= min_value;
-      un -= min_value;
-      div_2exp_assign_r(ln, ln, w, ROUND_DOWN);
-      div_2exp_assign_r(un, un, w, ROUND_DOWN);
-
-      //std::cout << "ln = " << ln << std::endl;
-      //std::cout << "un = " << un << std::endl;
-
-      // Special case: this variable does not need wrapping.
-      if (ln == 0 && un == 0)
-        continue;
-
-      // If overflow is impossible, try not to add useless constraints.
-      if (o == OVERFLOW_IMPOSSIBLE) {
-        if (ln < 0)
-          full_range_bounds.insert(min_value <= x);
-        if (un > 0)
-          full_range_bounds.insert(x <= max_value);
-        continue;
-      }
-
-      if (o == OVERFLOW_UNDEFINED || un - ln > k_threshold)
-        goto set_full_range;
-
-      Polyhedron hull(topology(), space_dimension(), EMPTY);
-      for ( ; ln <= un; ++ln) {
-        Polyhedron p(*this);
-        //std::cout << "p: " << p << std::endl;
-        if (ln != 0) {
-          mul_2exp_assign(ld, ln, w);
-          //std::cout << "ld = " << ld << std::endl;
-          p.affine_image(x, x - ld, 1);
-          //std::cout << "affine_image: " << p << std::endl;
-        }
-        if (pcs != 0)
-          p.add_constraints(*pcs);
-        p.add_constraint(min_value <= x);
-        p.add_constraint(x <= max_value);
-        hull.poly_hull_assign(p);
-        //std::cout << "hull: " << hull << std::endl;
-      }
-      swap(hull);
-    }
-    if (pcs != 0)
-      add_constraints(*pcs);
-    add_constraints(full_range_bounds);
-  }
-  else
-    assert(false);
 }

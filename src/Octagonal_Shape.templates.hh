@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
 #include "meta_programming.hh"
+#include "wrap_assign.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -6603,6 +6604,20 @@ Octagonal_Shape<T>
   swap(ub);
   assert(OK());
   return true;
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>::wrap_assign(const Variables_Set& vars,
+                                Bounded_Integer_Type_Width w,
+                                Bounded_Integer_Type_Signedness s,
+                                Bounded_Integer_Type_Overflow o,
+                                const Constraint_System* pcs,
+                                unsigned complexity_threshold,
+                                bool wrap_individually) {
+  Implementation::wrap_assign(*this,
+                              vars, w, s, o, pcs,
+                              complexity_threshold, wrap_individually);
 }
 
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */

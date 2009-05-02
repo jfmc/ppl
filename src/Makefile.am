@@ -349,6 +349,7 @@ BDS_Status.idefs.hh \
 Og_Status.idefs.hh
 
 libppl_la_SOURCES = \
+wrap_assign.hh \
 Box.cc \
 checked.cc \
 Checked_Number.cc \
