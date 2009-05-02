@@ -60,7 +60,6 @@ wrap_assign_rec(PS& dest,
                 unsigned complexity_threshold,
                 Coefficient& tmp1,
                 Coefficient& tmp2) {
-  dimension_type space_dim = dest.space_dimension();
   if (first == end) {
     PS p(src);
     if (pcs != 0)
