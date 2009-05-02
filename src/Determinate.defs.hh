@@ -39,8 +39,8 @@ namespace Parma_Polyhedra_Library {
 
   \relates Determinate
 */
-template <typename PS>
-bool operator==(const Determinate<PS>& x, const Determinate<PS>& y);
+template <typename PSET>
+bool operator==(const Determinate<PSET>& x, const Determinate<PSET>& y);
 
 /*! \brief
   Returns <CODE>true</CODE> if and only if
@@ -48,16 +48,16 @@ bool operator==(const Determinate<PS>& x, const Determinate<PS>& y);
 
   \relates Determinate
 */
-template <typename PS>
-bool operator!=(const Determinate<PS>& x, const Determinate<PS>& y);
+template <typename PSET>
+bool operator!=(const Determinate<PSET>& x, const Determinate<PSET>& y);
 
 namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Determinate */
-template <typename PS>
+template <typename PSET>
 std::ostream&
-operator<<(std::ostream&, const Determinate<PS>&);
+operator<<(std::ostream&, const Determinate<PSET>&);
 
 } // namespace IO_Operators
 
@@ -65,7 +65,7 @@ operator<<(std::ostream&, const Determinate<PS>&);
 
 //! Wraps a PPL class into a determinate constraint system interface.
 /*! \ingroup PPL_CXX_interface */
-template <typename PS>
+template <typename PSET>
 class Parma_Polyhedra_Library::Determinate {
 public:
   //! \name Constructors and Destructor
@@ -75,7 +75,7 @@ public:
     Injection operator: builds the determinate constraint system element
     corresponding to the base-level element \p p.
   */
-  Determinate(const PS& p);
+  Determinate(const PSET& p);
 
   /*! \brief
     Injection operator: builds the determinate constraint system element
@@ -100,7 +100,7 @@ public:
   //@{
 
   //! Returns a const reference to the embedded element.
-  const PS& element() const;
+  const PSET& element() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is the top of the
@@ -166,7 +166,7 @@ public:
   void concatenate_assign(const Determinate& y);
 
   //! Returns a reference to the embedded element.
-  PS& element();
+  PSET& element();
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
@@ -188,12 +188,12 @@ public:
   //! A function adapter for the Determinate class.
   /*! \ingroup PPL_CXX_interface
     It lifts a Binary_Operator_Assign function object, taking arguments
-    of type PS, producing the corresponding function object taking
-    arguments of type Determinate<PS>.
+    of type PSET, producing the corresponding function object taking
+    arguments of type Determinate<PSET>.
 
     The template parameter Binary_Operator_Assign is supposed to
     implement an <EM>apply and assign</EM> function, i.e., a function
-    having signature <CODE>void foo(PS& x, const PS& y)</CODE> that
+    having signature <CODE>void foo(PSET& x, const PSET& y)</CODE> that
     applies an operator to \c x and \c y and assigns the result to \c x.
     For instance, such a function object is obtained by
     <CODE>std::mem_fun_ref(&C_Polyhedron::intersection_assign)</CODE>.
@@ -252,7 +252,7 @@ private:
 
   public:
     //! A possibly shared base-level domain element.
-    PS ph;
+    PSET ph;
 
     /*! \brief
       Builds a new representation by creating a domain element
@@ -261,7 +261,7 @@ private:
     Rep(dimension_type num_dimensions, Degenerate_Element kind);
 
     //! Builds a new representation by copying base-level element \p p.
-    Rep(const PS& p);
+    Rep(const PSET& p);
 
     //! Builds a new representation by copying the constraints in \p cs.
     Rep(const Constraint_System& cs);
@@ -304,9 +304,9 @@ private:
   Rep* prep;
 
   friend bool
-  operator==<PS>(const Determinate<PS>& x, const Determinate<PS>& y);
+  operator==<PSET>(const Determinate<PSET>& x, const Determinate<PSET>& y);
   friend bool
-  operator!=<PS>(const Determinate<PS>& x, const Determinate<PS>& y);
+  operator!=<PSET>(const Determinate<PSET>& x, const Determinate<PSET>& y);
 };
 
 
@@ -314,9 +314,9 @@ namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Determinate */
-template <typename PS>
-void swap(Parma_Polyhedra_Library::Determinate<PS>& x,
-	  Parma_Polyhedra_Library::Determinate<PS>& y);
+template <typename PSET>
+void swap(Parma_Polyhedra_Library::Determinate<PSET>& x,
+	  Parma_Polyhedra_Library::Determinate<PSET>& y);
 
 } // namespace std
 

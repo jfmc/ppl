@@ -41,20 +41,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 //! The ask-and-tell construction instantiated on PPL polyhedra.
 /*! \ingroup PPL_CXX_interface */
-template <typename PS>
+template <typename PSET>
 class Parma_Polyhedra_Library::Pointset_Ask_Tell
   : public Parma_Polyhedra_Library::Ask_Tell
-<Parma_Polyhedra_Library::Determinate<PS> > {
+<Parma_Polyhedra_Library::Determinate<PSET> > {
 public:
-  typedef PS element_type;
+  typedef PSET element_type;
 
 private:
-  typedef Determinate<PS> CS;
-  typedef Ask_Tell<CS> Base;
+  typedef Determinate<PSET> COW_PSET;
+  typedef Ask_Tell<COW_PSET> Base;
   typedef typename Base::Pair Pair;
 
 public:
-  //! Returns the maximum space dimension a Pointset_Ask_Tell<PS> can handle.
+  //! Returns the maximum space dimension a Pointset_Ask_Tell<PSET> can handle.
   static dimension_type max_space_dimension();
 
   //! \name Constructors
@@ -79,7 +79,7 @@ public:
     If \p ph is nonempty, builds a powerset containing only \p ph.
     Builds the empty powerset otherwise.
   */
-  explicit Pointset_Ask_Tell(const PS& ph);
+  explicit Pointset_Ask_Tell(const PSET& ph);
 
   /*! \brief
     Copy-constructor allowing a source powerset with elements of a
@@ -169,7 +169,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p ph are dimension-incompatible.
   */
-  void add_disjunct(const PS& ph);
+  void add_disjunct(const PSET& ph);
 
   //! Intersects \p *this with constraint \p c.
   /*!
@@ -496,9 +496,9 @@ namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Pointset_Ask_Tell */
-template <typename PS>
-void swap(Parma_Polyhedra_Library::Pointset_Ask_Tell<PS>& x,
-	  Parma_Polyhedra_Library::Pointset_Ask_Tell<PS>& y);
+template <typename PSET>
+void swap(Parma_Polyhedra_Library::Pointset_Ask_Tell<PSET>& x,
+	  Parma_Polyhedra_Library::Pointset_Ask_Tell<PSET>& y);
 
 } // namespace std
 

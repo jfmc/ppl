@@ -46,10 +46,10 @@ struct Wrap_Dim_Traslations {
 
 typedef std::vector<Wrap_Dim_Traslations> Wrap_Traslations;
 
-template <typename PS>
+template <typename PSET>
 void
-wrap_assign_rec(PS& dest,
-                const PS& src,
+wrap_assign_rec(PSET& dest,
+                const PSET& src,
                 Variables_Set vars,
                 Wrap_Traslations::iterator first,
                 Wrap_Traslations::iterator end,
@@ -61,7 +61,7 @@ wrap_assign_rec(PS& dest,
                 Coefficient& tmp1,
                 Coefficient& tmp2) {
   if (first == end) {
-    PS p(src);
+    PSET p(src);
     if (pcs != 0)
       p.refine_with_constraints(*pcs);
     for (Variables_Set::const_iterator i = vars.begin(),
@@ -82,7 +82,7 @@ wrap_assign_rec(PS& dest,
     for (quadrant = first_quadrant; quadrant <= last_quadrant; ++quadrant) {
       if (quadrant != 0) {
         mul_2exp_assign(shift, quadrant, w);
-        PS p(src);
+        PSET p(src);
         p.affine_image(x, x - shift, 1);
         wrap_assign_rec(dest, p, vars, first+1, end, w, min_value, max_value,
                         pcs, complexity_threshold, tmp1, tmp2);
@@ -94,9 +94,9 @@ wrap_assign_rec(PS& dest,
   }
 }
 
-template <typename PS>
+template <typename PSET>
 void
-wrap_assign(PS& pointset,
+wrap_assign(PSET& pointset,
             const Variables_Set& vars,
             Bounded_Integer_Type_Width w,
             Bounded_Integer_Type_Signedness s,
@@ -113,7 +113,7 @@ wrap_assign(PS& pointset,
   const dimension_type min_space_dim = vars.space_dimension();
   if (space_dim < min_space_dim) {
     std::ostringstream s;
-    // FIXME: how can we write the class name of PS here?
+    // FIXME: how can we write the class name of PSET here?
     s << "PPL::...::wrap_assign(vs, ...):" << std::endl
       << "this->space_dimension() == " << space_dim
       << ", required space dimension == " << min_space_dim << ".";
@@ -258,9 +258,9 @@ wrap_assign(PS& pointset,
       // Temporay variable holding the shifts to be applied in order
       // to implement the traslations.
       Coefficient& shift = ld;
-      PS hull(space_dim, EMPTY);
+      PSET hull(space_dim, EMPTY);
       for ( ; quadrant <= last_quadrant; ++quadrant) {
-        PS p(pointset);
+        PSET p(pointset);
         if (quadrant != 0) {
           mul_2exp_assign(shift, quadrant, w);
           p.affine_image(x, x - shift, 1);
@@ -281,7 +281,7 @@ wrap_assign(PS& pointset,
   }
 
   if (!wrap_individually && !traslations.empty()) {
-    PS hull(space_dim, EMPTY);
+    PSET hull(space_dim, EMPTY);
     wrap_assign_rec(hull, pointset, traslated_dimensions,
                     traslations.begin(), traslations.end(),
                     w, min_value, max_value, pcs, complexity_threshold,

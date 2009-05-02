@@ -14,10 +14,10 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename PH>
+template <typename PSET>
 class Widening_Function;
 
-template <typename PH, typename CS>
+template <typename PSET, typename CSYS>
 class Limited_Widening_Function;
 
 } // namespace Parma_Polyhedra_Library
