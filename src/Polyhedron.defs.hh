@@ -1423,6 +1423,55 @@ public:
   */
   void time_elapse_assign(const Polyhedron& y);
 
+  /*! \brief
+    \ref Wrapping_Operator "Wraps" the specified dimensions of the
+    vector space.
+
+    \param vars
+    The set of Variable objects corresponding to the space dimensions
+    to be wrapped.
+
+    \param w
+    The width of the bounded integer type corresponding to
+    all the dimensions to be wrapped.
+
+    \param s
+    The signedness of the bounded integer type corresponding to
+    all the dimensions to be wrapped.
+
+    \param w
+    The overflow behavior of the bounded integer type corresponding to
+    all the dimensions to be wrapped.
+
+    \param pcs
+    Possibly null pointer to a constraint system.  When non-null,
+    the pointed-to constraint system is assumed to represent the
+    guard with respect to which wrapping is performed.  Passing
+    a constraint system in this way can be more precise then
+    adding the constraints in <CODE>*pcs</CODE> to the result
+    of the wrapping operation.
+
+    \param complexity_threshold
+    A precision parameter of the \ref Wrap_Operator "wrapping operator":
+    higher values result in possibly improved precision.
+
+    \param wrap_individually
+    <CODE>true</CODE> if the dimensions should be wrapped individually
+    (something that results in much greater efficiency to the detriment of
+    precision).
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p vars.
+  */
+  void wrap_assign(const Variables_Set& vars,
+                   Bounded_Integer_Type_Width w,
+                   Bounded_Integer_Type_Signedness s,
+                   Bounded_Integer_Type_Overflow o,
+                   const Constraint_System* pcs = 0,
+                   unsigned complexity_threshold = 16,
+                   bool wrap_individually = true);
+
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
 

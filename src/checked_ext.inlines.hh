@@ -619,7 +619,7 @@ rem_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
-mul2exp_ext(To& to, const From& x, int exp, Rounding_Dir dir) {
+mul_2exp_ext(To& to, const From& x, unsigned int exp, Rounding_Dir dir) {
   if (!ext_to_handle<From_Policy>(x))
     goto native;
   if (is_nan<From_Policy>(x))
@@ -630,14 +630,14 @@ mul2exp_ext(To& to, const From& x, int exp, Rounding_Dir dir) {
     return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
   else {
   native:
-    return mul2exp<To_Policy, From_Policy>(to, x, exp, dir);
+    return mul_2exp<To_Policy, From_Policy>(to, x, exp, dir);
   }
 }
 
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
-div2exp_ext(To& to, const From& x, int exp, Rounding_Dir dir) {
+div_2exp_ext(To& to, const From& x, int exp, Rounding_Dir dir) {
   if (!ext_to_handle<From_Policy>(x))
     goto native;
   if (is_nan<From_Policy>(x))
@@ -648,7 +648,7 @@ div2exp_ext(To& to, const From& x, int exp, Rounding_Dir dir) {
     return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
   else {
   native:
-    return div2exp<To_Policy, From_Policy>(to, x, exp, dir);
+    return div_2exp<To_Policy, From_Policy>(to, x, exp, dir);
   }
 }
 

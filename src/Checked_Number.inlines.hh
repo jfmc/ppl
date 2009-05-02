@@ -402,8 +402,8 @@ name(To& to, const From& x, int exp, Rounding_Dir dir) {		\
 		 dir);							\
 }
 
-FUNC1(mul2exp_assign_r, mul2exp_ext)
-FUNC1(div2exp_assign_r, div2exp_ext)
+FUNC1(mul_2exp_assign_r, mul_2exp_ext)
+FUNC1(div_2exp_assign_r, div_2exp_ext)
 
 #undef FUNC1
 
@@ -704,6 +704,17 @@ PPL_DEF_ASSIGN_FUN3_3(lcm_assign, lcm_assign_r)
 #undef PPL_DEF_ASSIGN_FUN3_2
 #undef PPL_DEF_ASSIGN_FUN3_3
 #undef PPL_DEF_ASSIGN_FUN5_5
+
+#define PPL_DEF_ASSIGN_2EXP(f, fun)					\
+template <typename T, typename Policy>                                  \
+inline void								\
+f(Checked_Number<T, Policy>& to,					\
+  const Checked_Number<T, Policy>& x, unsigned int exp) {               \
+  Policy::handle_result(fun(to, x, exp, Policy::ROUND_DEFAULT_FUNCTION)); \
+}
+
+PPL_DEF_ASSIGN_2EXP(mul_2exp_assign, mul_2exp_assign_r)
+PPL_DEF_ASSIGN_2EXP(div_2exp_assign, div_2exp_assign_r)
 
 template <typename T, typename Policy>
 inline void

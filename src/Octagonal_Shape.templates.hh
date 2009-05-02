@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
 #include "meta_programming.hh"
+#include "wrap_assign.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -953,7 +954,7 @@ Octagonal_Shape<T>::is_strong_coherent() const {
           // Compute (m_i_ci + m_cj_j)/2 into `semi_sum',
           // rounding the result towards plus infinity.
           add_assign_r(semi_sum, m_i_ci, m_cj_j, ROUND_UP);
-          div2exp_assign_r(semi_sum, semi_sum, 1, ROUND_UP);
+          div_2exp_assign_r(semi_sum, semi_sum, 1, ROUND_UP);
           if (m_i[j] > semi_sum)
             return false;
         }
@@ -1120,7 +1121,7 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
       // Approximating the maximum/minimum of `expr'.
       if (num_vars == 1) {
         PPL_DIRTY_TEMP(N, m_i_j);
-        div2exp_assign_r(m_i_j, m_i[j], 1, ROUND_UP);
+        div_2exp_assign_r(m_i_j, m_i[j], 1, ROUND_UP);
         add_mul_assign_r(d, coeff_expr, m_i_j, ROUND_UP);
       }
       else
@@ -1927,7 +1928,7 @@ Octagonal_Shape<T>::strong_coherence_assign() {
           const N& x_cj_j = matrix[coherent_index(j)][j];
           if (!is_plus_infinity(x_cj_j)) {
             add_assign_r(semi_sum, x_i_ci, x_cj_j, ROUND_UP);
-            div2exp_assign_r(semi_sum, semi_sum, 1, ROUND_UP);
+            div_2exp_assign_r(semi_sum, semi_sum, 1, ROUND_UP);
             min_assign(x_i[j], semi_sum);
           }
         }
@@ -2317,7 +2318,7 @@ Octagonal_Shape<T>
       // m_i_j >= (m_i_ci + m_cj_j)/2,   where j != ci.
       if (j != ci) {
         add_assign_r(tmp, m_i_ci, matrix[cj][j], ROUND_UP);
-        div2exp_assign_r(tmp, tmp, 1, ROUND_UP);
+        div_2exp_assign_r(tmp, tmp, 1, ROUND_UP);
         if (m_i_j >= tmp)
           // The constraint is redundant.
           continue;
@@ -3386,7 +3387,7 @@ Octagonal_Shape<T>
         // We avoid to check if `ub_u' is plus infinity, because
         // it is used for the computation of `ub_v'.
         // Let half = m_cu_u / 2.
-        div2exp_assign_r(half, matrix[n_u+1][n_u], 1, ROUND_UP);
+        div_2exp_assign_r(half, matrix[n_u+1][n_u], 1, ROUND_UP);
         N& m_v_minus_u = (n_v < n_u) ? matrix[n_u][n_v] : m_cv[n_u+1];
         sub_assign_r(m_v_minus_u, ub_v, half, ROUND_UP);
       }
@@ -3400,11 +3401,11 @@ Octagonal_Shape<T>
           // computed as `ub_v - (q * ub_u + (1-q) * lb_u)',
           // i.e., `ub_v + (-lb_u) - q * (ub_u + (-lb_u))'.
           assign_r(minus_lb_u, m_u_cu, ROUND_NOT_NEEDED);
-          div2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
+          div_2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
           assign_r(q, expr_u, ROUND_NOT_NEEDED);
           div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
           assign_r(ub_u, matrix[n_u+1][n_u], ROUND_NOT_NEEDED);
-          div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
+          div_2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
           // Compute `ub_u - lb_u'.
           add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
           // Compute `(-lb_u) - q * (ub_u - lb_u)'.
@@ -3425,7 +3426,7 @@ Octagonal_Shape<T>
         // We avoid to check if `lb_u' is plus infinity, because
         // it is used for the computation of `ub_v'.
         // Let half = m_u_cu / 2.
-        div2exp_assign_r(half, matrix[n_u][n_u+1], 1, ROUND_UP);
+        div_2exp_assign_r(half, matrix[n_u][n_u+1], 1, ROUND_UP);
         N& m_v_plus_u = (n_v < n_u) ? matrix[n_u+1][n_v] : m_cv[n_u];
         sub_assign_r(m_v_plus_u, ub_v, half, ROUND_UP);
       }
@@ -3439,11 +3440,11 @@ Octagonal_Shape<T>
           // computed as `ub_v + ((-q) * lb_u + (1+q) * ub_u)',
           // i.e., `ub_v + ub_u + (-q) * (lb_u - ub_u)'.
           assign_r(ub_u, m_cu[n_u], ROUND_NOT_NEEDED);
-          div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
+          div_2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
           assign_r(minus_q, minus_expr_u, ROUND_NOT_NEEDED);
           div_assign_r(minus_q, minus_q, mpq_sc_den, ROUND_NOT_NEEDED);
           assign_r(lb_u, matrix[n_u][n_u+1], ROUND_NOT_NEEDED);
-          div2exp_assign_r(lb_u, lb_u, 1, ROUND_NOT_NEEDED);
+          div_2exp_assign_r(lb_u, lb_u, 1, ROUND_NOT_NEEDED);
           neg_assign_r(lb_u, lb_u, ROUND_NOT_NEEDED);
           // Compute `lb_u - ub_u'.
           sub_assign_r(lb_u, lb_u, ub_u, ROUND_NOT_NEEDED);
@@ -3504,7 +3505,7 @@ Octagonal_Shape<T>
         // We avoid to check if `lb_u' is plus infinity, because
         // it is used for the computation of `lb_v'.
         // Let half = m_u_cu / 2.
-        div2exp_assign_r(half, matrix[n_u][n_u+1], 1, ROUND_UP);
+        div_2exp_assign_r(half, matrix[n_u][n_u+1], 1, ROUND_UP);
         N& m_u_minus_v = (n_v < n_u) ? matrix[n_u+1][n_v+1] : m_v[n_u];
         sub_assign_r(m_u_minus_v, minus_lb_v, half, ROUND_UP);
       }
@@ -3518,11 +3519,11 @@ Octagonal_Shape<T>
           // computed as `(q * lb_u + (1-q) * ub_u) - lb_v',
           // i.e., `ub_u - q * (ub_u + (-lb_u)) + minus_lb_v'.
           assign_r(ub_u, m_cu[n_u], ROUND_NOT_NEEDED);
-          div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
+          div_2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
           assign_r(q, expr_u, ROUND_NOT_NEEDED);
           div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
           assign_r(minus_lb_u, matrix[n_u][n_u+1], ROUND_NOT_NEEDED);
-          div2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
+          div_2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
           // Compute `ub_u - lb_u'.
           add_assign_r(minus_lb_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
           // Compute `ub_u - q * (ub_u - lb_u)'.
@@ -3543,7 +3544,7 @@ Octagonal_Shape<T>
         // We avoid to check if `ub_u' is plus infinity, because
         // it is used for the computation of `lb_v'.
         // Let half = m_cu_u / 2.
-        div2exp_assign_r(half, matrix[n_u+1][n_u], 1, ROUND_UP);
+        div_2exp_assign_r(half, matrix[n_u+1][n_u], 1, ROUND_UP);
         N& m_minus_v_minus_u = (n_v < n_u) ? matrix[n_u][n_v+1] : m_v[n_u+1];
         sub_assign_r(m_minus_v_minus_u, minus_lb_v, half, ROUND_UP);
       }
@@ -3557,11 +3558,11 @@ Octagonal_Shape<T>
           // computed as `-lb_v - ((-q)*ub_u + (1+q)*lb_u)',
           // i.e., `minus_lb_v - lb_u + q*(ub_u - lb_u)'.
           assign_r(ub_u, matrix[n_u+1][n_u], ROUND_NOT_NEEDED);
-          div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
+          div_2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
           assign_r(q, expr_u, ROUND_NOT_NEEDED);
           div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
           assign_r(minus_lb_u, m_u[n_u+1], ROUND_NOT_NEEDED);
-          div2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
+          div_2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
           // Compute `ub_u - lb_u'.
           add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
           // Compute `-lb_u + q*(ub_u - lb_u)'.
@@ -3886,7 +3887,7 @@ Octagonal_Shape<T>::refine(const Variable var,
               const N& double_approx_i = m_ci[n_i];
               if (!is_plus_infinity(double_approx_i)) {
                 // Let half = double_approx_i / 2.
-                div2exp_assign_r(half, double_approx_i, 1, ROUND_UP);
+                div_2exp_assign_r(half, double_approx_i, 1, ROUND_UP);
                 add_mul_assign_r(sum, coeff_i, half, ROUND_UP);
               }
               else {
@@ -3899,7 +3900,7 @@ Octagonal_Shape<T>::refine(const Variable var,
               const N& double_approx_minus_i = m_i[n_i+1];
               if (!is_plus_infinity(double_approx_minus_i)) {
                 // Let half = double_approx_minus_i / 2.
-                div2exp_assign_r(half, double_approx_minus_i, 1, ROUND_UP);
+                div_2exp_assign_r(half, double_approx_minus_i, 1, ROUND_UP);
                 add_mul_assign_r(neg_sum, coeff_i, half, ROUND_UP);
               }
               else {
@@ -3916,7 +3917,7 @@ Octagonal_Shape<T>::refine(const Variable var,
               const N& double_approx_minus_i = m_i[n_i+1];
               if (!is_plus_infinity(double_approx_minus_i)) {
                 // Let half = double_approx_minus_i / 2.
-                div2exp_assign_r(half, double_approx_minus_i, 1, ROUND_UP);
+                div_2exp_assign_r(half, double_approx_minus_i, 1, ROUND_UP);
                 add_mul_assign_r(sum, minus_coeff_i, half, ROUND_UP);
               }
               else {
@@ -3929,7 +3930,7 @@ Octagonal_Shape<T>::refine(const Variable var,
               const N& double_approx_i = m_ci[n_i];
               if (!is_plus_infinity(double_approx_i)) {
                 // Let half = double_approx_i / 2.
-                div2exp_assign_r(half, double_approx_i, 1, ROUND_UP);
+                div_2exp_assign_r(half, double_approx_i, 1, ROUND_UP);
                 add_mul_assign_r(neg_sum, minus_coeff_i, half, ROUND_UP);
               }
               else {
@@ -3966,7 +3967,7 @@ Octagonal_Shape<T>::refine(const Variable var,
           if (pinf_count == 0) {
             // Add the constraint `v <= sum'.
             PPL_DIRTY_TEMP(N, double_sum);
-            mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
             matrix[n_var+1][n_var] = double_sum;
             // Deduce constraints of the form `v +/- u', where `u != v'.
             deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
@@ -4011,7 +4012,7 @@ Octagonal_Shape<T>::refine(const Variable var,
           if (neg_pinf_count == 0) {
             // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
             PPL_DIRTY_TEMP(N, double_neg_sum);
-            mul2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
             matrix[n_var][n_var+1] = double_neg_sum;
             // Deduce constraints of the form `-v +/- u', where `u != v'.
             deduce_minus_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, neg_sum);
@@ -4082,7 +4083,7 @@ Octagonal_Shape<T>::refine(const Variable var,
             neg_assign(minus_sc_i, sc_i);
             assign_r(coeff_i, minus_sc_i, ROUND_UP);
           }
-          div2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
+          div_2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
           add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
         }
         // Divide by the (sign corrected) denominator (if needed).
@@ -4100,7 +4101,7 @@ Octagonal_Shape<T>::refine(const Variable var,
         if (pinf_count == 0) {
           // Add the constraint `v <= sum'.
           PPL_DIRTY_TEMP(N, double_sum);
-          mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+          mul_2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
           add_octagonal_constraint(n_var+1, n_var, double_sum);
           // Deduce constraints of the form `v +/- u', where `u != v'.
           deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
@@ -4166,7 +4167,7 @@ Octagonal_Shape<T>::refine(const Variable var,
             neg_assign(minus_sc_i, sc_i);
             assign_r(coeff_i, minus_sc_i, ROUND_UP);
           }
-          div2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
+          div_2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
           add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
         }
 
@@ -4185,7 +4186,7 @@ Octagonal_Shape<T>::refine(const Variable var,
         if (pinf_count == 0) {
           // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
           PPL_DIRTY_TEMP(N, double_sum);
-          mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+          mul_2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
           add_octagonal_constraint(n_var, n_var+1, double_sum);
           // Deduce constraints of the form `-v +/- u', where `u != v'.
           deduce_minus_v_pm_u_bounds(var_id, pinf_index, sc_expr, sc_den, sum);
@@ -4336,10 +4337,10 @@ Octagonal_Shape<T>::affine_image(const Variable var,
               add_assign_r(m_i_cv, m_i_cv, minus_d, ROUND_UP);
             }
             // Now update unary constraints on var.
-            mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(d, d, 1, ROUND_IGNORE);
             N& m_cv_v = m_cv[n_var];
             add_assign_r(m_cv_v, m_cv_v, d, ROUND_UP);
-            mul2exp_assign_r(minus_d, minus_d, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(minus_d, minus_d, 1, ROUND_IGNORE);
             N& m_v_cv = m_v[n_var+1];
             add_assign_r(m_v_cv, m_v_cv, minus_d, ROUND_UP);
            }
@@ -4363,11 +4364,11 @@ Octagonal_Shape<T>::affine_image(const Variable var,
             // adding or subtracting the value `b/denominator'.
             PPL_DIRTY_TEMP(N, d);
             div_round_up(d, b, denominator);
-            mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(d, d, 1, ROUND_IGNORE);
             add_assign_r(m_cv_v, m_cv_v, d, ROUND_UP);
             PPL_DIRTY_TEMP(N, minus_d);
             div_round_up(minus_d, b, minus_den);
-            mul2exp_assign_r(minus_d, minus_d, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(minus_d, minus_d, 1, ROUND_IGNORE);
             add_assign_r(m_v_cv, m_v_cv, minus_d, ROUND_UP);
           }
           incremental_strong_closure_assign(var);
@@ -4472,7 +4473,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
         const N& double_up_approx_i = m_ci[n_i];
         if (!is_plus_infinity(double_up_approx_i)) {
           // Let half = double_up_approx_i / 2.
-          div2exp_assign_r(half, double_up_approx_i, 1, ROUND_UP);
+          div_2exp_assign_r(half, double_up_approx_i, 1, ROUND_UP);
           add_mul_assign_r(pos_sum, coeff_i, half, ROUND_UP);
         }
         else {
@@ -4485,7 +4486,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
         const N& double_up_approx_minus_i = m_i[n_i+1];
         if (!is_plus_infinity(double_up_approx_minus_i)) {
           // Let half = double_up_approx_minus_i / 2.
-          div2exp_assign_r(half, double_up_approx_minus_i, 1, ROUND_UP);
+          div_2exp_assign_r(half, double_up_approx_minus_i, 1, ROUND_UP);
           add_mul_assign_r(neg_sum, coeff_i, half, ROUND_UP);
         }
         else {
@@ -4502,7 +4503,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
         const N& double_up_approx_minus_i = m_i[n_i+1];
         if (!is_plus_infinity(double_up_approx_minus_i)) {
           // Let half = double_up_approx_minus_i / 2.
-          div2exp_assign_r(half, double_up_approx_minus_i, 1, ROUND_UP);
+          div_2exp_assign_r(half, double_up_approx_minus_i, 1, ROUND_UP);
           add_mul_assign_r(pos_sum, minus_coeff_i, half, ROUND_UP);
         }
         else {
@@ -4515,7 +4516,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
         const N& double_up_approx_i = m_ci[n_i];
         if (!is_plus_infinity(double_up_approx_i)) {
           // Let half = double_up_approx_i / 2.
-          div2exp_assign_r(half, double_up_approx_i, 1, ROUND_UP);
+          div_2exp_assign_r(half, double_up_approx_i, 1, ROUND_UP);
           add_mul_assign_r(neg_sum, minus_coeff_i, half, ROUND_UP);
         }
         else {
@@ -4554,7 +4555,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
       PPL_DIRTY_TEMP(N, double_pos_sum);
-      mul2exp_assign_r(double_pos_sum, pos_sum, 1, ROUND_IGNORE);
+      mul_2exp_assign_r(double_pos_sum, pos_sum, 1, ROUND_IGNORE);
       matrix[n_var+1][n_var] = double_pos_sum;
       // Deduce constraints of the form `v +/- u', where `u != v'.
       deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, pos_sum);
@@ -4597,7 +4598,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
     if (neg_pinf_count == 0) {
       // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
       PPL_DIRTY_TEMP(N, double_neg_sum);
-      mul2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
+      mul_2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
       matrix[n_var][n_var+1] = double_neg_sum;
       // Deduce constraints of the form `-v +/- u', where `u != v'.
       deduce_minus_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, neg_sum);
@@ -4879,7 +4880,7 @@ Octagonal_Shape<T>
                 assign_r(m_v[k], PLUS_INFINITY, ROUND_NOT_NEEDED);
                 add_assign_r(m_cv[k], m_cv[k], d, ROUND_UP);
               }
-              mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
+              mul_2exp_assign_r(d, d, 1, ROUND_IGNORE);
               add_assign_r(m_cv_v, m_cv_v, d, ROUND_UP);
               assign_r(m_v_cv, PLUS_INFINITY, ROUND_NOT_NEEDED);
             }
@@ -4887,7 +4888,7 @@ Octagonal_Shape<T>
               // Here `w_coeff == -denominator'.
               // `expr' is of the form: -a*var + b.
               N& m_v_cv = matrix[n_var][n_var+1];
-              mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
+              mul_2exp_assign_r(d, d, 1, ROUND_IGNORE);
               add_assign_r(matrix[n_var+1][n_var], m_v_cv, d, ROUND_UP);
               assign_r(m_v_cv, PLUS_INFINITY, ROUND_NOT_NEEDED);
               forget_binary_octagonal_constraints(var_id);
@@ -4946,7 +4947,7 @@ Octagonal_Shape<T>
                 add_assign_r(m_v[k], m_v[k], d, ROUND_UP);
                 assign_r(m_cv[k], PLUS_INFINITY, ROUND_NOT_NEEDED);
               }
-              mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
+              mul_2exp_assign_r(d, d, 1, ROUND_IGNORE);
               add_assign_r(m_v_cv, m_v_cv, d, ROUND_UP);
               assign_r(m_cv_v, PLUS_INFINITY, ROUND_NOT_NEEDED);
             }
@@ -4954,7 +4955,7 @@ Octagonal_Shape<T>
               // Here `w_coeff == -denominator'.
               // `expr' is of the form: -a*var + b.
               N& m_cv_v = matrix[n_var+1][n_var];
-              mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
+              mul_2exp_assign_r(d, d, 1, ROUND_IGNORE);
               add_assign_r(matrix[n_var][n_var+1], m_cv_v, d, ROUND_UP);
               assign_r(m_cv_v, PLUS_INFINITY, ROUND_NOT_NEEDED);
               forget_binary_octagonal_constraints(var_id);
@@ -5066,7 +5067,7 @@ Octagonal_Shape<T>
           neg_assign(minus_sc_i, sc_i);
           assign_r(coeff_i, minus_sc_i, ROUND_UP);
         }
-        div2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
+        div_2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
         add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
       }
       // Remove all constraints on `v'.
@@ -5094,7 +5095,7 @@ Octagonal_Shape<T>
       if (pinf_count == 0) {
         // Add the constraint `v <= pos_sum'.
         PPL_DIRTY_TEMP(N, double_sum);
-        mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+        mul_2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
         matrix[n_var+1][n_var] = double_sum;
         // Deduce constraints of the form `v +/- u', where `u != v'.
         deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
@@ -5160,7 +5161,7 @@ Octagonal_Shape<T>
           neg_assign(minus_sc_i, sc_i);
           assign_r(coeff_i, minus_sc_i, ROUND_UP);
         }
-        div2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
+        div_2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
         add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
       }
 
@@ -5189,7 +5190,7 @@ Octagonal_Shape<T>
       if (pinf_count == 0) {
         // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
         PPL_DIRTY_TEMP(N, double_sum);
-        mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+        mul_2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
         matrix[n_var][n_var+1] = double_sum;
         // Deduce constraints of the form `-v +/- u', where `u != v'.
         deduce_minus_v_pm_u_bounds(var_id, pinf_index, sc_expr, sc_den, sum);
@@ -5613,7 +5614,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
         const N& double_up_approx_minus_i = m_i[n_i+1];
         if (!is_plus_infinity(double_up_approx_minus_i)) {
           // Let half = double_up_approx_minus_i / 2.
-          div2exp_assign_r(half, double_up_approx_minus_i, 1, ROUND_UP);
+          div_2exp_assign_r(half, double_up_approx_minus_i, 1, ROUND_UP);
           add_mul_assign_r(neg_sum, coeff_i, half, ROUND_UP);
         }
         else {
@@ -5630,7 +5631,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
         const N& double_up_approx_i = m_ci[n_i];
         if (!is_plus_infinity(double_up_approx_i)) {
           // Let half = double_up_approx_i / 2.
-          div2exp_assign_r(half, double_up_approx_i, 1, ROUND_UP);
+          div_2exp_assign_r(half, double_up_approx_i, 1, ROUND_UP);
           add_mul_assign_r(neg_sum, minus_coeff_i, half, ROUND_UP);
         }
         else {
@@ -5672,7 +5673,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
     if (neg_pinf_count == 0) {
       // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
       PPL_DIRTY_TEMP(N, double_neg_sum);
-      mul2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
+      mul_2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
       matrix[n_var][n_var+1] = double_neg_sum;
       // Deduce constraints of the form `-v +/- u', where `u != v'.
       deduce_minus_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, neg_sum);
@@ -6605,6 +6606,20 @@ Octagonal_Shape<T>
   return true;
 }
 
+template <typename T>
+void
+Octagonal_Shape<T>::wrap_assign(const Variables_Set& vars,
+                                Bounded_Integer_Type_Width w,
+                                Bounded_Integer_Type_Signedness s,
+                                Bounded_Integer_Type_Overflow o,
+                                const Constraint_System* pcs,
+                                unsigned complexity_threshold,
+                                bool wrap_individually) {
+  Implementation::wrap_assign(*this,
+                              vars, w, s, o, pcs,
+                              complexity_threshold, wrap_individually);
+}
+
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
 template <typename T>
 std::ostream&
@@ -6651,7 +6666,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
         s << ", ";
       // If the value bound can NOT be divided by 2 exactly,
       // then we output the constraint `2*v_i == bound'.
-      if (div2exp_assign_r(half, x_ii_i, 1, ROUND_UP) == V_EQ)
+      if (div_2exp_assign_r(half, x_ii_i, 1, ROUND_UP) == V_EQ)
         s << v_i << " == " << half;
       else
         s << "2*" << v_i << " == " << x_ii_i;
@@ -6666,7 +6681,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
         neg_assign_r(negation, x_i_ii, ROUND_NOT_NEEDED);
         // If the value bound can NOT be divided by 2 exactly,
         // then we output the constraint `2*v_i >= negation'.
-        if (div2exp_assign_r(half, negation, 1, ROUND_UP) == V_EQ)
+        if (div_2exp_assign_r(half, negation, 1, ROUND_UP) == V_EQ)
           s << v_i << " >= " << half;
         else
           s << "2*" << v_i << " >= " << negation;
@@ -6678,7 +6693,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
           s << ", ";
         // If the value bound can NOT be divided by 2 exactly,
         // then we output the constraint `2*v_i <= bound'.
-        if (div2exp_assign_r(half, x_ii_i, 1, ROUND_UP) == V_EQ)
+        if (div_2exp_assign_r(half, x_ii_i, 1, ROUND_UP) == V_EQ)
           s << v_i << " <= " << half;
         else
           s << "2*" << v_i << " <= " << x_ii_i;

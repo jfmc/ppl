@@ -158,6 +158,7 @@ Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
 H79_Certificate.types.hh \
 Grid_Certificate.types.hh \
+Affine_Space.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
@@ -274,6 +275,8 @@ H79_Certificate.defs.hh \
 H79_Certificate.inlines.hh \
 Grid_Certificate.defs.hh \
 Grid_Certificate.inlines.hh \
+Affine_Space.defs.hh \
+Affine_Space.inlines.hh \
 Polyhedron.defs.hh \
 Ph_Status.inlines.hh \
 Polyhedron.inlines.hh \
@@ -346,6 +349,7 @@ BDS_Status.idefs.hh \
 Og_Status.idefs.hh
 
 libppl_la_SOURCES = \
+wrap_assign.hh \
 Box.cc \
 checked.cc \
 Checked_Number.cc \
@@ -371,6 +375,7 @@ Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \
 H79_Certificate.cc \
 Grid_Certificate.cc \
+Affine_Space.cc \
 Polyhedron_nonpublic.cc \
 Polyhedron_public.cc \
 Polyhedron_chdims.cc \

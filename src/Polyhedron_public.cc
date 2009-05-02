@@ -22,8 +22,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 #include "Polyhedron.defs.hh"
+#include "C_Polyhedron.defs.hh"
+#include "NNC_Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include "MIP_Problem.defs.hh"
+#include "wrap_assign.hh"
 #include <cstdlib>
 #include <cassert>
 #include <iostream>
@@ -3664,6 +3667,24 @@ PPL::Polyhedron::external_memory_in_bytes() const {
     + gen_sys.external_memory_in_bytes()
     + sat_c.external_memory_in_bytes()
     + sat_g.external_memory_in_bytes();
+}
+
+void
+PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
+                             Bounded_Integer_Type_Width w,
+                             Bounded_Integer_Type_Signedness s,
+                             Bounded_Integer_Type_Overflow o,
+                             const Constraint_System* pcs,
+                             unsigned complexity_threshold,
+                             bool wrap_individually) {
+  if (is_necessarily_closed())
+    Implementation::wrap_assign(static_cast<C_Polyhedron&>(*this),
+                                vars, w, s, o, pcs,
+                                complexity_threshold, wrap_individually);
+  else
+    Implementation::wrap_assign(static_cast<NNC_Polyhedron&>(*this),
+                                vars, w, s, o, pcs,
+                                complexity_threshold, wrap_individually);
 }
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron */

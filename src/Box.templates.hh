@@ -302,7 +302,7 @@ Box<ITV>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
       = oct.matrix[cii][ii];
     if (!is_plus_infinity(twice_ub)) {
       assign_r(bound, twice_ub, ROUND_NOT_NEEDED);
-      div2exp_assign_r(bound, bound, 1, ROUND_NOT_NEEDED);
+      div_2exp_assign_r(bound, bound, 1, ROUND_NOT_NEEDED);
       seq_i.upper_set_uninit(bound);
     }
     else
@@ -314,7 +314,7 @@ Box<ITV>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
     if (!is_plus_infinity(twice_lb)) {
       assign_r(bound, twice_lb, ROUND_NOT_NEEDED);
       neg_assign_r(bound, bound, ROUND_NOT_NEEDED);
-      div2exp_assign_r(bound, bound, 1, ROUND_NOT_NEEDED);
+      div_2exp_assign_r(bound, bound, 1, ROUND_NOT_NEEDED);
       seq_i.lower_set_uninit(bound);
     }
     else

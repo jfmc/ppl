@@ -92,7 +92,7 @@ template <typename T, typename Policy>
 inline bool
 is_even(const Checked_Number<T, Policy>& x) {
   Checked_Number<T, Policy> half_x;
-  return div2exp_assign_r(half_x, x, 1, ROUND_DIRECT) == V_EQ
+  return div_2exp_assign_r(half_x, x, 1, ROUND_DIRECT) == V_EQ
     && is_integer(half_x);
 }
 

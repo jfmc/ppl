@@ -81,6 +81,16 @@ sub_mul_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
 }
 
 inline void
+mul_2exp_assign(GMP_Integer& x, const GMP_Integer& y, unsigned int exp) {
+  mpz_mul_2exp(x.get_mpz_t(), y.get_mpz_t(), exp);
+}
+
+inline void
+div_2exp_assign(GMP_Integer& x, const GMP_Integer& y, unsigned int exp) {
+  mpz_tdiv_q_2exp(x.get_mpz_t(), y.get_mpz_t(), exp);
+}
+
+inline void
 exact_div_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
   assert(y % z == 0);
   mpz_divexact(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());

@@ -380,12 +380,12 @@ namespace Checked {
 #define PPL_SPECIALIZE_IDIV(func, To, From1, From2)                     \
   PPL_SPECIALIZE_FUN3_0_1(idiv, func, Result, nonconst, To,             \
                           const, From1, const, From2, Rounding_Dir)
-#define PPL_SPECIALIZE_MUL2EXP(func, To, From)                          \
-  PPL_SPECIALIZE_FUN2_0_2(mul2exp, func, Result, nonconst, To,          \
-                          const, From, int, Rounding_Dir)
-#define PPL_SPECIALIZE_DIV2EXP(func, To, From)                          \
-  PPL_SPECIALIZE_FUN2_0_2(div2exp, func, Result, nonconst, To,          \
-                          const, From, int, Rounding_Dir)
+#define PPL_SPECIALIZE_MUL_2EXP(func, To, From)                         \
+  PPL_SPECIALIZE_FUN2_0_2(mul_2exp, func, Result, nonconst, To,         \
+                          const, From, unsigned int, Rounding_Dir)
+#define PPL_SPECIALIZE_DIV_2EXP(func, To, From)                         \
+  PPL_SPECIALIZE_FUN2_0_2(div_2exp, func, Result, nonconst, To,         \
+                          const, From, unsigned int, Rounding_Dir)
 #define PPL_SPECIALIZE_ADD_MUL(func, To, From1, From2)                  \
   PPL_SPECIALIZE_FUN3_0_1(add_mul, func, Result, nonconst, To,          \
                           const, From1, const, From2, Rounding_Dir)
@@ -465,10 +465,12 @@ PPL_DECLARE_FUN3_0_1(rem,
 PPL_DECLARE_FUN3_0_1(idiv,
                      Result, nonconst, To,
                      const, From1, const, From2, Rounding_Dir)
-PPL_DECLARE_FUN2_0_2(mul2exp,
-                     Result, nonconst, To, const, From, int, Rounding_Dir)
-PPL_DECLARE_FUN2_0_2(div2exp,
-                     Result, nonconst, To, const, From, int, Rounding_Dir)
+PPL_DECLARE_FUN2_0_2(mul_2exp,
+                     Result, nonconst, To,
+                     const, From, unsigned int, Rounding_Dir)
+PPL_DECLARE_FUN2_0_2(div_2exp,
+                     Result, nonconst, To,
+                     const, From, unsigned int, Rounding_Dir)
 PPL_DECLARE_FUN3_0_1(add_mul,
                      Result, nonconst, To,
                      const, From1, const, From2, Rounding_Dir)
