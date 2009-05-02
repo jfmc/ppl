@@ -51,6 +51,7 @@ $(top_builddir)/src/libppl.la \
 
 TESTS = \
 asciidumpload1 \
+constraintsproduct1 \
 directproduct1 directproduct2 directproduct3 directproduct4 \
 directproduct5 directproduct6 \
 partiallyreducedproduct1 partiallyreducedproduct2 partiallyreducedproduct3 \
@@ -64,6 +65,8 @@ XFAIL_TESTS =
 #
 
 asciidumpload1_SOURCES = asciidumpload1.cc
+
+constraintsproduct1_SOURCES = constraintsproduct1.cc
 
 directproduct1_SOURCES = directproduct1.cc
 directproduct2_SOURCES = directproduct2.cc

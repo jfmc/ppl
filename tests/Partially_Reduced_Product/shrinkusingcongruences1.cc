@@ -218,7 +218,7 @@ test06() {
   print_constraints(sucp, "*** after ok check: sucp constraints ***");
 
   if (ok) {
-    ok = ok && sucp == known_sucp;
+    ok = sucp == known_sucp;
 
     print_congruences(sucp, "*** after known_sucp check: sucp congruences ***");
     print_constraints(sucp, "*** after known_sucp check: sucp constraints ***");
@@ -227,7 +227,8 @@ test06() {
   return ok;
 }
 
-// Shows a problem with this reduction
+// Shrink_Using_Congruences_Reduction that calls constraints()
+// and hence reduce().
 bool
 test07() {
   Variable A(0);
@@ -241,8 +242,27 @@ test07() {
 
   bool ok = sucp.OK();
 
-  sucp.ascii_dump();
   Constraint_System cs1 = sucp.constraints();
+
+  SUCProduct known_sucp(1);
+  known_sucp.refine_with_constraints(cs1);
+
+  print_congruences(sucp, "*** after ok check: sucp congruences ***");
+  print_constraints(sucp, "*** after ok check: sucp constraints ***");
+
+  if (ok) {
+    ok = (sucp == known_sucp);
+    print_constraints(sucp,
+                      "*** after known_sucp check: sucp constraints ***");
+    print_congruences(sucp,
+                      "*** after known_sucp check: sucp congruences ***");
+    if (!ok) {
+      print_constraints(known_sucp,
+                        "*** known_sucp constraints ***");
+      print_congruences(known_sucp,
+                        "*** known_sucp congruences ***");
+    }
+  }
 
   return ok;
 }
@@ -250,13 +270,11 @@ test07() {
 } // namespace
 
 BEGIN_MAIN
-/*
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-*/
   DO_TEST(test07);
 END_MAIN

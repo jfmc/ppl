@@ -469,8 +469,18 @@ void Constraints_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
     return;
   }
   else {
+    dimension_type space_dim = d1.space_dimension();
     d1.refine_with_constraints(d2.minimized_constraints());
+    if (d1.is_empty()) {
+      D2 new_d2(space_dim, EMPTY);
+      std::swap(d2, new_d2);
+      return;
+    }
     d2.refine_with_constraints(d1.minimized_constraints());
+    if (d2.is_empty()) {
+      D1 new_d1(space_dim, EMPTY);
+      std::swap(d1, new_d1);
+    }
   }
 }
 
@@ -561,7 +571,8 @@ bool shrink_using_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
 }
 
 template <typename D1, typename D2>
-void Shrink_Using_Congruences_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
+void
+  Shrink_Using_Congruences_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
   if (d1.is_empty() || d2.is_empty()) {
     // If one of the components is empty, do the smash reduction and return.
     Parma_Polyhedra_Library::Smash_Reduction<D1, D2> sr;
@@ -570,28 +581,28 @@ void Shrink_Using_Congruences_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) 
   }
   else {
     // Use the congruences representing d1 to shrink both components.
-    const Congruence_System& cgs1 = d1.minimized_congruences();
+    const Congruence_System cgs1 = d1.minimized_congruences();
     for (Congruence_System::const_iterator i = cgs1.begin(),
            cgs_end = cgs1.end(); i != cgs_end; ++i) {
       const Congruence& cg1 = *i;
       if (cg1.is_equality())
         d2.refine_with_congruence(cg1);
       else
-        if (!Parma_Polyhedra_Library::shrink_using_congruence_no_check(d1, d2,
-                                                                       cg1))
+        if (!Parma_Polyhedra_Library::
+            shrink_using_congruence_no_check(d1, d2, cg1))
           // The product is empty.
           return;
     }
     // Use the congruences representing d2 to shrink both components.
-    const Congruence_System& cgs2 = d2.minimized_congruences();
+    const Congruence_System cgs2 = d2.minimized_congruences();
     for (Congruence_System::const_iterator i = cgs2.begin(),
            cgs_end = cgs2.end(); i != cgs_end; ++i) {
       const Congruence& cg2 = *i;
       if (cg2.is_equality())
         d1.refine_with_congruence(cg2);
       else
-        if (!Parma_Polyhedra_Library::shrink_using_congruence_no_check(d2, d1,
-                                                                       cg2))
+        if (!Parma_Polyhedra_Library::
+            shrink_using_congruence_no_check(d2, d1, cg2))
           // The product is empty.
            return;
     }
