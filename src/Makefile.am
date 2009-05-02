@@ -328,7 +328,7 @@ Partially_Reduced_Product.inlines.hh \
 Partially_Reduced_Product.templates.hh \
 max_space_dimension.hh \
 algorithms.hh \
-wrap.hh
+wrap_string.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
@@ -410,7 +410,7 @@ version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
 swapping_sort.icc \
-wrap.cc
+wrap_string.cc
 #Pointset_Ask_Tell.cc
 
 if NO_UNDEFINED
