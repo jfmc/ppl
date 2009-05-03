@@ -39,6 +39,8 @@ test01() {
 
   oct.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
 
+  print_constraints(oct, "*** oct.wrap_assign() ***");
+
   TOctagonal_Shape known_result(2);
   known_result.refine_with_constraint(x >= 0);
   known_result.refine_with_constraint(x <= 255);
