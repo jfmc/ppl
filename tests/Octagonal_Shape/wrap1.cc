@@ -43,7 +43,8 @@ test01() {
   typedef TOctagonal_Shape::coefficient_type T;
   if (!std::numeric_limits<T>::is_bounded
       || (std::numeric_limits<T>::max() >= 510
-          && std::numeric_limits<T>::min() <= -510)) {
+          && (std::numeric_limits<T>::is_iec559
+              || std::numeric_limits<T>::min() <= -510))) {
     known_result.refine_with_constraint(x >= 0);
     known_result.refine_with_constraint(x <= 255);
     known_result.refine_with_constraint(y >= 64);
@@ -61,6 +62,7 @@ test01() {
   bool ok = (oct == known_result);
 
   print_constraints(oct, "*** oct.wrap_assign(...) ***");
+  print_constraints(known_result, "*** known_result ***");
 
   return ok;
 }
@@ -87,7 +89,8 @@ test02() {
   typedef TOctagonal_Shape::coefficient_type_base T;
   if (!std::numeric_limits<T>::is_bounded
       || (std::numeric_limits<T>::max() >= 510
-          && std::numeric_limits<T>::min() <= -510)) {
+          && (std::numeric_limits<T>::is_iec559
+              || std::numeric_limits<T>::min() <= -510))) {
     known_result.refine_with_constraint(x >= 0);
     known_result.refine_with_constraint(y >= 96);
     known_result.refine_with_constraint(-x+y >= 96);
@@ -102,6 +105,7 @@ test02() {
   bool ok = (oct == known_result);
 
   print_constraints(oct, "*** oct.wrap_assign(...) ***");
+  print_constraints(known_result, "*** known_result ***");
 
   return ok;
 }
