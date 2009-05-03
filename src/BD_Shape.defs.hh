@@ -404,7 +404,11 @@ private:
     The (extended) numeric type of the inhomogeneous term of
     the inequalities defining a BDS.
   */
+#ifndef NDEBUG
   typedef Checked_Number<T, Extended_Number_Policy> N;
+#else
+  typedef Checked_Number<T, WRD_Extended_Number_Policy> N;
+#endif
 
 public:
   //! The numeric base type upon which bounded differences are built.
