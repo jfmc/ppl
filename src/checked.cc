@@ -26,6 +26,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+Minus_Infinity MINUS_INFINITY;
+Plus_Infinity PLUS_INFINITY;
+Not_A_Number NOT_A_NUMBER;
+
 namespace Checked {
 
 //! Holds the precision parameter used for rational sqrt calculations.

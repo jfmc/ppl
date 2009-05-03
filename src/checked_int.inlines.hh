@@ -561,9 +561,9 @@ assign_signed_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
     }
     if (from.fits_slong_p()) {
       signed long v = from.get_si();
-      if (v < C_Integer<To>::min)
+      if (v < Extended_Int<To_Policy, To>::min)
 	return set_neg_overflow_int<To_Policy>(to, dir);
-      if (v > C_Integer<To>::max)
+      if (v > Extended_Int<To_Policy, To>::max)
 	return set_pos_overflow_int<To_Policy>(to, dir);
       to = v;
       return V_EQ;
@@ -610,7 +610,7 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
     }
     if (from.fits_ulong_p()) {
       unsigned long v = from.get_ui();
-      if (v > C_Integer<To>::max)
+      if (v > Extended_Int<To_Policy, To>::max)
 	return set_pos_overflow_int<To_Policy>(to, dir);
       to = v;
       return V_EQ;
@@ -1109,7 +1109,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 div_2exp_signed_int(Type& to, const Type x, unsigned int exp,
                     Rounding_Dir dir) {
-  if (exp >= sizeof(Type) * 8) {
+  if (exp > sizeof(Type) * 8 - 1) {
   zero:
     to = 0;
     if (round_ignore(dir))
@@ -1121,7 +1121,7 @@ div_2exp_signed_int(Type& to, const Type x, unsigned int exp,
     else
       return V_EQ;
   }
-  if (exp >= sizeof(Type) * 8 - 1) {
+  if (exp == sizeof(Type) * 8 - 1) {
     if (x == C_Integer<Type>::min) {
       to = -1;
       return V_EQ;
