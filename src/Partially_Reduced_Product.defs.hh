@@ -165,15 +165,15 @@ public:
 };
 
 /*! \brief
-  This class provides the reduction method for the
-  Congruences_Product domain.
+  This class provides the reduction method for the Congruences_Product
+  domain.
 
   \ingroup PPL_CXX_interface
   The reduction classes are used to instantiate the Partially_Reduced_Product
   domain.
 
-  This class uses the congruences defining each of the components
-  to check, for each of the congruences, if the other component
+  This class uses the minimized congruences defining each of the components.
+  For each of the congruences, it checks if the other component
   intersects none, one or more than one hyperplane defined by the congruence
   and adds equalities or emptiness as appropriate; in more detail:
   Letting the components be d1 and d2, then, for each congruence cg
@@ -185,16 +185,17 @@ public:
   - otherwise, d1 and d2 are set to empty.
   Unless d1 and d2 are already empty, the process is repeated where the
   roles of d1 and d2 are reversed.
+  If d1 or d2 is empty, then the emptiness is propagated.
 
 */
 template <typename D1, typename D2>
-class Parma_Polyhedra_Library::Shrink_Using_Congruences_Reduction {
+class Parma_Polyhedra_Library::Congruences_Reduction {
 public:
   //! Default constructor.
-  Shrink_Using_Congruences_Reduction();
+  Congruences_Reduction();
 
   /*! \brief
-    The congruence reduction operator to detect emptiness or any equalities
+    The congruences reduction operator for detect emptiness or any equalities
     implied by each of the congruences defining one of the components
     and the bounds of the other component. It is assumed that the
     components are already constraints reduced.
@@ -217,7 +218,7 @@ public:
   void product_reduce(D1& d1, D2& d2);
 
   //! Destructor.
-  ~Shrink_Using_Congruences_Reduction();
+  ~Congruences_Reduction();
 };
 
 /*! \brief
@@ -1579,8 +1580,8 @@ public:
   typedef Partially_Reduced_Product<D1, D2, Constraints_Reduction<D1, D2> >
   Constraints_Product;
 
-  typedef Partially_Reduced_Product<D1, D2, Shrink_Using_Congruences_Reduction<D1, D2> >
-  Shrink_Using_Congruences_Product;
+  typedef Partially_Reduced_Product<D1, D2, Congruences_Reduction<D1, D2> >
+  Congruences_Product;
 };
 
 } // namespace Parma_Polyhedra_Library

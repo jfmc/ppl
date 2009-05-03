@@ -484,13 +484,13 @@ void Constraints_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
   }
 }
 
-/* Auxiliary procedure for the Shrink_Using_Congruences_Reduction() method.
+/* Auxiliary procedure for the Congruences_Reduction() method.
    If more than one hyperplane defined by congruence cg intersect
    d2, then d1 and d2 are unchanged; if exactly one intersects d2, then
    the corresponding equality is added to d1 and d2;
    otherwise d1 and d2 are set empty. */
 template <typename D1, typename D2>
-bool shrink_using_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
+bool shrink_to_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
   // It is assumed that cg is a proper congruence.
   assert(cg.modulus() != 0);
   // It is assumed that cg is satisfied by all points in d1.
@@ -572,7 +572,7 @@ bool shrink_using_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
 
 template <typename D1, typename D2>
 void
-  Shrink_Using_Congruences_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
+  Congruences_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
   if (d1.is_empty() || d2.is_empty()) {
     // If one of the components is empty, do the smash reduction and return.
     Parma_Polyhedra_Library::Smash_Reduction<D1, D2> sr;
@@ -589,7 +589,7 @@ void
         d2.refine_with_congruence(cg1);
       else
         if (!Parma_Polyhedra_Library::
-            shrink_using_congruence_no_check(d1, d2, cg1))
+            shrink_to_congruence_no_check(d1, d2, cg1))
           // The product is empty.
           return;
     }
@@ -602,7 +602,7 @@ void
         d1.refine_with_congruence(cg2);
       else
         if (!Parma_Polyhedra_Library::
-            shrink_using_congruence_no_check(d2, d1, cg2))
+            shrink_to_congruence_no_check(d2, d1, cg2))
           // The product is empty.
            return;
     }

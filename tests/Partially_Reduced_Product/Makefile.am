@@ -56,7 +56,7 @@ directproduct1 directproduct2 directproduct3 directproduct4 \
 directproduct5 directproduct6 \
 partiallyreducedproduct1 partiallyreducedproduct2 partiallyreducedproduct3 \
 partiallyreducedproduct4 \
-shrinkusingcongruences1
+congruencesproduct1
 
 XFAIL_TESTS =
 
@@ -80,7 +80,7 @@ partiallyreducedproduct2_SOURCES = partiallyreducedproduct2.cc
 partiallyreducedproduct3_SOURCES = partiallyreducedproduct3.cc
 partiallyreducedproduct4_SOURCES = partiallyreducedproduct4.cc
 
-shrinkusingcongruences1_SOURCES = shrinkusingcongruences1.cc
+congruencesproduct1_SOURCES = congruencesproduct1.cc
 
 check_PROGRAMS = $(TESTS)
 

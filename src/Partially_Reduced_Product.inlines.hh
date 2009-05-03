@@ -751,14 +751,12 @@ Constraints_Reduction<D1, D2>::~Constraints_Reduction() {
 
 template <typename D1, typename D2>
 inline
-Shrink_Using_Congruences_Reduction<D1, D2>
-::Shrink_Using_Congruences_Reduction() {
+Congruences_Reduction<D1, D2>::Congruences_Reduction() {
 }
 
 template <typename D1, typename D2>
 inline
-Shrink_Using_Congruences_Reduction<D1, D2>
-::~Shrink_Using_Congruences_Reduction() {
+Congruences_Reduction<D1, D2>::~Congruences_Reduction() {
 }
 
 } // namespace Parma_Polyhedra_Library
