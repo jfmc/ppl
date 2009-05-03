@@ -44,11 +44,13 @@ template <typename Policy>						\
   static const bool has_quiet_NaN =  Policy::has_nan;                   \
                                                                         \
   static Type min() {							\
-    return Checked::Extended_Int<Policy, T>::min;                       \
+    return Type(Checked::Extended_Int<Policy, T>::min,                  \
+                ROUND_NOT_NEEDED);                                      \
   }									\
                                                                         \
   static Type max() {							\
-    return Checked::Extended_Int<Policy, T>::max;                       \
+    return Type(Checked::Extended_Int<Policy, T>::max,                  \
+                ROUND_NOT_NEEDED);                                      \
   }									\
 									\
   static Type infinity() {						\
