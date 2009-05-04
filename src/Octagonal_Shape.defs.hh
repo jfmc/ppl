@@ -477,13 +477,11 @@ public:
     The OS inherits the space dimension of \p cs.
 
     \param cs
-    A system of constraints: constraints that are not
-    \ref Octagonal_Shapes "octagonal constraints"
-    are ignored (even though they may have contributed
-    to the space dimension).
+    A system of octagonal constraints.
 
     \exception std::invalid_argument
-    Thrown if the system of constraints \p cs contains strict inequalities.
+    Thrown if \p cs contains a constraint which is not optimally supported
+    by the Octagonal shape domain.
   */
   explicit Octagonal_Shape(const Constraint_System& cs);
 
@@ -492,7 +490,11 @@ public:
     The OS inherits the space dimension of \p cgs
 
     \param cgs
-    A system of congruences: some elements may be safely ignored.
+    A system of congruences.
+
+    \exception std::invalid_argument
+    Thrown if \p cgs contains a congruence which is not optimally supported
+    by the Octagonal shape domain.
   */
   explicit Octagonal_Shape(const Congruence_System& cgs);
 

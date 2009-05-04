@@ -467,10 +467,7 @@ public:
     The BDS inherits the space dimension of \p cs.
 
     \param cs
-    A system of constraints: constraints that are not
-    \ref Bounded_Difference_Shapes "bounded differences"
-    are ignored (even though they may have contributed
-    to the space dimension).
+    A system of BD constraints.
 
     \exception std::invalid_argument
     Thrown if \p cs contains a constraint which is not optimally supported
@@ -483,7 +480,11 @@ public:
     The BDS inherits the space dimension of \p cgs
 
     \param cgs
-    A system of congruences: some elements may be safely ignored.
+    A system of congruences.
+
+    \exception std::invalid_argument
+    Thrown if \p cgs contains congruences which are not optimally
+    supported by the BD shape domain.
   */
   explicit BD_Shape(const Congruence_System& cgs);
 
@@ -839,8 +840,7 @@ public:
     defining \p *this.
 
     \param c
-    The constraint to be added. If it is not a bounded difference, it
-    will be simply ignored.
+    The constraint to be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible,
@@ -865,8 +865,7 @@ public:
     defining \p *this.
 
     \param  cs
-    The constraints that will be added. Constraints that are not bounded
-    differences will be simply ignored.
+    The constraints that will be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
