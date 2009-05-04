@@ -367,13 +367,13 @@ public:
 
   /*! \brief
     Returns true indicating that this domain has methods that
-    can recycle congruences
+    can recycle congruences.
   */
   static bool can_recycle_congruence_systems();
 
   /*! \brief
     Returns true indicating that this domain has methods that
-    can recycle constraints
+    can recycle constraints.
   */
   static bool can_recycle_constraint_systems();
 
