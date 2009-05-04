@@ -113,7 +113,7 @@ public:
   //! Default constructor.
   Bit_Row();
 
-  //! Copy-constructor.
+  //! Copy constructor.
   Bit_Row(const Bit_Row& y);
 
   //! Set-union constructor.

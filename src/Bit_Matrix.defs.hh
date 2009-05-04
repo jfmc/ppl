@@ -41,7 +41,7 @@ public:
   //! Construct a bit matrix with \p n_rows rows and \p n_columns columns.
   Bit_Matrix(dimension_type n_rows, dimension_type n_columns);
 
-  //! Copy-constructor.
+  //! Copy constructor.
   Bit_Matrix(const Bit_Matrix& y);
 
   //! Destructor.

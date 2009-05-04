@@ -447,7 +447,7 @@ public:
   explicit BD_Shape(dimension_type num_dimensions = 0,
                     Degenerate_Element kind = UNIVERSE);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   /*!
     The complexity argument is ignored.
   */

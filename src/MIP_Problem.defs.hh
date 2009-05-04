@@ -203,7 +203,7 @@ public:
 	      const Linear_Expression& obj = Linear_Expression::zero(),
 	      Optimization_Mode mode = MAXIMIZATION);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   MIP_Problem(const MIP_Problem& y);
 
   //! Destructor.

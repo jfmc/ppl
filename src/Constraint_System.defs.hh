@@ -135,7 +135,7 @@ public:
   //! Builds a system containing copies of any equalities in \p cgs.
   explicit Constraint_System(const Congruence_System& cgs);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Constraint_System(const Constraint_System& cs);
 
   //! Destructor.
@@ -204,7 +204,7 @@ public:
     //! Default constructor.
     const_iterator();
 
-    //! Ordinary copy-constructor.
+    //! Ordinary copy constructor.
     const_iterator(const const_iterator& y);
 
     //! Destructor.

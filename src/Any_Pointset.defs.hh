@@ -84,7 +84,7 @@ public:
   //! Default constructor.
   Any_Pointset();
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Any_Pointset(const Any_Pointset& y);
 
   //! \name Member Functions that Do Not Modify the Pointset

@@ -513,7 +513,7 @@ public:
   Partially_Reduced_Product(const Octagonal_Shape<U>& os,
                             Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Partially_Reduced_Product(const Partially_Reduced_Product& y,
                             Complexity_Class complexity = ANY_COMPLEXITY);
 

@@ -553,7 +553,7 @@ public:
   explicit Affine_Space(const Polyhedron& ph,
                         Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   /*!
     The complexity argument is ignored.
   */

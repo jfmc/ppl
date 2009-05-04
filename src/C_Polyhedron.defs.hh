@@ -241,7 +241,7 @@ public:
   explicit C_Polyhedron(const Grid& grid,
                         Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   /*!
     The complexity argument is ignored.
   */

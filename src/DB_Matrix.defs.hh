@@ -75,7 +75,7 @@ public:
   //! Builds a square matrix having the specified dimension.
   explicit DB_Matrix(dimension_type n_rows);
 
-  //! Copy-constructor.
+  //! Copy constructor.
   DB_Matrix(const DB_Matrix& y);
 
   //! Constructs a conservative approximation of \p y.
@@ -115,7 +115,7 @@ public:
     */
     explicit const_iterator(const Iter& b);
 
-    //! Ordinary copy-constructor.
+    //! Ordinary copy constructor.
     const_iterator(const const_iterator& y);
 
     //! Assignment operator.

@@ -402,7 +402,7 @@ protected:
 	     dimension_type num_dimensions,
 	     Degenerate_Element kind);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   /*!
     The complexity argument is ignored.
   */

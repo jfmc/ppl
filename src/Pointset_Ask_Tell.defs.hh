@@ -72,7 +72,7 @@ public:
   Pointset_Ask_Tell(dimension_type num_dimensions = 0,
 		    Degenerate_Element kind = UNIVERSE);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Pointset_Ask_Tell(const Pointset_Ask_Tell& y);
 
   /*! \brief
@@ -82,7 +82,7 @@ public:
   explicit Pointset_Ask_Tell(const PSET& ph);
 
   /*! \brief
-    Copy-constructor allowing a source powerset with elements of a
+    Copy constructor allowing a source powerset with elements of a
     different polyhedron kind.
   */
   template <typename QH>
