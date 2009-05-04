@@ -64,6 +64,15 @@ are that (1) applications do not depend on the internals of the library
 (these may change from release to release), and (2) the interface
 invariants can be thoroughly checked (by the access functions).
 
+\note
+All functions taking as input argument an opaque pointer datatype assume
+that such an argument is actually <em>referring to a valid PPL object</em>.
+For instance, a function with an argument having type
+<code>ppl_MIP_Problem_t</code> will expect a valid MIP_Problem object,
+previously initialized by calling, e.g., <code>ppl_new_MIP_Problem</code>.
+If that is not the case (e.g., if a null pointer is passed in),
+the behavior is undefined.
+
 The PPL's C interface is initialized by means of the
 <CODE>ppl_initialize</CODE> function.  This function must
 be called <EM>before using any other interface of the library</EM>.
