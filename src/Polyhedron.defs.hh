@@ -1462,7 +1462,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p vars.
+    Variable objects contained in \p vars or with <CODE>*pcs</CODE>.
   */
   void wrap_assign(const Variables_Set& vars,
                    Bounded_Integer_Type_Width w,
