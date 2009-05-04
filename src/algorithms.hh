@@ -60,7 +60,7 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
     // The polyhedral hull is exact if and only if all the elements
     // of the partition of the polyhedral hull of `p' and `q' with
     // respect to `q' are included in `p'
-    if (!nnc_p.contains(i->element()))
+    if (!nnc_p.contains(i->pointset()))
       return false;
   p = phull;
   return true;

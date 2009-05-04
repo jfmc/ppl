@@ -34,8 +34,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 /*! \brief
-  Returns <CODE>true</CODE> if and only if
-  \p x and \p y are the same domain element.
+  Returns <CODE>true</CODE> if and only if \p x and \p y are the same
+  COW-wrapped pointset.
 
   \relates COW_Pointset
 */
@@ -43,8 +43,8 @@ template <typename PSET>
 bool operator==(const COW_Pointset<PSET>& x, const COW_Pointset<PSET>& y);
 
 /*! \brief
-  Returns <CODE>true</CODE> if and only if
-  \p x and \p y are different domain elements.
+  Returns <CODE>true</CODE> if and only if \p x and \p y are different
+  COW-wrapped pointsets.
 
   \relates COW_Pointset
 */
@@ -63,7 +63,7 @@ operator<<(std::ostream&, const COW_Pointset<PSET>&);
 
 } // namespace Parma_Polyhedra_Library
 
-//! Wraps a PPL class into a determinate constraint system interface.
+//! A copy-on-write wrapper for PPL pointsets.
 /*! \ingroup PPL_CXX_interface */
 template <typename PSET>
 class Parma_Polyhedra_Library::COW_Pointset {
@@ -72,20 +72,21 @@ public:
   //@{
 
   /*! \brief
-    Injection operator: builds the determinate constraint system element
-    corresponding to the base-level element \p p.
+    Constructs a COW-wrapped object corresponding to the base-level
+    element \p p.
   */
   COW_Pointset(const PSET& p);
 
   /*! \brief
-    Injection operator: builds the determinate constraint system element
-    corresponding to the base-level element represented by \p cs.
+    Constructs a COW-wrapped object corresponding to the base-level
+    pointset defined by \p cs.
   */
   COW_Pointset(const Constraint_System& cs);
 
-  //! \brief
-  //! Injection operator: builds the determinate constraint system element
-  //! corresponding to the base-level element represented by \p cgs.
+  /*! \brief
+    Constructs a COW-wrapped object corresponding to the base-level
+    pointset defined by \p cgs.
+  */
   COW_Pointset(const Congruence_System& cgs);
 
   //! Copy constructor.
@@ -99,8 +100,8 @@ public:
   //! \name Member Functions that Do Not Modify the Domain Element
   //@{
 
-  //! Returns a const reference to the embedded element.
-  const PSET& element() const;
+  //! Returns a const reference to the embedded pointset.
+  const PSET& pointset() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is the top of the
@@ -166,7 +167,7 @@ public:
   void concatenate_assign(const COW_Pointset& y);
 
   //! Returns a reference to the embedded element.
-  PSET& element();
+  PSET& pointset();
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
@@ -235,9 +236,9 @@ private:
   private:
     /*! \brief
       Count the number of references:
-      -   0: leaked, \p ph is non-const;
-      -   1: one reference, \p ph is non-const;
-      - > 1: more than one reference, \p ph is const.
+      -   0: leaked, \p pset is non-const;
+      -   1: one reference, \p pset is non-const;
+      - > 1: more than one reference, \p pset is const.
     */
     mutable unsigned long references;
 
@@ -252,7 +253,7 @@ private:
 
   public:
     //! A possibly shared base-level domain element.
-    PSET ph;
+    PSET pset;
 
     /*! \brief
       Builds a new representation by creating a domain element

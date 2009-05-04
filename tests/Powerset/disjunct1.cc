@@ -47,10 +47,10 @@ test01() {
   Pointset_Powerset<NNC_Polyhedron> nnc_ps(c_ps);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator c_i = c_ps.begin();
-  C_Polyhedron c_phi = c_i->element();
+  C_Polyhedron c_phi = c_i->pointset();
   print_constraints(c_phi, "*** c_phi ***");
   Pointset_Powerset<NNC_Polyhedron>::const_iterator nnc_i = nnc_ps.begin();
-  NNC_Polyhedron nnc_phi = nnc_i->element();
+  NNC_Polyhedron nnc_phi = nnc_i->pointset();
   print_constraints(nnc_phi, "*** nnc_phi ***");
 
   return c_ps.OK() && nnc_ps.OK();
@@ -76,10 +76,10 @@ test02() {
   Pointset_Powerset<C_Polyhedron> c_ps(nnc_ps);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator c_i = c_ps.begin();
-  C_Polyhedron c_phi = c_i->element();
+  C_Polyhedron c_phi = c_i->pointset();
   print_constraints(c_phi, "*** c_phi ***");
   Pointset_Powerset<NNC_Polyhedron>::const_iterator nnc_i = nnc_ps.begin();
-  NNC_Polyhedron nnc_phi = nnc_i->element();
+  NNC_Polyhedron nnc_phi = nnc_i->pointset();
   print_constraints(nnc_phi, "*** nnc_phi ***");
 
   return nnc_ps.OK() && c_ps.OK();
@@ -133,9 +133,9 @@ test04() {
   c_ps.add_disjunct(ph1);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i->element();
+  C_Polyhedron phi = i->pointset();
   i++;
-  C_Polyhedron phi1 = i->element();
+  C_Polyhedron phi1 = i->pointset();
 
   bool ok = phi.OK() && phi == ph;
 
@@ -174,9 +174,9 @@ test05() {
   pps_box.add_disjunct(box1);
 
   Pointset_Powerset<TBox>::const_iterator i = pps_box.begin();
-  TBox pps_boxi = i->element();
+  TBox pps_boxi = i->pointset();
   i++;
-  TBox pps_boxi1 = i->element();
+  TBox pps_boxi1 = i->pointset();
 
   bool ok = pps_boxi.OK() && pps_boxi == box;
 
@@ -249,9 +249,9 @@ test07() {
   pps_box.add_disjunct(box1);
 
   Pointset_Powerset<TBox>::const_iterator i = pps_box.begin();
-  TBox pps_boxi = i->element();
+  TBox pps_boxi = i->pointset();
   i++;
-  TBox pps_boxi1 = i->element();
+  TBox pps_boxi1 = i->pointset();
 
   bool ok = pps_boxi.OK() && pps_boxi == box;
 

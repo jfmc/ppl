@@ -52,9 +52,9 @@ test01() {
   ph1.affine_image(x, x + y);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i->element();
+  C_Polyhedron phi = i->pointset();
   i++;
-  C_Polyhedron phi1 = i->element();
+  C_Polyhedron phi1 = i->pointset();
 
   bool ok = phi.OK() && phi == ph;
 
@@ -164,9 +164,9 @@ test04() {
   ph1.generalized_affine_image(x - y, GREATER_OR_EQUAL, Linear_Expression(3));
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i->element();
+  C_Polyhedron phi = i->pointset();
   i++;
-  C_Polyhedron phi1 = i->element();
+  C_Polyhedron phi1 = i->pointset();
 
   bool ok = phi.OK() && phi == ph;
 
@@ -211,9 +211,9 @@ test05() {
   ph1.bounded_affine_image(y, Linear_Expression(0), 2*y, 5);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i->element();
+  C_Polyhedron phi = i->pointset();
   i++;
-  C_Polyhedron phi1 = i->element();
+  C_Polyhedron phi1 = i->pointset();
 
   bool ok = phi.OK() && phi == ph;
 

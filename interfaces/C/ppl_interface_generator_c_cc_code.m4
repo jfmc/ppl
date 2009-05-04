@@ -1056,7 +1056,7 @@ ppl_@CLASS@_iterator_dereference
 (ppl_const_@CLASS@_iterator_t psit,
  ppl_const_@DISJUNCT@_t* cd) try {
    const @CPP_CLASS@::iterator& cpsit = *to_const(psit);
-   const @DISJUNCT_TOPOLOGY@@A_DISJUNCT@& d = cpsit->element();
+   const @DISJUNCT_TOPOLOGY@@A_DISJUNCT@& d = cpsit->pointset();
    *cd = to_const(&d);
    return 0;
 }
@@ -1067,7 +1067,7 @@ ppl_@CLASS@_const_iterator_dereference
 (ppl_const_@CLASS@_const_iterator_t psit,
  ppl_const_@DISJUNCT@_t* cd) try {
    const @CPP_CLASS@::const_iterator& cpsit = *to_const(psit);
-   const @DISJUNCT_TOPOLOGY@@A_DISJUNCT@& d = cpsit->element();
+   const @DISJUNCT_TOPOLOGY@@A_DISJUNCT@& d = cpsit->pointset();
    *cd = to_const(&d);
    return 0;
 }

@@ -64,7 +64,7 @@ Pointset_Powerset<NNC_Polyhedron>
   for (typename Pointset_Powerset<QH>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(COW_Pointset<NNC_Polyhedron>
-			 (NNC_Polyhedron(i->element(), complexity)));
+			 (NNC_Polyhedron(i->pointset(), complexity)));
 
   // FIXME: If the domain elements can be represented _exactly_ as NNC
   // polyhedra, then having x.reduced = y.reduced is correct. This is
@@ -89,7 +89,7 @@ Pointset_Powerset<PSET>
   Pointset_Powerset& x = *this;
   for (typename Pointset_Powerset<QH>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
-    x.sequence.push_back(COW_Pointset<PSET>(PSET(i->element(), complexity)));
+    x.sequence.push_back(COW_Pointset<PSET>(PSET(i->pointset(), complexity)));
   // Note: this might be non-reduced even when `y' is known to be
   // omega-reduced, because the constructor of PSET may have made
   // different QH elements to become comparable.
@@ -116,13 +116,13 @@ Pointset_Powerset<PSET>::concatenate_assign(const Pointset_Powerset& y) {
     ++xi;
     if (abandon_expensive_computations && xi != x_end && y_begin != y_end) {
       // Hurry up!
-      PSET xph = xi->element();
+      PSET xph = xi->pointset();
       for (++xi; xi != x_end; ++xi)
-	xph.upper_bound_assign(xi->element());
+	xph.upper_bound_assign(xi->pointset());
       const_iterator yi = y_begin;
-      PSET yph = yi->element();
+      PSET yph = yi->pointset();
       for (++yi; yi != y_end; ++yi)
-	yph.upper_bound_assign(yi->element());
+	yph.upper_bound_assign(yi->pointset());
       xph.concatenate_assign(yph);
       x.swap(new_x);
       x.add_disjunct(xph);
@@ -140,7 +140,7 @@ Pointset_Powerset<PSET>::add_constraint(const Constraint& c) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().add_constraint(c);
+    si->pointset().add_constraint(c);
   x.reduced = false;
   assert(x.OK());
 }
@@ -151,7 +151,7 @@ Pointset_Powerset<PSET>::refine_with_constraint(const Constraint& c) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().refine_with_constraint(c);
+    si->pointset().refine_with_constraint(c);
   x.reduced = false;
   assert(x.OK());
 }
@@ -162,7 +162,7 @@ Pointset_Powerset<PSET>::add_constraints(const Constraint_System& cs) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().add_constraints(cs);
+    si->pointset().add_constraints(cs);
   x.reduced = false;
   assert(x.OK());
 }
@@ -173,7 +173,7 @@ Pointset_Powerset<PSET>::refine_with_constraints(const Constraint_System& cs) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().refine_with_constraints(cs);
+    si->pointset().refine_with_constraints(cs);
   x.reduced = false;
   assert(x.OK());
 }
@@ -184,7 +184,7 @@ Pointset_Powerset<PSET>::add_congruence(const Congruence& c) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().add_congruence(c);
+    si->pointset().add_congruence(c);
   x.reduced = false;
   assert(x.OK());
 }
@@ -195,7 +195,7 @@ Pointset_Powerset<PSET>::refine_with_congruence(const Congruence& cg) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().refine_with_congruence(cg);
+    si->pointset().refine_with_congruence(cg);
   x.reduced = false;
   assert(x.OK());
 }
@@ -206,7 +206,7 @@ Pointset_Powerset<PSET>::add_congruences(const Congruence_System& cs) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().add_congruences(cs);
+    si->pointset().add_congruences(cs);
   x.reduced = false;
   assert(x.OK());
 }
@@ -217,7 +217,7 @@ Pointset_Powerset<PSET>::refine_with_congruences(const Congruence_System& cgs) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().refine_with_congruences(cgs);
+    si->pointset().refine_with_congruences(cgs);
   x.reduced = false;
   assert(x.OK());
 }
@@ -228,7 +228,7 @@ Pointset_Powerset<PSET>::unconstrain(const Variable var) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    si->element().unconstrain(var);
+    si->pointset().unconstrain(var);
     x.reduced = false;
   }
   assert(x.OK());
@@ -240,7 +240,7 @@ Pointset_Powerset<PSET>::unconstrain(const Variables_Set& vars) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    si->element().unconstrain(vars);
+    si->pointset().unconstrain(vars);
     x.reduced = false;
   }
   assert(x.OK());
@@ -252,7 +252,7 @@ Pointset_Powerset<PSET>::add_space_dimensions_and_embed(dimension_type m) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().add_space_dimensions_and_embed(m);
+    si->pointset().add_space_dimensions_and_embed(m);
   x.space_dim += m;
   assert(x.OK());
 }
@@ -263,7 +263,7 @@ Pointset_Powerset<PSET>::add_space_dimensions_and_project(dimension_type m) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().add_space_dimensions_and_project(m);
+    si->pointset().add_space_dimensions_and_project(m);
   x.space_dim += m;
   assert(x.OK());
 }
@@ -276,7 +276,7 @@ Pointset_Powerset<PSET>::remove_space_dimensions(const Variables_Set& vars) {
   if (num_removed > 0) {
     for (Sequence_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->element().remove_space_dimensions(vars);
+      si->pointset().remove_space_dimensions(vars);
       x.reduced = false;
     }
     x.space_dim -= num_removed;
@@ -292,7 +292,7 @@ Pointset_Powerset<PSET>::remove_higher_space_dimensions(dimension_type
   if (new_dimension < x.space_dim) {
     for (Sequence_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->element().remove_higher_space_dimensions(new_dimension);
+      si->pointset().remove_higher_space_dimensions(new_dimension);
       x.reduced = false;
     }
     x.space_dim = new_dimension;
@@ -318,8 +318,8 @@ Pointset_Powerset<PSET>::map_space_dimensions(const Partial_Function& pfunc) {
     Sequence_iterator s_begin = x.sequence.begin();
     for (Sequence_iterator si = s_begin,
 	   s_end = x.sequence.end(); si != s_end; ++si)
-      si->element().map_space_dimensions(pfunc);
-    x.space_dim = s_begin->element().space_dimension();
+      si->pointset().map_space_dimensions(pfunc);
+    x.space_dim = s_begin->pointset().space_dimension();
     x.reduced = false;
   }
   assert(x.OK());
@@ -332,7 +332,7 @@ Pointset_Powerset<PSET>::expand_space_dimension(Variable var,
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().expand_space_dimension(var, m);
+    si->pointset().expand_space_dimension(var, m);
   x.space_dim += m;
   assert(x.OK());
 }
@@ -346,7 +346,7 @@ Pointset_Powerset<PSET>::fold_space_dimensions(const Variables_Set& vars,
   if (num_folded > 0) {
     for (Sequence_iterator si = x.sequence.begin(),
            s_end = x.sequence.end(); si != s_end; ++si)
-      si->element().fold_space_dimensions(vars, dest);
+      si->pointset().fold_space_dimensions(vars, dest);
   }
   x.space_dim -= num_folded;
   assert(x.OK());
@@ -361,7 +361,7 @@ Pointset_Powerset<PSET>::affine_image(Variable var,
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    si->element().affine_image(var, expr, denominator);
+    si->pointset().affine_image(var, expr, denominator);
     // Note that the underlying domain can apply conservative approximation:
     // that is why it would not be correct to make the loss of reduction
     // conditional on `var' and `expr'.
@@ -379,7 +379,7 @@ Pointset_Powerset<PSET>::affine_preimage(Variable var,
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    si->element().affine_preimage(var, expr, denominator);
+    si->pointset().affine_preimage(var, expr, denominator);
     // Note that the underlying domain can apply conservative approximation:
     // that is why it would not be correct to make the loss of reduction
     // conditional on `var' and `expr'.
@@ -398,7 +398,7 @@ Pointset_Powerset<PSET>
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    si->element().generalized_affine_image(lhs, relsym, rhs);
+    si->pointset().generalized_affine_image(lhs, relsym, rhs);
     x.reduced = false;
   }
   assert(x.OK());
@@ -413,7 +413,7 @@ Pointset_Powerset<PSET>
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    si->element().generalized_affine_preimage(lhs, relsym, rhs);
+    si->pointset().generalized_affine_preimage(lhs, relsym, rhs);
     x.reduced = false;
   }
   assert(x.OK());
@@ -429,7 +429,7 @@ Pointset_Powerset<PSET>
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    si->element().generalized_affine_image(var, relsym, expr, denominator);
+    si->pointset().generalized_affine_image(var, relsym, expr, denominator);
     x.reduced = false;
   }
   assert(x.OK());
@@ -444,7 +444,7 @@ Pointset_Powerset<PSET>
                               Coefficient_traits::const_reference denominator) {  Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    si->element().generalized_affine_preimage(var, relsym, expr, denominator);
+    si->pointset().generalized_affine_preimage(var, relsym, expr, denominator);
     x.reduced = false;
   }
   assert(x.OK());
@@ -461,7 +461,7 @@ Pointset_Powerset<PSET>
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    si->element().bounded_affine_image(var, lb_expr, ub_expr, denominator);
+    si->pointset().bounded_affine_image(var, lb_expr, ub_expr, denominator);
     x.reduced = false;
   }
   assert(x.OK());
@@ -477,7 +477,7 @@ Pointset_Powerset<PSET>
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    si->element().bounded_affine_preimage(var, lb_expr, ub_expr,
+    si->pointset().bounded_affine_preimage(var, lb_expr, ub_expr,
                                           denominator);
     x.reduced = false;
   }
@@ -494,7 +494,7 @@ Pointset_Powerset<PSET>::affine_dimension() const {
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    PSET pi(si->element());
+    PSET pi(si->pointset());
     if (!pi.is_empty()) {
       C_Polyhedron phi(space_dim);
       const Constraint_System& cs = pi.minimized_constraints();
@@ -517,11 +517,11 @@ Pointset_Powerset<PSET>::is_universe() const {
   const Pointset_Powerset& x = *this;
   // Exploit omega-reduction, if already computed.
   if (x.is_omega_reduced())
-    return x.size() == 1 && x.begin()->element().is_universe();
+    return x.size() == 1 && x.begin()->pointset().is_universe();
 
   // A powerset is universe iff one of its disjuncts is.
   for (const_iterator x_i = x.begin(), x_end = x.end(); x_i != x_end; ++x_i)
-    if (x_i->element().is_universe()) {
+    if (x_i->pointset().is_universe()) {
       // Speculative omega-reduction, if it is worth.
       if (x.size() > 1) {
         Pointset_Powerset<PSET> universe(x.space_dimension(), UNIVERSE);
@@ -539,7 +539,7 @@ Pointset_Powerset<PSET>::is_empty() const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si)
-    if (!si->element().is_empty())
+    if (!si->pointset().is_empty())
       return false;
   return true;
 }
@@ -550,7 +550,7 @@ Pointset_Powerset<PSET>::is_discrete() const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si)
-    if (!si->element().is_discrete())
+    if (!si->pointset().is_discrete())
       return false;
   return true;
 }
@@ -564,7 +564,7 @@ Pointset_Powerset<PSET>::is_topologically_closed() const {
   x.omega_reduce();
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si)
-    if (!si->element().is_topologically_closed())
+    if (!si->pointset().is_topologically_closed())
       return false;
   return true;
 }
@@ -575,7 +575,7 @@ Pointset_Powerset<PSET>::is_bounded() const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si)
-    if (!si->element().is_bounded())
+    if (!si->pointset().is_bounded())
       return false;
   return true;
 }
@@ -599,7 +599,7 @@ Pointset_Powerset<PSET>::constrains(Variable var) const {
   if (x.is_empty())
     return true;
   for (const_iterator x_i = x.begin(), x_end = x.end(); x_i != x_end; ++x_i)
-    if (x_i->element().constrains(var))
+    if (x_i->pointset().constrains(var))
       return true;
   return false;
 }
@@ -610,10 +610,10 @@ Pointset_Powerset<PSET>::is_disjoint_from(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
          xs_end = x.sequence.end(); si != xs_end; ++si) {
-    const PSET& pi = si->element();
+    const PSET& pi = si->pointset();
     for (Sequence_const_iterator sj = y.sequence.begin(),
            ys_end = y.sequence.end(); sj != ys_end; ++sj) {
-      const PSET& pj = sj->element();
+      const PSET& pj = sj->pointset();
       if (!pi.is_disjoint_from(pj))
         return false;
     }
@@ -627,7 +627,7 @@ Pointset_Powerset<PSET>::topological_closure_assign() {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().topological_closure_assign();
+    si->pointset().topological_closure_assign();
   assert(x.OK());
 }
 
@@ -643,7 +643,7 @@ Pointset_Powerset<PSET>
   PSET enlarged(context.space_dimension(), UNIVERSE);
   for (Sequence_const_iterator si = context.sequence.begin(),
          s_end = context.sequence.end(); si != s_end; ++si) {
-    PSET context_i(si->element());
+    PSET context_i(si->pointset());
     context_i.intersection_assign(enlarged);
     PSET enlarged_i(dest);
     nonempty_intersection
@@ -677,10 +677,10 @@ Pointset_Powerset<PSET>
 
   if (y.size() == 1) {
     // More efficient, special handling of the singleton context case.
-    const PSET& y_i = y.sequence.begin()->element();
+    const PSET& y_i = y.sequence.begin()->pointset();
     for (Sequence_iterator si = x.sequence.begin(),
            s_end = x.sequence.end(); si != s_end; ) {
-      PSET& x_i = si->element();
+      PSET& x_i = si->pointset();
       if (x_i.simplify_using_context_assign(y_i))
         ++si;
       else
@@ -692,7 +692,7 @@ Pointset_Powerset<PSET>
     // The context is not a singleton.
     for (Sequence_iterator si = x.sequence.begin(),
            s_end = x.sequence.end(); si != s_end; ) {
-      if (y.intersection_preserving_enlarge_element(si->element()))
+      if (y.intersection_preserving_enlarge_element(si->pointset()))
         ++si;
       else
         // Intersection with `*si' is empty: drop the disjunct.
@@ -710,12 +710,12 @@ Pointset_Powerset<PSET>::contains(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = y.sequence.begin(),
          ys_end = y.sequence.end(); si != ys_end; ++si) {
-    const PSET& pi = si->element();
+    const PSET& pi = si->pointset();
     bool pi_is_contained = false;
     for (Sequence_const_iterator sj = x.sequence.begin(),
            xs_end = x.sequence.end();
          (sj != xs_end && !pi_is_contained); ++sj) {
-      const PSET& pj = sj->element();
+      const PSET& pj = sj->pointset();
       if (pj.contains(pi))
         pi_is_contained = true;
     }
@@ -735,12 +735,12 @@ Pointset_Powerset<PSET>::strictly_contains(const Pointset_Powerset& y) const {
   x.omega_reduce();
   for (Sequence_const_iterator si = y.sequence.begin(),
          ys_end = y.sequence.end(); si != ys_end; ++si) {
-    const PSET& pi = si->element();
+    const PSET& pi = si->pointset();
     bool pi_is_strictly_contained = false;
     for (Sequence_const_iterator sj = x.sequence.begin(),
            xs_end = x.sequence.end();
          (sj != xs_end && !pi_is_strictly_contained); ++sj) {
-      const PSET& pj = sj->element();
+      const PSET& pj = sj->pointset();
       if (pj.strictly_contains(pi))
         pi_is_strictly_contained = true;
     }
@@ -768,7 +768,7 @@ Pointset_Powerset<PSET>::relation_with(const Congruence& cg) const {
   bool may_saturate = true;
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    Poly_Con_Relation relation_i = si->element().relation_with(cg);
+    Poly_Con_Relation relation_i = si->pointset().relation_with(cg);
     if (!relation_i.implies(Poly_Con_Relation::is_included()))
       is_included = false;
     if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
@@ -812,7 +812,7 @@ Pointset_Powerset<PSET>::relation_with(const Constraint& c) const {
   bool may_saturate = true;
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    Poly_Con_Relation relation_i = si->element().relation_with(c);
+    Poly_Con_Relation relation_i = si->pointset().relation_with(c);
     if (!relation_i.implies(Poly_Con_Relation::is_included()))
       is_included = false;
     if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
@@ -845,7 +845,7 @@ Pointset_Powerset<PSET>::relation_with(const Generator& g) const {
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    Poly_Gen_Relation relation_i = si->element().relation_with(g);
+    Poly_Gen_Relation relation_i = si->pointset().relation_with(g);
     if (relation_i.implies(Poly_Gen_Relation::subsumes()))
       return Poly_Gen_Relation::subsumes();
   }
@@ -861,7 +861,7 @@ Pointset_Powerset<PSET>
   x.omega_reduce();
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si)
-    if (!si->element().bounds_from_above(expr))
+    if (!si->pointset().bounds_from_above(expr))
       return false;
   return true;
 }
@@ -874,7 +874,7 @@ Pointset_Powerset<PSET>
   x.omega_reduce();
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si)
-    if (!si->element().bounds_from_below(expr))
+    if (!si->pointset().bounds_from_below(expr))
       return false;
   return true;
 }
@@ -905,7 +905,7 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->element().maximize(expr, supi_n, supi_d, maxi))
+    if (!si->pointset().maximize(expr, supi_n, supi_d, maxi))
       return false;
     else
       if (first) {
@@ -960,7 +960,7 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->element().maximize(expr, supi_n, supi_d, maxi, gi))
+    if (!si->pointset().maximize(expr, supi_n, supi_d, maxi, gi))
       return false;
     else
       if (first) {
@@ -1017,7 +1017,7 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->element().minimize(expr, infi_n, infi_d, mini))
+    if (!si->pointset().minimize(expr, infi_n, infi_d, mini))
       return false;
     else
       if (first) {
@@ -1072,7 +1072,7 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->element().minimize(expr, infi_n, infi_d, mini, gi))
+    if (!si->pointset().minimize(expr, infi_n, infi_d, mini, gi))
       return false;
     else
       if (first) {
@@ -1109,7 +1109,7 @@ Pointset_Powerset<PSET>::contains_integer_point() const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si)
-    if (si->element().contains_integer_point())
+    if (si->pointset().contains_integer_point())
       return true;
   return false;
 }
@@ -1133,13 +1133,13 @@ Pointset_Powerset<PSET>::pairwise_reduce() {
     for (Sequence_iterator si = s_begin; si != s_end; ++si, ++si_index) {
       if (marked[si_index])
 	continue;
-      PSET& pi = si->element();
+      PSET& pi = si->pointset();
       Sequence_const_iterator sj = si;
       unsigned sj_index = si_index;
       for (++sj, ++sj_index; sj != s_end; ++sj, ++sj_index) {
 	if (marked[sj_index])
 	  continue;
-	const PSET& pj = sj->element();
+	const PSET& pj = sj->pointset();
 	if (pi.upper_bound_assign_if_exact(pj)) {
 	  marked[si_index] = marked[sj_index] = true;
 	  new_x.add_non_bottom_disjunct_preserve_reduction(pi);
@@ -1191,8 +1191,8 @@ BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf) {
   for (const_iterator i = x_begin,
 	 y_begin = y.begin(), y_end = y.end(); i != x_end; ++i, ++i_index)
     for (const_iterator j = y_begin; j != y_end; ++j) {
-      const PSET& pi = i->element();
-      const PSET& pj = j->element();
+      const PSET& pi = i->pointset();
+      const PSET& pj = j->pointset();
       if (pi.contains(pj)) {
 	PSET pi_copy = pi;
 	wf(pi_copy, pj);
@@ -1248,7 +1248,7 @@ collect_certificates(std::map<Cert, size_type,
   assert(x.is_omega_reduced());
   assert(cert_ms.size() == 0);
   for (const_iterator i = x.begin(), end = x.end(); i != end; i++) {
-    Cert ph_cert(i->element());
+    Cert ph_cert(i->pointset());
     ++cert_ms[ph_cert];
   }
 }
@@ -1328,12 +1328,12 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
   // Compute the poly-hull of `x'.
   PSET x_hull(x.space_dim, EMPTY);
   for (const_iterator i = x.begin(), x_end = x.end(); i != x_end; ++i)
-    x_hull.upper_bound_assign(i->element());
+    x_hull.upper_bound_assign(i->pointset());
 
   // Compute the poly-hull of `y'.
   PSET y_hull(y.space_dim, EMPTY);
   for (const_iterator i = y.begin(), y_end = y.end(); i != y_end; ++i)
-    y_hull.upper_bound_assign(i->element());
+    y_hull.upper_bound_assign(i->pointset());
   // Compute the certificate for `y_hull'.
   const Cert y_hull_cert(y_hull);
 
@@ -1368,7 +1368,7 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
   PSET bgp99_heuristics_hull(x.space_dim, EMPTY);
   for (const_iterator i = bgp99_heuristics.begin(),
 	 bh_end = bgp99_heuristics.end(); i != bh_end; ++i)
-    bgp99_heuristics_hull.upper_bound_assign(i->element());
+    bgp99_heuristics_hull.upper_bound_assign(i->pointset());
 
   // Check for stabilization and, if successful,
   // commit to the result of the extrapolation.
@@ -1426,7 +1426,7 @@ Pointset_Powerset<PSET>::ascii_dump(std::ostream& s) const {
     << "\nspace_dim " << x.space_dim
     << "\n";
   for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi)
-    xi->element().ascii_dump(s);
+    xi->pointset().ascii_dump(s);
 }
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(PSET, Pointset_Powerset<PSET>)
@@ -1470,7 +1470,7 @@ bool
 Pointset_Powerset<PSET>::OK() const {
   const Pointset_Powerset& x = *this;
   for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi) {
-    const PSET& pi = xi->element();
+    const PSET& pi = xi->pointset();
     if (pi.space_dimension() != x.space_dim) {
 #ifndef NDEBUG
       std::cerr << "Space dimension mismatch: is " << pi.space_dimension()

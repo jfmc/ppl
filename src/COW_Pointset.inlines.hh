@@ -31,25 +31,25 @@ template <typename PSET>
 inline
 COW_Pointset<PSET>::Rep::Rep(dimension_type num_dimensions,
 			  Degenerate_Element kind)
-  : references(0), ph(num_dimensions, kind) {
+  : references(0), pset(num_dimensions, kind) {
 }
 
 template <typename PSET>
 inline
 COW_Pointset<PSET>::Rep::Rep(const PSET& p)
-  : references(0), ph(p) {
+  : references(0), pset(p) {
 }
 
 template <typename PSET>
 inline
 COW_Pointset<PSET>::Rep::Rep(const Constraint_System& cs)
-  : references(0), ph(cs) {
+  : references(0), pset(cs) {
 }
 
 template <typename PSET>
 inline
 COW_Pointset<PSET>::Rep::Rep(const Congruence_System& cgs)
-  : references(0), ph(cgs) {
+  : references(0), pset(cgs) {
 }
 
 template <typename PSET>
@@ -79,7 +79,7 @@ COW_Pointset<PSET>::Rep::is_shared() const {
 template <typename PSET>
 inline memory_size_type
 COW_Pointset<PSET>::Rep::external_memory_in_bytes() const {
-  return ph.external_memory_in_bytes();
+  return pset.external_memory_in_bytes();
 }
 
 template <typename PSET>
@@ -90,8 +90,8 @@ COW_Pointset<PSET>::Rep::total_memory_in_bytes() const {
 
 template <typename PSET>
 inline
-COW_Pointset<PSET>::COW_Pointset(const PSET& ph)
-  : prep(new Rep(ph)) {
+COW_Pointset<PSET>::COW_Pointset(const PSET& pset)
+  : prep(new Rep(pset)) {
   prep->new_reference();
 }
 
@@ -143,7 +143,7 @@ template <typename PSET>
 inline void
 COW_Pointset<PSET>::mutate() {
   if (prep->is_shared()) {
-    Rep* new_prep = new Rep(prep->ph);
+    Rep* new_prep = new Rep(prep->pset);
     (void) prep->del_reference();
     new_prep->new_reference();
     prep = new_prep;
@@ -152,27 +152,27 @@ COW_Pointset<PSET>::mutate() {
 
 template <typename PSET>
 inline const PSET&
-COW_Pointset<PSET>::element() const {
-  return prep->ph;
+COW_Pointset<PSET>::pointset() const {
+  return prep->pset;
 }
 
 template <typename PSET>
 inline PSET&
-COW_Pointset<PSET>::element() {
+COW_Pointset<PSET>::pointset() {
   mutate();
-  return prep->ph;
+  return prep->pset;
 }
 
 template <typename PSET>
 inline void
 COW_Pointset<PSET>::upper_bound_assign(const COW_Pointset& y) {
-  element().upper_bound_assign(y.element());
+  pointset().upper_bound_assign(y.pointset());
 }
 
 template <typename PSET>
 inline void
 COW_Pointset<PSET>::meet_assign(const COW_Pointset& y) {
-  element().intersection_assign(y.element());
+  pointset().intersection_assign(y.pointset());
 }
 
 template <typename PSET>
@@ -190,37 +190,37 @@ COW_Pointset<PSET>::weakening_assign(const COW_Pointset& y) {
   // FIXME: the following should be turned into a proper
   // implementation.  This can be postponed until the time the
   // ask-and-tell construction is revived.
-  element().difference_assign(y.element());
+  pointset().difference_assign(y.pointset());
 }
 
 template <typename PSET>
 inline void
 COW_Pointset<PSET>::concatenate_assign(const COW_Pointset& y) {
-  element().concatenate_assign(y.element());
+  pointset().concatenate_assign(y.pointset());
 }
 
 template <typename PSET>
 inline bool
 COW_Pointset<PSET>::definitely_entails(const COW_Pointset& y) const {
-  return prep == y.prep || y.prep->ph.contains(prep->ph);
+  return prep == y.prep || y.prep->pset.contains(prep->pset);
 }
 
 template <typename PSET>
 inline bool
 COW_Pointset<PSET>::is_definitely_equivalent_to(const COW_Pointset& y) const {
-  return prep == y.prep || prep->ph == y.prep->ph;
+  return prep == y.prep || prep->pset == y.prep->pset;
 }
 
 template <typename PSET>
 inline bool
 COW_Pointset<PSET>::is_top() const {
-  return prep->ph.is_universe();
+  return prep->pset.is_universe();
 }
 
 template <typename PSET>
 inline bool
 COW_Pointset<PSET>::is_bottom() const {
-  return prep->ph.is_empty();
+  return prep->pset.is_empty();
 }
 
 template <typename PSET>
@@ -238,7 +238,7 @@ COW_Pointset<PSET>::total_memory_in_bytes() const {
 template <typename PSET>
 inline bool
 COW_Pointset<PSET>::OK() const {
-  return prep->ph.OK();
+  return prep->pset.OK();
 }
 
 namespace IO_Operators {
@@ -247,7 +247,7 @@ namespace IO_Operators {
 template <typename PSET>
 inline std::ostream&
 operator<<(std::ostream& s, const COW_Pointset<PSET>& x) {
-  s << x.element();
+  s << x.pointset();
   return s;
 }
 
@@ -257,14 +257,14 @@ operator<<(std::ostream& s, const COW_Pointset<PSET>& x) {
 template <typename PSET>
 inline bool
 operator==(const COW_Pointset<PSET>& x, const COW_Pointset<PSET>& y) {
-  return x.prep == y.prep || x.prep->ph == y.prep->ph;
+  return x.prep == y.prep || x.prep->pset == y.prep->pset;
 }
 
 /*! \relates COW_Pointset */
 template <typename PSET>
 inline bool
 operator!=(const COW_Pointset<PSET>& x, const COW_Pointset<PSET>& y) {
-  return x.prep != y.prep && x.prep->ph != y.prep->ph;
+  return x.prep != y.prep && x.prep->pset != y.prep->pset;
 }
 
 template <typename PSET>
@@ -280,7 +280,7 @@ template <typename Binary_Operator_Assign>
 inline void
 COW_Pointset<PSET>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>::
 operator()(COW_Pointset& x, const COW_Pointset& y) const {
-  op_assign_(x.element(), y.element());
+  op_assign_(x.pointset(), y.pointset());
 }
 
 template <typename PSET>
