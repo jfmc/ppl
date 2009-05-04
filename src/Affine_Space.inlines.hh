@@ -38,13 +38,14 @@ Affine_Space::Affine_Space(dimension_type num_dimensions,
 
 inline
 Affine_Space::Affine_Space(const Generator_System& /*gs*/) {
-  // FIXME: implement by building the grid generators.
+  // FIXME(0.11): implement by building the grid generators.
+  // Throw std::invalid_argument if `gs' contains rays.
   abort();
 }
 
 inline
 Affine_Space::Affine_Space(Generator_System& /*gs*/, Recycle_Input) {
-  // FIXME: implement by building the grid generators.
+  // FIXME(0.11): implement by building the grid generators.
   abort();
 }
 

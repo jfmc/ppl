@@ -60,8 +60,8 @@ namespace IO_Operators {
   \relates Parma_Polyhedra_Library::Affine_Space
   Writes a textual representation of \p a on \p s: <CODE>false</CODE>
   is written if \p a is an empty affine space; <CODE>true</CODE> is written
-  if \p a is a universe affine space; a minimized system of congruences
-  defining \p a is written otherwise, all congruences in one row
+  if \p a is a universe affine space; a minimized system of equalitiy
+  constraints defining \p a is written otherwise, all equalities in one row
   separated by ", "s.
 */
 std::ostream&
@@ -94,23 +94,20 @@ bool operator!=(const Affine_Space& x, const Affine_Space& y);
 
 //! An affine space.
 /*! \ingroup PPL_CXX_interface
-  An object of the class Affine_Space represents a rational affine space.
+  An object of the class Affine_Space represents an affine space
+  in the vector space \f$\Rset^n\f$.
 
-  The domain of affine spaces <EM>optimally supports</EM>:
-    - all (proper and non-proper) congruences;
-    - tautological and inconsistent constraints;
-    - linear equality constraints (i.e., non-proper congruences).
-
+  The domain of affine spaces linear equality constraints.
   Depending on the method, using a constraint that is not optimally
   supported by the domain will either raise an exception or
   result in a (possibly non-optimal) upward approximation.
 
   The domain of affine spaces support a concept of double description similar
   to the one developed for polyhedra: hence, an affine space can be specified
-  as either a finite system of congruences or a finite system of
-  generators (see Section \ref sect_rational_affine spaces) and it is always
-  possible to obtain either representation.
-  That is, if we know the system of congruences, we can obtain
+  as either a finite system of equalities or a finite system of
+  generators  (see Section \ref representation)
+  and it is always possible to obtain either representation.
+  That is, if we know the system of equalities, we can obtain
   from this a system of generators that define the same affine space
   and vice versa.
   These systems can contain redundant members, or they can be in the
@@ -124,7 +121,7 @@ bool operator!=(const Affine_Space& x, const Affine_Space& y);
   - most operations working on an affine space and another object (another
     affine space, a congruence, a generator, a set of variables, etc.) will
     throw an exception if the affine space and the object are not
-    dimension-compatible (see Section \ref Affine_Space_Space_Dimensions);
+    dimension-compatible (see Section \ref representation);
   - the only ways in which the space dimension of an affine space can be
     changed are with <EM>explicit</EM> calls to operators provided for
     that purpose, and with standard copy, assignment and swap
@@ -141,6 +138,8 @@ bool operator!=(const Affine_Space& x, const Affine_Space& y);
   Variable x(0);
   Variable y(1);
   \endcode
+
+  FIXME(0.11): revise the contents below this point of this comment block.
 
   \par Example 1
   The following code builds an affine space corresponding to the even integer
@@ -370,15 +369,15 @@ public:
 
   /*! \brief
     Returns true indicating that this domain has methods that
-    can recycle congruences
+    can recycle constraints.
   */
-  static bool can_recycle_congruence_systems();
+  static bool can_recycle_constraint_systems();
 
   /*! \brief
     Returns true indicating that this domain has methods that
-    can recycle constraints
+    can recycle congruences
   */
-  static bool can_recycle_constraint_systems();
+  static bool can_recycle_congruence_systems();
 
   //! Builds an affine space having the specified properties.
   /*!
@@ -440,7 +439,8 @@ public:
     The system of generators defining the affine space.
 
     \exception std::invalid_argument
-    Thrown if the system of generators is not empty but has no points.
+    Thrown if the system of generators contains rays or is not empty but
+    has no points.
 
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
@@ -461,7 +461,8 @@ public:
     from the other constructors.
 
     \exception std::invalid_argument
-    Thrown if the system of generators is not empty but has no points.
+    Thrown if the system of generators contains rays or is not empty but
+    has no points.
 
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
@@ -471,7 +472,8 @@ public:
   //! Builds an affine space out of a box.
   /*!
     The affine space inherits the space dimension of the box.
-    The built affine space is the most precise affine space that includes the box.
+    The built affine space is the most precise affine space that
+    includes the box.
 
     \param box
     The box representing the affine space to be built.
@@ -491,7 +493,8 @@ public:
   //! Builds an affine space out of a bounded-difference shape.
   /*!
     The affine space inherits the space dimension of the BDS.
-    The built affine space is the most precise affine space that includes the BDS.
+    The built affine space is the most precise affine space that
+    includes the BDS.
 
     \param bd
     The BDS representing the affine space to be built.
@@ -511,7 +514,8 @@ public:
   //! Builds an affine space out of an octagonal shape.
   /*!
     The affine space inherits the space dimension of the octagonal shape.
-    The built affine space is the most precise affine space that includes the octagonal shape.
+    The built affine space is the most precise affine space that
+    includes the octagonal shape.
 
     \param os
     The octagonal shape representing the affine space to be built.
@@ -534,7 +538,7 @@ public:
     If \p complexity is \p ANY_COMPLEXITY, then the affine space built is the
     smallest one containing \p ph.
 
-    The affine space inherits the space dimension of polyhedron.
+    The affine space inherits the space dimension of \p ph.
 
     \param ph
     The polyhedron.
@@ -587,18 +591,21 @@ public:
   */
   Constraint_System minimized_constraints() const;
 
-  //! Returns the system of congruences.
+  //! Returns the system of equality congruences satisfied by \p *this.
   const Congruence_System& congruences() const;
 
-  //! Returns the system of congruences in minimal form.
+  /*! \brief
+    Returns the system of equality congruences satisfied by \p *this,
+    with no redundant congruences and having the same affine dimension
+    as \p *this.
+  */
   const Congruence_System& minimized_congruences() const;
 
-  //! Returns the system of generators.
-  const Generator_System& generators() const;
+  //! Returns a system of generators defining \p *this.
+  Generator_System generators() const;
 
-  //! Returns the minimized system of generators.
-  const Generator_System&
-  minimized_generators() const;
+  //! Returns a minimized system of generators defining \p *this.
+  Generator_System minimized_generators() const;
 
   //! Returns the relations holding between \p *this and \p cg.
   /*
@@ -647,8 +654,8 @@ public:
 
   //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
   /*!
-    An affine space is discrete if it can be defined by a generator system which
-    contains only points and parameters.  This includes the empty affine space
+    An affine space is discrete if it can be defined by a generator system
+    that contains at most one point.  This includes the empty affine space
     and any affine space in dimension zero.
   */
   bool is_discrete() const;
@@ -688,6 +695,8 @@ public:
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
   bool bounds_from_below(const Linear_Expression& expr) const;
+
+  // FIXME(0.11): revise all the comment blocks below this one.
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -1157,10 +1166,10 @@ public:
 		    = Coefficient_one());
 
   /*! \brief
-    Assigns to \p *this the \ref Affine_Space_Affine_Transformation
-    "affine preimage" of
-    \p *this under the function mapping variable \p var to the affine
-    expression specified by \p expr and \p denominator.
+    Assigns to \p *this the
+    \ref Single_Update_Affine_Functions "affine preimage"
+    of \p *this under the function mapping variable \p var to the
+    affine expression specified by \p expr and \p denominator.
 
     \param var
     The variable to which the affine expression is substituted;
@@ -1175,45 +1184,6 @@ public:
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
     dimension-incompatible or if \p var is not a space dimension of \p *this.
-
-    \if Include_Implementation_Details
-
-    When considering congruences of an affine space, the affine transformation
-    \f[
-      \frac{\sum_{i=0}^{n-1} a_i x_i + b}{denominator},
-    \f]
-    is assigned to \p var where \p expr is
-    \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
-    (\f$b\f$ is the inhomogeneous term).
-
-    If generators are up-to-date, then the specialized function
-    affine_image() is used (for the system of generators)
-    and inverse transformation to reach the same result.
-    To obtain the inverse transformation, we use the following observation.
-
-    Observation:
-    -# The affine transformation is invertible if the coefficient
-       of \p var in this transformation (i.e. \f$a_\mathrm{var}\f$)
-       is different from zero.
-    -# If the transformation is invertible, then we can write
-       \f[
-  	 \mathrm{denominator} * {x'}_\mathrm{var}
-	   = \sum_{i = 0}^{n - 1} a_i x_i + b
-           = a_\mathrm{var} x_\mathrm{var}
-               + \sum_{i \neq \mathrm{var}} a_i x_i + b,
-       \f],
-       the inverse transformation is
-       \f[
-	 a_\mathrm{var} x_\mathrm{var}
-           = \mathrm{denominator} * {x'}_\mathrm{var}
-               - \sum_{i \neq j} a_i x_i - b.
-       \f].
-
-    Then, if the transformation is invertible, all the entities that
-    were up-to-date remain up-to-date. Otherwise only congruences remain
-    up-to-date.
-
-    \endif
   */
   void affine_preimage(Variable var,
 		       const Linear_Expression& expr,
@@ -1239,11 +1209,6 @@ public:
     \param denominator
     The denominator of the right hand side affine expression.
     Optional argument with an automatic value of one;
-
-    \param modulus
-    The modulus of the congruence lhs %= rhs.  A modulus of zero
-    indicates lhs == rhs.  Optional argument with an automatic value
-    of zero.
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
@@ -1277,11 +1242,6 @@ public:
     The denominator of the right hand side affine expression.
     Optional argument with an automatic value of one;
 
-    \param modulus
-    The modulus of the congruence lhs %= rhs.  A modulus of zero
-    indicates lhs == rhs.  Optional argument with an automatic value
-    of zero.
-
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
     dimension-incompatible or if \p var is not a space dimension of \p
@@ -1309,11 +1269,6 @@ public:
     \param rhs
     The right hand side affine expression.
 
-    \param modulus
-    The modulus of the congruence lhs %= rhs.  A modulus of zero
-    indicates lhs == rhs.  Optional argument with an automatic value
-    of zero.
-
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with \p lhs or \p
     rhs.
@@ -1337,11 +1292,6 @@ public:
 
     \param rhs
     The right hand side affine expression;
-
-    \param modulus
-    The modulus of the congruence lhs %= rhs.  A modulus of zero
-    indicates lhs == rhs.  Optional argument with an automatic value
-    of zero.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with \p lhs or \p
@@ -1417,8 +1367,8 @@ public:
 			       = Coefficient_one());
 
   /*! \brief
-    Assigns to \p *this the result of computing the \ref Affine_Space_Time_Elapse
-    "time-elapse" between \p *this and \p y.
+    Assigns to \p *this the result of computing the
+    \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -1429,20 +1379,13 @@ public:
   void topological_closure_assign();
 
   /*! \brief
-    Assigns to \p *this the result of computing the \ref Affine_Space_Widening
-    "Affine_Space widening" between \p *this and \p y.
-
-    This widening uses either the congruence or generator systems
-    depending on which of the systems describing x and y
-    are up to date and minimized.
+    Does nothing, as the domain of affine spaces has finite height.
 
     \param y
     An affine space that <EM>must</EM> be contained in \p *this;
 
     \param tp
-    An optional pointer to an unsigned variable storing the number of
-    available tokens (to be used when applying the
-    \ref Affine_Space_Widening_with_Tokens "widening with tokens" delay technique).
+    An optional pointer, which is ignored.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -1450,20 +1393,16 @@ public:
   void widening_assign(const Affine_Space& y, unsigned* tp = NULL);
 
   /*! \brief
-    Improves the result of the \ref Affine_Space_Widening "Affine_Space widening"
-    computation by also enforcing those congruences in \p cgs that are
-    satisfied by all the points of \p *this.
+    Does nothing, as the domain of affine spaces has finite height.
 
     \param y
     An affine space that <EM>must</EM> be contained in \p *this;
 
     \param cs
-    The system of constraints used to improve the widened affine space;
+    A system of constraints, which is ignored.
 
     \param tp
-    An optional pointer to an unsigned variable storing the number of
-    available tokens (to be used when applying the
-    \ref Affine_Space_Widening_with_Tokens "widening with tokens" delay technique).
+    An optional pointer, which is ignored.
 
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are dimension-incompatible.
@@ -1532,8 +1471,8 @@ public:
   void add_space_dimensions_and_project(dimension_type m);
 
   /*! \brief
-    Assigns to \p *this the \ref Affine_Space_Concatenate "concatenation" of
-    \p *this and \p y, taken in this order.
+    Assigns to \p *this the \ref Concatenating_Polyhedra "concatenation"
+    of \p *this and \p y, taken in this order.
 
     \exception std::length_error
     Thrown if the concatenation would cause the vector space
@@ -1565,7 +1504,7 @@ public:
 
   /*! \brief
     Remaps the dimensions of the vector space according to
-    a \ref Affine_Space_Map_Space_Dimensions "partial function".
+    a \ref Mapping_the_Dimensions_of_the_Vector_Space "partial function".
 
     If \p pfunc maps only some of the dimensions of \p *this then the
     rest will be projected away.
@@ -1608,7 +1547,8 @@ public:
 
     The result is undefined if \p pfunc does not encode a partial
     function with the properties described in the
-    \ref Affine_Space_Map_Space_Dimensions "specification of the mapping operator".
+    \ref Mapping_the_Dimensions_of_the_Vector_Space
+    "specification of the mapping operator".
   */
   template <typename Partial_Function>
   void map_space_dimensions(const Partial_Function& pfunc);
@@ -1632,7 +1572,7 @@ public:
     If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
     and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
     then the \f$k\f$-th space dimension is
-    \ref Affine_Space_Expand_Space_Dimension "expanded" to \p m new space dimensions
+    \ref expand_space_dimension "expanded" to \p m new space dimensions
     \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
   */
   void expand_space_dimension(Variable var, dimension_type m);
@@ -1706,6 +1646,65 @@ public:
 private:
   //! The rational grid implementing \p *this.
   Grid gr;
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \name Exception Throwers
+  //@{
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+protected:
+#if 0
+  void throw_runtime_error(const char* method) const;
+  void throw_invalid_argument(const char* method, const char* reason) const;
+#endif
+  void throw_dimension_incompatible(const char* method,
+				    const char* other_name,
+				    dimension_type other_dim) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* as_name,
+				    const Affine_Space& as) const;
+#if 0
+  void throw_dimension_incompatible(const char* method,
+				    const char* e_name,
+				    const Linear_Expression& e) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* cg_name,
+				    const Congruence& cg) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* c_name,
+				    const Constraint& c) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* g_name,
+				    const Generator& g) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* cgs_name,
+				    const Congruence_System& cgs) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* cs_name,
+				    const Constraint_System& cs) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* var_name,
+				    Variable var) const;
+  void throw_dimension_incompatible(const char* method,
+				    dimension_type required_space_dim) const;
+#endif
+
+  // Note: it has to be a static method, because it can be called inside
+  // constructors (before actually constructing the grid object).
+  static void throw_space_dimension_overflow(const char* method,
+					     const char* reason);
+
+  void throw_invalid_constraint(const char* method,
+                                const char* c_name) const;
+  void throw_invalid_constraints(const char* method,
+                                 const char* cs_name) const;
+  void throw_invalid_generator(const char* method,
+			       const char* g_name) const;
+  void throw_invalid_generators(const char* method,
+				const char* gs_name) const;
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //@} // Exception Throwers
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+
 };
 
 
