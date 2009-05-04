@@ -232,7 +232,7 @@ bool test02() {
   const memory_size_type ph_total_size = ph.total_memory_in_bytes();
   const memory_size_type ph_external_size = ph.external_memory_in_bytes();
 
-  Determinate<C_Polyhedron> dph(ph);
+  COW_Pointset<C_Polyhedron> dph(ph);
 
   const memory_size_type dph_total_size = dph.total_memory_in_bytes();
   const memory_size_type dph_external_size = dph.external_memory_in_bytes();

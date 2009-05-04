@@ -9,14 +9,14 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_Determinate_types_hh
-#define PPL_Determinate_types_hh 1
+#ifndef PPL_COW_Pointset_types_hh
+#define PPL_COW_Pointset_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
 template <typename PSET>
-class Determinate;
+class COW_Pointset;
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Determinate_types_hh)
+#endif // !defined(PPL_COW_Pointset_types_hh)

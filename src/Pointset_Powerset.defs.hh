@@ -36,7 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid.defs.hh"
 #include "Partially_Reduced_Product.defs.hh"
 #include "Variables_Set.types.hh"
-#include "Determinate.defs.hh"
+#include "COW_Pointset.defs.hh"
 #include "Powerset.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
@@ -60,12 +60,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 template <typename PSET>
 class Parma_Polyhedra_Library::Pointset_Powerset
   : public Parma_Polyhedra_Library::Powerset
-<Parma_Polyhedra_Library::Determinate<PSET> > {
+<Parma_Polyhedra_Library::COW_Pointset<PSET> > {
 public:
   typedef PSET element_type;
 
 private:
-  typedef Determinate<PSET> COW_PSET;
+  typedef COW_Pointset<PSET> COW_PSET;
   typedef Powerset<COW_PSET> Base;
 
 public:

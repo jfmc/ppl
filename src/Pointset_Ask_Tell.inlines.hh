@@ -54,8 +54,8 @@ Pointset_Ask_Tell<PSET>::Pointset_Ask_Tell(dimension_type num_dimensions,
 					 Degenerate_Element kind)
   : Base(), space_dim(num_dimensions) {
   if (kind == EMPTY)
-    pair_insert(Determinate<PSET>(PSET(num_dimensions, UNIVERSE)),
-		Determinate<PSET>(PSET(num_dimensions, EMPTY)));
+    pair_insert(COW_Pointset<PSET>(PSET(num_dimensions, UNIVERSE)),
+		COW_Pointset<PSET>(PSET(num_dimensions, EMPTY)));
   assert(OK());
 }
 
@@ -74,14 +74,14 @@ Pointset_Ask_Tell<PSET>::Pointset_Ask_Tell(const PSET& ph)
 template <typename PSET>
 inline
 Pointset_Ask_Tell<PSET>::Pointset_Ask_Tell(const Constraint_System& cs)
-  : Base(Determinate<PSET>(cs)), space_dim(cs.space_dimension()) {
+  : Base(COW_Pointset<PSET>(cs)), space_dim(cs.space_dimension()) {
   assert(OK());
 }
 
 template <typename PSET>
 inline
 Pointset_Ask_Tell<PSET>::Pointset_Ask_Tell(const Congruence_System& cgs)
-  : Base(Determinate<PSET>(cgs)), space_dim(cgs.space_dimension()) {
+  : Base(COW_Pointset<PSET>(cgs)), space_dim(cgs.space_dimension()) {
   assert(OK());
 }
 

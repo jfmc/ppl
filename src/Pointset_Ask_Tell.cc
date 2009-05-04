@@ -33,8 +33,8 @@ PPL::Pointset_Ask_Tell<PPL::NNC_Polyhedron>
   Pointset_Ask_Tell& x = *this;
   for (Pointset_Ask_Tell<C_Polyhedron>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i) {
-    Determinate<NNC_Polyhedron> nnc_ask(NNC_Polyhedron(i->ask().element()));
-    Determinate<NNC_Polyhedron> nnc_tell(NNC_Polyhedron(i->tell().element()));
+    COW_Pointset<NNC_Polyhedron> nnc_ask(NNC_Polyhedron(i->ask().element()));
+    COW_Pointset<NNC_Polyhedron> nnc_tell(NNC_Polyhedron(i->tell().element()));
     x.sequence.push_back(Pair(nnc_ask, nnc_tell));
   }
   x.normalized = y.normalized;
@@ -49,8 +49,8 @@ PPL::Pointset_Ask_Tell<PPL::C_Polyhedron>
   Pointset_Ask_Tell& x = *this;
   for (Pointset_Ask_Tell<NNC_Polyhedron>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i) {
-    Determinate<C_Polyhedron> c_ask(C_Polyhedron(i->ask().element()));
-    Determinate<C_Polyhedron> c_tell(C_Polyhedron(i->tell().element()));
+    COW_Pointset<C_Polyhedron> c_ask(C_Polyhedron(i->ask().element()));
+    COW_Pointset<C_Polyhedron> c_tell(C_Polyhedron(i->tell().element()));
     x.sequence.push_back(Pair(c_ask, c_tell));
   }
 

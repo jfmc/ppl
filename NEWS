@@ -24,6 +24,8 @@ o  The Java interface has to be explicitly initialized before use by
    of Java classes and field/method IDs, thereby reducing the overhead
    of native method callbacks.
 
+o  The `Determinate' class has been renamed `COW_Pointset'.
+
 
 Deprecated and removed methods
 ------------------------------

@@ -311,9 +311,9 @@ Octagonal_Shape.defs.hh \
 Og_Status.inlines.hh \
 Octagonal_Shape.inlines.hh \
 Octagonal_Shape.templates.hh \
-Determinate.types.hh \
-Determinate.defs.hh \
-Determinate.inlines.hh \
+COW_Pointset.types.hh \
+COW_Pointset.defs.hh \
+COW_Pointset.inlines.hh \
 Powerset.types.hh \
 Powerset.defs.hh \
 Powerset.inlines.hh \

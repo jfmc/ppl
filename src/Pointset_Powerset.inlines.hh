@@ -55,7 +55,7 @@ Pointset_Powerset<PSET>::Pointset_Powerset(dimension_type num_dimensions,
   : Base(), space_dim(num_dimensions) {
   Pointset_Powerset& x = *this;
   if (kind == UNIVERSE)
-    x.sequence.push_back(Determinate<PSET>(PSET(num_dimensions, kind)));
+    x.sequence.push_back(COW_Pointset<PSET>(PSET(num_dimensions, kind)));
   assert(x.OK());
 }
 
@@ -78,7 +78,7 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const C_Polyhedron& ph,
   }
   else
     x.reduced = false;
-  x.sequence.push_back(Determinate<PSET>(PSET(ph, complexity)));
+  x.sequence.push_back(COW_Pointset<PSET>(PSET(ph, complexity)));
   x.reduced = false;
   assert(OK());
 }
@@ -95,7 +95,7 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const NNC_Polyhedron& ph,
   }
   else
     x.reduced = false;
-  x.sequence.push_back(Determinate<PSET>(PSET(ph, complexity)));
+  x.sequence.push_back(COW_Pointset<PSET>(PSET(ph, complexity)));
   assert(OK());
 }
 
@@ -106,7 +106,7 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const Grid& gr,
   : Base(), space_dim(gr.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!gr.is_empty()) {
-    x.sequence.push_back(Determinate<PSET>(PSET(gr)));
+    x.sequence.push_back(COW_Pointset<PSET>(PSET(gr)));
   }
   assert(OK());
 }
@@ -125,7 +125,7 @@ Pointset_Powerset<PSET>
   }
   else
     x.reduced = false;
-  x.sequence.push_back(Determinate<PSET>(PSET(prp, complexity)));
+  x.sequence.push_back(COW_Pointset<PSET>(PSET(prp, complexity)));
   x.reduced = false;
   assert(OK());
 }
@@ -137,7 +137,7 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const Box<Interval>& box,
   : Base(), space_dim(box.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!box.is_empty())
-    x.sequence.push_back(Determinate<PSET>(PSET(box)));
+    x.sequence.push_back(COW_Pointset<PSET>(PSET(box)));
   assert(OK());
 }
 
@@ -148,7 +148,7 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const Octagonal_Shape<T>& os,
   : Base(), space_dim(os.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!os.is_empty())
-    x.sequence.push_back(Determinate<PSET>(PSET(os)));
+    x.sequence.push_back(COW_Pointset<PSET>(PSET(os)));
   assert(OK());
 }
 
@@ -159,21 +159,21 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const BD_Shape<T>& bds,
   : Base(), space_dim(bds.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!bds.is_empty())
-    x.sequence.push_back(Determinate<PSET>(PSET(bds)));
+    x.sequence.push_back(COW_Pointset<PSET>(PSET(bds)));
   assert(OK());
 }
 
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(const Constraint_System& cs)
-  : Base(Determinate<PSET>(cs)), space_dim(cs.space_dimension()) {
+  : Base(COW_Pointset<PSET>(cs)), space_dim(cs.space_dimension()) {
   assert(OK());
 }
 
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(const Congruence_System& cgs)
-  : Base(Determinate<PSET>(cgs)), space_dim(cgs.space_dimension()) {
+  : Base(COW_Pointset<PSET>(cgs)), space_dim(cgs.space_dimension()) {
   assert(OK());
 }
 

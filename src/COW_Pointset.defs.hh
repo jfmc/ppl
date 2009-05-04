@@ -1,4 +1,4 @@
-/* Determinate class declaration.
+/* COW_Pointset class declaration.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,10 +20,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Determinate_defs_hh
-#define PPL_Determinate_defs_hh
+#ifndef PPL_COW_Pointset_defs_hh
+#define PPL_COW_Pointset_defs_hh
 
-#include "Determinate.types.hh"
+#include "COW_Pointset.types.hh"
 #include "Constraint_System.types.hh"
 #include "Congruence_System.types.hh"
 #include "Variable.defs.hh"
@@ -37,27 +37,27 @@ namespace Parma_Polyhedra_Library {
   Returns <CODE>true</CODE> if and only if
   \p x and \p y are the same domain element.
 
-  \relates Determinate
+  \relates COW_Pointset
 */
 template <typename PSET>
-bool operator==(const Determinate<PSET>& x, const Determinate<PSET>& y);
+bool operator==(const COW_Pointset<PSET>& x, const COW_Pointset<PSET>& y);
 
 /*! \brief
   Returns <CODE>true</CODE> if and only if
   \p x and \p y are different domain elements.
 
-  \relates Determinate
+  \relates COW_Pointset
 */
 template <typename PSET>
-bool operator!=(const Determinate<PSET>& x, const Determinate<PSET>& y);
+bool operator!=(const COW_Pointset<PSET>& x, const COW_Pointset<PSET>& y);
 
 namespace IO_Operators {
 
 //! Output operator.
-/*! \relates Parma_Polyhedra_Library::Determinate */
+/*! \relates Parma_Polyhedra_Library::COW_Pointset */
 template <typename PSET>
 std::ostream&
-operator<<(std::ostream&, const Determinate<PSET>&);
+operator<<(std::ostream&, const COW_Pointset<PSET>&);
 
 } // namespace IO_Operators
 
@@ -66,7 +66,7 @@ operator<<(std::ostream&, const Determinate<PSET>&);
 //! Wraps a PPL class into a determinate constraint system interface.
 /*! \ingroup PPL_CXX_interface */
 template <typename PSET>
-class Parma_Polyhedra_Library::Determinate {
+class Parma_Polyhedra_Library::COW_Pointset {
 public:
   //! \name Constructors and Destructor
   //@{
@@ -75,24 +75,24 @@ public:
     Injection operator: builds the determinate constraint system element
     corresponding to the base-level element \p p.
   */
-  Determinate(const PSET& p);
+  COW_Pointset(const PSET& p);
 
   /*! \brief
     Injection operator: builds the determinate constraint system element
     corresponding to the base-level element represented by \p cs.
   */
-  Determinate(const Constraint_System& cs);
+  COW_Pointset(const Constraint_System& cs);
 
   //! \brief
   //! Injection operator: builds the determinate constraint system element
   //! corresponding to the base-level element represented by \p cgs.
-  Determinate(const Congruence_System& cgs);
+  COW_Pointset(const Congruence_System& cgs);
 
   //! Copy constructor.
-  Determinate(const Determinate& y);
+  COW_Pointset(const COW_Pointset& y);
 
   //! Destructor.
-  ~Determinate();
+  ~COW_Pointset();
 
   //@} // Constructors and Destructor
 
@@ -115,13 +115,13 @@ public:
   bool is_bottom() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this entails \p y.
-  bool definitely_entails(const Determinate& y) const;
+  bool definitely_entails(const COW_Pointset& y) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this and \p y
     are equivalent.
   */
-  bool is_definitely_equivalent_to(const Determinate& y) const;
+  bool is_definitely_equivalent_to(const COW_Pointset& y) const;
 
   /*! \brief
     Returns a lower bound to the total size in bytes of the memory
@@ -151,19 +151,19 @@ public:
   //@{
 
   //! Assigns to \p *this the upper bound of \p *this and \p y.
-  void upper_bound_assign(const Determinate& y);
+  void upper_bound_assign(const COW_Pointset& y);
 
   //! Assigns to \p *this the meet of \p *this and \p y.
-  void meet_assign(const Determinate& y);
+  void meet_assign(const COW_Pointset& y);
 
   //! Assigns to \p *this the result of weakening \p *this with \p y.
-  void weakening_assign(const Determinate& y);
+  void weakening_assign(const COW_Pointset& y);
 
   /*! \brief
     Assigns to \p *this the \ref Concatenating_Polyhedra "concatenation"
     of \p *this and \p y, taken in this order.
   */
-  void concatenate_assign(const Determinate& y);
+  void concatenate_assign(const COW_Pointset& y);
 
   //! Returns a reference to the embedded element.
   PSET& element();
@@ -171,25 +171,25 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     On return from this method, the representation of \p *this
-    is not shared by different Determinate objects.
+    is not shared by different COW_Pointset objects.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   void mutate();
 
   //! Assignment operator.
-  Determinate& operator=(const Determinate& y);
+  COW_Pointset& operator=(const COW_Pointset& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Determinate& y);
+  void swap(COW_Pointset& y);
 
   //@} // Member Functions that May Modify the Domain Element
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! A function adapter for the Determinate class.
+  //! A function adapter for the COW_Pointset class.
   /*! \ingroup PPL_CXX_interface
     It lifts a Binary_Operator_Assign function object, taking arguments
     of type PSET, producing the corresponding function object taking
-    arguments of type Determinate<PSET>.
+    arguments of type COW_Pointset<PSET>.
 
     The template parameter Binary_Operator_Assign is supposed to
     implement an <EM>apply and assign</EM> function, i.e., a function
@@ -207,7 +207,7 @@ public:
     Binary_Operator_Assign_Lifter(Binary_Operator_Assign op_assign);
 
     //! Function-application operator.
-    void operator()(Determinate& x, const Determinate& y) const;
+    void operator()(COW_Pointset& x, const COW_Pointset& y) const;
 
   private:
     //! The function object to be lifted.
@@ -225,11 +225,11 @@ public:
   lift_op_assign(Binary_Operator_Assign op_assign);
 
 private:
-  //! The possibly shared representation of a Determinate object.
+  //! The possibly shared representation of a COW_Pointset object.
   /*! \ingroup PPL_CXX_interface
     By adopting the <EM>copy-on-write</EM> technique, a single
     representation of the base-level object may be shared by more than
-    one object of the class Determinate.
+    one object of the class COW_Pointset.
   */
   class Rep {
   private:
@@ -304,22 +304,22 @@ private:
   Rep* prep;
 
   friend bool
-  operator==<PSET>(const Determinate<PSET>& x, const Determinate<PSET>& y);
+  operator==<PSET>(const COW_Pointset<PSET>& x, const COW_Pointset<PSET>& y);
   friend bool
-  operator!=<PSET>(const Determinate<PSET>& x, const Determinate<PSET>& y);
+  operator!=<PSET>(const COW_Pointset<PSET>& x, const COW_Pointset<PSET>& y);
 };
 
 
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Determinate */
+/*! \relates Parma_Polyhedra_Library::COW_Pointset */
 template <typename PSET>
-void swap(Parma_Polyhedra_Library::Determinate<PSET>& x,
-	  Parma_Polyhedra_Library::Determinate<PSET>& y);
+void swap(Parma_Polyhedra_Library::COW_Pointset<PSET>& x,
+	  Parma_Polyhedra_Library::COW_Pointset<PSET>& y);
 
 } // namespace std
 
-#include "Determinate.inlines.hh"
+#include "COW_Pointset.inlines.hh"
 
-#endif // !defined(PPL_Determinate_defs_hh)
+#endif // !defined(PPL_COW_Pointset_defs_hh)
