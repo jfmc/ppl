@@ -1326,20 +1326,22 @@ public:
     The signedness of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
-    \param w
+    \param o
     The overflow behavior of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
     \param pcs
     Possibly null pointer to a constraint system.  When non-null,
     the pointed-to constraint system is assumed to represent the
-    guard with respect to which wrapping is performed.  Passing
-    a constraint system in this way can be more precise then
-    adding the constraints in <CODE>*pcs</CODE> to the result
-    of the wrapping operation.
+    conditional or looping construct guard with respect to which
+    wrapping is performed.  Since wrapping requires the computation
+    of upper bounds and due to non-distributivity of constraint
+    refinement over upper bounds, passing a constraint system in this
+    way can be more precise than refining the result of the wrapping
+    operation with the constraints in <CODE>*pcs</CODE>.
 
     \param complexity_threshold
-    A precision parameter of the \ref Wrap_Operator "wrapping operator":
+    A precision parameter of the \ref Wrapping_Operator "wrapping operator":
     higher values result in possibly improved precision.
 
     \param wrap_individually

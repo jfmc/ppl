@@ -328,6 +328,7 @@ Partially_Reduced_Product.inlines.hh \
 Partially_Reduced_Product.templates.hh \
 max_space_dimension.hh \
 algorithms.hh \
+wrap_assign.hh \
 wrap_string.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
@@ -349,7 +350,6 @@ BDS_Status.idefs.hh \
 Og_Status.idefs.hh
 
 libppl_la_SOURCES = \
-wrap_assign.hh \
 Box.cc \
 checked.cc \
 Checked_Number.cc \
