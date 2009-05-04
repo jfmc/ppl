@@ -570,7 +570,8 @@ public:
 
   /*! \brief
     Returns \f$0\f$, if \p *this is empty; otherwise, returns
-    the \ref Affine_Space_Affine_Dimension "affine dimension" of \p *this.
+    \ref Affine_Independence_and_Affine_Dimension "affine dimension"
+    of \p *this.
   */
   dimension_type affine_dimension() const;
 
@@ -1070,11 +1071,8 @@ public:
   bool upper_bound_assign_if_exact(const Affine_Space& y);
 
   /*! \brief
-    Assigns to \p *this the \ref Affine_Space_Difference "affine space-difference" of
-    \p *this and \p y.
-
-    The affine space difference between affine spaces x and y is the smallest affine space
-    containing all the points from x and y that are only in x.
+    Assigns to \p *this the \ref Convex_Polyhedral_Difference
+    "poly-difference" of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -1093,10 +1091,10 @@ public:
   bool simplify_using_context_assign(const Affine_Space& y);
 
   /*! \brief
-    Assigns to \p *this the \ref Affine_Space_Affine_Transformation
-    "affine image" of \p
-    *this under the function mapping variable \p var to the affine
-    expression specified by \p expr and \p denominator.
+    Assigns to \p *this the
+    \ref Single_Update_Affine_Functions "affine image"
+    of \p *this under the function mapping variable \p var to the
+    affine expression specified by \p expr and \p denominator.
 
     \param var
     The variable to which the affine expression is assigned;
