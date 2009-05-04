@@ -437,6 +437,17 @@ library user to provide the PPL's method with approximations of reality
 that are consistent with respect to the desired results.
 
 
+\section Approximating_Bounded_Arithmetic Approximating Bounded Arithmetic
+
+FIXME(0.11): to be written.
+
+
+\subsection Wrapping_Operator Wrapping Operator
+
+FIXME(0.11): to be written.
+\ref SK07 "[SK07]"
+
+
 \section convex_polys Convex Polyhedra
 
 In this section we introduce convex polyhedra,
