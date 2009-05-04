@@ -60,6 +60,7 @@ Java_Class_Cache::Java_Class_Cache() {
   Linear_Expression_Variable = NULL;
   MIP_Problem_Status = NULL;
   Optimization_Mode = NULL;
+  Pair = NULL;
   Poly_Con_Relation = NULL;
   Poly_Gen_Relation = NULL;
   PPL_Object = NULL;
@@ -124,6 +125,7 @@ Java_Class_Cache::init_cache(JNIEnv* env) {
              "parma_polyhedra_library/MIP_Problem_Status");
   init_cache(env, Optimization_Mode,
              "parma_polyhedra_library/Optimization_Mode");
+  init_cache(env, Pair, "parma_polyhedra_library/Pair");
   init_cache(env, Poly_Con_Relation,
              "parma_polyhedra_library/Poly_Con_Relation");
   init_cache(env, Poly_Gen_Relation,
@@ -173,6 +175,7 @@ Java_Class_Cache::clear_cache(JNIEnv* env) {
   clear_cache(env, Linear_Expression_Variable);
   clear_cache(env, MIP_Problem_Status);
   clear_cache(env, Optimization_Mode);
+  clear_cache(env, Pair);
   clear_cache(env, Poly_Con_Relation);
   clear_cache(env, Poly_Gen_Relation);
   clear_cache(env, PPL_Object);
@@ -742,46 +745,32 @@ set_generator(JNIEnv* env, jobject dst, jobject src) {
 
 void
 set_pair_element(JNIEnv* env, jobject dst_pair, int arg, jobject src) {
-  const char* field_name;
   switch (arg) {
   case 0:
-    field_name = "first";
+    env->SetObjectField(dst_pair, cached_FMIDs.Pair_first_ID, src);
     break;
   case 1:
-    field_name = "second";
+    env->SetObjectField(dst_pair, cached_FMIDs.Pair_second_ID, src);
     break;
   default:
     assert(false);
     throw std::runtime_error("PPL Java interface internal error: "
                              "pair value not allowed");
   }
-  jclass pair_class = env->FindClass("parma_polyhedra_library/Pair");
-  CHECK_RESULT_ASSERT(env, pair_class);
-  jfieldID fID = env->GetFieldID(pair_class, field_name, "Ljava/lang/Object;");
-  CHECK_RESULT_ASSERT(env, fID);
-  env->SetObjectField(dst_pair, fID, src);
 }
 
 jobject
 get_pair_element(JNIEnv* env, int arg, jobject j_pair) {
-  const char* field_name;
   switch (arg) {
   case 0:
-    field_name = "first";
-    break;
+    return env->GetObjectField(j_pair, cached_FMIDs.Pair_first_ID);
   case 1:
-    field_name = "second";
-    break;
+    return env->GetObjectField(j_pair, cached_FMIDs.Pair_second_ID);
   default:
     assert(false);
     throw std::runtime_error("PPL Java interface internal error: "
                              "pair value not allowed");
   }
-  jclass pair_class = env->FindClass("parma_polyhedra_library/Pair");
-  CHECK_RESULT_ASSERT(env, pair_class);
-  jfieldID fID = env->GetFieldID(pair_class, field_name, "Ljava/lang/Object;");
-  CHECK_RESULT_ASSERT(env, fID);
-  return env->GetObjectField(j_pair, fID);
 }
 
 jobject

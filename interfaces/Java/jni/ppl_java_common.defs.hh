@@ -167,6 +167,7 @@ public:
   jclass Linear_Expression_Variable;
   jclass MIP_Problem_Status;
   jclass Optimization_Mode;
+  jclass Pair;
   jclass Poly_Con_Relation;
   jclass Poly_Gen_Relation;
   jclass PPL_Object;
@@ -289,6 +290,9 @@ struct Java_FMID_Cache {
   jfieldID Optimization_Mode_MAXIMIZATION_ID;
   jfieldID Optimization_Mode_MINIMIZATION_ID;
   jmethodID Optimization_Mode_ordinal_ID;
+  // Pair.
+  jfieldID Pair_first_ID;
+  jfieldID Pair_second_ID;
   // Poly_Con_Relation and Poly_Gen_Relation.
   jmethodID Poly_Con_Relation_init_ID;
   jmethodID Poly_Gen_Relation_init_ID;

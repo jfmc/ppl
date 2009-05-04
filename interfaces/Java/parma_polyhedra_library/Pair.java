@@ -43,4 +43,9 @@ public class Pair<K, V>  {
     public V getSecond() {
 	return second;
     }
+
+    private static native void initIDs();
+    static {
+        initIDs();
+    }
 }
