@@ -1004,7 +1004,6 @@ public:
 
   /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.
-    The result is not guaranteed to be minimized.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
@@ -1014,7 +1013,6 @@ public:
 
   /*! \brief
     Assigns to \p *this the poly-hull of \p *this and \p y.
-    The result is not guaranteed to be minimized.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
@@ -1028,7 +1026,7 @@ public:
   /*! \brief
     Assigns to \p *this
     the \ref Convex_Polyhedral_Difference "poly-difference"
-    of \p *this and \p y. The result is not guaranteed to be minimized.
+    of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
