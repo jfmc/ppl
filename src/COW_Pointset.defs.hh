@@ -252,7 +252,7 @@ private:
     Rep();
 
   public:
-    //! A possibly shared base-level domain element.
+    //! A possibly shared, base-level pointset.
     PSET pset;
 
     /*! \brief
