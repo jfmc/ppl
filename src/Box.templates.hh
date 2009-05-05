@@ -401,7 +401,7 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
 	lp.evaluate_objective_function(g, bound_num, bound_den);
 	assign_r(ubound.get_num(), bound_num, ROUND_NOT_NEEDED);
 	assign_r(ubound.get_den(), bound_den, ROUND_NOT_NEEDED);
-	assert(is_canonical(bound));
+	assert(is_canonical(ubound));
 	upper.set(LESS_OR_EQUAL, ubound);
       }
       // Evaluate optimal lower bound.
