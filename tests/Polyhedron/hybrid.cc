@@ -1,7 +1,5 @@
-
-/* Test three examples for linear hybrid systems.
-   These are based on the examples in HalbwachsPR94
-   and HalbwachsPR97 papers.
+/* Test three examples for linear hybrid systems.  These are based on
+   the examples in HalbwachsPR94 and HalbwachsPR97 papers.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -27,9 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-  // The water monitor example.
-  // Note that we have had to add a closure operator as an action
-  // for each of the transitions. Without this, the results are empty.
+// The water monitor example.
+// Note that we have had to add a closure operator as an action
+// for each of the transitions. Without this, the results are empty.
 bool
 test01() {
   Variable w(0);
@@ -62,15 +60,15 @@ test01() {
     // We must close the constraints since the values of x and w
     // increase continuously in the transition from l3 to l0.
     ph_tmp.topological_closure_assign();
-    // add constraint for the transition from l3 to l0
+    // Add constraint for the transition from l3 to l0.
     ph_tmp.add_constraint(x == 2);
-    // add invariant constraint for l0
+    // Add invariant constraint for l0.
     ph_tmp.add_constraint(w < 10);
-    // join with the Init(l0)
+    // Join with the Init(l0).
     ph0.upper_bound_assign(ph_tmp);
-    // time elaspe for l0
+    // Time elaspe for l0.
     ph0.time_elapse_assign(ph_tea01);
-    // add invariant constraint for l0
+    // Add invariant constraint for l0.
     ph0.add_constraint(w < 10);
 
     ph0.H79_widening_assign(ph0_prev);
@@ -118,17 +116,17 @@ test01() {
     // We must close the constraints since the values of x and w
     // increase continuously in the transition from l0 to l1.
     ph1.topological_closure_assign();
-    // add constraint for the transition from l0 to l1
+    // Add constraint for the transition from l0 to l1.
     ph1.add_constraint(w == 10);
-    // do the action for the transition from l0 to l1
+    // Do the action for the transition from l0 to l1.
     ph1.affine_image(x, 0*x);
-    // add invariant constraint for l1
+    // Add invariant constraint for l1.
     ph1.add_constraint(x < 2);
-    // time elaspe for l1
+    // Time elapse for l1.
     ph1.time_elapse_assign(ph_tea01);
-    // add invariant constraint for l1
+    // Add invariant constraint for l1.
     print_constraints(ph1, "*** ph1 before time elapse ***");
-    // add invariant constraint for l1
+    // Add invariant constraint for l1.
     ph1.add_constraint(x < 2);
 
     // The only incoming transition is from l1.
@@ -136,14 +134,14 @@ test01() {
     // We must close the constraints since the values of x and w
     // increase continuously in the transition from l1 to l2.
     ph2.topological_closure_assign();
-    // add constraint for the transition from l1 to l2
+    // Add constraint for the transition from l1 to l2.
     ph2.add_constraint(x == 2);
-    // there is no action for the transition from l1 to l2
-    // add invariant constraint for l2
+    // There is no action for the transition from l1 to l2.
+    // add invariant constraint for l2.
     ph2.add_constraint(w > 5);
-    // time elaspe for l2
+    // Time elaspe for l2.
     ph2.time_elapse_assign(ph_tea23);
-    // add invariant constraint for l2
+    // Add invariant constraint for l2.
     ph2.add_constraint(w > 5);
 
     // The only incoming transition is from l2.
@@ -151,22 +149,22 @@ test01() {
     // We must close the constraints since the values of x and w
     // increase continuously in the transition from l2 to l3.
     ph3.topological_closure_assign();
-    // add constraint for the transition from l2 to l3
+    // Add constraint for the transition from l2 to l3.
     ph3.add_constraint(w == 5);
-    // do the action for the transition from l2 to l3
+    // Do the action for the transition from l2 to l3.
     ph3.affine_image(x, 0*x);
-    // add invariant constraint for l3
+    // Add invariant constraint for l3.
     ph3.add_constraint(x < 2);
-    // time elaspe for l3
+    // Time elaspe for l3.
     ph3.time_elapse_assign(ph_tea23);
-    // add invariant constraint for l3
+    // Add invariant constraint for l3.
     ph3.add_constraint(x < 2);
   }
   return false;
 }
 
-  // the Fischer protocol example where we make the exclusion variable
-  // one of the variables of the automaton.
+// The Fischer protocol example where we make the exclusion variable
+// one of the variables of the automaton.
 bool
 test02() {
   Variable x1(0);
@@ -203,7 +201,7 @@ test02() {
   while (true) {
     //    nout << "next iteration" << "\n";
 
-    // location l0
+    // Location l0.
     ph0 = ph0_Init;
     ph_tmp = ph3;
     ph_tmp.add_constraint(x1 >= b);
@@ -223,7 +221,7 @@ test02() {
     ph0.add_constraint(k >= 0);
     ph0.add_constraint(k <= 2);
 
-    // location l1
+    // Location l1.
     ph1 = ph0;
     ph1.add_constraint(k == 0);
     ph1.affine_image(x1, Linear_Expression(0));
@@ -233,7 +231,7 @@ test02() {
     ph1.add_constraint(k == 0);
     ph1.add_constraint(x1 <= a);
 
-    // location l2
+    // Location l2.
     ph2 = ph1;
     ph2.affine_image(x1, Linear_Expression(0));
     ph2.affine_image(x2, Linear_Expression(0));
@@ -242,7 +240,7 @@ test02() {
     ph2.time_elapse_assign(ph_tea);
     ph2.add_constraint(k == 1);
 
-    // location l3
+    // Location l3.
     ph3 = ph2;
     ph3.add_constraint(x2 <= a);
     ph3.add_constraint(x1 < b);
@@ -251,14 +249,14 @@ test02() {
     ph3.time_elapse_assign(ph_tea);
     ph3.add_constraint(k == 2);
 
-    // location l4
+    // Location l4.
     ph4 = ph2;
     ph4.add_constraint(x1 >= b);
     ph4.add_constraint(k == 1);
     ph4.time_elapse_assign(ph_tea);
     ph4.add_constraint(k == 1);
 
-    // location l5
+    // Location l5.
     ph5 = ph4;
     ph5.add_constraint(x2 <= a);
     ph5.affine_image(k, Linear_Expression(2));
@@ -343,7 +341,7 @@ test02() {
   return true;
 }
 
-  // the Scheduler example using the Polyhedron domain.
+// The Scheduler example using the Polyhedron domain.
 bool
 test03() {
   Variable c1(0);
@@ -369,7 +367,7 @@ test03() {
   NNC_Polyhedron ph_t1_prev(6, EMPTY);
   NNC_Polyhedron ph_t2_prev(6, EMPTY);
 
-  // The time elapse polyhedron at location Task1
+  // The time elapse polyhedron at location Task1.
   NNC_Polyhedron ph_tea1(6);
   ph_tea1.add_constraint(c1 == 1);
   ph_tea1.add_constraint(c2 == 1);
@@ -378,7 +376,7 @@ test03() {
   ph_tea1.add_constraint(k1 == 0);
   ph_tea1.add_constraint(k2 == 0);
 
-  // The time elapse polyhedron at location Task2
+  // The time elapse polyhedron at location Task2.
   NNC_Polyhedron ph_tea2(6);
   ph_tea2.add_constraint(c1 == 1);
   ph_tea2.add_constraint(c2 == 1);
@@ -391,7 +389,7 @@ test03() {
 
   while (true) {
 
-    // location Idle
+    // Location Idle.
     ph_idle.upper_bound_assign(ph_idle_Init);
     ph_tmp = ph_t1;
     ph_tmp.add_constraint(x1 == 4);
@@ -407,7 +405,7 @@ test03() {
     ph_tmp.affine_image(x2, Linear_Expression(0));
     ph_idle.upper_bound_assign(ph_tmp);
 
-    // location Task1
+    // Location Task1.
     ph_tmp = ph_idle;
     ph_tmp.add_constraint(c1 >= 10);
     ph_tmp.affine_image(c1, Linear_Expression(0));
@@ -438,7 +436,7 @@ test03() {
     ph_t1.time_elapse_assign(ph_tea1);
     ph_t1.add_constraint(x1 <= 4);
 
-    // location Task2
+    // Location Task2.
     ph_tmp = ph_idle;
     ph_tmp.add_constraint(c2 >= 20);
     ph_tmp.affine_image(c2, Linear_Expression(0));
@@ -522,16 +520,15 @@ test03() {
   return false;
 }
 
-  // Additional procedures needed for the Scheduler example using powersets
+// Additional procedures needed for the Scheduler example using powersets.
 
-  // Compute the time_elapse() for each element of the powerset.
+// Compute the time_elapse() for each element of the powerset.
 void
-time_elapse(
-	    Pointset_Powerset<NNC_Polyhedron>& ps, const NNC_Polyhedron& ph) {
-
+time_elapse(Pointset_Powerset<NNC_Polyhedron>& ps,
+            const NNC_Polyhedron& ph) {
   Pointset_Powerset<NNC_Polyhedron> ps_result(ps.space_dimension(), EMPTY);
   for (Pointset_Powerset<NNC_Polyhedron>::const_iterator i = ps.begin(),
-                                    ps_end = ps.end(); i != ps_end; ++i) {
+         ps_end = ps.end(); i != ps_end; ++i) {
     NNC_Polyhedron di = i->pointset();
     NNC_Polyhedron d(di);
     d.time_elapse_assign(ph);
@@ -540,16 +537,15 @@ time_elapse(
   ps = ps_result;
 }
 
-  // Compute the affine_image() for each element of the powerset.
+// Compute the affine_image() for each element of the powerset.
 void
-affine_image(
-	    Pointset_Powerset<NNC_Polyhedron>& ps, Variable var,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator
-	                 = Coefficient_one()) {
+affine_image(Pointset_Powerset<NNC_Polyhedron>& ps, Variable var,
+             const Linear_Expression& expr,
+             Coefficient_traits::const_reference denominator
+             = Coefficient_one()) {
   Pointset_Powerset<NNC_Polyhedron> ps_result(ps.space_dimension(), EMPTY);
   for (Pointset_Powerset<NNC_Polyhedron>::iterator i = ps.begin(),
-                                   ps_end = ps.end(); i != ps_end; ++i) {
+         ps_end = ps.end(); i != ps_end; ++i) {
     NNC_Polyhedron phi = i->pointset();
     NNC_Polyhedron ph(phi);
     ph.affine_image(var, expr, denominator);
@@ -571,23 +567,22 @@ powerset_upper_bound(Pointset_Powerset<NNC_Polyhedron>& ps,
   }
 }
 
-  // This has been added to replace the expensive geometrically_covers()
-  // test at each cycle of the iteration and intended to speed up the
-  // computation.
-  //
-  // Check if every disjunct of the 2nd powerset is contained in an
-  // disjunct of the first powerset.
-  // If this succeeds then geometrically covers() will also hold.
+// This has been added to replace the expensive geometrically_covers()
+// test at each cycle of the iteration and intended to speed up the
+// computation.
+//
+// Check if every disjunct of the 2nd powerset is contained in an
+// disjunct of the first powerset.
+// If this succeeds then geometrically covers() will also hold.
 bool
-disjunct_covers(
-	    Pointset_Powerset<NNC_Polyhedron>& ps1,
-              Pointset_Powerset<NNC_Polyhedron>& ps2) {
+disjunct_covers(Pointset_Powerset<NNC_Polyhedron>& ps1,
+                Pointset_Powerset<NNC_Polyhedron>& ps2) {
   for (Pointset_Powerset<NNC_Polyhedron>::iterator i = ps2.begin(),
-                                   ps2_end = ps2.end(); i != ps2_end; ++i) {
+         ps2_end = ps2.end(); i != ps2_end; ++i) {
     bool is_contained = false;
     NNC_Polyhedron ph2 = i->pointset();
     for (Pointset_Powerset<NNC_Polyhedron>::iterator j = ps1.begin(),
-                                   ps1_end = ps1.end(); j != ps1_end; ++j) {
+           ps1_end = ps1.end(); j != ps1_end; ++j) {
       NNC_Polyhedron ph1 = j->pointset();
       if (ph1.contains(ph2)) {
         is_contained = true;
@@ -600,7 +595,7 @@ disjunct_covers(
   return true;
 }
 
-  // the Scheduler example using powersets
+// The Scheduler example using powersets.
 bool
 test04() {
   Variable x1(0);
@@ -664,7 +659,7 @@ test04() {
     affine_image(ph_tmp, x2, Linear_Expression(0));
     ph_idle.upper_bound_assign(ph_tmp);
 
-    //ph_t1
+    // ph_t1
     ph_tmp = ph_idle;
     ph_tmp.add_constraint(c1 >= 10);
     affine_image(ph_tmp, c1, Linear_Expression(0));
@@ -696,7 +691,7 @@ test04() {
     ph_t1.add_constraint(x1 <= 4);
     (void) ph_t1.is_empty();
 
-    //ph_t2
+    // ph_t2
     ph_tmp = ph_idle;
     ph_tmp.add_constraint(c2 >= 20);
     affine_image(ph_tmp, c2, Linear_Expression(0));
@@ -732,7 +727,7 @@ test04() {
     ph_t2.add_constraint(x2 <= 8);
 
     // Note that widening is not needed and the iteration terminates
-    // with the ph_t2 consisting of 4 polyhedra
+    // with the ph_t2 consisting of 4 polyhedra.
     // The results without any widening are:
 
     // ph_idle = { F = 0, E = 0, D = 0, C = 0, B >= 0, A >= 0 }
@@ -793,9 +788,8 @@ test04() {
 
       print_constraints(ph_t2, "*** ph_t2 final ***");
 
-      // We project away the variables c1 and C2
-      // only compare the upper_bounds of the powerset with the
-      // expected result.
+      // We project away the variables c1 and C2 only compare the
+      // upper_bounds of the powerset with the expected result.
 
       Variables_Set vs;
       vs.insert(c1);
