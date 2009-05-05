@@ -186,7 +186,7 @@ public:
   //! Builds an empty system of generators of dimension \p dim.
   explicit Grid_Generator_System(dimension_type dim);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Grid_Generator_System(const Grid_Generator_System& gs);
 
   //! Destructor.
@@ -273,7 +273,7 @@ public:
     //! Default constructor.
     const_iterator();
 
-    //! Ordinary copy-constructor.
+    //! Ordinary copy constructor.
     const_iterator(const const_iterator& y);
 
     //! Destructor.
@@ -309,7 +309,7 @@ public:
   private:
     friend class Grid_Generator_System;
 
-    //! Copy-constructor from Generator_System::const_iterator.
+    //! Copy constructor from Generator_System::const_iterator.
     const_iterator(const Generator_System::const_iterator& y);
   };
 

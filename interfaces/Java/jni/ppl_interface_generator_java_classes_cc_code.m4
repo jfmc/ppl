@@ -156,7 +156,7 @@ Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_1Iterator_get_1disjunct
     CHECK_RESULT_ASSERT(env, j_ctr_id);
     jobject j_obj = env->NewObject(j_class, j_ctr_id);
     CHECK_RESULT_RETURN(env, j_obj, 0);
-    set_ptr(env, j_obj,  &((*this_ptr)->element()), true);
+    set_ptr(env, j_obj,  &((*this_ptr)->pointset()), true);
     return j_obj;
   }
   CATCH_ALL;

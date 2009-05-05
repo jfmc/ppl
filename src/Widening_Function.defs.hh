@@ -30,11 +30,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 //! Wraps a widening method into a function object.
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename PH>
+template <typename PSET>
 class Parma_Polyhedra_Library::Widening_Function {
 public:
   //! The (parametric) type of a widening method.
-  typedef void (PH::* Widening_Method)(const PH&, unsigned*);
+  typedef void (PSET::* Widening_Method)(const PSET&, unsigned*);
 
   //! Explicit unary constructor.
   explicit
@@ -45,7 +45,7 @@ public:
     Computes <CODE>(x.*wm)(y, tp)</CODE>, where \p wm is the widening
     method stored at construction time.
   */
-  void operator()(PH& x, const PH& y, unsigned* tp = 0) const;
+  void operator()(PSET& x, const PSET& y, unsigned* tp = 0) const;
 
 private:
   //! The widening method.
@@ -57,13 +57,13 @@ private:
 //! Wraps a limited widening method into a function object.
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename PH, typename CS>
+template <typename PSET, typename CSYS>
 class Parma_Polyhedra_Library::Limited_Widening_Function {
 public:
   //! The (parametric) type of a limited widening method.
-  typedef void (PH::* Limited_Widening_Method)(const PH&,
-					       const CS&,
-					       unsigned*);
+  typedef void (PSET::* Limited_Widening_Method)(const PSET&,
+                                                 const CSYS&,
+                                                 unsigned*);
 
   //! Constructor.
   /*!
@@ -74,7 +74,7 @@ public:
     The constraint system limiting the widening.
   */
   Limited_Widening_Function(Limited_Widening_Method lwm,
-			    const CS& cs);
+			    const CSYS& cs);
 
   //! Function-application operator.
   /*!
@@ -82,13 +82,13 @@ public:
     are the limited widening method and the constraint system stored
     at construction time.
   */
-  void operator()(PH& x, const PH& y, unsigned* tp = 0) const;
+  void operator()(PSET& x, const PSET& y, unsigned* tp = 0) const;
 
 private:
   //! The limited widening method.
   Limited_Widening_Method lw_method;
   //! A constant reference to the constraint system limiting the widening.
-  const CS& limiting_cs;
+  const CSYS& limiting_cs;
 };
 
 namespace Parma_Polyhedra_Library {
@@ -100,9 +100,9 @@ namespace Parma_Polyhedra_Library {
   \param wm
   The widening method.
 */
-template <typename PH>
-Widening_Function<PH>
-widen_fun_ref(void (PH::* wm)(const PH&, unsigned*));
+template <typename PSET>
+Widening_Function<PSET>
+widen_fun_ref(void (PSET::* wm)(const PSET&, unsigned*));
 
 //! Wraps a limited widening method into a function object.
 /*!
@@ -114,10 +114,10 @@ widen_fun_ref(void (PH::* wm)(const PH&, unsigned*));
   \param cs
   The constraint system limiting the widening.
 */
-template <typename PH, typename CS>
-Limited_Widening_Function<PH, CS>
-widen_fun_ref(void (PH::* lwm)(const PH&, const CS&, unsigned*),
-	      const CS& cs);
+template <typename PSET, typename CSYS>
+Limited_Widening_Function<PSET, CSYS>
+widen_fun_ref(void (PSET::* lwm)(const PSET&, const CSYS&, unsigned*),
+	      const CSYS& cs);
 
 } // namespace Parma_Polyhedra_Library
 

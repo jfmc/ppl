@@ -92,7 +92,8 @@ test02() {
   Grid known_gr(p);
 
   Pointset_Powerset<Grid>::iterator i = (result.second).begin();
-  return (i->element() == known_gr);
+
+return i->pointset() == known_gr;
 }
 
 BEGIN_MAIN

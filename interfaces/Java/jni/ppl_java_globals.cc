@@ -46,6 +46,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "parma_polyhedra_library_MIP_Problem.h"
 #include "parma_polyhedra_library_MIP_Problem_Status.h"
 #include "parma_polyhedra_library_Optimization_Mode.h"
+#include "parma_polyhedra_library_Pair.h"
 #include "parma_polyhedra_library_Parma_Polyhedra_Library.h"
 #include "parma_polyhedra_library_Poly_Con_Relation.h"
 #include "parma_polyhedra_library_Poly_Gen_Relation.h"
@@ -484,6 +485,18 @@ Java_parma_1polyhedra_1library_Optimization_1Mode_initIDs
   mID = env->GetMethodID(j_opt_mode_class, "ordinal", "()I");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Optimization_Mode_ordinal_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Pair_initIDs
+(JNIEnv* env, jclass j_pair_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_pair_class, "first", "Ljava/lang/Object;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Pair_first_ID = fID;
+  fID = env->GetFieldID(j_pair_class, "second", "Ljava/lang/Object;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Pair_second_ID = fID;
 }
 
 JNIEXPORT void JNICALL

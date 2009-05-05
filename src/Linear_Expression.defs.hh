@@ -238,7 +238,7 @@ public:
   //! Default constructor: returns a copy of Linear_Expression::zero().
   Linear_Expression();
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Linear_Expression(const Linear_Expression& e);
 
   //! Destructor.
@@ -382,7 +382,7 @@ private:
   // Grid_Generator_System::affine_image().
   friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
-  //! Copy-constructor with a specified space dimension.
+  //! Copy constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type sz);
 
   //! Implementation sizing constructor.

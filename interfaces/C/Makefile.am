@@ -76,6 +76,14 @@ LIBPPL_C_LT_CURRENT =  4
 LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      0
 
+
+if BUILD_WATCHDOG_LIBRARY
+
+WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
+WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
+
+endif BUILD_WATCHDOG_LIBRARY
+
 ppl_c.h: ppl_c_header.h ppl_c_version.h ppl_c_domains.h Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir)/interfaces/C -I $(top_srcdir)/src \
@@ -119,6 +127,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
 -I$(top_builddir)/interfaces/C \
 -I$(top_builddir)/src \
+$(WATCHDOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 lib_LTLIBRARIES = libppl_c.la
@@ -212,6 +221,7 @@ endif NO_UNDEFINED
 libppl_c_la_LIBADD = \
 @required_instantiations_c_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
+$(WATCHDOG_LIBRARY) \
 @extra_libraries@
 
 libppl_c_la_DEPENDENCIES = \

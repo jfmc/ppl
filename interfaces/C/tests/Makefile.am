@@ -80,25 +80,26 @@ print_to_buffer.c
 nodist_EXTRA_formatted_output_SOURCES = \
 dummy.cc
 
-#watchdog1_SRCS = watchdog1.cc
+watchdog1_SRCS = watchdog1.c
 
 noinst_HEADERS = \
 ppl_c_test.h
 
 if BUILD_WATCHDOG_LIBRARY
-WATCHDOG_TESTS =
-# watchdog1
 
-# watchdog1_SOURCES = $(watchdog1_SRCS)
+WATCHDOG_TESTS = \
+watchdog1
 
-# watchdog1_CPPFLAGS = \
-# $(AM_CPPFLAGS) \
-# -I$(top_builddir)/Watchdog \
-# -I$(top_builddir)/Watchdog/src
+watchdog1_SOURCES = $(watchdog1_SRCS)
 
-# watchdog1_LDADD = \
-# $(LDADD) \
-# $(top_builddir)/Watchdog/src/libpwl.la
+watchdog1_CPPFLAGS = \
+$(AM_CPPFLAGS) \
+-I$(top_builddir)/Watchdog \
+-I$(top_builddir)/Watchdog/src
+
+watchdog1_LDADD = \
+$(LDADD) \
+$(top_builddir)/Watchdog/src/libpwl.la
 
 endif BUILD_WATCHDOG_LIBRARY
 

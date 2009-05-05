@@ -82,7 +82,7 @@ public:
   explicit Ptr_Iterator(const P& q);
 
   /*! \brief
-    Copy-constructor allowing the construction of a const_iterator
+    Copy constructor allowing the construction of a const_iterator
     from a non-const iterator.
   */
   template<typename Q>

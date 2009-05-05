@@ -404,7 +404,11 @@ private:
     The (extended) numeric type of the inhomogeneous term of
     the inequalities defining a BDS.
   */
+#ifndef NDEBUG
   typedef Checked_Number<T, Extended_Number_Policy> N;
+#else
+  typedef Checked_Number<T, WRD_Extended_Number_Policy> N;
+#endif
 
 public:
   //! The numeric base type upon which bounded differences are built.
@@ -443,7 +447,7 @@ public:
   explicit BD_Shape(dimension_type num_dimensions = 0,
                     Degenerate_Element kind = UNIVERSE);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   /*!
     The complexity argument is ignored.
   */
@@ -463,10 +467,7 @@ public:
     The BDS inherits the space dimension of \p cs.
 
     \param cs
-    A system of constraints: constraints that are not
-    \ref Bounded_Difference_Shapes "bounded differences"
-    are ignored (even though they may have contributed
-    to the space dimension).
+    A system of BD constraints.
 
     \exception std::invalid_argument
     Thrown if \p cs contains a constraint which is not optimally supported
@@ -479,7 +480,11 @@ public:
     The BDS inherits the space dimension of \p cgs
 
     \param cgs
-    A system of congruences: some elements may be safely ignored.
+    A system of congruences.
+
+    \exception std::invalid_argument
+    Thrown if \p cgs contains congruences which are not optimally
+    supported by the BD shape domain.
   */
   explicit BD_Shape(const Congruence_System& cgs);
 
@@ -835,8 +840,7 @@ public:
     defining \p *this.
 
     \param c
-    The constraint to be added. If it is not a bounded difference, it
-    will be simply ignored.
+    The constraint to be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible,
@@ -861,8 +865,7 @@ public:
     defining \p *this.
 
     \param  cs
-    The constraints that will be added. Constraints that are not bounded
-    differences will be simply ignored.
+    The constraints that will be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
@@ -1303,20 +1306,22 @@ public:
     The signedness of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
-    \param w
+    \param o
     The overflow behavior of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
     \param pcs
     Possibly null pointer to a constraint system.  When non-null,
     the pointed-to constraint system is assumed to represent the
-    guard with respect to which wrapping is performed.  Passing
-    a constraint system in this way can be more precise then
-    adding the constraints in <CODE>*pcs</CODE> to the result
-    of the wrapping operation.
+    conditional or looping construct guard with respect to which
+    wrapping is performed.  Since wrapping requires the computation
+    of upper bounds and due to non-distributivity of constraint
+    refinement over upper bounds, passing a constraint system in this
+    way can be more precise than refining the result of the wrapping
+    operation with the constraints in <CODE>*pcs</CODE>.
 
     \param complexity_threshold
-    A precision parameter of the \ref Wrap_Operator "wrapping operator":
+    A precision parameter of the \ref Wrapping_Operator "wrapping operator":
     higher values result in possibly improved precision.
 
     \param wrap_individually
@@ -1326,7 +1331,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p vars.
+    Variable objects contained in \p vars or with <CODE>*pcs</CODE>.
   */
   void wrap_assign(const Variables_Set& vars,
                    Bounded_Integer_Type_Width w,

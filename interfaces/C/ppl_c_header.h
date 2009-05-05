@@ -64,6 +64,15 @@ are that (1) applications do not depend on the internals of the library
 (these may change from release to release), and (2) the interface
 invariants can be thoroughly checked (by the access functions).
 
+\note
+All functions taking as input argument an opaque pointer datatype assume
+that such an argument is actually <em>referring to a valid PPL object</em>.
+For instance, a function with an argument having type
+<code>ppl_MIP_Problem_t</code> will expect a valid MIP_Problem object,
+previously initialized by calling, e.g., <code>ppl_new_MIP_Problem</code>.
+If that is not the case (e.g., if a null pointer is passed in),
+the behavior is undefined.
+
 The PPL's C interface is initialized by means of the
 <CODE>ppl_initialize</CODE> function.  This function must
 be called <EM>before using any other interface of the library</EM>.
@@ -302,7 +311,12 @@ enum ppl_enum_error_code {
   /*! \hideinitializer
     A totally unknown, totally unexpected error happened.
     This indicates a bug in the PPL. */
-  PPL_ERROR_UNEXPECTED_ERROR = -10
+  PPL_ERROR_UNEXPECTED_ERROR = -10,
+  /*! \hideinitializer
+    An exception has been raised by the PPL as a timeout previously set
+    by the user has expired.
+  */
+  PPL_TIMEOUT_EXCEPTION = -11
 };
 
 /*! \brief
@@ -316,6 +330,39 @@ enum ppl_enum_error_code {
 int
 ppl_set_error_handler PPL_PROTO((void (*h)(enum ppl_enum_error_code code,
 					   const char* description)));
+
+/*@}*/ /* Error */
+
+/*! \defgroup Timeout Handling
+  Functions for setting and resetting timeouts.
+*/
+/*@{*/
+
+/*! \brief
+  Sets the timeout for computations whose completion could require
+  an exponential amount of time.
+
+  \param time
+  The number of hundreths of seconds.
+  It must be strictly greater than zero.
+
+  Computations taking exponential time will be interrupted some time
+  after \p time hundreths of seconds have elapsed since the call to
+  the timeout setting function. If the computation is interrupted that
+  way, the interrupted function will return error code
+  <code>PPL_TIMEOUT_EXCEPTION</code>.
+  Otherwise, if the computation completes without being interrupted,
+  then the timeout should be reset by calling
+  <code>ppl_reset_timeout()</code>.
+*/
+int
+ppl_set_timeout PPL_PROTO((unsigned time));
+
+/*! \brief
+  Resets the timeout time so that the computation is not interrupted.
+*/
+int
+ppl_reset_timeout PPL_PROTO((void));
 
 /*@}*/ /* Error */
 

@@ -14,7 +14,7 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename PS>
+template <typename PSET>
 class Pointset_Ask_Tell;
 
 } // namespace Parma_Polyhedra_Library

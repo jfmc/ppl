@@ -220,7 +220,7 @@ public:
   explicit NNC_Polyhedron(const Octagonal_Shape<U>& os,
                           Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y,
                  Complexity_Class complexity = ANY_COMPLEXITY);
 

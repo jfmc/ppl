@@ -222,7 +222,7 @@ public:
   //! Default constructor.
   Checked_Number();
 
-  //! Copy-constructor.
+  //! Copy constructor.
   Checked_Number(const Checked_Number& y);
 
   //! Direct initialization from a Checked_Number and rounding mode.

@@ -40,18 +40,29 @@ test01() {
   oct.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
 
   TOctagonal_Shape known_result(2);
-  known_result.refine_with_constraint(x >= 0);
-  known_result.refine_with_constraint(x <= 255);
-  known_result.refine_with_constraint(y >= 64);
-  known_result.refine_with_constraint(y <= 192);
-  known_result.refine_with_constraint(+x-y <= 160);
-  known_result.refine_with_constraint(-x+y <= 160);
-  known_result.refine_with_constraint(+x+y >= 96);
-  known_result.refine_with_constraint(+x+y <= 416);
+  typedef TOctagonal_Shape::coefficient_type T;
+  if (!std::numeric_limits<T>::is_bounded
+      || (std::numeric_limits<T>::max() >= 510
+          && (std::numeric_limits<T>::is_iec559
+              || std::numeric_limits<T>::min() <= -510))) {
+    known_result.refine_with_constraint(x >= 0);
+    known_result.refine_with_constraint(x <= 255);
+    known_result.refine_with_constraint(y >= 64);
+    known_result.refine_with_constraint(y <= 192);
+    known_result.refine_with_constraint(+x-y <= 160);
+    known_result.refine_with_constraint(-x+y <= 160);
+    known_result.refine_with_constraint(+x+y >= 96);
+    known_result.refine_with_constraint(+x+y <= 416);
+  }
+  else {
+    known_result.refine_with_constraint(x >= 0);
+    known_result.refine_with_constraint(y >= 0);
+  }
 
   bool ok = (oct == known_result);
 
   print_constraints(oct, "*** oct.wrap_assign(...) ***");
+  print_constraints(known_result, "*** known_result ***");
 
   return ok;
 }
@@ -75,14 +86,26 @@ test02() {
   oct.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
 
   TOctagonal_Shape known_result(2);
-  known_result.refine_with_constraint(x >= 0);
-  known_result.refine_with_constraint(y >= 96);
-  known_result.refine_with_constraint(-x+y >= 96);
-  known_result.refine_with_constraint(+x+y <= 160);
+  typedef TOctagonal_Shape::coefficient_type_base T;
+  if (!std::numeric_limits<T>::is_bounded
+      || (std::numeric_limits<T>::max() >= 510
+          && (std::numeric_limits<T>::is_iec559
+              || std::numeric_limits<T>::min() <= -510))) {
+    known_result.refine_with_constraint(x >= 0);
+    known_result.refine_with_constraint(y >= 96);
+    known_result.refine_with_constraint(-x+y >= 96);
+    known_result.refine_with_constraint(+x+y <= 160);
+  }
+  else {
+    known_result.refine_with_constraint(x >= 0);
+    known_result.refine_with_constraint(y >= 0);
+    known_result.refine_with_constraint(+x-y <= 0);
+  }
 
   bool ok = (oct == known_result);
 
   print_constraints(oct, "*** oct.wrap_assign(...) ***");
+  print_constraints(known_result, "*** known_result ***");
 
   return ok;
 }
@@ -377,6 +400,6 @@ test12() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
-  DO_TEST(test02);
+  DO_TEST_F8(test01);
+  DO_TEST_F8(test02);
 END_MAIN

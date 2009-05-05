@@ -71,7 +71,7 @@ public:
   Matrix(dimension_type n_rows, dimension_type n_columns,
 	 Row::Flags row_flags = Row::Flags());
 
-  //! Copy-constructor.
+  //! Copy constructor.
   Matrix(const Matrix& y);
 
   //! Destructor.
@@ -109,7 +109,7 @@ public:
     */
     explicit const_iterator(const Iter& b);
 
-    //! Ordinary copy-constructor.
+    //! Ordinary copy constructor.
     const_iterator(const const_iterator& y);
 
     //! Assignment operator.

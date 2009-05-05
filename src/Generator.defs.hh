@@ -283,7 +283,7 @@ public:
   closure_point(const Linear_Expression& e = Linear_Expression::zero(),
 		Coefficient_traits::const_reference d = Coefficient_one());
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Generator(const Generator& g);
 
   //! Destructor.
@@ -446,7 +446,7 @@ private:
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
 						    const Generator& g);
 
-  //! Copy-constructor with given space dimension.
+  //! Copy constructor with given space dimension.
   Generator(const Generator& g, dimension_type dimension);
 
   //! Returns <CODE>true</CODE> if and only if \p *this is not a line.

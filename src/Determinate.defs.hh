@@ -34,58 +34,68 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 /*! \brief
-  Returns <CODE>true</CODE> if and only if
-  \p x and \p y are the same domain element.
+  Returns <CODE>true</CODE> if and only if \p x and \p y are the same
+  COW-wrapped pointset.
 
   \relates Determinate
 */
-template <typename PS>
-bool operator==(const Determinate<PS>& x, const Determinate<PS>& y);
+template <typename PSET>
+bool operator==(const Determinate<PSET>& x, const Determinate<PSET>& y);
 
 /*! \brief
-  Returns <CODE>true</CODE> if and only if
-  \p x and \p y are different domain elements.
+  Returns <CODE>true</CODE> if and only if \p x and \p y are different
+  COW-wrapped pointsets.
 
   \relates Determinate
 */
-template <typename PS>
-bool operator!=(const Determinate<PS>& x, const Determinate<PS>& y);
+template <typename PSET>
+bool operator!=(const Determinate<PSET>& x, const Determinate<PSET>& y);
 
 namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Determinate */
-template <typename PS>
+template <typename PSET>
 std::ostream&
-operator<<(std::ostream&, const Determinate<PS>&);
+operator<<(std::ostream&, const Determinate<PSET>&);
 
 } // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 
-//! Wraps a PPL class into a determinate constraint system interface.
-/*! \ingroup PPL_CXX_interface */
-template <typename PS>
+/*! \brief
+  A wrapper for PPL pointsets, providing them with a
+  <EM>determinate constraint system</EM> interface, as defined
+  in \ref Bag98 "[Bag98]".
+
+  The implementation uses a copy-on-write optimization, making the
+  class suitable for constructions, like the <EM>finite powerset</A>
+  and <EM>ask-and-tell</EM> of \ref Bag98 "[Bag98]", that are likely
+  to perform many copies.
+
+  \ingroup PPL_CXX_interface
+*/
+template <typename PSET>
 class Parma_Polyhedra_Library::Determinate {
 public:
   //! \name Constructors and Destructor
   //@{
 
   /*! \brief
-    Injection operator: builds the determinate constraint system element
-    corresponding to the base-level element \p p.
+    Constructs a COW-wrapped object corresponding to the pointset \p p.
   */
-  Determinate(const PS& p);
+  Determinate(const PSET& p);
 
   /*! \brief
-    Injection operator: builds the determinate constraint system element
-    corresponding to the base-level element represented by \p cs.
+    Constructs a COW-wrapped object corresponding to the pointset
+    defined by \p cs.
   */
   Determinate(const Constraint_System& cs);
 
-  //! \brief
-  //! Injection operator: builds the determinate constraint system element
-  //! corresponding to the base-level element represented by \p cgs.
+  /*! \brief
+    Constructs a COW-wrapped object corresponding to the pointset
+    defined by \p cgs.
+  */
   Determinate(const Congruence_System& cgs);
 
   //! Copy constructor.
@@ -99,18 +109,18 @@ public:
   //! \name Member Functions that Do Not Modify the Domain Element
   //@{
 
-  //! Returns a const reference to the embedded element.
-  const PS& element() const;
+  //! Returns a const reference to the embedded pointset.
+  const PSET& pointset() const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is the top of the
-    determinate constraint system (i.e., the whole vector space).
+    Returns <CODE>true</CODE> if and only if \p *this embeds the universe
+    element \p PSET.
   */
   bool is_top() const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is the bottom
-    of the determinate constraint system.
+    Returns <CODE>true</CODE> if and only if \p *this embeds the empty
+    element of \p PSET.
   */
   bool is_bottom() const;
 
@@ -119,7 +129,7 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this and \p y
-    are equivalent.
+    are definitely equivalent.
   */
   bool is_definitely_equivalent_to(const Determinate& y) const;
 
@@ -166,7 +176,7 @@ public:
   void concatenate_assign(const Determinate& y);
 
   //! Returns a reference to the embedded element.
-  PS& element();
+  PSET& pointset();
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
@@ -188,12 +198,12 @@ public:
   //! A function adapter for the Determinate class.
   /*! \ingroup PPL_CXX_interface
     It lifts a Binary_Operator_Assign function object, taking arguments
-    of type PS, producing the corresponding function object taking
-    arguments of type Determinate<PS>.
+    of type PSET, producing the corresponding function object taking
+    arguments of type Determinate<PSET>.
 
     The template parameter Binary_Operator_Assign is supposed to
     implement an <EM>apply and assign</EM> function, i.e., a function
-    having signature <CODE>void foo(PS& x, const PS& y)</CODE> that
+    having signature <CODE>void foo(PSET& x, const PSET& y)</CODE> that
     applies an operator to \c x and \c y and assigns the result to \c x.
     For instance, such a function object is obtained by
     <CODE>std::mem_fun_ref(&C_Polyhedron::intersection_assign)</CODE>.
@@ -235,9 +245,9 @@ private:
   private:
     /*! \brief
       Count the number of references:
-      -   0: leaked, \p ph is non-const;
-      -   1: one reference, \p ph is non-const;
-      - > 1: more than one reference, \p ph is const.
+      -   0: leaked, \p pset is non-const;
+      -   1: one reference, \p pset is non-const;
+      - > 1: more than one reference, \p pset is const.
     */
     mutable unsigned long references;
 
@@ -251,17 +261,17 @@ private:
     Rep();
 
   public:
-    //! A possibly shared base-level domain element.
-    PS ph;
+    //! The possibly shared, embedded pointset.
+    PSET pset;
 
     /*! \brief
-      Builds a new representation by creating a domain element
+      Builds a new representation by creating a pointset
       of the specified kind, in the specified vector space.
     */
     Rep(dimension_type num_dimensions, Degenerate_Element kind);
 
-    //! Builds a new representation by copying base-level element \p p.
-    Rep(const PS& p);
+    //! Builds a new representation by copying the pointset \p p.
+    Rep(const PSET& p);
 
     //! Builds a new representation by copying the constraints in \p cs.
     Rep(const Constraint_System& cs);
@@ -304,9 +314,10 @@ private:
   Rep* prep;
 
   friend bool
-  operator==<PS>(const Determinate<PS>& x, const Determinate<PS>& y);
+  operator==<PSET>(const Determinate<PSET>& x, const Determinate<PSET>& y);
+
   friend bool
-  operator!=<PS>(const Determinate<PS>& x, const Determinate<PS>& y);
+  operator!=<PSET>(const Determinate<PSET>& x, const Determinate<PSET>& y);
 };
 
 
@@ -314,9 +325,9 @@ namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Determinate */
-template <typename PS>
-void swap(Parma_Polyhedra_Library::Determinate<PS>& x,
-	  Parma_Polyhedra_Library::Determinate<PS>& y);
+template <typename PSET>
+void swap(Parma_Polyhedra_Library::Determinate<PSET>& x,
+	  Parma_Polyhedra_Library::Determinate<PSET>& y);
 
 } // namespace std
 

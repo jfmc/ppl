@@ -58,6 +58,7 @@ parma_polyhedra_library.Linear_Expression_Variable \
 parma_polyhedra_library.MIP_Problem \
 parma_polyhedra_library.MIP_Problem_Status \
 parma_polyhedra_library.Optimization_Mode \
+parma_polyhedra_library.Pair \
 parma_polyhedra_library.Parma_Polyhedra_Library \
 parma_polyhedra_library.Poly_Con_Relation \
 parma_polyhedra_library.Poly_Gen_Relation \
@@ -92,6 +93,7 @@ parma_polyhedra_library_Linear_Expression_Variable.h \
 parma_polyhedra_library_MIP_Problem.h \
 parma_polyhedra_library_MIP_Problem_Status.h \
 parma_polyhedra_library_Optimization_Mode.h \
+parma_polyhedra_library_Pair.h \
 parma_polyhedra_library_Parma_Polyhedra_Library.h \
 parma_polyhedra_library_Poly_Con_Relation.h \
 parma_polyhedra_library_Poly_Gen_Relation.h \
@@ -232,8 +234,8 @@ MIP_Problem.class \
 MIP_Problem_Status.class \
 Optimization_Mode.class \
 Overflow_Error_Exception.class \
-Parma_Polyhedra_Library.class \
 Pair.class \
+Parma_Polyhedra_Library.class \
 Partial_Function.class \
 Poly_Con_Relation.class \
 Poly_Gen_Relation.class \

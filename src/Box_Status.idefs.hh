@@ -46,10 +46,10 @@ public:
   //! By default Status is the empty set of assertion.
   Status();
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Status(const Status& y);
 
-  //! Copy-constructor from a box of different type.
+  //! Copy constructor from a box of different type.
   template <typename Other_ITV>
   Status(const typename Box<Other_ITV>::Status& y);
 

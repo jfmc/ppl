@@ -518,7 +518,7 @@ test17() {
 
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
-  bool ok =! ph2.ascii_load(f);
+  bool ok = !ph2.ascii_load(f);
   close(f);
 
   return ok;
@@ -535,7 +535,7 @@ test18() {
 
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
-  bool ok =! ph2.ascii_load(f);
+  bool ok = !ph2.ascii_load(f);
   close(f);
 
   return ok;
@@ -552,7 +552,7 @@ test19() {
 
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
-  bool ok =! ph2.ascii_load(f);
+  bool ok = !ph2.ascii_load(f);
   close(f);
 
   return ok;

@@ -188,7 +188,7 @@ public:
   //! Builds the singleton system containing only generator \p g.
   explicit Generator_System(const Generator& g);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Generator_System(const Generator_System& gs);
 
   //! Destructor.
@@ -257,7 +257,7 @@ public:
     //! Default constructor.
     const_iterator();
 
-    //! Ordinary copy-constructor.
+    //! Ordinary copy constructor.
     const_iterator(const const_iterator& y);
 
     //! Destructor.

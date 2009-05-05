@@ -367,13 +367,13 @@ public:
 
   /*! \brief
     Returns true indicating that this domain has methods that
-    can recycle congruences
+    can recycle congruences.
   */
   static bool can_recycle_congruence_systems();
 
   /*! \brief
     Returns true indicating that this domain has methods that
-    can recycle constraints
+    can recycle constraints.
   */
   static bool can_recycle_constraint_systems();
 
@@ -577,7 +577,7 @@ public:
   explicit Grid(const Polyhedron& ph,
                 Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   /*!
     The complexity argument is ignored.
   */

@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 
-#include "wrap.hh"
+#include "wrap_string.hh"
 #include <cstdlib>
 
 namespace Parma_Polyhedra_Library {

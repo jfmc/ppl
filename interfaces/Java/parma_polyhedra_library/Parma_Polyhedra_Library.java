@@ -45,6 +45,33 @@ site: http://www.cs.unipr.it/ppl/ . */
   Here is a list of notes with general information and advice
   on the use of the Java interface.
 
+  - When the Parma Polyhedra Library is configured, it will automatically
+    test for the existence of the Java system (unless configuration options
+    are passed to disable the build of the Java interface;
+    see configuration option <code>--enable-interfaces</code>).
+    If Java is correctly installed in a standard location, things will be
+    arranged so that the Java interface is built and installed
+    (see configuration option <code>--with-java</code> if you need to
+    specify a non-standard location for the Java system).
+
+  - The Java interface files are all installed in the directory
+    \c prefix/lib/ppl.  Since this includes shared and
+    dynamically loaded libraries, you must make your dynamic
+    linker/loader aware of this fact.  If you use a GNU/Linux system,
+    try the commands <CODE>man ld.so</CODE> and <CODE>man ldconfig</CODE>
+    for more information.
+
+  - Any application using the PPL should:
+      - Load the PPL interface library by calling <code>System.load</code>
+        and passing the full path of the dynamic shared object;
+      - Make sure that only the intended version(s) of the library has
+        been loaded, e.g., by calling static method <code>version()</code>
+        in class \c parma_polyhedra_library.Parma_Polyhedra_Library;
+      - Starting from version 0.11, initialize the interface by calling
+        static method <code>initialize_library()</code>;
+        when all library work is done, finalize the interface by calling
+        <code>finalize_library()</code>.
+
   - The numerical abstract domains available to the Java user as
     Java classes consist of the <EM>simple</EM> domains,
     <EM>powersets</EM> of a simple domain and <EM>products</EM>
@@ -77,14 +104,10 @@ site: http://www.cs.unipr.it/ppl/ . */
   - In the following, any of the above numerical
     abstract domains  is called a PPL <EM>domain</EM>
     and any element of a PPL domain is called a <EM>PPL object</EM>.
-  - The Java interface files are all installed in the directory
-    \c prefix/lib/ppl.  Since this includes shared and
-    dynamically loaded libraries, you must make your dynamic
-    linker/loader aware of this fact.  If you use a GNU/Linux system,
-    try the commands <CODE>man ld.so</CODE> and <CODE>man ldconfig</CODE>
-    for more information.
+
   - A Java program can create a new object for a PPL domain by
     using the constructors for the class corresponding to the domain.
+
   - For a PPL object with space dimension \p k,
     the identifiers used for the PPL variables
     must lie between 0 and \f$k-1\f$ and correspond to the indices of the
@@ -96,22 +119,13 @@ site: http://www.cs.unipr.it/ppl/ . */
     should follow all the (space) dimension-compatibility rules stated in
     Section \extref{representation, Representations of Convex Polyhedra}
     of the main PPL user manual.
+
   - As explained above, a polyhedron has a fixed topology C or NNC,
     that is determined at the time of its initialization.
     All subsequent operations on the polyhedron must respect all the
     topological compatibility rules stated in Section
     \extref{representation, Representations of Convex Polyhedra}
     of the main PPL user manual.
-  - Any application using the PPL should make sure that only the
-    intended version(s) of the library are ever used.
-  - When the Parma Polyhedra Library is configured, it will automatically
-    test for the existence of the Java system (unless configuration options
-    are passed to disable the build of the Java interface;
-    see configuration option <code>--enable-interfaces</code>).
-    If Java is correctly installed in a standard location, things will be
-    arranged so that the Java interface is built and installed
-    (see configuration option <code>--with-java</code> if you need to
-    specify a non-standard location for the Java system).
 
 */ /* \mainpage */
 
@@ -130,10 +144,22 @@ public class Parma_Polyhedra_Library {
     //! \name Library initialization and finalization
     //@{
 
-    //! Initializes the library.
+    /*! \brief
+      Initializes the Parma Polyhedra Library.
+
+      This method must be called after loading the library and
+      before calling any other method from any other PPL package class.
+    */
     public static native void initialize_library();
 
-    //! Finalizes the library.
+    /*! \brief
+      Finalizes the Parma Polyhedra Library.
+
+      This method must be called when work with the library is done.
+      After finalization, no other library method can be called
+      (except those in class Parma_Polyhedra_Library), unless the library
+      is re-initialized by calling <code>initialize_library()</code>.
+    */
     public static native void finalize_library();
 
     //@} // Library initialization and finalization

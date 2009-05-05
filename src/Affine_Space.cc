@@ -72,13 +72,13 @@ PPL::Affine_Space::minimized_congruences() const {
   return gr.minimized_congruences();
 }
 
-const PPL::Generator_System&
+PPL::Generator_System
 PPL::Affine_Space::generators() const {
   // FIXME: implement by filtering the grid generators.
   abort();
 }
 
-const PPL::Generator_System&
+PPL::Generator_System
 PPL::Affine_Space::minimized_generators() const {
   // FIXME: implement by filtering the grid generators.
   abort();
@@ -361,16 +361,41 @@ PPL::Affine_Space::fold_space_dimensions(const Variables_Set& to_be_folded,
 }
 
 void
-PPL::Affine_Space::widening_assign(const Affine_Space& y, unsigned* tp) {
-  gr.widening_assign(y.gr, tp);
+PPL::Affine_Space::widening_assign(const Affine_Space& y, unsigned*) {
+  Affine_Space& x = *this;
+
+  // Dimension-compatibility check.
+  if (space_dimension() != y.space_dimension())
+    throw_dimension_incompatible("widening_assign(y)", "y", y);
+
+#ifndef NDEBUG
+  {
+    // Assume y is contained in or equal to x.
+    const Affine_Space x_copy = x;
+    const Affine_Space y_copy = y;
+    assert(x_copy.contains(y_copy));
+  }
+#endif
 }
 
 void
 PPL::Affine_Space::limited_extrapolation_assign(const Affine_Space& y,
-                                                const Constraint_System& cs,
-                                                unsigned* tp) {
-  Congruence_System cgs(cs);
-  gr.limited_extrapolation_assign(y.gr, cgs, tp);
+                                                const Constraint_System&,
+                                                unsigned*) {
+  Affine_Space& x = *this;
+
+  // Dimension-compatibility check.
+  if (space_dimension() != y.space_dimension())
+    throw_dimension_incompatible("widening_assign(y)", "y", y);
+
+#ifndef NDEBUG
+  {
+    // Assume y is contained in or equal to x.
+    const Affine_Space x_copy = x;
+    const Affine_Space y_copy = y;
+    assert(x_copy.contains(y_copy));
+  }
+#endif
 }
 
 /*! \relates Parma_Polyhedra_Library::Affine_Space */
@@ -379,3 +404,24 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Affine_Space& gr) {
   s << gr;
   return s;
 }
+
+void
+PPL::Affine_Space
+::throw_dimension_incompatible(const char* method,
+                               const char* other_name,
+                               dimension_type other_dim) const {
+  std::ostringstream s;
+  s << "PPL::Affine_Space::" << method << ":\n"
+    << "this->space_dimension() == " << space_dimension() << ", "
+    << other_name << ".space_dimension() == " << other_dim << ".";
+  throw std::invalid_argument(s.str());
+}
+
+void
+PPL::Affine_Space
+::throw_dimension_incompatible(const char* method,
+                               const char* as_name,
+                               const Affine_Space& as) const {
+  throw_dimension_incompatible(method, as_name, as.space_dimension());
+}
+

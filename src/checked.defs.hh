@@ -534,10 +534,9 @@ struct Is_Special<Plus_Infinity> : public True {};
 template <>
 struct Is_Special<Not_A_Number> : public True {};
 
-
-#define MINUS_INFINITY Minus_Infinity()
-#define PLUS_INFINITY Plus_Infinity()
-#define NOT_A_NUMBER Not_A_Number()
+extern Minus_Infinity MINUS_INFINITY;
+extern Plus_Infinity PLUS_INFINITY;
+extern Not_A_Number NOT_A_NUMBER;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
