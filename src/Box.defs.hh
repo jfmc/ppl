@@ -43,10 +43,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "Grid.types.hh"
 #include "Partially_Reduced_Product.types.hh"
+#include "intervals.defs.hh"
 #include <vector>
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
+
+struct Interval_Base;
+struct Circular_Interval_Base;
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are the same box.
 /*! \relates Box
@@ -1181,7 +1185,12 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void CC76_widening_assign(const Box& y, unsigned* tp = 0);
+  template <typename T>
+  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+  CC76_widening_assign(const T& y, unsigned* tp = 0);
+  template <typename T>
+  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
+  CC76_widening_assign(const T& y, unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1199,9 +1208,14 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  template <typename Iterator>
-  void CC76_widening_assign(const Box& y,
-			    Iterator first, Iterator last);
+  template <typename T, typename Iterator>
+  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+  CC76_widening_assign(const T& y,
+		       Iterator first, Iterator last);
+  template <typename T, typename Iterator>
+  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
+  CC76_widening_assign(const T& y,
+		       Iterator first, Iterator last);
 
   //! Same as CC76_widening_assign(y, tp).
   void widening_assign(const Box& y, unsigned* tp = 0);
@@ -1249,7 +1263,12 @@ public:
     <CODE>x.CC76_narrowing_assign(y)</CODE> will assign to \p x
     the result of the computation \f$\mathtt{y} \Delta \mathtt{x}\f$.
   */
-  void CC76_narrowing_assign(const Box& y);
+  template <typename T>
+  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+  CC76_narrowing_assign(const T& y);
+  template <typename T>
+  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
+  CC76_narrowing_assign(const T& y);
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
 

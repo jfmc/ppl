@@ -83,7 +83,6 @@ f_info(const Interval<Boundary, Info>& x) {
 struct Scalar_As_Interval_Policy {
   const_bool_nodef(may_be_empty, true);
   const_bool_nodef(may_contain_infinity, true);
-  const_bool_nodef(check_empty_result, false);
   const_bool_nodef(check_inexact, false);
 };
 
@@ -126,15 +125,6 @@ f_is_singleton(const T& x) {
   return !f_is_empty(x);
 }
 
-template <typename T>
-inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Ternary>::type
-f_is_empty_lazy(const T& x) {
-  if (f_info(x).get_interval_property(CARDINALITY_0))
-    return f_info(x).get_interval_property(CARDINALITY_IS) ? T_YES : T_NO;
-  else
-    return T_MAYBE;
-}
-
 } // namespace Interval_NS
 
 template <typename T>
@@ -152,15 +142,6 @@ check_empty_arg(const T& x) {
     assert(!f_is_empty(x));
     return false;
   }
-}
-
-template <typename Boundary, typename Info>
-inline I_Result
-check_empty_result(const Interval<Boundary, Info>& x, I_Result r) {
-  if (Info::check_empty_result && f_is_empty(x))
-    return I_EMPTY;
-  else
-    return static_cast<I_Result>(r | I_MAYBE_EMPTY);
 }
 
 template <typename T1, typename T2>
@@ -249,20 +230,6 @@ Interval<Boundary, Info>::is_disjoint_from(const T& y) const {
 }
 
 template <typename To_Boundary, typename To_Info>
-template <typename From1, typename From2>
-inline I_Result
-Interval<To_Boundary, To_Info>::assign(const From1& l, const From2& u) {
-  info().clear();
-  Result rl = Boundary_NS::assign(LOWER, lower(), info(), LOWER, l, f_info(l));
-  Result ru = Boundary_NS::assign(UPPER, upper(), info(), UPPER, u, f_info(u));
-  complete_init_internal();
-  assert(OK());
-  // The following Parma_Polyhedra_Library:: qualification is to work
-  // around a bug in version 10.0 of the Intel C/C++ compiler.
-  return Parma_Polyhedra_Library::check_empty_result(*this, combine(rl, ru));
-}
-
-template <typename To_Boundary, typename To_Info>
 template <typename From>
 inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
@@ -279,7 +246,6 @@ Interval<To_Boundary, To_Info>::assign(const From& x) {
   Result ru = Boundary_NS::assign(UPPER, upper(), to_info,
 				  UPPER, f_upper(x), f_info(x));
   assign_or_swap(info(), to_info);
-  complete_init_internal();
   assert(OK());
   return combine(rl, ru);
 }
@@ -296,9 +262,6 @@ Interval<To_Boundary, To_Info>::join_assign(const From& x) {
     return combine(V_EQ, V_EQ);
   if (!join_restriction(info(), *this, x))
     return assign(EMPTY);
-  info().set_interval_property(CARDINALITY_IS, false);
-  info().set_interval_property(CARDINALITY_0);
-  info().set_interval_property(CARDINALITY_1, false);
   Result rl, ru;
   rl = min_assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
   ru = max_assign(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
@@ -323,7 +286,6 @@ Interval<To_Boundary, To_Info>::join_assign(const From1& x, const From2& y) {
   to_info.clear();
   if (!join_restriction(to_info, x, y))
     return assign(EMPTY);
-  to_info.set_interval_property(CARDINALITY_0);
   Result rl, ru;
   rl = min_assign(LOWER, lower(), to_info,
 		  LOWER, f_lower(x), f_info(x),
@@ -332,7 +294,6 @@ Interval<To_Boundary, To_Info>::join_assign(const From1& x, const From2& y) {
 		  UPPER, f_upper(x), f_info(x),
 		  UPPER, f_upper(y), f_info(y));
   assign_or_swap(info(), to_info);
-  complete_init_internal();
   assert(OK());
   return combine(rl, ru);
 }
@@ -369,15 +330,11 @@ Interval<To_Boundary, To_Info>::intersect_assign(const From& x) {
   assert(f_OK(x));
   if (!intersect_restriction(info(), *this, x))
     return assign(EMPTY);
-  // FIXME: more accurate?
-  invalidate_cardinality_cache();
   Result rl, ru;
   rl = max_assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
   ru = min_assign(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
   assert(OK());
-  // The following Parma_Polyhedra_Library:: qualification is to work
-  // around a bug in version 10.0 of the Intel C/C++ compiler.
-  return Parma_Polyhedra_Library::check_empty_result(*this, combine(rl, ru));
+  return I_ANY;
 }
 
 template <typename To_Boundary, typename To_Info>
@@ -402,11 +359,8 @@ Interval<To_Boundary, To_Info>::intersect_assign(const From1& x,
 		  UPPER, f_upper(x), f_info(x),
 		  UPPER, f_upper(y), f_info(y));
   assign_or_swap(info(), to_info);
-  complete_init_internal();
   assert(OK());
-  // The following Parma_Polyhedra_Library:: qualification is to work
-  // around a bug in version 10.0 of the Intel C/C++ compiler.
-  return Parma_Polyhedra_Library::check_empty_result(*this, combine(rl, ru));
+  return I_NOT_EMPTY;
 }
 
 template <typename To_Boundary, typename To_Info>
@@ -426,13 +380,11 @@ Interval<To_Boundary, To_Info>::difference_assign(const From& x) {
     if (nu)
       return assign(EMPTY);
     else {
-      invalidate_cardinality_cache();
       info().clear_boundary_properties(LOWER);
       rl = complement(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x));
     }
   }
   else if (nu) {
-    invalidate_cardinality_cache();
     info().clear_boundary_properties(UPPER);
     ru = complement(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x));
   }
@@ -472,7 +424,6 @@ Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
     rl = Boundary_NS::assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
   }
   assign_or_swap(info(), to_info);
-  complete_init_internal();
   assert(OK());
   return combine(rl, ru);
 }
@@ -493,56 +444,40 @@ Interval<To_Boundary, To_Info>
       if (lt(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x)))
 	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(UPPER);
-      Result ru = Boundary_NS::assign(UPPER, upper(), info(),
-				      UPPER, f_upper(x), f_info(x), true);
-      invalidate_cardinality_cache();
+      Boundary_NS::assign(UPPER, upper(), info(),
+			  UPPER, f_upper(x), f_info(x), true);
       normalize();
-      // The following Parma_Polyhedra_Library:: qualification is to work
-      // around a bug in version 10.0 of the Intel C/C++ compiler.
-      return Parma_Polyhedra_Library::check_empty_result(*this,
-							 combine(V_EQ, ru));
+      return I_ANY;
     }
   case LESS_OR_EQUAL:
     {
       if (le(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x)))
 	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(UPPER);
-      Result ru = Boundary_NS::assign(UPPER, upper(), info(),
-				      UPPER, f_upper(x), f_info(x));
-      invalidate_cardinality_cache();
+      Boundary_NS::assign(UPPER, upper(), info(),
+			  UPPER, f_upper(x), f_info(x));
       normalize();
-      // The following Parma_Polyhedra_Library:: qualification is to work
-      // around a bug in version 10.0 of the Intel C/C++ compiler.
-      return Parma_Polyhedra_Library::check_empty_result(*this,
-							 combine(V_EQ, ru));
+      return I_ANY;
     }
   case GREATER_THAN:
     {
       if (gt(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x)))
 	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(LOWER);
-      Result rl = Boundary_NS::assign(LOWER, lower(), info(),
-				      LOWER, f_lower(x), f_info(x), true);
-      invalidate_cardinality_cache();
+      Boundary_NS::assign(LOWER, lower(), info(),
+			  LOWER, f_lower(x), f_info(x), true);
       normalize();
-      // The following Parma_Polyhedra_Library:: qualification is to work
-      // around a bug in version 10.0 of the Intel C/C++ compiler.
-      return Parma_Polyhedra_Library::check_empty_result(*this,
-							 combine(rl, V_EQ));
+      return I_ANY;
     }
   case GREATER_OR_EQUAL:
     {
       if (ge(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x)))
 	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(LOWER);
-      Result rl = Boundary_NS::assign(LOWER, lower(), info(),
-				      LOWER, f_lower(x), f_info(x));
-      invalidate_cardinality_cache();
+      Boundary_NS::assign(LOWER, lower(), info(),
+			  LOWER, f_lower(x), f_info(x));
       normalize();
-      // The following Parma_Polyhedra_Library:: qualification is to work
-      // around a bug in version 10.0 of the Intel C/C++ compiler.
-      return Parma_Polyhedra_Library::check_empty_result(*this,
-							 combine(rl, V_EQ));
+      return I_ANY;
     }
   case EQUAL:
     return intersect_assign(x);
@@ -553,15 +488,11 @@ Interval<To_Boundary, To_Info>
       if (check_empty_arg(*this))
 	return I_EMPTY;
       if (eq(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x)))
-	lower_shrink();
+	remove_inf();
       if (eq(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x)))
-	upper_shrink();
-      invalidate_cardinality_cache();
+	remove_sup();
       normalize();
-      // The following Parma_Polyhedra_Library:: qualification is to work
-      // around a bug in version 10.0 of the Intel C/C++ compiler.
-      return Parma_Polyhedra_Library::check_empty_result(*this,
-							 combine(V_EQ, V_EQ));
+      return I_ANY;
     }
   default:
     assert(false);
@@ -587,12 +518,8 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       info().clear_boundary_properties(UPPER);
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
 				      LOWER, f_lower(x), SCALAR_INFO, !is_open(LOWER, f_lower(x), f_info(x)));
-      invalidate_cardinality_cache();
       normalize();
-      // The following Parma_Polyhedra_Library:: qualification is to work
-      // around a bug in version 10.0 of the Intel C/C++ compiler.
-      return Parma_Polyhedra_Library::check_empty_result(*this,
-							 combine(V_EQ, ru));
+      return I_ANY;
     }
   case LESS_OR_EQUAL:
     {
@@ -601,12 +528,8 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       info().clear_boundary_properties(UPPER);
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
 				      LOWER, f_lower(x), SCALAR_INFO);
-      invalidate_cardinality_cache();
       normalize();
-      // The following Parma_Polyhedra_Library:: qualification is to work
-      // around a bug in version 10.0 of the Intel C/C++ compiler.
-      return Parma_Polyhedra_Library::check_empty_result(*this,
-							 combine(V_EQ, ru));
+      return I_ANY;
     }
   case GREATER_THAN:
     {
@@ -615,12 +538,8 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       info().clear_boundary_properties(LOWER);
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
 				      UPPER, f_upper(x), SCALAR_INFO, !is_open(UPPER, f_upper(x), f_info(x)));
-      invalidate_cardinality_cache();
       normalize();
-      // The following Parma_Polyhedra_Library:: qualification is to work
-      // around a bug in version 10.0 of the Intel C/C++ compiler.
-      return Parma_Polyhedra_Library::check_empty_result(*this,
-							 combine(rl, V_EQ));
+      return I_ANY;
     }
   case GREATER_OR_EQUAL:
     {
@@ -629,12 +548,8 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       info().clear_boundary_properties(LOWER);
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
 				      UPPER, f_upper(x), SCALAR_INFO);
-      invalidate_cardinality_cache();
       normalize();
-      // The following Parma_Polyhedra_Library:: qualification is to work
-      // around a bug in version 10.0 of the Intel C/C++ compiler.
-      return Parma_Polyhedra_Library::check_empty_result(*this,
-							 combine(rl, V_EQ));
+      return I_ANY;
     }
   case EQUAL:
     if (!f_is_singleton(x))
@@ -645,15 +560,11 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       if (check_empty_arg(*this))
 	return I_EMPTY;
       if (eq(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x)))
-	lower_shrink();
+	remove_inf();
       if (eq(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x)))
-	upper_shrink();
-      invalidate_cardinality_cache();
+	remove_sup();
       normalize();
-      // The following Parma_Polyhedra_Library:: qualification is to work
-      // around a bug in version 10.0 of the Intel C/C++ compiler.
-      return Parma_Polyhedra_Library::check_empty_result(*this,
-							 combine(V_EQ, V_EQ));
+      return I_ANY;
     }
   default:
     assert(false);
@@ -679,7 +590,6 @@ Interval<To_Boundary, To_Info>::neg_assign(const From& x) {
   ru = Boundary_NS::neg_assign(UPPER, upper(), to_info, LOWER, f_lower(x), f_info(x));
   assign_or_swap(lower(), to_lower);
   assign_or_swap(info(), to_info);
-  complete_init_internal();
   assert(OK());
   return combine(rl, ru);
 }
@@ -717,7 +627,6 @@ Interval<To_Boundary, To_Info>::add_assign(const From1& x, const From2& y) {
 				      UPPER, f_upper(x), f_info(x),
 				      UPPER, f_upper(y), f_info(y));
   assign_or_swap(info(), to_info);
-  complete_init_internal();
   assert(OK());
   return combine(rl, ru);
 }
@@ -759,7 +668,6 @@ Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {
 			       LOWER, f_lower(y), f_info(y));
   assign_or_swap(lower(), to_lower);
   assign_or_swap(info(), to_info);
-  complete_init_internal();
   assert(OK());
   return combine(rl, ru);
 }
@@ -930,7 +838,6 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
   }
   assign_or_swap(lower(), to_lower);
   assign_or_swap(info(), to_info);
-  complete_init_internal();
   assert(OK());
   return combine(rl, ru);
 }
@@ -1041,7 +948,6 @@ Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
   }
   assign_or_swap(lower(), to_lower);
   assign_or_swap(info(), to_info);
-  complete_init_internal();
   assert(OK());
   return combine(rl, ru);
 }
@@ -1197,9 +1103,6 @@ Interval<Boundary, Info>::ascii_load(std::istream& s) {
     return false;
   if (!ascii_load(s, upper()))
     return false;
-#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
-  complete_init_internal();
-#endif
   assert(OK());
   return true;
 }

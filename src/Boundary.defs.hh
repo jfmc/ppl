@@ -29,13 +29,6 @@ namespace Parma_Polyhedra_Library {
 
 namespace Boundary_NS {
 
-struct Unbounded {
-  Unbounded() {
-  }
-};
-
-const Unbounded UNBOUNDED;
-
 struct Property {
   enum Type {
     SPECIAL_,
@@ -74,12 +67,6 @@ special_set_boundary_infinity(Boundary_Type type, T&, Info& info) {
   assert(Info::store_special);
   info.set_boundary_property(type, SPECIAL);
   return V_EQ;
-}
-
-template <typename T, typename Info>
-inline bool
-special_is_boundary_infinity(Boundary_Type, const T&, const Info&) {
-  return true;
 }
 
 template <typename T, typename Info>
@@ -214,32 +201,48 @@ shrink(Boundary_Type type, T& x, Info& info, bool check) {
 
 template <typename T, typename Info>
 inline bool
-is_unbounded(Boundary_Type type, const T& x, const Info& info) {
-  if (Info::store_special)
-    return info.get_boundary_property(type, SPECIAL)
-      && special_is_boundary_infinity(type, x, info);
-  else if (std::numeric_limits<T>::has_infinity) {
-    if (type == LOWER)
-      return Parma_Polyhedra_Library::is_minus_infinity(x);
-    else
-      return Parma_Polyhedra_Library::is_plus_infinity(x);
-  }
-  else if (std::numeric_limits<T>::is_bounded) {
-    if (type == LOWER)
-      return x == std::numeric_limits<T>::min();
-    else
+is_domain_inf(Boundary_Type type, const T& x, const Info& info) {
+  if (Info::store_special && type == LOWER)
+    return info.get_boundary_property(type, SPECIAL);
+  else if (std::numeric_limits<T>::has_infinity)
+    return Parma_Polyhedra_Library::is_minus_infinity(x);
+  else if (std::numeric_limits<T>::is_bounded)
+    return x == std::numeric_limits<T>::min();
+  else
+    return false;
+}
+
+template <typename T, typename Info>
+inline bool
+is_domain_sup(Boundary_Type type, const T& x, const Info& info) {
+  if (Info::store_special && type == UPPER)
+    return info.get_boundary_property(type, SPECIAL);
+  else if (std::numeric_limits<T>::has_infinity)
+    return Parma_Polyhedra_Library::is_plus_infinity(x);
+  else if (std::numeric_limits<T>::is_bounded)
       return x == std::numeric_limits<T>::max();
-  } else
+  else
     return false;
 }
 
 template <typename T, typename Info>
 inline bool
 normal_is_boundary_infinity(Boundary_Type type, const T& x, const Info&) {
+  if (!std::numeric_limits<T>::has_infinity)
+    return false;
   if (type == LOWER)
     return Parma_Polyhedra_Library::is_minus_infinity(x);
   else
     return Parma_Polyhedra_Library::is_plus_infinity(x);
+}
+
+template <typename T, typename Info>
+inline bool
+is_boundary_infinity(Boundary_Type type, const T& x, const Info& info) {
+  if (Info::store_special)
+    return info.get_boundary_property(type, SPECIAL);
+  else
+    return normal_is_boundary_infinity(type, x, info);
 }
 
 template <typename T, typename Info>
@@ -258,8 +261,7 @@ inline bool
 is_minus_infinity(Boundary_Type type, const T& x, const Info& info) {
   if (type == LOWER) {
     if (Info::store_special)
-      return info.get_boundary_property(type, SPECIAL)
-	&& special_is_boundary_infinity(type, x, info);
+      return info.get_boundary_property(type, SPECIAL);
     else
       return normal_is_boundary_infinity(type, x, info);
   }
@@ -272,8 +274,7 @@ inline bool
 is_plus_infinity(Boundary_Type type, const T& x, const Info& info) {
   if (type == UPPER) {
     if (Info::store_special)
-      return info.get_boundary_property(type, SPECIAL)
-	&& special_is_boundary_infinity(type, x, info);
+      return info.get_boundary_property(type, SPECIAL);
     else
       return normal_is_boundary_infinity(type, x, info);
   }
@@ -283,19 +284,8 @@ is_plus_infinity(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename T, typename Info>
 inline bool
-is_boundary_infinity(Boundary_Type type, const T& x, const Info& info) {
-  if (Info::store_special)
-    return info.get_boundary_property(type, SPECIAL)
-      && special_is_boundary_infinity(type, x, info);
-  else
-    return normal_is_boundary_infinity(type, x, info);
-}
-
-template <typename T, typename Info>
-inline bool
 is_reverse_infinity(Boundary_Type type, const T& x, const Info& info) {
-  return !Info::store_special
-    && normal_is_reverse_infinity(type, x, info);
+  return normal_is_reverse_infinity(type, x, info);
 }
 
 template <typename T, typename Info>
@@ -327,8 +317,7 @@ boundary_infinity_is_open(Boundary_Type type, const Info& info) {
 template <typename T, typename Info>
 inline int
 sgn_b(Boundary_Type type, const T& x, const Info& info) {
-  if (info.get_boundary_property(type, SPECIAL) &&
-      special_is_boundary_infinity(type, x, info))
+  if (info.get_boundary_property(type, SPECIAL))
     return type == LOWER ? -1 : 1;
   else
     // The following Parma_Polyhedra_Library:: qualification is to work
@@ -484,8 +473,7 @@ complement(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type, const T& x, const Info& info) {
   assert(to_type != type);
   bool shrink;
-  if (info.get_boundary_property(type, SPECIAL)
-      && special_is_boundary_infinity(type, x, info)) {
+  if (info.get_boundary_property(type, SPECIAL)) {
     shrink = !special_is_open(type, x, info);
     if (type == LOWER)
       return set_minus_infinity(to_type, to, to_info, shrink);
@@ -505,8 +493,7 @@ assign(Boundary_Type to_type, To& to, To_Info& to_info,
        Boundary_Type type, const T& x, const Info& info,
        bool shrink = false) {
   assert(to_type == type);
-  if (info.get_boundary_property(type, SPECIAL)
-      && special_is_boundary_infinity(type, x, info)) {
+  if (info.get_boundary_property(type, SPECIAL)) {
     shrink = shrink || special_is_open(type, x, info);
     return set_boundary_infinity(to_type, to, to_info, shrink);
   }
@@ -567,8 +554,7 @@ neg_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type, const T& x, const Info& info) {
   assert(to_type != type);
   bool shrink;
-  if (info.get_boundary_property(type, SPECIAL)
-      && special_is_boundary_infinity(type, x, info)) {
+  if (info.get_boundary_property(type, SPECIAL)) {
     shrink = special_is_open(type, x, info);
     return set_boundary_infinity(to_type, to, to_info, shrink);
   }

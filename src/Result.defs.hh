@@ -27,19 +27,20 @@ namespace Parma_Polyhedra_Library {
 
 //! Possible outcomes of a checked arithmetic computation.
 /*! \ingroup PPL_CXX_interface */
+// This must be kept in sync with Relation_Symbol
 enum Result {
 
   //! \hideinitializer Ordinary result class.
   VC_NORMAL = 0,
 
+  //! \hideinitializer The computed result is exact.
+  V_EQ = 1,
+
   //! \hideinitializer The computed result is inexact and rounded up.
-  V_LT = 1,
+  V_LT = 2,
 
   //! \hideinitializer The computed result is inexact and rounded down.
-  V_GT = 2,
-
-  //! \hideinitializer The computed result is exact.
-  V_EQ = 4,
+  V_GT = 4,
 
   //! \hideinitializer The computed result is inexact.
   V_NE = V_LT | V_GT,

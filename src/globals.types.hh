@@ -35,19 +35,20 @@ enum Degenerate_Element {
 
 //! Relation symbols.
 /*! \ingroup PPL_CXX_interface */
+// This must be kept in sync with Result
 enum Relation_Symbol {
-  //! Less than.
-  LESS_THAN,
-  //! Less than or equal to.
-  LESS_OR_EQUAL,
-  //! Equal to.
-  EQUAL,
-  //! Greater than or equal to.
-  GREATER_OR_EQUAL,
-  //! Greater than.
-  GREATER_THAN,
-  //! Not equal to.
-  NOT_EQUAL
+  //! \hideinitializer Equal to.
+  EQUAL = 1,
+  //! \hideinitializer Less than.
+  LESS_THAN = 2,
+  //! \hideinitializer Less than or equal to.
+  LESS_OR_EQUAL = LESS_THAN | EQUAL,
+  //! \hideinitializer Greater than.
+  GREATER_THAN = 4,
+  //! \hideinitializer Greater than or equal to.
+  GREATER_OR_EQUAL = GREATER_THAN | EQUAL,
+  //! \hideinitializer Not equal to.
+  NOT_EQUAL = LESS_THAN | GREATER_THAN
 };
 
 //! Complexity pseudo-classes.

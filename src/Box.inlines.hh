@@ -261,7 +261,7 @@ Box<ITV>::get_lower_bound(const dimension_type k, bool& closed,
   assert(k < seq.size());
   const ITV& seq_k = seq[k];
 
-  if (seq_k.lower_is_unbounded())
+  if (seq_k.lower_is_boundary_infinity())
     return false;
 
   closed = !seq_k.lower_is_open();
@@ -281,7 +281,7 @@ Box<ITV>::get_upper_bound(const dimension_type k, bool& closed,
   assert(k < seq.size());
   const ITV& seq_k = seq[k];
 
-  if (seq_k.upper_is_unbounded())
+  if (seq_k.upper_is_boundary_infinity())
     return false;
 
   closed = !seq_k.upper_is_open();
@@ -397,14 +397,14 @@ Box<ITV>
   ITV& seq_v = seq[var_id];
   switch (type) {
   case Constraint::EQUALITY:
-    seq_v.refine_existential(EQUAL, q);
+    seq_v.add_constraint(i_constraint(EQUAL, q));
     break;
   case Constraint::NONSTRICT_INEQUALITY:
-    seq_v.refine_existential((den > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL, q);
+    seq_v.add_constraint(i_constraint(den > 0 ? GREATER_OR_EQUAL : LESS_OR_EQUAL, q));
     assert(seq_v.OK());
     break;
   case Constraint::STRICT_INEQUALITY:
-    seq_v.refine_existential((den > 0) ? GREATER_THAN : LESS_THAN, q);
+    seq_v.add_constraint(i_constraint(den > 0 ? GREATER_THAN : LESS_THAN, q));
     break;
   }
   // FIXME: do check the value returned by `refine_existential' and

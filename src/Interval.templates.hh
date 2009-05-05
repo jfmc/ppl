@@ -38,10 +38,10 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
   Interval<Boundary, Info>& x = *this;
 
   // Upper bound.
-  if (!x.upper_is_unbounded()) {
+  if (!x.upper_is_boundary_infinity()) {
     Boundary& x_ub = x.upper();
     const Boundary& y_ub = y.upper();
-    assert(!y.upper_is_unbounded() && y_ub <= x_ub);
+    assert(!y.upper_is_boundary_infinity() && y_ub <= x_ub);
     if (y_ub < x_ub) {
       Iterator k = std::lower_bound(first, last, x_ub);
       if (k != last) {
@@ -49,15 +49,15 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
 	  x_ub = *k;
       }
       else
-	x.upper_set(UNBOUNDED);
+	x.upper_extend();
     }
   }
 
   // Lower bound.
-  if (!x.lower_is_unbounded()) {
+  if (!x.lower_is_boundary_infinity()) {
     Boundary& x_lb = x.lower();
     const Boundary& y_lb = y.lower();
-    assert(!y.lower_is_unbounded() && y_lb >= x_lb);
+    assert(!y.lower_is_boundary_infinity() && y_lb >= x_lb);
     if (y_lb > x_lb) {
       Iterator k = std::lower_bound(first, last, x_lb);
       if (k != last) {
@@ -65,7 +65,7 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
 	  if (k != first)
 	    x_lb = *--k;
 	  else
-	    x.lower_set(UNBOUNDED);
+	    x.lower_extend();
 	}
       }
       else
@@ -143,8 +143,8 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   }
 
   // Buld interval.
-  bool lower_unbounded = false;
-  bool upper_unbounded = false;
+  bool lower_boundary_infinity = false;
+  bool upper_boundary_infinity = false;
   switch (lower_r) {
   case V_EQ:
     break;
@@ -153,7 +153,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     break;
   case VC_MINUS_INFINITY:
   case V_NEG_OVERFLOW:
-    lower_unbounded = true;
+    lower_boundary_infinity = true;
     break;
   case VC_PLUS_INFINITY:
   case V_POS_OVERFLOW:
@@ -180,25 +180,26 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     return is;
   case VC_PLUS_INFINITY:
   case V_POS_OVERFLOW:
-    upper_unbounded = true;
+    upper_boundary_infinity = true;
     break;
   default:
     assert(false);
   }
 
-  if (!lower_unbounded
-      && !upper_unbounded
+  if (!lower_boundary_infinity
+      && !upper_boundary_infinity
       && (lower_bound > upper_bound
 	  || (lower_open && lower_bound == upper_bound)))
     x.assign(EMPTY);
   else {
-    x.assign(UNIVERSE);
-    if (!lower_unbounded)
-      x.refine_existential((lower_open ? GREATER_THAN : GREATER_OR_EQUAL),
-			   lower_bound);
-    if (!upper_unbounded)
-      x.refine_existential((upper_open ? LESS_THAN : LESS_OR_EQUAL),
-			   upper_bound);
+    if (lower_boundary_infinity)
+      special_set_boundary_infinity(LOWER, x.lower(), x.info());
+    else
+      assign(LOWER, x.lower(), x.info(), LOWER, lower_bound, SCALAR_INFO, lower_open);
+    if (upper_boundary_infinity)
+      special_set_boundary_infinity(UPPER, x.upper(), x.info());
+    else
+      assign(UPPER, x.upper(), x.info(), UPPER, upper_bound, SCALAR_INFO, upper_open);
   }
   return is;
 }
@@ -210,21 +211,21 @@ Interval<Boundary, Info>::simplify_using_context_assign(const From& y) {
   // FIXME: the following code wrongly assumes that intervals are closed
   // and have no restrictions. It must be generalized.
   if (lt(UPPER, upper(), info(), LOWER, f_lower(y), f_info(y))) {
-    lower_set(UNBOUNDED);
+    lower_extend();
     return false;
   }
   if (gt(LOWER, lower(), info(), UPPER, f_upper(y), f_info(y))) {
-    upper_set(UNBOUNDED);
+    upper_extend();
     return false;
   }
   // Weakening the upper bound.
-  if (!upper_is_unbounded() && !y.upper_is_unbounded()
+  if (!upper_is_boundary_infinity() && !y.upper_is_boundary_infinity()
       && y.upper() <= upper())
-    upper_set(UNBOUNDED);
+    upper_extend();
   // Weakening the lower bound.
-  if (!lower_is_unbounded() && !y.lower_is_unbounded()
+  if (!lower_is_boundary_infinity() && !y.lower_is_boundary_infinity()
       && y.lower() >= lower())
-    lower_set(UNBOUNDED);
+    lower_extend();
   return true;
 }
 
