@@ -532,7 +532,7 @@ time_elapse(
   Pointset_Powerset<NNC_Polyhedron> ps_result(ps.space_dimension(), EMPTY);
   for (Pointset_Powerset<NNC_Polyhedron>::const_iterator i = ps.begin(),
                                     ps_end = ps.end(); i != ps_end; ++i) {
-    NNC_Polyhedron di = i->element();
+    NNC_Polyhedron di = i->pointset();
     NNC_Polyhedron d(di);
     d.time_elapse_assign(ph);
     ps_result.add_disjunct(d);
@@ -550,7 +550,7 @@ affine_image(
   Pointset_Powerset<NNC_Polyhedron> ps_result(ps.space_dimension(), EMPTY);
   for (Pointset_Powerset<NNC_Polyhedron>::iterator i = ps.begin(),
                                    ps_end = ps.end(); i != ps_end; ++i) {
-    NNC_Polyhedron phi = i->element();
+    NNC_Polyhedron phi = i->pointset();
     NNC_Polyhedron ph(phi);
     ph.affine_image(var, expr, denominator);
     ps_result.add_disjunct(ph);
@@ -565,7 +565,7 @@ powerset_upper_bound(Pointset_Powerset<NNC_Polyhedron>& ps,
   Pointset_Powerset<NNC_Polyhedron> ps_result(ps.space_dimension(), EMPTY);
   for (Pointset_Powerset<NNC_Polyhedron>::iterator i = ps.begin(),
                                    ps_end = ps.end(); i != ps_end; ++i) {
-    NNC_Polyhedron phi = i->element();
+    NNC_Polyhedron phi = i->pointset();
     ph.upper_bound_assign(phi);
     (void) ph.is_empty();
   }
@@ -585,10 +585,10 @@ disjunct_covers(
   for (Pointset_Powerset<NNC_Polyhedron>::iterator i = ps2.begin(),
                                    ps2_end = ps2.end(); i != ps2_end; ++i) {
     bool is_contained = false;
-    NNC_Polyhedron ph2 = i->element();
+    NNC_Polyhedron ph2 = i->pointset();
     for (Pointset_Powerset<NNC_Polyhedron>::iterator j = ps1.begin(),
                                    ps1_end = ps1.end(); j != ps1_end; ++j) {
-      NNC_Polyhedron ph1 = j->element();
+      NNC_Polyhedron ph1 = j->pointset();
       if (ph1.contains(ph2)) {
         is_contained = true;
         break;
