@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
 #include "Variables_Set.types.hh"
-#include "COW_Pointset.defs.hh"
+#include "Determinate.defs.hh"
 #include "Ask_Tell.defs.hh"
 #include <iosfwd>
 #include <list>
@@ -44,13 +44,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 template <typename PSET>
 class Parma_Polyhedra_Library::Pointset_Ask_Tell
   : public Parma_Polyhedra_Library::Ask_Tell
-<Parma_Polyhedra_Library::COW_Pointset<PSET> > {
+<Parma_Polyhedra_Library::Determinate<PSET> > {
 public:
   typedef PSET element_type;
 
 private:
-  typedef COW_Pointset<PSET> COW_PSET;
-  typedef Ask_Tell<COW_PSET> Base;
+  typedef Determinate<PSET> Det_PSET;
+  typedef Ask_Tell<Det_PSET> Base;
   typedef typename Base::Pair Pair;
 
 public:

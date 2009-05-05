@@ -299,7 +299,7 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
   Pointset_Powerset& x = *this;
   for (Pointset_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
-    x.sequence.push_back(COW_Pointset<NNC_Polyhedron>
+    x.sequence.push_back(Determinate<NNC_Polyhedron>
 			 (NNC_Polyhedron(i->pointset())));
   x.reduced = y.reduced;
   assert(x.OK());
@@ -314,7 +314,7 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
   Pointset_Powerset& x = *this;
   for (Pointset_Powerset<Grid>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
-    x.sequence.push_back(COW_Pointset<NNC_Polyhedron>
+    x.sequence.push_back(Determinate<NNC_Polyhedron>
 			 (NNC_Polyhedron(i->pointset())));
   x.reduced = false;
   assert(x.OK());
@@ -329,7 +329,7 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron>
   Pointset_Powerset& x = *this;
   for (Pointset_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
-    x.sequence.push_back(COW_Pointset<C_Polyhedron>
+    x.sequence.push_back(Determinate<C_Polyhedron>
 			 (C_Polyhedron(i->pointset())));
 
   // Note: this might be non-reduced even when `y' is known to be

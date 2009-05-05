@@ -173,7 +173,7 @@ bool test02() {
   const memory_size_type oct_total_size = oct.total_memory_in_bytes();
   const memory_size_type oct_external_size = oct.external_memory_in_bytes();
 
-  COW_Pointset<TOctagonal_Shape> doct(oct);
+  Determinate<TOctagonal_Shape> doct(oct);
 
   const memory_size_type doct_total_size = doct.total_memory_in_bytes();
   const memory_size_type doct_external_size = doct.external_memory_in_bytes();

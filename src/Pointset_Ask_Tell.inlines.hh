@@ -54,8 +54,8 @@ Pointset_Ask_Tell<PSET>::Pointset_Ask_Tell(dimension_type num_dimensions,
 					 Degenerate_Element kind)
   : Base(), space_dim(num_dimensions) {
   if (kind == EMPTY)
-    pair_insert(COW_Pointset<PSET>(PSET(num_dimensions, UNIVERSE)),
-		COW_Pointset<PSET>(PSET(num_dimensions, EMPTY)));
+    pair_insert(Determinate<PSET>(PSET(num_dimensions, UNIVERSE)),
+		Determinate<PSET>(PSET(num_dimensions, EMPTY)));
   assert(OK());
 }
 
@@ -74,14 +74,14 @@ Pointset_Ask_Tell<PSET>::Pointset_Ask_Tell(const PSET& ph)
 template <typename PSET>
 inline
 Pointset_Ask_Tell<PSET>::Pointset_Ask_Tell(const Constraint_System& cs)
-  : Base(COW_Pointset<PSET>(cs)), space_dim(cs.space_dimension()) {
+  : Base(Determinate<PSET>(cs)), space_dim(cs.space_dimension()) {
   assert(OK());
 }
 
 template <typename PSET>
 inline
 Pointset_Ask_Tell<PSET>::Pointset_Ask_Tell(const Congruence_System& cgs)
-  : Base(COW_Pointset<PSET>(cgs)), space_dim(cgs.space_dimension()) {
+  : Base(Determinate<PSET>(cgs)), space_dim(cgs.space_dimension()) {
   assert(OK());
 }
 
@@ -118,7 +118,7 @@ Pointset_Ask_Tell<PSET>::intersection_assign(const Pointset_Ask_Tell& y) {
   Pointset_Ask_Tell& x = *this;
   x.pairwise_apply_assign
     (y,
-     COW_PSET::lift_op_assign(std::mem_fun_ref(&PSET::intersection_assign)));
+     Det_PSET::lift_op_assign(std::mem_fun_ref(&PSET::intersection_assign)));
 }
 
 template <typename PSET>
@@ -127,7 +127,7 @@ Pointset_Ask_Tell<PSET>::time_elapse_assign(const Pointset_Ask_Tell& y) {
   Pointset_Ask_Tell& x = *this;
   x.pairwise_apply_assign
     (y,
-     COW_PSET::lift_op_assign(std::mem_fun_ref(&PSET::time_elapse_assign)));
+     Det_PSET::lift_op_assign(std::mem_fun_ref(&PSET::time_elapse_assign)));
 }
 
 template <typename PSET>

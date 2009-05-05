@@ -1,4 +1,4 @@
-/* COW_Pointset class implementation: inline functions.
+/* Determinate class implementation: inline functions.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_COW_Pointset_inlines_hh
-#define PPL_COW_Pointset_inlines_hh 1
+#ifndef PPL_Determinate_inlines_hh
+#define PPL_Determinate_inlines_hh 1
 
 #include <cassert>
 
@@ -29,103 +29,103 @@ namespace Parma_Polyhedra_Library {
 
 template <typename PSET>
 inline
-COW_Pointset<PSET>::Rep::Rep(dimension_type num_dimensions,
+Determinate<PSET>::Rep::Rep(dimension_type num_dimensions,
 			  Degenerate_Element kind)
   : references(0), pset(num_dimensions, kind) {
 }
 
 template <typename PSET>
 inline
-COW_Pointset<PSET>::Rep::Rep(const PSET& p)
+Determinate<PSET>::Rep::Rep(const PSET& p)
   : references(0), pset(p) {
 }
 
 template <typename PSET>
 inline
-COW_Pointset<PSET>::Rep::Rep(const Constraint_System& cs)
+Determinate<PSET>::Rep::Rep(const Constraint_System& cs)
   : references(0), pset(cs) {
 }
 
 template <typename PSET>
 inline
-COW_Pointset<PSET>::Rep::Rep(const Congruence_System& cgs)
+Determinate<PSET>::Rep::Rep(const Congruence_System& cgs)
   : references(0), pset(cgs) {
 }
 
 template <typename PSET>
 inline
-COW_Pointset<PSET>::Rep::~Rep() {
+Determinate<PSET>::Rep::~Rep() {
   assert(references == 0);
 }
 
 template <typename PSET>
 inline void
-COW_Pointset<PSET>::Rep::new_reference() const {
+Determinate<PSET>::Rep::new_reference() const {
   ++references;
 }
 
 template <typename PSET>
 inline bool
-COW_Pointset<PSET>::Rep::del_reference() const {
+Determinate<PSET>::Rep::del_reference() const {
   return --references == 0;
 }
 
 template <typename PSET>
 inline bool
-COW_Pointset<PSET>::Rep::is_shared() const {
+Determinate<PSET>::Rep::is_shared() const {
   return references > 1;
 }
 
 template <typename PSET>
 inline memory_size_type
-COW_Pointset<PSET>::Rep::external_memory_in_bytes() const {
+Determinate<PSET>::Rep::external_memory_in_bytes() const {
   return pset.external_memory_in_bytes();
 }
 
 template <typename PSET>
 inline memory_size_type
-COW_Pointset<PSET>::Rep::total_memory_in_bytes() const {
+Determinate<PSET>::Rep::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
 template <typename PSET>
 inline
-COW_Pointset<PSET>::COW_Pointset(const PSET& pset)
+Determinate<PSET>::Determinate(const PSET& pset)
   : prep(new Rep(pset)) {
   prep->new_reference();
 }
 
 template <typename PSET>
 inline
-COW_Pointset<PSET>::COW_Pointset(const Constraint_System& cs)
+Determinate<PSET>::Determinate(const Constraint_System& cs)
   : prep(new Rep(cs)) {
   prep->new_reference();
 }
 
 template <typename PSET>
 inline
-COW_Pointset<PSET>::COW_Pointset(const Congruence_System& cgs)
+Determinate<PSET>::Determinate(const Congruence_System& cgs)
   : prep(new Rep(cgs)) {
   prep->new_reference();
 }
 
 template <typename PSET>
 inline
-COW_Pointset<PSET>::COW_Pointset(const COW_Pointset& y)
+Determinate<PSET>::Determinate(const Determinate& y)
   : prep(y.prep) {
   prep->new_reference();
 }
 
 template <typename PSET>
 inline
-COW_Pointset<PSET>::~COW_Pointset() {
+Determinate<PSET>::~Determinate() {
   if (prep->del_reference())
     delete prep;
 }
 
 template <typename PSET>
-inline COW_Pointset<PSET>&
-COW_Pointset<PSET>::operator=(const COW_Pointset& y) {
+inline Determinate<PSET>&
+Determinate<PSET>::operator=(const Determinate& y) {
   y.prep->new_reference();
   if (prep->del_reference())
     delete prep;
@@ -135,13 +135,13 @@ COW_Pointset<PSET>::operator=(const COW_Pointset& y) {
 
 template <typename PSET>
 inline void
-COW_Pointset<PSET>::swap(COW_Pointset& y) {
+Determinate<PSET>::swap(Determinate& y) {
   std::swap(prep, y.prep);
 }
 
 template <typename PSET>
 inline void
-COW_Pointset<PSET>::mutate() {
+Determinate<PSET>::mutate() {
   if (prep->is_shared()) {
     Rep* new_prep = new Rep(prep->pset);
     (void) prep->del_reference();
@@ -152,32 +152,32 @@ COW_Pointset<PSET>::mutate() {
 
 template <typename PSET>
 inline const PSET&
-COW_Pointset<PSET>::pointset() const {
+Determinate<PSET>::pointset() const {
   return prep->pset;
 }
 
 template <typename PSET>
 inline PSET&
-COW_Pointset<PSET>::pointset() {
+Determinate<PSET>::pointset() {
   mutate();
   return prep->pset;
 }
 
 template <typename PSET>
 inline void
-COW_Pointset<PSET>::upper_bound_assign(const COW_Pointset& y) {
+Determinate<PSET>::upper_bound_assign(const Determinate& y) {
   pointset().upper_bound_assign(y.pointset());
 }
 
 template <typename PSET>
 inline void
-COW_Pointset<PSET>::meet_assign(const COW_Pointset& y) {
+Determinate<PSET>::meet_assign(const Determinate& y) {
   pointset().intersection_assign(y.pointset());
 }
 
 template <typename PSET>
 inline bool
-COW_Pointset<PSET>::has_nontrivial_weakening() {
+Determinate<PSET>::has_nontrivial_weakening() {
   // FIXME: the following should be turned into a query to PSET.  This
   // can be postponed until the time the ask-and-tell construction is
   // revived.
@@ -186,7 +186,7 @@ COW_Pointset<PSET>::has_nontrivial_weakening() {
 
 template <typename PSET>
 inline void
-COW_Pointset<PSET>::weakening_assign(const COW_Pointset& y) {
+Determinate<PSET>::weakening_assign(const Determinate& y) {
   // FIXME: the following should be turned into a proper
   // implementation.  This can be postponed until the time the
   // ask-and-tell construction is revived.
@@ -195,82 +195,82 @@ COW_Pointset<PSET>::weakening_assign(const COW_Pointset& y) {
 
 template <typename PSET>
 inline void
-COW_Pointset<PSET>::concatenate_assign(const COW_Pointset& y) {
+Determinate<PSET>::concatenate_assign(const Determinate& y) {
   pointset().concatenate_assign(y.pointset());
 }
 
 template <typename PSET>
 inline bool
-COW_Pointset<PSET>::definitely_entails(const COW_Pointset& y) const {
+Determinate<PSET>::definitely_entails(const Determinate& y) const {
   return prep == y.prep || y.prep->pset.contains(prep->pset);
 }
 
 template <typename PSET>
 inline bool
-COW_Pointset<PSET>::is_definitely_equivalent_to(const COW_Pointset& y) const {
+Determinate<PSET>::is_definitely_equivalent_to(const Determinate& y) const {
   return prep == y.prep || prep->pset == y.prep->pset;
 }
 
 template <typename PSET>
 inline bool
-COW_Pointset<PSET>::is_top() const {
+Determinate<PSET>::is_top() const {
   return prep->pset.is_universe();
 }
 
 template <typename PSET>
 inline bool
-COW_Pointset<PSET>::is_bottom() const {
+Determinate<PSET>::is_bottom() const {
   return prep->pset.is_empty();
 }
 
 template <typename PSET>
 inline memory_size_type
-COW_Pointset<PSET>::external_memory_in_bytes() const {
+Determinate<PSET>::external_memory_in_bytes() const {
   return prep->total_memory_in_bytes();
 }
 
 template <typename PSET>
 inline memory_size_type
-COW_Pointset<PSET>::total_memory_in_bytes() const {
+Determinate<PSET>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
 template <typename PSET>
 inline bool
-COW_Pointset<PSET>::OK() const {
+Determinate<PSET>::OK() const {
   return prep->pset.OK();
 }
 
 namespace IO_Operators {
 
-/*! \relates Parma_Polyhedra_Library::COW_Pointset */
+/*! \relates Parma_Polyhedra_Library::Determinate */
 template <typename PSET>
 inline std::ostream&
-operator<<(std::ostream& s, const COW_Pointset<PSET>& x) {
+operator<<(std::ostream& s, const Determinate<PSET>& x) {
   s << x.pointset();
   return s;
 }
 
 } // namespace IO_Operators
 
-/*! \relates COW_Pointset */
+/*! \relates Determinate */
 template <typename PSET>
 inline bool
-operator==(const COW_Pointset<PSET>& x, const COW_Pointset<PSET>& y) {
+operator==(const Determinate<PSET>& x, const Determinate<PSET>& y) {
   return x.prep == y.prep || x.prep->pset == y.prep->pset;
 }
 
-/*! \relates COW_Pointset */
+/*! \relates Determinate */
 template <typename PSET>
 inline bool
-operator!=(const COW_Pointset<PSET>& x, const COW_Pointset<PSET>& y) {
+operator!=(const Determinate<PSET>& x, const Determinate<PSET>& y) {
   return x.prep != y.prep && x.prep->pset != y.prep->pset;
 }
 
 template <typename PSET>
 template <typename Binary_Operator_Assign>
 inline
-COW_Pointset<PSET>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>::
+Determinate<PSET>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>::
 Binary_Operator_Assign_Lifter(Binary_Operator_Assign op_assign)
   : op_assign_(op_assign) {
 }
@@ -278,16 +278,16 @@ Binary_Operator_Assign_Lifter(Binary_Operator_Assign op_assign)
 template <typename PSET>
 template <typename Binary_Operator_Assign>
 inline void
-COW_Pointset<PSET>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>::
-operator()(COW_Pointset& x, const COW_Pointset& y) const {
+Determinate<PSET>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>::
+operator()(Determinate& x, const Determinate& y) const {
   op_assign_(x.pointset(), y.pointset());
 }
 
 template <typename PSET>
 template <typename Binary_Operator_Assign>
 inline
-COW_Pointset<PSET>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>
-COW_Pointset<PSET>::lift_op_assign(Binary_Operator_Assign op_assign) {
+Determinate<PSET>::Binary_Operator_Assign_Lifter<Binary_Operator_Assign>
+Determinate<PSET>::lift_op_assign(Binary_Operator_Assign op_assign) {
   return Binary_Operator_Assign_Lifter<Binary_Operator_Assign>(op_assign);
 }
 
@@ -296,14 +296,14 @@ COW_Pointset<PSET>::lift_op_assign(Binary_Operator_Assign op_assign) {
 
 namespace std {
 
-/*! \relates Parma_Polyhedra_Library::COW_Pointset */
+/*! \relates Parma_Polyhedra_Library::Determinate */
 template <typename PSET>
 inline void
-swap(Parma_Polyhedra_Library::COW_Pointset<PSET>& x,
-     Parma_Polyhedra_Library::COW_Pointset<PSET>& y) {
+swap(Parma_Polyhedra_Library::Determinate<PSET>& x,
+     Parma_Polyhedra_Library::Determinate<PSET>& y) {
   x.swap(y);
 }
 
 } // namespace std
 
-#endif // !defined(PPL_COW_Pointset_inlines_hh)
+#endif // !defined(PPL_Determinate_inlines_hh)

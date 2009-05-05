@@ -217,7 +217,7 @@ test02() {
   const memory_size_type gr1_total_size = gr1.total_memory_in_bytes();
   const memory_size_type gr1_external_size = gr1.external_memory_in_bytes();
 
-  COW_Pointset<Grid> dgr(gr1);
+  Determinate<Grid> dgr(gr1);
 
   const memory_size_type dgr_total_size = dgr.total_memory_in_bytes();
   const memory_size_type dgr_external_size = dgr.external_memory_in_bytes();

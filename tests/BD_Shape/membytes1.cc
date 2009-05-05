@@ -181,7 +181,7 @@ bool test02() {
   const memory_size_type bd_total_size = bds.total_memory_in_bytes();
   const memory_size_type bd_external_size = bds.external_memory_in_bytes();
 
-  COW_Pointset<TBD_Shape> dbds(bds);
+  Determinate<TBD_Shape> dbds(bds);
 
   const memory_size_type dbd_total_size = dbds.total_memory_in_bytes();
   const memory_size_type dbd_external_size = dbds.external_memory_in_bytes();

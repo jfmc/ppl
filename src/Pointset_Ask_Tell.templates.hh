@@ -49,7 +49,7 @@ Pointset_Ask_Tell<PSET>::add_disjunct(const PSET& ph) {
       << "ph.space_dimension() == " << ph.space_dimension() << ".";
     throw std::invalid_argument(s.str());
   }
-  x.sequence.push_back(COW_Pointset<PSET>(ph));
+  x.sequence.push_back(Determinate<PSET>(ph));
   x.reduced = false;
   assert(x.OK());
 }
@@ -62,9 +62,9 @@ Pointset_Ask_Tell<NNC_Polyhedron>
   Pointset_Ask_Tell& x = *this;
   for (typename Pointset_Ask_Tell<QH>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i) {
-    COW_Pointset<NNC_Polyhedron>
+    Determinate<NNC_Polyhedron>
       nnc_ask(NNC_Polyhedron(i->ask().pointset().constraints()));
-    COW_Pointset<NNC_Polyhedron>
+    Determinate<NNC_Polyhedron>
       nnc_tell(NNC_Polyhedron(i->tell().pointset().constraints()));
     x.sequence.push_back(Pair(nnc_ask, nnc_tell));
   }
@@ -81,9 +81,9 @@ Pointset_Ask_Tell<C_Polyhedron>
   Pointset_Ask_Tell& x = *this;
   for (typename Pointset_Ask_Tell<QH>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i) {
-    COW_Pointset<C_Polyhedron>
+    Determinate<C_Polyhedron>
       c_ask(C_Polyhedron(i->ask().pointset().constraints()));
-    COW_Pointset<C_Polyhedron>
+    Determinate<C_Polyhedron>
       c_tell(C_Polyhedron(i->tell().pointset().constraints()));
     x.sequence.push_back(Pair(c_ask, c_tell));
   }
@@ -100,9 +100,9 @@ void
 Pointset_Ask_Tell<PSET>::concatenate_assign(const Pointset_Ask_Tell& y) {
   Pointset_Ask_Tell& x = *this;
   for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
-    COW_PSET ask(PSET(space_dim, UNIVERSE));
+    Det_PSET ask(PSET(space_dim, UNIVERSE));
     ask.concatenate_assign(yi->ask());
-    COW_PSET tell(PSET(space_dim, UNIVERSE));
+    Det_PSET tell(PSET(space_dim, UNIVERSE));
     tell.concatenate_assign(yi->tell());
     x.sequence.push_back(Pair(ask, tell));
   }

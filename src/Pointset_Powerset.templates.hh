@@ -49,7 +49,7 @@ Pointset_Powerset<PSET>::add_disjunct(const PSET& ph) {
       << "ph.space_dimension() == " << ph.space_dimension() << ".";
     throw std::invalid_argument(s.str());
   }
-  x.sequence.push_back(COW_Pointset<PSET>(ph));
+  x.sequence.push_back(Determinate<PSET>(ph));
   x.reduced = false;
   assert(x.OK());
 }
@@ -63,7 +63,7 @@ Pointset_Powerset<NNC_Polyhedron>
   Pointset_Powerset& x = *this;
   for (typename Pointset_Powerset<QH>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
-    x.sequence.push_back(COW_Pointset<NNC_Polyhedron>
+    x.sequence.push_back(Determinate<NNC_Polyhedron>
 			 (NNC_Polyhedron(i->pointset(), complexity)));
 
   // FIXME: If the domain elements can be represented _exactly_ as NNC
@@ -89,7 +89,7 @@ Pointset_Powerset<PSET>
   Pointset_Powerset& x = *this;
   for (typename Pointset_Powerset<QH>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
-    x.sequence.push_back(COW_Pointset<PSET>(PSET(i->pointset(), complexity)));
+    x.sequence.push_back(Determinate<PSET>(PSET(i->pointset(), complexity)));
   // Note: this might be non-reduced even when `y' is known to be
   // omega-reduced, because the constructor of PSET may have made
   // different QH elements to become comparable.
@@ -108,7 +108,7 @@ Pointset_Powerset<PSET>::concatenate_assign(const Pointset_Powerset& y) {
   for (const_iterator xi = x.begin(), x_end = x.end(),
 	 y_begin = y.begin(), y_end = y.end(); xi != x_end; ) {
     for (const_iterator yi = y_begin; yi != y_end; ++yi) {
-      COW_PSET zi = *xi;
+      Det_PSET zi = *xi;
       zi.concatenate_assign(*yi);
       assert(!zi.is_bottom());
       new_x.sequence.push_back(zi);
