@@ -269,7 +269,7 @@ test11() {
 
   print_constraints(box, "*** box ***");
 
-  return (affine_dim == 0);
+  return affine_dim == 0;
 }
 
 } // namespace

@@ -56,7 +56,7 @@ typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 ascii_load(std::istream& s, T& t) {
   if (std::numeric_limits<T>::is_exact)
     // An exact datatype: input from pretty printed version is accurate.
-    return (s >> t);
+    return s >> t;
   else {
     // An inexact datatype (probably floating point):
     // first load its hexadecimal representation ...

@@ -284,7 +284,7 @@ test11() {
 
   print_constraints(bds, "*** bds ***");
 
-  return (affine_dim == 0);
+  return affine_dim == 0;
 }
 
 } // namespace

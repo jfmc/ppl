@@ -1514,7 +1514,7 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
       // Update also `internal_space_dim'.
       x.internal_space_dim = x.external_space_dim;
       assert(OK());
-      return (status != UNSATISFIABLE);
+      return status != UNSATISFIABLE;
     }
   }
   // We should not be here!

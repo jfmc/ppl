@@ -246,7 +246,7 @@ test08() {
   nout << "ph.relation_with(c) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
-  return (rel == known_result);
+  return rel == known_result;
 }
 
 bool

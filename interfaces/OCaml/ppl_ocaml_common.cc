@@ -605,7 +605,7 @@ build_ppl_Congruence(value c) {
   mpz_class z(mpz_ptr_val(Field(c, 2)));
   Linear_Expression lhs = build_ppl_Linear_Expression(e1);
   Linear_Expression rhs = build_ppl_Linear_Expression(e2);
-  return ((lhs %= rhs) / z);
+  return (lhs %= rhs) / z;
 }
 
 Generator

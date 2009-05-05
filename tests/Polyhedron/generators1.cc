@@ -217,7 +217,7 @@ test08() {
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B >= 0);
 
-  return (C_Polyhedron(gs) == known_result);
+  return C_Polyhedron(gs) == known_result;
 }
 
 } // namespace

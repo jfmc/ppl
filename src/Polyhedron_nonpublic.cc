@@ -1460,7 +1460,7 @@ PPL::Polyhedron::BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y) {
   const dimension_type x_affine_dim = x.affine_dimension();
   const dimension_type y_affine_dim = y.affine_dimension();
   if (x_affine_dim > y_affine_dim)
-    return (y.is_included_in(x));
+    return y.is_included_in(x);
   else if (x_affine_dim < y_affine_dim) {
     if (x.is_included_in(y)) {
       x = y;

@@ -612,8 +612,8 @@ build_cxx_linear_expression(JNIEnv* env, jobject j_le) {
       = env->GetObjectField(j_le, cached_FMIDs.Linear_Expression_Sum_lhs_ID);
     jobject r_value
       = env->GetObjectField(j_le, cached_FMIDs.Linear_Expression_Sum_rhs_ID);
-    return (build_cxx_linear_expression(env, l_value)
-	    + build_cxx_linear_expression(env, r_value));
+    return build_cxx_linear_expression(env, l_value)
+      + build_cxx_linear_expression(env, r_value);
   }
   // LE_Times
   if (env->IsAssignableFrom(current_class,
@@ -627,8 +627,8 @@ build_cxx_linear_expression(JNIEnv* env, jobject j_le) {
     jobject le_value
       = env->GetObjectField(j_le,
                             cached_FMIDs.Linear_Expression_Times_rhs_ID);
-    return (build_cxx_coeff(env, ppl_coeff)
-	    * build_cxx_linear_expression(env, le_value));
+    return build_cxx_coeff(env, ppl_coeff)
+      * build_cxx_linear_expression(env, le_value);
   }
   // LE_Difference
   if (env->IsAssignableFrom(current_class,
@@ -639,8 +639,8 @@ build_cxx_linear_expression(JNIEnv* env, jobject j_le) {
     jobject r_value
       = env->GetObjectField(j_le,
                             cached_FMIDs.Linear_Expression_Difference_rhs_ID);
-    return (build_cxx_linear_expression(env, l_value)
-	    - build_cxx_linear_expression(env, r_value));
+    return build_cxx_linear_expression(env, l_value)
+      - build_cxx_linear_expression(env, r_value);
   }
   // LE_Unary_Minus
   if (env->IsAssignableFrom(current_class,
@@ -648,7 +648,7 @@ build_cxx_linear_expression(JNIEnv* env, jobject j_le) {
     jobject le_value
       = env->GetObjectField(j_le,
                             cached_FMIDs.Linear_Expression_Unary_Minus_arg_ID);
-    return (-build_cxx_linear_expression(env, le_value));
+    return -build_cxx_linear_expression(env, le_value);
   }
   assert(false);
   throw std::runtime_error("PPL Java interface internal error");

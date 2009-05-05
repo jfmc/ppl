@@ -1031,7 +1031,7 @@ Octagonal_Shape<T>::bounds(const Linear_Expression& expr,
     Optimization_Mode mode_bounds =
       from_above ? MAXIMIZATION : MINIMIZATION;
     MIP_Problem mip(space_dim, constraints(), expr, mode_bounds);
-    return (mip.solve() == OPTIMIZED_MIP_PROBLEM);
+    return mip.solve() == OPTIMIZED_MIP_PROBLEM;
   }
 }
 

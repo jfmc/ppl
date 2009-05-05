@@ -1052,7 +1052,7 @@ BD_Shape<T>::bounds(const Linear_Expression& expr,
       = from_above ? MAXIMIZATION : MINIMIZATION;
     MIP_Problem mip(space_dim, constraints(), expr, mode_bounds);
     // Problem is known to be feasible.
-    return (mip.solve() == OPTIMIZED_MIP_PROBLEM);
+    return mip.solve() == OPTIMIZED_MIP_PROBLEM;
   }
 }
 

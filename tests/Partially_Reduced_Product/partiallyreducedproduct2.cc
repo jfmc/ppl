@@ -290,7 +290,7 @@ test06() {
   print_congruences(sp2, "*** sp2 congruences ***");
   print_constraints(sp2, "*** sp2 constraints ***");
 
-  return (smash_ok);
+  return smash_ok;
 }
 
 // difference_assign(sp2)
@@ -702,7 +702,7 @@ test16() {
   print_congruences(cp2, "*** cp2 congruences ***");
   print_constraints(cp2, "*** cp2 constraints ***");
 
-  return (cons_ok);
+  return cons_ok;
 }
 
 // difference_assign(cp2)

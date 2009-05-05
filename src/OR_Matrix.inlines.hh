@@ -37,7 +37,7 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 inline dimension_type
 OR_Matrix<T>::row_first_element_index(const dimension_type k) {
-  return ((k+1)*(k+1))/2;
+  return ((k + 1)*(k + 1))/2;
 }
 
 template <typename T>

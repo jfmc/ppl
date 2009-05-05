@@ -464,9 +464,9 @@ PPL::Polyhedron::is_universe() const {
   else if (!constraints_are_minimized())
     minimize();
   if (is_necessarily_closed())
-    return (con_sys.num_rows() == 1
-	    && con_sys[0].is_inequality()
-	    && con_sys[0].is_tautological());
+    return con_sys.num_rows() == 1
+      && con_sys[0].is_inequality()
+      && con_sys[0].is_tautological();
   else {
     // NNC polyhedron.
     if (con_sys.num_rows() != 2

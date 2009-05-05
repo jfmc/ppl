@@ -1730,7 +1730,7 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
 	result_gr.add_congruences(result_cs);
 	x.swap(result_gr);
 	assert(x.OK());
-	return (!empty_intersection);
+	return !empty_intersection;
       }
     }
       // Cannot exit from here.

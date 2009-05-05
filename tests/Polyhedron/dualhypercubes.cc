@@ -381,7 +381,7 @@ test01() {
       }
 
     }
-  return (num_errors == 0);
+  return num_errors == 0;
 }
 
 } // namespace
