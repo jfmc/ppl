@@ -40,13 +40,13 @@ aux_test01(const C_Polyhedron& p,
   NNC_Polyhedron nnc_q(q);
   typedef Pointset_Powerset<NNC_Polyhedron>::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
-    const NNC_Polyhedron& a = i->element();
+    const NNC_Polyhedron& a = i->pointset();
     // All elements of `s' must be disjoint from `p'.
     if (!a.is_disjoint_from(nnc_p))
       return false;
     iter j = i;
     for (++j; j != s_end; ++j) {
-      const NNC_Polyhedron& b = j->element();
+      const NNC_Polyhedron& b = j->pointset();
       // All elements of `s' must be pairwise disjoint.
       if (!a.is_disjoint_from(b))
 	return false;
@@ -113,13 +113,13 @@ aux_test02(const C_Polyhedron& p,
   NNC_Polyhedron nnc_q(q);
   typedef Pointset_Powerset<NNC_Polyhedron>::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
-    const NNC_Polyhedron& a = i->element();
+    const NNC_Polyhedron& a = i->pointset();
     // All elements of `s' must be disjoint from `p'.
     if (!a.is_disjoint_from(nnc_p))
       return false;
     iter j = i;
     for (++j; j != s_end; ++j) {
-      const NNC_Polyhedron& b = j->element();
+      const NNC_Polyhedron& b = j->pointset();
       // All elements of `s' must be pairwise disjoint.
       if (!a.is_disjoint_from(b))
 	return false;
@@ -186,13 +186,13 @@ aux_test03(const C_Polyhedron& p,
   NNC_Polyhedron nnc_q(q);
   typedef Pointset_Powerset<NNC_Polyhedron>::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
-    const NNC_Polyhedron& a = i->element();
+    const NNC_Polyhedron& a = i->pointset();
     // All elements of `s' must be disjoint from `p'.
     if (!a.is_disjoint_from(nnc_p))
       return false;
     iter j = i;
     for (++j; j != s_end; ++j) {
-      const NNC_Polyhedron& b = j->element();
+      const NNC_Polyhedron& b = j->pointset();
       // All elements of `s' must be pairwise disjoint.
       if (!a.is_disjoint_from(b))
 	return false;
