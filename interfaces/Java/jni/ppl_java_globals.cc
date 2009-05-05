@@ -637,6 +637,45 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_restore_1pre_1PPL_1roun
   CATCH_ALL;
 }
 
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1timeout
+(JNIEnv* env, jclass, jint hsecs) {
+  try {
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+    const char* what = "PPL Java interface error:\n"
+      "Parma_Polyhedra_Library::set_timeout: "
+      "the PPL Watchdog library is not enabled.";
+    throw std::runtime_error(what);
+#else
+    // In case a timeout was already set.
+    reset_timeout();
+    assert(hsecs > 0);
+    unsigned cxx_hsecs = jtype_to_unsigned<unsigned>(hsecs);
+    assert(cxx_hsecs > 0);
+    static timeout_exception e;
+    using Parma_Watchdog_Library::Watchdog;
+    p_timeout_object = new Watchdog(hsecs, abandon_expensive_computations, e);
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_reset_1timeout
+(JNIEnv* env, jclass) {
+  try {
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+    const char* what = "PPL Java interface error:\n"
+      "Parma_Polyhedra_Library.reset_timeout(): "
+      "the PPL Watchdog library is not enabled.";
+    throw std::runtime_error(what);
+#else
+    reset_timeout();
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+  }
+  CATCH_ALL;
+}
+
 JNIEXPORT jlong JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_max_1space_1dimension
 (JNIEnv* env , jobject j_this_mip_problem) {

@@ -247,11 +247,38 @@ handle_exception(JNIEnv* env, const std::exception& e) {
 }
 
 void
+handle_exception(JNIEnv* env, const timeout_exception&) {
+  reset_timeout();
+  jclass newExcCls
+    = env->FindClass("parma_polyhedra_library/Timeout_Exception");
+  CHECK_RESULT_ASSERT(env, newExcCls);
+  jint ret = env->ThrowNew(newExcCls, "PPL timeout expired");
+  CHECK_RESULT_ABORT(env, (ret == 0));
+}
+
+void
 handle_exception(JNIEnv* env) {
   jclass newExcCls = env->FindClass("java/lang/RuntimeException");
   CHECK_RESULT_ASSERT(env, newExcCls);
   jint ret = env->ThrowNew(newExcCls, "PPL bug: unknown exception raised");
   CHECK_RESULT_ABORT(env, ret == 0);
+}
+
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+
+Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
+
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+
+void
+reset_timeout() {
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+  if (p_timeout_object) {
+    delete p_timeout_object;
+    p_timeout_object = 0;
+    abandon_expensive_computations = 0;
+  }
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 
 jobject

@@ -24,6 +24,8 @@ o  The Java interface has to be explicitly initialized before use by
    of Java classes and field/method IDs, thereby reducing the overhead
    of native method callbacks.
 
+o  The C and Java interfaces now support timeout computation facilities.
+
 
 Deprecated and removed methods
 ------------------------------

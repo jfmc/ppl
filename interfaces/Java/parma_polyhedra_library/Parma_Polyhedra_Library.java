@@ -218,4 +218,31 @@ public class Parma_Polyhedra_Library {
 
     //@} // (Re-) Setting floating-point rounding mode.
 
+    //! \name Timeout handling
+    //@{
+
+    /*! \brief
+      Sets the timeout for computations whose completion could require
+      an exponential amount of time.
+
+      \param hsecs
+      The number of hundreths of seconds.
+      It must be strictly greater than zero.
+
+      Computations taking exponential time will be interrupted some time
+      after \p hsecs hundreths of seconds have elapsed since the call to
+      the timeout setting function, by throwing a exception
+      <code>PPL_TIMEOUT_EXCEPTION</code>.
+      Otherwise, if the computation completes without being interrupted,
+      then the timeout should be reset by calling
+      <code>reset_timeout()</code>.
+    */
+    public static native void set_timeout(int hsecs);
+
+    /*! \brief
+      Resets the timeout time so that the computation is not interrupted.
+    */
+    public static native void reset_timeout();
+
+    //@} // Timeout handling.
 }

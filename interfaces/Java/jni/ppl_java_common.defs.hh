@@ -26,6 +26,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_NO_AUTOMATIC_INITIALIZATION
 #include "ppl.hh"
 
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+#include "pwl.hh"
+#endif
+
 #include <jni.h>
 #include "interfaced_boxes.hh"
 #include "marked_pointers.hh"
@@ -52,6 +56,9 @@ site: http://www.cs.unipr.it/ppl/ . */
     handle_exception(env, e); \
   } \
   catch (const std::exception& e) { \
+    handle_exception(env, e); \
+  } \
+  catch (const timeout_exception& e) { \
     handle_exception(env, e); \
   } \
   catch (...) { \
@@ -108,6 +115,24 @@ namespace Java {
 struct Java_ExceptionOccurred : public std::exception {
 };
 
+class timeout_exception : public Parma_Polyhedra_Library::Throwable {
+public:
+  void throw_me() const {
+    throw *this;
+  }
+  int priority() const {
+    return 0;
+  }
+  timeout_exception() {
+  }
+};
+
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+extern Parma_Watchdog_Library::Watchdog* p_timeout_object;
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+
+void reset_timeout();
+
 void
 handle_exception(JNIEnv* env, const std::logic_error& e);
 
@@ -130,8 +155,10 @@ void
 handle_exception(JNIEnv* env, const std::exception& e);
 
 void
-handle_exception(JNIEnv* env);
+handle_exception(JNIEnv* env, const timeout_exception& e);
 
+void
+handle_exception(JNIEnv* env);
 
 //! A cache for global references to Java classes.
 /*!

@@ -143,6 +143,7 @@ $(srcdir)/Poly_Con_Relation.java \
 $(srcdir)/Poly_Gen_Relation.java \
 $(srcdir)/PPL_Object.java \
 $(srcdir)/Relation_Symbol.java \
+$(srcdir)/Timeout_Exception.java \
 $(srcdir)/Variable.java \
 $(srcdir)/Variables_Set.java
 
@@ -241,6 +242,7 @@ Poly_Con_Relation.class \
 Poly_Gen_Relation.class \
 PPL_Object.class \
 Relation_Symbol.class \
+Timeout_Exception.class \
 Variable.class \
 Variables_Set.class
 

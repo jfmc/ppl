@@ -364,7 +364,7 @@ ppl_set_timeout PPL_PROTO((unsigned time));
 int
 ppl_reset_timeout PPL_PROTO((void));
 
-/*@}*/ /* Error */
+/*@}*/ /* Timeout Handling */
 
 /*! \defgroup Datatypes Library Datatypes
   \brief
