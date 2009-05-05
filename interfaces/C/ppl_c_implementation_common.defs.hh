@@ -25,6 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #define PPL_NO_AUTOMATIC_INITIALIZATION
 #include "ppl.hh"
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+#include "pwl.hh"
+#endif
 #include "ppl_c.h"
 #include <stdexcept>
 
@@ -93,6 +96,20 @@ private:
   mutable int empty;
 };
 
+class timeout_exception : public Parma_Polyhedra_Library::Throwable {
+public:
+  void throw_me() const {
+    throw *this;
+  }
+  int priority() const {
+    return 0;
+  }
+  timeout_exception() {
+  }
+};
+
+void reset_timeout();
+
 } // namespace C
 
 } // namespace Interfaces
@@ -114,7 +131,12 @@ CATCH_STD_EXCEPTION(length_error, PPL_ERROR_LENGTH_ERROR) \
 CATCH_STD_EXCEPTION(overflow_error, PPL_ARITHMETIC_OVERFLOW) \
 CATCH_STD_EXCEPTION(runtime_error, PPL_ERROR_INTERNAL_ERROR) \
 CATCH_STD_EXCEPTION(exception, PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION) \
-catch (...) {						     \
+catch (timeout_exception&) { \
+  reset_timeout(); \
+  notify_error(PPL_TIMEOUT_EXCEPTION, "PPL timeout expired"); \
+  return PPL_TIMEOUT_EXCEPTION; \
+} \
+catch (...) { \
   notify_error(PPL_ERROR_UNEXPECTED_ERROR, \
 	       "completely unexpected error: a bug in the PPL"); \
   return PPL_ERROR_UNEXPECTED_ERROR; \

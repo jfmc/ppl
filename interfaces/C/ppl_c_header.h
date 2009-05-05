@@ -311,7 +311,12 @@ enum ppl_enum_error_code {
   /*! \hideinitializer
     A totally unknown, totally unexpected error happened.
     This indicates a bug in the PPL. */
-  PPL_ERROR_UNEXPECTED_ERROR = -10
+  PPL_ERROR_UNEXPECTED_ERROR = -10,
+  /*! \hideinitializer
+    An exception has been raised by the PPL as a timeout previously set
+    by the user has expired.
+  */
+  PPL_TIMEOUT_EXCEPTION = -11
 };
 
 /*! \brief
@@ -325,6 +330,39 @@ enum ppl_enum_error_code {
 int
 ppl_set_error_handler PPL_PROTO((void (*h)(enum ppl_enum_error_code code,
 					   const char* description)));
+
+/*@}*/ /* Error */
+
+/*! \defgroup Timeout Handling
+  Functions for setting and resetting timeouts.
+*/
+/*@{*/
+
+/*! \brief
+  Sets the timeout for computations whose completion could require
+  an exponential amount of time.
+
+  \param time
+  The number of hundreths of seconds.
+  It must be strictly greater than zero.
+
+  Computations taking exponential time will be interrupted some time
+  after \p time hundreths of seconds have elapsed since the call to
+  the timeout setting function. If the computation is interrupted that
+  way, the interrupted function will return error code
+  <code>PPL_TIMEOUT_EXCEPTION</code>.
+  Otherwise, if the computation completes without being interrupted,
+  then the timeout should be reset by calling
+  <code>ppl_reset_timeout()</code>.
+*/
+int
+ppl_set_timeout PPL_PROTO((unsigned time));
+
+/*! \brief
+  Resets the timeout time so that the computation is not interrupted.
+*/
+int
+ppl_reset_timeout PPL_PROTO((void));
 
 /*@}*/ /* Error */
 

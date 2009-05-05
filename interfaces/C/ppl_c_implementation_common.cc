@@ -93,6 +93,23 @@ notify_error(enum ppl_enum_error_code code, const char* description) {
     user_error_handler(code, description);
 }
 
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+
+Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
+
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+
+void
+reset_timeout() {
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+  if (p_timeout_object) {
+    delete p_timeout_object;
+    p_timeout_object = 0;
+    abandon_expensive_computations = 0;
+  }
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+}
+
 } // namespace C
 
 } // namespace Interfaces
@@ -181,6 +198,36 @@ ppl_finalize(void) try {
 
   finalize();
   return 0;
+}
+CATCH_ALL
+
+int
+ppl_set_timeout(unsigned time) try {
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  const char* what = "PPL C interface error:\n"
+    "ppl_set_timeout: the PPL Watchdog library is not enabled.";
+  throw std::runtime_error(what);
+#else
+  // In case a timeout was already set.
+  reset_timeout();
+  static timeout_exception e;
+  using Parma_Watchdog_Library::Watchdog;
+  p_timeout_object = new Watchdog(time, abandon_expensive_computations, e);
+  return 0;
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+}
+CATCH_ALL
+
+int
+ppl_reset_timeout(void) try {
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  const char* what = "PPL C interface error:\n"
+    "ppl_reset_timeout: the PPL Watchdog library is not enabled.";
+  throw std::runtime_error(what);
+#else
+  reset_timeout();
+  return 0;
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL
 
