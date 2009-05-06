@@ -436,7 +436,7 @@ test14() {
 BEGIN_MAIN
   DO_TEST_F16(test01);
   DO_TEST_F16(test02);
-  DO_TEST_F8(test03);
+  DO_TEST_F16A(test03);
   DO_TEST_F8(test04);
   DO_TEST_F16(test05);
   DO_TEST_F16(test06);
