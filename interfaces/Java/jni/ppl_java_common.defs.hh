@@ -75,26 +75,26 @@ site: http://www.cs.unipr.it/ppl/ . */
     if (env->ExceptionOccurred())        \
       return;                            \
   } while (0)
-#define CHECK_RESULT_ABORT(env, result)  \
+#define CHECK_RESULT_ABORT(env, cond)	 \
   do {                                   \
-    if (!result)                         \
+    if (!(cond))			 \
       abort();                           \
   } while (0)
-#define CHECK_RESULT_ASSERT(env, result) \
-  assert(result)
-#define CHECK_RESULT_THROW(env, result)  \
+#define CHECK_RESULT_ASSERT(env, cond)   \
+  assert(cond)
+#define CHECK_RESULT_THROW(env, cond)    \
   do {                                   \
-    if (!result)                         \
+    if (!(cond))			 \
       throw Java_ExceptionOccurred();    \
   } while (0)
-#define CHECK_RESULT_RETURN(env, result, val) \
+#define CHECK_RESULT_RETURN(env, cond, val)   \
   do {                                        \
-    if (!result)                              \
+    if (!(cond))			      \
       return val;                             \
   } while (0)
-#define CHECK_RESULT_RETURN_VOID(env, result) \
+#define CHECK_RESULT_RETURN_VOID(env, cond)   \
   do {                                        \
-    if (!result)                              \
+    if (!(cond))			      \
       return;                                 \
   } while (0)
 

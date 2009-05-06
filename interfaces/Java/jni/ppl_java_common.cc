@@ -190,7 +190,7 @@ handle_exception(JNIEnv* env, const std::overflow_error& e) {
     = env->FindClass("parma_polyhedra_library/Overflow_Error_Exception");
   CHECK_RESULT_ASSERT(env, newExcCls);
   jint ret = env->ThrowNew(newExcCls, e.what());
-  CHECK_RESULT_ABORT(env, ret);
+  CHECK_RESULT_ABORT(env, ret == 0);
 }
 
 void
@@ -199,7 +199,7 @@ handle_exception(JNIEnv* env, const std::invalid_argument& e) {
     = env->FindClass("parma_polyhedra_library/Invalid_Argument_Exception");
   CHECK_RESULT_ASSERT(env, newExcCls);
   jint ret = env->ThrowNew(newExcCls, e.what());
-  CHECK_RESULT_ABORT(env, ret);
+  CHECK_RESULT_ABORT(env, ret == 0);
 }
 
 void
@@ -208,7 +208,7 @@ handle_exception(JNIEnv* env, const std::logic_error& e) {
     = env->FindClass("parma_polyhedra_library/Logic_Error_Exception");
   CHECK_RESULT_ASSERT(env, newExcCls);
   jint ret = env->ThrowNew(newExcCls, e.what());
-  CHECK_RESULT_ABORT(env, ret);
+  CHECK_RESULT_ABORT(env, ret == 0);
 }
 
 void
@@ -217,7 +217,7 @@ handle_exception(JNIEnv* env, const std::length_error& e) {
     = env->FindClass("parma_polyhedra_library/Length_Error_Exception");
   CHECK_RESULT_ASSERT(env, newExcCls);
   jint ret = env->ThrowNew(newExcCls, e.what());
-  CHECK_RESULT_ABORT(env, ret);
+  CHECK_RESULT_ABORT(env, ret == 0);
 }
 
 void
@@ -226,7 +226,7 @@ handle_exception(JNIEnv* env, const std::domain_error& e) {
     = env->FindClass("parma_polyhedra_library/Domain_Error_Exception");
   CHECK_RESULT_ASSERT(env, newExcCls);
   jint ret = env->ThrowNew(newExcCls, e.what());
-  CHECK_RESULT_ABORT(env, ret);
+  CHECK_RESULT_ABORT(env, ret == 0);
 }
 
 void
@@ -235,7 +235,7 @@ handle_exception(JNIEnv* env, const std::bad_alloc&) {
     = env->FindClass("java/lang/RuntimeException");
   CHECK_RESULT_ASSERT(env, newExcCls);
   jint ret = env->ThrowNew(newExcCls, "Out of memory");
-  CHECK_RESULT_ABORT(env, ret);
+  CHECK_RESULT_ABORT(env, ret == 0);
 }
 
 void
@@ -243,7 +243,7 @@ handle_exception(JNIEnv* env, const std::exception& e) {
   jclass newExcCls = env->FindClass("java/lang/RuntimeException");
   CHECK_RESULT_ASSERT(env, newExcCls);
   jint ret = env->ThrowNew(newExcCls, e.what());
-  CHECK_RESULT_ABORT(env, ret);
+  CHECK_RESULT_ABORT(env, ret == 0);
 }
 
 void
@@ -251,7 +251,7 @@ handle_exception(JNIEnv* env) {
   jclass newExcCls = env->FindClass("java/lang/RuntimeException");
   CHECK_RESULT_ASSERT(env, newExcCls);
   jint ret = env->ThrowNew(newExcCls, "PPL bug: unknown exception raised");
-  CHECK_RESULT_ABORT(env, ret);
+  CHECK_RESULT_ABORT(env, ret == 0);
 }
 
 jobject
