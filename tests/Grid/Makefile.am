@@ -117,7 +117,8 @@ topclosed1 \
 topclosure1 \
 unconstrain1 \
 upperbound1 upperbound2 \
-widening1 widening2  widening3\
+widening1 widening2  widening3 \
+wrap1 \
 writecongruencesystem
 
 XFAIL_TESTS =
@@ -279,6 +280,8 @@ widening2_SOURCES = widening2.cc
 widening3_SOURCES = widening3.cc
 
 writecongruencesystem_SOURCES = writecongruencesystem.cc
+
+wrap1_SOURCES = wrap1.cc
 
 check_PROGRAMS = $(TESTS)
 

@@ -1478,6 +1478,53 @@ public:
   */
   void time_elapse_assign(const Grid& y);
 
+  /*! \brief
+    \ref Wrapping_Operator "Wraps" the specified dimensions of the
+    vector space.
+
+    \param vars
+    The set of Variable objects corresponding to the space dimensions
+    to be wrapped.
+
+    \param w
+    The width of the bounded integer type corresponding to
+    all the dimensions to be wrapped.
+
+    \param s
+    The signedness of the bounded integer type corresponding to
+    all the dimensions to be wrapped.
+
+    \param o
+    The overflow behavior of the bounded integer type corresponding to
+    all the dimensions to be wrapped.
+
+    \param pcs
+    Possibly null pointer to a constraint system.
+    This argument is for compatibility with wrap_assign()
+    for the other domains and is ignored.
+
+    \param complexity_threshold
+    A precision parameter of the \ref Wrapping_Operator "wrapping operator".
+    This argument is for compatibility with wrap_assign()
+    for the other domains and is ignored.
+
+    \param wrap_individually
+    <CODE>true</CODE> if the dimensions should be wrapped individually.
+    As wrapping dimensions collectively does not improve the precision,
+    this argument is ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p vars or with <CODE>*pcs</CODE>.
+  */
+  void wrap_assign(const Variables_Set& vars,
+                   Bounded_Integer_Type_Width w,
+                   Bounded_Integer_Type_Signedness s,
+                   Bounded_Integer_Type_Overflow o,
+                   const Constraint_System* pcs = 0,
+                   unsigned complexity_threshold = 16,
+                   bool wrap_individually = true);
+
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
 

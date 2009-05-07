@@ -2639,6 +2639,87 @@ PPL::Grid::external_memory_in_bytes() const {
     + gen_sys.external_memory_in_bytes();
 }
 
+void
+PPL::Grid::wrap_assign(const Variables_Set& vars,
+                             Bounded_Integer_Type_Width w,
+                             Bounded_Integer_Type_Signedness s,
+                             Bounded_Integer_Type_Overflow o,
+                             const Constraint_System*,
+                             unsigned,
+                             bool) {
+
+  // If overflow is impossible do nothing.
+  if (o == OVERFLOW_IMPOSSIBLE)
+    // FIXME: CHECKME: If the grid frequency for x in vars is more than half
+    // the wrap frequency, then x can only take a unique (ie constant) value.
+    return;
+
+  // Wrapping no variable is a no-op.
+  if (vars.empty())
+    return;
+
+  const dimension_type space_dim = space_dimension();
+  // Dimension-compatibility check of `vars'.
+  if (space_dim < vars.space_dimension()) {
+    std::ostringstream s;
+    s << "PPL::Grid::wrap_assign(vars, ...):" << std::endl
+      << "this->space_dimension() == " << space_dim
+      << ", required space dimension == " << vars.space_dimension() << ".";
+    throw std::invalid_argument(s.str());
+  }
+
+  // Wrapping an empty polyhedron is a no-op.
+  if (marked_empty())
+    return;
+  if (!generators_are_up_to_date() && !update_generators())
+    // Updating found `this' empty.
+    return;
+
+  // Generators are up-to-date.
+  const Grid gr = *this;
+
+  // If overflow is undefined, then all we know is that the variable
+  // will be integral.
+  if (o == OVERFLOW_UNDEFINED) {
+    for (Variables_Set::const_iterator i = vars.begin(),
+           vars_end = vars.end(); i != vars.end(); ++i) {
+
+      const Variable x = Variable(*i);
+
+      // If x is a constant, do nothing.
+      if (!gr.bounds(x, "wrap_assign(...)")) {
+        if (gr.constrains(x))
+          // We know that x is not a constant,
+          // so x may wrap to any integral value.
+          add_grid_generator(parameter(x));
+      }
+    }
+    return;
+  }
+
+  // Overflow wraps.
+  assert(o == OVERFLOW_WRAPS);
+  // Set the wrap frequency for variables of width `w' and signedness `s'.
+  PPL_DIRTY_TEMP_COEFFICIENT(wrap_frequency);
+  if (s == UNSIGNED)
+    mul_2exp_assign(wrap_frequency, Coefficient_one(), w);
+  else {
+    assert(s == SIGNED_2_COMPLEMENT);
+    mul_2exp_assign(wrap_frequency, Coefficient_one(), w-1);
+  }
+
+  for (Variables_Set::const_iterator i = vars.begin(),
+         vars_end = vars.end(); i != vars.end(); ++i) {
+    const Variable x = Variable(*i);
+    // If x is a constant, do nothing.
+    if (!gr.bounds(x, "wrap_assign(...)")) {
+      if (gr.constrains(x))
+        // We know that x is not a constant, so x may wrap.
+        add_grid_generator(parameter(wrap_frequency * x));
+    }
+  }
+}
+
 /*! \relates Parma_Polyhedra_Library::Grid */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Grid& gr) {
