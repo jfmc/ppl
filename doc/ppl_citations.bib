@@ -279,34 +279,6 @@
               proved with classical linear invariants."
 }
 
-@Inproceedings{BramanM08,
-  Title = "Safety Verification of Fault Tolerant Goal-based Control Programs
-           with Estimation Uncertainty",
-  Author = "J. M. B. Braman and R. M. Murray",
-  Booktitle = "Proceedings of the 2008 American Control Conference",
-  Address = "Seattle, Washington, USA",
-  Publisher = "IEEE Press",
-  Year = 2008,
-  Pages = "27--32",
-  ISSN = "0743-1619",
-  ISBN = "978-1-4244-2078-0",
-  Abstract = "Fault tolerance and safety verification of control
-              systems that have state variable estimation uncertainty
-              are essential for the success of autonomous robotic
-              systems. A software control architecture called mission
-              data system, developed at the Jet Propulsion Laboratory,
-              uses goal networks as the control program for autonomous
-              systems. Certain types of goal networks can be converted
-              into linear hybrid systems and verified for safety using
-              existing symbolic model checking software. A process for
-              calculating the probability of failure of certain
-              classes of verifiable goal networks due to state
-              estimation uncertainty is presented. A verifiable
-              example task is presented and the failure probability of
-              the control program based on estimation uncertainty is
-              found."
-}
-
 @Techreport{BagnaraR-CZ05TR,
   Author = "R. Bagnara and E. Rodr{\'\i}guez-Carbonell and E. Zaffanella",
   Title = "Generation of Basic Semi-algebraic Invariants
@@ -372,6 +344,34 @@
               splits a logic into two parts : one integer, and one
               decimal (i.e. on the interval $[0, 1[$). We also give
               a basis for an implementation of our representation."
+}
+
+@Inproceedings{BramanM08,
+  Title = "Safety Verification of Fault Tolerant Goal-based Control Programs
+           with Estimation Uncertainty",
+  Author = "J. M. B. Braman and R. M. Murray",
+  Booktitle = "Proceedings of the 2008 American Control Conference",
+  Address = "Seattle, Washington, USA",
+  Publisher = "IEEE Press",
+  Year = 2008,
+  Pages = "27--32",
+  ISSN = "0743-1619",
+  ISBN = "978-1-4244-2078-0",
+  Abstract = "Fault tolerance and safety verification of control
+              systems that have state variable estimation uncertainty
+              are essential for the success of autonomous robotic
+              systems. A software control architecture called mission
+              data system, developed at the Jet Propulsion Laboratory,
+              uses goal networks as the control program for autonomous
+              systems. Certain types of goal networks can be converted
+              into linear hybrid systems and verified for safety using
+              existing symbolic model checking software. A process for
+              calculating the probability of failure of certain
+              classes of verifiable goal networks due to state
+              estimation uncertainty is presented. A verifiable
+              example task is presented and the failure probability of
+              the control program based on estimation uncertainty is
+              found."
 }
 
 @Techreport{CacheraM-A05,
@@ -1666,6 +1666,39 @@
               capture linear inequalities among hundreds of variables,
               a result well-beyond state-of-the-art implementations of
               Polyhedra."
+}
+
+@Inproceedings{LeconteB06,
+  Author = "M. Leconte and B. Berstel",
+  Title = "Extending a {CP} Solver with Congruences
+           as Domains for Program Verification",
+  Booktitle = "Proceedings of the 1st workshop on Constraints
+               in Software Testing, Verification and Analysis (CSTVA '06)",
+  Address = "Nantes, France",
+  Editor = "B. Blanc and A. Gotlieb and C. Michel",
+  Publisher = "IEEE Computer Society Press",
+  Pages = "22--33",
+  Year = 2006,
+  Abstract = "Constraints generated for Program Verification tasks
+              very often involve integer variables ranging on all the
+              machine-representable integer values. Thus, if the
+              propagation takes a time that is linear in the size of
+              the domains, it will not reach a fix point in practical
+              time.  Indeed, the propagation time needed to reduce the
+              interval domains for as simple equations as $x = 2y + 1$
+              and $x = 2z$ is proportional to the size of the initial
+              domains of the variables. To avoid this \emph{slow
+              convergence} phenomenon, we propose to enrich a
+              Constraint Programming Solver (CP Solver) with
+              \emph{congruence domains}. This idea has been introduced
+              by [Granger, P.: Static analysis of arithmetic congruences.
+              International Journal of Computer Math (1989) 165--199]
+              in the abstract interpretation community and we show how
+              a CP Solver can benefit from it, for example in
+              discovering immediately that $12x + |y| = 3$ and
+              $4z + 7y = 0$ have no integer solution.",
+  Note = "Available at
+          \url{http://www.irisa.fr/manifestations/2006/CSTVA06/}."
 }
 
 @Inproceedings{LogozzoF08,
