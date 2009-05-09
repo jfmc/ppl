@@ -372,6 +372,45 @@ Box<ITV>::minimized_congruences() const {
 }
 
 template <typename ITV>
+inline I_Result
+Box<ITV>::refine_interval_no_check(ITV& itv,
+                                   const Constraint::Type type,
+                                   Coefficient_traits::const_reference num,
+                                   Coefficient_traits::const_reference den) {
+  assert(den != 0);
+  // The interval constraint is of the form
+  // `var + num / den rel 0',
+  // where `rel' is either the relation `==', `>=', or `>'.
+  // For the purpose of refining the interval, this is
+  // (morally) turned into `var rel -num/den'.
+  PPL_DIRTY_TEMP0(mpq_class, q);
+  assign_r(q.get_num(), num, ROUND_NOT_NEEDED);
+  assign_r(q.get_den(), den, ROUND_NOT_NEEDED);
+  q.canonicalize();
+  // Turn `num/den' into `-num/den'.
+  q = -q;
+
+  I_Result res;
+  switch (type) {
+  case Constraint::EQUALITY:
+    res = itv.add_constraint(i_constraint(EQUAL, q));
+    break;
+  case Constraint::NONSTRICT_INEQUALITY:
+    res = itv.add_constraint(i_constraint(den > 0
+                                          ? GREATER_OR_EQUAL
+                                          : LESS_OR_EQUAL, q));
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    res = itv.add_constraint(i_constraint(den > 0
+                                          ? GREATER_THAN
+                                          : LESS_THAN, q));
+    break;
+  }
+  assert(itv.OK());
+  return res;
+}
+
+template <typename ITV>
 inline void
 Box<ITV>
 ::add_interval_constraint_no_check(const dimension_type var_id,
@@ -381,34 +420,9 @@ Box<ITV>
   assert(!marked_empty());
   assert(var_id < space_dimension());
   assert(den != 0);
-
-  // The interval constraint is of the form
-  // `Variable(var_id) + num / den rel 0', where
-  // `rel' is either the relation `==', `>=', or `>'.
-  // For the purpose of refining the interval, this is
-  // (morally) turned into `Variable(var_id) rel -num/den'.
-  PPL_DIRTY_TEMP0(mpq_class, q);
-  assign_r(q.get_num(), num, ROUND_NOT_NEEDED);
-  assign_r(q.get_den(), den, ROUND_NOT_NEEDED);
-  q.canonicalize();
-  // Turn `num/den' into `-num/den'.
-  q = -q;
-
-  ITV& seq_v = seq[var_id];
-  switch (type) {
-  case Constraint::EQUALITY:
-    seq_v.add_constraint(i_constraint(EQUAL, q));
-    break;
-  case Constraint::NONSTRICT_INEQUALITY:
-    seq_v.add_constraint(i_constraint(den > 0 ? GREATER_OR_EQUAL : LESS_OR_EQUAL, q));
-    assert(seq_v.OK());
-    break;
-  case Constraint::STRICT_INEQUALITY:
-    seq_v.add_constraint(i_constraint(den > 0 ? GREATER_THAN : LESS_THAN, q));
-    break;
-  }
-  // FIXME: do check the value returned by `refine_existential' and
-  // set `empty' and `empty_up_to_date' as appropriate.
+  refine_interval_no_check(seq[var_id], type, num, den);
+  // FIXME: do check the value returned and set `empty' and
+  // `empty_up_to_date' as appropriate.
   // This has to be done after reimplementation of intervals.
   reset_empty_up_to_date();
   assert(OK());

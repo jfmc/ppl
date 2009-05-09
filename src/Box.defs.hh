@@ -1171,6 +1171,54 @@ public:
   void topological_closure_assign();
 
   /*! \brief
+    \ref Wrapping_Operator "Wraps" the specified dimensions of the
+    vector space.
+
+    \param vars
+    The set of Variable objects corresponding to the space dimensions
+    to be wrapped.
+
+    \param w
+    The width of the bounded integer type corresponding to
+    all the dimensions to be wrapped.
+
+    \param s
+    The signedness of the bounded integer type corresponding to
+    all the dimensions to be wrapped.
+
+    \param o
+    The overflow behavior of the bounded integer type corresponding to
+    all the dimensions to be wrapped.
+
+    \param pcs
+    Possibly null pointer to a constraint system.  When non-null,
+    the pointed-to constraint system is assumed to represent the
+    conditional or looping construct guard with respect to which
+    wrapping is performed.  Since wrapping requires the computation
+    of upper bounds and due to non-distributivity of constraint
+    refinement over upper bounds, passing a constraint system in this
+    way can be more precise than refining the result of the wrapping
+    operation with the constraints in <CODE>*pcs</CODE>.
+
+    \param complexity_threshold
+    A precision parameter which is ignored for the Box domain.
+
+    \param wrap_individually
+    A precision parameter which is ignored for the Box domain.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p vars or with <CODE>*pcs</CODE>.
+  */
+  void wrap_assign(const Variables_Set& vars,
+                   Bounded_Integer_Type_Width w,
+                   Bounded_Integer_Type_Signedness s,
+                   Bounded_Integer_Type_Overflow o,
+                   const Constraint_System* pcs = 0,
+                   unsigned complexity_threshold = 16,
+                   bool wrap_individually = true);
+
+  /*! \brief
     Assigns to \p *this the result of computing the
     \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
 
@@ -1613,6 +1661,15 @@ private:
      the box on the <CODE>k</CODE>-th space dimension.
    */
   const ITV& operator[](dimension_type k) const;
+
+  /*! \brief
+    WRITE ME.
+  */
+  static I_Result
+  refine_interval_no_check(ITV& itv,
+                           Constraint::Type type,
+                           Coefficient_traits::const_reference num,
+                           Coefficient_traits::const_reference den);
 
   /*! \brief
     WRITE ME.

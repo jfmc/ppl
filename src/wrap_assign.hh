@@ -185,7 +185,7 @@ wrap_assign(PSET& pointset,
   //using namespace IO_Operators;
 
   for (Variables_Set::const_iterator i = vars.begin(),
-         vars_end = vars.end(); i != vars.end(); ++i) {
+         vars_end = vars.end(); i != vars_end; ++i) {
 
     const Variable x = Variable(*i);
 
@@ -264,7 +264,7 @@ wrap_assign(PSET& pointset,
 
     if (wrap_individually) {
       Coefficient& quadrant = first_quadrant;
-      // Temporay variable holding the shifts to be applied in order
+      // Temporary variable holding the shifts to be applied in order
       // to implement the translations.
       Coefficient& shift = ld;
       PSET hull(space_dim, EMPTY);

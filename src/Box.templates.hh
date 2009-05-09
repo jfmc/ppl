@@ -36,6 +36,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Octagonal_Shape.defs.hh"
 #include "MIP_Problem.defs.hh"
 #include "Rational_Interval.hh"
+#include <vector>
+#include <map>
 #include <iostream>
 
 namespace Parma_Polyhedra_Library {
@@ -1402,6 +1404,125 @@ Box<ITV>::topological_closure_assign() {
 
   for (dimension_type k = seq.size(); k-- > 0; )
     seq[k].topological_closure_assign();
+}
+
+template <typename ITV>
+void
+Box<ITV>::wrap_assign(const Variables_Set& vars,
+                      Bounded_Integer_Type_Width w,
+                      Bounded_Integer_Type_Signedness s,
+                      Bounded_Integer_Type_Overflow o,
+                      const Constraint_System* pcs,
+                      unsigned complexity_threshold,
+                      bool wrap_individually) {
+#if 1 // Generic implementation commented out.
+  Implementation::wrap_assign(*this,
+                              vars, w, s, o, pcs,
+                              complexity_threshold, wrap_individually);
+#else // Specialized implementation.
+  used(wrap_individually);
+  used(complexity_threshold);
+  Box& x = *this;
+  const dimension_type space_dim = x.space_dimension();
+  // Dimension-compatibility check of `*pcs', if any.
+  if (pcs != 0 && pcs->space_dimension() > space_dim)
+    throw_dimension_incompatible("wrap_assign(vars, w, s, o, pcs, ...)", *pcs);
+
+  // Wrapping no variable is a no-op.
+  if (vars.empty())
+    return;
+
+  // Dimension-compatibility check.
+  const dimension_type vars_space_dim = vars.space_dimension();
+  if (space_dim < vars_space_dim)
+    throw_dimension_incompatible("wrap_space_dimensions(vs, w, s, o, ...)",
+				 vars_space_dim);
+
+  if (x.is_empty())
+    return;
+
+  const Variables_Set::const_iterator vs_end = vars.end();
+  const ITV* null_p_itv = 0;
+
+  if (pcs == 0) {
+    // No constraint refinement is needed here.
+    for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i) {
+      ITV& seq_v = x.seq[*i];
+      I_Result res = seq_v.wrap_assign(w, s, o, null_p_itv);
+      if (seq_v.check_empty(res)) {
+        x.set_empty();
+        return;
+      }
+    }
+    assert(x.OK());
+    return;
+  }
+
+  assert(pcs != 0);
+  const Constraint_System& cs = *pcs;
+  const dimension_type cs_space_dim = cs.space_dimension();
+  // A map associating interval constraints to variable indexes.
+  typedef std::map<dimension_type, std::vector<const Constraint*> > map_type;
+  map_type var_cs_map;
+  dimension_type c_num_vars = 0;
+  dimension_type c_only_var = 0;
+  for (Constraint_System::const_iterator i = cs.begin(),
+         i_end = cs.end(); i != i_end; ++i) {
+    const Constraint& c = *i;
+    if (extract_interval_constraint(c, cs_space_dim,
+                                    c_num_vars, c_only_var)) {
+      if (c_num_vars == 1) {
+        // An interval constraint on variable index `c_only_var'.
+        assert(c_only_var < space_dim);
+        // We do care about c if c_only_var is going to be wrapped.
+        if (vars.find(c_only_var) != vs_end)
+          var_cs_map[c_only_var].push_back(&c);
+      }
+      else {
+        assert(c_num_vars == 0);
+        // Note: tautologies have been filtered out by iterators.
+        assert(c.is_inconsistent());
+        x.set_empty();
+        return;
+      }
+    }
+  }
+
+  const ITV* p_itv;
+  ITV refinement_interval;
+  const map_type::const_iterator var_cs_map_end = var_cs_map.end();
+  // Loop through the variable indexes in `vars'.
+  for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i) {
+    const dimension_type v = *i;
+    // Look for the refinement constraints for space dimension index `v'.
+    map_type::const_iterator var_cs_map_iter = var_cs_map.find(v);
+    if (var_cs_map_iter == var_cs_map_end) {
+      // No refinement constraint is available for variable `v'.
+      p_itv = null_p_itv;
+    }
+    else {
+      p_itv = &refinement_interval;
+      // Build a refinement interval for variable `v'.
+      refinement_interval.assign(UNIVERSE);
+      map_type::mapped_type& var_cs = var_cs_map_iter->second;
+      for (dimension_type j = var_cs.size(); j-- > 0; ) {
+        const Constraint& c = *var_cs[j];
+        refine_interval_no_check(refinement_interval,
+                                 c.type(),
+                                 c.inhomogeneous_term(),
+                                 c.coefficient(Variable(v)));
+      }
+    }
+    // Wrap space dimension index `v'.
+    ITV& seq_v = x.seq[v];
+    I_Result res = seq_v.wrap_assign(w, s, o, p_itv);
+    if (seq_v.check_empty(res)) {
+      x.set_empty();
+      return;
+    }
+  }
+  assert(x.OK());
+#endif
 }
 
 template <typename ITV>
