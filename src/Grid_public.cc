@@ -2660,13 +2660,9 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
 
   const dimension_type space_dim = space_dimension();
   // Dimension-compatibility check of `vars'.
-  if (space_dim < vars.space_dimension()) {
-    std::ostringstream s;
-    s << "PPL::Grid::wrap_assign(vars, ...):" << std::endl
-      << "this->space_dimension() == " << space_dim
-      << ", required space dimension == " << vars.space_dimension() << ".";
-    throw std::invalid_argument(s.str());
-  }
+  const dimension_type min_space_dim = vars.space_dimension();
+  if (space_dim < min_space_dim)
+    throw_dimension_incompatible("wrap_assign(vs, ...)", min_space_dim);
 
   // Wrapping an empty polyhedron is a no-op.
   if (marked_empty())
@@ -2683,10 +2679,9 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   if (o == OVERFLOW_UNDEFINED) {
     for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars.end(); ++i) {
-
       const Variable x = Variable(*i);
 
-      // If x is a constant, do nothing.
+      // If `x' is a constant, do nothing.
       if (!gr.bounds(x, "wrap_assign(...)")) {
         if (gr.constrains(x))
           // We know that x is not a constant,
