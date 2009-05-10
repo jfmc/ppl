@@ -655,6 +655,40 @@ div_2exp_ext(To& to, const From& x, int exp, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
+smod_2exp_ext(To& to, const From& x, unsigned int exp, Rounding_Dir dir) {
+  if (!ext_to_handle<From_Policy>(x))
+    goto native;
+  if (is_nan<From_Policy>(x))
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  else if (CHECK_P(To_Policy::check_inf_mod, is_minf<From_Policy>(x)
+		   || is_pinf<From_Policy>(x)))
+    return assign_special<To_Policy>(to, V_INF_MOD, ROUND_IGNORE);
+  else {
+  native:
+    return smod_2exp<To_Policy, From_Policy>(to, x, exp, dir);
+  }
+}
+
+template <typename To_Policy, typename From_Policy,
+	  typename To, typename From>
+inline Result
+umod_2exp_ext(To& to, const From& x, unsigned int exp, Rounding_Dir dir) {
+  if (!ext_to_handle<From_Policy>(x))
+    goto native;
+  if (is_nan<From_Policy>(x))
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  else if (CHECK_P(To_Policy::check_inf_mod, is_minf<From_Policy>(x)
+		   || is_pinf<From_Policy>(x)))
+    return assign_special<To_Policy>(to, V_INF_MOD, ROUND_IGNORE);
+  else {
+  native:
+    return umod_2exp<To_Policy, From_Policy>(to, x, exp, dir);
+  }
+}
+
+template <typename To_Policy, typename From_Policy,
+	  typename To, typename From>
+inline Result
 sqrt_ext(To& to, const From& x, Rounding_Dir dir) {
   if (!ext_to_handle<From_Policy>(x))
     goto native;

@@ -104,6 +104,10 @@ inverse(Rounding_Dir dir) {
   return static_cast<Rounding_Dir>((dir & ~ROUND_DIR_MASK) | d);
 }
 
+inline Rounding_Dir operator|(Rounding_Dir x, Rounding_Dir y) {
+  return static_cast<Rounding_Dir>((unsigned)x | (unsigned)y);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Rounding_Dir_inlines_hh)

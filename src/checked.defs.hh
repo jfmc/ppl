@@ -386,6 +386,12 @@ namespace Checked {
 #define PPL_SPECIALIZE_DIV_2EXP(func, To, From)                         \
   PPL_SPECIALIZE_FUN2_0_2(div_2exp, func, Result, nonconst, To,         \
                           const, From, unsigned int, Rounding_Dir)
+#define PPL_SPECIALIZE_SMOD_2EXP(func, To, From)			\
+  PPL_SPECIALIZE_FUN2_0_2(smod_2exp, func, Result, nonconst, To,	\
+                          const, From, unsigned int, Rounding_Dir)
+#define PPL_SPECIALIZE_UMOD_2EXP(func, To, From)			\
+  PPL_SPECIALIZE_FUN2_0_2(umod_2exp, func, Result, nonconst, To,	\
+                          const, From, unsigned int, Rounding_Dir)
 #define PPL_SPECIALIZE_ADD_MUL(func, To, From1, From2)                  \
   PPL_SPECIALIZE_FUN3_0_1(add_mul, func, Result, nonconst, To,          \
                           const, From1, const, From2, Rounding_Dir)
@@ -469,6 +475,12 @@ PPL_DECLARE_FUN2_0_2(mul_2exp,
                      Result, nonconst, To,
                      const, From, unsigned int, Rounding_Dir)
 PPL_DECLARE_FUN2_0_2(div_2exp,
+                     Result, nonconst, To,
+                     const, From, unsigned int, Rounding_Dir)
+PPL_DECLARE_FUN2_0_2(smod_2exp,
+                     Result, nonconst, To,
+                     const, From, unsigned int, Rounding_Dir)
+PPL_DECLARE_FUN2_0_2(umod_2exp,
                      Result, nonconst, To,
                      const, From, unsigned int, Rounding_Dir)
 PPL_DECLARE_FUN3_0_1(add_mul,

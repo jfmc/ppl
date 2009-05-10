@@ -552,6 +552,8 @@ name(To& to, const From& x, int exp, Rounding_Dir dir);
 
 FUNC1(mul_2exp_assign_r)
 FUNC1(div_2exp_assign_r)
+FUNC1(smod_2exp_assign_r)
+FUNC1(umod_2exp_assign_r)
 
 #undef FUNC1
 

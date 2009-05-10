@@ -1088,7 +1088,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 div_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
                       Rounding_Dir dir) {
-  if (exp >= sizeof(Type) * 8) {
+  if (exp >= sizeof(Type) * CHAR_BIT) {
     to = 0;
     if (round_ignore(dir))
       return V_GE;
@@ -1109,7 +1109,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 div_2exp_signed_int(Type& to, const Type x, unsigned int exp,
                     Rounding_Dir dir) {
-  if (exp > sizeof(Type) * 8 - 1) {
+  if (exp > sizeof(Type) * CHAR_BIT - 1) {
   zero:
     to = 0;
     if (round_ignore(dir))
@@ -1121,7 +1121,7 @@ div_2exp_signed_int(Type& to, const Type x, unsigned int exp,
     else
       return V_EQ;
   }
-  if (exp == sizeof(Type) * 8 - 1) {
+  if (exp == sizeof(Type) * CHAR_BIT - 1) {
     if (x == C_Integer<Type>::min) {
       to = -1;
       return V_EQ;
@@ -1158,14 +1158,14 @@ mul_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
     to = x << exp;
     return V_EQ;
   }
-  if (exp >= sizeof(Type) * 8) {
+  if (exp >= sizeof(Type) * CHAR_BIT) {
     if (x == 0) {
       to = 0;
       return V_EQ;
     }
     return set_pos_overflow_int<To_Policy>(to, dir);
   }
-  if (x & (((static_cast<Type>(1) << exp) - 1) << (sizeof(Type) * 8 - exp)))
+  if (x & (((static_cast<Type>(1) << exp) - 1) << (sizeof(Type) * CHAR_BIT - exp)))
     return set_pos_overflow_int<To_Policy>(to, dir);
   Type n = x << exp;
   if (n > Extended_Int<To_Policy, Type>::max)
@@ -1182,7 +1182,7 @@ mul_2exp_signed_int(Type& to, const Type x, unsigned int exp,
     to = x << exp;
     return V_EQ;
   }
-  if (exp >= sizeof(Type) * 8 - 1) {
+  if (exp >= sizeof(Type) * CHAR_BIT - 1) {
     if (x < 0)
       return set_neg_overflow_int<To_Policy>(to, dir);
     else if (x > 0)
@@ -1193,7 +1193,7 @@ mul_2exp_signed_int(Type& to, const Type x, unsigned int exp,
     }
   }
   Type mask = ((static_cast<Type>(1) << exp) - 1)
-    << (sizeof(Type) * 8 - 1 - exp);
+    << (sizeof(Type) * CHAR_BIT - 1 - exp);
   Type n;
   if (x < 0) {
     if ((x & mask) != mask)
@@ -1213,13 +1213,67 @@ mul_2exp_signed_int(Type& to, const Type x, unsigned int exp,
   return V_EQ;
 }
 
+template <typename To_Policy, typename From_Policy, typename Type>
+inline Result
+smod_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
+		       Rounding_Dir dir) {
+  if (exp > sizeof(Type) * CHAR_BIT)
+    to = x;
+  else {
+    Type v = exp == sizeof(Type) * CHAR_BIT ? x : (x & ((Type(1) << exp) - 1));
+    if (v >= Type(1) << (exp - 1))
+      return set_neg_overflow_int<To_Policy>(to, dir);
+    else
+      to = v;
+  }
+  return V_EQ;
+}
+
+template <typename To_Policy, typename From_Policy, typename Type>
+inline Result
+smod_2exp_signed_int(Type& to, const Type x, unsigned int exp,
+		     Rounding_Dir) {
+  if (exp >= sizeof(Type) * CHAR_BIT)
+    to = x;
+  else {
+    Type m = Type(1) << (exp - 1);
+    to = (x & (m - 1)) - (x & m);
+  }
+  return V_EQ;
+}
+
+template <typename To_Policy, typename From_Policy, typename Type>
+inline Result
+umod_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
+		       Rounding_Dir) {
+  if (exp >= sizeof(Type) * CHAR_BIT)
+    to = x;
+  else
+    to = x & ((Type(1) << exp) - 1);
+  return V_EQ;
+}
+
+template <typename To_Policy, typename From_Policy, typename Type>
+inline Result
+umod_2exp_signed_int(Type& to, const Type x, unsigned int exp,
+		     Rounding_Dir dir) {
+  if (exp >= sizeof(Type) * CHAR_BIT) {
+    if (x < 0)
+      return set_pos_overflow_int<To_Policy>(to, dir);
+    to = x;
+  }
+  else
+    to = x & ((Type(1) << exp) - 1);
+  return V_EQ;
+}
+
 template <typename Type>
 inline void
 isqrtrem(Type& q, Type& r, const Type from) {
   q = 0;
   r = from;
   Type t(1);
-  for (t <<= 8 * sizeof(Type) - 2; t != 0; t >>= 2) {
+  for (t <<= CHAR_BIT * sizeof(Type) - 2; t != 0; t >>= 2) {
     Type s = q + t;
     if (s <= r) {
       r -= s;
@@ -1441,6 +1495,28 @@ PPL_SPECIALIZE_DIV_2EXP(div_2exp_unsigned_int, unsigned short, unsigned short)
 PPL_SPECIALIZE_DIV_2EXP(div_2exp_unsigned_int, unsigned int, unsigned int)
 PPL_SPECIALIZE_DIV_2EXP(div_2exp_unsigned_int, unsigned long, unsigned long)
 PPL_SPECIALIZE_DIV_2EXP(div_2exp_unsigned_int, unsigned long long, unsigned long long)
+
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_signed_int, signed char, signed char)
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_signed_int, signed short, signed short)
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_signed_int, signed int, signed int)
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_signed_int, signed long, signed long)
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_signed_int, signed long long, signed long long)
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_unsigned_int, unsigned long long, unsigned long long)
+
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_signed_int, signed char, signed char)
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_signed_int, signed short, signed short)
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_signed_int, signed int, signed int)
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_signed_int, signed long, signed long)
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_signed_int, signed long long, signed long long)
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_unsigned_int, unsigned long long, unsigned long long)
 
 PPL_SPECIALIZE_SQRT(sqrt_signed_int, signed char, signed char)
 PPL_SPECIALIZE_SQRT(sqrt_signed_int, signed short, signed short)

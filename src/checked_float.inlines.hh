@@ -591,7 +591,7 @@ inline Result
 mul_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  assert(exp < sizeof(unsigned long long) * 8);
+  assert(exp < sizeof(unsigned long long) * CHAR_BIT);
   return
     mul<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
@@ -604,12 +604,45 @@ inline Result
 div_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  assert(exp < sizeof(unsigned long long) * 8);
+  assert(exp < sizeof(unsigned long long) * CHAR_BIT);
   return
     div<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
                                             static_cast<Type>(1ULL << exp),
                                             dir);
+}
+
+template <typename To_Policy, typename From_Policy, typename Type>
+inline Result
+smod_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
+  if (To_Policy::check_nan_result && is_nan<From_Policy>(x))
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  if (To_Policy::check_inf_mod && is_inf_float<From_Policy>(x))
+    return assign_special<To_Policy>(to, V_INF_MOD, ROUND_IGNORE);
+  assert(exp < sizeof(unsigned long long) * CHAR_BIT);
+  Type m = 1ULL << exp;
+  rem_float<To_Policy, From_Policy, Float_2exp>(to, x, m, ROUND_IGNORE);
+  Type m2 = m / 2;
+  if (to < -m2)
+    return add_float<To_Policy, From_Policy, Float_2exp>(to, to, m, dir);
+  else if (to >= m2)
+    return sub_float<To_Policy, From_Policy, Float_2exp>(to, to, m, dir);
+  return V_EQ;
+}
+
+template <typename To_Policy, typename From_Policy, typename Type>
+inline Result
+umod_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
+  if (To_Policy::check_nan_result && is_nan<From_Policy>(x))
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  if (To_Policy::check_inf_mod && is_inf_float<From_Policy>(x))
+    return assign_special<To_Policy>(to, V_INF_MOD, ROUND_IGNORE);
+  assert(exp < sizeof(unsigned long long) * CHAR_BIT);
+  Type m = 1ULL << exp;
+  rem_float<To_Policy, From_Policy, Float_2exp>(to, x, m, ROUND_IGNORE);
+  if (to < 0)
+    return add_float<To_Policy, From_Policy, Float_2exp>(to, to, m, dir);
+  return V_EQ;
 }
 
 template <typename To_Policy, typename From_Policy, typename Type>
@@ -679,7 +712,7 @@ assign_float_int_inexact(To& to, const From from, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_float_int(To& to, const From from, Rounding_Dir dir) {
-  if (sizeof(From) * 8 > Float<To>::Binary::MANTISSA_BITS)
+  if (sizeof(From) * CHAR_BIT > Float<To>::Binary::MANTISSA_BITS)
     return assign_float_int_inexact<To_Policy, From_Policy>(to, from, dir);
   else
     return assign_exact<To_Policy, From_Policy>(to, from, dir);
@@ -973,6 +1006,8 @@ PPL_SPECIALIZE_DIV(div_float, float, float, float)
 PPL_SPECIALIZE_REM(rem_float, float, float, float)
 PPL_SPECIALIZE_MUL_2EXP(mul_2exp_float, float, float)
 PPL_SPECIALIZE_DIV_2EXP(div_2exp_float, float, float)
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_float, float, float)
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_float, float, float)
 PPL_SPECIALIZE_SQRT(sqrt_float, float, float)
 PPL_SPECIALIZE_GCD(gcd_exact, float, float, float)
 PPL_SPECIALIZE_GCDEXT(gcdext_exact, float, float, float, float, float)
@@ -1017,6 +1052,8 @@ PPL_SPECIALIZE_DIV(div_float, double, double, double)
 PPL_SPECIALIZE_REM(rem_float, double, double, double)
 PPL_SPECIALIZE_MUL_2EXP(mul_2exp_float, double, double)
 PPL_SPECIALIZE_DIV_2EXP(div_2exp_float, double, double)
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_float, double, double)
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_float, double, double)
 PPL_SPECIALIZE_SQRT(sqrt_float, double, double)
 PPL_SPECIALIZE_GCD(gcd_exact, double, double, double)
 PPL_SPECIALIZE_GCDEXT(gcdext_exact, double, double, double, double, double)
@@ -1061,6 +1098,8 @@ PPL_SPECIALIZE_DIV(div_float, long double, long double, long double)
 PPL_SPECIALIZE_REM(rem_float, long double, long double, long double)
 PPL_SPECIALIZE_MUL_2EXP(mul_2exp_float, long double, long double)
 PPL_SPECIALIZE_DIV_2EXP(div_2exp_float, long double, long double)
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_float, long double, long double)
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_float, long double, long double)
 PPL_SPECIALIZE_SQRT(sqrt_float, long double, long double)
 PPL_SPECIALIZE_GCD(gcd_exact, long double, long double, long double)
 PPL_SPECIALIZE_GCDEXT(gcdext_exact, long double, long double, long double,

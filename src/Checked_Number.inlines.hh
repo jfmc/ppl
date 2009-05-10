@@ -404,6 +404,8 @@ name(To& to, const From& x, int exp, Rounding_Dir dir) {		\
 
 FUNC1(mul_2exp_assign_r, mul_2exp_ext)
 FUNC1(div_2exp_assign_r, div_2exp_ext)
+FUNC1(smod_2exp_assign_r, smod_2exp_ext)
+FUNC1(umod_2exp_assign_r, umod_2exp_ext)
 
 #undef FUNC1
 

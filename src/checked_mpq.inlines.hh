@@ -317,8 +317,10 @@ inline Result
 rem_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   if (CHECK_P(To_Policy::check_div_zero, sgn(y) == 0))
     return assign_special<To_Policy>(to, V_MOD_ZERO, ROUND_IGNORE);
-  to = x / y;
-  to.get_num() %= to.get_den();
+  PPL_DIRTY_TEMP(mpq_class, tmp);
+  tmp = x / y;
+  tmp.get_num() %= tmp.get_den();
+  to = tmp * y;
   return V_EQ;
 }
 
@@ -347,6 +349,37 @@ div_2exp_mpq(mpq_class& to, const mpq_class& x, unsigned int exp,
 }
 
 PPL_SPECIALIZE_DIV_2EXP(div_2exp_mpq, mpq_class, mpq_class)
+
+template <typename To_Policy, typename From_Policy>
+inline Result
+smod_2exp_mpq(mpq_class& to, const mpq_class& x, unsigned int exp,
+	      Rounding_Dir) {
+  to.get_num() = x.get_num();
+  mpz_mul_2exp(to.get_den().get_mpz_t(), x.get_den().get_mpz_t(), exp);
+  mpz_fdiv_r(to.get_num().get_mpz_t(), to.get_num().get_mpz_t(), to.get_den().get_mpz_t());
+  to.canonicalize();
+  if (to >= 0.5)
+    to -= 1;
+  mpz_mul_2exp(to.get_num().get_mpz_t(), to.get_num().get_mpz_t(), exp);
+  to.canonicalize();
+  return V_EQ;
+}
+
+PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_mpq, mpq_class, mpq_class)
+
+template <typename To_Policy, typename From_Policy>
+inline Result
+umod_2exp_mpq(mpq_class& to, const mpq_class& x, unsigned int exp,
+	      Rounding_Dir) {
+  to.get_num() = x.get_num();
+  mpz_mul_2exp(to.get_den().get_mpz_t(), x.get_den().get_mpz_t(), exp);
+  mpz_fdiv_r(to.get_num().get_mpz_t(), to.get_num().get_mpz_t(), to.get_den().get_mpz_t());
+  mpz_mul_2exp(to.get_num().get_mpz_t(), to.get_num().get_mpz_t(), exp);
+  to.canonicalize();
+  return V_EQ;
+}
+
+PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_mpq, mpq_class, mpq_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result
