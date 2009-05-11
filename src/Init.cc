@@ -175,7 +175,7 @@ PPL::Init::Init() {
 
     // The default is choosen to have a precision greater than most
     // precise IEC559 floating point (112 bits of mantissa).
-    set_rational_sqrt_precision_parameter(128);
+    set_irrational_precision(128);
   }
 }
 
