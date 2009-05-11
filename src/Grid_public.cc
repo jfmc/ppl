@@ -2644,22 +2644,26 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
                              Bounded_Integer_Type_Width w,
                              Bounded_Integer_Type_Signedness s,
                              Bounded_Integer_Type_Overflow o,
-                             const Constraint_System*,
+                             const Constraint_System* pcs,
                              unsigned,
                              bool) {
 
-  // If overflow is impossible do nothing.
-  if (o == OVERFLOW_IMPOSSIBLE)
-    // FIXME: CHECKME: If the grid frequency for x in vars is more than half
-    // the wrap frequency, then x can only take a unique (ie constant) value.
-    return;
+  // Dimension-compatibility check of `*pcs', if any.
+  if (pcs != 0) {
+   const dimension_type pcs_space_dim = pcs->space_dimension();
+   if (pcs->space_dimension() != space_dim)
+     throw_dimension_incompatible("wrap_assign(vs, ...)", pcs_space_dim);
+  }
 
   // Wrapping no variable is a no-op.
   if (vars.empty())
     return;
 
+<<<<<<< HEAD:src/Grid_public.cc
   const dimension_type space_dim = space_dimension();
   // Dimension-compatibility check of `vars'.
+=======
+>>>>>>> Improved and corrected draft code for wrap_assign() for grids.:src/Grid_public.cc
   const dimension_type min_space_dim = vars.space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("wrap_assign(vs, ...)", min_space_dim);
@@ -2667,25 +2671,66 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   // Wrapping an empty polyhedron is a no-op.
   if (marked_empty())
     return;
-  if (!generators_are_up_to_date() && !update_generators())
-    // Updating found `this' empty.
+  if (!generators_are_minimized() && !minimize())
+    // Minimizing found `this' empty.
     return;
+
+  // Set the wrap frequency for variables of width `w'.
+  // This is independent of the signedness `s'.
+  PPL_DIRTY_TEMP_COEFFICIENT(wrap_frequency);
+  mul_2exp_assign(wrap_frequency, Coefficient_one(), w);
 
   // Generators are up-to-date.
   const Grid gr = *this;
 
+  // Overflow is impossible. So check if value might be constant.
+  if (o == OVERFLOW_IMPOSSIBLE) {
+    PPL_DIRTY_TEMP_COEFFICIENT(f_n);
+    PPL_DIRTY_TEMP_COEFFICIENT(f_d);
+    PPL_DIRTY_TEMP_COEFFICIENT(v_n);
+    PPL_DIRTY_TEMP_COEFFICIENT(v_d);
+    for (Variables_Set::const_iterator i = vars.begin(),
+           vars_end = vars.end(); i != vars.end(); ++i) {
+      const Variable x = Variable(*i);
+      // If the grid frequency for `x' in `vars' is more than half the wrap
+      // frequency, then `x' can only take a unique (ie constant) value.
+      if (!gr.frequency_no_check(x, f_n, f_d, v_n, v_d))
+        continue;
+      if (2*f_n > f_d * wrap_frequency) {
+        if (s == UNSIGNED) {
+          // `v_n' is the value closest to 0 and may be negatve.
+          if (v_n < 0) {
+            v_n *= f_d;
+            add_mul_assign(v_n, f_n, v_d);
+            v_d *= f_d;
+            PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+            gcd_assign(gcd, v_n, v_d);
+            exact_div_assign(v_n, v_n, gcd);
+            exact_div_assign(v_d, v_d, gcd);
+          }
+        }
+        add_constraint(v_d * x == v_n);
+      }
+    }
+    return;
+  }
   // If overflow is undefined, then all we know is that the variable
-  // will be integral.
+  // can take any integer between the wrap bounds.
   if (o == OVERFLOW_UNDEFINED) {
     for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars.end(); ++i) {
       const Variable x = Variable(*i);
+<<<<<<< HEAD:src/Grid_public.cc
 
       // If `x' is a constant, do nothing.
       if (!gr.bounds(x, "wrap_assign(...)")) {
+=======
+      // If `x' is a constant, do nothing.
+      if (!gr.bounds_no_check(x)) {
+>>>>>>> Improved and corrected draft code for wrap_assign() for grids.:src/Grid_public.cc
         if (gr.constrains(x))
-          // We know that x is not a constant,
-          // so x may wrap to any integral value.
+          // We know that `x' is not a constant,
+          // so `x' may wrap to any integral value.
           add_grid_generator(parameter(x));
       }
     }
@@ -2694,22 +2739,14 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
 
   // Overflow wraps.
   assert(o == OVERFLOW_WRAPS);
-  // Set the wrap frequency for variables of width `w' and signedness `s'.
-  PPL_DIRTY_TEMP_COEFFICIENT(wrap_frequency);
-  if (s == UNSIGNED)
-    mul_2exp_assign(wrap_frequency, Coefficient_one(), w);
-  else {
-    assert(s == SIGNED_2_COMPLEMENT);
-    mul_2exp_assign(wrap_frequency, Coefficient_one(), w-1);
-  }
 
   for (Variables_Set::const_iterator i = vars.begin(),
          vars_end = vars.end(); i != vars.end(); ++i) {
     const Variable x = Variable(*i);
-    // If x is a constant, do nothing.
-    if (!gr.bounds(x, "wrap_assign(...)")) {
+    // If `x' is a constant, do nothing.
+    if (!gr.bounds_no_check(x)) {
       if (gr.constrains(x))
-        // We know that x is not a constant, so x may wrap.
+        // We know that `x' is not a constant, so `x' may wrap.
         add_grid_generator(parameter(wrap_frequency * x));
     }
   }

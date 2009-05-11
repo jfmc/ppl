@@ -32,8 +32,6 @@ test01() {
   gr.add_congruence((x + 24 %= 8*y) / 2);
   gr.add_congruence((y %= 1) / 3);
 
-  print_congruences(gr, "*** gr ***");
-
   Variables_Set vars(x, y);
 
   gr.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
@@ -59,8 +57,6 @@ test02() {
   gr.add_congruence(x + 24 %= 8*y);
   gr.add_congruence((y %= 1) / 2);
 
-  print_congruences(gr, "*** gr ***");
-
   Variables_Set vars(x, y);
 
   gr.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_UNDEFINED);
@@ -83,8 +79,6 @@ test03() {
   Grid gr(2);
   gr.add_congruence((x + 24 %= 8*y) / 255);
   gr.add_congruence(x %= 0);
-
-  print_congruences(gr, "*** gr ***");
 
   Variables_Set vars(x, y);
 
@@ -111,14 +105,176 @@ test04() {
   Grid gr(4);
   gr.add_congruence((x %= 255) / 0);
 
-  print_congruences(gr, "*** gr ***");
-
   Variables_Set vars(x, w);
 
   gr.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
 
   Grid known_result(4);
   known_result.add_congruence((x %= 255) / 0);
+
+  bool ok = (gr == known_result);
+
+  print_congruences(gr, "*** gr.wrap_assign(...) ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
+
+  Grid gr1(4);
+  gr1.add_congruence((x %= 10) / 255);
+  Grid gr2(gr1);
+
+  Variables_Set vars(x);
+
+  gr1.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_IMPOSSIBLE);
+  gr2.wrap_assign(vars, BITS_8, SIGNED_2_COMPLEMENT, OVERFLOW_IMPOSSIBLE);
+
+  Grid known_result(4);
+  known_result.add_congruence((x %= 10) / 0);
+
+  bool ok = (gr1 == known_result && gr2 == known_result);
+
+  print_congruences(gr1, "*** gr1.wrap_assign(...) ***");
+  print_congruences(gr2, "*** gr2.wrap_assign(...) ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
+
+  Grid gr1(4);
+  gr1.add_congruence((x %= 245) / 255);
+  Grid gr2(gr1);
+
+  Variables_Set vars(x);
+
+  gr1.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_IMPOSSIBLE);
+  gr2.wrap_assign(vars, BITS_8, SIGNED_2_COMPLEMENT, OVERFLOW_IMPOSSIBLE);
+
+  Grid known_result1(4);
+  known_result1.add_congruence((x %= 245) / 0);
+  Grid known_result2(4);
+  known_result2.add_congruence((x %= -10) / 0);
+
+  bool ok = (gr1 == known_result1 && gr2 == known_result2);
+
+  print_congruences(gr1, "*** gr1.wrap_assign(...) ***");
+  print_congruences(gr2, "*** gr2.wrap_assign(...) ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  Grid gr(3);
+  gr.add_congruence(x + 24 %= 8*y);
+  gr.add_congruence((y %= 1) / 0);
+
+  Variables_Set vars(x, y);
+
+  gr.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_UNDEFINED);
+
+  Grid known_result(3);
+  known_result.add_congruence(x %= 0);
+  known_result.add_congruence((y %= 1) / 0);
+
+  bool ok = (gr == known_result);
+
+  print_congruences(gr, "*** gr.wrap_assign(...) ***");
+
+  return ok;
+}
+
+// Expression of a greater space dimension than the grid.
+bool
+test08() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
+
+  Grid gr(3);
+  gr.add_congruence((z == -2) / 0);
+  gr.add_congruence((x ==  0) / 0);
+
+  Variables_Set vars(x, w);
+
+  try {
+    gr.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_UNDEFINED);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+// Expression of a greater space dimension than the grid.
+bool
+test09() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
+
+  Grid gr(3);
+  gr.add_congruence((z == -2) / 0);
+  gr.add_congruence((x ==  0) / 0);
+
+  Constraint_System pcs;
+  pcs.insert(x+y+z+w == 2);
+
+  Variables_Set vars(x, y);
+
+  try {
+    gr.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_UNDEFINED, &pcs);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test10() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
+
+  Grid gr(4);
+  gr.add_congruence((x %= 1) / 2);
+
+  Constraint_System pcs;
+  pcs.insert(x+y+z+w == 2);
+
+  Variables_Set vars(x, w);
+
+  // The constraint system pcs will be ignored.
+  gr.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &pcs);
+
+  Grid known_result(4);
+  known_result.add_congruence((x %= 1) / 2);
 
   bool ok = (gr == known_result);
 
@@ -134,4 +290,10 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN
