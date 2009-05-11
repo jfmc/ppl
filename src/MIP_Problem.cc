@@ -857,12 +857,13 @@ PPL::MIP_Problem::process_pending_constraints() {
 
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_float_entering_index() const {
-  PPL_DIRTY_TEMP0(mpq_class, real_coeff);
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
   double challenger_num = 0.0;
   double challenger_den = 0.0;
   double current_value = 0.0;
+  double float_tableau_value = 0.0;
+  double float_tableau_denum = 0.0;
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
@@ -880,10 +881,9 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 	const Coefficient& tableau_ij = tableau_i[j];
 	if (tableau_ij != 0) {
 	  assert(tableau_i[base[i]] != 0);
-	  assign_r(real_coeff.get_num(), tableau_ij, ROUND_NOT_NEEDED);
-	  assign_r(real_coeff.get_den(), tableau_i[base[i]], ROUND_NOT_NEEDED);
-	  real_coeff.canonicalize();
-	  double float_tableau_value = real_coeff.get_d();
+	  assign_r(float_tableau_value, tableau_ij, ROUND_IGNORE);
+	  assign_r(float_tableau_denum, tableau_i[base[i]], ROUND_IGNORE);
+	  float_tableau_value /= float_tableau_denum;
 	  challenger_den += float_tableau_value * float_tableau_value;
 	}
       }
