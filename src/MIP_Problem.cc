@@ -855,22 +855,6 @@ PPL::MIP_Problem::process_pending_constraints() {
   return true;
 }
 
-namespace {
-
-inline void
-assign(double& d, const mpz_class& c) {
-  d = c.get_d();
-}
-
-template <typename T, typename Policy>
-inline void
-assign(double& d,
-       const Parma_Polyhedra_Library::Checked_Number<T, Policy>& c) {
-  d = raw_value(c);
-}
-
-} // namespace
-
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   PPL_DIRTY_TEMP0(mpq_class, real_coeff);
@@ -886,7 +870,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     if (sgn(cost_j) == cost_sign) {
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
-      assign(challenger_num, cost_j);
+      assign_r(challenger_num, cost_j, ROUND_IGNORE);
       challenger_num = fabs(challenger_num);
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
@@ -899,8 +883,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 	  assign_r(real_coeff.get_num(), tableau_ij, ROUND_NOT_NEEDED);
 	  assign_r(real_coeff.get_den(), tableau_i[base[i]], ROUND_NOT_NEEDED);
 	  real_coeff.canonicalize();
-	  double float_tableau_value;
-	  assign(float_tableau_value, real_coeff);
+	  double float_tableau_value = real_coeff.get_d();
 	  challenger_den += float_tableau_value * float_tableau_value;
 	}
       }
@@ -1565,7 +1548,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   bool found_satisfiable_generator = true;
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   const Coefficient& p_divisor = p.divisor();
-  dimension_type nonint_dim;
+  dimension_type nonint_dim = lp.space_dimension();
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);

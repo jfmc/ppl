@@ -11,8 +11,6 @@ Enhancements for PPL 0.11
 - Make all the *affine*image() methods uniform as far as the
   specification is concerned.
 - Check the use or the NOT_EQUAL Relation_Symbol everywhere.
-- Get rid of ugly assign functions defined in anonymous namespace of
-  MIP_Problem.cc replacing it with a more general-purpose approach.
 - Reconsider the datatype for the units parameter in the Watchdog
   constructors: should we prefer an unsigned?
 - Rename set_rational_sqrt_precision_parameter to
