@@ -193,7 +193,7 @@ public class Parma_Polyhedra_Library {
 
     //@} // Version Checking
 
-    //! \name (Re-) Setting floating-point rounding mode.
+    //! \name Floating-point rounding and precision settings.
     //@{
 
     /*! \brief
@@ -216,7 +216,20 @@ public class Parma_Polyhedra_Library {
     */
     public static native void restore_pre_PPL_rounding();
 
-    //@} // (Re-) Setting floating-point rounding mode.
+    //! Returns the precision parameter for irrational calculations.
+    public static native int irrational_precision();
+
+    //! Sets the precision parameter used for irrational calculations.
+    /*!
+      If \p p is less than or equal to <CODE>INT_MAX</CODE>, sets the
+      precision parameter used for irrational calculations to \p p.
+      Then, in the irrational calculations returning an unbounded rational,
+      (e.g., when computing a square root), the lesser between numerator
+      and denominator will be limited to 2**\p p.
+    */
+    public static native void set_irrational_precision(int p);
+
+    //@} // Floating-point rounding and precision settings.
 
     //! \name Timeout handling
     //@{
@@ -231,8 +244,8 @@ public class Parma_Polyhedra_Library {
 
       Computations taking exponential time will be interrupted some time
       after \p hsecs hundreths of seconds have elapsed since the call to
-      the timeout setting function, by throwing a exception
-      <code>PPL_TIMEOUT_EXCEPTION</code>.
+      the timeout setting function, by throwing a
+      <code>Timeout_Exception</code> object.
       Otherwise, if the computation completes without being interrupted,
       then the timeout should be reset by calling
       <code>reset_timeout()</code>.

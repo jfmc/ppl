@@ -637,6 +637,26 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_restore_1pre_1PPL_1roun
   CATCH_ALL;
 }
 
+JNIEXPORT jint JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_irrational_1precision
+(JNIEnv* env , jclass) {
+  try {
+    return irrational_precision();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1irrational_1precision
+(JNIEnv* env , jclass, jint p) {
+  try {
+    unsigned cxx_p = jtype_to_unsigned<unsigned>(p);
+    set_irrational_precision(cxx_p);
+  }
+  CATCH_ALL;
+}
+
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1timeout
 (JNIEnv* env, jclass, jint hsecs) {

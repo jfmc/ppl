@@ -56,6 +56,8 @@ static {
     PPL_Test.println_if_vnoisy(Parma_Polyhedra_Library.banner());
     Parma_Polyhedra_Library.set_rounding_for_PPL();
     Parma_Polyhedra_Library.restore_pre_PPL_rounding();
+    PPL_Test.print_if_noisy("Irrational precision: ");
+    PPL_Test.println_if_noisy(Parma_Polyhedra_Library.irrational_precision());
 
     return true;
     }

@@ -158,6 +158,12 @@ unit -> unit = "ppl_set_rounding_for_PPL"
 external ppl_restore_pre_PPL_rounding:
 unit -> unit = "ppl_restore_pre_PPL_rounding"
 
+external ppl_irrational_precision:
+unit -> int = "ppl_irrational_precision"
+
+external ppl_set_irrational_precision:
+int -> unit = "ppl_set_irrational_precision"
+
 external ppl_set_timeout:
 int -> unit = "ppl_set_timeout"
 

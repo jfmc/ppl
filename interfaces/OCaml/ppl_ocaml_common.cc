@@ -1205,6 +1205,24 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
+ppl_irrational_precision(value unit) try {
+  CAMLparam1(unit);
+  CAMLreturn(Val_long(irrational_precision()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_set_irrational_precision(value p) try {
+  CAMLparam1(p);
+  unsigned cxx_p = value_to_unsigned<unsigned>(p);
+  set_irrational_precision(cxx_p);
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
 ppl_set_timeout(value time) try {
   CAMLparam1(time);
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED

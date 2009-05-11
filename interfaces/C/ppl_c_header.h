@@ -215,6 +215,24 @@ ppl_set_rounding_for_PPL PPL_PROTO((void));
 int
 ppl_restore_pre_PPL_rounding PPL_PROTO((void));
 
+/*! \brief
+  Writes to \p p the precision parameter used for irrational calculations.
+*/
+int
+ppl_irrational_precision PPL_PROTO((unsigned* p));
+
+/*! \brief
+  Sets the precision parameter used for irrational calculations.
+
+  If \p p is less than or equal to <CODE>INT_MAX</CODE>, sets the
+  precision parameter used for irrational calculations to \p p.
+  Then, in the irrational calculations returning an unbounded rational,
+  (e.g., when computing a square root), the lesser between numerator
+  and denominator will be limited to 2**\p p.
+*/
+int
+ppl_set_irrational_precision PPL_PROTO((unsigned p));
+
 /*@}*/ /* Init */
 
 /*! \defgroup Version Version Checking

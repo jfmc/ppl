@@ -246,6 +246,20 @@ ppl_restore_pre_PPL_rounding(void) try {
 CATCH_ALL
 
 int
+ppl_irrational_precision(unsigned* p) try {
+  *p = irrational_precision();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_set_irrational_precision(unsigned p) try {
+  set_irrational_precision(p);
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_version_major(void) try {
   return version_major();
 }
