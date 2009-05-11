@@ -2659,11 +2659,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   if (vars.empty())
     return;
 
-<<<<<<< HEAD:src/Grid_public.cc
-  const dimension_type space_dim = space_dimension();
   // Dimension-compatibility check of `vars'.
-=======
->>>>>>> Improved and corrected draft code for wrap_assign() for grids.:src/Grid_public.cc
   const dimension_type min_space_dim = vars.space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("wrap_assign(vs, ...)", min_space_dim);
@@ -2680,7 +2676,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   PPL_DIRTY_TEMP_COEFFICIENT(wrap_frequency);
   mul_2exp_assign(wrap_frequency, Coefficient_one(), w);
 
-  // Generators are up-to-date.
+  // Generators are up-to-date and minimized.
   const Grid gr = *this;
 
   // Overflow is impossible. So check if value might be constant.
@@ -2720,14 +2716,8 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
     for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars.end(); ++i) {
       const Variable x = Variable(*i);
-<<<<<<< HEAD:src/Grid_public.cc
-
-      // If `x' is a constant, do nothing.
-      if (!gr.bounds(x, "wrap_assign(...)")) {
-=======
       // If `x' is a constant, do nothing.
       if (!gr.bounds_no_check(x)) {
->>>>>>> Improved and corrected draft code for wrap_assign() for grids.:src/Grid_public.cc
         if (gr.constrains(x))
           // We know that `x' is not a constant,
           // so `x' may wrap to any integral value.

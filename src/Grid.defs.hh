@@ -2160,8 +2160,8 @@ private:
     \p val_n and \p val_d are left untouched.
 
     \warning
-    If \p expr and \p *this are dimension-incompatible, or the generators
-    are not minimized, then the behavior is undefined.
+    If \p expr and \p *this are dimension-incompatible,
+    then the behavior is undefined.
   */
   bool frequency_no_check(const Linear_Expression& expr,
 		Coefficient& freq_n, Coefficient& freq_d,
