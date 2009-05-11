@@ -2313,6 +2313,47 @@ A grid \f$\cL\f$ <EM>subsumes</EM> a (polyhedron) ray or line
 \f$g\f$ if adding the corresponding grid line to any grid generator system
 representing \f$\cL\f$ does not change \f$\cL\f$.
 
+\subsection Wrapping_Operator Wrapping Operator
+
+The operator <CODE>wrap_assign</CODE> provided by the library, allows
+for the wrapping of a subset of the set of space dimensions so to fit
+the given bounded integer type and have the specified overflow behavior.
+
+Suppose \f$\cL \in \Gset_n\f$ is a grid and \f$J\f$ a subset of the
+set of space dimensions \f$\{0, \ldots, n-1\}\f$.
+Suppose also that the width of the bounded integer type is \f$w\f$ so that
+the range of values can be \f$0 - 2^w-1\f$ if the type is unsigned
+and \f$-2^{w-1} - 2^{w-1} - 1\f$ otherwise.
+Consider a space dimension \f$j \in J\f$.
+
+If the value in \f$\cL\f$ for the dimension \f$j\f$ is bounded and
+hence a constant, no wrapping can take place; in this case the
+grid is unchanged.
+
+Otherwise the value for the dimension \f$j\f$ will be unbounded and
+the result of the operation will depend on which of
+three possible overflow behaviors has been specified.
+
+- Overflow impossible: in this case, it is known that no wrapping can
+  occur; if the grid has exactly one possible value for the given
+  bounded integer type, then the dimension \f$j\f$ is set equal to
+  that value, otherwise, the grid is unchanged.
+
+- Overflow undefined: in this case, the wrapped value can be any
+  integer within the range of the bounded integer type, so that the
+  parameter \f$(0, \ldots, 0, v_j, 0, \dots, 0)\f$, where
+  \f$v_j = 1\f$ is added to the generator system.
+
+- Overflow wraps: in this case, the \f$j\f$ dimension can be wrapped to
+  a value modulo \f$2^w\f$, so that the parameter
+  \f$(0, \ldots, 0, v_j, 0, \dots, 0)\f$, where \f$v_j = 2^w\f$
+  is added to the generator system.
+
+Note that the <CODE>wrap_assign</CODE> is intended for dimensions that
+can take integral values; if this not the case for any of the
+dimensions in \f$J\f$ for the grid \f$\cL\f$, the behavior is
+undefined.
+
 \subsection Grid_Widening Widening Operators
 
 The library provides <EM>grid widening</EM> operators for the domain of grids.
