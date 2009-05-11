@@ -200,7 +200,7 @@ test07() {
   return ok;
 }
 
-// Expression of a greater space dimension than the grid.
+// Expression with a greater space dimension than the grid.
 bool
 test08() {
   Variable x(0);
@@ -226,7 +226,7 @@ test08() {
   return false;
 }
 
-// Expression of a greater space dimension than the grid.
+// Constraint with a greater space dimension than the grid.
 bool
 test09() {
   Variable x(0);
@@ -283,6 +283,76 @@ test10() {
   return ok;
 }
 
+bool
+test11() {
+  Variable x(0);
+  Variable y(1);
+  Grid gr(2);
+  gr.add_congruence((x %= 256) / 0);
+  gr.add_congruence(y %= 0);
+
+  Variables_Set vars(x);
+
+  gr.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_UNDEFINED);
+
+  Grid known_result(2);
+  known_result.add_congruence((x %= 0) / 1);
+  known_result.add_congruence(y %= 0);
+
+  bool ok = (gr == known_result);
+
+  print_congruences(gr, "*** gr.wrap_assign(...) ***");
+
+  return ok;
+}
+
+bool
+test12() {
+  Variable x(0);
+  Variable y(1);
+  Grid gr(2);
+  gr.add_congruence((x %= 256) / 0);
+  gr.add_congruence(y %= 0);
+
+  Variables_Set vars(x);
+
+  gr.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
+
+  Grid known_result(2);
+  known_result.add_congruence((x %= 0) / 0);
+  known_result.add_congruence(y %= 0);
+
+  bool ok = (gr == known_result);
+
+  print_congruences(gr, "*** gr.wrap_assign(...) ***");
+
+  return ok;
+}
+
+bool
+test13() {
+  Variable x(0);
+  Variable y(1);
+  Grid gr(2);
+  gr.add_congruence((x %= 25) / 0);
+  gr.add_congruence(y %= 0);
+
+  Variables_Set vars(x);
+
+  gr.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_UNDEFINED);
+
+  Grid known_result(2);
+  known_result.add_congruence((x %= 25) / 0);
+  known_result.add_congruence(y %= 0);
+
+  bool ok = (gr == known_result);
+
+  print_congruences(gr, "*** gr.wrap_assign(...) ***");
+
+  return ok;
+}
+
+
 } // namespace
 
 BEGIN_MAIN
@@ -296,4 +366,7 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST_F8(test10);
+  DO_TEST_F8(test11);
+  DO_TEST_F8(test12);
+  DO_TEST_F8(test13);
 END_MAIN

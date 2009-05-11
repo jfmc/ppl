@@ -2135,14 +2135,14 @@ private:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
-    \p expr can takes discrete values in \p *this, in which case the maximum
-    frequency and minimal value for \p expr in \p *this is computed.
+    \p expr is discrete in \p *this, in which case the maximum frequency
+    and the value for \p expr that is closest to zero are computed.
 
     \param expr
     The linear expression for which the frequency is needed;
 
     \param freq_n
-    The numerator of the maximum frequency;
+    The numerator of the maximum frequency of \p expr;
 
     \param freq_d
     The denominator of the maximum frequency of \p expr;

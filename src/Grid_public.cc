@@ -2675,11 +2675,26 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   // This is independent of the signedness `s'.
   PPL_DIRTY_TEMP_COEFFICIENT(wrap_frequency);
   mul_2exp_assign(wrap_frequency, Coefficient_one(), w);
+  // Set `min_value' and `max_value' to the minimum and maximum values
+  // a variable of width `w' and signedness `s' can take.
+  PPL_DIRTY_TEMP_COEFFICIENT(min_value);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_value);
+  if (s == UNSIGNED) {
+    min_value = 0;
+    mul_2exp_assign(max_value, Coefficient_one(), w);
+    --max_value;
+  }
+  else {
+    assert(s == SIGNED_2_COMPLEMENT);
+    mul_2exp_assign(max_value, Coefficient_one(), w-1);
+    neg_assign(min_value, max_value);
+    --max_value;
+  }
 
   // Generators are up-to-date and minimized.
   const Grid gr = *this;
 
-  // Overflow is impossible. So check if value might be constant.
+  // Overflow is impossible. So check if value might become constant.
   if (o == OVERFLOW_IMPOSSIBLE) {
     PPL_DIRTY_TEMP_COEFFICIENT(f_n);
     PPL_DIRTY_TEMP_COEFFICIENT(f_d);
@@ -2688,13 +2703,23 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
     for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars.end(); ++i) {
       const Variable x = Variable(*i);
-      // If the grid frequency for `x' in `vars' is more than half the wrap
-      // frequency, then `x' can only take a unique (ie constant) value.
+      // If the grid frequency for `x' in `vars' is more than half the
+      // `wrap_frequency', then `x' can only take a unique (ie constant)
+      // value.
       if (!gr.frequency_no_check(x, f_n, f_d, v_n, v_d))
         continue;
+      if (f_n == 0) {
+        // `x' is a constant in `gr'.
+        if ((v_n > max_value * v_d) || (v_n < min_value * v_d)) {
+          // If the value is outside the range of the bounded integer type,
+          // then `x' has no possible value and hence `gr' is set empty.
+          set_empty();
+          return;
+        }
+      }
       if (2*f_n > f_d * wrap_frequency) {
         if (s == UNSIGNED) {
-          // `v_n' is the value closest to 0 and may be negatve.
+          // `v_n' is the value closest to 0 and may be negative.
           if (v_n < 0) {
             v_n *= f_d;
             add_mul_assign(v_n, f_n, v_d);
@@ -2711,17 +2736,31 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
     return;
   }
   // If overflow is undefined, then all we know is that the variable
-  // can take any integer between the wrap bounds.
+  // may take any integer within the range of the bounded integer type.
   if (o == OVERFLOW_UNDEFINED) {
     for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars.end(); ++i) {
       const Variable x = Variable(*i);
-      // If `x' is a constant, do nothing.
       if (!gr.bounds_no_check(x)) {
+        // `x' is not a constant in `gr'.
         if (gr.constrains(x))
-          // We know that `x' is not a constant,
-          // so `x' may wrap to any integral value.
+          // We know that `x' is not a constant, so `x' may wrap to any
+          // integral value.
           add_grid_generator(parameter(x));
+      }
+      else {
+        // `x' is a constant in `gr'.
+        PPL_DIRTY_TEMP_COEFFICIENT(coeff_x);
+        PPL_DIRTY_TEMP_COEFFICIENT(div_x);
+        coeff_x = gen_sys[0].coefficient(x);
+        div_x = gen_sys[0].divisor();
+        // If the value of `x' is not within the range for the bounded
+        // integer type, then `x' can take any integral value;
+        // otherwise `x' is unchanged.
+        if (coeff_x > max_value * div_x || coeff_x < min_value * div_x) {
+          unconstrain(x);
+          add_congruence(x %= 0);
+        }
       }
     }
     return;
@@ -2733,13 +2772,33 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   for (Variables_Set::const_iterator i = vars.begin(),
          vars_end = vars.end(); i != vars.end(); ++i) {
     const Variable x = Variable(*i);
-    // If `x' is a constant, do nothing.
     if (!gr.bounds_no_check(x)) {
+      // `x' is not a constant in `gr'.
       if (gr.constrains(x))
-        // We know that `x' is not a constant, so `x' may wrap.
+        // We know that `x' is not a constant, so `x' may wrap
+        // to a value modulo the `wrap_frequency'.
         add_grid_generator(parameter(wrap_frequency * x));
     }
+    else {
+      // `x' is a constant in `gr'.
+      PPL_DIRTY_TEMP_COEFFICIENT(coeff_x);
+      PPL_DIRTY_TEMP_COEFFICIENT(f_x);
+      coeff_x = gen_sys[0].coefficient(x);
+      f_x = gen_sys[0].divisor();
+      // If the value of `x' is not within the range for the bounded
+      // integer type, then `x' will wrap modulo the `wrap_frequency';
+      // otherwise `x' is unchanged.
+      if (coeff_x > max_value * f_x || coeff_x < min_value * f_x) {
+        f_x *= wrap_frequency;
+        coeff_x %= f_x;
+        if (s == UNSIGNED && coeff_x < 0)
+          coeff_x += f_x;
+        unconstrain(x);
+        add_constraint(x == coeff_x);
+      }
+    }
   }
+  return;
 }
 
 /*! \relates Parma_Polyhedra_Library::Grid */
