@@ -2161,7 +2161,8 @@ private:
 
     \warning
     If \p expr and \p *this are dimension-incompatible,
-    then the behavior is undefined.
+    the grid generator system is not minimized or \p *this is
+    empty, then the behavior is undefined.
   */
   bool frequency_no_check(const Linear_Expression& expr,
 		Coefficient& freq_n, Coefficient& freq_d,
@@ -2184,7 +2185,8 @@ private:
 
     \warning
     If \p cg and \p *this are dimension-incompatible,
-    the behavior is undefined.
+    the grid generator system is not minimized or \p *this is
+    empty, then the behavior is undefined.
   */
   void add_congruence_no_check(const Congruence& cg);
 

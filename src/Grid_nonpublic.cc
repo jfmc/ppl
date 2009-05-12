@@ -317,12 +317,7 @@ PPL::Grid::frequency_no_check(const Linear_Expression& expr,
 
   // The dimension of `expr' must be at most the dimension of *this.
   assert(space_dim >= expr.space_dimension());
-
-  // The frequency is undefined if the grid is empty; return false.
-  if (marked_empty())
-    return false;
-  if (!generators_are_minimized() && !minimize())
-    return false;
+  assert(generators_are_minimized() && !marked_empty());
 
   // The generators are up to date and minimized and the grid is non-empty.
 
