@@ -2759,7 +2759,6 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   assert(o == OVERFLOW_UNDEFINED);
   // If overflow is undefined, then all we know is that the variable
   // may take any integer within the range of the bounded integer type.
-  PPL_DIRTY_TEMP_COEFFICIENT(coeff_x);
   const Grid_Generator& point = gen_sys[0];
   const Coefficient& div = point.divisor();
   max_value *= div;
@@ -2775,7 +2774,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
     }
     else {
       // `x' is a constant `v' in `gr'.
-      coeff_x = point.coefficient(x);
+      const Coefficient& coeff_x = point.coefficient(x);
       // If the value `v' for `x' is not within the range for the
       // bounded integer type, then `x' may wrap to any value `v + z'
       // where `z' is an integer; otherwise `x' is unchanged.
