@@ -2761,10 +2761,11 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   // may take any integer within the range of the bounded integer type.
   PPL_DIRTY_TEMP_COEFFICIENT(coeff_x);
   const Grid_Generator& point = gen_sys[0];
-  Coefficient& div_x = wrap_frequency;
-  div_x = point.divisor();
+  const Coefficient& div = point.divisor();
+  max_value *= div;
+  min_value *= div;
   for (Variables_Set::const_iterator i = vars.begin(),
-         vars_end    = vars.end(); i != vars.end(); ++i) {
+         vars_end = vars.end(); i != vars.end(); ++i) {
     const Variable x = Variable(*i);
     if (!gr.bounds_no_check(x)) {
       // `x' is not a constant in `gr'.
@@ -2778,7 +2779,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
       // If the value `v' for `x' is not within the range for the
       // bounded integer type, then `x' may wrap to any value `v + z'
       // where `z' is an integer; otherwise `x' is unchanged.
-      if (coeff_x > max_value * div_x || coeff_x < min_value * div_x) {
+      if (coeff_x > max_value || coeff_x < min_value) {
         add_grid_generator(parameter(x));
       }
     }
