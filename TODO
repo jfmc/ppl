@@ -36,6 +36,10 @@ e3460918400e04cf24fda33ff0cf9d18a95840b8
 b94dc7951129d065d858b6dbd932eac59a643f96
 (We cannot test the Java interface unless ENABLE_SHARED.)
 
+1c8a74aea14bce95dc1916df66995dd5a163eb2b
+(New configuration option `--with-gmp-build=DIR'.
+This allows to use a non-installed build of GMP in DIR.)
+
 
 Enhancements for PPL 0.11 or later versions
 ===========================================
