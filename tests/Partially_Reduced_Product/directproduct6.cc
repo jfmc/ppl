@@ -541,17 +541,13 @@ test18() {
 
   TBox_Grid ndp(ph);
 
-  TBox_Grid known_ndp(2);
-  known_ndp.refine_with_constraint(3*x >= -2);
-  known_ndp.refine_with_constraint(x <= 4);
-  known_ndp.refine_with_constraint(y >= -10);
-  known_ndp.refine_with_constraint(y <= 4);
+  TBox_Grid known_dp(2);
+  known_dp.refine_with_constraint(3*x >= -2);
+  known_dp.refine_with_constraint(x <= 4);
+  known_dp.refine_with_constraint(y >= -10);
+  known_dp.refine_with_constraint(y <= 4);
 
-  TBox_Grid known_pdp(2);
-  known_pdp.refine_with_constraint(x <= 4);
-  known_pdp.refine_with_constraint(y <= 4);
-
-  bool ok = (ndp == known_ndp && pdp == known_pdp && pdp.contains(ndp));
+  bool ok = (ndp == known_dp && pdp == known_dp);
 
   print_constraints(ph, "*** ph ***");
   print_constraints(ndp, "*** ndp ***");
