@@ -63,19 +63,29 @@ Parma_Polyhedra_Library_test1.java \
 Parma_Polyhedra_Library_test2.java \
 PPL_Test.java
 
+if ENABLE_SHARED
+
 CLASSPATH = ../ppl_java.jar:.
 JAVACFLAGS = -classpath $(CLASSPATH)
 
 PPL_DLOPEN = -dlopen ../../../src/libppl.la
 
 if BUILD_WATCHDOG_LIBRARY
+
 PWL_DLOPEN = -dlopen ../../../Watchdog/src/libpwl.la
+
 endif BUILD_WATCHDOG_LIBRARY
 
 java_test_environment = \
 $(LIBTOOL) --mode=execute $(PPL_DLOPEN) $(PWL_DLOPEN) \
 	$(JAVA) -classpath .:../ppl_java.jar \
 		-Djava.library.path=../jni/.libs
+
+ppl_java_generated_tests.java: $(interface_generator_dependencies)
+	$(M4) --prefix-builtin -I../.. \
+		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
+		$(srcdir)/ppl_interface_generator_java_test_java.m4 \
+			> $@
 
 check-local: ppl_java_generated_tests.java
 	$(java_test_environment) ppl_java_generated_tests
@@ -85,14 +95,10 @@ check-local: ppl_java_generated_tests.java
 	$(java_test_environment) Parma_Polyhedra_Library_test1
 	$(java_test_environment) Parma_Polyhedra_Library_test2
 
-ppl_java_generated_tests.java: $(interface_generator_dependencies)
-	$(M4) --prefix-builtin -I../.. \
-		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
-		$(srcdir)/ppl_interface_generator_java_test_java.m4 \
-			> $@
-
 CLEANFILES = \
 ppl_java_generated_tests.java
+
+endif ENABLE_SHARED
 
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
