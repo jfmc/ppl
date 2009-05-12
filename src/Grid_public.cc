@@ -2745,21 +2745,20 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
         // `x' is not a constant in `gr'.
         if (gr.constrains(x))
           // We know that `x' is not a constant, so `x' may wrap to any
-          // integral value.
+          // value `x + z' where z is an integer.
           add_grid_generator(parameter(x));
       }
       else {
-        // `x' is a constant in `gr'.
+        // `x' is a constant `v' in `gr'.
         PPL_DIRTY_TEMP_COEFFICIENT(coeff_x);
         PPL_DIRTY_TEMP_COEFFICIENT(div_x);
         coeff_x = gen_sys[0].coefficient(x);
         div_x = gen_sys[0].divisor();
-        // If the value of `x' is not within the range for the bounded
-        // integer type, then `x' can take any integral value;
-        // otherwise `x' is unchanged.
+        // If the value `v' for `x' is not within the range for the
+        // bounded integer type, then `x' may wrap to any value `v + z'
+        // where `z' is an integer; otherwise `x' is unchanged.
         if (coeff_x > max_value * div_x || coeff_x < min_value * div_x) {
-          unconstrain(x);
-          add_congruence(x %= 0);
+          add_grid_generator(parameter(x));
         }
       }
     }
