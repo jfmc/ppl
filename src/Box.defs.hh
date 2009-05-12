@@ -815,10 +815,20 @@ public:
     Use the constraints in \p cs to refine \p *this.
 
     \param  cs
-     The constraints to be used for refinement.
+    The constraints to be used for refinement.
+    To avoid termination problems, each constraint in \p cs
+    will be used for a single refinement step.
 
-     \exception std::invalid_argument
-     Thrown if \p *this and \p cs are dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \note
+    The user is warned that the accuracy of this refinement operator
+    depends on the order of evaluation of the constraints in \p cs,
+    which is in general unpredictable. If a fine control on such an
+    order is needed, the user should consider calling the method
+    <code>refine_with_constraint(const Constraint& c)</code> inside
+    an appropriate looping construct.
   */
   void refine_with_constraints(const Constraint_System& cs);
 
@@ -858,13 +868,22 @@ public:
   /*! \brief
     Use the constraints in \p cs for constraint propagagion on \p *this.
 
-    \param  cs
-     The constraints to be used for constraint propagation.
+    \param cs
+    The constraints to be used for constraint propagation.
 
-     \exception std::invalid_argument
-     Thrown if \p *this and \p cs are dimension-incompatible.
+    \param max_iterations
+    The maximum number of propagation steps for each constraint in \p cs.
+    If zero (the default), the number of propagations will be unbounded,
+    possibly resulting in an infinite loop.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \warning
+    This method may lead to non-termination if \p max_iterations is 0.
   */
-  void propagate_constraints(const Constraint_System& cs);
+  void propagate_constraints(const Constraint_System& cs,
+                             dimension_type max_iterations = 0);
 
   /*! \brief
     Computes the \ref Cylindrification "cylindrification" of \p *this with
@@ -1628,8 +1647,7 @@ private:
     Uses the constraint \p c to refine \p *this.
 
     \param c
-    The constraint to be added.
-    Non-interval constraints are ignored.
+    The constraint to be used for the refinement.
 
     \warning
     If \p c and \p *this are dimension-incompatible,
@@ -1641,8 +1659,9 @@ private:
     Uses the constraints in \p cs to refine \p *this.
 
     \param cs
-    The constraints to be added.
-    Non-interval constraints are ignored.
+    The constraints to be used for the refinement.
+    To avoid termination problems, each constraint in \p cs
+    will be used for a single refinement step.
 
     \warning
     If \p cs and \p *this are dimension-incompatible,
@@ -1844,14 +1863,20 @@ private:
     \param  cs
     The constraints to be propagated.
 
+    \param max_iterations
+    The maximum number of propagation steps for each constraint in \p cs.
+    If zero, the number of propagations will be unbounded, possibly
+    resulting in an infinite loop.
+
     \warning
     If \p cs and \p *this are dimension-incompatible,
     the behavior is undefined.
 
     \warning
-    This method may lead to non-termination.
+    This method may lead to non-termination if \p max_iterations is 0.
   */
-  void propagate_constraints_no_check(const Constraint_System& cs);
+  void propagate_constraints_no_check(const Constraint_System& cs,
+                                      dimension_type max_iterations);
 
   //! Checks if and how \p expr is bounded in \p *this.
   /*!

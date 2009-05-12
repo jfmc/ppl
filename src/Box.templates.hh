@@ -359,10 +359,15 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
 
   if (complexity == POLYNOMIAL_COMPLEXITY) {
     // FIXME: is there a way to avoid this initialization?
-    for (dimension_type i = space_dimension(); i-- > 0; )
+    for (dimension_type i = space_dim; i-- > 0; )
       seq[i].assign(UNIVERSE);
-    // Extract easy-to-find bounds from constraints.
-    refine_with_constraints(ph.simplified_constraints());
+    // Get a simplified version of the constraints.
+    Constraint_System cs = ph.simplified_constraints();
+    // Propagate easy-to-find bounds from the constraints,
+    // allowing for a limited number of iterations.
+    // FIXME: 20 is just a wild guess.
+    const dimension_type max_iterations = 20;
+    propagate_constraints_no_check(cs, max_iterations);
   }
   else if (complexity == SIMPLEX_COMPLEXITY) {
     MIP_Problem lp(space_dim);
@@ -1931,11 +1936,11 @@ Box<ITV>::refine_no_check(const Constraint& c) {
 
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
-  // Non-interval constraints are ignored.
-  // FIXME: instead of ignoring, safely use propagate_no_check()
-  // (i.e., ensuring that no termination problem can arise).
-  if (!extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var))
+  // Non-interval constraints are approximated.
+  if (!extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var)) {
+    propagate_constraint_no_check(c);
     return;
+  }
 
   const Coefficient& n = c.inhomogeneous_term();
   if (c_num_vars == 0) {
@@ -2403,12 +2408,17 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
 
 template <typename ITV>
 void
-Box<ITV>::propagate_constraints_no_check(const Constraint_System& cs) {
+Box<ITV>
+::propagate_constraints_no_check(const Constraint_System& cs,
+                                 const dimension_type max_iterations) {
   assert(cs.space_dimension() <= space_dimension());
 
+  Sequence copy;
   bool changed;
+  dimension_type num_iterations = 0;
   do {
-    Sequence copy(seq);
+    ++num_iterations;
+    copy = seq;
     for (Constraint_System::const_iterator i = cs.begin(),
 	   cs_end = cs.end(); i != cs_end; ++i)
       propagate_constraint_no_check(*i);
@@ -2417,6 +2427,11 @@ Box<ITV>::propagate_constraints_no_check(const Constraint_System& cs) {
     // computations.  If so, the exception specified by the client
     // is thrown now.
     maybe_abandon();
+
+    // NOTE: if max_iterations == 0 (i.e., no iteration limit is set)
+    // the following test will anyway trigger on wrap around.
+    if (num_iterations == max_iterations)
+      break;
 
     changed = (copy != seq);
   } while (changed);

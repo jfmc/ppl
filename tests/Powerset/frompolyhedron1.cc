@@ -474,34 +474,29 @@ test14() {
 
   C_Polyhedron ph(4);
   ph.add_constraint(x >= 2);
+  ph.add_constraint(y >= 5);
   ph.add_constraint(z >= 1);
-  ph.add_constraint(x + z <= 3);
-  C_Polyhedron ph1(4);
-  ph1.add_constraint(x >= 2);
-  ph1.add_constraint(z >= 1);
-  ph1.add_constraint(x + z <= 3);
+  ph.add_constraint(x + y + z <= 8);
 
-  // With the default complexity, the implied equalities x = 2 and z = 1.
-  // are found
+  C_Polyhedron ph1(ph);
+
+  // With both the default and polynomial complexities,
+  // the implied equalities x = 2, y = 5 and z = 1 are found.
   Pointset_Powerset<TBox> pps(ph);
-  // With the polynomial complexity, implied equalities are not found.
   Pointset_Powerset<TBox> pps1(ph1, POLYNOMIAL_COMPLEXITY);
 
   Pointset_Powerset<TBox> known_pps(4);
   known_pps.add_constraint(x == 2);
+  known_pps.add_constraint(y == 5);
   known_pps.add_constraint(z == 1);
-  Pointset_Powerset<TBox> known_pps1(4);
-  known_pps1.add_constraint(x >= 2);
-  known_pps1.add_constraint(z >= 1);
 
-  bool ok = (pps == known_pps && pps1 == known_pps1);
+  bool ok = (pps == known_pps && pps1 == known_pps);
 
-  Pointset_Powerset<TBox>::const_iterator i = pps.begin();
-  TBox boxi = i->pointset();
-  print_constraints(boxi, "*** boxi ***");
-  Pointset_Powerset<TBox>::const_iterator i1 = pps1.begin();
-  TBox boxi1 = i1->pointset();
-  print_constraints(boxi1, "*** boxi1 ***");
+  if (pps.size() > 0)
+    print_constraints(pps.begin()->pointset(), "*** box ***");
+
+  if (pps1.size() > 0)
+    print_constraints(pps1.begin()->pointset(), "*** box1 ***");
 
   return ok && pps.OK() && pps1.OK();
 }
@@ -517,31 +512,26 @@ test15() {
 
   C_Polyhedron ph(4);
   ph.add_constraint(x >= 2);
+  ph.add_constraint(y >= 5);
   ph.add_constraint(z >= 1);
-  ph.add_constraint(x + z <= 2);
+  ph.add_constraint(x + y + z <= 7);
 
-  // NOTE: taking a copy of ph so that ph1 is not affected by
-  // the construction of pps (which minimizes ph and detects emptiness).
   C_Polyhedron ph1(ph);
 
-  // With the default complexity, the built powerset is empty.
+  // With both the default and polynomial complexity,
+  // the built powerset is detected to be empty.
   Pointset_Powerset<TBox> pps(ph);
-  // With the polynomial complexity, the built powerset is non-empty.
   Pointset_Powerset<TBox> pps1(ph1, POLYNOMIAL_COMPLEXITY);
 
   Pointset_Powerset<TBox> known_pps(4, EMPTY);
-  Pointset_Powerset<TBox> known_pps1(4);
-  known_pps1.add_constraint(x >= 2);
-  known_pps1.add_constraint(z >= 1);
 
-  bool ok = (pps == known_pps && pps1 == known_pps1);
+  bool ok = (pps == known_pps && pps1 == known_pps);
 
-  if (ok) {
-    // Here it is safe to dereference pps1.begin().
-    Pointset_Powerset<TBox>::const_iterator i1 = pps1.begin();
-    TBox boxi1 = i1->pointset();
-    print_constraints(boxi1, "*** boxi1 ***");
-  }
+  // These will print something only if test is going to fail.
+  if (pps.size() > 0)
+    print_constraints(pps.begin()->pointset(), "*** box ***");
+  if (pps1.size() > 0)
+    print_constraints(pps1.begin()->pointset(), "*** box1 ***");
 
   return ok && pps.OK() && pps1.OK();
 }
@@ -582,22 +572,16 @@ test17() {
   Pointset_Powerset<TBox> pps1(pps1_c, POLYNOMIAL_COMPLEXITY);
   Pointset_Powerset<TBox> pps2(pps2_c);
 
-  Pointset_Powerset<TBox> known_pps1(2);
-  known_pps1.add_constraint(2*x >= 1);
-  known_pps1.add_constraint(y >= 0);
-  Pointset_Powerset<TBox> known_pps2(2);
-  known_pps2.add_constraint(2*x == 1);
-  known_pps2.add_constraint(y == 0);
+  Pointset_Powerset<TBox> known_pps(2);
+  known_pps.add_constraint(2*x == 1);
+  known_pps.add_constraint(y == 0);
 
-  bool ok = (pps1 == known_pps1 && pps2 == known_pps2);
+  bool ok = (pps1 == known_pps && pps2 == known_pps);
 
-  Pointset_Powerset<TBox>::const_iterator i1 = pps1.begin();
-  TBox boxi1 = i1->pointset();
-  print_constraints(boxi1, "*** boxi1 ***");
-
-  Pointset_Powerset<TBox>::const_iterator i2 = pps2.begin();
-  TBox boxi2 = i2->pointset();
-  print_constraints(boxi2, "*** boxi2 ***");
+  if (pps1.size() > 0)
+    print_constraints(pps1.begin()->pointset(), "*** box1 ***");
+  if (pps2.size() > 0)
+    print_constraints(pps2.begin()->pointset(), "*** box2 ***");
 
   return ok;
 }
@@ -655,10 +639,8 @@ test19() {
   ph.add_constraint(x >= 2);
   ph.add_constraint(z >= 1);
   ph.add_constraint(x + z <= 2);
-  C_Polyhedron ph1(4);
-  ph1.add_constraint(x >= 2);
-  ph1.add_constraint(z >= 1);
-  ph1.add_constraint(x + z <= 2);
+
+  C_Polyhedron ph1(ph);
 
   // With the default complexity, the built powerset is empty.
   Pointset_Powerset<Grid> pps(ph);
