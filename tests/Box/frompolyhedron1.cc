@@ -49,9 +49,8 @@ test01() {
   return ok;
 }
 
-// A non-bounded closed polyhedron  in 2D consisting of a wedge bounded
+// A non-bounded closed polyhedron in 2D consisting of a wedge bounded
 // by y >= 0 and x >= y.
-// The resulting bounding box depends on the complexity class.
 bool
 test02() {
   Variable x(0);
@@ -65,20 +64,16 @@ test02() {
 
   TBox nbox(ph);
 
-  TBox known_nbox(2);
-  known_nbox.add_constraint(x >= 0);
-  known_nbox.add_constraint(y >= 0);
+  TBox known_box(2);
+  known_box.add_constraint(x >= 0);
+  known_box.add_constraint(y >= 0);
 
-  TBox known_pbox(2);
-  known_pbox.add_constraint(y >= 0);
-
-  bool ok = (nbox == known_nbox && pbox == known_pbox && pbox.contains(nbox));
+  bool ok = (nbox == known_box && pbox == known_box);
 
   print_constraints(ph, "*** ph ***");
   print_constraints(nbox, "*** nbox ***");
   print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_nbox, "*** known_nbox ***");
-  print_constraints(known_pbox, "*** known_pbox ***");
+  print_constraints(known_box, "*** known_box ***");
 
   return ok;
 }
@@ -98,23 +93,18 @@ test03() {
 
   TBox nbox(ph);
 
-  TBox known_nbox(2);
-  known_nbox.add_constraint(3*x >= -2);
-  known_nbox.add_constraint(x <= 4);
-  known_nbox.add_constraint(y >= -10);
-  known_nbox.add_constraint(y <= 4);
+  TBox known_box(2);
+  known_box.add_constraint(3*x >= -2);
+  known_box.add_constraint(x <= 4);
+  known_box.add_constraint(y >= -10);
+  known_box.add_constraint(y <= 4);
 
-  TBox known_pbox(2);
-  known_pbox.add_constraint(x <= 4);
-  known_pbox.add_constraint(y <= 4);
-
-  bool ok = (nbox == known_nbox && pbox == known_pbox && pbox.contains(nbox));
+  bool ok = (nbox == known_box && pbox == known_box);
 
   print_constraints(ph, "*** ph ***");
   print_constraints(nbox, "*** nbox ***");
   print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_nbox, "*** known_nbox ***");
-  print_constraints(known_pbox, "*** known_pbox ***");
+  print_constraints(known_box, "*** known_box ***");
 
   return ok;
 }
@@ -136,25 +126,19 @@ test04() {
 
   TBox nbox(ph);
 
-  TBox known_nbox(4);
-  known_nbox.add_constraint(3*x >= -2);
-  known_nbox.add_constraint(x <= 4);
-  known_nbox.add_constraint(y >= -10);
-  known_nbox.add_constraint(3*y <= 12);
-  known_nbox.add_constraint(3*z >= 15);
+  TBox known_box(4);
+  known_box.add_constraint(3*x >= -2);
+  known_box.add_constraint(x <= 4);
+  known_box.add_constraint(y >= -10);
+  known_box.add_constraint(3*y <= 12);
+  known_box.add_constraint(3*z >= 15);
 
-  TBox known_pbox(4);
-  known_pbox.add_constraint(x <= 4);
-  known_pbox.add_constraint(y <= 4);
-  known_pbox.add_constraint(z >= 5);
-
-  bool ok = (nbox == known_nbox && pbox == known_pbox && pbox.contains(nbox));
+  bool ok = (nbox == known_box && pbox == known_box);
 
   print_constraints(ph, "*** ph ***");
   print_constraints(nbox, "*** nbox ***");
   print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_nbox, "*** known_nbox ***");
-  print_constraints(known_pbox, "*** known_pbox ***");
+  print_constraints(known_box, "*** known_box ***");
 
   return ok;
 }

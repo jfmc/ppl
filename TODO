@@ -20,9 +20,6 @@ Enhancements for PPL 0.11
 - Switch to the latest versions of Autoconf and Automake (in beta test
   at the time of writing): they provide features we have been looking
   for for years.
-- Fix the methods Box<ITV>::refine_with_constraint/s so that they perform
-  a safe (i.e., always terminating) propagation instead of ignoring the
-  non-interval constraints.
 
 Commits to consider should we release PPL 0.10.3
 ================================================
