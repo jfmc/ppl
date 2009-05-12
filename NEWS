@@ -26,6 +26,9 @@ o  The Java interface has to be explicitly initialized before use by
 
 o  The C and Java interfaces now support timeout computation facilities.
 
+o  New configuration option `--with-gmp-build=DIR' allows to use a
+   non-installed build of GMP in DIR.
+
 
 Deprecated and removed methods
 ------------------------------

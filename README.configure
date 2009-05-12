@@ -109,6 +109,11 @@ how to make sure that GMP's shared library will be found at run-time
 "<GMP prefix>/lib64:$LD_LIBRARY_PATH" is the most commonly used
 solution).
 
+It is also possible to use a non-installed build of GMP.  In order to
+do that you should configure the PPL with, among others, the option
+
+  --with-gmp-build=<GMP build directory>
+
 
 3. Using the Right C and C++ Compilers
 --------------------------------------
