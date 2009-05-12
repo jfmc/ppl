@@ -725,6 +725,42 @@ div_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
   }
 }
 
+template <typename To, typename To_Info, typename T, typename Info>
+inline Result
+umod_2exp_assign(Boundary_Type to_type, To& to, To_Info& to_info,
+		 Boundary_Type type, const T& x, const Info& info,
+		 unsigned int exp) {
+  assert(to_type != type);
+  bool shrink;
+  if (is_boundary_infinity(type, x, info)) {
+    shrink = boundary_infinity_is_open(type, info);
+    return set_boundary_infinity(to_type, to, to_info, shrink);
+  }
+  shrink = normal_is_open(type, x, info);
+  bool check = (To_Info::check_inexact
+		|| (!shrink && (To_Info::store_open || to_info.has_restriction())));
+  Result r = umod_2exp_assign_r(to, x, exp, round_dir_check(to_type, check));
+  return adjust_boundary(to_type, to, to_info, shrink, r);
+}
+
+template <typename To, typename To_Info, typename T, typename Info>
+inline Result
+smod_2exp_assign(Boundary_Type to_type, To& to, To_Info& to_info,
+		 Boundary_Type type, const T& x, const Info& info,
+		 unsigned int exp) {
+  assert(to_type != type);
+  bool shrink;
+  if (is_boundary_infinity(type, x, info)) {
+    shrink = boundary_infinity_is_open(type, info);
+    return set_boundary_infinity(to_type, to, to_info, shrink);
+  }
+  shrink = normal_is_open(type, x, info);
+  bool check = (To_Info::check_inexact
+		|| (!shrink && (To_Info::store_open || to_info.has_restriction())));
+  Result r = smod_2exp_assign_r(to, x, exp, round_dir_check(to_type, check));
+  return adjust_boundary(to_type, to, to_info, shrink, r);
+}
+
 } // namespace Boundary_NS
 
 } // namespace Parma_Polyhedra_Library
