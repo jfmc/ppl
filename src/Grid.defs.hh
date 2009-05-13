@@ -1113,8 +1113,8 @@ public:
   bool upper_bound_assign_if_exact(const Grid& y);
 
   /*! \brief
-    Assigns to \p *this the \ref Grid_Difference "grid-difference" of
-    \p *this and \p y.
+    Assigns to \p *this the \ref Convex_Polyhedral_Difference "grid-difference"
+    of \p *this and \p y.
 
     The grid difference between grids x and y is the smallest grid
     containing all the points from x and y that are only in x.
@@ -1660,7 +1660,8 @@ public:
   //@{
 
   /*! \brief
-    Adds \p m new space dimensions and embeds the old grid in the new
+    \ref Adding_New_Dimensions_to_the_Vector_Space "Adds"
+    \p m new space dimensions and embeds the old grid in the new
     vector space.
 
     \param m
@@ -1687,7 +1688,8 @@ public:
   void add_space_dimensions_and_embed(dimension_type m);
 
   /*! \brief
-    Adds \p m new space dimensions to the grid and does not embed it
+    \ref Adding_New_Dimensions_to_the_Vector_Space "Adds"
+    \p m new space dimensions to the grid and does not embed it
     in the new vector space.
 
     \param m
@@ -1714,7 +1716,7 @@ public:
   void add_space_dimensions_and_project(dimension_type m);
 
   /*! \brief
-    Assigns to \p *this the \ref Grid_Concatenate "concatenation" of
+    Assigns to \p *this the \ref Concatenating_Polyhedra "concatenation" of
     \p *this and \p y, taken in this order.
 
     \exception std::length_error
@@ -1737,7 +1739,8 @@ public:
 
   /*! \brief
     Removes the higher dimensions of the vector space so that the
-    resulting space will have dimension \p new_dimension.
+    resulting space will have \ref Removing_Dimensions_from_the_Vector_Space
+    "dimension \p new_dimension."
 
     \exception std::invalid_argument
     Thrown if \p new_dimensions is greater than the space dimension of
@@ -1747,7 +1750,7 @@ public:
 
   /*! \brief
     Remaps the dimensions of the vector space according to
-    a \ref Grid_Map_Space_Dimensions "partial function".
+    a \ref Mapping_the_Dimensions_of_the_Vector_Space "partial function".
 
     If \p pfunc maps only some of the dimensions of \p *this then the
     rest will be projected away.
@@ -1790,7 +1793,7 @@ public:
 
     The result is undefined if \p pfunc does not encode a partial
     function with the properties described in the
-    \ref Grid_Map_Space_Dimensions "specification of the mapping operator".
+    \ref Mapping_the_Dimensions_of_the_Vector_Space "specification of the mapping operator".
   */
   template <typename Partial_Function>
   void map_space_dimensions(const Partial_Function& pfunc);
@@ -1814,7 +1817,8 @@ public:
     If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
     and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
     then the \f$k\f$-th space dimension is
-    \ref Grid_Expand_Space_Dimension "expanded" to \p m new space dimensions
+    \ref Expanding_One_Dimension_of_the_Vector_Space_to_Multiple_Dimensions
+    "expanded" to \p m new space dimensions
     \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
   */
   void expand_space_dimension(Variable var, dimension_type m);
@@ -1839,7 +1843,8 @@ public:
     \p vars is a set of variables whose maximum space dimension
     is also less than or equal to \f$n\f$, and \p dest is not a member
     of \p vars, then the space dimensions corresponding to
-    variables in \p vars are \ref Grid_Fold_Space_Dimensions "folded"
+    variables in \p vars are
+    \ref Folding_Multiple_Dimensions_of_the_Vector_Space_into_One_Dimension "folded"
     into the \f$k\f$-th space dimension.
   */
   void fold_space_dimensions(const Variables_Set& vars, Variable dest);
