@@ -291,7 +291,7 @@ public:
     switch (c.rel()) {
     case V_LGE:
       return lower_extend();
-    case VC_NAN:
+    case V_NAN:
       return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
     case V_GT:
       open = true;
@@ -321,7 +321,7 @@ public:
     switch (c.rel()) {
     case V_LGE:
       return lower_extend();
-    case VC_NAN:
+    case V_NAN:
       return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
     case V_LT:
       open = true;
@@ -348,8 +348,8 @@ public:
     Relation_Symbol rs;
     switch (c.rel()) {
     case V_LGE:
-    case V_NEG_OVERFLOW:
-    case V_POS_OVERFLOW:
+    case V_GT_MINUS_INFINITY:
+    case V_LT_PLUS_INFINITY:
       return assign(UNIVERSE);
     default:
       return assign(EMPTY);
@@ -372,7 +372,7 @@ public:
     switch (c1.rel()) {
     case V_LGE:
       return build(c2);
-    case VC_NAN:
+    case V_NAN:
       return assign(EMPTY);
     default:
       break;
@@ -380,7 +380,7 @@ public:
     switch (c2.rel()) {
     case V_LGE:
       return build(c1);
-    case VC_NAN:
+    case V_NAN:
       return assign(EMPTY);
     default:
       break;
@@ -425,7 +425,7 @@ public:
   assign(const From&) {
     info().clear();
     Result rl, ru;
-    switch (From::code) {
+    switch (From::vclass) {
     case VC_MINUS_INFINITY:
       rl = Boundary_NS::set_minus_infinity(LOWER, lower(), info());
       ru = Boundary_NS::set_minus_infinity(UPPER, upper(), info());
@@ -436,8 +436,8 @@ public:
       break;
     default:
       assert(0);
-      rl = VC_NAN;
-      ru = VC_NAN;
+      rl = V_NAN;
+      ru = V_NAN;
     }
     assert(OK());
     return combine(rl, ru);

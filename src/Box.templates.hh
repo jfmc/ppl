@@ -2133,11 +2133,10 @@ namespace {
 
 inline bool
 propagate_constraint_check_result(Result r, Ternary& open) {
+  r = result_relation_class(r);
   switch (r) {
-  case V_NEG_OVERFLOW:
-  case V_POS_OVERFLOW:
-  case V_UNKNOWN_NEG_OVERFLOW:
-  case V_UNKNOWN_POS_OVERFLOW:
+  case V_GT_MINUS_INFINITY:
+  case V_LT_PLUS_INFINITY:
     return true;
   case V_LT:
   case V_GT:

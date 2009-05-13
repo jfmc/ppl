@@ -59,16 +59,16 @@ enum I_Result {
   I_SINGULARITIES = 256
 };
 
-inline I_Result operator|(I_Result x, I_Result y) {
-  return static_cast<I_Result>((unsigned)x | (unsigned)y);
+inline I_Result operator|(I_Result a, I_Result b) {
+  return static_cast<I_Result>((unsigned)a | (unsigned)b);
 }
 
-inline I_Result operator&(I_Result x, I_Result y) {
-  return static_cast<I_Result>((unsigned)x & (unsigned)y);
+inline I_Result operator&(I_Result a, I_Result b) {
+  return static_cast<I_Result>((unsigned)a & (unsigned)b);
 }
 
-inline I_Result operator-(I_Result x, I_Result y) {
-  return static_cast<I_Result>((unsigned)x & ~(unsigned)y);
+inline I_Result operator-(I_Result a, I_Result b) {
+  return static_cast<I_Result>((unsigned)a & ~(unsigned)b);
 }
 
 template <typename Criteria, typename T>
@@ -168,21 +168,23 @@ public:
     const Derived& c = static_cast<const Derived&>(*this);
     Result r = c.rel();
     switch (r) {
-    case VC_NAN:
+    case V_EMPTY:
     case V_LGE:
       return r;
     case V_LE:
       r = assign_r(to, c.value(), static_cast<Rounding_Dir>(ROUND_UP | ROUND_FPU_CHECK_INEXACT));
+      r = result_relation_class(r);
       if (r == V_EQ)
 	return V_LE;
       goto lt;
     case V_LT:
       r = assign_r(to, c.value(), ROUND_UP);
+      r = result_relation_class(r);
     lt:
       switch (r) {
-      case VC_NAN:
-      case V_POS_OVERFLOW:
-      case VC_MINUS_INFINITY:
+      case V_EMPTY:
+      case V_LT_PLUS_INFINITY:
+      case V_EQ_MINUS_INFINITY:
 	return r;
       case V_LT:
       case V_LE:
@@ -194,16 +196,18 @@ public:
       break;
     case V_GE:
       r = assign_r(to, c.value(), static_cast<Rounding_Dir>(ROUND_DOWN | ROUND_FPU_CHECK_INEXACT));
+      r = result_relation_class(r);
       if (r == V_EQ)
 	return V_GE;
       goto gt;
     case V_GT:
       r = assign_r(to, c.value(), ROUND_DOWN);
+      r = result_relation_class(r);
     gt:
       switch (r) {
-      case VC_NAN:
-      case V_NEG_OVERFLOW:
-      case VC_PLUS_INFINITY:
+      case V_EMPTY:
+      case V_GT_MINUS_INFINITY:
+      case V_EQ_PLUS_INFINITY:
 	return r;
       case V_LT:
       case V_LE:
@@ -215,13 +219,15 @@ public:
       break;
     case V_EQ:
       r = assign_r(to, c.value(), ROUND_CHECK);
+      r = result_relation_class(r);
       assert(r != V_LT && r != V_GT);
       if (r == V_EQ)
 	return V_EQ;
       else
-	return VC_NAN;
+	return V_EMPTY;
     case V_NE:
       r = assign_r(to, c.value(), ROUND_CHECK);
+      r = result_relation_class(r);
       if (r == V_EQ)
 	return V_NE;
       else
@@ -230,7 +236,7 @@ public:
       break;
     }
     assert(false);
-    return VC_NAN;
+    return V_EMPTY;
   }
   template <typename T>
   Result convert_real(T& to1, Result& rel2, T& to2) const {
@@ -241,19 +247,21 @@ public:
       return V_LGE;
     }
     rel2 = assign_r(to2, c.value(), ROUND_UP);
+    rel2 = result_relation_class(rel2);
     switch (rel2) {
-    case VC_NAN:
-    case VC_MINUS_INFINITY:
+    case V_EMPTY:
+    case V_EQ_MINUS_INFINITY:
     case V_EQ:
       return V_LGE;
     }
     rel1 = assign_r(to1, c.value(), ROUND_DOWN);
+    rel1 = result_relation_class(rel1);
     switch (rel1) {
     case V_EQ:
       assert(rel2 == V_LE);
       goto eq;
-    case VC_PLUS_INFINITY:
-    case VC_NAN:
+    case V_EQ_PLUS_INFINITY:
+    case V_EMPTY:
       rel2 = rel1;
       return V_LGE;
     case V_GE:
@@ -264,20 +272,20 @@ public:
       }
       /* Fall through*/
     case V_GT:
-    case V_NEG_OVERFLOW:
+    case V_GT_MINUS_INFINITY:
       return rel1;
     default:
       assert(false);
-      return VC_NAN;
+      return V_EMPTY;
     }
     switch (rel2) {
     case V_LE:
     case V_LT:
-    case V_POS_OVERFLOW:
+    case V_LT_PLUS_INFINITY:
       return rel1;
     default:
       assert(false);
-      return VC_NAN;
+      return V_EMPTY;
     }
   }
   template <typename T>
@@ -288,28 +296,32 @@ public:
       if (is_integer(to)) {
 	rel = sub_assign_r(to, to, T(1),
 			   static_cast<Rounding_Dir>(ROUND_UP | ROUND_FPU_CHECK_INEXACT));
+	rel = result_relation_class(rel);
 	return rel == V_EQ ? V_LE : rel;
       }
       /* Fall through */
     case V_LE:
       rel = floor_assign_r(to, to, ROUND_UP);
+      rel = result_relation_class(rel);
       assert(rel == V_EQ);
       return V_LE;
     case V_GT:
       if (is_integer(to)) {
 	rel = add_assign_r(to, to, T(1),
 			   static_cast<Rounding_Dir>(ROUND_DOWN | ROUND_FPU_CHECK_INEXACT));
+	rel = result_relation_class(rel);
 	return rel == V_EQ ? V_GE : rel;
       }
       /* Fall through */
     case V_GE:
       rel = ceil_assign_r(to, to, ROUND_DOWN);
+      rel = result_relation_class(rel);
       assert(rel == V_EQ);
       return V_GE;
     case V_EQ:
       if (is_integer(to))
 	return V_EQ;
-      return VC_NAN;
+      return V_EMPTY;
     case V_NE:
       if (is_integer(to))
 	return V_NE;
@@ -324,6 +336,7 @@ struct I_Constraint_Rel {
   Result rel;
   I_Constraint_Rel(Result r)
     : rel(r) {
+    assert(result_relation_class(r) == r);
   }
   I_Constraint_Rel(Relation_Symbol r)
     : rel((Result)r) {

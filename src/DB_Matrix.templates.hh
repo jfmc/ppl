@@ -233,7 +233,7 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
   for (dimension_type i = 0; i < nrows;  ++i)
     for (dimension_type j = 0; j < nrows; ++j) {
       Result r = input(x[i][j], s, ROUND_CHECK);
-      if (r != V_EQ || is_minus_infinity(x[i][j]))
+      if (result_relation(r) != VR_EQ || is_minus_infinity(x[i][j]))
 	return false;
     }
 

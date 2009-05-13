@@ -38,19 +38,19 @@ classify_mpq(const mpq_class& v, bool nan, bool inf, bool sign) {
       && ::sgn(v.get_den()) == 0) {
     int s = ::sgn(v.get_num());
     if (Policy::has_nan && (nan || sign) && s == 0)
-      return VC_NAN;
+      return V_NAN;
     if (!inf && !sign)
-      return VC_NORMAL;
+      return V_LGE;
     if (Policy::has_infinity) {
       if (s < 0)
-	return inf ? VC_MINUS_INFINITY : V_LT;
+	return inf ? V_EQ_MINUS_INFINITY : V_LT;
       if (s > 0)
-	return inf ? VC_PLUS_INFINITY : V_GT;
+	return inf ? V_EQ_PLUS_INFINITY : V_GT;
     }
   }
   if (sign)
-    return sgn<Policy>(v);
-  return VC_NORMAL;
+    return (Result) sgn<Policy>(v);
+  return V_LGE;
 }
 
 PPL_SPECIALIZE_CLASSIFY(classify_mpq, mpq_class)
@@ -99,27 +99,33 @@ PPL_SPECIALIZE_IS_INT(is_int_mpq, mpq_class)
 
 template <typename Policy>
 inline Result
-assign_special_mpq(mpq_class& v, Result r, Rounding_Dir) {
-  Result c = classify(r);
-  if (Policy::has_nan && c == VC_NAN) {
-    v.get_num() = 0;
-    v.get_den() = 0;
-  }
-  else if (Policy::has_infinity) {
-    switch (c) {
-    case VC_MINUS_INFINITY:
+assign_special_mpq(mpq_class& v, Result_Class c, Rounding_Dir) {
+  switch (c) {
+  case VC_NAN:
+    if (Policy::has_nan) {
+      v.get_num() = 0;
+      v.get_den() = 0;
+      return V_NAN | V_UNREPRESENTABLE;
+    }
+    return V_NAN;
+  case VC_MINUS_INFINITY:
+    if (Policy::has_infinity) {
       v.get_num() = -1;
       v.get_den() = 0;
-      return V_EQ;
-    case VC_PLUS_INFINITY:
+      return V_EQ_MINUS_INFINITY;
+    }
+    return V_EQ_MINUS_INFINITY | V_UNREPRESENTABLE;
+  case VC_PLUS_INFINITY:
+    if (Policy::has_infinity) {
       v.get_num() = 1;
       v.get_den() = 0;
-      return V_EQ;
-    default:
-      break;
+      return V_EQ_PLUS_INFINITY;
     }
+    return V_EQ_PLUS_INFINITY | V_UNREPRESENTABLE;
+  default:
+    assert(false);
+    return V_NAN | V_UNREPRESENTABLE;
   }
-  return r;
 }
 
 PPL_SPECIALIZE_ASSIGN_SPECIAL(assign_special_mpq, mpq_class)
@@ -293,8 +299,9 @@ PPL_SPECIALIZE_MUL(mul_mpq, mpq_class, mpq_class, mpq_class)
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
 div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
-  if (CHECK_P(To_Policy::check_div_zero, sgn(y) == 0))
-    return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
+  if (CHECK_P(To_Policy::check_div_zero, sgn(y) == 0)) {
+    return assign_nan<To_Policy>(to, V_DIV_ZERO);
+  }
   to = x / y;
   return V_EQ;
 }
@@ -304,8 +311,9 @@ PPL_SPECIALIZE_DIV(div_mpq, mpq_class, mpq_class, mpq_class)
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
 idiv_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir dir) {
-  if (CHECK_P(To_Policy::check_div_zero, sgn(y) == 0))
-    return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
+  if (CHECK_P(To_Policy::check_div_zero, sgn(y) == 0)) {
+    return assign_nan<To_Policy>(to, V_DIV_ZERO);
+  }
   to = x / y;
   return trunc<To_Policy, To_Policy>(to, to, dir);
 }
@@ -315,8 +323,9 @@ PPL_SPECIALIZE_IDIV(idiv_mpq, mpq_class, mpq_class, mpq_class)
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
 rem_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
-  if (CHECK_P(To_Policy::check_div_zero, sgn(y) == 0))
-    return assign_special<To_Policy>(to, V_MOD_ZERO, ROUND_IGNORE);
+  if (CHECK_P(To_Policy::check_div_zero, sgn(y) == 0)) {
+    return assign_nan<To_Policy>(to, V_MOD_ZERO);
+  }
   PPL_DIRTY_TEMP(mpq_class, tmp);
   tmp = x / y;
   tmp.get_num() %= tmp.get_den();
@@ -415,8 +424,9 @@ extern unsigned long rational_sqrt_precision_parameter;
 template <typename To_Policy, typename From_Policy>
 inline Result
 sqrt_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir dir) {
-  if (CHECK_P(To_Policy::check_sqrt_neg, from < 0))
-    return assign_special<To_Policy>(to, V_SQRT_NEG, ROUND_IGNORE);
+  if (CHECK_P(To_Policy::check_sqrt_neg, from < 0)) {
+    return assign_nan<To_Policy>(to, V_SQRT_NEG);
+  }
   if (from == 0) {
     to = 0;
     return V_EQ;
@@ -445,13 +455,15 @@ PPL_SPECIALIZE_SQRT(sqrt_mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-input_mpq(mpq_class& to, std::istream& is, Rounding_Dir) {
+input_mpq(mpq_class& to, std::istream& is, Rounding_Dir dir) {
   Result r = input_mpq(to, is);
-  switch (classify(r)) {
+  Result_Class c = result_class(r);
+  switch (c) {
   case VC_MINUS_INFINITY:
   case VC_PLUS_INFINITY:
+    return assign_special<Policy>(to, c, dir);
   case VC_NAN:
-    return assign_special<Policy>(to, r, ROUND_IGNORE);
+    return assign_nan<Policy>(to, r);
   default:
     return r;
   }

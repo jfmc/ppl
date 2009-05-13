@@ -106,10 +106,11 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   // Get the lower bound.
   Boundary lower_bound;
   Result lower_r  = input(lower_bound, is, ROUND_DOWN);
-  if (lower_r == V_CVT_STR_UNK || lower_r == VC_NAN) {
+  if (lower_r == V_CVT_STR_UNK || lower_r == V_NAN) {
     is.setstate(std::ios_base::failbit);
     return is;
   }
+  lower_r = result_relation_class(lower_r);
 
   // Match the comma separating the lower and upper bounds.
   do {
@@ -124,10 +125,11 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   // Get the upper bound.
   Boundary upper_bound;
   Result upper_r = input(upper_bound, is, ROUND_UP);
-  if (upper_r == V_CVT_STR_UNK || upper_r == VC_NAN) {
+  if (upper_r == V_CVT_STR_UNK || upper_r == V_NAN) {
     is.setstate(std::ios_base::failbit);
     return is;
   }
+  upper_r = result_relation_class(upper_r);
 
   // Get the closing parenthesis.
   do {
@@ -151,13 +153,13 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   case V_LE:
     lower_open = true;
     break;
-  case VC_MINUS_INFINITY:
-  case V_NEG_OVERFLOW:
+  case V_EQ_MINUS_INFINITY:
+  case V_GT_MINUS_INFINITY:
     lower_boundary_infinity = true;
     break;
-  case VC_PLUS_INFINITY:
-  case V_POS_OVERFLOW:
-    if (upper_r == VC_PLUS_INFINITY || upper_r == V_POS_OVERFLOW)
+  case V_EQ_PLUS_INFINITY:
+  case V_LT_PLUS_INFINITY:
+    if (upper_r == V_EQ_PLUS_INFINITY || upper_r == V_LT_PLUS_INFINITY)
       x.assign(UNIVERSE);
     else
       x.assign(EMPTY);
@@ -171,15 +173,15 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   case V_GE:
     upper_open = true;
     break;
-  case VC_MINUS_INFINITY:
-  case V_NEG_OVERFLOW:
-    if (lower_r == VC_MINUS_INFINITY || lower_r == V_NEG_OVERFLOW)
+  case V_EQ_MINUS_INFINITY:
+  case V_GT_MINUS_INFINITY:
+    if (lower_r == V_EQ_MINUS_INFINITY || lower_r == V_GT_MINUS_INFINITY)
       x.assign(UNIVERSE);
     else
       x.assign(EMPTY);
     return is;
-  case VC_PLUS_INFINITY:
-  case V_POS_OVERFLOW:
+  case V_EQ_PLUS_INFINITY:
+  case V_LT_PLUS_INFINITY:
     upper_boundary_infinity = true;
     break;
   default:

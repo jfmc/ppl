@@ -319,7 +319,7 @@ namespace Checked {
 #define PPL_SPECIALIZE_COPY(func, Type)                                 \
   PPL_SPECIALIZE_FUN2_0_0(copy, func, void, nonconst, Type, const, Type)
 #define PPL_SPECIALIZE_SGN(func, From)                          \
-  PPL_SPECIALIZE_FUN1_0_0(sgn, func, Result, const, From)
+  PPL_SPECIALIZE_FUN1_0_0(sgn, func, Result_Relation, const, From)
 #define PPL_SPECIALIZE_CMP(func, Type1, Type2)                          \
   PPL_SPECIALIZE_FUN2_0_0(cmp, func, Result, const, Type1, const, Type2)
 #define PPL_SPECIALIZE_CLASSIFY(func, Type)                             \
@@ -334,10 +334,10 @@ namespace Checked {
   PPL_SPECIALIZE_FUN1_0_0(is_int, func, bool, const, Type)
 #define PPL_SPECIALIZE_ASSIGN_SPECIAL(func, Type)                       \
   PPL_SPECIALIZE_FUN1_0_2(assign_special, func, Result,                 \
-                          nonconst, Type, Result, Rounding_Dir)
+                          nonconst, Type, Result_Class, Rounding_Dir)
 #define PPL_SPECIALIZE_CONSTRUCT_SPECIAL(func, Type)                    \
   PPL_SPECIALIZE_FUN1_0_2(construct_special, func, Result, nonconst,    \
-                          Type, Result, Rounding_Dir)
+                          Type, Result_Class, Rounding_Dir)
 #define PPL_SPECIALIZE_CONSTRUCT(func, To, From)                        \
   PPL_SPECIALIZE_FUN2_0_1(construct, func, Result, nonconst, To, \
                           const, From, Rounding_Dir)
@@ -420,9 +420,9 @@ namespace Checked {
 PPL_DECLARE_FUN2_0_0(copy,
                      void, nonconst, Type1, const, Type2)
 PPL_DECLARE_FUN1_0_0(sgn,
-                     Result, const, From)
+                     Result_Relation, const, From)
 PPL_DECLARE_FUN2_0_0(cmp,
-                     Result, const, Type1, const, Type2)
+                     Result_Relation, const, Type1, const, Type2)
 PPL_DECLARE_FUN1_0_3(classify,
                      Result, const, Type, bool, bool, bool)
 PPL_DECLARE_FUN1_0_0(is_nan,
@@ -434,9 +434,9 @@ PPL_DECLARE_FUN1_0_0(is_pinf,
 PPL_DECLARE_FUN1_0_0(is_int,
                      bool, const, Type)
 PPL_DECLARE_FUN1_0_2(assign_special,
-                     Result, nonconst, Type, Result, Rounding_Dir)
+                     Result, nonconst, Type, Result_Class, Rounding_Dir)
 PPL_DECLARE_FUN1_0_2(construct_special,
-                     Result, nonconst, Type, Result, Rounding_Dir)
+                     Result, nonconst, Type, Result_Class, Rounding_Dir)
 PPL_DECLARE_FUN2_0_1(construct,
                      Result, nonconst, To, const, From, Rounding_Dir)
 PPL_DECLARE_FUN2_0_1(assign,
@@ -525,13 +525,13 @@ Result input_mpq(mpq_class& to, std::istream& is);
 } // namespace Checked
 
 struct Minus_Infinity {
-  static const Result code = VC_MINUS_INFINITY;
+  static const Result_Class vclass = VC_MINUS_INFINITY;
 };
 struct Plus_Infinity {
-  static const Result code = VC_PLUS_INFINITY;
+  static const Result_Class vclass = VC_PLUS_INFINITY;
 };
 struct Not_A_Number {
-  static const Result code = VC_NAN;
+  static const Result_Class vclass = VC_NAN;
 };
 
 template <typename T>
@@ -591,7 +591,7 @@ struct Checked_Number_Transparent_Policy {
   //! When true, requests to check for FPU inexact result are honored.
   const_bool_nodef(fpu_check_inexact, false);
 
-  //! Return VC_NAN on NaN result also for native extended.
+  //! Return V_NAN on NaN result also for native extended.
   const_bool_nodef(check_nan_result, false);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;

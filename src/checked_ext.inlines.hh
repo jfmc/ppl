@@ -46,16 +46,16 @@ ext_to_handle(const Type& x) {
 }
 
 template <typename Policy, typename Type>
-inline Result
+inline Result_Relation
 sgn_ext(const Type& x) {
   if (!ext_to_handle<Policy>(x))
     goto native;
   if (is_nan<Policy>(x))
-    return VC_NAN;
+    return VR_EMPTY;
   else if (is_minf<Policy>(x))
-    return V_LT;
+    return VR_LT;
   else if (is_pinf<Policy>(x))
-    return V_GT;
+    return VR_GT;
   else {
   native:
     return sgn<Policy>(x);
@@ -203,7 +203,7 @@ add_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   else if (is_pinf<From1_Policy>(x)) {
     if (CHECK_P(To_Policy::check_inf_add_inf, is_minf<From2_Policy>(y))) {
     inf_add_inf:
-      return assign_special<To_Policy>(to, V_INF_ADD_INF, ROUND_IGNORE);
+      return assign_nan<To_Policy>(to, V_INF_ADD_INF);
     }
     else
       goto pinf;
@@ -241,7 +241,7 @@ sub_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   else if (is_pinf<From1_Policy>(x)) {
     if (CHECK_P(To_Policy::check_inf_sub_inf, is_pinf<From2_Policy>(y))) {
     inf_sub_inf:
-      return assign_special<To_Policy>(to, V_INF_SUB_INF, ROUND_IGNORE);
+      return assign_nan<To_Policy>(to, V_INF_SUB_INF);
     }
     else
       goto pinf;
@@ -272,9 +272,9 @@ mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (is_minf<From1_Policy>(x)) {
     switch (sgn_ext<From2_Policy>(y)) {
-    case V_LT:
+    case VR_LT:
       goto pinf;
-    case V_GT:
+    case VR_GT:
       goto minf;
     default:
       goto inf_mul_zero;
@@ -282,9 +282,9 @@ mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   }
   else if (is_pinf<From1_Policy>(x)) {
     switch (sgn_ext<From2_Policy>(y)) {
-    case V_LT:
+    case VR_LT:
       goto minf;
-    case V_GT:
+    case VR_GT:
       goto pinf;
     default:
       goto inf_mul_zero;
@@ -293,9 +293,9 @@ mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   else {
     if (is_minf<From2_Policy>(y)) {
       switch (sgn<From1_Policy>(x)) {
-      case V_LT:
+      case VR_LT:
 	goto pinf;
-      case V_GT:
+      case VR_GT:
 	goto minf;
       default:
 	goto inf_mul_zero;
@@ -303,16 +303,16 @@ mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     }
     else if (is_pinf<From2_Policy>(y)) {
       switch (sgn<From1_Policy>(x)) {
-      case V_LT:
+      case VR_LT:
       minf:
 	return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
-      case V_GT:
+      case VR_GT:
       pinf:
 	return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
       default:
       inf_mul_zero:
 	assert(To_Policy::check_inf_mul_zero);
-	return assign_special<To_Policy>(to, V_INF_MUL_ZERO, ROUND_IGNORE);
+	return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
       }
     }
     else {
@@ -335,9 +335,9 @@ add_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (is_minf<From1_Policy>(x)) {
     switch (sgn_ext<From2_Policy>(y)) {
-    case V_LT:
+    case VR_LT:
       goto a_pinf;
-    case V_GT:
+    case VR_GT:
       goto a_minf;
     default:
       goto inf_mul_zero;
@@ -345,9 +345,9 @@ add_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   }
   else if (is_pinf<From1_Policy>(x)) {
     switch (sgn_ext<From2_Policy>(y)) {
-    case V_LT:
+    case VR_LT:
       goto a_minf;
-    case V_GT:
+    case VR_GT:
       goto a_pinf;
     default:
       goto inf_mul_zero;
@@ -356,9 +356,9 @@ add_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   else {
     if (is_minf<From2_Policy>(y)) {
       switch (sgn<From1_Policy>(x)) {
-      case V_LT:
+      case VR_LT:
 	goto a_pinf;
-      case V_GT:
+      case VR_GT:
 	goto a_minf;
       default:
 	goto inf_mul_zero;
@@ -366,24 +366,24 @@ add_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     }
     else if (is_pinf<From2_Policy>(y)) {
       switch (sgn<From1_Policy>(x)) {
-      case V_LT:
+      case VR_LT:
       a_minf:
 	if (CHECK_P(To_Policy::check_inf_add_inf, is_pinf<To_Policy>(to)))
 	  goto inf_add_inf;
 	else
 	  goto minf;
-      case V_GT:
+      case VR_GT:
       a_pinf:
 	if (CHECK_P(To_Policy::check_inf_add_inf, is_minf<To_Policy>(to))) {
 	inf_add_inf:
-	  return assign_special<To_Policy>(to, V_INF_ADD_INF, ROUND_IGNORE);
+	  return assign_nan<To_Policy>(to, V_INF_ADD_INF);
 	}
 	else
 	  goto pinf;
       default:
       inf_mul_zero:
 	assert(To_Policy::check_inf_mul_zero);
-	return assign_special<To_Policy>(to, V_INF_MUL_ZERO, ROUND_IGNORE);
+	return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
       }
     }
     else {
@@ -413,9 +413,9 @@ sub_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (is_minf<From1_Policy>(x)) {
     switch (sgn_ext<From2_Policy>(y)) {
-    case V_LT:
+    case VR_LT:
       goto a_pinf;
-    case V_GT:
+    case VR_GT:
       goto a_minf;
     default:
       goto inf_mul_zero;
@@ -423,9 +423,9 @@ sub_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   }
   else if (is_pinf<From1_Policy>(x)) {
     switch (sgn_ext<From2_Policy>(y)) {
-    case V_LT:
+    case VR_LT:
       goto a_minf;
-    case V_GT:
+    case VR_GT:
       goto a_pinf;
     default:
       goto inf_mul_zero;
@@ -434,9 +434,9 @@ sub_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   else {
     if (is_minf<From2_Policy>(y)) {
       switch (sgn<From1_Policy>(x)) {
-      case V_LT:
+      case VR_LT:
 	goto a_pinf;
-      case V_GT:
+      case VR_GT:
 	goto a_minf;
       default:
 	goto inf_mul_zero;
@@ -444,24 +444,24 @@ sub_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     }
     else if (is_pinf<From2_Policy>(y)) {
       switch (sgn<From1_Policy>(x)) {
-      case V_LT:
+      case VR_LT:
       a_minf:
 	if (CHECK_P(To_Policy::check_inf_sub_inf, is_minf<To_Policy>(to)))
 	  goto inf_sub_inf;
 	else
 	  goto pinf;
-      case V_GT:
+      case VR_GT:
       a_pinf:
 	if (CHECK_P(To_Policy::check_inf_sub_inf, is_pinf<To_Policy>(to))) {
 	inf_sub_inf:
-	  return assign_special<To_Policy>(to, V_INF_SUB_INF, ROUND_IGNORE);
+	  return assign_nan<To_Policy>(to, V_INF_SUB_INF);
 	}
 	else
 	  goto minf;
       default:
       inf_mul_zero:
 	assert(To_Policy::check_inf_mul_zero);
-	return assign_special<To_Policy>(to, V_INF_MUL_ZERO, ROUND_IGNORE);
+	return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
       }
     }
     else {
@@ -493,9 +493,9 @@ div_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
       goto inf_div_inf;
     else {
       switch (sgn<From2_Policy>(y)) {
-      case V_LT:
+      case VR_LT:
 	goto pinf;
-      case V_GT:
+      case VR_GT:
 	goto minf;
       default:
 	goto div_zero;
@@ -506,20 +506,20 @@ div_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     if (CHECK_P(To_Policy::check_inf_div_inf, is_minf<From2_Policy>(y)
 		|| is_pinf<From2_Policy>(y))) {
     inf_div_inf:
-      return assign_special<To_Policy>(to, V_INF_DIV_INF, ROUND_IGNORE);
+      return assign_nan<To_Policy>(to, V_INF_DIV_INF);
     }
     else {
       switch (sgn<From2_Policy>(y)) {
-      case V_LT:
+      case VR_LT:
       minf:
 	return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
-      case V_GT:
+      case VR_GT:
       pinf:
 	return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
       default:
       div_zero:
 	assert(To_Policy::check_div_zero);
-	return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
+	return assign_nan<To_Policy>(to, V_DIV_ZERO);
       }
     }
   }
@@ -550,9 +550,9 @@ idiv_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
       goto inf_div_inf;
     else {
       switch (sgn<From2_Policy>(y)) {
-      case V_LT:
+      case VR_LT:
 	goto pinf;
-      case V_GT:
+      case VR_GT:
 	goto minf;
       default:
 	goto div_zero;
@@ -563,20 +563,20 @@ idiv_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     if (CHECK_P(To_Policy::check_inf_div_inf, is_minf<From2_Policy>(y)
 		|| is_pinf<From2_Policy>(y))) {
     inf_div_inf:
-      return assign_special<To_Policy>(to, V_INF_DIV_INF, ROUND_IGNORE);
+      return assign_nan<To_Policy>(to, V_INF_DIV_INF);
     }
     else {
       switch (sgn<From2_Policy>(y)) {
-      case V_LT:
+      case VR_LT:
       minf:
 	return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
-      case V_GT:
+      case VR_GT:
       pinf:
 	return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
       default:
       div_zero:
 	assert(To_Policy::check_div_zero);
-	return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
+	return assign_nan<To_Policy>(to, V_DIV_ZERO);
       }
     }
   }
@@ -602,8 +602,9 @@ rem_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   else if (CHECK_P(To_Policy::check_inf_mod, is_minf<From1_Policy>(x)
-		   || is_pinf<From1_Policy>(x)))
-    return assign_special<To_Policy>(to, V_INF_MOD, ROUND_IGNORE);
+		   || is_pinf<From1_Policy>(x))) {
+    return assign_nan<To_Policy>(to, V_INF_MOD);
+  }
   else {
     if (is_minf<From1_Policy>(y) || is_pinf<From2_Policy>(y)) {
       to = x;
@@ -661,8 +662,9 @@ smod_2exp_ext(To& to, const From& x, unsigned int exp, Rounding_Dir dir) {
   if (is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   else if (CHECK_P(To_Policy::check_inf_mod, is_minf<From_Policy>(x)
-		   || is_pinf<From_Policy>(x)))
-    return assign_special<To_Policy>(to, V_INF_MOD, ROUND_IGNORE);
+		   || is_pinf<From_Policy>(x))) {
+    return assign_nan<To_Policy>(to, V_INF_MOD);
+  }
   else {
   native:
     return smod_2exp<To_Policy, From_Policy>(to, x, exp, dir);
@@ -678,8 +680,9 @@ umod_2exp_ext(To& to, const From& x, unsigned int exp, Rounding_Dir dir) {
   if (is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   else if (CHECK_P(To_Policy::check_inf_mod, is_minf<From_Policy>(x)
-		   || is_pinf<From_Policy>(x)))
-    return assign_special<To_Policy>(to, V_INF_MOD, ROUND_IGNORE);
+		   || is_pinf<From_Policy>(x))) {
+    return assign_nan<To_Policy>(to, V_INF_MOD);
+  }
   else {
   native:
     return umod_2exp<To_Policy, From_Policy>(to, x, exp, dir);
@@ -694,8 +697,9 @@ sqrt_ext(To& to, const From& x, Rounding_Dir dir) {
     goto native;
   if (is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  else if (is_minf<From_Policy>(x))
-    return assign_special<To_Policy>(to, V_SQRT_NEG, ROUND_IGNORE);
+  else if (is_minf<From_Policy>(x)) {
+    return assign_nan<To_Policy>(to, V_SQRT_NEG);
+  }
   else if (is_pinf<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
   else {
@@ -756,21 +760,21 @@ lcm_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 
 template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
-inline Result
+inline Result_Relation
 cmp_ext(const Type1& x, const Type2& y) {
   if (!ext_to_handle<Policy1>(x) && !ext_to_handle<Policy2>(y))
     goto native;
   if (is_nan<Policy1>(x) || is_nan<Policy2>(y))
-    return V_UNORD_COMP;
+    return VR_EMPTY;
   else if (is_minf<Policy1>(x))
-    return is_minf<Policy2>(y) ? V_EQ : V_LT;
+    return is_minf<Policy2>(y) ? VR_EQ : VR_LT;
   else if (is_pinf<Policy1>(x))
-    return is_pinf<Policy2>(y) ? V_EQ : V_GT;
+    return is_pinf<Policy2>(y) ? VR_EQ : VR_GT;
   else {
     if (is_minf<Policy2>(y))
-      return V_GT;
+      return VR_GT;
     if (is_pinf<Policy2>(y))
-      return V_LT;
+      return VR_LT;
   native:
     return cmp<Policy1, Policy2>(x, y);
   }
@@ -855,7 +859,7 @@ output_ext(std::ostream& os, const Type& x,
     goto native;
   if (is_nan<Policy>(x)) {
     os << "nan";
-    return VC_NAN;
+    return V_NAN;
   }
   if (is_minf<Policy>(x)) {
     os << "-inf";

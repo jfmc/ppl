@@ -109,7 +109,7 @@ set_unbounded(Boundary_Type type, T& x, Info& info) {
     r = assign_r(x, MINUS_INFINITY, ROUND_UP);
   else
     r = assign_r(x, PLUS_INFINITY, ROUND_DOWN);
-  if (r == V_EQ && !Info::may_contain_infinity)
+  if (result_relation(r) == VR_EQ && !Info::may_contain_infinity)
     info.set_boundary_property(type, OPEN);
   return r;
 }
@@ -131,10 +131,11 @@ set_minus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
     assert(type == LOWER);
     r = special_set_boundary_infinity(type, x, info);
   }
-  else
+  else {
     r = assign_r(x, MINUS_INFINITY, round_dir_check(type));
-  assert(r != VC_MINUS_INFINITY);
-  if (open || r != V_EQ)
+    assert(result_representable(r));
+  }
+  if (open || result_relation(r) != VR_EQ)
     info.set_boundary_property(type, OPEN);
   return r;
 }
@@ -156,10 +157,11 @@ set_plus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
     assert(type == UPPER);
     r = special_set_boundary_infinity(type, x, info);
   }
-  else
+  else {
     r = assign_r(x, PLUS_INFINITY, round_dir_check(type));
-  assert(r != VC_MINUS_INFINITY);
-  if (open || r != V_EQ)
+    assert(result_representable(r));
+  }
+  if (open || result_relation(r) != VR_EQ)
     info.set_boundary_property(type, OPEN);
   return r;
 }
@@ -175,7 +177,7 @@ set_boundary_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
     r = assign_r(x, MINUS_INFINITY, round_dir_check(type));
   else
     r = assign_r(x, PLUS_INFINITY, round_dir_check(type));
-  assert(r == V_EQ);
+  assert(result_representable(r));
   if (open)
     info.set_boundary_property(type, OPEN);
   return r;
@@ -415,12 +417,13 @@ template <typename T, typename Info>
 inline Result
 adjust_boundary(Boundary_Type type, T& x, Info& info,
 		bool open, Result r) {
+  r = result_relation_class(r);
   if (type == LOWER) {
     switch (r) {
-    case V_NEG_OVERFLOW:
+    case V_GT_MINUS_INFINITY:
       open = true;
       /* Fall through */
-    case VC_MINUS_INFINITY:
+    case V_EQ_MINUS_INFINITY:
       if (!Info::store_special)
 	return r;
       if (open)
@@ -437,15 +440,15 @@ adjust_boundary(Boundary_Type type, T& x, Info& info,
       return r;
     default:
       assert(false);
-      return VC_NAN;
+      return V_NAN;
     }
   }
   else {
     switch (r) {
-    case V_POS_OVERFLOW:
+    case V_LT_PLUS_INFINITY:
       open = true;
       /* Fall through */
-    case VC_PLUS_INFINITY:
+    case V_EQ_PLUS_INFINITY:
       if (!Info::store_special)
 	return r;
       if (open)
@@ -462,7 +465,7 @@ adjust_boundary(Boundary_Type type, T& x, Info& info,
       return r;
     default:
       assert(false);
-      return VC_NAN;
+      return V_NAN;
     }
   }
 }

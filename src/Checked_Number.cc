@@ -44,15 +44,15 @@ throw_result_exception(Result r) {
   case V_LGE:
     throw std::logic_error("Exact result is less than, greater than or "
 			   "equal to computed one.");
-  case VC_MINUS_INFINITY:
+  case V_EQ_MINUS_INFINITY:
     throw std::overflow_error("Minus infinity.");
-  case V_NEG_OVERFLOW:
+  case V_GT_MINUS_INFINITY:
     throw std::overflow_error("Negative overflow.");
   case V_UNKNOWN_NEG_OVERFLOW:
     throw std::overflow_error("Unknown result due to negative overflow.");
-  case VC_PLUS_INFINITY:
+  case V_EQ_PLUS_INFINITY:
     throw std::overflow_error("Plus infinity.");
-  case V_POS_OVERFLOW:
+  case V_LT_PLUS_INFINITY:
     throw std::overflow_error("Positive overflow.");
   case V_UNKNOWN_POS_OVERFLOW:
     throw std::overflow_error("Unknown result due to positive overflow.");
@@ -74,8 +74,6 @@ throw_result_exception(Result r) {
     throw std::domain_error("Remainder of division by zero.");
   case V_SQRT_NEG:
     throw std::domain_error("Square root of negative number.");
-  case V_UNORD_COMP:
-    throw std::domain_error("Unordered comparison.");
   default:
     throw std::logic_error("Unexpected result.");
   }

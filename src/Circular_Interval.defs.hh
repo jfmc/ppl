@@ -387,9 +387,9 @@ public:
     Result rel = c.convert_integer(v);
     switch (rel) {
     case V_LGE:
-    case V_POS_OVERFLOW:
+    case V_LT_PLUS_INFINITY:
       return lower_extend();
-    case VC_NAN:
+    case V_NAN:
       break;
     case V_GE:
     case V_EQ:
@@ -410,9 +410,9 @@ public:
     Result rel = c.convert_integer(v);
     switch (rel) {
     case V_LGE:
-    case V_POS_OVERFLOW:
+    case V_LT_PLUS_INFINITY:
       return upper_extend();
-    case VC_NAN:
+    case V_NAN:
       break;
     case V_LE:
     case V_EQ:
@@ -468,8 +468,8 @@ public:
     Result rel = c.convert_integer(start_);
     switch (rel) {
     case V_LGE:
-    case V_NEG_OVERFLOW:
-    case V_POS_OVERFLOW:
+    case V_GT_MINUS_INFINITY:
+    case V_LT_PLUS_INFINITY:
       return assign(UNIVERSE);
     default:
       return assign(EMPTY);
@@ -508,7 +508,7 @@ public:
     switch (c1.rel()) {
     case V_LGE:
       return build(c2);
-    case VC_NAN:
+    case V_NAN:
       return assign(EMPTY);
     default:
       break;
@@ -516,7 +516,7 @@ public:
     switch (c2.rel()) {
     case V_LGE:
       return build(c1);
-    case VC_NAN:
+    case V_NAN:
       return assign(EMPTY);
     default:
       break;
