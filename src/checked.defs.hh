@@ -555,49 +555,82 @@ extern Not_A_Number NOT_A_NUMBER;
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 struct Checked_Number_Transparent_Policy {
-  //! Checks for overflowed result.
+  //! Do not check for overflowed result.
   const_bool_nodef(check_overflow, false);
 
-  //! Checks for attempts to add infinities with different sign.
+  //! Do not check for attempts to add infinities with different sign.
   const_bool_nodef(check_inf_add_inf, false);
 
-  //! Checks for attempts to subtract infinities with same sign.
+  //! Do not check for attempts to subtract infinities with same sign.
   const_bool_nodef(check_inf_sub_inf, false);
 
-  //! Checks for attempts to multiply infinities by zero.
+  //! Do not check for attempts to multiply infinities by zero.
   const_bool_nodef(check_inf_mul_zero, false);
 
-  //! Checks for attempts to divide by zero.
+  //! Do not check for attempts to divide by zero.
   const_bool_nodef(check_div_zero, false);
 
-  //! Checks for attempts to divide infinities.
+  //! Do not check for attempts to divide infinities.
   const_bool_nodef(check_inf_div_inf, false);
 
-  //! Checks for attempts to compute remainder of infinities.
+  //! Do not check for attempts to compute remainder of infinities.
   const_bool_nodef(check_inf_mod, false);
 
-  //! Checks for attempts to take the square root of a negative number.
+  //! Do not check for attempts to take the square root of a negative number.
   const_bool_nodef(check_sqrt_neg, false);
 
-  //! Handles not-a-number special value.
+  //! Handle not-a-number special value if \p T has it.
   const_bool_nodef(has_nan, std::numeric_limits<T>::has_quiet_NaN);
 
-  //! Handles infinity special values.
+  //! Handle infinity special values if \p T have them.
   const_bool_nodef(has_infinity, std::numeric_limits<T>::has_infinity);
 
-  //! Representation is identical to primitive.
+  /*! \brief
+    The checked number can always be safely converted to the
+    underlying type \p T and vice-versa.
+  */
   const_bool_nodef(convertible, true);
 
-  //! When true, requests to check for FPU inexact result are honored.
+  //! Do not honor requests to check for FPU inexact results.
   const_bool_nodef(fpu_check_inexact, false);
 
-  //! Return V_NAN on NaN result also for native extended.
+  //! Do not make extra checks to detect FPU NaN results.
   const_bool_nodef(check_nan_result, false);
+
+  /*! \brief
+    For constructors, by default use the same rounding used by
+    underlying type.
+  */
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
+
+  /*! \brief
+    For overloaded operators (operator+(), operator-(), ...), by
+    default use the same rounding used by the underlying type.
+  */
   static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
-  static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_NATIVE;
+
+  /*! \brief
+    For input functions, by default use the same rounding used by
+    the underlying type.
+  */
   static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_NATIVE;
+
+  /*! \brief
+    For output functions, by default use the same rounding used by
+    the underlying type.
+  */
   static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_NATIVE;
+
+  /*! \brief
+    For all other functions, by default use the same rounding used by
+    the underlying type.
+  */
+  static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_NATIVE;
+
+  /*! \brief
+    Handles \p r: called by all constructors, operators and functions that
+    do not return a Result value.
+  */
   static void handle_result(Result r);
 };
 
