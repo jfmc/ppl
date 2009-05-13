@@ -48,7 +48,7 @@ struct Bounded_Integer_Coefficient_Policy {
   //! Do not handle not-a-number special value.
   const_bool_nodef(has_nan, false);
 
-  //! Handle infinity special values if \p T have them.
+  //! Do not handle infinity special values.
   const_bool_nodef(has_infinity, false);
 
   /*! \brief
