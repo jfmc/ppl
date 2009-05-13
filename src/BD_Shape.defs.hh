@@ -43,6 +43,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "DB_Matrix.defs.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.defs.hh"
+#include "WRD_coefficient_types.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include <cstddef>
 #include <iosfwd>

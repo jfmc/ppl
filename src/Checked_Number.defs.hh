@@ -61,35 +61,6 @@ struct Extended_Number_Policy {
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \ingroup PPL_CXX_interface */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-struct WRD_Extended_Number_Policy {
-  const_bool_nodef(check_overflow, true);
-  const_bool_nodef(check_inf_add_inf, false);
-  const_bool_nodef(check_inf_sub_inf, false);
-  const_bool_nodef(check_inf_mul_zero, false);
-  const_bool_nodef(check_div_zero, false);
-  const_bool_nodef(check_inf_div_inf, false);
-  const_bool_nodef(check_inf_mod, false);
-  const_bool_nodef(check_sqrt_neg, false);
-  const_bool_nodef(has_nan, true);
-  const_bool_nodef(has_infinity, true);
-  // Do not uncomment the following.
-  // The compile time error on conversions is the expected behavior.
-  // const_bool_nodef(convertible, false);
-  const_bool_nodef(fpu_check_inexact, true);
-  const_bool_nodef(fpu_check_nan_result, false);
-  // Do not uncomment the following.
-  // The compile time error is the expected behavior.
-  // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_UP;
-  static void handle_result(Result r);
-};
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A policy checking for overflows.
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)

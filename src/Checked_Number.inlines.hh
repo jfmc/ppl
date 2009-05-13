@@ -71,12 +71,6 @@ Extended_Number_Policy::handle_result(Result r) {
     throw_result_exception(r);
 }
 
-inline void
-WRD_Extended_Number_Policy::handle_result(Result r) {
-  if (result_class(r) == VC_NAN)
-    throw_result_exception(r);
-}
-
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number()

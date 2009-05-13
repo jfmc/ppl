@@ -193,6 +193,8 @@ checked_ext.inlines.hh \
 Checked_Number.defs.hh \
 Checked_Number.inlines.hh \
 Checked_Number.templates.hh \
+WRD_coefficient_types.defs.hh \
+WRD_coefficient_types.inlines.hh \
 checked_numeric_limits.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \

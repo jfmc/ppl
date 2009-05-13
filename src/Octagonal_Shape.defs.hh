@@ -42,6 +42,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 #include "Variables_Set.types.hh"
 #include "Checked_Number.defs.hh"
+#include "WRD_coefficient_types.defs.hh"
+#include "Bit_Row.defs.hh"
 #include <vector>
 #include <cstddef>
 #include <climits>
