@@ -279,6 +279,7 @@ public:
   }
 
   I_Result lower_extend() {
+    info().clear_boundary_properties(LOWER);
     set_unbounded(LOWER, lower(), info());
     return I_ANY;
   }
@@ -309,6 +310,7 @@ public:
   }
 
   I_Result upper_extend() {
+    info().clear_boundary_properties(UPPER);
     set_unbounded(UPPER, upper(), info());
     return I_ANY;
   }
