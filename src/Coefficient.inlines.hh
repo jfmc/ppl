@@ -25,6 +25,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_CHECKED_INTEGERS
+inline void
+Bounded_Integer_Coefficient_Policy::handle_result(Result r) {
+  if (result_overflow(r))
+    throw_result_exception(r);
+}
+#endif // PPL_CHECKED_INTEGERS
+
+
 #if defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 inline Coefficient_traits::const_reference
 Coefficient_zero() {
@@ -39,7 +48,7 @@ Coefficient_one() {
   static Coefficient one(1);
   return one;
 }
-#endif
+#endif // defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 
 #ifdef PPL_GMP_INTEGERS
 inline Coefficient_traits::const_reference
@@ -54,7 +63,7 @@ Coefficient_one() {
   assert(*Coefficient_one_p != 0);
   return *Coefficient_one_p;
 }
-#endif
+#endif // PPL_GMP_INTEGERS
 
 } // namespace Parma_Polyhedra_Library
 
