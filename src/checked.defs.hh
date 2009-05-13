@@ -321,7 +321,7 @@ namespace Checked {
 #define PPL_SPECIALIZE_SGN(func, From)                          \
   PPL_SPECIALIZE_FUN1_0_0(sgn, func, Result_Relation, const, From)
 #define PPL_SPECIALIZE_CMP(func, Type1, Type2)                          \
-  PPL_SPECIALIZE_FUN2_0_0(cmp, func, Result, const, Type1, const, Type2)
+  PPL_SPECIALIZE_FUN2_0_0(cmp, func, Result_Relation, const, Type1, const, Type2)
 #define PPL_SPECIALIZE_CLASSIFY(func, Type)                             \
   PPL_SPECIALIZE_FUN1_0_3(classify, func, Result, const, Type, bool, bool, bool)
 #define PPL_SPECIALIZE_IS_NAN(func, Type)                       \
