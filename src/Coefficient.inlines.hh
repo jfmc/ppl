@@ -28,7 +28,7 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_CHECKED_INTEGERS
 inline void
 Bounded_Integer_Coefficient_Policy::handle_result(Result r) {
-  if (result_overflow(r))
+  if (result_overflow(r) || result_class(r) == VC_NAN)
     throw_result_exception(r);
 }
 #endif // PPL_CHECKED_INTEGERS
