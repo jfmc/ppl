@@ -41,20 +41,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 //! The ask-and-tell construction instantiated on PPL polyhedra.
 /*! \ingroup PPL_CXX_interface */
-template <typename PS>
+template <typename PSET>
 class Parma_Polyhedra_Library::Pointset_Ask_Tell
   : public Parma_Polyhedra_Library::Ask_Tell
-<Parma_Polyhedra_Library::Determinate<PS> > {
+<Parma_Polyhedra_Library::Determinate<PSET> > {
 public:
-  typedef PS element_type;
+  typedef PSET element_type;
 
 private:
-  typedef Determinate<PS> CS;
-  typedef Ask_Tell<CS> Base;
+  typedef Determinate<PSET> Det_PSET;
+  typedef Ask_Tell<Det_PSET> Base;
   typedef typename Base::Pair Pair;
 
 public:
-  //! Returns the maximum space dimension a Pointset_Ask_Tell<PS> can handle.
+  //! Returns the maximum space dimension a Pointset_Ask_Tell<PSET> can handle.
   static dimension_type max_space_dimension();
 
   //! \name Constructors
@@ -72,17 +72,17 @@ public:
   Pointset_Ask_Tell(dimension_type num_dimensions = 0,
 		    Degenerate_Element kind = UNIVERSE);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Pointset_Ask_Tell(const Pointset_Ask_Tell& y);
 
   /*! \brief
     If \p ph is nonempty, builds a powerset containing only \p ph.
     Builds the empty powerset otherwise.
   */
-  explicit Pointset_Ask_Tell(const PS& ph);
+  explicit Pointset_Ask_Tell(const PSET& ph);
 
   /*! \brief
-    Copy-constructor allowing a source powerset with elements of a
+    Copy constructor allowing a source powerset with elements of a
     different polyhedron kind.
   */
   template <typename QH>
@@ -169,7 +169,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p ph are dimension-incompatible.
   */
-  void add_disjunct(const PS& ph);
+  void add_disjunct(const PSET& ph);
 
   //! Intersects \p *this with constraint \p c.
   /*!
@@ -214,17 +214,17 @@ public:
 
   /*! \brief
     Computes the \ref Cylindrification "cylindrification" of \p *this with
-    respect to the set of space dimensions \p to_be_unconstrained,
+    respect to the set of space dimensions \p vars,
     assigning the result to \p *this.
 
-    \param to_be_unconstrained
+    \param vars
     The set of space dimension that will be unconstrained.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p to_be_removed.
+    Variable objects contained in \p vars.
   */
-  void unconstrain(const Variables_Set& to_be_unconstrained);
+  void unconstrain(const Variables_Set& vars);
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
@@ -362,15 +362,15 @@ public:
 
   //! Removes all the specified space dimensions.
   /*!
-    \param to_be_removed
+    \param vars
     The set of Variable objects corresponding to the space dimensions
     to be removed.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p to_be_removed.
+    Variable objects contained in \p vars.
   */
-  void remove_space_dimensions(const Variables_Set& to_be_removed);
+  void remove_space_dimensions(const Variables_Set& vars);
 
   /*! \brief
     Removes the higher space dimensions so that the resulting space
@@ -496,9 +496,9 @@ namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Pointset_Ask_Tell */
-template <typename PS>
-void swap(Parma_Polyhedra_Library::Pointset_Ask_Tell<PS>& x,
-	  Parma_Polyhedra_Library::Pointset_Ask_Tell<PS>& y);
+template <typename PSET>
+void swap(Parma_Polyhedra_Library::Pointset_Ask_Tell<PSET>& x,
+	  Parma_Polyhedra_Library::Pointset_Ask_Tell<PSET>& y);
 
 } // namespace std
 

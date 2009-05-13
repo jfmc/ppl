@@ -132,6 +132,7 @@ topclosure1 \
 unconstrain1 \
 universe1 universe2 \
 variablesset1 \
+wrap1 \
 writeconsys1 \
 writegensys1 \
 writepolyhedron1 writepolyhedron2 \
@@ -203,6 +204,7 @@ nnc_smm1 \
 nnc_timeelapse1 \
 nnc_unconstrain1 \
 nnc_universe1 \
+nnc_wrap1 \
 nnc_writepolyhedron1
 
 #
@@ -402,6 +404,8 @@ universe1_SOURCES = universe1.cc
 universe2_SOURCES = universe2.cc
 
 variablesset1_SOURCES = variablesset1.cc
+
+wrap1_SOURCES = wrap1.cc
 
 writeconsys1_SOURCES = writeconsys1.cc
 
@@ -622,6 +626,9 @@ nnc_unconstrain1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_universe1_SOURCES = universe1.cc
 nnc_universe1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_wrap1_SOURCES = wrap1.cc
+nnc_wrap1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_writepolyhedron1_SOURCES = writepolyhedron1.cc
 nnc_writepolyhedron1_CXXFLAGS = $(DERIVED_CXXFLAGS)

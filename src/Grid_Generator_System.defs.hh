@@ -186,7 +186,7 @@ public:
   //! Builds an empty system of generators of dimension \p dim.
   explicit Grid_Generator_System(dimension_type dim);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Grid_Generator_System(const Grid_Generator_System& gs);
 
   //! Destructor.
@@ -273,7 +273,7 @@ public:
     //! Default constructor.
     const_iterator();
 
-    //! Ordinary copy-constructor.
+    //! Ordinary copy constructor.
     const_iterator(const const_iterator& y);
 
     //! Destructor.
@@ -309,7 +309,7 @@ public:
   private:
     friend class Grid_Generator_System;
 
-    //! Copy-constructor from Generator_System::const_iterator.
+    //! Copy constructor from Generator_System::const_iterator.
     const_iterator(const Generator_System::const_iterator& y);
   };
 
@@ -453,10 +453,10 @@ private:
   //! Removes all the specified dimensions from the generator system.
   /*!
     The space dimension of the variable with the highest space
-    dimension in \p to_be_removed must be at most the space dimension
+    dimension in \p vars must be at most the space dimension
     of \p this.
   */
-  void remove_space_dimensions(const Variables_Set& to_be_removed);
+  void remove_space_dimensions(const Variables_Set& vars);
 
   /*! \brief
     Removes the higher dimensions of the system so that the resulting

@@ -72,7 +72,7 @@ test02() {
 
   open(f, my_file, ios_base::in);
   Grid_Generator_System gs(grid_point(0*A));
-  bool ok =! gs.ascii_load(f);
+  bool ok = !gs.ascii_load(f);
   close(f);
 
   return ok;
@@ -90,7 +90,7 @@ test03() {
 
   open(f, my_file, ios_base::in);
   Grid_Generator_System gs(grid_point(0*A));
-  bool ok =! gs.ascii_load(f);
+  bool ok = !gs.ascii_load(f);
   close(f);
 
   return ok;
@@ -108,7 +108,7 @@ test04() {
 
   open(f, my_file, ios_base::in);
   Grid_Generator_System gs(grid_point(0*A));
-  bool ok =! gs.ascii_load(f);
+  bool ok = !gs.ascii_load(f);
   close(f);
 
   return ok;
@@ -127,7 +127,7 @@ test05() {
 
   open(f, my_file, ios_base::in);
   Grid_Generator_System gs(grid_point(0*A));
-  bool ok =! gs.ascii_load(f);
+  bool ok = !gs.ascii_load(f);
   close(f);
 
   return ok;

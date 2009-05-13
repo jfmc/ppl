@@ -46,6 +46,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "parma_polyhedra_library_MIP_Problem.h"
 #include "parma_polyhedra_library_MIP_Problem_Status.h"
 #include "parma_polyhedra_library_Optimization_Mode.h"
+#include "parma_polyhedra_library_Pair.h"
 #include "parma_polyhedra_library_Parma_Polyhedra_Library.h"
 #include "parma_polyhedra_library_Poly_Con_Relation.h"
 #include "parma_polyhedra_library_Poly_Gen_Relation.h"
@@ -56,6 +57,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::Java;
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_initialize_1library
+(JNIEnv* env, jclass /* ppl_class */) {
+  initialize();
+  cached_classes.init_cache(env);
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_finalize_1library
+(JNIEnv* env, jclass /* ppl_class */) {
+  cached_classes.clear_cache(env);
+  finalize();
+}
+
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_By_1Reference_initIDs
@@ -73,7 +89,6 @@ Java_parma_1polyhedra_1library_By_1Reference_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Coefficient_initIDs
 (JNIEnv* env, jclass j_coeff_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Coefficient, j_coeff_class);
   jfieldID fID;
   fID = env->GetFieldID(j_coeff_class, "value", "Ljava/math/BigInteger;");
   CHECK_RESULT_ASSERT(env, fID);
@@ -86,29 +101,24 @@ Java_parma_1polyhedra_1library_Coefficient_initIDs
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Coefficient_toString_ID = mID;
   // Boolean.
-  jclass Boolean_class;
-  PPL_JNI_FIND_CLASS(Boolean_class, env, Boolean, "java/lang/Boolean");
-  mID = env->GetStaticMethodID(Boolean_class, "valueOf",
+  mID = env->GetStaticMethodID(cached_classes.Boolean, "valueOf",
                                "(Z)Ljava/lang/Boolean;");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Boolean_valueOf_ID = mID;
   // Integer.
-  jclass Integer_class;
-  PPL_JNI_FIND_CLASS(Integer_class, env, Integer, "java/lang/Integer");
-  mID = env->GetStaticMethodID(Integer_class, "valueOf",
+  mID = env->GetStaticMethodID(cached_classes.Integer, "valueOf",
                                "(I)Ljava/lang/Integer;");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Integer_valueOf_ID = mID;
-  mID = env->GetMethodID(Integer_class, "intValue", "()I");
+  mID = env->GetMethodID(cached_classes.Integer, "intValue", "()I");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Integer_intValue_ID = mID;
   // Long.
-  jclass Long_class;
-  PPL_JNI_FIND_CLASS(Long_class, env, Long, "java/lang/Long");
-  mID = env->GetStaticMethodID(Long_class, "valueOf", "(J)Ljava/lang/Long;");
+  mID = env->GetStaticMethodID(cached_classes.Long, "valueOf",
+                               "(J)Ljava/lang/Long;");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Long_valueOf_ID = mID;
-  mID = env->GetMethodID(Long_class, "longValue", "()J");
+  mID = env->GetMethodID(cached_classes.Long, "longValue", "()J");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Long_longValue_ID = mID;
 }
@@ -124,7 +134,6 @@ Java_parma_1polyhedra_1library_Complexity_1Class_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Congruence_initIDs
 (JNIEnv* env, jclass j_congruence_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Congruence, j_congruence_class);
   jfieldID fID;
   fID = env->GetFieldID(j_congruence_class, "modulus",
                         "Lparma_polyhedra_library/Coefficient;");
@@ -150,7 +159,6 @@ Java_parma_1polyhedra_1library_Congruence_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Congruence_1System_initIDs
 (JNIEnv* env, jclass j_con_sys_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Congruence_System, j_con_sys_class);
   jmethodID mID;
   mID = env->GetMethodID(j_con_sys_class, "<init>", "()V");
   CHECK_RESULT_ASSERT(env, mID);
@@ -163,7 +171,6 @@ Java_parma_1polyhedra_1library_Congruence_1System_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Constraint_initIDs
 (JNIEnv* env, jclass j_constraint_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Constraint, j_constraint_class);
   jfieldID fID;
   fID = env->GetFieldID(j_constraint_class, "lhs",
                         "Lparma_polyhedra_library/Linear_Expression;");
@@ -189,7 +196,6 @@ Java_parma_1polyhedra_1library_Constraint_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Constraint_1System_initIDs
 (JNIEnv* env, jclass j_con_sys_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Constraint_System, j_con_sys_class);
   jmethodID mID;
   mID = env->GetMethodID(j_con_sys_class, "<init>", "()V");
   CHECK_RESULT_ASSERT(env, mID);
@@ -197,6 +203,19 @@ Java_parma_1polyhedra_1library_Constraint_1System_initIDs
   mID = env->GetMethodID(j_con_sys_class, "add", "(Ljava/lang/Object;)Z");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Constraint_System_add_ID = mID;
+  // NOTE: initialize the iterator method IDs common to all *_System classes.
+  mID = env->GetMethodID(j_con_sys_class, "iterator",
+                         "()Ljava/util/Iterator;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.System_iterator_ID = mID;
+  mID = env->GetMethodID(cached_classes.Iterator, "hasNext", "()Z");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.System_Iterator_has_next_ID = mID;
+  assert(cached_classes.Iterator != NULL);
+  mID = env->GetMethodID(cached_classes.Iterator, "next",
+                         "()Ljava/lang/Object;");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.System_Iterator_next_ID = mID;
 }
 
 JNIEXPORT void JNICALL
@@ -210,7 +229,6 @@ Java_parma_1polyhedra_1library_Degenerate_1Element_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Generator_initIDs
 (JNIEnv* env, jclass j_generator_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Generator, j_generator_class);
   jfieldID fID;
   fID = env->GetFieldID(j_generator_class, "gt",
                         "Lparma_polyhedra_library/Generator_Type;");
@@ -252,7 +270,6 @@ Java_parma_1polyhedra_1library_Generator_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Generator_1System_initIDs
 (JNIEnv* env, jclass j_gen_sys_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Generator_System, j_gen_sys_class);
   jmethodID mID;
   mID = env->GetMethodID(j_gen_sys_class, "<init>", "()V");
   CHECK_RESULT_ASSERT(env, mID);
@@ -265,7 +282,6 @@ Java_parma_1polyhedra_1library_Generator_1System_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Generator_1Type_initIDs
 (JNIEnv* env, jclass j_gen_type_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Generator_Type, j_gen_type_class);
   jmethodID mID;
   mID = env->GetMethodID(j_gen_type_class, "ordinal", "()I");
   CHECK_RESULT_ASSERT(env, mID);
@@ -275,7 +291,6 @@ Java_parma_1polyhedra_1library_Generator_1Type_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Grid_1Generator_initIDs
 (JNIEnv* env, jclass j_grid_generator_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Grid_Generator, j_grid_generator_class);
   jfieldID fID;
   fID = env->GetFieldID(j_grid_generator_class, "gt",
                         "Lparma_polyhedra_library/Grid_Generator_Type;");
@@ -312,7 +327,6 @@ Java_parma_1polyhedra_1library_Grid_1Generator_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Grid_1Generator_1System_initIDs
 (JNIEnv* env, jclass j_gen_sys_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Grid_Generator_System, j_gen_sys_class);
   jmethodID mID;
   mID = env->GetMethodID(j_gen_sys_class, "<init>", "()V");
   CHECK_RESULT_ASSERT(env, mID);
@@ -325,7 +339,6 @@ Java_parma_1polyhedra_1library_Grid_1Generator_1System_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Grid_1Generator_1Type_initIDs
 (JNIEnv* env, jclass j_grid_gen_type_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Grid_Generator_Type, j_grid_gen_type_class);
   jmethodID mID;
   mID = env->GetMethodID(j_grid_gen_type_class, "ordinal", "()I");
   CHECK_RESULT_ASSERT(env, mID);
@@ -335,7 +348,6 @@ Java_parma_1polyhedra_1library_Grid_1Generator_1Type_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_initIDs
 (JNIEnv* env, jclass j_le_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Linear_Expression, j_le_class);
   jmethodID mID;
   mID = env->GetMethodID(j_le_class, "sum",
                          "(Lparma_polyhedra_library/Linear_Expression;)"
@@ -352,7 +364,6 @@ Java_parma_1polyhedra_1library_Linear_1Expression_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_1Coefficient_initIDs
 (JNIEnv* env, jclass j_le_coeff_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Linear_Expression_Coefficient, j_le_coeff_class);
   jfieldID fID;
   fID = env->GetFieldID(j_le_coeff_class, "coeff",
                         "Lparma_polyhedra_library/Coefficient;");
@@ -368,7 +379,6 @@ Java_parma_1polyhedra_1library_Linear_1Expression_1Coefficient_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_1Difference_initIDs
 (JNIEnv* env, jclass j_le_diff_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Linear_Expression_Difference, j_le_diff_class);
   jfieldID fID;
   fID = env->GetFieldID(j_le_diff_class, "lhs",
                         "Lparma_polyhedra_library/Linear_Expression;");
@@ -383,7 +393,6 @@ Java_parma_1polyhedra_1library_Linear_1Expression_1Difference_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_1Sum_initIDs
 (JNIEnv* env, jclass j_le_sum_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Linear_Expression_Sum, j_le_sum_class);
   jfieldID fID;
   fID = env->GetFieldID(j_le_sum_class, "lhs",
                         "Lparma_polyhedra_library/Linear_Expression;");
@@ -398,7 +407,6 @@ Java_parma_1polyhedra_1library_Linear_1Expression_1Sum_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_1Times_initIDs
 (JNIEnv* env, jclass j_le_times_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Linear_Expression_Times, j_le_times_class);
   jfieldID fID;
   fID = env->GetFieldID(j_le_times_class, "lhs",
                         "Lparma_polyhedra_library/Linear_Expression_Coefficient;");
@@ -419,8 +427,6 @@ Java_parma_1polyhedra_1library_Linear_1Expression_1Times_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_1Unary_1Minus_initIDs
 (JNIEnv* env, jclass j_le_uminus_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Linear_Expression_Unary_Minus,
-                          j_le_uminus_class);
   jfieldID fID;
   fID = env->GetFieldID(j_le_uminus_class, "arg",
                         "Lparma_polyhedra_library/Linear_Expression;");
@@ -431,7 +437,6 @@ Java_parma_1polyhedra_1library_Linear_1Expression_1Unary_1Minus_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_1Variable_initIDs
 (JNIEnv* env, jclass j_le_var_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Linear_Expression_Variable, j_le_var_class);
   jmethodID mID;
   mID = env->GetMethodID(j_le_var_class, "<init>",
 			 "(Lparma_polyhedra_library/Variable;)V");
@@ -445,7 +450,6 @@ Java_parma_1polyhedra_1library_Linear_1Expression_1Variable_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_1Status_initIDs
 (JNIEnv* env, jclass j_mip_status_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, MIP_Problem_Status, j_mip_status_class);
   jfieldID fID;
   fID = env->GetStaticFieldID(j_mip_status_class, "UNFEASIBLE_MIP_PROBLEM",
                               "Lparma_polyhedra_library/MIP_Problem_Status;");
@@ -468,7 +472,6 @@ Java_parma_1polyhedra_1library_MIP_1Problem_1Status_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Optimization_1Mode_initIDs
 (JNIEnv* env, jclass j_opt_mode_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Optimization_Mode, j_opt_mode_class);
   jfieldID fID;
   fID = env->GetStaticFieldID(j_opt_mode_class, "MAXIMIZATION",
                               "Lparma_polyhedra_library/Optimization_Mode;");
@@ -485,9 +488,20 @@ Java_parma_1polyhedra_1library_Optimization_1Mode_initIDs
 }
 
 JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Pair_initIDs
+(JNIEnv* env, jclass j_pair_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_pair_class, "first", "Ljava/lang/Object;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Pair_first_ID = fID;
+  fID = env->GetFieldID(j_pair_class, "second", "Ljava/lang/Object;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Pair_second_ID = fID;
+}
+
+JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Poly_1Con_1Relation_initIDs
 (JNIEnv* env, jclass j_poly_con_relation_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Poly_Con_Relation, j_poly_con_relation_class);
   jmethodID mID;
   mID = env->GetMethodID(j_poly_con_relation_class, "<init>", "(I)V");
   CHECK_RESULT_ASSERT(env, mID);
@@ -497,7 +511,6 @@ Java_parma_1polyhedra_1library_Poly_1Con_1Relation_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Poly_1Gen_1Relation_initIDs
 (JNIEnv* env, jclass j_poly_gen_relation_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Poly_Gen_Relation, j_poly_gen_relation_class);
   jmethodID mID;
   mID = env->GetMethodID(j_poly_gen_relation_class, "<init>", "(I)V");
   CHECK_RESULT_ASSERT(env, mID);
@@ -507,7 +520,6 @@ Java_parma_1polyhedra_1library_Poly_1Gen_1Relation_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_PPL_1Object_initIDs
 (JNIEnv* env, jclass j_ppl_object_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, PPL_Object, j_ppl_object_class);
   jfieldID fID = env->GetFieldID(j_ppl_object_class, "ptr", "J");
   CHECK_RESULT_ASSERT(env, fID);
   cached_FMIDs.PPL_Object_ptr_ID = fID;
@@ -516,7 +528,6 @@ Java_parma_1polyhedra_1library_PPL_1Object_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Relation_1Symbol_initIDs
 (JNIEnv* env, jclass j_rel_sym_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Relation_Symbol, j_rel_sym_class);
   jfieldID fID;
   fID = env->GetStaticFieldID(j_rel_sym_class, "EQUAL",
                               "Lparma_polyhedra_library/Relation_Symbol;");
@@ -539,7 +550,6 @@ Java_parma_1polyhedra_1library_Relation_1Symbol_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Variable_initIDs
 (JNIEnv* env, jclass j_variable_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Variable, j_variable_class);
   jfieldID fID = env->GetFieldID(j_variable_class, "varid", "I");
   CHECK_RESULT_ASSERT(env, fID);
   cached_FMIDs.Variable_varid_ID = fID;
@@ -551,7 +561,6 @@ Java_parma_1polyhedra_1library_Variable_initIDs
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Variables_1Set_initIDs
 (JNIEnv* env, jclass j_vset_class) {
-  PPL_JNI_SET_CLASS_IN_CACHE(env, Variables_Set, j_vset_class);
   jmethodID mID;
   mID = env->GetMethodID(j_vset_class, "<init>", "()V");
   CHECK_RESULT_ASSERT(env, mID);
@@ -628,6 +637,65 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_restore_1pre_1PPL_1roun
   CATCH_ALL;
 }
 
+JNIEXPORT jint JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_irrational_1precision
+(JNIEnv* env , jclass) {
+  try {
+    return irrational_precision();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1irrational_1precision
+(JNIEnv* env , jclass, jint p) {
+  try {
+    unsigned cxx_p = jtype_to_unsigned<unsigned>(p);
+    set_irrational_precision(cxx_p);
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1timeout
+(JNIEnv* env, jclass, jint hsecs) {
+  try {
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+    const char* what = "PPL Java interface error:\n"
+      "Parma_Polyhedra_Library::set_timeout: "
+      "the PPL Watchdog library is not enabled.";
+    throw std::runtime_error(what);
+#else
+    // In case a timeout was already set.
+    reset_timeout();
+    assert(hsecs > 0);
+    unsigned cxx_hsecs = jtype_to_unsigned<unsigned>(hsecs);
+    assert(cxx_hsecs > 0);
+    static timeout_exception e;
+    using Parma_Watchdog_Library::Watchdog;
+    p_timeout_object = new Watchdog(hsecs, abandon_expensive_computations, e);
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_reset_1timeout
+(JNIEnv* env, jclass) {
+  try {
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+    const char* what = "PPL Java interface error:\n"
+      "Parma_Polyhedra_Library.reset_timeout(): "
+      "the PPL Watchdog library is not enabled.";
+    throw std::runtime_error(what);
+#else
+    reset_timeout();
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+  }
+  CATCH_ALL;
+}
+
 JNIEXPORT jlong JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_max_1space_1dimension
 (JNIEnv* env , jobject j_this_mip_problem) {
@@ -675,11 +743,8 @@ Java_parma_1polyhedra_1library_MIP_1Problem_objective_1function
     inhomogeneous_term = mip->objective_function().inhomogeneous_term();
     jobject j_coeff_inhomogeneous_term
       = build_java_coeff(env, inhomogeneous_term);
-    jclass j_le_coeff_class;
-    PPL_JNI_FIND_CLASS(j_le_coeff_class, env, Linear_Expression_Coefficient,
-                       "parma_polyhedra_library/Linear_Expression_Coefficient");
     jobject j_le_coeff
-      = env->NewObject(j_le_coeff_class,
+      = env->NewObject(cached_classes.Linear_Expression_Coefficient,
                        cached_FMIDs.Linear_Expression_Coefficient_init_ID,
                        j_coeff_inhomogeneous_term);
     CHECK_RESULT_RETURN(env, j_le_coeff, 0);
@@ -743,10 +808,7 @@ JNIEXPORT jobject JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_constraints
 (JNIEnv* env, jobject j_this_mip_problem) {
   try {
-    jclass j_cs_class;
-    PPL_JNI_FIND_CLASS(j_cs_class, env, Constraint_System,
-                       "parma_polyhedra_library/Constraint_System");
-    jobject j_cs = env->NewObject(j_cs_class,
+    jobject j_cs = env->NewObject(cached_classes.Constraint_System,
                                   cached_FMIDs.Constraint_System_init_ID);
     CHECK_RESULT_RETURN(env, j_cs, 0);
 

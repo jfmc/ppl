@@ -42,26 +42,20 @@ test01() {
 
   TBox nbox(ph);
 
-  TBox known_nbox(4);
-  known_nbox.add_constraint(3*x > -2);
-  known_nbox.add_constraint(x <= 4);
-  known_nbox.add_constraint(y > -10);
-  known_nbox.add_constraint(y <= 4);
-  known_nbox.add_constraint(z >= 5);
+  // Same precision for both complexities.
+  TBox known_box(4);
+  known_box.add_constraint(3*x > -2);
+  known_box.add_constraint(x <= 4);
+  known_box.add_constraint(y > -10);
+  known_box.add_constraint(y <= 4);
+  known_box.add_constraint(z >= 5);
 
-  TBox known_pbox(4);
-  known_pbox.add_constraint(x <= 4);
-  known_pbox.add_constraint(y <= 4);
-  known_pbox.add_constraint(z >= 5);
-
-  bool ok = (nbox == known_nbox && pbox == known_pbox && pbox.contains(nbox));
+  bool ok = (nbox == known_box && pbox == known_box);
 
   print_constraints(ph, "*** ph ***");
   print_constraints(nbox, "*** nbox ***");
   print_constraints(pbox, "*** pbox ***");
-
-  print_constraints(known_nbox, "*** known_nbox ***");
-  print_constraints(known_pbox, "*** known_pbox ***");
+  print_constraints(known_box, "*** known_box ***");
 
   return ok;
 }
@@ -82,24 +76,19 @@ test02() {
 
   TBox nbox(ph);
 
-  TBox known_nbox(2);
-  known_nbox.add_constraint(3*x >= -2);
-  known_nbox.add_constraint(x < 4);
-  known_nbox.add_constraint(y > -10);
-  known_nbox.add_constraint(y <= 4);
+  // Same precision for both complexities.
+  TBox known_box(2);
+  known_box.add_constraint(3*x >= -2);
+  known_box.add_constraint(x < 4);
+  known_box.add_constraint(y > -10);
+  known_box.add_constraint(y <= 4);
 
-  TBox known_pbox(2);
-  known_pbox.add_constraint(x < 4);
-  known_pbox.add_constraint(y <= 4);
-
-  bool ok = (nbox == known_nbox && pbox == known_pbox && pbox.contains(nbox));
+  bool ok = (nbox == known_box && pbox == known_box);
 
   print_constraints(ph, "*** ph ***");
   print_constraints(nbox, "*** nbox ***");
   print_constraints(pbox, "*** pbox ***");
-
-  print_constraints(known_nbox, "*** known_nbox ***");
-  print_constraints(known_pbox, "*** known_pbox ***");
+  print_constraints(known_box, "*** known_box ***");
 
   return ok;
 }

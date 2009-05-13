@@ -382,6 +382,10 @@ print_string_if_noisy "Maximum space dimension is: ";
 let i = ppl_max_space_dimension()
 in print_int_if_noisy i;;
 print_string_if_noisy "\n";;
+print_string_if_noisy "Irrational precision is: ";
+let p = ppl_irrational_precision()
+in print_int_if_noisy(p);;
+print_string_if_noisy "\n";;
 
 (* Testing exceptions *)
 try

@@ -209,7 +209,7 @@ swap(Parma_Polyhedra_Library::Congruence& x,
 */
 class Parma_Polyhedra_Library::Congruence : private Row {
 public:
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Congruence(const Congruence& cg);
 
   //! Copy-constructs (modulo 0) from equality constraint \p c.

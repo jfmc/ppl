@@ -147,7 +147,8 @@ run_one(all_versions_and_banner) :-
 run_one(numeric_bounds) :-
   max_dimension,
   coefficient_bounds,
-  set_restore_rounding.
+  set_restore_rounding,
+  set_restore_irrational_precision.
 
 run_one(new_polyhedron_from_dimension) :-
   new_polyhedron_from_dim.
@@ -313,6 +314,17 @@ cpp_bounded_values(Max, Min) :-
 set_restore_rounding :-
   ppl_set_rounding_for_PPL,
   ppl_restore_pre_PPL_rounding.
+
+set_restore_irrational_precision :-
+  ppl_irrational_precision(Default),
+  Default == 128,
+  Non_Default = 100,
+  ppl_set_irrational_precision(Non_Default),
+  ppl_irrational_precision(Changed),
+  Changed == Non_Default,
+  ppl_set_irrational_precision(Default),
+  ppl_irrational_precision(Restored),
+  Restored == Default.
 
 %%%%%%%%%%%%%%%%% New Polyhedron %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -32,11 +32,11 @@ static {
     try {
         System.loadLibrary("ppl_java");
     }
-
-   catch (UnsatisfiedLinkError  e) {
-       System.out.println("Unable to load the library");
-       System.exit(-1);
-   }
+    catch (UnsatisfiedLinkError  e) {
+        System.out.println("Unable to load the library");
+        System.out.println(e.getMessage());
+        System.exit(-1);
+    }
 }
 
     // This code tests the MIP_Problem methods.
@@ -269,8 +269,10 @@ static {
     }
 
     public static void main(String[] args) {
+        Parma_Polyhedra_Library.initialize_library();
 	boolean test_result_ok =
 	    Test_Executor.executeTests(MIP_Problem_test1.class);
+        Parma_Polyhedra_Library.finalize_library();
 	if (!test_result_ok)
 	    System.exit(1);
 	System.exit(0);

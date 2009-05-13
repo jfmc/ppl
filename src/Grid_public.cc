@@ -1328,15 +1328,15 @@ PPL::Grid::unconstrain(const Variable var) {
 }
 
 void
-PPL::Grid::unconstrain(const Variables_Set& to_be_unconstrained) {
+PPL::Grid::unconstrain(const Variables_Set& vars) {
   // The cylindrification wrt no dimensions is a no-op.
   // This case also captures the only legal cylindrification
   // of a grid in a 0-dim space.
-  if (to_be_unconstrained.empty())
+  if (vars.empty())
     return;
 
   // Dimension-compatibility check.
-  const dimension_type min_space_dim = to_be_unconstrained.space_dimension();
+  const dimension_type min_space_dim = vars.space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("unconstrain(vs)", min_space_dim);
 
@@ -1349,9 +1349,9 @@ PPL::Grid::unconstrain(const Variables_Set& to_be_unconstrained) {
   assert(generators_are_up_to_date());
   // Since `gen_sys' is not empty, the space dimension of the inserted
   // generators are automatically adjusted.
-  for (Variables_Set::const_iterator tbu = to_be_unconstrained.begin(),
-         tbu_end = to_be_unconstrained.end(); tbu != tbu_end; ++tbu) {
-    Grid_Generator l = grid_line(Variable(*tbu));
+  for (Variables_Set::const_iterator vsi = vars.begin(),
+         vsi_end = vars.end(); vsi != vsi_end; ++vsi) {
+    Grid_Generator l = grid_line(Variable(*vsi));
     gen_sys.recycling_insert(l);
   }
   // Constraints are no longer up-to-date.
@@ -1730,7 +1730,7 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
 	result_gr.add_congruences(result_cs);
 	x.swap(result_gr);
 	assert(x.OK());
-	return (!empty_intersection);
+	return !empty_intersection;
       }
     }
       // Cannot exit from here.
@@ -1980,7 +1980,8 @@ generalized_affine_image(const Variable var,
   assert(OK());
 }
 
-void PPL::Grid::
+void
+PPL::Grid::
 generalized_affine_preimage(const Variable var,
 			    const Relation_Symbol relsym,
 			    const Linear_Expression& expr,
@@ -2206,7 +2207,8 @@ generalized_affine_image(const Linear_Expression& lhs,
   assert(OK());
 }
 
-void PPL::Grid::
+void
+PPL::Grid::
 generalized_affine_preimage(const Linear_Expression& lhs,
 			    const Relation_Symbol relsym,
 			    const Linear_Expression& rhs,
@@ -2636,6 +2638,158 @@ PPL::Grid::external_memory_in_bytes() const {
     con_sys.external_memory_in_bytes()
     + gen_sys.external_memory_in_bytes();
 }
+
+void
+PPL::Grid::wrap_assign(const Variables_Set& vars,
+                       Bounded_Integer_Type_Width w,
+                       Bounded_Integer_Type_Signedness s,
+                       Bounded_Integer_Type_Overflow o,
+                       const Constraint_System* pcs,
+                       unsigned,
+                       bool) {
+
+  // Dimension-compatibility check of `*pcs', if any.
+  if (pcs != 0) {
+   const dimension_type pcs_space_dim  = pcs->space_dimension();
+   if (pcs->space_dimension() != space_dim)
+     throw_dimension_incompatible("wrap_assign(vs, ...)", pcs_space_dim);
+  }
+
+  // Wrapping no variable is a no-op.
+  if (vars.empty())
+    return;
+
+  // Dimension-compatibility check of `vars'.
+  const dimension_type min_space_dim = vars.space_dimension();
+  if (space_dim < min_space_dim)
+    throw_dimension_incompatible("wrap_assign(vs, ...)", min_space_dim);
+
+  // Wrapping an empty polyhedron is a no-op.
+  if (marked_empty())
+    return;
+  if (!generators_are_minimized() && !minimize())
+    // Minimizing found `this' empty.
+    return;
+
+  // Set the wrap frequency for variables of width `w'.
+  // This is independent of the signedness `s'.
+  PPL_DIRTY_TEMP_COEFFICIENT(wrap_frequency);
+  mul_2exp_assign(wrap_frequency, Coefficient_one(), w);
+  // Set `min_value' and `max_value' to the minimum and maximum values
+  // a variable of width `w' and signedness `s' can take.
+  PPL_DIRTY_TEMP_COEFFICIENT(min_value);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_value);
+  if (s == UNSIGNED) {
+    min_value = 0;
+    mul_2exp_assign(max_value, Coefficient_one(), w);
+    --max_value;
+  }
+  else {
+    assert(s == SIGNED_2_COMPLEMENT);
+    mul_2exp_assign(max_value, Coefficient_one(), w-1);
+    neg_assign(min_value, max_value);
+    --max_value;
+  }
+
+  // Generators are up-to-date and minimized.
+  const Grid gr = *this;
+
+  // Overflow is impossible or wraps.
+  if (o == OVERFLOW_IMPOSSIBLE || o == OVERFLOW_WRAPS) {
+    PPL_DIRTY_TEMP_COEFFICIENT(f_n);
+    PPL_DIRTY_TEMP_COEFFICIENT(f_d);
+    PPL_DIRTY_TEMP_COEFFICIENT(v_n);
+    PPL_DIRTY_TEMP_COEFFICIENT(v_d);
+    PPL_DIRTY_TEMP_COEFFICIENT(f_d_wrap_frequency);
+    for (Variables_Set::const_iterator i = vars.begin(),
+           vars_end = vars.end(); i != vars.end(); ++i) {
+      const Variable x = Variable(*i);
+      if (!gr.frequency_no_check(x, f_n, f_d, v_n, v_d))
+        continue;
+      if (f_n == 0) {
+
+        // `x' is a constant in `gr'.
+        if ((v_n > max_value * v_d) || (v_n < min_value * v_d)) {
+          // The value is outside the range of the bounded integer type.
+          if (o == OVERFLOW_IMPOSSIBLE) {
+            // Then `x' has no possible value and hence `gr' is set empty.
+            set_empty();
+            return;
+          }
+          assert(o == OVERFLOW_WRAPS);
+          // The value v_n for `x' is wrapped modulo the 'wrap_frequency'.
+          Coefficient& wrap_modulus = f_n;
+          wrap_modulus = v_d * wrap_frequency;
+          v_n %= wrap_modulus;
+          // `v_n' is the value closest to 0 and may be negative.
+          if (s == UNSIGNED && v_n < 0)
+            v_n += wrap_modulus;
+          unconstrain(x);
+          add_constraint(v_d * x == v_n);
+        }
+        continue;
+      }
+
+      // `x' is not a constant in `gr'.
+      assert(f_n != 0);
+      Coefficient& wrap_modulus = f_n;
+      f_d_wrap_frequency = f_d * wrap_frequency;
+      if (o == OVERFLOW_WRAPS && f_n != f_d * wrap_frequency)
+        // We know that `x' is not a constant, so, if overflow wraps,
+        // `x' may wrap to a value modulo the `wrap_frequency'.
+        add_grid_generator(parameter(wrap_frequency * x));
+      else if ((o == OVERFLOW_IMPOSSIBLE && 2*f_n >= f_d_wrap_frequency)
+               || (f_n == f_d_wrap_frequency)) {
+        // In these cases, `x' can only take a unique (ie constant)
+        // value.
+        if (s == UNSIGNED && v_n < 0) {
+          // `v_n' is the value closest to 0 and may be negative.
+          v_n *= f_d;
+          add_mul_assign(v_n, f_n, v_d);
+          v_d *= f_d;
+        }
+        add_constraint(v_d * x == v_n);
+      }
+      else
+        // If overflow is impossible but the grid frequency is less than
+        // half the wrap frequency, then there is more than one possible
+        // value for `x' in the range of the bounded integer type,
+        // so the grid is unchanged.
+        assert(o == OVERFLOW_IMPOSSIBLE && 2*f_n < f_d_wrap_frequency);
+    }
+    return;
+  }
+
+  assert(o == OVERFLOW_UNDEFINED);
+  // If overflow is undefined, then all we know is that the variable
+  // may take any integer within the range of the bounded integer type.
+  const Grid_Generator& point = gen_sys[0];
+  const Coefficient& div = point.divisor();
+  max_value *= div;
+  min_value *= div;
+  for (Variables_Set::const_iterator i = vars.begin(),
+         vars_end = vars.end(); i != vars.end(); ++i) {
+    const Variable x = Variable(*i);
+    if (!gr.bounds_no_check(x)) {
+      // `x' is not a constant in `gr'.
+      // We know that `x' is not a constant, so `x' may wrap to any
+      // value `x + z' where z is an integer.
+      add_grid_generator(parameter(x));
+    }
+    else {
+      // `x' is a constant `v' in `gr'.
+      const Coefficient& coeff_x = point.coefficient(x);
+      // If the value `v' for `x' is not within the range for the
+      // bounded integer type, then `x' may wrap to any value `v + z'
+      // where `z' is an integer; otherwise `x' is unchanged.
+      if (coeff_x > max_value || coeff_x < min_value) {
+        add_grid_generator(parameter(x));
+      }
+    }
+  }
+  return;
+}
+
 
 /*! \relates Parma_Polyhedra_Library::Grid */
 std::ostream&

@@ -61,7 +61,7 @@ test01() {
 
   print_generators(computed_result, "*** ph1.upper_bound_assign(ph2) ***");
 
-  return (computed_result == known_result);
+  return computed_result == known_result;
 }
 
 bool

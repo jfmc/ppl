@@ -93,6 +93,23 @@ notify_error(enum ppl_enum_error_code code, const char* description) {
     user_error_handler(code, description);
 }
 
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+
+Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
+
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+
+void
+reset_timeout() {
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+  if (p_timeout_object) {
+    delete p_timeout_object;
+    p_timeout_object = 0;
+    abandon_expensive_computations = 0;
+  }
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+}
+
 } // namespace C
 
 } // namespace Interfaces
@@ -185,6 +202,36 @@ ppl_finalize(void) try {
 CATCH_ALL
 
 int
+ppl_set_timeout(unsigned time) try {
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  const char* what = "PPL C interface error:\n"
+    "ppl_set_timeout: the PPL Watchdog library is not enabled.";
+  throw std::runtime_error(what);
+#else
+  // In case a timeout was already set.
+  reset_timeout();
+  static timeout_exception e;
+  using Parma_Watchdog_Library::Watchdog;
+  p_timeout_object = new Watchdog(time, abandon_expensive_computations, e);
+  return 0;
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+}
+CATCH_ALL
+
+int
+ppl_reset_timeout(void) try {
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  const char* what = "PPL C interface error:\n"
+    "ppl_reset_timeout: the PPL Watchdog library is not enabled.";
+  throw std::runtime_error(what);
+#else
+  reset_timeout();
+  return 0;
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+}
+CATCH_ALL
+
+int
 ppl_set_rounding_for_PPL(void) try {
   set_rounding_for_PPL();
   return 0;
@@ -194,6 +241,20 @@ CATCH_ALL
 int
 ppl_restore_pre_PPL_rounding(void) try {
   restore_pre_PPL_rounding();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_irrational_precision(unsigned* p) try {
+  *p = irrational_precision();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_set_irrational_precision(unsigned p) try {
+  set_irrational_precision(p);
   return 0;
 }
 CATCH_ALL
@@ -1845,10 +1906,10 @@ ppl_MIP_Problem_add_to_integer_space_dimensions(ppl_MIP_Problem_t mip,
 					        ppl_dimension_type ds[],
 					        size_t n) try {
   MIP_Problem& mmip = *to_nonconst(mip);
-  Variables_Set to_be_set;
+  Variables_Set vars;
   for (ppl_dimension_type i = n; i-- > 0; )
-    to_be_set.insert(ds[i]);
-  mmip.add_to_integer_space_dimensions(to_be_set);
+    vars.insert(ds[i]);
+  mmip.add_to_integer_space_dimensions(vars);
   return 0;
 }
 CATCH_ALL

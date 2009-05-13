@@ -380,12 +380,12 @@ namespace Checked {
 #define PPL_SPECIALIZE_IDIV(func, To, From1, From2)                     \
   PPL_SPECIALIZE_FUN3_0_1(idiv, func, Result, nonconst, To,             \
                           const, From1, const, From2, Rounding_Dir)
-#define PPL_SPECIALIZE_MUL2EXP(func, To, From)                          \
-  PPL_SPECIALIZE_FUN2_0_2(mul2exp, func, Result, nonconst, To,          \
-                          const, From, int, Rounding_Dir)
-#define PPL_SPECIALIZE_DIV2EXP(func, To, From)                          \
-  PPL_SPECIALIZE_FUN2_0_2(div2exp, func, Result, nonconst, To,          \
-                          const, From, int, Rounding_Dir)
+#define PPL_SPECIALIZE_MUL_2EXP(func, To, From)                         \
+  PPL_SPECIALIZE_FUN2_0_2(mul_2exp, func, Result, nonconst, To,         \
+                          const, From, unsigned int, Rounding_Dir)
+#define PPL_SPECIALIZE_DIV_2EXP(func, To, From)                         \
+  PPL_SPECIALIZE_FUN2_0_2(div_2exp, func, Result, nonconst, To,         \
+                          const, From, unsigned int, Rounding_Dir)
 #define PPL_SPECIALIZE_ADD_MUL(func, To, From1, From2)                  \
   PPL_SPECIALIZE_FUN3_0_1(add_mul, func, Result, nonconst, To,          \
                           const, From1, const, From2, Rounding_Dir)
@@ -465,10 +465,12 @@ PPL_DECLARE_FUN3_0_1(rem,
 PPL_DECLARE_FUN3_0_1(idiv,
                      Result, nonconst, To,
                      const, From1, const, From2, Rounding_Dir)
-PPL_DECLARE_FUN2_0_2(mul2exp,
-                     Result, nonconst, To, const, From, int, Rounding_Dir)
-PPL_DECLARE_FUN2_0_2(div2exp,
-                     Result, nonconst, To, const, From, int, Rounding_Dir)
+PPL_DECLARE_FUN2_0_2(mul_2exp,
+                     Result, nonconst, To,
+                     const, From, unsigned int, Rounding_Dir)
+PPL_DECLARE_FUN2_0_2(div_2exp,
+                     Result, nonconst, To,
+                     const, From, unsigned int, Rounding_Dir)
 PPL_DECLARE_FUN3_0_1(add_mul,
                      Result, nonconst, To,
                      const, From1, const, From2, Rounding_Dir)
@@ -532,10 +534,9 @@ struct Is_Special<Plus_Infinity> : public True {};
 template <>
 struct Is_Special<Not_A_Number> : public True {};
 
-
-#define MINUS_INFINITY Minus_Infinity()
-#define PLUS_INFINITY Plus_Infinity()
-#define NOT_A_NUMBER Not_A_Number()
+extern Minus_Infinity MINUS_INFINITY;
+extern Plus_Infinity PLUS_INFINITY;
+extern Not_A_Number NOT_A_NUMBER;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */

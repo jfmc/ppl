@@ -260,7 +260,7 @@ public:
 				   Coefficient_traits::const_reference d
 				   = Coefficient_one());
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Grid_Generator(const Grid_Generator& g);
 
   //! Destructor.

@@ -183,7 +183,7 @@ m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
     public native void
-      unconstrain_space_dimensions(Variables_Set to_be_unconstrained);
+      unconstrain_space_dimensions(Variables_Set vars);
 
 ')
 
@@ -421,7 +421,7 @@ m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void remove_space_dimensions(Variables_Set to_be_removed);
+    public native void remove_space_dimensions(Variables_Set vars);
 
 ')
 
@@ -443,8 +443,8 @@ m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void fold_space_dimensions(Variables_Set to_be_folded,
-					     Variable var);
+    public native void fold_space_dimensions(Variables_Set vars,
+					     Variable dest);
 
 ')
 

@@ -245,7 +245,7 @@ PPL::Constraint_System::insert(const Constraint& c) {
       // Here `*this' is NNC and `c' is necessarily closed.
       // Copying the constraint adding the epsilon coefficient
       // and the missing space dimensions, if any.
-      // FIXME: provide a resizing copy-constructor taking
+      // FIXME: provide a resizing copy constructor taking
       // topology and the space dimension.
       const dimension_type new_size = 2 + std::max(c.space_dimension(),
 						   space_dimension());

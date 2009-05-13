@@ -80,7 +80,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A tag class.
   /*! \ingroup PPL_CXX_interface
-    Tag class to differentiate the Linear_System copy-constructor that
+    Tag class to differentiate the Linear_System copy constructor that
     copies pending rows as pending from the one that transforms
     pending rows into non-pending ones.
   */
@@ -88,10 +88,10 @@ public:
   struct With_Pending {
   };
 
-  //! Copy-constructor: pending rows are transformed into non-pending ones.
+  //! Copy constructor: pending rows are transformed into non-pending ones.
   Linear_System(const Linear_System& y);
 
-  //! Full copy-constructor: pending rows are copied as pending.
+  //! Full copy constructor: pending rows are copied as pending.
   Linear_System(const Linear_System& y, With_Pending);
 
   //! Assignment operator: pending rows are transformed into non-pending ones.
@@ -451,7 +451,7 @@ public:
   //! Constructor.
   With_Bit_Matrix_iterator(Iter1 iter1, Iter2 iter2);
 
-  //! Copy-constructor.
+  //! Copy constructor.
   With_Bit_Matrix_iterator(const With_Bit_Matrix_iterator& y);
 
   //! Destructor.

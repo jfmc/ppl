@@ -143,6 +143,12 @@ val ppl_set_rounding_for_PPL:
 val ppl_restore_pre_PPL_rounding:
   unit -> unit
 
+val ppl_irrational_precision:
+  unit -> int
+
+val ppl_set_irrational_precision:
+  int -> unit
+
 val ppl_set_timeout:
   int -> unit
 

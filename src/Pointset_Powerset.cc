@@ -37,12 +37,12 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
   y.omega_reduce();
   Sequence new_sequence = x.sequence;
   for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
-    const NNC_Polyhedron& py = yi->element();
+    const NNC_Polyhedron& py = yi->pointset();
     Sequence tmp_sequence;
     for (Sequence_const_iterator nsi = new_sequence.begin(),
 	   ns_end = new_sequence.end(); nsi != ns_end; ++nsi) {
       std::pair<NNC_Polyhedron, Pointset_Powerset<NNC_Polyhedron> > partition
-	= linear_partition(py, nsi->element());
+	= linear_partition(py, nsi->pointset());
       const Pointset_Powerset<NNC_Polyhedron>& residues = partition.second;
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
@@ -60,7 +60,7 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
 ::geometrically_covers(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi)
-    if (!check_containment(yi->element(), x))
+    if (!check_containment(yi->pointset(), x))
       return false;
   return true;
 }
@@ -75,10 +75,10 @@ PPL::check_containment(const NNC_Polyhedron& ph,
   tmp.add_disjunct(ph);
   for (Pointset_Powerset<NNC_Polyhedron>::const_iterator
 	 i = ps.begin(), ps_end = ps.end(); i != ps_end; ++i) {
-    const NNC_Polyhedron& pi = i->element();
+    const NNC_Polyhedron& pi = i->pointset();
     for (Pointset_Powerset<NNC_Polyhedron>::iterator
 	   j = tmp.begin(); j != tmp.end(); ) {
-      const NNC_Polyhedron& pj = j->element();
+      const NNC_Polyhedron& pj = j->pointset();
       if (pi.contains(pj))
 	j = tmp.drop_disjunct(j);
       else
@@ -91,7 +91,7 @@ PPL::check_containment(const NNC_Polyhedron& ph,
 						      EMPTY);
       for (Pointset_Powerset<NNC_Polyhedron>::iterator
 	     j = tmp.begin(); j != tmp.end(); ) {
-	const NNC_Polyhedron& pj = j->element();
+	const NNC_Polyhedron& pj = j->pointset();
 	if (pj.is_disjoint_from(pi))
 	  ++j;
 	else {
@@ -208,10 +208,10 @@ PPL::check_containment(const Grid& ph,
   tmp.add_disjunct(ph);
   for (Pointset_Powerset<Grid>::const_iterator
 	 i = ps.begin(), ps_end = ps.end(); i != ps_end; ++i) {
-    const Grid& pi = i->element();
+    const Grid& pi = i->pointset();
     for (Pointset_Powerset<Grid>::iterator
 	   j = tmp.begin(); j != tmp.end(); ) {
-      const Grid& pj = j->element();
+      const Grid& pj = j->pointset();
       if (pi.contains(pj))
 	j = tmp.drop_disjunct(j);
       else
@@ -224,7 +224,7 @@ PPL::check_containment(const Grid& ph,
 						      EMPTY);
       for (Pointset_Powerset<Grid>::iterator
 	     j = tmp.begin(); j != tmp.end(); ) {
-	const Grid& pj = j->element();
+	const Grid& pj = j->pointset();
 	if (pj.is_disjoint_from(pi))
 	  ++j;
 	else {
@@ -261,13 +261,13 @@ PPL::Pointset_Powerset<PPL::Grid>
   y.omega_reduce();
   Sequence new_sequence = x.sequence;
   for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
-    const Grid& py = yi->element();
+    const Grid& py = yi->pointset();
     Sequence tmp_sequence;
     for (Sequence_const_iterator nsi = new_sequence.begin(),
 	   ns_end = new_sequence.end(); nsi != ns_end; ++nsi) {
       bool finite_partition;
       std::pair<Grid, Pointset_Powerset<Grid> > partition
-	= approximate_partition(py, nsi->element(), finite_partition);
+	= approximate_partition(py, nsi->pointset(), finite_partition);
       const Pointset_Powerset<Grid>& residues = partition.second;
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
@@ -285,7 +285,7 @@ PPL::Pointset_Powerset<PPL::Grid>
 ::geometrically_covers(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi)
-    if (!check_containment(yi->element(), x))
+    if (!check_containment(yi->pointset(), x))
       return false;
   return true;
 }
@@ -300,7 +300,7 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
   for (Pointset_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(Determinate<NNC_Polyhedron>
-			 (NNC_Polyhedron(i->element())));
+			 (NNC_Polyhedron(i->pointset())));
   x.reduced = y.reduced;
   assert(x.OK());
 }
@@ -315,7 +315,7 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
   for (Pointset_Powerset<Grid>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(Determinate<NNC_Polyhedron>
-			 (NNC_Polyhedron(i->element())));
+			 (NNC_Polyhedron(i->pointset())));
   x.reduced = false;
   assert(x.OK());
 }
@@ -330,7 +330,7 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron>
   for (Pointset_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(Determinate<C_Polyhedron>
-			 (C_Polyhedron(i->element())));
+			 (C_Polyhedron(i->pointset())));
 
   // Note: this might be non-reduced even when `y' is known to be
   // omega-reduced, because the constructor of C_Polyhedron, by

@@ -22,8 +22,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 #include "Polyhedron.defs.hh"
+#include "C_Polyhedron.defs.hh"
+#include "NNC_Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include "MIP_Problem.defs.hh"
+#include "wrap_assign.hh"
 #include <cstdlib>
 #include <cassert>
 #include <iostream>
@@ -461,9 +464,9 @@ PPL::Polyhedron::is_universe() const {
   else if (!constraints_are_minimized())
     minimize();
   if (is_necessarily_closed())
-    return (con_sys.num_rows() == 1
-	    && con_sys[0].is_inequality()
-	    && con_sys[0].is_tautological());
+    return con_sys.num_rows() == 1
+      && con_sys[0].is_inequality()
+      && con_sys[0].is_tautological();
   else {
     // NNC polyhedron.
     if (con_sys.num_rows() != 2
@@ -1856,15 +1859,15 @@ PPL::Polyhedron::unconstrain(const Variable var) {
 }
 
 void
-PPL::Polyhedron::unconstrain(const Variables_Set& to_be_unconstrained) {
+PPL::Polyhedron::unconstrain(const Variables_Set& vars) {
   // The cylindrification wrt no dimensions is a no-op.
   // This case also captures the only legal cylindrification
   // of a polyhedron in a 0-dim space.
-  if (to_be_unconstrained.empty())
+  if (vars.empty())
     return;
 
   // Dimension-compatibility check.
-  const dimension_type min_space_dim = to_be_unconstrained.space_dimension();
+  const dimension_type min_space_dim = vars.space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("unconstrain(vs)", min_space_dim);
 
@@ -1878,16 +1881,16 @@ PPL::Polyhedron::unconstrain(const Variables_Set& to_be_unconstrained) {
   assert(generators_are_up_to_date());
   // Since `gen_sys' is not empty, the topology and space dimension
   // of the inserted generators are automatically adjusted.
-  Variables_Set::const_iterator tbu = to_be_unconstrained.begin();
-  Variables_Set::const_iterator tbu_end = to_be_unconstrained.end();
+  Variables_Set::const_iterator vsi = vars.begin();
+  Variables_Set::const_iterator vsi_end = vars.end();
   if (can_have_something_pending()) {
-    for ( ; tbu != tbu_end; ++tbu)
-      gen_sys.insert_pending(Generator::line(Variable(*tbu)));
+    for ( ; vsi != vsi_end; ++vsi)
+      gen_sys.insert_pending(Generator::line(Variable(*vsi)));
     set_generators_pending();
   }
   else {
-    for ( ; tbu != tbu_end; ++tbu)
-      gen_sys.insert(Generator::line(Variable(*tbu)));
+    for ( ; vsi != vsi_end; ++vsi)
+      gen_sys.insert(Generator::line(Variable(*vsi)));
     // After adding the new generators,
     // constraints are no longer up-to-date.
     clear_generators_minimized();
@@ -3664,6 +3667,24 @@ PPL::Polyhedron::external_memory_in_bytes() const {
     + gen_sys.external_memory_in_bytes()
     + sat_c.external_memory_in_bytes()
     + sat_g.external_memory_in_bytes();
+}
+
+void
+PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
+                             Bounded_Integer_Type_Width w,
+                             Bounded_Integer_Type_Signedness s,
+                             Bounded_Integer_Type_Overflow o,
+                             const Constraint_System* pcs,
+                             unsigned complexity_threshold,
+                             bool wrap_individually) {
+  if (is_necessarily_closed())
+    Implementation::wrap_assign(static_cast<C_Polyhedron&>(*this),
+                                vars, w, s, o, pcs,
+                                complexity_threshold, wrap_individually);
+  else
+    Implementation::wrap_assign(static_cast<NNC_Polyhedron&>(*this),
+                                vars, w, s, o, pcs,
+                                complexity_threshold, wrap_individually);
 }
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron */

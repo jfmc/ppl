@@ -413,21 +413,21 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 }
 
 void
-PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
+PPL::Polyhedron::remove_space_dimensions(const Variables_Set& vars) {
   // The removal of no dimensions from any polyhedron is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a polyhedron in a 0-dim space.
-  if (to_be_removed.empty()) {
+  if (vars.empty()) {
     assert(OK());
     return;
   }
 
   // Dimension-compatibility check.
-  const dimension_type min_space_dim = to_be_removed.space_dimension();
+  const dimension_type min_space_dim = vars.space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
-  const dimension_type new_space_dim = space_dim - to_be_removed.size();
+  const dimension_type new_space_dim = space_dim - vars.size();
 
   // We need updated generators; note that keeping pending generators
   // is useless because the constraints will be dropped anyway.
@@ -453,14 +453,14 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
 
   // For each variable to be removed, we fill the corresponding column
   // by shifting left those columns that will not be removed.
-  Variables_Set::const_iterator tbr = to_be_removed.begin();
-  Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst_col = *tbr + 1;
+  Variables_Set::const_iterator vsi = vars.begin();
+  Variables_Set::const_iterator vsi_end = vars.end();
+  dimension_type dst_col = *vsi + 1;
   dimension_type src_col = dst_col + 1;
-  for (++tbr; tbr != tbr_end; ++tbr) {
-    const dimension_type tbr_col = *tbr + 1;
+  for (++vsi; vsi != vsi_end; ++vsi) {
+    const dimension_type vsi_col = *vsi + 1;
     // All columns in between are moved to the left.
-    while (src_col < tbr_col)
+    while (src_col < vsi_col)
       gen_sys.Matrix::swap_columns(dst_col++, src_col++);
     ++src_col;
   }
@@ -600,28 +600,28 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
 }
 
 void
-PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
-				       Variable var) {
+PPL::Polyhedron::fold_space_dimensions(const Variables_Set& vars,
+				       Variable dest) {
   // TODO: this implementation is _really_ an executable specification.
 
-  // `var' should be one of the dimensions of the polyhedron.
-  if (var.space_dimension() > space_dim)
-    throw_dimension_incompatible("fold_space_dimensions(tbf, v)", "v", var);
+  // `dest' should be one of the dimensions of the polyhedron.
+  if (dest.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(vs, v)", "v", dest);
 
   // The folding of no dimensions is a no-op.
-  if (to_be_folded.empty())
+  if (vars.empty())
     return;
 
-  // All variables in `to_be_folded' should be dimensions of the polyhedron.
-  if (to_be_folded.space_dimension() > space_dim)
-    throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
-				 "tbf.space_dimension()",
-				 to_be_folded.space_dimension());
+  // All variables in `vars' should be dimensions of the polyhedron.
+  if (vars.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(vs, v)",
+				 "vs.space_dimension()",
+				 vars.space_dimension());
 
-  // Moreover, `var.id()' should not occur in `to_be_folded'.
-  if (to_be_folded.find(var.id()) != to_be_folded.end())
-    throw_invalid_argument("fold_space_dimensions(tbf, v)",
-			   "v should not occur in tbf");
+  // Moreover, `dest.id()' should not occur in `vars'.
+  if (vars.find(dest.id()) != vars.end())
+    throw_invalid_argument("fold_space_dimensions(vs, v)",
+			   "v should not occur in vs");
 
   // All of the affine images we are going to compute are not invertible,
   // hence we will need to compute the generators of the polyehdron.
@@ -631,13 +631,13 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
   // Having generators, we now know if the polyhedron is empty:
   // in that case, folding is equivalent to just removing space dimensions.
   if (!marked_empty()) {
-    for (Variables_Set::const_iterator i = to_be_folded.begin(),
-           tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
+    for (Variables_Set::const_iterator i = vars.begin(),
+           vs_end = vars.end(); i != vs_end; ++i) {
       Polyhedron copy = *this;
-      copy.affine_image(var, Linear_Expression(Variable(*i)));
+      copy.affine_image(dest, Linear_Expression(Variable(*i)));
       poly_hull_assign(copy);
     }
   }
-  remove_space_dimensions(to_be_folded);
+  remove_space_dimensions(vars);
   assert(OK());
 }

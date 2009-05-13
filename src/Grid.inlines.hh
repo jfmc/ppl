@@ -232,12 +232,12 @@ Grid::hash_code() const {
 
 inline Constraint_System
 Grid::constraints() const {
-    return Constraint_System(congruences());;
+  return Constraint_System(congruences());;
 }
 
 inline Constraint_System
 Grid::minimized_constraints() const {
-    return Constraint_System(minimized_congruences());;
+  return Constraint_System(minimized_congruences());;
 }
 
 inline void
@@ -364,7 +364,6 @@ Grid::strictly_contains(const Grid& y) const {
 
 inline void
 Grid::topological_closure_assign() {
-  return;
 }
 
 } // namespace Parma_Polyhedra_Library

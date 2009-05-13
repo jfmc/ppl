@@ -17,10 +17,30 @@ by issuing a command like:
 
 $ java -classpath .:<PPL prefix>/<libdir>/ppl/ppl_java.jar My_Test
 
-Note that the source code in My_Test.java should take care of loading
-the PPL interface library, by calling `System.load' and passing the
-full path of the dynamic shared object. For instance, on a Linux machine
-and assuming <PPL prefix>=/usr/local/, the call will be something like:
+Note that the source code in My_Test.java should take care of:
 
-  System.load("/usr/local/lib/ppl/libppl_java.so");
+a) Load the PPL interface library, by calling `System.load' and
+   passing the full path of the dynamic shared object. For instance,
+   on a Linux machine and assuming <PPL prefix>=/usr/local/, the call
+   will be something like:
 
+    System.load("/usr/local/lib/ppl/libppl_java.so");
+
+b) Make sure that only the intended version(s) of the library has been
+   loaded, e.g., by calling static method
+
+    Parma_Polyhedra_Library.version();
+
+c) Starting from PPL version 0.11, before calling any other method from
+   other PPL package classes, initialize the Java interface by calling
+   the static method
+
+    Parma_Polyhedra_Library.initialize_library();
+
+   When done using the library, finalize it by calling the static method
+
+    Parma_Polyhedra_Library.finalize_library();
+
+   After finalization no other method of the library may be used (except
+   for those in class Parma_Polyhedra_Library), unless the library
+   is re-initialized by calling initialize_library().

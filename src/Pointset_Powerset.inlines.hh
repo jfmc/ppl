@@ -36,39 +36,39 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename PS>
+template <typename PSET>
 inline dimension_type
-Pointset_Powerset<PS>::space_dimension() const {
+Pointset_Powerset<PSET>::space_dimension() const {
   return space_dim;
 }
 
-template <typename PS>
+template <typename PSET>
 inline dimension_type
-Pointset_Powerset<PS>::max_space_dimension() {
-  return PS::max_space_dimension();
+Pointset_Powerset<PSET>::max_space_dimension() {
+  return PSET::max_space_dimension();
 }
 
-template <typename PS>
+template <typename PSET>
 inline
-Pointset_Powerset<PS>::Pointset_Powerset(dimension_type num_dimensions,
+Pointset_Powerset<PSET>::Pointset_Powerset(dimension_type num_dimensions,
 					 Degenerate_Element kind)
   : Base(), space_dim(num_dimensions) {
   Pointset_Powerset& x = *this;
   if (kind == UNIVERSE)
-    x.sequence.push_back(Determinate<PS>(PS(num_dimensions, kind)));
+    x.sequence.push_back(Determinate<PSET>(PSET(num_dimensions, kind)));
   assert(x.OK());
 }
 
-template <typename PS>
+template <typename PSET>
 inline
-Pointset_Powerset<PS>::Pointset_Powerset(const Pointset_Powerset& y,
+Pointset_Powerset<PSET>::Pointset_Powerset(const Pointset_Powerset& y,
                                          Complexity_Class)
   : Base(y), space_dim(y.space_dim) {
 }
 
-template <typename PS>
+template <typename PSET>
 inline
-Pointset_Powerset<PS>::Pointset_Powerset(const C_Polyhedron& ph,
+Pointset_Powerset<PSET>::Pointset_Powerset(const C_Polyhedron& ph,
                                          Complexity_Class complexity)
   : Base(), space_dim(ph.space_dimension()) {
   Pointset_Powerset& x = *this;
@@ -78,14 +78,14 @@ Pointset_Powerset<PS>::Pointset_Powerset(const C_Polyhedron& ph,
   }
   else
     x.reduced = false;
-  x.sequence.push_back(Determinate<PS>(PS(ph, complexity)));
+  x.sequence.push_back(Determinate<PSET>(PSET(ph, complexity)));
   x.reduced = false;
   assert(OK());
 }
 
-template <typename PS>
+template <typename PSET>
 inline
-Pointset_Powerset<PS>::Pointset_Powerset(const NNC_Polyhedron& ph,
+Pointset_Powerset<PSET>::Pointset_Powerset(const NNC_Polyhedron& ph,
                                          Complexity_Class complexity)
   : Base(), space_dim(ph.space_dimension()) {
   Pointset_Powerset& x = *this;
@@ -95,26 +95,26 @@ Pointset_Powerset<PS>::Pointset_Powerset(const NNC_Polyhedron& ph,
   }
   else
     x.reduced = false;
-  x.sequence.push_back(Determinate<PS>(PS(ph, complexity)));
+  x.sequence.push_back(Determinate<PSET>(PSET(ph, complexity)));
   assert(OK());
 }
 
-template <typename PS>
+template <typename PSET>
 inline
-Pointset_Powerset<PS>::Pointset_Powerset(const Grid& gr,
+Pointset_Powerset<PSET>::Pointset_Powerset(const Grid& gr,
                                          Complexity_Class)
   : Base(), space_dim(gr.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!gr.is_empty()) {
-    x.sequence.push_back(Determinate<PS>(PS(gr)));
+    x.sequence.push_back(Determinate<PSET>(PSET(gr)));
   }
   assert(OK());
 }
 
-template <typename PS>
+template <typename PSET>
 template <typename QH1, typename QH2, typename R>
 inline
-Pointset_Powerset<PS>
+Pointset_Powerset<PSET>
 ::Pointset_Powerset(const Partially_Reduced_Product<QH1, QH2, R>& prp,
                     Complexity_Class complexity)
   : Base(), space_dim(prp.space_dimension()) {
@@ -125,116 +125,118 @@ Pointset_Powerset<PS>
   }
   else
     x.reduced = false;
-  x.sequence.push_back(Determinate<PS>(PS(prp, complexity)));
+  x.sequence.push_back(Determinate<PSET>(PSET(prp, complexity)));
   x.reduced = false;
   assert(OK());
 }
 
-template <typename PS>
+template <typename PSET>
 template <typename Interval>
-Pointset_Powerset<PS>::Pointset_Powerset(const Box<Interval>& box,
+Pointset_Powerset<PSET>::Pointset_Powerset(const Box<Interval>& box,
                                          Complexity_Class)
   : Base(), space_dim(box.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!box.is_empty())
-    x.sequence.push_back(Determinate<PS>(PS(box)));
+    x.sequence.push_back(Determinate<PSET>(PSET(box)));
   assert(OK());
 }
 
-template <typename PS>
+template <typename PSET>
 template <typename T>
-Pointset_Powerset<PS>::Pointset_Powerset(const Octagonal_Shape<T>& os,
+Pointset_Powerset<PSET>::Pointset_Powerset(const Octagonal_Shape<T>& os,
                                          Complexity_Class)
   : Base(), space_dim(os.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!os.is_empty())
-    x.sequence.push_back(Determinate<PS>(PS(os)));
+    x.sequence.push_back(Determinate<PSET>(PSET(os)));
   assert(OK());
 }
 
-template <typename PS>
+template <typename PSET>
 template <typename T>
-Pointset_Powerset<PS>::Pointset_Powerset(const BD_Shape<T>& bds,
+Pointset_Powerset<PSET>::Pointset_Powerset(const BD_Shape<T>& bds,
                                          Complexity_Class)
   : Base(), space_dim(bds.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!bds.is_empty())
-    x.sequence.push_back(Determinate<PS>(PS(bds)));
+    x.sequence.push_back(Determinate<PSET>(PSET(bds)));
   assert(OK());
 }
 
-template <typename PS>
+template <typename PSET>
 inline
-Pointset_Powerset<PS>::Pointset_Powerset(const Constraint_System& cs)
-  : Base(Determinate<PS>(cs)), space_dim(cs.space_dimension()) {
+Pointset_Powerset<PSET>::Pointset_Powerset(const Constraint_System& cs)
+  : Base(Determinate<PSET>(cs)), space_dim(cs.space_dimension()) {
   assert(OK());
 }
 
-template <typename PS>
+template <typename PSET>
 inline
-Pointset_Powerset<PS>::Pointset_Powerset(const Congruence_System& cgs)
-  : Base(Determinate<PS>(cgs)), space_dim(cgs.space_dimension()) {
+Pointset_Powerset<PSET>::Pointset_Powerset(const Congruence_System& cgs)
+  : Base(Determinate<PSET>(cgs)), space_dim(cgs.space_dimension()) {
   assert(OK());
 }
 
-template <typename PS>
-inline Pointset_Powerset<PS>&
-Pointset_Powerset<PS>::operator=(const Pointset_Powerset& y) {
+template <typename PSET>
+inline Pointset_Powerset<PSET>&
+Pointset_Powerset<PSET>::operator=(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
   x.Base::operator=(y);
   x.space_dim = y.space_dim;
   return x;
 }
 
-template <typename PS>
+template <typename PSET>
 inline void
-Pointset_Powerset<PS>::swap(Pointset_Powerset& y) {
+Pointset_Powerset<PSET>::swap(Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
   x.Base::swap(y);
   std::swap(x.space_dim, y.space_dim);
 }
 
-template <typename PS>
+template <typename PSET>
 template <typename QH>
-inline Pointset_Powerset<PS>&
-Pointset_Powerset<PS>::operator=(const Pointset_Powerset<QH>& y) {
+inline Pointset_Powerset<PSET>&
+Pointset_Powerset<PSET>::operator=(const Pointset_Powerset<QH>& y) {
   Pointset_Powerset& x = *this;
-  Pointset_Powerset<PS> pps(y);
+  Pointset_Powerset<PSET> pps(y);
   x.swap(pps);
   return x;
 }
 
-template <typename PS>
+template <typename PSET>
 inline void
-Pointset_Powerset<PS>::intersection_assign(const Pointset_Powerset& y) {
+Pointset_Powerset<PSET>::intersection_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
   x.pairwise_apply_assign
-    (y, CS::lift_op_assign(std::mem_fun_ref(&PS::intersection_assign)));
+    (y,
+     Det_PSET::lift_op_assign(std::mem_fun_ref(&PSET::intersection_assign)));
 }
 
-template <typename PS>
+template <typename PSET>
 inline void
-Pointset_Powerset<PS>::time_elapse_assign(const Pointset_Powerset& y) {
+Pointset_Powerset<PSET>::time_elapse_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
   x.pairwise_apply_assign
-    (y, CS::lift_op_assign(std::mem_fun_ref(&PS::time_elapse_assign)));
+    (y,
+     Det_PSET::lift_op_assign(std::mem_fun_ref(&PSET::time_elapse_assign)));
 }
 
-template <typename PS>
+template <typename PSET>
 inline bool
-Pointset_Powerset<PS>
+Pointset_Powerset<PSET>
 ::geometrically_covers(const Pointset_Powerset& y) const {
-  // This code is only used when PS is an abstraction of NNC_Polyhedron.
+  // This code is only used when PSET is an abstraction of NNC_Polyhedron.
   const Pointset_Powerset<NNC_Polyhedron> xx(*this);
   const Pointset_Powerset<NNC_Polyhedron> yy(y);
   return xx.geometrically_covers(yy);
 }
 
-template <typename PS>
+template <typename PSET>
 inline bool
-Pointset_Powerset<PS>
+Pointset_Powerset<PSET>
 ::geometrically_equals(const Pointset_Powerset& y) const {
-  // This code is only used when PS is an abstraction of NNC_Polyhedron.
+  // This code is only used when PSET is an abstraction of NNC_Polyhedron.
   const Pointset_Powerset<NNC_Polyhedron> xx(*this);
   const Pointset_Powerset<NNC_Polyhedron> yy(y);
   return xx.geometrically_covers(yy) && yy.geometrically_covers(xx);
@@ -256,29 +258,29 @@ Pointset_Powerset<NNC_Polyhedron>
   return x.geometrically_covers(y) && y.geometrically_covers(x);
 }
 
-template <typename PS>
+template <typename PSET>
 inline memory_size_type
-Pointset_Powerset<PS>::external_memory_in_bytes() const {
+Pointset_Powerset<PSET>::external_memory_in_bytes() const {
   return Base::external_memory_in_bytes();
 }
 
-template <typename PS>
+template <typename PSET>
 inline memory_size_type
-Pointset_Powerset<PS>::total_memory_in_bytes() const {
+Pointset_Powerset<PSET>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-template <typename PS>
+template <typename PSET>
 inline int32_t
-Pointset_Powerset<PS>::hash_code() const {
+Pointset_Powerset<PSET>::hash_code() const {
   return space_dimension() & 0x7fffffff;
 }
 
-template <typename PS>
+template <typename PSET>
 inline void
-Pointset_Powerset<PS>
+Pointset_Powerset<PSET>
 ::difference_assign(const Pointset_Powerset& y) {
-  // This code is only used when PS is an abstraction of NNC_Polyhedron.
+  // This code is only used when PSET is an abstraction of NNC_Polyhedron.
   Pointset_Powerset<NNC_Polyhedron> nnc_this(*this);
   Pointset_Powerset<NNC_Polyhedron> nnc_y(y);
   nnc_this.difference_assign(nnc_y);
@@ -286,10 +288,10 @@ Pointset_Powerset<PS>
 }
 
 /*! \relates Pointset_Powerset */
-template <typename PS>
+template <typename PSET>
 inline bool
-check_containment(const PS& ph, const Pointset_Powerset<PS>& ps) {
-  // This code is only used when PS is an abstraction of NNC_Polyhedron.
+check_containment(const PSET& ph, const Pointset_Powerset<PSET>& ps) {
+  // This code is only used when PSET is an abstraction of NNC_Polyhedron.
   const NNC_Polyhedron pph = NNC_Polyhedron(ph.constraints());
   const Pointset_Powerset<NNC_Polyhedron> pps(ps);
   return check_containment(pph, pps);
@@ -310,10 +312,10 @@ check_containment(const C_Polyhedron& ph,
 namespace std {
 
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
-template <typename PS>
+template <typename PSET>
 inline void
-swap(Parma_Polyhedra_Library::Pointset_Powerset<PS>& x,
-     Parma_Polyhedra_Library::Pointset_Powerset<PS>& y) {
+swap(Parma_Polyhedra_Library::Pointset_Powerset<PSET>& x,
+     Parma_Polyhedra_Library::Pointset_Powerset<PSET>& y) {
   x.swap(y);
 }
 

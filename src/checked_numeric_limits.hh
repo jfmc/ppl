@@ -44,25 +44,29 @@ template <typename Policy>						\
   static const bool has_quiet_NaN =  Policy::has_nan;                   \
                                                                         \
   static Type min() {							\
-    return Checked::Extended_Int<Policy, T>::min;                       \
+    Type v;								\
+    v.raw_value() = Checked::Extended_Int<Policy, T>::min;		\
+    return v;								\
   }									\
                                                                         \
   static Type max() {							\
-    return Checked::Extended_Int<Policy, T>::max;                       \
+    Type v;								\
+    v.raw_value() = Checked::Extended_Int<Policy, T>::max;		\
+    return v;								\
   }									\
 									\
   static Type infinity() {						\
-    return								\
-      Policy::has_infinity						\
-      ? PLUS_INFINITY                                                   \
-      : static_cast<Type>(0);						\
+    Type v;								\
+    Checked::assign_special<Policy>(v.raw_value(), VC_PLUS_INFINITY,	\
+			    ROUND_IGNORE);				\
+    return v;								\
   }									\
 									\
   static Type quiet_NaN() {						\
-    return								\
-      Policy::has_nan                                                   \
-      ? NOT_A_NUMBER                                                    \
-      : static_cast<Type>(0);						\
+    Type v;								\
+    Checked::assign_special<Policy>(v.raw_value(), VC_NAN,		\
+			    ROUND_IGNORE);				\
+    return v;								\
   }									\
 };
 
@@ -114,17 +118,16 @@ public:
   static const bool has_quiet_NaN =  Policy::has_nan;
 
   static Type infinity() {
-    return
-      Policy::has_infinity
-      ? PLUS_INFINITY
-      : static_cast<Type>(0);
+    Type v;
+    Checked::assign_special<Policy>(v.raw_value(), VC_PLUS_INFINITY,
+				    ROUND_IGNORE);
+    return v;
   }
 
   static Type quiet_NaN() {
-    return
-      Policy::has_nan
-      ? NOT_A_NUMBER
-      : static_cast<Type>(0);
+    Type v;
+    Checked::assign_special<Policy>(v.raw_value(), VC_NAN, ROUND_IGNORE);
+    return v;
   }
 };
 
@@ -143,17 +146,16 @@ public:
   static const bool has_quiet_NaN =  Policy::has_nan;
 
   static Type infinity() {
-    return
-      Policy::has_infinity
-      ? PLUS_INFINITY
-      : static_cast<Type>(0);
+    Type v;
+    Checked::assign_special<Policy>(v.raw_value(), VC_PLUS_INFINITY,
+				    ROUND_IGNORE);
+    return v;
   }
 
   static Type quiet_NaN() {
-    return
-      Policy::has_nan
-      ? NOT_A_NUMBER
-      : static_cast<Type>(0);
+    Type v;
+    Checked::assign_special<Policy>(v.raw_value(), VC_NAN, ROUND_IGNORE);
+    return v;
   }
 };
 

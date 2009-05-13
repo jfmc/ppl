@@ -277,7 +277,8 @@ public:
     case Interval_NS::Property::CARDINALITY_1_:
       return cache_singleton && get_bit(bitset, cardinality_1_bit);
     case Interval_NS::Property::CARDINALITY_IS_:
-      return (cache_empty || cache_singleton) && get_bit(bitset, cardinality_is_bit);
+      return (cache_empty || cache_singleton)
+        && get_bit(bitset, cardinality_is_bit);
     default:
       return false;
     }

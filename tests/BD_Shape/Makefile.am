@@ -110,6 +110,7 @@ unconstrain1 \
 universe1 \
 upperbound1 \
 upperboundifexact1 \
+wrap1 \
 writebdshape1
 
 # This will be overridden by the `run_tests' script.
@@ -282,6 +283,8 @@ universe1_SOURCES = universe1.cc
 upperbound1_SOURCES = upperbound1.cc
 
 upperboundifexact1_SOURCES = upperboundifexact1.cc
+
+wrap1_SOURCES = wrap1.cc
 
 writebdshape1_SOURCES = writebdshape1.cc
 

@@ -38,18 +38,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename PS>
+template <typename PSET>
 void
-Pointset_Ask_Tell<PS>::add_disjunct(const PS& ph) {
+Pointset_Ask_Tell<PSET>::add_disjunct(const PSET& ph) {
   Pointset_Ask_Tell& x = *this;
   if (x.space_dimension() != ph.space_dimension()) {
     std::ostringstream s;
-    s << "PPL::Pointset_Ask_Tell<PS>::add_disjunct(ph):\n"
+    s << "PPL::Pointset_Ask_Tell<PSET>::add_disjunct(ph):\n"
       << "this->space_dimension() == " << x.space_dimension() << ", "
       << "ph.space_dimension() == " << ph.space_dimension() << ".";
     throw std::invalid_argument(s.str());
   }
-  x.sequence.push_back(Determinate<PS>(ph));
+  x.sequence.push_back(Determinate<PSET>(ph));
   x.reduced = false;
   assert(x.OK());
 }
@@ -63,9 +63,9 @@ Pointset_Ask_Tell<NNC_Polyhedron>
   for (typename Pointset_Ask_Tell<QH>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i) {
     Determinate<NNC_Polyhedron>
-      nnc_ask(NNC_Polyhedron(i->ask().element().constraints()));
+      nnc_ask(NNC_Polyhedron(i->ask().pointset().constraints()));
     Determinate<NNC_Polyhedron>
-      nnc_tell(NNC_Polyhedron(i->tell().element().constraints()));
+      nnc_tell(NNC_Polyhedron(i->tell().pointset().constraints()));
     x.sequence.push_back(Pair(nnc_ask, nnc_tell));
   }
   // FIXME: the following is a bug!
@@ -82,9 +82,9 @@ Pointset_Ask_Tell<C_Polyhedron>
   for (typename Pointset_Ask_Tell<QH>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i) {
     Determinate<C_Polyhedron>
-      c_ask(C_Polyhedron(i->ask().element().constraints()));
+      c_ask(C_Polyhedron(i->ask().pointset().constraints()));
     Determinate<C_Polyhedron>
-      c_tell(C_Polyhedron(i->tell().element().constraints()));
+      c_tell(C_Polyhedron(i->tell().pointset().constraints()));
     x.sequence.push_back(Pair(c_ask, c_tell));
   }
 
@@ -95,14 +95,14 @@ Pointset_Ask_Tell<C_Polyhedron>
   assert(x.OK());
 }
 
-template <typename PS>
+template <typename PSET>
 void
-Pointset_Ask_Tell<PS>::concatenate_assign(const Pointset_Ask_Tell& y) {
+Pointset_Ask_Tell<PSET>::concatenate_assign(const Pointset_Ask_Tell& y) {
   Pointset_Ask_Tell& x = *this;
   for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
-    CS ask(PS(space_dim, UNIVERSE));
+    Det_PSET ask(PSET(space_dim, UNIVERSE));
     ask.concatenate_assign(yi->ask());
-    CS tell(PS(space_dim, UNIVERSE));
+    Det_PSET tell(PSET(space_dim, UNIVERSE));
     tell.concatenate_assign(yi->tell());
     x.sequence.push_back(Pair(ask, tell));
   }
@@ -112,85 +112,85 @@ Pointset_Ask_Tell<PS>::concatenate_assign(const Pointset_Ask_Tell& y) {
   assert(x.OK());
 }
 
-template <typename PS>
+template <typename PSET>
 void
-Pointset_Ask_Tell<PS>::add_constraint(const Constraint& c) {
+Pointset_Ask_Tell<PSET>::add_constraint(const Constraint& c) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().add_constraint(c);
+    si->pointset().add_constraint(c);
   x.reduced = false;
   assert(x.OK());
 }
 
-template <typename PS>
+template <typename PSET>
 void
-Pointset_Ask_Tell<PS>::add_constraints(const Constraint_System& cs) {
+Pointset_Ask_Tell<PSET>::add_constraints(const Constraint_System& cs) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().add_constraints(cs);
+    si->pointset().add_constraints(cs);
   x.reduced = false;
   assert(x.OK());
 }
 
-template <typename PS>
+template <typename PSET>
 void
-Pointset_Ask_Tell<PS>::unconstrain(const Variable var) {
+Pointset_Ask_Tell<PSET>::unconstrain(const Variable var) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().unconstrain(var);
+    si->pointset().unconstrain(var);
   x.reduced = false;
   assert(x.OK());
 }
 
-template <typename PS>
+template <typename PSET>
 void
-Pointset_Ask_Tell<PS>::unconstrain(const Variables_Set& to_be_unconstrained) {
+Pointset_Ask_Tell<PSET>::unconstrain(const Variables_Set& vars) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().unconstrain(to_be_unconstrained);
+    si->pointset().unconstrain(vars);
   x.reduced = false;
   assert(x.OK());
 }
 
-template <typename PS>
+template <typename PSET>
 void
-Pointset_Ask_Tell<PS>::add_space_dimensions_and_embed(dimension_type m) {
+Pointset_Ask_Tell<PSET>::add_space_dimensions_and_embed(dimension_type m) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().add_space_dimensions_and_embed(m);
+    si->pointset().add_space_dimensions_and_embed(m);
   x.space_dim += m;
   assert(x.OK());
 }
 
-template <typename PS>
+template <typename PSET>
 void
-Pointset_Ask_Tell<PS>::add_space_dimensions_and_project(dimension_type m) {
+Pointset_Ask_Tell<PSET>::add_space_dimensions_and_project(dimension_type m) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->element().add_space_dimensions_and_project(m);
+    si->pointset().add_space_dimensions_and_project(m);
   x.space_dim += m;
   assert(x.OK());
 }
 
-template <typename PS>
+template <typename PSET>
 void
-Pointset_Ask_Tell<PS>::
-remove_space_dimensions(const Variables_Set& to_be_removed) {
+Pointset_Ask_Tell<PSET>::
+remove_space_dimensions(const Variables_Set& vars) {
   Pointset_Ask_Tell& x = *this;
-  Variables_Set::size_type num_removed = to_be_removed.size();
+  Variables_Set::size_type num_removed = vars.size();
   if (num_removed > 0) {
     for (Sequence_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ) {
-      PS& ask = si->ask().element();
-      PS& tell = si->tell().element();
-      ask.remove_space_dimensions(to_be_removed);
-      tell.remove_space_dimensions(to_be_removed);
+      PSET& ask = si->ask().pointset();
+      PSET& tell = si->tell().pointset();
+      ask.remove_space_dimensions(vars);
+      tell.remove_space_dimensions(vars);
       if (tell.contains(ask)) {
 	si = x.sequence.erase(si);
 	s_end = x.sequence.end();
@@ -205,16 +205,16 @@ remove_space_dimensions(const Variables_Set& to_be_removed) {
   }
 }
 
-template <typename PS>
+template <typename PSET>
 void
-Pointset_Ask_Tell<PS>::remove_higher_space_dimensions(dimension_type
+Pointset_Ask_Tell<PSET>::remove_higher_space_dimensions(dimension_type
 						       new_dimension) {
   Pointset_Ask_Tell& x = *this;
   if (new_dimension < x.space_dim) {
     for (Sequence_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->ask().element().remove_higher_space_dimensions(new_dimension);
-      si->tell().element().remove_higher_space_dimensions(new_dimension);
+      si->ask().pointset().remove_higher_space_dimensions(new_dimension);
+      si->tell().pointset().remove_higher_space_dimensions(new_dimension);
       x.reduced = false;
     }
     x.space_dim = new_dimension;
@@ -222,10 +222,10 @@ Pointset_Ask_Tell<PS>::remove_higher_space_dimensions(dimension_type
   }
 }
 
-template <typename PS>
+template <typename PSET>
 template <typename Partial_Function>
 void
-Pointset_Ask_Tell<PS>::map_space_dimensions(const Partial_Function& pfunc) {
+Pointset_Ask_Tell<PSET>::map_space_dimensions(const Partial_Function& pfunc) {
   Pointset_Ask_Tell& x = *this;
   if (x.is_bottom()) {
     dimension_type n = 0;
@@ -240,29 +240,29 @@ Pointset_Ask_Tell<PS>::map_space_dimensions(const Partial_Function& pfunc) {
     Sequence_iterator s_begin = x.sequence.begin();
     for (Sequence_iterator si = s_begin,
 	   s_end = x.sequence.end(); si != s_end; ++si)
-      si->element().map_space_dimensions(pfunc);
-    x.space_dim = s_begin->element().space_dimension();
+      si->pointset().map_space_dimensions(pfunc);
+    x.space_dim = s_begin->pointset().space_dimension();
     x.reduced = false;
   }
   assert(x.OK());
 }
 
-template <typename PS>
+template <typename PSET>
 void
-Pointset_Ask_Tell<PS>::ascii_dump(std::ostream& s) const {
+Pointset_Ask_Tell<PSET>::ascii_dump(std::ostream& s) const {
   const Pointset_Ask_Tell& x = *this;
   s << "size " << x.size()
     << "\nspace_dim " << x.space_dim
     << "\n";
   for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi)
-    xi->element().ascii_dump(s);
+    xi->pointset().ascii_dump(s);
 }
 
-PPL_OUTPUT_TEMPLATE_DEFINITIONS(PS, Pointset_Ask_Tell<PS>)
+PPL_OUTPUT_TEMPLATE_DEFINITIONS(PSET, Pointset_Ask_Tell<PSET>)
 
-template <typename PS>
+template <typename PSET>
 bool
-Pointset_Ask_Tell<PS>::ascii_load(std::istream& s) {
+Pointset_Ask_Tell<PSET>::ascii_load(std::istream& s) {
   Pointset_Ask_Tell& x = *this;
   std::string str;
 
@@ -282,7 +282,7 @@ Pointset_Ask_Tell<PS>::ascii_load(std::istream& s) {
 
   Pointset_Ask_Tell new_x(x.space_dim, EMPTY);
   while (sz-- > 0) {
-    PS ph;
+    PSET ph;
     if (!ph.ascii_load(s))
       return false;
     new_x.add_disjunct(ph);
@@ -294,13 +294,13 @@ Pointset_Ask_Tell<PS>::ascii_load(std::istream& s) {
   return true;
 }
 
-template <typename PS>
+template <typename PSET>
 bool
-Pointset_Ask_Tell<PS>::OK() const {
+Pointset_Ask_Tell<PSET>::OK() const {
   const Pointset_Ask_Tell& x = *this;
   for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi) {
-    const PS& ask_i = xi->ask().element();
-    const PS& tell_i = xi->tell().element();
+    const PSET& ask_i = xi->ask().pointset();
+    const PSET& tell_i = xi->tell().pointset();
     if (ask_i.space_dimension() != x.space_dim
 	|| tell_i.space_dimension() != x.space_dim) {
 #ifndef NDEBUG

@@ -97,7 +97,7 @@ test03() {
   // NOTE: results depends on whether or not the rational constraints
   // on y have been approximated as integral constraints.
   typedef TOctagonal_Shape::coefficient_type_base T;
-  return (std::numeric_limits<T>::is_integer ? contains : !contains);
+  return std::numeric_limits<T>::is_integer ? contains : !contains;
 }
 
 bool

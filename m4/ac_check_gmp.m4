@@ -32,6 +32,19 @@ else
   fi
 fi
 
+AC_ARG_WITH(gmp-build,
+  AS_HELP_STRING([--with-gmp-build=DIR],
+                 [use a non-installed build of GMP in DIR]),
+  gmp_build_dir=$with_gmp_build
+  if test -z "$with_libgmp_prefix"
+  then
+    CPPFLAGS="$CPPFLAGS -I$gmp_build_dir -I$gmp_build_dir/tune"
+    LDFLAGS="$LDFLAGS -L$gmp_build_dir -L$gmp_build_dir/.libs"
+    LDFLAGS="$LDFLAGS -L$gmp_build_dir/tune"
+  else
+    AC_MSG_ERROR([cannot use --with-gmp-build and --with-libgmp* together])
+  fi)
+
 dnl Check how to link with libgmp.
 AC_LIB_LINKFLAGS([gmp])
 

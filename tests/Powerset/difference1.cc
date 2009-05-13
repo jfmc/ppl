@@ -120,8 +120,8 @@ test03() {
   for (Pointset_Powerset<C_Polyhedron>::const_iterator
 	 i = intersection.begin(), in_end = intersection.end();
        i != in_end; ++i)
-    if (i->element().affine_dimension() > 1) {
-      nout << "intersection contains " << i->element() << "," << endl
+    if (i->pointset().affine_dimension() > 1) {
+      nout << "intersection contains " << i->pointset() << "," << endl
 	   << "which is of affine dimension greater than 1" << endl;
       ok1 = false;
     }

@@ -414,8 +414,6 @@ BD_Shape<T>::is_discrete() const {
 template <typename T>
 inline void
 BD_Shape<T>::topological_closure_assign() {
-  // Nothing to be done.
-  return;
 }
 
 /*! \relates BD_Shape */

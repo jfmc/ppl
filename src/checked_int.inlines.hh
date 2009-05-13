@@ -561,9 +561,9 @@ assign_signed_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
     }
     if (from.fits_slong_p()) {
       signed long v = from.get_si();
-      if (v < C_Integer<To>::min)
+      if (v < Extended_Int<To_Policy, To>::min)
 	return set_neg_overflow_int<To_Policy>(to, dir);
-      if (v > C_Integer<To>::max)
+      if (v > Extended_Int<To_Policy, To>::max)
 	return set_pos_overflow_int<To_Policy>(to, dir);
       to = v;
       return V_EQ;
@@ -610,7 +610,7 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
     }
     if (from.fits_ulong_p()) {
       unsigned long v = from.get_ui();
-      if (v > C_Integer<To>::max)
+      if (v > Extended_Int<To_Policy, To>::max)
 	return set_pos_overflow_int<To_Policy>(to, dir);
       to = v;
       return V_EQ;
@@ -1086,10 +1086,9 @@ rem_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir) {
 
 template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
-div2exp_unsigned_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
-  if (exp < 0)
-    return mul2exp<To_Policy, From_Policy>(to, x, -exp, dir);
-  if (static_cast<unsigned int>(exp) >= sizeof(Type) * 8) {
+div_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
+                      Rounding_Dir dir) {
+  if (exp >= sizeof(Type) * 8) {
     to = 0;
     if (round_ignore(dir))
       return V_GE;
@@ -1108,10 +1107,9 @@ div2exp_unsigned_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
 
 template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
-div2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
-  if (exp < 0)
-    return mul2exp<To_Policy, From_Policy>(to, x, -exp, dir);
-  if (static_cast<unsigned int>(exp) >= sizeof(Type) * 8) {
+div_2exp_signed_int(Type& to, const Type x, unsigned int exp,
+                    Rounding_Dir dir) {
+  if (exp > sizeof(Type) * 8 - 1) {
   zero:
     to = 0;
     if (round_ignore(dir))
@@ -1123,7 +1121,7 @@ div2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
     else
       return V_EQ;
   }
-  if (static_cast<unsigned int>(exp) >= sizeof(Type) * 8 - 1) {
+  if (exp == sizeof(Type) * 8 - 1) {
     if (x == C_Integer<Type>::min) {
       to = -1;
       return V_EQ;
@@ -1154,14 +1152,13 @@ div2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
 
 template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
-mul2exp_unsigned_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
-  if (exp < 0)
-    return div2exp<To_Policy, From_Policy>(to, x, -exp, dir);
+mul_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
+                      Rounding_Dir dir) {
   if (!To_Policy::check_overflow) {
     to = x << exp;
     return V_EQ;
   }
-  if (static_cast<unsigned int>(exp) >= sizeof(Type) * 8) {
+  if (exp >= sizeof(Type) * 8) {
     if (x == 0) {
       to = 0;
       return V_EQ;
@@ -1179,14 +1176,13 @@ mul2exp_unsigned_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
 
 template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
-mul2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
-  if (exp < 0)
-    return div2exp<To_Policy, From_Policy>(to, x, -exp, dir);
+mul_2exp_signed_int(Type& to, const Type x, unsigned int exp,
+                    Rounding_Dir dir) {
   if (!To_Policy::check_overflow) {
     to = x << exp;
     return V_EQ;
   }
-  if (static_cast<unsigned int>(exp) >= sizeof(Type) * 8 - 1) {
+  if (exp >= sizeof(Type) * 8 - 1) {
     if (x < 0)
       return set_neg_overflow_int<To_Policy>(to, dir);
     else if (x > 0)
@@ -1424,27 +1420,27 @@ PPL_SPECIALIZE_REM(rem_unsigned_int, unsigned int, unsigned int, unsigned int)
 PPL_SPECIALIZE_REM(rem_unsigned_int, unsigned long, unsigned long, unsigned long)
 PPL_SPECIALIZE_REM(rem_unsigned_int, unsigned long long, unsigned long long, unsigned long long)
 
-PPL_SPECIALIZE_MUL2EXP(mul2exp_signed_int, signed char, signed char)
-PPL_SPECIALIZE_MUL2EXP(mul2exp_signed_int, signed short, signed short)
-PPL_SPECIALIZE_MUL2EXP(mul2exp_signed_int, signed int, signed int)
-PPL_SPECIALIZE_MUL2EXP(mul2exp_signed_int, signed long, signed long)
-PPL_SPECIALIZE_MUL2EXP(mul2exp_signed_int, signed long long, signed long long)
-PPL_SPECIALIZE_MUL2EXP(mul2exp_unsigned_int, unsigned char, unsigned char)
-PPL_SPECIALIZE_MUL2EXP(mul2exp_unsigned_int, unsigned short, unsigned short)
-PPL_SPECIALIZE_MUL2EXP(mul2exp_unsigned_int, unsigned int, unsigned int)
-PPL_SPECIALIZE_MUL2EXP(mul2exp_unsigned_int, unsigned long, unsigned long)
-PPL_SPECIALIZE_MUL2EXP(mul2exp_unsigned_int, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_MUL_2EXP(mul_2exp_signed_int, signed char, signed char)
+PPL_SPECIALIZE_MUL_2EXP(mul_2exp_signed_int, signed short, signed short)
+PPL_SPECIALIZE_MUL_2EXP(mul_2exp_signed_int, signed int, signed int)
+PPL_SPECIALIZE_MUL_2EXP(mul_2exp_signed_int, signed long, signed long)
+PPL_SPECIALIZE_MUL_2EXP(mul_2exp_signed_int, signed long long, signed long long)
+PPL_SPECIALIZE_MUL_2EXP(mul_2exp_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_MUL_2EXP(mul_2exp_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_MUL_2EXP(mul_2exp_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_MUL_2EXP(mul_2exp_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_MUL_2EXP(mul_2exp_unsigned_int, unsigned long long, unsigned long long)
 
-PPL_SPECIALIZE_DIV2EXP(div2exp_signed_int, signed char, signed char)
-PPL_SPECIALIZE_DIV2EXP(div2exp_signed_int, signed short, signed short)
-PPL_SPECIALIZE_DIV2EXP(div2exp_signed_int, signed int, signed int)
-PPL_SPECIALIZE_DIV2EXP(div2exp_signed_int, signed long, signed long)
-PPL_SPECIALIZE_DIV2EXP(div2exp_signed_int, signed long long, signed long long)
-PPL_SPECIALIZE_DIV2EXP(div2exp_unsigned_int, unsigned char, unsigned char)
-PPL_SPECIALIZE_DIV2EXP(div2exp_unsigned_int, unsigned short, unsigned short)
-PPL_SPECIALIZE_DIV2EXP(div2exp_unsigned_int, unsigned int, unsigned int)
-PPL_SPECIALIZE_DIV2EXP(div2exp_unsigned_int, unsigned long, unsigned long)
-PPL_SPECIALIZE_DIV2EXP(div2exp_unsigned_int, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_DIV_2EXP(div_2exp_signed_int, signed char, signed char)
+PPL_SPECIALIZE_DIV_2EXP(div_2exp_signed_int, signed short, signed short)
+PPL_SPECIALIZE_DIV_2EXP(div_2exp_signed_int, signed int, signed int)
+PPL_SPECIALIZE_DIV_2EXP(div_2exp_signed_int, signed long, signed long)
+PPL_SPECIALIZE_DIV_2EXP(div_2exp_signed_int, signed long long, signed long long)
+PPL_SPECIALIZE_DIV_2EXP(div_2exp_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_DIV_2EXP(div_2exp_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_DIV_2EXP(div_2exp_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_DIV_2EXP(div_2exp_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_DIV_2EXP(div_2exp_unsigned_int, unsigned long long, unsigned long long)
 
 PPL_SPECIALIZE_SQRT(sqrt_signed_int, signed char, signed char)
 PPL_SPECIALIZE_SQRT(sqrt_signed_int, signed short, signed short)

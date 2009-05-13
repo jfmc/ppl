@@ -489,7 +489,8 @@ Box<ITV>::propagate_constraint(const Constraint& c) {
 
 template <typename ITV>
 inline void
-Box<ITV>::propagate_constraints(const Constraint_System& cs) {
+Box<ITV>::propagate_constraints(const Constraint_System& cs,
+                                const dimension_type max_iterations) {
   // Dimension-compatibility check.
   if (cs.space_dimension() > space_dimension())
     throw_dimension_incompatible("propagate_constraints(cs)", cs);
@@ -498,7 +499,7 @@ Box<ITV>::propagate_constraints(const Constraint_System& cs) {
   if (marked_empty())
     return;
 
-  propagate_constraints_no_check(cs);
+  propagate_constraints_no_check(cs, max_iterations);
 }
 
 template <typename ITV>

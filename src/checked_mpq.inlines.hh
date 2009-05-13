@@ -326,29 +326,27 @@ PPL_SPECIALIZE_REM(rem_mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result
-mul2exp_mpq(mpq_class& to, const mpq_class& x, int exp, Rounding_Dir dir) {
-  if (exp < 0)
-    return div2exp<To_Policy, From_Policy>(to, x, -exp, dir);
+mul_2exp_mpq(mpq_class& to, const mpq_class& x, unsigned int exp,
+             Rounding_Dir) {
   mpz_mul_2exp(to.get_num().get_mpz_t(), x.get_num().get_mpz_t(), exp);
   to.get_den() = x.get_den();
   to.canonicalize();
   return V_EQ;
 }
 
-PPL_SPECIALIZE_MUL2EXP(mul2exp_mpq, mpq_class, mpq_class)
+PPL_SPECIALIZE_MUL_2EXP(mul_2exp_mpq, mpq_class, mpq_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result
-div2exp_mpq(mpq_class& to, const mpq_class& x, int exp, Rounding_Dir dir) {
-  if (exp < 0)
-    return mul2exp<To_Policy, From_Policy>(to, x, -exp, dir);
+div_2exp_mpq(mpq_class& to, const mpq_class& x, unsigned int exp,
+             Rounding_Dir) {
   to.get_num() = x.get_num();
   mpz_mul_2exp(to.get_den().get_mpz_t(), x.get_den().get_mpz_t(), exp);
   to.canonicalize();
   return V_EQ;
 }
 
-PPL_SPECIALIZE_DIV2EXP(div2exp_mpq, mpq_class, mpq_class)
+PPL_SPECIALIZE_DIV_2EXP(div_2exp_mpq, mpq_class, mpq_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result
@@ -379,7 +377,7 @@ sub_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y,
 
 PPL_SPECIALIZE_SUB_MUL(sub_mul_mpq, mpq_class, mpq_class, mpq_class)
 
-extern unsigned long rational_sqrt_precision_parameter;
+extern unsigned irrational_precision;
 
 template <typename To_Policy, typename From_Policy>
 inline Result
@@ -396,12 +394,14 @@ sqrt_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir dir) {
   mpz_class& to_a = gt1 ? to.get_num() : to.get_den();
   mpz_class& to_b = gt1 ? to.get_den() : to.get_num();
   Rounding_Dir rdir = gt1 ? dir : inverse(dir);
-  mul2exp<To_Policy, From_Policy>(to_a, from_a, 2*rational_sqrt_precision_parameter, ROUND_IGNORE);
+  mul_2exp<To_Policy, From_Policy>(to_a, from_a,
+                                   2*irrational_precision, ROUND_IGNORE);
   Result rdiv
     = div<To_Policy, To_Policy, To_Policy>(to_a, to_a, from_b, rdir);
   Result rsqrt = sqrt<To_Policy, To_Policy>(to_a, to_a, rdir);
   to_b = 1;
-  mul2exp<To_Policy, To_Policy>(to_b, to_b, rational_sqrt_precision_parameter, ROUND_IGNORE);
+  mul_2exp<To_Policy, To_Policy>(to_b, to_b,
+                                 irrational_precision, ROUND_IGNORE);
   to.canonicalize();
   return rdiv != V_EQ ? rdiv : rsqrt;
 }
@@ -455,27 +455,27 @@ PPL_SPECIALIZE_ASSIGN(assign_mpq_long_double, mpq_class, long double)
 
 } // namespace Checked
 
-//! Returns the precision parameter used for rational square root calculations.
+//! Returns the precision parameter used for irrational calculations.
 inline unsigned
-rational_sqrt_precision_parameter() {
-  return Checked::rational_sqrt_precision_parameter;
+irrational_precision() {
+  return Checked::irrational_precision;
 }
 
-//! Sets the precision parameter used for rational square root calculations.
+//! Sets the precision parameter used for irrational calculations.
 /*! The lesser between numerator and denominator is limited to 2**\p p.
 
   If \p p is less than or equal to <CODE>INT_MAX</CODE>, sets the
-  precision parameter used for rational square root calculations to \p p.
+  precision parameter used for irrational calculations to \p p.
 
   \exception std::invalid_argument
   Thrown if \p p is greater than <CODE>INT_MAX</CODE>.
 */
 inline void
-set_rational_sqrt_precision_parameter(const unsigned p) {
+set_irrational_precision(const unsigned p) {
   if (p <= INT_MAX)
-    Checked::rational_sqrt_precision_parameter = p;
+    Checked::irrational_precision = p;
   else
-    throw std::invalid_argument("PPL::set_rational_sqrt_precision_parameter(p)"
+    throw std::invalid_argument("PPL::set_irrational_precision(p)"
 				" with p > INT_MAX");
 }
 

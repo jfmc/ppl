@@ -203,11 +203,10 @@ Partially_Reduced_Product<D1, D2, R>
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>
-::unconstrain(const Variables_Set& to_be_unconstrained) {
+Partially_Reduced_Product<D1, D2, R>::unconstrain(const Variables_Set& vars) {
   reduce();
-  d1.unconstrain(to_be_unconstrained);
-  d2.unconstrain(to_be_unconstrained);
+  d1.unconstrain(vars);
+  d2.unconstrain(vars);
 }
 
 template <typename D1, typename D2, typename R>
@@ -573,9 +572,9 @@ Partially_Reduced_Product<D1, D2, R>
 template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
-::remove_space_dimensions(const Variables_Set& to_be_removed) {
-  d1.remove_space_dimensions(to_be_removed);
-  d2.remove_space_dimensions(to_be_removed);
+::remove_space_dimensions(const Variables_Set& vars) {
+  d1.remove_space_dimensions(vars);
+  d2.remove_space_dimensions(vars);
 }
 
 template <typename D1, typename D2, typename R>
@@ -606,10 +605,10 @@ Partially_Reduced_Product<D1, D2, R>
 template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
-::fold_space_dimensions(const Variables_Set& to_be_folded,
-			Variable var) {
-  d1.fold_space_dimensions(to_be_folded, var);
-  d2.fold_space_dimensions(to_be_folded, var);
+::fold_space_dimensions(const Variables_Set& vars,
+			Variable dest) {
+  d1.fold_space_dimensions(vars, dest);
+  d2.fold_space_dimensions(vars, dest);
 }
 
 template <typename D1, typename D2, typename R>

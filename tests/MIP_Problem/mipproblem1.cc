@@ -138,9 +138,6 @@ test01() {
   Generator pg = mip.optimizing_point();
   nout << "Optimizing point = ";
   print_generator(pg);
-  Generator pg_kr = point(2*X21 + 44*X39);
-  if (pg != pg_kr)
-    return false;
 
   // Making mip unfeasible.
   Constraint_System further_cs;

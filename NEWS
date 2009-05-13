@@ -17,6 +17,18 @@ o  When the PPL has been configured with
    procedure checks that the FPU can indeed be controlled and fails if
    that is not the case.
 
+o  The Java interface has to be explicitly initialized before use by
+   calling static method Parma_Polyhedra_Library.initialize_library().
+   Initialization makes more explicit the exact point where PPL
+   floating point rounding mode is set; it also allows for the caching
+   of Java classes and field/method IDs, thereby reducing the overhead
+   of native method callbacks.
+
+o  The C and Java interfaces now support timeout computation facilities.
+
+o  New configuration option `--with-gmp-build=DIR' allows to use a
+   non-installed build of GMP in DIR.
+
 
 Deprecated and removed methods
 ------------------------------

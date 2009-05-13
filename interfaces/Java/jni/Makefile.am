@@ -36,12 +36,19 @@ $(interface_generator_files)
 EXTRA_DIST = \
 $(interface_generator_files)
 
+if BUILD_WATCHDOG_LIBRARY
+
+WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
+WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
+
+endif BUILD_WATCHDOG_LIBRARY
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
 -I$(top_builddir)/src \
 -I../parma_polyhedra_library \
 -I$(top_srcdir)/src \
+$(WATCHDOG_INCLUDE_OPTIONS) \
 @extra_includes@ @JNIFLAGS@
 
 BUILT_SOURCES = \
@@ -156,6 +163,7 @@ ppl_java_Constraints_Product_Grid_NNC_Polyhedron.cc
 libppl_java_la_LIBADD = \
 @required_instantiations_java_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
+$(WATCHDOG_LIBRARY) \
 @extra_libraries@
 
 libppl_java_la_DEPENDENCIES = \

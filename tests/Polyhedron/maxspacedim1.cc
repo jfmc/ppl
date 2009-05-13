@@ -127,7 +127,7 @@ test01() {
 
   // 9458 is the value of max_space_dimension()
   // computed on a 32bit architecture.
-  return (max_space_dimension() >= 9458);
+  return max_space_dimension() >= 9458;
 }
 
 BEGIN_MAIN

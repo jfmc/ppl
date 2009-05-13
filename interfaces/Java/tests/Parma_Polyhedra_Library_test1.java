@@ -32,11 +32,11 @@ static {
     try {
         System.loadLibrary("ppl_java");
     }
-
-   catch (UnsatisfiedLinkError  e) {
-       System.out.println("Unable to load the library");
-       System.exit(-1);
-   }
+    catch (UnsatisfiedLinkError  e) {
+        System.out.println("Unable to load the library");
+        System.out.println(e.getMessage());
+        System.exit(-1);
+    }
 }
 
     // This code tests the Parma_Polyhedra_Library methods.
@@ -56,14 +56,18 @@ static {
     PPL_Test.println_if_vnoisy(Parma_Polyhedra_Library.banner());
     Parma_Polyhedra_Library.set_rounding_for_PPL();
     Parma_Polyhedra_Library.restore_pre_PPL_rounding();
+    PPL_Test.print_if_noisy("Irrational precision: ");
+    PPL_Test.println_if_noisy(Parma_Polyhedra_Library.irrational_precision());
 
     return true;
     }
 
 
     public static void main(String[] args) {
+        Parma_Polyhedra_Library.initialize_library();
 	boolean test_result_ok =
 	    Test_Executor.executeTests(Parma_Polyhedra_Library_test1.class);
+        Parma_Polyhedra_Library.finalize_library();
 	if (!test_result_ok)
 	    System.exit(1);
 	System.exit(0);

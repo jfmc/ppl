@@ -422,20 +422,18 @@ PPL_SPECIALIZE_REM(rem_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result
-mul2exp_mpz(mpz_class& to, const mpz_class& x, int exp, Rounding_Dir dir) {
-  if (exp < 0)
-    return div2exp<To_Policy, From_Policy>(to, x, -exp, dir);
+mul_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
+             Rounding_Dir) {
   mpz_mul_2exp(to.get_mpz_t(), x.get_mpz_t(), exp);
   return V_EQ;
 }
 
-PPL_SPECIALIZE_MUL2EXP(mul2exp_mpz, mpz_class, mpz_class)
+PPL_SPECIALIZE_MUL_2EXP(mul_2exp_mpz, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result
-div2exp_mpz(mpz_class& to, const mpz_class& x, int exp, Rounding_Dir dir) {
-  if (exp < 0)
-    return mul2exp<To_Policy, From_Policy>(to, x, -exp, dir);
+div_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
+             Rounding_Dir dir) {
   mpz_srcptr n = x.get_mpz_t();
   if (round_ignore(dir)) {
     mpz_tdiv_q_2exp(to.get_mpz_t(), x.get_mpz_t(), exp);
@@ -452,7 +450,7 @@ div2exp_mpz(mpz_class& to, const mpz_class& x, int exp, Rounding_Dir dir) {
   }
 }
 
-PPL_SPECIALIZE_DIV2EXP(div2exp_mpz, mpz_class, mpz_class)
+PPL_SPECIALIZE_DIV_2EXP(div_2exp_mpz, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result

@@ -224,6 +224,15 @@ included with all instantiations of the OCaml interfaces.
    based on floating point numbers.
    This is performed automatically at finalization-time.
 
+<H2><CODE> ppl_irrational_precision </CODE></H2>
+   Returns the precision parameter for irrational calculations.
+
+<H2><CODE> ppl_set_irrational_precision </CODE></H2>
+   Sets the precision parameter <CODE>p</CODE> for irrational calculations.
+   In the following irrational calculations returning an unbounded
+   rational (e.g., when computing a square root), the lesser between
+   numerator and denominator will be limited to <CODE>2**p</CODE>.
+
 <BR>
 
 \anchor OCaml_mip_functions

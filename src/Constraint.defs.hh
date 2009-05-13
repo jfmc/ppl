@@ -259,7 +259,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
 */
 class Parma_Polyhedra_Library::Constraint : private Linear_Row {
 public:
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   Constraint(const Constraint& c);
 
   //! Copy-constructs from equality congruence \p cg.
@@ -512,7 +512,7 @@ private:
   friend Constraint
   operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
-  //! Copy-constructor with given size.
+  //! Copy constructor with given size.
   Constraint(const Constraint& c, dimension_type sz);
 
   /*! \brief

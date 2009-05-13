@@ -112,7 +112,7 @@ private:
   class Pseudo_Row {
   public:
     /*! \brief
-      Copy-constructor allowing the construction of a const pseudo-row
+      Copy constructor allowing the construction of a const pseudo-row
       from a non-const pseudo-row.
       Ordinary copy constructor.
     */
@@ -216,7 +216,7 @@ private:
     explicit any_row_iterator(U& base);
 
     /*! \brief
-      Copy-constructor allowing the construction of a const_iterator
+      Copy constructor allowing the construction of a const_iterator
       from a non-const iterator.
     */
     template <typename V>
@@ -344,7 +344,7 @@ public:
   */
   OR_Matrix(dimension_type space_dim);
 
-  //! Copy-constructor.
+  //! Copy constructor.
   OR_Matrix(const OR_Matrix& y);
 
   //! Constructs a conservative approximation of \p y.

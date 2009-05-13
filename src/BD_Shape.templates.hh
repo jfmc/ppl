@@ -33,6 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variables_Set.defs.hh"
 #include "Bit_Row.defs.hh"
 #include "Temp.defs.hh"
+#include "wrap_assign.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -1051,7 +1052,7 @@ BD_Shape<T>::bounds(const Linear_Expression& expr,
       = from_above ? MAXIMIZATION : MINIMIZATION;
     MIP_Problem mip(space_dim, constraints(), expr, mode_bounds);
     // Problem is known to be feasible.
-    return (mip.solve() == OPTIMIZED_MIP_PROBLEM);
+    return mip.solve() == OPTIMIZED_MIP_PROBLEM;
   }
 }
 
@@ -2548,11 +2549,11 @@ BD_Shape<T>::add_space_dimensions_and_project(const dimension_type m) {
 
 template <typename T>
 void
-BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
+BD_Shape<T>::remove_space_dimensions(const Variables_Set& vars) {
   // The removal of no dimensions from any BDS is a no-op.
   // Note that this case also captures the only legal removal of
   // space dimensions from a BDS in a 0-dim space.
-  if (to_be_removed.empty()) {
+  if (vars.empty()) {
     assert(OK());
     return;
   }
@@ -2560,7 +2561,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   const dimension_type old_space_dim = space_dimension();
 
   // Dimension-compatibility check.
-  const dimension_type min_space_dim = to_be_removed.space_dimension();
+  const dimension_type min_space_dim = vars.space_dimension();
   if (old_space_dim < min_space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
@@ -2569,7 +2570,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
 
   // When removing _all_ dimensions from a BDS, we obtain the
   // zero-dimensional BDS.
-  const dimension_type new_space_dim = old_space_dim - to_be_removed.size();
+  const dimension_type new_space_dim = old_space_dim - vars.size();
   if (new_space_dim == 0) {
     dbm.resize_no_copy(1);
     if (!marked_empty())
@@ -2594,15 +2595,15 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // For each variable to remove, we fill the corresponding column and
   // row by shifting respectively left and above those
   // columns and rows, that will not be removed.
-  Variables_Set::const_iterator tbr = to_be_removed.begin();
-  Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst = *tbr + 1;
+  Variables_Set::const_iterator vsi = vars.begin();
+  Variables_Set::const_iterator vsi_end = vars.end();
+  dimension_type dst = *vsi + 1;
   dimension_type src = dst + 1;
-  for (++tbr; tbr != tbr_end; ++tbr) {
-    const dimension_type tbr_next = *tbr + 1;
+  for (++vsi; vsi != vsi_end; ++vsi) {
+    const dimension_type vsi_next = *vsi + 1;
     // All other columns and rows are moved respectively to the left
     // and above.
-    while (src < tbr_next) {
+    while (src < vsi_next) {
       std::swap(dbm[dst], dbm[src]);
       for (dimension_type i = old_space_dim + 1; i-- > 0; ) {
         DB_Row<N>& dbm_i = dbm[i];
@@ -3274,14 +3275,14 @@ BD_Shape<T>::unconstrain(const Variable var) {
 
 template <typename T>
 void
-BD_Shape<T>::unconstrain(const Variables_Set& to_be_unconstrained) {
+BD_Shape<T>::unconstrain(const Variables_Set& vars) {
   // The cylindrification wrt no dimensions is a no-op.
   // This case captures the only legal cylindrification in a 0-dim space.
-  if (to_be_unconstrained.empty())
+  if (vars.empty())
     return;
 
   // Dimension-compatibility check.
-  const dimension_type min_space_dim = to_be_unconstrained.space_dimension();
+  const dimension_type min_space_dim = vars.space_dimension();
   if (space_dimension() < min_space_dim)
     throw_dimension_incompatible("unconstrain(vs)", min_space_dim);
 
@@ -3293,9 +3294,9 @@ BD_Shape<T>::unconstrain(const Variables_Set& to_be_unconstrained) {
   if (marked_empty())
     return;
 
-  for (Variables_Set::const_iterator tbu = to_be_unconstrained.begin(),
-         tbu_end = to_be_unconstrained.end(); tbu != tbu_end; ++tbu)
-    forget_all_dbm_constraints(*tbu + 1);
+  for (Variables_Set::const_iterator vsi = vars.begin(),
+         vsi_end = vars.end(); vsi != vsi_end; ++vsi)
+    forget_all_dbm_constraints(*vsi + 1);
   // Shortest-path closure is preserved, but not reduction.
   reset_shortest_path_reduced();
   assert(OK());
@@ -5456,38 +5457,38 @@ BD_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
 
 template <typename T>
 void
-BD_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
-                                   Variable var) {
+BD_Shape<T>::fold_space_dimensions(const Variables_Set& vars,
+                                   Variable dest) {
   const dimension_type space_dim = space_dimension();
-  // `var' should be one of the dimensions of the BDS.
-  if (var.space_dimension() > space_dim)
-    throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
-                                 "v", var);
+  // `dest' should be one of the dimensions of the BDS.
+  if (dest.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(vs, v)",
+                                 "v", dest);
 
   // The folding of no dimensions is a no-op.
-  if (to_be_folded.empty())
+  if (vars.empty())
     return;
 
-  // All variables in `to_be_folded' should be dimensions of the BDS.
-  if (to_be_folded.space_dimension() > space_dim)
-    throw_dimension_incompatible("fold_space_dimensions(tbf, ...)",
-                                 to_be_folded.space_dimension());
+  // All variables in `vars' should be dimensions of the BDS.
+  if (vars.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(vs, v)",
+                                 vars.space_dimension());
 
-  // Moreover, `var.id()' should not occur in `to_be_folded'.
-  if (to_be_folded.find(var.id()) != to_be_folded.end())
-    throw_generic("fold_space_dimensions(tbf, v)",
-                  "v should not occur in tbf");
+  // Moreover, `dest.id()' should not occur in `vars'.
+  if (vars.find(dest.id()) != vars.end())
+    throw_generic("fold_space_dimensions(vs, v)",
+                  "v should not occur in vs");
 
   shortest_path_closure_assign();
   if (!marked_empty()) {
     // Recompute the elements of the row and the column corresponding
-    // to variable `var' by taking the join of their value with the
+    // to variable `dest' by taking the join of their value with the
     // value of the corresponding elements in the row and column of the
-    // variable `to_be_folded'.
-    const dimension_type v_id = var.id() + 1;
+    // variable `vars'.
+    const dimension_type v_id = dest.id() + 1;
     DB_Row<N>& dbm_v = dbm[v_id];
-    for (Variables_Set::const_iterator i = to_be_folded.begin(),
-           tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
+    for (Variables_Set::const_iterator i = vars.begin(),
+           vs_end = vars.end(); i != vs_end; ++i) {
       const dimension_type tbf_id = *i + 1;
       const DB_Row<N>& dbm_tbf = dbm[tbf_id];
       for (dimension_type j = space_dim + 1; j-- > 0; ) {
@@ -5496,7 +5497,21 @@ BD_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
       }
     }
   }
-  remove_space_dimensions(to_be_folded);
+  remove_space_dimensions(vars);
+}
+
+template <typename T>
+void
+BD_Shape<T>::wrap_assign(const Variables_Set& vars,
+                         Bounded_Integer_Type_Width w,
+                         Bounded_Integer_Type_Signedness s,
+                         Bounded_Integer_Type_Overflow o,
+                         const Constraint_System* pcs,
+                         unsigned complexity_threshold,
+                         bool wrap_individually) {
+  Implementation::wrap_assign(*this,
+                              vars, w, s, o, pcs,
+                              complexity_threshold, wrap_individually);
 }
 
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
@@ -5525,12 +5540,12 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
             else
               s << ", ";
             if (i == 0) {
-              // We have got a equality constraint with one Variable.
+              // We have got a equality constraint with one variable.
               s << Variable(j - 1);
               s << " == " << c_i_j;
             }
             else {
-              // We have got a equality constraint with two Variables.
+              // We have got a equality constraint with two variables.
               if (sgn(c_i_j) >= 0) {
                 s << Variable(j - 1);
                 s << " - ";
@@ -5553,13 +5568,13 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
               else
                 s << ", ";
               if (i == 0) {
-                // We have got a constraint with an only Variable.
+                // We have got a constraint with only one variable.
                 s << Variable(j - 1);
                 neg_assign_r(v, c_j_i, ROUND_DOWN);
                 s << " >= " << v;
               }
               else {
-                // We have got a constraint with two Variables.
+                // We have got a constraint with two variables.
                 if (sgn(c_j_i) >= 0) {
                   s << Variable(i - 1);
                   s << " - ";
@@ -5581,12 +5596,12 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
               else
                 s << ", ";
               if (i == 0) {
-                // We have got a constraint with an only Variable.
+                // We have got a constraint with only one variable.
                 s << Variable(j - 1);
                 s << " <= " << c_i_j;
               }
               else {
-                // We have got a constraint with two Variables.
+                // We have got a constraint with two variables.
                 if (sgn(c_i_j) >= 0) {
                   s << Variable(j - 1);
                   s << " - ";

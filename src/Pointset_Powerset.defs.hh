@@ -49,7 +49,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 /*!
   \warning
   At present, the supported instantiations for the
-  disjunct domain template \p PS are the simple pointset domains:
+  disjunct domain template \p PSET are the simple pointset domains:
   <CODE>C_Polyhedron</CODE>,
   <CODE>NNC_Polyhedron</CODE>,
   <CODE>Grid</CODE>,
@@ -57,19 +57,19 @@ site: http://www.cs.unipr.it/ppl/ . */
   <CODE>BD_Shape<T></CODE>,
   <CODE>Box<T></CODE>.
 */
-template <typename PS>
+template <typename PSET>
 class Parma_Polyhedra_Library::Pointset_Powerset
   : public Parma_Polyhedra_Library::Powerset
-<Parma_Polyhedra_Library::Determinate<PS> > {
+<Parma_Polyhedra_Library::Determinate<PSET> > {
 public:
-  typedef PS element_type;
+  typedef PSET element_type;
 
 private:
-  typedef Determinate<PS> CS;
-  typedef Powerset<CS> Base;
+  typedef Determinate<PSET> Det_PSET;
+  typedef Powerset<Det_PSET> Base;
 
 public:
-  //! Returns the maximum space dimension a Pointset_Powerset<PS> can handle.
+  //! Returns the maximum space dimension a Pointset_Powerset<PSET> can handle.
   static dimension_type max_space_dimension();
 
   //! \name Constructors
@@ -87,7 +87,7 @@ public:
   Pointset_Powerset(dimension_type num_dimensions = 0,
 		    Degenerate_Element kind = UNIVERSE);
 
-  //! Ordinary copy-constructor.
+  //! Ordinary copy constructor.
   /*!
     The complexity argument is ignored.
   */
@@ -96,7 +96,7 @@ public:
 
   /*! \brief
     Conversion constructor: the type <CODE>QH</CODE> of the disjuncts
-    in the source powerset is different from <CODE>PS</CODE>.
+    in the source powerset is different from <CODE>PSET</CODE>.
 
     \param y
     The powerset to be used to build the new powerset.
@@ -110,7 +110,7 @@ public:
 
   /*! \brief
     Creates a Pointset_Powerset from a product
-    This will be created as a single disjunct of type PS that
+    This will be created as a single disjunct of type PSET that
     approximates the product.
   */
    template <typename QH1, typename QH2, typename R>
@@ -571,7 +571,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p ph are dimension-incompatible.
   */
-  void add_disjunct(const PS& ph);
+  void add_disjunct(const PSET& ph);
 
   //! Intersects \p *this with constraint \p c.
   /*!
@@ -669,17 +669,17 @@ public:
 
   /*! \brief
     Computes the \ref Cylindrification "cylindrification" of \p *this with
-    respect to the set of space dimensions \p to_be_unconstrained,
+    respect to the set of space dimensions \p vars,
     assigning the result to \p *this.
 
-    \param to_be_unconstrained
+    \param vars
     The set of space dimension that will be unconstrained.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p to_be_removed.
+    Variable objects contained in \p vars.
   */
-  void unconstrain(const Variables_Set& to_be_unconstrained);
+  void unconstrain(const Variables_Set& vars);
 
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
@@ -1037,7 +1037,7 @@ public:
 
   /*! \brief
     Conversion assignment: the type <CODE>QH</CODE> of the disjuncts
-    in the source powerset is different from <CODE>PS</CODE>
+    in the source powerset is different from <CODE>PSET</CODE>
     (\p *this and \p y can be dimension-incompatible).
   */
   template <typename QH>
@@ -1068,15 +1068,15 @@ public:
 
   //! Removes all the specified space dimensions.
   /*!
-    \param to_be_removed
+    \param vars
     The set of Variable objects corresponding to the space dimensions
     to be removed.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p to_be_removed.
+    Variable objects contained in \p vars.
   */
-  void remove_space_dimensions(const Variables_Set& to_be_removed);
+  void remove_space_dimensions(const Variables_Set& vars);
 
   /*! \brief
     Removes the higher space dimensions so that the resulting space
@@ -1122,31 +1122,31 @@ public:
   */
   void expand_space_dimension(Variable var, dimension_type m);
 
-  //! Folds the space dimensions in \p to_be_folded into \p var.
+  //! Folds the space dimensions in \p vars into \p dest.
   /*!
-    \param to_be_folded
+    \param vars
     The set of Variable objects corresponding to the space dimensions
     to be folded;
 
-    \param var
+    \param dest
     The variable corresponding to the space dimension that is the
     destination of the folding operation.
 
     \exception std::invalid_argument
-    Thrown if \p *this is dimension-incompatible with \p var or with
-    one of the Variable objects contained in \p to_be_folded.  Also
-    thrown if \p var is contained in \p to_be_folded.
+    Thrown if \p *this is dimension-incompatible with \p dest or with
+    one of the Variable objects contained in \p vars.  Also
+    thrown if \p dest is contained in \p vars.
 
     If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
-    <CODE>var</CODE> has space dimension \f$k \leq n\f$,
-    \p to_be_folded is a set of variables whose maximum space dimension
-    is also less than or equal to \f$n\f$, and \p var is not a member
-    of \p to_be_folded, then the space dimensions corresponding to
-    variables in \p to_be_folded are
+    <CODE>dest</CODE> has space dimension \f$k \leq n\f$,
+    \p vars is a set of variables whose maximum space dimension
+    is also less than or equal to \f$n\f$, and \p dest is not a member
+    of \p vars, then the space dimensions corresponding to
+    variables in \p vars are
     \ref Folding_Multiple_Dimensions_of_the_Vector_Space_into_One_Dimension
     "folded" into the \f$k\f$-th space dimension.
   */
-  void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
+  void fold_space_dimensions(const Variables_Set& vars, Variable dest);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
@@ -1176,16 +1176,15 @@ private:
   dimension_type space_dim;
 
   /*! \brief
-    Assigns to \p to_be_enlarged a
-    \ref Powerset_Meet_Preserving_Simplification
-    "powerset meet-preserving enlargement" of itself with respect to \p *this.
-    If \c false is returned, then the intersection is empty.
+    Assigns to \p dest a \ref Powerset_Meet_Preserving_Simplification
+    "powerset meet-preserving enlargement" of itself with respect to
+    \p *this.  If \c false is returned, then the intersection is empty.
 
     \note
-    It is assumed that \p *this and \p to_be_enlarged are
-    topology-compatible and dimension-compatible.
+    It is assumed that \p *this and \p dest are topology-compatible
+    and dimension-compatible.
   */
-  bool intersection_preserving_enlarge_element(PS& to_be_enlarged) const;
+  bool intersection_preserving_enlarge_element(PSET& dest) const;
 
   /*! \brief
     Assigns to \p *this the result of applying the BGP99 heuristics
@@ -1221,7 +1220,7 @@ namespace Parma_Polyhedra_Library {
 /*! \relates Pointset_Powerset
   Let \p p and \p q be two polyhedra.
   The function returns an object <CODE>r</CODE> of type
-  <CODE>std::pair\<PS, Pointset_Powerset\<NNC_Polyhedron\> \></CODE>
+  <CODE>std::pair\<PSET, Pointset_Powerset\<NNC_Polyhedron\> \></CODE>
   such that
   - <CODE>r.first</CODE> is the intersection of \p p and \p q;
   - <CODE>r.second</CODE> has the property that all its elements are
@@ -1237,9 +1236,9 @@ namespace Parma_Polyhedra_Library {
   this paper</A> for more information about the implementation.
   \endif
 */
-template <typename PS>
-std::pair<PS, Pointset_Powerset<NNC_Polyhedron> >
-linear_partition(const PS& p, const PS& q);
+template <typename PSET>
+std::pair<PSET, Pointset_Powerset<NNC_Polyhedron> >
+linear_partition(const PSET& p, const PSET& q);
 
 /*! \brief
   Returns <CODE>true</CODE> if and only if the union of
@@ -1259,7 +1258,7 @@ check_containment(const NNC_Polyhedron& ph,
   \relates Parma_Polyhedra_Library::Pointset_Powerset
   Let \p p and \p q be two grids.
   The function returns an object <CODE>r</CODE> of type
-  <CODE>std::pair\<PS, Pointset_Powerset\<Grid\> \></CODE>
+  <CODE>std::pair\<PSET, Pointset_Powerset\<Grid\> \></CODE>
   such that
   - <CODE>r.first</CODE> is the intersection of \p p and \p q;
   - If there is a finite partition of \p q wrt \p p
@@ -1292,13 +1291,13 @@ check_containment(const Grid& ph,
 
   \relates Pointset_Powerset
   \note
-  It is assumed that the template parameter PS can be converted
+  It is assumed that the template parameter PSET can be converted
   without precision loss into an NNC_Polyhedron; otherwise,
   an incorrect result might be obtained.
 */
-template <typename PS>
+template <typename PSET>
 bool
-check_containment(const PS& ph, const Pointset_Powerset<PS>& ps);
+check_containment(const PSET& ph, const Pointset_Powerset<PSET>& ps);
 
 // CHECKME: according to the Intel compiler, the declaration of the
 // following specialization (of the class template parameter) should come
@@ -1357,9 +1356,9 @@ namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
-template <typename PS>
-void swap(Parma_Polyhedra_Library::Pointset_Powerset<PS>& x,
-	  Parma_Polyhedra_Library::Pointset_Powerset<PS>& y);
+template <typename PSET>
+void swap(Parma_Polyhedra_Library::Pointset_Powerset<PSET>& x,
+	  Parma_Polyhedra_Library::Pointset_Powerset<PSET>& y);
 
 } // namespace std
 

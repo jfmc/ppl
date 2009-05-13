@@ -605,7 +605,7 @@ build_ppl_Congruence(value c) {
   mpz_class z(mpz_ptr_val(Field(c, 2)));
   Linear_Expression lhs = build_ppl_Linear_Expression(e1);
   Linear_Expression rhs = build_ppl_Linear_Expression(e2);
-  return ((lhs %= rhs) / z);
+  return (lhs %= rhs) / z;
 }
 
 Generator
@@ -1199,6 +1199,24 @@ CAMLprim value
 ppl_restore_pre_PPL_rounding(value unit) try {
   CAMLparam1(unit);
   restore_pre_PPL_rounding();
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_irrational_precision(value unit) try {
+  CAMLparam1(unit);
+  CAMLreturn(Val_long(irrational_precision()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_set_irrational_precision(value p) try {
+  CAMLparam1(p);
+  unsigned cxx_p = value_to_unsigned<unsigned>(p);
+  set_irrational_precision(cxx_p);
   CAMLreturn(Val_unit);
 }
 CATCH_ALL

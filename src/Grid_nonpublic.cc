@@ -286,7 +286,16 @@ PPL::Grid::bounds(const Linear_Expression& expr,
     // Minimizing found `this' empty.
     return true;
 
-  // The generators are up to date.
+  return bounds_no_check(expr);
+}
+
+bool
+PPL::Grid::bounds_no_check(const Linear_Expression& expr) const {
+  // The dimension of `expr' must be at most the dimension of *this.
+  assert(space_dim > 0 && space_dim >= expr.space_dimension());
+  assert(generators_are_minimized() && !marked_empty());
+
+  // The generators are up to date and minimized.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Grid_Generator& g = gen_sys[i];
     // Only lines and parameters in `*this' can cause `expr' to be
@@ -298,6 +307,85 @@ PPL::Grid::bounds(const Linear_Expression& expr,
 	return false;
     }
   }
+  return true;
+}
+
+bool
+PPL::Grid::frequency_no_check(const Linear_Expression& expr,
+                     Coefficient& freq_n, Coefficient& freq_d,
+                     Coefficient& val_n, Coefficient& val_d) const {
+
+  // The dimension of `expr' must be at most the dimension of *this.
+  assert(space_dim >= expr.space_dimension());
+  assert(generators_are_minimized() && !marked_empty());
+
+  // The generators are up to date and minimized and the grid is non-empty.
+
+  // If the grid is bounded for the expression `expr',
+  // then `expr' has a constant value and the frequency is 0.
+  if (bounds_no_check(expr)) {
+    freq_n = 0;
+    freq_d = 1;
+    // Find the value of the constant expression.
+    const Grid_Generator& point = gen_sys[0];
+    val_d = point.divisor();
+    Scalar_Products::homogeneous_assign(val_n, expr, point);
+    val_n += expr.inhomogeneous_term() * val_d;
+    // Reduce `val_n' and `val_d'.
+    PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+    gcd_assign(gcd, val_n, val_d);
+    exact_div_assign(val_n, val_n, gcd);
+    exact_div_assign(val_d, val_d, gcd);
+    return true;
+  }
+
+  // The frequency is the gcd of the scalar products of the parameters
+  // in `gen_sys'.
+  dimension_type num_rows = gen_sys.num_rows();
+  PPL_DIRTY_TEMP_COEFFICIENT(sp);
+  freq_n = 0;
+
+  // As the generators are minimized, `gen_sys[0]' is a point
+  // and considered later.
+  for (dimension_type row = 1; row < num_rows; ++row) {
+    const Grid_Generator& gen = gen_sys[row];
+    Scalar_Products::homogeneous_assign(sp, expr, gen);
+    if (gen.is_line()) {
+      if (sgn(sp) != 0)
+          return false;
+      continue;
+    }
+    // `gen' must be a parameter.
+    assert(gen.is_parameter());
+    if (sgn(sp) != 0)
+    gcd_assign(freq_n, freq_n, sp);
+  }
+  const Grid_Generator& point = gen_sys[0];
+  assert(point.is_point());
+
+  // The denominator of the frequency and of the value is
+  // the divisor for the generators.
+  freq_d = point.divisor();
+  val_d = freq_d;
+
+  // As point is a grid generator, homogeneous_assign() must be used.
+  Scalar_Products::homogeneous_assign(val_n, expr, point);
+  val_n += expr.inhomogeneous_term() * val_d;
+
+  // Reduce `val_n' by the frequency `freq_n'.
+  val_n %= freq_n;
+
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  // Reduce `freq_n' and `freq_d'.
+  gcd_assign(gcd, freq_n, freq_d);
+  exact_div_assign(freq_n, freq_n, gcd);
+  exact_div_assign(freq_d, freq_d, gcd);
+
+  // Reduce `val_n' and `val_d'.
+  gcd_assign(gcd, val_n, val_d);
+  exact_div_assign(val_n, val_n, gcd);
+  exact_div_assign(val_d, val_d, gcd);
+
   return true;
 }
 

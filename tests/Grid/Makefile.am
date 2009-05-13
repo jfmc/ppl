@@ -76,7 +76,6 @@ congruences2 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
-coveringbox1 coveringbox2 \
 discrete1 \
 disjoint1 \
 equals1 \
@@ -118,7 +117,8 @@ topclosed1 \
 topclosure1 \
 unconstrain1 \
 upperbound1 upperbound2 \
-widening1 widening2  widening3\
+widening1 widening2  widening3 \
+wrap1 \
 writecongruencesystem
 
 XFAIL_TESTS =
@@ -216,9 +216,6 @@ generator1_SOURCES = generator1.cc
 generators1_SOURCES = generators1.cc
 generators2_SOURCES = generators2.cc
 
-coveringbox1_SOURCES = coveringbox1.cc
-coveringbox2_SOURCES = coveringbox2.cc
-
 grid1_SOURCES = grid1.cc
 grid2_SOURCES = grid2.cc
 grid3_SOURCES = grid3.cc
@@ -283,6 +280,8 @@ widening2_SOURCES = widening2.cc
 widening3_SOURCES = widening3.cc
 
 writecongruencesystem_SOURCES = writecongruencesystem.cc
+
+wrap1_SOURCES = wrap1.cc
 
 check_PROGRAMS = $(TESTS)
 

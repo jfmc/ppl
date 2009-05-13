@@ -375,7 +375,7 @@ m4_define(`ppl_@CLASS@_get_disjunct_code',
     PPL_CHECK(it);
 
     @DISJUNCT_TOPOLOGY@@A_DISJUNCT@* disj
-      = const_cast<@DISJUNCT_TOPOLOGY@@A_DISJUNCT@*>(&((*it)->element()));
+      = const_cast<@DISJUNCT_TOPOLOGY@@A_DISJUNCT@*>(&((*it)->pointset()));
     Prolog_term_ref t_d = Prolog_new_term_ref();
     Prolog_put_address(t_d, disj);
 

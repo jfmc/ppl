@@ -23,7 +23,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_ppl_java_common_defs_hh
 #define PPL_ppl_java_common_defs_hh 1
 
+#define PPL_NO_AUTOMATIC_INITIALIZATION
 #include "ppl.hh"
+
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+#include "pwl.hh"
+#endif
+
 #include <jni.h>
 #include "interfaced_boxes.hh"
 #include "marked_pointers.hh"
@@ -52,6 +58,9 @@ site: http://www.cs.unipr.it/ppl/ . */
   catch (const std::exception& e) { \
     handle_exception(env, e); \
   } \
+  catch (const timeout_exception& e) { \
+    handle_exception(env, e); \
+  } \
   catch (...) { \
     handle_exception(env); \
   }
@@ -73,26 +82,26 @@ site: http://www.cs.unipr.it/ppl/ . */
     if (env->ExceptionOccurred())        \
       return;                            \
   } while (0)
-#define CHECK_RESULT_ABORT(env, result)  \
+#define CHECK_RESULT_ABORT(env, cond)	 \
   do {                                   \
-    if (!result)                         \
+    if (!(cond))			 \
       abort();                           \
   } while (0)
-#define CHECK_RESULT_ASSERT(env, result) \
-  assert(result)
-#define CHECK_RESULT_THROW(env, result)  \
+#define CHECK_RESULT_ASSERT(env, cond)   \
+  assert(cond)
+#define CHECK_RESULT_THROW(env, cond)    \
   do {                                   \
-    if (!result)                         \
+    if (!(cond))			 \
       throw Java_ExceptionOccurred();    \
   } while (0)
-#define CHECK_RESULT_RETURN(env, result, val) \
+#define CHECK_RESULT_RETURN(env, cond, val)   \
   do {                                        \
-    if (!result)                              \
+    if (!(cond))			      \
       return val;                             \
   } while (0)
-#define CHECK_RESULT_RETURN_VOID(env, result) \
+#define CHECK_RESULT_RETURN_VOID(env, cond)   \
   do {                                        \
-    if (!result)                              \
+    if (!(cond))			      \
       return;                                 \
   } while (0)
 
@@ -105,6 +114,24 @@ namespace Java {
 
 struct Java_ExceptionOccurred : public std::exception {
 };
+
+class timeout_exception : public Parma_Polyhedra_Library::Throwable {
+public:
+  void throw_me() const {
+    throw *this;
+  }
+  int priority() const {
+    return 0;
+  }
+  timeout_exception() {
+  }
+};
+
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+extern Parma_Watchdog_Library::Watchdog* p_timeout_object;
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+
+void reset_timeout();
 
 void
 handle_exception(JNIEnv* env, const std::logic_error& e);
@@ -128,19 +155,91 @@ void
 handle_exception(JNIEnv* env, const std::exception& e);
 
 void
+handle_exception(JNIEnv* env, const timeout_exception& e);
+
+void
 handle_exception(JNIEnv* env);
 
+//! A cache for global references to Java classes.
+/*!
+  The cache is loaded by \c Parma_Polyhedra_Library.initialize_library();
+  It is cleared by \c Parma_Polyhedra_Library.finalize_library().
+*/
+class Java_Class_Cache {
+public:
+  // Non-PPL types.
+  jclass Boolean;
+  jclass Integer;
+  jclass Long;
+  jclass Iterator;
+  // PPL types.
+  jclass By_Reference;
+  jclass Coefficient;
+  jclass Congruence;
+  jclass Constraint;
+  jclass Generator;
+  jclass Grid_Generator;
+  jclass Generator_Type;
+  jclass Grid_Generator_Type;
+  jclass Constraint_System;
+  jclass Congruence_System;
+  jclass Generator_System;
+  jclass Grid_Generator_System;
+  jclass Linear_Expression;
+  jclass Linear_Expression_Coefficient;
+  jclass Linear_Expression_Difference;
+  jclass Linear_Expression_Sum;
+  jclass Linear_Expression_Times;
+  jclass Linear_Expression_Unary_Minus;
+  jclass Linear_Expression_Variable;
+  jclass MIP_Problem_Status;
+  jclass Optimization_Mode;
+  jclass Pair;
+  jclass Poly_Con_Relation;
+  jclass Poly_Gen_Relation;
+  jclass PPL_Object;
+  jclass Relation_Symbol;
+  jclass Variable;
+  jclass Variables_Set;
 
-//! A cache for Java classes field/method IDs.
+  //! Default constructor.
+  Java_Class_Cache();
+
+  //! Initializes all cache fields.
+  void init_cache(JNIEnv* env);
+
+  //! Resets all fields to \c NULL.
+  void clear_cache(JNIEnv* env);
+
+private:
+  //! Sets \p field to a global reference to Java class called \p name.
+  void init_cache(JNIEnv* env, jclass& field, const char* name);
+
+  //! Resets \p field to \c NULL, deleting the global reference (if any).
+  void clear_cache(JNIEnv* env, jclass& field);
+
+  // Private and not implemented: copy construction not allowed.
+  Java_Class_Cache(const Java_Class_Cache&);
+  // Private and not implemented: copy assignment not allowed.
+  Java_Class_Cache& operator=(const Java_Class_Cache&);
+};
+
+//! A cache for field and method IDs of Java classes.
+/*!
+  The IDs for fields and methods of PPL Java classes are automatically
+  by the static initializer of the corresponding Java class.
+  The static initializers of some PPL Java class also stores the IDs
+  for fields and methods of non-PPL classes (e.g., Boolean, Long, etc.).
+*/
 struct Java_FMID_Cache {
-  // Non-PPL type method IDs.
+  // Non-PPL type method IDs: stored when loading Coefficient.
   jmethodID Boolean_valueOf_ID;
   jmethodID Integer_valueOf_ID;
   jmethodID Integer_intValue_ID;
-  jmethodID Iterator_has_next_ID;
-  jmethodID Iterator_next_ID;
   jmethodID Long_valueOf_ID;
   jmethodID Long_longValue_ID;
+
+  // PPL type field and method IDs.
   // By_Reference.
   jfieldID By_Reference_obj_ID;
   jmethodID By_Reference_init_ID;
@@ -148,7 +247,7 @@ struct Java_FMID_Cache {
   jfieldID Coefficient_value_ID;
   jmethodID Coefficient_init_from_String_ID;
   jmethodID Coefficient_toString_ID;
-  // Congruence.
+  // Complexity_Class.
   jmethodID Complexity_Class_ordinal_ID;
   // Congruence.
   jfieldID Congruence_modulus_ID;
@@ -189,6 +288,10 @@ struct Java_FMID_Cache {
   jmethodID Generator_System_add_ID;
   jmethodID Grid_Generator_System_init_ID;
   jmethodID Grid_Generator_System_add_ID;
+  // System_Iterator: stored when loading Constraint_System.
+  jmethodID System_iterator_ID;
+  jmethodID System_Iterator_has_next_ID;
+  jmethodID System_Iterator_next_ID;
   // Linear_Expression.
   jmethodID Linear_Expression_sum_ID;
   jmethodID Linear_Expression_times_ID;
@@ -214,6 +317,9 @@ struct Java_FMID_Cache {
   jfieldID Optimization_Mode_MAXIMIZATION_ID;
   jfieldID Optimization_Mode_MINIMIZATION_ID;
   jmethodID Optimization_Mode_ordinal_ID;
+  // Pair.
+  jfieldID Pair_first_ID;
+  jfieldID Pair_second_ID;
   // Poly_Con_Relation and Poly_Gen_Relation.
   jmethodID Poly_Con_Relation_init_ID;
   jmethodID Poly_Gen_Relation_init_ID;
@@ -231,91 +337,17 @@ struct Java_FMID_Cache {
   jmethodID Variables_Set_init_ID;
   jmethodID Variables_Set_add_ID;
   jmethodID Variables_Set_iterator_ID;
-  // Iterator on Variables_Set.
+  // Iterators on Variables_Set.
   jmethodID Variables_Set_Iterator_has_next_ID;
   jmethodID Variables_Set_Iterator_next_ID;
 };
-extern Java_FMID_Cache cached_FMIDs;
 
-//! A cache for Java classes.
-struct Java_Class_Cache {
-  // Non-PPL types.
-  jclass Boolean;
-  jclass Integer;
-  jclass Long;
-  jclass Iterator;
-  // PPL types.
-  jclass By_Reference;
-  jclass Coefficient;
-  jclass Congruence;
-  jclass Constraint;
-  jclass Generator;
-  jclass Grid_Generator;
-  jclass Generator_Type;
-  jclass Grid_Generator_Type;
-  jclass Constraint_System;
-  jclass Congruence_System;
-  jclass Generator_System;
-  jclass Grid_Generator_System;
-  jclass Linear_Expression;
-  jclass Linear_Expression_Coefficient;
-  jclass Linear_Expression_Difference;
-  jclass Linear_Expression_Sum;
-  jclass Linear_Expression_Times;
-  jclass Linear_Expression_Unary_Minus;
-  jclass Linear_Expression_Variable;
-  jclass MIP_Problem_Status;
-  jclass Optimization_Mode;
-  jclass Poly_Con_Relation;
-  jclass Poly_Gen_Relation;
-  jclass PPL_Object;
-  jclass Relation_Symbol;
-  jclass Variable;
-  jclass Variables_Set;
-};
+//! The cached class references.
 extern Java_Class_Cache cached_classes;
 
+//! The field and method ID cache.
+extern Java_FMID_Cache cached_FMIDs;
 
-#define PPL_JNI_SET_CLASS_IN_CACHE(env, field, jni_class)             \
-  do {                                                             \
-    if (cached_classes.field != NULL)                              \
-      env->DeleteGlobalRef(cached_classes.field);                  \
-    cached_classes.field = (jclass) env->NewGlobalRef(jni_class);  \
-    CHECK_RESULT_ASSERT(env, cached_classes.field);                \
-  } while (0)
-
-#define PPL_JNI_FIND_CLASS(jni_class, env, field, name)  \
-  do {                                                   \
-    jni_class = cached_classes.field;                    \
-    if (jni_class == NULL) {                             \
-      jni_class = env->FindClass(name);                  \
-      CHECK_RESULT_ASSERT(env, jni_class);               \
-      PPL_JNI_SET_CLASS_IN_CACHE(env, field, jni_class); \
-    }                                                    \
-  } while (0)
-
-#define PPL_JNI_GET_METHOD_ID(mID, env, field, jni_object, \
-                              name, signature)             \
-  do {                                                     \
-    mID = cached_FMIDs.field;                              \
-    if (mID == NULL) {                                     \
-      jclass jni_class = env->GetObjectClass(jni_object);  \
-      mID = env->GetMethodID(jni_class, name, signature);  \
-      CHECK_RESULT_ASSERT(env, mID);                       \
-      cached_FMIDs.field = mID;                            \
-    }                                                      \
-  } while (0)
-
-#define PPL_JNI_GET_STATIC_METHOD_ID(mID, env, field, jni_class, \
-                                     name, signature)            \
-  do {                                                           \
-    mID = cached_FMIDs.field;                                    \
-    if (mID == NULL) {                                           \
-      mID = env->GetStaticMethodID(jni_class, name, signature);  \
-      CHECK_RESULT_ASSERT(env, mID);                             \
-      cached_FMIDs.field = mID;                                  \
-    }                                                            \
-  } while (0)
 
 /*! \brief
   Builds an unsigned C++ number from the Java native number \p value.

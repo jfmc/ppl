@@ -855,30 +855,15 @@ PPL::MIP_Problem::process_pending_constraints() {
   return true;
 }
 
-namespace {
-
-inline void
-assign(double& d, const mpz_class& c) {
-  d = c.get_d();
-}
-
-template <typename T, typename Policy>
-inline void
-assign(double& d,
-       const Parma_Polyhedra_Library::Checked_Number<T, Policy>& c) {
-  d = raw_value(c);
-}
-
-} // namespace
-
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_float_entering_index() const {
-  PPL_DIRTY_TEMP0(mpq_class, real_coeff);
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
   double challenger_num = 0.0;
   double challenger_den = 0.0;
   double current_value = 0.0;
+  double float_tableau_value = 0.0;
+  double float_tableau_denum = 0.0;
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
@@ -886,7 +871,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     if (sgn(cost_j) == cost_sign) {
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
-      assign(challenger_num, cost_j);
+      assign_r(challenger_num, cost_j, ROUND_IGNORE);
       challenger_num = fabs(challenger_num);
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
@@ -896,11 +881,9 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 	const Coefficient& tableau_ij = tableau_i[j];
 	if (tableau_ij != 0) {
 	  assert(tableau_i[base[i]] != 0);
-	  assign_r(real_coeff.get_num(), tableau_ij, ROUND_NOT_NEEDED);
-	  assign_r(real_coeff.get_den(), tableau_i[base[i]], ROUND_NOT_NEEDED);
-	  real_coeff.canonicalize();
-	  double float_tableau_value;
-	  assign(float_tableau_value, real_coeff);
+	  assign_r(float_tableau_value, tableau_ij, ROUND_IGNORE);
+	  assign_r(float_tableau_denum, tableau_i[base[i]], ROUND_IGNORE);
+	  float_tableau_value /= float_tableau_denum;
 	  challenger_den += float_tableau_value * float_tableau_value;
 	}
       }
@@ -1514,7 +1497,7 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
       // Update also `internal_space_dim'.
       x.internal_space_dim = x.external_space_dim;
       assert(OK());
-      return (status != UNSATISFIABLE);
+      return status != UNSATISFIABLE;
     }
   }
   // We should not be here!
@@ -1565,7 +1548,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   bool found_satisfiable_generator = true;
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   const Coefficient& p_divisor = p.divisor();
-  dimension_type nonint_dim;
+  dimension_type nonint_dim = lp.space_dimension();
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
