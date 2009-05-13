@@ -620,6 +620,42 @@ rem_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
+add_2exp_ext(To& to, const From& x, unsigned int exp, Rounding_Dir dir) {
+  if (!ext_to_handle<From_Policy>(x))
+    goto native;
+  if (is_nan<From_Policy>(x))
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  else if (is_minf<From_Policy>(x))
+    return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
+  else if (is_pinf<From_Policy>(x))
+    return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
+  else {
+  native:
+    return add_2exp<To_Policy, From_Policy>(to, x, exp, dir);
+  }
+}
+
+template <typename To_Policy, typename From_Policy,
+	  typename To, typename From>
+inline Result
+sub_2exp_ext(To& to, const From& x, unsigned int exp, Rounding_Dir dir) {
+  if (!ext_to_handle<From_Policy>(x))
+    goto native;
+  if (is_nan<From_Policy>(x))
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  else if (is_minf<From_Policy>(x))
+    return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
+  else if (is_pinf<From_Policy>(x))
+    return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
+  else {
+  native:
+    return sub_2exp<To_Policy, From_Policy>(to, x, exp, dir);
+  }
+}
+
+template <typename To_Policy, typename From_Policy,
+	  typename To, typename From>
+inline Result
 mul_2exp_ext(To& to, const From& x, unsigned int exp, Rounding_Dir dir) {
   if (!ext_to_handle<From_Policy>(x))
     goto native;

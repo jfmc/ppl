@@ -496,6 +496,8 @@ typename Enable_If<Is_Native_Or_Checked<To>::value \
                    Result>::type \
 name(To& to, const From& x, int exp, Rounding_Dir dir);
 
+FUNC1(add_2exp_assign_r)
+FUNC1(sub_2exp_assign_r)
 FUNC1(mul_2exp_assign_r)
 FUNC1(div_2exp_assign_r)
 FUNC1(smod_2exp_assign_r)

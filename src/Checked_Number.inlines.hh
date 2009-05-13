@@ -390,6 +390,8 @@ name(To& to, const From& x, int exp, Rounding_Dir dir) {		\
 		 dir);							\
 }
 
+FUNC1(add_2exp_assign_r, add_2exp_ext)
+FUNC1(sub_2exp_assign_r, sub_2exp_ext)
 FUNC1(mul_2exp_assign_r, mul_2exp_ext)
 FUNC1(div_2exp_assign_r, div_2exp_ext)
 FUNC1(smod_2exp_assign_r, smod_2exp_ext)

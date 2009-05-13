@@ -347,10 +347,10 @@ assign_signed_int_signed_int(To& to, const From from, Rounding_Dir dir) {
 	  && (Extended_Int<To_Policy, To>::min > Extended_Int<From_Policy, From>::min
 	      || Extended_Int<To_Policy, To>::max < Extended_Int<From_Policy, From>::max))) {
     if (CHECK_P(To_Policy::check_overflow,
-		from < static_cast<From>(Extended_Int<To_Policy, To>::min)))
+		from < From(Extended_Int<To_Policy, To>::min)))
       return set_neg_overflow_int<To_Policy>(to, dir);
     if (CHECK_P(To_Policy::check_overflow,
-		from > static_cast<From>(Extended_Int<To_Policy, To>::max)))
+		from > From(Extended_Int<To_Policy, To>::max)))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = To(from);
@@ -362,7 +362,7 @@ inline Result
 assign_signed_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
   if (sizeof(To) <= sizeof(From)) {
     if (CHECK_P(To_Policy::check_overflow,
-		from > static_cast<From>(Extended_Int<To_Policy, To>::max)))
+		from > From(Extended_Int<To_Policy, To>::max)))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = To(from);
@@ -376,7 +376,7 @@ assign_unsigned_int_signed_int(To& to, const From from, Rounding_Dir dir) {
     return set_neg_overflow_int<To_Policy>(to, dir);
   if (sizeof(To) < sizeof(From)) {
     if (CHECK_P(To_Policy::check_overflow,
-		from > static_cast<From>(Extended_Int<To_Policy, To>::max)))
+		from > From(Extended_Int<To_Policy, To>::max)))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = To(from);
@@ -390,7 +390,7 @@ assign_unsigned_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
       || (sizeof(To) == sizeof(From)
 	  && Extended_Int<To_Policy, To>::max < Extended_Int<From_Policy, From>::max)) {
     if (CHECK_P(To_Policy::check_overflow,
-		from > static_cast<From>(Extended_Int<To_Policy, To>::max)))
+		from > From(Extended_Int<To_Policy, To>::max)))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = To(from);
@@ -500,7 +500,7 @@ assign_int_float(To& to, const From from, Rounding_Dir dir) {
     return set_pos_overflow_int<To_Policy>(to, dir);
 #endif
   From i_from = rint(from);
-  to = static_cast<To>(i_from);
+  to = To(i_from);
   if (round_ignore(dir))
     return V_LGE;
   if (from < i_from)
@@ -1105,7 +1105,7 @@ div_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
   to = x >> exp;
   if (round_ignore(dir))
     return V_GE;
-  if (x & ((static_cast<Type>(1) << exp) - 1))
+  if (x & ((Type(1) << exp) - 1))
     return round_gt_int_no_overflow<To_Policy>(to, dir);
   else
     return V_EQ;
@@ -1135,10 +1135,10 @@ div_2exp_signed_int(Type& to, const Type x, unsigned int exp,
     goto zero;
   }
 #if 0
-  to = x / (static_cast<Type>(1) << exp);
+  to = x / (Type(1) << exp);
   if (round_ignore(dir))
     return V_GE;
-  Type r = x % (static_cast<Type>(1) << exp);
+  Type r = x % (Type(1) << exp);
   if (r < 0)
     return round_lt_int_no_overflow<To_Policy>(to, dir);
   else if (r > 0)
@@ -1150,10 +1150,66 @@ div_2exp_signed_int(Type& to, const Type x, unsigned int exp,
   to = x >> exp;
   if (round_ignore(dir))
     return V_GE;
-  if (x & ((static_cast<Type>(1) << exp) - 1))
+  if (x & ((Type(1) << exp) - 1))
     return round_gt_int_no_overflow<To_Policy>(to, dir);
   return V_EQ;
 #endif
+}
+
+template <typename To_Policy, typename From_Policy, typename Type>
+inline Result
+add_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
+                      Rounding_Dir dir) {
+  if (!To_Policy::check_overflow) {
+    to = x + (Type(1) << exp);
+    return V_EQ;
+  }
+  if (exp >= sizeof(Type) * CHAR_BIT)
+    return set_pos_overflow_int<To_Policy>(to, dir);
+  return add_unsigned_int<To_Policy, From_Policy, void>(to, x, Type(1) << exp, dir);
+}
+
+template <typename To_Policy, typename From_Policy, typename Type>
+inline Result
+add_2exp_signed_int(Type& to, const Type x, unsigned int exp,
+		    Rounding_Dir dir) {
+  if (!To_Policy::check_overflow) {
+    to = x + (Type(1) << exp);
+    return V_EQ;
+  }
+  if (exp >= sizeof(Type) * CHAR_BIT)
+    return set_pos_overflow_int<To_Policy>(to, dir);
+  if (exp == sizeof(Type) * CHAR_BIT - 1)
+    return sub_signed_int<To_Policy, From_Policy, void>(to, x, -2 * (Type(1) << (exp - 1)), dir);
+  return add_signed_int<To_Policy, From_Policy, void>(to, x, Type(1) << exp, dir);
+}
+
+template <typename To_Policy, typename From_Policy, typename Type>
+inline Result
+sub_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
+                      Rounding_Dir dir) {
+  if (!To_Policy::check_overflow) {
+    to = x - (Type(1) << exp);
+    return V_EQ;
+  }
+  if (exp >= sizeof(Type) * CHAR_BIT)
+    return set_neg_overflow_int<To_Policy>(to, dir);
+  return sub_unsigned_int<To_Policy, From_Policy, void>(to, x, Type(1) << exp, dir);
+}
+
+template <typename To_Policy, typename From_Policy, typename Type>
+inline Result
+sub_2exp_signed_int(Type& to, const Type x, unsigned int exp,
+		    Rounding_Dir dir) {
+  if (!To_Policy::check_overflow) {
+    to = x - (Type(1) << exp);
+    return V_EQ;
+  }
+  if (exp >= sizeof(Type) * CHAR_BIT)
+    return set_neg_overflow_int<To_Policy>(to, dir);
+  if (exp == sizeof(Type) * CHAR_BIT - 1)
+    return add_signed_int<To_Policy, From_Policy, void>(to, x, -2 * (Type(1) << (exp - 1)), dir);
+  return sub_signed_int<To_Policy, From_Policy, void>(to, x, Type(1) << exp, dir);
 }
 
 template <typename To_Policy, typename From_Policy, typename Type>
@@ -1171,7 +1227,7 @@ mul_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
     }
     return set_pos_overflow_int<To_Policy>(to, dir);
   }
-  if (x & (((static_cast<Type>(1) << exp) - 1) << (sizeof(Type) * CHAR_BIT - exp)))
+  if (x & (((Type(1) << exp) - 1) << (sizeof(Type) * CHAR_BIT - exp)))
     return set_pos_overflow_int<To_Policy>(to, dir);
   Type n = x << exp;
   if (n > Extended_Int<To_Policy, Type>::max)
@@ -1198,7 +1254,7 @@ mul_2exp_signed_int(Type& to, const Type x, unsigned int exp,
       return V_EQ;
     }
   }
-  Type mask = ((static_cast<Type>(1) << exp) - 1)
+  Type mask = ((Type(1) << exp) - 1)
     << (sizeof(Type) * CHAR_BIT - 1 - exp);
   Type n;
   if (x < 0) {
@@ -1362,7 +1418,7 @@ template <typename Policy, typename Type>
 inline Result
 output_char(std::ostream& os, Type& from,
 	    const Numeric_Format&, Rounding_Dir) {
-  os << static_cast<int>(from);
+  os << int(from);
   return V_EQ;
 }
 
@@ -1482,6 +1538,28 @@ PPL_SPECIALIZE_REM(rem_unsigned_int, unsigned short, unsigned short, unsigned sh
 PPL_SPECIALIZE_REM(rem_unsigned_int, unsigned int, unsigned int, unsigned int)
 PPL_SPECIALIZE_REM(rem_unsigned_int, unsigned long, unsigned long, unsigned long)
 PPL_SPECIALIZE_REM(rem_unsigned_int, unsigned long long, unsigned long long, unsigned long long)
+
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_signed_int, signed char, signed char)
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_signed_int, signed short, signed short)
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_signed_int, signed int, signed int)
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_signed_int, signed long, signed long)
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_signed_int, signed long long, signed long long)
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_unsigned_int, unsigned long long, unsigned long long)
+
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_signed_int, signed char, signed char)
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_signed_int, signed short, signed short)
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_signed_int, signed int, signed int)
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_signed_int, signed long, signed long)
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_signed_int, signed long long, signed long long)
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_unsigned_int, unsigned char, unsigned char)
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_unsigned_int, unsigned short, unsigned short)
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_unsigned_int, unsigned int, unsigned int)
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_unsigned_int, unsigned long, unsigned long)
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_unsigned_int, unsigned long long, unsigned long long)
 
 PPL_SPECIALIZE_MUL_2EXP(mul_2exp_signed_int, signed char, signed char)
 PPL_SPECIALIZE_MUL_2EXP(mul_2exp_signed_int, signed short, signed short)

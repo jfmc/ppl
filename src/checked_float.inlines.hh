@@ -595,6 +595,32 @@ struct Float_2exp {
 
 template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
+add_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
+  if (To_Policy::check_nan_result && is_nan<From_Policy>(x))
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  assert(exp < sizeof(unsigned long long) * CHAR_BIT);
+  return
+    add<To_Policy, From_Policy, Float_2exp>(to,
+                                            x,
+                                            Type(1ULL << exp),
+                                            dir);
+}
+
+template <typename To_Policy, typename From_Policy, typename Type>
+inline Result
+sub_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
+  if (To_Policy::check_nan_result && is_nan<From_Policy>(x))
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  assert(exp < sizeof(unsigned long long) * CHAR_BIT);
+  return
+    sub<To_Policy, From_Policy, Float_2exp>(to,
+                                            x,
+                                            Type(1ULL << exp),
+                                            dir);
+}
+
+template <typename To_Policy, typename From_Policy, typename Type>
+inline Result
 mul_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
@@ -602,7 +628,7 @@ mul_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   return
     mul<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
-                                            static_cast<Type>(1ULL << exp),
+                                            Type(1ULL << exp),
                                             dir);
 }
 
@@ -615,7 +641,7 @@ div_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   return
     div<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
-                                            static_cast<Type>(1ULL << exp),
+                                            Type(1ULL << exp),
                                             dir);
 }
 
@@ -779,7 +805,7 @@ assign_float_mpz(T& to, const mpz_class& _from, Rounding_Dir dir)
     return V_EQ;
   }
   size_t exponent = mpz_sizeinbase(from, 2) - 1;
-  if (exponent > static_cast<size_t>(Float<T>::Binary::EXPONENT_MAX)) {
+  if (exponent > size_t(Float<T>::Binary::EXPONENT_MAX)) {
     if (sign < 0)
       return set_neg_overflow_float<To_Policy>(to, dir);
     else
@@ -828,7 +854,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
     else
       return round_gt_float<To_Policy>(to, dir);
   }
-  if (exponent > static_cast<signed int>(Float<T>::Binary::EXPONENT_MAX + 1)) {
+  if (exponent > int(Float<T>::Binary::EXPONENT_MAX + 1)) {
   overflow:
     if (sign < 0)
       return set_neg_overflow_float<To_Policy>(to, dir);
@@ -861,7 +887,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
   }
   else
     --exponent;
-  if (exponent > static_cast<signed int>(Float<T>::Binary::EXPONENT_MAX)) {
+  if (exponent > int(Float<T>::Binary::EXPONENT_MAX)) {
     mpz_clear(mantissa);
     goto overflow;
   }
@@ -1022,6 +1048,8 @@ PPL_SPECIALIZE_SUB(sub_float, float, float, float)
 PPL_SPECIALIZE_MUL(mul_float, float, float, float)
 PPL_SPECIALIZE_DIV(div_float, float, float, float)
 PPL_SPECIALIZE_REM(rem_float, float, float, float)
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_float, float, float)
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_float, float, float)
 PPL_SPECIALIZE_MUL_2EXP(mul_2exp_float, float, float)
 PPL_SPECIALIZE_DIV_2EXP(div_2exp_float, float, float)
 PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_float, float, float)
@@ -1068,6 +1096,8 @@ PPL_SPECIALIZE_SUB(sub_float, double, double, double)
 PPL_SPECIALIZE_MUL(mul_float, double, double, double)
 PPL_SPECIALIZE_DIV(div_float, double, double, double)
 PPL_SPECIALIZE_REM(rem_float, double, double, double)
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_float, double, double)
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_float, double, double)
 PPL_SPECIALIZE_MUL_2EXP(mul_2exp_float, double, double)
 PPL_SPECIALIZE_DIV_2EXP(div_2exp_float, double, double)
 PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_float, double, double)
@@ -1114,6 +1144,8 @@ PPL_SPECIALIZE_SUB(sub_float, long double, long double, long double)
 PPL_SPECIALIZE_MUL(mul_float, long double, long double, long double)
 PPL_SPECIALIZE_DIV(div_float, long double, long double, long double)
 PPL_SPECIALIZE_REM(rem_float, long double, long double, long double)
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_float, long double, long double)
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_float, long double, long double)
 PPL_SPECIALIZE_MUL_2EXP(mul_2exp_float, long double, long double)
 PPL_SPECIALIZE_DIV_2EXP(div_2exp_float, long double, long double)
 PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_float, long double, long double)

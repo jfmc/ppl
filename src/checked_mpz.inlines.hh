@@ -430,6 +430,32 @@ PPL_SPECIALIZE_REM(rem_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result
+add_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
+             Rounding_Dir) {
+  PPL_DIRTY_TEMP(mpz_class, v);
+  v = 1;
+  mpz_mul_2exp(v.get_mpz_t(), v.get_mpz_t(), exp);
+  to = x + v;
+  return V_EQ;
+}
+
+PPL_SPECIALIZE_ADD_2EXP(add_2exp_mpz, mpz_class, mpz_class)
+
+template <typename To_Policy, typename From_Policy>
+inline Result
+sub_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
+             Rounding_Dir) {
+  PPL_DIRTY_TEMP(mpz_class, v);
+  v = 1;
+  mpz_mul_2exp(v.get_mpz_t(), v.get_mpz_t(), exp);
+  to = x - v;
+  return V_EQ;
+}
+
+PPL_SPECIALIZE_SUB_2EXP(sub_2exp_mpz, mpz_class, mpz_class)
+
+template <typename To_Policy, typename From_Policy>
+inline Result
 mul_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
              Rounding_Dir) {
   mpz_mul_2exp(to.get_mpz_t(), x.get_mpz_t(), exp);
