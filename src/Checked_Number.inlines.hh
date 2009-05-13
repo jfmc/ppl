@@ -66,12 +66,6 @@ Checked_Number_Transparent_Policy<T>::handle_result(Result) {
 }
 
 inline void
-Checked_Number_Default_Policy::handle_result(Result r) {
-  if (result_overflow(r) || result_class(r) == VC_NAN)
-    throw_result_exception(r);
-}
-
-inline void
 Extended_Number_Policy::handle_result(Result r) {
   if (result_class(r) == VC_NAN)
     throw_result_exception(r);
