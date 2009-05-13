@@ -47,7 +47,7 @@ struct Checked_Number_Default_Policy {
   const_bool_nodef(has_infinity, false);
   const_bool_nodef(convertible, true);
   const_bool_nodef(fpu_check_inexact, true);
-  const_bool_nodef(check_nan_result, true);
+  const_bool_nodef(fpu_check_nan_result, true);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_NATIVE;
@@ -74,7 +74,7 @@ struct Extended_Number_Policy {
   // The compile time error on conversions is the expected behavior.
   // const_bool_nodef(convertible, false);
   const_bool_nodef(fpu_check_inexact, true);
-  const_bool_nodef(check_nan_result, true);
+  const_bool_nodef(fpu_check_nan_result, true);
   // Do not uncomment the following.
   // The compile time error is the expected behavior.
   // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
@@ -103,7 +103,7 @@ struct WRD_Extended_Number_Policy {
   // The compile time error on conversions is the expected behavior.
   // const_bool_nodef(convertible, false);
   const_bool_nodef(fpu_check_inexact, true);
-  const_bool_nodef(check_nan_result, false);
+  const_bool_nodef(fpu_check_nan_result, false);
   // Do not uncomment the following.
   // The compile time error is the expected behavior.
   // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
@@ -132,7 +132,7 @@ struct Check_Overflow_Policy {
   const_bool_nodef(has_infinity, std::numeric_limits<T>::has_infinity);
   const_bool_nodef(convertible, true);
   const_bool_nodef(fpu_check_inexact, true);
-  const_bool_nodef(check_nan_result, true);
+  const_bool_nodef(fpu_check_nan_result, true);
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
