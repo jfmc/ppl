@@ -233,6 +233,11 @@ public:
     return lt(UPPER, upper(), info(), LOWER, lower(), info());
   }
 
+  bool check_empty(I_Result r) const {
+    return (r & I_ANY) == I_EMPTY ||
+      ((r & I_ANY) != I_NOT_EMPTY && is_empty());
+  }
+
   bool is_singleton() const {
     return eq(LOWER, lower(), info(), UPPER, upper(), info());
   }
@@ -521,6 +526,49 @@ public:
     else
       floor_assign_r(u, upper(), ROUND_UP);
     return u >= l;
+  }
+
+  template <typename T>
+  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
+  wrap_assign(const T& x, Bounded_Integer_Type_Width w,
+	      Bounded_Integer_Type_Signedness s, const Interval& refinement) {
+    if (is_empty())
+      return I_EMPTY;
+    if (lower_is_boundary_infinity() || upper_is_boundary_infinity())
+      return assign(refinement);
+    PPL_DIRTY_TEMP(Boundary, u);
+    Result r;
+    r = sub_2exp_assign_r(u, upper(), w, ROUND_UP);
+    if (!result_overflow(r) && u > lower())
+      return assign(refinement);
+    switch (s) {
+    case UNSIGNED:
+      umod_2exp_assign(LOWER, lower(), info(),
+		       LOWER, f_lower(x), f_info(x), w);
+      umod_2exp_assign(UPPER, upper(), info(),
+		       UPPER, f_upper(x), f_info(x), w);
+      break;
+    case SIGNED_2_COMPLEMENT:
+      smod_2exp_assign(LOWER, lower(), info(),
+		       LOWER, f_lower(x), f_info(x), w);
+      smod_2exp_assign(UPPER, upper(), info(),
+		       UPPER, f_upper(x), f_info(x), w);
+      break;
+    default:
+      assert(false);
+      break;
+    }
+    if (le(LOWER, lower(), info(), UPPER, upper(), info()))
+      return intersect_assign(refinement);
+    PPL_DIRTY_TEMP(Interval, tmp);
+    tmp.info.clear();
+    Boundary_NS::assign(LOWER, tmp.lower(), tmp.info(),
+			LOWER, lower(), info());
+    set_unbounded(UPPER, tmp.upper(), tmp.info());
+    tmp.intersect_assign(refinement);
+    lower_extend();
+    intersect_assign(refinement);
+    return join_assign(tmp);
   }
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
