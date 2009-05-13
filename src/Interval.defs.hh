@@ -468,9 +468,10 @@ public:
   void topological_closure_assign() {
     if (!Info::store_open || is_empty())
       return;
-
-    info().set_boundary_property(LOWER, OPEN, false);
-    info().set_boundary_property(UPPER, OPEN, false);
+    if (lower_is_open() && !lower_is_boundary_infinity())
+      info().set_boundary_property(LOWER, OPEN, false);
+    if (upper_is_open() && !upper_is_boundary_infinity())
+      info().set_boundary_property(UPPER, OPEN, false);
   }
 
   void remove_inf() {
