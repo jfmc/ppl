@@ -2700,6 +2700,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
     PPL_DIRTY_TEMP_COEFFICIENT(f_d);
     PPL_DIRTY_TEMP_COEFFICIENT(v_n);
     PPL_DIRTY_TEMP_COEFFICIENT(v_d);
+    PPL_DIRTY_TEMP_COEFFICIENT(f_d_wrap_frequency);
     for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars.end(); ++i) {
       const Variable x = Variable(*i);
@@ -2730,9 +2731,16 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
       }
 
       // `x' is not a constant in `gr'.
-      if (2*f_n > f_d * wrap_frequency) {
-        // If the grid frequency for `x' in `vars' is more than half the
-        // `wrap_frequency', then `x' can only take a unique (ie constant)
+      assert(f_n != 0);
+      Coefficient& wrap_modulus = f_n;
+      f_d_wrap_frequency = f_d * wrap_frequency;
+      if (o == OVERFLOW_WRAPS && f_n != f_d * wrap_frequency)
+        // We know that `x' is not a constant, so, if overflow wraps,
+        // `x' may wrap to a value modulo the `wrap_frequency'.
+        add_grid_generator(parameter(wrap_frequency * x));
+      else if ((o == OVERFLOW_IMPOSSIBLE && 2*f_n >= f_d_wrap_frequency)
+               || (f_n == f_d_wrap_frequency)) {
+        // In these cases, `x' can only take a unique (ie constant)
         // value.
         if (s == UNSIGNED && v_n < 0) {
           // `v_n' is the value closest to 0 and may be negative.
@@ -2742,16 +2750,12 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
         }
         add_constraint(v_d * x == v_n);
       }
-      else if (o == OVERFLOW_WRAPS)
-        // We know that `x' is not a constant, so, if overflow wraps,
-        // `x' may wrap to a value modulo the `wrap_frequency'.
-        add_grid_generator(parameter(wrap_frequency * x));
       else
-        // If overflow is impossible but the grid frequency is no more than
+        // If overflow is impossible but the grid frequency is less than
         // half the wrap frequency, then there is more than one possible
         // value for `x' in the range of the bounded integer type,
         // so the grid is unchanged.
-        assert(o == OVERFLOW_IMPOSSIBLE && 2*f_n <= f_d * wrap_frequency);
+        assert(o == OVERFLOW_IMPOSSIBLE && 2*f_n < f_d_wrap_frequency);
     }
     return;
   }

@@ -352,6 +352,60 @@ test13() {
   return ok;
 }
 
+bool
+test14() {
+  Variable x(0);
+  Variable y(1);
+
+  Grid gr1(2);
+  gr1.add_congruence((x %= 245) / 255);
+  Grid gr2(gr1);
+
+  Variables_Set vars(x);
+
+  gr1.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
+  gr2.wrap_assign(vars, BITS_8, SIGNED_2_COMPLEMENT, OVERFLOW_WRAPS);
+
+  Grid known_result1(2);
+  known_result1.add_congruence((x %= 0) / 1);
+  Grid known_result2(2);
+  known_result2.add_congruence((x %= 0) / 1);
+
+  bool ok = (gr1 == known_result1 && gr2 == known_result2);
+
+  print_congruences(gr1, "*** gr1.wrap_assign(...) ***");
+  print_congruences(gr2, "*** gr2.wrap_assign(...) ***");
+
+  return ok;
+}
+
+bool
+test15() {
+  Variable x(0);
+  Variable y(1);
+
+  Grid gr1(2);
+  gr1.add_congruence((x %= 245) / 256);
+  Grid gr2(gr1);
+
+  Variables_Set vars(x);
+
+  gr1.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
+  gr2.wrap_assign(vars, BITS_8, SIGNED_2_COMPLEMENT, OVERFLOW_WRAPS);
+
+  Grid known_result1(2);
+  known_result1.add_congruence((x %= 245) / 0);
+  Grid known_result2(2);
+  known_result2.add_congruence((x %= -11) / 0);
+
+  bool ok = (gr1 == known_result1 && gr2 == known_result2);
+
+  print_congruences(gr1, "*** gr1.wrap_assign(...) ***");
+  print_congruences(gr2, "*** gr2.wrap_assign(...) ***");
+
+  return ok;
+}
+
 
 } // namespace
 
@@ -369,4 +423,6 @@ BEGIN_MAIN
   DO_TEST_F8(test11);
   DO_TEST_F8(test12);
   DO_TEST_F8(test13);
+  DO_TEST_F8(test14);
+  DO_TEST_F8(test15);
 END_MAIN
