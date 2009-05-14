@@ -1465,7 +1465,7 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
   // FIXME: Build the quadrant interval.
   I_Constraint<Coefficient> lower = i_constraint(GREATER_OR_EQUAL, min_value);
   I_Constraint<Coefficient> upper = i_constraint(LESS_THAN, max_value);
-  ITV quadrant_itv;
+  PPL_DIRTY_TEMP(ITV, quadrant_itv);
   quadrant_itv.build(lower, upper);
 
   if (pcs == 0) {
@@ -1497,11 +1497,11 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
   // A map associating interval constraints to variable indexes.
   typedef std::map<dimension_type, std::vector<const Constraint*> > map_type;
   map_type var_cs_map;
-  dimension_type c_num_vars = 0;
-  dimension_type c_only_var = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
          i_end = cs.end(); i != i_end; ++i) {
     const Constraint& c = *i;
+    dimension_type c_num_vars = 0;
+    dimension_type c_only_var = 0;
     if (extract_interval_constraint(c, cs_space_dim,
                                     c_num_vars, c_only_var)) {
       if (c_num_vars == 1) {
@@ -1521,7 +1521,7 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
     }
   }
 
-  ITV refinement_itv;
+  PPL_DIRTY_TEMP(ITV, refinement_itv);
   const map_type::const_iterator var_cs_map_end = var_cs_map.end();
   // Loop through the variable indexes in `vars'.
   for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i) {

@@ -406,9 +406,9 @@ Box<ITV>::refine_interval_no_check(ITV& itv,
                                           : LESS_THAN, q));
     break;
   default:
-    // Silence an annoying GCC warning.
-    res = I_ANY;
+    // Silence an annoying GCC warning (should never reach this point).
     assert(false);
+    res = I_ANY;
   }
   assert(itv.OK());
   return res;
