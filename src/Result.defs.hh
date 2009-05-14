@@ -100,9 +100,6 @@ enum Result {
   //! \hideinitializer The exact result is a number out of finite bounds.
   V_OVERFLOW = 1 << 6,
 
-  //! \hideinitializer The computed result is not representable.
-  V_UNREPRESENTABLE = 1 << 7,
-
   //! \hideinitializer A negative integer overflow occurred (rounding up).
   V_LT_INF = V_LT | V_OVERFLOW,
 
@@ -155,7 +152,10 @@ enum Result {
   V_UNKNOWN_NEG_OVERFLOW = V_NAN | (10 << 8),
 
   //! \hideinitializer Unknown result due to intermediate positive overflow.
-  V_UNKNOWN_POS_OVERFLOW = V_NAN | (11 << 8)
+  V_UNKNOWN_POS_OVERFLOW = V_NAN | (11 << 8),
+
+  //! \hideinitializer The computed result is not representable.
+  V_UNREPRESENTABLE = 1 << 7,
 
 };
 
