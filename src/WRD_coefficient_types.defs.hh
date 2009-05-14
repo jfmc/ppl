@@ -31,21 +31,46 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 struct WRD_Extended_Number_Policy {
+  //! Check for overflowed result.
   const_bool_nodef(check_overflow, true);
+
+  //! Do not check for attempts to add infinities with different sign.
   const_bool_nodef(check_inf_add_inf, false);
+
+  //! Do not check for attempts to subtract infinities with same sign.
   const_bool_nodef(check_inf_sub_inf, false);
+
+  //! Do not check for attempts to multiply infinities by zero.
   const_bool_nodef(check_inf_mul_zero, false);
+
+  //! Do not check for attempts to divide by zero.
   const_bool_nodef(check_div_zero, false);
+
+  //! Do not check for attempts to divide infinities.
   const_bool_nodef(check_inf_div_inf, false);
+
+  //! Do not check for attempts to compute remainder of infinities.
   const_bool_nodef(check_inf_mod, false);
+
+  //! Do not checks for attempts to take the square root of a negative number.
   const_bool_nodef(check_sqrt_neg, false);
+
+  //! Handle not-a-number special value.
   const_bool_nodef(has_nan, true);
+
+  //! Handle infinity special values.
   const_bool_nodef(has_infinity, true);
+
   // Do not uncomment the following.
   // The compile time error on conversions is the expected behavior.
   // const_bool_nodef(convertible, false);
+
+  //! Honor requests to check for FPU inexact results.
   const_bool_nodef(fpu_check_inexact, true);
+
+  //! Do not make extra checks to detect FPU NaN results.
   const_bool_nodef(fpu_check_nan_result, false);
+
   // Do not uncomment the following.
   // The compile time error is the expected behavior.
   // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
@@ -53,6 +78,11 @@ struct WRD_Extended_Number_Policy {
   // static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_UP;
   // static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_UP;
   // static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_UP;
+
+  /*! \brief
+    Handles \p r: called by all constructors, operators and functions that
+    do not return a Result value.
+  */
   static void handle_result(Result r);
 };
 
