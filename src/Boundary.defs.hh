@@ -733,7 +733,7 @@ inline Result
 umod_2exp_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 		 Boundary_Type type, const T& x, const Info& info,
 		 unsigned int exp) {
-  assert(to_type != type);
+  assert(to_type == type);
   bool shrink;
   if (is_boundary_infinity(type, x, info)) {
     shrink = boundary_infinity_is_open(type, info);
@@ -751,7 +751,7 @@ inline Result
 smod_2exp_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 		 Boundary_Type type, const T& x, const Info& info,
 		 unsigned int exp) {
-  assert(to_type != type);
+  assert(to_type == type);
   bool shrink;
   if (is_boundary_infinity(type, x, info)) {
     shrink = boundary_infinity_is_open(type, info);
