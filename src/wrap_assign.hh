@@ -68,7 +68,7 @@ wrap_assign_rec(PSET& dest,
            vars_end = vars.end(); i != vars.end(); ++i) {
       const Variable x = Variable(*i);
       p.refine_with_constraint(min_value <= x);
-      p.refine_with_constraint(x < max_value);
+      p.refine_with_constraint(x <= max_value);
     }
     dest.upper_bound_assign(p);
   }
@@ -135,17 +135,18 @@ wrap_assign(PSET& pointset,
 
   // Set `min_value' and `max_value' to the minimum and maximum values
   // a variable of width `w' and signedness `s' can take.
-  // NOTE: value is meant to range in [min_value, max_value).
   PPL_DIRTY_TEMP_COEFFICIENT(min_value);
   PPL_DIRTY_TEMP_COEFFICIENT(max_value);
   if (s == UNSIGNED) {
     min_value = 0;
     mul_2exp_assign(max_value, Coefficient_one(), w);
+    --max_value;
   }
   else {
     assert(s == SIGNED_2_COMPLEMENT);
     mul_2exp_assign(max_value, Coefficient_one(), w-1);
     neg_assign(min_value, max_value);
+    --max_value;
   }
 
   // If we are wrapping variables collectively, the ranges for the
@@ -194,7 +195,7 @@ wrap_assign(PSET& pointset,
     set_full_range:
       pointset.unconstrain(x);
       full_range_bounds.insert(min_value <= x);
-      full_range_bounds.insert(x < max_value);
+      full_range_bounds.insert(x <= max_value);
       continue;
     }
 
@@ -219,7 +220,7 @@ wrap_assign(PSET& pointset,
       if (first_quadrant < 0)
         full_range_bounds.insert(min_value <= x);
       if (last_quadrant > 0)
-        full_range_bounds.insert(x < max_value);
+        full_range_bounds.insert(x <= max_value);
       continue;
     }
 
@@ -256,7 +257,7 @@ wrap_assign(PSET& pointset,
           const Variable& x = i->var;
           pointset.unconstrain(x);
           full_range_bounds.insert(min_value <= x);
-          full_range_bounds.insert(x < max_value);
+          full_range_bounds.insert(x <= max_value);
         }
       }
     }
@@ -276,7 +277,7 @@ wrap_assign(PSET& pointset,
         if (pcs != 0)
           p.refine_with_constraints(*pcs);
         p.refine_with_constraint(min_value <= x);
-        p.refine_with_constraint(x < max_value);
+        p.refine_with_constraint(x <= max_value);
         hull.upper_bound_assign(p);
       }
       pointset.swap(hull);
