@@ -135,10 +135,10 @@ JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Congruence_initIDs
 (JNIEnv* env, jclass j_congruence_class) {
   jfieldID fID;
-  fID = env->GetFieldID(j_congruence_class, "modulus",
+  fID = env->GetFieldID(j_congruence_class, "mod",
                         "Lparma_polyhedra_library/Coefficient;");
   CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Congruence_modulus_ID = fID;
+  cached_FMIDs.Congruence_mod_ID = fID;
   fID = env->GetFieldID(j_congruence_class, "lhs",
                         "Lparma_polyhedra_library/Linear_Expression;");
   CHECK_RESULT_ASSERT(env, fID);

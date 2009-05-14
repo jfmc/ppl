@@ -250,7 +250,7 @@ struct Java_FMID_Cache {
   // Complexity_Class.
   jmethodID Complexity_Class_ordinal_ID;
   // Congruence.
-  jfieldID Congruence_modulus_ID;
+  jfieldID Congruence_mod_ID;
   jfieldID Congruence_lhs_ID;
   jfieldID Congruence_rhs_ID;
   jmethodID Congruence_init_ID;

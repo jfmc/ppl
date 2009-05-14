@@ -41,7 +41,7 @@ import java.io.IOException;
 public class Congruence {
 
     //! The modulus of the congruence.
-    protected Coefficient modulus;
+    protected Coefficient mod;
 
     //! The value of the left hand side of \p this.
     Linear_Expression lhs;
@@ -55,9 +55,24 @@ public class Congruence {
     */
     public Congruence(Linear_Expression e1, Linear_Expression e2,
 		      Coefficient m) {
-	modulus = new Coefficient(m);
+	mod = new Coefficient(m);
 	lhs = e1.clone();
 	rhs = e2.clone();
+    }
+
+    //! Returns the left hand side of \p this.
+    public Linear_Expression left_hand_side() {
+	return lhs;
+    }
+
+    //! Returns the right hand side of \p this.
+    public Linear_Expression right_hand_side() {
+	return rhs;
+    }
+
+    //! Returns the relation symbol of \p this.
+    public Coefficient modulus() {
+	return mod;
     }
 
     //! Returns an ascii formatted internal representation of \p this.

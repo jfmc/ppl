@@ -328,14 +328,14 @@ build_java_poly_con_relation(JNIEnv* env, Poly_Con_Relation& r) {
 
 Congruence
 build_cxx_congruence(JNIEnv* env, jobject j_congruence) {
-  jobject j_modulus
-    = env->GetObjectField(j_congruence, cached_FMIDs.Congruence_modulus_ID);
+  jobject j_mod
+    = env->GetObjectField(j_congruence, cached_FMIDs.Congruence_mod_ID);
   jobject j_lhs
     = env->GetObjectField(j_congruence, cached_FMIDs.Congruence_lhs_ID);
   jobject j_rhs
     = env->GetObjectField(j_congruence, cached_FMIDs.Congruence_rhs_ID);
   PPL_DIRTY_TEMP_COEFFICIENT(ppl_modulus);
-  ppl_modulus = build_cxx_coeff(env, j_modulus);
+  ppl_modulus = build_cxx_coeff(env, j_mod);
   Linear_Expression lhs = build_cxx_linear_expression(env, j_lhs);
   Linear_Expression rhs = build_cxx_linear_expression(env, j_rhs);
   return (lhs %= rhs) / ppl_modulus;
@@ -831,13 +831,13 @@ build_java_constraint(JNIEnv* env, const Constraint& c) {
 
 jobject
 build_java_congruence(JNIEnv* env, const Congruence& cg) {
-  jobject j_modulus = build_java_coeff(env, cg.modulus());
+  jobject j_mod = build_java_coeff(env, cg.modulus());
   jobject j_lhs = build_linear_expression(env, cg);
   jobject j_rhs
     = build_java_linear_expression_coefficient(env, -cg.inhomogeneous_term());
   jobject ret = env->NewObject(cached_classes.Congruence,
                                cached_FMIDs.Congruence_init_ID,
-			       j_lhs, j_rhs, j_modulus);
+			       j_lhs, j_rhs, j_mod);
   CHECK_RESULT_THROW(env, ret);
   return ret;
 }
