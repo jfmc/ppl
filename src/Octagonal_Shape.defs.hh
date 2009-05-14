@@ -417,7 +417,7 @@ private:
     the inequalities defining an OS.
   */
 #ifndef NDEBUG
-  typedef Checked_Number<T, Extended_Number_Policy> N;
+  typedef Checked_Number<T, Debug_WRD_Extended_Number_Policy> N;
 #else
   typedef Checked_Number<T, WRD_Extended_Number_Policy> N;
 #endif
