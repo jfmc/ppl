@@ -1333,7 +1333,7 @@ interval_term(const Rational_Box::interval_type& i) {
     // Lower bound.
     const Prolog_atom& l_oc = i.lower_is_open() ? a_o : a_c;
     Prolog_term_ref l_b = Prolog_new_term_ref();
-    if (i.lower_is_unbounded())
+    if (i.lower_is_boundary_infinity())
       Prolog_put_atom(l_b, a_minf);
     else
       Prolog_put_term(l_b, rational_term(i.lower()));
@@ -1343,7 +1343,7 @@ interval_term(const Rational_Box::interval_type& i) {
     // Upper bound.
     const Prolog_atom& u_oc = i.upper_is_open() ? a_o : a_c;
     Prolog_term_ref u_b = Prolog_new_term_ref();
-    if (i.upper_is_unbounded())
+    if (i.upper_is_boundary_infinity())
       Prolog_put_atom(u_b, a_pinf);
     else
       Prolog_put_term(u_b, rational_term(i.upper()));

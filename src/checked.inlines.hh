@@ -28,6 +28,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Integer.hh"
 #include <cassert>
 
+#if defined(__GNUC__)
+/*! \brief
+  Performs the test <CODE>a < b</CODE> avoiding the warning
+  about comparison with min or max of the type.
+*/
+#define PPL_LT_SILENT(a, b)				\
+  ({						\
+      __typeof__(a) _a = (a);			\
+      __typeof__(b) _b = (b);			\
+      _a <= _b && _a != _b;			\
+  })
+/*! \brief
+  Performs the test <CODE>a > b</CODE> avoiding the warning
+  about comparison with min or max of the type.
+*/
+#define PPL_GT_SILENT(a, b) PPL_LT_SILENT(b, a)
+#else
+#define PPL_LT_SILENT(a, b) ((a) < (b))
+#define PPL_GT_SILENT(a, b) ((a) > (b))
+#endif
+
 namespace Parma_Polyhedra_Library {
 
 namespace Checked {
@@ -212,7 +233,7 @@ struct PPL_FUNCTION_CLASS(construct) {
 
 template <typename To_Policy, typename To>
 struct PPL_FUNCTION_CLASS(construct_special) {
-  static inline Result function(To& to, Result r, Rounding_Dir dir) {
+  static inline Result function(To& to, Result_Class r, Rounding_Dir dir) {
     new (&to) To();
     return assign_special<To_Policy>(to, r, dir);
   }
@@ -238,37 +259,6 @@ abs_generic(To& to, const From& from, Rounding_Dir dir) {
     return neg<To_Policy, From_Policy>(to, from, dir);
   else
     return assign<To_Policy, From_Policy>(to, from, dir);
-}
-
-inline Result
-neg(Result r) {
-  assert(!is_special(r));
-  Result ret = static_cast<Result>(r & V_EQ);
-  if (r & V_LT)
-    ret = static_cast<Result>(ret | V_GT);
-  if (r & V_GT)
-    ret = static_cast<Result>(ret | V_LT);
-  return ret;
-}
-
-inline Result
-add(Result r1, Result r2) {
-  assert(!is_special(r1));
-  assert(!is_special(r2));
-  if (r1 == V_EQ)
-    return r2;
-  if (r2 == V_EQ)
-    return r1;
-  if (((r1 & V_LT) && (r2 & V_GT))
-      || ((r1 & V_GT) && (r2 & V_LT)))
-    return V_LGE;
-  return static_cast<Result>((((r1 & r2) & V_EQ) ? V_EQ : 0) |
-			       (r1 & (V_LT | V_GT)));
-}
-
-inline Result
-sub(Result r1, Result r2) {
-  return add(r1, neg(r2));
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -410,13 +400,13 @@ lcm_gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
-inline Result
+inline Result_Relation
 sgn_generic(const Type& x) {
   if (x > 0)
-    return V_GT;
-  if (x == 0)
-    return V_EQ;
-  return V_LT;
+    return VR_GT;
+  if (x < 0)
+    return VR_LT;
+  return VR_EQ;
 }
 
 template <typename T1, typename T2, typename Enable = void>
@@ -470,7 +460,7 @@ inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
 			   && C_Integer<U>::value
 			   && C_Integer<S>::is_signed), bool>::type
 lt(const U& x, const S& y) {
-  return y >= 0 && x < y;
+  return y >= 0 && x < static_cast<typename C_Integer<S>::other_type>(y);
 }
 
 template <typename S, typename U>
@@ -486,7 +476,7 @@ inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
 			   && C_Integer<U>::value
 			   && C_Integer<S>::is_signed), bool>::type
 le(const U& x, const S& y) {
-  return y >= 0 && x <= y;
+  return y >= 0 && x <= static_cast<typename C_Integer<S>::other_type>(y);
 }
 
 template <typename S, typename U>
@@ -494,7 +484,7 @@ inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
 			   && C_Integer<U>::value
 			   && C_Integer<S>::is_signed), bool>::type
 eq(const S& x, const U& y) {
-  return x >= 0 && x == y;
+  return x >= 0 && static_cast<typename C_Integer<S>::other_type>(x) == y;
 }
 
 template <typename U, typename S>
@@ -502,7 +492,7 @@ inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
 			   && C_Integer<U>::value
 			   && C_Integer<S>::is_signed), bool>::type
 eq(const U& x, const S& y) {
-  return y >= 0 && x == y;
+  return y >= 0 && x == static_cast<typename C_Integer<S>::other_type>(y);
 }
 
 template <typename T1, typename T2>
@@ -511,7 +501,7 @@ inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 			   && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 eq(const T1& x, const T2& y) {
   PPL_DIRTY_TEMP(T1, tmp);
-  Result r = assign_r(tmp, y, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
+  Result r = assign_r(tmp, y, ROUND_CHECK);
   // FIXME: We can do this also without fpu inexact check using a
   // conversion back and forth and then testing equality.  We should
   // code this in checked_float.inlines.hh, probably it's faster also
@@ -527,13 +517,12 @@ inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 lt(const T1& x, const T2& y) {
   PPL_DIRTY_TEMP(T1, tmp);
   Result r = assign_r(tmp, y, ROUND_UP);
-  switch (r) {
-  case V_POS_OVERFLOW:
-  case VC_PLUS_INFINITY:
+  if (!result_representable(r))
     return true;
-  case V_EQ:
-  case V_LT:
-  case V_LE:
+  switch (result_relation(r)) {
+  case VR_EQ:
+  case VR_LT:
+  case VR_LE:
     return x < tmp;
   default:
     return false;
@@ -551,17 +540,16 @@ le(const T1& x, const T2& y) {
     = assign_r(tmp,
                y,
                static_cast<Rounding_Dir>(ROUND_UP | ROUND_FPU_CHECK_INEXACT));
-  switch (r) {
-  case V_POS_OVERFLOW:
-  case VC_PLUS_INFINITY:
+  if (!result_representable(r))
     return true;
-  case V_EQ:
+  switch (result_relation(r)) {
+  case VR_EQ:
     return x <= tmp;
-  case V_LT:
+  case VR_LT:
     return x < tmp;
-  case V_LE:
-  case V_GE:
-  case V_LGE:
+  case VR_LE:
+  case VR_GE:
+  case VR_LGE:
     // FIXME: See comment above.
     assert(0);
   default:
@@ -592,13 +580,20 @@ eq_p(const Type1& x, const Type2& y) {
 
 template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
-inline Result
+inline Result_Relation
 cmp_generic(const Type1& x, const Type2& y) {
   if (lt(y, x))
-    return V_GT;
+    return VR_GT;
   if (lt(x, y))
-    return V_LT;
-  return V_EQ;
+    return VR_LT;
+  return VR_EQ;
+}
+
+template <typename Policy, typename Type>
+inline Result
+assign_nan(Type& to, Result r) {
+  assign_special<Policy>(to, VC_NAN, ROUND_IGNORE);
+  return r;
 }
 
 template <typename Policy, typename Type>
@@ -606,12 +601,18 @@ inline Result
 input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
   PPL_DIRTY_TEMP0(mpq_class, q);
   Result r = input_mpq(q, is);
-  if (is_special(r))
-    return assign_special<Policy>(to, r, dir);
-  if (r == V_EQ)
-    return assign<Policy, void>(to, q, dir);
-  assert(0);
-  return VC_NAN;
+  Result_Class c = result_class(r);
+  switch (c) {
+  case VC_MINUS_INFINITY:
+  case VC_PLUS_INFINITY:
+    return assign_special<Policy>(to, c, dir);
+  case VC_NAN:
+    return assign_nan<Policy>(to, r);
+  default:
+    break;
+  }
+  assert(r == V_EQ);
+  return assign<Policy, void>(to, q, dir);
 }
 
 } // namespace Checked

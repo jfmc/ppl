@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "meta_programming.hh"
 #include "assign_or_swap.hh"
+#include "intervals.defs.hh"
 #include "Interval.types.hh"
 #include "Interval_Info.defs.hh"
 #include <iosfwd>
@@ -35,20 +36,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-enum I_Result {
-  I_EMPTY = 0,
-  /*
-  I_L_EQ = V_EQ,
-  I_L_GT = V_GT,
-  I_L_GE = V_GE,
-  I_U_EQ = V_EQ << 6,
-  I_U_LT = V_LT << 6,
-  I_U_LE = V_LE << 6,
-  */
-  I_MAYBE_EMPTY = 1 << 12,
-  I_SINGULARITIES = 1 << 13
-};
-
 enum Ternary { T_YES, T_NO, T_MAYBE };
 
 inline I_Result
@@ -56,27 +43,11 @@ combine(Result l, Result u) {
   return static_cast<I_Result>(l | (u << 6));
 }
 
-inline Result
-lower(I_Result r) {
-  return static_cast<Result>(r & 63);
-}
-
-inline Result
-upper(I_Result r) {
-  return static_cast<Result>((r >> 6) & 63);
-}
-
-template <typename Info>
-inline bool
-unrepresentability_error(I_Result r, const Info&) {
-  return !Info::store_special
-    && (is_special(lower(r)) || is_special(upper(r)));
-}
+struct Interval_Base {
+};
 
 using namespace Boundary_NS;
 using namespace Interval_NS;
-
-struct Interval_Base {};
 
 template <typename T, typename Enable = void>
 struct Is_Singleton : public Is_Native_Or_Checked<T> {};
@@ -118,12 +89,6 @@ private:
                          " when boundary type may contains infinity");
   Info& w_info() const {
     return const_cast<Interval&>(*this);
-  }
-  bool is_empty_nocache() const {
-    return lt(UPPER, upper(), info(), LOWER, lower(), info());
-  }
-  bool is_singleton_nocache() const {
-    return eq(LOWER, lower(), info(), UPPER, upper(), info());
   }
   Result lower_normalize() const {
     Result r;
@@ -174,34 +139,6 @@ public:
   typedef Info info_type;
 
   typedef Interval_NS::Property Property;
-
-  void lower_load() {
-#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
-    lower_loaded = 1;
-#endif
-  }
-
-  void upper_load() {
-#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
-    upper_loaded = 1;
-#endif
-  }
-
-  void complete_init() {
-#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
-    assert(lower_loaded);
-    assert(upper_loaded);
-    completed = 1;
-#endif
-  }
-
-  void complete_init_internal() {
-#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
-    lower_loaded = 1;
-    upper_loaded = 1;
-    completed = 1;
-#endif
-  }
 
   template <typename T>
   typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
@@ -262,60 +199,17 @@ public:
     return upper_;
   }
 
-  Ternary is_empty_cached() const {
-    if (info().get_interval_property(CARDINALITY_0))
-      return info().get_interval_property(CARDINALITY_IS) ? T_YES : T_NO;
-    else if (info().get_interval_property(CARDINALITY_IS))
-      return T_NO;
-    else
-      return T_MAYBE;
+  I_Constraint<boundary_type> lower_constraint() const {
+    assert(!is_empty());
+    if (info().get_boundary_property(LOWER, SPECIAL))
+      return I_Constraint<boundary_type>();
+    return i_constraint(lower_is_open() ? GREATER_THAN : GREATER_OR_EQUAL, lower(), true);
   }
-
-  Ternary is_singleton_cached() const {
-    if (info().get_interval_property(CARDINALITY_1))
-      return info().get_interval_property(CARDINALITY_IS) ? T_YES : T_NO;
-    else if (info().get_interval_property(CARDINALITY_IS))
-      return T_NO;
-    else
-      return T_MAYBE;
-  }
-
-  bool is_empty() const {
-    switch (is_empty_cached()) {
-    case T_NO:
-      return false;
-    case T_YES:
-      return true;
-    case T_MAYBE:
-      bool r = is_empty_nocache();
-      if (r) {
-	w_info().set_interval_property(CARDINALITY_IS, r);
-	w_info().set_interval_property(CARDINALITY_1, false);
-      }
-      w_info().set_interval_property(CARDINALITY_0);
-      return r;
-    }
-    assert(false);
-    return false;
-  }
-
-  bool is_singleton() const {
-    switch (is_singleton_cached()) {
-    case T_NO:
-      return false;
-    case T_YES:
-      return true;
-    case T_MAYBE:
-      bool r = is_singleton_nocache();
-      if (r) {
-	w_info().set_interval_property(CARDINALITY_IS, r);
-	w_info().set_interval_property(CARDINALITY_0, false);
-      }
-      w_info().set_interval_property(CARDINALITY_1);
-      return r;
-    }
-    assert(false);
-    return false;
+  I_Constraint<boundary_type> upper_constraint() const {
+    assert(!is_empty());
+    if (info().get_boundary_property(UPPER, SPECIAL))
+      return I_Constraint<boundary_type>();
+    return i_constraint(upper_is_open() ? LESS_THAN : LESS_OR_EQUAL, upper(), true);
   }
 
   bool has_restriction() const {
@@ -327,14 +221,25 @@ public:
     if (has_restriction()) {
       Result rl = lower_normalize();
       Result ru = upper_normalize();
-      // FIXME: this invalidation is not needed if interval is unchanged
-      invalidate_cardinality_cache();
       info().normalize();
       assert(OK());
       return combine(rl, ru);
     }
     else
       return combine(V_EQ, V_EQ);
+  }
+
+  bool is_empty() const {
+    return lt(UPPER, upper(), info(), LOWER, lower(), info());
+  }
+
+  bool check_empty(I_Result r) const {
+    return (r & I_ANY) == I_EMPTY ||
+      ((r & I_ANY) != I_NOT_EMPTY && is_empty());
+  }
+
+  bool is_singleton() const {
+    return eq(LOWER, lower(), info(), UPPER, upper(), info());
   }
 
   bool lower_is_open() const {
@@ -347,189 +252,177 @@ public:
     return is_open(UPPER, upper(), info());
   }
 
-  Result lower_shrink() {
+  bool lower_is_boundary_infinity() const {
     assert(OK());
-    return shrink(LOWER, lower(), info(), false);
+    return Boundary_NS::is_boundary_infinity(LOWER, lower(), info());
   }
 
-  Result upper_shrink() {
+  bool upper_is_boundary_infinity() const {
     assert(OK());
-    return shrink(UPPER, upper(), info(), false);
+    return Boundary_NS::is_boundary_infinity(UPPER, upper(), info());
   }
 
-  bool lower_is_unbounded() const {
+  bool lower_is_domain_inf() const {
     assert(OK());
-    return Boundary_NS::is_unbounded(LOWER, lower(), info());
+    return Boundary_NS::is_domain_inf(LOWER, lower(), info());
   }
 
-  bool upper_is_unbounded() const {
+  bool upper_is_domain_sup() const {
     assert(OK());
-    return Boundary_NS::is_unbounded(UPPER, upper(), info());
+    return Boundary_NS::is_domain_sup(UPPER, upper(), info());
   }
 
-  bool is_unbounded() const {
+  bool is_bounded() const {
     assert(OK());
-    return lower_is_unbounded() || upper_is_unbounded();
+    return !lower_is_boundary_infinity() && !upper_is_boundary_infinity();
   }
 
   bool is_universe() const {
     assert(OK());
-    return lower_is_unbounded() && upper_is_unbounded()
+    return lower_is_domain_inf() && upper_is_domain_sup()
       && !has_restriction();
   }
 
-  void invalidate_cardinality_cache() const {
-    w_info().set_interval_property(CARDINALITY_IS, false);
-    w_info().set_interval_property(CARDINALITY_0, false);
-    w_info().set_interval_property(CARDINALITY_1, false);
-  }
-
-  template <typename T>
-  Result lower_set_uninit(const T& x, bool open = false) {
+  I_Result lower_extend() {
     info().clear_boundary_properties(LOWER);
-    Result rl = Boundary_NS::assign(LOWER, lower(), info(), LOWER, x, f_info(x, open));
-    lower_load();
-    return rl;
+    set_unbounded(LOWER, lower(), info());
+    return I_ANY;
   }
 
-  Result lower_set_uninit(const Unbounded&) {
-    info().clear_boundary_properties(LOWER);
-    Result rl = set_unbounded(LOWER, lower(), info());
-    lower_load();
-    return rl;
+  template <typename C>
+  typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C>::value, I_Result>::type
+  lower_extend(const C& c) {
+    assert(OK());
+    bool open;
+    switch (c.rel()) {
+    case V_LGE:
+      return lower_extend();
+    case V_NAN:
+      return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
+    case V_GT:
+      open = true;
+      break;
+    case V_GE:
+    case V_EQ:
+      open = false;
+      break;
+    default:
+      assert(false);
+    }
+    min_assign(LOWER, lower(), info(), LOWER, c.value(), f_info(c.value(), open));
+    assert(OK());
+    return I_ANY;
   }
 
-  template <typename T>
-  Result lower_set(const T& x, bool open = false) {
-    assert(OK());
-    info().clear_boundary_properties(LOWER);
-    Result rl = Boundary_NS::assign(LOWER, lower(), info(), LOWER, x, f_info(x, open));
-    invalidate_cardinality_cache();
-    assert(OK());
-    return rl;
-  }
-
-  Result lower_set(const Unbounded&) {
-    assert(OK());
-    info().clear_boundary_properties(LOWER);
-    Result rl = set_unbounded(LOWER, lower(), info());
-    invalidate_cardinality_cache();
-    assert(OK());
-    return rl;
-  }
-
-  template <typename T>
-  Result lower_narrow(const T& x, bool open = false) {
-    assert(OK());
-    if (ge(LOWER, lower(), info(), LOWER, x, f_info(x, open)))
-      return V_EQ;
-    return lower_set(x, open);
-  }
-
-  template <typename T>
-  Result lower_widen(const T& x, bool open = false) {
-    assert(OK());
-    if (le(LOWER, lower(), info(), LOWER, x, f_info(x, open)))
-      return V_EQ;
-    return lower_set(x, open);
-  }
-
-  Result lower_widen(const Unbounded&) {
-    assert(OK());
-    if (lower_is_unbounded())
-      return V_EQ;
-    info().clear_boundary_properties(LOWER);
-    Result rl = set_unbounded(LOWER, lower(), info());
-    invalidate_cardinality_cache();
-    assert(OK());
-    return V_EQ;
-  }
-
-  template <typename T>
-  Result upper_set_uninit(const T& x, bool open = false) {
+  I_Result upper_extend() {
     info().clear_boundary_properties(UPPER);
-    Result rl = Boundary_NS::assign(UPPER, upper(), info(), UPPER, x, f_info(x, open));
-    upper_load();
-    return rl;
-  }
-  Result upper_set_uninit(const Unbounded&) {
-    info().clear_boundary_properties(UPPER);
-    Result rl = set_unbounded(UPPER, upper(), info());
-    upper_load();
-    return rl;
+    set_unbounded(UPPER, upper(), info());
+    return I_ANY;
   }
 
-  template <typename T>
-  Result upper_set(const T& x, bool open = false) {
+  template <typename C>
+  typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C>::value, I_Result>::type
+  upper_extend(const C& c) {
     assert(OK());
-    info().clear_boundary_properties(UPPER);
-    Result rl = Boundary_NS::assign(UPPER, upper(), info(), UPPER, x, f_info(x, open));
-    invalidate_cardinality_cache();
+    bool open;
+    switch (c.rel()) {
+    case V_LGE:
+      return lower_extend();
+    case V_NAN:
+      return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
+    case V_LT:
+      open = true;
+      break;
+    case V_LE:
+    case V_EQ:
+      open = false;
+      break;
+    default:
+      assert(false);
+    }
+    max_assign(UPPER, upper(), info(), UPPER, c.value(), f_info(c.value(), open));
     assert(OK());
-    return rl;
+    return I_ANY;
   }
 
-  Result upper_set(const Unbounded&) {
-    assert(OK());
-    info().clear_boundary_properties(UPPER);
-    Result rl = set_unbounded(UPPER, upper(), info());
-    invalidate_cardinality_cache();
-    assert(OK());
-    return rl;
+  I_Result build() {
+    return assign(UNIVERSE);
   }
 
-  template <typename T>
-  Result upper_narrow(const T& x, bool open = false) {
-    assert(OK());
-    if (le(UPPER, upper(), info(), UPPER, x, f_info(x, open)))
-      return V_EQ;
-    return upper_set(x, open);
+  template <typename C>
+  typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C>::value, I_Result>::type
+  build(const C& c) {
+    Relation_Symbol rs;
+    switch (c.rel()) {
+    case V_LGE:
+    case V_GT_MINUS_INFINITY:
+    case V_LT_PLUS_INFINITY:
+      return assign(UNIVERSE);
+    default:
+      return assign(EMPTY);
+    case V_LT:
+    case V_LE:
+    case V_GT:
+    case V_GE:
+    case V_EQ:
+    case V_NE:
+      assign(UNIVERSE);
+      rs = (Relation_Symbol) c.rel();
+      return refine_existential(rs, c.value());
+    }
   }
 
-  template <typename T>
-  Result upper_widen(const T& x, bool open = false) {
-    assert(OK());
-    if (ge(UPPER, upper(), info(), UPPER, x, f_info(x, open)))
-      return V_EQ;
-    return upper_set(x, open);
+  template <typename C1, typename C2>
+  typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C1>::value &&
+		     Is_Same_Or_Derived<I_Constraint_Base, C2>::value, I_Result>::type
+  build(const C1& c1, const C2& c2) {
+    switch (c1.rel()) {
+    case V_LGE:
+      return build(c2);
+    case V_NAN:
+      return assign(EMPTY);
+    default:
+      break;
+    }
+    switch (c2.rel()) {
+    case V_LGE:
+      return build(c1);
+    case V_NAN:
+      return assign(EMPTY);
+    default:
+      break;
+    }
+    build(c1);
+    I_Result r = add_constraint(c2);
+    return r - (I_CHANGED | I_UNCHANGED);
   }
 
-  Result upper_widen(const Unbounded&) {
-    assert(OK());
-    if (upper_is_unbounded())
-      return V_EQ;
-    info().clear_boundary_properties(UPPER);
-    Result rl = set_unbounded(UPPER, upper(), info());
-    invalidate_cardinality_cache();
-    assert(OK());
-    return rl;
+  template <typename C>
+  typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C>::value, I_Result>::type
+  add_constraint(const C& c) {
+    Interval x;
+    x.build(c);
+    return intersect_assign(x);
   }
 
   I_Result assign(Degenerate_Element e) {
     I_Result r;
-    Result rl, ru;
     info().clear();
     switch (e) {
-    case EMPTY:
-      info().set_interval_property(CARDINALITY_IS);
-      info().set_interval_property(CARDINALITY_0);
-      lower_set_uninit(1);
-      upper_set_uninit(0);
-      r = I_EMPTY;
-      break;
-    case UNIVERSE:
-      info().set_interval_property(CARDINALITY_0, true);
-      info().set_interval_property(CARDINALITY_1, true);
-      rl = lower_set_uninit(UNBOUNDED);
-      ru = upper_set_uninit(UNBOUNDED);
-      r = combine(rl, ru);
-      break;
     default:
       assert(0);
-      r = I_EMPTY;
+      /* Fall through */
+    case EMPTY:
+      lower_ = 1;
+      upper_ = 0;
+      r = I_EMPTY | I_EXACT;
+      break;
+    case UNIVERSE:
+      set_unbounded(LOWER, lower(), info());
+      set_unbounded(UPPER, upper(), info());
+      r = I_UNIVERSE | I_EXACT;
       break;
     }
-    complete_init();
     assert(OK());
     return r;
   }
@@ -538,10 +431,8 @@ public:
   typename Enable_If<Is_Special<From>::value, I_Result>::type
   assign(const From&) {
     info().clear();
-    info().set_interval_property(CARDINALITY_0, true);
-    info().set_interval_property(CARDINALITY_1, true);
     Result rl, ru;
-    switch (From::code) {
+    switch (From::vclass) {
     case VC_MINUS_INFINITY:
       rl = Boundary_NS::set_minus_infinity(LOWER, lower(), info());
       ru = Boundary_NS::set_minus_infinity(UPPER, upper(), info());
@@ -552,44 +443,56 @@ public:
       break;
     default:
       assert(0);
-      rl = VC_NAN;
-      ru = VC_NAN;
+      rl = V_NAN;
+      ru = V_NAN;
     }
-    complete_init_internal();
     assert(OK());
     return combine(rl, ru);
   }
 
   I_Result set_infinities() {
     info().clear();
-    info().set_interval_property(CARDINALITY_0, true);
-    info().set_interval_property(CARDINALITY_1, true);
     // FIXME: what about restrictions?
     Result rl = Boundary_NS::set_minus_infinity(LOWER, lower(), info());
     Result ru = Boundary_NS::set_plus_infinity(UPPER, upper(), info());
-    complete_init_internal();
     assert(OK());
     return combine(rl, ru);
   }
 
+  static bool is_always_topologically_closed() {
+    return !Info::store_open;
+  }
+
   bool is_topologically_closed() const {
     assert(OK());
-    return !Info::store_open
+    return is_always_topologically_closed()
       || is_empty()
-      || ((lower_is_unbounded() || !lower_is_open())
-          && (upper_is_unbounded() || !upper_is_open()));
+      || ((lower_is_boundary_infinity() || !lower_is_open())
+          && (upper_is_boundary_infinity() || !upper_is_open()));
   }
 
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign() {
     if (!Info::store_open || is_empty())
       return;
-
-    if (!lower_is_unbounded())
+    if (lower_is_open() && !lower_is_boundary_infinity())
       info().set_boundary_property(LOWER, OPEN, false);
-
-    if (!upper_is_unbounded())
+    if (upper_is_open() && !upper_is_boundary_infinity())
       info().set_boundary_property(UPPER, OPEN, false);
+  }
+
+  void remove_inf() {
+    assert(!is_empty());
+    if (!Info::store_open)
+      return;
+    info().set_boundary_property(LOWER, OPEN, true);
+  }
+
+  void remove_sup() {
+    assert(!is_empty());
+    if (!Info::store_open)
+      return;
+    info().set_boundary_property(UPPER, OPEN, true);
   }
 
   bool is_infinity() const {
@@ -606,7 +509,7 @@ public:
     assert(OK());
     if (is_empty())
       return false;
-    if (is_unbounded())
+    if (!is_bounded())
       return true;
     Boundary l;
     if (lower_is_open()) {
@@ -625,6 +528,49 @@ public:
     return u >= l;
   }
 
+  template <typename T>
+  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, I_Result>::type
+  wrap_assign(Bounded_Integer_Type_Width w, Bounded_Integer_Type_Signedness s,
+	      const Interval& refinement) {
+    if (is_empty())
+      return I_EMPTY;
+    if (lower_is_boundary_infinity() || upper_is_boundary_infinity())
+      return assign(refinement);
+    PPL_DIRTY_TEMP(Boundary, u);
+    Result r;
+    r = sub_2exp_assign_r(u, upper(), w, ROUND_UP);
+    if (!result_overflow(r) && u > lower())
+      return assign(refinement);
+    switch (s) {
+    case UNSIGNED:
+      umod_2exp_assign(LOWER, lower(), info(),
+		       LOWER, lower(), info(), w);
+      umod_2exp_assign(UPPER, upper(), info(),
+		       UPPER, upper(), info(), w);
+      break;
+    case SIGNED_2_COMPLEMENT:
+      smod_2exp_assign(LOWER, lower(), info(),
+		       LOWER, lower(), info(), w);
+      smod_2exp_assign(UPPER, upper(), info(),
+		       UPPER, upper(), info(), w);
+      break;
+    default:
+      assert(false);
+      break;
+    }
+    if (le(LOWER, lower(), info(), UPPER, upper(), info()))
+      return intersect_assign(refinement);
+    PPL_DIRTY_TEMP(Interval, tmp);
+    tmp.info.clear();
+    Boundary_NS::assign(LOWER, tmp.lower(), tmp.info(),
+			LOWER, lower(), info());
+    set_unbounded(UPPER, tmp.upper(), tmp.info());
+    tmp.intersect_assign(refinement);
+    lower_extend();
+    intersect_assign(refinement);
+    return join_assign(tmp);
+  }
+
   //! Returns the total size in bytes of the memory occupied by \p *this.
   memory_size_type total_memory_in_bytes() const;
 
@@ -635,13 +581,6 @@ public:
   bool ascii_load(std::istream& s);
 
   bool OK() const {
-#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
-    if (!completed) {
-	std::cerr << "The interval initialization has not been completed."
-                  << std::endl;
-	return false;
-    }
-#endif
 #if 0
     if (!Info::may_be_empty && is_empty()) {
 #ifndef NDEBUG
@@ -720,74 +659,16 @@ public:
 #endif
     }
 
-    Ternary t;
-
-    t = is_empty_cached();
-    if (t == T_YES) {
-      if (!is_empty_nocache()) {
-#ifndef NDEBUG
-	std::cerr << "The interval is marked to be empty, "
-                  << "but actually it is not empty.\n";
-#endif
-	return false;
-      }
-    }
-    else if (t == T_NO) {
-      if (is_empty_nocache()) {
-#ifndef NDEBUG
-	std::cerr << "The interval is marked to be not empty, "
-                  << "but actually it is empty.\n";
-#endif
-	return false;
-      }
-    }
-
-    t = is_singleton_cached();
-    if (t == T_YES) {
-      if (!is_singleton_nocache()) {
-#ifndef NDEBUG
-	std::cerr << "The interval is marked to be singleton, "
-                  << "but actually it is not singleton.\n";
-#endif
-	return false;
-      }
-    }
-    else if (t == T_NO) {
-      if (is_singleton_nocache()) {
-#ifndef NDEBUG
-	std::cerr << "The interval is marked to be not singleton, "
-                  << "but actually it is singleton.\n";
-#endif
-	return false;
-      }
-    }
-
-    if (info().get_interval_property(CARDINALITY_IS) &&
-	info().get_interval_property(CARDINALITY_0)
-        == info().get_interval_property(CARDINALITY_1)) {
-#ifndef NDEBUG
-      std::cerr << "The interval is marked to know its cardinality, "
-                << "but this is unspecified or ambiguous.\n";
-#endif
-      return false;
-    }
-
     // Everything OK.
     return true;
   }
 
   Interval()
-#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
-    : lower_loaded(0), upper_loaded(0), completed(0)
-#endif
   {
   }
 
   template <typename T>
   explicit Interval(const T& x)
-#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
-    : lower_loaded(0), upper_loaded(0), completed(0)
-#endif
   {
     assign(x);
   }
@@ -807,8 +688,6 @@ public:
                      || Is_Interval<T>::value, bool>::type
   is_disjoint_from(const T& y) const;
 
-  template <typename From1, typename From2>
-  I_Result assign(const From1& l, const From2& u);
 
   template <typename From>
   typename Enable_If<Is_Singleton<From>::value
@@ -968,11 +847,6 @@ public:
 private:
   Boundary lower_;
   Boundary upper_;
-#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
-  unsigned int lower_loaded:1;
-  unsigned int upper_loaded:1;
-  unsigned int completed:1;
-#endif
 };
 
 } // namespace Parma_Polyhedra_Library

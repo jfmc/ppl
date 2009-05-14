@@ -33,7 +33,7 @@ inline Rounding_Dir
 rounding_dir(Rounding_Dir dir) {
   if (dir == ROUND_NOT_NEEDED) {
 #ifdef DEBUG_ROUND_NOT_NEEDED
-    return ROUND_DIRECT & ROUND_FPU_CHECK_INEXACT;
+    return ROUND_CHECK;
 #else
     return ROUND_IGNORE;
 #endif
@@ -43,7 +43,7 @@ rounding_dir(Rounding_Dir dir) {
 
 inline Result
 check_result(Result r, Rounding_Dir dir) {
-  if (dir == ROUND_NOT_NEEDED && !is_special(r)) {
+  if (dir == ROUND_NOT_NEEDED && result_class(r) == VC_NORMAL) {
 #ifdef DEBUG_ROUND_NOT_NEEDED
     // FIXME: this is wrong. If an overflow happens the Result may be
     // V_LT or V_GT. What's the better way to cope with that?
@@ -66,20 +66,8 @@ Checked_Number_Transparent_Policy<T>::handle_result(Result) {
 }
 
 inline void
-Checked_Number_Default_Policy::handle_result(Result r) {
-  if (is_special(r))
-    throw_result_exception(r);
-}
-
-inline void
 Extended_Number_Policy::handle_result(Result r) {
-  if (is_special(r))
-    throw_result_exception(r);
-}
-
-inline void
-WRD_Extended_Number_Policy::handle_result(Result r) {
-  if (is_special(r))
+  if (result_class(r) == VC_NAN)
     throw_result_exception(r);
 }
 
@@ -199,7 +187,7 @@ template <typename From>
 inline
 Checked_Number<T, Policy>::Checked_Number(const From&, Rounding_Dir dir, typename Enable_If<Is_Special<From>::value, bool>::type) {
   Policy::handle_result(check_result(Checked::assign_special<Policy>(v,
-							    From::code,
+							    From::vclass,
 							    rounding_dir(dir)),
 				     dir));
 }
@@ -210,7 +198,7 @@ inline
 Checked_Number<T, Policy>::Checked_Number(const From&, typename Enable_If<Is_Special<From>::value, bool>::type) {
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;
   Policy::handle_result(check_result(Checked::assign_special<Policy>(v,
-							    From::code,
+							    From::vclass,
 							    rounding_dir(dir)),
 				     dir));
 }
@@ -220,7 +208,7 @@ inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Special<From>::v
 assign_r(To& to, const From&, Rounding_Dir dir) {
   return check_result(Checked::assign_special<typename Native_Checked_To_Wrapper<To>
 		      ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),
-				From::code,
+				From::vclass,
 				rounding_dir(dir)),
 		      dir);
 }
@@ -230,7 +218,7 @@ inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Special<From>::v
 construct(To& to, const From&, Rounding_Dir dir) {
   return check_result(Checked::construct_special<typename Native_Checked_To_Wrapper<To>
 		      ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),
-				From::code,
+				From::vclass,
 				rounding_dir(dir)),
 		      dir);
 }
@@ -402,8 +390,12 @@ name(To& to, const From& x, int exp, Rounding_Dir dir) {		\
 		 dir);							\
 }
 
+FUNC1(add_2exp_assign_r, add_2exp_ext)
+FUNC1(sub_2exp_assign_r, sub_2exp_ext)
 FUNC1(mul_2exp_assign_r, mul_2exp_ext)
 FUNC1(div_2exp_assign_r, div_2exp_ext)
+FUNC1(smod_2exp_assign_r, smod_2exp_ext)
+FUNC1(umod_2exp_assign_r, umod_2exp_ext)
 
 #undef FUNC1
 
@@ -728,13 +720,13 @@ exact_div_assign(Checked_Number<T, Policy>& x,
 template <typename From>
 inline typename Enable_If<Is_Native_Or_Checked<From>::value, int>::type
 sgn(const From& x) {
-  Result r = Checked::sgn_ext<typename Native_Checked_From_Wrapper<From>::Policy>(Native_Checked_From_Wrapper<From>::raw_value(x));
+  Result_Relation r = Checked::sgn_ext<typename Native_Checked_From_Wrapper<From>::Policy>(Native_Checked_From_Wrapper<From>::raw_value(x));
   switch (r) {
-  case V_LT:
+  case VR_LT:
     return -1;
-  case V_EQ:
+  case VR_EQ:
     return 0;
-  case V_GT:
+  case VR_GT:
     return 1;
   default:
     throw(0);
@@ -747,17 +739,17 @@ inline typename Enable_If<Is_Native_Or_Checked<From1>::value
                           && Is_Native_Or_Checked<From2>::value,
                           int>::type
 cmp(const From1& x, const From2& y) {
-  Result r
+  Result_Relation r
     = Checked::cmp_ext<typename Native_Checked_From_Wrapper<From1>::Policy,
                        typename Native_Checked_From_Wrapper<From2>::Policy>
                  (Native_Checked_From_Wrapper<From1>::raw_value(x),
 		  Native_Checked_From_Wrapper<From2>::raw_value(y));
   switch (r) {
-  case V_LT:
+  case VR_LT:
     return -1;
-  case V_EQ:
+  case VR_EQ:
     return 0;
-  case V_GT:
+  case VR_GT:
     return 1;
   default:
     throw(0);

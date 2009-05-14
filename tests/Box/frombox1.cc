@@ -79,7 +79,7 @@ test04() {
 bool
 test05() {
   const int DIM = 10;
-  typedef Checked_Number<mpq_class> Q;
+  typedef Checked_Number<mpq_class, Checked_Number_Transparent_Policy<mpq_class> > Q;
   Rational_Box src(DIM, UNIVERSE);
   Q k;
   Q a;

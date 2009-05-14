@@ -193,6 +193,8 @@ checked_ext.inlines.hh \
 Checked_Number.defs.hh \
 Checked_Number.inlines.hh \
 Checked_Number.templates.hh \
+WRD_coefficient_types.defs.hh \
+WRD_coefficient_types.inlines.hh \
 checked_numeric_limits.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \
@@ -210,12 +212,15 @@ iterator_to_const.inlines.hh \
 distances.defs.hh \
 distances.inlines.hh \
 Boundary.defs.hh \
+intervals.defs.hh \
+Bool4.defs.hh \
 Interval_Info.defs.hh \
 Interval_Info.inlines.hh \
 Interval_Restriction.defs.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
 Interval.templates.hh \
+Circular_Interval.defs.hh \
 Box.defs.hh \
 Box_Status.inlines.hh \
 Box.inlines.hh \

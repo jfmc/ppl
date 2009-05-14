@@ -43,6 +43,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "DB_Matrix.defs.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.defs.hh"
+#include "WRD_coefficient_types.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include <cstddef>
 #include <iosfwd>
@@ -405,7 +406,7 @@ private:
     the inequalities defining a BDS.
   */
 #ifndef NDEBUG
-  typedef Checked_Number<T, Extended_Number_Policy> N;
+  typedef Checked_Number<T, Debug_WRD_Extended_Number_Policy> N;
 #else
   typedef Checked_Number<T, WRD_Extended_Number_Policy> N;
 #endif

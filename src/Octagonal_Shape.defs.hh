@@ -42,6 +42,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 #include "Variables_Set.types.hh"
 #include "Checked_Number.defs.hh"
+#include "WRD_coefficient_types.defs.hh"
+#include "Bit_Row.defs.hh"
 #include <vector>
 #include <cstddef>
 #include <climits>
@@ -415,7 +417,7 @@ private:
     the inequalities defining an OS.
   */
 #ifndef NDEBUG
-  typedef Checked_Number<T, Extended_Number_Policy> N;
+  typedef Checked_Number<T, Debug_WRD_Extended_Number_Policy> N;
 #else
   typedef Checked_Number<T, WRD_Extended_Number_Policy> N;
 #endif

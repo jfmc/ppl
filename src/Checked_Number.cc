@@ -27,7 +27,11 @@ namespace Parma_Polyhedra_Library {
 
 void
 throw_result_exception(Result r) {
-  switch (r) {
+  switch (r - V_UNREPRESENTABLE) {
+  case V_EMPTY:
+    throw std::domain_error("Exact result is not comparable to computable one.");
+  case V_EQ:
+    throw std::logic_error("Exact result is equal to computed one.");
   case V_LT:
     throw std::logic_error("Exact result is less than computed one.");
   case V_LE:
@@ -44,18 +48,22 @@ throw_result_exception(Result r) {
   case V_LGE:
     throw std::logic_error("Exact result is less than, greater than or "
 			   "equal to computed one.");
-  case VC_MINUS_INFINITY:
+  case V_EQ_MINUS_INFINITY:
     throw std::overflow_error("Minus infinity.");
-  case V_NEG_OVERFLOW:
+  case V_GT_MINUS_INFINITY:
+  case V_LT_INF:
     throw std::overflow_error("Negative overflow.");
   case V_UNKNOWN_NEG_OVERFLOW:
-    throw std::overflow_error("Unknown result due to negative overflow.");
-  case VC_PLUS_INFINITY:
+    throw std::overflow_error("Unknown result due to intermediate negative overflow.");
+  case V_EQ_PLUS_INFINITY:
     throw std::overflow_error("Plus infinity.");
-  case V_POS_OVERFLOW:
+  case V_LT_PLUS_INFINITY:
+  case V_GT_SUP:
     throw std::overflow_error("Positive overflow.");
   case V_UNKNOWN_POS_OVERFLOW:
-    throw std::overflow_error("Unknown result due to positive overflow.");
+    throw std::overflow_error("Unknown result due to intermediate positive overflow.");
+  case V_NAN:
+    throw std::domain_error("Not-a-Number.");
   case V_CVT_STR_UNK:
     throw std::domain_error("Invalid numeric string.");
   case V_DIV_ZERO:
@@ -74,8 +82,6 @@ throw_result_exception(Result r) {
     throw std::domain_error("Remainder of division by zero.");
   case V_SQRT_NEG:
     throw std::domain_error("Square root of negative number.");
-  case V_UNORD_COMP:
-    throw std::domain_error("Unordered comparison.");
   default:
     throw std::logic_error("Unexpected result.");
   }
