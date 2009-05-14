@@ -81,6 +81,7 @@ disjoint1 \
 equals1 \
 expandspacedim1 \
 foldspacedims1 \
+frequency1 \
 frombdshape1 \
 frombox1 \
 fromgrid1 \
@@ -190,6 +191,8 @@ disjoint1_SOURCES = disjoint1.cc
 equals1_SOURCES = equals1.cc
 
 expandspacedim1_SOURCES = expandspacedim1.cc
+
+frequency1_SOURCES = frequency1.cc
 
 frombdshape1_SOURCES = frombdshape1.cc
 

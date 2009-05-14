@@ -2475,6 +2475,32 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
   assert(x.OK(true) && y.OK(true));
 }
 
+bool
+PPL::Grid::frequency(const Linear_Expression& expr,
+                     Coefficient& freq_n, Coefficient& freq_d,
+                     Coefficient& val_n, Coefficient& val_d) const {
+  // The dimension of `expr' must be at most the dimension of *this.
+  if (space_dim < expr.space_dimension())
+    throw_dimension_incompatible("frequency(e, ...)", "e", expr);
+
+  // Space dimension = 0: if empty, then return false;
+  // otherwise the frequency is 1 and the value is 0
+  if (space_dim == 0) {
+    if (is_empty())
+      return false;
+    freq_n = 0;
+    freq_d = 1;
+    val_n = 0;
+    val_d = 1;
+    return true;
+  }
+  if (!generators_are_minimized() && !minimize())
+    // Minimizing found `this' empty.
+    return false;
+
+  return frequency_no_check(expr, freq_n, freq_d, val_n, val_d);
+}
+
 /*! \relates Parma_Polyhedra_Library::Grid */
 bool
 PPL::operator==(const Grid& x, const Grid& y) {
