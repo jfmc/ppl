@@ -1440,24 +1440,52 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
   // Dimension-compatibility check.
   const dimension_type vars_space_dim = vars.space_dimension();
   if (space_dim < vars_space_dim)
-    throw_dimension_incompatible("wrap_space_dimensions(vs, w, s, o, ...)",
+    throw_dimension_incompatible("wrap_assign(vs, w, s, o, ...)",
 				 vars_space_dim);
 
   if (x.is_empty())
     return;
 
   const Variables_Set::const_iterator vs_end = vars.end();
-  const ITV* null_p_itv = 0;
+
+  // FIXME: temporarily (ab-) using Coefficient.
+  // Set `min_value' and `max_value' to the minimum and maximum values
+  // a variable of width `w' and signedness `s' can take.
+  PPL_DIRTY_TEMP_COEFFICIENT(min_value);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_value);
+  if (s == UNSIGNED) {
+    min_value = 0;
+    mul_2exp_assign(max_value, Coefficient_one(), w);
+  }
+  else {
+    assert(s == SIGNED_2_COMPLEMENT);
+    mul_2exp_assign(max_value, Coefficient_one(), w-1);
+    neg_assign(min_value, max_value);
+  }
+  // FIXME: Build the quadrant interval.
+  I_Constraint<Coefficient> lower = i_constraint(GREATER_OR_EQUAL, min_value);
+  I_Constraint<Coefficient> upper = i_constraint(LESS_THAN, max_value);
+  ITV quadrant_itv;
+  quadrant_itv.build(lower, upper);
 
   if (pcs == 0) {
     // No constraint refinement is needed here.
-    for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i) {
-      ITV& seq_v = x.seq[*i];
-      I_Result res = seq_v.wrap_assign(w, s, o, null_p_itv);
-      if (seq_v.check_empty(res)) {
-        x.set_empty();
-        return;
+    switch (o) {
+    case OVERFLOW_WRAPS:
+      for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i)
+        x.seq[*i].wrap_assign(w, s, quadrant_itv);
+      break;
+    case OVERFLOW_UNDEFINED:
+      for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i) {
+        ITV& x_seq_v = x.seq[*i];
+        if (!quadrant_itv.contains(x_seq_v))
+          x_seq_v.assign(UNIVERSE);
       }
+      break;
+    case OVERFLOW_IMPOSSIBLE:
+      for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i)
+        x.seq[*i].intersect_assign(quadrant_itv);
+      break;
     }
     assert(x.OK());
     return;
@@ -1493,37 +1521,38 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
     }
   }
 
-  const ITV* p_itv;
-  ITV refinement_interval;
+  ITV refinement_itv;
   const map_type::const_iterator var_cs_map_end = var_cs_map.end();
   // Loop through the variable indexes in `vars'.
   for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i) {
     const dimension_type v = *i;
+    refinement_itv = quadrant_itv;
     // Look for the refinement constraints for space dimension index `v'.
     map_type::const_iterator var_cs_map_iter = var_cs_map.find(v);
-    if (var_cs_map_iter == var_cs_map_end) {
-      // No refinement constraint is available for variable `v'.
-      p_itv = null_p_itv;
-    }
-    else {
-      p_itv = &refinement_interval;
-      // Build a refinement interval for variable `v'.
-      refinement_interval.assign(UNIVERSE);
-      map_type::mapped_type& var_cs = var_cs_map_iter->second;
+    if (var_cs_map_iter != var_cs_map_end) {
+      // Refine interval for variable `v'.
+      const map_type::mapped_type& var_cs = var_cs_map_iter->second;
       for (dimension_type j = var_cs.size(); j-- > 0; ) {
         const Constraint& c = *var_cs[j];
-        refine_interval_no_check(refinement_interval,
+        refine_interval_no_check(refinement_itv,
                                  c.type(),
                                  c.inhomogeneous_term(),
                                  c.coefficient(Variable(v)));
       }
     }
     // Wrap space dimension index `v'.
-    ITV& seq_v = x.seq[v];
-    I_Result res = seq_v.wrap_assign(w, s, o, p_itv);
-    if (seq_v.check_empty(res)) {
-      x.set_empty();
-      return;
+    ITV& x_seq_v = x.seq[v];
+    switch (o) {
+    case OVERFLOW_WRAPS:
+      x_seq_v.wrap_assign(w, s, refinement_itv);
+      break;
+    case OVERFLOW_UNDEFINED:
+      if (!quadrant_itv.contains(x_seq_v))
+        x_seq_v.assign(UNIVERSE);
+      break;
+    case OVERFLOW_IMPOSSIBLE:
+      x_seq_v.intersect_assign(refinement_itv);
+      break;
     }
   }
   assert(x.OK());
