@@ -529,9 +529,9 @@ public:
   }
 
   template <typename T>
-  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
-  wrap_assign(const T& x, Bounded_Integer_Type_Width w,
-	      Bounded_Integer_Type_Signedness s, const Interval& refinement) {
+  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, I_Result>::type
+  wrap_assign(Bounded_Integer_Type_Width w, Bounded_Integer_Type_Signedness s,
+	      const Interval& refinement) {
     if (is_empty())
       return I_EMPTY;
     if (lower_is_boundary_infinity() || upper_is_boundary_infinity())
@@ -544,15 +544,15 @@ public:
     switch (s) {
     case UNSIGNED:
       umod_2exp_assign(LOWER, lower(), info(),
-		       LOWER, f_lower(x), f_info(x), w);
+		       LOWER, lower(), info(), w);
       umod_2exp_assign(UPPER, upper(), info(),
-		       UPPER, f_upper(x), f_info(x), w);
+		       UPPER, upper(), info(), w);
       break;
     case SIGNED_2_COMPLEMENT:
       smod_2exp_assign(LOWER, lower(), info(),
-		       LOWER, f_lower(x), f_info(x), w);
+		       LOWER, lower(), info(), w);
       smod_2exp_assign(UPPER, upper(), info(),
-		       UPPER, f_upper(x), f_info(x), w);
+		       UPPER, upper(), info(), w);
       break;
     default:
       assert(false);
