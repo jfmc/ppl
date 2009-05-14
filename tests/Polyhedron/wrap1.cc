@@ -500,6 +500,6 @@ BEGIN_MAIN
   DO_TEST_F8(test12);
   DO_TEST_F16(test13);
   DO_TEST_F8(test14);
-  DO_TEST_F(test15);
+  DO_TEST(test15);
   DO_TEST_F(test16);
 END_MAIN

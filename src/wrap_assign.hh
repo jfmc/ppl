@@ -115,9 +115,12 @@ wrap_assign(PSET& pointset,
     throw std::invalid_argument(s.str());
   }
 
-  // Wrapping no variable is a no-op.
-  if (vars.empty())
+  // Wrapping no variable only requires refining with *pcs, if any.
+  if (vars.empty()) {
+    if (pcs != 0)
+      pointset.refine_with_constraints(*pcs);
     return;
+  }
 
   // Dimension-compatibility check of `vars'.
   if (space_dim < vars.space_dimension()) {
