@@ -347,10 +347,10 @@ assign_signed_int_signed_int(To& to, const From from, Rounding_Dir dir) {
 	  && (Extended_Int<To_Policy, To>::min > Extended_Int<From_Policy, From>::min
 	      || Extended_Int<To_Policy, To>::max < Extended_Int<From_Policy, From>::max))) {
     if (CHECK_P(To_Policy::check_overflow,
-		from < From(Extended_Int<To_Policy, To>::min)))
+		PPL_LT_SILENT(from, From(Extended_Int<To_Policy, To>::min))))
       return set_neg_overflow_int<To_Policy>(to, dir);
     if (CHECK_P(To_Policy::check_overflow,
-		from > From(Extended_Int<To_Policy, To>::max)))
+		PPL_GT_SILENT(from, From(Extended_Int<To_Policy, To>::max))))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = To(from);
@@ -390,7 +390,7 @@ assign_unsigned_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
       || (sizeof(To) == sizeof(From)
 	  && Extended_Int<To_Policy, To>::max < Extended_Int<From_Policy, From>::max)) {
     if (CHECK_P(To_Policy::check_overflow,
-		from > From(Extended_Int<To_Policy, To>::max)))
+		PPL_GT_SILENT(from, From(Extended_Int<To_Policy, To>::max))))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = To(from);
@@ -561,9 +561,9 @@ assign_signed_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
     }
     if (from.fits_slong_p()) {
       signed long v = from.get_si();
-      if (v < Extended_Int<To_Policy, To>::min)
+      if (PPL_LT_SILENT(v, (Extended_Int<To_Policy, To>::min)))
 	return set_neg_overflow_int<To_Policy>(to, dir);
-      if (v > Extended_Int<To_Policy, To>::max)
+      if (PPL_GT_SILENT(v, (Extended_Int<To_Policy, To>::max)))
 	return set_pos_overflow_int<To_Policy>(to, dir);
       to = v;
       return V_EQ;
@@ -610,7 +610,7 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
     }
     if (from.fits_ulong_p()) {
       unsigned long v = from.get_ui();
-      if (v > Extended_Int<To_Policy, To>::max)
+      if (PPL_GT_SILENT(v, (Extended_Int<To_Policy, To>::max)))
 	return set_pos_overflow_int<To_Policy>(to, dir);
       to = v;
       return V_EQ;
@@ -1230,7 +1230,7 @@ mul_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
   if (x & (((Type(1) << exp) - 1) << (sizeof(Type) * CHAR_BIT - exp)))
     return set_pos_overflow_int<To_Policy>(to, dir);
   Type n = x << exp;
-  if (n > Extended_Int<To_Policy, Type>::max)
+  if (PPL_GT_SILENT(n, (Extended_Int<To_Policy, Type>::max)))
     return set_pos_overflow_int<To_Policy>(to, dir);
   to = n;
   return V_EQ;
@@ -1261,14 +1261,14 @@ mul_2exp_signed_int(Type& to, const Type x, unsigned int exp,
     if ((x & mask) != mask)
       return set_neg_overflow_int<To_Policy>(to, dir);
     n = x << exp;
-    if (n < Extended_Int<To_Policy, Type>::min)
+    if (PPL_LT_SILENT(n, (Extended_Int<To_Policy, Type>::min)))
       return set_neg_overflow_int<To_Policy>(to, dir);
   }
   else {
     if (x & mask)
       return set_pos_overflow_int<To_Policy>(to, dir);
     n = x << exp;
-    if (n > Extended_Int<To_Policy, Type>::max)
+    if (PPL_GT_SILENT(n, (Extended_Int<To_Policy, Type>::max)))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = n;

@@ -28,6 +28,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Integer.hh"
 #include <cassert>
 
+#if defined(__GNUC__)
+/*! \brief
+  Performs the test <CODE>a < b</CODE> avoiding the warning
+  about comparison with min or max of the type.
+*/
+#define PPL_LT_SILENT(a, b)				\
+  ({						\
+      __typeof__(a) _a = (a);			\
+      __typeof__(b) _b = (b);			\
+      _a <= _b && _a != _b;			\
+  })
+/*! \brief
+  Performs the test <CODE>a > b</CODE> avoiding the warning
+  about comparison with min or max of the type.
+*/
+#define PPL_GT_SILENT(a, b) PPL_LT_SILENT(b, a)
+#else
+#define PPL_LT_SILENT(a, b) ((a) < (b))
+#define PPL_GT_SILENT(a, b) ((a) > (b))
+#endif
+
 namespace Parma_Polyhedra_Library {
 
 namespace Checked {
@@ -439,7 +460,7 @@ inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
 			   && C_Integer<U>::value
 			   && C_Integer<S>::is_signed), bool>::type
 lt(const U& x, const S& y) {
-  return y >= 0 && x < y;
+  return y >= 0 && x < static_cast<typename C_Integer<S>::other_type>(y);
 }
 
 template <typename S, typename U>
@@ -455,7 +476,7 @@ inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
 			   && C_Integer<U>::value
 			   && C_Integer<S>::is_signed), bool>::type
 le(const U& x, const S& y) {
-  return y >= 0 && x <= y;
+  return y >= 0 && x <= static_cast<typename C_Integer<S>::other_type>(y);
 }
 
 template <typename S, typename U>
@@ -463,7 +484,7 @@ inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
 			   && C_Integer<U>::value
 			   && C_Integer<S>::is_signed), bool>::type
 eq(const S& x, const U& y) {
-  return x >= 0 && x == y;
+  return x >= 0 && static_cast<typename C_Integer<S>::other_type>(x) == y;
 }
 
 template <typename U, typename S>
@@ -471,7 +492,7 @@ inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
 			   && C_Integer<U>::value
 			   && C_Integer<S>::is_signed), bool>::type
 eq(const U& x, const S& y) {
-  return y >= 0 && x == y;
+  return y >= 0 && x == static_cast<typename C_Integer<S>::other_type>(y);
 }
 
 template <typename T1, typename T2>
@@ -480,7 +501,7 @@ inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 			   && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 eq(const T1& x, const T2& y) {
   PPL_DIRTY_TEMP(T1, tmp);
-  Result r = assign_r(tmp, y, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
+  Result r = assign_r(tmp, y, ROUND_CHECK);
   // FIXME: We can do this also without fpu inexact check using a
   // conversion back and forth and then testing equality.  We should
   // code this in checked_float.inlines.hh, probably it's faster also
