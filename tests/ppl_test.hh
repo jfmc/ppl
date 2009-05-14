@@ -1056,6 +1056,11 @@ print_constraints(const Polyhedron& ph,
 		  const std::string& intro = "",
 		  std::ostream& s = nout);
 
+void
+print_constraints(const Affine_Space& affs,
+		  const std::string& intro = "",
+		  std::ostream& s = nout);
+
 template <typename Interval>
 void
 print_constraints(const Box<Interval>& box,
