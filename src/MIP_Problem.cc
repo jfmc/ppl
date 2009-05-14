@@ -855,6 +855,22 @@ PPL::MIP_Problem::process_pending_constraints() {
   return true;
 }
 
+namespace {
+
+inline void
+assign(double& d, const mpz_class& c) {
+  d = c.get_d();
+}
+
+template <typename T, typename Policy>
+inline void
+assign(double& d,
+       const Parma_Polyhedra_Library::Checked_Number<T, Policy>& c) {
+  d = raw_value(c);
+}
+
+} // namespace
+
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
@@ -871,7 +887,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     if (sgn(cost_j) == cost_sign) {
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
-      assign_r(challenger_num, cost_j, ROUND_IGNORE);
+      assign(challenger_num, cost_j);
       challenger_num = fabs(challenger_num);
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
@@ -881,8 +897,8 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 	const Coefficient& tableau_ij = tableau_i[j];
 	if (tableau_ij != 0) {
 	  assert(tableau_i[base[i]] != 0);
-	  assign_r(float_tableau_value, tableau_ij, ROUND_IGNORE);
-	  assign_r(float_tableau_denum, tableau_i[base[i]], ROUND_IGNORE);
+	  assign(float_tableau_value, tableau_ij);
+	  assign(float_tableau_denum, tableau_i[base[i]]);
 	  float_tableau_value /= float_tableau_denum;
 	  challenger_den += float_tableau_value * float_tableau_value;
 	}
