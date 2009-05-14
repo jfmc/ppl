@@ -541,6 +541,7 @@ public:
     r = sub_2exp_assign_r(u, upper(), w, ROUND_UP);
     if (!result_overflow(r) && u > lower())
       return assign(refinement);
+    info().clear();
     switch (s) {
     case UNSIGNED:
       umod_2exp_assign(LOWER, lower(), info(),
