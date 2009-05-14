@@ -41,10 +41,10 @@ test01() {
   box.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
 
   TBox known_result(2);
-  known_result.add_constraint(0 <= x);
-  known_result.add_constraint(x <= 255);
-  known_result.add_constraint(0 <= y);
-  known_result.add_constraint(y <= 255);
+  known_result.refine_with_constraint(0 <= x);
+  known_result.refine_with_constraint(x < 256);
+  known_result.refine_with_constraint(0 <= y);
+  known_result.refine_with_constraint(y < 256);
 
   bool ok = (box == known_result);
 
@@ -74,10 +74,10 @@ test02() {
   box.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
 
   TBox known_result(2);
-  known_result.add_constraint(0 <= x);
-  known_result.add_constraint(x <= 255);
-  known_result.add_constraint(0 <= y);
-  known_result.add_constraint(y <= 50);
+  known_result.refine_with_constraint(0 <= x);
+  known_result.refine_with_constraint(x < 256);
+  known_result.refine_with_constraint(0 <= y);
+  known_result.refine_with_constraint(y <= 50);
 
   bool ok = (box == known_result);
 
@@ -108,10 +108,10 @@ test03() {
   box.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
 
   TBox known_result(2);
-  known_result.add_constraint(0 <= x);
-  known_result.add_constraint(x <= 255);
-  known_result.add_constraint(0 <= y);
-  known_result.add_constraint(y <= 50);
+  known_result.refine_with_constraint(0 <= x);
+  known_result.refine_with_constraint(x < 256);
+  known_result.refine_with_constraint(0 <= y);
+  known_result.refine_with_constraint(y <= 50);
 
   bool ok = (box == known_result);
 

@@ -431,6 +431,58 @@ test14() {
   return ok;
 }
 
+bool
+test15() {
+  C_Polyhedron ph(1);
+  print_constraints(ph, "*** ph ***");
+
+  Variables_Set vars;
+
+  Variable x(0);
+  Constraint_System cs;
+  cs.insert(x == 10);
+
+  ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
+
+  C_Polyhedron known_result(1);
+  known_result.add_constraint(x == 10);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** ph.wrap_assign(...) ***");
+
+  return ok;
+}
+
+bool
+test16() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(x == 256);
+  ph.add_constraint(y == 256 + 256 + 1);
+
+  print_constraints(ph, "*** ph ***");
+
+  Variables_Set vars(x, y);
+
+  Constraint_System cs;
+  cs.insert(x + 1 == y);
+
+  ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(x == 0);
+  known_result.add_constraint(y == 1);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** ph.wrap_assign(...) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -448,4 +500,6 @@ BEGIN_MAIN
   DO_TEST_F8(test12);
   DO_TEST_F16(test13);
   DO_TEST_F8(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN
