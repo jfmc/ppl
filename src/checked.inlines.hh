@@ -30,8 +30,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #if defined(__GNUC__)
 /*! \brief
-  Performs the test <CODE>a < b</CODE> avoiding the warning
-  about comparison with min or max of the type.
+  Performs the test <CODE>a < b</CODE> avoiding the warning about the
+  comparison being always false due to limited range of data type.
 */
 #define PPL_LT_SILENT(a, b)				\
   ({						\
@@ -40,8 +40,8 @@ site: http://www.cs.unipr.it/ppl/ . */
       _a <= _b && _a != _b;			\
   })
 /*! \brief
-  Performs the test <CODE>a > b</CODE> avoiding the warning
-  about comparison with min or max of the type.
+  Performs the test <CODE>a > b</CODE> avoiding the warning about the
+  comparison being always false due to limited range of data type.
 */
 #define PPL_GT_SILENT(a, b) PPL_LT_SILENT(b, a)
 #else

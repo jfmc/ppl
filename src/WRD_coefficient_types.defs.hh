@@ -28,11 +28,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \brief
+/*! \brief \ingroup PPL_CXX_interface
   The production policy for checked numbers used in weakly-relational
   domains.
-
-  \ingroup PPL_CXX_interface
  */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 struct WRD_Extended_Number_Policy {
@@ -92,11 +90,9 @@ struct WRD_Extended_Number_Policy {
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \brief
+/*! \brief \ingroup PPL_CXX_interface
   The debugging policy for checked numbers used in weakly-relational
   domains.
-
-  \ingroup PPL_CXX_interface
  */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 struct Debug_WRD_Extended_Number_Policy {
