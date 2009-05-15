@@ -859,7 +859,6 @@ Octagonal_Shape<T>::contains_integer_point() const {
   oct_z.reset_strongly_closed();
 
   typedef Octagonal_Shape<mpz_class>::N Z;
-  PPL_DIRTY_TEMP(N, tmp);
   bool all_integers = true;
   typename OR_Matrix<N>::const_element_iterator x_i = matrix.element_begin();
   for (typename OR_Matrix<Z>::element_iterator
@@ -872,11 +871,7 @@ Octagonal_Shape<T>::contains_integer_point() const {
       assign_r(*z_i, d, ROUND_NOT_NEEDED);
     else {
       all_integers = false;
-      Z& d_z = *z_i;
-      // Copy d into d_z, but rounding downwards.
-      neg_assign_r(tmp, d, ROUND_NOT_NEEDED);
-      assign_r(d_z, tmp, ROUND_UP);
-      neg_assign_r(d_z, d_z, ROUND_NOT_NEEDED);
+      assign_r(*z_i, d, ROUND_DOWN);
     }
   }
   // Restore strong closure.
