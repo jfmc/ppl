@@ -48,7 +48,9 @@ enum Rounding_Dir {
   ROUND_NATIVE = ROUND_IGNORE,
 
   /*! \hideinitializer
-    Rounding is not needed: client code must ensure the operation is exact.
+    Rounding is not needed: client code must ensure that the operation
+    result is exact and representable in the destination type.
+    Result info is evaluated lazily.
   */
   ROUND_NOT_NEEDED = 7,
 
