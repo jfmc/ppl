@@ -1423,7 +1423,8 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
 #if 1 // Generic implementation commented out.
   Implementation::wrap_assign(*this,
                               vars, w, s, o, pcs,
-                              complexity_threshold, wrap_individually);
+                              complexity_threshold, wrap_individually,
+                              "Box");
 #else // Specialized implementation.
   used(wrap_individually);
   used(complexity_threshold);
