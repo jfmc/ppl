@@ -172,7 +172,7 @@ public:
     case V_LGE:
       return r;
     case V_LE:
-      r = assign_r(to, c.value(), static_cast<Rounding_Dir>(ROUND_UP | ROUND_FPU_CHECK_INEXACT));
+      r = assign_r(to, c.value(), static_cast<Rounding_Dir>(ROUND_UP | ROUND_STRICT_RELATION));
       r = result_relation_class(r);
       if (r == V_EQ)
 	return V_LE;
@@ -195,7 +195,7 @@ public:
       }
       break;
     case V_GE:
-      r = assign_r(to, c.value(), static_cast<Rounding_Dir>(ROUND_DOWN | ROUND_FPU_CHECK_INEXACT));
+      r = assign_r(to, c.value(), static_cast<Rounding_Dir>(ROUND_DOWN | ROUND_STRICT_RELATION));
       r = result_relation_class(r);
       if (r == V_EQ)
 	return V_GE;
@@ -295,7 +295,7 @@ public:
     case V_LT:
       if (is_integer(to)) {
 	rel = sub_assign_r(to, to, T(1),
-			   static_cast<Rounding_Dir>(ROUND_UP | ROUND_FPU_CHECK_INEXACT));
+			   static_cast<Rounding_Dir>(ROUND_UP | ROUND_STRICT_RELATION));
 	rel = result_relation_class(rel);
 	return rel == V_EQ ? V_LE : rel;
       }
@@ -308,7 +308,7 @@ public:
     case V_GT:
       if (is_integer(to)) {
 	rel = add_assign_r(to, to, T(1),
-			   static_cast<Rounding_Dir>(ROUND_DOWN | ROUND_FPU_CHECK_INEXACT));
+			   static_cast<Rounding_Dir>(ROUND_DOWN | ROUND_STRICT_RELATION));
 	rel = result_relation_class(rel);
 	return rel == V_EQ ? V_GE : rel;
       }

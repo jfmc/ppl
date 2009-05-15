@@ -311,7 +311,11 @@ PPL_SPECIALIZE_ASSIGN(assign_mpz_long_double, mpz_class, long double)
 template <typename To_Policy, typename From_Policy>
 inline Result
 assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
-  if (round_not_requested(dir)) {
+  if (round_not_needed(dir)) {
+    to = from.get_num();
+    return V_LGE;
+  }
+  if (round_ignore(dir)) {
     to = from;
     return V_LGE;
   }
@@ -319,12 +323,16 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
   mpz_srcptr d = from.get_den().get_mpz_t();
   if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
-    return mpz_divisible_p(n, d) ? V_EQ : V_GT;
+    if (round_strict_relation(dir))
+      return mpz_divisible_p(n, d) ? V_EQ : V_GT;
+    return V_GE;
   }
   else {
     assert(round_up(dir));
     mpz_cdiv_q(to.get_mpz_t(), n, d);
-    return mpz_divisible_p(n, d) ? V_EQ : V_LT;
+    if (round_strict_relation(dir))
+      return mpz_divisible_p(n, d) ? V_EQ : V_LT;
+    return V_LE;
   }
 }
 
@@ -389,12 +397,16 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
   }
   if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
-    return mpz_divisible_p(n, d) ? V_EQ : V_GT;
+    if (round_strict_relation(dir))
+      return mpz_divisible_p(n, d) ? V_EQ : V_GT;
+    return V_GE;
   }
   else {
     assert(round_up(dir));
     mpz_cdiv_q(to.get_mpz_t(), n, d);
-    return mpz_divisible_p(n, d) ? V_EQ : V_LT;
+    if (round_strict_relation(dir))
+      return mpz_divisible_p(n, d) ? V_EQ : V_LT;
+    return V_LE;
   }
 }
 
@@ -474,12 +486,16 @@ div_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
   }
   if (round_down(dir)) {
     mpz_fdiv_q_2exp(to.get_mpz_t(), n, exp);
-    return mpz_divisible_2exp_p(n, exp) ? V_EQ : V_GT;
+    if (round_strict_relation(dir))
+      return mpz_divisible_2exp_p(n, exp) ? V_EQ : V_GT;
+    return V_GE;
   }
   else {
     assert(round_up(dir));
     mpz_cdiv_q_2exp(to.get_mpz_t(), n, exp);
-    return mpz_divisible_2exp_p(n, exp) ? V_EQ : V_LT;
+    if (round_strict_relation(dir))
+      return mpz_divisible_2exp_p(n, exp) ? V_EQ : V_LT;
+    return V_LE;
   }
 }
 

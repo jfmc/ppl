@@ -68,8 +68,8 @@ round_inverse(Rounding_Dir dir) {
 }
 
 inline bool
-round_fpu_check_inexact(Rounding_Dir dir) {
-  return dir & ROUND_FPU_CHECK_INEXACT;
+round_strict_relation(Rounding_Dir dir) {
+  return dir & ROUND_STRICT_RELATION;
 }
 
 #if PPL_CAN_CONTROL_FPU

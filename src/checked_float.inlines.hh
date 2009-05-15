@@ -281,14 +281,16 @@ round_gt_float(To& to, Rounding_Dir dir) {
 template <typename Policy>
 inline void
 prepare_inexact(Rounding_Dir dir) {
-  if (Policy::fpu_check_inexact && round_fpu_check_inexact(dir))
+  if (Policy::fpu_check_inexact &&
+      !round_not_needed(dir) && round_strict_relation(dir))
     fpu_reset_inexact();
 }
 
 template <typename Policy>
 inline Result
 result_relation(Rounding_Dir dir) {
-  if (Policy::fpu_check_inexact && round_fpu_check_inexact(dir)) {
+  if (Policy::fpu_check_inexact &&
+      !round_not_needed(dir) && round_strict_relation(dir))
     switch (fpu_check_inexact()) {
     case 0:
       return V_EQ;

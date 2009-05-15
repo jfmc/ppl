@@ -59,9 +59,13 @@ enum Rounding_Dir {
 
   ROUND_DIR_MASK = 7,
 
-  ROUND_FPU_CHECK_INEXACT = 8,
+  /*! \hideinitializer
+    The client code is willing to pay an extra price to know the exact
+    relation beetwen the exact result and the computed one.
+   */
+  ROUND_STRICT_RELATION = 8,
 
-  ROUND_CHECK = ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT
+  ROUND_CHECK = ROUND_DIRECT | ROUND_STRICT_RELATION
 };
 
 /*! \brief
@@ -79,7 +83,7 @@ bool round_not_requested(Rounding_Dir dir);
 bool round_direct(Rounding_Dir dir);
 bool round_inverse(Rounding_Dir dir);
 
-bool round_fpu_check_inexact(Rounding_Dir dir);
+bool round_strict_relation(Rounding_Dir dir);
 
 fpu_rounding_direction_type round_fpu_dir(Rounding_Dir dir);
 

@@ -539,7 +539,7 @@ le(const T1& x, const T2& y) {
   Result r
     = assign_r(tmp,
                y,
-               static_cast<Rounding_Dir>(ROUND_UP | ROUND_FPU_CHECK_INEXACT));
+               static_cast<Rounding_Dir>(ROUND_UP | ROUND_STRICT_RELATION));
   if (!result_representable(r))
     return true;
   switch (result_relation(r)) {

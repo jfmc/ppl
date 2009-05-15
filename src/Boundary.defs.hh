@@ -56,7 +56,7 @@ enum Boundary_Type {
 inline Rounding_Dir
 round_dir_check(Boundary_Type t, bool check = false) {
   if (check)
-    return static_cast<Rounding_Dir>(t | ROUND_FPU_CHECK_INEXACT);
+    return static_cast<Rounding_Dir>(t | ROUND_STRICT_RELATION);
   else
     return static_cast<Rounding_Dir>(t);
 }
