@@ -452,7 +452,7 @@ inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
 			   && C_Integer<U>::value
 			   && C_Integer<S>::is_signed), bool>::type
 lt(const S& x, const U& y) {
-  return x < 0 || x < y;
+  return x < 0 || static_cast<typename C_Integer<S>::other_type>(x) < y;
 }
 
 template <typename U, typename S>
@@ -468,7 +468,7 @@ inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
 			   && C_Integer<U>::value
 			   && C_Integer<S>::is_signed), bool>::type
 le(const S& x, const U& y) {
-  return x < 0 || x <= y;
+  return x < 0 || static_cast<typename C_Integer<S>::other_type>(x) <= y;
 }
 
 template <typename U, typename S>
