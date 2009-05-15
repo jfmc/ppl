@@ -6665,7 +6665,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
         s << ", ";
       // If the value bound can NOT be divided by 2 exactly,
       // then we output the constraint `2*v_i == bound'.
-      if (div_2exp_assign_r(half, x_ii_i, 1, ROUND_UP) == V_EQ)
+      if (div_2exp_assign_r(half, x_ii_i, 1, ROUND_UP | ROUND_STRICT_RELATION) == V_EQ)
         s << v_i << " == " << half;
       else
         s << "2*" << v_i << " == " << x_ii_i;
@@ -6680,7 +6680,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
         neg_assign_r(negation, x_i_ii, ROUND_NOT_NEEDED);
         // If the value bound can NOT be divided by 2 exactly,
         // then we output the constraint `2*v_i >= negation'.
-        if (div_2exp_assign_r(half, negation, 1, ROUND_UP) == V_EQ)
+        if (div_2exp_assign_r(half, negation, 1, ROUND_UP | ROUND_STRICT_RELATION) == V_EQ)
           s << v_i << " >= " << half;
         else
           s << "2*" << v_i << " >= " << negation;
@@ -6692,7 +6692,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
           s << ", ";
         // If the value bound can NOT be divided by 2 exactly,
         // then we output the constraint `2*v_i <= bound'.
-        if (div_2exp_assign_r(half, x_ii_i, 1, ROUND_UP) == V_EQ)
+        if (div_2exp_assign_r(half, x_ii_i, 1, ROUND_UP | ROUND_STRICT_RELATION) == V_EQ)
           s << v_i << " <= " << half;
         else
           s << "2*" << v_i << " <= " << x_ii_i;
