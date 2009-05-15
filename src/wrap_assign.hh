@@ -103,14 +103,17 @@ wrap_assign(PSET& pointset,
             Bounded_Integer_Type_Overflow o,
             const Constraint_System* pcs,
             unsigned complexity_threshold,
-            bool wrap_individually) {
-  const dimension_type space_dim = pointset.space_dimension();
+            bool wrap_individually,
+            const char* class_name) {
+  // We must have pcs->space_dimension() <= vars.space_dimension()
+  //         and  vars.space_dimension() <= pointset.space_dimension().
+
   // Dimension-compatibility check of `*pcs', if any.
-  if (pcs != 0 && pcs->space_dimension() > space_dim) {
+  const dimension_type vars_space_dim = vars.space_dimension();
+  if (pcs != 0 && pcs->space_dimension() > vars_space_dim) {
     std::ostringstream s;
-    // FIXME: how can we write the class name of PSET here?
-    s << "PPL::...::wrap_assign(..., pcs, ...):" << std::endl
-      << "this->space_dimension() == " << space_dim
+    s << "PPL::" << class_name << "::wrap_assign(..., pcs, ...):" << std::endl
+      << "vars.space_dimension() == " << vars_space_dim
       << ", pcs->space_dimension() == " << pcs->space_dimension() << ".";
     throw std::invalid_argument(s.str());
   }
@@ -123,10 +126,10 @@ wrap_assign(PSET& pointset,
   }
 
   // Dimension-compatibility check of `vars'.
-  if (space_dim < vars.space_dimension()) {
+  const dimension_type space_dim = pointset.space_dimension();
+  if (vars.space_dimension() > space_dim) {
     std::ostringstream s;
-    // FIXME: how can we write the class name of PSET here?
-    s << "PPL::...::wrap_assign(vs, ...):" << std::endl
+    s << "PPL::" << class_name << "::wrap_assign(vs, ...):" << std::endl
       << "this->space_dimension() == " << space_dim
       << ", required space dimension == " << vars.space_dimension() << ".";
     throw std::invalid_argument(s.str());

@@ -1312,14 +1312,16 @@ public:
     all the dimensions to be wrapped.
 
     \param pcs
-    Possibly null pointer to a constraint system.  When non-null,
-    the pointed-to constraint system is assumed to represent the
-    conditional or looping construct guard with respect to which
-    wrapping is performed.  Since wrapping requires the computation
-    of upper bounds and due to non-distributivity of constraint
-    refinement over upper bounds, passing a constraint system in this
-    way can be more precise than refining the result of the wrapping
-    operation with the constraints in <CODE>*pcs</CODE>.
+    Possibly null pointer to a constraint system whose variables
+    are contained in \p vars.  If <CODE>*pcs</CODE> depends on
+    variables not in \p vars, the behavior is undefined.
+    When non-null, the pointed-to constraint system is assumed to
+    represent the conditional or looping construct guard with respect
+    to which wrapping is performed.  Since wrapping requires the
+    computation of upper bounds and due to non-distributivity of
+    constraint refinement over upper bounds, passing a constraint
+    system in this way can be more precise than refining the result of
+    the wrapping operation with the constraints in <CODE>*pcs</CODE>.
 
     \param complexity_threshold
     A precision parameter of the \ref Wrapping_Operator "wrapping operator":
@@ -1331,8 +1333,9 @@ public:
     precision).
 
     \exception std::invalid_argument
-    Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p vars or with <CODE>*pcs</CODE>.
+    Thrown if <CODE>*pcs</CODE> is dimension-incompatible with
+    \p vars, or if \p *this is dimension-incompatible \p vars or with
+    <CODE>*pcs</CODE>.
   */
   void wrap_assign(const Variables_Set& vars,
                    Bounded_Integer_Type_Width w,

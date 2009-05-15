@@ -3680,11 +3680,13 @@ PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
   if (is_necessarily_closed())
     Implementation::wrap_assign(static_cast<C_Polyhedron&>(*this),
                                 vars, w, s, o, pcs,
-                                complexity_threshold, wrap_individually);
+                                complexity_threshold, wrap_individually,
+                                "C_Polyhedron");
   else
     Implementation::wrap_assign(static_cast<NNC_Polyhedron&>(*this),
                                 vars, w, s, o, pcs,
-                                complexity_threshold, wrap_individually);
+                                complexity_threshold, wrap_individually,
+                                "NNC_Polyhedron");
 }
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron */
