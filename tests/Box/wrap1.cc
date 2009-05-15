@@ -44,10 +44,8 @@ test01() {
   TBox known_result(2);
   known_result.refine_with_constraint(0 <= x);
   known_result.refine_with_constraint(x <= 255);
-  // known_result.refine_with_constraint(x < 256);
   known_result.refine_with_constraint(0 <= y);
   known_result.refine_with_constraint(y <= 255);
-  // known_result.refine_with_constraint(y < 256);
 
   bool ok = (box == known_result);
 
@@ -80,7 +78,6 @@ test02() {
   TBox known_result(2);
   known_result.refine_with_constraint(0 <= x);
   known_result.refine_with_constraint(x <= 255);
-  // known_result.refine_with_constraint(x < 256);
   known_result.refine_with_constraint(0 <= y);
   known_result.refine_with_constraint(y <= 50);
 
@@ -117,7 +114,6 @@ test03() {
   known_result.refine_with_constraint(6 <= x);
   // known_result.refine_with_constraint(0 <= x);
   known_result.refine_with_constraint(x <= 255);
-  // known_result.refine_with_constraint(x < 256);
   known_result.refine_with_constraint(0 <= y);
   known_result.refine_with_constraint(y <= 50);
 
@@ -133,5 +129,5 @@ test03() {
 BEGIN_MAIN
   DO_TEST_F8(test01);
   DO_TEST_F8(test02);
-  DO_TEST_F8(test03);
+  DO_TEST_F(test03);
 END_MAIN
