@@ -593,7 +593,7 @@ test03() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST_F8(test01);
+  DO_TEST_F32(test01);
   DO_TEST_MAY_OVERFLOW_IF_INEXACT(test02, TBD_Shape);
   DO_TEST(test03);
 END_MAIN
