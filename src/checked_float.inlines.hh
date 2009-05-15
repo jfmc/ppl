@@ -290,7 +290,7 @@ template <typename Policy>
 inline Result
 result_relation(Rounding_Dir dir) {
   if (Policy::fpu_check_inexact &&
-      !round_not_needed(dir) && round_strict_relation(dir))
+      !round_not_needed(dir) && round_strict_relation(dir)) {
     switch (fpu_check_inexact()) {
     case 0:
       return V_EQ;
