@@ -515,6 +515,8 @@ assign_int_float(To& to, const From from, Rounding_Dir dir) {
     return round_lt_int<To_Policy>(to, dir);
   if (from > i_from)
     return round_gt_int<To_Policy>(to, dir);
+  assert(false);
+  return V_NAN;
 }
 
 PPL_SPECIALIZE_ASSIGN(assign_int_float, signed char, float)

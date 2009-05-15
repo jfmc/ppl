@@ -280,6 +280,8 @@ assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
     return round_lt_mpz<To_Policy>(to, dir);
   if (from > i_from)
     return round_gt_mpz<To_Policy>(to, dir);
+  assert(false);
+  return V_NAN;
 }
 
 PPL_SPECIALIZE_ASSIGN(assign_mpz_float, mpz_class, float)
