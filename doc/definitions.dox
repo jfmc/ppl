@@ -2072,15 +2072,15 @@ is the grid
 
 The library provides operators for checking the relation holding
 between a grid  and
-a congruence, a grid generator, constraint or a (polyhedron) generator.
+a congruence, a grid generator, a constraint or a (polyhedron) generator.
 
 Suppose \f$\cL\f$ is a grid
 and \f$\cC\f$ an arbitrary congruence system representing \f$\cL\f$.
 Suppose also that
 \f$
   \cg = \bigl(
-        \langle \vect{a}, \vect{x} \rangle \equiv_f b
-      \bigr)
+          \langle \vect{a}, \vect{x} \rangle \equiv_f b
+        \bigr)
 \f$
 is a congruence relation
 with \f$\cL_{\cg} = \gcon\bigl(\{\cg\}\bigr)\f$.
