@@ -297,12 +297,6 @@ bool extract_octagonal_difference(const Constraint& c,
                                   Coefficient& c_coeff,
                                   Coefficient& c_term);
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns the index coherent to \p i.
-/*! \relates Octagonal_Shape */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-dimension_type coherent_index(dimension_type i);
-
 } // namespace Parma_Polyhedra_Library
 
 //! An octagonal shape.
