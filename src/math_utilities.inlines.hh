@@ -92,7 +92,7 @@ template <typename T, typename Policy>
 inline bool
 is_even(const Checked_Number<T, Policy>& x) {
   Checked_Number<T, Policy> half_x;
-  return div_2exp_assign_r(half_x, x, 1, ROUND_DIRECT) == V_EQ
+  return div_2exp_assign_r(half_x, x, 1, ROUND_DIRECT | ROUND_STRICT_RELATION) == V_EQ
     && is_integer(half_x);
 }
 
@@ -101,7 +101,7 @@ inline bool
 is_additive_inverse(const Checked_Number<T, Policy>& x,
 		    const Checked_Number<T, Policy>& y) {
   Checked_Number<T, Policy> negated_x;
-  return neg_assign_r(negated_x, x, ROUND_DIRECT) == V_EQ
+  return neg_assign_r(negated_x, x, ROUND_DIRECT | ROUND_STRICT_RELATION) == V_EQ
     && negated_x == y;
 }
 
