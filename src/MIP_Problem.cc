@@ -857,6 +857,14 @@ PPL::MIP_Problem::process_pending_constraints() {
 
 namespace {
 
+// NOTE: the following two `assign' helper functions are needed to
+// handle the assignment of a Coefficient to a double in method
+//     MIP_Problem::steepest_edge_float_entering_index().
+// We cannot use assign_r(double, Coefficient, Rounding_Dir) as it would
+// lead to a compilation error on those platforms (e.g., ARM) where
+// controlled floating point rounding is not available (even if the
+// rounding mode would be set to ROUND_IGNORE).
+
 inline void
 assign(double& d, const mpz_class& c) {
   d = c.get_d();
