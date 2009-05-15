@@ -110,12 +110,31 @@ wrap_assign(PSET& pointset,
 
   // Dimension-compatibility check of `*pcs', if any.
   const dimension_type vars_space_dim = vars.space_dimension();
-  if (pcs != 0 && pcs->space_dimension() > vars_space_dim) {
-    std::ostringstream s;
-    s << "PPL::" << class_name << "::wrap_assign(..., pcs, ...):" << std::endl
-      << "vars.space_dimension() == " << vars_space_dim
-      << ", pcs->space_dimension() == " << pcs->space_dimension() << ".";
-    throw std::invalid_argument(s.str());
+  if (pcs != 0) {
+    if (pcs->space_dimension() > vars_space_dim) {
+      std::ostringstream s;
+      s << "PPL::" << class_name << "::wrap_assign(..., pcs, ...):"
+        << std::endl
+        << "vars.space_dimension() == " << vars_space_dim
+        << ", pcs->space_dimension() == " << pcs->space_dimension() << ".";
+      throw std::invalid_argument(s.str());
+    }
+
+#ifndef NDEBUG
+    // Check that all variables upon which `*pcs' depends are in `vars'.
+    // An assertion is violated otherwise.
+    const Constraint_System cs = *pcs;
+    dimension_type cs_space_dim = cs.space_dimension();
+    Variables_Set::const_iterator vars_end = vars.end();
+    for (Constraint_System::const_iterator i = cs.begin(),
+           cs_end = cs.end(); i != cs_end; ++i) {
+      const Constraint& c = *i;
+      for (dimension_type d = cs_space_dim; d-- > 0; ) {
+        assert(c.coefficient(Variable(d)) == 0
+               || vars.find(d) != vars_end);
+      }
+    }
+#endif
   }
 
   // Wrapping no variable only requires refining with *pcs, if any.
