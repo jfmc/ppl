@@ -303,69 +303,64 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
-  // Find the equality corresponding to the congruence (ignoring the modulus).
-  Linear_Expression expr;
-  for (dimension_type i = cg_space_dim; i-- > 0; ) {
-    const Variable v(i);
-    expr += cg.coefficient(v) * v;
-  }
-  expr += cg.inhomogeneous_term();
+  // Build the equality corresponding to the congruence (ignoring the modulus).
+  Linear_Expression expr = Linear_Expression(cg);
   Constraint c(expr == 0);
 
   // The polyhedron is non-empty so that there exists a point.
-  // For an arbitrary generator point find the scalar product with
+  // For an arbitrary generator point, compute the scalar product with
   // the equality.
   PPL_DIRTY_TEMP_COEFFICIENT(point_val);
 
-  for (Generator_System::const_iterator g = gen_sys.begin(),
-         gen_sys_end = gen_sys.end(); g != gen_sys_end; ++g) {
-    if (g->is_point()) {
-      Scalar_Products::assign(point_val, c, *g);
+  for (Generator_System::const_iterator gs_i = gen_sys.begin(),
+         gs_end = gen_sys.end(); gs_i != gs_end; ++gs_i) {
+    if (gs_i->is_point()) {
+      Scalar_Products::assign(point_val, c, *gs_i);
       break;
     }
   }
 
-  // Find the 2 hyperplanes that satisfies the congruence and are
-  // nearest to the point such that the point lies on or between these
-  // hyperplanes.
+  // Find 2 hyperplanes that satisfy the congruence and are near to
+  // the generating point (so that the point lies on or between these
+  // hyperplanes).
   // Then use the relations between the polyhedron and the corresponding
-  // half-spaces to determine its relation with the congruence.
+  // halfspaces to determine its relation with the congruence.
   const Coefficient& modulus = cg.modulus();
 
-  PPL_DIRTY_TEMP_COEFFICIENT(div);
-  div = modulus;
-
+  // FIXME: specify rounding mode.
   PPL_DIRTY_TEMP_COEFFICIENT(nearest);
-  nearest = (point_val / div) * div;
+  nearest = (point_val / modulus) * modulus;
 
   point_val -= nearest;
   expr -= nearest;
   if (point_val == 0)
      return relation_with(expr == 0);
 
-  Linear_Expression next_expr;
-  if (point_val > 0) {
-     next_expr = expr - modulus;
-  }
-  else {
-    expr = - (expr);
-    next_expr = expr - modulus;
-  }
+  // Build first halfspace.
+  const bool positive = (point_val > 0);
+  Constraint first_halfspace = positive ? (expr >= 0) : (expr <= 0);
 
-  Poly_Con_Relation relations = relation_with(expr >= 0);
-  assert(!relations.implies(Poly_Con_Relation::saturates())
-	 && !relations.implies(Poly_Con_Relation::is_disjoint()));
-  if (relations.implies(Poly_Con_Relation::strictly_intersects()))
+  Poly_Con_Relation first_rels = relation_with(first_halfspace);
+  assert(!first_rels.implies(Poly_Con_Relation::saturates())
+	 && !first_rels.implies(Poly_Con_Relation::is_disjoint()));
+  if (first_rels.implies(Poly_Con_Relation::strictly_intersects()))
     return Poly_Con_Relation::strictly_intersects();
 
-  assert(relations == Poly_Con_Relation::is_included());
-  Poly_Con_Relation next_relations = relation_with(next_expr <= 0);
-  assert(!next_relations.implies(Poly_Con_Relation::saturates())
-	 && !next_relations.implies(Poly_Con_Relation::is_disjoint()));
-  if (next_relations.implies(Poly_Con_Relation::strictly_intersects()))
+  // Build second halfspace.
+  if (positive)
+    expr -= modulus;
+  else
+    expr += modulus;
+  Constraint second_halfspace = positive ? (expr <= 0) : (expr >= 0);
+
+  assert(first_rels == Poly_Con_Relation::is_included());
+  Poly_Con_Relation second_rels = relation_with(second_halfspace);
+  assert(!second_rels.implies(Poly_Con_Relation::saturates())
+	 && !second_rels.implies(Poly_Con_Relation::is_disjoint()));
+  if (second_rels.implies(Poly_Con_Relation::strictly_intersects()))
     return Poly_Con_Relation::strictly_intersects();
 
-  assert(next_relations == Poly_Con_Relation::is_included());
+  assert(second_rels == Poly_Con_Relation::is_included());
   return Poly_Con_Relation::is_disjoint();
 }
 
