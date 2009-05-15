@@ -29,6 +29,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifndef NDEBUG
+#define DEBUG_ROUND_NOT_NEEDED
+#endif
+
 inline Rounding_Dir
 rounding_dir(Rounding_Dir dir) {
   if (dir == ROUND_NOT_NEEDED) {
