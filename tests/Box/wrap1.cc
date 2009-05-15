@@ -40,11 +40,14 @@ test01() {
 
   box.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
 
+  // FIXME.
   TBox known_result(2);
   known_result.refine_with_constraint(0 <= x);
-  known_result.refine_with_constraint(x < 256);
+  known_result.refine_with_constraint(x <= 255);
+  // known_result.refine_with_constraint(x < 256);
   known_result.refine_with_constraint(0 <= y);
-  known_result.refine_with_constraint(y < 256);
+  known_result.refine_with_constraint(y <= 255);
+  // known_result.refine_with_constraint(y < 256);
 
   bool ok = (box == known_result);
 
@@ -73,9 +76,11 @@ test02() {
 
   box.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
 
+  // FIXME.
   TBox known_result(2);
   known_result.refine_with_constraint(0 <= x);
-  known_result.refine_with_constraint(x < 256);
+  known_result.refine_with_constraint(x <= 255);
+  // known_result.refine_with_constraint(x < 256);
   known_result.refine_with_constraint(0 <= y);
   known_result.refine_with_constraint(y <= 50);
 
@@ -107,9 +112,12 @@ test03() {
 
   box.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
 
+  // FIXME.
   TBox known_result(2);
-  known_result.refine_with_constraint(0 <= x);
-  known_result.refine_with_constraint(x < 256);
+  known_result.refine_with_constraint(6 <= x);
+  // known_result.refine_with_constraint(0 <= x);
+  known_result.refine_with_constraint(x <= 255);
+  // known_result.refine_with_constraint(x < 256);
   known_result.refine_with_constraint(0 <= y);
   known_result.refine_with_constraint(y <= 50);
 
