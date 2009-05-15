@@ -1206,36 +1206,39 @@ Octagonal_Shape<T>::relation_with(const Congruence& cg) const {
   if (space_dim == 0) {
     if (cg.is_inconsistent())
       return Poly_Con_Relation::is_disjoint();
-    else if (cg.inhomogeneous_term() % cg.modulus() == 0)
+    else {
+      assert(cg.is_tautological());
       return Poly_Con_Relation::saturates()
         && Poly_Con_Relation::is_included();
+    }
   }
 
-  PPL_DIRTY_TEMP(Coefficient, min_num);
-  PPL_DIRTY_TEMP(Coefficient, min_den);
+  // FIXME: the following code has to be checked and improved.
+  // Add comment to explain what we are doing and why.
+  const Coefficient& inhomo = cg.inhomogeneous_term();
+  Linear_Expression le = Linear_Expression(cg);
+  le -= inhomo;
+  PPL_DIRTY_TEMP_COEFFICIENT(min_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_den);
   bool min_included;
-  PPL_DIRTY_TEMP_COEFFICIENT(mod);
-  mod = cg.modulus();
-  Linear_Expression le;
-  for (dimension_type i = cg_space_dim; i-- > 0; )
-    le += cg.coefficient(Variable(i)) * Variable(i);
   bool bounded_below = minimize(le, min_num, min_den, min_included);
 
   if (!bounded_below)
     return Poly_Con_Relation::strictly_intersects();
 
-  PPL_DIRTY_TEMP_COEFFICIENT(v);
-  PPL_DIRTY_TEMP_COEFFICIENT(lower_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(lower_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(val);
+  neg_assign(val, inhomo);
+
   PPL_DIRTY_TEMP_COEFFICIENT(lower);
-  assign_r(lower_num, min_num, ROUND_NOT_NEEDED);
-  assign_r(lower_den, min_den, ROUND_NOT_NEEDED);
-  neg_assign(v, cg.inhomogeneous_term());
-  lower = lower_num / lower_den;
-  v += ((lower / mod) * mod);
-  if (v * lower_den < lower_num)
-    v += mod;
-  const Constraint& c(le == v);
+  // FIXME: specify rounding mode.
+  lower = min_num / min_den;
+
+  const Coefficient& mod = cg.modulus();
+  // FIXME: specify rounding mode.
+  val += ((lower / mod) * mod);
+  if (val * min_den < min_num)
+    val += mod;
+  Constraint c(le == val);
   return relation_with(c);
 }
 
