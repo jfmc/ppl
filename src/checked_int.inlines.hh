@@ -499,15 +499,12 @@ assign_int_float(To& to, const From from, Rounding_Dir dir) {
   if (CHECK_P(To_Policy::check_overflow, (from > Extended_Int<To_Policy, To>::max)))
     return set_pos_overflow_int<To_Policy>(to, dir);
 #endif
-  From i_from = rint(from);
-  to = To(i_from);
   if (round_not_requested(dir)) {
-    if (round_direct(ROUND_UP))
-      return V_LE;
-    if (round_direct(ROUND_DOWN))
-      return V_GE;
+    to = from;
     return V_LGE;
   }
+  From i_from = rint(from);
+  to = i_from;
   if (from == i_from)
     return V_EQ;
   if (round_direct(ROUND_UP))
@@ -516,7 +513,7 @@ assign_int_float(To& to, const From from, Rounding_Dir dir) {
     return round_gt_int<To_Policy>(to, dir);
   if (from < i_from)
     return round_lt_int<To_Policy>(to, dir);
-  else if (from > i_from)
+  if (from > i_from)
     return round_gt_int<To_Policy>(to, dir);
 }
 

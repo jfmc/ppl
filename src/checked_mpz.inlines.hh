@@ -268,13 +268,17 @@ assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
     to = from;
     return V_LGE;
   }
-  From n = rint(from);
-  to = n;
-  if (from == n)
+  From i_from = rint(from);
+  to = i_from;
+  if (from == i_from)
     return V_EQ;
-  if (from < 0)
+  if (round_direct(ROUND_UP))
     return round_lt_mpz<To_Policy>(to, dir);
-  else
+  if (round_direct(ROUND_DOWN))
+    return round_gt_mpz<To_Policy>(to, dir);
+  if (from < i_from)
+    return round_lt_mpz<To_Policy>(to, dir);
+  if (from > i_from)
     return round_gt_mpz<To_Policy>(to, dir);
 }
 
