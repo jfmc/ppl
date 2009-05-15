@@ -1433,9 +1433,12 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
   if (pcs != 0 && pcs->space_dimension() > space_dim)
     throw_dimension_incompatible("wrap_assign(vars, w, s, o, pcs, ...)", *pcs);
 
-  // Wrapping no variable is a no-op.
-  if (vars.empty())
+  // Wrapping no variable only requires refining with *pcs, if any.
+  if (vars.empty()) {
+    if (pcs != 0)
+      pointset.refine_with_constraints(*pcs);
     return;
+  }
 
   // Dimension-compatibility check.
   const dimension_type vars_space_dim = vars.space_dimension();
