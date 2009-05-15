@@ -60,7 +60,8 @@ Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n) {
 int
 Prolog_put_Coefficient(Prolog_term_ref& t, const Coefficient& n) {
   long l = 0;
-  if (assign_r(l, n, ROUND_NOT_NEEDED) != V_EQ)
+  Result r = assign_r(l, n, ROUND_IGNORE);
+  if (result_overflow(r))
     throw PPL_integer_out_of_range(n);
   return Prolog_put_long(t, l);
 }

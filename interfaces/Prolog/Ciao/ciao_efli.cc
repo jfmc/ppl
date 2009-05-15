@@ -65,7 +65,8 @@ Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n) {
 int
 Prolog_put_Coefficient(Prolog_term_ref& t, const Coefficient& n) {
   int i;
-  if (assign_r(i, n, ROUND_NOT_NEEDED) == V_EQ)
+  Result r = assign_r(i, n, ROUND_IGNORE);
+  if (!result_overflow(r))
     t = ciao_integer(i);
   else {
     std::ostringstream s;

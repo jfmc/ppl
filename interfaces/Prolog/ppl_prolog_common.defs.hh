@@ -529,7 +529,8 @@ term_to_unsigned(Prolog_term_ref t, const char* where) {
     Prolog_get_Coefficient(t, v);
     if (v < 0)
       throw not_unsigned_integer(t, where);
-    if (assign_r(d, raw_value(v), ROUND_NOT_NEEDED) != V_EQ)
+    Result r = assign_r(d, raw_value(v), ROUND_IGNORE);
+    if (result_overflow(r))
       throw Prolog_unsigned_out_of_range(t, where,
 					 std::numeric_limits<U>::max());
   }
