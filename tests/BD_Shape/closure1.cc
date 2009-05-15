@@ -327,9 +327,9 @@ add_edges(BD_Shape<T>& bds, const Edge* edges, unsigned n) {
   for (unsigned i = 0; i < n; ++i) {
     const mpq_class& q = perturbate(edges[i].distance);
     Coefficient a;
-    assign_r(a, q.get_den(), ROUND_NOT_NEEDED);
+    a = q.get_den();
     Coefficient b;
-    assign_r(b, q.get_num(), ROUND_NOT_NEEDED);
+    b = q.get_num();
 
     nout << "a = " << a << "; b = " << b << endl;
 
@@ -593,7 +593,7 @@ test03() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
+  DO_TEST_F8(test01);
   DO_TEST_MAY_OVERFLOW_IF_INEXACT(test02, TBD_Shape);
   DO_TEST(test03);
 END_MAIN
