@@ -48,6 +48,16 @@ round_ignore(Rounding_Dir dir) {
 }
 
 inline bool
+round_not_needed(Rounding_Dir dir) {
+  return round_dir(dir) == ROUND_NOT_NEEDED;
+}
+
+inline bool
+round_not_requested(Rounding_Dir dir) {
+  return round_dir(dir) == ROUND_IGNORE || round_dir(dir) == ROUND_NOT_NEEDED;
+}
+
+inline bool
 round_direct(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_DIRECT;
 }

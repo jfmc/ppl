@@ -196,18 +196,18 @@ construct_mpz_float(mpz_class& to, const From& from, Rounding_Dir dir) {
     return construct_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
   else if (is_pinf<From_Policy>(from))
     return construct_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
-  if (round_ignore(dir)) {
+  if (round_not_requested(dir)) {
     new (&to) mpz_class(from);
     return V_LGE;
   }
   From n = rint(from);
   new (&to) mpz_class(n);
-  if (from < n)
-    return round_lt_mpz<To_Policy>(to, dir);
-  else if (from > n)
-    return round_gt_mpz<To_Policy>(to, dir);
-  else
+  if (from == n)
     return V_EQ;
+  if (from < 0)
+    return round_lt_mpz<To_Policy>(to, dir);
+  else
+    return round_gt_mpz<To_Policy>(to, dir);
 }
 
 PPL_SPECIALIZE_CONSTRUCT(construct_mpz_float, mpz_class, float)
@@ -264,18 +264,18 @@ assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
     return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
   else if (is_pinf<From_Policy>(from))
     return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
-  if (round_ignore(dir)) {
+  if (round_not_requested(dir)) {
     to = from;
     return V_LGE;
   }
   From n = rint(from);
   to = n;
-  if (from < n)
-    return round_lt_mpz<To_Policy>(to, dir);
-  else if (from > n)
-    return round_gt_mpz<To_Policy>(to, dir);
-  else
+  if (from == n)
     return V_EQ;
+  if (from < 0)
+    return round_lt_mpz<To_Policy>(to, dir);
+  else
+    return round_gt_mpz<To_Policy>(to, dir);
 }
 
 PPL_SPECIALIZE_ASSIGN(assign_mpz_float, mpz_class, float)
@@ -307,7 +307,7 @@ PPL_SPECIALIZE_ASSIGN(assign_mpz_long_double, mpz_class, long double)
 template <typename To_Policy, typename From_Policy>
 inline Result
 assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
-  if (round_ignore(dir)) {
+  if (round_not_requested(dir)) {
     to = from;
     return V_LGE;
   }
@@ -375,18 +375,13 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
   }
   mpz_srcptr n = x.get_mpz_t();
   mpz_srcptr d = y.get_mpz_t();
-  if (round_ignore(dir)) {
-#if 0
-    // FIXME: we need to reconsider Rounding_Dir argument to clarify if
-    // client code intention is to have approximate result without any interest
-    // in knowing the direction of rounding or to grant to called function
-    // that result will be exact.
+  if (round_not_needed(dir)) {
     mpz_divexact(to.get_mpz_t(), n, d);
     return V_LGE;
-#else
+  }
+  if (round_ignore(dir)) {
     mpz_cdiv_q(to.get_mpz_t(), n, d);
     return V_LE;
-#endif
   }
   if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
@@ -469,7 +464,7 @@ inline Result
 div_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
              Rounding_Dir dir) {
   mpz_srcptr n = x.get_mpz_t();
-  if (round_ignore(dir)) {
+  if (round_not_requested(dir)) {
     mpz_tdiv_q_2exp(to.get_mpz_t(), x.get_mpz_t(), exp);
     return V_LGE;
   }
@@ -576,7 +571,7 @@ sqrt_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir dir) {
   if (CHECK_P(To_Policy::check_sqrt_neg, from < 0)) {
     return assign_nan<To_Policy>(to, V_SQRT_NEG);
   }
-  if (round_ignore(dir)) {
+  if (round_not_requested(dir)) {
     to = sqrt(from);
     return V_GE;
   }

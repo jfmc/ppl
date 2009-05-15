@@ -99,7 +99,7 @@ rint(long double x) {
 
 inline bool
 fpu_direct_rounding(Rounding_Dir dir) {
-  return round_direct(dir) || round_ignore(dir);
+  return round_direct(dir) || round_not_requested(dir);
 }
 
 inline bool

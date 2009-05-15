@@ -38,8 +38,6 @@ rounding_dir(Rounding_Dir dir) {
   if (dir == ROUND_NOT_NEEDED) {
 #ifdef DEBUG_ROUND_NOT_NEEDED
     return ROUND_CHECK;
-#else
-    return ROUND_IGNORE;
 #endif
   }
   return dir;

@@ -74,6 +74,8 @@ Rounding_Dir round_dir(Rounding_Dir dir);
 bool round_down(Rounding_Dir dir);
 bool round_up(Rounding_Dir dir);
 bool round_ignore(Rounding_Dir dir);
+bool round_not_needed(Rounding_Dir dir);
+bool round_not_requested(Rounding_Dir dir);
 bool round_direct(Rounding_Dir dir);
 bool round_inverse(Rounding_Dir dir);
 
