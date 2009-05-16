@@ -1318,8 +1318,8 @@ public:
     The width of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
-    \param s
-    The signedness of the bounded integer type corresponding to
+    \param r
+    The representation of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
     \param o
@@ -1354,7 +1354,7 @@ public:
   */
   void wrap_assign(const Variables_Set& vars,
                    Bounded_Integer_Type_Width w,
-                   Bounded_Integer_Type_Signedness s,
+                   Bounded_Integer_Type_Representation r,
                    Bounded_Integer_Type_Overflow o,
                    const Constraint_System* pcs = 0,
                    unsigned complexity_threshold = 16,

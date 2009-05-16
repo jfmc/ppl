@@ -100,7 +100,7 @@ enum Bounded_Integer_Type_Width {
   See the section on
   \ref Approximating_Bounded_Arithmetic "approximating bounded arithmetic".
 */
-enum Bounded_Integer_Type_Signedness {
+enum Bounded_Integer_Type_Representation {
   //! Unsigned integer.
   UNSIGNED,
 

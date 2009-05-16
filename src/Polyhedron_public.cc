@@ -3668,19 +3668,19 @@ PPL::Polyhedron::external_memory_in_bytes() const {
 void
 PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
                              Bounded_Integer_Type_Width w,
-                             Bounded_Integer_Type_Signedness s,
+                             Bounded_Integer_Type_Representation r,
                              Bounded_Integer_Type_Overflow o,
                              const Constraint_System* pcs,
                              unsigned complexity_threshold,
                              bool wrap_individually) {
   if (is_necessarily_closed())
     Implementation::wrap_assign(static_cast<C_Polyhedron&>(*this),
-                                vars, w, s, o, pcs,
+                                vars, w, r, o, pcs,
                                 complexity_threshold, wrap_individually,
                                 "C_Polyhedron");
   else
     Implementation::wrap_assign(static_cast<NNC_Polyhedron&>(*this),
-                                vars, w, s, o, pcs,
+                                vars, w, r, o, pcs,
                                 complexity_threshold, wrap_individually,
                                 "NNC_Polyhedron");
 }

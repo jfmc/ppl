@@ -158,7 +158,7 @@ void
 wrap_assign(PSET& pointset,
             const Variables_Set& vars,
             const Bounded_Integer_Type_Width w,
-            const Bounded_Integer_Type_Signedness s,
+            const Bounded_Integer_Type_Representation r,
             const Bounded_Integer_Type_Overflow o,
             const Constraint_System* pcs,
             const unsigned complexity_threshold,
@@ -221,13 +221,13 @@ wrap_assign(PSET& pointset,
   // a variable of width `w' and signedness `s' can take.
   PPL_DIRTY_TEMP_COEFFICIENT(min_value);
   PPL_DIRTY_TEMP_COEFFICIENT(max_value);
-  if (s == UNSIGNED) {
+  if (r == UNSIGNED) {
     min_value = 0;
     mul_2exp_assign(max_value, Coefficient_one(), w);
     --max_value;
   }
   else {
-    assert(s == SIGNED_2_COMPLEMENT);
+    assert(r == SIGNED_2_COMPLEMENT);
     mul_2exp_assign(max_value, Coefficient_one(), w-1);
     neg_assign(min_value, max_value);
     --max_value;

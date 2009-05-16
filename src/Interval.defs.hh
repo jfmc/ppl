@@ -530,19 +530,19 @@ public:
 
   template <typename From>
   typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
-  wrap_assign(Bounded_Integer_Type_Width w, Bounded_Integer_Type_Signedness s,
+  wrap_assign(Bounded_Integer_Type_Width w,
+              Bounded_Integer_Type_Representation r,
 	      const From& refinement) {
     if (is_empty())
       return I_EMPTY;
     if (lower_is_boundary_infinity() || upper_is_boundary_infinity())
       return assign(refinement);
     PPL_DIRTY_TEMP(Boundary, u);
-    Result r;
-    r = sub_2exp_assign_r(u, upper(), w, ROUND_UP);
-    if (!result_overflow(r) && u > lower())
+    Result result = sub_2exp_assign_r(u, upper(), w, ROUND_UP);
+    if (!result_overflow(result) && u > lower())
       return assign(refinement);
     info().clear();
-    switch (s) {
+    switch (r) {
     case UNSIGNED:
       umod_2exp_assign(LOWER, lower(), info(),
 		       LOWER, lower(), info(), w);

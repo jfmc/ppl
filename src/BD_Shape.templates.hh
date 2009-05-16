@@ -5491,13 +5491,13 @@ template <typename T>
 void
 BD_Shape<T>::wrap_assign(const Variables_Set& vars,
                          Bounded_Integer_Type_Width w,
-                         Bounded_Integer_Type_Signedness s,
+                         Bounded_Integer_Type_Representation r,
                          Bounded_Integer_Type_Overflow o,
                          const Constraint_System* pcs,
                          unsigned complexity_threshold,
                          bool wrap_individually) {
   Implementation::wrap_assign(*this,
-                              vars, w, s, o, pcs,
+                              vars, w, r, o, pcs,
                               complexity_threshold, wrap_individually,
                               "BD_Shape");
 }

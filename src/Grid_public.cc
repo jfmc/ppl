@@ -2642,7 +2642,7 @@ PPL::Grid::external_memory_in_bytes() const {
 void
 PPL::Grid::wrap_assign(const Variables_Set& vars,
                        Bounded_Integer_Type_Width w,
-                       Bounded_Integer_Type_Signedness s,
+                       Bounded_Integer_Type_Representation r,
                        Bounded_Integer_Type_Overflow o,
                        const Constraint_System* pcs,
                        unsigned,
@@ -2679,13 +2679,13 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   // a variable of width `w' and signedness `s' can take.
   PPL_DIRTY_TEMP_COEFFICIENT(min_value);
   PPL_DIRTY_TEMP_COEFFICIENT(max_value);
-  if (s == UNSIGNED) {
+  if (r == UNSIGNED) {
     min_value = 0;
     mul_2exp_assign(max_value, Coefficient_one(), w);
     --max_value;
   }
   else {
-    assert(s == SIGNED_2_COMPLEMENT);
+    assert(r == SIGNED_2_COMPLEMENT);
     mul_2exp_assign(max_value, Coefficient_one(), w-1);
     neg_assign(min_value, max_value);
     --max_value;
@@ -2722,7 +2722,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
           wrap_modulus = v_d * wrap_frequency;
           v_n %= wrap_modulus;
           // `v_n' is the value closest to 0 and may be negative.
-          if (s == UNSIGNED && v_n < 0)
+          if (r == UNSIGNED && v_n < 0)
             v_n += wrap_modulus;
           unconstrain(x);
           add_constraint(v_d * x == v_n);
@@ -2742,7 +2742,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
                || (f_n == f_d_wrap_frequency)) {
         // In these cases, `x' can only take a unique (ie constant)
         // value.
-        if (s == UNSIGNED && v_n < 0) {
+        if (r == UNSIGNED && v_n < 0) {
           // `v_n' is the value closest to 0 and may be negative.
           v_n *= f_d;
           add_mul_assign(v_n, f_n, v_d);
