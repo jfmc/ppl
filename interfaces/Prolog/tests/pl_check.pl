@@ -1957,38 +1957,37 @@ build_hypercube_constraints(Dim, [V|Vars], [V >= 0, V =< 1|CS]) :-
 
 % Find the dimension and constraints for
 % a hypercube that causes a timeout exception.
-compute_timeout_hypercube(T, Dim_in, Dim_out, CS_out) :-
+compute_timeout_hypercube(Hsecs, T, Dim_in, Dim_out, CS_out) :-
     Dim_in =< 100,
     clean_ppl_new_Polyhedron_from_space_dimension(T, Dim_in, universe, P),
     make_vars(Dim_in, Vars),
     build_hypercube_constraints(Dim_in, Vars, CS),
     ppl_timeout_exception_atom(Time_Out_Atom),
-    catch(add_constraints_and_get_minimized_constraints(P, CS),
-           Time_Out_Atom, Catch_Exception = ok),
+    catch((ppl_set_timeout(Hsecs),
+           add_constraints_and_get_minimized_constraints(P, CS)),
+          Time_Out_Atom, Catch_Exception = ok),
+    ppl_reset_timeout,
     (Catch_Exception == ok ->
         Dim_out = Dim_in,
         CS_out = CS
     ;
         Dim1 is Dim_in+1,
         ppl_delete_Polyhedron(P),
-        compute_timeout_hypercube(T, Dim1, Dim_out, CS_out)
+        compute_timeout_hypercube(Hsecs, T, Dim1, Dim_out, CS_out)
     ).
 
 time_out(T) :-
   ppl_set_timeout_exception_atom(pl_time_out),
   \+  ppl_timeout_exception_atom(pl_x),
   ppl_timeout_exception_atom(pl_time_out),
-  ppl_set_timeout(10),
-  compute_timeout_hypercube(T, 1, Dim, CS),
+  compute_timeout_hypercube(10, T, 1, Dim, CS),
   !,
   N1 is 1,
-  ppl_reset_timeout,
-  ppl_set_timeout_exception_atom(pl_time_out),
-  ppl_set_timeout(N1),
-  ppl_timeout_exception_atom(Time_Out_Atom),
   clean_ppl_new_Polyhedron_from_space_dimension(T, Dim, universe, P),
-  catch(add_constraints_and_get_minimized_constraints(P, CS),
-           Time_Out_Atom, Catch_Exception = ok),
+  catch((ppl_set_timeout(N1),
+         add_constraints_and_get_minimized_constraints(P, CS)),
+        pl_time_out, Catch_Exception = ok),
+  ppl_reset_timeout,
   (Catch_Exception == ok ->
       display_message(['while testing time_out, polyhedron with topology',
                  T, 'timeout after', N1, ms])
@@ -2001,13 +2000,11 @@ time_out(T) :-
   !,
   ppl_delete_Polyhedron(P),
   N2 is 40,
-  ppl_reset_timeout,
-  ppl_set_timeout_exception_atom(pl_time_out),
-  ppl_set_timeout(N2),
-  ppl_timeout_exception_atom(Time_Out_Atom1),
   clean_ppl_new_Polyhedron_from_space_dimension(T, Dim, universe, Q),
-  catch(ppl_Polyhedron_is_universe(Q),
-           Time_Out_Atom1, Catch_Exception = not_ok),
+  catch((ppl_set_timeout(N2),
+         ppl_Polyhedron_is_universe(Q)),
+        pl_time_out, Catch_Exception = not_ok),
+  ppl_reset_timeout,
   (Catch_Exception == not_ok ->
       display_message(['while testing time_out, polyhedron with topology',
                  T, 'timeout after', N2, ms]),
@@ -2446,23 +2443,21 @@ exception_prolog1(N, V) :-
 
 %% TEST: Prolog_unsigned_out_of_range.
 %% This test accepts any one of three exceptions:
-%% ppl_invalid_argument: with a 32 bit system, the number 1 << 34 is expected
+%% ppl_invalid_argument: with a 32 bit system, the number 1 << 59 is expected
 %%                       to throw this Prolog exception;
-%% out_of_memory:        with a 64 bit system, the number 1 << 34 does not
-%%                       throw an exception on the Prolog side, but, with
-%%                       unbounded integers, the large number of dimensions
-%%                       will throw a bad_alloc exception in C++;
-%% ppl_overflow_error:   with bounded integers, when the number is too large,
-%%                       an overflow exception may be thrown.
+%% out_of_memory:        with a 64 bit system, the number 1 << 59 does not
+%%                       throw an exception on the Prolog side, but the
+%%                       large number of dimensions will cause a bad_alloc
+%%                       exception in C++.
 %%
 exception_prolog(1, _) :-
     pl_check_prolog_flag(bounded, Y),
    (Y == true ->
      true
     ;
-     (I is 1 << 34,
-     must_catch(ppl_new_C_Polyhedron_from_generators([point('$VAR'(I))], _),
-                prolog_exception_error)
+     (I is 1 << 59,
+        must_catch(ppl_new_C_Polyhedron_from_generators([point('$VAR'(I))], _),
+                   prolog_exception_error)
       )
    ).
 
@@ -2479,8 +2474,7 @@ exception_prolog(2, _) :-
 
 %% TEST: not_unsigned_integer
 exception_prolog(3, _) :-
-  must_catch(ppl_set_timeout(-1), ppl_invalid_argument).
-
+    must_catch(ppl_set_timeout(-1), ppl_invalid_argument).
 
 %% TEST: not_unsigned_integer
 exception_prolog(4, _) :-
