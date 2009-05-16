@@ -71,8 +71,12 @@ enum Optimization_Mode {
   MAXIMIZATION
 };
 
-//! Widths of bounded integer types.
-/*! \ingroup PPL_CXX_interface */
+/*! \brief \ingroup PPL_CXX_interface
+  Widths of bounded integer types.
+
+  See the section on
+  \ref Approximating_Bounded_Arithmetic "approximating bounded arithmetic".
+*/
 enum Bounded_Integer_Type_Width {
   //! \hideinitializer 8 bits.
   BITS_8 = 8,
@@ -90,8 +94,12 @@ enum Bounded_Integer_Type_Width {
   BITS_128 = 128,
 };
 
-//! Signedness of bounded integer types.
-/*! \ingroup PPL_CXX_interface */
+/*! \brief \ingroup PPL_CXX_interface
+  Representation of bounded integer types.
+
+  See the section on
+  \ref Approximating_Bounded_Arithmetic "approximating bounded arithmetic".
+*/
 enum Bounded_Integer_Type_Signedness {
   //! Unsigned integer.
   UNSIGNED,
@@ -100,13 +108,18 @@ enum Bounded_Integer_Type_Signedness {
   SIGNED_2_COMPLEMENT
 };
 
-//! Overflow behavior of bounded integer types.
-/*! \ingroup PPL_CXX_interface */
+/*! \brief \ingroup PPL_CXX_interface
+  Overflow behavior of bounded integer types.
+
+  See the section on
+  \ref Approximating_Bounded_Arithmetic "approximating bounded arithmetic".
+*/
 enum Bounded_Integer_Type_Overflow {
   /*! \brief
     On overflow, wrapping takes place.
 
-    FIXME: formally specify what "wrapping takes place" means.
+    This means that, for a \f$w\f$-bit bounded integer, the computation
+    happens modulo \f$2^w\f$.
   */
   OVERFLOW_WRAPS,
 
