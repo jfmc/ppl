@@ -439,13 +439,65 @@ that are consistent with respect to the desired results.
 
 \section Approximating_Bounded_Arithmetic Approximating Bounded Arithmetic
 
-FIXME(0.11): to be written.
+The Parma Polyhedra Library provides services that allow to compute
+correct approximations of bounded arithmetic as available in widespread
+programming languages.  Supported bit-widths are 8, 16, 32 and 64 bits,
+with some limited support for 128 bits.
+Supported representations are binary unsigned and two's complement signed.
+Supported overflow behaviors are:
+<DL>
+  <DT>Wrapping:</DT>
+  <DD>
+    this means that, for a \f$w\f$-bit bounded integer, the computation
+    happens modulo \f$2^w\f$.  In turn, this signifies that the computation
+    happens <EM>as if</EM> the unbounded arithmetic result was computed
+    and then wrapped.  For unsigned integers, the wrapping function is
+    simply \f$x \bmod 2^w\f$, most conveniently defined as
+    \f[
+      \mathrm{wrap}_\mathrm{u}(x)
+        \defeq
+          x - 2^w \lfloor x/2^w \rfloor.
+    \f]
+    For signed integers the wrapping function is, instead,
+    \f[
+      \mathrm{wrap}_\mathrm{s}(x)
+        \defeq
+          \begin{cases}
+            \mathrm{wrap}_\mathrm{u}(x),
+              &\text{if $\mathrm{wrap}_\mathrm{u}(x) < 2^{w-1}$;} \\
+            \mathrm{wrap}_\mathrm{u}(x) - 2^w,
+              &\text{otherwise.}
+          \end{cases}
+    \f]
+  </DD>
+  <DT>Undefined:</DT>
+  <DD>
+    this means that the result of the operation resulting in an
+    overflow can take any value.  This is useful to partially
+    model systems where overflow has unspecified effects on
+    the computed result.
+    Even though something more serious can happen in the system
+    being analyzed ---due to, e.g., C's undefined behavior---, here we
+    are only concerned with the results of arithmetic operations.
+    It is the responsibility of the analyzer to ensure that other
+    manifestations of undefined behavior are conservatively approximated.
+  </DD>
+  <DT>Impossible:</DT>
+  <DD>
+    this is for the analysis of languages where overflow is trapped
+    before it affects the state, for which, thus, any indication that
+    an overflow may have affected the state is necessarily due to
+    the imprecision of the analysis.
+  </DD>
+</DL>
+
+FIXME(0.11): to be continued.
+\ref SK07 "[SK07]"
 
 
 \subsection Wrapping_Operator Wrapping Operator
 
 FIXME(0.11): to be written.
-\ref SK07 "[SK07]"
 
 
 \section convex_polys Convex Polyhedra
