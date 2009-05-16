@@ -310,34 +310,35 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
   // The polyhedron is non-empty so that there exists a point.
   // For an arbitrary generator point, compute the scalar product with
   // the equality.
-  PPL_DIRTY_TEMP_COEFFICIENT(point_val);
-
+  PPL_DIRTY_TEMP_COEFFICIENT(sp_point);
   for (Generator_System::const_iterator gs_i = gen_sys.begin(),
          gs_end = gen_sys.end(); gs_i != gs_end; ++gs_i) {
     if (gs_i->is_point()) {
-      Scalar_Products::assign(point_val, c, *gs_i);
+      Scalar_Products::assign(sp_point, c, *gs_i);
+      expr -= sp_point;
       break;
     }
   }
 
-  // Find 2 hyperplanes that satisfy the congruence and are near to
+  // Find two hyperplanes that satisfy the congruence and are near to
   // the generating point (so that the point lies on or between these
-  // hyperplanes).
-  // Then use the relations between the polyhedron and the corresponding
-  // halfspaces to determine its relation with the congruence.
+  // two hyperplanes).
+  // Then use the relations between the polyhedron and the halfspaces
+  // corresponding to the hyperplanes to determine the result.
+
+  // Compute the distance from the point to an hyperplane.
   const Coefficient& modulus = cg.modulus();
+  PPL_DIRTY_TEMP_COEFFICIENT(signed_distance);
+  signed_distance = sp_point % modulus;
+  if (signed_distance == 0)
+    // The point is lying on the hyperplane.
+    return relation_with(expr == 0);
+  else
+    // The point is not lying on the hyperplane.
+    expr += signed_distance;
 
-  // FIXME: specify rounding mode.
-  PPL_DIRTY_TEMP_COEFFICIENT(nearest);
-  nearest = (point_val / modulus) * modulus;
-
-  point_val -= nearest;
-  expr -= nearest;
-  if (point_val == 0)
-     return relation_with(expr == 0);
-
-  // Build first halfspace.
-  const bool positive = (point_val > 0);
+  // Build first halfspace constraint.
+  const bool positive = (signed_distance > 0);
   Constraint first_halfspace = positive ? (expr >= 0) : (expr <= 0);
 
   Poly_Con_Relation first_rels = relation_with(first_halfspace);

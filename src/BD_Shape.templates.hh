@@ -1204,24 +1204,17 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
 template <typename T>
 Poly_Con_Relation
 BD_Shape<T>::relation_with(const Congruence& cg) const {
-  const dimension_type cg_space_dim = cg.space_dimension();
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
-  if (cg_space_dim > space_dim)
+  if (cg.space_dimension() > space_dim)
     throw_dimension_incompatible("relation_with(cg)", cg);
 
   // If the congruence is a bounded difference equality,
   // find the relation with the equivalent equality constraint.
   if (cg.is_equality()) {
     Constraint c(cg);
-    dimension_type num_vars = 0;
-    dimension_type i = 0;
-    dimension_type j = 0;
-    PPL_DIRTY_TEMP_COEFFICIENT(coeff);
-    if (extract_bounded_difference(c, cg_space_dim, num_vars,
-                                    i, j, coeff))
-      return relation_with(c);
+    return relation_with(c);
   }
 
   shortest_path_closure_assign();
@@ -1234,36 +1227,30 @@ BD_Shape<T>::relation_with(const Congruence& cg) const {
   if (space_dim == 0) {
     if (cg.is_inconsistent())
       return Poly_Con_Relation::is_disjoint();
-    else if (cg.inhomogeneous_term() % cg.modulus() == 0)
+    else
       return Poly_Con_Relation::saturates()
         && Poly_Con_Relation::is_included();
   }
 
-  PPL_DIRTY_TEMP(Coefficient, min_num);
-  PPL_DIRTY_TEMP(Coefficient, min_den);
+  // FIXME: add proper comments to the following.
+  Linear_Expression le = Linear_Expression(cg);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_den);
   bool min_included;
-  PPL_DIRTY_TEMP_COEFFICIENT(mod);
-  mod = cg.modulus();
-  Linear_Expression le;
-  for (dimension_type i = cg_space_dim; i-- > 0; )
-    le += cg.coefficient(Variable(i)) * Variable(i);
   bool bounded_below = minimize(le, min_num, min_den, min_included);
 
   if (!bounded_below)
     return Poly_Con_Relation::strictly_intersects();
 
-  PPL_DIRTY_TEMP_COEFFICIENT(v);
-  PPL_DIRTY_TEMP_COEFFICIENT(lower_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(lower_den);
-  PPL_DIRTY_TEMP_COEFFICIENT(lower);
-  assign_r(lower_num, min_num, ROUND_NOT_NEEDED);
-  assign_r(lower_den, min_den, ROUND_NOT_NEEDED);
-  neg_assign(v, cg.inhomogeneous_term());
-  lower = lower_num / lower_den;
-  v += ((lower / mod) * mod);
-  if (v * lower_den < lower_num)
-    v += mod;
-  const Constraint& c(le == v);
+  PPL_DIRTY_TEMP_COEFFICIENT(value);
+  value = min_num / min_den;
+  const Coefficient& modulus = cg.modulus();
+  PPL_DIRTY_TEMP_COEFFICIENT(signed_distance);
+  signed_distance = value % modulus;
+  value -= signed_distance;
+  if (value * min_den < min_num)
+    value += modulus;
+  Constraint c(le == value);
   return relation_with(c);
 }
 

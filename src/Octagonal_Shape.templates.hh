@@ -1190,9 +1190,8 @@ Octagonal_Shape<T>::relation_with(const Congruence& cg) const {
   dimension_type cg_space_dim = cg.space_dimension();
 
   // Dimension-compatibility check.
-  if (cg_space_dim > space_dim) {
+  if (cg_space_dim > space_dim)
     throw_dimension_incompatible("relation_with(cg)", cg);
-  }
 
   // If the congruence is an equality,
   // find the relation with the equivalent equality constraint.
@@ -1211,18 +1210,14 @@ Octagonal_Shape<T>::relation_with(const Congruence& cg) const {
   if (space_dim == 0) {
     if (cg.is_inconsistent())
       return Poly_Con_Relation::is_disjoint();
-    else {
-      assert(cg.is_tautological());
+    else
       return Poly_Con_Relation::saturates()
         && Poly_Con_Relation::is_included();
-    }
   }
 
   // FIXME: the following code has to be checked and improved.
   // Add comment to explain what we are doing and why.
-  const Coefficient& inhomo = cg.inhomogeneous_term();
   Linear_Expression le = Linear_Expression(cg);
-  le -= inhomo;
   PPL_DIRTY_TEMP_COEFFICIENT(min_num);
   PPL_DIRTY_TEMP_COEFFICIENT(min_den);
   bool min_included;
@@ -1231,19 +1226,17 @@ Octagonal_Shape<T>::relation_with(const Congruence& cg) const {
   if (!bounded_below)
     return Poly_Con_Relation::strictly_intersects();
 
-  PPL_DIRTY_TEMP_COEFFICIENT(val);
-  neg_assign(val, inhomo);
-
-  PPL_DIRTY_TEMP_COEFFICIENT(lower);
   // FIXME: specify rounding mode.
-  lower = min_num / min_den;
+  PPL_DIRTY_TEMP_COEFFICIENT(value);
+  value = min_num / min_den;
 
-  const Coefficient& mod = cg.modulus();
-  // FIXME: specify rounding mode.
-  val += ((lower / mod) * mod);
-  if (val * min_den < min_num)
-    val += mod;
-  Constraint c(le == val);
+  const Coefficient& modulus = cg.modulus();
+  PPL_DIRTY_TEMP_COEFFICIENT(signed_distance);
+  signed_distance = value % modulus;
+  value -= signed_distance;
+  if (value * min_den < min_num)
+    value += modulus;
+  Constraint c(le == value);
   return relation_with(c);
 }
 
