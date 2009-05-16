@@ -101,10 +101,13 @@ enum Bounded_Integer_Type_Width {
   \ref Approximating_Bounded_Arithmetic "approximating bounded arithmetic".
 */
 enum Bounded_Integer_Type_Representation {
-  //! Unsigned integer.
+  //! Unsigned binary.
   UNSIGNED,
 
-  //! Signed integer represented by the two's complement of the absolute value.
+  /*! \brief
+    Signed binary where negative values are represented by the two's
+    complement of the absolute value.
+  */
   SIGNED_2_COMPLEMENT
 };
 

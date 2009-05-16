@@ -454,18 +454,18 @@ Supported overflow behaviors are:
     and then wrapped.  For unsigned integers, the wrapping function is
     simply \f$x \bmod 2^w\f$, most conveniently defined as
     \f[
-      \mathrm{wrap}_\mathrm{u}(x)
+      \mathrm{wrap}^\mathrm{u}_w(x)
         \defeq
           x - 2^w \lfloor x/2^w \rfloor.
     \f]
     For signed integers the wrapping function is, instead,
     \f[
-      \mathrm{wrap}_\mathrm{s}(x)
+      \mathrm{wrap}^\mathrm{s}_w(x)
         \defeq
           \begin{cases}
-            \mathrm{wrap}_\mathrm{u}(x),
-              &\text{if $\mathrm{wrap}_\mathrm{u}(x) < 2^{w-1}$;} \\
-            \mathrm{wrap}_\mathrm{u}(x) - 2^w,
+            \mathrm{wrap}^\mathrm{u}_w(x),
+              &\text{if $\mathrm{wrap}^\mathrm{u}_w(x) < 2^{w-1}$;} \\
+            \mathrm{wrap}^\mathrm{u}_w(x) - 2^w,
               &\text{otherwise.}
           \end{cases}
     \f]
@@ -492,12 +492,28 @@ Supported overflow behaviors are:
 </DL>
 
 FIXME(0.11): to be continued.
-\ref SK07 "[SK07]"
 
 
 \subsection Wrapping_Operator Wrapping Operator
 
-FIXME(0.11): to be written.
+One possibility to precisely approximate the semantics of programs that
+operate on bounded integer variables is to follow the approach described
+in \ref SK07 "[SK07]".  The idea is to associate space dimensions to the
+<EM>unwrapped values</EM> of bounded variables.  Suppose <CODE>j</CODE>
+is a \f$w\f$-bit, unsigned program variable associated to a space dimension
+labeled by the variable \f$x\f$.  If \f$x\f$ is constrained by some
+numerical abstraction to take values in a set \f$S \sseq \Rset\f$, then
+the program variable <CODE>j</CODE> can only take values in
+\f$\bigl\{\, \mathrm{wrap}^\mathrm{u}_w(z) \bigm| z \in S \,\bigr\}\f$.
+There are two reasons why this is interesting: firstly, this allows
+to retain relational information by using a single numerical abstraction
+tracking multiple program variables.  Secondly, the integers modulo
+\f$2^w\f$ form a ring of equivalence classes on which addition
+and multiplication are well defined.  This means, e.g., that assignments
+with affine right-hand sides and involving only variables with the same
+bit-width and representation can be safely modeled by affine images.
+
+FIXME(0.11): to be continued.
 
 
 \section convex_polys Convex Polyhedra
