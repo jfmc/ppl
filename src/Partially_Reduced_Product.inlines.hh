@@ -264,6 +264,7 @@ Partially_Reduced_Product<D1, D2, R>
 	       Coefficient_traits::const_reference denominator) {
   d1.affine_image(var, expr, denominator);
   d2.affine_image(var, expr, denominator);
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
@@ -274,6 +275,7 @@ Partially_Reduced_Product<D1, D2, R>
 		  Coefficient_traits::const_reference denominator) {
   d1.affine_preimage(var, expr, denominator);
   d2.affine_preimage(var, expr, denominator);
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
@@ -285,6 +287,7 @@ Partially_Reduced_Product<D1, D2, R>
 			   Coefficient_traits::const_reference denominator) {
   d1.generalized_affine_image(var, relsym, expr, denominator);
   d2.generalized_affine_image(var, relsym, expr, denominator);
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
@@ -296,6 +299,7 @@ Partially_Reduced_Product<D1, D2, R>
 			      Coefficient_traits::const_reference denominator) {
   d1.generalized_affine_preimage(var, relsym, expr, denominator);
   d2.generalized_affine_preimage(var, relsym, expr, denominator);
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
@@ -306,6 +310,7 @@ Partially_Reduced_Product<D1, D2, R>
 			   const Linear_Expression& rhs) {
   d1.generalized_affine_image(lhs, relsym, rhs);
   d2.generalized_affine_image(lhs, relsym, rhs);
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
@@ -316,6 +321,7 @@ Partially_Reduced_Product<D1, D2, R>
                               const Linear_Expression& rhs) {
   d1.generalized_affine_preimage(lhs, relsym, rhs);
   d2.generalized_affine_preimage(lhs, relsym, rhs);
+  clear_reduced_flag();
 }
 
 

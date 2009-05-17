@@ -344,7 +344,7 @@ test10() {
   cs.insert(D <= 9);
   Congruence_System cgs;
   cgs.insert(A %= 0);
-  cgs.insert((B %= 0) / 15);
+  cgs.insert((B %= 5) / 15);
   cgs.insert(C %= 0);
   cgs.insert(D %= 0);
 
@@ -364,6 +364,8 @@ test10() {
   gb1.refine_with_constraints(cs);
   gb1.refine_with_congruences(cgs);
   gb1.affine_image(A, 2*B + D);
+  print_constraints(ab1,
+       "*** (Affine_Space x TBox) ab1 constraints ***");
 
   AffBox ab2(ab1);
   TBox box2(box1);
@@ -406,9 +408,11 @@ test10() {
   GridBox known_gb(4);
   known_gb.refine_with_constraints(known_cs);
   known_gb.refine_with_congruences(cgs);
-  known_gb.refine_with_congruence((A + 2*B - D %= 0) / 90);
+  known_gb.refine_with_congruence((A - D %= 20) / 30);
+  known_gb.refine_with_congruence((B %= 5) / 15);
 
-  bool ok = (ab1 == known_ab && box1 == known_box
+  bool ok = (ab1 == known_ab
+             && box1 == known_box
              && affs1 == known_affs && gb1 == known_gb);
 
   print_constraints(ab1,
@@ -416,6 +420,8 @@ test10() {
   print_constraints(box1,
        "*** (TBox) box1 constraints ***");
   print_constraints(affs1, "*** (Affine_Space) affs1 constraints ***");
+  print_constraints(gb1,
+       "*** (Grid x TBox) gb1 constraints ***");
   print_congruences(gb1,
        "*** (Grid x TBox) gb1 congruences ***");
 
