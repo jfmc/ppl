@@ -512,6 +512,17 @@ tracking multiple program variables.  Secondly, the integers modulo
 and multiplication are well defined.  This means, e.g., that assignments
 with affine right-hand sides and involving only variables with the same
 bit-width and representation can be safely modeled by affine images.
+While upper bounds and widening can be used without any precaution,
+anything that can be reconducted to intersection requires a preliminary
+<EM>wrapping</EM> phase, where the dimensions corresponding to bounded
+integer types are brought back to their natural domain.
+This necessity arise naturally for the analysis of conditionals
+and conversion operators, as well as in the realization of domain
+combinations.
+
+The PPL provides a general wrapping operator that is parametric with
+respect to the set of space dimensions (variables) to be wrapped,
+the width, representation and overflow behavior of all these variables,
 
 FIXME(0.11): to be continued.
 
