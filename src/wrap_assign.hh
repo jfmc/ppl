@@ -309,29 +309,20 @@ wrap_assign(PSET& pointset,
     if (o == OVERFLOW_UNDEFINED || collective_wrap_too_complex)
       goto set_full_range;
 
-    Coefficient& diff = ud;
-    diff = last_quadrant - first_quadrant;
-
-    // Please note that the `>=' is intentional here.
-    if (diff >= UINT_MAX)
-      goto set_full_range;
+    Coefficient& quadrants = ud;
+    quadrants = last_quadrant - first_quadrant + 1;
 
     unsigned extension;
-    assign_r(extension, diff, ROUND_NOT_NEEDED);
-    ++extension;
-    assert(extension > 0);
-
-    if (extension > complexity_threshold)
+    Result r = assign_r(extension, quadrants, ROUND_DIRECT);
+    if (result_overflow(r) || extension > complexity_threshold)
       goto set_full_range;
 
     if (!wrap_individually && !collective_wrap_too_complex) {
-      if (collective_wrap_complexity > UINT_MAX / extension)
-        collective_wrap_too_complex = true;
-      else {
-        collective_wrap_complexity *= extension;
-        if (collective_wrap_complexity > complexity_threshold)
+      r = mul_assign_r(collective_wrap_complexity,
+		       collective_wrap_complexity, extension, ROUND_DIRECT);
+      if (result_overflow(r) ||
+	  collective_wrap_complexity > complexity_threshold)
           collective_wrap_too_complex = true;
-      }
       if (collective_wrap_too_complex) {
         // Set all the dimensions in `translations' to full range.
         for (Wrap_Translations::const_iterator i = translations.begin(),
