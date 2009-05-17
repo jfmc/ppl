@@ -75,7 +75,7 @@ enum Optimization_Mode {
   Widths of bounded integer types.
 
   See the section on
-  \ref Approximating_Bounded_Arithmetic "approximating bounded arithmetic".
+  \ref Approximating_Bounded_Integers "approximating bounded integers".
 */
 enum Bounded_Integer_Type_Width {
   //! \hideinitializer 8 bits.
@@ -98,7 +98,7 @@ enum Bounded_Integer_Type_Width {
   Representation of bounded integer types.
 
   See the section on
-  \ref Approximating_Bounded_Arithmetic "approximating bounded arithmetic".
+  \ref Approximating_Bounded_Integers "approximating bounded integers".
 */
 enum Bounded_Integer_Type_Representation {
   //! Unsigned binary.
@@ -115,7 +115,7 @@ enum Bounded_Integer_Type_Representation {
   Overflow behavior of bounded integer types.
 
   See the section on
-  \ref Approximating_Bounded_Arithmetic "approximating bounded arithmetic".
+  \ref Approximating_Bounded_Integers "approximating bounded integers".
 */
 enum Bounded_Integer_Type_Overflow {
   /*! \brief

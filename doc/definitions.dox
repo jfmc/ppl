@@ -437,7 +437,17 @@ library user to provide the PPL's method with approximations of reality
 that are consistent with respect to the desired results.
 
 
-\section Approximating_Bounded_Arithmetic Approximating Bounded Arithmetic
+\section Approximating_Integers Approximating Integers
+
+FIXME(0.11): to be written.
+
+
+\subsection Dropping_Non_Integer_Points Dropping Non-Integer Points
+
+FIXME(0.11): to be written.
+
+
+\subsection Approximating_Bounded_Integers Approximating Bounded Integers
 
 The Parma Polyhedra Library provides services that allow to compute
 correct approximations of bounded arithmetic as available in widespread
@@ -494,7 +504,7 @@ Supported overflow behaviors are:
 FIXME(0.11): to be continued.
 
 
-\subsection Wrapping_Operator Wrapping Operator
+\subsubsection Wrapping_Operator Wrapping Operator
 
 One possibility to precisely approximate the semantics of programs that
 operate on bounded integer variables is to follow the approach described
@@ -522,9 +532,38 @@ combinations.
 
 The PPL provides a general wrapping operator that is parametric with
 respect to the set of space dimensions (variables) to be wrapped,
-the width, representation and overflow behavior of all these variables,
+the width, representation and overflow behavior of all these variables.
+An optional constraint system allows, when given, to increase the
+precision.  This constraint system, which must only depend on variables
+with respect to which wrapping is performed, is assumed to represent
+the conditional or looping construct guard with respect to which
+wrapping is performed.  Since wrapping requires the computation of
+upper bounds and due to non-distributivity of constraint refinement
+over upper bounds, passing a constraint system in this way can be more
+precise than refining the result of the wrapping operation afterwards.
+The general wrapping operator offered by the PPL also allows to control
+the complexity/precision ratio by means of two additional parameters:
+an unsigned integer encoding a complexity threshold, with higher values
+resulting in possibly improved precision; and a Boolean controlling
+whether space dimensions should be wrapped individually, something that
+results in much greater efficiency to the detriment of precision,
+or collectively.
 
-FIXME(0.11): to be continued.
+Note that the PPL assumes that any space dimension subject to wrapping
+is being used to capture the value of bounded integer values.  As a
+consequence the library is free to drop, from the involved numerical
+abstraction, any point having a non-integer coordinate in correspondence
+of a space dimension subject to wrapping.  It must be stressed that
+freedom to drop such points does not constitute an obligation to remove
+all of them (especially because this would be extraordinarily expensive
+on some numerical abstractions).
+The PPL provides operators for the more systematic
+\ref Dropping_Non_Integer_Points
+"removal of points with non-integral coordinates".
+
+The wrapping operator will only remove some of these points
+as a byproduct of its main task and only when this comes at a negligible
+extra cost.
 
 
 \section convex_polys Convex Polyhedra
