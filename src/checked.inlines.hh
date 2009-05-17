@@ -404,9 +404,9 @@ inline Result_Relation
 sgn_generic(const Type& x) {
   if (x > 0)
     return VR_GT;
-  if (x < 0)
-    return VR_LT;
-  return VR_EQ;
+  if (x == 0)
+    return VR_EQ;
+  return VR_LT;
 }
 
 template <typename T1, typename T2, typename Enable = void>

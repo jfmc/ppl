@@ -722,7 +722,7 @@ sgn_float(const Type x) {
     return VR_LT;
   if (x == 0)
     return VR_EQ;
-    return VR_EMPTY;
+  return VR_EMPTY;
 }
 
 template <typename Policy1, typename Policy2, typename Type>
