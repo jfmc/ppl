@@ -109,10 +109,8 @@ test03() {
 
   box.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
 
-  // FIXME.
   TBox known_result(2);
-  known_result.refine_with_constraint(6 <= x);
-  // known_result.refine_with_constraint(0 <= x);
+  known_result.refine_with_constraint(0 <= x);
   known_result.refine_with_constraint(x <= 255);
   known_result.refine_with_constraint(0 <= y);
   known_result.refine_with_constraint(y <= 50);
@@ -197,7 +195,7 @@ test05() {
 BEGIN_MAIN
   DO_TEST_F8(test01);
   DO_TEST_F8(test02);
-  DO_TEST_F(test03);
+  DO_TEST_F8(test03);
   DO_TEST_F8(test04);
   DO_TEST_F8(test05);
 END_MAIN
