@@ -117,8 +117,7 @@ wrap_assign_col(PSET& dest,
                 Coefficient_traits::const_reference min_value,
                 Coefficient_traits::const_reference max_value,
                 const Constraint_System* pcs,
-                Coefficient& tmp1,
-                Coefficient& tmp2) {
+                Coefficient& tmp) {
   if (first == end) {
     PSET p(src);
     if (pcs != 0)
@@ -136,19 +135,19 @@ wrap_assign_col(PSET& dest,
     const Variable& x = wrap_dim_translations.var;
     const Coefficient& first_quadrant = wrap_dim_translations.first_quadrant;
     const Coefficient& last_quadrant = wrap_dim_translations.last_quadrant;
-    Coefficient& quadrant = tmp1;
-    Coefficient& shift = tmp2;
+    Coefficient& shift = tmp;
+    PPL_DIRTY_TEMP_COEFFICIENT(quadrant);
     for (quadrant = first_quadrant; quadrant <= last_quadrant; ++quadrant) {
       if (quadrant != 0) {
         mul_2exp_assign(shift, quadrant, w);
         PSET p(src);
         p.affine_image(x, x - shift, 1);
         wrap_assign_col(dest, p, vars, first+1, end, w, min_value, max_value,
-                        pcs, tmp1, tmp2);
+                        pcs, tmp);
       }
       else
         wrap_assign_col(dest, src, vars, first+1, end, w, min_value, max_value,
-                        pcs, tmp1, tmp2);
+                        pcs, tmp);
     }
   }
 }
@@ -372,7 +371,7 @@ wrap_assign(PSET& pointset,
       PSET hull(space_dim, EMPTY);
       wrap_assign_col(hull, pointset, dimensions_to_be_translated,
                       translations.begin(), translations.end(),
-                      w, min_value, max_value, pcs, ln, ld);
+                      w, min_value, max_value, pcs, ln);
       pointset.swap(hull);
     }
   }
