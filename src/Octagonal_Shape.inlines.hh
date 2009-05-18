@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BD_Shape.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
+#include "wrap_assign.hh"
 #include <cassert>
 #include <algorithm>
 
@@ -548,6 +549,21 @@ Octagonal_Shape<T>
     set_zero_dim_univ();
   space_dim = new_dimension;
   assert(OK());
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>::wrap_assign(const Variables_Set& vars,
+                                Bounded_Integer_Type_Width w,
+                                Bounded_Integer_Type_Representation r,
+                                Bounded_Integer_Type_Overflow o,
+                                const Constraint_System* pcs,
+                                unsigned complexity_threshold,
+                                bool wrap_individually) {
+  Implementation::wrap_assign(*this,
+                              vars, w, r, o, pcs,
+                              complexity_threshold, wrap_individually,
+                              "Octagonal_Shape");
 }
 
 template <typename T>

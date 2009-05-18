@@ -1565,6 +1565,33 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
 
 template <typename ITV>
 void
+Box<ITV>::drop_some_non_integer_points(Complexity_Class complexity) {
+  if (std::numeric_limits<typename ITV::boundary_type>::is_integer
+      && !ITV::info_type::store_open)
+    return;
+
+  // FIXME(0.11): complete.
+}
+
+template <typename ITV>
+void
+Box<ITV>::drop_some_non_integer_points(const Variables_Set& vars,
+                                       Complexity_Class complexity) {
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = vars.space_dimension();
+  if (space_dimension() < min_space_dim)
+    throw_dimension_incompatible("drop_some_non_integer_points(vs, cmpl)",
+                                 min_space_dim);
+
+  if (std::numeric_limits<typename ITV::boundary_type>::is_integer
+      && !ITV::info_type::store_open)
+    return;
+
+  // FIXME(0.11): complete.
+}
+
+template <typename ITV>
+void
 Box<ITV>::intersection_assign(const Box& y) {
   Box& x = *this;
   const dimension_type space_dim = space_dimension();

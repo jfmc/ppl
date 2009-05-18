@@ -33,7 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variables_Set.defs.hh"
 #include "Bit_Row.defs.hh"
 #include "Temp.defs.hh"
-#include "wrap_assign.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -5489,17 +5488,27 @@ BD_Shape<T>::fold_space_dimensions(const Variables_Set& vars,
 
 template <typename T>
 void
-BD_Shape<T>::wrap_assign(const Variables_Set& vars,
-                         Bounded_Integer_Type_Width w,
-                         Bounded_Integer_Type_Representation r,
-                         Bounded_Integer_Type_Overflow o,
-                         const Constraint_System* pcs,
-                         unsigned complexity_threshold,
-                         bool wrap_individually) {
-  Implementation::wrap_assign(*this,
-                              vars, w, r, o, pcs,
-                              complexity_threshold, wrap_individually,
-                              "BD_Shape");
+BD_Shape<T>::drop_some_non_integer_points(Complexity_Class complexity) {
+  if (std::numeric_limits<T>::is_integer)
+    return;
+
+  // FIXME(0.11): complete.
+}
+
+template <typename T>
+void
+BD_Shape<T>::drop_some_non_integer_points(const Variables_Set& vars,
+                                          Complexity_Class complexity) {
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = vars.space_dimension();
+  if (space_dimension() < min_space_dim)
+    throw_dimension_incompatible("drop_some_non_integer_points(vs, cmpl)",
+                                 min_space_dim);
+
+  if (std::numeric_limits<T>::is_integer)
+    return;
+
+  // FIXME(0.11): complete.
 }
 
 /*! \relates Parma_Polyhedra_Library::BD_Shape */

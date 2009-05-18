@@ -28,7 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
 #include "meta_programming.hh"
-#include "wrap_assign.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -2781,8 +2780,7 @@ Octagonal_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
 
 template <typename T>
 void
-Octagonal_Shape<T>
-::remove_space_dimensions(const Variables_Set& vars) {
+Octagonal_Shape<T>::remove_space_dimensions(const Variables_Set& vars) {
   // The removal of no dimensions from any octagon is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a octagon in a 0-dim space.
@@ -6618,17 +6616,29 @@ Octagonal_Shape<T>
 
 template <typename T>
 void
-Octagonal_Shape<T>::wrap_assign(const Variables_Set& vars,
-                                Bounded_Integer_Type_Width w,
-                                Bounded_Integer_Type_Representation r,
-                                Bounded_Integer_Type_Overflow o,
-                                const Constraint_System* pcs,
-                                unsigned complexity_threshold,
-                                bool wrap_individually) {
-  Implementation::wrap_assign(*this,
-                              vars, w, r, o, pcs,
-                              complexity_threshold, wrap_individually,
-                              "Octagonal_Shape");
+Octagonal_Shape<T>
+::drop_some_non_integer_points(Complexity_Class complexity) {
+  if (std::numeric_limits<T>::is_integer)
+    return;
+
+  // FIXME(0.11): complete.
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>
+::drop_some_non_integer_points(const Variables_Set& vars,
+                               Complexity_Class complexity) {
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = vars.space_dimension();
+  if (space_dimension() < min_space_dim)
+    throw_dimension_incompatible("drop_some_non_integer_points(vs, cmpl)",
+                                 min_space_dim);
+
+  if (std::numeric_limits<T>::is_integer)
+    return;
+
+  // FIXME(0.11): complete.
 }
 
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
