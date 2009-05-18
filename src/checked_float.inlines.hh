@@ -598,7 +598,7 @@ struct Float_2exp {
 template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 add_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
-  if (To_Policy::check_nan_result && is_nan<From_Policy>(x))
+  if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   assert(exp < sizeof(unsigned long long) * CHAR_BIT);
   return
@@ -611,7 +611,7 @@ add_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 sub_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
-  if (To_Policy::check_nan_result && is_nan<From_Policy>(x))
+  if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   assert(exp < sizeof(unsigned long long) * CHAR_BIT);
   return
