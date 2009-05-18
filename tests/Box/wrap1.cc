@@ -124,10 +124,80 @@ test03() {
   return ok;
 }
 
+bool
+test04() {
+  Variable x(0);
+  TBox box1(1);
+  box1.add_constraint(2*x == 511);
+
+  print_constraints(box1, "*** box ***");
+
+  Variables_Set vars(x);
+
+  // Making copies before affecting box1.
+  TBox box2(box1);
+  TBox box3(box1);
+
+  TBox good_enough_result(box1);
+  TBox precise_result(1, EMPTY);
+
+  box1.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
+  box2.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_UNDEFINED);
+  box3.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_IMPOSSIBLE);
+
+  // FIXME: Implementation can be more precise than expected.
+  bool ok = box1.contains(precise_result) && good_enough_result.contains(box1)
+    && box2.contains(precise_result) && good_enough_result.contains(box2)
+    && box3.contains(precise_result) && good_enough_result.contains(box3);
+
+  print_constraints(box1, "*** box.wrap_assign(..., OVERFLOW_WRAPS) ***");
+  print_constraints(box2, "*** box.wrap_assign(..., OVERFLOW_UNDEFINED) ***");
+  print_constraints(box3, "*** box.wrap_assign(..., OVERFLOW_IMPOSSIBLE) ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable x(0);
+  TBox box1(1);
+  box1.add_constraint(2*x == 18*256 + 511);
+
+  print_constraints(box1, "*** box ***");
+
+  Variables_Set vars(x);
+
+  // Making copies before affecting box1.
+  TBox box2(box1);
+  TBox box3(box1);
+
+  box1.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
+  box2.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_UNDEFINED);
+  box3.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_IMPOSSIBLE);
+
+  TBox known_result1(1, EMPTY);
+  TBox known_result2(1);
+  known_result2.add_constraint(x >= 0);
+  known_result2.add_constraint(x <= 255);
+  TBox known_result3(1, EMPTY);
+
+  bool ok = (box1 == known_result1)
+    && (box2 == known_result2)
+    && (box3 == known_result3);
+
+  print_constraints(box1, "*** box.wrap_assign(..., OVERFLOW_WRAPS) ***");
+  print_constraints(box2, "*** box.wrap_assign(..., OVERFLOW_UNDEFINED) ***");
+  print_constraints(box3, "*** box.wrap_assign(..., OVERFLOW_IMPOSSIBLE) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST_F8(test01);
   DO_TEST_F8(test02);
   DO_TEST_F(test03);
+  DO_TEST_F8(test04);
+  DO_TEST_F8(test05);
 END_MAIN

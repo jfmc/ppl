@@ -1420,7 +1420,7 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
                       const Constraint_System* pcs,
                       unsigned complexity_threshold,
                       bool wrap_individually) {
-#if 1 // Generic implementation commented out.
+#if 0 // Generic implementation commented out.
   Implementation::wrap_assign(*this,
                               vars, w, r, o, pcs,
                               complexity_threshold, wrap_individually,
@@ -1429,66 +1429,94 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
   used(wrap_individually);
   used(complexity_threshold);
   Box& x = *this;
-  const dimension_type space_dim = x.space_dimension();
-  // Dimension-compatibility check of `*pcs', if any.
-  if (pcs != 0 && pcs->space_dimension() > space_dim)
-    throw_dimension_incompatible("wrap_assign(vars, w, s, o, pcs, ...)", *pcs);
+
+  // Dimension-compatibility check for `*pcs', if any.
+  const dimension_type vars_space_dim = vars.space_dimension();
+  if (pcs != 0 && pcs->space_dimension() > vars_space_dim) {
+    std::ostringstream s;
+    s << "PPL::Box<ITV>::wrap_assign(vars, w, r, o, pcs, ...):"
+      << std::endl
+      << "vars.space_dimension() == " << vars_space_dim
+      << ", pcs->space_dimension() == " << pcs->space_dimension() << ".";
+    throw std::invalid_argument(s.str());
+  }
 
   // Wrapping no variable only requires refining with *pcs, if any.
   if (vars.empty()) {
     if (pcs != 0)
-      pointset.refine_with_constraints(*pcs);
+      refine_with_constraints(*pcs);
     return;
   }
 
-  // Dimension-compatibility check.
-  const dimension_type vars_space_dim = vars.space_dimension();
-  if (space_dim < vars_space_dim)
-    throw_dimension_incompatible("wrap_assign(vs, w, s, o, ...)",
-				 vars_space_dim);
+  // Dimension-compatibility check for `vars'.
+  const dimension_type space_dim = x.space_dimension();
+  if (space_dim < vars_space_dim) {
+    std::ostringstream s;
+    s << "PPL::Box<ITV>::wrap_assign(vars, ...):"
+      << std::endl
+      << "this->space_dimension() == " << space_dim
+      << ", required space dimension == " << vars_space_dim << ".";
+    throw std::invalid_argument(s.str());
+  }
 
+  // Wrapping an empty polyhedron is a no-op.
   if (x.is_empty())
     return;
-
-  const Variables_Set::const_iterator vs_end = vars.end();
 
   // FIXME: temporarily (ab-) using Coefficient.
   // Set `min_value' and `max_value' to the minimum and maximum values
   // a variable of width `w' and signedness `s' can take.
   PPL_DIRTY_TEMP_COEFFICIENT(min_value);
   PPL_DIRTY_TEMP_COEFFICIENT(max_value);
-  if (s == UNSIGNED) {
+  if (r == UNSIGNED) {
     min_value = 0;
     mul_2exp_assign(max_value, Coefficient_one(), w);
+    --max_value;
   }
   else {
-    assert(s == SIGNED_2_COMPLEMENT);
+    assert(r == SIGNED_2_COMPLEMENT);
     mul_2exp_assign(max_value, Coefficient_one(), w-1);
     neg_assign(min_value, max_value);
+    --max_value;
   }
-  // FIXME: Build the quadrant interval.
-  I_Constraint<Coefficient> lower = i_constraint(GREATER_OR_EQUAL, min_value);
-  I_Constraint<Coefficient> upper = i_constraint(LESS_THAN, max_value);
-  PPL_DIRTY_TEMP(ITV, quadrant_itv);
-  quadrant_itv.build(lower, upper);
+
+  // FIXME: Build the (integer) quadrant interval.
+  PPL_DIRTY_TEMP(ITV, integer_quadrant_itv);
+  PPL_DIRTY_TEMP(ITV, rational_quadrant_itv);
+  {
+    I_Constraint<Coefficient> lower = i_constraint(GREATER_OR_EQUAL, min_value);
+    I_Constraint<Coefficient> upper = i_constraint(LESS_OR_EQUAL, max_value);
+    integer_quadrant_itv.build(lower, upper);
+    // The rational quadrant is only needed if overflow is undefined.
+    if (o == OVERFLOW_UNDEFINED) {
+      ++max_value;
+      upper = i_constraint(LESS_THAN, max_value);
+      rational_quadrant_itv.build(lower, upper);
+    }
+  }
+
+  const Variables_Set::const_iterator vs_end = vars.end();
 
   if (pcs == 0) {
     // No constraint refinement is needed here.
     switch (o) {
     case OVERFLOW_WRAPS:
       for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i)
-        x.seq[*i].wrap_assign(w, s, quadrant_itv);
+        x.seq[*i].wrap_assign(w, r, integer_quadrant_itv);
+      reset_empty_up_to_date();
       break;
     case OVERFLOW_UNDEFINED:
       for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i) {
         ITV& x_seq_v = x.seq[*i];
-        if (!quadrant_itv.contains(x_seq_v))
-          x_seq_v.assign(UNIVERSE);
+        if (!rational_quadrant_itv.contains(x_seq_v)) {
+          x_seq_v.assign(integer_quadrant_itv);
+        }
       }
       break;
     case OVERFLOW_IMPOSSIBLE:
       for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i)
-        x.seq[*i].intersect_assign(quadrant_itv);
+        x.seq[*i].intersect_assign(integer_quadrant_itv);
+      reset_empty_up_to_date();
       break;
     }
     assert(x.OK());
@@ -1530,7 +1558,7 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
   // Loop through the variable indexes in `vars'.
   for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i) {
     const dimension_type v = *i;
-    refinement_itv = quadrant_itv;
+    refinement_itv = integer_quadrant_itv;
     // Look for the refinement constraints for space dimension index `v'.
     map_type::const_iterator var_cs_map_iter = var_cs_map.find(v);
     if (var_cs_map_iter != var_cs_map_end) {
@@ -1548,10 +1576,10 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
     ITV& x_seq_v = x.seq[v];
     switch (o) {
     case OVERFLOW_WRAPS:
-      x_seq_v.wrap_assign(w, s, refinement_itv);
+      x_seq_v.wrap_assign(w, r, refinement_itv);
       break;
     case OVERFLOW_UNDEFINED:
-      if (!quadrant_itv.contains(x_seq_v))
+      if (!rational_quadrant_itv.contains(x_seq_v))
         x_seq_v.assign(UNIVERSE);
       break;
     case OVERFLOW_IMPOSSIBLE:
