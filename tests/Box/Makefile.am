@@ -100,6 +100,7 @@ propagateconstraints1 propagateconstraints2 \
 relations1 relations2 relations3 relations4 \
 refinewithconstraint1 refinewithconstraint2 \
 refinewithconstraints1 \
+refinewithcongruence1 \
 refinewithcongruences1 \
 removespacedims1 \
 simplifyusingcontext1 \
@@ -256,12 +257,14 @@ relations4_SOURCES = relations4.cc
 propagateconstraints1_SOURCES = propagateconstraints1.cc
 propagateconstraints2_SOURCES = propagateconstraints2.cc
 
+refinewithcongruence1_SOURCES = refinewithcongruence1.cc
+
+refinewithcongruences1_SOURCES = refinewithcongruences1.cc
+
 refinewithconstraint1_SOURCES = refinewithconstraint1.cc
 refinewithconstraint2_SOURCES = refinewithconstraint2.cc
 
 refinewithconstraints1_SOURCES = refinewithconstraints1.cc
-
-refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 

@@ -2192,23 +2192,8 @@ Box<ITV>::refine_no_check(const Congruence& cg) {
   }
 
   assert(cg.is_equality());
-  dimension_type cg_num_vars = 0;
-  dimension_type cg_only_var = 0;
-  // Congruences that are not interval congruences are ignored.
-  if (!extract_interval_congruence(cg, cg_space_dim, cg_num_vars, cg_only_var))
-    return;
-
-  if (cg_num_vars == 0) {
-    // Dealing with a trivial congruence.
-    if (cg.inhomogeneous_term() != 0)
-      set_empty();
-    return;
-  }
-
-  assert(cg_num_vars == 1);
-  const Coefficient& n = cg.inhomogeneous_term();
-  const Coefficient& d = cg.coefficient(Variable(cg_only_var));
-  add_interval_constraint_no_check(cg_only_var, Constraint::EQUALITY, n, d);
+  Constraint c(cg);
+  refine_no_check(c);
 }
 
 template <typename ITV>
