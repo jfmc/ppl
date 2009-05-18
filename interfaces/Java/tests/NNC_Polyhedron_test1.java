@@ -39,7 +39,7 @@ static {
     }
 }
 
-    public static Boolean test01() {
+    public static boolean test01() {
 	Variable X = new Variable(0);
 	Variable Y = new Variable(1);
 	Variable Z = new Variable(2);
@@ -54,18 +54,23 @@ static {
 	Linear_Expression le_5
 	    = new Linear_Expression_Coefficient(new Coefficient(5));
 	Linear_Expression lhs1 = le_X.sum(le_2Y.sum(le_5Z));
-	NNC_Polyhedron ph1 = new NNC_Polyhedron(3,
-						Degenerate_Element.UNIVERSE);
+	NNC_Polyhedron ph1
+            = new NNC_Polyhedron(3, Degenerate_Element.UNIVERSE);
 	ph1.add_constraint(new Constraint(lhs1,
-					 Relation_Symbol.GREATER_OR_EQUAL,
-					 le_7));
-	ph1.add_constraint(new Constraint(le_X, Relation_Symbol.LESS_THAN,
+                                          Relation_Symbol.GREATER_OR_EQUAL,
+                                          le_7));
+	ph1.add_constraint(new Constraint(le_X,
+                                          Relation_Symbol.LESS_THAN,
 					  le_5Z));
 	PPL_Test.println_if_noisy(ph1.constraints().toString());
-	return new Boolean(true);
+        Constraint c = new Constraint(le_5Z,
+                                      Relation_Symbol.GREATER_THAN,
+                                      le_X);
+        Poly_Con_Relation rel = ph1.relation_with(c);
+	return rel.implies(Poly_Con_Relation.is_included());
     }
 
-    public static Boolean test02() {
+    public static boolean test02() {
 	// Test if `minimized_constraints' returns an empty Constraint_System
 	// if the Polyhedron is built from universe with a dimension greater
 	// than zero.
@@ -74,7 +79,7 @@ static {
 	Variable Z = new Variable(2);
 	NNC_Polyhedron ph = new NNC_Polyhedron(3, Degenerate_Element.UNIVERSE);
 	Constraint_System cs = ph.minimized_constraints();
-	return new Boolean(cs.isEmpty());
+	return cs.isEmpty();
     }
 
     public static void main(String[] args) {

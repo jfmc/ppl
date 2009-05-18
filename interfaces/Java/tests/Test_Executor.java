@@ -25,36 +25,38 @@ import java.lang.reflect.Method;
 public class Test_Executor {
 
     /*! \brief
-    Executes all the methods named `test****' that are implemented in
-    the class \p c. This class expects that the return value is a Boolean
-    and the test methods don't take parameters.
+      Executes all the static methods of class \p c whose name starts
+      with "test". It is expected that these methods have no parameters
+      and return a Boolean value.
 
-    \return
-    <CODE>true</CODE> if and only if all the tests defined in the class
-    \p return <CODE>true</CODE>, otherwise returns <CODE>false</CODE>
-  */
+      \return
+      \c true if and only if all the tests defined in class \p c
+      return \c true.
+
+      \param c
+      The class whose test methods are execute.
+    */
     public static boolean executeTests(Class c) {
         PPL_Test.initialize();
-	Boolean single_test_result_ok;
-	Boolean global_test_result_ok = new Boolean(true);
+	boolean global_test_result_ok = true;
 	System.out.println("Checking " + c.getName());
 	Method methods[] = c.getDeclaredMethods();
+        Object[] no_args = new Object[0];
 	for (Method currentMethod:methods) {
 	    try {
-		if (currentMethod.getName().startsWith("test"))  {
+		if (currentMethod.getName().startsWith("test")) {
 		    System.out.println("Executing " + currentMethod.getName());
-		    single_test_result_ok =
-			(Boolean) currentMethod.invoke(new Object(),
-						       new Object[0]);
-		    if (!single_test_result_ok) {
-			global_test_result_ok = new Boolean(false);
+		    boolean ok = (Boolean) currentMethod.invoke(null, no_args);
+		    if (!ok) {
+			global_test_result_ok = false;
 			System.out.println(currentMethod.getName() + " failed");
 		    }
 		}
 	    }
 	    catch (Exception e) {
- 		System.out.println("An unexpected exception has occured");
-		return new Boolean(false);
+                System.out.println("Unexpected exception caught.");
+                System.out.println(e.getMessage());
+		return false;
 	    }
 	}
 	return global_test_result_ok;

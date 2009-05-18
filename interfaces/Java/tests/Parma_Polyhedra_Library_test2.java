@@ -36,11 +36,10 @@ static {
 }
 
     // This code tests the timeout functions.
-    public static Boolean test01() {
+    public static boolean test01() {
         int hsecs = 50;
         int max_dimension = 20;
-        timed_compute_open_hypercube_generators(hsecs, max_dimension);
-        return true;
+        return timed_compute_open_hypercube_generators(hsecs, max_dimension);
     }
 
     public static void main(String[] args) {
@@ -74,9 +73,9 @@ static {
         ph.add_constraints(cs);
     }
 
-    private static
-        void timed_compute_open_hypercube_generators(int hsecs,
-                                                     int max_dimension) {
+    private static boolean
+        timed_compute_open_hypercube_generators(int hsecs,
+                                                int max_dimension) {
         for (int i = 0; i <= max_dimension; ++i) {
             Polyhedron ph = new NNC_Polyhedron(i, Degenerate_Element.UNIVERSE);
             open_hypercube(i, ph);
@@ -91,15 +90,15 @@ static {
             } catch (Timeout_Exception e) {
                 PPL_Test.println_if_noisy("Expected timeout exception caught:");
                 PPL_Test.println_if_noisy(e.getMessage());
-                return;
+                return true;
             } catch (Exception e) {
                 PPL_Test.println_if_noisy("Unexpected exception caught:");
                 PPL_Test.println_if_noisy(e.getMessage());
-                System.exit(1);
+                return false;
             }
         }
         // Should not reach this point.
         PPL_Test.println_if_noisy("Expected timeout exception NOT caught!");
-        System.exit(1);
+        return false;
     }
 }

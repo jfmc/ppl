@@ -40,7 +40,7 @@ static {
 }
 
     // This code tests the Parma_Polyhedra_Library methods.
-    public static Boolean test01() {
+    public static boolean test01() {
 
     PPL_Test.print_if_noisy("Version Major: ");
     PPL_Test.println_if_noisy(Parma_Polyhedra_Library.version_major());
