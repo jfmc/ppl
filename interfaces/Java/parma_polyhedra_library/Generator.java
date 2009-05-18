@@ -110,6 +110,16 @@ public class Generator {
         return new Generator(e, Generator_Type.RAY);
     }
 
+    //! Returns the generator type.
+    public Generator_Type type() {
+        return gt;
+    }
+
+    //! Returns the linear expression in \p this.
+    public Linear_Expression linear_expression() {
+        return le;
+    }
+
     //! If \p this is either a point or a closure point, returns its divisor.
     /*!
       \exception RuntimeErrorException

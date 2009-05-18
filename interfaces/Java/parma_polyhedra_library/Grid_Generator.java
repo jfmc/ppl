@@ -24,6 +24,7 @@ package parma_polyhedra_library;
 
 import java.io.Writer;
 import java.io.IOException;
+import javax.management.RuntimeErrorException;
 
 //! A grid line, parameter or grid point.
 /*! \ingroup PPL_Java_interface
@@ -82,6 +83,31 @@ public class Grid_Generator {
     public static Grid_Generator grid_point(Linear_Expression e,
 					    Coefficient d) {
 	return new Grid_Generator(e, d, Grid_Generator_Type.POINT);
+    }
+
+    //! Returns the generator type.
+    public Grid_Generator_Type type() {
+        return gt;
+    }
+
+    //! Returns the linear expression in \p this.
+    public Linear_Expression linear_expression() {
+        return le;
+    }
+
+    //! If \p this is either a grid point or a parameter, returns its divisor.
+    /*!
+      \exception RuntimeErrorException
+      Thrown if \p this is a line.
+    */
+    public Coefficient divisor() {
+        if (this.gt != Grid_Generator_Type.LINE)
+	    return div;
+	Error cause = new Error("parma_polyhedra_library."
+                                + "Grid_Generator::divisor:\n"
+				+ "this is neither a grid point"
+				+ " nor a parameter.");
+	throw new RuntimeErrorException(cause);
     }
 
     //! Returns an ascii formatted internal representation of \p this.

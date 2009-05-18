@@ -338,9 +338,9 @@ propagate_edges(Box<T>& box, const Edge* edges, unsigned n) {
   for (unsigned i = 0; i < n; ++i) {
     const mpq_class& q = perturbate(edges[i].distance);
     Coefficient a;
-    assign_r(a, q.get_den(), ROUND_NOT_NEEDED);
+    a = q.get_den();
     Coefficient b;
-    assign_r(b, q.get_num(), ROUND_NOT_NEEDED);
+    b = q.get_num();
 
     vnout << "a = " << a << "; b = " << b << endl;
 
@@ -443,7 +443,7 @@ bool test03() {
 }
 
 BEGIN_MAIN
-  DO_TEST_F16(test01);
-  DO_TEST(test02);
-  DO_TEST(test03);
+  DO_TEST_F32(test01);
+  DO_TEST_F16(test02);
+  DO_TEST_F16(test03);
 END_MAIN

@@ -23,18 +23,62 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Result_inlines_hh
 #define PPL_Result_inlines_hh 1
 
+#include <cassert>
+
 namespace Parma_Polyhedra_Library {
 
 /*! \relates Parma_Polyhedra_Library::Result */
-inline Result
-classify(Result r) {
-  return static_cast<Result>(r & VC_MASK);
+inline Result_Class
+result_class(Result r) {
+  return static_cast<Result_Class>(r & VC_MASK);
 }
 
 /*! \relates Parma_Polyhedra_Library::Result */
+inline Result_Relation
+result_relation(Result r) {
+  return static_cast<Result_Relation>(r & VR_MASK);
+}
+
+/*! \relates Parma_Polyhedra_Library::Result */
+inline Result
+result_relation_class(Result r) {
+  return static_cast<Result>(r & (VR_MASK | VC_MASK));
+}
+
+inline int
+result_overflow(Result r) {
+  switch (result_class(r)) {
+  case VC_NORMAL:
+    switch (r) {
+    case V_LT_INF:
+      return -1;
+    case V_GT_SUP:
+      return 1;
+    default:
+      break;
+    }
+    break;
+  case VC_MINUS_INFINITY:
+    return -1;
+  case VC_PLUS_INFINITY:
+    return 1;
+  default:
+    break;
+  }
+  return 0;
+}
+
 inline bool
-is_special(Result r) {
-  return classify(r) != VC_NORMAL;
+result_representable(Result r) {
+  return !(r & V_UNREPRESENTABLE);
+}
+
+inline Result operator|(Result a, Result b) {
+  return static_cast<Result>((unsigned)a | (unsigned)b);
+}
+
+inline Result operator-(Result a, Result b) {
+  return static_cast<Result>((unsigned)a & ~(unsigned)b);
 }
 
 } // namespace Parma_Polyhedra_Library

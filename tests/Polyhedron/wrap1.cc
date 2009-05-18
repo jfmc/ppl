@@ -431,6 +431,174 @@ test14() {
   return ok;
 }
 
+bool
+test15() {
+  C_Polyhedron ph(1);
+  print_constraints(ph, "*** ph ***");
+
+  Variables_Set vars;
+
+  Variable x(0);
+  Constraint_System cs;
+  cs.insert(x == 10);
+
+  try {
+    // This is an invalid use of wrap_assign(): since `vars' is empty,
+    // `cs' can only contain 0-dimensional constraints.
+    ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test16() {
+  C_Polyhedron ph(1);
+  print_constraints(ph, "*** ph ***");
+
+  Variables_Set vars;
+
+  Variable x(0);
+  Constraint_System cs;
+  cs.insert(Linear_Expression(0) == 1);
+  cs.insert(Linear_Expression(0) == 0);
+
+  try {
+    // This is a valid use of wrap_assign(): `vars' is empty,
+    // but `cs' only contains 0-dimensional constraints.
+    ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "unexpected exception thrown: " << e.what() << endl << endl;
+    return false;
+  }
+  catch (...) {
+    return false;
+  }
+
+  return ph.is_empty();
+}
+
+bool
+test17() {
+  C_Polyhedron ph(1);
+  print_constraints(ph, "*** ph ***");
+
+  Variables_Set vars;
+
+  Variable x(0);
+  Constraint_System cs;
+  cs.insert(Linear_Expression(0) == 0);
+
+  try {
+    // This is a valid use of wrap_assign(): `vars' is empty,
+    // but `cs' only contains 0-dimensional constraints.
+    ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "unexpected exception thrown: " << e.what() << endl << endl;
+    return false;
+  }
+  catch (...) {
+    return false;
+  }
+
+  return ph.is_universe();
+}
+
+bool
+test18() {
+  C_Polyhedron ph(1);
+  print_constraints(ph, "*** ph ***");
+
+  Variable x(0);
+  Variable y(1);
+  Variables_Set vars(x, y);
+
+  Constraint_System cs;
+  cs.insert(x == 10);
+
+  try {
+    // This is an invalid use of wrap_assign(): the space dimension
+    // of `vars' is higher than the space dimension of `ph'.
+    ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test19() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(x == 256);
+  ph.add_constraint(y == 256 + 256 + 1);
+
+  print_constraints(ph, "*** ph ***");
+
+  Variables_Set vars(x, y);
+
+  Constraint_System cs;
+  cs.insert(x + 1 == y);
+
+  ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(x == 0);
+  known_result.add_constraint(y == 1);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** ph.wrap_assign(...) ***");
+
+  return ok;
+}
+
+bool
+test20() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(2*x >= 1);
+  ph.add_constraint(3*x <= 2);
+  ph.add_constraint(y >= 255);
+  ph.add_constraint(y <= 257);
+
+  print_constraints(ph, "*** ph ***");
+
+  Variables_Set vars(x, y);
+
+  Constraint_System cs;
+  cs.insert(x + y <= 100);
+
+  ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs, 16, false);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(2*x >= 0);
+  known_result.add_constraint(3*x <= 2);
+  known_result.add_constraint(y >= 0);
+  known_result.add_constraint(y <= 1);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** ph.wrap_assign(...) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -440,7 +608,7 @@ BEGIN_MAIN
   DO_TEST_F8(test04);
   DO_TEST_F16(test05);
   DO_TEST_F16(test06);
-  DO_TEST_F16A(test07);
+  DO_TEST_F8(test07);
   DO_TEST_F8(test08);
   DO_TEST_F16(test09);
   DO_TEST_F16(test10);
@@ -448,4 +616,10 @@ BEGIN_MAIN
   DO_TEST_F8(test12);
   DO_TEST_F16(test13);
   DO_TEST_F8(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST_F8(test19);
+  DO_TEST_F8(test20);
 END_MAIN

@@ -33,7 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variables_Set.defs.hh"
 #include "Bit_Row.defs.hh"
 #include "Temp.defs.hh"
-#include "wrap_assign.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -1204,24 +1203,17 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
 template <typename T>
 Poly_Con_Relation
 BD_Shape<T>::relation_with(const Congruence& cg) const {
-  const dimension_type cg_space_dim = cg.space_dimension();
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
-  if (cg_space_dim > space_dim)
+  if (cg.space_dimension() > space_dim)
     throw_dimension_incompatible("relation_with(cg)", cg);
 
-  // If the congruence is a bounded difference equality,
-  // find the relation with the equivalent equality constraint.
+  // If the congruence is an equality, find the relation with
+  // the equivalent equality constraint.
   if (cg.is_equality()) {
     Constraint c(cg);
-    dimension_type num_vars = 0;
-    dimension_type i = 0;
-    dimension_type j = 0;
-    PPL_DIRTY_TEMP_COEFFICIENT(coeff);
-    if (extract_bounded_difference(c, cg_space_dim, num_vars,
-                                    i, j, coeff))
-      return relation_with(c);
+    return relation_with(c);
   }
 
   shortest_path_closure_assign();
@@ -1234,37 +1226,68 @@ BD_Shape<T>::relation_with(const Congruence& cg) const {
   if (space_dim == 0) {
     if (cg.is_inconsistent())
       return Poly_Con_Relation::is_disjoint();
-    else if (cg.inhomogeneous_term() % cg.modulus() == 0)
+    else
       return Poly_Con_Relation::saturates()
         && Poly_Con_Relation::is_included();
   }
 
-  PPL_DIRTY_TEMP(Coefficient, min_num);
-  PPL_DIRTY_TEMP(Coefficient, min_den);
+  // Find the lower bound for a hyperplane with direction
+  // defined by the congruence.
+  Linear_Expression le = Linear_Expression(cg);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_den);
   bool min_included;
-  PPL_DIRTY_TEMP_COEFFICIENT(mod);
-  mod = cg.modulus();
-  Linear_Expression le;
-  for (dimension_type i = cg_space_dim; i-- > 0; )
-    le += cg.coefficient(Variable(i)) * Variable(i);
   bool bounded_below = minimize(le, min_num, min_den, min_included);
 
+  // If there is no lower bound, then some of the hyperplanes defined by
+  // the congruence will strictly intersect the shape.
   if (!bounded_below)
     return Poly_Con_Relation::strictly_intersects();
 
-  PPL_DIRTY_TEMP_COEFFICIENT(v);
-  PPL_DIRTY_TEMP_COEFFICIENT(lower_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(lower_den);
-  PPL_DIRTY_TEMP_COEFFICIENT(lower);
-  assign_r(lower_num, min_num, ROUND_NOT_NEEDED);
-  assign_r(lower_den, min_den, ROUND_NOT_NEEDED);
-  neg_assign(v, cg.inhomogeneous_term());
-  lower = lower_num / lower_den;
-  v += ((lower / mod) * mod);
-  if (v * lower_den < lower_num)
-    v += mod;
-  const Constraint& c(le == v);
-  return relation_with(c);
+  // TODO: Consider adding a max_and_min() method, performing both
+  // maximization and minimization so as to possibly exploit
+  // incrementality of the MIP solver.
+
+  // Find the upper bound for a hyperplane with direction
+  // defined by the congruence.
+  PPL_DIRTY_TEMP_COEFFICIENT(max_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_den);
+  bool max_included;
+  bool bounded_above = maximize(le, max_num, max_den, max_included);
+
+  // If there is no upper bound, then some of the hyperplanes defined by
+  // the congruence will strictly intersect the shape.
+  if (!bounded_above)
+    return Poly_Con_Relation::strictly_intersects();
+
+  PPL_DIRTY_TEMP_COEFFICIENT(signed_distance);
+
+  // Find the position value for the hyperplane that satisfies the congruence
+  // and is above the lower bound for the shape.
+  PPL_DIRTY_TEMP_COEFFICIENT(min_value);
+  min_value = min_num / min_den;
+  const Coefficient& modulus = cg.modulus();
+  signed_distance = min_value % modulus;
+  min_value -= signed_distance;
+  if (min_value * min_den < min_num)
+    min_value += modulus;
+
+  // Find the position value for the hyperplane that satisfies the congruence
+  // and is below the upper bound for the shape.
+  PPL_DIRTY_TEMP_COEFFICIENT(max_value);
+  max_value = max_num / max_den;
+  signed_distance = max_value % modulus;
+  max_value += signed_distance;
+  if (max_value * max_den > max_num)
+    max_value -= modulus;
+
+  // If the upper bound value is less than the lower bound value,
+  // then there is an empty intersection with the congruence;
+  // otherwise it will strictly intersect.
+  if (max_value < min_value)
+    return Poly_Con_Relation::is_disjoint();
+  else
+    return Poly_Con_Relation::strictly_intersects();
 }
 
 
@@ -5502,16 +5525,27 @@ BD_Shape<T>::fold_space_dimensions(const Variables_Set& vars,
 
 template <typename T>
 void
-BD_Shape<T>::wrap_assign(const Variables_Set& vars,
-                         Bounded_Integer_Type_Width w,
-                         Bounded_Integer_Type_Signedness s,
-                         Bounded_Integer_Type_Overflow o,
-                         const Constraint_System* pcs,
-                         unsigned complexity_threshold,
-                         bool wrap_individually) {
-  Implementation::wrap_assign(*this,
-                              vars, w, s, o, pcs,
-                              complexity_threshold, wrap_individually);
+BD_Shape<T>::drop_some_non_integer_points(Complexity_Class complexity) {
+  if (std::numeric_limits<T>::is_integer)
+    return;
+
+  // FIXME(0.11): complete.
+}
+
+template <typename T>
+void
+BD_Shape<T>::drop_some_non_integer_points(const Variables_Set& vars,
+                                          Complexity_Class complexity) {
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = vars.space_dimension();
+  if (space_dimension() < min_space_dim)
+    throw_dimension_incompatible("drop_some_non_integer_points(vs, cmpl)",
+                                 min_space_dim);
+
+  if (std::numeric_limits<T>::is_integer)
+    return;
+
+  // FIXME(0.11): complete.
 }
 
 /*! \relates Parma_Polyhedra_Library::BD_Shape */

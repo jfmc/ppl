@@ -599,7 +599,7 @@ then
   AC_DEFINE(PPL_NATIVE_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a native one.])
 elif test x"$coefficient_kind" = xchecked
 then
-  coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t>"
+  coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t, Bounded_Integer_Coefficient_Policy>"
   AC_DEFINE_UNQUOTED(PPL_COEFFICIENT_TYPE, $coefficient_type)
   AC_DEFINE_UNQUOTED(PPL_COEFFICIENT_BITS, $coefficient_bits)
   AC_DEFINE(PPL_CHECKED_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a checked one.])

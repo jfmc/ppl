@@ -93,7 +93,7 @@ OR_Matrix<T>::ascii_load(std::istream& s) {
     const dimension_type rs = i.row_size();
     for (dimension_type j = 0; j < rs; ++j) {
       Result r = input(r_i[j], s, ROUND_CHECK);
-      if (r != V_EQ || is_minus_infinity(r_i[j]))
+      if (result_relation(r) != VR_EQ || is_minus_infinity(r_i[j]))
 	return false;
     }
   }

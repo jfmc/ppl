@@ -43,10 +43,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "Grid.types.hh"
 #include "Partially_Reduced_Product.types.hh"
+#include "intervals.defs.hh"
 #include <vector>
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
+
+struct Interval_Base;
+struct Circular_Interval_Base;
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are the same box.
 /*! \relates Box
@@ -1186,6 +1190,83 @@ public:
   void topological_closure_assign();
 
   /*! \brief
+    \ref Wrapping_Operator "Wraps" the specified dimensions of the
+    vector space.
+
+    \param vars
+    The set of Variable objects corresponding to the space dimensions
+    to be wrapped.
+
+    \param w
+    The width of the bounded integer type corresponding to
+    all the dimensions to be wrapped.
+
+    \param r
+    The representation of the bounded integer type corresponding to
+    all the dimensions to be wrapped.
+
+    \param o
+    The overflow behavior of the bounded integer type corresponding to
+    all the dimensions to be wrapped.
+
+    \param pcs
+    Possibly null pointer to a constraint system.  When non-null,
+    the pointed-to constraint system is assumed to represent the
+    conditional or looping construct guard with respect to which
+    wrapping is performed.  Since wrapping requires the computation
+    of upper bounds and due to non-distributivity of constraint
+    refinement over upper bounds, passing a constraint system in this
+    way can be more precise than refining the result of the wrapping
+    operation with the constraints in <CODE>*pcs</CODE>.
+
+    \param complexity_threshold
+    A precision parameter which is ignored for the Box domain.
+
+    \param wrap_individually
+    A precision parameter which is ignored for the Box domain.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p vars or with <CODE>*pcs</CODE>.
+  */
+  void wrap_assign(const Variables_Set& vars,
+                   Bounded_Integer_Type_Width w,
+                   Bounded_Integer_Type_Representation r,
+                   Bounded_Integer_Type_Overflow o,
+                   const Constraint_System* pcs = 0,
+                   unsigned complexity_threshold = 16,
+                   bool wrap_individually = true);
+
+  /*! \brief
+    Possibly tightens \p *this by dropping some points with non-integer
+    coordinates.
+
+    \param complexity
+    The maximal complexity of any algorithms used.
+
+    \note
+    Currently there is no optimality guarantee, not even if
+    \p complexity is <CODE>ANY_COMPLEXITY</CODE>.
+  */
+   void drop_some_non_integer_points(Complexity_Class complexity
+                                    = ANY_COMPLEXITY);
+
+  /*! \brief
+    Possibly tightens \p *this by dropping some points with non-integer
+    coordinates for the space dimensions corresponding to \p vars.
+
+    \param complexity
+    The maximal complexity of any algorithms used.
+
+    \note
+    Currently there is no optimality guarantee, not even if
+    \p complexity is <CODE>ANY_COMPLEXITY</CODE>.
+  */
+  void drop_some_non_integer_points(const Variables_Set& vars,
+                                    Complexity_Class complexity
+                                    = ANY_COMPLEXITY);
+
+  /*! \brief
     Assigns to \p *this the result of computing the
     \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
 
@@ -1200,7 +1281,12 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void CC76_widening_assign(const Box& y, unsigned* tp = 0);
+  template <typename T>
+  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+  CC76_widening_assign(const T& y, unsigned* tp = 0);
+  template <typename T>
+  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
+  CC76_widening_assign(const T& y, unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1218,9 +1304,14 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  template <typename Iterator>
-  void CC76_widening_assign(const Box& y,
-			    Iterator first, Iterator last);
+  template <typename T, typename Iterator>
+  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+  CC76_widening_assign(const T& y,
+		       Iterator first, Iterator last);
+  template <typename T, typename Iterator>
+  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
+  CC76_widening_assign(const T& y,
+		       Iterator first, Iterator last);
 
   //! Same as CC76_widening_assign(y, tp).
   void widening_assign(const Box& y, unsigned* tp = 0);
@@ -1268,7 +1359,12 @@ public:
     <CODE>x.CC76_narrowing_assign(y)</CODE> will assign to \p x
     the result of the computation \f$\mathtt{y} \Delta \mathtt{x}\f$.
   */
-  void CC76_narrowing_assign(const Box& y);
+  template <typename T>
+  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+  CC76_narrowing_assign(const T& y);
+  template <typename T>
+  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
+  CC76_narrowing_assign(const T& y);
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
 
@@ -1613,6 +1709,15 @@ private:
      the box on the <CODE>k</CODE>-th space dimension.
    */
   const ITV& operator[](dimension_type k) const;
+
+  /*! \brief
+    WRITE ME.
+  */
+  static I_Result
+  refine_interval_no_check(ITV& itv,
+                           Constraint::Type type,
+                           Coefficient_traits::const_reference num,
+                           Coefficient_traits::const_reference den);
 
   /*! \brief
     WRITE ME.

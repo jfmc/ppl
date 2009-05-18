@@ -31,17 +31,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BD_Shape.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
+#include "wrap_assign.hh"
 #include <cassert>
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {
 
-// FIXME: find the appropriate place for this.
+namespace Implementation {
+
+namespace Octagonal_Shapes {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns the index coherent to \p i.
 /*! \relates Octagonal_Shape */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 inline dimension_type
 coherent_index(const dimension_type i) {
   return (i % 2 != 0) ? i-1 : i+1;
 }
+
+} // namespace Octagonal_Shapes
+
+} // namespace Implementation
 
 template <typename T>
 inline dimension_type
@@ -345,6 +356,7 @@ inline const typename Octagonal_Shape<T>::coefficient_type&
 Octagonal_Shape<T>::matrix_at(const dimension_type i,
 			      const dimension_type j) const {
   assert(i < matrix.num_rows() && j < matrix.num_rows());
+  using namespace Implementation::Octagonal_Shapes;
   return (j < matrix.row_size(i))
     ? matrix[i][j]
     : matrix[coherent_index(j)][coherent_index(i)];
@@ -355,6 +367,7 @@ inline typename Octagonal_Shape<T>::coefficient_type&
 Octagonal_Shape<T>::matrix_at(const dimension_type i,
 			      const dimension_type j) {
   assert(i < matrix.num_rows() && j < matrix.num_rows());
+  using namespace Implementation::Octagonal_Shapes;
   return (j < matrix.row_size(i))
     ? matrix[i][j]
     : matrix[coherent_index(j)][coherent_index(i)];
@@ -536,6 +549,21 @@ Octagonal_Shape<T>
     set_zero_dim_univ();
   space_dim = new_dimension;
   assert(OK());
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>::wrap_assign(const Variables_Set& vars,
+                                Bounded_Integer_Type_Width w,
+                                Bounded_Integer_Type_Representation r,
+                                Bounded_Integer_Type_Overflow o,
+                                const Constraint_System* pcs,
+                                unsigned complexity_threshold,
+                                bool wrap_individually) {
+  Implementation::wrap_assign(*this,
+                              vars, w, r, o, pcs,
+                              complexity_threshold, wrap_individually,
+                              "Octagonal_Shape");
 }
 
 template <typename T>

@@ -1342,7 +1342,7 @@ public:
     Assigns to the first (resp., second) component of \p *this
     the "concatenation" of the first (resp., second) components
     of \p *this and \p y, taken in this order.
-    See also \ref Concatenating_Polyhedra and \ref Grid_Concatenate.
+    See also \ref Concatenating_Polyhedra.
 
     \exception std::length_error
     Thrown if the concatenation would cause the vector space

@@ -43,6 +43,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "DB_Matrix.defs.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.defs.hh"
+#include "WRD_coefficient_types.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include <cstddef>
 #include <iosfwd>
@@ -405,7 +406,7 @@ private:
     the inequalities defining a BDS.
   */
 #ifndef NDEBUG
-  typedef Checked_Number<T, Extended_Number_Policy> N;
+  typedef Checked_Number<T, Debug_WRD_Extended_Number_Policy> N;
 #else
   typedef Checked_Number<T, WRD_Extended_Number_Policy> N;
 #endif
@@ -1302,8 +1303,8 @@ public:
     The width of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
-    \param s
-    The signedness of the bounded integer type corresponding to
+    \param r
+    The representation of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
     \param o
@@ -1311,14 +1312,16 @@ public:
     all the dimensions to be wrapped.
 
     \param pcs
-    Possibly null pointer to a constraint system.  When non-null,
-    the pointed-to constraint system is assumed to represent the
-    conditional or looping construct guard with respect to which
-    wrapping is performed.  Since wrapping requires the computation
-    of upper bounds and due to non-distributivity of constraint
-    refinement over upper bounds, passing a constraint system in this
-    way can be more precise than refining the result of the wrapping
-    operation with the constraints in <CODE>*pcs</CODE>.
+    Possibly null pointer to a constraint system whose variables
+    are contained in \p vars.  If <CODE>*pcs</CODE> depends on
+    variables not in \p vars, the behavior is undefined.
+    When non-null, the pointed-to constraint system is assumed to
+    represent the conditional or looping construct guard with respect
+    to which wrapping is performed.  Since wrapping requires the
+    computation of upper bounds and due to non-distributivity of
+    constraint refinement over upper bounds, passing a constraint
+    system in this way can be more precise than refining the result of
+    the wrapping operation with the constraints in <CODE>*pcs</CODE>.
 
     \param complexity_threshold
     A precision parameter of the \ref Wrapping_Operator "wrapping operator":
@@ -1330,16 +1333,46 @@ public:
     precision).
 
     \exception std::invalid_argument
-    Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p vars or with <CODE>*pcs</CODE>.
+    Thrown if <CODE>*pcs</CODE> is dimension-incompatible with
+    \p vars, or if \p *this is dimension-incompatible \p vars or with
+    <CODE>*pcs</CODE>.
   */
   void wrap_assign(const Variables_Set& vars,
                    Bounded_Integer_Type_Width w,
-                   Bounded_Integer_Type_Signedness s,
+                   Bounded_Integer_Type_Representation r,
                    Bounded_Integer_Type_Overflow o,
                    const Constraint_System* pcs = 0,
                    unsigned complexity_threshold = 16,
                    bool wrap_individually = true);
+
+  /*! \brief
+    Possibly tightens \p *this by dropping some points with non-integer
+    coordinates.
+
+    \param complexity
+    The maximal complexity of any algorithms used.
+
+    \note
+    Currently there is no optimality guarantee, not even if
+    \p complexity is <CODE>ANY_COMPLEXITY</CODE>.
+  */
+   void drop_some_non_integer_points(Complexity_Class complexity
+                                    = ANY_COMPLEXITY);
+
+  /*! \brief
+    Possibly tightens \p *this by dropping some points with non-integer
+    coordinates for the space dimensions corresponding to \p vars.
+
+    \param complexity
+    The maximal complexity of any algorithms used.
+
+    \note
+    Currently there is no optimality guarantee, not even if
+    \p complexity is <CODE>ANY_COMPLEXITY</CODE>.
+  */
+  void drop_some_non_integer_points(const Variables_Set& vars,
+                                    Complexity_Class complexity
+                                    = ANY_COMPLEXITY);
 
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();

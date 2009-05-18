@@ -28,7 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
 #include "meta_programming.hh"
-#include "wrap_assign.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -431,6 +430,7 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
       --i_iter;
 
     typename OR_Matrix<N>::row_reference_type m_ci = *i_iter;
+    using namespace Implementation::Octagonal_Shapes;
     dimension_type cj = coherent_index(j);
     N& m_ci_cj = m_ci[cj];
     // Also compute the bound for `m_ci_cj', rounding towards plus infinity.
@@ -527,6 +527,7 @@ Octagonal_Shape<T>::refine_no_check(const Constraint& c) {
       --i_iter;
 
     typename OR_Matrix<N>::row_reference_type m_ci = *i_iter;
+    using namespace Implementation::Octagonal_Shapes;
     dimension_type cj = coherent_index(j);
     N& m_ci_cj = m_ci[cj];
     // Also compute the bound for `m_ci_cj', rounding towards plus infinity.
@@ -645,6 +646,7 @@ Octagonal_Shape<T>::minimized_congruences() const {
       {
         const N& c_i_li = matrix[i][lead_i];
 #ifndef NDEBUG
+        using namespace Implementation::Octagonal_Shapes;
         const N& c_ii_lii = matrix[i+1][coherent_index(lead_i)];
         assert(is_additive_inverse(c_ii_lii, c_i_li));
 #endif
@@ -773,6 +775,7 @@ Octagonal_Shape<T>::is_disjoint_from(const Octagonal_Shape& y) const {
 
   PPL_DIRTY_TEMP(N, neg_y_ci_cj);
   for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
+    using namespace Implementation::Octagonal_Shapes;
     const dimension_type i = i_iter.index();
     const dimension_type ci = coherent_index(i);
     const dimension_type rs_i = i_iter.row_size();
@@ -859,7 +862,6 @@ Octagonal_Shape<T>::contains_integer_point() const {
   oct_z.reset_strongly_closed();
 
   typedef Octagonal_Shape<mpz_class>::N Z;
-  PPL_DIRTY_TEMP(N, tmp);
   bool all_integers = true;
   typename OR_Matrix<N>::const_element_iterator x_i = matrix.element_begin();
   for (typename OR_Matrix<Z>::element_iterator
@@ -872,11 +874,7 @@ Octagonal_Shape<T>::contains_integer_point() const {
       assign_r(*z_i, d, ROUND_NOT_NEEDED);
     else {
       all_integers = false;
-      Z& d_z = *z_i;
-      // Copy d into d_z, but rounding downwards.
-      neg_assign_r(tmp, d, ROUND_NOT_NEEDED);
-      assign_r(d_z, tmp, ROUND_UP);
-      neg_assign_r(d_z, d_z, ROUND_NOT_NEEDED);
+      assign_r(*z_i, d, ROUND_DOWN);
     }
   }
   // Restore strong closure.
@@ -944,6 +942,7 @@ Octagonal_Shape<T>::is_strong_coherent() const {
   for (dimension_type i = num_rows; i-- > 0; ) {
     typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin() + i;
     typename OR_Matrix<N>::const_row_reference_type m_i = *iter;
+    using namespace Implementation::Octagonal_Shapes;
     const N& m_i_ci = m_i[coherent_index(i)];
     for (dimension_type j = matrix.row_size(i); j-- > 0; )
       // Note: on the main diagonal only PLUS_INFINITY can occur.
@@ -1190,9 +1189,8 @@ Octagonal_Shape<T>::relation_with(const Congruence& cg) const {
   dimension_type cg_space_dim = cg.space_dimension();
 
   // Dimension-compatibility check.
-  if (cg_space_dim > space_dim) {
+  if (cg_space_dim > space_dim)
     throw_dimension_incompatible("relation_with(cg)", cg);
-  }
 
   // If the congruence is an equality,
   // find the relation with the equivalent equality constraint.
@@ -1211,37 +1209,68 @@ Octagonal_Shape<T>::relation_with(const Congruence& cg) const {
   if (space_dim == 0) {
     if (cg.is_inconsistent())
       return Poly_Con_Relation::is_disjoint();
-    else if (cg.inhomogeneous_term() % cg.modulus() == 0)
+    else
       return Poly_Con_Relation::saturates()
         && Poly_Con_Relation::is_included();
   }
 
-  PPL_DIRTY_TEMP(Coefficient, min_num);
-  PPL_DIRTY_TEMP(Coefficient, min_den);
+  // Find the lower bound for a hyperplane with direction
+  // defined by the congruence.
+  Linear_Expression le = Linear_Expression(cg);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_den);
   bool min_included;
-  PPL_DIRTY_TEMP_COEFFICIENT(mod);
-  mod = cg.modulus();
-  Linear_Expression le;
-  for (dimension_type i = cg_space_dim; i-- > 0; )
-    le += cg.coefficient(Variable(i)) * Variable(i);
   bool bounded_below = minimize(le, min_num, min_den, min_included);
 
+  // If there is no lower bound, then some of the hyperplanes defined by
+  // the congruence will strictly intersect the shape.
   if (!bounded_below)
     return Poly_Con_Relation::strictly_intersects();
 
-  PPL_DIRTY_TEMP_COEFFICIENT(v);
-  PPL_DIRTY_TEMP_COEFFICIENT(lower_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(lower_den);
-  PPL_DIRTY_TEMP_COEFFICIENT(lower);
-  assign_r(lower_num, min_num, ROUND_NOT_NEEDED);
-  assign_r(lower_den, min_den, ROUND_NOT_NEEDED);
-  neg_assign(v, cg.inhomogeneous_term());
-  lower = lower_num / lower_den;
-  v += ((lower / mod) * mod);
-  if (v * lower_den < lower_num)
-    v += mod;
-  const Constraint& c(le == v);
-  return relation_with(c);
+  // TODO: Consider adding a max_and_min() method, performing both
+  // maximization and minimization so as to possibly exploit
+  // incrementality of the MIP solver.
+
+  // Find the upper bound for a hyperplane with direction
+  // defined by the congruence.
+  PPL_DIRTY_TEMP_COEFFICIENT(max_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_den);
+  bool max_included;
+  bool bounded_above = maximize(le, max_num, max_den, max_included);
+
+  // If there is no upper bound, then some of the hyperplanes defined by
+  // the congruence will strictly intersect the shape.
+  if (!bounded_above)
+    return Poly_Con_Relation::strictly_intersects();
+
+  PPL_DIRTY_TEMP_COEFFICIENT(signed_distance);
+
+  // Find the position value for the hyperplane that satisfies the congruence
+  // and is above the lower bound for the shape.
+  PPL_DIRTY_TEMP_COEFFICIENT(min_value);
+  min_value = min_num / min_den;
+  const Coefficient& modulus = cg.modulus();
+  signed_distance = min_value % modulus;
+  min_value -= signed_distance;
+  if (min_value * min_den < min_num)
+    min_value += modulus;
+
+  // Find the position value for the hyperplane that satisfies the congruence
+  // and is below the upper bound for the shape.
+  PPL_DIRTY_TEMP_COEFFICIENT(max_value);
+  max_value = max_num / max_den;
+  signed_distance = max_value % modulus;
+  max_value += signed_distance;
+  if (max_value * max_den > max_num)
+    max_value -= modulus;
+
+  // If the upper bound value is less than the lower bound value,
+  // then there is an empty intersection with the congruence;
+  // otherwise it will strictly intersect.
+  if (max_value < min_value)
+    return Poly_Con_Relation::is_disjoint();
+  else
+    return Poly_Con_Relation::strictly_intersects();
 }
 
 template <typename T>
@@ -1410,6 +1439,7 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   else
     --i_iter;
   typename OR_Matrix<N>::const_row_reference_type m_ci = *i_iter;
+  using namespace Implementation::Octagonal_Shapes;
   const N& m_ci_cj = m_ci[coherent_index(j)];
   PPL_DIRTY_TEMP_COEFFICIENT(numer);
   PPL_DIRTY_TEMP_COEFFICIENT(denom);
@@ -1857,6 +1887,7 @@ Octagonal_Shape<T>::strong_closure_assign() const {
       }
 
       for (dimension_type i = 0; i < n_rows; ++i) {
+        using namespace Implementation::Octagonal_Shapes;
         const dimension_type ci = coherent_index(i);
         const N& vec_k_ci = vec_k[ci];
         const N& vec_ck_ci = vec_ck[ci];
@@ -1920,6 +1951,7 @@ Octagonal_Shape<T>::strong_coherence_assign() {
          i_end = matrix.row_end(); i_iter != i_end; ++i_iter) {
     typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
     const dimension_type i = i_iter.index();
+    using namespace Implementation::Octagonal_Shapes;
     const N& x_i_ci = x_i[coherent_index(i)];
     // Avoid to do unnecessary sums.
     if (!is_plus_infinity(x_i_ci))
@@ -2025,6 +2057,7 @@ Octagonal_Shape<T>
   const dimension_type rs_v = v_iter.row_size();
   const dimension_type n_rows = x.matrix.num_rows();
   PPL_DIRTY_TEMP(N, sum);
+  using namespace Implementation::Octagonal_Shapes;
   for (Row_Iterator k_iter = m_begin; k_iter != m_end; ++k_iter) {
     const dimension_type k = k_iter.index();
     const dimension_type ck = coherent_index(k);
@@ -2148,7 +2181,9 @@ Octagonal_Shape<T>
     typename OR_Matrix<N>::const_row_reference_type m_ci
       = (i % 2 != 0) ? *(i_iter-1) : *(i_iter+1);
     for (dimension_type j = 0; j < i; ++j) {
+      // FIXME: what is the following, commented-out for?
     //for (dimension_type j = i; j-- > 0; ) {
+      using namespace Implementation::Octagonal_Shapes;
       dimension_type cj = coherent_index(j);
       if (is_additive_inverse(m_ci[cj], m_i[j]))
         // Choose as successor the variable having the greatest index.
@@ -2180,6 +2215,7 @@ Octagonal_Shape<T>
     typename OR_Matrix<N>::const_row_reference_type m_ci
       = (i % 2 != 0) ? *(i_iter-1) : *(i_iter+1);
     for (dimension_type j = 0; j < i; ++j) {
+      using namespace Implementation::Octagonal_Shapes;
       dimension_type cj = coherent_index(j);
       if (is_additive_inverse(m_ci[cj], m_i[j]))
         // Choose as leader the variable having the smaller index.
@@ -2204,6 +2240,7 @@ Octagonal_Shape<T>
     if (!dealt_with[i]) {
       // The index is a leader.
       // Now check if it is a leader of a singular class or not.
+      using namespace Implementation::Octagonal_Shapes;
       if (next_i == coherent_index(i)) {
         exist_sing_class = true;
         sing_leader = i;
@@ -2278,10 +2315,12 @@ Octagonal_Shape<T>
   compute_leaders(successor, no_sing_leaders, exist_sing_class, sing_leader);
   const dimension_type num_no_sing_leaders = no_sing_leaders.size();
 
+
   // Step 2: flag redundant constraints in `redundancy'.
   // Go through non-singular leaders first.
   for (dimension_type li = 0; li < num_no_sing_leaders; ++li) {
     const dimension_type i = no_sing_leaders[li];
+    using namespace Implementation::Octagonal_Shapes;
     const dimension_type ci = coherent_index(i);
     typename OR_Matrix<N>::const_row_reference_type
       m_i = *(matrix.row_begin()+i);
@@ -2775,8 +2814,7 @@ Octagonal_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
 
 template <typename T>
 void
-Octagonal_Shape<T>
-::remove_space_dimensions(const Variables_Set& vars) {
+Octagonal_Shape<T>::remove_space_dimensions(const Variables_Set& vars) {
   // The removal of no dimensions from any octagon is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a octagon in a 0-dim space.
@@ -3113,6 +3151,7 @@ Octagonal_Shape<T>
           Row_reference m_ci = *i_iter;
           Row_Reference lo_m_ci = *lo_iter;
           // Select the right column of the cell.
+          using namespace Implementation::Octagonal_Shapes;
           dimension_type cj = coherent_index(j);
           N& lo_m_ci_cj = lo_m_ci[cj];
           neg_assign(term);
@@ -6236,6 +6275,7 @@ Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& vars,
     const dimension_type min_id = std::min(n_dest, tbf_var);
     const dimension_type max_id = std::max(n_dest, tbf_var);
 
+    using namespace Implementation::Octagonal_Shapes;
     for (dimension_type j = 0; j < min_id; ++j) {
       const dimension_type cj = coherent_index(j);
       max_assign(m_v[j], m_tbf[j]);
@@ -6332,6 +6372,7 @@ Octagonal_Shape<T>::upper_bound_assign_if_exact(const Octagonal_Shape& y) {
 
   for (dimension_type i = n_rows; i-- > 0; ) {
     const Bit_Row& x_non_red_i = x_non_red[i];
+    using namespace Implementation::Octagonal_Shapes;
     const dimension_type ci = coherent_index(i);
     const dimension_type row_size_i = OR_Matrix<N>::row_size(i);
     Row_Reference x_i = *(x_m_begin + i);
@@ -6509,6 +6550,7 @@ Octagonal_Shape<T>
 
   for (dimension_type i = n_rows; i-- > 0; ) {
     const Bit_Row& tx_non_red_i = tx_non_red[i];
+    using namespace Implementation::Octagonal_Shapes;
     const dimension_type ci = coherent_index(i);
     const dimension_type row_size_i = OR_Matrix<N>::row_size(i);
     Row_Reference tx_i = *(tx_m_begin + i);
@@ -6608,16 +6650,29 @@ Octagonal_Shape<T>
 
 template <typename T>
 void
-Octagonal_Shape<T>::wrap_assign(const Variables_Set& vars,
-                                Bounded_Integer_Type_Width w,
-                                Bounded_Integer_Type_Signedness s,
-                                Bounded_Integer_Type_Overflow o,
-                                const Constraint_System* pcs,
-                                unsigned complexity_threshold,
-                                bool wrap_individually) {
-  Implementation::wrap_assign(*this,
-                              vars, w, s, o, pcs,
-                              complexity_threshold, wrap_individually);
+Octagonal_Shape<T>
+::drop_some_non_integer_points(Complexity_Class complexity) {
+  if (std::numeric_limits<T>::is_integer)
+    return;
+
+  // FIXME(0.11): complete.
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>
+::drop_some_non_integer_points(const Variables_Set& vars,
+                               Complexity_Class complexity) {
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = vars.space_dimension();
+  if (space_dimension() < min_space_dim)
+    throw_dimension_incompatible("drop_some_non_integer_points(vs, cmpl)",
+                                 min_space_dim);
+
+  if (std::numeric_limits<T>::is_integer)
+    return;
+
+  // FIXME(0.11): complete.
 }
 
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
@@ -6666,7 +6721,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
         s << ", ";
       // If the value bound can NOT be divided by 2 exactly,
       // then we output the constraint `2*v_i == bound'.
-      if (div_2exp_assign_r(half, x_ii_i, 1, ROUND_UP) == V_EQ)
+      if (div_2exp_assign_r(half, x_ii_i, 1, ROUND_UP | ROUND_STRICT_RELATION) == V_EQ)
         s << v_i << " == " << half;
       else
         s << "2*" << v_i << " == " << x_ii_i;
@@ -6681,7 +6736,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
         neg_assign_r(negation, x_i_ii, ROUND_NOT_NEEDED);
         // If the value bound can NOT be divided by 2 exactly,
         // then we output the constraint `2*v_i >= negation'.
-        if (div_2exp_assign_r(half, negation, 1, ROUND_UP) == V_EQ)
+        if (div_2exp_assign_r(half, negation, 1, ROUND_UP | ROUND_STRICT_RELATION) == V_EQ)
           s << v_i << " >= " << half;
         else
           s << "2*" << v_i << " >= " << negation;
@@ -6693,7 +6748,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
           s << ", ";
         // If the value bound can NOT be divided by 2 exactly,
         // then we output the constraint `2*v_i <= bound'.
-        if (div_2exp_assign_r(half, x_ii_i, 1, ROUND_UP) == V_EQ)
+        if (div_2exp_assign_r(half, x_ii_i, 1, ROUND_UP | ROUND_STRICT_RELATION) == V_EQ)
           s << v_i << " <= " << half;
         else
           s << "2*" << v_i << " <= " << x_ii_i;

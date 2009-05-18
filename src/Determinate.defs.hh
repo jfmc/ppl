@@ -69,7 +69,7 @@ operator<<(std::ostream&, const Determinate<PSET>&);
   in \ref Bag98 "[Bag98]".
 
   The implementation uses a copy-on-write optimization, making the
-  class suitable for constructions, like the <EM>finite powerset</A>
+  class suitable for constructions, like the <EM>finite powerset</EM></A>
   and <EM>ask-and-tell</EM> of \ref Bag98 "[Bag98]", that are likely
   to perform many copies.
 

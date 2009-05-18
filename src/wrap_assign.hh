@@ -48,18 +48,76 @@ typedef std::vector<Wrap_Dim_Translations> Wrap_Translations;
 
 template <typename PSET>
 void
-wrap_assign_rec(PSET& dest,
+wrap_assign_ind(PSET& pointset,
+                Variables_Set& vars,
+                Wrap_Translations::const_iterator first,
+                Wrap_Translations::const_iterator end,
+                Bounded_Integer_Type_Width w,
+                Coefficient_traits::const_reference min_value,
+                Coefficient_traits::const_reference max_value,
+                const Constraint_System& cs,
+                Coefficient& tmp1,
+                Coefficient& tmp2) {
+  const dimension_type space_dim = pointset.space_dimension();
+  const dimension_type cs_space_dim = cs.space_dimension();
+  for (Wrap_Translations::const_iterator i = first; i != end; ++i) {
+    const Wrap_Dim_Translations& wrap_dim_translations = *i;
+    const Variable& x = wrap_dim_translations.var;
+    const Coefficient& first_quadrant = wrap_dim_translations.first_quadrant;
+    const Coefficient& last_quadrant = wrap_dim_translations.last_quadrant;
+    Coefficient& quadrant = tmp1;
+    Coefficient& shift = tmp2;
+    PSET hull(space_dim, EMPTY);
+    for (quadrant = first_quadrant; quadrant <= last_quadrant; ++quadrant) {
+      PSET p(pointset);
+      if (quadrant != 0) {
+        mul_2exp_assign(shift, quadrant, w);
+        p.affine_image(x, x - shift, 1);
+      }
+      // `x' has just been wrapped.
+      vars.erase(x.id());
+
+      // Refine `p' with all the constraints in `cs' not depending
+      // on variables in `vars'.
+      if (vars.empty())
+        p.refine_with_constraints(cs);
+      else {
+        Variables_Set::const_iterator vars_end = vars.end();
+        for (Constraint_System::const_iterator j = cs.begin(),
+               cs_end = cs.end(); j != cs_end; ++j) {
+          const Constraint& c = *j;
+          for (dimension_type d = cs_space_dim; d-- > 0; ) {
+            if (c.coefficient(Variable(d)) != 0 && vars.find(d) != vars_end)
+              goto skip;
+          }
+          // If we are here it means `c' does not depend on variables
+          // in `vars'.
+          p.refine_with_constraint(c);
+
+        skip:
+          continue;
+        }
+      }
+      p.refine_with_constraint(min_value <= x);
+      p.refine_with_constraint(x <= max_value);
+      hull.upper_bound_assign(p);
+    }
+    pointset.swap(hull);
+  }
+}
+
+template <typename PSET>
+void
+wrap_assign_col(PSET& dest,
                 const PSET& src,
-                Variables_Set vars,
-                Wrap_Translations::iterator first,
-                Wrap_Translations::iterator end,
+                const Variables_Set& vars,
+                Wrap_Translations::const_iterator first,
+                Wrap_Translations::const_iterator end,
                 Bounded_Integer_Type_Width w,
                 Coefficient_traits::const_reference min_value,
                 Coefficient_traits::const_reference max_value,
                 const Constraint_System* pcs,
-                unsigned complexity_threshold,
-                Coefficient& tmp1,
-                Coefficient& tmp2) {
+                Coefficient& tmp) {
   if (first == end) {
     PSET p(src);
     if (pcs != 0)
@@ -77,19 +135,19 @@ wrap_assign_rec(PSET& dest,
     const Variable& x = wrap_dim_translations.var;
     const Coefficient& first_quadrant = wrap_dim_translations.first_quadrant;
     const Coefficient& last_quadrant = wrap_dim_translations.last_quadrant;
-    Coefficient& quadrant = tmp1;
-    Coefficient& shift = tmp2;
+    Coefficient& shift = tmp;
+    PPL_DIRTY_TEMP_COEFFICIENT(quadrant);
     for (quadrant = first_quadrant; quadrant <= last_quadrant; ++quadrant) {
       if (quadrant != 0) {
         mul_2exp_assign(shift, quadrant, w);
         PSET p(src);
         p.affine_image(x, x - shift, 1);
-        wrap_assign_rec(dest, p, vars, first+1, end, w, min_value, max_value,
-                        pcs, complexity_threshold, tmp1, tmp2);
+        wrap_assign_col(dest, p, vars, first+1, end, w, min_value, max_value,
+                        pcs, tmp);
       }
       else
-        wrap_assign_rec(dest, src, vars, first+1, end, w, min_value, max_value,
-                        pcs, complexity_threshold, tmp1, tmp2);
+        wrap_assign_col(dest, src, vars, first+1, end, w, min_value, max_value,
+                        pcs, tmp);
     }
   }
 }
@@ -98,32 +156,57 @@ template <typename PSET>
 void
 wrap_assign(PSET& pointset,
             const Variables_Set& vars,
-            Bounded_Integer_Type_Width w,
-            Bounded_Integer_Type_Signedness s,
-            Bounded_Integer_Type_Overflow o,
+            const Bounded_Integer_Type_Width w,
+            const Bounded_Integer_Type_Representation r,
+            const Bounded_Integer_Type_Overflow o,
             const Constraint_System* pcs,
-            unsigned complexity_threshold,
-            bool wrap_individually) {
-  const dimension_type space_dim = pointset.space_dimension();
+            const unsigned complexity_threshold,
+            const bool wrap_individually,
+            const char* class_name) {
+  // We must have pcs->space_dimension() <= vars.space_dimension()
+  //         and  vars.space_dimension() <= pointset.space_dimension().
+
   // Dimension-compatibility check of `*pcs', if any.
-  if (pcs != 0 && pcs->space_dimension() != space_dim) {
-    std::ostringstream s;
-    // FIXME: how can we write the class name of PSET here?
-    s << "PPL::...::wrap_assign(..., pcs, ...):" << std::endl
-      << "this->space_dimension() == " << space_dim
-      << ", pcs->space_dimension() == " << pcs->space_dimension() << ".";
-    throw std::invalid_argument(s.str());
+  const dimension_type vars_space_dim = vars.space_dimension();
+  if (pcs != 0) {
+    if (pcs->space_dimension() > vars_space_dim) {
+      std::ostringstream s;
+      s << "PPL::" << class_name << "::wrap_assign(..., pcs, ...):"
+        << std::endl
+        << "vars.space_dimension() == " << vars_space_dim
+        << ", pcs->space_dimension() == " << pcs->space_dimension() << ".";
+      throw std::invalid_argument(s.str());
+    }
+
+#ifndef NDEBUG
+    // Check that all variables upon which `*pcs' depends are in `vars'.
+    // An assertion is violated otherwise.
+    const Constraint_System cs = *pcs;
+    const dimension_type cs_space_dim = cs.space_dimension();
+    Variables_Set::const_iterator vars_end = vars.end();
+    for (Constraint_System::const_iterator i = cs.begin(),
+           cs_end = cs.end(); i != cs_end; ++i) {
+      const Constraint& c = *i;
+      for (dimension_type d = cs_space_dim; d-- > 0; ) {
+        assert(c.coefficient(Variable(d)) == 0
+               || vars.find(d) != vars_end);
+      }
+    }
+#endif
   }
 
-  // Wrapping no variable is a no-op.
-  if (vars.empty())
+  // Wrapping no variable only requires refining with *pcs, if any.
+  if (vars.empty()) {
+    if (pcs != 0)
+      pointset.refine_with_constraints(*pcs);
     return;
+  }
 
   // Dimension-compatibility check of `vars'.
-  if (space_dim < vars.space_dimension()) {
+  const dimension_type space_dim = pointset.space_dimension();
+  if (vars.space_dimension() > space_dim) {
     std::ostringstream s;
-    // FIXME: how can we write the class name of PSET here?
-    s << "PPL::...::wrap_assign(vs, ...):" << std::endl
+    s << "PPL::" << class_name << "::wrap_assign(vs, ...):" << std::endl
       << "this->space_dimension() == " << space_dim
       << ", required space dimension == " << vars.space_dimension() << ".";
     throw std::invalid_argument(s.str());
@@ -137,13 +220,13 @@ wrap_assign(PSET& pointset,
   // a variable of width `w' and signedness `s' can take.
   PPL_DIRTY_TEMP_COEFFICIENT(min_value);
   PPL_DIRTY_TEMP_COEFFICIENT(max_value);
-  if (s == UNSIGNED) {
+  if (r == UNSIGNED) {
     min_value = 0;
     mul_2exp_assign(max_value, Coefficient_one(), w);
     --max_value;
   }
   else {
-    assert(s == SIGNED_2_COMPLEMENT);
+    assert(r == SIGNED_2_COMPLEMENT);
     mul_2exp_assign(max_value, Coefficient_one(), w-1);
     neg_assign(min_value, max_value);
     --max_value;
@@ -154,9 +237,9 @@ wrap_assign(PSET& pointset,
   // immediately applied.
   Wrap_Translations translations;
 
-  // If we are wrapping variables collectively, dimensions subject
-  // to translation are added to this set.
-  Variables_Set translated_dimensions;
+  // Dimensions subject to translation are added to this set if we are
+  // wrapping collectively or if `pcs' is non null.
+  Variables_Set dimensions_to_be_translated;
 
   // This will contain a lower bound to the number of abstractions
   // to be joined in order to obtain the collective wrapping result.
@@ -182,10 +265,8 @@ wrap_assign(PSET& pointset,
   PPL_DIRTY_TEMP_COEFFICIENT(un);
   PPL_DIRTY_TEMP_COEFFICIENT(ud);
 
-  //using namespace IO_Operators;
-
   for (Variables_Set::const_iterator i = vars.begin(),
-         vars_end = vars.end(); i != vars.end(); ++i) {
+         vars_end = vars.end(); i != vars_end; ++i) {
 
     const Variable x = Variable(*i);
 
@@ -227,29 +308,20 @@ wrap_assign(PSET& pointset,
     if (o == OVERFLOW_UNDEFINED || collective_wrap_too_complex)
       goto set_full_range;
 
-    Coefficient& diff = ud;
-    diff = last_quadrant - first_quadrant;
-
-    // Please note that the `>=' is intentional here.
-    if (diff >= UINT_MAX)
-      goto set_full_range;
+    Coefficient& quadrants = ud;
+    quadrants = last_quadrant - first_quadrant + 1;
 
     unsigned extension;
-    assign_r(extension, diff, ROUND_NOT_NEEDED);
-    ++extension;
-    assert(extension > 0);
-
-    if (extension > complexity_threshold)
+    Result r = assign_r(extension, quadrants, ROUND_IGNORE);
+    if (result_overflow(r) || extension > complexity_threshold)
       goto set_full_range;
 
     if (!wrap_individually && !collective_wrap_too_complex) {
-      if (collective_wrap_complexity > UINT_MAX / extension)
-        collective_wrap_too_complex = true;
-      else {
-        collective_wrap_complexity *= extension;
-        if (collective_wrap_complexity > complexity_threshold)
+      r = mul_assign_r(collective_wrap_complexity,
+		       collective_wrap_complexity, extension, ROUND_IGNORE);
+      if (result_overflow(r) ||
+	  collective_wrap_complexity > complexity_threshold)
           collective_wrap_too_complex = true;
-      }
       if (collective_wrap_too_complex) {
         // Set all the dimensions in `translations' to full range.
         for (Wrap_Translations::const_iterator i = translations.begin(),
@@ -262,9 +334,9 @@ wrap_assign(PSET& pointset,
       }
     }
 
-    if (wrap_individually) {
+    if (wrap_individually && pcs == 0) {
       Coefficient& quadrant = first_quadrant;
-      // Temporay variable holding the shifts to be applied in order
+      // Temporary variable holding the shifts to be applied in order
       // to implement the translations.
       Coefficient& shift = ld;
       PSET hull(space_dim, EMPTY);
@@ -274,28 +346,34 @@ wrap_assign(PSET& pointset,
           mul_2exp_assign(shift, quadrant, w);
           p.affine_image(x, x - shift, 1);
         }
-        if (pcs != 0)
-          p.refine_with_constraints(*pcs);
         p.refine_with_constraint(min_value <= x);
         p.refine_with_constraint(x <= max_value);
         hull.upper_bound_assign(p);
       }
       pointset.swap(hull);
     }
-    else if (!collective_wrap_too_complex)
-      // !wrap_individually.
-      translated_dimensions.insert(x);
+    else if (wrap_individually || !collective_wrap_too_complex) {
+      assert(!wrap_individually || pcs != 0);
+      dimensions_to_be_translated.insert(x);
       translations
         .push_back(Wrap_Dim_Translations(x, first_quadrant, last_quadrant));
+    }
   }
 
-  if (!wrap_individually && !translations.empty()) {
-    PSET hull(space_dim, EMPTY);
-    wrap_assign_rec(hull, pointset, translated_dimensions,
-                    translations.begin(), translations.end(),
-                    w, min_value, max_value, pcs, complexity_threshold,
-                    ln, ld);
-    pointset.swap(hull);
+  if (!translations.empty()) {
+    if (wrap_individually) {
+      assert(pcs != 0);
+      wrap_assign_ind(pointset, dimensions_to_be_translated,
+                      translations.begin(), translations.end(),
+                      w, min_value, max_value, *pcs, ln, ld);
+    }
+    else {
+      PSET hull(space_dim, EMPTY);
+      wrap_assign_col(hull, pointset, dimensions_to_be_translated,
+                      translations.begin(), translations.end(),
+                      w, min_value, max_value, pcs, ln);
+      pointset.swap(hull);
+    }
   }
 
   if (pcs != 0)

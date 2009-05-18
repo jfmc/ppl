@@ -440,7 +440,7 @@ test20() {
   print_constraints(oc, "--- oc ---");
   print_congruence(cg, "--- cg ---");
   using namespace IO_Operators;
-  nout << "oc.relation_with((A %= 0)/1) == " << rel << endl;
+  nout << "oc.relation_with((A + 3*B %= 0)/1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 

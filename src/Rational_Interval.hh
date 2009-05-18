@@ -37,7 +37,6 @@ struct Rational_Interval_Info_Policy {
   const_int_nodef(next_bit, 0);
   const_bool_nodef(may_be_empty, true);
   const_bool_nodef(may_contain_infinity, false);
-  const_bool_nodef(check_empty_result, false);
   const_bool_nodef(check_inexact, false);
 };
 

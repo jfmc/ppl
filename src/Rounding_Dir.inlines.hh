@@ -48,6 +48,16 @@ round_ignore(Rounding_Dir dir) {
 }
 
 inline bool
+round_not_needed(Rounding_Dir dir) {
+  return round_dir(dir) == ROUND_NOT_NEEDED;
+}
+
+inline bool
+round_not_requested(Rounding_Dir dir) {
+  return round_dir(dir) == ROUND_IGNORE || round_dir(dir) == ROUND_NOT_NEEDED;
+}
+
+inline bool
 round_direct(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_DIRECT;
 }
@@ -58,8 +68,8 @@ round_inverse(Rounding_Dir dir) {
 }
 
 inline bool
-round_fpu_check_inexact(Rounding_Dir dir) {
-  return dir & ROUND_FPU_CHECK_INEXACT;
+round_strict_relation(Rounding_Dir dir) {
+  return dir & ROUND_STRICT_RELATION;
 }
 
 #if PPL_CAN_CONTROL_FPU
@@ -102,6 +112,10 @@ inverse(Rounding_Dir dir) {
     return dir;
   }
   return static_cast<Rounding_Dir>((dir & ~ROUND_DIR_MASK) | d);
+}
+
+inline Rounding_Dir operator|(Rounding_Dir x, Rounding_Dir y) {
+  return static_cast<Rounding_Dir>((unsigned)x | (unsigned)y);
 }
 
 } // namespace Parma_Polyhedra_Library

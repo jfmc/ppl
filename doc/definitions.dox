@@ -437,15 +437,133 @@ library user to provide the PPL's method with approximations of reality
 that are consistent with respect to the desired results.
 
 
-\section Approximating_Bounded_Arithmetic Approximating Bounded Arithmetic
+\section Approximating_Integers Approximating Integers
 
 FIXME(0.11): to be written.
 
 
-\subsection Wrapping_Operator Wrapping Operator
+\subsection Dropping_Non_Integer_Points Dropping Non-Integer Points
 
 FIXME(0.11): to be written.
-\ref SK07 "[SK07]"
+
+
+\subsection Approximating_Bounded_Integers Approximating Bounded Integers
+
+The Parma Polyhedra Library provides services that allow to compute
+correct approximations of bounded arithmetic as available in widespread
+programming languages.  Supported bit-widths are 8, 16, 32 and 64 bits,
+with some limited support for 128 bits.
+Supported representations are binary unsigned and two's complement signed.
+Supported overflow behaviors are:
+<DL>
+  <DT>Wrapping:</DT>
+  <DD>
+    this means that, for a \f$w\f$-bit bounded integer, the computation
+    happens modulo \f$2^w\f$.  In turn, this signifies that the computation
+    happens <EM>as if</EM> the unbounded arithmetic result was computed
+    and then wrapped.  For unsigned integers, the wrapping function is
+    simply \f$x \bmod 2^w\f$, most conveniently defined as
+    \f[
+      \mathrm{wrap}^\mathrm{u}_w(x)
+        \defeq
+          x - 2^w \lfloor x/2^w \rfloor.
+    \f]
+    For signed integers the wrapping function is, instead,
+    \f[
+      \mathrm{wrap}^\mathrm{s}_w(x)
+        \defeq
+          \begin{cases}
+            \mathrm{wrap}^\mathrm{u}_w(x),
+              &\text{if $\mathrm{wrap}^\mathrm{u}_w(x) < 2^{w-1}$;} \\
+            \mathrm{wrap}^\mathrm{u}_w(x) - 2^w,
+              &\text{otherwise.}
+          \end{cases}
+    \f]
+  </DD>
+  <DT>Undefined:</DT>
+  <DD>
+    this means that the result of the operation resulting in an
+    overflow can take any value.  This is useful to partially
+    model systems where overflow has unspecified effects on
+    the computed result.
+    Even though something more serious can happen in the system
+    being analyzed ---due to, e.g., C's undefined behavior---, here we
+    are only concerned with the results of arithmetic operations.
+    It is the responsibility of the analyzer to ensure that other
+    manifestations of undefined behavior are conservatively approximated.
+  </DD>
+  <DT>Impossible:</DT>
+  <DD>
+    this is for the analysis of languages where overflow is trapped
+    before it affects the state, for which, thus, any indication that
+    an overflow may have affected the state is necessarily due to
+    the imprecision of the analysis.
+  </DD>
+</DL>
+
+FIXME(0.11): to be continued.
+
+
+\subsubsection Wrapping_Operator Wrapping Operator
+
+One possibility to precisely approximate the semantics of programs that
+operate on bounded integer variables is to follow the approach described
+in \ref SK07 "[SK07]".  The idea is to associate space dimensions to the
+<EM>unwrapped values</EM> of bounded variables.  Suppose <CODE>j</CODE>
+is a \f$w\f$-bit, unsigned program variable associated to a space dimension
+labeled by the variable \f$x\f$.  If \f$x\f$ is constrained by some
+numerical abstraction to take values in a set \f$S \sseq \Rset\f$, then
+the program variable <CODE>j</CODE> can only take values in
+\f$\bigl\{\, \mathrm{wrap}^\mathrm{u}_w(z) \bigm| z \in S \,\bigr\}\f$.
+There are two reasons why this is interesting: firstly, this allows
+to retain relational information by using a single numerical abstraction
+tracking multiple program variables.  Secondly, the integers modulo
+\f$2^w\f$ form a ring of equivalence classes on which addition
+and multiplication are well defined.  This means, e.g., that assignments
+with affine right-hand sides and involving only variables with the same
+bit-width and representation can be safely modeled by affine images.
+While upper bounds and widening can be used without any precaution,
+anything that can be reconducted to intersection requires a preliminary
+<EM>wrapping</EM> phase, where the dimensions corresponding to bounded
+integer types are brought back to their natural domain.
+This necessity arise naturally for the analysis of conditionals
+and conversion operators, as well as in the realization of domain
+combinations.
+
+The PPL provides a general wrapping operator that is parametric with
+respect to the set of space dimensions (variables) to be wrapped,
+the width, representation and overflow behavior of all these variables.
+An optional constraint system allows, when given, to increase the
+precision.  This constraint system, which must only depend on variables
+with respect to which wrapping is performed, is assumed to represent
+the conditional or looping construct guard with respect to which
+wrapping is performed.  Since wrapping requires the computation of
+upper bounds and due to non-distributivity of constraint refinement
+over upper bounds, passing a constraint system in this way can be more
+precise than refining the result of the wrapping operation afterwards.
+The general wrapping operator offered by the PPL also allows to control
+the complexity/precision ratio by means of two additional parameters:
+an unsigned integer encoding a complexity threshold, with higher values
+resulting in possibly improved precision; and a Boolean controlling
+whether space dimensions should be wrapped individually, something that
+results in much greater efficiency to the detriment of precision,
+or collectively.
+
+Note that the PPL assumes that any space dimension subject to wrapping
+is being used to capture the value of bounded integer values.  As a
+consequence the library is free to drop, from the involved numerical
+abstraction, any point having a non-integer coordinate in correspondence
+of a space dimension subject to wrapping.  It must be stressed that
+freedom to drop such points does not constitute an obligation to remove
+all of them (especially because this would be extraordinarily expensive
+on some numerical abstractions).
+The PPL provides operators for the more systematic
+\ref Dropping_Non_Integer_Points
+"removal of points with non-integral coordinates".
+
+The wrapping operator will only remove some of these points
+as a byproduct of its main task and only when this comes at a negligible
+extra cost.
 
 
 \section convex_polys Convex Polyhedra
@@ -1945,197 +2063,11 @@ Thus we have \f$0 \leq \pdim(\cG) \leq n\f$.
 
 \section rational_grid_operations Operations on Rational Grids
 
-In this section we briefly describe operations on rational grids
-that are provided by the library.
-These are similar to those described in Section \ref Operations_on_Convex_Polyhedra.
-
-\subsection Grid_Intersection_and_Join Grid Intersection and Grid Join
-
-For any pair of grids \f$\cL_1, \cL_2 \in \Gset_n\f$,
-the <EM>intersection</EM> of \f$\cL_1\f$ and \f$\cL_2\f$,
-defined as the set intersection \f$\cL_1 \inters \cL_2\f$,
-is the largest grid included in both \f$\cL_1\f$ and \f$\cL_2\f$;
-similarly, the <EM>grid join</EM>
-of \f$\cL_1\f$ and \f$\cL_2\f$, denoted by \f$\cL_1 \uplus \cL_2\f$,
-is the smallest grid that includes both
-\f$\cL_1\f$ and \f$\cL_2\f$.
-
-In theoretical terms,
-the intersection and grid join operators defined above
-are the binary <EM>meet</EM> and the binary <EM>join</EM>
-operators on the lattice \f$\Gset_n\f$.
-
-\subsection Grid_Difference Grid Difference
-
-For any pair of grids \f$\cL_1, \cL_2 \in \Gset_n\f$,
-the <EM>grid difference</EM>
-of \f$\cL_1\f$ and \f$\cL_2\f$ is defined as the smallest
-grid containing the set-theoretic difference
-of \f$\cL_1\f$ and \f$\cL_2\f$.
-
-\subsection Grid_Concatenate Concatenating Grids
-
-Viewing a grid as a set of tuples (its points), it is sometimes
-useful to consider the set of tuples obtained by concatenating
-an ordered pair of grids.
-Formally, the <EM>concatenation</EM> of the grids
-\f$\cL_1 \in \Gset_n\f$ and \f$\cL_2 \in \Gset_m\f$ (taken in this order)
-is the grid in \f$\Gset_{n+m}\f$ defined as
-\f[
-      \Bigl\{\,
-        (x_0, \ldots, x_{n-1}, y_0, \ldots, y_{m-1})^\transpose
-          \in \Rset^{n+m}
-      \Bigm|
-        (x_0, \ldots, x_{n-1})^\transpose \in \cL_1,
-        (y_0, \ldots, y_{m-1})^\transpose \in \cL_2
-      \,\Bigl\}.
-\f]
-Another way of seeing it is as follows: first embed grid \f$\cL_1\f$
-into a vector space of dimension \f$n+m\f$ and then add a suitably
-renamed-apart version of the congruence relations defining \f$\cL_2\f$.
-
-\subsection  Grid_Add_Space_Dimensions Adding New Dimensions to the Vector Space
-
-The library provides two operators for adding a number \f$i\f$ of
-space dimensions to a grid \f$\cL \in \Gset_n\f$,
-therefore transforming it into a new grid in
-\f$\Gset_{n+i}\f$.
-In both cases, the added dimensions of the vector space
-are those having the highest indices.
-
-The operator <CODE>add_space_dimensions_and_embed</CODE>
-\e embeds the grid \f$\cL\f$ into the new vector space of
-dimension \f$i+n\f$ and returns the grid
-defined by all and only the congruences defining \f$\cL\f$
-(the variables corresponding to the added dimensions are unconstrained).
-For instance, when starting from a grid \f$\cL \sseq \Rset^2\f$
-and adding a third space dimension, the result will be the grid
-\f[
-   \bigl\{\,
-         (x_0, x_1, x_2)^\transpose \in \Rset^3
-       \bigm|
-         (x_0, x_1)^\transpose \in \cL
-       \,\bigr\}.
-\f]
-
-In contrast, the operator  <CODE>add_space_dimensions_and_project</CODE>
-\e projects the grid \f$\cL\f$ into the new vector space of
-dimension \f$i+n\f$ and returns the grid
-whose congruence system, besides the congruence relations defining \f$\cL\f$,
-will include additional equalities on the added dimensions.
-Namely, the corresponding variables are all constrained to be equal to 0.
-For instance, when starting from a grid \f$\cL \sseq \Rset^2\f$
-and adding a third space dimension, the result will be the grid
-\f[
-  \bigl\{\,
-          (x_0, x_1, 0)^\transpose \in \Rset^3
-        \bigm|
-          (x_0, x_1)^\transpose \in \cL
-        \,\bigr\}.
-\f]
-
-\subsection Grid_Remove_Space_Dimensions Removing Dimensions from the Vector Space
-
-The library provides two operators for removing
-space dimensions from a grid \f$\cL \in \Gset_n\f$,
-therefore transforming it into a new grid in
-\f$\Gset_m\f$ where \f$m \leq n\f$.
-
-Given a set of variables, the operator <CODE>remove_space_dimensions</CODE>
-removes all the space dimensions specified by the variables in the set.
-
-Given a space dimension \f$m\f$ less than or equal to that of the grid,
-the operator <CODE>remove_higher_space_dimensions</CODE> removes
-the space dimensions having indices greater than or equal to \f$m\f$.
-
-\subsection Grid_Map_Space_Dimensions Mapping the Dimensions of the Vector Space
-
-The operator <CODE>map_space_dimensions</CODE> provided by the library
-maps the dimensions of the vector space \f$\Rset^n\f$ according
-to a partial injective function \f$\pard{\rho}{\{0, \ldots, n-1\}}{\Nset}\f$
-such that
-\f[
-  \rho\bigl(\{0, \ldots, n-1\}\bigr) = \{0, \ldots, m-1\}
-\f]
-with \f$m \leq n\f$.
-Dimensions corresponding to indices that are not mapped
-by \f$\rho\f$ are removed.
-
-If \f$m = 0\f$, i.e., if the function \f$\rho\f$ is undefined everywhere,
-then the operator projects the argument grid \f$\cL \in \Gset_n\f$
-onto the zero-dimension space \f$\Rset^0\f$;
-otherwise the result is a grid in \f$\Gset_m\f$ given by
-\f[
-      \Bigl\{\,
-        \bigl(v_{\rho^{-1}(0)}, \ldots, v_{\rho^{-1}(m-1)}\bigr)^\transpose
-      \Bigm|
-        (v_0, \ldots, v_{n-1})^\transpose \in \cL
-      \,\Bigr\}.
-\f]
-
-\subsection Grid_Expand_Space_Dimension Expanding One Dimension of the Vector Space to Multiple Dimensions
-
-The operator <CODE>expand_space_dimension</CODE> provided by the library
-adds \f$m\f$ new space dimensions to a grid \f$\cL \in \Gset_n\f$,
-with \f$n > 0\f$, so that dimensions
-\f$n\f$, \f$n+1\f$, \f$\ldots\f$, \f$n+m-1\f$
-of the resulting grid are exact copies of the \f$i\f$-th space dimension
-of \f$\cL\f$.  More formally, the result is a grid in \f$\Gset_m\f$ given by
-\f[
-      \sset{
-        \vect{u} \in \Rset^{n+m}
-      }{
-        \exists \vect{v}, \vect{w} \in \cL
-          \st u_i = v_i \\
-          \qquad \mathord{} \land \forall j = n, n+1, \ldots, n+m-1
-                                     \itc u_j = w_i \\
-          \qquad \mathord{} \land \forall k = 0, \ldots, n-1
-                                     \itc k \neq i \implies u_k = v_k = w_k
-      }.
-\f]
-
-\subsection Grid_Fold_Space_Dimensions Folding Multiple Dimensions of the Vector Space into One Dimension
-
-The operator <CODE>fold_space_dimensions</CODE> provided by the library,
-given a grid \f$\cL \in \Gset_n\f$, with \f$n > 0\f$,
-folds a subset \f$J\f$ of the set of space dimensions \f$\{0, \ldots, n-1\}\f$
-into a space dimension \f$i < n\f$, where \f$i \notin J\f$.
-Letting \f$m = \card J\f$, the result is given by the grid join
-\f[
-  \cL_0 \uplus \cdots \uplus \cL_m
-\f]
-where
-\f[
-  \cL_m
-    \defeq
-      \sset{
-        \vect{u} \in \Rset^{n-m}
-      }{
-        \exists \vect{v} \in \cL
-          \st u_{i'} = v_i \\
-          \qquad \mathord{} \land \forall k = 0, \ldots, n-1
-                                     \itc k \neq i \implies u_{k'} = v_k
-      },
-\f]
-for \f$ d = 0 \f$, \f$ \ldots \f$, \f$ m-1 \f$,
-\f[
-  \cL_d
-    \defeq
-      \sset{
-        \vect{u} \in \Rset^{n-m}
-      }{
-        \exists \vect{v} \in \cL
-          \st u_{i'} = v_{j_d} \\
-          \qquad \mathord{} \land \forall k = 0, \ldots, n-1
-                                     \itc k \neq i \implies u_{k'} = v_k
-      }
-\f]
-and, for \f$ k = 0 \f$, \f$ \ldots \f$, \f$ n-1 \f$,
-\f[
-  k'
-    \defeq
-      k - \card \{\, j \in J \mid k > j \,\}.
-\f]
+In general, the operations on rational grids are the same as those for the other
+PPL domains and the definitions of these can be found in
+Section \ref Operations_on_Convex_Polyhedra.
+Below we just describe those operations that have features or behavior
+that is in some way special to the grid domain.
 
 \subsection Grid_Affine_Transformation Affine Images and Preimages
 
@@ -2258,15 +2190,15 @@ is the grid
 
 The library provides operators for checking the relation holding
 between a grid  and
-a congruence, a grid generator, constraint or a (polyhedron) generator.
+a congruence, a grid generator, a constraint or a (polyhedron) generator.
 
 Suppose \f$\cL\f$ is a grid
 and \f$\cC\f$ an arbitrary congruence system representing \f$\cL\f$.
 Suppose also that
 \f$
   \cg = \bigl(
-        \langle \vect{a}, \vect{x} \rangle \equiv_f b
-      \bigr)
+          \langle \vect{a}, \vect{x} \rangle \equiv_f b
+        \bigr)
 \f$
 is a congruence relation
 with \f$\cL_{\cg} = \gcon\bigl(\{\cg\}\bigr)\f$.
@@ -2316,8 +2248,11 @@ representing \f$\cL\f$ does not change \f$\cL\f$.
 \subsection Grid_Wrapping_Operator Wrapping Operator
 
 The operator <CODE>wrap_assign</CODE> provided by the library, allows
-for the wrapping of a subset of the set of space dimensions so as to fit
-the given bounded integer type and have the specified overflow behavior.
+for the \ref Wrapping_Operator "wrapping" of a subset of the set of
+space dimensions so as to fit the given bounded integer type and have
+the specified overflow behavior.  In order to maximize the precision
+of this operator for grids, the exact behavior differs in some
+respects from the other simple classes of geometric descriptors.
 
 Suppose \f$\cL \in \Gset_n\f$ is a grid and \f$J\f$ a subset of the
 set of space dimensions \f$\{0, \ldots, n-1\}\f$.
@@ -2328,30 +2263,30 @@ and \f$R = \{r \in \Rset \mid -2^{w-1} \leq r < 2^{w-1}\}\f$ otherwise.
 Consider a space dimension \f$j \in J\f$ and a variable \f$v_j\f$
 for dimension \f$j\f$.
 
-If the value in \f$\cL\f$ for the variable \f$v_j\f$ is
-a constant in the range \f$R\f$, then it is unchanged.
-Otherwise the result of the operation will depend on the
-specified overflow behavior.
+If the value in \f$\cL\f$ for the variable \f$v_j\f$ is a constant in
+the range \f$R\f$, then it is unchanged.  Otherwise the result
+\f$\cL'\f$ of the operation on \f$\cL\f$ will depend on the specified
+overflow behavior.
 
 - Overflow impossible. In this case, it is known that no wrapping can
   occur. If the grid \f$\cL\f$ has no value for the variable \f$v_j\f$ in the
   range \f$R\f$, then \f$\cL\f$ is set empty. If \f$v_j\f$ has exactly
   one value \f$a \in R\f$ in \f$\cL\f$, then \f$v_j\f$ is set
-  equal to \f$a\f$. Otherwise, \f$\cL\f$ is unchanged.
+  equal to \f$a\f$. Otherwise, \f$\cL' = \cL\f$.
 
 - Overflow undefined. In this case, for each value \f$a\f$ for
   \f$v_j\f$ in the grid \f$\cL\f$, the wrapped value can be any value
   \f$a + z \in R\f$ where \f$z \in \Zset\f$.
-  Therefore the parameter \f$(0, \ldots, 0, v_j, 0, \dots, 0)\f$,
-  where \f$v_j = 1\f$ is added to the generator system for \f$\cL\f$.
+  Therefore \f$\cL'\f$ is obtained by adding the parameter
+  \f$(0, \ldots, 0, v_j, 0, \dots, 0)\f$,
+  where \f$v_j = 1\f$, to the generator system for \f$\cL\f$.
 
-- Overflow wraps. In this case, if \f$v_j\f$ has exactly
-  one value \f$a \in R\f$ in \f$\cL\f$, then \f$v_j\f$ is set
-  equal to \f$a\f$. Otherwise, for each value \f$a\f$ for
-  \f$v_j\f$ in the grid \f$\cL\f$, there must be more than one value
-  of the form \f$a + z 2^w \in R\f$ where \f$z \in \Zset\f$.
-  Therefore the parameter \f$(0, \ldots, 0, v_j, 0, \dots, 0)\f$,
-  where \f$v_j = 2^w\f$ is added to the generator system for \f$\cL\f$.
+- Overflow wraps. In this case, if \f$\cL\f$ already satisfies the
+  congruence \f$v_j = a \mod 2^w\f$, for some \f$a \in \Rset\f$, then
+  \f$v_j\f$ is set equal to \f$a'\f$ where \f$a' = a \mod 2^w\f$ and
+  \f$a'\in R\f$.  Otherwise, \f$\cL'\f$ is obtained by adding the
+  parameter \f$(0, \ldots, 0, v_j, 0, \dots, 0)\f$, where
+  \f$v_j = 2^w\f$, to the generator system for \f$\cL\f$.
 
 \subsection Grid_Widening Widening Operators
 

@@ -126,7 +126,7 @@ parse_number_part(std::istream& is, number_struct& num) {
     c = is.get();
     if (c != 'n' && c != 'N')
       goto error;
-    return VC_NAN;
+    return V_NAN;
   inf:
   case 'i':
   case 'I':
@@ -136,7 +136,7 @@ parse_number_part(std::istream& is, number_struct& num) {
     c = is.get();
     if (c != 'f' && c != 'F')
       goto error;
-    return num.neg_mantissa ? VC_MINUS_INFINITY : VC_PLUS_INFINITY;
+    return num.neg_mantissa ? V_EQ_MINUS_INFINITY : V_EQ_PLUS_INFINITY;
   }
   if (get_digit(c, 10) < 0)
     goto error;
@@ -316,7 +316,7 @@ input_mpq(mpq_class& to, std::istream& is) {
   if (r != V_EQ)
     return r;
   if (den_struct.base && den_struct.mantissa.empty())
-      return VC_NAN;
+      return V_NAN;
   if (num_struct.mantissa.empty()) {
     to = 0;
     return V_EQ;
