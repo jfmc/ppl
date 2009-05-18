@@ -572,8 +572,8 @@ test20() {
   Variable y(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(x >= 255);
-  ph.add_constraint(x <= 257);
+  ph.add_constraint(2*x >= 1);
+  ph.add_constraint(3*x <= 2);
   ph.add_constraint(y >= 255);
   ph.add_constraint(y <= 257);
 
@@ -587,8 +587,8 @@ test20() {
   ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs, 16, false);
 
   C_Polyhedron known_result(2);
-  known_result.add_constraint(x >= 0);
-  known_result.add_constraint(x <= 1);
+  known_result.add_constraint(2*x >= 0);
+  known_result.add_constraint(3*x <= 2);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(y <= 1);
 
@@ -621,5 +621,5 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST_F8(test19);
-  DO_TEST(test20);
+  DO_TEST_F8(test20);
 END_MAIN
