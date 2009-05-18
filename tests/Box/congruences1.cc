@@ -142,16 +142,14 @@ test06() {
   Congruence_System cgs;
   cgs.insert((A %= 7) / 0);
   cgs.insert((B %= 3) / 0);
-  // This inconsistent equality is ignored when refining.
+  // This inconsistent equality is not ignored when refining.
   cgs.insert((A + B %= 0) / 0);
   cgs.insert(C %= 7);
 
   TBox box(cgs.space_dimension(), UNIVERSE);
   box.refine_with_congruences(cgs);
 
-  Rational_Box known_result(3);
-  known_result.add_constraint(A == 7);
-  known_result.add_constraint(B == 3);
+  Rational_Box known_result(3, EMPTY);
 
   bool ok = check_result(box, known_result);
 
