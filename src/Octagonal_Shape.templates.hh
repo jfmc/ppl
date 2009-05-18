@@ -1214,29 +1214,63 @@ Octagonal_Shape<T>::relation_with(const Congruence& cg) const {
         && Poly_Con_Relation::is_included();
   }
 
-  // FIXME: the following code has to be checked and improved.
-  // Add comment to explain what we are doing and why.
+  // Find the lower bound for a hyperplane with direction
+  // defined by the congruence.
   Linear_Expression le = Linear_Expression(cg);
   PPL_DIRTY_TEMP_COEFFICIENT(min_num);
   PPL_DIRTY_TEMP_COEFFICIENT(min_den);
   bool min_included;
   bool bounded_below = minimize(le, min_num, min_den, min_included);
 
+  // If there is no lower bound, then some of the hyperplanes defined by
+  // the congruence will strictly intersect the shape.
   if (!bounded_below)
     return Poly_Con_Relation::strictly_intersects();
 
-  // FIXME: specify rounding mode.
-  PPL_DIRTY_TEMP_COEFFICIENT(value);
-  value = min_num / min_den;
+  // TODO: Consider adding a max_and_min() method, performing both
+  // maximization and minimization so as to possibly exploit
+  // incrementality of the MIP solver.
 
-  const Coefficient& modulus = cg.modulus();
+  // Find the upper bound for a hyperplane with direction
+  // defined by the congruence.
+  PPL_DIRTY_TEMP_COEFFICIENT(max_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_den);
+  bool max_included;
+  bool bounded_above = maximize(le, max_num, max_den, max_included);
+
+  // If there is no upper bound, then some of the hyperplanes defined by
+  // the congruence will strictly intersect the shape.
+  if (!bounded_above)
+    return Poly_Con_Relation::strictly_intersects();
+
   PPL_DIRTY_TEMP_COEFFICIENT(signed_distance);
-  signed_distance = value % modulus;
-  value -= signed_distance;
-  if (value * min_den < min_num)
-    value += modulus;
-  Constraint c(le == value);
-  return relation_with(c);
+
+  // Find the position value for the hyperplane that satisfies the congruence
+  // and is above the lower bound for the shape.
+  PPL_DIRTY_TEMP_COEFFICIENT(min_value);
+  min_value = min_num / min_den;
+  const Coefficient& modulus = cg.modulus();
+  signed_distance = min_value % modulus;
+  min_value -= signed_distance;
+  if (min_value * min_den < min_num)
+    min_value += modulus;
+
+  // Find the position value for the hyperplane that satisfies the congruence
+  // and is below the upper bound for the shape.
+  PPL_DIRTY_TEMP_COEFFICIENT(max_value);
+  max_value = max_num / max_den;
+  signed_distance = max_value % modulus;
+  max_value += signed_distance;
+  if (max_value * max_den > max_num)
+    max_value -= modulus;
+
+  // If the upper bound value is less than the lower bound value,
+  // then there is an empty intersection with the congruence;
+  // otherwise it will strictly intersect.
+  if (max_value < min_value)
+    return Poly_Con_Relation::is_disjoint();
+  else
+    return Poly_Con_Relation::strictly_intersects();
 }
 
 template <typename T>
