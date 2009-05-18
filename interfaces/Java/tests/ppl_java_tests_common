@@ -37,35 +37,38 @@ public class ppl_java_generated_tests {
         }
     }
 
+    // Success state.
+    static boolean globally_ok;
+
     // Common stuff. We can add other objects if we need them later.
-    Coefficient coeff_0;
-    Coefficient coeff_5;
-    Variable var_C;
-    Variables_Set var_set_A;
-    Linear_Expression le_A;
+    static Coefficient coeff_0;
+    static Coefficient coeff_5;
+    static Variable var_C;
+    static Variables_Set var_set_A;
+    static Linear_Expression le_A;
 
-    Constraint constraint1;
-    Constraint constraint2;
-    Congruence congruence1;
-    Generator generator1;
-    Grid_Generator grid_generator1;
+    static Constraint constraint1;
+    static Constraint constraint2;
+    static Congruence congruence1;
+    static Generator generator1;
+    static Grid_Generator grid_generator1;
 
-    Constraint_System constraints1;
-    Constraint_System constraints2;
-    Congruence_System congruences1;
-    Congruence_System congruences2;
-    Generator_System generators1;
-    Grid_Generator_System grid_generators1;
+    static Constraint_System constraints1;
+    static Constraint_System constraints2;
+    static Congruence_System congruences1;
+    static Congruence_System congruences2;
+    static Generator_System generators1;
+    static Grid_Generator_System grid_generators1;
 
-    By_Reference<Boolean> bool_by_ref1;
-    By_Reference<Boolean> bool_by_ref2;
-    By_Reference<Integer> int_by_ref1;
-    By_Reference<Integer> zero_by_ref1;
+    static By_Reference<Boolean> bool_by_ref1;
+    static By_Reference<Boolean> bool_by_ref2;
+    static By_Reference<Integer> int_by_ref1;
+    static By_Reference<Integer> zero_by_ref1;
 
-    Test_Partial_Function partial_function;
+    static Test_Partial_Function partial_function;
 
     // Common initialization.
-    public void initialize() {
+    public static void initialize() {
 
         // Initialize output variables.
         PPL_Test.initialize();
@@ -182,4 +185,15 @@ public class ppl_java_generated_tests {
 	partial_function.insert(0, 2);
 	partial_function.insert(2, 0);
 	partial_function.insert(1, 1);
-}
+    }
+
+    // Helper method.
+    static void report_success_or_failure(boolean locally_ok) {
+        if (locally_ok)
+            PPL_Test.println_if_noisy("Success");
+        else {
+            PPL_Test.println_if_noisy("Failure");
+            globally_ok = false;
+        }
+    }
+
