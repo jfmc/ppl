@@ -587,7 +587,7 @@ test20() {
   ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs, 16, false);
 
   C_Polyhedron known_result(2);
-  known_result.add_constraint(2*x >= 0);
+  known_result.add_constraint(2*x >= 1);
   known_result.add_constraint(3*x <= 2);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(y <= 1);
