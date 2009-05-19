@@ -327,9 +327,30 @@ test09() {
   return ok;
 }
 
-// Example taken from SenS07 (figure 5(a)
+// space_dimension()
 bool
 test10() {
+  Variable A(0);
+  Variable E(4);
+
+  Constraint_System cs;
+  cs.insert(A + E <= 9);
+  cs.insert(A + E >= 9);
+
+  PolyGrid cp(5);
+  cp.refine_with_constraints(cs);
+
+  bool cons_ok = (cp.space_dimension() == 5);
+
+  print_congruences(cp, "*** cp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
+
+  return cons_ok;
+}
+
+// Example taken from SenS07 (figure 5(a)
+bool
+test11() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -430,7 +451,7 @@ test10() {
 
 // Example taken from SenS07 (figure 5(b)
 bool
-test11() {
+test12() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -507,7 +528,6 @@ test11() {
   return ok;
 }
 
-
 } // namespace
 
 BEGIN_MAIN
@@ -522,4 +542,5 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN
