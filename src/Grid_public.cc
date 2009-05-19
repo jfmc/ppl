@@ -2704,58 +2704,73 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
     for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars.end(); ++i) {
       const Variable x = Variable(*i);
+      // Find the frequency and a value for `x' in `gr'.
       if (!gr.frequency_no_check(x, f_n, f_d, v_n, v_d))
         continue;
       if (f_n == 0) {
 
         // `x' is a constant in `gr'.
-        if ((v_n > max_value * v_d) || (v_n < min_value * v_d)) {
+        if (v_d != 1) {
+          // The value for `x' is not integral (`frequency_no_check()'
+          // ensures that `v_n' and `v_d' have no common divisors).
+          set_empty();
+          return;
+        }
+
+        // `x' is a constant and has an integral value.
+        if ((v_n > max_value) || (v_n < min_value)) {
           // The value is outside the range of the bounded integer type.
           if (o == OVERFLOW_IMPOSSIBLE) {
-            // Then `x' has no possible value and hence `gr' is set empty.
+            // Then `x' has no possible value and hence set empty.
             set_empty();
             return;
           }
           assert(o == OVERFLOW_WRAPS);
           // The value v_n for `x' is wrapped modulo the 'wrap_frequency'.
-          Coefficient& wrap_modulus = f_n;
-          wrap_modulus = v_d * wrap_frequency;
-          v_n %= wrap_modulus;
+          v_n %= wrap_frequency;
           // `v_n' is the value closest to 0 and may be negative.
           if (r == UNSIGNED && v_n < 0)
-            v_n += wrap_modulus;
+            v_n += wrap_frequency;
           unconstrain(x);
-          add_constraint(v_d * x == v_n);
+          add_constraint(x == v_n);
         }
         continue;
       }
 
       // `x' is not a constant in `gr'.
       assert(f_n != 0);
-      Coefficient& wrap_modulus = f_n;
-      f_d_wrap_frequency = f_d * wrap_frequency;
-      if (o == OVERFLOW_WRAPS && f_n != f_d * wrap_frequency)
+
+      if (f_d % v_d != 0) {
+        // Then `x' has no integral value and hence `gr' is set empty.
+        set_empty();
+        return;
+      }
+      if (f_d != 1) {
+        // `x' has non-integral values, so add the integrality
+        // congruence for `x'.
+        add_congruence((x %= 0) / 1);
+      }
+      if (o == OVERFLOW_WRAPS && f_n != wrap_frequency)
         // We know that `x' is not a constant, so, if overflow wraps,
         // `x' may wrap to a value modulo the `wrap_frequency'.
         add_grid_generator(parameter(wrap_frequency * x));
-      else if ((o == OVERFLOW_IMPOSSIBLE && 2*f_n >= f_d_wrap_frequency)
-               || (f_n == f_d_wrap_frequency)) {
+      else if ((o == OVERFLOW_IMPOSSIBLE && 2*f_n >= wrap_frequency)
+               || (f_n == wrap_frequency)) {
         // In these cases, `x' can only take a unique (ie constant)
         // value.
         if (r == UNSIGNED && v_n < 0) {
           // `v_n' is the value closest to 0 and may be negative.
-          v_n *= f_d;
-          add_mul_assign(v_n, f_n, v_d);
-          v_d *= f_d;
+          v_n += f_n;
         }
-        add_constraint(v_d * x == v_n);
+        unconstrain(x);
+        add_constraint(x == v_n);
       }
       else
         // If overflow is impossible but the grid frequency is less than
         // half the wrap frequency, then there is more than one possible
         // value for `x' in the range of the bounded integer type,
         // so the grid is unchanged.
-        assert(o == OVERFLOW_IMPOSSIBLE && 2*f_n < f_d_wrap_frequency);
+        assert(o == OVERFLOW_IMPOSSIBLE && 2*f_n < wrap_frequency);
     }
     return;
   }
@@ -2763,7 +2778,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   assert(o == OVERFLOW_UNDEFINED);
   // If overflow is undefined, then all we know is that the variable
   // may take any integer within the range of the bounded integer type.
-  const Grid_Generator& point = gen_sys[0];
+  const Grid_Generator& point = gr.gen_sys[0];
   const Coefficient& div = point.divisor();
   max_value *= div;
   min_value *= div;
@@ -2774,11 +2789,26 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
       // `x' is not a constant in `gr'.
       // We know that `x' is not a constant, so `x' may wrap to any
       // value `x + z' where z is an integer.
-      add_grid_generator(parameter(x));
+      if (point.coefficient(x) % div != 0) {
+        // We know that `x' can take non-integral values, so enforce
+        // integrality.
+        unconstrain(x);
+        add_congruence(x %= 0);
+      }
+      else
+        // `x' has at least one integral value.
+        // `x' may also take other non-integral values,
+        // but checking could be costly so we ignore this.
+        add_grid_generator(parameter(x));
     }
     else {
       // `x' is a constant `v' in `gr'.
       const Coefficient& coeff_x = point.coefficient(x);
+      // `x' should be integral.
+      if (coeff_x % div != 0) {
+        set_empty();
+        return;
+      }
       // If the value `v' for `x' is not within the range for the
       // bounded integer type, then `x' may wrap to any value `v + z'
       // where `z' is an integer; otherwise `x' is unchanged.
