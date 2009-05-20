@@ -91,7 +91,7 @@ enum Bounded_Integer_Type_Width {
   BITS_64 = 64,
 
   //! \hideinitializer 128 bits.
-  BITS_128 = 128,
+  BITS_128 = 128
 };
 
 /*! \brief \ingroup PPL_CXX_interface

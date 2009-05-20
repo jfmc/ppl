@@ -155,7 +155,7 @@ enum Result {
   V_UNKNOWN_POS_OVERFLOW = V_NAN | (11 << 8),
 
   //! \hideinitializer The computed result is not representable.
-  V_UNREPRESENTABLE = 1 << 7,
+  V_UNREPRESENTABLE = 1 << 7
 
 };
 
