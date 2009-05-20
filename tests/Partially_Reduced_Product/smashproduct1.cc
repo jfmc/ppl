@@ -653,7 +653,7 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
-  DO_TEST(test16);
+  DO_TEST_F8(test16);
   DO_TEST(test17);
   DO_TEST(test18);
 END_MAIN
