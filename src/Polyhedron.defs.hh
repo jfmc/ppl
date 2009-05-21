@@ -762,6 +762,39 @@ public:
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
 		Generator& g) const;
 
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty and
+    \p expr is discrete in \p *this, in which case the maximum frequency
+    and the value for \p expr that is closest to zero are computed.
+
+    \param expr
+    The linear expression for which the frequency is needed;
+
+    \param freq_n
+    The numerator of the maximum frequency of \p expr;
+
+    \param freq_d
+    The denominator of the maximum frequency of \p expr;
+
+    \param val_n
+    The numerator of a value of \p expr at a point in the grid
+    that is closest to zero;
+
+    \param val_d
+    The denominator of a value of \p expr at a point in the grid
+    that is closest to zero;
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr can take any real number in \p *this,
+    <CODE>false</CODE> is returned and \p freq_n, \p freq_d,
+    \p val_n and \p val_d are left untouched.
+  */
+  bool frequency(const Linear_Expression& expr,
+                 Coefficient& freq_n, Coefficient& freq_d,
+                 Coefficient& val_n, Coefficient& val_d) const;
+
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
     \exception std::invalid_argument

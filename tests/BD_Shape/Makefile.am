@@ -80,6 +80,7 @@ empty1 \
 equality1 \
 expandspacedim1 \
 foldspacedims1 \
+frequency1 \
 frombdshape1 \
 frombox1 \
 fromgensys1 \
@@ -218,6 +219,8 @@ equality1_SOURCES = equality1.cc
 expandspacedim1_SOURCES = expandspacedim1.cc
 
 foldspacedims1_SOURCES = foldspacedims1.cc
+
+frequency1_SOURCES = frequency1.cc
 
 frombdshape1_SOURCES = frombdshape1.cc
 
