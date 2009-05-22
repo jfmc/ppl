@@ -774,7 +774,7 @@ Octagonal_Shape<T>::is_disjoint_from(const Octagonal_Shape& y) const {
   const Row_Iterator y_begin = y.matrix.row_begin();
 
   PPL_DIRTY_TEMP(N, neg_y_ci_cj);
-  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
+    for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
     using namespace Implementation::Octagonal_Shapes;
     const dimension_type i = i_iter.index();
     const dimension_type ci = coherent_index(i);
@@ -892,13 +892,148 @@ Octagonal_Shape<T>::contains_integer_point() const {
 
 template <typename T>
 bool
+Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
+                              Coefficient& freq_n, Coefficient& freq_d,
+                              Coefficient& val_n, Coefficient& val_d) const {
+  dimension_type space_dim = space_dimension();
+  // The dimension of `expr' must be at most the dimension of *this.
+  if (space_dim < expr.space_dimension())
+    throw_dimension_incompatible("frequency(e, ...)", "e", expr);
+
+  // Check if `expr' has a constant value.
+  // If it is constant, set the frequency `freq_n' to 0
+  // and return true. Otherwise the values for \p expr
+  // are not discrete so return false.
+
+  // Space dimension = 0: if empty, then return false;
+  // otherwise the frequency is 0 and the value is the inhomogeneous term.
+  if (space_dim == 0) {
+    if (is_empty())
+      return false;
+    freq_n = 0;
+    freq_d = 1;
+    val_n = expr.inhomogeneous_term();
+    val_d = 1;
+    return true;
+  }
+
+  strong_closure_assign();
+  // For an empty Octagonal shape, we simply return false.
+  if (marked_empty())
+    return false;
+
+  // The Octagonal shape has at least 1 dimension and is not empty.
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff_j);
+  PPL_DIRTY_TEMP_COEFFICIENT(num);
+  PPL_DIRTY_TEMP_COEFFICIENT(den);
+  Linear_Expression le = expr;
+  // Boolean to keep track of a variable `v' in expression `le'.
+  // If we can replace `v' by an expression using variables other
+  // than `v' and are already in `le', then this is set to true.
+  bool constant_v;
+
+  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+
+  const Row_Iterator m_begin = matrix.row_begin();
+  const Row_Iterator m_end = matrix.row_end();
+
+  PPL_DIRTY_TEMP_COEFFICIENT(val_den);
+  val_den = 1;
+
+  for (Row_Iterator i_iter = m_begin; i_iter != m_end; i_iter += 2) {
+    constant_v = false;
+    dimension_type i = i_iter.index();
+    const Variable v(i/2);
+    coeff = le.coefficient(v);
+    if (coeff == 0) {
+      constant_v = true;
+      continue;
+    }
+    // We check the unary constraints.
+    Row_Reference m_i = *i_iter;
+    Row_Reference m_ii = *(i_iter+1);
+    const N& m_i_ii = m_i[i+1];
+    const N& m_ii_i = m_ii[i];
+    if ((!is_plus_infinity(m_i_ii) && !is_plus_infinity(m_ii_i))
+        && (is_additive_inverse(m_i_ii, m_ii_i))) {
+      // If `v' is constant, replace it in `le' by the value.
+      numer_denom(m_i_ii, num, den);
+      den *= 2;
+      le -= coeff*v;
+      le = den*le - num*coeff;
+      val_den *= den;
+      constant_v = true;
+      continue;
+    }
+    // Check the octagonal constraints between `v' and the other dimensions
+    // that have non-zero coefficient in `le'.
+    else {
+      assert(!constant_v);
+      using namespace Implementation::Octagonal_Shapes;
+      const dimension_type ci = coherent_index(i);
+      for (Row_Iterator j_iter = i_iter; j_iter != m_end; j_iter += 2) {
+        dimension_type j = j_iter.index();
+        const Variable vj(j/2);
+        coeff_j = le.coefficient(vj);
+        if (coeff_j == 0)
+          // The coefficient in `le' is 0, so do nothing.
+          continue;
+        const dimension_type cj = coherent_index(j);
+        const dimension_type cjj = coherent_index(j+1);
+
+        // Check if we want the sum or difference constraint.
+        // If the coefficients for `v' and `vj' are the same, use
+        // the sum constraint, otherwise use the difference constraint.
+        bool same_sign = (sgn(coeff) == sgn(coeff_j));
+
+        Row_Reference m_j = (same_sign) ? *(m_begin + j + 1) : *(m_begin + j);
+        Row_Reference m_cj = (same_sign) ? *(m_begin + cjj) : *(m_begin + cj);
+        const N& m_j_i = m_j[i];
+        const N& m_i_j = m_cj[ci];
+        if ((!is_plus_infinity(m_i_j) && !is_plus_infinity(m_j_i))
+            && (is_additive_inverse(m_i_j, m_j_i))) {
+          // The coefficient for `vj' in `le' is not 0
+          // and the constraint with `v' is an equality.
+          // So apply this equality to eliminate `v' in `le'.
+          numer_denom(m_i_j, num, den);
+          le -= coeff*v;
+          le = (same_sign) ? le - coeff*vj :  le + coeff*vj;
+          le *= den;
+          le = le - num*coeff;
+          val_den *= den;
+          constant_v = true;
+          break;
+        }
+      }
+      if (!constant_v)
+        // The expression `expr' is not constant.
+        return false;
+    }
+  }
+  if (!constant_v)
+    // The expression `expr' is not constant.
+    return false;
+
+  // The expression 'expr' is constant.
+  freq_n = 0;
+  freq_d = 1;
+
+  // Reduce `val_n' and `val_d'.
+  normalize2(le.inhomogeneous_term(), val_den, val_n, val_d);
+  return true;
+}
+
+template <typename T>
+bool
 Octagonal_Shape<T>::constrains(const Variable var) const {
-  // `var' should be one of the dimensions of the polyhedron.
+  // `var' should be one of the dimensions of the octagonal shape.
   const dimension_type var_space_dim = var.space_dimension();
   if (space_dimension() < var_space_dim)
     throw_dimension_incompatible("constrains(v)", "v", var);
 
-  // A polyhedron known to be empty constrains all variables.
+  // An octagon known to be empty constrains all variables.
   // (Note: do not force emptiness check _yet_)
   if (marked_empty())
     return true;
