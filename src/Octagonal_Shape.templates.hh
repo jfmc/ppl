@@ -983,13 +983,8 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
         const dimension_type cj = coherent_index(j);
         const dimension_type cjj = coherent_index(j+1);
 
-        // Check if we want the sum or difference constraint.
-        // If the coefficients for `v' and `vj' are the same, use
-        // the sum constraint, otherwise use the difference constraint.
-        bool same_sign = (sgn(coeff) == sgn(coeff_j));
-
-        Row_Reference m_j = (same_sign) ? *(m_begin + j + 1) : *(m_begin + j);
-        Row_Reference m_cj = (same_sign) ? *(m_begin + cjj) : *(m_begin + cj);
+        Row_Reference m_j = *(m_begin + j);
+        Row_Reference m_cj = *(m_begin + cj);
         const N& m_j_i = m_j[i];
         const N& m_i_j = m_cj[ci];
         if ((!is_plus_infinity(m_i_j) && !is_plus_infinity(m_j_i))
@@ -999,7 +994,26 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
           // So apply this equality to eliminate `v' in `le'.
           numer_denom(m_i_j, num, den);
           le -= coeff*v;
-          le = (same_sign) ? le - coeff*vj :  le + coeff*vj;
+          le = le + coeff*vj;
+          le *= den;
+          le = le - num*coeff;
+          val_den *= den;
+          constant_v = true;
+          break;
+        }
+
+        m_j = *(m_begin + j + 1);
+        m_cj = *(m_begin + cjj);
+        const N& m_j_i1 = m_j[i];
+        const N& m_i_j1 = m_cj[ci];
+        if ((!is_plus_infinity(m_i_j1) && !is_plus_infinity(m_j_i1))
+            && (is_additive_inverse(m_i_j1, m_j_i1))) {
+          // The coefficient for `vj' in `le' is not 0
+          // and the constraint with `v' is an equality.
+          // So apply this equality to eliminate `v' in `le'.
+          numer_denom(m_i_j1, num, den);
+          le -= coeff*v;
+          le = le - coeff*vj;
           le *= den;
           le = le - num*coeff;
           val_den *= den;

@@ -243,6 +243,54 @@ test10() {
   return ok;
 }
 
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagonal_Shape os(3);
+  os.add_constraint(2*A + 2*B == 1);
+  os.add_constraint(B - C == 1);
+  os.add_constraint(B <= 2);
+
+  Coefficient num;
+  Coefficient den;
+  Coefficient valn;
+  Coefficient vald;
+  bool ok = (os.frequency(Linear_Expression(A - B + 2*C + 1),
+                           num, den, valn, vald)
+             && num == 0 && den == 1 && valn == -1 && vald == 2);
+  print_constraints(os, "*** os ***");
+  nout << "valn " << valn << ", vald " << vald << endl;
+
+  return ok;
+}
+
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagonal_Shape os(3);
+  os.add_constraint(2*A - 2*B == 1);
+  os.add_constraint(B + C == 1);
+  os.add_constraint(B <= 2);
+
+  Coefficient num;
+  Coefficient den;
+  Coefficient valn;
+  Coefficient vald;
+  bool ok = (os.frequency(Linear_Expression(A + B + 2*C + 1),
+                           num, den, valn, vald)
+             && num == 0 && den == 1 && valn == 7 && vald == 2);
+  print_constraints(os, "*** os ***");
+  nout << "valn " << valn << ", vald " << vald << endl;
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -256,4 +304,6 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN
