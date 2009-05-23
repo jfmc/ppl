@@ -175,6 +175,13 @@ Affine_Space::minimize(const Linear_Expression& expr,
   return gr.minimize(expr, inf_n, inf_d, minimum, point);
 }
 
+inline bool
+Affine_Space::frequency(const Linear_Expression& expr,
+                        Coefficient& freq_n, Coefficient& freq_d,
+                        Coefficient& val_n, Coefficient& val_d) const {
+  return gr.frequency(expr, freq_n, freq_d, val_n, val_d);
+}
+
 /*! \relates Affine_Space */
 inline bool
 operator!=(const Affine_Space& x, const Affine_Space& y) {
