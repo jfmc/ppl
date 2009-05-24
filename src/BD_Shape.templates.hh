@@ -845,7 +845,7 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
           // and the difference with `v' in the BD shape is constant.
           // So apply this equality to eliminate `v' in `le'.
           numer_denom(tmp, num, den);
-          le = le - coeff*v + coeff*vj;
+          le -= coeff*v - coeff*vj;
           le = den*le - num*coeff;
           val_den *= den;
           constant_v = true;

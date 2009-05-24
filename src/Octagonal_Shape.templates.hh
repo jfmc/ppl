@@ -994,9 +994,9 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
           // So apply this equality to eliminate `v' in `le'.
           numer_denom(m_i_j, num, den);
           le -= coeff*v;
-          le = le + coeff*vj;
+          le += coeff*vj;
           le *= den;
-          le = le - num*coeff;
+          le -= num*coeff;
           val_den *= den;
           constant_v = true;
           break;
@@ -1013,9 +1013,9 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
           // So apply this equality to eliminate `v' in `le'.
           numer_denom(m_i_j1, num, den);
           le -= coeff*v;
-          le = le - coeff*vj;
+          le -= coeff*vj;
           le *= den;
-          le = le - num*coeff;
+          le -= num*coeff;
           val_den *= den;
           constant_v = true;
           break;
