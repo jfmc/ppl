@@ -764,6 +764,16 @@ inline
 Congruences_Reduction<D1, D2>::~Congruences_Reduction() {
 }
 
+template <typename D1, typename D2>
+inline
+Shape_Preserving_Reduction<D1, D2>::Shape_Preserving_Reduction() {
+}
+
+template <typename D1, typename D2>
+inline
+Shape_Preserving_Reduction<D1, D2>::~Shape_Preserving_Reduction() {
+}
+
 } // namespace Parma_Polyhedra_Library
 
 /*! \relates Parma_Polyhedra_Library::Partially_Reduced_Product */

@@ -222,6 +222,56 @@ public:
 };
 
 /*! \brief
+  This class provides the reduction method for the Shape_Preserving_Product
+  domain.
+
+  \ingroup PPL_CXX_interface
+  The reduction classes are used to instantiate the Partially_Reduced_Product
+  domain.
+
+  This reduction method includes the congruences reduction.
+  This class uses the minimized constraints defining each of the components.
+  For each of the constraints, it checks the frequency and value for the same
+  linear expression in other component. If the constraint does not satisfy
+  the implied congruence, the inhomogeneous term is adjusted so that it does.
+  Note that unless the congruences reduction adds equalitites
+  the shapes of the domains are unaltered.
+
+*/
+template <typename D1, typename D2>
+class Parma_Polyhedra_Library::Shape_Preserving_Reduction {
+public:
+  //! Default constructor.
+  Shape_Preserving_Reduction();
+
+  /*! \brief
+    The congruences reduction operator for detect emptiness or any equalities
+    implied by each of the congruences defining one of the components
+    and the bounds of the other component. It is assumed that the
+    components are already constraints reduced.
+
+    The minimized congruence system defining the domain element \p d1
+    is used to check if \p d2 intersects none, one or more than one
+    of the hyperplanes defined by the congruences: if it intersects none,
+    then product is set empty; if it intersects one, then the equality
+    defining this hyperplane is added to both components; otherwise,
+    the product is unchanged.
+    In each case, the donor domain must provide a congruence system
+    in minimal form.
+
+    \param d1
+    A pointset domain element;
+
+    \param d2
+    A pointset domain element;
+  */
+  void product_reduce(D1& d1, D2& d2);
+
+  //! Destructor.
+  ~Shape_Preserving_Reduction();
+};
+
+/*! \brief
   This class provides the reduction method for the Direct_Product domain.
 
   \ingroup PPL_CXX_interface
@@ -1582,6 +1632,9 @@ public:
 
   typedef Partially_Reduced_Product<D1, D2, Congruences_Reduction<D1, D2> >
   Congruences_Product;
+
+  typedef Partially_Reduced_Product<D1, D2, Shape_Preserving_Reduction<D1, D2> >
+  Shape_Preserving_Product;
 };
 
 } // namespace Parma_Polyhedra_Library

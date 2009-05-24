@@ -82,6 +82,7 @@ maxmin1 \
 refinewithcongruences1 \
 refinewithconstraints1 \
 relations1 \
+shapepreservingproduct1 \
 smashproduct1 \
 spacedims1 \
 timeelapse1 \
@@ -92,7 +93,10 @@ upperbound1
 REVERSED_TESTS = \
 reverse_constraints1 \
 reverse_congruences1 \
-reverse_directproduct1
+reverse_directproduct1 \
+reverse_constraintsproduct1 \
+reverse_congruencesproduct1 \
+reverse_shapepreservingproduct1
 
 TESTS = \
 $(ORIGINAL_TESTS) \
@@ -157,6 +161,8 @@ refinewithconstraints1_SOURCES = refinewithconstraints1.cc
 
 relations1_SOURCES = relations1.cc
 
+shapepreservingproduct1_SOURCES = shapepreservingproduct1.cc
+
 smashproduct1_SOURCES = smashproduct1.cc
 
 spacedims1_SOURCES = spacedims1.cc
@@ -177,6 +183,15 @@ reverse_constraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 reverse_directproduct1_SOURCES = directproduct1.cc
 reverse_directproduct1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+reverse_constraintsproduct1_SOURCES = constraintsproduct1.cc
+reverse_constraintsproduct1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+reverse_congruencesproduct1_SOURCES = congruencesproduct1.cc
+reverse_congruencesproduct1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+reverse_shapepreservingproduct1_SOURCES = shapepreservingproduct1.cc
+reverse_shapepreservingproduct1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 check_PROGRAMS = $(TESTS)
 

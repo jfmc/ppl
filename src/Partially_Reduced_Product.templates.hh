@@ -579,34 +579,111 @@ void
     sr.product_reduce(d1, d2);
     return;
   }
-  else {
-    // Use the congruences representing d1 to shrink both components.
-    const Congruence_System cgs1 = d1.minimized_congruences();
-    for (Congruence_System::const_iterator i = cgs1.begin(),
-           cgs_end = cgs1.end(); i != cgs_end; ++i) {
-      const Congruence& cg1 = *i;
-      if (cg1.is_equality())
-        d2.refine_with_congruence(cg1);
-      else
-        if (!Parma_Polyhedra_Library::
-            shrink_to_congruence_no_check(d1, d2, cg1))
-          // The product is empty.
-          return;
-    }
-    // Use the congruences representing d2 to shrink both components.
-    const Congruence_System cgs2 = d2.minimized_congruences();
-    for (Congruence_System::const_iterator i = cgs2.begin(),
-           cgs_end = cgs2.end(); i != cgs_end; ++i) {
-      const Congruence& cg2 = *i;
-      if (cg2.is_equality())
-        d1.refine_with_congruence(cg2);
-      else
-        if (!Parma_Polyhedra_Library::
-            shrink_to_congruence_no_check(d2, d1, cg2))
-          // The product is empty.
-           return;
-    }
+  // Use the congruences representing d1 to shrink both components.
+  const Congruence_System cgs1 = d1.minimized_congruences();
+  for (Congruence_System::const_iterator i = cgs1.begin(),
+         cgs_end = cgs1.end(); i != cgs_end; ++i) {
+    const Congruence& cg1 = *i;
+    if (cg1.is_equality())
+      d2.refine_with_congruence(cg1);
+    else
+      if (!Parma_Polyhedra_Library::
+          shrink_to_congruence_no_check(d1, d2, cg1))
+        // The product is empty.
+        return;
   }
+  // Use the congruences representing d2 to shrink both components.
+  const Congruence_System cgs2 = d2.minimized_congruences();
+  for (Congruence_System::const_iterator i = cgs2.begin(),
+         cgs_end = cgs2.end(); i != cgs_end; ++i) {
+    const Congruence& cg2 = *i;
+    if (cg2.is_equality())
+      d1.refine_with_congruence(cg2);
+    else
+      if (!Parma_Polyhedra_Library::
+          shrink_to_congruence_no_check(d2, d1, cg2))
+        // The product is empty.
+        return;
+  }
+}
+
+template <typename D1, typename D2>
+void
+  Shape_Preserving_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
+    // First do the congruences reduction.
+    Parma_Polyhedra_Library::Congruences_Reduction<D1, D2> cgr;
+    cgr.product_reduce(d1, d2);
+    if (d1.is_empty())
+      return;
+
+  PPL_DIRTY_TEMP_COEFFICIENT(freq_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(freq_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(val_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(val_d);
+
+  // Use the constraints representing d2.
+  Constraint_System cs = d2.minimized_constraints();
+  Constraint_System refining_cs;
+  for (Constraint_System::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i) {
+    const Constraint& c = *i;
+    if (c.is_equality())
+      continue;
+    // Check the frequency and value of the linear expression for
+    // the constraint `c'.
+    Linear_Expression le(c);
+    if (!d1.frequency(le, freq_n, freq_d, val_n, val_d))
+      // Nothing to do.
+      continue;
+    if (val_n == 0)
+      // Nothing to do.
+      continue;
+    // Adjust the value of the inhomogeneous term to satisfy
+    // the implied congruence.
+    if (val_n < 0) {
+      val_n = val_n*freq_d + val_d*freq_n;
+      val_d *= freq_d;
+    }
+    le *= val_d;
+    le -= val_n;
+    refining_cs.insert(le >= 0);
+  }
+  d2.refine_with_constraints(refining_cs);
+
+  // Use the constraints representing d1.
+  cs = d1.minimized_constraints();
+  refining_cs.clear();
+  for (Constraint_System::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i) {
+    const Constraint& c = *i;
+    if (c.is_equality())
+      // Equalities aleady shared.
+      continue;
+    // Check the frequency and value of the linear expression for
+    // the constraint `c'.
+    Linear_Expression le(c);
+    if (!d2.frequency(le, freq_n, freq_d, val_n, val_d))
+      // Nothing to do.
+      continue;
+    if (val_n == 0)
+      // Nothing to do.
+      continue;
+    // Adjust the value of the inhomogeneous term to satisfy
+    // the implied congruence.
+    if (val_n < 0) {
+      val_n = val_n*freq_d + val_d*freq_n;
+      val_d *= freq_d;
+    }
+    le *= val_d;
+    le -= val_n;
+    refining_cs.insert(le >= 0);
+  }
+  d1.refine_with_constraints(refining_cs);
+
+  // The reduction may have introduced additional equalities
+  // so these must be shared with the other component.
+  Parma_Polyhedra_Library::Constraints_Reduction<D1, D2> cr;
+  cr.product_reduce(d1, d2);
 }
 
 } // namespace Parma_Polyhedra_Library
