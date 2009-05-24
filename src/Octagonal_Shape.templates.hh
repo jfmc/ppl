@@ -962,7 +962,8 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
       numer_denom(m_i_ii, num, den);
       den *= 2;
       le -= coeff*v;
-      le = den*le - num*coeff;
+      le *= den;
+      le -= num*coeff;
       val_den *= den;
       constant_v = true;
       continue;

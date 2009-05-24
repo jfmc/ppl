@@ -1409,7 +1409,8 @@ Box<ITV>::frequency(const Linear_Expression& expr,
       num = tmp.get_num();
       den = tmp.get_den();
       le -= coeff*v;
-      le = den*le + num*coeff;
+      le *= den;
+      le += num*coeff;
       val_den *= den;
       continue;
     }
