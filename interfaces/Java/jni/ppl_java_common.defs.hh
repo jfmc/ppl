@@ -302,8 +302,8 @@ struct Java_FMID_Cache {
   jfieldID Linear_Expression_Difference_rhs_ID;
   jfieldID Linear_Expression_Sum_lhs_ID;
   jfieldID Linear_Expression_Sum_rhs_ID;
-  jfieldID Linear_Expression_Times_lhs_ID;
-  jfieldID Linear_Expression_Times_rhs_ID;
+  jfieldID Linear_Expression_Times_coeff_ID;
+  jfieldID Linear_Expression_Times_lin_expr_ID;
   jmethodID Linear_Expression_Times_init_from_coeff_var_ID;
   jfieldID Linear_Expression_Unary_Minus_arg_ID;
   jmethodID Linear_Expression_Variable_init_ID;

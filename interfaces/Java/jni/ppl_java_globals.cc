@@ -408,14 +408,14 @@ JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_1Times_initIDs
 (JNIEnv* env, jclass j_le_times_class) {
   jfieldID fID;
-  fID = env->GetFieldID(j_le_times_class, "lhs",
-                        "Lparma_polyhedra_library/Linear_Expression_Coefficient;");
+  fID = env->GetFieldID(j_le_times_class, "coeff",
+                        "Lparma_polyhedra_library/Coefficient;");
   CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Linear_Expression_Times_lhs_ID = fID;
-  fID = env->GetFieldID(j_le_times_class, "rhs",
+  cached_FMIDs.Linear_Expression_Times_coeff_ID = fID;
+  fID = env->GetFieldID(j_le_times_class, "lin_expr",
                         "Lparma_polyhedra_library/Linear_Expression;");
   CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Linear_Expression_Times_rhs_ID = fID;
+  cached_FMIDs.Linear_Expression_Times_lin_expr_ID = fID;
   jmethodID mID;
   mID = env->GetMethodID(j_le_times_class, "<init>",
                          "(Lparma_polyhedra_library/Coefficient;"

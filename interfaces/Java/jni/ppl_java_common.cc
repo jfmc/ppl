@@ -616,65 +616,57 @@ build_cxx_constraint(JNIEnv* env, jobject j_constraint) {
 
 Linear_Expression
 build_cxx_linear_expression(JNIEnv* env, jobject j_le) {
+  jfieldID fID;
   jclass current_class = env->GetObjectClass(j_le);
   // LE_Variable
   if (env->IsAssignableFrom(current_class,
                             cached_classes.Linear_Expression_Variable)) {
-    jint var_id
-      = env->CallIntMethod(j_le,
-                           cached_FMIDs.Linear_Expression_Variable_var_id_ID);
+    jmethodID mID = cached_FMIDs.Linear_Expression_Variable_var_id_ID;
+    jint var_id = env->CallIntMethod(j_le, mID);
     return Linear_Expression(Variable(var_id));
   }
   // LE_Coefficient
   if (env->IsAssignableFrom(current_class,
                             cached_classes.Linear_Expression_Coefficient)) {
-    jfieldID fID = cached_FMIDs.Linear_Expression_Coefficient_coeff_ID;
+    fID = cached_FMIDs.Linear_Expression_Coefficient_coeff_ID;
     jobject ppl_coeff = env->GetObjectField(j_le, fID);
     return Linear_Expression(build_cxx_coeff(env, ppl_coeff));
   }
   // LE_Sum
   if (env->IsAssignableFrom(current_class,
                             cached_classes.Linear_Expression_Sum)) {
-    jobject l_value
-      = env->GetObjectField(j_le, cached_FMIDs.Linear_Expression_Sum_lhs_ID);
-    jobject r_value
-      = env->GetObjectField(j_le, cached_FMIDs.Linear_Expression_Sum_rhs_ID);
+    fID = cached_FMIDs.Linear_Expression_Sum_lhs_ID;
+    jobject l_value = env->GetObjectField(j_le, fID);
+    fID = cached_FMIDs.Linear_Expression_Sum_rhs_ID;
+    jobject r_value = env->GetObjectField(j_le, fID);
     return build_cxx_linear_expression(env, l_value)
       + build_cxx_linear_expression(env, r_value);
   }
   // LE_Times
   if (env->IsAssignableFrom(current_class,
                             cached_classes.Linear_Expression_Times)) {
-    jobject le_coeff_value
-      = env->GetObjectField(j_le,
-                            cached_FMIDs.Linear_Expression_Times_lhs_ID);
-    jobject ppl_coeff
-      = env->GetObjectField(le_coeff_value,
-                            cached_FMIDs.Linear_Expression_Coefficient_coeff_ID);
-    jobject le_value
-      = env->GetObjectField(j_le,
-                            cached_FMIDs.Linear_Expression_Times_rhs_ID);
-    return build_cxx_coeff(env, ppl_coeff)
+    fID = cached_FMIDs.Linear_Expression_Times_coeff_ID;
+    jobject coeff_value = env->GetObjectField(j_le, fID);
+    fID = cached_FMIDs.Linear_Expression_Times_lin_expr_ID;
+    jobject le_value = env->GetObjectField(j_le, fID);
+    return build_cxx_coeff(env, coeff_value)
       * build_cxx_linear_expression(env, le_value);
   }
   // LE_Difference
   if (env->IsAssignableFrom(current_class,
                             cached_classes.Linear_Expression_Difference)) {
-    jobject l_value
-      = env->GetObjectField(j_le,
-                            cached_FMIDs.Linear_Expression_Difference_lhs_ID);
-    jobject r_value
-      = env->GetObjectField(j_le,
-                            cached_FMIDs.Linear_Expression_Difference_rhs_ID);
+    fID = cached_FMIDs.Linear_Expression_Difference_lhs_ID;
+    jobject l_value = env->GetObjectField(j_le,fID);
+    fID = cached_FMIDs.Linear_Expression_Difference_rhs_ID;
+    jobject r_value = env->GetObjectField(j_le, fID);
     return build_cxx_linear_expression(env, l_value)
       - build_cxx_linear_expression(env, r_value);
   }
   // LE_Unary_Minus
   if (env->IsAssignableFrom(current_class,
                             cached_classes.Linear_Expression_Unary_Minus)) {
-    jobject le_value
-      = env->GetObjectField(j_le,
-                            cached_FMIDs.Linear_Expression_Unary_Minus_arg_ID);
+    fID = cached_FMIDs.Linear_Expression_Unary_Minus_arg_ID;
+    jobject le_value = env->GetObjectField(j_le, fID);
     return -build_cxx_linear_expression(env, le_value);
   }
   assert(false);
