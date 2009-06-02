@@ -53,6 +53,10 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
         = new @TOPOLOGY@@CLASS@(6, Degenerate_Element.EMPTY);
     report_success_or_failure(new_0_universe.OK() && new_6_universe.OK()
        && new_0_empty.OK() && new_6_empty.OK());
+    new_0_universe.free();
+    new_6_universe.free();
+    new_0_empty.free();
+    new_6_empty.free();
 }
 
 ')
@@ -64,6 +68,8 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
     @FRIEND@ friend_gd = new @FRIEND@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ new_gd = new @TOPOLOGY@@CLASS@(friend_gd);
     report_success_or_failure(new_gd.OK());
+    friend_gd.free();
+    new_gd.free();
 }
 
 ')
@@ -82,6 +88,10 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
         @TOPOLOGY@@CLASS@ new_gd_ac
             = new @TOPOLOGY@@CLASS@(friend_gd, Complexity_Class.ANY_COMPLEXITY);
         report_success_or_failure(new_gd_ac.OK());
+        friend_gd.free();
+        new_gd_pc.free();
+        new_gd_sc.free();
+        new_gd_ac.free();
     }
 }
 
@@ -93,6 +103,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
     PPL_Test.print_if_noisy("Testing @TOPOLOGY@@CLASS@ from @BUILD_REPRESENT@s: ");
     @TOPOLOGY@@CLASS@ new_gd1 = new @TOPOLOGY@@CLASS@(@BUILD_REPRESENT@s1);
     report_success_or_failure(new_gd1.OK());
+    new_gd1.free();
 }
 
 ')
@@ -146,6 +157,7 @@ m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
     else
         PPL_Test.println_if_noisy("@HAS_PROPERTY@ is false for gd.");
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -158,6 +170,7 @@ m4_define(`ppl_@CLASS@_@DIMENSION@_code',
     PPL_Test.print_if_noisy("@DIMENSION@ of gd = ");
     PPL_Test.println_if_noisy(gd.@DIMENSION@());
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -170,6 +183,8 @@ m4_define(`ppl_@CLASS@_@BINOP@_code',
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s2);
     gd1.@BINOP@(gd2);
     report_success_or_failure(gd1.OK());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -182,6 +197,7 @@ m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
     boolean gd_simplify_using_context_assign
         = gd.simplify_using_context_assign(gd);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -193,6 +209,7 @@ m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @!CLASS_REPRESENT@_System gd_@CLASS_REPRESENT@ = gd.@CLASS_REPRESENT@s();
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -204,6 +221,7 @@ m4_define(`ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @!CLASS_REPRESENT@_System gr = gd.minimized_@CLASS_REPRESENT@s();
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -216,6 +234,8 @@ m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s2);
     boolean gd1_@COMPARISON@ = gd2.@COMPARISON@(gd1);
     report_success_or_failure(gd1.OK() && gd2.OK());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -228,6 +248,8 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s2);
     gd1.@EXTRAPOLATION@_narrowing_assign(gd2);
     report_success_or_failure(gd1.OK());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -240,6 +262,7 @@ m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
     Poly_@!A_RELATION_REPRESENT@_Relation
         poly_relation = gd.relation_with(@RELATION_REPRESENT@1);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -251,6 +274,7 @@ m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.add_@CLASS_REPRESENT@(@CLASS_REPRESENT@1);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -262,6 +286,7 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.refine_with_@REFINE_REPRESENT@(@REFINE_REPRESENT@1);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -273,6 +298,7 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.add_@CLASS_REPRESENT@s(@CLASS_REPRESENT@s1);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -284,6 +310,7 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.refine_with_@REFINE_REPRESENT@s(@REFINE_REPRESENT@s1);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -296,6 +323,8 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     boolean is_exact = gd1.@UB_EXACT@(gd2);
     report_success_or_failure(gd1.OK());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -307,6 +336,7 @@ m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.@AFFIMAGE@(var_C, le_A, coeff_5);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -318,6 +348,7 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.generalized_@AFFIMAGE@(var_C, Relation_Symbol.EQUAL, le_A, coeff_5);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -329,6 +360,7 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.generalized_@AFFIMAGE@(le_A, Relation_Symbol.EQUAL, le_A);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -341,6 +373,7 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
     gd.generalized_@AFFIMAGE@_with_congruence(var_C, Relation_Symbol.EQUAL,
                                               le_A, coeff_5, coeff_5);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -354,6 +387,7 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
                                                       Relation_Symbol.EQUAL,
                                                       le_A, coeff_5);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -367,6 +401,7 @@ m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
     if (!gd.equals(new Object()))
         PPL_Test.println_if_noisy("A generic object is not equal to gd");
     report_success_or_failure(equals && gd.OK());
+    gd.free();
 }
 
 ')
@@ -378,6 +413,7 @@ m4_define(`ppl_@CLASS@_OK_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     boolean ok = gd.OK();
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -389,6 +425,7 @@ m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.bounded_@AFFIMAGE@(var_C, le_A, le_A, coeff_5);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -400,6 +437,7 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.@SIMPLIFY@();
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -411,6 +449,7 @@ m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.unconstrain_space_dimension(var_C);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -422,6 +461,7 @@ m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.unconstrain_space_dimensions(var_set_A);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -433,6 +473,7 @@ m4_define(`ppl_@CLASS@_constrains_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     boolean constrains = gd.constrains(var_C);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -445,6 +486,7 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_code',
     boolean @MAXMIN@
         = gd.@MAXMIN@(le_A, coeff_0, coeff_5, bool_by_ref1);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -457,6 +499,7 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
     boolean @MAXMIN@_with_point
         = gd.@MAXMIN@(le_A, coeff_0, coeff_5, bool_by_ref2, generator1);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ');
@@ -468,6 +511,7 @@ m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.add_space_dimensions_@EMBEDPROJECT@(2);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -479,6 +523,7 @@ m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.remove_higher_space_dimensions(2);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -490,6 +535,7 @@ m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.remove_space_dimensions(var_set_A);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -501,6 +547,7 @@ m4_define(`ppl_@CLASS@_expand_space_dimension_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.expand_space_dimension(var_C, 1);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -512,6 +559,7 @@ m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.fold_space_dimensions(var_set_A, var_C);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -523,6 +571,7 @@ m4_define(`ppl_@CLASS@_map_space_dimensions_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.map_space_dimensions(partial_function);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -535,6 +584,8 @@ m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.@WIDEN@_widening_assign(gd2);
     report_success_or_failure(gd1.OK());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -547,6 +598,8 @@ m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.@WIDEN@_widening_assign(gd2, int_by_ref1);
     report_success_or_failure(gd1.OK());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -557,9 +610,10 @@ m4_define(`ppl_@CLASS@_widening_assign_code',
     PPL_Test.print_if_noisy("Testing widening_assign: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    gd1.widening_assign(gd2,
-                        int_by_ref1);
+    gd1.widening_assign(gd2, int_by_ref1);
     report_success_or_failure(gd1.OK());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -572,6 +626,8 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.@EXTRAPOLATION@_extrapolation_assign(gd2, int_by_ref1);
     report_success_or_failure(gd1.OK());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -584,6 +640,8 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.@EXTRAPOLATION@_narrowing_assign(gd2);
     report_success_or_failure(gd1.OK());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -597,6 +655,8 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
     gd1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(gd2, @CONSTRAINER@s1,
                                                           zero_by_ref1);
     report_success_or_failure(gd1.OK());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -609,6 +669,8 @@ m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.BGP99_@DISJUNCT_WIDEN@_extrapolation_assign(gd2, 2);
     report_success_or_failure(gd1.OK());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -621,6 +683,8 @@ m4_define(`ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(gd2);
     report_success_or_failure(gd1.OK());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -632,6 +696,7 @@ m4_define(`ppl_@CLASS@_string_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     PPL_Test.println_if_noisy(gd.toString());
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 ');
 
@@ -643,6 +708,7 @@ m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
     PPL_Test.println_if_noisy("@MEMBYTES@ of gd: ");
     PPL_Test.println_if_noisy(gd.@MEMBYTES@());
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ');
@@ -654,6 +720,7 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     PPL_Test.println_if_noisy(gd.ascii_dump());
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ');
@@ -672,6 +739,8 @@ m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
     PPL_Test.print_if_noisy((p.getFirst()).toString());
     PPL_Test.print_if_noisy(", ");
     PPL_Test.println_if_noisy((p.getSecond()).toString());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -695,6 +764,8 @@ m4_define(`ppl_@CLASS@_approximate_partition_code',
     PPL_Test.print_if_noisy(", ");
     PPL_Test.println_if_noisy(bool_by_ref1);
     PPL_Test.println_if_noisy();
+    gd1.free();
+    gd2.free();
 }
 
 ');
@@ -706,6 +777,7 @@ m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@_Iterator it_gd = gd.@BEGINEND@_iterator();
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -724,6 +796,7 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
       it_gd.@A_INCDEC@();
     }
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 ')
@@ -736,6 +809,7 @@ m4_define(`ppl_@CLASS@_get_disjunct_code',
     @TOPOLOGY@@CLASS@_Iterator it_gd = gd.begin_iterator();
     @TOPOLOGY@@DISJUNCT@ gd_disjunct = it_gd.get_disjunct();
     report_success_or_failure(gd.OK() && gd_disjunct.OK());
+    gd.free();
 }
 
 ')
@@ -749,6 +823,7 @@ m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
     @CLASS@_Iterator it_gd_copy = new @CLASS@_Iterator(it_gd);
     @TOPOLOGY@@DISJUNCT@ gd_disjunct = it_gd_copy.get_disjunct();
     report_success_or_failure(gd.OK() && gd_disjunct.OK());
+    gd.free();
 }
 
 ')
@@ -761,17 +836,20 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
     @TOPOLOGY@@CLASS@_Iterator it_gd = gd.begin_iterator();
     gd.drop_disjunct(it_gd);
     report_success_or_failure(gd.OK());
+    gd.free();
 }
 
 {
     PPL_Test.print_if_noisy("Testing drop_disjuncts: ");
-    @CLASS@ gd = new @CLASS@(@CONSTRAINER@s1);
+    @CLASS@ gd1 = new @CLASS@(@CONSTRAINER@s1);
     @CLASS@ gd2 = new @CLASS@(@CONSTRAINER@s2);
-    gd.upper_bound_assign(gd2);
-    @CLASS@_Iterator it_gd = gd.begin_iterator();
-    @CLASS@_Iterator it_gd_end = gd.end_iterator();
-    gd.drop_disjuncts(it_gd, it_gd_end);
-    report_success_or_failure(gd.OK());
+    gd1.upper_bound_assign(gd2);
+    @CLASS@_Iterator it_gd1 = gd1.begin_iterator();
+    @CLASS@_Iterator it_gd1_end = gd1.end_iterator();
+    gd1.drop_disjuncts(it_gd1, it_gd1_end);
+    report_success_or_failure(gd1.OK());
+    gd1.free();
+    gd2.free();
 }
 
 ')
@@ -785,6 +863,8 @@ m4_define(`ppl_@CLASS@_add_disjunct_code',
         = new @DISJUNCT_TOPOLOGY@@DISJUNCT@(@CONSTRAINER@s1);
     gd.add_disjunct(gd_disjunct);
     report_success_or_failure(gd.OK());
+    gd.free();
+    gd_disjunct.free();
 }
 
 ');
@@ -798,6 +878,7 @@ m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
     @TOPOLOGY@@CLASS@_Iterator it_gd2 = gd.begin_iterator();
     boolean equals = it_gd1.equals(it_gd2);
     report_success_or_failure(gd.OK() && equals);
+    gd.free();
 }
 
 ')
