@@ -2138,7 +2138,7 @@ template <typename ITV>
 void
 Box<ITV>::refine_no_check(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
-  assert(c_space_dim <= space_dimension());
+  assert(c.space_dimension() <= space_dimension());
   assert(!marked_empty());
 
   dimension_type c_num_vars = 0;
@@ -2179,8 +2179,7 @@ void
 Box<ITV>::refine_no_check(const Congruence& cg) {
   assert(!marked_empty());
 
-  const dimension_type cg_space_dim = cg.space_dimension();
-  assert(cg_space_dim <= space_dimension());
+  assert(cg.space_dimension() <= space_dimension());
 
   if (cg.is_proper_congruence()) {
     // FIXME: also deal with the case of interval with restrictions.
