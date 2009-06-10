@@ -241,6 +241,7 @@ yes)
   AC_MSG_RESULT(yes)
   OPT_FLAGS="-g"
   COMP_FLAGS="$COMP_FLAGS -fprofile-arcs -ftest-coverage"
+  extra_libraries="${extra_libraries} -lgcov"
   ;;
 no)
   AC_MSG_RESULT(no)
