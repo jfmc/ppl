@@ -55,9 +55,15 @@ operator<<(std::ostream& s, const PIP_Problem& p);
    - the dimension of the vector space;
    - the feasible region, by means of a finite set of linear equality
      and non-strict inequality constraints;
-   - the subset of the unknown variables that range over the integers
-     (the other variables implicitly ranging over the reals);
-   - the objective function, described by a Linear_Expression;
+   - the subset of those dimensions of the vector space that are
+     interpreted as integer parameters (the other space dimensions
+     are interpreted as non-parameter integer variables);
+
+   // FIXME: should the non-negativity constraints be assumed?
+   // If that is the case, the problem will always be either
+   // unfeasible or optimizable (since the origin of the vector
+   // space is the minimum for the unconstrained non-negative problem).
+
    - the optimization mode (either maximization or minimization).
 
   The class provides support for the (incremental) solution of the
@@ -80,7 +86,7 @@ public:
   //! Builds a trivial PIP problem.
   /*!
     A trivial PIP problem requires to maximize the objective function
-    \f$0\f$ on a vector space under no constraints at all:
+    \f$0\f$ on a vector space under no constraints and with no parameters:
     the origin of the vector space is an optimal solution.
 
     \param dim
@@ -93,12 +99,11 @@ public:
   explicit PIP_Problem(dimension_type dim = 0);
 
   /*! \brief
-    Builds an PIP problem having space dimension \p dim
+    Builds a PIP problem having space dimension \p dim
     from the sequence of constraints in the range
-    \f$[\mathrm{first}, \mathrm{last})\f$,
-    the objective function \p obj and optimization mode \p mode;
-    those dimensions whose indices occur in \p int_vars are
-    constrained to take an integer value.
+    \f$[\mathrm{first}, \mathrm{last})\f$;
+    those dimensions whose indices occur in \p p_vars are
+    interpreted as parameters.
 
     \param dim
     The dimension of the vector space enclosing \p *this.
@@ -109,37 +114,26 @@ public:
     \param last
     A past-the-end input iterator to the sequence of constraints.
 
-    \param int_vars
-    The set of variables' indexes that are constrained to take integer values.
-
-    \param obj
-    The objective function (optional argument with default value \f$0\f$).
-
-    \param mode
-    The optimization mode (optional argument with default value
-    <CODE>MAXIMIZATION</CODE>).
+    \param p_vars
+    The set of variables' indexes that are interpreted as parameters.
 
     \exception std::length_error
     Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
 
     \exception std::invalid_argument
-    Thrown if a constraint in the sequence is a strict inequality,
-    if the space dimension of a constraint (resp., of the
-    objective function or of the integer variables) or the space dimension
-    of the integer variable set is strictly greater than \p dim.
+    Thrown if a constraint in the sequence is a strict inequality or
+    if the space dimension of a constraint (resp., the parameter
+    variables) is strictly greater than \p dim.
   */
   template <typename In>
   PIP_Problem(dimension_type dim,
 	      In first, In last,
-	      const Variables_Set& int_vars,
-	      const Linear_Expression& obj = Linear_Expression::zero(),
-	      Optimization_Mode mode = MAXIMIZATION);
+	      const Variables_Set& p_vars);
 
   /*! \brief
-    Builds an PIP problem having space dimension \p dim
+    Builds a PIP problem having space dimension \p dim
     from the sequence of constraints in the range
-    \f$[\mathrm{first}, \mathrm{last})\f$,
-    the objective function \p obj and optimization mode \p mode.
+    \f$[\mathrm{first}, \mathrm{last})\f$.
 
     \param dim
     The dimension of the vector space enclosing \p *this.
@@ -149,58 +143,17 @@ public:
 
     \param last
     A past-the-end input iterator to the sequence of constraints.
-
-    \param obj
-    The objective function (optional argument with default value \f$0\f$).
-
-    \param mode
-    The optimization mode (optional argument with default value
-    <CODE>MAXIMIZATION</CODE>).
 
     \exception std::length_error
     Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
 
     \exception std::invalid_argument
     Thrown if a constraint in the sequence is a strict inequality
-    or if the space dimension of a constraint (resp., of the
-    objective function or of the integer variables) is strictly
-    greater than \p dim.
+    or if the space dimension of a constraint is strictly greater
+    than \p dim.
   */
   template <typename In>
-  PIP_Problem(dimension_type dim,
-              In first, In last,
-              const Linear_Expression& obj = Linear_Expression::zero(),
-              Optimization_Mode mode = MAXIMIZATION);
-
-  /*! \brief
-    Builds an PIP problem having space dimension \p dim from the constraint
-    system \p cs, the objective function \p obj and optimization mode \p mode.
-
-    \param dim
-    The dimension of the vector space enclosing \p *this.
-
-    \param cs
-    The constraint system defining the feasible region.
-
-    \param obj
-    The objective function (optional argument with default value \f$0\f$).
-
-    \param mode
-    The optimization mode (optional argument with default value
-    <CODE>MAXIMIZATION</CODE>).
-
-    \exception std::length_error
-    Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
-
-    \exception std::invalid_argument
-    Thrown if the constraint system contains any strict inequality
-    or if the space dimension of the constraint system (resp., the
-    objective function) is strictly greater than \p dim.
-  */
-  PIP_Problem(dimension_type dim,
-	      const Constraint_System& cs,
-	      const Linear_Expression& obj = Linear_Expression::zero(),
-	      Optimization_Mode mode = MAXIMIZATION);
+  PIP_Problem(dimension_type dim, In first, In last);
 
   //! Ordinary copy-constructor.
   PIP_Problem(const PIP_Problem& y);
@@ -211,17 +164,17 @@ public:
   //! Assignment operator.
   PIP_Problem& operator=(const PIP_Problem& y);
 
-  //! Returns the maximum space dimension an PIP_Problem can handle.
+  //! Returns the maximum space dimension a PIP_Problem can handle.
   static dimension_type max_space_dimension();
 
   //! Returns the space dimension of the PIP problem.
   dimension_type space_dimension() const;
 
   /*! \brief
-    Returns a set containing all the variables' indexes constrained
-    to be integral.
+    Returns a set containing all the variables' indexes representing
+    the parameters of the PIP problem.
   */
-  const Variables_Set& integer_space_dimensions() const;
+  const Variables_Set& parameter_space_dimensions() const;
 
 private:
   //! A type alias for a sequence of constraints.
@@ -246,12 +199,6 @@ public:
   */
   const_iterator constraints_end() const;
 
-  //! Returns the objective function.
-  const Linear_Expression& objective_function() const;
-
-  //! Returns the optimization mode.
-  Optimization_Mode optimization_mode() const;
-
   //! Resets \p *this to be equal to the trivial PIP problem.
   /*!
     The space dimension is reset to \f$0\f$.
@@ -275,14 +222,14 @@ public:
   void add_space_dimensions_and_embed(dimension_type m);
 
   /*! \brief
-    Sets the variables whose indexes are in set \p i_vars to be
-    integer space dimensions.
+    Sets the variables whose indexes are in set \p p_vars to be
+    parameter space dimensions.
 
     \exception std::invalid_argument
-    Thrown if some index in \p i_vars does not correspond to
+    Thrown if some index in \p p_vars does not correspond to
     a space dimension in \p *this.
   */
-  void add_to_integer_space_dimensions(const Variables_Set& i_vars);
+  void add_to_parameter_space_dimensions(const Variables_Set& p_vars);
 
   /*! \brief
     Adds a copy of constraint \p c to the PIP problem.
@@ -303,17 +250,6 @@ public:
   */
   void add_constraints(const Constraint_System& cs);
 
-  //! Sets the objective function to \p obj.
-  /*!
-    \exception std::invalid_argument
-    Thrown if the space dimension of \p obj is strictly greater than
-    the space dimension of \p *this.
-  */
-  void set_objective_function(const Linear_Expression& obj);
-
-  //! Sets the optimization mode to \p mode.
-  void set_optimization_mode(Optimization_Mode mode);
-
   //! Checks satisfiability of \p *this.
   /*!
     \return
@@ -325,30 +261,9 @@ public:
   /*!
     \return
     An PIP_Problem_Status flag indicating the outcome of the optimization
-    attempt (unfeasible, unbounded or optimized problem).
+    attempt (unfeasible or optimized problem).
   */
   PIP_Problem_Status solve() const;
-
-  /*! \brief
-    Sets \p num and \p den so that \f$\frac{num}{den}\f$ is the result
-    of evaluating the objective function on \p evaluating_point.
-
-    \param evaluating_point
-    The point on which the objective function will be evaluated.
-
-    \param num
-    On exit will contain the numerator of the evaluated value.
-
-    \param den
-    On exit will contain the denominator of the evaluated value.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p evaluating_point are dimension-incompatible
-    or if the generator \p evaluating_point is not a point.
-  */
-  void evaluate_objective_function(const Generator& evaluating_point,
-				   Coefficient& num,
-				   Coefficient& den) const;
 
   //! Returns a feasible point for \p *this, if it exists.
   /*!
@@ -364,16 +279,6 @@ public:
     if the PIP problem is unbounded or not satisfiable.
   */
   const Generator& optimizing_point() const;
-
-  /*! \brief
-    Sets \p num and \p den so that \f$\frac{num}{den}\f$ is
-    the solution of the optimization problem.
-
-    \exception std::domain_error
-    Thrown if \p *this doesn't not have an optimizing point, i.e.,
-    if the PIP problem is unbounded or not satisfiable.
-  */
-  void optimal_value(Coefficient& num, Coefficient& den) const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
