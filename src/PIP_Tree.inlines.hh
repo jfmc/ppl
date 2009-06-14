@@ -29,6 +29,18 @@ inline
 PIP_Tree_Node::~PIP_Tree_Node() {
 }
 
+inline
+const PIP_Tree_Node*
+PIP_Decision_Node::child_node(bool v) const {
+  return v ? true_child : false_child;
+}
+
+inline
+PIP_Tree_Node*
+PIP_Decision_Node::child_node(bool v) {
+  return v ? true_child : false_child;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_PIP_Tree_inlines_hh)
