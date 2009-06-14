@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_PIP_Tree_defs_hh 1
 
 #include "PIP_Tree.types.hh"
+#include "Variable.defs.hh"
+#include "Linear_Expression.types.hh"
 #include "Constraint_System.types.hh"
 #include "PIP_Problem.types.hh"
 #include "globals.defs.hh"
@@ -64,7 +66,25 @@ public:
   //! Returns \p this.
   PIP_Solution_Node* as_solution();
 
-  // get_bindings();
+  /*! \brief
+    Returns a parametric expression of the values of variable \p v.
+
+    The returned linear expression only involves parameters.
+
+    \exception std::invalid_argument
+    Thrown if \p v is dimension-incompatible with \p *this
+    or if \p v is a parameter.
+  */
+  const Linear_Expression& parametric_values(Variable v);
+
+  //! Returns the constraints (on variables and parameters) of \p *this.
+  const Constraint_System& constraints();
+
+private:
+  // Only PIP_Problem is allowed to use the constructor.
+  friend class PIP_Problem;
+
+  // FIXME: constructors to be decided.
 };
 
 //! A tree node representing a decision in the space of solutions.
@@ -79,8 +99,8 @@ public:
   //! Returns \p this.
   PIP_Decision_Node* as_decision();
 
-  //! Returns a const pointer to the \v (true or false) branch of \p *this.
-  const PIP_Tree_Node* child_node(bool v) const;
+  //! Returns a const pointer to the \p b (true or false) branch of \p *this.
+  const PIP_Tree_Node* child_node(bool b) const;
 
   //! Returns a pointer to the \v (true or false) branch of \p *this.
   PIP_Tree_Node* child_node(bool v);
