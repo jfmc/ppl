@@ -272,7 +272,9 @@ MIP_Problem.defs.hh \
 MIP_Problem.inlines.hh \
 MIP_Problem.templates.hh \
 PIP_Tree.defs.hh \
+PIP_Tree.inlines.hh \
 PIP_Problem.defs.hh \
+PIP_Problem.inlines.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \

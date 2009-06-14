@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_PIP_Tree_defs_hh 1
 
 #include "PIP_Tree.types.hh"
+#include "Constraint_System.types.hh"
+#include "PIP_Problem.types.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -82,15 +84,60 @@ public:
   //! Returns a pointer to the \v (true or false) branch of \p *this.
   PIP_Tree_Node* child_node(bool v);
 
-  // Constraint_System* get_constraints();
+  //! Returns the system of constraints controlling \p *this.
+  const Constraint_System& constraints();
 
 private:
-  PIP_Tree_Node* false_child;
+  //! Pointer to the "true" child of \p *this.
   PIP_Tree_Node* true_child;
+
+  //! Pointer to the "false" child of \p *this.
+  PIP_Tree_Node* false_child;
+
+  // Only PIP_Problem is allowed to use the constructor.
+  friend class PIP_Problem;
+
+  /*! \brief
+    Constructs if \p cs then \p tcp \p else \p fcp.
+
+    Constructs a decision node controlled by \p cs (which is copied),
+    with "true" child \p tcp and "false" child \p fcp.
+
+    \param cs
+    The system of constraints controlling the node.
+
+    \exception std::invalid_argument
+    Thrown if \p cs contains strict inequalities.
+  */
+  PIP_Decision_Node(const Constraint_System& cs,
+                    PIP_Tree_Node* fcp, PIP_Tree_Node* tcp);
+
+  /*! \brief
+    Constructs if \p cs then \p tcp \p else \p fcp.
+
+    Constructs a decision node controlled by \p cs (which is recycled),
+    with "true" child \p tcp and "false" child \p fcp.
+
+    \param cs
+    The system of constraints controlling the node.  It is not
+    declared <CODE>const</CODE> because its data-structures may be
+    recycled to build the polyhedron.
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
+    \exception std::invalid_argument
+    Thrown if \p cs contains strict inequalities.
+  */
+  PIP_Decision_Node(const Constraint_System& cs, Recycle_Input dummy,
+                    PIP_Tree_Node* fcp, PIP_Tree_Node* tcp);
 };
 
 typedef const PIP_Tree_Node* PIP_Tree;
 
 } // namespace Parma_Polyhedra_Library
+
+#include "PIP_Tree.inlines.hh"
 
 #endif // !defined(PPL_PIP_Tree_defs_hh)
