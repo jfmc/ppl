@@ -52,10 +52,13 @@ public:
 //! A tree node representing part of the space of solutions.
 class PIP_Solution_Node : public PIP_Tree_Node {
 public:
-  //! Returns \p *this.
+  //! Destructor.
+  ~PIP_Solution_Node();
+
+  //! Returns \p this.
   const PIP_Solution_Node* as_solution() const;
 
-  //! Returns \p *this.
+  //! Returns \p this.
   PIP_Solution_Node* as_solution();
 
   // get_bindings();
@@ -64,16 +67,26 @@ public:
 //! A tree node representing a decision in the space of solutions.
 class PIP_Decision_Node : public PIP_Tree_Node {
 public:
+  //! Destructor.
   ~PIP_Decision_Node();
+
+  //! Returns \p this.
   const PIP_Decision_Node* as_decision() const;
+
+  //! Returns \p this.
   PIP_Decision_Node* as_decision();
-  const PIP_Tree_Node* if_node(bool v) const;
-  PIP_Tree_Node* if_node(bool v);
+
+  //! Returns a const pointer to the \v (true or false) branch of \p *this.
+  const PIP_Tree_Node* child_node(bool v) const;
+
+  //! Returns a pointer to the \v (true or false) branch of \p *this.
+  PIP_Tree_Node* child_node(bool v);
+
   // Constraint_System* get_constraints();
 
 private:
-  PIP_Tree_Node* if_false;
-  PIP_Tree_Node* if_true;
+  PIP_Tree_Node* false_child;
+  PIP_Tree_Node* true_child;
 };
 
 typedef PIP_Tree_Node* PIP_Tree;

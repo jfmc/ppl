@@ -25,9 +25,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+PIP_Tree_Node::~PIP_Tree_Node() {
+}
+
 PIP_Decision_Node::~PIP_Decision_Node() {
-  delete if_false;
-  delete if_true;
+  delete false_child;
+  delete true_child;
 }
 
 const PIP_Solution_Node*
