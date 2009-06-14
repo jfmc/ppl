@@ -265,20 +265,20 @@ public:
   */
   PIP_Problem_Status solve() const;
 
-  //! Returns a feasible point for \p *this, if it exists.
+  //! Returns a feasible solution for \p *this, if it exists.
   /*!
     \exception std::domain_error
     Thrown if the PIP problem is not satisfiable.
   */
-  const Generator& feasible_point() const;
+  PIP_Tree solution() const;
 
-  //! Returns an optimal point for \p *this, if it exists.
+  //! Returns an optimizing solution for \p *this, if it exists.
   /*!
     \exception std::domain_error
     Thrown if \p *this doesn't not have an optimizing point, i.e.,
     if the PIP problem is unbounded or not satisfiable.
   */
-  const Generator& optimizing_point() const;
+  PIP_Tree optimizing_solution() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -300,29 +300,6 @@ public:
 
   //! Swaps \p *this with \p y.
   void swap(PIP_Problem& y);
-
-  //! Names of PIP problems' control parameters.
-  enum Control_Parameter_Name {
-    //! The pricing rule.
-    PRICING
-  };
-
-  //! Possible values for PIP problem's control parameters.
-  enum Control_Parameter_Value {
-    //! Steepest edge pricing method, using floating points (default).
-    PRICING_STEEPEST_EDGE_FLOAT,
-    //! Steepest edge pricing method, using Coefficient.
-    PRICING_STEEPEST_EDGE_EXACT,
-    //! Textbook pricing method.
-    PRICING_TEXTBOOK
-  };
-
-  //! Returns the value of the control parameter \p name.
-  Control_Parameter_Value
-  get_control_parameter(Control_Parameter_Name name) const;
-
-  //! Sets control parameter \p value.
-  void set_control_parameter(Control_Parameter_Value value);
 };
 
 namespace std {

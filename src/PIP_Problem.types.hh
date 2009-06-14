@@ -19,8 +19,6 @@ namespace Parma_Polyhedra_Library {
 enum PIP_Problem_Status {
   //! The problem is unfeasible.
   UNFEASIBLE_PIP_PROBLEM,
-  //! The problem is unbounded.
-  UNBOUNDED_PIP_PROBLEM,
   //! The problem has an optimal solution.
   OPTIMIZED_PIP_PROBLEM
 };

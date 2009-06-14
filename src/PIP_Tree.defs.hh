@@ -89,7 +89,7 @@ private:
   PIP_Tree_Node* true_child;
 };
 
-typedef PIP_Tree_Node* PIP_Tree;
+typedef const PIP_Tree_Node* PIP_Tree;
 
 } // namespace Parma_Polyhedra_Library
 
