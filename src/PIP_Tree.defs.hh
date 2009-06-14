@@ -151,7 +151,7 @@ private:
     \exception std::invalid_argument
     Thrown if \p cs contains strict inequalities.
   */
-  PIP_Decision_Node(const Constraint_System& cs, Recycle_Input dummy,
+  PIP_Decision_Node(Constraint_System& cs, Recycle_Input dummy,
                     PIP_Tree_Node* fcp, PIP_Tree_Node* tcp);
 };
 
