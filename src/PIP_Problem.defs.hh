@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.types.hh"
 #include "Generator.defs.hh"
 #include "Variables_Set.defs.hh"
+#include "PIP_Tree.defs.hh"
 #include <vector>
 #include <deque>
 #include <iosfwd>
