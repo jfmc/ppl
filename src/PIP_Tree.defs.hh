@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "PIP_Tree.types.hh"
 #include "Constraint_System.types.hh"
 #include "PIP_Problem.types.hh"
+#include "globals.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
