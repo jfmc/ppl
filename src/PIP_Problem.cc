@@ -1,4 +1,4 @@
-/* PIP_Tree related class implementation: non-inline functions.
+/* PIP_Problem class implementation: non-inline functions.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,54 +21,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
-#include "PIP_Tree.defs.hh"
+#include "PIP_Problem.defs.hh"
 
-namespace Parma_Polyhedra_Library {
+namespace PPL = Parma_Polyhedra_Library;
 
-PIP_Decision_Node::~PIP_Decision_Node() {
-  delete if_false;
-  delete if_true;
+/*! \relates Parma_Polyhedra_Library::PIP_Problem */
+std::ostream&
+PPL::IO_Operators::operator<<(std::ostream& s, const PIP_Problem& /*p*/) {
+ return s;
 }
-
-const PIP_Solution_Node*
-PIP_Tree_Node::as_solution() const {
-  return 0;
-}
-
-PIP_Solution_Node*
-PIP_Tree_Node::as_solution() {
-  return 0;
-}
-
-const PIP_Decision_Node*
-PIP_Tree_Node::as_decision() const {
-  return 0;
-}
-
-PIP_Decision_Node*
-PIP_Tree_Node::as_decision() {
-  return 0;
-}
-
-const PIP_Solution_Node*
-PIP_Solution_Node::as_solution() const {
-  return this;
-}
-
-PIP_Solution_Node*
-PIP_Solution_Node::as_solution() {
-  return this;
-}
-
-const PIP_Decision_Node*
-PIP_Decision_Node::as_decision() const {
-  return this;
-}
-
-PIP_Decision_Node*
-PIP_Decision_Node::as_decision() {
-  return this;
-}
-
-} // namespace Parma_Polyhedra_Library
-

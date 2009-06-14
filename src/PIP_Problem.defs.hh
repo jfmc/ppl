@@ -334,7 +334,7 @@ void swap(Parma_Polyhedra_Library::PIP_Problem& x,
 
 } // namespace std
 
-#include "PIP_Problem.inlines.hh"
-#include "PIP_Problem.templates.hh"
+//#include "PIP_Problem.inlines.hh"
+//#include "PIP_Problem.templates.hh"
 
 #endif // !defined(PPL_PIP_Problem_defs_hh)

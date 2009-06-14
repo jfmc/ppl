@@ -23,30 +23,46 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_PIP_Tree_defs_hh
 #define PPL_PIP_Tree_defs_hh 1
 
+#include "PIP_Tree.types.hh"
+
 namespace Parma_Polyhedra_Library {
 
-class PIP_Solution_Node;
-class PIP_Decision_Node;
-
+/*! \brief
+  The base class for the nodes of the trees representing the solutions
+  of PIP problems.
+*/
 class PIP_Tree_Node {
 public:
+  //! Returns \p this if \p *this is a solution node, 0 otherwise.
   virtual const PIP_Solution_Node* as_solution() const;
+
+  //! Returns \p this if \p *this is a solution node, 0 otherwise.
   virtual PIP_Solution_Node* as_solution();
+
+  //! Returns \p this if \p *this is a decision node, 0 otherwise.
   virtual const PIP_Decision_Node* as_decision() const;
+
+  //! Returns \p this if \p *this is a decision node, 0 otherwise.
   virtual PIP_Decision_Node* as_decision();
+
+  //! Destructor.
   virtual ~PIP_Tree_Node();
 };
 
+//! A tree node representing part of the space of solutions.
 class PIP_Solution_Node : public PIP_Tree_Node {
 public:
+  //! Returns \p *this.
   const PIP_Solution_Node* as_solution() const;
+
+  //! Returns \p *this.
   PIP_Solution_Node* as_solution();
+
   // get_bindings();
 };
 
+//! A tree node representing a decision in the space of solutions.
 class PIP_Decision_Node : public PIP_Tree_Node {
-  PIP_Tree_Node* if_false;
-  PIP_Tree_Node* if_true;
 public:
   ~PIP_Decision_Node();
   const PIP_Decision_Node* as_decision() const;
@@ -54,6 +70,10 @@ public:
   const PIP_Tree_Node* if_node(bool v) const;
   PIP_Tree_Node* if_node(bool v);
   // Constraint_System* get_constraints();
+
+private:
+  PIP_Tree_Node* if_false;
+  PIP_Tree_Node* if_true;
 };
 
 typedef PIP_Tree_Node* PIP_Tree;
