@@ -131,31 +131,6 @@ public:
 	      In first, In last,
 	      const Variables_Set& p_vars);
 
-  /*! \brief
-    Builds a PIP problem having space dimension \p dim
-    from the sequence of constraints in the range
-    \f$[\mathrm{first}, \mathrm{last})\f$.
-
-    \param dim
-    The dimension of the vector space enclosing \p *this.
-
-    \param first
-    An input iterator to the start of the sequence of constraints.
-
-    \param last
-    A past-the-end input iterator to the sequence of constraints.
-
-    \exception std::length_error
-    Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
-
-    \exception std::invalid_argument
-    Thrown if a constraint in the sequence is a strict inequality
-    or if the space dimension of a constraint is strictly greater
-    than \p dim.
-  */
-  template <typename In>
-  PIP_Problem(dimension_type dim, In first, In last);
-
   //! Ordinary copy-constructor.
   PIP_Problem(const PIP_Problem& y);
 
@@ -207,30 +182,29 @@ public:
   void clear();
 
   /*! \brief
-    Adds \p m new space dimensions and embeds the old PIP problem
-    in the new vector space.
+    Adds <CODE>m_pip_vars + m_pip_params</CODE> new space dimensions
+    and embeds the old PIP problem in the new vector space.
 
-    \param m
-    The number of dimensions to add.
+    \param m_pip_vars
+    The number of space dimensions to add that are interpreted as
+    PIP problem variables (i.e., non parameters). These are added
+    \e before adding the \p m_pip_params parameters.
+
+    \param m_pip_params
+    The number of space dimensions to add that are interpreted as
+    PIP problem parameters. These are added \e after having added the
+    \p m_pip_vars problem variables.
 
     \exception std::length_error
-    Thrown if adding \p m new space dimensions would cause the
-    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+    Thrown if adding <CODE>m_pip_vars + m_pip_params</CODE> new space
+    dimensions would cause the vector space to exceed dimension
+    <CODE>max_space_dimension()</CODE>.
 
     The new space dimensions will be those having the highest indexes
     in the new PIP problem; they are initially unconstrained.
   */
-  void add_space_dimensions_and_embed(dimension_type m);
-
-  /*! \brief
-    Sets the variables whose indexes are in set \p p_vars to be
-    parameter space dimensions.
-
-    \exception std::invalid_argument
-    Thrown if some index in \p p_vars does not correspond to
-    a space dimension in \p *this.
-  */
-  void add_to_parameter_space_dimensions(const Variables_Set& p_vars);
+  void add_space_dimensions_and_embed(dimension_type m_pip_vars,
+                                      dimension_type m_pip_params);
 
   /*! \brief
     Adds a copy of constraint \p c to the PIP problem.
@@ -301,6 +275,54 @@ public:
 
   //! Swaps \p *this with \p y.
   void swap(PIP_Problem& y);
+
+private:
+  //! The dimension of the vector space.
+  dimension_type external_space_dim;
+
+  /*! \brief
+    The space dimension of the current (partial) solution of the
+    PIP problem; it may be smaller than \p external_space_dim.
+  */
+  dimension_type internal_space_dim;
+
+  //! An enumerated type describing the internal status of the PIP problem.
+  enum Status {
+    //! The PIP problem is unsatisfiable.
+    UNSATISFIABLE,
+    //! The PIP problem is satisfiable; a feasible solution has been computed.
+    SATISFIABLE,
+    //! The PIP problem is optimized; the solution tree has been computed.
+    OPTIMIZED,
+    /*! \brief
+      The feasible region of the PIP problem has been changed by adding
+      new variables, parameters or constraints; a feasible solution for
+      the old feasible region is still available.
+    */
+    PARTIALLY_SATISFIABLE
+  };
+
+  //! The internal state of the MIP problem.
+  Status status;
+
+  /*! \brief
+    A Boolean encoding whether or not internal data structures have
+    already been properly sized and populated: useful to allow for
+    deeper checks in method OK().
+  */
+  bool initialized;
+
+  //! The sequence of constraints describing the feasible region.
+  Constraint_Sequence input_cs;
+
+  //! The first index of `input_cs' containing a pending constraint.
+  dimension_type first_pending_constraint;
+
+  /*! \brief
+    A set containing all the indexes of space dimensions that are
+    interpreted as problem parameters.
+  */
+  Variables_Set parameters;
 };
 
 namespace std {
