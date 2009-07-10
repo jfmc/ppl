@@ -49,13 +49,14 @@ public:
 
 
 private:
+  typedef Pending_List<Time> WD_Pending_List;
   friend class Init;
   static void initialize();
   static void finalize();
 
   bool expired;
   const Handler& handler;
-  Pending_List::Iterator pending_position;
+  WD_Pending_List::Iterator pending_position;
 
 private:
   // Just to prevent their use.
@@ -90,18 +91,18 @@ private:
   static Time time_so_far;
 
   //! The ordered queue of pending watchdog events.
-  static Pending_List pending;
+  static WD_Pending_List pending;
 
   //! The actual signal handler.
   static void handle_timeout(int);
 
   // Handle the addition of a new watchdog event.
-  static Pending_List::Iterator new_watchdog_event(int units,
+  static WD_Pending_List::Iterator new_watchdog_event(int units,
 						   const Handler& handler,
 						   bool& expired_flag);
 
   // Handle the removal of a watchdog event.
-  void remove_watchdog_event(Pending_List::Iterator position);
+  void remove_watchdog_event(WD_Pending_List::Iterator position);
 
   // Whether the alarm clock is running.
   static volatile bool alarm_clock_running;

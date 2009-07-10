@@ -30,6 +30,7 @@ Pending_Element.types.hh \
 Pending_List.types.hh \
 Time.types.hh \
 Watchdog.types.hh \
+Weightwatch.types.hh \
 Handler.defs.hh \
 Handler.inlines.hh \
 Time.defs.hh \
@@ -44,15 +45,17 @@ Pending_Element.defs.hh \
 Pending_Element.inlines.hh \
 Pending_List.defs.hh \
 Pending_List.inlines.hh \
+Pending_List.templates.hh \
 Watchdog.defs.hh \
-Watchdog.inlines.hh
+Watchdog.inlines.hh \
+Weightwatch.defs.hh \
+Weightwatch.inlines.hh
 
 SOURCE_FILES = \
 $(INCLUDE_FILES) \
-Pending_Element.cc \
-Pending_List.cc \
 Time.cc \
-Watchdog.cc
+Watchdog.cc \
+Weightwatch.cc
 
 EXTRA_DIST = \
 $(SOURCE_FILES) \

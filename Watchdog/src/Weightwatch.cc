@@ -1,4 +1,4 @@
-/* Pending_Element class implementation (non-inline functions).
+/* Weightwatch and associated classes' implementation (non-inline functions).
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
@@ -22,11 +22,41 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <pwl-config.h>
 
-#include "Pending_Element.defs.hh"
+#include "Weightwatch.defs.hh"
+
+#include <iostream>
+#include <stdexcept>
+#include <string>
+#include <string.h>
 
 namespace PWL = Parma_Watchdog_Library;
 
-bool
-PWL::Pending_Element::OK() const {
-  return d.OK();
+// The ordered queue of pending weight thresholds.
+PWL::Weightwatch::WW_Pending_List PWL::Weightwatch::pending;
+
+PWL::Weight PWL::Weightwatch::weight_so_far = 0;
+
+PWL::Weightwatch::WW_Pending_List::Iterator
+PWL::Weightwatch::new_weight_threshold(int units,
+				       const Handler& handler,
+				       bool& expired_flag) {
+  assert(units > 0);
+  if (weight_so_far == 0)
+    weight_so_far = 1;
+  return pending.insert(weight_so_far + units, handler, expired_flag);
 }
+
+void
+PWL::Weightwatch::remove_weight_threshold(WW_Pending_List::Iterator position) {
+  pending.erase(position);
+  if (pending.empty())
+    weight_so_far = 0;
+}
+
+PWL::Weightwatch::~Weightwatch() {
+  if (!expired) {
+    remove_weight_threshold(pending_position);
+  }
+  delete &handler;
+}
+

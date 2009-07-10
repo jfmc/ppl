@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PWL_EList_inlines_hh
 #define PWL_EList_inlines_hh 1
 
+#include <cassert>
+
 namespace Parma_Watchdog_Library {
 
 template <typename T>

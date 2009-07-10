@@ -23,36 +23,44 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PWL_Pending_List_inlines_hh
 #define PWL_Pending_List_inlines_hh 1
 
+#include <cassert>
+
 namespace Parma_Watchdog_Library {
 
+template <typename Threshold>
 inline
-Pending_List::Pending_List()
+Pending_List<Threshold>::Pending_List()
   : active_list(),
     free_list() {
   assert(OK());
 }
 
+template <typename Threshold>
 inline
-Pending_List::~Pending_List() {
+Pending_List<Threshold>::~Pending_List() {
 }
 
-inline Pending_List::Iterator
-Pending_List::begin() {
+template <typename Threshold>
+inline typename Pending_List<Threshold>::Iterator
+Pending_List<Threshold>::begin() {
   return active_list.begin();
 }
 
-inline Pending_List::Iterator
-Pending_List::end() {
+template <typename Threshold>
+inline typename Pending_List<Threshold>::Iterator
+Pending_List<Threshold>::end() {
   return active_list.end();
 }
 
+template <typename Threshold>
 inline bool
-Pending_List::empty() const {
+Pending_List<Threshold>::empty() const {
   return active_list.empty();
 }
 
-inline Pending_List::Iterator
-Pending_List::erase(Iterator position) {
+template <typename Threshold>
+inline typename Pending_List<Threshold>::Iterator
+Pending_List<Threshold>::erase(Iterator position) {
   assert(!empty());
   Iterator next = active_list.erase(position);
   free_list.push_back(*position);
