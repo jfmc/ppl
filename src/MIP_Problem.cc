@@ -221,30 +221,26 @@ PPL::MIP_Problem::is_satisfiable() const {
     assert(OK());
     return true;
   case PARTIALLY_SATISFIABLE:
-    { // LP case.
-      if (i_variables.empty())
-	return is_lp_satisfiable();
-      // MIP Case.
-      const Variables_Set this_variables_set = integer_space_dimensions();
+    {
       MIP_Problem& x = const_cast<MIP_Problem&>(*this);
-      Generator p = point();
-      // This disable the Variable integrality check in OK() until we will
-      // find a feasible point.
-      x.i_variables.clear();
-      x.is_lp_satisfiable();
-      if (is_mip_satisfiable(x, p, this_variables_set)) {
-	x.last_generator = p;
-	x.status = SATISFIABLE;
-	// Restore i_variables;
-    	x.i_variables = this_variables_set;
-	return true;
-      }
-      else {
-	x.status = UNSATISFIABLE;
-	// Restore i_variables;
-    	x.i_variables = this_variables_set;
-	return false;
-      }
+      // LP case.
+      if (x.i_variables.empty())
+	return x.is_lp_satisfiable();
+
+      // MIP case.
+      {
+        // Temporarily relax the MIP into an LP problem.
+        RAII_Temporary_Real_Relaxation relaxed(x);
+        Generator p = point();
+        relaxed.lp.is_lp_satisfiable();
+        if (is_mip_satisfiable(relaxed.lp, relaxed.i_vars, p)) {
+          x.last_generator = p;
+          x.status = SATISFIABLE;
+        }
+        else
+          x.status = UNSATISFIABLE;
+      } // `relaxed' destroyed here: relaxation automatically reset.
+      return (x.status == SATISFIABLE);
     }
   }
   // We should not be here!
@@ -268,9 +264,9 @@ PPL::MIP_Problem::solve() const{
   case PARTIALLY_SATISFIABLE:
     {
       MIP_Problem& x = const_cast<MIP_Problem&>(*this);
-      if (i_variables.empty()) {
-	// LP Problem case.
-	if (is_lp_satisfiable()) {
+      if (x.i_variables.empty()) {
+	// LP case.
+	if (x.is_lp_satisfiable()) {
 	  x.second_phase();
 	  if (x.status == UNBOUNDED)
 	    return UNBOUNDED_MIP_PROBLEM;
@@ -281,34 +277,31 @@ PPL::MIP_Problem::solve() const{
 	}
 	return UNFEASIBLE_MIP_PROBLEM;
       }
-      // MIP Problem case.
-      // This disable the Variable integrality check in OK() until we will find
-      // an optimizing point.
-      const Variables_Set this_variables_set = integer_space_dimensions();
-      x.i_variables.clear();
-      if (x.is_lp_satisfiable())
-	x.second_phase();
-      else {
-	x.status = UNSATISFIABLE;
-	// Restore i_variables;
-	x.i_variables = this_variables_set;
-	return UNFEASIBLE_MIP_PROBLEM;
-      }
-      PPL_DIRTY_TEMP0(mpq_class, incumbent_solution);
-      Generator g = point();
-      bool have_incumbent_solution = false;
 
-      MIP_Problem mip_copy(*this);
-      // Treat this MIP_Problem as an LP one: we have to deal with
-      // the relaxation in solve_mip().
-      mip_copy.i_variables.clear();
-      MIP_Problem_Status mip_status = solve_mip(have_incumbent_solution,
-						incumbent_solution, g,
-						mip_copy,
-						this_variables_set);
-      // Restore i_variables;
-      x.i_variables = this_variables_set;
-      switch (mip_status) {
+      // MIP case.
+      MIP_Problem_Status return_value;
+      Generator g = point();
+      {
+        // Temporarily relax the MIP into an LP problem.
+        RAII_Temporary_Real_Relaxation relaxed(x);
+        if (relaxed.lp.is_lp_satisfiable())
+          relaxed.lp.second_phase();
+        else {
+          x.status = UNSATISFIABLE;
+          // NOTE: `relaxed' destroyed: relaxation automatically reset.
+          return UNFEASIBLE_MIP_PROBLEM;
+        }
+        PPL_DIRTY_TEMP0(mpq_class, incumbent_solution);
+        bool have_incumbent_solution = false;
+
+        MIP_Problem lp_copy(relaxed.lp);
+        assert(lp_copy.integer_space_dimensions().empty());
+        return_value = solve_mip(have_incumbent_solution,
+                                 incumbent_solution, g,
+                                 lp_copy, relaxed.i_vars);
+      } // `relaxed' destroyed here: relaxation automatically reset.
+
+      switch (return_value) {
       case UNFEASIBLE_MIP_PROBLEM:
 	x.status = UNSATISFIABLE;
 	break;
@@ -325,7 +318,7 @@ PPL::MIP_Problem::solve() const{
 	break;
       }
       assert(OK());
-      return mip_status;
+      return return_value;
     }
   }
   // We should not be here!
@@ -440,8 +433,8 @@ PPL::MIP_Problem::is_satisfied(const Constraint& c, const Generator& g) {
 
 bool
 PPL::MIP_Problem::is_saturated(const Constraint& c, const Generator& g) {
-  // Scalar_Products::sign() requires the second argument to be at least
-  // as large as the first one.
+  // Scalar_Products::sign() requires the space dimension of the second
+  // argument to be at least as large as the one of the first one.
   int sp_sign = g.space_dimension() <= c.space_dimension()
     ? Scalar_Products::sign(g, c)
     : Scalar_Products::sign(c, g);
@@ -1630,12 +1623,12 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 }
 
 bool
-PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
+PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& lp,
 					    const Variables_Set& i_vars,
 					    dimension_type& branching_index) {
   // Insert here the variables that don't satisfy the integrality condition.
-  const Constraint_Sequence& input_cs = mip.input_cs;
-  const Generator& last_generator = mip.last_generator;
+  const Constraint_Sequence& input_cs = lp.input_cs;
+  const Generator& last_generator = lp.last_generator;
   const Coefficient& last_generator_divisor = last_generator.divisor();
   Variables_Set candidate_variables;
 
@@ -1684,19 +1677,21 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
 }
 
 bool
-PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
-				     const Variables_Set& i_vars) {
-  // Solve the problem as a non MIP one, it must be done internally.
+PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
+				     const Variables_Set& i_vars,
+                                     Generator& p) {
+  assert(lp.integer_space_dimensions().empty());
+
+  // Solve the LP problem.
   if (!lp.is_lp_satisfiable())
     return false;
-  PPL_DIRTY_TEMP0(mpq_class, tmp_rational);
 
+  PPL_DIRTY_TEMP0(mpq_class, tmp_rational);
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff1);
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff2);
-  p = lp.last_generator;
-
   bool found_satisfiable_generator = true;
   dimension_type nonint_dim;
+  p = lp.last_generator;
   const Coefficient& p_divisor = p.divisor();
 
 #if PPL_SIMPLEX_USE_MIP_HEURISTIC
@@ -1718,7 +1713,6 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   if (found_satisfiable_generator)
     return true;
 
-
   assert(nonint_dim < lp.space_dimension());
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
@@ -1730,11 +1724,11 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   {
     MIP_Problem lp_aux = lp;
     lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
-    if (is_mip_satisfiable(lp_aux, p, i_vars))
+    if (is_mip_satisfiable(lp_aux, i_vars, p))
       return true;
   }
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
-  return is_mip_satisfiable(lp, p, i_vars);
+  return is_mip_satisfiable(lp, i_vars, p);
 }
 
 bool
