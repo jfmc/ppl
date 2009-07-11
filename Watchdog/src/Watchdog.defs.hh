@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Handler.types.hh"
 #include "Pending_List.defs.hh"
 #include <cassert>
+#include <functional>
 
 #ifdef PWL_HAVE_SYS_TIME_H
 # include <sys/time.h>
@@ -49,7 +50,7 @@ public:
 
 
 private:
-  typedef Pending_List<Time> WD_Pending_List;
+  typedef Pending_List<Time, std::less<Time> > WD_Pending_List;
   friend class Init;
   static void initialize();
   static void finalize();

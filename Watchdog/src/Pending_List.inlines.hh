@@ -27,40 +27,40 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Watchdog_Library {
 
-template <typename Threshold>
+template <typename Threshold, typename Compare>
 inline
-Pending_List<Threshold>::Pending_List()
+Pending_List<Threshold, Compare>::Pending_List()
   : active_list(),
     free_list() {
   assert(OK());
 }
 
-template <typename Threshold>
+template <typename Threshold, typename Compare>
 inline
-Pending_List<Threshold>::~Pending_List() {
+Pending_List<Threshold, Compare>::~Pending_List() {
 }
 
-template <typename Threshold>
-inline typename Pending_List<Threshold>::Iterator
-Pending_List<Threshold>::begin() {
+template <typename Threshold, typename Compare>
+inline typename Pending_List<Threshold, Compare>::Iterator
+Pending_List<Threshold, Compare>::begin() {
   return active_list.begin();
 }
 
-template <typename Threshold>
-inline typename Pending_List<Threshold>::Iterator
-Pending_List<Threshold>::end() {
+template <typename Threshold, typename Compare>
+inline typename Pending_List<Threshold, Compare>::Iterator
+Pending_List<Threshold, Compare>::end() {
   return active_list.end();
 }
 
-template <typename Threshold>
+template <typename Threshold, typename Compare>
 inline bool
-Pending_List<Threshold>::empty() const {
+Pending_List<Threshold, Compare>::empty() const {
   return active_list.empty();
 }
 
-template <typename Threshold>
-inline typename Pending_List<Threshold>::Iterator
-Pending_List<Threshold>::erase(Iterator position) {
+template <typename Threshold, typename Compare>
+inline typename Pending_List<Threshold, Compare>::Iterator
+Pending_List<Threshold, Compare>::erase(Iterator position) {
   assert(!empty());
   Iterator next = active_list.erase(position);
   free_list.push_back(*position);

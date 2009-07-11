@@ -30,59 +30,56 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Watchdog_Library {
 
-typedef unsigned int Weight;
-
-//! A watchdog for computational weight.
+//! A watchdog for thresholds exceeding.
+template <typename Threshold, typename Get, typename Compare>
 class Weightwatch {
 public:
   template <typename Flag_Base, typename Flag>
-  Weightwatch(int units, const Flag_Base* volatile& holder, Flag& flag);
+  Weightwatch(const Threshold& threshold, const Flag_Base* volatile& holder, Flag& flag);
 
-  Weightwatch(int units, void (*function)());
+  Weightwatch(const Threshold& threshold, void (*function)());
   ~Weightwatch();
-  static void initialize(Weight& current_weight, void (*&check_hook)(void));
 
 private:
-  typedef Pending_List<Weight> WW_Pending_List;
+  typedef Pending_List<Threshold, Compare> WW_Pending_List;
 
   bool expired;
   const Handler& handler;
-  WW_Pending_List::Iterator pending_position;
+  typename WW_Pending_List::Iterator pending_position;
 
-private:
   // Just to prevent their use.
   Weightwatch(const Weightwatch&);
   Weightwatch& operator=(const Weightwatch&);
 
-  //! The ordered queue of pending weight thresholds.
-  static WW_Pending_List pending;
+  struct Initialize {
+    Initialize(void (*&check_hook)(void));
+    //! The ordered queue of pending thresholds.
+    WW_Pending_List pending;
 
-  //! Pointer to current weight.
-  static Weight *current_weight_ptr;
+    //! Pointer to check hook.
+    void (**check_hook_ptr)(void);
+  };
+  static Initialize initialize;
 
-  //! Pointer to check hook.
-  static void (**check_hook_ptr)(void);
+  // Handle the addition of a new threshold.
+  static typename WW_Pending_List::Iterator
+  add_threshold(Threshold threshold,
+		const Handler& handler,
+		bool& expired_flag);
 
-#ifndef NDEBUG
-  //! Weight at previous check.
-  static Weight previous_weight;
-#endif
+  // Handle the removal of a threshold.
+  static typename WW_Pending_List::Iterator
+  remove_threshold(typename WW_Pending_List::Iterator position);
 
-  // Handle the addition of a new weight threshold.
-  static WW_Pending_List::Iterator new_weight_threshold(int units,
-						      const Handler& handler,
-						      bool& expired_flag);
-
-  // Handle the removal of a weight threshold.
-  static WW_Pending_List::Iterator remove_weight_threshold(WW_Pending_List::Iterator position);
-
-  //! Check weight threshold reaching.
+  //! Check threshold exceeding.
   static void check();
+
 };
 
 } // namespace Parma_Watchdog_Library
 
 #include "Weightwatch.inlines.hh"
+#include "Weightwatch.templates.hh"
 
 #endif // !defined(PWL_Watchdog_defs_hh)
 

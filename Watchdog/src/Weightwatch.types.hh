@@ -13,7 +13,8 @@ PURPOSE. */
 #define PWL_Weightwatch_types_hh 1
 
 namespace Parma_Watchdog_Library {
-  class Weightwatch;
+template <typename Threshold, typename Get, typename Compare>
+class Weightwatch;
 }
 
 #endif // !defined(PWL_Weightwatch_types_hh)

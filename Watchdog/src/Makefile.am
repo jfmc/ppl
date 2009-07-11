@@ -49,7 +49,8 @@ Pending_List.templates.hh \
 Watchdog.defs.hh \
 Watchdog.inlines.hh \
 Weightwatch.defs.hh \
-Weightwatch.inlines.hh
+Weightwatch.inlines.hh \
+Weightwatch.templates.hh
 
 SOURCE_FILES = \
 $(INCLUDE_FILES) \

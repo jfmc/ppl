@@ -14,7 +14,7 @@ PURPOSE. */
 
 namespace Parma_Watchdog_Library {
 
-template <typename Threshold>
+template <typename Threshold, typename Compare>
 class Pending_List;
 
 } // namespace Parma_Watchdog_Library

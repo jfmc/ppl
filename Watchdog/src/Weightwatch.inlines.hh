@@ -29,23 +29,25 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Watchdog_Library {
 
+template <typename Threshold, typename Get, typename Compare>
 template <typename Flag_Base, typename Flag>
-Weightwatch::Weightwatch(int units, const Flag_Base* volatile& holder, Flag& flag)
+Weightwatch<Threshold, Get, Compare>::Weightwatch(const Threshold& threshold, const Flag_Base* volatile& holder, Flag& flag)
   : expired(false),
     handler(*new Handler_Flag<Flag_Base, Flag>(holder, flag)) {
-  if (units <= 0)
+  if (!Compare()(threshold, Get()()))
     throw std::invalid_argument("Weightwatch constructor called with a"
-				" non-positive weight");
-  pending_position = new_weight_threshold(units, handler, expired);
+				" threshold already reached");
+  pending_position = add_threshold(threshold, handler, expired);
 }
 
+template <typename Threshold, typename Get, typename Compare>
 inline
-Weightwatch::Weightwatch(int units, void (*function)())
+Weightwatch<Threshold, Get, Compare>::Weightwatch(const Threshold& threshold, void (*function)())
   : expired(false), handler(*new Handler_Function(function)) {
-  if (units <= 0)
+  if (!Compare()(threshold, Get()()))
     throw std::invalid_argument("Weightwatch constructor called with a"
-				" non-positive weight");
-  pending_position = new_weight_threshold(units, handler, expired);
+				" threshold already reached");
+  pending_position = add_threshold(threshold, handler, expired);
 }
 
 } // namespace Parma_Watchdog_Library

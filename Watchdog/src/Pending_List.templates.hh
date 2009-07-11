@@ -27,14 +27,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Watchdog_Library {
 
-template <typename Threshold>
-typename Pending_List<Threshold>::Iterator
-Pending_List<Threshold>::insert(const Threshold& deadline,
-				     const Handler& handler,
-				     bool& expired_flag) {
+template <typename Threshold, typename Compare>
+typename Pending_List<Threshold, Compare>::Iterator
+Pending_List<Threshold, Compare>::insert(const Threshold& deadline,
+				const Handler& handler,
+				bool& expired_flag) {
   Iterator position = active_list.begin();
   for (Iterator active_list_end = active_list.end();
-       position != active_list_end && position->deadline() < deadline;
+       position != active_list_end && Compare()(position->deadline(), deadline);
        ++position)
     ;
   Iterator ppe;
@@ -51,29 +51,29 @@ Pending_List<Threshold>::insert(const Threshold& deadline,
   return r;
 }
 
-template <typename Threshold>
+template <typename Threshold, typename Compare>
 bool
-Pending_List<Threshold>::OK() const {
+Pending_List<Threshold, Compare>::OK() const {
   if (!active_list.OK())
     return false;
 
   if (!free_list.OK())
     return false;
 
-  Threshold t;
+  const Threshold* old;
   Const_Iterator i = active_list.begin();
-  t = i->deadline();
+  old = &i->deadline();
   ++i;
   for (Const_Iterator active_list_end = active_list.end(); i != active_list_end; ++i) {
-    const Threshold& d = i->deadline();
-    if (t > d) {
+    const Threshold& t = i->deadline();
+    if (Compare()(t, *old)) {
 #ifndef NDEBUG
       std::cerr << "The active list is not sorted!"
 		<< std::endl;
 #endif
       return false;
     }
-    t = d;
+    old = &t;
   }
   return true;
 }

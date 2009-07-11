@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Handler.types.hh"
 
 //! An ordered list for recording pending watchdog events.
-template <typename Threshold>
+template <typename Threshold, typename Compare>
 class Parma_Watchdog_Library::Pending_List {
 public:
   //! A non-const iterator to traverse the list.
