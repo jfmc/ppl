@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Watchdog_Library {
 
-typedef unsigned long long Weight;
+typedef unsigned int Weight;
 
 //! A watchdog for computational weight.
 class Weightwatch {
@@ -40,8 +40,7 @@ public:
 
   Weightwatch(int units, void (*function)());
   ~Weightwatch();
-  static void add(unsigned int units, unsigned int iterations);
-  static void check();
+  static void initialize(Weight& current_weight, void (*&check_hook)(void));
 
 private:
   typedef Pending_List<Weight> WW_Pending_List;
@@ -58,8 +57,16 @@ private:
   //! The ordered queue of pending weight thresholds.
   static WW_Pending_List pending;
 
-  //! Current weight.
-  static Weight weight_so_far;
+  //! Pointer to current weight.
+  static Weight *current_weight_ptr;
+
+  //! Pointer to check hook.
+  static void (**check_hook_ptr)(void);
+
+#ifndef NDEBUG
+  //! Weight at previous check.
+  static Weight previous_weight;
+#endif
 
   // Handle the addition of a new weight threshold.
   static WW_Pending_List::Iterator new_weight_threshold(int units,
@@ -67,8 +74,10 @@ private:
 						      bool& expired_flag);
 
   // Handle the removal of a weight threshold.
-  void remove_weight_threshold(WW_Pending_List::Iterator position);
+  static WW_Pending_List::Iterator remove_weight_threshold(WW_Pending_List::Iterator position);
 
+  //! Check weight threshold reaching.
+  static void check();
 };
 
 } // namespace Parma_Watchdog_Library

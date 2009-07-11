@@ -48,28 +48,6 @@ Weightwatch::Weightwatch(int units, void (*function)())
   pending_position = new_weight_threshold(units, handler, expired);
 }
 
-inline void
-Weightwatch::add(unsigned int units, unsigned int iterations) {
-  if (weight_so_far == 0)
-    return;
-  weight_so_far += (Weight)units * iterations;
-}
-
-inline void
-Weightwatch::check() {
-  if (weight_so_far == 0)
-    return;
-  WW_Pending_List::Iterator i = pending.begin();
-  assert(i != pending.end());
-  while (weight_so_far >= i->deadline()) {
-    i->handler().act();
-    i->expired_flag() = true;
-    i = pending.erase(i);
-    if (i == pending.end())
-      weight_so_far = 0;
-  }
-}
-
 } // namespace Parma_Watchdog_Library
 
 #endif // !defined(PWL_Weightwatch_inlines_hh)
