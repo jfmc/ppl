@@ -27,20 +27,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Watchdog_Library {
 
-template <typename Threshold, typename Compare>
-typename Pending_List<Threshold, Compare>::Iterator
-Pending_List<Threshold, Compare>::insert(const Threshold& deadline,
-				const Handler& handler,
-				bool& expired_flag) {
+template <typename Traits>
+typename Pending_List<Traits>::Iterator
+Pending_List<Traits>::insert(const typename Traits::Threshold& deadline,
+			     const Handler& handler,
+			     bool& expired_flag) {
   Iterator position = active_list.begin();
   for (Iterator active_list_end = active_list.end();
-       position != active_list_end && Compare()(position->deadline(), deadline);
+       position != active_list_end && Traits::less_than(position->deadline(), deadline);
        ++position)
     ;
   Iterator ppe;
   // Only allocate a new element if the free list is empty.
   if (free_list.empty())
-    ppe = new Pending_Element<Threshold>(deadline, handler, expired_flag);
+    ppe = new Pending_Element<typename Traits::Threshold>(deadline, handler, expired_flag);
   else {
     ppe = free_list.begin();
     free_list.erase(ppe);
@@ -51,22 +51,22 @@ Pending_List<Threshold, Compare>::insert(const Threshold& deadline,
   return r;
 }
 
-template <typename Threshold, typename Compare>
+template <typename Traits>
 bool
-Pending_List<Threshold, Compare>::OK() const {
+Pending_List<Traits>::OK() const {
   if (!active_list.OK())
     return false;
 
   if (!free_list.OK())
     return false;
 
-  const Threshold* old;
+  const typename Traits::Threshold* old;
   Const_Iterator i = active_list.begin();
   old = &i->deadline();
   ++i;
   for (Const_Iterator active_list_end = active_list.end(); i != active_list_end; ++i) {
-    const Threshold& t = i->deadline();
-    if (Compare()(t, *old)) {
+    const typename Traits::Threshold& t = i->deadline();
+    if (Traits::less_than(t, *old)) {
 #ifndef NDEBUG
       std::cerr << "The active list is not sorted!"
 		<< std::endl;

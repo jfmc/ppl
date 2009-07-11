@@ -29,14 +29,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Handler.types.hh"
 
 //! An ordered list for recording pending watchdog events.
-template <typename Threshold, typename Compare>
+template <typename Traits>
 class Parma_Watchdog_Library::Pending_List {
 public:
   //! A non-const iterator to traverse the list.
-  typedef typename EList<Pending_Element<Threshold> >::Iterator Iterator;
+  typedef typename EList<Pending_Element<typename Traits::Threshold> >::Iterator Iterator;
 
   //! A const iterator to traverse the list.
-  typedef typename EList<Pending_Element<Threshold> >::Const_Iterator Const_Iterator;
+  typedef typename EList<Pending_Element<typename Traits::Threshold> >::Const_Iterator Const_Iterator;
 
   //! Constructs an empty list.
   Pending_List();
@@ -45,7 +45,7 @@ public:
   ~Pending_List();
 
   //! Inserts a new Pending_Element object with the given attributes.
-  Iterator insert(const Threshold& deadline,
+  Iterator insert(const typename Traits::Threshold& deadline,
 		  const Handler& handler,
 		  bool& expired_flag);
 
@@ -68,8 +68,8 @@ public:
   bool OK() const;
 
 private:
-  EList<Pending_Element<Threshold> > active_list;
-  EList<Pending_Element<Threshold> > free_list;
+  EList<Pending_Element<typename Traits::Threshold> > active_list;
+  EList<Pending_Element<typename Traits::Threshold> > free_list;
 };
 
 #include "Pending_List.inlines.hh"

@@ -1,4 +1,4 @@
-/* Weightwatch and associated classes' implementation (non-inline functions).
+/* Threshold_Watcher and associated classes' implementation (non-inline functions).
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
@@ -22,15 +22,5 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <pwl-config.h>
 
-#include "Weightwatch.defs.hh"
+#include "Threshold_Watcher.defs.hh"
 
-namespace Parma_Watchdog_Library {
-
-#if 0
-// The ordered queue of pending thresholds.
-Weightwatch::WW_Pending_List Weightwatch::pending;
-
-void (**Weightwatch::check_hook_ptr)(void) = 0;
-#endif
-
-}

@@ -1,4 +1,4 @@
-/* Weightwatch and associated classes' implementation: inline functions.
+/* Threshold_Watcher and associated classes' implementation: inline functions.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PWL_Weightwatch_inlines_hh
-#define PWL_Weightwatch_inlines_hh 1
+#ifndef PWL_Threshold_Watcher_inlines_hh
+#define PWL_Threshold_Watcher_inlines_hh 1
 
 #include <stdexcept>
 
@@ -29,27 +29,31 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Watchdog_Library {
 
-template <typename Threshold, typename Get, typename Compare>
+template <typename Traits>
 template <typename Flag_Base, typename Flag>
-Weightwatch<Threshold, Get, Compare>::Weightwatch(const Threshold& threshold, const Flag_Base* volatile& holder, Flag& flag)
+Threshold_Watcher<Traits>::Threshold_Watcher(const typename Traits::Delta& delta, const Flag_Base* volatile& holder, Flag& flag)
   : expired(false),
     handler(*new Handler_Flag<Flag_Base, Flag>(holder, flag)) {
-  if (!Compare()(Get()(), threshold))
-    throw std::invalid_argument("Weightwatch constructor called with a"
+  typename Traits::Threshold threshold;
+  Traits::from_delta(threshold, delta);
+  if (!Traits::less_than(Traits::get(), threshold))
+    throw std::invalid_argument("Threshold_Watcher constructor called with a"
 				" threshold already reached");
   pending_position = add_threshold(threshold, handler, expired);
 }
 
-template <typename Threshold, typename Get, typename Compare>
+template <typename Traits>
 inline
-Weightwatch<Threshold, Get, Compare>::Weightwatch(const Threshold& threshold, void (*function)())
+Threshold_Watcher<Traits>::Threshold_Watcher(const typename Traits::Delta& delta, void (*function)())
   : expired(false), handler(*new Handler_Function(function)) {
-  if (!Compare()(Get()(), threshold))
-    throw std::invalid_argument("Weightwatch constructor called with a"
+  typename Traits::Threshold threshold;
+  Traits::from_delta(threshold, delta);
+  if (!Traits::less_than(Traits::get(), threshold))
+    throw std::invalid_argument("Threshold_Watcher constructor called with a"
 				" threshold already reached");
   pending_position = add_threshold(threshold, handler, expired);
 }
 
 } // namespace Parma_Watchdog_Library
 
-#endif // !defined(PWL_Weightwatch_inlines_hh)
+#endif // !defined(PWL_Threshold_Watcher_inlines_hh)

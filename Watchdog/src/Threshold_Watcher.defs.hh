@@ -1,4 +1,4 @@
-/* Weightwatch and associated classes' declaration and inline functions.
+/* Threshold_Watcher and associated classes' declaration and inline functions.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
@@ -20,10 +20,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PWL_Weightwatch_defs_hh
-#define PWL_Weightwatch_defs_hh 1
+#ifndef PWL_Threshold_Watcher_defs_hh
+#define PWL_Threshold_Watcher_defs_hh 1
 
-#include "Weightwatch.types.hh"
+#include "Threshold_Watcher.types.hh"
 #include "Handler.types.hh"
 #include "Pending_List.defs.hh"
 #include <cassert>
@@ -31,39 +31,37 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Watchdog_Library {
 
 //! A watchdog for thresholds exceeding.
-template <typename Threshold, typename Get, typename Compare>
-class Weightwatch {
+template <typename Traits>
+class Threshold_Watcher {
 public:
   template <typename Flag_Base, typename Flag>
-  Weightwatch(const Threshold& threshold, const Flag_Base* volatile& holder, Flag& flag);
+  Threshold_Watcher(const typename Traits::Delta& delta, const Flag_Base* volatile& holder, Flag& flag);
 
-  Weightwatch(const Threshold& threshold, void (*function)());
-  ~Weightwatch();
+  Threshold_Watcher(const typename Traits::Delta& delta, void (*function)());
+  ~Threshold_Watcher();
 
 private:
-  typedef Pending_List<Threshold, Compare> WW_Pending_List;
+  typedef Pending_List<Traits> WW_Pending_List;
 
   bool expired;
   const Handler& handler;
   typename WW_Pending_List::Iterator pending_position;
 
   // Just to prevent their use.
-  Weightwatch(const Weightwatch&);
-  Weightwatch& operator=(const Weightwatch&);
+  Threshold_Watcher(const Threshold_Watcher&);
+  Threshold_Watcher& operator=(const Threshold_Watcher&);
 
   struct Initialize {
-    Initialize(void (*&check_hook)(void));
+    Initialize(int) {
+    }
     //! The ordered queue of pending thresholds.
     WW_Pending_List pending;
-
-    //! Pointer to check hook.
-    void (**check_hook_ptr)(void);
   };
   static Initialize initialize;
 
   // Handle the addition of a new threshold.
   static typename WW_Pending_List::Iterator
-  add_threshold(Threshold threshold,
+  add_threshold(typename Traits::Threshold threshold,
 		const Handler& handler,
 		bool& expired_flag);
 
@@ -71,15 +69,15 @@ private:
   static typename WW_Pending_List::Iterator
   remove_threshold(typename WW_Pending_List::Iterator position);
 
-  //! Check threshold exceeding.
+  //! Check threshold reaching.
   static void check();
 
 };
 
 } // namespace Parma_Watchdog_Library
 
-#include "Weightwatch.inlines.hh"
-#include "Weightwatch.templates.hh"
+#include "Threshold_Watcher.inlines.hh"
+#include "Threshold_Watcher.templates.hh"
 
-#endif // !defined(PWL_Watchdog_defs_hh)
+#endif // !defined(PWL_Threshold_Watcher_defs_hh)
 

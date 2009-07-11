@@ -9,12 +9,12 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PWL_Weightwatch_types_hh
-#define PWL_Weightwatch_types_hh 1
+#ifndef PWL_Threshold_Watcher_types_hh
+#define PWL_Threshold_Watcher_types_hh 1
 
 namespace Parma_Watchdog_Library {
-template <typename Threshold, typename Get, typename Compare>
-class Weightwatch;
+template <typename Traits>
+class Threshold_Watcher;
 }
 
-#endif // !defined(PWL_Weightwatch_types_hh)
+#endif // !defined(PWL_Threshold_Watcher_types_hh)

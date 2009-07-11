@@ -39,6 +39,13 @@ namespace Parma_Watchdog_Library {
 // Set linkage now to declare it friend later.
 extern "C" void PWL_handle_timeout(int signum);
 
+struct Watchdog_Traits {
+  typedef Time Threshold;
+  static bool less_than(const Threshold& a, const Threshold& b) {
+    return a < b;
+  }
+};
+
 //! A watchdog timer.
 class Watchdog {
 public:
@@ -50,7 +57,7 @@ public:
 
 
 private:
-  typedef Pending_List<Time, std::less<Time> > WD_Pending_List;
+  typedef Pending_List<Watchdog_Traits> WD_Pending_List;
   friend class Init;
   static void initialize();
   static void finalize();
