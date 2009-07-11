@@ -34,7 +34,7 @@ template <typename Flag_Base, typename Flag>
 Weightwatch<Threshold, Get, Compare>::Weightwatch(const Threshold& threshold, const Flag_Base* volatile& holder, Flag& flag)
   : expired(false),
     handler(*new Handler_Flag<Flag_Base, Flag>(holder, flag)) {
-  if (!Compare()(threshold, Get()()))
+  if (!Compare()(Get()(), threshold))
     throw std::invalid_argument("Weightwatch constructor called with a"
 				" threshold already reached");
   pending_position = add_threshold(threshold, handler, expired);
@@ -44,7 +44,7 @@ template <typename Threshold, typename Get, typename Compare>
 inline
 Weightwatch<Threshold, Get, Compare>::Weightwatch(const Threshold& threshold, void (*function)())
   : expired(false), handler(*new Handler_Function(function)) {
-  if (!Compare()(threshold, Get()()))
+  if (!Compare()(Get()(), threshold))
     throw std::invalid_argument("Weightwatch constructor called with a"
 				" threshold already reached");
   pending_position = add_threshold(threshold, handler, expired);
