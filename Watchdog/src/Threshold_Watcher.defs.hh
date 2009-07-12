@@ -54,12 +54,10 @@ private:
   Threshold_Watcher& operator=(const Threshold_Watcher&);
 
   struct Initialize {
-    Initialize(int) {
-    }
     //! The ordered queue of pending thresholds.
     WW_Pending_List pending;
   };
-  static Initialize initialize;
+  static Initialize init;
 
   // Handle the addition of a new threshold.
   static typename WW_Pending_List::Iterator

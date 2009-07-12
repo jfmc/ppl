@@ -31,15 +31,15 @@ Threshold_Watcher<Traits>::add_threshold(typename Traits::Threshold threshold,
                                          const Handler& handler,
                                          bool& expired_flag) {
   Traits::check_function = Threshold_Watcher::check;
-  return initialize.pending.insert(threshold, handler, expired_flag);
+  return init.pending.insert(threshold, handler, expired_flag);
 }
 
 template <typename Traits>
 typename Threshold_Watcher<Traits>::WW_Pending_List::Iterator
 Threshold_Watcher<Traits>
 ::remove_threshold(typename WW_Pending_List::Iterator position) {
-  typename WW_Pending_List::Iterator i = initialize.pending.erase(position);
-  if (initialize.pending.empty())
+  typename WW_Pending_List::Iterator i = init.pending.erase(position);
+  if (init.pending.empty())
     Traits::check_function = 0;
   return i;
 }
@@ -54,14 +54,14 @@ Threshold_Watcher<Traits>::~Threshold_Watcher() {
 template <typename Traits>
 void
 Threshold_Watcher<Traits>::check() {
-  typename WW_Pending_List::Iterator i = initialize.pending.begin();
-  assert(i != initialize.pending.end());
+  typename WW_Pending_List::Iterator i = init.pending.begin();
+  assert(i != init.pending.end());
   const typename Traits::Threshold& current = Traits::get();
   while (!Traits::less_than(current, i->deadline())) {
     i->handler().act();
     i->expired_flag() = true;
     i = remove_threshold(i);
-    if (i == initialize.pending.end())
+    if (i == init.pending.end())
       break;
   }
 }

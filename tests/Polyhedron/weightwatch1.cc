@@ -29,8 +29,8 @@ namespace {
 typedef
 Parma_Watchdog_Library::Threshold_Watcher<Weightwatch_Traits> Weightwatch;
 
-template <>
-Weightwatch::Initialize Weightwatch::initialize(0);
+template <> Weightwatch::Initialize
+Weightwatch::init = Weightwatch::Initialize();
 
 
 class Deterministic_Timeout
