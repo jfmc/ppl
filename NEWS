@@ -10,7 +10,7 @@ NEWS for version 0.11  (released date to be decided)
 New and Changed Features
 ========================
 
-o  Implementation of general (NNC) polyhedra speeded up.
+o  Implementation of general (C and NNC) polyhedra speeded up.
 
 o  When the PPL has been configured with
    CPPFLAGS="-DPPL_ARM_CAN_CONTROL_FPU=1", the library initialization
