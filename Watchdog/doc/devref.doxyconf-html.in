@@ -99,11 +99,14 @@ INPUT                  = @srcdir@/../src/Doubly_Linked_Object.types.hh \
                          @srcdir@/../src/Pending_Element.types.hh \
                          @srcdir@/../src/Pending_Element.defs.hh \
                          @srcdir@/../src/Pending_Element.inlines.hh \
-                         @srcdir@/../src/Pending_Element.cc \
                          @srcdir@/../src/Pending_List.types.hh \
                          @srcdir@/../src/Pending_List.defs.hh \
                          @srcdir@/../src/Pending_List.inlines.hh \
-                         @srcdir@/../src/Pending_List.cc \
+                         @srcdir@/../src/Threshold_Watcher.types.hh \
+                         @srcdir@/../src/Threshold_Watcher.defs.hh \
+                         @srcdir@/../src/Threshold_Watcher.inlines.hh \
+                         @srcdir@/../src/Threshold_Watcher.templates.hh \
+                         @srcdir@/../src/Threshold_Watcher.cc \
                          @srcdir@/../src/Time.types.hh \
                          @srcdir@/../src/Time.defs.hh \
                          @srcdir@/../src/Time.inlines.hh \
