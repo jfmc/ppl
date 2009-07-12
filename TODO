@@ -2,8 +2,6 @@
 Enhancements for PPL 0.11
 =========================
 
-- Consider adding the --with-gmp configure option, removing
-  --with-libgmp-prefix and --with-libgmpxx-prefix.
 - Add the domain of circular linear progressions.
 - Finish the domain of intervals.
 - Make all the *affine*image() methods uniform as far as the
