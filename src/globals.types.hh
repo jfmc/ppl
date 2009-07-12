@@ -152,6 +152,8 @@ enum Bounded_Integer_Type_Overflow {
   OVERFLOW_IMPOSSIBLE
 };
 
+struct Weightwatch_Traits;
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_globals_types_hh)

@@ -382,6 +382,45 @@ ppl_set_timeout PPL_PROTO((unsigned time));
 int
 ppl_reset_timeout PPL_PROTO((void));
 
+/*! \brief
+  Sets a threshold for computations whose completion could require
+  an exponential amount of time.
+
+  \param weight
+  The maximum computational weight allowed.
+  It must be strictly greater than zero.
+
+  Computations taking exponential time will be interrupted some time
+  after reaching the \p weight complexity threshold. If the computation
+  is interrupted that way, the interrupted function will return error code
+  <code>PPL_TIMEOUT_EXCEPTION</code>.
+  Otherwise, if the computation completes without being interrupted,
+  then the deterministic timeout should be reset by calling
+  <code>ppl_reset_deterministic_timeout()</code>.
+
+  \note
+  This "timeout" checking functionality is said to be \e deterministic
+  because it is not based on actual elapsed time. Its behavior will
+  only depend on (some of the) computations performed in the PPL library
+  and it will be otherwise independent from the computation environment
+  (CPU, operating system, compiler, etc.).
+
+  \warning
+  The weight mechanism is under alpha testing. In particular,
+  there is still no clear relation between the weight threshold and
+  the actual computational complexity. As a consequence, client
+  applications should be ready to reconsider the tuning of these
+  weight thresholds when upgrading to newer version of the PPL.
+*/
+int
+ppl_set_deterministic_timeout PPL_PROTO((unsigned weight));
+
+/*! \brief
+  Resets the deterministic timeout so that the computation is not interrupted.
+*/
+int
+ppl_reset_deterministic_timeout PPL_PROTO((void));
+
 /*@}*/ /* Timeout Handling */
 
 /*! \defgroup Datatypes Library Datatypes
