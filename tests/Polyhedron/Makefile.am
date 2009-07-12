@@ -644,6 +644,8 @@ memory1_SRCS = memory1.cc
 
 watchdog1_SRCS = watchdog1.cc
 
+weightwatch1_SRCS = weightwatch1.cc
+
 if !VALGRIND_TESTS_ENABLED
 VALGRIND_BRITTLE_TESTS = memory1
 
@@ -653,14 +655,25 @@ endif !VALGRIND_TESTS_ENABLED
 
 
 if BUILD_WATCHDOG_LIBRARY
-WATCHDOG_TESTS = watchdog1
 
-watchdog1_SOURCES = $(watchdog1_SRCS)
-watchdog1_CPPFLAGS = \
+WATCHDOG_TESTS = \
+watchdog1 \
+weightwatch1
+
+WATCHDOG_LIBRARY_CPPFLAGS = \
 $(AM_CPPFLAGS) \
 -I$(top_builddir)/Watchdog \
 -I$(top_builddir)/Watchdog/src
-watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
+
+WATCHDOG_LIBRARY_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
+
+watchdog1_SOURCES = $(watchdog1_SRCS)
+watchdog1_CPPFLAGS = $(WATCHDOG_LIBRARY_CPPFLAGS)
+watchdog1_LDADD = $(WATCHDOG_LIBRARY_LDADD)
+
+weightwatch1_SOURCES = $(weightwatch1_SRCS)
+weightwatch1_CPPFLAGS = $(WATCHDOG_LIBRARY_CPPFLAGS)
+weightwatch1_LDADD = $(WATCHDOG_LIBRARY_LDADD)
 
 endif BUILD_WATCHDOG_LIBRARY
 
@@ -674,7 +687,7 @@ XFAIL_TESTS =
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
-EXTRA_DIST = $(memory1_SRCS) $(watchdog1_SRCS)
+EXTRA_DIST = $(memory1_SRCS) $(watchdog1_SRCS) $(weightwatch1_SRCS)
 
 BUGS =
 
