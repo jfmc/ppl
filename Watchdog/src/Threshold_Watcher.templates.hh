@@ -28,17 +28,17 @@ namespace Parma_Watchdog_Library {
 template <typename Traits>
 typename Threshold_Watcher<Traits>::WW_Pending_List::Iterator
 Threshold_Watcher<Traits>::add_threshold(typename Traits::Threshold threshold,
-				   const Handler& handler,
-				   bool& expired_flag) {
+                                         const Handler& handler,
+                                         bool& expired_flag) {
   Traits::check_function = Threshold_Watcher::check;
   return initialize.pending.insert(threshold, handler, expired_flag);
 }
 
 template <typename Traits>
 typename Threshold_Watcher<Traits>::WW_Pending_List::Iterator
-Threshold_Watcher<Traits>::remove_threshold(typename WW_Pending_List::Iterator position) {
-  typename WW_Pending_List::Iterator i;
-  i = initialize.pending.erase(position);
+Threshold_Watcher<Traits>
+::remove_threshold(typename WW_Pending_List::Iterator position) {
+  typename WW_Pending_List::Iterator i = initialize.pending.erase(position);
   if (initialize.pending.empty())
     Traits::check_function = 0;
   return i;

@@ -13,8 +13,10 @@ PURPOSE. */
 #define PWL_Threshold_Watcher_types_hh 1
 
 namespace Parma_Watchdog_Library {
+
 template <typename Traits>
 class Threshold_Watcher;
-}
+
+} // namespace Parma_Watchdog_Library
 
 #endif // !defined(PWL_Threshold_Watcher_types_hh)

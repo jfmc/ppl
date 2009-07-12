@@ -28,16 +28,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Pending_List.defs.hh"
 #include <cassert>
 
-namespace Parma_Watchdog_Library {
-
 //! A watchdog for thresholds exceeding.
 template <typename Traits>
-class Threshold_Watcher {
+class Parma_Watchdog_Library::Threshold_Watcher {
 public:
   template <typename Flag_Base, typename Flag>
-  Threshold_Watcher(const typename Traits::Delta& delta, const Flag_Base* volatile& holder, Flag& flag);
+  Threshold_Watcher(const typename Traits::Delta& delta,
+                    const Flag_Base* volatile& holder,
+                    Flag& flag);
 
-  Threshold_Watcher(const typename Traits::Delta& delta, void (*function)());
+  Threshold_Watcher(const typename Traits::Delta& delta,
+                    void (*function)());
+
   ~Threshold_Watcher();
 
 private:
@@ -73,8 +75,6 @@ private:
   static void check();
 
 };
-
-} // namespace Parma_Watchdog_Library
 
 #include "Threshold_Watcher.inlines.hh"
 #include "Threshold_Watcher.templates.hh"
