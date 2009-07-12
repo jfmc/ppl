@@ -55,7 +55,6 @@ public:
   Watchdog(unsigned int units, void (*function)());
   ~Watchdog();
 
-
 private:
   typedef Pending_List<Watchdog_Traits> WD_Pending_List;
   friend class Init;
