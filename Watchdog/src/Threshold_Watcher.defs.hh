@@ -28,7 +28,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Pending_List.defs.hh"
 #include <cassert>
 
-//! A watchdog for thresholds exceeding.
+/*! \brief
+  A class of watchdogs controlling the exceeding of a threshold.
+
+  \tparam Traits
+  FIXME
+*/
 template <typename Traits>
 class Parma_Watchdog_Library::Threshold_Watcher {
 public:
@@ -43,11 +48,11 @@ public:
   ~Threshold_Watcher();
 
 private:
-  typedef Pending_List<Traits> WW_Pending_List;
+  typedef Pending_List<Traits> TW_Pending_List;
 
   bool expired;
   const Handler& handler;
-  typename WW_Pending_List::Iterator pending_position;
+  typename TW_Pending_List::Iterator pending_position;
 
   // Just to prevent their use.
   Threshold_Watcher(const Threshold_Watcher&);
@@ -55,19 +60,19 @@ private:
 
   struct Initialize {
     //! The ordered queue of pending thresholds.
-    WW_Pending_List pending;
+    TW_Pending_List pending;
   };
   static Initialize init;
 
   // Handle the addition of a new threshold.
-  static typename WW_Pending_List::Iterator
+  static typename TW_Pending_List::Iterator
   add_threshold(typename Traits::Threshold threshold,
 		const Handler& handler,
 		bool& expired_flag);
 
   // Handle the removal of a threshold.
-  static typename WW_Pending_List::Iterator
-  remove_threshold(typename WW_Pending_List::Iterator position);
+  static typename TW_Pending_List::Iterator
+  remove_threshold(typename TW_Pending_List::Iterator position);
 
   //! Check threshold reaching.
   static void check();
