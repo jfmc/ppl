@@ -365,7 +365,7 @@ PPL::Affine_Space::widening_assign(const Affine_Space& y, unsigned*) {
   Affine_Space& x = *this;
 
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (x.space_dimension() != y.space_dimension())
     throw_dimension_incompatible("widening_assign(y)", "y", y);
 
 #ifndef NDEBUG
@@ -385,7 +385,7 @@ PPL::Affine_Space::limited_extrapolation_assign(const Affine_Space& y,
   Affine_Space& x = *this;
 
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (x.space_dimension() != y.space_dimension())
     throw_dimension_incompatible("widening_assign(y)", "y", y);
 
 #ifndef NDEBUG
