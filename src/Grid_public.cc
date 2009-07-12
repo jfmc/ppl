@@ -2700,7 +2700,6 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
     PPL_DIRTY_TEMP_COEFFICIENT(f_d);
     PPL_DIRTY_TEMP_COEFFICIENT(v_n);
     PPL_DIRTY_TEMP_COEFFICIENT(v_d);
-    PPL_DIRTY_TEMP_COEFFICIENT(f_d_wrap_frequency);
     for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars.end(); ++i) {
       const Variable x = Variable(*i);
