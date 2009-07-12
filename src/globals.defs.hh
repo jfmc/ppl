@@ -84,6 +84,44 @@ dimension_type
 compute_capacity(dimension_type requested_size,
 		 dimension_type maximum_size);
 
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Traits class for the deterministic timeout mechanism.
+/*! \ingroup PPL_CXX_interface
+  This abstract base class should be instantiated by those users
+  willing to provide a polynomial upper bound to the time spent
+  by any invocation of a library operator.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+struct Weightwatch_Traits {
+  //! The type used to specify thresholds for computational weight.
+  typedef unsigned int Threshold;
+
+  //! The type used to specify increments of computational weight.
+  typedef unsigned int Delta;
+
+  //! Returns the current computational weight.
+  static const Threshold& get();
+
+  //! Compares the two weights \p a and \p b.
+  static bool less_than(const Threshold& a, const Threshold& b);
+
+  //! Sets \p threshold to be \p delta units bigger than the current weigth.
+  static void from_delta(Threshold& threshold, const Delta& delta);
+
+  //! The current computational weight.
+  static Threshold weight;
+
+  /*! \brief
+    A pointer to the function that has to be called when checking
+    the reaching of thresholds.
+
+    The pointer can be null if no threshold are set.
+  */
+  static void (*check_function)(void);
+};
+
+
 //! User objects the PPL can throw.
 /*! \ingroup PPL_CXX_interface
   This abstract base class should be instantiated by those users

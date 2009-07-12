@@ -33,12 +33,31 @@ not_a_dimension() {
   return std::numeric_limits<dimension_type>::max();
 }
 
+inline const Weightwatch_Traits::Threshold&
+Weightwatch_Traits::get() {
+  return weight;
+}
+
+inline bool
+Weightwatch_Traits::less_than(const Threshold& a, const Threshold& b) {
+  return b - a < 1U << (sizeof(Threshold)*8-1);
+}
+
+inline void
+Weightwatch_Traits::from_delta(Threshold& threshold, const Delta& delta) {
+  threshold = weight + delta;
+}
+
 inline
 Throwable::~Throwable() {
 }
 
 inline void
 maybe_abandon() {
+  if (Weightwatch_Traits::check_function) {
+    ++Weightwatch_Traits::weight;
+    Weightwatch_Traits::check_function();
+  }
   if (const Throwable* p = abandon_expensive_computations)
     p->throw_me();
 }

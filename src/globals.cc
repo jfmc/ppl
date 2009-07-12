@@ -30,3 +30,6 @@ namespace PPL = Parma_Polyhedra_Library;
 
 const PPL::Throwable* volatile PPL::abandon_expensive_computations = 0;
 
+// Initialize Weightwatch_Traits static data members.
+PPL::Weightwatch_Traits::Threshold PPL::Weightwatch_Traits::weight = 0;
+void (*PPL::Weightwatch_Traits::check_function)(void) = 0;
