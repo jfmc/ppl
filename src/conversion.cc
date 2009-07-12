@@ -34,11 +34,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-// True if abandon_expensive_computations should be checked often,
-// where the meaning of "often" is as stated in the documentation
-// of that variable.
-#define REACTIVE_ABANDONING 1
-
 /*!
   \return
   The number of lines of the polyhedron or the number of equality
@@ -414,18 +409,17 @@ PPL::Polyhedron::conversion(Linear_System& source,
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
 	break;
-#if REACTIVE_ABANDONING
       // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
       maybe_abandon();
-#endif
     }
     for (dimension_type i = index_non_zero + 1; i < dest_num_rows; ++i) {
       Scalar_Products::assign(scalar_prod[i], source_k, dest[i]);
-#if REACTIVE_ABANDONING
+      // Check if the client has requested abandoning all expensive
+      // computations.  If so, the exception specified by the client
+      // is thrown now.
       maybe_abandon();
-#endif
     }
 
     // We first treat the case when `index_non_zero' is less than
@@ -543,9 +537,10 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
 	}
-#if REACTIVE_ABANDONING
+        // Check if the client has requested abandoning all expensive
+        // computations.  If so, the exception specified by the client
+        // is thrown now.
 	maybe_abandon();
-#endif
       }
       // Since the `scalar_prod_nle' is positive (by construction), it
       // does not saturate the constraint `source_k'.  Therefore, if
@@ -761,9 +756,10 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		}
 	      }
 	    }
-#if REACTIVE_ABANDONING
+            // Check if the client has requested abandoning all expensive
+            // computations.  If so, the exception specified by the client
+            // is thrown now.
 	    maybe_abandon();
-#endif
 	  }
 	  // Now we substitute the rays in Q- (i.e., the rays violating
 	  // the constraint) with the newly added rays.
@@ -808,12 +804,6 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	++k;
       }
     }
-#if !REACTIVE_ABANDONING
-    // Check if the client has requested abandoning all expensive
-    // computations.  If so, the exception specified by the client
-    // is thrown now.
-    maybe_abandon();
-#endif
   }
 
   // We may have identified some redundant constraints in `source',
