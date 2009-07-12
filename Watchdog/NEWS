@@ -4,6 +4,14 @@ Parma Watchdog Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.8  (released date to be decided)
+--------------------------------------------------------------------------
+
+o  The new class Threshold_Watcher allows to define, generically,
+   any kind of watchdog controlling the exceeding of a threshold.
+
+
+--------------------------------------------------------------------------
 NEWS for version 0.7  (released on April 14, 2009)
 --------------------------------------------------------------------------
 
