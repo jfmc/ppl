@@ -160,7 +160,7 @@ PWL::PWL_handle_timeout(int signum) {
 }
 
 PWL::Watchdog::WD_Pending_List::Iterator
-PWL::Watchdog::new_watchdog_event(int units,
+PWL::Watchdog::new_watchdog_event(unsigned int units,
 				  const Handler& handler,
 				  bool& expired_flag) {
   assert(units > 0);
