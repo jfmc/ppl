@@ -116,7 +116,7 @@ struct Weightwatch_Traits {
     A pointer to the function that has to be called when checking
     the reaching of thresholds.
 
-    The pointer can be null if no threshold are set.
+    The pointer can be null if no thresholds are set.
   */
   static void (*check_function)(void);
 };
