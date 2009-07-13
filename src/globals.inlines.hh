@@ -53,13 +53,19 @@ Throwable::~Throwable() {
 }
 
 #ifndef NDEBUG
-extern int in_assert;
+namespace Implementation {
+
+//! Non zero during evaluation of PPL_ASSERT expression.
+extern unsigned int in_assert;
+
+} // namespace Implementation
+
 #endif
 
 inline void
 maybe_abandon() {
 #ifndef NDEBUG
-  if (in_assert)
+  if (Implementation::in_assert)
     return;
 #endif
   ++Weightwatch_Traits::weight;

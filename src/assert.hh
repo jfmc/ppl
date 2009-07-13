@@ -26,14 +26,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include "globals.defs.hh"
 
-namespace Parma_Polyhedra_Library {
-
 #if defined(NDEBUG)
 
 #define PPL_ASSERT(cond__)
 #define PPL_ASSERT_HEAVY(cond__)
 
 #else
+
+namespace Parma_Polyhedra_Library {
+
+namespace Implementation {
+
+//! Non zero during evaluation of PPL_ASSERT expression.
+extern unsigned int in_assert;
+
+} // namespace Implementation
+
+} // namespace Parma_Polyhedra_Library
 
 #define PPL_DEBUG_PPL_ASSERT 1
 #if !PPL_DEBUG_PPL_ASSERT
@@ -50,14 +59,12 @@ namespace Parma_Polyhedra_Library {
   } while(0)
 #endif
 
-#define PPL_ASSERT_HEAVY(cond__)		\
-    do {					\
-      ++Parma_Polyhedra_Library::in_assert;	\
-      assert(cond__);				\
-      --Parma_Polyhedra_Library::in_assert;	\
+#define PPL_ASSERT_HEAVY(cond__)				\
+  do {								\
+      ++Parma_Polyhedra_Library::Implementation::in_assert;	\
+      assert(cond__);						\
+      --Parma_Polyhedra_Library::Implementation::in_assert;	\
     } while (0)
 #endif
-
-} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_assert_hh)
