@@ -21,9 +21,11 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
+#include "globals.defs.hh"
+
+#if PPL_PROFILE_ADD_WEIGHT
 #include <iostream>
 #include <cmath>
-#include "globals.defs.hh"
 #include "Weight_Profiler.defs.hh"
 
 namespace Parma_Polyhedra_Library {
@@ -72,3 +74,5 @@ struct timespec Weight_Profiler::stamp;
 double Weight_Profiler::adj = Weight_Profiler::tune_adj();
 
 } // namespace Parma_Polyhedra_Library
+
+#endif
