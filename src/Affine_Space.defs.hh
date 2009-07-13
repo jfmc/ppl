@@ -435,7 +435,7 @@ public:
   /*!
     The affine space inherits the space dimension of the generator system.
 
-    \param const_gs
+    \param gs
     The system of generators defining the affine space.
 
     \exception std::invalid_argument

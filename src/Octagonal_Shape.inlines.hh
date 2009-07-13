@@ -43,7 +43,7 @@ namespace Octagonal_Shapes {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns the index coherent to \p i.
-/*! \relates Octagonal_Shape */
+/*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 inline dimension_type
 coherent_index(const dimension_type i) {
