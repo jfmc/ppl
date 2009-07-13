@@ -108,17 +108,15 @@ bool test01() {
     // Thanks to the blind relaxation of the strict inequality constraint,
     // polyhedron ph is easily seen to contain an integer point.
     const bool contains = ph.contains_integer_point();
-    nout << "\nph " << (contains ? "contains" : "does not contain")
+    nout << endl << "ph "
+         << (contains ? "contains" : "does not contain")
          << " an integer point" << endl;
     return contains;
   }
+  // Note: other exceptions are just propagated.
   catch (const Deterministic_Timeout& e) {
     // Unexpected timeout exception.
-    nout << e.what() << endl;
-    return false;
-  }
-  catch (...) {
-    // Unexpected exception.
+    nout << endl << e.what() << endl;
     return false;
   }
   // Should never get here.
@@ -176,18 +174,16 @@ bool test02() {
     // The branch-and-bound heuristics of the MIP solver behaves badly
     // on this particular example, causing timeout to expire.
     const bool contains = ph.contains_integer_point();
-    nout << "ph " << (contains ? "contains" : "does not contain")
+    nout << endl
+         << "ph " << (contains ? "contains" : "does not contain")
          << " an integer point" << endl;
     return false;
   }
+  // Note: other exceptions are just propagated.
   catch (const Deterministic_Timeout& e) {
     // Expected exception.
-    nout << e.what() << endl;
+    nout << endl << e.what() << endl;
     return true;
-  }
-  catch (...) {
-    // Unexpected exception.
-    return false;
   }
   // Should never get here.
   return false;
@@ -216,18 +212,16 @@ bool test03() {
     // onto a lower dimensional space: the performance issue of previous
     // test does not depend on high dimension vector space.
     const bool contains = ph.contains_integer_point();
-    nout << "ph " << (contains ? "contains" : "does not contain")
+    nout << endl
+         << "ph " << (contains ? "contains" : "does not contain")
          << " an integer point" << endl;
     return false;
   }
+  // Note: other exceptions are just propagated.
   catch (const Deterministic_Timeout& e) {
     // Expected exception.
-    nout << e.what() << endl;
+    nout << endl << e.what() << endl;
     return true;
-  }
-  catch (...) {
-    // Unexpected exception.
-    return false;
   }
   // Should never get here.
   return false;
