@@ -257,6 +257,16 @@ handle_exception(JNIEnv* env, const timeout_exception&) {
 }
 
 void
+handle_exception(JNIEnv* env, const deterministic_timeout_exception&) {
+  reset_deterministic_timeout();
+  jclass newExcCls
+    = env->FindClass("parma_polyhedra_library/Timeout_Exception");
+  CHECK_RESULT_ASSERT(env, newExcCls);
+  jint ret = env->ThrowNew(newExcCls, "PPL deterministic timeout expired");
+  CHECK_RESULT_ABORT(env, (ret == 0));
+}
+
+void
 handle_exception(JNIEnv* env) {
   jclass newExcCls = env->FindClass("java/lang/RuntimeException");
   CHECK_RESULT_ASSERT(env, newExcCls);
@@ -268,6 +278,8 @@ handle_exception(JNIEnv* env) {
 
 Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
 
+Weightwatch* p_deterministic_timeout_object = 0;
+
 #endif // PPL_WATCHDOG_LIBRARY_ENABLED
 
 void
@@ -276,6 +288,17 @@ reset_timeout() {
   if (p_timeout_object) {
     delete p_timeout_object;
     p_timeout_object = 0;
+    abandon_expensive_computations = 0;
+  }
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+}
+
+void
+reset_deterministic_timeout() {
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+  if (p_deterministic_timeout_object) {
+    delete p_deterministic_timeout_object;
+    p_deterministic_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
 #endif // PPL_WATCHDOG_LIBRARY_ENABLED
@@ -981,3 +1004,11 @@ build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs) {
 } // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
+
+
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+using namespace Parma_Polyhedra_Library::Interfaces::Java;
+
+template <> Weightwatch::Initialize
+Weightwatch::init = Weightwatch::Initialize();
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED

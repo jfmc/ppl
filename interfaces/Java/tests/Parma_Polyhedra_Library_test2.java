@@ -42,6 +42,14 @@ static {
         return timed_compute_open_hypercube_generators(hsecs, max_dimension);
     }
 
+    // This code tests the deterministic timeout functions.
+    public static boolean test02() {
+        int weight = 2000;
+        int max_dimension = 20;
+        return weighted_compute_open_hypercube_generators(weight,
+                                                          max_dimension);
+    }
+
     public static void main(String[] args) {
         Parma_Polyhedra_Library.initialize_library();
 	boolean test_result_ok =
@@ -86,6 +94,35 @@ static {
                     ph.generators();
                 } finally {
                     Parma_Polyhedra_Library.reset_timeout();
+                }
+            } catch (Timeout_Exception e) {
+                PPL_Test.println_if_noisy("Expected timeout exception caught:");
+                PPL_Test.println_if_noisy(e.getMessage());
+                return true;
+            } catch (Exception e) {
+                PPL_Test.println_if_noisy("Unexpected exception caught:");
+                PPL_Test.println_if_noisy(e.getMessage());
+                return false;
+            }
+        }
+        // Should not reach this point.
+        PPL_Test.println_if_noisy("Expected timeout exception NOT caught!");
+        return false;
+    }
+
+    private static boolean
+        weighted_compute_open_hypercube_generators(int weight,
+                                                   int max_dimension) {
+        for (int i = 0; i <= max_dimension; ++i) {
+            Polyhedron ph = new NNC_Polyhedron(i, Degenerate_Element.UNIVERSE);
+            open_hypercube(i, ph);
+            PPL_Test.println_if_noisy("Hypercube of dimension " + i);
+            try {
+                Parma_Polyhedra_Library.set_deterministic_timeout(weight);
+                try {
+                    ph.generators();
+                } finally {
+                    Parma_Polyhedra_Library.reset_deterministic_timeout();
                 }
             } catch (Timeout_Exception e) {
                 PPL_Test.println_if_noisy("Expected timeout exception caught:");
