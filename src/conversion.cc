@@ -406,10 +406,10 @@ PPL::Polyhedron::conversion(Linear_System& source,
       Scalar_Products::assign(scalar_prod[index_non_zero],
 			      source_k,
 			      dest[index_non_zero]);
+      WEIGHT_ADD(source_num_columns);
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
 	break;
-      WEIGHT_ADD(source_num_columns);
       // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
