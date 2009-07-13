@@ -20,6 +20,12 @@ o  When the PPL has been configured with
 o  New configure option --with-gmp-prefix supersedes the (now removed)
    options --with-libgmp-prefix and --with-libgmpxx-prefix.
 
+o  New "deterministic" timeout computation facilities: it is now possible
+   to set computational bounds (on the library calls taking exponential time)
+   that do not depend on the actual elapsed time and hence are independent
+   from the actual computation environment (CPU, operating system, etc.).
+   Still under alpha testing.
+
 o  The Java interface has to be explicitly initialized before use by
    calling static method Parma_Polyhedra_Library.initialize_library().
    Initialization makes more explicit the exact point where PPL
