@@ -58,7 +58,6 @@ maybe_abandon() {
   if (Implementation::in_assert)
     return;
 #endif
-  WEIGHT_ADD(1);
   if (Weightwatch_Traits::check_function)
     Weightwatch_Traits::check_function();
   if (const Throwable* p = abandon_expensive_computations)
