@@ -40,7 +40,7 @@ Weightwatch_Traits::get() {
 
 inline bool
 Weightwatch_Traits::less_than(const Threshold& a, const Threshold& b) {
-  return b - a < 1U << (sizeof(Threshold)*8-1);
+  return b - a < 1ULL << (sizeof(Threshold)*8-1);
 }
 
 inline void

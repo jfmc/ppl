@@ -31,7 +31,7 @@ class Weight_Profiler {
   enum { DISCARDED = 0, VALID = 1 };
 public:
   Weight_Profiler(const char* file, int line,
-		  Weightwatch_Traits::Threshold delta,
+		  Weightwatch_Traits::Delta delta,
 		  double tmin = 0, double tmax = 0)
     : file(file), line(line), delta(delta),
       tmin(tmin), tmax(tmax) {
@@ -56,7 +56,7 @@ public:
     assert(r >= 0);
   }
   void end(unsigned int factor = 1) {
-    Weightwatch_Traits::weight += delta * factor;
+    Weightwatch_Traits::weight += (Weightwatch_Traits::Threshold) delta * factor;
     struct timespec start = stamp;
     begin();
     double elapsed;
@@ -87,7 +87,7 @@ public:
  private:
   const char *file;
   int line;
-  Weightwatch_Traits::Threshold delta;
+  Weightwatch_Traits::Delta delta;
   double tmin;
   double tmax;
 

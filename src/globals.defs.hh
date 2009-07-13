@@ -95,10 +95,10 @@ compute_capacity(dimension_type requested_size,
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 struct Weightwatch_Traits {
   //! The type used to specify thresholds for computational weight.
-  typedef unsigned int Threshold;
+  typedef unsigned long long Threshold;
 
   //! The type used to specify increments of computational weight.
-  typedef unsigned int Delta;
+  typedef unsigned long long Delta;
 
   //! Returns the current computational weight.
   static const Threshold& get();
