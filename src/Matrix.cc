@@ -35,7 +35,7 @@ PPL::Matrix::Matrix(const dimension_type n_rows,
 		    Row::Flags row_flags)
   :
 #ifdef NDEBUG
-    rows(n_rows)),
+    rows(n_rows),
 #else
     rows(n_rows <= max_num_rows() ? n_rows : 0),
 #endif
