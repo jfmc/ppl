@@ -49,8 +49,9 @@ site: http://www.cs.unipr.it/ppl/ . */
   } while(0)
 #endif
 
-// The evaluation of asserted condition could have a non zero computational
-// weight (i.e. the execution path could encounter a WEIGHT_ADD).
+// The evaluation of asserted conditions could have a non zero
+// computational weight (i.e., the execution path could contain an
+// invocation of WEIGHT_ADD).
 #define PPL_ASSERT_HEAVY(cond__)				\
   do {								\
       ++Parma_Polyhedra_Library::Implementation::in_assert;	\
