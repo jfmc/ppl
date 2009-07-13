@@ -435,6 +435,28 @@ that are included with all instantiations of the Prolog interfaces.
 
    <EM>Resets the timeout time so that the computation is not interrupted.</EM>
 
+<P><CODE> ppl_set_deterministic_timeout(+Weight) </CODE><BR>
+
+   <EM>Computations taking exponential time will be interrupted
+   some time after reaching the <CODE>Weight</CODE> complexity threshold.
+   If the computation is interrupted that way, the current timeout
+   exception atom will be thrown.
+   <CODE>Weight</CODE> must be strictly greater than zero.</EM>
+   <P>
+   <EM>NOTE:</EM> This "timeout" checking functionality is said to be
+   <EM>deterministic</EM> because it is not based on actual elapsed time.
+   Its behavior will only depend on (some of the) computations performed
+   in the PPL library and it will be otherwise independent from the
+   computation environment (CPU, operating system, compiler, etc.).
+   The weight mechanism is under alpha testing: client applications
+   should be ready to reconsider the tuning of these weight thresholds
+   when upgrading to newer version of the PPL.
+
+<P><CODE> ppl_reset_deterministic_timeout </CODE><BR>
+
+   <EM>Resets the deterministic timeout so that the computation is not
+   interrupted.</EM>
+
 <P><CODE> ppl_set_rounding_for_PPL </CODE><BR>
 
    <EM>Sets the FPU rounding mode so that the PPL abstractions based on

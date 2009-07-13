@@ -421,7 +421,8 @@ handle_exception(const std::exception& e);
 void
 handle_exception();
 
-class timeout_exception : public Parma_Polyhedra_Library::Throwable {
+class timeout_exception
+  : public Parma_Polyhedra_Library::Throwable {
 public:
   void throw_me() const {
     throw *this;
@@ -429,12 +430,24 @@ public:
   int priority() const {
     return 0;
   }
-  timeout_exception() {
-  }
 };
 
 void
 handle_exception(const timeout_exception&);
+
+class deterministic_timeout_exception
+  : public Parma_Polyhedra_Library::Throwable {
+public:
+  void throw_me() const {
+    throw *this;
+  }
+  int priority() const {
+    return 0;
+  }
+};
+
+void
+handle_exception(const deterministic_timeout_exception&);
 
 #define CATCH_ALL \
   catch (const Prolog_unsigned_out_of_range& e) { \
@@ -483,6 +496,9 @@ handle_exception(const timeout_exception&);
     handle_exception(e); \
   } \
   catch (const timeout_exception& e) { \
+    handle_exception(e); \
+  } \
+  catch (const deterministic_timeout_exception& e) { \
     handle_exception(e); \
   } \
   catch(const std::overflow_error& e) { \
@@ -686,6 +702,12 @@ ppl_set_timeout(Prolog_term_ref t_time);
 
 extern "C" Prolog_foreign_return_type
 ppl_reset_timeout();
+
+extern "C" Prolog_foreign_return_type
+ppl_set_deterministic_timeout(Prolog_term_ref t_weight);
+
+extern "C" Prolog_foreign_return_type
+ppl_reset_deterministic_timeout();
 
 extern "C" Prolog_foreign_return_type
 ppl_Coefficient_is_bounded();
