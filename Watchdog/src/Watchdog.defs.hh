@@ -52,28 +52,39 @@ public:
   template <typename Flag_Base, typename Flag>
   Watchdog(unsigned int units, const Flag_Base* volatile& holder, Flag& flag);
 
+  /*! \brief
+    Constructor: if not reset, the watchdog will trigger after \p units
+    hundreths of seconds, invoking handler \p function.
+  */
   Watchdog(unsigned int units, void (*function)());
+
+  //! Destructor.
   ~Watchdog();
 
 private:
   typedef Pending_List<Watchdog_Traits> WD_Pending_List;
   friend class Init;
+
+  //! Static class initialization.
   static void initialize();
+  //! Static class finalization.
   static void finalize();
 
+  //! Whether or not this watchdog has expired.
   bool expired;
+
   const Handler& handler;
   WD_Pending_List::Iterator pending_position;
 
-private:
-  // Just to prevent their use.
+  // Private and not implemented: copy construction is not allowed.
   Watchdog(const Watchdog&);
+  // Private and not implemented: copy assignment is not allowed.
   Watchdog& operator=(const Watchdog&);
 
   // Pass this to getitimer().
   static itimerval current_timer_status;
 
-  // Get the timer value.
+  //! Reads the timer value into \p time.
   static void get_timer(Time& time);
 
   // Pass this to setitimer().
@@ -82,13 +93,13 @@ private:
   // Last time value we set the timer to.
   static Time last_time_requested;
 
-  // Set the timer value.
+  //! Sets the timer value to \p time.
   static void set_timer(const Time& time);
 
-  // Stops the timer.
+  //! Stops the timer.
   static void stop_timer();
 
-  // Quick reschedule to avoid race conditions.
+  //! Quick reschedule to avoid race conditions.
   static void reschedule();
 
   // Used by the above.
@@ -103,18 +114,19 @@ private:
   //! The actual signal handler.
   static void handle_timeout(int);
 
-  // Handle the addition of a new watchdog event.
-  static WD_Pending_List::Iterator new_watchdog_event(unsigned int units,
-						      const Handler& handler,
-						      bool& expired_flag);
+  //! Handles the addition of a new watchdog event.
+  static WD_Pending_List::Iterator
+  new_watchdog_event(unsigned int units,
+                     const Handler& handler,
+                     bool& expired_flag);
 
-  // Handle the removal of a watchdog event.
+  //! Handles the removal of the watchdog event referred by \p position.
   void remove_watchdog_event(WD_Pending_List::Iterator position);
 
-  // Whether the alarm clock is running.
+  //! Whether the alarm clock is running.
   static volatile bool alarm_clock_running;
 
-  // Whether we are changing data that is also changed by the signal handler.
+  //! Whether we are changing data that is also changed by the signal handler.
   static volatile bool in_critical_section;
 
   friend void PWL_handle_timeout(int signum);
