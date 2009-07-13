@@ -409,7 +409,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
 	break;
-      WEIGHT_ADD(1);
+      WEIGHT_ADD(source_num_columns);
       // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
@@ -417,7 +417,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
     }
     for (dimension_type i = index_non_zero + 1; i < dest_num_rows; ++i) {
       Scalar_Products::assign(scalar_prod[i], source_k, dest[i]);
-      WEIGHT_ADD(1);
+      WEIGHT_ADD(source_num_columns);
       // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
@@ -538,8 +538,8 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
+          WEIGHT_ADD_MUL(4, dest_num_columns);
 	}
-	WEIGHT_ADD(1);
         // Check if the client has requested abandoning all expensive
         // computations.  If so, the exception specified by the client
         // is thrown now.
@@ -711,6 +711,8 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		    redundant = true;
 		    break;
 		  }
+                assert(bound >= num_lines_or_equalities);
+                WEIGHT_ADD(bound - num_lines_or_equalities);
 		if (!redundant) {
 		  // Adding the new ray to `dest' and the corresponding
 		  // saturation row to `sat'.
@@ -756,10 +758,10 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		    scalar_prod[dest_num_rows] = Coefficient_zero();
 		  // Increment the number of generators.
 		  ++dest_num_rows;
-		}
+                  WEIGHT_ADD_MUL(4, dest_num_columns);
+		} // if (!redundant)
 	      }
 	    }
-	    WEIGHT_ADD(1);
             // Check if the client has requested abandoning all expensive
             // computations.  If so, the exception specified by the client
             // is thrown now.
