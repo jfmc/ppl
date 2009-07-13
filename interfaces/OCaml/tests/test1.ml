@@ -448,6 +448,37 @@ in (
     | _ ->
       print_string_if_noisy "ppl_set_timeout test failed:\n";
       print_string_if_noisy "generic exception caught.\n"
+  end;
+  begin
+    try
+      print_string_if_noisy "\nStarting ppl_reset_deterministic_timeout test:\n";
+      ppl_set_deterministic_timeout 2000;
+      compute_timeout_hypercube 0 2;
+      ppl_reset_deterministic_timeout ();
+      print_string_if_noisy "ppl_reset_deterministic_timeout test succeeded.\n"
+    with
+    | PPL_timeout_exception ->
+      print_string_if_noisy "ppl_reset_deterministic_timeout test seems to be failed:\n";
+      print_string_if_noisy "Unexpected PPL timeout exception caught.\n"
+    | _ ->
+      print_string_if_noisy "ppl_reset_deterministic_timeout test seems to be failed.";
+      (* FIXME: print the contents of the exception. *)
+      print_string_if_noisy "\n"
+  end;
+  begin
+    try
+      print_string_if_noisy "\nStarting ppl_set_deterministic_timeout test:\n";
+      ppl_set_deterministic_timeout 2000;
+      compute_timeout_hypercube 0 100;
+      ppl_reset_deterministic_timeout ();
+      print_string_if_noisy "ppl_set_deterministic_timeout test seems to be failed!\n"
+    with
+    | PPL_timeout_exception ->
+      print_string_if_noisy "ppl_set_deterministic_timeout test succeded\n";
+      print_string_if_noisy "Expected PPL timeout exception caught.\n"
+    | _ ->
+      print_string_if_noisy "ppl_set_deterministic_timeout test failed:\n";
+      print_string_if_noisy "generic exception caught.\n"
   end
 );;
 

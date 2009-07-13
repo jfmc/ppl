@@ -155,6 +155,12 @@ val ppl_set_timeout:
 val ppl_reset_timeout:
   unit -> unit
 
+val ppl_set_deterministic_timeout:
+  int -> unit
+
+val ppl_reset_deterministic_timeout:
+  unit -> unit
+
 type mip_problem
 
 val ppl_new_MIP_Problem_from_space_dimension:
