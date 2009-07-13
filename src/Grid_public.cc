@@ -1242,8 +1242,9 @@ PPL::Grid::add_recycled_grid_generators(Grid_Generator_System& gs) {
   if (space_dim == 0) {
     if (marked_empty())
       set_zero_dim_univ();
-    else
+    else {
       PPL_ASSERT(gs.has_points());
+    }
     PPL_ASSERT(OK(true));
     return;
   }
@@ -2771,12 +2772,13 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
         unconstrain(x);
         add_constraint(x == v_n);
       }
-      else
+      else {
         // If overflow is impossible but the grid frequency is less than
         // half the wrap frequency, then there is more than one possible
         // value for `x' in the range of the bounded integer type,
         // so the grid is unchanged.
         PPL_ASSERT(o == OVERFLOW_IMPOSSIBLE && 2*f_n < wrap_frequency);
+      }
     }
     return;
   }
