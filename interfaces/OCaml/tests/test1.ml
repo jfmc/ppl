@@ -419,6 +419,8 @@ and compute_timeout_hypercube dim_in dim_out =
   )
 in (
   begin
+    (* FIXME: in the following try/with, the timeouts should be reset
+       unconditionally. Is there a way to implement try/finally? *)
     try
       print_string_if_noisy "\nStarting ppl_reset_timeout test:\n";
       ppl_set_timeout 100;
@@ -427,9 +429,11 @@ in (
       print_string_if_noisy "ppl_reset_timeout test succeeded.\n"
     with
     | PPL_timeout_exception ->
+      ppl_reset_timeout ();
       print_string_if_noisy "ppl_reset_timeout test seems to be failed:\n";
       print_string_if_noisy "Unexpected PPL timeout exception caught.\n"
     | _ ->
+      ppl_reset_timeout ();
       print_string_if_noisy "ppl_reset_timeout test seems to be failed.";
       (* FIXME: print the contents of the exception. *)
       print_string_if_noisy "\n"
@@ -443,9 +447,11 @@ in (
       print_string_if_noisy "ppl_set_timeout test seems to be failed!\n"
     with
     | PPL_timeout_exception ->
+      ppl_reset_timeout ();
       print_string_if_noisy "ppl_set_timeout test succeded\n";
       print_string_if_noisy "Expected PPL timeout exception caught.\n"
     | _ ->
+      ppl_reset_timeout ();
       print_string_if_noisy "ppl_set_timeout test failed:\n";
       print_string_if_noisy "generic exception caught.\n"
   end;
@@ -458,9 +464,11 @@ in (
       print_string_if_noisy "ppl_reset_deterministic_timeout test succeeded.\n"
     with
     | PPL_timeout_exception ->
+      ppl_reset_deterministic_timeout ();
       print_string_if_noisy "ppl_reset_deterministic_timeout test seems to be failed:\n";
       print_string_if_noisy "Unexpected PPL timeout exception caught.\n"
     | _ ->
+      ppl_reset_deterministic_timeout ();
       print_string_if_noisy "ppl_reset_deterministic_timeout test seems to be failed.";
       (* FIXME: print the contents of the exception. *)
       print_string_if_noisy "\n"
@@ -474,9 +482,11 @@ in (
       print_string_if_noisy "ppl_set_deterministic_timeout test seems to be failed!\n"
     with
     | PPL_timeout_exception ->
+      ppl_reset_deterministic_timeout ();
       print_string_if_noisy "ppl_set_deterministic_timeout test succeded\n";
       print_string_if_noisy "Expected PPL timeout exception caught.\n"
     | _ ->
+      ppl_reset_deterministic_timeout ();
       print_string_if_noisy "ppl_set_deterministic_timeout test failed:\n";
       print_string_if_noisy "generic exception caught.\n"
   end
