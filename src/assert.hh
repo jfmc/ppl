@@ -33,17 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #else
 
-namespace Parma_Polyhedra_Library {
-
-namespace Implementation {
-
-//! Non zero during evaluation of PPL_ASSERT expression.
-extern unsigned int in_assert;
-
-} // namespace Implementation
-
-} // namespace Parma_Polyhedra_Library
-
 #define PPL_DEBUG_PPL_ASSERT 1
 #if !PPL_DEBUG_PPL_ASSERT
 #define PPL_ASSERT(cond__) assert(cond__)
