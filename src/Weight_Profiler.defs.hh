@@ -44,34 +44,41 @@ public:
       stat[i].max = 0;
     }
   }
+
   ~Weight_Profiler() {
     output_stats();
   }
+
   void output_stats();
+
   static void begin() {
 #ifndef NDEBUG
-    int r =
-#endif
-      clock_gettime(CLOCK_THREAD_CPUTIME_ID, &stamp);
+    int r = clock_gettime(CLOCK_THREAD_CPUTIME_ID, &stamp);
     assert(r >= 0);
+#else
+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &stamp);
+#endif
   }
+
   void end(unsigned int factor = 1) {
-    Weightwatch_Traits::weight += (Weightwatch_Traits::Threshold) delta * factor;
+    Weightwatch_Traits::weight
+      += (Weightwatch_Traits::Threshold) delta * factor;
     struct timespec start = stamp;
     begin();
     double elapsed;
     if (stamp.tv_nsec >= start.tv_nsec) {
-      elapsed = (stamp.tv_nsec - start.tv_nsec) +
+      elapsed = (stamp.tv_nsec - start.tv_nsec)
 	+ (stamp.tv_sec - start.tv_sec) * 1e9;
     }
     else {
-      elapsed = (1000000000 - start.tv_nsec + stamp.tv_nsec ) +
+      elapsed = (1000000000 - start.tv_nsec + stamp.tv_nsec )
 	+ (stamp.tv_sec - start.tv_sec - 1) * 1e9;
     }
     elapsed -= adj;
     double elapsed1 = elapsed / factor;
-    int i;
-    i = (elapsed1 < tmin || (tmax > 0 && elapsed1 > tmax)) ? DISCARDED : VALID;
+    int i = (elapsed1 < tmin || (tmax > 0 && elapsed1 > tmax))
+      ? DISCARDED
+      : VALID;
     ++stat[i].samples;
     if (stat[i].count == 0)
       stat[i].min = stat[i].max = elapsed1;
@@ -83,7 +90,9 @@ public:
     stat[i].ssum += elapsed * elapsed1;
     stat[i].count += factor;
   }
+
   static double tune_adj();
+
  private:
   const char *file;
   int line;
@@ -106,4 +115,4 @@ public:
 
 }
 
-#endif
+#endif // Weight_Profiler_defs_hh
