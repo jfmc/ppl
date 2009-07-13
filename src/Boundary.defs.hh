@@ -122,10 +122,12 @@ set_minus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
                          || std::numeric_limits<T>::has_infinity,
                          "minus infinity is not representable");
   */
-  if (open)
+  if (open) {
     PPL_ASSERT(type == LOWER);
-  else
+  }
+  else {
     PPL_ASSERT(Info::may_contain_infinity);
+  }
   Result r;
   if (Info::store_special) {
     PPL_ASSERT(type == LOWER);
@@ -148,10 +150,12 @@ set_plus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
                          || std::numeric_limits<T>::has_infinity,
                          "minus infinity is not representable");
   */
-  if (open)
+  if (open) {
     PPL_ASSERT(type == UPPER);
-  else
+  }
+  else {
     PPL_ASSERT(Info::may_contain_infinity);
+  }
   Result r;
   if (Info::store_special) {
     PPL_ASSERT(type == UPPER);
