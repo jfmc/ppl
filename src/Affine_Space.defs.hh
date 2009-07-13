@@ -1192,7 +1192,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to
-    the \ref Affine_Space_Generalized_Image "generalized affine relation"
+    the \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
     \pmod{\mathrm{modulus}}\f$.
 
@@ -1224,7 +1224,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
-    \ref Affine_Space_Generalized_Image "generalized affine relation"
+    \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
     \pmod{\mathrm{modulus}}\f$.
 
@@ -1256,7 +1256,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to
-    the \ref Affine_Space_Generalized_Image "generalized affine relation"
+    the \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
 
     \param lhs
@@ -1280,7 +1280,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
-    \ref Affine_Space_Generalized_Image "generalized affine relation"
+    \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
 
     \param lhs
