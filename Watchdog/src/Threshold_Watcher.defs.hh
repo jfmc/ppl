@@ -31,8 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 /*! \brief
   A class of watchdogs controlling the exceeding of a threshold.
 
-  \tparam Traits
-  FIXME
+  \tparam Traits class to set data types and functions for the
+  threshold handling. See \ref Weightwatch_Traits for an example.
 */
 template <typename Traits>
 class Parma_Watchdog_Library::Threshold_Watcher {
