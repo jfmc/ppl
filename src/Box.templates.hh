@@ -2613,6 +2613,7 @@ Box<ITV>
 	   cs_end = cs.end(); i != cs_end; ++i)
       propagate_constraint_no_check(*i);
 
+    WEIGHT_ADD(1);
     // Check if the client has requested abandoning all expensive
     // computations.  If so, the exception specified by the client
     // is thrown now.

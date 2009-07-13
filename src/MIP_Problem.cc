@@ -1147,6 +1147,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     if (exiting_base_index == tableau_num_rows)
       return false;
 
+    WEIGHT_ADD(1);
     // Check if the client has requested abandoning all expensive
     // computations. If so, the exception specified by the client
     // is thrown now.
@@ -1224,6 +1225,7 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
     if (exiting_base_index == tableau_num_rows)
       return false;
 
+    WEIGHT_ADD(1);
     // Check if the client has requested abandoning all expensive
     // computations. If so, the exception specified by the client
     // is thrown now.

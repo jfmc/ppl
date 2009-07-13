@@ -409,6 +409,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
 	break;
+      WEIGHT_ADD(1);
       // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
@@ -416,6 +417,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
     }
     for (dimension_type i = index_non_zero + 1; i < dest_num_rows; ++i) {
       Scalar_Products::assign(scalar_prod[i], source_k, dest[i]);
+      WEIGHT_ADD(1);
       // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
@@ -537,6 +539,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
 	}
+	WEIGHT_ADD(1);
         // Check if the client has requested abandoning all expensive
         // computations.  If so, the exception specified by the client
         // is thrown now.
@@ -756,6 +759,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		}
 	      }
 	    }
+	    WEIGHT_ADD(1);
             // Check if the client has requested abandoning all expensive
             // computations.  If so, the exception specified by the client
             // is thrown now.

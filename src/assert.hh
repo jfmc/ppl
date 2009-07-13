@@ -33,6 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #else
 
+// Non zero to detect use of PPL_ASSERT instead of PPL_ASSERT_HEAVY
 #define PPL_DEBUG_PPL_ASSERT 1
 #if !PPL_DEBUG_PPL_ASSERT
 #define PPL_ASSERT(cond__) assert(cond__)
@@ -48,6 +49,8 @@ site: http://www.cs.unipr.it/ppl/ . */
   } while(0)
 #endif
 
+// The evaluation of asserted condition could have a non zero computational
+// weight (i.e. the execution path could encounter a WEIGHT_ADD).
 #define PPL_ASSERT_HEAVY(cond__)				\
   do {								\
       ++Parma_Polyhedra_Library::Implementation::in_assert;	\

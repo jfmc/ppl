@@ -332,6 +332,7 @@ Partially_Reduced_Product.types.hh \
 Partially_Reduced_Product.defs.hh \
 Partially_Reduced_Product.inlines.hh \
 Partially_Reduced_Product.templates.hh \
+Weight_Profiler.defs.hh \
 max_space_dimension.hh \
 algorithms.hh \
 wrap_assign.hh \
@@ -412,6 +413,7 @@ stdiobuf.cc \
 c_streambuf.cc \
 globals.cc \
 mp_std_bits.cc \
+Weight_Profiler.cc \
 version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
