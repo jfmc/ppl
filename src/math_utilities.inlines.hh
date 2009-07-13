@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Coefficient.defs.hh"
 #include <limits>
-#include <cassert>
+#include "assert.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -42,7 +42,7 @@ normalize2(Coefficient_traits::const_reference x,
 template <typename T>
 inline T
 low_bits_mask(const unsigned n) {
-  assert(n < unsigned(std::numeric_limits<T>::digits));
+  PPL_ASSERT(n < unsigned(std::numeric_limits<T>::digits));
   return n == 0 ? 0 : ~(~(T(0u)) << n);
 }
 
@@ -50,7 +50,7 @@ template <typename T, typename Policy>
 inline void
 numer_denom(const Checked_Number<T, Policy>& from,
 	    Coefficient& num, Coefficient& den) {
-  assert(!is_not_a_number(from)
+  PPL_ASSERT(!is_not_a_number(from)
 	 && !is_minus_infinity(from)
 	 && !is_plus_infinity(from));
   PPL_DIRTY_TEMP0(mpq_class, q);

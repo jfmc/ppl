@@ -123,7 +123,7 @@ assign_special_mpq(mpq_class& v, Result_Class c, Rounding_Dir) {
     }
     return V_EQ_PLUS_INFINITY | V_UNREPRESENTABLE;
   default:
-    assert(false);
+    PPL_ASSERT(false);
     return V_NAN | V_UNREPRESENTABLE;
   }
 }

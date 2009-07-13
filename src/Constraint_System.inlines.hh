@@ -92,7 +92,7 @@ Constraint_System::clear() {
 
 inline const Constraint_System&
 Constraint_System::zero_dim_empty() {
-  assert(zero_dim_empty_p != 0);
+  PPL_ASSERT(zero_dim_empty_p != 0);
   return *zero_dim_empty_p;
 }
 

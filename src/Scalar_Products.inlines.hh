@@ -143,8 +143,8 @@ Topology_Adjusted_Scalar_Product_Sign
 inline int
 Topology_Adjusted_Scalar_Product_Sign::operator()(const Constraint& c,
 						  const Generator& g) const {
-  assert(c.space_dimension() <= g.space_dimension());
-  assert(sps_fp == (c.is_necessarily_closed()
+  PPL_ASSERT(c.space_dimension() <= g.space_dimension());
+  PPL_ASSERT(sps_fp == (c.is_necessarily_closed()
 		    ? static_cast<SPS_type>(&Scalar_Products::sign)
 		    : static_cast<SPS_type>(&Scalar_Products::reduced_sign)));
   return sps_fp(static_cast<const Linear_Row&>(c),
@@ -154,8 +154,8 @@ Topology_Adjusted_Scalar_Product_Sign::operator()(const Constraint& c,
 inline int
 Topology_Adjusted_Scalar_Product_Sign::operator()(const Generator& g,
 						  const Constraint& c) const {
-  assert(g.space_dimension() <= c.space_dimension());
-  assert(sps_fp == (g.is_necessarily_closed()
+  PPL_ASSERT(g.space_dimension() <= c.space_dimension());
+  PPL_ASSERT(sps_fp == (g.is_necessarily_closed()
 		    ? static_cast<SPS_type>(&Scalar_Products::sign)
 		    : static_cast<SPS_type>(&Scalar_Products::reduced_sign)));
   return sps_fp(static_cast<const Linear_Row&>(g),

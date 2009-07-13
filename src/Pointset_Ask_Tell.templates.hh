@@ -51,7 +51,7 @@ Pointset_Ask_Tell<PSET>::add_disjunct(const PSET& ph) {
   }
   x.sequence.push_back(Determinate<PSET>(ph));
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <>
@@ -70,7 +70,7 @@ Pointset_Ask_Tell<NNC_Polyhedron>
   }
   // FIXME: the following is a bug!
   x.normalized = y.normalized;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <>
@@ -92,7 +92,7 @@ Pointset_Ask_Tell<C_Polyhedron>
   // because the approximation potentially introduced by the conversion
   // may have made uncomparable elements in `y' to become comparable in `x'.
   x.normalized = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -109,7 +109,7 @@ Pointset_Ask_Tell<PSET>::concatenate_assign(const Pointset_Ask_Tell& y) {
   space_dim += y.space_dim;
   if (x.normalized)
     x.normalized = y.normalized;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -120,7 +120,7 @@ Pointset_Ask_Tell<PSET>::add_constraint(const Constraint& c) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_constraint(c);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -131,7 +131,7 @@ Pointset_Ask_Tell<PSET>::add_constraints(const Constraint_System& cs) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_constraints(cs);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -142,7 +142,7 @@ Pointset_Ask_Tell<PSET>::unconstrain(const Variable var) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().unconstrain(var);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -153,7 +153,7 @@ Pointset_Ask_Tell<PSET>::unconstrain(const Variables_Set& vars) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().unconstrain(vars);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -164,7 +164,7 @@ Pointset_Ask_Tell<PSET>::add_space_dimensions_and_embed(dimension_type m) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_space_dimensions_and_embed(m);
   x.space_dim += m;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -175,7 +175,7 @@ Pointset_Ask_Tell<PSET>::add_space_dimensions_and_project(dimension_type m) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_space_dimensions_and_project(m);
   x.space_dim += m;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -201,7 +201,7 @@ remove_space_dimensions(const Variables_Set& vars) {
       }
     }
     x.space_dim -= num_removed;
-    assert(x.OK());
+    PPL_ASSERT_HEAVY(x.OK());
   }
 }
 
@@ -218,7 +218,7 @@ Pointset_Ask_Tell<PSET>::remove_higher_space_dimensions(dimension_type
       x.reduced = false;
     }
     x.space_dim = new_dimension;
-    assert(x.OK());
+    PPL_ASSERT_HEAVY(x.OK());
   }
 }
 
@@ -244,7 +244,7 @@ Pointset_Ask_Tell<PSET>::map_space_dimensions(const Partial_Function& pfunc) {
     x.space_dim = s_begin->pointset().space_dimension();
     x.reduced = false;
   }
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -290,7 +290,7 @@ Pointset_Ask_Tell<PSET>::ascii_load(std::istream& s) {
   x.swap(new_x);
 
   // Check invariants.
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
   return true;
 }
 

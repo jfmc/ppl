@@ -54,7 +54,7 @@ initialize() {
 inline void
 finalize() {
 #ifdef PPL_NO_AUTOMATIC_INITIALIZATION
-  assert(Parma_Polyhedra_Library_initializer_p != 0);
+  PPL_ASSERT(Parma_Polyhedra_Library_initializer_p != 0);
   delete Parma_Polyhedra_Library_initializer_p;
   Parma_Polyhedra_Library_initializer_p = 0;
 #endif

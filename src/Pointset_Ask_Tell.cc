@@ -38,7 +38,7 @@ PPL::Pointset_Ask_Tell<PPL::NNC_Polyhedron>
     x.sequence.push_back(Pair(nnc_ask, nnc_tell));
   }
   x.normalized = y.normalized;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <>
@@ -58,5 +58,5 @@ PPL::Pointset_Ask_Tell<PPL::C_Polyhedron>
   // normalized, because the constructor of C_Polyhedron, by enforcing
   // topological closure, may have made different elements comparable.
   x.normalized = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }

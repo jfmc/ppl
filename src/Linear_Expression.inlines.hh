@@ -84,7 +84,7 @@ Linear_Expression::inhomogeneous_term() const {
 
 inline const Linear_Expression&
 Linear_Expression::zero() {
-  assert(zero_p != 0);
+  PPL_ASSERT(zero_p != 0);
   return *zero_p;
 }
 

@@ -33,3 +33,5 @@ const PPL::Throwable* volatile PPL::abandon_expensive_computations = 0;
 // Initialize Weightwatch_Traits static data members.
 PPL::Weightwatch_Traits::Threshold PPL::Weightwatch_Traits::weight = 0;
 void (*PPL::Weightwatch_Traits::check_function)(void) = 0;
+
+int PPL::in_assert = 0;

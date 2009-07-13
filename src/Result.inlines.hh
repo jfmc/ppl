@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Result_inlines_hh
 #define PPL_Result_inlines_hh 1
 
-#include <cassert>
+#include "assert.hh"
 
 namespace Parma_Polyhedra_Library {
 

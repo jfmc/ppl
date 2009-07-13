@@ -97,7 +97,7 @@ OR_Matrix<T>::ascii_load(std::istream& s) {
 	return false;
     }
   }
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 

@@ -230,7 +230,7 @@ Partially_Reduced_Product<D1, D2, R>
   // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
-  assert(reduced);
+  PPL_ASSERT(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
@@ -285,7 +285,7 @@ Partially_Reduced_Product<D1, D2, R>
   // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
-  assert(reduced);
+  PPL_ASSERT(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);
@@ -341,7 +341,7 @@ Partially_Reduced_Product<D1, D2, R>
   // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
-  assert(reduced);
+  PPL_ASSERT(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
@@ -403,7 +403,7 @@ Partially_Reduced_Product<D1, D2, R>
   // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
-  assert(reduced);
+  PPL_ASSERT(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);

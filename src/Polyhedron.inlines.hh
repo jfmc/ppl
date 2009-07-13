@@ -288,15 +288,15 @@ Polyhedron::clear_generators_up_to_date() {
 
 inline bool
 Polyhedron::process_pending() const {
-  assert(space_dim > 0 && !marked_empty());
-  assert(has_something_pending());
+  PPL_ASSERT(space_dim > 0 && !marked_empty());
+  PPL_ASSERT(has_something_pending());
 
   Polyhedron& x = const_cast<Polyhedron&>(*this);
 
   if (x.has_pending_constraints())
     return x.process_pending_constraints();
 
-  assert(x.has_pending_generators());
+  PPL_ASSERT(x.has_pending_generators());
   x.process_pending_generators();
   return true;
 }
@@ -343,7 +343,7 @@ Polyhedron::minimize(const Linear_Expression& expr,
 
 inline Constraint_System
 Polyhedron::simplified_constraints() const {
-  assert(constraints_are_up_to_date());
+  PPL_ASSERT(constraints_are_up_to_date());
   Constraint_System cs(con_sys);
   if (cs.num_pending_rows() > 0)
     cs.unset_pending_rows();

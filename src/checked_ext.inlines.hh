@@ -311,7 +311,7 @@ mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 	return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
       default:
       inf_mul_zero:
-	assert(To_Policy::check_inf_mul_zero);
+	PPL_ASSERT(To_Policy::check_inf_mul_zero);
 	return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
       }
     }
@@ -382,7 +382,7 @@ add_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 	  goto pinf;
       default:
       inf_mul_zero:
-	assert(To_Policy::check_inf_mul_zero);
+	PPL_ASSERT(To_Policy::check_inf_mul_zero);
 	return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
       }
     }
@@ -460,7 +460,7 @@ sub_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 	  goto minf;
       default:
       inf_mul_zero:
-	assert(To_Policy::check_inf_mul_zero);
+	PPL_ASSERT(To_Policy::check_inf_mul_zero);
 	return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
       }
     }
@@ -518,7 +518,7 @@ div_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 	return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
       default:
       div_zero:
-	assert(To_Policy::check_div_zero);
+	PPL_ASSERT(To_Policy::check_div_zero);
 	return assign_nan<To_Policy>(to, V_DIV_ZERO);
       }
     }
@@ -575,7 +575,7 @@ idiv_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 	return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
       default:
       div_zero:
-	assert(To_Policy::check_div_zero);
+	PPL_ASSERT(To_Policy::check_div_zero);
 	return assign_nan<To_Policy>(to, V_DIV_ZERO);
       }
     }

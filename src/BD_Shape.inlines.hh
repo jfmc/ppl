@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Temp.defs.hh"
 #include "meta_programming.hh"
 #include "wrap_assign.hh"
-#include <cassert>
+#include "assert.hh"
 #include <vector>
 #include <iostream>
 #include <algorithm>
@@ -121,7 +121,7 @@ BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
       // A (non zero-dim) universe BDS is closed.
       set_shortest_path_closed();
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename T>
@@ -235,8 +235,8 @@ BD_Shape<T>::refine_with_congruences(const Congruence_System& cgs) {
 template <typename T>
 inline void
 BD_Shape<T>::refine_no_check(const Congruence& cg) {
-  assert(!marked_empty());
-  assert(cg.space_dimension() <= space_dimension());
+  PPL_ASSERT(!marked_empty());
+  PPL_ASSERT(cg.space_dimension() <= space_dimension());
 
   if (cg.is_proper_congruence()) {
     if (cg.is_inconsistent())
@@ -245,7 +245,7 @@ BD_Shape<T>::refine_no_check(const Congruence& cg) {
     return;
   }
 
-  assert(cg.is_equality());
+  PPL_ASSERT(cg.is_equality());
   Constraint c(cg);
   refine_no_check(c);
 }
@@ -657,7 +657,7 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
 				const dimension_type j,
 				const N& k) {
   // Private method: the caller has to ensure the following.
-  assert(i <= space_dimension() && j <= space_dimension() && i != j);
+  PPL_ASSERT(i <= space_dimension() && j <= space_dimension() && i != j);
   N& dbm_ij = dbm[i][j];
   if (dbm_ij > k) {
     dbm_ij = k;
@@ -673,8 +673,8 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
 				Coefficient_traits::const_reference num,
 				Coefficient_traits::const_reference den) {
   // Private method: the caller has to ensure the following.
-  assert(i <= space_dimension() && j <= space_dimension() && i != j);
-  assert(den != 0);
+  PPL_ASSERT(i <= space_dimension() && j <= space_dimension() && i != j);
+  PPL_ASSERT(den != 0);
   PPL_DIRTY_TEMP(N, k);
   div_round_up(k, num, den);
   add_dbm_constraint(i, j, k);
@@ -692,7 +692,7 @@ BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
   px.time_elapse_assign(py);
   BD_Shape<T> x(px);
   swap(x);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename T>
@@ -740,7 +740,7 @@ BD_Shape<T>::remove_higher_space_dimensions(const dimension_type new_dim) {
   // Note that this case also captures the only legal removal of
   // dimensions from a zero-dim space BDS.
   if (new_dim == space_dimension()) {
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -757,7 +757,7 @@ BD_Shape<T>::remove_higher_space_dimensions(const dimension_type new_dim) {
   // the zero-dim universe BDS has been obtained.
   if (new_dim == 0 && !marked_empty())
     set_zero_dim_univ();
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename T>
@@ -801,7 +801,7 @@ BD_Shape<T>::H79_widening_assign(const BD_Shape& y, unsigned* tp) {
   px.H79_widening_assign(py, tp);
   BD_Shape x(px);
   swap(x);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename T>
@@ -821,7 +821,7 @@ BD_Shape<T>::limited_H79_extrapolation_assign(const BD_Shape& y,
   px.limited_H79_extrapolation_assign(py, cs, tp);
   BD_Shape x(px);
   swap(x);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename T>

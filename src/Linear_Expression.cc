@@ -59,13 +59,13 @@ const PPL::Linear_Expression* PPL::Linear_Expression::zero_p = 0;
 
 void
 PPL::Linear_Expression::initialize() {
-  assert(zero_p == 0);
+  PPL_ASSERT(zero_p == 0);
   zero_p = new Linear_Expression(Coefficient_zero());
 }
 
 void
 PPL::Linear_Expression::finalize() {
-  assert(zero_p != 0);
+  PPL_ASSERT(zero_p != 0);
   delete zero_p;
   zero_p = 0;
 }

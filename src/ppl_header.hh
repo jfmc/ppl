@@ -104,7 +104,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #  undef NDEBUG
 # endif
 #endif
-#include <cassert>
+#include "assert.hh"
 
 #ifdef PPL_NO_AUTOMATIC_INITIALIZATION
  #undef PPL_NO_AUTOMATIC_INITIALIZATION

@@ -135,7 +135,7 @@ BD_Shape<T>::Status::reset_shortest_path_reduced() {
 template <typename T>
 inline void
 BD_Shape<T>::Status::set_shortest_path_reduced() {
-  assert(test_shortest_path_closed());
+  PPL_ASSERT(test_shortest_path_closed());
   set(SHORTEST_PATH_REDUCED);
 }
 
@@ -258,7 +258,7 @@ BD_Shape<T>::Status::ascii_load(std::istream& s) {
     reset_shortest_path_reduced();
 
   // Check invariants.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 

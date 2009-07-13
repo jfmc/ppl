@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Topology.hh"
 #include "Scalar_Products.defs.hh"
 
-#include <cassert>
+#include "assert.hh"
 #endif
 #include <iostream>
 
@@ -373,7 +373,7 @@ PPL::Affine_Space::widening_assign(const Affine_Space& y, unsigned*) {
     // Assume y is contained in or equal to x.
     const Affine_Space x_copy = x;
     const Affine_Space y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT(x_copy.contains(y_copy));
   }
 #endif
 }
@@ -393,7 +393,7 @@ PPL::Affine_Space::limited_extrapolation_assign(const Affine_Space& y,
     // Assume y is contained in or equal to x.
     const Affine_Space x_copy = x;
     const Affine_Space y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT(x_copy.contains(y_copy));
   }
 #endif
 }

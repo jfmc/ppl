@@ -133,7 +133,7 @@ Box<ITV>::max_space_dimension() {
 template <typename ITV>
 inline const ITV&
 Box<ITV>::operator[](const dimension_type k) const {
-  assert(k < seq.size());
+  PPL_ASSERT(k < seq.size());
   return seq[k];
 }
 
@@ -166,7 +166,7 @@ Box<ITV>::set_interval(const Variable var, const ITV& i) {
   seq[var.id()] = i;
   reset_empty_up_to_date();
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -245,7 +245,7 @@ Box<ITV>::expand_space_dimension(const Variable var,
   // To expand the space dimension corresponding to variable `var',
   // we append to the box `m' copies of the corresponding interval.
   seq.insert(seq.end(), m, seq[var.id()]);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -258,7 +258,7 @@ template <typename ITV>
 inline bool
 Box<ITV>::get_lower_bound(const dimension_type k, bool& closed,
                           Coefficient& n, Coefficient& d) const {
-  assert(k < seq.size());
+  PPL_ASSERT(k < seq.size());
   const ITV& seq_k = seq[k];
 
   if (seq_k.lower_is_boundary_infinity())
@@ -278,7 +278,7 @@ template <typename ITV>
 inline bool
 Box<ITV>::get_upper_bound(const dimension_type k, bool& closed,
                           Coefficient& n, Coefficient& d) const {
-  assert(k < seq.size());
+  PPL_ASSERT(k < seq.size());
   const ITV& seq_k = seq[k];
 
   if (seq_k.upper_is_boundary_infinity())
@@ -377,7 +377,7 @@ Box<ITV>::refine_interval_no_check(ITV& itv,
                                    const Constraint::Type type,
                                    Coefficient_traits::const_reference num,
                                    Coefficient_traits::const_reference den) {
-  assert(den != 0);
+  PPL_ASSERT(den != 0);
   // The interval constraint is of the form
   // `var + num / den rel 0',
   // where `rel' is either the relation `==', `>=', or `>'.
@@ -407,10 +407,10 @@ Box<ITV>::refine_interval_no_check(ITV& itv,
     break;
   default:
     // Silence an annoying GCC warning (should never reach this point).
-    assert(false);
+    PPL_ASSERT(false);
     res = I_ANY;
   }
-  assert(itv.OK());
+  PPL_ASSERT(itv.OK());
   return res;
 }
 
@@ -421,15 +421,15 @@ Box<ITV>
                                    const Constraint::Type type,
                                    Coefficient_traits::const_reference num,
                                    Coefficient_traits::const_reference den) {
-  assert(!marked_empty());
-  assert(var_id < space_dimension());
-  assert(den != 0);
+  PPL_ASSERT(!marked_empty());
+  PPL_ASSERT(var_id < space_dimension());
+  PPL_ASSERT(den != 0);
   refine_interval_no_check(seq[var_id], type, num, den);
   // FIXME: do check the value returned and set `empty' and
   // `empty_up_to_date' as appropriate.
   // This has to be done after reimplementation of intervals.
   reset_empty_up_to_date();
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -538,7 +538,7 @@ Box<ITV>::unconstrain(const Variable var) {
     set_empty();
   else
     seq_var.assign(UNIVERSE);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 /*! \relates Box */

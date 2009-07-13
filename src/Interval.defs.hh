@@ -200,13 +200,13 @@ public:
   }
 
   I_Constraint<boundary_type> lower_constraint() const {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     if (info().get_boundary_property(LOWER, SPECIAL))
       return I_Constraint<boundary_type>();
     return i_constraint(lower_is_open() ? GREATER_THAN : GREATER_OR_EQUAL, lower(), true);
   }
   I_Constraint<boundary_type> upper_constraint() const {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     if (info().get_boundary_property(UPPER, SPECIAL))
       return I_Constraint<boundary_type>();
     return i_constraint(upper_is_open() ? LESS_THAN : LESS_OR_EQUAL, upper(), true);
@@ -217,12 +217,12 @@ public:
   }
 
   I_Result normalize() const {
-    assert(OK());
+    PPL_ASSERT(OK());
     if (has_restriction()) {
       Result rl = lower_normalize();
       Result ru = upper_normalize();
       info().normalize();
-      assert(OK());
+      PPL_ASSERT(OK());
       return combine(rl, ru);
     }
     else
@@ -243,42 +243,42 @@ public:
   }
 
   bool lower_is_open() const {
-    assert(OK());
+    PPL_ASSERT(OK());
     return is_open(LOWER, lower(), info());
   }
 
   bool upper_is_open() const {
-    assert(OK());
+    PPL_ASSERT(OK());
     return is_open(UPPER, upper(), info());
   }
 
   bool lower_is_boundary_infinity() const {
-    assert(OK());
+    PPL_ASSERT(OK());
     return Boundary_NS::is_boundary_infinity(LOWER, lower(), info());
   }
 
   bool upper_is_boundary_infinity() const {
-    assert(OK());
+    PPL_ASSERT(OK());
     return Boundary_NS::is_boundary_infinity(UPPER, upper(), info());
   }
 
   bool lower_is_domain_inf() const {
-    assert(OK());
+    PPL_ASSERT(OK());
     return Boundary_NS::is_domain_inf(LOWER, lower(), info());
   }
 
   bool upper_is_domain_sup() const {
-    assert(OK());
+    PPL_ASSERT(OK());
     return Boundary_NS::is_domain_sup(UPPER, upper(), info());
   }
 
   bool is_bounded() const {
-    assert(OK());
+    PPL_ASSERT(OK());
     return !lower_is_boundary_infinity() && !upper_is_boundary_infinity();
   }
 
   bool is_universe() const {
-    assert(OK());
+    PPL_ASSERT(OK());
     return lower_is_domain_inf() && upper_is_domain_sup()
       && !has_restriction();
   }
@@ -292,7 +292,7 @@ public:
   template <typename C>
   typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C>::value, I_Result>::type
   lower_extend(const C& c) {
-    assert(OK());
+    PPL_ASSERT(OK());
     bool open;
     switch (c.rel()) {
     case V_LGE:
@@ -307,10 +307,10 @@ public:
       open = false;
       break;
     default:
-      assert(false);
+      PPL_ASSERT(false);
     }
     min_assign(LOWER, lower(), info(), LOWER, c.value(), f_info(c.value(), open));
-    assert(OK());
+    PPL_ASSERT(OK());
     return I_ANY;
   }
 
@@ -323,7 +323,7 @@ public:
   template <typename C>
   typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C>::value, I_Result>::type
   upper_extend(const C& c) {
-    assert(OK());
+    PPL_ASSERT(OK());
     bool open;
     switch (c.rel()) {
     case V_LGE:
@@ -338,10 +338,10 @@ public:
       open = false;
       break;
     default:
-      assert(false);
+      PPL_ASSERT(false);
     }
     max_assign(UPPER, upper(), info(), UPPER, c.value(), f_info(c.value(), open));
-    assert(OK());
+    PPL_ASSERT(OK());
     return I_ANY;
   }
 
@@ -410,7 +410,7 @@ public:
     info().clear();
     switch (e) {
     default:
-      assert(0);
+      PPL_ASSERT(0);
       /* Fall through */
     case EMPTY:
       lower_ = 1;
@@ -423,7 +423,7 @@ public:
       r = I_UNIVERSE | I_EXACT;
       break;
     }
-    assert(OK());
+    PPL_ASSERT(OK());
     return r;
   }
 
@@ -442,11 +442,11 @@ public:
       ru = Boundary_NS::set_plus_infinity(UPPER, upper(), info());
       break;
     default:
-      assert(0);
+      PPL_ASSERT(0);
       rl = V_NAN;
       ru = V_NAN;
     }
-    assert(OK());
+    PPL_ASSERT(OK());
     return combine(rl, ru);
   }
 
@@ -455,7 +455,7 @@ public:
     // FIXME: what about restrictions?
     Result rl = Boundary_NS::set_minus_infinity(LOWER, lower(), info());
     Result ru = Boundary_NS::set_plus_infinity(UPPER, upper(), info());
-    assert(OK());
+    PPL_ASSERT(OK());
     return combine(rl, ru);
   }
 
@@ -464,7 +464,7 @@ public:
   }
 
   bool is_topologically_closed() const {
-    assert(OK());
+    PPL_ASSERT(OK());
     return is_always_topologically_closed()
       || is_empty()
       || ((lower_is_boundary_infinity() || !lower_is_open())
@@ -482,21 +482,21 @@ public:
   }
 
   void remove_inf() {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     if (!Info::store_open)
       return;
     info().set_boundary_property(LOWER, OPEN, true);
   }
 
   void remove_sup() {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     if (!Info::store_open)
       return;
     info().set_boundary_property(UPPER, OPEN, true);
   }
 
   bool is_infinity() const {
-    assert(OK());
+    PPL_ASSERT(OK());
     if (is_reverse_infinity(LOWER, lower(), info()))
       return 1;
     else if (is_reverse_infinity(UPPER, upper(), info()))
@@ -506,7 +506,7 @@ public:
   }
 
   bool contains_integer_point() const {
-    assert(OK());
+    PPL_ASSERT(OK());
     if (is_empty())
       return false;
     if (!is_bounded())
@@ -556,7 +556,7 @@ public:
 		       UPPER, upper(), info(), w);
       break;
     default:
-      assert(false);
+      PPL_ASSERT(false);
       break;
     }
     if (le(LOWER, lower(), info(), UPPER, upper(), info()))

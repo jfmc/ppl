@@ -112,6 +112,7 @@ endif
 INCLUDE_FILES = \
 namespaces.hh \
 compiler.hh \
+assert.hh \
 meta_programming.hh \
 Slow_Copy.hh \
 Has_Assign_Or_Swap.hh \

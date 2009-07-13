@@ -93,7 +93,7 @@ public:
   void assign(Degenerate_Element e) {
     switch (e) {
     default:
-      assert(0);
+      PPL_ASSERT(0);
       /* Fall through */
     case EMPTY:
       value = B_EMPTY;

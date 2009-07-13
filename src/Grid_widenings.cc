@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Grid.defs.hh"
 
-#include <cassert>
+#include "assert.hh"
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -35,17 +35,17 @@ PPL::Grid::select_wider_congruences(const Grid& y,
 				    Congruence_System& cgs_selected) const {
   // Private method: the caller must ensure the following conditions
   // (beside the inclusion `y <= x').
-  assert(space_dim == y.space_dim);
-  assert(!marked_empty());
-  assert(!y.marked_empty());
-  assert(congruences_are_minimized());
-  assert(y.congruences_are_minimized());
+  PPL_ASSERT(space_dim == y.space_dim);
+  PPL_ASSERT(!marked_empty());
+  PPL_ASSERT(!y.marked_empty());
+  PPL_ASSERT(congruences_are_minimized());
+  PPL_ASSERT(y.congruences_are_minimized());
 
   // Note: row counters start at 0, to preserve the original order in
   // the selected congruences.
   for (dimension_type dim = con_sys.space_dimension(), x_row = 0, y_row = 0;
        dim > 0; --dim) {
-    assert(dim_kinds[dim] == CON_VIRTUAL
+    PPL_ASSERT(dim_kinds[dim] == CON_VIRTUAL
 	   || dim_kinds[dim] == y.dim_kinds[dim]);
     switch (dim_kinds[dim]) {
     case PROPER_CONGRUENCE:
@@ -86,7 +86,7 @@ PPL::Grid::congruence_widening_assign(const Grid& const_y, unsigned* tp) {
     // Assume y is contained in or equal to x.
     const Grid x_copy = x;
     const Grid y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT(x_copy.contains(y_copy));
   }
 #endif
 
@@ -152,7 +152,7 @@ PPL::Grid::congruence_widening_assign(const Grid& const_y, unsigned* tp) {
     // No tokens.
     std::swap(x, result);
 
-  assert(x.OK(true));
+  PPL_ASSERT(x.OK(true));
 }
 
 void
@@ -183,7 +183,7 @@ PPL::Grid::limited_congruence_extrapolation_assign(const Grid& y,
     // Assume that y is contained in or equal to x.
     const Grid x_copy = x;
     const Grid y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT(x_copy.contains(y_copy));
   }
 #endif
 
@@ -222,7 +222,7 @@ PPL::Grid::limited_congruence_extrapolation_assign(const Grid& y,
     // There are tokens, so widening will leave the grid the same.
     x.congruence_widening_assign(y, tp);
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -230,17 +230,17 @@ PPL::Grid::select_wider_generators(const Grid& y,
 				   Grid_Generator_System& ggs_selected) const {
   // Private method: the caller must ensure the following conditions
   // (beside the inclusion `y <= x').
-  assert(space_dim == y.space_dim);
-  assert(!marked_empty());
-  assert(!y.marked_empty());
-  assert(generators_are_minimized());
-  assert(y.generators_are_minimized());
+  PPL_ASSERT(space_dim == y.space_dim);
+  PPL_ASSERT(!marked_empty());
+  PPL_ASSERT(!y.marked_empty());
+  PPL_ASSERT(generators_are_minimized());
+  PPL_ASSERT(y.generators_are_minimized());
 
   // Note: row counters start at 0, to preserve the original order in
   // the selected generators.
   for (dimension_type dim = 0, x_row = 0, y_row = 0;
        dim <= gen_sys.space_dimension(); ++dim) {
-    assert(dim_kinds[dim] == LINE
+    PPL_ASSERT(dim_kinds[dim] == LINE
            || y.dim_kinds[dim] == GEN_VIRTUAL
 	   || dim_kinds[dim] == y.dim_kinds[dim]);
     switch (dim_kinds[dim]) {
@@ -288,7 +288,7 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
     // Assume y is contained in or equal to x.
     const Grid x_copy = x;
     const Grid y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT(x_copy.contains(y_copy));
   }
 #endif
 
@@ -300,7 +300,7 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.generators_are_up_to_date()) {
     if (!x.generators_are_minimized()) {
       simplify(x.gen_sys, x.dim_kinds);
-      assert(!x.gen_sys.has_no_rows());
+      PPL_ASSERT(!x.gen_sys.has_no_rows());
       x.set_generators_minimized();
     }
   }
@@ -314,7 +314,7 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   if (y.generators_are_up_to_date()) {
     if (!y.generators_are_minimized()) {
       simplify(y.gen_sys, y.dim_kinds);
-      assert(!y.gen_sys.has_no_rows());
+      PPL_ASSERT(!y.gen_sys.has_no_rows());
       y.set_generators_minimized();
     }
   }
@@ -354,7 +354,7 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
     // No tokens.
     std::swap(x, result);
 
-  assert(x.OK(true));
+  PPL_ASSERT(x.OK(true));
 }
 
 void
@@ -385,7 +385,7 @@ PPL::Grid::limited_generator_extrapolation_assign(const Grid& y,
     // Assume that y is contained in or equal to x.
     const Grid x_copy = x;
     const Grid y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT(x_copy.contains(y_copy));
   }
 #endif
 
@@ -424,7 +424,7 @@ PPL::Grid::limited_generator_extrapolation_assign(const Grid& y,
     // There are tokens, so widening will leave the grid the same.
     x.generator_widening_assign(y, tp);
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -442,7 +442,7 @@ PPL::Grid::widening_assign(const Grid& const_y, unsigned* tp) {
     // Assume y is contained in or equal to x.
     const Grid x_copy = x;
     const Grid y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT(x_copy.contains(y_copy));
   }
 #endif
 
@@ -491,7 +491,7 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
     // Assume that y is contained in or equal to x.
     const Grid x_copy = x;
     const Grid y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT(x_copy.contains(y_copy));
   }
 #endif
 
@@ -530,5 +530,5 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
     // There are tokens, so widening will leave the grid the same.
     x.widening_assign(y, tp);
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }

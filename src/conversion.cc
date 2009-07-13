@@ -357,11 +357,11 @@ PPL::Polyhedron::conversion(Linear_System& source,
   // By construction, the number of columns of `sat' is the same as
   // the number of rows of `source'; also, the number of rows of `sat'
   // is the same as the number of rows of `dest'.
-  assert(source_num_rows == sat.num_columns());
-  assert(dest_num_rows == sat.num_rows());
+  PPL_ASSERT(source_num_rows == sat.num_columns());
+  PPL_ASSERT(dest_num_rows == sat.num_rows());
 
   // If `start > 0', then we are converting the pending constraints.
-  assert(start == 0 || start == source.first_pending_row());
+  PPL_ASSERT(start == 0 || start == source.first_pending_row());
 
   // During the iteration on the constraints in `source' we may identify
   // constraints that are redundant: these have to be removed by swapping
@@ -389,7 +389,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 
     // Constraints and generators must have the same dimension,
     // otherwise the scalar product below will bomb.
-    assert(source_num_columns == dest_num_columns);
+    PPL_ASSERT(source_num_columns == dest_num_columns);
 
     // `scalar_prod[i]' will contain the scalar product of the
     // constraint `source_k' and the generator `dest[i]'.  This
@@ -665,8 +665,8 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	      // If there exist another generator that saturates
 	      // all the constraints saturated by both `dest[i]' and
 	      // `dest[j]', then they are NOT adjacent.
-	      assert(sat[i].last() == ULONG_MAX || sat[i].last() < k);
-	      assert(sat[j].last() == ULONG_MAX || sat[j].last() < k);
+	      PPL_ASSERT(sat[i].last() == ULONG_MAX || sat[i].last() < k);
+	      PPL_ASSERT(sat[j].last() == ULONG_MAX || sat[j].last() < k);
 
 	      // Being the union of `sat[i]' and `sat[j]',
 	      // `new_satrow' corresponds to a ray that saturates all the
@@ -746,7 +746,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		  // by construction, the new ray lies on the hyper-plane
 		  // represented by the constraint `source_k'.
 		  // Thus, the added scalar product is 0.
-		  assert(scalar_prod.size() >= dest_num_rows);
+		  PPL_ASSERT(scalar_prod.size() >= dest_num_rows);
 		  if (scalar_prod.size() <= dest_num_rows)
 		    scalar_prod.push_back(Coefficient_zero());
 		  else
@@ -809,7 +809,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
   // We may have identified some redundant constraints in `source',
   // which have been swapped at the end of the system.
   if (source_num_redundant > 0) {
-    assert(source_num_redundant == source.num_rows() - source_num_rows);
+    PPL_ASSERT(source_num_redundant == source.num_rows() - source_num_rows);
     source.erase_to_end(source_num_rows);
     sat.columns_erase_to_end(source_num_rows);
   }

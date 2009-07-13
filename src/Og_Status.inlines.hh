@@ -216,7 +216,7 @@ Octagonal_Shape<T>::Status::ascii_load(std::istream& s) {
     reset_strongly_closed();
 
   // Check invariants.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 

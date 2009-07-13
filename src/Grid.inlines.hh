@@ -128,7 +128,7 @@ Grid::Grid(dimension_type num_dimensions,
 	       0)
 	    : num_dimensions) {
   construct(num_dimensions, kind);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 inline

@@ -82,8 +82,8 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::dimension_type
 PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
   // This method is only applied to a well-formed system `sys'.
-  assert(sys.OK(true));
-  assert(sys.num_columns() >= 1);
+  PPL_ASSERT(sys.OK(true));
+  PPL_ASSERT(sys.num_columns() >= 1);
 
   dimension_type num_rows = sys.num_rows();
   const dimension_type num_columns = sys.num_columns();
@@ -302,7 +302,7 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
 #ifndef NDEBUG
   // Check if the flag is set (that of the equalities is already set).
   for (dimension_type i = num_lines_or_equalities; i < num_rows; ++i)
-    assert(sys[i].is_ray_or_point_or_inequality());
+    PPL_ASSERT(sys[i].is_ray_or_point_or_inequality());
 #endif
 
   // Finally, since now the sub-system (of `sys') of the irredundant

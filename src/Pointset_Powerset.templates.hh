@@ -51,7 +51,7 @@ Pointset_Powerset<PSET>::add_disjunct(const PSET& ph) {
   }
   x.sequence.push_back(Determinate<PSET>(ph));
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <>
@@ -77,7 +77,7 @@ Pointset_Powerset<NNC_Polyhedron>
   // assignment x.reduced = y.reduced will be a bug.
   x.reduced = y.reduced;
 
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -94,7 +94,7 @@ Pointset_Powerset<PSET>
   // omega-reduced, because the constructor of PSET may have made
   // different QH elements to become comparable.
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -110,7 +110,7 @@ Pointset_Powerset<PSET>::concatenate_assign(const Pointset_Powerset& y) {
     for (const_iterator yi = y_begin; yi != y_end; ++yi) {
       Det_PSET zi = *xi;
       zi.concatenate_assign(*yi);
-      assert(!zi.is_bottom());
+      PPL_ASSERT_HEAVY(!zi.is_bottom());
       new_x.sequence.push_back(zi);
     }
     ++xi;
@@ -126,12 +126,12 @@ Pointset_Powerset<PSET>::concatenate_assign(const Pointset_Powerset& y) {
       xph.concatenate_assign(yph);
       x.swap(new_x);
       x.add_disjunct(xph);
-      assert(x.OK());
+      PPL_ASSERT_HEAVY(x.OK());
       return;
     }
   }
   x.swap(new_x);
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -142,7 +142,7 @@ Pointset_Powerset<PSET>::add_constraint(const Constraint& c) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_constraint(c);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -153,7 +153,7 @@ Pointset_Powerset<PSET>::refine_with_constraint(const Constraint& c) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().refine_with_constraint(c);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -164,7 +164,7 @@ Pointset_Powerset<PSET>::add_constraints(const Constraint_System& cs) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_constraints(cs);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -175,7 +175,7 @@ Pointset_Powerset<PSET>::refine_with_constraints(const Constraint_System& cs) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().refine_with_constraints(cs);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -186,7 +186,7 @@ Pointset_Powerset<PSET>::add_congruence(const Congruence& c) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_congruence(c);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -197,7 +197,7 @@ Pointset_Powerset<PSET>::refine_with_congruence(const Congruence& cg) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().refine_with_congruence(cg);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -208,7 +208,7 @@ Pointset_Powerset<PSET>::add_congruences(const Congruence_System& cs) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_congruences(cs);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -219,7 +219,7 @@ Pointset_Powerset<PSET>::refine_with_congruences(const Congruence_System& cgs) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().refine_with_congruences(cgs);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -231,7 +231,7 @@ Pointset_Powerset<PSET>::unconstrain(const Variable var) {
     si->pointset().unconstrain(var);
     x.reduced = false;
   }
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -243,7 +243,7 @@ Pointset_Powerset<PSET>::unconstrain(const Variables_Set& vars) {
     si->pointset().unconstrain(vars);
     x.reduced = false;
   }
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -254,7 +254,7 @@ Pointset_Powerset<PSET>::add_space_dimensions_and_embed(dimension_type m) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_space_dimensions_and_embed(m);
   x.space_dim += m;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -265,7 +265,7 @@ Pointset_Powerset<PSET>::add_space_dimensions_and_project(dimension_type m) {
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_space_dimensions_and_project(m);
   x.space_dim += m;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -280,7 +280,7 @@ Pointset_Powerset<PSET>::remove_space_dimensions(const Variables_Set& vars) {
       x.reduced = false;
     }
     x.space_dim -= num_removed;
-    assert(x.OK());
+    PPL_ASSERT_HEAVY(x.OK());
   }
 }
 
@@ -296,7 +296,7 @@ Pointset_Powerset<PSET>::remove_higher_space_dimensions(dimension_type
       x.reduced = false;
     }
     x.space_dim = new_dimension;
-    assert(x.OK());
+    PPL_ASSERT_HEAVY(x.OK());
   }
 }
 
@@ -322,7 +322,7 @@ Pointset_Powerset<PSET>::map_space_dimensions(const Partial_Function& pfunc) {
     x.space_dim = s_begin->pointset().space_dimension();
     x.reduced = false;
   }
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -334,7 +334,7 @@ Pointset_Powerset<PSET>::expand_space_dimension(Variable var,
          s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().expand_space_dimension(var, m);
   x.space_dim += m;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -349,7 +349,7 @@ Pointset_Powerset<PSET>::fold_space_dimensions(const Variables_Set& vars,
       si->pointset().fold_space_dimensions(vars, dest);
   }
   x.space_dim -= num_folded;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -367,7 +367,7 @@ Pointset_Powerset<PSET>::affine_image(Variable var,
     // conditional on `var' and `expr'.
     x.reduced = false;
   }
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -385,7 +385,7 @@ Pointset_Powerset<PSET>::affine_preimage(Variable var,
     // conditional on `var' and `expr'.
     x.reduced = false;
   }
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 
@@ -401,7 +401,7 @@ Pointset_Powerset<PSET>
     si->pointset().generalized_affine_image(lhs, relsym, rhs);
     x.reduced = false;
   }
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -416,7 +416,7 @@ Pointset_Powerset<PSET>
     si->pointset().generalized_affine_preimage(lhs, relsym, rhs);
     x.reduced = false;
   }
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -432,7 +432,7 @@ Pointset_Powerset<PSET>
     si->pointset().generalized_affine_image(var, relsym, expr, denominator);
     x.reduced = false;
   }
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -447,7 +447,7 @@ Pointset_Powerset<PSET>
     si->pointset().generalized_affine_preimage(var, relsym, expr, denominator);
     x.reduced = false;
   }
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 
@@ -464,7 +464,7 @@ Pointset_Powerset<PSET>
     si->pointset().bounded_affine_image(var, lb_expr, ub_expr, denominator);
     x.reduced = false;
   }
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -481,7 +481,7 @@ Pointset_Powerset<PSET>
                                           denominator);
     x.reduced = false;
   }
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -628,7 +628,7 @@ Pointset_Powerset<PSET>::topological_closure_assign() {
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().topological_closure_assign();
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -637,7 +637,7 @@ Pointset_Powerset<PSET>
 ::intersection_preserving_enlarge_element(PSET& dest) const {
   // FIXME: this is just an executable specification.
   const Pointset_Powerset& context = *this;
-  assert(context.space_dimension() == dest.space_dimension());
+  PPL_ASSERT(context.space_dimension() == dest.space_dimension());
   bool nonempty_intersection = false;
   // TODO: maybe use a *sorted* constraint system?
   PSET enlarged(context.space_dimension(), UNIVERSE);
@@ -700,7 +700,7 @@ Pointset_Powerset<PSET>
     }
   }
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
   return !x.sequence.empty();
 }
 
@@ -1162,7 +1162,7 @@ Pointset_Powerset<PSET>::pairwise_reduce() {
     std::swap(x.sequence, new_x.sequence);
     n -= deleted;
   } while (deleted > 0);
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
@@ -1178,7 +1178,7 @@ BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf) {
     // We assume that `y' entails `x'.
     const Pointset_Powerset<PSET> x_copy = x;
     const Pointset_Powerset<PSET> y_copy = y;
-    assert(y_copy.definitely_entails(x_copy));
+    PPL_ASSERT_HEAVY(y_copy.definitely_entails(x_copy));
   }
 #endif
 
@@ -1209,8 +1209,8 @@ BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf) {
 								  nx_begin,
 								  nx_end);
   std::swap(x.sequence, new_x.sequence);
-  assert(x.OK());
-  assert(x.is_omega_reduced());
+  PPL_ASSERT_HEAVY(x.OK());
+  PPL_ASSERT(x.is_omega_reduced());
 }
 
 template <typename PSET>
@@ -1228,7 +1228,7 @@ BGP99_extrapolation_assign(const Pointset_Powerset& y,
     // We assume that `y' entails `x'.
     const Pointset_Powerset<PSET> x_copy = x;
     const Pointset_Powerset<PSET> y_copy = y;
-    assert(y_copy.definitely_entails(x_copy));
+    PPL_ASSERT_HEAVY(y_copy.definitely_entails(x_copy));
   }
 #endif
 
@@ -1245,8 +1245,8 @@ Pointset_Powerset<PSET>::
 collect_certificates(std::map<Cert, size_type,
                      typename Cert::Compare>& cert_ms) const {
   const Pointset_Powerset& x = *this;
-  assert(x.is_omega_reduced());
-  assert(cert_ms.size() == 0);
+  PPL_ASSERT(x.is_omega_reduced());
+  PPL_ASSERT(cert_ms.size() == 0);
   for (const_iterator i = x.begin(), end = x.end(); i != end; i++) {
     Cert ph_cert(i->pointset());
     ++cert_ms[ph_cert];
@@ -1314,14 +1314,14 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
     // We assume that `y' entails `x'.
     const Pointset_Powerset<PSET> x_copy = x;
     const Pointset_Powerset<PSET> y_copy = y;
-    assert(y_copy.definitely_entails(x_copy));
+    PPL_ASSERT_HEAVY(y_copy.definitely_entails(x_copy));
   }
 #endif
 
   // First widening technique: do nothing.
 
   // If `y' is the empty collection, do nothing.
-  assert(x.size() > 0);
+  PPL_ASSERT(x.size() > 0);
   if (y.size() == 0)
     return;
 
@@ -1461,7 +1461,7 @@ Pointset_Powerset<PSET>::ascii_load(std::istream& s) {
   x.swap(new_x);
 
   // Check invariants.
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
   return true;
 }
 

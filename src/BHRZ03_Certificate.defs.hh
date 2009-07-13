@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BHRZ03_Certificate.types.hh"
 #include "Polyhedron.types.hh"
 #include "globals.types.hh"
-#include <cassert>
+#include "assert.hh"
 #include <vector>
 
 //! The convergence certificate for the BHRZ03 widening operator.

@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_globals_inlines_hh 1
 
 #include <limits>
-#include <cassert>
+#include "assert.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -52,12 +52,19 @@ inline
 Throwable::~Throwable() {
 }
 
+#ifndef NDEBUG
+extern int in_assert;
+#endif
+
 inline void
 maybe_abandon() {
-  if (Weightwatch_Traits::check_function) {
-    ++Weightwatch_Traits::weight;
+#ifndef NDEBUG
+  if (in_assert)
+    return;
+#endif
+  ++Weightwatch_Traits::weight;
+  if (Weightwatch_Traits::check_function)
     Weightwatch_Traits::check_function();
-  }
   if (const Throwable* p = abandon_expensive_computations)
     p->throw_me();
 }

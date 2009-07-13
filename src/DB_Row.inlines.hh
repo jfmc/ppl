@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_DB_Row_inlines_hh 1
 
 #include "checked.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <cstddef>
 #include <limits>
 #include <algorithm>
@@ -39,7 +39,7 @@ DB_Row_Impl_Handler<T>::Impl::operator new(const size_t fixed_size,
 #if PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   return ::operator new(fixed_size + capacity*sizeof(T));
 #else
-  assert(capacity >= 1);
+  PPL_ASSERT(capacity >= 1);
   return ::operator new(fixed_size + (capacity-1)*sizeof(T));
 #endif
 }
@@ -131,14 +131,14 @@ DB_Row_Impl_Handler<T>::~DB_Row_Impl_Handler() {
 template <typename T>
 inline T&
 DB_Row_Impl_Handler<T>::Impl::operator[](const dimension_type k) {
-  assert(k < size());
+  PPL_ASSERT(k < size());
   return vec_[k];
 }
 
 template <typename T>
 inline const T&
 DB_Row_Impl_Handler<T>::Impl::operator[](const dimension_type k) const {
-  assert(k < size());
+  PPL_ASSERT(k < size());
   return vec_[k];
 }
 
@@ -176,15 +176,15 @@ DB_Row<T>::allocate(
 #endif
 	       dimension_type capacity) {
   DB_Row<T>& x = *this;
-  assert(capacity <= max_size());
+  PPL_ASSERT(capacity <= max_size());
 #if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity == 0)
     ++capacity;
 #endif
-  assert(x.impl == 0);
+  PPL_ASSERT(x.impl == 0);
   x.impl = new (capacity) typename DB_Row_Impl_Handler<T>::Impl();
 #if PPL_DB_ROW_EXTRA_DEBUG
-  assert(x.capacity_ == 0);
+  PPL_ASSERT(x.capacity_ == 0);
   x.capacity_ = capacity;
 #endif
 }
@@ -193,9 +193,9 @@ template <typename T>
 inline void
 DB_Row<T>::expand_within_capacity(const dimension_type new_size) {
   DB_Row<T>& x = *this;
-  assert(x.impl);
+  PPL_ASSERT(x.impl);
 #if PPL_DB_ROW_EXTRA_DEBUG
-  assert(new_size <= x.capacity_);
+  PPL_ASSERT(new_size <= x.capacity_);
 #endif
   x.impl->expand_within_capacity(new_size);
 }
@@ -204,9 +204,9 @@ template <typename T>
 inline void
 DB_Row<T>::copy_construct_coefficients(const DB_Row& y) {
   DB_Row<T>& x = *this;
-  assert(x.impl && y.impl);
+  PPL_ASSERT(x.impl && y.impl);
 #if PPL_DB_ROW_EXTRA_DEBUG
-  assert(y.size() <= x.capacity_);
+  PPL_ASSERT(y.size() <= x.capacity_);
 #endif
   x.impl->copy_construct_coefficients(*(y.impl));
 }
@@ -217,9 +217,9 @@ inline void
 DB_Row<T>::construct_upward_approximation(const DB_Row<U>& y,
 					  const dimension_type capacity) {
   DB_Row<T>& x = *this;
-  assert(y.size() <= capacity && capacity <= max_size());
+  PPL_ASSERT(y.size() <= capacity && capacity <= max_size());
   allocate(capacity);
-  assert(y.impl);
+  PPL_ASSERT(y.impl);
   x.impl->construct_upward_approximation(*(y.impl));
 }
 
@@ -227,7 +227,7 @@ template <typename T>
 inline void
 DB_Row<T>::construct(const dimension_type sz,
 		     const dimension_type capacity) {
-  assert(sz <= capacity && capacity <= max_size());
+  PPL_ASSERT(sz <= capacity && capacity <= max_size());
   allocate(capacity);
   expand_within_capacity(sz);
 }
@@ -267,8 +267,8 @@ inline
 DB_Row<T>::DB_Row(const DB_Row& y,
 		  const	dimension_type capacity)
   : DB_Row_Impl_Handler<T>() {
-  assert(y.impl);
-  assert(y.size() <= capacity && capacity <= max_size());
+  PPL_ASSERT(y.impl);
+  PPL_ASSERT(y.size() <= capacity && capacity <= max_size());
   allocate(capacity);
   copy_construct_coefficients(y);
 }
@@ -279,8 +279,8 @@ DB_Row<T>::DB_Row(const DB_Row& y,
 		  const dimension_type sz,
 		  const	dimension_type capacity)
   : DB_Row_Impl_Handler<T>() {
-  assert(y.impl);
-  assert(y.size() <= sz && sz <= capacity && capacity <= max_size());
+  PPL_ASSERT(y.impl);
+  PPL_ASSERT(y.size() <= sz && sz <= capacity && capacity <= max_size());
   allocate(capacity);
   copy_construct_coefficients(y);
   expand_within_capacity(sz);
@@ -295,7 +295,7 @@ template <typename T>
 inline void
 DB_Row<T>::shrink(const dimension_type new_size) {
   DB_Row<T>& x = *this;
-  assert(x.impl);
+  PPL_ASSERT(x.impl);
   x.impl->shrink(new_size);
 }
 

@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Checked_Number.defs.hh"
 #include "C_Polyhedron.defs.hh"
 #include "distances.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <algorithm>
 #include "checked.defs.hh"
 
@@ -117,7 +117,7 @@ template <typename U>
 inline U&
 OR_Matrix<T>::Pseudo_Row<U>::operator[](const dimension_type k) const {
 #if PPL_OR_MATRIX_EXTRA_DEBUG
-  assert(k < size_);
+  PPL_ASSERT(k < size_);
 #endif
   return *(first + k);
 }
@@ -520,7 +520,7 @@ OR_Matrix<T>::OR_Matrix(const OR_Matrix<U>& y)
     vec_capacity(compute_capacity(y.vec.size(),
                                   DB_Row<T>::max_size())) {
   vec.construct_upward_approximation(y.vec, vec_capacity);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename T>
@@ -535,7 +535,7 @@ OR_Matrix<T>::operator=(const OR_Matrix& y) {
 template <typename T>
 inline void
 OR_Matrix<T>::grow(const dimension_type new_dim) {
-  assert(new_dim >= space_dim);
+  PPL_ASSERT(new_dim >= space_dim);
   if (new_dim > space_dim) {
     const dimension_type new_size = 2*new_dim*(new_dim + 1);
     if (new_size <= vec_capacity) {
@@ -558,7 +558,7 @@ OR_Matrix<T>::grow(const dimension_type new_dim) {
 template <typename T>
 inline void
 OR_Matrix<T>::shrink(const dimension_type new_dim) {
-  assert(new_dim <= space_dim);
+  PPL_ASSERT(new_dim <= space_dim);
   const dimension_type new_size = 2*new_dim*(new_dim + 1);
   vec.shrink(new_size);
   space_dim = new_dim;
@@ -627,7 +627,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
       maybe_assign(tmp2p, tmp2, x_i, inverse(dir));
     }
     sub_assign_r(tmp1, *tmp1p, *tmp2p, dir);
-    assert(sgn(tmp1) >= 0);
+    PPL_ASSERT(sgn(tmp1) >= 0);
     Specialization::combine(tmp0, tmp1, dir);
   }
 

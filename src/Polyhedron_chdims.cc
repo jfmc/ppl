@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Polyhedron.defs.hh"
 #include "Variables_Set.defs.hh"
-#include <cassert>
+#include "assert.hh"
 
 #define BE_LAZY 1
 
@@ -37,9 +37,9 @@ PPL::Polyhedron::add_space_dimensions(Linear_System& sys1,
 				      Bit_Matrix& sat1,
 				      Bit_Matrix& sat2,
 				      dimension_type add_dim) {
-  assert(sys1.topology() == sys2.topology());
-  assert(sys1.num_columns() == sys2.num_columns());
-  assert(add_dim != 0);
+  PPL_ASSERT(sys1.topology() == sys2.topology());
+  PPL_ASSERT(sys1.num_columns() == sys2.num_columns());
+  PPL_ASSERT(add_dim != 0);
 
   sys1.add_zero_columns(add_dim);
   dimension_type old_index = sys2.first_pending_row();
@@ -113,7 +113,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
   // The case of a zero-dimensional space polyhedron.
   if (space_dim == 0) {
     // Since it is not empty, it has to be the universe polyhedron.
-    assert(status.test_zero_dim_univ());
+    PPL_ASSERT(status.test_zero_dim_univ());
     // We swap `*this' with a newly created
     // universe polyhedron of dimension `m'.
     Polyhedron ph(topology(), m, UNIVERSE);
@@ -149,7 +149,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
     }
   else {
     // Only generators are up-to-date: no need to modify the constraints.
-    assert(generators_are_up_to_date());
+    PPL_ASSERT(generators_are_up_to_date());
     gen_sys.add_rows_and_columns(m);
     // The polyhedron does not support pending generators.
     gen_sys.unset_pending_rows();
@@ -180,7 +180,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
 
   // Note: we do not check for satisfiability, because the system of
   // constraints may be unsatisfiable.
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -206,7 +206,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   }
 
   if (space_dim == 0) {
-    assert(status.test_zero_dim_univ() && gen_sys.has_no_rows());
+    PPL_ASSERT(status.test_zero_dim_univ() && gen_sys.has_no_rows());
     // The system of generators for this polyhedron has only
     // the origin as a point.
     // In an NNC polyhedron, all points have to be accompanied
@@ -218,7 +218,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
     gen_sys.adjust_topology_and_space_dimension(topology(), m);
     set_generators_minimized();
     space_dim = m;
-    assert(OK());
+    PPL_ASSERT_HEAVY(OK());
     return;
   }
 
@@ -268,7 +268,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
     }
   else {
     // Only generators are up-to-date: no need to modify the constraints.
-    assert(generators_are_up_to_date());
+    PPL_ASSERT(generators_are_up_to_date());
     gen_sys.add_zero_columns(m);
     // If the polyhedron is not necessarily closed,
     // move the epsilon coefficients to the last column.
@@ -280,7 +280,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
 
   // Note: we do not check for satisfiability, because the system of
   // constraints may be unsatisfiable.
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -334,7 +334,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 
   // We already dealt with the cases of an empty or zero-dim `y' polyhedron;
   // also, `cs' contains the low-level constraints, at least.
-  assert(added_rows > 0 && added_columns > 0);
+  PPL_ASSERT(added_rows > 0 && added_columns > 0);
 
   con_sys.add_zero_rows_and_columns(added_rows, added_columns,
 				    Linear_Row::Flags(topology(),
@@ -409,7 +409,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 
   // The system of constraints may be unsatisfiable,
   // thus we do not check for satisfiability.
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -418,7 +418,7 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& vars) {
   // Note that this case also captures the only legal removal of
   // dimensions from a polyhedron in a 0-dim space.
   if (vars.empty()) {
-    assert(OK());
+    PPL_ASSERT_HEAVY(OK());
     return;
   }
 
@@ -440,7 +440,7 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& vars) {
     con_sys.clear();
     // Update the space dimension.
     space_dim = new_space_dim;
-    assert(OK());
+    PPL_ASSERT_HEAVY(OK());
     return;
   }
 
@@ -482,7 +482,7 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& vars) {
   // Update the space dimension.
   space_dim = new_space_dim;
 
-  assert(OK(true));
+  PPL_ASSERT_HEAVY(OK(true));
 }
 
 void
@@ -496,7 +496,7 @@ PPL::Polyhedron::remove_higher_space_dimensions(dimension_type new_dimension) {
   // Note that this case also captures the only legal removal of
   // dimensions from a polyhedron in a 0-dim space.
   if (new_dimension == space_dim) {
-    assert(OK());
+    PPL_ASSERT_HEAVY(OK());
     return;
   }
 
@@ -509,7 +509,7 @@ PPL::Polyhedron::remove_higher_space_dimensions(dimension_type new_dimension) {
     // just updates the space dimension.
     space_dim = new_dimension;
     con_sys.clear();
-    assert(OK());
+    PPL_ASSERT_HEAVY(OK());
     return;
   }
 
@@ -540,7 +540,7 @@ PPL::Polyhedron::remove_higher_space_dimensions(dimension_type new_dimension) {
   // Update the space dimension.
   space_dim = new_dimension;
 
-  assert(OK(true));
+  PPL_ASSERT_HEAVY(OK(true));
 }
 
 void
@@ -596,7 +596,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
     }
   }
   add_recycled_constraints(new_constraints);
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -639,5 +639,5 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& vars,
     }
   }
   remove_space_dimensions(vars);
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }

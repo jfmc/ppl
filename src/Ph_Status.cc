@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 #include <iostream>
 #include <string>
-#include <cassert>
+#include "assert.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -154,7 +154,7 @@ PPL::Polyhedron::Status::ascii_load(std::istream& s) {
     reset_sat_g_up_to_date();
 
   // Check invariants.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 

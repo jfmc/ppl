@@ -81,7 +81,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim)
 			    "mode):\n"
 			    "dim exceeds the maximum allowed "
 			    "space dimension.");
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
@@ -132,7 +132,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
 				"cs contains strict inequalities.");
   // Actually copy the constraints.
   input_cs.insert(input_cs.end(), cs.begin(), cs.end());
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -150,7 +150,7 @@ PPL::MIP_Problem::add_constraint(const Constraint& c) {
   input_cs.push_back(c);
   if (status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -169,7 +169,7 @@ PPL::MIP_Problem::add_constraints(const Constraint_System& cs) {
   input_cs.insert(input_cs.end(), cs.begin(), cs.end());
   if (status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -185,7 +185,7 @@ PPL::MIP_Problem::set_objective_function(const Linear_Expression& obj) {
   input_obj_function = obj;
   if (status == UNBOUNDED || status == OPTIMIZED)
     status = SATISFIABLE;
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 const PPL::Generator&
@@ -211,14 +211,14 @@ PPL::MIP_Problem::is_satisfiable() const {
   // Check `status' to filter out trivial cases.
   switch (status) {
   case UNSATISFIABLE:
-    assert(OK());
+    PPL_ASSERT(OK());
     return false;
   case SATISFIABLE:
     // Intentionally fall through
   case UNBOUNDED:
     // Intentionally fall through.
   case OPTIMIZED:
-    assert(OK());
+    PPL_ASSERT(OK());
     return true;
   case PARTIALLY_SATISFIABLE:
     {
@@ -251,13 +251,13 @@ PPL::MIP_Problem_Status
 PPL::MIP_Problem::solve() const{
   switch (status) {
   case UNSATISFIABLE:
-    assert(OK());
+    PPL_ASSERT(OK());
     return UNFEASIBLE_MIP_PROBLEM;
   case UNBOUNDED:
-    assert(OK());
+    PPL_ASSERT(OK());
     return UNBOUNDED_MIP_PROBLEM;
   case OPTIMIZED:
-    assert(OK());
+    PPL_ASSERT(OK());
     return OPTIMIZED_MIP_PROBLEM;
   case SATISFIABLE:
     // Intentionally fall through
@@ -271,7 +271,7 @@ PPL::MIP_Problem::solve() const{
 	  if (x.status == UNBOUNDED)
 	    return UNBOUNDED_MIP_PROBLEM;
 	  else {
-	    assert(x.status == OPTIMIZED);
+	    PPL_ASSERT(x.status == OPTIMIZED);
 	    return OPTIMIZED_MIP_PROBLEM;
 	  }
 	}
@@ -295,7 +295,7 @@ PPL::MIP_Problem::solve() const{
         bool have_incumbent_solution = false;
 
         MIP_Problem lp_copy(relaxed.lp);
-        assert(lp_copy.integer_space_dimensions().empty());
+        PPL_ASSERT(lp_copy.integer_space_dimensions().empty());
         return_value = solve_mip(have_incumbent_solution,
                                  incumbent_solution, g,
                                  lp_copy, relaxed.i_vars);
@@ -317,7 +317,7 @@ PPL::MIP_Problem::solve() const{
 	x.last_generator = g;
 	break;
       }
-      assert(OK());
+      PPL_ASSERT(OK());
       return return_value;
     }
   }
@@ -337,7 +337,7 @@ PPL::MIP_Problem::add_space_dimensions_and_embed(const dimension_type m) {
   external_space_dim += m;
   if (status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -383,7 +383,7 @@ PPL::MIP_Problem::merge_split_variables(dimension_type var_index,
 #ifndef NDEBUG
       for (dimension_type j = 0; j < tableau_nrows; ++j) {
  	dimension_type dummy = 0;
-	assert(!is_in_base(mapping[var_index].first, dummy));
+	PPL_ASSERT(!is_in_base(mapping[var_index].first, dummy));
       }
 #endif
       // We set base[i] to zero to keep track that that the constraint is not
@@ -818,7 +818,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     status = OPTIMIZED;
     // Ensure the right space dimension is obtained.
     last_generator = point(0*Variable(space_dimension()-1));
-    assert(OK());
+    PPL_ASSERT(OK());
     return true;
   }
 
@@ -844,7 +844,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     erase_artificials(begin_artificials, end_artificials);
   compute_generator();
   status = SATISFIABLE;
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -875,7 +875,7 @@ assign(double& d,
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
-  assert(tableau_num_rows == base.size());
+  PPL_ASSERT(tableau_num_rows == base.size());
   double challenger_num = 0.0;
   double challenger_den = 0.0;
   double current_value = 0.0;
@@ -897,7 +897,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 	const Row& tableau_i = tableau[i];
 	const Coefficient& tableau_ij = tableau_i[j];
 	if (tableau_ij != 0) {
-	  assert(tableau_i[base[i]] != 0);
+	  PPL_ASSERT(tableau_i[base[i]] != 0);
 	  assign(float_tableau_value, tableau_ij);
 	  assign(float_tableau_denum, tableau_i[base[i]]);
 	  float_tableau_value /= float_tableau_denum;
@@ -919,7 +919,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
-  assert(tableau_num_rows == base.size());
+  PPL_ASSERT(tableau_num_rows == base.size());
   // The square of the lcm of all the coefficients of variables in base.
   PPL_DIRTY_TEMP_COEFFICIENT(squared_lcm_basis);
   // The normalization factor for each coefficient in the tableau.
@@ -1000,7 +1000,7 @@ PPL::MIP_Problem::textbook_entering_index() const {
   // Get the "sign" of the cost function.
   const dimension_type cost_sign_index = working_cost.size() - 1;
   const int cost_sign = sgn(working_cost[cost_sign_index]);
-  assert(cost_sign != 0);
+  PPL_ASSERT(cost_sign != 0);
   for (dimension_type i = 1; i < cost_sign_index; ++i)
     if (sgn(working_cost[i]) == cost_sign)
       return i;
@@ -1013,8 +1013,8 @@ void
 PPL::MIP_Problem::linear_combine(Row& x,
 				 const Row& y,
 				 const dimension_type k) {
-  assert(x.size() == y.size());
-  assert(y[k] != 0 && x[k] != 0);
+  PPL_ASSERT(x.size() == y.size());
+  PPL_ASSERT(y[k] != 0 && x[k] != 0);
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
@@ -1126,7 +1126,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
   if (cost_sgn_coeff < 0)
     neg_assign(current_num);
   abs_assign(current_den, cost_sgn_coeff);
-  assert(tableau.num_columns() == working_cost.size());
+  PPL_ASSERT(tableau.num_columns() == working_cost.size());
   const dimension_type tableau_num_rows = tableau.num_rows();
 
   while (true) {
@@ -1174,7 +1174,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
 		<< num_iterations << "." << std::endl;
 #endif
     // If the following condition fails, probably there's a bug.
-    assert(challenger >= current);
+    PPL_ASSERT(challenger >= current);
     // If the value of the objective function does not improve,
     // keep track of that.
     if (challenger == current) {
@@ -1199,8 +1199,8 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
 
 bool
 PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
-  assert(tableau.num_columns() == working_cost.size());
-  assert(get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_EXACT
+  PPL_ASSERT(tableau.num_columns() == working_cost.size());
+  PPL_ASSERT(get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_EXACT
          || get_control_parameter(PRICING) == PRICING_TEXTBOOK);
 
   const dimension_type tableau_num_rows = tableau.num_rows();
@@ -1394,7 +1394,7 @@ PPL::MIP_Problem::compute_generator() const {
 void
 PPL::MIP_Problem::second_phase() {
   // Second_phase requires that *this is satisfiable.
-  assert(status == SATISFIABLE || status == UNBOUNDED || status == OPTIMIZED);
+  PPL_ASSERT(status == SATISFIABLE || status == UNBOUNDED || status == OPTIMIZED);
   // In the following cases the problem is already solved.
   if (status == UNBOUNDED || status == OPTIMIZED)
     return;
@@ -1444,7 +1444,7 @@ PPL::MIP_Problem::second_phase() {
 	    << num_iterations << "." << std::endl;
 #endif
   status = second_phase_successful ? OPTIMIZED : UNBOUNDED;
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -1513,7 +1513,7 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
       x.first_pending_constraint = input_cs.size();
       // Update also `internal_space_dim'.
       x.internal_space_dim = x.external_space_dim;
-      assert(OK());
+      PPL_ASSERT(OK());
       return status != UNSATISFIABLE;
     }
   }
@@ -1546,13 +1546,13 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   if (lp_status == UNBOUNDED_MIP_PROBLEM)
     p = lp.last_generator;
   else {
-    assert(lp_status == OPTIMIZED_MIP_PROBLEM);
+    PPL_ASSERT(lp_status == OPTIMIZED_MIP_PROBLEM);
     // Do not call optimizing_point().
     p = lp.last_generator;
     lp.evaluate_objective_function(p, tmp_coeff1, tmp_coeff2);
     assign_r(tmp_rational.get_num(), tmp_coeff1, ROUND_NOT_NEEDED);
     assign_r(tmp_rational.get_den(), tmp_coeff2, ROUND_NOT_NEEDED);
-    assert(is_canonical(tmp_rational));
+    PPL_ASSERT(is_canonical(tmp_rational));
     if (have_incumbent_solution
 	&& ((lp.optimization_mode() == MAXIMIZATION
  	     && tmp_rational <= incumbent_solution_value)
@@ -1601,7 +1601,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
     return lp_status;
   }
 
-  assert(nonint_dim < lp.space_dimension());
+  PPL_ASSERT(nonint_dim < lp.space_dimension());
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
 	   ROUND_NOT_NEEDED);
@@ -1680,7 +1680,7 @@ bool
 PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
 				     const Variables_Set& i_vars,
                                      Generator& p) {
-  assert(lp.integer_space_dimensions().empty());
+  PPL_ASSERT(lp.integer_space_dimensions().empty());
 
   // Solve the LP problem.
   if (!lp.is_lp_satisfiable())
@@ -1713,7 +1713,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   if (found_satisfiable_generator)
     return true;
 
-  assert(nonint_dim < lp.space_dimension());
+  PPL_ASSERT(nonint_dim < lp.space_dimension());
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
 	   ROUND_NOT_NEEDED);
@@ -2150,7 +2150,7 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
   if (!i_variables.ascii_load(s))
     return false;
 
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 

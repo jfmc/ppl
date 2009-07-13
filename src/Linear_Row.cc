@@ -103,8 +103,8 @@ void
 PPL::Linear_Row::linear_combine(const Linear_Row& y, const dimension_type k) {
   Linear_Row& x = *this;
   // We can combine only vector of the same dimension.
-  assert(x.size() == y.size());
-  assert(y[k] != 0 && x[k] != 0);
+  PPL_ASSERT(x.size() == y.size());
+  PPL_ASSERT(y[k] != 0 && x[k] != 0);
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.

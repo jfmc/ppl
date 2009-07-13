@@ -1,4 +1,4 @@
-/* Coefficient class implementation (non-inline functions).
+/* Implementation of PPL_ASSERT macro.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,45 +20,44 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <ppl-config.h>
+#ifndef PPL_assert_hh
+#define PPL_assert_hh 1
 
-#include "Coefficient.defs.hh"
+#include <cassert>
+#include "globals.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
-#if defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
-void
-Coefficient_constants_initialize() {
-}
+#if defined(NDEBUG)
 
-void
-Coefficient_constants_finalize() {
-}
+#define PPL_ASSERT(cond__)
+#define PPL_ASSERT_HEAVY(cond__)
+
+#else
+
+#define PPL_DEBUG_PPL_ASSERT 1
+#if !PPL_DEBUG_PPL_ASSERT
+#define PPL_ASSERT(cond__) assert(cond__)
+#else
+#define PPL_ASSERT(cond__)				   \
+  do {							   \
+    Parma_Polyhedra_Library::Weightwatch_Traits::Threshold \
+      old_weight__ =					   \
+      Parma_Polyhedra_Library::Weightwatch_Traits::weight; \
+    assert(cond__);					   \
+    assert(old_weight__ == Parma_Polyhedra_Library::Weightwatch_Traits::weight &&   \
+	   "PPL_ASSERT_HEAVY have to be used here");	   \
+  } while(0)
 #endif
 
-#ifdef PPL_GMP_INTEGERS
-const Coefficient* Coefficient_zero_p = 0;
-const Coefficient* Coefficient_one_p = 0;
-
-void
-Coefficient_constants_initialize() {
-  PPL_ASSERT(Coefficient_zero_p == 0);
-  Coefficient_zero_p = new Coefficient(0);
-
-  PPL_ASSERT(Coefficient_one_p == 0);
-  Coefficient_one_p = new Coefficient(1);
-}
-
-void
-Coefficient_constants_finalize() {
-  PPL_ASSERT(Coefficient_zero_p != 0);
-  delete Coefficient_zero_p;
-  Coefficient_zero_p = 0;
-
-  PPL_ASSERT(Coefficient_one_p != 0);
-  delete Coefficient_one_p;
-  Coefficient_one_p = 0;
-}
+#define PPL_ASSERT_HEAVY(cond__)		\
+    do {					\
+      ++Parma_Polyhedra_Library::in_assert;	\
+      assert(cond__);				\
+      --Parma_Polyhedra_Library::in_assert;	\
+    } while (0)
 #endif
 
 } // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_assert_hh)

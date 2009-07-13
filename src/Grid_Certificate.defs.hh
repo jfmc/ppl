@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Grid.types.hh"
 #include "globals.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <vector>
 
 //! The convergence certificate for the Grid widening operator.

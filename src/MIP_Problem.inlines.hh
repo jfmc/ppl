@@ -56,7 +56,7 @@ MIP_Problem::MIP_Problem(const MIP_Problem& y)
     opt_mode(y.opt_mode),
     last_generator(y.last_generator),
     i_variables(y.i_variables) {
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 inline
@@ -70,7 +70,7 @@ MIP_Problem::set_optimization_mode(const Optimization_Mode mode) {
     opt_mode = mode;
     if (status == UNBOUNDED || status == OPTIMIZED)
       status = SATISFIABLE;
-    assert(OK());
+    PPL_ASSERT(OK());
   }
 }
 
@@ -108,7 +108,7 @@ MIP_Problem::integer_space_dimensions() const {
 inline MIP_Problem::Control_Parameter_Value
 MIP_Problem::get_control_parameter(Control_Parameter_Name name) const {
   used(name);
-  assert(name == PRICING);
+  PPL_ASSERT(name == PRICING);
   return pricing;
 }
 

@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_intervals_defs_hh
 #define PPL_intervals_defs_hh 1
 
-#include <cassert>
+#include "assert.hh"
 #include <cstdlib>
 
 #include "Checked_Number.defs.hh"
@@ -220,7 +220,7 @@ public:
     case V_EQ:
       r = assign_r(to, c.value(), ROUND_CHECK);
       r = result_relation_class(r);
-      assert(r != V_LT && r != V_GT);
+      PPL_ASSERT(r != V_LT && r != V_GT);
       if (r == V_EQ)
 	return V_EQ;
       else
@@ -235,7 +235,7 @@ public:
     default:
       break;
     }
-    assert(false);
+    PPL_ASSERT(false);
     return V_EMPTY;
   }
   template <typename T>
@@ -258,7 +258,7 @@ public:
     rel1 = result_relation_class(rel1);
     switch (rel1) {
     case V_EQ:
-      assert(rel2 == V_LE);
+      PPL_ASSERT(rel2 == V_LE);
       goto eq;
     case V_EQ_PLUS_INFINITY:
     case V_EMPTY:
@@ -275,7 +275,7 @@ public:
     case V_GT_MINUS_INFINITY:
       return rel1;
     default:
-      assert(false);
+      PPL_ASSERT(false);
       return V_EMPTY;
     }
     switch (rel2) {
@@ -284,7 +284,7 @@ public:
     case V_LT_PLUS_INFINITY:
       return rel1;
     default:
-      assert(false);
+      PPL_ASSERT(false);
       return V_EMPTY;
     }
   }
@@ -303,7 +303,7 @@ public:
     case V_LE:
       rel = floor_assign_r(to, to, ROUND_UP);
       rel = result_relation_class(rel);
-      assert(rel == V_EQ);
+      PPL_ASSERT(rel == V_EQ);
       return V_LE;
     case V_GT:
       if (is_integer(to)) {
@@ -316,7 +316,7 @@ public:
     case V_GE:
       rel = ceil_assign_r(to, to, ROUND_DOWN);
       rel = result_relation_class(rel);
-      assert(rel == V_EQ);
+      PPL_ASSERT(rel == V_EQ);
       return V_GE;
     case V_EQ:
       if (is_integer(to))
@@ -336,7 +336,7 @@ struct I_Constraint_Rel {
   Result rel;
   I_Constraint_Rel(Result r)
     : rel(r) {
-    assert(result_relation_class(r) == r);
+    PPL_ASSERT(result_relation_class(r) == r);
   }
   I_Constraint_Rel(Relation_Symbol r)
     : rel((Result)r) {

@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Scalar_Products.defs.hh"
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
-#include <cassert>
+#include "assert.hh"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -49,7 +49,7 @@ bool
 PPL::Constraint_System::
 adjust_topology_and_space_dimension(const Topology new_topology,
 				    const dimension_type new_space_dim) {
-  assert(space_dimension() <= new_space_dim);
+  PPL_ASSERT(space_dimension() <= new_space_dim);
 
   const dimension_type old_space_dim = space_dimension();
   const Topology old_topology = topology();
@@ -94,7 +94,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	if (cols_to_be_added > 0)
 	  add_zero_columns(cols_to_be_added);
       }
-    assert(OK());
+    PPL_ASSERT(OK());
     return true;
   }
 
@@ -201,7 +201,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
       }
     }
   // We successfully adjusted space dimensions and topology.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -229,7 +229,7 @@ void
 PPL::Constraint_System::insert(const Constraint& c) {
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending constraint.
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
   if (topology() == c.topology())
     Linear_System::insert(c);
   else
@@ -253,7 +253,7 @@ PPL::Constraint_System::insert(const Constraint& c) {
       tmp_c.set_not_necessarily_closed();
       Linear_System::insert(tmp_c);
     }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -279,14 +279,14 @@ PPL::Constraint_System::insert_pending(const Constraint& c) {
       tmp_c.set_not_necessarily_closed();
       Linear_System::insert_pending(tmp_c);
     }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 PPL::dimension_type
 PPL::Constraint_System::num_inequalities() const {
   // We are sure that we call this method only when
   // the matrix has no pending rows.
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
   const Constraint_System& cs = *this;
   dimension_type n = 0;
   // If the Linear_System happens to be sorted, take advantage of the fact
@@ -305,7 +305,7 @@ PPL::dimension_type
 PPL::Constraint_System::num_equalities() const {
   // We are sure that we call this method only when
   // the matrix has no pending rows.
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
   return num_rows() - num_inequalities();
 }
 
@@ -318,7 +318,7 @@ PPL::Constraint_System::const_iterator::skip_forward() {
 
 bool
 PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
-  assert(g.space_dimension() <= space_dimension());
+  PPL_ASSERT(g.space_dimension() <= space_dimension());
 
   // Setting `sps' to the appropriate scalar product sign operator.
   // This also avoids problems when having _legal_ topology mismatches
@@ -417,9 +417,9 @@ PPL::Constraint_System
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).
-  assert(v > 0 && v <= x.space_dimension());
-  assert(expr.space_dimension() <= x.space_dimension());
-  assert(denominator > 0);
+  PPL_ASSERT(v > 0 && v <= x.space_dimension());
+  PPL_ASSERT(expr.space_dimension() <= x.space_dimension());
+  PPL_ASSERT(denominator > 0);
 
   const dimension_type n_columns = x.num_columns();
   const dimension_type n_rows = x.num_rows();
@@ -568,7 +568,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
     return false;
   }
   // Check invariants.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -576,14 +576,14 @@ const PPL::Constraint_System* PPL::Constraint_System::zero_dim_empty_p = 0;
 
 void
 PPL::Constraint_System::initialize() {
-  assert(zero_dim_empty_p == 0);
+  PPL_ASSERT(zero_dim_empty_p == 0);
   zero_dim_empty_p
     = new Constraint_System(Constraint::zero_dim_false());
 }
 
 void
 PPL::Constraint_System::finalize() {
-  assert(zero_dim_empty_p != 0);
+  PPL_ASSERT(zero_dim_empty_p != 0);
   delete zero_dim_empty_p;
   zero_dim_empty_p = 0;
 }

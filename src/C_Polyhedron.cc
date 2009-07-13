@@ -37,7 +37,7 @@ PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y, Complexity_Class)
     const Constraint& c = *i;
     add_constraint(c.is_strict_inequality() ? (Linear_Expression(c) >= 0) : c);
   }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 PPL::C_Polyhedron::C_Polyhedron(const Congruence_System& cgs)
