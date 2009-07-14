@@ -137,6 +137,7 @@ extern unsigned int in_assert;
 
 #if defined(NDEBUG)
 #if PPL_PROFILE_ADD_WEIGHT
+#define WEIGHT_BEGIN() Weight_Profiler::begin()
 #define WEIGHT_ADD(delta)				      \
   do {							      \
     static Weight_Profiler wp__(__FILE__, __LINE__, delta);   \
@@ -148,6 +149,7 @@ extern unsigned int in_assert;
     wp__.end(factor);							\
   } while(0)
 #else
+#define WEIGHT_BEGIN()
 #define WEIGHT_ADD(delta)			\
   do {						\
     Weightwatch_Traits::weight += delta;	\
@@ -158,6 +160,7 @@ extern unsigned int in_assert;
   } while(0)
 #endif
 #else
+#define WEIGHT_BEGIN()
 #define WEIGHT_ADD(delta)			\
   do {						\
     if (!Implementation::in_assert)		\

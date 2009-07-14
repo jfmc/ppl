@@ -403,10 +403,11 @@ PPL::Polyhedron::conversion(Linear_System& source,
     // that does not saturate the constraint `source_k'.
     dimension_type index_non_zero = 0;
     for ( ; index_non_zero < dest_num_rows; ++index_non_zero) {
+      WEIGHT_BEGIN();
       Scalar_Products::assign(scalar_prod[index_non_zero],
 			      source_k,
 			      dest[index_non_zero]);
-      WEIGHT_ADD_MUL(1, source_num_columns);
+      WEIGHT_ADD_MUL(17, source_num_columns);
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
 	break;
@@ -416,8 +417,9 @@ PPL::Polyhedron::conversion(Linear_System& source,
       maybe_abandon();
     }
     for (dimension_type i = index_non_zero + 1; i < dest_num_rows; ++i) {
+      WEIGHT_BEGIN();
       Scalar_Products::assign(scalar_prod[i], source_k, dest[i]);
-      WEIGHT_ADD_MUL(1, source_num_columns);
+      WEIGHT_ADD_MUL(25, source_num_columns);
       // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
@@ -530,6 +532,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		     normalized_sp_i,
 		     normalized_sp_o);
 	  Linear_Row& dest_i = dest[i];
+          WEIGHT_BEGIN();
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Coefficient& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
@@ -538,7 +541,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
-          WEIGHT_ADD_MUL(1, dest_num_columns);
+          WEIGHT_ADD_MUL(41, dest_num_columns);
 	}
         // Check if the client has requested abandoning all expensive
         // computations.  If so, the exception specified by the client
@@ -702,6 +705,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		// Now we actually check for redundancy by computing
 		// adjacency information.
 		bool redundant = false;
+		WEIGHT_BEGIN();
 		for (dimension_type
 		       l = num_lines_or_equalities; l < bound; ++l)
 		  if (l != i && l != j
@@ -712,7 +716,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		    break;
 		  }
                 assert(bound >= num_lines_or_equalities);
-                WEIGHT_ADD_MUL(1, bound - num_lines_or_equalities);
+                WEIGHT_ADD_MUL(15, bound - num_lines_or_equalities);
 		if (!redundant) {
 		  // Adding the new ray to `dest' and the corresponding
 		  // saturation row to `sat'.
@@ -740,11 +744,13 @@ PPL::Polyhedron::conversion(Linear_System& source,
 			     scalar_prod[j],
 			     normalized_sp_i,
 			     normalized_sp_o);
+		  WEIGHT_BEGIN();
 		  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 		    Coefficient& new_row_c = new_row[c];
 		    new_row_c = normalized_sp_i * dest[j][c];
 		    sub_mul_assign(new_row_c, normalized_sp_o, dest[i][c]);
 		  }
+                  WEIGHT_ADD_MUL(86, dest_num_columns);
 		  new_row.strong_normalize();
 		  // Since we added a new generator to `dest',
 		  // we also add a new element to `scalar_prod';
@@ -758,7 +764,6 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		    scalar_prod[dest_num_rows] = Coefficient_zero();
 		  // Increment the number of generators.
 		  ++dest_num_rows;
-                  WEIGHT_ADD_MUL(1, dest_num_columns);
 		} // if (!redundant)
 	      }
 	    }
