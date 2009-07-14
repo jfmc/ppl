@@ -940,7 +940,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     // `lcm_basis' will no longer be needed.
     lcm_basis *= lcm_basis;
     std::swap(squared_lcm_basis, lcm_basis);
-    WEIGHT_ADD_MUL(2, tableau_num_rows);
+    WEIGHT_ADD_MUL(444, tableau_num_rows);
   }
 
   // Defined here to avoid repeated (de-)allocations.
@@ -988,7 +988,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
 	std::swap(current_den, challenger_den);
 	entering_index = j;
       }
-      WEIGHT_ADD_MUL(1, tableau_num_rows);
+      WEIGHT_ADD_MUL(47, tableau_num_rows);
     }
   }
   return entering_index;
@@ -1041,7 +1041,7 @@ PPL::MIP_Problem::linear_combine(Row& x,
     }
   x[k] = 0;
   x.normalize();
-  WEIGHT_ADD_MUL(1, x_size);
+  WEIGHT_ADD_MUL(83, x_size);
 }
 
 // See pages 42-43 of [PapadimitriouS98].
@@ -1112,7 +1112,7 @@ PPL::MIP_Problem
       if (sign > 0
 	  || (sign == 0 && base[i] < base[exiting_base_index]))
 	exiting_base_index = i;
-      WEIGHT_ADD(1);
+      WEIGHT_ADD(1044);
     }
   }
   return exiting_base_index;
@@ -1608,7 +1608,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
       PPL_DIRTY_TEMP_COEFFICIENT(num);
       PPL_DIRTY_TEMP_COEFFICIENT(den);
       lp.evaluate_objective_function(p, num, den);
-      std::cerr << "new value found: " << num << "/" << den << std::endl;
+      std::cout << "new value found: " << num << "/" << den << std::endl;
 #endif
     }
     return lp_status;
@@ -1625,11 +1625,21 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   {
     MIP_Problem lp_aux = lp;
     lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
+#if PPL_NOISY_SIMPLEX
+    using namespace IO_Operators;
+    std::cout << "descending with: "
+              << (Variable(nonint_dim) <= tmp_coeff1) << std::endl;
+#endif
     solve_mip(have_incumbent_solution, incumbent_solution_value,
 	      incumbent_solution_point, lp_aux, i_vars);
   }
   // TODO: change this when we will be able to remove constraints.
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
+#if PPL_NOISY_SIMPLEX
+  using namespace IO_Operators;
+  std::cout << "descending with: "
+            << (Variable(nonint_dim) >= tmp_coeff2) << std::endl;
+#endif
   solve_mip(have_incumbent_solution, incumbent_solution_value,
 	    incumbent_solution_point, lp, i_vars);
   return have_incumbent_solution ? lp_status : UNFEASIBLE_MIP_PROBLEM;

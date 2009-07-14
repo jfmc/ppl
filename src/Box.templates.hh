@@ -2619,7 +2619,7 @@ Box<ITV>
     for (Constraint_System::const_iterator i = cs_begin; i != cs_end; ++i)
       propagate_constraint_no_check(*i);
 
-    WEIGHT_ADD_MUL(1, propagation_weight);
+    WEIGHT_ADD_MUL(40, propagation_weight);
     // Check if the client has requested abandoning all expensive
     // computations.  If so, the exception specified by the client
     // is thrown now.
