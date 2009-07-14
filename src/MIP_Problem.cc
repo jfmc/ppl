@@ -56,6 +56,8 @@ namespace {
 
 unsigned long num_iterations = 0;
 
+unsigned mip_recursion_level = 0;
+
 } // namespace
 #endif // PPL_NOISY_SIMPLEX
 
@@ -233,6 +235,9 @@ PPL::MIP_Problem::is_satisfiable() const {
         RAII_Temporary_Real_Relaxation relaxed(x);
         Generator p = point();
         relaxed.lp.is_lp_satisfiable();
+#if PPL_NOISY_SIMPLEX
+        mip_recursion_level = 0;
+#endif
         if (is_mip_satisfiable(relaxed.lp, relaxed.i_vars, p)) {
           x.last_generator = p;
           x.status = SATISFIABLE;
@@ -829,8 +834,9 @@ PPL::MIP_Problem::process_pending_constraints() {
     : compute_simplex_using_exact_pricing();
 
 #if PPL_NOISY_SIMPLEX
-  std::cout << "MIP_Problem::solve: 1st phase ended at iteration "
- 	    << num_iterations << "." << std::endl;
+  std::cout << "MIP_Problem::process_pending_constraints(): "
+            << "1st phase ended at iteration "
+            << num_iterations << "." << std::endl;
 #endif
 
   if (!first_phase_succesful || working_cost[0] != 0) {
@@ -1453,7 +1459,7 @@ PPL::MIP_Problem::second_phase() {
     : compute_simplex_using_exact_pricing();
   compute_generator();
 #if PPL_NOISY_SIMPLEX
-  std::cout << "MIP_Problem::solve: 2nd phase ended at iteration "
+  std::cout << "MIP_Problem::second_phase(): 2nd phase ended at iteration "
 	    << num_iterations << "." << std::endl;
 #endif
   status = second_phase_successful ? OPTIMIZED : UNBOUNDED;
@@ -1703,11 +1709,24 @@ bool
 PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
 				     const Variables_Set& i_vars,
                                      Generator& p) {
+#if PPL_NOISY_SIMPLEX
+  ++mip_recursion_level;
+  std::cout << "MIP_Problem::is_mip_satisfiable(): "
+            << "entering recursion level " << mip_recursion_level
+            << "." << std::endl;
+#endif
   PPL_ASSERT(lp.integer_space_dimensions().empty());
 
   // Solve the LP problem.
-  if (!lp.is_lp_satisfiable())
+  if (!lp.is_lp_satisfiable()) {
+#if PPL_NOISY_SIMPLEX
+    std::cout << "MIP_Problem::is_mip_satisfiable(): "
+              << "exiting from recursion level " << mip_recursion_level
+              << "." << std::endl;
+    --mip_recursion_level;
+#endif
     return false;
+  }
 
   PPL_DIRTY_TEMP0(mpq_class, tmp_rational);
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff1);
@@ -1747,11 +1766,25 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   {
     MIP_Problem lp_aux = lp;
     lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
-    if (is_mip_satisfiable(lp_aux, i_vars, p))
+    if (is_mip_satisfiable(lp_aux, i_vars, p)) {
+#if PPL_NOISY_SIMPLEX
+      std::cout << "MIP_Problem::is_mip_satisfiable(): "
+                << "exiting from recursion level " << mip_recursion_level
+                << "." << std::endl;
+      --mip_recursion_level;
+#endif
       return true;
+    }
   }
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
-  return is_mip_satisfiable(lp, i_vars, p);
+  bool satisfiable = is_mip_satisfiable(lp, i_vars, p);
+#if PPL_NOISY_SIMPLEX
+  std::cout << "MIP_Problem::is_mip_satisfiable(): "
+            << "exiting from recursion level " << mip_recursion_level
+            << "." << std::endl;
+  --mip_recursion_level;
+#endif
+  return satisfiable;
 }
 
 bool
