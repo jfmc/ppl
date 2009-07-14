@@ -835,8 +835,8 @@ PPL::MIP_Problem::process_pending_constraints() {
 
 #if PPL_NOISY_SIMPLEX
   std::cout << "MIP_Problem::process_pending_constraints(): "
-            << "1st phase ended at iteration "
-            << num_iterations << "." << std::endl;
+            << "1st phase ended at iteration " << num_iterations
+            << "." << std::endl;
 #endif
 
   if (!first_phase_succesful || working_cost[0] != 0) {
@@ -1188,8 +1188,8 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
     if (num_iterations % 200 == 0)
-      std::cout << "Primal Simplex: iteration "
-		<< num_iterations << "." << std::endl;
+      std::cout << "Primal simplex: iteration " << num_iterations
+                << "." << std::endl;
 #endif
     // If the following condition fails, probably there's a bug.
     PPL_ASSERT(challenger >= current);
@@ -1255,8 +1255,8 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
     if (num_iterations % 200 == 0)
-      std::cout << "Primal Simplex: iteration "
-                << num_iterations << "." << std::endl;
+      std::cout << "Primal simplex: iteration " << num_iterations
+                << "." << std::endl;
 #endif
   }
 }
@@ -1460,7 +1460,8 @@ PPL::MIP_Problem::second_phase() {
   compute_generator();
 #if PPL_NOISY_SIMPLEX
   std::cout << "MIP_Problem::second_phase(): 2nd phase ended at iteration "
-	    << num_iterations << "." << std::endl;
+	    << num_iterations
+            << "." << std::endl;
 #endif
   status = second_phase_successful ? OPTIMIZED : UNBOUNDED;
   PPL_ASSERT(OK());
@@ -1614,7 +1615,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
       PPL_DIRTY_TEMP_COEFFICIENT(num);
       PPL_DIRTY_TEMP_COEFFICIENT(den);
       lp.evaluate_objective_function(p, num, den);
-      std::cout << "new value found: " << num << "/" << den << std::endl;
+      std::cout << "new value found: " << num << "/" << den
+                << "." << std::endl;
 #endif
     }
     return lp_status;
@@ -1634,7 +1636,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 #if PPL_NOISY_SIMPLEX
     using namespace IO_Operators;
     std::cout << "descending with: "
-              << (Variable(nonint_dim) <= tmp_coeff1) << std::endl;
+              << (Variable(nonint_dim) <= tmp_coeff1)
+              << "." << std::endl;
 #endif
     solve_mip(have_incumbent_solution, incumbent_solution_value,
 	      incumbent_solution_point, lp_aux, i_vars);
@@ -1644,7 +1647,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 #if PPL_NOISY_SIMPLEX
   using namespace IO_Operators;
   std::cout << "descending with: "
-            << (Variable(nonint_dim) >= tmp_coeff2) << std::endl;
+            << (Variable(nonint_dim) >= tmp_coeff2)
+            << "." << std::endl;
 #endif
   solve_mip(have_incumbent_solution, incumbent_solution_value,
 	    incumbent_solution_point, lp, i_vars);
@@ -1766,7 +1770,13 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   {
     MIP_Problem lp_aux = lp;
     lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
-<<<<<<< HEAD:src/MIP_Problem.cc
+#if PPL_NOISY_SIMPLEX
+    using namespace IO_Operators;
+    std::cout << "MIP_Problem::is_mip_satisfiable(): "
+              << "descending with: "
+              << (Variable(nonint_dim) <= tmp_coeff1)
+              << "." << std::endl;
+#endif
     if (is_mip_satisfiable(lp_aux, i_vars, p)) {
 #if PPL_NOISY_SIMPLEX
       std::cout << "MIP_Problem::is_mip_satisfiable(): "
@@ -1774,19 +1784,15 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
                 << "." << std::endl;
       --mip_recursion_level;
 #endif
-=======
-#if PPL_NOISY_SIMPLEX
-    using namespace IO_Operators;
-    std::cout << "descending with: "
-              << (Variable(nonint_dim) <= tmp_coeff1) << std::endl;
-#endif
-    if (is_mip_satisfiable(lp_aux, i_vars, p))
->>>>>>> More weights adjusted.  Added a couple of debugging prints.:src/MIP_Problem.cc
       return true;
     }
   }
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
-<<<<<<< HEAD:src/MIP_Problem.cc
+#if PPL_NOISY_SIMPLEX
+  using namespace IO_Operators;
+  std::cout << "descending with: "
+            << (Variable(nonint_dim) >= tmp_coeff2) << std::endl;
+#endif
   bool satisfiable = is_mip_satisfiable(lp, i_vars, p);
 #if PPL_NOISY_SIMPLEX
   std::cout << "MIP_Problem::is_mip_satisfiable(): "
@@ -1795,14 +1801,6 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   --mip_recursion_level;
 #endif
   return satisfiable;
-=======
-#if PPL_NOISY_SIMPLEX
-  using namespace IO_Operators;
-  std::cout << "descending with: "
-            << (Variable(nonint_dim) >= tmp_coeff2) << std::endl;
-#endif
-  return is_mip_satisfiable(lp, i_vars, p);
->>>>>>> More weights adjusted.  Added a couple of debugging prints.:src/MIP_Problem.cc
 }
 
 bool
