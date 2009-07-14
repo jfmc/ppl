@@ -1615,7 +1615,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
       PPL_DIRTY_TEMP_COEFFICIENT(num);
       PPL_DIRTY_TEMP_COEFFICIENT(den);
       lp.evaluate_objective_function(p, num, den);
-      std::cout << "new value found: " << num << "/" << den
+      std::cout << "MIP_Problem::solve_mip(): "
+                << "new value found: " << num << "/" << den
                 << "." << std::endl;
 #endif
     }
@@ -1635,7 +1636,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
     lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
 #if PPL_NOISY_SIMPLEX
     using namespace IO_Operators;
-    std::cout << "descending with: "
+    std::cout << "MIP_Problem::solve_mip(): "
+              << "descending with: "
               << (Variable(nonint_dim) <= tmp_coeff1)
               << "." << std::endl;
 #endif
@@ -1646,7 +1648,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
 #if PPL_NOISY_SIMPLEX
   using namespace IO_Operators;
-  std::cout << "descending with: "
+  std::cout << "MIP_Problem::solve_mip(): "
+            << "descending with: "
             << (Variable(nonint_dim) >= tmp_coeff2)
             << "." << std::endl;
 #endif
@@ -1790,8 +1793,10 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
 #if PPL_NOISY_SIMPLEX
   using namespace IO_Operators;
-  std::cout << "descending with: "
-            << (Variable(nonint_dim) >= tmp_coeff2) << std::endl;
+  std::cout << "MIP_Problem::is_mip_satisfiable(): "
+            << "descending with: "
+            << (Variable(nonint_dim) >= tmp_coeff2)
+            << "." << std::endl;
 #endif
   bool satisfiable = is_mip_satisfiable(lp, i_vars, p);
 #if PPL_NOISY_SIMPLEX
