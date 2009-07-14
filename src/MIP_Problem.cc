@@ -918,7 +918,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 	current_value = challenger_value;
 	entering_index = j;
       }
-      WEIGHT_ADD_MUL(1, tableau_num_rows);
+      WEIGHT_ADD_MUL(338, tableau_num_rows);
     }
   }
   return entering_index;
@@ -1212,7 +1212,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     if (cost_sgn_coeff < 0)
       neg_assign(current_num);
     abs_assign(current_den, cost_sgn_coeff);
-    WEIGHT_ADD(1);
+    WEIGHT_ADD(566);
   }
 }
 
@@ -1766,6 +1766,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   {
     MIP_Problem lp_aux = lp;
     lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
+<<<<<<< HEAD:src/MIP_Problem.cc
     if (is_mip_satisfiable(lp_aux, i_vars, p)) {
 #if PPL_NOISY_SIMPLEX
       std::cout << "MIP_Problem::is_mip_satisfiable(): "
@@ -1773,10 +1774,19 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
                 << "." << std::endl;
       --mip_recursion_level;
 #endif
+=======
+#if PPL_NOISY_SIMPLEX
+    using namespace IO_Operators;
+    std::cout << "descending with: "
+              << (Variable(nonint_dim) <= tmp_coeff1) << std::endl;
+#endif
+    if (is_mip_satisfiable(lp_aux, i_vars, p))
+>>>>>>> More weights adjusted.  Added a couple of debugging prints.:src/MIP_Problem.cc
       return true;
     }
   }
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
+<<<<<<< HEAD:src/MIP_Problem.cc
   bool satisfiable = is_mip_satisfiable(lp, i_vars, p);
 #if PPL_NOISY_SIMPLEX
   std::cout << "MIP_Problem::is_mip_satisfiable(): "
@@ -1785,6 +1795,14 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   --mip_recursion_level;
 #endif
   return satisfiable;
+=======
+#if PPL_NOISY_SIMPLEX
+  using namespace IO_Operators;
+  std::cout << "descending with: "
+            << (Variable(nonint_dim) >= tmp_coeff2) << std::endl;
+#endif
+  return is_mip_satisfiable(lp, i_vars, p);
+>>>>>>> More weights adjusted.  Added a couple of debugging prints.:src/MIP_Problem.cc
 }
 
 bool
