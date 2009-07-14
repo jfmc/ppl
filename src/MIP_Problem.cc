@@ -886,6 +886,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
     const Coefficient& cost_j = working_cost[j];
     if (sgn(cost_j) == cost_sign) {
+      WEIGHT_BEGIN();
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
       assign(challenger_num, cost_j);
@@ -911,6 +912,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 	current_value = challenger_value;
 	entering_index = j;
       }
+      WEIGHT_ADD_MUL(1, tableau_num_rows);
     }
   }
   return entering_index;
@@ -925,6 +927,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   // The normalization factor for each coefficient in the tableau.
   std::vector<Coefficient> norm_factor(tableau_num_rows);
   {
+    WEIGHT_BEGIN();
     // Compute the lcm of all the coefficients of variables in base.
     PPL_DIRTY_TEMP_COEFFICIENT(lcm_basis);
     lcm_basis = 1;
@@ -937,8 +940,8 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     // `lcm_basis' will no longer be needed.
     lcm_basis *= lcm_basis;
     std::swap(squared_lcm_basis, lcm_basis);
+    WEIGHT_ADD_MUL(2, tableau_num_rows);
   }
-  WEIGHT_ADD_MUL(2, tableau_num_rows);
 
   // Defined here to avoid repeated (de-)allocations.
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_num);
@@ -954,6 +957,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
     const Coefficient& cost_j = working_cost[j];
     if (sgn(cost_j) == cost_sign) {
+      WEIGHT_BEGIN();
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
       challenger_num = cost_j * cost_j;
@@ -969,7 +973,6 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
 	  add_mul_assign(challenger_den, scalar_value, scalar_value);
         }
       }
-      WEIGHT_ADD_MUL(2, tableau_num_rows);
       // Initialization during the first loop.
       if (entering_index == 0) {
 	std::swap(current_num, challenger_num);
@@ -985,6 +988,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
 	std::swap(current_den, challenger_den);
 	entering_index = j;
       }
+      WEIGHT_ADD_MUL(1, tableau_num_rows);
     }
   }
   return entering_index;
@@ -1015,6 +1019,7 @@ void
 PPL::MIP_Problem::linear_combine(Row& x,
 				 const Row& y,
 				 const dimension_type k) {
+  WEIGHT_BEGIN();
   const dimension_type x_size = x.size();
   PPL_ASSERT(x_size == y.size());
   PPL_ASSERT(y[k] != 0 && x[k] != 0);
@@ -1036,7 +1041,7 @@ PPL::MIP_Problem::linear_combine(Row& x,
     }
   x[k] = 0;
   x.normalize();
-  WEIGHT_ADD_MUL(3, x_size);
+  WEIGHT_ADD_MUL(1, x_size);
 }
 
 // See pages 42-43 of [PapadimitriouS98].
@@ -1092,6 +1097,7 @@ PPL::MIP_Problem
     const Coefficient& t_ib = t_i[base[i]];
     const int t_ie_sign = sgn(t_ie);
     if (t_ie_sign != 0 && t_ie_sign == sgn(t_ib)) {
+      WEIGHT_BEGIN();
       const Row& t_e = tableau[exiting_base_index];
       const Coefficient& t_ee = t_e[entering_var_index];
       lcm_assign(lcm, t_ee, t_ie);
@@ -1106,7 +1112,7 @@ PPL::MIP_Problem
       if (sign > 0
 	  || (sign == 0 && base[i] < base[exiting_base_index]))
 	exiting_base_index = i;
-      WEIGHT_ADD(7);
+      WEIGHT_ADD(1);
     }
   }
   return exiting_base_index;
@@ -1162,6 +1168,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     // feasible region.
     pivot(entering_var_index, exiting_base_index);
 
+    WEIGHT_BEGIN();
     // Now begins the objective function's value check to choose between
     // the `textbook' and the float `steepest-edge' technique.
     cost_sgn_coeff = working_cost[working_cost.size()-1];
@@ -1172,7 +1179,6 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     challenger *= current_den;
     abs_assign(current, cost_sgn_coeff);
     current *= current_num;
-    WEIGHT_ADD(2);
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
     if (num_iterations % 200 == 0)
@@ -1200,6 +1206,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     if (cost_sgn_coeff < 0)
       neg_assign(current_num);
     abs_assign(current_den, cost_sgn_coeff);
+    WEIGHT_ADD(1);
   }
 }
 
@@ -1230,7 +1237,6 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
     if (exiting_base_index == tableau_num_rows)
       return false;
 
-    WEIGHT_ADD(1);
     // Check if the client has requested abandoning all expensive
     // computations. If so, the exception specified by the client
     // is thrown now.
