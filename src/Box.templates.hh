@@ -2607,17 +2607,19 @@ Box<ITV>
   const Constraint_System::const_iterator cs_begin = cs.begin();
   const Constraint_System::const_iterator cs_end = cs.end();
   const dimension_type cs_size = std::distance(cs_begin, cs_end);
+  const dimension_type propagation_weight = cs_size * space_dim;
 
   Sequence copy;
   bool changed;
   dimension_type num_iterations = 0;
   do {
+    WEIGHT_BEGIN();
     ++num_iterations;
     copy = seq;
     for (Constraint_System::const_iterator i = cs_begin; i != cs_end; ++i)
       propagate_constraint_no_check(*i);
 
-    WEIGHT_ADD_MUL(cs_size, space_dim);
+    WEIGHT_ADD_MUL(1, propagation_weight);
     // Check if the client has requested abandoning all expensive
     // computations.  If so, the exception specified by the client
     // is thrown now.
