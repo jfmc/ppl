@@ -938,6 +938,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     lcm_basis *= lcm_basis;
     std::swap(squared_lcm_basis, lcm_basis);
   }
+  WEIGHT_ADD_MUL(2, tableau_num_rows);
 
   // Defined here to avoid repeated (de-)allocations.
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_num);
@@ -968,6 +969,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
 	  add_mul_assign(challenger_den, scalar_value, scalar_value);
         }
       }
+      WEIGHT_ADD_MUL(2, tableau_num_rows);
       // Initialization during the first loop.
       if (entering_index == 0) {
 	std::swap(current_num, challenger_num);
@@ -1013,7 +1015,8 @@ void
 PPL::MIP_Problem::linear_combine(Row& x,
 				 const Row& y,
 				 const dimension_type k) {
-  PPL_ASSERT(x.size() == y.size());
+  const dimension_type x_size = x.size();
+  PPL_ASSERT(x_size == y.size());
   PPL_ASSERT(y[k] != 0 && x[k] != 0);
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
@@ -1021,7 +1024,7 @@ PPL::MIP_Problem::linear_combine(Row& x,
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x[k], y[k], normalized_x_k, normalized_y_k);
-  for (dimension_type i = x.size(); i-- > 0; )
+  for (dimension_type i = x_size; i-- > 0; )
     if (i != k) {
       Coefficient& x_i = x[i];
       x_i *= normalized_y_k;
@@ -1033,6 +1036,7 @@ PPL::MIP_Problem::linear_combine(Row& x,
     }
   x[k] = 0;
   x.normalize();
+  WEIGHT_ADD_MUL(3, x_size);
 }
 
 // See pages 42-43 of [PapadimitriouS98].
@@ -1102,6 +1106,7 @@ PPL::MIP_Problem
       if (sign > 0
 	  || (sign == 0 && base[i] < base[exiting_base_index]))
 	exiting_base_index = i;
+      WEIGHT_ADD(7);
     }
   }
   return exiting_base_index;
@@ -1147,7 +1152,6 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     if (exiting_base_index == tableau_num_rows)
       return false;
 
-    WEIGHT_ADD(1);
     // Check if the client has requested abandoning all expensive
     // computations. If so, the exception specified by the client
     // is thrown now.
@@ -1168,6 +1172,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     challenger *= current_den;
     abs_assign(current, cost_sgn_coeff);
     current *= current_num;
+    WEIGHT_ADD(2);
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
     if (num_iterations % 200 == 0)
