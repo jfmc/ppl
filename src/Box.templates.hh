@@ -2601,7 +2601,12 @@ void
 Box<ITV>
 ::propagate_constraints_no_check(const Constraint_System& cs,
                                  const dimension_type max_iterations) {
-  PPL_ASSERT(cs.space_dimension() <= space_dimension());
+  const dimension_type space_dim = space_dimension();
+  PPL_ASSERT(cs.space_dimension() <= space_dim);
+
+  const Constraint_System::const_iterator cs_begin = cs.begin();
+  const Constraint_System::const_iterator cs_end = cs.end();
+  const dimension_type cs_size = std::distance(cs_begin, cs_end);
 
   Sequence copy;
   bool changed;
@@ -2609,11 +2614,10 @@ Box<ITV>
   do {
     ++num_iterations;
     copy = seq;
-    for (Constraint_System::const_iterator i = cs.begin(),
-	   cs_end = cs.end(); i != cs_end; ++i)
+    for (Constraint_System::const_iterator i = cs_begin; i != cs_end; ++i)
       propagate_constraint_no_check(*i);
 
-    WEIGHT_ADD(1);
+    WEIGHT_ADD_MUL(cs_size, space_dim);
     // Check if the client has requested abandoning all expensive
     // computations.  If so, the exception specified by the client
     // is thrown now.
