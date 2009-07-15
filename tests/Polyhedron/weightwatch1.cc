@@ -104,7 +104,7 @@ bool test01() {
   print_constraints(ph, "*** ph ***");
 
   try {
-    Weightwatch ww(400, too_fat);
+    Weightwatch ww(2500000, too_fat);
     // Thanks to the blind relaxation of the strict inequality constraint,
     // polyhedron ph is easily seen to contain an integer point.
     const bool contains = ph.contains_integer_point();
@@ -170,7 +170,7 @@ bool test02() {
   print_constraints(ph, "*** ph ***");
 
   try {
-    Weightwatch ww(400, too_fat);
+    Weightwatch ww(2500000, too_fat);
     // The branch-and-bound heuristics of the MIP solver behaves badly
     // on this particular example, causing timeout to expire.
     const bool contains = ph.contains_integer_point();
@@ -207,7 +207,7 @@ bool test03() {
   print_constraints(ph, "*** ph ***");
 
   try {
-    Weightwatch ww(400, too_fat);
+    Weightwatch ww(1000000000, too_fat);
     // Polyhedron ph is the projection of the polyehdron of test01
     // onto a lower dimensional space: the performance issue of previous
     // test does not depend on high dimension vector space.
