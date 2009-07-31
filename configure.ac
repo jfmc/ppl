@@ -1125,17 +1125,11 @@ AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE,
 # Checks for YAP.
 if test x${yap_prolog_interface_enabled} = xyes
 then
-  AC_CHECK_PROG(YAP_PROLOG, yap, yap)
-  if test x"$YAP_PROLOG" = xyap
-  then
-    AC_CHECK_HEADER(Yap/c_interface.h,
-                    [],
-                    YAP_PROLOG="")
-  fi
+  AC_CHECK_YAP_PROLOG
 fi
 
 if test x${yap_prolog_interface_enabled} = xyes \
-&& test x$YAP_PROLOG = xyap
+&& test x$have_yap_prolog = xyes
 then
   build_yap_prolog_interface=yes
 fi

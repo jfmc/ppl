@@ -63,6 +63,7 @@ AM_CPPFLAGS = \
 -I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 $(WATCHDOG_INCLUDE_OPTIONS) \
+$(YAP_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 if NO_UNDEFINED
@@ -160,7 +161,7 @@ nodist_EXTRA_ppl_yap_la_SOURCES = \
 
 ppl_yap_la_LIBADD = \
 @required_instantiations_prolog_cxx_objects@ \
--lYap \
+$(YAP_PROLOG_LD_OPTIONS) \
 $(top_builddir)/src/libppl.la \
 $(WATCHDOG_LIBRARY) \
 @extra_libraries@
@@ -213,7 +214,7 @@ pl_check_test: yap_pl_check.pl ppl_yap.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen ppl_yap.la \
-		yap -l $(srcdir)/yap_pl_check.pl \
+		$(YAP_PROLOG) -l $(srcdir)/yap_pl_check.pl \
 			<script_pchk >obtained_pchk
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
@@ -227,7 +228,7 @@ clpq_test: yap_clpq.pl ppl_yap.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECT
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen ppl_yap.la \
-		yap -l $(srcdir)/yap_clpq.pl \
+		$(YAP_PROLOG) -l $(srcdir)/yap_clpq.pl \
 			<script_clpq >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
@@ -238,7 +239,7 @@ clpq2_test: yap_clpq2.pl ppl_yap.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EX
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen ppl_yap.la \
-		yap -l $(srcdir)/yap_clpq2.pl \
+		$(YAP_PROLOG) -l $(srcdir)/yap_clpq2.pl \
 			<script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
@@ -254,7 +255,7 @@ ppl_prolog_generated_test: yap_prolog_generated_test.pl ppl_yap.pl  ../tests/exp
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen ppl_yap.la \
-		yap -l yap_prolog_generated_test.pl \
+		$(YAP_PROLOG) -l yap_prolog_generated_test.pl \
 			<script_pgt >obtained_pgt
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f ppl_prolog_generated_test_common.pl; \
