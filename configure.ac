@@ -713,10 +713,11 @@ AC_CHECK_DECLS([fma,fmaf,fmal,rintf,rintl], , , [#include <cmath>])
 # Checks for the availability of "fast" integral types.
 AC_CHECK_TYPES([int_fast16_t,int_fast32_t,int_fast64_t,uint_fast16_t,uint_fast32_t,uint_fast64_t])
 
-# Must link everything with libm.
-extra_libraries="${extra_libraries} -lm"
+# The PPL uses <cmath> for sqrt and other functions in several places.
+AC_SEARCH_LIBS([sqrt], [m])
 
-# GMP library.
+
+# Checks on the GMP library.
 
 AC_CHECK_GMP
 if test x"$have_gmp" = xno
@@ -1482,6 +1483,7 @@ then
     CXXFLAGS="$CXXFLAGS -W -Wall"
   fi
 fi
+
 
 AC_SUBST(LIBEXT, [$libext])
 AC_SUBST(SHREXT, [$shrext_cmds])
