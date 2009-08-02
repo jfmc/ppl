@@ -375,7 +375,6 @@ polyhullifexact1_SOURCES = polyhullifexact1.cc
 polyhullifexact2_SOURCES = polyhullifexact2.cc
 
 randphull1_SOURCES = randphull1.cc
-randphull1_LDADD = $(LDADD) -lm
 
 refinewithconstraint1_SOURCES = refinewithconstraint1.cc
 refinewithconstraints1_SOURCES = refinewithconstraints1.cc
@@ -606,7 +605,6 @@ nnc_polyhullifexact1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_randphull1_SOURCES = randphull1.cc
 nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_randphull1_LDADD = $(LDADD) -lm
 
 nnc_relations1_SOURCES = relations1.cc
 nnc_relations1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -665,7 +663,9 @@ $(AM_CPPFLAGS) \
 -I$(top_builddir)/Watchdog \
 -I$(top_builddir)/Watchdog/src
 
-WATCHDOG_LIBRARY_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
+WATCHDOG_LIBRARY_LDADD = \
+$(LDADD) \
+$(top_builddir)/Watchdog/src/libpwl.la
 
 watchdog1_SOURCES = $(watchdog1_SRCS)
 watchdog1_CPPFLAGS = $(WATCHDOG_LIBRARY_CPPFLAGS)
