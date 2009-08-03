@@ -611,22 +611,17 @@ then
   AC_DEFINE(PPL_GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
 fi
 
-# Allow additions to C and C++ compilation flags.
-
+# Allow additions to C compilation flags.
 AC_ARG_WITH(cflags,
   AS_HELP_STRING([--with-cflags=XXX],
                  [add XXX to the options for the C compiler]),
   CFLAGS="$CFLAGS $with_cflags")
 
+# Allow additions to C++ compilation flags.
 AC_ARG_WITH(cxxflags,
   AS_HELP_STRING([--with-cxxflags=XXX],
                  [add XXX to the options for the C++ compiler]),
   CXXFLAGS="$CXXFLAGS $with_cxxflags")
-
-# Check for Perl.
-AC_PATH_PROG([PERL], perl, no)
-AC_SUBST([PERL])
-AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
 
 # Checks for C typedefs, structures, compiler and architecture characteristics.
 AC_LANG(C)
@@ -651,8 +646,16 @@ AC_CHECK_SIZEOF(long double)
 AC_CHECK_SIZEOF([int*])
 AC_CHECK_SIZEOF([fp], [], [typedef int *(*fp)();])
 
+# Check for Perl.
+AC_PATH_PROG([PERL], perl, no)
+AC_SUBST([PERL])
+AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
+
 # Use C++ for the remaining checks.
 AC_LANG(C++)
+
+# The PPL uses <cmath> for sqrt and other functions in several places.
+AC_SEARCH_LIBS([sqrt], [m])
 
 # Check for the possibility to control the FPU.
 AC_CHECK_FPU_CONTROL
@@ -712,9 +715,6 @@ AC_CHECK_DECLS([fma,fmaf,fmal,rintf,rintl], , , [#include <cmath>])
 
 # Checks for the availability of "fast" integral types.
 AC_CHECK_TYPES([int_fast16_t,int_fast32_t,int_fast64_t,uint_fast16_t,uint_fast32_t,uint_fast64_t])
-
-# The PPL uses <cmath> for sqrt and other functions in several places.
-AC_SEARCH_LIBS([sqrt], [m])
 
 
 # Checks on the GMP library.
