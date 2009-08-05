@@ -20,6 +20,14 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+member(X, [X|_]).
+member(X, [_|T]) :-
+    member(X, T).
+
+append([], L, L).
+append([H|T], L, [H|R]) :-
+    append(T, L, R).
+
 :-  ensure_loaded('ppl_prolog_generated_test_main.pl').
 
 prolog_system('SWI').
