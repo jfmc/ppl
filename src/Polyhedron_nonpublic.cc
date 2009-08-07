@@ -1641,6 +1641,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     x.update_sat_g();
   const Bit_Matrix& x_sat = x.sat_g;
 
+  Bit_Row x_cs_condition_3;
   Bit_Row x_gs_condition_3;
   Bit_Row all_ones;
   all_ones.set_until(x_gs_num_rows);
@@ -1658,6 +1659,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
       return false;
     if (x_c.is_strict_inequality()) {
       // Postpone check for condition 3.
+      x_cs_condition_3.set(i);
       set_intersection(x_closure_points, saturators, tmp_set);
       set_union(x_gs_condition_3, tmp_set, x_gs_condition_3);
     }
@@ -1700,6 +1702,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     y.update_sat_g();
   const Bit_Matrix& y_sat = y.sat_g;
 
+  Bit_Row y_cs_condition_3;
   Bit_Row y_gs_condition_3;
   all_ones.clear();
   all_ones.set_until(y_gs_num_rows);
@@ -1709,13 +1712,13 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     if (x.relation_with(y_c).implies(Poly_Con_Relation::is_included()))
       continue;
     set_difference(all_ones, y_sat[i], saturators);
-    // CHECKME: do we really need to re-check condition 1?
     // Check condition 1.
     set_intersection(y_nonpoints_nonred_in_x, saturators, tmp_set);
     if (!tmp_set.empty())
       return false;
     if (y_c.is_strict_inequality()) {
       // Postpone check for condition 3.
+      y_cs_condition_3.set(i);
       set_intersection(y_closure_points, saturators, tmp_set);
       set_union(y_gs_condition_3, tmp_set, y_gs_condition_3);
     }
@@ -1727,7 +1730,29 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     }
   }
 
-  // Now check condition 3 on `x_gs_condition_3' and `y_gs_condition_3'.
+  // Now considering condition 3.
+
+  if (x_cs_condition_3.empty() && y_cs_condition_3.empty()) {
+    // No test for condition 3 is needed.
+    // The hull is exact: compute it.
+    for (dimension_type j = y_gs_num_rows; j-- > 0; )
+      if (y_gs_nonred_in_x[j])
+        add_generator(y_gs[j]);
+    return true;
+  }
+
+  // We have anyway to compute the upper bound and its constraints too.
+  Polyhedron ub(x);
+  for (dimension_type j = y_gs_num_rows; j-- > 0; )
+    if (y_gs_nonred_in_x[j])
+      ub.add_generator(y_gs[j]);
+  (void) ub.minimize();
+  PPL_ASSERT(!ub.is_empty());
+
+  // NOTE: the following computation of x_gs_condition_3_not_in_y
+  // (resp., y_gs_condition_3_not_in_x) is not required for correctness.
+  // It is done so as to later apply a speculative test
+  // (i.e., a non-conclusive but computationally lighter test).
 
   // Filter away from `x_gs_condition_3' those closure points
   // that, when considered as points, would belong to `y',
@@ -1751,7 +1776,6 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
         break;
     }
   }
-
   // Symmetrically, filter away from `y_gs_condition_3' those
   // closure points that, when considered as points, would belong to `x',
   // i.e., those that violate no strict constraint in `x_cs'.
@@ -1775,23 +1799,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     }
   }
 
-  if (x_gs_condition_3_not_in_y.empty()
-      && y_gs_condition_3_not_in_x.empty()) {
-    // The hull is exact: compute it.
-    for (dimension_type j = y_gs_num_rows; j-- > 0; )
-      if (y_gs_nonred_in_x[j])
-        add_generator(y_gs[j]);
-    return true;
-  }
-
-  // We have anyway to compute the upper bound and its constraints too.
-  Polyhedron ub(x);
-  for (dimension_type j = y_gs_num_rows; j-- > 0; )
-    if (y_gs_nonred_in_x[j])
-      ub.add_generator(y_gs[j]);
-  (void) ub.minimize();
-  PPL_ASSERT(!ub.is_empty());
-
+  // NOTE: here we apply the speculative test.
   // Check if there exists a closure point in `x_gs_condition_3_not_in_y'
   // or `y_gs_condition_3_not_in_x' that belongs (as point) to the hull.
   // If so, the hull is not exact.
@@ -1820,15 +1828,54 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     }
   }
 
-  if (x_gs_condition_3_not_in_y.empty()
-      && y_gs_condition_3_not_in_x.empty()) {
-    // No closure point satisfies condition 3, hence the hull is exact.
-    swap(ub);
-    return true;
-  }
-  else
-    // The hull is not exact.
+  if (!(x_gs_condition_3_not_in_y.empty()
+        && y_gs_condition_3_not_in_x.empty()))
+    // There exist a closure point satisfying condition 3,
+    // hence the hull is not exact.
     return false;
+
+  // The speculative test was not successful:
+  // apply the expensive (but conclusive) test for condition 3.
+
+  // Consider strict inequalities in `x' violated by `y'.
+  for (dimension_type i = x_cs_condition_3.first();
+       i != ULONG_MAX; i = x_cs_condition_3.next(i)) {
+    const Constraint& x_cs_i = x_cs[i];
+    PPL_ASSERT(x_cs_i.is_strict_inequality());
+    // Build the equality constraint induced by x_cs_i.
+    Constraint eq_i(Linear_Expression(x_cs_i) == 0);
+    PPL_ASSERT(!(ub.relation_with(eq_i)
+                 .implies(Poly_Con_Relation::is_disjoint())));
+    Polyhedron ub_inters_hyperplane(ub);
+    ub_inters_hyperplane.add_constraint(eq_i);
+    Polyhedron y_inters_hyperplane(y);
+    y_inters_hyperplane.add_constraint(eq_i);
+    if (!y_inters_hyperplane.contains(ub_inters_hyperplane))
+      // The hull is not exact.
+      return false;
+  }
+
+  // Consider strict inequalities in `y' violated by `x'.
+  for (dimension_type i = y_cs_condition_3.first();
+       i != ULONG_MAX; i = y_cs_condition_3.next(i)) {
+    const Constraint& y_cs_i = y_cs[i];
+    PPL_ASSERT(y_cs_i.is_strict_inequality());
+    // Build the equality constraint induced by y_cs_i.
+    Constraint eq_i(Linear_Expression(y_cs_i) == 0);
+    PPL_ASSERT(!(ub.relation_with(eq_i)
+                 .implies(Poly_Con_Relation::is_disjoint())));
+    Polyhedron ub_inters_hyperplane(ub);
+    ub_inters_hyperplane.add_constraint(eq_i);
+    Polyhedron x_inters_hyperplane(x);
+    x_inters_hyperplane.add_constraint(eq_i);
+    if (!x_inters_hyperplane.contains(ub_inters_hyperplane))
+      // The hull is not exact.
+      return false;
+  }
+
+  // The hull is exact.
+  swap(ub);
+  return true;
 }
 
 bool
