@@ -47,6 +47,14 @@ o  All methods having a name ending in `_and_minimize' (e.g.,
    have been removed (they were deprecated in version 0.10).
 
 
+Bugfixes
+========
+
+o  Corrected a bug in method
+     bool NNC_Polyhedron::poly_hull_assign_if_exact(const NNC_Polyhedron&);
+   whereby some inexact NNC hulls were incorrectly flagged as exact.
+
+
 --------------------------------------------------------------------------
 NEWS for version 0.10.2  (released on April 18, 2009)
 --------------------------------------------------------------------------
