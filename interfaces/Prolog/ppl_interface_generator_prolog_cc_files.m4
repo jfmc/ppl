@@ -52,8 +52,6 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 
 m4_divert`'dnl
 dnl
-dnl `#'include "ppl_prolog_common.cc"`'dnl
-dnl
 dnl Generate the non-fixed part of the file.
 m4_all_code`'dnl
 ___END_OF_FILE___
