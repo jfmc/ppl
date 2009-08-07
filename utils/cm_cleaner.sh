@@ -22,16 +22,13 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-CUTTING_MARKER_PREFIX="%<--%<--%<-- "
+___BEGIN_OF_FILE___() {
+  rm -f $1
+  cat > /dev/null
+}
 
-while IFS= read -r line
-do
-  case "$line" in
-      $CUTTING_MARKER_PREFIX*)
-	  read dummy file <<EOF
-$line
-EOF
-	  rm -f "$file"
-	  ;;
-  esac
-done
+___END_OF_FILE___() {
+    :
+}
+
+. $1

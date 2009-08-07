@@ -72,8 +72,8 @@ ppl_prolog_generated_test.stamp: $(interface_generator_dependencies)
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_prolog_generated_test_pl.m4 \
 			> ppl_prolog_generated_test_blob
-	$(top_srcdir)/utils/cm_cleaner.sh < ppl_prolog_generated_test_blob
-	$(top_srcdir)/utils/cm_splitter.sh < ppl_prolog_generated_test_blob
+	$(top_srcdir)/utils/cm_cleaner.sh ./ppl_prolog_generated_test_blob
+	$(top_srcdir)/utils/cm_splitter.sh ./ppl_prolog_generated_test_blob
 	rm -f ppl_prolog_generated_test_blob
 	echo timestamp >$@
 

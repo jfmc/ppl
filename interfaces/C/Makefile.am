@@ -110,8 +110,8 @@ ppl_c_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_cc_files.m4 \
                 > ppl_c_cc_blob
-	$(top_srcdir)/utils/cm_cleaner.sh < ppl_c_cc_blob
-	$(top_srcdir)/utils/cm_splitter.sh < ppl_c_cc_blob
+	$(top_srcdir)/utils/cm_cleaner.sh ./ppl_c_cc_blob
+	$(top_srcdir)/utils/cm_splitter.sh ./ppl_c_cc_blob
 	rm -f ppl_c_cc_blob
 	echo timestamp >$@
 
@@ -119,8 +119,8 @@ ppl_c_implementation_domains.hh: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_hh_files.m4 \
                 > ppl_c_hh_blob
-	$(top_srcdir)/utils/cm_cleaner.sh < ppl_c_hh_blob
-	$(top_srcdir)/utils/cm_splitter.sh < ppl_c_hh_blob
+	$(top_srcdir)/utils/cm_cleaner.sh ./ppl_c_hh_blob
+	$(top_srcdir)/utils/cm_splitter.sh ./ppl_c_hh_blob
 	rm -f ppl_c_hh_blob
 
 AM_CPPFLAGS = \
