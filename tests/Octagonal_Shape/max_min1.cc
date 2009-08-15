@@ -326,7 +326,6 @@ test09() {
 
 bool
 test10() {
-
   TOctagonal_Shape oct(0);
 
   print_constraints(oct, "*** oct ***");
