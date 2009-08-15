@@ -887,6 +887,9 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
                                 bool& maximum) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
+  if (x.is_empty())
+    return false;
+
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(supt_n);
@@ -940,6 +943,9 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
                                 Generator& g) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
+  if (x.is_empty())
+    return false;
+
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(supt_n);
@@ -999,6 +1005,9 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
                                 bool& minimum) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
+  if (x.is_empty())
+    return false;
+
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(inft_n);
@@ -1052,6 +1061,9 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
                                 Generator& g) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
+  if (x.is_empty())
+    return false;
+
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(inft_n);
