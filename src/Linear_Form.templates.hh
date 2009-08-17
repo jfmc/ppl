@@ -56,8 +56,8 @@ Linear_Form<C>::Linear_Form(const Variable v, const Variable w)
   vec.reserve(compute_capacity(space_dim+1, vec_type::max_size()));
   vec.resize(space_dim+1, zero);
   if (v_space_dim != w_space_dim) {
-    vec[v_space_dim] = 1;
-    vec[w_space_dim] = -1;
+    vec[v_space_dim] = 1.0;
+    vec[w_space_dim] = -1.0;
   }
 }
 
@@ -65,8 +65,8 @@ Linear_Form<C>::Linear_Form(const Variable v, const Variable w)
 template <typename C>
 Linear_Form<C>
 operator+(const Linear_Form<C>& f1, const Linear_Form<C>& f2) {
-  dimension_type f1_size = f1.vec.size();
-  dimension_type f2_size = f2.vec.size();
+  dimension_type f1_size = f1.size();
+  dimension_type f2_size = f2.size();
   dimension_type min_size;
   dimension_type max_size;
   const Linear_Form<C>* p_e_max;
@@ -121,30 +121,12 @@ operator+(const C& n, const Linear_Form<C>& f) {
   return r;
 }
 
-/*! \relates Linear_Form */
-template <typename C>
-Linear_Form<C>
-operator+(const Variable v, const Variable w) {
-  const dimension_type v_space_dim = v.space_dimension();
-  const dimension_type w_space_dim = w.space_dimension();
-  const dimension_type space_dim = std::max(v_space_dim, w_space_dim);
-  if (space_dim > Linear_Form<C>::max_space_dimension())
-    throw std::length_error("Linear_Form "
-                            "operator+(v, w):\n"
-                            "v or w exceed the maximum allowed "
-                            "space dimension.");
-  Linear_Form<C> r(space_dim+1, true);
-  ++r[v_space_dim];
-  ++r[w_space_dim];
-  return r;
-}
-
 /*! \relates Parma_Polyhedra_Library::Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator-(const Linear_Form<C>& f) {
   Linear_Form<C> r(f);
-  for (dimension_type i = f.vec.size(); i-- > 0; )
+  for (dimension_type i = f.size(); i-- > 0; )
     neg_assign(r[i]);
   return r;
 }
@@ -153,8 +135,8 @@ operator-(const Linear_Form<C>& f) {
 template <typename C>
 Linear_Form<C>
 operator-(const Linear_Form<C>& f1, const Linear_Form<C>& f2) {
-  dimension_type f1_size = f1.vec.size();
-  dimension_type f2_size = f2.vec.size();
+  dimension_type f1_size = f1.size();
+  dimension_type f2_size = f2.size();
   if (f1_size > f2_size) {
     Linear_Form<C> r(f1_size, false);
     dimension_type i = f1_size;
@@ -198,7 +180,7 @@ operator-(const Variable v, const Linear_Form<C>& f) {
   const dimension_type f_space_dim = f.space_dimension();
   const dimension_type space_dim = std::max(v_space_dim, f_space_dim);
   Linear_Form<C> r(f, space_dim+1);
-  for (dimension_type i = f.vec.size(); i-- > 0; )
+  for (dimension_type i = f.size(); i-- > 0; )
     r[i].neg_assign(r[i]);
   r[v_space_dim] += 1.0;
   return r;
@@ -225,7 +207,7 @@ template <typename C>
 Linear_Form<C>
 operator-(const C& n, const Linear_Form<C>& f) {
   Linear_Form<C> r(f);
-  for (dimension_type i = f.vec.size(); i-- > 0; )
+  for (dimension_type i = f.size(); i-- > 0; )
     neg_assign(r[i]);
   r[0] += n;
   return r;
@@ -237,7 +219,7 @@ Linear_Form<C>
 operator*(const C& n,
 	       const Linear_Form<C>& f) {
   Linear_Form<C> r(f);
-  for (dimension_type i = f.vec.size(); i-- > 0; )
+  for (dimension_type i = f.size(); i-- > 0; )
     r[i] *= n;
   return r;
 }
@@ -246,8 +228,8 @@ operator*(const C& n,
 template <typename C>
 Linear_Form<C>&
 operator+=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
-  dimension_type f1_size = f1.vec.size();
-  dimension_type f2_size = f2.vec.size();
+  dimension_type f1_size = f1.size();
+  dimension_type f2_size = f2.size();
   if (f1_size < f2_size)
     f1.extend(f2_size);
   for (dimension_type i = f2_size; i-- > 0; )
@@ -264,7 +246,7 @@ operator+=(Linear_Form<C>& f, const Variable v) {
     throw std::length_error("Linear_Form<C>& "
                             "operator+=(e, v):\n"
 			    "v exceeds the maximum allowed space dimension.");
-  const dimension_type f_size = f.vec.size();
+  const dimension_type f_size = f.size();
   if (f_size <= v_space_dim)
     f.extend(v_space_dim+1);
   f[v_space_dim] += 1.0;
@@ -275,8 +257,8 @@ operator+=(Linear_Form<C>& f, const Variable v) {
 template <typename C>
 Linear_Form<C>&
 operator-=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
-  dimension_type f1_size = f1.vec.size();
-  dimension_type f2_size = f2.vec.size();
+  dimension_type f1_size = f1.size();
+  dimension_type f2_size = f2.size();
   if (f1_size < f2_size)
     f1.extend(f2_size);
   for (dimension_type i = f2_size; i-- > 0; )
@@ -293,7 +275,7 @@ operator-=(Linear_Form<C>& f, const Variable v) {
     throw std::length_error("Linear_Form<C>& "
                             "operator-=(e, v):\n"
 			    "v exceeds the maximum allowed space dimension.");
-  const dimension_type f_size = f.vec.size();
+  const dimension_type f_size = f.size();
   if (f_size <= v_space_dim)
     f.extend(v_space_dim+1);
   f[v_space_dim] -= 1.0;
@@ -304,7 +286,7 @@ operator-=(Linear_Form<C>& f, const Variable v) {
 template <typename C>
 Linear_Form<C>&
 operator*=(Linear_Form<C>& f, const C& n) {
-  dimension_type f_size = f.vec.size();
+  dimension_type f_size = f.size();
   for (dimension_type i = f_size; i-- > 0; )
     f[i] *= n;
   return f;
@@ -314,8 +296,8 @@ operator*=(Linear_Form<C>& f, const C& n) {
 template <typename C>
 inline bool
 operator==(const Linear_Form<C>& x, const Linear_Form<C>& y) {
-  const dimension_type x_size = x.vec.size();
-  const dimension_type y_size = y.vec.size();
+  const dimension_type x_size = x.size();
+  const dimension_type y_size = y.size();
   if (x_size != y_size)
     return false;
 
@@ -327,16 +309,23 @@ operator==(const Linear_Form<C>& x, const Linear_Form<C>& y) {
 }
 
 template <typename C>
+inline memory_size_type
+Linear_Form<C>::external_memory_in_bytes() const {
+  memory_size_type n = 0;
+  for (dimension_type i = size(); i-- > 0; )
+    n += vec[i].external_memory_in_bytes();
+  n += vec.capacity()*sizeof(C);
+  return n;
+}
+
+template <typename C>
 bool
 Linear_Form<C>::OK() const {
-  for (dimension_type i = vec.size(); i-- > 0; )
+  for (dimension_type i = size(); i-- > 0; )
     if (!vec[i].OK())
       return false;
   return true;
 }
-
-template <typename C>
-C Linear_Form<C>::zero(0.0);
 
 /*! \relates Parma_Polyhedra_Library::Linear_Form */
 template <typename C>
@@ -382,6 +371,9 @@ IO_Operators::operator<<(std::ostream& s, const Linear_Form<C>& f) {
 }
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(C, Linear_Form<C>)
+
+template <typename C>
+C Linear_Form<C>::zero(0.0);
 
 } // namespace Parma_Polyhedra_Library
 

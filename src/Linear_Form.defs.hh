@@ -37,12 +37,6 @@ template <typename C>
 Linear_Form<C>
 operator+(const Linear_Form<C>& f1, const Linear_Form<C>& f2);
 
-//! Returns the linear form \p v + \p w.
-/*! \relates Linear_Form */
-template <typename C>
-Linear_Form<C>
-operator+(Variable v, Variable w);
-
 //! Returns the linear form \p v + \p e.
 /*! \relates Linear_Form */
 template <typename C>
@@ -84,12 +78,6 @@ operator-(const Linear_Form<C>& f);
 template <typename C>
 Linear_Form<C>
 operator-(const Linear_Form<C>& f1, const Linear_Form<C>& f2);
-
-//! Returns the linear form \p v - \p w.
-/*! \relates Linear_Form */
-template <typename C>
-Linear_Form<C>
-operator-(Variable v, Variable w);
 
 //! Returns the linear form \p v - \p e.
 /*! \relates Linear_Form */
@@ -265,15 +253,12 @@ public:
   Linear_Form();
 
   //! Ordinary copy constructor.
-  Linear_Form(const Linear_Form& e);
+  Linear_Form(const Linear_Form& f);
 
   //! Destructor.
   ~Linear_Form();
 
-  /*! \brief
-    Builds the linear form corresponding
-    to the inhomogeneous term \p n.
-  */
+  //! Builds the linear form corresponding to the inhomogeneous term \p n.
   explicit Linear_Form(const C& n);
 
   //! Builds the linear form corresponding to the variable \p v.
@@ -282,7 +267,7 @@ public:
     Thrown if the space dimension of \p v exceeds
     <CODE>Linear_Form::max_space_dimension()</CODE>.
   */
-  Linear_Form(Variable v);
+  explicit Linear_Form(Variable v);
 
   //! Builds the linear form corresponding to the linear expression \p e.
   Linear_Form(const Linear_Expression& e);
@@ -334,7 +319,7 @@ private:
   vec_type vec;
 
   //! Copy constructor with a specified space dimension.
-  Linear_Form(const Linear_Form& e, dimension_type sz);
+  Linear_Form(const Linear_Form& f, dimension_type sz);
 
   //! Implementation sizing constructor.
   /*!
@@ -353,6 +338,9 @@ private:
   */
   Linear_Form(Variable v, Variable w);
 
+  //! Gives the number of generic coefficients currently in use.
+  dimension_type size() const;
+
   //! Extends the vector of \p *this to size \p sz.
   void extend(dimension_type sz);
 
@@ -370,16 +358,12 @@ private:
   operator+<C>(const Linear_Form<C>& f, const C& n);
   friend Linear_Form<C>
   operator+<C>(Variable v, const Linear_Form<C>& f);
-  friend Linear_Form<C>
-  operator+<C>(Variable v, Variable w);
 
   friend Linear_Form<C>
   operator-<C>(const Linear_Form<C>& f);
 
   friend Linear_Form<C>
   operator-<C>(const Linear_Form<C>& f1, const Linear_Form<C>& f2);
-  friend Linear_Form<C>
-  operator-<C>(Variable v, Variable w);
   friend Linear_Form<C>
   operator-<C>(const C& n, const Linear_Form<C>& f);
   friend Linear_Form<C>

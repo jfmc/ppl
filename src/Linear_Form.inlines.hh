@@ -60,9 +60,15 @@ Linear_Form<C>::~Linear_Form() {
 }
 
 template <typename C>
+inline dimension_type
+Linear_Form<C>::size() const {
+  return vec.size();
+}
+
+template <typename C>
 inline void
 Linear_Form<C>::extend(dimension_type sz) {
-  assert(sz > vec.size());
+  assert(sz > size());
   vec.reserve(compute_capacity(sz, vec_type().max_size()));
   vec.resize(sz, zero);
 }
@@ -84,7 +90,7 @@ Linear_Form<C>::Linear_Form(const C& n)
 template <typename C>
 inline dimension_type
 Linear_Form<C>::space_dimension() const {
-  return vec.size() - 1;
+  return size() - 1;
 }
 
 template <typename C>
@@ -98,14 +104,14 @@ Linear_Form<C>::coefficient(Variable v) const {
 template <typename C>
 inline C&
 Linear_Form<C>::operator[](dimension_type i) {
-  assert(i < vec.size());
+  assert(i < size());
   return vec[i];
 }
 
 template <typename C>
 inline const C&
 Linear_Form<C>::operator[](dimension_type i) const {
-  assert(i < vec.size());
+  assert(i < size());
   return vec[i];
 }
 
@@ -117,16 +123,8 @@ Linear_Form<C>::inhomogeneous_term() const {
 
 template <typename C>
 inline memory_size_type
-Linear_Form<C>::external_memory_in_bytes() const {
-  // FIXME: compute the real thing.
-  return 0;
-}
-
-template <typename C>
-inline memory_size_type
 Linear_Form<C>::total_memory_in_bytes() const {
-  // FIXME: compute the real thing.
-  return 0;
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 /*! \relates Linear_Form */
