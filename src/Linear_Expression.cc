@@ -286,10 +286,10 @@ PPL::operator+=(Linear_Expression& e1, const Linear_Expression& e2) {
     for (dimension_type i = e2_size; i-- > 0; )
       e1[i] += e2[i];
   else {
-    Linear_Expression e(e2);
+    Linear_Expression new_e(e2);
     for (dimension_type i = e1_size; i-- > 0; )
-      e[i] += e1[i];
-    std::swap(e1, e);
+      new_e[i] += e1[i];
+    e1.swap(new_e);
   }
   return e1;
 }
@@ -305,7 +305,7 @@ PPL::operator+=(Linear_Expression& e, const Variable v) {
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
     Linear_Expression new_e(e, v_space_dim+1);
-    std::swap(e, new_e);
+    e.swap(new_e);
   }
   ++e[v_space_dim];
   return e;
@@ -320,10 +320,10 @@ PPL::operator-=(Linear_Expression& e1, const Linear_Expression& e2) {
     for (dimension_type i = e2_size; i-- > 0; )
       e1[i] -= e2[i];
   else {
-    Linear_Expression e(e1, e2_size);
+    Linear_Expression new_e(e1, e2_size);
     for (dimension_type i = e2_size; i-- > 0; )
-      e[i] -= e2[i];
-    std::swap(e1, e);
+      new_e[i] -= e2[i];
+    e1.swap(new_e);
   }
   return e1;
 }
@@ -339,7 +339,7 @@ PPL::operator-=(Linear_Expression& e, const Variable v) {
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
     Linear_Expression new_e(e, v_space_dim+1);
-    std::swap(e, new_e);
+    e.swap(new_e);
   }
   --e[v_space_dim];
   return e;
