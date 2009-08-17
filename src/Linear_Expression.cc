@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator.defs.hh"
 #include "Congruence.defs.hh"
 #include <stdexcept>
+#include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
 
