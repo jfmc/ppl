@@ -206,18 +206,17 @@ void swap(Parma_Polyhedra_Library::Linear_Form<C>& x,
     \sum_{i=0}^{n-1} a_i x_i + b
   \f]
   where \f$n\f$ is the dimension of the vector space,
-  each \f$a_i\f$ is the integer coefficient
+  each \f$a_i\f$ is the coefficient
   of the \f$i\f$-th variable \f$x_i\f$
-  and \f$b\f$ is the integer for the inhomogeneous term.
+  and \f$b\f$ is the inhomogeneous term.
+  The coefficiens and the inhomogeneous terms of the linear form
+  are element of the template parameter \p C.
 
   \par How to build a linear form.
 
-  Linear forms are the basic blocks for defining
-  both constraints (i.e., linear equalities or inequalities)
-  and generators (i.e., lines, rays, points and closure points).
   A full set of functions is defined to provide a convenient interface
   for building complex linear forms starting from simpler ones
-  and from objects of the classes Variable and Coefficient:
+  and from objects of the classes Variable and \p C:
   available operators include unary negation,
   binary addition and subtraction,
   as well as multiplication by a Coefficient.
@@ -225,7 +224,9 @@ void swap(Parma_Polyhedra_Library::Linear_Form<C>& x,
   space dimension of the arguments used to build it:
   in particular, the space dimension of a Variable <CODE>x</CODE>
   is defined as <CODE>x.id()+1</CODE>,
-  whereas all the objects of the class Coefficient have space dimension zero.
+  whereas all the objects of the class \p C have space dimension zero.
+
+  FIXME: the following needs rewriting.
 
   \par Example
   The following code builds the linear form \f$4x - 2y - z + 14\f$,
