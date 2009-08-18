@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Linear_Form_templates_hh
 #define PPL_Linear_Form_templates_hh 1
 
+#include "Linear_Expression.defs.hh"
 #include <stdexcept>
 #include <iostream>
 
@@ -30,16 +31,16 @@ namespace Parma_Polyhedra_Library {
 
 template <typename C>
 Linear_Form<C>::Linear_Form(const Variable v)
-  : vec(v.space_dimension() <= max_space_dimension()
-        ? v.space_dimension()+1
-        : (throw std::length_error("Linear_Form<C>::"
-                                   "Linear_Form(v):\n"
-                                   "v exceeds the maximum allowed "
-                                   "space dimension."),
-           v.space_dimension()+1)
-        , zero) {
-  vec.reserve(compute_capacity(v.space_dimension()+1, vec_type().max_size()));
-  vec[v.space_dimension()] += 1.0;
+  : vec() {
+  const dimension_type space_dim = v.space_dimension();
+  if (space_dim > max_space_dimension())
+    throw std::length_error("Linear_Form<C>::"
+                            "Linear_Form(v):\n"
+                            "v exceeds the maximum allowed "
+                            "space dimension.");
+  vec.reserve(compute_capacity(space_dim+1, vec_type().max_size()));
+  vec.resize(space_dim+1, zero);
+  vec[v.space_dimension()] = 1.0;
 }
 
 template <typename C>
@@ -53,12 +54,28 @@ Linear_Form<C>::Linear_Form(const Variable v, const Variable w)
                             "Linear_Form(v, w):\n"
                             "v or w exceed the maximum allowed "
                             "space dimension.");
-  vec.reserve(compute_capacity(space_dim+1, vec_type::max_size()));
+  vec.reserve(compute_capacity(space_dim+1, vec_type().max_size()));
   vec.resize(space_dim+1, zero);
   if (v_space_dim != w_space_dim) {
     vec[v_space_dim] = 1.0;
     vec[w_space_dim] = -1.0;
   }
+}
+
+template <typename C>
+Linear_Form<C>::Linear_Form(const Linear_Expression& e)
+  : vec() {
+  const dimension_type space_dim = e.space_dimension();
+  if (space_dim > max_space_dimension())
+    throw std::length_error("Linear_Form<C>::"
+                            "Linear_Form(e):\n"
+                            "e exceeds the maximum allowed "
+                            "space dimension.");
+  vec.reserve(compute_capacity(space_dim+1, vec_type().max_size()));
+  vec.resize(space_dim+1);
+  for (dimension_type i = space_dim; i-- > 0; )
+    vec[i+1] = e.coefficient(Variable(i));
+  vec[0] = e.inhomogeneous_term();
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Form */
@@ -106,8 +123,9 @@ operator+(const Variable v, const Linear_Form<C>& f) {
                             "operator+(v, f):\n"
                             "v exceeds the maximum allowed "
                             "space dimension.");
-  const dimension_type space_dim = std::max(v_space_dim, f.space_dimension());
-  Linear_Form<C> r(f, space_dim+1);
+  Linear_Form<C> r(f);
+  if (v_space_dim > f.space_dimension())
+    r.extend(v_space_dim+1);
   r[v_space_dim] += 1.0;
   return r;
 }
@@ -177,9 +195,9 @@ operator-(const Variable v, const Linear_Form<C>& f) {
                             "operator-(v, e):\n"
                             "v exceeds the maximum allowed "
                             "space dimension.");
-  const dimension_type f_space_dim = f.space_dimension();
-  const dimension_type space_dim = std::max(v_space_dim, f_space_dim);
-  Linear_Form<C> r(f, space_dim+1);
+  Linear_Form<C> r(f);
+  if (v_space_dim > f.space_dimension())
+    r.extend(v_space_dim+1);
   for (dimension_type i = f.size(); i-- > 0; )
     r[i].neg_assign(r[i]);
   r[v_space_dim] += 1.0;
@@ -196,8 +214,9 @@ operator-(const Linear_Form<C>& f, const Variable v) {
                             "operator-(e, v):\n"
                             "v exceeds the maximum allowed "
                             "space dimension.");
-  const dimension_type space_dim = std::max(v_space_dim, f.space_dimension());
-  Linear_Form<C> r(f, space_dim+1);
+  Linear_Form<C> r(f);
+  if (v_space_dim > f.space_dimension())
+    r.extend(v_space_dim+1);
   r[v_space_dim] -= 1.0;
   return r;
 }
@@ -246,8 +265,7 @@ operator+=(Linear_Form<C>& f, const Variable v) {
     throw std::length_error("Linear_Form<C>& "
                             "operator+=(e, v):\n"
 			    "v exceeds the maximum allowed space dimension.");
-  const dimension_type f_size = f.size();
-  if (f_size <= v_space_dim)
+  if (v_space_dim > f.space_dimension())
     f.extend(v_space_dim+1);
   f[v_space_dim] += 1.0;
   return f;
@@ -275,8 +293,7 @@ operator-=(Linear_Form<C>& f, const Variable v) {
     throw std::length_error("Linear_Form<C>& "
                             "operator-=(e, v):\n"
 			    "v exceeds the maximum allowed space dimension.");
-  const dimension_type f_size = f.size();
-  if (f_size <= v_space_dim)
+  if (v_space_dim > f.space_dimension())
     f.extend(v_space_dim+1);
   f[v_space_dim] -= 1.0;
   return f;
@@ -346,10 +363,11 @@ IO_Operators::operator<<(std::ostream& s, const Linear_Form<C>& f) {
       else {
         if (fv == -1.0)
           s << " - ";
-        else if (fv != 1.0)
-          s << fv << "*";
-        else
+        else {
           s << " + ";
+          if (fv != 1.0)
+            s << fv << "*";
+        }
       }
       s << Variable(v);
     }

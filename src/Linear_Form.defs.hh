@@ -268,9 +268,9 @@ public:
     Thrown if the space dimension of \p v exceeds
     <CODE>Linear_Form::max_space_dimension()</CODE>.
   */
-  explicit Linear_Form(Variable v);
+  Linear_Form(Variable v);
 
-  //! Builds the linear form corresponding to the linear expression \p e.
+  //! Builds a linear form approximating the linear expression \p e.
   Linear_Form(const Linear_Expression& e);
 
   //! Returns the maximum space dimension a Linear_Form can handle.
@@ -318,9 +318,6 @@ private:
 
   //! The container vector.
   vec_type vec;
-
-  //! Copy constructor with a specified space dimension.
-  Linear_Form(const Linear_Form& f, dimension_type sz);
 
   //! Implementation sizing constructor.
   /*!

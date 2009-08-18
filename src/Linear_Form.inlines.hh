@@ -38,7 +38,7 @@ template <typename C>
 inline
 Linear_Form<C>::Linear_Form()
   : vec(1, zero) {
-  vec.reserve(compute_capacity(1, vec_type::max_size()));
+  vec.reserve(compute_capacity(1, vec_type().max_size()));
 }
 
 template <typename C>
@@ -75,16 +75,9 @@ Linear_Form<C>::extend(dimension_type sz) {
 
 template <typename C>
 inline
-Linear_Form<C>::Linear_Form(const Linear_Form& f, dimension_type sz)
-  : vec(f.vec) {
-  extend(sz);
-}
-
-template <typename C>
-inline
 Linear_Form<C>::Linear_Form(const C& n)
   : vec(1, n) {
-  vec.reserve(compute_capacity(1, vec_type::max_size()));
+  vec.reserve(compute_capacity(1, vec_type().max_size()));
 }
 
 template <typename C>

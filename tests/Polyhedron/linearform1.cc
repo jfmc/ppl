@@ -166,6 +166,28 @@ test05() {
   return ok;
 }
 
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(16);
+  Variable D(120);
+
+  Linear_Form<db_r_oc> f = A + 2*B + 16*C + 120*D;
+
+  Linear_Form<db_r_oc> known_result = A;
+  known_result += db_r_oc(2) * Linear_Form<db_r_oc>(B);
+  known_result += db_r_oc(16) * Linear_Form<db_r_oc>(C);
+  known_result += db_r_oc(120) * Linear_Form<db_r_oc>(D);
+
+  bool ok = (f == known_result);
+
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -173,5 +195,5 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN
