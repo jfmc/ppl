@@ -65,7 +65,7 @@ Ask_Tell<D>::reduce() {
       else
 	++yi;
     }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
   return changed;
 }
 
@@ -91,7 +91,7 @@ Ask_Tell<D>::deduce() {
   }
   if (changed)
     (void) reduce();
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
   return changed;
 }
 
@@ -139,7 +139,7 @@ Ask_Tell<D>::absorb() {
   }
   if (changed)
     (void) reduce();
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
   return changed;
 }
 
@@ -177,7 +177,7 @@ Ask_Tell<D>::deabsorb() const {
     x.reduce();
     x.deduce();
   }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename D>
@@ -199,7 +199,7 @@ Ask_Tell<D>::upper_bound_assign(const Ask_Tell& y) {
 	z.pair_insert(ask, tell);
     }
   *this = z;
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename D>

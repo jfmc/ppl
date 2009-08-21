@@ -188,8 +188,8 @@ source_generation.stamp: $(interface_generator_dependencies)
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_classes_java.m4 \
 			> java_blob
-	$(top_srcdir)/utils/cm_cleaner.sh < java_blob
-	$(top_srcdir)/utils/cm_splitter.sh < java_blob
+	$(top_srcdir)/utils/cm_cleaner.sh ./java_blob
+	$(top_srcdir)/utils/cm_splitter.sh ./java_blob
 	rm -f java_blob
 	echo timestamp >$@
 

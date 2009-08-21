@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_globals_inlines_hh 1
 
 #include <limits>
-#include <cassert>
+#include "assert.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -33,12 +33,33 @@ not_a_dimension() {
   return std::numeric_limits<dimension_type>::max();
 }
 
+inline const Weightwatch_Traits::Threshold&
+Weightwatch_Traits::get() {
+  return weight;
+}
+
+inline bool
+Weightwatch_Traits::less_than(const Threshold& a, const Threshold& b) {
+  return b - a < 1ULL << (sizeof(Threshold)*8-1);
+}
+
+inline void
+Weightwatch_Traits::from_delta(Threshold& threshold, const Delta& delta) {
+  threshold = weight + delta;
+}
+
 inline
 Throwable::~Throwable() {
 }
 
 inline void
 maybe_abandon() {
+#ifndef NDEBUG
+  if (Implementation::in_assert)
+    return;
+#endif
+  if (Weightwatch_Traits::check_function)
+    Weightwatch_Traits::check_function();
   if (const Throwable* p = abandon_expensive_computations)
     p->throw_me();
 }

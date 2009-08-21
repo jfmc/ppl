@@ -26,7 +26,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
 
-namespace PPL = Parma_Polyhedra_Library;
+namespace Parma_Polyhedra_Library {
 
-const PPL::Throwable* volatile PPL::abandon_expensive_computations = 0;
+const Throwable* volatile abandon_expensive_computations = 0;
 
+// Initialize Weightwatch_Traits static data members.
+Weightwatch_Traits::Threshold Weightwatch_Traits::weight = 0;
+void (*Weightwatch_Traits::check_function)(void) = 0;
+
+#ifndef NDEBUG
+namespace Implementation {
+unsigned int in_assert = 0;
+}
+#endif
+
+} // namespace Parma_Polyhedra_Library

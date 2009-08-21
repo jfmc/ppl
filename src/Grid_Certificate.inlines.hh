@@ -29,7 +29,7 @@ inline
 Grid_Certificate::Grid_Certificate()
   : num_equalities(0), num_proper_congruences(0) {
   // This is the certificate for a zero-dim universe grid.
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 inline

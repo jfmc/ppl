@@ -34,14 +34,14 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
 					       Iterator first,
 					       Iterator last) {
   // We assume that `y' is contained in or equal to `*this'.
-  assert(contains(y));
+  PPL_ASSERT(contains(y));
   Interval<Boundary, Info>& x = *this;
 
   // Upper bound.
   if (!x.upper_is_boundary_infinity()) {
     Boundary& x_ub = x.upper();
     const Boundary& y_ub = y.upper();
-    assert(!y.upper_is_boundary_infinity() && y_ub <= x_ub);
+    PPL_ASSERT(!y.upper_is_boundary_infinity() && y_ub <= x_ub);
     if (y_ub < x_ub) {
       Iterator k = std::lower_bound(first, last, x_ub);
       if (k != last) {
@@ -57,7 +57,7 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
   if (!x.lower_is_boundary_infinity()) {
     Boundary& x_lb = x.lower();
     const Boundary& y_lb = y.lower();
-    assert(!y.lower_is_boundary_infinity() && y_lb >= x_lb);
+    PPL_ASSERT(!y.lower_is_boundary_infinity() && y_lb >= x_lb);
     if (y_lb > x_lb) {
       Iterator k = std::lower_bound(first, last, x_lb);
       if (k != last) {
@@ -165,7 +165,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
       x.assign(EMPTY);
     return is;
   default:
-    assert(false);
+    PPL_ASSERT(false);
   }
   switch (upper_r) {
   case V_EQ:
@@ -185,7 +185,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     upper_boundary_infinity = true;
     break;
   default:
-    assert(false);
+    PPL_ASSERT(false);
   }
 
   if (!lower_boundary_infinity

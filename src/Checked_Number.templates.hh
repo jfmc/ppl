@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Checked_Number_templates_hh
 #define PPL_Checked_Number_templates_hh 1
 
-#include <cassert>
+#include "assert.hh"
 #include <iomanip>
 #include <limits>
 
@@ -131,7 +131,7 @@ ascii_load(std::istream& s, T& t) {
         }
         byte_value += half_byte_value;
       }
-      assert(byte_value <= 255);
+      PPL_ASSERT(byte_value <= 255);
       p[i] = static_cast<unsigned char>(byte_value);
     }
     // ... then read and discard pretty printed value.

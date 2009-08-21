@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "H79_Certificate.types.hh"
 #include "Polyhedron.types.hh"
 #include "globals.types.hh"
-#include <cassert>
+#include "assert.hh"
 #include <vector>
 
 //! A convergence certificate for the H79 widening operator.

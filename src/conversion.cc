@@ -34,11 +34,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-// True if abandon_expensive_computations should be checked often,
-// where the meaning of "often" is as stated in the documentation
-// of that variable.
-#define REACTIVE_ABANDONING 1
-
 /*!
   \return
   The number of lines of the polyhedron or the number of equality
@@ -362,11 +357,11 @@ PPL::Polyhedron::conversion(Linear_System& source,
   // By construction, the number of columns of `sat' is the same as
   // the number of rows of `source'; also, the number of rows of `sat'
   // is the same as the number of rows of `dest'.
-  assert(source_num_rows == sat.num_columns());
-  assert(dest_num_rows == sat.num_rows());
+  PPL_ASSERT(source_num_rows == sat.num_columns());
+  PPL_ASSERT(dest_num_rows == sat.num_rows());
 
   // If `start > 0', then we are converting the pending constraints.
-  assert(start == 0 || start == source.first_pending_row());
+  PPL_ASSERT(start == 0 || start == source.first_pending_row());
 
   // During the iteration on the constraints in `source' we may identify
   // constraints that are redundant: these have to be removed by swapping
@@ -394,7 +389,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 
     // Constraints and generators must have the same dimension,
     // otherwise the scalar product below will bomb.
-    assert(source_num_columns == dest_num_columns);
+    PPL_ASSERT(source_num_columns == dest_num_columns);
 
     // `scalar_prod[i]' will contain the scalar product of the
     // constraint `source_k' and the generator `dest[i]'.  This
@@ -408,24 +403,27 @@ PPL::Polyhedron::conversion(Linear_System& source,
     // that does not saturate the constraint `source_k'.
     dimension_type index_non_zero = 0;
     for ( ; index_non_zero < dest_num_rows; ++index_non_zero) {
+      WEIGHT_BEGIN();
       Scalar_Products::assign(scalar_prod[index_non_zero],
 			      source_k,
 			      dest[index_non_zero]);
+      WEIGHT_ADD_MUL(17, source_num_columns);
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
 	break;
-#if REACTIVE_ABANDONING
       // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
       maybe_abandon();
-#endif
     }
     for (dimension_type i = index_non_zero + 1; i < dest_num_rows; ++i) {
+      WEIGHT_BEGIN();
       Scalar_Products::assign(scalar_prod[i], source_k, dest[i]);
-#if REACTIVE_ABANDONING
+      WEIGHT_ADD_MUL(25, source_num_columns);
+      // Check if the client has requested abandoning all expensive
+      // computations.  If so, the exception specified by the client
+      // is thrown now.
       maybe_abandon();
-#endif
     }
 
     // We first treat the case when `index_non_zero' is less than
@@ -534,6 +532,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		     normalized_sp_i,
 		     normalized_sp_o);
 	  Linear_Row& dest_i = dest[i];
+          WEIGHT_BEGIN();
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Coefficient& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
@@ -542,10 +541,12 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
+          WEIGHT_ADD_MUL(41, dest_num_columns);
 	}
-#if REACTIVE_ABANDONING
+        // Check if the client has requested abandoning all expensive
+        // computations.  If so, the exception specified by the client
+        // is thrown now.
 	maybe_abandon();
-#endif
       }
       // Since the `scalar_prod_nle' is positive (by construction), it
       // does not saturate the constraint `source_k'.  Therefore, if
@@ -670,8 +671,8 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	      // If there exist another generator that saturates
 	      // all the constraints saturated by both `dest[i]' and
 	      // `dest[j]', then they are NOT adjacent.
-	      assert(sat[i].last() == ULONG_MAX || sat[i].last() < k);
-	      assert(sat[j].last() == ULONG_MAX || sat[j].last() < k);
+	      PPL_ASSERT(sat[i].last() == ULONG_MAX || sat[i].last() < k);
+	      PPL_ASSERT(sat[j].last() == ULONG_MAX || sat[j].last() < k);
 
 	      // Being the union of `sat[i]' and `sat[j]',
 	      // `new_satrow' corresponds to a ray that saturates all the
@@ -704,6 +705,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		// Now we actually check for redundancy by computing
 		// adjacency information.
 		bool redundant = false;
+		WEIGHT_BEGIN();
 		for (dimension_type
 		       l = num_lines_or_equalities; l < bound; ++l)
 		  if (l != i && l != j
@@ -713,6 +715,8 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		    redundant = true;
 		    break;
 		  }
+                assert(bound >= num_lines_or_equalities);
+                WEIGHT_ADD_MUL(15, bound - num_lines_or_equalities);
 		if (!redundant) {
 		  // Adding the new ray to `dest' and the corresponding
 		  // saturation row to `sat'.
@@ -740,30 +744,33 @@ PPL::Polyhedron::conversion(Linear_System& source,
 			     scalar_prod[j],
 			     normalized_sp_i,
 			     normalized_sp_o);
+		  WEIGHT_BEGIN();
 		  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 		    Coefficient& new_row_c = new_row[c];
 		    new_row_c = normalized_sp_i * dest[j][c];
 		    sub_mul_assign(new_row_c, normalized_sp_o, dest[i][c]);
 		  }
+                  WEIGHT_ADD_MUL(86, dest_num_columns);
 		  new_row.strong_normalize();
 		  // Since we added a new generator to `dest',
 		  // we also add a new element to `scalar_prod';
 		  // by construction, the new ray lies on the hyper-plane
 		  // represented by the constraint `source_k'.
 		  // Thus, the added scalar product is 0.
-		  assert(scalar_prod.size() >= dest_num_rows);
+		  PPL_ASSERT(scalar_prod.size() >= dest_num_rows);
 		  if (scalar_prod.size() <= dest_num_rows)
 		    scalar_prod.push_back(Coefficient_zero());
 		  else
 		    scalar_prod[dest_num_rows] = Coefficient_zero();
 		  // Increment the number of generators.
 		  ++dest_num_rows;
-		}
+		} // if (!redundant)
 	      }
 	    }
-#if REACTIVE_ABANDONING
+            // Check if the client has requested abandoning all expensive
+            // computations.  If so, the exception specified by the client
+            // is thrown now.
 	    maybe_abandon();
-#endif
 	  }
 	  // Now we substitute the rays in Q- (i.e., the rays violating
 	  // the constraint) with the newly added rays.
@@ -808,18 +815,12 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	++k;
       }
     }
-#if !REACTIVE_ABANDONING
-    // Check if the client has requested abandoning all expensive
-    // computations.  If so, the exception specified by the client
-    // is thrown now.
-    maybe_abandon();
-#endif
   }
 
   // We may have identified some redundant constraints in `source',
   // which have been swapped at the end of the system.
   if (source_num_redundant > 0) {
-    assert(source_num_redundant == source.num_rows() - source_num_rows);
+    PPL_ASSERT(source_num_redundant == source.num_rows() - source_num_rows);
     source.erase_to_end(source_num_rows);
     sat.columns_erase_to_end(source_num_rows);
   }

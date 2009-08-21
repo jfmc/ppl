@@ -2,24 +2,8 @@
 Enhancements for PPL 0.11
 =========================
 
-- Add the domain of circular linear progressions.
-- Finish the domain of intervals.
-- Supplement the "preemption" methods of the library allowing for
-  deterministic mechanisms (e.g., decrementing a counter and throwing
-  when it reaches zero).  This will probably require changing the
-  current interface based on `abandon_expensive_computations'.
 - Make all the *affine*image() methods uniform as far as the
   specification is concerned.
-- Check the use or the NOT_EQUAL Relation_Symbol everywhere.
-- Reconsider the datatype for the units parameter in the Watchdog
-  constructors: should we prefer an unsigned?
-- Intervals are best instantiated with checked numbers with
-  particular policies: review all the interfaced boxes,
-  augment the testsuite, and update the documentation.
-- Reduce the number of FIXMEs to no more than 20.
-- Switch to the latest versions of Autoconf and Automake (in beta test
-  at the time of writing): they provide features we have been looking
-  for for years.
 
 
 Commits to consider should we release PPL 0.10.3
@@ -42,9 +26,17 @@ b94dc7951129d065d858b6dbd932eac59a643f96
 This allows to use a non-installed build of GMP in DIR.)
 
 
-Enhancements for PPL 0.11 or later versions
+Enhancements for PPL 0.12 or later versions
 ===========================================
 
+- Add the domain of circular linear progressions.
+- Finish the domain of intervals.
+- Intervals are best instantiated with checked numbers with
+  particular policies: review all the interfaced boxes,
+  augment the testsuite, and update the documentation.
+- Make the library thread-safe.
+- Modify the Makefile.am's to extend silent mode to our own rules.
+- Reduce the number of FIXMEs to no more than 20.
 - Consider switching to MLGMPIDL for the OCaml interface
   (see https://bugzilla.redhat.com/show_bug.cgi?id=491712).
 - Improve the OCaml interface by supporting dynamic loading.
@@ -106,10 +98,9 @@ Enhancements for PPL 0.11 or later versions
 - Any_Pointset domain: check the interface for lacking or useless methods.
 
 
-Enhancements for PPL 0.12 or later versions
+Enhancements for PPL 0.13 or later versions
 ===========================================
 
-- Make the library thread-safe.
 - Find a way to let the GMP and checked-int versions of the PPL coexist
   so as to allow using them in the same application.
 - Provide methods computing approximations of the integer convex hull

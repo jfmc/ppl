@@ -82,24 +82,33 @@ dummy.cc
 
 watchdog1_SRCS = watchdog1.c
 
+weightwatch1_SRCS = weightwatch1.c
+
 noinst_HEADERS = \
 ppl_c_test.h
 
 if BUILD_WATCHDOG_LIBRARY
 
 WATCHDOG_TESTS = \
-watchdog1
+watchdog1 \
+weightwatch1
 
-watchdog1_SOURCES = $(watchdog1_SRCS)
-
-watchdog1_CPPFLAGS = \
+WATCHDOG_LIBRARY_CPPFLAGS = \
 $(AM_CPPFLAGS) \
 -I$(top_builddir)/Watchdog \
 -I$(top_builddir)/Watchdog/src
 
-watchdog1_LDADD = \
+WATCHDOG_LIBRARY_LDADD = \
 $(LDADD) \
 $(top_builddir)/Watchdog/src/libpwl.la
+
+watchdog1_SOURCES = $(watchdog1_SRCS)
+watchdog1_CPPFLAGS = $(WATCHDOG_LIBRARY_CPPFLAGS)
+watchdog1_LDADD = $(WATCHDOG_LIBRARY_LDADD)
+
+weightwatch1_SOURCES = $(weightwatch1_SRCS)
+weightwatch1_CPPFLAGS = $(WATCHDOG_LIBRARY_CPPFLAGS)
+weightwatch1_LDADD = $(WATCHDOG_LIBRARY_LDADD)
 
 endif BUILD_WATCHDOG_LIBRARY
 

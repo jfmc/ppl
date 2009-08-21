@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid.defs.hh"
 #include <iostream>
 #include <string>
-#include <cassert>
+#include "assert.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -155,7 +155,7 @@ PPL::Grid::Status::ascii_load(std::istream& s) {
     reset_sat_g_up_to_date();
 
   // Check invariants.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 

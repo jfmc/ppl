@@ -51,7 +51,7 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
   }
   std::swap(x.sequence, new_sequence);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <>
@@ -276,7 +276,7 @@ PPL::Pointset_Powerset<PPL::Grid>
   }
   std::swap(x.sequence, new_sequence);
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <>
@@ -302,7 +302,7 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
     x.sequence.push_back(Determinate<NNC_Polyhedron>
 			 (NNC_Polyhedron(i->pointset())));
   x.reduced = y.reduced;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <>
@@ -317,7 +317,7 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
     x.sequence.push_back(Determinate<NNC_Polyhedron>
 			 (NNC_Polyhedron(i->pointset())));
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <>
@@ -337,5 +337,5 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron>
   // enforcing topological closure, may have made different elements
   // comparable.
   x.reduced = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }

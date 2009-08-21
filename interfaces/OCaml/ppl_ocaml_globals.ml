@@ -170,6 +170,12 @@ int -> unit = "ppl_set_timeout"
 external ppl_reset_timeout:
 unit -> unit = "ppl_reset_timeout"
 
+external ppl_set_deterministic_timeout:
+int -> unit = "ppl_set_deterministic_timeout"
+
+external ppl_reset_deterministic_timeout:
+unit -> unit = "ppl_reset_deterministic_timeout"
+
 external ppl_new_MIP_Problem_from_space_dimension:
   int -> mip_problem = "ppl_new_MIP_Problem_from_space_dimension"
 

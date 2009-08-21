@@ -84,6 +84,95 @@ dimension_type
 compute_capacity(dimension_type requested_size,
 		 dimension_type maximum_size);
 
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Traits class for the deterministic timeout mechanism.
+/*! \ingroup PPL_CXX_interface
+  This abstract base class should be instantiated by those users
+  willing to provide a polynomial upper bound to the time spent
+  by any invocation of a library operator.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+struct Weightwatch_Traits {
+  //! The type used to specify thresholds for computational weight.
+  typedef unsigned long long Threshold;
+
+  //! The type used to specify increments of computational weight.
+  typedef unsigned long long Delta;
+
+  //! Returns the current computational weight.
+  static const Threshold& get();
+
+  //! Compares the two weights \p a and \p b.
+  static bool less_than(const Threshold& a, const Threshold& b);
+
+  //! Sets \p threshold to be \p delta units bigger than the current weigth.
+  static void from_delta(Threshold& threshold, const Delta& delta);
+
+  //! The current computational weight.
+  static Threshold weight;
+
+  /*! \brief
+    A pointer to the function that has to be called when checking
+    the reaching of thresholds.
+
+    The pointer can be null if no thresholds are set.
+  */
+  static void (*check_function)(void);
+};
+
+
+#ifndef NDEBUG
+namespace Implementation {
+
+//! Non zero during evaluation of PPL_ASSERT expression.
+extern unsigned int in_assert;
+
+} // namespace Implementation
+#endif
+
+#ifndef PPL_PROFILE_ADD_WEIGHT
+#define PPL_PROFILE_ADD_WEIGHT 0
+#endif
+
+#if defined(NDEBUG)
+#if PPL_PROFILE_ADD_WEIGHT
+#define WEIGHT_BEGIN() Weight_Profiler::begin()
+#define WEIGHT_ADD(delta)				      \
+  do {							      \
+    static Weight_Profiler wp__(__FILE__, __LINE__, delta);   \
+    wp__.end();						      \
+  } while(0)
+#define WEIGHT_ADD_MUL(delta, factor)					\
+  do {									\
+    static Weight_Profiler wp__(__FILE__, __LINE__, delta);		\
+    wp__.end(factor);							\
+  } while(0)
+#else
+#define WEIGHT_BEGIN()
+#define WEIGHT_ADD(delta)			\
+  do {						\
+    Weightwatch_Traits::weight += delta;	\
+  } while(0)
+#define WEIGHT_ADD_MUL(delta, factor)			\
+  do {							\
+    Weightwatch_Traits::weight += delta * factor;	\
+  } while(0)
+#endif
+#else
+#define WEIGHT_BEGIN()
+#define WEIGHT_ADD(delta)			\
+  do {						\
+    if (!Implementation::in_assert)		\
+      Weightwatch_Traits::weight += delta;	\
+  } while(0)
+#define WEIGHT_ADD_MUL(delta, factor)			\
+  do {							\
+    if (!Implementation::in_assert)			\
+      Weightwatch_Traits::weight += delta * factor;	\
+  } while(0)
+#endif
+
 //! User objects the PPL can throw.
 /*! \ingroup PPL_CXX_interface
   This abstract base class should be instantiated by those users
@@ -375,6 +464,10 @@ FOK(mpz_class)
 FOK(mpq_class)
 
 } // namespace Parma_Polyhedra_Library
+
+#if defined(NDEBUG) && PPL_PROFILE_ADD_WEIGHT
+#include "Weight_Profiler.defs.hh"
+#endif
 
 #include "globals.inlines.hh"
 

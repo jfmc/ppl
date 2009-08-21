@@ -43,7 +43,7 @@ Linear_System::is_sorted() const {
   // of a system (if `sorted' evaluates to `false' nothing is known).
   // This assertion is used to ensure that the system
   // is actually sorted when `sorted' value is 'true'.
-  assert(!sorted || check_sorted());
+  PPL_ASSERT(!sorted || check_sorted());
   return sorted;
 }
 
@@ -76,7 +76,7 @@ Linear_System::first_pending_row() const {
 
 inline dimension_type
 Linear_System::num_pending_rows() const {
-  assert(num_rows() >= first_pending_row());
+  PPL_ASSERT(num_rows() >= first_pending_row());
   return num_rows() - first_pending_row();
 }
 
@@ -97,7 +97,7 @@ Linear_System::Linear_System(const Linear_System& y)
   unset_pending_rows();
   // Previously pending rows may violate sortedness.
   sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
 }
 
 inline
@@ -115,7 +115,7 @@ Linear_System::operator=(const Linear_System& y) {
   unset_pending_rows();
   // Previously pending rows may violate sortedness.
   sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
   return *this;
 }
 

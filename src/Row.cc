@@ -26,14 +26,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Coefficient.defs.hh"
 #include <iostream>
 #include <iomanip>
-#include <cassert>
+#include "assert.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Row_Impl_Handler::
 Impl::expand_within_capacity(const dimension_type new_size) {
-  assert(size() <= new_size && new_size <= max_size());
+  PPL_ASSERT(size() <= new_size && new_size <= max_size());
 #if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   // vec_[0] is already constructed.
   if (size() == 0 && new_size > 0)
@@ -48,7 +48,7 @@ Impl::expand_within_capacity(const dimension_type new_size) {
 void
 PPL::Row_Impl_Handler::Impl::shrink(dimension_type new_size) {
   const dimension_type old_size = size();
-  assert(new_size <= old_size);
+  PPL_ASSERT(new_size <= old_size);
   // Since ~Coefficient() does not throw exceptions, nothing here does.
   set_size(new_size);
 #if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
@@ -71,7 +71,7 @@ PPL::Row_Impl_Handler::Impl::copy_construct_coefficients(const Impl& y) {
     bump_size();
   }
 #else
-  assert(y_size > 0);
+  PPL_ASSERT(y_size > 0);
   if (y_size > 0) {
     vec_[0] = y.vec_[0];
     bump_size();

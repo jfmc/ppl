@@ -70,7 +70,7 @@ PWL::Time PWL::Watchdog::last_time_requested;
 PWL::Time PWL::Watchdog::time_so_far;
 
 // The ordered queue of pending watchdog events.
-PWL::Pending_List PWL::Watchdog::pending;
+PWL::Watchdog::WD_Pending_List PWL::Watchdog::pending;
 
 // Whether the alarm clock is running.
 volatile bool PWL::Watchdog::alarm_clock_running = false;
@@ -138,7 +138,7 @@ PWL::Watchdog::handle_timeout(int) {
   else {
     time_so_far += last_time_requested;
     if (!pending.empty()) {
-      Pending_List::Iterator i = pending.begin();
+      WD_Pending_List::Iterator i = pending.begin();
       do {
 	i->handler().act();
 	i->expired_flag() = true;
@@ -159,12 +159,12 @@ PWL::PWL_handle_timeout(int signum) {
   PWL::Watchdog::handle_timeout(signum);
 }
 
-PWL::Pending_List::Iterator
-PWL::Watchdog::new_watchdog_event(int units,
+PWL::Watchdog::WD_Pending_List::Iterator
+PWL::Watchdog::new_watchdog_event(unsigned int units,
 				  const Handler& handler,
 				  bool& expired_flag) {
   assert(units > 0);
-  Pending_List::Iterator position;
+  WD_Pending_List::Iterator position;
   Time deadline(units);
   if (!alarm_clock_running) {
     position = pending.insert(deadline, handler, expired_flag);
@@ -191,10 +191,10 @@ PWL::Watchdog::new_watchdog_event(int units,
 }
 
 void
-PWL::Watchdog::remove_watchdog_event(Pending_List::Iterator position) {
+PWL::Watchdog::remove_watchdog_event(WD_Pending_List::Iterator position) {
   assert(!pending.empty());
   if (position == pending.begin()) {
-    Pending_List::Iterator next = position;
+    WD_Pending_List::Iterator next = position;
     ++next;
     if (next != pending.end()) {
       Time first_deadline(position->deadline());

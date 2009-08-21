@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Topology.hh"
 #include "Scalar_Products.defs.hh"
 
-#include <cassert>
+#include "assert.hh"
 #endif
 #include <iostream>
 
@@ -365,7 +365,7 @@ PPL::Affine_Space::widening_assign(const Affine_Space& y, unsigned*) {
   Affine_Space& x = *this;
 
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (x.space_dimension() != y.space_dimension())
     throw_dimension_incompatible("widening_assign(y)", "y", y);
 
 #ifndef NDEBUG
@@ -373,7 +373,7 @@ PPL::Affine_Space::widening_assign(const Affine_Space& y, unsigned*) {
     // Assume y is contained in or equal to x.
     const Affine_Space x_copy = x;
     const Affine_Space y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT(x_copy.contains(y_copy));
   }
 #endif
 }
@@ -385,7 +385,7 @@ PPL::Affine_Space::limited_extrapolation_assign(const Affine_Space& y,
   Affine_Space& x = *this;
 
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (x.space_dimension() != y.space_dimension())
     throw_dimension_incompatible("widening_assign(y)", "y", y);
 
 #ifndef NDEBUG
@@ -393,7 +393,7 @@ PPL::Affine_Space::limited_extrapolation_assign(const Affine_Space& y,
     // Assume y is contained in or equal to x.
     const Affine_Space x_copy = x;
     const Affine_Space y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT(x_copy.contains(y_copy));
   }
 #endif
 }

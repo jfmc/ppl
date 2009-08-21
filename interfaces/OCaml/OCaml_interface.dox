@@ -210,6 +210,26 @@ included with all instantiations of the OCaml interfaces.
    Resets the timeout time so that the computation is not interrupted.
    An exception is thrown if the PPL Watchdog library is not enabled.
 
+<H2><CODE> ppl_set_deterministic_timeout weight </CODE></H2>
+   Computations taking exponential time will be interrupted some time
+   after reaching the <CODE>weight</CODE> complexity threshold.
+   If the computation is interrupted that way, a timeout exception
+   will be thrown.
+   An exception is immediately thrown if <CODE>hsecs</CODE> is not strictly
+   greater than zero, or if the PPL Watchdog library is not enabled.
+   <EM>NOTE:</EM> This "timeout" checking functionality is said to be
+   <EM>deterministic</EM> because it is not based on actual elapsed time.
+   Its behavior will only depend on (some of the) computations performed
+   in the PPL library and it will be otherwise independent from the
+   computation environment (CPU, operating system, compiler, etc.).
+   The weight mechanism is under alpha testing: client applications
+   should be ready to reconsider the tuning of these weight thresholds
+   when upgrading to newer version of the PPL.
+
+<H2><CODE> ppl_reset_deterministic_timeout </CODE></H2>
+   Resets the timeout time so that the computation is not interrupted.
+   An exception is thrown if the PPL Watchdog library is not enabled.
+
 <H2><CODE> ppl_set_rounding_for_PPL </CODE></H2>
    Sets the FPU rounding mode so that the PPL abstractions based on
    floating point numbers work correctly.

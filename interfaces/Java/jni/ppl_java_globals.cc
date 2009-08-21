@@ -674,7 +674,8 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1timeout
     assert(cxx_hsecs > 0);
     static timeout_exception e;
     using Parma_Watchdog_Library::Watchdog;
-    p_timeout_object = new Watchdog(hsecs, abandon_expensive_computations, e);
+    p_timeout_object
+      = new Watchdog(cxx_hsecs, abandon_expensive_computations, e);
 #endif // PPL_WATCHDOG_LIBRARY_ENABLED
   }
   CATCH_ALL;
@@ -691,6 +692,45 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_reset_1timeout
     throw std::runtime_error(what);
 #else
     reset_timeout();
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1deterministic_1timeout
+(JNIEnv* env, jclass, jint weight) {
+  try {
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+    const char* what = "PPL Java interface error:\n"
+      "Parma_Polyhedra_Library::set_deterministic_timeout: "
+      "the PPL Watchdog library is not enabled.";
+    throw std::runtime_error(what);
+#else
+    // In case a timeout was already set.
+    reset_deterministic_timeout();
+    assert(weight > 0);
+    unsigned cxx_weight = jtype_to_unsigned<unsigned>(weight);
+    assert(cxx_weight > 0);
+    static deterministic_timeout_exception e;
+    p_deterministic_timeout_object
+      = new Weightwatch(cxx_weight, abandon_expensive_computations, e);
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_reset_1deterministic_1timeout
+(JNIEnv* env, jclass) {
+  try {
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+    const char* what = "PPL Java interface error:\n"
+      "Parma_Polyhedra_Library.reset_deterministic_timeout(): "
+      "the PPL Watchdog library is not enabled.";
+    throw std::runtime_error(what);
+#else
+    reset_deterministic_timeout();
 #endif // PPL_WATCHDOG_LIBRARY_ENABLED
   }
   CATCH_ALL;

@@ -42,8 +42,12 @@ AC_ARG_WITH(gmp-build,
     LDFLAGS="$LDFLAGS -L$gmp_build_dir -L$gmp_build_dir/.libs"
     LDFLAGS="$LDFLAGS -L$gmp_build_dir/tune"
   else
-    AC_MSG_ERROR([cannot use --with-gmp-build and --with-libgmp* together])
+    AC_MSG_ERROR([cannot use --with-gmp-build and --with-gmp-prefix together])
   fi)
+
+dnl Both libgmp and libbmpxx come from the gmp package.
+AC_LIB_FROMPACKAGE([gmp], [gmp])
+AC_LIB_FROMPACKAGE([gmpxx], [gmp])
 
 dnl Check how to link with libgmp.
 AC_LIB_LINKFLAGS([gmp])

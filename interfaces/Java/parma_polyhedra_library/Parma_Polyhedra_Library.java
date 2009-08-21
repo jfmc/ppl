@@ -257,5 +257,42 @@ public class Parma_Polyhedra_Library {
     */
     public static native void reset_timeout();
 
+    /*! \brief
+      Sets a threshold for computations whose completion could require
+      an exponential amount of time.
+
+      \param weight
+      The maximum computational weight allowed.
+      It must be strictly greater than zero.
+
+      Computations taking exponential time will be interrupted some time
+      after reaching the \p weight complexity threshold, by throwing a
+      <code>Timeout_Exception</code> object.
+      Otherwise, if the computation completes without being interrupted,
+      then the deterministic timeout should be reset by calling
+      <code>reset_deterministic_timeout()</code>.
+
+      \note
+      This "timeout" checking functionality is said to be \e deterministic
+      because it is not based on actual elapsed time. Its behavior will
+      only depend on (some of the) computations performed in the PPL library
+      and it will be otherwise independent from the computation environment
+      (CPU, operating system, compiler, etc.).
+
+      \warning
+      The weight mechanism is under alpha testing. In particular,
+      there is still no clear relation between the weight threshold and
+      the actual computational complexity. As a consequence, client
+      applications should be ready to reconsider the tuning of these
+      weight thresholds when upgrading to newer version of the PPL.
+    */
+    public static native void set_deterministic_timeout(int weight);
+
+    /*! \brief
+      Resets the deterministic timeout so that the computation is not
+      interrupted.
+    */
+    public static native void reset_deterministic_timeout();
+
     //@} // Timeout handling.
 }

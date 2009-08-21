@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "meta_programming.hh"
 #include "compiler.hh"
 #include <gmp.h>
-#include <cassert>
+#include "assert.hh"
 #include <cmath>
 
 #ifdef NAN

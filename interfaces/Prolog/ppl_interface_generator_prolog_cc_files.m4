@@ -39,7 +39,8 @@ dnl m4_pre_extra_class_code(Class_Counter)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)
-%<--%<--%<-- ppl_prolog_`'m4_current_interface.cc
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_prolog_`'m4_current_interface.cc << ___END_OF_FILE___
 /* Prolog m4_current_interface interface code: definitions.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
@@ -50,11 +51,10 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 ')
 
 m4_divert`'dnl
-
-`#'include "ppl_prolog_common.cc"`'dnl
 dnl
 dnl Generate the non-fixed part of the file.
 m4_all_code`'dnl
+___END_OF_FILE___
 dnl
 dnl End of file generation.
 

@@ -10,12 +10,21 @@ NEWS for version 0.11  (released date to be decided)
 New and Changed Features
 ========================
 
-o  Implementation of general (NNC) polyhedra speeded up.
+o  Implementation of general (C and NNC) polyhedra speeded up.
 
 o  When the PPL has been configured with
    CPPFLAGS="-DPPL_ARM_CAN_CONTROL_FPU=1", the library initialization
    procedure checks that the FPU can indeed be controlled and fails if
    that is not the case.
+
+o  New configure option --with-gmp-prefix supersedes the (now removed)
+   options --with-libgmp-prefix and --with-libgmpxx-prefix.
+
+o  New "deterministic" timeout computation facilities: it is now possible
+   to set computational bounds (on the library calls taking exponential time)
+   that do not depend on the actual elapsed time and hence are independent
+   from the actual computation environment (CPU, operating system, etc.).
+   Still under alpha testing.
 
 o  The Java interface has to be explicitly initialized before use by
    calling static method Parma_Polyhedra_Library.initialize_library().
@@ -36,6 +45,18 @@ Deprecated and removed methods
 o  All methods having a name ending in `_and_minimize' (e.g.,
    add_constraints_and_minimize, poly_hull_assign_and_minimize, ...)
    have been removed (they were deprecated in version 0.10).
+
+
+Bugfixes
+========
+
+o  Corrected a bug in maximize and mininimize optimization methods of
+   class template Pointset_Powerset, whereby the Boolean value true
+   (indicating successful optimization) was returned for empty powersets.
+
+o  Corrected a bug in method
+     bool NNC_Polyhedron::poly_hull_assign_if_exact(const NNC_Polyhedron&);
+   whereby some inexact NNC hulls were incorrectly flagged as exact.
 
 
 --------------------------------------------------------------------------

@@ -139,7 +139,7 @@ check_empty_arg(const T& x) {
   if (f_info(x).may_be_empty)
     return f_is_empty(x);
   else {
-    assert(!f_is_empty(x));
+    PPL_ASSERT(!f_is_empty(x));
     return false;
   }
 }
@@ -150,8 +150,8 @@ inline typename Enable_If<((Is_Singleton<T1>::value || Is_Interval<T1>::value)
 			   && (Is_Interval<T1>::value || Is_Interval<T2>::value)),
 			  bool>::type
 operator==(const T1& x, const T2& y) {
-  assert(f_OK(x));
-  assert(f_OK(y));
+  PPL_ASSERT(f_OK(x));
+  PPL_ASSERT(f_OK(y));
   if (check_empty_arg(x))
     return check_empty_arg(y);
   else if (check_empty_arg(y))
@@ -176,8 +176,8 @@ template <typename Boundary, typename Info>
 template <typename T>
 inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
 Interval<Boundary, Info>::contains(const T& y) const {
-  assert(OK());
-  assert(f_OK(y));
+  PPL_ASSERT(OK());
+  PPL_ASSERT(f_OK(y));
   if (check_empty_arg(y))
     return true;
   if (check_empty_arg(*this))
@@ -194,8 +194,8 @@ template <typename Boundary, typename Info>
 template <typename T>
 inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
 Interval<Boundary, Info>::strictly_contains(const T& y) const {
-  assert(OK());
-  assert(f_OK(y));
+  PPL_ASSERT(OK());
+  PPL_ASSERT(f_OK(y));
   if (check_empty_arg(y))
     return !check_empty_arg(*this);
   if (check_empty_arg(*this))
@@ -218,8 +218,8 @@ template <typename T>
 inline typename Enable_If<Is_Singleton<T>::value
                           || Is_Interval<T>::value, bool>::type
 Interval<Boundary, Info>::is_disjoint_from(const T& y) const {
-  assert(OK());
-  assert(f_OK(y));
+  PPL_ASSERT(OK());
+  PPL_ASSERT(f_OK(y));
   if (check_empty_arg(*this) || check_empty_arg(y))
     return true;
 //   CHECKME.
@@ -234,7 +234,7 @@ template <typename From>
 inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::assign(const From& x) {
-  assert(f_OK(x));
+  PPL_ASSERT(f_OK(x));
   if (check_empty_arg(x))
     return assign(EMPTY);
   PPL_DIRTY_TEMP(To_Info, to_info);
@@ -246,7 +246,7 @@ Interval<To_Boundary, To_Info>::assign(const From& x) {
   Result ru = Boundary_NS::assign(UPPER, upper(), to_info,
 				  UPPER, f_upper(x), f_info(x));
   assign_or_swap(info(), to_info);
-  assert(OK());
+  PPL_ASSERT(OK());
   return combine(rl, ru);
 }
 
@@ -255,7 +255,7 @@ template <typename From>
 inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::join_assign(const From& x) {
-  assert(f_OK(x));
+  PPL_ASSERT(f_OK(x));
   if (check_empty_arg(*this))
     return assign(x);
   if (check_empty_arg(x))
@@ -265,7 +265,7 @@ Interval<To_Boundary, To_Info>::join_assign(const From& x) {
   Result rl, ru;
   rl = min_assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
   ru = max_assign(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
-  assert(OK());
+  PPL_ASSERT(OK());
   return combine(rl, ru);
 }
 
@@ -276,8 +276,8 @@ inline typename Enable_If<((Is_Singleton<From1>::value
 			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::join_assign(const From1& x, const From2& y) {
-  assert(f_OK(x));
-  assert(f_OK(y));
+  PPL_ASSERT(f_OK(x));
+  PPL_ASSERT(f_OK(y));
   if (check_empty_arg(x))
     return assign(y);
   if (check_empty_arg(y))
@@ -294,7 +294,7 @@ Interval<To_Boundary, To_Info>::join_assign(const From1& x, const From2& y) {
 		  UPPER, f_upper(x), f_info(x),
 		  UPPER, f_upper(y), f_info(y));
   assign_or_swap(info(), to_info);
-  assert(OK());
+  PPL_ASSERT(OK());
   return combine(rl, ru);
 }
 
@@ -327,13 +327,13 @@ template <typename From>
 inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::intersect_assign(const From& x) {
-  assert(f_OK(x));
+  PPL_ASSERT(f_OK(x));
   if (!intersect_restriction(info(), *this, x))
     return assign(EMPTY);
   Result rl, ru;
   rl = max_assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
   ru = min_assign(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
-  assert(OK());
+  PPL_ASSERT(OK());
   return I_ANY;
 }
 
@@ -345,8 +345,8 @@ inline typename Enable_If<((Is_Singleton<From1>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::intersect_assign(const From1& x,
                                                  const From2& y) {
-  assert(f_OK(x));
-  assert(f_OK(y));
+  PPL_ASSERT(f_OK(x));
+  PPL_ASSERT(f_OK(y));
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!intersect_restriction(to_info, x, y))
@@ -359,7 +359,7 @@ Interval<To_Boundary, To_Info>::intersect_assign(const From1& x,
 		  UPPER, f_upper(x), f_info(x),
 		  UPPER, f_upper(y), f_info(y));
   assign_or_swap(info(), to_info);
-  assert(OK());
+  PPL_ASSERT(OK());
   return I_NOT_EMPTY;
 }
 
@@ -368,7 +368,7 @@ template <typename From>
 inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::difference_assign(const From& x) {
-  assert(f_OK(x));
+  PPL_ASSERT(f_OK(x));
   // FIXME: restrictions
   if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x)) ||
       gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x)))
@@ -388,7 +388,7 @@ Interval<To_Boundary, To_Info>::difference_assign(const From& x) {
     info().clear_boundary_properties(UPPER);
     ru = complement(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x));
   }
-  assert(OK());
+  PPL_ASSERT(OK());
   return combine(rl, ru);
 }
 
@@ -400,8 +400,8 @@ inline typename Enable_If<((Is_Singleton<From1>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
                                                   const From2& y) {
-  assert(f_OK(x));
-  assert(f_OK(y));
+  PPL_ASSERT(f_OK(x));
+  PPL_ASSERT(f_OK(y));
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   // FIXME: restrictions
@@ -424,7 +424,7 @@ Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
     rl = Boundary_NS::assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
   }
   assign_or_swap(info(), to_info);
-  assert(OK());
+  PPL_ASSERT(OK());
   return combine(rl, ru);
 }
 
@@ -434,8 +434,8 @@ inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>
 ::refine_existential(Relation_Symbol rel, const From& x) {
-  assert(OK());
-  assert(f_OK(x));
+  PPL_ASSERT(OK());
+  PPL_ASSERT(f_OK(x));
   if (check_empty_arg(x))
     return assign(EMPTY);
   switch (rel) {
@@ -495,7 +495,7 @@ Interval<To_Boundary, To_Info>
       return I_ANY;
     }
   default:
-    assert(false);
+    PPL_ASSERT(false);
     return I_EMPTY;
   }
 }
@@ -506,8 +506,8 @@ inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
                                                  const From& x) {
-  assert(OK());
-  assert(f_OK(x));
+  PPL_ASSERT(OK());
+  PPL_ASSERT(f_OK(x));
   if (check_empty_arg(x))
     return combine(V_EQ, V_EQ);
   switch (rel) {
@@ -567,7 +567,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       return I_ANY;
     }
   default:
-    assert(false);
+    PPL_ASSERT(false);
     return I_EMPTY;
   }
 }
@@ -577,7 +577,7 @@ template <typename From>
 inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::neg_assign(const From& x) {
-  assert(f_OK(x));
+  PPL_ASSERT(f_OK(x));
   if (check_empty_arg(x))
     return assign(EMPTY);
   PPL_DIRTY_TEMP(To_Info, to_info);
@@ -590,7 +590,7 @@ Interval<To_Boundary, To_Info>::neg_assign(const From& x) {
   ru = Boundary_NS::neg_assign(UPPER, upper(), to_info, LOWER, f_lower(x), f_info(x));
   assign_or_swap(lower(), to_lower);
   assign_or_swap(info(), to_info);
-  assert(OK());
+  PPL_ASSERT(OK());
   return combine(rl, ru);
 }
 
@@ -601,8 +601,8 @@ inline typename Enable_If<((Is_Singleton<From1>::value
 			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::add_assign(const From1& x, const From2& y) {
-  assert(f_OK(x));
-  assert(f_OK(y));
+  PPL_ASSERT(f_OK(x));
+  PPL_ASSERT(f_OK(y));
   if (check_empty_arg(x) || check_empty_arg(y))
     return assign(EMPTY);
   int inf = Parma_Polyhedra_Library::is_infinity(x);
@@ -627,7 +627,7 @@ Interval<To_Boundary, To_Info>::add_assign(const From1& x, const From2& y) {
 				      UPPER, f_upper(x), f_info(x),
 				      UPPER, f_upper(y), f_info(y));
   assign_or_swap(info(), to_info);
-  assert(OK());
+  PPL_ASSERT(OK());
   return combine(rl, ru);
 }
 
@@ -638,8 +638,8 @@ inline typename Enable_If<((Is_Singleton<From1>::value
 			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {
-  assert(f_OK(x));
-  assert(f_OK(y));
+  PPL_ASSERT(f_OK(x));
+  PPL_ASSERT(f_OK(y));
   if (check_empty_arg(x) || check_empty_arg(y))
     return assign(EMPTY);
   int inf = Parma_Polyhedra_Library::is_infinity(x);
@@ -668,7 +668,7 @@ Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {
 			       LOWER, f_lower(y), f_info(y));
   assign_or_swap(lower(), to_lower);
   assign_or_swap(info(), to_info);
-  assert(OK());
+  PPL_ASSERT(OK());
   return combine(rl, ru);
 }
 
@@ -691,8 +691,8 @@ inline typename Enable_If<((Is_Singleton<From1>::value
 			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
-  assert(f_OK(x));
-  assert(f_OK(y));
+  PPL_ASSERT(f_OK(x));
+  PPL_ASSERT(f_OK(y));
   if (check_empty_arg(x) || check_empty_arg(y))
     return assign(EMPTY);
   int xls = sgn_b(LOWER, f_lower(x), f_info(x));
@@ -838,7 +838,7 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
   }
   assign_or_swap(lower(), to_lower);
   assign_or_swap(info(), to_info);
-  assert(OK());
+  PPL_ASSERT(OK());
   return combine(rl, ru);
 }
 
@@ -860,8 +860,8 @@ inline typename Enable_If<((Is_Singleton<From1>::value
 			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
-  assert(f_OK(x));
-  assert(f_OK(y));
+  PPL_ASSERT(f_OK(x));
+  PPL_ASSERT(f_OK(y));
   if (check_empty_arg(x) || check_empty_arg(y))
     return assign(EMPTY);
   int yls = sgn_b(LOWER, f_lower(y), f_info(y));
@@ -948,7 +948,7 @@ Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
   }
   assign_or_swap(lower(), to_lower);
   assign_or_swap(info(), to_info);
-  assert(OK());
+  PPL_ASSERT(OK());
   return combine(rl, ru);
 }
 
@@ -1051,7 +1051,7 @@ operator/(const Interval<B, Info>& x, const Interval<B, Info>& y) {
 template <typename Boundary, typename Info>
 inline std::ostream&
 operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
-  // assert(x.OK());
+  // PPL_ASSERT(x.OK());
   if (check_empty_arg(x))
     return os << "[]";
   if (x.is_singleton()) {
@@ -1103,7 +1103,7 @@ Interval<Boundary, Info>::ascii_load(std::istream& s) {
     return false;
   if (!ascii_load(s, upper()))
     return false;
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 

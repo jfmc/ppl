@@ -174,8 +174,8 @@ ppl_java_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_classes_cc_files.m4 \
                 > ppl_java_cc_blob
-	$(top_srcdir)/utils/cm_cleaner.sh < ppl_java_cc_blob
-	$(top_srcdir)/utils/cm_splitter.sh < ppl_java_cc_blob
+	$(top_srcdir)/utils/cm_cleaner.sh ./ppl_java_cc_blob
+	$(top_srcdir)/utils/cm_splitter.sh ./ppl_java_cc_blob
 	rm -f ppl_java_cc_blob
 	echo timestamp >$@
 

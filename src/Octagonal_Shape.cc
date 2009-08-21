@@ -38,8 +38,8 @@ PPL::extract_octagonal_difference(const Constraint& c,
 				  Coefficient& c_coeff,
 				  Coefficient& c_term) {
   // Check for preconditions.
-  assert(c.space_dimension() == c_space_dim);
-  assert(c_num_vars == 0 && c_first_var == 0 && c_second_var == 0);
+  PPL_ASSERT(c.space_dimension() == c_space_dim);
+  PPL_ASSERT(c_num_vars == 0 && c_first_var == 0 && c_second_var == 0);
   // Store the indices of the non-zero components of `c',
   dimension_type non_zero_index[2] = { 0, 0 };
   // Collect the non-zero components of `c'.
@@ -92,7 +92,7 @@ PPL::extract_octagonal_difference(const Constraint& c,
     }
     break;
   default:
-    assert(c_num_vars == 0);
+    PPL_ASSERT(c_num_vars == 0);
     break;
   }
   return true;

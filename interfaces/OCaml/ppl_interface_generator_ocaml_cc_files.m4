@@ -40,7 +40,8 @@ m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 m4_define(`m4_current_cplusplus', m4_cplusplus_class`'$1)`'dnl
 
-%<--%<--%<-- ppl_ocaml_`'m4_current_interface`'.cc
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_ocaml_`'m4_current_interface`'.cc << ___END_OF_FILE___
 /* OCaml m4_current_interface interface code.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
@@ -59,5 +60,6 @@ dnl Generate the main class-dependent code.
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
 m4_all_code
+___END_OF_FILE___
 dnl
 dnl End of file generation.

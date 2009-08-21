@@ -23,7 +23,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], [0.11pre1], [ppl-devel@cs.unipr.it], [ppl])
+AC_INIT([the Parma Polyhedra Library], [0.11pre6], [ppl-devel@cs.unipr.it], [ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
@@ -39,7 +39,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
 
 # Use Automake.
-AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip tar-ustar 1.9])
+AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip dist-lzma tar-ustar silent-rules 1.11])
 
 AC_SUBST(VERSION)
 
@@ -611,22 +611,17 @@ then
   AC_DEFINE(PPL_GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
 fi
 
-# Allow additions to C and C++ compilation flags.
-
+# Allow additions to C compilation flags.
 AC_ARG_WITH(cflags,
   AS_HELP_STRING([--with-cflags=XXX],
                  [add XXX to the options for the C compiler]),
   CFLAGS="$CFLAGS $with_cflags")
 
+# Allow additions to C++ compilation flags.
 AC_ARG_WITH(cxxflags,
   AS_HELP_STRING([--with-cxxflags=XXX],
                  [add XXX to the options for the C++ compiler]),
   CXXFLAGS="$CXXFLAGS $with_cxxflags")
-
-# Check for Perl.
-AC_PATH_PROG([PERL], perl, no)
-AC_SUBST([PERL])
-AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
 
 # Checks for C typedefs, structures, compiler and architecture characteristics.
 AC_LANG(C)
@@ -651,8 +646,16 @@ AC_CHECK_SIZEOF(long double)
 AC_CHECK_SIZEOF([int*])
 AC_CHECK_SIZEOF([fp], [], [typedef int *(*fp)();])
 
+# Check for Perl.
+AC_PATH_PROG([PERL], perl, no)
+AC_SUBST([PERL])
+AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
+
 # Use C++ for the remaining checks.
 AC_LANG(C++)
+
+# The PPL uses <cmath> for sqrt and other functions in several places.
+AC_SEARCH_LIBS([sqrt], [m])
 
 # Check for the possibility to control the FPU.
 AC_CHECK_FPU_CONTROL
@@ -713,10 +716,8 @@ AC_CHECK_DECLS([fma,fmaf,fmal,rintf,rintl], , , [#include <cmath>])
 # Checks for the availability of "fast" integral types.
 AC_CHECK_TYPES([int_fast16_t,int_fast32_t,int_fast64_t,uint_fast16_t,uint_fast32_t,uint_fast64_t])
 
-# Must link everything with libm.
-extra_libraries="${extra_libraries} -lm"
 
-# GMP library.
+# Checks on the GMP library.
 
 AC_CHECK_GMP
 if test x"$have_gmp" = xno
@@ -1125,17 +1126,11 @@ AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE,
 # Checks for YAP.
 if test x${yap_prolog_interface_enabled} = xyes
 then
-  AC_CHECK_PROG(YAP_PROLOG, yap, yap)
-  if test x"$YAP_PROLOG" = xyap
-  then
-    AC_CHECK_HEADER(Yap/c_interface.h,
-                    [],
-                    YAP_PROLOG="")
-  fi
+  AC_CHECK_YAP_PROLOG
 fi
 
 if test x${yap_prolog_interface_enabled} = xyes \
-&& test x$YAP_PROLOG = xyap
+&& test x$have_yap_prolog = xyes
 then
   build_yap_prolog_interface=yes
 fi
@@ -1488,6 +1483,7 @@ then
     CXXFLAGS="$CXXFLAGS -W -Wall"
   fi
 fi
+
 
 AC_SUBST(LIBEXT, [$libext])
 AC_SUBST(SHREXT, [$shrext_cmds])

@@ -34,8 +34,8 @@ PPL::extract_interval_constraint(const Constraint& c,
 				 dimension_type& c_num_vars,
 				 dimension_type& c_only_var) {
   // Check for preconditions.
-  assert(c.space_dimension() == c_space_dim);
-  assert(c_num_vars == 0 && c_only_var == 0);
+  PPL_ASSERT(c.space_dimension() == c_space_dim);
+  PPL_ASSERT(c_num_vars == 0 && c_only_var == 0);
   // Collect the non-zero components of `c'.
   for (dimension_type i = c_space_dim; i-- > 0; )
     if (c.coefficient(Variable(i)) != 0) {
@@ -56,10 +56,10 @@ PPL::extract_interval_congruence(const Congruence& cg,
 				 dimension_type& cg_num_vars,
 				 dimension_type& cg_only_var) {
   // Check for preconditions.
-  assert(cg.space_dimension() == cg_space_dim);
-  assert(cg_num_vars == 0 && cg_only_var == 0);
+  PPL_ASSERT(cg.space_dimension() == cg_space_dim);
+  PPL_ASSERT(cg_num_vars == 0 && cg_only_var == 0);
   // Only equality congruences can be intervals.
-  assert(cg.is_equality());
+  PPL_ASSERT(cg.is_equality());
 
   // Collect the non-zero components of `cg'.
   for (dimension_type i = cg_space_dim; i-- > 0; )

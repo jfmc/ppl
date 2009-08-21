@@ -27,7 +27,8 @@ dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
 m4_divert`'dnl
-%<--%<--%<-- ppl_prolog_generated_test_main.pl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_prolog_generated_test_main.pl << ___END_OF_FILE___
 /* Prolog code for checking all predicates.  -*- C++ -*-
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
@@ -100,7 +101,8 @@ dnl Main call to generate code for the include statements.
 dnl -----------------------------------------------------------------
 dnl
 m4_divert`'dnl
-%<--%<--%<-- ppl_prolog_generated_test_main.pl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_prolog_generated_test_main.pl << ___END_OF_FILE___
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                   %
@@ -172,7 +174,8 @@ dnl
 m4_pushdef(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 
-%<--%<--%<-- ppl_prolog_generated_test_`'m4_current_interface.pl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_prolog_generated_test_`'m4_current_interface.pl << ___END_OF_FILE___
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                   %
 %                       Main call for tests                         %
@@ -211,7 +214,8 @@ m4_ifdef(`$1_code',
 ')`'dnl
 m4_pushdef(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)
-%<--%<--%<-- ppl_prolog_generated_test_`'m4_current_interface.pl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_prolog_generated_test_`'m4_current_interface.pl << ___END_OF_FILE___
 m4_undefine(`m4_current_interface')`'dnl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                   %
@@ -256,7 +260,8 @@ m4_define(`m4_pre_extra_class_code', `dnl
 m4_pushdef(`m4_current_interface', m4_interface_class`'$1)`'dnl
 m4_pushdef(`m4_current_group', m4_class_group`'$1)`'dnl
 
-%<--%<--%<-- ppl_prolog_generated_test_`'m4_current_interface.pl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_prolog_generated_test_`'m4_current_interface.pl << ___END_OF_FILE___
 m4_popdef(`m4_current_interface')`'dnl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                   %
@@ -299,7 +304,8 @@ dnl -----------------------------------------------------------------
 
 m4_pushdef(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)
-%<--%<--%<-- ppl_prolog_generated_test_`'m4_current_interface.pl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_prolog_generated_test_`'m4_current_interface.pl << ___END_OF_FILE___
 m4_undefine(`m4_current_interface')`'dnl
 m4_define(`m4_start1', 0)`'dnl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -343,7 +349,8 @@ m4_popdef(`m4_post_extra_class_code')
 m4_pushdef(`m4_pre_extra_class_code', `dnl
 m4_pushdef(`m4_current_interface', m4_interface_class`'$1)`'dnl
 
-%<--%<--%<-- ppl_prolog_generated_test_`'m4_current_interface.pl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_prolog_generated_test_`'m4_current_interface.pl << ___END_OF_FILE___
 ')
 m4_pushdef(`m4_post_extra_class_code', `')
 m4_pushdef(`m4_expanded_procedure_schema', `
@@ -357,8 +364,8 @@ m4_ifelse(m4_index($1, new), `-1', ,
 
 m4_divert`'dnl
 m4_all_code
+___END_OF_FILE___
 m4_divert(-1)
 m4_popdef(`m4_expanded_procedure_schema')
 m4_popdef(`m4_pre_extra_class_code')
-
 dnl End of file generation.

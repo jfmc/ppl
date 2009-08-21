@@ -23,7 +23,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Watchdog Library],[0.7],[bagnara@cs.unipr.it],[pwl])
+AC_INIT([the Parma Watchdog Library],[0.8],[bagnara@cs.unipr.it],[pwl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
@@ -39,7 +39,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
 
 # Use Automake.
-AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip 1.7.3])
+AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip dist-lzma silent-rules 1.11])
 AC_SUBST(VERSION)
 
 # Generate a configuration header file.

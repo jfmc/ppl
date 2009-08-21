@@ -94,7 +94,7 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
      }
      input_cs.push_back(*i);
    }
-   assert(OK());
+   PPL_ASSERT(OK());
 }
 
 template <typename In>
@@ -150,7 +150,7 @@ MIP_Problem::MIP_Problem(dimension_type dim,
     }
     input_cs.push_back(*i);
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Rounding_Dir_inlines_hh
 #define PPL_Rounding_Dir_inlines_hh 1
 
-#include <cassert>
+#include "assert.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -82,7 +82,7 @@ round_fpu_dir(Rounding_Dir dir) {
   case ROUND_DOWN:
     return static_cast<fpu_rounding_direction_type>(PPL_FPU_DOWNWARD);
   default:
-    assert(false);
+    PPL_ASSERT(false);
     return static_cast<fpu_rounding_direction_type>(PPL_FPU_UPWARD);
   }
 }
@@ -106,7 +106,7 @@ inverse(Rounding_Dir dir) {
     d = ROUND_UP;
     break;
   default:
-    assert(false);
+    PPL_ASSERT(false);
     /* Fall through */
   case ROUND_IGNORE:
     return dir;

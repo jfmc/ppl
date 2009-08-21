@@ -24,7 +24,8 @@ AC_DEFUN([AC_CHECK_SWI_PROLOG],
 [
 dnl By default, SWI-Prolog is installed as `pl', though some administrators
 dnl call it `swipl' or `swi-prolog'.  In particular, on Mac OS X `pl' is
-dnl the name of another program.
+dnl the name of another program.  On Windows, the console version of
+dnl SWI-Prolog is called `plcon'.
 AC_PATH_PROG(swi_prolog, swi-prolog)
 if test -z $swi_prolog
 then
@@ -32,6 +33,10 @@ then
   if test -z $swi_prolog
   then
     AC_PATH_PROG(swi_prolog, pl)
+    if test -z $swi_prolog
+    then
+      AC_PATH_PROG(swi_prolog, plcon)
+    fi
   fi
 fi
 if test x$swi_prolog != x

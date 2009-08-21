@@ -2,7 +2,7 @@
 
 Name:           ppl
 Version:        0.10.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        The Parma Polyhedra Library: a library of numerical abstractions
 Group:          Development/Libraries
@@ -416,6 +416,9 @@ mv \
 rm -rf %{buildroot}
 
 %changelog
+* Sun Jul 12 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10.2-4
+- Force rebuild.
+
 * Fri Jun 19 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10.2-3
 - The `gprolog' and `yap' packages are not available on the sparc64 and
   sparcv9 architectures: so do `ppl-gprolog', `ppl-gprolog-static' and

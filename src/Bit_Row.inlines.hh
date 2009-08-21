@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Bit_Row_inlines_hh 1
 
 #include "globals.defs.hh"
-#include <cassert>
+#include "assert.hh"
 
 // For the declaration of ffs(3).
 #if defined(PPL_HAVE_STRINGS_H)
@@ -50,17 +50,17 @@ Bit_Row::Bit_Row(const Bit_Row& y) {
 inline
 Bit_Row::Bit_Row(const Bit_Row& y, const Bit_Row& z) {
   const mp_size_t y_size = y.vec->_mp_size;
-  assert(y_size >= 0);
+  PPL_ASSERT(y_size >= 0);
   const mp_size_t z_size = z.vec->_mp_size;
-  assert(z_size >= 0);
+  PPL_ASSERT(z_size >= 0);
   if (y_size < z_size) {
-    assert(static_cast<unsigned long>(z_size)
+    PPL_ASSERT(static_cast<unsigned long>(z_size)
            <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
     mpz_init2(vec, z_size * PPL_BITS_PER_GMP_LIMB);
     union_helper(y, z);
   }
   else {
-    assert(static_cast<unsigned long>(y_size)
+    PPL_ASSERT(static_cast<unsigned long>(y_size)
            <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
     mpz_init2(vec, y_size * PPL_BITS_PER_GMP_LIMB);
     union_helper(z, y);
@@ -96,7 +96,7 @@ Bit_Row::clear_from(const unsigned long k) {
 inline unsigned long
 Bit_Row::count_ones() const {
   mp_size_t x_size = vec->_mp_size;
-  assert(x_size >= 0);
+  PPL_ASSERT(x_size >= 0);
   return x_size == 0 ? 0 : mpn_popcount(vec->_mp_d, x_size);
 }
 
@@ -129,17 +129,17 @@ Bit_Row::total_memory_in_bytes() const {
 inline void
 set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
   const mp_size_t x_size = x.vec->_mp_size;
-  assert(x_size >= 0);
+  PPL_ASSERT(x_size >= 0);
   const mp_size_t y_size = y.vec->_mp_size;
-  assert(y_size >= 0);
+  PPL_ASSERT(y_size >= 0);
   if (x_size < y_size) {
-    assert(static_cast<unsigned long>(y_size)
+    PPL_ASSERT(static_cast<unsigned long>(y_size)
            <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
     mpz_realloc2(z.vec, y_size * PPL_BITS_PER_GMP_LIMB);
     z.union_helper(x, y);
   }
   else {
-    assert(static_cast<unsigned long>(x_size)
+    PPL_ASSERT(static_cast<unsigned long>(x_size)
            <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
     mpz_realloc2(z.vec, x_size * PPL_BITS_PER_GMP_LIMB);
     z.union_helper(y, x);
@@ -169,7 +169,7 @@ namespace Implementation {
 */
 inline unsigned int
 first_one(unsigned int u) {
-  assert(u != 0);
+  PPL_ASSERT(u != 0);
   return __builtin_ctz(u);
 }
 
@@ -179,7 +179,7 @@ first_one(unsigned int u) {
 */
 inline unsigned int
 first_one(unsigned long ul) {
-  assert(ul != 0);
+  PPL_ASSERT(ul != 0);
   return __builtin_ctzl(ul);
 }
 
@@ -189,7 +189,7 @@ first_one(unsigned long ul) {
 */
 inline unsigned int
 first_one(unsigned long long ull) {
-  assert(ull != 0);
+  PPL_ASSERT(ull != 0);
   return __builtin_ctzll(ull);
 }
 
@@ -246,7 +246,7 @@ first_one(mp_limb_t w) {
 */
 inline unsigned int
 last_one(unsigned int u) {
-  assert(u != 0);
+  PPL_ASSERT(u != 0);
   return sizeof(unsigned int)*CHAR_BIT - 1 - __builtin_clz(u);
 }
 
@@ -256,7 +256,7 @@ last_one(unsigned int u) {
 */
 inline unsigned int
 last_one(unsigned long ul) {
-  assert(ul != 0);
+  PPL_ASSERT(ul != 0);
   return sizeof(unsigned long)*CHAR_BIT - 1 - __builtin_clzl(ul);
 }
 
@@ -266,7 +266,7 @@ last_one(unsigned long ul) {
 */
 inline unsigned int
 last_one(unsigned long long ull) {
-  assert(ull != 0);
+  PPL_ASSERT(ull != 0);
   return sizeof(unsigned long long)*CHAR_BIT - 1 - __builtin_clzll(ull);
 }
 
@@ -277,7 +277,7 @@ last_one(unsigned long long ull) {
 */
 inline unsigned int
 last_one(mp_limb_t w) {
-  assert(w != 0);
+  PPL_ASSERT(w != 0);
   unsigned int r = 0;
 #if PPL_SIZEOF_MP_LIMB_T == 8
   if (w &

@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Powerset_inlines_hh 1
 
 #include <algorithm>
-#include <cassert>
+#include "assert.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -138,7 +138,7 @@ inline
 Powerset<D>::Powerset(const D& d)
   : sequence(), reduced(false) {
   sequence.push_back(d);
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename D>

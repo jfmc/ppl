@@ -33,9 +33,11 @@ m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
 
 m4_pushdef(`m4_one_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
-%<--%<--%<-- ppl_ocaml_domains.hh
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_ocaml_domains.hh << ___END_OF_FILE___
 `#'include "ppl_ocaml_`'m4_current_interface.hh"
-%<--%<--%<-- ppl_ocaml_`'m4_current_interface.hh
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_ocaml_`'m4_current_interface.hh << ___END_OF_FILE___
 /* OCaml m4_current_interface interface code: declarations.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
@@ -49,12 +51,14 @@ dnl Generate type declarations for all the classes.
 dnl -----------------------------------------------------------------
 
 m4_divert`'dnl
-%<--%<--%<-- ppl_ocaml_domains.hh
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_ocaml_domains.hh << ___END_OF_FILE___
 /* OCaml interface code: inclusion of all the domain-dependent declarations.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
 `#'include "ppl_ocaml_common.defs.hh"
 m4_all_code
+___END_OF_FILE___
 dnl
 dnl End of file generation.

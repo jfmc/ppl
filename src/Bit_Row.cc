@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl-config.h>
 
 #include "Bit_Row.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <climits>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -31,7 +31,7 @@ namespace PPL = Parma_Polyhedra_Library;
 unsigned long
 PPL::Bit_Row::first() const {
   const mp_size_t vec_size = vec->_mp_size;
-  assert(vec_size >= 0);
+  PPL_ASSERT(vec_size >= 0);
   mp_size_t li = 0;
   mp_srcptr p = vec->_mp_d;
   for (; li < vec_size; ++li, ++p) {
@@ -55,7 +55,7 @@ PPL::Bit_Row::next(unsigned long position) const {
 
   mp_size_t li = position / PPL_BITS_PER_GMP_LIMB;
   const mp_size_t vec_size = vec->_mp_size;
-  assert(vec_size >= 0);
+  PPL_ASSERT(vec_size >= 0);
   if (li >= vec_size)
     return ULONG_MAX;
 
@@ -80,13 +80,13 @@ PPL::Bit_Row::next(unsigned long position) const {
 unsigned long
 PPL::Bit_Row::last() const {
   mp_size_t li = vec->_mp_size;
-  assert(li >= 0);
+  PPL_ASSERT(li >= 0);
   if (li == 0)
     return ULONG_MAX;
   --li;
   const mp_srcptr p = vec->_mp_d + li;
   const mp_limb_t limb = *p;
-  assert(limb != 0);
+  PPL_ASSERT(limb != 0);
   return li*PPL_BITS_PER_GMP_LIMB + Implementation::last_one(limb);
 }
 
@@ -98,7 +98,7 @@ PPL::Bit_Row::prev(unsigned long position) const {
   --position;
 
   const mp_size_t vec_size = vec->_mp_size;
-  assert(vec_size > 0);
+  PPL_ASSERT(vec_size > 0);
   mp_size_t li = position / PPL_BITS_PER_GMP_LIMB;
 
   mp_limb_t limb;
@@ -133,7 +133,7 @@ PPL::Bit_Row::prev(unsigned long position) const {
 bool
 PPL::Bit_Row::operator[](const unsigned long k) const {
   const mp_size_t vec_size = vec->_mp_size;
-  assert(vec_size >= 0);
+  PPL_ASSERT(vec_size >= 0);
 
   unsigned long i = k / GMP_NUMB_BITS;
   if (i >= static_cast<unsigned long>(vec_size))
@@ -154,9 +154,9 @@ PPL::Bit_Row::set_until(unsigned long k) {
 int
 PPL::compare(const Bit_Row& x, const Bit_Row& y) {
   const mp_size_t x_size = x.vec->_mp_size;
-  assert(x_size >= 0);
+  PPL_ASSERT(x_size >= 0);
   const mp_size_t y_size = y.vec->_mp_size;
-  assert(y_size >= 0);
+  PPL_ASSERT(y_size >= 0);
   mp_size_t size = (x_size > y_size ? y_size : x_size);
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
@@ -181,9 +181,9 @@ PPL::compare(const Bit_Row& x, const Bit_Row& y) {
 bool
 PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y) {
   mp_size_t x_size = x.vec->_mp_size;
-  assert(x_size >= 0);
+  PPL_ASSERT(x_size >= 0);
   mp_size_t y_size = y.vec->_mp_size;
-  assert(y_size >= 0);
+  PPL_ASSERT(y_size >= 0);
   if (x_size > y_size)
     return false;
   mp_srcptr xp = x.vec->_mp_d;
@@ -203,9 +203,9 @@ bool
 PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
 		     bool& strict_subset) {
   mp_size_t x_size = x.vec->_mp_size;
-  assert(x_size >= 0);
+  PPL_ASSERT(x_size >= 0);
   mp_size_t y_size = y.vec->_mp_size;
-  assert(y_size >= 0);
+  PPL_ASSERT(y_size >= 0);
   if (x_size > y_size)
     return false;
   mp_srcptr xp = x.vec->_mp_d;
@@ -247,9 +247,9 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
 bool
 PPL::strict_subset(const Bit_Row& x, const Bit_Row& y) {
   mp_size_t x_size = x.vec->_mp_size;
-  assert(x_size >= 0);
+  PPL_ASSERT(x_size >= 0);
   mp_size_t y_size = y.vec->_mp_size;
-  assert(y_size >= 0);
+  PPL_ASSERT(y_size >= 0);
   if (x_size > y_size)
     return false;
   bool different = (x_size < y_size);
@@ -273,9 +273,9 @@ PPL::strict_subset(const Bit_Row& x, const Bit_Row& y) {
 bool
 PPL::operator==(const Bit_Row& x, const Bit_Row& y) {
   const mp_size_t x_vec_size = x.vec->_mp_size;
-  assert(x_vec_size >= 0);
+  PPL_ASSERT(x_vec_size >= 0);
   const mp_size_t y_vec_size = y.vec->_mp_size;
-  assert(y_vec_size >= 0);
+  PPL_ASSERT(y_vec_size >= 0);
 
   if (x_vec_size != y_vec_size)
     return false;
@@ -287,9 +287,9 @@ PPL::operator==(const Bit_Row& x, const Bit_Row& y) {
 bool
 PPL::operator!=(const Bit_Row& x, const Bit_Row& y) {
   const mp_size_t x_vec_size = x.vec->_mp_size;
-  assert(x_vec_size >= 0);
+  PPL_ASSERT(x_vec_size >= 0);
   const mp_size_t y_vec_size = y.vec->_mp_size;
-  assert(y_vec_size >= 0);
+  PPL_ASSERT(y_vec_size >= 0);
 
   if (x_vec_size != y_vec_size)
     return true;
@@ -310,8 +310,8 @@ void
 PPL::Bit_Row::union_helper(const Bit_Row& y, const Bit_Row& z) {
   mp_size_t y_size = y.vec->_mp_size;
   mp_size_t z_size = z.vec->_mp_size;
-  assert(y_size <= z_size);
-  assert(vec->_mp_alloc >= z_size);
+  PPL_ASSERT(y_size <= z_size);
+  PPL_ASSERT(vec->_mp_alloc >= z_size);
   vec->_mp_size = z_size;
   mp_srcptr yp = y.vec->_mp_d;
   mp_srcptr zp = z.vec->_mp_d;

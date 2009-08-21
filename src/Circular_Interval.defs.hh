@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <iostream>
 #include <string>
-#include <cassert>
+#include "assert.hh"
 
 #include "intervals.defs.hh"
 #include "Bool4.defs.hh"
@@ -60,7 +60,7 @@ template <typename U>
 void add_wrap_signed(U& to, const U& x, const U& y, const U& modulo) {
   to = x + y;
   if (modulo) {
-    assert((modulo & U(modulo - 1)) == 0);
+    PPL_ASSERT((modulo & U(modulo - 1)) == 0);
     to = (to + (modulo >> 1)) % modulo - (modulo >> 1);
   }
 }
@@ -77,7 +77,7 @@ template <typename U>
 void sub_wrap_signed(U& to, const U& x, const U& y, const U& modulo) {
   to = x + y;
   if (modulo) {
-    assert((modulo & U(modulo - 1)) == 0);
+    PPL_ASSERT((modulo & U(modulo - 1)) == 0);
     to = (to + (modulo >> 1)) % modulo - (modulo >> 1);
   }
 }
@@ -86,7 +86,7 @@ template <typename U>
 void mul_wrap_unsigned(U& to, const U& x, const U& y, const U& modulo) {
   to = x * y;
   if (modulo) {
-    assert((modulo & U(modulo - 1)) == 0);
+    PPL_ASSERT((modulo & U(modulo - 1)) == 0);
     to %= modulo;
   }
 }
@@ -95,7 +95,7 @@ template <typename U>
 void mul_wrap_signed(U& to, const U& x, const U& y, const U& modulo) {
   to = x * y;
   if (modulo) {
-    assert((modulo & U(modulo - 1)) == 0);
+    PPL_ASSERT((modulo & U(modulo - 1)) == 0);
     to = (to + (modulo >> 1)) % modulo - (modulo >> 1);
   }
 }
@@ -157,28 +157,28 @@ public:
 private:
   // Return 0 if v is inside the interval or the distance between end and v
   delta_type distance_from_end(const boundary_type& v) const {
-    assert(delta_ < delta_max());
+    PPL_ASSERT(delta_ < delta_max());
     delta_type d;
     sub_wrap_unsigned(d, v, start_, Policy::modulo);
     return d > delta_ ? d - delta_ : 0;
   }
   // Return 0 if v is inside the interval or the distance between v and start
   delta_type distance_to_start(const boundary_type& v) const {
-    assert(delta_ < delta_max());
+    PPL_ASSERT(delta_ < delta_max());
     delta_type d;
     sub_wrap_unsigned(d, v, start_, Policy::modulo);
     return d > delta_ ? Policy::modulo - d : 0;
   }
   // Return 0 if v is outside the interval or 1 + the distance between v and end
   delta_type distance_to_end(const boundary_type& v) const {
-    assert(delta_ < delta_max());
+    PPL_ASSERT(delta_ < delta_max());
     delta_type d;
     sub_wrap_unsigned(d, v, start_, Policy::modulo);
     return d > delta_ ? 0 : delta_ + 1 - d;
   }
   // Return 0 if v is outside the interval or 1 + the distance between start and v
   delta_type distance_from_start(const boundary_type& v) const {
-    assert(delta_ < delta_max());
+    PPL_ASSERT(delta_ < delta_max());
     delta_type d;
     sub_wrap_unsigned(d, v, start_, Policy::modulo);
     return d > delta_ ? 0 : d + 1;
@@ -201,7 +201,7 @@ private:
     return d <= delta_ - x.delta_;
   }
   I_Result lower_extend(const boundary_type &v) {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     if (lower_is_domain_inf() || start_ <= v)
       return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
     delta_ += start_ - v;
@@ -209,7 +209,7 @@ private:
     return I_SOME | I_UNIVERSE | I_EXACT | I_CHANGED;
   }
   I_Result upper_extend(const boundary_type &v) {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     if (upper_is_domain_sup() || start_ + delta_ >= v)
       return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
     delta_ = v - start_;
@@ -240,7 +240,7 @@ public:
     if (delta_ == delta_max()) {
       if (start_ == 0)
 	return I_UNIVERSE;
-      assert(start_ == 1);
+      PPL_ASSERT(start_ == 1);
       return I_EMPTY;
     }
     else if (delta_ == 0)
@@ -275,19 +275,19 @@ public:
     return !maybe_check_empty();
   }
   I_Constraint<boundary_type> lower_constraint() const {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     return i_constraint(GREATER_OR_EQUAL, lower());
   }
   I_Constraint<boundary_type> upper_constraint() const {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     return i_constraint(LESS_OR_EQUAL, upper());
   }
   bool lower_is_open() const {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     return false;
   }
   bool upper_is_open() const {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     return false;
   }
   boundary_type start() const {
@@ -297,23 +297,23 @@ public:
     return delta_;
   }
   boundary_type end() const {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     boundary_type u;
     add_wrap_unsigned(u, start_, delta_, Policy::modulo);
     return u;
   }
   bool is_splitted() const {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     return delta_ > domain_sup() - start_;
   }
   boundary_type lower() const {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     if (is_splitted())
       return domain_inf();
     return start_;
   }
   boundary_type upper() const {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     if (is_splitted())
       return domain_sup();
     return end();
@@ -382,7 +382,7 @@ public:
   template <typename C>
   typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C>::value, I_Result>::type
   lower_extend(const C& c) {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     boundary_type v;
     Result rel = c.convert_integer(v);
     switch (rel) {
@@ -395,7 +395,7 @@ public:
     case V_EQ:
       return lower_extend(v);
     default:
-      assert(false);
+      PPL_ASSERT(false);
     }
     return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
   }
@@ -405,7 +405,7 @@ public:
   template <typename C>
   typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C>::value, I_Result>::type
   upper_extend(const C& c) {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     boundary_type v;
     Result rel = c.convert_integer(v);
     switch (rel) {
@@ -418,12 +418,12 @@ public:
     case V_EQ:
       return upper_extend(v);
     default:
-      assert(false);
+      PPL_ASSERT(false);
     }
     return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
   }
   I_Result remove_sup() {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     if (delta_ == 0)
       return assign(EMPTY) | I_CHANGED;
     else
@@ -431,7 +431,7 @@ public:
     return I_NOT_UNIVERSE | I_EXACT | I_CHANGED;
   }
   I_Result remove_inf() {
-    assert(!is_empty());
+    PPL_ASSERT(!is_empty());
     if (delta_ == 0)
       return assign(EMPTY) | I_CHANGED;
     else {
@@ -442,14 +442,14 @@ public:
   }
 #if 0
   void push() {
-    assert(delta_ != delta_max());
+    PPL_ASSERT(delta_ != delta_max());
     if (delta_ == delta_max() - 1)
       assign(UNIVERSE);
     else
       ++delta_;
   }
   void unshift() {
-    assert(delta_ != delta_max());
+    PPL_ASSERT(delta_ != delta_max());
     if (delta_ == delta_max() - 1)
       assign(UNIVERSE);
     else {
@@ -536,7 +536,7 @@ public:
     delta_ = delta_max();
     switch (e) {
     default:
-      assert(0);
+      PPL_ASSERT(0);
       /* Fall through */
     case EMPTY:
       start_ = 1;
@@ -547,14 +547,14 @@ public:
     }
   }
   I_Result assign(const boundary_type& v) {
-    assert(v <= domain_sup());
+    PPL_ASSERT(v <= domain_sup());
     start_ = v;
     delta_ = 0;
     return I_SINGLETON | I_EXACT;
   }
   I_Result assign(const boundary_type& s, const boundary_type& e) {
-    assert(s <= domain_sup());
-    assert(e <= domain_sup());
+    PPL_ASSERT(s <= domain_sup());
+    PPL_ASSERT(e <= domain_sup());
     sub_wrap_unsigned(delta_, e, s, Policy::modulo);
     if (delta_ == delta_max()) {
       start_ = 0;
@@ -1009,7 +1009,7 @@ public:
       return false;
     if (!ascii_load(s, delta_))
       return false;
-    assert(OK());
+    PPL_ASSERT(OK());
     return true;
   }
 protected:

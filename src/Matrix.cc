@@ -33,20 +33,25 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Matrix::Matrix(const dimension_type n_rows,
 		    const dimension_type n_columns,
 		    Row::Flags row_flags)
-  : rows((assert(n_rows <= max_num_rows()),
-	  n_rows)),
+  :
+#ifdef NDEBUG
+    rows(n_rows),
+#else
+    rows(n_rows <= max_num_rows() ? n_rows : 0),
+#endif
     row_size(n_columns),
     row_capacity(compute_capacity(n_columns, max_num_columns())) {
+  PPL_ASSERT(n_rows <= max_num_rows());
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0; i < n_rows; ++i)
     rows[i].construct(n_columns, row_capacity, row_flags);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
 PPL::Matrix::add_zero_rows(const dimension_type n, Row::Flags row_flags) {
-  assert(n > 0);
-  assert(n <= max_num_rows() - num_rows());
+  PPL_ASSERT(n > 0);
+  PPL_ASSERT(n <= max_num_rows() - num_rows());
   const dimension_type old_num_rows = rows.size();
   const dimension_type new_num_rows = old_num_rows + n;
 
@@ -76,8 +81,8 @@ PPL::Matrix::add_zero_rows(const dimension_type n, Row::Flags row_flags) {
 
 void
 PPL::Matrix::add_zero_columns(const dimension_type n) {
-  assert(n > 0);
-  assert(n <= max_num_columns() - num_columns());
+  PPL_ASSERT(n > 0);
+  PPL_ASSERT(n <= max_num_columns() - num_columns());
   const dimension_type num_rows = rows.size();
   const dimension_type new_num_columns = row_size + n;
 
@@ -90,7 +95,7 @@ PPL::Matrix::add_zero_columns(const dimension_type n) {
     // make sure all the rows have the same capacity.
     const dimension_type new_row_capacity
       = compute_capacity(new_num_columns, max_num_columns());
-    assert(new_row_capacity <= max_num_columns());
+    PPL_ASSERT(new_row_capacity <= max_num_columns());
     for (dimension_type i = num_rows; i-- > 0; ) {
       Row new_row(rows[i], new_num_columns, new_row_capacity);
       std::swap(rows[i], new_row);
@@ -105,10 +110,10 @@ void
 PPL::Matrix::add_zero_rows_and_columns(const dimension_type n,
 				       const dimension_type m,
 				       Row::Flags row_flags) {
-  assert(n > 0);
-  assert(n <= max_num_rows() - num_rows());
-  assert(m > 0);
-  assert(m <= max_num_columns() - num_columns());
+  PPL_ASSERT(n > 0);
+  PPL_ASSERT(n <= max_num_rows() - num_rows());
+  PPL_ASSERT(m > 0);
+  PPL_ASSERT(m <= max_num_columns() - num_columns());
   const dimension_type old_num_rows = rows.size();
   const dimension_type new_num_rows = old_num_rows + n;
   const dimension_type new_num_columns = row_size + m;
@@ -178,7 +183,7 @@ void
 PPL::Matrix::add_recycled_row(Row& y) {
   // The added row must have the same size and capacity as the
   // existing rows of the system.
-  assert(y.OK(row_size, row_capacity));
+  PPL_ASSERT(y.OK(row_size, row_capacity));
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
@@ -200,7 +205,7 @@ PPL::Matrix::add_recycled_row(Row& y) {
     // then substitutes it with a copy of the given row.
     std::swap(*rows.insert(rows.end(), Row()), y);
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -315,13 +320,13 @@ PPL::Matrix::ascii_load(std::istream& s) {
       return false;
 
   // Check invariants.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 
 void
 PPL::Matrix::swap_columns(const dimension_type i, const dimension_type j) {
-  assert(i != j && i < num_columns() && j < num_columns());
+  PPL_ASSERT(i != j && i < num_columns() && j < num_columns());
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Row& rows_k = rows[k];
     std::swap(rows_k[i], rows_k[j]);
@@ -330,8 +335,8 @@ PPL::Matrix::swap_columns(const dimension_type i, const dimension_type j) {
 
 void
 PPL::Matrix::remove_trailing_columns(const dimension_type n) {
-  assert(n > 0);
-  assert(n <= row_size);
+  PPL_ASSERT(n > 0);
+  PPL_ASSERT(n <= row_size);
   row_size -= n;
   for (dimension_type i = num_rows(); i-- > 0; )
     rows[i].shrink(row_size);
@@ -341,7 +346,7 @@ void
 PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
   const dimension_type n = cycles.size();
-  assert(cycles[n - 1] == 0);
+  PPL_ASSERT(cycles[n - 1] == 0);
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Row& rows_k = rows[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {
@@ -349,7 +354,7 @@ PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
       while (cycles[j] != 0)
 	++j;
       // Cycles of length less than 2 are not allowed.
-      assert(j - i >= 2);
+      PPL_ASSERT(j - i >= 2);
       if (j - i == 2)
 	// For cycles of length 2 no temporary is needed, just a swap.
 	std::swap(rows_k[cycles[i]], rows_k[cycles[i+1]]);

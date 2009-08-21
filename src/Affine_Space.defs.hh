@@ -435,7 +435,7 @@ public:
   /*!
     The affine space inherits the space dimension of the generator system.
 
-    \param const_gs
+    \param gs
     The system of generators defining the affine space.
 
     \exception std::invalid_argument
@@ -1192,7 +1192,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to
-    the \ref Affine_Space_Generalized_Image "generalized affine relation"
+    the \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
     \pmod{\mathrm{modulus}}\f$.
 
@@ -1224,7 +1224,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
-    \ref Affine_Space_Generalized_Image "generalized affine relation"
+    \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
     \pmod{\mathrm{modulus}}\f$.
 
@@ -1256,7 +1256,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to
-    the \ref Affine_Space_Generalized_Image "generalized affine relation"
+    the \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
 
     \param lhs
@@ -1280,7 +1280,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
-    \ref Affine_Space_Generalized_Image "generalized affine relation"
+    \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
 
     \param lhs
@@ -1597,7 +1597,8 @@ public:
     \p to_be_folded is a set of variables whose maximum space dimension
     is also less than or equal to \f$n\f$, and \p var is not a member
     of \p to_be_folded, then the space dimensions corresponding to
-    variables in \p to_be_folded are \ref Affine_Space_Fold_Space_Dimensions "folded"
+    variables in \p to_be_folded are
+    \ref Folding_Multiple_Dimensions_of_the_Vector_Space_into_One_Dimension "folded"
     into the \f$k\f$-th space dimension.
   */
   void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);

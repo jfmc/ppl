@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BHRZ03_Certificate.defs.hh"
 
 #include "Polyhedron.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -41,7 +41,7 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
   // constraint and the generator systems in minimal form.
   ph.minimize();
   // It is assumed that `ph' is not an empty polyhedron.
-  assert(!ph.marked_empty());
+  PPL_ASSERT(!ph.marked_empty());
 
   // The dimension of the polyhedron is obtained by subtracting
   // the number of equalities from the space dimension.
@@ -50,7 +50,7 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
   // constraint and epsilon bounds).
   const dimension_type space_dim = ph.space_dimension();
   affine_dim = space_dim;
-  assert(num_constraints == 0);
+  PPL_ASSERT(num_constraints == 0);
   const Constraint_System& cs = ph.minimized_constraints();
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
@@ -59,8 +59,8 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
       --affine_dim;
   }
 
-  assert(lin_space_dim == 0);
-  assert(num_points == 0);
+  PPL_ASSERT(lin_space_dim == 0);
+  PPL_ASSERT(num_points == 0);
   const Generator_System& gs = ph.minimized_generators();
   for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
@@ -89,7 +89,7 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
       ++lin_space_dim;
       break;
     }
-  assert(OK());
+  PPL_ASSERT(OK());
 
   // TODO: this is an inefficient workaround.
   // For NNC polyhedra, constraints might be no longer up-to-date
@@ -104,7 +104,7 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
 
 int
 PPL::BHRZ03_Certificate::compare(const BHRZ03_Certificate& y) const {
-  assert(OK() && y.OK());
+  PPL_ASSERT(OK() && y.OK());
   if (affine_dim != y.affine_dim)
     return affine_dim > y.affine_dim ? 1 : -1;
   if (lin_space_dim != y.lin_space_dim)
@@ -115,7 +115,7 @@ PPL::BHRZ03_Certificate::compare(const BHRZ03_Certificate& y) const {
     return num_points > y.num_points ? 1 : -1;
 
   const dimension_type space_dim = num_rays_null_coord.size();
-  assert(num_rays_null_coord.size() == y.num_rays_null_coord.size());
+  PPL_ASSERT(num_rays_null_coord.size() == y.num_rays_null_coord.size());
   // Note: iterating upwards, because we have to check first
   // the number of rays having more NON-zero coordinates.
   for (dimension_type i = 0; i < space_dim; i++)
@@ -127,7 +127,7 @@ PPL::BHRZ03_Certificate::compare(const BHRZ03_Certificate& y) const {
 
 int
 PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
-  assert(ph.space_dimension() == num_rays_null_coord.size());
+  PPL_ASSERT(ph.space_dimension() == num_rays_null_coord.size());
 
   // TODO: provide a correct and reasonably efficient
   // implementation for NNC polyhedra.
@@ -137,7 +137,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   ph.minimize();
   // It is assumed that `ph' is a polyhedron containing the
   // polyhedron described by `*this': hence, it cannot be empty.
-  assert(!ph.marked_empty());
+  PPL_ASSERT(!ph.marked_empty());
 
   // The dimension of the polyhedron is obtained by subtracting
   // the number of equalities from the space dimension.
@@ -169,7 +169,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
     return 1;
 
   // At this point the two polyhedra must have the same dimension.
-  assert(ph_affine_dim == affine_dim);
+  PPL_ASSERT(ph_affine_dim == affine_dim);
 
   // Speculative optimization: in order to better exploit the incrementality
   // of the comparison, we do not compute information about rays here,
@@ -210,7 +210,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
 
   // At this point the lineality space of the two polyhedra must have
   // the same dimension.
-  assert(ph_lin_space_dim == lin_space_dim);
+  PPL_ASSERT(ph_lin_space_dim == lin_space_dim);
 
   // If the number of constraints of `ph' is decreasing, then the chain
   // is stabilizing. If it is increasing, the chain is not stabilizing.

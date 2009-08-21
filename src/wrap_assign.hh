@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Coefficient.defs.hh"
 #include "Variable.defs.hh"
 #include "Constraint_System.defs.hh"
-#include <cassert>
+#include "assert.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -188,7 +188,7 @@ wrap_assign(PSET& pointset,
            cs_end = cs.end(); i != cs_end; ++i) {
       const Constraint& c = *i;
       for (dimension_type d = cs_space_dim; d-- > 0; ) {
-        assert(c.coefficient(Variable(d)) == 0
+        PPL_ASSERT(c.coefficient(Variable(d)) == 0
                || vars.find(d) != vars_end);
       }
     }
@@ -226,7 +226,7 @@ wrap_assign(PSET& pointset,
     --max_value;
   }
   else {
-    assert(r == SIGNED_2_COMPLEMENT);
+    PPL_ASSERT(r == SIGNED_2_COMPLEMENT);
     mul_2exp_assign(max_value, Coefficient_one(), w-1);
     neg_assign(min_value, max_value);
     --max_value;
@@ -353,7 +353,7 @@ wrap_assign(PSET& pointset,
       pointset.swap(hull);
     }
     else if (wrap_individually || !collective_wrap_too_complex) {
-      assert(!wrap_individually || pcs != 0);
+      PPL_ASSERT(!wrap_individually || pcs != 0);
       dimensions_to_be_translated.insert(x);
       translations
         .push_back(Wrap_Dim_Translations(x, first_quadrant, last_quadrant));
@@ -362,7 +362,7 @@ wrap_assign(PSET& pointset,
 
   if (!translations.empty()) {
     if (wrap_individually) {
-      assert(pcs != 0);
+      PPL_ASSERT(pcs != 0);
       wrap_assign_ind(pointset, dimensions_to_be_translated,
                       translations.begin(), translations.end(),
                       w, min_value, max_value, *pcs, ln, ld);

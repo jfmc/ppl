@@ -162,22 +162,22 @@ const PPL::Generator* PPL::Generator::zero_dim_closure_point_p = 0;
 
 void
 PPL::Generator::initialize() {
-  assert(zero_dim_point_p == 0);
+  PPL_ASSERT(zero_dim_point_p == 0);
   zero_dim_point_p
     = new Generator(point());
 
-  assert(zero_dim_closure_point_p == 0);
+  PPL_ASSERT(zero_dim_closure_point_p == 0);
   zero_dim_closure_point_p
     = new Generator(closure_point());
 }
 
 void
 PPL::Generator::finalize() {
-  assert(zero_dim_point_p != 0);
+  PPL_ASSERT(zero_dim_point_p != 0);
   delete zero_dim_point_p;
   zero_dim_point_p = 0;
 
-  assert(zero_dim_closure_point_p != 0);
+  PPL_ASSERT(zero_dim_closure_point_p != 0);
   delete zero_dim_closure_point_p;
   zero_dim_closure_point_p = 0;
 }
@@ -273,7 +273,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator::Type& t) {
 
 bool
 PPL::Generator::is_matching_closure_point(const Generator& p) const {
-  assert(topology() == p.topology()
+  PPL_ASSERT(topology() == p.topology()
 	 && space_dimension() == p.space_dimension()
 	 && type() == CLOSURE_POINT
 	 && p.type() == POINT);

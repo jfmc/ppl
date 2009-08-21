@@ -30,7 +30,7 @@ BHRZ03_Certificate::BHRZ03_Certificate()
   : affine_dim(0), lin_space_dim(0), num_constraints(0), num_points(1),
     num_rays_null_coord() {
   // This is the certificate for a zero-dim universe polyhedron.
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 inline

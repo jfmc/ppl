@@ -148,7 +148,7 @@ assign_special_mpz(mpz_class& v, Result_Class c, Rounding_Dir) {
     }
     return V_EQ_PLUS_INFINITY | V_UNREPRESENTABLE;
   default:
-    assert(false);
+    PPL_ASSERT(false);
     return V_NAN;
   }
 }
@@ -159,9 +159,9 @@ template <typename To_Policy, typename From_Policy>
 inline void
 copy_mpz(mpz_class& to, const mpz_class& from) {
   if (is_nan_mpz<From_Policy>(from))
-    assert(To_Policy::has_nan);
+    PPL_ASSERT(To_Policy::has_nan);
   else if (is_minf_mpz<From_Policy>(from) || is_pinf_mpz<From_Policy>(from))
-    assert(To_Policy::has_infinity);
+    PPL_ASSERT(To_Policy::has_infinity);
   else {
     to = from;
     return;
@@ -280,7 +280,7 @@ assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
     return round_lt_mpz<To_Policy>(to, dir);
   if (from > i_from)
     return round_gt_mpz<To_Policy>(to, dir);
-  assert(false);
+  PPL_ASSERT(false);
   return V_NAN;
 }
 
@@ -304,7 +304,7 @@ assign_mpz_long_double(mpz_class& to, const From& from, Rounding_Dir dir) {
   Result r =
 #endif
     input_mpq(tmp, ss);
-  assert(r == V_EQ);
+  PPL_ASSERT(r == V_EQ);
   return assign<To_Policy, From_Policy>(to, tmp, dir);
 }
 
@@ -330,7 +330,7 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
     return V_GE;
   }
   else {
-    assert(round_up(dir));
+    PPL_ASSERT(round_up(dir));
     mpz_cdiv_q(to.get_mpz_t(), n, d);
     if (round_strict_relation(dir))
       return mpz_divisible_p(n, d) ? V_EQ : V_LT;
@@ -404,7 +404,7 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
     return V_GE;
   }
   else {
-    assert(round_up(dir));
+    PPL_ASSERT(round_up(dir));
     mpz_cdiv_q(to.get_mpz_t(), n, d);
     if (round_strict_relation(dir))
       return mpz_divisible_p(n, d) ? V_EQ : V_LT;
@@ -493,7 +493,7 @@ div_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
     return V_GE;
   }
   else {
-    assert(round_up(dir));
+    PPL_ASSERT(round_up(dir));
     mpz_cdiv_q_2exp(to.get_mpz_t(), n, exp);
     if (round_strict_relation(dir))
       return mpz_divisible_2exp_p(n, exp) ? V_EQ : V_LT;

@@ -1549,6 +1549,10 @@ public:
     Possibly tightens \p *this by dropping some points with non-integer
     coordinates for the space dimensions corresponding to \p vars.
 
+    \param vars
+    Points with non-integer coordinates for these variables/space-dimensions
+    can be discarded.
+
     \param complexity
     The maximal complexity of any algorithms used.
 

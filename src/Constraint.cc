@@ -88,14 +88,14 @@ PPL::Constraint::Constraint(const Congruence& cg,
 	       Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
   Constraint& c = *this;
   // Copy coefficients.
-  assert(sz > 0);
+  PPL_ASSERT(sz > 0);
   while (sz-- > 0)
     c[sz] = cg[sz];
 }
 
 bool
 PPL::Constraint::is_tautological() const {
-  assert(size() > 0);
+  PPL_ASSERT(size() > 0);
   const Constraint& x = *this;
   if (x.all_homogeneous_terms_are_zero())
     if (is_equality())
@@ -136,7 +136,7 @@ PPL::Constraint::is_tautological() const {
 
 bool
 PPL::Constraint::is_inconsistent() const {
-  assert(size() > 0);
+  PPL_ASSERT(size() > 0);
   const Constraint& x = *this;
   if (x.all_homogeneous_terms_are_zero())
     // The inhomogeneous term is the only non-zero coefficient.
@@ -223,38 +223,38 @@ const PPL::Constraint* PPL::Constraint::epsilon_leq_one_p = 0;
 
 void
 PPL::Constraint::initialize() {
-  assert(zero_dim_false_p == 0);
+  PPL_ASSERT(zero_dim_false_p == 0);
   zero_dim_false_p
     = new Constraint(Linear_Expression::zero() == Coefficient_one());
 
-  assert(zero_dim_positivity_p == 0);
+  PPL_ASSERT(zero_dim_positivity_p == 0);
   zero_dim_positivity_p
     = new Constraint(Linear_Expression::zero() <= Coefficient_one());
 
-  assert(epsilon_geq_zero_p == 0);
+  PPL_ASSERT(epsilon_geq_zero_p == 0);
   epsilon_geq_zero_p
     = new Constraint(construct_epsilon_geq_zero());
 
-  assert(epsilon_leq_one_p == 0);
+  PPL_ASSERT(epsilon_leq_one_p == 0);
   epsilon_leq_one_p
     = new Constraint(Linear_Expression::zero() < Coefficient_one());
 }
 
 void
 PPL::Constraint::finalize() {
-  assert(zero_dim_false_p != 0);
+  PPL_ASSERT(zero_dim_false_p != 0);
   delete zero_dim_false_p;
   zero_dim_false_p = 0;
 
-  assert(zero_dim_positivity_p != 0);
+  PPL_ASSERT(zero_dim_positivity_p != 0);
   delete zero_dim_positivity_p;
   zero_dim_positivity_p = 0;
 
-  assert(epsilon_geq_zero_p != 0);
+  PPL_ASSERT(epsilon_geq_zero_p != 0);
   delete epsilon_geq_zero_p;
   epsilon_geq_zero_p = 0;
 
-  assert(epsilon_leq_one_p != 0);
+  PPL_ASSERT(epsilon_leq_one_p != 0);
   delete epsilon_leq_one_p;
   epsilon_leq_one_p = 0;
 }

@@ -38,7 +38,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::dimension_type
 PPL::Linear_System::num_lines_or_equalities() const {
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
   const Linear_System& x = *this;
   dimension_type n = 0;
   for (dimension_type i = num_rows(); i-- > 0; )
@@ -49,10 +49,10 @@ PPL::Linear_System::num_lines_or_equalities() const {
 
 void
 PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
-  assert(row_size >= y.row_size);
+  PPL_ASSERT(row_size >= y.row_size);
   // Both systems have to be sorted and have no pending rows.
-  assert(check_sorted() && y.check_sorted());
-  assert(num_pending_rows() == 0 && y.num_pending_rows() == 0);
+  PPL_ASSERT(check_sorted() && y.check_sorted());
+  PPL_ASSERT(num_pending_rows() == 0 && y.num_pending_rows() == 0);
 
   Linear_System& x = *this;
 
@@ -95,7 +95,7 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
   std::swap(tmp, rows);
   // There are no pending rows.
   unset_pending_rows();
-  assert(check_sorted());
+  PPL_ASSERT(check_sorted());
 }
 
 void
@@ -174,7 +174,7 @@ PPL::Linear_System::ascii_load(std::istream& s) {
       return false;
 
   // Check invariants.
-  assert(OK(true));
+  PPL_ASSERT(OK(true));
   return true;
 }
 
@@ -182,10 +182,10 @@ void
 PPL::Linear_System::insert(const Linear_Row& r) {
   // The added row must be strongly normalized and have the same
   // topology of the system.
-  assert(r.check_strong_normalized());
-  assert(topology() == r.topology());
+  PPL_ASSERT(r.check_strong_normalized());
+  PPL_ASSERT(topology() == r.topology());
   // This method is only used when the system has no pending rows.
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
 
   const dimension_type old_num_rows = num_rows();
   const dimension_type old_num_columns = num_columns();
@@ -213,18 +213,18 @@ PPL::Linear_System::insert(const Linear_Row& r) {
     add_row(r);
 
   // The added row was not a pending row.
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
   // Do not check for strong normalization,
   // because no modification of rows has occurred.
-  assert(OK(false));
+  PPL_ASSERT(OK(false));
 }
 
 void
 PPL::Linear_System::insert_pending(const Linear_Row& r) {
   // The added row must be strongly normalized and have the same
   // topology of the system.
-  assert(r.check_strong_normalized());
-  assert(topology() == r.topology());
+  PPL_ASSERT(r.check_strong_normalized());
+  PPL_ASSERT(topology() == r.topology());
 
   const dimension_type old_num_rows = num_rows();
   const dimension_type old_num_columns = num_columns();
@@ -254,16 +254,16 @@ PPL::Linear_System::insert_pending(const Linear_Row& r) {
     add_pending_row(r);
 
   // The added row was a pending row.
-  assert(num_pending_rows() > 0);
+  PPL_ASSERT(num_pending_rows() > 0);
   // Do not check for strong normalization,
   // because no modification of rows has occurred.
-  assert(OK(false));
+  PPL_ASSERT(OK(false));
 }
 
 void
 PPL::Linear_System::add_pending_rows(const Linear_System& y) {
   Linear_System& x = *this;
-  assert(x.row_size == y.row_size);
+  PPL_ASSERT(x.row_size == y.row_size);
 
   const dimension_type x_n_rows = x.num_rows();
   const dimension_type y_n_rows = y.num_rows();
@@ -279,12 +279,12 @@ PPL::Linear_System::add_pending_rows(const Linear_System& y) {
   }
   // Do not check for strong normalization,
   // because no modification of rows has occurred.
-  assert(OK(false));
+  PPL_ASSERT(OK(false));
 }
 
 void
 PPL::Linear_System::add_rows(const Linear_System& y) {
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
 
   // Adding no rows is a no-op.
   if (y.has_no_rows())
@@ -309,7 +309,7 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
 
   // Do not check for strong normalization,
   // because no modification of rows has occurred.
-  assert(OK(false));
+  PPL_ASSERT(OK(false));
 }
 
 void
@@ -321,15 +321,15 @@ PPL::Linear_System::sort_rows() {
   sorted = true;
   // Do not check for strong normalization,
   // because no modification of rows has occurred.
-  assert(OK(false));
+  PPL_ASSERT(OK(false));
 }
 
 void
 PPL::Linear_System::sort_rows(const dimension_type first_row,
 			      const dimension_type last_row) {
-  assert(first_row <= last_row && last_row <= num_rows());
+  PPL_ASSERT(first_row <= last_row && last_row <= num_rows());
   // We cannot mix pending and non-pending rows.
-  assert(first_row >= first_pending_row() || last_row <= first_pending_row());
+  PPL_ASSERT(first_row >= first_pending_row() || last_row <= first_pending_row());
 
   // First sort without removing duplicates.
   std::vector<Row>::iterator first = rows.begin() + first_row;
@@ -347,10 +347,10 @@ void
 PPL::Linear_System::add_row(const Linear_Row& r) {
   // The added row must be strongly normalized and have the same
   // number of elements as the existing rows of the system.
-  assert(r.check_strong_normalized());
-  assert(r.size() == row_size);
+  PPL_ASSERT(r.check_strong_normalized());
+  PPL_ASSERT(r.size() == row_size);
   // This method is only used when the system has no pending rows.
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
 
   const bool was_sorted = is_sorted();
 
@@ -375,18 +375,18 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
       set_sorted(true);
   }
   // The added row was not a pending row.
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
   // Do not check for strong normalization, because no modification of
   // rows has occurred.
-  assert(OK(false));
+  PPL_ASSERT(OK(false));
 }
 
 void
 PPL::Linear_System::add_pending_row(const Linear_Row& r) {
   // The added row must be strongly normalized and have the same
   // number of elements of the existing rows of the system.
-  assert(r.check_strong_normalized());
-  assert(r.size() == row_size);
+  PPL_ASSERT(r.check_strong_normalized());
+  PPL_ASSERT(r.size() == row_size);
 
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
@@ -413,10 +413,10 @@ PPL::Linear_System::add_pending_row(const Linear_Row& r) {
   }
 
   // The added row was a pending row.
-  assert(num_pending_rows() > 0);
+  PPL_ASSERT(num_pending_rows() > 0);
   // Do not check for strong normalization, because no modification of
   // rows has occurred.
-  assert(OK(false));
+  PPL_ASSERT(OK(false));
 }
 
 void
@@ -446,7 +446,7 @@ PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
   }
 
   // The added row was a pending row.
-  assert(num_pending_rows() > 0);
+  PPL_ASSERT(num_pending_rows() > 0);
 }
 
 void
@@ -503,7 +503,7 @@ void
 PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
   Linear_System& sys = *this;
   // We can only sort the non-pending part of the system.
-  assert(sys.first_pending_row() == sat.num_rows());
+  PPL_ASSERT(sys.first_pending_row() == sat.num_rows());
   if (sys.first_pending_row() <= 1) {
     sys.set_sorted(true);
     return;
@@ -531,7 +531,7 @@ PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
   sys.set_index_first_pending_row(new_first_pending_row);
   // ... and the corresponding rows of the saturation matrix.
   sat.rows_erase_to_end(sat.num_rows() - num_duplicates);
-  assert(sys.check_sorted());
+  PPL_ASSERT(sys.check_sorted());
   // Now the system is sorted.
   sys.set_sorted(true);
 }
@@ -543,12 +543,12 @@ PPL::Linear_System::gauss(const dimension_type n_lines_or_equalities) {
   // having no pending rows and exactly `n_lines_or_equalities'
   // lines or equalities, all of which occur before the rays or points
   // or inequalities.
-  assert(x.OK(true));
-  assert(x.num_pending_rows() == 0);
-  assert(n_lines_or_equalities == x.num_lines_or_equalities());
+  PPL_ASSERT(x.OK(true));
+  PPL_ASSERT(x.num_pending_rows() == 0);
+  PPL_ASSERT(n_lines_or_equalities == x.num_lines_or_equalities());
 #ifndef NDEBUG
   for (dimension_type i = n_lines_or_equalities; i-- > 0; )
-    assert(x[i].is_line_or_equality());
+    PPL_ASSERT(x[i].is_line_or_equality());
 #endif
 
   dimension_type rank = 0;
@@ -583,7 +583,7 @@ PPL::Linear_System::gauss(const dimension_type n_lines_or_equalities) {
   if (changed)
     x.set_sorted(false);
   // A well-formed system is returned.
-  assert(x.OK(true));
+  PPL_ASSERT(x.OK(true));
   return rank;
 }
 
@@ -595,13 +595,13 @@ PPL::Linear_System
   // having no pending rows and exactly `n_lines_or_equalities'
   // lines or equalities, all of which occur before the first ray
   // or point or inequality.
-  assert(x.OK(true));
-  assert(x.num_columns() >= 1);
-  assert(x.num_pending_rows() == 0);
-  assert(n_lines_or_equalities <= x.num_lines_or_equalities());
+  PPL_ASSERT(x.OK(true));
+  PPL_ASSERT(x.num_columns() >= 1);
+  PPL_ASSERT(x.num_pending_rows() == 0);
+  PPL_ASSERT(n_lines_or_equalities <= x.num_lines_or_equalities());
 #ifndef NDEBUG
   for (dimension_type i = n_lines_or_equalities; i-- > 0; )
-    assert(x[i].is_line_or_equality());
+    PPL_ASSERT(x[i].is_line_or_equality());
 #endif
 
   const dimension_type nrows = x.num_rows();
@@ -683,7 +683,7 @@ PPL::Linear_System
   x.set_sorted(still_sorted);
 
   // A well-formed system is returned.
-  assert(x.OK(true));
+  PPL_ASSERT(x.OK(true));
 }
 
 void
@@ -691,8 +691,8 @@ PPL::Linear_System::simplify() {
   Linear_System& x = *this;
   // This method is only applied to a well-formed system
   // having no pending rows.
-  assert(x.OK(true));
-  assert(x.num_pending_rows() == 0);
+  PPL_ASSERT(x.OK(true));
+  PPL_ASSERT(x.num_pending_rows() == 0);
 
   // Partially sort the linear system so that all lines/equalities come first.
   dimension_type nrows = x.num_rows();
@@ -702,7 +702,7 @@ PPL::Linear_System::simplify() {
       if (n_lines_or_equalities < i) {
 	std::swap(x[i], x[n_lines_or_equalities]);
 	// The system was not sorted.
-	assert(!x.sorted);
+	PPL_ASSERT(!x.sorted);
       }
       ++n_lines_or_equalities;
     }
@@ -726,12 +726,12 @@ PPL::Linear_System::simplify() {
   // Apply back-substitution to the system of rays/points/inequalities.
   x.back_substitute(n_lines_or_equalities);
   // A well-formed system is returned.
-  assert(x.OK(true));
+  PPL_ASSERT(x.OK(true));
 }
 
 void
 PPL::Linear_System::add_rows_and_columns(const dimension_type n) {
-  assert(n > 0);
+  PPL_ASSERT(n > 0);
   const bool was_sorted = is_sorted();
   const dimension_type old_n_rows = num_rows();
   const dimension_type old_n_columns = num_columns();
@@ -761,13 +761,13 @@ PPL::Linear_System::add_rows_and_columns(const dimension_type n) {
     set_sorted(compare(x[n-1], x[n]) <= 0);
 
   // A well-formed system has to be returned.
-  assert(OK(true));
+  PPL_ASSERT(OK(true));
 }
 
 void
 PPL::Linear_System::sort_pending_and_remove_duplicates() {
-  assert(num_pending_rows() > 0);
-  assert(is_sorted());
+  PPL_ASSERT(num_pending_rows() > 0);
+  PPL_ASSERT(is_sorted());
   Linear_System& x = *this;
 
   // The non-pending part of the system is already sorted.
@@ -817,7 +817,7 @@ PPL::Linear_System::sort_pending_and_remove_duplicates() {
   }
   // Do not check for strong normalization,
   // because no modification of rows has occurred.
-  assert(OK(false));
+  PPL_ASSERT(OK(false));
 }
 
 bool

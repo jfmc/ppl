@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "NNC_Polyhedron.defs.hh"
 #include "Pointset_Powerset.defs.hh"
 #include <utility>
-#include <cassert>
+#include "assert.hh"
 
 namespace Parma_Polyhedra_Library {
 

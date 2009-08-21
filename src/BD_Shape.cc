@@ -36,8 +36,8 @@ PPL::extract_bounded_difference(const Constraint& c,
 				dimension_type& c_second_var,
 				Coefficient& c_coeff) {
   // Check for preconditions.
-  assert(c.space_dimension() == c_space_dim);
-  assert(c_num_vars == 0 && c_first_var == 0 && c_second_var == 0);
+  PPL_ASSERT(c.space_dimension() == c_space_dim);
+  PPL_ASSERT(c_num_vars == 0 && c_first_var == 0 && c_second_var == 0);
   // Store the indices of the non-zero components of `c',
   dimension_type non_zero_index[2] = { 0, 0 };
   // Collect the non-zero components of `c'.
@@ -73,7 +73,7 @@ PPL::extract_bounded_difference(const Constraint& c,
     c_first_var = non_zero_index[0];
     break;
   default:
-    assert(c_num_vars == 0);
+    PPL_ASSERT(c_num_vars == 0);
     break;
   }
   return true;
@@ -88,8 +88,8 @@ PPL::compute_leader_indices(const std::vector<dimension_type>& predecessor,
   // The vector `indices' contains one entry for each equivalence
   // class, storing the index of the corresponding leader in
   // increasing order: it is used to avoid repeated tests for leadership.
-  assert(indices.size() == 0);
-  assert(0 == predecessor[0]);
+  PPL_ASSERT(indices.size() == 0);
+  PPL_ASSERT(0 == predecessor[0]);
   indices.push_back(0);
   for (dimension_type i = 1, p_size = predecessor.size(); i != p_size; ++i)
     if (i == predecessor[i])

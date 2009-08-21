@@ -218,7 +218,7 @@ Box<ITV>::Status::ascii_load(std::istream& s) {
     reset_universe();
 
   // Check invariants.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 

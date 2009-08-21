@@ -175,7 +175,7 @@ Generator_System::end() const {
 
 inline const Generator_System&
 Generator_System::zero_dim_univ() {
-  assert(zero_dim_univ_p != 0);
+  PPL_ASSERT(zero_dim_univ_p != 0);
   return *zero_dim_univ_p;
 }
 

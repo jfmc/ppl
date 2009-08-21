@@ -47,8 +47,7 @@ pwl_test.cc
 
 LDADD = \
 ../src/libpwl.la \
-libpwl_tests.a \
--lm
+libpwl_tests.a
 
 noinst_HEADERS = \
 pwl_test.hh
