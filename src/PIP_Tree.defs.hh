@@ -102,7 +102,7 @@ public:
   //! Returns a const pointer to the \p b (true or false) branch of \p *this.
   const PIP_Tree_Node* child_node(bool b) const;
 
-  //! Returns a pointer to the \v (true or false) branch of \p *this.
+  //! Returns a pointer to the \p v (true or false) branch of \p *this.
   PIP_Tree_Node* child_node(bool v);
 
   //! Returns the system of constraints controlling \p *this.
