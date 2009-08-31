@@ -340,7 +340,13 @@ Weight_Profiler.defs.hh \
 max_space_dimension.hh \
 algorithms.hh \
 wrap_assign.hh \
-wrap_string.hh
+wrap_string.hh \
+Floating_Point_Expression.types.hh \
+Floating_Point_Expression.defs.hh \
+Floating_Point_Expression.inlines.hh \
+Constant_Floating_Point_Expression.types.hh \
+Constant_Floating_Point_Expression.defs.hh \
+Constant_Floating_Point_Expression.inlines.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
