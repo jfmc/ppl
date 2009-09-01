@@ -1,4 +1,4 @@
-/* Declarations for the Division_Floating_Point_Expression class and its 
+/* Declarations for the Division_Floating_Point_Expression class and its
    constituents.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -31,6 +31,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Division_Floating_Point_Expression */
+template <typename FP_Interval_Type, typename FP_Format>
+void swap(Parma_Polyhedra_Library::
+	  Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
+	  Parma_Polyhedra_Library::
+	  Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y);
+
+} // namespace std
+
 template <typename FP_Interval_Type, typename FP_Format>
 class Division_Floating_Point_Expression
 : public virtual Floating_Point_Expression<FP_Interval_Type, FP_Format> {
@@ -56,15 +68,30 @@ public:
 	   Floating_Point_Expression<FP_Interval_Type, FP_Format>* const num,
            Floating_Point_Expression<FP_Interval_Type, FP_Format>* const den);
 
-  ~Division_Floating_Point_Expression(); 
+  ~Division_Floating_Point_Expression();
 
   FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
 
+  //! Swaps \p *this with \p y.
+  void swap(Division_Floating_Point_Expression<FP_Interval_Type,
+	                                         FP_Format>& y);
+
 private:
 
-  Floating_Point_Expression<FP_Interval_Type, FP_Format>* const first_operand;
-  Floating_Point_Expression<FP_Interval_Type,
-			    FP_Format>* const second_operand;
+  Floating_Point_Expression<FP_Interval_Type, FP_Format>* first_operand;
+  Floating_Point_Expression<FP_Interval_Type, FP_Format>* second_operand;
+
+  // Ordinary copy constructor.
+  // inhibited
+  Division_Floating_Point_Expression(
+         const Division_Floating_Point_Expression<FP_Interval_Type,
+                                                    FP_Format>& e);
+
+  // inhibited
+  Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>&
+  operator=(const Division_Floating_Point_Expression<FP_Interval_Type,
+	    FP_Format>& e);
+
 
 }; // class Division_Floating_Point_Expression
 

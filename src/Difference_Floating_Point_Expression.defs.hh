@@ -1,5 +1,5 @@
 /* Declarations for the Difference_Floating_Point_Expression class and
-   its   constituents.
+   its constituents.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -31,6 +31,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Difference_Floating_Point_Expression */
+template <typename FP_Interval_Type, typename FP_Format>
+void swap(Parma_Polyhedra_Library::
+	  Difference_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
+	  Parma_Polyhedra_Library::
+	  Difference_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y);
+
+} // namespace std
+
 template <typename FP_Interval_Type, typename FP_Format>
 class Difference_Floating_Point_Expression
 : public virtual Floating_Point_Expression<FP_Interval_Type, FP_Format> {
@@ -53,18 +65,33 @@ public:
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::info_type info_type;
 
   Difference_Floating_Point_Expression(
-	   Floating_Point_Expression<FP_Interval_Type, FP_Format>* const num,
-           Floating_Point_Expression<FP_Interval_Type, FP_Format>* const den);
+	   Floating_Point_Expression<FP_Interval_Type, FP_Format>* const x,
+           Floating_Point_Expression<FP_Interval_Type, FP_Format>* const y);
 
   ~Difference_Floating_Point_Expression();
 
   FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
 
+  //! Swaps \p *this with \p y.
+  void swap(Difference_Floating_Point_Expression<FP_Interval_Type,
+	                                         FP_Format>& y);
+
 private:
 
-  Floating_Point_Expression<FP_Interval_Type, FP_Format>* const first_operand;
-  Floating_Point_Expression<FP_Interval_Type,
-			    FP_Format>* const second_operand;
+  Floating_Point_Expression<FP_Interval_Type, FP_Format>* first_operand;
+  Floating_Point_Expression<FP_Interval_Type, FP_Format>* second_operand;
+
+  // Ordinary copy constructor.
+  // inhibited
+  Difference_Floating_Point_Expression(
+         const Difference_Floating_Point_Expression<FP_Interval_Type,
+                                                    FP_Format>& e);
+
+  // inhibited
+  Difference_Floating_Point_Expression<FP_Interval_Type, FP_Format>&
+  operator=(const Difference_Floating_Point_Expression<FP_Interval_Type,
+	    FP_Format>& e);
+
 
 }; // class Difference_Floating_Point_Expression
 

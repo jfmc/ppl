@@ -47,9 +47,17 @@ Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   delete second_operand;
 }
 
-  // FIXME: add function body 
 template <typename FP_Interval_Type, typename FP_Format>
-inline 
+inline void
+Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
+swap(Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
+  std::swap(first_operand, y.first_operand);
+  std::swap(second_operand, y.second_operand);
+}
+
+  // FIXME: add function body
+template <typename FP_Interval_Type, typename FP_Format>
+inline
 typename Division_Floating_Point_Expression<FP_Interval_Type,
                                                    FP_Format>::FP_Linear_Form
 Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>::linearize(
@@ -59,5 +67,20 @@ const FP_Interval_Abstract_Store& store) const {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+/*! \relates Parma_Polyhedra_Library::Division_Floating_Point_Expression */
+template <typename FP_Interval_Type, typename FP_Format>
+inline void
+swap(Parma_Polyhedra_Library::
+     Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
+     Parma_Polyhedra_Library::
+     Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
+  x.swap(y);
+}
+
+} // namespace std
+
 
 #endif // !defined(PPL_Division_Floating_Point_Expression_inlines_hh)
