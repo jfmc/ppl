@@ -1,4 +1,4 @@
-/* Declarations for the Difference_Floating_Point_Expression class and 
+/* Declarations for the Difference_Floating_Point_Expression class and
    its   constituents.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -56,7 +56,7 @@ public:
 	   Floating_Point_Expression<FP_Interval_Type, FP_Format>* const num,
            Floating_Point_Expression<FP_Interval_Type, FP_Format>* const den);
 
-  ~Difference_Floating_Point_Expression(); 
+  ~Difference_Floating_Point_Expression();
 
   FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
 

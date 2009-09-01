@@ -1,4 +1,4 @@
-/* Difference_Floating_Point_Expression class implementation: inline 
+/* Difference_Floating_Point_Expression class implementation: inline
    functions.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -48,9 +48,9 @@ Difference_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   delete second_operand;
 }
 
-  // FIXME: add function body 
+  // FIXME: add function body
 template <typename FP_Interval_Type, typename FP_Format>
-inline 
+inline
 typename Difference_Floating_Point_Expression<FP_Interval_Type,
                                                    FP_Format>::FP_Linear_Form
 Difference_Floating_Point_Expression<FP_Interval_Type, FP_Format>::linearize(
