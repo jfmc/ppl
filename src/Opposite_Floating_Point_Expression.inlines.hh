@@ -43,8 +43,8 @@ Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
-Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>::swap(
-	 Variable_Floating_Point_Expression& y) {
+Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>::swap(
+	 Opposite_Floating_Point_Expression& y) {
   std::swap(operand, y.operand);
 }
 
