@@ -41,8 +41,10 @@ Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
 ~Constant_Floating_Point_Expression() {}
 
 template <typename FP_Interval_Type, typename FP_Format>
-inline typename Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::FP_Linear_Form
-Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::linearize(FP_Interval_Abstract_Store store) {
+inline typename Constant_Floating_Point_Expression<FP_Interval_Type,
+                                                   FP_Format>::FP_Linear_Form
+Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::linearize(
+const FP_Interval_Abstract_Store& store) const {
 
   FP_Interval_Type result_interval(l_bound);
   FP_Interval_Type result_upper_bound(u_bound);

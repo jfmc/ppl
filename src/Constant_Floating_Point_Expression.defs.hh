@@ -1,4 +1,5 @@
-/* Declarations for the Constant_Floating_Point_Expression class and its constituents.
+/* Declarations for the Constant_Floating_Point_Expression class and
+   its constituents.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -56,12 +57,13 @@ public:
 
   ~Constant_Floating_Point_Expression();
 
-  FP_Linear_Form linearize(FP_Interval_Abstract_Store store);
+  FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
 
 private:
 
+  // FIXME: this is a temporary solution: we should find a way to convert
+  // a floating point with an arbitrary format to an interval.
   boundary_type l_bound;
-
   boundary_type u_bound;
 
 }; // class Constant_Floating_Point_Expression

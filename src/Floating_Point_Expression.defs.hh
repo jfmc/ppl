@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-  template <typename FP_Interval_Type, typename FP_Format>
+template <typename FP_Interval_Type, typename FP_Format>
 class Floating_Point_Expression {
 
 public:
@@ -45,7 +45,8 @@ public:
 
   virtual ~Floating_Point_Expression();
 
-  virtual FP_Linear_Form linearize(FP_Interval_Abstract_Store store) = 0;
+  virtual FP_Linear_Form linearize(
+                         const FP_Interval_Abstract_Store& store) const = 0;
 
 }; // class Floating_Point_Expression
 
