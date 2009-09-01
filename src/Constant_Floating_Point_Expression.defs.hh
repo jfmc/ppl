@@ -52,8 +52,8 @@ public:
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::info_type info_type;
 
-  Constant_Floating_Point_Expression(boundary_type lower_bound,
-                                     boundary_type upper_bound);
+  Constant_Floating_Point_Expression(const boundary_type lower_bound,
+                                     const boundary_type upper_bound);
 
   ~Constant_Floating_Point_Expression();
 
