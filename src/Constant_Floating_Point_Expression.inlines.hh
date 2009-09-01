@@ -50,7 +50,7 @@ const FP_Interval_Abstract_Store& store) const {
   FP_Interval_Type result_interval(l_bound);
   FP_Interval_Type result_upper_bound(u_bound);
   result_interval.join_assign(result_upper_bound);
-  FP_Linear_Form result = FP_Interval_Linear_Form(result_interval);
+  FP_Linear_Form result = FP_Linear_Form(result_interval);
   return result;
 
 }
