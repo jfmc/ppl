@@ -346,7 +346,10 @@ Floating_Point_Expression.defs.hh \
 Floating_Point_Expression.inlines.hh \
 Constant_Floating_Point_Expression.types.hh \
 Constant_Floating_Point_Expression.defs.hh \
-Constant_Floating_Point_Expression.inlines.hh
+Constant_Floating_Point_Expression.inlines.hh \
+Variable_Floating_Point_Expression.types.hh \
+Variable_Floating_Point_Expression.defs.hh \
+Variable_Floating_Point_Expression.inlines.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
