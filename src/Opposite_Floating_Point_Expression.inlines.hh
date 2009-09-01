@@ -39,7 +39,9 @@ Opposite_Floating_Point_Expression(
 template <typename FP_Interval_Type, typename FP_Format>
 inline
 Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
-~Opposite_Floating_Point_Expression() {}
+~Opposite_Floating_Point_Expression() {
+  delete operand;
+}
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
