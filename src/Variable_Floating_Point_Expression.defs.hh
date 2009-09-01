@@ -29,6 +29,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable_Floating_Point_Expression.types.hh"
 #include <map>
 
+namespace std {
+
+template<typename FP_Interval_Type, typename FP_Format>
+void swap(Parma_Polyhedra_Library::Variable_Floating_Point_Expression<
+                                   FP_Interval_Type, FP_Format>& x,
+          Parma_Polyhedra_Library::Variable_Floating_Point_Expression<
+                                   FP_Interval_Type, FP_Format>& y);
+
+} // namespace std
+
 namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
@@ -58,7 +68,15 @@ public:
 
   FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
 
+  void swap(Variable_Floating_Point_Expression& y);
+
 private:
+
+  Variable_Floating_Point_Expression(
+			  const Variable_Floating_Point_Expression& y);
+
+  Variable_Floating_Point_Expression& operator=(
+		          const Variable_Floating_Point_Expression& y);
 
   dimension_type variable_index;
 

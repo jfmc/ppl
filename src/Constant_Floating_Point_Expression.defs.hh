@@ -29,6 +29,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constant_Floating_Point_Expression.types.hh"
 #include <map>
 
+namespace std {
+
+template<typename FP_Interval_Type, typename FP_Format>
+void swap(Parma_Polyhedra_Library::Constant_Floating_Point_Expression<
+                                   FP_Interval_Type, FP_Format>& x,
+          Parma_Polyhedra_Library::Constant_Floating_Point_Expression<
+                                   FP_Interval_Type, FP_Format>& y);
+
+} // namespace std
+
 namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
@@ -59,12 +69,20 @@ public:
 
   FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
 
+  void swap(Constant_Floating_Point_Expression& y);
+
 private:
 
   // FIXME: this is a temporary solution: we should find a way to convert
   // a floating point with an arbitrary format to an interval.
   boundary_type l_bound;
   boundary_type u_bound;
+
+  Constant_Floating_Point_Expression(
+			  const Constant_Floating_Point_Expression& y);
+
+  Constant_Floating_Point_Expression& operator=(
+		          const Constant_Floating_Point_Expression& y);
 
 }; // class Constant_Floating_Point_Expression
 

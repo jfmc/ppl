@@ -29,6 +29,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Opposite_Floating_Point_Expression.types.hh"
 #include <map>
 
+namespace std {
+
+template<typename FP_Interval_Type, typename FP_Format>
+void swap(Parma_Polyhedra_Library::Opposite_Floating_Point_Expression<
+                                   FP_Interval_Type, FP_Format>& x,
+          Parma_Polyhedra_Library::Opposite_Floating_Point_Expression<
+                                   FP_Interval_Type, FP_Format>& y);
+
+} // namespace std
+
 namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
@@ -59,9 +69,17 @@ public:
 
   FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
 
+  void swap(Opposite_Floating_Point_Expression& y);
+
 private:
 
-  Floating_Point_Expression<FP_Interval_Type, FP_Format>* const operand;
+  Opposite_Floating_Point_Expression(
+			  const Opposite_Floating_Point_Expression& y);
+
+  Opposite_Floating_Point_Expression& operator=(
+			  const Opposite_Floating_Point_Expression& y);
+
+  Floating_Point_Expression<FP_Interval_Type, FP_Format>* operand;
 
 }; // class Opposite_Floating_Point_Expression
 

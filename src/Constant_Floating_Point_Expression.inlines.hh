@@ -42,6 +42,14 @@ Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
 ~Constant_Floating_Point_Expression() {}
 
 template <typename FP_Interval_Type, typename FP_Format>
+inline void
+Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::swap(
+	 Constant_Floating_Point_Expression& y) {
+  std::swap(l_bound, y.l_bound);
+  std::swap(u_bound, y.u_bound);
+}
+
+template <typename FP_Interval_Type, typename FP_Format>
 inline typename Constant_Floating_Point_Expression<FP_Interval_Type,
                                                    FP_Format>::FP_Linear_Form
 Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::linearize(
@@ -56,5 +64,19 @@ const FP_Interval_Abstract_Store& store) const {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+/*! \relates Parma_Polyhedra_Library::Constant_Floating_Point_Expression */
+template <typename FP_Interval_Type, typename FP_Format>
+inline void
+swap(Parma_Polyhedra_Library::Constant_Floating_Point_Expression<
+                              FP_Interval_Type, FP_Format>& x,
+     Parma_Polyhedra_Library::Constant_Floating_Point_Expression<
+                              FP_Interval_Type, FP_Format>& y) {
+  x.swap(y);
+}
+
+} // namespace std
 
 #endif // !defined(PPL_Constant_Floating_Point_Expression_inlines_hh)
