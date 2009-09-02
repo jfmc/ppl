@@ -97,5 +97,6 @@ private:
 } // namespace Parma_Polyhedra_Library
 
 #include "Sum_Floating_Point_Expression.inlines.hh"
+#include "Sum_Floating_Point_Expression.templates.hh"
 
 #endif // !defined(PPL_Sum_Floating_Point_Expression_defs_hh)

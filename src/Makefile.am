@@ -350,7 +350,15 @@ Constant_Floating_Point_Expression.defs.hh \
 Constant_Floating_Point_Expression.inlines.hh \
 Variable_Floating_Point_Expression.types.hh \
 Variable_Floating_Point_Expression.defs.hh \
-Variable_Floating_Point_Expression.inlines.hh
+Variable_Floating_Point_Expression.inlines.hh \
+Sum_Floating_Point_Expression.types.hh \
+Sum_Floating_Point_Expression.defs.hh \
+Sum_Floating_Point_Expression.inlines.hh \
+Sum_Floating_Point_Expression.templates.hh \
+Difference_Floating_Point_Expression.types.hh \
+Difference_Floating_Point_Expression.defs.hh \
+Difference_Floating_Point_Expression.inlines.hh \
+Difference_Floating_Point_Expression.templates.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
