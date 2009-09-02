@@ -26,9 +26,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "Floating_Point_Expression.types.hh"
 #include "Linear_Form.defs.hh"
+#include <cmath>
 #include <map>
 
 namespace Parma_Polyhedra_Library {
+
+//! Policy class defining the IEEE754 single precision format.
+struct IEEE754_Single {
+  static const unsigned short fraction_bits = 23;
+  static const unsigned short exponent_bits = 8;
+  static const unsigned short exponent_bias = 127;
+};
+
+//! Policy class defining the IEEE754 double precision format.
+struct IEEE754_Double {
+  static const unsigned short fraction_bits = 52;
+  static const unsigned short exponent_bits = 11;
+  static const unsigned short exponent_bias = 1023;
+};
 
 template <typename FP_Interval_Type, typename FP_Format>
 class Floating_Point_Expression {
@@ -48,7 +63,26 @@ public:
   virtual FP_Linear_Form linearize(
                          const FP_Interval_Abstract_Store& store) const = 0;
 
+  // Absolute error.
+  static boundary_type absolute_error;
+
+  // Static helper functions.
+  // FIXME: this may not be the best place for them.
+
+  static bool overflows(const FP_Linear_Form& lf);
+
+  static FP_Linear_Form intervalize(const FP_Linear_Form&,
+                                    const FP_Interval_Abstract_Store& store);
+
+  static FP_Linear_Form relative_error(const FP_Linear_Form&);
+
 }; // class Floating_Point_Expression
+
+// Initialize static members of the class
+template <typename FP_Interval_Type, typename FP_Format>
+typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
+Floating_Point_Expression<FP_Interval_Type, FP_Format>::absolute_error =
+  pow(2, 1 - FP_Format::exponent_bias - FP_Format::fraction_bits);
 
 } // namespace Parma_Polyhedra_Library
 
