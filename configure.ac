@@ -1524,6 +1524,7 @@ AC_CONFIG_FILES(Makefile
                 tests/MIP_Problem/Makefile
                 tests/Octagonal_Shape/Makefile
                 tests/Partially_Reduced_Product/Makefile
+                tests/PIP_Problem/Makefile
                 tests/Polyhedron/Makefile
                 tests/Powerset/Makefile
                 utils/Makefile

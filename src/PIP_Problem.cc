@@ -30,3 +30,51 @@ std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const PIP_Problem& /*p*/) {
  return s;
 }
+
+void
+PPL::PIP_Problem::Rational_Matrix::normalize() {
+  //FIXME
+}
+
+PPL::PIP_Problem::PIP_Problem(dimension_type dim)
+  : external_space_dim(dim),
+    internal_space_dim(0),
+    tableau(),
+    status(PARTIALLY_SATISFIABLE),
+    initialized(false),
+    input_cs(),
+    first_pending_constraint(0),
+    parameters() {
+  // Check for space dimension overflow.
+  if (dim > max_space_dimension())
+    throw std::length_error("PPL::PIP_Problem:: PIP_Problem(dim, first, "
+                            "last, p_vars):\n"
+                            "dim exceeds the maximum allowed"
+                            "space dimension.");
+  PPL_ASSERT(OK());
+}
+
+PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
+  : external_space_dim(y.external_space_dim),
+    internal_space_dim(y.internal_space_dim),
+    tableau(y.tableau),
+    status(y.status),
+    initialized(y.initialized),
+    input_cs(y.input_cs),
+    first_pending_constraint(y.first_pending_constraint),
+    parameters(y.parameters) {
+  PPL_ASSERT(OK());
+}
+
+PPL::PIP_Problem_Status
+PPL::PIP_Problem::solve() const {
+  //FIXME
+  return OPTIMIZED_PIP_PROBLEM;
+}
+
+
+bool
+PPL::PIP_Problem::OK() const {
+  //FIXME
+  return true;
+}

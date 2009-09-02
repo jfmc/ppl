@@ -25,6 +25,40 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline PIP_Problem::Rational_Matrix::Rational_Matrix():
+    Matrix(), denominator(1) {
+}
+
+inline PIP_Problem::Rational_Matrix::Rational_Matrix(
+    dimension_type n_rows, dimension_type n_columns, Row::Flags row_flags):
+    Matrix(n_rows, n_columns, row_flags),
+    denominator(1) {
+}
+
+inline PIP_Problem::Rational_Matrix::Rational_Matrix(
+    const Rational_Matrix& y):
+    Matrix(y),
+    denominator(1) {
+}
+
+inline bool PIP_Problem::Rational_Matrix::is_integer() {
+  return denominator == 1;
+}
+
+inline const Coefficient&
+PIP_Problem::Rational_Matrix::get_denominator() const {
+  return denominator;
+}
+
+inline
+PIP_Problem::~PIP_Problem() {
+}
+
+inline dimension_type
+PIP_Problem::max_space_dimension() {
+  return Constraint::max_space_dimension();
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {

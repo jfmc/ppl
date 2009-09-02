@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "PIP_Problem.types.hh"
 #include "globals.types.hh"
 #include "Linear_Expression.defs.hh"
-#include "Constraint.types.hh"
+#include "Constraint.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator.defs.hh"
 #include "Variables_Set.defs.hh"
@@ -286,6 +286,60 @@ private:
   */
   dimension_type internal_space_dim;
 
+  //! A rational matrix, with a common nenominator
+  class Rational_Matrix: public Matrix {
+  public:
+    //! Builds an empty matrix.
+    /*!
+      Rows' size and capacity are initialized to \f$0\f$.
+    */
+    Rational_Matrix();
+
+    //! Builds a zero matrix with specified dimensions and flags.
+    /*!
+      \param n_rows
+      The number of rows of the matrix that will be created;
+
+      \param n_columns
+      The number of columns of the matrix that will be created.
+
+      \param row_flags
+      The flags used to build the rows of the matrix;
+      by default, the rows will have all flags unset.
+    */
+    Rational_Matrix(dimension_type n_rows, dimension_type n_columns,
+	            Row::Flags row_flags = Row::Flags());
+
+    //! Copy constructor.
+    Rational_Matrix(const Rational_Matrix& y);
+
+    //! Normalizes the modulo of coefficients so that they are mutually prime.
+    /*!
+      Computes the Greatest Common Divisor (GCD) among the elements of
+      the matrix and normalizes them and the denominator by the GCD itself.
+    */
+    void normalize();
+
+    //! Tests whether the matrix is integer, \e ie. the denominator is 1.
+    bool is_integer();
+
+    //! Returns the value of the denominator.
+    const Coefficient &get_denominator() const;
+
+  protected:
+    Coefficient denominator;
+  };
+
+  //! The parametric simplex tableau
+  /*!
+    Consists in two rational matrices, represented as an integer tableau 
+    and a common denominator. The \p s matrix is the matrix of simplex
+    coefficients, and the \p t matrix is the matrix of parameter coefficients.
+  */
+  struct {
+    Rational_Matrix s, t;
+  } tableau;
+
   //! An enumerated type describing the internal status of the PIP problem.
   enum Status {
     //! The PIP problem is unsatisfiable.
@@ -335,6 +389,6 @@ void swap(Parma_Polyhedra_Library::PIP_Problem& x,
 } // namespace std
 
 #include "PIP_Problem.inlines.hh"
-//#include "PIP_Problem.templates.hh"
+#include "PIP_Problem.templates.hh"
 
 #endif // !defined(PPL_PIP_Problem_defs_hh)
