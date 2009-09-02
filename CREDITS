@@ -35,6 +35,10 @@ Current Contributors:
                         intervals.  He also helps on several other
                         design and implementation issues.
 
+  Fabio Bossi           (student of the University of Parma)
+                        is working on the PPL support for the approximation
+                        of floating point computations.
+
   Andrea Cimino         (former student of the University of Parma)
                         wrote most of the mixed integer programming
                         solver, and also most of the Java and OCaml
