@@ -43,7 +43,7 @@ namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
 class Opposite_Floating_Point_Expression
-: public virtual Floating_Point_Expression<FP_Interval_Type, FP_Format> {
+: public Floating_Point_Expression<FP_Interval_Type, FP_Format> {
 
 public:
 

@@ -43,7 +43,7 @@ namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
 class Constant_Floating_Point_Expression
-: public virtual Floating_Point_Expression<FP_Interval_Type, FP_Format> {
+  : public Floating_Point_Expression<FP_Interval_Type, FP_Format> {
 
 public:
 
@@ -75,8 +75,7 @@ private:
 
   // FIXME: this is a temporary solution: we should find a way to convert
   // a floating point with an arbitrary format to an interval.
-  boundary_type l_bound;
-  boundary_type u_bound;
+  FP_Interval_Type value;
 
   Constant_Floating_Point_Expression(
 			  const Constant_Floating_Point_Expression& y);

@@ -31,9 +31,10 @@ template <typename FP_Interval_Type, typename FP_Format>
 inline
 Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
 Constant_Floating_Point_Expression(const boundary_type lb,
-                                   const boundary_type ub) {
-  l_bound = lb;
-  u_bound = ub;
+                                   const boundary_type ub)
+  : value(lb) {
+  assert(lb <= ub);
+  value.join_assign(ub);
 }
 
 template <typename FP_Interval_Type, typename FP_Format>
@@ -45,20 +46,16 @@ template <typename FP_Interval_Type, typename FP_Format>
 inline void
 Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::swap(
 	 Constant_Floating_Point_Expression& y) {
-  std::swap(l_bound, y.l_bound);
-  std::swap(u_bound, y.u_bound);
+  std::swap(value, y.value);
 }
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline typename Constant_Floating_Point_Expression<FP_Interval_Type,
                                                    FP_Format>::FP_Linear_Form
-Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::linearize(
-const FP_Interval_Abstract_Store& store) const {
+Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::linearize(const FP_Interval_Abstract_Store& store) const {
 
-  FP_Interval_Type result_interval(l_bound);
-  FP_Interval_Type result_upper_bound(u_bound);
-  result_interval.join_assign(result_upper_bound);
-  FP_Linear_Form result = FP_Linear_Form(result_interval);
+  FP_Linear_Form result = FP_Linear_Form(value);
   return result;
 
 }
