@@ -35,10 +35,9 @@ typename Difference_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::linearize(const FP_Interval_Abstract_Store& store) const {
   FP_Linear_Form linearized_first_operand = first_operand->linearize(store);
   FP_Linear_Form linearized_second_operand = second_operand->linearize(store);
-  FP_Interval error = FP_Interval_Type(-absolute_error);
+  FP_Interval abs_error = FP_Interval_Type(-absolute_error);
   // FIXME: this may be incorrect for some policies.
   error.join_assign(absolute_error);
-  FP_Linear_Form abs_error = FP_Linear_Form(error);
   FP_Linear_Form result = linearized_first_operand - linearized_second_operand +
                           relative_error(linearized_first_operand) +
                           relative_error(linearized_second_operand) +

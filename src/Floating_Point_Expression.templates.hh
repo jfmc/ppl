@@ -63,22 +63,21 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
 }
 
 template<typename FP_Interval_Type, typename FP_Format>
-typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::FP_Linear_Form
+FP_Interval_Type
 Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::intervalize(const FP_Linear_Form& lf,
               const FP_Interval_Abstract_Store& store) {
-  FP_Interval_Type resulting_interval = lf.inhomogeneous_term();
+  FP_Interval_Type result = lf.inhomogeneous_term();
   dimension_type dimension = lf.space_dimension();
   for (dimension_type i = 0; i < dimension; ++i) {
     typename FP_Interval_Abstract_Store::const_iterator
              next_variable_value = store.find(i);
     if (next_variable_value != store.end()) {
       FP_Interval_Type current_coefficient = lf.coefficient(Variable(i));
-      resulting_interval += current_coefficient * (*next_variable_value);
+      result += current_coefficient * (*next_variable_value);
     }
   }
 
-  FP_Linear_Form result = FP_Interval_Type(resulting_interval);
   return result;
 }
 

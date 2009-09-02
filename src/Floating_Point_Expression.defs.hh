@@ -31,6 +31,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Exception class indicating the failure of a linearization attempt.
+class Linearization_Failed {};
+
 //! Policy class defining the IEEE754 single precision format.
 struct IEEE754_Single {
   static const unsigned short fraction_bits = 23;
@@ -73,8 +76,8 @@ public:
 
   static FP_Linear_Form relative_error(const FP_Linear_Form&);
 
-  static FP_Linear_Form intervalize(const FP_Linear_Form&,
-                                    const FP_Interval_Abstract_Store& store);
+  static FP_Interval_Type intervalize(const FP_Linear_Form&,
+                                      const FP_Interval_Abstract_Store& store);
 
 }; // class Floating_Point_Expression
 

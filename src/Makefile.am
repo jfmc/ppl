@@ -359,6 +359,10 @@ Difference_Floating_Point_Expression.types.hh \
 Difference_Floating_Point_Expression.defs.hh \
 Difference_Floating_Point_Expression.inlines.hh \
 Difference_Floating_Point_Expression.templates.hh \
+Multiplication_Floating_Point_Expression.types.hh \
+Multiplication_Floating_Point_Expression.defs.hh \
+Multiplication_Floating_Point_Expression.inlines.hh \
+Multiplication_Floating_Point_Expression.templates.hh \
 Opposite_Floating_Point_Expression.types.hh \
 Opposite_Floating_Point_Expression.defs.hh \
 Opposite_Floating_Point_Expression.inlines.hh

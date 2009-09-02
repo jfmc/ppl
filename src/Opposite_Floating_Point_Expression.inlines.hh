@@ -56,7 +56,7 @@ inline typename Opposite_Floating_Point_Expression<FP_Interval_Type,
                                                    FP_Format>::FP_Linear_Form
 Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::linearize(const FP_Interval_Abstract_Store& store) const {
-  return -(operand->linearize(store)).
+  return -(operand->linearize(store));
 }
 
 } // namespace Parma_Polyhedra_Library

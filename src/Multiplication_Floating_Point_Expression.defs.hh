@@ -100,5 +100,6 @@ private:
 } // namespace Parma_Polyhedra_Library
 
 #include "Multiplication_Floating_Point_Expression.inlines.hh"
+#include "Multiplication_Floating_Point_Expression.templates.hh"
 
 #endif // !defined(PPL_Multiplication_Floating_Point_Expression_defs_hh)

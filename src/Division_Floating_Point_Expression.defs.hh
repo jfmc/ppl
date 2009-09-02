@@ -98,5 +98,6 @@ private:
 } // namespace Parma_Polyhedra_Library
 
 #include "Division_Floating_Point_Expression.inlines.hh"
+#include "Division_Floating_Point_Expression.templates.hh"
 
 #endif // !defined(PPL_Division_Floating_Point_Expression_defs_hh)
