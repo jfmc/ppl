@@ -29,28 +29,27 @@ namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline
-Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
-Division_Floating_Point_Expression(
+Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::Division_Floating_Point_Expression(
          Floating_Point_Expression<FP_Interval_Type, FP_Format>* const num,
-         Floating_Point_Expression<FP_Interval_Type, FP_Format>* const den) {
+         Floating_Point_Expression<FP_Interval_Type, FP_Format>* const den)
+  : first_operand(num), second_operand(den) {
   assert(num != NULL);
   assert(den != NULL);
-  first_operand = num;
-  second_operand = den;
-}
+ }
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline
-Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
-~Division_Floating_Point_Expression() {
+Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::~Division_Floating_Point_Expression() {
   delete first_operand;
   delete second_operand;
 }
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
-Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
-swap(Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
+Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::swap(Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
   std::swap(first_operand, y.first_operand);
   std::swap(second_operand, y.second_operand);
 }
@@ -58,10 +57,9 @@ swap(Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
   // FIXME: add function body
 template <typename FP_Interval_Type, typename FP_Format>
 inline
-typename Division_Floating_Point_Expression<FP_Interval_Type,
-                                                   FP_Format>::FP_Linear_Form
-Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>::linearize(
-const FP_Interval_Abstract_Store& store) const {
+typename Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::FP_Linear_Form Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::linearize(const FP_Interval_Abstract_Store& store) const {
   FP_Linear_Form result = FP_Linear_Form();
   return result;
 }
@@ -73,10 +71,10 @@ namespace std {
 /*! \relates Parma_Polyhedra_Library::Division_Floating_Point_Expression */
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
-swap(Parma_Polyhedra_Library::
-     Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
-     Parma_Polyhedra_Library::
-     Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
+swap(Parma_Polyhedra_Library
+     ::Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
+     Parma_Polyhedra_Library
+     ::Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
   x.swap(y);
 }
 

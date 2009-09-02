@@ -36,26 +36,28 @@ namespace std {
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Difference_Floating_Point_Expression */
 template <typename FP_Interval_Type, typename FP_Format>
-void swap(Parma_Polyhedra_Library::
-	  Difference_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
-	  Parma_Polyhedra_Library::
-	  Difference_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y);
+void swap(Parma_Polyhedra_Library
+	  ::Difference_Floating_Point_Expression<FP_Interval_Type,
+	                                         FP_Format>& x,
+	  Parma_Polyhedra_Library
+	  ::Difference_Floating_Point_Expression<FP_Interval_Type,
+	                                         FP_Format>& y);
 
 } // namespace std
 
 template <typename FP_Interval_Type, typename FP_Format>
 class Difference_Floating_Point_Expression
-: public virtual Floating_Point_Expression<FP_Interval_Type, FP_Format> {
+  : public Floating_Point_Expression<FP_Interval_Type, FP_Format> {
 
 public:
 
   typedef typename
-  Floating_Point_Expression<FP_Interval_Type, FP_Format>::
-  FP_Linear_Form FP_Linear_Form;
+  Floating_Point_Expression<FP_Interval_Type, FP_Format>
+  ::FP_Linear_Form FP_Linear_Form;
 
   typedef typename
-  Floating_Point_Expression<FP_Interval_Type, FP_Format>::
-  FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
+  Floating_Point_Expression<FP_Interval_Type, FP_Format>
+  ::FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
 
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
@@ -90,7 +92,7 @@ private:
   // inhibited
   Difference_Floating_Point_Expression<FP_Interval_Type, FP_Format>&
   operator=(const Difference_Floating_Point_Expression<FP_Interval_Type,
-	    FP_Format>& e);
+	                                               FP_Format>& e);
 
 
 }; // class Difference_Floating_Point_Expression

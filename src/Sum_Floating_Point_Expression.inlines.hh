@@ -30,28 +30,27 @@ namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline
-Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
-Sum_Floating_Point_Expression(
+Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::Sum_Floating_Point_Expression(
          Floating_Point_Expression<FP_Interval_Type, FP_Format>* const x,
-         Floating_Point_Expression<FP_Interval_Type, FP_Format>* const y) {
+         Floating_Point_Expression<FP_Interval_Type, FP_Format>* const y)
+  : first_operand(x), second_operand(y) {
   assert(num != NULL);
   assert(den != NULL);
-  first_operand = x;
-  second_operand = y;
 }
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline
-Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
-~Sum_Floating_Point_Expression() {
+Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::~Sum_Floating_Point_Expression() {
   delete first_operand;
   delete second_operand;
 }
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
-Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
-swap(Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
+Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::swap(Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
   std::swap(first_operand, y.first_operand);
   std::swap(second_operand, y.second_operand);
 }
@@ -60,10 +59,9 @@ swap(Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
   // FIXME: add function body
 template <typename FP_Interval_Type, typename FP_Format>
 inline
-typename Sum_Floating_Point_Expression<FP_Interval_Type,
-                                                   FP_Format>::FP_Linear_Form
-Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>::linearize(
-const FP_Interval_Abstract_Store& store) const {
+typename Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::FP_Linear_Form Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::linearize(const FP_Interval_Abstract_Store& store) const {
   FP_Linear_Form result = FP_Linear_Form();
   return result;
 }
@@ -75,10 +73,10 @@ namespace std {
 /*! \relates Parma_Polyhedra_Library::Sum_Floating_Point_Expression */
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
-swap(Parma_Polyhedra_Library::
-     Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
-     Parma_Polyhedra_Library::
-     Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
+swap(Parma_Polyhedra_Library
+     ::Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
+     Parma_Polyhedra_Library
+     ::Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
   x.swap(y);
 }
 
