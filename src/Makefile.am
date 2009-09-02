@@ -358,7 +358,10 @@ Sum_Floating_Point_Expression.templates.hh \
 Difference_Floating_Point_Expression.types.hh \
 Difference_Floating_Point_Expression.defs.hh \
 Difference_Floating_Point_Expression.inlines.hh \
-Difference_Floating_Point_Expression.templates.hh
+Difference_Floating_Point_Expression.templates.hh \
+Opposite_Floating_Point_Expression.types.hh \
+Opposite_Floating_Point_Expression.defs.hh \
+Opposite_Floating_Point_Expression.inlines.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
