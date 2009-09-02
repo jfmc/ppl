@@ -62,7 +62,7 @@ public:
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::info_type info_type;
 
-  Variable_Floating_Point_Expression(const dimension_type v_index);
+  explicit Variable_Floating_Point_Expression(const dimension_type v_index);
 
   ~Variable_Floating_Point_Expression();
 

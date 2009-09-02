@@ -62,7 +62,7 @@ public:
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::info_type info_type;
 
-  Opposite_Floating_Point_Expression(
+  explicit Opposite_Floating_Point_Expression(
            Floating_Point_Expression<FP_Interval_Type, FP_Format>* const op);
 
   ~Opposite_Floating_Point_Expression();
