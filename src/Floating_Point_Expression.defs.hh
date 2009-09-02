@@ -78,11 +78,14 @@ public:
 
 }; // class Floating_Point_Expression
 
-// Initialize static members of the class
+// Initialize static members of the class.
 template <typename FP_Interval_Type, typename FP_Format>
 typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
 Floating_Point_Expression<FP_Interval_Type, FP_Format>::absolute_error =
-  pow(2, 1 - FP_Format::exponent_bias - FP_Format::fraction_bits);
+  std::max(pow(2, 1 - FP_Format::exponent_bias - FP_Format::fraction_bits),
+  std::numeric_limits<typename Floating_Point_Expression<FP_Interval_Type,
+                                                         FP_Format>
+	                       ::boundary_type>::denorm_min());
 
 } // namespace Parma_Polyhedra_Library
 
