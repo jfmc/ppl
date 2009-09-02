@@ -71,10 +71,10 @@ public:
 
   static bool overflows(const FP_Linear_Form& lf);
 
+  static FP_Linear_Form relative_error(const FP_Linear_Form&);
+
   static FP_Linear_Form intervalize(const FP_Linear_Form&,
                                     const FP_Interval_Abstract_Store& store);
-
-  static FP_Linear_Form relative_error(const FP_Linear_Form&);
 
 }; // class Floating_Point_Expression
 
@@ -90,5 +90,6 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>::absolute_error =
 } // namespace Parma_Polyhedra_Library
 
 #include "Floating_Point_Expression.inlines.hh"
+#include "Floating_Point_Expression.templates.hh"
 
 #endif // !defined(PPL_Floating_Point_Expression_defs_hh)

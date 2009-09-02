@@ -344,6 +344,7 @@ wrap_string.hh \
 Floating_Point_Expression.types.hh \
 Floating_Point_Expression.defs.hh \
 Floating_Point_Expression.inlines.hh \
+Floating_Point_Expression.templates.hh \
 Constant_Floating_Point_Expression.types.hh \
 Constant_Floating_Point_Expression.defs.hh \
 Constant_Floating_Point_Expression.inlines.hh \

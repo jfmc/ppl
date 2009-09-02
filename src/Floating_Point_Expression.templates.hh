@@ -1,0 +1,87 @@
+/* Floating_Point_Expression class implementation:
+   non-inline template functions.
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+#ifndef PPL_Floating_Point_Expression_templates_hh
+#define PPL_Floating_Point_Expression_templates_hh 1
+
+#include "Floating_Point_Expression.defs.hh"
+#include <cmath>
+
+namespace Parma_Polyhedra_Library {
+
+template<typename FP_Interval_Type, typename FP_Format>
+typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::FP_Linear_Form
+Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::relative_error(const FP_Linear_Form& lf) {
+  /* FIXME: here we assume that boundary_type can represent
+     (2)^(-FP_Format::fraction_bits) precisely. */
+  FP_Interval_Type error_propagator(pow(-2, -FP_Format::fraction_bits));
+  // FIXME: this may be incorrect for some policies.
+  error_propagator.join_assign(FP_Interval_Type(
+                               pow(2, -FP_Format::fraction_bits)));
+
+  // Handle the inhomogeneous term.
+  FP_Interval_Type current_term = lf.inhomogeneous_term();
+  boundary_type current_multiplier = std::max(abs(current_term.lower()),
+                                              abs(current_term.upper()));
+  FP_Linear_Form current_result_term = FP_Linear_Form(current_multiplier *
+                                                      error_propagator);
+  FP_Linear_Form result = FP_Linear_Form(current_result_term);
+
+  // Handle the other terms.
+  dimension_type dimension = lf.space_dimension();
+  for (dimension_type i = 0; i < dimension; ++i) {
+    current_term = lf.coefficient(Variable(i));
+    current_multiplier = std::max(abs(current_term.lower()),
+                                  abs(current_term.upper()));
+    current_result_term = FP_Linear_Form(Variable(i)) * current_multiplier *
+                          error_propagator;
+    result += current_result_term;
+  }
+
+  return result;
+}
+
+template<typename FP_Interval_Type, typename FP_Format>
+typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::FP_Linear_Form
+Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::intervalize(const FP_Linear_Form& lf,
+              const FP_Interval_Abstract_Store& store) {
+  FP_Interval_Type resulting_interval = lf.inhomogeneous_term();
+  dimension_type dimension = lf.space_dimension();
+  for (dimension_type i = 0; i < dimension; ++i) {
+    typename FP_Interval_Abstract_Store::const_iterator
+             next_variable_value = store.find(i);
+    if (next_variable_value != store.end()) {
+      FP_Interval_Type current_coefficient = lf.coefficient(Variable(i));
+      resulting_interval += current_coefficient * (*next_variable_value);
+    }
+  }
+
+  FP_Linear_Form result = FP_Interval_Type(resulting_interval);
+  return result;
+}
+
+} // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_Floating_Point_Expression_templates_hh)

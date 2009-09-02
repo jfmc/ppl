@@ -34,6 +34,7 @@ Constant_Floating_Point_Expression(const boundary_type lb,
                                    const boundary_type ub)
   : value(lb) {
   assert(lb <= ub);
+  // FIXME: this may be incorrect for some policies.
   value.join_assign(ub);
 }
 
@@ -54,10 +55,8 @@ inline typename Constant_Floating_Point_Expression<FP_Interval_Type,
                                                    FP_Format>::FP_Linear_Form
 Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::linearize(const FP_Interval_Abstract_Store& store) const {
-
   FP_Linear_Form result = FP_Linear_Form(value);
   return result;
-
 }
 
 } // namespace Parma_Polyhedra_Library

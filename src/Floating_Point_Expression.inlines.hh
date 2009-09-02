@@ -36,12 +36,12 @@ template <typename FP_Interval_Type, typename FP_Format>
 inline bool
 Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::overflows(const FP_Linear_Form& lf) {
-  if(!lf.inhomogeneous_term().is_bounded())
+  if (!lf.inhomogeneous_term().is_bounded())
     return true;
 
   dimension_type dimension = lf.space_dimension();
-  for(dimension_type i = 0; i <= dimension; ++i) {
-    if(!lf.coefficient(Variable(i)).is_bounded())
+  for (dimension_type i = 0; i < dimension; ++i) {
+    if (!lf.coefficient(Variable(i)).is_bounded())
       return true;
   }
 
