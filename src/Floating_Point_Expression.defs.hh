@@ -85,7 +85,9 @@ public:
 template <typename FP_Interval_Type, typename FP_Format>
 typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
 Floating_Point_Expression<FP_Interval_Type, FP_Format>::absolute_error =
-  std::max(pow(2, 1 - FP_Format::exponent_bias - FP_Format::fraction_bits),
+  std::max(static_cast<typename Floating_Point_Expression<FP_Interval_Type,
+	   FP_Format>::boundary_type>
+           (pow(2, 1 - FP_Format::exponent_bias - FP_Format::fraction_bits)),
   std::numeric_limits<typename Floating_Point_Expression<FP_Interval_Type,
                                                          FP_Format>
 	                       ::boundary_type>::denorm_min());
