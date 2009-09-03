@@ -363,6 +363,10 @@ Multiplication_Floating_Point_Expression.types.hh \
 Multiplication_Floating_Point_Expression.defs.hh \
 Multiplication_Floating_Point_Expression.inlines.hh \
 Multiplication_Floating_Point_Expression.templates.hh \
+Division_Floating_Point_Expression.types.hh \
+Division_Floating_Point_Expression.defs.hh \
+Division_Floating_Point_Expression.inlines.hh \
+Division_Floating_Point_Expression.templates.hh \
 Opposite_Floating_Point_Expression.types.hh \
 Opposite_Floating_Point_Expression.defs.hh \
 Opposite_Floating_Point_Expression.inlines.hh

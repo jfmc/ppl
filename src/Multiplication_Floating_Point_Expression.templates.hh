@@ -77,7 +77,7 @@ typename Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   FP_Linear_Form result;
   FP_Interval abs_error = FP_Interval_Type(-absolute_error);
   // FIXME: this may be incorrect for some policies.
-  error.join_assign(absolute_error);
+  abs_error.join_assign(absolute_error);
   if (intervalize_first) {
     result = intervalized_first_operand * linearized_second_operand +
       intervalized_first_operand * relative_error(linearized_second_operand) +
