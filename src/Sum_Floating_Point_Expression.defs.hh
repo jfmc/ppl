@@ -29,8 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Sum_Floating_Point_Expression.types.hh"
 #include <map>
 
-namespace Parma_Polyhedra_Library {
-
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
@@ -43,6 +41,7 @@ void swap(Parma_Polyhedra_Library
 
 } // namespace std
 
+namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
 class Sum_Floating_Point_Expression
