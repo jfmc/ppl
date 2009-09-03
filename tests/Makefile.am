@@ -22,11 +22,11 @@
 
 SUBDIRS = \
 . \
+PIP_Problem \
 Powerset \
 Partially_Reduced_Product \
 Box \
 MIP_Problem \
-PIP_Problem \
 Octagonal_Shape \
 BD_Shape \
 Polyhedron \

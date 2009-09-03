@@ -20,13 +20,12 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-//#define NOISY 1
-
 #include "ppl_test.hh"
 
 namespace {
 
-bool test01() {
+bool
+test01() {
   Variable X1(0);
   Variable X2(1);
   Variable I0(2);
@@ -41,13 +40,11 @@ bool test01() {
   cs.insert(-X1 - I0 + N >= 0);
   cs.insert(X2 + J0 - N - 1 >= 0);
 
-  PIP_Problem pip = PIP_Problem(cs.space_dimension(), cs.begin(), cs.end(),
-      params);
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
 
-  if (pip.solve() != OPTIMIZED_PIP_PROBLEM)
-    return false;
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
 
-  return true;
+  return ok;
 }
 
 } // namespace
