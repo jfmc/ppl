@@ -141,33 +141,8 @@ test04() {
   return ok;
 }
 
-// Test operator+=(Linear_Form<db_r_oc>& f, Variable v):
-// in this case the dimension of v is strictly greater than
-// the dimension of f.
 bool
 test05() {
-  Variable A(0);
-  Variable B(1);
-
-  Linear_Form<db_r_oc> f = A;
-  db_r_oc x(2.0);
-  x /= 3.0;
-  f *= x;
-
-  Linear_Form<db_r_oc> known_result = f + B;
-
-  f += B;
-
-  bool ok = (f == known_result);
-
-  nout << "*** known_result ***" << endl
-       << known_result << endl;
-
-  return ok;
-}
-
-bool
-test06() {
   Variable A(0);
   Variable B(1);
   Variable C(16);
@@ -195,5 +170,5 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST(test06);
+  DO_TEST(test05);
 END_MAIN
