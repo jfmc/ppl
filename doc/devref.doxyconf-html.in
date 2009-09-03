@@ -314,6 +314,30 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Octagonal_Shape.inlines.hh \
                          @srcdir@/../src/Octagonal_Shape.templates.hh \
                          @srcdir@/../src/Octagonal_Shape.cc \
+			 @srcdir@/../src/Floating_Point_Expression.types.hh \
+			 @srcdir@/../src/Floating_Point_Expression.defs.hh \
+			 @srcdir@/../src/Floating_Point_Expression.inlines.hh \
+			 @srcdir@/../src/Constant_Floating_Point_Expression.types.hh \
+			 @srcdir@/../src/Constant_Floating_Point_Expression.defs.hh \
+			 @srcdir@/../src/Constant_Floating_Point_Expression.inlines.hh \
+			 @srcdir@/../src/Difference_Floating_Point_Expression.types.hh \
+			 @srcdir@/../src/Difference_Floating_Point_Expression.defs.hh \
+			 @srcdir@/../src/Difference_Floating_Point_Expression.inlines.hh \
+			 @srcdir@/../src/Division_Floating_Point_Expression.types.hh \
+			 @srcdir@/../src/Division_Floating_Point_Expression.defs.hh \
+			 @srcdir@/../src/Division_Floating_Point_Expression.inlines.hh \
+			 @srcdir@/../src/Multiplication_Floating_Point_Expression.types.hh \
+			 @srcdir@/../src/Multiplication_Floating_Point_Expression.defs.hh \
+			 @srcdir@/../src/Multiplication_Floating_Point_Expression.inlines.hh \
+			 @srcdir@/../src/Opposite_Floating_Point_Expression.types.hh \
+			 @srcdir@/../src/Opposite_Floating_Point_Expression.defs.hh \
+			 @srcdir@/../src/Opposite_Floating_Point_Expression.inlines.hh \
+			 @srcdir@/../src/Sum_Floating_Point_Expression.types.hh \
+			 @srcdir@/../src/Sum_Floating_Point_Expression.defs.hh \
+			 @srcdir@/../src/Sum_Floating_Point_Expression.inlines.hh \
+			 @srcdir@/../src/Variable_Floating_Point_Expression.types.hh \
+			 @srcdir@/../src/Variable_Floating_Point_Expression.defs.hh \
+			 @srcdir@/../src/Variable_Floating_Point_Expression.inlines.hh \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox
 INPUT_ENCODING         = UTF-8

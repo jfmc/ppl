@@ -45,33 +45,67 @@ void swap(Parma_Polyhedra_Library
 
 namespace Parma_Polyhedra_Library {
 
+//! A generic Difference Floating Point Expression
+/*! \ingroup PPL_CXX_interface
+  The class template type parameter \p FP_Interval_Type represents the type
+  of the intervals used in the abstract domain.
+  
+  The class template type parameter \p FP_Format represents the format
+  of the floating point variable used in the concrete domain.
+*/
 template <typename FP_Interval_Type, typename FP_Format>
 class Difference_Floating_Point_Expression
   : public Floating_Point_Expression<FP_Interval_Type, FP_Format> {
 
 public:
 
+  /* \brief
+     Alias for the Linear_Form<FP_Interval_Type> from 
+     Floating_Point_Expression
+  */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>
   ::FP_Linear_Form FP_Linear_Form;
 
+  /* \brief
+     Alias for the std::map<dimension_type, FP_Interval_Type> from 
+     Floating_Point_Expression.
+  */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>
   ::FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
 
+  /* \brief
+     Alias for the P_Interval_Type::boundary_type from 
+     Floating_Point_Expression.
+  */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
   boundary_type;
 
+  /* \brief
+     Alias for the P_Interval_Type::info_type from Floating_Point_Expression.
+  */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::info_type info_type;
 
+  //! \name Constructors and Destructor
+  //@{
+  /*! \brief
+    Constructor with two parameters: builds the difference floating point 
+    expression from \p x and \p y corresponding to the floating point 
+    expression \p x - \p y.
+  */
   Difference_Floating_Point_Expression(
 	   Floating_Point_Expression<FP_Interval_Type, FP_Format>* const x,
            Floating_Point_Expression<FP_Interval_Type, FP_Format>* const y);
 
+  //! Destructor.
   ~Difference_Floating_Point_Expression();
 
+  //@} // Constructors and Destructor
+
+  //TODO: comment
   FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
 
   //! Swaps \p *this with \p y.
@@ -80,16 +114,25 @@ public:
 
 private:
 
+  //! Pointer to the first operand.
   Floating_Point_Expression<FP_Interval_Type, FP_Format>* first_operand;
+  //! Pointer to the second operand.
   Floating_Point_Expression<FP_Interval_Type, FP_Format>* second_operand;
 
-  // Ordinary copy constructor.
-  // inhibited
+  #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Copy constructor: temporary inhibited.
+  */
+  #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Difference_Floating_Point_Expression(
          const Difference_Floating_Point_Expression<FP_Interval_Type,
                                                     FP_Format>& e);
 
-  // inhibited
+  #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Assignment operator: temporary inhibited.
+  */
+  #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Difference_Floating_Point_Expression<FP_Interval_Type, FP_Format>&
   operator=(const Difference_Floating_Point_Expression<FP_Interval_Type,
 	                                               FP_Format>& e);

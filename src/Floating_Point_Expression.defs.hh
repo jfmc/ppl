@@ -48,30 +48,60 @@ struct IEEE754_Double {
   static const unsigned short exponent_bias = 1023;
 };
 
+//! The floating point expression on a given format
+/*! \ingroup PPL_CXX_Interface
+  This class offers a generic implemenation of a
+  <EM>floating point expression</EM> of format \f$\mathbf{f}\f$, this includes
+  constants, variables of format \f$\mathbf{f}\f$, binary and unary
+  arithmetic operators.
+
+  \par Template type parameters
+  The class template type parameter \p FP_Interval_Type represents the type
+  of the intervals used in the abstract domain. Here we assume that the
+  value has floating point type.
+  The class template type parameter \p FP_Format represents the format
+  of the floating point expression used in the concrete domain.
+  This parameter must be a struct which contains \f$3\f$ fields:
+
+  - <CODE>static const unsigned short fraction_bits</CODE> that represents the
+    number of bits of the fraction.
+  - <CODE>static const unsigned short exponent_bits</CODE> that represents the
+    number of bits of the exponent.
+  - <CODE>static const unsigned short exponent_bias</CODE> that represents the
+    value of exponent bias.
+*/
 template <typename FP_Interval_Type, typename FP_Format>
 class Floating_Point_Expression {
 
 public:
 
+  //! Alias for a linear form with template argument \p FP_Iterval_Type.
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
 
+  //! Alias for a map that associates an index to a type.
   typedef std::map<dimension_type, FP_Interval_Type> FP_Interval_Abstract_Store;
 
   typedef typename FP_Interval_Type::boundary_type boundary_type;
 
   typedef typename FP_Interval_Type::info_type info_type;
 
+  //! Destructor.
   virtual ~Floating_Point_Expression();
 
+  /* \brief
+     Builds a linear form that correctly approximates the floating point
+     expression in the given abstract store.
+  */
   virtual FP_Linear_Form linearize(
                          const FP_Interval_Abstract_Store& store) const = 0;
 
-  // Absolute error.
+  //!  Absolute error.
   static boundary_type absolute_error;
 
-  // Static helper functions.
-  // FIXME: this may not be the best place for them.
-
+  /* \brief
+    Verification if a given linear form overflows.
+    Return <CODE>true</CODE> if is bounded, <CODE>false</CODE> otherwise.
+  */  // FIXME: this may not be the best place for them.
   static bool overflows(const FP_Linear_Form& lf);
 
   static FP_Linear_Form relative_error(const FP_Linear_Form&);
@@ -81,7 +111,7 @@ public:
 
 }; // class Floating_Point_Expression
 
-// Initialize static members of the class.
+//! Initialize static members of the class.
 template <typename FP_Interval_Type, typename FP_Format>
 typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
 Floating_Point_Expression<FP_Interval_Type, FP_Format>::absolute_error =

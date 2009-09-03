@@ -31,6 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace std {
 
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Constant_Floating_Point_Expression */
 template<typename FP_Interval_Type, typename FP_Format>
 void swap(Parma_Polyhedra_Library::Constant_Floating_Point_Expression<
                                    FP_Interval_Type, FP_Format>& x,
@@ -41,32 +43,65 @@ void swap(Parma_Polyhedra_Library::Constant_Floating_Point_Expression<
 
 namespace Parma_Polyhedra_Library {
 
+//! A generic Constant Floating Point Expression
+/*! \ingroup PPL_CXX_interface
+  The class template type parameter \p FP_Interval_Type represents the type
+  of the intervals used in the abstract domain.
+  
+  The class template type parameter \p FP_Format represents the format
+  of the floating point variable used in the concrete domain.
+ */
 template <typename FP_Interval_Type, typename FP_Format>
 class Constant_Floating_Point_Expression
   : public Floating_Point_Expression<FP_Interval_Type, FP_Format> {
 
 public:
 
+  /* \brief
+     Alias for the Linear_Form<FP_Interval_Type> from 
+     Floating_Point_Expression
+  */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Linear_Form FP_Linear_Form;
 
+  /* \brief
+     Alias for the std::map<dimension_type, FP_Interval_Type> from 
+     Floating_Point_Expression.
+  */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
 
+  /* \brief
+     Alias for the P_Interval_Type::boundary_type from 
+     Floating_Point_Expression.
+  */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
   boundary_type;
 
+  /* \brief
+     Alias for the P_Interval_Type::info_type from Floating_Point_Expression.
+  */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::info_type info_type;
 
+  //! \name Constructors and Destructor
+  //@{
+  /*! \brief
+    Constructor with two parameters: builds the constant floating point 
+    expression from \p lower_bound and \p upper_bound. 
+  */
   Constant_Floating_Point_Expression(const boundary_type lower_bound,
                                      const boundary_type upper_bound);
 
+  //! Destructor.
   ~Constant_Floating_Point_Expression();
 
+  //@} // Constructors and Destructor
+
+  // TODO: comment
   FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
 
   void swap(Constant_Floating_Point_Expression& y);
@@ -77,9 +112,19 @@ private:
   // a floating point with an arbitrary format to an interval.
   FP_Interval_Type value;
 
+  #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Copy constructor: temporary inhibited.
+  */
+  #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Constant_Floating_Point_Expression(
 			  const Constant_Floating_Point_Expression& y);
 
+  #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Assignment operator: temporary inhibited.
+  */
+  #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAIL
   Constant_Floating_Point_Expression& operator=(
 		          const Constant_Floating_Point_Expression& y);
 
