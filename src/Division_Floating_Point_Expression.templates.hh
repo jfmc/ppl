@@ -42,7 +42,7 @@ typename Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
     throw Linearization_Failed();
 
   FP_Linear_Form linearized_first_operand = first_operand->linearize(store);
-  FP_Interval abs_error = FP_Interval_Type(-absolute_error);
+  FP_Interval_Type abs_error = FP_Interval_Type(-absolute_error);
   // FIXME: this may be incorrect for some policies.
   abs_error.join_assign(absolute_error);
   FP_Linear_Form result = linearized_first_operand / intervalized_second_operand
