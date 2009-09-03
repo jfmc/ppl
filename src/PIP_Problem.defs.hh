@@ -287,7 +287,7 @@ private:
   dimension_type internal_space_dim;
 
   //! A rational matrix, with a common nenominator
-  class Rational_Matrix: public Matrix {
+  class Rational_Matrix : public Matrix {
   public:
     //! Builds an empty matrix.
     /*!
@@ -330,15 +330,16 @@ private:
     Coefficient denominator;
   };
 
-  //! The parametric simplex tableau
-  /*!
-    Consists in two rational matrices, represented as an integer tableau 
-    and a common denominator. The \p s matrix is the matrix of simplex
-    coefficients, and the \p t matrix is the matrix of parameter coefficients.
-  */
-  struct {
-    Rational_Matrix s, t;
-  } tableau;
+  //! The type for parametric simplex tableau.
+  struct Tableau {
+    //! The matrix of simplex coefficients.
+    Rational_Matrix s;
+    //! The matrix of parameter coefficients.
+    Rational_Matrix t;
+  };
+
+  //! The parametric simplex tableau.
+  Tableau tableau;
 
   //! An enumerated type describing the internal status of the PIP problem.
   enum Status {
