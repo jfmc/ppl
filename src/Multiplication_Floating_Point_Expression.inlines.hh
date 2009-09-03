@@ -35,8 +35,8 @@ Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
          Floating_Point_Expression<FP_Interval_Type, FP_Format>* const x,
          Floating_Point_Expression<FP_Interval_Type, FP_Format>* const y)
   : first_operand(x), second_operand(y) {
-  assert(x != NULL);
-  assert(y != NULL);
+  assert(x != 0);
+  assert(y != 0);
 }
 
 template <typename FP_Interval_Type, typename FP_Format>

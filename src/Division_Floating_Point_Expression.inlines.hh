@@ -34,8 +34,8 @@ Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
          Floating_Point_Expression<FP_Interval_Type, FP_Format>* const num,
          Floating_Point_Expression<FP_Interval_Type, FP_Format>* const den)
   : first_operand(num), second_operand(den) {
-  assert(num != NULL);
-  assert(den != NULL);
+  assert(num != 0);
+  assert(den != 0);
  }
 
 template <typename FP_Interval_Type, typename FP_Format>

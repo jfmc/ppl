@@ -34,7 +34,7 @@ Opposite_Floating_Point_Expression(
          Floating_Point_Expression<FP_Interval_Type, FP_Format>* const op)
   : operand(op)
 {
-  assert(op != NULL);
+  assert(op != 0);
 }
 
 template <typename FP_Interval_Type, typename FP_Format>
