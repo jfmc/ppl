@@ -24,9 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Multiplication_Floating_Point_Expression_defs_hh
 #define PPL_Multiplication_Floating_Point_Expression_defs_hh 1
 
+#include "Floating_Point_Expression.defs.hh"
 #include "globals.defs.hh"
 #include "Multiplication_Floating_Point_Expression.types.hh"
-#include "Linear_Form.defs.hh"
 #include <map>
 
 namespace Parma_Polyhedra_Library {
