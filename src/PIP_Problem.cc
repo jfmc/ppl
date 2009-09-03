@@ -77,3 +77,157 @@ PPL::PIP_Problem::OK() const {
   //FIXME
   return true;
 }
+
+void
+PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
+  using namespace IO_Operators;
+  s << "\nexternal_space_dim: " << external_space_dim << " \n";
+  s << "\ninternal_space_dim: " << internal_space_dim << " \n";
+
+  const dimension_type input_cs_size = input_cs.size();
+
+  s << "\ninput_cs( " << input_cs_size << " )\n";
+  for (dimension_type i = 0; i < input_cs_size; ++i)
+    input_cs[i].ascii_dump(s);
+
+  s << "\nfirst_pending_constraint: " <<  first_pending_constraint
+    << std::endl;
+
+  s << "\ninitialized: " << (initialized ? "YES" : "NO") << "\n";
+
+  s << "\nstatus: ";
+  switch (status) {
+  case UNSATISFIABLE:
+    s << "UNSATISFIABLE";
+    break;
+  case SATISFIABLE:
+    s << "SATISFIABLE";
+    break;
+  case OPTIMIZED:
+    s << "OPTIMIZED";
+    break;
+  case PARTIALLY_SATISFIABLE:
+    s << "PARTIALLY_SATISFIABLE";
+    break;
+  }
+  s << "\n";
+
+  s << "\nparameters";
+  parameters.ascii_dump(s);
+
+  s << "\nsimplex_tableau\n";
+  tableau.s.ascii_dump(s);
+
+  s << "\nparameter_tableau\n";
+  tableau.t.ascii_dump(s);
+}
+
+PPL_OUTPUT_DEFINITIONS(PIP_Problem)
+
+bool
+PPL::PIP_Problem::ascii_load(std::istream& s) {
+  std::string str;
+  if (!(s >> str) || str != "external_space_dim:")
+    return false;
+
+  if (!(s >> external_space_dim))
+    return false;
+
+  if (!(s >> str) || str != "internal_space_dim:")
+    return false;
+
+  if (!(s >> internal_space_dim))
+    return false;
+
+  if (!(s >> str) || str != "input_cs(")
+    return false;
+
+  dimension_type input_cs_size;
+
+  if (!(s >> input_cs_size))
+    return false;
+
+  if (!(s >> str) || str != ")")
+    return false;
+
+  Constraint c(Constraint::zero_dim_positivity());
+  for (dimension_type i = 0; i < input_cs_size; ++i) {
+    if (!c.ascii_load(s))
+      return false;
+    input_cs.push_back(c);
+  }
+
+  if (!(s >> str) || str != "first_pending_constraint:")
+    return false;
+
+  if (!(s >> first_pending_constraint))
+    return false;
+
+  if (!(s >> str) || str != "initialized:")
+    return false;
+  if (!(s >> str))
+    return false;
+  if (str == "YES")
+    initialized = true;
+  else if (str == "NO")
+    initialized = false;
+  else
+    return false;
+
+  if (!(s >> str) || str != "status:")
+    return false;
+
+  if (!(s >> str))
+    return false;
+
+  if (str == "UNSATISFIABLE")
+    status = UNSATISFIABLE;
+  else if (str == "SATISFIABLE")
+    status = SATISFIABLE;
+  else if (str == "OPTIMIZED")
+    status = OPTIMIZED;
+  else if (str == "PARTIALLY_SATISFIABLE")
+    status = PARTIALLY_SATISFIABLE;
+  else
+    return false;
+
+  if (!(s >> str) || str != "parameters")
+    return false;
+
+  if (!parameters.ascii_load(s))
+    return false;
+
+  if (!(s >> str) || str != "simplex_tableau")
+    return false;
+  if (!tableau.s.ascii_load(s))
+    return false;
+
+  if (!(s >> str) || str != "parameter_tableau")
+    return false;
+  if (!tableau.t.ascii_load(s))
+    return false;
+
+  PPL_ASSERT(OK());
+  return true;
+}
+
+void
+PPL::PIP_Problem::Rational_Matrix::ascii_dump(std::ostream& s) const {
+  s << "denominator " << denominator << "\n";
+  Matrix::ascii_dump(s);
+}
+
+bool
+PPL::PIP_Problem::Rational_Matrix::ascii_load(std::istream& s) {
+  std::string str;
+  if (!(s >> str) || str != "denominator")
+    return false;
+  Coefficient den;
+  if (!(s >> den))
+    return false;
+  denominator = den;
+
+  return Matrix::ascii_load(s);
+}
+
+

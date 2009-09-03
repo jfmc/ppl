@@ -326,6 +326,9 @@ private:
     //! Returns the value of the denominator.
     const Coefficient &get_denominator() const;
 
+    void ascii_dump(std::ostream& s) const;
+    bool ascii_load(std::istream& s);
+
   protected:
     Coefficient denominator;
   };
