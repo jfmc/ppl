@@ -9,7 +9,7 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_Multiplication_Floating_Point_Expression_types_hh
+#ifndef PPL_Sum_Floating_Point_Expression_types_hh
 #define PPL_Sum_Floating_Point_Expression_types_hh 1
 
 namespace Parma_Polyhedra_Library {
