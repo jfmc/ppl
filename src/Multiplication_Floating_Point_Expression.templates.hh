@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Multiplication_Floating_Point_Expression_templates_hh
 #define PPL_Multiplication_Floating_Point_Expression_templates_hh 1
 
-#include "Multiplication_Floating_Point_Expression.defs.hh"
-
 namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
@@ -47,7 +45,7 @@ typename Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   FP_Linear_Form linearized_first_operand = first_operand->linearize(store);
   FP_Interval_Type intervalized_first_operand = intervalize(
 				                linearized_first_operand);
-  FP_Linear_Form linearized_second_operant = second_operand->linearize(store);
+  FP_Linear_Form linearized_second_operand = second_operand->linearize(store);
   FP_Interval_Type intervalized_second_operand = intervalize(
                                                  linearized_second_operand);
   boundary_type first_interval_size, second_interval_size;
@@ -75,9 +73,9 @@ typename Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 
   // Here we do the actual computation.
   FP_Linear_Form result;
-  FP_Interval_Type abs_error = FP_Interval_Type(-absolute_error);
+  FP_Interval_Type abs_error = FP_Interval_Type(-this->absolute_error);
   // FIXME: this may be incorrect for some policies.
-  abs_error.join_assign(absolute_error);
+  abs_error.join_assign(this->absolute_error);
   if (intervalize_first) {
     result = intervalized_first_operand * linearized_second_operand +
       intervalized_first_operand * relative_error(linearized_second_operand) +

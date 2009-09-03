@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Division_Floating_Point_Expression_templates_hh
 #define PPL_Division_Floating_Point_Expression_templates_hh 1
 
-#include "Division_Floating_Point_Expression.defs.hh"
-
 namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
@@ -42,12 +40,12 @@ typename Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
     throw Linearization_Failed();
 
   FP_Linear_Form linearized_first_operand = first_operand->linearize(store);
-  FP_Interval_Type abs_error = FP_Interval_Type(-absolute_error);
+  FP_Interval_Type abs_error = FP_Interval_Type(-this->absolute_error);
   // FIXME: this may be incorrect for some policies.
-  abs_error.join_assign(absolute_error);
+  abs_error.join_assign(this->absolute_error);
   FP_Linear_Form result = linearized_first_operand / intervalized_second_operand
     + relative_error(linearized_first_operand) / intervalized_second_operand
-    + abs_eror;
+    + abs_error;
 
   return result;
 }

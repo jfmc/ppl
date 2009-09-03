@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Difference_Floating_Point_Expression_templates_hh
 #define PPL_Difference_Floating_Point_Expression_templates_hh 1
 
-#include "Difference_Floating_Point_Expression.defs.hh"
-
 namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
@@ -35,9 +33,9 @@ typename Difference_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::linearize(const FP_Interval_Abstract_Store& store) const {
   FP_Linear_Form linearized_first_operand = first_operand->linearize(store);
   FP_Linear_Form linearized_second_operand = second_operand->linearize(store);
-  FP_Interval_Type abs_error = FP_Interval_Type(-absolute_error);
+  FP_Interval_Type abs_error = FP_Interval_Type(-this->absolute_error);
   // FIXME: this may be incorrect for some policies.
-  abs_error.join_assign(absolute_error);
+  abs_error.join_assign(this->absolute_error);
   FP_Linear_Form result = linearized_first_operand - linearized_second_operand +
                           relative_error(linearized_first_operand) +
                           relative_error(linearized_second_operand) +

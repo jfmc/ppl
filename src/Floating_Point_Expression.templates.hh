@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Floating_Point_Expression_templates_hh
 #define PPL_Floating_Point_Expression_templates_hh 1
 
-#include "Floating_Point_Expression.defs.hh"
 #include <cmath>
 
 namespace Parma_Polyhedra_Library {
