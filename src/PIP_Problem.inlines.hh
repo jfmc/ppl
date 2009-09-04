@@ -46,7 +46,7 @@ PIP_Problem::Rational_Matrix::Rational_Matrix(const Rational_Matrix& y)
 }
 
 inline bool
-PIP_Problem::Rational_Matrix::is_integer() {
+PIP_Problem::Rational_Matrix::is_integer() const {
   return denominator == 1;
 }
 
@@ -62,6 +62,16 @@ PIP_Problem::~PIP_Problem() {
 inline dimension_type
 PIP_Problem::max_space_dimension() {
   return Constraint::max_space_dimension();
+}
+
+inline PIP_Problem::const_iterator
+PIP_Problem::constraints_begin() const {
+  return input_cs.begin();
+}
+
+inline PIP_Problem::const_iterator
+PIP_Problem::constraints_end() const {
+  return input_cs.end();
 }
 
 } // namespace Parma_Polyhedra_Library

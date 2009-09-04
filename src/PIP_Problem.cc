@@ -40,6 +40,7 @@ PPL::PIP_Problem::PIP_Problem(dimension_type dim)
   : external_space_dim(dim),
     internal_space_dim(0),
     tableau(),
+    basis(),
     status(PARTIALLY_SATISFIABLE),
     initialized(false),
     input_cs(),
@@ -57,6 +58,7 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
   : external_space_dim(y.external_space_dim),
     internal_space_dim(y.internal_space_dim),
     tableau(y.tableau),
+    basis(y.basis),
     status(y.status),
     initialized(y.initialized),
     input_cs(y.input_cs),
@@ -67,8 +69,97 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
 
 PPL::PIP_Problem_Status
 PPL::PIP_Problem::solve() const {
-  //FIXME
-  return OPTIMIZED_PIP_PROBLEM;
+  switch (status) {
+  case UNSATISFIABLE:
+    PPL_ASSERT(OK());
+    return UNFEASIBLE_PIP_PROBLEM;
+  case OPTIMIZED:
+    PPL_ASSERT(OK());
+    return OPTIMIZED_PIP_PROBLEM;
+  case SATISFIABLE:
+    // Intentionally fall through
+  case PARTIALLY_SATISFIABLE:
+    {
+      PIP_Problem& x = const_cast<PIP_Problem&>(*this);
+      PIP_Problem_Status return_value;
+
+      x.update_tableau();
+      //FIXME: implement the simplex algorithm
+
+      return_value = OPTIMIZED_PIP_PROBLEM;
+
+      switch (return_value) {
+      case UNFEASIBLE_PIP_PROBLEM:
+        x.status = UNSATISFIABLE;
+        break;
+      case OPTIMIZED_PIP_PROBLEM:
+        x.status = OPTIMIZED;
+        break;
+      }
+      PPL_ASSERT(OK());
+      return return_value;
+    }
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL internal error");
+}
+
+void
+PPL::PIP_Problem::update_tableau() {
+  dimension_type i;
+  dimension_type n_params = parameters.size();
+  dimension_type n_vars = external_space_dim - n_params;
+  dimension_type n_vars_int = tableau.s.num_columns();
+  dimension_type n_constr_int = tableau.s.num_rows();
+  const_iterator cst;
+
+  if (tableau.t.num_columns() == 0) {
+    // Create the parameter column, corresponding to the constant term
+    tableau.t.add_zero_columns(1);
+  }
+
+  for (i=internal_space_dim; i<external_space_dim; ++i) {
+    // add new columns to the tableau
+    if (parameters.count(i) == 1)
+      tableau.t.add_zero_columns(1);
+    else
+      tableau.s.add_zero_columns(1);
+  }
+  internal_space_dim = external_space_dim;
+
+  Coefficient denom_s = tableau.s.get_denominator();
+  Coefficient denom_t = tableau.t.get_denominator();
+
+  for (cst = constraints_begin() + first_pending_constraint;
+       cst < constraints_end(); ++cst) {
+    // FIXME: must handle nonbasic variables aswell
+    int v = 0;
+    int p = 1;
+    Row var(n_vars, Row::Flags());
+    Row param(n_params+1, Row::Flags());
+    Coefficient cnst_term = -cst->inhomogeneous_term();
+    if (cst->is_strict_inequality())
+      // convert c > 0  <=>  c-1 >= 0
+      cnst_term -= 1;
+    param[0] = cnst_term * denom_t;
+    for (i=0; i<internal_space_dim; i++) {
+      if (parameters.count(i) == 1) {
+        param[p] = cst->coefficient(Variable(i)) * denom_t;
+        ++p;
+      } else {
+        var[v] = cst->coefficient(Variable(i)) * denom_s;
+        ++v;
+      }
+    }
+    //FIXME: must handle equality constraints
+    tableau.s.add_row(var);
+    tableau.t.add_row(param);
+  }
+
+  // update current basis with newly inserted variables
+  dimension_type next_var = n_vars_int + n_constr_int;
+  for (i=n_vars_int; i<n_vars; ++i)
+    basis.insert(next_var++);
 }
 
 

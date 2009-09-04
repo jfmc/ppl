@@ -320,8 +320,8 @@ private:
     */
     void normalize();
 
-    //! Tests whether the matrix is integer, \e ie. the denominator is 1.
-    bool is_integer();
+    //! Tests whether the matrix is integer, \e ie. the denominator is 1.
+    bool is_integer() const;
 
     //! Returns the value of the denominator.
     const Coefficient &get_denominator() const;
@@ -343,6 +343,9 @@ private:
 
   //! The parametric simplex tableau.
   Tableau tableau;
+
+  //! A set containing the internal indices of the basic variables
+  Variables_Set basis;
 
   //! An enumerated type describing the internal status of the PIP problem.
   enum Status {
@@ -381,6 +384,11 @@ private:
     interpreted as problem parameters.
   */
   Variables_Set parameters;
+
+  /*! \brief
+    Populates the parametric simplex tableau using external data, if necessary
+  */
+  void update_tableau();
 };
 
 namespace std {
