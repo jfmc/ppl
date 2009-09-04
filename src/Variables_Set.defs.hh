@@ -62,7 +62,7 @@ public:
     If <CODE>v.id() <= w.id()</CODE>, this constructor builds the
     set of variables' indexes
     <CODE>v.id()</CODE>, <CODE>v.id()+1</CODE>, ..., <CODE>w.id()</CODE>.
-    The empty set it built otherwise.
+    The empty set is built otherwise.
   */
   Variables_Set(const Variable& v, const Variable& w);
 
@@ -75,12 +75,12 @@ public:
   */
   dimension_type space_dimension() const;
 
-  //! Inserts the index of variavle \p v into the set.
+  //! Inserts the index of variable \p v into the set.
   void insert(Variable v);
+
   // The `insert' method above overloads (instead of hiding) the
   // other `insert' method of std::set.
   using Base::insert;
-
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
