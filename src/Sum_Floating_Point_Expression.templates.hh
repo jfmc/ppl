@@ -32,7 +32,7 @@ typename Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::linearize(const FP_Interval_Abstract_Store& store) const {
   FP_Linear_Form linearized_first_operand = first_operand->linearize(store);
   FP_Linear_Form linearized_second_operand = second_operand->linearize(store);
-  FP_Interval_Type abs_error = FP_Interval_Type(-this->absolute_error);
+  FP_Interval_Type abs_error(-this->absolute_error);
   // FIXME: this may be incorrect for some policies.
   abs_error.join_assign(this->absolute_error);
   FP_Linear_Form result = linearized_first_operand + linearized_second_operand +

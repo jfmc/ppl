@@ -33,7 +33,7 @@ typename Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::linearize(const FP_Interval_Abstract_Store& store) const {
   /*
     FIXME: we currently adopt the Interval-Size Local strategy in order to
-    decide which of the two linear forms should be intervalized, as described
+    decide which of the two linear forms must be intervalized, as described
     in section 6.2.4 of Antoine Mine's thesis. We should also consider more
     refined strategies.
   */
@@ -73,7 +73,7 @@ typename Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 
   // Here we do the actual computation.
   FP_Linear_Form result;
-  FP_Interval_Type abs_error = FP_Interval_Type(-this->absolute_error);
+  FP_Interval_Type abs_error(-this->absolute_error);
   // FIXME: this may be incorrect for some policies.
   abs_error.join_assign(this->absolute_error);
   if (intervalize_first) {

@@ -43,9 +43,9 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
   FP_Interval_Type current_term = lf.inhomogeneous_term();
   FP_Interval_Type current_multiplier(std::max(abs(current_term.lower()),
 					       abs(current_term.upper())));
-  FP_Linear_Form current_result_term = FP_Linear_Form(current_multiplier *
-                                                      error_propagator);
-  FP_Linear_Form result = FP_Linear_Form(current_result_term);
+  FP_Linear_Form current_result_term(current_multiplier *
+                                     error_propagator);
+  FP_Linear_Form result = current_result_term;
 
   // Handle the other terms.
   dimension_type dimension = lf.space_dimension();
