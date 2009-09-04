@@ -43,10 +43,16 @@ typename Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   FP_Interval_Type abs_error(-this->absolute_error);
   // FIXME: this may be incorrect for some policies.
   abs_error.join_assign(this->absolute_error);
-  FP_Linear_Form result = linearized_first_operand / intervalized_second_operand
-    + relative_error(linearized_first_operand) / intervalized_second_operand
-    + abs_error;
-
+  /*
+    FIXME: since we currently lack an explicit way to divide a linear form
+    by a scalar, we temporarily multiply by 1/scalar.
+  */
+  FP_Interval_Type reversed_intervalized_second_operand =
+     (FP_Interval_Type(boundary_type(1)) / intervalized_second_operand);
+  FP_Linear_Form result = linearized_first_operand *
+                          reversed_intervalized_second_operand +
+                          relative_error(linearized_first_operand) * 
+                          reversed_intervalized_second_operand + abs_error;
   return result;
 }
 
