@@ -31,8 +31,8 @@ typename Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::FP_Linear_Form Division_Floating_Point_Expression<FP_Interval_Type,
                                                     FP_Format>
 ::linearize(const FP_Interval_Abstract_Store& store) const {
-  FP_Interval_Type intervalized_second_operand = intervalize(
-                                second_operand->linearize(store));
+  FP_Interval_Type intervalized_second_operand = this->intervalize(
+				second_operand->linearize(store), store);
   // Check if we may divide by zero.
   // FIXME: check the assumption that boundary_type is comparable with zero.
   if (intervalized_second_operand.lower() <= 0 &&

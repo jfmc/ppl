@@ -43,11 +43,11 @@ typename Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   // true if we intervalize the first form, false if we intervalize the second.
   bool intervalize_first;
   FP_Linear_Form linearized_first_operand = first_operand->linearize(store);
-  FP_Interval_Type intervalized_first_operand = intervalize(
-				                linearized_first_operand);
+  FP_Interval_Type intervalized_first_operand = this->intervalize(
+					     linearized_first_operand, store);
   FP_Linear_Form linearized_second_operand = second_operand->linearize(store);
-  FP_Interval_Type intervalized_second_operand = intervalize(
-                                                 linearized_second_operand);
+  FP_Interval_Type intervalized_second_operand = this->intervalize(
+					      linearized_second_operand, store);
   boundary_type first_interval_size, second_interval_size;
   // FIXME: we are not sure that what we do here is policy-proof.
   if (intervalized_first_operand.is_bounded()) {

@@ -73,7 +73,7 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
              next_variable_value = store.find(i);
     if (next_variable_value != store.end()) {
       FP_Interval_Type current_coefficient = lf.coefficient(Variable(i));
-      result += current_coefficient * (*next_variable_value);
+      result += current_coefficient * next_variable_value->second;
     }
   }
 
