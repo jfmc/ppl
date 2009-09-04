@@ -276,6 +276,7 @@ PIP_Tree.defs.hh \
 PIP_Tree.inlines.hh \
 PIP_Problem.defs.hh \
 PIP_Problem.inlines.hh \
+PIP_Problem.templates.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \
