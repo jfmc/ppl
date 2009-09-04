@@ -40,6 +40,10 @@ Current Contributors:
                         solver, and also most of the Java and OCaml
                         interfaces.
 
+  François Galea        [*] (University of Versailles) is working
+                        at the implementation of the Parametric Integer
+                        Programming solver.
+
   Katy Dobson           [4] (University of Leeds) is working on the
                         formalization and definition of algorithms for
                         rational grids and products of grids and
@@ -345,6 +349,7 @@ projects and organizations:
  [1] http://www.cs.unipr.it/~bagnara/
  [2] http://www.comp.leeds.ac.uk/hill/
  [3] http://www.cs.unipr.it/~zaffanella/
+ [*] http://www.prism.uvsq.fr/~fgalea/
  [4] http://www.comp.leeds.ac.uk/katyd/
  [5] http://www.lsi.upc.edu/~erodri/
  [6] http://www.math.unipr.it/~zaccagni/
