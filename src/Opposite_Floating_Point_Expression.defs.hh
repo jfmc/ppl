@@ -102,7 +102,10 @@ public:
 
   //@} // Constructors and Destructor
 
-  // TODO: comment
+  /* \brief
+     Returns a linear form in the abstract store \p store that simply
+     represents the opposite of the operand linearization.
+  */
   FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
 
   //! Swaps \p *this with \p y.

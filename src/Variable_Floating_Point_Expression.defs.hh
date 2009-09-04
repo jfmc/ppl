@@ -89,8 +89,8 @@ public:
   //! \name Constructors and Destructor
   //@{
   /*! \brief
-    Constructor with a parameter: builds the variable floating point expression
-    from \p v_index corresponding to the variable index.
+    Constructor with a parameter: builds the variable floating point 
+    expression from \p v_index corresponding to the variable index.
   */
   explicit Variable_Floating_Point_Expression(const dimension_type v_index);
 
@@ -99,7 +99,10 @@ public:
 
   //@} // Constructors and Destructor
 
-  // TODO: comment
+  /* \brief
+     Returns a linear form in the abstract store \p store corresponding to
+     <CODE>this</CODE> variable with coefficent \f$[1,1]\f$.
+  */
   FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
 
   //! Swaps \p *this with \p y.

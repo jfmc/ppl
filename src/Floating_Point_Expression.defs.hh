@@ -96,6 +96,11 @@ public:
                          const FP_Interval_Abstract_Store& store) const = 0;
 
   //!  Absolute error.
+  /* \brief
+     Initialized by computing the smallest non-zero positive
+     number in the less precise format between the analyzer and the analyzed
+     format.
+  */
   static boundary_type absolute_error;
 
   /* \brief
@@ -104,14 +109,22 @@ public:
   */  // FIXME: this may not be the best place for them.
   static bool overflows(const FP_Linear_Form& lf);
 
-  static FP_Linear_Form relative_error(const FP_Linear_Form&);
+  /* \brief
+     Returns a linear form that is used by <CODE>linearize</CODE> to account 
+     for the relative errors on \p lf.
+  */
+  static FP_Linear_Form relative_error(const FP_Linear_Form& lf);
 
-  static FP_Interval_Type intervalize(const FP_Linear_Form&,
+   /* \brief
+     Returns an interval that over approximates the range of \p lf in
+     the apstract store \p store.
+  */
+  static FP_Interval_Type intervalize(const FP_Linear_Form& lf,
                                       const FP_Interval_Abstract_Store& store);
 
 }; // class Floating_Point_Expression
 
-//! Initialize static members of the class.
+
 template <typename FP_Interval_Type, typename FP_Format>
 typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
 Floating_Point_Expression<FP_Interval_Type, FP_Format>::absolute_error =

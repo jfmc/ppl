@@ -105,7 +105,16 @@ public:
 
   //@} // Constructors and Destructor.
 
-  // TODO: comment
+  // FIXME: Modify documentation when exceptions are fixed
+  // FIXME: Add complete description of method
+  /* \brief
+     Returns a linear form in the abstract store \p store constructed by 
+     adding the following linear forms:
+
+     
+     \exception Parma_Polyhedra_Library::Linearization_Failed
+    Thrown if the method <CODE>linearize</CODE> fails.
+  */
   FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
 
   //! Swaps \p *this with \p y.
