@@ -341,10 +341,9 @@ PPL::PIP_Problem
   // First add PIP variables ...
   external_space_dim += m_pip_vars;
   // ... then add PIP parameters.
-  if (m_pip_vars > 0) {
-    parameters.insert(Variable(external_space_dim),
-                      Variable(external_space_dim - 1 + m_pip_vars));
-    external_space_dim += m_pip_vars;
+  for (dimension_type i = m_pip_params; i-- > 0; ) {
+    parameters.insert(Variable(external_space_dim));
+    ++external_space_dim;
   }
   // Update problem status.
   if (status != UNSATISFIABLE)
