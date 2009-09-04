@@ -60,6 +60,11 @@ PIP_Problem::~PIP_Problem() {
 }
 
 inline dimension_type
+PIP_Problem::space_dimension() const {
+  return external_space_dim;
+}
+
+inline dimension_type
 PIP_Problem::max_space_dimension() {
   return Constraint::max_space_dimension();
 }
@@ -72,6 +77,11 @@ PIP_Problem::constraints_begin() const {
 inline PIP_Problem::const_iterator
 PIP_Problem::constraints_end() const {
   return input_cs.end();
+}
+
+inline const Variables_Set&
+PIP_Problem::parameter_space_dimensions() const {
+  return parameters;
 }
 
 } // namespace Parma_Polyhedra_Library

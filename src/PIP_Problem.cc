@@ -321,4 +321,33 @@ PPL::PIP_Problem::Rational_Matrix::ascii_load(std::istream& s) {
   return Matrix::ascii_load(s);
 }
 
-
+void
+PPL::PIP_Problem
+::add_space_dimensions_and_embed(const dimension_type m_pip_vars,
+                                 const dimension_type m_pip_params) {
+  // The space dimension of the resulting PIP problem should not
+  // overflow the maximum allowed space dimension.
+  dimension_type available = max_space_dimension() - space_dimension();
+  bool should_throw = (m_pip_vars > available);
+  if (!should_throw) {
+    available -= m_pip_vars;
+    should_throw = (m_pip_params > available);
+  }
+  if (should_throw)
+    throw std::length_error("PPL::PIP_Problem::"
+			    "add_space_dimensions_and_embed(m_v, m_p):\n"
+			    "adding m_v+m_p new space dimensions exceeds "
+			    "the maximum allowed space dimension.");
+  // First add PIP variables ...
+  external_space_dim += m_pip_vars;
+  // ... then add PIP parameters.
+  if (m_pip_vars > 0) {
+    parameters.insert(Variable(external_space_dim),
+                      Variable(external_space_dim - 1 + m_pip_vars));
+    external_space_dim += m_pip_vars;
+  }
+  // Update problem status.
+  if (status != UNSATISFIABLE)
+    status = PARTIALLY_SATISFIABLE;
+  PPL_ASSERT(OK());
+}
