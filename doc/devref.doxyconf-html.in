@@ -314,6 +314,14 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Octagonal_Shape.inlines.hh \
                          @srcdir@/../src/Octagonal_Shape.templates.hh \
                          @srcdir@/../src/Octagonal_Shape.cc \
+                         @srcdir@/../src/PIP_Problem.cc \
+                         @srcdir@/../src/PIP_Problem.defs.hh \
+                         @srcdir@/../src/PIP_Problem.inlines.hh \
+                         @srcdir@/../src/PIP_Problem.templates.hh \
+                         @srcdir@/../src/PIP_Problem.types.hh \
+                         @srcdir@/../src/PIP_Tree.defs.hh \
+                         @srcdir@/../src/PIP_Tree.inlines.hh \
+                         @srcdir@/../src/PIP_Tree.types.hh \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox
 INPUT_ENCODING         = UTF-8
