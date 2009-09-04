@@ -1,4 +1,4 @@
-/* Testing Linear_Expression.
+/* Testing class Floating_Point_Expression ad its derivate classes.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,145 +22,34 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
+typedef Linear_Form<fl_r_oc> Interval_Linear_Form;
+typedef Division_Floating_Point_Expression<fl_r_oc, IEEE754_Single> div_fpes;
+typedef Division_Floating_Point_Expression<fl_r_oc, IEEE754_Double> div_fped;
+typedef Difference_Floating_Point_Expression<fl_r_oc, IEEE754_Single> dif_fpes;
+typedef Difference_Floating_Point_Expression<fl_r_oc, IEEE754_Double> dif_fped;
+typedef Multiplication_Floating_Point_Expression<fl_r_oc, IEEE754_Single> mul_fpes;
+typedef Multiplication_Floating_Point_Expression<fl_r_oc, IEEE754_Double> mul_fped;
+typedef Sum_Floating_Point_Expression<fl_r_oc, IEEE754_Single> sum_fpes;
+typedef Sum_Floating_Point_Expression<fl_r_oc, IEEE754_Double> sum_fped;
+typedef Constant_Floating_Point_Expression<fl_r_oc, IEEE754_Single> con_fpes;
+typedef Constant_Floating_Point_Expression<fl_r_oc, IEEE754_Double> con_fped;
+typedef Variable_Floating_Point_Expression<fl_r_oc, IEEE754_Single> var_fpes;
+typedef Variable_Floating_Point_Expression<fl_r_oc, IEEE754_Double> var_fped;
+typedef Opposite_Floating_Point_Expression<fl_r_oc, IEEE754_Single> opp_fpes;
+typedef Opposite_Floating_Point_Expression<fl_r_oc, IEEE754_Double> opp_fped;
+
 namespace {
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-// Test operator-=(Linear_Form<db_r_oc>& f1, const Linear_Form<db_r_oc>& f2):
-// in this case the dimension of f2 is strictly greater than
-// the dimension of f1.
 bool
 test01() {
-  Variable A(0);
-  Variable B(1);
-
-  Linear_Form<db_r_oc> f1 = A;
-  Linear_Form<db_r_oc> f2 = B;
-  f1 -= f2;
-
-  Linear_Form<db_r_oc> known_result = A - Linear_Form<db_r_oc>(B);
-
-  bool ok = (f1 == known_result);
-
-  nout << "*** known_result ***" << endl
-       << known_result << endl;
-
-  return ok;
+  return true;
 }
 
 bool
 test02() {
-  Variable A(15);
-  Variable B(0);
-
-  Linear_Form<db_r_oc> f1 = A;
-  Linear_Form<db_r_oc> f2 = B;
-
-  Linear_Form<db_r_oc> known_result1 = f1 + f2;
-
-  bool ok1 = (Linear_Form<db_r_oc>(A) + B == known_result1)
-    && (B + Linear_Form<db_r_oc>(A) == known_result1)
-    && (A + Linear_Form<db_r_oc>(B) == known_result1)
-    && (Linear_Form<db_r_oc>(B) + A == known_result1)
-    && (Linear_Form<db_r_oc>(B) + Linear_Form<db_r_oc>(A) == known_result1);
-
-  nout << "*** known_result1 ***" << endl
-       << known_result1 << endl;
-
-  Linear_Form<db_r_oc> known_result2 = f1 + f1;
-
-  bool ok2 = (Linear_Form<db_r_oc>(A) + A == known_result2)
-    && (A + Linear_Form<db_r_oc>(A) == known_result2)
-    && (A + Linear_Form<db_r_oc>(A) == known_result2)
-    && (Linear_Form<db_r_oc>(A) + A == known_result2)
-    && (Linear_Form<db_r_oc>(A) + Linear_Form<db_r_oc>(A) == known_result2);
-
-  nout << "*** known_result2 ***" << endl
-       << known_result2 << endl;
-
-  return ok1 && ok2;
-}
-
-bool
-test03() {
-  Variable A(15);
-  Variable B(10);
-
-  Linear_Form<db_r_oc> f1 = A;
-  Linear_Form<db_r_oc> f2 = B;
-
-  Linear_Form<db_r_oc> known_result1 = f1 - f2;
-
-  bool ok1 = (Linear_Form<db_r_oc>(A) - B == known_result1)
-    && (A - Linear_Form<db_r_oc>(B) == known_result1)
-    && (Linear_Form<db_r_oc>(A) - Linear_Form<db_r_oc>(B) == known_result1);
-
-  nout << "*** known_result1 ***" << endl
-       << known_result1 << endl;
-
-  Linear_Form<db_r_oc> known_result2 = f2 - f1;
-
-  bool ok2 = (Linear_Form<db_r_oc>(B) - A == known_result2)
-    && (B - Linear_Form<db_r_oc>(A) == known_result2)
-    && (Linear_Form<db_r_oc>(B) - Linear_Form<db_r_oc>(A) == known_result2);
-
-  nout << "*** known_result2 ***" << endl
-       << known_result2 << endl;
-
-  Linear_Form<db_r_oc> known_result3 = f1 - f1;
-
-  bool ok3 = (Linear_Form<db_r_oc>(A) - A == known_result3)
-    && (A - Linear_Form<db_r_oc>(A) == known_result3)
-    && (Linear_Form<db_r_oc>(A) - Linear_Form<db_r_oc>(A) == known_result3);
-
-  nout << "*** known_result3 ***" << endl
-       << known_result3 << endl;
-
-  return ok1 && ok2 && ok3;
-}
-
-// Test operator+=(Linear_Form<db_r_oc>& f1, const Linear_Form<db_r_oc>& f2):
-// in this case the dimension of f2 is strictly greater than
-// the dimension of f1.
-bool
-test04() {
-  Variable A(0);
-  Variable B(1);
-
-  Linear_Form<db_r_oc> f1 = A;
-  Linear_Form<db_r_oc> f2 = B;
-  f1 += f2;
-
-  Linear_Form<db_r_oc> known_result = Linear_Form<db_r_oc>(A) + B;
-
-  bool ok = (f1 == known_result);
-
-  nout << "*** known_result ***" << endl
-       << known_result << endl;
-
-  return ok;
-}
-
-bool
-test05() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(16);
-  Variable D(120);
-
-  Linear_Form<db_r_oc> f = A + 2*B + 16*C + 120*D;
-
-  Linear_Form<db_r_oc> known_result = A;
-  known_result += db_r_oc(2) * Linear_Form<db_r_oc>(B);
-  known_result += db_r_oc(16) * Linear_Form<db_r_oc>(C);
-  known_result += db_r_oc(120) * Linear_Form<db_r_oc>(D);
-
-  bool ok = (f == known_result);
-
-  nout << "*** known_result ***" << endl
-       << known_result << endl;
-
-  return ok;
+  return true;
 }
 
 } // namespace
@@ -168,7 +57,4 @@ test05() {
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
-  DO_TEST(test03);
-  DO_TEST(test04);
-  DO_TEST(test05);
 END_MAIN
