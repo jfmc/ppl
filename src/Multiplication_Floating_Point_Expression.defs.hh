@@ -115,7 +115,8 @@ public:
      \exception Parma_Polyhedra_Library::Linearization_Failed
     Thrown if the method <CODE>linearize</CODE> fails.
   */
-  FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
+  void linearize(const FP_Interval_Abstract_Store& store,
+                 FP_Linear_Form& result) const;
 
   //! Swaps \p *this with \p y.
   void swap(Multiplication_Floating_Point_Expression<FP_Interval_Type,

@@ -52,11 +52,13 @@ Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>::swap(
 }
 
 template <typename FP_Interval_Type, typename FP_Format>
-inline typename Opposite_Floating_Point_Expression<FP_Interval_Type,
-                                                   FP_Format>::FP_Linear_Form
+inline void
 Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>
-::linearize(const FP_Interval_Abstract_Store& store) const {
-  return -(operand->linearize(store));
+::linearize(const FP_Interval_Abstract_Store& store,
+            FP_Linear_Form& result) const {
+  operand->linearize(store, result);
+  result.negate();
+  return;
 }
 
 } // namespace Parma_Polyhedra_Library

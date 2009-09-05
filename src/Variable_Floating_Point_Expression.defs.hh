@@ -103,7 +103,8 @@ public:
      Returns a linear form in the abstract store \p store corresponding to
      <CODE>this</CODE> variable with coefficent \f$[1,1]\f$.
   */
-  FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
+  void linearize(const FP_Interval_Abstract_Store& store,
+                 FP_Linear_Form& result) const;
 
   //! Swaps \p *this with \p y.
   void swap(Variable_Floating_Point_Expression& y);

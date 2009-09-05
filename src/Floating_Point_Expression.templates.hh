@@ -29,9 +29,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template<typename FP_Interval_Type, typename FP_Format>
-typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::FP_Linear_Form
+void
 Floating_Point_Expression<FP_Interval_Type, FP_Format>
-::relative_error(const FP_Linear_Form& lf) {
+::relative_error(const FP_Linear_Form& lf, FP_Linear_Form& result) {
   /* FIXME: here we assume that boundary_type can represent
      (2)^(-FP_Format::fraction_bits) precisely. */
   FP_Interval_Type error_propagator(pow(-2, -FP_Format::fraction_bits));
@@ -40,12 +40,12 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
                                pow(2, -FP_Format::fraction_bits)));
 
   // Handle the inhomogeneous term.
-  FP_Interval_Type current_term = lf.inhomogeneous_term();
+  const FP_Interval_Type& current_term = lf.inhomogeneous_term();
   FP_Interval_Type current_multiplier(std::max(abs(current_term.lower()),
 					       abs(current_term.upper())));
-  FP_Linear_Form current_result_term(current_multiplier *
-                                     error_propagator);
-  FP_Linear_Form result = current_result_term;
+  FP_Linear_Form current_result_term(current_multiplier);
+  current_result_term *= error_propagator;
+  result = FP_Linear_Form(current_result_term);
 
   // Handle the other terms.
   dimension_type dimension = lf.space_dimension();
@@ -53,31 +53,34 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
     current_term = lf.coefficient(Variable(i));
     current_multiplier = FP_Interval_Type(std::max(abs(current_term.lower()),
 						   abs(current_term.upper())));
-    current_result_term = FP_Linear_Form(Variable(i)) * current_multiplier *
-                          error_propagator;
+    current_result_term = FP_Linear_Form(Variable(i));
+    current_result_term *= current_multiplier;
+    current_result_term *= error_propagator;
     result += current_result_term;
   }
 
-  return result;
+  return;
 }
 
 template<typename FP_Interval_Type, typename FP_Format>
-FP_Interval_Type
+void
 Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::intervalize(const FP_Linear_Form& lf,
-              const FP_Interval_Abstract_Store& store) {
-  FP_Interval_Type result = lf.inhomogeneous_term();
+              const FP_Interval_Abstract_Store& store,
+              FP_Interval_Type& result) {
+  result = FP_Interval_Type(lf.inhomogeneous_term());
   dimension_type dimension = lf.space_dimension();
   for (dimension_type i = 0; i < dimension; ++i) {
     typename FP_Interval_Abstract_Store::const_iterator
              next_variable_value = store.find(i);
     if (next_variable_value != store.end()) {
-      FP_Interval_Type current_coefficient = lf.coefficient(Variable(i));
-      result += current_coefficient * next_variable_value->second;
+      FP_Interval_Type current_addend = lf.coefficient(Variable(i));
+      current_addend *= next_variable_value->second;
+      result += current_addend;
     }
   }
 
-  return result;
+  return;
 }
 
 } // namespace Parma_Polyhedra_Library

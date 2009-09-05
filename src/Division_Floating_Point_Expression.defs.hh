@@ -104,7 +104,8 @@ public:
   //@} // Constructors and Destructor
 
   // TODO: comment
-  FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
+  void linearize(const FP_Interval_Abstract_Store& store,
+                 FP_Linear_Form& result) const;
 
   //! Swaps \p *this with \p y.
   void swap(Division_Floating_Point_Expression<FP_Interval_Type,

@@ -106,7 +106,8 @@ public:
      Returns a linear form in the abstract store \p store that simply
      represents the opposite of the operand linearization.
   */
-  FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
+  void linearize(const FP_Interval_Abstract_Store& store,
+                 FP_Linear_Form& result) const;
 
   //! Swaps \p *this with \p y.
   void swap(Opposite_Floating_Point_Expression& y);

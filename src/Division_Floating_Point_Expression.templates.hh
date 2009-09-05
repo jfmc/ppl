@@ -27,33 +27,32 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
-typename Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
-::FP_Linear_Form Division_Floating_Point_Expression<FP_Interval_Type,
-                                                    FP_Format>
-::linearize(const FP_Interval_Abstract_Store& store) const {
-  FP_Interval_Type intervalized_second_operand = this->intervalize(
-				second_operand->linearize(store), store);
+void Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::linearize(const FP_Interval_Abstract_Store& store,
+            FP_Linear_Form& result) const {
+  FP_Linear_Form linearized_second_operand;
+  second_operand->linearize(store, linearized_second_operand);
+  FP_Interval_Type intervalized_second_operand;
+  this->intervalize(linearized_second_operand, store,
+                    intervalized_second_operand);
+
   // Check if we may divide by zero.
   // FIXME: check the assumption that boundary_type is comparable with zero.
   if (intervalized_second_operand.lower() <= 0 &&
       intervalized_second_operand.upper() >= 0)
     throw Linearization_Failed();
 
-  FP_Linear_Form linearized_first_operand = first_operand->linearize(store);
+  first_operand->linearize(store, result);
+  FP_Linear_Form rel_error;
+  relative_error(result, rel_error);
+  result /= intervalized_second_operand;
+  rel_error /= intervalized_second_operand;
+  result += rel_error;
   FP_Interval_Type abs_error(-this->absolute_error);
   // FIXME: this may be incorrect for some policies.
   abs_error.join_assign(this->absolute_error);
-  /*
-    FIXME: since we currently lack an explicit way to divide a linear form
-    by a scalar, we temporarily multiply by 1/scalar.
-  */
-  FP_Interval_Type reversed_intervalized_second_operand =
-     (FP_Interval_Type(boundary_type(1)) / intervalized_second_operand);
-  FP_Linear_Form result = linearized_first_operand *
-                          reversed_intervalized_second_operand +
-                          relative_error(linearized_first_operand) * 
-                          reversed_intervalized_second_operand + abs_error;
-  return result;
+  result += abs_error;
+  return;
 }
 
 } // namespace Parma_Polyhedra_Library

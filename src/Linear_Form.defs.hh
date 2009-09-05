@@ -165,6 +165,16 @@ template <typename C>
 Linear_Form<C>&
 operator*=(Linear_Form<C>& f, const C& n);
 
+//! Returns the linear form \p f / \p n and addigns it to \p f.
+/*!
+   \relates Linear_Form
+   Performs the division of a linear form by a scalar. It is up to the user to
+   ensure that division by 0 is not performed.
+*/
+template <typename C>
+Linear_Form<C>&
+operator/=(Linear_Form<C>& f, const C& n);
+
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
 /*! \relates Linear_Form */
 template <typename C>
@@ -285,6 +295,9 @@ public:
   //! Returns the inhomogeneous term of \p *this.
   const C& inhomogeneous_term() const;
 
+  //! Negates all the coefficients of \p *this.
+  void negate();
+
   /*! \brief
     Returns a lower bound to the total size in bytes of the memory
     occupied by \p *this.
@@ -392,6 +405,9 @@ private:
 
   friend Linear_Form<C>&
   operator*=<C>(Linear_Form<C>& f, const C& n);
+
+  friend Linear_Form<C>&
+  operator/=<C>(Linear_Form<C>& f, const C& n);
 
   friend bool
   operator==<C>(const Linear_Form<C>& x, const Linear_Form<C>& y);

@@ -92,8 +92,8 @@ public:
      Builds a linear form that correctly approximates the floating point
      expression in the given abstract store.
   */
-  virtual FP_Linear_Form linearize(
-                         const FP_Interval_Abstract_Store& store) const = 0;
+  virtual void linearize(const FP_Interval_Abstract_Store& store,
+                         FP_Linear_Form& result) const = 0;
 
   //!  Absolute error.
   /* \brief
@@ -113,14 +113,16 @@ public:
      Returns a linear form that is used by <CODE>linearize</CODE> to account 
      for the relative errors on \p lf.
   */
-  static FP_Linear_Form relative_error(const FP_Linear_Form& lf);
+  static void relative_error(const FP_Linear_Form& lf,
+                             FP_Linear_Form& result);
 
    /* \brief
      Returns an interval that over approximates the range of \p lf in
      the apstract store \p store.
   */
-  static FP_Interval_Type intervalize(const FP_Linear_Form& lf,
-                                      const FP_Interval_Abstract_Store& store);
+  static void intervalize(const FP_Linear_Form& lf,
+                          const FP_Interval_Abstract_Store& store,
+                          FP_Interval_Type& result);
 
 }; // class Floating_Point_Expression
 

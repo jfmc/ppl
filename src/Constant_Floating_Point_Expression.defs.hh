@@ -101,7 +101,7 @@ public:
 
   //@} // Constructors and Destructor
 
-    // FIXME: Modify documentation when exceptions are fixed
+    // FIXME: Modify documentation when exceptions are fixed.
   /* \brief
      Returns a linear form in the abstract store \p store corresponding to
      an inhomogenous term which over-approximates the value of 
@@ -110,7 +110,8 @@ public:
      \exception Parma_Polyhedra_Library::Linearization_Failed
     Thrown if the method <CODE>linearize</CODE> fails.
   */
-  FP_Linear_Form linearize(const FP_Interval_Abstract_Store& store) const;
+  void linearize(const FP_Interval_Abstract_Store& store,
+                 FP_Linear_Form& result) const;
 
   //!  Swaps \p *this with \p y.
   void swap(Constant_Floating_Point_Expression& y);

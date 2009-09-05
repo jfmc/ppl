@@ -309,6 +309,16 @@ operator*=(Linear_Form<C>& f, const C& n) {
   return f;
 }
 
+/*! \relates Parma_Polyhedra_Library::Linear_Form */
+template <typename C>
+Linear_Form<C>&
+operator/=(Linear_Form<C>& f, const C& n) {
+  dimension_type f_size = f.size();
+  for (dimension_type i = f_size; i-- > 0; )
+    f[i] /= n;
+  return f;
+}
+
 /*! \relates Linear_Row */
 template <typename C>
 inline bool
@@ -323,6 +333,14 @@ operator==(const Linear_Form<C>& x, const Linear_Form<C>& y) {
       return false;
 
   return true;
+}
+
+template <typename C>
+void
+Linear_Form<C>::negate() {
+  for (dimension_type i = vec.size(); i-- > 0; )
+    neg_assign(vec[i]);
+  return;
 }
 
 template <typename C>

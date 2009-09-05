@@ -51,12 +51,12 @@ Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::swap(
 }
 
 template <typename FP_Interval_Type, typename FP_Format>
-inline typename Constant_Floating_Point_Expression<FP_Interval_Type,
-                                                   FP_Format>::FP_Linear_Form
+inline void
 Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>
-::linearize(const FP_Interval_Abstract_Store& store) const {
-  FP_Linear_Form result = FP_Linear_Form(value);
-  return result;
+::linearize(const FP_Interval_Abstract_Store& store,
+            FP_Linear_Form& result) const {
+  result = FP_Linear_Form(value);
+  return;
 }
 
 } // namespace Parma_Polyhedra_Library
