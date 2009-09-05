@@ -40,9 +40,9 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
                                pow(2, -FP_Format::fraction_bits)));
 
   // Handle the inhomogeneous term.
-  const FP_Interval_Type& current_term = lf.inhomogeneous_term();
-  FP_Interval_Type current_multiplier(std::max(abs(current_term.lower()),
-					       abs(current_term.upper())));
+  const FP_Interval_Type* current_term = &lf.inhomogeneous_term();
+  FP_Interval_Type current_multiplier(std::max(abs(current_term->lower()),
+					       abs(current_term->upper())));
   FP_Linear_Form current_result_term(current_multiplier);
   current_result_term *= error_propagator;
   result = FP_Linear_Form(current_result_term);
@@ -50,9 +50,9 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
   // Handle the other terms.
   dimension_type dimension = lf.space_dimension();
   for (dimension_type i = 0; i < dimension; ++i) {
-    current_term = lf.coefficient(Variable(i));
-    current_multiplier = FP_Interval_Type(std::max(abs(current_term.lower()),
-						   abs(current_term.upper())));
+    current_term = &lf.coefficient(Variable(i));
+    current_multiplier = FP_Interval_Type(std::max(abs(current_term->lower()),
+						   abs(current_term->upper())));
     current_result_term = FP_Linear_Form(Variable(i));
     current_result_term *= current_multiplier;
     current_result_term *= error_propagator;
