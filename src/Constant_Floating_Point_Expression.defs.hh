@@ -47,6 +47,7 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface
 
   \par Template type parameters
+
   - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain.
   - The class template type parameter \p FP_Format represents the format
@@ -104,9 +105,11 @@ public:
 
     // FIXME: Modify documentation when exceptions are fixed.
   /*! \brief
-     Returns a linear form in the abstract store \p store corresponding to
-     an inhomogenous term which over-approximates the value of
-     <CODE>this</CODE> argument.
+     Modifies a linear form \p result in the abstract store \p store
+     corresponding to an inhomogenous term which over-approximates
+     *this.value.
+     \param store The abstract store.
+     \param result The linear form that will be modified.
 
      \exception Parma_Polyhedra_Library::Linearization_Failed
     Thrown if the method <CODE>linearize</CODE> fails.

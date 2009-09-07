@@ -48,14 +48,15 @@ struct IEEE754_Double {
   static const unsigned short exponent_bias = 1023;
 };
 
-//! The floating point expression on a given format
+//! A floating point expression on a given format
 /*! \ingroup PPL_CXX_Interface
   This class offers a generic implemenation of a
-  <EM>floating point expression</EM> of format \f$\mathbf{f}\f$, this includes
-  constants, variables of format \f$\mathbf{f}\f$, binary and unary
+  <EM>floating point expression</EM> of format \f$f\f$, this includes
+  constants, variables of format \f$f\f$, binary and unary
   arithmetic operators.
 
   \par Template type parameters
+
   - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain. Here we assume that the
   value has floating point type.
@@ -88,36 +89,46 @@ public:
   virtual ~Floating_Point_Expression();
 
   /*! \brief
-     Builds a linear form that correctly approximates the floating point
-     expression in the given abstract store.
+     Modifies a linear form \p result that correctly approximates the
+     floating point expression in the given abstract store.
+     \param store The abstract store.
+     \param result The modified linear form.
   */
   virtual void linearize(const FP_Interval_Abstract_Store& store,
                          FP_Linear_Form& result) const = 0;
 
   //!  Absolute error.
-  /* \brief
+  /*! \brief
      Initialized by computing the smallest non-zero positive
      number in the less precise format between the analyzer and the analyzed
      format.
   */
-  static const boundary_type absolute_error;
+  static boundary_type absolute_error;
 
   /*! \brief
-    Verification if a given linear form overflows.
+    Verifies if a given linear form overflows.
+    \param lf The linear form to verify.
+    \return
     Return <CODE>true</CODE> if is bounded, <CODE>false</CODE> otherwise.
   */  // FIXME: this may not be the best place for them.
   static bool overflows(const FP_Linear_Form& lf);
 
   /*! \brief
-     Returns a linear form that is used by <CODE>linearize</CODE> to account
-     for the relative errors on \p lf.
+     Modifies the linear form \p result that is used by <CODE>linearize</CODE>
+     to account for the relative errors on \p lf.
+     \param lf The linear form used to compute the relative error.
+     \param result The linear form corresponding to the relative error of
+       \p lf.
   */
   static void relative_error(const FP_Linear_Form& lf,
                              FP_Linear_Form& result);
 
    /*! \brief
-     Returns an interval that over approximates the range of \p lf in
-     the apstract store \p store.
+     Modifies an interval \p result that over approximates the range of
+     \p lf in the abstract store \p store.
+     \param lf The linear form to aproximate.
+     \param store The abstract store.
+     \param result The linear form that will be modified.
    */
   static void intervalize(const FP_Linear_Form& lf,
                           const FP_Interval_Abstract_Store& store,
@@ -127,8 +138,7 @@ public:
 
 
 template <typename FP_Interval_Type, typename FP_Format>
-const typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::
-boundary_type
+typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
 Floating_Point_Expression<FP_Interval_Type, FP_Format>::absolute_error =
   std::max(static_cast<typename Floating_Point_Expression<FP_Interval_Type,
 	   FP_Format>::boundary_type>

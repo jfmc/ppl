@@ -47,6 +47,7 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface
 
   \par Template type parameters
+
   - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain.
   - The class template type parameter \p FP_Format represents the format
@@ -73,7 +74,7 @@ public:
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
-  /* \brief
+  /*! \brief
      Alias for the P_Interval_Type::boundary_type from
      Floating_Point_Expression.
   */
@@ -101,8 +102,11 @@ public:
   //@} // Constructors and Destructor
 
   /*! \brief
-     Returns a linear form in the abstract store \p store corresponding to
-     <CODE>this</CODE> variable with coefficent \f$[1,1]\f$.
+     Modifies a linear form \p result in the abstract store \p store
+     corresponding to <CODE>this</CODE> variable with coefficent \f[1,1]\f.
+
+     \param store The abstract store.
+     \param result The linear form that will be modified.
   */
   void linearize(const FP_Interval_Abstract_Store& store,
                  FP_Linear_Form& result) const;

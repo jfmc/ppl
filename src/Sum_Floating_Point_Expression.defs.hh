@@ -47,6 +47,7 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface
 
   \par Template type parameters
+
   - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain.
   - The class template type parameter \p FP_Format represents the format
@@ -106,8 +107,8 @@ public:
 
   // FIXME: Modify documentation when exceptions are fixed
   /*! \brief
-     Returns a linear form in the abstract store \p store constructed by
-     adding the following linear forms:
+     Modifies a linear form \p result in the abstract store \p store
+     constructed by adding the following linear forms:
 
      - the linearization of the <CODE>first_operand</CODE>;
      - the linearization of the <CODE>second_operand</CODE>;
