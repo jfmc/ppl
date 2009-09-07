@@ -62,6 +62,9 @@ typedef Opposite_Floating_Point_Expression<db_r_oc, IEEE754_Double> opp_fpedd;
 typedef Floating_Point_Expression<fl_r_oc, IEEE754_Single>::FP_Interval_Abstract_Store sstr;
 typedef Constant_Floating_Point_Expression<db_r_oc, IEEE754_Single>::FP_Interval_Abstract_Store dstr;
 
+typedef Floating_Point_Expression<fl_r_oc, IEEE754_Single>::FP_Linear_Form_Abstract_Store lsstr;
+typedef Constant_Floating_Point_Expression<db_r_oc, IEEE754_Single>::FP_Linear_Form_Abstract_Store ldstr;
+
 namespace {
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -101,7 +104,7 @@ test03() {
   div_fpess div(num, den);
   try {
     Float_Interval_Linear_Form result;
-    div.linearize(sstr(), result);
+    div.linearize(sstr(), lsstr(), result);
   }
   catch (Linearization_Failed e) {
     return true;
@@ -120,7 +123,7 @@ test04() {
   dif_fpess* dif = new dif_fpess(var1, con);
   mul_fpess mul(dif, var0);
   Float_Interval_Linear_Form result;
-  mul.linearize(store, result);
+  mul.linearize(store, lsstr(), result);
   nout << result << endl;
   fl_r_oc kr(-std::numeric_limits<float>::denorm_min());
   kr.join_assign(std::numeric_limits<float>::denorm_min());
@@ -140,7 +143,7 @@ test05() {
   sum_fpedd* sum = new sum_fpedd(con, var1);
   mul_fpedd mul(var0, sum);
   Double_Interval_Linear_Form result;
-  mul.linearize(store, result);
+  mul.linearize(store, ldstr(), result);
   nout << result << endl;
   db_r_oc kr(-std::numeric_limits<double>::denorm_min());
   kr.join_assign(std::numeric_limits<double>::denorm_min());

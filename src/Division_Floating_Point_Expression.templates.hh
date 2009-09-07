@@ -28,12 +28,13 @@ namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
 void Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
-::linearize(const FP_Interval_Abstract_Store& store,
+::linearize(const FP_Interval_Abstract_Store& int_store,
+            const FP_Linear_Form_Abstract_Store& lf_store,
             FP_Linear_Form& result) const {
   FP_Linear_Form linearized_second_operand;
-  second_operand->linearize(store, linearized_second_operand);
+  second_operand->linearize(int_store, lf_store, linearized_second_operand);
   FP_Interval_Type intervalized_second_operand;
-  this->intervalize(linearized_second_operand, store,
+  this->intervalize(linearized_second_operand, int_store,
                     intervalized_second_operand);
 
   // Check if we may divide by zero.
@@ -42,7 +43,7 @@ void Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
       intervalized_second_operand.upper() >= 0)
     throw Linearization_Failed();
 
-  first_operand->linearize(store, result);
+  first_operand->linearize(int_store, lf_store, result);
   FP_Linear_Form rel_error;
   relative_error(result, rel_error);
   result /= intervalized_second_operand;

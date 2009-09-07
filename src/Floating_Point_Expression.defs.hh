@@ -78,8 +78,12 @@ public:
   //! Alias for a linear form with template argument \p FP_Iterval_Type.
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
 
-  //! Alias for a map that associates an index to a type.
+  //! Alias for a map that associates a variable index to an interval.
   typedef std::map<dimension_type, FP_Interval_Type> FP_Interval_Abstract_Store;
+
+  //! Alias for a map that associates a variable index to a linear form.
+  typedef std::map<dimension_type, FP_Linear_Form>
+          FP_Linear_Form_Abstract_Store;
 
   typedef typename FP_Interval_Type::boundary_type boundary_type;
 
@@ -94,7 +98,8 @@ public:
      \param store The abstract store.
      \param result The modified linear form.
   */
-  virtual void linearize(const FP_Interval_Abstract_Store& store,
+  virtual void linearize(const FP_Interval_Abstract_Store& int_store,
+                         const FP_Linear_Form_Abstract_Store& lf_store,
                          FP_Linear_Form& result) const = 0;
 
   //!  Absolute error.

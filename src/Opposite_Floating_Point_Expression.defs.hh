@@ -73,6 +73,10 @@ public:
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
 
+  typedef typename
+  Floating_Point_Expression<FP_Interval_Type, FP_Format>::
+  FP_Linear_Form_Abstract_Store FP_Linear_Form_Abstract_Store;
+
   /* \brief
      Alias for the P_Interval_Type::boundary_type from
      Floating_Point_Expression.
@@ -106,7 +110,8 @@ public:
      Returns a linear form in the abstract store \p store that simply
      represents the opposite of the operand linearization.
   */
-  void linearize(const FP_Interval_Abstract_Store& store,
+  void linearize(const FP_Interval_Abstract_Store& int_store,
+                 const FP_Linear_Form_Abstract_Store& lf_store,
                  FP_Linear_Form& result) const;
 
   //! Swaps \p *this with \p y.
