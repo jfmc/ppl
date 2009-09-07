@@ -121,10 +121,8 @@ public:
      \param store The abstract store.
      \param result The linear form that will be modified.
 
-
      \exception Parma_Polyhedra_Library::Linearization_Failed
-     Thrown if \f$0 \in\f$
-      \p *this.second_operand.
+     Thrown if \f$0 \f$ is into second operand range.
   */
   void linearize(const FP_Interval_Abstract_Store& int_store,
                  const FP_Linear_Form_Abstract_Store& lf_store,

@@ -51,8 +51,8 @@ struct IEEE754_Double {
 //! A floating point expression on a given format
 /*! \ingroup PPL_CXX_Interface
   This class offers a generic implemenation of a
-  <EM>floating point expression</EM> of format \f$f\f$, this includes
-  constants, variables of format \f$f\f$, binary and unary
+  <EM>floating point expression</EM> of format \f$$\mathbf{f}$\f$, this 
+  includes constants, variables of format \f$$\mathbf{f}$\f$, binary and unary
   arithmetic operators.
 
   \par Template type parameters

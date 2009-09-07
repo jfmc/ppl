@@ -106,9 +106,10 @@ public:
 
   //@} // Constructors and Destructor
 
+  //! Linearization of a variable.
   /*! \brief
      Modifies a linear form \p result in the abstract store \p store
-     corresponding to <CODE>this</CODE> variable with coefficent \f[1,1]\f.
+     corresponding to <CODE>this</CODE> variable with coefficent \f$[1,1]\f$.
 
      \param store The abstract store.
      \param result The linear form that will be modified.
