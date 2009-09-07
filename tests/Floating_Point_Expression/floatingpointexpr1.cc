@@ -128,7 +128,8 @@ test04() {
   fl_r_oc kr(-std::numeric_limits<float>::denorm_min());
   kr.join_assign(std::numeric_limits<float>::denorm_min());
   Float_Interval_Linear_Form known_result(kr);
-  nout << known_result << endl;
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
   return result == known_result;
 }
 
@@ -148,7 +149,35 @@ test05() {
   db_r_oc kr(-std::numeric_limits<double>::denorm_min());
   kr.join_assign(std::numeric_limits<double>::denorm_min());
   Double_Interval_Linear_Form known_result(kr);
-  nout << known_result << endl;
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
+  return result == known_result;
+}
+
+bool
+test06() {
+  sstr store;
+  fl_r_oc tmp = fl_r_oc(0);
+  tmp.join_assign(1);
+  store[0] = tmp;
+  store[1] = fl_r_oc(2);
+  var_fpess* var0 = new var_fpess(0);
+  var_fpess* var1 = new var_fpess(1);
+  mul_fpess mul(var0, var1);
+  Float_Interval_Linear_Form result;
+  mul.linearize(store, result);
+  tmp = fl_r_oc(-std::numeric_limits<float>::denorm_min());
+  tmp.join_assign(std::numeric_limits<float>::denorm_min());
+  float exp = pow(2, -22);
+  fl_r_oc coeff = fl_r_oc(-exp);
+  coeff.join_assign(exp);
+  coeff += fl_r_oc(2);
+  Float_Interval_Linear_Form known_result =
+  Float_Interval_Linear_Form(Variable(0));
+  known_result *= coeff;
+  known_result += tmp;
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
   return result == known_result;
 }
 
@@ -160,4 +189,5 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN
