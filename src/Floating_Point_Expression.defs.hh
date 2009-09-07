@@ -56,19 +56,18 @@ struct IEEE754_Double {
   arithmetic operators.
 
   \par Template type parameters
-  The class template type parameter \p FP_Interval_Type represents the type
+  - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain. Here we assume that the
   value has floating point type.
-  The class template type parameter \p FP_Format represents the format
+  - The class template type parameter \p FP_Format represents the format
   of the floating point expression used in the concrete domain.
   This parameter must be a struct which contains \f$3\f$ fields:
-
-  - <CODE>static const unsigned short fraction_bits</CODE> that represents the
-    number of bits of the fraction.
-  - <CODE>static const unsigned short exponent_bits</CODE> that represents the
-    number of bits of the exponent.
-  - <CODE>static const unsigned short exponent_bias</CODE> that represents the
-    value of exponent bias.
+    -# <CODE>static const unsigned short fraction_bits</CODE> that represents
+    the number of bits of the fraction.
+    -# <CODE>static const unsigned short exponent_bits</CODE> that represents
+    the number of bits of the exponent.
+    -# <CODE>static const unsigned short exponent_bias</CODE> that represents
+    the value of exponent bias.
 */
 template <typename FP_Interval_Type, typename FP_Format>
 class Floating_Point_Expression {
@@ -88,7 +87,7 @@ public:
   //! Destructor.
   virtual ~Floating_Point_Expression();
 
-  /* \brief
+  /*! \brief
      Builds a linear form that correctly approximates the floating point
      expression in the given abstract store.
   */
@@ -103,23 +102,23 @@ public:
   */
   static const boundary_type absolute_error;
 
-  /* \brief
+  /*! \brief
     Verification if a given linear form overflows.
     Return <CODE>true</CODE> if is bounded, <CODE>false</CODE> otherwise.
   */  // FIXME: this may not be the best place for them.
   static bool overflows(const FP_Linear_Form& lf);
 
-  /* \brief
-     Returns a linear form that is used by <CODE>linearize</CODE> to account 
+  /*! \brief
+     Returns a linear form that is used by <CODE>linearize</CODE> to account
      for the relative errors on \p lf.
   */
   static void relative_error(const FP_Linear_Form& lf,
                              FP_Linear_Form& result);
 
-   /* \brief
+   /*! \brief
      Returns an interval that over approximates the range of \p lf in
      the apstract store \p store.
-  */
+   */
   static void intervalize(const FP_Linear_Form& lf,
                           const FP_Interval_Abstract_Store& store,
                           FP_Interval_Type& result);

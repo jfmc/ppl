@@ -45,10 +45,11 @@ namespace Parma_Polyhedra_Library {
 
 //! A generic Constant Floating Point Expression
 /*! \ingroup PPL_CXX_interface
-  The class template type parameter \p FP_Interval_Type represents the type
+
+  \par Template type parameters
+  - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain.
-  
-  The class template type parameter \p FP_Format represents the format
+  - The class template type parameter \p FP_Format represents the format
   of the floating point variable used in the concrete domain.
  */
 template <typename FP_Interval_Type, typename FP_Format>
@@ -57,31 +58,31 @@ class Constant_Floating_Point_Expression
 
 public:
 
-  /* \brief
-     Alias for the Linear_Form<FP_Interval_Type> from 
+  /*! \brief
+     Alias for the Linear_Form<FP_Interval_Type> from
      Floating_Point_Expression
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Linear_Form FP_Linear_Form;
 
-  /* \brief
-     Alias for the std::map<dimension_type, FP_Interval_Type> from 
+  /*! \brief
+     Alias for the std::map<dimension_type, FP_Interval_Type> from
      Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
 
-  /* \brief
-     Alias for the P_Interval_Type::boundary_type from 
+  /*! \brief
+     Alias for the P_Interval_Type::boundary_type from
      Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
   boundary_type;
 
-  /* \brief
+  /*! \brief
      Alias for the P_Interval_Type::info_type from Floating_Point_Expression.
   */
   typedef typename
@@ -90,8 +91,8 @@ public:
   //! \name Constructors and Destructor
   //@{
   /*! \brief
-    Constructor with two parameters: builds the constant floating point 
-    expression from \p lower_bound and \p upper_bound. 
+    Constructor with two parameters: builds the constant floating point
+    expression from \p lower_bound and \p upper_bound.
   */
   Constant_Floating_Point_Expression(const boundary_type lower_bound,
                                      const boundary_type upper_bound);
@@ -102,10 +103,10 @@ public:
   //@} // Constructors and Destructor
 
     // FIXME: Modify documentation when exceptions are fixed.
-  /* \brief
+  /*! \brief
      Returns a linear form in the abstract store \p store corresponding to
-     an inhomogenous term which over-approximates the value of 
-     <CODE>this</CODE> argument. 
+     an inhomogenous term which over-approximates the value of
+     <CODE>this</CODE> argument.
 
      \exception Parma_Polyhedra_Library::Linearization_Failed
     Thrown if the method <CODE>linearize</CODE> fails.

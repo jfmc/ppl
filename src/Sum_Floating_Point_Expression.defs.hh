@@ -45,10 +45,11 @@ namespace Parma_Polyhedra_Library {
 
 //! A generic Sum Floating Point Expression
 /*! \ingroup PPL_CXX_interface
-  The class template type parameter \p FP_Interval_Type represents the type
+
+  \par Template type parameters
+  - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain.
-  
-  The class template type parameter \p FP_Format represents the format
+  - The class template type parameter \p FP_Format represents the format
   of the floating point variable used in the concrete domain.
 */
 template <typename FP_Interval_Type, typename FP_Format>
@@ -57,31 +58,31 @@ class Sum_Floating_Point_Expression
 
 public:
 
-  /* \brief
-     Alias for the Linear_Form<FP_Interval_Type> from 
+  /*! \brief
+     Alias for the Linear_Form<FP_Interval_Type> from
      Floating_Point_Expression
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>
   ::FP_Linear_Form FP_Linear_Form;
 
-  /* \brief
-     Alias for the std::map<dimension_type, FP_Interval_Type> from 
+  /*! \brief
+     Alias for the std::map<dimension_type, FP_Interval_Type> from
      Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>
   ::FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
 
-  /* \brief
-     Alias for the P_Interval_Type::boundary_type from 
+  /*! \brief
+     Alias for the P_Interval_Type::boundary_type from
      Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
   boundary_type;
 
-  /* \brief
+  /*! \brief
      Alias for the P_Interval_Type::info_type from Floating_Point_Expression.
   */
   typedef typename
@@ -104,8 +105,8 @@ public:
   //@} // Constructors and Destructor
 
   // FIXME: Modify documentation when exceptions are fixed
-  /* \brief
-     Returns a linear form in the abstract store \p store constructed by 
+  /*! \brief
+     Returns a linear form in the abstract store \p store constructed by
      adding the following linear forms:
 
      - the linearization of the <CODE>first_operand</CODE>;

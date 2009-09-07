@@ -45,10 +45,11 @@ namespace Parma_Polyhedra_Library {
 
 //! A generic Variable Floating Point Expression
 /*! \ingroup PPL_CXX_interface
-  The class template type parameter \p FP_Interval_Type represents the type
+
+  \par Template type parameters
+  - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain.
-  
-  The class template type parameter \p FP_Format represents the format
+  - The class template type parameter \p FP_Format represents the format
   of the floating point variable used in the concrete domain.
  */
 template <typename FP_Interval_Type, typename FP_Format>
@@ -57,30 +58,30 @@ class Variable_Floating_Point_Expression
 
 public:
 
-  /* \brief
-     Alias for the Linear_Form<FP_Interval_Type> from 
+  /*! \brief
+     Alias for the Linear_Form<FP_Interval_Type> from
      Floating_Point_Expression
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Linear_Form FP_Linear_Form;
 
-  /* \brief
-     Alias for the std::map<dimension_type, FP_Interval_Type> from 
+  /*! \brief
+     Alias for the std::map<dimension_type, FP_Interval_Type> from
      Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
   /* \brief
-     Alias for the P_Interval_Type::boundary_type from 
+     Alias for the P_Interval_Type::boundary_type from
      Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
   boundary_type;
 
-  /* \brief
+  /*! \brief
      Alias for the P_Interval_Type::info_type from Floating_Point_Expression.
   */
   typedef typename
@@ -89,7 +90,7 @@ public:
   //! \name Constructors and Destructor
   //@{
   /*! \brief
-    Constructor with a parameter: builds the variable floating point 
+    Constructor with a parameter: builds the variable floating point
     expression from \p v_index corresponding to the variable index.
   */
   explicit Variable_Floating_Point_Expression(const dimension_type v_index);
@@ -99,7 +100,7 @@ public:
 
   //@} // Constructors and Destructor
 
-  /* \brief
+  /*! \brief
      Returns a linear form in the abstract store \p store corresponding to
      <CODE>this</CODE> variable with coefficent \f$[1,1]\f$.
   */
