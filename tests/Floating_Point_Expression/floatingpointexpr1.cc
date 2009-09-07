@@ -97,16 +97,56 @@ test02() {
 bool
 test03() {
   con_fpess* num = new con_fpess(3, 5);
-  con_fpess* den = new con_fpess(-1,1);
+  con_fpess* den = new con_fpess(-1, 1);
   div_fpess div(num, den);
   try {
-    Float_Interval_Linear_Form res;
-    div.linearize(sstr(), res);
+    Float_Interval_Linear_Form result;
+    div.linearize(sstr(), result);
   }
   catch (Linearization_Failed e) {
     return true;
   }
   return false;
+}
+
+bool
+test04() {
+  sstr store;
+  store[0] = fl_r_oc(0);
+  store[1] = fl_r_oc(10);
+  con_fpess* con = new con_fpess(5, 6);
+  var_fpess* var0 = new var_fpess(0);
+  var_fpess* var1 = new var_fpess(1);
+  dif_fpess* dif = new dif_fpess(var1, con);
+  mul_fpess mul(dif, var0);
+  Float_Interval_Linear_Form result;
+  mul.linearize(store, result);
+  nout << result << endl;
+  fl_r_oc kr(-std::numeric_limits<float>::denorm_min());
+  kr.join_assign(std::numeric_limits<float>::denorm_min());
+  Float_Interval_Linear_Form known_result(kr);
+  nout << known_result << endl;
+  return result == known_result;
+}
+
+bool
+test05() {
+  dstr store;
+  store[0] = db_r_oc(0);
+  store[1] = db_r_oc(4);
+  con_fpedd* con = new con_fpedd(5, 6);
+  var_fpedd* var0 = new var_fpedd(0);
+  var_fpedd* var1 = new var_fpedd(1);
+  sum_fpedd* sum = new sum_fpedd(con, var1);
+  mul_fpedd mul(var0, sum);
+  Double_Interval_Linear_Form result;
+  mul.linearize(store, result);
+  nout << result << endl;
+  db_r_oc kr(-std::numeric_limits<double>::denorm_min());
+  kr.join_assign(std::numeric_limits<double>::denorm_min());
+  Double_Interval_Linear_Form known_result(kr);
+  nout << known_result << endl;
+  return result == known_result;
 }
 
 } // namespace
@@ -115,4 +155,6 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN

@@ -325,12 +325,26 @@ inline bool
 operator==(const Linear_Form<C>& x, const Linear_Form<C>& y) {
   const dimension_type x_size = x.size();
   const dimension_type y_size = y.size();
-  if (x_size != y_size)
-    return false;
+  if (x_size >= y_size) {
+    for (dimension_type i = y_size; i-- > 0; )
+      if (x[i] != y[i])
+        return false;
 
-  for (dimension_type i = x_size; i-- > 0; )
-    if (x[i] != y[i])
-      return false;
+    for (dimension_type i = x_size; --i > y_size; )
+      if (x[i] != x.zero)
+        return false;
+
+  }
+  else {
+    for (dimension_type i = x_size; i-- > 0; )
+      if (x[i] != y[i])
+        return false;
+
+    for (dimension_type i = y_size; --i > x_size; )
+      if (y[i] != x.zero)
+        return false;
+
+  }
 
   return true;
 }
