@@ -165,7 +165,7 @@ test06() {
   var_fpess* var1 = new var_fpess(1);
   mul_fpess mul(var0, var1);
   Float_Interval_Linear_Form result;
-  mul.linearize(store, result);
+  mul.linearize(store, lsstr(), result);
   tmp = fl_r_oc(-std::numeric_limits<float>::denorm_min());
   tmp.join_assign(std::numeric_limits<float>::denorm_min());
   float exp = pow(2, -22);

@@ -34,7 +34,7 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::relative_error(const FP_Linear_Form& lf, FP_Linear_Form& result) {
   /* FIXME: here we assume that boundary_type can represent
      (2)^(-FP_Format::fraction_bits) precisely. */
-  FP_Interval_Type error_propagator(pow(-2, -FP_Format::fraction_bits));
+  FP_Interval_Type error_propagator(-pow(2, -FP_Format::fraction_bits));
   // FIXME: this may be incorrect for some policies.
   error_propagator.join_assign(FP_Interval_Type(
                                pow(2, -FP_Format::fraction_bits)));
