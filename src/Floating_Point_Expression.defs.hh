@@ -101,7 +101,7 @@ public:
      number in the less precise format between the analyzer and the analyzed
      format.
   */
-  static boundary_type absolute_error;
+  static const boundary_type absolute_error;
 
   /* \brief
     Verification if a given linear form overflows.
@@ -128,7 +128,8 @@ public:
 
 
 template <typename FP_Interval_Type, typename FP_Format>
-typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
+const typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::
+boundary_type
 Floating_Point_Expression<FP_Interval_Type, FP_Format>::absolute_error =
   std::max(static_cast<typename Floating_Point_Expression<FP_Interval_Type,
 	   FP_Format>::boundary_type>
