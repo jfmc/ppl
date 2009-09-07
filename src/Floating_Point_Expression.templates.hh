@@ -73,11 +73,10 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
   for (dimension_type i = 0; i < dimension; ++i) {
     typename FP_Interval_Abstract_Store::const_iterator
              next_variable_value = store.find(i);
-    if (next_variable_value != store.end()) {
-      FP_Interval_Type current_addend = lf.coefficient(Variable(i));
-      current_addend *= next_variable_value->second;
-      result += current_addend;
-    }
+    assert(next_variable_value != store.end());
+    FP_Interval_Type current_addend = lf.coefficient(Variable(i));
+    current_addend *= next_variable_value->second;
+    result += current_addend;
   }
 
   return;
