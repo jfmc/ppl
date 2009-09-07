@@ -59,6 +59,9 @@ typedef Variable_Floating_Point_Expression<db_r_oc, IEEE754_Double> var_fpedd;
 typedef Opposite_Floating_Point_Expression<db_r_oc, IEEE754_Single> opp_fpeds;
 typedef Opposite_Floating_Point_Expression<db_r_oc, IEEE754_Double> opp_fpedd;
 
+typedef Floating_Point_Expression<fl_r_oc, IEEE754_Single>::FP_Interval_Abstract_Store sstr;
+typedef Constant_Floating_Point_Expression<db_r_oc, IEEE754_Single>::FP_Interval_Abstract_Store dstr;
+
 namespace {
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -93,7 +96,17 @@ test02() {
 
 bool
 test03() {
-  return true;
+  con_fpess* num = new con_fpess(3, 5);
+  con_fpess* den = new con_fpess(-1,1);
+  div_fpess div(num, den);
+  try {
+    Float_Interval_Linear_Form res;
+    div.linearize(sstr(), res);
+  }
+  catch (Linearization_Failed e) {
+    return true;
+  }
+  return false;
 }
 
 } // namespace
