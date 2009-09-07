@@ -65,16 +65,26 @@ typedef Constant_Floating_Point_Expression<db_r_oc, IEEE754_Single>::FP_Interval
 typedef Floating_Point_Expression<fl_r_oc, IEEE754_Single>::FP_Linear_Form_Abstract_Store lsstr;
 typedef Constant_Floating_Point_Expression<db_r_oc, IEEE754_Single>::FP_Linear_Form_Abstract_Store ldstr;
 
+//FIXME: Why the analyzed format can't be IEEE754_Double?
+typedef Floating_Point_Expression<fl_r_oc, IEEE754_Double>::FP_Interval_Abstract_Store sdtr;
+typedef Constant_Floating_Point_Expression<db_r_oc, IEEE754_Double>::FP_Interval_Abstract_Store ddtr;
+
+typedef Floating_Point_Expression<fl_r_oc, IEEE754_Double>::FP_Linear_Form_Abstract_Store lsdtr;
+typedef Constant_Floating_Point_Expression<db_r_oc, IEEE754_Double>::FP_Linear_Form_Abstract_Store lddtr;
+
 namespace {
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
+// Tests absolute errors.
 bool
 test01() {
   nout << std::numeric_limits<float>::denorm_min() << endl;
   nout << div_fpess::absolute_error << endl;
   nout << div_fpesd::absolute_error << endl;
   nout << div_fpeds::absolute_error << endl;
+  nout << div_fpedd::absolute_error << endl;
+
   if (div_fpess::absolute_error != std::numeric_limits<float>::denorm_min())
     return false;
 
@@ -84,21 +94,15 @@ test01() {
   if (div_fpeds::absolute_error != std::numeric_limits<float>::denorm_min())
     return false;
 
-  return true;
-}
-
-bool
-test02() {
-  nout << std::numeric_limits<double>::denorm_min() << endl;
-  nout << div_fpedd::absolute_error << endl;
   if (div_fpedd::absolute_error != std::numeric_limits<double>::denorm_min())
     return false;
 
   return true;
 }
 
+// Tests division by zero.
 bool
-test03() {
+test02() {
   con_fpess* num = new con_fpess(3, 5);
   con_fpess* den = new con_fpess(-1, 1);
   div_fpess div(num, den);
@@ -107,53 +111,117 @@ test03() {
     div.linearize(sstr(), lsstr(), result);
   }
   catch (Linearization_Failed e) {
+    nout << "Division by zero." << endl;
     return true;
   }
   return false;
 }
 
+// Tests multiplication by zero.
+bool
+test03() {
+  sstr store_fl;
+  store_fl[0] = fl_r_oc(0);
+  store_fl[1] = fl_r_oc(10);
+  con_fpess* con_fl = new con_fpess(5, 6);
+  var_fpess* var0_fl = new var_fpess(0);
+  var_fpess* var1_fl = new var_fpess(1);
+  dif_fpess* dif_fl = new dif_fpess(var1_fl, con_fl);
+  mul_fpess mul_fl(dif_fl, var0_fl);
+  Float_Interval_Linear_Form result_fl;
+  mul_fl.linearize(store_fl, lsstr(), result_fl);
+
+  fl_r_oc kr_fl(-std::numeric_limits<float>::denorm_min());
+  kr_fl.join_assign(std::numeric_limits<float>::denorm_min());
+  Float_Interval_Linear_Form known_result_fl(kr_fl);
+
+  nout << "*** known_result_fl ***" << endl
+       << known_result_fl << endl;
+  bool ok_fl = (result_fl == known_result_fl);
+
+  dstr store_db;
+  store_db[0] = db_r_oc(0);
+  store_db[1] = db_r_oc(4);
+  con_fpedd* con_db = new con_fpedd(5, 6);
+  var_fpedd* var0_db = new var_fpedd(0);
+  var_fpedd* var1_db = new var_fpedd(1);
+  sum_fpedd* sum_db = new sum_fpedd(con_db, var1_db);
+  mul_fpedd mul_db(var0_db, sum_db);
+  Double_Interval_Linear_Form result_db;
+  mul_db.linearize(store_db, ldstr(), result_db);
+
+  db_r_oc kr_db(-std::numeric_limits<double>::denorm_min());
+  kr_db.join_assign(std::numeric_limits<double>::denorm_min());
+  Double_Interval_Linear_Form known_result_db(kr_db);
+
+  nout << "*** known_result_db ***" << endl
+       << known_result_db << endl;
+  bool ok_db = (result_db == known_result_db);
+
+  return ok_fl && ok_db;
+}
+
+// Tests the linearization of A + B.
 bool
 test04() {
-  sstr store;
-  store[0] = fl_r_oc(0);
-  store[1] = fl_r_oc(10);
-  con_fpess* con = new con_fpess(5, 6);
-  var_fpess* var0 = new var_fpess(0);
-  var_fpess* var1 = new var_fpess(1);
-  dif_fpess* dif = new dif_fpess(var1, con);
-  mul_fpess mul(dif, var0);
-  Float_Interval_Linear_Form result;
-  mul.linearize(store, lsstr(), result);
-  nout << result << endl;
-  fl_r_oc kr(-std::numeric_limits<float>::denorm_min());
-  kr.join_assign(std::numeric_limits<float>::denorm_min());
-  Float_Interval_Linear_Form known_result(kr);
+  dstr store;
+  db_r_oc tmp;
+  store[0] = tmp;
+  store[1] = tmp;
+  var_fpeds* var0 = new var_fpeds(0);
+  var_fpeds* var1 = new var_fpeds(1);
+  sum_fpeds sum(var0, var1);
+  Double_Interval_Linear_Form result;
+  sum.linearize(store, ldstr(), result);
+
+  Variable A(0);
+  Variable B(1);
+  Double_Interval_Linear_Form known_result = Double_Interval_Linear_Form(A);
+  float exp = pow(2, -23);
+  tmp = db_r_oc(1 - exp);
+  tmp.join_assign(1 + exp);
+  known_result *= tmp;
+  known_result += tmp * Linear_Form<db_r_oc>(B);
+  tmp = db_r_oc(-std::numeric_limits<float>::denorm_min());
+  tmp.join_assign(std::numeric_limits<float>::denorm_min());
+  known_result += tmp;
+
   nout << "*** known_result ***" << endl
        << known_result << endl;
   return result == known_result;
 }
 
+// Tests the linearization of A - B.
 bool
 test05() {
-  dstr store;
-  store[0] = db_r_oc(0);
-  store[1] = db_r_oc(4);
-  con_fpedd* con = new con_fpedd(5, 6);
-  var_fpedd* var0 = new var_fpedd(0);
-  var_fpedd* var1 = new var_fpedd(1);
-  sum_fpedd* sum = new sum_fpedd(con, var1);
-  mul_fpedd mul(var0, sum);
-  Double_Interval_Linear_Form result;
-  mul.linearize(store, ldstr(), result);
-  nout << result << endl;
-  db_r_oc kr(-std::numeric_limits<double>::denorm_min());
-  kr.join_assign(std::numeric_limits<double>::denorm_min());
-  Double_Interval_Linear_Form known_result(kr);
+  sstr store;
+  fl_r_oc tmp;
+  store[0] = tmp;
+  store[1] = tmp;
+  var_fpess* var0 = new var_fpess(0);
+  var_fpess* var1 = new var_fpess(1);
+  dif_fpess dif(var0, var1);
+  Float_Interval_Linear_Form result;
+  dif.linearize(store, lsstr(), result);
+
+  Variable A(0);
+  Variable B(1);
+  Float_Interval_Linear_Form known_result = Float_Interval_Linear_Form(A);
+  float exp = pow(2, -23);
+  tmp = fl_r_oc(1 - exp);
+  tmp.join_assign(1 + exp);
+  known_result *= tmp;
+  known_result -= tmp * Linear_Form<fl_r_oc>(B);
+  tmp = fl_r_oc(-std::numeric_limits<float>::denorm_min());
+  tmp.join_assign(std::numeric_limits<float>::denorm_min());
+  known_result += tmp;
+
   nout << "*** known_result ***" << endl
        << known_result << endl;
   return result == known_result;
 }
 
+// Tests the linearization of A * B where A = [0, 1] and B = [2, 2].
 bool
 test06() {
   sstr store;
@@ -166,16 +234,49 @@ test06() {
   mul_fpess mul(var0, var1);
   Float_Interval_Linear_Form result;
   mul.linearize(store, lsstr(), result);
+
   tmp = fl_r_oc(-std::numeric_limits<float>::denorm_min());
   tmp.join_assign(std::numeric_limits<float>::denorm_min());
   float exp = pow(2, -22);
-  fl_r_oc coeff = fl_r_oc(-exp);
-  coeff.join_assign(exp);
-  coeff += fl_r_oc(2);
+  fl_r_oc coeff = fl_r_oc(2 - exp);
+  coeff.join_assign(2 + exp);
+  //fl_r_oc coeff = fl_r_oc(-exp);
+  //coeff.join_assign(exp);
+  //coeff += fl_r_oc(2);
   Float_Interval_Linear_Form known_result =
   Float_Interval_Linear_Form(Variable(0));
   known_result *= coeff;
   known_result += tmp;
+
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
+  return result == known_result;
+}
+
+// Tests the linearization of A / B where A = [1, 4] and B = [2, 2].
+bool
+test07() {
+  ddtr store;
+  db_r_oc tmp = db_r_oc(0);
+  tmp.join_assign(1);
+  store[0] = tmp;
+  store[1] = db_r_oc(2);
+  var_fpedd* var0 = new var_fpedd(0);
+  var_fpedd* var1 = new var_fpedd(1);
+  div_fpedd div(var0, var1);
+  Double_Interval_Linear_Form result;
+  div.linearize(store, lddtr(), result);
+
+  tmp = db_r_oc(-std::numeric_limits<double>::denorm_min());
+  tmp.join_assign(std::numeric_limits<double>::denorm_min());
+  float exp = pow(2, -53);
+  db_r_oc coeff = db_r_oc(1 / 2.0 - exp);
+  coeff.join_assign(1 / 2.0 + exp);
+  Double_Interval_Linear_Form known_result =
+  Double_Interval_Linear_Form(Variable(0));
+  known_result *= coeff;
+  known_result += tmp;
+
   nout << "*** known_result ***" << endl
        << known_result << endl;
   return result == known_result;
@@ -190,4 +291,5 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN
