@@ -224,7 +224,7 @@ test05() {
 bool
 test06() {
   sstr store;
-  fl_r_oc tmp = fl_r_oc(0);
+  fl_r_oc tmp(0);
   tmp.join_assign(1);
   store[0] = tmp;
   store[1] = fl_r_oc(2);
@@ -256,7 +256,7 @@ test06() {
 bool
 test07() {
   ddtr store;
-  db_r_oc tmp = db_r_oc(0);
+  db_r_oc tmp(0);
   tmp.join_assign(1);
   store[0] = tmp;
   store[1] = db_r_oc(2);
@@ -281,6 +281,35 @@ test07() {
   return result == known_result;
 }
 
+// Tests the linearization of [1/4, 1/2] * (-A) where A = [1, 10].
+bool
+test08() {
+  sdtr store;
+  fl_r_oc tmp(1);
+  tmp.join_assign(10);
+  store[0] = tmp;
+  con_fpesd* con = new con_fpesd(1 / 4.0, 1 / 2.0);
+  var_fpesd* var0 = new var_fpesd(0);
+  opp_fpesd* opp = new opp_fpesd(var0);
+  mul_fpesd mul(con, opp);
+  Float_Interval_Linear_Form result;
+  mul.linearize(store, lsdtr(), result);
+
+  Variable A(0);
+  Float_Interval_Linear_Form known_result = Float_Interval_Linear_Form(A);
+  float exp = pow(2, -53);
+  tmp = fl_r_oc(-1 / 2.0 - exp);
+  tmp.join_assign(-1 / 4.0 + exp);
+  known_result *= tmp;
+  tmp = fl_r_oc(-std::numeric_limits<float>::denorm_min());
+  tmp.join_assign(std::numeric_limits<float>::denorm_min());
+  known_result += tmp;
+
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
+  return result == known_result;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -291,4 +320,5 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN
