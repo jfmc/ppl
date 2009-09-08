@@ -31,17 +31,11 @@ PPL::IO_Operators::operator<<(std::ostream& s, const PIP_Problem& /*p*/) {
  return s;
 }
 
-void
-PPL::PIP_Problem::Rational_Matrix::normalize() {
-  //FIXME
-}
-
 PPL::PIP_Problem::PIP_Problem(dimension_type dim)
   : external_space_dim(dim),
     internal_space_dim(0),
-    tableau(),
-    basis(),
     status(PARTIALLY_SATISFIABLE),
+    current_solution(0),
     initialized(false),
     input_cs(),
     first_pending_constraint(0),
@@ -57,9 +51,8 @@ PPL::PIP_Problem::PIP_Problem(dimension_type dim)
 PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
   : external_space_dim(y.external_space_dim),
     internal_space_dim(y.internal_space_dim),
-    tableau(y.tableau),
-    basis(y.basis),
     status(y.status),
+    current_solution(y.current_solution),
     initialized(y.initialized),
     input_cs(y.input_cs),
     first_pending_constraint(y.first_pending_constraint),
@@ -83,7 +76,15 @@ PPL::PIP_Problem::solve() const {
       PIP_Problem& x = const_cast<PIP_Problem&>(*this);
       PIP_Problem_Status return_value;
 
-      x.update_tableau();
+      if (current_solution == 0)
+        x.current_solution = new PIP_Solution_Node();
+
+      x.current_solution->update_tableau(&x.current_solution,
+                                         external_space_dim,
+                                         first_pending_constraint,
+                                         input_cs,
+                                         parameters);
+
       //FIXME: implement the simplex algorithm
 
       return_value = OPTIMIZED_PIP_PROBLEM;
@@ -102,64 +103,6 @@ PPL::PIP_Problem::solve() const {
   }
   // We should not be here!
   throw std::runtime_error("PPL internal error");
-}
-
-void
-PPL::PIP_Problem::update_tableau() {
-  dimension_type i;
-  dimension_type n_params = parameters.size();
-  dimension_type n_vars = external_space_dim - n_params;
-  dimension_type n_vars_int = tableau.s.num_columns();
-  dimension_type n_constr_int = tableau.s.num_rows();
-  const_iterator cst;
-
-  if (tableau.t.num_columns() == 0) {
-    // Create the parameter column, corresponding to the constant term
-    tableau.t.add_zero_columns(1);
-  }
-
-  for (i=internal_space_dim; i<external_space_dim; ++i) {
-    // add new columns to the tableau
-    if (parameters.count(i) == 1)
-      tableau.t.add_zero_columns(1);
-    else
-      tableau.s.add_zero_columns(1);
-  }
-  internal_space_dim = external_space_dim;
-
-  Coefficient denom_s = tableau.s.get_denominator();
-  Coefficient denom_t = tableau.t.get_denominator();
-
-  for (cst = constraints_begin() + first_pending_constraint;
-       cst < constraints_end(); ++cst) {
-    // FIXME: must handle nonbasic variables aswell
-    int v = 0;
-    int p = 1;
-    Row var(n_vars, Row::Flags());
-    Row param(n_params+1, Row::Flags());
-    Coefficient cnst_term = -cst->inhomogeneous_term();
-    if (cst->is_strict_inequality())
-      // convert c > 0  <=>  c-1 >= 0
-      cnst_term -= 1;
-    param[0] = cnst_term * denom_t;
-    for (i=0; i<internal_space_dim; i++) {
-      if (parameters.count(i) == 1) {
-        param[p] = cst->coefficient(Variable(i)) * denom_t;
-        ++p;
-      } else {
-        var[v] = cst->coefficient(Variable(i)) * denom_s;
-        ++v;
-      }
-    }
-    //FIXME: must handle equality constraints
-    tableau.s.add_row(var);
-    tableau.t.add_row(param);
-  }
-
-  // update current basis with newly inserted variables
-  dimension_type next_var = n_vars_int + n_constr_int;
-  for (i=n_vars_int; i<n_vars; ++i)
-    basis.insert(next_var++);
 }
 
 
@@ -205,12 +148,6 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
 
   s << "\nparameters";
   parameters.ascii_dump(s);
-
-  s << "\nsimplex_tableau\n";
-  tableau.s.ascii_dump(s);
-
-  s << "\nparameter_tableau\n";
-  tableau.t.ascii_dump(s);
 }
 
 PPL_OUTPUT_DEFINITIONS(PIP_Problem)
@@ -288,37 +225,8 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
   if (!parameters.ascii_load(s))
     return false;
 
-  if (!(s >> str) || str != "simplex_tableau")
-    return false;
-  if (!tableau.s.ascii_load(s))
-    return false;
-
-  if (!(s >> str) || str != "parameter_tableau")
-    return false;
-  if (!tableau.t.ascii_load(s))
-    return false;
-
   PPL_ASSERT(OK());
   return true;
-}
-
-void
-PPL::PIP_Problem::Rational_Matrix::ascii_dump(std::ostream& s) const {
-  s << "denominator " << denominator << "\n";
-  Matrix::ascii_dump(s);
-}
-
-bool
-PPL::PIP_Problem::Rational_Matrix::ascii_load(std::istream& s) {
-  std::string str;
-  if (!(s >> str) || str != "denominator")
-    return false;
-  Coefficient den;
-  if (!(s >> den))
-    return false;
-  denominator = den;
-
-  return Matrix::ascii_load(s);
 }
 
 void

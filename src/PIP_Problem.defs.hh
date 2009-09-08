@@ -286,67 +286,6 @@ private:
   */
   dimension_type internal_space_dim;
 
-  //! A rational matrix, with a common nenominator
-  class Rational_Matrix : public Matrix {
-  public:
-    //! Builds an empty matrix.
-    /*!
-      Rows' size and capacity are initialized to \f$0\f$.
-    */
-    Rational_Matrix();
-
-    //! Builds a zero matrix with specified dimensions and flags.
-    /*!
-      \param n_rows
-      The number of rows of the matrix that will be created;
-
-      \param n_columns
-      The number of columns of the matrix that will be created.
-
-      \param row_flags
-      The flags used to build the rows of the matrix;
-      by default, the rows will have all flags unset.
-    */
-    Rational_Matrix(dimension_type n_rows, dimension_type n_columns,
-	            Row::Flags row_flags = Row::Flags());
-
-    //! Copy constructor.
-    Rational_Matrix(const Rational_Matrix& y);
-
-    //! Normalizes the modulo of coefficients so that they are mutually prime.
-    /*!
-      Computes the Greatest Common Divisor (GCD) among the elements of
-      the matrix and normalizes them and the denominator by the GCD itself.
-    */
-    void normalize();
-
-    //! Tests whether the matrix is integer, \e ie. the denominator is 1.
-    bool is_integer() const;
-
-    //! Returns the value of the denominator.
-    const Coefficient &get_denominator() const;
-
-    void ascii_dump(std::ostream& s) const;
-    bool ascii_load(std::istream& s);
-
-  protected:
-    Coefficient denominator;
-  };
-
-  //! The type for parametric simplex tableau.
-  struct Tableau {
-    //! The matrix of simplex coefficients.
-    Rational_Matrix s;
-    //! The matrix of parameter coefficients.
-    Rational_Matrix t;
-  };
-
-  //! The parametric simplex tableau.
-  Tableau tableau;
-
-  //! A set containing the internal indices of the basic variables
-  Variables_Set basis;
-
   //! An enumerated type describing the internal status of the PIP problem.
   enum Status {
     //! The PIP problem is unsatisfiable.
@@ -366,6 +305,9 @@ private:
   //! The internal state of the MIP problem.
   Status status;
 
+  //! The current solution decision tree
+  PIP_Tree_Node *current_solution;
+
   /*! \brief
     A Boolean encoding whether or not internal data structures have
     already been properly sized and populated: useful to allow for
@@ -384,11 +326,6 @@ private:
     interpreted as problem parameters.
   */
   Variables_Set parameters;
-
-  /*! \brief
-    Populates the parametric simplex tableau using external data, if necessary
-  */
-  void update_tableau();
 };
 
 namespace std {
