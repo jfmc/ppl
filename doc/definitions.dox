@@ -2658,7 +2658,7 @@ floating point variable with its currently known approximation. The store is
 composed by two parts:
   - an <EM>interval abstract store</EM> \f$\fund{\rho}{\cV}{\mathbb{I}_a}\f$
     associating each variable with its current approximating interval, and
-  - a <EM>linear form abstract store</EM> \f$\fund{\rho}{\cV}{\mathbb{L}_a}\f$
+  - a <EM>linear form abstract store</EM> \f$\fund{\rho_l}{\cV}{\mathbb{L}_a}\f$
     associating each variable with its current approximating linear form.
 
 Both stores are represented by maps of the Standard Template Library and are
