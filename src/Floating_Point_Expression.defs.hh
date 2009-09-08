@@ -48,8 +48,9 @@ struct IEEE754_Double {
   static const unsigned short exponent_bias = 1023;
 };
 
-//! A floating point expression on a given format.
 /*! \ingroup PPL_CXX_Interface
+  A floating point expression on a given format.
+
   This class represents a concrete
   <EM>floating point expression</EM> of format \f$$\mathbf{f}$\f$, this 
   includes constants, variables of format \f$$\mathbf{f}$\f$, binary and unary
@@ -105,14 +106,15 @@ public:
 
   //! Linearizes a floating point expression.
   /*! \brief
-     Makes \p result become a Linear Form that correctly approximates the
-     value of the floating point expression in the given composite
-     abstract store.
-     \param int_store The interval abstract store.
-     \param lf_store The linear form abstract store.
-     \param result The modified linear form.
-  */
-  /*!
+    Linearizes a floating point expression.
+
+    Makes \p result become a Linear Form that correctly approximates the
+    value of the floating point expression in the given composite
+    abstract store.
+    \param int_store The interval abstract store.
+    \param lf_store The linear form abstract store.
+    \param result The modified linear form.
+ 
     All variables occuring in the floating point expression MUST have
     an associated interval in \p int_store.
     If this precondition is not met, calling the method causes an
@@ -122,11 +124,12 @@ public:
                          const FP_Linear_Form_Abstract_Store& lf_store,
                          FP_Linear_Form& result) const = 0;
 
-  //!  Absolute error.
-  /*! \brief
-     Initialized by computing the smallest non-zero positive
-     number in the less precise floating point format between the
-     analyzer format and the analyzed format.
+   /*! \brief
+    Absolute error.
+
+    Initialized by computing the smallest non-zero positive
+    number in the less precise floating point format between the
+    analyzer format and the analyzed format.
   */
   static boundary_type absolute_error;
 
@@ -141,13 +144,14 @@ public:
   */
   static bool overflows(const FP_Linear_Form& lf);
 
-  //! Computes the relative error of a given linear form.
   /*! \brief
-     Static helper method that is used by <CODE>linearize</CODE>
-     to account for the relative errors on \p lf.
-     \param lf The linear form used to compute the relative error.
-     \param result Becomes the linear form corresponding to a relative
-       error committed on \p lf.
+    Computes the relative error of a given linear form.
+
+    Static helper method that is used by <CODE>linearize</CODE>
+    to account for the relative errors on \p lf.
+    \param lf The linear form used to compute the relative error.
+    \param result Becomes the linear form corresponding to a relative
+    error committed on \p lf.
   */
   static void relative_error(const FP_Linear_Form& lf,
                              FP_Linear_Form& result);

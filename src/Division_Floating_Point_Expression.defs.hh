@@ -43,14 +43,32 @@ void swap(Parma_Polyhedra_Library
 
 namespace Parma_Polyhedra_Library {
 
-//! A generic Division Floating Point Expression
-/*! \ingroup PPL_CXX_interface
+/*! \brief
+  A generic Division Floating Point Expression.
+
+  \ingroup PPL_CXX_interface
+
   \par Template type parameters
 
   - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain.
   - The class template type parameter \p FP_Format represents the format
   of the floating point variable used in the concrete domain.
+
+  \par Linearizations of floating-point sum expressions
+
+  Let \f$i + \sum_{v \in V}i_{v}v \f$ be a linear form we define an abstract
+  operator \f$\adivlf\f$:
+  \f[
+  \begin{left}
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \adivlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  =
+  \left(i \adivifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \adivifp i'_{v}\right)v
+  \end{left}
+  \f]
 */
 template <typename FP_Interval_Type, typename FP_Format>
 class Division_Floating_Point_Expression
@@ -109,8 +127,10 @@ public:
   //@} // Constructors and Destructor
 
   /*! \brief
+    Linearizes the expression in a given astract state.
+
     Modifies a linear form \p result in the abstract store \p store
-     constructed by adding the following linear forms:
+    constructed by adding the following linear forms:
 
      - the linearization of the <CODE>first_operand</CODE> fract the
      linearization of the <CODE>second_operand</CODE>;
@@ -118,8 +138,9 @@ public:
      fract the linearization of the <CODE>second_operand</CODE>;
      - the absolute error.
 
-     \param store The abstract store.
-     \param result The linear form that will be modified.
+     \param int_store Interval floating-point store.
+     \param lf_store Linear form store.
+     \param result The linear form corresponding to \f$e \adivlf e' \f$
 
      \exception Parma_Polyhedra_Library::Linearization_Failed
      Thrown if \f$0 \f$ is into second operand range.

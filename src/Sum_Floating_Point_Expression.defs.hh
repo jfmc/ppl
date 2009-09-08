@@ -43,8 +43,10 @@ void swap(Parma_Polyhedra_Library
 
 namespace Parma_Polyhedra_Library {
 
-//! A generic Sum Floating Point Expression
-/*! \ingroup PPL_CXX_interface
+/*! \brief
+  A generic Sum Floating Point Expression.
+
+  \ingroup PPL_CXX_interface
 
   \par Template type parameters
 
@@ -56,11 +58,16 @@ namespace Parma_Polyhedra_Library {
   \par Linearizations of floating-point sum expressions
 
   Let \f$i + \sum_{v \in V}i_{v}v \f$ be a linear form we define an abstract
-  operator \f$\boxplus^{\#}\f$:
+  operator \f$\aslf\f$:
   \f[
-  \(i + \sum_{v \in V}i_{v}v\)\boxplus^{\#}\(i' + \sum_{v \in V}i'_{v}v\)
+  \begin{left}
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \aslf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
   =
-  \(i \asifp i'\) + \sum_{v \in V}\(i_{v} \asifp i'_{v}\)v
+  \left(i \asifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \asifp i'_{v}\right)v
+  \end{left}
   \f]
 */
 template <typename FP_Interval_Type, typename FP_Format>
@@ -121,7 +128,9 @@ public:
 
   // FIXME: Modify documentation when exceptions are fixed
   /*! \brief
-     Modifies a linear form \p result in the abstract store \p store
+    Linearizes the expression in a given astract state.
+
+     Modifies a linear form \p result in the abstract store
      constructed by adding the following linear forms:
 
      - the linearization of the <CODE>first_operand</CODE>;
@@ -129,6 +138,10 @@ public:
      - the relative error related to the <CODE>first_operand</CODE>;
      - the relative error related to the <CODE>second_operand</CODE>;
      - the absolute error.
+
+     \param int_store Interval floating-point store.
+     \param lf_store Linear form store.
+     \param result The linear form corresponding to \f$e \aslf e' \f$
 
      \exception Parma_Polyhedra_Library::Linearization_Failed
     Thrown if the method <CODE>linearize</CODE> fails.

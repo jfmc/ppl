@@ -45,8 +45,9 @@ void swap(Parma_Polyhedra_Library
 
 namespace Parma_Polyhedra_Library {
 
-//! A generic Difference Floating Point Expression
-/*! \ingroup PPL_CXX_interface
+/*! \brief
+  A generic Difference Floating Point Expression.
+  \ingroup PPL_CXX_interface
 
   \par Template type parameters
 
@@ -54,6 +55,21 @@ namespace Parma_Polyhedra_Library {
   of the intervals used in the abstract domain.
   - The class template type parameter \p FP_Format represents the format
   of the floating point variable used in the concrete domain.
+
+  \par Linearizations of floating-point sum expressions
+
+  Let \f$i + \sum_{v \in V}i_{v}v \f$ be a linear form we define an abstract
+  operator \f$\adlf\f$:
+  \f[
+  \begin{left}
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \adlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  =
+  \left(i \adifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \adifp i'_{v}\right)v
+  \end{left}
+  \f]
 */
 template <typename FP_Interval_Type, typename FP_Format>
 class Difference_Floating_Point_Expression
@@ -78,8 +94,8 @@ public:
   ::FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
 
   typedef typename
-  Floating_Point_Expression<FP_Interval_Type, FP_Format>::
-  FP_Linear_Form_Abstract_Store FP_Linear_Form_Abstract_Store;
+  Floating_Point_Expression<FP_Interval_Type, FP_Format>
+  ::FP_Linear_Form_Abstract_Store FP_Linear_Form_Abstract_Store;
 
   /*! \brief
      Alias for the P_Interval_Type::boundary_type from
@@ -113,6 +129,8 @@ public:
 
   // FIXME: Modify documentation when exceptions are fixed
   /*! \brief
+    Linearizes the expression in a given astract state.
+
      Modifies a linear form \p result in the abstract store \p store
      constructed by adding the following linear forms:
 
@@ -122,9 +140,9 @@ public:
      - the relative error related to the <CODE>second_operand</CODE>;
      - the absolute error.
 
-     \param store The abstract store.
-     \param result The linear form that will be modified.
-
+     \param int_store Interval floating-point store.
+     \param lf_store Linear form store.
+     \param result The linear form corresponding to \f$e \adlf e' \f$
 
      \exception Parma_Polyhedra_Library::Linearization_Failed
     Thrown if the method <CODE>linearize</CODE> fails.
