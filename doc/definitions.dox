@@ -2594,6 +2594,77 @@ to see that the widening operator is actually compatible with
 a given convergence certificate. If such a requirement is not met,
 then an extrapolation operator will be obtained.
 
+\section floating_point Analysis of floating point computations
+
+This section describes the PPL abstract domains that are used for
+approximating floating point computations in software analysis. We follow
+the approch described in \ref Min04 "[Min04]" and more detailedly in
+\ref Min05 "[Min05]". We will denote by \f$\cV\f$ the set of all floating
+point variables in the analyzed program. We will also denote by
+\f$\mathbb{F}_a\f$ the set of floating point numbers in the format used by the
+analyzer (that is, the machine running the PPL) and by \f$\mathbb{F}_t\f$
+the set of floating point numbers in the format used by the machine that is
+expected to run the analyzed program. Recall that floating point numbers
+include the infinities \f$-\infty\f$ and \f$+\infty\f$.
+
+\subsection interval_linear_forms Linear forms with interval coefficients
+
+Generic concrete <EM>floating point expressions</EM> on \f$\mathbb{F}_t\f$ are
+represented by the \link Parma_Polyhedra_Library::Floating_Point_Expression
+\c Floating_Point_Expression \endlink abstract class. Its concrete derivate
+classes are:
+  - \link Parma_Polyhedra_Library::Constant_Floating_Point_Expression \c
+    Constant_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Variable_Floating_Point_Expression \c
+    Variable_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Opposite_Floating_Point_Expression \c
+    Variable_Floating_Point_Expression \endlink, that is the negation
+    (unary minus) of a floating point expression,
+  - \link Parma_Polyhedra_Library::Sum_Floating_Point_Expression \c
+    Sum_Floating_Point_Expression \endlink, that is the sum of two floating
+    point expressions,
+  - \link Parma_Polyhedra_Library::Difference_Floating_Point_Expression \c
+    Difference_Floating_Point_Expression \endlink, that is the difference of
+    two floating point expressions,
+  - \link Parma_Polyhedra_Library::Multiplication_Floating_Point_Expression \c
+    Multiplication_Floating_Point_Expression \endlink, that is the product of
+    two floating point expressions, and
+  - \link Parma_Polyhedra_Library::Division_Floating_Point_Expression \c
+    Division_Floating_Point_Expression \endlink, that is the division of
+    two floating point expressions.
+
+The set of all the possible values in \f$\mathbb{F}_t\f$ of a floating point
+expression at a given program point in a given abstract store can be
+overapproximated by a <EM>linear form</EM> with interval coefficients, that is
+a linear expression of this kind:
+
+\f[
+  i + \sum_{v \in \cV}i_{v}v,
+\f]
+
+where all \f$v\f$ are free floating point variables and \f$i\f$ and all
+\f$i_{v}\f$ are elements of \f$\mathbb{I}_a\f$, defined as the set of all
+intervals with boundaries in \f$\mathbb{F}_a\f$. This operation is called
+<EM>linearization</EM> and is performed by the method linearize of floating
+point expression classes.
+
+Even though the intervals may be open, we will always use closed intervals
+in the documentation for the sake of simplicity, with the exception of unbounded
+intervals that have \f$\infty\f$ boundaries. We denote the set of all linear
+forms on \f$\mathbb{F}_a\f$ by \f$\mathbb{L}_a\f$.
+
+A <EM>(composite) floating point abstract store</EM> is used to associate each
+floating point variable with its currently known approximation. The store is
+composed by two parts:
+  - an <EM>interval abstract store</EM> \f$\fund{\rho,\cV,\mathbb{I}_a}\f$
+    associating each variable with its current approximating interval, and
+  - a <EM>linear form abstract store</EM> \f$\fund{\rho,\cV,\mathbb{L}_a}\f$
+    associating each variable with its current approximating linear form.
+
+Both stores are represented by maps of the Standard Template Library and are
+needed for performing linearization. Please see the documentation of floating
+point expression classes for more information.
+
 \section use_of_library Using the Library
 
 \subsection A_Note_on_the_Implementation_of_the_Operators A Note on the Implementation of the Operators
