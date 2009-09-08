@@ -239,9 +239,6 @@ test06() {
   float exp = pow(2, -22);
   fl_r_oc coeff = fl_r_oc(2 - exp);
   coeff.join_assign(2 + exp);
-  //fl_r_oc coeff = fl_r_oc(-exp);
-  //coeff.join_assign(exp);
-  //coeff += fl_r_oc(2);
   Float_Interval_Linear_Form known_result =
   Float_Interval_Linear_Form(Variable(0));
   known_result *= coeff;
