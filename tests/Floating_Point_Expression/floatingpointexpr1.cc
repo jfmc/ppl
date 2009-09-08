@@ -110,7 +110,7 @@ test02() {
     div.linearize(sstr(), lsstr(), result);
   }
   catch (Linearization_Failed e) {
-    nout << "Division by zero." << endl;
+    nout << "*** Linearization failed due to division by zero. ***" << endl;
     return true;
   }
   return false;
@@ -160,9 +160,39 @@ test03() {
   return ok_fl && ok_db;
 }
 
-// Tests the linearization of A + B.
+// Tests the linearization of variables in a given linear form abstract store.
 bool
 test04() {
+  lsdtr store_fl;
+  Variable A(0);
+  Float_Interval_Linear_Form known_result_fl = Float_Interval_Linear_Form(A);
+  store_fl[0] = known_result_fl;
+  var_fpesd var_fl(0);
+  Float_Interval_Linear_Form result_fl;
+  var_fl.linearize(sdtr(), store_fl, result_fl);
+
+  nout << "*** known_result_fl ***" << endl
+       << known_result_fl << endl;
+  bool ok_fl = (result_fl == known_result_fl);
+
+  lddtr store_db;
+  Double_Interval_Linear_Form known_result_db =
+  Double_Interval_Linear_Form(A);
+  store_db[0] = known_result_db;
+  var_fpedd var_db(0);
+  Double_Interval_Linear_Form result_db;
+  var_db.linearize(ddtr(), store_db, result_db);
+
+  nout << "*** known_result_db ***" << endl
+       << known_result_db << endl;
+  bool ok_db = (result_db == known_result_db);
+
+  return ok_fl && ok_db;
+}
+
+// Tests the linearization of A + B.
+bool
+test05() {
   dstr store;
   db_r_oc tmp;
   store[0] = tmp;
@@ -192,7 +222,7 @@ test04() {
 
 // Tests the linearization of A - B.
 bool
-test05() {
+test06() {
   sstr store;
   fl_r_oc tmp;
   store[0] = tmp;
@@ -222,7 +252,7 @@ test05() {
 
 // Tests the linearization of A * B where A = [0, 1] and B = [2, 2].
 bool
-test06() {
+test07() {
   sstr store;
   fl_r_oc tmp(0);
   tmp.join_assign(1);
@@ -251,7 +281,7 @@ test06() {
 
 // Tests the linearization of A / B where A = [1, 4] and B = [2, 2].
 bool
-test07() {
+test08() {
   ddtr store;
   db_r_oc tmp(0);
   tmp.join_assign(1);
@@ -280,7 +310,7 @@ test07() {
 
 // Tests the linearization of [1/4, 1/2] * (-A) where A = [1, 10].
 bool
-test08() {
+test09() {
   sdtr store;
   fl_r_oc tmp(1);
   tmp.join_assign(10);
@@ -307,6 +337,63 @@ test08() {
   return result == known_result;
 }
 
+// Tests linearization of multiplication by unbounded operands.
+bool
+test10() {
+  float max_fl = std::numeric_limits<float>::max();
+  fl_r_oc min_fl = fl_r_oc(-std::numeric_limits<float>::denorm_min());
+  min_fl.join_assign(std::numeric_limits<float>::denorm_min());
+  Float_Interval_Linear_Form known_result1 =
+  Float_Interval_Linear_Form(min_fl);
+  con_fpess* con1 = new con_fpess(0, 0);
+  con_fpess* con2 = new con_fpess(0, max_fl);
+  sum_fpess* sum  = new sum_fpess(con1, con2);
+  con_fpess* con3 = new con_fpess(0, 0);
+  mul_fpess mul(con3, sum);
+  Float_Interval_Linear_Form result;
+  mul.linearize(sstr(), lsstr(), result);
+
+  nout << "*** known_result1 ***" << endl
+       << known_result1 << endl;
+  bool ok1 = (known_result1 == result);
+
+  double max_db = std::numeric_limits<double>::max();
+  db_r_oc min_db = db_r_oc(-std::numeric_limits<double>::denorm_min());
+  min_db.join_assign(std::numeric_limits<double>::denorm_min());
+  Double_Interval_Linear_Form known_result2 =
+  Double_Interval_Linear_Form(min_db);
+  con_fpedd* con4 = new con_fpedd(0, 0);
+  con_fpedd* con5 = new con_fpedd(0, max_db);
+  sum_fpedd* sum2 = new sum_fpedd(con4, con5);
+  con_fpedd* con6 = new con_fpedd(0, 0);
+  mul_fpedd mul2(sum2, con6);
+  Double_Interval_Linear_Form result2;
+  mul2.linearize(ddtr(), lddtr(), result2);
+
+  nout << "*** known_result2 ***" << endl
+       << known_result2 << endl;
+  bool ok2 = (known_result2 == result2);
+
+  con_fpedd* con7 = new con_fpedd(0, 0);
+  con_fpedd* con8 = new con_fpedd(0, max_db);
+  sum_fpedd* sum3 = new sum_fpedd(con7, con8);
+  con_fpedd* con9 = new con_fpedd(0, 0);
+  con_fpedd* con10 = new con_fpedd(0, max_db);
+  sum_fpedd* sum4 = new sum_fpedd(con9, con10);
+  mul_fpedd mul3(sum3, sum4);
+
+  bool ok3 = false;
+  try {
+    mul3.linearize(ddtr(), lddtr(), result2);
+  }
+  catch (Linearization_Failed e) {
+    nout << "*** Linearization failed due to overflow. ***" << endl;
+    ok3 = true;
+  }
+
+  return ok1 && ok2 && ok3;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -318,4 +405,6 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN
