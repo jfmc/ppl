@@ -52,6 +52,16 @@ namespace Parma_Polyhedra_Library {
   of the intervals used in the abstract domain.
   - The class template type parameter \p FP_Format represents the format
   of the floating point variable used in the concrete domain.
+
+  \par Linearizations of floating-point sum expressions
+
+  Let \f$i + \sum_{v \in V}i_{v}v \f$ be a linear form we define an abstract
+  operator \f$\boxplus^{\#}\f$:
+  \f[
+  \(i + \sum_{v \in V}i_{v}v\)\boxplus^{\#}\(i' + \sum_{v \in V}i'_{v}v\)
+  =
+  \(i \asifp i'\) + \sum_{v \in V}\(i_{v} \asifp i'_{v}\)v
+  \f]
 */
 template <typename FP_Interval_Type, typename FP_Format>
 class Sum_Floating_Point_Expression
@@ -61,7 +71,7 @@ public:
 
   /*! \brief
      Alias for the Linear_Form<FP_Interval_Type> from
-     Floating_Point_Expression
+     Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>

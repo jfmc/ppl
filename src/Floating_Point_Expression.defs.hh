@@ -103,6 +103,7 @@ public:
   //! Destructor.
   virtual ~Floating_Point_Expression();
 
+  //! Linearizes a floating point expression.
   /*! \brief
      Makes \p result become a Linear Form that correctly approximates the
      value of the floating point expression in the given composite
@@ -140,6 +141,7 @@ public:
   */
   static bool overflows(const FP_Linear_Form& lf);
 
+  //! Computes the relative error of a given linear form.
   /*! \brief
      Static helper method that is used by <CODE>linearize</CODE>
      to account for the relative errors on \p lf.
