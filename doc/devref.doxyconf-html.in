@@ -338,6 +338,11 @@ INPUT                  = @srcdir@/definitions.dox \
 			 @srcdir@/../src/Variable_Floating_Point_Expression.types.hh \
 			 @srcdir@/../src/Variable_Floating_Point_Expression.defs.hh \
 			 @srcdir@/../src/Variable_Floating_Point_Expression.inlines.hh \
+			 @srcdir@/../src/Linear_Form.types.hh \
+                         @srcdir@/../src/Linear_Form.defs.hh \
+                         @srcdir@/../src/Linear_Form.inlines.hh \
+                         @srcdir@/../src/Linear_Form.templates.hh \
+                         @srcdir@/../src/Linear_Form.cc \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox
 INPUT_ENCODING         = UTF-8

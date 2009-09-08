@@ -57,18 +57,22 @@ namespace Parma_Polyhedra_Library {
 
   \par Linearizations of floating-point sum expressions
 
-  Let \f$i + \sum_{v \in V}i_{v}v \f$ be a linear form we define an abstract
-  operator \f$\aslf\f$:
+  Let \f$i + \sum_{v \in \cV}i_{v}v \f$ and 
+  \f$i' + \sum_{v \in \cV}i'_{v}v \f$
+  be two linear forms and \f$\aslf\f$ a sound abstract operator on linear
+  form such that:
   \f[
-  \begin{left}
-  \left(i + \sum_{v \in V}i_{v}v\right)
+    \left(i + \sum_{v \in \cV}i_{v}v\right)
   \aslf
-  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  \left(i' + \sum_{v \in \cV}i'_{v}v\right)
   =
   \left(i \asifp i'\right) +
-  \sum_{v \in V}\left(i_{v} \asifp i'_{v}\right)v
-  \end{left}
+  \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v
   \f]
+  Given an expression \f$\textrm{expr}_{\mathbf{f}}\f$ and an interval
+  abstract store \f$\rho^{\#}\f$, we construct the interval linear form
+  \f$\left(\textrm{expr}_{\mathbf{f}}\right)\rho^{\#}\f$ on \f$\cV\f$ as
+  follow:
 */
 template <typename FP_Interval_Type, typename FP_Format>
 class Sum_Floating_Point_Expression

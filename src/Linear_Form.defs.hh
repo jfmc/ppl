@@ -31,97 +31,97 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
 
-//! Returns the linear form \p e1 + \p e2.
+//! Returns the linear form \p f1 + \p f2.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator+(const Linear_Form<C>& f1, const Linear_Form<C>& f2);
 
-//! Returns the linear form \p v + \p e.
+//! Returns the linear form \p v + \p f.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator+(Variable v, const Linear_Form<C>& f);
 
-//! Returns the linear form \p e + \p v.
+//! Returns the linear form \p f + \p v.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator+(const Linear_Form<C>& f, Variable v);
 
-//! Returns the linear form \p n + \p e.
+//! Returns the linear form \p n + \p f.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator+(const C& n, const Linear_Form<C>& f);
 
-//! Returns the linear form \p e + \p n.
+//! Returns the linear form \p f + \p n.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator+(const Linear_Form<C>& f, const C& n);
 
-//! Returns the linear form \p e.
+//! Returns the linear form \p f.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator+(const Linear_Form<C>& f);
 
-//! Returns the linear form - \p e.
+//! Returns the linear form - \p f.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator-(const Linear_Form<C>& f);
 
-//! Returns the linear form \p e1 - \p e2.
+//! Returns the linear form \p f1 - \p f2.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator-(const Linear_Form<C>& f1, const Linear_Form<C>& f2);
 
-//! Returns the linear form \p v - \p e.
+//! Returns the linear form \p v - \p f.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator-(Variable v, const Linear_Form<C>& f);
 
-//! Returns the linear form \p e - \p v.
+//! Returns the linear form \p f - \p v.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator-(const Linear_Form<C>& f, Variable v);
 
-//! Returns the linear form \p n - \p e.
+//! Returns the linear form \p n - \p f.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator-(const C& n, const Linear_Form<C>& f);
 
-//! Returns the linear form \p e - \p n.
+//! Returns the linear form \p f - \p n.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator-(const Linear_Form<C>& f, const C& n);
 
-//! Returns the linear form \p n * \p e.
+//! Returns the linear form \p n * \p f.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator*(const C& n, const Linear_Form<C>& f);
 
-//! Returns the linear form \p e * \p n.
+//! Returns the linear form \p f * \p n.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator*(const Linear_Form<C>& f, const C& n);
 
-//! Returns the linear form \p e1 + \p e2 and assigns it to \p e1.
+//! Returns the linear form \p f1 + \p f2 and assigns it to \p e1.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator+=(Linear_Form<C>& f1, const Linear_Form<C>& f2);
 
-//! Returns the linear form \p e + \p v and assigns it to \p e.
+//! Returns the linear form \p f + \p v and assigns it to \p f.
 /*! \relates Linear_Form
   \exception std::length_error
   Thrown if the space dimension of \p v exceeds
@@ -131,19 +131,19 @@ template <typename C>
 Linear_Form<C>&
 operator+=(Linear_Form<C>& f, Variable v);
 
-//! Returns the linear form \p e + \p n and assigns it to \p e.
+//! Returns the linear form \p f + \p n and assigns it to \p f.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator+=(Linear_Form<C>& f, const C& n);
 
-//! Returns the linear form \p e1 - \p e2 and assigns it to \p e1.
+//! Returns the linear form \p f1 - \p f2 and assigns it to \p f1.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator-=(Linear_Form<C>& f1, const Linear_Form<C>& f2);
 
-//! Returns the linear form \p e - \p v and assigns it to \p e.
+//! Returns the linear form \p f - \p v and assigns it to \p f.
 /*! \relates Linear_Form
   \exception std::length_error
   Thrown if the space dimension of \p v exceeds
@@ -153,13 +153,13 @@ template <typename C>
 Linear_Form<C>&
 operator-=(Linear_Form<C>& f, Variable v);
 
-//! Returns the linear form \p e - \p n and assigns it to \p e.
+//! Returns the linear form \p f - \p n and assigns it to \p f.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator-=(Linear_Form<C>& f, const C& n);
 
-//! Returns the linear form \p n * \p e and assigns it to \p e.
+//! Returns the linear form \p n * \p f and assigns it to \p f.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
