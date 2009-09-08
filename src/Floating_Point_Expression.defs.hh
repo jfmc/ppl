@@ -59,7 +59,8 @@ struct IEEE754_Double {
 
   - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain. The interval bounds
-  should have a floating point type.
+  should have a floating point type and open intervals should not be
+  allowed, otherwise the analysis will not be sound.
   - The class template type parameter \p FP_Format represents the floating
   point format used in the concrete domain.
   This parameter must be a struct which contains \f$3\f$ fields:
