@@ -43,8 +43,10 @@ void swap(Parma_Polyhedra_Library::Constant_Floating_Point_Expression<
 
 namespace Parma_Polyhedra_Library {
 
-//! A generic Constant Floating Point Expression
-/*! \ingroup PPL_CXX_interface
+/*! \brief
+  A generic Constant Floating Point Expression.
+
+  \ingroup PPL_CXX_interface
 
   \par Template type parameters
 
@@ -109,11 +111,15 @@ public:
 
     // FIXME: Modify documentation when exceptions are fixed.
   /*! \brief
-     Modifies a linear form \p result in the abstract store \p store
-     corresponding to an inhomogenous term which over-approximates
-     *this.value.
-     \param store The abstract store.
-     \param result The linear form that will be modified.
+    Linearizes the expression in a given astract state.
+
+    Modifies a linear form \p result in the abstract store \p store
+    corresponding to an inhomogenous term which over-approximates
+    *this.value.
+
+    \param int_store Interval floating-point store.
+    \param lf_store Linear form store.
+    \param result The modified linear form.
 
      \exception Parma_Polyhedra_Library::Linearization_Failed
     Thrown if the method <CODE>linearize</CODE> fails.

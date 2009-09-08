@@ -43,8 +43,10 @@ void swap(Parma_Polyhedra_Library::Variable_Floating_Point_Expression<
 
 namespace Parma_Polyhedra_Library {
 
-//! A generic Variable Floating Point Expression
-/*! \ingroup PPL_CXX_interface
+/*! \brief
+  A generic Variable Floating Point Expression.
+
+\ingroup PPL_CXX_interface
 
   \par Template type parameters
 
@@ -106,13 +108,15 @@ public:
 
   //@} // Constructors and Destructor
 
-  //! Linearization of a variable.
   /*! \brief
-     Modifies a linear form \p result in the abstract store \p store
-     corresponding to <CODE>this</CODE> variable with coefficent \f$[1,1]\f$.
+    Linearization of a variable.
 
-     \param store The abstract store.
-     \param result The linear form that will be modified.
+    Modifies a linear form \p result in the abstract store \p store
+    corresponding to <CODE>this</CODE> variable with coefficent \f$[1,1]\f$.
+
+    \param int_store Interval floating-point store.
+    \param lf_store Linear form store.
+    \param result The modfied linear form.
   */
   void linearize(const FP_Interval_Abstract_Store& int_store,
                  const FP_Linear_Form_Abstract_Store& lf_store,
