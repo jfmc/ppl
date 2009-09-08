@@ -48,9 +48,9 @@ struct IEEE754_Double {
   static const unsigned short exponent_bias = 1023;
 };
 
-//! A floating point expression on a given format
+//! A floating point expression on a given format.
 /*! \ingroup PPL_CXX_Interface
-  This class offers a generic implemenation of a
+  This class represents a concrete
   <EM>floating point expression</EM> of format \f$$\mathbf{f}$\f$, this 
   includes constants, variables of format \f$$\mathbf{f}$\f$, binary and unary
   arithmetic operators.
@@ -58,10 +58,10 @@ struct IEEE754_Double {
   \par Template type parameters
 
   - The class template type parameter \p FP_Interval_Type represents the type
-  of the intervals used in the abstract domain. Here we assume that the
-  value has floating point type.
-  - The class template type parameter \p FP_Format represents the format
-  of the floating point expression used in the concrete domain.
+  of the intervals used in the abstract domain. The interval bounds
+  should have a floating point type.
+  - The class template type parameter \p FP_Format represents the floating
+  point format used in the concrete domain.
   This parameter must be a struct which contains \f$3\f$ fields:
     -# <CODE>static const unsigned short fraction_bits</CODE> that represents
     the number of bits of the fraction.
@@ -79,24 +79,42 @@ public:
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
 
   //! Alias for a map that associates a variable index to an interval.
+  /*!
+    The type a linear form abstract store associating each variable with an
+    interval that correctly approximates its value.
+  */
   typedef std::map<dimension_type, FP_Interval_Type> FP_Interval_Abstract_Store;
 
   //! Alias for a map that associates a variable index to a linear form.
+  /*!
+    The type a linear form abstract store associating each variable with a
+    linear form that correctly approximates its value.
+  */
   typedef std::map<dimension_type, FP_Linear_Form>
           FP_Linear_Form_Abstract_Store;
 
+  //! The floating point format used by the analyzer.
   typedef typename FP_Interval_Type::boundary_type boundary_type;
 
+  //! The interval policy used by \p FP_Interval_Type.
   typedef typename FP_Interval_Type::info_type info_type;
 
   //! Destructor.
   virtual ~Floating_Point_Expression();
 
   /*! \brief
-     Modifies a linear form \p result that correctly approximates the
-     floating point expression in the given abstract store.
-     \param store The abstract store.
+     Makes \p result become a Linear Form that correctly approximates the
+     value of the floating point expression in the given composite
+     abstract store.
+     \param int_store The interval abstract store.
+     \param lf_store The linear form abstract store.
      \param result The modified linear form.
+  */
+  /*!
+    All variables occuring in the floating point expression MUST have
+    an associated interval in \p int_store.
+    If this precondition is not met, calling the method causes an
+    undefined behavior.
   */
   virtual void linearize(const FP_Interval_Abstract_Store& int_store,
                          const FP_Linear_Form_Abstract_Store& lf_store,
@@ -105,32 +123,35 @@ public:
   //!  Absolute error.
   /*! \brief
      Initialized by computing the smallest non-zero positive
-     number in the less precise format between the analyzer and the analyzed
-     format.
+     number in the less precise floating point format between the
+     analyzer format and the analyzed format.
   */
   static boundary_type absolute_error;
 
+
+  // FIXME: this may not be the best place for them.
   /*! \brief
     Verifies if a given linear form overflows.
     \param lf The linear form to verify.
     \return
-    Return <CODE>true</CODE> if is bounded, <CODE>false</CODE> otherwise.
-  */  // FIXME: this may not be the best place for them.
+    Returns <CODE>true</CODE> if all coefficients in \p lf are bounded,
+    <CODE>false</CODE> otherwise.
+  */
   static bool overflows(const FP_Linear_Form& lf);
 
   /*! \brief
-     Modifies the linear form \p result that is used by <CODE>linearize</CODE>
+     Static helper method that is used by <CODE>linearize</CODE>
      to account for the relative errors on \p lf.
      \param lf The linear form used to compute the relative error.
-     \param result The linear form corresponding to the relative error of
-       \p lf.
+     \param result Becomes the linear form corresponding to a relative
+       error committed on \p lf.
   */
   static void relative_error(const FP_Linear_Form& lf,
                              FP_Linear_Form& result);
 
    /*! \brief
-     Modifies an interval \p result that over approximates the range of
-     \p lf in the abstract store \p store.
+     Makes \p result become an interval that overapproximates all the
+     possible values of \p lf in the interval abstract store \p store.
      \param lf The linear form to aproximate.
      \param store The abstract store.
      \param result The linear form that will be modified.
