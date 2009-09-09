@@ -150,7 +150,7 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node **parent_ref,
                                   dimension_type first_pending_constraint,
                                   const Constraint_Sequence &input_cs,
                                   const Variables_Set &parameters) {
-  dimension_type i;
+  dimension_type i, j;
   dimension_type n_params = parameters.size();
   dimension_type n_vars = external_space_dim - n_params;
   dimension_type n_vars_int = tableau.s.num_columns();
@@ -168,8 +168,11 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node **parent_ref,
   for (i=internal_space_dim; i<external_space_dim; ++i) {
     if (parameters.count(i) == 1)
       tableau.t.add_zero_columns(1);
-    else
+    else {
       tableau.s.add_zero_columns(1);
+      basis.push_back(true);
+      mapping.push_back(tableau.s.num_columns()-1);
+    }
   }
   internal_space_dim = external_space_dim;
 
@@ -178,7 +181,6 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node **parent_ref,
 
   for (cst = input_cs.begin() + first_pending_constraint;
        cst < input_cs.end(); ++cst) {
-    // FIXME: must handle nonbasic variables aswell
     int v = 0;
     int p = 1;
     Row var(n_vars, Row::Flags());
@@ -190,10 +192,22 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node **parent_ref,
     param[0] = cnst_term * denom_t;
     for (i=0; i<internal_space_dim; i++) {
       if (parameters.count(i) == 1) {
-        param[p] = cst->coefficient(Variable(i)) * denom_t;
-        ++p;
+        param[p++] = cst->coefficient(Variable(i)) * denom_t;
       } else {
-        var[v] = cst->coefficient(Variable(i)) * denom_s;
+        Coefficient c = cst->coefficient(Variable(i)) * denom_s;
+        dimension_type idx = mapping[v];
+        if (basis[v])
+          // Basic variable : add c * x_i
+          var[idx] += c;
+        else {
+          // Nonbasic variable : add c * row_i
+          const Row &sr = tableau.s[idx];
+          const Row &st = tableau.t[idx];
+          for (j=0; j<sr.size(); j++)
+            var[j] += c*sr[j];
+          for (j=0; j<st.size(); j++)
+            param[j] += c*st[j];
+        }
         ++v;
       }
     }
@@ -201,13 +215,7 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node **parent_ref,
     tableau.s.add_row(var);
     tableau.t.add_row(param);
   }
-
-  // update current basis with newly inserted variables
-  dimension_type next_var = n_vars_int + n_constr_int;
-  for (i=n_vars_int; i<n_vars; ++i)
-    basis.insert(next_var++);
+  // FIXME: decide emptiness detection (and node removal)
 }
-
-
 
 } // namespace Parma_Polyhedra_Library

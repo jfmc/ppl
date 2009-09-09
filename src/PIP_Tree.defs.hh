@@ -179,8 +179,26 @@ private:
   //! The parametric simplex tableau.
   Tableau tableau;
 
-  //! A set containing the internal indices of the basic variables
-  Variables_Set basis;
+  /*! \brief
+    A boolean vector for identifying the basic variables.
+
+    The value for <tt>basis[i]</tt> is:
+     - \b true if variable \p i is basic,
+     - \b false if variable \p i is nonbasic.
+  */
+  std::vector<bool> basis;
+
+  /*! \brief
+    A mapping between the tableau rows/columns and the original variables.
+
+    The value of <tt>mapping[i]</tt> depends of the value of <tt>basis[i]</tt>.
+
+     - If <tt>basis[i]</tt> is \b true, <tt>mapping[i]</tt> encodes the column
+       index of variable \p i in the \p s matrix of the tableau.
+     - If <tt>basis[i]</tt> is \b false, <tt>mapping[i]</tt> encodes the row
+       index of variable \p i in the tableau.
+  */
+  std::vector<dimension_type> mapping;
 
 protected:
   /*! \brief
