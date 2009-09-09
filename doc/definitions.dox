@@ -2653,7 +2653,7 @@ in the documentation for the sake of simplicity, with the exception of unbounded
 intervals that have \f$\infty\f$ boundaries. We denote the set of all linear
 forms on \f$\mathbb{F}_a\f$ by \f$\mathbb{L}_a\f$.
 
-The \link Parma_Polyhedra_Library::Linear_Form \c Linear_Form \endlink class 
+The \link Parma_Polyhedra_Library::Linear_Form \c Linear_Form \endlink class
 provides common algebraic operations on linear forms: you can add or
 subtract two linear forms, and multiply or divide a linear form by a scalar.
 We are writing only about interval linear forms in this section, so our
