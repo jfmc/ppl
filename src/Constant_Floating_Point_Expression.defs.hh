@@ -65,8 +65,8 @@ namespace Parma_Polyhedra_Library {
   follow:
   \f[
   \linexpr{\textrm{const}_{\mathbf{f},\mathbf{r}}(c)}\rho^{\#} =
-  [\textrm{const}_{\mathbf{f},-\infinity}(c);
-  \textrm{const}_{\mathbf{f},+\infinity}(c)].
+  [\textrm{const}_{\mathbf{f},-\infty}(c);
+  \textrm{const}_{\mathbf{f},+\infty}(c)].
   \f]
  */
 template <typename FP_Interval_Type, typename FP_Format>
