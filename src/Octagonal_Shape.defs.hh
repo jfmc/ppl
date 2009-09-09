@@ -44,6 +44,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Checked_Number.defs.hh"
 #include "WRD_coefficient_types.defs.hh"
 #include "Bit_Row.defs.hh"
+#include "Interval.types.hh"
+#include "Linear_Form.types.hh"
 #include <vector>
 #include <cstddef>
 #include <climits>
@@ -1104,6 +1106,10 @@ public:
                     Coefficient_traits::const_reference  denominator
                     = Coefficient_one());
 
+  template <typename Interval_Info>
+  void affine_image(Variable var,
+                    const Linear_Form< Interval<T, Interval_Info> >& lf);
+
   /*! \brief
     Assigns to \p *this the \ref affine_relation "affine preimage"
     of \p *this under the function mapping variable \p var into the
@@ -2105,6 +2111,11 @@ private:
   void throw_dimension_incompatible(const char* method,
                                     const char* name_row,
                                     const Linear_Expression& y) const;
+
+  template <typename C>
+  void throw_dimension_incompatible(const char* method,
+                                    const char* name_row,
+                                    const Linear_Form<C>& y) const;
 
   void throw_constraint_incompatible(const char* method) const;
 

@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
+#include "Interval.defs.hh"
+#include "Linear_Form.defs.hh"
 #include "meta_programming.hh"
 #include "assert.hh"
 #include <vector>
@@ -4670,6 +4672,54 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 }
 
 template <typename T>
+template <typename Interval_Info>
+void
+Octagonal_Shape<T>::affine_image(Variable var,
+                    const Linear_Form< Interval<T, Interval_Info> >& lf) {
+  /*
+    FIXME: this way for checking that T is a floating point type is a bit
+    unelengant.
+  */
+  // Check that T is a floating point type.
+  PPL_ASSERT(std::numeric_limits<T>::max_exponent);
+
+  // Dimension-compatibility checks.
+  // The dimension of `lf' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type lf_space_dim = lf.space_dimension();
+  if (space_dim < lf_space_dim)
+    throw_dimension_incompatible("affine_image(v, l)", "l", lf);
+
+  // `var' should be one of the dimensions of the octagon.
+  const dimension_type var_id = var.id();
+  if (space_dim < var_id + 1)
+    throw_dimension_incompatible("affine_image(v, l)", var.id()+1);
+
+  strong_closure_assign();
+  // The image of an empty octagon is empty too.
+  if (marked_empty())
+    return;
+
+  // Number of non-zero coefficients in `lf': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type t = 0;
+  // Variable-index of the last non-zero coefficient in `lf', if any.
+  dimension_type w_id = 0;
+
+  // Get information about the number of non-zero coefficients in `lf'.
+  for (dimension_type i = lf_space_dim; i-- > 0; )
+    if (lf.coefficient(Variable(i)) != 0) {
+      if (t++ == 1)
+        break;
+      else
+        w_id = i;
+    }
+
+  // FIXME: complete the implementation.
+
+}
+
+template <typename T>
 void
 Octagonal_Shape<T>::affine_preimage(const Variable var,
                                     const Linear_Expression& expr,
@@ -7065,6 +7115,20 @@ Octagonal_Shape<T>
   throw std::invalid_argument(s.str());
 }
 
+template <typename T>
+template <typename C>
+void
+Octagonal_Shape<T>
+::throw_dimension_incompatible(const char* method,
+                               const char* name_row,
+                               const Linear_Form<C>& y) const {
+  std::ostringstream s;
+  s << "PPL::Octagonal_Shape::" << method << ":\n"
+    << "this->space_dimension() == " << space_dimension()
+    << ", " << name_row << "->space_dimension() == "
+    << y.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
 
 template <typename T>
 void
