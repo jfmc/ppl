@@ -49,7 +49,7 @@ $(top_builddir)/tests/libppl_tests.a \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
-TESTS = \
+TESTS = linearform1 \
 floatingpointexpr1
 
 XFAIL_TESTS =
@@ -60,6 +60,7 @@ BUGS =
 # Sources for the tests
 #
 
+linearform1_SOURCES = linearform1.cc
 floatingpointexpr1_SOURCES = floatingpointexpr1.cc
 
 check_PROGRAMS = \

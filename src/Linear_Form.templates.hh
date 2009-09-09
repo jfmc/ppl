@@ -109,7 +109,6 @@ operator+(const Linear_Form<C>& f1, const Linear_Form<C>& f2) {
     r[i] = f1[i];
     r[i] += f2[i];
   }
-
   return r;
 }
 
