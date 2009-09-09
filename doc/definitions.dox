@@ -2665,28 +2665,40 @@ The operations on interval linear forms are intuitively defined as follows:
   \left(i + \sum_{v \in V}i_{v}v\right)
   \aslf
   \left(i' + \sum_{v \in V}i'_{v}v\right)
-  =
+  \defeq
   \left(i \asifp i'\right) +
   \sum_{v \in V}\left(i_{v} \asifp i'_{v}\right)v,
+
+\f]
+
+\f[
 
   \left(i + \sum_{v \in V}i_{v}v\right)
   \adlf
   \left(i' + \sum_{v \in V}i'_{v}v\right)
-  =
+  \defeq
   \left(i \adifp i'\right) +
   \sum_{v \in V}\left(i_{v} \adifp i'_{v}\right)v,
+
+\f]
+
+\f[
 
   i
   \amlf
   \left(i' + \sum_{v \in V}i'_{v}v\right)
-  =
+  \defeq
   \left(i \amifp i'\right) +
   \sum_{v \in V}\left(i \amifp i'_{v}\right)v,
+
+\f]
+
+\f[
 
   \left(i + \sum_{v \in V}i_{v}v\right)
   \adivlf
   i'
-  =
+  \defeq
   \left(i \adivifp i'\right) +
   \sum_{v \in V}\left(i_{v} \adivifp i'\right)v.
 
