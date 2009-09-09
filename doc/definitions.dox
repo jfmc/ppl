@@ -2653,6 +2653,50 @@ in the documentation for the sake of simplicity, with the exception of unbounded
 intervals that have \f$\infty\f$ boundaries. We denote the set of all linear
 forms on \f$\mathbb{F}_a\f$ by \f$\mathbb{L}_a\f$.
 
+The \link Parma_Polyhedra_Library::Linear_Form \c Linear_Form \endlink class 
+provides common algebraic operations on linear forms: you can add or
+subtract two linear forms, and multiply or divide a linear form by a scalar.
+We are writing only about interval linear forms in this section, so our
+scalars will always be intervals with floating point boundaries.
+The operations on interval linear forms are intuitively defined as follows:
+
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \aslf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  =
+  \left(i \asifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \asifp i'_{v}\right)v,
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \adlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  =
+  \left(i \adifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \adifp i'_{v}\right)v,
+
+  i
+  \amlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  =
+  \left(i \amifp i'\right) +
+  \sum_{v \in V}\left(i \amifp i'_{v}\right)v,
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \adivlf
+  i'
+  =
+  \left(i \adivifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \adivifp i'\right)v.
+
+\f]
+
+Where \f$\asifp, \adifp, \amifp,\f$ and \f$\adivifp\f$ are the corresponding
+operations on intervals. Note that these operations always round the
+interval's lower bound towards \f$-\infty\f$ and the upper bound towards
+\f$+\infty\f$ in order to obtain a correct overapproximation.
+
 A <EM>(composite) floating point abstract store</EM> is used to associate each
 floating point variable with its currently known approximation. The store is
 composed by two parts:
@@ -2662,8 +2706,15 @@ composed by two parts:
     associating each variable with its current approximating linear form.
 
 Both stores are represented by maps of the Standard Template Library and are
-needed for performing linearization. Please see the documentation of floating
+required by the linearize method. Please see the documentation of floating
 point expression classes for more information.
+
+The linearization of a floating point expression \f$e\f$ in the composite
+abstract store \f$\left \langle \rho, \rho_l \right \rangle\f$ will be denoted
+by \f$\f$. There are two ways a linearization attempt can fail:
+  - whenever an interval boundary overflows to \f$+\infty\f$ or \f$-\infty\f$,
+    and
+  - when we try to divide by an interval that contains \f$0\f$.
 
 \section use_of_library Using the Library
 
