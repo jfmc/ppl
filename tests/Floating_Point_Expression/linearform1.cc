@@ -219,22 +219,62 @@ test07() {
 
 
 // Tests overflows of space dimension.
-// FIXME: works in progress!
 bool
 test08() {
-  Linear_Form<fl_r_oc> f;
+  Linear_Form<db_r_oc> f;
   Variable A(f.max_space_dimension());
 
   bool ok1 = false;
   try {
-    f = Linear_Form<fl_r_oc>(A);
+    f = Linear_Form<db_r_oc>(A);
   }
   catch(std::length_error e) {
       nout << "Overflow in Linear_Form(const Variable v)." << endl;
       ok1 = true;
   }
 
-  return ok1;
+  bool ok2 = false;
+  try {
+    f += A;
+  }
+  catch(std::length_error e) {
+      nout << "Overflow in operator+=(Linear_Form<C>& f, const Variable v)."
+           << endl;
+      ok2 = true;
+  }
+
+  Linear_Form<db_r_oc> g;
+  bool ok3 = false;
+  try {
+    g = f - A;
+  }
+  catch(std::length_error e) {
+      nout << "Overflow in operator-(Linear_Form<C>& f, const Variable v)."
+           << endl;
+      ok3 = true;
+  }
+
+  bool ok4 = false;
+  try {
+    g = A - f;
+  }
+  catch(std::length_error e) {
+      nout << "Overflow in operator-(const Variable v, Linear_Form<C>& f)."
+           << endl;
+      ok4 = true;
+  }
+
+  bool ok5 = false;
+  try {
+    g = A + f;
+  }
+  catch(std::length_error e) {
+      nout << "Overflow in operator+(const Variable v, Linear_Form<C>& f)."
+           << endl;
+      ok5 = true;
+  }
+
+  return ok1 && ok2 && ok3 && ok4 && ok5;
 }
 
 } // namespace
