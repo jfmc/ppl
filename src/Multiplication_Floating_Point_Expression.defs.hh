@@ -63,7 +63,7 @@ namespace Parma_Polyhedra_Library {
   Let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
   \f$i' + \sum_{v \in \cV}i'_{v}v \f$
   be two linear forms, \f$\aslf\f$ and \f$\amlf\f$ two sound abstract
-  operator on linear forms such that:
+  operators on linear forms such that:
   \f[
   \left(i + \sum_{v \in \cV}i_{v}v\right)
   \aslf
@@ -112,7 +112,8 @@ namespace Parma_Polyhedra_Library {
   \f[
   \linexpr{e_{1} \otimes e_{2}}\rho^{\#}
   =
-  \linexpr{\iota\left(\linexpr{e_{1}\rho^{\#}}\right) \otimes e_{2}}\rho^{\#}.
+  \linexpr{\iota\left(\linexpr{e_{1}}\rho^{\#}\right)\rho^{\#}
+  \otimes e_{2}}\rho^{\#}.
   \f]
   where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the linear form obtained
   by the method <CODE>Floating_Point_Expression::relative_error()</CODE>,

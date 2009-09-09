@@ -85,13 +85,13 @@ namespace Parma_Polyhedra_Library {
   \f[
   \linexpr{e_{1} \ominus e_{2}}\rho^{\#} =
   \linexpr{e_{1}}\rho^{\#}
-  \adifp
+  \adlf
   \linexpr{e_{2}}\rho^{\#}
-  \asifp
+  \aslf
   \varepsilon_{\mathbf{f}}\left(\linexpr{e_{1}}\rho^{\#}\right)
-  \asifp
+  \aslf
   \varepsilon_{\mathbf{f}}\left(\linexpr{e_{2}}\rho^{\#}\right)
-  \asifp
+  \aslf
   mf_{\mathbf{f}}[-1;1]
   \f]
   where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the linear form obtained

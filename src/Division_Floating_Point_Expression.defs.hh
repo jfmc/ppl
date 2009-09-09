@@ -83,7 +83,7 @@ namespace Parma_Polyhedra_Library {
   \f[
   \linexpr{e_{1} \oslash [a;b]}\rho^{\#}
   =
-  \left(\linexpr{e_{2}}\rho^{\#}
+  \left(\linexpr{e_{1}}\rho^{\#}
   \adivlf
   [a;b]\right)
   \aslf
@@ -100,7 +100,7 @@ namespace Parma_Polyhedra_Library {
   \f[
   \linexpr{e_{1} \oslash e_{2}}\rho^{\#}
   =
-  \linexpr{e_{1} \oslash \iota\left(\linexpr{e_{2}\rho^{\#}}\right)}\rho^{\#}.
+  \linexpr{e_{1} \oslash \iota\left(\linexpr{e_{2}}\rho^{\#}\right)\rho^{\#}}.
   \f]
   where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the linear form obtained
   by the method <CODE>Floating_Point_Expression::relative_error()</CODE>,
