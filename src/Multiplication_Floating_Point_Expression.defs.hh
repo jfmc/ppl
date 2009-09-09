@@ -59,18 +59,67 @@ namespace Parma_Polyhedra_Library {
 
   \par Linearizations of floating-point sum expressions
 
-  Let \f$i + \sum_{v \in V}i_{v}v \f$ be a linear form we define an abstract
-  operator \f$\amlf\f$:
+
+  Let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
+  \f$i' + \sum_{v \in \cV}i'_{v}v \f$
+  be two linear forms, \f$\aslf\f$ and \f$\amlf\f$ two sound abstract
+  operator on linear forms such that:
   \f[
-  \begin{left}
-  \left(i + \sum_{v \in V}i_{v}v\right)
+  \left(i + \sum_{v \in \cV}i_{v}v\right)
+  \aslf
+  \left(i' + \sum_{v \in \cV}i'_{v}v\right)
+  =
+  \left(i \asifp i'\right) +
+  \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v,
+  \f]
+  \f[
+  i
   \amlf
-  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  \left(i' + \sum_{v \in \cV}i'_{v}v\right)
   =
   \left(i \amifp i'\right) +
-  \sum_{v \in V}\left(i_{v} \amifp i'_{v}\right)v
-  \end{left}
+  \sum_{v \in \cV}\left(i \amifp i'_{v}\right)v.
   \f]
+  Given an expression \f$[a;b] \otimes e_{2}\f$ and an interval
+  abstract store \f$\rho^{\#}\f$, we construct the interval linear form
+  \f$\linexpr{[a;b] \otimes e_{2}}\rho^{\#}\f$ on \f$\cV\f$ as follow:
+  \f[
+  \linexpr{[a;b] \otimes e_{2}}\rho^{\#}
+  =
+  \left([a;b]
+  \amlf
+  \linexpr{e_{2}}\rho^{\#}\right)
+  \aslf
+  \left([a;b]
+  \amlf
+  \varepsilon_{\mathbf{f}}\left(\linexpr{e_{2}}\rho^{\#}\right)\right)
+  \aslf
+  mf_{\mathbf{f}}[-1;1],
+  \f]
+  given an expression \f$e_{1} \otimes [a;b]\f$ and an interval
+  abstract store \f$\rho^{\#}\f$, we construct the interval linear form
+  \f$\linexpr{e_{1} \otimes [a;b]}\rho^{\#}\f$ on \f$\cV\f$ as
+  follow:
+  \f[
+  \linexpr{e_{1} \otimes [a;b]}\rho^{\#}
+  =
+  \linexpr{[a;b] \otimes e_{1}}\rho^{\#},
+  \f]
+  given an expression \f$e_{1} \otimes e_{2}\f$ and an interval
+  abstract store \f$\rho^{\#}\f$, we construct the interval linear form
+  \f$\linexpr{e_{1} \otimes e_{2}}\rho^{\#}\f$ on \f$\cV\f$ as
+  follow:
+  \f[
+  \linexpr{e_{1} \otimes e_{2}}\rho^{\#}
+  =
+  \linexpr{\iota\left(\linexpr{e_{1}\rho^{\#}}\right) \otimes e_{2}}\rho^{\#}.
+  \f]
+  where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the linear form obtained
+  by the method <CODE>Floating_Point_Expression::relative_error()</CODE>,
+  \f$\iota(l)\rho^{\#}\f$ is the linear form obtained by the method
+  <CODE>Floating_Point_Expression::intervalize()</CODE> and
+  \f$mf_{\mathbf{f}}[-1;1]\f$ the value of absolute error defined in
+  <CODE>Floating_Point_Expression::absolute_error</CODE>.
 */
 template <typename FP_Interval_Type, typename FP_Format>
 class Multiplication_Floating_Point_Expression

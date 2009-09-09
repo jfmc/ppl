@@ -152,6 +152,20 @@ public:
     \param lf The linear form used to compute the relative error.
     \param result Becomes the linear form corresponding to a relative
     error committed on \p lf.
+
+    This method modifies the given linear form <CODE>result</CODE> like
+    a function \f$\varepsilon_{\mathbf{f}}(l)\f$ on a linear form \f$l\f$
+    such as:
+    \f[
+    \varepsilon_{\mathbf{f}}\left([a;b]+\sum_{v \in \cV}[a_{v};b_{v}]v\right)
+    =
+    (\textrm{max}(|a|,|b|) \amifp [-2^{-\textrm{p}};2^{-\textrm{p}}])
+    +
+    \sum_{v \in \cV}(\textrm{max}(|a_{v}|,|b_{v}|)
+    \amifp 
+    [-2^{-\textrm{p}};2^{-\textrm{p}}])v
+    \f]
+    where p is the fraction size in bits for the format \f$\mathbf{f}\f$.
   */
   static void relative_error(const FP_Linear_Form& lf,
                              FP_Linear_Form& result);

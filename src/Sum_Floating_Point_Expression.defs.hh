@@ -57,22 +57,38 @@ namespace Parma_Polyhedra_Library {
 
   \par Linearizations of floating-point sum expressions
 
-  Let \f$i + \sum_{v \in \cV}i_{v}v \f$ and 
+  Let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
   \f$i' + \sum_{v \in \cV}i'_{v}v \f$
   be two linear forms and \f$\aslf\f$ a sound abstract operator on linear
-  form such that:
+  forms such that:
   \f[
-    \left(i + \sum_{v \in \cV}i_{v}v\right)
+  \left(i + \sum_{v \in \cV}i_{v}v\right)
   \aslf
   \left(i' + \sum_{v \in \cV}i'_{v}v\right)
   =
   \left(i \asifp i'\right) +
   \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v
   \f]
-  Given an expression \f$\textrm{expr}_{\mathbf{f}}\f$ and an interval
+  Given an expression \f$e_{1} \oplus e_{2}\f$ and an interval
   abstract store \f$\rho^{\#}\f$, we construct the interval linear form
-  \f$\left(\textrm{expr}_{\mathbf{f}}\right)\rho^{\#}\f$ on \f$\cV\f$ as
+  \f$\linexpr{e_{1} \oplus e_{2}}\rho^{\#}\f$ on \f$\cV\f$ as
   follow:
+  \f[
+  \linexpr{e_{1} \oplus e_{2}}\rho^{\#} =
+  \linexpr{e_{1}}\rho^{\#}
+  \aslf
+  \linexpr{e_{2}}\rho^{\#}
+  \aslf
+  \varepsilon_{\mathbf{f}}\left(\linexpr{e_{1}}\rho^{\#}\right)
+  \aslf
+  \varepsilon_{\mathbf{f}}\left(\linexpr{e_{2}}\rho^{\#}\right)
+  \aslf
+  mf_{\mathbf{f}}[-1;1]
+  \f]
+  where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the linear form obtained
+  from the method <CODE>Floating_Point_Expression::relative_error()</CODE>
+  and \f$mf_{\mathbf{f}}[-1;1]\f$ is the value of absolute error defined in
+  <CODE>Floating_Point_Expression::absolute_error</CODE>.
 */
 template <typename FP_Interval_Type, typename FP_Format>
 class Sum_Floating_Point_Expression

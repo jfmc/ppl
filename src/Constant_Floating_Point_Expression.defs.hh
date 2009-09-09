@@ -54,6 +54,20 @@ namespace Parma_Polyhedra_Library {
   of the intervals used in the abstract domain.
   - The class template type parameter \p FP_Format represents the format
   of the floating point variable used in the concrete domain.
+
+  \par Linearizations of floating-point constant expressions
+
+  Given a costant expression \f$\textrm{const}_{\mathbf{f},\mathbf{r}}(c)\f$
+  and an interval abstract store \f$\rho^{\#}\f$ where \f$\mathbf{f}\f$ is a
+  floating point format and \f$\mathbf{r}\f$ a rounding mode,
+  we construct the interval linear form
+  \f$\linexpr{\textrm{const}_{\mathbf{f},\mathbf{r}}(c)}\f$ as
+  follow:
+  \f[
+  \linexpr{\textrm{const}_{\mathbf{f},\mathbf{r}}(c)}\rho^{\#} =
+  [\textrm{const}_{\mathbf{f},-\infinity}(c);
+  \textrm{const}_{\mathbf{f},+\infinity}(c)].
+  \f]
  */
 template <typename FP_Interval_Type, typename FP_Format>
 class Constant_Floating_Point_Expression

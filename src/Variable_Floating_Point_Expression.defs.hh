@@ -54,6 +54,18 @@ namespace Parma_Polyhedra_Library {
   of the intervals used in the abstract domain.
   - The class template type parameter \p FP_Format represents the format
   of the floating point variable used in the concrete domain.
+
+  \par Linearizations of floating-point sum expressions
+
+  Given a variable expression \f$v_{\mathbf{f}}\f$ and an interval
+  abstract store \f$\rho^{\#}\f$, we construct the interval linear form
+  \f$\linexpr{v_{\mathbf{f}}}\rho^{\#}\f$ on \f$\cV\f$ as
+  follow:
+  \f[
+  \linexpr{v_{\mathbf{f}}}\rho^{\#} = [-1;1]v_{\mathbf{f}}
+  \f]
+  where \f$\mathbf{f}\f$ is a floating point format and \f$\cV\f$ a set of
+  free variables.
  */
 template <typename FP_Interval_Type, typename FP_Format>
 class Variable_Floating_Point_Expression
