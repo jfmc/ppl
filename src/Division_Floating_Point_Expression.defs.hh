@@ -71,7 +71,7 @@ namespace Parma_Polyhedra_Library {
   \f]
   \f[
   \left(i + \sum_{v \in \cV}i_{v}v\right)
-  \divlf
+  \adivlf
   i'
   =
   \left(i \adivifp i'\right) +
