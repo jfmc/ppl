@@ -43,12 +43,13 @@ void swap(Parma_Polyhedra_Library::Opposite_Floating_Point_Expression<
 
 namespace Parma_Polyhedra_Library {
 
-//! A generic Opposite Floating Point Expression
-/*! \ingroup PPL_CXX_interface
-  The class template type parameter \p FP_Interval_Type represents the type
-  of the intervals used in the abstract domain.
+/*! \brief
+  A generic Opposite Floating Point Expression.
+  \ingroup PPL_CXX_interface
 
-  The class template type parameter \p FP_Format represents the format
+  - The class template type parameter \p FP_Interval_Type represents the type
+  of the intervals used in the abstract domain.
+  -  The class template type parameter \p FP_Format represents the format
   of the floating point variable used in the concrete domain.
  */
 template <typename FP_Interval_Type, typename FP_Format>
@@ -109,6 +110,11 @@ public:
   /* \brief
      Returns a linear form in the abstract store \p store that simply
      represents the opposite of the operand linearization.
+
+     \param int_store The interval abstract store.
+     \param lf_store The linear form abstract store.
+     \param result The modified linear form.
+
   */
   void linearize(const FP_Interval_Abstract_Store& int_store,
                  const FP_Linear_Form_Abstract_Store& lf_store,

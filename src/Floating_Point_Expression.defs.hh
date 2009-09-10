@@ -52,7 +52,7 @@ struct IEEE754_Double {
   A floating point expression on a given format.
 
   This class represents a concrete
-  <EM>floating point expression</EM> of format \f$$\mathbf{f}$\f$, this 
+  <EM>floating point expression</EM> of format \f$$\mathbf{f}$\f$, this
   includes constants, variables of format \f$$\mathbf{f}$\f$, binary and unary
   arithmetic operators.
 
@@ -114,7 +114,7 @@ public:
     \param int_store The interval abstract store.
     \param lf_store The linear form abstract store.
     \param result The modified linear form.
- 
+
     All variables occuring in the floating point expression MUST have
     an associated interval in \p int_store.
     If this precondition is not met, calling the method causes an
@@ -162,7 +162,7 @@ public:
     (\textrm{max}(|a|,|b|) \amifp [-2^{-\textrm{p}};2^{-\textrm{p}}])
     +
     \sum_{v \in \cV}(\textrm{max}(|a_{v}|,|b_{v}|)
-    \amifp 
+    \amifp
     [-2^{-\textrm{p}};2^{-\textrm{p}}])v
     \f]
     where p is the fraction size in bits for the format \f$\mathbf{f}\f$.
@@ -176,6 +176,16 @@ public:
      \param lf The linear form to aproximate.
      \param store The abstract store.
      \param result The linear form that will be modified.
+
+     This method modifies the given linear form <CODE>result</CODE> like
+     a function \f$\iota(l)\rho^{\#}\f$ on a linear form \f$l\f$ in an
+     abstract store \f$\rho^{\#}\f$, such as:
+     \f[
+     \iota\left(i + \sum_{v \in \cV}i_{v}v\right)\rho^{\#}
+     =
+     i \asifp \left(\bigoplus_{v \in \cV}{}_{\mathbf{f}}^{\#}i_{v} \amifp
+     \rho^{\#}(v)\right)
+     \f]
    */
   static void intervalize(const FP_Linear_Form& lf,
                           const FP_Interval_Abstract_Store& store,
