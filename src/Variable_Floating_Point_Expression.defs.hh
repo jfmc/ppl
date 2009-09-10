@@ -62,10 +62,8 @@ namespace Parma_Polyhedra_Library {
   we construct the interval
   linear form \f$\linexpr{v}
   \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$ as
-  \f$\rho^{\#}_l(v)\f$ if it is defined; otherwise we construct it as:
-  \f[
-  \linexpr{v}\rho^{\#} = [-1;1]v.
-  \f]
+  \f$\rho^{\#}_l(v)\f$ if it is defined; otherwise we construct it as
+  \f$[-1;1]v\f$.
 */
 template <typename FP_Interval_Type, typename FP_Format>
 class Variable_Floating_Point_Expression
