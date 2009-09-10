@@ -117,18 +117,12 @@ public:
     Thrown if linearization fails for some reason.
 
     Formally, if \p *this represents the expression \f$e\f$,
-<<<<<<< HEAD:src/Floating_Point_Expression.defs.hh
     \p int_store represents the interval abstract store \f$\rho^{\#}\f$ and
     \p lf_store represents the linear form abstract store \f$\rho^{\#}_l\f$,
     then \p result will become
     \f$\linexpr{e} \left \langle \rho^{\#}, \rho_l^{\#}_l \right \rangle\f$
     if the linearization succeeds.
-=======
-    \p int_store represents the interval abstract store \f$\rho\f$ and
-    \p lf_store represents the linear form abstract store \f$\rho_l\f$, then
-    result will become \f$\linexpr{e}\left ( \rho, \rho_l \right )\f$ if the
-    linearization succeeds.
->>>>>>> Fixed a few errors.:src/Floating_Point_Expression.defs.hh
+
     All variables occuring in the floating point expression MUST have
     an associated interval in \p int_store.
     If this precondition is not met, calling the method causes an
@@ -184,33 +178,24 @@ public:
   static void relative_error(const FP_Linear_Form& lf,
                              FP_Linear_Form& result);
 
-<<<<<<< HEAD:src/Floating_Point_Expression.defs.hh
-   /*! \brief
-     Makes \p result become an interval that overapproximates all the
-     possible values of \p lf in the interval abstract store \p store.
-     \param lf The linear form to aproximate.
-     \param store The abstract store.
-     \param result The linear form that will be modified.
-
-     This method modifies the given linear form <CODE>result</CODE> like
-     a function \f$\iota(l)\rho^{\#}\f$ on a linear form \f$l\f$ in an
-     abstract store \f$\rho^{\#}\f$, such as:
-     \f[
-     \iota\left(i + \sum_{v \in \cV}i_{v}v\right)\rho^{\#}
-     =
-     i \asifp \left(\bigoplus_{v \in \cV}{}_{\mathbf{f}}^{\#}i_{v} \amifp
-     \rho^{\#}(v)\right)
-     \f]
-   */
-=======
   /*! \brief
     Makes \p result become an interval that overapproximates all the
     possible values of \p lf in the interval abstract store \p store.
+
     \param lf The linear form to aproximate.
     \param store The abstract store.
     \param result The linear form that will be modified.
+
+    This method modifies the given linear form <CODE>result</CODE> like
+    a function \f$\iota(l)\rho^{\#}\f$ on a linear form \f$l\f$ in an
+    abstract store \f$\rho^{\#}\f$, such as:
+    \f[
+    \iota\left(i + \sum_{v \in \cV}i_{v}v\right)\rho^{\#}
+    =
+    i \asifp \left(\bigoplus_{v \in \cV}{}_{\mathbf{f}}^{\#}i_{v} \amifp
+    \rho^{\#}(v)\right)
+    \f]
   */
->>>>>>> Revised and corrected the whole documentation.:src/Floating_Point_Expression.defs.hh
   static void intervalize(const FP_Linear_Form& lf,
                           const FP_Interval_Abstract_Store& store,
                           FP_Interval_Type& result);
