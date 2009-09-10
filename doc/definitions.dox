@@ -2712,9 +2712,11 @@ interval's lower bound towards \f$-\infty\f$ and the upper bound towards
 A <EM>(composite) floating point abstract store</EM> is used to associate each
 floating point variable with its currently known approximation. The store is
 composed by two parts:
-  - an <EM>interval abstract store</EM> \f$\fund{\rho}{\cV}{\mathbb{I}_a}\f$
+  - an <EM>interval abstract store</EM>
+    \f$\fund{\rho^{\#}}{\cV}{\mathbb{I}_a}\f$
     associating each variable with its current approximating interval, and
-  - a <EM>linear form abstract store</EM> \f$\fund{\rho_l}{\cV}{\mathbb{L}_a}\f$
+  - a <EM>linear form abstract store</EM>
+    \f$\fund{\rho^{\#}_l}{\cV}{\mathbb{L}_a}\f$
     associating each variable with its current approximating linear form.
 
 Both stores are represented by maps of the Standard Template Library and are
@@ -2722,9 +2724,9 @@ required by the linearize method. Please see the documentation of floating
 point expression classes for more information.
 
 The linearization of a floating point expression \f$e\f$ in the composite
-abstract store \f$\left \langle \rho, \rho_l \right \rangle\f$ will be denoted
-by \f$\linexpr{e} \left (\rho, \rho_l \right )\f$. There are two ways a
-linearization attempt can fail:
+abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$ will
+be denoted by \f$\linexpr{e} \left (\rho^{\#}, \rho^{\#}_l \right )\f$.
+There are two ways a linearization attempt can fail:
   - whenever an interval boundary overflows to \f$+\infty\f$ or \f$-\infty\f$,
     and
   - when we try to divide by an interval that contains \f$0\f$.

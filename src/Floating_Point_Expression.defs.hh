@@ -60,8 +60,7 @@ struct IEEE754_Double {
 
   - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain. The interval bounds
-  should have a floating point type and open intervals should not be
-  allowed, otherwise the analysis will not be sound.
+  should have a floating point type.
   - The class template type parameter \p FP_Format represents the floating
   point format used in the concrete domain.
   This parameter must be a struct which contains \f$3\f$ fields:
@@ -106,15 +105,23 @@ public:
 
   //! Linearizes a floating point expression.
   /*! \brief
-    Linearizes a floating point expression.
-
-    Makes \p result become a Linear Form that correctly approximates the
+    Makes \p result become a linear form that correctly approximates the
     value of the floating point expression in the given composite
     abstract store.
+
     \param int_store The interval abstract store.
     \param lf_store The linear form abstract store.
-    \param result The modified linear form.
+    \param result Becomes the linearized expression.
 
+    \exception Parma_Polyhedra_Library::Linearization_Failed
+    Thrown if linearization fails for some reason.
+
+    Formally, if \p *this represents the expression \f$e\f$,
+    \p int_store represents the interval abstract store \f$\rho^{\#}\f$ and
+    \p lf_store represents the linear form abstract store \f$\rho^{\#}_l\f$,
+    then \p result will become
+    \f$\linexpr{e} \left \langle \rho^{\#}, \rho_l^{\#}_l \right \rangle\f$
+    if the linearization succeeds.
     All variables occuring in the floating point expression MUST have
     an associated interval in \p int_store.
     If this precondition is not met, calling the method causes an
@@ -124,7 +131,7 @@ public:
                          const FP_Linear_Form_Abstract_Store& lf_store,
                          FP_Linear_Form& result) const = 0;
 
-   /*! \brief
+  /*! \brief
     Absolute error.
 
     Initialized by computing the smallest non-zero positive
@@ -132,7 +139,6 @@ public:
     analyzer format and the analyzed format.
   */
   static boundary_type absolute_error;
-
 
   // FIXME: this may not be the best place for them.
   /*! \brief
@@ -153,12 +159,13 @@ public:
     \param result Becomes the linear form corresponding to a relative
     error committed on \p lf.
 
-    This method modifies the given linear form <CODE>result</CODE> like
-    a function \f$\varepsilon_{\mathbf{f}}(l)\f$ on a linear form \f$l\f$
+    This method makes <CODE>result</CODE> become a linear form
+    obtained by evaluating the function \f$\varepsilon_{\mathbf{f}}(l)\f$
+    on the linear form \p lf. This function is defined as:
     such as:
     \f[
     \varepsilon_{\mathbf{f}}\left([a;b]+\sum_{v \in \cV}[a_{v};b_{v}]v\right)
-    =
+    \defeq
     (\textrm{max}(|a|,|b|) \amifp [-2^{-\textrm{p}};2^{-\textrm{p}}])
     +
     \sum_{v \in \cV}(\textrm{max}(|a_{v}|,|b_{v}|)
@@ -170,6 +177,7 @@ public:
   static void relative_error(const FP_Linear_Form& lf,
                              FP_Linear_Form& result);
 
+<<<<<<< HEAD:src/Floating_Point_Expression.defs.hh
    /*! \brief
      Makes \p result become an interval that overapproximates all the
      possible values of \p lf in the interval abstract store \p store.
@@ -187,6 +195,15 @@ public:
      \rho^{\#}(v)\right)
      \f]
    */
+=======
+  /*! \brief
+    Makes \p result become an interval that overapproximates all the
+    possible values of \p lf in the interval abstract store \p store.
+    \param lf The linear form to aproximate.
+    \param store The abstract store.
+    \param result The linear form that will be modified.
+  */
+>>>>>>> Revised and corrected the whole documentation.:src/Floating_Point_Expression.defs.hh
   static void intervalize(const FP_Linear_Form& lf,
                           const FP_Interval_Abstract_Store& store,
                           FP_Interval_Type& result);

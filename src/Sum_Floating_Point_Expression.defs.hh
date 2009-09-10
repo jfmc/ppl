@@ -52,10 +52,10 @@ namespace Parma_Polyhedra_Library {
 
   - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain.
-  - The class template type parameter \p FP_Format represents the format
-  of the floating point variable used in the concrete domain.
+  - The class template type parameter \p FP_Format represents the floating
+  point format used in the concrete domain.
 
-  \par Linearizations of floating-point sum expressions
+  \par Linearization of sum floating-point expressions
 
   Let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
   \f$i' + \sum_{v \in \cV}i'_{v}v \f$
@@ -69,25 +69,28 @@ namespace Parma_Polyhedra_Library {
   \left(i \asifp i'\right) +
   \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v
   \f]
-  Given an expression \f$e_{1} \oplus e_{2}\f$ and an interval
-  abstract store \f$\rho^{\#}\f$, we construct the interval linear form
-  \f$\linexpr{e_{1} \oplus e_{2}}\rho^{\#}\f$ on \f$\cV\f$ as
-  follow:
+  Given an expression \f$e_{1} \oplus e_{2}\f$ and a composite
+  abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
+  we construct the interval linear form
+  \f$\linexpr{e_{1} \oplus e_{2}}\left ( \rho^{\#}, \rho^{\#}_l \right )\f$
+  as follows:
   \f[
-  \linexpr{e_{1} \oplus e_{2}}\rho^{\#} =
-  \linexpr{e_{1}}\rho^{\#}
+  \linexpr{e_{1} \oplus e_{2}}\left ( \rho^{\#}, \rho^{\#}_l \right ) =
+  \linexpr{e_{1}}\left ( \rho^{\#}, \rho^{\#}_l \right )
   \aslf
-  \linexpr{e_{2}}\rho^{\#}
+  \linexpr{e_{2}}\left ( \rho^{\#}, \rho^{\#}_l \right )
   \aslf
-  \varepsilon_{\mathbf{f}}\left(\linexpr{e_{1}}\rho^{\#}\right)
+  \varepsilon_{\mathbf{f}}\left(\linexpr{e_{1}}
+  \left ( \rho^{\#}, \rho^{\#}_l \right ) \right)
   \aslf
-  \varepsilon_{\mathbf{f}}\left(\linexpr{e_{2}}\rho^{\#}\right)
+  \varepsilon_{\mathbf{f}}\left(\linexpr{e_{2}}
+  \left ( \rho^{\#}, \rho^{\#}_l \right ) \right)
   \aslf
   mf_{\mathbf{f}}[-1;1]
   \f]
-  where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the linear form obtained
-  from the method <CODE>Floating_Point_Expression::relative_error()</CODE>
-  and \f$mf_{\mathbf{f}}[-1;1]\f$ is the value of absolute error defined in
+  where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the linear form computed by
+  calling method <CODE>Floating_Point_Expression::relative_error</CODE>
+  on \f$l\f$ and \f$mf_{\mathbf{f}}\f$ is a rounding error defined in
   <CODE>Floating_Point_Expression::absolute_error</CODE>.
 */
 template <typename FP_Interval_Type, typename FP_Format>
@@ -112,12 +115,16 @@ public:
   Floating_Point_Expression<FP_Interval_Type, FP_Format>
   ::FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
 
+  /*! \brief
+     Alias for the std::map<dimension_type, FP_Linear_Form> from
+     Floating_Point_Expression.
+  */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Linear_Form_Abstract_Store FP_Linear_Form_Abstract_Store;
 
   /*! \brief
-     Alias for the P_Interval_Type::boundary_type from
+     Alias for the FP_Interval_Type::boundary_type from
      Floating_Point_Expression.
   */
   typedef typename
@@ -125,7 +132,7 @@ public:
   boundary_type;
 
   /*! \brief
-     Alias for the P_Interval_Type::info_type from Floating_Point_Expression.
+     Alias for the FP_Interval_Type::info_type from Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::info_type info_type;
@@ -134,8 +141,7 @@ public:
   //@{
   /*! \brief
     Constructor with two parameters: builds the sum floating point expression
-    from \p x and \p y corresponding to the floating point expression \p x
-    + \p y.
+    corresponding to \p x \f$\oplus\f$ \p y.
   */
   Sum_Floating_Point_Expression(
 	   Floating_Point_Expression<FP_Interval_Type, FP_Format>* const x,
@@ -148,23 +154,25 @@ public:
 
   // FIXME: Modify documentation when exceptions are fixed
   /*! \brief
-    Linearizes the expression in a given astract state.
+    Linearizes the expression in a given astract store.
 
-     Modifies a linear form \p result in the abstract store
-     constructed by adding the following linear forms:
+    Makes \p result become the linearization of \p *this in the given
+    composite abstract store.
 
-     - the linearization of the <CODE>first_operand</CODE>;
-     - the linearization of the <CODE>second_operand</CODE>;
-     - the relative error related to the <CODE>first_operand</CODE>;
-     - the relative error related to the <CODE>second_operand</CODE>;
-     - the absolute error.
+    \param int_store The interval abstract store.
+    \param lf_store The linear form abstract store.
+    \param result The modified linear form.
 
-     \param int_store Interval floating-point store.
-     \param lf_store Linear form store.
-     \param result The linear form corresponding to \f$e \aslf e' \f$
+    \exception Parma_Polyhedra_Library::Linearization_Failed
+    Thrown if linearization fails for some reason.
 
-     \exception Parma_Polyhedra_Library::Linearization_Failed
-    Thrown if the method <CODE>linearize</CODE> fails.
+    Note that all variables occuring in the expressions represented
+    by \p first_operand and \p second_operand MUST have an associated value in
+    \p int_store. If this precondition is not met, calling the method
+    causes an undefined behavior.
+    
+    See the class description for a detailed explanation of how \p result
+    is computed.
   */
   void linearize(const FP_Interval_Abstract_Store& int_store,
                  const FP_Linear_Form_Abstract_Store& lf_store,
@@ -182,7 +190,7 @@ private:
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Copy constructor: temporary inhibited.
+    Inhibited copy constructor.
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Sum_Floating_Point_Expression(
@@ -190,7 +198,7 @@ private:
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Assignment operator: temporary inhibited.
+    Inhibited assignment operator.
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>&

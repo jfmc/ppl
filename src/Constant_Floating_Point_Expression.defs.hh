@@ -52,23 +52,16 @@ namespace Parma_Polyhedra_Library {
 
   - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain.
-  - The class template type parameter \p FP_Format represents the format
-  of the floating point variable used in the concrete domain.
+  - The class template type parameter \p FP_Format represents the floating
+  point format used in the concrete domain.
 
-  \par Linearizations of floating-point constant expressions
+  \par Linearization of floating-point constant expressions
 
-  Given a costant expression \f$\textrm{const}_{\mathbf{f},\mathbf{r}}(c)\f$
-  and an interval abstract store \f$\rho^{\#}\f$ where \f$\mathbf{f}\f$ is a
-  floating point format and \f$\mathbf{r}\f$ a rounding mode,
-  we construct the interval linear form
-  \f$\linexpr{\textrm{const}_{\mathbf{f},\mathbf{r}}(c)}\f$ as
-  follow:
-  \f[
-  \linexpr{\textrm{const}_{\mathbf{f},\mathbf{r}}(c)}\rho^{\#} =
-  [\textrm{const}_{\mathbf{f},-\infty}(c);
-  \textrm{const}_{\mathbf{f},+\infty}(c)].
-  \f]
- */
+  The linearization of a constant floating point expression results in a
+  linear form consisting of only the inhomogeneous term
+  \f$\left[ l;u \right]\f$, where \f$l\f$ and \f$u\f$ are the lower
+  and upper bounds of the constant value given to the class constructor.
+*/
 template <typename FP_Interval_Type, typename FP_Format>
 class Constant_Floating_Point_Expression
   : public Floating_Point_Expression<FP_Interval_Type, FP_Format> {
@@ -91,12 +84,16 @@ public:
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
 
+  /*! \brief
+     Alias for the std::map<dimension_type, FP_Linear_Form> from
+     Floating_Point_Expression.
+  */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Linear_Form_Abstract_Store FP_Linear_Form_Abstract_Store;
 
   /*! \brief
-     Alias for the P_Interval_Type::boundary_type from
+     Alias for the FP_Interval_Type::boundary_type from
      Floating_Point_Expression.
   */
   typedef typename
@@ -104,7 +101,7 @@ public:
   boundary_type;
 
   /*! \brief
-     Alias for the P_Interval_Type::info_type from Floating_Point_Expression.
+     Alias for the FP_Interval_Type::info_type from Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::info_type info_type;
@@ -113,7 +110,8 @@ public:
   //@{
   /*! \brief
     Constructor with two parameters: builds the constant floating point
-    expression from \p lower_bound and \p upper_bound.
+    expression from a \p lower_bound and an \p upper_bound of its
+    value in the concrete domain.
   */
   Constant_Floating_Point_Expression(const boundary_type lower_bound,
                                      const boundary_type upper_bound);
@@ -123,26 +121,24 @@ public:
 
   //@} // Constructors and Destructor
 
-    // FIXME: Modify documentation when exceptions are fixed.
+  // FIXME: Modify documentation when exceptions are fixed.
   /*! \brief
-    Linearizes the expression in a given astract state.
+    Linearizes the expression in a given astract store.
 
-    Modifies a linear form \p result in the abstract store \p store
-    corresponding to an inhomogenous term which over-approximates
-    *this.value.
+    Makes \p result become the linearization of \p *this in the given
+    composite abstract store.
 
-    \param int_store Interval floating-point store.
-    \param lf_store Linear form store.
+    \param int_store The interval abstract store.
+    \param lf_store The linear form abstract store.
     \param result The modified linear form.
 
-     \exception Parma_Polyhedra_Library::Linearization_Failed
-    Thrown if the method <CODE>linearize</CODE> fails.
+    See the class description for an explanation of how \p result is computed.
   */
   void linearize(const FP_Interval_Abstract_Store& int_store,
                  const FP_Linear_Form_Abstract_Store& lf_store,
                  FP_Linear_Form& result) const;
 
-  //!  Swaps \p *this with \p y.
+  //! Swaps \p *this with \p y.
   void swap(Constant_Floating_Point_Expression& y);
 
 private:
@@ -153,7 +149,7 @@ private:
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Copy constructor: temporary inhibited.
+    Inhibited copy constructor.
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Constant_Floating_Point_Expression(
@@ -161,7 +157,7 @@ private:
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Assignment operator: temporary inhibited.
+    Inhibited assignment operator.
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAIL
   Constant_Floating_Point_Expression& operator=(

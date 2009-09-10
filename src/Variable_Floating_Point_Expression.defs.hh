@@ -46,27 +46,26 @@ namespace Parma_Polyhedra_Library {
 /*! \brief
   A generic Variable Floating Point Expression.
 
-\ingroup PPL_CXX_interface
+  \ingroup PPL_CXX_interface
 
   \par Template type parameters
 
   - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain.
-  - The class template type parameter \p FP_Format represents the format
-  of the floating point variable used in the concrete domain.
+  - The class template type parameter \p FP_Format represents the floating
+  point format used in the concrete domain.
 
-  \par Linearizations of floating-point sum expressions
+  \par Linearization of floating-point variable expressions
 
-  Given a variable expression \f$v_{\mathbf{f}}\f$ and an interval
-  abstract store \f$\rho^{\#}\f$, we construct the interval linear form
-  \f$\linexpr{v_{\mathbf{f}}}\rho^{\#}\f$ on \f$\cV\f$ as
-  follow:
+  Given a variable expression \f$v\f$ and a composite
+  abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
+  we construct the interval
+  linear form \f$\linexpr{v}\rho^{\#}\f$ as
+  \f$\rho^{\#}_l(v)\f$ if it is defined; otherwise we construct it as:
   \f[
-  \linexpr{v_{\mathbf{f}}}\rho^{\#} = [-1;1]v_{\mathbf{f}}
+  \linexpr{v}\rho^{\#} = [-1;1]v.
   \f]
-  where \f$\mathbf{f}\f$ is a floating point format and \f$\cV\f$ a set of
-  free variables.
- */
+*/
 template <typename FP_Interval_Type, typename FP_Format>
 class Variable_Floating_Point_Expression
 : public Floating_Point_Expression<FP_Interval_Type, FP_Format> {
@@ -89,12 +88,16 @@ public:
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
 
+  /*! \brief
+     Alias for the std::map<dimension_type, FP_Linear_Form> from
+     Floating_Point_Expression.
+  */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Linear_Form_Abstract_Store FP_Linear_Form_Abstract_Store;
 
   /* \brief
-     Alias for the P_Interval_Type::boundary_type from
+     Alias for the FP_Interval_Type::boundary_type from
      Floating_Point_Expression.
   */
   typedef typename
@@ -102,7 +105,7 @@ public:
   boundary_type;
 
   /*! \brief
-     Alias for the P_Interval_Type::info_type from Floating_Point_Expression.
+     Alias for the FP_Interval_Type::info_type from Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::info_type info_type;
@@ -111,7 +114,7 @@ public:
   //@{
   /*! \brief
     Constructor with a parameter: builds the variable floating point
-    expression from \p v_index corresponding to the variable index.
+    expression corresponding to the variable having \p v_index as its index.
   */
   explicit Variable_Floating_Point_Expression(const dimension_type v_index);
 
@@ -121,14 +124,21 @@ public:
   //@} // Constructors and Destructor
 
   /*! \brief
-    Linearization of a variable.
+    Linearizes the expression in a given astract store.
 
-    Modifies a linear form \p result in the abstract store \p store
-    corresponding to <CODE>this</CODE> variable with coefficent \f$[1,1]\f$.
+    Makes \p result become the linearization of \p *this in the given
+    composite abstract store.
 
-    \param int_store Interval floating-point store.
-    \param lf_store Linear form store.
-    \param result The modfied linear form.
+    \param int_store The interval abstract store.
+    \param lf_store The linear form abstract store.
+    \param result The modified linear form.
+
+    Note that the variable in the expression MUST have an associated value
+    in \p int_store. If this precondition is not met, calling the method
+    causes an undefined behavior.
+
+    See the class description for a detailed explanation of how \p result is
+    computed.
   */
   void linearize(const FP_Interval_Abstract_Store& int_store,
                  const FP_Linear_Form_Abstract_Store& lf_store,
@@ -141,7 +151,7 @@ private:
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Copy constructor: temporary inhibited.
+    Inhibited copy constructor.
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Variable_Floating_Point_Expression(
@@ -149,13 +159,13 @@ private:
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Assignment operator: temporary inhibited.
+    Inhibited assignment operator.
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Variable_Floating_Point_Expression& operator=(
 		          const Variable_Floating_Point_Expression& y);
 
-  //! Variable index's value.
+  //! The index of the variable.
   dimension_type variable_index;
 
 }; // class Variable_Floating_Point_Expression
