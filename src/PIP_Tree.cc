@@ -25,28 +25,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <algorithm>
 
-namespace PPL = Parma_Polyhedra_Library;
+namespace Parma_Polyhedra_Library {
 
 namespace {
 
 // Compute x += c * y
 void
-add_assign(PPL::Row& x, const PPL::Row& y, const PPL::Coefficient &c) {
-  for (PPL::dimension_type i=0; i<x.size(); ++i)
-    x[i] += c * y[i];
+add_assign(Row& x, const Row& y, Coefficient_traits::const_reference c) {
+  PPL_ASSERT(x.size() == y.size());
+  for (dimension_type i = x.size(); i-- > 0; )
+    add_mul_assign(x[i], c, y[i]);
 }
 
 // Merge constraint systems such as x = x U z
 void
-merge(PPL::Constraint_System &x, const PPL::Constraint_System &y) {
-  PPL::Constraint_System::const_iterator i;
-  for (i=y.begin(); i!=y.end(); ++i)
-    x.insert(*i);
+merge_assign(Constraint_System& x, const Constraint_System& y) {
+  for (Constraint_System::const_iterator y_i = y.begin(),
+         y_end = y.end(); y_i != y_end; ++y_i)
+    x.insert(*y_i);
 }
 
 } // namespace
 
-namespace Parma_Polyhedra_Library {
 
 PIP_Decision_Node::~PIP_Decision_Node() {
   delete true_child;
@@ -134,7 +134,7 @@ PIP_Decision_Node::solve(PIP_Tree_Node **parent_ref,
   PIP_Problem_Status stt;
   PIP_Problem_Status stf = UNFEASIBLE_PIP_PROBLEM;
   Constraint_System context_true(context);
-  merge(context_true, constraints_);
+  merge_assign(context_true, constraints_);
   stt = true_child->solve(&true_child, context_true);
   if (false_child) {
     // Decision nodes with false child must have exactly one constraint
