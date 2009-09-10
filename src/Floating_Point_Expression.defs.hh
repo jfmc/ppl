@@ -48,7 +48,8 @@ struct IEEE754_Double {
   static const unsigned short exponent_bias = 1023;
 };
 
-/*! \ingroup PPL_CXX_Interface
+/*! \brief
+  \ingroup PPL_CXX_Interface
   A floating point expression on a given format.
 
   This class represents a concrete
