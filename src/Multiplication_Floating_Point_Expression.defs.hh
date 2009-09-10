@@ -188,7 +188,7 @@ public:
   //@{
   /*! \brief
     Constructor with two parameters: builds the multiplication floating point
-    expression corresponding to \p x \otimes \p y.
+    expression corresponding to \p x \f$\otimes\f$ \p y.
   */
   Multiplication_Floating_Point_Expression(
 	   Floating_Point_Expression<FP_Interval_Type, FP_Format>* const x,
