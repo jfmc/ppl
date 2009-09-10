@@ -120,7 +120,7 @@ public:
     \p int_store represents the interval abstract store \f$\rho^{\#}\f$ and
     \p lf_store represents the linear form abstract store \f$\rho^{\#}_l\f$,
     then \p result will become
-    \f$\linexpr{e} \left \langle \rho^{\#}, \rho_l^{\#}_l \right \rangle\f$
+    \f$\linexpr{e} \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$
     if the linearization succeeds.
 
     All variables occuring in the floating point expression MUST have
