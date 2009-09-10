@@ -186,13 +186,12 @@ public:
     \param store The abstract store.
     \param result The linear form that will be modified.
 
-    This method modifies the given linear form <CODE>result</CODE> like
-    a function \f$\iota(l)\rho^{\#}\f$ on a linear form \f$l\f$ in an
-    abstract store \f$\rho^{\#}\f$, such as:
+    This method makes <CODE>result</CODE> become
+    \f$\iota(lf)\rho^{\#}\f$, that is an interval defined as:
     \f[
     \iota\left(i + \sum_{v \in \cV}i_{v}v\right)\rho^{\#}
-    =
-    i \asifp \left(\bigoplus_{v \in \cV}{}_{\mathbf{f}}^{\#}i_{v} \amifp
+    \defeq
+    i \asifp \left(\bigoplus_{v \in \cV}^{\#}i_{v} \amifp
     \rho^{\#}(v)\right)
     \f]
   */
