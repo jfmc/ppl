@@ -92,10 +92,10 @@ protected:
 
   /*! \brief
     Execute a parametric simplex on the tableau, under specified context.
-    
+
     \param parent_ref
     a pointer to the parent reference to \p this
-    
+
     \param context
     the context, being a set of constraints on the parameters
 
@@ -132,7 +132,7 @@ public:
 
   /*! \brief
     Returns the system of parameter constraints controlling \p *this.
-    
+
     The column indices in the constraints are numbered from \c 0 to
     <tt>np-1</tt>, where \c np is the total number of parameters. They are
     ordered with the same order as the parameter indices in the original
@@ -177,6 +177,9 @@ private:
       the matrix and normalizes them and the denominator by the GCD itself.
     */
     void normalize();
+
+    //! Returns the allocated capacity of each Row of the Matrix.
+    dimension_type capacity();
 
     //! Tests whether the matrix is integer, \e ie. the denominator is 1.
     bool is_integer() const;
@@ -254,10 +257,10 @@ protected:
 
   /*! \brief
     Execute a parametric simplex on the tableau, under specified context.
-    
+
     \param parent_ref
     a pointer to the parent reference to \p this
-    
+
     \param context
     the context, being a set of constraints on the parameters
 
@@ -290,7 +293,7 @@ public:
 
   /*! \brief
     Returns the system of parameter constraints controlling \p *this.
-    
+
     The column indices in the constraints are numbered from \c 0 to
     <tt>np-1</tt>, where \c np is the total number of parameters. They are
     ordered with the same order as the parameter indices in the original
@@ -372,10 +375,10 @@ protected:
 
   /*! \brief
     Execute a parametric simplex on the tableau, under specified context.
-    
+
     \param parent_ref
     a pointer to the parent reference to \p this
-    
+
     \param context
     the context, being a set of constraints on the parameters
 

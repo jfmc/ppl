@@ -23,6 +23,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl-config.h>
 #include "PIP_Tree.defs.hh"
 
+namespace PPL = Parma_Polyhedra_Library;
+
+namespace {
+
+// Compute x += c * y
+void
+add_assign(PPL::Row& x, const PPL::Row& y, const PPL::Coefficient &c) {
+  for (PPL::dimension_type i=0; i<x.size(); ++i)
+    x[i] += c * y[i];
+}
+
+// Merge constraint systems such as x = x U z
+void
+merge(PPL::Constraint_System &x, const PPL::Constraint_System &y) {
+  PPL::Constraint_System::const_iterator i;
+  for (i=y.begin(); i!=y.end(); ++i)
+    x.insert(*i);
+}
+
+} // namespace
+
 namespace Parma_Polyhedra_Library {
 
 PIP_Decision_Node::~PIP_Decision_Node() {
@@ -99,8 +120,7 @@ PIP_Decision_Node::solve(PIP_Tree_Node **parent_ref,
   PIP_Problem_Status stt;
   PIP_Problem_Status stf = UNFEASIBLE_PIP_PROBLEM;
   Constraint_System context_true(context);
-  //FIXME: not implemented yet (merging of constraint systems)
-  //context_true.merge(_constraints);
+  merge(context_true, _constraints);
   stt = true_child->solve(&true_child, context_true);
   if (false_child) {
     // Decision nodes with false child must have exactly one constraint
@@ -123,6 +143,12 @@ PIP_Decision_Node::solve(PIP_Tree_Node **parent_ref,
 void
 PIP_Solution_Node::Rational_Matrix::normalize() {
   //FIXME
+}
+
+//! Returns the allocated capacity of each Row of the Matrix.
+dimension_type
+PIP_Solution_Node::Rational_Matrix::capacity() {
+  return row_capacity;
 }
 
 void
@@ -177,7 +203,7 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node **parent_ref,
                                   dimension_type first_pending_constraint,
                                   const Constraint_Sequence &input_cs,
                                   const Variables_Set &parameters) {
-  dimension_type i, j;
+  dimension_type i;
   dimension_type n_params = parameters.size();
   dimension_type n_vars = external_space_dim - n_params;
   dimension_type internal_space_dim = tableau.t.num_columns()-1;
@@ -208,8 +234,8 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node **parent_ref,
        cst < input_cs.end(); ++cst) {
     int v = 0;
     int p = 1;
-    Row var(n_vars, Row::Flags());
-    Row param(n_params+1, Row::Flags());
+    Row var(n_vars, tableau.s.capacity(), Row::Flags());
+    Row param(n_params+1, tableau.t.capacity(), Row::Flags());
     Coefficient cnst_term = -cst->inhomogeneous_term();
     if (cst->is_strict_inequality())
       // convert c > 0  <=>  c-1 >= 0
@@ -219,19 +245,15 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node **parent_ref,
       if (parameters.count(i) == 1) {
         param[p++] = cst->coefficient(Variable(i)) * denom_t;
       } else {
-        Coefficient c = cst->coefficient(Variable(i)) * denom_s;
+        Coefficient c = cst->coefficient(Variable(i));
         dimension_type idx = mapping[v];
         if (basis[v])
           // Basic variable : add c * x_i
-          var[idx] += c;
+          var[idx] += c * denom_s;
         else {
           // Nonbasic variable : add c * row_i
-          const Row &sr = tableau.s[idx];
-          const Row &st = tableau.t[idx];
-          for (j=0; j<sr.size(); j++)
-            var[j] += c*sr[j];
-          for (j=0; j<st.size(); j++)
-            param[j] += c*st[j];
+          add_assign(var, tableau.s[idx], c);
+          add_assign(param, tableau.t[idx], c);
         }
         ++v;
       }
