@@ -85,9 +85,9 @@ PPL::PIP_Problem::solve() const {
                                          input_cs,
                                          parameters);
 
-      //FIXME: implement the simplex algorithm
-
-      return_value = OPTIMIZED_PIP_PROBLEM;
+      Constraint_System initial_context;
+      return_value = x.current_solution->solve(&x.current_solution,
+                                               initial_context);
 
       switch (return_value) {
       case UNFEASIBLE_PIP_PROBLEM:

@@ -322,7 +322,7 @@ private:
   dimension_type first_pending_constraint;
 
   /*! \brief
-    A set containing all the indexes of space dimensions that are
+    A set containing all the indices of space dimensions that are
     interpreted as problem parameters.
   */
   Variables_Set parameters;

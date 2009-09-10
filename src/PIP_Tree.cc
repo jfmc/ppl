@@ -79,19 +79,46 @@ PIP_Decision_Node::update_tableau(PIP_Tree_Node **parent_ref,
                                   dimension_type first_pending_constraint,
                                   const Constraint_Sequence &input_cs,
                                   const Variables_Set &parameters) {
-  true_child->update_tableau(parent_ref,
+  true_child->update_tableau(&true_child,
                              external_space_dim,
                              first_pending_constraint,
                              input_cs,
                              parameters);
   if (false_child)
-    false_child->update_tableau(parent_ref,
+    false_child->update_tableau(&false_child,
                                 external_space_dim,
                                 first_pending_constraint,
                                 input_cs,
                                 parameters);
 }
 
+PIP_Problem_Status
+PIP_Decision_Node::solve(PIP_Tree_Node **parent_ref,
+                         const Constraint_System& context) {
+  PIP_Problem_Status return_status;
+  PIP_Problem_Status stt;
+  PIP_Problem_Status stf = UNFEASIBLE_PIP_PROBLEM;
+  Constraint_System context_true(context);
+  //FIXME: not implemented yet (merging of constraint systems)
+  //context_true.merge(_constraints);
+  stt = true_child->solve(&true_child, context_true);
+  if (false_child) {
+    // Decision nodes with false child must have exactly one constraint
+    PPL_ASSERT(_constraints.num_rows() == 1);
+    Constraint_System context_false(context);
+    //FIXME: not implemented yet (constraint negation)
+    //context_false.insert(!_constraints[0]);
+    stf = false_child->solve(&false_child, context_false);
+  }
+
+  if (stt == UNFEASIBLE_PIP_PROBLEM && stf == UNFEASIBLE_PIP_PROBLEM) {
+    return_status = UNFEASIBLE_PIP_PROBLEM;
+    *parent_ref = 0;
+    delete this;
+    return UNFEASIBLE_PIP_PROBLEM;
+  }
+  return OPTIMIZED_PIP_PROBLEM;
+}
 
 void
 PIP_Solution_Node::Rational_Matrix::normalize() {
@@ -153,8 +180,6 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node **parent_ref,
   dimension_type i, j;
   dimension_type n_params = parameters.size();
   dimension_type n_vars = external_space_dim - n_params;
-  dimension_type n_vars_int = tableau.s.num_columns();
-  dimension_type n_constr_int = tableau.s.num_rows();
   dimension_type internal_space_dim = tableau.t.num_columns()-1;
   Constraint_Sequence::const_iterator cst;
 
@@ -216,6 +241,13 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node **parent_ref,
     tableau.t.add_row(param);
   }
   // FIXME: decide emptiness detection (and node removal)
+}
+
+PIP_Problem_Status
+PIP_Solution_Node::solve(PIP_Tree_Node **parent_ref,
+                         const Constraint_System& context) {
+  //FIXME
+  return OPTIMIZED_PIP_PROBLEM;
 }
 
 } // namespace Parma_Polyhedra_Library

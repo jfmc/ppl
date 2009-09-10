@@ -89,6 +89,22 @@ protected:
                               dimension_type first_pending_constraint,
                               const Constraint_Sequence &input_cs,
                               const Variables_Set &parameters) = 0;
+
+  /*! \brief
+    Execute a parametric simplex on the tableau, under specified context.
+    
+    \param parent_ref
+    a pointer to the parent reference to \p this
+    
+    \param context
+    the context, being a set of constraints on the parameters
+
+    \return
+    An PIP_Problem_Status flag indicating the outcome of the optimization
+    attempt (unfeasible or optimized problem).
+  */
+  virtual PIP_Problem_Status solve(PIP_Tree_Node **parent_ref,
+                                   const Constraint_System& context) = 0;
 };
 
 //! A tree node representing part of the space of solutions.
@@ -114,7 +130,14 @@ public:
   */
   const Linear_Expression& parametric_values(Variable v);
 
-  //! Returns the constraints (on variables and parameters) of \p *this.
+  /*! \brief
+    Returns the system of parameter constraints controlling \p *this.
+    
+    The column indices in the constraints are numbered from \c 0 to
+    <tt>np-1</tt>, where \c np is the total number of parameters. They are
+    ordered with the same order as the parameter indices in the original
+    problem.
+  */
   const Constraint_System& constraints();
 
   void ascii_dump(std::ostream& s) const;
@@ -200,6 +223,9 @@ private:
   */
   std::vector<dimension_type> mapping;
 
+  //! The local system of parameter constraints
+  Constraint_System _constraints;
+
 protected:
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
@@ -226,6 +252,21 @@ protected:
                               const Constraint_Sequence &input_cs,
                               const Variables_Set &parameters);
 
+  /*! \brief
+    Execute a parametric simplex on the tableau, under specified context.
+    
+    \param parent_ref
+    a pointer to the parent reference to \p this
+    
+    \param context
+    the context, being a set of constraints on the parameters
+
+    \return
+    An PIP_Problem_Status flag indicating the outcome of the optimization
+    attempt (unfeasible or optimized problem).
+  */
+  virtual PIP_Problem_Status solve(PIP_Tree_Node **parent_ref,
+                                   const Constraint_System& context);
   // FIXME: constructors to be decided.
 };
 
@@ -247,7 +288,14 @@ public:
   //! Returns a pointer to the \p v (true or false) branch of \p *this.
   PIP_Tree_Node* child_node(bool v);
 
-  //! Returns the system of constraints controlling \p *this.
+  /*! \brief
+    Returns the system of parameter constraints controlling \p *this.
+    
+    The column indices in the constraints are numbered from \c 0 to
+    <tt>np-1</tt>, where \c np is the total number of parameters. They are
+    ordered with the same order as the parameter indices in the original
+    problem.
+  */
   const Constraint_System& constraints();
 
 private:
@@ -256,6 +304,9 @@ private:
 
   //! Pointer to the "false" child of \p *this.
   PIP_Tree_Node* false_child;
+
+  //! The local system of parameter constraints
+  Constraint_System _constraints;
 
   /*! \brief
     Constructs if \p cs then \p tcp \p else \p fcp.
@@ -318,6 +369,22 @@ protected:
                               dimension_type first_pending_constraint,
                               const Constraint_Sequence &input_cs,
                               const Variables_Set &parameters);
+
+  /*! \brief
+    Execute a parametric simplex on the tableau, under specified context.
+    
+    \param parent_ref
+    a pointer to the parent reference to \p this
+    
+    \param context
+    the context, being a set of constraints on the parameters
+
+    \return
+    An PIP_Problem_Status flag indicating the outcome of the optimization
+    attempt (unfeasible or optimized problem).
+  */
+  virtual PIP_Problem_Status solve(PIP_Tree_Node **parent_ref,
+                                   const Constraint_System& context);
 };
 
 typedef const PIP_Tree_Node* PIP_Tree;
