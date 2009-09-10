@@ -34,8 +34,11 @@ test01() {
   Variable A(0);
   Variable B(1);
 
+  Linear_Form<db_r_oc> f;
   Linear_Form<db_r_oc> f1 = A;
   Linear_Form<db_r_oc> f2 = B;
+
+  f1 += f.coefficient(A);
   f1 -= f2;
 
   Linear_Form<db_r_oc> known_result = A - Linear_Form<db_r_oc>(B);
@@ -188,6 +191,92 @@ test06() {
   return ok;
 }
 
+// Tests operator==(const Linear_Form<C>& x, const Linear_Form<C>& y)
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Linear_Form<db_r_oc> f1 = A;
+  Linear_Form<db_r_oc> f2;
+  bool known_result = false;
+
+  bool result1 = (f1 == f2);
+
+  f2 += db_r_oc(1.0);
+  bool result2 = (f1 == f2);
+
+  bool result3 = (f2 == f1);
+
+  f1 += db_r_oc(1.0);
+  bool result4 = (f2 == f1);
+
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
+
+  return (known_result == (result1 || result2 || result3 || result4));
+}
+
+
+// Tests overflows of space dimension.
+bool
+test08() {
+  Linear_Form<db_r_oc> f;
+  Variable A(f.max_space_dimension());
+
+  bool ok1 = false;
+  try {
+    f = Linear_Form<db_r_oc>(A);
+  }
+  catch(std::length_error e) {
+      nout << "Overflow in Linear_Form(const Variable v)." << endl;
+      ok1 = true;
+  }
+
+  bool ok2 = false;
+  try {
+    f += A;
+  }
+  catch(std::length_error e) {
+      nout << "Overflow in operator+=(Linear_Form<C>& f, const Variable v)."
+           << endl;
+      ok2 = true;
+  }
+
+  Linear_Form<db_r_oc> g;
+  bool ok3 = false;
+  try {
+    g = f - A;
+  }
+  catch(std::length_error e) {
+      nout << "Overflow in operator-(Linear_Form<C>& f, const Variable v)."
+           << endl;
+      ok3 = true;
+  }
+
+  bool ok4 = false;
+  try {
+    g = A - f;
+  }
+  catch(std::length_error e) {
+      nout << "Overflow in operator-(const Variable v, Linear_Form<C>& f)."
+           << endl;
+      ok4 = true;
+  }
+
+  bool ok5 = false;
+  try {
+    g = A + f;
+  }
+  catch(std::length_error e) {
+      nout << "Overflow in operator+(const Variable v, Linear_Form<C>& f)."
+           << endl;
+      ok5 = true;
+  }
+
+  return ok1 && ok2 && ok3 && ok4 && ok5;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -195,5 +284,8 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
   DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN
