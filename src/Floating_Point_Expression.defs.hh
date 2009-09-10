@@ -191,7 +191,7 @@ public:
     \f[
     \iota\left(i + \sum_{v \in \cV}i_{v}v\right)\rho^{\#}
     \defeq
-    i \asifp \left(\bigoplus_{v \in \cV}^{\#}i_{v} \amifp
+    i \asifp \left(\bigoplus_{v \in \cV}{}^{\#}i_{v} \amifp
     \rho^{\#}(v)\right)
     \f]
   */

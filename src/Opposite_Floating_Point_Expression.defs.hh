@@ -77,7 +77,9 @@ namespace Parma_Polyhedra_Library {
   \linexpr{\ominus e} \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
   =
   \adlf
+  \left(
   \linexpr{e} \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle.
+  \right)
   \f]
 */
 template <typename FP_Interval_Type, typename FP_Format>
