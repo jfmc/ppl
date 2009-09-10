@@ -2725,8 +2725,8 @@ point expression classes for more information.
 
 The linearization of a floating point expression \f$e\f$ in the composite
 abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$ will
-be denoted by \f$\linexpr{e} \left (\rho^{\#}, \rho^{\#}_l \right )\f$.
-There are two ways a linearization attempt can fail:
+be denoted by \f$\linexpr{e} \left \langle \rho^{\#}, \rho^{\#}_l \right
+\rangle\f$. There are two ways a linearization attempt can fail:
   - whenever an interval boundary overflows to \f$+\infty\f$ or \f$-\infty\f$,
     and
   - when we try to divide by an interval that contains \f$0\f$.
