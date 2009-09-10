@@ -60,7 +60,8 @@ namespace Parma_Polyhedra_Library {
   Given a variable expression \f$v\f$ and a composite
   abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
   we construct the interval
-  linear form \f$\linexpr{v}\rho^{\#}\f$ as
+  linear form \f$\linexpr{v}
+  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$ as
   \f$\rho^{\#}_l(v)\f$ if it is defined; otherwise we construct it as:
   \f[
   \linexpr{v}\rho^{\#} = [-1;1]v.

@@ -52,9 +52,8 @@ struct IEEE754_Double {
   \ingroup PPL_CXX_Interface
   A floating point expression on a given format.
 
-  This class represents a concrete
-  <EM>floating point expression</EM> of format \f$$\mathbf{f}$\f$, this
-  includes constants, variables of format \f$$\mathbf{f}$\f$, binary and unary
+  This class represents a concrete <EM>floating point expression</EM>. This 
+  includes constants, floating point variables, binary and unary
   arithmetic operators.
 
   \par Template type parameters
@@ -64,7 +63,7 @@ struct IEEE754_Double {
   should have a floating point type.
   - The class template type parameter \p FP_Format represents the floating
   point format used in the concrete domain.
-  This parameter must be a struct which contains \f$3\f$ fields:
+  This parameter must be a struct which contains three fields:
     -# <CODE>static const unsigned short fraction_bits</CODE> that represents
     the number of bits of the fraction.
     -# <CODE>static const unsigned short exponent_bits</CODE> that represents
@@ -118,11 +117,18 @@ public:
     Thrown if linearization fails for some reason.
 
     Formally, if \p *this represents the expression \f$e\f$,
+<<<<<<< HEAD:src/Floating_Point_Expression.defs.hh
     \p int_store represents the interval abstract store \f$\rho^{\#}\f$ and
     \p lf_store represents the linear form abstract store \f$\rho^{\#}_l\f$,
     then \p result will become
     \f$\linexpr{e} \left \langle \rho^{\#}, \rho_l^{\#}_l \right \rangle\f$
     if the linearization succeeds.
+=======
+    \p int_store represents the interval abstract store \f$\rho\f$ and
+    \p lf_store represents the linear form abstract store \f$\rho_l\f$, then
+    result will become \f$\linexpr{e}\left ( \rho, \rho_l \right )\f$ if the
+    linearization succeeds.
+>>>>>>> Fixed a few errors.:src/Floating_Point_Expression.defs.hh
     All variables occuring in the floating point expression MUST have
     an associated interval in \p int_store.
     If this precondition is not met, calling the method causes an
