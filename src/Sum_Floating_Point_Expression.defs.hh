@@ -72,10 +72,13 @@ namespace Parma_Polyhedra_Library {
   Given an expression \f$e_{1} \oplus e_{2}\f$ and a composite
   abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
   we construct the interval linear form
-  \f$\linexpr{e_{1} \oplus e_{2}}\left ( \rho^{\#}, \rho^{\#}_l \right )\f$
+  \f$\linexpr{e_{1} \oplus e_{2}}
+  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$
   as follows:
   \f[
-  \linexpr{e_{1} \oplus e_{2}}\left ( \rho^{\#}, \rho^{\#}_l \right ) =
+  \linexpr{e_{1} \oplus e_{2}}
+  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  =
   \linexpr{e_{1}}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
   \aslf
   \linexpr{e_{2}}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle

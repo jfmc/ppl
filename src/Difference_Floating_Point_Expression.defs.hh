@@ -86,7 +86,8 @@ namespace Parma_Polyhedra_Library {
   follows:
   \f[
   \linexpr{e_{1} \ominus e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle =
+  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  =
   \linexpr{e_{1}}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
   \adlf
   \linexpr{e_{2}}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle

@@ -45,13 +45,41 @@ namespace Parma_Polyhedra_Library {
 
 /*! \brief
   A generic Opposite Floating Point Expression.
+
   \ingroup PPL_CXX_interface
+
+  \par Template type parameters
 
   - The class template type parameter \p FP_Interval_Type represents the type
   of the intervals used in the abstract domain.
-  -  The class template type parameter \p FP_Format represents the format
-  of the floating point variable used in the concrete domain.
- */
+  - The class template type parameter \p FP_Format represents the floating
+  point format used in the concrete domain.
+
+  \par Linearization of opposite floating-point expressions
+
+  Let \f$i + \sum_{v \in \cV}i_{v}v \f$ be an interval linear form and
+  let \f$\adlf\f$ be a sound unary operator on linear forms such that:
+
+  \f[
+  \adlf
+  \left(i + \sum_{v \in \cV}i_{v}v\right)
+  =
+  \left(\adifp i\right) +
+  \sum_{v \in \cV}\left(\adifp i_{v} \right)v,
+  \f]
+
+  Given a floating point expression \f$\ominus e\f$ and a composite
+  abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
+  we construct the interval linear form
+  \f$\linexpr{\ominus e}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$
+  as follows:
+  \f[
+  \linexpr{\ominus e} \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  =
+  \adlf
+  \linexpr{e} \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle.
+  \f]
+*/
 template <typename FP_Interval_Type, typename FP_Format>
 class Opposite_Floating_Point_Expression
   : public Floating_Point_Expression<FP_Interval_Type, FP_Format> {
@@ -74,12 +102,16 @@ public:
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
 
+  /* \brief
+     Alias for the std::map<dimension_type, FP_Linear_Form> from
+     Floating_Point_Expression.
+  */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Linear_Form_Abstract_Store FP_Linear_Form_Abstract_Store;
 
   /* \brief
-     Alias for the P_Interval_Type::boundary_type from
+     Alias for the FP_Interval_Type::boundary_type from
      Floating_Point_Expression.
   */
   typedef typename
@@ -87,7 +119,7 @@ public:
   boundary_type;
 
   /* \brief
-     Alias for the P_Interval_Type::info_type from Floating_Point_Expression.
+     Alias for the FP_Interval_Type::info_type from Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::info_type info_type;
@@ -95,9 +127,8 @@ public:
   //! \name Constructors and Destructor
   //@{
   /*! \brief
-    Constructor with a parameter: builds the opposite floating point
-    expression from \p op corresponding to the floating point expression
-    -\p op.
+    Constructor with one parameter: builds the opposite floating point
+    expression \f$\ominus\f$ \p op.
   */
   explicit Opposite_Floating_Point_Expression(
            Floating_Point_Expression<FP_Interval_Type, FP_Format>* const op);
@@ -107,14 +138,27 @@ public:
 
   //@} // Constructors and Destructor
 
-  /* \brief
-     Returns a linear form in the abstract store \p store that simply
-     represents the opposite of the operand linearization.
+  // FIXME: Modify documentation when exceptions are fixed
+  /*! \brief
+    Linearizes the expression in a given astract store.
 
-     \param int_store The interval abstract store.
-     \param lf_store The linear form abstract store.
-     \param result The modified linear form.
+    Makes \p result become the linearization of \p *this in the given
+    composite abstract store.
 
+    \param int_store The interval abstract store.
+    \param lf_store The linear form abstract store.
+    \param result The modified linear form.
+
+    \exception Parma_Polyhedra_Library::Linearization_Failed
+    Thrown if linearization fails for some reason.
+
+    Note that all variables occuring in the expression represented
+    by \p operand MUST have an associated value in \p int_store.
+    If this precondition is not met, calling the method
+    causes an undefined behavior.
+    
+    See the class description for a detailed explanation of how \p result
+    is computed.
   */
   void linearize(const FP_Interval_Abstract_Store& int_store,
                  const FP_Linear_Form_Abstract_Store& lf_store,
@@ -127,7 +171,7 @@ private:
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Copy constructor: temporary inhibited.
+    Inhibited copy constructor.
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Opposite_Floating_Point_Expression(
@@ -135,7 +179,7 @@ private:
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Assignment operator: temporary inhibited.
+    Inhibited assignment operator.
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Opposite_Floating_Point_Expression& operator=(
