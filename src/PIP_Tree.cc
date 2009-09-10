@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl-config.h>
 #include "PIP_Tree.defs.hh"
 
+#include <algorithm>
+
 namespace PPL = Parma_Polyhedra_Library;
 
 namespace {
@@ -94,8 +96,20 @@ PIP_Decision_Node::as_decision() {
   return this;
 }
 
+bool
+PIP_Solution_Node::OK() const {
+  /* FIXME: write me! */
+  return true;
+}
+
+bool
+PIP_Decision_Node::OK() const {
+  /* FIXME: write me! */
+  return true;
+}
+
 void
-PIP_Decision_Node::update_tableau(PIP_Tree_Node **parent_ref,
+PIP_Decision_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
                                   dimension_type external_space_dim,
                                   dimension_type first_pending_constraint,
                                   const Constraint_Sequence &input_cs,
@@ -124,7 +138,7 @@ PIP_Decision_Node::solve(PIP_Tree_Node **parent_ref,
   stt = true_child->solve(&true_child, context_true);
   if (false_child) {
     // Decision nodes with false child must have exactly one constraint
-    PPL_ASSERT(constraints_.num_rows() == 1);
+    PPL_ASSERT(1 == std::distance(constraints_.begin(), constraints_.end()));
     Constraint_System context_false(context);
     //FIXME: not implemented yet (constraint negation)
     //context_false.insert(!constraints_[0]);
@@ -198,7 +212,7 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
 }
 
 void
-PIP_Solution_Node::update_tableau(PIP_Tree_Node **parent_ref,
+PIP_Solution_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
                                   dimension_type external_space_dim,
                                   dimension_type first_pending_constraint,
                                   const Constraint_Sequence &input_cs,
@@ -266,8 +280,8 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node **parent_ref,
 }
 
 PIP_Problem_Status
-PIP_Solution_Node::solve(PIP_Tree_Node **parent_ref,
-                         const Constraint_System& context) {
+PIP_Solution_Node::solve(PIP_Tree_Node** /* parent_ref */,
+                         const Constraint_System& /* context */) {
   //FIXME
   return OPTIMIZED_PIP_PROBLEM;
 }

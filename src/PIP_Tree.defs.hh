@@ -26,7 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "PIP_Tree.types.hh"
 #include "Variable.defs.hh"
 #include "Linear_Expression.types.hh"
-#include "Constraint_System.types.hh"
+#include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
 #include "Constraint.defs.hh"
 #include "PIP_Problem.types.hh"
 #include "Matrix.defs.hh"
@@ -55,6 +56,9 @@ public:
 
   //! Destructor.
   virtual ~PIP_Tree_Node();
+
+  //! Returns \c true if and only if \p *this is well formed.
+  virtual bool OK() const = 0;
 
 protected:
   //! A type alias for a sequence of constraints.
@@ -142,6 +146,8 @@ public:
 
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
+
+  bool OK() const;
 
 private:
   //! A rational matrix, with a common nenominator
@@ -300,6 +306,8 @@ public:
     problem.
   */
   const Constraint_System& constraints();
+
+  bool OK() const;
 
 private:
   //! Pointer to the "true" child of \p *this.
