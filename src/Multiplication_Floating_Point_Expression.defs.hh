@@ -98,7 +98,7 @@ namespace Parma_Polyhedra_Library {
   \varepsilon_{\mathbf{f}}\left(\linexpr{e_{2}}
   \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle \right)\right)
   \aslf
-  mf_{\mathbf{f}}[-1;1],
+  mf_{\mathbf{f}}[-1;1].
   \f].
 
   Given an expression \f$e_{1} \otimes [a;b]\f$ and a composite
