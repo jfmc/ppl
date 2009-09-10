@@ -110,7 +110,8 @@ namespace Parma_Polyhedra_Library {
   \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
   =
   \linexpr{e_{1} \oslash \iota\left(\linexpr{e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle \right)\rho^{\#}},
+  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle \right)\rho^{\#}}
+  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle,
   \f]
   where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the linear form computed by
   calling method <CODE>Floating_Point_Expression::relative_error</CODE>
