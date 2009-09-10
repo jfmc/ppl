@@ -76,9 +76,9 @@ namespace Parma_Polyhedra_Library {
   as follows:
   \f[
   \linexpr{e_{1} \oplus e_{2}}\left ( \rho^{\#}, \rho^{\#}_l \right ) =
-  \linexpr{e_{1}}\left ( \rho^{\#}, \rho^{\#}_l \right )
+  \linexpr{e_{1}}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
   \aslf
-  \linexpr{e_{2}}\left ( \rho^{\#}, \rho^{\#}_l \right )
+  \linexpr{e_{2}}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
   \aslf
   \varepsilon_{\mathbf{f}}\left(\linexpr{e_{1}}
   \left ( \rho^{\#}, \rho^{\#}_l \right ) \right)
