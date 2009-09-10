@@ -227,7 +227,7 @@ private:
   std::vector<dimension_type> mapping;
 
   //! The local system of parameter constraints
-  Constraint_System _constraints;
+  Constraint_System constraints_;
 
 protected:
   /*! \brief
@@ -309,7 +309,7 @@ private:
   PIP_Tree_Node* false_child;
 
   //! The local system of parameter constraints
-  Constraint_System _constraints;
+  Constraint_System constraints_;
 
   /*! \brief
     Constructs if \p cs then \p tcp \p else \p fcp.

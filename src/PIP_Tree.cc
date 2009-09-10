@@ -120,14 +120,14 @@ PIP_Decision_Node::solve(PIP_Tree_Node **parent_ref,
   PIP_Problem_Status stt;
   PIP_Problem_Status stf = UNFEASIBLE_PIP_PROBLEM;
   Constraint_System context_true(context);
-  merge(context_true, _constraints);
+  merge(context_true, constraints_);
   stt = true_child->solve(&true_child, context_true);
   if (false_child) {
     // Decision nodes with false child must have exactly one constraint
-    PPL_ASSERT(_constraints.num_rows() == 1);
+    PPL_ASSERT(constraints_.num_rows() == 1);
     Constraint_System context_false(context);
     //FIXME: not implemented yet (constraint negation)
-    //context_false.insert(!_constraints[0]);
+    //context_false.insert(!constraints_[0]);
     stf = false_child->solve(&false_child, context_false);
   }
 
