@@ -4715,6 +4715,42 @@ Octagonal_Shape<T>::affine_image(Variable var,
         w_id = i;
     }
 
+  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
+  typedef Interval<T, Interval_Info> FP_Interval_Type;
+
+  const dimension_type n_var = 2*var_id;
+  const FP_Interval_Type& b = lf.inhomogeneous_term();
+
+  // `w' is the variable with index `w_id'.
+  // Now we know the form of `lf':
+  // - If t == 0, then lf == [lb;ub];
+  // - If t == 1, then lf == a*w + [lb;ub], where `w' can be `v' or another
+  //   variable;
+  // - If t == 2, the `lf' is of the general form.
+
+  if (t == 0) {
+    // Case 1: lf = [lb;ub];
+    forget_all_octagonal_constraints(var_id);
+    FP_Interval_Type two_b(b);
+    two_b *= 2;
+    // Add the constraint `var >= lb && var <= ub'.
+    add_octagonal_constraint(n_var+1, n_var, two_b.upper());
+    add_octagonal_constraint(n_var, n_var+1, -two_b.lower());
+    PPL_ASSERT(OK());
+    return;
+  }
+
+  T lb = b.lower();
+  T ub = b.upper();
+  bool is_b_zero = (lb == 0 && ub == 0);
+
+  if (t == 1) {
+
+  }
+
   // FIXME: complete the implementation.
 
 }
