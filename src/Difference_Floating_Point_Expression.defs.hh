@@ -99,7 +99,6 @@ namespace Parma_Polyhedra_Library {
   and \f$mf_{\mathbf{f}}[-1;1]\f$ the value of absolute error defined in
   <CODE>Floating_Point_Expression::absolute_error</CODE>.
 */
-*/
 template <typename FP_Interval_Type, typename FP_Format>
 class Difference_Floating_Point_Expression
   : public Floating_Point_Expression<FP_Interval_Type, FP_Format> {
