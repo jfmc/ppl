@@ -4752,11 +4752,45 @@ Octagonal_Shape<T>::affine_image(Variable var,
     return;
   }
 
+  // true if b = [0;0].
   bool is_b_zero = (b_lb == 0 && b_ub == 0);
 
   if (t == 1) {
-
+    // The one and only non-zero homogeneous coefficient in `lf'.
+    const FP_Interval_Type& w_coeff = lf.coefficient(Variable(w_id));
+    PPL_DIRTY_TEMP(N, w_coeff_lb);
+    PPL_DIRTY_TEMP(N, w_coeff_ub);
+    assign_r(w_coeff_lb, w_coeff.lower(), ROUND_NOT_NEEDED);
+    assign_r(w_coeff_ub, w_coeff.upper(), ROUND_NOT_NEEDED);
+    // true if w_coeff = [1;1].
+    bool is_w_coeff_one = (w_coeff_lb == 1 && w_coeff_ub == 1);
+    // true if w_coeff = [-1;-1].
+    bool is_w_coeff_minus_one = (w_coeff_lb == -1 && w_coeff_ub == -1);
+    if (is_w_coeff_one || is_w_coeff_minus_one) {
+      // Case 2: lf = w_coeff*w + b, with w_coeff = [+/-1;+/-1].
+      if (w_id == var_id) {
+        // Here `lf' is of the form: [+/-1;+/-1]* v + b.
+        if (is_w_coeff_one) {
+          if (is_b_zero)
+            // The transformation is the identity function.
+            return;
+          else {
+            
+          }
+        }
+        // Here `w_coeff = [-1;-1].
+      }
+      else {
+        // Here `w != var', so that `lf' is of the form
+        // [+/-1;+/-1] * w + b.
+      }
+    }
   }
+
+  // General case.
+  // Either t == 2, so that
+  // expr == i_1*x_1 + i_2*x_2 + ... + i_n*x_n + b, where n >= 2,
+  // or t == 1, expr == i*w + b, but i <> [+/-1;+/-1].
 
   // FIXME: complete the implementation.
 
