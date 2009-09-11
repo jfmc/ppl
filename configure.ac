@@ -716,6 +716,10 @@ AC_CHECK_DECLS([fma,fmaf,fmal,rintf,rintl], , , [#include <cmath>])
 # Checks for the availability of "fast" integral types.
 AC_CHECK_TYPES([int_fast16_t,int_fast32_t,int_fast64_t,uint_fast16_t,uint_fast32_t,uint_fast64_t])
 
+# Make sure uintptr_t is defined to an unsigned integer type wide enough
+# to hold a pointer, if such a type exists.
+AC_TYPE_UINTPTR_T
+
 
 # Checks on the GMP library.
 
