@@ -4798,7 +4798,6 @@ Octagonal_Shape<T>::affine_image(Variable var,
               add_assign_r(m_i_cv, m_i_cv, b_mlb, ROUND_UP);
             }
             // Now update unary constraints on var.
-            // FIXME: are we sure that ROUND_IGNORE is good?
             mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_IGNORE);
             N& m_cv_v = m_cv[n_var];
             add_assign_r(m_cv_v, m_cv_v, b_ub, ROUND_UP);
