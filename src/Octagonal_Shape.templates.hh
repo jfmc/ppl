@@ -4724,6 +4724,11 @@ Octagonal_Shape<T>::affine_image(Variable var,
   const dimension_type n_var = 2*var_id;
   const FP_Interval_Type& b = lf.inhomogeneous_term();
 
+  PPL_DIRTY_TEMP(N, b_lb);
+  PPL_DIRTY_TEMP(N, b_ub);
+  assign_r(b_lb, b.lower(), ROUND_NOT_NEEDED);
+  assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
+
   // `w' is the variable with index `w_id'.
   // Now we know the form of `lf':
   // - If t == 0, then lf == [lb;ub];
@@ -4734,18 +4739,20 @@ Octagonal_Shape<T>::affine_image(Variable var,
   if (t == 0) {
     // Case 1: lf = [lb;ub];
     forget_all_octagonal_constraints(var_id);
-    FP_Interval_Type two_b(b);
-    two_b *= 2;
+    PPL_DIRTY_TEMP(N, two_mlb);
+    PPL_DIRTY_TEMP(N, two_ub);
+    neg_assign_r(two_mlb, b_lb, ROUND_NOT_NEEDED);
+    assign_r(two_ub, b_ub, ROUND_NOT_NEEDED);
+    add_assign_r(two_mlb, two_mlb, two_mlb, ROUND_UP);
+    add_assign_r(two_ub, two_ub, two_ub, ROUND_UP);
     // Add the constraint `var >= lb && var <= ub'.
-    add_octagonal_constraint(n_var+1, n_var, two_b.upper());
-    add_octagonal_constraint(n_var, n_var+1, -two_b.lower());
+    add_octagonal_constraint(n_var+1, n_var, two_ub);
+    add_octagonal_constraint(n_var, n_var+1, two_mlb);
     PPL_ASSERT(OK());
     return;
   }
 
-  T lb = b.lower();
-  T ub = b.upper();
-  bool is_b_zero = (lb == 0 && ub == 0);
+  bool is_b_zero = (b_lb == 0 && b_ub == 0);
 
   if (t == 1) {
 
