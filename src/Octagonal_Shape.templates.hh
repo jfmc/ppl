@@ -4731,25 +4731,25 @@ Octagonal_Shape<T>::affine_image(Variable var,
   //   variable;
   // - If t == 2, the `lf' is of the general form.
 
-  if (t == 0) {
-    // Case 1: lf = [lb;ub];
-    forget_all_octagonal_constraints(var_id);
-    PPL_DIRTY_TEMP(N, two_mlb);
-    neg_assign_r(two_mlb, b.lower(), ROUND_NOT_NEEDED);
-    mul_2exp_assign_r(two_mlb, two_mlb, 1, ROUND_UP);
-    PPL_DIRTY_TEMP(N, two_ub);
-    mul_2exp_assign_r(two_ub, b.upper(), 1, ROUND_UP);
-    // Add the constraint `var >= lb && var <= ub'.
-    add_octagonal_constraint(n_var+1, n_var, two_ub);
-    add_octagonal_constraint(n_var, n_var+1, two_mlb);
-    PPL_ASSERT(OK());
-    return;
-  }
-
   PPL_DIRTY_TEMP(N, b_ub);
   assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
   PPL_DIRTY_TEMP(N, b_lb);
   assign_r(b_lb, b.lower(), ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, b_mlb);
+  neg_assign_r(b_mlb, b_lb, ROUND_NOT_NEEDED);
+
+  if (t == 0) {
+    // Case 1: lf = [lb;ub];
+    forget_all_octagonal_constraints(var_id);
+    mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_UP);
+    PPL_DIRTY_TEMP(N, two_ub);
+    mul_2exp_assign_r(two_ub, b_ub, 1, ROUND_UP);
+    // Add the constraint `var >= lb && var <= ub'.
+    add_octagonal_constraint(n_var+1, n_var, two_ub);
+    add_octagonal_constraint(n_var, n_var+1, b_mlb);
+    PPL_ASSERT(OK());
+    return;
+  }
 
   // true if b = [0;0].
   bool is_b_zero = (b_lb == 0 && b_ub == 0);
@@ -4776,8 +4776,6 @@ Octagonal_Shape<T>::affine_image(Variable var,
           else {
             // Translate all the constraints on `var' by adding the value
             // `b_ub' or subtracting the value `b_lb'.
-            PPL_DIRTY_TEMP(N, b_mlb);
-            neg_assign_r(b_mlb, b_lb, ROUND_NOT_NEEDED);
             const Row_Iterator m_begin = matrix.row_begin();
             const Row_Iterator m_end = matrix.row_end();
             Row_Iterator m_iter = m_begin + n_var;
@@ -4807,16 +4805,65 @@ Octagonal_Shape<T>::affine_image(Variable var,
             mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_IGNORE);
             N& m_v_cv = m_v[n_var+1];
             add_assign_r(m_v_cv, m_v_cv, b_mlb, ROUND_UP);
+            reset_strongly_closed();
           }
-	 // FIXME: can't we put it above?
-	 reset_strongly_closed();
         }
-        // Here `w_coeff = [-1;-1].
+        else {
+          // Here `w_coeff = [-1;-1].
+          // Remove the binary constraints on `var'.
+          forget_binary_octagonal_constraints(var_id);
+          const Row_Iterator m_begin = matrix.row_begin();
+          Row_Iterator m_iter = m_begin + n_var;
+          N& m_v_cv = (*m_iter)[n_var+1];
+          ++m_iter;
+          N& m_cv_v = (*m_iter)[n_var];
+          // Swap the unary constraints on `var'.
+          std::swap(m_v_cv, m_cv_v);
+          // Strong closure is not preserved.
+          reset_strongly_closed();
+          if (b != 0) {
+            // Translate the unary constraints on `var' by adding the value
+            // `b_ub' or subtracting the value `b_lb'.
+            mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_IGNORE);
+            add_assign_r(m_cv_v, m_cv_v, b_ub, ROUND_UP);
+            add_assign_r(m_v_cv, m_v_cv, b_mlb, ROUND_UP);
+          }
+          incremental_strong_closure_assign(var);
+        }
       }
       else {
         // Here `w != var', so that `lf' is of the form
         // [+/-1;+/-1] * w + b.
+        // Remove all constraints on `var'.
+        forget_all_octagonal_constraints(var_id);
+        const dimension_type n_w = 2*w_id;
+        if (is_w_coeff_one)
+          // Add the new constraints `var - w >= b_lb'
+          // `and var - w <= b_ub'.
+          if (var_id < w_id) {
+            add_octagonal_constraint(n_w, n_var, b_ub);
+            add_octagonal_constraint(n_w+1, n_var+1, b_mlb);
+          }
+          else {
+            add_octagonal_constraint(n_var+1, n_w+1, b_ub);
+            add_octagonal_constraint(n_var, n_w, b_mlb);
+          }
+        else
+          // Add the new constraints `var + w >= b_lb'
+          // `and var + w <= b_ub'.
+          if (var_id < w_id) {
+            add_octagonal_constraint(n_w+1, n_var, b_ub);
+            add_octagonal_constraint(n_w, n_var+1, b_mlb);
+          }
+          else {
+            add_octagonal_constraint(n_var+1, n_w, b_ub);
+            add_octagonal_constraint(n_var, n_w+1, b_mlb);
+          }
+        incremental_strong_closure_assign(var);
       }
+      PPL_ASSERT(OK());
+      return;
     }
   }
 
