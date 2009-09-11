@@ -64,6 +64,11 @@ inline
 PIP_Tree_Node::~PIP_Tree_Node() {
 }
 
+inline const Constraint_System&
+PIP_Tree_Node::constraints() const {
+  return constraints_;
+}
+
 inline
 const PIP_Tree_Node*
 PIP_Decision_Node::child_node(bool v) const {

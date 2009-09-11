@@ -60,6 +60,16 @@ public:
   //! Returns \c true if and only if \p *this is well formed.
   bool OK() const;
 
+  /*! \brief
+    Returns the system of parameter constraints controlling \p *this.
+
+    The column indices in the constraints are numbered from \c 0 to
+    <tt>np-1</tt>, where \c np is the total number of parameters. They are
+    ordered with the same order as the parameter indices in the original
+    problem.
+  */
+  const Constraint_System& constraints() const;
+
 protected:
   //! A type alias for a sequence of constraints.
   typedef std::vector<Constraint> Constraint_Sequence;
@@ -136,16 +146,6 @@ public:
     or if \p v is a parameter.
   */
   const Linear_Expression& parametric_values(Variable v);
-
-  /*! \brief
-    Returns the system of parameter constraints controlling \p *this.
-
-    The column indices in the constraints are numbered from \c 0 to
-    <tt>np-1</tt>, where \c np is the total number of parameters. They are
-    ordered with the same order as the parameter indices in the original
-    problem.
-  */
-  const Constraint_System& constraints();
 
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
@@ -329,16 +329,6 @@ public:
 
   //! Returns a pointer to the \p v (true or false) branch of \p *this.
   PIP_Tree_Node* child_node(bool v);
-
-  /*! \brief
-    Returns the system of parameter constraints controlling \p *this.
-
-    The column indices in the constraints are numbered from \c 0 to
-    <tt>np-1</tt>, where \c np is the total number of parameters. They are
-    ordered with the same order as the parameter indices in the original
-    problem.
-  */
-  const Constraint_System& constraints();
 
   bool OK() const;
 
