@@ -37,7 +37,7 @@ add_assign(Row& x, const Row& y, Coefficient_traits::const_reference c) {
     add_mul_assign(x[i], c, y[i]);
 }
 
-// Merge constraint systems such as x = x U z
+// Merge constraint systems such as x = x U y
 void
 merge_assign(Constraint_System& x, const Constraint_System& y) {
   for (Constraint_System::const_iterator y_i = y.begin(),
@@ -140,8 +140,12 @@ PIP_Decision_Node::solve(PIP_Tree_Node **parent_ref,
     // Decision nodes with false child must have exactly one constraint
     PPL_ASSERT(1 == std::distance(constraints_.begin(), constraints_.end()));
     Constraint_System context_false(context);
-    //FIXME: not implemented yet (constraint negation)
-    //context_false.insert(!constraints_[0]);
+    Constraint_System::const_iterator ci = constraints_.begin();
+    PPL_ASSERT(ci->is_nonstrict_inequality());
+    Linear_Expression expr = Linear_Expression(*ci);
+    expr += 1;
+    Constraint c(expr <= 0);
+    context_false.insert(c);
     stf = false_child->solve(&false_child, context_false);
   }
 
@@ -149,20 +153,14 @@ PIP_Decision_Node::solve(PIP_Tree_Node **parent_ref,
     return_status = UNFEASIBLE_PIP_PROBLEM;
     *parent_ref = 0;
     delete this;
-    return UNFEASIBLE_PIP_PROBLEM;
-  }
-  return OPTIMIZED_PIP_PROBLEM;
+  } else
+    return_status = OPTIMIZED_PIP_PROBLEM;
+  return return_status;
 }
 
 void
 PIP_Solution_Node::Rational_Matrix::normalize() {
   //FIXME
-}
-
-//! Returns the allocated capacity of each Row of the Matrix.
-dimension_type
-PIP_Solution_Node::Rational_Matrix::capacity() {
-  return row_capacity;
 }
 
 void

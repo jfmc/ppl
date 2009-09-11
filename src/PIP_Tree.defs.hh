@@ -185,7 +185,7 @@ private:
     void normalize();
 
     //! Returns the allocated capacity of each Row of the Matrix.
-    dimension_type capacity();
+    dimension_type capacity() const;
 
     //! Tests whether the matrix is integer, \e ie. the denominator is 1.
     bool is_integer() const;

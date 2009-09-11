@@ -55,6 +55,11 @@ PIP_Solution_Node::Rational_Matrix::get_denominator() const {
   return denominator;
 }
 
+inline dimension_type
+PIP_Solution_Node::Rational_Matrix::capacity() const {
+  return row_capacity;
+}
+
 inline
 PIP_Tree_Node::~PIP_Tree_Node() {
 }
