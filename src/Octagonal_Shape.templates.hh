@@ -4724,11 +4724,6 @@ Octagonal_Shape<T>::affine_image(Variable var,
   const dimension_type n_var = 2*var_id;
   const FP_Interval_Type& b = lf.inhomogeneous_term();
 
-  PPL_DIRTY_TEMP(N, b_lb);
-  PPL_DIRTY_TEMP(N, b_ub);
-  assign_r(b_lb, b.lower(), ROUND_NOT_NEEDED);
-  assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
-
   // `w' is the variable with index `w_id'.
   // Now we know the form of `lf':
   // - If t == 0, then lf == [lb;ub];
@@ -4740,17 +4735,21 @@ Octagonal_Shape<T>::affine_image(Variable var,
     // Case 1: lf = [lb;ub];
     forget_all_octagonal_constraints(var_id);
     PPL_DIRTY_TEMP(N, two_mlb);
+    neg_assign_r(two_mlb, b.lower(), ROUND_NOT_NEEDED);
+    mul_2exp_assign_r(two_mlb, two_mlb, 1, ROUND_UP);
     PPL_DIRTY_TEMP(N, two_ub);
-    neg_assign_r(two_mlb, b_lb, ROUND_NOT_NEEDED);
-    assign_r(two_ub, b_ub, ROUND_NOT_NEEDED);
-    add_assign_r(two_mlb, two_mlb, two_mlb, ROUND_UP);
-    add_assign_r(two_ub, two_ub, two_ub, ROUND_UP);
+    mul_2exp_assign_r(two_ub, b.upper(), 1, ROUND_UP);
     // Add the constraint `var >= lb && var <= ub'.
     add_octagonal_constraint(n_var+1, n_var, two_ub);
     add_octagonal_constraint(n_var, n_var+1, two_mlb);
     PPL_ASSERT(OK());
     return;
   }
+
+  PPL_DIRTY_TEMP(N, b_ub);
+  assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, b_lb);
+  assign_r(b_lb, b.lower(), ROUND_NOT_NEEDED);
 
   // true if b = [0;0].
   bool is_b_zero = (b_lb == 0 && b_ub == 0);
@@ -4775,8 +4774,42 @@ Octagonal_Shape<T>::affine_image(Variable var,
             // The transformation is the identity function.
             return;
           else {
-            
+            // Translate all the constraints on `var' by adding the value
+            // `b_ub' or subtracting the value `b_lb'.
+            PPL_DIRTY_TEMP(N, b_mlb);
+            neg_assign_r(b_mlb, b_lb, ROUND_NOT_NEEDED);
+            const Row_Iterator m_begin = matrix.row_begin();
+            const Row_Iterator m_end = matrix.row_end();
+            Row_Iterator m_iter = m_begin + n_var;
+            Row_Reference m_v = *m_iter;
+            ++m_iter;
+            Row_Reference m_cv = *m_iter;
+            ++m_iter;
+            // NOTE: delay update of unary constraints on `var'
+            for (dimension_type j = n_var; j-- > 0; ) {
+              N& m_v_j = m_v[j];
+              add_assign_r(m_v_j, m_v_j, b_mlb, ROUND_UP);
+              N& m_cv_j = m_cv[j];
+              add_assign_r(m_cv_j, m_cv_j, b_ub, ROUND_UP);
+            }
+            for ( ; m_iter != m_end; ++m_iter) {
+              Row_Reference m_i = *m_iter;
+              N& m_i_v = m_i[n_var];
+              add_assign_r(m_i_v, m_i_v, b_ub, ROUND_UP);
+              N& m_i_cv = m_i[n_var+1];
+              add_assign_r(m_i_cv, m_i_cv, b_mlb, ROUND_UP);
+            }
+            // Now update unary constraints on var.
+            // FIXME: are we sure that ROUND_IGNORE is good?
+            mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_IGNORE);
+            N& m_cv_v = m_cv[n_var];
+            add_assign_r(m_cv_v, m_cv_v, b_ub, ROUND_UP);
+            mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_IGNORE);
+            N& m_v_cv = m_v[n_var+1];
+            add_assign_r(m_v_cv, m_v_cv, b_mlb, ROUND_UP);
           }
+	 // FIXME: can't we put it above?
+	 reset_strongly_closed();
         }
         // Here `w_coeff = [-1;-1].
       }
