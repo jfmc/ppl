@@ -97,14 +97,90 @@ PIP_Decision_Node::as_decision() {
 }
 
 bool
+PIP_Solution_Node::Tableau::OK() const {
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
+
+  const dimension_type num_rows = s.num_rows();
+  if (num_rows != t.num_rows()) {
+#ifndef NDEBUG
+    cerr << "The PIP_Solution_Node::Tableau matrices do not have the "
+         << "same number of rows."
+         << endl;
+#endif
+    return false;
+  }
+  return true;
+}
+
+bool
+PIP_Tree_Node::OK() const {
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
+  Constraint_System::const_iterator begin = constraints_.begin();
+  Constraint_System::const_iterator end = constraints_.end();
+
+  // Parameter constraint system should contain no strict inequalities.
+  for (Constraint_System::const_iterator c = begin; c != end; c++)
+    if (c->is_strict_inequality()) {
+#ifndef NDEBUG
+      cerr << "The feasible region of the PIP_Problem parameter context"
+           << "is defined by a constraint system containing strict "
+           << "inequalities."
+	   << endl;
+      ascii_dump(cerr);
+#endif
+      return false;
+    }
+  return true;
+}
+
+bool
 PIP_Solution_Node::OK() const {
-  /* FIXME: write me! */
+  /* FIXME: finish me! */
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
+  if (!PIP_Tree_Node::OK())
+    return false;
+
+  // Check that every member used is OK.
+
+  if (!tableau.OK())
+    return false;
+
   return true;
 }
 
 bool
 PIP_Decision_Node::OK() const {
-  /* FIXME: write me! */
+  /* FIXME: finish me! */
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
+  if (!PIP_Tree_Node::OK())
+    return false;
+
+  // Decision nodes with false child must have exactly one constraint
+  if (false_child) {
+    dimension_type
+        dist = std::distance(constraints_.begin(), constraints_.end());
+    if (dist != 1) {
+#ifndef NDEBUG
+      cerr << "The PIP_Decision_Node has a 'false' child but does not "
+           << "have exactly one parametric constraint. (" << dist << ")"
+           << endl;
+#endif
+      return false;
+    }
+  }
+
   return true;
 }
 

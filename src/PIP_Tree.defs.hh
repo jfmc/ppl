@@ -58,7 +58,7 @@ public:
   virtual ~PIP_Tree_Node();
 
   //! Returns \c true if and only if \p *this is well formed.
-  virtual bool OK() const = 0;
+  bool OK() const;
 
 protected:
   //! A type alias for a sequence of constraints.
@@ -68,6 +68,9 @@ protected:
   // constructor and methods.
   friend class PIP_Problem;
   friend class PIP_Decision_Node;
+
+  //! The local system of parameter constraints.
+  Constraint_System constraints_;
 
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
@@ -206,6 +209,8 @@ private:
     Rational_Matrix s;
     //! The matrix of parameter coefficients.
     Rational_Matrix t;
+    //! Returns \c true if and only if \p *this is well formed.
+    bool OK() const;
   };
 
   //! The parametric simplex tableau.
@@ -248,9 +253,6 @@ private:
 
   //! A cache for computed sign values of constraint parametric RHS.
   std::vector<Row_Sign> sign;
-
-  //! The local system of parameter constraints.
-  Constraint_System constraints_;
 
   //! Determines the sign of given Row.
   static Row_Sign row_sign(const Row &x);
@@ -346,9 +348,6 @@ private:
 
   //! Pointer to the "false" child of \p *this.
   PIP_Tree_Node* false_child;
-
-  //! The local system of parameter constraints
-  Constraint_System constraints_;
 
   /*! \brief
     Constructs if \p cs then \p tcp \p else \p fcp.
