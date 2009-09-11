@@ -209,6 +209,38 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
   return true;
 }
 
+PIP_Solution_Node::Row_Sign
+PIP_Solution_Node::row_sign(const Row &x) {
+  PIP_Solution_Node::Row_Sign sign = ZERO;
+  Coefficient c;
+  for (int i = x.size(); i-- > 0; ) {
+    c = x[i];
+    switch (sign) {
+      case UNKNOWN:
+        // cannot happen
+        break;
+      case ZERO:
+        if (c < 0)
+          sign = NEGATIVE;
+        else if (c > 0)
+          sign = POSITIVE;
+        break;
+      case NEGATIVE:
+        if (c > 0)
+          return MIXED;
+        break;
+      case POSITIVE:
+        if (c < 0)
+          return MIXED;
+        break;
+      case MIXED:
+        // cannot happen
+        break;
+    }
+  }
+  return sign;
+}
+
 void
 PIP_Solution_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
                                   dimension_type external_space_dim,
@@ -273,6 +305,7 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
     // FIXME: must handle equality constraints
     tableau.s.add_row(var);
     tableau.t.add_row(param);
+    sign.push_back(row_sign(param));
   }
   // FIXME: decide emptiness detection (and node removal)
 }

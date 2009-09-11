@@ -232,8 +232,28 @@ private:
   */
   std::vector<dimension_type> mapping;
 
+  //! The possible values for the sign of a parametric linear expression.
+  enum Row_Sign {
+    //! Not computed yet (default)
+    UNKNOWN,
+    //! All row coefficients are zero.
+    ZERO,
+    //! All nonzero row coefficients are positive.
+    POSITIVE,
+    //! All nonzero row coefficients are negative.
+    NEGATIVE,
+    //! The row contains positive and negative coefficients.
+    MIXED
+  };
+
+  //! A cache for computed sign values of constraint parametric RHS
+  std::vector<Row_Sign> sign;
+
   //! The local system of parameter constraints
   Constraint_System constraints_;
+
+  //! Determines the sign of given Row
+  static Row_Sign row_sign(const Row &x);
 
 protected:
   /*! \brief
