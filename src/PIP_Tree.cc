@@ -241,6 +241,73 @@ PIP_Solution_Node::row_sign(const Row &x) {
   return sign;
 }
 
+bool
+PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
+  Matrix s(ctx);
+  s.add_row(cnst);
+  dimension_type i, j, k, j_;
+  dimension_type num_rows = s.num_rows();
+  dimension_type num_cols = s.num_columns();
+  bool result = false;
+
+  /* Perform nonparametric simplex pivots until we find an empty solution
+   * or an optimum */
+  for(;;) {
+    // Look for a negative RHS (=constant term, stored in matrix column 0)
+    i = 0;
+    while (i<num_rows && s[i][0] >= 0)
+      i++;
+    if (i == num_rows) {
+      // No negative RHS: optimum found
+      result = true;
+      break;
+    }
+    // Find a positive m[i][j] pivot
+    j = 1;
+    Row &p = s[i];
+    while (j<num_cols && p[j] <= 0)
+      j++;
+    if (j == num_cols) {
+      // No positive pivot candidate: empty problem
+      result = false;
+      break;
+    }
+    // Perform a pivot operation on the matrix
+    Coefficient sij = p[j];
+    for (j_=0; j_<num_cols; ++j_) {
+      if (j_ == j)
+        continue;
+      Coefficient sij_ = p[j_];
+      for (k=0; k<num_rows; ++k) {
+        Coefficient mult = s[k][j] * sij_;
+        if (mult % sij != 0) {
+          // Must scale row to stay in integer case
+          Coefficient gcd;
+          gcd_assign(gcd, mult, sij);
+          Coefficient scale_factor = sij/gcd;
+          add_assign(s[k], s[k], scale_factor);
+          mult *= scale_factor;
+        }
+        s[k][j_] -= mult / sij;
+      }
+    }
+    for (k=0; k<num_rows; ++k) {
+      Coefficient skj = s[k][j];
+      if (skj % sij != 0) {
+        // as above, we must perform row scaling
+        Coefficient gcd;
+        gcd_assign(gcd, skj, sij);
+        Coefficient scale_factor = sij/gcd;
+        add_assign(s[k], s[k], scale_factor);
+        skj *= scale_factor;
+      }
+      s[k][j_] = skj/sij;
+    }
+  }
+
+  return result;
+}
+
 void
 PIP_Solution_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
                                   dimension_type external_space_dim,

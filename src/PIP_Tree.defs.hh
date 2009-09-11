@@ -246,14 +246,25 @@ private:
     MIXED
   };
 
-  //! A cache for computed sign values of constraint parametric RHS
+  //! A cache for computed sign values of constraint parametric RHS.
   std::vector<Row_Sign> sign;
 
-  //! The local system of parameter constraints
+  //! The local system of parameter constraints.
   Constraint_System constraints_;
 
-  //! Determines the sign of given Row
+  //! Determines the sign of given Row.
   static Row_Sign row_sign(const Row &x);
+
+  /*! \brief
+    Checks whether a constraint is compatible with a context, ie. does not
+    make the context empty.
+
+    The algorithm consists in performing simplex pivots on a Matrix consisting
+    in the original matrix with the constraint inserted. If the simplex
+    terminates with a solution, then the restrained context is not empty.
+    Otherwise, it is.
+  */
+  static bool compatibility_check(const Matrix &ctx, const Row &cnst);
 
 protected:
   /*! \brief
