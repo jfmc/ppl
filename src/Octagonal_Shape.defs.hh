@@ -1792,6 +1792,12 @@ private:
   N& matrix_at(dimension_type i, dimension_type j);
   const N& matrix_at(dimension_type i, dimension_type j) const;
 
+  // FIXME: the name is questionable.
+  static void interval_coefficient_upper_bound(const N& var_ub,
+                                               const N& minus_var_ub,
+                                               const N& int_ub, const N& int_lb,
+                                               N& result);
+
   /*! \brief
     Uses the constraint \p c to refine \p *this.
 

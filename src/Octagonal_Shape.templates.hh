@@ -4757,14 +4757,10 @@ Octagonal_Shape<T>::affine_image(Variable var,
   if (t == 1) {
     // The one and only non-zero homogeneous coefficient in `lf'.
     const FP_Interval_Type& w_coeff = lf.coefficient(Variable(w_id));
-    PPL_DIRTY_TEMP(N, w_coeff_lb);
-    PPL_DIRTY_TEMP(N, w_coeff_ub);
-    assign_r(w_coeff_lb, w_coeff.lower(), ROUND_NOT_NEEDED);
-    assign_r(w_coeff_ub, w_coeff.upper(), ROUND_NOT_NEEDED);
     // true if w_coeff = [1;1].
-    bool is_w_coeff_one = (w_coeff_lb == 1 && w_coeff_ub == 1);
+    bool is_w_coeff_one = (w_coeff == 1);
     // true if w_coeff = [-1;-1].
-    bool is_w_coeff_minus_one = (w_coeff_lb == -1 && w_coeff_ub == -1);
+    bool is_w_coeff_minus_one = (w_coeff == -1);
     if (is_w_coeff_one || is_w_coeff_minus_one) {
       // Case 2: lf = w_coeff*w + b, with w_coeff = [+/-1;+/-1].
       if (w_id == var_id) {
@@ -4871,7 +4867,176 @@ Octagonal_Shape<T>::affine_image(Variable var,
   // expr == i_1*x_1 + i_2*x_2 + ... + i_n*x_n + b, where n >= 2,
   // or t == 1, expr == i*w + b, but i <> [+/-1;+/-1].
 
-  // FIXME: complete the implementation.
+  // Calculate upper bounds for lf, -lf, lf + var, lf - var,
+  // var - lf, - lf - var.
+  PPL_DIRTY_TEMP(N, lf_ub);
+  assign_r(lf_ub, b_ub, ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, minus_lf_ub);
+  assign_r(minus_lf_ub, b_mlb, ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, lf_plus_var_ub);
+  assign_r(lf_plus_var_ub, b_ub, ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, lf_minus_var_ub);
+  assign_r(lf_minus_var_ub, b_ub, ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, var_minus_lf_ub);
+  assign_r(var_minus_lf_ub, b_mlb, ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, minus_lf_minus_var_ub);
+  assign_r(minus_lf_minus_var_ub, b_mlb, ROUND_NOT_NEEDED);
+
+  // FIXME: the commented part is WRONG.
+  /*
+  PPL_DIRTY_TEMP(N, l_curr);
+  PPL_DIRTY_TEMP(N, u_curr);
+  PPL_DIRTY_TEMP(N, u_var);
+  PPL_DIRTY_TEMP(N, u_minus_var);
+  PPL_DIRTY_TEMP(N, first_comparison_term);
+  PPL_DIRTY_TEMP(N, second_comparison_term);
+  PPL_DIRTY_TEMP(N, third_comparison_term);
+  PPL_DIRTY_TEMP(N, fourth_comparison_term);
+
+  for (dimension_type curr_var = 0, n_curr_var = 0;
+       curr_var <= w_id; ++curr_var) {
+    FP_Interval_Type curr_coeff = lf.coefficient(i);
+    assign_r(l_curr, curr_coeff.lower(), ROUND_NOT_NEEDED);
+    assign_r(u_curr, curr_coeff.upper(), ROUND_NOT_NEEDED);
+    if (curr_var == var) {
+      // This is the case where we need special treatment for
+      // the upper bounds of quantities that contain var.
+
+      // Upper bound for var.
+      assign_r(u_var, matrix[n_curr_var+1][n_curr_var], ROUND_NOT_NEEDED);
+      // -Upper bound for -var.
+      neg_assign_r(u_minus_var, matrix[n_curr_var][n_curr_var + 1],
+                   ROUND_NOT_NEEDED);
+
+      // FIXME: implement this case.
+
+    }
+    else if (l_curr != 0 && u_curr != 0) {
+      // Here we treat the upper bounds of quantities that contain var
+      // in the same way as those who don't.
+
+      // Upper bound for curr_var.
+      assign_r(u_var, matrix[n_curr_var+1][n_curr_var], ROUND_NOT_NEEDED);
+      // -Upper bound for -curr_var.
+      neg_assign_r(u_minus_var, matrix[n_curr_var][n_curr_var + 1],
+                   ROUND_NOT_NEEDED);
+
+      // Now compute the next addend for upper bounds of linear forms
+      // that contain +lf.
+
+      // FIXME: this should probably be done in a separate function.
+      // Next addend will be the maximum of these four products.
+      assign_r(first_comparison_term, 0, ROUND_NOT_NEEDED);
+      assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
+      assign_r(third_comparison_term, 0, ROUND_NOT_NEEDED);
+      assign_r(fourth_comparison_term, 0, ROUND_NOT_NEEDED);
+      add_mul_assign_r(first_comparison_term, u_var, u_curr, ROUND_UP);
+      add_mul_assign_r(second_comparison_term, u_minus_var, u_curr, ROUND_UP);
+      add_mul_assign_r(third_comparison_term, u_var, l_curr, ROUND_UP);
+      add_mul_assign_r(fourth_comparison_term, u_minus_var, l_curr, ROUND_UP);
+
+      // NOTE: next addend will be stored in first_comparison_term
+      // to avoid temporaries.
+      assign_r(first_comparison_term, std::max(first_comparison_term,
+                                               second_comparison_term),
+               ROUND_NOT_NEEDED);
+      assign_r(first_comparison_term, std::max(first_comparison_term,
+                                               third_comparison_term),
+               ROUND_NOT_NEEDED);
+      assign_r(first_comparison_term, std::max(first_comparison_term,
+                                               fourth_comparison_term),
+               ROUND_NOT_NEEDED);
+
+      // Now add the next addend to all upper bounds.
+      add_assign_r(lf_ub, lf_ub, first_comparison_term, ROUND_UP);
+      add_assign_r(lf_plus_var_ub, lf_plus_var_ub, first_comparison_term,
+                   ROUND_UP);
+      add_assign_r(lf_minus_var_ub, lf_minus_var_ub, first_comparison_term,
+                   ROUND_UP);
+
+      // Now compute the next addend for upper bounds of linear forms
+      // that contain -lf.
+      neg_assign_r(l_curr, l_curr, ROUND_NOT_NEEDED);
+      neg_assign_r(u_curr, u_curr, ROUND_NOT_NEEDED);
+      // NOTE: now l_curr > u_curr!
+
+      // FIXME: this should probably be done in a separate function.
+      // Next addend will be the maximum of these four products.
+      assign_r(first_comparison_term, 0, ROUND_NOT_NEEDED);
+      assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
+      assign_r(third_comparison_term, 0, ROUND_NOT_NEEDED);
+      assign_r(fourth_comparison_term, 0, ROUND_NOT_NEEDED);
+      add_mul_assign_r(first_comparison_term, u_var, l_curr, ROUND_UP);
+      add_mul_assign_r(second_comparison_term, u_minus_var, l_curr, ROUND_UP);
+      add_mul_assign_r(third_comparison_term, u_var, u_curr, ROUND_UP);
+      add_mul_assign_r(fourth_comparison_term, u_minus_var, u_curr, ROUND_UP);
+
+      // NOTE: next addend will be stored in first_comparison_term
+      // to avoid temporaries.
+      assign_r(first_comparison_term, std::max(first_comparison_term,
+                                               second_comparison_term),
+               ROUND_NOT_NEEDED);
+      assign_r(first_comparison_term, std::max(first_comparison_term,
+                                               third_comparison_term),
+               ROUND_NOT_NEEDED);
+      assign_r(first_comparison_term, std::max(first_comparison_term,
+                                               fourth_comparison_term),
+               ROUND_NOT_NEEDED);
+
+      // Now add the next addend to all upper bounds.
+      add_assign_r(minus_lf_ub, minus_lf_ub, first_comparison_term, ROUND_UP);
+      add_assign_r(var_minus_lf_ub, var_minus_lf_ub, first_comparison_term,
+                   ROUND_UP);
+      add_assign_r(minus_lf_minus_var_ub, minus_lf_minus_var_ub,
+                   first_comparison_term, ROUND_UP);
+
+    }
+  }
+
+  // In the following, strong closure will be definitely lost.
+  reset_strongly_closed();
+
+  // Now update all constraints on var.
+  Row_Iterator m_iter = matrix.row_begin() + n_var;
+  Row_Reference m_i = (*m_iter);
+  ++m_iter;
+  Row_Reference m_ci = (*m_iter);
+  // First
+  */
+
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>::
+interval_coefficient_upper_bound(const N& var_ub, const N& minus_var_ub,
+                                 const N& int_ub, const N& int_lb,
+                                 N& result) {
+  /*
+    FIXME: this way for checking that T is a floating point type is a bit
+    unelengant.
+  */
+  // Check that T is a floating point type.
+  PPL_ASSERT(std::numeric_limits<T>::max_exponent);
+
+  // NOTE: we store the first comparison term directly into result.
+  PPL_DIRTY_TEMP(N, second_comparison_term);
+  PPL_DIRTY_TEMP(N, third_comparison_term);
+  PPL_DIRTY_TEMP(N, fourth_comparison_term);
+
+  assign_r(result, 0, ROUND_NOT_NEEDED);
+  assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
+  assign_r(third_comparison_term, 0, ROUND_NOT_NEEDED);
+  assign_r(fourth_comparison_term, 0, ROUND_NOT_NEEDED);
+
+  add_mul_assign_r(result, var_ub, int_ub, ROUND_UP);
+  add_mul_assign_r(second_comparison_term, minus_var_ub, int_ub, ROUND_UP);
+  add_mul_assign_r(third_comparison_term, var_ub, int_lb, ROUND_UP);
+  add_mul_assign_r(fourth_comparison_term, minus_var_ub, int_lb, ROUND_UP);
+
+  assign_r(result, std::max(result, second_comparison_term), ROUND_NOT_NEEDED);
+  assign_r(result, std::max(result, third_comparison_term), ROUND_NOT_NEEDED);
+  assign_r(result, std::max(result, fourth_comparison_term), ROUND_NOT_NEEDED);
 
 }
 
