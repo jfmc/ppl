@@ -420,6 +420,7 @@ private:
 #endif
 
 public:
+
   //! The numeric base type upon which OSs are built.
   typedef T coefficient_type_base;
 
