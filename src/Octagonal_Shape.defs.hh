@@ -1795,7 +1795,6 @@ private:
   template <typename Interval_Info>
   void linear_form_upper_bound(
 		   const Linear_Form< Interval<T, Interval_Info> >& lf,
-                   const dimension_type last_coefficient,
                    N& result) const;
 
   // FIXME: the name is questionable.

@@ -40,7 +40,7 @@ Linear_Form<C>::Linear_Form(const Variable v)
                             "space dimension.");
   vec.reserve(compute_capacity(space_dim+1, vec_type().max_size()));
   vec.resize(space_dim+1, zero);
-  vec[v.space_dimension()] = 1.0;
+  vec[v.space_dimension()] = static_cast<C>(1.0);
 }
 
 template <typename C>
@@ -57,8 +57,8 @@ Linear_Form<C>::Linear_Form(const Variable v, const Variable w)
   vec.reserve(compute_capacity(space_dim+1, vec_type().max_size()));
   vec.resize(space_dim+1, zero);
   if (v_space_dim != w_space_dim) {
-    vec[v_space_dim] = 1.0;
-    vec[w_space_dim] = -1.0;
+    vec[v_space_dim] = static_cast<C>(1.0);
+    vec[w_space_dim] = -static_cast<C>(1.0);
   }
 }
 
@@ -125,7 +125,7 @@ operator+(const Variable v, const Linear_Form<C>& f) {
   Linear_Form<C> r(f);
   if (v_space_dim > f.space_dimension())
     r.extend(v_space_dim+1);
-  r[v_space_dim] += 1.0;
+  r[v_space_dim] += static_cast<C>(1.0);
   return r;
 }
 
@@ -199,7 +199,7 @@ operator-(const Variable v, const Linear_Form<C>& f) {
     r.extend(v_space_dim+1);
   for (dimension_type i = f.size(); i-- > 0; )
     r[i].neg_assign(r[i]);
-  r[v_space_dim] += 1.0;
+  r[v_space_dim] += static_cast<C>(1.0);
   return r;
 }
 
@@ -216,7 +216,7 @@ operator-(const Linear_Form<C>& f, const Variable v) {
   Linear_Form<C> r(f);
   if (v_space_dim > f.space_dimension())
     r.extend(v_space_dim+1);
-  r[v_space_dim] -= 1.0;
+  r[v_space_dim] -= static_cast<C>(1.0);
   return r;
 }
 
@@ -266,7 +266,7 @@ operator+=(Linear_Form<C>& f, const Variable v) {
 			    "v exceeds the maximum allowed space dimension.");
   if (v_space_dim > f.space_dimension())
     f.extend(v_space_dim+1);
-  f[v_space_dim] += 1.0;
+  f[v_space_dim] += static_cast<C>(1.0);
   return f;
 }
 
@@ -294,7 +294,7 @@ operator-=(Linear_Form<C>& f, const Variable v) {
 			    "v exceeds the maximum allowed space dimension.");
   if (v_space_dim > f.space_dimension())
     f.extend(v_space_dim+1);
-  f[v_space_dim] -= 1.0;
+  f[v_space_dim] -= static_cast<C>(1.0);
   return f;
 }
 
@@ -385,18 +385,18 @@ IO_Operators::operator<<(std::ostream& s, const Linear_Form<C>& f) {
     const C& fv = f[v+1];
     if (fv != 0) {
       if (first) {
-        if (fv == -1.0)
+        if (fv == -static_cast<C>(1.0))
           s << "-";
-        else if (fv != 1.0)
+        else if (fv != static_cast<C>(1.0))
           s << fv << "*";
         first = false;
       }
       else {
-        if (fv == -1.0)
+        if (fv == -static_cast<C>(1.0))
           s << " - ";
         else {
           s << " + ";
-          if (fv != 1.0)
+          if (fv != static_cast<C>(1.0))
             s << fv << "*";
         }
       }

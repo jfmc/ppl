@@ -4867,22 +4867,65 @@ Octagonal_Shape<T>::affine_image(Variable var,
   // expr == i_1*x_1 + i_2*x_2 + ... + i_n*x_n + b, where n >= 2,
   // or t == 1, expr == i*w + b, but i <> [+/-1;+/-1].
 
-  // Calculate upper bounds for lf, -lf, lf + var, lf - var,
-  // var - lf, - lf - var.
-  PPL_DIRTY_TEMP(N, lf_ub);
-  assign_r(lf_ub, b_ub, ROUND_NOT_NEEDED);
-  PPL_DIRTY_TEMP(N, minus_lf_ub);
-  assign_r(minus_lf_ub, b_mlb, ROUND_NOT_NEEDED);
-  PPL_DIRTY_TEMP(N, lf_plus_var_ub);
-  assign_r(lf_plus_var_ub, b_ub, ROUND_NOT_NEEDED);
-  PPL_DIRTY_TEMP(N, lf_minus_var_ub);
-  assign_r(lf_minus_var_ub, b_ub, ROUND_NOT_NEEDED);
-  PPL_DIRTY_TEMP(N, var_minus_lf_ub);
-  assign_r(var_minus_lf_ub, b_mlb, ROUND_NOT_NEEDED);
-  PPL_DIRTY_TEMP(N, minus_lf_minus_var_ub);
-  assign_r(minus_lf_minus_var_ub, b_mlb, ROUND_NOT_NEEDED);
+  // In the following, strong closure will be definitely lost.
+  reset_strongly_closed();
 
-  linear_form_upper_bound(lf, w_id, lf_ub);
+  Linear_Form<FP_Interval_Type> minus_lf(-lf);
+
+  PPL_DIRTY_TEMP(N, lf_ub);
+  linear_form_upper_bound(lf, lf_ub);
+  PPL_DIRTY_TEMP(N, minus_lf_ub);
+  linear_form_upper_bound(minus_lf, minus_lf_ub);
+
+  // Update unary constraints on var.
+  mul_2exp_assign_r(lf_ub, lf_ub, 1, ROUND_IGNORE);
+  assign_r(matrix[n_var+1][n_var], lf_ub, ROUND_NOT_NEEDED);
+  mul_2exp_assign_r(minus_lf_ub, minus_lf_ub, 1, ROUND_IGNORE);
+  assign_r(matrix[n_var][n_var+1], minus_lf_ub, ROUND_NOT_NEEDED);
+
+  // Declare temporaries outside the loop.
+  PPL_DIRTY_TEMP(N, lf_plus_var_ub);
+  PPL_DIRTY_TEMP(N, lf_minus_var_ub);
+  PPL_DIRTY_TEMP(N, var_minus_lf_ub);
+  PPL_DIRTY_TEMP(N, minus_lf_minus_var_ub);
+
+  Row_Iterator m_iter = matrix.row_begin();
+  m_iter += n_var;
+  Row_Reference var_ite = *m_iter;
+  ++m_iter;
+  Row_Reference var_cv_ite = *m_iter;
+  ++m_iter;
+  Row_Iterator m_end = matrix.row_end();
+
+  // Update binary constraints on var.
+  for (dimension_type curr_var = var_id, n_curr_var = n_var - 2;
+       curr_var-- > 0; ) {
+    Variable current(curr_var);
+    linear_form_upper_bound(lf + current, lf_plus_var_ub);
+    linear_form_upper_bound(lf - current, lf_minus_var_ub);
+    linear_form_upper_bound(minus_lf + current, var_minus_lf_ub);
+    linear_form_upper_bound(minus_lf - current, minus_lf_minus_var_ub);
+    assign_r(var_ite[n_curr_var], var_minus_lf_ub, ROUND_NOT_NEEDED);
+    assign_r(var_ite[n_curr_var+1], minus_lf_minus_var_ub, ROUND_NOT_NEEDED);
+    assign_r(var_cv_ite[n_curr_var], lf_plus_var_ub, ROUND_NOT_NEEDED);
+    assign_r(var_cv_ite[n_curr_var+1], lf_minus_var_ub, ROUND_NOT_NEEDED);
+    n_curr_var -= 2;
+  }
+  for (dimension_type curr_var = var_id+1; m_iter != m_end; ++m_iter) {
+    Row_Reference m_v_ite = *m_iter;
+    ++m_iter;
+    Row_Reference m_cv_ite = *m_iter;
+    Variable current(curr_var);
+    linear_form_upper_bound(lf + current, lf_plus_var_ub);
+    linear_form_upper_bound(lf - current, lf_minus_var_ub);
+    linear_form_upper_bound(minus_lf + current, var_minus_lf_ub);
+    linear_form_upper_bound(minus_lf - current, minus_lf_minus_var_ub);
+    assign_r(m_v_ite[n_var], lf_minus_var_ub, ROUND_NOT_NEEDED);
+    assign_r(m_v_ite[n_var+1], minus_lf_minus_var_ub, ROUND_NOT_NEEDED);
+    assign_r(m_cv_ite[n_var], lf_plus_var_ub, ROUND_NOT_NEEDED);
+    assign_r(m_cv_ite[n_var+1], var_minus_lf_ub, ROUND_NOT_NEEDED);
+    ++curr_var;
+  }
 
 }
 
@@ -4891,10 +4934,7 @@ template <typename Interval_Info>
 void
 Octagonal_Shape<T>::
 linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
-                        const dimension_type last_coefficient,
                         N& result) const {
-  PPL_ASSERT(last_coefficient < lf.space_dimension());
-
   /*
     FIXME: this way for checking that T is a floating point type is a bit
     unelengant.
@@ -4902,7 +4942,10 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
   // Check that T is a floating point type.
   PPL_ASSERT(std::numeric_limits<T>::max_exponent);
 
+  const dimension_type lf_space_dimension = lf.space_dimension();
+
   typedef Interval<T, Interval_Info> FP_Interval_Type;
+
   const FP_Interval_Type* curr_coefficient;
   PPL_DIRTY_TEMP(N, curr_lb);
   PPL_DIRTY_TEMP(N, curr_ub);
@@ -4916,9 +4959,9 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
 
   PPL_DIRTY_TEMP(N, negator);
 
-  assign_r(result, 0, ROUND_NOT_NEEDED);
+  assign_r(result, lf.inhomogeneous_term().upper(), ROUND_NOT_NEEDED);
 
-  for (dimension_type curr_var = 0, n_var = 0; curr_var <= last_coefficient;
+  for (dimension_type curr_var = 0, n_var = 0; curr_var < lf_space_dimension;
        ++curr_var) {
     curr_coefficient = &(lf.coefficient(Variable(curr_var)));
     assign_r(curr_lb, curr_coefficient->lower(), ROUND_NOT_NEEDED);
