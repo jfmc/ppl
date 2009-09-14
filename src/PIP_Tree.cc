@@ -467,8 +467,133 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
 }
 
 PIP_Problem_Status
-PIP_Solution_Node::solve(PIP_Tree_Node** /* parent_ref */,
-                         const Constraint_System& /* context */) {
+PIP_Solution_Node::solve(PIP_Tree_Node** parent_ref,
+                         const Matrix& ctx) {
+  Matrix context(ctx);
+  merge_assign(context, constraints_);
+  const dimension_type n_a_d = not_a_dimension();
+
+  // Main loop of the simplex algorithm
+  for(;;) {
+    dimension_type i;
+    dimension_type i_ = n_a_d;
+    dimension_type i__ = n_a_d;
+    dimension_type num_rows = tableau.t.num_rows();
+    dimension_type num_vars = tableau.s.num_columns();
+    dimension_type num_params = tableau.t.num_columns();
+    Row_Sign s;
+
+    for (i=0; i<num_rows; ++i) {
+      Row_Sign s = sign[i];
+      if (s == UNKNOWN) {
+        s = row_sign(tableau.t[i]);
+        sign[i] = s;
+      }
+      /* Locate first row with negative parameter row */
+      if (s == NEGATIVE && i_ == n_a_d)
+        i_ = i;
+      /* Locate first row with unknown-signed parameter row */
+      if (s == MIXED && i__ == n_a_d)
+        i__ = i;
+    }
+
+    /* If no negative parameter row found, try to refine the sign of
+       undetermined rows using compatibility checks with the current context
+    */
+    if (i_ == n_a_d && i__ != n_a_d) {
+      for (i=i__; i<num_rows; ++i) {
+        if (sign[i] != MIXED)
+          continue;
+        s = ZERO;
+        if (compatibility_check(context, tableau.t[i]))
+          // constraint t_i(z) >= 0 is compatible with the context
+          s = POSITIVE;
+        Row c(num_params, Row::Flags());
+        negate_assign(c, tableau.t[i]);
+        if (compatibility_check(context, c)) {
+          // constraint t_i(z) < 0 <=> -t_i(z)-1 >= 0 is compatible
+          if (s == POSITIVE)
+            s = MIXED;
+          else
+            s = NEGATIVE;
+        }
+        if (s == NEGATIVE && i_ == n_a_d)
+          // first negative row found
+          i_ = i;
+        if (s != MIXED) {
+          // clear first mixed-sign row index if row is found to be not mixed
+          if (i == i__)
+            i__ = n_a_d;
+        } else if (i__ == n_a_d)
+          // first mixed-sign row found
+          i__ = i;
+        sign[i] = s;
+      }
+    }
+
+    /* If we have found a row i_ with negative parameters :
+       Either the problem is empty, or a pivoting step is required
+    */
+    if (i_ != n_a_d) {
+#if NOISY_PIP
+      std::cout << "Found row with negative parameters: " << i_
+                << std::endl;
+#endif
+      dimension_type j;
+      Coefficient z(0);
+      Coefficient sij, cij, cij_;
+      Coefficient c;
+      Row &row = tableau.s[i_];
+      /* Look for a positive S_ij such as the j^th column/S_ij is
+         lexico-minimal
+      */
+      dimension_type j_ = n_a_d;
+      for (j=0; j<num_vars; ++j) {
+        if (row[j] > 0) {
+          if (j_ == n_a_d) {
+            j_ = j;
+            sij = row[j];
+          } else {
+            /* Determine which column (j or j_) is lexico-minimal */
+            dimension_type k = 0;
+            do {
+              dimension_type mk = mapping[k];
+              if (basis[k]) {
+                /* reconstitute the identity submatrix part of S */
+                cij = (mk==j) ? tableau.s.get_denominator() : 0;
+                cij_ = (mk==j_) ? tableau.s.get_denominator() : 0;
+              } else {
+                cij = tableau.s[mk][j];
+                cij_ = tableau.s[mk][j_];
+              }
+            } while (k < num_vars && cij * sij == cij_ * row[j]);
+            if (k < num_vars && cij * sij < cij_ * row[j]) {
+              j_ = j;
+              sij = row[j];
+            }
+          }
+        }
+      }
+
+      /* If no positive S_ij: problem is empty */
+      if (j_ == n_a_d) {
+#if NOISY_PIP
+        std::cout << "No positive pivot found: Solution = _|_"
+                  << std::endl;
+#endif
+        *parent_ref = 0;
+        delete this;
+        return UNFEASIBLE_PIP_PROBLEM;
+      }
+#if NOISY_PIP
+      std::cout << "Pivot column: " << j_
+                << std::endl;
+#endif
+
+    }
+
+  } // Main loop of the simplex algorithm
+
   //FIXME
   return OPTIMIZED_PIP_PROBLEM;
 }
