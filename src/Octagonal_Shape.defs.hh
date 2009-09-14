@@ -1792,6 +1792,12 @@ private:
   N& matrix_at(dimension_type i, dimension_type j);
   const N& matrix_at(dimension_type i, dimension_type j) const;
 
+  template <typename Interval_Info>
+  void linear_form_upper_bound(
+		   const Linear_Form< Interval<T, Interval_Info> >& lf,
+                   const dimension_type last_coefficient,
+                   N& result) const;
+
   // FIXME: the name is questionable.
   static void interval_coefficient_upper_bound(const N& var_ub,
                                                const N& minus_var_ub,
