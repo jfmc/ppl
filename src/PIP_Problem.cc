@@ -85,7 +85,7 @@ PPL::PIP_Problem::solve() const {
                                          input_cs,
                                          parameters);
 
-      Constraint_System initial_context;
+      Matrix initial_context(0, parameters.size()+1);
       return_value = x.current_solution->solve(&x.current_solution,
                                                initial_context);
 

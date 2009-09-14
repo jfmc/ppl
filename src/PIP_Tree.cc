@@ -37,12 +37,29 @@ add_assign(Row& x, const Row& y, Coefficient_traits::const_reference c) {
     add_mul_assign(x[i], c, y[i]);
 }
 
-// Merge constraint systems such as x = x U y
+// Merge constraint system to a Matrix-form context such as x = x U y
 void
-merge_assign(Constraint_System& x, const Constraint_System& y) {
+merge_assign(Matrix& x, const Constraint_System& y) {
+  dimension_type width = x.num_columns();
+  PPL_ASSERT(y.empty() || y.begin()->space_dimension() == width-1);
+  Row row(width, Row::Flags());
   for (Constraint_System::const_iterator y_i = y.begin(),
-         y_end = y.end(); y_i != y_end; ++y_i)
-    x.insert(*y_i);
+         y_end = y.end(); y_i != y_end; ++y_i) {
+    PPL_ASSERT(y_i->is_nonstrict_inequality());
+    for (dimension_type j=width-1; j-- > 0; )
+      row[j+1] = y_i->coefficient(Variable(j));
+    row[0] = -y_i->inhomogeneous_term();
+    x.add_row(row);
+  }
+}
+
+// Tranform expression "expr" into "-expr-1"
+void
+negate_assign(Row& x, const Row& y) {
+  PPL_ASSERT(x.size() == y.size());
+  for (dimension_type i = x.size(); i-- > 0; )
+    x[i] = -y[i];
+  x[0] -= 1;
 }
 
 } // namespace
@@ -204,24 +221,20 @@ PIP_Decision_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
 }
 
 PIP_Problem_Status
-PIP_Decision_Node::solve(PIP_Tree_Node **parent_ref,
-                         const Constraint_System& context) {
+PIP_Decision_Node::solve(PIP_Tree_Node **parent_ref, const Matrix& context) {
   PIP_Problem_Status return_status;
   PIP_Problem_Status stt;
   PIP_Problem_Status stf = UNFEASIBLE_PIP_PROBLEM;
-  Constraint_System context_true(context);
+  Matrix context_true(context);
   merge_assign(context_true, constraints_);
   stt = true_child->solve(&true_child, context_true);
   if (false_child) {
     // Decision nodes with false child must have exactly one constraint
     PPL_ASSERT(1 == std::distance(constraints_.begin(), constraints_.end()));
-    Constraint_System context_false(context);
-    Constraint_System::const_iterator ci = constraints_.begin();
-    PPL_ASSERT(ci->is_nonstrict_inequality());
-    Linear_Expression expr = Linear_Expression(*ci);
-    expr += 1;
-    Constraint c(expr <= 0);
-    context_false.insert(c);
+    Matrix context_false(context);
+    merge_assign(context_false, constraints_);
+    Row &last = context_false[context_false.num_rows()-1];
+    negate_assign(last, last);
     stf = false_child->solve(&false_child, context_false);
   }
 
@@ -326,7 +339,7 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
   dimension_type num_cols = s.num_columns();
   bool result = false;
 
-  /* Perform nonparametric simplex pivots until we find an empty solution
+  /* Perform simplex pivots on the context until we find an empty solution
    * or an optimum */
   for(;;) {
     // Look for a negative RHS (=constant term, stored in matrix column 0)

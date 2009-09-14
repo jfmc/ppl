@@ -121,7 +121,7 @@ protected:
     attempt (unfeasible or optimized problem).
   */
   virtual PIP_Problem_Status solve(PIP_Tree_Node **parent_ref,
-                                   const Constraint_System& context) = 0;
+                                   const Matrix& context) = 0;
 };
 
 //! A tree node representing part of the space of solutions.
@@ -308,7 +308,7 @@ protected:
     attempt (unfeasible or optimized problem).
   */
   virtual PIP_Problem_Status solve(PIP_Tree_Node **parent_ref,
-                                   const Constraint_System& context);
+                                   const Matrix& context);
   // FIXME: constructors to be decided.
 };
 
@@ -415,7 +415,7 @@ protected:
     attempt (unfeasible or optimized problem).
   */
   virtual PIP_Problem_Status solve(PIP_Tree_Node **parent_ref,
-                                   const Constraint_System& context);
+                                   const Matrix& context);
 };
 
 typedef const PIP_Tree_Node* PIP_Tree;
