@@ -4943,6 +4943,7 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
   PPL_ASSERT(std::numeric_limits<T>::max_exponent);
 
   const dimension_type lf_space_dimension = lf.space_dimension();
+  PPL_ASSERT(lf_space_dimension <= space_dim);
 
   typedef Interval<T, Interval_Info> FP_Interval_Type;
 
@@ -4968,15 +4969,15 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
     assign_r(curr_ub, curr_coefficient->upper(), ROUND_NOT_NEEDED);
     if (curr_lb != 0 && curr_ub != 0) {
       assign_r(curr_var_ub, matrix[n_var+1][n_var], ROUND_NOT_NEEDED);
-      mul_2exp_assign_r(curr_var_ub, curr_var_ub, -1, ROUND_IGNORE);
+      div_2exp_assign_r(curr_var_ub, curr_var_ub, 1, ROUND_IGNORE);
       neg_assign_r(curr_minus_var_ub, matrix[n_var][n_var+1], ROUND_NOT_NEEDED);
-      mul_2exp_assign_r(curr_minus_var_ub, curr_minus_var_ub, -1, ROUND_IGNORE);
+      div_2exp_assign_r(curr_minus_var_ub, curr_minus_var_ub, 1, ROUND_IGNORE);
       // Optimize the most common case: curr = +/-[1;1]
       if (curr_lb == 1 && curr_ub == 1) {
         add_assign_r(result, result, std::max(curr_var_ub, curr_minus_var_ub),
                      ROUND_UP);
       }
-      else if (curr_lb == -1 && curr_ub == 1) {
+      else if (curr_lb == -1 && curr_ub == -1) {
         neg_assign_r(negator, std::min(curr_var_ub, curr_minus_var_ub),
                      ROUND_NOT_NEEDED);
         add_assign_r(result, result, negator, ROUND_UP);
