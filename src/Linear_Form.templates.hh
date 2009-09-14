@@ -58,7 +58,7 @@ Linear_Form<C>::Linear_Form(const Variable v, const Variable w)
   vec.resize(space_dim+1, zero);
   if (v_space_dim != w_space_dim) {
     vec[v_space_dim] = static_cast<C>(1.0);
-    vec[w_space_dim] = -static_cast<C>(1.0);
+    vec[w_space_dim] = static_cast<C>(-1.0);
   }
 }
 
@@ -385,18 +385,18 @@ IO_Operators::operator<<(std::ostream& s, const Linear_Form<C>& f) {
     const C& fv = f[v+1];
     if (fv != 0) {
       if (first) {
-        if (fv == -static_cast<C>(1.0))
+        if (fv == 1.0)
           s << "-";
-        else if (fv != static_cast<C>(1.0))
+        else if (fv != 1.0)
           s << fv << "*";
         first = false;
       }
       else {
-        if (fv == -static_cast<C>(1.0))
+        if (fv == -1.0)
           s << " - ";
         else {
           s << " + ";
-          if (fv != static_cast<C>(1.0))
+          if (fv != 1.0)
             s << fv << "*";
         }
       }
