@@ -550,36 +550,36 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
   // in `left' and `right'.
 
   // Declare temporaries outside of the loop.
-  PPL_DIRTY_TEMP(N, ff_lb);
-  PPL_DIRTY_TEMP(N, ff_ub);
-  PPL_DIRTY_TEMP(N, fs_lb);
-  PPL_DIRTY_TEMP(N, fs_ub);
-  PPL_DIRTY_TEMP(N, sf_lb);
-  PPL_DIRTY_TEMP(N, sf_ub);
-  PPL_DIRTY_TEMP(N, ss_lb);
-  PPL_DIRTY_TEMP(N, ss_ub);
+  PPL_DIRTY_TEMP(N, lf_lb);
+  PPL_DIRTY_TEMP(N, lf_ub);
+  PPL_DIRTY_TEMP(N, ls_lb);
+  PPL_DIRTY_TEMP(N, ls_ub);
+  PPL_DIRTY_TEMP(N, rf_lb);
+  PPL_DIRTY_TEMP(N, rf_ub);
+  PPL_DIRTY_TEMP(N, rs_lb);
+  PPL_DIRTY_TEMP(N, rs_ub);
 
   // FIXME: to complete.
 
   dimension_type max_w_id = std::max(left_w_id, right_w_id);
-  for (dimension_type first_v = 0; first_v <= max_id; ++first_v) {
-    for (dimension_type second_v = first_v; second_v <= max_id; ++second_v) {
-      FP_Interval_Type* ffv_coefficient =
-                        &(first.coefficient(Variable(first_v)));
-      FP_Interval_Type* fsv_coefficient =
-                        &(first.coefficient(Variable(second_v)));
-      FP_Interval_Type* sfv_coefficient =
-                        &(second.coefficient(Variable(first_v)));
-      FP_Interval_Type* ssv_coefficient =
-                        &(second.coefficient(Variable(second_v)));
-      assign_r(ff_lb, ffv_coefficient->lower(), ROUND_NOT_NEEDED);
-      assign_r(ff_ub, ffv_coefficient->upper(), ROUND_NOT_NEEDED);
-      assign_r(fs_lb, fsv_coefficient->lower(), ROUND_NOT_NEEDED);
-      assign_r(fs_ub, fsv_coefficient->upper(), ROUND_NOT_NEEDED);
-      assign_r(sf_lb, sfv_coefficient->lower(), ROUND_NOT_NEEDED);
-      assign_r(sf_ub, sfv_coefficient->upper(), ROUND_NOT_NEEDED);
-      assign_r(ss_lb, ssv_coefficient->lower(), ROUND_NOT_NEEDED);
-      assign_r(ss_ub, ssv_coefficient->upper(), ROUND_NOT_NEEDED);
+  for (dimension_type first_v = 0; first_v <= max_w_id; ++first_v) {
+    for (dimension_type second_v = first_v; second_v <= max_w_id; ++second_v) {
+      FP_Interval_Type* lfv_coefficient =
+                        &(left.coefficient(Variable(first_v)));
+      FP_Interval_Type* lsv_coefficient =
+                        &(left.coefficient(Variable(second_v)));
+      FP_Interval_Type* rfv_coefficient =
+                        &(right.coefficient(Variable(first_v)));
+      FP_Interval_Type* rsv_coefficient =
+                        &(right.coefficient(Variable(second_v)));
+      assign_r(lf_lb, lfv_coefficient->lower(), ROUND_NOT_NEEDED);
+      assign_r(lf_ub, lfv_coefficient->upper(), ROUND_NOT_NEEDED);
+      assign_r(ls_lb, lsv_coefficient->lower(), ROUND_NOT_NEEDED);
+      assign_r(ls_ub, lsv_coefficient->upper(), ROUND_NOT_NEEDED);
+      assign_r(rf_lb, rfv_coefficient->lower(), ROUND_NOT_NEEDED);
+      assign_r(rf_ub, rfv_coefficient->upper(), ROUND_NOT_NEEDED);
+      assign_r(rs_lb, rsv_coefficient->lower(), ROUND_NOT_NEEDED);
+      assign_r(rs_ub, rsv_coefficient->upper(), ROUND_NOT_NEEDED);
     }
   }
 
