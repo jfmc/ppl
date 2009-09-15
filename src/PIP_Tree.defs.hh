@@ -180,6 +180,9 @@ private:
     //! Copy constructor.
     Rational_Matrix(const Rational_Matrix& y);
 
+    //! Multiplies all coefficients and denominator with ratio.
+    void scale(const Coefficient &ratio);
+
     //! Normalizes the modulo of coefficients so that they are mutually prime.
     /*!
       Computes the Greatest Common Divisor (GCD) among the elements of

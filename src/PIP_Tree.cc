@@ -253,6 +253,16 @@ PIP_Solution_Node::Rational_Matrix::normalize() {
 }
 
 void
+PIP_Solution_Node::Rational_Matrix::scale(const Coefficient &ratio) {
+  dimension_type i, j;
+  dimension_type i_max = num_rows();
+  dimension_type j_max = num_columns();
+  for (i=0; i<i_max; ++i)
+    for (j=0; j<j_max; ++j)
+      rows[i][j] *= ratio;
+}
+
+void
 PIP_Solution_Node::Rational_Matrix::ascii_dump(std::ostream& s) const {
   s << "denominator " << denominator << "\n";
   Matrix::ascii_dump(s);
@@ -472,6 +482,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node** parent_ref,
   Matrix context(ctx);
   merge_assign(context, constraints_);
   const dimension_type n_a_d = not_a_dimension();
+  Coefficient gcd;
 
   // Main loop of the simplex algorithm
   for(;;) {
@@ -539,7 +550,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node** parent_ref,
       std::cout << "Found row with negative parameters: " << i_
                 << std::endl;
 #endif
-      dimension_type j;
+      dimension_type j, k;
       Coefficient z(0);
       Coefficient sij, cij, cij_;
       Coefficient c;
@@ -590,11 +601,107 @@ PIP_Solution_Node::solve(PIP_Tree_Node** parent_ref,
                 << std::endl;
 #endif
 
+      /* ** Perform pivot operation ** */
+
+      /* Check if column j_ or row i_ correspond to a problem variable */
+      dimension_type var_j = n_a_d;
+      dimension_type var_i = n_a_d;
+      for (j=0; j<num_vars; ++j) {
+        if (basis[j]) {
+          if (mapping[j] == j_)
+            var_j = j;
+        } else {
+          if (mapping[j] == i_)
+            var_i = j;
+        }
+      }
+      /* update basis */
+      if (var_j != n_a_d) {
+        basis[var_j] = false;
+        mapping[var_j] = i_;
+      }
+      if (var_i != n_a_d) {
+        basis[var_i] = true;
+        mapping[var_i] = j_;
+      }
+
+      /* create the identity matrix row corresponding to basic variable j_ */
+      Row prs(num_vars, tableau.s.capacity(), Row::Flags());
+      Row prt(num_params, tableau.t.capacity(), Row::Flags());
+      prs[j_] = tableau.s.get_denominator();
+      /* swap it with pivot row which would become identity after pivoting */
+      prs.swap(tableau.s[i_]);
+      prt.swap(tableau.t[i_]);
+      sign[i_] = ZERO;
+      for (j=0; j<num_vars; ++j) {
+        if (j==j_)
+          continue;
+        for (k=0; k<num_rows; ++k) {
+          Coefficient mult = prs[j] * tableau.s[k][j_];
+          if (mult % sij != 0) {
+            // Must scale matrix to stay in integer case
+            gcd_assign(gcd, mult, sij);
+            Coefficient scale_factor = sij/gcd;
+            tableau.s.scale(scale_factor);
+            mult *= scale_factor;
+          }
+          tableau.s[k][j] -= mult / sij;
+        }
+      }
+
+      /* create the identity matrix row corresponding to basic variable j_ */
+      for (j=0; j<num_params; ++j) {
+        for (k=0; k<num_rows; ++k) {
+          Coefficient c = prt[j] * tableau.s[k][j_];
+          if (c % sij != 0) {
+            // Must scale matrix to stay in integer case
+            gcd_assign(gcd, c, sij);
+            Coefficient scale_factor = sij/gcd;
+            tableau.t.scale(scale_factor);
+            c *= scale_factor;
+          }
+          c /= sij;
+          tableau.t[k][j] -= c;
+
+          s = sign[k];
+          if (s != MIXED) {
+            switch (s) {
+               case ZERO:
+                if (c > 0)
+                  sign[k] = NEGATIVE;
+                else if (c < 0)
+                  sign[k] = POSITIVE;
+                break;
+              case POSITIVE:
+                if (c > 0)
+                  sign[k] = MIXED;
+                break;
+              case NEGATIVE:
+                if (c < 0)
+                  sign[k] = MIXED;
+                break;
+              default:
+                break;
+            }
+          }
+        }
+      }
+
+      for (k=0; k<num_rows; ++k) {
+        Coefficient &c = tableau.s[k][j_];
+        if (c % sij != 0) {
+          Coefficient gcd;
+          gcd_assign(gcd, c, sij);
+          Coefficient scale_factor = sij/gcd;
+          tableau.s.scale(scale_factor);
+        }
+        c /= sij;
+      }
     }
+    //FIXME: to be finished
 
   } // Main loop of the simplex algorithm
 
-  //FIXME
   return OPTIMIZED_PIP_PROBLEM;
 }
 
