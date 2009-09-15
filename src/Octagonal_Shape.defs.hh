@@ -47,6 +47,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Interval.types.hh"
 #include "Linear_Form.types.hh"
 #include <vector>
+#include <map>
 #include <cstddef>
 #include <climits>
 #include <iosfwd>
@@ -1695,6 +1696,10 @@ public:
     into the \f$k\f$-th space dimension.
   */
   void fold_space_dimensions(const Variables_Set& vars, Variable dest);
+
+  template <typename Interval_Info>
+  void refine_fp_interval_abstract_store(
+              std::map< dimension_type, Interval<T, Interval_Info> >& store);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 

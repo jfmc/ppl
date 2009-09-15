@@ -5231,6 +5231,49 @@ interval_coefficient_upper_bound(const N& var_ub, const N& minus_var_ub,
 }
 
 template <typename T>
+template <typename Interval_Info>
+void
+Octagonal_Shape<T>::
+refine_fp_interval_abstract_store(
+	  std::map< dimension_type, Interval<T, Interval_Info> >& store) {
+
+  // Check that T is a floating point type.
+  PPL_ASSERT(!std::numeric_limits<T>::is_exact);
+
+  strong_closure_assign();
+
+  typedef Interval<T, Interval_Info> FP_Interval_Type;
+  typedef typename std::map<dimension_type, FP_Interval_Type>::iterator
+                   Map_Iterator;
+
+  PPL_DIRTY_TEMP(N, upper_bound);
+  Map_Iterator store_end = store.end();
+  for (Map_Iterator ite = store.begin(); ite != store_end; ++ite) {
+    dimension_type curr_var = ite->first;
+    PPL_ASSERT(curr_var < space_dim);
+    dimension_type n_curr_var = curr_var * 2;
+    FP_Interval_Type& curr_int = &(ite->second);
+    T& lb = curr_int.lower();
+    T& ub = curr_int.upper();
+    // FIXME: are we sure that ROUND_IGNORE is good?
+    // Now get the upper bound for curr_var in the octagon.
+    assign_r(upper_bound, matrix[n_curr_var+1][n_curr_var], ROUND_NOT_NEEDED);
+    div_2exp_assign_r(upper_bound, upper_bound, 1, ROUND_IGNORE);
+
+    if (upper_bound < ub)
+      ub = upper_bound;
+
+    // Now get the lower bound for curr_var in the octagon.
+    neg_assign_r(upper_bound, matrix[n_curr_var][n_curr_var+1],
+                 ROUND_NOT_NEEDED);
+    div_2exp_assign_r(upper_bound, upper_bound, 1, ROUND_IGNORE);
+
+    if (upper_bound > lb)
+      lb = upper_bound;
+  }
+}
+
+template <typename T>
 void
 Octagonal_Shape<T>::affine_preimage(const Variable var,
                                     const Linear_Expression& expr,
