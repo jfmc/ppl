@@ -483,12 +483,9 @@ void
 Octagonal_Shape<T>::refine_with_linear_form_inequality(
 		    const Linear_Form< Interval<T, Interval_Info> >& left,
 		    const Linear_Form< Interval<T, Interval_Info> >& right) {
-  /*
-    FIXME: this way for checking that T is a floating point type is a bit
-    unelengant.
-  */
+
   // Check that T is a floating point type.
-  PPL_ASSERT(std::numeric_limits<T>::max_exponent);
+  PPL_ASSERT(!std::numeric_limits<T>::is_exact);
 
   // FIXME: what to do when empty?
 
@@ -4870,12 +4867,9 @@ template <typename Interval_Info>
 void
 Octagonal_Shape<T>::affine_image(Variable var,
                     const Linear_Form< Interval<T, Interval_Info> >& lf) {
-  /*
-    FIXME: this way for checking that T is a floating point type is a bit
-    unelengant.
-  */
+
   // Check that T is a floating point type.
-  PPL_ASSERT(std::numeric_limits<T>::max_exponent);
+  PPL_ASSERT(!std::numeric_limits<T>::is_exact);
 
   // Dimension-compatibility checks.
   // The dimension of `lf' should not be greater than the dimension
@@ -5128,12 +5122,9 @@ void
 Octagonal_Shape<T>::
 linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
                         N& result) const {
-  /*
-    FIXME: this way for checking that T is a floating point type is a bit
-    unelengant.
-  */
+
   // Check that T is a floating point type.
-  PPL_ASSERT(std::numeric_limits<T>::max_exponent);
+  PPL_ASSERT(!std::numeric_limits<T>::is_exact);
 
   const dimension_type lf_space_dimension = lf.space_dimension();
   PPL_ASSERT(lf_space_dimension <= space_dim);
@@ -5214,12 +5205,9 @@ Octagonal_Shape<T>::
 interval_coefficient_upper_bound(const N& var_ub, const N& minus_var_ub,
                                  const N& int_ub, const N& int_lb,
                                  N& result) {
-  /*
-    FIXME: this way for checking that T is a floating point type is a bit
-    unelengant.
-  */
+
   // Check that T is a floating point type.
-  PPL_ASSERT(std::numeric_limits<T>::max_exponent);
+  PPL_ASSERT(!std::numeric_limits<T>::is_exact);
 
   // NOTE: we store the first comparison term directly into result.
   PPL_DIRTY_TEMP(N, second_comparison_term);
