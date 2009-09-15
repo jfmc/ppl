@@ -478,6 +478,116 @@ Octagonal_Shape<T>::add_congruence(const Congruence& cg) {
 }
 
 template <typename T>
+template <typename Interval_Info>
+void
+Octagonal_Shape<T>::refine_with_linear_form_inequality(
+		    const Linear_Form< Interval<T, Interval_Info> >& left,
+		    const Linear_Form< Interval<T, Interval_Info> >& right) {
+  /*
+    FIXME: this way for checking that T is a floating point type is a bit
+    unelengant.
+  */
+  // Check that T is a floating point type.
+  PPL_ASSERT(std::numeric_limits<T>::max_exponent);
+
+  // Dimension-compatibility checks.
+  // The dimensions of `left' and `right' should not be greater than the
+  // dimension of `*this'.
+  const dimension_type left_space_dim = left.space_dimension();
+  if (space_dim < left_space_dim)
+    throw_dimension_incompatible(
+          "refine_with_linear_form_inequality(left, right)", "left", left);
+
+  const dimension_type right_space_dim = right.space_dimension();
+  if (space_dim < right_space_dim)
+    throw_dimension_incompatible(
+          "refine_with_linear_form_inequality(left, right)", "right", right);
+
+  /*
+    FIXME: these are not really necessary right now. They will come in
+    handy when we optimize the most common cases.
+  */
+  // Number of non-zero coefficients in `left': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type left_t = 0;
+  // Variable-index of the last non-zero coefficient in `left', if any.
+  dimension_type left_w_id = 0;
+  // Number of non-zero coefficients in `right': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type right_t = 0;
+  // Variable-index of the last non-zero coefficient in `right', if any.
+  dimension_type right_w_id = 0;
+
+  // Get information about the number of non-zero coefficients in `left'.
+  for (dimension_type i = left_space_dim; i-- > 0; )
+    if (left.coefficient(Variable(i)) != 0) {
+      if (left_t++ == 1)
+        break;
+      else
+        left_w_id = i;
+    }
+
+  // Get information about the number of non-zero coefficients in `right'.
+  for (dimension_type i = right_space_dim; i-- > 0; )
+    if (right.coefficient(Variable(i)) != 0) {
+      if (right_t++ == 1)
+        break;
+      else
+        right_w_id = i;
+    }
+
+  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
+  typedef Interval<T, Interval_Info> FP_Interval_Type;
+
+  // TODO: optimize the most common cases.
+
+  // General case.
+
+  // FIRST, update the binary constraints for each pair of DIFFERENT variables
+  // in `left' and `right'.
+
+  // Declare temporaries outside of the loop.
+  PPL_DIRTY_TEMP(N, ff_lb);
+  PPL_DIRTY_TEMP(N, ff_ub);
+  PPL_DIRTY_TEMP(N, fs_lb);
+  PPL_DIRTY_TEMP(N, fs_ub);
+  PPL_DIRTY_TEMP(N, sf_lb);
+  PPL_DIRTY_TEMP(N, sf_ub);
+  PPL_DIRTY_TEMP(N, ss_lb);
+  PPL_DIRTY_TEMP(N, ss_ub);
+
+  // FIXME: to complete.
+
+  dimension_type max_w_id = std::max(left_w_id, right_w_id);
+  for (dimension_type first_v = 0; first_v <= max_id; ++first_v) {
+    for (dimension_type second_v = first_v; second_v <= max_id; ++second_v) {
+      FP_Interval_Type* ffv_coefficient =
+                        &(first.coefficient(Variable(first_v)));
+      FP_Interval_Type* fsv_coefficient =
+                        &(first.coefficient(Variable(second_v)));
+      FP_Interval_Type* sfv_coefficient =
+                        &(second.coefficient(Variable(first_v)));
+      FP_Interval_Type* ssv_coefficient =
+                        &(second.coefficient(Variable(second_v)));
+      assign_r(ff_lb, ffv_coefficient->lower(), ROUND_NOT_NEEDED);
+      assign_r(ff_ub, ffv_coefficient->upper(), ROUND_NOT_NEEDED);
+      assign_r(fs_lb, fsv_coefficient->lower(), ROUND_NOT_NEEDED);
+      assign_r(fs_ub, fsv_coefficient->upper(), ROUND_NOT_NEEDED);
+      assign_r(sf_lb, sfv_coefficient->lower(), ROUND_NOT_NEEDED);
+      assign_r(sf_ub, sfv_coefficient->upper(), ROUND_NOT_NEEDED);
+      assign_r(ss_lb, ssv_coefficient->lower(), ROUND_NOT_NEEDED);
+      assign_r(ss_ub, ssv_coefficient->upper(), ROUND_NOT_NEEDED);
+    }
+  }
+
+  // Finally, update the unary constraints.
+
+}
+
+template <typename T>
 void
 Octagonal_Shape<T>::refine_no_check(const Constraint& c) {
   PPL_ASSERT(!marked_empty());
@@ -4926,6 +5036,8 @@ Octagonal_Shape<T>::affine_image(Variable var,
   mul_2exp_assign_r(minus_lf_ub, minus_lf_ub, 1, ROUND_IGNORE);
   assign_r(matrix[n_var][n_var+1], minus_lf_ub, ROUND_NOT_NEEDED);
 
+  PPL_ASSERT(OK());
+
 }
 
 template <typename T>
@@ -4967,6 +5079,7 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
     assign_r(curr_lb, curr_coefficient->lower(), ROUND_NOT_NEEDED);
     assign_r(curr_ub, curr_coefficient->upper(), ROUND_NOT_NEEDED);
     if (curr_lb != 0 && curr_ub != 0) {
+      // FIXME: ensure that ROUND_IGNORE works fine with divisions by 2.
       assign_r(curr_var_ub, matrix[n_var+1][n_var], ROUND_NOT_NEEDED);
       div_2exp_assign_r(curr_var_ub, curr_var_ub, 1, ROUND_IGNORE);
       neg_assign_r(curr_minus_var_ub, matrix[n_var][n_var+1], ROUND_NOT_NEEDED);

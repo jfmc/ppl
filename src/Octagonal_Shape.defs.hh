@@ -986,6 +986,11 @@ public:
   */
   void refine_with_congruences(const Congruence_System& cgs);
 
+  template <typename Interval_Info>
+  void refine_with_linear_form_inequality(
+                   const Linear_Form< Interval<T, Interval_Info> >& left,
+                   const Linear_Form< Interval<T, Interval_Info> >& right);
+
   /*! \brief
     Computes the \ref Cylindrification "cylindrification" of \p *this with
     respect to space dimension \p var, assigning the result to \p *this.
