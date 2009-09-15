@@ -34,8 +34,7 @@ test01() {
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  Octagonal_Shape<float> oc2(3);
-
+  print_constraints(oc1, "*** oc1  ***");
   fl_r_oc free_term(-2);
   free_term.join_assign(1);
   Linear_Form<fl_r_oc> l(free_term);
@@ -53,12 +52,32 @@ test01() {
   return ok;
 }
 
-/*
+
 // tests affine_image(A, [-1, -1]*A)
 bool test02() {
-  return true;
+  Variable A(0);
+  Variable B(1);
+
+  Octagonal_Shape<float> oc1(3);
+  oc1.add_constraint(A <= 2);
+  oc1.add_constraint(A - B <= 3);
+  oc1.add_constraint(B <= 2);
+  Linear_Form<fl_r_oc> l(-A);
+  oc1.affine_image(A, l);
+  print_constraints(oc1, "*** oc1.affine_image(A, [-1, -1]*A) ***");
+
+  Octagonal_Shape<float> known_result(3);
+  known_result.add_constraint(A >= -2);
+  known_result.add_constraint(B <= 2);
+  known_result.add_constraint(B - A <= 4);
+  print_constraints(known_result, "*** known_result ***");
+
+  bool ok = (oc1 == known_result);
+
+  return ok;
 }
 
+/*
 // tests affine_image(A, [-1, 1]*B)
 bool test03() {
   return true;
@@ -74,4 +93,5 @@ bool test04() {
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN
