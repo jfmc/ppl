@@ -4872,17 +4872,6 @@ Octagonal_Shape<T>::affine_image(Variable var,
 
   Linear_Form<FP_Interval_Type> minus_lf(-lf);
 
-  PPL_DIRTY_TEMP(N, lf_ub);
-  linear_form_upper_bound(lf, lf_ub);
-  PPL_DIRTY_TEMP(N, minus_lf_ub);
-  linear_form_upper_bound(minus_lf, minus_lf_ub);
-
-  // Update unary constraints on var.
-  mul_2exp_assign_r(lf_ub, lf_ub, 1, ROUND_IGNORE);
-  assign_r(matrix[n_var+1][n_var], lf_ub, ROUND_NOT_NEEDED);
-  mul_2exp_assign_r(minus_lf_ub, minus_lf_ub, 1, ROUND_IGNORE);
-  assign_r(matrix[n_var][n_var+1], minus_lf_ub, ROUND_NOT_NEEDED);
-
   // Declare temporaries outside the loop.
   PPL_DIRTY_TEMP(N, lf_plus_var_ub);
   PPL_DIRTY_TEMP(N, lf_minus_var_ub);
@@ -4897,7 +4886,7 @@ Octagonal_Shape<T>::affine_image(Variable var,
   ++m_iter;
   Row_Iterator m_end = matrix.row_end();
 
-  // Update binary constraints on var.
+  // Update binary constraints on var FIRST.
   for (dimension_type curr_var = var_id, n_curr_var = n_var - 2;
        curr_var-- > 0; ) {
     Variable current(curr_var);
@@ -4926,6 +4915,16 @@ Octagonal_Shape<T>::affine_image(Variable var,
     assign_r(m_cv_ite[n_var+1], var_minus_lf_ub, ROUND_NOT_NEEDED);
     ++curr_var;
   }
+
+  // Finally, update unary constraints on var.
+  PPL_DIRTY_TEMP(N, lf_ub);
+  linear_form_upper_bound(lf, lf_ub);
+  PPL_DIRTY_TEMP(N, minus_lf_ub);
+  linear_form_upper_bound(minus_lf, minus_lf_ub);
+  mul_2exp_assign_r(lf_ub, lf_ub, 1, ROUND_IGNORE);
+  assign_r(matrix[n_var+1][n_var], lf_ub, ROUND_NOT_NEEDED);
+  mul_2exp_assign_r(minus_lf_ub, minus_lf_ub, 1, ROUND_IGNORE);
+  assign_r(matrix[n_var][n_var+1], minus_lf_ub, ROUND_NOT_NEEDED);
 
 }
 
