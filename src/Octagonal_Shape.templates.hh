@@ -490,6 +490,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
   // Check that T is a floating point type.
   PPL_ASSERT(std::numeric_limits<T>::max_exponent);
 
+  // FIXME: what to do when empty?
+
   // Dimension-compatibility checks.
   // The dimensions of `left' and `right' should not be greater than the
   // dimension of `*this'.
@@ -502,6 +504,10 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
   if (space_dim < right_space_dim)
     throw_dimension_incompatible(
           "refine_with_linear_form_inequality(left, right)", "right", right);
+
+  // FIXME: maybe it would be best to create a no_check variant.
+  if (marked_empty())
+    return;
 
   /*
     FIXME: these are not really necessary right now. They will come in
@@ -546,6 +552,9 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
 
   // General case.
 
+  // In the following, strong closure will be definitely lost.
+  reset_strongly_closed();
+
   // FIRST, update the binary constraints for each pair of DIFFERENT variables
   // in `left' and `right'.
 
@@ -558,19 +567,22 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
   PPL_DIRTY_TEMP(N, rf_ub);
   PPL_DIRTY_TEMP(N, rs_lb);
   PPL_DIRTY_TEMP(N, rs_ub);
+  PPL_DIRTY_TEMP(N, upper_bound);
 
-  // FIXME: to complete.
+  Linear_Form<FP_Interval_Type> right_minus_left(right);
+  right_minus_left -= left;
 
   dimension_type max_w_id = std::max(left_w_id, right_w_id);
-  for (dimension_type first_v = 0; first_v <= max_w_id; ++first_v) {
-    for (dimension_type second_v = first_v; second_v <= max_w_id; ++second_v) {
-      FP_Interval_Type* lfv_coefficient =
+  for (dimension_type first_v = 0; first_v < max_w_id; ++first_v) {
+    for (dimension_type second_v = first_v+1;
+         second_v <= max_w_id; ++second_v) {
+      const FP_Interval_Type* lfv_coefficient =
                         &(left.coefficient(Variable(first_v)));
-      FP_Interval_Type* lsv_coefficient =
+      const FP_Interval_Type* lsv_coefficient =
                         &(left.coefficient(Variable(second_v)));
-      FP_Interval_Type* rfv_coefficient =
+      const FP_Interval_Type* rfv_coefficient =
                         &(right.coefficient(Variable(first_v)));
-      FP_Interval_Type* rsv_coefficient =
+      const FP_Interval_Type* rsv_coefficient =
                         &(right.coefficient(Variable(second_v)));
       assign_r(lf_lb, lfv_coefficient->lower(), ROUND_NOT_NEEDED);
       assign_r(lf_ub, lfv_coefficient->upper(), ROUND_NOT_NEEDED);
@@ -580,10 +592,82 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
       assign_r(rf_ub, rfv_coefficient->upper(), ROUND_NOT_NEEDED);
       assign_r(rs_lb, rsv_coefficient->lower(), ROUND_NOT_NEEDED);
       assign_r(rs_ub, rsv_coefficient->upper(), ROUND_NOT_NEEDED);
+      // true when both variables appear in at least one argument.
+      if ((lf_lb != 0 || lf_ub != 0 || rf_lb != 0 || rf_ub != 0)
+          &&
+          (ls_lb != 0 || ls_ub != 0 || rs_lb != 0 || rs_lb != 0)) {
+        Variable first(first_v);
+        Variable second(second_v);
+        dimension_type n_first_var = first_v * 2;
+        dimension_type n_second_var = second_v * 2;
+        linear_form_upper_bound(right_minus_left - first + second,
+                                upper_bound);
+        assign_r(matrix[n_second_var+1][n_first_var+1],
+                 upper_bound, ROUND_NOT_NEEDED);
+        linear_form_upper_bound(right_minus_left + first + second,
+                                upper_bound);
+        assign_r(matrix[n_second_var+1][n_first_var],
+                 upper_bound, ROUND_NOT_NEEDED);
+        linear_form_upper_bound(right_minus_left - first - second,
+                                upper_bound);
+        assign_r(matrix[n_second_var][n_first_var+1],
+                 upper_bound, ROUND_NOT_NEEDED);
+        linear_form_upper_bound(right_minus_left + first - second,
+                                upper_bound);
+        assign_r(matrix[n_second_var][n_first_var],
+                 upper_bound, ROUND_NOT_NEEDED);
+      }
     }
   }
 
   // Finally, update the unary constraints.
+  for (dimension_type v = 0; v <= max_w_id; ++v) {
+    const FP_Interval_Type* lv_coefficient =
+                        &(left.coefficient(Variable(v)));
+    const FP_Interval_Type* rv_coefficient =
+                        &(right.coefficient(Variable(v)));
+    assign_r(lf_lb, lv_coefficient->lower(), ROUND_NOT_NEEDED);
+    assign_r(lf_ub, lv_coefficient->upper(), ROUND_NOT_NEEDED);
+    assign_r(rf_lb, rv_coefficient->lower(), ROUND_NOT_NEEDED);
+    assign_r(rf_ub, rv_coefficient->upper(), ROUND_NOT_NEEDED);
+    // true if variable v appears in one of the two arguments.
+    if (lf_lb != 0 || lf_ub != 0 || rf_lb != 0 || rf_ub != 0) {
+      Variable var(v);
+      dimension_type n_var = 2 * v;
+      /*
+        VERY DIRTY trick: since we need to keep the old unary constraints
+        while computing the new ones, we momentarily keep the new coefficients
+        in the main diagonal of the matrix. They will be moved later.
+      */
+      linear_form_upper_bound(right_minus_left + var, upper_bound);
+      assign_r(matrix[n_var+1][n_var+1], upper_bound, ROUND_NOT_NEEDED);
+      linear_form_upper_bound(right_minus_left - var, upper_bound);
+      assign_r(matrix[n_var][n_var], upper_bound, ROUND_NOT_NEEDED);
+    }
+  }
+
+  /*
+    Now move the newly computed coefficients from the main diagonal to
+    their proper place, and restore +infinity on the diagonal.
+  */
+  Row_Iterator m_ite = matrix.row_begin();
+  Row_Iterator m_end = matrix.row_end();
+  for (dimension_type i = 0; m_ite != m_end; i += 2) {
+    Row_Reference upper = *m_ite;
+    N& ul = upper[i];
+    N& ur = upper[i+1];
+    assign_r(ur, ul, ROUND_NOT_NEEDED);
+    assign_r(ul, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    ++m_ite;
+    Row_Reference lower = *m_ite;
+    N& ll = lower[i];
+    N& lr = lower[i+1];
+    assign_r(ll, lr, ROUND_NOT_NEEDED);
+    assign_r(lr, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    ++m_ite;
+  }
+
+  PPL_ASSERT(OK());
 
 }
 
@@ -4980,13 +5064,11 @@ Octagonal_Shape<T>::affine_image(Variable var,
   // In the following, strong closure will be definitely lost.
   reset_strongly_closed();
 
-  Linear_Form<FP_Interval_Type> minus_lf(-lf);
+  Linear_Form<FP_Interval_Type> minus_lf(lf);
+  minus_lf.negate();
 
   // Declare temporaries outside the loop.
-  PPL_DIRTY_TEMP(N, lf_plus_var_ub);
-  PPL_DIRTY_TEMP(N, lf_minus_var_ub);
-  PPL_DIRTY_TEMP(N, var_minus_lf_ub);
-  PPL_DIRTY_TEMP(N, minus_lf_minus_var_ub);
+  PPL_DIRTY_TEMP(N, upper_bound);
 
   Row_Iterator m_iter = matrix.row_begin();
   m_iter += n_var;
@@ -5000,14 +5082,14 @@ Octagonal_Shape<T>::affine_image(Variable var,
   for (dimension_type curr_var = var_id, n_curr_var = n_var - 2;
        curr_var-- > 0; ) {
     Variable current(curr_var);
-    linear_form_upper_bound(lf + current, lf_plus_var_ub);
-    linear_form_upper_bound(lf - current, lf_minus_var_ub);
-    linear_form_upper_bound(minus_lf + current, var_minus_lf_ub);
-    linear_form_upper_bound(minus_lf - current, minus_lf_minus_var_ub);
-    assign_r(var_ite[n_curr_var], var_minus_lf_ub, ROUND_NOT_NEEDED);
-    assign_r(var_ite[n_curr_var+1], minus_lf_minus_var_ub, ROUND_NOT_NEEDED);
-    assign_r(var_cv_ite[n_curr_var], lf_plus_var_ub, ROUND_NOT_NEEDED);
-    assign_r(var_cv_ite[n_curr_var+1], lf_minus_var_ub, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(lf + current, upper_bound);
+    assign_r(var_cv_ite[n_curr_var], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(lf - current, upper_bound);
+    assign_r(var_cv_ite[n_curr_var+1], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(minus_lf + current, upper_bound);
+    assign_r(var_ite[n_curr_var], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(minus_lf - current, upper_bound);
+    assign_r(var_ite[n_curr_var+1], upper_bound, ROUND_NOT_NEEDED);
     n_curr_var -= 2;
   }
   for (dimension_type curr_var = var_id+1; m_iter != m_end; ++m_iter) {
@@ -5015,14 +5097,14 @@ Octagonal_Shape<T>::affine_image(Variable var,
     ++m_iter;
     Row_Reference m_cv_ite = *m_iter;
     Variable current(curr_var);
-    linear_form_upper_bound(lf + current, lf_plus_var_ub);
-    linear_form_upper_bound(lf - current, lf_minus_var_ub);
-    linear_form_upper_bound(minus_lf + current, var_minus_lf_ub);
-    linear_form_upper_bound(minus_lf - current, minus_lf_minus_var_ub);
-    assign_r(m_v_ite[n_var], lf_minus_var_ub, ROUND_NOT_NEEDED);
-    assign_r(m_v_ite[n_var+1], minus_lf_minus_var_ub, ROUND_NOT_NEEDED);
-    assign_r(m_cv_ite[n_var], lf_plus_var_ub, ROUND_NOT_NEEDED);
-    assign_r(m_cv_ite[n_var+1], var_minus_lf_ub, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(lf + current, upper_bound);
+    assign_r(m_cv_ite[n_var], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(lf - current, upper_bound);
+    assign_r(m_v_ite[n_var], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(minus_lf + current, upper_bound);
+    assign_r(m_cv_ite[n_var+1], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(minus_lf - current, upper_bound);
+    assign_r(m_v_ite[n_var+1], upper_bound, ROUND_NOT_NEEDED);
     ++curr_var;
   }
 
