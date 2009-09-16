@@ -260,9 +260,48 @@ bool test08() {
   return true;
 }
 
-// tests affine_image(A, i + i1 * A + i2 * B)
+// tests affine_image(A, i1*A + i2*B + i3)
 bool test09() {
-  return true;
+  
+  Variable A(0);
+  Variable B(1);
+
+  Octagonal_Shape<double> oc1(2);
+  oc1.add_constraint(A >= 0);
+  oc1.add_constraint(A <= 2);
+  oc1.add_constraint(B >= 0);
+  oc1.add_constraint(B <= 2);
+  oc1.add_constraint(A - B >= 0);
+
+  print_constraints(oc1, "*** oc1 ***");
+
+  db_r_oc i3(0);
+  i3.join_assign(2);
+  db_r_oc i2(1);
+  i2.join_assign(2);
+  db_r_oc i1(1);
+  i1.join_assign(1);
+ 
+  Linear_Form<db_r_oc> l(i3);
+
+  l += i1*Linear_Form<db_r_oc>(A);
+  l += i2*Linear_Form<db_r_oc>(B);;
+  print_constraints(oc1, "*** oc1.affine_image(A,i1*A+i2*B+i3) ***");
+  oc1.affine_image(A,l);
+
+  Octagonal_Shape<double> know_result(2);
+  know_result.add_constraint(A >= 0);
+  know_result.add_constraint(A <= 8);
+  know_result.add_constraint(B >= 0);
+  know_result.add_constraint(B <= 2);
+  know_result.add_constraint(A - B <= 6);
+  know_result.add_constraint(A + B <= 10);
+  know_result.add_constraint(-A + B <= 0);
+  know_result.add_constraint(-A - B <= 0);
+
+  bool ok = (oc1 == know_result);
+
+  return ok;
 }
 
 } //namespace
@@ -270,11 +309,11 @@ bool test09() {
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
-  DO_TEST(test03); /* FIXME: Not yet tested!
+  DO_TEST(test03); /* FIXME: Not yet tested 
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
-  DO_TEST(test08);
-  DO_TEST(test09); */
+  DO_TEST(test08); */
+  DO_TEST(test09);
 END_MAIN

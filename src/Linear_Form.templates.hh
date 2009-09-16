@@ -385,7 +385,7 @@ IO_Operators::operator<<(std::ostream& s, const Linear_Form<C>& f) {
     const C& fv = f[v+1];
     if (fv != 0) {
       if (first) {
-        if (fv == 1.0)
+        if (fv == -1.0)
           s << "-";
         else if (fv != 1.0)
           s << fv << "*";

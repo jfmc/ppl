@@ -5151,7 +5151,7 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
     curr_coefficient = &(lf.coefficient(Variable(curr_var)));
     assign_r(curr_lb, curr_coefficient->lower(), ROUND_NOT_NEEDED);
     assign_r(curr_ub, curr_coefficient->upper(), ROUND_NOT_NEEDED);
-    if (curr_lb != 0 && curr_ub != 0) {
+    if (curr_lb != 0 || curr_ub != 0) {
       // FIXME: ensure that ROUND_IGNORE works fine with divisions by 2.
       assign_r(curr_var_ub, matrix[n_var+1][n_var], ROUND_NOT_NEEDED);
       div_2exp_assign_r(curr_var_ub, curr_var_ub, 1, ROUND_IGNORE);
