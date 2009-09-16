@@ -388,9 +388,8 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
 PIP_Solution_Node::Row_Sign
 PIP_Solution_Node::row_sign(const Row &x) {
   PIP_Solution_Node::Row_Sign sign = ZERO;
-  Coefficient c;
   for (int i = x.size(); i-- > 0; ) {
-    c = x[i];
+    const Coefficient &c = x[i];
     switch (sign) {
       case UNKNOWN:
         // cannot happen
@@ -449,11 +448,11 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
       break;
     }
     // Perform a pivot operation on the matrix
-    Coefficient sij = p[j];
+    const Coefficient &sij = p[j];
     for (j_=0; j_<num_cols; ++j_) {
       if (j_ == j)
         continue;
-      Coefficient sij_ = p[j_];
+      const Coefficient &sij_ = p[j_];
       for (k=0; k<num_rows; ++k) {
         Coefficient mult = s[k][j] * sij_;
         if (mult % sij != 0) {
@@ -514,8 +513,8 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
   }
   internal_space_dim = external_space_dim;
 
-  Coefficient denom_s = tableau.s.get_denominator();
-  Coefficient denom_t = tableau.t.get_denominator();
+  const Coefficient &denom_s = tableau.s.get_denominator();
+  const Coefficient &denom_t = tableau.t.get_denominator();
 
   for (cst = input_cs.begin() + first_pending_constraint;
        cst < input_cs.end(); ++cst) {
@@ -532,7 +531,7 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
       if (parameters.count(i) == 1) {
         param[p++] = cst->coefficient(Variable(i)) * denom_t;
       } else {
-        Coefficient c = cst->coefficient(Variable(i));
+        const Coefficient &c = cst->coefficient(Variable(i));
         dimension_type idx = mapping[v];
         if (basis[v])
           // Basic variable : add c * x_i
