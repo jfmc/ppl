@@ -506,10 +506,6 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
   if (marked_empty())
     return;
 
-  /*
-    FIXME: these are not really necessary right now. They will come in
-    handy when we optimize the most common cases.
-  */
   // Number of non-zero coefficients in `left': will be set to
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type left_t = 0;
@@ -545,7 +541,189 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
   typedef Interval<T, Interval_Info> FP_Interval_Type;
 
-  // TODO: optimize the most common cases.
+  if (left_t == 0) {
+    if (right_t == 0) {
+      // The constraint involves constants only. Ignore it: it is up to
+      // the analyzer to handle it.
+      return;
+    }
+
+    if (right_t == 1) {
+      // The constraint has the form [a-;a+] <= [b-;b+] + [c-;c+] * x.
+      // Reduce it to the constraint +/-x <= b+ - a- if [c-;c+] = +/-[1;1].
+      const FP_Interval_Type& right_w_coeff =
+	                      right.coefficient(Variable(right_w_id));
+      if (right_w_coeff == 1) {
+        const dimension_type n_right = right_w_id * 2;
+        PPL_DIRTY_TEMP(N, b_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_b = right.inhomogeneous_term();
+        sub_assign_r(b_plus_minus_a_minus, right_b.upper(), left_a.lower(),
+                     ROUND_UP);
+        mul_2exp_assign(b_plus_minus_a_minus, b_plus_minus_a_minus, 1,
+                        ROUND_IGNORE);
+        add_octagonal_constraint(n_right, n_right+1, b_plus_minus_a_minus);
+        return;
+      }
+
+      if (right_w_coeff == -1) {
+        const dimension_type n_right = right_w_id * 2;
+        PPL_DIRTY_TEMP(N, b_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_b = right.inhomogeneous_term();
+        sub_assign_r(b_plus_minus_a_minus, right_b.upper(), left_a.lower(),
+                     ROUND_UP);
+        mul_2exp_assign(b_plus_minus_a_minus, b_plus_minus_a_minus, 1,
+                        ROUND_IGNORE);
+        add_octagonal_constraint(n_right+1, n_right, b_plus_minus_a_minus);
+        return;
+      }
+    }
+  }
+  else if (left_t == 1) {
+    if (right_t == 0) {
+      // The constraint has the form [b-;b+] + [c-;c+] * x <= [a-;a+]
+      // Reduce it to the constraint +/-x <= a+ - b- if [c-;c+] = +/-[1;1].
+      const FP_Interval_Type& left_w_coeff =
+	                      left.coefficient(Variable(left_w_id));
+      if (left_w_coeff == 1) {
+        const dimension_type n_left = left_w_id * 2;
+        PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+        const FP_Interval_Type& left_b = left.inhomogeneous_term();
+        const FP_Interval_Type& right_a = right.inhomogeneous_term();
+        sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                     ROUND_UP);
+        mul_2exp_assign(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
+                        ROUND_IGNORE);
+        add_octagonal_constraint(n_left+1, n_left, a_plus_minus_b_minus);
+        return;
+      }
+
+      if (left_w_coeff == -1) {
+        const dimension_type n_left = left_w_id * 2;
+        PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+        const FP_Interval_Type& left_b = left.inhomogeneous_term();
+        const FP_Interval_Type& right_a = right.inhomogeneous_term();
+        sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                     ROUND_UP);
+        mul_2exp_assign(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
+                        ROUND_IGNORE);
+        add_octagonal_constraint(n_left, n_left+1, a_plus_minus_b_minus);
+        return;
+      }
+    }
+
+    if (right_t == 1) {
+      // The constraint has the form:
+      // [a-;a+] + [b-;b+] * x <= [c-;c+] + [d-;d+] * y.
+      // Reduce it to the constraint +/-x +/-y <= c+ - a-
+      // if [b-;b+] = +/-[1;1] and [d-;d+] = +/-[1;1].
+      const FP_Interval_Type& left_w_coeff =
+                              left.coefficient(Variable(left_w_id));
+      const FP_Interval_Type& right_w_coeff =
+	                      right.coefficient(Variable(right_w_id));
+      bool is_left_coeff_one = (left_w_coeff == 1);
+      bool is_left_coeff_minus_one = (left_w_coeff == -1);
+      bool is_right_coeff_one = (right_w_coeff == 1);
+      bool is_right_coeff_minus_one = (right_w_coeff == -1);
+      if (left_w_id == right_w_id) {
+        if (is_left_coeff_one && is_right_coeff_one ||
+            is_left_coeff_minus_one && is_right_constraint_minus_one) {
+          // Here we have an identity or a constants-only constraint.
+          return;
+        }
+        if (is_left_coeff_one && is_right_coeff_minus_one) {
+          // We fall back to a previous case
+          // (but we do not need to multiply the result by two).
+          const dimension_type n_left = left_w_id * 2;
+          PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+          const FP_Interval_Type& left_b = left.inhomogeneous_term();
+          const FP_Interval_Type& right_a = right.inhomogeneous_term();
+          sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                       ROUND_UP);
+          add_octagonal_constraint(n_left+1, n_left, a_plus_minus_b_minus);
+          return;
+        }
+        if (is_left_coeff_minus_one && is_right_coeff_one) {
+          // We fall back to a previous case
+          // (but we do not need to multiply the result by two).
+          const dimension_type n_left = left_w_id * 2;
+          PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+          const FP_Interval_Type& left_b = left.inhomogeneous_term();
+          const FP_Interval_Type& right_a = right.inhomogeneous_term();
+          sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                       ROUND_UP);
+          add_octagonal_constraint(n_left, n_left+1, a_plus_minus_b_minus);
+          return;
+        }
+      }
+      else if (is_left_coeff_one && is_right_coeff_one) {
+        const dimension_type n_left = left_w_id * 2;
+        const dimension_type n_right = right_w_id * 2;
+        PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_c = right.inhomogeneous_term();
+        sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
+                     ROUND_UP);
+        mul_2exp_assign(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
+                        ROUND_IGNORE);
+        if (left_w_id < right_w_id)
+          add_octagonal_constraint(n_right, n_left, c_plus_minus_a_minus);
+        else
+          add_octagonal_constraint(n_left+1, n_right+1, c_plus_minus_a_minus);
+        return;
+      }
+      if (is_left_coeff_one && is_right_coeff_minus_one) {
+        const dimension_type n_left = left_w_id * 2;
+        const dimension_type n_right = right_w_id * 2;
+        PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_c = right.inhomogeneous_term();
+        sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
+                     ROUND_UP);
+        mul_2exp_assign(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
+                        ROUND_IGNORE);
+        if (left_w_id < right_w_id)
+          add_octagonal_constraint(n_right+1, n_left, c_plus_minus_a_minus);
+        else
+          add_octagonal_constraint(n_left+1, n_right, c_plus_minus_a_minus);
+        return;
+      }
+      if (is_left_coeff_minus_one && is_right_coeff_one) {
+        const dimension_type n_left = left_w_id * 2;
+        const dimension_type n_right = right_w_id * 2;
+        PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_c = right.inhomogeneous_term();
+        sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
+                     ROUND_UP);
+        mul_2exp_assign(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
+                        ROUND_IGNORE);
+        if (left_w_id < right_w_id)
+          add_octagonal_constraint(n_right, n_left+1, c_plus_minus_a_minus);
+        else
+          add_octagonal_constraint(n_left, n_right+1, c_plus_minus_a_minus);
+        return;
+      }
+      if (is_left_coeff_minus_one && is_right_coeff_minus_one) {
+        const dimension_type n_left = left_w_id * 2;
+        const dimension_type n_right = right_w_id * 2;
+        PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_c = right.inhomogeneous_term();
+        sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
+                     ROUND_UP);
+        mul_2exp_assign(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
+                        ROUND_IGNORE);
+        if (left_w_id < right_w_id)
+          add_octagonal_constraint(n_right+1, n_left+1, c_plus_minus_a_minus);
+        else
+          add_octagonal_constraint(n_left, n_right, c_plus_minus_a_minus);
+        return;
+      }
+    }
+
+  }
 
   // General case.
 
