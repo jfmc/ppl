@@ -485,7 +485,9 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
 		    const Linear_Form< Interval<T, Interval_Info> >& right) {
 
   // Check that T is a floating point type.
-  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact);
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
+                     "Octagonal_Shape<T>::refine_with_linear_form_inequality:"
+                     " T not a floating point type.");
 
   // FIXME: what to do when empty?
 
@@ -560,8 +562,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         const FP_Interval_Type& right_b = right.inhomogeneous_term();
         sub_assign_r(b_plus_minus_a_minus, right_b.upper(), left_a.lower(),
                      ROUND_UP);
-        mul_2exp_assign(b_plus_minus_a_minus, b_plus_minus_a_minus, 1,
-                        ROUND_IGNORE);
+        mul_2exp_assign_r(b_plus_minus_a_minus, b_plus_minus_a_minus, 1,
+                          ROUND_IGNORE);
         add_octagonal_constraint(n_right, n_right+1, b_plus_minus_a_minus);
         return;
       }
@@ -573,8 +575,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         const FP_Interval_Type& right_b = right.inhomogeneous_term();
         sub_assign_r(b_plus_minus_a_minus, right_b.upper(), left_a.lower(),
                      ROUND_UP);
-        mul_2exp_assign(b_plus_minus_a_minus, b_plus_minus_a_minus, 1,
-                        ROUND_IGNORE);
+        mul_2exp_assign_r(b_plus_minus_a_minus, b_plus_minus_a_minus, 1,
+                          ROUND_IGNORE);
         add_octagonal_constraint(n_right+1, n_right, b_plus_minus_a_minus);
         return;
       }
@@ -593,8 +595,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         const FP_Interval_Type& right_a = right.inhomogeneous_term();
         sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                      ROUND_UP);
-        mul_2exp_assign(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
-                        ROUND_IGNORE);
+        mul_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
+                          ROUND_IGNORE);
         add_octagonal_constraint(n_left+1, n_left, a_plus_minus_b_minus);
         return;
       }
@@ -606,8 +608,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         const FP_Interval_Type& right_a = right.inhomogeneous_term();
         sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                      ROUND_UP);
-        mul_2exp_assign(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
-                        ROUND_IGNORE);
+        mul_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
+                          ROUND_IGNORE);
         add_octagonal_constraint(n_left, n_left+1, a_plus_minus_b_minus);
         return;
       }
@@ -665,8 +667,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
-        mul_2exp_assign(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
-                        ROUND_IGNORE);
+        mul_2exp_assign_r(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
+                          ROUND_IGNORE);
         if (left_w_id < right_w_id)
           add_octagonal_constraint(n_right, n_left, c_plus_minus_a_minus);
         else
@@ -681,8 +683,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
-        mul_2exp_assign(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
-                        ROUND_IGNORE);
+        mul_2exp_assign_r(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
+                          ROUND_IGNORE);
         if (left_w_id < right_w_id)
           add_octagonal_constraint(n_right+1, n_left, c_plus_minus_a_minus);
         else
@@ -697,8 +699,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
-        mul_2exp_assign(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
-                        ROUND_IGNORE);
+        mul_2exp_assign_r(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
+                          ROUND_IGNORE);
         if (left_w_id < right_w_id)
           add_octagonal_constraint(n_right, n_left+1, c_plus_minus_a_minus);
         else
@@ -713,8 +715,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
-        mul_2exp_assign(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
-                        ROUND_IGNORE);
+        mul_2exp_assign_r(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
+                          ROUND_IGNORE);
         if (left_w_id < right_w_id)
           add_octagonal_constraint(n_right+1, n_left+1, c_plus_minus_a_minus);
         else
@@ -722,7 +724,6 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         return;
       }
     }
-
   }
 
   // General case.
@@ -5047,7 +5048,9 @@ Octagonal_Shape<T>::affine_image(Variable var,
                     const Linear_Form< Interval<T, Interval_Info> >& lf) {
 
   // Check that T is a floating point type.
-  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact);
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
+                     "Octagonal_Shape<T>::affine_image(Variable, Linear_Form):"
+                     " T not a floating point type.");
 
   // Dimension-compatibility checks.
   // The dimension of `lf' should not be greater than the dimension
@@ -5302,7 +5305,9 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
                         N& result) const {
 
   // Check that T is a floating point type.
-  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact);
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
+                     "Octagonal_Shape<T>::linear_form_upper_bound:"
+                     " T not a floating point type.");
 
   const dimension_type lf_space_dimension = lf.space_dimension();
   PPL_ASSERT(lf_space_dimension <= space_dim);
@@ -5351,14 +5356,28 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
         assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
         assign_r(third_comparison_term, 0, ROUND_NOT_NEEDED);
         assign_r(fourth_comparison_term, 0, ROUND_NOT_NEEDED);
-        add_mul_assign_r(first_comparison_term, curr_var_ub, curr_ub,
-                         ROUND_UP);
-        add_mul_assign_r(second_comparison_term, curr_minus_var_ub, curr_ub,
-                         ROUND_UP);
-        add_mul_assign_r(third_comparison_term, curr_var_ub, curr_lb,
-                         ROUND_UP);
-        add_mul_assign_r(fourth_comparison_term, curr_minus_var_ub, curr_lb,
-                         ROUND_UP);
+        if (is_plus_infinity(curr_var_ub)) {
+          assign_r(first_comparison_term, PLUS_INFINITY, ROUND_NOT_NEEDED);
+          assign_r(third_comparison_term, PLUS_INFINITY, ROUND_NOT_NEEDED);
+        }
+        else {
+          add_mul_assign_r(first_comparison_term, curr_var_ub, curr_ub,
+                           ROUND_UP);
+          add_mul_assign_r(third_comparison_term, curr_var_ub, curr_lb,
+                           ROUND_UP);
+        }
+
+        if (is_minus_infinity(curr_minus_var_ub)) {
+          assign_r(second_comparison_term, PLUS_INFINITY, ROUND_NOT_NEEDED);
+          assign_r(fourth_comparison_term, PLUS_INFINITY, ROUND_NOT_NEEDED);
+        }
+        else {
+          add_mul_assign_r(second_comparison_term, curr_minus_var_ub, curr_ub,
+                           ROUND_UP);
+          add_mul_assign_r(fourth_comparison_term, curr_minus_var_ub, curr_lb,
+                           ROUND_UP);
+        }
+
         assign_r(first_comparison_term, std::max(first_comparison_term,
                                                  second_comparison_term),
                  ROUND_NOT_NEEDED);
@@ -5385,7 +5404,9 @@ interval_coefficient_upper_bound(const N& var_ub, const N& minus_var_ub,
                                  N& result) {
 
   // Check that T is a floating point type.
-  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact);
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
+                     "Octagonal_Shape<T>::interval_coefficient_upper_bound:"
+                     " T not a floating point type.");
 
   // NOTE: we store the first comparison term directly into result.
   PPL_DIRTY_TEMP(N, second_comparison_term);
@@ -5416,7 +5437,9 @@ refine_fp_interval_abstract_store(
 	  std::map< dimension_type, Interval<T, Interval_Info> >& store) {
 
   // Check that T is a floating point type.
-  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact);
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
+                     "Octagonal_Shape<T>::refine_fp_interval_abstract_store:"
+                     " T not a floating point type.");
 
   strong_closure_assign();
 
