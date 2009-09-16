@@ -2731,6 +2731,18 @@ be denoted by \f$\linexpr{e} \left \langle \rho^{\#}, \rho^{\#}_l \right
     and
   - when we try to divide by an interval that contains \f$0\f$.
 
+\subsection fp_abstract_domains Use of other abstract domains for floating point analysis
+
+Three of the other abstract domains of the PPL (
+\link Parma_Polyhedra_Library::BD_Shape \c BD_Shape \endlink,
+\link Parma_Polyhedra_Library::Octagonal_Shape \c Octagonal_Shape \endlink,
+and \link Parma_Polyhedra_Library::Polyhedron \c Polyhedron \endlink)
+provide a few optimized methods to be used in the analysis of floating point
+computations. They are recognized by the fact that they take interval
+linear forms and/or an interval abstract stores as their parameters.
+
+Please see the methods' documentation for more information.
+
 \section use_of_library Using the Library
 
 \subsection A_Note_on_the_Implementation_of_the_Operators A Note on the Implementation of the Operators

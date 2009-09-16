@@ -990,7 +990,7 @@ public:
 
   /*! \brief
     Refines the system of octagonal constraints defining \p *this using
-    the constraint expressed by \p left \f$\f$ \p right.
+    the constraint expressed by \p left \f$\leq\f$ \p right.
 
     \param left
     The linear form on intervals with floating point coefficients that
