@@ -988,6 +988,23 @@ public:
   */
   void refine_with_congruences(const Congruence_System& cgs);
 
+  /*! \brief
+    Refines the system of octagonal constraints defining \p *this using
+    the constraint expressed by \p left \f$\f$ \p right.
+
+    \param left
+    The linear form on intervals with floating point coefficients that
+    is on the left of the comparison operator. All of its coefficients
+    MUST be bounded.
+
+    \param right
+    The linear form on intervals with floating point coefficients that
+    is on the right of the comparison operator. All of its coefficients
+    MUST be bounded.
+
+    \exception std::invalid_argument
+    Thrown if \p left (or \p right) is dimension-incompatible with \p *this.
+  */
   template <typename Interval_Info>
   void refine_with_linear_form_inequality(
                    const Linear_Form< Interval<T, Interval_Info> >& left,
@@ -1113,6 +1130,22 @@ public:
                     Coefficient_traits::const_reference  denominator
                     = Coefficient_one());
 
+  /*! \brief
+    Assigns to \p *this the \ref affine_relation "affine image"
+    of \p *this under the function mapping variable \p var into the
+    affine expression(s) specified by \p lf.
+
+    \param var
+    The variable to which the affine expression is assigned.
+
+    \param lf
+    The linear form on intervals with floating point coefficients that
+    defines the affine expression. ALL of its coefficients MUST be boundend.
+
+    \exception std::invalid_argument
+    Thrown if \p lf and \p *this are dimension-incompatible or if \p var
+    is not a dimension of \p *this.
+  */
   template <typename Interval_Info>
   void affine_image(Variable var,
                     const Linear_Form< Interval<T, Interval_Info> >& lf);
@@ -1698,6 +1731,11 @@ public:
   */
   void fold_space_dimensions(const Variables_Set& vars, Variable dest);
 
+  //! Refines \p store with the constraints defining \p *this.
+  /*!
+    \param store
+    The interval floating point abstract store to refine.
+  */
   template <typename Interval_Info>
   void refine_fp_interval_abstract_store(
               std::map< dimension_type, Interval<T, Interval_Info> >& store);
@@ -1803,6 +1841,16 @@ private:
   N& matrix_at(dimension_type i, dimension_type j);
   const N& matrix_at(dimension_type i, dimension_type j) const;
 
+  /*! \brief
+    Returns an upper bound for \p lf according to the constraints
+    embedded in \p *this.
+
+    \p lf must be a linear form on intervals with floating point coefficients.
+    If all coefficients in \p lf are bounded, then \p result will become a
+    correct overapproximation of the value of \p lf when variables in
+    \p lf satisfy the constraints expressed by \p *this. Otherwise the
+    behavior of the method is undefined.
+  */
   template <typename Interval_Info>
   void linear_form_upper_bound(
 		   const Linear_Form< Interval<T, Interval_Info> >& lf,
