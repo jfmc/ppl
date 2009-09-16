@@ -64,6 +64,13 @@ negate_assign(Row& x, const Row& y) {
 
 } // namespace
 
+PIP_Tree_Node::PIP_Tree_Node()
+  : constraints_() {
+}
+
+PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node &x)
+  : constraints_(x.constraints_) {
+}
 
 PIP_Decision_Node::~PIP_Decision_Node() {
   delete true_child;
@@ -71,6 +78,39 @@ PIP_Decision_Node::~PIP_Decision_Node() {
 }
 
 PIP_Solution_Node::~PIP_Solution_Node() {
+}
+
+PIP_Solution_Node::PIP_Solution_Node()
+  : PIP_Tree_Node(),
+    tableau(),
+    basis(),
+    mapping(),
+    sign() {
+}
+
+PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x)
+  : PIP_Tree_Node(x),
+    tableau(x.tableau),
+    basis(x.basis),
+    mapping(x.mapping),
+    sign(x.sign) {
+}
+
+PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x,
+                                     bool empty_constraints)
+  : PIP_Tree_Node(),
+    tableau(x.tableau),
+    basis(x.basis),
+    mapping(x.mapping),
+    sign(x.sign) {
+  if (!empty_constraints)
+    constraints_ = x.constraints_;
+}
+
+PIP_Decision_Node::PIP_Decision_Node(PIP_Tree_Node* fcp, PIP_Tree_Node* tcp)
+  : PIP_Tree_Node(),
+    true_child(tcp),
+    false_child(fcp) {
 }
 
 const PIP_Solution_Node*

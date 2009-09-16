@@ -71,6 +71,12 @@ public:
   const Constraint_System& constraints() const;
 
 protected:
+  //! Default constructor.
+  PIP_Tree_Node();
+
+  //! Copy constructor.
+  PIP_Tree_Node(const PIP_Tree_Node &x);
+
   //! A type alias for a sequence of constraints.
   typedef std::vector<Constraint> Constraint_Sequence;
 
@@ -78,6 +84,7 @@ protected:
   // constructor and methods.
   friend class PIP_Problem;
   friend class PIP_Decision_Node;
+  friend class PIP_Solution_Node;
 
   //! The local system of parameter constraints.
   Constraint_System constraints_;
@@ -127,6 +134,9 @@ protected:
 //! A tree node representing part of the space of solutions.
 class PIP_Solution_Node : public PIP_Tree_Node {
 public:
+  //! Default constructor.
+  PIP_Solution_Node();
+
   //! Destructor.
   ~PIP_Solution_Node();
 
@@ -272,6 +282,12 @@ private:
   static bool compatibility_check(const Matrix &ctx, const Row &cnst);
 
 protected:
+  //! Copy constructor.
+  PIP_Solution_Node(const PIP_Solution_Node &x);
+
+  //! Copy constructor, allowing not to copy the constraint system.
+  PIP_Solution_Node(const PIP_Solution_Node &x, bool empty_constraints);
+
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
 
@@ -336,6 +352,9 @@ public:
   bool OK() const;
 
 private:
+  // only PIP_Solution_Node is allowed to use the constructor and methods.
+  friend class PIP_Solution_Node;
+
   //! Pointer to the "true" child of \p *this.
   PIP_Tree_Node* true_child;
 
@@ -343,40 +362,22 @@ private:
   PIP_Tree_Node* false_child;
 
   /*! \brief
-    Constructs if \p cs then \p tcp \p else \p fcp.
+    Constructs "if constraints then \p tcp else \p fcp". Initial constraint
+    set is empty.
 
-    Constructs a decision node controlled by \p cs (which is copied),
+    Constructs a decision node,
     with "true" child \p tcp and "false" child \p fcp.
 
-    \param cs
-    The system of constraints controlling the node.
+    \param fcp
+    Pointer to "false" child
+
+    \param tcp
+    Pointer to "true" child
 
     \exception std::invalid_argument
     Thrown if \p cs contains strict inequalities.
   */
-  PIP_Decision_Node(const Constraint_System& cs,
-                    PIP_Tree_Node* fcp, PIP_Tree_Node* tcp);
-
-  /*! \brief
-    Constructs if \p cs then \p tcp \p else \p fcp.
-
-    Constructs a decision node controlled by \p cs (which is recycled),
-    with "true" child \p tcp and "false" child \p fcp.
-
-    \param cs
-    The system of constraints controlling the node.  It is not
-    declared <CODE>const</CODE> because its data-structures may be
-    recycled to build the polyhedron.
-
-    \param dummy
-    A dummy tag to syntactically differentiate this one
-    from the other constructors.
-
-    \exception std::invalid_argument
-    Thrown if \p cs contains strict inequalities.
-  */
-  PIP_Decision_Node(Constraint_System& cs, Recycle_Input dummy,
-                    PIP_Tree_Node* fcp, PIP_Tree_Node* tcp);
+  PIP_Decision_Node(PIP_Tree_Node* fcp, PIP_Tree_Node* tcp);
 
 protected:
   /*! \brief
