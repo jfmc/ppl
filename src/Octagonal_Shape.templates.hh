@@ -485,7 +485,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
 		    const Linear_Form< Interval<T, Interval_Info> >& right) {
 
   // Check that T is a floating point type.
-  PPL_ASSERT(!std::numeric_limits<T>::is_exact);
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact);
 
   // FIXME: what to do when empty?
 
@@ -5047,7 +5047,7 @@ Octagonal_Shape<T>::affine_image(Variable var,
                     const Linear_Form< Interval<T, Interval_Info> >& lf) {
 
   // Check that T is a floating point type.
-  PPL_ASSERT(!std::numeric_limits<T>::is_exact);
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact);
 
   // Dimension-compatibility checks.
   // The dimension of `lf' should not be greater than the dimension
@@ -5302,7 +5302,7 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
                         N& result) const {
 
   // Check that T is a floating point type.
-  PPL_ASSERT(!std::numeric_limits<T>::is_exact);
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact);
 
   const dimension_type lf_space_dimension = lf.space_dimension();
   PPL_ASSERT(lf_space_dimension <= space_dim);
@@ -5385,7 +5385,7 @@ interval_coefficient_upper_bound(const N& var_ub, const N& minus_var_ub,
                                  N& result) {
 
   // Check that T is a floating point type.
-  PPL_ASSERT(!std::numeric_limits<T>::is_exact);
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact);
 
   // NOTE: we store the first comparison term directly into result.
   PPL_DIRTY_TEMP(N, second_comparison_term);
@@ -5416,7 +5416,7 @@ refine_fp_interval_abstract_store(
 	  std::map< dimension_type, Interval<T, Interval_Info> >& store) {
 
   // Check that T is a floating point type.
-  PPL_ASSERT(!std::numeric_limits<T>::is_exact);
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact);
 
   strong_closure_assign();
 
