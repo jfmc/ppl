@@ -628,7 +628,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
       bool is_right_coeff_minus_one = (right_w_coeff == -1);
       if (left_w_id == right_w_id) {
         if (is_left_coeff_one && is_right_coeff_one ||
-            is_left_coeff_minus_one && is_right_constraint_minus_one) {
+            is_left_coeff_minus_one && is_right_coeff_minus_one) {
           // Here we have an identity or a constants-only constraint.
           return;
         }
