@@ -5453,7 +5453,7 @@ refine_fp_interval_abstract_store(
     dimension_type curr_var = ite->first;
     PPL_ASSERT(curr_var < space_dim);
     dimension_type n_curr_var = curr_var * 2;
-    FP_Interval_Type& curr_int = &(ite->second);
+    FP_Interval_Type& curr_int = ite->second;
     T& lb = curr_int.lower();
     T& ub = curr_int.upper();
     // FIXME: are we sure that ROUND_IGNORE is good?
@@ -5462,7 +5462,7 @@ refine_fp_interval_abstract_store(
     div_2exp_assign_r(upper_bound, upper_bound, 1, ROUND_IGNORE);
 
     if (upper_bound < ub)
-      ub = upper_bound;
+      ub = upper_bound.raw_value();
 
     // Now get the lower bound for curr_var in the octagon.
     neg_assign_r(upper_bound, matrix[n_curr_var][n_curr_var+1],
@@ -5470,7 +5470,7 @@ refine_fp_interval_abstract_store(
     div_2exp_assign_r(upper_bound, upper_bound, 1, ROUND_IGNORE);
 
     if (upper_bound > lb)
-      lb = upper_bound;
+      lb = upper_bound.raw_value();
   }
 }
 
