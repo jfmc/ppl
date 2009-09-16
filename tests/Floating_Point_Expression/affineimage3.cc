@@ -115,7 +115,7 @@ bool test03() {
 }
 
 
-// tests affine_image(B, [1, 1]*B + [-1, 3])
+// tests affine_image(B, [1, 1]*B + [-1.5, 3.5])
 bool test04() {
   Variable A(0);
   Variable B(1);
@@ -124,24 +124,23 @@ bool test04() {
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  fl_r_oc free_term(-1);
-  free_term.join_assign(3);
+  fl_r_oc free_term(-1.5);
+  free_term.join_assign(3.5);
   Linear_Form<fl_r_oc> l(B);
   l += free_term;
   oc1.affine_image(B, l);
-  print_constraints(oc1, "*** oc1.affine_image(B, B + [-1, 3]) ***");
-  oc1.ascii_dump();
+  print_constraints(oc1, "*** oc1.affine_image(B, B + [-1.5, 3.5]) ***");
+
   Octagonal_Shape<float> known_result(3);
- /* known_result.add_constraint(A >= -2);
-  known_result.add_constraint(B <= 2);
-  known_result.add_constraint(B - A <= 4);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(2*B <= 11);
+  known_result.add_constraint(2*B + 2*A <= 15);
+  known_result.add_constraint(-2*B + 2*A <= 9);
   print_constraints(known_result, "*** known_result ***");
 
   bool ok = (oc1 == known_result);
 
   return ok;
-  */
-  return true;
 }
 
 // tests affine_image(A, [1, 1]*B + [-2, 0.5])
@@ -159,18 +158,18 @@ bool test05() {
   l += free_term;
   oc1.affine_image(A, l);
   print_constraints(oc1, "*** oc1.affine_image(A, B + [-2, 0.5]) ***");
-  oc1.ascii_dump();
+
   Octagonal_Shape<double> known_result(3);
- /* known_result.add_constraint(A >= -2);
+  known_result.add_constraint(2*A <= 5);
   known_result.add_constraint(B <= 2);
-  known_result.add_constraint(B - A <= 4);
+  known_result.add_constraint(B - A <= 2);
+  known_result.add_constraint(2*A - 2*B <= 1);
+  known_result.add_constraint(2*A + 2*B <= 9);
   print_constraints(known_result, "*** known_result ***");
 
   bool ok = (oc1 == known_result);
 
   return ok;
-  */
-  return true;
 }
 
 // tests affine_image(B, [1, 1]*A + [-3, 1])
@@ -188,18 +187,18 @@ bool test06() {
   l += free_term;
   oc1.affine_image(B, l);
   print_constraints(oc1, "*** oc1.affine_image(B, A + [-3, 1]) ***");
-  oc1.ascii_dump();
+
   Octagonal_Shape<double> known_result(3);
- /* known_result.add_constraint(A >= -2);
-  known_result.add_constraint(B <= 2);
-  known_result.add_constraint(B - A <= 4);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(B <= 3);
+  known_result.add_constraint(B - A <= 1);
+  known_result.add_constraint(A - B <= 3);
+  known_result.add_constraint(A + B <= 5);
   print_constraints(known_result, "*** known_result ***");
 
   bool ok = (oc1 == known_result);
 
   return ok;
-  */
-  return true;
 }
 
 // tests affine_image(B, [-1, -1]*A + [0, 4])
@@ -217,18 +216,18 @@ bool test07() {
   l += free_term;
   oc1.affine_image(B, l);
   print_constraints(oc1, "*** oc1.affine_image(B, -A + [0, 4]) ***");
-  oc1.ascii_dump();
+
   Octagonal_Shape<float> known_result(3);
- /* known_result.add_constraint(A >= -2);
-  known_result.add_constraint(B <= 2);
-  known_result.add_constraint(B - A <= 4);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(-B <= 2);
+  known_result.add_constraint(-B - A <= 0);
+  known_result.add_constraint(A - B <= 4);
+  known_result.add_constraint(A + B <= 4);
   print_constraints(known_result, "*** known_result ***");
 
   bool ok = (oc1 == known_result);
 
   return ok;
-  */
-  return true;
 }
 
 // tests affine_image(A, [-1, -1]*B + [0, 2])
@@ -246,23 +245,23 @@ bool test08() {
   l += free_term;
   oc1.affine_image(A, l);
   print_constraints(oc1, "*** oc1.affine_image(A, -B + [0, 2]) ***");
-  oc1.ascii_dump();
+
   Octagonal_Shape<float> known_result(3);
- /* known_result.add_constraint(A >= -2);
+  known_result.add_constraint(-A <= 2);
   known_result.add_constraint(B <= 2);
-  known_result.add_constraint(B - A <= 4);
+  known_result.add_constraint(-B - A <= 0);
+  known_result.add_constraint(-A + B <= 4);
+  known_result.add_constraint(A + B <= 2);
   print_constraints(known_result, "*** known_result ***");
 
   bool ok = (oc1 == known_result);
 
   return ok;
-  */
-  return true;
 }
 
 // tests affine_image(A, i1*A + i2*B + i3)
 bool test09() {
-  
+
   Variable A(0);
   Variable B(1);
 
@@ -281,7 +280,7 @@ bool test09() {
   i2.join_assign(2);
   db_r_oc i1(1);
   i1.join_assign(1);
- 
+
   Linear_Form<db_r_oc> l(i3);
 
   l += i1*Linear_Form<db_r_oc>(A);
@@ -309,11 +308,11 @@ bool test09() {
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
-  DO_TEST(test03); /* FIXME: Not yet tested 
+  DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
-  DO_TEST(test08); */
+  DO_TEST(test08);
   DO_TEST(test09);
 END_MAIN
