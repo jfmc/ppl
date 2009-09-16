@@ -74,7 +74,8 @@ PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node &x)
 
 PIP_Decision_Node::~PIP_Decision_Node() {
   delete true_child;
-  delete false_child;
+  if (false_child)
+    delete false_child;
 }
 
 PIP_Solution_Node::~PIP_Solution_Node() {
@@ -194,6 +195,14 @@ PIP_Tree_Node::OK() const {
       return false;
     }
   return true;
+}
+
+void
+PIP_Tree_Node::add_constraint(const Row &row) {
+  Linear_Expression e;
+  for (dimension_type j=row.size(); j-- > 1; )
+    e += row[j] * Variable(j-1);
+  constraints_.insert(e + row[0] >= 0);
 }
 
 bool
@@ -526,7 +535,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
 
   // Main loop of the simplex algorithm
   for(;;) {
-    dimension_type i;
+    dimension_type i, j;
     dimension_type i_ = n_a_d;
     dimension_type i__ = n_a_d;
     dimension_type num_rows = tableau.t.num_rows();
@@ -590,7 +599,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       std::cout << "Found row with negative parameters: " << i_
                 << std::endl;
 #endif
-      dimension_type j, k;
+      dimension_type k;
       Coefficient z(0);
       Coefficient sij, cij, cij_;
       Coefficient c;
@@ -736,6 +745,103 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           tableau.s.scale(scale_factor);
         }
         c /= sij;
+      }
+    }
+
+    /* Otherwise, we have found a row i__ with mixed parameter sign. */
+    else if (i__ != n_a_d) {
+      dimension_type neg = n_a_d;
+      Coefficient ns, score;
+
+      /* Look for a constraint with mixed parameter sign with no positive
+       * variable coefficients */
+      for (i=i__; i<num_rows; ++i) {
+        if (sign[i] != MIXED)
+          continue;
+        for (j=0; j<num_vars; ++j) {
+          if (tableau.s[i][j] > 0)
+            break;
+        }
+        /* Choose row with lowest score, potentially eliminating
+         * implicated tautologies if some exist */
+        if (j == num_vars) {
+          score = 0;
+          for (j=0; j<num_params; ++j)
+            score += tableau.t[i][j];
+          if (neg == n_a_d || score < ns) {
+            neg = i;
+            ns = score;
+          }
+        }
+      }
+      if (neg != n_a_d) {
+        i = neg;
+#ifdef NOISY_PIP
+        std::cout << "Found row with unknown parameter sign and negative "
+                     "variable coefficients: " << i
+                  << std::endl;
+#endif
+        Row &r = tableau.t[i];
+        context.add_row(r);
+        add_constraint(r);
+#ifdef NOISY_PIP
+        Linear_Expression e;
+        for (j=1; j<num_params; ++j)
+          e += r[j] * Variable(j-1);
+        Constraint c(e + r[0] >= 0);
+        std::cout << "Adding tautology: " << c
+                  << std::endl;
+#endif
+      } else {
+#ifdef NOISY_PIP
+        std::cout << "Found row with mixed parameter sign: " << i__
+                  << std::endl
+                  << "Solution depends on the sign of parameter"
+                  << std::endl;
+#endif
+        Row test(tableau.t[i__]);
+
+        /* Create a solution Node to become "true" version of current Node */
+        PIP_Tree_Node *tru = new PIP_Solution_Node(*this, true);
+        context.add_row(test);
+        PIP_Problem_Status status_t = tru->solve(tru, context);
+
+        /* Modify *this to become "false" version */
+        Constraint_System cs;
+        cs.swap(constraints_);
+        PIP_Tree_Node *fals = this;
+        Row &testf = context[context.num_rows()-1];
+        negate_assign(testf, test);
+        PIP_Problem_Status status_f = solve(fals, context);
+
+        if (status_t == UNFEASIBLE_PIP_PROBLEM
+            && status_f == UNFEASIBLE_PIP_PROBLEM) {
+          parent_ref = 0;
+          return UNFEASIBLE_PIP_PROBLEM;
+        } else if (status_t == UNFEASIBLE_PIP_PROBLEM) {
+          cs.swap(constraints_);
+          add_constraint(testf);
+          return OPTIMIZED_PIP_PROBLEM;
+        } else if (status_f == UNFEASIBLE_PIP_PROBLEM) {
+          cs.swap(tru->constraints_);
+          tru->add_constraint(test);
+          parent_ref = tru;
+          return OPTIMIZED_PIP_PROBLEM;
+        }
+
+        /* Create a decision Node to become parent of current Node */
+        PIP_Decision_Node *parent = new PIP_Decision_Node(fals, tru);
+        parent->add_constraint(test);
+
+        if (!cs.empty()) {
+          /* If node to be solved had tautologies, store them in a new
+             decision node */
+          parent = new PIP_Decision_Node(0, parent);
+          cs.swap(parent->constraints_);
+        }
+
+        parent_ref = parent;
+        return OPTIMIZED_PIP_PROBLEM;
       }
     }
     //FIXME: to be finished

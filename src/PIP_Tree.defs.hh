@@ -129,6 +129,9 @@ protected:
   */
   virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
                                    const Matrix& context) = 0;
+
+  //! Inserts a new parametric constraint in internal Row format
+  void add_constraint(const Row &x);
 };
 
 //! A tree node representing part of the space of solutions.
