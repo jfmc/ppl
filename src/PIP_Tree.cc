@@ -298,7 +298,35 @@ PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& context) {
 
 void
 PIP_Solution_Node::Rational_Matrix::normalize() {
-  //FIXME
+  if (denominator == 1)
+    return;
+  dimension_type i_max = num_rows();
+  dimension_type j_max = num_columns();
+  dimension_type i, j;
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  gcd = denominator;
+
+  for (i=0; i<i_max; ++i) {
+    const Row &row = rows[i];
+    for (j=0; j<j_max; ++j) {
+      const Coefficient &x = row[j];
+      if (x != 0) {
+        gcd_assign(gcd, x, gcd);
+        if (gcd == 1)
+          return;
+      }
+    }
+  }
+
+  // Divide the coefficients by the GCD.
+  for (i=0; i<i_max; ++i) {
+    Row &row = rows[i];
+    for (j=0; j<j_max; ++j) {
+      Coefficient &x = row[j];
+      exact_div_assign(x, x, gcd);
+    }
+  }
+  exact_div_assign(denominator, denominator, gcd);
 }
 
 void
