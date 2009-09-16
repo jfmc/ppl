@@ -127,7 +127,7 @@ protected:
     An PIP_Problem_Status flag indicating the outcome of the optimization
     attempt (unfeasible or optimized problem).
   */
-  virtual PIP_Problem_Status solve(PIP_Tree_Node **parent_ref,
+  virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
                                    const Matrix& context) = 0;
 };
 
@@ -326,7 +326,7 @@ protected:
     An PIP_Problem_Status flag indicating the outcome of the optimization
     attempt (unfeasible or optimized problem).
   */
-  virtual PIP_Problem_Status solve(PIP_Tree_Node **parent_ref,
+  virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
                                    const Matrix& context);
   // FIXME: constructors to be decided.
 };
@@ -418,7 +418,7 @@ protected:
     An PIP_Problem_Status flag indicating the outcome of the optimization
     attempt (unfeasible or optimized problem).
   */
-  virtual PIP_Problem_Status solve(PIP_Tree_Node **parent_ref,
+  virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
                                    const Matrix& context);
 };
 

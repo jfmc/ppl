@@ -86,7 +86,7 @@ PPL::PIP_Problem::solve() const {
                                          parameters);
 
       Matrix initial_context(0, parameters.size()+1);
-      return_value = x.current_solution->solve(&x.current_solution,
+      return_value = x.current_solution->solve(x.current_solution,
                                                initial_context);
 
       switch (return_value) {

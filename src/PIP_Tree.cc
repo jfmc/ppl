@@ -261,13 +261,13 @@ PIP_Decision_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
 }
 
 PIP_Problem_Status
-PIP_Decision_Node::solve(PIP_Tree_Node **parent_ref, const Matrix& context) {
+PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& context) {
   PIP_Problem_Status return_status;
   PIP_Problem_Status stt;
   PIP_Problem_Status stf = UNFEASIBLE_PIP_PROBLEM;
   Matrix context_true(context);
   merge_assign(context_true, constraints_);
-  stt = true_child->solve(&true_child, context_true);
+  stt = true_child->solve(true_child, context_true);
   if (false_child) {
     // Decision nodes with false child must have exactly one constraint
     PPL_ASSERT(1 == std::distance(constraints_.begin(), constraints_.end()));
@@ -275,12 +275,12 @@ PIP_Decision_Node::solve(PIP_Tree_Node **parent_ref, const Matrix& context) {
     merge_assign(context_false, constraints_);
     Row &last = context_false[context_false.num_rows()-1];
     negate_assign(last, last);
-    stf = false_child->solve(&false_child, context_false);
+    stf = false_child->solve(false_child, context_false);
   }
 
   if (stt == UNFEASIBLE_PIP_PROBLEM && stf == UNFEASIBLE_PIP_PROBLEM) {
     return_status = UNFEASIBLE_PIP_PROBLEM;
-    *parent_ref = 0;
+    parent_ref = 0;
     delete this;
   } else
     return_status = OPTIMIZED_PIP_PROBLEM;
@@ -517,7 +517,7 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
 }
 
 PIP_Problem_Status
-PIP_Solution_Node::solve(PIP_Tree_Node** parent_ref,
+PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
                          const Matrix& ctx) {
   Matrix context(ctx);
   merge_assign(context, constraints_);
@@ -632,7 +632,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node** parent_ref,
         std::cout << "No positive pivot found: Solution = _|_"
                   << std::endl;
 #endif
-        *parent_ref = 0;
+        parent_ref = 0;
         delete this;
         return UNFEASIBLE_PIP_PROBLEM;
       }
