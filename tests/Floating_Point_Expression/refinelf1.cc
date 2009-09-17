@@ -219,6 +219,83 @@ test05() {
 
 }
 
+// tests [1, 4] - A <= [-2, -2] + B and [-2, -2] + B <= [1, 4] - A
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  Octagonal_Shape<double> oc1(3);
+  oc1.add_constraint(A <= 2);
+  oc1.add_constraint(A - B <= 3);
+  oc1.add_constraint(B <= 2);
+  db_r_oc tmp(-2);
+  Linear_Form<db_r_oc> l2(B);
+  l2 += tmp;
+  Linear_Form<db_r_oc> l1(-A);
+  tmp.lower() = 1;
+  tmp.upper() = 4;
+  l1 += tmp;
+  oc1.refine_with_linear_form_inequality(l1, l2);
+  print_constraints(oc1, "*** [1, 4] - A <= [-2, -2] + B ***");
+
+  Octagonal_Shape<double> known_result(oc1);
+  known_result.add_constraint(-B - A <= -3);
+  print_constraints(known_result, "*** known_result ***");
+
+  bool ok1 = (oc1 == known_result);
+
+  oc1.refine_with_linear_form_inequality(l2, l1);
+  print_constraints(oc1, "*** [4, 4] - B <= [1, 3] + A ***");
+
+  known_result.add_constraint(-B - A <= -1);
+  print_constraints(known_result, "*** known_result2 ***");
+
+  bool ok2 = (oc1 == known_result);
+
+  return ok1 && ok2;
+
+}
+
+// tests [-3, -0.5] - A <= [-2, -1] - B and [-2, -1] - B <= [-3, -0.5] - A
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  Octagonal_Shape<float> oc1(3);
+  oc1.add_constraint(A <= 2);
+  oc1.add_constraint(A - B <= 3);
+  oc1.add_constraint(B <= 2);
+  fl_r_oc tmp(-2);
+  tmp.join_assign(-1);
+  Linear_Form<fl_r_oc> l2(-B);
+  l2 += tmp;
+  Linear_Form<fl_r_oc> l1(-A);
+  tmp.lower() = -3;
+  tmp.upper() = -0.5;
+  l1 += tmp;
+  oc1.refine_with_linear_form_inequality(l1, l2);
+  print_constraints(oc1, "*** [-3, -0.5] - A <= [-2, -1] - B ***");
+
+  Octagonal_Shape<float> known_result(oc1);
+  known_result.add_constraint(B - A <= 2);
+  print_constraints(known_result, "*** known_result ***");
+
+  bool ok1 = (oc1 == known_result);
+
+  oc1.refine_with_linear_form_inequality(l2, l1);
+  print_constraints(oc1, "*** [-2, -1] - B <= [-3, -0.5] - A ***");
+
+  known_result.add_constraint(-2*B + 2*A <= 3);
+  print_constraints(known_result, "*** known_result2 ***");
+
+  bool ok2 = (oc1 == known_result);
+
+  return ok1 && ok2;
+
+}
+
 } //namespace
 
 BEGIN_MAIN
@@ -227,4 +304,6 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN
