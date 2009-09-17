@@ -544,6 +544,9 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
   typedef Interval<T, Interval_Info> FP_Interval_Type;
 
+  // FIXME: there is plenty of duplicate code in the following lines. We could
+  // shorten it at the expense of a bit of efficiency.
+
   if (left_t == 0) {
     if (right_t == 0) {
       // The constraint involves constants only. Ignore it: it is up to
@@ -736,14 +739,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
   // in `left' and `right'.
 
   // Declare temporaries outside of the loop.
-  PPL_DIRTY_TEMP(N, lf_lb);
-  PPL_DIRTY_TEMP(N, lf_ub);
-  PPL_DIRTY_TEMP(N, ls_lb);
-  PPL_DIRTY_TEMP(N, ls_ub);
-  PPL_DIRTY_TEMP(N, rf_lb);
-  PPL_DIRTY_TEMP(N, rf_ub);
-  PPL_DIRTY_TEMP(N, rs_lb);
-  PPL_DIRTY_TEMP(N, rs_ub);
+  PPL_DIRTY_TEMP(N, low_coeff);
+  PPL_DIRTY_TEMP(N, high_coeff);
   PPL_DIRTY_TEMP(N, upper_bound);
 
   Linear_Form<FP_Interval_Type> right_minus_left(right);
@@ -761,18 +758,41 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
                         &(right.coefficient(Variable(first_v)));
       const FP_Interval_Type* rsv_coefficient =
                         &(right.coefficient(Variable(second_v)));
-      assign_r(lf_lb, lfv_coefficient->lower(), ROUND_NOT_NEEDED);
-      assign_r(lf_ub, lfv_coefficient->upper(), ROUND_NOT_NEEDED);
-      assign_r(ls_lb, lsv_coefficient->lower(), ROUND_NOT_NEEDED);
-      assign_r(ls_ub, lsv_coefficient->upper(), ROUND_NOT_NEEDED);
-      assign_r(rf_lb, rfv_coefficient->lower(), ROUND_NOT_NEEDED);
-      assign_r(rf_ub, rfv_coefficient->upper(), ROUND_NOT_NEEDED);
-      assign_r(rs_lb, rsv_coefficient->lower(), ROUND_NOT_NEEDED);
-      assign_r(rs_ub, rsv_coefficient->upper(), ROUND_NOT_NEEDED);
-      // true when both variables appear in at least one argument.
-      if ((lf_lb != 0 || lf_ub != 0 || rf_lb != 0 || rf_ub != 0)
-          &&
-          (ls_lb != 0 || ls_ub != 0 || rs_lb != 0 || rs_lb != 0)) {
+      // We update the constraints only when both variables appear in at
+      // least one argument.
+      bool do_update = false;
+      assign_r(low_coeff, lfv_coefficient->lower(), ROUND_NOT_NEEDED);
+      assign_r(high_coeff, lfv_coefficient->upper(), ROUND_NOT_NEEDED);
+      if (low_coeff != 0 || high_coeff != 0) {
+        assign_r(low_coeff, lsv_coefficient->lower(), ROUND_NOT_NEEDED);
+        assign_r(high_coeff, lsv_coefficient->upper(), ROUND_NOT_NEEDED);
+        if (low_coeff != 0 || high_coeff != 0)
+          do_update = true;
+        else {
+          assign_r(low_coeff, rsv_coefficient->lower(), ROUND_NOT_NEEDED);
+          assign_r(high_coeff, rsv_coefficient->upper(), ROUND_NOT_NEEDED);
+          if (low_coeff != 0 || high_coeff != 0)
+            do_update = true;
+        }
+      }
+      else {
+        assign_r(low_coeff, rfv_coefficient->lower(), ROUND_NOT_NEEDED);
+        assign_r(high_coeff, rfv_coefficient->upper(), ROUND_NOT_NEEDED);
+        if (low_coeff != 0 || high_coeff != 0) {
+          assign_r(low_coeff, lsv_coefficient->lower(), ROUND_NOT_NEEDED);
+          assign_r(high_coeff, lsv_coefficient->upper(), ROUND_NOT_NEEDED);
+          if (low_coeff != 0 || high_coeff != 0)
+            do_update = true;
+          else {
+            assign_r(low_coeff, rsv_coefficient->lower(), ROUND_NOT_NEEDED);
+            assign_r(high_coeff, rsv_coefficient->upper(), ROUND_NOT_NEEDED);
+            if (low_coeff != 0 || high_coeff != 0)
+              do_update = true;
+          }
+        }
+      }
+
+      if (do_update) {
         Variable first(first_v);
         Variable second(second_v);
         dimension_type n_first_var = first_v * 2;
@@ -803,12 +823,21 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
                         &(left.coefficient(Variable(v)));
     const FP_Interval_Type* rv_coefficient =
                         &(right.coefficient(Variable(v)));
-    assign_r(lf_lb, lv_coefficient->lower(), ROUND_NOT_NEEDED);
-    assign_r(lf_ub, lv_coefficient->upper(), ROUND_NOT_NEEDED);
-    assign_r(rf_lb, rv_coefficient->lower(), ROUND_NOT_NEEDED);
-    assign_r(rf_ub, rv_coefficient->upper(), ROUND_NOT_NEEDED);
-    // true if variable v appears in one of the two arguments.
-    if (lf_lb != 0 || lf_ub != 0 || rf_lb != 0 || rf_ub != 0) {
+    // We update the constraints only if v appears in at least one of the
+    // two arguments.
+    bool do_update = false;
+    assign_r(low_coeff, lv_coefficient->lower(), ROUND_NOT_NEEDED);
+    assign_r(high_coeff, lv_coefficient->upper(), ROUND_NOT_NEEDED);
+    if (low_coeff != 0 || high_coeff != 0)
+      do_update = true;
+    else {
+      assign_r(low_coeff, rv_coefficient->lower(), ROUND_NOT_NEEDED);
+      assign_r(high_coeff, rv_coefficient->upper(), ROUND_NOT_NEEDED);
+      if (low_coeff != 0 || high_coeff != 0)
+        do_update = true;
+    }
+
+    if (do_update) {
       Variable var(v);
       dimension_type n_var = 2 * v;
       /*
