@@ -750,42 +750,42 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
   for (dimension_type first_v = 0; first_v < max_w_id; ++first_v) {
     for (dimension_type second_v = first_v+1;
          second_v <= max_w_id; ++second_v) {
-      const FP_Interval_Type* lfv_coefficient =
-                        &(left.coefficient(Variable(first_v)));
-      const FP_Interval_Type* lsv_coefficient =
-                        &(left.coefficient(Variable(second_v)));
-      const FP_Interval_Type* rfv_coefficient =
-                        &(right.coefficient(Variable(first_v)));
-      const FP_Interval_Type* rsv_coefficient =
-                        &(right.coefficient(Variable(second_v)));
+      const FP_Interval_Type& lfv_coefficient =
+                        left.coefficient(Variable(first_v));
+      const FP_Interval_Type& lsv_coefficient =
+                        left.coefficient(Variable(second_v));
+      const FP_Interval_Type& rfv_coefficient =
+                        right.coefficient(Variable(first_v));
+      const FP_Interval_Type& rsv_coefficient =
+                        right.coefficient(Variable(second_v));
       // We update the constraints only when both variables appear in at
       // least one argument.
       bool do_update = false;
-      assign_r(low_coeff, lfv_coefficient->lower(), ROUND_NOT_NEEDED);
-      assign_r(high_coeff, lfv_coefficient->upper(), ROUND_NOT_NEEDED);
+      assign_r(low_coeff, lfv_coefficient.lower(), ROUND_NOT_NEEDED);
+      assign_r(high_coeff, lfv_coefficient.upper(), ROUND_NOT_NEEDED);
       if (low_coeff != 0 || high_coeff != 0) {
-        assign_r(low_coeff, lsv_coefficient->lower(), ROUND_NOT_NEEDED);
-        assign_r(high_coeff, lsv_coefficient->upper(), ROUND_NOT_NEEDED);
+        assign_r(low_coeff, lsv_coefficient.lower(), ROUND_NOT_NEEDED);
+        assign_r(high_coeff, lsv_coefficient.upper(), ROUND_NOT_NEEDED);
         if (low_coeff != 0 || high_coeff != 0)
           do_update = true;
         else {
-          assign_r(low_coeff, rsv_coefficient->lower(), ROUND_NOT_NEEDED);
-          assign_r(high_coeff, rsv_coefficient->upper(), ROUND_NOT_NEEDED);
+          assign_r(low_coeff, rsv_coefficient.lower(), ROUND_NOT_NEEDED);
+          assign_r(high_coeff, rsv_coefficient.upper(), ROUND_NOT_NEEDED);
           if (low_coeff != 0 || high_coeff != 0)
             do_update = true;
         }
       }
       else {
-        assign_r(low_coeff, rfv_coefficient->lower(), ROUND_NOT_NEEDED);
-        assign_r(high_coeff, rfv_coefficient->upper(), ROUND_NOT_NEEDED);
+        assign_r(low_coeff, rfv_coefficient.lower(), ROUND_NOT_NEEDED);
+        assign_r(high_coeff, rfv_coefficient.upper(), ROUND_NOT_NEEDED);
         if (low_coeff != 0 || high_coeff != 0) {
-          assign_r(low_coeff, lsv_coefficient->lower(), ROUND_NOT_NEEDED);
-          assign_r(high_coeff, lsv_coefficient->upper(), ROUND_NOT_NEEDED);
+          assign_r(low_coeff, lsv_coefficient.lower(), ROUND_NOT_NEEDED);
+          assign_r(high_coeff, lsv_coefficient.upper(), ROUND_NOT_NEEDED);
           if (low_coeff != 0 || high_coeff != 0)
             do_update = true;
           else {
-            assign_r(low_coeff, rsv_coefficient->lower(), ROUND_NOT_NEEDED);
-            assign_r(high_coeff, rsv_coefficient->upper(), ROUND_NOT_NEEDED);
+            assign_r(low_coeff, rsv_coefficient.lower(), ROUND_NOT_NEEDED);
+            assign_r(high_coeff, rsv_coefficient.upper(), ROUND_NOT_NEEDED);
             if (low_coeff != 0 || high_coeff != 0)
               do_update = true;
           }
@@ -819,20 +819,20 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
 
   // Finally, update the unary constraints.
   for (dimension_type v = 0; v <= max_w_id; ++v) {
-    const FP_Interval_Type* lv_coefficient =
-                        &(left.coefficient(Variable(v)));
-    const FP_Interval_Type* rv_coefficient =
-                        &(right.coefficient(Variable(v)));
+    const FP_Interval_Type& lv_coefficient =
+                        left.coefficient(Variable(v));
+    const FP_Interval_Type& rv_coefficient =
+                        right.coefficient(Variable(v));
     // We update the constraints only if v appears in at least one of the
     // two arguments.
     bool do_update = false;
-    assign_r(low_coeff, lv_coefficient->lower(), ROUND_NOT_NEEDED);
-    assign_r(high_coeff, lv_coefficient->upper(), ROUND_NOT_NEEDED);
+    assign_r(low_coeff, lv_coefficient.lower(), ROUND_NOT_NEEDED);
+    assign_r(high_coeff, lv_coefficient.upper(), ROUND_NOT_NEEDED);
     if (low_coeff != 0 || high_coeff != 0)
       do_update = true;
     else {
-      assign_r(low_coeff, rv_coefficient->lower(), ROUND_NOT_NEEDED);
-      assign_r(high_coeff, rv_coefficient->upper(), ROUND_NOT_NEEDED);
+      assign_r(low_coeff, rv_coefficient.lower(), ROUND_NOT_NEEDED);
+      assign_r(high_coeff, rv_coefficient.upper(), ROUND_NOT_NEEDED);
       if (low_coeff != 0 || high_coeff != 0)
         do_update = true;
     }
@@ -5341,7 +5341,6 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
 
   typedef Interval<T, Interval_Info> FP_Interval_Type;
 
-  const FP_Interval_Type* curr_coefficient;
   PPL_DIRTY_TEMP(N, curr_lb);
   PPL_DIRTY_TEMP(N, curr_ub);
   PPL_DIRTY_TEMP(N, curr_var_ub);
@@ -5356,9 +5355,10 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
 
   for (dimension_type curr_var = 0, n_var = 0; curr_var < lf_space_dimension;
        ++curr_var) {
-    curr_coefficient = &(lf.coefficient(Variable(curr_var)));
-    assign_r(curr_lb, curr_coefficient->lower(), ROUND_NOT_NEEDED);
-    assign_r(curr_ub, curr_coefficient->upper(), ROUND_NOT_NEEDED);
+    const FP_Interval_Type& curr_coefficient =
+                            lf.coefficient(Variable(curr_var));
+    assign_r(curr_lb, curr_coefficient.lower(), ROUND_NOT_NEEDED);
+    assign_r(curr_ub, curr_coefficient.upper(), ROUND_NOT_NEEDED);
     if (curr_lb != 0 || curr_ub != 0) {
       assign_r(curr_var_ub, matrix[n_var+1][n_var], ROUND_NOT_NEEDED);
       div_2exp_assign_r(curr_var_ub, curr_var_ub, 1, ROUND_UP);
