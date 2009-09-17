@@ -5339,7 +5339,7 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
       assign_r(curr_var_ub, matrix[n_var+1][n_var], ROUND_NOT_NEEDED);
       div_2exp_assign_r(curr_var_ub, curr_var_ub, 1, ROUND_UP);
       neg_assign_r(curr_minus_var_ub, matrix[n_var][n_var+1], ROUND_NOT_NEEDED);
-      div_2exp_assign_r(curr_minus_var_ub, curr_minus_var_ub, 1, ROUND_UP);
+      div_2exp_assign_r(curr_minus_var_ub, curr_minus_var_ub, 1, ROUND_DOWN);
       // Optimize the most common case: curr = +/-[1;1]
       if (curr_lb == 1 && curr_ub == 1) {
         add_assign_r(result, result, std::max(curr_var_ub, curr_minus_var_ub),
