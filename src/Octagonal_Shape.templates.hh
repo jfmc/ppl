@@ -5323,8 +5323,6 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
 
   PPL_DIRTY_TEMP(N, first_comparison_term);
   PPL_DIRTY_TEMP(N, second_comparison_term);
-  PPL_DIRTY_TEMP(N, third_comparison_term);
-  PPL_DIRTY_TEMP(N, fourth_comparison_term);
 
   PPL_DIRTY_TEMP(N, negator);
 
@@ -5354,24 +5352,24 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
         // Next addend will be the maximum of four quantities.
         assign_r(first_comparison_term, 0, ROUND_NOT_NEEDED);
         assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
-        assign_r(third_comparison_term, 0, ROUND_NOT_NEEDED);
-        assign_r(fourth_comparison_term, 0, ROUND_NOT_NEEDED);
         add_mul_assign_r(first_comparison_term, curr_var_ub, curr_ub,
                          ROUND_UP);
-        add_mul_assign_r(third_comparison_term, curr_var_ub, curr_lb,
-                         ROUND_UP);
-        add_mul_assign_r(second_comparison_term, curr_minus_var_ub, curr_ub,
-                         ROUND_UP);
-        add_mul_assign_r(fourth_comparison_term, curr_minus_var_ub, curr_lb,
+        add_mul_assign_r(second_comparison_term, curr_var_ub, curr_lb,
                          ROUND_UP);
         assign_r(first_comparison_term, std::max(first_comparison_term,
                                                  second_comparison_term),
                  ROUND_NOT_NEEDED);
+        assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
+        add_mul_assign_r(second_comparison_term, curr_minus_var_ub, curr_ub,
+                         ROUND_UP);
         assign_r(first_comparison_term, std::max(first_comparison_term,
-                                                 third_comparison_term),
+                                                 second_comparison_term),
                  ROUND_NOT_NEEDED);
+        assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
+        add_mul_assign_r(second_comparison_term, curr_minus_var_ub, curr_lb,
+                         ROUND_UP);
         assign_r(first_comparison_term, std::max(first_comparison_term,
-                                                 fourth_comparison_term),
+                                                 second_comparison_term),
                  ROUND_NOT_NEEDED);
 
         add_assign_r(result, result, first_comparison_term, ROUND_UP);
