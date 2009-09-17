@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "meta_programming.hh"
 #include "assert.hh"
 #include <vector>
+#include <map>
 #include <deque>
 #include <string>
 #include <iostream>
@@ -563,7 +564,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         sub_assign_r(b_plus_minus_a_minus, right_b.upper(), left_a.lower(),
                      ROUND_UP);
         mul_2exp_assign_r(b_plus_minus_a_minus, b_plus_minus_a_minus, 1,
-                          ROUND_IGNORE);
+                          ROUND_UP);
         add_octagonal_constraint(n_right, n_right+1, b_plus_minus_a_minus);
         return;
       }
@@ -576,7 +577,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         sub_assign_r(b_plus_minus_a_minus, right_b.upper(), left_a.lower(),
                      ROUND_UP);
         mul_2exp_assign_r(b_plus_minus_a_minus, b_plus_minus_a_minus, 1,
-                          ROUND_IGNORE);
+                          ROUND_UP);
         add_octagonal_constraint(n_right+1, n_right, b_plus_minus_a_minus);
         return;
       }
@@ -596,7 +597,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                      ROUND_UP);
         mul_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
-                          ROUND_IGNORE);
+                          ROUND_UP);
         add_octagonal_constraint(n_left+1, n_left, a_plus_minus_b_minus);
         return;
       }
@@ -609,7 +610,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                      ROUND_UP);
         mul_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
-                          ROUND_IGNORE);
+                          ROUND_UP);
         add_octagonal_constraint(n_left, n_left+1, a_plus_minus_b_minus);
         return;
       }
@@ -668,7 +669,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
         mul_2exp_assign_r(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
-                          ROUND_IGNORE);
+                          ROUND_UP);
         if (left_w_id < right_w_id)
           add_octagonal_constraint(n_right, n_left, c_plus_minus_a_minus);
         else
@@ -684,7 +685,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
         mul_2exp_assign_r(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
-                          ROUND_IGNORE);
+                          ROUND_UP);
         if (left_w_id < right_w_id)
           add_octagonal_constraint(n_right+1, n_left, c_plus_minus_a_minus);
         else
@@ -700,7 +701,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
         mul_2exp_assign_r(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
-                          ROUND_IGNORE);
+                          ROUND_UP);
         if (left_w_id < right_w_id)
           add_octagonal_constraint(n_right, n_left+1, c_plus_minus_a_minus);
         else
@@ -716,7 +717,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
         mul_2exp_assign_r(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
-                          ROUND_IGNORE);
+                          ROUND_UP);
         if (left_w_id < right_w_id)
           add_octagonal_constraint(n_right+1, n_left+1, c_plus_minus_a_minus);
         else
@@ -5163,10 +5164,10 @@ Octagonal_Shape<T>::affine_image(Variable var,
               add_assign_r(m_i_cv, m_i_cv, b_mlb, ROUND_UP);
             }
             // Now update unary constraints on var.
-            mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_UP);
             N& m_cv_v = m_cv[n_var];
             add_assign_r(m_cv_v, m_cv_v, b_ub, ROUND_UP);
-            mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_UP);
             N& m_v_cv = m_v[n_var+1];
             add_assign_r(m_v_cv, m_v_cv, b_mlb, ROUND_UP);
             reset_strongly_closed();
@@ -5188,8 +5189,8 @@ Octagonal_Shape<T>::affine_image(Variable var,
           if (b != 0) {
             // Translate the unary constraints on `var' by adding the value
             // `b_ub' or subtracting the value `b_lb'.
-            mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_IGNORE);
-            mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_UP);
+            mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_UP);
             add_assign_r(m_cv_v, m_cv_v, b_ub, ROUND_UP);
             add_assign_r(m_v_cv, m_v_cv, b_mlb, ROUND_UP);
           }
@@ -5288,9 +5289,9 @@ Octagonal_Shape<T>::affine_image(Variable var,
   linear_form_upper_bound(lf, lf_ub);
   PPL_DIRTY_TEMP(N, minus_lf_ub);
   linear_form_upper_bound(minus_lf, minus_lf_ub);
-  mul_2exp_assign_r(lf_ub, lf_ub, 1, ROUND_IGNORE);
+  mul_2exp_assign_r(lf_ub, lf_ub, 1, ROUND_UP);
   assign_r(matrix[n_var+1][n_var], lf_ub, ROUND_NOT_NEEDED);
-  mul_2exp_assign_r(minus_lf_ub, minus_lf_ub, 1, ROUND_IGNORE);
+  mul_2exp_assign_r(minus_lf_ub, minus_lf_ub, 1, ROUND_UP);
   assign_r(matrix[n_var][n_var+1], minus_lf_ub, ROUND_NOT_NEEDED);
 
   PPL_ASSERT(OK());
@@ -5335,11 +5336,10 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
     assign_r(curr_lb, curr_coefficient->lower(), ROUND_NOT_NEEDED);
     assign_r(curr_ub, curr_coefficient->upper(), ROUND_NOT_NEEDED);
     if (curr_lb != 0 || curr_ub != 0) {
-      // FIXME: ensure that ROUND_IGNORE works fine with divisions by 2.
       assign_r(curr_var_ub, matrix[n_var+1][n_var], ROUND_NOT_NEEDED);
-      div_2exp_assign_r(curr_var_ub, curr_var_ub, 1, ROUND_IGNORE);
+      div_2exp_assign_r(curr_var_ub, curr_var_ub, 1, ROUND_UP);
       neg_assign_r(curr_minus_var_ub, matrix[n_var][n_var+1], ROUND_NOT_NEEDED);
-      div_2exp_assign_r(curr_minus_var_ub, curr_minus_var_ub, 1, ROUND_IGNORE);
+      div_2exp_assign_r(curr_minus_var_ub, curr_minus_var_ub, 1, ROUND_UP);
       // Optimize the most common case: curr = +/-[1;1]
       if (curr_lb == 1 && curr_ub == 1) {
         add_assign_r(result, result, std::max(curr_var_ub, curr_minus_var_ub),
@@ -5456,10 +5456,9 @@ refine_fp_interval_abstract_store(
     FP_Interval_Type& curr_int = ite->second;
     T& lb = curr_int.lower();
     T& ub = curr_int.upper();
-    // FIXME: are we sure that ROUND_IGNORE is good?
     // Now get the upper bound for curr_var in the octagon.
     assign_r(upper_bound, matrix[n_curr_var+1][n_curr_var], ROUND_NOT_NEEDED);
-    div_2exp_assign_r(upper_bound, upper_bound, 1, ROUND_IGNORE);
+    div_2exp_assign_r(upper_bound, upper_bound, 1, ROUND_UP);
 
     if (upper_bound < ub)
       ub = upper_bound.raw_value();
@@ -5467,7 +5466,7 @@ refine_fp_interval_abstract_store(
     // Now get the lower bound for curr_var in the octagon.
     neg_assign_r(upper_bound, matrix[n_curr_var][n_curr_var+1],
                  ROUND_NOT_NEEDED);
-    div_2exp_assign_r(upper_bound, upper_bound, 1, ROUND_IGNORE);
+    div_2exp_assign_r(upper_bound, upper_bound, 1, ROUND_DOWN);
 
     if (upper_bound > lb)
       lb = upper_bound.raw_value();
