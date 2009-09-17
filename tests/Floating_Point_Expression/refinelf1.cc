@@ -49,6 +49,9 @@ test01() {
   catch(std::invalid_argument e) {
     nout << "space_dim < right_space_dim" << endl;
     Octagonal_Shape<double> oc2(1);
+    oc2.refine_with_linear_form_inequality(l1, l1);
+    oc2.refine_with_linear_form_inequality(-l1, l1);
+    oc2.refine_with_linear_form_inequality(l1, -l1);
     db_r_oc tmp;
     l1 -= A;
     l1 += tmp;
@@ -138,10 +141,10 @@ test03() {
   return ok1 && ok2;
 
 }
-/*
-// tests [3.5, 6] <= [-2.5, 0] + A
+
+// tests [-0.5, 1] + A <= [2.5, 5] + B and [2.5, 5] + B <= [-0.5, 1] + A
 bool
-test03() {
+test04() {
   Variable A(0);
   Variable B(1);
 
@@ -149,25 +152,34 @@ test03() {
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  db_r_oc tmp(3.5);
-  tmp.join_assign(6);
-  Linear_Form<db_r_oc> l1(tmp);
-  Linear_Form<db_r_oc> l2(-A);
-  tmp.lower() = -2.5;
-  tmp.upper() = 0;
+  db_r_oc tmp(-0.5);
+  tmp.join_assign(1);
+  Linear_Form<db_r_oc> l1(A);
+  l1 += tmp;
+  Linear_Form<db_r_oc> l2(B);
+  tmp.lower() = 2.5;
+  tmp.upper() = 5;
   l2 += tmp;
   oc1.refine_with_linear_form_inequality(l1, l2);
-  print_constraints(oc1, "*** [3.5, 6] <= [-2.5, 0] + A ***");
+  print_constraints(oc1, "*** [-0.5, 1] + A <= [2.5, 5] + B ***");
 
   Octagonal_Shape<double> known_result(oc1);
-  known_result.add_constraint(A <= -3.5);
+  known_result.add_constraint(2*A - 2*B <= 11);
   print_constraints(known_result, "*** known_result ***");
 
-  bool ok = (oc1 == known_result);
+  bool ok1 = (oc1 == known_result);
 
-  return ok;
+  oc1.refine_with_linear_form_inequality(l2, l1);
+  print_constraints(oc1, "*** [2.5, 5] + B <= [-0.5, 1] + A ***");
 
-} */
+  known_result.add_constraint(2*B - 2*A <= -3);
+  print_constraints(known_result, "*** known_result2 ***");
+
+  bool ok2 = (oc1 == known_result);
+
+  return ok1 && ok2;
+
+}
 
 } //namespace
 
@@ -175,4 +187,5 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN
