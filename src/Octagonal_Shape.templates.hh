@@ -791,20 +791,16 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         dimension_type n_second_var = second_v * 2;
         linear_form_upper_bound(right_minus_left - first + second,
                                 upper_bound);
-        assign_r(matrix[n_second_var+1][n_first_var+1],
-                 upper_bound, ROUND_NOT_NEEDED);
+        add_octagonal_constraint(n_second_var+1, n_first_var+1, upper_bound);
         linear_form_upper_bound(right_minus_left + first + second,
                                 upper_bound);
-        assign_r(matrix[n_second_var+1][n_first_var],
-                 upper_bound, ROUND_NOT_NEEDED);
+        add_octagonal_constraint(n_second_var+1, n_first_var, upper_bound);
         linear_form_upper_bound(right_minus_left - first - second,
                                 upper_bound);
-        assign_r(matrix[n_second_var][n_first_var+1],
-                 upper_bound, ROUND_NOT_NEEDED);
+        add_octagonal_constraint(n_second_var, n_first_var+1, upper_bound);
         linear_form_upper_bound(right_minus_left + first - second,
                                 upper_bound);
-        assign_r(matrix[n_second_var][n_first_var],
-                 upper_bound, ROUND_NOT_NEEDED);
+        add_octagonal_constraint(n_second_var, n_first_var, upper_bound);
       }
     }
   }
@@ -853,14 +849,12 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
   for (dimension_type i = 0; m_ite != m_end; i += 2) {
     Row_Reference upper = *m_ite;
     N& ul = upper[i];
-    N& ur = upper[i+1];
-    assign_r(ur, ul, ROUND_NOT_NEEDED);
+    add_octagonal_constraint(i, i+1, ul);
     assign_r(ul, PLUS_INFINITY, ROUND_NOT_NEEDED);
     ++m_ite;
     Row_Reference lower = *m_ite;
-    N& ll = lower[i];
     N& lr = lower[i+1];
-    assign_r(ll, lr, ROUND_NOT_NEEDED);
+    add_octagonal_constraint(i+1, i, lr);
     assign_r(lr, PLUS_INFINITY, ROUND_NOT_NEEDED);
     ++m_ite;
   }
