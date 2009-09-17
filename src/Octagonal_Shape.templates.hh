@@ -506,10 +506,6 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
     throw_dimension_incompatible(
           "refine_with_linear_form_inequality(left, right)", "right", right);
 
-  // FIXME: maybe it would be best to create a no_check variant.
-  if (marked_empty())
-    return;
-
   // Number of non-zero coefficients in `left': will be set to
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type left_t = 0;
