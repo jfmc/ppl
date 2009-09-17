@@ -724,9 +724,6 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
 
   // General case.
 
-  // In the following, strong closure will be definitely lost.
-  reset_strongly_closed();
-
   // FIRST, update the binary constraints for each pair of DIFFERENT variables
   // in `left' and `right'.
 
