@@ -5356,28 +5356,14 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
         assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
         assign_r(third_comparison_term, 0, ROUND_NOT_NEEDED);
         assign_r(fourth_comparison_term, 0, ROUND_NOT_NEEDED);
-        /*if (is_plus_infinity(curr_var_ub)) {
-          assign_r(first_comparison_term, PLUS_INFINITY, ROUND_NOT_NEEDED);
-          assign_r(third_comparison_term, PLUS_INFINITY, ROUND_NOT_NEEDED);
-        }
-        else {*/
-          add_mul_assign_r(first_comparison_term, curr_var_ub, curr_ub,
-                           ROUND_UP);
-          add_mul_assign_r(third_comparison_term, curr_var_ub, curr_lb,
-                           ROUND_UP);
-        /*}
-
-        if (is_minus_infinity(curr_minus_var_ub)) {
-          assign_r(second_comparison_term, PLUS_INFINITY, ROUND_NOT_NEEDED);
-          assign_r(fourth_comparison_term, PLUS_INFINITY, ROUND_NOT_NEEDED);
-        }
-        else { */
-          add_mul_assign_r(second_comparison_term, curr_minus_var_ub, curr_ub,
-                           ROUND_UP);
-          add_mul_assign_r(fourth_comparison_term, curr_minus_var_ub, curr_lb,
-                           ROUND_UP);
-        //}
-
+        add_mul_assign_r(first_comparison_term, curr_var_ub, curr_ub,
+                         ROUND_UP);
+        add_mul_assign_r(third_comparison_term, curr_var_ub, curr_lb,
+                         ROUND_UP);
+        add_mul_assign_r(second_comparison_term, curr_minus_var_ub, curr_ub,
+                         ROUND_UP);
+        add_mul_assign_r(fourth_comparison_term, curr_minus_var_ub, curr_lb,
+                         ROUND_UP);
         assign_r(first_comparison_term, std::max(first_comparison_term,
                                                  second_comparison_term),
                  ROUND_NOT_NEEDED);
