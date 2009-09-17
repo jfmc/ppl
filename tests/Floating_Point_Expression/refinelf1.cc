@@ -181,11 +181,50 @@ test04() {
 
 }
 
+// tests [1, 3] + A <= [4, 4] - B and [4, 4] - B <= [1, 3] + A
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  Octagonal_Shape<float> oc1(3);
+  oc1.add_constraint(A <= 2);
+  oc1.add_constraint(A - B <= 3);
+  oc1.add_constraint(B <= 2);
+  fl_r_oc tmp(4);
+  Linear_Form<fl_r_oc> l2(-B);
+  l2 += tmp;
+  Linear_Form<fl_r_oc> l1(A);
+  tmp.lower() = 1;
+  tmp.upper() = 3;
+  l1 += tmp;
+  oc1.refine_with_linear_form_inequality(l1, l2);
+  print_constraints(oc1, "*** [1, 3] + A <= [4, 4] - B ***");
+
+  Octagonal_Shape<float> known_result(oc1);
+  known_result.add_constraint(A + B <= 3);
+  print_constraints(known_result, "*** known_result ***");
+
+  bool ok1 = (oc1 == known_result);
+
+  oc1.refine_with_linear_form_inequality(l2, l1);
+  print_constraints(oc1, "*** [4, 4] - B <= [1, 3] + A ***");
+
+  known_result.add_constraint(-B - A <= -1);
+  print_constraints(known_result, "*** known_result2 ***");
+
+  bool ok2 = (oc1 == known_result);
+
+  return ok1 && ok2;
+
+}
+
 } //namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
+/*DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
-  DO_TEST(test04);
+  DO_TEST(test04); */
+  DO_TEST(test05);
 END_MAIN
