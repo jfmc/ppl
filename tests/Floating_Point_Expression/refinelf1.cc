@@ -57,9 +57,6 @@ test01() {
     l1 += tmp;
     l2 += tmp;
     oc2.refine_with_linear_form_inequality(l1, l2);
-    Constraint_System cs(A < A);
-    oc2.add_constraints(cs);
-    oc2.refine_with_linear_form_inequality(l2, l1);
     ok2 = true;
   }
 
