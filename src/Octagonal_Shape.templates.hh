@@ -490,7 +490,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
                      "Octagonal_Shape<T>::refine_with_linear_form_inequality:"
                      " T not a floating point type.");
 
-  // FIXME: what to do when empty?
+  // We assume that the analyzer will not try to apply an unreachable filter.
+  PPL_ASSERT(!marked_empty());
 
   // Dimension-compatibility checks.
   // The dimensions of `left' and `right' should not be greater than the
