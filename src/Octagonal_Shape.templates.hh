@@ -671,8 +671,6 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
-        mul_2exp_assign_r(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
-                          ROUND_UP);
         if (left_w_id < right_w_id)
           add_octagonal_constraint(n_right, n_left, c_plus_minus_a_minus);
         else
@@ -687,8 +685,6 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
-        mul_2exp_assign_r(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
-                          ROUND_UP);
         if (left_w_id < right_w_id)
           add_octagonal_constraint(n_right+1, n_left, c_plus_minus_a_minus);
         else
@@ -703,8 +699,6 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
-        mul_2exp_assign_r(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
-                          ROUND_UP);
         if (left_w_id < right_w_id)
           add_octagonal_constraint(n_right, n_left+1, c_plus_minus_a_minus);
         else
@@ -719,8 +713,6 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
-        mul_2exp_assign_r(c_plus_minus_a_minus, c_plus_minus_a_minus, 1,
-                          ROUND_UP);
         if (left_w_id < right_w_id)
           add_octagonal_constraint(n_right+1, n_left+1, c_plus_minus_a_minus);
         else
