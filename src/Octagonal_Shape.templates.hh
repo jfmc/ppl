@@ -5103,26 +5103,23 @@ Octagonal_Shape<T>::affine_image(Variable var,
 
   PPL_DIRTY_TEMP(N, b_ub);
   assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
-  PPL_DIRTY_TEMP(N, b_lb);
-  assign_r(b_lb, b.lower(), ROUND_NOT_NEEDED);
   PPL_DIRTY_TEMP(N, b_mlb);
-  neg_assign_r(b_mlb, b_lb, ROUND_NOT_NEEDED);
+  neg_assign_r(b_mlb, b.lower(), ROUND_NOT_NEEDED);
 
   if (t == 0) {
     // Case 1: lf = [lb;ub];
     forget_all_octagonal_constraints(var_id);
     mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_UP);
-    PPL_DIRTY_TEMP(N, two_ub);
-    mul_2exp_assign_r(two_ub, b_ub, 1, ROUND_UP);
+    mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_UP);
     // Add the constraint `var >= lb && var <= ub'.
-    add_octagonal_constraint(n_var+1, n_var, two_ub);
+    add_octagonal_constraint(n_var+1, n_var, b_ub);
     add_octagonal_constraint(n_var, n_var+1, b_mlb);
     PPL_ASSERT(OK());
     return;
   }
 
   // true if b = [0;0].
-  bool is_b_zero = (b_lb == 0 && b_ub == 0);
+  bool is_b_zero = (b_mlb == 0 && b_ub == 0);
 
   if (t == 1) {
     // The one and only non-zero homogeneous coefficient in `lf'.
