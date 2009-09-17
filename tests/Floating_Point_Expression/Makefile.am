@@ -50,7 +50,8 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 TESTS = floatingpointexpr1 \
-affineimage3
+affineimage3 \
+refinelf1
 
 XFAIL_TESTS =
 
@@ -62,6 +63,7 @@ BUGS =
 
 floatingpointexpr1_SOURCES = floatingpointexpr1.cc
 affineimage3_SOURCES = affineimage3.cc
+refinelf1_SOURCES = refinelf1.cc
 
 check_PROGRAMS = \
 $(TESTS) \
