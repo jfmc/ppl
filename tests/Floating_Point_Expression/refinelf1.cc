@@ -76,6 +76,7 @@ test02() {
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
+  Octagonal_Shape<float> known_result(oc1);
   fl_r_oc tmp(-1);
   tmp.join_assign(2);
   Linear_Form<fl_r_oc> l1(tmp);
@@ -86,7 +87,6 @@ test02() {
   oc1.refine_with_linear_form_inequality(l1, l2);
   print_constraints(oc1, "*** [-1, 2] <= [-4, -1] + A ***");
 
-  Octagonal_Shape<float> known_result(oc1);
   known_result.add_constraint(-A <= 0);
   print_constraints(known_result, "*** known_result1 ***");
 
@@ -114,6 +114,7 @@ test03() {
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
+  Octagonal_Shape<double> known_result(oc1);
   db_r_oc tmp(3.5);
   tmp.join_assign(6);
   Linear_Form<db_r_oc> l1(tmp);
@@ -124,7 +125,6 @@ test03() {
   oc1.refine_with_linear_form_inequality(l1, l2);
   print_constraints(oc1, "*** [3.5, 6] <= [-2.5, 0] - A ***");
 
-  Octagonal_Shape<double> known_result(oc1);
   known_result.add_constraint(2*A <= -7);
   print_constraints(known_result, "*** known_result ***");
 
@@ -152,6 +152,7 @@ test04() {
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
+  Octagonal_Shape<double> known_result(oc1);
   db_r_oc tmp(-0.5);
   tmp.join_assign(1);
   Linear_Form<db_r_oc> l1(A);
@@ -163,7 +164,6 @@ test04() {
   oc1.refine_with_linear_form_inequality(l1, l2);
   print_constraints(oc1, "*** [-0.5, 1] + A <= [2.5, 5] + B ***");
 
-  Octagonal_Shape<double> known_result(oc1);
   known_result.add_constraint(2*A - 2*B <= 11);
   print_constraints(known_result, "*** known_result ***");
 
@@ -191,6 +191,7 @@ test05() {
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
+  Octagonal_Shape<float> known_result(oc1);
   fl_r_oc tmp(4);
   Linear_Form<fl_r_oc> l2(-B);
   l2 += tmp;
@@ -201,7 +202,6 @@ test05() {
   oc1.refine_with_linear_form_inequality(l1, l2);
   print_constraints(oc1, "*** [1, 3] + A <= [4, 4] - B ***");
 
-  Octagonal_Shape<float> known_result(oc1);
   known_result.add_constraint(A + B <= 3);
   print_constraints(known_result, "*** known_result ***");
 
@@ -229,6 +229,7 @@ test06() {
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
+  Octagonal_Shape<double> known_result(oc1);
   db_r_oc tmp(-2);
   Linear_Form<db_r_oc> l2(B);
   l2 += tmp;
@@ -239,7 +240,6 @@ test06() {
   oc1.refine_with_linear_form_inequality(l1, l2);
   print_constraints(oc1, "*** [1, 4] - A <= [-2, -2] + B ***");
 
-  Octagonal_Shape<double> known_result(oc1);
   known_result.add_constraint(-B - A <= -3);
   print_constraints(known_result, "*** known_result ***");
 
@@ -267,6 +267,7 @@ test07() {
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
+  Octagonal_Shape<float> known_result(oc1);
   fl_r_oc tmp(-2);
   tmp.join_assign(-1);
   Linear_Form<fl_r_oc> l2(-B);
@@ -278,7 +279,6 @@ test07() {
   oc1.refine_with_linear_form_inequality(l1, l2);
   print_constraints(oc1, "*** [-3, -0.5] - A <= [-2, -1] - B ***");
 
-  Octagonal_Shape<float> known_result(oc1);
   known_result.add_constraint(B - A <= 2);
   print_constraints(known_result, "*** known_result ***");
 
@@ -296,6 +296,35 @@ test07() {
 
 }
 
+// tests [1, 3] * B <= [-1.5, 0] * A
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  Octagonal_Shape<double> oc1(3);
+  oc1.add_constraint(A <= 2);
+  oc1.add_constraint(A - B <= 3);
+  oc1.add_constraint(B <= 2);
+  Octagonal_Shape<double> known_result(oc1);
+  db_r_oc tmp(1);
+  tmp.join_assign(3);
+  Linear_Form<db_r_oc> l1(B);
+  l1 *= tmp;
+  Linear_Form<db_r_oc> l2(A);
+  tmp.lower() = -1.5;
+  tmp.upper() = 0;
+  l2 *= tmp;
+  oc1.refine_with_linear_form_inequality(l1, l2);
+  print_constraints(oc1, "*** [1, 3] * B <= [-1.5, 0] * A ***");
+
+  print_constraints(known_result, "*** known_result ***");
+
+  bool ok = (oc1 == known_result);
+
+  return ok;
+}
+
 } //namespace
 
 BEGIN_MAIN
@@ -306,4 +335,5 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN
