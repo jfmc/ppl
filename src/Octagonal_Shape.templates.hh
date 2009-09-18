@@ -828,9 +828,11 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         in the main diagonal of the matrix. They will be moved later.
       */
       linear_form_upper_bound(right_minus_left + var, upper_bound);
-      assign_r(matrix[n_var+1][n_var+1], upper_bound, ROUND_NOT_NEEDED);
+      mul_2exp_assign_r(matrix[n_var+1][n_var+1], upper_bound, 1,
+                        ROUND_UP);
       linear_form_upper_bound(right_minus_left - var, upper_bound);
-      assign_r(matrix[n_var][n_var], upper_bound, ROUND_NOT_NEEDED);
+      mul_2exp_assign_r(matrix[n_var][n_var], upper_bound, 1,
+                        ROUND_UP);
     }
   }
 

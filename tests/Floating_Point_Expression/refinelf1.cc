@@ -406,6 +406,6 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
-  DO_TEST(test09); //FIXME: A <= 1.75 (cut&paste error???)
-  DO_TEST(test10); //FIXME: A >= -7.5 (cut&paste error???)
+  DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN
