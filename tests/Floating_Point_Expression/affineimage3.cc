@@ -299,15 +299,16 @@ bool test10() {
   oc1.add_constraint(B >= 0);
   oc1.add_constraint(B <= 2);
   oc1.add_constraint(A - B >= 0);
-  db_r_oc i3(0);
-  i3.join_assign(2);
-  db_r_oc i2(1);
-  i2.join_assign(2);
-  db_r_oc i1(1);
-  i1.join_assign(1);
-  Linear_Form<db_r_oc> l(i3);
-  l += i1*Linear_Form<db_r_oc>(A);
-  l += i2*Linear_Form<db_r_oc>(B);;
+  db_r_oc tmp(1);
+  tmp.join_assign(1);
+  Linear_Form<db_r_oc> l(A);
+  l *= tmp;
+  tmp.lower() = 0;
+  tmp.upper() = 2;
+  l += tmp;
+  tmp.lower() = 1;
+  tmp.upper() = 2;
+  l += tmp * Linear_Form<db_r_oc>(B);
   oc1.affine_image(A,l);
   print_constraints(oc1, "*** oc1.affine_image(A, i + i0*A + i1*B) ***");
 

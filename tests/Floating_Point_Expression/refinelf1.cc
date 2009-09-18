@@ -322,6 +322,79 @@ test08() {
   return ok;
 }
 
+// tests [0.25, 0.5] * A + [-2, -1] * B <= [-7, -2]
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
+  Octagonal_Shape<double> oc1(3);
+  oc1.add_constraint(A <= 2);
+  oc1.add_constraint(A - B <= 3);
+  oc1.add_constraint(B <= 2);
+  Octagonal_Shape<double> known_result(oc1);
+
+  db_r_oc tmp(-7);
+  tmp.join_assign(-2);
+  Linear_Form<db_r_oc> l2(tmp);
+  Linear_Form<db_r_oc> l1(A);
+  tmp.lower() = 0.25;
+  tmp.upper() = 0.5;
+  l1 *= tmp;
+  tmp.lower() = -2;
+  tmp.upper() = -1;
+  l1 += tmp * Linear_Form<db_r_oc>(B);
+  oc1.refine_with_linear_form_inequality(l1, l2);
+  print_constraints(oc1, "*** [0.25, 0.5]*A + [-2, -1]*B <= [-7, -2] ***");
+
+  known_result.add_constraint(2*B + 2*A <= 11);
+  known_result.add_constraint(-2*B + 2*A <= 3);
+  known_result.add_constraint(2*A <= 7);
+  print_constraints(known_result, "*** known_result ***");
+
+  bool ok = (oc1 == known_result);
+
+  return ok;
+}
+
+// tests [-5, -1] * A <= [2, 3] * B + [0.5, 1]
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  Octagonal_Shape<float> oc1(3);
+  oc1.add_constraint(A <= 2);
+  oc1.add_constraint(A - B <= 3);
+  oc1.add_constraint(B <= 2);
+  Octagonal_Shape<float> known_result(oc1);
+  fl_r_oc tmp(2);
+  tmp.join_assign(3);
+  Linear_Form<fl_r_oc> l2(B);
+  l2 *= tmp;
+  tmp.lower() = 0.5;
+  tmp.upper() = 1;
+  l2 += tmp;
+  Linear_Form<fl_r_oc> l1(A);
+  tmp.lower() = -5;
+  tmp.upper() = -1;
+  l1 *= tmp;
+  oc1.refine_with_linear_form_inequality(l1, l2);
+  print_constraints(oc1, "*** [-5, -1] * A <= [2, 3] * B + [0.5, 1] ***");
+
+  known_result.add_constraint(B - A <= 17);
+  known_result.add_constraint(B + A <= 21);
+  known_result.add_constraint(-B - A <= 13);
+  known_result.add_constraint(-B + A <= 17);
+  known_result.add_constraint(A <= 19);
+  known_result.add_constraint(-A <= 15);
+  print_constraints(known_result, "*** known_result ***");
+
+  bool ok = (oc1 == known_result);
+
+  return ok;
+}
+
 } //namespace
 
 BEGIN_MAIN
@@ -333,4 +406,6 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09); //FIXME: A <= 1.75 (cut&paste error???)
+  DO_TEST(test10); //FIXME: A >= -7.5 (cut&paste error???)
 END_MAIN
