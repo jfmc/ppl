@@ -323,6 +323,7 @@ test08() {
 }
 
 // tests [0.25, 0.5] * A + [-2, -1] * B <= [-7, -2]
+// and   [-7, -2] <= [0.25, 0.5] * A + [-2, -1] * B
 bool
 test09() {
   Variable A(0);
@@ -352,7 +353,7 @@ test09() {
   known_result.add_constraint(2*A <= 7);
   print_constraints(known_result, "*** known_result ***");
 
-  bool ok = (oc1 == known_result);
+  bool ok1 = (oc1 == known_result);
 
   oc1.refine_with_linear_form_inequality(l2, l1);
   print_constraints(oc1, "*** [-7, -2] <= [0.25, 0.5]*A + [-2, -1]*B ***");
@@ -362,8 +363,6 @@ test09() {
   bool ok2 = (oc1 == known_result);
 
   return ok1 && ok2;
-
-  return ok;
 }
 
 // tests [-5, -1] * A <= [2, 3] * B + [0.5, 1]
