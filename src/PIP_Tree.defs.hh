@@ -70,6 +70,9 @@ public:
   */
   const Constraint_System& constraints() const;
 
+  void ascii_dump(std::ostream& s) const;
+  bool ascii_load(std::istream& s);
+
 protected:
   //! Default constructor.
   PIP_Tree_Node();

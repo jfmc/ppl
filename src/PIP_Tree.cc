@@ -340,6 +340,23 @@ PIP_Solution_Node::Rational_Matrix::scale(const Coefficient &ratio) {
 }
 
 void
+PIP_Tree_Node::ascii_dump(std::ostream& s) const {
+  s << "\nconstraints_\n";
+  constraints_.ascii_dump(s);
+}
+
+bool
+PIP_Tree_Node::ascii_load(std::istream& s) {
+  std::string str;
+  if (!(s >> str) || str != "constraints_")
+    return false;
+  constraints_.ascii_load(s);
+
+  PPL_ASSERT(OK());
+  return true;
+}
+
+void
 PIP_Solution_Node::Rational_Matrix::ascii_dump(std::ostream& s) const {
   s << "denominator " << denominator << "\n";
   Matrix::ascii_dump(s);
@@ -360,6 +377,8 @@ PIP_Solution_Node::Rational_Matrix::ascii_load(std::istream& s) {
 
 void
 PIP_Solution_Node::ascii_dump(std::ostream& s) const {
+  PIP_Tree_Node::ascii_dump(s);
+
   s << "\nvariable_tableau\n";
   tableau.s.ascii_dump(s);
 
@@ -367,11 +386,13 @@ PIP_Solution_Node::ascii_dump(std::ostream& s) const {
   tableau.t.ascii_dump(s);
 }
 
-
 bool
 PIP_Solution_Node::ascii_load(std::istream& s) {
+  if (!PIP_Tree_Node::ascii_load(s))
+    return false;
+
   std::string str;
-  if (!(s >> str) || str != "simplex_tableau")
+  if (!(s >> str) || str != "variable_tableau")
     return false;
   if (!tableau.s.ascii_load(s))
     return false;
