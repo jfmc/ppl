@@ -60,16 +60,16 @@ typedef Opposite_Floating_Point_Expression<db_r_oc, IEEE754_Single> opp_fpeds;
 typedef Opposite_Floating_Point_Expression<db_r_oc, IEEE754_Double> opp_fpedd;
 
 typedef Floating_Point_Expression<fl_r_oc, IEEE754_Single>::FP_Interval_Abstract_Store sstr;
-typedef Constant_Floating_Point_Expression<db_r_oc, IEEE754_Single>::FP_Interval_Abstract_Store dstr;
+typedef Floating_Point_Expression<db_r_oc, IEEE754_Single>::FP_Interval_Abstract_Store dstr;
 
 typedef Floating_Point_Expression<fl_r_oc, IEEE754_Single>::FP_Linear_Form_Abstract_Store lsstr;
-typedef Constant_Floating_Point_Expression<db_r_oc, IEEE754_Single>::FP_Linear_Form_Abstract_Store ldstr;
+typedef Floating_Point_Expression<db_r_oc, IEEE754_Single>::FP_Linear_Form_Abstract_Store ldstr;
 
 typedef Floating_Point_Expression<fl_r_oc, IEEE754_Double>::FP_Interval_Abstract_Store sdtr;
-typedef Constant_Floating_Point_Expression<db_r_oc, IEEE754_Double>::FP_Interval_Abstract_Store ddtr;
+typedef Floating_Point_Expression<db_r_oc, IEEE754_Double>::FP_Interval_Abstract_Store ddtr;
 
 typedef Floating_Point_Expression<fl_r_oc, IEEE754_Double>::FP_Linear_Form_Abstract_Store lsdtr;
-typedef Constant_Floating_Point_Expression<db_r_oc, IEEE754_Double>::FP_Linear_Form_Abstract_Store lddtr;
+typedef Floating_Point_Expression<db_r_oc, IEEE754_Double>::FP_Linear_Form_Abstract_Store lddtr;
 
 namespace {
 
