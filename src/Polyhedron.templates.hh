@@ -306,8 +306,41 @@ template <typename FP_Format, typename Interval_Info>
 void
 Polyhedron::overapproximate_linear_form(
   const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+  const dimension_type lf_dimension,
   const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store,
   Linear_Form<Interval <FP_Format, Interval_Info> >& result) {
+
+  // Check that FP_Format is indeed a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
+                         "Polyhedron::overapproximate_linear_form:"
+                         " FP_Format not a floating point type.");
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
+  typedef std::map<dimension_type, FP_Interval_Type> Interval_Abstract_Store;
+
+  result = FP_Linear_Form(lf.inhomogeneous_term());
+  const FP_Interval_Type aux_divisor1(static_cast<FP_Format>(0.5));
+  FP_Interval_Type aux_divisor2(aux_divisor1);
+  aux_divisor2.lower() = static_cast<FP_Format>(-0.5);
+
+  for (dimension_type i = 0; i < lf_dimension; ++i) {
+    Variable curr_var(i);
+    const FP_Interval_Type& curr_coeff = lf.coefficient(curr_var);
+    FP_Format curr_lb = curr_coeff.lower();
+    FP_Format curr_ub = curr_coeff.upper();
+    if (curr_lb != 0 || curr_ub != 0) {
+      FP_Interval_Type curr_addend(curr_ub - curr_lb);
+      curr_addend *= aux_divisor2;
+      curr_addend *= store[i];
+      result += curr_addend;
+      curr_addend = FP_Interval_Type(curr_lb + curr_ub);
+      curr_addend *= aux_divisor1;
+      curr_addend *= curr_var;
+      result += curr_addend;
+    }
+  }
+
 }
 
 } // namespace Parma_Polyhedra_Library

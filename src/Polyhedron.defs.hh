@@ -2569,6 +2569,7 @@ protected:
   template <typename FP_Format, typename Interval_Info>
   static void overapproximate_linear_form(
   const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+  const dimension_type lf_dimension,
   const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store,
   Linear_Form<Interval <FP_Format, Interval_Info> >& result);
 
