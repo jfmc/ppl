@@ -45,6 +45,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Checked_Number.defs.hh"
 #include "WRD_coefficient_types.defs.hh"
 #include "Bit_Matrix.defs.hh"
+#include "Interval.types.hh"
+#include "Linear_Form.types.hh"
 #include <cstddef>
 #include <iosfwd>
 #include <vector>
@@ -1090,6 +1092,26 @@ public:
                     = Coefficient_one());
 
   /*! \brief
+    Assigns to \p *this the \ref affine_relation "affine image"
+    of \p *this under the function mapping variable \p var into the
+    affine expression(s) specified by \p lf.
+
+    \param var
+    The variable to which the affine expression is assigned.
+
+    \param lf
+    The linear form on intervals with floating point coefficients that
+    defines the affine expression. ALL of its coefficients MUST be boundend.
+
+    \exception std::invalid_argument
+    Thrown if \p lf and \p *this are dimension-incompatible or if \p var
+    is not a dimension of \p *this.
+  */
+  template <typename Interval_Info>
+  void affine_image(const Variable& var,
+                    const Linear_Form< Interval<T, Interval_Info> >& lf);
+
+  /*! \brief
     Assigns to \p *this the
     \ref Single_Update_Affine_Functions "affine preimage"
     of \p *this under the function mapping variable \p var into the
@@ -2048,6 +2070,38 @@ private:
                                Coefficient_traits::const_reference sc_den,
                                const N& ub_v);
 
+  /* \brief
+    Auxiliary function for \ref affine_relation "affine image" that handle
+    the general case: \f$l \equal c\f$
+  */
+  template <typename Interval_Info>
+  void inhomogeneous_affine_image(const Variable& var,
+				  const dimension_type& var_id,
+				  const Interval<T, Interval_Info>& term,
+				  const N& ub,
+				  const N& lb);
+
+  /* \brief
+    Auxiliary function for \ref affine_relation "affine image" that handle
+    the general case: \f$l \equal ax + c\f$
+  */
+  template <typename Interval_Info>
+  void one_variable_affine_image(const Variable& var,
+				 const dimension_type& var_id,
+				 const Interval<T, Interval_Info>& term,
+				 const Interval<T, Interval_Info>& w_coeff,
+				 const N& ub,
+				 const N& lb);
+
+  /* \brief
+    Auxiliary function for \ref affine_relation "affine image" that handle
+    the general case: \f$l \equal ax + by + c\f$
+  */
+  template <typename Interval_Info>
+  void two_variable_affine_image(const Variable& var,
+				 const dimension_type& var_id,
+		         const Linear_Form< Interval<T, Interval_Info> >& lf);
+
   //! An helper function for the computation of affine relations.
   /*!
     For each dbm index \p u (less than or equal to \p last_v and different
@@ -2113,6 +2167,12 @@ private:
   void throw_dimension_incompatible(const char* method,
                                     const char* name_row,
                                     const Linear_Expression& y) const;
+
+  template<typename Interval_Info>
+  void throw_dimension_incompatible(const char* method,
+				    const char* name_row,
+				    const Linear_Form< Interval<T, 
+				    Interval_Info> >& lf) const;
 
   static void throw_expression_too_complex(const char* method,
                                            const Linear_Expression& e);

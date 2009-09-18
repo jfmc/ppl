@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Congruence_System.inlines.hh"
 #include "Congruence_System.defs.hh"
+#include "Interval.defs.hh"
+#include "Linear_Form.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "MIP_Problem.defs.hh"
@@ -4042,6 +4044,115 @@ BD_Shape<T>::affine_image(const Variable var,
 }
 
 template <typename T>
+template <typename Interval_Info>
+void
+BD_Shape<T>::affine_image(const Variable& var,
+                    const Linear_Form< Interval<T, Interval_Info> >& lf) {
+
+  // Check that T is a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
+		    "Octagonal_Shape<T>::affine_image(Variable, Linear_Form):"
+                    " T not a floating point type.");
+
+  // Dimension-compatibility checks.
+  // The dimension of `lf' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type space_dim = space_dimension();
+  const dimension_type lf_space_dim = lf.space_dimension();
+  if (space_dim < lf_space_dim)
+    throw_dimension_incompatible("affine_image(var_id, l)", "l", lf);
+
+  // `var' should be one of the dimensions of the shape.
+  const dimension_type var_id = var.id() + 1;
+  if (space_dim < var_id)
+    throw_dimension_incompatible("affine_image(var_id, l)", var.id());
+
+  // The image of an empty BDS is empty too.
+  shortest_path_closure_assign();
+  if (marked_empty())
+    return;
+
+  // Number of non-zero coefficients in `lf': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type t = 0;
+  // Index of the last non-zero coefficient in `lf', if any.
+  dimension_type w = 0;
+  // Get information about the number of non-zero coefficients in `lf'.
+  for (dimension_type i = lf_space_dim; i-- > 0; )
+    if (lf.coefficient(Variable(i)) != 0) {
+      if (t++ == 1)
+        break;
+      else
+        w = i+1;
+    }
+
+  typedef Interval<T, Interval_Info> FP_Interval_Type;
+
+  const FP_Interval_Type& b = lf.inhomogeneous_term();
+
+  // Now we know the form of `lf':
+  // - If t == 0, then lf == b, with `b' a constant;
+  // - If t == 1, then lf == a*w + b, where `w' can be `v' or another
+  //   variable; 
+  // - If t == 2, the `expr' is of the general form.
+
+  PPL_DIRTY_TEMP(N, b_ub);
+  assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, b_mlb);
+  neg_assign_r(b_mlb, b.lower(), ROUND_NOT_NEEDED);
+
+  if (t == 0) {
+    inhomogeneous_affine_image(var, var_id, b, b_ub, b_mlb);
+    PPL_ASSERT(OK());
+    return;
+  }
+  else if (t == 1) {
+    const FP_Interval_Type& w_coeff = lf.coefficient(Variable(w-1));
+    one_variable_affine_image(var, var_id, b, w_coeff, b_ub, b_mlb);
+    PPL_ASSERT(OK());
+    return;
+  }
+  
+  // General case.
+  // Either t == 2, so that
+  // lf == i_1*x_1 + i_2*x_2 + ... + i_n*x_n + b, where n >= 2,
+  // or t == 1, lf == i*w + b, but i <> [+/-1;+/-1].
+
+  two_variable_affine_image(var, var_id, lf);
+  PPL_ASSERT(OK());
+}
+
+  template <typename T>
+  template <typename Interval_Info>
+  void 
+  BD_Shape<T>::inhomogeneous_affine_image(const Variable& var,
+					  const dimension_type& var_id,
+				    const Interval<T, Interval_Info>& term,
+					  const N& ub,
+				          const N& lb) {
+  }
+
+  template <typename T>
+  template <typename Interval_Info>
+  void 
+  BD_Shape<T>::one_variable_affine_image(const Variable& var,
+					 const dimension_type& var_id,
+				   const Interval<T, Interval_Info>& term,
+				   const Interval<T, Interval_Info>& w_coeff,
+					 const N& ub,
+					 const N& lb) {
+  }
+
+  template <typename T>
+  template <typename Interval_Info>
+  void BD_Shape<T>
+  ::two_variable_affine_image(const Variable& var,
+			      const dimension_type& var_id,
+		 const Linear_Form< Interval<T, Interval_Info> >& lf) {
+  }
+
+
+template <typename T>
 void
 BD_Shape<T>::affine_preimage(const Variable var,
                              const Linear_Expression& expr,
@@ -5857,6 +5968,21 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
     << "this->space_dimension() == " << space_dimension()
     << ", " << name_row << "->space_dimension() == "
     << y.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename T>
+template<typename Interval_Info>
+void
+BD_Shape<T>::throw_dimension_incompatible(const char* method,
+                                          const char* name_row,
+                                          const Linear_Form< Interval<T, 
+					  Interval_Info> >& lf) const {
+  std::ostringstream s;
+  s << "PPL::BD_Shape::" << method << ":" << std::endl
+    << "this->space_dimension() == " << space_dimension()
+    << ", " << name_row << "->space_dimension() == "
+    << lf.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
