@@ -24,21 +24,60 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// tests affine_image(A, [-2, 1])
+// tests space_dimensions and trivial cases
 bool
 test01() {
   Variable A(0);
   Variable B(1);
+  BD_Shape<double> bd1(0);
+  bool ok1 = false;
+  Linear_Form<db_r_oc> l(A);
 
-  BD_Shape<float> oc1(3);
-  oc1.add_constraint(A <= 2);
-  oc1.add_constraint(A - B <= 3);
-  oc1.add_constraint(B <= 2);
+  try {
+      bd1.affine_image(A, l);
+  }
+  catch(std::invalid_argument e) {
+    nout << "bd1_space_dim < lf_space_dim" << endl;
+    ok1 = true;
+  }
+
+  bool ok2 = false;
+  BD_Shape<double> bd2(1);
+
+  try {
+    bd2.affine_image(B, l);
+  }
+  catch(std::invalid_argument e) {
+    nout << "space_dim < var_id + 1" << endl;
+    bd2.affine_image(A, l);
+    Constraint_System cs(A < A);
+    bd2.add_constraints(cs);
+    bd2.affine_image(A, l);
+    ok2 = true;
+  }
+
+  return ok1 && ok2;
+}
+
+
+// tests affine_image(A, [-2, 1])
+// FIXME: It's a preliminary version, not sound at the moment.
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  BD_Shape<float> bd1(3);
+  bd1.add_constraint(A <= 2);
+  bd1.add_constraint(A - B <= 3);
+  bd1.add_constraint(B <= 2);
   fl_r_oc free_term(-2);
   free_term.join_assign(1);
   Linear_Form<fl_r_oc> l(free_term);
-  oc1.affine_image(A, l);
-  print_constraints(oc1, "*** oc1.affine_image(A, [-2, 1]) ***");
+  bd1.affine_image(A, l);
+  print_constraints(bd1, "*** bd1.affine_image(A, [-2, 1]) ***");
+
+  // At the moment, affine_image is simply an identity function.
 
   BD_Shape<float> known_result(3);
   known_result.add_constraint(A <= 2);
@@ -46,7 +85,7 @@ test01() {
   known_result.add_constraint(A - B <= 3);
   print_constraints(known_result, "*** known_result ***");
 
-  bool ok = (oc1 == known_result);
+  bool ok = (bd1 == known_result);
 
   return ok;
 }
@@ -55,4 +94,5 @@ test01() {
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN

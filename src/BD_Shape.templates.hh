@@ -4051,7 +4051,7 @@ BD_Shape<T>::affine_image(const Variable& var,
 
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
-		    "Octagonal_Shape<T>::affine_image(Variable, Linear_Form):"
+		    "BD_Shape<T>::affine_image(Variable, Linear_Form):"
                     " T not a floating point type.");
 
   // Dimension-compatibility checks.
@@ -4093,7 +4093,7 @@ BD_Shape<T>::affine_image(const Variable& var,
   // Now we know the form of `lf':
   // - If t == 0, then lf == b, with `b' a constant;
   // - If t == 1, then lf == a*w + b, where `w' can be `v' or another
-  //   variable; 
+  //   variable;
   // - If t == 2, the `expr' is of the general form.
 
   PPL_DIRTY_TEMP(N, b_ub);
@@ -4112,7 +4112,7 @@ BD_Shape<T>::affine_image(const Variable& var,
     PPL_ASSERT(OK());
     return;
   }
-  
+
   // General case.
   // Either t == 2, so that
   // lf == i_1*x_1 + i_2*x_2 + ... + i_n*x_n + b, where n >= 2,
@@ -4124,30 +4124,30 @@ BD_Shape<T>::affine_image(const Variable& var,
 
   template <typename T>
   template <typename Interval_Info>
-  void 
+  void
   BD_Shape<T>::inhomogeneous_affine_image(const Variable& var,
-					  const dimension_type& var_id,
-				    const Interval<T, Interval_Info>& term,
-					  const N& ub,
-				          const N& lb) {
+                                 const dimension_type& var_id,
+                       const Interval<T, Interval_Info>& term,
+					                              const N& ub,
+				                                  const N& lb) {
   }
 
   template <typename T>
   template <typename Interval_Info>
-  void 
+  void
   BD_Shape<T>::one_variable_affine_image(const Variable& var,
-					 const dimension_type& var_id,
-				   const Interval<T, Interval_Info>& term,
+					            const dimension_type& var_id,
+                      const Interval<T, Interval_Info>& term,
 				   const Interval<T, Interval_Info>& w_coeff,
-					 const N& ub,
-					 const N& lb) {
+					                             const N& ub,
+                                                 const N& lb) {
   }
 
   template <typename T>
   template <typename Interval_Info>
   void BD_Shape<T>
   ::two_variable_affine_image(const Variable& var,
-			      const dimension_type& var_id,
+			                  const dimension_type& var_id,
 		 const Linear_Form< Interval<T, Interval_Info> >& lf) {
   }
 
@@ -5976,7 +5976,7 @@ template<typename Interval_Info>
 void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
                                           const char* name_row,
-                                          const Linear_Form< Interval<T, 
+                                          const Linear_Form< Interval<T,
 					  Interval_Info> >& lf) const {
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
