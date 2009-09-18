@@ -299,7 +299,38 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
 template <typename FP_Format, typename Interval_Info>
 void
 Polyhedron::affine_image(const Variable& var,
-            const Linear_Form<Interval <FP_Format, Interval_Info> >& lf) {
+const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store) {
+
+  // Check that FP_Format is indeed a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
+                         "Polyhedron::overapproximate_linear_form:"
+                         " FP_Format not a floating point type.");
+
+  // Dimension compatibility checks.
+  // The dimension of lf should not be greater than the dimension of *this.
+  const dimension_type lf_space_dim = lf.space_dimension();
+  if (space_dim < lf_space_dim)
+    throw_dimension_incompatible("affine_image(v, l)", "l", lf);
+
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_id = var.id();
+  if (space_dim < var_id + 1)
+    throw_dimension_incompatible("affine_image(v, l)", var.id()+1);
+
+  PPL_ASSERT(!marked_empty());
+
+  minimize();
+  unconstrain(var);
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
+
+  FP_Linear_Form lf_approx;
+  overapproximate_linear_form(lf, lf_space_dim, store, lf_approx);
+
+
+
 }
 
 template <typename FP_Format, typename Interval_Info>
@@ -330,6 +361,7 @@ Polyhedron::overapproximate_linear_form(
     FP_Format curr_lb = curr_coeff.lower();
     FP_Format curr_ub = curr_coeff.upper();
     if (curr_lb != 0 || curr_ub != 0) {
+      PPL_ASSERT(store.find(i) != store.end());
       FP_Interval_Type curr_addend(curr_ub - curr_lb);
       curr_addend *= aux_divisor2;
       curr_addend *= store[i];

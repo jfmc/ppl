@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
+#include "Linear_Form.types.hh"
 #include "assert.hh"
 #include <string>
 #include <iostream>
@@ -2229,6 +2230,14 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* cgs_name,
 					      const Congruence_System& cgs) const {
   throw_dimension_incompatible(method, cgs_name, cgs.space_dimension());
+}
+
+template <typename C>
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* lf_name,
+					      const Linear_Form<C>& lf) const {
+  throw_dimension_incompatible(method, lf_name, lf.space_dimension());
 }
 
 void
