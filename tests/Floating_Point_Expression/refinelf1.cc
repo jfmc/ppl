@@ -354,6 +354,15 @@ test09() {
 
   bool ok = (oc1 == known_result);
 
+  oc1.refine_with_linear_form_inequality(l2, l1);
+  print_constraints(oc1, "*** [-7, -2] <= [0.25, 0.5]*A + [-2, -1]*B ***");
+
+  print_constraints(known_result, "*** known_result2 ***");
+
+  bool ok2 = (oc1 == known_result);
+
+  return ok1 && ok2;
+
   return ok;
 }
 
