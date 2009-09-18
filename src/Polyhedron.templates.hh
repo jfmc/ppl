@@ -25,7 +25,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Generator.defs.hh"
 #include "MIP_Problem.defs.hh"
+#include "Interval.defs.hh"
+#include "Linear_Form.defs.hh"
 #include <algorithm>
+#include <map>
 #include <deque>
 
 namespace Parma_Polyhedra_Library {
@@ -291,6 +294,20 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   Polyhedron new_polyhedron(topology(), new_gensys);
   std::swap(*this, new_polyhedron);
   PPL_ASSERT_HEAVY(OK(true));
+}
+
+template <typename FP_Format, typename Interval_Info>
+void
+Polyhedron::affine_image(const Variable& var,
+            const Linear_Form<Interval <FP_Format, Interval_Info> >& lf) {
+}
+
+template <typename FP_Format, typename Interval_Info>
+void
+Polyhedron::overapproximate_linear_form(
+  const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+  const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store,
+  Linear_Form<Interval <FP_Format, Interval_Info> >& result) {
 }
 
 } // namespace Parma_Polyhedra_Library

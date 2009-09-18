@@ -47,7 +47,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Box.types.hh"
 #include "BD_Shape.types.hh"
 #include "Octagonal_Shape.types.hh"
+#include "Interval.types.hh"
+#include "Linear_Form.types.hh"
 #include <vector>
+#include <map>
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -1141,6 +1144,10 @@ public:
 		    const Linear_Expression& expr,
 		    Coefficient_traits::const_reference denominator
 		      = Coefficient_one());
+
+  template <typename FP_Format, typename Interval_Info>
+  void affine_image(const Variable& var,
+              const Linear_Form<Interval <FP_Format, Interval_Info> >& lf);
 
   /*! \brief
     Assigns to \p *this the
@@ -2559,8 +2566,13 @@ protected:
   //@} // Exception Throwers
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
-};
+  template <typename FP_Format, typename Interval_Info>
+  static void overapproximate_linear_form(
+  const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+  const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store,
+  Linear_Form<Interval <FP_Format, Interval_Info> >& result);
 
+};
 
 namespace std {
 
