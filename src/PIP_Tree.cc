@@ -871,8 +871,36 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         return OPTIMIZED_PIP_PROBLEM;
       }
     }
-    //FIXME: to be finished
 
+    /* Otherwise, all parameters are positive: we have found a continuous
+     * solution. If the solution happens to be integer, then it is a
+     * solution of the  integer problem. Otherwise, we may need to generate
+     * a new cut to try and get back into the integer case. */
+    else {
+#ifdef NOISY_PIP
+      std::cout << "All parameters are positive."
+                << std::endl;
+#endif
+      tableau.s.normalize();
+      tableau.t.normalize();
+
+      if (tableau.s.is_integer() && tableau.t.is_integer()) {
+        /* The solution is integer */
+#ifdef NOISY_PIP
+        std::cout << "Solution found for in current node."
+                  << std::endl;
+#endif
+        return OPTIMIZED_PIP_PROBLEM;
+      }
+      else {
+        /* The solution is non-integer. We have to generate a cut. */
+        //FIXME: to be finished
+#ifdef NOISY_PIP
+        std::cout << "Cut generation required."
+                  << std::endl;
+#endif
+      }
+    }
   } // Main loop of the simplex algorithm
 
   return OPTIMIZED_PIP_PROBLEM;
