@@ -5194,7 +5194,7 @@ Octagonal_Shape<T>::affine_image(const Variable& var,
           std::swap(m_v_cv, m_cv_v);
           // Strong closure is not preserved.
           reset_strongly_closed();
-          if (b != 0) {
+          if (!is_b_zero) {
             // Translate the unary constraints on `var' by adding the value
             // `b_ub' or subtracting the value `b_lb'.
             mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_UP);

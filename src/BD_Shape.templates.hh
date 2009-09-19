@@ -4076,14 +4076,14 @@ BD_Shape<T>::affine_image(const Variable& var,
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t = 0;
   // Index of the last non-zero coefficient in `lf', if any.
-  dimension_type w = 0;
+  dimension_type w_id = 0;
   // Get information about the number of non-zero coefficients in `lf'.
   for (dimension_type i = lf_space_dim; i-- > 0; )
     if (lf.coefficient(Variable(i)) != 0) {
       if (t++ == 1)
         break;
       else
-        w = i+1;
+        w_id = i + 1;
     }
 
   typedef Interval<T, Interval_Info> FP_Interval_Type;
@@ -4094,7 +4094,7 @@ BD_Shape<T>::affine_image(const Variable& var,
   // - If t == 0, then lf == b, with `b' a constant;
   // - If t == 1, then lf == a*w + b, where `w' can be `v' or another
   //   variable;
-  // - If t == 2, the `expr' is of the general form.
+  // - If t == 2, the linear form 'lf' is of the general form.
 
   PPL_DIRTY_TEMP(N, b_ub);
   assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
@@ -4102,13 +4102,14 @@ BD_Shape<T>::affine_image(const Variable& var,
   neg_assign_r(b_mlb, b.lower(), ROUND_NOT_NEEDED);
 
   if (t == 0) {
-    inhomogeneous_affine_image(var, var_id, b, b_ub, b_mlb);
+    inhomogeneous_affine_image(var, var_id, b_ub, b_mlb);
     PPL_ASSERT(OK());
     return;
   }
   else if (t == 1) {
-    const FP_Interval_Type& w_coeff = lf.coefficient(Variable(w-1));
-    one_variable_affine_image(var, var_id, b, w_coeff, b_ub, b_mlb);
+    const FP_Interval_Type& w_coeff = lf.coefficient(Variable(w_id - 1));
+    one_variable_affine_image(var, var_id, b, w_coeff, w_id,
+                              b_ub, b_mlb, space_dim);
     PPL_ASSERT(OK());
     return;
   }
@@ -4118,38 +4119,130 @@ BD_Shape<T>::affine_image(const Variable& var,
   // lf == i_1*x_1 + i_2*x_2 + ... + i_n*x_n + b, where n >= 2,
   // or t == 1, lf == i*w + b, but i <> [+/-1;+/-1].
 
-  two_variable_affine_image(var, var_id, lf);
+  two_variables_affine_image(var, var_id, lf);
   PPL_ASSERT(OK());
 }
 
-  template <typename T>
-  template <typename Interval_Info>
-  void
-  BD_Shape<T>::inhomogeneous_affine_image(const Variable& var,
-                                 const dimension_type& var_id,
-                       const Interval<T, Interval_Info>& term,
-					                              const N& ub,
-				                                  const N& lb) {
-  }
+// Case 1: var = [-mlb, ub].
+template <typename T>
+template <typename Interval_Info>
+void
+BD_Shape<T>::inhomogeneous_affine_image(const Variable& var,
+                                        const dimension_type& var_id,
+                                        const N& ub,
+                                        const N& mlb) {
+  // Remove all constraints on `var'.
+  forget_all_dbm_constraints(var);
+  // Shortest-path closure is preserved, but not reduction.
+  if (marked_shortest_path_reduced())
+    reset_shortest_path_reduced();
+    // Add the constraint `var >= lb && var <= ub'.
+    add_dbm_constraint(0, var_id, ub);
+    add_dbm_constraint(var_id, 0, mlb);
+    return;
+}
 
-  template <typename T>
-  template <typename Interval_Info>
-  void
-  BD_Shape<T>::one_variable_affine_image(const Variable& var,
-					            const dimension_type& var_id,
-                      const Interval<T, Interval_Info>& term,
-				   const Interval<T, Interval_Info>& w_coeff,
-					                             const N& ub,
-                                                 const N& lb) {
-  }
+// case 2: var = (+/-1) * w + [lb, -mlb], where `w' can be `var'
+// or another variable.
+template <typename T>
+template <typename Interval_Info>
+void
+BD_Shape<T>::one_variable_affine_image(const Variable& var,
+                                       const dimension_type& var_id,
+                          const Interval<T, Interval_Info>& w_coeff,
+                                       const dimension_type& w_id,
+                                       const N& ub,
+                                       const N& mlb,
+                                       const dimension_type& space_dim) {
 
-  template <typename T>
-  template <typename Interval_Info>
-  void BD_Shape<T>
-  ::two_variable_affine_image(const Variable& var,
-			                  const dimension_type& var_id,
-		 const Linear_Form< Interval<T, Interval_Info> >& lf) {
+
+  // true if b = [b_lb, b_ub] = [-mlb, ub] = [0;0].
+  bool is_b_zero = (mlb == 0 && ub == 0);
+  // true if w_coeff = [1;1]
+  bool is_w_coeff_one = (w_coeff == 1);
+  // true if w_coeff = [-1;-1].
+  bool is_w_coeff_minus_one = (w_coeff == -1);
+  if (is_w_coeff_one || is_w_coeff_minus_one) {
+    if (w_id == var_id) {
+      // Here `lf' is of the form: [+/-1;+/-1] * v + b.
+      if (is_w_coeff_one) {
+        if (is_b_zero)
+          // The transformation is the identity function.
+          return;
+        else {
+          // Translate all the constraints on `var' by adding the value
+          // `b_ub' or subtracting the value `b_lb'.
+          DB_Row<N>& dbm_v = dbm[var_id];
+          for (dimension_type i = space_dim + 1; i-- > 0; ) {
+            N& dbm_vi = dbm_v[i];
+            add_assign_r(dbm_vi, dbm_vi, mlb, ROUND_UP);
+            N& dbm_iv = dbm[i][var_id];
+            add_assign_r(dbm_iv, dbm_iv, ub, ROUND_UP);
+          }
+          // Both shortest-path closure and reduction are preserved.
+        }
+
+      }
+      else {
+        // Here `w_coeff = [-1;-1].
+        // Remove the binary constraints on `var'.
+        forget_binary_dbm_constraints(var);
+        std::swap(dbm[var_id][0], dbm[0][var_id]);
+        // Shortest-path closure is not preserved.
+        reset_shortest_path_closed();
+        if (!is_b_zero) {
+          // Translate the unary constraints on `var' by adding the value
+          // `b_ub' or subtracting the value `b_lb'.
+          N& dbm_v0 = dbm[var_id][0];
+          add_assign_r(dbm_v0, dbm_v0, ub, ROUND_UP);
+          N& dbm_0v = dbm[0][var_id];
+          add_assign_r(dbm_v0, dbm_0v, mlb, ROUND_UP);
+        }
+      }
+    }
+    else {
+      // Here `w != var', so that `lf' is of the form
+      // [+/-1;+/-1] * w + b.
+      // Remove all constraints on `var'.
+      forget_all_dbm_constraints(var);
+      // Shortest-path closure is preserved, but not reduction.
+      if (marked_shortest_path_reduced())
+        reset_shortest_path_reduced();
+
+      if (is_w_coeff_one) {
+        // Add the new constraints `var - w >= b_lb'
+        // `and var - w <= b_ub'.
+        add_dbm_constraint(w_id, var_id, ub);
+        add_dbm_constraint(var_id, w_id, mlb);
+      }
+      else {
+        // We have to add the constraint `v + w == b', over-approximating it
+        // by computing lower and upper bounds for `w'.
+        const N& lb_w = dbm[w_id][0];
+        if (!is_plus_infinity(lb_w)) {
+          // Add the constraint `v <= ub - lb_w'.
+          add_assign_r(dbm[0][var_id], ub, -lb_w, ROUND_UP);
+          reset_shortest_path_closed();
+        }
+        const N& ub_w = dbm[0][w_id];
+        if (!is_plus_infinity(ub_w)) {
+          // Add the constraint `v >= lb - ub_w'.
+          add_assign_r(dbm[var_id][0], ub_w, mlb, ROUND_UP);
+          reset_shortest_path_closed();
+        }
+      }
+    }
   }
+  return;
+}
+
+template <typename T>
+template <typename Interval_Info>
+void BD_Shape<T>
+::two_variables_affine_image(const Variable& var,
+                             const dimension_type& var_id,
+     const Linear_Form< Interval<T, Interval_Info> >& lf) {
+}
 
 
 template <typename T>

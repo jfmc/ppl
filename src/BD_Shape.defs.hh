@@ -2076,10 +2076,9 @@ private:
   */
   template <typename Interval_Info>
   void inhomogeneous_affine_image(const Variable& var,
-				  const dimension_type& var_id,
-				  const Interval<T, Interval_Info>& term,
-				  const N& ub,
-				  const N& lb);
+				                  const dimension_type& var_id,
+                                  const N& ub,
+                                  const N& mlb);
 
   /* \brief
     Auxiliary function for \ref affine_relation "affine image" that handle
@@ -2087,20 +2086,21 @@ private:
   */
   template <typename Interval_Info>
   void one_variable_affine_image(const Variable& var,
-				 const dimension_type& var_id,
-				 const Interval<T, Interval_Info>& term,
-				 const Interval<T, Interval_Info>& w_coeff,
-				 const N& ub,
-				 const N& lb);
+                                 const dimension_type& var_id,
+                    const Interval<T, Interval_Info>& w_coeff,
+                                 const dimension_type& w_id,
+				                 const N& ub,
+				                 const N& mlb,
+				                 const dimension_type& space_dim);
 
   /* \brief
     Auxiliary function for \ref affine_relation "affine image" that handle
     the general case: \f$l \equal ax + by + c\f$
   */
   template <typename Interval_Info>
-  void two_variable_affine_image(const Variable& var,
-				 const dimension_type& var_id,
-		         const Linear_Form< Interval<T, Interval_Info> >& lf);
+  void two_variables_affine_image(const Variable& var,
+				                  const dimension_type& var_id,
+            const Linear_Form< Interval<T,Interval_Info> >& lf);
 
   //! An helper function for the computation of affine relations.
   /*!
@@ -2171,7 +2171,7 @@ private:
   template<typename Interval_Info>
   void throw_dimension_incompatible(const char* method,
 				    const char* name_row,
-				    const Linear_Form< Interval<T, 
+				    const Linear_Form< Interval<T,
 				    Interval_Info> >& lf) const;
 
   static void throw_expression_too_complex(const char* method,
