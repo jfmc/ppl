@@ -375,6 +375,28 @@ Polyhedron::overapproximate_linear_form(
 
 }
 
+template <typename FP_Format, typename Interval_Info>
+void convert_to_integer_expression(
+	        const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+                const dimension_type lf_dimension,
+                Linear_Expression& result) {
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  typedef typename FP_Interval_Type::coefficient_type FP_Coeff_Type;
+
+}
+
+template <typename FP_Format, typename Interval_Info>
+void convert_to_integer_expressions(
+	        const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+                const dimension_type lf_dimension,
+                Linear_Expression& first, Linear_Expression& second) {
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  typedef typename FP_Interval_Type::coefficient_type FP_Coeff_Type;
+
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Polyhedron_templates_hh)
