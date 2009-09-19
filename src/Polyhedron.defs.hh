@@ -2587,8 +2587,8 @@ protected:
   template <typename FP_Format, typename Interval_Info>
   static void convert_to_integer_expressions(
 	      const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
-              const dimension_type lf_dimension,
-              Linear_Expression& first, Linear_Expression& second);
+              const dimension_type lf_dimension, Linear_Expression& res,
+              Coefficient& res_low_coeff, Coefficient& res_hi_coeff);
 
 };
 

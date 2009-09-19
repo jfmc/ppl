@@ -304,19 +304,19 @@ const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store) {
 
   // Check that FP_Format is indeed a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
-                         "Polyhedron::overapproximate_linear_form:"
+                         "Polyhedron::affine_image:"
                          " FP_Format not a floating point type.");
 
   // Dimension compatibility checks.
   // The dimension of lf should not be greater than the dimension of *this.
   const dimension_type lf_space_dim = lf.space_dimension();
   if (space_dim < lf_space_dim)
-    throw_dimension_incompatible("affine_image(v, l)", "l", lf);
+    throw_dimension_incompatible("affine_image(v, l, s)", "l", lf);
 
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
-    throw_dimension_incompatible("affine_image(v, l)", var.id()+1);
+    throw_dimension_incompatible("affine_image(v, l, s)", var.id()+1);
 
   PPL_ASSERT(!marked_empty());
 
@@ -380,28 +380,106 @@ void convert_to_integer_expression(
 	        const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
                 const dimension_type lf_dimension,
                 Linear_Expression& result) {
+  result = Linear_Expression();
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
   typedef typename FP_Interval_Type::coefficient_type FP_Coeff_Type;
+  std::vector<Coefficient> numerators(lf_dimension+1);
+  std::vector<Coefficient> denominators(lf_dimension+1);
 
+  // Convert each floating point number to a pair <numerator, denominator>
+  // and compute the lcm of all denominators.
+  PPL_DIRTY_TEMP_COEFFICIENT(lcm);
+  lcm = 1;
+  const FP_Interval_Type& b = lf.inhomogeneous_term();
+  // FIXME: are these checks numerator[i] != 0 really necessary?
+  numer_denom(b.upper(), numerators[lf_dimension],
+                         denominators[lf_dimension]);
+  if (numerators[lf_dimension] != 0)
+      lcm_assign(lcm, lcm, denominators[lf_dimension]);
+
+  for (dimension_type i = 0; i < lf_dimension; ++i) {
+    const FP_Interval_Type& curr_int = lf.coefficient(Variable(i));
+    numer_denom(curr_int.lower(), numerators[i], denominators[i]);
+    if (numerators[i] != 0)
+      lcm_assign(lcm, lcm, denominators[i]);
+  }
+
+  for (dimension_type i = 0; i < lf_dimension; ++i) {
+    if (numerators[i] != 0) {
+      exact_div_assign(denominators[i], lcm, denominators[i]);
+      numerators[i] *= denominators[i];
+      result += numerators[i] * Variable(i);
+    }
+  }
+
+  if (numerators[lf_dimension] != 0) {
+    exact_div_assign(denominators[lf_dimension],
+                     lcm, denominators[lf_dimension]);
+    numerators[lf_dimension] *= denominators[lf_dimension];
+    result += numerators[lf_dimension];
+  }
 }
 
 template <typename FP_Format, typename Interval_Info>
 void convert_to_integer_expressions(
 	        const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
-                const dimension_type lf_dimension,
-                Linear_Expression& first, Linear_Expression& second) {
+                const dimension_type lf_dimension, Linear_Expression& res,
+                Coefficient& res_low_coeff, Coefficient& res_hi_coeff) {
+  res = Linear_Expression();
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
   typedef typename FP_Interval_Type::coefficient_type FP_Coeff_Type;
-  std::vector<Coefficient> coefficients(lf_dimension+2);
-  std::vector<Coefficient> norm_factors(lf_dimension+2);
+  std::vector<Coefficient> numerators(lf_dimension+2);
+  std::vector<Coefficient> denominators(lf_dimension+2);
 
-  coefficients[lf_dimension] = lf.inhomogeneous_term().lower();
-  coefficients[lf_dimension+1] = lf.inhomogeneous_term().upper();
+  // Convert each floating point number to a pair <numerator, denominator>
+  // and compute the lcm of all denominators.
+  PPL_DIRTY_TEMP_COEFFICIENT(lcm);
+  lcm = 1;
+  const FP_Interval_Type& b = lf.inhomogeneous_term();
+  numer_denom(b.lower(), numerators[lf_dimension], denominators[lf_dimension]);
+  // FIXME: are these checks numerator[i] != 0 really necessary?
+  if (numerators[lf_dimension] != 0)
+      lcm_assign(lcm, lcm, denominators[lf_dimension]);
 
+  numer_denom(b.upper(), numerators[lf_dimension+1],
+                         denominators[lf_dimension+1]);
+  if (numerators[lf_dimension+1] != 0)
+      lcm_assign(lcm, lcm, denominators[lf_dimension+1]);
 
+  for (dimension_type i = 0; i < lf_dimension; ++i) {
+    const FP_Interval_Type& curr_int = lf.coefficient(Variable(i));
+    numer_denom(curr_int.lower(), numerators[i], denominators[i]);
+    if (numerators[i] != 0)
+      lcm_assign(lcm, lcm, denominators[i]);
+  }
 
+  for (dimension_type i = 0; i < lf_dimension; ++i) {
+    if (numerators[i] != 0) {
+      exact_div_assign(denominators[i], lcm, denominators[i]);
+      numerators[i] *= denominators[i];
+      res += numerators[i] * Variable(i);
+    }
+  }
+
+  if (numerators[lf_dimension] != 0) {
+    exact_div_assign(denominators[lf_dimension],
+                     lcm, denominators[lf_dimension]);
+    numerators[lf_dimension] *= denominators[lf_dimension];
+    res_low_coeff = numerators[lf_dimension];
+  }
+  else
+    res_low_coeff = Coefficient(0);
+
+  if (numerators[lf_dimension+1] != 0) {
+    exact_div_assign(denominators[lf_dimension+1],
+                     lcm, denominators[lf_dimension+1]);
+    numerators[lf_dimension+1] *= denominators[lf_dimension+1];
+    res_hi_coeff = numerators[lf_dimension+1];
+  }
+  else
+    res_hi_coeff = Coefficient(0);
 }
 
 } // namespace Parma_Polyhedra_Library
