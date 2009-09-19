@@ -394,6 +394,13 @@ void convert_to_integer_expressions(
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
   typedef typename FP_Interval_Type::coefficient_type FP_Coeff_Type;
+  std::vector<Coefficient> coefficients(lf_dimension+2);
+  std::vector<Coefficient> norm_factors(lf_dimension+2);
+
+  coefficients[lf_dimension] = lf.inhomogeneous_term().lower();
+  coefficients[lf_dimension+1] = lf.inhomogeneous_term().upper();
+
+
 
 }
 
