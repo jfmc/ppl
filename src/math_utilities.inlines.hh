@@ -46,9 +46,9 @@ low_bits_mask(const unsigned n) {
   return n == 0 ? 0 : ~(~(T(0u)) << n);
 }
 
-template <typename T, typename Policy>
-inline void
-numer_denom(const Checked_Number<T, Policy>& from,
+template <typename T>
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
+numer_denom(const T& from,
 	    Coefficient& num, Coefficient& den) {
   PPL_ASSERT(!is_not_a_number(from)
 	 && !is_minus_infinity(from)
@@ -59,9 +59,9 @@ numer_denom(const Checked_Number<T, Policy>& from,
   den = q.get_den();
 }
 
-template <typename T, typename Policy>
-inline void
-div_round_up(Checked_Number<T, Policy>& to,
+template <typename T>
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
+div_round_up(T& to,
 	     Coefficient_traits::const_reference x,
 	     Coefficient_traits::const_reference y) {
   PPL_DIRTY_TEMP0(mpq_class, qx);
@@ -88,19 +88,18 @@ max_assign(N& x, const N& y) {
     x = y;
 }
 
-template <typename T, typename Policy>
-inline bool
-is_even(const Checked_Number<T, Policy>& x) {
-  Checked_Number<T, Policy> half_x;
-  return div_2exp_assign_r(half_x, x, 1, ROUND_DIRECT | ROUND_STRICT_RELATION) == V_EQ
-    && is_integer(half_x);
+template <typename T>
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
+is_even(const T& x) {
+  T mod;
+  return umod_2exp_assign_r(mod, x, 1, ROUND_DIRECT | ROUND_STRICT_RELATION) == V_EQ
+    && mod == 0;
 }
 
-template <typename T, typename Policy>
-inline bool
-is_additive_inverse(const Checked_Number<T, Policy>& x,
-		    const Checked_Number<T, Policy>& y) {
-  Checked_Number<T, Policy> negated_x;
+template <typename T>
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
+is_additive_inverse(const T& x, const T& y) {
+  T negated_x;
   return neg_assign_r(negated_x, x, ROUND_DIRECT | ROUND_STRICT_RELATION) == V_EQ
     && negated_x == y;
 }
