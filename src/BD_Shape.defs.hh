@@ -2075,24 +2075,20 @@ private:
     the general case: \f$l \equal c\f$
   */
   template <typename Interval_Info>
-  void inhomogeneous_affine_image(const Variable& var,
-				                  const dimension_type& var_id,
-                                  const N& ub,
-                                  const N& mlb);
+  void inhomogeneous_affine_image(const dimension_type& var_id,
+				  const Interval<T, Interval_Info>& b);
 
   /* \brief
     Auxiliary function for \ref affine_relation "affine image" that handle
     the general case: \f$l \equal ax + c\f$
   */
   template <typename Interval_Info>
-  void one_variable_affine_image(const Variable& var,
-                                 const dimension_type& var_id,
-                    const Interval<T, Interval_Info>& w_coeff,
-                                 const dimension_type& w_id,
-				                 const N& ub,
-				                 const N& mlb,
-				                 const dimension_type& space_dim);
-
+  void one_variable_affine_image(const dimension_type& var_id,
+				 const Interval<T, Interval_Info>& b,
+				 const Interval<T, Interval_Info>& w_coeff,
+				 const dimension_type& w_id,
+				 const dimension_type& space_dim);
+  
   /* \brief
     Auxiliary function for \ref affine_relation "affine image" that handle
     the general case: \f$l \equal ax + by + c\f$

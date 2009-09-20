@@ -4096,20 +4096,14 @@ BD_Shape<T>::affine_image(const Variable& var,
   //   variable;
   // - If t == 2, the linear form 'lf' is of the general form.
 
-  PPL_DIRTY_TEMP(N, b_ub);
-  assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
-  PPL_DIRTY_TEMP(N, b_mlb);
-  neg_assign_r(b_mlb, b.lower(), ROUND_NOT_NEEDED);
-
   if (t == 0) {
-    inhomogeneous_affine_image(var, var_id, b_ub, b_mlb);
+    inhomogeneous_affine_image(var_id, b);
     PPL_ASSERT(OK());
     return;
   }
   else if (t == 1) {
     const FP_Interval_Type& w_coeff = lf.coefficient(Variable(w_id - 1));
-    one_variable_affine_image(var, var_id, b, w_coeff, w_id,
-                              b_ub, b_mlb, space_dim);
+    one_variable_affine_image(var_id, b, w_coeff, w_id, space_dim);
     PPL_ASSERT(OK());
     return;
   }
@@ -4119,7 +4113,7 @@ BD_Shape<T>::affine_image(const Variable& var,
   // lf == i_1*x_1 + i_2*x_2 + ... + i_n*x_n + b, where n >= 2,
   // or t == 1, lf == i*w + b, but i <> [+/-1;+/-1].
 
-  two_variables_affine_image(var, var_id, lf);
+  //two_variables_affine_image(var, var_id, lf);
   PPL_ASSERT(OK());
 }
 
@@ -4127,18 +4121,21 @@ BD_Shape<T>::affine_image(const Variable& var,
 template <typename T>
 template <typename Interval_Info>
 void
-BD_Shape<T>::inhomogeneous_affine_image(const Variable& var,
-                                        const dimension_type& var_id,
-                                        const N& ub,
-                                        const N& mlb) {
+BD_Shape<T>::inhomogeneous_affine_image(const dimension_type& var_id,
+					const Interval<T, Interval_Info>& b) {
+  PPL_DIRTY_TEMP(N, b_ub);
+  assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, b_mlb);
+  neg_assign_r(b_mlb, b.lower(), ROUND_NOT_NEEDED);
+
   // Remove all constraints on `var'.
-  forget_all_dbm_constraints(var);
+  forget_all_dbm_constraints(var_id);
   // Shortest-path closure is preserved, but not reduction.
   if (marked_shortest_path_reduced())
     reset_shortest_path_reduced();
     // Add the constraint `var >= lb && var <= ub'.
-    add_dbm_constraint(0, var_id, ub);
-    add_dbm_constraint(var_id, 0, mlb);
+    add_dbm_constraint(0, var_id, b_ub);
+    add_dbm_constraint(var_id, 0, b_mlb);
     return;
 }
 
@@ -4146,18 +4143,20 @@ BD_Shape<T>::inhomogeneous_affine_image(const Variable& var,
 // or another variable.
 template <typename T>
 template <typename Interval_Info>
-void
-BD_Shape<T>::one_variable_affine_image(const Variable& var,
-                                       const dimension_type& var_id,
-                          const Interval<T, Interval_Info>& w_coeff,
-                                       const dimension_type& w_id,
-                                       const N& ub,
-                                       const N& mlb,
-                                       const dimension_type& space_dim) {
+void BD_Shape<T>
+::one_variable_affine_image(const dimension_type& var_id,
+			    const Interval<T, Interval_Info>& b,
+			    const Interval<T, Interval_Info>& w_coeff,
+			    const dimension_type& w_id,
+			    const dimension_type& space_dim) {
 
+  PPL_DIRTY_TEMP(N, b_ub);
+  assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, b_mlb);
+  neg_assign_r(b_mlb, b.lower(), ROUND_NOT_NEEDED);
 
   // true if b = [b_lb, b_ub] = [-mlb, ub] = [0;0].
-  bool is_b_zero = (mlb == 0 && ub == 0);
+  bool is_b_zero = (b_mlb == 0 && b_ub == 0);
   // true if w_coeff = [1;1]
   bool is_w_coeff_one = (w_coeff == 1);
   // true if w_coeff = [-1;-1].
@@ -4175,9 +4174,9 @@ BD_Shape<T>::one_variable_affine_image(const Variable& var,
           DB_Row<N>& dbm_v = dbm[var_id];
           for (dimension_type i = space_dim + 1; i-- > 0; ) {
             N& dbm_vi = dbm_v[i];
-            add_assign_r(dbm_vi, dbm_vi, mlb, ROUND_UP);
+            add_assign_r(dbm_vi, dbm_vi, b_mlb, ROUND_UP);
             N& dbm_iv = dbm[i][var_id];
-            add_assign_r(dbm_iv, dbm_iv, ub, ROUND_UP);
+            add_assign_r(dbm_iv, dbm_iv, b_ub, ROUND_UP);
           }
           // Both shortest-path closure and reduction are preserved.
         }
@@ -4186,7 +4185,7 @@ BD_Shape<T>::one_variable_affine_image(const Variable& var,
       else {
         // Here `w_coeff = [-1;-1].
         // Remove the binary constraints on `var'.
-        forget_binary_dbm_constraints(var);
+        forget_binary_dbm_constraints(var_id);
         std::swap(dbm[var_id][0], dbm[0][var_id]);
         // Shortest-path closure is not preserved.
         reset_shortest_path_closed();
@@ -4194,9 +4193,9 @@ BD_Shape<T>::one_variable_affine_image(const Variable& var,
           // Translate the unary constraints on `var' by adding the value
           // `b_ub' or subtracting the value `b_lb'.
           N& dbm_v0 = dbm[var_id][0];
-          add_assign_r(dbm_v0, dbm_v0, ub, ROUND_UP);
+          add_assign_r(dbm_v0, dbm_v0, b_ub, ROUND_UP);
           N& dbm_0v = dbm[0][var_id];
-          add_assign_r(dbm_v0, dbm_0v, mlb, ROUND_UP);
+          add_assign_r(dbm_v0, dbm_0v, b_mlb, ROUND_UP);
         }
       }
     }
@@ -4204,7 +4203,7 @@ BD_Shape<T>::one_variable_affine_image(const Variable& var,
       // Here `w != var', so that `lf' is of the form
       // [+/-1;+/-1] * w + b.
       // Remove all constraints on `var'.
-      forget_all_dbm_constraints(var);
+      forget_all_dbm_constraints(var_id);
       // Shortest-path closure is preserved, but not reduction.
       if (marked_shortest_path_reduced())
         reset_shortest_path_reduced();
@@ -4212,22 +4211,24 @@ BD_Shape<T>::one_variable_affine_image(const Variable& var,
       if (is_w_coeff_one) {
         // Add the new constraints `var - w >= b_lb'
         // `and var - w <= b_ub'.
-        add_dbm_constraint(w_id, var_id, ub);
-        add_dbm_constraint(var_id, w_id, mlb);
+        add_dbm_constraint(w_id, var_id, b_ub);
+        add_dbm_constraint(var_id, w_id, b_mlb);
       }
       else {
         // We have to add the constraint `v + w == b', over-approximating it
         // by computing lower and upper bounds for `w'.
         const N& lb_w = dbm[w_id][0];
+	PPL_DIRTY_TEMP(N, minus_lb_w);
+	neg_assign_r(minus_lb_w, lb_w, ROUND_UP);
         if (!is_plus_infinity(lb_w)) {
           // Add the constraint `v <= ub - lb_w'.
-          add_assign_r(dbm[0][var_id], ub, -lb_w, ROUND_UP);
+          add_assign_r(dbm[0][var_id], b_ub, minus_lb_w, ROUND_UP);
           reset_shortest_path_closed();
         }
         const N& ub_w = dbm[0][w_id];
         if (!is_plus_infinity(ub_w)) {
           // Add the constraint `v >= lb - ub_w'.
-          add_assign_r(dbm[var_id][0], ub_w, mlb, ROUND_UP);
+          add_assign_r(dbm[var_id][0], ub_w, b_mlb, ROUND_UP);
           reset_shortest_path_closed();
         }
       }

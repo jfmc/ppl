@@ -67,7 +67,7 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  BD_Shape<float> bd1(3);
+  BD_Shape<float> bd1(2);
   bd1.add_constraint(A <= 2);
   bd1.add_constraint(A - B <= 3);
   bd1.add_constraint(B <= 2);
@@ -77,12 +77,14 @@ test02() {
   bd1.affine_image(A, l);
   print_constraints(bd1, "*** bd1.affine_image(A, [-2, 1]) ***");
 
+  bd1.ascii_dump();
   // At the moment, affine_image is simply an identity function.
 
-  BD_Shape<float> known_result(3);
-  known_result.add_constraint(A <= 2);
+  BD_Shape<float> known_result(2);
+  known_result.add_constraint(A <= 1);
+  known_result.add_constraint(- A <= 2);
   known_result.add_constraint(B <= 2);
-  known_result.add_constraint(A - B <= 3);
+ 
   print_constraints(known_result, "*** known_result ***");
 
   bool ok = (bd1 == known_result);
