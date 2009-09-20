@@ -4117,7 +4117,7 @@ BD_Shape<T>::affine_image(const Variable& var,
   PPL_ASSERT(OK());
 }
 
-// Case 1: var = [-mlb, ub].
+// Case 1: var = [-b, b].
 template <typename T>
 template <typename Interval_Info>
 void
@@ -4218,11 +4218,9 @@ void BD_Shape<T>
         // We have to add the constraint `v + w == b', over-approximating it
         // by computing lower and upper bounds for `w'.
         const N& lb_w = dbm[w_id][0];
-	PPL_DIRTY_TEMP(N, minus_lb_w);
-	neg_assign_r(minus_lb_w, lb_w, ROUND_UP);
         if (!is_plus_infinity(lb_w)) {
           // Add the constraint `v <= ub - lb_w'.
-          add_assign_r(dbm[0][var_id], b_ub, minus_lb_w, ROUND_UP);
+          sub_assign_r(dbm[0][var_id], b_ub, lb_w, ROUND_UP);
           reset_shortest_path_closed();
         }
         const N& ub_w = dbm[0][w_id];
