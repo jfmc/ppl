@@ -332,14 +332,16 @@ const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store) {
   Linear_Expression lf_approx_le;
   PPL_DIRTY_TEMP_COEFFICIENT(lo_coeff);
   PPL_DIRTY_TEMP_COEFFICIENT(hi_coeff);
-  convert_to_integer_expressions(lf_approx, lf_space_dim, lo_coeff, hi_coeff);
+  convert_to_integer_expressions(lf_approx, lf_space_dim, lf_approx_le,
+                                 lo_coeff, hi_coeff);
 
   // Finally, do the assignment.
   PPL_DIRTY_TEMP_COEFFICIENT(one_coeff);
   one_coeff = 1;
-  generalized_affine_image(var, GREATER_OR_EQUAL, lf_approx + lo_coeff,
+  generalized_affine_image(var, GREATER_OR_EQUAL, lf_approx_le + lo_coeff,
                            one_coeff);
-  generalized_affine_image(var, LESS_OR_EQUAL, lf_approx + hi_coeff, one_coeff);
+  generalized_affine_image(var, LESS_OR_EQUAL, lf_approx_le + hi_coeff,
+                           one_coeff);
 
 }
 
@@ -371,23 +373,26 @@ Polyhedron::overapproximate_linear_form(
     FP_Format curr_lb = curr_coeff.lower();
     FP_Format curr_ub = curr_coeff.upper();
     if (curr_lb != 0 || curr_ub != 0) {
-      PPL_ASSERT(store.find(i) != store.end());
+      typename Interval_Abstract_Store::const_iterator i_ite = store.find(i);
+      PPL_ASSERT(i_ite != store.end());
       FP_Interval_Type curr_addend(curr_ub - curr_lb);
       curr_addend *= aux_divisor2;
-      curr_addend *= store[i];
+      curr_addend *= i_ite->second;
       result += curr_addend;
       curr_addend = FP_Interval_Type(curr_lb + curr_ub);
       curr_addend *= aux_divisor1;
-      curr_addend *= curr_var;
-      result += curr_addend;
+      FP_Linear_Form curr_addend_lf(curr_var);
+      curr_addend_lf *= curr_addend;
+      result += curr_addend_lf;
     }
   }
 
 }
 
 template <typename FP_Format, typename Interval_Info>
-void convert_to_integer_expression(
-	        const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+void
+Polyhedron::convert_to_integer_expression(
+                const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
                 const dimension_type lf_dimension,
                 Linear_Expression& result) {
   result = Linear_Expression();
@@ -432,14 +437,15 @@ void convert_to_integer_expression(
 }
 
 template <typename FP_Format, typename Interval_Info>
-void convert_to_integer_expressions(
+void
+Polyhedron::convert_to_integer_expressions(
 	        const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
                 const dimension_type lf_dimension, Linear_Expression& res,
                 Coefficient& res_low_coeff, Coefficient& res_hi_coeff) {
   res = Linear_Expression();
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
-  typedef typename FP_Interval_Type::coefficient_type FP_Coeff_Type;
+  typedef typename FP_Interval_Type::boundary_type FP_Coeff_Type;
   std::vector<Coefficient> numerators(lf_dimension+2);
   std::vector<Coefficient> denominators(lf_dimension+2);
 
