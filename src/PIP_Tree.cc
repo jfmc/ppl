@@ -48,7 +48,7 @@ merge_assign(Matrix& x, const Constraint_System& y) {
     PPL_ASSERT(y_i->is_nonstrict_inequality());
     for (dimension_type j=width-1; j-- > 0; )
       row[j+1] = y_i->coefficient(Variable(j));
-    row[0] = -y_i->inhomogeneous_term();
+    row[0] = y_i->inhomogeneous_term();
     x.add_row(row);
   }
 }
@@ -448,7 +448,7 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
 
   /* Perform simplex pivots on the context until we find an empty solution
    * or an optimum */
-  for(;;) {
+  for (;;) {
     // Look for a negative RHS (=constant term, stored in matrix column 0)
     i = 0;
     while (i<num_rows && s[i][0] >= 0)
@@ -475,6 +475,8 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
         continue;
       const Coefficient &sij_ = p[j_];
       for (k=0; k<num_rows; ++k) {
+        if (k == i)
+          continue;
         Coefficient mult = s[k][j] * sij_;
         if (mult % sij != 0) {
           // Must scale row to stay in integer case
@@ -486,6 +488,7 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
         }
         s[k][j_] -= mult / sij;
       }
+      s[i][j_] = 0;
     }
     for (k=0; k<num_rows; ++k) {
       Coefficient skj = s[k][j];
@@ -497,7 +500,7 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
         add_assign(s[k], s[k], scale_factor);
         skj *= scale_factor;
       }
-      s[k][j_] = skj/sij;
+      s[k][j] = skj/sij;
     }
   }
 
@@ -543,7 +546,7 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
     int p = 1;
     Row var(n_vars, tableau.s.capacity(), Row::Flags());
     Row param(n_params+1, tableau.t.capacity(), Row::Flags());
-    Coefficient cnst_term = -cst->inhomogeneous_term();
+    Coefficient cnst_term = cst->inhomogeneous_term();
     if (cst->is_strict_inequality())
       // convert c > 0  <=>  c-1 >= 0
       cnst_term -= 1;
@@ -643,7 +646,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
        Either the problem is empty, or a pivoting step is required
     */
     if (i_ != n_a_d) {
-#if NOISY_PIP
+#ifdef NOISY_PIP
       std::cout << "Found row with negative parameters: " << i_
                 << std::endl;
 #endif
@@ -685,7 +688,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
 
       /* If no positive S_ij: problem is empty */
       if (j_ == n_a_d) {
-#if NOISY_PIP
+#ifdef NOISY_PIP
         std::cout << "No positive pivot found: Solution = _|_"
                   << std::endl;
 #endif
@@ -693,7 +696,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         delete this;
         return UNFEASIBLE_PIP_PROBLEM;
       }
-#if NOISY_PIP
+#ifdef NOISY_PIP
       std::cout << "Pivot column: " << j_
                 << std::endl;
 #endif
@@ -833,12 +836,13 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         context.add_row(r);
         add_constraint(r);
 #ifdef NOISY_PIP
-        Linear_Expression e;
-        for (j=1; j<num_params; ++j)
-          e += r[j] * Variable(j-1);
-        Constraint c(e + r[0] >= 0);
-        std::cout << "Adding tautology: " << c
-                  << std::endl;
+        Constraint_System::const_iterator c = constraints_.begin();
+        Constraint_System::const_iterator c_end = constraints_.end();
+        Constraint_System::const_iterator c1 = c;
+        while (++c1 != constraints_.end())
+          c = c1;
+        std::cout << "Adding tautology: ";
+        c->ascii_dump(std::cout);
 #endif
       } else {
 #ifdef NOISY_PIP
