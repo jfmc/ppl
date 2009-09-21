@@ -318,18 +318,28 @@ const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store) {
   if (space_dim < var_id + 1)
     throw_dimension_incompatible("affine_image(v, l, s)", var.id()+1);
 
+  // We suppose that the analyzer will not filter an unreachable test.
   PPL_ASSERT(!marked_empty());
-
-  minimize();
-  unconstrain(var);
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
 
+  // Overapproximate lf.
   FP_Linear_Form lf_approx;
   overapproximate_linear_form(lf, lf_space_dim, store, lf_approx);
 
+  // Normalize lf.
+  Linear_Expression lf_approx_le;
+  PPL_DIRTY_TEMP_COEFFICIENT(lo_coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(hi_coeff);
+  convert_to_integer_expressions(lf_approx, lf_space_dim, lo_coeff, hi_coeff);
 
+  // Finally, do the assignment.
+  PPL_DIRTY_TEMP_COEFFICIENT(one_coeff);
+  one_coeff = 1;
+  generalized_affine_image(var, GREATER_OR_EQUAL, lf_approx + lo_coeff,
+                           one_coeff);
+  generalized_affine_image(var, LESS_OR_EQUAL, lf_approx + hi_coeff, one_coeff);
 
 }
 
