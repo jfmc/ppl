@@ -4212,10 +4212,10 @@ void BD_Shape<T>
       else {
         // We have to add the constraint `v + w == b', over-approximating it
         // by computing lower and upper bounds for `w'.
-        const N& lb_w = dbm[w_id][0];
-        if (!is_plus_infinity(lb_w)) {
+        const N& mlb_w = dbm[w_id][0];
+        if (!is_plus_infinity(mlb_w)) {
           // Add the constraint `v <= ub - lb_w'.
-          sub_assign_r(dbm[0][var_id], b_ub, lb_w, ROUND_UP);
+          add_assign_r(dbm[0][var_id], b_ub, mlb_w, ROUND_UP);
           reset_shortest_path_closed();
         }
         const N& ub_w = dbm[0][w_id];

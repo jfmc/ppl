@@ -61,7 +61,6 @@ test01() {
 
 
 // tests affine_image(A, [-2, 1])
-// FIXME: It's a preliminary version, not sound at the moment.
 bool
 test02() {
   Variable A(0);
@@ -168,6 +167,93 @@ bool test05() {
   return ok;
 }
 
+// tests affine_image(B, [1, 1]*A + [-3, 1])
+bool test06() {
+  Variable A(0);
+  Variable B(1);
+
+  BD_Shape<double> bd1(3);
+  bd1.add_constraint(A <= 2);
+  bd1.add_constraint(A - B <= 3);
+  bd1.add_constraint(B <= 2);
+  db_r_oc free_term(-3);
+  free_term.join_assign(1);
+  Linear_Form<db_r_oc> l(A);
+  l += free_term;
+  bd1.affine_image(B, l);
+  print_constraints(bd1, "*** bd1.affine_image(B, A + [-3, 1]) ***");
+
+  BD_Shape<double> known_result(3);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(B <= 3);
+  known_result.add_constraint(B - A <= 1);
+  known_result.add_constraint(A - B <= 3);
+  print_constraints(known_result, "*** known_result ***");
+
+  bool ok = (bd1 == known_result);
+
+  return ok;
+}
+
+// tests affine_image(B, [-1, -1]*A + [0, 4])
+bool test07() {
+  Variable A(0);
+  Variable B(1);
+
+  BD_Shape<float> bd1(3);
+  bd1.add_constraint(A <= 2);
+  bd1.add_constraint(A - B <= 3);
+  bd1.add_constraint(B <= 2);
+  fl_r_oc free_term(0);
+  free_term.join_assign(4);
+  Linear_Form<fl_r_oc> l(-A);
+  l += free_term;
+  bd1.affine_image(B, l);
+  print_constraints(bd1, "*** bd1.affine_image(B, -A + [0, 4]) ***");
+
+  BD_Shape<float> known_result(3);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(-B <= 2);
+  known_result.add_constraint(A - B <= 4);
+  print_constraints(known_result, "*** known_result ***");
+
+  bool ok = (bd1 == known_result);
+
+  return ok;
+}
+
+// tests affine_image(A, [-1, -1]*B + [0, 2])
+bool test08() {
+  Variable A(0);
+  Variable B(1);
+
+  BD_Shape<float> bd1(3);
+  bd1.add_constraint(A <= 2);
+  bd1.add_constraint(A - B <= 3);
+  bd1.add_constraint(B <= 2);
+  bd1.add_constraint(B >= -10);
+  fl_r_oc free_term(0);
+  free_term.join_assign(2);
+  Linear_Form<fl_r_oc> l(-B);
+  l += free_term;
+  bd1.affine_image(A, l);
+  print_constraints(bd1, "*** bd1.affine_image(A, -B + [0, 2]) ***");
+
+  BD_Shape<float> known_result(3);
+  known_result.add_constraint(-A <= 2);
+  known_result.add_constraint(A <= 12);
+  known_result.add_constraint(B <= 2);
+  known_result.add_constraint(B >= -10);
+  //known_result.add_constraint(-B - A <= 0);
+  known_result.add_constraint(-A + B <= 4);
+  known_result.add_constraint(A - B <= 22);
+  print_constraints(known_result, "*** known_result ***");
+
+  bool ok = (bd1 == known_result);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -176,4 +262,7 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN
