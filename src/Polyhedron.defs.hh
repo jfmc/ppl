@@ -2628,6 +2628,25 @@ protected:
   //@} // Exception Throwers
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
+  //! Helper function that overapproximates an interval linear form.
+  /*!
+    \param lf
+    The linear form on intervals with floating point boundaries to approximate.
+
+    \param lf_dimension
+    Must be the space dimension of \p lf.
+
+    \param store
+    The interval abstract store in which the approximation is performed.
+
+    \param result
+    Used to store the result.
+
+    This function makes \p result become a linear form that is a correct
+    approximation of \p lf in \p store. The resulting linear form has the
+    property that all of its variable coefficients have a non-significative
+    upper bound and can thus be considered as singletons.
+  */
   template <typename FP_Format, typename Interval_Info>
   static void overapproximate_linear_form(
   const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
@@ -2635,12 +2654,53 @@ protected:
   const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store,
   Linear_Form<Interval <FP_Format, Interval_Info> >& result);
 
+  /*! \brief
+    Helper function that makes \p result become a Linear_Expression obtained
+    by normalizing the denominators in \p lf.
+
+    \param lf
+    The linear form on intervals with floating point boundarie to normalize.
+    It should be the result of an application of static method
+    <CODE>overapproximate_linear_form</CODE>.
+
+    \param l_dimension
+    Must be the space dimension of \p lf.
+
+    \param result
+    Used to store the result.
+
+    This function ignores the upper bound of intervals in \p lf,
+    so that in fact the result can be seen as \p lf multiplied by a proper
+    normalization constant.
+  */
   template <typename FP_Format, typename Interval_Info>
   static void convert_to_integer_expression(
 	      const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
               const dimension_type lf_dimension,
               Linear_Expression& result);
 
+  //! Normalization helper function.
+  /*!
+    \param lf
+    The linear form on intervals with floating point boundaries to normalize.
+    It should be the result of an application of static method
+    <CODE>overapproximate_linear_form</CODE>.
+
+    \param lf_dimension
+    Must be the space dimension of \p lf.
+
+    \param res
+    Stores the normalized linear form, except its inhomogeneous term.
+
+    \param res_low_coeff
+    Stores the lower boundary of the inhomogeneous term of the result.
+
+    \param res_hi_coeff
+    Stores the higher boundary of the inhomogeneous term of the result.
+
+    Results are obtained by normalizing denominators in \p lf, ignoring
+    the upper bounds of variable coefficients in \p lf.
+  */
   template <typename FP_Format, typename Interval_Info>
   static void convert_to_integer_expressions(
 	      const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
