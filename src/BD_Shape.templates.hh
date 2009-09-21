@@ -4108,16 +4108,11 @@ BD_Shape<T>::affine_image(const Variable& var,
     return;
   }
 
-  // General case.
-  // Either t == 2, so that
-  // lf == i_1*x_1 + i_2*x_2 + ... + i_n*x_n + b, where n >= 2,
-  // or t == 1, lf == i*w + b, but i <> [+/-1;+/-1].
-
   //two_variables_affine_image(var, var_id, lf);
   PPL_ASSERT(OK());
 }
 
-// Case 1: var = [-b, b].
+// Case 1: var = b, where b = [-b_mlb, b_ub]
 template <typename T>
 template <typename Interval_Info>
 void
@@ -4139,7 +4134,7 @@ BD_Shape<T>::inhomogeneous_affine_image(const dimension_type& var_id,
     return;
 }
 
-// case 2: var = (+/-1) * w + [lb, -mlb], where `w' can be `var'
+// case 2: var = (+/-1) * w + [-b_mlb, b_ub], where `w' can be `var'
 // or another variable.
 template <typename T>
 template <typename Interval_Info>
@@ -4155,7 +4150,7 @@ void BD_Shape<T>
   PPL_DIRTY_TEMP(N, b_mlb);
   neg_assign_r(b_mlb, b.lower(), ROUND_NOT_NEEDED);
 
-  // true if b = [b_lb, b_ub] = [-mlb, ub] = [0;0].
+  // true if b = [b_lb, b_ub] = [0;0].
   bool is_b_zero = (b_mlb == 0 && b_ub == 0);
   // true if w_coeff = [1;1]
   bool is_w_coeff_one = (w_coeff == 1);
@@ -4193,9 +4188,9 @@ void BD_Shape<T>
           // Translate the unary constraints on `var' by adding the value
           // `b_ub' or subtracting the value `b_lb'.
           N& dbm_v0 = dbm[var_id][0];
-          add_assign_r(dbm_v0, dbm_v0, b_ub, ROUND_UP);
+          add_assign_r(dbm_v0, dbm_v0, b_mlb, ROUND_UP);
           N& dbm_0v = dbm[0][var_id];
-          add_assign_r(dbm_v0, dbm_0v, b_mlb, ROUND_UP);
+          add_assign_r(dbm_0v, dbm_0v, b_ub, ROUND_UP);
         }
       }
     }
@@ -4235,6 +4230,10 @@ void BD_Shape<T>
   return;
 }
 
+// General case.
+// Either t == 2, so that
+// lf == i_1*x_1 + i_2*x_2 + ... + i_n*x_n + b, where n >= 2,
+// or t == 1, lf == i*w + b, but i <> [+/-1;+/-1].
 template <typename T>
 template <typename Interval_Info>
 void BD_Shape<T>

@@ -77,14 +77,90 @@ test02() {
   bd1.affine_image(A, l);
   print_constraints(bd1, "*** bd1.affine_image(A, [-2, 1]) ***");
 
-  bd1.ascii_dump();
-  // At the moment, affine_image is simply an identity function.
-
   BD_Shape<float> known_result(2);
   known_result.add_constraint(A <= 1);
-  known_result.add_constraint(- A <= 2);
+  known_result.add_constraint(-A <= 2);
   known_result.add_constraint(B <= 2);
- 
+  print_constraints(bd1, "*** known_result ***");
+
+  bool ok = (bd1 == known_result);
+
+  return ok;
+}
+
+// tests affine_image(A, [-1, -1]*A + [0.5, 2])
+bool test03() {
+  Variable A(0);
+  Variable B(1);
+
+  BD_Shape<double> bd1(3);
+  bd1.add_constraint(A <= 2);
+  bd1.add_constraint(A - B <= 3);
+  bd1.add_constraint(B <= 2);
+  db_r_oc free_term(0.5);
+  free_term.join_assign(2);
+  Linear_Form<db_r_oc> l(-A);
+  l += free_term;
+  bd1.affine_image(A, l);
+  print_constraints(bd1, "*** bd1.affine_image(A, -A + [0.5, 2]) ***");
+
+  BD_Shape<double> known_result(3);
+  known_result.add_constraint(-2*A <= 3);
+  known_result.add_constraint(B <= 2);
+  print_constraints(known_result, "*** known_result ***");
+  bool ok = (bd1 == known_result);
+
+  return ok;
+}
+
+// tests affine_image(B, [1, 1]*B + [-1.5, 3.5])
+bool test04() {
+  Variable A(0);
+  Variable B(1);
+
+  BD_Shape<float> bd1(3);
+  bd1.add_constraint(A <= 2);
+  bd1.add_constraint(A - B <= 3);
+  bd1.add_constraint(B <= 2);
+  fl_r_oc free_term(-1.5);
+  free_term.join_assign(3.5);
+  Linear_Form<fl_r_oc> l(B);
+  l += free_term;
+  bd1.affine_image(B, l);
+  print_constraints(bd1, "*** bd1.affine_image(B, B + [-1.5, 3.5]) ***");
+
+  BD_Shape<float> known_result(3);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(2*B <= 11);
+  known_result.add_constraint(-2*B + 2*A <= 9);
+  print_constraints(known_result, "*** known_result ***");
+
+  bool ok = (bd1 == known_result);
+
+  return ok;
+}
+
+// tests affine_image(A, [1, 1]*B + [-1, 0.5])
+bool test05() {
+  Variable A(0);
+  Variable B(1);
+
+  BD_Shape<double> bd1(3);
+  bd1.add_constraint(A <= 2);
+  bd1.add_constraint(A - B <= 3);
+  bd1.add_constraint(B <= 2);
+  db_r_oc free_term(-1);
+  free_term.join_assign(0.5);
+  Linear_Form<db_r_oc> l(B);
+  l += free_term;
+  bd1.affine_image(A, l);
+  print_constraints(bd1, "*** bd1.affine_image(A, B + [-1, 0.5]) ***");
+
+  BD_Shape<double> known_result(3);
+  known_result.add_constraint(2*A <= 5);
+  known_result.add_constraint(B <= 2);
+  known_result.add_constraint(B - A <= 1);
+  known_result.add_constraint(2*A - 2*B <= 1);
   print_constraints(known_result, "*** known_result ***");
 
   bool ok = (bd1 == known_result);
@@ -97,4 +173,7 @@ test02() {
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN
