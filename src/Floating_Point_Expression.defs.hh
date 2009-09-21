@@ -34,6 +34,13 @@ namespace Parma_Polyhedra_Library {
 //! Exception class indicating the failure of a linearization attempt.
 class Linearization_Failed {};
 
+//! Policy class defining the IEEE754 half precision format.
+struct IEEE754_Half {
+  static const unsigned short fraction_bits = 10;
+  static const unsigned short exponent_bits = 5;
+  static const unsigned short exponent_bias = 15;
+};
+
 //! Policy class defining the IEEE754 single precision format.
 struct IEEE754_Single {
   static const unsigned short fraction_bits = 23;
@@ -46,6 +53,27 @@ struct IEEE754_Double {
   static const unsigned short fraction_bits = 52;
   static const unsigned short exponent_bits = 11;
   static const unsigned short exponent_bias = 1023;
+};
+
+//! Policy class defining the IEEE754 quadruple precision format.
+struct IEEE754_Quadruple {
+  static const unsigned short fraction_bits = 112;
+  static const unsigned short exponent_bits = 15;
+  static const unsigned short exponent_bias = 16383;
+};
+
+//! Policy class defining the IBM single precision format.
+struct IBM_Single {
+  static const unsigned short fraction_bits = 24;
+  static const unsigned short exponent_bits = 7;
+  static const unsigned short exponent_bias = 64;
+};
+
+//! Policy class defining the IBM double precision format.
+struct IBM_Double {
+  static const unsigned short fraction_bits = 56;
+  static const unsigned short exponent_bits = 7;
+  static const unsigned short exponent_bias = 64;
 };
 
 /*! \brief

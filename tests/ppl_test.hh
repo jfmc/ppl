@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 #include <sstream>
 #include <list>
+#include <map>
 #include <iterator>
 #include <string>
 #include <iostream>
@@ -513,6 +514,19 @@ struct Floating_Real_Open_Interval_Info_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
+struct Floating_Real_Closed_Interval_Info_Policy {
+  const_bool_nodef(store_special, false);
+  const_bool_nodef(store_open, false);
+  const_bool_nodef(cache_empty, false);
+  const_bool_nodef(cache_singleton, true);
+  const_bool_nodef(cache_normalized, false);
+  const_int_nodef(next_bit, 0);
+  const_bool_nodef(may_be_empty, false);
+  const_bool_nodef(may_contain_infinity, false);
+  const_bool_nodef(check_empty_result, false);
+  const_bool_nodef(check_inexact, false);
+};
+
 typedef Interval_Restriction_None
 <Interval_Info_Bitset<unsigned int, Floating_Real_Open_Interval_Info_Policy> >
 Floating_Real_Open_Interval_Info;
@@ -548,6 +562,42 @@ typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;
 
 //! The incarnation of Octagonal_Shape under test.
 typedef Octagonal_Shape<OCTAGONAL_SHAPE_INSTANCE> TOctagonal_Shape;
+
+// For floating point analysis.
+#ifdef ANALYZER_FP_FORMAT
+#ifdef ANALYZED_FP_FORMAT
+//! The type of an interval with floating point boundaries.
+typedef Interval<ANALYZER_FP_FORMAT,
+                 Floating_Real_Closed_Interval_Info_Policy> FP_Interval;
+
+//! The type of an interval linear form.
+typedef Linear_Form<FP_Interval> FP_Linear_Form;
+
+//! The type of an interval abstract store.
+typedef std::map<dimension_type, FP_Interval> FP_Interval_Abstract_Store;
+
+//! The type of a linear form abstract store.
+typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
+
+/*! \brief
+  The incarnation of Floating_Point_Expression under test for analyzing
+  floating point computations.
+*/
+typedef Floating_Point_Expression<FP_Interval_Type, ANALYZED_FP_FORMAT> FP_Expression;
+
+/*! \brief
+  The incarnation of BD_Shape under test for analyzing
+  floating point computations.
+*/
+typedef BD_Shape<ANALYZER_FP_FORMAT> FP_BD_Shape;
+
+/*! \brief
+  The incarnation of Octagon under test for analyzing
+  floating point computations.
+*/
+typedef Octagon<ANALYZER_FP_FORMAT> FP_Octagon;
+#endif
+#endif
 
 template <typename Shape>
 inline bool
