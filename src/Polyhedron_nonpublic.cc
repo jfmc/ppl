@@ -2232,14 +2232,6 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
   throw_dimension_incompatible(method, cgs_name, cgs.space_dimension());
 }
 
-template <typename C>
-void
-PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const char* lf_name,
-					      const Linear_Form<C>& lf) const {
-  throw_dimension_incompatible(method, lf_name, lf.space_dimension());
-}
-
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* var_name,

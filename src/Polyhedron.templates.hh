@@ -316,7 +316,7 @@ const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store) {
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
-    throw_dimension_incompatible("affine_image(v, l, s)", var.id()+1);
+    throw_dimension_incompatible("affine_image(v, l, s)", "v", var);
 
   // We suppose that the analyzer will not filter an unreachable test.
   PPL_ASSERT(!marked_empty());
@@ -496,6 +496,14 @@ Polyhedron::convert_to_integer_expressions(
   }
   else
     res_hi_coeff = Coefficient(0);
+}
+
+template <typename C>
+void
+Polyhedron::throw_dimension_incompatible(const char* method,
+				         const char* lf_name,
+				         const Linear_Form<C>& lf) const {
+  throw_dimension_incompatible(method, lf_name, lf.space_dimension());
 }
 
 } // namespace Parma_Polyhedra_Library
