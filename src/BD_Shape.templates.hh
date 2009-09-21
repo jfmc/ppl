@@ -4103,11 +4103,12 @@ BD_Shape<T>::affine_image(const Variable& var,
   }
   else if (t == 1) {
     const FP_Interval_Type& w_coeff = lf.coefficient(Variable(w_id - 1));
-    one_variable_affine_image(var_id, b, w_coeff, w_id, space_dim);
-    PPL_ASSERT(OK());
-    return;
+    if(w_coeff == 1 || w_coeff == -1) {
+      one_variable_affine_image(var_id, b, w_coeff, w_id, space_dim);
+      PPL_ASSERT(OK());
+      return;
+    }
   }
-
   two_variables_affine_image(var_id, lf, space_dim);
   PPL_ASSERT(OK());
 }
@@ -4154,76 +4155,71 @@ void BD_Shape<T>
   bool is_b_zero = (b_mlb == 0 && b_ub == 0);
   // true if w_coeff = [1;1]
   bool is_w_coeff_one = (w_coeff == 1);
-  // true if w_coeff = [-1;-1].
-  bool is_w_coeff_minus_one = (w_coeff == -1);
-  if (is_w_coeff_one || is_w_coeff_minus_one) {
-    if (w_id == var_id) {
-      // Here `lf' is of the form: [+/-1;+/-1] * v + b.
-      if (is_w_coeff_one) {
-        if (is_b_zero)
-          // The transformation is the identity function.
-          return;
-        else {
-          // Translate all the constraints on `var' by adding the value
-          // `b_ub' or subtracting the value `b_lb'.
-          DB_Row<N>& dbm_v = dbm[var_id];
-          for (dimension_type i = space_dim + 1; i-- > 0; ) {
-            N& dbm_vi = dbm_v[i];
-            add_assign_r(dbm_vi, dbm_vi, b_mlb, ROUND_UP);
-            N& dbm_iv = dbm[i][var_id];
-            add_assign_r(dbm_iv, dbm_iv, b_ub, ROUND_UP);
-          }
-          // Both shortest-path closure and reduction are preserved.
-        }
 
-      }
+  if (w_id == var_id) {
+    // Here `lf' is of the form: [+/-1;+/-1] * v + b.
+    if (is_w_coeff_one) {
+      if (is_b_zero)
+        // The transformation is the identity function.
+        return;
       else {
-        // Here `w_coeff = [-1;-1].
-        // Remove the binary constraints on `var'.
-        forget_binary_dbm_constraints(var_id);
-        std::swap(dbm[var_id][0], dbm[0][var_id]);
-        // Shortest-path closure is not preserved.
-        reset_shortest_path_closed();
-        if (!is_b_zero) {
-          // Translate the unary constraints on `var' by adding the value
-          // `b_ub' or subtracting the value `b_lb'.
-          N& dbm_v0 = dbm[var_id][0];
-          add_assign_r(dbm_v0, dbm_v0, b_mlb, ROUND_UP);
-          N& dbm_0v = dbm[0][var_id];
-          add_assign_r(dbm_0v, dbm_0v, b_ub, ROUND_UP);
+        // Translate all the constraints on `var' by adding the value
+        // `b_ub' or subtracting the value `b_lb'.
+        DB_Row<N>& dbm_v = dbm[var_id];
+        for (dimension_type i = space_dim + 1; i-- > 0; ) {
+          N& dbm_vi = dbm_v[i];
+          add_assign_r(dbm_vi, dbm_vi, b_mlb, ROUND_UP);
+          N& dbm_iv = dbm[i][var_id];
+          add_assign_r(dbm_iv, dbm_iv, b_ub, ROUND_UP);
         }
+        // Both shortest-path closure and reduction are preserved.
+      }
+     }
+    else {
+      // Here `w_coeff = [-1;-1].
+      // Remove the binary constraints on `var'.
+      forget_binary_dbm_constraints(var_id);
+      std::swap(dbm[var_id][0], dbm[0][var_id]);
+      // Shortest-path closure is not preserved.
+      reset_shortest_path_closed();
+      if (!is_b_zero) {
+        // Translate the unary constraints on `var' by adding the value
+        // `b_ub' or subtracting the value `b_lb'.
+        N& dbm_v0 = dbm[var_id][0];
+        add_assign_r(dbm_v0, dbm_v0, b_mlb, ROUND_UP);
+        N& dbm_0v = dbm[0][var_id];
+        add_assign_r(dbm_0v, dbm_0v, b_ub, ROUND_UP);
       }
     }
+  }
+  else {
+    // Here `w != var', so that `lf' is of the form
+    // [+/-1;+/-1] * w + b.
+    // Remove all constraints on `var'.
+    forget_all_dbm_constraints(var_id);
+    // Shortest-path closure is preserved, but not reduction.
+    if (marked_shortest_path_reduced())
+      reset_shortest_path_reduced();
+     if (is_w_coeff_one) {
+      // Add the new constraints `var - w >= b_lb'
+      // `and var - w <= b_ub'.
+      add_dbm_constraint(w_id, var_id, b_ub);
+      add_dbm_constraint(var_id, w_id, b_mlb);
+    }
     else {
-      // Here `w != var', so that `lf' is of the form
-      // [+/-1;+/-1] * w + b.
-      // Remove all constraints on `var'.
-      forget_all_dbm_constraints(var_id);
-      // Shortest-path closure is preserved, but not reduction.
-      if (marked_shortest_path_reduced())
-        reset_shortest_path_reduced();
-
-      if (is_w_coeff_one) {
-        // Add the new constraints `var - w >= b_lb'
-        // `and var - w <= b_ub'.
-        add_dbm_constraint(w_id, var_id, b_ub);
-        add_dbm_constraint(var_id, w_id, b_mlb);
+      // We have to add the constraint `v + w == b', over-approximating it
+      // by computing lower and upper bounds for `w'.
+      const N& mlb_w = dbm[w_id][0];
+      if (!is_plus_infinity(mlb_w)) {
+        // Add the constraint `v <= ub - lb_w'.
+        add_assign_r(dbm[0][var_id], b_ub, mlb_w, ROUND_UP);
+        reset_shortest_path_closed();
       }
-      else {
-        // We have to add the constraint `v + w == b', over-approximating it
-        // by computing lower and upper bounds for `w'.
-        const N& mlb_w = dbm[w_id][0];
-        if (!is_plus_infinity(mlb_w)) {
-          // Add the constraint `v <= ub - lb_w'.
-          add_assign_r(dbm[0][var_id], b_ub, mlb_w, ROUND_UP);
-          reset_shortest_path_closed();
-        }
-        const N& ub_w = dbm[0][w_id];
-        if (!is_plus_infinity(ub_w)) {
-          // Add the constraint `v >= lb - ub_w'.
-          add_assign_r(dbm[var_id][0], ub_w, b_mlb, ROUND_UP);
-          reset_shortest_path_closed();
-        }
+      const N& ub_w = dbm[0][w_id];
+      if (!is_plus_infinity(ub_w)) {
+        // Add the constraint `v >= lb - ub_w'.
+        add_assign_r(dbm[var_id][0], ub_w, b_mlb, ROUND_UP);
+        reset_shortest_path_closed();
       }
     }
   }

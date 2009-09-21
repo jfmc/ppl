@@ -253,6 +253,32 @@ bool test08() {
   return ok;
 }
 
+// tests affine_image(B, [-0.5, 0.5]*A)
+bool test09() {
+  Variable A(0);
+  Variable B(1);
+
+  BD_Shape<double> bd1(3);
+  bd1.add_constraint(A <= 2);
+  bd1.add_constraint(A - B <= 3);
+  bd1.add_constraint(B <= 2);
+  db_r_oc coeff(-0.5);
+  coeff.join_assign(0.5);
+  Linear_Form<db_r_oc> l(A);
+  l *= coeff;
+  bd1.affine_image(B, l);
+  print_constraints(bd1, "*** bd1.affine_image(B, [-0.5, 0.5]*A) ***");
+
+  BD_Shape<double> known_result(3);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(A - B <= 3);
+  print_constraints(known_result, "*** known_result ***");
+
+  bool ok = (bd1 == known_result);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -264,4 +290,5 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
