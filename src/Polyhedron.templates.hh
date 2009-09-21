@@ -298,6 +298,53 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
 
 template <typename FP_Format, typename Interval_Info>
 void
+Polyhedron::refine_with_linear_form_inequality(
+  const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
+  const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
+  const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store) {
+
+  // Check that FP_Format is indeed a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
+                         "Polyhedron::affine_image:"
+                         " FP_Format not a floating point type.");
+
+  // Dimension compatibility checks.
+  // The dimensions of left and right should not be greater than the
+  // dimension of *this.
+  const dimension_type left_space_dim = left.space_dimension();
+  if (space_dim < left_space_dim)
+    throw_dimension_incompatible(
+          "refine_with_linear_form_inequality(l1, l2, s)", "l1", left);
+
+  const dimension_type right_space_dim = right.space_dimension();
+  if (space_dim < right_space_dim)
+    throw_dimension_incompatible(
+          "refine_with_linear_form_inequality(l1, l2, s)", "l2", right);
+
+  // We assume that the analyzer will not refine an unreachable test.
+  PPL_ASSERT(!marked_empty());
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
+
+  // Overapproximate left - right.
+  FP_Linear_Form left_minus_right(left);
+  left_minus_right -= right;
+  dimension_type lf_space_dim = left_minus_right.space_dimension();
+  FP_Linear_Form lf_approx;
+  overapproximate_linear_form(left_minus_right, lf_space_dim, store, lf_approx);
+
+  // Normalize left - right.
+  Linear_Expression lf_approx_le;
+  convert_to_integer_expression(lf_approx, lf_space_dim, lf_approx_le);
+
+  // Finally, do the refinement.
+  refine_with_constraint(lf_approx_le <= 0);
+
+}
+
+template <typename FP_Format, typename Interval_Info>
+void
 Polyhedron::affine_image(const Variable& var,
 const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
 const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store) {
@@ -318,7 +365,7 @@ const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store) {
   if (space_dim < var_id + 1)
     throw_dimension_incompatible("affine_image(v, l, s)", "v", var);
 
-  // We suppose that the analyzer will not filter an unreachable test.
+  // We assume that the analyzer will not perform an unreachable assignment.
   PPL_ASSERT(!marked_empty());
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
@@ -363,6 +410,7 @@ Polyhedron::overapproximate_linear_form(
   typedef std::map<dimension_type, FP_Interval_Type> Interval_Abstract_Store;
 
   result = FP_Linear_Form(lf.inhomogeneous_term());
+  // FIXME: this may not be policy-neutral.
   const FP_Interval_Type aux_divisor1(static_cast<FP_Format>(0.5));
   FP_Interval_Type aux_divisor2(aux_divisor1);
   aux_divisor2.lower() = static_cast<FP_Format>(-0.5);
@@ -398,7 +446,7 @@ Polyhedron::convert_to_integer_expression(
   result = Linear_Expression();
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
-  typedef typename FP_Interval_Type::coefficient_type FP_Coeff_Type;
+  typedef typename FP_Interval_Type::boundary_type FP_Coeff_Type;
   std::vector<Coefficient> numerators(lf_dimension+1);
   std::vector<Coefficient> denominators(lf_dimension+1);
 
@@ -408,7 +456,7 @@ Polyhedron::convert_to_integer_expression(
   lcm = 1;
   const FP_Interval_Type& b = lf.inhomogeneous_term();
   // FIXME: are these checks numerator[i] != 0 really necessary?
-  numer_denom(b.upper(), numerators[lf_dimension],
+  numer_denom(b.lower(), numerators[lf_dimension],
                          denominators[lf_dimension]);
   if (numerators[lf_dimension] != 0)
       lcm_assign(lcm, lcm, denominators[lf_dimension]);
