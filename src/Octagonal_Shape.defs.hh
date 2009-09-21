@@ -993,17 +993,19 @@ public:
     the constraint expressed by \p left \f$\leq\f$ \p right.
 
     \param left
-    The linear form on intervals with floating point coefficients that
-    is on the left of the comparison operator. All of its coefficients
+    The linear form on intervals with floating point boundaries that
+    is at the left of the comparison operator. All of its coefficients
     MUST be bounded.
 
     \param right
-    The linear form on intervals with floating point coefficients that
-    is on the right of the comparison operator. All of its coefficients
+    The linear form on intervals with floating point boundaries that
+    is at the right of the comparison operator. All of its coefficients
     MUST be bounded.
 
     \exception std::invalid_argument
     Thrown if \p left (or \p right) is dimension-incompatible with \p *this.
+
+    
   */
   template <typename Interval_Info>
   void refine_with_linear_form_inequality(
@@ -1139,12 +1141,16 @@ public:
     The variable to which the affine expression is assigned.
 
     \param lf
-    The linear form on intervals with floating point coefficients that
-    defines the affine expression. ALL of its coefficients MUST be boundend.
+    The linear form on intervals with floating point boundaries that
+    defines the affine expression(s). ALL of its coefficients MUST be bounded.
 
     \exception std::invalid_argument
     Thrown if \p lf and \p *this are dimension-incompatible or if \p var
     is not a dimension of \p *this.
+
+    This function is used in abstract interpretation to model an assignment
+    of a value that is correctly overapproximated by \p lf to the
+    floating point variable represented by \p var.
   */
   template <typename Interval_Info>
   void affine_image(const Variable& var,
