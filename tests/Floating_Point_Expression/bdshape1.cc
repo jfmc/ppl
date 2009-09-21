@@ -279,6 +279,45 @@ bool test09() {
   return ok;
 }
 
+// tests affine_image(A, i + i0*A + i1*B) where
+// i = [0, 2], i0 = [1, 1] and i1 = [1, 2].
+bool test10() {
+
+  Variable A(0);
+  Variable B(1);
+
+  BD_Shape<double> bd1(2);
+  bd1.add_constraint(A >= 0);
+  bd1.add_constraint(A <= 2);
+  bd1.add_constraint(B >= 0);
+  bd1.add_constraint(B <= 2);
+  bd1.add_constraint(A - B >= 0);
+  db_r_oc tmp(1);
+  Linear_Form<db_r_oc> l(A);
+  l *= tmp;
+  tmp.lower() = 0;
+  tmp.upper() = 2;
+  l += tmp;
+  tmp.lower() = 1;
+  tmp.upper() = 2;
+  l += tmp * Linear_Form<db_r_oc>(B);
+  bd1.affine_image(A,l);
+  print_constraints(bd1, "*** bd1.affine_image(A, i + i0*A + i1*B) ***");
+
+  BD_Shape<double> know_result(2);
+  know_result.add_constraint(A >= 0);
+  know_result.add_constraint(A <= 8);
+  know_result.add_constraint(B >= 0);
+  know_result.add_constraint(B <= 2);
+  know_result.add_constraint(A - B <= 6);
+  know_result.add_constraint(-A + B <= 0);
+  print_constraints(know_result, "*** know_result ***");
+
+  bool ok = (bd1 == know_result);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -291,4 +330,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

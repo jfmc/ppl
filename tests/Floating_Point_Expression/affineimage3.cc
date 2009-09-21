@@ -287,7 +287,8 @@ bool test09() {
 }
 
 
-// tests affine_image(A, i + i0*A + i1*B)
+// tests affine_image(A, i + i0*A + i1*B) where
+// i = [0, 2], i0 = [1, 1] and i1 = [1, 2].
 bool test10() {
 
   Variable A(0);
@@ -300,7 +301,6 @@ bool test10() {
   oc1.add_constraint(B <= 2);
   oc1.add_constraint(A - B >= 0);
   db_r_oc tmp(1);
-  tmp.join_assign(1);
   Linear_Form<db_r_oc> l(A);
   l *= tmp;
   tmp.lower() = 0;
