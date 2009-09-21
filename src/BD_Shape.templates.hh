@@ -4108,7 +4108,7 @@ BD_Shape<T>::affine_image(const Variable& var,
     return;
   }
 
-  //two_variables_affine_image(var, var_id, lf);
+  two_variables_affine_image(var_id, lf, space_dim);
   PPL_ASSERT(OK());
 }
 
@@ -4237,11 +4237,122 @@ void BD_Shape<T>
 template <typename T>
 template <typename Interval_Info>
 void BD_Shape<T>
-::two_variables_affine_image(const Variable& var,
-                             const dimension_type& var_id,
-     const Linear_Form< Interval<T, Interval_Info> >& lf) {
+::two_variables_affine_image(const dimension_type& var_id,
+      const Linear_Form< Interval<T, Interval_Info> >& lf,
+                          const dimension_type& space_dim) {
+
+  reset_shortest_path_closed();
+
+  Linear_Form< Interval<T, Interval_Info> > minus_lf(lf);
+  minus_lf.negate();
+
+  // Declare temporaries outside the loop.
+  PPL_DIRTY_TEMP(N, upper_bound);
+
+  // Update binary constraints on var FIRST.
+  for (dimension_type curr_var = 1; curr_var < var_id; ++curr_var) {
+    Variable current(curr_var - 1);
+    linear_form_upper_bound(lf - current, upper_bound, space_dim);
+    assign_r(dbm[curr_var][var_id], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(minus_lf + current, upper_bound, space_dim);
+    assign_r(dbm[var_id][curr_var], upper_bound, ROUND_NOT_NEEDED);
+  }
+  for (dimension_type curr_var = var_id + 1; curr_var <= space_dim;
+                                                      ++curr_var) {
+    Variable current(curr_var - 1);
+    linear_form_upper_bound(lf - current, upper_bound, space_dim);
+    assign_r(dbm[curr_var][var_id], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(minus_lf + current, upper_bound, space_dim);
+    assign_r(dbm[var_id][curr_var], upper_bound, ROUND_NOT_NEEDED);
+  }
+  // Finally, update unary constraints on var.
+  PPL_DIRTY_TEMP(N, lf_ub);
+  linear_form_upper_bound(lf, lf_ub, space_dim);
+  PPL_DIRTY_TEMP(N, minus_lf_ub);
+  linear_form_upper_bound(minus_lf, minus_lf_ub, space_dim);
+  assign_r(dbm[0][var_id], lf_ub, ROUND_NOT_NEEDED);
+  assign_r(dbm[var_id][0], minus_lf_ub, ROUND_NOT_NEEDED);
 }
 
+template <typename T>
+template <typename Interval_Info>
+void
+BD_Shape<T>::
+linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
+                                                                  N& result,
+                                    const dimension_type& space_dim) const {
+
+  // Check that T is a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
+                     "BD_Shape<T>::linear_form_upper_bound:"
+                     " T not a floating point type.");
+
+  const dimension_type lf_space_dimension = lf.space_dimension();
+  PPL_ASSERT(lf_space_dimension <= space_dim);
+
+  typedef Interval<T, Interval_Info> FP_Interval_Type;
+
+  PPL_DIRTY_TEMP(N, curr_lb);
+  PPL_DIRTY_TEMP(N, curr_ub);
+  PPL_DIRTY_TEMP(N, curr_var_ub);
+  PPL_DIRTY_TEMP(N, curr_minus_var_ub);
+
+  PPL_DIRTY_TEMP(N, first_comparison_term);
+  PPL_DIRTY_TEMP(N, second_comparison_term);
+
+  PPL_DIRTY_TEMP(N, negator);
+
+  assign_r(result, lf.inhomogeneous_term().upper(), ROUND_NOT_NEEDED);
+
+  for (dimension_type curr_var = 0, n_var = 0; curr_var < lf_space_dimension;
+       ++curr_var) {
+    n_var = curr_var + 1;
+    const FP_Interval_Type& curr_coefficient =
+                            lf.coefficient(Variable(curr_var));
+    assign_r(curr_lb, curr_coefficient.lower(), ROUND_NOT_NEEDED);
+    assign_r(curr_ub, curr_coefficient.upper(), ROUND_NOT_NEEDED);
+    if (curr_lb != 0 || curr_ub != 0) {
+      assign_r(curr_var_ub, dbm[0][n_var], ROUND_NOT_NEEDED);
+      neg_assign_r(curr_minus_var_ub, dbm[n_var][0], ROUND_NOT_NEEDED);
+      // Optimize the most commons cases: curr = +/-[1;1]
+      if (curr_lb == 1 && curr_ub == 1) {
+        add_assign_r(result, result, std::max(curr_var_ub, curr_minus_var_ub),
+                     ROUND_UP);
+      }
+      else if (curr_lb == -1 && curr_ub == -1) {
+        neg_assign_r(negator, std::min(curr_var_ub, curr_minus_var_ub),
+                     ROUND_NOT_NEEDED);
+        add_assign_r(result, result, negator, ROUND_UP);
+      }
+      else {
+        // Next addend will be the maximum of four quantities.
+        assign_r(first_comparison_term, 0, ROUND_NOT_NEEDED);
+        assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
+        add_mul_assign_r(first_comparison_term, curr_var_ub, curr_ub,
+                         ROUND_UP);
+        add_mul_assign_r(second_comparison_term, curr_var_ub, curr_lb,
+                         ROUND_UP);
+        assign_r(first_comparison_term, std::max(first_comparison_term,
+                                                 second_comparison_term),
+                 ROUND_NOT_NEEDED);
+        assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
+        add_mul_assign_r(second_comparison_term, curr_minus_var_ub, curr_ub,
+                         ROUND_UP);
+        assign_r(first_comparison_term, std::max(first_comparison_term,
+                                                 second_comparison_term),
+                 ROUND_NOT_NEEDED);
+        assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
+        add_mul_assign_r(second_comparison_term, curr_minus_var_ub, curr_lb,
+                         ROUND_UP);
+        assign_r(first_comparison_term, std::max(first_comparison_term,
+                                                 second_comparison_term),
+                 ROUND_NOT_NEEDED);
+
+        add_assign_r(result, result, first_comparison_term, ROUND_UP);
+      }
+    }
+  }
+}
 
 template <typename T>
 void

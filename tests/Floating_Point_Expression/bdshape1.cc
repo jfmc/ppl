@@ -244,7 +244,6 @@ bool test08() {
   known_result.add_constraint(A <= 12);
   known_result.add_constraint(B <= 2);
   known_result.add_constraint(B >= -10);
-  //known_result.add_constraint(-B - A <= 0);
   known_result.add_constraint(-A + B <= 4);
   known_result.add_constraint(A - B <= 22);
   print_constraints(known_result, "*** known_result ***");

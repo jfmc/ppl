@@ -2088,15 +2088,21 @@ private:
 				 const Interval<T, Interval_Info>& w_coeff,
 				 const dimension_type& w_id,
 				 const dimension_type& space_dim);
-  
+
   /* \brief
     Auxiliary function for \ref affine_relation "affine image" that handle
     the general case: \f$l \equal ax + by + c\f$
   */
   template <typename Interval_Info>
-  void two_variables_affine_image(const Variable& var,
-				                  const dimension_type& var_id,
-            const Linear_Form< Interval<T,Interval_Info> >& lf);
+  void two_variables_affine_image(const dimension_type& var_id,
+            const Linear_Form< Interval<T,Interval_Info> >& lf,
+                               const dimension_type& space_dim);
+
+  template <typename Interval_Info>
+  void linear_form_upper_bound(
+             const Linear_Form< Interval<T, Interval_Info> >& lf,
+                                                       N& result,
+                                 const dimension_type& space_dim) const;
 
   //! An helper function for the computation of affine relations.
   /*!
