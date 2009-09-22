@@ -101,7 +101,6 @@ limitedbhrz03extrapolation1 \
 limitedh79extrapolation1 \
 linearpartition1 \
 linearexpression1 \
-linearform1 \
 linearsystem1 \
 mapspacedims1 \
 matrix1 \
@@ -334,8 +333,6 @@ limitedh79extrapolation1_SOURCES = limitedh79extrapolation1.cc
 linearpartition1_SOURCES = linearpartition1.cc
 
 linearexpression1_SOURCES = linearexpression1.cc
-
-linearform1_SOURCES = linearform1.cc
 
 linearsystem1_SOURCES = linearsystem1.cc
 

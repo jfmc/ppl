@@ -49,9 +49,10 @@ $(top_builddir)/tests/libppl_tests.a \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
-TESTS = floatingpointexpr1 \
-affineimage3 \
-refinelf1 \
+TESTS = linearform1 \
+floatingpointexpr1 \
+octagonalshape1 \
+octagonalshape2 \
 bdshape1
 
 XFAIL_TESTS =
@@ -62,9 +63,10 @@ BUGS =
 # Sources for the tests
 #
 
+linearform1_SOURCES = linearform1.cc
 floatingpointexpr1_SOURCES = floatingpointexpr1.cc
-affineimage3_SOURCES = affineimage3.cc
-refinelf1_SOURCES = refinelf1.cc
+octagonalshape1_SOURCES = octagonalshape1.cc
+octagonalshape2_SOURCES = octagonalshape2.cc
 bdshape1_SOURCES = bdshape1.cc
 
 check_PROGRAMS = \

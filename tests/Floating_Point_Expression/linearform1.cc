@@ -1,4 +1,4 @@
-/* Testing Linear_Expression.
+/* Testing Linear_Form on floating point intervals.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -243,38 +243,52 @@ test08() {
       ok2 = true;
   }
 
-  Linear_Form<db_r_oc> g;
   bool ok3 = false;
+  try {
+    f -= A;
+  }
+  catch(std::length_error e) {
+      nout << "Overflow in operator-=(Linear_Form<C>& f, const Variable v)."
+           << endl;
+      Variable B(1);
+      Variable C(2);
+      Linear_Form<db_r_oc> g(B);
+      g -= C;
+      ok3 = true;
+  }
+
+  Linear_Form<db_r_oc> g;
+  bool ok4 = false;
   try {
     g = f - A;
   }
   catch(std::length_error e) {
       nout << "Overflow in operator-(Linear_Form<C>& f, const Variable v)."
            << endl;
-      ok3 = true;
+      ok4 = true;
   }
 
-  bool ok4 = false;
+  bool ok5 = false;
   try {
     g = A - f;
   }
   catch(std::length_error e) {
       nout << "Overflow in operator-(const Variable v, Linear_Form<C>& f)."
            << endl;
-      ok4 = true;
+      ok5 = true;
   }
 
-  bool ok5 = false;
+  bool ok6 = false;
   try {
     g = A + f;
   }
   catch(std::length_error e) {
       nout << "Overflow in operator+(const Variable v, Linear_Form<C>& f)."
            << endl;
-      ok5 = true;
+      ok6 = true;
   }
 
-  return ok1 && ok2 && ok3 && ok4 && ok5;
+  return ok1 && ok2 && ok3 && ok4 && ok5 && ok6;
 }
 
 } // namespace
