@@ -34,54 +34,6 @@ namespace Parma_Polyhedra_Library {
 //! Exception class indicating the failure of a linearization attempt.
 class Linearization_Failed {};
 
-/*
-  FIXME: considering adapting the whole code of Floating_Point_Expression
-  to use the policies defined in Float.defs.hh instead of the following
-  ones that contain duplicate information.
-*/
-
-//! Policy class defining the IEEE754 half precision format.
-struct IEEE754_Half {
-  static const unsigned short fraction_bits = 10;
-  static const unsigned short exponent_bits = 5;
-  static const unsigned short exponent_bias = 15;
-};
-
-//! Policy class defining the IEEE754 single precision format.
-struct IEEE754_Single {
-  static const unsigned short fraction_bits = 23;
-  static const unsigned short exponent_bits = 8;
-  static const unsigned short exponent_bias = 127;
-};
-
-//! Policy class defining the IEEE754 double precision format.
-struct IEEE754_Double {
-  static const unsigned short fraction_bits = 52;
-  static const unsigned short exponent_bits = 11;
-  static const unsigned short exponent_bias = 1023;
-};
-
-//! Policy class defining the IEEE754 quadruple precision format.
-struct IEEE754_Quadruple {
-  static const unsigned short fraction_bits = 112;
-  static const unsigned short exponent_bits = 15;
-  static const unsigned short exponent_bias = 16383;
-};
-
-//! Policy class defining the IBM single precision format.
-struct IBM_Single {
-  static const unsigned short fraction_bits = 24;
-  static const unsigned short exponent_bits = 7;
-  static const unsigned short exponent_bias = 64;
-};
-
-//! Policy class defining the IBM double precision format.
-struct IBM_Double {
-  static const unsigned short fraction_bits = 56;
-  static const unsigned short exponent_bits = 7;
-  static const unsigned short exponent_bias = 64;
-};
-
 /*! \brief
   \ingroup PPL_CXX_Interface
   A floating point expression on a given format.
@@ -97,13 +49,9 @@ struct IBM_Double {
   should have a floating point type.
   - The class template type parameter \p FP_Format represents the floating
   point format used in the concrete domain.
-  This parameter must be a struct which contains three fields:
-    -# <CODE>static const unsigned short fraction_bits</CODE> that represents
-    the number of bits of the fraction.
-    -# <CODE>static const unsigned short exponent_bits</CODE> that represents
-    the number of bits of the exponent.
-    -# <CODE>static const unsigned short exponent_bias</CODE> that represents
-    the value of exponent bias.
+  This parameter must be a struct similar to the ones defined in file
+  Float.defs.hh, even though it is sufficient to define the two
+  fields MANTISSA_BITS and EXPONENT_BIAS.
 */
 template <typename FP_Interval_Type, typename FP_Format>
 class Floating_Point_Expression {
@@ -241,7 +189,7 @@ typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
 Floating_Point_Expression<FP_Interval_Type, FP_Format>::absolute_error =
   std::max(static_cast<typename Floating_Point_Expression<FP_Interval_Type,
 	   FP_Format>::boundary_type>
-           (pow(2, 1 - FP_Format::exponent_bias - FP_Format::fraction_bits)),
+           (pow(2, 1 - FP_Format::EXPONENT_BIAS - FP_Format::MANTISSA_BITS)),
   std::numeric_limits<typename Floating_Point_Expression<FP_Interval_Type,
                                                          FP_Format>
 	                       ::boundary_type>::denorm_min());
