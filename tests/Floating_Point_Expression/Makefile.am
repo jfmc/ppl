@@ -36,10 +36,11 @@ endif !VALGRIND_TESTS_ENABLED
 TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src \
+$(TEST_CPPFLAGS) \
 -I$(top_builddir)/src \
--I$(top_srcdir)/utils \
+-I$(top_srcdir)/src \
 -I$(top_srcdir)/tests \
+-I$(top_srcdir)/utils \
 @extra_includes@ \
 @debug_flag@
 
@@ -49,34 +50,115 @@ $(top_builddir)/tests/libppl_tests.a \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
-TESTS = linearform1 \
+ORIGINAL_TESTS = \
+bdshape1 \
 floatingpointexpr1 \
+linearform1 \
 octagonalshape1 \
-octagonalshape2 \
-bdshape1
+octagonalshape2
+
+DERIVED_TESTS =
+
+ALL_TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS)
+
+# This will be overridden by the `run_tests' script.
+TEST_CPPFLAGS=-DANALYZER_FP_FORMAT=fl_r_oc -DANALYZED_FP_FORMAT=float_ieee754_half
+
+dist_check_SCRIPTS = run_tests
+
+TESTS = run_tests.stamp
+
+.PHONY: run_tests.stamp
+run_tests.stamp: run_tests
+	+MAKE=$(MAKE) $(srcdir)/run_tests
+	echo "true" >run_tests.stamp
+	chmod +x run_tests.stamp
 
 XFAIL_TESTS =
 
-BUGS =
+# Do not change the ordering in what follows.
+if SUPPORTED_FLOAT
+FLOAT_INSTANCES= \
+fl_r_oc/float_ieee754_half \
+fl_r_oc/float_ieee754_single \
+fl_r_oc/float_ieee754_double \
+fl_r_oc/float_ieee754_quad \
+fl_r_oc/float_ibm_single \
+fl_r_oc/float_ibm_double \
+fl_r_oc/float_intel_double_extended
+endif
+if SUPPORTED_DOUBLE
+DOUBLE_INSTANCES= \
+db_r_oc/float_ieee754_half \
+db_r_oc/float_ieee754_single \
+db_r_oc/float_ieee754_double \
+db_r_oc/float_ieee754_quad \
+db_r_oc/float_ibm_single \
+db_r_oc/float_ibm_double \
+db_r_oc/float_intel_double_extended
+endif
+if SUPPORTED_LONG_DOUBLE
+LONG_DOUBLE_INSTANCES= \
+ld_r_oc/float_ieee754_half \
+ld_r_oc/float_ieee754_single \
+ld_r_oc/float_ieee754_double \
+ld_r_oc/float_ieee754_quad \
+ld_r_oc/float_ibm_single \
+ld_r_oc/float_ibm_double \
+ld_r_oc/float_intel_double_extended
+endif
+
+# Do not change the ordering in what follows.
+INSTANCES = \
+$(FLOAT_INSTANCES) \
+$(DOUBLE_INSTANCES) \
+$(LONG_DOUBLE_INSTANCES)
+
+print_check_PROGRAMS:
+	echo $(check_PROGRAMS)
+
+print_INSTANCES:
+	echo $(INSTANCES)
+
 
 #
 # Sources for the tests
 #
 
-linearform1_SOURCES = linearform1.cc
-floatingpointexpr1_SOURCES = floatingpointexpr1.cc
-octagonalshape1_SOURCES = octagonalshape1.cc
-octagonalshape2_SOURCES = octagonalshape2.cc
 bdshape1_SOURCES = bdshape1.cc
 
-check_PROGRAMS = \
-$(TESTS) \
-$(WATCHDOG_TESTS) \
-$(BUGS)
+floatingpointexpr1_SOURCES = floatingpointexpr1.cc
 
-EXTRA_DIST =
+linearform1_SOURCES = linearform1.cc
 
-MOSTLYCLEANFILES =
+octagonalshape1_SOURCES = octagonalshape1.cc
+
+octagonalshape2_SOURCES = octagonalshape2.cc
+
+
+#
+# Sources and compilation flags for the derived check programs
+#
+
+DERIVED_CXXFLAGS = -DDERIVED_TEST $(AM_CXXFLAGS)
+
+#nnc_frompolyhedron1_SOURCES = frompolyhedron1.cc
+#nnc_frompolyhedron1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+BUGS =
+
+check_PROGRAMS = $(ALL_TESTS) $(BUGS)
+
+#EXTRA_DIST = $(refinewithconstraints2_SRCS)
+
+#MOSTLYCLEANFILES = \
+#ascii_dump_load1.dat
+
+CLEANFILES = \
+run_tests.stamp
+
+DISTCLEANFILES = \
+dirty_marker
 
 $(top_builddir)/utils/libppl_utils.a:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
