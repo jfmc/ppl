@@ -2719,9 +2719,12 @@ composed by two parts:
     \f$\fund{\rho^{\#}_l}{\cV}{\mathbb{L}_a}\f$
     associating each variable with its current approximating linear form.
 
-Both stores are represented by maps of the Standard Template Library and are
-required by the linearize method. Please see the documentation of floating
-point expression classes for more information.
+An interval abstract store is represented by a
+\link Parma_Polyhedra_Library::Box \c Box \endlink with floating point
+boundaries, while a linear form abstract store is a map
+of the Standard Template Library. The <CODE>linearize</CODE> method requires
+both stores as its arguments. Please see the documentation of floating point
+expression classes for more information.
 
 The linearization of a floating point expression \f$e\f$ in the composite
 abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$ will

@@ -2673,7 +2673,7 @@ protected:
     It should be the result of an application of static method
     <CODE>overapproximate_linear_form</CODE>.
 
-    \param l_dimension
+    \param lf_dimension
     Must be the space dimension of \p lf.
 
     \param result
