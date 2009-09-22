@@ -595,7 +595,7 @@ typedef BD_Shape<ANALYZER_FP_FORMAT> FP_BD_Shape;
   The incarnation of Octagon under test for analyzing
   floating point computations.
 */
-typedef Octagon<ANALYZER_FP_FORMAT> FP_Octagon;
+typedef Octagonal_Shape<ANALYZER_FP_FORMAT> FP_Octagonal_Shape;
 #endif
 #endif
 
