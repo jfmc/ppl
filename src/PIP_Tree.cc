@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 #include "PIP_Tree.defs.hh"
+#include "PIP_Problem.defs.hh"
 
 #include <algorithm>
 
@@ -64,12 +65,14 @@ negate_assign(Row& x, const Row& y) {
 
 } // namespace
 
-PIP_Tree_Node::PIP_Tree_Node()
-  : constraints_() {
+PIP_Tree_Node::PIP_Tree_Node(PIP_Problem* p)
+  : problem(p),
+    constraints_() {
 }
 
 PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node &x)
-  : constraints_(x.constraints_) {
+  : problem(x.problem),
+    constraints_(x.constraints_) {
 }
 
 PIP_Decision_Node::~PIP_Decision_Node() {
@@ -81,8 +84,8 @@ PIP_Decision_Node::~PIP_Decision_Node() {
 PIP_Solution_Node::~PIP_Solution_Node() {
 }
 
-PIP_Solution_Node::PIP_Solution_Node()
-  : PIP_Tree_Node(),
+PIP_Solution_Node::PIP_Solution_Node(PIP_Problem* p)
+  : PIP_Tree_Node(p),
     tableau(),
     basis(),
     mapping(),
@@ -99,7 +102,7 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x)
 
 PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x,
                                      bool empty_constraints)
-  : PIP_Tree_Node(),
+  : PIP_Tree_Node(x.problem),
     tableau(x.tableau),
     basis(x.basis),
     mapping(x.mapping),
@@ -108,8 +111,10 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x,
     constraints_ = x.constraints_;
 }
 
-PIP_Decision_Node::PIP_Decision_Node(PIP_Tree_Node* fcp, PIP_Tree_Node* tcp)
-  : PIP_Tree_Node(),
+PIP_Decision_Node::PIP_Decision_Node(PIP_Problem* p,
+                                     PIP_Tree_Node* fcp,
+                                     PIP_Tree_Node* tcp)
+  : PIP_Tree_Node(p),
     true_child(tcp),
     false_child(fcp) {
 }
@@ -882,13 +887,13 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         }
 
         /* Create a decision Node to become parent of current Node */
-        PIP_Decision_Node *parent = new PIP_Decision_Node(fals, tru);
+        PIP_Decision_Node *parent = new PIP_Decision_Node(problem, fals, tru);
         parent->add_constraint(test);
 
         if (!cs.empty()) {
           /* If node to be solved had tautologies, store them in a new
              decision node */
-          parent = new PIP_Decision_Node(0, parent);
+          parent = new PIP_Decision_Node(problem, 0, parent);
           cs.swap(parent->constraints_);
         }
 

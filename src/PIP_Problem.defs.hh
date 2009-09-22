@@ -83,6 +83,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   the change of objective function and the change of optimization mode.
 */
 class Parma_Polyhedra_Library::PIP_Problem {
+  friend class PIP_Solution_Node;
 public:
   //! Builds a trivial PIP problem.
   /*!
