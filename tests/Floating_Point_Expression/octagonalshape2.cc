@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-typedef Floating_Point_Expression<db_r_oc, IEEE754_Double>::FP_Interval_Abstract_Store ddtr;
+typedef Floating_Point_Expression<db_r_oc, float_ieee754_double>::FP_Interval_Abstract_Store ddtr;
 
 namespace {
 

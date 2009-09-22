@@ -25,51 +25,82 @@ site: http://www.cs.unipr.it/ppl/ . */
 typedef Linear_Form<fl_r_oc> Float_Interval_Linear_Form;
 typedef Linear_Form<db_r_oc> Double_Interval_Linear_Form;
 
-typedef Division_Floating_Point_Expression<fl_r_oc, IEEE754_Single> div_fpess;
-typedef Division_Floating_Point_Expression<fl_r_oc, IEEE754_Double> div_fpesd;
-typedef Difference_Floating_Point_Expression<fl_r_oc, IEEE754_Single> dif_fpess;
-typedef Difference_Floating_Point_Expression<fl_r_oc, IEEE754_Double> dif_fpesd;
-typedef Multiplication_Floating_Point_Expression<fl_r_oc, IEEE754_Single>
-mul_fpess;
-typedef Multiplication_Floating_Point_Expression<fl_r_oc, IEEE754_Double>
-mul_fpesd;
-typedef Sum_Floating_Point_Expression<fl_r_oc, IEEE754_Single> sum_fpess;
-typedef Sum_Floating_Point_Expression<fl_r_oc, IEEE754_Double> sum_fpesd;
-typedef Constant_Floating_Point_Expression<fl_r_oc, IEEE754_Single> con_fpess;
-typedef Constant_Floating_Point_Expression<fl_r_oc, IEEE754_Double> con_fpesd;
-typedef Variable_Floating_Point_Expression<fl_r_oc, IEEE754_Single> var_fpess;
-typedef Variable_Floating_Point_Expression<fl_r_oc, IEEE754_Double> var_fpesd;
-typedef Opposite_Floating_Point_Expression<fl_r_oc, IEEE754_Single> opp_fpess;
-typedef Opposite_Floating_Point_Expression<fl_r_oc, IEEE754_Double> opp_fpesd;
+typedef Division_Floating_Point_Expression<fl_r_oc,
+                                           float_ieee754_single> div_fpess;
+typedef Division_Floating_Point_Expression<fl_r_oc,
+                                           float_ieee754_double> div_fpesd;
+typedef Difference_Floating_Point_Expression<fl_r_oc,
+                                           float_ieee754_single> dif_fpess;
+typedef Difference_Floating_Point_Expression<fl_r_oc,
+                                           float_ieee754_double> dif_fpesd;
+typedef Multiplication_Floating_Point_Expression<fl_r_oc,
+                                           float_ieee754_single> mul_fpess;
+typedef Multiplication_Floating_Point_Expression<fl_r_oc,
+                                           float_ieee754_double> mul_fpesd;
+typedef Sum_Floating_Point_Expression<fl_r_oc,
+                                      float_ieee754_single> sum_fpess;
+typedef Sum_Floating_Point_Expression<fl_r_oc,
+                                      float_ieee754_double> sum_fpesd;
+typedef Constant_Floating_Point_Expression<fl_r_oc,
+                                           float_ieee754_single> con_fpess;
+typedef Constant_Floating_Point_Expression<fl_r_oc,
+                                           float_ieee754_double> con_fpesd;
+typedef Variable_Floating_Point_Expression<fl_r_oc,
+                                           float_ieee754_single> var_fpess;
+typedef Variable_Floating_Point_Expression<fl_r_oc,
+                                           float_ieee754_double> var_fpesd;
+typedef Opposite_Floating_Point_Expression<fl_r_oc,
+                                           float_ieee754_single> opp_fpess;
+typedef Opposite_Floating_Point_Expression<fl_r_oc,
+                                           float_ieee754_double> opp_fpesd;
+typedef Division_Floating_Point_Expression<db_r_oc,
+                                           float_ieee754_single> div_fpeds;
+typedef Division_Floating_Point_Expression<db_r_oc,
+                                           float_ieee754_double> div_fpedd;
+typedef Difference_Floating_Point_Expression<db_r_oc,
+                                           float_ieee754_single> dif_fpeds;
+typedef Difference_Floating_Point_Expression<db_r_oc,
+                                           float_ieee754_double> dif_fpedd;
+typedef Multiplication_Floating_Point_Expression<db_r_oc,
+                                           float_ieee754_single> mul_fpeds;
+typedef Multiplication_Floating_Point_Expression<db_r_oc,
+                                           float_ieee754_double> mul_fpedd;
+typedef Sum_Floating_Point_Expression<db_r_oc,
+                                      float_ieee754_single> sum_fpeds;
+typedef Sum_Floating_Point_Expression<db_r_oc,
+                                      float_ieee754_double> sum_fpedd;
+typedef Constant_Floating_Point_Expression<db_r_oc,
+                                           float_ieee754_single> con_fpeds;
+typedef Constant_Floating_Point_Expression<db_r_oc,
+                                           float_ieee754_double> con_fpedd;
+typedef Variable_Floating_Point_Expression<db_r_oc,
+                                           float_ieee754_single> var_fpeds;
+typedef Variable_Floating_Point_Expression<db_r_oc,
+                                           float_ieee754_double> var_fpedd;
+typedef Opposite_Floating_Point_Expression<db_r_oc,
+                                           float_ieee754_single> opp_fpeds;
+typedef Opposite_Floating_Point_Expression<db_r_oc,
+                                           float_ieee754_double> opp_fpedd;
 
-typedef Division_Floating_Point_Expression<db_r_oc, IEEE754_Single> div_fpeds;
-typedef Division_Floating_Point_Expression<db_r_oc, IEEE754_Double> div_fpedd;
-typedef Difference_Floating_Point_Expression<db_r_oc, IEEE754_Single> dif_fpeds;
-typedef Difference_Floating_Point_Expression<db_r_oc, IEEE754_Double> dif_fpedd;
-typedef Multiplication_Floating_Point_Expression<db_r_oc, IEEE754_Single>
-mul_fpeds;
-typedef Multiplication_Floating_Point_Expression<db_r_oc, IEEE754_Double>
-mul_fpedd;
-typedef Sum_Floating_Point_Expression<db_r_oc, IEEE754_Single> sum_fpeds;
-typedef Sum_Floating_Point_Expression<db_r_oc, IEEE754_Double> sum_fpedd;
-typedef Constant_Floating_Point_Expression<db_r_oc, IEEE754_Single> con_fpeds;
-typedef Constant_Floating_Point_Expression<db_r_oc, IEEE754_Double> con_fpedd;
-typedef Variable_Floating_Point_Expression<db_r_oc, IEEE754_Single> var_fpeds;
-typedef Variable_Floating_Point_Expression<db_r_oc, IEEE754_Double> var_fpedd;
-typedef Opposite_Floating_Point_Expression<db_r_oc, IEEE754_Single> opp_fpeds;
-typedef Opposite_Floating_Point_Expression<db_r_oc, IEEE754_Double> opp_fpedd;
+typedef Floating_Point_Expression<fl_r_oc,
+                    float_ieee754_single>::FP_Interval_Abstract_Store sstr;
+typedef Floating_Point_Expression<db_r_oc,
+                    float_ieee754_single>::FP_Interval_Abstract_Store dstr;
 
-typedef Floating_Point_Expression<fl_r_oc, IEEE754_Single>::FP_Interval_Abstract_Store sstr;
-typedef Floating_Point_Expression<db_r_oc, IEEE754_Single>::FP_Interval_Abstract_Store dstr;
+typedef Floating_Point_Expression<fl_r_oc,
+                float_ieee754_single>::FP_Linear_Form_Abstract_Store lsstr;
+typedef Floating_Point_Expression<db_r_oc,
+                float_ieee754_single>::FP_Linear_Form_Abstract_Store ldstr;
 
-typedef Floating_Point_Expression<fl_r_oc, IEEE754_Single>::FP_Linear_Form_Abstract_Store lsstr;
-typedef Floating_Point_Expression<db_r_oc, IEEE754_Single>::FP_Linear_Form_Abstract_Store ldstr;
+typedef Floating_Point_Expression<fl_r_oc,
+                    float_ieee754_double>::FP_Interval_Abstract_Store sdtr;
+typedef Floating_Point_Expression<db_r_oc,
+                    float_ieee754_double>::FP_Interval_Abstract_Store ddtr;
 
-typedef Floating_Point_Expression<fl_r_oc, IEEE754_Double>::FP_Interval_Abstract_Store sdtr;
-typedef Floating_Point_Expression<db_r_oc, IEEE754_Double>::FP_Interval_Abstract_Store ddtr;
-
-typedef Floating_Point_Expression<fl_r_oc, IEEE754_Double>::FP_Linear_Form_Abstract_Store lsdtr;
-typedef Floating_Point_Expression<db_r_oc, IEEE754_Double>::FP_Linear_Form_Abstract_Store lddtr;
+typedef Floating_Point_Expression<fl_r_oc,
+                float_ieee754_double>::FP_Linear_Form_Abstract_Store lsdtr;
+typedef Floating_Point_Expression<db_r_oc,
+                float_ieee754_double>::FP_Linear_Form_Abstract_Store lddtr;
 
 namespace {
 
@@ -129,7 +160,6 @@ test03() {
   mul_fpess mul_fl(dif_fl, var0_fl);
   Float_Interval_Linear_Form result_fl;
   mul_fl.linearize(store_fl, lsstr(), result_fl);
-
   fl_r_oc kr_fl(-std::numeric_limits<float>::denorm_min());
   kr_fl.join_assign(std::numeric_limits<float>::denorm_min());
   Float_Interval_Linear_Form known_result_fl(kr_fl);
