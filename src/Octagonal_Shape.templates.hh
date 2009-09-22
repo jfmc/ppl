@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Interval.defs.hh"
 #include "Linear_Form.defs.hh"
 #include "meta_programming.hh"
+#include "Box.defs.hh"
 #include "assert.hh"
 #include <vector>
 #include <map>
@@ -5426,43 +5427,16 @@ template <typename Interval_Info>
 void
 Octagonal_Shape<T>::
 refine_fp_interval_abstract_store(
-	  std::map< dimension_type, Interval<T, Interval_Info> >& store) const {
+	  Box< Interval<T, Interval_Info> >& store) const {
 
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
                      "Octagonal_Shape<T>::refine_fp_interval_abstract_store:"
                      " T not a floating point type.");
 
-  strong_closure_assign();
-
   typedef Interval<T, Interval_Info> FP_Interval_Type;
-  typedef typename std::map<dimension_type, FP_Interval_Type>::iterator
-                   Map_Iterator;
+  store.intersection_assign(Box<FP_Interval_Type>(*this));
 
-  PPL_DIRTY_TEMP(N, upper_bound);
-  Map_Iterator store_end = store.end();
-  for (Map_Iterator ite = store.begin(); ite != store_end; ++ite) {
-    dimension_type curr_var = ite->first;
-    PPL_ASSERT(curr_var < space_dim);
-    dimension_type n_curr_var = curr_var * 2;
-    FP_Interval_Type& curr_int = ite->second;
-    T& lb = curr_int.lower();
-    T& ub = curr_int.upper();
-    // Now get the upper bound for curr_var in the octagon.
-    assign_r(upper_bound, matrix[n_curr_var+1][n_curr_var], ROUND_NOT_NEEDED);
-    div_2exp_assign_r(upper_bound, upper_bound, 1, ROUND_UP);
-
-    if (upper_bound < ub)
-      ub = upper_bound.raw_value();
-
-    // Now get the lower bound for curr_var in the octagon.
-    neg_assign_r(upper_bound, matrix[n_curr_var][n_curr_var+1],
-                 ROUND_NOT_NEEDED);
-    div_2exp_assign_r(upper_bound, upper_bound, 1, ROUND_DOWN);
-
-    if (upper_bound > lb)
-      lb = upper_bound.raw_value();
-  }
 }
 
 template <typename T>

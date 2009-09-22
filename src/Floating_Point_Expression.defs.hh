@@ -25,7 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.defs.hh"
 #include "Floating_Point_Expression.types.hh"
-#include "Linear_Form.defs.hh"
+#include "Linear_Form.types.hh"
+#include "Box.types.hh"
 #include <cmath>
 #include <map>
 
@@ -62,11 +63,14 @@ public:
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
 
   //! Alias for a map that associates a variable index to an interval.
-  /*!
+  /*! \brief
+    Alias for a Box storing lower and upper bounds for floating point
+    variables.
+
     The type a linear form abstract store associating each variable with an
     interval that correctly approximates its value.
   */
-  typedef std::map<dimension_type, FP_Interval_Type> FP_Interval_Abstract_Store;
+  typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
 
   //! Alias for a map that associates a variable index to a linear form.
   /*!

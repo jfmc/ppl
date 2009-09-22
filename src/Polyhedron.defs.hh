@@ -1018,7 +1018,7 @@ public:
   */
   template <typename FP_Format, typename Interval_Info>
   void refine_fp_interval_abstract_store(
-       std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store)
+       Box< Interval<FP_Format, Interval_Info> >& store)
        const;
 
   /*! \brief

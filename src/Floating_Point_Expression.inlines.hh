@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Floating_Point_Expression_inlines_hh 1
 
 #include "globals.defs.hh"
+#include "Linear_Form.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

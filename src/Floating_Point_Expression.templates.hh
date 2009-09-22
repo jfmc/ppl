@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Floating_Point_Expression_templates_hh
 #define PPL_Floating_Point_Expression_templates_hh 1
 
+#include "Linear_Form.defs.hh"
 #include <cmath>
 
 namespace Parma_Polyhedra_Library {
@@ -70,12 +71,12 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
               FP_Interval_Type& result) {
   result = FP_Interval_Type(lf.inhomogeneous_term());
   dimension_type dimension = lf.space_dimension();
+  assert(dimension <= store.space_dimension());
   for (dimension_type i = 0; i < dimension; ++i) {
-    typename FP_Interval_Abstract_Store::const_iterator
-             next_variable_value = store.find(i);
-    assert(next_variable_value != store.end());
     FP_Interval_Type current_addend = lf.coefficient(Variable(i));
-    current_addend *= next_variable_value->second;
+    const FP_Interval_Type& curr_int = store.get_interval(Variable(i));
+    assert(curr_int.is_bounded());
+    current_addend *= curr_int;
     result += current_addend;
   }
 
