@@ -125,7 +125,7 @@ struct float_ieee754_double {
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
-struct float_IBM_single {
+struct float_ibm_single {
   static const unsigned int EXPONENT_BITS = 7;
   static const unsigned int MANTISSA_BITS = 24;
   static const int EXPONENT_BIAS = 64;
@@ -135,7 +135,7 @@ struct float_IBM_single {
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
-struct float_IBM_double {
+struct float_ibm_double {
   static const unsigned int EXPONENT_BITS = 7;
   static const unsigned int MANTISSA_BITS = 56;
   static const int EXPONENT_BIAS = 64;
