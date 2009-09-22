@@ -4237,7 +4237,10 @@ void BD_Shape<T>
       const Linear_Form< Interval<T, Interval_Info> >& lf,
                           const dimension_type& space_dim) {
 
-  reset_shortest_path_closed();
+  // Shortest-path closure is preserved, but not reduction.
+  if (marked_shortest_path_reduced())
+    reset_shortest_path_reduced();
+
 
   Linear_Form< Interval<T, Interval_Info> > minus_lf(lf);
   minus_lf.negate();
