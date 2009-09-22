@@ -1108,7 +1108,7 @@ public:
     is not a dimension of \p *this.
   */
   template <typename Interval_Info>
-  void affine_image(const Variable& var,
+  void affine_image(Variable var,
                     const Linear_Form< Interval<T, Interval_Info> >& lf);
 
   /*! \brief

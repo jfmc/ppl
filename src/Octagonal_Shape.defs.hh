@@ -1155,7 +1155,7 @@ public:
     floating point variable represented by \p var.
   */
   template <typename Interval_Info>
-  void affine_image(const Variable& var,
+  void affine_image(Variable var,
                     const Linear_Form< Interval<T, Interval_Info> >& lf);
 
   /*! \brief

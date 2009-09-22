@@ -5056,7 +5056,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 template <typename T>
 template <typename Interval_Info>
 void
-Octagonal_Shape<T>::affine_image(const Variable& var,
+Octagonal_Shape<T>::affine_image(const Variable var,
                     const Linear_Form< Interval<T, Interval_Info> >& lf) {
 
   // Check that T is a floating point type.

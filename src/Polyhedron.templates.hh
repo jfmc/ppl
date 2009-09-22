@@ -345,7 +345,7 @@ Polyhedron::refine_with_linear_form_inequality(
 
 template <typename FP_Format, typename Interval_Info>
 void
-Polyhedron::affine_image(const Variable& var,
+Polyhedron::affine_image(const Variable var,
 const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
 const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store) {
 

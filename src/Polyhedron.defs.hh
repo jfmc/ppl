@@ -1213,7 +1213,7 @@ public:
     floating point variable represented by \p var.
   */
   template <typename FP_Format, typename Interval_Info>
-  void affine_image(const Variable& var,
+  void affine_image(Variable var,
   const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
   const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store);
 
