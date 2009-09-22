@@ -1011,6 +1011,16 @@ public:
   const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
   const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store);
 
+  //! Refines \p store with the constraints defining \p *this.
+  /*!
+    \param store
+    The interval floating point abstract store to refine.
+  */
+  template <typename FP_Format, typename Interval_Info>
+  void refine_fp_interval_abstract_store(
+       std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store)
+       const;
+
   /*! \brief
     Computes the \ref Cylindrification "cylindrification" of \p *this with
     respect to space dimension \p var, assigning the result to \p *this.

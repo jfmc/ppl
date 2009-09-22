@@ -441,7 +441,6 @@ Polyhedron::convert_to_integer_expression(
   result = Linear_Expression();
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
-  typedef typename FP_Interval_Type::boundary_type FP_Coeff_Type;
   std::vector<Coefficient> numerators(lf_dimension+1);
   std::vector<Coefficient> denominators(lf_dimension+1);
 
@@ -488,7 +487,6 @@ Polyhedron::convert_to_integer_expressions(
   res = Linear_Expression();
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
-  typedef typename FP_Interval_Type::boundary_type FP_Coeff_Type;
   std::vector<Coefficient> numerators(lf_dimension+2);
   std::vector<Coefficient> denominators(lf_dimension+2);
 
@@ -539,6 +537,55 @@ Polyhedron::convert_to_integer_expressions(
   }
   else
     res_hi_coeff = Coefficient(0);
+}
+
+template <typename FP_Format, typename Interval_Info>
+void
+Polyhedron::
+refine_fp_interval_abstract_store(
+       std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store)
+       const {
+
+  // Check that FP_Format is indeed a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
+                     "Polyhedron::refine_fp_interval_abstract_store:"
+                     " T not a floating point type.");
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  typedef typename std::map<dimension_type, FP_Interval_Type>::iterator
+                   Map_Iterator;
+
+  // FIXME: there could be restrictions on Interval_Info.
+  Box<FP_Interval_Type> limits(*this);
+  PPL_DIRTY_TEMP_COEFFICIENT(numerator);
+  PPL_DIRTY_TEMP_COEFFICIENT(denominator);
+  Map_Iterator store_end = store.end();
+  for (Map_Iterator ite = store.begin(); ite != store_end; ++ite) {
+    dimension_type curr_var = ite->first;
+    PPL_ASSERT(curr_var < space_dim);
+    Variable var(curr_var);
+    Linear_Expression var_exp(var);
+    bool dummy;
+    FP_Interval_Type& curr_int = ite->second;
+    FP_Format& lb = curr_int.lower();
+    FP_Format& ub = curr_int.upper();
+    FP_Format comparison_term;
+    mpq_class tmp_rational;
+    if (limits.minimize(var_exp, numerator, denominator, dummy)) {
+      assign_r(tmp_rational.get_num(), numerator, ROUND_NOT_NEEDED);
+      assign_r(tmp_rational.get_den(), denominator, ROUND_NOT_NEEDED);
+      assign_r(comparison_term, tmp_rational, ROUND_DOWN);
+      if (comparison_term > lb)
+        lb = comparison_term;
+    }
+    if (limits.maximize(var_exp, numerator, denominator, dummy)) {
+      assign_r(tmp_rational.get_num(), numerator, ROUND_NOT_NEEDED);
+      assign_r(tmp_rational.get_den(), denominator, ROUND_NOT_NEEDED);
+      assign_r(comparison_term, tmp_rational, ROUND_UP);
+      if (comparison_term < ub)
+        ub = comparison_term;
+    }
+  }
 }
 
 template <typename C>

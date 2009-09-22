@@ -5426,7 +5426,7 @@ template <typename Interval_Info>
 void
 Octagonal_Shape<T>::
 refine_fp_interval_abstract_store(
-	  std::map< dimension_type, Interval<T, Interval_Info> >& store) {
+	  std::map< dimension_type, Interval<T, Interval_Info> >& store) const {
 
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,

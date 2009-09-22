@@ -1746,7 +1746,8 @@ public:
   */
   template <typename Interval_Info>
   void refine_fp_interval_abstract_store(
-              std::map< dimension_type, Interval<T, Interval_Info> >& store);
+              std::map< dimension_type, Interval<T, Interval_Info> >& store)
+       const;
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
