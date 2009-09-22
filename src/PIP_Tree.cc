@@ -89,7 +89,9 @@ PIP_Solution_Node::PIP_Solution_Node(PIP_Problem* p)
     tableau(),
     basis(),
     mapping(),
-    sign() {
+    sign(),
+    solution(),
+    solution_valid(false) {
 }
 
 PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x)
@@ -97,7 +99,9 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x)
     tableau(x.tableau),
     basis(x.basis),
     mapping(x.mapping),
-    sign(x.sign) {
+    sign(x.sign),
+    solution(x.solution),
+    solution_valid(x.solution_valid) {
 }
 
 PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x,
@@ -106,7 +110,9 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x,
     tableau(x.tableau),
     basis(x.basis),
     mapping(x.mapping),
-    sign(x.sign) {
+    sign(x.sign),
+    solution(x.solution),
+    solution_valid(x.solution_valid) {
   if (!empty_constraints)
     constraints_ = x.constraints_;
 }
@@ -407,8 +413,33 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
   if (!tableau.t.ascii_load(s))
     return false;
 
+  solution_valid = false;
   PPL_ASSERT(OK());
   return true;
+}
+
+const Linear_Expression&
+PIP_Solution_Node::parametric_values(Variable v) {
+  update_solution();
+  Variables_Set& parameters = problem->parameters;
+  dimension_type id = v.id();
+  dimension_type j;
+  Variables_Set::iterator location = parameters.lower_bound(id);
+  if (location == parameters.end())
+    j = id;
+  else {
+    if (*location == id) {
+#ifndef NDEBUG
+      std::cerr << "PIP_Solution_Node::parametric_values(Variable): "
+                   "Supplied Variable corresponds to a parameter"
+                << std::endl;
+#endif
+      j = not_a_dimension();
+    } else
+      j = id - std::distance(parameters.begin(),location) - 1;
+  }
+
+  return solution[j];
 }
 
 PIP_Solution_Node::Row_Sign
@@ -579,6 +610,30 @@ PIP_Solution_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
     sign.push_back(row_sign(param));
   }
   // FIXME: decide emptiness detection (and node removal)
+}
+
+void
+PIP_Solution_Node::update_solution() {
+  if (solution_valid)
+    return;
+  dimension_type num_vars = tableau.s.num_columns();
+  if (solution.size() != num_vars)
+    solution.resize(num_vars);
+  for (dimension_type i = num_vars; i-- > 0; ) {
+    Linear_Expression &sol = solution[i];
+    if (basis[i]) {
+      sol = Linear_Expression(0);
+    } else {
+      Row &row = tableau.t[mapping[i]];
+      sol = Linear_Expression(row[0]);
+      dimension_type k;
+      Variables_Set::iterator j;
+      Variables_Set::iterator j_end = problem->parameters.end();
+      for (j = problem->parameters.begin(), k = 1; j != j_end; ++j, ++k)
+        sol += row[k] * Variable(*j);
+    }
+  }
+  solution_valid = true;
 }
 
 PIP_Problem_Status
@@ -802,6 +857,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         }
         c /= sij;
       }
+      solution_valid = false;
     }
 
     /* Otherwise, we have found a row i__ with mixed parameter sign. */

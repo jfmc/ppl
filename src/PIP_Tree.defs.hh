@@ -276,6 +276,12 @@ private:
   //! A cache for computed sign values of constraint parametric RHS.
   std::vector<Row_Sign> sign;
 
+  //! Parametric values for the solution.
+  std::vector<Linear_Expression> solution;
+
+  //! An indicator for solution validity.
+  bool solution_valid;
+
   //! Determines the sign of given Row.
   static Row_Sign row_sign(const Row &x);
 
@@ -321,6 +327,9 @@ protected:
                               dimension_type first_pending_constraint,
                               const Constraint_Sequence &input_cs,
                               const Variables_Set &parameters);
+
+  //! Update the solution values.
+  virtual void update_solution();
 
   /*! \brief
     Execute a parametric simplex on the tableau, under specified context.
