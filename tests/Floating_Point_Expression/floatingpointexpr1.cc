@@ -81,22 +81,10 @@ typedef Opposite_Floating_Point_Expression<db_r_oc,
                                            float_ieee754_single> opp_fpeds;
 typedef Opposite_Floating_Point_Expression<db_r_oc,
                                            float_ieee754_double> opp_fpedd;
-
-typedef Floating_Point_Expression<fl_r_oc,
-                    float_ieee754_single>::FP_Interval_Abstract_Store sstr;
-typedef Floating_Point_Expression<db_r_oc,
-                    float_ieee754_single>::FP_Interval_Abstract_Store dstr;
-
 typedef Floating_Point_Expression<fl_r_oc,
                 float_ieee754_single>::FP_Linear_Form_Abstract_Store lsstr;
 typedef Floating_Point_Expression<db_r_oc,
                 float_ieee754_single>::FP_Linear_Form_Abstract_Store ldstr;
-
-typedef Floating_Point_Expression<fl_r_oc,
-                    float_ieee754_double>::FP_Interval_Abstract_Store sdtr;
-typedef Floating_Point_Expression<db_r_oc,
-                    float_ieee754_double>::FP_Interval_Abstract_Store ddtr;
-
 typedef Floating_Point_Expression<fl_r_oc,
                 float_ieee754_double>::FP_Linear_Form_Abstract_Store lsdtr;
 typedef Floating_Point_Expression<db_r_oc,
@@ -138,7 +126,7 @@ test02() {
   div_fpess div(num, den);
   try {
     Float_Interval_Linear_Form result;
-    div.linearize(sstr(), lsstr(), result);
+    div.linearize(Box<fl_r_oc>(0), lsstr(), result);
   }
   catch (Linearization_Failed e) {
     nout << "*** Linearization failed due to division by zero. ***" << endl;
@@ -150,9 +138,9 @@ test02() {
 // Tests multiplication by zero.
 bool
 test03() {
-  sstr store_fl;
-  store_fl[0] = fl_r_oc(0);
-  store_fl[1] = fl_r_oc(10);
+  Box<fl_r_oc> store_fl(2);
+  store_fl.set_interval(Variable(0), fl_r_oc(0));
+  store_fl.set_interval(Variable(1), fl_r_oc(10));
   con_fpess* con_fl = new con_fpess(5, 6);
   var_fpess* var0_fl = new var_fpess(0);
   var_fpess* var1_fl = new var_fpess(1);
@@ -168,9 +156,9 @@ test03() {
        << known_result_fl << endl;
   bool ok_fl = (result_fl == known_result_fl);
 
-  dstr store_db;
-  store_db[0] = db_r_oc(0);
-  store_db[1] = db_r_oc(4);
+  Box<db_r_oc> store_db(2);
+  store_db.set_interval(Variable(0), db_r_oc(0));
+  store_db.set_interval(Variable(1), db_r_oc(4));
   con_fpedd* con_db = new con_fpedd(5, 6);
   var_fpedd* var0_db = new var_fpedd(0);
   var_fpedd* var1_db = new var_fpedd(1);
@@ -199,7 +187,7 @@ test04() {
   store_fl[0] = known_result_fl;
   var_fpesd var_fl(0);
   Float_Interval_Linear_Form result_fl;
-  var_fl.linearize(sdtr(), store_fl, result_fl);
+  var_fl.linearize(Box<fl_r_oc>(0), store_fl, result_fl);
 
   nout << "*** known_result_fl ***" << endl
        << known_result_fl << endl;
@@ -211,7 +199,7 @@ test04() {
   store_db[0] = known_result_db;
   var_fpedd var_db(0);
   Double_Interval_Linear_Form result_db;
-  var_db.linearize(ddtr(), store_db, result_db);
+  var_db.linearize(Box<db_r_oc>(0), store_db, result_db);
 
   nout << "*** known_result_db ***" << endl
        << known_result_db << endl;
@@ -223,10 +211,10 @@ test04() {
 // Tests the linearization of A + B.
 bool
 test05() {
-  dstr store;
   db_r_oc tmp;
-  store[0] = tmp;
-  store[1] = tmp;
+  Box<db_r_oc> store(2);
+  store.set_interval(Variable(0), tmp);
+  store.set_interval(Variable(1), tmp);
   var_fpeds* var0 = new var_fpeds(0);
   var_fpeds* var1 = new var_fpeds(1);
   sum_fpeds sum(var0, var1);
@@ -253,10 +241,10 @@ test05() {
 // Tests the linearization of A - B.
 bool
 test06() {
-  sstr store;
   fl_r_oc tmp;
-  store[0] = tmp;
-  store[1] = tmp;
+  Box<fl_r_oc> store(2);
+  store.set_interval(Variable(0), tmp);
+  store.set_interval(Variable(1), tmp);
   var_fpess* var0 = new var_fpess(0);
   var_fpess* var1 = new var_fpess(1);
   dif_fpess dif(var0, var1);
@@ -283,11 +271,11 @@ test06() {
 // Tests the linearization of A * B where A = [0, 1] and B = [2, 2].
 bool
 test07() {
-  sstr store;
+  Box<fl_r_oc> store(2);
   fl_r_oc tmp(0);
   tmp.join_assign(1);
-  store[0] = tmp;
-  store[1] = fl_r_oc(2);
+  store.set_interval(Variable(0), tmp);
+  store.set_interval(Variable(1), fl_r_oc(2));
   var_fpess* var0 = new var_fpess(0);
   var_fpess* var1 = new var_fpess(1);
   mul_fpess mul(var0, var1);
@@ -309,14 +297,14 @@ test07() {
   return result == known_result;
 }
 
-// Tests the linearization of A / B where A = [1, 4] and B = [2, 2].
+// Tests the linearization of A / B where A = [0, 1] and B = [2, 2].
 bool
 test08() {
-  ddtr store;
+  Box<db_r_oc> store(2);
   db_r_oc tmp(0);
   tmp.join_assign(1);
-  store[0] = tmp;
-  store[1] = db_r_oc(2);
+  store.set_interval(Variable(0), tmp);
+  store.set_interval(Variable(1), db_r_oc(2));
   var_fpedd* var0 = new var_fpedd(0);
   var_fpedd* var1 = new var_fpedd(1);
   div_fpedd div(var0, var1);
@@ -341,10 +329,10 @@ test08() {
 // Tests the linearization of [1/4, 1/2] * (-A) where A = [1, 10].
 bool
 test09() {
-  sdtr store;
+  Box<fl_r_oc> store(1);
   fl_r_oc tmp(1);
   tmp.join_assign(10);
-  store[0] = tmp;
+  store.set_interval(Variable(0), tmp);
   con_fpesd* con = new con_fpesd(1 / 4.0, 1 / 2.0);
   var_fpesd* var0 = new var_fpesd(0);
   opp_fpesd* opp = new opp_fpesd(var0);
@@ -381,7 +369,7 @@ test10() {
   con_fpess* con3 = new con_fpess(0, 0);
   mul_fpess mul(con3, sum);
   Float_Interval_Linear_Form result;
-  mul.linearize(sstr(), lsstr(), result);
+  mul.linearize(Box<fl_r_oc>(), lsstr(), result);
 
   nout << "*** known_result1 ***" << endl
        << known_result1 << endl;
@@ -398,7 +386,7 @@ test10() {
   con_fpedd* con6 = new con_fpedd(0, 0);
   mul_fpedd mul2(sum2, con6);
   Double_Interval_Linear_Form result2;
-  mul2.linearize(ddtr(), lddtr(), result2);
+  mul2.linearize(Box<db_r_oc>(), lddtr(), result2);
 
   nout << "*** known_result2 ***" << endl
        << known_result2 << endl;
@@ -414,7 +402,7 @@ test10() {
 
   bool ok3 = false;
   try {
-    mul3.linearize(ddtr(), lddtr(), result2);
+    mul3.linearize(Box<db_r_oc>(), lddtr(), result2);
   }
   catch (Linearization_Failed e) {
     nout << "*** Linearization failed due to overflow. ***" << endl;

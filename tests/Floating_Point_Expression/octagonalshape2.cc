@@ -23,8 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-typedef Floating_Point_Expression<db_r_oc, float_ieee754_double>::FP_Interval_Abstract_Store ddtr;
-
 namespace {
 
 // tests trivial cases
@@ -412,13 +410,13 @@ bool
 test11() {
   Variable A(0);
   Variable B(1);
-  ddtr store;
+  Box<db_r_oc> store(2);
   db_r_oc tmp(-2.5);
   tmp.join_assign(3.5);
-  store[0] = tmp;
+  store.set_interval(A, tmp);
   tmp.lower() = -4;
   tmp.upper() = 4;
-  store[1] = tmp;
+  store.set_interval(B, tmp);
   Octagonal_Shape<double> oc1(2);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(B <= 2);
@@ -426,25 +424,27 @@ test11() {
   oc1.add_constraint(2*B >= -3);
   oc1.refine_fp_interval_abstract_store(store);
 
-  nout << "*** store[0] ***" << endl
-       << store[0] << endl;
+  tmp = store.get_interval(A);
+  nout << "*** store.get_interval(A) ***" << endl
+       << tmp << endl;
 
   db_r_oc known_result1(-2.5);
   known_result1.join_assign(2);
   nout << "*** known_result1 ***" << endl
        << known_result1 << endl;
 
-  bool ok1 = (store[0] == known_result1);
+  bool ok1 = (tmp == known_result1);
 
-  nout << "*** store[1] ***" << endl
-       << store[1] << endl;
+  tmp = store.get_interval(B);
+  nout << "*** store.get_interval(B) ***" << endl
+       << tmp << endl;
 
   db_r_oc known_result2(-1.5);
   known_result2.join_assign(2);
   nout << "*** known_result2 ***" << endl
        << known_result2 << endl;
 
-  bool ok2 = (store[1] == known_result2);
+  bool ok2 = (tmp == known_result2);
 
   return ok1 && ok2;
 }
