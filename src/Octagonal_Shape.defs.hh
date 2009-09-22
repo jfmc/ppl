@@ -1864,7 +1864,7 @@ private:
 		   const Linear_Form< Interval<T, Interval_Info> >& lf,
                    N& result) const;
 
-  // FIXME: the name is questionable.
+  // FIXME: this function is currently not used. Consider removing it.
   static void interval_coefficient_upper_bound(const N& var_ub,
                                                const N& minus_var_ub,
                                                const N& int_ub, const N& int_lb,

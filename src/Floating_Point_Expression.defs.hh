@@ -34,6 +34,12 @@ namespace Parma_Polyhedra_Library {
 //! Exception class indicating the failure of a linearization attempt.
 class Linearization_Failed {};
 
+/*
+  FIXME: considering adapting the whole code of Floating_Point_Expression
+  to use the policies defined in Float.defs.hh instead of the following
+  ones that contain duplicate information.
+*/
+
 //! Policy class defining the IEEE754 half precision format.
 struct IEEE754_Half {
   static const unsigned short fraction_bits = 10;

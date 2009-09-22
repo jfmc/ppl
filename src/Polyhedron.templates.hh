@@ -305,7 +305,7 @@ Polyhedron::refine_with_linear_form_inequality(
 
   // Check that FP_Format is indeed a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
-                         "Polyhedron::affine_image:"
+                         "Polyhedron::refine_with_linear_form_inequality:"
                          " FP_Format not a floating point type.");
 
   // Dimension compatibility checks.
@@ -383,12 +383,7 @@ const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store) {
                                  lo_coeff, hi_coeff);
 
   // Finally, do the assignment.
-  PPL_DIRTY_TEMP_COEFFICIENT(one_coeff);
-  one_coeff = 1;
-  generalized_affine_image(var, GREATER_OR_EQUAL, lf_approx_le + lo_coeff,
-                           one_coeff);
-  generalized_affine_image(var, LESS_OR_EQUAL, lf_approx_le + hi_coeff,
-                           one_coeff);
+  bounded_affine_image(var, lf_approx_le + lo_coeff, lf_approx_le + hi_coeff);
 
 }
 
