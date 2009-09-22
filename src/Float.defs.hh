@@ -41,6 +41,16 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
+struct float_ieee754_half {
+  static const unsigned int EXPONENT_BITS = 5;
+  static const unsigned int MANTISSA_BITS = 10;
+  static const int EXPONENT_BIAS = 15;
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+
 struct float_ieee754_single {
   uint32_t word;
   static const uint32_t SGN_MASK = 0x80000000;
@@ -109,6 +119,26 @@ struct float_ieee754_double {
   void inc();
   void set_max(bool negative);
   void build(bool negative, mpz_t mantissa, int exponent);
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+
+struct float_IBM_single {
+  static const unsigned int EXPONENT_BITS = 7;
+  static const unsigned int MANTISSA_BITS = 24;
+  static const int EXPONENT_BIAS = 64;
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+
+struct float_IBM_double {
+  static const unsigned int EXPONENT_BITS = 7;
+  static const unsigned int MANTISSA_BITS = 56;
+  static const int EXPONENT_BIAS = 64;
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
