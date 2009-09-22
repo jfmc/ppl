@@ -583,7 +583,7 @@ typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
   The incarnation of Floating_Point_Expression under test for analyzing
   floating point computations.
 */
-typedef Floating_Point_Expression<FP_Interval_Type, ANALYZED_FP_FORMAT> FP_Expression;
+typedef Floating_Point_Expression<FP_Interval, ANALYZED_FP_FORMAT> FP_Expression;
 
 /*! \brief
   The incarnation of BD_Shape under test for analyzing
