@@ -574,16 +574,66 @@ typedef Interval<ANALYZER_FP_FORMAT,
 typedef Linear_Form<FP_Interval> FP_Linear_Form;
 
 //! The type of an interval abstract store.
-typedef std::map<dimension_type, FP_Interval> FP_Interval_Abstract_Store;
+typedef Box<FP_Interval> FP_Interval_Abstract_Store;
 
 //! The type of a linear form abstract store.
-typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
+typedef std::map<dimension_type, FP_Linear_Form>
+                                 FP_Linear_Form_Abstract_Store;
 
 /*! \brief
   The incarnation of Floating_Point_Expression under test for analyzing
   floating point computations.
 */
-typedef Floating_Point_Expression<FP_Interval, ANALYZED_FP_FORMAT> FP_Expression;
+typedef Floating_Point_Expression<FP_Interval, ANALYZED_FP_FORMAT>
+                                                         FP_Expression;
+
+/*! \brief
+  The incarnation of Constant_Floating_Point_Expression under test for
+  analyzing floating point computations.
+*/
+typedef Constant_Floating_Point_Expression<FP_Interval,
+                                ANALYZED_FP_FORMAT> Con_FP_Expression;
+
+/*! \brief
+  The incarnation of Variable_Floating_Point_Expression under test for
+  analyzing floating point computations.
+*/
+typedef Variable_Floating_Point_Expression<FP_Interval,
+                                ANALYZED_FP_FORMAT> Var_FP_Expression;
+
+/*! \brief
+  The incarnation of Sum_Floating_Point_Expression under test for
+  analyzing floating point computations.
+*/
+typedef Sum_Floating_Point_Expression<FP_Interval,
+                                      ANALYZED_FP_FORMAT> Sum_FP_Expression;
+
+/*! \brief
+  The incarnation of Difference_Floating_Point_Expression under test for
+  analyzing floating point computations.
+*/
+typedef Difference_Floating_Point_Expression<FP_Interval,
+                                      ANALYZED_FP_FORMAT> Dif_FP_Expression;
+/*! \brief
+  The incarnation of Multiplication_Floating_Point_Expression under test for
+  analyzing floating point computations.
+*/
+typedef Multiplication_Floating_Point_Expression<FP_Interval,
+                                      ANALYZED_FP_FORMAT> Mul_FP_Expression;
+
+/*! \brief
+  The incarnation of Division_Floating_Point_Expression under test for
+  analyzing floating point computations.
+*/
+typedef Division_Floating_Point_Expression<FP_Interval,
+                                      ANALYZED_FP_FORMAT> Div_FP_Expression;
+
+/*! \brief
+  The incarnation of Multiplication_Floating_Point_Expression under test for
+  analyzing floating point computations.
+*/
+typedef Opposite_Floating_Point_Expression<FP_Interval,
+                                      ANALYZED_FP_FORMAT> Opp_FP_Expression;
 
 /*! \brief
   The incarnation of BD_Shape under test for analyzing
@@ -592,7 +642,7 @@ typedef Floating_Point_Expression<FP_Interval, ANALYZED_FP_FORMAT> FP_Expression
 typedef BD_Shape<ANALYZER_FP_FORMAT> FP_BD_Shape;
 
 /*! \brief
-  The incarnation of Octagon under test for analyzing
+  The incarnation of Octagonal_Shape under test for analyzing
   floating point computations.
 */
 typedef Octagonal_Shape<ANALYZER_FP_FORMAT> FP_Octagonal_Shape;
