@@ -40,16 +40,22 @@ add_assign(Row& x, const Row& y, Coefficient_traits::const_reference c) {
 
 // Merge constraint system to a Matrix-form context such as x = x U y
 void
-merge_assign(Matrix& x, const Constraint_System& y) {
+merge_assign(Matrix& x,
+             const Constraint_System& y,
+             const Variables_Set &parameters) {
   dimension_type width = x.num_columns();
   PPL_ASSERT(y.empty() || y.begin()->space_dimension() == width-1);
   Row row(width, Row::Flags());
+  Variables_Set::iterator param_begin = parameters.begin();
+  Variables_Set::iterator param_end = parameters.end();
+  Variables_Set::iterator pi;
+  dimension_type j;
   for (Constraint_System::const_iterator y_i = y.begin(),
          y_end = y.end(); y_i != y_end; ++y_i) {
     PPL_ASSERT(y_i->is_nonstrict_inequality());
-    for (dimension_type j=width-1; j-- > 0; )
-      row[j+1] = y_i->coefficient(Variable(j));
     row[0] = y_i->inhomogeneous_term();
+    for (pi=param_begin, j=1; pi != param_end; ++pi, ++j)
+      row[j] = y_i->coefficient(Variable(*pi));
     x.add_row(row);
   }
 }
@@ -211,8 +217,15 @@ PIP_Tree_Node::OK() const {
 void
 PIP_Tree_Node::add_constraint(const Row &row) {
   Linear_Expression e;
-  for (dimension_type j=row.size(); j-- > 1; )
-    e += row[j] * Variable(j-1);
+  const Variables_Set &parameters = problem->parameter_space_dimensions();
+  Variables_Set::const_iterator param_begin = parameters.begin();
+  Variables_Set::const_iterator param_end = parameters.end();
+  Variables_Set::const_iterator pi;
+  dimension_type j;
+  PPL_ASSERT(dimension_type(std::distance(param_begin, param_end))+1
+             == row.size());
+  for (pi=param_begin, j=1; pi != param_end; ++pi, ++j)
+    e += row[j] * Variable(*pi);
   constraints_.insert(e + row[0] >= 0);
 }
 
@@ -286,13 +299,14 @@ PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& context) {
   PIP_Problem_Status stt;
   PIP_Problem_Status stf = UNFEASIBLE_PIP_PROBLEM;
   Matrix context_true(context);
-  merge_assign(context_true, constraints_);
+  const Variables_Set &parameters = problem->parameter_space_dimensions();
+  merge_assign(context_true, constraints_, parameters);
   stt = true_child->solve(true_child, context_true);
   if (false_child) {
     // Decision nodes with false child must have exactly one constraint
     PPL_ASSERT(1 == std::distance(constraints_.begin(), constraints_.end()));
     Matrix context_false(context);
-    merge_assign(context_false, constraints_);
+    merge_assign(context_false, constraints_, parameters);
     Row &last = context_false[context_false.num_rows()-1];
     negate_assign(last, last);
     stf = false_child->solve(false_child, context_false);
@@ -640,7 +654,8 @@ PIP_Problem_Status
 PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
                          const Matrix& ctx) {
   Matrix context(ctx);
-  merge_assign(context, constraints_);
+  const Variables_Set &parameters = problem->parameter_space_dimensions();
+  merge_assign(context, constraints_, parameters);
   const dimension_type n_a_d = not_a_dimension();
   Coefficient gcd;
 

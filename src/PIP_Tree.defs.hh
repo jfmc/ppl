@@ -63,10 +63,9 @@ public:
   /*! \brief
     Returns the system of parameter constraints controlling \p *this.
 
-    The column indices in the constraints are numbered from \c 0 to
-    <tt>np-1</tt>, where \c np is the total number of parameters. They are
-    ordered with the same order as the parameter indices in the original
-    problem.
+    The indices in the constraints are the same as the original variables and
+    parameters. Coefficients in indices corresponding to variables always are
+    zero.
   */
   const Constraint_System& constraints() const;
 
