@@ -4275,6 +4275,389 @@ void BD_Shape<T>
 
 template <typename T>
 template <typename Interval_Info>
+void BD_Shape<T>::refine_with_linear_form_inequality(
+                   const Linear_Form< Interval<T, Interval_Info> >& left,
+                   const Linear_Form< Interval<T, Interval_Info> >& right) {
+
+    // Check that T is a floating point type.
+    PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
+		    "Octagonal_Shape<T>::refine_with_linear_form_inequality:"
+		    " T not a floating point type.");
+
+    //We assume that the analyzer will not try to apply an unreachable filter.
+    PPL_ASSERT(!marked_empty());
+
+    // Dimension-compatibility checks.
+    // The dimensions of `left' and `right' should not be greater than the
+    // dimension of `*this'.
+    const dimension_type left_space_dim = left.space_dimension();
+    const dimension_type space_dim = space_dimension();
+    if (space_dim < left_space_dim)
+      throw_dimension_incompatible(
+          "refine_with_linear_form_inequality(left, right)", "left", left);
+
+    const dimension_type right_space_dim = right.space_dimension();
+    if (space_dim < right_space_dim)
+      throw_dimension_incompatible(
+          "refine_with_linear_form_inequality(left, right)", "right", right);
+
+  // Number of non-zero coefficients in `left': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type left_t = 0;
+  // Variable-index of the last non-zero coefficient in `left', if any.
+  dimension_type left_w_id = 0;
+  // Number of non-zero coefficients in `right': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type right_t = 0;
+  // Variable-index of the last non-zero coefficient in `right', if any.
+  dimension_type right_w_id = 0;
+
+  // Get information about the number of non-zero coefficients in `left'.
+  for (dimension_type i = left_space_dim; i-- > 0; )
+    if (left.coefficient(Variable(i)) != 0) {
+      if (left_t++ == 1)
+        break;
+      else
+        left_w_id = i;
+    }
+
+  // Get information about the number of non-zero coefficients in `right'.
+  for (dimension_type i = right_space_dim; i-- > 0; )
+    if (right.coefficient(Variable(i)) != 0) {
+      if (right_t++ == 1)
+        break;
+      else
+        right_w_id = i;
+    }
+
+  typedef Interval<T, Interval_Info> FP_Interval_Type;
+
+  // FIXME: there is plenty of duplicate code in the following lines. We could
+  // shorten it at the expense of a bit of efficiency.
+
+  if (left_t == 0) {
+    left_inhomogeneous_refine(left_t, right_t, right_w_id, left, right);
+    PPL_ASSERT(OK());
+    return;
+  }
+  else if(left_t == 1){
+    left_one_var_refine(left_t, left_w_id, right_t, right_w_id, left, right);
+    PPL_ASSERT(OK());
+    return;
+  }
+
+  // FIXME: General case must be implemented in a new private function.
+
+  /*
+  // General case.
+
+  // FIRST, update the binary constraints for each pair of DIFFERENT variables
+  // in `left' and `right'.
+
+  // Declare temporaries outside of the loop.
+  PPL_DIRTY_TEMP(N, low_coeff);
+  PPL_DIRTY_TEMP(N, high_coeff);
+  PPL_DIRTY_TEMP(N, upper_bound);
+
+  Linear_Form<FP_Interval_Type> right_minus_left(right);
+  right_minus_left.negate();
+
+  dimension_type max_w_id = std::max(left_w_id, right_w_id);
+  for (dimension_type first_v = 0; first_v < max_w_id; ++first_v) {
+    for (dimension_type second_v = first_v+1;
+         second_v <= max_w_id; ++second_v) {
+      const FP_Interval_Type& lfv_coefficient =
+                        left.coefficient(Variable(first_v));
+      const FP_Interval_Type& lsv_coefficient =
+                        left.coefficient(Variable(second_v));
+      const FP_Interval_Type& rfv_coefficient =
+                        right.coefficient(Variable(first_v));
+      const FP_Interval_Type& rsv_coefficient =
+                        right.coefficient(Variable(second_v));
+      // We update the constraints only when both variables appear in at
+      // least one argument.
+      bool do_update = false;
+      assign_r(low_coeff, lfv_coefficient.lower(), ROUND_NOT_NEEDED);
+      assign_r(high_coeff, lfv_coefficient.upper(), ROUND_NOT_NEEDED);
+      if (low_coeff != 0 || high_coeff != 0) {
+        assign_r(low_coeff, lsv_coefficient.lower(), ROUND_NOT_NEEDED);
+        assign_r(high_coeff, lsv_coefficient.upper(), ROUND_NOT_NEEDED);
+        if (low_coeff != 0 || high_coeff != 0)
+          do_update = true;
+        else {
+          assign_r(low_coeff, rsv_coefficient.lower(), ROUND_NOT_NEEDED);
+          assign_r(high_coeff, rsv_coefficient.upper(), ROUND_NOT_NEEDED);
+          if (low_coeff != 0 || high_coeff != 0)
+            do_update = true;
+        }
+      }
+      else {
+        assign_r(low_coeff, rfv_coefficient.lower(), ROUND_NOT_NEEDED);
+        assign_r(high_coeff, rfv_coefficient.upper(), ROUND_NOT_NEEDED);
+        if (low_coeff != 0 || high_coeff != 0) {
+          assign_r(low_coeff, lsv_coefficient.lower(), ROUND_NOT_NEEDED);
+          assign_r(high_coeff, lsv_coefficient.upper(), ROUND_NOT_NEEDED);
+          if (low_coeff != 0 || high_coeff != 0)
+            do_update = true;
+          else {
+            assign_r(low_coeff, rsv_coefficient.lower(), ROUND_NOT_NEEDED);
+            assign_r(high_coeff, rsv_coefficient.upper(), ROUND_NOT_NEEDED);
+            if (low_coeff != 0 || high_coeff != 0)
+              do_update = true;
+          }
+        }
+      }
+
+      if (do_update) {
+        Variable first(first_v);
+        Variable second(second_v);
+        dimension_type n_first_var = first_v * 2;
+        dimension_type n_second_var = second_v * 2;
+        linear_form_upper_bound(right_minus_left - first + second,
+                                upper_bound);
+        add_dbm_constraint(n_second_var+1, n_first_var+1, upper_bound);
+        linear_form_upper_bound(right_minus_left + first + second,
+                                upper_bound);
+        add_dbm_constraint(n_second_var+1, n_first_var, upper_bound);
+        linear_form_upper_bound(right_minus_left - first - second,
+                                upper_bound);
+        add_dbm_constraint(n_second_var, n_first_var+1, upper_bound);
+        linear_form_upper_bound(right_minus_left + first - second,
+                                upper_bound);
+        add_dbm_constraint(n_second_var, n_first_var, upper_bound);
+      }
+    }
+  }
+
+  // Finally, update the unary constraints.
+  for (dimension_type v = 0; v <= max_w_id; ++v) {
+    const FP_Interval_Type& lv_coefficient =
+                        left.coefficient(Variable(v));
+    const FP_Interval_Type& rv_coefficient =
+                        right.coefficient(Variable(v));
+    // We update the constraints only if v appears in at least one of the
+    // two arguments.
+    bool do_update = false;
+    assign_r(low_coeff, lv_coefficient.lower(), ROUND_NOT_NEEDED);
+    assign_r(high_coeff, lv_coefficient.upper(), ROUND_NOT_NEEDED);
+    if (low_coeff != 0 || high_coeff != 0)
+      do_update = true;
+    else {
+      assign_r(low_coeff, rv_coefficient.lower(), ROUND_NOT_NEEDED);
+      assign_r(high_coeff, rv_coefficient.upper(), ROUND_NOT_NEEDED);
+      if (low_coeff != 0 || high_coeff != 0)
+        do_update = true;
+    }
+
+    if (do_update) {
+      Variable var(v);
+      dimension_type n_var = 2 * v;
+      
+      //  VERY DIRTY trick: since we need to keep the old unary constraints
+      //  while computing the new ones, we momentarily keep the new coefficients
+      //  in the main diagonal of the matrix. They will be moved later.
+      
+      linear_form_upper_bound(right_minus_left + var, upper_bound);
+      linear_form_upper_bound(right_minus_left - var, upper_bound);
+    }
+  }
+
+  
+  //  Now move the newly computed coefficients from the main diagonal to
+  //  their proper place, and restore +infinity on the diagonal.
+  
+  Row_Iterator m_ite = matrix.row_begin();
+  Row_Iterator m_end = matrix.row_end();
+  for (dimension_type i = 0; m_ite != m_end; i += 2) {
+    Row_Reference upper = *m_ite;
+    N& ul = upper[i];
+    add_octagonal_constraint(i, i+1, ul);
+    assign_r(ul, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    ++m_ite;
+    Row_Reference lower = *m_ite;
+    N& lr = lower[i+1];
+    add_octagonal_constraint(i+1, i, lr);
+    assign_r(lr, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    ++m_ite;
+  }
+
+  
+*/
+  PPL_ASSERT(OK());
+  return;
+} // end of refine
+
+template <typename T>
+template <typename Interval_Info>
+void
+BD_Shape<T>::left_inhomogeneous_refine(const dimension_type& left_t,
+				       const dimension_type& right_t,
+				       const dimension_type& right_w_id,
+		    const Linear_Form< Interval<T, Interval_Info> >& left,
+		    const Linear_Form< Interval<T, Interval_Info> >& right) {
+
+  typedef Interval<T, Interval_Info> FP_Interval_Type;
+
+  if (right_t == 0) {
+    // The constraint involves constants only. Ignore it: it is up to
+    // the analyzer to handle it.
+    return;
+  }
+    
+  if (right_t == 1) {
+    // The constraint has the form [a-;a+] <= [b-;b+] + [c-;c+] * x.
+    // Reduce it to the constraint +/-x <= b+ - a- if [c-;c+] = +/-[1;1].
+      const FP_Interval_Type& right_w_coeff =
+	                      right.coefficient(Variable(right_w_id));
+      if (right_w_coeff == 1) {
+        PPL_DIRTY_TEMP(N, b_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_b = right.inhomogeneous_term();
+        sub_assign_r(b_plus_minus_a_minus, right_b.upper(), left_a.lower(),
+                     ROUND_UP);
+        add_dbm_constraint(right_w_id, 0, b_plus_minus_a_minus);
+        return;
+      }
+
+      if (right_w_coeff == -1) {
+        PPL_DIRTY_TEMP(N, b_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_b = right.inhomogeneous_term();
+        sub_assign_r(b_plus_minus_a_minus, right_b.upper(), left_a.lower(),
+                     ROUND_UP);
+        add_dbm_constraint(0, right_w_id, b_plus_minus_a_minus);
+        return;
+      }
+    }
+    return;
+} // end of left_inhomogeneous_refine
+
+
+template <typename T>
+template <typename Interval_Info>
+void
+BD_Shape<T>
+::left_one_var_refine(const dimension_type& left_t,
+		      const dimension_type& left_w_id,
+		      const dimension_type& right_t,
+		      const dimension_type& right_w_id,
+		      const Linear_Form< Interval<T, Interval_Info> >& left,
+		      const Linear_Form< Interval<T, Interval_Info> >& right) {
+
+  typedef Interval<T, Interval_Info> FP_Interval_Type;
+  
+    if (right_t == 0) {
+      // The constraint has the form [b-;b+] + [c-;c+] * x <= [a-;a+]
+      // Reduce it to the constraint +/-x <= a+ - b- if [c-;c+] = +/-[1;1].
+      const FP_Interval_Type& left_w_coeff =
+	left.coefficient(Variable(left_w_id));
+
+      if (left_w_coeff == 1) {
+        PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+        const FP_Interval_Type& left_b = left.inhomogeneous_term();
+        const FP_Interval_Type& right_a = right.inhomogeneous_term();
+        sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                     ROUND_UP);
+        add_dbm_constraint(0, left_w_id, a_plus_minus_b_minus);
+        return;
+      }
+
+      if (left_w_coeff == -1) {
+        PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+        const FP_Interval_Type& left_b = left.inhomogeneous_term();
+        const FP_Interval_Type& right_a = right.inhomogeneous_term();
+        sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                     ROUND_UP);
+        add_dbm_constraint(left_w_id, 0, a_plus_minus_b_minus);
+        return;
+      }
+    } // fi right_t == 0
+    
+    if(right_t == 1) {
+      // The constraint has the form:
+      // [a-;a+] + [b-;b+] * x <= [c-;c+] + [d-;d+] * y.
+      // Reduce it to the constraint +/-x +/-y <= c+ - a-
+      // if [b-;b+] = +/-[1;1] and [d-;d+] = +/-[1;1].
+      const FP_Interval_Type& left_w_coeff =
+                              left.coefficient(Variable(left_w_id));
+      const FP_Interval_Type& right_w_coeff =
+	                      right.coefficient(Variable(right_w_id));
+      bool is_left_coeff_one = (left_w_coeff == 1);
+      bool is_left_coeff_minus_one = (left_w_coeff == -1);
+      bool is_right_coeff_one = (right_w_coeff == 1);
+      bool is_right_coeff_minus_one = (right_w_coeff == -1);
+      if (left_w_id == right_w_id) {
+        if ((is_left_coeff_one && is_right_coeff_one) ||
+            (is_left_coeff_minus_one && is_right_coeff_minus_one)) {
+          // Here we have an identity or a constants-only constraint.
+          return;
+        }
+        if (is_left_coeff_one && is_right_coeff_minus_one) {
+          // We fall back to a previous case
+          // (but we do not need to multiply the result by two).
+          PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+          const FP_Interval_Type& left_b = left.inhomogeneous_term();
+          const FP_Interval_Type& right_a = right.inhomogeneous_term();
+          sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                       ROUND_UP);
+	  div_2exp_assign (a_plus_minus_b_minus, a_plus_minus_b_minus, 1);
+          add_dbm_constraint(0, left_w_id, a_plus_minus_b_minus);
+          return;
+        }
+        if (is_left_coeff_minus_one && is_right_coeff_one) {
+          // We fall back to a previous case
+          // (but we do not need to multiply the result by two).
+          PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+          const FP_Interval_Type& left_b = left.inhomogeneous_term();
+          const FP_Interval_Type& right_a = right.inhomogeneous_term();
+          sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                       ROUND_UP);
+	  div_2exp_assign (a_plus_minus_b_minus, a_plus_minus_b_minus, 1);
+          add_dbm_constraint(right_w_id, 0, a_plus_minus_b_minus);
+          return;
+        }
+      }
+      else if (is_left_coeff_one && is_right_coeff_one) {        
+        PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_c = right.inhomogeneous_term();
+        sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
+                     ROUND_UP);
+        add_dbm_constraint(left_w_id, right_w_id , c_plus_minus_a_minus);
+	return;
+      }
+      if (is_left_coeff_one && is_right_coeff_minus_one) {
+        // if right coefficent is negative the constraint x + y <= b
+	// is ignored;
+
+	// FIXME: manage this case adding a costraint x <= k
+	// where k is an overaproximation of b - y
+        return;
+      }
+      if (is_left_coeff_minus_one && is_right_coeff_one) {
+        PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_c = right.inhomogeneous_term();
+        sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
+                     ROUND_UP);
+        add_dbm_constraint(right_w_id, left_w_id , c_plus_minus_a_minus);
+        return;
+      }
+      if (is_left_coeff_minus_one && is_right_coeff_minus_one) {
+        // if right and left coefficents are negative the constraint 
+	// - x - y <= b
+	// is ignored;
+
+	// FIXME: manage this case adding a costraint - x <= k
+	// where k is an overaproximation of b + y
+      }
+    }
+    return;
+}
+
+
+template <typename T>
+template <typename Interval_Info>
 void
 BD_Shape<T>::
 linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
