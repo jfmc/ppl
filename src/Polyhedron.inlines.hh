@@ -372,6 +372,22 @@ Polyhedron::add_recycled_congruences(Congruence_System& cgs) {
   add_congruences(cgs);
 }
 
+template <typename FP_Format, typename Interval_Info>
+inline void
+Polyhedron::
+refine_fp_interval_abstract_store(
+       Box< Interval<FP_Format, Interval_Info> >& store) const {
+
+  // Check that FP_Format is indeed a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
+                     "Polyhedron::refine_fp_interval_abstract_store:"
+                     " T not a floating point type.");
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  store.intersection_assign(Box<FP_Interval_Type>(*this));
+
+}
+
 /*! \relates Polyhedron */
 inline bool
 operator!=(const Polyhedron& x, const Polyhedron& y) {

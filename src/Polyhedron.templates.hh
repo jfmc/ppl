@@ -339,7 +339,6 @@ Polyhedron::refine_with_linear_form_inequality(
 
   // Finally, do the refinement.
   refine_with_constraint(lf_approx_le <= 0);
-
 }
 
 template <typename FP_Format, typename Interval_Info>
@@ -383,7 +382,6 @@ const Box< Interval<FP_Format, Interval_Info> >& store) {
 
   // Finally, do the assignment.
   bounded_affine_image(var, lf_approx_le + lo_coeff, lf_approx_le + hi_coeff);
-
 }
 
 template <typename FP_Format, typename Interval_Info>
@@ -403,7 +401,6 @@ Polyhedron::overapproximate_linear_form(
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
-  typedef Box<FP_Interval_Type> Interval_Abstract_Store;
 
   result = FP_Linear_Form(lf.inhomogeneous_term());
   // FIXME: this may not be policy-neutral.
@@ -429,7 +426,6 @@ Polyhedron::overapproximate_linear_form(
       result += curr_addend_lf;
     }
   }
-
 }
 
 template <typename FP_Format, typename Interval_Info>
@@ -537,22 +533,6 @@ Polyhedron::convert_to_integer_expressions(
   }
   else
     res_hi_coeff = Coefficient(0);
-}
-
-template <typename FP_Format, typename Interval_Info>
-void
-Polyhedron::
-refine_fp_interval_abstract_store(
-       Box< Interval<FP_Format, Interval_Info> >& store) const {
-
-  // Check that FP_Format is indeed a floating point type.
-  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
-                     "Polyhedron::refine_fp_interval_abstract_store:"
-                     " T not a floating point type.");
-
-  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
-  store.intersection_assign(Box<FP_Interval_Type>(*this));
-
 }
 
 template <typename C>

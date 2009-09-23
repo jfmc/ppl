@@ -30,7 +30,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Interval.defs.hh"
 #include "Linear_Form.defs.hh"
 #include "meta_programming.hh"
-#include "Box.defs.hh"
 #include "assert.hh"
 #include <vector>
 #include <deque>
@@ -856,7 +855,6 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
   }
 
   PPL_ASSERT(OK());
-
 }
 
 template <typename T>
@@ -5303,7 +5301,6 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   assign_r(matrix[n_var][n_var+1], minus_lf_ub, ROUND_NOT_NEEDED);
 
   PPL_ASSERT(OK());
-
 }
 
 template <typename T>
@@ -5418,24 +5415,6 @@ interval_coefficient_upper_bound(const N& var_ub, const N& minus_var_ub,
   assign_r(result, std::max(result, second_comparison_term), ROUND_NOT_NEEDED);
   assign_r(result, std::max(result, third_comparison_term), ROUND_NOT_NEEDED);
   assign_r(result, std::max(result, fourth_comparison_term), ROUND_NOT_NEEDED);
-
-}
-
-template <typename T>
-template <typename Interval_Info>
-void
-Octagonal_Shape<T>::
-refine_fp_interval_abstract_store(
-	  Box< Interval<T, Interval_Info> >& store) const {
-
-  // Check that T is a floating point type.
-  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
-                     "Octagonal_Shape<T>::refine_fp_interval_abstract_store:"
-                     " T not a floating point type.");
-
-  typedef Interval<T, Interval_Info> FP_Interval_Type;
-  store.intersection_assign(Box<FP_Interval_Type>(*this));
-
 }
 
 template <typename T>
