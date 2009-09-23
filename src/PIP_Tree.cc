@@ -450,7 +450,7 @@ PIP_Solution_Node::parametric_values(Variable v) {
 #endif
       j = not_a_dimension();
     } else
-      j = id - std::distance(parameters.begin(),location) - 1;
+      j = id - std::distance(parameters.begin(),location);
   }
 
   return solution[j];
@@ -911,6 +911,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         Row &r = tableau.t[i];
         context.add_row(r);
         add_constraint(r);
+        sign[i] = POSITIVE;
 #ifdef NOISY_PIP
         Constraint_System::const_iterator c = constraints_.begin();
         Constraint_System::const_iterator c_end = constraints_.end();
@@ -958,13 +959,14 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         }
 
         /* Create a decision Node to become parent of current Node */
-        PIP_Decision_Node *parent = new PIP_Decision_Node(problem, fals, tru);
+        PIP_Decision_Node* parent
+        = new PIP_Decision_Node(fals->problem, fals, tru);
         parent->add_constraint(test);
 
         if (!cs.empty()) {
           /* If node to be solved had tautologies, store them in a new
              decision node */
-          parent = new PIP_Decision_Node(problem, 0, parent);
+          parent = new PIP_Decision_Node(fals->problem, 0, parent);
           cs.swap(parent->constraints_);
         }
 
