@@ -30,10 +30,10 @@ bool
 test01() {
   Variable A(0);
   Variable B(1);
-  Octagonal_Shape<double> oc1(0);
+  FP_Octagonal_Shape oc1(0);
   bool ok1 = false;
-  Linear_Form<db_r_oc> l1(A);
-  Linear_Form<db_r_oc> l2;
+  FP_Linear_Form l1(A);
+  FP_Linear_Form l2;
   try {
       oc1.refine_with_linear_form_inequality(l1, l2);
   }
@@ -48,11 +48,11 @@ test01() {
   }
   catch(std::invalid_argument e) {
     nout << "space_dim < right_space_dim" << endl;
-    Octagonal_Shape<double> oc2(1);
+    FP_Octagonal_Shape oc2(1);
     oc2.refine_with_linear_form_inequality(l1, l1);
     oc2.refine_with_linear_form_inequality(-l1, l1);
     oc2.refine_with_linear_form_inequality(l1, -l1);
-    db_r_oc tmp;
+    FP_Interval tmp(0);
     l1 -= A;
     l1 += tmp;
     l2 += tmp;
@@ -69,15 +69,15 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  Octagonal_Shape<float> oc1(3);
+  FP_Octagonal_Shape oc1(3);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  Octagonal_Shape<float> known_result(oc1);
-  fl_r_oc tmp(-1);
+  FP_Octagonal_Shape known_result(oc1);
+  FP_Interval tmp(-1);
   tmp.join_assign(2);
-  Linear_Form<fl_r_oc> l1(tmp);
-  Linear_Form<fl_r_oc> l2(A);
+  FP_Linear_Form l1(tmp);
+  FP_Linear_Form l2(A);
   tmp.lower() = -4;
   tmp.upper() = -1;
   l2 += tmp;
@@ -107,15 +107,15 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  Octagonal_Shape<double> oc1(3);
+  FP_Octagonal_Shape oc1(3);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  Octagonal_Shape<double> known_result(oc1);
-  db_r_oc tmp(3.5);
+  FP_Octagonal_Shape known_result(oc1);
+  FP_Interval tmp(3.5);
   tmp.join_assign(6);
-  Linear_Form<db_r_oc> l1(tmp);
-  Linear_Form<db_r_oc> l2(-A);
+  FP_Linear_Form l1(tmp);
+  FP_Linear_Form l2(-A);
   tmp.lower() = -2.5;
   tmp.upper() = 0;
   l2 += tmp;
@@ -145,16 +145,16 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  Octagonal_Shape<double> oc1(3);
+  FP_Octagonal_Shape oc1(3);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  Octagonal_Shape<double> known_result(oc1);
-  db_r_oc tmp(-0.5);
+  FP_Octagonal_Shape known_result(oc1);
+  FP_Interval tmp(-0.5);
   tmp.join_assign(1);
-  Linear_Form<db_r_oc> l1(A);
+  FP_Linear_Form l1(A);
   l1 += tmp;
-  Linear_Form<db_r_oc> l2(B);
+  FP_Linear_Form l2(B);
   tmp.lower() = 2.5;
   tmp.upper() = 5;
   l2 += tmp;
@@ -184,15 +184,15 @@ test05() {
   Variable A(0);
   Variable B(1);
 
-  Octagonal_Shape<float> oc1(3);
+  FP_Octagonal_Shape oc1(3);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  Octagonal_Shape<float> known_result(oc1);
-  fl_r_oc tmp(4);
-  Linear_Form<fl_r_oc> l2(-B);
+  FP_Octagonal_Shape known_result(oc1);
+  FP_Interval tmp(4);
+  FP_Linear_Form l2(-B);
   l2 += tmp;
-  Linear_Form<fl_r_oc> l1(A);
+  FP_Linear_Form l1(A);
   tmp.lower() = 1;
   tmp.upper() = 3;
   l1 += tmp;
@@ -222,15 +222,15 @@ test06() {
   Variable A(0);
   Variable B(1);
 
-  Octagonal_Shape<double> oc1(3);
+  FP_Octagonal_Shape oc1(3);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  Octagonal_Shape<double> known_result(oc1);
-  db_r_oc tmp(-2);
-  Linear_Form<db_r_oc> l2(B);
+  FP_Octagonal_Shape known_result(oc1);
+  FP_Interval tmp(-2);
+  FP_Linear_Form l2(B);
   l2 += tmp;
-  Linear_Form<db_r_oc> l1(-A);
+  FP_Linear_Form l1(-A);
   tmp.lower() = 1;
   tmp.upper() = 4;
   l1 += tmp;
@@ -260,16 +260,16 @@ test07() {
   Variable A(0);
   Variable B(1);
 
-  Octagonal_Shape<float> oc1(3);
+  FP_Octagonal_Shape oc1(3);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  Octagonal_Shape<float> known_result(oc1);
-  fl_r_oc tmp(-2);
+  FP_Octagonal_Shape known_result(oc1);
+  FP_Interval tmp(-2);
   tmp.join_assign(-1);
-  Linear_Form<fl_r_oc> l2(-B);
+  FP_Linear_Form l2(-B);
   l2 += tmp;
-  Linear_Form<fl_r_oc> l1(-A);
+  FP_Linear_Form l1(-A);
   tmp.lower() = -3;
   tmp.upper() = -0.5;
   l1 += tmp;
@@ -299,16 +299,16 @@ test08() {
   Variable A(0);
   Variable B(1);
 
-  Octagonal_Shape<double> oc1(3);
+  FP_Octagonal_Shape oc1(3);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  Octagonal_Shape<double> known_result(oc1);
-  db_r_oc tmp(1);
+  FP_Octagonal_Shape known_result(oc1);
+  FP_Interval tmp(1);
   tmp.join_assign(3);
-  Linear_Form<db_r_oc> l1(B);
+  FP_Linear_Form l1(B);
   l1 *= tmp;
-  Linear_Form<db_r_oc> l2(A);
+  FP_Linear_Form l2(A);
   tmp.lower() = -1.5;
   tmp.upper() = 0;
   l2 *= tmp;
@@ -329,22 +329,22 @@ test09() {
   Variable A(0);
   Variable B(1);
 
-  Octagonal_Shape<double> oc1(3);
+  FP_Octagonal_Shape oc1(3);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  Octagonal_Shape<double> known_result(oc1);
+  FP_Octagonal_Shape known_result(oc1);
 
-  db_r_oc tmp(-7);
+  FP_Interval tmp(-7);
   tmp.join_assign(-2);
-  Linear_Form<db_r_oc> l2(tmp);
-  Linear_Form<db_r_oc> l1(A);
+  FP_Linear_Form l2(tmp);
+  FP_Linear_Form l1(A);
   tmp.lower() = 0.25;
   tmp.upper() = 0.5;
   l1 *= tmp;
   tmp.lower() = -2;
   tmp.upper() = -1;
-  l1 += tmp * Linear_Form<db_r_oc>(B);
+  l1 += tmp * FP_Linear_Form(B);
   oc1.refine_with_linear_form_inequality(l1, l2);
   print_constraints(oc1, "*** [0.25, 0.5]*A + [-2, -1]*B <= [-7, -2] ***");
 
@@ -371,19 +371,19 @@ test10() {
   Variable A(0);
   Variable B(1);
 
-  Octagonal_Shape<float> oc1(3);
+  FP_Octagonal_Shape oc1(3);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  Octagonal_Shape<float> known_result(oc1);
-  fl_r_oc tmp(2);
+  FP_Octagonal_Shape known_result(oc1);
+  FP_Interval tmp(2);
   tmp.join_assign(3);
-  Linear_Form<fl_r_oc> l2(B);
+  FP_Linear_Form l2(B);
   l2 *= tmp;
   tmp.lower() = 0.5;
   tmp.upper() = 1;
   l2 += tmp;
-  Linear_Form<fl_r_oc> l1(A);
+  FP_Linear_Form l1(A);
   tmp.lower() = -5;
   tmp.upper() = -1;
   l1 *= tmp;
