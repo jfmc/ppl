@@ -204,7 +204,8 @@ test06() {
 
   tmp = FP_Interval(-FP_Expression::absolute_error);
   tmp.join_assign(FP_Expression::absolute_error);
-  ANALYZER_FP_FORMAT exp = pow(2,-static_cast<ANALYZER_FP_FORMAT>((ANALYZED_FP_FORMAT::MANTISSA_BITS-1)));
+  ANALYZER_FP_FORMAT exp = pow(2,
+    -static_cast<ANALYZER_FP_FORMAT>((ANALYZED_FP_FORMAT::MANTISSA_BITS-1)));
   FP_Interval coeff = FP_Interval(2);
   coeff -= exp;
   FP_Interval coeff2(2);
