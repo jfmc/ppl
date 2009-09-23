@@ -26,38 +26,9 @@ namespace {
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-// Tests absolute errors.
-bool
-test01() {
-    /*
-  nout << FP_Expression::absolute_error << endl;
-  nout << Div_FP_Expression::absolute_error << endl;
-  nout << Div_FP_Expression::absolute_error << endl;
-  nout << Div_FP_Expression::absolute_error << endl;
-  nout << Div_FP_Expression::absolute_error << endl;
-
-  if (Div_FP_Expression::absolute_error !=
-      FP_Expression::absolute_error)
-    return false;
-
-  if (Div_FP_Expression::absolute_error !=
-      FP_Expression::absolute_error)
-    return false;
-
-  if (Div_FP_Expression::absolute_error !=
-      FP_Expression::absolute_error)
-    return false;
-
-  if (Div_FP_Expression::absolute_error !=
-      FP_Expression::absolute_error)
-    return false;
-  */
-  return true;
-}
-
 // Tests division by zero.
 bool
-test02() {
+test01() {
   Con_FP_Expression* num = new Con_FP_Expression(3, 5);
   Con_FP_Expression* den = new Con_FP_Expression(-1, 1);
   Div_FP_Expression div(num, den);
@@ -75,7 +46,7 @@ test02() {
 
 // Tests multiplication by zero.
 bool
-test03() {
+test02() {
   FP_Interval_Abstract_Store store_fl(2);
   store_fl.set_interval(Variable(0), FP_Interval(0));
   store_fl.set_interval(Variable(1), FP_Interval(10));
@@ -118,7 +89,7 @@ test03() {
 
 // Tests linearization of variables in a given linear form abstract store.
 bool
-test04() {
+test03() {
   FP_Linear_Form_Abstract_Store store_fl;
   Variable A(0);
   FP_Linear_Form known_result_fl = FP_Linear_Form(A);
@@ -148,7 +119,7 @@ test04() {
 
 // Tests the linearization of A + B.
 bool
-test05() {
+test04() {
   FP_Interval tmp;
   FP_Interval_Abstract_Store store(2);
   store.set_interval(Variable(0), tmp);
@@ -162,7 +133,8 @@ test05() {
   Variable A(0);
   Variable B(1);
   FP_Linear_Form known_result = FP_Linear_Form(A);
-  ANALYZER_FP_FORMAT exp = pow(2,-static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS));
+  ANALYZER_FP_FORMAT exp = pow(2,
+    -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS));
   nout << exp << endl;
   tmp = FP_Interval(1);
   tmp -= exp;
@@ -184,7 +156,7 @@ test05() {
 
 // Tests the linearization of A - B.
 bool
-test06() {
+test05() {
   FP_Interval tmp;
   FP_Interval_Abstract_Store store(2);
   store.set_interval(Variable(0), tmp);
@@ -198,7 +170,8 @@ test06() {
   Variable A(0);
   Variable B(1);
   FP_Linear_Form known_result = FP_Linear_Form(A);
-  ANALYZER_FP_FORMAT exp = pow(2,-static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS));
+  ANALYZER_FP_FORMAT exp = pow(2,
+    -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS));
   tmp = FP_Interval(1);
   tmp -= exp;
   FP_Interval tmp2(1);
@@ -217,7 +190,7 @@ test06() {
 
 // Tests the linearization of A * B where A = [0, 1] and B = [2, 2].
 bool
-test07() {
+test06() {
   FP_Interval_Abstract_Store store(2);
   FP_Interval tmp(0);
   tmp.join_assign(1);
@@ -249,7 +222,7 @@ test07() {
 
 // Tests the linearization of A / B where A = [0, 1] and B = [2, 2].
 bool
-test08() {
+test07() {
   FP_Interval_Abstract_Store store(2);
   FP_Interval tmp(0);
   tmp.join_assign(1);
@@ -263,7 +236,8 @@ test08() {
 
   tmp = FP_Interval(-FP_Expression::absolute_error);
   tmp.join_assign(FP_Expression::absolute_error);
-  ANALYZER_FP_FORMAT exp = pow(2,-static_cast<ANALYZER_FP_FORMAT>((ANALYZED_FP_FORMAT::MANTISSA_BITS+1)));
+  ANALYZER_FP_FORMAT exp = pow(2,
+    -static_cast<ANALYZER_FP_FORMAT>((ANALYZED_FP_FORMAT::MANTISSA_BITS+1)));
   FP_Interval coeff = FP_Interval(1 / 2.0);
   coeff -= exp;
   FP_Interval coeff2(1 / 2.0);
@@ -280,7 +254,7 @@ test08() {
 
 // Tests the linearization of [1/4, 1/2] * (-A) where A = [1, 10].
 bool
-test09() {
+test08() {
   FP_Interval_Abstract_Store store(1);
   FP_Interval tmp(1);
   tmp.join_assign(10);
@@ -294,7 +268,8 @@ test09() {
 
   Variable A(0);
   FP_Linear_Form known_result = FP_Linear_Form(A);
-  ANALYZER_FP_FORMAT exp = pow(2,-static_cast<ANALYZER_FP_FORMAT>((ANALYZED_FP_FORMAT::MANTISSA_BITS+1)));
+  ANALYZER_FP_FORMAT exp = pow(2,
+    -static_cast<ANALYZER_FP_FORMAT>((ANALYZED_FP_FORMAT::MANTISSA_BITS+1)));
   tmp = FP_Interval(-1 / 2.0);
   tmp -= exp;
   FP_Interval tmp2(-1 / 4.0);
@@ -312,7 +287,7 @@ test09() {
 
 // Tests linearization of multiplication by unbounded operands.
 bool
-test10() {
+test09() {
   ANALYZER_FP_FORMAT max_fl = std::numeric_limits<ANALYZER_FP_FORMAT>::max();
   FP_Interval min_fl = FP_Interval(
                      -FP_Expression::absolute_error);
@@ -382,5 +357,4 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-  DO_TEST(test10);
 END_MAIN

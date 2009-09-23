@@ -26,7 +26,7 @@ namespace {
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-// Test operator-=(Linear_Form<db_r_oc>& f1, const Linear_Form<db_r_oc>& f2):
+// Test operator-=(FP_Linear_Form& f1, const FP_Linear_Form& f2):
 // in this case the dimension of f2 is strictly greater than
 // the dimension of f1.
 bool
@@ -34,14 +34,14 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  Linear_Form<db_r_oc> f;
-  Linear_Form<db_r_oc> f1 = A;
-  Linear_Form<db_r_oc> f2 = B;
+  FP_Linear_Form f;
+  FP_Linear_Form f1 = A;
+  FP_Linear_Form f2 = B;
 
   f1 += f.coefficient(A);
   f1 -= f2;
 
-  Linear_Form<db_r_oc> known_result = A - Linear_Form<db_r_oc>(B);
+  FP_Linear_Form known_result = A - FP_Linear_Form(B);
 
   bool ok = (f1 == known_result);
 
@@ -56,27 +56,27 @@ test02() {
   Variable A(15);
   Variable B(0);
 
-  Linear_Form<db_r_oc> f1 = A;
-  Linear_Form<db_r_oc> f2 = B;
+  FP_Linear_Form f1 = A;
+  FP_Linear_Form f2 = B;
 
-  Linear_Form<db_r_oc> known_result1 = f1 + f2;
+  FP_Linear_Form known_result1 = f1 + f2;
 
-  bool ok1 = (Linear_Form<db_r_oc>(A) + B == known_result1)
-    && (B + Linear_Form<db_r_oc>(A) == known_result1)
-    && (A + Linear_Form<db_r_oc>(B) == known_result1)
-    && (Linear_Form<db_r_oc>(B) + A == known_result1)
-    && (Linear_Form<db_r_oc>(B) + Linear_Form<db_r_oc>(A) == known_result1);
+  bool ok1 = (FP_Linear_Form(A) + B == known_result1)
+    && (B + FP_Linear_Form(A) == known_result1)
+    && (A + FP_Linear_Form(B) == known_result1)
+    && (FP_Linear_Form(B) + A == known_result1)
+    && (FP_Linear_Form(B) + FP_Linear_Form(A) == known_result1);
 
   nout << "*** known_result1 ***" << endl
        << known_result1 << endl;
 
-  Linear_Form<db_r_oc> known_result2 = f1 + f1;
+  FP_Linear_Form known_result2 = f1 + f1;
 
-  bool ok2 = (Linear_Form<db_r_oc>(A) + A == known_result2)
-    && (A + Linear_Form<db_r_oc>(A) == known_result2)
-    && (A + Linear_Form<db_r_oc>(A) == known_result2)
-    && (Linear_Form<db_r_oc>(A) + A == known_result2)
-    && (Linear_Form<db_r_oc>(A) + Linear_Form<db_r_oc>(A) == known_result2);
+  bool ok2 = (FP_Linear_Form(A) + A == known_result2)
+    && (A + FP_Linear_Form(A) == known_result2)
+    && (A + FP_Linear_Form(A) == known_result2)
+    && (FP_Linear_Form(A) + A == known_result2)
+    && (FP_Linear_Form(A) + FP_Linear_Form(A) == known_result2);
 
   nout << "*** known_result2 ***" << endl
        << known_result2 << endl;
@@ -89,32 +89,32 @@ test03() {
   Variable A(15);
   Variable B(10);
 
-  Linear_Form<db_r_oc> f1 = A;
-  Linear_Form<db_r_oc> f2 = B;
+  FP_Linear_Form f1 = A;
+  FP_Linear_Form f2 = B;
 
-  Linear_Form<db_r_oc> known_result1 = f1 - f2;
+  FP_Linear_Form known_result1 = f1 - f2;
 
-  bool ok1 = (Linear_Form<db_r_oc>(A) - B == known_result1)
-    && (A - Linear_Form<db_r_oc>(B) == known_result1)
-    && (Linear_Form<db_r_oc>(A) - Linear_Form<db_r_oc>(B) == known_result1);
+  bool ok1 = (FP_Linear_Form(A) - B == known_result1)
+    && (A - FP_Linear_Form(B) == known_result1)
+    && (FP_Linear_Form(A) - FP_Linear_Form(B) == known_result1);
 
   nout << "*** known_result1 ***" << endl
        << known_result1 << endl;
 
-  Linear_Form<db_r_oc> known_result2 = f2 - f1;
+  FP_Linear_Form known_result2 = f2 - f1;
 
-  bool ok2 = (Linear_Form<db_r_oc>(B) - A == known_result2)
-    && (B - Linear_Form<db_r_oc>(A) == known_result2)
-    && (Linear_Form<db_r_oc>(B) - Linear_Form<db_r_oc>(A) == known_result2);
+  bool ok2 = (FP_Linear_Form(B) - A == known_result2)
+    && (B - FP_Linear_Form(A) == known_result2)
+    && (FP_Linear_Form(B) - FP_Linear_Form(A) == known_result2);
 
   nout << "*** known_result2 ***" << endl
        << known_result2 << endl;
 
-  Linear_Form<db_r_oc> known_result3 = f1 - f1;
+  FP_Linear_Form known_result3 = f1 - f1;
 
-  bool ok3 = (Linear_Form<db_r_oc>(A) - A == known_result3)
-    && (A - Linear_Form<db_r_oc>(A) == known_result3)
-    && (Linear_Form<db_r_oc>(A) - Linear_Form<db_r_oc>(A) == known_result3);
+  bool ok3 = (FP_Linear_Form(A) - A == known_result3)
+    && (A - FP_Linear_Form(A) == known_result3)
+    && (FP_Linear_Form(A) - FP_Linear_Form(A) == known_result3);
 
   nout << "*** known_result3 ***" << endl
        << known_result3 << endl;
@@ -122,7 +122,7 @@ test03() {
   return ok1 && ok2 && ok3;
 }
 
-// Test operator+=(Linear_Form<db_r_oc>& f1, const Linear_Form<db_r_oc>& f2):
+// Test operator+=(FP_Linear_Form& f1, const FP_Linear_Form& f2):
 // in this case the dimension of f2 is strictly greater than
 // the dimension of f1.
 bool
@@ -130,11 +130,11 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  Linear_Form<db_r_oc> f1 = A;
-  Linear_Form<db_r_oc> f2 = B;
+  FP_Linear_Form f1 = A;
+  FP_Linear_Form f2 = B;
   f1 += f2;
 
-  Linear_Form<db_r_oc> known_result = Linear_Form<db_r_oc>(A) + B;
+  FP_Linear_Form known_result = FP_Linear_Form(A) + B;
 
   bool ok = (f1 == known_result);
 
@@ -144,7 +144,7 @@ test04() {
   return ok;
 }
 
-// Test operator+=(Linear_Form<db_r_oc>& f, Variable v):
+// Test operator+=(FP_Linear_Form& f, Variable v):
 // in this case the dimension of v is strictly greater than
 // the dimension of f.
 bool
@@ -152,12 +152,12 @@ test05() {
   Variable A(0);
   Variable B(1);
 
-  Linear_Form<db_r_oc> f = A;
-  db_r_oc x(2.0);
-  x /= 3.0;
+  FP_Linear_Form f = A;
+  FP_Interval x(2.0);
+  x /= FP_Interval(3.0);
   f *= x;
 
-  Linear_Form<db_r_oc> known_result = f + B;
+  FP_Linear_Form known_result = f + B;
 
   f += B;
 
@@ -176,12 +176,12 @@ test06() {
   Variable C(16);
   Variable D(120);
 
-  Linear_Form<db_r_oc> f = A + 2*B + 16*C + 120*D;
+  FP_Linear_Form f = A + 2*B + 16*C + 120*D;
 
-  Linear_Form<db_r_oc> known_result = A;
-  known_result += db_r_oc(2) * Linear_Form<db_r_oc>(B);
-  known_result += db_r_oc(16) * Linear_Form<db_r_oc>(C);
-  known_result += db_r_oc(120) * Linear_Form<db_r_oc>(D);
+  FP_Linear_Form known_result = A;
+  known_result += FP_Interval(2) * FP_Linear_Form(B);
+  known_result += FP_Interval(16) * FP_Linear_Form(C);
+  known_result += FP_Interval(120) * FP_Linear_Form(D);
 
   bool ok = (f == known_result);
 
@@ -197,18 +197,18 @@ test07() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
-  Linear_Form<db_r_oc> f1 = A;
-  Linear_Form<db_r_oc> f2;
+  FP_Linear_Form f1 = A;
+  FP_Linear_Form f2;
   bool known_result = false;
 
   bool result1 = (f1 == f2);
 
-  f2 += db_r_oc(1.0);
+  f2 += FP_Interval(1.0);
   bool result2 = (f1 == f2);
 
   bool result3 = (f2 == f1);
 
-  f1 += db_r_oc(1.0);
+  f1 += FP_Interval(1.0);
   bool result4 = (f2 == f1);
 
   nout << "*** known_result ***" << endl
@@ -221,12 +221,12 @@ test07() {
 // Tests overflows of space dimension.
 bool
 test08() {
-  Linear_Form<db_r_oc> f;
+  FP_Linear_Form f;
   Variable A(f.max_space_dimension());
 
   bool ok1 = false;
   try {
-    f = Linear_Form<db_r_oc>(A);
+    f = FP_Linear_Form(A);
   }
   catch(std::length_error e) {
       nout << "Overflow in Linear_Form(const Variable v)." << endl;
@@ -252,12 +252,12 @@ test08() {
            << endl;
       Variable B(1);
       Variable C(2);
-      Linear_Form<db_r_oc> g(B);
+      FP_Linear_Form g(B);
       g -= C;
       ok3 = true;
   }
 
-  Linear_Form<db_r_oc> g;
+  FP_Linear_Form g;
   bool ok4 = false;
   try {
     g = f - A;
