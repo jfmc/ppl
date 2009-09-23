@@ -568,7 +568,7 @@ typedef Octagonal_Shape<OCTAGONAL_SHAPE_INSTANCE> TOctagonal_Shape;
 #ifdef ANALYZED_FP_FORMAT
 //! The type of an interval with floating point boundaries.
 typedef Interval<ANALYZER_FP_FORMAT,
-                 Floating_Real_Closed_Interval_Info_Policy> FP_Interval;
+                 Floating_Real_Open_Interval_Info> FP_Interval;
 
 //! The type of an interval linear form.
 typedef Linear_Form<FP_Interval> FP_Linear_Form;

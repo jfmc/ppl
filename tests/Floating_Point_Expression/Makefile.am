@@ -62,7 +62,7 @@ DERIVED_TESTS =
 ALL_TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS)
 
 # This will be overridden by the `run_tests' script.
-TEST_CPPFLAGS=-DANALYZER_FP_FORMAT=fl_r_oc -DANALYZED_FP_FORMAT=float_ieee754_half
+TEST_CPPFLAGS=-DANALYZER_FP_FORMAT=float -DANALYZED_FP_FORMAT=float_ieee754_half
 
 dist_check_SCRIPTS = run_tests
 
@@ -79,33 +79,33 @@ XFAIL_TESTS =
 # Do not change the ordering in what follows.
 if SUPPORTED_FLOAT
 FLOAT_INSTANCES= \
-fl_r_oc/float_ieee754_half \
-fl_r_oc/float_ieee754_single \
-fl_r_oc/float_ieee754_double \
-fl_r_oc/float_ieee754_quad \
-fl_r_oc/float_ibm_single \
-fl_r_oc/float_ibm_double \
-fl_r_oc/float_intel_double_extended
+float/float_ieee754_half \
+float/float_ieee754_single \
+float/float_ieee754_double \
+float/float_ieee754_quad \
+float/float_ibm_single \
+float/float_ibm_double \
+float/float_intel_double_extended
 endif
 if SUPPORTED_DOUBLE
 DOUBLE_INSTANCES= \
-db_r_oc/float_ieee754_half \
-db_r_oc/float_ieee754_single \
-db_r_oc/float_ieee754_double \
-db_r_oc/float_ieee754_quad \
-db_r_oc/float_ibm_single \
-db_r_oc/float_ibm_double \
-db_r_oc/float_intel_double_extended
+double/float_ieee754_half \
+double/float_ieee754_single \
+double/float_ieee754_double \
+double/float_ieee754_quad \
+double/float_ibm_single \
+double/float_ibm_double \
+double/float_intel_double_extended
 endif
 if SUPPORTED_LONG_DOUBLE
 LONG_DOUBLE_INSTANCES= \
-ld_r_oc/float_ieee754_half \
-ld_r_oc/float_ieee754_single \
-ld_r_oc/float_ieee754_double \
-ld_r_oc/float_ieee754_quad \
-ld_r_oc/float_ibm_single \
-ld_r_oc/float_ibm_double \
-ld_r_oc/float_intel_double_extended
+long_double/float_ieee754_half \
+long_double/float_ieee754_single \
+long_double/float_ieee754_double \
+long_double/float_ieee754_quad \
+long_double/float_ibm_single \
+long_double/float_ibm_double \
+long_double/float_intel_double_extended
 endif
 
 # Do not change the ordering in what follows.
