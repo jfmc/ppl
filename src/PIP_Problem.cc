@@ -105,6 +105,15 @@ PPL::PIP_Problem::solve() const {
   throw std::runtime_error("PPL internal error");
 }
 
+PPL::PIP_Tree
+PPL::PIP_Problem::solution() const {
+  return current_solution;
+}
+
+PPL::PIP_Tree
+PPL::PIP_Problem::optimizing_solution() const {
+  return current_solution;
+}
 
 bool
 PPL::PIP_Problem::OK() const {

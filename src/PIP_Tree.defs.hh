@@ -163,7 +163,7 @@ public:
     Thrown if \p v is dimension-incompatible with \p *this
     or if \p v is a parameter.
   */
-  const Linear_Expression& parametric_values(Variable v);
+  const Linear_Expression& parametric_values(const Variable &v) const;
 
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);

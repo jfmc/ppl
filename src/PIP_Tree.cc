@@ -433,8 +433,8 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
 }
 
 const Linear_Expression&
-PIP_Solution_Node::parametric_values(Variable v) {
-  update_solution();
+PIP_Solution_Node::parametric_values(const Variable &v) const {
+  const_cast<PIP_Solution_Node&>(*this).update_solution();
   Variables_Set& parameters = problem->parameters;
   dimension_type id = v.id();
   dimension_type j;

@@ -24,6 +24,43 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+void
+display_solution(const PIP_Tree pip, const Variables_Set &vars, int indent=0) {
+  using namespace std;
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (!pip) {
+    nout << setw(indent*2) << "" << "_|_" << endl;
+  } else {
+    const Constraint_System &constraints = pip->constraints();
+    if (!constraints.empty()) {
+      nout << setw(indent*2) << "" << "if ";
+      Constraint_System::const_iterator begin = constraints.begin();
+      Constraint_System::const_iterator end = constraints.end();
+      Constraint_System::const_iterator i;
+      for (i = begin; i != end; ++i)
+        nout << ((i==begin)?"":" and ") << *i;
+      nout << " then" << endl;
+    }
+    const PIP_Decision_Node* dn = pip->as_decision();
+    if (dn) {
+      display_solution(dn->child_node(true), vars, indent+1);
+      nout << setw(indent*2) << "" << "else" << endl;
+      display_solution(dn->child_node(false), vars, indent+1);
+    } else {
+      const PIP_Solution_Node* sn = pip->as_solution();
+      Variables_Set::const_iterator begin = vars.begin();
+      Variables_Set::const_iterator end = vars.end();
+      Variables_Set::const_iterator i;
+      nout << setw(indent*2+2) << "" << "{";
+      for (i=begin; i!=end; ++i)
+        nout << ((i==begin)?"":" ; ") << sn->parametric_values(Variable(*i));
+      nout << "}" << endl;
+      nout << setw(indent*2) << "" << "else" << endl;
+      nout << setw(indent*2+2) << "" << "_|_" << endl;
+    }
+  }
+}
+
 bool
 test01() {
   Variable X1(0);
@@ -43,6 +80,10 @@ test01() {
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
 
   bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    display_solution(solution, Variables_Set(X1, X2));
+  }
 
   return ok;
 }
