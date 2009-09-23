@@ -275,19 +275,16 @@ PIP_Decision_Node::OK() const {
 }
 
 void
-PIP_Decision_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
-                                  dimension_type external_space_dim,
+PIP_Decision_Node::update_tableau(dimension_type external_space_dim,
                                   dimension_type first_pending_constraint,
                                   const Constraint_Sequence &input_cs,
                                   const Variables_Set &parameters) {
-  true_child->update_tableau(&true_child,
-                             external_space_dim,
+  true_child->update_tableau(external_space_dim,
                              first_pending_constraint,
                              input_cs,
                              parameters);
   if (false_child)
-    false_child->update_tableau(&false_child,
-                                external_space_dim,
+    false_child->update_tableau(external_space_dim,
                                 first_pending_constraint,
                                 input_cs,
                                 parameters);
@@ -558,8 +555,7 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
 }
 
 void
-PIP_Solution_Node::update_tableau(PIP_Tree_Node ** /* parent_ref */,
-                                  dimension_type external_space_dim,
+PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
                                   dimension_type first_pending_constraint,
                                   const Constraint_Sequence &input_cs,
                                   const Variables_Set &parameters) {

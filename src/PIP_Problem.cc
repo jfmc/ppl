@@ -79,8 +79,7 @@ PPL::PIP_Problem::solve() const {
       if (current_solution == 0)
         x.current_solution = new PIP_Solution_Node(&x);
 
-      x.current_solution->update_tableau(&x.current_solution,
-                                         external_space_dim,
+      x.current_solution->update_tableau(external_space_dim,
                                          first_pending_constraint,
                                          input_cs,
                                          parameters);

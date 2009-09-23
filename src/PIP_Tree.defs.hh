@@ -97,9 +97,6 @@ protected:
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
 
-    \param parent_ref
-    a pointer to the parent reference to \p this
-
     \param external_space_dim
     size of constraints (variables and parameters added)
 
@@ -113,8 +110,7 @@ protected:
     \param parameters
     a \c std::set of indices of the parameters in the constraints
   */
-  virtual void update_tableau(PIP_Tree_Node **parent_ref,
-                              dimension_type external_space_dim,
+  virtual void update_tableau(dimension_type external_space_dim,
                               dimension_type first_pending_constraint,
                               const Constraint_Sequence &input_cs,
                               const Variables_Set &parameters) = 0;
@@ -305,9 +301,6 @@ protected:
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
 
-    \param parent_ref
-    a pointer to the parent reference to \p this
-
     \param external_space_dim
     size of constraints (variables and parameters added)
 
@@ -321,8 +314,7 @@ protected:
     \param parameters
     a \c std::set of indices of the parameters in the constraints
   */
-  virtual void update_tableau(PIP_Tree_Node **parent_ref,
-                              dimension_type external_space_dim,
+  virtual void update_tableau(dimension_type external_space_dim,
                               dimension_type first_pending_constraint,
                               const Constraint_Sequence &input_cs,
                               const Variables_Set &parameters);
@@ -400,9 +392,6 @@ protected:
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
 
-    \param parent_ref
-    a pointer to the parent reference to \p this
-
     \param external_space_dim
     size of constraints (variables and parameters added)
 
@@ -416,8 +405,7 @@ protected:
     \param parameters
     a \c std::set of indices of the parameters in the constraints
   */
-  virtual void update_tableau(PIP_Tree_Node **parent_ref,
-                              dimension_type external_space_dim,
+  virtual void update_tableau(dimension_type external_space_dim,
                               dimension_type first_pending_constraint,
                               const Constraint_Sequence &input_cs,
                               const Variables_Set &parameters);
