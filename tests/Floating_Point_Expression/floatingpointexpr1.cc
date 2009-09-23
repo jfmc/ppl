@@ -47,24 +47,25 @@ test01() {
 // Tests multiplication by zero.
 bool
 test02() {
-  FP_Interval_Abstract_Store store_fl(2);
-  store_fl.set_interval(Variable(0), FP_Interval(0));
-  store_fl.set_interval(Variable(1), FP_Interval(10));
-  Con_FP_Expression* con_fl = new Con_FP_Expression(5, 6);
-  Var_FP_Expression* var0_fl = new Var_FP_Expression(0);
-  Var_FP_Expression* var1_fl = new Var_FP_Expression(1);
-  Dif_FP_Expression* dif_fl = new Dif_FP_Expression(var1_fl, con_fl);
-  Mul_FP_Expression mul_fl(dif_fl, var0_fl);
-  FP_Linear_Form result_fl;
-  mul_fl.linearize(store_fl, FP_Linear_Form_Abstract_Store(), result_fl);
-  FP_Interval kr_fl(-FP_Expression::absolute_error);
-  kr_fl.join_assign(FP_Expression::absolute_error);
-  FP_Linear_Form known_result_fl(kr_fl);
+  FP_Interval_Abstract_Store store(2);
+  store.set_interval(Variable(0), FP_Interval(0));
+  store.set_interval(Variable(1), FP_Interval(10));
+  Con_FP_Expression* con = new Con_FP_Expression(5, 6);
+  Var_FP_Expression* var0 = new Var_FP_Expression(0);
+  Var_FP_Expression* var1 = new Var_FP_Expression(1);
+  Dif_FP_Expression* dif = new Dif_FP_Expression(var1, con);
+  Mul_FP_Expression mul(dif, var0);
+  FP_Linear_Form result;
+  mul.linearize(store, FP_Linear_Form_Abstract_Store(), result);
+  FP_Interval kr(-FP_Expression::absolute_error);
+  kr.join_assign(FP_Expression::absolute_error);
+  FP_Linear_Form known_result(kr);
 
-  nout << "*** known_result_fl ***" << endl
-       << known_result_fl << endl;
-  bool ok_fl = (result_fl == known_result_fl);
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
+  bool ok = (result == known_result);
 
+  return ok; /*
   FP_Interval_Abstract_Store store_db(2);
   store_db.set_interval(Variable(0), FP_Interval(0));
   store_db.set_interval(Variable(1), FP_Interval(4));
@@ -84,24 +85,25 @@ test02() {
        << known_result_db << endl;
   bool ok_db = (result_db == known_result_db);
 
-  return ok_fl && ok_db;
+  return ok_fl && ok_db; */
 }
 
 // Tests linearization of variables in a given linear form abstract store.
 bool
 test03() {
-  FP_Linear_Form_Abstract_Store store_fl;
+  FP_Linear_Form_Abstract_Store store;
   Variable A(0);
-  FP_Linear_Form known_result_fl = FP_Linear_Form(A);
-  store_fl[0] = known_result_fl;
-  Var_FP_Expression var_fl(0);
-  FP_Linear_Form result_fl;
-  var_fl.linearize(FP_Interval_Abstract_Store(0), store_fl, result_fl);
+  FP_Linear_Form known_result = FP_Linear_Form(A);
+  store[0] = known_result;
+  Var_FP_Expression var(0);
+  FP_Linear_Form result;
+  var.linearize(FP_Interval_Abstract_Store(0), store, result);
 
-  nout << "*** known_result_fl ***" << endl
-       << known_result_fl << endl;
-  bool ok_fl = (result_fl == known_result_fl);
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
+  bool ok = (result == known_result);
 
+  return ok; /*
   FP_Linear_Form_Abstract_Store store_db;
   FP_Linear_Form known_result_db =
   FP_Linear_Form(A);
@@ -114,7 +116,7 @@ test03() {
        << known_result_db << endl;
   bool ok_db = (result_db == known_result_db);
 
-  return ok_fl && ok_db;
+  return ok_fl && ok_db; */
 }
 
 // Tests the linearization of A + B.
@@ -129,22 +131,18 @@ test04() {
   Sum_FP_Expression sum(var0, var1);
   FP_Linear_Form result;
   sum.linearize(store, FP_Linear_Form_Abstract_Store(), result);
-  nout << result << endl;
   Variable A(0);
   Variable B(1);
   FP_Linear_Form known_result = FP_Linear_Form(A);
   ANALYZER_FP_FORMAT exp = pow(2,
     -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS));
-  nout << exp << endl;
   tmp = FP_Interval(1);
   tmp -= exp;
   FP_Interval tmp2(1);
   tmp2 += exp;
   tmp.join_assign(tmp2);
-  nout << tmp << endl;
   known_result *= tmp;
   known_result += tmp * FP_Linear_Form(B);
-  nout << FP_Expression::absolute_error << endl;
   tmp = FP_Interval(-FP_Expression::absolute_error);
   tmp.join_assign(FP_Expression::absolute_error);
   known_result += tmp;
@@ -289,13 +287,12 @@ test08() {
 // Tests linearization of multiplication by unbounded operands.
 bool
 test09() {
-  ANALYZER_FP_FORMAT max_fl = std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  FP_Interval min_fl = FP_Interval(
-                     -FP_Expression::absolute_error);
-  min_fl.join_assign(FP_Expression::absolute_error);
-  FP_Linear_Form known_result1 = FP_Linear_Form(min_fl);
+  ANALYZER_FP_FORMAT max = std::numeric_limits<ANALYZER_FP_FORMAT>::max();
+  FP_Interval min = FP_Interval(-FP_Expression::absolute_error);
+  min.join_assign(FP_Expression::absolute_error);
+  FP_Linear_Form known_result1 = FP_Linear_Form(min);
   Con_FP_Expression* con1 = new Con_FP_Expression(0, 0);
-  Con_FP_Expression* con2 = new Con_FP_Expression(0, max_fl);
+  Con_FP_Expression* con2 = new Con_FP_Expression(0, max);
   Sum_FP_Expression* sum  = new Sum_FP_Expression(con1, con2);
   Con_FP_Expression* con3 = new Con_FP_Expression(0, 0);
   Mul_FP_Expression mul(con3, sum);
@@ -306,14 +303,14 @@ test09() {
   nout << "*** known_result1 ***" << endl
        << known_result1 << endl;
   bool ok1 = (known_result1 == result);
-
+/*
   ANALYZER_FP_FORMAT max_db = std::numeric_limits<ANALYZER_FP_FORMAT>::max();
   FP_Interval min_db = FP_Interval(
                      -FP_Expression::absolute_error);
-  min_db.join_assign(FP_Expression::absolute_error);
-  FP_Linear_Form known_result2 = FP_Linear_Form(min_db);
+  min_db.join_assign(FP_Expression::absolute_error); */
+  FP_Linear_Form known_result2 = FP_Linear_Form(min);
   Con_FP_Expression* con4 = new Con_FP_Expression(0, 0);
-  Con_FP_Expression* con5 = new Con_FP_Expression(0, max_db);
+  Con_FP_Expression* con5 = new Con_FP_Expression(0, max);
   Sum_FP_Expression* sum2 = new Sum_FP_Expression(con4, con5);
   Con_FP_Expression* con6 = new Con_FP_Expression(0, 0);
   Mul_FP_Expression mul2(sum2, con6);
@@ -326,10 +323,10 @@ test09() {
   bool ok2 = (known_result2 == result2);
 
   Con_FP_Expression* con7 = new Con_FP_Expression(0, 0);
-  Con_FP_Expression* con8 = new Con_FP_Expression(0, max_db);
+  Con_FP_Expression* con8 = new Con_FP_Expression(0, max);
   Sum_FP_Expression* sum3 = new Sum_FP_Expression(con7, con8);
   Con_FP_Expression* con9 = new Con_FP_Expression(0, 0);
-  Con_FP_Expression* con10 = new Con_FP_Expression(0, max_db);
+  Con_FP_Expression* con10 = new Con_FP_Expression(0, max);
   Sum_FP_Expression* sum4 = new Sum_FP_Expression(con9, con10);
   Mul_FP_Expression  mul3(sum3, sum4);
 

@@ -404,10 +404,8 @@ test10() {
 }
 
 // tests Octagonal_Shape<T>::refine_fp_interval_abstract_store
-// FIXME: this test should be parametric according to the floating point
-// format of analyzer and analyzed.
 bool
-test11() { /*
+test11() {
   Variable A(0);
   Variable B(1);
   FP_Interval_Abstract_Store store(2);
@@ -446,8 +444,7 @@ test11() { /*
 
   bool ok2 = (tmp == known_result2);
 
-  return ok1 && ok2; */
-  return true;
+  return ok1 && ok2;
 }
 
 } //namespace
