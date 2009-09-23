@@ -47,7 +47,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Interval.types.hh"
 #include "Linear_Form.types.hh"
 #include <vector>
-#include <map>
 #include <cstddef>
 #include <climits>
 #include <iosfwd>

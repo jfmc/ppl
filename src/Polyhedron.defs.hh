@@ -50,7 +50,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Interval.types.hh"
 #include "Linear_Form.types.hh"
 #include <vector>
-#include <map>
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -1009,7 +1008,7 @@ public:
   void refine_with_linear_form_inequality(
   const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
   const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
-  const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store);
+  const Box< Interval<FP_Format, Interval_Info> >& store);
 
   //! Refines \p store with the constraints defining \p *this.
   /*!
@@ -1215,7 +1214,7 @@ public:
   template <typename FP_Format, typename Interval_Info>
   void affine_image(Variable var,
   const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
-  const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store);
+  const Box< Interval<FP_Format, Interval_Info> >& store);
 
   /*! \brief
     Assigns to \p *this the
@@ -2661,7 +2660,7 @@ protected:
   static void overapproximate_linear_form(
   const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
   const dimension_type lf_dimension,
-  const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store,
+  const Box< Interval<FP_Format, Interval_Info> >& store,
   Linear_Form<Interval <FP_Format, Interval_Info> >& result);
 
   /*! \brief

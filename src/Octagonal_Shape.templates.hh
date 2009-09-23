@@ -33,7 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Box.defs.hh"
 #include "assert.hh"
 #include <vector>
-#include <map>
 #include <deque>
 #include <string>
 #include <iostream>

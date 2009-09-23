@@ -28,7 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Interval.defs.hh"
 #include "Linear_Form.defs.hh"
 #include <algorithm>
-#include <map>
 #include <deque>
 
 namespace Parma_Polyhedra_Library {
@@ -301,7 +300,7 @@ void
 Polyhedron::refine_with_linear_form_inequality(
   const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
   const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
-  const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store) {
+  const Box< Interval<FP_Format, Interval_Info> >& store) {
 
   // Check that FP_Format is indeed a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
@@ -347,7 +346,7 @@ template <typename FP_Format, typename Interval_Info>
 void
 Polyhedron::affine_image(const Variable var,
 const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
-const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store) {
+const Box< Interval<FP_Format, Interval_Info> >& store) {
 
   // Check that FP_Format is indeed a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
@@ -392,7 +391,7 @@ void
 Polyhedron::overapproximate_linear_form(
   const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
   const dimension_type lf_dimension,
-  const std::map< dimension_type, Interval<FP_Format, Interval_Info> >& store,
+  const Box< Interval<FP_Format, Interval_Info> >& store,
   Linear_Form<Interval <FP_Format, Interval_Info> >& result) {
 
   // Check that FP_Format is indeed a floating point type.
@@ -400,9 +399,11 @@ Polyhedron::overapproximate_linear_form(
                          "Polyhedron::overapproximate_linear_form:"
                          " FP_Format not a floating point type.");
 
+  PPL_ASSERT(lf_dimension <= store.space_dimension());
+
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
-  typedef std::map<dimension_type, FP_Interval_Type> Interval_Abstract_Store;
+  typedef Box<FP_Interval_Type> Interval_Abstract_Store;
 
   result = FP_Linear_Form(lf.inhomogeneous_term());
   // FIXME: this may not be policy-neutral.
@@ -416,11 +417,10 @@ Polyhedron::overapproximate_linear_form(
     FP_Format curr_lb = curr_coeff.lower();
     FP_Format curr_ub = curr_coeff.upper();
     if (curr_lb != 0 || curr_ub != 0) {
-      typename Interval_Abstract_Store::const_iterator i_ite = store.find(i);
-      PPL_ASSERT(i_ite != store.end());
+      const FP_Interval_Type& curr_int = store.get_iterval(Variable(i));
       FP_Interval_Type curr_addend(curr_ub - curr_lb);
       curr_addend *= aux_divisor2;
-      curr_addend *= i_ite->second;
+      curr_addend *= curr_int;
       result += curr_addend;
       curr_addend = FP_Interval_Type(curr_lb + curr_ub);
       curr_addend *= aux_divisor1;
