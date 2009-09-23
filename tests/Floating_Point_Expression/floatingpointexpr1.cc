@@ -65,27 +65,7 @@ test02() {
        << known_result << endl;
   bool ok = (result == known_result);
 
-  return ok; /*
-  FP_Interval_Abstract_Store store_db(2);
-  store_db.set_interval(Variable(0), FP_Interval(0));
-  store_db.set_interval(Variable(1), FP_Interval(4));
-  Con_FP_Expression* con_db  = new Con_FP_Expression(5, 6);
-  Var_FP_Expression* var0_db = new Var_FP_Expression(0);
-  Var_FP_Expression* var1_db = new Var_FP_Expression(1);
-  Sum_FP_Expression* sum_db  = new Sum_FP_Expression(con_db, var1_db);
-  Mul_FP_Expression mul_db(var0_db, sum_db);
-  FP_Linear_Form result_db;
-  mul_db.linearize(store_db, FP_Linear_Form_Abstract_Store(), result_db);
-
-  FP_Interval kr_db(-FP_Expression::absolute_error);
-  kr_db.join_assign(FP_Expression::absolute_error);
-  FP_Linear_Form known_result_db(kr_db);
-
-  nout << "*** known_result_db ***" << endl
-       << known_result_db << endl;
-  bool ok_db = (result_db == known_result_db);
-
-  return ok_fl && ok_db; */
+  return ok;
 }
 
 // Tests linearization of variables in a given linear form abstract store.
@@ -103,20 +83,7 @@ test03() {
        << known_result << endl;
   bool ok = (result == known_result);
 
-  return ok; /*
-  FP_Linear_Form_Abstract_Store store_db;
-  FP_Linear_Form known_result_db =
-  FP_Linear_Form(A);
-  store_db[0] = known_result_db;
-  Var_FP_Expression var_db(0);
-  FP_Linear_Form result_db;
-  var_db.linearize(FP_Interval_Abstract_Store(0), store_db, result_db);
-
-  nout << "*** known_result_db ***" << endl
-       << known_result_db << endl;
-  bool ok_db = (result_db == known_result_db);
-
-  return ok_fl && ok_db; */
+  return ok;
 }
 
 // Tests the linearization of A + B.
@@ -303,11 +270,7 @@ test09() {
   nout << "*** known_result1 ***" << endl
        << known_result1 << endl;
   bool ok1 = (known_result1 == result);
-/*
-  ANALYZER_FP_FORMAT max_db = std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  FP_Interval min_db = FP_Interval(
-                     -FP_Expression::absolute_error);
-  min_db.join_assign(FP_Expression::absolute_error); */
+
   FP_Linear_Form known_result2 = FP_Linear_Form(min);
   Con_FP_Expression* con4 = new Con_FP_Expression(0, 0);
   Con_FP_Expression* con5 = new Con_FP_Expression(0, max);
