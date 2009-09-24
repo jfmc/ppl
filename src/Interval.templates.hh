@@ -234,8 +234,9 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   bool upper_boundary_infinity = false;
   switch (lower_r) {
   case V_EQ:
+  case V_GE:
     break;
-  case V_LE:
+  case V_GT:
     lower_open = true;
     break;
   case V_EQ_MINUS_INFINITY:
@@ -254,8 +255,9 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   }
   switch (upper_r) {
   case V_EQ:
+  case V_LE:
     break;
-  case V_GE:
+  case V_LT:
     upper_open = true;
     break;
   case V_EQ_MINUS_INFINITY:
