@@ -51,11 +51,12 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
-bdshape1 \
-floatingpointexpr1 \
-linearform1 \
-octagonalshape1 \
-octagonalshape2
+polyhedron1
+#bdshape1 \
+#floatingpointexpr1 \
+#linearform1 \
+#octagonalshape1 \
+#octagonalshape2
 
 DERIVED_TESTS =
 
@@ -125,15 +126,17 @@ print_INSTANCES:
 # Sources for the tests
 #
 
-bdshape1_SOURCES = bdshape1.cc
+polyhedron1_SOURCES = polyhedron1.cc
 
-floatingpointexpr1_SOURCES = floatingpointexpr1.cc
+#bdshape1_SOURCES = bdshape1.cc
 
-linearform1_SOURCES = linearform1.cc
+#floatingpointexpr1_SOURCES = floatingpointexpr1.cc
 
-octagonalshape1_SOURCES = octagonalshape1.cc
+#linearform1_SOURCES = linearform1.cc
 
-octagonalshape2_SOURCES = octagonalshape2.cc
+#octagonalshape1_SOURCES = octagonalshape1.cc
+
+#octagonalshape2_SOURCES = octagonalshape2.cc
 
 
 #

@@ -414,7 +414,7 @@ Polyhedron::overapproximate_linear_form(
     FP_Format curr_lb = curr_coeff.lower();
     FP_Format curr_ub = curr_coeff.upper();
     if (curr_lb != 0 || curr_ub != 0) {
-      const FP_Interval_Type& curr_int = store.get_iterval(Variable(i));
+      const FP_Interval_Type& curr_int = store.get_interval(Variable(i));
       FP_Interval_Type curr_addend(curr_ub - curr_lb);
       curr_addend *= aux_divisor2;
       curr_addend *= curr_int;
