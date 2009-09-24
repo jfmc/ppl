@@ -115,7 +115,6 @@ Interval<Boundary, Info>::Interval(const char* s) {
       assign(EMPTY);
     break;
   default:
-    std::cerr << "lower_r = " << lower_r << std::endl;
     PPL_ASSERT(false);
   }
   switch (upper_r) {
