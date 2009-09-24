@@ -379,11 +379,13 @@ const Box< Interval<FP_Format, Interval_Info> >& store) {
   Linear_Expression lf_approx_le;
   PPL_DIRTY_TEMP_COEFFICIENT(lo_coeff);
   PPL_DIRTY_TEMP_COEFFICIENT(hi_coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(denominator);
   convert_to_integer_expressions(lf_approx, lf_space_dim, lf_approx_le,
-                                 lo_coeff, hi_coeff);
+                                 lo_coeff, hi_coeff, denominator);
 
   // Finally, do the assignment.
-  bounded_affine_image(var, lf_approx_le + lo_coeff, lf_approx_le + hi_coeff);
+  bounded_affine_image(var, lf_approx_le + lo_coeff, lf_approx_le + hi_coeff,
+                       denominator);
 }
 
 template <typename FP_Format, typename Interval_Info>
@@ -482,7 +484,8 @@ void
 Polyhedron::convert_to_integer_expressions(
 	        const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
                 const dimension_type lf_dimension, Linear_Expression& res,
-                Coefficient& res_low_coeff, Coefficient& res_hi_coeff) {
+                Coefficient& res_low_coeff, Coefficient& res_hi_coeff,
+                Coefficient& lcm) {
   res = Linear_Expression();
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
@@ -491,7 +494,6 @@ Polyhedron::convert_to_integer_expressions(
 
   // Convert each floating point number to a pair <numerator, denominator>
   // and compute the lcm of all denominators.
-  PPL_DIRTY_TEMP_COEFFICIENT(lcm);
   lcm = 1;
   const FP_Interval_Type& b = lf.inhomogeneous_term();
   numer_denom(b.lower(), numerators[lf_dimension], denominators[lf_dimension]);

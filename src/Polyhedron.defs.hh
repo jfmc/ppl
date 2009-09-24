@@ -2682,7 +2682,7 @@ protected:
     Used to store the result.
 
     This function ignores the upper bound of intervals in \p lf,
-    so that in fact the result can be seen as \p lf multiplied by a proper
+    so that in fact \p result can be seen as \p lf multiplied by a proper
     normalization constant.
   */
   template <typename FP_Format, typename Interval_Info>
@@ -2710,6 +2710,10 @@ protected:
     \param res_hi_coeff
     Stores the higher boundary of the inhomogeneous term of the result.
 
+    \param denominator
+    Becomes the common denominator of \p res_low_coeff, \p res_hi_coeff
+    and all coefficients in \p res.
+
     Results are obtained by normalizing denominators in \p lf, ignoring
     the upper bounds of variable coefficients in \p lf.
   */
@@ -2717,7 +2721,8 @@ protected:
   static void convert_to_integer_expressions(
 	      const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
               const dimension_type lf_dimension, Linear_Expression& res,
-              Coefficient& res_low_coeff, Coefficient& res_hi_coeff);
+              Coefficient& res_low_coeff, Coefficient& res_hi_coeff,
+              Coefficient& denominator);
 
 };
 
