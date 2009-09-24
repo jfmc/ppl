@@ -664,15 +664,19 @@ public:
     return true;
   }
 
-  Interval()
-  {
+  Interval() {
   }
 
   template <typename T>
-  explicit Interval(const T& x)
-  {
+  explicit Interval(const T& x) {
     assign(x);
   }
+
+  /*! \brief
+    Builds the smallest interval containing the number whose textual
+    representation is contained in \p s.
+  */
+  explicit Interval(const char* s);
 
   template <typename T>
   typename Enable_If<Is_Singleton<T>::value

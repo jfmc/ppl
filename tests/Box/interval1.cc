@@ -178,6 +178,14 @@ bool test04() {
   return true;
 }
 
+template<typename F>
+bool
+test05() {
+  typename My_Interval<F>::interval_type x("123.00123");
+  nout << "x = " << x << endl;
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -187,6 +195,7 @@ BEGIN_MAIN
   DO_TEST(test02<float>);
   DO_TEST(test03<float>);
   DO_TEST(test04<float>);
+  DO_TEST(test05<float>);
 #endif // PPL_SUPPORTED_FLOAT
 
 #if PPL_SUPPORTED_DOUBLE
@@ -194,6 +203,7 @@ BEGIN_MAIN
   DO_TEST(test02<double>);
   DO_TEST(test03<double>);
   DO_TEST(test04<double>);
+  DO_TEST(test05<double>);
 #endif // PPL_SUPPORTED_DOUBLE
 
 #if PPL_SUPPORTED_LONG_DOUBLE
@@ -201,6 +211,7 @@ BEGIN_MAIN
   DO_TEST(test02<long double>);
   DO_TEST(test03<long double>);
   DO_TEST(test04<long double>);
+  DO_TEST(test05<long double>);
 #endif // PPL_SUPPORTED_LONG_DOUBLE
 
 END_MAIN
