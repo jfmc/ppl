@@ -116,6 +116,12 @@ public:
   Constant_Floating_Point_Expression(const boundary_type lower_bound,
                                      const boundary_type upper_bound);
 
+  /*! \brief
+    Builds a constant floating point expression with the value
+    expressed by the string \p str_value.
+  */
+  Constant_Floating_Point_Expression(const char* str_value);
+
   //! Destructor.
   ~Constant_Floating_Point_Expression();
 

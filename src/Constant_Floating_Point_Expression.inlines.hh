@@ -30,6 +30,12 @@ namespace Parma_Polyhedra_Library {
 template <typename FP_Interval_Type, typename FP_Format>
 inline
 Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
+Constant_Floating_Point_Expression(const char* str_value)
+  : value(str_value) {}
+
+template <typename FP_Interval_Type, typename FP_Format>
+inline
+Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
 Constant_Floating_Point_Expression(const boundary_type lb,
                                    const boundary_type ub)
   : value(lb) {
