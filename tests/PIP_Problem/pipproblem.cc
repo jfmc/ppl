@@ -32,7 +32,8 @@ display_solution(const PIP_Tree pip, const Variables_Set &vars, int indent=0) {
     nout << setw(indent*2) << "" << "_|_" << endl;
   } else {
     const Constraint_System &constraints = pip->constraints();
-    if (!constraints.empty()) {
+    bool constraints_empty = constraints.empty();
+    if (!constraints_empty) {
       nout << setw(indent*2) << "" << "if ";
       Constraint_System::const_iterator begin = constraints.begin();
       Constraint_System::const_iterator end = constraints.end();
@@ -51,12 +52,14 @@ display_solution(const PIP_Tree pip, const Variables_Set &vars, int indent=0) {
       Variables_Set::const_iterator begin = vars.begin();
       Variables_Set::const_iterator end = vars.end();
       Variables_Set::const_iterator i;
-      nout << setw(indent*2+2) << "" << "{";
+      nout << setw(indent*2+(constraints_empty?0:2)) << "" << "{";
       for (i=begin; i!=end; ++i)
         nout << ((i==begin)?"":" ; ") << sn->parametric_values(Variable(*i));
       nout << "}" << endl;
-      nout << setw(indent*2) << "" << "else" << endl;
-      nout << setw(indent*2+2) << "" << "_|_" << endl;
+      if (!constraints_empty) {
+        nout << setw(indent*2) << "" << "else" << endl;
+        nout << setw(indent*2+2) << "" << "_|_" << endl;
+      }
     }
   }
 }

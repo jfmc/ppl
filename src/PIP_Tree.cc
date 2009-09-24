@@ -713,6 +713,39 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       }
     }
 
+    /* If there remains a row i with undetermined sign and at least one
+       positive S_ij coefficient, where constraint t_i(z) > 0 is not
+       compatible with the context, the row parameter can be considered
+       negative
+    */
+    if (i_ == n_a_d && i__ != n_a_d) {
+      for (i=i__; i<num_rows; ++i) {
+        if (sign[i] != MIXED)
+          continue;
+        bool found = false;
+        const Row &p = tableau.s[i];
+        for (j=0; j<num_vars; ++j)
+          if (p[j] > 0) {
+            found = true;
+            break;
+          }
+        if (!found)
+          continue;
+        Row row(tableau.t[i]);
+        row[0] -= 1;
+        if (compatibility_check(context, row)) {
+          if (i__ == n_a_d)
+            i__ = i;
+        } else {
+          sign[i] = NEGATIVE;
+          if (i_ == n_a_d)
+            i_ = i;
+          if (i__ == i)
+            i__ = n_a_d;
+        }
+      }
+    }
+
     /* If we have found a row i_ with negative parameters :
        Either the problem is empty, or a pivoting step is required
     */
