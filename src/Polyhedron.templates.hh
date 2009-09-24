@@ -307,6 +307,7 @@ Polyhedron::refine_with_linear_form_inequality(
                          "Polyhedron::refine_with_linear_form_inequality:"
                          " FP_Format not a floating point type.");
 
+  PPL_ASSERT(space_dim <= store.space_dimension());
   PPL_ASSERT(store.is_bounded());
   // Dimension compatibility checks.
   // The dimensions of left and right should not be greater than the
@@ -353,6 +354,7 @@ const Box< Interval<FP_Format, Interval_Info> >& store) {
                          "Polyhedron::affine_image:"
                          " FP_Format not a floating point type.");
 
+  PPL_ASSERT(space_dim <= store.space_dimension());
   PPL_ASSERT(store.is_bounded());
   // Dimension compatibility checks.
   // The dimension of lf should not be greater than the dimension of *this.
