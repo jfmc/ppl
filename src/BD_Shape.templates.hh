@@ -4330,8 +4330,6 @@ void BD_Shape<T>::refine_with_linear_form_inequality(
         right_w_id = i;
     }
 
-  typedef Interval<T, Interval_Info> FP_Interval_Type;
-
   // FIXME: there is plenty of duplicate code in the following lines. We could
   // shorten it at the expense of a bit of efficiency.
 
@@ -4346,145 +4344,9 @@ void BD_Shape<T>::refine_with_linear_form_inequality(
     return;
   }
 
-  // FIXME: General case must be implemented in a new private function.
-
-  /*
   // General case.
-
-  // FIRST, update the binary constraints for each pair of DIFFERENT variables
-  // in `left' and `right'.
-
-  // Declare temporaries outside of the loop.
-  PPL_DIRTY_TEMP(N, low_coeff);
-  PPL_DIRTY_TEMP(N, high_coeff);
-  PPL_DIRTY_TEMP(N, upper_bound);
-
-  Linear_Form<FP_Interval_Type> right_minus_left(right);
-  right_minus_left.negate();
-
-  dimension_type max_w_id = std::max(left_w_id, right_w_id);
-  for (dimension_type first_v = 0; first_v < max_w_id; ++first_v) {
-    for (dimension_type second_v = first_v+1;
-         second_v <= max_w_id; ++second_v) {
-      const FP_Interval_Type& lfv_coefficient =
-                        left.coefficient(Variable(first_v));
-      const FP_Interval_Type& lsv_coefficient =
-                        left.coefficient(Variable(second_v));
-      const FP_Interval_Type& rfv_coefficient =
-                        right.coefficient(Variable(first_v));
-      const FP_Interval_Type& rsv_coefficient =
-                        right.coefficient(Variable(second_v));
-      // We update the constraints only when both variables appear in at
-      // least one argument.
-      bool do_update = false;
-      assign_r(low_coeff, lfv_coefficient.lower(), ROUND_NOT_NEEDED);
-      assign_r(high_coeff, lfv_coefficient.upper(), ROUND_NOT_NEEDED);
-      if (low_coeff != 0 || high_coeff != 0) {
-        assign_r(low_coeff, lsv_coefficient.lower(), ROUND_NOT_NEEDED);
-        assign_r(high_coeff, lsv_coefficient.upper(), ROUND_NOT_NEEDED);
-        if (low_coeff != 0 || high_coeff != 0)
-          do_update = true;
-        else {
-          assign_r(low_coeff, rsv_coefficient.lower(), ROUND_NOT_NEEDED);
-          assign_r(high_coeff, rsv_coefficient.upper(), ROUND_NOT_NEEDED);
-          if (low_coeff != 0 || high_coeff != 0)
-            do_update = true;
-        }
-      }
-      else {
-        assign_r(low_coeff, rfv_coefficient.lower(), ROUND_NOT_NEEDED);
-        assign_r(high_coeff, rfv_coefficient.upper(), ROUND_NOT_NEEDED);
-        if (low_coeff != 0 || high_coeff != 0) {
-          assign_r(low_coeff, lsv_coefficient.lower(), ROUND_NOT_NEEDED);
-          assign_r(high_coeff, lsv_coefficient.upper(), ROUND_NOT_NEEDED);
-          if (low_coeff != 0 || high_coeff != 0)
-            do_update = true;
-          else {
-            assign_r(low_coeff, rsv_coefficient.lower(), ROUND_NOT_NEEDED);
-            assign_r(high_coeff, rsv_coefficient.upper(), ROUND_NOT_NEEDED);
-            if (low_coeff != 0 || high_coeff != 0)
-              do_update = true;
-          }
-        }
-      }
-
-      if (do_update) {
-        Variable first(first_v);
-        Variable second(second_v);
-        dimension_type n_first_var = first_v * 2;
-        dimension_type n_second_var = second_v * 2;
-        linear_form_upper_bound(right_minus_left - first + second,
-                                upper_bound);
-        add_dbm_constraint(n_second_var+1, n_first_var+1, upper_bound);
-        linear_form_upper_bound(right_minus_left + first + second,
-                                upper_bound);
-        add_dbm_constraint(n_second_var+1, n_first_var, upper_bound);
-        linear_form_upper_bound(right_minus_left - first - second,
-                                upper_bound);
-        add_dbm_constraint(n_second_var, n_first_var+1, upper_bound);
-        linear_form_upper_bound(right_minus_left + first - second,
-                                upper_bound);
-        add_dbm_constraint(n_second_var, n_first_var, upper_bound);
-      }
-    }
-  }
-
-  // Finally, update the unary constraints.
-  for (dimension_type v = 0; v <= max_w_id; ++v) {
-    const FP_Interval_Type& lv_coefficient =
-                        left.coefficient(Variable(v));
-    const FP_Interval_Type& rv_coefficient =
-                        right.coefficient(Variable(v));
-    // We update the constraints only if v appears in at least one of the
-    // two arguments.
-    bool do_update = false;
-    assign_r(low_coeff, lv_coefficient.lower(), ROUND_NOT_NEEDED);
-    assign_r(high_coeff, lv_coefficient.upper(), ROUND_NOT_NEEDED);
-    if (low_coeff != 0 || high_coeff != 0)
-      do_update = true;
-    else {
-      assign_r(low_coeff, rv_coefficient.lower(), ROUND_NOT_NEEDED);
-      assign_r(high_coeff, rv_coefficient.upper(), ROUND_NOT_NEEDED);
-      if (low_coeff != 0 || high_coeff != 0)
-        do_update = true;
-    }
-
-    if (do_update) {
-      Variable var(v);
-      dimension_type n_var = 2 * v;
-      
-      //  VERY DIRTY trick: since we need to keep the old unary constraints
-      //  while computing the new ones, we momentarily keep the new coefficients
-      //  in the main diagonal of the matrix. They will be moved later.
-      
-      linear_form_upper_bound(right_minus_left + var, upper_bound);
-      linear_form_upper_bound(right_minus_left - var, upper_bound);
-    }
-  }
-
-  
-  //  Now move the newly computed coefficients from the main diagonal to
-  //  their proper place, and restore +infinity on the diagonal.
-  
-  Row_Iterator m_ite = matrix.row_begin();
-  Row_Iterator m_end = matrix.row_end();
-  for (dimension_type i = 0; m_ite != m_end; i += 2) {
-    Row_Reference upper = *m_ite;
-    N& ul = upper[i];
-    add_octagonal_constraint(i, i+1, ul);
-    assign_r(ul, PLUS_INFINITY, ROUND_NOT_NEEDED);
-    ++m_ite;
-    Row_Reference lower = *m_ite;
-    N& lr = lower[i+1];
-    add_octagonal_constraint(i+1, i, lr);
-    assign_r(lr, PLUS_INFINITY, ROUND_NOT_NEEDED);
-    ++m_ite;
-  }
-
-  
-*/
+  left_two_var_refine(left_w_id, right_w_id, left, right);
   PPL_ASSERT(OK());
-  return;
 } // end of refine
 
 template <typename T>
@@ -4655,6 +4517,118 @@ BD_Shape<T>
     return;
 }
 
+template <typename T>
+template <typename Interval_Info>
+void
+BD_Shape<T>
+::left_two_var_refine(const dimension_type& left_w_id,
+		      const dimension_type& right_w_id,
+		      const Linear_Form< Interval<T, Interval_Info> >& left,
+		      const Linear_Form< Interval<T, Interval_Info> >& right) {
+
+  typedef Interval<T, Interval_Info> FP_Interval_Type;
+
+  Linear_Form<FP_Interval_Type> right_minus_left(right);
+  right_minus_left -= left;
+
+  // Declare temporaries outside of the loop.
+  PPL_DIRTY_TEMP(N, low_coeff);
+  PPL_DIRTY_TEMP(N, high_coeff);
+  PPL_DIRTY_TEMP(N, upper_bound);
+  
+  dimension_type max_w_id = std::max(left_w_id, right_w_id);
+
+  for (dimension_type first_v = 0; first_v < max_w_id; ++first_v) {
+    for (dimension_type second_v = first_v+1;
+         second_v <= max_w_id; ++second_v) {
+      const FP_Interval_Type& lfv_coefficient =
+	left.coefficient(Variable(first_v));
+      const FP_Interval_Type& lsv_coefficient =
+	left.coefficient(Variable(second_v));
+      const FP_Interval_Type& rfv_coefficient =
+	right.coefficient(Variable(first_v));
+      const FP_Interval_Type& rsv_coefficient =
+	right.coefficient(Variable(second_v));
+      // We update the constraints only when both variables appear in at
+      // least one argument.
+      bool do_update = false;
+      assign_r(low_coeff, lfv_coefficient.lower(), ROUND_NOT_NEEDED);
+      assign_r(high_coeff, lfv_coefficient.upper(), ROUND_NOT_NEEDED);
+      if (low_coeff != 0 || high_coeff != 0) {
+        assign_r(low_coeff, lsv_coefficient.lower(), ROUND_NOT_NEEDED);
+        assign_r(high_coeff, lsv_coefficient.upper(), ROUND_NOT_NEEDED);
+        if (low_coeff != 0 || high_coeff != 0)
+          do_update = true;
+        else {
+          assign_r(low_coeff, rsv_coefficient.lower(), ROUND_NOT_NEEDED);
+          assign_r(high_coeff, rsv_coefficient.upper(), ROUND_NOT_NEEDED);
+          if (low_coeff != 0 || high_coeff != 0)
+            do_update = true;
+        }
+      }
+      else {
+        assign_r(low_coeff, rfv_coefficient.lower(), ROUND_NOT_NEEDED);
+        assign_r(high_coeff, rfv_coefficient.upper(), ROUND_NOT_NEEDED);
+        if (low_coeff != 0 || high_coeff != 0) {
+          assign_r(low_coeff, lsv_coefficient.lower(), ROUND_NOT_NEEDED);
+          assign_r(high_coeff, lsv_coefficient.upper(), ROUND_NOT_NEEDED);
+          if (low_coeff != 0 || high_coeff != 0)
+            do_update = true;
+          else {
+            assign_r(low_coeff, rsv_coefficient.lower(), ROUND_NOT_NEEDED);
+            assign_r(high_coeff, rsv_coefficient.upper(), ROUND_NOT_NEEDED);
+            if (low_coeff != 0 || high_coeff != 0)
+              do_update = true;
+          }
+        }
+      }
+      
+      if (do_update) {
+        Variable first(first_v);
+        Variable second(second_v);
+        dimension_type n_first_var = first_v +1 ;
+        dimension_type n_second_var = second_v + 1;
+        linear_form_upper_bound(right_minus_left - first + second,
+                                upper_bound);
+        add_dbm_constraint(n_first_var, n_second_var, upper_bound);
+        linear_form_upper_bound(right_minus_left + first - second,
+                                upper_bound);
+        add_dbm_constraint(n_second_var, n_first_var, upper_bound);
+      }
+    }
+  }
+
+  // Finally, update the unary constraints.
+  for (dimension_type v = 0; v <= max_w_id; ++v) {
+    const FP_Interval_Type& lv_coefficient =
+      left.coefficient(Variable(v));
+    const FP_Interval_Type& rv_coefficient =
+      right.coefficient(Variable(v));
+    // We update the constraints only if v appears in at least one of the
+    // two arguments.
+    bool do_update = false;
+    assign_r(low_coeff, lv_coefficient.lower(), ROUND_NOT_NEEDED);
+    assign_r(high_coeff, lv_coefficient.upper(), ROUND_NOT_NEEDED);
+    if (low_coeff != 0 || high_coeff != 0)
+      do_update = true;
+    else {
+      assign_r(low_coeff, rv_coefficient.lower(), ROUND_NOT_NEEDED);
+      assign_r(high_coeff, rv_coefficient.upper(), ROUND_NOT_NEEDED);
+      if (low_coeff != 0 || high_coeff != 0)
+        do_update = true;
+    }
+
+    if (do_update) {
+      Variable var(v);
+      dimension_type n_var = v + 1;
+      linear_form_upper_bound(right_minus_left + var, upper_bound);
+      add_dbm_constraint(0, n_var, upper_bound);
+      linear_form_upper_bound(right_minus_left - var, upper_bound);
+      add_dbm_constraint(n_var, 0, upper_bound);
+    }
+  }
+  
+}
 
 template <typename T>
 template <typename Interval_Info>

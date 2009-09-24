@@ -2147,6 +2147,16 @@ private:
 		   const Linear_Form< Interval<T, Interval_Info> >& left,
                    const Linear_Form< Interval<T, Interval_Info> >& right);
  
+/* \brief
+    Auxiliary function for refine with linear form that handle
+    the general case.
+  */
+  template <typename Interval_Info>
+  void left_two_var_refine(const dimension_type& left_w_id,
+			   const dimension_type& right_w_id,
+		   const Linear_Form< Interval<T, Interval_Info> >& left,
+                   const Linear_Form< Interval<T, Interval_Info> >& right);
+
   template <typename Interval_Info>
   void linear_form_upper_bound(
              const Linear_Form< Interval<T, Interval_Info> >& lf,
