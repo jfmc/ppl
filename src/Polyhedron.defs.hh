@@ -995,7 +995,7 @@ public:
     \param store
     The interval abstract store in which the test defining the filter is
     performed. All variables that occur in \p left or \p right MUST have
-    an associated value in it.
+    an associated interval in it, and all of these intervals MUST be bounded.
 
     \exception std::invalid_argument
     Thrown if \p left (or \p right) is dimension-incompatible with \p *this.
@@ -1201,7 +1201,8 @@ public:
 
     \param store
     The interval abstract store in which the variable assignment is performed.
-    All variables that occur in \p lf MUST have an associated value in it.
+    All variables that occur in \p lf MUST have an associated interval in it,
+    and all of these intervals MUST be bounded.
 
     \exception std::invalid_argument
     Thrown if \p lf and \p *this are dimension-incompatible or if \p var is
@@ -2647,6 +2648,8 @@ protected:
 
     \param store
     The interval abstract store in which the approximation is performed.
+    All variables that occur in \p lf MUST have an associated interval in it,
+    and all of these intervals MUST be bounded.
 
     \param result
     Used to store the result.
