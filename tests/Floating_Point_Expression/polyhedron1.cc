@@ -149,8 +149,7 @@ test05() {
   Variable A(0);
   Variable B(1);
   FP_Interval_Abstract_Store store(2);
-  FP_Interval tmp(-2.5); //FIXME: Perturbation of inhomogeneous term in order
-  tmp.join_assign(6.5);  //to handle rounding errors.
+  FP_Interval tmp(2);
   store.set_interval(A, tmp);
   store.set_interval(B, tmp);
   C_Polyhedron ph(2);
@@ -161,14 +160,11 @@ test05() {
   FP_Linear_Form l(A);
   l += tmp;
   l -= B;
-  tmp = -1 / 3.0;
-  l *= tmp;
+  l /= FP_Interval(-3);
 
   ph.affine_image(B, l, store);
   print_constraints(ph,
     "*** ph.affine_image(B, (A - B + 2) / (-3), store) ***");
-
-  ph.affine_image(B, l, store);
 
   C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(2*A));
