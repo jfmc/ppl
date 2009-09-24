@@ -566,12 +566,17 @@ o  Ideally the tests should exercise every line of code in the library.
    Here we summarize the steps needed to produce coverage information
    using `lcov' (see below for a few hints on the direct use of `gcov').
    The build tree under test must be configured with the
-   `--enable-coverage' and `--disable-optimization options' (and possibly
-   also with --enable-profiling).  For example:
+   `--enable-coverage' and `--disable-optimization' options (and possibly
+   also with --enable-profiling). Furthermore, according to this thread
+       http://gcc.gnu.org/bugzilla/show_bug.cgi?id=12076
+   GCC performs NRV (Named Return Value) transformations even when
+   optimizations are turned off; hence, to avoid spurious zero counts
+   in return statements, the compilation flag `-fno-elide-constructors'
+   is recommended. For example:
 
-     $ configure --enable-coverage --disable-optimization \
-                 --enable-profiling \
-                 --enable-assertions --enable-more-assertions
+     $ configure --enable-coverage --enable-profiling \
+         --disable-optimization --with-cxxflags='-fno-elide-constructors' \
+         --enable-assertions --enable-more-assertions
 
    Running the tests (with `make check') produces many .gcno and .gcda
    files in src/.libs and in the test directories.  These are data

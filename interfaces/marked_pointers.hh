@@ -26,8 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-#include <stdint.h>
-
 #define PPL_MARKED_POINTERS_MASK ((uintptr_t) 1)
 
 /*! \brief
