@@ -50,7 +50,7 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 TESTS = \
-pipproblem
+pipproblem1
 
 XFAIL_TESTS =
 
@@ -60,16 +60,16 @@ BUGS =
 # Sources for the tests
 #
 
-pipproblem_SOURCES = pipproblem.cc
+pipproblem1_SOURCES = pipproblem1.cc
 
 check_PROGRAMS = \
 $(TESTS) \
 $(WATCHDOG_TESTS) \
 $(BUGS)
 
-#EXTRA_DIST = 
+#EXTRA_DIST =
 
-#MOSTLYCLEANFILES = 
+#MOSTLYCLEANFILES =
 
 $(top_builddir)/utils/libppl_utils.a:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
