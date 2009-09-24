@@ -104,6 +104,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #  undef NDEBUG
 # endif
 #endif
+// Must include <cassert> again in order to make the latest changes to
+// NDEBUG effective.
+#include <cassert>
 #include "assert.hh"
 
 #ifdef PPL_NO_AUTOMATIC_INITIALIZATION

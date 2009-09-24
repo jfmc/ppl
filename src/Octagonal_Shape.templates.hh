@@ -2390,10 +2390,10 @@ Octagonal_Shape<T>::tight_closure_assign() {
       const dimension_type ci = i+1;
       N& mat_i_ci = matrix[i][ci];
       if (!is_plus_infinity(mat_i_ci) && !is_even(mat_i_ci))
-        sub_assign_r(mat_i_ci, mat_i_ci, temp_one, ROUND_NOT_NEEDED);
+        sub_assign_r(mat_i_ci, mat_i_ci, temp_one, ROUND_UP);
       N& mat_ci_i = matrix[ci][i];
       if (!is_plus_infinity(mat_ci_i) && !is_even(mat_ci_i))
-        sub_assign_r(mat_ci_i, mat_ci_i, temp_one, ROUND_NOT_NEEDED);
+        sub_assign_r(mat_ci_i, mat_ci_i, temp_one, ROUND_UP);
     }
     // Propagate tightened unary constraints.
     strong_coherence_assign();
@@ -4388,7 +4388,7 @@ Octagonal_Shape<T>::refine(const Variable var,
           if (pinf_count == 0) {
             // Add the constraint `v <= sum'.
             PPL_DIRTY_TEMP(N, double_sum);
-            mul_2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(double_sum, sum, 1, ROUND_UP);
             matrix[n_var+1][n_var] = double_sum;
             // Deduce constraints of the form `v +/- u', where `u != v'.
             deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
@@ -4433,7 +4433,7 @@ Octagonal_Shape<T>::refine(const Variable var,
           if (neg_pinf_count == 0) {
             // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
             PPL_DIRTY_TEMP(N, double_neg_sum);
-            mul_2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_UP);
             matrix[n_var][n_var+1] = double_neg_sum;
             // Deduce constraints of the form `-v +/- u', where `u != v'.
             deduce_minus_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, neg_sum);
@@ -4522,7 +4522,7 @@ Octagonal_Shape<T>::refine(const Variable var,
         if (pinf_count == 0) {
           // Add the constraint `v <= sum'.
           PPL_DIRTY_TEMP(N, double_sum);
-          mul_2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+          mul_2exp_assign_r(double_sum, sum, 1, ROUND_UP);
           add_octagonal_constraint(n_var+1, n_var, double_sum);
           // Deduce constraints of the form `v +/- u', where `u != v'.
           deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
@@ -4607,7 +4607,7 @@ Octagonal_Shape<T>::refine(const Variable var,
         if (pinf_count == 0) {
           // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
           PPL_DIRTY_TEMP(N, double_sum);
-          mul_2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+          mul_2exp_assign_r(double_sum, sum, 1, ROUND_UP);
           add_octagonal_constraint(n_var, n_var+1, double_sum);
           // Deduce constraints of the form `-v +/- u', where `u != v'.
           deduce_minus_v_pm_u_bounds(var_id, pinf_index, sc_expr, sc_den, sum);
@@ -4758,10 +4758,10 @@ Octagonal_Shape<T>::affine_image(const Variable var,
               add_assign_r(m_i_cv, m_i_cv, minus_d, ROUND_UP);
             }
             // Now update unary constraints on var.
-            mul_2exp_assign_r(d, d, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(d, d, 1, ROUND_UP);
             N& m_cv_v = m_cv[n_var];
             add_assign_r(m_cv_v, m_cv_v, d, ROUND_UP);
-            mul_2exp_assign_r(minus_d, minus_d, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(minus_d, minus_d, 1, ROUND_UP);
             N& m_v_cv = m_v[n_var+1];
             add_assign_r(m_v_cv, m_v_cv, minus_d, ROUND_UP);
            }
@@ -4785,11 +4785,11 @@ Octagonal_Shape<T>::affine_image(const Variable var,
             // adding or subtracting the value `b/denominator'.
             PPL_DIRTY_TEMP(N, d);
             div_round_up(d, b, denominator);
-            mul_2exp_assign_r(d, d, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(d, d, 1, ROUND_UP);
             add_assign_r(m_cv_v, m_cv_v, d, ROUND_UP);
             PPL_DIRTY_TEMP(N, minus_d);
             div_round_up(minus_d, b, minus_den);
-            mul_2exp_assign_r(minus_d, minus_d, 1, ROUND_IGNORE);
+            mul_2exp_assign_r(minus_d, minus_d, 1, ROUND_UP);
             add_assign_r(m_v_cv, m_v_cv, minus_d, ROUND_UP);
           }
           incremental_strong_closure_assign(var);
@@ -4976,7 +4976,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
       PPL_DIRTY_TEMP(N, double_pos_sum);
-      mul_2exp_assign_r(double_pos_sum, pos_sum, 1, ROUND_IGNORE);
+      mul_2exp_assign_r(double_pos_sum, pos_sum, 1, ROUND_UP);
       matrix[n_var+1][n_var] = double_pos_sum;
       // Deduce constraints of the form `v +/- u', where `u != v'.
       deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, pos_sum);
@@ -5019,7 +5019,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
     if (neg_pinf_count == 0) {
       // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
       PPL_DIRTY_TEMP(N, double_neg_sum);
-      mul_2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
+      mul_2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_UP);
       matrix[n_var][n_var+1] = double_neg_sum;
       // Deduce constraints of the form `-v +/- u', where `u != v'.
       deduce_minus_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, neg_sum);
@@ -5667,7 +5667,7 @@ Octagonal_Shape<T>
                 assign_r(m_v[k], PLUS_INFINITY, ROUND_NOT_NEEDED);
                 add_assign_r(m_cv[k], m_cv[k], d, ROUND_UP);
               }
-              mul_2exp_assign_r(d, d, 1, ROUND_IGNORE);
+              mul_2exp_assign_r(d, d, 1, ROUND_UP);
               add_assign_r(m_cv_v, m_cv_v, d, ROUND_UP);
               assign_r(m_v_cv, PLUS_INFINITY, ROUND_NOT_NEEDED);
             }
@@ -5675,7 +5675,7 @@ Octagonal_Shape<T>
               // Here `w_coeff == -denominator'.
               // `expr' is of the form: -a*var + b.
               N& m_v_cv = matrix[n_var][n_var+1];
-              mul_2exp_assign_r(d, d, 1, ROUND_IGNORE);
+              mul_2exp_assign_r(d, d, 1, ROUND_UP);
               add_assign_r(matrix[n_var+1][n_var], m_v_cv, d, ROUND_UP);
               assign_r(m_v_cv, PLUS_INFINITY, ROUND_NOT_NEEDED);
               forget_binary_octagonal_constraints(var_id);
@@ -5734,7 +5734,7 @@ Octagonal_Shape<T>
                 add_assign_r(m_v[k], m_v[k], d, ROUND_UP);
                 assign_r(m_cv[k], PLUS_INFINITY, ROUND_NOT_NEEDED);
               }
-              mul_2exp_assign_r(d, d, 1, ROUND_IGNORE);
+              mul_2exp_assign_r(d, d, 1, ROUND_UP);
               add_assign_r(m_v_cv, m_v_cv, d, ROUND_UP);
               assign_r(m_cv_v, PLUS_INFINITY, ROUND_NOT_NEEDED);
             }
@@ -5742,7 +5742,7 @@ Octagonal_Shape<T>
               // Here `w_coeff == -denominator'.
               // `expr' is of the form: -a*var + b.
               N& m_cv_v = matrix[n_var+1][n_var];
-              mul_2exp_assign_r(d, d, 1, ROUND_IGNORE);
+              mul_2exp_assign_r(d, d, 1, ROUND_UP);
               add_assign_r(matrix[n_var][n_var+1], m_cv_v, d, ROUND_UP);
               assign_r(m_cv_v, PLUS_INFINITY, ROUND_NOT_NEEDED);
               forget_binary_octagonal_constraints(var_id);
@@ -5882,7 +5882,7 @@ Octagonal_Shape<T>
       if (pinf_count == 0) {
         // Add the constraint `v <= pos_sum'.
         PPL_DIRTY_TEMP(N, double_sum);
-        mul_2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+        mul_2exp_assign_r(double_sum, sum, 1, ROUND_UP);
         matrix[n_var+1][n_var] = double_sum;
         // Deduce constraints of the form `v +/- u', where `u != v'.
         deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
@@ -5977,7 +5977,7 @@ Octagonal_Shape<T>
       if (pinf_count == 0) {
         // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
         PPL_DIRTY_TEMP(N, double_sum);
-        mul_2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+        mul_2exp_assign_r(double_sum, sum, 1, ROUND_UP);
         matrix[n_var][n_var+1] = double_sum;
         // Deduce constraints of the form `-v +/- u', where `u != v'.
         deduce_minus_v_pm_u_bounds(var_id, pinf_index, sc_expr, sc_den, sum);
@@ -6460,7 +6460,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
     if (neg_pinf_count == 0) {
       // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
       PPL_DIRTY_TEMP(N, double_neg_sum);
-      mul_2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
+      mul_2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_UP);
       matrix[n_var][n_var+1] = double_neg_sum;
       // Deduce constraints of the form `-v +/- u', where `u != v'.
       deduce_minus_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, neg_sum);

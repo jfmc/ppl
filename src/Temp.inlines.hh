@@ -60,8 +60,8 @@ Temp_Item<T>::release(Temp_Item& p) {
 
 template <typename T>
 inline
-Temp_Reference_Holder<T>::Temp_Reference_Holder(Temp_Item<T>& p)
-  : held(p) {
+Temp_Reference_Holder<T>::Temp_Reference_Holder()
+  : held(Temp_Item<T>::obtain()) {
 }
 
 template <typename T>
@@ -87,29 +87,16 @@ Temp_Value_Holder<T>::item() {
   return item_;
 }
 
-template <typename T>
-inline typename Temp_From_Free_List<T>::holder_type
-Temp_From_Free_List<T>::obtain_holder() {
-  return Temp_Reference_Holder<T>(Temp_Item<T>::obtain());
-}
-
-template <typename T>
-inline typename Temp_From_Local_Variable<T>::holder_type
-Temp_From_Local_Variable<T>::obtain_holder() {
-  return Temp_Value_Holder<T>();
-}
-
 } // namespace Parma_Polyhedra_Library
 
 #define PPL_DIRTY_TEMP(T, id)						\
-  typename Parma_Polyhedra_Library::Dirty_Temp<T>::holder_type holder ## id = \
-    Parma_Polyhedra_Library::Dirty_Temp<T>::obtain_holder();		\
-  typename Parma_Polyhedra_Library::Dirty_Temp<T>::type id =		\
-    holder ## id.item()
+  typename                                                              \
+  Parma_Polyhedra_Library::Dirty_Temp<T>::holder_type holder ## id;     \
+  typename                                                              \
+  Parma_Polyhedra_Library::Dirty_Temp<T>::type id = holder ## id.item()
 
 #define PPL_DIRTY_TEMP0(T, id)						\
-  Parma_Polyhedra_Library::Dirty_Temp<T>::holder_type holder ## id =	\
-    Parma_Polyhedra_Library::Dirty_Temp<T>::obtain_holder();		\
+  Parma_Polyhedra_Library::Dirty_Temp<T>::holder_type holder ## id;	\
   Parma_Polyhedra_Library::Dirty_Temp<T>::type id = holder ## id.item()
 
 #endif // !defined(PPL_Temp_inlines_hh)

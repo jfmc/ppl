@@ -50,6 +50,10 @@ o  All methods having a name ending in `_and_minimize' (e.g.,
 Bugfixes
 ========
 
+o  Corrected a bug in maximize and mininimize optimization methods of
+   class template Pointset_Powerset, whereby the Boolean value true
+   (indicating successful optimization) was returned for empty powersets.
+
 o  Corrected a bug in method
      bool NNC_Polyhedron::poly_hull_assign_if_exact(const NNC_Polyhedron&);
    whereby some inexact NNC hulls were incorrectly flagged as exact.

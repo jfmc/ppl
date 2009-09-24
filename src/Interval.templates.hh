@@ -75,6 +75,92 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
 }
 
 template <typename Boundary, typename Info>
+Interval<Boundary, Info>::Interval(const char* s) {
+  // Get the lower bound.
+  Boundary lower_bound;
+  Result lower_r = assign_r(lower_bound, s, ROUND_DOWN);
+  if (lower_r == V_CVT_STR_UNK || lower_r == V_NAN) {
+    throw std::invalid_argument("PPL::Interval(const char* s)"
+                                " with s invalid");
+  }
+  lower_r = result_relation_class(lower_r);
+
+  // Get the upper bound.
+  Boundary upper_bound;
+  Result upper_r = assign_r(upper_bound, s, ROUND_UP);
+  assert(upper_r != V_CVT_STR_UNK && upper_r != V_NAN);
+  upper_r = result_relation_class(upper_r);
+
+  // Buld the interval.
+  bool lower_open = false;
+  bool upper_open = false;
+  bool lower_boundary_infinity = false;
+  bool upper_boundary_infinity = false;
+  switch (lower_r) {
+  case V_EQ:
+  case V_GE:
+    break;
+  case V_GT:
+    lower_open = true;
+    break;
+  case V_EQ_MINUS_INFINITY:
+  case V_GT_MINUS_INFINITY:
+    lower_boundary_infinity = true;
+    break;
+  case V_EQ_PLUS_INFINITY:
+  case V_LT_PLUS_INFINITY:
+    if (upper_r == V_EQ_PLUS_INFINITY || upper_r == V_LT_PLUS_INFINITY)
+      assign(UNIVERSE);
+    else
+      assign(EMPTY);
+    break;
+  default:
+    std::cerr << "lower_r = " << lower_r << std::endl;
+    PPL_ASSERT(false);
+  }
+  switch (upper_r) {
+  case V_EQ:
+  case V_LE:
+    break;
+  case V_LT:
+    upper_open = true;
+    break;
+  case V_EQ_MINUS_INFINITY:
+  case V_GT_MINUS_INFINITY:
+    if (lower_r == V_EQ_MINUS_INFINITY || lower_r == V_GT_MINUS_INFINITY)
+      assign(UNIVERSE);
+    else
+      assign(EMPTY);
+    break;
+  case V_EQ_PLUS_INFINITY:
+  case V_LT_PLUS_INFINITY:
+    upper_boundary_infinity = true;
+    break;
+  default:
+    PPL_ASSERT(false);
+  }
+
+  if (!lower_boundary_infinity
+      && !upper_boundary_infinity
+      && (lower_bound > upper_bound
+          || (lower_open && lower_bound == upper_bound)))
+    assign(EMPTY);
+  else {
+    if (lower_boundary_infinity)
+      special_set_boundary_infinity(LOWER, lower(), info());
+    else
+      Boundary_NS::assign(LOWER, lower(), info(),
+                          LOWER, lower_bound, SCALAR_INFO, lower_open);
+    if (upper_boundary_infinity)
+      special_set_boundary_infinity(UPPER, upper(), info());
+    else
+      Boundary_NS::assign(UPPER, upper(), info(),
+                          UPPER, upper_bound, SCALAR_INFO, upper_open);
+  }
+}
+
+
+template <typename Boundary, typename Info>
 inline std::istream&
 operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   // Eat leading white space.
@@ -105,7 +191,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
 
   // Get the lower bound.
   Boundary lower_bound;
-  Result lower_r  = input(lower_bound, is, ROUND_DOWN);
+  Result lower_r = input(lower_bound, is, ROUND_DOWN);
   if (lower_r == V_CVT_STR_UNK || lower_r == V_NAN) {
     is.setstate(std::ios_base::failbit);
     return is;
@@ -197,11 +283,13 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     if (lower_boundary_infinity)
       special_set_boundary_infinity(LOWER, x.lower(), x.info());
     else
-      assign(LOWER, x.lower(), x.info(), LOWER, lower_bound, SCALAR_INFO, lower_open);
+      assign(LOWER, x.lower(), x.info(),
+             LOWER, lower_bound, SCALAR_INFO, lower_open);
     if (upper_boundary_infinity)
       special_set_boundary_infinity(UPPER, x.upper(), x.info());
     else
-      assign(UPPER, x.upper(), x.info(), UPPER, upper_bound, SCALAR_INFO, upper_open);
+      assign(UPPER, x.upper(), x.info(),
+             UPPER, upper_bound, SCALAR_INFO, upper_open);
   }
   return is;
 }

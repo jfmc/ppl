@@ -286,8 +286,8 @@ Pointset_Powerset<PSET>::remove_space_dimensions(const Variables_Set& vars) {
 
 template <typename PSET>
 void
-Pointset_Powerset<PSET>::remove_higher_space_dimensions(dimension_type
-						      new_dimension) {
+Pointset_Powerset<PSET>
+::remove_higher_space_dimensions(dimension_type new_dimension) {
   Pointset_Powerset& x = *this;
   if (new_dimension < x.space_dim) {
     for (Sequence_iterator si = x.sequence.begin(),
@@ -328,7 +328,7 @@ Pointset_Powerset<PSET>::map_space_dimensions(const Partial_Function& pfunc) {
 template <typename PSET>
 void
 Pointset_Powerset<PSET>::expand_space_dimension(Variable var,
-                                              dimension_type m) {
+                                                dimension_type m) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si)
@@ -340,7 +340,7 @@ Pointset_Powerset<PSET>::expand_space_dimension(Variable var,
 template <typename PSET>
 void
 Pointset_Powerset<PSET>::fold_space_dimensions(const Variables_Set& vars,
-                                             Variable dest) {
+                                               Variable dest) {
   Pointset_Powerset& x = *this;
   Variables_Set::size_type num_folded = vars.size();
   if (num_folded > 0) {
@@ -355,9 +355,9 @@ Pointset_Powerset<PSET>::fold_space_dimensions(const Variables_Set& vars,
 template <typename PSET>
 void
 Pointset_Powerset<PSET>::affine_image(Variable var,
-                                    const Linear_Expression& expr,
-                                    Coefficient_traits::const_reference
-                                    denominator) {
+                                      const Linear_Expression& expr,
+                                      Coefficient_traits::const_reference
+                                      denominator) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
@@ -373,9 +373,9 @@ Pointset_Powerset<PSET>::affine_image(Variable var,
 template <typename PSET>
 void
 Pointset_Powerset<PSET>::affine_preimage(Variable var,
-                                       const Linear_Expression& expr,
-                                       Coefficient_traits::const_reference
-                                       denominator) {
+                                         const Linear_Expression& expr,
+                                         Coefficient_traits::const_reference
+                                         denominator) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
@@ -441,7 +441,9 @@ Pointset_Powerset<PSET>
 ::generalized_affine_preimage(Variable var,
                               const Relation_Symbol relsym,
                               const Linear_Expression& expr,
-                              Coefficient_traits::const_reference denominator) {  Pointset_Powerset& x = *this;
+                              Coefficient_traits::const_reference
+                              denominator) {
+  Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
     si->pointset().generalized_affine_preimage(var, relsym, expr, denominator);
@@ -882,11 +884,14 @@ Pointset_Powerset<PSET>
 template <typename PSET>
 bool
 Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
-                                Coefficient& sup_n,
-                                Coefficient& sup_d,
-                                bool& maximum) const {
+                                  Coefficient& sup_n,
+                                  Coefficient& sup_d,
+                                  bool& maximum) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
+  if (x.is_empty())
+    return false;
+
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(supt_n);
@@ -934,12 +939,15 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
 template <typename PSET>
 bool
 Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
-                                Coefficient& sup_n,
-                                Coefficient& sup_d,
-                                bool& maximum,
-                                Generator& g) const {
+                                  Coefficient& sup_n,
+                                  Coefficient& sup_d,
+                                  bool& maximum,
+                                  Generator& g) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
+  if (x.is_empty())
+    return false;
+
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(supt_n);
@@ -994,11 +1002,14 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
 template <typename PSET>
 bool
 Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
-                                Coefficient& inf_n,
-                                Coefficient& inf_d,
-                                bool& minimum) const {
+                                  Coefficient& inf_n,
+                                  Coefficient& inf_d,
+                                  bool& minimum) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
+  if (x.is_empty())
+    return false;
+
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(inft_n);
@@ -1046,12 +1057,15 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
 template <typename PSET>
 bool
 Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
-                                Coefficient& inf_n,
-                                Coefficient& inf_d,
-                                bool& minimum,
-                                Generator& g) const {
+                                  Coefficient& inf_n,
+                                  Coefficient& inf_d,
+                                  bool& minimum,
+                                  Generator& g) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
+  if (x.is_empty())
+    return false;
+
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(inft_n);
@@ -1258,8 +1272,7 @@ template <typename Cert>
 bool
 Pointset_Powerset<PSET>::
 is_cert_multiset_stabilizing(const std::map<Cert, size_type,
-                             typename Cert::Compare>& y_cert_ms
-			     ) const {
+                             typename Cert::Compare>& y_cert_ms) const {
   typedef std::map<Cert, size_type, typename Cert::Compare> Cert_Multiset;
   Cert_Multiset x_cert_ms;
   collect_certificates(x_cert_ms);
@@ -1305,7 +1318,7 @@ template <typename PSET>
 template <typename Cert, typename Widening>
 void
 Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
-                                             Widening wf) {
+                                               Widening wf) {
   // `x' is the current iteration value.
   Pointset_Powerset& x = *this;
 
