@@ -4334,12 +4334,12 @@ void BD_Shape<T>::refine_with_linear_form_inequality(
   // shorten it at the expense of a bit of efficiency.
 
   if (left_t == 0) {
-    left_inhomogeneous_refine(left_t, right_t, right_w_id, left, right);
+    left_inhomogeneous_refine(right_t, right_w_id, left, right);
     PPL_ASSERT(OK());
     return;
   }
   else if(left_t == 1){
-    left_one_var_refine(left_t, left_w_id, right_t, right_w_id, left, right);
+    left_one_var_refine(left_w_id, right_t, right_w_id, left, right);
     PPL_ASSERT(OK());
     return;
   }
@@ -4352,8 +4352,7 @@ void BD_Shape<T>::refine_with_linear_form_inequality(
 template <typename T>
 template <typename Interval_Info>
 void
-BD_Shape<T>::left_inhomogeneous_refine(const dimension_type& left_t,
-				       const dimension_type& right_t,
+BD_Shape<T>::left_inhomogeneous_refine(const dimension_type& right_t,
 				       const dimension_type& right_w_id,
 		    const Linear_Form< Interval<T, Interval_Info> >& left,
 		    const Linear_Form< Interval<T, Interval_Info> >& right) {
@@ -4399,12 +4398,11 @@ template <typename T>
 template <typename Interval_Info>
 void
 BD_Shape<T>
-::left_one_var_refine(const dimension_type& left_t,
-		      const dimension_type& left_w_id,
+::left_one_var_refine(const dimension_type& left_w_id,
 		      const dimension_type& right_t,
 		      const dimension_type& right_w_id,
-		      const Linear_Form< Interval<T, Interval_Info> >& left,
-		      const Linear_Form< Interval<T, Interval_Info> >& right) {
+	        const Linear_Form< Interval<T, Interval_Info> >& left,
+		const Linear_Form< Interval<T, Interval_Info> >& right) {
 
   typedef Interval<T, Interval_Info> FP_Interval_Type;
   
@@ -4523,8 +4521,8 @@ void
 BD_Shape<T>
 ::left_two_var_refine(const dimension_type& left_w_id,
 		      const dimension_type& right_w_id,
-		      const Linear_Form< Interval<T, Interval_Info> >& left,
-		      const Linear_Form< Interval<T, Interval_Info> >& right) {
+		const Linear_Form< Interval<T, Interval_Info> >& left,
+		const Linear_Form< Interval<T, Interval_Info> >& right) {
 
   typedef Interval<T, Interval_Info> FP_Interval_Type;
 
@@ -4588,11 +4586,12 @@ BD_Shape<T>
         Variable second(second_v);
         dimension_type n_first_var = first_v +1 ;
         dimension_type n_second_var = second_v + 1;
+	const dimension_type space_dim = space_dimension();
         linear_form_upper_bound(right_minus_left - first + second,
-                                upper_bound);
+                                upper_bound, space_dim);
         add_dbm_constraint(n_first_var, n_second_var, upper_bound);
         linear_form_upper_bound(right_minus_left + first - second,
-                                upper_bound);
+                                upper_bound, space_dim);
         add_dbm_constraint(n_second_var, n_first_var, upper_bound);
       }
     }
@@ -4635,8 +4634,8 @@ template <typename Interval_Info>
 void
 BD_Shape<T>::
 linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
-                                                                  N& result,
-                                    const dimension_type& space_dim) const {
+			N& result,
+			const dimension_type& space_dim) const {
 
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,

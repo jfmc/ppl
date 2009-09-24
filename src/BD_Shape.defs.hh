@@ -2129,8 +2129,7 @@ private:
     the general case: \f$l \equal ax + c\f$
   */
   template <typename Interval_Info>
-  void left_inhomogeneous_refine(const dimension_type& left_t,
-				 const dimension_type& right_t,
+  void left_inhomogeneous_refine(const dimension_type& right_t,
 				 const dimension_type& right_w_id,
 		   const Linear_Form< Interval<T, Interval_Info> >& left,
                    const Linear_Form< Interval<T, Interval_Info> >& right);
@@ -2140,8 +2139,7 @@ private:
     the general case: \f$ax +b \equal cy + d\f$
   */
   template <typename Interval_Info>
-  void left_one_var_refine(const dimension_type& left_t,
-			   const dimension_type& left_w_id,
+  void left_one_var_refine(const dimension_type& left_w_id,
 			   const dimension_type& right_t,
 			   const dimension_type& right_w_id,
 		   const Linear_Form< Interval<T, Interval_Info> >& left,
