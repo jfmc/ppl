@@ -122,7 +122,8 @@ test04() {
   Variable A(0);
   Variable B(1);
   FP_Interval_Abstract_Store store(2);
-  FP_Interval tmp(-1 / 3.0);
+  FP_Interval tmp(-1);
+  tmp /= FP_Interval(3);
   store.set_interval(A, tmp);
   store.set_interval(B, tmp);
   C_Polyhedron ph(2, EMPTY);
