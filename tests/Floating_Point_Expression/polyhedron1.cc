@@ -178,42 +178,28 @@ test05() {
 
   return ok;
 }
-/*
+
+// tests ph.affine_image(A, (-A - 1) / (-1), store)
 bool
 test06() {
   Variable A(0);
   Variable B(1);
-
-  C_Polyhedron ph1(2, EMPTY);
-
-  print_constraints(ph1, "*** ph1 ***");
-
-  ph1.affine_image(A, 2*A + B + 1);
-
-  C_Polyhedron known_result(2, EMPTY);
-
-  bool ok = (ph1 == known_result);
-
-  print_constraints(ph1, "*** after ph1.affine_image(A, 2*A + B + 1) ***");
-
-  return ok;
-}
-
-bool
-test07() {
-  Variable A(0);
-  Variable B(1);
-
+  FP_Interval_Abstract_Store store(2);
+  FP_Interval tmp(-1);
+  store.set_interval(A, tmp);
+  store.set_interval(B, tmp);
+  FP_Linear_Form l(-A);
+  l += tmp;
+  l /= tmp;
   Generator_System gs;
   gs.insert(point());
   gs.insert(point(A));
   gs.insert(point(B));
   gs.insert(point(A + B));
   C_Polyhedron ph(gs);
-
-  print_generators(ph, "*** ph ***");
-
-  ph.affine_image(A, -A - 1, -1);
+  ph.affine_image(A, l, store);
+  print_constraints(ph,
+    "*** ph.affine_image(A, (-A - 1) / (-1), store) ***");
 
   Generator_System known_gs;
   known_gs.insert(point(A));
@@ -224,71 +210,59 @@ test07() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** after ph.affine_image(A, -A - 1, -1) ***");
+  print_constraints(ph, "*** known_result ***");
 
   return ok;
 }
 
+// tests affine_image on NNC_Polyhedron.
 bool
-test08() {
+test07() {
   Variable A(0);
   Variable B(1);
+  FP_Interval_Abstract_Store store(2);
+  FP_Interval tmp(2);
+  store.set_interval(A, tmp);
+  store.set_interval(B, tmp);
+  FP_Linear_Form l(A);
 
-  C_Polyhedron ph(2);
-  ph.generators();
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
-  C_Polyhedron copy_ph(ph);
+  NNC_Polyhedron p1(2);
+  p1.add_constraint(B == 0);
+  p1.add_constraint(-A > 0);
 
-  print_constraints(ph, "*** ph ***");
+  NNC_Polyhedron p2(2);
+  p2.add_constraint(B == 0);
+  p2.add_constraint(A >= 0);
 
-  ph.affine_image(A, A + 1);
-  copy_ph.affine_image(A, -A - 1, -1);
+  p1.affine_image(B, l, store);
+  print_constraints(p1, "*** p1.affine_image(B, A) ***");
+  NNC_Polyhedron known_result1(2);
+  known_result1.add_constraint(A - B == 0);
+  known_result1.add_constraint(A < 0);
+  print_constraints(p1, "*** known_result1 ***");
+  bool ok1 = (p1 == known_result1);
 
-  bool ok = (ph == copy_ph);
+  l += tmp;
+  p2.affine_image(B, l, store);
+  print_constraints(p2, "*** p2.affine_image(B, A + 2) ***");
+  NNC_Polyhedron known_result2(2);
+  known_result2.add_constraint(A - B == -2);
+  known_result2.add_constraint(A >= 0);
+  print_constraints(p2, "*** known_result2 ***");
+  bool ok2 = (p2 == known_result2);
 
-  print_generators(ph, "*** after ph.affine_image(A, A + 1) ***");
-  print_generators(copy_ph,
-		   "*** after copy_ph.affine_image(A, -A - 1, -1) ***");
-
-  return ok;
+  return ok1 && ok2;
 }
 
-bool
-test09() {
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ph(2);
-  ph.generators();
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
-  C_Polyhedron copy_ph(ph);
-
-  print_constraints(ph, "*** ph ***");
-
-  ph.affine_image(B, A + 1);
-  copy_ph.affine_image(B, -A - 1, -1);
-
-  bool ok = (ph == copy_ph);
-
-  print_generators(ph, "*** after ph.affine_image(B, A + 1) ***");
-  print_generators(copy_ph,
-		   "*** after copy_ph.affine_image(B, -A - 1, -1) ***");
-
-  return ok;
-}
-*/
 } // namespace
 
+//FIXME: unreached lines 533, 542.
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST(test05); /*
+  DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
-  DO_TEST(test08);
-  DO_TEST(test09); */
 END_MAIN
