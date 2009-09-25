@@ -51,12 +51,13 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
-polyhedron1
-#bdshape1 \
-#floatingpointexpr1 \
-#linearform1 \
-#octagonalshape1 \
-#octagonalshape2
+bdshape1 \
+floatingpointexpr1 \
+linearform1 \
+octagonalshape1 \
+octagonalshape2 \
+polyhedron1 \
+polyhedron2
 
 DERIVED_TESTS =
 

@@ -51,15 +51,46 @@ test01() {
 
 bool
 test02() {
-  C_Polyhedron pol(1);
+  C_Polyhedron result(1);
   FP_Interval_Abstract_Store store(1);
   store.set_interval(Variable(0), FP_Interval(1.5));
   FP_Interval interval(57);
   FP_Linear_Form lf1(Variable(0));
   FP_Linear_Form lf2(interval);
-  pol.refine_with_linear_form_inequality(lf1, lf2, store);
-  print_constraints(pol, "RESULT");
-  return true;
+  result.refine_with_linear_form_inequality(lf1, lf2, store);
+  print_constraints(result, "RESULT");
+  C_Polyhedron known_result(1);
+  known_result.refine_with_constraint(Variable(0) <= 57);
+  print_constraints(known_result, "KNOWN RESULT");
+  return result == known_result;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  FP_Interval_Abstract_Store store(2);
+  store.set_interval(A, FP_Interval(1));
+  store.set_interval(B, FP_Interval(2));
+
+  C_Polyhedron result(2);
+  result.refine_with_linear_form_inequality(-FP_Linear_Form(A),
+				 FP_Linear_Form(FP_Interval(0)), store);
+  result.refine_with_linear_form_inequality(FP_Linear_Form(A),
+				 FP_Linear_Form(FP_Interval(2)), store);
+  result.refine_with_linear_form_inequality(-FP_Linear_Form(A),
+				 FP_Linear_Form(FP_Interval(1)), store);
+  result.refine_with_linear_form_inequality(-FP_Linear_Form(B),
+				 FP_Linear_Form(FP_Interval(-1)), store);
+  print_constraints(result, "RESULT");
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(B >= 1);
+  print_constraints(known_result, "KNOWN RESULT");
+
+  return result == known_result;
 }
 
 } // namespace
@@ -67,4 +98,5 @@ test02() {
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
+  DO_TEST(test03);
 END_MAIN
