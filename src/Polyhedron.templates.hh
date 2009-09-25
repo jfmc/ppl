@@ -300,7 +300,8 @@ void
 Polyhedron::refine_with_linear_form_inequality(
   const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
   const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
-  const Box< Interval<FP_Format, Interval_Info> >& store) {
+  const Box< Interval<FP_Format, Interval_Info> >& store,
+  bool is_strict) {
 
   // Check that FP_Format is indeed a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
@@ -340,7 +341,10 @@ Polyhedron::refine_with_linear_form_inequality(
   convert_to_integer_expression(lf_approx, lf_space_dim, lf_approx_le);
 
   // Finally, do the refinement.
-  refine_with_constraint(lf_approx_le <= 0);
+  if (!is_strict || is_necessarily_closed())
+    refine_with_constraint(lf_approx_le <= 0);
+  else
+    refine_with_constraint(lf_approx_le < 0);
 }
 
 template <typename FP_Format, typename Interval_Info>

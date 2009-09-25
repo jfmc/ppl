@@ -374,6 +374,37 @@ Polyhedron::add_recycled_congruences(Congruence_System& cgs) {
 
 template <typename FP_Format, typename Interval_Info>
 inline void
+Polyhedron::generalized_refine_with_linear_form_inequality(
+	    const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
+	    const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
+            Relation_Symbol relsym,
+            const Box< Interval<FP_Format, Interval_Info> >& store) {
+  switch (relsym) {
+  case EQUAL:
+    refine_with_linear_form_inequality(left, right, store, false);
+    refine_with_linear_form_inequality(right, left, store, false);
+    break;
+  case LESS_THAN:
+    refine_with_linear_form_inequality(left, right, store, true);
+    break;
+  case LESS_OR_EQUAL:
+    refine_with_linear_form_inequality(left, right, store, false);
+    break;
+  case GREATER_THAN:
+    refine_with_linear_form_inequality(right, left, store, true);
+    break;
+  case GREATER_OR_EQUAL:
+    refine_with_linear_form_inequality(right, left, store, false);
+    break;
+  case NOT_EQUAL:
+    break;
+  default:
+    throw std::runtime_error("PPL internal error");
+  }
+}
+
+template <typename FP_Format, typename Interval_Info>
+inline void
 Polyhedron::
 refine_fp_interval_abstract_store(
        Box< Interval<FP_Format, Interval_Info> >& store) const {
