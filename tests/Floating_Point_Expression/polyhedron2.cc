@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+// tests incompatible dimensions.
 bool
 test01() {
   C_Polyhedron pol(1);
@@ -42,6 +43,7 @@ test01() {
       pol.refine_with_linear_form_inequality(l1, l2, store);
     }
     catch (std::invalid_argument) {
+      nout << "incompatible dimensions." << endl;
       return true;
     }
   }
@@ -49,22 +51,25 @@ test01() {
   return false;
 }
 
+// tests A <= [57, 57]
 bool
 test02() {
-  C_Polyhedron result(1);
+  C_Polyhedron ph(1);
   FP_Interval_Abstract_Store store(1);
   store.set_interval(Variable(0), FP_Interval(1.5));
   FP_Interval interval(57);
   FP_Linear_Form lf1(Variable(0));
   FP_Linear_Form lf2(interval);
-  result.refine_with_linear_form_inequality(lf1, lf2, store);
-  print_constraints(result, "RESULT");
+  ph.refine_with_linear_form_inequality(lf1, lf2, store);
+  print_constraints(ph, "*** A <= [57, 57] ***");
   C_Polyhedron known_result(1);
   known_result.refine_with_constraint(Variable(0) <= 57);
-  print_constraints(known_result, "KNOWN RESULT");
-  return result == known_result;
+  print_constraints(known_result, "*** known_result ***");
+
+  return ph == known_result;
 }
 
+// tests -A <= 0 && A <= 2 && -A <= 1 && -B <= -1
 bool
 test03() {
   Variable A(0);
@@ -73,24 +78,87 @@ test03() {
   store.set_interval(A, FP_Interval(1));
   store.set_interval(B, FP_Interval(2));
 
-  C_Polyhedron result(2);
-  result.refine_with_linear_form_inequality(-FP_Linear_Form(A),
+  C_Polyhedron ph(2);
+  ph.refine_with_linear_form_inequality(-FP_Linear_Form(A),
 				 FP_Linear_Form(FP_Interval(0)), store);
-  result.refine_with_linear_form_inequality(FP_Linear_Form(A),
+  ph.refine_with_linear_form_inequality(FP_Linear_Form(A),
 				 FP_Linear_Form(FP_Interval(2)), store);
-  result.refine_with_linear_form_inequality(-FP_Linear_Form(A),
+  ph.refine_with_linear_form_inequality(-FP_Linear_Form(A),
 				 FP_Linear_Form(FP_Interval(1)), store);
-  result.refine_with_linear_form_inequality(-FP_Linear_Form(B),
+  ph.refine_with_linear_form_inequality(-FP_Linear_Form(B),
 				 FP_Linear_Form(FP_Interval(-1)), store);
-  print_constraints(result, "RESULT");
+  print_constraints(ph, "*** ph ***");
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 2);
   known_result.add_constraint(B >= 1);
-  print_constraints(known_result, "KNOWN RESULT");
+  print_constraints(known_result, "*** known_result ***");
 
-  return result == known_result;
+  return ph == known_result;
+}
+
+// tests -A <= -1/3 && A <= 2/3 && -B <= 0 && B <= 1/3
+// and refine_fp_interval_abstract_store
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  FP_Interval tmp0(0);
+  tmp0.join_assign(10);
+  FP_Interval_Abstract_Store store(2);
+  store.set_interval(A, tmp0);
+  store.set_interval(B, tmp0);
+  FP_Interval tmp(tmp0);
+  tmp = 2;
+  //tmp.lower() = 2;
+  //tmp.upper() = 2;
+  tmp /= FP_Interval(3);
+  FP_Linear_Form la(A);
+  FP_Linear_Form lb(B);
+  FP_Linear_Form lk(tmp);
+
+  C_Polyhedron ph(2);
+  ph.refine_with_linear_form_inequality(la, lk, store);
+  tmp = 1;
+  lk -= tmp;
+  ph.refine_with_linear_form_inequality(-la, lk, store);
+  ph.refine_with_linear_form_inequality(lk, lb, store);
+  tmp = 3;
+  lk *= tmp;
+  tmp = 1;
+  lk += tmp;
+  ph.refine_with_linear_form_inequality(-lb, lk, store);
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron known_result1(2);
+  known_result1.add_constraint(3*A >= 1);
+  known_result1.add_constraint(3*A <= 2);
+  known_result1.add_constraint(B >= 0);
+  known_result1.add_constraint(3*B <= 1);
+  print_constraints(known_result1, "*** known_result1 ***");
+
+  bool ok1 = ph.contains(known_result1);
+
+  ph.refine_fp_interval_abstract_store(store);
+  nout << "*** FP_Interval_Abstract_Store ***" << endl;
+
+  nout << "A = " << store.get_interval(A) << endl;
+  bool ok2 = tmp0.contains(store.get_interval(A));
+
+  //FIXME: Sound, but not much precise.
+  nout << "B = " << store.get_interval(B) << endl;
+  bool ok3 = tmp0.contains(store.get_interval(B));
+
+  return ok1 && ok2 && ok3;
+
+}
+
+// tests (2/3)*B - 0.5 >= (1/3)*A
+bool
+test05() {
+
+  return true;
 }
 
 } // namespace
@@ -99,4 +167,6 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN
