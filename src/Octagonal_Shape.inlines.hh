@@ -618,7 +618,7 @@ inline void
 Octagonal_Shape<T>::generalized_refine_with_linear_form_inequality(
 		    const Linear_Form< Interval<T, Interval_Info> >& left,
 		    const Linear_Form< Interval<T, Interval_Info> >& right,
-                    Relation_Symbol relsym) {
+                    const Relation_Symbol relsym) {
   switch (relsym) {
   case EQUAL:
     refine_with_linear_form_inequality(left, right);

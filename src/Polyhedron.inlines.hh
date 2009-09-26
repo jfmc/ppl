@@ -377,7 +377,7 @@ inline void
 Polyhedron::generalized_refine_with_linear_form_inequality(
 	    const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
 	    const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
-            Relation_Symbol relsym,
+            const Relation_Symbol relsym,
             const Box< Interval<FP_Format, Interval_Info> >& store) {
   switch (relsym) {
   case EQUAL:

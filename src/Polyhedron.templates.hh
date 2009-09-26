@@ -301,7 +301,7 @@ Polyhedron::refine_with_linear_form_inequality(
   const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
   const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
   const Box< Interval<FP_Format, Interval_Info> >& store,
-  bool is_strict) {
+  const bool is_strict) {
 
   // Check that FP_Format is indeed a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
