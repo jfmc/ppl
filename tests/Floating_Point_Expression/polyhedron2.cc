@@ -1,5 +1,6 @@
-/* Test Polyhedron::refine_fp_interval_abstract_store and
-   Polyhedron::refine_with_linear_form_inequality.
+/* Test Polyhedron::refine_fp_interval_abstract_store,
+   Polyhedron::refine_with_linear_form_inequality and
+   Polyhedron::generalized_refine_with_linear_form_inequality.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -69,16 +70,19 @@ test02() {
   return ph == known_result;
 }
 
-// tests -A <= 0 && A <= 2 && -A <= 1 && -B <= -1
+// tests -A <= 0 && A <= 2 && -A <= 1 && -B <= -1 && C = 0
 bool
 test03() {
   Variable A(0);
   Variable B(1);
-  FP_Interval_Abstract_Store store(2);
-  store.set_interval(A, FP_Interval(1));
-  store.set_interval(B, FP_Interval(2));
+  Variable C(2);
+  FP_Interval_Abstract_Store store(3);
+  FP_Interval tmp(0);
+  store.set_interval(A, tmp);
+  store.set_interval(B, tmp);
+  store.set_interval(C, tmp);
 
-  C_Polyhedron ph(2);
+  C_Polyhedron ph(3);
   ph.refine_with_linear_form_inequality(-FP_Linear_Form(A),
 				 FP_Linear_Form(FP_Interval(0)), store);
   ph.refine_with_linear_form_inequality(FP_Linear_Form(A),
@@ -87,12 +91,17 @@ test03() {
 				 FP_Linear_Form(FP_Interval(1)), store);
   ph.refine_with_linear_form_inequality(-FP_Linear_Form(B),
 				 FP_Linear_Form(FP_Interval(-1)), store);
+  ph.generalized_refine_with_linear_form_inequality(
+    FP_Linear_Form(C), FP_Linear_Form(tmp), EQUAL, store);
+  ph.generalized_refine_with_linear_form_inequality(
+    FP_Linear_Form(C), FP_Linear_Form(tmp), NOT_EQUAL, store);
   print_constraints(ph, "*** ph ***");
 
-  C_Polyhedron known_result(2);
+  C_Polyhedron known_result(3);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 2);
   known_result.add_constraint(B >= 1);
+  known_result.add_constraint(C == 0);
   print_constraints(known_result, "*** known_result ***");
 
   return ph == known_result;
@@ -117,16 +126,20 @@ test04() {
   FP_Linear_Form lk(tmp);
 
   C_Polyhedron ph(2);
-  ph.refine_with_linear_form_inequality(la, lk, store);
+  ph.generalized_refine_with_linear_form_inequality(
+    lk, la, GREATER_THAN, store);
   tmp = 1;
   lk -= tmp;
-  ph.refine_with_linear_form_inequality(-la, lk, store);
-  ph.refine_with_linear_form_inequality(lk, lb, store);
+  ph.generalized_refine_with_linear_form_inequality(
+    lk, -la, GREATER_OR_EQUAL, store);
+  ph.generalized_refine_with_linear_form_inequality(
+    lk, lb, LESS_OR_EQUAL, store);
   tmp = 3;
   lk *= tmp;
   tmp = 1;
   lk += tmp;
-  ph.refine_with_linear_form_inequality(-lb, lk, store);
+  ph.generalized_refine_with_linear_form_inequality(
+    -lb, lk, LESS_THAN, store);
   print_constraints(ph, "*** ph ***");
 
   C_Polyhedron known_result1(2);
@@ -174,11 +187,12 @@ test05() {
   tmp.upper() = 0.5;
   lb += tmp;
 
-  C_Polyhedron ph(2);
-  ph.refine_with_linear_form_inequality(la, lb, store);
+  NNC_Polyhedron ph(2);
+  ph.generalized_refine_with_linear_form_inequality(
+    lb, la, GREATER_THAN, store);
   print_constraints(ph, "*** ph ***");
 
-  C_Polyhedron known_result1(2);
+  NNC_Polyhedron known_result1(2);
   known_result1.add_constraint(2*A <= 4*B + 1);
   print_constraints(known_result1, "*** known_result1 ***");
 
@@ -195,6 +209,8 @@ test05() {
 
   return ok1 && ok2 && ok3;
 }
+
+
 
 } // namespace
 
