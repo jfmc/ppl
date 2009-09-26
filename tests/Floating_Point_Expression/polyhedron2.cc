@@ -111,8 +111,6 @@ test04() {
   store.set_interval(B, tmp0);
   FP_Interval tmp(tmp0);
   tmp = 2;
-  //tmp.lower() = 2;
-  //tmp.upper() = 2;
   tmp /= FP_Interval(3);
   FP_Linear_Form la(A);
   FP_Linear_Form lb(B);
@@ -154,11 +152,48 @@ test04() {
 
 }
 
-// tests (2/3)*B - 0.5 >= (1/3)*A
+// tests (2/3)*B + [-0.5, 0.5] >= (1/3)*A
+// FIXME: Not pass at the moment.
 bool
 test05() {
+  Variable A(0);
+  Variable B(1);
+  FP_Interval tmp0(-1);
+  tmp0.join_assign(1);
+  FP_Interval_Abstract_Store store(2);
+  store.set_interval(A, tmp0);
+  store.set_interval(B, tmp0);
+  FP_Interval tmp(1);
+  tmp /= FP_Interval(3);
+  FP_Linear_Form la(A);
+  la *= tmp;
+  FP_Linear_Form lb(B);
+  tmp += tmp;
+  lb *= tmp;
+  tmp.lower() = -0.5;
+  tmp.upper() = 0.5;
+  lb += tmp;
 
-  return true;
+  C_Polyhedron ph(2);
+  ph.refine_with_linear_form_inequality(la, lb, store);
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron known_result1(2);
+  known_result1.add_constraint(2*A <= 4*B + 1);
+  print_constraints(known_result1, "*** known_result1 ***");
+
+  bool ok1 = ph.contains(known_result1);
+
+  ph.refine_fp_interval_abstract_store(store);
+  nout << "*** FP_Interval_Abstract_Store ***" << endl;
+
+  nout << "A = " << store.get_interval(A) << endl;
+  bool ok2 = tmp0.contains(store.get_interval(A));
+
+  nout << "B = " << store.get_interval(B) << endl;
+  bool ok3 = tmp0.contains(store.get_interval(B));
+
+  return ok1 && ok2 && ok3;
 }
 
 } // namespace
