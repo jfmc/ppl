@@ -50,13 +50,14 @@ $(top_builddir)/tests/libppl_tests.a \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
-ORIGINAL_TESTS = \
-bdshape1 \
-floatingpointexpr1 \
-linearform1 \
-octagonalshape1 \
-octagonalshape2 \
-polyhedron1 \
+ORIGINAL_TESTS = polyhedron2
+
+#bdshape1 \
+#floatingpointexpr1 \
+#linearform1 \
+#octagonalshape1 \
+#octagonalshape2 \
+#polyhedron1 \
 polyhedron2
 
 DERIVED_TESTS =
@@ -127,7 +128,9 @@ print_INSTANCES:
 # Sources for the tests
 #
 
-polyhedron1_SOURCES = polyhedron1.cc
+polyhedron2_SOURCES = polyhedron2.cc
+
+#polyhedron1_SOURCES = polyhedron1.cc
 
 #bdshape1_SOURCES = bdshape1.cc
 
