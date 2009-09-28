@@ -4376,7 +4376,7 @@ BD_Shape<T>::left_inhomogeneous_refine(const dimension_type& right_t,
         const FP_Interval_Type& right_b = right.inhomogeneous_term();
         sub_assign_r(b_plus_minus_a_minus, right_b.upper(), left_a.lower(),
                      ROUND_UP);
-        add_dbm_constraint(right_w_id, 0, b_plus_minus_a_minus);
+        add_dbm_constraint(right_w_id+1, 0, b_plus_minus_a_minus);
         return;
       }
 
@@ -4386,7 +4386,7 @@ BD_Shape<T>::left_inhomogeneous_refine(const dimension_type& right_t,
         const FP_Interval_Type& right_b = right.inhomogeneous_term();
         sub_assign_r(b_plus_minus_a_minus, right_b.upper(), left_a.lower(),
                      ROUND_UP);
-        add_dbm_constraint(0, right_w_id, b_plus_minus_a_minus);
+        add_dbm_constraint(0, right_w_id+1, b_plus_minus_a_minus);
         return;
       }
     }
@@ -4418,7 +4418,7 @@ BD_Shape<T>
         const FP_Interval_Type& right_a = right.inhomogeneous_term();
         sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                      ROUND_UP);
-        add_dbm_constraint(0, left_w_id, a_plus_minus_b_minus);
+        add_dbm_constraint(0, left_w_id+1, a_plus_minus_b_minus);
         return;
       }
 
@@ -4428,7 +4428,7 @@ BD_Shape<T>
         const FP_Interval_Type& right_a = right.inhomogeneous_term();
         sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                      ROUND_UP);
-        add_dbm_constraint(left_w_id, 0, a_plus_minus_b_minus);
+        add_dbm_constraint(left_w_id+1, 0, a_plus_minus_b_minus);
         return;
       }
     } // fi right_t == 0
@@ -4460,8 +4460,9 @@ BD_Shape<T>
           const FP_Interval_Type& right_a = right.inhomogeneous_term();
           sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                        ROUND_UP);
-	  div_2exp_assign (a_plus_minus_b_minus, a_plus_minus_b_minus, 1);
-          add_dbm_constraint(0, left_w_id, a_plus_minus_b_minus);
+	  div_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
+			    ROUND_UP);
+          add_dbm_constraint(0, left_w_id+1, a_plus_minus_b_minus);
           return;
         }
         if (is_left_coeff_minus_one && is_right_coeff_one) {
@@ -4472,8 +4473,9 @@ BD_Shape<T>
           const FP_Interval_Type& right_a = right.inhomogeneous_term();
           sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                        ROUND_UP);
-	  div_2exp_assign (a_plus_minus_b_minus, a_plus_minus_b_minus, 1);
-          add_dbm_constraint(right_w_id, 0, a_plus_minus_b_minus);
+	  div_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
+			    ROUND_UP);
+          add_dbm_constraint(right_w_id+1, 0, a_plus_minus_b_minus);
           return;
         }
       }
@@ -4483,7 +4485,7 @@ BD_Shape<T>
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
-        add_dbm_constraint(left_w_id, right_w_id , c_plus_minus_a_minus);
+        add_dbm_constraint(left_w_id+1, right_w_id+1, c_plus_minus_a_minus);
 	return;
       }
       if (is_left_coeff_one && is_right_coeff_minus_one) {
@@ -4500,7 +4502,7 @@ BD_Shape<T>
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
-        add_dbm_constraint(right_w_id, left_w_id , c_plus_minus_a_minus);
+        add_dbm_constraint(right_w_id+1, left_w_id+1, c_plus_minus_a_minus);
         return;
       }
       if (is_left_coeff_minus_one && is_right_coeff_minus_one) {
@@ -4535,6 +4537,7 @@ BD_Shape<T>
   PPL_DIRTY_TEMP(N, upper_bound);
   
   dimension_type max_w_id = std::max(left_w_id, right_w_id);
+  const dimension_type space_dim = space_dimension();
 
   for (dimension_type first_v = 0; first_v < max_w_id; ++first_v) {
     for (dimension_type second_v = first_v+1;
@@ -4586,8 +4589,7 @@ BD_Shape<T>
         Variable second(second_v);
         dimension_type n_first_var = first_v +1 ;
         dimension_type n_second_var = second_v + 1;
-	const dimension_type space_dim = space_dimension();
-        linear_form_upper_bound(right_minus_left - first + second,
+	        linear_form_upper_bound(right_minus_left - first + second,
                                 upper_bound, space_dim);
         add_dbm_constraint(n_first_var, n_second_var, upper_bound);
         linear_form_upper_bound(right_minus_left + first - second,
@@ -4620,9 +4622,9 @@ BD_Shape<T>
     if (do_update) {
       Variable var(v);
       dimension_type n_var = v + 1;
-      linear_form_upper_bound(right_minus_left + var, upper_bound);
+      linear_form_upper_bound(right_minus_left + var, upper_bound, space_dim);
       add_dbm_constraint(0, n_var, upper_bound);
-      linear_form_upper_bound(right_minus_left - var, upper_bound);
+      linear_form_upper_bound(right_minus_left - var, upper_bound, space_dim);
       add_dbm_constraint(n_var, 0, upper_bound);
     }
   }
