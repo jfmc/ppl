@@ -133,11 +133,9 @@ test04() {
   ph.generalized_refine_with_linear_form_inequality(
     lk, -la, GREATER_OR_EQUAL, store);
   ph.generalized_refine_with_linear_form_inequality(
-    lk, lb, LESS_OR_EQUAL, store);
-  tmp = 3;
-  lk *= tmp;
-  tmp = 1;
-  lk += tmp;
+    lb, -lk, LESS_OR_EQUAL, store);
+  tmp = 0;
+  lk = FP_Linear_Form(tmp);
   ph.generalized_refine_with_linear_form_inequality(
     -lb, lk, LESS_THAN, store);
   print_constraints(ph, "*** ph ***");
@@ -157,7 +155,6 @@ test04() {
   nout << "A = " << store.get_interval(A) << endl;
   bool ok2 = tmp0.contains(store.get_interval(A));
 
-  //FIXME: Sound, but not much precise.
   nout << "B = " << store.get_interval(B) << endl;
   bool ok3 = tmp0.contains(store.get_interval(B));
 
@@ -189,11 +186,11 @@ test05() {
 
   NNC_Polyhedron ph(2);
   ph.generalized_refine_with_linear_form_inequality(
-    lb, la, GREATER_THAN, store);
+    lb, la, GREATER_OR_EQUAL, store);
   print_constraints(ph, "*** ph ***");
 
   NNC_Polyhedron known_result1(2);
-  known_result1.add_constraint(2*A <= 4*B + 1);
+  known_result1.add_constraint(2*A <= 4*B + 3);
   print_constraints(known_result1, "*** known_result1 ***");
 
   bool ok1 = ph.contains(known_result1);
