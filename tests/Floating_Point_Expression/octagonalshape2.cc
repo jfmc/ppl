@@ -29,7 +29,6 @@ namespace {
 bool
 test01() {
   Variable A(0);
-  Variable B(1);
   FP_Octagonal_Shape oc1(0);
   bool ok1 = false;
   FP_Linear_Form l1(A);

@@ -50,7 +50,8 @@ $(top_builddir)/tests/libppl_tests.a \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
-ORIGINAL_TESTS = polyhedron2
+ORIGINAL_TESTS = \
+digitalfilters1
 
 #bdshape1 \
 #floatingpointexpr1 \
@@ -58,7 +59,7 @@ ORIGINAL_TESTS = polyhedron2
 #octagonalshape1 \
 #octagonalshape2 \
 #polyhedron1 \
-polyhedron2
+#polyhedron2
 
 
 
@@ -131,7 +132,9 @@ print_INSTANCES:
 # Sources for the tests
 #
 
-polyhedron2_SOURCES = polyhedron2.cc
+digitalfilters1_SOURCES = digitalfilters1.cc
+
+#polyhedron2_SOURCES = polyhedron2.cc
 
 #polyhedron1_SOURCES = polyhedron1.cc
 
