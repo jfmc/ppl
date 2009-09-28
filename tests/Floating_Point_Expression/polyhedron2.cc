@@ -163,7 +163,7 @@ test04() {
 }
 
 // tests (2/3)*B + [-0.5, 0.5] >= (1/3)*A
-// FIXME: Not pass at the moment.
+// where A = B = [-1, 1]
 bool
 test05() {
   Variable A(0);
@@ -185,16 +185,11 @@ test05() {
   lb += tmp;
 
   NNC_Polyhedron ph(2);
+  FP_Linear_Form l(tmp0);
+  ph.affine_image(A, l, store);
+  ph.affine_image(B, l, store);
   ph.generalized_refine_with_linear_form_inequality(
     lb, la, GREATER_OR_EQUAL, store);
-  ph.generalized_refine_with_linear_form_inequality(
-  FP_Linear_Form(A), FP_Linear_Form(FP_Interval(-1)), GREATER_OR_EQUAL, store);
-  ph.generalized_refine_with_linear_form_inequality(
-  FP_Linear_Form(A), FP_Linear_Form(FP_Interval(1)), LESS_OR_EQUAL, store);
-  ph.generalized_refine_with_linear_form_inequality(
-  FP_Linear_Form(B), FP_Linear_Form(FP_Interval(-1)), GREATER_OR_EQUAL, store);
-  ph.generalized_refine_with_linear_form_inequality(
-  FP_Linear_Form(B), FP_Linear_Form(FP_Interval(1)), LESS_OR_EQUAL, store);
   print_constraints(ph, "*** ph ***");
 
   NNC_Polyhedron known_result1(2);
@@ -206,6 +201,17 @@ test05() {
   print_constraints(known_result1, "*** known_result1 ***");
 
   bool ok1 = ph.contains(known_result1);
+
+  ph.refine_fp_interval_abstract_store(store);
+  nout << "*** FP_Interval_Abstract_Store ***" << endl;
+
+  nout << "A = " << store.get_interval(A) << endl;
+  bool ok2 = tmp0.contains(store.get_interval(A));
+
+  nout << "B = " << store.get_interval(B) << endl;
+  bool ok3 = tmp0.contains(store.get_interval(B));
+
+  return ok1 && ok2 && ok3;
 
   return ok1;
 }
