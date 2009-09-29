@@ -116,6 +116,7 @@ test03() {
   oc.affine_image(R, FP_Linear_Form(X - S));
   oc.affine_image(Y, FP_Linear_Form(X));
 
+
   //if (R <= -D) Y = S - D;
   FP_Linear_Form lr(R);
   FP_Octagonal_Shape oc_then(oc);
@@ -136,7 +137,7 @@ test03() {
   tmp = abstract_store.get_interval(Y);
   nout << "Y in " << tmp << endl;
 
-  return tmp.is_bounded();
+  return (tmp.lower() == -136);
 }
 
 // tests rate limiter using polyhedra abstract domain.
@@ -195,6 +196,82 @@ test04() {
 
   tmp = abstract_store.get_interval(Y);
   nout << "Y in " << tmp << endl;
+  return (tmp.lower() == -128);
+}
+
+// tests rate limiter using octagons abstract domain and
+// FP_Linear_Form_Abstract_Store.
+bool
+test05() {
+  Variable X(0); //input
+  Variable D(1); //input
+  Variable Y(2); //output
+  Variable S(3); //last output
+  Variable R(4); //actual rate
+  Var_FP_Expression x(0);
+  Var_FP_Expression d(1);
+  Var_FP_Expression y(2);
+  Var_FP_Expression s(3);
+  Var_FP_Expression r(4);
+  FP_Linear_Form lx(X);
+  FP_Linear_Form ld(D);
+  FP_Linear_Form ly(Y);
+  FP_Linear_Form ls;
+  FP_Linear_Form lr;
+  FP_Interval_Abstract_Store abstract_store(5);
+  FP_Linear_Form_Abstract_Store lf_abstract_store;
+  FP_Interval tmp(-128);
+  tmp.join_assign(128);
+  abstract_store.set_interval(X, tmp);
+  tmp.lower() = 0;
+  tmp.upper() = 16;
+  abstract_store.set_interval(D, tmp);
+  FP_Octagonal_Shape oc(abstract_store);
+
+  nout << "*** n = 0 ***" << endl;
+
+  //S = Y; R = X - S; Y = X;
+  oc.affine_image(S, ly);
+  //assign_linear_form
+  Var_FP_Expression* px = new Var_FP_Expression(0);
+  Var_FP_Expression* ps = new Var_FP_Expression(3);
+  Dif_FP_Expression x_dif_s(px, ps);
+  x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
+  oc.affine_image(R, lr);
+  //assign_linear_form
+  oc.affine_image(Y, lx);
+  //assign_linear_form
+
+  //if (R <= -D) Y = S - D;
+  FP_Octagonal_Shape oc_then(oc);
+  oc_then.refine_with_linear_form_inequality(lr, -ld);
+  Var_FP_Expression* ps1 = new Var_FP_Expression(3);
+  Var_FP_Expression* pd  = new Var_FP_Expression(2);
+  Dif_FP_Expression s1_dif_d(ps1, pd);
+  s1_dif_d.linearize(abstract_store, lf_abstract_store, ly);
+  oc_then.affine_image(Y, ly);
+  //assign_linear_form
+  oc.refine_with_linear_form_inequality(-ld, lr);
+  oc.upper_bound_assign(oc_then);
+  oc.refine_fp_interval_abstract_store(abstract_store);
+  //lub on FP_Interval_abstract_store
+
+  //if (R >= D)  Y = S + D;
+  oc_then = oc;
+  oc_then.refine_with_linear_form_inequality(ld, lr);
+  Var_FP_Expression* ps2 = new Var_FP_Expression(3);
+  Var_FP_Expression* pd1  = new Var_FP_Expression(2);
+  Sum_FP_Expression s2_sum_d1(ps2, pd1);
+  s2_sum_d1.linearize(abstract_store, lf_abstract_store, ly);
+  oc_then.affine_image(Y, ly);
+  //assign_linear_form
+  oc.refine_with_linear_form_inequality(lr, ld);
+  oc.upper_bound_assign(oc_then);
+  oc.refine_fp_interval_abstract_store(abstract_store);
+  //lub on FP_Interval_abstract_store
+
+  tmp = abstract_store.get_interval(Y);
+  nout << "Y in " << tmp << endl;
   return tmp.is_bounded();
 }
 
@@ -202,7 +279,8 @@ test04() {
 
 BEGIN_MAIN
   DO_TEST(test01);
-  //DO_TEST(test02);
+  DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN
