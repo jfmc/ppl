@@ -44,7 +44,7 @@ merge_assign(Matrix& x,
              const Constraint_System& y,
              const Variables_Set &parameters) {
   dimension_type width = x.num_columns();
-  PPL_ASSERT(y.empty() || y.begin()->space_dimension() == width-1);
+  PPL_ASSERT(parameters.size() == width-1);
   Row row(width, Row::Flags());
   Variables_Set::iterator param_begin = parameters.begin();
   Variables_Set::iterator param_end = parameters.end();
