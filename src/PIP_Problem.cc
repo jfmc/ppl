@@ -39,7 +39,8 @@ PPL::PIP_Problem::PIP_Problem(dimension_type dim)
     initialized(false),
     input_cs(),
     first_pending_constraint(0),
-    parameters() {
+    parameters(),
+    initial_context() {
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
     throw std::length_error("PPL::PIP_Problem:: PIP_Problem(dim):\n"
@@ -56,7 +57,8 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
     initialized(y.initialized),
     input_cs(y.input_cs),
     first_pending_constraint(y.first_pending_constraint),
-    parameters(y.parameters) {
+    parameters(y.parameters),
+    initial_context(y.initial_context) {
   PPL_ASSERT(OK());
 }
 
@@ -83,6 +85,40 @@ PPL::PIP_Problem::solve() const {
         return OPTIMIZED_PIP_PROBLEM;
       }
 
+      //look for constraints with only parameter coefficients
+      Constraint_Sequence::const_iterator c;
+      Constraint_Sequence::const_iterator c_end = input_cs.end();
+      Variables_Set::iterator param_begin = parameters.begin();
+      Variables_Set::iterator param_end = parameters.end();
+      Variables_Set::iterator pi;
+      dimension_type i;
+
+      // resize context matrix properly
+      dimension_type num_params = parameters.size()+1;
+      dimension_type num_cols = initial_context.num_columns();
+      if (num_cols < num_params)
+        x.initial_context.add_zero_columns(num_params-num_cols);
+
+      for (c = input_cs.begin()+first_pending_constraint; c != c_end; ++c) {
+        dimension_type width = c->space_dimension();
+        if (external_space_dim < width)
+          x.external_space_dim = width;
+        for (i = 0; i < width; ++i) {
+          if (c->coefficient(Variable(i)) != 0 && parameters.count(i) == 0)
+            /* nonzero variable coefficient, constraint not to be inserted
+              in context */
+            break;
+        }
+        if (i == width) {
+          // At this point, the constraint must be translated into context row
+          Row row(num_params, Row::Flags());
+          for (pi = param_begin, i = 1; pi != param_end; ++pi, ++i)
+            row[i] = c->coefficient(Variable(*pi));
+          row[0] = c->inhomogeneous_term();
+          x.initial_context.add_row(row);
+        }
+      }
+
       x.current_solution->update_tableau(external_space_dim,
                                          first_pending_constraint,
                                          input_cs,
@@ -90,7 +126,6 @@ PPL::PIP_Problem::solve() const {
       x.internal_space_dim = external_space_dim;
       x.first_pending_constraint = input_cs.size();
 
-      Matrix initial_context(0, parameters.size()+1);
       return_value = x.current_solution->solve(x.current_solution,
                                                initial_context);
 
@@ -162,6 +197,9 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
 
   s << "\nparameters";
   parameters.ascii_dump(s);
+
+  s << "\ninitial_context";
+  initial_context.ascii_dump(s);
 }
 
 PPL_OUTPUT_DEFINITIONS(PIP_Problem)
@@ -237,6 +275,12 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
     return false;
 
   if (!parameters.ascii_load(s))
+    return false;
+
+  if (!(s >> str) || str != "initial_context")
+    return false;
+
+  if (!initial_context.ascii_load(s))
     return false;
 
   PPL_ASSERT(OK());

@@ -79,6 +79,8 @@ test01() {
   cs.insert(X1 + I0 - N >= 0);
   cs.insert(-X1 - I0 + N >= 0);
   cs.insert(X2 + J0 - N - 1 >= 0);
+  cs.insert(I0 >= 1);
+  cs.insert(N >= 1);
 
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
 

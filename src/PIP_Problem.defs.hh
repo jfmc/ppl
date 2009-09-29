@@ -327,6 +327,13 @@ private:
     interpreted as problem parameters.
   */
   Variables_Set parameters;
+
+  /*! \brief
+    The initial context
+  
+    Contains problem constraints on parameters only
+  */
+  Matrix initial_context;
 };
 
 namespace std {

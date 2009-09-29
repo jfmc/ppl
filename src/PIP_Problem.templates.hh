@@ -39,7 +39,8 @@ PIP_Problem::PIP_Problem(dimension_type dim,
     initialized(false),
     input_cs(),
     first_pending_constraint(0),
-    parameters(p_vars) {
+    parameters(p_vars),
+    initial_context() {
   // Check that integer Variables_Set does not exceed the space dimension
   // of the problem.
   if (p_vars.space_dimension() > external_space_dim) {

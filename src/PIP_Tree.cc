@@ -615,9 +615,14 @@ PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
       }
     }
     // FIXME: must handle equality constraints
-    tableau.s.add_row(var);
-    tableau.t.add_row(param);
-    sign.push_back(row_sign(param));
+    if (row_sign(var) != ZERO) {
+      /* parametric-only constraints have already been inserted in initial
+        context, so no need to insert them in the tableau
+      */
+      tableau.s.add_row(var);
+      tableau.t.add_row(param);
+      sign.push_back(row_sign(param));
+    }
   }
 }
 
