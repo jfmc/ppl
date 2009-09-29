@@ -619,7 +619,6 @@ PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
     tableau.t.add_row(param);
     sign.push_back(row_sign(param));
   }
-  // FIXME: decide emptiness detection (and node removal)
 }
 
 void

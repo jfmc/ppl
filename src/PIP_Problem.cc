@@ -78,11 +78,17 @@ PPL::PIP_Problem::solve() const {
 
       if (current_solution == 0)
         x.current_solution = new PIP_Solution_Node(&x);
+      if (input_cs.empty()) {
+        // no constraints: solution = {0}
+        return OPTIMIZED_PIP_PROBLEM;
+      }
 
       x.current_solution->update_tableau(external_space_dim,
                                          first_pending_constraint,
                                          input_cs,
                                          parameters);
+      x.internal_space_dim = external_space_dim;
+      x.first_pending_constraint = input_cs.size();
 
       Matrix initial_context(0, parameters.size()+1);
       return_value = x.current_solution->solve(x.current_solution,
