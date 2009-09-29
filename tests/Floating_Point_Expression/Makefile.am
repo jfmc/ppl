@@ -51,7 +51,8 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
-digitalfilters1
+digitalfilters1 \
+bdshape2
 
 #bdshape1 \
 #floatingpointexpr1 \
@@ -133,6 +134,8 @@ print_INSTANCES:
 #
 
 digitalfilters1_SOURCES = digitalfilters1.cc
+
+bdshape2_SOURCE = bdshape2.cc
 
 #polyhedron2_SOURCES = polyhedron2.cc
 

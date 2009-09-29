@@ -107,7 +107,7 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  FP_Octagonal_Shape bd1(3);
+  FP_Octagonal_Shape bd1(2);
   bd1.add_constraint(A <= 2);
   bd1.add_constraint(A - B <= 3);
   bd1.add_constraint(B <= 2);
@@ -138,10 +138,51 @@ test03() {
   return ok1 && ok2;
 
 }
+
+// tests [-0.5, 1] + A <= [2.5, 5] + B and [2.5, 5] + B <= [-0.5, 1] + A
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
+  FP_BD_Shape bd1(2);
+  bd1.add_constraint(A <= 2);
+  bd1.add_constraint(A - B <= 3);
+  bd1.add_constraint(B <= 2);
+  FP_BD_Shape known_result(bd1);
+  FP_Interval tmp(-0.5);
+  tmp.join_assign(1);
+  FP_Linear_Form l1(A);
+  l1 += tmp;
+  FP_Linear_Form l2(B);
+  tmp.lower() = 2.5;
+  tmp.upper() = 5;
+  l2 += tmp;
+  bd1.refine_with_linear_form_inequality(l1, l2);
+  print_constraints(bd1, "*** [-0.5, 1] + A <= [2.5, 5] + B ***");
+
+  known_result.add_constraint(2*A - 2*B <= 11);
+  print_constraints(known_result, "*** known_result ***");
+
+  bool ok1 = (bd1 == known_result);
+
+  bd1.refine_with_linear_form_inequality(l2, l1);
+  print_constraints(bd1, "*** [2.5, 5] + B <= [-0.5, 1] + A ***");
+
+  known_result.add_constraint((2*B) - (2*A) <= -3);
+  print_constraints(known_result, "*** known_result2 ***");
+
+  bool ok2 = (bd1 == known_result);
+
+  return ok1 && ok2;
+
+}
+
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
-  DO_TEST(test02);
-// DO_TEST(test03);
+//DO_TEST(test01);
+//DO_TEST(test02);
+//DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN

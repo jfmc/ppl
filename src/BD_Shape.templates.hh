@@ -4485,7 +4485,7 @@ BD_Shape<T>
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
-        add_dbm_constraint(left_w_id+1, right_w_id+1, c_plus_minus_a_minus);
+        add_dbm_constraint(right_w_id+1, left_w_id+1, c_plus_minus_a_minus);
 	return;
       }
       if (is_left_coeff_one && is_right_coeff_minus_one) {
