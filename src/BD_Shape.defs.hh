@@ -1768,6 +1768,16 @@ public:
   */
   void fold_space_dimensions(const Variables_Set& vars, Variable dest);
 
+  //! Refines \p store with the constraints defining \p *this.
+  /*!
+    \param store
+    The interval floating point abstract store to refine.
+  */
+  template <typename Interval_Info>
+  void refine_fp_interval_abstract_store(
+                          Box< Interval<T, Interval_Info> >& store) const;
+
+
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
   PPL_OUTPUT_DECLARATIONS
@@ -2150,7 +2160,7 @@ private:
     the general case.
   */
   template <typename Interval_Info>
-  void left_two_var_refine(const dimension_type& left_w_id,
+  void general_refine(const dimension_type& left_w_id,
 			   const dimension_type& right_w_id,
 		   const Linear_Form< Interval<T, Interval_Info> >& left,
                    const Linear_Form< Interval<T, Interval_Info> >& right);
