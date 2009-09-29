@@ -4496,7 +4496,7 @@ BD_Shape<T>
 	// where k is an overaproximation of b - y
         return;
       }
-      if (is_left_coeff_minus_one && is_right_coeff_one) {
+      if (is_left_coeff_minus_one && is_right_coeff_minus_one) {
         PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
         const FP_Interval_Type& left_a = left.inhomogeneous_term();
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
@@ -4505,7 +4505,7 @@ BD_Shape<T>
         add_dbm_constraint(right_w_id+1, left_w_id+1, c_plus_minus_a_minus);
         return;
       }
-      if (is_left_coeff_minus_one && is_right_coeff_minus_one) {
+      if (is_left_coeff_minus_one && is_right_coeff_one) {
         // if right and left coefficents are negative the constraint 
 	// - x - y <= b
 	// is ignored;
