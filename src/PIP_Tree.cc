@@ -69,16 +69,78 @@ negate_assign(Row& x, const Row& y) {
   x[0] -= 1;
 }
 
+// Update given context matrix using local artificials
+dimension_type
+update_context(Matrix &context,
+               const PIP_Tree_Node::Artificial_Parameter_Sequence &ap) {
+  dimension_type ap_size = ap.size();
+  if (ap_size > 0)
+    context.add_zero_columns(ap_size);
+  return ap_size;
+}
+
+// Update given context matrix and parameter set using local artificials
+void
+insert_artificials(Variables_Set &params, Matrix &context,
+                   const PIP_Tree_Node::Artificial_Parameter_Sequence &ap,
+                   dimension_type &space_dimension) {
+  dimension_type ap_size = update_context(context, ap);
+  if (ap_size > 0) {
+    for (dimension_type i = 0; i < ap_size; ++i)
+      params.insert(space_dimension++);
+  }
+}
+
 } // namespace
 
 PIP_Tree_Node::PIP_Tree_Node(PIP_Problem* p)
   : problem(p),
-    constraints_() {
+    constraints_(),
+    artificial_parameters() {
 }
 
 PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node &x)
   : problem(x.problem),
-    constraints_(x.constraints_) {
+    constraints_(x.constraints_),
+    artificial_parameters(x.artificial_parameters) {
+}
+
+PIP_Tree_Node::Artificial_Parameter::Artificial_Parameter()
+  : Linear_Expression(), denominator(1) {
+}
+
+PIP_Tree_Node::Artificial_Parameter
+::Artificial_Parameter(const Linear_Expression &e, const Coefficient &d)
+  : Linear_Expression(e), denominator(d) {
+}
+
+PIP_Tree_Node::Artificial_Parameter
+::Artificial_Parameter(const Artificial_Parameter &x)
+  : Linear_Expression(x), denominator(x.denominator) {
+}
+
+const Coefficient&
+PIP_Tree_Node::Artificial_Parameter
+::get_denominator() const {
+  return denominator;
+}
+
+void
+PIP_Tree_Node::Artificial_Parameter::ascii_dump(std::ostream& s) const {
+  s << "\ndenominator " << denominator << "\n";
+  Linear_Expression::ascii_dump(s);
+}
+
+bool
+PIP_Tree_Node::Artificial_Parameter::ascii_load(std::istream& s) {
+  std::string str;
+  if (!(s >> str) || str != "denominator")
+    return false;
+  if (!(s >> denominator))
+    return false;
+  if (!Linear_Expression::ascii_load(s))
+    return false;
+  return true;
 }
 
 PIP_Decision_Node::~PIP_Decision_Node() {
@@ -119,8 +181,10 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x,
     sign(x.sign),
     solution(x.solution),
     solution_valid(x.solution_valid) {
-  if (!empty_constraints)
+  if (!empty_constraints) {
     constraints_ = x.constraints_;
+    artificial_parameters = x.artificial_parameters;
+  }
 }
 
 PIP_Decision_Node::PIP_Decision_Node(PIP_Problem* p,
@@ -291,22 +355,29 @@ PIP_Decision_Node::update_tableau(dimension_type external_space_dim,
 }
 
 PIP_Problem_Status
-PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& context) {
+PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& context,
+                         const Variables_Set &params,
+                         dimension_type space_dimension) {
   PIP_Problem_Status return_status;
   PIP_Problem_Status stt;
   PIP_Problem_Status stf = UNFEASIBLE_PIP_PROBLEM;
   Matrix context_true(context);
-  const Variables_Set &parameters = problem->parameter_space_dimensions();
+  Variables_Set parameters(params);
+  insert_artificials(parameters, context_true, artificial_parameters,
+                     space_dimension);
   merge_assign(context_true, constraints_, parameters);
-  stt = true_child->solve(true_child, context_true);
+  stt = true_child->solve(true_child, context_true, parameters,
+                          space_dimension);
   if (false_child) {
     // Decision nodes with false child must have exactly one constraint
     PPL_ASSERT(1 == std::distance(constraints_.begin(), constraints_.end()));
     Matrix context_false(context);
+    update_context(context_false, artificial_parameters);
     merge_assign(context_false, constraints_, parameters);
     Row &last = context_false[context_false.num_rows()-1];
     negate_assign(last, last);
-    stf = false_child->solve(false_child, context_false);
+    stf = false_child->solve(false_child, context_false, parameters,
+                             space_dimension);
   }
 
   if (stt == UNFEASIBLE_PIP_PROBLEM && stf == UNFEASIBLE_PIP_PROBLEM) {
@@ -365,6 +436,10 @@ void
 PIP_Tree_Node::ascii_dump(std::ostream& s) const {
   s << "\nconstraints_\n";
   constraints_.ascii_dump(s);
+  dimension_type artificial_parameters_size = artificial_parameters.size();
+  s << "\nartificial_parameters( " << artificial_parameters_size << " )\n";
+  for (dimension_type i=0; i<artificial_parameters_size; ++i)
+    artificial_parameters[i].ascii_dump(s);
 }
 
 bool
@@ -373,6 +448,18 @@ PIP_Tree_Node::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "constraints_")
     return false;
   constraints_.ascii_load(s);
+
+  if (!(s >> str) || str != "artificial_parameters(")
+    return false;
+  dimension_type artificial_parameters_size;
+  if (!(s >> artificial_parameters_size))
+    return false;
+  Artificial_Parameter ap;
+  for (dimension_type i=0; i<artificial_parameters_size; ++i) {
+    if (!ap.ascii_load(s))
+      return false;
+    artificial_parameters.push_back(ap);
+  }
 
   PPL_ASSERT(OK());
   return true;
@@ -651,10 +738,13 @@ PIP_Solution_Node::update_solution() {
 }
 
 PIP_Problem_Status
-PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
-                         const Matrix& ctx) {
+PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
+                         const Variables_Set &params,
+                         dimension_type space_dimension) {
   Matrix context(ctx);
-  const Variables_Set &parameters = problem->parameter_space_dimensions();
+  Variables_Set parameters(params);
+  insert_artificials(parameters, context, artificial_parameters,
+                     space_dimension);
   merge_assign(context, constraints_, parameters);
   const dimension_type n_a_d = not_a_dimension();
   Coefficient gcd;
@@ -966,15 +1056,19 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         /* Create a solution Node to become "true" version of current Node */
         PIP_Tree_Node *tru = new PIP_Solution_Node(*this, true);
         context.add_row(test);
-        PIP_Problem_Status status_t = tru->solve(tru, context);
+        PIP_Problem_Status status_t = tru->solve(tru, context, parameters,
+                                      space_dimension);
 
         /* Modify *this to become "false" version */
         Constraint_System cs;
+        Artificial_Parameter_Sequence aps;
         cs.swap(constraints_);
+        aps.swap(artificial_parameters);
         PIP_Tree_Node *fals = this;
         Row &testf = context[context.num_rows()-1];
         negate_assign(testf, test);
-        PIP_Problem_Status status_f = solve(fals, context);
+        PIP_Problem_Status status_f = solve(fals, context, parameters,
+                                            space_dimension);
 
         if (status_t == UNFEASIBLE_PIP_PROBLEM
             && status_f == UNFEASIBLE_PIP_PROBLEM) {
@@ -1002,6 +1096,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           parent = new PIP_Decision_Node(fals->problem, 0, parent);
           cs.swap(parent->constraints_);
         }
+        aps.swap(parent->artificial_parameters);
 
         parent_ref = parent;
         return OPTIMIZED_PIP_PROBLEM;

@@ -127,7 +127,8 @@ PPL::PIP_Problem::solve() const {
       x.first_pending_constraint = input_cs.size();
 
       return_value = x.current_solution->solve(x.current_solution,
-                                               initial_context);
+                                               initial_context, parameters,
+                                               external_space_dim);
 
       switch (return_value) {
       case UNFEASIBLE_PIP_PROBLEM:

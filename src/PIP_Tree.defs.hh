@@ -69,6 +69,38 @@ public:
   */
   const Constraint_System& constraints() const;
 
+  /*! \brief
+    A class to store the expession of artificial parameters in solution trees.
+
+    These locally new parameters are of the form of the integer division of a
+    linear expression of the other parameters (constant term included), by a
+    coefficient. Coefficients at indexes corresponding to variables always are
+    zero.
+  */
+  class Artificial_Parameter : public Linear_Expression {
+  public:
+    Artificial_Parameter();
+    Artificial_Parameter(const Linear_Expression &e, const Coefficient &d);
+    Artificial_Parameter(const Artificial_Parameter &x);
+
+    const Coefficient& get_denominator() const;
+
+    void ascii_dump(std::ostream& s) const;
+    bool ascii_load(std::istream& s);
+
+  private:
+    Coefficient denominator;
+  };
+
+  //! A type alias for a sequence of Artificial_Parameter's.
+  typedef std::vector<Artificial_Parameter> Artificial_Parameter_Sequence;
+
+  //! Returns a const_iterator to the beginning of local artificial parameters.
+  Artificial_Parameter_Sequence::const_iterator art_parameter_begin() const;
+
+  //! Returns a const_iterator to the end of local artificial parameters.
+  Artificial_Parameter_Sequence::const_iterator art_parameter_end() const;
+
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
 
@@ -93,6 +125,9 @@ protected:
 
   //! The local system of parameter constraints.
   Constraint_System constraints_;
+
+  //! The local sequence of expressions for local artificial parameters.
+  Artificial_Parameter_Sequence artificial_parameters;
 
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
@@ -124,12 +159,20 @@ protected:
     \param context
     the context, being a set of constraints on the parameters
 
+    \param params
+    local parameter set, including parent artificial parameters
+
+    \param space_dimension
+    space dimension of parent, including artificial parameters
+
     \return
     An PIP_Problem_Status flag indicating the outcome of the optimization
     attempt (unfeasible or optimized problem).
   */
   virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
-                                   const Matrix& context) = 0;
+                                   const Matrix& context,
+                                   const Variables_Set& params,
+                                   dimension_type space_dimension) = 0;
 
   //! Inserts a new parametric constraint in internal Row format
   void add_constraint(const Row &x);
@@ -295,7 +338,10 @@ protected:
   //! Copy constructor.
   PIP_Solution_Node(const PIP_Solution_Node &x);
 
-  //! Copy constructor, allowing not to copy the constraint system.
+  /*! \brief
+    Copy constructor, allowing not to copy the constraint system and
+    artificial parameters
+  */
   PIP_Solution_Node(const PIP_Solution_Node &x, bool empty_constraints);
 
   /*! \brief
@@ -331,12 +377,20 @@ protected:
     \param context
     the context, being a set of constraints on the parameters
 
+    \param params
+    local parameter set, including parent artificial parameters
+
+    \param space_dimension
+    space dimension of parent, including artificial parameters
+
     \return
     An PIP_Problem_Status flag indicating the outcome of the optimization
     attempt (unfeasible or optimized problem).
   */
   virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
-                                   const Matrix& context);
+                                   const Matrix& context,
+                                   const Variables_Set& params,
+                                   dimension_type space_dimension);
   // FIXME: constructors to be decided.
 };
 
@@ -419,12 +473,20 @@ protected:
     \param context
     the context, being a set of constraints on the parameters
 
+    \param params
+    local parameter set, including parent artificial parameters
+
+    \param space_dimension
+    space dimension of parent, including artificial parameters
+
     \return
     An PIP_Problem_Status flag indicating the outcome of the optimization
     attempt (unfeasible or optimized problem).
   */
   virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
-                                   const Matrix& context);
+                                   const Matrix& context,
+                                   const Variables_Set& params,
+                                   dimension_type space_dimension);
 };
 
 typedef const PIP_Tree_Node* PIP_Tree;
