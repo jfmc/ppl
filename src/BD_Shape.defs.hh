@@ -2168,8 +2168,7 @@ private:
   template <typename Interval_Info>
   void linear_form_upper_bound(
              const Linear_Form< Interval<T, Interval_Info> >& lf,
-                                                       N& result,
-                                 const dimension_type& space_dim) const;
+                                                       N& result) const;
 
   //! An helper function for the computation of affine relations.
   /*!

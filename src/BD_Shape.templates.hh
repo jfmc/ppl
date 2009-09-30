@@ -4251,24 +4251,24 @@ void BD_Shape<T>
   // Update binary constraints on var FIRST.
   for (dimension_type curr_var = 1; curr_var < var_id; ++curr_var) {
     Variable current(curr_var - 1);
-    linear_form_upper_bound(lf - current, upper_bound, space_dim);
+    linear_form_upper_bound(lf - current, upper_bound);
     assign_r(dbm[curr_var][var_id], upper_bound, ROUND_NOT_NEEDED);
-    linear_form_upper_bound(minus_lf + current, upper_bound, space_dim);
+    linear_form_upper_bound(minus_lf + current, upper_bound);
     assign_r(dbm[var_id][curr_var], upper_bound, ROUND_NOT_NEEDED);
   }
   for (dimension_type curr_var = var_id + 1; curr_var <= space_dim;
                                                       ++curr_var) {
     Variable current(curr_var - 1);
-    linear_form_upper_bound(lf - current, upper_bound, space_dim);
+    linear_form_upper_bound(lf - current, upper_bound);
     assign_r(dbm[curr_var][var_id], upper_bound, ROUND_NOT_NEEDED);
-    linear_form_upper_bound(minus_lf + current, upper_bound, space_dim);
+    linear_form_upper_bound(minus_lf + current, upper_bound);
     assign_r(dbm[var_id][curr_var], upper_bound, ROUND_NOT_NEEDED);
   }
   // Finally, update unary constraints on var.
   PPL_DIRTY_TEMP(N, lf_ub);
-  linear_form_upper_bound(lf, lf_ub, space_dim);
+  linear_form_upper_bound(lf, lf_ub);
   PPL_DIRTY_TEMP(N, minus_lf_ub);
-  linear_form_upper_bound(minus_lf, minus_lf_ub, space_dim);
+  linear_form_upper_bound(minus_lf, minus_lf_ub);
   assign_r(dbm[0][var_id], lf_ub, ROUND_NOT_NEEDED);
   assign_r(dbm[var_id][0], minus_lf_ub, ROUND_NOT_NEEDED);
 }
@@ -4552,8 +4552,7 @@ BD_Shape<T>
   PPL_DIRTY_TEMP(N, upper_bound);
   
   dimension_type max_w_id = std::max(left_w_id, right_w_id);
-  const dimension_type space_dim = space_dimension();
-
+  
   for (dimension_type first_v = 0; first_v < max_w_id; ++first_v) {
     for (dimension_type second_v = first_v+1;
          second_v <= max_w_id; ++second_v) {
@@ -4605,10 +4604,10 @@ BD_Shape<T>
         dimension_type n_first_var = first_v +1 ;
         dimension_type n_second_var = second_v + 1;
 	        linear_form_upper_bound(right_minus_left - first + second,
-                                upper_bound, space_dim);
+                                upper_bound);
         add_dbm_constraint(n_first_var, n_second_var, upper_bound);
         linear_form_upper_bound(right_minus_left + first - second,
-                                upper_bound, space_dim);
+                                upper_bound);
         add_dbm_constraint(n_second_var, n_first_var, upper_bound);
       }
     }
@@ -4637,9 +4636,9 @@ BD_Shape<T>
     if (do_update) {
       Variable var(v);
       dimension_type n_var = v + 1;
-      linear_form_upper_bound(right_minus_left + var, upper_bound, space_dim);
+      linear_form_upper_bound(right_minus_left + var, upper_bound);
       add_dbm_constraint(0, n_var, upper_bound);
-      linear_form_upper_bound(right_minus_left - var, upper_bound, space_dim);
+      linear_form_upper_bound(right_minus_left - var, upper_bound);
       add_dbm_constraint(n_var, 0, upper_bound);
     }
   }
@@ -4651,8 +4650,7 @@ template <typename Interval_Info>
 void
 BD_Shape<T>::
 linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
-			N& result,
-			const dimension_type& space_dim) const {
+			N& result) const {
 
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
@@ -4660,7 +4658,7 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
                      " T not a floating point type.");
 
   const dimension_type lf_space_dimension = lf.space_dimension();
-  PPL_ASSERT(lf_space_dimension <= space_dim);
+  PPL_ASSERT(lf_space_dimension <= space_dimension());
 
   typedef Interval<T, Interval_Info> FP_Interval_Type;
 
