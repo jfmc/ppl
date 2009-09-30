@@ -137,19 +137,19 @@ digitalfilters1_SOURCES = digitalfilters1.cc
 
 bdshape2_SOURCE = bdshape2.cc
 
-#polyhedron2_SOURCES = polyhedron2.cc
+polyhedron2_SOURCES = polyhedron2.cc
 
-#polyhedron1_SOURCES = polyhedron1.cc
+polyhedron1_SOURCES = polyhedron1.cc
 
-#bdshape1_SOURCES = bdshape1.cc
+bdshape1_SOURCES = bdshape1.cc
 
-#floatingpointexpr1_SOURCES = floatingpointexpr1.cc
+floatingpointexpr1_SOURCES = floatingpointexpr1.cc
 
-#linearform1_SOURCES = linearform1.cc
+linearform1_SOURCES = linearform1.cc
 
-#octagonalshape1_SOURCES = octagonalshape1.cc
+octagonalshape1_SOURCES = octagonalshape1.cc
 
-#octagonalshape2_SOURCES = octagonalshape2.cc
+octagonalshape2_SOURCES = octagonalshape2.cc
 
 
 #

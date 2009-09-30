@@ -4404,7 +4404,6 @@ BD_Shape<T>::left_inhomogeneous_refine(const dimension_type& right_t,
         return;
       }
     }
-    return;
 } // end of left_inhomogeneous_refine
 
 
@@ -4521,14 +4520,6 @@ BD_Shape<T>
         add_dbm_constraint(right_w_id+1, left_w_id+1, c_plus_minus_a_minus);
 	return;
       }
-      if (is_left_coeff_one && is_right_coeff_minus_one) {
-        // if right coefficent is negative the constraint x + y <= b
-	// is ignored;
-
-	// FIXME: manage this case adding a costraint x <= k
-	// where k is an overaproximation of b - y
-        return;
-      }
       if (is_left_coeff_minus_one && is_right_coeff_minus_one) {
         PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
         const FP_Interval_Type& left_a = left.inhomogeneous_term();
@@ -4539,7 +4530,6 @@ BD_Shape<T>
         return;
       }
     }
-    return;
 }
 
 template <typename T>
