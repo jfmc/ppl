@@ -430,6 +430,7 @@ PIP_Solution_Node::Rational_Matrix::scale(const Coefficient &ratio) {
   for (i=0; i<i_max; ++i)
     for (j=0; j<j_max; ++j)
       rows[i][j] *= ratio;
+  denominator *= ratio;
 }
 
 void
@@ -941,6 +942,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
             gcd_assign(gcd, mult, sij);
             Coefficient scale_factor = sij/gcd;
             tableau.s.scale(scale_factor);
+            tableau.t.scale(scale_factor);
             mult *= scale_factor;
           }
           tableau.s[k][j] -= mult / sij;
@@ -955,6 +957,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
             // Must scale matrix to stay in integer case
             gcd_assign(gcd, c, sij);
             Coefficient scale_factor = sij/gcd;
+            tableau.s.scale(scale_factor);
             tableau.t.scale(scale_factor);
             c *= scale_factor;
           }
@@ -992,6 +995,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
           gcd_assign(gcd, c, sij);
           Coefficient scale_factor = sij/gcd;
           tableau.s.scale(scale_factor);
+          tableau.t.scale(scale_factor);
         }
         c /= sij;
       }
@@ -1118,7 +1122,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
       if (tableau.s.is_integer() && tableau.t.is_integer()) {
         /* The solution is integer */
 #ifdef NOISY_PIP
-        std::cout << "Solution found for in current node."
+        std::cout << "Solution found for problem in current node."
                   << std::endl;
 #endif
         return OPTIMIZED_PIP_PROBLEM;
@@ -1130,6 +1134,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         std::cout << "Cut generation required."
                   << std::endl;
 #endif
+        return OPTIMIZED_PIP_PROBLEM;
       }
     }
   } // Main loop of the simplex algorithm

@@ -105,7 +105,7 @@ test02() {
   cs.insert(3*j >= -2*i+8);
   cs.insert(j <= 4*i - 4);
   cs.insert(j <= m);
-  cs.insert(j >= 0);
+  //cs.insert(j >= 0);
   cs.insert(i <= n);
 
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);

@@ -42,7 +42,7 @@ PIP_Solution_Node::Rational_Matrix::Rational_Matrix(dimension_type n_rows,
 inline
 PIP_Solution_Node::Rational_Matrix::Rational_Matrix(const Rational_Matrix& y)
   : Matrix(y),
-    denominator(1) {
+    denominator(y.denominator) {
 }
 
 inline bool
