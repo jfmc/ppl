@@ -32,7 +32,7 @@ test01() {
   bool ok1 = false;
   FP_Linear_Form l1(A);
   FP_Linear_Form l2;
-  
+
   try{
     bd1.refine_with_linear_form_inequality(l1,l2);
     std::cout <<"no eccezione" <<std::endl;
@@ -40,8 +40,8 @@ test01() {
   catch(std::invalid_argument e) {
     ok1 = true;
   }
-  
-  
+
+
   bool ok2 = false;
   try{
     bd1.refine_with_linear_form_inequality(l2,l1);
@@ -59,7 +59,7 @@ test01() {
     bd2.refine_with_linear_form_inequality(l1, l2);
     ok2 = true;
   }
-  
+
   return ok1 && ok2;
 }
 
@@ -198,14 +198,16 @@ test05() {
   l1 += tmp;
   bd1.refine_with_linear_form_inequality(l1, l2);
   print_constraints(bd1, "*** [1, 3] + A <= [4, 4] - B ***");
-  
+
   print_constraints(known_result, "*** known_result ***");
-  
+
   bool ok1 = (bd1 == known_result);
 
   bd1.refine_with_linear_form_inequality(l2, l1);
   print_constraints(bd1, "*** [4, 4] - B <= [1, 3] + A ***");
 
+  known_result.add_constraint(-A <= 1);
+  known_result.add_constraint(-B <= 1);
   print_constraints(known_result, "*** known_result2 ***");
 
   bool ok2 = (bd1 == known_result);
@@ -235,12 +237,14 @@ test06() {
   bd1.refine_with_linear_form_inequality(l1, l2);
   print_constraints(bd1, "*** [1, 4] - A <= [-2, -2] + B ***");
 
+  known_result.add_constraint(-A <= -1);
+  known_result.add_constraint(-B <= -1);
   print_constraints(known_result, "*** known_result ***");
 
   bool ok1 = (bd1 == known_result);
 
   bd1.refine_with_linear_form_inequality(l2, l1);
-  print_constraints(bd1, "*** [4, 4] - B <= [1, 3] + A ***");
+  print_constraints(bd1, "*** [-2, -2] + B <= [1, 4] - A ***");
 
   print_constraints(known_result, "*** known_result2 ***");
 
@@ -457,7 +461,7 @@ test12() {
   tmp.join_assign(-1);
   FP_Linear_Form l2(tmp);
   FP_Linear_Form l1(-A);
-  
+
   bd1.refine_with_linear_form_inequality(l1, l2);
   print_constraints(bd1, "*** - A <= [-1, 0]  ***");
 
@@ -476,7 +480,7 @@ test12() {
   return ok1 && ok2;
 }
 
-// tests  A <= - B + [-1, 0] and - B + [0, 1] <= A
+// tests  A <= - B + [-1, 0] and - B + [-1, 0] <= A
 bool
 test13() {
   Variable A(0);
@@ -492,7 +496,7 @@ test13() {
   FP_Linear_Form l2(-B);
   FP_Linear_Form l1(A);
    l2 += tmp;
-  
+
   bd1.refine_with_linear_form_inequality(l1, l2);
   print_constraints(bd1, "*** A <= - B + [-1, 0]  ***");
 
@@ -501,8 +505,10 @@ test13() {
   bool ok1 = (bd1 == known_result);
 
   bd1.refine_with_linear_form_inequality(l2, l1);
-  print_constraints(bd1, "*** - B + [0, 1] <= A  ***");
-  
+  print_constraints(bd1, "*** - B + [-1, 0] <= A  ***");
+  known_result.add_constraint(-A <= 3);
+  known_result.add_constraint(-B <= 3);
+
   print_constraints(known_result, "*** known_result ***");
 
   bool ok2 = (bd1 == known_result);
@@ -526,7 +532,7 @@ test14() {
   FP_Linear_Form l2(-A);
   FP_Linear_Form l1(A);
   l2 += tmp;
-  
+
   bd1.refine_with_linear_form_inequality(l1, l2);
   print_constraints(bd1, "*** A <= - A + [-1, 0]  ***");
 
@@ -537,7 +543,7 @@ test14() {
 
   bd1.refine_with_linear_form_inequality(l2, l1);
   print_constraints(bd1, "*** - A + [0, 1] <= A  ***");
-  
+
   known_result.add_constraint(2*(-A) <= 1);
   print_constraints(known_result, "*** known_result ***");
 

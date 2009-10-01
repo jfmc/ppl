@@ -53,6 +53,8 @@ $(top_builddir)/src/libppl.la \
 ORIGINAL_TESTS = \
 digitalfilters1
 
+#digitalfilters1
+#bdshape2 \
 #bdshape1 \
 #floatingpointexpr1 \
 #linearform1 \
@@ -60,8 +62,6 @@ digitalfilters1
 #octagonalshape2 \
 #polyhedron1 \
 #polyhedron2
-
-
 
 
 DERIVED_TESTS =
@@ -134,7 +134,7 @@ print_INSTANCES:
 
 digitalfilters1_SOURCES = digitalfilters1.cc
 
-#bdshape2_SOURCE = bdshape2.cc
+#bdshape2_SOURCES = bdshape2.cc
 
 #polyhedron2_SOURCES = polyhedron2.cc
 

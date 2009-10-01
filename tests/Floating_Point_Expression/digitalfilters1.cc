@@ -100,7 +100,6 @@ test01() {
     print_constraints(abstract_store ,"*** if (R >= D)  Y = S + D; ***");
   }
 
-  tmp = abstract_store.get_interval(Y);
   nout << "*** Y in [-128 - 16n, 128 + 16n] ***" << endl;
   return tmp.is_bounded();
 }
@@ -121,7 +120,7 @@ test02() {
   // Y = 0;
   bd.affine_image(Y, FP_Linear_Form(tmp));
 
-  for(unsigned int n = 0; bd_begin != bd; ++n) {
+  for(unsigned int n = 0; n < 5; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     bd_begin = bd;
@@ -163,9 +162,7 @@ test02() {
          "*** if (R >= D)  Y = S + D; ***");
   }
 
-  bd.refine_fp_interval_abstract_store(abstract_store);
-  tmp = abstract_store.get_interval(Y);
-  nout << "*** Y in " << tmp << " ***" << endl;
+  nout << "*** Y in [-16 - 16n, 128 + 16n] ***" << endl;
   return tmp.is_bounded();
 }
 
@@ -310,8 +307,8 @@ test04() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
-  //DO_TEST(test02);
-  DO_TEST(test03);
-  DO_TEST(test04);
+  //DO_TEST(test01);
+  DO_TEST(test02);
+  //DO_TEST(test03);
+  //DO_TEST(test04);
 END_MAIN

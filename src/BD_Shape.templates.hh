@@ -4238,7 +4238,8 @@ void BD_Shape<T>
                           const dimension_type& space_dim) {
 
   // Remove all constraints on 'var'.
-  forget_all_dbm_constraints(var_id);
+  //forget_all_dbm_constraints(var_id);
+
   // Shortest-path closure is maintained, but not reduction.
   if (marked_shortest_path_reduced())
     reset_shortest_path_reduced();
@@ -4480,7 +4481,7 @@ BD_Shape<T>
                        ROUND_UP);
 	      div_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
 			                ROUND_UP);
-          add_dbm_constraint(0, left_w_id+1, a_plus_minus_b_minus);
+          add_dbm_constraint(0, left_w_id + 1, a_plus_minus_b_minus);
           return;
         }
         if (is_left_coeff_minus_one && is_right_coeff_one) {
@@ -4493,26 +4494,55 @@ BD_Shape<T>
                        ROUND_UP);
 	      div_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
 			    ROUND_UP);
-          add_dbm_constraint(right_w_id+1, 0, a_plus_minus_b_minus);
+          add_dbm_constraint(right_w_id + 1, 0, a_plus_minus_b_minus);
           return;
         }
       }
       else if (is_left_coeff_minus_one && is_right_coeff_one) {
-        // if right and left coefficents are negative the constraint
-	// - x - y <= b
-	// is ignored;
-
-	// FIXME: manage this case adding a costraint - x <= k
-	// where k is an overaproximation of b + y
-	return;
+        // over-approximate (if is it possible) the inequality
+        // -B + [b1, b2] <= A + [a1, a2] by adding the constraints
+        // -B <= upper_bound(A) + (a2 - b1) and
+        // -A <= upper_bound(B) + (a2 - b1)
+        PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+        const FP_Interval_Type& left_b = left.inhomogeneous_term();
+        const FP_Interval_Type& right_a = right.inhomogeneous_term();
+        sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                       ROUND_UP);
+        PPL_DIRTY_TEMP(N, ub);
+        ub = dbm[0][right_w_id + 1];
+        if (!is_plus_infinity(ub)) {
+          add_assign_r(ub, ub, a_plus_minus_b_minus, ROUND_UP);
+          add_dbm_constraint(left_w_id + 1, 0, ub);
+        }
+        ub = dbm[0][left_w_id + 1];
+        if (!is_plus_infinity(ub)) {
+          add_assign_r(ub, ub, a_plus_minus_b_minus, ROUND_UP);
+          add_dbm_constraint(right_w_id + 1, 0, ub);
+        }
+	    return;
       }
       if (is_left_coeff_one && is_right_coeff_minus_one) {
-        // if right coefficent is negative the constraint x + y <= b
-	// is ignored;
-
-	// FIXME: manage this case adding a costraint x <= k
-	// where k is an overaproximation of b - y
-        return;
+        // over-approximate (if is it possible) the inequality
+        // B + [b1, b2] <= -A + [a1, a2] by adding the constraints
+        // B <= upper_bound(-A) + (a2 - b1) and
+        // A <= upper_bound(-B) + (a2 - b1)
+        PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+        const FP_Interval_Type& left_b = left.inhomogeneous_term();
+        const FP_Interval_Type& right_a = right.inhomogeneous_term();
+        sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                       ROUND_UP);
+        PPL_DIRTY_TEMP(N, ub);
+        ub = dbm[right_w_id + 1][0];
+        if (!is_plus_infinity(ub)) {
+          add_assign_r(ub, ub, a_plus_minus_b_minus, ROUND_UP);
+          add_dbm_constraint(0, left_w_id + 1, ub);
+        }
+        ub = dbm[left_w_id + 1][0];
+        if (!is_plus_infinity(ub)) {
+          add_assign_r(ub, ub, a_plus_minus_b_minus, ROUND_UP);
+          add_dbm_constraint(0, right_w_id + 1, ub);
+        }
+	    return;
       }
       if (is_left_coeff_one && is_right_coeff_one) {
 	PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
@@ -4545,7 +4575,6 @@ BD_Shape<T>
 		 const Linear_Form< Interval<T, Interval_Info> >& right) {
 
   typedef Interval<T, Interval_Info> FP_Interval_Type;
-
   Linear_Form<FP_Interval_Type> right_minus_left(right);
   right_minus_left -= left;
 
