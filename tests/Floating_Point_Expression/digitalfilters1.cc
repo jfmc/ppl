@@ -108,8 +108,65 @@ test01() {
 // tests rate limiter using bounded differences abstract domain.
 bool
 test02() {
+  Variable X(0); //input
+  Variable D(1); //input
+  Variable Y(2); //output
+  Variable S(3); //last output
+  Variable R(4); //actual rate
+  FP_Interval_Abstract_Store abstract_store(5);
+  FP_BD_Shape bd(abstract_store);
+  FP_Interval tmp(0);
+  FP_BD_Shape bd_begin;
 
-  return true;
+  // Y = 0;
+  bd.affine_image(Y, FP_Linear_Form(tmp));
+
+  for(unsigned int n = 0; bd_begin != bd; ++n) {
+
+    nout << "*** n = " << n << " ***" << endl;
+    bd_begin = bd;
+
+    //X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
+    tmp.lower() = -128;
+    tmp.upper() = 128;
+    bd.affine_image(X, FP_Linear_Form(tmp));
+    tmp.lower() = 0;
+    tmp.upper() = 16;
+    bd.affine_image(D, FP_Linear_Form(tmp));
+    bd.affine_image(S, FP_Linear_Form(Y));
+    bd.affine_image(R, FP_Linear_Form(X - S));
+    bd.affine_image(Y, FP_Linear_Form(X));
+
+    //if (R <= -D) Y = S - D;
+    FP_BD_Shape bd_then(bd);
+    bd_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
+                                              -FP_Linear_Form(D));
+    bd_then.affine_image(Y, FP_Linear_Form(S - D));
+
+    bd.refine_with_linear_form_inequality(-FP_Linear_Form(D),
+                                           FP_Linear_Form(R));
+    bd.upper_bound_assign(bd_then);
+    print_constraints(Box<FP_Interval>(bd) ,
+         "*** if (R <= -D) Y = S - D; ***");
+
+    //if (R >= D)  Y = S + D;
+    bd_then = bd;
+    bd_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
+                                               FP_Linear_Form(R));
+    bd_then.affine_image(Y, FP_Linear_Form(S + D));
+
+    bd.refine_with_linear_form_inequality(FP_Linear_Form(R),
+                                          FP_Linear_Form(D));
+
+    bd.upper_bound_assign(bd_then);
+    print_constraints(Box<FP_Interval>(bd) ,
+         "*** if (R >= D)  Y = S + D; ***");
+  }
+
+  bd.refine_fp_interval_abstract_store(abstract_store);
+  tmp = abstract_store.get_interval(Y);
+  nout << "*** Y in " << tmp << " ***" << endl;
+  return tmp.is_bounded();
 }
 
 // tests rate limiter using octagons abstract domain.

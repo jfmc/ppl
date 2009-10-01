@@ -4237,10 +4237,13 @@ void BD_Shape<T>
       const Linear_Form< Interval<T, Interval_Info> >& lf,
                           const dimension_type& space_dim) {
 
-  // Shortest-path closure is preserved, but not reduction.
+  // Remove all constraints on 'var'.
+  forget_all_dbm_constraints(var_id);
+  // Shortest-path closure is maintained, but not reduction.
   if (marked_shortest_path_reduced())
     reset_shortest_path_reduced();
 
+  reset_shortest_path_closed();
 
   Linear_Form< Interval<T, Interval_Info> > minus_lf(lf);
   minus_lf.negate();
@@ -4332,9 +4335,9 @@ void BD_Shape<T>::refine_with_linear_form_inequality(
         right_w_id = i;
     }
 
-  const FP_Interval_Type& left_w_coeff = 
+  const FP_Interval_Type& left_w_coeff =
           left.coefficient(Variable(left_w_id));
-  const FP_Interval_Type& right_w_coeff = 
+  const FP_Interval_Type& right_w_coeff =
           right.coefficient(Variable(right_w_id));
 
   // FIXME: there is plenty of duplicate code in the following lines. We could
@@ -4378,7 +4381,7 @@ BD_Shape<T>::left_inhomogeneous_refine(const dimension_type& right_t,
 		    const Linear_Form< Interval<T, Interval_Info> >& right) {
 
   typedef Interval<T, Interval_Info> FP_Interval_Type;
-  
+
   if (right_t == 1) {
     // The constraint has the form [a-;a+] <= [b-;b+] + [c-;c+] * x.
     // Reduce it to the constraint +/-x <= b+ - a- if [c-;c+] = +/-[1;1].
@@ -4418,7 +4421,7 @@ BD_Shape<T>
 		const Linear_Form< Interval<T, Interval_Info> >& right) {
 
   typedef Interval<T, Interval_Info> FP_Interval_Type;
-  
+
     if (right_t == 0) {
       // The constraint has the form [b-;b+] + [c-;c+] * x <= [a-;a+]
       // Reduce it to the constraint +/-x <= a+ - b- if [c-;c+] = +/-[1;1].
@@ -4445,7 +4448,7 @@ BD_Shape<T>
         return;
       }
     } // fi right_t == 0
-    
+
     if(right_t == 1) {
       // The constraint has the form:
       // [a-;a+] + [b-;b+] * x <= [c-;c+] + [d-;d+] * y.
@@ -4475,8 +4478,8 @@ BD_Shape<T>
           const FP_Interval_Type& right_a = right.inhomogeneous_term();
           sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                        ROUND_UP);
-	  div_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
-			    ROUND_UP);
+	      div_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
+			                ROUND_UP);
           add_dbm_constraint(0, left_w_id+1, a_plus_minus_b_minus);
           return;
         }
@@ -4488,14 +4491,14 @@ BD_Shape<T>
           const FP_Interval_Type& right_a = right.inhomogeneous_term();
           sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                        ROUND_UP);
-	  div_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
+	      div_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
 			    ROUND_UP);
           add_dbm_constraint(right_w_id+1, 0, a_plus_minus_b_minus);
           return;
         }
       }
       else if (is_left_coeff_minus_one && is_right_coeff_one) {
-        // if right and left coefficents are negative the constraint 
+        // if right and left coefficents are negative the constraint
 	// - x - y <= b
 	// is ignored;
 
@@ -4511,7 +4514,7 @@ BD_Shape<T>
 	// where k is an overaproximation of b - y
         return;
       }
-      if (is_left_coeff_one && is_right_coeff_one) {        
+      if (is_left_coeff_one && is_right_coeff_one) {
 	PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
 	const FP_Interval_Type& left_a = left.inhomogeneous_term();
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
@@ -4550,9 +4553,9 @@ BD_Shape<T>
   PPL_DIRTY_TEMP(N, low_coeff);
   PPL_DIRTY_TEMP(N, high_coeff);
   PPL_DIRTY_TEMP(N, upper_bound);
-  
+
   dimension_type max_w_id = std::max(left_w_id, right_w_id);
-  
+
   for (dimension_type first_v = 0; first_v < max_w_id; ++first_v) {
     for (dimension_type second_v = first_v+1;
          second_v <= max_w_id; ++second_v) {
@@ -4597,7 +4600,7 @@ BD_Shape<T>
           }
         }
       }
-      
+
       if (do_update) {
         Variable first(first_v);
         Variable second(second_v);
@@ -4642,7 +4645,7 @@ BD_Shape<T>
       add_dbm_constraint(n_var, 0, upper_bound);
     }
   }
-  
+
 }
 
 template <typename T>
