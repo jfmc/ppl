@@ -547,6 +547,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
     if (right_t == 0) {
       // The constraint involves constants only. Ignore it: it is up to
       // the analyzer to handle it.
+      PPL_ASSERT(OK());
       return;
     }
 
@@ -565,6 +566,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         mul_2exp_assign_r(b_plus_minus_a_minus, b_plus_minus_a_minus, 1,
                           ROUND_UP);
         add_octagonal_constraint(n_right, n_right+1, b_plus_minus_a_minus);
+        PPL_ASSERT(OK());
         return;
       }
 
@@ -578,6 +580,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         mul_2exp_assign_r(b_plus_minus_a_minus, b_plus_minus_a_minus, 1,
                           ROUND_UP);
         add_octagonal_constraint(n_right+1, n_right, b_plus_minus_a_minus);
+        PPL_ASSERT(OK());
         return;
       }
     }
@@ -598,6 +601,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         mul_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
                           ROUND_UP);
         add_octagonal_constraint(n_left+1, n_left, a_plus_minus_b_minus);
+        PPL_ASSERT(OK());
         return;
       }
 
@@ -611,6 +615,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         mul_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
                           ROUND_UP);
         add_octagonal_constraint(n_left, n_left+1, a_plus_minus_b_minus);
+        PPL_ASSERT(OK());
         return;
       }
     }
@@ -632,6 +637,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         if ((is_left_coeff_one && is_right_coeff_one) ||
             (is_left_coeff_minus_one && is_right_coeff_minus_one)) {
           // Here we have an identity or a constants-only constraint.
+          PPL_ASSERT(OK());
           return;
         }
         if (is_left_coeff_one && is_right_coeff_minus_one) {
@@ -644,6 +650,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
           sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                        ROUND_UP);
           add_octagonal_constraint(n_left+1, n_left, a_plus_minus_b_minus);
+          PPL_ASSERT(OK());
           return;
         }
         if (is_left_coeff_minus_one && is_right_coeff_one) {
@@ -656,6 +663,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
           sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                        ROUND_UP);
           add_octagonal_constraint(n_left, n_left+1, a_plus_minus_b_minus);
+          PPL_ASSERT(OK());
           return;
         }
       }
@@ -671,6 +679,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
           add_octagonal_constraint(n_right, n_left, c_plus_minus_a_minus);
         else
           add_octagonal_constraint(n_left+1, n_right+1, c_plus_minus_a_minus);
+        PPL_ASSERT(OK());
         return;
       }
       if (is_left_coeff_one && is_right_coeff_minus_one) {
@@ -685,6 +694,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
           add_octagonal_constraint(n_right+1, n_left, c_plus_minus_a_minus);
         else
           add_octagonal_constraint(n_left+1, n_right, c_plus_minus_a_minus);
+        PPL_ASSERT(OK());
         return;
       }
       if (is_left_coeff_minus_one && is_right_coeff_one) {
@@ -699,6 +709,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
           add_octagonal_constraint(n_right, n_left+1, c_plus_minus_a_minus);
         else
           add_octagonal_constraint(n_left, n_right+1, c_plus_minus_a_minus);
+        PPL_ASSERT(OK());
         return;
       }
       if (is_left_coeff_minus_one && is_right_coeff_minus_one) {
@@ -713,6 +724,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
           add_octagonal_constraint(n_right+1, n_left+1, c_plus_minus_a_minus);
         else
           add_octagonal_constraint(n_left, n_right, c_plus_minus_a_minus);
+        PPL_ASSERT(OK());
         return;
       }
     }
@@ -853,7 +865,6 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
     assign_r(lr, PLUS_INFINITY, ROUND_NOT_NEEDED);
     ++m_ite;
   }
-
   PPL_ASSERT(OK());
 }
 

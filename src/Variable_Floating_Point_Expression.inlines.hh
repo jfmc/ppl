@@ -61,6 +61,33 @@ Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   return;
 }
 
+template <typename FP_Interval_Type, typename FP_Format>
+inline void
+Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::linear_form_assign(const FP_Linear_Form& lf,
+                           FP_Linear_Form_Abstract_Store& lf_store) const {
+
+  //std::cout << "**********************************"<< std::endl;
+  //std::cout << "assign on var: " << variable_index << std::endl;
+
+  for (typename FP_Linear_Form_Abstract_Store::iterator i = lf_store.begin();
+                                                      i != lf_store.end();) {
+    typename FP_Linear_Form_Abstract_Store::iterator j = i++;
+
+    //std::cout << "checking var: " << j->first << std::endl;
+    //std:: cout << "coeff" << (j->second).coefficient(Variable(variable_index)) << std::endl;
+
+    if( (j->second).coefficient(Variable(variable_index)) != 0 ) {
+      //std::cout << "removed var: " << j->first << std::endl;
+      lf_store.erase(j);
+    }
+  }
+
+  lf_store[variable_index] = lf;
+  //std::cout << "updated var: " << variable_index << std::endl;
+  return;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {

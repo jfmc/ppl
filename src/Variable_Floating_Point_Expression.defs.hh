@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "Variable_Floating_Point_Expression.types.hh"
 #include <map>
+#include <utility>
 
 namespace std {
 
@@ -143,6 +144,9 @@ public:
                  const FP_Linear_Form_Abstract_Store& lf_store,
                  FP_Linear_Form& result) const;
 
+
+  void linear_form_assign(const FP_Linear_Form&,
+                                FP_Linear_Form_Abstract_Store& lf_store) const;
   //! Swaps \p *this with \p y.
   void swap(Variable_Floating_Point_Expression& y);
 
