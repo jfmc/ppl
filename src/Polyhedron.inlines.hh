@@ -381,6 +381,7 @@ Polyhedron::generalized_refine_with_linear_form_inequality(
             const Box< Interval<FP_Format, Interval_Info> >& store) {
   switch (relsym) {
   case EQUAL:
+    // TODO: see if we can handle this case more efficiently.
     refine_with_linear_form_inequality(left, right, store, false);
     refine_with_linear_form_inequality(right, left, store, false);
     break;

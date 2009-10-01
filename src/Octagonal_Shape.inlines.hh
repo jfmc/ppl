@@ -621,6 +621,7 @@ Octagonal_Shape<T>::generalized_refine_with_linear_form_inequality(
                     const Relation_Symbol relsym) {
   switch (relsym) {
   case EQUAL:
+    // TODO: see if we can handle this case more efficiently.
     refine_with_linear_form_inequality(left, right);
     refine_with_linear_form_inequality(right, left);
     break;
