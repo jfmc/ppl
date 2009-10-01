@@ -309,7 +309,6 @@ Polyhedron::refine_with_linear_form_inequality(
                          " FP_Format not a floating point type.");
 
   PPL_ASSERT(space_dim <= store.space_dimension());
-  PPL_ASSERT(store.is_bounded());
   // Dimension compatibility checks.
   // The dimensions of left and right should not be greater than the
   // dimension of *this.
@@ -359,7 +358,6 @@ const Box< Interval<FP_Format, Interval_Info> >& store) {
                          " FP_Format not a floating point type.");
 
   PPL_ASSERT(space_dim <= store.space_dimension());
-  PPL_ASSERT(store.is_bounded());
   // Dimension compatibility checks.
   // The dimension of lf should not be greater than the dimension of *this.
   const dimension_type lf_space_dim = lf.space_dimension();
@@ -408,7 +406,6 @@ Polyhedron::overapproximate_linear_form(
                          " FP_Format not a floating point type.");
 
   PPL_ASSERT(lf_dimension <= store.space_dimension());
-  PPL_ASSERT(store.is_bounded());
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
@@ -422,10 +419,12 @@ Polyhedron::overapproximate_linear_form(
   for (dimension_type i = 0; i < lf_dimension; ++i) {
     Variable curr_var(i);
     const FP_Interval_Type& curr_coeff = lf.coefficient(curr_var);
+    PPL_ASSERT(curr_coeff.is_bounded());
     FP_Format curr_lb = curr_coeff.lower();
     FP_Format curr_ub = curr_coeff.upper();
     if (curr_lb != 0 || curr_ub != 0) {
       const FP_Interval_Type& curr_int = store.get_interval(Variable(i));
+      PPL_ASSERT(curr_int.is_bounded());
       FP_Interval_Type curr_addend(curr_ub - curr_lb);
       curr_addend *= aux_divisor2;
       curr_addend *= curr_int;
