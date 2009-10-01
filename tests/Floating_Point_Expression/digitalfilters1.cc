@@ -101,7 +101,7 @@ test01() {
   }
 
   tmp = abstract_store.get_interval(Y);
-  nout << "*** Y in " << tmp << " ***" << endl;
+  nout << "*** Y in [-128 - 16n, 128 + 16n] ***" << endl;
   return tmp.is_bounded();
 }
 
@@ -187,11 +187,6 @@ test04() {
   FP_Interval_Abstract_Store abstract_store(5);
   NNC_Polyhedron ph(abstract_store);
   FP_Interval tmp(0);
-  abstract_store.set_interval(X, tmp);
-  abstract_store.set_interval(D, tmp);
-  abstract_store.set_interval(Y, tmp);
-  abstract_store.set_interval(S, tmp);
-  abstract_store.set_interval(R, tmp);
   NNC_Polyhedron ph_begin;
 
   // Y = 0;
@@ -209,8 +204,11 @@ test04() {
     tmp.lower() = 0;
     tmp.upper() = 16;
     ph.affine_image(D, FP_Linear_Form(tmp), abstract_store);
+    abstract_store = Box<FP_Interval>(ph);
     ph.affine_image(S, FP_Linear_Form(Y), abstract_store);
+    abstract_store = Box<FP_Interval>(ph);
     ph.affine_image(R, FP_Linear_Form(X - S), abstract_store);
+    abstract_store = Box<FP_Interval>(ph);
     ph.affine_image(Y, FP_Linear_Form(X), abstract_store);
 
     //if (R <= -D) Y = S - D;
@@ -218,8 +216,8 @@ test04() {
     FP_Interval_Abstract_Store as_then(abstract_store);
     ph_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                               -FP_Linear_Form(D),
-                                                 abstract_store);
-    ph_then.affine_image(Y, FP_Linear_Form(S - D), abstract_store);
+                                                        as_then);
+    ph_then.affine_image(Y, FP_Linear_Form(S - D), as_then);
 
     ph.refine_with_linear_form_inequality(-FP_Linear_Form(D),
                                            FP_Linear_Form(R),
@@ -234,20 +232,18 @@ test04() {
     as_then = abstract_store;
     ph_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
                                                FP_Linear_Form(R),
-                                               abstract_store);
-    ph_then.affine_image(Y, FP_Linear_Form(S + D), abstract_store);
+                                               as_then);
+    ph_then.affine_image(Y, FP_Linear_Form(S + D), as_then);
 
     ph.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                           FP_Linear_Form(D),
                                           abstract_store);
-
     ph.upper_bound_assign(ph_then);
     abstract_store.upper_bound_assign(as_then);
     print_constraints(Box<FP_Interval>(ph) ,
          "*** if (R >= D)  Y = S + D; ***");
   }
 
-  ph.refine_fp_interval_abstract_store(abstract_store);
   tmp = abstract_store.get_interval(Y);
   nout << "*** Y in " << tmp << " ***" << endl;
   return tmp.is_bounded();
@@ -257,8 +253,8 @@ test04() {
 } // namespace
 
 BEGIN_MAIN
-  //DO_TEST(test01);
+  DO_TEST(test01);
   //DO_TEST(test02);
   DO_TEST(test03);
-  //DO_TEST(test04);
+  DO_TEST(test04);
 END_MAIN
