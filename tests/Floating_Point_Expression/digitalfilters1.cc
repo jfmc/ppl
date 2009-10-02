@@ -326,10 +326,11 @@ test05() {
   // Y = 0;
   con_y.linearize(abstract_store, lf_abstract_store, lk);
   oc.affine_image(Y, lk);
-  FP_Interval threesold(-144);
-  threesold.join_assign(144);
 
-  for(unsigned int n = 0; !tmp.contains(threesold); ++n) {
+  FP_Interval threshold(-144);
+  threshold.join_assign(144);
+
+  for(unsigned int n = 0; !tmp.contains(threshold); ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     oc_begin = oc;
@@ -390,8 +391,106 @@ test05() {
     tmp = box.get_interval(Y);
   }
 
-  oc.refine_fp_interval_abstract_store(abstract_store);
-  tmp = abstract_store.get_interval(Y);
+  nout << "*** Y in " << tmp << " ***" << endl;
+  return tmp.is_bounded();
+}
+
+// tests rate limiter using polyhedra abstract domain and
+// linearization of floating point expressions.
+bool
+test06() {
+  Variable X(0); //input
+  Variable D(1); //input
+  Variable Y(2); //output
+  Variable S(3); //last output
+  Variable R(4); //actual rate
+  FP_Interval_Abstract_Store abstract_store(5);
+  FP_Linear_Form_Abstract_Store lf_abstract_store;
+  NNC_Polyhedron ph(abstract_store);
+  FP_Interval tmp(0);
+  NNC_Polyhedron ph_begin;
+  Con_FP_Expression con_y(0, 0);
+  FP_Linear_Form lx;
+  FP_Linear_Form ly;
+  FP_Linear_Form lr;
+  FP_Linear_Form lk;
+
+  // Y = 0;
+  con_y.linearize(abstract_store, lf_abstract_store, lk);
+  ph.affine_image(Y, lk, abstract_store);
+
+  //FIXME: Can the threshold be more precise than [-144, 144]?
+  FP_Interval threshold(-144);
+  threshold.join_assign(144);
+
+  for(unsigned int n = 0; !tmp.contains(threshold); ++n) {
+
+    nout << "*** n = " << n << " ***" << endl;
+    ph_begin = ph;
+
+    //X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
+    Con_FP_Expression con_x(-128, 128);
+    con_x.linearize(abstract_store, lf_abstract_store, lk);
+    ph.affine_image(X, lk, abstract_store);
+
+    Con_FP_Expression con_d(0, 16);
+    con_d.linearize(abstract_store, lf_abstract_store, lk);
+    ph.affine_image(D, lk, abstract_store);
+
+    Var_FP_Expression var_y(2);
+    abstract_store = Box<FP_Interval>(ph);
+    var_y.linearize(abstract_store, lf_abstract_store, ly);
+    ph.affine_image(S, ly, abstract_store);
+
+    Var_FP_Expression* px = new Var_FP_Expression(0);
+    Var_FP_Expression* ps = new Var_FP_Expression(3);
+    Dif_FP_Expression x_dif_s(px, ps);
+    abstract_store = Box<FP_Interval>(ph);
+    x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
+    ph.affine_image(R, lr, abstract_store);
+
+    Var_FP_Expression var_x(0);
+    abstract_store = Box<FP_Interval>(ph);
+    var_x.linearize(abstract_store, lf_abstract_store, lx);
+    ph.affine_image(Y, lx, abstract_store);
+
+    //if (R <= -D) Y = S - D;
+    NNC_Polyhedron ph_then(ph);
+    FP_Interval_Abstract_Store as_then(abstract_store);
+    ph_then.refine_with_linear_form_inequality(lr, -lk, as_then);
+    Var_FP_Expression* pd  = new Var_FP_Expression(1);
+    Var_FP_Expression* ps2 = new Var_FP_Expression(3);
+    Dif_FP_Expression s_dif_d(ps2, pd);
+    s_dif_d.linearize(abstract_store, lf_abstract_store, ly);
+    ph_then.affine_image(Y, ly, abstract_store);
+
+    ph.refine_with_linear_form_inequality(-lk, lr, abstract_store);
+
+    ph.upper_bound_assign(ph_then);
+    abstract_store.upper_bound_assign(as_then);
+    print_constraints(Box<FP_Interval>(ph) ,
+         "*** if (R <= -D) Y = S - D; ***");
+
+    //if (R >= D)  Y = S + D;
+    ph_then = ph;
+    as_then = abstract_store;
+    ph_then.refine_with_linear_form_inequality(lk, lr, as_then);
+
+    Var_FP_Expression* pd1  = new Var_FP_Expression(1);
+    Var_FP_Expression* ps3  = new Var_FP_Expression(3);
+    Sum_FP_Expression s_sum_d(ps3, pd1);
+    s_sum_d.linearize(abstract_store, lf_abstract_store, ly);
+    ph_then.affine_image(Y, ly, as_then);
+
+    ph.refine_with_linear_form_inequality(lr, lk, abstract_store);
+
+    ph.upper_bound_assign(ph_then);
+    Box<FP_Interval> box(ph);
+    abstract_store.upper_bound_assign(as_then);
+    print_constraints(box, "*** if (R >= D)  Y = S + D; ***");
+    tmp = box.get_interval(Y);
+  }
+
   nout << "*** Y in " << tmp << " ***" << endl;
   return tmp.is_bounded();
 }
@@ -404,4 +503,5 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN
