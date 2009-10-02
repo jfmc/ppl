@@ -390,19 +390,29 @@ PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& context,
 }
 
 void
-PIP_Solution_Node::Rational_Matrix::normalize() {
+PIP_Solution_Node::Tableau::normalize() {
   if (denominator == 1)
     return;
-  dimension_type i_max = num_rows();
-  dimension_type j_max = num_columns();
-  dimension_type i, j;
+  dimension_type i_max = s.num_rows();
+  dimension_type j_max = s.num_columns();
+  dimension_type k_max = t.num_columns();
+  dimension_type i, j, k;
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd = denominator;
 
   for (i=0; i<i_max; ++i) {
-    const Row &row = rows[i];
+    const Row &row_s = s[i];
     for (j=0; j<j_max; ++j) {
-      const Coefficient &x = row[j];
+      const Coefficient &x = row_s[j];
+      if (x != 0) {
+        gcd_assign(gcd, x, gcd);
+        if (gcd == 1)
+          return;
+      }
+    }
+    const Row &row_t = t[i];
+    for (k=0; k<k_max; ++k) {
+      const Coefficient &x = row_t[k];
       if (x != 0) {
         gcd_assign(gcd, x, gcd);
         if (gcd == 1)
@@ -413,9 +423,14 @@ PIP_Solution_Node::Rational_Matrix::normalize() {
 
   // Divide the coefficients by the GCD.
   for (i=0; i<i_max; ++i) {
-    Row &row = rows[i];
+    Row &row_s = s[i];
     for (j=0; j<j_max; ++j) {
-      Coefficient &x = row[j];
+      Coefficient &x = row_s[j];
+      exact_div_assign(x, x, gcd);
+    }
+    Row &row_t = t[i];
+    for (k=0; k<k_max; ++k) {
+      Coefficient &x = row_t[k];
       exact_div_assign(x, x, gcd);
     }
   }
@@ -423,13 +438,17 @@ PIP_Solution_Node::Rational_Matrix::normalize() {
 }
 
 void
-PIP_Solution_Node::Rational_Matrix::scale(const Coefficient &ratio) {
-  dimension_type i, j;
-  dimension_type i_max = num_rows();
-  dimension_type j_max = num_columns();
-  for (i=0; i<i_max; ++i)
+PIP_Solution_Node::Tableau::scale(const Coefficient &ratio) {
+  dimension_type i, j, k;
+  dimension_type i_max = s.num_rows();
+  dimension_type j_max = s.num_columns();
+  dimension_type k_max = t.num_columns();
+  for (i=0; i<i_max; ++i) {
     for (j=0; j<j_max; ++j)
-      rows[i][j] *= ratio;
+      s[i][j] *= ratio;
+    for (k=0; k<k_max; ++k)
+      t[i][k] *= ratio;
+  }
   denominator *= ratio;
 }
 
@@ -467,22 +486,32 @@ PIP_Tree_Node::ascii_load(std::istream& s) {
 }
 
 void
-PIP_Solution_Node::Rational_Matrix::ascii_dump(std::ostream& s) const {
-  s << "denominator " << denominator << "\n";
-  Matrix::ascii_dump(s);
+PIP_Solution_Node::Tableau::ascii_dump(std::ostream& st) const {
+  st << "denominator " << denominator << "\n";
+  st << "variables ";
+  s.ascii_dump(st);
+  st << "parameters ";
+  t.ascii_dump(st);
 }
 
 bool
-PIP_Solution_Node::Rational_Matrix::ascii_load(std::istream& s) {
+PIP_Solution_Node::Tableau::ascii_load(std::istream& st) {
   std::string str;
-  if (!(s >> str) || str != "denominator")
+  if (!(st >> str) || str != "denominator")
     return false;
   Coefficient den;
-  if (!(s >> den))
+  if (!(st >> den))
     return false;
   denominator = den;
-
-  return Matrix::ascii_load(s);
+  if (!(st >> str) || str != "variables")
+    return false;
+  if (!s.ascii_load(st))
+    return false;
+  if (!(st >> str) || str != "parameters")
+    return false;
+  if (!t.ascii_load(st))
+    return false;
+  return true;
 }
 
 void
@@ -671,29 +700,28 @@ PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
   }
   internal_space_dim = external_space_dim;
 
-  const Coefficient &denom_s = tableau.s.get_denominator();
-  const Coefficient &denom_t = tableau.t.get_denominator();
+  const Coefficient &denom = tableau.get_denominator();
 
   for (cst = input_cs.begin() + first_pending_constraint;
        cst < input_cs.end(); ++cst) {
     int v = 0;
     int p = 1;
-    Row var(n_vars, tableau.s.capacity(), Row::Flags());
-    Row param(n_params+1, tableau.t.capacity(), Row::Flags());
+    Row var(n_vars, tableau.s_capacity(), Row::Flags());
+    Row param(n_params+1, tableau.t_capacity(), Row::Flags());
     Coefficient cnst_term = cst->inhomogeneous_term();
     if (cst->is_strict_inequality())
       // convert c > 0  <=>  c-1 >= 0
       cnst_term -= 1;
-    param[0] = cnst_term * denom_t;
+    param[0] = cnst_term * denom;
     for (i=0; i<internal_space_dim; i++) {
       if (parameters.count(i) == 1) {
-        param[p++] = cst->coefficient(Variable(i)) * denom_t;
+        param[p++] = cst->coefficient(Variable(i)) * denom;
       } else {
         const Coefficient &c = cst->coefficient(Variable(i));
         dimension_type idx = mapping[v];
         if (basis[v])
           // Basic variable : add c * x_i
-          var[idx] += c * denom_s;
+          var[idx] += c * denom;
         else {
           // Nonbasic variable : add c * row_i
           add_assign(var, tableau.s[idx], c);
@@ -870,8 +898,8 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
               dimension_type mk = mapping[k];
               if (basis[k]) {
                 /* reconstitute the identity submatrix part of S */
-                cij = (mk==j) ? tableau.s.get_denominator() : 0;
-                cij_ = (mk==j_) ? tableau.s.get_denominator() : 0;
+                cij = (mk==j) ? tableau.get_denominator() : 0;
+                cij_ = (mk==j_) ? tableau.get_denominator() : 0;
               } else {
                 cij = tableau.s[mk][j];
                 cij_ = tableau.s[mk][j_];
@@ -925,9 +953,9 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
       }
 
       /* create the identity matrix row corresponding to basic variable j_ */
-      Row prs(num_vars, tableau.s.capacity(), Row::Flags());
-      Row prt(num_params, tableau.t.capacity(), Row::Flags());
-      prs[j_] = tableau.s.get_denominator();
+      Row prs(num_vars, tableau.s_capacity(), Row::Flags());
+      Row prt(num_params, tableau.t_capacity(), Row::Flags());
+      prs[j_] = tableau.get_denominator();
       /* swap it with pivot row which would become identity after pivoting */
       prs.swap(tableau.s[i_]);
       prt.swap(tableau.t[i_]);
@@ -941,8 +969,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
             // Must scale matrix to stay in integer case
             gcd_assign(gcd, mult, sij);
             Coefficient scale_factor = sij/gcd;
-            tableau.s.scale(scale_factor);
-            tableau.t.scale(scale_factor);
+            tableau.scale(scale_factor);
             mult *= scale_factor;
           }
           tableau.s[k][j] -= mult / sij;
@@ -957,8 +984,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
             // Must scale matrix to stay in integer case
             gcd_assign(gcd, c, sij);
             Coefficient scale_factor = sij/gcd;
-            tableau.s.scale(scale_factor);
-            tableau.t.scale(scale_factor);
+            tableau.scale(scale_factor);
             c *= scale_factor;
           }
           c /= sij;
@@ -994,8 +1020,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
           Coefficient gcd;
           gcd_assign(gcd, c, sij);
           Coefficient scale_factor = sij/gcd;
-          tableau.s.scale(scale_factor);
-          tableau.t.scale(scale_factor);
+          tableau.scale(scale_factor);
         }
         c /= sij;
       }
@@ -1116,10 +1141,9 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
       std::cout << "All parameters are positive."
                 << std::endl;
 #endif
-      tableau.s.normalize();
-      tableau.t.normalize();
+      tableau.normalize();
 
-      if (tableau.s.is_integer() && tableau.t.is_integer()) {
+      if (tableau.is_integer()) {
         /* The solution is integer */
 #ifdef NOISY_PIP
         std::cout << "Solution found for problem in current node."

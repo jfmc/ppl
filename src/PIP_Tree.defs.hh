@@ -210,65 +210,42 @@ public:
   bool OK() const;
 
 private:
-  //! A rational matrix, with a common nenominator
-  class Rational_Matrix : public Matrix {
-  public:
-    //! Builds an empty matrix.
-    /*!
-      Rows' size and capacity are initialized to \f$0\f$.
-    */
-    Rational_Matrix();
+  //! The type for parametric simplex tableau.
+  struct Tableau {
+    //! The matrix of simplex coefficients.
+    Matrix s;
+    //! The matrix of parameter coefficients.
+    Matrix t;
+    //! A common denominator for all matrix elements
+    Coefficient denominator;
 
-    //! Builds a zero matrix with specified dimensions and flags.
-    /*!
-      \param n_rows
-      The number of rows of the matrix that will be created;
-
-      \param n_columns
-      The number of columns of the matrix that will be created.
-
-      \param row_flags
-      The flags used to build the rows of the matrix;
-      by default, the rows will have all flags unset.
-    */
-    Rational_Matrix(dimension_type n_rows, dimension_type n_columns,
-	            Row::Flags row_flags = Row::Flags());
-
+    //! Default constructor.
+    Tableau();
     //! Copy constructor.
-    Rational_Matrix(const Rational_Matrix& y);
+    Tableau(const Tableau& x);
+    //! Destructor.
+    ~Tableau();
 
+    //! Returns the allocated capacity of each Row of the \p s Matrix.
+    dimension_type s_capacity() const;
+    //! Returns the allocated capacity of each Row of the \p t Matrix.
+    dimension_type t_capacity() const;
+    //! Tests whether the matrix is integer, \e ie. the denominator is 1.
+    bool is_integer() const;
     //! Multiplies all coefficients and denominator with ratio.
     void scale(const Coefficient &ratio);
-
     //! Normalizes the modulo of coefficients so that they are mutually prime.
     /*!
       Computes the Greatest Common Divisor (GCD) among the elements of
-      the matrix and normalizes them and the denominator by the GCD itself.
+      the matrices and normalizes them and the denominator by the GCD itself.
     */
     void normalize();
-
-    //! Returns the allocated capacity of each Row of the Matrix.
-    dimension_type capacity() const;
-
-    //! Tests whether the matrix is integer, \e ie. the denominator is 1.
-    bool is_integer() const;
-
     //! Returns the value of the denominator.
     const Coefficient &get_denominator() const;
 
     void ascii_dump(std::ostream& s) const;
     bool ascii_load(std::istream& s);
 
-  protected:
-    Coefficient denominator;
-  };
-
-  //! The type for parametric simplex tableau.
-  struct Tableau {
-    //! The matrix of simplex coefficients.
-    Rational_Matrix s;
-    //! The matrix of parameter coefficients.
-    Rational_Matrix t;
     //! Returns \c true if and only if \p *this is well formed.
     bool OK() const;
   };

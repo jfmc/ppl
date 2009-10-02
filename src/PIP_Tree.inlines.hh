@@ -26,38 +26,41 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-PIP_Solution_Node::Rational_Matrix::Rational_Matrix()
-  : Matrix(),
+PIP_Solution_Node::Tableau::Tableau()
+  : s(),
+    t(),
     denominator(1) {
 }
 
 inline
-PIP_Solution_Node::Rational_Matrix::Rational_Matrix(dimension_type n_rows,
-                                              dimension_type n_columns,
-                                              Row::Flags row_flags)
-  : Matrix(n_rows, n_columns, row_flags),
-    denominator(1) {
-}
-
-inline
-PIP_Solution_Node::Rational_Matrix::Rational_Matrix(const Rational_Matrix& y)
-  : Matrix(y),
+PIP_Solution_Node::Tableau::Tableau(const Tableau& y)
+  : s(y.s),
+    t(y.t),
     denominator(y.denominator) {
 }
 
+inline
+PIP_Solution_Node::Tableau::~Tableau() {
+}
+
 inline bool
-PIP_Solution_Node::Rational_Matrix::is_integer() const {
+PIP_Solution_Node::Tableau::is_integer() const {
   return denominator == 1;
 }
 
 inline const Coefficient&
-PIP_Solution_Node::Rational_Matrix::get_denominator() const {
+PIP_Solution_Node::Tableau::get_denominator() const {
   return denominator;
 }
 
 inline dimension_type
-PIP_Solution_Node::Rational_Matrix::capacity() const {
-  return row_capacity;
+PIP_Solution_Node::Tableau::s_capacity() const {
+  return compute_capacity(s.num_columns(), Matrix::max_num_columns());
+}
+
+inline dimension_type
+PIP_Solution_Node::Tableau::t_capacity() const {
+  return compute_capacity(t.num_columns(), Matrix::max_num_columns());
 }
 
 inline
