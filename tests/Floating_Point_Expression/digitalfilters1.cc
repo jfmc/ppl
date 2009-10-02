@@ -201,11 +201,11 @@ test03() {
     //if (R <= -D) Y = S - D;
     FP_Octagonal_Shape oc_then(oc);
     oc_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
-                                            -FP_Linear_Form(D));
+                                              -FP_Linear_Form(D));
     oc_then.affine_image(Y, FP_Linear_Form(S - D));
 
     oc.refine_with_linear_form_inequality(-FP_Linear_Form(D),
-                                         FP_Linear_Form(R));
+                                           FP_Linear_Form(R));
     oc.upper_bound_assign(oc_then);
     print_constraints(Box<FP_Interval>(oc) ,
          "*** if (R <= -D) Y = S - D; ***");
@@ -213,11 +213,11 @@ test03() {
     //if (R >= D)  Y = S + D;
     oc_then = oc;
     oc_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
-                                             FP_Linear_Form(R));
+                                               FP_Linear_Form(R));
     oc_then.affine_image(Y, FP_Linear_Form(S + D));
 
     oc.refine_with_linear_form_inequality(FP_Linear_Form(R),
-                                        FP_Linear_Form(D));
+                                          FP_Linear_Form(D));
 
     oc.upper_bound_assign(oc_then);
     print_constraints(Box<FP_Interval>(oc) ,
@@ -303,12 +303,105 @@ test04() {
   return tmp.is_bounded();
 }
 
+// tests rate limiter using octagons abstract domain and
+// linearization of floating point expressions.
+bool
+test05() {
+  Variable X(0); //input
+  Variable D(1); //input
+  Variable Y(2); //output
+  Variable S(3); //last output
+  Variable R(4); //actual rate
+  FP_Interval_Abstract_Store abstract_store(5);
+  FP_Linear_Form_Abstract_Store lf_abstract_store;
+  FP_Octagonal_Shape oc(abstract_store);
+  FP_Interval tmp(0);
+  FP_Octagonal_Shape oc_begin;
+  Con_FP_Expression con_y(0, 0);
+  FP_Linear_Form lx;
+  FP_Linear_Form ly;
+  FP_Linear_Form lr;
+  FP_Linear_Form lk;
+
+  // Y = 0;
+  con_y.linearize(abstract_store, lf_abstract_store, lk);
+  oc.affine_image(Y, lk);
+  FP_Interval threesold(-144);
+  threesold.join_assign(144);
+
+  for(unsigned int n = 0; !tmp.contains(threesold); ++n) {
+
+    nout << "*** n = " << n << " ***" << endl;
+    oc_begin = oc;
+
+    Con_FP_Expression con_x(-128, 128);
+    con_x.linearize(abstract_store, lf_abstract_store, lk);
+    oc.affine_image(X, lk);
+
+    Con_FP_Expression con_d(0, 16);
+    con_d.linearize(abstract_store, lf_abstract_store, lk);
+    oc.affine_image(D, lk);
+
+    Var_FP_Expression var_y(2);
+    var_y.linearize(abstract_store, lf_abstract_store, ly);
+    oc.affine_image(S, ly);
+
+    Var_FP_Expression* px = new Var_FP_Expression(0);
+    Var_FP_Expression* ps = new Var_FP_Expression(3);
+    Dif_FP_Expression x_dif_s(px, ps);
+    x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
+    oc.affine_image(R, lr);
+
+    Var_FP_Expression var_x(0);
+    var_x.linearize(abstract_store, lf_abstract_store, lx);
+    oc.affine_image(Y, lx);
+
+    //if (R <= -D) Y = S - D;
+    FP_Octagonal_Shape oc_then(oc);
+    oc_then.refine_with_linear_form_inequality(lr, -lk);
+
+    Var_FP_Expression* pd  = new Var_FP_Expression(1);
+    Var_FP_Expression* ps2 = new Var_FP_Expression(3);
+    Dif_FP_Expression s_dif_d(ps2, pd);
+    s_dif_d.linearize(abstract_store, lf_abstract_store, ly);
+    oc_then.affine_image(Y, ly);
+
+    oc.refine_with_linear_form_inequality(-lk, lr);
+
+    oc.upper_bound_assign(oc_then);
+    print_constraints(Box<FP_Interval>(oc) ,
+         "*** if (R <= -D) Y = S - D; ***");
+
+    //if (R >= D)  Y = S + D;
+    oc_then = oc;
+    oc_then.refine_with_linear_form_inequality(lk, lr);
+
+    Var_FP_Expression* pd1  = new Var_FP_Expression(1);
+    Var_FP_Expression* ps3  = new Var_FP_Expression(3);
+    Sum_FP_Expression s_sum_d(ps3, pd1);
+    s_sum_d.linearize(abstract_store, lf_abstract_store, ly);
+    oc_then.affine_image(Y, ly);
+
+    oc.refine_with_linear_form_inequality(lr, lk);
+
+    oc.upper_bound_assign(oc_then);
+    Box<FP_Interval> box(oc);
+    print_constraints(box, "*** if (R >= D)  Y = S + D; ***");
+    tmp = box.get_interval(Y);
+  }
+
+  oc.refine_fp_interval_abstract_store(abstract_store);
+  tmp = abstract_store.get_interval(Y);
+  nout << "*** Y in " << tmp << " ***" << endl;
+  return tmp.is_bounded();
+}
 
 } // namespace
 
 BEGIN_MAIN
-  //DO_TEST(test01);
+  DO_TEST(test01);
   DO_TEST(test02);
-  //DO_TEST(test03);
-  //DO_TEST(test04);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN
