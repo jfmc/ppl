@@ -46,14 +46,21 @@ for (n = 0; n < N; ++n) {
 }
 */
 
-// tests rate limiter using intervals abstract domain.
+// tests rate limiter using intervals abstract domain
+// and ignoring rounding errors.
 bool
 test01() {
-  Variable X(0); //input
-  Variable D(1); //input
-  Variable Y(2); //output
-  Variable S(3); //last output
-  Variable R(4); //actual rate
+  //input signal
+  Variable X(0);
+  //maximum allowed for |R|
+  Variable D(1);
+  //output signal
+  Variable Y(2);
+  //last output
+  Variable S(3);
+  //actual rate
+  Variable R(4);
+
   FP_Interval_Abstract_Store abstract_store(5);
   FP_Interval tmp(0);
   FP_Interval_Abstract_Store as_begin;
@@ -61,8 +68,8 @@ test01() {
   // Y = 0;
   abstract_store.set_interval(Y, tmp);
 
-  unsigned int N = 5;
-  for(unsigned int n = 0; n < N; ++n) {
+  unsigned short N = 5;
+  for(unsigned short n = 0; n < N; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     as_begin = abstract_store;
@@ -104,14 +111,21 @@ test01() {
   return tmp.is_bounded();
 }
 
-// tests rate limiter using bounded differences abstract domain.
+// tests rate limiter using bounded differences abstract domain
+// and ignoring rounding errors.
 bool
 test02() {
-  Variable X(0); //input
-  Variable D(1); //input
-  Variable Y(2); //output
-  Variable S(3); //last output
-  Variable R(4); //actual rate
+  //input signal
+  Variable X(0);
+  //maximum allowed for |R|
+  Variable D(1);
+  //output signal
+  Variable Y(2);
+  //last output
+  Variable S(3);
+  //actual rate
+  Variable R(4);
+
   FP_Interval_Abstract_Store abstract_store(5);
   FP_BD_Shape bd(abstract_store);
   FP_Interval tmp(0);
@@ -120,7 +134,7 @@ test02() {
   // Y = 0;
   bd.affine_image(Y, FP_Linear_Form(tmp));
 
-  for(unsigned int n = 0; n < 5; ++n) {
+  for(unsigned short n = 0; n < 5; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     bd_begin = bd;
@@ -166,14 +180,21 @@ test02() {
   return tmp.is_bounded();
 }
 
-// tests rate limiter using octagons abstract domain.
+// tests rate limiter using octagons abstract domain
+// and ignoring rounding errors.
 bool
 test03() {
-  Variable X(0); //input
-  Variable D(1); //input
-  Variable Y(2); //output
-  Variable S(3); //last output
-  Variable R(4); //actual rate
+  //input signal
+  Variable X(0);
+  //maximum allowed for |R|
+  Variable D(1);
+  //output signal
+  Variable Y(2);
+  //last output
+  Variable S(3);
+  //actual rate
+  Variable R(4);
+
   FP_Interval_Abstract_Store abstract_store(5);
   FP_Octagonal_Shape oc(abstract_store);
   FP_Interval tmp(0);
@@ -182,7 +203,7 @@ test03() {
   // Y = 0;
   oc.affine_image(Y, FP_Linear_Form(tmp));
 
-  for(unsigned int n = 0; oc_begin != oc; ++n) {
+  for(unsigned short n = 0; oc_begin != oc; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     oc_begin = oc;
@@ -230,14 +251,21 @@ test03() {
   return tmp.is_bounded();
 }
 
-// tests rate limiter using polyhedra abstract domain.
+// tests rate limiter using polyhedra abstract domain
+// and ignoring rounding errors.
 bool
 test04() {
-  Variable X(0); //input
-  Variable D(1); //input
-  Variable Y(2); //output
-  Variable S(3); //last output
-  Variable R(4); //actual rate
+  //input signal
+  Variable X(0);
+  //maximum allowed for |R|
+  Variable D(1);
+  //output signal
+  Variable Y(2);
+  //last output
+  Variable S(3);
+  //actual rate
+  Variable R(4);
+
   FP_Interval_Abstract_Store abstract_store(5);
   NNC_Polyhedron ph(abstract_store);
   FP_Interval tmp(0);
@@ -246,7 +274,7 @@ test04() {
   // Y = 0;
   ph.affine_image(Y, FP_Linear_Form(tmp), abstract_store);
 
-  for(unsigned int n = 0; ph_begin != ph; ++n) {
+  for(unsigned short n = 0; ph_begin != ph; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     ph_begin = ph;
@@ -307,11 +335,17 @@ test04() {
 // linearization of floating point expressions.
 bool
 test05() {
-  Variable X(0); //input
-  Variable D(1); //input
-  Variable Y(2); //output
-  Variable S(3); //last output
-  Variable R(4); //actual rate
+  //input signal
+  Variable X(0);
+  //maximum allowed for |R|
+  Variable D(1);
+  //output signal
+  Variable Y(2);
+  //last output
+  Variable S(3);
+  //actual rate
+  Variable R(4);
+
   FP_Interval_Abstract_Store abstract_store(5);
   FP_Linear_Form_Abstract_Store lf_abstract_store;
   FP_Octagonal_Shape oc(abstract_store);
@@ -330,7 +364,7 @@ test05() {
   FP_Interval threshold(-144);
   threshold.join_assign(144);
 
-  for(unsigned int n = 0; !tmp.contains(threshold); ++n) {
+  for(unsigned short n = 0; n < 10 /* !tmp.contains(threshold) */; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     oc_begin = oc;
@@ -399,11 +433,17 @@ test05() {
 // linearization of floating point expressions.
 bool
 test06() {
-  Variable X(0); //input
-  Variable D(1); //input
-  Variable Y(2); //output
-  Variable S(3); //last output
-  Variable R(4); //actual rate
+  //input signal
+  Variable X(0);
+  //maximum allowed for |R|
+  Variable D(1);
+  //output signal
+  Variable Y(2);
+  //last output
+  Variable S(3);
+  //actual rate
+  Variable R(4);
+
   FP_Interval_Abstract_Store abstract_store(5);
   FP_Linear_Form_Abstract_Store lf_abstract_store;
   NNC_Polyhedron ph(abstract_store);
@@ -423,7 +463,7 @@ test06() {
   FP_Interval threshold(-144);
   threshold.join_assign(144);
 
-  for(unsigned int n = 0; !tmp.contains(threshold); ++n) {
+  for(unsigned short n = 0; !tmp.contains(threshold); ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     ph_begin = ph;
