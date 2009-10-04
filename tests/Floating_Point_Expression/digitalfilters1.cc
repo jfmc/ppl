@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <limits>
 
 namespace {
 
@@ -73,7 +74,7 @@ test01() {
     nout << "*** n = " << n << " ***" << endl;
     as_begin = abstract_store;
 
-    //X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
+    // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     tmp.lower() = -128;
     tmp.upper() = 128;
     abstract_store.set_interval(X, tmp);
@@ -84,7 +85,7 @@ test01() {
     abstract_store.affine_image(R, X - S);
     abstract_store.affine_image(Y, X);
 
-    //if (R <= -D) Y = S - D;
+    // if (R <= -D) Y = S - D;
     FP_Interval_Abstract_Store as_then(abstract_store);
     as_then.refine_with_constraint(R <= -D);
     as_then.affine_image(Y, S - D);
@@ -92,7 +93,7 @@ test01() {
     abstract_store.upper_bound_assign(as_then);
     print_constraints(abstract_store ,"*** if (R <= -D) Y = S - D; ***");
 
-    //if (R >= D)  Y = S + D;
+    // if (R >= D)  Y = S + D;
     as_then = abstract_store;
     as_then.refine_with_constraint(R >= D);
     as_then.affine_image(Y, S + D);
@@ -103,8 +104,16 @@ test01() {
     print_constraints(abstract_store ,"*** if (R >= D)  Y = S + D; ***");
 
     abstract_store.upper_bound_assign(as_begin);
-    Constraint_System cs(abstract_store.constraints());
-    abstract_store.widening_assign(as_begin);
+    Constraint_System cs;
+    // FIXME: It's a temporary solution, waiting for a complete
+    // implementation of ANALYZED_FP_FORMAT.
+    //ANALYZED_FP_FORMAT max = std::numeric_limits<ANALYZED_FP_FORMAT>::max();
+    PPL_DIRTY_TEMP_COEFFICIENT(M);
+    //assign_r(M, max, ROUND_DOWN);
+    assign_r(M, 200, ROUND_DOWN);
+    cs.insert(Y <= M);
+    cs.insert(Y >= -M);
+    abstract_store.limited_CC76_extrapolation_assign(as_begin, cs);
     Box<FP_Interval> box(abstract_store);
     print_constraints(box, "*** after widening ***");
     tmp = box.get_interval(Y);
@@ -142,7 +151,7 @@ test02() {
     nout << "*** n = " << n << " ***" << endl;
     bd_begin = bd;
 
-    //X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
+    // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     tmp.lower() = -128;
     tmp.upper() = 128;
     bd.affine_image(X, FP_Linear_Form(tmp));
@@ -153,7 +162,7 @@ test02() {
     bd.affine_image(R, FP_Linear_Form(X - S));
     bd.affine_image(Y, FP_Linear_Form(X));
 
-    //if (R <= -D) Y = S - D;
+    // if (R <= -D) Y = S - D;
     FP_BD_Shape bd_then(bd);
     bd_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                               -FP_Linear_Form(D));
@@ -165,7 +174,7 @@ test02() {
     print_constraints(Box<FP_Interval>(bd) ,
          "*** if (R <= -D) Y = S - D; ***");
 
-    //if (R >= D)  Y = S + D;
+    // if (R >= D)  Y = S + D;
     bd_then = bd;
     bd_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
                                                FP_Linear_Form(R));
@@ -179,8 +188,16 @@ test02() {
          "*** if (R >= D)  Y = S + D; ***");
 
     bd.upper_bound_assign(bd_begin);
-    Constraint_System cs(bd.constraints());
-    bd.widening_assign(bd_begin);
+    Constraint_System cs(abstract_store.constraints());
+    // FIXME: It's a temporary solution, waiting for a complete
+    // implementation of ANALYZED_FP_FORMAT.
+    //ANALYZED_FP_FORMAT max = std::numeric_limits<ANALYZED_FP_FORMAT>::max();
+    PPL_DIRTY_TEMP_COEFFICIENT(M);
+    //assign_r(M, max, ROUND_DOWN);
+    assign_r(M, 200, ROUND_DOWN);
+    cs.insert(Y <= M);
+    cs.insert(Y >= -M);
+    bd.limited_BHMZ05_extrapolation_assign(bd_begin, cs);
     Box<FP_Interval> box(bd);
     print_constraints(box, "*** after widening ***");
     tmp = box.get_interval(Y);
@@ -255,7 +272,15 @@ test03() {
          "*** if (R >= D)  Y = S + D; ***");
 
     oc.upper_bound_assign(oc_begin);
-    Constraint_System cs(oc.constraints());
+    Constraint_System cs(abstract_store.constraints());
+    // FIXME: It's a temporary solution, waiting for a complete
+    // implementation of ANALYZED_FP_FORMAT.
+    //ANALYZED_FP_FORMAT max = std::numeric_limits<ANALYZED_FP_FORMAT>::max();
+    PPL_DIRTY_TEMP_COEFFICIENT(M);
+    //assign_r(M, max, ROUND_DOWN);
+    assign_r(M, 200, ROUND_DOWN);
+    cs.insert(Y <= 500);//M);
+    cs.insert(Y >= -500);//-M);
     oc.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
     Box<FP_Interval> box(oc);
     print_constraints(box, "*** after widening ***");
@@ -294,7 +319,7 @@ test04() {
     nout << "*** n = " << n << " ***" << endl;
     ph_begin = ph;
 
-    //X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
+    // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     tmp.lower() = -128;
     tmp.upper() = 128;
     ph.affine_image(X, FP_Linear_Form(tmp), abstract_store);
@@ -308,7 +333,7 @@ test04() {
     abstract_store = Box<FP_Interval>(ph);
     ph.affine_image(Y, FP_Linear_Form(X), abstract_store);
 
-    //if (R <= -D) Y = S - D;
+    // if (R <= -D) Y = S - D;
     NNC_Polyhedron ph_then(ph);
     FP_Interval_Abstract_Store as_then(abstract_store);
     ph_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
@@ -324,7 +349,7 @@ test04() {
     print_constraints(Box<FP_Interval>(ph) ,
          "*** if (R <= -D) Y = S - D; ***");
 
-    //if (R >= D)  Y = S + D;
+    // if (R >= D)  Y = S + D;
     ph_then = ph;
     as_then = abstract_store;
     ph_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
@@ -341,7 +366,15 @@ test04() {
          "*** if (R >= D)  Y = S + D; ***");
 
     ph.upper_bound_assign(ph_begin);
-    Constraint_System cs(ph.constraints());
+    Constraint_System cs(abstract_store.constraints());
+    // FIXME: It's a temporary solution, waiting for a complete
+    // implementation of ANALYZED_FP_FORMAT.
+    //ANALYZED_FP_FORMAT max = std::numeric_limits<ANALYZED_FP_FORMAT>::max();
+    PPL_DIRTY_TEMP_COEFFICIENT(M);
+    //assign_r(M, max, ROUND_DOWN);
+    assign_r(M, 200, ROUND_DOWN);
+    cs.insert(Y <= M);
+    cs.insert(Y >= -M);
     ph.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
     Box<FP_Interval> box(ph);
     print_constraints(box, "*** after widening ***");
@@ -410,7 +443,7 @@ test05() {
     var_x.linearize(abstract_store, lf_abstract_store, lx);
     oc.affine_image(Y, lx);
 
-    //if (R <= -D) Y = S - D;
+    // if (R <= -D) Y = S - D;
     FP_Octagonal_Shape oc_then(oc);
     oc_then.refine_with_linear_form_inequality(lr, -lk);
 
@@ -426,7 +459,7 @@ test05() {
     print_constraints(Box<FP_Interval>(oc) ,
          "*** if (R <= -D) Y = S - D; ***");
 
-    //if (R >= D)  Y = S + D;
+    // if (R >= D)  Y = S + D;
     oc_then = oc;
     oc_then.refine_with_linear_form_inequality(lk, lr);
 
@@ -443,7 +476,7 @@ test05() {
 
     oc.upper_bound_assign(oc_begin);
     Constraint_System cs(oc.constraints());
-    // FIXME: not sound.
+    // FIXME: Not sound, we should use ANALYZED_FP_FORMAT.
     ANALYZER_FP_FORMAT max = std::numeric_limits<ANALYZER_FP_FORMAT>::max();
     PPL_DIRTY_TEMP_COEFFICIENT(M);
     assign_r(M, max, ROUND_DOWN);
@@ -496,7 +529,7 @@ test06() {
     nout << "*** n = " << n << " ***" << endl;
     ph_begin = ph;
 
-    //X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
+    // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     Con_FP_Expression con_x(-128, 128);
     con_x.linearize(abstract_store, lf_abstract_store, lk);
     ph.affine_image(X, lk, abstract_store);
@@ -522,7 +555,7 @@ test06() {
     var_x.linearize(abstract_store, lf_abstract_store, lx);
     ph.affine_image(Y, lx, abstract_store);
 
-    //if (R <= -D) Y = S - D;
+    // if (R <= -D) Y = S - D;
     NNC_Polyhedron ph_then(ph);
     FP_Interval_Abstract_Store as_then(abstract_store);
     ph_then.refine_with_linear_form_inequality(lr, -lk, as_then);
@@ -539,7 +572,7 @@ test06() {
     print_constraints(Box<FP_Interval>(ph) ,
          "*** if (R <= -D) Y = S - D; ***");
 
-    //if (R >= D)  Y = S + D;
+    // if (R >= D)  Y = S + D;
     ph_then = ph;
     as_then = abstract_store;
     ph_then.refine_with_linear_form_inequality(lk, lr, as_then);
@@ -559,7 +592,7 @@ test06() {
 
     ph.upper_bound_assign(ph_begin);
     Constraint_System cs;
-    // FIXME: not sound.
+    // FIXME: This is not sound, it should use ANALYZED_FP_FORMAT
     ANALYZER_FP_FORMAT max = std::numeric_limits<ANALYZER_FP_FORMAT>::max();
     PPL_DIRTY_TEMP_COEFFICIENT(M);
     assign_r(M, max, ROUND_DOWN);
