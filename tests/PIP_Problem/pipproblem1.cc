@@ -114,6 +114,28 @@ test02() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     display_solution(solution, Variables_Set(i, j));
+
+bool
+test03() {
+  Variable i(0);
+  Variable j(1);
+  Variable k(2);
+  Variable m(3);
+  Variable n(4);
+  Variables_Set params(k, n);
+
+  Constraint_System cs;
+  cs.insert(i <= m);
+  cs.insert(j <= n);
+  cs.insert(2*i+j <= 2*m+n-k);
+  cs.insert(2*i+j >= 2*m+n-k);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    display_solution(solution, params, Variables_Set(i, j));
   }
 
   return ok;
@@ -124,4 +146,5 @@ test02() {
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
+  DO_TEST(test03);
 END_MAIN
