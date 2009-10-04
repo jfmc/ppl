@@ -101,6 +101,22 @@ public:
   //! Returns a const_iterator to the end of local artificial parameters.
   Artificial_Parameter_Sequence::const_iterator art_parameter_end() const;
 
+  /*! \brief
+    Insert in parameter set the parameter indices corresponding to local
+    artificials.
+
+    \param params
+    the Variables_Set to be updated
+    
+    \param space_dimension
+    the space dimension for \p *this
+    
+    \return
+    the number of inserted indices
+  */
+  dimension_type insert_artificials(Variables_Set &params,
+                                    dimension_type space_dimension) const;
+
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
 
@@ -175,7 +191,7 @@ protected:
                                    dimension_type space_dimension) = 0;
 
   //! Inserts a new parametric constraint in internal Row format
-  void add_constraint(const Row &x);
+  void add_constraint(const Row &x, const Variables_Set& parameters);
 };
 
 //! A tree node representing part of the space of solutions.
@@ -198,11 +214,16 @@ public:
 
     The returned linear expression only involves parameters.
 
+    \param parameters
+    a \c std::set of indices of the parameters in the constraints
+
     \exception std::invalid_argument
     Thrown if \p v is dimension-incompatible with \p *this
     or if \p v is a parameter.
   */
-  const Linear_Expression& parametric_values(const Variable &v) const;
+  const Linear_Expression&
+  parametric_values(const Variable &v,
+                    const Variables_Set& parameters) const;
 
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
@@ -339,11 +360,16 @@ protected:
   */
   virtual void update_tableau(dimension_type external_space_dim,
                               dimension_type first_pending_constraint,
-                              const Constraint_Sequence &input_cs,
-                              const Variables_Set &parameters);
+                              const Constraint_Sequence& input_cs,
+                              const Variables_Set& parameters);
 
-  //! Update the solution values.
-  virtual void update_solution();
+  /*! \brief
+    Update the solution values.
+
+    \param parameters
+    a \c std::set of indices of the parameters in the constraints
+  */
+  virtual void update_solution(const Variables_Set& parameters);
 
   /*! \brief
     Execute a parametric simplex on the tableau, under specified context.
@@ -467,6 +493,13 @@ protected:
 };
 
 typedef const PIP_Tree_Node* PIP_Tree;
+
+namespace IO_Operators {
+
+std::ostream& operator<<(std::ostream& os,
+                         const PIP_Tree_Node::Artificial_Parameter& x);
+
+} // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 

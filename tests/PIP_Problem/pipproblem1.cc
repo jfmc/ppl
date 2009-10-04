@@ -25,12 +25,26 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 void
-display_solution(const PIP_Tree pip, const Variables_Set &vars, int indent=0) {
+display_solution(const PIP_Tree pip, const Variables_Set& params,
+                 const Variables_Set& vars, dimension_type space_dimension,
+                 int indent=0) {
   using namespace std;
   using namespace Parma_Polyhedra_Library::IO_Operators;
   if (!pip) {
     nout << setw(indent*2) << "" << "_|_" << endl;
   } else {
+    Variables_Set parameters(params);
+    dimension_type new_params
+        = pip->insert_artificials(parameters, space_dimension);
+    if (new_params > 0) {
+      PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator i, i_end;
+      i_end = pip->art_parameter_end();
+      for (i=pip->art_parameter_begin(); i!=i_end; ++i) {
+        nout << setw(indent*2) << "" << "Parameter "
+             << Linear_Expression(Variable(space_dimension++))
+             << " = " << *i << endl;
+      }
+    }
     const Constraint_System &constraints = pip->constraints();
     bool constraints_empty = constraints.empty();
     if (!constraints_empty) {
@@ -44,9 +58,11 @@ display_solution(const PIP_Tree pip, const Variables_Set &vars, int indent=0) {
     }
     const PIP_Decision_Node* dn = pip->as_decision();
     if (dn) {
-      display_solution(dn->child_node(true), vars, indent+1);
+      display_solution(dn->child_node(true), parameters, vars,
+                       space_dimension, indent+1);
       nout << setw(indent*2) << "" << "else" << endl;
-      display_solution(dn->child_node(false), vars, indent+1);
+      display_solution(dn->child_node(false), parameters, vars,
+                       space_dimension, indent+1);
     } else {
       const PIP_Solution_Node* sn = pip->as_solution();
       Variables_Set::const_iterator begin = vars.begin();
@@ -54,7 +70,8 @@ display_solution(const PIP_Tree pip, const Variables_Set &vars, int indent=0) {
       Variables_Set::const_iterator i;
       nout << setw(indent*2+(constraints_empty?0:2)) << "" << "{";
       for (i=begin; i!=end; ++i)
-        nout << ((i==begin)?"":" ; ") << sn->parametric_values(Variable(*i));
+        nout << ((i==begin)?"":" ; ")
+             << sn->parametric_values(Variable(*i), parameters);
       nout << "}" << endl;
       if (!constraints_empty) {
         nout << setw(indent*2) << "" << "else" << endl;
@@ -87,7 +104,8 @@ test01() {
   bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
   if (ok) {
     const PIP_Tree solution = pip.solution();
-    display_solution(solution, Variables_Set(X1, X2));
+    display_solution(solution, params, Variables_Set(X1, X2),
+                     cs.space_dimension());
   }
 
   return ok;
@@ -113,7 +131,12 @@ test02() {
   bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
   if (ok) {
     const PIP_Tree solution = pip.solution();
-    display_solution(solution, Variables_Set(i, j));
+    display_solution(solution, params, Variables_Set(i, j),
+                     cs.space_dimension());
+  }
+
+  return ok;
+}
 
 bool
 test03() {
@@ -135,7 +158,8 @@ test03() {
   bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
   if (ok) {
     const PIP_Tree solution = pip.solution();
-    display_solution(solution, params, Variables_Set(i, j));
+    display_solution(solution, params, Variables_Set(i, j),
+                     cs.space_dimension());
   }
 
   return ok;

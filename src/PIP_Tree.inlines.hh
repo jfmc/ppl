@@ -72,6 +72,16 @@ PIP_Tree_Node::constraints() const {
   return constraints_;
 }
 
+inline PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator
+PIP_Tree_Node::art_parameter_begin() const {
+  return artificial_parameters.begin();
+}
+
+inline PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator
+PIP_Tree_Node::art_parameter_end() const {
+  return artificial_parameters.end();
+}
+
 inline
 const PIP_Tree_Node*
 PIP_Decision_Node::child_node(bool v) const {

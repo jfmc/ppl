@@ -30,6 +30,15 @@ namespace Parma_Polyhedra_Library {
 
 namespace {
 
+// Calculate positive modulo of x % y
+void
+mod_assign(Coefficient &z, Coefficient_traits::const_reference x,
+           Coefficient_traits::const_reference y) {
+  z = x%y;
+  if (z < 0)
+    z += y;
+}
+
 // Compute x += c * y
 void
 add_assign(Row& x, const Row& y, Coefficient_traits::const_reference c) {
@@ -81,7 +90,7 @@ update_context(Matrix &context,
 
 // Update given context matrix and parameter set using local artificials
 void
-insert_artificials(Variables_Set &params, Matrix &context,
+update_context(Variables_Set &params, Matrix &context,
                    const PIP_Tree_Node::Artificial_Parameter_Sequence &ap,
                    dimension_type &space_dimension) {
   dimension_type ap_size = update_context(context, ap);
@@ -92,6 +101,16 @@ insert_artificials(Variables_Set &params, Matrix &context,
 }
 
 } // namespace
+
+namespace IO_Operators {
+
+std::ostream&
+operator<<(std::ostream& os, const PIP_Tree_Node::Artificial_Parameter& x) {
+  os << "(" << ((Linear_Expression)x) << ") div " << x.get_denominator();
+  return os;
+}
+
+} // namespace IO_Operators
 
 PIP_Tree_Node::PIP_Tree_Node(PIP_Problem* p)
   : problem(p),
@@ -235,6 +254,17 @@ PIP_Decision_Node::as_decision() {
   return this;
 }
 
+dimension_type
+PIP_Tree_Node::insert_artificials(Variables_Set &params,
+                                  dimension_type space_dimension) const {
+  dimension_type ap_size = artificial_parameters.size();
+  if (ap_size > 0) {
+    for (dimension_type i = 0; i < ap_size; ++i)
+      params.insert(space_dimension++);
+  }
+  return ap_size;
+}
+
 bool
 PIP_Solution_Node::Tableau::OK() const {
 #ifndef NDEBUG
@@ -279,9 +309,9 @@ PIP_Tree_Node::OK() const {
 }
 
 void
-PIP_Tree_Node::add_constraint(const Row &row) {
+PIP_Tree_Node
+::add_constraint(const Row &row, const Variables_Set& parameters) {
   Linear_Expression e;
-  const Variables_Set &parameters = problem->parameter_space_dimensions();
   Variables_Set::const_iterator param_begin = parameters.begin();
   Variables_Set::const_iterator param_end = parameters.end();
   Variables_Set::const_iterator pi;
@@ -363,8 +393,8 @@ PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& context,
   PIP_Problem_Status stf = UNFEASIBLE_PIP_PROBLEM;
   Matrix context_true(context);
   Variables_Set parameters(params);
-  insert_artificials(parameters, context_true, artificial_parameters,
-                     space_dimension);
+  update_context(parameters, context_true, artificial_parameters,
+                 space_dimension);
   merge_assign(context_true, constraints_, parameters);
   stt = true_child->solve(true_child, context_true, parameters,
                           space_dimension);
@@ -547,9 +577,10 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
 }
 
 const Linear_Expression&
-PIP_Solution_Node::parametric_values(const Variable &v) const {
-  const_cast<PIP_Solution_Node&>(*this).update_solution();
-  Variables_Set& parameters = problem->parameters;
+PIP_Solution_Node
+::parametric_values(const Variable &v,
+                    const Variables_Set& parameters) const {
+  const_cast<PIP_Solution_Node&>(*this).update_solution(parameters);
   dimension_type id = v.id();
   dimension_type j;
   Variables_Set::iterator location = parameters.lower_bound(id);
@@ -743,10 +774,11 @@ PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
 }
 
 void
-PIP_Solution_Node::update_solution() {
+PIP_Solution_Node::update_solution(const Variables_Set& parameters) {
   if (solution_valid)
     return;
   dimension_type num_vars = tableau.s.num_columns();
+  const Coefficient& d = tableau.get_denominator();
   if (solution.size() != num_vars)
     solution.resize(num_vars);
   for (dimension_type i = num_vars; i-- > 0; ) {
@@ -755,12 +787,12 @@ PIP_Solution_Node::update_solution() {
       sol = Linear_Expression(0);
     } else {
       Row &row = tableau.t[mapping[i]];
-      sol = Linear_Expression(row[0]);
+      sol = Linear_Expression(row[0]/d);
       dimension_type k;
-      Variables_Set::iterator j;
-      Variables_Set::iterator j_end = problem->parameters.end();
-      for (j = problem->parameters.begin(), k = 1; j != j_end; ++j, ++k)
-        sol += row[k] * Variable(*j);
+      Variables_Set::const_iterator j;
+      Variables_Set::const_iterator j_end = parameters.end();
+      for (j = parameters.begin(), k = 1; j != j_end; ++j, ++k)
+        sol += (row[k]/d) * Variable(*j);
     }
   }
   solution_valid = true;
@@ -772,8 +804,8 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
                          dimension_type space_dimension) {
   Matrix context(ctx);
   Variables_Set parameters(params);
-  insert_artificials(parameters, context, artificial_parameters,
-                     space_dimension);
+  update_context(parameters, context, artificial_parameters,
+                 space_dimension);
   merge_assign(context, constraints_, parameters);
   const dimension_type n_a_d = not_a_dimension();
   Coefficient gcd;
@@ -904,6 +936,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
                 cij = tableau.s[mk][j];
                 cij_ = tableau.s[mk][j_];
               }
+              ++k;
             } while (k < num_vars && cij * sij == cij_ * row[j]);
             if (k < num_vars && cij * sij < cij_ * row[j]) {
               j_ = j;
@@ -960,6 +993,9 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
       prs.swap(tableau.s[i_]);
       prt.swap(tableau.t[i_]);
       sign[i_] = ZERO;
+      /* save current denominator corresponding to sij */
+      Coefficient sij_denom = tableau.get_denominator();
+      /* Compute columns s[*][j] : s[k][j] -= s[k][j_] * prs[j] / sij */
       for (j=0; j<num_vars; ++j) {
         if (j==j_)
           continue;
@@ -976,7 +1012,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         }
       }
 
-      /* create the identity matrix row corresponding to basic variable j_ */
+      /* Compute columns t[*][j] : t[k][j] -= t[k][j_] * prt[j] / sij */
       for (j=0; j<num_params; ++j) {
         for (k=0; k<num_rows; ++k) {
           Coefficient c = prt[j] * tableau.s[k][j_];
@@ -1014,15 +1050,18 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         }
       }
 
+      /* compute column s[*][j_] : s[k][j_] /= sij */
       for (k=0; k<num_rows; ++k) {
-        Coefficient &c = tableau.s[k][j_];
-        if (c % sij != 0) {
+        Coefficient& c = tableau.s[k][j_];
+        Coefficient numerator = c * sij_denom;
+        if (numerator % sij != 0) {
           Coefficient gcd;
-          gcd_assign(gcd, c, sij);
+          gcd_assign(gcd, numerator, sij);
           Coefficient scale_factor = sij/gcd;
           tableau.scale(scale_factor);
+          numerator *= scale_factor;
         }
-        c /= sij;
+        c = numerator / sij;
       }
       solution_valid = false;
     }
@@ -1062,23 +1101,31 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
 #endif
         Row &r = tableau.t[i];
         context.add_row(r);
-        add_constraint(r);
+        add_constraint(r, parameters);
         sign[i] = POSITIVE;
 #ifdef NOISY_PIP
+        using namespace IO_Operators;
         Constraint_System::const_iterator c = constraints_.begin();
         Constraint_System::const_iterator c_end = constraints_.end();
         Constraint_System::const_iterator c1 = c;
         while (++c1 != constraints_.end())
           c = c1;
-        std::cout << "Adding tautology: ";
-        c->ascii_dump(std::cout);
+        std::cout << "Adding tautology: " << *c << std::endl;
 #endif
       } else {
 #ifdef NOISY_PIP
-        std::cout << "Found row with mixed parameter sign: " << i__
-                  << std::endl
-                  << "Solution depends on the sign of parameter"
-                  << std::endl;
+        {
+          using namespace IO_Operators;
+          Linear_Expression e;
+          Variables_Set::const_iterator p;
+          dimension_type j;
+          for (p = parameters.begin(), j=1; p != parameters.end(); ++p, ++j)
+            e += tableau.t[i__][j] * Variable(*p);
+          e += tableau.t[i__][0];
+          std::cout << "Found row with mixed parameter sign: " << i__
+                    << "\nSolution depends on the sign of parameter " << e
+                    << std::endl;
+        }
 #endif
         Row test(tableau.t[i__]);
 
@@ -1105,11 +1152,13 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
           return UNFEASIBLE_PIP_PROBLEM;
         } else if (status_t == UNFEASIBLE_PIP_PROBLEM) {
           cs.swap(constraints_);
-          add_constraint(testf);
+          aps.swap(artificial_parameters);
+          add_constraint(testf, parameters);
           return OPTIMIZED_PIP_PROBLEM;
         } else if (status_f == UNFEASIBLE_PIP_PROBLEM) {
           cs.swap(tru->constraints_);
-          tru->add_constraint(test);
+          aps.swap(tru->artificial_parameters);
+          tru->add_constraint(test, parameters);
           parent_ref = tru;
           return OPTIMIZED_PIP_PROBLEM;
         }
@@ -1117,7 +1166,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         /* Create a decision Node to become parent of current Node */
         PIP_Decision_Node* parent
         = new PIP_Decision_Node(fals->problem, fals, tru);
-        parent->add_constraint(test);
+        parent->add_constraint(test, parameters);
 
         if (!cs.empty()) {
           /* If node to be solved had tautologies, store them in a new
@@ -1143,7 +1192,18 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
 #endif
       tableau.normalize();
 
-      if (tableau.is_integer()) {
+      // Look for a row with non integer parameter coefficients (first is okay)
+      const Coefficient& d = tableau.get_denominator();
+      for (i=0; i<num_rows; ++i) {
+        const Row& row = tableau.t[i];
+        for (j=0; j<num_params; ++j) {
+          if (row[j] % d != 0)
+            goto endsearch;
+        }
+      }
+      endsearch:
+
+      if (i == num_rows) {
         /* The solution is integer */
 #ifdef NOISY_PIP
         std::cout << "Solution found for problem in current node."
@@ -1153,12 +1213,92 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
       }
       else {
         /* The solution is non-integer. We have to generate a cut. */
-        //FIXME: to be finished
 #ifdef NOISY_PIP
-        std::cout << "Cut generation required."
+        std::cout << "Row " << i << " contains non-integer coefficients. "
+                  << "Cut generation required."
                   << std::endl;
 #endif
-        return OPTIMIZED_PIP_PROBLEM;
+        tableau.t.add_zero_columns(1);
+        tableau.s.add_zero_rows(1, Row::Flags());
+        tableau.t.add_zero_rows(1, Row::Flags());
+        context.add_zero_columns(1);
+
+        // Generate new artificial parameter
+        const Row& row_t = tableau.t[i];
+        Linear_Expression e;
+        Variables_Set::const_iterator p;
+        Coefficient mod;
+        mod_assign(mod, row_t[0], d);
+        if (mod != 0)
+          e += (d-mod);
+        for (p=parameters.begin(), j=1; j<num_params; ++j, ++p) {
+          mod_assign(mod, row_t[j], d);
+          if (mod != 0)
+            e += (d-mod) * Variable(*p);
+        }
+        artificial_parameters.push_back(Artificial_Parameter(e, d));
+        parameters.insert(space_dimension);
+#ifdef NOISY_PIP
+        using namespace IO_Operators;
+        std::cout << "Creating new parameter " << Variable(space_dimension)
+                  << " = (" << e << ")/" << d
+                  << std::endl;
+#endif
+        ++space_dimension;
+
+        // Update current context with constraints on the new parameter
+        Row ctx1(num_params+1, Row::Flags());
+        Row ctx2(num_params+1, Row::Flags());
+        for (j=0; j<num_params; ++j) {
+          mod_assign(mod, row_t[j], d);
+          if (mod != 0) {
+            ctx1[j] = d - mod;
+            ctx2[j] = -ctx1[j];
+          } else {
+            ctx1[j] = 0;
+            ctx2[j] = 0;
+          }
+        }
+        ctx1[num_params] = -d;
+        ctx2[num_params] = d;
+        ctx2[0] += d-1;
+#ifdef NOISY_PIP
+        {
+          Variables_Set::const_iterator p = parameters.begin();
+          Linear_Expression e1;
+          Linear_Expression e2;
+          for (j=1; j<=num_params; ++j, ++p) {
+            e1 += ctx1[j] * Variable(*p);
+            e2 += ctx2[j] * Variable(*p);
+          }
+          e1 += ctx1[0];
+          e2 += ctx2[0];
+          std::cout << "Inserting into context: "
+                    << Constraint(e1 >= 0) << " ; "
+                    << Constraint(e2 >= 0) << std::endl;
+        }
+#endif
+        context.add_row(ctx1);
+        context.add_row(ctx2);
+
+        // Generate new cut
+        Row& cut_s = tableau.s[num_rows];
+        Row& cut_t = tableau.t[num_rows];
+        //const Row& row_t = tableau.t[i];
+        const Row& row_s = tableau.s[i];
+        for (j=0; j<num_vars; ++j) {
+          mod_assign(mod, row_s[j], d);
+          cut_s[j] = d*mod;
+        }
+        for (j=0; j<num_params; ++j) {
+          mod_assign(mod, row_t[j], d);
+          if (mod != 0)
+            cut_t[j] = d*(mod - d);
+          else
+            cut_t[j] = 0;
+        }
+        cut_t[num_params] = d*d;
+        sign.push_back(NEGATIVE);
       }
     }
   } // Main loop of the simplex algorithm
