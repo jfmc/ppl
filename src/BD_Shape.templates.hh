@@ -4340,9 +4340,6 @@ void BD_Shape<T>::refine_with_linear_form_inequality(
   const FP_Interval_Type& right_w_coeff =
           right.coefficient(Variable(right_w_id));
 
-  // FIXME: there is plenty of duplicate code in the following lines. We could
-  // shorten it at the expense of a bit of efficiency.
-
   if (left_t == 0) {
     if (right_t == 0) {
       // The constraint involves constants only. Ignore it: it is up to
@@ -4366,11 +4363,10 @@ void BD_Shape<T>::refine_with_linear_form_inequality(
     }
   }
 
-
   // General case.
   general_refine(left_w_id, right_w_id, left, right);
   PPL_ASSERT(OK());
-} // end of refine
+} // end of refine_with_linear_form_inequality
 
 template <typename T>
 template <typename Interval_Info>
@@ -4471,8 +4467,7 @@ BD_Shape<T>
           return;
         }
         if (is_left_coeff_one && is_right_coeff_minus_one) {
-          // We fall back to a previous case
-          // (but we do not need to multiply the result by two).
+          // We fall back to a previous case.
           PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
           const FP_Interval_Type& left_b = left.inhomogeneous_term();
           const FP_Interval_Type& right_a = right.inhomogeneous_term();
@@ -4484,9 +4479,8 @@ BD_Shape<T>
           return;
         }
         if (is_left_coeff_minus_one && is_right_coeff_one) {
-          // We fall back to a previous case
-          // (but we do not need to multiply the result by two).
-          PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+          // We fall back to a previous case.
+	  PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
           const FP_Interval_Type& left_b = left.inhomogeneous_term();
           const FP_Interval_Type& right_a = right.inhomogeneous_term();
           sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
