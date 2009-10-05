@@ -303,7 +303,7 @@ public:
 template <>
 class Float<long double> : public True {
 public:
-#if PPL_CXX_LONG_BINARY_FORMAT == PPL_FLOAT_IEEE754_HALF
+#if PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_HALF
   typedef float_ieee754_half Binary;
 #elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
   typedef float_ieee754_single Binary;
