@@ -35,13 +35,13 @@ test01() {
   try {
     FP_Linear_Form l1(Variable(3));
     FP_Linear_Form l2;
-    pol.refine_with_linear_form_inequality(l1, l2, store);
+    pol.refine_with_linear_form_inequality(l1, l2);
   }
   catch (std::invalid_argument) {
     try {
       FP_Linear_Form l1;
       FP_Linear_Form l2(Variable(3));
-      pol.refine_with_linear_form_inequality(l1, l2, store);
+      pol.refine_with_linear_form_inequality(l1, l2);
     }
     catch (std::invalid_argument) {
       nout << "incompatible dimensions." << endl;
@@ -61,7 +61,7 @@ test02() {
   FP_Interval interval(57);
   FP_Linear_Form lf1(Variable(0));
   FP_Linear_Form lf2(interval);
-  ph.refine_with_linear_form_inequality(lf1, lf2, store);
+  ph.refine_with_linear_form_inequality(lf1, lf2);
   print_constraints(ph, "*** A <= [57, 57] ***");
   C_Polyhedron known_result(1);
   known_result.refine_with_constraint(Variable(0) <= 57);
@@ -84,17 +84,17 @@ test03() {
 
   C_Polyhedron ph(3);
   ph.refine_with_linear_form_inequality(-FP_Linear_Form(A),
-				 FP_Linear_Form(FP_Interval(0)), store);
+				 FP_Linear_Form(FP_Interval(0)));
   ph.refine_with_linear_form_inequality(FP_Linear_Form(A),
-				 FP_Linear_Form(FP_Interval(2)), store);
+				 FP_Linear_Form(FP_Interval(2)));
   ph.refine_with_linear_form_inequality(-FP_Linear_Form(A),
-				 FP_Linear_Form(FP_Interval(1)), store);
+				 FP_Linear_Form(FP_Interval(1)));
   ph.refine_with_linear_form_inequality(-FP_Linear_Form(B),
-				 FP_Linear_Form(FP_Interval(-1)), store);
+				 FP_Linear_Form(FP_Interval(-1)));
   ph.generalized_refine_with_linear_form_inequality(
-    FP_Linear_Form(C), FP_Linear_Form(tmp), EQUAL, store);
+    FP_Linear_Form(C), FP_Linear_Form(tmp), EQUAL);
   ph.generalized_refine_with_linear_form_inequality(
-    FP_Linear_Form(C), FP_Linear_Form(tmp), NOT_EQUAL, store);
+    FP_Linear_Form(C), FP_Linear_Form(tmp), NOT_EQUAL);
   print_constraints(ph, "*** ph ***");
 
   C_Polyhedron known_result(3);
@@ -127,17 +127,17 @@ test04() {
 
   C_Polyhedron ph(2);
   ph.generalized_refine_with_linear_form_inequality(
-    lk, la, GREATER_THAN, store);
+    lk, la, GREATER_THAN);
   tmp = 1;
   lk -= tmp;
   ph.generalized_refine_with_linear_form_inequality(
-    lk, -la, GREATER_OR_EQUAL, store);
+    lk, -la, GREATER_OR_EQUAL);
   ph.generalized_refine_with_linear_form_inequality(
-    lb, -lk, LESS_OR_EQUAL, store);
+    lb, -lk, LESS_OR_EQUAL);
   tmp = 0;
   lk = FP_Linear_Form(tmp);
   ph.generalized_refine_with_linear_form_inequality(
-    -lb, lk, LESS_THAN, store);
+    -lb, lk, LESS_THAN);
   print_constraints(ph, "*** ph ***");
 
   C_Polyhedron known_result1(2);
@@ -186,10 +186,10 @@ test05() {
 
   NNC_Polyhedron ph(2);
   FP_Linear_Form l(tmp0);
-  ph.affine_image(A, l, store);
-  ph.affine_image(B, l, store);
+  ph.affine_image(A, l);
+  ph.affine_image(B, l);
   ph.generalized_refine_with_linear_form_inequality(
-    lb, la, GREATER_OR_EQUAL, store);
+    lb, la, GREATER_OR_EQUAL);
   print_constraints(ph, "*** ph ***");
 
   NNC_Polyhedron known_result1(2);
