@@ -325,10 +325,12 @@ Polyhedron::refine_with_linear_form_inequality(
   // We assume that the analyzer will not refine an unreachable test.
   PPL_ASSERT(!marked_empty());
 
-  if (Floating_Point_Expression::overflows(left))
+  if (Floating_Point_Expression<FP_Format, float_ieee754_single>::
+      overflows(left))
     return;
 
-  if (Floating_Point_Expression::overflows(right))
+  if (Floating_Point_Expression<FP_Format, float_ieee754_single>::
+      overflows(right))
     return;
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
@@ -337,13 +339,15 @@ Polyhedron::refine_with_linear_form_inequality(
   // Overapproximate left - right.
   FP_Linear_Form left_minus_right(left);
   left_minus_right -= right;
-  if (Floating_Point_Expression::overflows(left_minus_right))
+  if (Floating_Point_Expression<FP_Format, float_ieee754_single>::
+      overflows(left_minus_right))
     return;
 
   dimension_type lf_space_dim = left_minus_right.space_dimension();
   FP_Linear_Form lf_approx;
   overapproximate_linear_form(left_minus_right, lf_space_dim, lf_approx);
-  if (Floating_Point_Expression::overflows(lf_approx))
+  if (Floating_Point_Expression<FP_Format, float_ieee754_single>::
+      overflows(lf_approx))
     return;
 
   // Normalize left - right.
@@ -381,7 +385,8 @@ const Linear_Form<Interval <FP_Format, Interval_Info> >& lf) {
   // We assume that the analyzer will not perform an unreachable assignment.
   PPL_ASSERT(!marked_empty());
 
-  if (Floating_Point_Expression::overflows(lf)) {
+  if (Floating_Point_Expression<FP_Format, float_ieee754_single>::
+      overflows(lf)) {
     *this = Polyhedron(topology(), space_dim, UNIVERSE);
     return;
   }
@@ -393,7 +398,8 @@ const Linear_Form<Interval <FP_Format, Interval_Info> >& lf) {
   FP_Linear_Form lf_approx;
   overapproximate_linear_form(lf, lf_space_dim, lf_approx);
 
-  if (Floating_Point_Expression::overflows(lf_approx)) {
+  if (Floating_Point_Expression<FP_Format, float_ieee754_single>::
+      overflows(lf_approx)) {
     *this = Polyhedron(topology(), space_dim, UNIVERSE);
     return;
   }

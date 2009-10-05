@@ -2684,7 +2684,7 @@ protected:
     considered as singletons.
   */
   template <typename FP_Format, typename Interval_Info>
-  static void overapproximate_linear_form(
+  void overapproximate_linear_form(
   const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
   const dimension_type lf_dimension,
   Linear_Form<Interval <FP_Format, Interval_Info> >& result);
