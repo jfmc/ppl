@@ -216,7 +216,6 @@ test02() {
 
 // tests rate limiter using octagons abstract domain
 // and ignoring rounding errors.
-// FIXME: Not pass at the moment,
 bool
 test03() {
   // Input signal.
@@ -282,6 +281,7 @@ test03() {
     oc.upper_bound_assign(oc_begin);
     Constraint_System cs;
     PPL_DIRTY_TEMP_COEFFICIENT(M);
+    PPL_DIRTY_TEMP_COEFFICIENT(N);
     ANALYZER_FP_FORMAT max_analyzed =
     (2 - pow(2,
        -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
@@ -291,10 +291,13 @@ test03() {
       std::numeric_limits<ANALYZER_FP_FORMAT>::max();
     max_analyzer = std::min(max_analyzer, max_analyzed);
     assign_r(M, max_analyzer, ROUND_DOWN);
-    cs.insert(Y <= M);
-    cs.insert(Y >= -M);
-    //Octagonal_Shape<float> oc1(cs);
-    //print_constraints(oc1, "*** oc1 ***");
+    div_2exp_assign_r(N, M, 1, ROUND_DOWN);
+    // FIXME: By inserting the constraints Y <= M and Y >= -M, we obtain
+    // Y + Y <= 2 * M = +inf and -Y - Y <= -2 * M = +inf.
+    // For a more precise analysis, it is better to insert the
+    // constraints Y <= N and Y >= -N, where N = M / 2.
+    cs.insert(Y <= N);
+    cs.insert(Y >= -N);
     oc.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
     Box<FP_Interval> box(oc);
     print_constraints(box, "*** after widening ***");
@@ -638,7 +641,7 @@ test06() {
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
-  //DO_TEST(test03);
+  DO_TEST(test03);
   DO_TEST(test04);
   //DO_TEST(test05);
   //DO_TEST(test06);
