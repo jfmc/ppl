@@ -993,11 +993,6 @@ public:
     is on the right of the comparison operator. All of its coefficients
     MUST be bounded.
 
-    \param store
-    The interval abstract store in which the test defining the filter is
-    performed. All variables that occur in \p left or \p right MUST have
-    an associated interval in it, and all of these intervals MUST be bounded.
-
     \param is_strict
     True if the comparison is strict.
 
@@ -1012,7 +1007,6 @@ public:
   void refine_with_linear_form_inequality(
   const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
   const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
-  const Box< Interval<FP_Format, Interval_Info> >& store,
   bool is_strict = false);
 
   /*! \brief
@@ -1033,11 +1027,6 @@ public:
     \param relsym
     The relation symbol.
 
-    \param store
-    The interval abstract store in which the test defining the filter is
-    performed. All variables that occur in \p left or \p right MUST have
-    an associated interval in it, and all of these intervals MUST be bounded.
-
     \exception std::invalid_argument
     Thrown if \p left (or \p right) is dimension-incompatible with \p *this.
 
@@ -1052,8 +1041,7 @@ public:
   void generalized_refine_with_linear_form_inequality(
   const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
   const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
-  Relation_Symbol relsym,
-  const Box< Interval<FP_Format, Interval_Info> >& store);
+  Relation_Symbol relsym);
 
   //! Refines \p store with the constraints defining \p *this.
   /*!
@@ -1244,11 +1232,6 @@ public:
     The linear form on intervals with floating point boundaries that
     defines the affine expression(s). ALL of its coefficients MUST be bounded.
 
-    \param store
-    The interval abstract store in which the variable assignment is performed.
-    All variables that occur in \p lf MUST have an associated interval in it,
-    and all of these intervals MUST be bounded.
-
     \exception std::invalid_argument
     Thrown if \p lf and \p *this are dimension-incompatible or if \p var is
     not a space dimension of \p *this.
@@ -1259,8 +1242,7 @@ public:
   */
   template <typename FP_Format, typename Interval_Info>
   void affine_image(Variable var,
-  const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
-  const Box< Interval<FP_Format, Interval_Info> >& store);
+  const Linear_Form<Interval <FP_Format, Interval_Info> >& lf);
 
   /*! \brief
     Assigns to \p *this the
@@ -2687,28 +2669,24 @@ protected:
   /*!
     \param lf
     The linear form on intervals with floating point boundaries to approximate.
+    ALL of its coefficients MUST be bounded.
 
     \param lf_dimension
     Must be the space dimension of \p lf.
-
-    \param store
-    The interval abstract store in which the approximation is performed.
-    All variables that occur in \p lf MUST have an associated interval in it,
-    and all of these intervals MUST be bounded.
 
     \param result
     Used to store the result.
 
     This function makes \p result become a linear form that is a correct
-    approximation of \p lf in \p store. The resulting linear form has the
-    property that all of its variable coefficients have a non-significative
-    upper bound and can thus be considered as singletons.
+    approximation of \p lf under the constraints specified by \p *this.
+    The resulting linear form has the property that all of its variable
+    coefficients have a non-significative upper bound and can thus be
+    considered as singletons.
   */
   template <typename FP_Format, typename Interval_Info>
   static void overapproximate_linear_form(
   const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
   const dimension_type lf_dimension,
-  const Box< Interval<FP_Format, Interval_Info> >& store,
   Linear_Form<Interval <FP_Format, Interval_Info> >& result);
 
   /*! \brief

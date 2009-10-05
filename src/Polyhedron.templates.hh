@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "MIP_Problem.defs.hh"
 #include "Interval.defs.hh"
 #include "Linear_Form.defs.hh"
+// For static method overflows.
+#include "Floating_Point_Expression.defs.hh"
 #include <algorithm>
 #include <deque>
 
@@ -300,7 +302,6 @@ void
 Polyhedron::refine_with_linear_form_inequality(
   const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
   const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
-  const Box< Interval<FP_Format, Interval_Info> >& store,
   const bool is_strict) {
 
   // Check that FP_Format is indeed a floating point type.
@@ -308,7 +309,6 @@ Polyhedron::refine_with_linear_form_inequality(
                          "Polyhedron::refine_with_linear_form_inequality:"
                          " FP_Format not a floating point type.");
 
-  PPL_ASSERT(space_dim <= store.space_dimension());
   // Dimension compatibility checks.
   // The dimensions of left and right should not be greater than the
   // dimension of *this.
@@ -325,15 +325,26 @@ Polyhedron::refine_with_linear_form_inequality(
   // We assume that the analyzer will not refine an unreachable test.
   PPL_ASSERT(!marked_empty());
 
+  if (Floating_Point_Expression::overflows(left))
+    return;
+
+  if (Floating_Point_Expression::overflows(right))
+    return;
+
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
 
   // Overapproximate left - right.
   FP_Linear_Form left_minus_right(left);
   left_minus_right -= right;
+  if (Floating_Point_Expression::overflows(left_minus_right))
+    return;
+
   dimension_type lf_space_dim = left_minus_right.space_dimension();
   FP_Linear_Form lf_approx;
-  overapproximate_linear_form(left_minus_right, lf_space_dim, store, lf_approx);
+  overapproximate_linear_form(left_minus_right, lf_space_dim, lf_approx);
+  if (Floating_Point_Expression::overflows(lf_approx))
+    return;
 
   // Normalize left - right.
   Linear_Expression lf_approx_le;
@@ -349,15 +360,13 @@ Polyhedron::refine_with_linear_form_inequality(
 template <typename FP_Format, typename Interval_Info>
 void
 Polyhedron::affine_image(const Variable var,
-const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
-const Box< Interval<FP_Format, Interval_Info> >& store) {
+const Linear_Form<Interval <FP_Format, Interval_Info> >& lf) {
 
   // Check that FP_Format is indeed a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
                          "Polyhedron::affine_image:"
                          " FP_Format not a floating point type.");
 
-  PPL_ASSERT(space_dim <= store.space_dimension());
   // Dimension compatibility checks.
   // The dimension of lf should not be greater than the dimension of *this.
   const dimension_type lf_space_dim = lf.space_dimension();
@@ -372,12 +381,22 @@ const Box< Interval<FP_Format, Interval_Info> >& store) {
   // We assume that the analyzer will not perform an unreachable assignment.
   PPL_ASSERT(!marked_empty());
 
+  if (Floating_Point_Expression::overflows(lf)) {
+    *this = Polyhedron(topology(), space_dim, UNIVERSE);
+    return;
+  }
+
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
 
   // Overapproximate lf.
   FP_Linear_Form lf_approx;
-  overapproximate_linear_form(lf, lf_space_dim, store, lf_approx);
+  overapproximate_linear_form(lf, lf_space_dim, lf_approx);
+
+  if (Floating_Point_Expression::overflows(lf_approx)) {
+    *this = Polyhedron(topology(), space_dim, UNIVERSE);
+    return;
+  }
 
   // Normalize lf.
   Linear_Expression lf_approx_le;
@@ -397,7 +416,6 @@ void
 Polyhedron::overapproximate_linear_form(
   const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
   const dimension_type lf_dimension,
-  const Box< Interval<FP_Format, Interval_Info> >& store,
   Linear_Form<Interval <FP_Format, Interval_Info> >& result) {
 
   // Check that FP_Format is indeed a floating point type.
@@ -405,10 +423,12 @@ Polyhedron::overapproximate_linear_form(
                          "Polyhedron::overapproximate_linear_form:"
                          " FP_Format not a floating point type.");
 
-  PPL_ASSERT(lf_dimension <= store.space_dimension());
-
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
+
+  // Build a Box from the Polyhedron so that we can extract upper and
+  // lower bounds of variables easily.
+  Box<FP_Interval_Type> polybox(*this);
 
   result = FP_Linear_Form(lf.inhomogeneous_term());
   // FIXME: this may not be policy-neutral.
@@ -423,8 +443,7 @@ Polyhedron::overapproximate_linear_form(
     FP_Format curr_lb = curr_coeff.lower();
     FP_Format curr_ub = curr_coeff.upper();
     if (curr_lb != 0 || curr_ub != 0) {
-      const FP_Interval_Type& curr_int = store.get_interval(Variable(i));
-      PPL_ASSERT(curr_int.is_bounded());
+      const FP_Interval_Type& curr_int = polybox.get_interval(curr_var);
       FP_Interval_Type curr_addend(curr_ub - curr_lb);
       curr_addend *= aux_divisor2;
       curr_addend *= curr_int;

@@ -377,25 +377,24 @@ inline void
 Polyhedron::generalized_refine_with_linear_form_inequality(
 	    const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
 	    const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
-            const Relation_Symbol relsym,
-            const Box< Interval<FP_Format, Interval_Info> >& store) {
+            const Relation_Symbol relsym) {
   switch (relsym) {
   case EQUAL:
     // TODO: see if we can handle this case more efficiently.
-    refine_with_linear_form_inequality(left, right, store, false);
-    refine_with_linear_form_inequality(right, left, store, false);
+    refine_with_linear_form_inequality(left, right, false);
+    refine_with_linear_form_inequality(right, left, false);
     break;
   case LESS_THAN:
-    refine_with_linear_form_inequality(left, right, store, true);
+    refine_with_linear_form_inequality(left, right, true);
     break;
   case LESS_OR_EQUAL:
-    refine_with_linear_form_inequality(left, right, store, false);
+    refine_with_linear_form_inequality(left, right, false);
     break;
   case GREATER_THAN:
-    refine_with_linear_form_inequality(right, left, store, true);
+    refine_with_linear_form_inequality(right, left, true);
     break;
   case GREATER_OR_EQUAL:
-    refine_with_linear_form_inequality(right, left, store, false);
+    refine_with_linear_form_inequality(right, left, false);
     break;
   case NOT_EQUAL:
     break;
