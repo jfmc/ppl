@@ -311,7 +311,7 @@ test04() {
   NNC_Polyhedron ph_begin;
 
   // Y = 0;
-  ph.affine_image(Y, FP_Linear_Form(tmp), abstract_store);
+  ph.affine_image(Y, FP_Linear_Form(tmp));
 
   for(unsigned short n = 0; ph_begin != ph; ++n) {
 
@@ -321,28 +321,26 @@ test04() {
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     tmp.lower() = -128;
     tmp.upper() = 128;
-    ph.affine_image(X, FP_Linear_Form(tmp), abstract_store);
+    ph.affine_image(X, FP_Linear_Form(tmp));
     tmp.lower() = 0;
     tmp.upper() = 16;
-    ph.affine_image(D, FP_Linear_Form(tmp), abstract_store);
+    ph.affine_image(D, FP_Linear_Form(tmp));
     abstract_store = Box<FP_Interval>(ph);
-    ph.affine_image(S, FP_Linear_Form(Y), abstract_store);
+    ph.affine_image(S, FP_Linear_Form(Y));
     abstract_store = Box<FP_Interval>(ph);
-    ph.affine_image(R, FP_Linear_Form(X - S), abstract_store);
+    ph.affine_image(R, FP_Linear_Form(X - S));
     abstract_store = Box<FP_Interval>(ph);
-    ph.affine_image(Y, FP_Linear_Form(X), abstract_store);
+    ph.affine_image(Y, FP_Linear_Form(X));
 
     // if (R <= -D) Y = S - D;
     NNC_Polyhedron ph_then(ph);
     FP_Interval_Abstract_Store as_then(abstract_store);
     ph_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
-                                              -FP_Linear_Form(D),
-                                                        as_then);
-    ph_then.affine_image(Y, FP_Linear_Form(S - D), as_then);
+                                              -FP_Linear_Form(D));
+    ph_then.affine_image(Y, FP_Linear_Form(S - D));
 
     ph.refine_with_linear_form_inequality(-FP_Linear_Form(D),
-                                           FP_Linear_Form(R),
-                                             abstract_store);
+                                           FP_Linear_Form(R));
     ph.upper_bound_assign(ph_then);
     abstract_store.upper_bound_assign(as_then);
     print_constraints(Box<FP_Interval>(ph) ,
@@ -352,13 +350,11 @@ test04() {
     ph_then = ph;
     as_then = abstract_store;
     ph_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
-                                               FP_Linear_Form(R),
-                                               as_then);
+                                               FP_Linear_Form(R));
     ph_then.affine_image(Y, FP_Linear_Form(S + D), as_then);
 
     ph.refine_with_linear_form_inequality(FP_Linear_Form(R),
-                                          FP_Linear_Form(D),
-                                          abstract_store);
+                                          FP_Linear_Form(D));
     ph.upper_bound_assign(ph_then);
     abstract_store.upper_bound_assign(as_then);
     print_constraints(Box<FP_Interval>(ph) ,
@@ -487,7 +483,6 @@ test05() {
     Box<FP_Interval> box(oc);
     print_constraints(box, "*** after widening ***");
     tmp = box.get_interval(Y);
-
   }
 
   nout << "*** Y in " << tmp << " ***" << endl;
@@ -523,7 +518,7 @@ test06() {
 
   // Y = 0;
   con_y.linearize(abstract_store, lf_abstract_store, lk);
-  ph.affine_image(Y, lk, abstract_store);
+  ph.affine_image(Y, lk);
 
   for(unsigned short n = 0; ph_begin != ph; ++n) {
 
@@ -533,28 +528,28 @@ test06() {
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     Con_FP_Expression con_x(-128, 128);
     con_x.linearize(abstract_store, lf_abstract_store, lk);
-    ph.affine_image(X, lk, abstract_store);
+    ph.affine_image(X, lk);
 
     Con_FP_Expression con_d(0, 16);
     con_d.linearize(abstract_store, lf_abstract_store, lk);
-    ph.affine_image(D, lk, abstract_store);
+    ph.affine_image(D, lk);
 
     Var_FP_Expression var_y(2);
     abstract_store = Box<FP_Interval>(ph);
     var_y.linearize(abstract_store, lf_abstract_store, ly);
-    ph.affine_image(S, ly, abstract_store);
+    ph.affine_image(S, ly);
 
     Var_FP_Expression* px = new Var_FP_Expression(0);
     Var_FP_Expression* ps = new Var_FP_Expression(3);
     Dif_FP_Expression x_dif_s(px, ps);
     abstract_store = Box<FP_Interval>(ph);
     x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
-    ph.affine_image(R, lr, abstract_store);
+    ph.affine_image(R, lr);
 
     Var_FP_Expression var_x(0);
     abstract_store = Box<FP_Interval>(ph);
     var_x.linearize(abstract_store, lf_abstract_store, lx);
-    ph.affine_image(Y, lx, abstract_store);
+    ph.affine_image(Y, lx);
 
     // if (R <= -D) Y = S - D;
     NNC_Polyhedron ph_then(ph);
@@ -564,9 +559,9 @@ test06() {
     Var_FP_Expression* ps2 = new Var_FP_Expression(3);
     Dif_FP_Expression s_dif_d(ps2, pd);
     s_dif_d.linearize(abstract_store, lf_abstract_store, ly);
-    ph_then.affine_image(Y, ly, abstract_store);
+    ph_then.affine_image(Y, ly);
 
-    ph.refine_with_linear_form_inequality(-lk, lr, abstract_store);
+    ph.refine_with_linear_form_inequality(-lk, lr);
 
     ph.upper_bound_assign(ph_then);
     abstract_store.upper_bound_assign(as_then);
@@ -576,15 +571,15 @@ test06() {
     // if (R >= D)  Y = S + D;
     ph_then = ph;
     as_then = abstract_store;
-    ph_then.refine_with_linear_form_inequality(lk, lr, as_then);
+    ph_then.refine_with_linear_form_inequality(lk, lr);
 
     Var_FP_Expression* pd1  = new Var_FP_Expression(1);
     Var_FP_Expression* ps3  = new Var_FP_Expression(3);
     Sum_FP_Expression s_sum_d(ps3, pd1);
     s_sum_d.linearize(abstract_store, lf_abstract_store, ly);
-    ph_then.affine_image(Y, ly, as_then);
+    ph_then.affine_image(Y, ly);
 
-    ph.refine_with_linear_form_inequality(lr, lk, abstract_store);
+    ph.refine_with_linear_form_inequality(lr, lk);
 
     ph.upper_bound_assign(ph_then);
     abstract_store.upper_bound_assign(as_then);
