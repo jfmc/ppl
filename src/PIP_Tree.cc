@@ -1213,11 +1213,32 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
       }
       else {
         /* The solution is non-integer. We have to generate a cut. */
+        Coefficient mod;
+        /* Look for row which will generate the "deepest" cut */
+        Coefficient score;
+        Coefficient best = 0;
+        dimension_type best_i = i;
+        for (i_ = i; i_ < num_rows; ++i_) {
+          const Row& row = tableau.t[i_];
+          score = 0;
+          for (j = 0; j < num_params; ++j) {
+            mod_assign(mod, row[j], d);
+            if (mod != 0)
+              score += d - mod;
+          }
+          if (score > best) {
+            best = score;
+            best_i = i_;
+          }
+        }
+        i = best_i;
+
 #ifdef NOISY_PIP
         std::cout << "Row " << i << " contains non-integer coefficients. "
                   << "Cut generation required."
                   << std::endl;
 #endif
+
         tableau.t.add_zero_columns(1);
         tableau.s.add_zero_rows(1, Row::Flags());
         tableau.t.add_zero_rows(1, Row::Flags());
@@ -1227,7 +1248,6 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         const Row& row_t = tableau.t[i];
         Linear_Expression e;
         Variables_Set::const_iterator p;
-        Coefficient mod;
         mod_assign(mod, row_t[0], d);
         if (mod != 0)
           e += (d-mod);
