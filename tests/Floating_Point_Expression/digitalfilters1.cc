@@ -605,7 +605,7 @@ test06() {
     //assign_r(M, max, ROUND_DOWN);
     //cs.insert(Y <= M);
     //cs.insert(Y >= -M);
-    
+
     ph.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
     Box<FP_Interval> box(ph);
     print_constraints(box, "*** after widening ***");
