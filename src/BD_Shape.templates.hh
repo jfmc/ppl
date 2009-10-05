@@ -4282,7 +4282,6 @@ template <typename Interval_Info>
 void BD_Shape<T>::refine_with_linear_form_inequality(
                    const Linear_Form< Interval<T, Interval_Info> >& left,
                    const Linear_Form< Interval<T, Interval_Info> >& right) {
-
     // Check that T is a floating point type.
     PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
 		    "Octagonal_Shape<T>::refine_with_linear_form_inequality:"

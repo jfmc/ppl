@@ -21,7 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include <limits>
 
 namespace {
 
@@ -272,15 +271,15 @@ test03() {
          "*** if (R >= D)  Y = S + D; ***");
 
     oc.upper_bound_assign(oc_begin);
-    Constraint_System cs(abstract_store.constraints());
+    Constraint_System cs;
     // FIXME: It's a temporary solution, waiting for a complete
     // implementation of ANALYZED_FP_FORMAT.
     //ANALYZED_FP_FORMAT max = std::numeric_limits<ANALYZED_FP_FORMAT>::max();
     PPL_DIRTY_TEMP_COEFFICIENT(M);
     //assign_r(M, max, ROUND_DOWN);
     assign_r(M, 200, ROUND_DOWN);
-    cs.insert(Y <= 500);//M);
-    cs.insert(Y >= -500);//-M);
+    cs.insert(Y <= M);
+    cs.insert(Y >= -M);
     oc.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
     Box<FP_Interval> box(oc);
     print_constraints(box, "*** after widening ***");
@@ -366,7 +365,7 @@ test04() {
          "*** if (R >= D)  Y = S + D; ***");
 
     ph.upper_bound_assign(ph_begin);
-    Constraint_System cs(abstract_store.constraints());
+    Constraint_System cs;
     // FIXME: It's a temporary solution, waiting for a complete
     // implementation of ANALYZED_FP_FORMAT.
     //ANALYZED_FP_FORMAT max = std::numeric_limits<ANALYZED_FP_FORMAT>::max();
@@ -475,11 +474,13 @@ test05() {
     print_constraints(Box<FP_Interval>(oc), "*** if (R >= D)  Y = S + D; ***");
 
     oc.upper_bound_assign(oc_begin);
-    Constraint_System cs(oc.constraints());
-    // FIXME: Not sound, we should use ANALYZED_FP_FORMAT.
-    ANALYZER_FP_FORMAT max = std::numeric_limits<ANALYZER_FP_FORMAT>::max();
+    Constraint_System cs;
+    // FIXME: It's a temporary solution, waiting for a complete
+    // implementation of ANALYZED_FP_FORMAT.
+    //ANALYZED_FP_FORMAT max = std::numeric_limits<ANALYZED_FP_FORMAT>::max();
     PPL_DIRTY_TEMP_COEFFICIENT(M);
-    assign_r(M, max, ROUND_DOWN);
+    //assign_r(M, max, ROUND_DOWN);
+    assign_r(M, 200, ROUND_DOWN);
     cs.insert(Y <= M);
     cs.insert(Y >= -M);
     oc.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
@@ -592,10 +593,12 @@ test06() {
 
     ph.upper_bound_assign(ph_begin);
     Constraint_System cs;
-    // FIXME: This is not sound, it should use ANALYZED_FP_FORMAT
-    ANALYZER_FP_FORMAT max = std::numeric_limits<ANALYZER_FP_FORMAT>::max();
+    // FIXME: It's a temporary solution, waiting for a complete
+    // implementation of ANALYZED_FP_FORMAT.
+    //ANALYZED_FP_FORMAT max = std::numeric_limits<ANALYZED_FP_FORMAT>::max();
     PPL_DIRTY_TEMP_COEFFICIENT(M);
-    assign_r(M, max, ROUND_DOWN);
+    //assign_r(M, max, ROUND_DOWN);
+    assign_r(M, 200, ROUND_DOWN);
     cs.insert(Y <= M);
     cs.insert(Y >= -M);
     ph.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
@@ -615,6 +618,6 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  //DO_TEST(test05);
-  //DO_TEST(test06);
+  DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN
