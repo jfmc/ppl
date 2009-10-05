@@ -42,9 +42,30 @@ namespace Parma_Polyhedra_Library {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 struct float_ieee754_half {
+  uint32_t word;
+  static const uint32_t SGN_MASK = 0x8000;
+  static const uint32_t EXP_MASK = 0xfc00;
+  static const uint32_t POS_INF = 0xfc00;
+  static const uint32_t NEG_INF = 0x7c00;
+  static const uint32_t POS_ZERO = 0x0000;
+  static const uint32_t NEG_ZERO = 0x8000;
   static const unsigned int EXPONENT_BITS = 5;
   static const unsigned int MANTISSA_BITS = 10;
-  static const int EXPONENT_BIAS = 15;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_BIAS = EXPONENT_MAX;
+  static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
+  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
+					- static_cast<int>(MANTISSA_BITS);
+  int is_inf() const;
+  int is_nan() const;
+  int is_zero() const;
+  int sign_bit() const;
+  void negate();
+  void dec();
+  void inc();
+  void set_max(bool negative);
+  void build(bool negative, mpz_t mantissa, int exponent);
+
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -228,7 +249,9 @@ class Float : public False { };
 template <>
 class Float<float> : public True {
 public:
-#if PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+#if PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_HALF
+  typedef float_ieee754_half Binary;
+#elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
   typedef float_ieee754_single Binary;
 #elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
   typedef float_ieee754_double Binary;
@@ -253,7 +276,9 @@ public:
 template <>
 class Float<double> : public True {
 public:
-#if PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+#if PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_HALF
+  typedef float_ieee754_half Binary;
+#elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
   typedef float_ieee754_single Binary;
 #elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
   typedef float_ieee754_double Binary;
@@ -278,7 +303,9 @@ public:
 template <>
 class Float<long double> : public True {
 public:
-#if PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+#if PPL_CXX_LONG_BINARY_FORMAT == PPL_FLOAT_IEEE754_HALF
+  typedef float_ieee754_half Binary;
+#elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
   typedef float_ieee754_single Binary;
 #elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
   typedef float_ieee754_double Binary;

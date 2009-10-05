@@ -596,6 +596,16 @@ test06() {
     assign_r(M, 200, ROUND_DOWN);
     cs.insert(Y <= M);
     cs.insert(Y >= -M);
+    // FIXME: not sound.
+    // ANALYZED_FP_FORMAT max = std::numeric_limits<ANALYZED_FP_FORMAT>::max();
+    // NOTE: std::max() not correct, try use following solution.
+    // ANALYZED_FP_FORMAT max;
+    // max.set_max(false);
+    //PPL_DIRTY_TEMP_COEFFICIENT(M);
+    //assign_r(M, max, ROUND_DOWN);
+    //cs.insert(Y <= M);
+    //cs.insert(Y >= -M);
+    
     ph.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
     Box<FP_Interval> box(ph);
     print_constraints(box, "*** after widening ***");

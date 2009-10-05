@@ -26,6 +26,64 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <climits>
 
 namespace Parma_Polyhedra_Library {
+ 
+inline int
+float_ieee754_half::is_inf() const {
+  if (word == NEG_INF)
+    return -1;
+  if (word == POS_INF)
+    return 1;
+  return 0;
+}
+
+inline int
+float_ieee754_half::is_nan() const {
+  return (word & ~SGN_MASK) > POS_INF;
+}
+
+inline int
+float_ieee754_half::is_zero() const {
+  if (word == NEG_ZERO)
+    return -1;
+  if (word == POS_ZERO)
+    return 1;
+  return 0;
+}
+
+inline void
+float_ieee754_half::negate() {
+  word ^= SGN_MASK;
+}
+
+inline int
+float_ieee754_half::sign_bit() const {
+  return !!(word & SGN_MASK);
+}
+
+inline void
+float_ieee754_half::dec() {
+  --word;
+}
+
+inline void
+float_ieee754_half::inc() {
+  ++word;
+}
+
+inline void
+float_ieee754_half::set_max(bool negative) {
+  word = 0x7bff;
+  if (negative)
+    word |= SGN_MASK;
+}
+
+inline void
+float_ieee754_half::build(bool negative, mpz_t mantissa, int exponent) {
+  word = mpz_get_ui(mantissa) & ((1UL << MANTISSA_BITS) - 1);
+  if (negative)
+    word |= SGN_MASK;
+  word |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << MANTISSA_BITS;
+}
 
 inline int
 float_ieee754_single::is_inf() const {
