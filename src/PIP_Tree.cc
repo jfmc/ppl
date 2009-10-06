@@ -636,7 +636,7 @@ bool
 PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
   Matrix s(ctx);
   s.add_row(cnst);
-  dimension_type i, j, k, j_;
+  dimension_type i, j, k, j_, j__;
   dimension_type num_rows = s.num_rows();
   dimension_type num_cols = s.num_columns();
   bool result = false;
@@ -664,38 +664,42 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
       break;
     }
     // Perform a pivot operation on the matrix
-    const Coefficient &sij = p[j];
+    const Coefficient& sij = p[j];
     for (j_=0; j_<num_cols; ++j_) {
       if (j_ == j)
         continue;
-      const Coefficient &sij_ = p[j_];
+      const Coefficient& sij_ = p[j_];
       for (k=0; k<num_rows; ++k) {
         if (k == i)
           continue;
-        Coefficient mult = s[k][j] * sij_;
+        Row& row = s[k];
+        Coefficient mult = row[j] * sij_;
         if (mult % sij != 0) {
           // Must scale row to stay in integer case
           Coefficient gcd;
           gcd_assign(gcd, mult, sij);
           Coefficient scale_factor = sij/gcd;
-          add_assign(s[k], s[k], scale_factor);
+          for (j__=0; j__<num_cols; ++j__)
+            row[j__] *= scale_factor;
           mult *= scale_factor;
         }
-        s[k][j_] -= mult / sij;
+        row[j_] -= mult / sij;
       }
       s[i][j_] = 0;
     }
     for (k=0; k<num_rows; ++k) {
-      Coefficient skj = s[k][j];
+      Row& row = s[k];
+      Coefficient& skj = row[j];
       if (skj % sij != 0) {
         // as above, we must perform row scaling
         Coefficient gcd;
         gcd_assign(gcd, skj, sij);
         Coefficient scale_factor = sij/gcd;
-        add_assign(s[k], s[k], scale_factor);
+        for (j__=0; j__<num_cols; ++j__)
+          row[j__] *= scale_factor;
         skj *= scale_factor;
       }
-      s[k][j] = skj/sij;
+      skj /= sij;
     }
   }
 
