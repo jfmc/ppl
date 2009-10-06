@@ -69,13 +69,13 @@ merge_assign(Matrix& x,
   }
 }
 
-// Tranform expression "expr" into "-expr-1"
+// Tranform expression "expr" into "-expr-1", using scaling
 void
-negate_assign(Row& x, const Row& y) {
+negate_assign(Row& x, const Row& y, const Coefficient& sc) {
   PPL_ASSERT(x.size() == y.size());
   for (dimension_type i = x.size(); i-- > 0; )
     x[i] = -y[i];
-  x[0] -= 1;
+  x[0] -= sc;
 }
 
 // Update given context matrix using local artificials
@@ -405,7 +405,7 @@ PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& context,
     update_context(context_false, artificial_parameters);
     merge_assign(context_false, constraints_, parameters);
     Row &last = context_false[context_false.num_rows()-1];
-    negate_assign(last, last);
+    negate_assign(last, last, 1);
     stf = false_child->solve(false_child, context_false, parameters,
                              space_dimension);
   }
@@ -664,11 +664,11 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
       break;
     }
     // Perform a pivot operation on the matrix
-    const Coefficient& sij = p[j];
+    const Coefficient sij = p[j];
     for (j_=0; j_<num_cols; ++j_) {
       if (j_ == j)
         continue;
-      const Coefficient& sij_ = p[j_];
+      const Coefficient sij_ = p[j_];
       for (k=0; k<num_rows; ++k) {
         if (k == i)
           continue;
@@ -856,7 +856,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
           // constraint t_i(z) >= 0 is compatible with the context
           s = POSITIVE;
         Row c(num_params, Row::Flags());
-        negate_assign(c, tableau.t[i]);
+        negate_assign(c, tableau.t[i], tableau.get_denominator());
         if (compatibility_check(context, c)) {
           // constraint t_i(z) < 0 <=> -t_i(z)-1 >= 0 is compatible
           if (s == POSITIVE)
@@ -897,7 +897,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         if (!found)
           continue;
         Row row(tableau.t[i]);
-        row[0] -= 1;
+        row[0] -= tableau.get_denominator();
         if (compatibility_check(context, row)) {
           if (i__ == n_a_d)
             i__ = i;
@@ -1152,7 +1152,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         aps.swap(artificial_parameters);
         PIP_Tree_Node *fals = this;
         Row &testf = context[context.num_rows()-1];
-        negate_assign(testf, test);
+        negate_assign(testf, test, 1);
         PIP_Problem_Status status_f = solve(fals, context, parameters,
                                             space_dimension);
 
