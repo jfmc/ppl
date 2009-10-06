@@ -107,10 +107,10 @@ public:
 
     \param params
     the Variables_Set to be updated
-    
+
     \param space_dimension
     the space dimension for \p *this
-    
+
     \return
     the number of inserted indices
   */
@@ -214,6 +214,9 @@ public:
     Returns a parametric expression of the values of variable \p v.
 
     The returned linear expression only involves parameters.
+
+    \param v
+    the variable which is queried about
 
     \param parameters
     a \c std::set of indices of the parameters in the constraints
