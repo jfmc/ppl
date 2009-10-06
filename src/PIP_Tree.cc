@@ -824,6 +824,12 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
     dimension_type num_params = tableau.t.num_columns();
     Row_Sign s;
 
+#ifdef NOISY_PIP
+    tableau.ascii_dump(std::cout);
+    std::cout << "context ";
+    context.ascii_dump(std::cout);
+#endif
+
     for (i=0; i<num_rows; ++i) {
       Row_Sign s = sign[i];
       if (s == UNKNOWN) {
@@ -1322,6 +1328,21 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
             cut_t[j] = 0;
         }
         cut_t[num_params] = d*d;
+#ifdef NOISY_PIP
+        {
+          Linear_Expression e;
+          dimension_type ti = 1;
+          dimension_type si = 0;
+          for (j=0; j<space_dimension; ++j) {
+            if (parameters.count(j) == 1)
+              e += cut_t[ti++] * Variable(j);
+            else
+              e += cut_s[si++] * Variable(j);
+          }
+          std::cout << "Adding cut: " << Constraint(e + cut_t[0] >= 0)
+                    << std::endl;
+        }
+#endif
         sign.push_back(NEGATIVE);
       }
     }

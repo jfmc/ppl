@@ -136,6 +136,7 @@ protected:
   friend class PIP_Decision_Node;
   friend class PIP_Solution_Node;
 
+  //FIXME - remove problem pointer
   //! A pointer to the master problem object.
   PIP_Problem* problem;
 
