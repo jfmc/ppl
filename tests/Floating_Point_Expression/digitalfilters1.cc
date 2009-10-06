@@ -62,24 +62,26 @@ test01() {
   Variable R(4);
 
   FP_Interval_Abstract_Store abstract_store(5);
-  FP_Interval tmp(0);
+  FP_Interval y(0);
+  FP_Interval y_begin(1);
   FP_Interval_Abstract_Store as_begin;
 
   // Y = 0;
-  abstract_store.set_interval(Y, tmp);
+  abstract_store.set_interval(Y, y);
 
-  for(unsigned short n = 0; as_begin != abstract_store; ++n) {
+  for(unsigned short n = 0; y != y_begin; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     as_begin = abstract_store;
+    y_begin = y;
 
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
-    tmp.lower() = -128;
-    tmp.upper() = 128;
-    abstract_store.set_interval(X, tmp);
-    tmp.lower() = 0;
-    tmp.upper() = 16;
-    abstract_store.set_interval(D, tmp);
+    y.lower() = -128;
+    y.upper() = 128;
+    abstract_store.set_interval(X, y);
+    y.lower() = 0;
+    y.upper() = 16;
+    abstract_store.set_interval(D, y);
     abstract_store.affine_image(S, Y);
     abstract_store.affine_image(R, X - S);
     abstract_store.affine_image(Y, X);
@@ -119,11 +121,11 @@ test01() {
     abstract_store.limited_CC76_extrapolation_assign(as_begin, cs);
     Box<FP_Interval> box(abstract_store);
     print_constraints(box, "*** after widening ***");
-    tmp = box.get_interval(Y);
+    y = box.get_interval(Y);
   }
 
   nout << "*** Y in [-128 - 16n, 128 + 16n] ***" << endl;
-  return !tmp.is_bounded();
+  return !y.is_bounded();
 }
 
 // tests rate limiter using bounded differences abstract domain
@@ -143,24 +145,26 @@ test02() {
 
   FP_Interval_Abstract_Store abstract_store(5);
   FP_BD_Shape bd(abstract_store);
-  FP_Interval tmp(0);
+  FP_Interval y_begin(1);
+  FP_Interval y(0);
   FP_BD_Shape bd_begin;
 
   // Y = 0;
-  bd.affine_image(Y, FP_Linear_Form(tmp));
+  bd.affine_image(Y, FP_Linear_Form(y));
 
-  for(unsigned short n = 0; bd_begin != bd; ++n) {
+  for(unsigned short n = 0; y != y_begin; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     bd_begin = bd;
+    y_begin = y;
 
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
-    tmp.lower() = -128;
-    tmp.upper() = 128;
-    bd.affine_image(X, FP_Linear_Form(tmp));
-    tmp.lower() = 0;
-    tmp.upper() = 16;
-    bd.affine_image(D, FP_Linear_Form(tmp));
+    y.lower() = -128;
+    y.upper() = 128;
+    bd.affine_image(X, FP_Linear_Form(y));
+    y.lower() = 0;
+    y.upper() = 16;
+    bd.affine_image(D, FP_Linear_Form(y));
     bd.affine_image(S, FP_Linear_Form(Y));
     bd.affine_image(R, FP_Linear_Form(X - S));
     bd.affine_image(Y, FP_Linear_Form(X));
@@ -207,11 +211,11 @@ test02() {
     bd.limited_BHMZ05_extrapolation_assign(bd_begin, cs);
     Box<FP_Interval> box(bd);
     print_constraints(box, "*** after widening ***");
-    tmp = box.get_interval(Y);
+    y = box.get_interval(Y);
   }
 
   nout << "*** Y in [-16 - 16n, 128 + 16n] ***" << endl;
-  return !tmp.is_bounded();
+  return !y.is_bounded();
 }
 
 // tests rate limiter using octagons abstract domain
@@ -231,24 +235,26 @@ test03() {
 
   FP_Interval_Abstract_Store abstract_store(5);
   FP_Octagonal_Shape oc(abstract_store);
-  FP_Interval tmp(0);
+  FP_Interval y(0);
+  FP_Interval y_begin(1);
   FP_Octagonal_Shape oc_begin;
 
   // Y = 0;
-  oc.affine_image(Y, FP_Linear_Form(tmp));
+  oc.affine_image(Y, FP_Linear_Form(y));
 
-  for(unsigned short n = 0; oc_begin != oc; ++n) {
+  for(unsigned short n = 0; y_begin != y; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     oc_begin = oc;
+    y_begin = y;
 
     //X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
-    tmp.lower() = -128;
-    tmp.upper() = 128;
-    oc.affine_image(X, FP_Linear_Form(tmp));
-    tmp.lower() = 0;
-    tmp.upper() = 16;
-    oc.affine_image(D, FP_Linear_Form(tmp));
+    y.lower() = -128;
+    y.upper() = 128;
+    oc.affine_image(X, FP_Linear_Form(y));
+    y.lower() = 0;
+    y.upper() = 16;
+    oc.affine_image(D, FP_Linear_Form(y));
     oc.affine_image(S, FP_Linear_Form(Y));
     oc.affine_image(R, FP_Linear_Form(X - S));
     oc.affine_image(Y, FP_Linear_Form(X));
@@ -301,11 +307,11 @@ test03() {
     oc.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
     Box<FP_Interval> box(oc);
     print_constraints(box, "*** after widening ***");
-    tmp = box.get_interval(Y);
+    y = box.get_interval(Y);
   }
 
-  nout << "*** Y in " << tmp << " ***" << endl;
-  return tmp.is_bounded();
+  nout << "*** Y in " << y << " ***" << endl;
+  return y.is_bounded();
 }
 
 // tests rate limiter using polyhedra abstract domain
@@ -325,24 +331,25 @@ test04() {
 
   FP_Interval_Abstract_Store abstract_store(5);
   NNC_Polyhedron ph(abstract_store);
-  FP_Interval tmp(0);
+  FP_Interval y(0);
+  FP_Interval y_begin(1);
   NNC_Polyhedron ph_begin;
 
   // Y = 0;
-  ph.affine_image(Y, FP_Linear_Form(tmp));
+  ph.affine_image(Y, FP_Linear_Form(y));
 
-  for(unsigned short n = 0; ph_begin != ph; ++n) {
+  for(unsigned short n = 0; y_begin != y; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     ph_begin = ph;
-
+    y_begin = y;
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
-    tmp.lower() = -128;
-    tmp.upper() = 128;
-    ph.affine_image(X, FP_Linear_Form(tmp));
-    tmp.lower() = 0;
-    tmp.upper() = 16;
-    ph.affine_image(D, FP_Linear_Form(tmp));
+    y.lower() = -128;
+    y.upper() = 128;
+    ph.affine_image(X, FP_Linear_Form(y));
+    y.lower() = 0;
+    y.upper() = 16;
+    ph.affine_image(D, FP_Linear_Form(y));
     abstract_store = Box<FP_Interval>(ph);
     ph.affine_image(S, FP_Linear_Form(Y));
     abstract_store = Box<FP_Interval>(ph);
@@ -395,11 +402,11 @@ test04() {
     ph.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
     Box<FP_Interval> box(ph);
     print_constraints(box, "*** after widening ***");
-    tmp = box.get_interval(Y);
+    y = box.get_interval(Y);
   }
 
-  nout << "*** Y in " << tmp << " ***" << endl;
-  return tmp.is_bounded();
+  nout << "*** Y in " << y << " ***" << endl;
+  return y.is_bounded();
 }
 
 // tests rate limiter using octagons abstract domain and
@@ -421,7 +428,7 @@ test05() {
   FP_Interval_Abstract_Store abstract_store(5);
   FP_Linear_Form_Abstract_Store lf_abstract_store;
   FP_Octagonal_Shape oc(abstract_store);
-  FP_Interval tmp(0);
+  FP_Interval y(0);
   FP_Octagonal_Shape oc_begin;
   Con_FP_Expression con_y(0, 0);
   FP_Linear_Form lx;
@@ -508,11 +515,11 @@ test05() {
     oc.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
     Box<FP_Interval> box(oc);
     print_constraints(box, "*** after widening ***");
-    tmp = box.get_interval(Y);
+    y = box.get_interval(Y);
   }
 
-  nout << "*** Y in " << tmp << " ***" << endl;
-  return tmp.is_bounded();
+  nout << "*** Y in " << y << " ***" << endl;
+  return y.is_bounded();
 }
 
 // tests rate limiter using polyhedra abstract domain and
