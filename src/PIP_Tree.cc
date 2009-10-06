@@ -1248,73 +1248,84 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
                   << "Cut generation required."
                   << std::endl;
 #endif
-
-        tableau.t.add_zero_columns(1);
         tableau.s.add_zero_rows(1, Row::Flags());
         tableau.t.add_zero_rows(1, Row::Flags());
-        context.add_zero_columns(1);
 
-        // Generate new artificial parameter
+        // Test if cut to be generated must be parametric or not
+        const Row& row_t1 = tableau.t[i];
+        for (j=1; j<num_params; ++j) {
+          if (row_t1[j] % d != 0) {
+            tableau.t.add_zero_columns(1);
+            context.add_zero_columns(1);
+            break;
+          }
+        }
+
         const Row& row_t = tableau.t[i];
-        Linear_Expression e;
-        Variables_Set::const_iterator p;
-        mod_assign(mod, row_t[0], d);
-        if (mod != 0)
-          e += (d-mod);
-        for (p=parameters.begin(), j=1; j<num_params; ++j, ++p) {
-          mod_assign(mod, row_t[j], d);
-          if (mod != 0)
-            e += (d-mod) * Variable(*p);
-        }
-        artificial_parameters.push_back(Artificial_Parameter(e, d));
-        parameters.insert(space_dimension);
-#ifdef NOISY_PIP
-        using namespace IO_Operators;
-        std::cout << "Creating new parameter " << Variable(space_dimension)
-                  << " = (" << e << ")/" << d
-                  << std::endl;
-#endif
-        ++space_dimension;
-
-        // Update current context with constraints on the new parameter
-        Row ctx1(num_params+1, Row::Flags());
-        Row ctx2(num_params+1, Row::Flags());
-        for (j=0; j<num_params; ++j) {
-          mod_assign(mod, row_t[j], d);
-          if (mod != 0) {
-            ctx1[j] = d - mod;
-            ctx2[j] = -ctx1[j];
-          } else {
-            ctx1[j] = 0;
-            ctx2[j] = 0;
-          }
-        }
-        ctx1[num_params] = -d;
-        ctx2[num_params] = d;
-        ctx2[0] += d-1;
-#ifdef NOISY_PIP
-        {
-          Variables_Set::const_iterator p = parameters.begin();
-          Linear_Expression e1;
-          Linear_Expression e2;
-          for (j=1; j<=num_params; ++j, ++p) {
-            e1 += ctx1[j] * Variable(*p);
-            e2 += ctx2[j] * Variable(*p);
-          }
-          e1 += ctx1[0];
-          e2 += ctx2[0];
-          std::cout << "Inserting into context: "
-                    << Constraint(e1 >= 0) << " ; "
-                    << Constraint(e2 >= 0) << std::endl;
-        }
-#endif
-        context.add_row(ctx1);
-        context.add_row(ctx2);
-
-        // Generate new cut
         Row& cut_s = tableau.s[num_rows];
         Row& cut_t = tableau.t[num_rows];
-        //const Row& row_t = tableau.t[i];
+
+        if (j < num_params) {
+          // Fractional parameter coefficient found: generate parametric cut
+          // Generate new artificial parameter
+          Linear_Expression e;
+          Variables_Set::const_iterator p;
+          mod_assign(mod, row_t[0], d);
+          if (mod != 0)
+            e += (d-mod);
+          for (p=parameters.begin(), j=1; j<num_params; ++j, ++p) {
+            mod_assign(mod, row_t[j], d);
+            if (mod != 0)
+              e += (d-mod) * Variable(*p);
+          }
+          artificial_parameters.push_back(Artificial_Parameter(e, d));
+          parameters.insert(space_dimension);
+#ifdef NOISY_PIP
+          using namespace IO_Operators;
+          std::cout << "Creating new parameter " << Variable(space_dimension)
+                    << " = (" << e << ")/" << d
+                    << std::endl;
+#endif
+          ++space_dimension;
+
+          // Update current context with constraints on the new parameter
+          Row ctx1(num_params+1, Row::Flags());
+          Row ctx2(num_params+1, Row::Flags());
+          for (j=0; j<num_params; ++j) {
+            mod_assign(mod, row_t[j], d);
+            if (mod != 0) {
+              ctx1[j] = d - mod;
+              ctx2[j] = -ctx1[j];
+            } else {
+              ctx1[j] = 0;
+              ctx2[j] = 0;
+            }
+          }
+          ctx1[num_params] = -d;
+          ctx2[num_params] = d;
+          ctx2[0] += d-1;
+#ifdef NOISY_PIP
+          {
+            Variables_Set::const_iterator p = parameters.begin();
+            Linear_Expression e1;
+            Linear_Expression e2;
+            for (j=1; j<=num_params; ++j, ++p) {
+              e1 += ctx1[j] * Variable(*p);
+              e2 += ctx2[j] * Variable(*p);
+            }
+            e1 += ctx1[0];
+            e2 += ctx2[0];
+            std::cout << "Inserting into context: "
+                      << Constraint(e1 >= 0) << " ; "
+                      << Constraint(e2 >= 0) << std::endl;
+          }
+#endif
+          context.add_row(ctx1);
+          context.add_row(ctx2);
+          cut_t[num_params] = d*d;
+        }
+
+        // Generate new cut
         const Row& row_s = tableau.s[i];
         for (j=0; j<num_vars; ++j) {
           mod_assign(mod, row_s[j], d);
@@ -1327,9 +1338,9 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
           else
             cut_t[j] = 0;
         }
-        cut_t[num_params] = d*d;
 #ifdef NOISY_PIP
         {
+          using namespace IO_Operators;
           Linear_Expression e;
           dimension_type ti = 1;
           dimension_type si = 0;
