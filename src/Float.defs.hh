@@ -42,13 +42,13 @@ namespace Parma_Polyhedra_Library {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 struct float_ieee754_half {
-  uint32_t word;
-  static const uint32_t SGN_MASK = 0x8000;
-  static const uint32_t EXP_MASK = 0xfc00;
-  static const uint32_t POS_INF = 0xfc00;
-  static const uint32_t NEG_INF = 0x7c00;
-  static const uint32_t POS_ZERO = 0x0000;
-  static const uint32_t NEG_ZERO = 0x8000;
+  uint16_t word;
+  static const uint16_t SGN_MASK = 0x8000;
+  static const uint16_t EXP_MASK = 0xfc00;
+  static const uint16_t POS_INF = 0xfc00;
+  static const uint16_t NEG_INF = 0x7c00;
+  static const uint16_t POS_ZERO = 0x0000;
+  static const uint16_t NEG_ZERO = 0x8000;
   static const unsigned int EXPONENT_BITS = 5;
   static const unsigned int MANTISSA_BITS = 10;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
@@ -147,9 +147,29 @@ struct float_ieee754_double {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 struct float_ibm_single {
+  uint32_t word;
+  static const uint32_t SGN_MASK = 0x80000000;
+  static const uint32_t EXP_MASK = 0x7f000000;
+  static const uint32_t POS_INF = 0x7f000000;
+  static const uint32_t NEG_INF = 0xff000000;
+  static const uint32_t POS_ZERO = 0x00000000;
+  static const uint32_t NEG_ZERO = 0x80000000;
   static const unsigned int EXPONENT_BITS = 7;
   static const unsigned int MANTISSA_BITS = 24;
   static const int EXPONENT_BIAS = 64;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
+  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
+					- static_cast<int>(MANTISSA_BITS);
+  int is_inf() const;
+  int is_nan() const;
+  int is_zero() const;
+  int sign_bit() const;
+  void negate();
+  void dec();
+  void inc();
+  void set_max(bool negative);
+  void build(bool negative, mpz_t mantissa, int exponent);
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

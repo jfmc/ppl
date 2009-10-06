@@ -228,6 +228,65 @@ float_ieee754_double::build(bool negative, mpz_t mantissa, int exponent) {
 }
 
 inline int
+float_ibm_single::is_inf() const {
+  if (word == NEG_INF)
+    return -1;
+  if (word == POS_INF)
+    return 1;
+  return 0;
+}
+
+inline int
+float_ibm_single::is_nan() const {
+  return (word & ~SGN_MASK) > POS_INF;
+}
+
+inline int
+float_ibm_single::is_zero() const {
+  if (word == NEG_ZERO)
+    return -1;
+  if (word == POS_ZERO)
+    return 1;
+  return 0;
+}
+
+inline void
+float_ibm_single::negate() {
+  word ^= SGN_MASK;
+}
+
+inline int
+float_ibm_single::sign_bit() const {
+  return !!(word & SGN_MASK);
+}
+
+inline void
+float_ibm_single::dec() {
+  --word;
+}
+
+inline void
+float_ibm_single::inc() {
+  ++word;
+}
+
+inline void
+float_ibm_single::set_max(bool negative) {
+  word = 0x7f000000;
+  if (negative)
+    word |= SGN_MASK;
+}
+
+inline void
+float_ibm_single::build(bool negative, mpz_t mantissa, int exponent) {
+  word = mpz_get_ui(mantissa) & ((1UL << MANTISSA_BITS) - 1);
+  if (negative)
+    word |= SGN_MASK;
+  word |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << MANTISSA_BITS;
+}
+
+  ///asasdasda
+inline int
 float_intel_double_extended::is_inf() const {
   if (lsp != LSP_INF)
     return 0;
