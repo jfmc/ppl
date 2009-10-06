@@ -122,7 +122,7 @@ public:
 
 protected:
   //! Default constructor.
-  PIP_Tree_Node(PIP_Problem* p);
+  PIP_Tree_Node();
 
   //! Copy constructor.
   PIP_Tree_Node(const PIP_Tree_Node &x);
@@ -135,10 +135,6 @@ protected:
   friend class PIP_Problem;
   friend class PIP_Decision_Node;
   friend class PIP_Solution_Node;
-
-  //FIXME - remove problem pointer
-  //! A pointer to the master problem object.
-  PIP_Problem* problem;
 
   //! The local system of parameter constraints.
   Constraint_System constraints_;
@@ -199,7 +195,7 @@ protected:
 class PIP_Solution_Node : public PIP_Tree_Node {
 public:
   //! Default constructor.
-  PIP_Solution_Node(PIP_Problem* p);
+  PIP_Solution_Node();
 
   //! Destructor.
   ~PIP_Solution_Node();
@@ -447,7 +443,7 @@ private:
     \exception std::invalid_argument
     Thrown if \p cs contains strict inequalities.
   */
-  PIP_Decision_Node(PIP_Problem* p, PIP_Tree_Node* fcp, PIP_Tree_Node* tcp);
+  PIP_Decision_Node(PIP_Tree_Node* fcp, PIP_Tree_Node* tcp);
 
 protected:
   /*! \brief

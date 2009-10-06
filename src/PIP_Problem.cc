@@ -79,7 +79,7 @@ PPL::PIP_Problem::solve() const {
       PIP_Problem_Status return_value;
 
       if (current_solution == 0)
-        x.current_solution = new PIP_Solution_Node(&x);
+        x.current_solution = new PIP_Solution_Node();
       if (input_cs.empty()) {
         // no constraints: solution = {0}
         return OPTIMIZED_PIP_PROBLEM;

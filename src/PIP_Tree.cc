@@ -112,15 +112,13 @@ operator<<(std::ostream& os, const PIP_Tree_Node::Artificial_Parameter& x) {
 
 } // namespace IO_Operators
 
-PIP_Tree_Node::PIP_Tree_Node(PIP_Problem* p)
-  : problem(p),
-    constraints_(),
+PIP_Tree_Node::PIP_Tree_Node()
+  : constraints_(),
     artificial_parameters() {
 }
 
 PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node &x)
-  : problem(x.problem),
-    constraints_(x.constraints_),
+  : constraints_(x.constraints_),
     artificial_parameters(x.artificial_parameters) {
 }
 
@@ -171,8 +169,8 @@ PIP_Decision_Node::~PIP_Decision_Node() {
 PIP_Solution_Node::~PIP_Solution_Node() {
 }
 
-PIP_Solution_Node::PIP_Solution_Node(PIP_Problem* p)
-  : PIP_Tree_Node(p),
+PIP_Solution_Node::PIP_Solution_Node()
+  : PIP_Tree_Node(),
     tableau(),
     basis(),
     mapping(),
@@ -193,7 +191,7 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x)
 
 PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x,
                                      bool empty_constraints)
-  : PIP_Tree_Node(x.problem),
+  : PIP_Tree_Node(),
     tableau(x.tableau),
     basis(x.basis),
     mapping(x.mapping),
@@ -206,10 +204,9 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x,
   }
 }
 
-PIP_Decision_Node::PIP_Decision_Node(PIP_Problem* p,
-                                     PIP_Tree_Node* fcp,
+PIP_Decision_Node::PIP_Decision_Node(PIP_Tree_Node* fcp,
                                      PIP_Tree_Node* tcp)
-  : PIP_Tree_Node(p),
+  : PIP_Tree_Node(),
     true_child(tcp),
     false_child(fcp) {
 }
@@ -1174,14 +1171,13 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         }
 
         /* Create a decision Node to become parent of current Node */
-        PIP_Decision_Node* parent
-        = new PIP_Decision_Node(fals->problem, fals, tru);
+        PIP_Decision_Node* parent = new PIP_Decision_Node(fals, tru);
         parent->add_constraint(test, parameters);
 
         if (!cs.empty()) {
           /* If node to be solved had tautologies, store them in a new
              decision node */
-          parent = new PIP_Decision_Node(fals->problem, 0, parent);
+          parent = new PIP_Decision_Node(0, parent);
           cs.swap(parent->constraints_);
         }
         aps.swap(parent->artificial_parameters);
