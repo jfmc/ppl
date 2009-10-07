@@ -77,6 +77,8 @@ DECLARE_CONVERSIONS(Grid_Generator_System_const_iterator,
 
 DECLARE_CONVERSIONS(MIP_Problem, MIP_Problem)
 
+DECLARE_CONVERSIONS(PIP_Problem, PIP_Problem)
+
 inline Relation_Symbol
 relation_symbol(enum ppl_enum_Constraint_Type t) {
   switch (t) {

@@ -686,6 +686,15 @@ PPL_TYPE_DECLARATION(Grid_Generator_System_const_iterator)
 */
 PPL_TYPE_DECLARATION(MIP_Problem)
 
+/*! \interface ppl_PIP_Problem_tag
+  \brief
+  Types and functions for PIP problems.
+
+  The types and functions for PIP problems provide an interface
+  towards \extref{Parma_Polyhedra_Library::PIP_Problem, PIP_Problem}.
+*/
+PPL_TYPE_DECLARATION(PIP_Problem)
+
 
 #undef PPL_DECLARE_PRINT_FUNCTIONS
 #undef PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS
@@ -2301,6 +2310,23 @@ extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_EXACT;
 */
 extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_FLOAT;
 
+
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of the "unfeasible PIP problem" status.
+*/
+extern int PPL_PIP_PROBLEM_STATUS_UNFEASIBLE;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of the "unbounded PIP problem" status.
+*/
+extern int PPL_PIP_PROBLEM_STATUS_UNBOUNDED;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of the "optimized PIP problem" status.
+*/
+extern int PPL_PIP_PROBLEM_STATUS_OPTIMIZED;
+
 /*@}*/ /* Symbolic Constants */
 
 /*! \brief \name Constructors, Assignment and Destructor */
@@ -2571,9 +2597,278 @@ int
 ppl_MIP_Problem_set_control_parameter
 PPL_PROTO((ppl_MIP_Problem_t mip, int value));
 
+
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Builds a trivial PIP problem of dimension \p d and writes an
+  handle to it at address \p pmip.
+*/
+int
+ppl_new_PIP_Problem_from_space_dimension PPL_PROTO((ppl_PIP_Problem_t* pmip,
+						    ppl_dimension_type d));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Builds an PIP problem of space dimension \p d having feasible region \p cs,
+  objective function \p le and optimization mode \p m; writes a handle to
+  it at address \p pmip.
+*/
+int
+ppl_new_PIP_Problem PPL_PROTO((ppl_PIP_Problem_t* pmip,
+			       ppl_dimension_type d,
+			       ppl_const_Constraint_System_t cs,
+			       ppl_const_Linear_Expression_t le,
+			       int m));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Builds an PIP problem that is a copy of \p mip; writes a handle
+  for the newly created system at address \p pmip.
+*/
+int
+ppl_new_PIP_Problem_from_PIP_Problem
+PPL_PROTO((ppl_PIP_Problem_t* pmip, ppl_const_PIP_Problem_t mip));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Assigns a copy of the PIP problem \p src to \p dst.
+*/
+int
+ppl_assign_PIP_Problem_from_PIP_Problem
+PPL_PROTO((ppl_PIP_Problem_t dst, ppl_const_PIP_Problem_t src));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Invalidates the handle \p mip: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_PIP_Problem PPL_PROTO((ppl_const_PIP_Problem_t mip));
+
+/*@}*/ /* Constructors, Assignment and Destructor for PIP_Problem */
+
+/*! \brief \name Functions that Do Not Modify the PIP_Problem */
+/*@{*/
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes to \p m the dimension of the vector space enclosing \p mip.
+*/
+int
+ppl_PIP_Problem_space_dimension
+PPL_PROTO((ppl_const_PIP_Problem_t mip, ppl_dimension_type* m));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes to \p m the number of integer space dimensions of \p mip.
+*/
+int
+ppl_PIP_Problem_number_of_integer_space_dimensions
+PPL_PROTO((ppl_const_PIP_Problem_t mip, ppl_dimension_type* m));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes in the first positions of the array \p ds all the integer space
+  dimensions of problem \p mip. If the array is not big enough to hold
+  all of the integer space dimensions, the behavior is undefined.
+*/
+int
+ppl_PIP_Problem_integer_space_dimensions
+PPL_PROTO((ppl_const_PIP_Problem_t mip, ppl_dimension_type ds[]));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes to \p m the number of constraints defining
+  the feasible region of \p mip.
+*/
+int
+ppl_PIP_Problem_number_of_constraints PPL_PROTO((ppl_const_PIP_Problem_t mip,
+						 ppl_dimension_type* m));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes at address \p pc a const handle to the \p i-th constraint
+  defining the feasible region of the PIP problem \p mip
+*/
+int
+ppl_PIP_Problem_constraint_at_index PPL_PROTO((ppl_const_PIP_Problem_t mip,
+					       ppl_dimension_type i,
+					       ppl_const_Constraint_t* pc));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes a const handle to the linear expression defining the
+  objective function of the PIP problem \p mip at address \p ple.
+*/
+int
+ppl_PIP_Problem_objective_function
+PPL_PROTO((ppl_const_PIP_Problem_t mip, ppl_const_Linear_Expression_t* ple));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Returns the optimization mode of the PIP problem \p mip.
+*/
+int
+ppl_PIP_Problem_optimization_mode PPL_PROTO((ppl_const_PIP_Problem_t mip));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Returns a positive integer if \p mip is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p mip is broken.  Useful for debugging purposes.
+*/
+int
+ppl_PIP_Problem_OK PPL_PROTO((ppl_const_PIP_Problem_t mip));
+
+/*@}*/ /* Functions that Do Not Modify the PIP_Problem */
+
+/*! \brief \name Functions that May Modify the PIP_Problem */
+/*@{*/
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Resets the PIP problem to be a trivial problem of space dimension 0.
+*/
+int
+ppl_PIP_Problem_clear PPL_PROTO((ppl_PIP_Problem_t mip));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Adds \p d new dimensions to the space enclosing the PIP problem \p mip
+  and to \p mip itself.
+*/
+int
+ppl_PIP_Problem_add_space_dimensions_and_embed
+PPL_PROTO((ppl_PIP_Problem_t mip, ppl_dimension_type d));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Sets the space dimensions that are specified in first \p n positions
+  of the array \p ds to be integer dimensions of problem \p mip.
+  The presence of duplicates in \p ds is a waste but an innocuous one.
+*/
+int
+ppl_PIP_Problem_add_to_integer_space_dimensions
+PPL_PROTO((ppl_PIP_Problem_t mip, ppl_dimension_type ds[], size_t n));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Modifies the feasible region of the PIP problem \p mip by adding a copy
+  of the constraint \p c.
+*/
+int
+ppl_PIP_Problem_add_constraint PPL_PROTO((ppl_PIP_Problem_t mip,
+					  ppl_const_Constraint_t c));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Modifies the feasible region of the PIP problem \p mip by adding a copy
+  of the constraints in \p cs.
+*/
+int
+ppl_PIP_Problem_add_constraints PPL_PROTO((ppl_PIP_Problem_t mip,
+					   ppl_const_Constraint_System_t cs));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Sets the objective function of the PIP problem \p mip to a copy of \p le.
+*/
+int
+ppl_PIP_Problem_set_objective_function
+PPL_PROTO((ppl_PIP_Problem_t mip, ppl_const_Linear_Expression_t le));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Sets the optimization mode of the PIP problem \p mip to \p mode.
+*/
+int
+ppl_PIP_Problem_set_optimization_mode PPL_PROTO((ppl_PIP_Problem_t mip,
+						 int mode));
+
+/*@}*/ /* Functions that May Modify the PIP_Problem */
+
+/*! \brief \name Computing the Solution of the PIP_Problem */
+/*@{*/
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Returns a positive integer if \p mip is satisfiable; returns 0 otherwise.
+*/
+int
+ppl_PIP_Problem_is_satisfiable PPL_PROTO((ppl_const_PIP_Problem_t mip));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Solves the PIP problem \p mip, returning an exit status.
+
+  \return
+  <CODE>PPL_PIP_PROBLEM_STATUS_UNFEASIBLE</CODE> if the PIP problem
+  is not satisfiable;
+  <CODE>PPL_PIP_PROBLEM_STATUS_UNBOUNDED</CODE> if the PIP problem
+  is satisfiable but there is no finite bound to the value of
+  the objective function;
+  <CODE>PPL_PIP_PROBLEM_STATUS_OPTIMIZED</CODE> if the PIP problem
+  admits an optimal solution.
+*/
+int
+ppl_PIP_Problem_solve PPL_PROTO((ppl_const_PIP_Problem_t mip));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Evaluates the objective function of \p mip on point \p g.
+
+  \param mip
+  The PIP problem defining the objective function;
+
+  \param g
+  The generator on which the objective function will be evaluated;
+
+  \param num
+  Will be assigned the numerator of the objective function value;
+
+  \param den
+  Will be assigned the denominator of the objective function value;
+*/
+int
+ppl_PIP_Problem_evaluate_objective_function
+PPL_PROTO((ppl_const_PIP_Problem_t mip, ppl_const_Generator_t g,
+	   ppl_Coefficient_t num, ppl_Coefficient_t den));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes a const handle to a feasible point for the PIP problem \p mip
+  at address \p pg.
+*/
+int
+ppl_PIP_Problem_feasible_point PPL_PROTO((ppl_const_PIP_Problem_t mip,
+					  ppl_const_Generator_t* pg));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes a const handle to an optimizing point for the PIP problem \p mip
+  at address \p pg.
+*/
+int
+ppl_PIP_Problem_optimizing_point PPL_PROTO((ppl_const_PIP_Problem_t mip,
+					    ppl_const_Generator_t* pg));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Returns the optimal value for \p mip.
+
+  \param mip
+  The PIP problem;
+
+  \param num
+  Will be assigned the numerator of the optimal value;
+
+  \param den
+  Will be assigned the denominator of the optimal value.
+*/
+int
+ppl_PIP_Problem_optimal_value
+PPL_PROTO((ppl_const_PIP_Problem_t mip,
+	   ppl_Coefficient_t num, ppl_Coefficient_t den));
+
+/*@}*/ /* Computing the Solution of the PIP_Problem */
+
+/*! \brief \name Querying/Setting Control Parameters */
+/*@{*/
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Returns the value of control parameter \p name in problem \p mip.
+*/
+int
+ppl_PIP_Problem_get_control_parameter
+PPL_PROTO((ppl_const_PIP_Problem_t mip, int name));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Sets control parameter \p value in problem \p mip.
+*/
+int
+ppl_PIP_Problem_set_control_parameter
+PPL_PROTO((ppl_PIP_Problem_t mip, int value));
+
 /*@}*/ /* Querying/Setting Control Parameters */
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(MIP_Problem)
+
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(PIP_Problem)
 
 #include "ppl_c_domains.h"
 
