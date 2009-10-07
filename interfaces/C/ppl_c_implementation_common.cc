@@ -2093,25 +2093,25 @@ ppl_MIP_Problem_OK(ppl_const_MIP_Problem_t mip) try {
 CATCH_ALL
 
 int
-ppl_new_PIP_Problem_from_space_dimension(ppl_PIP_Problem_t* pmip,
+ppl_new_PIP_Problem_from_space_dimension(ppl_PIP_Problem_t* ppip,
                                          ppl_dimension_type d) try {
-  *pmip = to_nonconst(new PIP_Problem(d));
+  *ppip = to_nonconst(new PIP_Problem(d));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t* pmip,
-				     ppl_const_PIP_Problem_t mip) try {
-  const PIP_Problem& mmip = *to_const(mip);
-  *pmip = to_nonconst(new PIP_Problem(mmip));
+ppl_new_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t* dpip,
+				     ppl_const_PIP_Problem_t pip) try {
+  const PIP_Problem& spip = *to_const(pip);
+  *dpip = to_nonconst(new PIP_Problem(spip));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_PIP_Problem(ppl_const_PIP_Problem_t mip) try {
-  delete to_const(mip);
+ppl_delete_PIP_Problem(ppl_const_PIP_Problem_t pip) try {
+  delete to_const(pip);
   return 0;
 }
 CATCH_ALL
@@ -2127,26 +2127,26 @@ ppl_assign_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t dst,
 CATCH_ALL
 
 int
-ppl_PIP_Problem_space_dimension(ppl_const_PIP_Problem_t mip,
+ppl_PIP_Problem_space_dimension(ppl_const_PIP_Problem_t pip,
 				ppl_dimension_type* m) try {
-  *m = to_const(mip)->space_dimension();
+  *m = to_const(pip)->space_dimension();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_PIP_Problem_number_of_parameter_space_dimensions(ppl_const_PIP_Problem_t mip,
+ppl_PIP_Problem_number_of_parameter_space_dimensions(ppl_const_PIP_Problem_t pip,
 						   ppl_dimension_type* m) try {
-  const PIP_Problem& mmip = *to_const(mip);
-  *m = mmip.parameter_space_dimensions().size();
+  const PIP_Problem& ppip = *to_const(pip);
+  *m = ppip.parameter_space_dimensions().size();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_PIP_Problem_parameter_space_dimensions(ppl_const_PIP_Problem_t mip,
+ppl_PIP_Problem_parameter_space_dimensions(ppl_const_PIP_Problem_t pip,
 					 ppl_dimension_type ds[]) try {
-  const Variables_Set& vars = to_const(mip)->parameter_space_dimensions();
+  const Variables_Set& vars = to_const(pip)->parameter_space_dimensions();
   ppl_dimension_type* ds_i = ds;
   for (Variables_Set::const_iterator v_iter = vars.begin(),
 	 v_end = vars.end(); v_iter != v_end; ++v_iter, ++ds_i)
@@ -2156,66 +2156,66 @@ ppl_PIP_Problem_parameter_space_dimensions(ppl_const_PIP_Problem_t mip,
 CATCH_ALL
 
 int
-ppl_PIP_Problem_number_of_constraints(ppl_const_PIP_Problem_t mip,
+ppl_PIP_Problem_number_of_constraints(ppl_const_PIP_Problem_t pip,
 				      ppl_dimension_type* m) try {
-  const PIP_Problem& mmip = *to_const(mip);
-  *m = mmip.constraints_end() - mmip.constraints_begin();
+  const PIP_Problem& ppip = *to_const(pip);
+  *m = ppip.constraints_end() - ppip.constraints_begin();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_PIP_Problem_constraint_at_index(ppl_const_PIP_Problem_t mip,
+ppl_PIP_Problem_constraint_at_index(ppl_const_PIP_Problem_t pip,
 				    ppl_dimension_type i,
 				    ppl_const_Constraint_t* pc) try {
 #ifndef NDEBUG
   ppl_dimension_type num_constraints;
-  ppl_PIP_Problem_number_of_constraints(mip, &num_constraints);
+  ppl_PIP_Problem_number_of_constraints(pip, &num_constraints);
   assert(i < num_constraints);
 #endif
-  const PIP_Problem& mmip = *to_const(mip);
-  const Constraint& c = *(mmip.constraints_begin() + i);
+  const PIP_Problem& ppip = *to_const(pip);
+  const Constraint& c = *(ppip.constraints_begin() + i);
   *pc = to_const(&c);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_PIP_Problem_clear(ppl_PIP_Problem_t mip) try {
-  to_nonconst(mip)->clear();
+ppl_PIP_Problem_clear(ppl_PIP_Problem_t pip) try {
+  to_nonconst(pip)->clear();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_PIP_Problem_add_constraint(ppl_PIP_Problem_t mip,
+ppl_PIP_Problem_add_constraint(ppl_PIP_Problem_t pip,
 			       ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
-  PIP_Problem& mmip = *to_nonconst(mip);
-  mmip.add_constraint(cc);
+  PIP_Problem& ppip = *to_nonconst(pip);
+  ppip.add_constraint(cc);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_PIP_Problem_add_constraints(ppl_PIP_Problem_t mip,
+ppl_PIP_Problem_add_constraints(ppl_PIP_Problem_t pip,
 				ppl_const_Constraint_System_t cs) try {
   const Constraint_System& ccs = *to_const(cs);
-  PIP_Problem& mmip = *to_nonconst(mip);
-  mmip.add_constraints(ccs);
+  PIP_Problem& ppip = *to_nonconst(pip);
+  ppip.add_constraints(ccs);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_PIP_Problem_is_satisfiable(ppl_const_PIP_Problem_t mip) try {
-  return to_const(mip)->is_satisfiable() ? 1 : 0;
+ppl_PIP_Problem_is_satisfiable(ppl_const_PIP_Problem_t pip) try {
+  return to_const(pip)->is_satisfiable() ? 1 : 0;
 }
 CATCH_ALL
 
 int
-ppl_PIP_Problem_solve(ppl_const_PIP_Problem_t mip) try {
-  return to_const(mip)->solve();
+ppl_PIP_Problem_solve(ppl_const_PIP_Problem_t pip) try {
+  return to_const(pip)->solve();
 }
 CATCH_ALL
 
@@ -2236,8 +2236,8 @@ ppl_PIP_Problem_optimizing_solution(ppl_const_PIP_Problem_t pip,
 CATCH_ALL
 
 int
-ppl_PIP_Problem_OK(ppl_const_PIP_Problem_t mip) try {
-  return to_const(mip)->OK() ? 1 : 0;
+ppl_PIP_Problem_OK(ppl_const_PIP_Problem_t pip) try {
+  return to_const(pip)->OK() ? 1 : 0;
 }
 CATCH_ALL
 
