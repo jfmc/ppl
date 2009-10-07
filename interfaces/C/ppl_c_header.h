@@ -694,6 +694,7 @@ PPL_TYPE_DECLARATION(MIP_Problem)
   towards \extref{Parma_Polyhedra_Library::PIP_Problem, PIP_Problem}.
 */
 PPL_TYPE_DECLARATION(PIP_Problem)
+PPL_TYPE_DECLARATION(PIP_Tree_Node)
 
 
 #undef PPL_DECLARE_PRINT_FUNCTIONS

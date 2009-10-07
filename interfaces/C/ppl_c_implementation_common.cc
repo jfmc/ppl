@@ -2220,6 +2220,22 @@ ppl_PIP_Problem_solve(ppl_const_PIP_Problem_t mip) try {
 CATCH_ALL
 
 int
+ppl_PIP_Problem_solution(ppl_const_PIP_Problem_t pip,
+                         ppl_const_PIP_Tree_Node_t* ppip_tree) try {
+  *ppip_tree = to_const(to_const(pip)->solution());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_optimizing_solution(ppl_const_PIP_Problem_t pip,
+                                    ppl_const_PIP_Tree_Node_t* ppip_tree) try {
+  *ppip_tree = to_const(to_const(pip)->optimizing_solution());
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_PIP_Problem_OK(ppl_const_PIP_Problem_t mip) try {
   return to_const(mip)->OK() ? 1 : 0;
 }
