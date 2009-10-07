@@ -412,7 +412,6 @@ test04() {
 
 // tests rate limiter using octagons abstract domain and
 // linearization of floating point expressions.
-// FIXME: not pass at the moment.
 bool
 test05() {
   // Input signal.
@@ -430,6 +429,7 @@ test05() {
   FP_Linear_Form_Abstract_Store lf_abstract_store;
   FP_Octagonal_Shape oc(abstract_store);
   FP_Interval y(0);
+  FP_Interval y_begin(1);
   FP_Octagonal_Shape oc_begin;
   Con_FP_Expression con_y(0, 0);
   FP_Linear_Form lx;
@@ -441,10 +441,11 @@ test05() {
   con_y.linearize(abstract_store, lf_abstract_store, lk);
   oc.affine_image(Y, lk);
 
-  for(unsigned short n = 0; oc_begin != oc; ++n) {
+  for(unsigned short n = 0; y_begin != y; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     oc_begin = oc;
+    y_begin = y;
 
     Con_FP_Expression con_x(-128, 128);
     con_x.linearize(abstract_store, lf_abstract_store, lk);
@@ -520,7 +521,7 @@ test05() {
   }
 
   nout << "*** Y in " << y << " ***" << endl;
-  return y.is_bounded();
+  return !y.is_bounded();
 }
 
 // tests rate limiter using polyhedra abstract domain and
@@ -545,6 +546,8 @@ test06() {
   FP_Interval tmp(0);
   NNC_Polyhedron ph_begin;
   Con_FP_Expression con_y(0, 0);
+  FP_Interval y(0);
+  FP_Interval y_begin(1);
   FP_Linear_Form lx;
   FP_Linear_Form ly;
   FP_Linear_Form lr;
@@ -554,32 +557,28 @@ test06() {
   con_y.linearize(abstract_store, lf_abstract_store, lk);
   ph.affine_image(Y, lk);
 
-  for(unsigned short n = 0; ph_begin != ph; ++n) {
+  for(unsigned short n = 0; y_begin != y && y.is_bounded(); ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     ph_begin = ph;
-
+    y_begin = y;
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     Con_FP_Expression con_x(-128, 128);
     con_x.linearize(abstract_store, lf_abstract_store, lk);
     ph.affine_image(X, lk);
-
     Con_FP_Expression con_d(0, 16);
     con_d.linearize(abstract_store, lf_abstract_store, lk);
     ph.affine_image(D, lk);
-
     Var_FP_Expression var_y(2);
     abstract_store = Box<FP_Interval>(ph);
     var_y.linearize(abstract_store, lf_abstract_store, ly);
     ph.affine_image(S, ly);
-
     Var_FP_Expression* px = new Var_FP_Expression(0);
     Var_FP_Expression* ps = new Var_FP_Expression(3);
     Dif_FP_Expression x_dif_s(px, ps);
     abstract_store = Box<FP_Interval>(ph);
     x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
     ph.affine_image(R, lr);
-
     Var_FP_Expression var_x(0);
     abstract_store = Box<FP_Interval>(ph);
     var_x.linearize(abstract_store, lf_abstract_store, lx);
@@ -637,11 +636,11 @@ test06() {
     ph.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
     Box<FP_Interval> box(ph);
     print_constraints(box, "*** after widening ***");
-    tmp = box.get_interval(Y);
+    y = box.get_interval(Y);
   }
 
-  nout << "*** Y in " << tmp << " ***" << endl;
-  return tmp.is_bounded();
+  nout << "*** Y in " << y << " ***" << endl;
+  return !y.is_bounded();
 }
 
 } // namespace
@@ -651,6 +650,6 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  //DO_TEST(test05);
+  DO_TEST(test05);
   //DO_TEST(test06);
 END_MAIN
