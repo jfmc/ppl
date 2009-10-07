@@ -22,7 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 #include "PIP_Tree.defs.hh"
-#include "PIP_Problem.defs.hh"
 
 #include <algorithm>
 

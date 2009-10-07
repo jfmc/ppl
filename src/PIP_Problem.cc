@@ -323,3 +323,31 @@ PPL::PIP_Problem
     status = PARTIALLY_SATISFIABLE;
   PPL_ASSERT(OK());
 }
+
+void
+PPL::PIP_Problem::add_constraint(const Constraint& c) {
+  if (c.space_dimension() > external_space_dim) {
+    std::ostringstream s;
+    s << "PPL::PIP_Problem::add_constraint(c):\n"
+      << "dim == "<< external_space_dim << " and c.space_dimension() =="
+      << " " << c.space_dimension() << " are dimension"
+      "incompatible.";
+    throw std::invalid_argument(s.str());
+  }
+
+  // Check the constraint.
+  if (c.is_strict_inequality())
+    throw std::invalid_argument("PPL::PIP_Problem::add_constraint(c):\n"
+                                "constraint c is"
+                                "a strict inequality constraint.");
+  input_cs.push_back(c);
+}
+
+void
+PPL::PIP_Problem::add_constraints(const Constraint_System &cs) {
+  Constraint_System::const_iterator c;
+  Constraint_System::const_iterator end = cs.end();
+  for (c=cs.begin(); c!=end; ++c)
+    add_constraint(*c);
+}
+
