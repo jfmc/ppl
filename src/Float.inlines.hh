@@ -285,7 +285,6 @@ float_ibm_single::build(bool negative, mpz_t mantissa, int exponent) {
   word |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << MANTISSA_BITS;
 }
 
-  ///asasdasda
 inline int
 float_intel_double_extended::is_inf() const {
   if (lsp != LSP_INF)
