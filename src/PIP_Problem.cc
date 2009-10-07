@@ -60,6 +60,12 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
     parameters(y.parameters),
     initial_context(y.initial_context) {
   PPL_ASSERT(OK());
+  //FIXME: must also copy the solution tree
+}
+
+PPL::PIP_Problem::~PIP_Problem() {
+  if (current_solution != 0)
+    delete current_solution;
 }
 
 PPL::PIP_Problem_Status

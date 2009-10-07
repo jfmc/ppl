@@ -25,10 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline
-PIP_Problem::~PIP_Problem() {
-}
-
 inline dimension_type
 PIP_Problem::space_dimension() const {
   return external_space_dim;
