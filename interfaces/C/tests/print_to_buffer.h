@@ -70,6 +70,8 @@ DECLARE_PRINT_TO_BUFFER(Grid_Generator_System)
 
 DECLARE_PRINT_TO_BUFFER(MIP_Problem)
 
+DECLARE_PRINT_TO_BUFFER(PIP_Problem)
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

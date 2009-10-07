@@ -2115,7 +2115,7 @@ ppl_delete_PIP_Problem(ppl_const_PIP_Problem_t pip) try {
   return 0;
 }
 CATCH_ALL
-
+/*
 int
 ppl_assign_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t dst,
 					ppl_const_PIP_Problem_t src) try {
@@ -2125,7 +2125,7 @@ ppl_assign_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t dst,
   return 0;
 }
 CATCH_ALL
-
+*/
 int
 ppl_PIP_Problem_space_dimension(ppl_const_PIP_Problem_t pip,
 				ppl_dimension_type* m) try {
@@ -2180,13 +2180,13 @@ ppl_PIP_Problem_constraint_at_index(ppl_const_PIP_Problem_t pip,
 }
 CATCH_ALL
 
+/*
 int
 ppl_PIP_Problem_clear(ppl_PIP_Problem_t pip) try {
   to_nonconst(pip)->clear();
   return 0;
 }
 CATCH_ALL
-
 int
 ppl_PIP_Problem_add_constraint(ppl_PIP_Problem_t pip,
 			       ppl_const_Constraint_t c) try {
@@ -2212,7 +2212,7 @@ ppl_PIP_Problem_is_satisfiable(ppl_const_PIP_Problem_t pip) try {
   return to_const(pip)->is_satisfiable() ? 1 : 0;
 }
 CATCH_ALL
-
+*/
 int
 ppl_PIP_Problem_solve(ppl_const_PIP_Problem_t pip) try {
   return to_const(pip)->solve();
