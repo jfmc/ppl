@@ -307,7 +307,7 @@ PPL::PIP_Problem::clear() {
   input_cs.clear();
   first_pending_constraint = 0;
   parameters.clear();
-  initial_context.clear();  
+  initial_context.clear();
 }
 
 void

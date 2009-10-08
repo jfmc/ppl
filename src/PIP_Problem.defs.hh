@@ -330,7 +330,7 @@ private:
 
   /*! \brief
     The initial context
-  
+
     Contains problem constraints on parameters only
   */
   Matrix initial_context;
