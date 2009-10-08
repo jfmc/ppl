@@ -295,6 +295,22 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
 }
 
 void
+PPL::PIP_Problem::clear() {
+  external_space_dim = 0;
+  internal_space_dim = 0;
+  status = PARTIALLY_SATISFIABLE;
+  if (current_solution != 0) {
+    delete current_solution;
+    current_solution = 0;
+  }
+  initialized = false;
+  input_cs.clear();
+  first_pending_constraint = 0;
+  parameters.clear();
+  initial_context.clear();  
+}
+
+void
 PPL::PIP_Problem
 ::add_space_dimensions_and_embed(const dimension_type m_pip_vars,
                                  const dimension_type m_pip_params) {
@@ -351,3 +367,7 @@ PPL::PIP_Problem::add_constraints(const Constraint_System &cs) {
     add_constraint(*c);
 }
 
+bool
+PPL::PIP_Problem::is_satisfiable() const {
+  return status == OPTIMIZED;
+}
