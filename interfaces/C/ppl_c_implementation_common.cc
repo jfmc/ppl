@@ -2179,7 +2179,6 @@ ppl_PIP_Problem_constraint_at_index(ppl_const_PIP_Problem_t pip,
   return 0;
 }
 CATCH_ALL
-
 /*
 int
 ppl_PIP_Problem_clear(ppl_PIP_Problem_t pip) try {
@@ -2187,6 +2186,7 @@ ppl_PIP_Problem_clear(ppl_PIP_Problem_t pip) try {
   return 0;
 }
 CATCH_ALL
+*/
 int
 ppl_PIP_Problem_add_constraint(ppl_PIP_Problem_t pip,
 			       ppl_const_Constraint_t c) try {
@@ -2206,7 +2206,7 @@ ppl_PIP_Problem_add_constraints(ppl_PIP_Problem_t pip,
   return 0;
 }
 CATCH_ALL
-
+/*
 int
 ppl_PIP_Problem_is_satisfiable(ppl_const_PIP_Problem_t pip) try {
   return to_const(pip)->is_satisfiable() ? 1 : 0;
