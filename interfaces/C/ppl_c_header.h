@@ -695,6 +695,8 @@ PPL_TYPE_DECLARATION(MIP_Problem)
 */
 PPL_TYPE_DECLARATION(PIP_Problem)
 PPL_TYPE_DECLARATION(PIP_Tree_Node)
+PPL_TYPE_DECLARATION(PIP_Decision_Node)
+PPL_TYPE_DECLARATION(PIP_Solution_Node)
 
 
 #undef PPL_DECLARE_PRINT_FUNCTIONS
@@ -2319,11 +2321,6 @@ extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_FLOAT;
 extern int PPL_PIP_PROBLEM_STATUS_UNFEASIBLE;
 
 /*! \relates ppl_PIP_Problem_tag \brief
-  Code of the "unbounded PIP problem" status.
-*/
-extern int PPL_PIP_PROBLEM_STATUS_UNBOUNDED;
-
-/*! \relates ppl_PIP_Problem_tag \brief
   Code of the "optimized PIP problem" status.
 */
 extern int PPL_PIP_PROBLEM_STATUS_OPTIMIZED;
@@ -2785,9 +2782,6 @@ ppl_PIP_Problem_is_satisfiable PPL_PROTO((ppl_const_PIP_Problem_t pip));
   \return
   <CODE>PPL_PIP_PROBLEM_STATUS_UNFEASIBLE</CODE> if the PIP problem
   is not satisfiable;
-  <CODE>PPL_PIP_PROBLEM_STATUS_UNBOUNDED</CODE> if the PIP problem
-  is satisfiable but there is no finite bound to the value of
-  the objective function;
   <CODE>PPL_PIP_PROBLEM_STATUS_OPTIMIZED</CODE> if the PIP problem
   admits an optimal solution.
 */
@@ -2899,6 +2893,22 @@ PPL_PROTO((ppl_const_PIP_Problem_t pip, int name));
 int
 ppl_PIP_Problem_set_control_parameter
 PPL_PROTO((ppl_PIP_Problem_t pip, int value));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Returns \p this if \p *this is a solution node, 0 otherwise.
+*/
+int
+ppl_PIP_Problem_as_solution
+PPL_PROTO((ppl_const_PIP_Tree_Node_t spip_tree,
+           ppl_const_PIP_Solution_Node_t* dpip_tree));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Returns \p this if \p *this is a decision node, 0 otherwise.
+*/
+int
+ppl_PIP_Problem_as_decision
+PPL_PROTO((ppl_const_PIP_Tree_Node_t spip_tree,
+           ppl_const_PIP_Decision_Node_t* dpip_tree));
 
 /*@}*/ /* Querying/Setting Control Parameters */
 

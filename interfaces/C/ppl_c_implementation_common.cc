@@ -2237,6 +2237,21 @@ ppl_PIP_Problem_OK(ppl_const_PIP_Problem_t pip) try {
 }
 CATCH_ALL
 
+int
+ppl_PIP_Problem_as_solution(ppl_const_PIP_Tree_Node_t spip_tree,
+                            ppl_const_PIP_Solution_Node_t* dpip_tree) try {
+  *dpip_tree = to_const(to_const(spip_tree)->as_solution());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_as_decision(ppl_const_PIP_Tree_Node_t spip_tree,
+                            ppl_const_PIP_Decision_Node_t* dpip_tree) try {
+  *dpip_tree = to_const(to_const(spip_tree)->as_decision());
+  return 0;
+}
+CATCH_ALL
 
 int
 ppl_io_print_variable(ppl_dimension_type var) try {

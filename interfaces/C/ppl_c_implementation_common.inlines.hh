@@ -81,6 +81,10 @@ DECLARE_CONVERSIONS(PIP_Problem, PIP_Problem)
 
 DECLARE_CONVERSIONS(PIP_Tree_Node, PIP_Tree_Node)
 
+DECLARE_CONVERSIONS(PIP_Decision_Node, PIP_Decision_Node)
+
+DECLARE_CONVERSIONS(PIP_Solution_Node, PIP_Solution_Node)
+
 inline Relation_Symbol
 relation_symbol(enum ppl_enum_Constraint_Type t) {
   switch (t) {
