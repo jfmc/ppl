@@ -53,6 +53,8 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
   : external_space_dim(y.external_space_dim),
     internal_space_dim(y.internal_space_dim),
     status(y.status),
+    // FIXME: this causes sharing of the solution tree,
+    // possibly later resulting in memory corruption (double free).
     current_solution(y.current_solution),
     initialized(y.initialized),
     input_cs(y.input_cs),
@@ -60,7 +62,7 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
     parameters(y.parameters),
     initial_context(y.initial_context) {
   PPL_ASSERT(OK());
-  //FIXME: must also copy the solution tree
+  // FIXME: must also copy the solution tree
 }
 
 PPL::PIP_Problem::~PIP_Problem() {
@@ -164,7 +166,55 @@ PPL::PIP_Problem::optimizing_solution() const {
 
 bool
 PPL::PIP_Problem::OK() const {
-  //FIXME
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
+
+  if (external_space_dim < internal_space_dim) {
+#ifndef NDEBUG
+      cerr << "The internal space dimension of the PIP_Problem is "
+	   << "greater than its external space dimension."
+	   << endl;
+      ascii_dump(cerr);
+#endif
+      return false;
+    }
+
+  // Constraint system should be OK.
+  const dimension_type input_cs_num_rows = input_cs.size();
+  for (dimension_type i = input_cs_num_rows; i-- > 0; )
+    if (!input_cs[i].OK())
+      return false;
+
+  // Constraint system should contain no strict inequalities.
+  for (dimension_type i = input_cs_num_rows; i-- > 0; ) {
+    if (input_cs[i].is_strict_inequality()) {
+#ifndef NDEBUG
+      cerr << "The feasible region of the PIP_Problem is defined by "
+	   << "a constraint system containing strict inequalities."
+	   << endl;
+      ascii_dump(cerr);
+#endif
+      return false;
+    }
+    if (input_cs[i].space_dimension() > external_space_dim) {
+#ifndef NDEBUG
+      cerr << "The space dimension of the PIP_Problem is smaller than "
+           << "the space dimension of one of its constraints."
+	   << endl;
+      ascii_dump(cerr);
+#endif
+      return false;
+    }
+  }
+
+  if (!parameters.OK())
+    return false;
+  if (!initial_context.OK())
+    return false;
+
+  // All checks passed.
   return true;
 }
 

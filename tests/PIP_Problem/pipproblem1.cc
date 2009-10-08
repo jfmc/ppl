@@ -165,10 +165,46 @@ test03() {
   return ok;
 }
 
+bool
+test04() {
+  Variable i(0);
+  Variable j(1);
+  Variable k(2);
+  Variable m(3);
+  Variable n(4);
+  Variables_Set params(k, n);
+
+  Constraint_System cs;
+  cs.insert(i <= m);
+  cs.insert(j <= n);
+  cs.insert(2*i+j <= 2*m+n-k);
+  cs.insert(2*i+j >= 2*m+n-k);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    display_solution(solution, params, Variables_Set(i, j),
+                     cs.space_dimension());
+  }
+
+  // Copy constructor is buggy.
+  {
+    PIP_Problem pip_copy = pip;
+    // Here we call the destructor of pip_copy
+    // and we also destroy the (shared) solution tree of pip.
+  }
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  // Uncomment this to get a segmentation fault.
+  // DO_TEST(test04);
 END_MAIN

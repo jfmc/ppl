@@ -50,6 +50,26 @@ PIP_Problem::parameter_space_dimensions() const {
   return parameters;
 }
 
+inline void
+PIP_Problem::swap(PIP_Problem& y) {
+  std::swap(external_space_dim, y.external_space_dim);
+  std::swap(internal_space_dim, y.internal_space_dim);
+  std::swap(status, y.status);
+  std::swap(current_solution, y.current_solution);
+  std::swap(initialized, y.initialized);
+  std::swap(input_cs, y.input_cs);
+  std::swap(first_pending_constraint, y.first_pending_constraint);
+  std::swap(parameters, y.parameters);
+  std::swap(initial_context, y.initial_context);
+}
+
+inline PIP_Problem&
+PIP_Problem::operator=(const PIP_Problem& y) {
+  PIP_Problem tmp(y);
+  swap(tmp);
+  return *this;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {

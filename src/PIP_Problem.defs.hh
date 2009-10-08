@@ -307,7 +307,7 @@ private:
   Status status;
 
   //! The current solution decision tree
-  PIP_Tree_Node *current_solution;
+  PIP_Tree_Node* current_solution;
 
   /*! \brief
     A Boolean encoding whether or not internal data structures have
