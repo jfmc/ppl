@@ -2099,7 +2099,7 @@ ppl_new_PIP_Problem_from_space_dimension(ppl_PIP_Problem_t* ppip,
   return 0;
 }
 CATCH_ALL
-
+/* FIXME: Waiting for c++ method for operator=() to be implemented.
 int
 ppl_new_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t* dpip,
 				     ppl_const_PIP_Problem_t pip) try {
@@ -2108,14 +2108,14 @@ ppl_new_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t* dpip,
   return 0;
 }
 CATCH_ALL
-
+*/
 int
 ppl_delete_PIP_Problem(ppl_const_PIP_Problem_t pip) try {
   delete to_const(pip);
   return 0;
 }
 CATCH_ALL
-/*
+/* FIXME: Waiting for c++ method for operator=() to be implemented.
 int
 ppl_assign_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t dst,
 					ppl_const_PIP_Problem_t src) try {
@@ -2238,17 +2238,89 @@ ppl_PIP_Problem_OK(ppl_const_PIP_Problem_t pip) try {
 CATCH_ALL
 
 int
-ppl_PIP_Problem_as_solution(ppl_const_PIP_Tree_Node_t spip_tree,
-                            ppl_const_PIP_Solution_Node_t* dpip_tree) try {
+ppl_PIP_Tree_Node_as_solution(ppl_const_PIP_Tree_Node_t spip_tree,
+                              ppl_const_PIP_Solution_Node_t* dpip_tree) try {
   *dpip_tree = to_const(to_const(spip_tree)->as_solution());
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_PIP_Problem_as_decision(ppl_const_PIP_Tree_Node_t spip_tree,
-                            ppl_const_PIP_Decision_Node_t* dpip_tree) try {
+ppl_PIP_Tree_Node_as_decision(ppl_const_PIP_Tree_Node_t spip_tree,
+                              ppl_const_PIP_Decision_Node_t* dpip_tree) try {
   *dpip_tree = to_const(to_const(spip_tree)->as_decision());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Tree_Node_get_constraints(ppl_const_PIP_Tree_Node_t pip_tree,
+                                  ppl_const_Constraint_System_t* pcs) try {
+  const PIP_Tree_Node& spip_tree = *to_const(pip_tree);
+  const Constraint_System& cs = spip_tree.constraints();
+  *pcs = to_const(&cs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_PIP_Tree_Node(ppl_const_PIP_Tree_Node_t pip_tree) try {
+  delete to_const(pip_tree);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Tree_Node_OK(ppl_const_PIP_Tree_Node_t pip_tree) try {
+  return to_const(pip_tree)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Tree_Node_begin(ppl_const_PIP_Tree_Node_t pip_tree,
+ ppl_Artificial_Parameter_Sequence_const_iterator_t pit) try {
+  PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator& spit
+    = *to_nonconst(pit);
+  spit = to_const(pip_tree)->art_parameter_begin();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Artificial_Parameter(ppl_Artificial_Parameter_t* pap) try {
+  *pap = to_nonconst(new Artificial_Parameter());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Artificial_Parameter_from_Linear_Expression
+(ppl_Artificial_Parameter_t* pap,
+ ppl_const_Linear_Expression_t le,
+ ppl_const_Coefficient_t coef) try {
+  const Linear_Expression& sle = *to_const(le);
+  const Coefficient& scoef = *to_const(coef);
+  *pap = to_nonconst(new Artificial_Parameter(sle, scoef));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Artificial_Parameter_from_Artificial_Parameter
+(ppl_Artificial_Parameter_t* pap,
+ ppl_const_Artificial_Parameter_t ap) try {
+  const Artificial_Parameter& sap = *to_const(ap);
+  *pap = to_nonconst(new Artificial_Parameter(sap));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Artificial_Parameter_get_denominator(ppl_const_Artificial_Parameter_t ap,
+                                         ppl_const_Coefficient_t* coef) try {
+  const Artificial_Parameter& sap = *to_const(ap);
+  const Coefficient& dcoef = sap.get_denominator();
+  *coef = to_const(&dcoef);
   return 0;
 }
 CATCH_ALL

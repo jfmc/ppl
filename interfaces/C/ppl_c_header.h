@@ -697,6 +697,9 @@ PPL_TYPE_DECLARATION(PIP_Problem)
 PPL_TYPE_DECLARATION(PIP_Tree_Node)
 PPL_TYPE_DECLARATION(PIP_Decision_Node)
 PPL_TYPE_DECLARATION(PIP_Solution_Node)
+PPL_TYPE_DECLARATION(Artificial_Parameter)
+PPL_TYPE_DECLARATION(Artificial_Parameter_Sequence)
+PPL_TYPE_DECLARATION(Artificial_Parameter_Sequence_const_iterator)
 
 
 #undef PPL_DECLARE_PRINT_FUNCTIONS
@@ -2616,7 +2619,6 @@ ppl_new_PIP_Problem PPL_PROTO((ppl_PIP_Problem_t* ppip,
 			       ppl_const_Constraint_System_t cs,
 			       ppl_const_Linear_Expression_t le,
 			       int m));
-
 /*! \relates ppl_PIP_Problem_tag \brief
   Builds an PIP problem that is a copy of \p pip; writes a handle
   for the newly created system at address \p ppip.
@@ -2898,7 +2900,7 @@ PPL_PROTO((ppl_PIP_Problem_t pip, int value));
   Returns \p this if \p *this is a solution node, 0 otherwise.
 */
 int
-ppl_PIP_Problem_as_solution
+ppl_PIP_Tree_Node_as_solution
 PPL_PROTO((ppl_const_PIP_Tree_Node_t spip_tree,
            ppl_const_PIP_Solution_Node_t* dpip_tree));
 
@@ -2906,15 +2908,117 @@ PPL_PROTO((ppl_const_PIP_Tree_Node_t spip_tree,
   Returns \p this if \p *this is a decision node, 0 otherwise.
 */
 int
-ppl_PIP_Problem_as_decision
+ppl_PIP_Tree_Node_as_decision
 PPL_PROTO((ppl_const_PIP_Tree_Node_t spip_tree,
            ppl_const_PIP_Decision_Node_t* dpip_tree));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Returns the value of control parameter \p name in problem \p pip.
+*/
+int
+ppl_PIP_Tree_Node_get_constraints
+PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
+           ppl_const_Constraint_System_t* pcs));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Returns a positive integer if \p pip_tree is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p pip_tree is broken.  Useful for debugging purposes.
+*/
+int
+ppl_PIP_Tree_Node_OK PPL_PROTO((ppl_const_PIP_Tree_Node_t pip));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Invalidates the handle \p pip_tree: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_PIP_Tree_Node PPL_PROTO((ppl_const_PIP_Tree_Node_t pip));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Assigns to \p pit a const iterator "pointing" to the beginning of
+  the artificial parameter sequence in the pip tree node \p pip_tree.
+*/
+int
+ppl_PIP_Tree_Node_begin
+PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
+           ppl_Artificial_Parameter_Sequence_const_iterator_t* pit));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Assigns to \p pit a const iterator "pointing" to the end of
+  the artificial parameter sequence in the pip tree node \p pip_tree.
+*/
+int
+ppl_PIP_Tree_Node_end
+PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
+           ppl_Artificial_Parameter_Sequence_const_iterator_t pit));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Insert in parameter set the parameter indices corresponding to local
+  artificials.
+
+  \param params
+  the Variables_Set to be updated
+
+  \param space_dimension
+  the space dimension for \p *this
+
+  \return
+  the number of inserted indices
+*/
+int
+ppl_PIP_Tree_Node_insert_artificials
+PPL_PROTO((ppl_const_PIP_Tree_Node_t pip,
+           ppl_dimension_type ds[],
+           size_t n,
+           ppl_dimension_type space_dim,
+           ppl_dimension_type inserted));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Creates a new artificial parameter corresponding to the constant 0 in a
+  zero-dimensional space; writes a handle for the new artificial
+  parameter at address \p pap.
+*/
+int
+ppl_new_Artificial_Parameter PPL_PROTO((ppl_Artificial_Parameter_t* pap));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Builds a artificial parameter that is the result of
+  integer division of the linear expression \p le by \p coef;
+  writes a handle for the newly created artificial parameter
+  at address \p pap.
+*/
+int
+ppl_new_Artificial_Parameter_from_Linear_Expression
+PPL_PROTO((ppl_Artificial_Parameter_t* pap,
+           ppl_const_Linear_Expression_t le,
+           ppl_Coefficient_t coef));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Builds a artificial parameter that is a copy of \p ap; writes a handle
+  for the newly created artificial parameter at address \p pap.
+*/
+int
+ppl_new_Artificial_Parameter_from_Artificial_Parameter
+PPL_PROTO((ppl_Artificial_Parameter_t* pap,
+           ppl_const_Artificial_Parameter_t ap));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes to \p coef the denominator in artificial parameter \p ap.
+*/
+int
+ppl_Artificial_Parameter_get_denominator
+PPL_PROTO((ppl_const_Artificial_Parameter_t ap, ppl_const_Coefficient_t* coef));
 
 /*@}*/ /* Querying/Setting Control Parameters */
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(MIP_Problem)
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(PIP_Problem)
+
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(PIP_Tree_Node)
+
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Artificial_Parameter)
 
 #include "ppl_c_domains.h"
 

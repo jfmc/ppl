@@ -75,6 +75,20 @@ Grid_Generator_System_const_iterator;
 DECLARE_CONVERSIONS(Grid_Generator_System_const_iterator,
                     Grid_Generator_System_const_iterator)
 
+typedef PIP_Tree_Node::Artificial_Parameter
+Artificial_Parameter;
+DECLARE_CONVERSIONS(Artificial_Parameter, Artificial_Parameter)
+
+typedef PIP_Tree_Node::Artificial_Parameter_Sequence
+Artificial_Parameter_Sequence;
+DECLARE_CONVERSIONS(Artificial_Parameter_Sequence,
+                    Artificial_Parameter_Sequence)
+
+typedef PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator
+Artificial_Parameter_Sequence_const_iterator;
+DECLARE_CONVERSIONS(Artificial_Parameter_Sequence_const_iterator,
+                    Artificial_Parameter_Sequence_const_iterator)
+
 DECLARE_CONVERSIONS(MIP_Problem, MIP_Problem)
 
 DECLARE_CONVERSIONS(PIP_Problem, PIP_Problem)
