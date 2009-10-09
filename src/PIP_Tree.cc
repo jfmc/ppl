@@ -1150,6 +1150,24 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         std::cout << "Adding tautology: " << *c << std::endl;
 #endif
       } else {
+        /* Heuristically choose "best" pivoting row. */
+        Coefficient score;
+        Coefficient best = 0;
+        dimension_type best_i = n_a_d;
+        for (i = i__; i < num_rows; ++i) {
+          if (sign[i] != MIXED)
+            continue;
+          const Row& row = tableau.t[i];
+          score = 0;
+          for (j = 0; j < num_params; ++j)
+            score += row[j];
+          if (best_i == n_a_d || score < best) {
+            best = score;
+            best_i = i;
+          }
+        }
+        i__ = best_i;
+
 #ifdef NOISY_PIP
         {
           using namespace IO_Operators;
