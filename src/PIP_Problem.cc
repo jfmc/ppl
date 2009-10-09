@@ -419,5 +419,7 @@ PPL::PIP_Problem::add_constraints(const Constraint_System &cs) {
 
 bool
 PPL::PIP_Problem::is_satisfiable() const {
+  if (status == PARTIALLY_SATISFIABLE)
+    solve();
   return status == OPTIMIZED;
 }
