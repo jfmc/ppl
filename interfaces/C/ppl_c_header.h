@@ -2609,17 +2609,6 @@ ppl_new_PIP_Problem_from_space_dimension PPL_PROTO((ppl_PIP_Problem_t* pmip,
 						    ppl_dimension_type d));
 
 /*! \relates ppl_PIP_Problem_tag \brief
-  Builds an PIP problem of space dimension \p d having feasible region \p cs,
-  objective function \p le and optimization mode \p m; writes a handle to
-  it at address \p ppip.
-*/
-int
-ppl_new_PIP_Problem PPL_PROTO((ppl_PIP_Problem_t* ppip,
-			       ppl_dimension_type d,
-			       ppl_const_Constraint_System_t cs,
-			       ppl_const_Linear_Expression_t le,
-			       int m));
-/*! \relates ppl_PIP_Problem_tag \brief
   Builds an PIP problem that is a copy of \p pip; writes a handle
   for the newly created system at address \p ppip.
 */
@@ -2654,19 +2643,19 @@ ppl_PIP_Problem_space_dimension
 PPL_PROTO((ppl_const_PIP_Problem_t pip, ppl_dimension_type* m));
 
 /*! \relates ppl_PIP_Problem_tag \brief
-  Writes to \p m the number of integer space dimensions of \p pip.
+  Writes to \p m the number of parameter space dimensions of \p pip.
 */
 int
-ppl_PIP_Problem_number_of_integer_space_dimensions
+ppl_PIP_Problem_number_of_parameter_space_dimensions
 PPL_PROTO((ppl_const_PIP_Problem_t pip, ppl_dimension_type* m));
 
 /*! \relates ppl_PIP_Problem_tag \brief
-  Writes in the first positions of the array \p ds all the integer space
+  Writes in the first positions of the array \p ds all the parameter space
   dimensions of problem \p pip. If the array is not big enough to hold
-  all of the integer space dimensions, the behavior is undefined.
+  all of the parameter space dimensions, the behavior is undefined.
 */
 int
-ppl_PIP_Problem_integer_space_dimensions
+ppl_PIP_Problem_parameter_space_dimensions
 PPL_PROTO((ppl_const_PIP_Problem_t pip, ppl_dimension_type ds[]));
 
 /*! \relates ppl_PIP_Problem_tag \brief
@@ -2685,26 +2674,6 @@ int
 ppl_PIP_Problem_constraint_at_index PPL_PROTO((ppl_const_PIP_Problem_t pip,
 					       ppl_dimension_type i,
 					       ppl_const_Constraint_t* pc));
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Writes a const handle to the linear expression defining the
-  objective function of the PIP problem \p pip at address \p ple.
-*/
-int
-ppl_PIP_Problem_objective_function
-PPL_PROTO((ppl_const_PIP_Problem_t pip, ppl_const_Linear_Expression_t* ple));
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Returns the optimization mode of the PIP problem \p pip.
-*/
-int
-ppl_PIP_Problem_optimization_mode PPL_PROTO((ppl_const_PIP_Problem_t pip));
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Returns a positive integer if \p pip is well formed, i.e., if it
-  satisfies all its implementation invariants; returns 0 and perhaps
-  makes some noise if \p pip is broken.  Useful for debugging purposes.
-*/
 int
 ppl_PIP_Problem_OK PPL_PROTO((ppl_const_PIP_Problem_t pip));
 
@@ -2720,12 +2689,34 @@ int
 ppl_PIP_Problem_clear PPL_PROTO((ppl_PIP_Problem_t pip));
 
 /*! \relates ppl_PIP_Problem_tag \brief
-  Adds \p d new dimensions to the space enclosing the PIP problem \p pip
-  and to \p pip itself.
+  Adds <CODE>m_pip_vars + m_pip_params</CODE> new space dimensions
+  and embeds the PIP problem \p pip in the new vector space.
+
+  \param pip
+
+  \param pip_vars
+  The number of space dimensions to add that are interpreted as
+  PIP problem variables (i.e., non parameters). These are added
+  \e before adding the \p pip_params parameters.
+
+  \param pip_params
+  The number of space dimensions to add that are interpreted as
+  PIP problem parameters. These are added \e after having added the
+  \p pip_vars problem variables.
+
+  \exception std::length_error
+  Thrown if adding <CODE>pip_vars + pip_params</CODE> new space
+  dimensions would cause the vector space to exceed dimension
+  <CODE>max_space_dimension()</CODE>.
+
+  The new space dimensions will be those having the highest indexes
+  in the new PIP problem; they are initially unconstrained.
 */
 int
 ppl_PIP_Problem_add_space_dimensions_and_embed
-PPL_PROTO((ppl_PIP_Problem_t pip, ppl_dimension_type d));
+PPL_PROTO((ppl_PIP_Problem_t pip,
+           ppl_dimension_type pip_vars,
+           ppl_dimension_type pip_params));
 
 /*! \relates ppl_PIP_Problem_tag \brief
   Sets the space dimensions that are specified in first \p n positions
@@ -2751,20 +2742,6 @@ ppl_PIP_Problem_add_constraint PPL_PROTO((ppl_PIP_Problem_t pip,
 int
 ppl_PIP_Problem_add_constraints PPL_PROTO((ppl_PIP_Problem_t pip,
 					   ppl_const_Constraint_System_t cs));
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Sets the objective function of the PIP problem \p pip to a copy of \p le.
-*/
-int
-ppl_PIP_Problem_set_objective_function
-PPL_PROTO((ppl_PIP_Problem_t pip, ppl_const_Linear_Expression_t le));
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Sets the optimization mode of the PIP problem \p pip to \p mode.
-*/
-int
-ppl_PIP_Problem_set_optimization_mode PPL_PROTO((ppl_PIP_Problem_t pip,
-						 int mode));
 
 /*@}*/ /* Functions that May Modify the PIP_Problem */
 
@@ -2823,59 +2800,6 @@ int
 ppl_PPL_Problem_optimizing_solution
 PPL_PROTO((ppl_const_PIP_Problem_t pip,
            ppl_const_PIP_Tree_Node_t* pip_tree));
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Evaluates the objective function of \p pip on point \p g.
-
-  \param pip
-  The PIP problem defining the objective function;
-
-  \param g
-  The generator on which the objective function will be evaluated;
-
-  \param num
-  Will be assigned the numerator of the objective function value;
-
-  \param den
-  Will be assigned the denominator of the objective function value;
-*/
-int
-ppl_PIP_Problem_evaluate_objective_function
-PPL_PROTO((ppl_const_PIP_Problem_t pip, ppl_const_Generator_t g,
-	   ppl_Coefficient_t num, ppl_Coefficient_t den));
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Writes a const handle to a feasible point for the PIP problem \p pip
-  at address \p pg.
-*/
-int
-ppl_PIP_Problem_feasible_point PPL_PROTO((ppl_const_PIP_Problem_t pip,
-					  ppl_const_Generator_t* pg));
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Writes a const handle to an optimizing point for the PIP problem \p pip
-  at address \p pg.
-*/
-int
-ppl_PIP_Problem_optimizing_point PPL_PROTO((ppl_const_PIP_Problem_t pip,
-					    ppl_const_Generator_t* pg));
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Returns the optimal value for \p pip.
-
-  \param pip
-  The PIP problem;
-
-  \param num
-  Will be assigned the numerator of the optimal value;
-
-  \param den
-  Will be assigned the denominator of the optimal value.
-*/
-int
-ppl_PIP_Problem_optimal_value
-PPL_PROTO((ppl_const_PIP_Problem_t pip,
-	   ppl_Coefficient_t num, ppl_Coefficient_t den));
 
 /*@}*/ /* Computing the Solution of the PIP_Problem */
 
@@ -2968,7 +2892,7 @@ PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
 */
 int
 ppl_PIP_Tree_Node_insert_artificials
-PPL_PROTO((ppl_const_PIP_Tree_Node_t pip,
+PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
            ppl_dimension_type ds[],
            size_t n,
            ppl_dimension_type space_dim,

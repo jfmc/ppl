@@ -2109,12 +2109,6 @@ ppl_new_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t* dpip,
 }
 CATCH_ALL
 */
-int
-ppl_delete_PIP_Problem(ppl_const_PIP_Problem_t pip) try {
-  delete to_const(pip);
-  return 0;
-}
-CATCH_ALL
 /* FIXME: Waiting for c++ method for operator=() to be implemented.
 int
 ppl_assign_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t dst,
@@ -2126,6 +2120,12 @@ ppl_assign_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t dst,
 }
 CATCH_ALL
 */
+int
+ppl_delete_PIP_Problem(ppl_const_PIP_Problem_t pip) try {
+  delete to_const(pip);
+  return 0;
+}
+CATCH_ALL
 int
 ppl_PIP_Problem_space_dimension(ppl_const_PIP_Problem_t pip,
 				ppl_dimension_type* m) try {
@@ -2182,6 +2182,16 @@ CATCH_ALL
 int
 ppl_PIP_Problem_clear(ppl_PIP_Problem_t pip) try {
   to_nonconst(pip)->clear();
+  return 0;
+}
+CATCH_ALL
+int
+ppl_PIP_Problem_add_space_dimensions_and_embed(ppl_PIP_Problem_t pip,
+					       ppl_dimension_type pip_vars,
+					       ppl_dimension_type pip_params)
+  try {
+  PIP_Problem& spip = *to_nonconst(pip);
+  spip.add_space_dimensions_and_embed(pip_vars,pip_params);
   return 0;
 }
 CATCH_ALL
@@ -2282,6 +2292,30 @@ ppl_PIP_Tree_Node_begin(ppl_const_PIP_Tree_Node_t pip_tree,
   PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator& spit
     = *to_nonconst(pit);
   spit = to_const(pip_tree)->art_parameter_begin();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Tree_Node_end(ppl_const_PIP_Tree_Node_t pip_tree,
+ ppl_Artificial_Parameter_Sequence_const_iterator_t pit) try {
+  PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator& spit
+    = *to_nonconst(pit);
+  spit = to_const(pip_tree)->art_parameter_end();
+  return 0;
+}
+CATCH_ALL
+int
+ppl_PIP_Tree_Node_insert_artificials(ppl_const_PIP_Tree_Node_t pip_tree,
+                                     ppl_dimension_type ds[],
+                                     size_t n,
+                                     ppl_dimension_type space_dim,
+                                     ppl_dimension_type inserted) try {
+  const PIP_Tree_Node& spip_tree = *to_const(pip_tree);
+  Variables_Set vars;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    vars.insert(ds[i]);
+  inserted = spip_tree.insert_artificials(vars,space_dim);
   return 0;
 }
 CATCH_ALL
