@@ -53,16 +53,15 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
   : external_space_dim(y.external_space_dim),
     internal_space_dim(y.internal_space_dim),
     status(y.status),
-    // FIXME: this causes sharing of the solution tree,
-    // possibly later resulting in memory corruption (double free).
-    current_solution(y.current_solution),
+    current_solution(0),
     initialized(y.initialized),
     input_cs(y.input_cs),
     first_pending_constraint(y.first_pending_constraint),
     parameters(y.parameters),
     initial_context(y.initial_context) {
+  if (y.current_solution != 0)
+    current_solution = y.current_solution->clone();
   PPL_ASSERT(OK());
-  // FIXME: must also copy the solution tree
 }
 
 PPL::PIP_Problem::~PIP_Problem() {

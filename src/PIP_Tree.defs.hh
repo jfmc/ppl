@@ -120,6 +120,9 @@ public:
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
 
+  //! Returns a pointer to a dynamically-allocated copy of \p *this.
+  PIP_Tree_Node* clone() const;
+
 protected:
   //! Default constructor.
   PIP_Tree_Node();
@@ -227,6 +230,9 @@ public:
 
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
+
+  //! Returns a pointer to a dynamically-allocated copy of \p *this.
+  PIP_Solution_Node* clone() const;
 
   bool OK() const;
 
@@ -415,6 +421,9 @@ public:
   //! Returns a pointer to the \p v (true or false) branch of \p *this.
   PIP_Tree_Node* child_node(bool v);
 
+  //! Returns a pointer to a dynamically-allocated copy of \p *this.
+  PIP_Decision_Node* clone() const;
+
   bool OK() const;
 
 private:
@@ -446,6 +455,9 @@ private:
   PIP_Decision_Node(PIP_Tree_Node* fcp, PIP_Tree_Node* tcp);
 
 protected:
+  //! Copy constructor.
+  PIP_Decision_Node(const PIP_Decision_Node &x);
+
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
 

@@ -189,11 +189,14 @@ test04() {
                      cs.space_dimension());
   }
 
-  // Copy constructor is buggy.
+  // Copy constructor is no longer buggy.
   {
     PIP_Problem pip_copy = pip;
     // Here we call the destructor of pip_copy
-    // and we also destroy the (shared) solution tree of pip.
+    // and we also destroy the (copied) solution tree of pip_copy.
+    const PIP_Tree solution = pip_copy.solution();
+    display_solution(solution, params, Variables_Set(i, j),
+                     cs.space_dimension());
   }
 
   return ok;
@@ -205,6 +208,5 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
-  // Uncomment this to get a segmentation fault.
-  // DO_TEST(test04);
+  DO_TEST(test04);
 END_MAIN

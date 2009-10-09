@@ -210,6 +210,16 @@ PIP_Decision_Node::PIP_Decision_Node(PIP_Tree_Node* fcp,
     false_child(fcp) {
 }
 
+PIP_Decision_Node ::PIP_Decision_Node(const PIP_Decision_Node& x)
+  : PIP_Tree_Node(x),
+    true_child(0),
+    false_child(0) {
+  if (x.true_child != 0)
+    true_child = x.true_child->clone();
+  if (x.false_child != 0)
+    false_child = x.false_child->clone();
+}
+
 const PIP_Solution_Node*
 PIP_Tree_Node::as_solution() const {
   return 0;
@@ -509,6 +519,27 @@ PIP_Tree_Node::ascii_load(std::istream& s) {
 
   PPL_ASSERT(OK());
   return true;
+}
+
+PIP_Tree_Node*
+PIP_Tree_Node::clone() const {
+  const PIP_Solution_Node* as_s = as_solution();
+  if (as_s != 0)
+    return as_s->clone();
+  const PIP_Decision_Node* as_d = as_decision();
+  if (as_d != 0)
+    return as_d->clone();
+  return 0;
+}
+
+PIP_Solution_Node*
+PIP_Solution_Node::clone() const {
+  return new PIP_Solution_Node(*this);
+}
+
+PIP_Decision_Node*
+PIP_Decision_Node::clone() const {
+  return new PIP_Decision_Node(*this);
 }
 
 void
