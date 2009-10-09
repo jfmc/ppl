@@ -2321,6 +2321,65 @@ ppl_PIP_Tree_Node_insert_artificials(ppl_const_PIP_Tree_Node_t pip_tree,
 CATCH_ALL
 
 int
+ppl_new_PIP_Solution_Node(ppl_PIP_Solution_Node_t* ppip_sol) try {
+  *ppip_sol = to_nonconst(new PIP_Solution_Node());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_PIP_Solution_Node(ppl_const_PIP_Solution_Node_t pip_sol) try {
+  delete to_const(pip_sol);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Solution_Node_get_parametric_values
+  (ppl_const_PIP_Solution_Node_t pip_sol,
+   ppl_dimension_type v,
+   ppl_dimension_type pars[],
+   size_t n,
+   ppl_const_Linear_Expression_t* le) try {
+  const PIP_Solution_Node& spip_sol = *to_const(pip_sol);
+  Variables_Set vars;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    vars.insert(pars[i]);
+  const Linear_Expression& lle = spip_sol.parametric_values(Variable(v),vars);
+  *le = to_const(&lle);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Solution_Node_OK(ppl_const_PIP_Solution_Node_t pip_sol) try {
+  return to_const(pip_sol)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_PIP_Decision_Node(ppl_const_PIP_Decision_Node_t pip_dec) try {
+  delete to_const(pip_dec);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Decision_Node_OK(ppl_const_PIP_Decision_Node_t pip_dec) try {
+  return to_const(pip_dec)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Decision_Node_get_child_node(ppl_const_PIP_Decision_Node_t pip_dec,
+                                     int b,
+                                     ppl_const_PIP_Tree_Node_t* pip_tree) try {
+  *pip_tree = to_const(to_const(pip_dec)->child_node(b));
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_new_Artificial_Parameter(ppl_Artificial_Parameter_t* pap) try {
   *pap = to_nonconst(new Artificial_Parameter());
   return 0;

@@ -2768,7 +2768,7 @@ int
 ppl_PIP_Problem_solve PPL_PROTO((ppl_const_PIP_Problem_t pip));
 
   /*! \relates ppl_PIP_Problem_tag \brief
-    Returns a feasible solution for \p *this, if it exists.
+    Writes to \p pip_tree a solution for \p pip, if it exists.
 
     \param pip
     The PIP problem;
@@ -2784,7 +2784,7 @@ ppl_PPL_Problem_solution PPL_PROTO((ppl_const_PIP_Problem_t pip,
                                     ppl_const_PIP_Tree_Node_t* pip_tree));
 
   /*! \relates ppl_PIP_Problem_tag \brief
-    Returns an optimizing solution for \p *this, if it exists.
+    Writes to \p pip_tree an optimizing solution for \p pip, if it exists.
 
     \param pip
     The PIP problem;
@@ -2793,7 +2793,7 @@ ppl_PPL_Problem_solution PPL_PROTO((ppl_const_PIP_Problem_t pip,
     The PIP tree;
 
     \exception std::domain_error
-    Thrown if \p *this doesn't not have an optimizing point, i.e.,
+    Thrown if \p pip does not not have an optimizing point, i.e.,
     if the PIP problem is unbounded or not satisfiable.
   */
 int
@@ -2803,25 +2803,9 @@ PPL_PROTO((ppl_const_PIP_Problem_t pip,
 
 /*@}*/ /* Computing the Solution of the PIP_Problem */
 
-/*! \brief \name Querying/Setting Control Parameters */
-/*@{*/
-
 /*! \relates ppl_PIP_Problem_tag \brief
-  Returns the value of control parameter \p name in problem \p pip.
-*/
-int
-ppl_PIP_Problem_get_control_parameter
-PPL_PROTO((ppl_const_PIP_Problem_t pip, int name));
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Sets control parameter \p value in problem \p pip.
-*/
-int
-ppl_PIP_Problem_set_control_parameter
-PPL_PROTO((ppl_PIP_Problem_t pip, int value));
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Returns \p this if \p *this is a solution node, 0 otherwise.
+  Writes to \p dpip_tree the solution node if \p spip_tree is
+  a solution node, and 0 otherwise.
 */
 int
 ppl_PIP_Tree_Node_as_solution
@@ -2829,7 +2813,8 @@ PPL_PROTO((ppl_const_PIP_Tree_Node_t spip_tree,
            ppl_const_PIP_Solution_Node_t* dpip_tree));
 
 /*! \relates ppl_PIP_Problem_tag \brief
-  Returns \p this if \p *this is a decision node, 0 otherwise.
+  Writes to \p dpip_tree the decision node if \p spip_tree
+  is a decision node, and 0 otherwise.
 */
 int
 ppl_PIP_Tree_Node_as_decision
@@ -2837,7 +2822,8 @@ PPL_PROTO((ppl_const_PIP_Tree_Node_t spip_tree,
            ppl_const_PIP_Decision_Node_t* dpip_tree));
 
 /*! \relates ppl_PIP_Problem_tag \brief
-  Returns the value of control parameter \p name in problem \p pip.
+  Writes to \p pcs the local system of parameter constraints
+  at the pip tree node \p pip_tree.
 */
 int
 ppl_PIP_Tree_Node_get_constraints
@@ -2899,6 +2885,61 @@ PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
            ppl_dimension_type inserted));
 
 /*! \relates ppl_PIP_Problem_tag \brief
+  Builds a trivial PIP problem of dimension \p d and writes an
+  handle to it at address \p pmip.
+*/
+int
+ppl_new_PIP_Solution_Node PPL_PROTO((ppl_PIP_Solution_Node_t* ppip_sol));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Invalidates the handle \p pip_sol: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_PIP_Solution_Node PPL_PROTO((ppl_const_PIP_Solution_Node_t pip_sol));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes to \p le a parametric expression of the values of variable \p v.
+
+  The returned linear expression only involves parameters.
+
+  \param v
+  the variable which is queried about
+
+  \param pars
+  a \c std::set of indices of the parameters in the constraints
+
+  \exception std::invalid_argument
+  Thrown if \p v is dimension-incompatible with \p *this
+  or if \p v is a parameter.
+*/
+int
+ppl_PIP_Solution_Node_get_parametric_values
+PPL_PROTO((ppl_const_PIP_Solution_Node_t pip_sol,
+           ppl_dimension_type v,
+           ppl_dimension_type pars[],
+           size_t n,
+           ppl_Linear_Expression_t le));
+
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Invalidates the handle \p pip_dec: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_PIP_Decision_Node PPL_PROTO((ppl_const_PIP_Decision_Node_t pip_dec));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes to \p pip_tree a const pointer to the \p b (true or false) branch
+  of \p pip_dec.
+*/
+int
+ppl_PIP_Decision_Node_get_child_node
+PPL_PROTO((ppl_const_PIP_Decision_Node_t pip_dec,
+           int b,
+           ppl_const_PIP_Tree_Node_t* pip_tree));
+
+/*! \relates ppl_PIP_Problem_tag \brief
   Creates a new artificial parameter corresponding to the constant 0 in a
   zero-dimensional space; writes a handle for the new artificial
   parameter at address \p pap.
@@ -2941,6 +2982,10 @@ PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(MIP_Problem)
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(PIP_Problem)
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(PIP_Tree_Node)
+
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(PIP_Solution_Node)
+
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(PIP_Decision_Node)
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Artificial_Parameter)
 
