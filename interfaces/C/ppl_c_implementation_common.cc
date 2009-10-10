@@ -2099,7 +2099,7 @@ ppl_new_PIP_Problem_from_space_dimension(ppl_PIP_Problem_t* ppip,
   return 0;
 }
 CATCH_ALL
-/* FIXME: Waiting for c++ method for operator=() to be implemented.
+
 int
 ppl_new_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t* dpip,
 				     ppl_const_PIP_Problem_t pip) try {
@@ -2108,8 +2108,7 @@ ppl_new_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t* dpip,
   return 0;
 }
 CATCH_ALL
-*/
-/* FIXME: Waiting for c++ method for operator=() to be implemented.
+
 int
 ppl_assign_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t dst,
 					ppl_const_PIP_Problem_t src) try {
@@ -2119,13 +2118,14 @@ ppl_assign_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t dst,
   return 0;
 }
 CATCH_ALL
-*/
+
 int
 ppl_delete_PIP_Problem(ppl_const_PIP_Problem_t pip) try {
   delete to_const(pip);
   return 0;
 }
 CATCH_ALL
+
 int
 ppl_PIP_Problem_space_dimension(ppl_const_PIP_Problem_t pip,
 				ppl_dimension_type* m) try {
@@ -2135,8 +2135,8 @@ ppl_PIP_Problem_space_dimension(ppl_const_PIP_Problem_t pip,
 CATCH_ALL
 
 int
-ppl_PIP_Problem_number_of_parameter_space_dimensions(ppl_const_PIP_Problem_t pip,
-						   ppl_dimension_type* m) try {
+ppl_PIP_Problem_number_of_parameter_space_dimensions
+(ppl_const_PIP_Problem_t pip, ppl_dimension_type* m) try {
   const PIP_Problem& ppip = *to_const(pip);
   *m = ppip.parameter_space_dimensions().size();
   return 0;
@@ -2145,7 +2145,7 @@ CATCH_ALL
 
 int
 ppl_PIP_Problem_parameter_space_dimensions(ppl_const_PIP_Problem_t pip,
-					 ppl_dimension_type ds[]) try {
+                                           ppl_dimension_type ds[]) try {
   const Variables_Set& vars = to_const(pip)->parameter_space_dimensions();
   ppl_dimension_type* ds_i = ds;
   for (Variables_Set::const_iterator v_iter = vars.begin(),
