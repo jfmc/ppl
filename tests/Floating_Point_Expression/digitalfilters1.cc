@@ -129,7 +129,7 @@ test01() {
   return !y.is_bounded();
 }
 
-// tests rate limiter using bounded differences abstract domain
+// Tests rate limiter using bounded differences abstract domain
 // and ignoring rounding errors.
 bool
 test02() {
@@ -219,7 +219,7 @@ test02() {
   return !y.is_bounded();
 }
 
-// tests rate limiter using octagons abstract domain
+// Tests rate limiter using octagons abstract domain
 // and ignoring rounding errors.
 bool
 test03() {
@@ -315,7 +315,7 @@ test03() {
   return y.is_bounded();
 }
 
-// tests rate limiter using polyhedra abstract domain
+// Tests rate limiter using polyhedra abstract domain
 // and ignoring rounding errors.
 bool
 test04() {
@@ -410,7 +410,7 @@ test04() {
   return y.is_bounded();
 }
 
-// tests rate limiter using octagons abstract domain and
+// Tests rate limiter using octagons abstract domain and
 // linearization of floating point expressions.
 bool
 test05() {
@@ -503,6 +503,7 @@ test05() {
     oc.upper_bound_assign(oc_begin);
     Constraint_System cs;
     PPL_DIRTY_TEMP_COEFFICIENT(M);
+    PPL_DIRTY_TEMP_COEFFICIENT(N);
     ANALYZER_FP_FORMAT max_analyzed =
     (2 - pow(2,
        -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
@@ -512,21 +513,26 @@ test05() {
       std::numeric_limits<ANALYZER_FP_FORMAT>::max();
     max_analyzer = std::min(max_analyzer, max_analyzed);
     assign_r(M, max_analyzer, ROUND_DOWN);
-    cs.insert(Y <= M);
-    cs.insert(Y >= -M);
-    oc.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
-    Box<FP_Interval> box(oc);
+    div_2exp_assign_r(N, M, 1, ROUND_DOWN);
+    // FIXME: By inserting the constraints Y <= M and Y >= -M, we obtain
+    // Y + Y <= 2 * M = +inf and -Y - Y <= -2 * M = +inf.
+    // For a more precise analysis, it is better to insert the
+    // constraints Y <= N and Y >= -N, where N = M / 2.
+    cs.insert(Y <= N);
+    cs.insert(Y >= -N);
+    FP_Octagonal_Shape oc_wid(oc);
+    oc_wid.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
+    Box<FP_Interval> box(oc_wid);
     print_constraints(box, "*** after widening ***");
     y = box.get_interval(Y);
   }
 
   nout << "*** Y in " << y << " ***" << endl;
-  return !y.is_bounded();
+  return y.is_bounded();
 }
 
-// tests rate limiter using polyhedra abstract domain and
+// Tests rate limiter using polyhedra abstract domain and
 // linearization of floating point expressions.
-// FIXME: not pass at the moment.
 bool
 test06() {
   // Input signal.
@@ -557,11 +563,12 @@ test06() {
   con_y.linearize(abstract_store, lf_abstract_store, lk);
   ph.affine_image(Y, lk);
 
-  for(unsigned short n = 0; y_begin != y && y.is_bounded(); ++n) {
+  for(unsigned short n = 0; y_begin != y; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     ph_begin = ph;
     y_begin = y;
+
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     Con_FP_Expression con_x(-128, 128);
     con_x.linearize(abstract_store, lf_abstract_store, lk);
@@ -633,23 +640,24 @@ test06() {
     assign_r(M, max_analyzer, ROUND_DOWN);
     cs.insert(Y <= M);
     cs.insert(Y >= -M);
-    ph.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
-    Box<FP_Interval> box(ph);
+    NNC_Polyhedron ph_wid(ph);
+    ph_wid.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
+    Box<FP_Interval> box(ph_wid);
     print_constraints(box, "*** after widening ***");
     y = box.get_interval(Y);
   }
 
   nout << "*** Y in " << y << " ***" << endl;
-  return !y.is_bounded();
+  return y.is_bounded();
 }
 
 } // namespace
 
-BEGIN_MAIN
+BEGIN_MAIN /*
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
-  DO_TEST(test04);
+  DO_TEST(test04); */
   DO_TEST(test05);
-  //DO_TEST(test06);
+  DO_TEST(test06);
 END_MAIN
