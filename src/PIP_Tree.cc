@@ -1265,8 +1265,11 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
 
       // Look for a row with non integer parameter coefficients (first is okay)
       const Coefficient& d = tableau.get_denominator();
-      for (i=0; i<num_rows; ++i) {
-        const Row& row = tableau.t[i];
+      for (i=0; i<num_vars; ++i) {
+        if (basis[i])
+          // basic variable = 0 -> integer
+          continue;
+        const Row& row = tableau.t[mapping[i]];
         for (j=0; j<num_params; ++j) {
           if (row[j] % d != 0)
             goto endsearch;
@@ -1274,7 +1277,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
       }
       endsearch:
 
-      if (i == num_rows) {
+      if (i == num_vars) {
         /* The solution is integer */
 #ifdef NOISY_PIP
         std::cout << "Solution found for problem in current node."
@@ -1288,8 +1291,8 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         /* Look for row which will generate the "deepest" cut */
         Coefficient score;
         Coefficient best = 0;
-        dimension_type best_i = i;
-        for (i_ = i; i_ < num_rows; ++i_) {
+        dimension_type best_i = 0;
+        for (i_ = 0; i_ < num_rows; ++i_) {
           const Row& row = tableau.t[i_];
           score = 0;
           for (j = 0; j < num_params; ++j) {
