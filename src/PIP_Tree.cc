@@ -696,6 +696,9 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
       if (j_ == j)
         continue;
       const Coefficient sij_ = p[j_];
+      if (sij_ == 0)
+        // if element j of pivot row is zero, nothing to do for this column
+        continue;
       for (k=0; k<num_rows; ++k) {
         if (k == i)
           continue;
@@ -714,19 +717,22 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
       }
       s[i][j_] = 0;
     }
-    for (k=0; k<num_rows; ++k) {
-      Row& row = s[k];
-      Coefficient& skj = row[j];
-      if (skj % sij != 0) {
-        // as above, we must perform row scaling
-        Coefficient gcd;
-        gcd_assign(gcd, skj, sij);
-        Coefficient scale_factor = sij/gcd;
-        for (j__=0; j__<num_cols; ++j__)
-          row[j__] *= scale_factor;
-        skj *= scale_factor;
+    if (sij != 1) {
+      // Update column only if pivot != 1
+      for (k=0; k<num_rows; ++k) {
+        Row& row = s[k];
+        Coefficient& skj = row[j];
+        if (skj % sij != 0) {
+          // as above, we must perform row scaling
+          Coefficient gcd;
+          gcd_assign(gcd, skj, sij);
+          Coefficient scale_factor = sij/gcd;
+          for (j__=0; j__<num_cols; ++j__)
+            row[j__] *= scale_factor;
+          skj *= scale_factor;
+        }
+        skj /= sij;
       }
-      skj /= sij;
     }
   }
 
@@ -1036,8 +1042,12 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
       for (j=0; j<num_vars; ++j) {
         if (j==j_)
           continue;
+        const Coefficient& prsj = prs[j];
+        if (prsj == 0)
+          // if element j of pivot row is zero, nothing to do for this column
+          continue;
         for (k=0; k<num_rows; ++k) {
-          Coefficient mult = prs[j] * tableau.s[k][j_];
+          Coefficient mult = prsj * tableau.s[k][j_];
           if (mult % sij != 0) {
             // Must scale matrix to stay in integer case
             gcd_assign(gcd, mult, sij);
@@ -1051,8 +1061,12 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
 
       /* Compute columns t[*][j] : t[k][j] -= t[k][j_] * prt[j] / sij */
       for (j=0; j<num_params; ++j) {
+        const Coefficient& prtj = prt[j];
+        if (prtj == 0)
+          // if element j of pivot row is zero, nothing to do for this column
+          continue;
         for (k=0; k<num_rows; ++k) {
-          Coefficient c = prt[j] * tableau.s[k][j_];
+          Coefficient c = prtj * tableau.s[k][j_];
           if (c % sij != 0) {
             // Must scale matrix to stay in integer case
             gcd_assign(gcd, c, sij);
@@ -1088,17 +1102,20 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
       }
 
       /* compute column s[*][j_] : s[k][j_] /= sij */
-      for (k=0; k<num_rows; ++k) {
-        Coefficient& c = tableau.s[k][j_];
-        Coefficient numerator = c * sij_denom;
-        if (numerator % sij != 0) {
-          Coefficient gcd;
-          gcd_assign(gcd, numerator, sij);
-          Coefficient scale_factor = sij/gcd;
-          tableau.scale(scale_factor);
-          numerator *= scale_factor;
+      if (sij != sij_denom) {
+        // Update column only if pivot != 1
+        for (k=0; k<num_rows; ++k) {
+          Coefficient& c = tableau.s[k][j_];
+          Coefficient numerator = c * sij_denom;
+          if (numerator % sij != 0) {
+            Coefficient gcd;
+            gcd_assign(gcd, numerator, sij);
+            Coefficient scale_factor = sij/gcd;
+            tableau.scale(scale_factor);
+            numerator *= scale_factor;
+          }
+          c = numerator / sij;
         }
-        c = numerator / sij;
       }
       solution_valid = false;
     }
