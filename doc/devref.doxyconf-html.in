@@ -317,6 +317,7 @@ INPUT                  = @srcdir@/definitions.dox \
 			 @srcdir@/../src/Floating_Point_Expression.types.hh \
 			 @srcdir@/../src/Floating_Point_Expression.defs.hh \
 			 @srcdir@/../src/Floating_Point_Expression.inlines.hh \
+			 @srcdir@/../src/Floating_Point_Expression.templates.hh \    
 			 @srcdir@/../src/Constant_Floating_Point_Expression.types.hh \
 			 @srcdir@/../src/Constant_Floating_Point_Expression.defs.hh \
 			 @srcdir@/../src/Constant_Floating_Point_Expression.inlines.hh \
