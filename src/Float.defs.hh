@@ -275,6 +275,8 @@ public:
   typedef float_ieee754_single Binary;
 #elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
   typedef float_ieee754_double Binary;
+#elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IBM_SINGLE
+  typedef float_ibm_single Binary;
 #elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
   typedef float_ieee754_quad Binary;
 #elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
@@ -302,6 +304,8 @@ public:
   typedef float_ieee754_single Binary;
 #elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
   typedef float_ieee754_double Binary;
+#elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IBM_SINGLE
+  typedef float_ibm_single Binary;
 #elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
   typedef float_ieee754_quad Binary;
 #elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
@@ -329,6 +333,8 @@ public:
   typedef float_ieee754_single Binary;
 #elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
   typedef float_ieee754_double Binary;
+#elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IBM_SINGLE
+  typedef float_ibm_single Binary;
 #elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
   typedef float_ieee754_quad Binary;
 #elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
