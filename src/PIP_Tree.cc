@@ -666,7 +666,12 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
   dimension_type i, j, k, j_, j__;
   dimension_type num_rows = s.num_rows();
   dimension_type num_cols = s.num_columns();
+  std::vector<Coefficient> scaling(num_rows, 1);
   bool result = false;
+  PPL_DIRTY_TEMP_COEFFICIENT(sij);
+  PPL_DIRTY_TEMP_COEFFICIENT(mult);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(scale_factor);
 
   /* Perform simplex pivots on the context until we find an empty solution
    * or an optimum */
@@ -682,7 +687,7 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
     }
     // Find a positive m[i][j] pivot
     j = 1;
-    Row &p = s[i];
+    const Row& p = s[i];
     while (j<num_cols && p[j] <= 0)
       j++;
     if (j == num_cols) {
@@ -691,11 +696,11 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
       break;
     }
     // Perform a pivot operation on the matrix
-    const Coefficient sij = p[j];
+    sij = p[j];
     for (j_=0; j_<num_cols; ++j_) {
       if (j_ == j)
         continue;
-      const Coefficient sij_ = p[j_];
+      const Coefficient& sij_ = p[j_];
       if (sij_ == 0)
         // if element j of pivot row is zero, nothing to do for this column
         continue;
@@ -703,35 +708,36 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
         if (k == i)
           continue;
         Row& row = s[k];
-        Coefficient mult = row[j] * sij_;
+        mult = row[j] * sij_;
         if (mult % sij != 0) {
           // Must scale row to stay in integer case
-          Coefficient gcd;
           gcd_assign(gcd, mult, sij);
-          Coefficient scale_factor = sij/gcd;
+          exact_div_assign(scale_factor, sij, gcd);
           for (j__=0; j__<num_cols; ++j__)
             row[j__] *= scale_factor;
           mult *= scale_factor;
+          scaling[k] *= scale_factor;
         }
         row[j_] -= mult / sij;
       }
       s[i][j_] = 0;
     }
-    if (sij != 1) {
+    if (sij != scaling[i]) {
       // Update column only if pivot != 1
       for (k=0; k<num_rows; ++k) {
         Row& row = s[k];
         Coefficient& skj = row[j];
-        if (skj % sij != 0) {
+        mult = skj*scaling[i];
+        if (mult % sij != 0) {
           // as above, we must perform row scaling
-          Coefficient gcd;
-          gcd_assign(gcd, skj, sij);
-          Coefficient scale_factor = sij/gcd;
+          gcd_assign(gcd, mult, sij);
+          exact_div_assign(scale_factor, sij, gcd);
           for (j__=0; j__<num_cols; ++j__)
             row[j__] *= scale_factor;
-          skj *= scale_factor;
+          scaling[k] *= scale_factor;
+          mult *= scale_factor;
         }
-        skj /= sij;
+        exact_div_assign(skj, mult, sij);
       }
     }
   }
