@@ -1323,19 +1323,30 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
       }
       else {
         /* The solution is non-integer. We have to generate a cut. */
-        Coefficient mod;
+
         /* Look for row which will generate the "deepest" cut */
-        Coefficient score;
+        PPL_DIRTY_TEMP_COEFFICIENT(score);
+        PPL_DIRTY_TEMP_COEFFICIENT(score1);
+        PPL_DIRTY_TEMP_COEFFICIENT(score2);
+        PPL_DIRTY_TEMP_COEFFICIENT(mod);
         Coefficient best = 0;
         dimension_type best_i = 0;
         for (i_ = 0; i_ < num_rows; ++i_) {
-          const Row& row = tableau.t[i_];
-          score = 0;
+          const Row& row_t = tableau.t[i_];
+          const Row& row_s = tableau.s[i_];
+          score1 = 0;
           for (j = 0; j < num_params; ++j) {
-            mod_assign(mod, row[j], d);
+            mod_assign(mod, row_t[j], d);
             if (mod != 0)
-              score += d - mod;
+              score1 += d - mod;
           }
+          score2 = 0;
+          for (j = 0; j < num_vars; ++j) {
+            mod_assign(mod, row_s[j], d);
+            if (mod != 0)
+              score2 += d - mod;
+          }
+          score = score1*score2;
           if (score > best) {
             best = score;
             best_i = i_;
