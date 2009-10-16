@@ -51,9 +51,8 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
-digitalfilters1
+digitalfilters1 
 
-#digitalfilters1
 #bdshape2 \
 #bdshape1 \
 #floatingpointexpr1 \

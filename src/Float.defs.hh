@@ -49,6 +49,7 @@ struct float_ieee754_half {
   static const uint16_t NEG_INF = 0x7c00;
   static const uint16_t POS_ZERO = 0x0000;
   static const uint16_t NEG_ZERO = 0x8000;
+  static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 5;
   static const unsigned int MANTISSA_BITS = 10;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
@@ -80,6 +81,7 @@ struct float_ieee754_single {
   static const uint32_t NEG_INF = 0xff800000;
   static const uint32_t POS_ZERO = 0x00000000;
   static const uint32_t NEG_ZERO = 0x80000000;
+  static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 8;
   static const unsigned int MANTISSA_BITS = 23;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
@@ -124,6 +126,7 @@ struct float_ieee754_double {
   static const uint32_t LSP_INF = 0;
   static const uint32_t LSP_ZERO = 0;
   static const uint32_t LSP_MAX = 0xffffffff;
+  static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 11;
   static const unsigned int MANTISSA_BITS = 52;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
@@ -154,6 +157,7 @@ struct float_ibm_single {
   static const uint32_t NEG_INF = 0xff000000;
   static const uint32_t POS_ZERO = 0x00000000;
   static const uint32_t NEG_ZERO = 0x80000000;
+  static const unsigned int BASE = 16;
   static const unsigned int EXPONENT_BITS = 7;
   static const unsigned int MANTISSA_BITS = 24;
   static const int EXPONENT_BIAS = 64;
@@ -177,6 +181,9 @@ struct float_ibm_single {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 struct float_ibm_double {
+  // FIXME: BASE must be 16, 16^56 should return an overflow
+  // and absolute/relative error are not sound.
+  static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 7;
   static const unsigned int MANTISSA_BITS = 56;
   static const int EXPONENT_BIAS = 64;
@@ -203,6 +210,7 @@ struct float_intel_double_extended {
   static const uint64_t LSP_ZERO = 0;
   static const uint64_t LSP_DMAX = 0x7fffffffffffffffULL;
   static const uint64_t LSP_NMAX = 0xffffffffffffffffULL;
+  static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 15;
   static const unsigned int MANTISSA_BITS = 63;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
@@ -241,6 +249,7 @@ struct float_ieee754_quad {
   static const uint64_t LSP_INF = 0;
   static const uint64_t LSP_ZERO = 0;
   static const uint64_t LSP_MAX = 0xffffffffffffffffULL;
+  static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 15;
   static const unsigned int MANTISSA_BITS = 112;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;

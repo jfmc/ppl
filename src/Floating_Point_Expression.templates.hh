@@ -35,9 +35,12 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::relative_error(const FP_Linear_Form& lf, FP_Linear_Form& result) {
   /* FIXME: here we assume that boundary_type can represent
      (2)^(-FP_Format::MANTISSA_BITS) precisely. */
-  FP_Interval_Type error_propagator(-pow(2, -static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type>(FP_Format::MANTISSA_BITS)));
-  // FIXME: this may be incorrect for some policies.
-  error_propagator.join_assign(FP_Interval_Type(pow(2, -static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type>(FP_Format::MANTISSA_BITS))));
+  FP_Interval_Type error_propagator(-pow(FP_Format::BASE, 
+  -static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
+  ::boundary_type>(FP_Format::MANTISSA_BITS)));
+  error_propagator.join_assign(FP_Interval_Type(pow(FP_Format::BASE, 
+  -static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
+  ::boundary_type>(FP_Format::MANTISSA_BITS))));
 
   // Handle the inhomogeneous term.
   const FP_Interval_Type* current_term = &lf.inhomogeneous_term();
@@ -52,7 +55,7 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
   for (dimension_type i = 0; i < dimension; ++i) {
     current_term = &lf.coefficient(Variable(i));
     current_multiplier = FP_Interval_Type(std::max(abs(current_term->lower()),
-						   abs(current_term->upper())));
+					       abs(current_term->upper())));
     current_result_term = FP_Linear_Form(Variable(i));
     current_result_term *= current_multiplier;
     current_result_term *= error_propagator;

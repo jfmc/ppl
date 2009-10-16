@@ -101,7 +101,7 @@ test04() {
   Variable A(0);
   Variable B(1);
   FP_Linear_Form known_result = FP_Linear_Form(A);
-  ANALYZER_FP_FORMAT exp = pow(2,
+  ANALYZER_FP_FORMAT exp = pow(ANALYZED_FP_FORMAT::BASE,
     -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS));
   tmp = FP_Interval(1);
   tmp -= exp;
@@ -135,7 +135,7 @@ test05() {
   Variable A(0);
   Variable B(1);
   FP_Linear_Form known_result = FP_Linear_Form(A);
-  ANALYZER_FP_FORMAT exp = pow(2,
+  ANALYZER_FP_FORMAT exp = pow(ANALYZED_FP_FORMAT::BASE,
     -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS));
   tmp = FP_Interval(1);
   tmp -= exp;
@@ -169,7 +169,7 @@ test06() {
 
   tmp = FP_Interval(-FP_Expression::absolute_error);
   tmp.join_assign(FP_Expression::absolute_error);
-  ANALYZER_FP_FORMAT exp = pow(2,
+  ANALYZER_FP_FORMAT exp = pow(ANALYZED_FP_FORMAT::BASE,
     -static_cast<ANALYZER_FP_FORMAT>((ANALYZED_FP_FORMAT::MANTISSA_BITS-1)));
   FP_Interval coeff = FP_Interval(2);
   coeff -= exp;
@@ -202,7 +202,7 @@ test07() {
 
   tmp = FP_Interval(-FP_Expression::absolute_error);
   tmp.join_assign(FP_Expression::absolute_error);
-  ANALYZER_FP_FORMAT exp = pow(2,
+  ANALYZER_FP_FORMAT exp = pow(ANALYZED_FP_FORMAT::BASE,
     -static_cast<ANALYZER_FP_FORMAT>((ANALYZED_FP_FORMAT::MANTISSA_BITS+1)));
   FP_Interval coeff = FP_Interval(1 / 2.0);
   coeff -= exp;
@@ -234,7 +234,7 @@ test08() {
 
   Variable A(0);
   FP_Linear_Form known_result = FP_Linear_Form(A);
-  ANALYZER_FP_FORMAT exp = pow(2,
+  ANALYZER_FP_FORMAT exp = pow(ANALYZED_FP_FORMAT::BASE,
     -static_cast<ANALYZER_FP_FORMAT>((ANALYZED_FP_FORMAT::MANTISSA_BITS+1)));
   tmp = FP_Interval(-1 / 2.0);
   tmp -= exp;
