@@ -74,7 +74,9 @@ negate_assign(Row& x, const Row& y, const Coefficient& sc) {
   PPL_ASSERT(x.size() == y.size());
   for (dimension_type i = x.size(); i-- > 0; )
     x[i] = -y[i];
-  x[0] -= sc;
+  PPL_DIRTY_TEMP_COEFFICIENT(mod);
+  mod_assign(mod, x[0], sc);
+  x[0] -= ((mod == 0) ? sc : mod);
 }
 
 // Update given context matrix using local artificials
@@ -96,6 +98,29 @@ update_context(Variables_Set &params, Matrix &context,
   if (ap_size > 0) {
     for (dimension_type i = 0; i < ap_size; ++i)
       params.insert(space_dimension++);
+  }
+}
+
+void
+row_normalize(Row& x) {
+  dimension_type size = x.size();
+  if (size == 0)
+    return;
+  dimension_type j;
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  gcd = x[0];
+  for (j=1; j<size; ++j) {
+    const Coefficient& c = x[j];
+    if (c != 0) {
+      gcd_assign(gcd, c, gcd);
+      if (gcd == 1)
+        return;
+    }
+  }
+  // Divide the coefficients by the GCD.
+  for (j=0; j<size; ++j) {
+    Coefficient& c = x[j];
+    exact_div_assign(c, c, gcd);
   }
 }
 
@@ -936,7 +961,10 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         if (!found)
           continue;
         Row row(tableau.t[i]);
-        row[0] -= tableau.get_denominator();
+        const Coefficient& denom = tableau.get_denominator();
+        PPL_DIRTY_TEMP_COEFFICIENT(mod);
+        mod_assign(mod, row[0], denom);
+        row[0] -= ((mod == 0) ? denom : mod);
         if (compatibility_check(context, row)) {
           if (i__ == n_a_d)
             i__ = i;
@@ -1159,7 +1187,8 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
                      "variable coefficients: " << i
                   << std::endl;
 #endif
-        Row &r = tableau.t[i];
+        Row r(tableau.t[i]);
+        row_normalize(r);
         context.add_row(r);
         add_constraint(r, parameters);
         sign[i] = POSITIVE;
@@ -1191,6 +1220,8 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         }
         i__ = best_i;
 
+        Row test(tableau.t[i__]);
+        row_normalize(test);
 #ifdef NOISY_PIP
         {
           using namespace IO_Operators;
@@ -1198,14 +1229,13 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
           Variables_Set::const_iterator p;
           dimension_type j;
           for (p = parameters.begin(), j=1; p != parameters.end(); ++p, ++j)
-            e += tableau.t[i__][j] * Variable(*p);
-          e += tableau.t[i__][0];
+            e += test[j] * Variable(*p);
+          e += test[0];
           std::cout << "Found row with mixed parameter sign: " << i__
                     << "\nSolution depends on the sign of parameter " << e
                     << std::endl;
         }
 #endif
-        Row test(tableau.t[i__]);
 
         /* Create a solution Node to become "true" version of current Node */
         PIP_Tree_Node *tru = new PIP_Solution_Node(*this, true);
@@ -1392,19 +1422,19 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
 #endif
           context.add_row(ctx1);
           context.add_row(ctx2);
-          cut_t[num_params] = d*d;
+          cut_t[num_params] = d;
         }
 
         // Generate new cut
         const Row& row_s = tableau.s[i];
         for (j=0; j<num_vars; ++j) {
           mod_assign(mod, row_s[j], d);
-          cut_s[j] = d*mod;
+          cut_s[j] = mod;
         }
         for (j=0; j<num_params; ++j) {
           mod_assign(mod, row_t[j], d);
           if (mod != 0)
-            cut_t[j] = d*(mod - d);
+            cut_t[j] = mod - d;
           else
             cut_t[j] = 0;
         }
