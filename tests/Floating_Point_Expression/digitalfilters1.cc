@@ -410,10 +410,125 @@ test04() {
   return y.is_bounded();
 }
 
-// Tests rate limiter using octagons abstract domain and
+// Tests rate limiter using bounded differences abstract domain and
 // linearization of floating point expressions.
 bool
 test05() {
+  // Input signal.
+  Variable X(0);
+  // Maximum allowed for |R|.
+  Variable D(1);
+  // Output signal.
+  Variable Y(2);
+  // Last output.
+  Variable S(3);
+  // Actual rate.
+  Variable R(4);
+
+  FP_Interval_Abstract_Store abstract_store(5);
+  FP_Linear_Form_Abstract_Store lf_abstract_store;
+  FP_BD_Shape bd(abstract_store);
+  FP_Interval y(0);
+  FP_Interval y_begin(1);
+  FP_BD_Shape bd_begin;
+  Con_FP_Expression con_y(0, 0);
+  FP_Linear_Form lx;
+  FP_Linear_Form ly;
+  FP_Linear_Form lr;
+  FP_Linear_Form lk;
+
+  // Y = 0;
+  con_y.linearize(abstract_store, lf_abstract_store, lk);
+  bd.affine_image(Y, lk);
+
+  for(unsigned short n = 0; y_begin != y; ++n) {
+
+    nout << "*** n = " << n << " ***" << endl;
+    bd_begin = bd;
+    y_begin = y;
+
+    Con_FP_Expression con_x(-128, 128);
+    con_x.linearize(abstract_store, lf_abstract_store, lk);
+    bd.affine_image(X, lk);
+
+    Con_FP_Expression con_d(0, 16);
+    con_d.linearize(abstract_store, lf_abstract_store, lk);
+    bd.affine_image(D, lk);
+
+    Var_FP_Expression var_y(2);
+    var_y.linearize(abstract_store, lf_abstract_store, ly);
+    bd.affine_image(S, ly);
+
+    Var_FP_Expression* px = new Var_FP_Expression(0);
+    Var_FP_Expression* ps = new Var_FP_Expression(3);
+    Dif_FP_Expression x_dif_s(px, ps);
+    x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
+    bd.affine_image(R, lr);
+
+    Var_FP_Expression var_x(0);
+    var_x.linearize(abstract_store, lf_abstract_store, lx);
+    bd.affine_image(Y, lx);
+
+    // if (R <= -D) Y = S - D;
+    FP_BD_Shape bd_then(bd);
+    bd_then.refine_with_linear_form_inequality(lr, -lk);
+
+    Var_FP_Expression* pd  = new Var_FP_Expression(1);
+    Var_FP_Expression* ps2 = new Var_FP_Expression(3);
+    Dif_FP_Expression s_dif_d(ps2, pd);
+    s_dif_d.linearize(abstract_store, lf_abstract_store, ly);
+    bd_then.affine_image(Y, ly);
+
+    bd.refine_with_linear_form_inequality(-lk, lr);
+
+    bd.upper_bound_assign(bd_then);
+    print_constraints(Box<FP_Interval>(bd) ,
+         "*** if (R <= -D) Y = S - D; ***");
+
+    // if (R >= D)  Y = S + D;
+    bd_then = bd;
+    bd_then.refine_with_linear_form_inequality(lk, lr);
+
+    Var_FP_Expression* pd1  = new Var_FP_Expression(1);
+    Var_FP_Expression* ps3  = new Var_FP_Expression(3);
+    Sum_FP_Expression s_sum_d(ps3, pd1);
+    s_sum_d.linearize(abstract_store, lf_abstract_store, ly);
+    bd_then.affine_image(Y, ly);
+
+    bd.refine_with_linear_form_inequality(lr, lk);
+
+    bd.upper_bound_assign(bd_then);
+    print_constraints(Box<FP_Interval>(bd), "*** if (R >= D)  Y = S + D; ***");
+
+    bd.upper_bound_assign(bd_begin);
+    Constraint_System cs;
+    PPL_DIRTY_TEMP_COEFFICIENT(M);
+    ANALYZER_FP_FORMAT max_analyzed =
+    (2 - pow(2,
+       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
+       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
+                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
+    ANALYZER_FP_FORMAT max_analyzer =
+      std::numeric_limits<ANALYZER_FP_FORMAT>::max();
+    max_analyzer = std::min(max_analyzer, max_analyzed);
+    assign_r(M, max_analyzer, ROUND_DOWN);
+    cs.insert(Y <= M);
+    cs.insert(Y >= -M);
+    FP_BD_Shape bd_wid(bd);
+    bd_wid.limited_BHMZ05_extrapolation_assign(bd_begin, cs);
+    Box<FP_Interval> box(bd_wid);
+    print_constraints(box, "*** after widening ***");
+    y = box.get_interval(Y);
+  }
+
+  nout << "*** Y in " << y << " ***" << endl;
+  return y.is_bounded();
+}
+
+// Tests rate limiter using octagons abstract domain and
+// linearization of floating point expressions.
+bool
+test06() {
   // Input signal.
   Variable X(0);
   // Maximum allowed for |R|.
@@ -534,7 +649,7 @@ test05() {
 // Tests rate limiter using polyhedra abstract domain and
 // linearization of floating point expressions.
 bool
-test06() {
+test07() {
   // Input signal.
   Variable X(0);
   // Maximum allowed for |R|.
@@ -577,17 +692,14 @@ test06() {
     con_d.linearize(abstract_store, lf_abstract_store, lk);
     ph.affine_image(D, lk);
     Var_FP_Expression var_y(2);
-    abstract_store = Box<FP_Interval>(ph);
     var_y.linearize(abstract_store, lf_abstract_store, ly);
     ph.affine_image(S, ly);
     Var_FP_Expression* px = new Var_FP_Expression(0);
     Var_FP_Expression* ps = new Var_FP_Expression(3);
     Dif_FP_Expression x_dif_s(px, ps);
-    abstract_store = Box<FP_Interval>(ph);
     x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
     ph.affine_image(R, lr);
     Var_FP_Expression var_x(0);
-    abstract_store = Box<FP_Interval>(ph);
     var_x.linearize(abstract_store, lf_abstract_store, lx);
     ph.affine_image(Y, lx);
 
@@ -653,11 +765,12 @@ test06() {
 
 } // namespace
 
-BEGIN_MAIN /*
+BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
-  DO_TEST(test04); */
+  DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN
