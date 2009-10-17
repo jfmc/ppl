@@ -512,6 +512,7 @@ test05() {
       std::numeric_limits<ANALYZER_FP_FORMAT>::max();
     max_analyzer = std::min(max_analyzer, max_analyzed);
     assign_r(M, max_analyzer, ROUND_DOWN);
+    //FIXME: We could take any value of M >= 145.
     cs.insert(Y <= M);
     cs.insert(Y >= -M);
     FP_BD_Shape bd_wid(bd);
@@ -633,6 +634,7 @@ test06() {
     // Y + Y <= 2 * M = +inf and -Y - Y <= -2 * M = +inf.
     // For a more precise analysis, it is better to insert the
     // constraints Y <= N and Y >= -N, where N = M / 2.
+    // However, we could take any value of N >= 145.
     cs.insert(Y <= N);
     cs.insert(Y >= -N);
     FP_Octagonal_Shape oc_wid(oc);
@@ -750,6 +752,7 @@ test07() {
       std::numeric_limits<ANALYZER_FP_FORMAT>::max();
     max_analyzer = std::min(max_analyzer, max_analyzed);
     assign_r(M, max_analyzer, ROUND_DOWN);
+    //FIXME: We could take any value of M >= 136.
     cs.insert(Y <= M);
     cs.insert(Y >= -M);
     NNC_Polyhedron ph_wid(ph);
