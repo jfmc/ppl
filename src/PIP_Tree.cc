@@ -688,11 +688,10 @@ bool
 PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
   Matrix s(ctx);
   s.add_row(cnst);
-  dimension_type i, j, k, j_, j__;
+  dimension_type i, i_, j, k, j_, j__;
   dimension_type num_rows = s.num_rows();
   dimension_type num_cols = s.num_columns();
   std::vector<Coefficient> scaling(num_rows, 1);
-  bool result = false;
   PPL_DIRTY_TEMP_COEFFICIENT(sij);
   PPL_DIRTY_TEMP_COEFFICIENT(mult);
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
@@ -702,26 +701,36 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
    * or an optimum */
   for (;;) {
     // Look for a negative RHS (=constant term, stored in matrix column 0)
-    i = 0;
-    while (i<num_rows && s[i][0] >= 0)
-      i++;
-    if (i == num_rows) {
+    i = num_rows;
+    j = 0;
+    for (i_=0; i_<num_rows; ++i_) {
+      const Row& rs = s[i_];
+      if (rs[0] < 0) {
+        if (i == num_rows)
+          i = i_;
+        for (j_=1; j_<num_cols; ++j_) {
+          if (rs[j_] > 0) {
+            if(j == 0)
+              j = j_;
+            break;
+          }
+        }
+        if (j_==num_cols) {
+          // No positive pivot candidate: empty problem
+          return false;
+        }
+      }
+    }
+
+    if (j == 0) {
       // No negative RHS: optimum found
-      result = true;
-      break;
+      return true;
     }
-    // Find a positive m[i][j] pivot
-    j = 1;
+    // Now we have a positive s[i][j] pivot
     const Row& p = s[i];
-    while (j<num_cols && p[j] <= 0)
-      j++;
-    if (j == num_cols) {
-      // No positive pivot candidate: empty problem
-      result = false;
-      break;
-    }
-    // Perform a pivot operation on the matrix
     sij = p[j];
+
+    // Perform a pivot operation on the matrix
     for (j_=0; j_<num_cols; ++j_) {
       if (j_ == j)
         continue;
@@ -767,7 +776,8 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
     }
   }
 
-  return result;
+  // This point is never reached
+  return false;
 }
 
 void
