@@ -51,8 +51,8 @@ class Linearization_Failed {};
   - The class template type parameter \p FP_Format represents the floating
   point format used in the concrete domain.
   This parameter must be a struct similar to the ones defined in file
-  Float.defs.hh, even though it is sufficient to define the two
-  fields MANTISSA_BITS and EXPONENT_BIAS.
+  Float.defs.hh, even though it is sufficient to define the three
+  fields BASE, MANTISSA_BITS and EXPONENT_BIAS.
 */
 template <typename FP_Interval_Type, typename FP_Format>
 class Floating_Point_Expression {
@@ -106,7 +106,7 @@ public:
     \p int_store represents the interval abstract store \f$\rho^{\#}\f$ and
     \p lf_store represents the linear form abstract store \f$\rho^{\#}_l\f$,
     then \p result will become
-    \f$\linexpr{e} \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$
+    \f$\linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}\f$
     if the linearization succeeds.
 
     All variables occuring in the floating point expression MUST have
@@ -153,13 +153,14 @@ public:
     \f[
     \varepsilon_{\mathbf{f}}\left([a;b]+\sum_{v \in \cV}[a_{v};b_{v}]v\right)
     \defeq
-    (\textrm{max}(|a|,|b|) \amifp [-2^{-\textrm{p}};2^{-\textrm{p}}])
+    (\textrm{max}(|a|,|b|) \amifp [-\beta^{-\textrm{p}};\beta^{-\textrm{p}}])
     +
     \sum_{v \in \cV}(\textrm{max}(|a_{v}|,|b_{v}|)
     \amifp
-    [-2^{-\textrm{p}};2^{-\textrm{p}}])v
+    [-\beta^{-\textrm{p}};\beta^{-\textrm{p}}])v
     \f]
-    where p is the fraction size in bits for the format \f$\mathbf{f}\f$.
+    where p is the fraction size in bits for the format \f$\mathbf{f}\f$ and
+    \f$\beta\f$ the base.
   */
   static void relative_error(const FP_Linear_Form& lf,
                              FP_Linear_Form& result);

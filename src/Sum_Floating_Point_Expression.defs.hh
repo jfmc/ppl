@@ -61,33 +61,33 @@ namespace Parma_Polyhedra_Library {
   \f$i' + \sum_{v \in \cV}i'_{v}v \f$
   be two linear forms and \f$\aslf\f$ a sound abstract operator on linear
   forms such that:
+
   \f[
-  \left(i + \sum_{v \in \cV}i_{v}v\right)
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
   \aslf
-  \left(i' + \sum_{v \in \cV}i'_{v}v\right)
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)
   =
   \left(i \asifp i'\right) +
-  \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v
+  \sum_{v \in \cV}\left(i_{v} \asifp i'_{v} \right)v.
   \f]
+
   Given an expression \f$e_{1} \oplus e_{2}\f$ and a composite
-  abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
-  we construct the interval linear form
-  \f$\linexpr{e_{1} \oplus e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  \rrbracket\f$, we construct the interval linear form
+  \f$\linexprenv{e_{1} \oplus e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
   \f[
-  \linexpr{e_{1} \oplus e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  \linexprenv{e_{1} \oplus e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   =
-  \linexpr{e_{1}}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  \linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
   \aslf
-  \linexpr{e_{2}}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   \aslf
-  \varepsilon_{\mathbf{f}}\left(\linexpr{e_{1}}
-  \left ( \rho^{\#}, \rho^{\#}_l \right ) \right)
+  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
+  \right)
   \aslf
-  \varepsilon_{\mathbf{f}}\left(\linexpr{e_{2}}
-  \left ( \rho^{\#}, \rho^{\#}_l \right ) \right)
+  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  \right)
   \aslf
   mf_{\mathbf{f}}[-1;1]
   \f]

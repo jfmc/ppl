@@ -192,6 +192,5 @@
 \newcommand*{\adlf}{\boxminus^{\#}}
 \newcommand*{\adivlf}{\boxslash^{\#}}
 \newcommand*{\amlf}{\boxtimes^{\#}}
-\def\llexpr{(\kern-.1667em|}
-\def\rlexpr{|\kern-.1667em)}
-\newcommand*{\linexpr}[1]{\llexpr #1 \rlexpr}
+\newcommand*{\linexpr}[1]{\llparenthesis #1 \rrparenthesis}
+\newcommand*{\linexprenv}[3]{\llparenthesis #1 \rrparenthesis \left \llbracket #2, #3 \right \rrbracket}

@@ -71,7 +71,7 @@ The main features of the library are the following:
   GNU General Public License.
 
 In the following section we describe all the domains available to the PPL user.
-More detailed descriptions of these domains andthe operations provided
+More detailed descriptions of these domains and the operations provided
 will be found in subsequent sections.
 
 In the final section of this chapter (Section \ref use_of_library),
@@ -334,7 +334,7 @@ descriptors since they are also used in <EM>generic</EM> PPL operations.
   an invalid argument exception is thrown.
 </LI>
 <LI>
-  Other interaction between the semantic GDs and constraint GDs
+  Other interaction between the semantic GDs and constraint GDs.
   <UL>
   <LI>
     <CODE>add_constraint()</CODE>, <CODE>add_constraints()</CODE>,
@@ -356,10 +356,10 @@ descriptors since they are also used in <EM>generic</EM> PPL operations.
     <CODE>refine_with_constraint()</CODE>,
     <CODE>refine_with_constraints()</CODE>,
     <CODE>refine_with_congruence()</CODE>,
-    <CODE>refine_with_congruences()</CODE>
+    <CODE>refine_with_congruences()</CODE>.
 
     If the argument constraint GD is optimally supported by the
-    semantic GD, the the methods behave the same as the corresponding
+    semantic GD, the methods behave the same as the corresponding
     \c add_* methods listed above.  Otherwise the constraint GD
     is used only to a limited extent to refine the semantic GD;
     possibly not at all.  Notice that, while repeating an add operation
@@ -384,20 +384,20 @@ descriptors since they are also used in <EM>generic</EM> PPL operations.
   </LI>
   <LI>
     <CODE>constraints()</CODE>, <CODE>minimized_constraints()</CODE>,
-    <CODE>congruences()</CODE>, <CODE>minimized_congruences()</CODE>
+    <CODE>congruences()</CODE>, <CODE>minimized_congruences()</CODE>.
 
-    returns the indicated system of constraint GDs satisfied by
+    Returns the indicated system of constraint GDs satisfied by
     the semantic GD.
   </LI>
   <LI>
     <CODE>can_recycle_constraint_systems()</CODE>,
-    <CODE>can_recycle_congruence_systems()</CODE>
+    <CODE>can_recycle_congruence_systems()</CODE>.
 
-    return true if and only if the semantic GD can recycle the
+    Return true if and only if the semantic GD can recycle the
     indicated constraint GD.
   </LI>
   <LI>
-    <CODE>relation_with()</CODE>
+    <CODE>relation_with()</CODE>.
 
     This takes a constraint GD as an argument and returns the relations holding
     between the semantic GD and the constraint GD.
@@ -458,7 +458,8 @@ Supported overflow behaviors are:
 <DL>
   <DT>Wrapping:</DT>
   <DD>
-    this means that, for a \f$w\f$-bit bounded integer, the computation
+    this means that, for a \f$w\textrm{-bit}\f$ bounded integer, the
+    computation
     happens modulo \f$2^w\f$.  In turn, this signifies that the computation
     happens <EM>as if</EM> the unbounded arithmetic result was computed
     and then wrapped.  For unsigned integers, the wrapping function is
@@ -510,7 +511,8 @@ One possibility to precisely approximate the semantics of programs that
 operate on bounded integer variables is to follow the approach described
 in \ref SK07 "[SK07]".  The idea is to associate space dimensions to the
 <EM>unwrapped values</EM> of bounded variables.  Suppose <CODE>j</CODE>
-is a \f$w\f$-bit, unsigned program variable associated to a space dimension
+is a \f$w\textrm{-bit}\f$, unsigned program variable associated to a space 
+dimension
 labeled by the variable \f$x\f$.  If \f$x\f$ is constrained by some
 numerical abstraction to take values in a set \f$S \sseq \Rset\f$, then
 the program variable <CODE>j</CODE> can only take values in
@@ -578,11 +580,11 @@ For more information about the definitions and results stated here see
 
 \subsection Vectors_Matrices_and_Scalar_Products Vectors, Matrices and Scalar Products
 
-We denote by \f$\Rset^n\f$ the \f$n\f$-dimensional vector space on the field
+We denote by \f$\Rset^n\f$ the \f$n\textrm{-dimensional}\f$ vector space on the field
 of real numbers \f$\Rset\f$, endowed with the standard topology.
 The set of all non-negative reals is denoted by \f$\nonnegRset\f$.
 For each \f$i \in \{0, \ldots, n-1\}\f$, \f$v_i\f$ denotes
-the \f$i\f$-th component of the (column) vector
+the \f$i\textrm{-th}\f$ component of the (column) vector
 \f$\vect{v} = (v_0, \ldots, v_{n-1})^\transpose \in \Rset^n\f$.
 We denote by \f$\vect{0}\f$ the vector of \f$\Rset^n\f$,
 called <EM>the origin</EM>, having all components equal to zero.
@@ -681,7 +683,7 @@ increased accuracy.
 \subsection Bounded_Polyhedra Bounded Polyhedra
 
 An NNC polyhedron \f$\cP \in \Pset_n\f$ is <EM>bounded</EM>
-if there exists a \f$\lambda \in \nonnegRset\f$ such that
+if there exists a \f$\lambda \in \nonnegRset\f$ such that:
 \f[
   \cP
     \sseq
@@ -2618,7 +2620,7 @@ classes are:
   - \link Parma_Polyhedra_Library::Variable_Floating_Point_Expression \c
     Variable_Floating_Point_Expression \endlink,
   - \link Parma_Polyhedra_Library::Opposite_Floating_Point_Expression \c
-    Variable_Floating_Point_Expression \endlink, that is the negation
+    Opposite_Floating_Point_Expression \endlink, that is the negation
     (unary minus) of a floating point expression,
   - \link Parma_Polyhedra_Library::Sum_Floating_Point_Expression \c
     Sum_Floating_Point_Expression \endlink, that is the sum of two floating
@@ -2727,9 +2729,8 @@ both stores as its arguments. Please see the documentation of floating point
 expression classes for more information.
 
 The linearization of a floating point expression \f$e\f$ in the composite
-abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$ will
-be denoted by \f$\linexpr{e} \left \langle \rho^{\#}, \rho^{\#}_l \right
-\rangle\f$. There are two ways a linearization attempt can fail:
+abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right \rrbracket\f$ will
+be denoted by \f$\linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}\f$. There are two ways a linearization attempt can fail:
   - whenever an interval boundary overflows to \f$+\infty\f$ or \f$-\infty\f$,
     and
   - when we try to divide by an interval that contains \f$0\f$.

@@ -80,54 +80,47 @@ namespace Parma_Polyhedra_Library {
   \sum_{v \in \cV}\left(i \amifp i'_{v}\right)v.
   \f]
   Given an expression \f$[a;b] \otimes e_{2}\f$ and a composite
-  abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
-  we construct the interval linear form
-  \f$\linexpr{[a;b] \otimes e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  \rrbracket\f$, we construct the interval linear form
+  \f$\linexprenv{[a;b] \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
   \f[
-  \linexpr{[a;b] \otimes e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  \linexprenv{[a;b] \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   =
   \left([a;b]
   \amlf
-  \linexpr{e_{2}}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle \right)
+  \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}\right)
   \aslf
   \left([a;b]
   \amlf
-  \varepsilon_{\mathbf{f}}\left(\linexpr{e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle \right)\right)
+  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  \right)\right)
   \aslf
   mf_{\mathbf{f}}[-1;1].
   \f].
 
   Given an expression \f$e_{1} \otimes [a;b]\f$ and a composite
-  abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
-  we construct the interval linear form
-  \f$\linexpr{e_{1} \otimes [a;b]}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  \rrbracket\f$, we construct the interval linear form
+  \f$\linexprenv{e_{1} \otimes [a;b]}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
   \f[
-  \linexpr{e_{1} \otimes [a;b]}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  \linexprenv{e_{1} \otimes [a;b]}{\rho^{\#}}{\rho^{\#}_l}
   =
-  \linexpr{[a;b] \otimes e_{1}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle.
+  \linexprenv{[a;b] \otimes e_{1}}{\rho^{\#}}{\rho^{\#}_l}.
   \f]
 
   Given an expression \f$e_{1} \otimes e_{2}\f$ and a composite
-  abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
-  we construct the interval linear form
-  \f$\linexpr{e_{1} \otimes e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  \rrbracket\f$, we construct the interval linear form
+  \f$\linexprenv{e_{1} \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
   \f[
-  \linexpr{e_{1} \otimes e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  \linexprenv{e_{1} \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   =
-  \linexpr{\iota\left(\linexpr{e_{1}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle \right)\rho^{\#}
-  \otimes e_{2}}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle,
+  \linexprenv{\iota\left(\linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
+  \right)\rho^{\#}
+  \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l},
   \f]
   where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the linear form computed by
   calling method <CODE>Floating_Point_Expression::relative_error</CODE>

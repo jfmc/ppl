@@ -69,17 +69,17 @@ namespace Parma_Polyhedra_Library {
   \f]
 
   Given a floating point expression \f$\ominus e\f$ and a composite
-  abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
-  we construct the interval linear form
-  \f$\linexpr{\ominus e}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  \rrbracket\f$, we construct the interval linear form
+  \f$\linexprenv{\ominus e}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
   \f[
-  \linexpr{\ominus e} \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  \linexprenv{\ominus e}{\rho^{\#}}{\rho^{\#}_l}
   =
   \adlf
   \left(
-  \linexpr{e} \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle.
-  \right)
+  \linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}
+  \right).
   \f]
 */
 template <typename FP_Interval_Type, typename FP_Format>

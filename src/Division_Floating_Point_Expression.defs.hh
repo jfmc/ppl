@@ -78,40 +78,39 @@ namespace Parma_Polyhedra_Library {
   \sum_{v \in \cV}\left(i_{v} \adivifp i'\right)v.
   \f]
   Given an expression \f$e_{1} \oslash [a;b]\f$ and a composite
-  abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  \rrbracket\f$,
   we construct the interval linear form
-  \f$\linexpr{e_{1} \oslash [a;b]}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$
+  \f$
+  \linexprenv{e_{1} \oslash [a;b]}{\rho^{\#}}{\rho^{\#}_l}
+  \f$
   as follows:
   \f[
-  \linexpr{e_{1} \oslash [a;b]}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  \linexprenv{e_{1} \oslash [a;b]}{\rho^{\#}}{\rho^{\#}_l}
   =
-  \left(\linexpr{e_{1}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  \left(\linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
   \adivlf
   [a;b]\right)
   \aslf
-  \left(\varepsilon_{\mathbf{f}}\left(\linexpr{e_{1}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle \right)
+  \left(\varepsilon_{\mathbf{f}}\left(
+  \linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
+  \right)
   \adivlf
   [a;b]\right)
   \aslf
   mf_{\mathbf{f}}[-1;1],
   \f]
   given an expression \f$e_{1} \oslash e_{2}\f$ and a composite
-  abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
-  we construct the interval linear form
-  \f$\linexpr{e_{1} \oslash e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  \rrbracket\f$, we construct the interval linear form
+  \f$\linexprenv{e_{1} \oslash e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
   \f[
-  \linexpr{e_{1} \oslash e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  \linexprenv{e_{1} \oslash e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   =
-  \linexpr{e_{1} \oslash \iota\left(\linexpr{e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle \right)\rho^{\#}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle,
+  \linexprenv{e_{1} \oslash \iota\left(
+  \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l} 
+  \right)\rho^{\#}}{\rho^{\#}}{\rho^{\#}_l},
   \f]
   where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the linear form computed by
   calling method <CODE>Floating_Point_Expression::relative_error</CODE>

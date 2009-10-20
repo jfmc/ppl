@@ -59,10 +59,9 @@ namespace Parma_Polyhedra_Library {
   \par Linearization of floating-point variable expressions
 
   Given a variable expression \f$v\f$ and a composite
-  abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
-  we construct the interval
-  linear form \f$\linexpr{v}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$ as
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  \rrbracket\f$, we construct the interval
+  linear form \f$\linexprenv{v}{\rho^{\#}}{\rho^{\#}_l}\f$ as
   \f$\rho^{\#}_l(v)\f$ if it is defined; otherwise we construct it as
   \f$[-1;1]v\f$.
 */

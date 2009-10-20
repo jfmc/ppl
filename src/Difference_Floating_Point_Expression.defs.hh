@@ -79,24 +79,22 @@ namespace Parma_Polyhedra_Library {
   \sum_{v \in \cV}\left(i_{v} \adifp i'_{v}\right)v.
   \f]
   Given an expression \f$e_{1} \ominus e_{2}\f$ and a composite
-  abstract store \f$\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$,
-  we construct the interval linear form
-  \f$\linexpr{e_{1} \ominus e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle\f$ on \f$\cV\f$ as
-  follows:
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  \rrbracket\f$,  we construct the interval linear form
+  \f$\linexprenv{e_{1} \ominus e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$ 
+  on \f$\cV\f$ as follows:
   \f[
-  \linexpr{e_{1} \ominus e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  \linexprenv{e_{1} \ominus e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   =
-  \linexpr{e_{1}}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  \linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
   \adlf
-  \linexpr{e_{2}}\left \langle \rho^{\#}, \rho^{\#}_l \right \rangle
+  \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   \aslf
-  \varepsilon_{\mathbf{f}}\left(\linexpr{e_{1}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle \right)
+  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l} 
+  \right)
   \aslf
-  \varepsilon_{\mathbf{f}}\left(\linexpr{e_{2}}
-  \left \langle \rho^{\#}, \rho^{\#}_l \right \rangle \right)
+  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l} 
+  \right)
   \aslf
   mf_{\mathbf{f}}[-1;1]
   \f]
