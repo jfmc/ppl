@@ -988,6 +988,13 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
       }
     }
 
+#ifdef NOISY_PIP
+    std::cout << "sign =";
+    for (i=0; i<sign.size(); ++i)
+      std::cout << " " << "?0+-*"[sign[i]];
+    std::cout << std::endl;
+#endif
+
     /* If we have found a row i_ with negative parameters :
        Either the problem is empty, or a pivoting step is required
     */
