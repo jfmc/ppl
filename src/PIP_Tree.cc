@@ -688,14 +688,23 @@ bool
 PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
   Matrix s(ctx);
   s.add_row(cnst);
-  dimension_type i, i_, j, k, j_, j__;
+  dimension_type i, i_, j, k, j_, j__, var_i, var_j;
   dimension_type num_rows = s.num_rows();
   dimension_type num_cols = s.num_columns();
+  dimension_type num_vars = num_cols-1;
+  const dimension_type n_a_d = not_a_dimension();
   std::vector<Coefficient> scaling(num_rows, 1);
   PPL_DIRTY_TEMP_COEFFICIENT(sij);
   PPL_DIRTY_TEMP_COEFFICIENT(mult);
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   PPL_DIRTY_TEMP_COEFFICIENT(scale_factor);
+  PPL_DIRTY_TEMP_COEFFICIENT(scaling_i);
+  std::vector<dimension_type> mapping;
+  std::vector<bool> basis(num_vars, true);
+  for (j=1; j<=num_vars; ++j)
+    mapping.push_back(j);
+  Row p(num_cols, compute_capacity(num_cols, Matrix::max_num_columns()),
+        Row::Flags());
 
   /* Perform simplex pivots on the context until we find an empty solution
    * or an optimum */
@@ -726,9 +735,37 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
       // No negative RHS: optimum found
       return true;
     }
+
     // Now we have a positive s[i][j] pivot
-    const Row& p = s[i];
+    var_j = n_a_d;
+    var_i = n_a_d;
+    for (j_=0; j_<num_vars; ++j_) {
+      if (basis[j_]) {
+        if (mapping[j_] == j)
+          var_j = j_;
+      } else {
+        if (mapping[j_] == i)
+          var_i = j_;
+      }
+    }
+    /* update basis */
+    if (var_j != n_a_d) {
+      basis[var_j] = false;
+      mapping[var_j] = i;
+    }
+    if (var_i != n_a_d) {
+      basis[var_i] = true;
+      mapping[var_i] = j;
+    }
+
+    /* create the identity matrix row corresponding to basic variable j */
+    for (j_=0; j_<num_cols; ++j_)
+      p[j_]=0;
+    p[j] = 1;
+    p.swap(s[i]);
     sij = p[j];
+    scaling_i = scaling[i];
+    scaling[i] = 1;
 
     // Perform a pivot operation on the matrix
     for (j_=0; j_<num_cols; ++j_) {
@@ -739,8 +776,6 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
         // if element j of pivot row is zero, nothing to do for this column
         continue;
       for (k=0; k<num_rows; ++k) {
-        if (k == i)
-          continue;
         Row& row = s[k];
         mult = row[j] * sij_;
         if (mult % sij != 0) {
@@ -754,14 +789,13 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
         }
         row[j_] -= mult / sij;
       }
-      s[i][j_] = 0;
     }
-    if (sij != scaling[i]) {
+    if (sij != scaling_i) {
       // Update column only if pivot != 1
       for (k=0; k<num_rows; ++k) {
         Row& row = s[k];
         Coefficient& skj = row[j];
-        mult = skj*scaling[i];
+        mult = skj*scaling_i;
         if (mult % sij != 0) {
           // as above, we must perform row scaling
           gcd_assign(gcd, mult, sij);
