@@ -241,7 +241,7 @@ test06() {
 
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
 
-  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  bool ok = (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
   if (ok) {
     const PIP_Tree solution = pip.solution();
     display_solution(solution, params, Variables_Set(i),

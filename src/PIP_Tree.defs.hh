@@ -335,6 +335,9 @@ private:
     Matrix consisting in the original matrix with the constraint inserted. If
     the simplex terminates with a feasible (optimal) solution, then the
     restrained context is not empty. Otherwise, it is.
+
+    The algorithm ensures the feasible solutions are integer, by applying a
+    cut generation method when intermediate non-integer solutions are found.
   */
   static bool compatibility_check(const Matrix &ctx, const Row &cnst);
 

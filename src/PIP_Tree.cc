@@ -686,6 +686,8 @@ PIP_Solution_Node::row_sign(const Row &x) {
 
 bool
 PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
+  if (ctx.num_rows() == 0)
+    return true;
   Matrix s(ctx);
   s.add_row(cnst);
   dimension_type i, i_, j, k, j_, j__, var_i, var_j;
@@ -732,8 +734,32 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
     }
 
     if (j == 0) {
-      // No negative RHS: optimum found
-      return true;
+      // No negative RHS: fractional optimum found. If it is integer, then
+      // the test is successful. Otherwise, generate a new cut.
+      for (i=0; i<num_vars; ++i) {
+        if (basis[i])
+          // basic variable = 0 -> integer
+          continue;
+        // nonbasic variable
+        i_ = mapping[i];
+        if (s[i_][0] % scaling[i_] != 0)
+          // constant term is not integer
+          break;
+      }
+      if (i==num_vars) {
+        // Found an integer solution, thus the check is successful
+        return true;
+      }
+      // Generate a new cut
+      s.add_zero_rows(1, Row::Flags());
+      const Row& row = s[i_];
+      Row& cut = s[num_rows++];
+      scaling.push_back(1);
+      const Coefficient& sc = scaling[i_];
+      for (j=0; j<num_cols; ++j)
+        mod_assign(cut[j], row[j], sc);
+      cut[0] -= sc;
+      continue;
     }
 
     // Now we have a positive s[i][j] pivot
@@ -1340,7 +1366,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
     }
 
     /* Otherwise, all parameters are positive: we have found a continuous
-     * solution. If the solution happens to be integer, then it is a
+     * solution. If the solution happens to be integer, then it is the
      * solution of the  integer problem. Otherwise, we may need to generate
      * a new cut to try and get back into the integer case. */
     else {
