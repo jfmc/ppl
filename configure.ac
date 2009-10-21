@@ -835,6 +835,24 @@ esac
 build_ppl_lpsol=$enableval
 AM_CONDITIONAL(BUILD_PPL_LPSOL, test x"$build_ppl_lpsol" = xyes)
 
+enableval=yes
+AC_MSG_CHECKING([whether to build the ppl_pips program])
+AC_ARG_ENABLE(ppl_pips,
+  AS_HELP_STRING([--enable-ppl_pips], [build the ppl_pips program]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-ppl_pips, needs yes or no])
+  ;;
+esac
+build_ppl_pips=$enableval
+AM_CONDITIONAL(BUILD_PPL_PIPS, test x"$build_ppl_pips" = xyes)
+
 # Define lists of available interfaces: lowercase and blank-separated.
 non_prolog_interfaces="cxx c ocaml java"
 prolog_interfaces="ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog"
@@ -1538,6 +1556,8 @@ AC_CONFIG_FILES(Makefile
                 demos/ppl_lcdd/examples/Makefile
                 demos/ppl_lpsol/Makefile
                 demos/ppl_lpsol/examples/Makefile
+                demos/ppl_pips/Makefile
+                demos/ppl_pips/examples/Makefile
                 doc/Makefile
                 doc/user.doxyconf-latex
                 doc/devref.doxyconf-latex

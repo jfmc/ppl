@@ -20,16 +20,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-if BUILD_PPL_LCDD
-PPL_LCDD_SUBDIR = ppl_lcdd
-endif BUILD_PPL_LCDD
+DAT_FILES = \
+test02.dat
 
-if BUILD_PPL_LPSOL
-PPL_LPSOL_SUBDIR = ppl_lpsol
-endif BUILD_PPL_LPSOL
-
-if BUILD_PPL_PIPS
-PPL_PIPS_SUBDIR = ppl_pips
-endif BUILD_PPL_PIPS
-
-SUBDIRS = $(PPL_LCDD_SUBDIR) $(PPL_LPSOL_SUBDIR) $(PPL_PIPS_SUBDIR)
+dist_noinst_DATA = $(DAT_FILES)
