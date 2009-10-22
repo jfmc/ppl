@@ -269,11 +269,14 @@ Grid_Generator_System.inlines.hh \
 Congruence_System.inlines.hh \
 Scalar_Products.defs.hh \
 Scalar_Products.inlines.hh \
+MIP_Problem.types.hh \
 MIP_Problem.defs.hh \
 MIP_Problem.inlines.hh \
 MIP_Problem.templates.hh \
+PIP_Tree.types.hh \
 PIP_Tree.defs.hh \
 PIP_Tree.inlines.hh \
+PIP_Problem.types.hh \
 PIP_Problem.defs.hh \
 PIP_Problem.inlines.hh \
 PIP_Problem.templates.hh \
