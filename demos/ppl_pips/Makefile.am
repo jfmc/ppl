@@ -45,16 +45,16 @@ piplib_lcdd: piplib_lcdd.o
 	$(CXXLINK) $< -lpip -lgmpxx -lgmp $(top_builddir)/utils/libppl_utils.a
 
 EXTRA_DIST = \
-expected_mpz \
-expected_mpz_a \
-expected_int8 \
-expected_int8_a \
-expected_int16 \
-expected_int16_a \
-expected_int32 \
-expected_int32_a \
-expected_int64 \
-expected_int64_a
+expected_mpz
+# expected_mpz_a \
+# expected_int8 \
+# expected_int8_a \
+# expected_int16 \
+# expected_int16_a \
+# expected_int32 \
+# expected_int32_a \
+# expected_int64 \
+# expected_int64_a
 
 if HAVE_MD5SUM
 
@@ -62,19 +62,7 @@ COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
 if ASSERTIONS_ENABLED
 
-TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED = \
-ccc6.ext \
-ccp6.ext \
-cut32_16.ext \
-cyclic16-10.ext \
-reg600-5_m.ext \
-cyclic17_8.ine \
-in6.ine \
-in7.ine \
-kq20_11_m.ine \
-mit31-20.ine \
-sampleh8.ine \
-trunc10.ine
+TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED =
 
 EXPECTED = expected_$(COEFFICIENT_MNEMONIC)_a
 
@@ -85,23 +73,13 @@ EXPECTED = expected_$(COEFFICIENT_MNEMONIC)
 endif !ASSERTIONS_ENABLED
 
 TOUGH_EXAMPLES = \
-cp7.ext \
-cyclic25_13.ext \
-prodst62.ext \
-cp6.ine \
-mit.ine \
-mit288-281.ine \
-mit41-16.ine \
-mit708-9.ine \
-mit71-61.ine \
-mit90-86.ine \
 $(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 
 check-local: ppl_pips$(EXEEXT)
 	echo $(TOUGH_EXAMPLES) >tough_examples
 	echo $(ECHO_N) "$(ECHO_C)" >obtained
 	export LC_ALL=C; \
-	for path in $(srcdir)/examples/*.ext $(srcdir)/examples/*.ine; \
+	for path in $(srcdir)/examples/*.dat; \
 	do \
 	  file=`basename $$path`; \
 	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
