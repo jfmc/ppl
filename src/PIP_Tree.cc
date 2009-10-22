@@ -686,8 +686,6 @@ PIP_Solution_Node::row_sign(const Row &x) {
 
 bool
 PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
-  if (ctx.num_rows() == 0)
-    return true;
   Matrix s(ctx);
   s.add_row(cnst);
   dimension_type i, i_, j, k, j_, j__, var_i, var_j;
