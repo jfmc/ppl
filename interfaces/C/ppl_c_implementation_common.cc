@@ -2196,6 +2196,18 @@ ppl_PIP_Problem_add_space_dimensions_and_embed(ppl_PIP_Problem_t pip,
 }
 CATCH_ALL
 int
+ppl_PIP_Problem_add_to_parameter_space_dimensions(ppl_PIP_Problem_t pip,
+					          ppl_dimension_type ds[],
+					          size_t n) try {
+  PIP_Problem& ppip = *to_nonconst(pip);
+  Variables_Set vars;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    vars.insert(ds[i]);
+  ppip.add_to_parameter_space_dimensions(vars);
+  return 0;
+}
+CATCH_ALL
+int
 ppl_PIP_Problem_add_constraint(ppl_PIP_Problem_t pip,
 			       ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);

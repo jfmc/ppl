@@ -390,6 +390,33 @@ PPL::PIP_Problem
 }
 
 void
+PPL::PIP_Problem
+::add_to_parameter_space_dimensions(const Variables_Set& p_vars) {
+  if (p_vars.space_dimension() > external_space_dim)
+    throw std::invalid_argument("PPL::PIP_Problem::"
+				"add_to_parameter_space_dimension(p_vars):\n"
+				"*this and p_vars are dimension"
+				"incompatible.");
+  const dimension_type original_size = parameters.size();
+  parameters.insert(p_vars.begin(), p_vars.end());
+  // Do not allow to turn variables into parameters
+  Variables_Set::const_iterator p;
+  Variables_Set::const_iterator end = p_vars.end();
+  for (p=p_vars.begin(); p!=end; ++p) {
+    if (*p < internal_space_dim) {
+      throw std::invalid_argument("PPL::PIP_Problem::"
+				  "add_to_parameter_space_dimension(p_vars):"
+				  "p_vars contain variable indices.");
+    }
+  }
+
+  // If a new parameter was inserted, set the internal status to
+  // PARTIALLY_SATISFIABLE.
+  if (parameters.size() != original_size && status != UNSATISFIABLE)
+    status = PARTIALLY_SATISFIABLE;
+}
+
+void
 PPL::PIP_Problem::add_constraint(const Constraint& c) {
   if (c.space_dimension() > external_space_dim) {
     std::ostringstream s;

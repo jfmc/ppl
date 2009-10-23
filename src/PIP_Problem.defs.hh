@@ -87,7 +87,7 @@ class Parma_Polyhedra_Library::PIP_Problem {
 public:
   //! Builds a trivial PIP problem.
   /*!
-    A trivial PIP problem requires to maximize the objective function
+    A trivial PIP problem requires to minimize the objective function
     \f$0\f$ on a vector space under no constraints and with no parameters:
     the origin of the vector space is an optimal solution.
 
@@ -108,7 +108,8 @@ public:
     interpreted as parameters.
 
     \param dim
-    The dimension of the vector space enclosing \p *this.
+    The dimension of the vector space (variables and parameters) enclosing
+    \p *this.
 
     \param first
     An input iterator to the start of the sequence of constraints.
@@ -206,6 +207,16 @@ public:
   */
   void add_space_dimensions_and_embed(dimension_type m_pip_vars,
                                       dimension_type m_pip_params);
+
+  /*! \brief
+    Sets the space dimensions whose indexes which are in set \p p_vars to be
+    parameter space dimensions.
+
+    \exception std::invalid_argument
+    Thrown if some index in \p p_vars does not correspond to
+    a space dimension in \p *this.
+  */
+  void add_to_parameter_space_dimensions(const Variables_Set& p_vars);
 
   /*! \brief
     Adds a copy of constraint \p c to the PIP problem.

@@ -2720,11 +2720,11 @@ PPL_PROTO((ppl_PIP_Problem_t pip,
 
 /*! \relates ppl_PIP_Problem_tag \brief
   Sets the space dimensions that are specified in first \p n positions
-  of the array \p ds to be integer dimensions of problem \p pip.
+  of the array \p ds to be parameter dimensions of problem \p pip.
   The presence of duplicates in \p ds is a waste but an innocuous one.
 */
 int
-ppl_PIP_Problem_add_to_integer_space_dimensions
+ppl_PIP_Problem_add_to_parameter_space_dimensions
 PPL_PROTO((ppl_PIP_Problem_t pip, ppl_dimension_type ds[], size_t n));
 
 /*! \relates ppl_PIP_Problem_tag \brief
