@@ -64,7 +64,8 @@ $(top_builddir)/interfaces/C/libppl_c.la \
 @extra_libraries@
 
 NORMAL_TESTS = \
-formatted_output
+formatted_output \
+pip_test
 
 #
 # Sources for the tests
@@ -74,6 +75,9 @@ formatted_output_SOURCES = \
 formatted_output.c \
 print_to_buffer.h \
 print_to_buffer.c
+
+pip_test_SOURCES = \
+pip_test.c
 
 # Dummy C++ source to cause C++ linking.
 # FIXME: why isn't enough to do this for libppl_c_tests.a?
