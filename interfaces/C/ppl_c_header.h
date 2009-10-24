@@ -2780,7 +2780,7 @@ ppl_PIP_Problem_solve PPL_PROTO((ppl_const_PIP_Problem_t pip));
     Thrown if the PIP problem is not satisfiable.
   */
 int
-ppl_PPL_Problem_solution PPL_PROTO((ppl_const_PIP_Problem_t pip,
+ppl_PIP_Problem_solution PPL_PROTO((ppl_const_PIP_Problem_t pip,
                                     ppl_const_PIP_Tree_Node_t* pip_tree));
 
   /*! \relates ppl_PIP_Problem_tag \brief
@@ -2797,7 +2797,7 @@ ppl_PPL_Problem_solution PPL_PROTO((ppl_const_PIP_Problem_t pip,
     if the PIP problem is unbounded or not satisfiable.
   */
 int
-ppl_PPL_Problem_optimizing_solution
+ppl_PIP_Problem_optimizing_solution
 PPL_PROTO((ppl_const_PIP_Problem_t pip,
            ppl_const_PIP_Tree_Node_t* pip_tree));
 
@@ -2974,6 +2974,33 @@ PPL_PROTO((ppl_Artificial_Parameter_t* pap,
 int
 ppl_Artificial_Parameter_get_denominator
 PPL_PROTO((ppl_const_Artificial_Parameter_t ap, ppl_const_Coefficient_t* coef));
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Dereference \p git writing a const handle to the resulting
+  grid generator at address \p pg.
+*/
+int
+ppl_Artificial_Parameter_Sequence_const_iterator_dereference
+PPL_PROTO((ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit,
+	   ppl_const_Artificial_Parameter_t* pap));
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Increment \p git so that it "points" to the next grid generator.
+*/
+int
+ppl_Artificial_Parameter_Sequence_const_iterator_increment
+PPL_PROTO((ppl_Artificial_Parameter_Sequence_const_iterator_t apit));
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Returns a positive integer if the iterators corresponding to \p x and
+  \p y are equal; returns 0 if they are different.
+*/
+int
+ppl_Artificial_Parameter_Sequence_const_iterator_equal_test
+PPL_PROTO((ppl_const_Artificial_Parameter_Sequence_const_iterator_t x,
+	   ppl_const_Artificial_Parameter_Sequence_const_iterator_t y));
+
+/*@}*/ /* Dereferencing, Incrementing and Equality Testing */
 
 /*@}*/ /* Querying/Setting Control Parameters */
 

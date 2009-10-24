@@ -104,7 +104,7 @@ main(int argc, char **argv) {
     ppl_dimension_type dim;
     ppl_const_PIP_Tree_Node_t solution;
     ppl_PIP_Problem_space_dimension(pip, &dim);
-    ppl_PPL_Problem_solution(pip, &solution);
+    ppl_PIP_Problem_solution(pip, &solution);
     /* display_solution(solution, N_VARS, N_PARAMETERS, parameter_dim); */
   }
 

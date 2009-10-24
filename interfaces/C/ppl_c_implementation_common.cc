@@ -2431,6 +2431,36 @@ ppl_Artificial_Parameter_get_denominator(ppl_const_Artificial_Parameter_t ap,
 CATCH_ALL
 
 int
+ppl_Artificial_Parameter_Sequence_const_iterator_dereference
+(ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit,
+ ppl_const_Artificial_Parameter_t* pap) try {
+  const Artificial_Parameter_Sequence::const_iterator& papit = *to_const(apit);
+  const Artificial_Parameter& ap = *papit;
+  *pap = to_const(&ap);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Artificial_Parameter_Sequence_const_iterator_increment
+(ppl_Artificial_Parameter_Sequence_const_iterator_t apit) try {
+  Artificial_Parameter_Sequence::const_iterator& papit = *to_nonconst(apit);
+  ++papit;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Artificial_Parameter_Sequence_const_iterator_equal_test
+(ppl_const_Artificial_Parameter_Sequence_const_iterator_t x,
+ ppl_const_Artificial_Parameter_Sequence_const_iterator_t y) try {
+  const Artificial_Parameter_Sequence::const_iterator& xx = *to_const(x);
+  const Artificial_Parameter_Sequence::const_iterator& yy = *to_const(y);
+  return (xx == yy) ? 1 : 0;
+}
+CATCH_ALL
+
+int
 ppl_io_print_variable(ppl_dimension_type var) try {
   const char* b = c_variable_output_function(var);
   if (b == 0 || puts(b) < 0)
