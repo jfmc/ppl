@@ -2342,7 +2342,7 @@ ppl_new_MIP_Problem_from_space_dimension PPL_PROTO((ppl_MIP_Problem_t* pmip,
 						    ppl_dimension_type d));
 
 /*! \relates ppl_MIP_Problem_tag \brief
-  Builds an MIP problem of space dimension \p d having feasible region \p cs,
+  Builds a MIP problem of space dimension \p d having feasible region \p cs,
   objective function \p le and optimization mode \p m; writes a handle to
   it at address \p pmip.
 */
@@ -2354,7 +2354,7 @@ ppl_new_MIP_Problem PPL_PROTO((ppl_MIP_Problem_t* pmip,
 			       int m));
 
 /*! \relates ppl_MIP_Problem_tag \brief
-  Builds an MIP problem that is a copy of \p mip; writes a handle
+  Builds a MIP problem that is a copy of \p mip; writes a handle
   for the newly created system at address \p pmip.
 */
 int
@@ -2598,6 +2598,7 @@ int
 ppl_MIP_Problem_set_control_parameter
 PPL_PROTO((ppl_MIP_Problem_t mip, int value));
 
+/*@}*/ /* Querying/Setting Control Parameters */
 
 
 /*! \relates ppl_PIP_Problem_tag \brief
@@ -2609,8 +2610,8 @@ ppl_new_PIP_Problem_from_space_dimension PPL_PROTO((ppl_PIP_Problem_t* pmip,
 						    ppl_dimension_type d));
 
 /*! \relates ppl_PIP_Problem_tag \brief
-  Builds an PIP problem that is a copy of \p pip; writes a handle
-  for the newly created system at address \p ppip.
+  Builds a PIP problem that is a copy of \p pip; writes a handle
+  for the newly created problem at address \p ppip.
 */
 int
 ppl_new_PIP_Problem_from_PIP_Problem
@@ -2674,6 +2675,7 @@ int
 ppl_PIP_Problem_constraint_at_index PPL_PROTO((ppl_const_PIP_Problem_t pip,
 					       ppl_dimension_type i,
 					       ppl_const_Constraint_t* pc));
+
 int
 ppl_PIP_Problem_OK PPL_PROTO((ppl_const_PIP_Problem_t pip));
 
@@ -2693,6 +2695,7 @@ ppl_PIP_Problem_clear PPL_PROTO((ppl_PIP_Problem_t pip));
   and embeds the PIP problem \p pip in the new vector space.
 
   \param pip
+  The PIP problem to be embedded in the new vector space.
 
   \param pip_vars
   The number of space dimensions to add that are interpreted as
@@ -2703,11 +2706,6 @@ ppl_PIP_Problem_clear PPL_PROTO((ppl_PIP_Problem_t pip));
   The number of space dimensions to add that are interpreted as
   PIP problem parameters. These are added \e after having added the
   \p pip_vars problem variables.
-
-  \exception std::length_error
-  Thrown if adding <CODE>pip_vars + pip_params</CODE> new space
-  dimensions would cause the vector space to exceed dimension
-  <CODE>max_space_dimension()</CODE>.
 
   The new space dimensions will be those having the highest indexes
   in the new PIP problem; they are initially unconstrained.
@@ -2767,35 +2765,16 @@ ppl_PIP_Problem_is_satisfiable PPL_PROTO((ppl_const_PIP_Problem_t pip));
 int
 ppl_PIP_Problem_solve PPL_PROTO((ppl_const_PIP_Problem_t pip));
 
-  /*! \relates ppl_PIP_Problem_tag \brief
-    Writes to \p pip_tree a solution for \p pip, if it exists.
-
-    \param pip
-    The PIP problem;
-
-    \param pip_tree
-    The PIP tree;
-
-    \exception std::domain_error
-    Thrown if the PIP problem is not satisfiable.
-  */
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes to \p pip_tree a solution for \p pip, if it exists.
+*/
 int
 ppl_PIP_Problem_solution PPL_PROTO((ppl_const_PIP_Problem_t pip,
                                     ppl_const_PIP_Tree_Node_t* pip_tree));
 
-  /*! \relates ppl_PIP_Problem_tag \brief
-    Writes to \p pip_tree an optimizing solution for \p pip, if it exists.
-
-    \param pip
-    The PIP problem;
-
-    \param pip_tree
-    The PIP tree;
-
-    \exception std::domain_error
-    Thrown if \p pip does not not have an optimizing point, i.e.,
-    if the PIP problem is unbounded or not satisfiable.
-  */
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes to \p pip_tree an optimizing solution for \p pip, if it exists.
+*/
 int
 ppl_PIP_Problem_optimizing_solution
 PPL_PROTO((ppl_const_PIP_Problem_t pip,
@@ -2852,7 +2831,7 @@ ppl_delete_PIP_Tree_Node PPL_PROTO((ppl_const_PIP_Tree_Node_t pip));
 int
 ppl_PIP_Tree_Node_begin
 PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
-           ppl_Artificial_Parameter_Sequence_const_iterator_t* pit));
+           ppl_Artificial_Parameter_Sequence_const_iterator_t pit));
 
 /*! \relates ppl_PIP_Problem_tag \brief
   Assigns to \p pit a const iterator "pointing" to the end of
@@ -2901,17 +2880,17 @@ ppl_delete_PIP_Solution_Node PPL_PROTO((ppl_const_PIP_Solution_Node_t pip_sol));
 /*! \relates ppl_PIP_Problem_tag \brief
   Writes to \p le a parametric expression of the values of variable \p v.
 
-  The returned linear expression only involves parameters.
+  The linear expression assigned to \p le only involves parameters.
+
+  \return PPL_ERROR_INVALID_ARGUMENT
+  Returned if \p v is dimension-incompatible with \p *this
+  or if \p v is a parameter.
 
   \param v
-  the variable which is queried about
+  The variable which is queried about
 
   \param pars
-  a \c std::set of indices of the parameters in the constraints
-
-  \exception std::invalid_argument
-  Thrown if \p v is dimension-incompatible with \p *this
-  or if \p v is a parameter.
+  A set of indices of the parameters in the constraints
 */
 int
 ppl_PIP_Solution_Node_get_parametric_values
@@ -2948,8 +2927,8 @@ int
 ppl_new_Artificial_Parameter PPL_PROTO((ppl_Artificial_Parameter_t* pap));
 
 /*! \relates ppl_PIP_Problem_tag \brief
-  Builds a artificial parameter that is the result of
-  integer division of the linear expression \p le by \p coef;
+  Builds an artificial parameter that is the result of
+  integer division of the linear expression \p le by \p coeff;
   writes a handle for the newly created artificial parameter
   at address \p pap.
 */
@@ -2957,10 +2936,10 @@ int
 ppl_new_Artificial_Parameter_from_Linear_Expression
 PPL_PROTO((ppl_Artificial_Parameter_t* pap,
            ppl_const_Linear_Expression_t le,
-           ppl_Coefficient_t coef));
+           ppl_Coefficient_t coeff));
 
 /*! \relates ppl_PIP_Problem_tag \brief
-  Builds a artificial parameter that is a copy of \p ap; writes a handle
+  Builds an artificial parameter that is a copy of \p ap; writes a handle
   for the newly created artificial parameter at address \p pap.
 */
 int
@@ -2969,15 +2948,57 @@ PPL_PROTO((ppl_Artificial_Parameter_t* pap,
            ppl_const_Artificial_Parameter_t ap));
 
 /*! \relates ppl_PIP_Problem_tag \brief
-  Writes to \p coef the denominator in artificial parameter \p ap.
+  Writes to \p coeff the denominator in artificial parameter \p ap.
 */
 int
 ppl_Artificial_Parameter_get_denominator
-PPL_PROTO((ppl_const_Artificial_Parameter_t ap, ppl_const_Coefficient_t* coef));
+PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
+           ppl_const_Coefficient_t* coeff));
+
+/*! \brief \name Constructors, Assignment and Destructor */
+/*@{*/
 
 /*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
-  Dereference \p git writing a const handle to the resulting
-  grid generator at address \p pg.
+  Builds a new `const iterator' and writes a handle to it at address
+  \p papit.
+*/
+int
+ppl_new_Artificial_Parameter_Sequence_const_iterator
+PPL_PROTO((ppl_Artificial_Parameter_Sequence_const_iterator_t* papit));
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Builds a const iterator that is a copy of \p apit; writes an
+  handle for the newly created const iterator at address \p papit.
+*/
+int
+ppl_new_Artificial_Parameter_Sequence_const_iterator_from_Artificial_Parameter_Sequence_const_iterator
+PPL_PROTO((ppl_Artificial_Parameter_Sequence_const_iterator_t* papit,
+	   ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit));
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Assigns a copy of the const iterator \p src to \p dst.
+*/
+int
+ppl_assign_Artificial_Parameter_Sequence_const_iterator_from_Artificial_Parameter_Sequence_const_iterator
+PPL_PROTO((ppl_Artificial_Parameter_Sequence_const_iterator_t dst,
+	   ppl_const_Artificial_Parameter_Sequence_const_iterator_t src));
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Invalidates the handle \p apit: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Artificial_Parameter_Sequence_const_iterator
+PPL_PROTO((ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit));
+
+/*@}*/ /* Constructors, Assignment and Destructor */
+
+/*! \brief \name Dereferencing, Incrementing and Equality Testing */
+/*@{*/
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Dereference \p apit writing a const handle to the resulting
+  artificial parameter at address \p pap.
 */
 int
 ppl_Artificial_Parameter_Sequence_const_iterator_dereference
@@ -2985,7 +3006,7 @@ PPL_PROTO((ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit,
 	   ppl_const_Artificial_Parameter_t* pap));
 
 /*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
-  Increment \p git so that it "points" to the next grid generator.
+  Increment \p apit so that it "points" to the next artificial parameter.
 */
 int
 ppl_Artificial_Parameter_Sequence_const_iterator_increment
@@ -3001,8 +3022,6 @@ PPL_PROTO((ppl_const_Artificial_Parameter_Sequence_const_iterator_t x,
 	   ppl_const_Artificial_Parameter_Sequence_const_iterator_t y));
 
 /*@}*/ /* Dereferencing, Incrementing and Equality Testing */
-
-/*@}*/ /* Querying/Setting Control Parameters */
 
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(MIP_Problem)
 

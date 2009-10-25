@@ -247,7 +247,7 @@ public:
   //! Optimizes the PIP problem.
   /*!
     \return
-    An PIP_Problem_Status flag indicating the outcome of the optimization
+    A PIP_Problem_Status flag indicating the outcome of the optimization
     attempt (unfeasible or optimized problem).
   */
   PIP_Problem_Status solve() const;
@@ -262,7 +262,7 @@ public:
   //! Returns an optimizing solution for \p *this, if it exists.
   /*!
     \exception std::domain_error
-    Thrown if \p *this doesn't not have an optimizing point, i.e.,
+    Thrown if \p *this does not have an optimizing point, i.e.,
     if the PIP problem is unbounded or not satisfiable.
   */
   PIP_Tree optimizing_solution() const;

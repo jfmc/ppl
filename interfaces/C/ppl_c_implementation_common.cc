@@ -2299,7 +2299,8 @@ ppl_PIP_Tree_Node_OK(ppl_const_PIP_Tree_Node_t pip_tree) try {
 CATCH_ALL
 
 int
-ppl_PIP_Tree_Node_begin(ppl_const_PIP_Tree_Node_t pip_tree,
+ppl_PIP_Tree_Node_begin
+(ppl_const_PIP_Tree_Node_t pip_tree,
  ppl_Artificial_Parameter_Sequence_const_iterator_t pit) try {
   PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator& spit
     = *to_nonconst(pit);
@@ -2309,7 +2310,8 @@ ppl_PIP_Tree_Node_begin(ppl_const_PIP_Tree_Node_t pip_tree,
 CATCH_ALL
 
 int
-ppl_PIP_Tree_Node_end(ppl_const_PIP_Tree_Node_t pip_tree,
+ppl_PIP_Tree_Node_end
+(ppl_const_PIP_Tree_Node_t pip_tree,
  ppl_Artificial_Parameter_Sequence_const_iterator_t pit) try {
   PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator& spit
     = *to_nonconst(pit);
@@ -2317,6 +2319,7 @@ ppl_PIP_Tree_Node_end(ppl_const_PIP_Tree_Node_t pip_tree,
   return 0;
 }
 CATCH_ALL
+
 int
 ppl_PIP_Tree_Node_insert_artificials(ppl_const_PIP_Tree_Node_t pip_tree,
                                      ppl_dimension_type ds[],
@@ -2327,7 +2330,7 @@ ppl_PIP_Tree_Node_insert_artificials(ppl_const_PIP_Tree_Node_t pip_tree,
   Variables_Set vars;
   for (ppl_dimension_type i = n; i-- > 0; )
     vars.insert(ds[i]);
-  inserted = spip_tree.insert_artificials(vars,space_dim);
+  inserted = spip_tree.insert_artificials(vars, space_dim);
   return 0;
 }
 CATCH_ALL
@@ -2426,6 +2429,46 @@ ppl_Artificial_Parameter_get_denominator(ppl_const_Artificial_Parameter_t ap,
   const Artificial_Parameter& sap = *to_const(ap);
   const Coefficient& dcoef = sap.get_denominator();
   *coef = to_const(&dcoef);
+  return 0;
+}
+CATCH_ALL
+
+
+/* Interface for Artificial_Parameter_Sequence::const_iterator. */
+
+int
+ppl_new_Artificial_Parameter_Sequence_const_iterator
+(ppl_Artificial_Parameter_Sequence_const_iterator_t* papit) try {
+  *papit = to_nonconst(new Artificial_Parameter_Sequence::const_iterator());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Artificial_Parameter_Sequence_const_iterator_from_Artificial_Parameter_Sequence_const_iterator
+(ppl_Artificial_Parameter_Sequence_const_iterator_t* papit,
+ ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit)  try {
+  *papit = to_nonconst(new Artificial_Parameter_Sequence::const_iterator(*to_const(apit)));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Artificial_Parameter_Sequence_const_iterator
+(ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit)
+  try {
+  delete to_const(apit);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Artificial_Parameter_Sequence_const_iterator_from_Artificial_Parameter_Sequence_const_iterator
+(ppl_Artificial_Parameter_Sequence_const_iterator_t dst,
+ ppl_const_Artificial_Parameter_Sequence_const_iterator_t src) try {
+  const Artificial_Parameter_Sequence::const_iterator& ssrc = *to_const(src);
+  Artificial_Parameter_Sequence::const_iterator& ddst = *to_nonconst(dst);
+  ddst = ssrc;
   return 0;
 }
 CATCH_ALL
