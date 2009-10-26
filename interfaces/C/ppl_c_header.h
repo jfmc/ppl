@@ -694,11 +694,26 @@ PPL_TYPE_DECLARATION(MIP_Problem)
   towards \extref{Parma_Polyhedra_Library::PIP_Problem, PIP_Problem}.
 */
 PPL_TYPE_DECLARATION(PIP_Problem)
+
+/*! \interface ppl_PIP_Tree_Node_tag
+  \brief
+  Types and functions for PIP tree nodes.
+*/
 PPL_TYPE_DECLARATION(PIP_Tree_Node)
 PPL_TYPE_DECLARATION(PIP_Decision_Node)
 PPL_TYPE_DECLARATION(PIP_Solution_Node)
+
+/*! \interface ppl_Artificial_Parameter_tag
+  \brief
+  Types and functions for PIP artificial parameters.
+*/
 PPL_TYPE_DECLARATION(Artificial_Parameter)
 PPL_TYPE_DECLARATION(Artificial_Parameter_Sequence)
+
+/*! \interface ppl_Artificial_Parameter_Sequence_const_iterator_tag
+  \brief
+  Types and functions for iterating on PIP artificial parameters.
+*/
 PPL_TYPE_DECLARATION(Artificial_Parameter_Sequence_const_iterator)
 
 
@@ -2601,6 +2616,9 @@ PPL_PROTO((ppl_MIP_Problem_t mip, int value));
 /*@}*/ /* Querying/Setting Control Parameters */
 
 
+/*! \brief \name Constructors, Assignment and Destructor */
+/*@{*/
+
 /*! \relates ppl_PIP_Problem_tag \brief
   Builds a trivial PIP problem of dimension \p d and writes an
   handle to it at address \p pmip.
@@ -2782,7 +2800,7 @@ PPL_PROTO((ppl_const_PIP_Problem_t pip,
 
 /*@}*/ /* Computing the Solution of the PIP_Problem */
 
-/*! \relates ppl_PIP_Problem_tag \brief
+/*! \relates ppl_PIP_Tree_Node_tag \brief
   Writes to \p dpip_tree the solution node if \p spip_tree is
   a solution node, and 0 otherwise.
 */
@@ -2791,7 +2809,7 @@ ppl_PIP_Tree_Node_as_solution
 PPL_PROTO((ppl_const_PIP_Tree_Node_t spip_tree,
            ppl_const_PIP_Solution_Node_t* dpip_tree));
 
-/*! \relates ppl_PIP_Problem_tag \brief
+/*! \relates ppl_PIP_Tree_Node_tag \brief
   Writes to \p dpip_tree the decision node if \p spip_tree
   is a decision node, and 0 otherwise.
 */
@@ -2800,7 +2818,7 @@ ppl_PIP_Tree_Node_as_decision
 PPL_PROTO((ppl_const_PIP_Tree_Node_t spip_tree,
            ppl_const_PIP_Decision_Node_t* dpip_tree));
 
-/*! \relates ppl_PIP_Problem_tag \brief
+/*! \relates ppl_PIP_Tree_Node_tag \brief
   Writes to \p pcs the local system of parameter constraints
   at the pip tree node \p pip_tree.
 */
@@ -2809,7 +2827,7 @@ ppl_PIP_Tree_Node_get_constraints
 PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
            ppl_const_Constraint_System_t* pcs));
 
-/*! \relates ppl_PIP_Problem_tag \brief
+/*! \relates ppl_PIP_Tree_Node_tag \brief
   Returns a positive integer if \p pip_tree is well formed, i.e., if it
   satisfies all its implementation invariants; returns 0 and perhaps
   makes some noise if \p pip_tree is broken.  Useful for debugging purposes.
@@ -2817,14 +2835,7 @@ PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
 int
 ppl_PIP_Tree_Node_OK PPL_PROTO((ppl_const_PIP_Tree_Node_t pip));
 
-/*! \relates ppl_PIP_Problem_tag \brief
-  Invalidates the handle \p pip_tree: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_PIP_Tree_Node PPL_PROTO((ppl_const_PIP_Tree_Node_t pip));
-
-/*! \relates ppl_PIP_Problem_tag \brief
+/*! \relates ppl_PIP_Tree_Node_tag \brief
   Assigns to \p pit a const iterator "pointing" to the beginning of
   the artificial parameter sequence in the pip tree node \p pip_tree.
 */
@@ -2833,7 +2844,7 @@ ppl_PIP_Tree_Node_begin
 PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
            ppl_Artificial_Parameter_Sequence_const_iterator_t pit));
 
-/*! \relates ppl_PIP_Problem_tag \brief
+/*! \relates ppl_PIP_Tree_Node_tag \brief
   Assigns to \p pit a const iterator "pointing" to the end of
   the artificial parameter sequence in the pip tree node \p pip_tree.
 */
@@ -2842,7 +2853,7 @@ ppl_PIP_Tree_Node_end
 PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
            ppl_Artificial_Parameter_Sequence_const_iterator_t pit));
 
-/*! \relates ppl_PIP_Problem_tag \brief
+/*! \relates ppl_PIP_Tree_Node_tag \brief
   Insert in parameter set the parameter indices corresponding to local
   artificials.
 
@@ -2863,21 +2874,7 @@ PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
            ppl_dimension_type space_dim,
            ppl_dimension_type inserted));
 
-/*! \relates ppl_PIP_Problem_tag \brief
-  Builds a trivial PIP problem of dimension \p d and writes an
-  handle to it at address \p pmip.
-*/
-int
-ppl_new_PIP_Solution_Node PPL_PROTO((ppl_PIP_Solution_Node_t* ppip_sol));
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Invalidates the handle \p pip_sol: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_PIP_Solution_Node PPL_PROTO((ppl_const_PIP_Solution_Node_t pip_sol));
-
-/*! \relates ppl_PIP_Problem_tag \brief
+/*! \relates ppl_PIP_Tree_Node_tag \brief
   Writes to \p le a parametric expression of the values of variable \p v.
 
   The linear expression assigned to \p le only involves parameters.
@@ -2900,15 +2897,7 @@ PPL_PROTO((ppl_const_PIP_Solution_Node_t pip_sol,
            size_t n,
            ppl_Linear_Expression_t le));
 
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Invalidates the handle \p pip_dec: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_PIP_Decision_Node PPL_PROTO((ppl_const_PIP_Decision_Node_t pip_dec));
-
-/*! \relates ppl_PIP_Problem_tag \brief
+/*! \relates ppl_PIP_Tree_Node_tag \brief
   Writes to \p pip_tree a const pointer to the \p b (true or false) branch
   of \p pip_dec.
 */
@@ -2918,36 +2907,15 @@ PPL_PROTO((ppl_const_PIP_Decision_Node_t pip_dec,
            int b,
            ppl_const_PIP_Tree_Node_t* pip_tree));
 
-/*! \relates ppl_PIP_Problem_tag \brief
-  Creates a new artificial parameter corresponding to the constant 0 in a
-  zero-dimensional space; writes a handle for the new artificial
-  parameter at address \p pap.
+/*! \relates ppl_Artificial_Parameter_tag \brief
+  Writes to \p le the linear expression in artificial parameter \p ap.
 */
 int
-ppl_new_Artificial_Parameter PPL_PROTO((ppl_Artificial_Parameter_t* pap));
+ppl_Artificial_Parameter_get_Linear_Expression
+PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
+           ppl_const_Linear_Expression_t* le));
 
-/*! \relates ppl_PIP_Problem_tag \brief
-  Builds an artificial parameter that is the result of
-  integer division of the linear expression \p le by \p coeff;
-  writes a handle for the newly created artificial parameter
-  at address \p pap.
-*/
-int
-ppl_new_Artificial_Parameter_from_Linear_Expression
-PPL_PROTO((ppl_Artificial_Parameter_t* pap,
-           ppl_const_Linear_Expression_t le,
-           ppl_Coefficient_t coeff));
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Builds an artificial parameter that is a copy of \p ap; writes a handle
-  for the newly created artificial parameter at address \p pap.
-*/
-int
-ppl_new_Artificial_Parameter_from_Artificial_Parameter
-PPL_PROTO((ppl_Artificial_Parameter_t* pap,
-           ppl_const_Artificial_Parameter_t ap));
-
-/*! \relates ppl_PIP_Problem_tag \brief
+/*! \relates ppl_Artificial_Parameter_tag \brief
   Writes to \p coeff the denominator in artificial parameter \p ap.
 */
 int

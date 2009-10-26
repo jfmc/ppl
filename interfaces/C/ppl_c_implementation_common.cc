@@ -2336,20 +2336,6 @@ ppl_PIP_Tree_Node_insert_artificials(ppl_const_PIP_Tree_Node_t pip_tree,
 CATCH_ALL
 
 int
-ppl_new_PIP_Solution_Node(ppl_PIP_Solution_Node_t* ppip_sol) try {
-  *ppip_sol = to_nonconst(new PIP_Solution_Node());
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_delete_PIP_Solution_Node(ppl_const_PIP_Solution_Node_t pip_sol) try {
-  delete to_const(pip_sol);
-  return 0;
-}
-CATCH_ALL
-
-int
 ppl_PIP_Solution_Node_get_parametric_values
   (ppl_const_PIP_Solution_Node_t pip_sol,
    ppl_dimension_type v,
@@ -2395,30 +2381,12 @@ ppl_PIP_Decision_Node_get_child_node(ppl_const_PIP_Decision_Node_t pip_dec,
 CATCH_ALL
 
 int
-ppl_new_Artificial_Parameter(ppl_Artificial_Parameter_t* pap) try {
-  *pap = to_nonconst(new Artificial_Parameter());
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_new_Artificial_Parameter_from_Linear_Expression
-(ppl_Artificial_Parameter_t* pap,
- ppl_const_Linear_Expression_t le,
- ppl_const_Coefficient_t coef) try {
-  const Linear_Expression& sle = *to_const(le);
-  const Coefficient& scoef = *to_const(coef);
-  *pap = to_nonconst(new Artificial_Parameter(sle, scoef));
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_new_Artificial_Parameter_from_Artificial_Parameter
-(ppl_Artificial_Parameter_t* pap,
- ppl_const_Artificial_Parameter_t ap) try {
+ppl_Artificial_Parameter_get_Linear_Expression
+(ppl_const_Artificial_Parameter_t ap,
+ ppl_const_Linear_Expression_t* le) try {
   const Artificial_Parameter& sap = *to_const(ap);
-  *pap = to_nonconst(new Artificial_Parameter(sap));
+  const Linear_Expression& lle = static_cast<const Linear_Expression&>(sap);
+  *le = to_const(&lle);
   return 0;
 }
 CATCH_ALL
@@ -2557,6 +2525,8 @@ DEFINE_OUTPUT_FUNCTIONS(Grid_Generator_System)
 DEFINE_OUTPUT_FUNCTIONS(MIP_Problem)
 
 DEFINE_OUTPUT_FUNCTIONS(PIP_Problem)
+
+DEFINE_OUTPUT_FUNCTIONS(Artificial_Parameter)
 
 char*
 ppl_io_wrap_string(const char* src,
