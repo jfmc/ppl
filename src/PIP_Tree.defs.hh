@@ -102,14 +102,22 @@ public:
   Artificial_Parameter_Sequence::const_iterator art_parameter_end() const;
 
   /*! \brief
-    Insert in parameter set the parameter indices corresponding to local
-    artificials.
+    Inserts in parameter set \p params the parameter indices corresponding to
+    local artificials.
+
+    This utility method can typically be used by user programs when spanning a
+    solution tree. As new parameters may be defined in tree nodes by the
+    solver, local solutions are likely to be expressed in terms of both the
+    upper level parameters and the local ones.
+
+    The resulting space dimension is the sum of \p space_dimension and the
+    returned number of inserts indices.
 
     \param params
     the Variables_Set to be updated
 
     \param space_dimension
-    the space dimension for \p *this
+    the space dimension for \p *this (excluding the local parameters)
 
     \return
     the number of inserted indices
@@ -218,7 +226,9 @@ public:
     the variable which is queried about
 
     \param parameters
-    a \c std::set of indices of the parameters in the constraints
+    a \c std::set of indices of the parameters in the constraints, including
+    those for all artificials from the solution tree root to this node
+    (included)
 
     \exception std::invalid_argument
     Thrown if \p v is dimension-incompatible with \p *this

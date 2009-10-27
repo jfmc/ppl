@@ -2854,14 +2854,31 @@ PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
            ppl_Artificial_Parameter_Sequence_const_iterator_t pit));
 
 /*! \relates ppl_PIP_Tree_Node_tag \brief
-  Insert in parameter set the parameter indices corresponding to local
+  Inserts in parameter set the parameter indices corresponding to local
   artificials.
 
-  \param params
-  the Variables_Set to be updated
+  This utility method can typically be used by user programs when spanning a
+  solution tree. As new parameters may be defined in tree nodes by the solver,
+  local solutions are likely to be expressed in terms of both the upper level
+  parameters and the local ones.
 
-  \param space_dimension
-  the space dimension for \p *this
+  The resulting space dimension is the sum of \p space_dim and the
+  returned number of inserts indices.
+
+  \param pip_tree
+  the pip tree node whose artificial parameter indices are queried about
+
+  \param ds
+  an array containing the current parameter indices, which will be updated
+  with the local indices, and must be properly dimensioned in order the new
+  indices to be inserted
+
+  \param n
+  number of current valid parameter indices in \p ds (excluding the values to
+  be inserted)
+
+  \param space_dim
+  the space dimension for \p pip_tree (excluding the local parameters)
 
   \return
   the number of inserted indices
@@ -2871,23 +2888,33 @@ ppl_PIP_Tree_Node_insert_artificials
 PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
            ppl_dimension_type ds[],
            size_t n,
-           ppl_dimension_type space_dim,
-           ppl_dimension_type inserted));
+           ppl_dimension_type space_dim));
 
 /*! \relates ppl_PIP_Tree_Node_tag \brief
-  Writes to \p le a parametric expression of the values of variable \p v.
+  Writes to \p le a const pointer to the parametric expression of the values
+  of variable \p v in solution node \p pip_sol.
 
   The linear expression assigned to \p le only involves parameters.
+
+  \param pip_sol
+  the solution tree node
+
+  \param v
+  the variable which is queried about
+
+  \param pars
+  a set of indices of the parameters in the constraints, including those for
+  all artificials from the solution tree root to this node (included)
+
+  \param n
+  number of valid elements in \p pars
+
+  \param le
+  the returned expression of variable \p v
 
   \return PPL_ERROR_INVALID_ARGUMENT
   Returned if \p v is dimension-incompatible with \p *this
   or if \p v is a parameter.
-
-  \param v
-  The variable which is queried about
-
-  \param pars
-  A set of indices of the parameters in the constraints
 */
 int
 ppl_PIP_Solution_Node_get_parametric_values
@@ -2895,7 +2922,7 @@ PPL_PROTO((ppl_const_PIP_Solution_Node_t pip_sol,
            ppl_dimension_type v,
            ppl_dimension_type pars[],
            size_t n,
-           ppl_Linear_Expression_t le));
+           ppl_const_Linear_Expression_t* le));
 
 /*! \relates ppl_PIP_Tree_Node_tag \brief
   Writes to \p pip_tree a const pointer to the \p b (true or false) branch

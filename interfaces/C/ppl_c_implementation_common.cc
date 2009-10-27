@@ -2324,14 +2324,19 @@ int
 ppl_PIP_Tree_Node_insert_artificials(ppl_const_PIP_Tree_Node_t pip_tree,
                                      ppl_dimension_type ds[],
                                      size_t n,
-                                     ppl_dimension_type space_dim,
-                                     ppl_dimension_type inserted) try {
+                                     ppl_dimension_type space_dim) try {
   const PIP_Tree_Node& spip_tree = *to_const(pip_tree);
   Variables_Set vars;
-  for (ppl_dimension_type i = n; i-- > 0; )
-    vars.insert(ds[i]);
+  ppl_dimension_type inserted;
+  ppl_dimension_type i;
   inserted = spip_tree.insert_artificials(vars, space_dim);
-  return 0;
+  if (inserted > 0) {
+    Variables_Set::const_iterator end = vars.end();
+    Variables_Set::const_iterator v;
+    for (i = n, v = vars.begin(); v != end; ++i, ++v)
+      ds[i] = *v;
+  }
+  return inserted;
 }
 CATCH_ALL
 
