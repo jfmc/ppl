@@ -122,7 +122,14 @@ PPL::PIP_Problem::solve() const {
           for (pi = param_begin, i = 1; pi != param_end; ++pi, ++i)
             row[i] = c->coefficient(Variable(*pi));
           row[0] = c->inhomogeneous_term();
+          if (c->is_strict_inequality())
+            row[0] -= 1;
           x.initial_context.add_row(row);
+          if (c->is_equality()) {
+            for (i = 0; i < width; ++i)
+              row[i] = -row[i];
+            x.initial_context.add_row(row);
+          }
         }
       }
 

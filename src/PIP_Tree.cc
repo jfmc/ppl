@@ -74,9 +74,11 @@ negate_assign(Row& x, const Row& y, const Coefficient& sc) {
   PPL_ASSERT(x.size() == y.size());
   for (dimension_type i = x.size(); i-- > 0; )
     x[i] = -y[i];
-  PPL_DIRTY_TEMP_COEFFICIENT(mod);
-  mod_assign(mod, x[0], sc);
-  x[0] -= ((mod == 0) ? sc : mod);
+  if (sc != 0) {
+    PPL_DIRTY_TEMP_COEFFICIENT(mod);
+    mod_assign(mod, x[0], sc);
+    x[0] -= ((mod == 0) ? sc : mod);
+  }
 }
 
 // Update given context matrix using local artificials
@@ -867,7 +869,7 @@ PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
   }
   internal_space_dim = external_space_dim;
 
-  const Coefficient &denom = tableau.get_denominator();
+  const Coefficient& denom = tableau.get_denominator();
 
   for (cst = input_cs.begin() + first_pending_constraint;
        cst < input_cs.end(); ++cst) {
@@ -897,7 +899,6 @@ PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
         ++v;
       }
     }
-    // FIXME: must handle equality constraints
     if (row_sign(var) != ZERO) {
       /* parametric-only constraints have already been inserted in initial
         context, so no need to insert them in the tableau
@@ -905,6 +906,13 @@ PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
       tableau.s.add_row(var);
       tableau.t.add_row(param);
       sign.push_back(row_sign(param));
+      if (cst->is_equality()) {
+        negate_assign(var, var, 0);
+        negate_assign(param, param, 0);
+        tableau.s.add_row(var);
+        tableau.t.add_row(param);
+        sign.push_back(row_sign(param));
+      }
     }
   }
 }

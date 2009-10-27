@@ -93,8 +93,7 @@ test01() {
   Constraint_System cs;
   cs.insert(-X1 + N - 1 >= 0);
   cs.insert(X1 - X2 >= 0);
-  cs.insert(X1 + I0 - N >= 0);
-  cs.insert(-X1 - I0 + N >= 0);
+  cs.insert(X1 + I0 == N);
   cs.insert(X2 + J0 - N - 1 >= 0);
   cs.insert(I0 >= 1);
   cs.insert(N >= 1);
@@ -150,8 +149,7 @@ test03() {
   Constraint_System cs;
   cs.insert(i <= m);
   cs.insert(j <= n);
-  cs.insert(2*i+j <= 2*m+n-k);
-  cs.insert(2*i+j >= 2*m+n-k);
+  cs.insert(2*i+j == 2*m+n-k);
 
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
 
@@ -177,8 +175,7 @@ test04() {
   Constraint_System cs;
   cs.insert(i <= m);
   cs.insert(j <= n);
-  cs.insert(2*i+j <= 2*m+n-k);
-  cs.insert(2*i+j >= 2*m+n-k);
+  cs.insert(2*i+j == 2*m+n-k);
 
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
 
@@ -236,8 +233,7 @@ test06() {
   Variables_Set params(n);
 
   Constraint_System cs;
-  cs.insert(4*i + 2*n >= 1);
-  cs.insert(4*i + 2*n <= 1);
+  cs.insert(4*i + 2*n == 1);
 
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
 
