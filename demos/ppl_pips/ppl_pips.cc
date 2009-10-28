@@ -232,15 +232,17 @@ public:
         pip.add_constraint(PPL::Constraint(e == 0));
     }
     k = 0;
-    for (i=0; i<num_ctx_rows; ++i) {
-      PPL::Linear_Expression e;
-      for (j=0; j<num_params; ++j)
-        e += context[k++] * PPL::Variable(num_vars+j);
-      e += context[k++];
-      if (ctx_type[i])
-        pip.add_constraint(PPL::Constraint(e >= 0));
-      else
-        pip.add_constraint(PPL::Constraint(e == 0));
+    if (num_params > 0) {
+      for (i=0; i<num_ctx_rows; ++i) {
+        PPL::Linear_Expression e;
+        for (j=0; j<num_params; ++j)
+          e += context[k++] * PPL::Variable(num_vars+j);
+        e += context[k++];
+        if (ctx_type[i])
+          pip.add_constraint(PPL::Constraint(e >= 0));
+        else
+          pip.add_constraint(PPL::Constraint(e == 0));
+      }
     }
     return true;
   }
