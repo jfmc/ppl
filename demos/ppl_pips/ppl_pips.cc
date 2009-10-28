@@ -167,90 +167,17 @@ pip_display_sol(std::ostream& out,
 
 class PIP_Parser {
 public:
-  PIP_Parser() : pip(), comment() {
+  PIP_Parser() : pip() {
   }
 
-  ~PIP_Parser() {
+  virtual ~PIP_Parser() {
   }
 
   const PPL::PIP_Problem& problem() const {
     return pip;
   }
 
-  bool read(std::istream& in) {
-    using namespace PPL;
-    dimension_type num_params;
-    dimension_type num_ctx_rows;
-    dimension_type num_vars;
-    dimension_type num_constraints;
-    int tmp = 0;
-    int solve_integer = 0;
-    dimension_type bignum_column;
-    dimension_type i, j;
-
-    if (!expect(in, '('))
-      return false;
-    if (!expect(in, '('))
-      return false;
-    if (!read_comment(in))
-      return false;
-
-    in >> num_vars >> num_params >> num_constraints >> num_ctx_rows >> tmp
-       >> solve_integer;
-    bignum_column = (tmp == -1) ? not_a_dimension() : tmp;
-#if 0
-    std::cout << "num_vars = " << num_vars << std::endl;
-    std::cout << "num_params = " << num_params << std::endl;
-    std::cout << "num_constraints = " << num_constraints << std::endl;
-    std::cout << "num_ctx_rows = " << num_ctx_rows << std::endl;
-    std::cout << "bignum_column = " << tmp << std::endl;
-    std::cout << "solve_integer = " << solve_integer << std::endl;
-#endif
-    if (bignum_column != not_a_dimension()) {
-      std::cerr << "No support for bignums yet." << std::endl;
-      return false;
-    }
-    if (solve_integer != 1) {
-      std::cerr << "Can only solve integer problems." << std::endl;
-      return false;
-    }
-
-
-    if (!expect(in, '('))
-      return false;
-    dimension_type constraint_width = num_vars+num_params+1;
-    Coefficient constraints[num_constraints][constraint_width];
-    for (i=0; i<num_constraints; ++i)
-      if (!read_vector(in, constraint_width, constraints[i]))
-        return false;
-
-    Coefficient context[num_ctx_rows][num_params+1];
-    for (i=0; i<num_ctx_rows; ++i)
-      if (!read_vector(in, num_params+1, context[i]))
-        return false;
-
-    pip.add_space_dimensions_and_embed(num_vars, num_params);
-    for (i=0; i<num_constraints; ++i) {
-      Linear_Expression e;
-      j = 0;
-      for (; j<num_vars; ++j) {
-        e += constraints[i][j] * Variable(j);
-      }
-      e += constraints[i][j++];
-      for (; j<constraint_width; ++j) {
-        e += constraints[i][j] * Variable(j-1);
-      }
-      pip.add_constraint(Constraint(e >= 0));
-    }
-    for (i=0; i<num_ctx_rows; ++i) {
-      Linear_Expression e;
-      for (j=0; j<num_params; ++j) {
-        e += context[i][j] * Variable(num_vars+j);
-      }
-      pip.add_constraint(Constraint(e + context[i][j] >= 0));
-    }
-    return true;
-  }
+  virtual bool read(std::istream& in) = 0;
 
   // output the solution in PIPlib-like format
   /* void output_solution_piplib(std::ostream& out) {
@@ -266,7 +193,7 @@ public:
     out << "))" << std::endl;
   } */
 
-  // output the solution in PIPlib-like format
+  // output the solution in "if-then-else" format
   void output_solution_tree(std::ostream& out) {
     const PPL::Variables_Set& params = pip.parameter_space_dimensions();
     PPL::Variables_Set vars;
@@ -278,15 +205,171 @@ public:
     pip_display_sol(out, solution, params, vars, pip.space_dimension());
   }
 
-private:
-  bool expect(std::istream& in, char c) {
-    char a;
-    do {
-      in >> a;
-    } while (a != c && in.good());
-    return a == c;
+  bool update_pip(PPL::dimension_type num_vars,
+                  PPL::dimension_type num_params,
+                  PPL::dimension_type num_constraints,
+                  PPL::dimension_type num_ctx_rows,
+                  const PPL::Coefficient* constraints,
+                  const PPL::Coefficient* context,
+                  const int constraint_type[],
+                  const int ctx_type[],
+                  PPL::dimension_type bignum_column) {
+    if (bignum_column != PPL::not_a_dimension()) {
+      std::cerr << "No support for bignums yet." << std::endl;
+      return false;
+    }
+    PPL::dimension_type i, j, k;
+    pip.add_space_dimensions_and_embed(num_vars, num_params);
+    k = 0;
+    for (i=0; i<num_constraints; ++i) {
+      PPL::Linear_Expression e;
+      for (j=0; j<num_vars+num_params; ++j)
+        e += constraints[k++] * PPL::Variable(j);
+      e += constraints[k++];
+      if (constraint_type[i])
+        pip.add_constraint(PPL::Constraint(e >= 0));
+      else
+        pip.add_constraint(PPL::Constraint(e == 0));
+    }
+    k = 0;
+    for (i=0; i<num_ctx_rows; ++i) {
+      PPL::Linear_Expression e;
+      for (j=0; j<num_params; ++j)
+        e += context[k++] * PPL::Variable(num_vars+j);
+      e += context[k++];
+      if (ctx_type[i])
+        pip.add_constraint(PPL::Constraint(e >= 0));
+      else
+        pip.add_constraint(PPL::Constraint(e == 0));
+    }
+    return true;
   }
 
+protected:
+  // The problem object
+  PPL::PIP_Problem pip;
+}; // class PIP_Parser
+
+class PIP_Polylib_Parser : public PIP_Parser {
+public:
+  PIP_Polylib_Parser(): PIP_Parser() {
+  }
+
+  bool read(std::istream& in) {
+    PPL::dimension_type num_params;
+    PPL::dimension_type num_ctx_rows;
+    PPL::dimension_type num_vars;
+    PPL::dimension_type num_constraints;
+    PPL::dimension_type constraint_width;
+    std::string line;
+    getline_nocomment(in, line);
+    std::istringstream sin(line);
+    sin >> num_ctx_rows >> num_params;
+    num_params -= 2;
+    PPL::Coefficient context[num_ctx_rows][num_params+1];
+    int ctx_type[num_ctx_rows];
+
+    PPL::dimension_type i, j;
+    for (i=0; i<num_ctx_rows; ++i) {
+      getline_nocomment(in, line);
+      std::istringstream sin(line);
+      sin >> ctx_type[i];
+      for (j=0; j<num_params; ++j) {
+        sin >> context[i][j];
+      }
+    }
+    getline_nocomment(in, line);
+    std::istringstream sin2(line);
+    int tmp;
+    sin2 >> tmp;
+    PPL::dimension_type bignum_column;
+    bignum_column = (tmp == -1) ? PPL::not_a_dimension() : tmp;
+
+    getline_nocomment(in, line);
+    std::istringstream sin3(line);
+    sin3 >> num_constraints >> constraint_width;
+    constraint_width -= 1;
+    num_vars = constraint_width - num_params - 1;
+    PPL::Coefficient constraints[num_constraints][constraint_width];
+    int constraint_type[num_constraints];
+    for (i=0; i<num_constraints; ++i) {
+      getline_nocomment(in, line);
+      std::istringstream sin(line);
+      sin >> constraint_type[i];
+      for (j=0; j<constraint_width; ++j) {
+        sin >> constraints[i][j];
+      }
+    }
+    bool result = update_pip(num_vars, num_params, num_constraints,
+                             num_ctx_rows, &constraints[0][0], &context[0][0],
+                             constraint_type, ctx_type, bignum_column);
+    return result;
+  }
+
+protected:
+  static void getline_nocomment(std::istream& in, std::string& s) {
+    do {
+      getline(in, s);
+    } while (s.size() == 0 || s[0] == '\r' || s[0] == '#');
+  }
+}; // class PIP_Polylib_Parser
+
+class PIP_Piplib_Parser : public PIP_Parser {
+public:
+  PIP_Piplib_Parser() : PIP_Parser(), comment() {
+  }
+
+  bool read(std::istream& in) {
+    PPL::dimension_type num_params;
+    PPL::dimension_type num_ctx_rows;
+    PPL::dimension_type num_vars;
+    PPL::dimension_type num_constraints;
+    int tmp;
+    int solve_integer;
+    PPL::dimension_type bignum_column;
+    PPL::dimension_type i;
+
+    if (!expect(in, '('))
+      return false;
+    if (!expect(in, '('))
+      return false;
+    if (!read_comment(in))
+      return false;
+
+    in >> num_vars >> num_params >> num_constraints >> num_ctx_rows >> tmp
+       >> solve_integer;
+    bignum_column = (tmp == -1) ? PPL::not_a_dimension() : tmp;
+    if (solve_integer != 1) {
+      std::cerr << "Can only solve integer problems." << std::endl;
+      return false;
+    }
+
+    if (!expect(in, '('))
+      return false;
+    PPL::dimension_type constraint_width = num_vars+num_params+1;
+    PPL::Coefficient constraints[num_constraints][constraint_width];
+    int constraint_type[num_constraints];
+    for (i=0; i<num_constraints; ++i)
+      constraint_type[i] = 1;
+    for (i=0; i<num_constraints; ++i)
+      if (!read_vector(in, constraint_width, num_vars, constraints[i]))
+        return false;
+
+    PPL::Coefficient context[num_ctx_rows][num_params+1];
+    int ctx_type[num_ctx_rows];
+    for (i=0; i<num_ctx_rows; ++i)
+      ctx_type[i] = 1;
+    for (i=0; i<num_ctx_rows; ++i)
+      if (!read_vector(in, num_params+1, num_params, context[i]))
+        return false;
+
+    bool result = update_pip(num_vars, num_params, num_constraints,
+                             num_ctx_rows, &constraints[0][0], &context[0][0],
+                             constraint_type, ctx_type, bignum_column);
+    return result;
+  }
+
+protected:
   bool read_comment(std::istream& in) {
     comment = "";
     int count = 1;
@@ -304,8 +387,17 @@ private:
     return true;
   }
 
-  bool read_vector(std::istream& in, PPL::dimension_type size,
-                   PPL::Coefficient tab[]) {
+  static bool expect(std::istream& in, char c) {
+    char a;
+    do {
+      in >> a;
+    } while (a != c && in.good());
+    return a == c;
+  }
+
+  static bool read_vector(std::istream& in, PPL::dimension_type size,
+                          PPL::dimension_type cst_col,
+                          PPL::Coefficient tab[]) {
     if (!expect(in, '#'))
       return false;
     if (!expect(in, '['))
@@ -314,18 +406,21 @@ private:
     if (getline(in, s, ']').bad())
       return false;
     std::istringstream iss(s);
-    for (PPL::dimension_type i=0; i<size; ++i)
-      if (!(iss >> tab[i]))
+    PPL::dimension_type k = 0;
+    for (PPL::dimension_type i=0; i<cst_col; ++i)
+      if (!(iss >> tab[k++]))
+        return false;
+    if (!(iss >> tab[size-1]))
+      return false;
+    for (PPL::dimension_type i=cst_col+1; i<size; ++i)
+      if (!(iss >> tab[k++]))
         return false;
     return true;
   }
 
-  // The problem object
-  PPL::PIP_Problem pip;
-
   // The comment string in the source file
   std::string comment;
-}; // class PIP_Parser
+}; // class PIP_Piplib_Parser
 
 #ifdef PPL_HAVE_GETOPT_H
 struct option long_options[] = {
@@ -333,6 +428,8 @@ struct option long_options[] = {
   {"max-memory",     required_argument, 0, 'R'},
   {"help",           no_argument,       0, 'h'},
   {"output",         required_argument, 0, 'o'},
+  {"polylib",        no_argument,       0, 'P'},
+  {"piplib",         no_argument,       0, 'p'},
   {"timings",        no_argument,       0, 't'},
   {"verbose",        no_argument,       0, 'v'},
 #if defined(USE_PPL)
@@ -352,6 +449,8 @@ static const char* usage_string
 "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
+"  -P, --polylib           read problem in Polylib format (default)\n"
+"  -p, --piplib            read problem in PIPlib format\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           produces lots of output\n"
 #if defined(USE_PPL)
@@ -366,9 +465,9 @@ static const char* usage_string
 "Report bugs to <ppl-devel@cs.unipr.it>.\n";
 
 #if defined(USE_PPL)
-#define OPTION_LETTERS "R:ho:tvVc:"
+#define OPTION_LETTERS "R:ho:PptvVc:"
 #else
-#define OPTION_LETTERS "R:ho:tv"
+#define OPTION_LETTERS "R:ho:Pptv"
 #endif
 
 const char* program_name = 0;
@@ -442,6 +541,8 @@ output() {
   assert(output_stream_p);
   return *output_stream_p;
 }
+
+bool piplib_format = false;
 
 } // namespace
 
@@ -528,6 +629,14 @@ process_options(int argc, char* argv[]) {
       output_file_name = optarg;
       break;
 
+    case 'P':
+      piplib_format = false;
+      break;
+
+    case 'p':
+      piplib_format = true;
+      break;
+
     case 't':
       print_timings = true;
       break;
@@ -608,23 +717,27 @@ main(int argc, char* argv[]) try {
 
 //  POLYHEDRON_TYPE ph;
 //  Representation rep = read_polyhedron(input(), ph);
-  PIP_Parser parser;
-  if (!parser.read(*input_stream_p))
+  PIP_Parser* parser;
+  if (piplib_format)
+    parser = new PIP_Piplib_Parser();
+  else
+    parser = new PIP_Polylib_Parser();
+  if (!parser->read(*input_stream_p))
     return 1;
 
   maybe_start_clock();
 
   // Compute the dual simplex on the problem.
-  const PPL::PIP_Problem& pip = parser.problem();
+  const PPL::PIP_Problem& pip = parser->problem();
 
   pip.solve();
 
-#if defined(USE_PPL) || defined(USE_POLKA)
+#if defined(USE_PPL) || defined(USE_PIPLIB)
   maybe_print_clock();
 #endif
 
   // Write the solution.
-  parser.output_solution_tree(*output_stream_p);
+  parser->output_solution_tree(*output_stream_p);
 
   return 0;
 }
