@@ -276,7 +276,7 @@ public:
       getline_nocomment(in, line);
       std::istringstream sin(line);
       sin >> ctx_type[i];
-      for (j=0; j<num_params+1; ++j) {
+      for (j=0; j<=num_params; ++j) {
         sin >> context[i][j];
       }
     }
