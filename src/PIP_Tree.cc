@@ -754,7 +754,7 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
       s.add_zero_rows(1, Row::Flags());
       const Row& row = s[i_];
       Row& cut = s[num_rows++];
-      scaling.push_back(1);
+      scaling.push_back(scaling[i_]);
       const Coefficient& sc = scaling[i_];
       for (j=0; j<num_cols; ++j)
         mod_assign(cut[j], row[j], sc);
