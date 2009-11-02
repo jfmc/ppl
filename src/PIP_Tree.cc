@@ -720,16 +720,16 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
         if (i == num_rows)
           i = i_;
         for (j_=1; j_<num_cols; ++j_) {
-          if (rs[j_] > 0) {
-            if(j == 0)
-              j = j_;
-            break;
-          }
+          // Search for first least nonnegative pivot candidate
+          const Coefficient& c = rs[j_];
+          if (c > 0 && (j == 0 || c < rs[j]))
+            j = j_;
         }
-        if (j_==num_cols) {
+        if (j == 0) {
           // No positive pivot candidate: empty problem
           return false;
         }
+        break;
       }
     }
 
