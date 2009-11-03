@@ -2836,6 +2836,15 @@ int
 ppl_PIP_Tree_Node_OK PPL_PROTO((ppl_const_PIP_Tree_Node_t pip));
 
 /*! \relates ppl_PIP_Tree_Node_tag \brief
+  Writes to \p m the number of elements in the artificial parameter sequence
+  in the pip tree node \p pip_tree.
+*/
+int
+ppl_PIP_Tree_Node_number_of_artificials
+PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
+           ppl_dimension_type* m));
+
+/*! \relates ppl_PIP_Tree_Node_tag \brief
   Assigns to \p pit a const iterator "pointing" to the beginning of
   the artificial parameter sequence in the pip tree node \p pip_tree.
 */

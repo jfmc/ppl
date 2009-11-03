@@ -101,6 +101,9 @@ public:
   //! Returns a const_iterator to the end of local artificial parameters.
   Artificial_Parameter_Sequence::const_iterator art_parameter_end() const;
 
+  //! Returns the number of local artificial parameters.
+  dimension_type art_parameter_count() const;
+
   /*! \brief
     Inserts in parameter set \p params the parameter indices corresponding to
     local artificials.

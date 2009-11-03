@@ -2299,6 +2299,15 @@ ppl_PIP_Tree_Node_OK(ppl_const_PIP_Tree_Node_t pip_tree) try {
 CATCH_ALL
 
 int
+ppl_PIP_Tree_Node_number_of_artificials(ppl_const_PIP_Tree_Node_t pip_tree,
+					ppl_dimension_type* m) try {
+  const PIP_Tree_Node& node = *to_const(pip_tree);
+  *m = node.art_parameter_count();
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_PIP_Tree_Node_begin
 (ppl_const_PIP_Tree_Node_t pip_tree,
  ppl_Artificial_Parameter_Sequence_const_iterator_t pit) try {

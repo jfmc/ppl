@@ -82,6 +82,11 @@ PIP_Tree_Node::art_parameter_end() const {
   return artificial_parameters.end();
 }
 
+inline dimension_type
+PIP_Tree_Node::art_parameter_count() const {
+  return artificial_parameters.size();
+}
+
 inline
 const PIP_Tree_Node*
 PIP_Decision_Node::child_node(bool v) const {
