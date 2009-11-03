@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 
 static const char* program_name = 0;
 
@@ -43,6 +44,124 @@ fatal(const char* format, ...) {
   va_end(ap);
   fprintf(stderr, "\n");
   my_exit(1);
+}
+
+static void
+display_solution_i(ppl_const_PIP_Tree_Node_t node,
+                   ppl_dimension_type n_vars,
+                   ppl_dimension_type n_params,
+                   const ppl_dimension_type vars[],
+                   const ppl_dimension_type params[],
+                   int indent) {
+  if (!node) {
+    printf("%*s_|_\n", indent*2, "");
+  } else {
+    ppl_dimension_type space_dimension = n_vars + n_params;
+    ppl_dimension_type new_params;
+    ppl_dimension_type* parameters;
+    ppl_const_Constraint_System_t constraints;
+    ppl_const_PIP_Decision_Node_t dn;
+    int constraints_empty;
+    ppl_PIP_Tree_Node_number_of_artificials(node, &new_params);
+    parameters = malloc((n_params+new_params)*sizeof(ppl_dimension_type));
+    memcpy(parameters, params, n_params*sizeof(ppl_dimension_type));
+    if (new_params > 0) {
+      ppl_Artificial_Parameter_Sequence_const_iterator_t i, i_end;
+      ppl_PIP_Tree_Node_insert_artificials(node, parameters, n_params,
+                                           space_dimension);
+      ppl_new_Artificial_Parameter_Sequence_const_iterator(&i);
+      ppl_new_Artificial_Parameter_Sequence_const_iterator(&i_end);
+      ppl_PIP_Tree_Node_begin(node, i);
+      ppl_PIP_Tree_Node_end(node, i_end);
+      while (!ppl_Artificial_Parameter_Sequence_const_iterator_equal_test
+              (i,i_end)) {
+        ppl_const_Artificial_Parameter_t ap;
+        ppl_Artificial_Parameter_Sequence_const_iterator_dereference(i, &ap);
+        printf("%*sParameter ", indent*2, "");
+        ppl_io_print_variable(space_dimension++);
+        printf(" = ");
+        ppl_io_print_Artificial_Parameter(ap);
+        printf("\n");
+        ppl_Artificial_Parameter_Sequence_const_iterator_increment(i);
+      }
+      ppl_delete_Artificial_Parameter_Sequence_const_iterator(i_end);
+      ppl_delete_Artificial_Parameter_Sequence_const_iterator(i);
+    }
+
+    ppl_PIP_Tree_Node_get_constraints(node, &constraints);
+    constraints_empty = ppl_Constraint_System_empty(constraints);
+    if (!constraints_empty) {
+      int notfirst = 0;
+      ppl_Constraint_System_const_iterator_t end, i;
+      ppl_new_Constraint_System_const_iterator(&i);
+      ppl_new_Constraint_System_const_iterator(&end);
+      ppl_Constraint_System_begin(constraints, i);
+      ppl_Constraint_System_end(constraints, end);
+      printf("%*sif ", indent*2, "");
+      for (; !ppl_Constraint_System_const_iterator_equal_test(i,end);
+           ppl_Constraint_System_const_iterator_increment(i)) {
+        ppl_const_Constraint_t c;
+        if (notfirst)
+          printf(" and ");
+        ppl_Constraint_System_const_iterator_dereference(i, &c);
+        ppl_io_print_Constraint(c);
+        notfirst = 1;
+      }
+      printf(" then\n");
+    }
+    ppl_PIP_Tree_Node_as_decision(node, &dn);
+    n_params += new_params;
+    if (dn) {
+      ppl_const_PIP_Tree_Node_t child;
+      ppl_PIP_Decision_Node_get_child_node(dn, 1, &child);
+      display_solution_i(child, n_vars, n_params, vars, parameters, indent+1);
+      printf("%*selse\n", indent*2, "");
+      ppl_PIP_Decision_Node_get_child_node(dn, 0, &child);
+      display_solution_i(child, n_vars, n_params, vars, parameters, indent+1);
+    } else {
+      int notfirst = 0;
+      ppl_const_PIP_Solution_Node_t sn;
+      ppl_dimension_type i;
+      ppl_const_Linear_Expression_t le;
+      ppl_PIP_Tree_Node_as_solution(node, &sn);
+      printf("%*s{", indent*2+(constraints_empty?0:2), "");
+      for (i=0; i<n_vars; ++i) {
+        if (notfirst)
+          printf(" ; ");
+        ppl_PIP_Solution_Node_get_parametric_values(sn, vars[i], parameters,
+                                                    n_params, &le);
+        ppl_io_print_Linear_Expression(le);
+        notfirst = 1;
+      }
+      printf("}\n");
+      if (!constraints_empty)
+        printf("%*selse\n%*s_|_\n", indent*2, "", indent*2+2, "");
+    }
+    free(parameters);
+  }
+}
+
+void
+display_solution(ppl_const_PIP_Tree_Node_t node,
+                 ppl_dimension_type n_vars,
+                 ppl_dimension_type n_params,
+                 const ppl_dimension_type params[]) {
+  ppl_dimension_type* vars;
+  ppl_dimension_type i, j, k, dim;
+  vars = malloc(n_vars*sizeof(ppl_dimension_type));
+  dim = n_vars+n_params;
+
+  /* construct the array of variable space indices. This requires the params
+     array to be sorted in ascending order.
+  */
+  for (i=0, j=0, k=0; i<dim; ++i) {
+    if (k == n_params || i < params[k])
+      vars[j++] = i;
+    else
+      ++k;
+  }
+  display_solution_i(node, n_vars, n_params, vars, params, 0);
+  free(vars);
 }
 
 #define N_VARS 2
@@ -105,7 +224,7 @@ main(int argc, char **argv) {
     ppl_const_PIP_Tree_Node_t solution;
     ppl_PIP_Problem_space_dimension(pip, &dim);
     ppl_PIP_Problem_solution(pip, &solution);
-    /* display_solution(solution, N_VARS, N_PARAMETERS, parameter_dim); */
+    display_solution(solution, N_VARS, N_PARAMETERS, parameter_dim);
   }
 
   ppl_delete_PIP_Problem(pip);
