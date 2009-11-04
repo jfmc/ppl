@@ -758,7 +758,6 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
   dimension_type num_rows = s.num_rows();
   dimension_type num_cols = s.num_columns();
   dimension_type num_vars = num_cols-1;
-  const dimension_type n_a_d = not_a_dimension();
   std::vector<Coefficient> scaling(num_rows, 1);
   PPL_DIRTY_TEMP_COEFFICIENT(sij);
   PPL_DIRTY_TEMP_COEFFICIENT(mult);
@@ -766,9 +765,21 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
   PPL_DIRTY_TEMP_COEFFICIENT(scale_factor);
   PPL_DIRTY_TEMP_COEFFICIENT(scaling_i);
   std::vector<dimension_type> mapping;
-  std::vector<bool> basis(num_vars, true);
-  for (j=1; j<=num_vars; ++j)
+  std::vector<bool> basis;
+  std::vector<dimension_type> var_row;
+  std::vector<dimension_type> var_column;
+  // Column 0 is the constant term, not a variable
+  var_column.push_back(not_a_dimension());
+  for (j=1; j<=num_vars; ++j) {
+    basis.push_back(true);
     mapping.push_back(j);
+    var_column.push_back(j-1);
+  }
+  for (i=0; i<num_rows; ++i) {
+    basis.push_back(false);
+    mapping.push_back(i);
+    var_row.push_back(i+num_vars);
+  }
   Row p(num_cols, compute_capacity(num_cols, Matrix::max_num_columns()),
         Row::Flags());
 
@@ -815,6 +826,9 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
         return true;
       }
       // Generate a new cut
+      var_row.push_back(mapping.size());
+      basis.push_back(false);
+      mapping.push_back(num_rows);
       s.add_zero_rows(1, Row::Flags());
       const Row& row = s[i_];
       Row& cut = s[num_rows++];
@@ -827,26 +841,16 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
     }
 
     // Now we have a positive s[i][j] pivot
-    var_j = n_a_d;
-    var_i = n_a_d;
-    for (j_=0; j_<num_vars; ++j_) {
-      if (basis[j_]) {
-        if (mapping[j_] == j)
-          var_j = j_;
-      } else {
-        if (mapping[j_] == i)
-          var_i = j_;
-      }
-    }
+
     /* update basis */
-    if (var_j != n_a_d) {
-      basis[var_j] = false;
-      mapping[var_j] = i;
-    }
-    if (var_i != n_a_d) {
-      basis[var_i] = true;
-      mapping[var_i] = j;
-    }
+    var_j = var_column[j];
+    var_i = var_row[i];
+    basis[var_j] = false;
+    mapping[var_j] = i;
+    basis[var_i] = true;
+    mapping[var_i] = j;
+    var_column[j] = var_i;
+    var_row[i] = var_j;
 
     /* create the identity matrix row corresponding to basic variable j */
     for (j_=0; j_<num_cols; ++j_)
