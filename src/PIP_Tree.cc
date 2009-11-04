@@ -364,7 +364,6 @@ PIP_Tree_Node
 
 bool
 PIP_Solution_Node::OK() const {
-  /* FIXME: finish me! */
 #ifndef NDEBUG
   using std::endl;
   using std::cerr;
@@ -376,6 +375,64 @@ PIP_Solution_Node::OK() const {
 
   if (!tableau.OK())
     return false;
+
+  // Check coherency of basis, mapping, var_row and var_column
+  if (basis.size() != mapping.size()) {
+#ifndef NDEBUG
+    cerr << "The PIP_Solution_Node::basis and PIP_Solution_Node::mapping "
+         << "vectors do not have the same number of elements."
+         << endl;
+#endif
+    return false;
+  }
+  if (basis.size() != var_row.size() + var_column.size()) {
+#ifndef NDEBUG
+    cerr << "The sum of number of elements in the PIP_Solution_Node::var_row "
+         << "and PIP_Solution_Node::var_column vectors is different from the "
+         << "number of elements in the PIP_Solution_Node::basis vector."
+         << endl;
+#endif
+    return false;
+  }
+  if (var_column.size() != tableau.s.num_columns()) {
+#ifndef NDEBUG
+    cerr << "The number of elements in the PIP_Solution_Node::var_column "
+         << "vector is different from the number of columns in the "
+         << "PIP_Solution_Node::tableau.s Matrix."
+         << endl;
+#endif
+    return false;
+  }
+  if (var_row.size() != tableau.s.num_rows()) {
+#ifndef NDEBUG
+    cerr << "The number of elements in the PIP_Solution_Node::var_row "
+         << "vector is different from the number of rows in the "
+         << "PIP_Solution_Node::tableau.s Matrix."
+         << endl;
+#endif
+    return false;
+  }
+  for (dimension_type i = mapping.size(); i-- > 0; ) {
+    dimension_type rowcol = mapping[i];
+    if (basis[i] && var_column[rowcol] != i) {
+#ifndef NDEBUG
+      cerr << "Variable " << i << " is basic and corresponds to column "
+           << rowcol << " but PIP_Solution_Node::var_column[" << rowcol
+           << "] does not correspond to variable " << i << "."
+           << endl;
+#endif
+      return false;
+    }
+    if (!basis[i] && var_row[rowcol] != i) {
+#ifndef NDEBUG
+      cerr << "Variable " << i << " is nonbasic and corresponds to row "
+           << rowcol << " but PIP_Solution_Node::var_row[" << rowcol
+           << "] does not correspond to variable " << i << "."
+           << endl;
+#endif
+      return false;
+    }
+  }
 
   return true;
 }
@@ -421,6 +478,7 @@ PIP_Decision_Node::update_tableau(dimension_type external_space_dim,
                                 first_pending_constraint,
                                 input_cs,
                                 parameters);
+  PPL_ASSERT(OK());
 }
 
 PIP_Problem_Status
@@ -949,6 +1007,7 @@ PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
       }
     }
   }
+  PPL_ASSERT(OK());
 }
 
 void
@@ -997,6 +1056,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
     dimension_type num_vars = tableau.s.num_columns();
     dimension_type num_params = tableau.t.num_columns();
     Row_Sign s;
+    PPL_ASSERT(OK());
 
 #ifdef NOISY_PIP
     tableau.ascii_dump(std::cout);
