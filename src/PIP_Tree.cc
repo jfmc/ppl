@@ -200,6 +200,8 @@ PIP_Solution_Node::PIP_Solution_Node()
     tableau(),
     basis(),
     mapping(),
+    var_row(),
+    var_column(),
     sign(),
     solution(),
     solution_valid(false) {
@@ -210,6 +212,8 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x)
     tableau(x.tableau),
     basis(x.basis),
     mapping(x.mapping),
+    var_row(x.var_row),
+    var_column(x.var_column),
     sign(x.sign),
     solution(x.solution),
     solution_valid(x.solution_valid) {
@@ -221,6 +225,8 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x,
     tableau(x.tableau),
     basis(x.basis),
     mapping(x.mapping),
+    var_row(x.var_row),
+    var_column(x.var_column),
     sign(x.sign),
     solution(x.solution),
     solution_valid(x.solution_valid) {
@@ -862,9 +868,27 @@ PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
     if (parameters.count(i) == 1)
       tableau.t.add_zero_columns(1);
     else {
+      dimension_type column = tableau.s.num_columns();
       tableau.s.add_zero_columns(1);
-      basis.push_back(true);
-      mapping.push_back(tableau.s.num_columns()-1);
+      if (tableau.s.num_rows() == 0) {
+        // No rows have been added yet
+        basis.push_back(true);
+        mapping.push_back(column);
+      } else {
+        /* Need to insert the original variable id before the slack variable
+          id's to respect variable ordering */
+        dimension_type j;
+        basis.insert(basis.begin()+column, true);
+        mapping.insert(mapping.begin()+column, column);
+        // update variable id's of slack variables
+        for (j = var_row.size(); j-- > 0; )
+          if (var_row[j] >= column)
+            ++var_row[j];
+        for (j = var_column.size(); j-- > 0; )
+          if (var_column[j] >= column)
+            ++var_column[j];
+      }
+      var_column.push_back(column);
     }
   }
   internal_space_dim = external_space_dim;
@@ -903,15 +927,25 @@ PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
       /* parametric-only constraints have already been inserted in initial
         context, so no need to insert them in the tableau
       */
+      dimension_type var_id = mapping.size();
+      dimension_type row_id = tableau.s.num_rows();
       tableau.s.add_row(var);
       tableau.t.add_row(param);
       sign.push_back(row_sign(param));
+      basis.push_back(false);
+      mapping.push_back(row_id);
+      var_row.push_back(var_id);
       if (cst->is_equality()) {
+        ++var_id;
+        ++row_id;
         negate_assign(var, var, 0);
         negate_assign(param, param, 0);
         tableau.s.add_row(var);
         tableau.t.add_row(param);
         sign.push_back(row_sign(param));
+        basis.push_back(false);
+        mapping.push_back(row_id);
+        var_row.push_back(var_id);
       }
     }
   }
@@ -1123,27 +1157,15 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
 
       /* ** Perform pivot operation ** */
 
-      /* Check if column j_ or row i_ correspond to a problem variable */
-      dimension_type var_j = n_a_d;
-      dimension_type var_i = n_a_d;
-      for (j=0; j<num_vars; ++j) {
-        if (basis[j]) {
-          if (mapping[j] == j_)
-            var_j = j;
-        } else {
-          if (mapping[j] == i_)
-            var_i = j;
-        }
-      }
       /* update basis */
-      if (var_j != n_a_d) {
-        basis[var_j] = false;
-        mapping[var_j] = i_;
-      }
-      if (var_i != n_a_d) {
-        basis[var_i] = true;
-        mapping[var_i] = j_;
-      }
+      dimension_type var_j = var_column[j_];
+      dimension_type var_i = var_row[i_];
+      basis[var_j] = false;
+      mapping[var_j] = i_;
+      var_row[i_] = var_j;
+      basis[var_i] = true;
+      mapping[var_i] = j_;
+      var_column[j_] = var_i;
 
       /* create the identity matrix row corresponding to basic variable j_ */
       Row prs(num_vars, tableau.s_capacity(), Row::Flags());
@@ -1548,6 +1570,9 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
                     << std::endl;
         }
 #endif
+        var_row.push_back(num_rows+num_vars);
+        basis.push_back(false);
+        mapping.push_back(num_rows);
         sign.push_back(NEGATIVE);
       }
     }

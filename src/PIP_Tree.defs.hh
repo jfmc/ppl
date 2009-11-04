@@ -296,6 +296,17 @@ private:
   /*! \brief
     A boolean vector for identifying the basic variables.
 
+    Variable identifiers are numbered from 0 to <tt>n+m-1</tt>, where \p n
+    is the number of columns in the simplex tableau corresponding to variables,
+    and \p m is the number of rows.
+
+    Indices from 0 to <tt>n-1</tt> correspond to the original variables.
+
+    Indices from \p n to <tt>n+m-1</tt> correspond to the slack variables
+    associated to the internal constraints, which do not strictly correspond
+    to original constraints, since these may have been transformed to fit the
+    standard form of the dual simplex.
+
     The value for <tt>basis[i]</tt> is:
      - \b true if variable \p i is basic,
      - \b false if variable \p i is nonbasic.
@@ -313,6 +324,14 @@ private:
        index of variable \p i in the tableau.
   */
   std::vector<dimension_type> mapping;
+
+  /*! A vector of the variable identifiers associated to each row of the
+     simplex tableau. */
+  std::vector<dimension_type> var_row;
+
+  /*! A vector of the variable identifiers associated to each column of the
+     simplex tableau. */
+  std::vector<dimension_type> var_column;
 
   //! The possible values for the sign of a parametric linear expression.
   enum Row_Sign {
