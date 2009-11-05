@@ -1030,7 +1030,6 @@ PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
           var_row.push_back(var_id);
         } else {
           // The special constraint already exists and is nonbasic
-          std::cout << "bla\n";
           dimension_type row = mapping[special_equality_row];
           sub_assign(tableau.s[row], var);
           sub_assign(tableau.t[row], param);
