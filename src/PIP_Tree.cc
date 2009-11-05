@@ -223,7 +223,7 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x)
     mapping(x.mapping),
     var_row(x.var_row),
     var_column(x.var_column),
-    special_equality_row(0),
+    special_equality_row(x.special_equality_row),
     sign(x.sign),
     solution(x.solution),
     solution_valid(x.solution_valid) {
