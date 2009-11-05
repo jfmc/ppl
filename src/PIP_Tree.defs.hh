@@ -325,13 +325,31 @@ private:
   */
   std::vector<dimension_type> mapping;
 
-  /*! A vector of the variable identifiers associated to each row of the
-     simplex tableau. */
+  /*! \brief A vector of the variable identifiers associated to each row of
+     the simplex tableau. */
   std::vector<dimension_type> var_row;
 
-  /*! A vector of the variable identifiers associated to each column of the
-     simplex tableau. */
+  /*! \brief A vector of the variable identifiers associated to each column
+     of the simplex tableau. */
   std::vector<dimension_type> var_column;
+
+  /*! \brief The variable number of the special inequality used for modelling
+    equality constraints.
+
+    The subset of equality constraints in a specific problem can be expressed
+    as: \f$f_i(x,p) = 0 ; 1 \leq i \leq n\f$. As the dual simplex standard form
+    requires constraints to be inequalities, the following constraints can be
+    modelized the following way:
+
+     - \f$f_i(x,p) \geq 0 ; 1 \leq i \leq n\f$
+
+     - \f$\sum\limits_{i=1}^n f_i(x,p) \leq 0\f$
+
+    The \p special_equality_row value stores the variable number of the
+    specific constraint which is used to modelize the latter sum of
+    constraints. If no such constraint exists, the value is set to \p 0.
+  */
+  dimension_type special_equality_row;
 
   //! The possible values for the sign of a parametric linear expression.
   enum Row_Sign {

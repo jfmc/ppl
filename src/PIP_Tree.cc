@@ -46,6 +46,14 @@ add_assign(Row& x, const Row& y, Coefficient_traits::const_reference c) {
     add_mul_assign(x[i], c, y[i]);
 }
 
+// Compute x -= y
+void
+sub_assign(Row& x, const Row& y) {
+  PPL_ASSERT(x.size() == y.size());
+  for (dimension_type i = x.size(); i-- > 0; )
+    x[i] -= y[i];
+}
+
 // Merge constraint system to a Matrix-form context such as x = x U y
 void
 merge_assign(Matrix& x,
@@ -202,6 +210,7 @@ PIP_Solution_Node::PIP_Solution_Node()
     mapping(),
     var_row(),
     var_column(),
+    special_equality_row(0),
     sign(),
     solution(),
     solution_valid(false) {
@@ -214,6 +223,7 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x)
     mapping(x.mapping),
     var_row(x.var_row),
     var_column(x.var_column),
+    special_equality_row(0),
     sign(x.sign),
     solution(x.solution),
     solution_valid(x.solution_valid) {
@@ -227,6 +237,7 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x,
     mapping(x.mapping),
     var_row(x.var_row),
     var_column(x.var_column),
+    special_equality_row(x.special_equality_row),
     sign(x.sign),
     solution(x.solution),
     solution_valid(x.solution_valid) {
@@ -949,6 +960,8 @@ PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
         for (j = var_column.size(); j-- > 0; )
           if (var_column[j] >= column)
             ++var_column[j];
+        if (special_equality_row > 0)
+          ++special_equality_row;
       }
       var_column.push_back(column);
     }
@@ -998,16 +1011,30 @@ PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
       mapping.push_back(row_id);
       var_row.push_back(var_id);
       if (cst->is_equality()) {
-        ++var_id;
-        ++row_id;
-        negate_assign(var, var, 0);
-        negate_assign(param, param, 0);
-        tableau.s.add_row(var);
-        tableau.t.add_row(param);
-        sign.push_back(row_sign(param));
-        basis.push_back(false);
-        mapping.push_back(row_id);
-        var_row.push_back(var_id);
+        /* Handle equality constraints. After having added the f_i(x,p) >= 0
+          constraint, we must add -f_i(x,p) to the special equality row */
+        if (special_equality_row == 0 || basis[special_equality_row]) {
+          // The special constraint has not been created yet
+          /* FIXME: for now, we don't handle the case where the variable is
+            basic, and create a new row. This might be faster however. */
+          ++var_id;
+          ++row_id;
+          negate_assign(var, var, 0);
+          negate_assign(param, param, 0);
+          tableau.s.add_row(var);
+          tableau.t.add_row(param);
+          sign.push_back(row_sign(param));
+          special_equality_row = mapping.size();
+          basis.push_back(false);
+          mapping.push_back(row_id);
+          var_row.push_back(var_id);
+        } else {
+          // The special constraint already exists and is nonbasic
+          std::cout << "bla\n";
+          dimension_type row = mapping[special_equality_row];
+          sub_assign(tableau.s[row], var);
+          sub_assign(tableau.t[row], param);
+        }
       }
     }
   }
