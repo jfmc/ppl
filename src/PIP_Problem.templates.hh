@@ -77,6 +77,7 @@ PIP_Problem::PIP_Problem(dimension_type dim,
     }
     input_cs.push_back(*i);
   }
+  control_parameters_init();
   PPL_ASSERT(OK());
 }
 

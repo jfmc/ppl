@@ -159,6 +159,9 @@ protected:
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
 
+    \param problem
+    the containing problem object
+
     \param external_space_dim
     size of constraints (variables and parameters added)
 
@@ -172,7 +175,8 @@ protected:
     \param parameters
     a \c std::set of indices of the parameters in the constraints
   */
-  virtual void update_tableau(dimension_type external_space_dim,
+  virtual void update_tableau(const PIP_Problem& problem,
+                              dimension_type external_space_dim,
                               dimension_type first_pending_constraint,
                               const Constraint_Sequence &input_cs,
                               const Variables_Set &parameters) = 0;
@@ -182,6 +186,9 @@ protected:
 
     \param parent_ref
     a pointer to the parent reference to \p this
+
+    \param problem
+    the containing problem object
 
     \param context
     the context, being a set of constraints on the parameters
@@ -197,6 +204,7 @@ protected:
     attempt (unfeasible or optimized problem).
   */
   virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
+                                   const PIP_Problem& problem,
                                    const Matrix& context,
                                    const Variables_Set& params,
                                    dimension_type space_dimension) = 0;
@@ -404,6 +412,9 @@ protected:
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
 
+    \param problem
+    the containing problem object
+
     \param external_space_dim
     size of constraints (variables and parameters added)
 
@@ -417,7 +428,8 @@ protected:
     \param parameters
     a \c std::set of indices of the parameters in the constraints
   */
-  virtual void update_tableau(dimension_type external_space_dim,
+  virtual void update_tableau(const PIP_Problem& problem,
+                              dimension_type external_space_dim,
                               dimension_type first_pending_constraint,
                               const Constraint_Sequence& input_cs,
                               const Variables_Set& parameters);
@@ -436,6 +448,9 @@ protected:
     \param parent_ref
     a pointer to the parent reference to \p this
 
+    \param problem
+    the containing problem object
+
     \param context
     the context, being a set of constraints on the parameters
 
@@ -450,6 +465,7 @@ protected:
     attempt (unfeasible or optimized problem).
   */
   virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
+                                   const PIP_Problem& problem,
                                    const Matrix& context,
                                    const Variables_Set& params,
                                    dimension_type space_dimension);
@@ -514,6 +530,9 @@ protected:
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
 
+    \param problem
+    the containing problem object
+
     \param external_space_dim
     size of constraints (variables and parameters added)
 
@@ -527,7 +546,8 @@ protected:
     \param parameters
     a \c std::set of indices of the parameters in the constraints
   */
-  virtual void update_tableau(dimension_type external_space_dim,
+  virtual void update_tableau(const PIP_Problem& problem,
+                              dimension_type external_space_dim,
                               dimension_type first_pending_constraint,
                               const Constraint_Sequence &input_cs,
                               const Variables_Set &parameters);
@@ -537,6 +557,9 @@ protected:
 
     \param parent_ref
     a pointer to the parent reference to \p this
+
+    \param problem
+    the containing problem object
 
     \param context
     the context, being a set of constraints on the parameters
@@ -552,6 +575,7 @@ protected:
     attempt (unfeasible or optimized problem).
   */
   virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
+                                   const PIP_Problem& problem,
                                    const Matrix& context,
                                    const Variables_Set& params,
                                    dimension_type space_dimension);

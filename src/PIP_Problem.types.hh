@@ -12,6 +12,8 @@ PURPOSE. */
 #ifndef PPL_PIP_Problem_types_hh
 #define PPL_PIP_Problem_types_hh 1
 
+#include <vector>
+
 namespace Parma_Polyhedra_Library {
 
 //! Possible outcomes of the PIP_Problem solver.
@@ -21,6 +23,22 @@ enum PIP_Problem_Status {
   UNFEASIBLE_PIP_PROBLEM,
   //! The problem has an optimal solution.
   OPTIMIZED_PIP_PROBLEM
+};
+
+//! Possible name values for PIP_Problem control parameters.
+/*! \ingroup PPL_CXX_interface */
+enum PIP_Problem_Control_Parameter_Name {
+  /*! Number of different possible values of
+     PIP_Problem_Control_Parameter_Name enumeration. */
+  PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE
+};
+
+//! Possible values for PIP_Problem control parameters.
+/*! \ingroup PPL_CXX_interface */
+enum PIP_Problem_Control_Parameter_Value {
+  /*! Number of different possible values of
+     PIP_Problem_Control_Parameter_Value enumeration. */
+  PIP_PROBLEM_CONTROL_PARAMETER_VALUE_SIZE
 };
 
 class PIP_Problem;

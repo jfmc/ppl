@@ -46,6 +46,7 @@ PPL::PIP_Problem::PIP_Problem(dimension_type dim)
     throw std::length_error("PPL::PIP_Problem:: PIP_Problem(dim):\n"
                             "dim exceeds the maximum allowed"
                             "space dimension.");
+  control_parameters_init();
   PPL_ASSERT(OK());
 }
 
@@ -62,11 +63,22 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
   if (y.current_solution != 0)
     current_solution = y.current_solution->clone();
   PPL_ASSERT(OK());
+  control_parameters_copy(y);
 }
 
 PPL::PIP_Problem::~PIP_Problem() {
   if (current_solution != 0)
     delete current_solution;
+}
+
+void
+PPL::PIP_Problem::control_parameters_init() {
+}
+
+void
+PPL::PIP_Problem::control_parameters_copy(const PIP_Problem& y) {
+  for (dimension_type i=PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE; i-- > 0;)
+    control_parameters[i] = y.control_parameters[i];
 }
 
 PPL::PIP_Problem_Status
@@ -133,7 +145,8 @@ PPL::PIP_Problem::solve() const {
         }
       }
 
-      x.current_solution->update_tableau(external_space_dim,
+      x.current_solution->update_tableau(*this,
+                                         external_space_dim,
                                          first_pending_constraint,
                                          input_cs,
                                          parameters);
@@ -141,6 +154,7 @@ PPL::PIP_Problem::solve() const {
       x.first_pending_constraint = input_cs.size();
 
       return_value = x.current_solution->solve(x.current_solution,
+                                               *this,
                                                initial_context, parameters,
                                                external_space_dim);
 
@@ -215,6 +229,8 @@ PPL::PIP_Problem::OK() const {
     }
   }
 
+  // Test validity of control parameter values.
+
   if (!parameters.OK())
     return false;
   if (!initial_context.OK())
@@ -263,6 +279,16 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
 
   s << "\ninitial_context";
   initial_context.ascii_dump(s);
+
+  s << "\ncontrol_parameters";
+  for (dimension_type i=0; i<PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE; ++i) {
+    PIP_Problem_Control_Parameter_Value value = control_parameters[i];
+    switch (value) {
+    default:
+      s << "Invalid control parameter value";
+    }
+    s << "\n";
+  }
 }
 
 PPL_OUTPUT_DEFINITIONS(PIP_Problem)
@@ -346,6 +372,19 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
   if (!initial_context.ascii_load(s))
     return false;
 
+  if (!(s >> str) || str != "control_parameters")
+    return false;
+
+  for (dimension_type i=0; i<PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE; ++i) {
+    if (!(s >> str))
+      return false;
+    PIP_Problem_Control_Parameter_Value value;
+    // set of if / else if string comparisons to get the correct value
+    // else
+      return false;
+    control_parameters[i] = value;
+  }
+
   PPL_ASSERT(OK());
   return true;
 }
@@ -364,6 +403,7 @@ PPL::PIP_Problem::clear() {
   first_pending_constraint = 0;
   parameters.clear();
   initial_context.clear();
+  control_parameters_init();
 }
 
 void
@@ -455,4 +495,15 @@ PPL::PIP_Problem::is_satisfiable() const {
   if (status == PARTIALLY_SATISFIABLE)
     solve();
   return status == OPTIMIZED;
+}
+
+void
+PPL::PIP_Problem::set_control_parameter(PIP_Problem_Control_Parameter_Name n,
+                                      PIP_Problem_Control_Parameter_Value v) {
+  switch (n) {
+  default:
+    throw std::invalid_argument("PPL::PIP_Problem::set_control_parameter(n,v)"
+                                ":\ninvalid value for n.");
+  }
+  control_parameters[n] = v;
 }

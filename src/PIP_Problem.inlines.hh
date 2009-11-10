@@ -70,6 +70,13 @@ PIP_Problem::operator=(const PIP_Problem& y) {
   return *this;
 }
 
+//! Returns the control parameter value for parameter name \p n.
+inline PIP_Problem_Control_Parameter_Value
+PIP_Problem::get_control_parameter(PIP_Problem_Control_Parameter_Name n)
+const {
+  return control_parameters[n];
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {

@@ -476,16 +476,19 @@ PIP_Decision_Node::OK() const {
 }
 
 void
-PIP_Decision_Node::update_tableau(dimension_type external_space_dim,
+PIP_Decision_Node::update_tableau(const PIP_Problem& problem,
+                                  dimension_type external_space_dim,
                                   dimension_type first_pending_constraint,
                                   const Constraint_Sequence &input_cs,
                                   const Variables_Set &parameters) {
-  true_child->update_tableau(external_space_dim,
+  true_child->update_tableau(problem,
+                             external_space_dim,
                              first_pending_constraint,
                              input_cs,
                              parameters);
   if (false_child)
-    false_child->update_tableau(external_space_dim,
+    false_child->update_tableau(problem,
+                                external_space_dim,
                                 first_pending_constraint,
                                 input_cs,
                                 parameters);
@@ -493,7 +496,9 @@ PIP_Decision_Node::update_tableau(dimension_type external_space_dim,
 }
 
 PIP_Problem_Status
-PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& context,
+PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref,
+                         const PIP_Problem& problem,
+                         const Matrix& context,
                          const Variables_Set &params,
                          dimension_type space_dimension) {
   PIP_Problem_Status return_status;
@@ -504,7 +509,7 @@ PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& context,
   update_context(parameters, context_true, artificial_parameters,
                  space_dimension);
   merge_assign(context_true, constraints_, parameters);
-  stt = true_child->solve(true_child, context_true, parameters,
+  stt = true_child->solve(true_child, problem, context_true, parameters,
                           space_dimension);
   if (false_child) {
     // Decision nodes with false child must have exactly one constraint
@@ -514,7 +519,7 @@ PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& context,
     merge_assign(context_false, constraints_, parameters);
     Row &last = context_false[context_false.num_rows()-1];
     negate_assign(last, last, 1);
-    stf = false_child->solve(false_child, context_false, parameters,
+    stf = false_child->solve(false_child, problem, context_false, parameters,
                              space_dimension);
   }
 
@@ -909,7 +914,8 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
 }
 
 void
-PIP_Solution_Node::update_tableau(dimension_type external_space_dim,
+PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
+                                  dimension_type external_space_dim,
                                   dimension_type first_pending_constraint,
                                   const Constraint_Sequence &input_cs,
                                   const Variables_Set &parameters) {
@@ -1055,7 +1061,9 @@ PIP_Solution_Node::update_solution(const Variables_Set& parameters) {
 }
 
 PIP_Problem_Status
-PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
+PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
+                         const PIP_Problem& problem,
+                         const Matrix& ctx,
                          const Variables_Set &params,
                          dimension_type space_dimension) {
   Matrix context(ctx);
@@ -1424,8 +1432,8 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         /* Create a solution Node to become "true" version of current Node */
         PIP_Tree_Node *tru = new PIP_Solution_Node(*this, true);
         context.add_row(test);
-        PIP_Problem_Status status_t = tru->solve(tru, context, parameters,
-                                      space_dimension);
+        PIP_Problem_Status status_t = tru->solve(tru, problem, context,
+                                                 parameters, space_dimension);
 
         /* Modify *this to become "false" version */
         Constraint_System cs;
@@ -1435,7 +1443,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref, const Matrix& ctx,
         PIP_Tree_Node *fals = this;
         Row &testf = context[context.num_rows()-1];
         negate_assign(testf, test, 1);
-        PIP_Problem_Status status_f = solve(fals, context, parameters,
+        PIP_Problem_Status status_f = solve(fals, problem, context, parameters,
                                             space_dimension);
 
         if (status_t == UNFEASIBLE_PIP_PROBLEM

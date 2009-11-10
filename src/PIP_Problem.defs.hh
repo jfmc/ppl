@@ -83,7 +83,6 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   the change of objective function and the change of optimization mode.
 */
 class Parma_Polyhedra_Library::PIP_Problem {
-  friend class PIP_Solution_Node;
 public:
   //! Builds a trivial PIP problem.
   /*!
@@ -288,7 +287,20 @@ public:
   //! Swaps \p *this with \p y.
   void swap(PIP_Problem& y);
 
+  //! Returns the control parameter value for parameter name \p n.
+  PIP_Problem_Control_Parameter_Value
+  get_control_parameter(PIP_Problem_Control_Parameter_Name n) const;
+
+  //! Sets the control parameter \p n to value \p v.
+  void set_control_parameter(PIP_Problem_Control_Parameter_Name n,
+                             PIP_Problem_Control_Parameter_Value v);
 private:
+  //! Initializes the control parameters with default values.
+  void control_parameters_init();
+
+  //! Copies the control parameters from problem object \p y.
+  void control_parameters_copy(const PIP_Problem& y);
+
   //! The dimension of the vector space.
   dimension_type external_space_dim;
 
@@ -345,6 +357,10 @@ private:
     Contains problem constraints on parameters only
   */
   Matrix initial_context;
+
+  //! The control parameters for the problem object.
+  PIP_Problem_Control_Parameter_Value
+  control_parameters[PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE];
 };
 
 namespace std {
