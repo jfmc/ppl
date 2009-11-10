@@ -132,7 +132,7 @@ public:
   bool ascii_load(std::istream& s);
 
   //! Returns a pointer to a dynamically-allocated copy of \p *this.
-  PIP_Tree_Node* clone() const;
+  virtual PIP_Tree_Node* clone() const = 0;
 
 protected:
   //! Default constructor.
@@ -245,7 +245,7 @@ public:
   bool ascii_load(std::istream& s);
 
   //! Returns a pointer to a dynamically-allocated copy of \p *this.
-  PIP_Solution_Node* clone() const;
+  virtual PIP_Tree_Node* clone() const;
 
   bool OK() const;
 
@@ -475,7 +475,7 @@ public:
   PIP_Tree_Node* child_node(bool v);
 
   //! Returns a pointer to a dynamically-allocated copy of \p *this.
-  PIP_Decision_Node* clone() const;
+  virtual PIP_Tree_Node* clone() const;
 
   bool OK() const;
 

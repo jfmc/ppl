@@ -624,22 +624,11 @@ PIP_Tree_Node::ascii_load(std::istream& s) {
 }
 
 PIP_Tree_Node*
-PIP_Tree_Node::clone() const {
-  const PIP_Solution_Node* as_s = as_solution();
-  if (as_s != 0)
-    return as_s->clone();
-  const PIP_Decision_Node* as_d = as_decision();
-  if (as_d != 0)
-    return as_d->clone();
-  return 0;
-}
-
-PIP_Solution_Node*
 PIP_Solution_Node::clone() const {
   return new PIP_Solution_Node(*this);
 }
 
-PIP_Decision_Node*
+PIP_Tree_Node*
 PIP_Decision_Node::clone() const {
   return new PIP_Decision_Node(*this);
 }
