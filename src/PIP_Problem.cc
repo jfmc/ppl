@@ -236,10 +236,11 @@ PPL::PIP_Problem::OK() const {
   if (strategy < PIP_CUTTING_STRATEGY_FIRST
       || strategy > PIP_CUTTING_STRATEGY_DEEPEST) {
 #ifndef NDEBUG
-      cerr << "Invalid value for the PIP_CUTTING_STRATEGY control parameter."
-	   << endl;
-      ascii_dump(cerr);
+    cerr << "Invalid value for the PIP_CUTTING_STRATEGY control parameter."
+	 << endl;
+    ascii_dump(cerr);
 #endif
+    return false;
   }
 
   if (!parameters.OK())
