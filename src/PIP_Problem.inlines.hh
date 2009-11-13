@@ -77,6 +77,12 @@ const {
   return control_parameters[n];
 }
 
+//! Gets the dimension for the big parameter
+inline dimension_type
+PIP_Problem::get_big_parameter_dimension() const {
+  return big_parameter_dimension;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {

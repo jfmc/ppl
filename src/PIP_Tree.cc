@@ -212,6 +212,7 @@ PIP_Solution_Node::PIP_Solution_Node()
     var_row(),
     var_column(),
     special_equality_row(0),
+    big_dimension(0),
     sign(),
     solution(),
     solution_valid(false) {
@@ -225,6 +226,7 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x)
     var_row(x.var_row),
     var_column(x.var_column),
     special_equality_row(x.special_equality_row),
+    big_dimension(x.big_dimension),
     sign(x.sign),
     solution(x.solution),
     solution_valid(x.solution_valid) {
@@ -239,6 +241,7 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x,
     var_row(x.var_row),
     var_column(x.var_column),
     special_equality_row(x.special_equality_row),
+    big_dimension(x.big_dimension),
     sign(x.sign),
     solution(x.solution),
     solution_valid(x.solution_valid) {
@@ -726,7 +729,17 @@ PIP_Solution_Node
 }
 
 PIP_Solution_Node::Row_Sign
-PIP_Solution_Node::row_sign(const Row &x) {
+PIP_Solution_Node::row_sign(const Row &x, dimension_type big_dimension) {
+  if (big_dimension > 0) {
+    /* If a big parameter has been set and its coefficient is not zero,
+      just return the sign of the coefficient */
+    const Coefficient &c = x[big_dimension];
+    if (c > 0)
+      return POSITIVE;
+    if (c < 0)
+      return NEGATIVE;
+    // otherwise c == 0, then no big parameter involved
+  }
   PIP_Solution_Node::Row_Sign sign = ZERO;
   for (int i = x.size(); i-- > 0; ) {
     const Coefficient &c = x[i];
@@ -963,6 +976,14 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
     }
   }
   internal_space_dim = external_space_dim;
+  if (big_dimension == 0 && problem.big_parameter_dimension > 0) {
+    // Compute the column number of big parameter in tableau.t matrix
+    Variables_Set::const_iterator begin = parameters.begin();
+    Variables_Set::const_iterator pos
+      = parameters.find(problem.big_parameter_dimension);
+    big_dimension = std::distance(begin, pos) + 1;
+    std::cout << "big_dimension = " << big_dimension << std::endl;
+  }
 
   const Coefficient& denom = tableau.get_denominator();
 
@@ -994,7 +1015,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
         ++v;
       }
     }
-    if (row_sign(var) != ZERO) {
+    if (row_sign(var, 0) != ZERO) {
       /* parametric-only constraints have already been inserted in initial
         context, so no need to insert them in the tableau
       */
@@ -1002,7 +1023,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
       dimension_type row_id = tableau.s.num_rows();
       tableau.s.add_row(var);
       tableau.t.add_row(param);
-      sign.push_back(row_sign(param));
+      sign.push_back(row_sign(param, big_dimension));
       basis.push_back(false);
       mapping.push_back(row_id);
       var_row.push_back(var_id);
@@ -1019,7 +1040,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
           negate_assign(param, param, 0);
           tableau.s.add_row(var);
           tableau.t.add_row(param);
-          sign.push_back(row_sign(param));
+          sign.push_back(row_sign(param, big_dimension));
           special_equality_row = mapping.size();
           basis.push_back(false);
           mapping.push_back(row_id);
@@ -1094,8 +1115,8 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
 
     for (i=0; i<num_rows; ++i) {
       Row_Sign s = sign[i];
-      if (s == UNKNOWN) {
-        s = row_sign(tableau.t[i]);
+      if (s == UNKNOWN || s == MIXED) {
+        s = row_sign(tableau.t[i], big_dimension);
         sign[i] = s;
       }
       /* Locate first row with negative parameter row */

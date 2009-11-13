@@ -218,10 +218,6 @@ public:
                   const int constraint_type[],
                   const int ctx_type[],
                   PPL::dimension_type bignum_column) {
-    if (bignum_column != PPL::not_a_dimension()) {
-      std::cerr << "No support for bignums yet." << std::endl;
-      return false;
-    }
     PPL::dimension_type i, j, k;
     pip.add_space_dimensions_and_embed(num_vars, num_params);
     k = 0;
@@ -248,6 +244,8 @@ public:
           pip.add_constraint(PPL::Constraint(e == 0));
       }
     }
+    if (bignum_column != PPL::not_a_dimension())
+      pip.set_big_parameter_dimension(bignum_column);
     return true;
   }
 
@@ -288,8 +286,6 @@ public:
     std::istringstream sin2(line);
     int tmp;
     sin2 >> tmp;
-    PPL::dimension_type bignum_column;
-    bignum_column = (tmp == -1) ? PPL::not_a_dimension() : tmp;
 
     getline_nocomment(in, line);
     std::istringstream sin3(line);
@@ -306,6 +302,8 @@ public:
         sin >> constraints[i][j];
       }
     }
+    PPL::dimension_type bignum_column;
+    bignum_column = (tmp == -1) ? PPL::not_a_dimension() : (tmp+num_vars-1);
     bool result = update_pip(num_vars, num_params, num_constraints,
                              num_ctx_rows, &constraints[0][0], &context[0][0],
                              constraint_type, ctx_type, bignum_column);

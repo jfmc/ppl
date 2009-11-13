@@ -40,7 +40,8 @@ PPL::PIP_Problem::PIP_Problem(dimension_type dim)
     input_cs(),
     first_pending_constraint(0),
     parameters(),
-    initial_context() {
+    initial_context(),
+    big_parameter_dimension(0) {
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
     throw std::length_error("PPL::PIP_Problem:: PIP_Problem(dim):\n"
@@ -59,7 +60,8 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
     input_cs(y.input_cs),
     first_pending_constraint(y.first_pending_constraint),
     parameters(y.parameters),
-    initial_context(y.initial_context) {
+    initial_context(y.initial_context),
+    big_parameter_dimension(y.big_parameter_dimension) {
   if (y.current_solution != 0)
     current_solution = y.current_solution->clone();
   PPL_ASSERT(OK());
@@ -243,6 +245,17 @@ PPL::PIP_Problem::OK() const {
     return false;
   }
 
+  if (big_parameter_dimension != 0
+      && parameters.count(big_parameter_dimension) == 0) {
+#ifndef NDEBUG
+    cerr << "The current value for the big parameter is not a parameter "
+         << "dimension."
+	 << endl;
+    ascii_dump(cerr);
+#endif
+    return false;
+  }
+
   if (!parameters.OK())
     return false;
   if (!initial_context.OK())
@@ -307,6 +320,8 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
     }
     s << "\n";
   }
+
+  s << "\nbig_parameter_dimension: " << big_parameter_dimension << " \n";
 }
 
 PPL_OUTPUT_DEFINITIONS(PIP_Problem)
@@ -405,6 +420,11 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
       return false;
     control_parameters[i] = value;
   }
+
+  if (!(s >> str) || str != "big_parameter_dimension:")
+    return false;
+  if (!(s >> big_parameter_dimension))
+    return false;
 
   PPL_ASSERT(OK());
   return true;
@@ -535,4 +555,18 @@ PPL::PIP_Problem::set_control_parameter(PIP_Problem_Control_Parameter_Name n,
                                 ":\ninvalid value for n.");
   }
   control_parameters[n] = v;
+}
+
+void
+PPL::PIP_Problem::set_big_parameter_dimension(dimension_type x) {
+  if (parameters.count(x) == 0)
+    throw std::invalid_argument("PPL::PIP_Problem::set_big_parameter_dimension"
+                                "(x):\n"
+                                "dimension 'x' is not a parameter.");
+  if (x < internal_space_dim)
+    throw std::invalid_argument("PPL::PIP_Problem::set_big_parameter_dimension"
+                                "(x):\n"
+                                "only newly-added parameters can be"
+                                "converted into the big parameter.");
+  big_parameter_dimension = x;
 }

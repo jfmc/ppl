@@ -359,6 +359,11 @@ private:
   */
   dimension_type special_equality_row;
 
+  /*! \brief The column number in the parametric part of the simplex tableau
+    which corresponds to the big parameter
+  */
+  dimension_type big_dimension;
+
   //! The possible values for the sign of a parametric linear expression.
   enum Row_Sign {
     //! Not computed yet (default)
@@ -383,7 +388,7 @@ private:
   bool solution_valid;
 
   //! Determines the sign of given Row.
-  static Row_Sign row_sign(const Row &x);
+  static Row_Sign row_sign(const Row &x, dimension_type big_dimension);
 
   /*! \brief
     Checks whether a constraint is compatible with a context, ie. does not

@@ -295,6 +295,13 @@ public:
   //! Sets the control parameter \p n to value \p v.
   void set_control_parameter(PIP_Problem_Control_Parameter_Name n,
                              PIP_Problem_Control_Parameter_Value v);
+
+  //! Sets the dimension for the big parameter
+  void set_big_parameter_dimension(dimension_type x);
+
+  //! Gets the dimension for the big parameter
+  dimension_type get_big_parameter_dimension() const;
+
 private:
   //! Initializes the control parameters with default values.
   void control_parameters_init();
@@ -362,6 +369,9 @@ private:
   //! The control parameters for the problem object.
   PIP_Problem_Control_Parameter_Value
   control_parameters[PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE];
+
+  //! The dimension for the big parameter, or zero if not set.
+  dimension_type big_parameter_dimension;
 };
 
 namespace std {
