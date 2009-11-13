@@ -73,7 +73,7 @@ PPL::PIP_Problem::~PIP_Problem() {
 
 void
 PPL::PIP_Problem::control_parameters_init() {
-  control_parameters[PIP_CUTTING_STRATEGY] = PIP_CUTTING_STRATEGY_DEEPEST;
+  control_parameters[PIP_CUTTING_STRATEGY] = PIP_CUTTING_STRATEGY_FIRST;
 }
 
 void

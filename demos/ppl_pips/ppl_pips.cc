@@ -106,7 +106,7 @@ ppl_set_GMP_memory_allocation_functions(void) {
 namespace {
 
 PPL::PIP_Problem_Control_Parameter_Value cutting_strategy
-    = PPL::PIP_CUTTING_STRATEGY_DEEPEST;
+    = PPL::PIP_CUTTING_STRATEGY_FIRST;
 
 void
 pip_display_sol(std::ostream& out,
@@ -464,8 +464,8 @@ static const char* usage_string
 "  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n"
 #endif
 "\nCut generation options:\n"
-"  -d, --deepest           try to generate the deepest cut (default)\n"
-"  -f, --first             use the first non-integer row\n"
+"  -f, --first             use the first non-integer row (default)\n"
+"  -d, --deepest           try to generate the deepest cut\n"
 #ifndef PPL_HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
