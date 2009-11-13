@@ -105,6 +105,9 @@ ppl_set_GMP_memory_allocation_functions(void) {
 
 namespace {
 
+PPL::PIP_Problem_Control_Parameter_Value cutting_strategy
+    = PPL::PIP_CUTTING_STRATEGY_DEEPEST;
+
 void
 pip_display_sol(std::ostream& out,
                 const Parma_Polyhedra_Library::PIP_Tree pip,
@@ -168,6 +171,7 @@ pip_display_sol(std::ostream& out,
 class PIP_Parser {
 public:
   PIP_Parser() : pip() {
+    pip.set_control_parameter(PPL::PIP_CUTTING_STRATEGY, cutting_strategy);
   }
 
   virtual ~PIP_Parser() {
@@ -459,6 +463,9 @@ static const char* usage_string
 "  -V, --version           prints version information to stdout\n"
 "  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n"
 #endif
+"\nCut generation options:\n"
+"  -d, --deepest           try to generate the deepest cut (default)\n"
+"  -f, --first             use the first non-integer row\n"
 #ifndef PPL_HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
@@ -467,9 +474,9 @@ static const char* usage_string
 "Report bugs to <ppl-devel@cs.unipr.it>.\n";
 
 #if defined(USE_PPL)
-#define OPTION_LETTERS "R:ho:PptvVc:"
+#define OPTION_LETTERS "R:ho:PptvVc:df"
 #else
-#define OPTION_LETTERS "R:ho:Pptv"
+#define OPTION_LETTERS "R:ho:Pptvdf"
 #endif
 
 const char* program_name = 0;
@@ -659,6 +666,14 @@ process_options(int argc, char* argv[]) {
       break;
 
 #endif
+
+    case 'd':
+      cutting_strategy = PPL::PIP_CUTTING_STRATEGY_DEEPEST;
+      break;
+
+    case 'f':
+      cutting_strategy = PPL::PIP_CUTTING_STRATEGY_FIRST;
+      break;
 
     default:
       abort();

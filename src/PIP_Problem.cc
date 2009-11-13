@@ -73,6 +73,7 @@ PPL::PIP_Problem::~PIP_Problem() {
 
 void
 PPL::PIP_Problem::control_parameters_init() {
+  control_parameters[PIP_CUTTING_STRATEGY] = PIP_CUTTING_STRATEGY_DEEPEST;
 }
 
 void
@@ -230,6 +231,16 @@ PPL::PIP_Problem::OK() const {
   }
 
   // Test validity of control parameter values.
+  PIP_Problem_Control_Parameter_Value strategy
+  = control_parameters[PIP_CUTTING_STRATEGY];
+  if (strategy < PIP_CUTTING_STRATEGY_FIRST
+      || strategy > PIP_CUTTING_STRATEGY_DEEPEST) {
+#ifndef NDEBUG
+      cerr << "Invalid value for the PIP_CUTTING_STRATEGY control parameter."
+	   << endl;
+      ascii_dump(cerr);
+#endif
+  }
 
   if (!parameters.OK())
     return false;
@@ -284,6 +295,12 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
   for (dimension_type i=0; i<PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE; ++i) {
     PIP_Problem_Control_Parameter_Value value = control_parameters[i];
     switch (value) {
+    case PIP_CUTTING_STRATEGY_FIRST:
+      s << "PIP_CUTTING_STRATEGY_FIRST";
+      break;
+    case PIP_CUTTING_STRATEGY_DEEPEST:
+      s << "PIP_CUTTING_STRATEGY_DEEPEST";
+      break;
     default:
       s << "Invalid control parameter value";
     }
@@ -379,8 +396,11 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
     if (!(s >> str))
       return false;
     PIP_Problem_Control_Parameter_Value value;
-    // set of if / else if string comparisons to get the correct value
-    // else
+    if (str == "PIP_CUTTING_STRATEGY_FIRST")
+      value = PIP_CUTTING_STRATEGY_FIRST;
+    if (str == "PIP_CUTTING_STRATEGY_DEEPEST")
+      value = PIP_CUTTING_STRATEGY_DEEPEST;
+    else
       return false;
     control_parameters[i] = value;
   }
@@ -501,6 +521,14 @@ void
 PPL::PIP_Problem::set_control_parameter(PIP_Problem_Control_Parameter_Name n,
                                       PIP_Problem_Control_Parameter_Value v) {
   switch (n) {
+  case PIP_CUTTING_STRATEGY:
+    if (v != PIP_CUTTING_STRATEGY_FIRST && v != PIP_CUTTING_STRATEGY_DEEPEST)
+      throw std::invalid_argument("PPL::PIP_Problem::set_control_parameter"
+                                  "(n,v):\ninvalid value for n. "
+                                  "Valid choices are "
+                                  "PIP_CUTTING_STRATEGY_FIRST or"
+                                  "PIP_CUTTING_STRATEGY_DEEPEST.");
+    break;
   default:
     throw std::invalid_argument("PPL::PIP_Problem::set_control_parameter(n,v)"
                                 ":\ninvalid value for n.");

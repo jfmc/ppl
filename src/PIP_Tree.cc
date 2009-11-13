@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 #include "PIP_Tree.defs.hh"
+#include "PIP_Problem.defs.hh"
 
 #include <algorithm>
 
@@ -1515,36 +1516,41 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       }
       else {
         /* The solution is non-integer. We have to generate a cut. */
-
-        /* Look for row which will generate the "deepest" cut */
-        PPL_DIRTY_TEMP_COEFFICIENT(score);
-        PPL_DIRTY_TEMP_COEFFICIENT(score1);
-        PPL_DIRTY_TEMP_COEFFICIENT(score2);
         PPL_DIRTY_TEMP_COEFFICIENT(mod);
-        Coefficient best = 0;
-        dimension_type best_i = 0;
-        for (i_ = 0; i_ < num_rows; ++i_) {
-          const Row& row_t = tableau.t[i_];
-          const Row& row_s = tableau.s[i_];
-          score1 = 0;
-          for (j = 0; j < num_params; ++j) {
-            mod_assign(mod, row_t[j], d);
-            if (mod != 0)
-              score1 += d - mod;
+        if (problem.control_parameters[PIP_CUTTING_STRATEGY]
+            == PIP_CUTTING_STRATEGY_FIRST) {
+          /* Just choose the row corresponding to variable i */
+          i = mapping[i];
+        } else /* PIP_CUTTING_STRATEGY_DEEPEST */ {
+          /* Look for the row which will generate the "deepest" cut */
+          PPL_DIRTY_TEMP_COEFFICIENT(score);
+          PPL_DIRTY_TEMP_COEFFICIENT(score1);
+          PPL_DIRTY_TEMP_COEFFICIENT(score2);
+          Coefficient best = 0;
+          dimension_type best_i = 0;
+          for (i_ = 0; i_ < num_rows; ++i_) {
+            const Row& row_t = tableau.t[i_];
+            const Row& row_s = tableau.s[i_];
+            score1 = 0;
+            for (j = 0; j < num_params; ++j) {
+              mod_assign(mod, row_t[j], d);
+              if (mod != 0)
+                score1 += d - mod;
+            }
+            score2 = 0;
+            for (j = 0; j < num_vars; ++j) {
+              mod_assign(mod, row_s[j], d);
+              if (mod != 0)
+                score2 += d - mod;
+            }
+            score = score1*score2;
+            if (score > best) {
+              best = score;
+              best_i = i_;
+            }
           }
-          score2 = 0;
-          for (j = 0; j < num_vars; ++j) {
-            mod_assign(mod, row_s[j], d);
-            if (mod != 0)
-              score2 += d - mod;
-          }
-          score = score1*score2;
-          if (score > best) {
-            best = score;
-            best_i = i_;
-          }
+          i = best_i;
         }
-        i = best_i;
 
 #ifdef NOISY_PIP
         std::cout << "Row " << i << " contains non-integer coefficients. "
