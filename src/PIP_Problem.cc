@@ -64,8 +64,8 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
     big_parameter_dimension(y.big_parameter_dimension) {
   if (y.current_solution != 0)
     current_solution = y.current_solution->clone();
-  PPL_ASSERT(OK());
   control_parameters_copy(y);
+  PPL_ASSERT(OK());
 }
 
 PPL::PIP_Problem::~PIP_Problem() {
