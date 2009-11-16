@@ -440,6 +440,8 @@ struct option long_options[] = {
   {"version",        no_argument,       0, 'V'},
   {"check",          required_argument, 0, 'c'},
 #endif
+  {"first",          no_argument,       0, 'f'},
+  {"deepest",        no_argument,       0, 'd'},
   {0, 0, 0, 0}
 };
 #endif
