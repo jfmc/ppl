@@ -342,7 +342,7 @@ public:
 
     in >> num_vars >> num_params >> num_constraints >> num_ctx_rows >> tmp
        >> solve_integer;
-    bignum_column = (tmp == -1) ? PPL::not_a_dimension() : tmp;
+    bignum_column = (tmp == -1) ? PPL::not_a_dimension() : (tmp-1);
     if (solve_integer != 1) {
       std::cerr << "Can only solve integer problems." << std::endl;
       return false;
