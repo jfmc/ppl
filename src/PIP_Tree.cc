@@ -1549,9 +1549,12 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           PPL_DIRTY_TEMP_COEFFICIENT(score2);
           Coefficient best = 0;
           dimension_type best_i = 0;
-          for (i_ = 0; i_ < num_rows; ++i_) {
-            const Row& row_t = tableau.t[i_];
-            const Row& row_s = tableau.s[i_];
+          for (i_ = 0; i_ < num_vars; ++i_) {
+            if (basis[i_])
+              continue;
+            i = mapping[i_];
+            const Row& row_t = tableau.t[i];
+            const Row& row_s = tableau.s[i];
             score1 = 0;
             for (j = 0; j < num_params; ++j) {
               mod_assign(mod, row_t[j], d);
@@ -1567,7 +1570,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
             score = score1*score2;
             if (score > best) {
               best = score;
-              best_i = i_;
+              best_i = i;
             }
           }
           i = best_i;
