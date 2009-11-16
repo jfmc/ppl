@@ -108,6 +108,8 @@ namespace {
 PPL::PIP_Problem_Control_Parameter_Value cutting_strategy
     = PPL::PIP_CUTTING_STRATEGY_FIRST;
 
+int loop_iterations = 1;
+
 void
 pip_display_sol(std::ostream& out,
                 const Parma_Polyhedra_Library::PIP_Tree pip,
@@ -436,6 +438,7 @@ struct option long_options[] = {
   {"piplib",         no_argument,       0, 'p'},
   {"timings",        no_argument,       0, 't'},
   {"verbose",        no_argument,       0, 'v'},
+  {"iterations",     required_argument, 0, 'i'},
 #if defined(USE_PPL)
   {"version",        no_argument,       0, 'V'},
   {"check",          required_argument, 0, 'c'},
@@ -459,6 +462,7 @@ static const char* usage_string
 "  -p, --piplib            read problem in PIPlib format\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           produces lots of output\n"
+"  -i, --iterations=N      execute the resolution N times (default=1)\n"
 #if defined(USE_PPL)
 "  -V, --version           prints version information to stdout\n"
 "  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n"
@@ -474,9 +478,9 @@ static const char* usage_string
 "Report bugs to <ppl-devel@cs.unipr.it>.\n";
 
 #if defined(USE_PPL)
-#define OPTION_LETTERS "R:ho:PptvVc:df"
+#define OPTION_LETTERS "R:ho:Pptvi:Vc:df"
 #else
-#define OPTION_LETTERS "R:ho:Pptvdf"
+#define OPTION_LETTERS "R:ho:Pptvi:df"
 #endif
 
 const char* program_name = 0;
@@ -654,6 +658,12 @@ process_options(int argc, char* argv[]) {
       verbose = true;
       break;
 
+    case 'i':
+      loop_iterations = strtol(optarg, &endptr, 10);
+      if (*endptr || loop_iterations < 1)
+	fatal("a positive integer must follow `-i'");
+      break;
+
 #if defined(USE_PPL)
 
     case 'V':
@@ -744,17 +754,25 @@ main(int argc, char* argv[]) try {
 
   maybe_start_clock();
 
-  // Compute the dual simplex on the problem.
   const PPL::PIP_Problem& pip = parser->problem();
 
-  pip.solve();
+  if (loop_iterations == 1) {
+    // Compute the dual simplex on the problem.
+    pip.solve();
+    // Write the solution.
+    parser->output_solution_tree(*output_stream_p);
+  } else {
+    // Perform a time benchmark loop executing the resolution several times.
+    for (int i=0; i<loop_iterations; ++i) {
+      PPL::PIP_Problem* pipp = new PPL::PIP_Problem(pip);
+      pipp->solve();
+      delete pipp;
+    }
+  }
 
 #if defined(USE_PPL) || defined(USE_PIPLIB)
   maybe_print_clock();
 #endif
-
-  // Write the solution.
-  parser->output_solution_tree(*output_stream_p);
 
   return 0;
 }
