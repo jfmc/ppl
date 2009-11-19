@@ -1736,14 +1736,36 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         PPL_DIRTY_TEMP_COEFFICIENT(mod);
         if (problem.control_parameters[PIP_CUTTING_STRATEGY]
             == PIP_CUTTING_STRATEGY_FIRST) {
-          /* Just choose the row corresponding to variable i */
-          i = mapping[i];
+          // Find the first row with simplest parametric part.
+          dimension_type best_i = n_a_d;
+          dimension_type best_pcount = n_a_d;
+          dimension_type pcount;
+          for (i_ = 0; i_ < num_vars; ++i_) {
+            if (basis[i_])
+              continue;
+            i = mapping[i_];
+            const Row& row_t = tableau.t[i];
+            pcount = 0;
+            for (j = 0; j < num_params; ++j) {
+              mod_assign(mod, row_t[j], d);
+              if (mod != 0)
+                ++pcount;
+            }
+            if (pcount != 0 && (best_i == n_a_d || (pcount < best_pcount))) {
+              best_pcount = pcount;
+              best_i = i;
+            }
+          }
+          i = best_i;
         } else /* PIP_CUTTING_STRATEGY_DEEPEST */ {
-          /* Look for the row which will generate the "deepest" cut */
+          /* Find the row with simplest parametric part which will generate
+            the "deepest" cut */
           PPL_DIRTY_TEMP_COEFFICIENT(score);
           PPL_DIRTY_TEMP_COEFFICIENT(score2);
-          Coefficient best = 0;
+          Coefficient best_score = 0;
           dimension_type best_i = n_a_d;
+          dimension_type best_pcount = n_a_d;
+          dimension_type pcount;
           for (i_ = 0; i_ < num_vars; ++i_) {
             if (basis[i_])
               continue;
@@ -1751,10 +1773,13 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
             const Row& row_t = tableau.t[i];
             const Row& row_s = tableau.s[i];
             score = 0;
+            pcount = 0;
             for (j = 0; j < num_params; ++j) {
               mod_assign(mod, row_t[j], d);
-              if (mod != 0)
+              if (mod != 0) {
                 score += d - mod;
+                ++pcount;
+              }
             }
             score2 = 0;
             for (j = 0; j < num_vars; ++j) {
@@ -1762,8 +1787,21 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
               score2 += d - mod;
             }
             score *= score2;
-            if (best_i == n_a_d || score > best) {
-              best = score;
+            /* Choose row i if:
+              row i is non-integer
+              AND (no row has been chosen yet
+                   OR row i has number of non-integer parameter
+                      coefficients lower than the current best row
+                   OR row i has the same number of non-integer parameter
+                      coefficients as the current best row, and its score is
+                      better)
+            */
+            if (pcount != 0
+                && (best_i == n_a_d
+                    || (pcount < best_pcount)
+                    || (pcount == best_pcount && score > best_score))) {
+              best_score = score;
+              best_pcount = pcount;
               best_i = i;
             }
           }
