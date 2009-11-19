@@ -675,11 +675,69 @@ void
 PIP_Solution_Node::ascii_dump(std::ostream& s) const {
   PIP_Tree_Node::ascii_dump(s);
 
-  s << "\nvariable_tableau\n";
-  tableau.s.ascii_dump(s);
+  s << "\ntableau\n";
+  tableau.ascii_dump(s);
 
-  s << "\nparameter_tableau\n";
-  tableau.t.ascii_dump(s);
+  s << "\nbasis ";
+  dimension_type basis_size = basis.size();
+  s << basis_size;
+  for (dimension_type i=0; i<basis_size; ++i)
+    s << (basis[i] ? " true" : " false");
+
+  s << "\nmapping ";
+  dimension_type mapping_size = mapping.size();
+  s << mapping_size;
+  for (dimension_type i=0; i<mapping_size; ++i)
+    s << " " << mapping[i];
+
+  s << "\nvar_row ";
+  dimension_type var_row_size = var_row.size();
+  s << var_row_size;
+  for (dimension_type i=0; i<var_row_size; ++i)
+    s << " " << var_row[i];
+
+  s << "\nvar_column ";
+  dimension_type var_column_size = var_column.size();
+  s << var_column_size;
+  for (dimension_type i=0; i<var_column_size; ++i)
+    s << " " << var_column[i];
+  s << "\n";
+
+  s << "special_equality_row " << special_equality_row << "\n";
+  s << "big_dimension " << big_dimension << "\n";
+
+  s << "sign ";
+  dimension_type sign_size = sign.size();
+  s << sign_size;
+  for (dimension_type i=0; i<sign_size; ++i) {
+    s << " ";
+    switch (sign[i]) {
+    case UNKNOWN:
+      s << "UNKNOWN";
+      break;
+    case ZERO:
+      s << "ZERO";
+      break;
+    case POSITIVE:
+      s << "POSITIVE";
+      break;
+    case NEGATIVE:
+      s << "NEGATIVE";
+      break;
+    case MIXED:
+      s << "MIXED";
+      break;
+    }
+  }
+  s << "\n";
+
+  dimension_type solution_size = solution.size();
+  s << "solution " << solution_size << "\n";
+  for (dimension_type i=0; i<solution_size; ++i)
+    solution[i].ascii_dump(s);
+  s << "\n";
+
+  s << "solution_valid " << (solution_valid ? "true" : "false") << "\n";
 }
 
 bool
@@ -688,17 +746,126 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
     return false;
 
   std::string str;
-  if (!(s >> str) || str != "variable_tableau")
+  if (!(s >> str) || str != "tableau")
     return false;
-  if (!tableau.s.ascii_load(s))
-    return false;
-
-  if (!(s >> str) || str != "parameter_tableau")
-    return false;
-  if (!tableau.t.ascii_load(s))
+  if (!tableau.ascii_load(s))
     return false;
 
-  solution_valid = false;
+  if (!(s >> str) || str != "basis")
+    return false;
+  dimension_type basis_size;
+  if (!(s >> basis_size))
+    return false;
+  basis.clear();
+  for (dimension_type i=0; i<basis_size; ++i) {
+    if (!(s >> str))
+      return false;
+    bool val = false;
+    if (str == "true")
+      val = true;
+    else if (str != "false")
+      return false;
+    basis.push_back(val);
+  }
+
+  if (!(s >> str) || str != "mapping")
+    return false;
+  dimension_type mapping_size;
+  if (!(s >> mapping_size))
+    return false;
+  mapping.clear();
+  for (dimension_type i=0; i<mapping_size; ++i) {
+    dimension_type val;
+    if (!(s >> val))
+      return false;
+    mapping.push_back(val);
+  }
+
+  if (!(s >> str) || str != "var_row")
+    return false;
+  dimension_type var_row_size;
+  if (!(s >> var_row_size))
+    return false;
+  var_row.clear();
+  for (dimension_type i=0; i<var_row_size; ++i) {
+    dimension_type val;
+    if (!(s >> val))
+      return false;
+    var_row.push_back(val);
+  }
+
+  if (!(s >> str) || str != "var_column")
+    return false;
+  dimension_type var_column_size;
+  if (!(s >> var_column_size))
+    return false;
+  var_column.clear();
+  for (dimension_type i=0; i<var_column_size; ++i) {
+    dimension_type val;
+    if (!(s >> val))
+      return false;
+    var_column.push_back(val);
+  }
+
+  if (!(s >> str) || str != "special_equality_row")
+    return false;
+  if (!(s >> special_equality_row))
+    return false;
+
+  if (!(s >> str) || str != "big_dimension")
+    return false;
+  if (!(s >> big_dimension))
+    return false;
+
+  if (!(s >> str) || str != "sign")
+    return false;
+  dimension_type sign_size;
+  if (!(s >> sign_size))
+    return false;
+  sign.clear();
+  for (dimension_type i=0; i<sign_size; ++i) {
+    if (!(s >> str))
+      return false;
+    Row_Sign val;
+    if (str == "UNKNOWN")
+      val = UNKNOWN;
+    else if (str == "ZERO")
+      val = ZERO;
+    else if (str == "POSITIVE")
+      val = POSITIVE;
+    else if (str == "NEGATIVE")
+      val = NEGATIVE;
+    else if (str == "MIXED")
+      val = MIXED;
+    else
+      return false;
+    sign.push_back(val);
+  }
+
+  if (!(s >> str) || str != "solution")
+    return false;
+  dimension_type solution_size;
+  if (!(s >> solution_size))
+    return false;
+  solution.clear();
+  for (dimension_type i=0; i<solution_size; ++i) {
+    Linear_Expression val;
+    if (!val.ascii_load(s))
+      return false;
+    solution.push_back(val);
+  }
+
+  if (!(s >> str) || str != "solution_valid")
+    return false;
+  if (!(s >> str))
+    return false;
+  if (str == "true")
+    solution_valid = true;
+  else if (str == "false")
+    solution_valid = false;
+  else
+    return false;
+
   PPL_ASSERT(OK());
   return true;
 }
