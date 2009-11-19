@@ -982,7 +982,6 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
     Variables_Set::const_iterator pos
       = parameters.find(problem.big_parameter_dimension);
     big_dimension = std::distance(begin, pos) + 1;
-    std::cout << "big_dimension = " << big_dimension << std::endl;
   }
 
   const Coefficient& denom = tableau.get_denominator();
