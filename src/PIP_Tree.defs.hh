@@ -150,11 +150,20 @@ protected:
   friend class PIP_Decision_Node;
   friend class PIP_Solution_Node;
 
+  //! A pointer to \p *this 's parent, or 0 if \p *this is the root node.
+  const PIP_Decision_Node* parent_;
+
   //! The local system of parameter constraints.
   Constraint_System constraints_;
 
   //! The local sequence of expressions for local artificial parameters.
   Artificial_Parameter_Sequence artificial_parameters;
+
+  //! Set this node's parent to \p *p.
+  void set_parent(const PIP_Decision_Node* p);
+
+  //! Returns a pointer to this node's parent.
+  const PIP_Decision_Node* parent() const;
 
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary

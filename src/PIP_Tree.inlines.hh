@@ -67,6 +67,16 @@ inline
 PIP_Tree_Node::~PIP_Tree_Node() {
 }
 
+inline void
+PIP_Tree_Node::set_parent(const PIP_Decision_Node* p) {
+  parent_ = p;
+}
+
+inline const PIP_Decision_Node*
+PIP_Tree_Node::parent() const {
+  return parent_;
+}
+
 inline const Constraint_System&
 PIP_Tree_Node::constraints() const {
   return constraints_;

@@ -148,12 +148,14 @@ operator<<(std::ostream& os, const PIP_Tree_Node::Artificial_Parameter& x) {
 } // namespace IO_Operators
 
 PIP_Tree_Node::PIP_Tree_Node()
-  : constraints_(),
+  : parent_(0),
+    constraints_(),
     artificial_parameters() {
 }
 
 PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node &x)
-  : constraints_(x.constraints_),
+  : parent_(0),
+    constraints_(x.constraints_),
     artificial_parameters(x.artificial_parameters) {
 }
 
@@ -256,16 +258,24 @@ PIP_Decision_Node::PIP_Decision_Node(PIP_Tree_Node* fcp,
   : PIP_Tree_Node(),
     true_child(tcp),
     false_child(fcp) {
+  if (fcp != 0)
+    fcp->set_parent(this);
+  if (tcp != 0)
+    tcp->set_parent(this);
 }
 
 PIP_Decision_Node ::PIP_Decision_Node(const PIP_Decision_Node& x)
   : PIP_Tree_Node(x),
     true_child(0),
     false_child(0) {
-  if (x.true_child != 0)
+  if (x.true_child != 0) {
     true_child = x.true_child->clone();
-  if (x.false_child != 0)
+    true_child->set_parent(this);
+  }
+  if (x.false_child != 0) {
     false_child = x.false_child->clone();
+    false_child->set_parent(this);
+  }
 }
 
 const PIP_Solution_Node*
