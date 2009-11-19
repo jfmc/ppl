@@ -179,6 +179,22 @@ PIP_Tree_Node::Artificial_Parameter
   return denominator;
 }
 
+bool
+operator==(const PIP_Tree_Node::Artificial_Parameter& x,
+           const PIP_Tree_Node::Artificial_Parameter& y) {
+  using namespace IO_Operators;
+  if (x.space_dimension() != y.space_dimension())
+    return false;
+  if (x.denominator != y.denominator)
+    return false;
+  if (x.inhomogeneous_term() != y.inhomogeneous_term())
+    return false;
+  for (dimension_type i = x.space_dimension(); i-- > 0; )
+    if (x.coefficient(Variable(i)) != y.coefficient(Variable(i)))
+      return false;
+  return true;
+}
+
 void
 PIP_Tree_Node::Artificial_Parameter::ascii_dump(std::ostream& s) const {
   s << "\ndenominator " << denominator << "\n";
@@ -1123,6 +1139,10 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
   }
 
   // add new columns to the tableau
+  /* FIXME: when the node or its parents have artificial parameters, we
+    must insert new parameter columns before the columns corresponding to
+    the artificial parameters. Meanwhile parameter insertion after a first
+    solve (incremental solving) is broken. */
   for (i=internal_space_dim; i<external_space_dim; ++i) {
     if (parameters.count(i) == 1)
       tableau.t.add_zero_columns(1);
@@ -1760,21 +1780,22 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
 
         // Test if cut to be generated must be parametric or not
         const Row& row_t1 = tableau.t[i];
+        bool gen_parametric_cut = false;
         for (j=1; j<num_params; ++j) {
           if (row_t1[j] % d != 0) {
-            tableau.t.add_zero_columns(1);
-            context.add_zero_columns(1);
+            gen_parametric_cut = true;
             break;
           }
         }
 
-        const Row& row_t = tableau.t[i];
-        Row& cut_s = tableau.s[num_rows];
-        Row& cut_t = tableau.t[num_rows];
+        // Column index of already existing Artificial_Parameter
+        dimension_type ap_column = n_a_d;
+        bool reuse_ap = false;
 
-        if (j < num_params) {
+        if (gen_parametric_cut) {
           // Fractional parameter coefficient found: generate parametric cut
           // Generate new artificial parameter
+          const Row& row_t = tableau.t[i];
           Linear_Expression e;
           Variables_Set::const_iterator p;
           mod_assign(mod, row_t[0], d);
@@ -1785,16 +1806,55 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
             if (mod != 0)
               e += (d-mod) * Variable(*p);
           }
-          artificial_parameters.push_back(Artificial_Parameter(e, d));
-          parameters.insert(space_dimension);
-#ifdef NOISY_PIP
-          using namespace IO_Operators;
-          std::cout << "Creating new parameter " << Variable(space_dimension)
-                    << " = (" << e << ")/" << d
-                    << std::endl;
-#endif
-          ++space_dimension;
+          Artificial_Parameter ap(e, d);
 
+          // Search if the Artificial_Parameter has already been generated
+          ap_column = space_dimension;
+          const PIP_Tree_Node* node = this;
+          do {
+            for (j = node->artificial_parameters.size(); j-- > 0; ) {
+              --ap_column;
+              if (node->artificial_parameters[j] == ap) {
+                reuse_ap = true;
+                break;
+              }
+            }
+            node = node->parent();
+          } while (!reuse_ap && node != 0);
+
+          if (!reuse_ap) {
+            // The Artificial_Parameter does not exist yet
+            tableau.t.add_zero_columns(1);
+            context.add_zero_columns(1);
+            artificial_parameters.push_back(ap);
+            parameters.insert(space_dimension);
+#ifdef NOISY_PIP
+            using namespace IO_Operators;
+            std::cout << "Creating new parameter "
+                      << Variable(space_dimension)
+                      << " = (" << e << ")/" << d
+                      << std::endl;
+#endif
+            ++space_dimension;
+            ap_column = num_params;
+          } else {
+            // We can re-use the existing Artificial_Parameter
+#ifdef NOISY_PIP
+            using namespace IO_Operators;
+            std::cout << "Re-using parameter " << Variable(ap_column)
+                      << " = (" << e << ")/" << d
+                      << std::endl;
+#endif
+            ap_column = ap_column-num_vars+1;
+          }
+        }
+
+        // Get reference to tableau rows after eventual resize
+        const Row& row_t = tableau.t[i];
+        Row& cut_s = tableau.s[num_rows];
+        Row& cut_t = tableau.t[num_rows];
+
+        if (gen_parametric_cut && !reuse_ap) {
           // Update current context with constraints on the new parameter
           Row ctx1(num_params+1, Row::Flags());
           Row ctx2(num_params+1, Row::Flags());
@@ -1813,6 +1873,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           ctx2[0] += d-1;
 #ifdef NOISY_PIP
           {
+            using namespace IO_Operators;
             Variables_Set::const_iterator p = parameters.begin();
             Linear_Expression e1;
             Linear_Expression e2;
@@ -1829,7 +1890,6 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
 #endif
           context.add_row(ctx1);
           context.add_row(ctx2);
-          cut_t[num_params] = d;
         }
 
         // Generate new cut
@@ -1845,6 +1905,10 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           else
             cut_t[j] = 0;
         }
+        if (ap_column != n_a_d)
+          // If we re-use an existing Artificial_Parameter
+          cut_t[ap_column] = d;
+
 #ifdef NOISY_PIP
         {
           using namespace IO_Operators;

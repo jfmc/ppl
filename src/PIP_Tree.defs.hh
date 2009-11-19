@@ -85,6 +85,10 @@ public:
 
     const Coefficient& get_denominator() const;
 
+    //! Returns \b true if \p x and \p y are equal.
+    friend bool operator==(const Artificial_Parameter& x,
+                           const Artificial_Parameter& y);
+
     void ascii_dump(std::ostream& s) const;
     bool ascii_load(std::istream& s);
 
