@@ -1711,30 +1711,28 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         } else /* PIP_CUTTING_STRATEGY_DEEPEST */ {
           /* Look for the row which will generate the "deepest" cut */
           PPL_DIRTY_TEMP_COEFFICIENT(score);
-          PPL_DIRTY_TEMP_COEFFICIENT(score1);
           PPL_DIRTY_TEMP_COEFFICIENT(score2);
           Coefficient best = 0;
-          dimension_type best_i = 0;
+          dimension_type best_i = n_a_d;
           for (i_ = 0; i_ < num_vars; ++i_) {
             if (basis[i_])
               continue;
             i = mapping[i_];
             const Row& row_t = tableau.t[i];
             const Row& row_s = tableau.s[i];
-            score1 = 0;
+            score = 0;
             for (j = 0; j < num_params; ++j) {
               mod_assign(mod, row_t[j], d);
               if (mod != 0)
-                score1 += d - mod;
+                score += d - mod;
             }
             score2 = 0;
             for (j = 0; j < num_vars; ++j) {
               mod_assign(mod, row_s[j], d);
-              if (mod != 0)
-                score2 += d - mod;
+              score2 += d - mod;
             }
-            score = score1*score2;
-            if (score > best) {
+            score *= score2;
+            if (best_i == n_a_d || score > best) {
               best = score;
               best_i = i;
             }
