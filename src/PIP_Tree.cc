@@ -1409,10 +1409,10 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
                 << std::endl;
 #endif
       dimension_type k;
-      Coefficient z(0);
-      Coefficient sij, cij, cij_;
-      Coefficient c;
-      Row &row = tableau.s[i_];
+      const Row& row = tableau.s[i_];
+      PPL_DIRTY_TEMP_COEFFICIENT(sij);
+      PPL_DIRTY_TEMP_COEFFICIENT(cij);
+      PPL_DIRTY_TEMP_COEFFICIENT(cij_);
       /* Look for a positive S_ij such as the j^th column/S_ij is
          lexico-minimal
       */
@@ -1461,6 +1461,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
 #endif
 
       /* ** Perform pivot operation ** */
+      PPL_DIRTY_TEMP_COEFFICIENT(c);
 
       /* update basis */
       dimension_type var_j = var_column[j_];
@@ -1481,8 +1482,10 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       prt.swap(tableau.t[i_]);
       sign[i_] = ZERO;
       /* save current denominator corresponding to sij */
-      Coefficient sij_denom = tableau.get_denominator();
+      PPL_DIRTY_TEMP_COEFFICIENT(sij_denom);
+      sij_denom = tableau.get_denominator();
       /* Compute columns s[*][j] : s[k][j] -= s[k][j_] * prs[j] / sij */
+      PPL_DIRTY_TEMP_COEFFICIENT(scale_factor);
       for (j=0; j<num_vars; ++j) {
         if (j==j_)
           continue;
@@ -1491,11 +1494,12 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           // if element j of pivot row is zero, nothing to do for this column
           continue;
         for (k=0; k<num_rows; ++k) {
-          Coefficient mult = prsj * tableau.s[k][j_];
+          PPL_DIRTY_TEMP_COEFFICIENT(mult);
+          mult = prsj * tableau.s[k][j_];
           if (mult % sij != 0) {
             // Must scale matrix to stay in integer case
             gcd_assign(gcd, mult, sij);
-            Coefficient scale_factor = sij/gcd;
+            scale_factor = sij/gcd;
             tableau.scale(scale_factor);
             mult *= scale_factor;
           }
@@ -1510,11 +1514,11 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           // if element j of pivot row is zero, nothing to do for this column
           continue;
         for (k=0; k<num_rows; ++k) {
-          Coefficient c = prtj * tableau.s[k][j_];
+          c = prtj * tableau.s[k][j_];
           if (c % sij != 0) {
             // Must scale matrix to stay in integer case
             gcd_assign(gcd, c, sij);
-            Coefficient scale_factor = sij/gcd;
+            scale_factor = sij/gcd;
             tableau.scale(scale_factor);
             c *= scale_factor;
           }
@@ -1550,11 +1554,12 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         // Update column only if pivot != 1
         for (k=0; k<num_rows; ++k) {
           Coefficient& c = tableau.s[k][j_];
-          Coefficient numerator = c * sij_denom;
+          PPL_DIRTY_TEMP_COEFFICIENT(numerator);
+          numerator = c * sij_denom;
           if (numerator % sij != 0) {
-            Coefficient gcd;
+            PPL_DIRTY_TEMP_COEFFICIENT(gcd);
             gcd_assign(gcd, numerator, sij);
-            Coefficient scale_factor = sij/gcd;
+            scale_factor = sij/gcd;
             tableau.scale(scale_factor);
             numerator *= scale_factor;
           }
@@ -1567,7 +1572,8 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
     /* Otherwise, we have found a row i__ with mixed parameter sign. */
     else if (i__ != n_a_d) {
       dimension_type neg = n_a_d;
-      Coefficient ns, score;
+      PPL_DIRTY_TEMP_COEFFICIENT(ns);
+      PPL_DIRTY_TEMP_COEFFICIENT(score);
 
       /* Look for a constraint with mixed parameter sign with no positive
        * variable coefficients */
@@ -1613,8 +1619,9 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
 #endif
       } else {
         /* Heuristically choose "best" pivoting row. */
-        Coefficient score;
-        Coefficient best = 0;
+        PPL_DIRTY_TEMP_COEFFICIENT(score);
+        PPL_DIRTY_TEMP_COEFFICIENT(best);
+        best = 0;
         dimension_type best_i = n_a_d;
         for (i = i__; i < num_rows; ++i) {
           if (sign[i] != MIXED)
@@ -1762,7 +1769,8 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
             the "deepest" cut */
           PPL_DIRTY_TEMP_COEFFICIENT(score);
           PPL_DIRTY_TEMP_COEFFICIENT(score2);
-          Coefficient best_score = 0;
+          PPL_DIRTY_TEMP_COEFFICIENT(best_score);
+          best_score = 0;
           dimension_type best_i = n_a_d;
           dimension_type best_pcount = n_a_d;
           dimension_type pcount;
