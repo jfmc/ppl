@@ -68,24 +68,27 @@ test01() {
 
   // Y = 0;
   abstract_store.set_interval(Y, y);
+  Box<FP_Interval> box(abstract_store);
 
   for(unsigned short n = 0; y != y_begin; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     as_begin = abstract_store;
     y_begin = y;
+    print_constraints(box, "*** begin loop ***");
 
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     y.lower() = -128;
     y.upper() = 128;
     abstract_store.set_interval(X, y);
+
     y.lower() = 0;
     y.upper() = 16;
     abstract_store.set_interval(D, y);
+
     abstract_store.affine_image(S, Y);
     abstract_store.affine_image(R, X - S);
     abstract_store.affine_image(Y, X);
-
 
     // if (R <= -D) Y = S - D;
     FP_Interval_Abstract_Store as_then(abstract_store);
@@ -93,7 +96,8 @@ test01() {
     as_then.affine_image(Y, S - D);
     abstract_store.refine_with_constraint(R > -D);
     abstract_store.upper_bound_assign(as_then);
-    print_constraints(abstract_store ,"*** if (R <= -D) Y = S - D; ***");
+    print_constraints(abstract_store,
+      "*** after if (R <= -D) Y = S - D; ***");
 
     // if (R >= D)  Y = S + D;
     as_then = abstract_store;
@@ -103,7 +107,8 @@ test01() {
     abstract_store.upper_bound_assign(as_then);
 
     abstract_store.upper_bound_assign(as_then);
-    print_constraints(abstract_store ,"*** if (R >= D)  Y = S + D; ***");
+    print_constraints(abstract_store,
+      "*** after if (R >= D)  Y = S + D; ***");
 
     abstract_store.upper_bound_assign(as_begin);
     Constraint_System cs;
@@ -120,12 +125,12 @@ test01() {
     cs.insert(Y <= M);
     cs.insert(Y >= -M);
     abstract_store.limited_CC76_extrapolation_assign(as_begin, cs);
-    Box<FP_Interval> box(abstract_store);
-    print_constraints(box, "*** after widening ***");
+    box = Box<FP_Interval>(abstract_store);
+    print_constraints(box, "*** end loop ***");
     y = box.get_interval(Y);
   }
 
-  nout << "*** Y in [-128 - 16n, 128 + 16n] ***" << endl;
+  nout << "*** Y in " << y << " ***" << endl;
   return !y.is_bounded();
 }
 
@@ -152,20 +157,24 @@ test02() {
 
   // Y = 0;
   bd.affine_image(Y, FP_Linear_Form(y));
+  Box<FP_Interval> box(bd);
 
   for(unsigned short n = 0; y != y_begin; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     bd_begin = bd;
     y_begin = y;
+    print_constraints(box, "*** begin loop ***");
 
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     y.lower() = -128;
     y.upper() = 128;
     bd.affine_image(X, FP_Linear_Form(y));
+
     y.lower() = 0;
     y.upper() = 16;
     bd.affine_image(D, FP_Linear_Form(y));
+
     bd.affine_image(S, FP_Linear_Form(Y));
     bd.affine_image(R, FP_Linear_Form(X - S));
     bd.affine_image(Y, FP_Linear_Form(X));
@@ -179,8 +188,8 @@ test02() {
     bd.refine_with_linear_form_inequality(-FP_Linear_Form(D),
                                            FP_Linear_Form(R));
     bd.upper_bound_assign(bd_then);
-    print_constraints(Box<FP_Interval>(bd) ,
-         "*** if (R <= -D) Y = S - D; ***");
+    print_constraints(Box<FP_Interval>(bd),
+         "*** after if (R <= -D) Y = S - D; ***");
 
     // if (R >= D)  Y = S + D;
     bd_then = bd;
@@ -192,8 +201,8 @@ test02() {
                                           FP_Linear_Form(D));
 
     bd.upper_bound_assign(bd_then);
-    print_constraints(Box<FP_Interval>(bd) ,
-         "*** if (R >= D)  Y = S + D; ***");
+    print_constraints(Box<FP_Interval>(bd),
+         "*** after if (R >= D)  Y = S + D; ***");
 
     bd.upper_bound_assign(bd_begin);
     Constraint_System cs;
@@ -210,12 +219,12 @@ test02() {
     cs.insert(Y <= M);
     cs.insert(Y >= -M);
     bd.limited_BHMZ05_extrapolation_assign(bd_begin, cs);
-    Box<FP_Interval> box(bd);
-    print_constraints(box, "*** after widening ***");
+    box = Box<FP_Interval>(bd);
+    print_constraints(box, "*** end loop ***");
     y = box.get_interval(Y);
   }
 
-  nout << "*** Y in [-16 - 16n, 128 + 16n] ***" << endl;
+  nout << "*** Y in " << y << " ***" << endl;
   return !y.is_bounded();
 }
 
@@ -242,12 +251,14 @@ test03() {
 
   // Y = 0;
   oc.affine_image(Y, FP_Linear_Form(y));
+  Box<FP_Interval> box(oc);
 
   for(unsigned short n = 0; y_begin != y; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     oc_begin = oc;
     y_begin = y;
+    print_constraints(box, "*** begin loop ***");
 
     //X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     y.lower() = -128;
@@ -269,8 +280,8 @@ test03() {
     oc.refine_with_linear_form_inequality(-FP_Linear_Form(D),
                                            FP_Linear_Form(R));
     oc.upper_bound_assign(oc_then);
-    print_constraints(Box<FP_Interval>(oc) ,
-         "*** if (R <= -D) Y = S - D; ***");
+    print_constraints(Box<FP_Interval>(oc),
+         "*** after if (R <= -D) Y = S - D; ***");
 
     //if (R >= D)  Y = S + D;
     oc_then = oc;
@@ -282,8 +293,8 @@ test03() {
                                           FP_Linear_Form(D));
 
     oc.upper_bound_assign(oc_then);
-    print_constraints(Box<FP_Interval>(oc) ,
-         "*** if (R >= D)  Y = S + D; ***");
+    print_constraints(Box<FP_Interval>(oc),
+         "*** after (R >= D)  Y = S + D; ***");
 
     oc.upper_bound_assign(oc_begin);
     Constraint_System cs;
@@ -303,11 +314,12 @@ test03() {
     // Y + Y <= 2 * M = +inf and -Y - Y <= -2 * M = +inf.
     // For a more precise analysis, it is better to insert the
     // constraints Y <= N and Y >= -N, where N = M / 2.
+    // However, we could take any value of N >= 136.
     cs.insert(Y <= N);
     cs.insert(Y >= -N);
     oc.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
-    Box<FP_Interval> box(oc);
-    print_constraints(box, "*** after widening ***");
+    box = Box<FP_Interval>(oc);
+    print_constraints(box, "*** end loop ***");
     y = box.get_interval(Y);
   }
 
@@ -338,12 +350,15 @@ test04() {
 
   // Y = 0;
   ph.affine_image(Y, FP_Linear_Form(y));
+  Box<FP_Interval> box(ph);
 
   for(unsigned short n = 0; y_begin != y; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     ph_begin = ph;
     y_begin = y;
+    print_constraints(box, "*** begin loop ***");
+
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     y.lower() = -128;
     y.upper() = 128;
@@ -369,8 +384,8 @@ test04() {
                                            FP_Linear_Form(R));
     ph.upper_bound_assign(ph_then);
     abstract_store.upper_bound_assign(as_then);
-    print_constraints(Box<FP_Interval>(ph) ,
-         "*** if (R <= -D) Y = S - D; ***");
+    print_constraints(Box<FP_Interval>(ph),
+         "*** after if (R <= -D) Y = S - D; ***");
 
     // if (R >= D)  Y = S + D;
     ph_then = ph;
@@ -383,8 +398,8 @@ test04() {
                                           FP_Linear_Form(D));
     ph.upper_bound_assign(ph_then);
     abstract_store.upper_bound_assign(as_then);
-    print_constraints(Box<FP_Interval>(ph) ,
-         "*** if (R >= D)  Y = S + D; ***");
+    print_constraints(Box<FP_Interval>(ph),
+         "*** after if (R >= D)  Y = S + D; ***");
 
     ph.upper_bound_assign(ph_begin);
     Constraint_System cs;
@@ -398,11 +413,12 @@ test04() {
       std::numeric_limits<ANALYZER_FP_FORMAT>::max();
     max_analyzer = std::min(max_analyzer, max_analyzed);
     assign_r(M, max_analyzer, ROUND_DOWN);
+    // FIXME: we could take any value of M >= 128.
     cs.insert(Y <= M);
     cs.insert(Y >= -M);
     ph.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
-    Box<FP_Interval> box(ph);
-    print_constraints(box, "*** after widening ***");
+    box = Box<FP_Interval>(ph);
+    print_constraints(box, "*** end loop ***");
     y = box.get_interval(Y);
   }
 
@@ -440,12 +456,14 @@ test05() {
   // Y = 0;
   con_y.linearize(abstract_store, lf_abstract_store, lk);
   bd.affine_image(Y, lk);
+  Box<FP_Interval> box(bd);
 
   for(unsigned short n = 0; y_begin != y; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     bd_begin = bd;
     y_begin = y;
+    print_constraints(box, "*** begin loop ***");
 
     Con_FP_Expression con_x(-128, 128);
     con_x.linearize(abstract_store, lf_abstract_store, lk);
@@ -482,8 +500,8 @@ test05() {
     bd.refine_with_linear_form_inequality(-lk, lr);
 
     bd.upper_bound_assign(bd_then);
-    print_constraints(Box<FP_Interval>(bd) ,
-         "*** if (R <= -D) Y = S - D; ***");
+    print_constraints(Box<FP_Interval>(bd),
+         "*** after if (R <= -D) Y = S - D; ***");
 
     // if (R >= D)  Y = S + D;
     bd_then = bd;
@@ -498,7 +516,8 @@ test05() {
     bd.refine_with_linear_form_inequality(lr, lk);
 
     bd.upper_bound_assign(bd_then);
-    print_constraints(Box<FP_Interval>(bd), "*** if (R >= D)  Y = S + D; ***");
+    print_constraints(Box<FP_Interval>(bd),
+      "*** after if (R >= D)  Y = S + D; ***");
 
     bd.upper_bound_assign(bd_begin);
     Constraint_System cs;
@@ -512,13 +531,11 @@ test05() {
       std::numeric_limits<ANALYZER_FP_FORMAT>::max();
     max_analyzer = std::min(max_analyzer, max_analyzed);
     assign_r(M, max_analyzer, ROUND_DOWN);
-    //FIXME: We could take any value of M >= 145.
     cs.insert(Y <= M);
     cs.insert(Y >= -M);
-    FP_BD_Shape bd_wid(bd);
-    bd_wid.limited_BHMZ05_extrapolation_assign(bd_begin, cs);
-    Box<FP_Interval> box(bd_wid);
-    print_constraints(box, "*** after widening ***");
+    bd.limited_BHMZ05_extrapolation_assign(bd_begin, cs);
+    box = Box<FP_Interval>(bd);
+    print_constraints(box, "*** end loop ***");
     y = box.get_interval(Y);
   }
 
@@ -556,12 +573,14 @@ test06() {
   // Y = 0;
   con_y.linearize(abstract_store, lf_abstract_store, lk);
   oc.affine_image(Y, lk);
+  Box<FP_Interval> box(oc);
 
   for(unsigned short n = 0; y_begin != y; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     oc_begin = oc;
     y_begin = y;
+    print_constraints(box, "*** before loop ***");
 
     Con_FP_Expression con_x(-128, 128);
     con_x.linearize(abstract_store, lf_abstract_store, lk);
@@ -598,8 +617,8 @@ test06() {
     oc.refine_with_linear_form_inequality(-lk, lr);
 
     oc.upper_bound_assign(oc_then);
-    print_constraints(Box<FP_Interval>(oc) ,
-         "*** if (R <= -D) Y = S - D; ***");
+    print_constraints(Box<FP_Interval>(oc),
+         "*** after if (R <= -D) Y = S - D; ***");
 
     // if (R >= D)  Y = S + D;
     oc_then = oc;
@@ -614,7 +633,8 @@ test06() {
     oc.refine_with_linear_form_inequality(lr, lk);
 
     oc.upper_bound_assign(oc_then);
-    print_constraints(Box<FP_Interval>(oc), "*** if (R >= D)  Y = S + D; ***");
+    print_constraints(Box<FP_Interval>(oc),
+         "*** after if (R >= D)  Y = S + D; ***");
 
     oc.upper_bound_assign(oc_begin);
     Constraint_System cs;
@@ -634,13 +654,11 @@ test06() {
     // Y + Y <= 2 * M = +inf and -Y - Y <= -2 * M = +inf.
     // For a more precise analysis, it is better to insert the
     // constraints Y <= N and Y >= -N, where N = M / 2.
-    // However, we could take any value of N >= 145.
     cs.insert(Y <= N);
     cs.insert(Y >= -N);
-    FP_Octagonal_Shape oc_wid(oc);
-    oc_wid.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
-    Box<FP_Interval> box(oc_wid);
-    print_constraints(box, "*** after widening ***");
+    oc.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
+    box = Box<FP_Interval>(oc);
+    print_constraints(box, "*** end loop ***");
     y = box.get_interval(Y);
   }
 
@@ -679,28 +697,34 @@ test07() {
   // Y = 0;
   con_y.linearize(abstract_store, lf_abstract_store, lk);
   ph.affine_image(Y, lk);
+  Box<FP_Interval> box(ph);
 
   for(unsigned short n = 0; y_begin != y; ++n) {
 
     nout << "*** n = " << n << " ***" << endl;
     ph_begin = ph;
     y_begin = y;
+    print_constraints(box, "*** begin loop ***");
 
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     Con_FP_Expression con_x(-128, 128);
     con_x.linearize(abstract_store, lf_abstract_store, lk);
     ph.affine_image(X, lk);
+
     Con_FP_Expression con_d(0, 16);
     con_d.linearize(abstract_store, lf_abstract_store, lk);
     ph.affine_image(D, lk);
+
     Var_FP_Expression var_y(2);
     var_y.linearize(abstract_store, lf_abstract_store, ly);
     ph.affine_image(S, ly);
+
     Var_FP_Expression* px = new Var_FP_Expression(0);
     Var_FP_Expression* ps = new Var_FP_Expression(3);
     Dif_FP_Expression x_dif_s(px, ps);
     x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
     ph.affine_image(R, lr);
+
     Var_FP_Expression var_x(0);
     var_x.linearize(abstract_store, lf_abstract_store, lx);
     ph.affine_image(Y, lx);
@@ -719,8 +743,8 @@ test07() {
 
     ph.upper_bound_assign(ph_then);
     abstract_store.upper_bound_assign(as_then);
-    print_constraints(Box<FP_Interval>(ph) ,
-         "*** if (R <= -D) Y = S - D; ***");
+    print_constraints(Box<FP_Interval>(ph),
+         "*** after if (R <= -D) Y = S - D; ***");
 
     // if (R >= D)  Y = S + D;
     ph_then = ph;
@@ -738,7 +762,7 @@ test07() {
     ph.upper_bound_assign(ph_then);
     abstract_store.upper_bound_assign(as_then);
     print_constraints(Box<FP_Interval>(ph),
-      "*** if (R >= D)  Y = S + D; ***");
+      "*** after (R >= D)  Y = S + D; ***");
 
     ph.upper_bound_assign(ph_begin);
     Constraint_System cs;
@@ -752,19 +776,18 @@ test07() {
       std::numeric_limits<ANALYZER_FP_FORMAT>::max();
     max_analyzer = std::min(max_analyzer, max_analyzed);
     assign_r(M, max_analyzer, ROUND_DOWN);
-    //FIXME: We could take any value of M >= 136.
     cs.insert(Y <= M);
     cs.insert(Y >= -M);
-    NNC_Polyhedron ph_wid(ph);
-    ph_wid.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
-    Box<FP_Interval> box(ph_wid);
-    print_constraints(box, "*** after widening ***");
+    ph.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
+    box = Box<FP_Interval>(ph);
+    print_constraints(box, "*** end loop ***");
     y = box.get_interval(Y);
   }
 
   nout << "*** Y in " << y << " ***" << endl;
   return y.is_bounded();
 }
+
 
 } // namespace
 
@@ -773,7 +796,7 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST(test05);
-  DO_TEST(test06);
-  DO_TEST(test07);
+  //DO_TEST(test05);
+  //DO_TEST(test06);
+  //DO_TEST(test07);
 END_MAIN
