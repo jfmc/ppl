@@ -447,6 +447,7 @@ PPL::PIP_Problem::clear() {
   parameters.clear();
   initial_context.clear();
   control_parameters_init();
+  big_parameter_dimension = 0;
 }
 
 void

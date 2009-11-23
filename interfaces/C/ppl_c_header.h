@@ -2832,6 +2832,20 @@ int
 ppl_PIP_Problem_set_control_parameter
 PPL_PROTO((ppl_PIP_Problem_t pip, int value));
 
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes into \p *pd the big parameter dimension of PIP problem \p pip.
+*/
+int
+ppl_PIP_Problem_get_big_parameter_dimension
+PPL_PROTO((ppl_const_PIP_Problem_t pip, ppl_dimension_type* pd));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Sets the big parameter dimension of PIP problem \p pip to \p d.
+*/
+int
+ppl_PIP_Problem_set_big_parameter_dimension
+PPL_PROTO((ppl_PIP_Problem_t pip, ppl_dimension_type d));
+
 /*@}*/ /* Querying/Setting Control Parameters */
 
 

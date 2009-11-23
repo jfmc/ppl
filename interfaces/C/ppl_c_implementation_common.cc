@@ -2290,6 +2290,23 @@ ppl_PIP_Problem_set_control_parameter(ppl_PIP_Problem_t pip,
 CATCH_ALL
 
 int
+ppl_PIP_Problem_get_big_parameter_dimension(ppl_const_PIP_Problem_t pip,
+                                            ppl_dimension_type* pd) try {
+  *pd = to_const(pip)->get_big_parameter_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_set_big_parameter_dimension(ppl_PIP_Problem_t pip,
+                                            ppl_dimension_type d) try {
+  to_nonconst(pip)->set_big_parameter_dimension(d);
+  return 0;
+}
+CATCH_ALL
+
+
+int
 ppl_PIP_Tree_Node_as_solution(ppl_const_PIP_Tree_Node_t spip_tree,
                               ppl_const_PIP_Solution_Node_t* dpip_tree) try {
   *dpip_tree = to_const(to_const(spip_tree)->as_solution());
