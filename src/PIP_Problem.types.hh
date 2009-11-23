@@ -31,8 +31,7 @@ enum PIP_Problem_Control_Parameter_Name {
   //! Cutting strategy
   PIP_CUTTING_STRATEGY,
 
-  /*! Number of different possible values of
-     PIP_Problem_Control_Parameter_Name enumeration. */
+  //! Number of different enumeration values.
   PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE
 };
 
@@ -44,8 +43,7 @@ enum PIP_Problem_Control_Parameter_Value {
   //! Choose row which generates the deepest cut
   PIP_CUTTING_STRATEGY_DEEPEST,
 
-  /*! Number of different possible values of
-     PIP_Problem_Control_Parameter_Value enumeration. */
+  //! Number of different enumeration values.
   PIP_PROBLEM_CONTROL_PARAMETER_VALUE_SIZE
 };
 

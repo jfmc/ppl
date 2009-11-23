@@ -28,10 +28,11 @@ namespace PPL = Parma_Polyhedra_Library;
 /*! \relates Parma_Polyhedra_Library::PIP_Problem */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const PIP_Problem& /*p*/) {
- return s;
+  // FIXME: to be implemented.
+  return s;
 }
 
-PPL::PIP_Problem::PIP_Problem(dimension_type dim)
+PPL::PIP_Problem::PIP_Problem(const dimension_type dim)
   : external_space_dim(dim),
     internal_space_dim(0),
     status(PARTIALLY_SATISFIABLE),
@@ -44,7 +45,7 @@ PPL::PIP_Problem::PIP_Problem(dimension_type dim)
     big_parameter_dimension(0) {
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
-    throw std::length_error("PPL::PIP_Problem:: PIP_Problem(dim):\n"
+    throw std::length_error("PPL::PIP_Problem::PIP_Problem(dim):\n"
                             "dim exceeds the maximum allowed"
                             "space dimension.");
   control_parameters_init();
@@ -80,7 +81,7 @@ PPL::PIP_Problem::control_parameters_init() {
 
 void
 PPL::PIP_Problem::control_parameters_copy(const PIP_Problem& y) {
-  for (dimension_type i=PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE; i-- > 0;)
+  for (dimension_type i = PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE; i-- > 0; )
     control_parameters[i] = y.control_parameters[i];
 }
 
@@ -94,7 +95,7 @@ PPL::PIP_Problem::solve() const {
     PPL_ASSERT(OK());
     return OPTIMIZED_PIP_PROBLEM;
   case SATISFIABLE:
-    // Intentionally fall through
+    // Intentionally fall through.
   case PARTIALLY_SATISFIABLE:
     {
       PIP_Problem& x = const_cast<PIP_Problem&>(*this);
@@ -103,45 +104,47 @@ PPL::PIP_Problem::solve() const {
       if (current_solution == 0)
         x.current_solution = new PIP_Solution_Node();
       if (input_cs.empty()) {
-        // no constraints: solution = {0}
+        // No constraints: solution = {0}.
         return OPTIMIZED_PIP_PROBLEM;
       }
 
-      //look for constraints with only parameter coefficients
+      // Look for constraints with only parameter coefficients.
+      const Constraint_Sequence::const_iterator c_begin = input_cs.begin();
+      const Constraint_Sequence::const_iterator c_end = input_cs.end();
       Constraint_Sequence::const_iterator c;
-      Constraint_Sequence::const_iterator c_end = input_cs.end();
-      Variables_Set::iterator param_begin = parameters.begin();
-      Variables_Set::iterator param_end = parameters.end();
+      const Variables_Set::iterator param_begin = parameters.begin();
+      const Variables_Set::iterator param_end = parameters.end();
       Variables_Set::iterator pi;
       dimension_type i;
 
-      // resize context matrix properly
-      dimension_type num_params = parameters.size()+1;
+      // Resize context matrix properly.
+      dimension_type num_params = parameters.size() + 1;
       dimension_type num_cols = initial_context.num_columns();
       if (num_cols < num_params)
-        x.initial_context.add_zero_columns(num_params-num_cols);
+        x.initial_context.add_zero_columns(num_params - num_cols);
 
-      for (c = input_cs.begin()+first_pending_constraint; c != c_end; ++c) {
-        dimension_type width = c->space_dimension();
-        if (external_space_dim < width)
-          x.external_space_dim = width;
-        for (i = 0; i < width; ++i) {
+      for (c = c_begin + first_pending_constraint; c != c_end; ++c) {
+        const dimension_type c_space_dim = c->space_dimension();
+        if (external_space_dim < c_space_dim)
+          x.external_space_dim = c_space_dim;
+        bool has_nonzero_variable_coefficient = false;
+        for (i = 0; i < c_space_dim; ++i) {
           if (c->coefficient(Variable(i)) != 0 && parameters.count(i) == 0)
-            /* nonzero variable coefficient, constraint not to be inserted
-              in context */
+            /* Constraint should not be inserted in context. */
+            has_nonzero_variable_coefficient = true;
             break;
         }
-        if (i == width) {
-          // At this point, the constraint must be translated into context row
+        if (!has_nonzero_variable_coefficient) {
+          // At this point, the constraint must be translated into context row.
           Row row(num_params, Row::Flags());
           for (pi = param_begin, i = 1; pi != param_end; ++pi, ++i)
             row[i] = c->coefficient(Variable(*pi));
           row[0] = c->inhomogeneous_term();
           if (c->is_strict_inequality())
-            row[0] -= 1;
+            --row[0];
           x.initial_context.add_row(row);
           if (c->is_equality()) {
-            for (i = 0; i < width; ++i)
+            for (i = 0; i < c_space_dim; ++i)
               row[i] = -row[i];
             x.initial_context.add_row(row);
           }
@@ -306,7 +309,7 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
   initial_context.ascii_dump(s);
 
   s << "\ncontrol_parameters";
-  for (dimension_type i=0; i<PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE; ++i) {
+  for (dimension_type i = 0; i < PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE; ++i) {
     PIP_Problem_Control_Parameter_Value value = control_parameters[i];
     switch (value) {
     case PIP_CUTTING_STRATEGY_FIRST:
@@ -408,7 +411,7 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "control_parameters")
     return false;
 
-  for (dimension_type i=0; i<PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE; ++i) {
+  for (dimension_type i = 0; i < PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE; ++i) {
     if (!(s >> str))
       return false;
     PIP_Problem_Control_Parameter_Value value;
@@ -487,10 +490,10 @@ PPL::PIP_Problem
 				"incompatible.");
   const dimension_type original_size = parameters.size();
   parameters.insert(p_vars.begin(), p_vars.end());
-  // Do not allow to turn variables into parameters
+  // Do not allow to turn variables into parameters.
   Variables_Set::const_iterator p;
   Variables_Set::const_iterator end = p_vars.end();
-  for (p=p_vars.begin(); p!=end; ++p) {
+  for (p = p_vars.begin(); p != end; ++p) {
     if (*p < internal_space_dim) {
       throw std::invalid_argument("PPL::PIP_Problem::"
 				  "add_to_parameter_space_dimension(p_vars):"
@@ -525,10 +528,9 @@ PPL::PIP_Problem::add_constraint(const Constraint& c) {
 
 void
 PPL::PIP_Problem::add_constraints(const Constraint_System &cs) {
-  Constraint_System::const_iterator c;
-  Constraint_System::const_iterator end = cs.end();
-  for (c=cs.begin(); c!=end; ++c)
-    add_constraint(*c);
+  for (Constraint_System::const_iterator ci = cs.begin(),
+         ci_end = cs.end(); ci != ci_end; ++ci)
+    add_constraint(*ci);
 }
 
 bool
@@ -539,8 +541,9 @@ PPL::PIP_Problem::is_satisfiable() const {
 }
 
 void
-PPL::PIP_Problem::set_control_parameter(PIP_Problem_Control_Parameter_Name n,
-                                      PIP_Problem_Control_Parameter_Value v) {
+PPL::PIP_Problem
+::set_control_parameter(PIP_Problem_Control_Parameter_Name n,
+                        PIP_Problem_Control_Parameter_Value v) {
   switch (n) {
   case PIP_CUTTING_STRATEGY:
     if (v != PIP_CUTTING_STRATEGY_FIRST && v != PIP_CUTTING_STRATEGY_DEEPEST)

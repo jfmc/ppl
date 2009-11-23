@@ -61,6 +61,9 @@ PIP_Problem::swap(PIP_Problem& y) {
   std::swap(first_pending_constraint, y.first_pending_constraint);
   std::swap(parameters, y.parameters);
   std::swap(initial_context, y.initial_context);
+  for (unsigned i = 0; i < PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE; ++i)
+    std::swap(control_parameters[i], y.control_parameters[i]);
+  std::swap(big_parameter_dimension, y.big_parameter_dimension);
 }
 
 inline PIP_Problem&
@@ -72,8 +75,9 @@ PIP_Problem::operator=(const PIP_Problem& y) {
 
 //! Returns the control parameter value for parameter name \p n.
 inline PIP_Problem_Control_Parameter_Value
-PIP_Problem::get_control_parameter(PIP_Problem_Control_Parameter_Name n)
-const {
+PIP_Problem
+::get_control_parameter(PIP_Problem_Control_Parameter_Name n) const {
+  assert(n >= 0 && n < PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE);
   return control_parameters[n];
 }
 
@@ -87,14 +91,12 @@ PIP_Problem::get_big_parameter_dimension() const {
 
 namespace std {
 
-#if 0
 /*! \relates Parma_Polyhedra_Library::PIP_Problem */
 inline void
 swap(Parma_Polyhedra_Library::PIP_Problem& x,
      Parma_Polyhedra_Library::PIP_Problem& y) {
   x.swap(y);
 }
-#endif
 
 } // namespace std
 

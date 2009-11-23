@@ -56,7 +56,7 @@ PIP_Problem::PIP_Problem(dimension_type dim,
 
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
-    throw std::length_error("PPL::PIP_Problem:: PIP_Problem(dim, first, "
+    throw std::length_error("PPL::PIP_Problem::PIP_Problem(dim, first, "
                             "last, p_vars):\n"
                             "dim exceeds the maximum allowed"
                             "space dimension.");
