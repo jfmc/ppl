@@ -32,14 +32,15 @@ display_solution(const PIP_Tree pip, const Variables_Set& params,
   using namespace Parma_Polyhedra_Library::IO_Operators;
   if (!pip) {
     nout << setw(indent*2) << "" << "_|_" << endl;
-  } else {
+  }
+  else {
     Variables_Set parameters(params);
     dimension_type new_params
-        = pip->insert_artificials(parameters, space_dimension);
+      = pip->insert_artificials(parameters, space_dimension);
     if (new_params > 0) {
       PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator i, i_end;
       i_end = pip->art_parameter_end();
-      for (i=pip->art_parameter_begin(); i!=i_end; ++i) {
+      for (i = pip->art_parameter_begin(); i != i_end; ++i) {
         nout << setw(indent*2) << "" << "Parameter "
              << Linear_Expression(Variable(space_dimension++))
              << " = " << *i << endl;
@@ -49,11 +50,11 @@ display_solution(const PIP_Tree pip, const Variables_Set& params,
     bool constraints_empty = constraints.empty();
     if (!constraints_empty) {
       nout << setw(indent*2) << "" << "if ";
-      Constraint_System::const_iterator begin = constraints.begin();
-      Constraint_System::const_iterator end = constraints.end();
-      Constraint_System::const_iterator i;
-      for (i = begin; i != end; ++i)
-        nout << ((i==begin)?"":" and ") << *i;
+      for (Constraint_System::const_iterator
+             begin = constraints.begin(),
+             end = constraints.end(),
+             i = begin; i != end; ++i)
+        nout << ((i == begin) ? "" : " and ") << *i;
       nout << " then" << endl;
     }
     const PIP_Decision_Node* dn = pip->as_decision();
@@ -63,14 +64,15 @@ display_solution(const PIP_Tree pip, const Variables_Set& params,
       nout << setw(indent*2) << "" << "else" << endl;
       display_solution(dn->child_node(false), parameters, vars,
                        space_dimension, indent+1);
-    } else {
+    }
+    else {
       const PIP_Solution_Node* sn = pip->as_solution();
-      Variables_Set::const_iterator begin = vars.begin();
-      Variables_Set::const_iterator end = vars.end();
-      Variables_Set::const_iterator i;
-      nout << setw(indent*2+(constraints_empty?0:2)) << "" << "{";
-      for (i=begin; i!=end; ++i)
-        nout << ((i==begin)?"":" ; ")
+      nout << setw(indent*2 + (constraints_empty ? 0 : 2)) << "" << "{";
+      for (Variables_Set::const_iterator
+             begin = vars.begin(),
+             end = vars.end(),
+             i = begin; i != end; ++i)
+        nout << ((i == begin) ? "" : " ; ")
              << sn->parametric_values(Variable(*i), parameters);
       nout << "}" << endl;
       if (!constraints_empty) {
