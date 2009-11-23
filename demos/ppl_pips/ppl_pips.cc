@@ -34,8 +34,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 6
-#error "PPL version 0.6 or following is required"
+#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 11
+#error "PPL version 0.11 or following is required"
 #endif
 
 typedef PPL::C_Polyhedron POLYHEDRON_TYPE;
@@ -105,8 +105,8 @@ ppl_set_GMP_memory_allocation_functions(void) {
 
 namespace {
 
-PPL::PIP_Problem_Control_Parameter_Value cutting_strategy
-    = PPL::PIP_CUTTING_STRATEGY_FIRST;
+PPL::PIP_Problem::Control_Parameter_Value cutting_strategy
+  = PPL::PIP_Problem::CUTTING_STRATEGY_FIRST;
 
 int loop_iterations = 1;
 
@@ -116,7 +116,7 @@ pip_display_sol(std::ostream& out,
                 const Parma_Polyhedra_Library::Variables_Set& params,
                 const Parma_Polyhedra_Library::Variables_Set& vars,
                 Parma_Polyhedra_Library::dimension_type space_dimension,
-                int indent=0) {
+                int indent = 0) {
   using namespace std;
   using namespace Parma_Polyhedra_Library::IO_Operators;
   if (!pip) {
@@ -124,25 +124,25 @@ pip_display_sol(std::ostream& out,
   } else {
     Variables_Set parameters(params);
     dimension_type new_params
-        = pip->insert_artificials(parameters, space_dimension);
+      = pip->insert_artificials(parameters, space_dimension);
     if (new_params > 0) {
       PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator i, i_end;
       i_end = pip->art_parameter_end();
-      for (i=pip->art_parameter_begin(); i!=i_end; ++i) {
+      for (i = pip->art_parameter_begin(); i != i_end; ++i) {
         out << setw(indent*2) << "" << "Parameter "
-             << Linear_Expression(Variable(space_dimension++))
-             << " = " << *i << endl;
+            << Linear_Expression(Variable(space_dimension++))
+            << " = " << *i << endl;
       }
     }
     const Constraint_System &constraints = pip->constraints();
     bool constraints_empty = constraints.empty();
     if (!constraints_empty) {
       out << setw(indent*2) << "" << "if ";
-      Constraint_System::const_iterator begin = constraints.begin();
-      Constraint_System::const_iterator end = constraints.end();
-      Constraint_System::const_iterator i;
-      for (i = begin; i != end; ++i)
-        out << ((i==begin)?"":" and ") << *i;
+      for (Constraint_System::const_iterator
+             begin = constraints.begin(),
+             end = constraints.end(),
+             i = begin; i != end; ++i)
+        out << ((i == begin) ? "" : " and ") << *i;
       out << " then" << endl;
     }
     const PIP_Decision_Node* dn = pip->as_decision();
@@ -154,13 +154,13 @@ pip_display_sol(std::ostream& out,
                       space_dimension, indent+1);
     } else {
       const PIP_Solution_Node* sn = pip->as_solution();
-      Variables_Set::const_iterator begin = vars.begin();
-      Variables_Set::const_iterator end = vars.end();
-      Variables_Set::const_iterator i;
-      out << setw(indent*2+(constraints_empty?0:2)) << "" << "{";
-      for (i=begin; i!=end; ++i)
-        out << ((i==begin)?"":" ; ")
-             << sn->parametric_values(Variable(*i), parameters);
+      out << setw(indent*2 + (constraints_empty ? 0 : 2)) << "" << "{";
+      for (Variables_Set::const_iterator
+             begin = vars.begin(),
+             end = vars.end(),
+             i = begin; i != end; ++i)
+        out << ((i == begin) ? "" : " ; ")
+            << sn->parametric_values(Variable(*i), parameters);
       out << "}" << endl;
       if (!constraints_empty) {
         out << setw(indent*2) << "" << "else" << endl;
@@ -173,7 +173,7 @@ pip_display_sol(std::ostream& out,
 class PIP_Parser {
 public:
   PIP_Parser() : pip() {
-    pip.set_control_parameter(PPL::PIP_CUTTING_STRATEGY, cutting_strategy);
+    pip.set_control_parameter(cutting_strategy);
   }
 
   virtual ~PIP_Parser() {
@@ -189,7 +189,7 @@ public:
   /* void output_solution_piplib(std::ostream& out) {
     const PPL::Variables_Set& params = pip.parameter_space_dimensions();
     PPL::Variables_Set vars;
-    for (PPL::dimension_type i=0; i<pip.space_dimension(); ++i) {
+    for (PPL::dimension_type i = 0; i < pip.space_dimension(); ++i) {
       if (params.count(i) == 0)
         vars.insert(i);
     }
@@ -203,7 +203,7 @@ public:
   void output_solution_tree(std::ostream& out) {
     const PPL::Variables_Set& params = pip.parameter_space_dimensions();
     PPL::Variables_Set vars;
-    for (PPL::dimension_type i=0; i<pip.space_dimension(); ++i) {
+    for (PPL::dimension_type i = 0; i < pip.space_dimension(); ++i) {
       if (params.count(i) == 0)
         vars.insert(i);
     }
@@ -220,12 +220,10 @@ public:
                   const int constraint_type[],
                   const int ctx_type[],
                   PPL::dimension_type bignum_column) {
-    PPL::dimension_type i, j, k;
     pip.add_space_dimensions_and_embed(num_vars, num_params);
-    k = 0;
-    for (i=0; i<num_constraints; ++i) {
+    for (PPL::dimension_type k = 0, i = 0; i < num_constraints; ++i) {
       PPL::Linear_Expression e;
-      for (j=0; j<num_vars+num_params; ++j)
+      for (PPL::dimension_type j = 0; j < num_vars + num_params; ++j)
         e += constraints[k++] * PPL::Variable(j);
       e += constraints[k++];
       if (constraint_type[i])
@@ -233,11 +231,10 @@ public:
       else
         pip.add_constraint(PPL::Constraint(e == 0));
     }
-    k = 0;
     if (num_params > 0) {
-      for (i=0; i<num_ctx_rows; ++i) {
+      for (PPL::dimension_type k = 0, i = 0; i < num_ctx_rows; ++i) {
         PPL::Linear_Expression e;
-        for (j=0; j<num_params; ++j)
+        for (PPL::dimension_type j = 0; j < num_params; ++j)
           e += context[k++] * PPL::Variable(num_vars+j);
         e += context[k++];
         if (ctx_type[i])
@@ -275,12 +272,11 @@ public:
     PPL::Coefficient context[num_ctx_rows][num_params+1];
     int ctx_type[num_ctx_rows];
 
-    PPL::dimension_type i, j;
-    for (i=0; i<num_ctx_rows; ++i) {
+    for (PPL::dimension_type i = 0; i < num_ctx_rows; ++i) {
       getline_nocomment(in, line);
       std::istringstream sin(line);
       sin >> ctx_type[i];
-      for (j=0; j<=num_params; ++j) {
+      for (PPL::dimension_type j = 0; j <= num_params; ++j) {
         sin >> context[i][j];
       }
     }
@@ -296,11 +292,11 @@ public:
     num_vars = constraint_width - num_params - 1;
     PPL::Coefficient constraints[num_constraints][constraint_width];
     int constraint_type[num_constraints];
-    for (i=0; i<num_constraints; ++i) {
+    for (PPL::dimension_type i = 0; i < num_constraints; ++i) {
       getline_nocomment(in, line);
       std::istringstream sin(line);
       sin >> constraint_type[i];
-      for (j=0; j<constraint_width; ++j) {
+      for (PPL::dimension_type j = 0; j < constraint_width; ++j) {
         sin >> constraints[i][j];
       }
     }
@@ -355,17 +351,17 @@ public:
     PPL::dimension_type constraint_width = num_vars+num_params+1;
     PPL::Coefficient constraints[num_constraints][constraint_width];
     int constraint_type[num_constraints];
-    for (i=0; i<num_constraints; ++i)
+    for (i = 0; i < num_constraints; ++i)
       constraint_type[i] = 1;
-    for (i=0; i<num_constraints; ++i)
+    for (i = 0; i < num_constraints; ++i)
       if (!read_vector(in, constraint_width, num_vars, constraints[i]))
         return false;
 
     PPL::Coefficient context[num_ctx_rows][num_params+1];
     int ctx_type[num_ctx_rows];
-    for (i=0; i<num_ctx_rows; ++i)
+    for (i = 0; i < num_ctx_rows; ++i)
       ctx_type[i] = 1;
-    for (i=0; i<num_ctx_rows; ++i)
+    for (i = 0; i < num_ctx_rows; ++i)
       if (!read_vector(in, num_params+1, num_params, context[i]))
         return false;
 
@@ -413,12 +409,12 @@ protected:
       return false;
     std::istringstream iss(s);
     PPL::dimension_type k = 0;
-    for (PPL::dimension_type i=0; i<cst_col; ++i)
+    for (PPL::dimension_type i = 0; i < cst_col; ++i)
       if (!(iss >> tab[k++]))
         return false;
     if (!(iss >> tab[size-1]))
       return false;
-    for (PPL::dimension_type i=cst_col+1; i<size; ++i)
+    for (PPL::dimension_type i = cst_col + 1; i < size; ++i)
       if (!(iss >> tab[k++]))
         return false;
     return true;
@@ -678,11 +674,11 @@ process_options(int argc, char* argv[]) {
 #endif
 
     case 'd':
-      cutting_strategy = PPL::PIP_CUTTING_STRATEGY_DEEPEST;
+      cutting_strategy = PPL::PIP_Problem::CUTTING_STRATEGY_DEEPEST;
       break;
 
     case 'f':
-      cutting_strategy = PPL::PIP_CUTTING_STRATEGY_FIRST;
+      cutting_strategy = PPL::PIP_Problem::CUTTING_STRATEGY_FIRST;
       break;
 
     default:
@@ -763,7 +759,7 @@ main(int argc, char* argv[]) try {
     parser->output_solution_tree(*output_stream_p);
   } else {
     // Perform a time benchmark loop executing the resolution several times.
-    for (int i=0; i<loop_iterations; ++i) {
+    for (int i = 0; i < loop_iterations; ++i) {
       PPL::PIP_Problem* pipp = new PPL::PIP_Problem(pip);
       pipp->solve();
       delete pipp;

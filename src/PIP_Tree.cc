@@ -1741,8 +1741,9 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       else {
         /* The solution is non-integer. We have to generate a cut. */
         PPL_DIRTY_TEMP_COEFFICIENT(mod);
-        if (problem.control_parameters[PIP_CUTTING_STRATEGY]
-            == PIP_CUTTING_STRATEGY_FIRST) {
+        const PIP_Problem::Control_Parameter_Value cutting_strategy
+          = problem.control_parameters[PIP_Problem::CUTTING_STRATEGY];
+        if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_FIRST) {
           // Find the first row with simplest parametric part.
           dimension_type best_i = n_a_d;
           dimension_type best_pcount = n_a_d;
@@ -1764,7 +1765,9 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
             }
           }
           i = best_i;
-        } else /* PIP_CUTTING_STRATEGY_DEEPEST */ {
+        }
+        else {
+          assert(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST);
           /* Find the row with simplest parametric part which will generate
             the "deepest" cut */
           PPL_DIRTY_TEMP_COEFFICIENT(score);

@@ -2343,6 +2343,21 @@ extern int PPL_PIP_PROBLEM_STATUS_UNFEASIBLE;
 */
 extern int PPL_PIP_PROBLEM_STATUS_OPTIMIZED;
 
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code for the PIP problem's "cutting strategy" control parameter name.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_CUTTING_STRATEGY;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of PIP problem's "first" cutting strategy.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_FIRST;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of PIP problem's "deepest" cutting strategy.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_DEEPEST;
+
 /*@}*/ /* Symbolic Constants */
 
 /*! \brief \name Constructors, Assignment and Destructor */
@@ -2799,6 +2814,26 @@ PPL_PROTO((ppl_const_PIP_Problem_t pip,
            ppl_const_PIP_Tree_Node_t* pip_tree));
 
 /*@}*/ /* Computing the Solution of the PIP_Problem */
+
+/*! \brief \name Querying/Setting Control Parameters */
+/*@{*/
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Returns the value of control parameter \p name in problem \p pip.
+*/
+int
+ppl_PIP_Problem_get_control_parameter
+PPL_PROTO((ppl_const_PIP_Problem_t pip, int name));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Sets control parameter \p value in problem \p pip.
+*/
+int
+ppl_PIP_Problem_set_control_parameter
+PPL_PROTO((ppl_PIP_Problem_t pip, int value));
+
+/*@}*/ /* Querying/Setting Control Parameters */
+
 
 /*! \relates ppl_PIP_Tree_Node_tag \brief
   Writes to \p dpip_tree the solution node if \p spip_tree is

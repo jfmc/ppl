@@ -288,13 +288,32 @@ public:
   //! Swaps \p *this with \p y.
   void swap(PIP_Problem& y);
 
-  //! Returns the control parameter value for parameter name \p n.
-  PIP_Problem_Control_Parameter_Value
-  get_control_parameter(PIP_Problem_Control_Parameter_Name n) const;
+  //! Possible names for PIP_Problem control parameters.
+  enum Control_Parameter_Name {
+    //! Cutting strategy
+    CUTTING_STRATEGY,
 
-  //! Sets the control parameter \p n to value \p v.
-  void set_control_parameter(PIP_Problem_Control_Parameter_Name n,
-                             PIP_Problem_Control_Parameter_Value v);
+    //! Number of different enumeration values.
+    CONTROL_PARAMETER_NAME_SIZE
+  };
+
+  //! Possible values for PIP_Problem control parameters.
+  enum Control_Parameter_Value {
+    //! Choose the first non-integer row
+    CUTTING_STRATEGY_FIRST,
+    //! Choose row which generates the deepest cut
+    CUTTING_STRATEGY_DEEPEST,
+
+    //! Number of different enumeration values.
+    CONTROL_PARAMETER_VALUE_SIZE
+  };
+
+  //! Returns the value of control parameter \p name.
+  Control_Parameter_Value
+  get_control_parameter(Control_Parameter_Name name) const;
+
+  //! Sets control parameter \p value.
+  void set_control_parameter(Control_Parameter_Value value);
 
   //! Sets the dimension for the big parameter
   void set_big_parameter_dimension(dimension_type x);
@@ -367,8 +386,8 @@ private:
   Matrix initial_context;
 
   //! The control parameters for the problem object.
-  PIP_Problem_Control_Parameter_Value
-  control_parameters[PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE];
+  Control_Parameter_Value
+  control_parameters[CONTROL_PARAMETER_NAME_SIZE];
 
   //! The dimension for the big parameter, or zero if not set.
   dimension_type big_parameter_dimension;

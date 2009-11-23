@@ -38,10 +38,10 @@ $(top_builddir)/utils/libppl_utils.a \
 #dist_man_MANS = \
 #ppl_pips.1
 
-piplib_lcdd.o: $(srcdir)/ppl_pips.cc $(top_builddir)/utils/libppl_utils.a
-	$(CXXCOMPILE) -c -o $@ -DUSE_POLKA $(srcdir)/ppl_pips.cc
+piplib_pips.o: $(srcdir)/ppl_pips.cc $(top_builddir)/utils/libppl_utils.a
+	$(CXXCOMPILE) -c -o $@ -DUSE_PIPLIB $(srcdir)/ppl_pips.cc
 
-piplib_lcdd: piplib_lcdd.o
+piplib_pips: piplib_pips.o
 	$(CXXLINK) $< -lpip -lgmpxx -lgmp $(top_builddir)/utils/libppl_utils.a
 
 EXTRA_DIST = \

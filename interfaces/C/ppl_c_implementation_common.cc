@@ -164,6 +164,10 @@ int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_TEXTBOOK;
 int PPL_PIP_PROBLEM_STATUS_UNFEASIBLE;
 int PPL_PIP_PROBLEM_STATUS_OPTIMIZED;
 
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_CUTTING_STRATEGY;
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_FIRST;
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_DEEPEST;
+
 int PPL_OPTIMIZATION_MODE_MINIMIZATION;
 int PPL_OPTIMIZATION_MODE_MAXIMIZATION;
 
@@ -208,6 +212,13 @@ ppl_initialize(void) try {
 
   PPL_PIP_PROBLEM_STATUS_UNFEASIBLE = UNFEASIBLE_PIP_PROBLEM;
   PPL_PIP_PROBLEM_STATUS_OPTIMIZED = OPTIMIZED_PIP_PROBLEM;
+
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_CUTTING_STRATEGY
+    = PIP_Problem::CUTTING_STRATEGY;
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_FIRST
+    = PIP_Problem::CUTTING_STRATEGY_FIRST;
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_DEEPEST
+    = PIP_Problem::CUTTING_STRATEGY_DEEPEST;
 
   PPL_OPTIMIZATION_MODE_MINIMIZATION = MINIMIZATION;
   PPL_OPTIMIZATION_MODE_MAXIMIZATION = MAXIMIZATION;
@@ -2256,6 +2267,25 @@ CATCH_ALL
 int
 ppl_PIP_Problem_OK(ppl_const_PIP_Problem_t pip) try {
   return to_const(pip)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_get_control_parameter(ppl_const_PIP_Problem_t pip,
+                                      int name) try {
+  PIP_Problem::Control_Parameter_Name n
+    = static_cast<PIP_Problem::Control_Parameter_Name>(name);
+  return to_const(pip)->get_control_parameter(n);
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_set_control_parameter(ppl_PIP_Problem_t pip,
+                                      int value) try {
+  PIP_Problem::Control_Parameter_Value v
+    = static_cast<PIP_Problem::Control_Parameter_Value>(value);
+  to_nonconst(pip)->set_control_parameter(v);
+  return 0;
 }
 CATCH_ALL
 
