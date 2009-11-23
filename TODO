@@ -4,6 +4,7 @@ Enhancements for PPL 0.11
 
 - Make all the *affine*image() methods uniform as far as the
   specification is concerned.
+- Look carefully at http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42115
 
 
 Commits to consider should we release PPL 0.10.3
