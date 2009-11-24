@@ -109,6 +109,48 @@ test04() {
   return ok;
 }
 
+bool
+test05() {
+  Variable X(0);
+  PIP_Problem pip(1);
+  pip.add_constraint(X == -X);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  // Solving again a problem already optimized.
+  ok &= (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable X(0);
+  PIP_Problem pip(1);
+  pip.add_constraint(X == -X);
+  pip.add_constraint(X >= 1);
+
+  bool ok = (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
+  // Solving again a problem already detected to be unfeasible.
+  ok &= (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable X(0);
+  PIP_Problem pip(1);
+  pip.add_constraint(X == -X);
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+
+  // Incrementally adding a constraint.
+  pip.add_constraint(X >= 1);
+  // Solving a problem that was optimized and now is unfeasible.
+  ok &= (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -116,4 +158,7 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST_F(test07);
 END_MAIN
