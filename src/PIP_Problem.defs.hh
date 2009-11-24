@@ -55,7 +55,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   The PIP problem is specified by providing:
    - the dimension of the vector space;
    - the feasible region, by means of a finite set of linear equality
-     and non-strict inequality constraints;
+     and (strict or non-strict) inequality constraints;
    - the subset of those dimensions of the vector space that are
      interpreted as integer parameters (the other space dimensions
      are interpreted as non-parameter integer variables);
@@ -124,9 +124,8 @@ public:
     Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
 
     \exception std::invalid_argument
-    Thrown if a constraint in the sequence is a strict inequality or
-    if the space dimension of a constraint (resp., the parameter
-    variables) is strictly greater than \p dim.
+    Thrown if the space dimension of a constraint in the sequence
+    (resp., the parameter variables) is strictly greater than \p dim.
   */
   template <typename In>
   PIP_Problem(dimension_type dim,
@@ -222,8 +221,8 @@ public:
     Adds a copy of constraint \p c to the PIP problem.
 
     \exception std::invalid_argument
-    Thrown if the constraint \p c is a strict inequality or if its space
-    dimension is strictly greater than the space dimension of \p *this.
+    Thrown if the space dimension of \p c is strictly greater than
+    the space dimension of \p *this.
   */
   void add_constraint(const Constraint& c);
 
@@ -231,9 +230,8 @@ public:
     Adds a copy of the constraints in \p cs to the PIP problem.
 
     \exception std::invalid_argument
-    Thrown if the constraint system \p cs contains any strict inequality
-    or if its space dimension is strictly greater than the space dimension
-    of \p *this.
+    Thrown if the space dimension of constraint system \p cs is strictly
+    greater than the space dimension of \p *this.
   */
   void add_constraints(const Constraint_System& cs);
 
@@ -345,8 +343,6 @@ private:
   enum Status {
     //! The PIP problem is unsatisfiable.
     UNSATISFIABLE,
-    //! The PIP problem is satisfiable; a feasible solution has been computed.
-    SATISFIABLE,
     //! The PIP problem is optimized; the solution tree has been computed.
     OPTIMIZED,
     /*! \brief

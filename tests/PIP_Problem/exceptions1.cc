@@ -82,19 +82,13 @@ test03() {
 
 bool
 test04() {
-  Variable X(0);
-  Constraint_System cs;
-  cs.insert(X < 1);
-
+  PIP_Problem pip;
   try {
-    // This is an incorrect use of the constructor:
-    // strict constraints are not allowed.
-    PIP_Problem pip(cs.space_dimension(),
-                    cs.begin(), cs.end(),
-                    Variables_Set());
+    // Adding too many space dimensions.
+    pip.add_space_dimensions_and_embed(1, PIP_Problem::max_space_dimension());
   }
-  catch (std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl << endl;
+  catch (std::length_error& e) {
+    nout << "length_error: " << e.what() << endl << endl;
     return true;
   }
   catch (...) {

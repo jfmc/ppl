@@ -46,34 +46,29 @@ PIP_Problem::PIP_Problem(dimension_type dim,
   // of the problem.
   if (p_vars.space_dimension() > external_space_dim) {
     std::ostringstream s;
-    s << "PPL::PIP_Problem::PIP_Problem"
-      << "(dim, first, last, p_vars):\n"
-      << "dim == "<< external_space_dim << " and p_vars.space_dimension() =="
-      << " " << p_vars.space_dimension() << " are dimension"
-      "incompatible.";
+    s << "PPL::PIP_Problem::PIP_Problem(dim, first, last, p_vars):\n"
+      << "dim == " << external_space_dim
+      << " and p_vars.space_dimension() == "
+      << p_vars.space_dimension()
+      << " are dimension incompatible.";
     throw std::invalid_argument(s.str());
   }
 
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
-    throw std::length_error("PPL::PIP_Problem::PIP_Problem(dim, first, "
-                            "last, p_vars):\n"
-                            "dim exceeds the maximum allowed"
+    throw std::length_error("PPL::PIP_Problem::"
+                            "PIP_Problem(dim, first, last, p_vars):\n"
+                            "dim exceeds the maximum allowed "
                             "space dimension.");
   // Check the constraints.
   for (In i = first; i != last; ++i) {
-    if (i->is_strict_inequality())
-      throw std::invalid_argument("PPL::PIP_Problem::"
-                                  "PIP_Problem(dim, first, last, p_vars):\n"
-                                  "range [first, last) contains"
-                                  "a strict inequality constraint.");
     if (i->space_dimension() > dim) {
       std::ostringstream s;
       s << "PPL::PIP_Problem::"
         << "PIP_Problem(dim, first, last, p_vars):\n"
-        << "range [first, last) contains a constraint having space"
-        << "dimension  == " << i->space_dimension() << " that exceeds"
-        "this->space_dimension == " << dim << ".";
+        << "range [first, last) contains a constraint having space "
+        << "dimension == " << i->space_dimension()
+        << " that exceeds this->space_dimension == " << dim << ".";
       throw std::invalid_argument(s.str());
     }
     input_cs.push_back(*i);

@@ -46,7 +46,7 @@ PPL::PIP_Problem::PIP_Problem(const dimension_type dim)
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
     throw std::length_error("PPL::PIP_Problem::PIP_Problem(dim):\n"
-                            "dim exceeds the maximum allowed"
+                            "dim exceeds the maximum allowed "
                             "space dimension.");
   control_parameters_init();
   PPL_ASSERT(OK());
@@ -94,8 +94,6 @@ PPL::PIP_Problem::solve() const {
   case OPTIMIZED:
     PPL_ASSERT(OK());
     return OPTIMIZED_PIP_PROBLEM;
-  case SATISFIABLE:
-    // Intentionally fall through.
   case PARTIALLY_SATISFIABLE:
     {
       PIP_Problem& x = const_cast<PIP_Problem&>(*this);
@@ -144,7 +142,7 @@ PPL::PIP_Problem::solve() const {
             --row[0];
           x.initial_context.add_row(row);
           if (c->is_equality()) {
-            for (i = 0; i < c_space_dim; ++i)
+            for (i = 0; i < num_params; ++i)
               row[i] = -row[i];
             x.initial_context.add_row(row);
           }
@@ -213,17 +211,8 @@ PPL::PIP_Problem::OK() const {
     if (!input_cs[i].OK())
       return false;
 
-  // Constraint system should contain no strict inequalities.
+  // Constraint system should be space dimension compatible.
   for (dimension_type i = input_cs_num_rows; i-- > 0; ) {
-    if (input_cs[i].is_strict_inequality()) {
-#ifndef NDEBUG
-      cerr << "The feasible region of the PIP_Problem is defined by "
-	   << "a constraint system containing strict inequalities."
-	   << endl;
-      ascii_dump(cerr);
-#endif
-      return false;
-    }
     if (input_cs[i].space_dimension() > external_space_dim) {
 #ifndef NDEBUG
       cerr << "The space dimension of the PIP_Problem is smaller than "
@@ -289,9 +278,6 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
   case UNSATISFIABLE:
     s << "UNSATISFIABLE";
     break;
-  case SATISFIABLE:
-    s << "SATISFIABLE";
-    break;
   case OPTIMIZED:
     s << "OPTIMIZED";
     break;
@@ -307,7 +293,7 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
   s << "\ninitial_context";
   initial_context.ascii_dump(s);
 
-  s << "\ncontrol_parameters";
+  s << "\ncontrol_parameters\n";
   for (dimension_type i = 0; i < CONTROL_PARAMETER_NAME_SIZE; ++i) {
     Control_Parameter_Value value = control_parameters[i];
     switch (value) {
@@ -388,8 +374,6 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
 
   if (str == "UNSATISFIABLE")
     status = UNSATISFIABLE;
-  else if (str == "SATISFIABLE")
-    status = SATISFIABLE;
   else if (str == "OPTIMIZED")
     status = OPTIMIZED;
   else if (str == "PARTIALLY_SATISFIABLE")
@@ -488,7 +472,7 @@ PPL::PIP_Problem
   if (p_vars.space_dimension() > external_space_dim)
     throw std::invalid_argument("PPL::PIP_Problem::"
 				"add_to_parameter_space_dimension(p_vars):\n"
-				"*this and p_vars are dimension"
+				"*this and p_vars are dimension "
 				"incompatible.");
   const dimension_type original_size = parameters.size();
   parameters.insert(p_vars.begin(), p_vars.end());
@@ -515,16 +499,10 @@ PPL::PIP_Problem::add_constraint(const Constraint& c) {
     std::ostringstream s;
     s << "PPL::PIP_Problem::add_constraint(c):\n"
       << "dim == "<< external_space_dim << " and c.space_dimension() =="
-      << " " << c.space_dimension() << " are dimension"
+      << " " << c.space_dimension() << " are dimension "
       "incompatible.";
     throw std::invalid_argument(s.str());
   }
-
-  // Check the constraint.
-  if (c.is_strict_inequality())
-    throw std::invalid_argument("PPL::PIP_Problem::add_constraint(c):\n"
-                                "constraint c is"
-                                "a strict inequality constraint.");
   input_cs.push_back(c);
 }
 

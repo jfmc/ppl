@@ -111,10 +111,7 @@ test04() {
 
 bool
 test05() {
-  Variable X(0);
   PIP_Problem pip(1);
-  pip.add_constraint(X == -X);
-
   bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
   // Solving again a problem already optimized.
   ok &= (pip.solve() == OPTIMIZED_PIP_PROBLEM);
@@ -151,6 +148,42 @@ test07() {
   return ok;
 }
 
+bool
+test08() {
+  Variable X(0);
+  Variable Y(1);
+  Variable Z(2);
+
+  Constraint_System cs;
+  cs.insert(X == 2);
+  cs.insert(Y < 1);
+  cs.insert(Z == 7);
+
+  Variables_Set params(Y, Z);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable X(0);
+  Variable Y(1);
+  Variable Z(2);
+
+  PIP_Problem pip(3);
+  pip.add_constraint(X == 2);
+  pip.add_constraint(Y < 1);
+  pip.add_constraint(Z == 7);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -160,5 +193,7 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-  DO_TEST_F(test07);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
