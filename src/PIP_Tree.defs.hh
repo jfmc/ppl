@@ -372,8 +372,10 @@ private:
   */
   dimension_type special_equality_row;
 
-  /*! \brief The column number in the parametric part of the simplex tableau
-    which corresponds to the big parameter
+  /*! \brief
+    The column number in the parametric part of the simplex tableau
+    which corresponds to the big parameter; \c not_a_dimension()
+    if not set.
   */
   dimension_type big_dimension;
 

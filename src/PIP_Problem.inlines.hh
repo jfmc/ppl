@@ -73,14 +73,12 @@ PIP_Problem::operator=(const PIP_Problem& y) {
   return *this;
 }
 
-//! Returns the control parameter value for parameter name \p n.
 inline PIP_Problem::Control_Parameter_Value
 PIP_Problem::get_control_parameter(Control_Parameter_Name n) const {
   assert(n >= 0 && n < CONTROL_PARAMETER_NAME_SIZE);
   return control_parameters[n];
 }
 
-//! Gets the dimension for the big parameter
 inline dimension_type
 PIP_Problem::get_big_parameter_dimension() const {
   return big_parameter_dimension;

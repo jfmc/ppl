@@ -92,10 +92,28 @@ test03() {
   return ok;
 }
 
+bool
+test04() {
+  PIP_Problem pip(6);
+  Variables_Set params(Variable(3), Variable(5));
+  pip.add_to_parameter_space_dimensions(params);
+
+  bool ok = (pip.get_big_parameter_dimension() == not_a_dimension());
+
+  pip.set_big_parameter_dimension(3);
+  ok &= (pip.get_big_parameter_dimension() == 3);
+
+  pip.set_big_parameter_dimension(5);
+  ok &= (pip.get_big_parameter_dimension() == 5);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN

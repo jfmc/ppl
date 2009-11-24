@@ -318,7 +318,11 @@ public:
   //! Sets the dimension for the big parameter
   void set_big_parameter_dimension(dimension_type x);
 
-  //! Gets the dimension for the big parameter
+  /*! \brief
+    Returns the space dimension for the big parameter.
+
+    If a big parameter was not set, returns \c not_a_dimension().
+  */
   dimension_type get_big_parameter_dimension() const;
 
 private:
@@ -389,7 +393,10 @@ private:
   Control_Parameter_Value
   control_parameters[CONTROL_PARAMETER_NAME_SIZE];
 
-  //! The dimension for the big parameter, or zero if not set.
+  /*! \brief
+    The dimension for the big parameter, or \c not_a_dimension()
+    if not set.
+  */
   dimension_type big_parameter_dimension;
 };
 

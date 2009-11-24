@@ -230,7 +230,7 @@ PIP_Solution_Node::PIP_Solution_Node()
     var_row(),
     var_column(),
     special_equality_row(0),
-    big_dimension(0),
+    big_dimension(not_a_dimension()),
     sign(),
     solution(),
     solution_valid(false) {
@@ -923,7 +923,7 @@ PIP_Solution_Node
 
 PIP_Solution_Node::Row_Sign
 PIP_Solution_Node::row_sign(const Row &x, dimension_type big_dimension) {
-  if (big_dimension > 0) {
+  if (big_dimension != not_a_dimension()) {
     /* If a big parameter has been set and its coefficient is not zero,
       just return the sign of the coefficient */
     const Coefficient &c = x[big_dimension];
@@ -1173,7 +1173,8 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
     }
   }
   internal_space_dim = external_space_dim;
-  if (big_dimension == 0 && problem.big_parameter_dimension > 0) {
+  if (big_dimension == not_a_dimension()
+      && problem.big_parameter_dimension != not_a_dimension()) {
     // Compute the column number of big parameter in tableau.t matrix
     Variables_Set::const_iterator begin = parameters.begin();
     Variables_Set::const_iterator pos

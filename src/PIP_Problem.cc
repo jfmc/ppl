@@ -42,7 +42,7 @@ PPL::PIP_Problem::PIP_Problem(const dimension_type dim)
     first_pending_constraint(0),
     parameters(),
     initial_context(),
-    big_parameter_dimension(0) {
+    big_parameter_dimension(not_a_dimension()) {
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
     throw std::length_error("PPL::PIP_Problem::PIP_Problem(dim):\n"
@@ -247,7 +247,7 @@ PPL::PIP_Problem::OK() const {
     return false;
   }
 
-  if (big_parameter_dimension != 0
+  if (big_parameter_dimension != not_a_dimension()
       && parameters.count(big_parameter_dimension) == 0) {
 #ifndef NDEBUG
     cerr << "The current value for the big parameter is not a parameter "
@@ -323,7 +323,9 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
     s << "\n";
   }
 
-  s << "\nbig_parameter_dimension: " << big_parameter_dimension << " \n";
+  s << "\nbig_parameter_dimension: "
+    << big_parameter_dimension
+    << "\n";
 }
 
 PPL_OUTPUT_DEFINITIONS(PIP_Problem)
@@ -447,7 +449,7 @@ PPL::PIP_Problem::clear() {
   parameters.clear();
   initial_context.clear();
   control_parameters_init();
-  big_parameter_dimension = 0;
+  big_parameter_dimension = not_a_dimension();
 }
 
 void
@@ -557,12 +559,12 @@ PPL::PIP_Problem::set_control_parameter(Control_Parameter_Value value) {
 void
 PPL::PIP_Problem::set_big_parameter_dimension(dimension_type x) {
   if (parameters.count(x) == 0)
-    throw std::invalid_argument("PPL::PIP_Problem::set_big_parameter_dimension"
-                                "(x):\n"
+    throw std::invalid_argument("PPL::PIP_Problem::"
+                                "set_big_parameter_dimension(x):\n"
                                 "dimension 'x' is not a parameter.");
   if (x < internal_space_dim)
-    throw std::invalid_argument("PPL::PIP_Problem::set_big_parameter_dimension"
-                                "(x):\n"
+    throw std::invalid_argument("PPL::PIP_Problem::"
+                                "set_big_parameter_dimension(x):\n"
                                 "only newly-added parameters can be"
                                 "converted into the big parameter.");
   big_parameter_dimension = x;
