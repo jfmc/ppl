@@ -50,6 +50,7 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 TESTS = \
+exceptions1 \
 pipproblem1 pipproblem2
 
 XFAIL_TESTS =
@@ -59,6 +60,8 @@ BUGS =
 #
 # Sources for the tests
 #
+
+exceptions1_SOURCES = exceptions1.cc
 
 pipproblem1_SOURCES = pipproblem1.cc
 pipproblem2_SOURCES = pipproblem2.cc
