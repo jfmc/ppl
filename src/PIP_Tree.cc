@@ -112,29 +112,6 @@ update_context(Variables_Set &params, Matrix &context,
   }
 }
 
-void
-row_normalize(Row& x) {
-  dimension_type size = x.size();
-  if (size == 0)
-    return;
-  dimension_type j;
-  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-  gcd = x[0];
-  for (j=1; j<size; ++j) {
-    const Coefficient& c = x[j];
-    if (c != 0) {
-      gcd_assign(gcd, c, gcd);
-      if (gcd == 1)
-        return;
-    }
-  }
-  // Divide the coefficients by the GCD.
-  for (j=0; j<size; ++j) {
-    Coefficient& c = x[j];
-    exact_div_assign(c, c, gcd);
-  }
-}
-
 } // namespace
 
 namespace IO_Operators {
@@ -1605,7 +1582,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
                   << std::endl;
 #endif
         Row r(tableau.t[i]);
-        row_normalize(r);
+        r.normalize();
         context.add_row(r);
         add_constraint(r, parameters);
         sign[i] = POSITIVE;
@@ -1639,7 +1616,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         i__ = best_i;
 
         Row test(tableau.t[i__]);
-        row_normalize(test);
+        test.normalize();
 #ifdef NOISY_PIP
         {
           using namespace IO_Operators;
