@@ -1087,18 +1087,26 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
         // Found an integer solution, thus the check is successful
         return true;
       }
-      // Generate a new cut
-      var_row.push_back(mapping.size());
-      basis.push_back(false);
-      mapping.push_back(num_rows);
-      s.add_zero_rows(1, Row::Flags());
-      const Row& row = s[i_];
-      Row& cut = s[num_rows++];
-      scaling.push_back(scaling[i_]);
-      const Coefficient& sc = scaling[i_];
-      for (j=0; j<num_cols; ++j)
-        mod_assign(cut[j], row[j], sc);
-      cut[0] -= sc;
+      for (i = 0; i < num_vars; ++i) {
+        if (basis[i])
+          // basic variable = 0 -> integer
+          continue;
+        i_ = mapping[i];
+        const Coefficient& d = scaling[i_];
+        if (s[i_][0] % d == 0)
+          continue;
+        // Constant term is not integer. Generate a new cut.
+        var_row.push_back(mapping.size());
+        basis.push_back(false);
+        mapping.push_back(num_rows);
+        s.add_zero_rows(1, Row::Flags());
+        const Row& row = s[i_];
+        Row& cut = s[num_rows++];
+        for (j = 0; j < num_cols; ++j)
+          mod_assign(cut[j], row[j], d);
+        cut[0] -= d;
+        scaling.push_back(d);
+      }
       continue;
     }
 
