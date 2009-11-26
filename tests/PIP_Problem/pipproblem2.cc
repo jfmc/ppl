@@ -184,6 +184,18 @@ test09() {
   return ok;
 }
 
+bool
+test10() {
+  Variable A(0);
+  Constraint_System cs;
+  cs.insert(A >= 5);
+
+  PIP_Problem pip1(3, cs.begin(), cs.end(), Variables_Set());
+  bool ok = (pip1.solve() == OPTIMIZED_PIP_PROBLEM);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -196,4 +208,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN
