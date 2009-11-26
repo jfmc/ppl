@@ -127,10 +127,11 @@ PPL::PIP_Problem::solve() const {
           x.external_space_dim = c_space_dim;
         bool has_nonzero_variable_coefficient = false;
         for (i = 0; i < c_space_dim; ++i) {
-          if (c->coefficient(Variable(i)) != 0 && parameters.count(i) == 0)
+          if (c->coefficient(Variable(i)) != 0 && parameters.count(i) == 0) {
             /* Constraint should not be inserted in context. */
             has_nonzero_variable_coefficient = true;
             break;
+          }
         }
         if (!has_nonzero_variable_coefficient) {
           // At this point, the constraint must be translated into context row.
