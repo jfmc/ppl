@@ -1051,22 +1051,19 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
     // Look for a negative RHS (=constant term, stored in matrix column 0)
     i = num_rows;
     j = 0;
-    for (i_=0; i_<num_rows; ++i_) {
-      const Row& rs = s[i_];
-      if (rs[0] < 0) {
-        if (i == num_rows)
-          i = i_;
-        for (j_=1; j_<num_cols; ++j_) {
-          // Search for first least nonnegative pivot candidate
-          const Coefficient& c = rs[j_];
-          if (c > 0 && (j == 0 || c < rs[j]))
-            j = j_;
-        }
-        if (j == 0) {
-          // No positive pivot candidate: empty problem
-          return false;
-        }
-        break;
+
+    // Find Pivot row i and pivot column j, by maximizing the pivot column
+    for (i_ = 0; i_ < num_rows; ++i_) {
+      if (s[i_][0] >= 0)
+        continue;
+      if (!find_lexico_minimum_column(s, mapping, basis, s[i_], 1, j_)) {
+        // No positive pivot candidate: empty problem
+        return false;
+      }
+      if (j == 0 || column_lower(s, mapping, basis,
+                    s[i], j, s[i_], j_, s[i][0], s[i_][0])) {
+        i = i_;
+        j = j_;
       }
     }
 
