@@ -50,6 +50,7 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 TESTS = \
+ascii_dump_load1 \
 exceptions1 \
 pipproblem1 pipproblem2
 
@@ -60,6 +61,8 @@ BUGS =
 #
 # Sources for the tests
 #
+
+ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 
 exceptions1_SOURCES = exceptions1.cc
 
@@ -73,7 +76,8 @@ $(BUGS)
 
 #EXTRA_DIST =
 
-#MOSTLYCLEANFILES =
+MOSTLYCLEANFILES = \
+ascii_dump_load1.dat
 
 $(top_builddir)/utils/libppl_utils.a:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
