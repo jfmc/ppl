@@ -1032,12 +1032,12 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
   std::vector<dimension_type> var_column;
   // Column 0 is the constant term, not a variable
   var_column.push_back(not_a_dimension());
-  for (j=1; j<=num_vars; ++j) {
+  for (j = 1; j <= num_vars; ++j) {
     basis.push_back(true);
     mapping.push_back(j);
     var_column.push_back(j-1);
   }
-  for (i=0; i<num_rows; ++i) {
+  for (i = 0; i < num_rows; ++i) {
     basis.push_back(false);
     mapping.push_back(i);
     var_row.push_back(i+num_vars);
@@ -1073,17 +1073,20 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
     if (j == 0) {
       // No negative RHS: fractional optimum found. If it is integer, then
       // the test is successful. Otherwise, generate a new cut.
+      bool all_integer_vars = true;
       for (i=0; i<num_vars; ++i) {
         if (basis[i])
           // basic variable = 0 -> integer
           continue;
         // nonbasic variable
         i_ = mapping[i];
-        if (s[i_][0] % scaling[i_] != 0)
-          // constant term is not integer
+        if (s[i_][0] % scaling[i_] != 0) {
+          // Constant term is not integer.
+          all_integer_vars = false;
           break;
+        }
       }
-      if (i==num_vars) {
+      if (all_integer_vars) {
         // Found an integer solution, thus the check is successful
         return true;
       }
@@ -1124,14 +1127,14 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
     scaling[i] = 1;
 
     // Perform a pivot operation on the matrix
-    for (j_=0; j_<num_cols; ++j_) {
+    for (j_ = 0; j_ < num_cols; ++j_) {
       if (j_ == j)
         continue;
       const Coefficient& sij_ = p[j_];
       if (sij_ == 0)
         // if element j of pivot row is zero, nothing to do for this column
         continue;
-      for (k=0; k<num_rows; ++k) {
+      for (k = 0; k < num_rows; ++k) {
         Row& row = s[k];
         mult = row[j] * sij_;
         if (mult % sij != 0) {
