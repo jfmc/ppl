@@ -112,6 +112,79 @@ update_context(Variables_Set &params, Matrix &context,
   }
 }
 
+/* Compares two columns lexicographically in revised simplex tableau
+  - Returns true if (column ja)*(-cst_a)/pivot_a[ja]
+                    << (column jb)*(-cst_b)/pivot_b[jb]
+  - Returns false otherwise
+*/
+bool
+column_lower(const Matrix& tableau,
+             const std::vector<dimension_type>& mapping,
+             const std::vector<bool>& basis,
+             const Row& pivot_a,
+             dimension_type ja,
+             const Row& pivot_b,
+             dimension_type jb,
+             const Coefficient& cst_a = -1,
+             const Coefficient& cst_b = -1) {
+  PPL_DIRTY_TEMP_COEFFICIENT(cij_a);
+  PPL_DIRTY_TEMP_COEFFICIENT(cij_b);
+  const Coefficient& sij_a = pivot_a[ja];
+  const Coefficient& sij_b = pivot_b[jb];
+  PPL_ASSERT(sij_a > 0);
+  PPL_ASSERT(sij_b > 0);
+  if (ja == jb) {
+    // Same column: just compare the ratios.
+    // This works since all columns are lexico-positive.
+    return cst_a * sij_b > cst_b * sij_a;
+  }
+
+  dimension_type k = 0;
+  dimension_type num_vars = mapping.size();
+  do {
+    dimension_type mk = mapping[k];
+    if (basis[k]) {
+      // Reconstitute the identity submatrix part of tableau.
+      cij_a = (mk==ja) ? 1 : 0;
+      cij_b = (mk==jb) ? 1 : 0;
+    } else {
+      cij_a = tableau[mk][ja];
+      cij_b = tableau[mk][jb];
+    }
+    ++k;
+  } while (k < num_vars && cij_a * cst_a * sij_b == cij_b * cst_b * sij_a);
+  return k < num_vars && cij_a * cst_a * sij_b > cij_b * cst_b * sij_a;
+}
+
+/* Find the column j in revised simplex tableau such as
+  - pivot_row[j] is positive
+  - (column j) / pivot_row[j] is lexico-minimal
+*/
+bool
+find_lexico_minimum_column(const Matrix& tableau,
+                           const std::vector<dimension_type>& mapping,
+                           const std::vector<bool>& basis,
+                           const Row& pivot_row,
+                           dimension_type start_j,
+                           dimension_type& j) {
+  dimension_type num_cols = tableau.num_columns();
+  bool has_positive_coefficient = false;
+
+  j = num_cols;
+  for (dimension_type j_ = start_j; j_ < num_cols; ++j_) {
+    const Coefficient& c = pivot_row[j_];
+    if (c <= 0)
+      continue;
+    has_positive_coefficient = true;
+    if (j == num_cols
+        || column_lower(tableau, mapping, basis, pivot_row, j_, pivot_row, j))
+      j = j_;
+  }
+  return has_positive_coefficient;
+}
+
+
+
 } // namespace
 
 namespace IO_Operators {
@@ -1386,45 +1459,14 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       std::cout << "Found row with negative parameters: " << i_
                 << std::endl;
 #endif
-      dimension_type k;
-      const Row& row = tableau.s[i_];
-      PPL_DIRTY_TEMP_COEFFICIENT(sij);
-      PPL_DIRTY_TEMP_COEFFICIENT(cij);
-      PPL_DIRTY_TEMP_COEFFICIENT(cij_);
       /* Look for a positive S_ij such as the j^th column/S_ij is
          lexico-minimal
       */
-      dimension_type j_ = n_a_d;
-      for (j=0; j<num_vars; ++j) {
-        if (row[j] > 0) {
-          if (j_ == n_a_d) {
-            j_ = j;
-            sij = row[j];
-          } else {
-            /* Determine which column (j or j_) is lexico-minimal */
-            dimension_type k = 0;
-            do {
-              dimension_type mk = mapping[k];
-              if (basis[k]) {
-                /* reconstitute the identity submatrix part of S */
-                cij = (mk==j) ? tableau.get_denominator() : 0;
-                cij_ = (mk==j_) ? tableau.get_denominator() : 0;
-              } else {
-                cij = tableau.s[mk][j];
-                cij_ = tableau.s[mk][j_];
-              }
-              ++k;
-            } while (k < num_vars && cij * sij == cij_ * row[j]);
-            if (k < num_vars && cij * sij < cij_ * row[j]) {
-              j_ = j;
-              sij = row[j];
-            }
-          }
-        }
-      }
-
-      /* If no positive S_ij: problem is empty */
-      if (j_ == n_a_d) {
+      PPL_DIRTY_TEMP_COEFFICIENT(sij);
+      dimension_type j_;
+      if (!find_lexico_minimum_column(tableau.s, mapping, basis,
+                                      tableau.s[i_], 0, j_)) {
+        /* If no positive S_ij: problem is empty */
 #ifdef NOISY_PIP
         std::cout << "No positive pivot found: Solution = _|_"
                   << std::endl;
@@ -1433,6 +1475,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         delete this;
         return UNFEASIBLE_PIP_PROBLEM;
       }
+      sij = tableau.s[i_][j_];
 #ifdef NOISY_PIP
       std::cout << "Pivot column: " << j_
                 << std::endl;
@@ -1464,6 +1507,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       sij_denom = tableau.get_denominator();
       /* Compute columns s[*][j] : s[k][j] -= s[k][j_] * prs[j] / sij */
       PPL_DIRTY_TEMP_COEFFICIENT(scale_factor);
+      dimension_type k;
       for (j=0; j<num_vars; ++j) {
         if (j==j_)
           continue;
