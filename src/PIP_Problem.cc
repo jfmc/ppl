@@ -103,6 +103,7 @@ PPL::PIP_Problem::solve() const {
         x.current_solution = new PIP_Solution_Node();
       if (input_cs.empty()) {
         // No constraints: solution = {0}.
+        x.status = OPTIMIZED;
         return OPTIMIZED_PIP_PROBLEM;
       }
 
@@ -291,7 +292,7 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
   s << "\nparameters";
   parameters.ascii_dump(s);
 
-  s << "\ninitial_context";
+  s << "\ninitial_context\n";
   initial_context.ascii_dump(s);
 
   s << "\ncontrol_parameters\n";
