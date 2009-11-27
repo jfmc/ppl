@@ -1270,7 +1270,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
         ++v;
       }
     }
-    if (row_sign(var, 0) != ZERO) {
+    if (row_sign(var, not_a_dimension()) != ZERO) {
       /* parametric-only constraints have already been inserted in initial
         context, so no need to insert them in the tableau
       */
