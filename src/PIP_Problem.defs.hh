@@ -54,34 +54,159 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   programming problem.
   The PIP problem is specified by providing:
    - the dimension of the vector space;
-   - the feasible region, by means of a finite set of linear equality
-     and (strict or non-strict) inequality constraints;
    - the subset of those dimensions of the vector space that are
      interpreted as integer parameters (the other space dimensions
      are interpreted as non-parameter integer variables);
+   - the feasible region, by means of a finite set of linear equality
+     and (strict or non-strict) inequality constraints involving both
+     variables and parameters;
+   - optionally, an initial context restricting the definition domain for
+     the parameters, by means of a finite set of linear equality and
+     (strict or non-strict) inequality constraints involving only
+     parameters;
+   - optionally, the dimension of a parameter to be considered arbitrarily
+     big; such a parameter is called the &ldquo;big parameter&rdquo;.
 
-   // FIXME: should the non-negativity constraints be assumed?
-   // If that is the case, the problem will always be either
-   // unfeasible or optimizable (since the origin of the vector
-   // space is the minimum for the unconstrained non-negative problem).
-
-   - the optimization mode (either maximization or minimization).
+  All variables and parameters are considered non-negative integers.
 
   The class provides support for the (incremental) solution of the
   PIP problem based on variations of the revised simplex method and
-  on branch-and-bound techniques. The result of the resolution
-  process is expressed in terms of an enumeration, encoding the
-  feasibility and the unboundedness of the optimization problem.
-  The class supports simple feasibility tests (i.e., no optimization),
-  as well as the extraction of an optimal (resp., feasible) point,
-  provided the PIP_Problem is optimizable (resp., feasible).
+  on Gomory cut generation techniques.
+
+  The solution for a PIP problem is the lexicographic minimum of the
+  integer points of the feasible region, expressed in terms of the
+  parameters. As the problem to be solved only involves non-negative
+  variables and parameters, the problem will always be either unfeasible
+  or optimizable.
+
+  As the feasibility and the solution value of a PIP problem depend on the
+  values of the parameters, the solution is a binary decision tree,
+  dividing the context parameter set into subsets. The tree nodes are:
+   - decision nodes, encoding one or more linear tests on the parameters;
+     if all the tests are true, then the solution is the node's
+     &ldquo;true&rdquo; child, otherwise the solution is the node's
+     &ldquo;false&rdquo; child;
+   - solution nodes, encoding the solution of the problem in the current
+     context subset, where each variable is defined in terms of a linear
+     expression of the parameters.
+
+  Concerning the decision nodes, it may happen that a decision node has no
+  &ldquo;false&rdquo; or &ldquo;true&rdquo; child. This means the
+  corresponding test leads to an unfeasible solution. In addition, decision
+  nodes with two or more linear tests cannot have a &ldquo;false&rdquo;
+  child.
+
+  Both tree node types may also contain the definition of extra parameters
+  which are artificially introduced by the solver to keep the solution
+  values integer. Such artificial parameters are defined by the integer
+  division of a linear expression on the parameters by an integer
+  coefficient.
 
   By exploiting the incremental nature of the solver, it is possible
   to reuse part of the computational work already done when solving
   variants of a given PIP_Problem: currently, incremental resolution
   supports the addition of space dimensions, the addition of constraints,
   the change of objective function and the change of optimization mode.
+
+  \par Example problem
+  An example PIP problem can be defined the following:
+  \code
+  3*j >= -2*i+8
+  j <= 4*i - 4
+  i <= n
+  j <= m
+  \endcode
+  where \c i and \c j are variables, and \c n and \c m are parameters.
+  The resulting solution tree is:
+  \code
+  if 7*n >= 10 then
+    if 7*m >= 12 then
+      {i = 2 ; j = 2}
+    else
+      New Parameter P = (m) div 2
+      if 2*n + 3*m >= 8 then
+        {i = -m - P + 4 ; j = m}
+      else
+        _|_
+  else
+    _|_
+  \endcode
+  The \f$\perp\f$ notation, also called &ldquo;bottom&rdquo;, denotes
+  the lexicographic minimum of an empty set, here meaning the problem is
+  infeasible.\n
+  Also notice that a new parameter is defined after the first \c else. It
+  is only valid inside the block where it is defined, and is used when
+  formulating the value of the <tt>{i,j}</tt> vector.
+
+  \par Context restriction
+  The above solution is correct in an unrestricted original context,
+  meaning all possible values are allowed for the parameters. If we
+  restrict the context with the following parameter inequalities:
+  \code
+  m >= n
+  n >= 5
+  \endcode
+  then the result will simply be:
+  \code
+  {i = 2 ; j = 2}
+  \endcode
+
+  \par Problem object creation
+  The PIP_Problem object correspondind to the above example problem can be
+  created like follows:
+  \code
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  \endcode
+  If you want to restrict the original context, simply add the parameter
+  constraints the same way as for normal constraints.
+  \code
+  cs.insert(m >= n);
+  cs.insert(n >= 5);
+  \endcode
+
+  \par Problem solving
+  Once a PIP_Problem object has been created, you can start the
+  resolution of the problem by calling the solve() method:
+  \code
+  PIP_Problem_Status status;
+  status = pip.solve();
+  \endcode
+  where the returned \c status indicates if the problem has been optimized
+  or if it is unfeasible for any possible configuration of the parameter
+  values.
+
+  \par Solution tree spanning
+  Retrieve the optimized decision tree:
+  \code
+  const PIP_Tree_Node* node = solution();
+  \endcode
+  If the pointer designates a \f$\perp\f$ solution (infeasible), its value
+  is \c 0.\n
+  FIXME: insert_artificials()
+
+  To check whether a non-null tree node pointer designates a solution or a
+  decision node, you can call the as_decision() and as_solution() virtual
+  methods:
+  \code
+  const PIP_Solution_Node* sol = node->as_solution();
+  const PIP_Decision_Node* dec = node->as_decision();
+  \endcode
+  Exactly one of the \c sol and \c dec pointers will be \c 0. Then the
+  node type is of the kind of the non-null pointer.\n
+  FIXME: list of decision node tests, get true and false children
+  FIXME: list expressions of variables.
 */
+
 class Parma_Polyhedra_Library::PIP_Problem {
   friend class PIP_Solution_Node;
 public:
