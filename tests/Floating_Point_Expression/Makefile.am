@@ -132,7 +132,7 @@ print_INSTANCES:
 # Sources for the tests
 #
 
-reatelimiter_SOURCES = ratelimiter.cc
+ratelimiter_SOURCES = ratelimiter.cc
 
 digitalfilters1_SOURCES = digitalfilters1.cc
 
