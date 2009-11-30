@@ -88,7 +88,10 @@ operator<<(std::ostream& s, const PIP_Problem& p);
      &ldquo;false&rdquo; child;
    - solution nodes, encoding the solution of the problem in the current
      context subset, where each variable is defined in terms of a linear
-     expression of the parameters.
+     expression of the parameters. Solution nodes also embed an optionally
+     not empty set of parameter constraints, meaning if all constraint tests
+     are true, the solution is described by the node, otherwise the problem
+     is empty.
 
   Concerning the decision nodes, it may happen that a decision node has no
   &ldquo;false&rdquo; or &ldquo;true&rdquo; child. This means the
@@ -186,25 +189,86 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   values.
 
   \par Solution tree spanning
-  Retrieve the optimized decision tree:
+  Retrieve the optimized solution decision tree:
   \code
   const PIP_Tree_Node* node = solution();
   \endcode
   If the pointer designates a \f$\perp\f$ solution (infeasible), its value
   is \c 0.\n
-  FIXME: insert_artificials()
-
   To check whether a non-null tree node pointer designates a solution or a
-  decision node, you can call the as_decision() and as_solution() virtual
-  methods:
+  decision node, you can call the PIP_Tree_Node::as_decision() and
+  PIP_Tree_Node::as_solution() virtual methods:
   \code
   const PIP_Solution_Node* sol = node->as_solution();
-  const PIP_Decision_Node* dec = node->as_decision();
+  if (sol != 0) {
+    // The node is a solution node
+    ...
+  }
+  else {
+    // The node is a decision node
+    const PIP_Decision_Node* dec = node->as_decision();
+    ...
+  }
   \endcode
-  Exactly one of the \c sol and \c dec pointers will be \c 0. Then the
-  node type is of the kind of the non-null pointer.\n
-  FIXME: list of decision node tests, get true and false children
-  FIXME: list expressions of variables.
+
+  \par
+  To access the two child nodes of a Decision Node, use the
+  PIP_Tree_Node::child_node(bool) method, using \b true or \b false as an
+  argument to access the child node you want.
+
+  \par Artificial parameters
+  The expression of an artificial parameter is stored in an
+  PIP_Tree_Node::Artificial_Parameter object, which encodes the integer
+  division of a Linear_Expression (only expressed in terms of the other
+  parameters, including the previously-defined artificials) by a
+  denominator Coefficient.
+  To get the effective value of an artificial parameter, just divide the
+  result of the Linear_Expression applied to the effective values of the
+  other parameters by the value of the denominator.
+  The dimensions of the artificial parameters in a node can be computed as
+  <tt>dim</tt>, <tt>dim+1</tt>, ... where <tt>dim</tt>'s value is computed
+  the following way:
+   - for the root node \c dim is the maximum space dimension of the
+     original problem, plus one.
+   - for any other node of the tree, it is the sum of the \c dim value
+     computed for the parent node, plus the total number of artificial
+     parameters in the parent node.
+  \par
+  The definition of artificial parameters' dimension values always follow
+  this rule. If you choose to add a new variable or parameter on a problem
+  which already has a solution (incremental solving), all artificial
+  parameters in the solution will have their dimension values incremented.
+
+  \par Node constraints
+  All node types can embed parameter-only constraints. Decision nodes
+  contain at least one of them. You can access the node's constraints set
+  using the PIP_Tree_Node::constraints() method.
+  The signification of the node constraints is the following:
+   - On a decision node, if all tests in the constraints are true, then the
+     solution is the &ldquo;true&rdquo; child; otherwise it is the
+     &ldquo;false&rdquo; child. If the number of constraints is greater than
+     one, the &ldquo;false&rdquo; child is always infeasible.
+   - On a solution node, if the constraint set is empty or all tests in the
+     constraints are true, then the solution is described by the node;
+     otherwise the solution is \f$\perp\f$ (infeasible problem).
+  \par
+  Node constraints always are defined in terms of the parameters, including
+  those from the original problem and any of the artificial parameters
+  defined in nodes which belong to the path from the root to the concerned
+  node.
+
+  \par Getting the optimal values for the variables
+  Once having spanned the solution tree using the actual values of the
+  parameters, and having ended at a solution node, you can fetch the
+  parametric expression of any of the variables using the
+  PIP_Solution_Node::parametric_values() method.
+  \par
+  Variable expressions always are defined in terms of the parameters,
+  including those from the original problem and any of the artificial
+  parameters defined in nodes which belong to the path from the root to the
+  concerned node.
+
+  FIXME: different uses of the big parameter.
 */
 
 class Parma_Polyhedra_Library::PIP_Problem {
