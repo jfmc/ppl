@@ -2912,43 +2912,6 @@ PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
            ppl_Artificial_Parameter_Sequence_const_iterator_t pit));
 
 /*! \relates ppl_PIP_Tree_Node_tag \brief
-  Inserts in parameter set the parameter indices corresponding to local
-  artificials.
-
-  This utility method can typically be used by user programs when spanning a
-  solution tree. As new parameters may be defined in tree nodes by the solver,
-  local solutions are likely to be expressed in terms of both the upper level
-  parameters and the local ones.
-
-  The resulting space dimension is the sum of \p space_dim and the
-  returned number of inserts indices.
-
-  \param pip_tree
-  the pip tree node whose artificial parameter indices are queried about
-
-  \param ds
-  an array containing the current parameter indices, which will be updated
-  with the local indices, and must be properly dimensioned in order the new
-  indices to be inserted
-
-  \param n
-  number of current valid parameter indices in \p ds (excluding the values to
-  be inserted)
-
-  \param space_dim
-  the space dimension for \p pip_tree (excluding the local parameters)
-
-  \return
-  the number of inserted indices
-*/
-int
-ppl_PIP_Tree_Node_insert_artificials
-PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
-           ppl_dimension_type ds[],
-           size_t n,
-           ppl_dimension_type space_dim));
-
-/*! \relates ppl_PIP_Tree_Node_tag \brief
   Writes to \p le a const pointer to the parametric expression of the values
   of variable \p v in solution node \p pip_sol.
 
@@ -2978,7 +2941,7 @@ int
 ppl_PIP_Solution_Node_get_parametric_values
 PPL_PROTO((ppl_const_PIP_Solution_Node_t pip_sol,
            ppl_dimension_type v,
-           ppl_dimension_type pars[],
+           const ppl_dimension_type pars[],
            size_t n,
            ppl_const_Linear_Expression_t* le));
 

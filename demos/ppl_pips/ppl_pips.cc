@@ -113,7 +113,7 @@ int loop_iterations = 1;
 void
 pip_display_sol(std::ostream& out,
                 const Parma_Polyhedra_Library::PIP_Tree pip,
-                const Parma_Polyhedra_Library::Variables_Set& params,
+                const Parma_Polyhedra_Library::Variables_Set& parameters,
                 const Parma_Polyhedra_Library::Variables_Set& vars,
                 Parma_Polyhedra_Library::dimension_type space_dimension,
                 int indent = 0) {
@@ -122,17 +122,12 @@ pip_display_sol(std::ostream& out,
   if (!pip) {
     out << setw(indent*2) << "" << "_|_" << endl;
   } else {
-    Variables_Set parameters(params);
-    dimension_type new_params
-      = pip->insert_artificials(parameters, space_dimension);
-    if (new_params > 0) {
-      PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator i, i_end;
-      i_end = pip->art_parameter_end();
-      for (i = pip->art_parameter_begin(); i != i_end; ++i) {
-        out << setw(indent*2) << "" << "Parameter "
-            << Linear_Expression(Variable(space_dimension++))
-            << " = " << *i << endl;
-      }
+    PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator i, i_end;
+    i_end = pip->art_parameter_end();
+    for (i = pip->art_parameter_begin(); i != i_end; ++i) {
+      out << setw(indent*2) << "" << "Parameter "
+          << Linear_Expression(Variable(space_dimension++))
+          << " = " << *i << endl;
     }
     const Constraint_System &constraints = pip->constraints();
     bool constraints_empty = constraints.empty();

@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 void
-display_solution(const PIP_Tree pip, const Variables_Set& params,
+display_solution(const PIP_Tree pip, const Variables_Set& parameters,
                  const Variables_Set& vars, dimension_type space_dimension,
                  int indent=0) {
   using namespace std;
@@ -34,17 +34,12 @@ display_solution(const PIP_Tree pip, const Variables_Set& params,
     nout << setw(indent*2) << "" << "_|_" << endl;
   }
   else {
-    Variables_Set parameters(params);
-    dimension_type new_params
-      = pip->insert_artificials(parameters, space_dimension);
-    if (new_params > 0) {
-      PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator i, i_end;
-      i_end = pip->art_parameter_end();
-      for (i = pip->art_parameter_begin(); i != i_end; ++i) {
-        nout << setw(indent*2) << "" << "Parameter "
-             << Linear_Expression(Variable(space_dimension++))
-             << " = " << *i << endl;
-      }
+    PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator i, i_end;
+    i_end = pip->art_parameter_end();
+    for (i = pip->art_parameter_begin(); i != i_end; ++i) {
+      nout << setw(indent*2) << "" << "Parameter "
+           << Linear_Expression(Variable(space_dimension++))
+           << " = " << *i << endl;
     }
     const Constraint_System &constraints = pip->constraints();
     bool constraints_empty = constraints.empty();

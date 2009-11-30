@@ -387,12 +387,16 @@ PIP_Decision_Node::as_decision() {
 dimension_type
 PIP_Tree_Node::insert_artificials(Variables_Set &params,
                                   dimension_type space_dimension) const {
+  dimension_type parent_size = 0;
   dimension_type ap_size = artificial_parameters.size();
+  space_dimension -= ap_size;
+  if (parent_ != 0)
+    parent_size = parent_->insert_artificials(params, space_dimension);
   if (ap_size > 0) {
     for (dimension_type i = 0; i < ap_size; ++i)
       params.insert(space_dimension++);
   }
-  return ap_size;
+  return parent_size + ap_size;
 }
 
 bool
@@ -950,11 +954,16 @@ const Linear_Expression&
 PIP_Solution_Node
 ::parametric_values(const Variable &v,
                     const Variables_Set& parameters) const {
-  const_cast<PIP_Solution_Node&>(*this).update_solution(parameters);
+  Variables_Set all_parameters(parameters);
+  // Complete the parameter set with artificials.
+  insert_artificials(all_parameters,
+                     tableau.s.num_columns() + tableau.t.num_columns() - 1);
+
+  const_cast<PIP_Solution_Node&>(*this).update_solution(all_parameters);
   dimension_type id = v.id();
   dimension_type j;
-  Variables_Set::iterator location = parameters.lower_bound(id);
-  if (location == parameters.end())
+  Variables_Set::iterator location = all_parameters.lower_bound(id);
+  if (location == all_parameters.end())
     j = id;
   else {
     if (*location == id) {
@@ -965,7 +974,7 @@ PIP_Solution_Node
 #endif
       j = not_a_dimension();
     } else
-      j = id - std::distance(parameters.begin(),location);
+      j = id - std::distance(all_parameters.begin(),location);
   }
 
   return solution[j];

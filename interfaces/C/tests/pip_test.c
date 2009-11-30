@@ -51,24 +51,21 @@ display_solution_i(ppl_const_PIP_Tree_Node_t node,
                    ppl_dimension_type n_vars,
                    ppl_dimension_type n_params,
                    const ppl_dimension_type vars[],
-                   const ppl_dimension_type params[],
+                   const ppl_dimension_type parameters[],
                    int indent) {
   if (!node) {
+    /* A null pointer indicates the polyhedron is empty. */
     printf("%*s_|_\n", indent*2, "");
   } else {
     ppl_dimension_type space_dimension = n_vars + n_params;
     ppl_dimension_type new_params;
-    ppl_dimension_type* parameters;
     ppl_const_Constraint_System_t constraints;
     ppl_const_PIP_Decision_Node_t dn;
     int constraints_empty;
     ppl_PIP_Tree_Node_number_of_artificials(node, &new_params);
-    parameters = malloc((n_params+new_params)*sizeof(ppl_dimension_type));
-    memcpy(parameters, params, n_params*sizeof(ppl_dimension_type));
     if (new_params > 0) {
+      /* Display the artificial parameters. */
       ppl_Artificial_Parameter_Sequence_const_iterator_t i, i_end;
-      ppl_PIP_Tree_Node_insert_artificials(node, parameters, n_params,
-                                           space_dimension);
       ppl_new_Artificial_Parameter_Sequence_const_iterator(&i);
       ppl_new_Artificial_Parameter_Sequence_const_iterator(&i_end);
       ppl_PIP_Tree_Node_begin(node, i);
@@ -91,6 +88,7 @@ display_solution_i(ppl_const_PIP_Tree_Node_t node,
     ppl_PIP_Tree_Node_get_constraints(node, &constraints);
     constraints_empty = ppl_Constraint_System_empty(constraints);
     if (!constraints_empty) {
+      /* Display the constraints on the parameters. */
       int notfirst = 0;
       ppl_Constraint_System_const_iterator_t end, i;
       ppl_new_Constraint_System_const_iterator(&i);
@@ -110,8 +108,8 @@ display_solution_i(ppl_const_PIP_Tree_Node_t node,
       printf(" then\n");
     }
     ppl_PIP_Tree_Node_as_decision(node, &dn);
-    n_params += new_params;
     if (dn) {
+      /* The node is a decision Node: display the children nodes. */
       ppl_const_PIP_Tree_Node_t child;
       ppl_PIP_Decision_Node_get_child_node(dn, 1, &child);
       display_solution_i(child, n_vars, n_params, vars, parameters, indent+1);
@@ -119,6 +117,7 @@ display_solution_i(ppl_const_PIP_Tree_Node_t node,
       ppl_PIP_Decision_Node_get_child_node(dn, 0, &child);
       display_solution_i(child, n_vars, n_params, vars, parameters, indent+1);
     } else {
+      /* The node is a solution Node: display the expression of the vars. */
       int notfirst = 0;
       ppl_const_PIP_Solution_Node_t sn;
       ppl_dimension_type i;
@@ -137,7 +136,6 @@ display_solution_i(ppl_const_PIP_Tree_Node_t node,
       if (!constraints_empty)
         printf("%*selse\n%*s_|_\n", indent*2, "", indent*2+2, "");
     }
-    free(parameters);
   }
 }
 

@@ -108,30 +108,6 @@ public:
   //! Returns the number of local artificial parameters.
   dimension_type art_parameter_count() const;
 
-  /*! \brief
-    Inserts in parameter set \p params the parameter indices corresponding to
-    local artificials.
-
-    This utility method can typically be used by user programs when spanning a
-    solution tree. As new parameters may be defined in tree nodes by the
-    solver, local solutions are likely to be expressed in terms of both the
-    upper level parameters and the local ones.
-
-    The resulting space dimension is the sum of \p space_dimension and the
-    returned number of inserts indices.
-
-    \param params
-    the Variables_Set to be updated
-
-    \param space_dimension
-    the space dimension for \p *this (excluding the local parameters)
-
-    \return
-    the number of inserted indices
-  */
-  dimension_type insert_artificials(Variables_Set &params,
-                                    dimension_type space_dimension) const;
-
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
 
@@ -168,6 +144,29 @@ protected:
 
   //! Returns a pointer to this node's parent.
   const PIP_Decision_Node* parent() const;
+
+  /*! \brief
+    Inserts in parameter set \p params the parameter indices corresponding
+    to all artificials parameters involved in this node (from the solution
+    tree root to the node included).
+
+    This utility method can typically be used by user programs when spanning
+    a solution tree. As new parameters may be defined in tree nodes by the
+    solver, local solutions are likely to be expressed in terms of both the
+    upper level parameters and the local ones.
+
+    \param params
+    the Variables_Set to be updated
+
+    \param space_dimension
+    the space dimension of the simplex tableau (including artificial
+    parameters)
+
+    \return
+    the number of inserted artificial parameters.
+  */
+  dimension_type insert_artificials(Variables_Set &params,
+                                    dimension_type space_dimension) const;
 
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
@@ -244,15 +243,14 @@ public:
   /*! \brief
     Returns a parametric expression of the values of variable \p v.
 
-    The returned linear expression only involves parameters.
+    The returned linear expression involves original and artificial
+    parameters.
 
     \param v
     the variable which is queried about
 
     \param parameters
-    a \c std::set of indices of the parameters in the constraints, including
-    those for all artificials from the solution tree root to this node
-    (included)
+    a \c std::set of indices of the parameters in the problem constraints
 
     \exception std::invalid_argument
     Thrown if \p v is dimension-incompatible with \p *this

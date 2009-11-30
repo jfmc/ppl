@@ -2377,30 +2377,10 @@ ppl_PIP_Tree_Node_end
 CATCH_ALL
 
 int
-ppl_PIP_Tree_Node_insert_artificials(ppl_const_PIP_Tree_Node_t pip_tree,
-                                     ppl_dimension_type ds[],
-                                     size_t n,
-                                     ppl_dimension_type space_dim) try {
-  const PIP_Tree_Node& spip_tree = *to_const(pip_tree);
-  Variables_Set vars;
-  ppl_dimension_type inserted;
-  ppl_dimension_type i;
-  inserted = spip_tree.insert_artificials(vars, space_dim);
-  if (inserted > 0) {
-    Variables_Set::const_iterator end = vars.end();
-    Variables_Set::const_iterator v;
-    for (i = n, v = vars.begin(); v != end; ++i, ++v)
-      ds[i] = *v;
-  }
-  return inserted;
-}
-CATCH_ALL
-
-int
 ppl_PIP_Solution_Node_get_parametric_values
   (ppl_const_PIP_Solution_Node_t pip_sol,
    ppl_dimension_type v,
-   ppl_dimension_type pars[],
+   const ppl_dimension_type pars[],
    size_t n,
    ppl_const_Linear_Expression_t* le) try {
   const PIP_Solution_Node& spip_sol = *to_const(pip_sol);
