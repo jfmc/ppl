@@ -473,7 +473,7 @@ test05() {
   assign_r(M, max_analyzer, ROUND_DOWN);
 
   // We have to check that Y not overflows.
-  // FIXME: We could take any value of M >= 145.
+  // FIXME: We could take any value of M >= 144.
   Constraint_System cs;
   cs.insert(Y <= M);
   cs.insert(Y >= -M);
@@ -665,7 +665,7 @@ test06() {
   // Y + Y <= 2 * M = +inf and -Y - Y <= -2 * M = +inf.
   // For a more precise analysis, it is better to insert the
   // constraints Y <= N and Y >= -N, where N = M / 2.
-  // However, we could take any value of N such that 145 <= N <= M / 2.
+  // However, we could take any value of N such that 144 <= N <= M / 2.
   div_2exp_assign_r(N, M, 1, ROUND_DOWN);
   // We have to check that Y not overflows.
   Constraint_System cs;
@@ -855,7 +855,7 @@ test07() {
   assign_r(M, max_analyzer, ROUND_DOWN);
 
   // We have to check that Y not overflows.
-  // FIXME: We could take any value of M >= 145.
+  // FIXME: We could take any value of M >= 144.
   Constraint_System cs;
   cs.insert(Y <= M);
   cs.insert(Y >= -M);
