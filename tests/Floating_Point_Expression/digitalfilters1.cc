@@ -471,7 +471,6 @@ test05() {
 
   max_analyzer = std::min(max_analyzer, max_analyzed);
   assign_r(M, max_analyzer, ROUND_DOWN);
-
   // We have to check that Y not overflows.
   // FIXME: We could take any value of M >= 144.
   Constraint_System cs;
@@ -546,7 +545,6 @@ test05() {
     FP_BD_Shape bd_then(bd);
     FP_Interval_Abstract_Store as_then(abstract_store);
     bd_then.refine_with_linear_form_inequality(lr, -lk);
-    as_then.refine_with_constraint(R <= -D);
     as_then.intersection_assign(Box<FP_Interval>(bd_then));
 
     // then Y = S - D;
@@ -560,7 +558,6 @@ test05() {
 
     // else skip;
     bd.refine_with_linear_form_inequality(-lk, lr);
-    abstract_store.refine_with_constraint(R > -D);
     abstract_store.intersection_assign(Box<FP_Interval>(bd));
 
     // LUB between then and else branches.
@@ -573,7 +570,6 @@ test05() {
     bd_then = bd;
     as_then = abstract_store;
     bd_then.refine_with_linear_form_inequality(lk, lr);
-    as_then.refine_with_constraint(R >= D);
     as_then.intersection_assign(Box<FP_Interval>(bd_then));
 
     // then Y = S + D;
@@ -587,7 +583,6 @@ test05() {
 
     // else skip;
     bd.refine_with_linear_form_inequality(lr, lk);
-    abstract_store.refine_with_constraint(R < D);
     abstract_store.intersection_assign(Box<FP_Interval>(bd));
 
     // LUB between then and else branches.
@@ -740,7 +735,6 @@ test06() {
     FP_Octagonal_Shape oc_then(oc);
     FP_Interval_Abstract_Store as_then(abstract_store);
     oc_then.refine_with_linear_form_inequality(lr, -lk);
-    as_then.refine_with_constraint(R <= -D);
     as_then.intersection_assign(Box<FP_Interval>(oc_then));
 
     // then Y = S - D.
@@ -754,7 +748,6 @@ test06() {
 
     // else skip.
     oc.refine_with_linear_form_inequality(-lk, lr);
-    abstract_store.refine_with_constraint(R > -D);
     abstract_store.intersection_assign(Box<FP_Interval>(oc));
 
     // LUB between then and else branches.
@@ -767,7 +760,6 @@ test06() {
     oc_then = oc;
     as_then = abstract_store;
     oc_then.refine_with_linear_form_inequality(lk, lr);
-    as_then.refine_with_constraint(R >= D);
     as_then.intersection_assign(Box<FP_Interval>(oc_then));
 
     // then Y = S + D
@@ -781,7 +773,6 @@ test06() {
 
     // else skip.
     oc.refine_with_linear_form_inequality(lr, lk);
-    abstract_store.refine_with_constraint(R < D);
     abstract_store.intersection_assign(Box<FP_Interval>(oc));
 
     // LUB between then and else branches.
@@ -927,7 +918,6 @@ test07() {
     NNC_Polyhedron ph_then(ph);
     FP_Interval_Abstract_Store as_then(abstract_store);
     ph_then.refine_with_linear_form_inequality(lr, -lk);
-    as_then.refine_with_constraint(R <= -D);
     as_then.intersection_assign(Box<FP_Interval>(ph_then));
 
     // then Y = S - D;
@@ -941,7 +931,6 @@ test07() {
 
     // else skip;
     ph.refine_with_linear_form_inequality(-lk, lr);
-    abstract_store.refine_with_constraint(R > -D);
     abstract_store.intersection_assign(Box<FP_Interval>(ph));
 
     // LUB between then and else branches.
@@ -954,7 +943,6 @@ test07() {
     ph_then = ph;
     as_then = abstract_store;
     ph_then.refine_with_linear_form_inequality(lk, lr);
-    as_then.refine_with_constraint(R >= D);
     as_then.intersection_assign(Box<FP_Interval>(ph_then));
 
     // then Y = S + D;
@@ -968,7 +956,6 @@ test07() {
 
     // else skip;
     ph.refine_with_linear_form_inequality(lr, lk);
-    abstract_store.refine_with_constraint(R < D);
     abstract_store.intersection_assign(Box<FP_Interval>(ph));
 
     // LUB between then and else branches.

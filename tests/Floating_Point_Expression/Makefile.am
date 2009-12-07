@@ -51,8 +51,7 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
-digitalfilters1 \
-ratelimiter
+digitalfilters1
 
 #bdshape2 \
 #bdshape1 \
@@ -131,8 +130,6 @@ print_INSTANCES:
 #
 # Sources for the tests
 #
-
-ratelimiter_SOURCES = ratelimiter.cc
 
 digitalfilters1_SOURCES = digitalfilters1.cc
 
