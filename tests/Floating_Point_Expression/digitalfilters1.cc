@@ -66,6 +66,20 @@ test01() {
   FP_Interval y_begin(1);
   FP_Interval_Abstract_Store as_begin;
 
+  Constraint_System cs;
+  PPL_DIRTY_TEMP_COEFFICIENT(M);
+  ANALYZER_FP_FORMAT max_analyzed =
+    (2 - pow(2,
+       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
+       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
+                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
+  ANALYZER_FP_FORMAT max_analyzer =
+    std::numeric_limits<ANALYZER_FP_FORMAT>::max();
+  max_analyzer = std::min(max_analyzer, max_analyzed);
+  assign_r(M, max_analyzer, ROUND_DOWN);
+  cs.insert(Y <= M);
+  cs.insert(Y >= -M);
+
   // Y = 0;
   abstract_store.set_interval(Y, y);
   Box<FP_Interval> box(abstract_store);
@@ -111,19 +125,7 @@ test01() {
       "*** after if (R >= D)  Y = S + D; ***");
 
     abstract_store.upper_bound_assign(as_begin);
-    Constraint_System cs;
-    PPL_DIRTY_TEMP_COEFFICIENT(M);
-    ANALYZER_FP_FORMAT max_analyzed =
-    (2 - pow(2,
-       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
-       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
-                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
-    ANALYZER_FP_FORMAT max_analyzer =
-      std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-    max_analyzer = std::min(max_analyzer, max_analyzed);
-    assign_r(M, max_analyzer, ROUND_DOWN);
-    cs.insert(Y <= M);
-    cs.insert(Y >= -M);
+
     abstract_store.limited_CC76_extrapolation_assign(as_begin, cs);
     box = Box<FP_Interval>(abstract_store);
     print_constraints(box, "*** end loop ***");
@@ -154,6 +156,20 @@ test02() {
   FP_Interval y_begin(1);
   FP_Interval y(0);
   FP_BD_Shape bd_begin;
+
+  Constraint_System cs;
+  PPL_DIRTY_TEMP_COEFFICIENT(M);
+  ANALYZER_FP_FORMAT max_analyzed =
+    (2 - pow(2,
+       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
+       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
+                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
+  ANALYZER_FP_FORMAT max_analyzer =
+    std::numeric_limits<ANALYZER_FP_FORMAT>::max();
+  max_analyzer = std::min(max_analyzer, max_analyzed);
+  assign_r(M, max_analyzer, ROUND_DOWN);
+  cs.insert(Y <= M);
+  cs.insert(Y >= -M);
 
   // Y = 0;
   bd.affine_image(Y, FP_Linear_Form(y));
@@ -205,19 +221,7 @@ test02() {
          "*** after if (R >= D)  Y = S + D; ***");
 
     bd.upper_bound_assign(bd_begin);
-    Constraint_System cs;
-    PPL_DIRTY_TEMP_COEFFICIENT(M);
-    ANALYZER_FP_FORMAT max_analyzed =
-    (2 - pow(2,
-       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
-       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
-                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
-    ANALYZER_FP_FORMAT max_analyzer =
-      std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-    max_analyzer = std::min(max_analyzer, max_analyzed);
-    assign_r(M, max_analyzer, ROUND_DOWN);
-    cs.insert(Y <= M);
-    cs.insert(Y >= -M);
+
     bd.limited_BHMZ05_extrapolation_assign(bd_begin, cs);
     box = Box<FP_Interval>(bd);
     print_constraints(box, "*** end loop ***");
@@ -248,6 +252,27 @@ test03() {
   FP_Interval y(0);
   FP_Interval y_begin(1);
   FP_Octagonal_Shape oc_begin;
+
+  Constraint_System cs;
+  PPL_DIRTY_TEMP_COEFFICIENT(M);
+  PPL_DIRTY_TEMP_COEFFICIENT(N);
+  ANALYZER_FP_FORMAT max_analyzed =
+    (2 - pow(2,
+       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
+       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
+                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
+  ANALYZER_FP_FORMAT max_analyzer =
+    std::numeric_limits<ANALYZER_FP_FORMAT>::max();
+  max_analyzer = std::min(max_analyzer, max_analyzed);
+  assign_r(M, max_analyzer, ROUND_DOWN);
+  div_2exp_assign_r(N, M, 1, ROUND_DOWN);
+  // FIXME: By inserting the constraints Y <= M and Y >= -M, we obtain
+  // Y + Y <= 2 * M = +inf and -Y - Y <= -2 * M = +inf.
+  // For a more precise analysis, it is better to insert the
+  // constraints Y <= N and Y >= -N, where N = M / 2.
+  // However, we could take any value of N >= 136.
+  cs.insert(Y <= N);
+  cs.insert(Y >= -N);
 
   // Y = 0;
   oc.affine_image(Y, FP_Linear_Form(y));
@@ -297,26 +322,7 @@ test03() {
          "*** after (R >= D)  Y = S + D; ***");
 
     oc.upper_bound_assign(oc_begin);
-    Constraint_System cs;
-    PPL_DIRTY_TEMP_COEFFICIENT(M);
-    PPL_DIRTY_TEMP_COEFFICIENT(N);
-    ANALYZER_FP_FORMAT max_analyzed =
-    (2 - pow(2,
-       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
-       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
-                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
-    ANALYZER_FP_FORMAT max_analyzer =
-      std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-    max_analyzer = std::min(max_analyzer, max_analyzed);
-    assign_r(M, max_analyzer, ROUND_DOWN);
-    div_2exp_assign_r(N, M, 1, ROUND_DOWN);
-    // FIXME: By inserting the constraints Y <= M and Y >= -M, we obtain
-    // Y + Y <= 2 * M = +inf and -Y - Y <= -2 * M = +inf.
-    // For a more precise analysis, it is better to insert the
-    // constraints Y <= N and Y >= -N, where N = M / 2.
-    // However, we could take any value of N >= 136.
-    cs.insert(Y <= N);
-    cs.insert(Y >= -N);
+
     oc.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
     box = Box<FP_Interval>(oc);
     print_constraints(box, "*** end loop ***");
@@ -347,6 +353,21 @@ test04() {
   FP_Interval y(0);
   FP_Interval y_begin(1);
   NNC_Polyhedron ph_begin;
+
+  Constraint_System cs;
+  PPL_DIRTY_TEMP_COEFFICIENT(M);
+  ANALYZER_FP_FORMAT max_analyzed =
+    (2 - pow(2,
+    -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
+    * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
+                 - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
+  ANALYZER_FP_FORMAT max_analyzer =
+    std::numeric_limits<ANALYZER_FP_FORMAT>::max();
+  max_analyzer = std::min(max_analyzer, max_analyzed);
+  assign_r(M, max_analyzer, ROUND_DOWN);
+  // FIXME: we could take any value of M >= 128.
+  cs.insert(Y <= M);
+  cs.insert(Y >= -M);
 
   // Y = 0;
   ph.affine_image(Y, FP_Linear_Form(y));
@@ -402,20 +423,7 @@ test04() {
          "*** after if (R >= D)  Y = S + D; ***");
 
     ph.upper_bound_assign(ph_begin);
-    Constraint_System cs;
-    PPL_DIRTY_TEMP_COEFFICIENT(M);
-    ANALYZER_FP_FORMAT max_analyzed =
-    (2 - pow(2,
-       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
-       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
-                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
-    ANALYZER_FP_FORMAT max_analyzer =
-      std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-    max_analyzer = std::min(max_analyzer, max_analyzed);
-    assign_r(M, max_analyzer, ROUND_DOWN);
-    // FIXME: we could take any value of M >= 128.
-    cs.insert(Y <= M);
-    cs.insert(Y >= -M);
+
     ph.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
     box = Box<FP_Interval>(ph);
     print_constraints(box, "*** end loop ***");
@@ -601,7 +609,7 @@ test05() {
     bd.limited_BHMZ05_extrapolation_assign(bd_begin, cs);
     abstract_store.limited_CC76_extrapolation_assign(as_begin, cs);
 
-    print_constraints(abstract_store,"*** end loop ***");
+    print_constraints(abstract_store, "*** end loop ***");
     y = abstract_store.get_interval(Y);
   }
 
