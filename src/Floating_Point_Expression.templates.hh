@@ -35,10 +35,10 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::relative_error(const FP_Linear_Form& lf, FP_Linear_Form& result) {
   /* FIXME: here we assume that boundary_type can represent
      (2)^(-FP_Format::MANTISSA_BITS) precisely. */
-  FP_Interval_Type error_propagator(-pow(FP_Format::BASE, 
+  FP_Interval_Type error_propagator(-pow(FP_Format::BASE,
   -static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
   ::boundary_type>(FP_Format::MANTISSA_BITS)));
-  error_propagator.join_assign(FP_Interval_Type(pow(FP_Format::BASE, 
+  error_propagator.join_assign(FP_Interval_Type(pow(FP_Format::BASE,
   -static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
   ::boundary_type>(FP_Format::MANTISSA_BITS))));
 
@@ -77,7 +77,6 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
   for (dimension_type i = 0; i < dimension; ++i) {
     FP_Interval_Type current_addend = lf.coefficient(Variable(i));
     const FP_Interval_Type& curr_int = store.get_interval(Variable(i));
-    assert(curr_int.is_bounded());
     current_addend *= curr_int;
     result += current_addend;
   }
