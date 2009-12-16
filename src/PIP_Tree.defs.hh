@@ -487,6 +487,29 @@ protected:
                                    const Matrix& context,
                                    const Variables_Set& params,
                                    dimension_type space_dimension);
+
+  /*! \brief
+    Generate a Gomory cut using non-integer tableau row \p i.
+
+    \param i
+    row index in simplex tableau from which the cut is generated
+
+    \param parameters
+    a std::set of the current parameter dimensions (including artificials);
+    to be updated if a new artificial parameter is to be created
+
+    \param context
+    a set of linear inequalities on the parameters, in Matrix form; to be
+    updated if a new artificial parameter is to be created
+
+    \param space_dimension
+    the current space dimension, including variables and all parameters; to
+    be updated if an extra parameter is to be created
+  */
+  void generate_cut(dimension_type i,
+                    Variables_Set& parameters,
+                    Matrix& context,
+                    dimension_type& space_dimension);
   // FIXME: constructors to be decided.
 };
 
