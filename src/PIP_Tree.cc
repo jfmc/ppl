@@ -1802,10 +1802,11 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
             best_i = i;
           }
         }
-        i = best_i;
+        generate_cut(best_i, parameters, context, space_dimension);
       }
       else {
-        assert(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST);
+        assert(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST
+               || cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL);
         /* Find the row with simplest parametric part which will generate
           the "deepest" cut */
         PPL_DIRTY_TEMP_COEFFICIENT(score);
@@ -1815,6 +1816,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         dimension_type best_i = n_a_d;
         dimension_type best_pcount = n_a_d;
         dimension_type pcount;
+        std::vector<dimension_type> all_best_is;
         for (i_ = 0; i_ < num_vars; ++i_) {
           if (basis[i_])
             continue;
@@ -1849,14 +1851,22 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
               && (best_i == n_a_d
                   || (pcount < best_pcount)
                   || (pcount == best_pcount && score > best_score))) {
+            if (pcount < best_pcount)
+              all_best_is.clear();
             best_score = score;
             best_pcount = pcount;
             best_i = i;
           }
+          if (pcount > 0)
+            all_best_is.push_back(i);
         }
-        i = best_i;
+        if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST)
+          generate_cut(best_i, parameters, context, space_dimension);
+        else /* cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL */ {
+          for (i = all_best_is.size(); i-- > 0; )
+            generate_cut(all_best_is[i], parameters, context, space_dimension);
+        }
       }
-      generate_cut(i, parameters, context, space_dimension);
     } // if (i__ != n_a_d)
   } // Main loop of the simplex algorithm
 

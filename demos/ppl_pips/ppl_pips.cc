@@ -436,6 +436,7 @@ struct option long_options[] = {
 #endif
   {"first",          no_argument,       0, 'f'},
   {"deepest",        no_argument,       0, 'd'},
+  {"all",            no_argument,       0, 'a'},
   {0, 0, 0, 0}
 };
 #endif
@@ -461,6 +462,7 @@ static const char* usage_string
 "\nCut generation options:\n"
 "  -f, --first             use the first non-integer row (default)\n"
 "  -d, --deepest           try to generate the deepest cut\n"
+"  -a, --all               always generate all possible cuts\n"
 #ifndef PPL_HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
@@ -469,9 +471,9 @@ static const char* usage_string
 "Report bugs to <ppl-devel@cs.unipr.it>.\n";
 
 #if defined(USE_PPL)
-#define OPTION_LETTERS "R:ho:Pptvi:Vc:df"
+#define OPTION_LETTERS "R:ho:Pptvi:Vc:fda"
 #else
-#define OPTION_LETTERS "R:ho:Pptvi:df"
+#define OPTION_LETTERS "R:ho:Pptvi:fda"
 #endif
 
 const char* program_name = 0;
@@ -668,12 +670,16 @@ process_options(int argc, char* argv[]) {
 
 #endif
 
+    case 'f':
+      cutting_strategy = PPL::PIP_Problem::CUTTING_STRATEGY_FIRST;
+      break;
+
     case 'd':
       cutting_strategy = PPL::PIP_Problem::CUTTING_STRATEGY_DEEPEST;
       break;
 
-    case 'f':
-      cutting_strategy = PPL::PIP_Problem::CUTTING_STRATEGY_FIRST;
+    case 'a':
+      cutting_strategy = PPL::PIP_Problem::CUTTING_STRATEGY_ALL;
       break;
 
     default:

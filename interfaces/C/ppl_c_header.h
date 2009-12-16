@@ -2358,6 +2358,11 @@ extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_FIRST;
 */
 extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_DEEPEST;
 
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of PIP problem's "all" cutting strategy.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_ALL;
+
 /*@}*/ /* Symbolic Constants */
 
 /*! \brief \name Constructors, Assignment and Destructor */

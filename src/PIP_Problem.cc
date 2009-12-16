@@ -229,7 +229,8 @@ PPL::PIP_Problem::OK() const {
   // Test validity of control parameter values.
   Control_Parameter_Value strategy = control_parameters[CUTTING_STRATEGY];
   if (strategy != CUTTING_STRATEGY_FIRST
-      && strategy != CUTTING_STRATEGY_DEEPEST) {
+      && strategy != CUTTING_STRATEGY_DEEPEST
+      && strategy != CUTTING_STRATEGY_ALL) {
 #ifndef NDEBUG
     cerr << "Invalid value for the CUTTING_STRATEGY control parameter."
 	 << endl;
@@ -304,6 +305,9 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
       break;
     case CUTTING_STRATEGY_DEEPEST:
       s << "CUTTING_STRATEGY_DEEPEST";
+      break;
+    case CUTTING_STRATEGY_ALL:
+      s << "CUTTING_STRATEGY_ALL";
       break;
     default:
       s << "Invalid control parameter value";
@@ -406,6 +410,8 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
       value = CUTTING_STRATEGY_FIRST;
     if (str == "CUTTING_STRATEGY_DEEPEST")
       value = CUTTING_STRATEGY_DEEPEST;
+    if (str == "CUTTING_STRATEGY_ALL")
+      value = CUTTING_STRATEGY_ALL;
     else
       return false;
     control_parameters[i] = value;
@@ -528,6 +534,8 @@ PPL::PIP_Problem::set_control_parameter(Control_Parameter_Value value) {
   case CUTTING_STRATEGY_FIRST:
     // Intentionally fall through.
   case CUTTING_STRATEGY_DEEPEST:
+    // Intentionally fall through.
+  case CUTTING_STRATEGY_ALL:
     control_parameters[CUTTING_STRATEGY] = value;
     break;
   default:

@@ -490,6 +490,8 @@ public:
     CUTTING_STRATEGY_FIRST,
     //! Choose row which generates the deepest cut
     CUTTING_STRATEGY_DEEPEST,
+    //! Always generate all possible cuts
+    CUTTING_STRATEGY_ALL,
 
     //! Number of different enumeration values.
     CONTROL_PARAMETER_VALUE_SIZE
