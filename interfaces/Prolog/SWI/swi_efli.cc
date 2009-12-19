@@ -50,10 +50,17 @@ ppl_Prolog_sysdep_deinit() {
 int
 Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n) {
   assert(Prolog_is_integer(t));
+  // FIXME: avoid the temporary when Coefficient is mpz_class.
   PPL_DIRTY_TEMP0(mpz_class, tmp);
+  int r;
+#if PLVERSION >= 50800
+  r = PL_get_mpz(t, tmp.get_mpz_t());
+#else
   PL_get_mpz(t, tmp.get_mpz_t());
+  r = 1;
+#endif
   n = tmp;
-  return 1;
+  return r;
 }
 
 int
