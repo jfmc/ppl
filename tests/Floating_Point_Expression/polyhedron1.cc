@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// tests ph.affine_image(B, 3)
+// Tests ph.affine_image(B, 3).
 bool
 test01() {
   Variable A(0);
@@ -56,7 +56,7 @@ test01() {
   return ok;
 }
 
-// tests ph.affine_image(A, A + B + 1)
+// Tests ph.affine_image(A, A + B + 1).
 bool
 test02() {
   Variable A(0);
@@ -86,7 +86,7 @@ test02() {
   return ok;
 }
 
-// tests ph.affine_image(A, (A + 1) / 2)
+// Tests ph.affine_image(A, (A + 1) / 2).
 bool
 test03() {
   Variable A(0);
@@ -116,7 +116,7 @@ test03() {
   return ok;
 }
 
-// tests ph.affine_image(A, (B + 2) / (-3))
+// Tests ph.affine_image(A, (B + 2) / (-3)).
 bool
 test04() {
   Variable A(0);
@@ -144,7 +144,7 @@ test04() {
   return ok;
 }
 
-// tests ph.affine_image(B, (A - B + 2) / (-3))
+// Tests ph.affine_image(B, (A - B + 2) / (-3)).
 bool
 test05() {
   Variable A(0);
@@ -179,7 +179,7 @@ test05() {
   return ok;
 }
 
-// tests ph.affine_image(A, (-A - 1) / (-1))
+// Tests ph.affine_image(A, (-A - 1) / (-1)).
 bool
 test06() {
   Variable A(0);
@@ -215,7 +215,7 @@ test06() {
   return ok;
 }
 
-// tests affine_image on NNC_Polyhedron.
+// Tests affine_image on NNC_Polyhedron.
 bool
 test07() {
   Variable A(0);
@@ -256,7 +256,6 @@ test07() {
 
 } // namespace
 
-//FIXME: unreached lines 533, 542.
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);

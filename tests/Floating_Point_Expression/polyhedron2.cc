@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// tests incompatible dimensions.
+// Tests incompatible dimensions.
 bool
 test01() {
   C_Polyhedron pol(1);
@@ -52,7 +52,7 @@ test01() {
   return false;
 }
 
-// tests A <= [57, 57]
+// Tests A <= [57, 57].
 bool
 test02() {
   C_Polyhedron ph(1);
@@ -70,7 +70,7 @@ test02() {
   return ph == known_result;
 }
 
-// tests -A <= 0 && A <= 2 && -A <= 1 && -B <= -1 && C = 0
+// Tests -A <= 0 && A <= 2 && -A <= 1 && -B <= -1 && C = 0.
 bool
 test03() {
   Variable A(0);
@@ -107,8 +107,8 @@ test03() {
   return ph == known_result;
 }
 
-// tests -A <= -1/3 && A <= 2/3 && -B <= 0 && B <= 1/3
-// and refine_fp_interval_abstract_store
+// Tests -A <= -1/3 && A <= 2/3 && -B <= 0 && B <= 1/3
+// and refine_fp_interval_abstract_store.
 bool
 test04() {
   Variable A(0);
@@ -162,8 +162,8 @@ test04() {
 
 }
 
-// tests (2/3)*B + [-0.5, 0.5] >= (1/3)*A
-// where A = B = [-1, 1]
+// Tests (2/3)*B + [-0.5, 0.5] >= (1/3)*A
+// where A = B = [-1, 1].
 bool
 test05() {
   Variable A(0);

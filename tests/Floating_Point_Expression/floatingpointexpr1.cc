@@ -89,7 +89,7 @@ test03() {
 // Tests the linearization of A + B.
 bool
 test04() {
-  FP_Interval tmp;
+  FP_Interval tmp(0);
   FP_Interval_Abstract_Store store(2);
   store.set_interval(Variable(0), tmp);
   store.set_interval(Variable(1), tmp);
@@ -116,13 +116,17 @@ test04() {
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
-  return result == known_result;
+
+  FP_Expression::intervalize(result, store, tmp);
+  FP_Expression::intervalize(known_result, store, tmp2);
+
+  return tmp.contains(tmp2);
 }
 
 // Tests the linearization of A - B.
 bool
 test05() {
-  FP_Interval tmp;
+  FP_Interval tmp(0);
   FP_Interval_Abstract_Store store(2);
   store.set_interval(Variable(0), tmp);
   store.set_interval(Variable(1), tmp);
@@ -150,7 +154,11 @@ test05() {
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
-  return result == known_result;
+
+  // FIXME: Computed result should over-approximates the known result.
+  FP_Expression::intervalize(result, store, tmp);
+  FP_Expression::intervalize(known_result, store, tmp2);
+  return tmp.contains(tmp2);
 }
 
 // Tests the linearization of A * B where A = [0, 1] and B = [2, 2].
@@ -183,7 +191,11 @@ test06() {
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
-  return result == known_result;
+
+  // FIXME: Computed result should over-approximates the known result.
+  FP_Expression::intervalize(result, store, coeff);
+  FP_Expression::intervalize(known_result, store, coeff2);
+  return coeff.contains(coeff2);
 }
 
 // Tests the linearization of A / B where A = [0, 1] and B = [2, 2].
@@ -215,7 +227,11 @@ test07() {
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
-  return result == known_result;
+
+  // FIXME: Computed result should over-approximates the known result.
+  FP_Expression::intervalize(result, store, coeff);
+  FP_Expression::intervalize(known_result, store, coeff2);
+  return coeff.contains(coeff2);
 }
 
 // Tests the linearization of [1/4, 1/2] * (-A) where A = [1, 10].
@@ -248,7 +264,11 @@ test08() {
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
-  return result == known_result;
+
+  // FIXME: Computed result should over-approximates the known result.
+  FP_Expression::intervalize(result, store, tmp);
+  FP_Expression::intervalize(known_result, store, tmp2);
+  return tmp.contains(tmp2);
 }
 
 // Tests linearization of multiplication by unbounded operands.
@@ -264,12 +284,15 @@ test09() {
   Con_FP_Expression* con3 = new Con_FP_Expression(0, 0);
   Mul_FP_Expression mul(con3, sum);
   FP_Linear_Form result;
-  mul.linearize(FP_Interval_Abstract_Store(),
-                FP_Linear_Form_Abstract_Store(), result);
-
-  nout << "*** known_result1 ***" << endl
-       << known_result1 << endl;
-  bool ok1 = (known_result1 == result);
+  bool ok1 = false;
+  try {
+    mul.linearize(FP_Interval_Abstract_Store(),
+                  FP_Linear_Form_Abstract_Store(), result);
+  }
+  catch (Linearization_Failed e) {
+    nout << "*** Linearization failed due to overflow. ***" << endl;
+    ok1 = true;
+  }
 
   FP_Linear_Form known_result2 = FP_Linear_Form(min);
   Con_FP_Expression* con4 = new Con_FP_Expression(0, 0);
@@ -278,12 +301,15 @@ test09() {
   Con_FP_Expression* con6 = new Con_FP_Expression(0, 0);
   Mul_FP_Expression mul2(sum2, con6);
   FP_Linear_Form result2;
-  mul2.linearize(FP_Interval_Abstract_Store(),
-                 FP_Linear_Form_Abstract_Store(), result2);
-
-  nout << "*** known_result2 ***" << endl
-       << known_result2 << endl;
-  bool ok2 = (known_result2 == result2);
+  bool ok2 = false;
+  try {
+    mul2.linearize(FP_Interval_Abstract_Store(),
+                   FP_Linear_Form_Abstract_Store(), result2);
+  }
+  catch (Linearization_Failed e) {
+    nout << "*** Linearization failed due to overflow. ***" << endl;
+    ok2 = true;
+  }
 
   Con_FP_Expression* con7 = new Con_FP_Expression(0, 0);
   Con_FP_Expression* con8 = new Con_FP_Expression(0, max);

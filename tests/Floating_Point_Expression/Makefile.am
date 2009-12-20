@@ -51,17 +51,15 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
-digitalfilters1
-
-#bdshape2 \
-#bdshape1 \
-#floatingpointexpr1 \
-#linearform1 \
-#octagonalshape1 \
-#octagonalshape2 \
-#polyhedron1 \
-#polyhedron2
-
+bdshape1 \
+bdshape2 \
+digitalfilters1 \
+floatingpointexpr1 \
+linearform1 \
+octagonalshape1 \
+octagonalshape2 \
+polyhedron1 \
+polyhedron2
 
 DERIVED_TESTS =
 
@@ -83,35 +81,24 @@ run_tests.stamp: run_tests
 XFAIL_TESTS =
 
 # Do not change the ordering in what follows.
+# Analyzer format should be less precise or equal than analyzed format.
 if SUPPORTED_FLOAT
 FLOAT_INSTANCES= \
-float/float_ieee754_half \
 float/float_ieee754_single \
 float/float_ieee754_double \
 float/float_ieee754_quad \
-float/float_ibm_single \
 float/float_ibm_double \
 float/float_intel_double_extended
 endif
 if SUPPORTED_DOUBLE
 DOUBLE_INSTANCES= \
-double/float_ieee754_half \
-double/float_ieee754_single \
 double/float_ieee754_double \
 double/float_ieee754_quad \
-double/float_ibm_single \
-double/float_ibm_double \
 double/float_intel_double_extended
 endif
 if SUPPORTED_LONG_DOUBLE
 LONG_DOUBLE_INSTANCES= \
-long_double/float_ieee754_half \
-long_double/float_ieee754_single \
-long_double/float_ieee754_double \
-long_double/float_ieee754_quad \
-long_double/float_ibm_single \
-long_double/float_ibm_double \
-long_double/float_intel_double_extended
+long_double/float_ieee754_quad
 endif
 
 # Do not change the ordering in what follows.
@@ -131,24 +118,23 @@ print_INSTANCES:
 # Sources for the tests
 #
 
+bdshape1_SOURCES = bdshape1.cc
+
+bdshape2_SOURCES = bdshape2.cc
+
 digitalfilters1_SOURCES = digitalfilters1.cc
 
-#bdshape2_SOURCES = bdshape2.cc
+floatingpointexpr1_SOURCES = floatingpointexpr1.cc
 
-#polyhedron2_SOURCES = polyhedron2.cc
+linearform1_SOURCES = linearform1.cc
 
-#polyhedron1_SOURCES = polyhedron1.cc
+octagonalshape1_SOURCES = octagonalshape1.cc
 
-#bdshape1_SOURCES = bdshape1.cc
+octagonalshape2_SOURCES = octagonalshape2.cc
 
-#floatingpointexpr1_SOURCES = floatingpointexpr1.cc
+polyhedron1_SOURCES = polyhedron1.cc
 
-#linearform1_SOURCES = linearform1.cc
-
-#octagonalshape1_SOURCES = octagonalshape1.cc
-
-#octagonalshape2_SOURCES = octagonalshape2.cc
-
+polyhedron2_SOURCES = polyhedron2.cc
 
 #
 # Sources and compilation flags for the derived check programs

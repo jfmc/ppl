@@ -181,9 +181,7 @@ struct float_ibm_single {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 struct float_ibm_double {
-  // FIXME: BASE must be 16, 16^56 should return an overflow
-  // and absolute/relative error are not sound.
-  static const unsigned int BASE = 2;
+  static const unsigned int BASE = 16;
   static const unsigned int EXPONENT_BITS = 7;
   static const unsigned int MANTISSA_BITS = 56;
   static const int EXPONENT_BIAS = 64;

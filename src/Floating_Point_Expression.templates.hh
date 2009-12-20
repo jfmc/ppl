@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Floating_Point_Expression_templates_hh 1
 
 #include "Linear_Form.defs.hh"
-#include <cmath>
 
 namespace Parma_Polyhedra_Library {
 
@@ -44,8 +43,12 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
 
   // Handle the inhomogeneous term.
   const FP_Interval_Type* current_term = &lf.inhomogeneous_term();
-  FP_Interval_Type current_multiplier(std::max(abs(current_term->lower()),
-					       abs(current_term->upper())));
+  assert(current_term->is_bounded());
+
+  FP_Interval_Type current_multiplier(std::max(
+    std::fabs(current_term->lower()),
+    std::fabs(current_term->upper()))
+  );
   FP_Linear_Form current_result_term(current_multiplier);
   current_result_term *= error_propagator;
   result = FP_Linear_Form(current_result_term);
@@ -54,8 +57,11 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
   dimension_type dimension = lf.space_dimension();
   for (dimension_type i = 0; i < dimension; ++i) {
     current_term = &lf.coefficient(Variable(i));
-    current_multiplier = FP_Interval_Type(std::max(abs(current_term->lower()),
-					       abs(current_term->upper())));
+    assert(current_term->is_bounded());
+    current_multiplier = FP_Interval_Type(std::max(
+      std::fabs(current_term->lower()),
+      std::fabs(current_term->upper()))
+    );
     current_result_term = FP_Linear_Form(Variable(i));
     current_result_term *= current_multiplier;
     current_result_term *= error_propagator;

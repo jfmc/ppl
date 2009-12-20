@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// tests trivial cases
+// Tests trivial cases.
 bool
 test01() {
   Variable A(0);
@@ -62,7 +62,7 @@ test01() {
   return ok1 && ok2;
 }
 
-// tests [-1, 2] <= [-4, -1] + A and [-4, -1] + A <= [-1, 2]
+// Tests [-1, 2] <= [-4, -1] + A and [-4, -1] + A <= [-1, 2].
 bool
 test02() {
   Variable A(0);
@@ -100,7 +100,7 @@ test02() {
 
 }
 
-// tests [3.5, 6] <= [-2.5, 0] - A and [-2.5, 0] - A <= [3.5, 6]
+// Tests [3.5, 6] <= [-2.5, 0] - A and [-2.5, 0] - A <= [3.5, 6].
 bool
 test03() {
   Variable A(0);
@@ -138,7 +138,7 @@ test03() {
 
 }
 
-// tests [-0.5, 1] + A <= [2.5, 5] + B and [2.5, 5] + B <= [-0.5, 1] + A
+// Tests [-0.5, 1] + A <= [2.5, 5] + B and [2.5, 5] + B <= [-0.5, 1] + A.
 bool
 test04() {
   Variable A(0);
@@ -177,7 +177,7 @@ test04() {
 
 }
 
-// tests [1, 3] + A <= [4, 4] - B and [4, 4] - B <= [1, 3] + A
+// Tests [1, 3] + A <= [4, 4] - B and [4, 4] - B <= [1, 3] + A.
 bool
 test05() {
   Variable A(0);
@@ -215,7 +215,7 @@ test05() {
 
 }
 
-// tests [1, 4] - A <= [-2, -2] + B and [-2, -2] + B <= [1, 4] - A
+// Tests [1, 4] - A <= [-2, -2] + B and [-2, -2] + B <= [1, 4] - A.
 bool
 test06() {
   Variable A(0);
@@ -253,7 +253,7 @@ test06() {
 
 }
 
-// tests [-3, -0.5] - A <= [-2, -1] - B and [-2, -1] - B <= [-3, -0.5] - A
+// Tests [-3, -0.5] - A <= [-2, -1] - B and [-2, -1] - B <= [-3, -0.5] - A.
 bool
 test07() {
   Variable A(0);
@@ -292,7 +292,7 @@ test07() {
 
 }
 
-// tests [1, 3] * B <= [-1.5, 0] * A
+// Tests [1, 3] * B <= [-1.5, 0] * A.
 bool
 test08() {
   Variable A(0);
@@ -321,8 +321,8 @@ test08() {
   return ok;
 }
 
-// tests [0.25, 0.5] * A + [-2, -1] * B <= [-7, -2]
-// and   [-7, -2] <= [0.25, 0.5] * A + [-2, -1] * B
+// Tests [0.25, 0.5] * A + [-2, -1] * B <= [-7, -2]
+// and   [-7, -2] <= [0.25, 0.5] * A + [-2, -1] * B.
 bool
 test09() {
   Variable A(0);
@@ -364,7 +364,7 @@ test09() {
   return ok1 && ok2;
 }
 
-// tests [-5, -1] * A <= [2, 3] * B + [0.5, 1]
+// Tests [-5, -1] * A <= [2, 3] * B + [0.5, 1].
 bool
 test10() {
   Variable A(0);
@@ -402,7 +402,7 @@ test10() {
   return ok;
 }
 
-// tests Octagonal_Shape<T>::refine_fp_interval_abstract_store
+// Tests Octagonal_Shape<T>::refine_fp_interval_abstract_store.
 bool
 test11() {
   Variable A(0);

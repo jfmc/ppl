@@ -69,14 +69,9 @@ test01() {
 
   Constraint_System cs;
   PPL_DIRTY_TEMP_COEFFICIENT(M);
-  ANALYZER_FP_FORMAT max_analyzed =
-    (2 - pow(2,
-       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
-       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
-                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
+
   ANALYZER_FP_FORMAT max_analyzer =
     std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  max_analyzer = std::min(max_analyzer, max_analyzed);
   assign_r(M, max_analyzer, ROUND_DOWN);
   cs.insert(Y <= M);
   cs.insert(Y >= -M);
@@ -167,14 +162,8 @@ test02() {
 
   Constraint_System cs;
   PPL_DIRTY_TEMP_COEFFICIENT(M);
-  ANALYZER_FP_FORMAT max_analyzed =
-    (2 - pow(2,
-       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
-       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
-                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
   ANALYZER_FP_FORMAT max_analyzer =
     std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  max_analyzer = std::min(max_analyzer, max_analyzed);
   assign_r(M, max_analyzer, ROUND_DOWN);
   cs.insert(Y <= M);
   cs.insert(Y >= -M);
@@ -264,14 +253,8 @@ test03() {
   Constraint_System cs;
   PPL_DIRTY_TEMP_COEFFICIENT(M);
   PPL_DIRTY_TEMP_COEFFICIENT(N);
-  ANALYZER_FP_FORMAT max_analyzed =
-    (2 - pow(2,
-       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
-       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
-                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
   ANALYZER_FP_FORMAT max_analyzer =
     std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  max_analyzer = std::min(max_analyzer, max_analyzed);
   assign_r(M, max_analyzer, ROUND_DOWN);
   div_2exp_assign_r(N, M, 1, ROUND_DOWN);
   // FIXME: By inserting the constraints Y <= M and Y >= -M, we obtain
@@ -364,14 +347,8 @@ test04() {
 
   Constraint_System cs;
   PPL_DIRTY_TEMP_COEFFICIENT(M);
-  ANALYZER_FP_FORMAT max_analyzed =
-    (2 - pow(2,
-    -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
-    * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
-                 - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
   ANALYZER_FP_FORMAT max_analyzer =
     std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  max_analyzer = std::min(max_analyzer, max_analyzed);
   assign_r(M, max_analyzer, ROUND_DOWN);
   // FIXME: we could take any value of M >= 128.
   cs.insert(Y <= M);
@@ -473,19 +450,8 @@ test05() {
   FP_Linear_Form lk;
 
   PPL_DIRTY_TEMP_COEFFICIENT(M);
-  // Here we compute the minimum value M between:
-  //  - The biggest number representable in the analyzed format, and
-  //  - The biggest number representable in the analyzer format.
-  ANALYZER_FP_FORMAT max_analyzed =
-    (2 - pow(2,
-       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
-       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
-                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
-
   ANALYZER_FP_FORMAT max_analyzer =
     std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-
-  max_analyzer = std::min(max_analyzer, max_analyzed);
   assign_r(M, max_analyzer, ROUND_DOWN);
   // We have to check that Y not overflows.
   // FIXME: We could take any value of M >= 144.
@@ -664,19 +630,8 @@ test06() {
 
   PPL_DIRTY_TEMP_COEFFICIENT(M);
   PPL_DIRTY_TEMP_COEFFICIENT(N);
-  // Here we compute the minimum value M between:
-  //  - The biggest number representable in the analyzed format, and
-  //  - The biggest number representable in the analyzer format.
-  ANALYZER_FP_FORMAT max_analyzed =
-    (2 - pow(2,
-       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
-       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
-                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
-
   ANALYZER_FP_FORMAT max_analyzer =
     std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-
-  max_analyzer = std::min(max_analyzer, max_analyzed);
   assign_r(M, max_analyzer, ROUND_DOWN);
 
   // FIXME: By inserting the constraints Y <= M and Y >= -M, we obtain
@@ -860,21 +815,9 @@ test07() {
   FP_Linear_Form lk;
 
   PPL_DIRTY_TEMP_COEFFICIENT(M);
-  // Here we compute the minimum value M between:
-  //  - The biggest number representable in the analyzed format, and
-  //  - The biggest number representable in the analyzer format.
-  ANALYZER_FP_FORMAT max_analyzed =
-    (2 - pow(2,
-       -static_cast<ANALYZER_FP_FORMAT>(ANALYZED_FP_FORMAT::MANTISSA_BITS)))
-       * pow(2, pow(2, ANALYZED_FP_FORMAT::EXPONENT_BITS)
-                    - (ANALYZED_FP_FORMAT::EXPONENT_BIAS) - 2);
-
   ANALYZER_FP_FORMAT max_analyzer =
     std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-
-  max_analyzer = std::min(max_analyzer, max_analyzed);
   assign_r(M, max_analyzer, ROUND_DOWN);
-
   // We have to check that Y not overflows.
   // FIXME: We could take any value of M >= 144.
   Constraint_System cs;

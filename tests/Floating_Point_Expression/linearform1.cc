@@ -191,7 +191,7 @@ test06() {
   return ok;
 }
 
-// Tests operator==(const Linear_Form<C>& x, const Linear_Form<C>& y)
+// Tests operator==(const Linear_Form<C>& x, const Linear_Form<C>& y).
 bool
 test07() {
   Variable A(0);

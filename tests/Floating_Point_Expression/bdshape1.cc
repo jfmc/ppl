@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// tests space_dimensions and trivial cases
+// Tests space_dimensions and trivial cases.
 bool
 test01() {
   Variable A(0);
@@ -60,7 +60,7 @@ test01() {
 }
 
 
-// tests affine_image(A, [-2, 1])
+// Tests affine_image(A, [-2, 1]).
 bool
 test02() {
   Variable A(0);
@@ -87,7 +87,7 @@ test02() {
   return ok;
 }
 
-// tests affine_image(A, [-1, -1]*A + [0.5, 2])
+// Tests affine_image(A, [-1, -1]*A + [0.5, 2]).
 bool test03() {
   Variable A(0);
   Variable B(1);
@@ -112,7 +112,7 @@ bool test03() {
   return ok;
 }
 
-// tests affine_image(B, [1, 1]*B + [-1.5, 3.5])
+// Tests affine_image(B, [1, 1]*B + [-1.5, 3.5]).
 bool test04() {
   Variable A(0);
   Variable B(1);
@@ -139,7 +139,7 @@ bool test04() {
   return ok;
 }
 
-// tests affine_image(A, [1, 1]*B + [-1, 0.5])
+// Tests affine_image(A, [1, 1]*B + [-1, 0.5]).
 bool test05() {
   Variable A(0);
   Variable B(1);
@@ -167,7 +167,7 @@ bool test05() {
   return ok;
 }
 
-// tests affine_image(B, [1, 1]*A + [-3, 1])
+// Tests affine_image(B, [1, 1]*A + [-3, 1]).
 bool test06() {
   Variable A(0);
   Variable B(1);
@@ -195,7 +195,7 @@ bool test06() {
   return ok;
 }
 
-// tests affine_image(B, [-1, -1]*A + [0, 4])
+// Tests affine_image(B, [-1, -1]*A + [0, 4]).
 bool test07() {
   Variable A(0);
   Variable B(1);
@@ -222,7 +222,7 @@ bool test07() {
   return ok;
 }
 
-// tests affine_image(A, [-1, -1]*B + [0, 2])
+// Tests affine_image(A, [-1, -1]*B + [0, 2]).
 bool test08() {
   Variable A(0);
   Variable B(1);
@@ -253,7 +253,7 @@ bool test08() {
   return ok;
 }
 
-// tests affine_image(B, [-0.5, 0.5]*A)
+// Tests affine_image(B, [-0.5, 0.5]*A).
 bool test09() {
   Variable A(0);
   Variable B(1);
@@ -279,7 +279,7 @@ bool test09() {
   return ok;
 }
 
-// tests affine_image(A, i + i0*A + i1*B) where
+// Tests affine_image(A, i + i0*A + i1*B) where
 // i = [0, 2], i0 = [1, 1] and i1 = [1, 2].
 bool test10() {
 
