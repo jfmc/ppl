@@ -239,8 +239,8 @@ public:
   }
 
   bool check_empty(I_Result r) const {
-    return (r & I_ANY) == I_EMPTY ||
-      ((r & I_ANY) != I_NOT_EMPTY && is_empty());
+    return (r & I_ANY) == I_EMPTY
+      || ((r & I_ANY) != I_NOT_EMPTY && is_empty());
   }
 
   bool is_singleton() const {

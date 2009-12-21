@@ -381,7 +381,8 @@ inline typename Enable_If<Is_Singleton<From>::value
 Interval<To_Boundary, To_Info>::difference_assign(const From& x) {
   PPL_ASSERT(f_OK(x));
   // FIXME: restrictions
-  if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x)) ||
+  if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x))
+      ||
       gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x)))
     return combine(V_EQ, V_EQ);
   bool nl = ge(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
@@ -416,7 +417,8 @@ Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   // FIXME: restrictions
-  if (lt(UPPER, f_upper(x), f_info(x), LOWER, f_lower(y), f_info(y)) ||
+  if (lt(UPPER, f_upper(x), f_info(x), LOWER, f_lower(y), f_info(y))
+      ||
       gt(LOWER, f_lower(x), f_info(x), UPPER, f_upper(y), f_info(y)))
     return assign(x);
   bool nl = ge(LOWER, f_lower(x), f_info(x), LOWER, f_lower(y), f_info(y));

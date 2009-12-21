@@ -363,16 +363,16 @@ struct Constant_ : public TConstant<T, v> {
 template <typename T, long long v, bool prefer_signed>
 struct Constant_<T, v, prefer_signed,
 		 typename Enable_If<(Fit<typename C_Integer<T>::smaller_signed_type, v>::value
-				     && (prefer_signed ||
-					 !Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value))>::type>
+				     && (prefer_signed
+                                         || !Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value))>::type>
   : public Constant_<typename C_Integer<T>::smaller_signed_type, v, prefer_signed> {
 };
 
 template <typename T, long long v, bool prefer_signed>
 struct Constant_<T, v, prefer_signed,
 		 typename Enable_If<(Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value
-				     && (!prefer_signed ||
-					 !Fit<typename C_Integer<T>::smaller_signed_type, v>::value))>::type>
+				     && (!prefer_signed
+                                         || !Fit<typename C_Integer<T>::smaller_signed_type, v>::value))>::type>
   : public Constant_<typename C_Integer<T>::smaller_unsigned_type, v, prefer_signed> {
 };
 
