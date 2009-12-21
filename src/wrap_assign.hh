@@ -319,9 +319,9 @@ wrap_assign(PSET& pointset,
     if (!wrap_individually && !collective_wrap_too_complex) {
       r = mul_assign_r(collective_wrap_complexity,
 		       collective_wrap_complexity, extension, ROUND_IGNORE);
-      if (result_overflow(r) ||
-	  collective_wrap_complexity > complexity_threshold)
-          collective_wrap_too_complex = true;
+      if (result_overflow(r)
+          || collective_wrap_complexity > complexity_threshold)
+        collective_wrap_too_complex = true;
       if (collective_wrap_too_complex) {
         // Set all the dimensions in `translations' to full range.
         for (Wrap_Translations::const_iterator i = translations.begin(),

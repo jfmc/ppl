@@ -321,13 +321,13 @@ Interval<Boundary, Info>::can_be_exactly_joined_to(const Type& x) const {
   PPL_DIRTY_TEMP(Boundary, b);
   if (gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x))) {
     b = lower();
-    return info().restrict(round_dir_check(LOWER, true), b, V_LT) == V_EQ &&
-      eq(LOWER, b, info(), UPPER, f_upper(x), f_info(x));
+    return info().restrict(round_dir_check(LOWER, true), b, V_LT) == V_EQ
+      && eq(LOWER, b, info(), UPPER, f_upper(x), f_info(x));
   }
   else if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x))) {
     b = upper();
-    return info().restrict(round_dir_check(UPPER, true), b, V_GT) == V_EQ &&
-      eq(UPPER, b, info(), LOWER, f_lower(x), f_info(x));
+    return info().restrict(round_dir_check(UPPER, true), b, V_GT) == V_EQ
+      && eq(UPPER, b, info(), LOWER, f_lower(x), f_info(x));
   }
   return true;
 }

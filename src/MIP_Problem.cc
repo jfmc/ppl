@@ -896,7 +896,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
       assign(challenger_num, cost_j);
-      challenger_num = fabs(challenger_num);
+      challenger_num = std::abs(challenger_num);
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
       challenger_den = 1.0;
@@ -1316,8 +1316,8 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   // encoding the kind of optimization; ...
   working_cost[tableau.num_columns()-1] = working_cost[tableau_last_index];
   // ... and finally remove redundant columns.
-  const dimension_type working_cost_new_size = working_cost.size() -
-    num_artificials;
+  const dimension_type working_cost_new_size
+    = working_cost.size() - num_artificials;
   working_cost.shrink(working_cost_new_size);
 }
 

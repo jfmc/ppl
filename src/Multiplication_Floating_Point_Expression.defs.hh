@@ -68,16 +68,16 @@ namespace Parma_Polyhedra_Library {
   \aslf
   \left(i' + \sum_{v \in \cV}i'_{v}v\right)
   =
-  \left(i \asifp i'\right) +
-  \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v,
+  \left(i \asifp i'\right)
+  + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v,
   \f]
   \f[
   i
   \amlf
   \left(i' + \sum_{v \in \cV}i'_{v}v\right)
   =
-  \left(i \amifp i'\right) +
-  \sum_{v \in \cV}\left(i \amifp i'_{v}\right)v.
+  \left(i \amifp i'\right)
+  + \sum_{v \in \cV}\left(i \amifp i'_{v}\right)v.
   \f]
   Given an expression \f$[a;b] \otimes e_{2}\f$ and a composite
   abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 

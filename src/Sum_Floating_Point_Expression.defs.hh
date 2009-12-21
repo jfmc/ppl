@@ -67,8 +67,8 @@ namespace Parma_Polyhedra_Library {
   \aslf
   \left(i' + \sum_{v \in \cV}i'_{v}v \right)
   =
-  \left(i \asifp i'\right) +
-  \sum_{v \in \cV}\left(i_{v} \asifp i'_{v} \right)v.
+  \left(i \asifp i'\right)
+  + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v} \right)v.
   \f]
 
   Given an expression \f$e_{1} \oplus e_{2}\f$ and a composite

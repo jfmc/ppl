@@ -502,7 +502,8 @@ public:
     }
   }
   template <typename C1, typename C2>
-  typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C1>::value &&
+  typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C1>::value
+                     &&
 		     Is_Same_Or_Derived<I_Constraint_Base, C2>::value, I_Result>::type
   build(const C1& c1, const C2& c2) {
     switch (c1.rel()) {
@@ -987,8 +988,8 @@ public:
     std::swap(delta_, x.delta_);
   }
   memory_size_type external_memory_in_bytes() const {
-    return Parma_Polyhedra_Library::external_memory_in_bytes(start_) +
-      Parma_Polyhedra_Library::external_memory_in_bytes(delta_);
+    return Parma_Polyhedra_Library::external_memory_in_bytes(start_)
+      + Parma_Polyhedra_Library::external_memory_in_bytes(delta_);
   }
   void ascii_dump(std::ostream& s) const {
     using Parma_Polyhedra_Library::ascii_dump;

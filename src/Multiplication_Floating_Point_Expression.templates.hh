@@ -55,12 +55,12 @@ void Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   boundary_type first_interval_size, second_interval_size;
 
   // FIXME: we are not sure that what we do here is policy-proof.
-  if (intervalized_first_operand.is_bounded() &&
-      intervalized_second_operand.is_bounded()) {
-    first_interval_size = intervalized_first_operand.upper() -
-                          intervalized_first_operand.lower();
-    second_interval_size = intervalized_second_operand.upper() -
-                           intervalized_second_operand.lower();
+  if (intervalized_first_operand.is_bounded()
+      && intervalized_second_operand.is_bounded()) {
+    first_interval_size = intervalized_first_operand.upper()
+      - intervalized_first_operand.lower();
+    second_interval_size = intervalized_second_operand.upper()
+      - intervalized_second_operand.lower();
     if (first_interval_size <= second_interval_size)
       intervalize_first = true;
     else

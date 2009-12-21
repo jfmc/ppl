@@ -64,8 +64,8 @@ namespace Parma_Polyhedra_Library {
   \adlf
   \left(i + \sum_{v \in \cV}i_{v}v\right)
   =
-  \left(\adifp i\right) +
-  \sum_{v \in \cV}\left(\adifp i_{v} \right)v,
+  \left(\adifp i\right)
+  + \sum_{v \in \cV}\left(\adifp i_{v} \right)v,
   \f]
 
   Given a floating point expression \f$\ominus e\f$ and a composite

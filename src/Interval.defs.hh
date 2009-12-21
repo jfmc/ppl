@@ -378,8 +378,10 @@ public:
   }
 
   template <typename C1, typename C2>
-  typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C1>::value &&
-		     Is_Same_Or_Derived<I_Constraint_Base, C2>::value, I_Result>::type
+  typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C1>::value
+                     &&
+		     Is_Same_Or_Derived<I_Constraint_Base, C2>::value,
+                     I_Result>::type
   build(const C1& c1, const C2& c2) {
     switch (c1.rel()) {
     case V_LGE:

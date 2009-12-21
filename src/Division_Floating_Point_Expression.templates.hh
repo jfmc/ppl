@@ -39,8 +39,8 @@ void Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 
   // Check if we may divide by zero.
   // FIXME: check the assumption that boundary_type is comparable with zero.
-  if (intervalized_second_operand.lower() <= 0 &&
-      intervalized_second_operand.upper() >= 0)
+  if (intervalized_second_operand.lower() <= 0
+      && intervalized_second_operand.upper() >= 0)
     throw Linearization_Failed();
 
   first_operand->linearize(int_store, lf_store, result);
