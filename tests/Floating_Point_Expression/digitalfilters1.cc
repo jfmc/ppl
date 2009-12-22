@@ -46,8 +46,7 @@ for (n = 0; n < N; ++n) {
 }
 */
 
-// Tests rate limiter using intervals abstract domain
-// and ignoring rounding errors.
+// Tests rate limiter using boxes and ignoring rounding errors.
 bool
 test01() {
   // Input signal.
@@ -139,8 +138,8 @@ test01() {
   return !y.is_bounded();
 }
 
-// Tests rate limiter using bounded differences abstract domain
-// and ignoring rounding errors.
+// Tests rate limiter using bounded differences and ignoring rounding
+// errors.
 bool
 test02() {
   // Input signal.
@@ -229,8 +228,8 @@ test02() {
   return !y.is_bounded();
 }
 
-// Tests rate limiter using octagons abstract domain
-// and ignoring rounding errors.
+// Tests rate limiter using octagonal shapes and ignoring rounding
+// errors.
 bool
 test03() {
   // Input signal.
@@ -324,8 +323,7 @@ test03() {
   return y.is_bounded();
 }
 
-// Tests rate limiter using polyhedra abstract domain
-// and ignoring rounding errors.
+// Tests rate limiter using polyhedra and ignoring rounding errors.
 bool
 test04() {
   // Input signal.
@@ -419,8 +417,8 @@ test04() {
   return y.is_bounded();
 }
 
-// Tests rate limiter using bounded differences abstract domain and
-// linearization of floating point expressions.
+// Tests rate limiter using bounded differences and linearization of
+// floating point expressions.
 // In order to improve the analysis, the interval domain is used
 // in parallel with bounded differences domain.
 bool
@@ -598,8 +596,8 @@ test05() {
   return y.is_bounded();
 }
 
-// Tests rate limiter using octagons abstract domain and
-// linearization of floating point expressions.
+// Tests rate limiter using octagonal shapes and linearization of
+// floating point expressions.
 // In order to improve the analysis, the interval domain is used
 // in parallel with octagons domain.
 bool
@@ -784,8 +782,8 @@ test06() {
   return y.is_bounded();
 }
 
-// Tests rate limiter using polyhedra abstract domain and
-// linearization of floating point expressions.
+// Tests rate limiter using polyhedra domain and linearization of
+// floating point expressions.
 // In order to improve the analysis, the interval domain is used
 // in parallel with poyhedra domain.
 bool
@@ -968,9 +966,9 @@ test07() {
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
-  DO_TEST(test03);
-  DO_TEST(test04);
-  DO_TEST(test05);
-  DO_TEST(test06);
-  DO_TEST(test07);
+  DO_TEST_F8(test03);
+  DO_TEST_F64(test04);
+  DO_TEST_F8(test05);
+  DO_TEST_F8(test06);
+  DO_TEST_F64(test07);
 END_MAIN
