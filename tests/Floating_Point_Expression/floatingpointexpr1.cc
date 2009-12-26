@@ -117,9 +117,9 @@ test04() {
   nout << "*** known_result ***" << endl
        << known_result << endl;
 
+  // FIXME: Computed result should over-approximates the known result.
   FP_Expression::intervalize(result, store, tmp);
   FP_Expression::intervalize(known_result, store, tmp2);
-
   return tmp.contains(tmp2);
 }
 

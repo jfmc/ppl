@@ -76,7 +76,7 @@ test01() {
   cs.insert(Y >= -M);
 
   // Y = 0;
-  abstract_store.set_interval(Y, tmp);
+  abstract_store.affine_image(Y, FP_Linear_Form(tmp));
   Box<FP_Interval> box(abstract_store);
 
   for(unsigned short n = 0; y != y_begin; ++n) {
@@ -89,26 +89,22 @@ test01() {
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     tmp.lower() = -128;
     tmp.upper() = 128;
-    abstract_store.set_interval(X, tmp);
+    abstract_store.affine_image(X, FP_Linear_Form(tmp));
 
     tmp.lower() = 0;
     tmp.upper() = 16;
-    abstract_store.set_interval(D, tmp);
+    abstract_store.affine_image(X, FP_Linear_Form(tmp));
 
-    // The linear form is intervalized and assigned to the corresponding
-    // variable in the abstract store.
-    FP_Expression::intervalize(FP_Linear_Form(Y), abstract_store, tmp);
-    abstract_store.set_interval(S, tmp);
-    FP_Expression::intervalize(FP_Linear_Form(X - S), abstract_store, tmp);
-    abstract_store.set_interval(R, tmp);
-    FP_Expression::intervalize(FP_Linear_Form(X), abstract_store, tmp);
-    abstract_store.set_interval(Y, tmp);
+    abstract_store.affine_image(S, FP_Linear_Form(Y));
+
+    abstract_store.affine_image(R, FP_Linear_Form(X - S));
+
+    abstract_store.affine_image(Y, FP_Linear_Form(X));
 
     // if (R <= -D) Y = S - D;
     FP_Interval_Abstract_Store as_then(abstract_store);
     as_then.refine_with_constraint(R <= -D);
-    FP_Expression::intervalize(FP_Linear_Form(S - D), as_then, tmp);
-    as_then.set_interval(Y, tmp);
+    as_then.affine_image(Y, FP_Linear_Form(S - D));
     abstract_store.refine_with_constraint(R > -D);
     abstract_store.upper_bound_assign(as_then);
     print_constraints(abstract_store,
@@ -117,8 +113,7 @@ test01() {
     // if (R >= D)  Y = S + D;
     as_then = abstract_store;
     as_then.refine_with_constraint(R >= D);
-    FP_Expression::intervalize(FP_Linear_Form(S + D), as_then, tmp);
-    as_then.set_interval(Y, tmp);
+    as_then.affine_image(Y, FP_Linear_Form(S + D));
     abstract_store.refine_with_constraint(R > D);
     abstract_store.upper_bound_assign(as_then);
 
@@ -467,7 +462,7 @@ test05() {
   // differences domain.
   // Then, we consider the intersection between these abstract domains.
   bd.affine_image(Y, lk);
-  abstract_store.set_interval(Y, tmp);
+  abstract_store.affine_image(Y, FP_Linear_Form(tmp));
 
   // This loop iterate until the value of Y reaches a fixed point.
   for(unsigned short n = 0; y_begin != y; ++n) {
@@ -484,26 +479,19 @@ test05() {
     Con_FP_Expression con_x(-128, 128);
     con_x.linearize(abstract_store, lf_abstract_store, lk);
     bd.affine_image(X, lk);
-    tmp.lower() = -128;
-    tmp.upper() = 128;
-    abstract_store.set_interval(X, tmp);
+    abstract_store.affine_image(X, FP_Linear_Form(tmp));
 
     // D = [0, 16];
     Con_FP_Expression con_d(0, 16);
     con_d.linearize(abstract_store, lf_abstract_store, lk);
     bd.affine_image(D, lk);
-    tmp.lower() = 0;
-    tmp.upper() = 16;
-    abstract_store.set_interval(D, tmp);
+    abstract_store.affine_image(D, FP_Linear_Form(tmp));
 
     // S = Y;
     Var_FP_Expression var_y(Y.id());
     var_y.linearize(abstract_store, lf_abstract_store, ly);
     bd.affine_image(S, ly);
-    // The linear form is intervalized and assigned to the corresponding
-    // variable in the abstract store.
-    FP_Expression::intervalize(FP_Linear_Form(Y), abstract_store, tmp);
-    abstract_store.set_interval(S, tmp);
+    abstract_store.affine_image(S, FP_Linear_Form(tmp));
     // Intersection between the values of the variables in
     // the BD_Shape and in the abstract store.
     abstract_store.intersection_assign(Box<FP_Interval>(bd));
@@ -514,16 +502,14 @@ test05() {
     Dif_FP_Expression x_dif_s(px, ps);
     x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
     bd.affine_image(R, lr);
-    FP_Expression::intervalize(FP_Linear_Form(X - S), abstract_store, tmp);
-    abstract_store.set_interval(R, tmp);
+    abstract_store.affine_image(R, FP_Linear_Form(X - S));
     abstract_store.intersection_assign(Box<FP_Interval>(bd));
 
     // Y = X;
     Var_FP_Expression var_x(X.id());
     var_x.linearize(abstract_store, lf_abstract_store, lx);
     bd.affine_image(Y, lx);
-    FP_Expression::intervalize(FP_Linear_Form(X), abstract_store, tmp);
-    abstract_store.set_interval(Y, tmp);
+    abstract_store.affine_image(Y, FP_Linear_Form(X));
     abstract_store.intersection_assign(Box<FP_Interval>(bd));
 
     // if (R <= -D)
@@ -538,8 +524,7 @@ test05() {
     Dif_FP_Expression s_dif_d(ps2, pd);
     s_dif_d.linearize(abstract_store, lf_abstract_store, ly);
     bd_then.affine_image(Y, ly);
-    FP_Expression::intervalize(FP_Linear_Form(S - D), as_then, tmp);
-    as_then.set_interval(Y, tmp);
+    as_then.affine_image(Y, FP_Linear_Form(S - D));
     as_then.intersection_assign(Box<FP_Interval>(bd_then));
 
     // else skip;
@@ -564,8 +549,7 @@ test05() {
     Sum_FP_Expression s_sum_d(ps3, pd1);
     s_sum_d.linearize(abstract_store, lf_abstract_store, ly);
     bd_then.affine_image(Y, ly);
-    FP_Expression::intervalize(FP_Linear_Form(S + D), as_then, tmp);
-    as_then.set_interval(Y, tmp);
+    as_then.affine_image(Y, FP_Linear_Form(S + D));
     as_then.intersection_assign(Box<FP_Interval>(bd_then));
 
     // else skip;
@@ -653,7 +637,7 @@ test06() {
   // domain.
   // Then, we consider the intersection between these abstract domains.
   oc.affine_image(Y, lk);
-  abstract_store.set_interval(Y, tmp);
+  abstract_store.affine_image(Y, FP_Linear_Form(tmp));
 
   // This loop iterate until the value of Y reaches a fixed point.
   for(unsigned short n = 0; y_begin != y; ++n) {
@@ -672,7 +656,7 @@ test06() {
     oc.affine_image(X, lk);
     tmp.lower() = -128;
     tmp.upper() = 128;
-    abstract_store.set_interval(X, tmp);
+    abstract_store.affine_image(X, FP_Linear_Form(tmp));
 
     // D = [0, 16].
     Con_FP_Expression con_d(0, 16);
@@ -680,16 +664,13 @@ test06() {
     oc.affine_image(D, lk);
     tmp.lower() = 0;
     tmp.upper() = 16;
-    abstract_store.set_interval(D, tmp);
+    abstract_store.affine_image(D, FP_Linear_Form(tmp));
 
     // S = Y.
     Var_FP_Expression var_y(Y.id());
     var_y.linearize(abstract_store, lf_abstract_store, ly);
     oc.affine_image(S, ly);
-    // The linear form is intervalized and assigned to the corresponding
-    // variable in the abstract store.
-    FP_Expression::intervalize(FP_Linear_Form(Y), abstract_store, tmp);
-    abstract_store.set_interval(Y, tmp);
+    abstract_store.affine_image(S, FP_Linear_Form(Y));
     // Intersection between the values of the variables in
     // the octagon and in the abstract store.
     abstract_store.intersection_assign(Box<FP_Interval>(oc));
@@ -700,16 +681,14 @@ test06() {
     Dif_FP_Expression x_dif_s(px, ps);
     x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
     oc.affine_image(R, lr);
-    FP_Expression::intervalize(FP_Linear_Form(X - S), abstract_store, tmp);
-    abstract_store.set_interval(R, tmp);
+    abstract_store.affine_image(R, FP_Linear_Form(X - S));
     abstract_store.intersection_assign(Box<FP_Interval>(oc));
 
     // Y = X;
     Var_FP_Expression var_x(X.id());
     var_x.linearize(abstract_store, lf_abstract_store, lx);
     oc.affine_image(Y, lx);
-    FP_Expression::intervalize(FP_Linear_Form(X), abstract_store, tmp);
-    abstract_store.set_interval(Y, tmp);
+    abstract_store.affine_image(Y, FP_Linear_Form(X));
     abstract_store.intersection_assign(Box<FP_Interval>(oc));
 
     // if (R <= -D)
@@ -724,8 +703,7 @@ test06() {
     Dif_FP_Expression s_dif_d(ps2, pd);
     s_dif_d.linearize(abstract_store, lf_abstract_store, ly);
     oc_then.affine_image(Y, ly);
-    FP_Expression::intervalize(FP_Linear_Form(S - D), as_then, tmp);
-    as_then.set_interval(Y, tmp);
+    as_then.affine_image(Y, FP_Linear_Form(S - D));
     as_then.intersection_assign(Box<FP_Interval>(oc_then));
 
     // else skip.
@@ -750,8 +728,7 @@ test06() {
     Sum_FP_Expression s_sum_d(ps3, pd1);
     s_sum_d.linearize(abstract_store, lf_abstract_store, ly);
     oc_then.affine_image(Y, ly);
-    FP_Expression::intervalize(FP_Linear_Form(S + D), as_then, tmp);
-    as_then.set_interval(Y, tmp);
+    as_then.affine_image(Y, FP_Linear_Form(S + D));
     as_then.intersection_assign(Box<FP_Interval>(oc_then));
 
     // else skip.
@@ -831,7 +808,7 @@ test07() {
   // performed in parallel in the interval domain and in the poyhedra domain.
   // Then, we consider the intersection between these abstract domains.
   ph.affine_image(Y, lk);
-  abstract_store.set_interval(Y, tmp);
+  abstract_store.affine_image(Y, FP_Linear_Form(tmp));
 
   // This loop iterate until the value of Y reaches a fixed point.
   for(unsigned short n = 0; y_begin != y; ++n) {
@@ -850,7 +827,7 @@ test07() {
     ph.affine_image(X, lk);
     tmp.lower() = -128;
     tmp.upper() = 128;
-    abstract_store.set_interval(X, tmp);
+    abstract_store.affine_image(X, FP_Linear_Form(tmp));
 
     // D = [0, 16];
     Con_FP_Expression con_d(0, 16);
@@ -858,16 +835,13 @@ test07() {
     ph.affine_image(D, lk);
     tmp.lower() = 0;
     tmp.upper() = 16;
-    abstract_store.set_interval(D, tmp);
+    abstract_store.affine_image(D, FP_Linear_Form(tmp));
 
     // S = Y;
     Var_FP_Expression var_y(Y.id());
     var_y.linearize(abstract_store, lf_abstract_store, ly);
     ph.affine_image(S, ly);
-    // The linear form is intervalized and assigned to the corresponding
-    // variable in the abstract store.
-    FP_Expression::intervalize(FP_Linear_Form(Y), abstract_store, tmp);
-    abstract_store.set_interval(S, tmp);
+    abstract_store.affine_image(S, FP_Linear_Form(tmp));
     // Intersection between the values of the variables in
     // the polyhedron and in the abstract store.
     abstract_store.intersection_assign(Box<FP_Interval>(ph));
@@ -878,16 +852,14 @@ test07() {
     Dif_FP_Expression x_dif_s(px, ps);
     x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
     ph.affine_image(R, lr);
-    FP_Expression::intervalize(FP_Linear_Form(X - S), abstract_store, tmp);
-    abstract_store.set_interval(R, tmp);
+    abstract_store.affine_image(R, FP_Linear_Form(X - S));
     abstract_store.intersection_assign(Box<FP_Interval>(ph));
 
     // Y = X;
     Var_FP_Expression var_x(X.id());
     var_x.linearize(abstract_store, lf_abstract_store, lx);
     ph.affine_image(Y, lx);
-    FP_Expression::intervalize(FP_Linear_Form(X), abstract_store, tmp);
-    abstract_store.set_interval(Y, tmp);
+    abstract_store.affine_image(Y, FP_Linear_Form(X));
     abstract_store.intersection_assign(Box<FP_Interval>(ph));
 
     // if (R <= -D)
@@ -902,8 +874,7 @@ test07() {
     Dif_FP_Expression s_dif_d(ps2, pd);
     s_dif_d.linearize(abstract_store, lf_abstract_store, ly);
     ph_then.affine_image(Y, ly);
-    FP_Expression::intervalize(FP_Linear_Form(S - D), as_then, tmp);
-    as_then.set_interval(Y, tmp);
+    as_then.affine_image(Y, FP_Linear_Form(S - D));
     as_then.intersection_assign(Box<FP_Interval>(ph_then));
 
     // else skip;
@@ -928,8 +899,7 @@ test07() {
     Sum_FP_Expression s_sum_d(ps3, pd1);
     s_sum_d.linearize(abstract_store, lf_abstract_store, ly);
     ph_then.affine_image(Y, ly);
-    FP_Expression::intervalize(FP_Linear_Form(S + D), as_then, tmp);
-    as_then.set_interval(Y, tmp);
+    as_then.affine_image(Y, FP_Linear_Form(S + D));
     as_then.intersection_assign(Box<FP_Interval>(ph_then));
 
     // else skip;

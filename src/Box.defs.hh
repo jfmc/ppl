@@ -44,6 +44,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid.types.hh"
 #include "Partially_Reduced_Product.types.hh"
 #include "intervals.defs.hh"
+#include "Interval.types.hh"
+#include "Linear_Form.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -984,6 +986,29 @@ public:
 		    const Linear_Expression& expr,
 		    Coefficient_traits::const_reference denominator
 		      = Coefficient_one());
+
+  /*! \brief
+    Assigns to \p *this the \ref affine_relation "affine image"
+    of \p *this under the function mapping variable \p var into the
+    affine expression(s) specified by \p lf.
+
+    \param var
+    The variable to which the affine expression is assigned.
+
+    \param lf
+    The linear form on intervals with floating point boundaries that
+    defines the affine expression(s). ALL of its coefficients MUST be bounded.
+
+    \exception std::invalid_argument
+    Thrown if \p lf and \p *this are dimension-incompatible or if \p var
+    is not a dimension of \p *this.
+
+    This function is used in abstract interpretation to model an assignment
+    of a value that is correctly overapproximated by \p lf to the
+    floating point variable represented by \p var.
+  */
+  void affine_image(Variable var,
+                    const Linear_Form<ITV>& lf);
 
   /*! \brief
     Assigns to \p *this the
@@ -2103,6 +2128,11 @@ private:
   void throw_dimension_incompatible(const char* method,
 				    const char* name_row,
 				    const Linear_Expression& y) const;
+
+  template <typename C>
+  void throw_dimension_incompatible(const char* method,
+                                    const char* name_row,
+                                    const Linear_Form<C>& y) const;
 
   static void throw_space_dimension_overflow(const char* method,
 					     const char* reason);

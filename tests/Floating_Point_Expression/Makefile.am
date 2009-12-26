@@ -86,15 +86,12 @@ if SUPPORTED_FLOAT
 FLOAT_INSTANCES= \
 float/float_ieee754_single \
 float/float_ieee754_double \
-float/float_ieee754_quad \
-float/float_ibm_double \
-float/float_intel_double_extended
+float/float_ieee754_quad
 endif
 if SUPPORTED_DOUBLE
 DOUBLE_INSTANCES= \
 double/float_ieee754_double \
-double/float_ieee754_quad \
-double/float_intel_double_extended
+double/float_ieee754_quad
 endif
 if SUPPORTED_LONG_DOUBLE
 LONG_DOUBLE_INSTANCES= \

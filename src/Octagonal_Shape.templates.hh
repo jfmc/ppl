@@ -5071,7 +5071,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
                      "Octagonal_Shape<T>::affine_image(Variable, Linear_Form):"
-                     " T not a floating point type.");
+                     " T is not a floating point type.");
 
   // Dimension-compatibility checks.
   // The dimension of `lf' should not be greater than the dimension
