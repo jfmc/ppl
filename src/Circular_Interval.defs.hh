@@ -217,8 +217,8 @@ private:
   }
 public:
   bool OK() const {
-    return delta_ < delta_max() ||
-      (delta_ == delta_max() && start_ <= 1);
+    return delta_ < delta_max()
+      || (delta_ == delta_max() && start_ <= 1);
   }
   Circular_Interval() {
   }
@@ -609,8 +609,8 @@ public:
   I_Result add_assign(const Circular_Interval& x, const Circular_Interval& y) {
     if (x.maybe_check_empty() || y.maybe_check_empty())
       return assign(EMPTY);
-    if (x.is_universe() || y.is_universe() ||
-	add_saturates_unsigned(delta_, x.delta_, y.delta_, Policy::modulo))
+    if (x.is_universe() || y.is_universe()
+        || add_saturates_unsigned(delta_, x.delta_, y.delta_, Policy::modulo))
       return assign(UNIVERSE);
     add_wrap_unsigned(start_, x.start_, y.start_, Policy::modulo);
     return I_NOT_DEGENERATE | I_EXACT;
@@ -618,8 +618,8 @@ public:
   I_Result sub_assign(const Circular_Interval& x, const Circular_Interval& y) {
     if (x.maybe_check_empty() || y.maybe_check_empty())
       return assign(EMPTY);
-    if (x.is_universe() || y.is_universe() ||
-	add_saturates_unsigned(delta_, x.delta_, y.delta_, Policy::modulo))
+    if (x.is_universe() || y.is_universe()
+        || add_saturates_unsigned(delta_, x.delta_, y.delta_, Policy::modulo))
       return assign(UNIVERSE);
     sub_wrap_unsigned(start_, x.start_, y.end(), Policy::modulo);
     return I_NOT_DEGENERATE | I_EXACT;
@@ -629,11 +629,12 @@ public:
       return assign(EMPTY);
     I_Result r;
     delta_type d;
-    if (y.delta_ == 0 ?
-	mul_saturates_unsigned(d, y.start_, x.delta_, Policy::modulo) :
-	(add_saturates_unsigned(d, x.start_, x.delta_, Policy::modulo) ||
-	 mul_saturates_unsigned(d, d, y.delta_, Policy::modulo) ||
-	 add_mul_saturates_unsigned(d, y.start_, x.delta_, Policy::modulo))) {
+    if (y.delta_ == 0
+        ? mul_saturates_unsigned(d, y.start_, x.delta_, Policy::modulo)
+        : (add_saturates_unsigned(d, x.start_, x.delta_, Policy::modulo)
+           || mul_saturates_unsigned(d, d, y.delta_, Policy::modulo)
+           || add_mul_saturates_unsigned(d, y.start_, x.delta_,
+                                         Policy::modulo))) {
       assign(UNIVERSE);
       r = I_UNIVERSE;
     }

@@ -46,6 +46,22 @@ for (n = 0; n < N; ++n) {
 }
 */
 
+void
+set_M(Coefficient& M, int m) {
+  if (std::numeric_limits<Coefficient>::is_bounded) {
+    if (std::numeric_limits<Coefficient>::min()
+        > std::numeric_limits<ANALYZER_FP_FORMAT>::min()
+        || std::numeric_limits<Coefficient>::max()
+        < std::numeric_limits<ANALYZER_FP_FORMAT>::min()) {
+      // This may still provoke an arithmetic overflow exception:
+      // no problem.
+      M = m;
+      return;
+    }
+  }
+  M = std::numeric_limits<ANALYZER_FP_FORMAT>::max();
+}
+
 // Tests rate limiter using boxes and ignoring rounding errors.
 bool
 test01() {
@@ -67,11 +83,8 @@ test01() {
   FP_Interval_Abstract_Store as_begin;
 
   Constraint_System cs;
-  PPL_DIRTY_TEMP_COEFFICIENT(M);
-
-  ANALYZER_FP_FORMAT max_analyzer =
-    std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  assign_r(M, max_analyzer, ROUND_DOWN);
+  Coefficient M;
+  set_M(M, 144);
   cs.insert(Y <= M);
   cs.insert(Y >= -M);
 
@@ -155,10 +168,8 @@ test02() {
   FP_BD_Shape bd_begin;
 
   Constraint_System cs;
-  PPL_DIRTY_TEMP_COEFFICIENT(M);
-  ANALYZER_FP_FORMAT max_analyzer =
-    std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  assign_r(M, max_analyzer, ROUND_DOWN);
+  Coefficient M;
+  set_M(M, 144);
   cs.insert(Y <= M);
   cs.insert(Y >= -M);
 
@@ -245,12 +256,10 @@ test03() {
   FP_Octagonal_Shape oc_begin;
 
   Constraint_System cs;
-  PPL_DIRTY_TEMP_COEFFICIENT(M);
-  PPL_DIRTY_TEMP_COEFFICIENT(N);
-  ANALYZER_FP_FORMAT max_analyzer =
-    std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  assign_r(M, max_analyzer, ROUND_DOWN);
-  div_2exp_assign_r(N, M, 1, ROUND_DOWN);
+  Coefficient M;
+  Coefficient N;
+  set_M(M, 272);
+  div_2exp_assign(N, M, 1);
   // FIXME: By inserting the constraints Y <= M and Y >= -M, we obtain
   // Y + Y <= 2 * M = +inf and -Y - Y <= -2 * M = +inf.
   // For a more precise analysis, it is better to insert the
@@ -339,11 +348,9 @@ test04() {
   NNC_Polyhedron ph_begin;
 
   Constraint_System cs;
-  PPL_DIRTY_TEMP_COEFFICIENT(M);
-  ANALYZER_FP_FORMAT max_analyzer =
-    std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  assign_r(M, max_analyzer, ROUND_DOWN);
-  // FIXME: we could take any value of M >= 128.
+  Coefficient M;
+  // Note: we can take any value of M >= 128 here.
+  set_M(M, 128);
   cs.insert(Y <= M);
   cs.insert(Y >= -M);
 
@@ -442,13 +449,9 @@ test05() {
   FP_Linear_Form lr;
   FP_Linear_Form lk;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(M);
-  ANALYZER_FP_FORMAT max_analyzer =
-    std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  assign_r(M, max_analyzer, ROUND_DOWN);
-  // We have to check that Y not overflows.
-  // FIXME: We could take any value of M >= 144.
   Constraint_System cs;
+  Coefficient M;
+  set_M(M, 144);
   cs.insert(Y <= M);
   cs.insert(Y >= -M);
 
@@ -610,20 +613,16 @@ test06() {
   FP_Linear_Form lr;
   FP_Linear_Form lk;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(M);
-  PPL_DIRTY_TEMP_COEFFICIENT(N);
-  ANALYZER_FP_FORMAT max_analyzer =
-    std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  assign_r(M, max_analyzer, ROUND_DOWN);
-
+  Constraint_System cs;
+  Coefficient M;
+  Coefficient N;
+  set_M(M, 288);
+  div_2exp_assign(N, M, 1);
   // FIXME: By inserting the constraints Y <= M and Y >= -M, we obtain
   // Y + Y <= 2 * M = +inf and -Y - Y <= -2 * M = +inf.
   // For a more precise analysis, it is better to insert the
   // constraints Y <= N and Y >= -N, where N = M / 2.
   // However, we could take any value of N such that 144 <= N <= M / 2.
-  div_2exp_assign_r(N, M, 1, ROUND_DOWN);
-  // We have to check that Y not overflows.
-  Constraint_System cs;
   cs.insert(Y <= N);
   cs.insert(Y >= -N);
 
@@ -789,13 +788,9 @@ test07() {
   FP_Linear_Form lr;
   FP_Linear_Form lk;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(M);
-  ANALYZER_FP_FORMAT max_analyzer =
-    std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  assign_r(M, max_analyzer, ROUND_DOWN);
-  // We have to check that Y not overflows.
-  // FIXME: We could take any value of M >= 144.
   Constraint_System cs;
+  Coefficient M;
+  set_M(M, 144);
   cs.insert(Y <= M);
   cs.insert(Y >= -M);
 
@@ -934,8 +929,8 @@ test07() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
-  DO_TEST(test02);
+  DO_TEST_F8(test01);
+  DO_TEST_F8(test02);
   DO_TEST_F8(test03);
   DO_TEST_F64(test04);
   DO_TEST_F8(test05);

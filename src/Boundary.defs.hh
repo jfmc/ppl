@@ -316,8 +316,8 @@ is_boundary_infinity_closed(Boundary_Type type, const T& x, const Info& info) {
 template <typename Info>
 inline bool
 boundary_infinity_is_open(Boundary_Type type, const Info& info) {
-  return !Info::may_contain_infinity ||
-    info.get_boundary_property(type, OPEN);
+  return !Info::may_contain_infinity
+    || info.get_boundary_property(type, OPEN);
 }
 
 template <typename T, typename Info>
@@ -357,8 +357,8 @@ eq(Boundary_Type type1, const T1& x1, const Info1& info1,
     return is_minus_infinity(type2, x2, info2);
   else if (is_plus_infinity(type1, x1, info1))
     return is_plus_infinity(type2, x2, info2);
-  else if (is_minus_infinity(type2, x2, info2) ||
-	   is_plus_infinity(type2, x2, info2))
+  else if (is_minus_infinity(type2, x2, info2)
+           || is_plus_infinity(type2, x2, info2))
     return false;
   else
     return equal(x1, x2);
