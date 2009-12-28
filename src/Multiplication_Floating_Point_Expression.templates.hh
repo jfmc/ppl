@@ -55,19 +55,32 @@ void Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   boundary_type first_interval_size, second_interval_size;
 
   // FIXME: we are not sure that what we do here is policy-proof.
-  if (intervalized_first_operand.is_bounded()
-      && intervalized_second_operand.is_bounded()) {
-    first_interval_size = intervalized_first_operand.upper()
-      - intervalized_first_operand.lower();
-    second_interval_size = intervalized_second_operand.upper()
-      - intervalized_second_operand.lower();
-    if (first_interval_size <= second_interval_size)
+  if (intervalized_first_operand.is_bounded()) {
+    if (intervalized_second_operand.is_bounded()) {
+      first_interval_size = intervalized_first_operand.upper() -
+                            intervalized_first_operand.lower();
+      second_interval_size = intervalized_second_operand.upper() -
+                             intervalized_second_operand.lower();
+      if (first_interval_size <= second_interval_size)
+        intervalize_first = true;
+      else
+        intervalize_first = false;
+    }
+    else {
+      if (this->overflows(linearized_second_operand))
+        throw Linearization_Failed();
       intervalize_first = true;
-    else
-      intervalize_first = false;
+    }
   }
-  else
-    throw Linearization_Failed();
+  else {
+    if (intervalized_second_operand.is_bounded()) {
+      if (this->overflows(linearized_first_operand))
+        throw Linearization_Failed();
+      intervalize_first = false;
+    }
+    else
+      throw Linearization_Failed();
+  }
 
   // Here we do the actual computation.
   // For optimizing, we store the relative error directly into result.
