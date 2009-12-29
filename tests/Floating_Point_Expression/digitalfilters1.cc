@@ -49,17 +49,17 @@ for (n = 0; n < N; ++n) {
 void
 set_M(Coefficient& M, int m) {
   if (std::numeric_limits<Coefficient>::is_bounded) {
-    if (std::numeric_limits<Coefficient>::min()
-        > std::numeric_limits<ANALYZER_FP_FORMAT>::min()
-        || std::numeric_limits<Coefficient>::max()
-        < std::numeric_limits<ANALYZER_FP_FORMAT>::min()) {
+    if (greater_than(std::numeric_limits<Coefficient>::min(),
+                     std::numeric_limits<ANALYZER_FP_FORMAT>::min())
+        || less_than(std::numeric_limits<Coefficient>::max(),
+                     std::numeric_limits<ANALYZER_FP_FORMAT>::min())) {
       // This may still provoke an arithmetic overflow exception:
       // no problem.
-      M = m;
+      assign_r(M, m, ROUND_DOWN);
       return;
     }
   }
-  M = std::numeric_limits<ANALYZER_FP_FORMAT>::max();
+  assign_r(M, std::numeric_limits<ANALYZER_FP_FORMAT>::max(), ROUND_DOWN);
 }
 
 // Tests rate limiter using boxes and ignoring rounding errors.
