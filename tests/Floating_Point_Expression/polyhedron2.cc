@@ -223,5 +223,5 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST_F32(test04);
-  DO_TEST_F16(test05);
+  DO_TEST_F64A(test05);
 END_MAIN
