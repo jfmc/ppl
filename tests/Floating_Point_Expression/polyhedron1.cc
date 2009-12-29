@@ -260,8 +260,18 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
-  DO_TEST_F32A(test04);
-  DO_TEST_F32(test05);
+  if (sizeof(ANALYZER_FP_FORMAT) == 4) {
+    DO_TEST_F32A(test04);
+    DO_TEST_F64A(test05);
+  }
+  else if (sizeof(ANALYZER_FP_FORMAT) == 8) {
+    DO_TEST_F64A(test04);
+    DO_TEST_F64(test05);
+  }
+  else {
+    DO_TEST_F64(test04);
+    DO_TEST_F64(test05);
+  }
   DO_TEST(test06);
   DO_TEST(test07);
 END_MAIN
