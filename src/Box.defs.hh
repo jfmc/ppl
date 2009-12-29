@@ -987,8 +987,9 @@ public:
 		    Coefficient_traits::const_reference denominator
 		      = Coefficient_one());
 
+  // FIXME: To be completed.
   /*! \brief
-    Assigns to \p *this the \ref affine_relation "affine image"
+    Assigns to \p *this the \ref affine_form_relation "affine form image"
     of \p *this under the function mapping variable \p var into the
     affine expression(s) specified by \p lf.
 
@@ -1007,8 +1008,8 @@ public:
     of a value that is correctly overapproximated by \p lf to the
     floating point variable represented by \p var.
   */
-  void affine_image(Variable var,
-                    const Linear_Form<ITV>& lf);
+  void affine_form_image(Variable var,
+                         const Linear_Form<ITV>& lf);
 
   /*! \brief
     Assigns to \p *this the

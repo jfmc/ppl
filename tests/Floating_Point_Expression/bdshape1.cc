@@ -1,4 +1,4 @@
-/* Test BD_Shape::affine_image on interval linear forms.
+/* Test BD_Shape::affine_form_image on interval linear forms.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -34,7 +34,7 @@ test01() {
   FP_Linear_Form l(A);
 
   try {
-      bd1.affine_image(A, l);
+      bd1.affine_form_image(A, l);
   }
   catch(std::invalid_argument e) {
     nout << "bd1_space_dim < lf_space_dim" << endl;
@@ -45,14 +45,14 @@ test01() {
   FP_BD_Shape bd2(1);
 
   try {
-    bd2.affine_image(B, l);
+    bd2.affine_form_image(B, l);
   }
   catch(std::invalid_argument e) {
     nout << "space_dim < var_id + 1" << endl;
-    bd2.affine_image(A, l);
+    bd2.affine_form_image(A, l);
     Constraint_System cs(A < A);
     bd2.add_constraints(cs);
-    bd2.affine_image(A, l);
+    bd2.affine_form_image(A, l);
     ok2 = true;
   }
 
@@ -60,7 +60,7 @@ test01() {
 }
 
 
-// Tests affine_image(A, [-2, 1]).
+// Tests affine_form_image(A, [-2, 1]).
 bool
 test02() {
   Variable A(0);
@@ -73,8 +73,8 @@ test02() {
   FP_Interval free_term(-2);
   free_term.join_assign(1);
   FP_Linear_Form l(free_term);
-  bd1.affine_image(A, l);
-  print_constraints(bd1, "*** bd1.affine_image(A, [-2, 1]) ***");
+  bd1.affine_form_image(A, l);
+  print_constraints(bd1, "*** bd1.affine_form_image(A, [-2, 1]) ***");
 
   FP_BD_Shape known_result(2);
   known_result.add_constraint(A <= 1);
@@ -87,7 +87,7 @@ test02() {
   return ok;
 }
 
-// Tests affine_image(A, [-1, -1]*A + [0.5, 2]).
+// Tests affine_form_image(A, [-1, -1]*A + [0.5, 2]).
 bool test03() {
   Variable A(0);
   Variable B(1);
@@ -100,8 +100,8 @@ bool test03() {
   free_term.join_assign(2);
   FP_Linear_Form l(-A);
   l += free_term;
-  bd1.affine_image(A, l);
-  print_constraints(bd1, "*** bd1.affine_image(A, -A + [0.5, 2]) ***");
+  bd1.affine_form_image(A, l);
+  print_constraints(bd1, "*** bd1.affine_form_image(A, -A + [0.5, 2]) ***");
 
   FP_BD_Shape known_result(3);
   known_result.add_constraint(-2*A <= 3);
@@ -112,7 +112,7 @@ bool test03() {
   return ok;
 }
 
-// Tests affine_image(B, [1, 1]*B + [-1.5, 3.5]).
+// Tests affine_form_image(B, [1, 1]*B + [-1.5, 3.5]).
 bool test04() {
   Variable A(0);
   Variable B(1);
@@ -125,8 +125,8 @@ bool test04() {
   free_term.join_assign(3.5);
   FP_Linear_Form l(B);
   l += free_term;
-  bd1.affine_image(B, l);
-  print_constraints(bd1, "*** bd1.affine_image(B, B + [-1.5, 3.5]) ***");
+  bd1.affine_form_image(B, l);
+  print_constraints(bd1, "*** bd1.affine_form_image(B, B + [-1.5, 3.5]) ***");
 
   FP_BD_Shape known_result(3);
   known_result.add_constraint(A <= 2);
@@ -139,7 +139,7 @@ bool test04() {
   return ok;
 }
 
-// Tests affine_image(A, [1, 1]*B + [-1, 0.5]).
+// Tests affine_form_image(A, [1, 1]*B + [-1, 0.5]).
 bool test05() {
   Variable A(0);
   Variable B(1);
@@ -152,8 +152,8 @@ bool test05() {
   free_term.join_assign(0.5);
   FP_Linear_Form l(B);
   l += free_term;
-  bd1.affine_image(A, l);
-  print_constraints(bd1, "*** bd1.affine_image(A, B + [-1, 0.5]) ***");
+  bd1.affine_form_image(A, l);
+  print_constraints(bd1, "*** bd1.affine_form_image(A, B + [-1, 0.5]) ***");
 
   FP_BD_Shape known_result(3);
   known_result.add_constraint(2*A <= 5);
@@ -167,7 +167,7 @@ bool test05() {
   return ok;
 }
 
-// Tests affine_image(B, [1, 1]*A + [-3, 1]).
+// Tests affine_form_image(B, [1, 1]*A + [-3, 1]).
 bool test06() {
   Variable A(0);
   Variable B(1);
@@ -180,8 +180,8 @@ bool test06() {
   free_term.join_assign(1);
   FP_Linear_Form l(A);
   l += free_term;
-  bd1.affine_image(B, l);
-  print_constraints(bd1, "*** bd1.affine_image(B, A + [-3, 1]) ***");
+  bd1.affine_form_image(B, l);
+  print_constraints(bd1, "*** bd1.affine_form_image(B, A + [-3, 1]) ***");
 
   FP_BD_Shape known_result(3);
   known_result.add_constraint(A <= 2);
@@ -195,7 +195,7 @@ bool test06() {
   return ok;
 }
 
-// Tests affine_image(B, [-1, -1]*A + [0, 4]).
+// Tests affine_form_image(B, [-1, -1]*A + [0, 4]).
 bool test07() {
   Variable A(0);
   Variable B(1);
@@ -208,8 +208,8 @@ bool test07() {
   free_term.join_assign(4);
   FP_Linear_Form l(-A);
   l += free_term;
-  bd1.affine_image(B, l);
-  print_constraints(bd1, "*** bd1.affine_image(B, -A + [0, 4]) ***");
+  bd1.affine_form_image(B, l);
+  print_constraints(bd1, "*** bd1.affine_form_image(B, -A + [0, 4]) ***");
 
   FP_BD_Shape known_result(3);
   known_result.add_constraint(A <= 2);
@@ -222,7 +222,7 @@ bool test07() {
   return ok;
 }
 
-// Tests affine_image(A, [-1, -1]*B + [0, 2]).
+// Tests affine_form_image(A, [-1, -1]*B + [0, 2]).
 bool test08() {
   Variable A(0);
   Variable B(1);
@@ -236,8 +236,8 @@ bool test08() {
   free_term.join_assign(2);
   FP_Linear_Form l(-B);
   l += free_term;
-  bd1.affine_image(A, l);
-  print_constraints(bd1, "*** bd1.affine_image(A, -B + [0, 2]) ***");
+  bd1.affine_form_image(A, l);
+  print_constraints(bd1, "*** bd1.affine_form_image(A, -B + [0, 2]) ***");
 
   FP_BD_Shape known_result(3);
   known_result.add_constraint(-A <= 2);
@@ -253,7 +253,7 @@ bool test08() {
   return ok;
 }
 
-// Tests affine_image(B, [-0.5, 0.5]*A).
+// Tests affine_form_image(B, [-0.5, 0.5]*A).
 bool test09() {
   Variable A(0);
   Variable B(1);
@@ -266,8 +266,8 @@ bool test09() {
   coeff.join_assign(0.5);
   FP_Linear_Form l(A);
   l *= coeff;
-  bd1.affine_image(B, l);
-  print_constraints(bd1, "*** bd1.affine_image(B, [-0.5, 0.5]*A) ***");
+  bd1.affine_form_image(B, l);
+  print_constraints(bd1, "*** bd1.affine_form_image(B, [-0.5, 0.5]*A) ***");
 
   FP_BD_Shape known_result(3);
   known_result.add_constraint(A <= 2);
@@ -279,7 +279,7 @@ bool test09() {
   return ok;
 }
 
-// Tests affine_image(A, i + i0*A + i1*B) where
+// Tests affine_form_image(A, i + i0*A + i1*B) where
 // i = [0, 2], i0 = [1, 1] and i1 = [1, 2].
 bool test10() {
 
@@ -301,8 +301,8 @@ bool test10() {
   tmp.lower() = 1;
   tmp.upper() = 2;
   l += tmp * FP_Linear_Form(B);
-  bd1.affine_image(A,l);
-  print_constraints(bd1, "*** bd1.affine_image(A, i + i0*A + i1*B) ***");
+  bd1.affine_form_image(A,l);
+  print_constraints(bd1, "*** bd1.affine_form_image(A, i + i0*A + i1*B) ***");
 
   FP_BD_Shape know_result(2);
   know_result.add_constraint(A >= 0);

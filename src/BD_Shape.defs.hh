@@ -1117,8 +1117,9 @@ public:
                     Coefficient_traits::const_reference denominator
                     = Coefficient_one());
 
+  // FIXME: To be completed.
   /*! \brief
-    Assigns to \p *this the \ref affine_relation "affine image"
+    Assigns to \p *this the \ref affine_form_relation "affine form image"
     of \p *this under the function mapping variable \p var into the
     affine expression(s) specified by \p lf.
 
@@ -1134,8 +1135,8 @@ public:
     is not a dimension of \p *this.
   */
   template <typename Interval_Info>
-  void affine_image(Variable var,
-                    const Linear_Form< Interval<T, Interval_Info> >& lf);
+  void affine_form_image(Variable var,
+                        const Linear_Form< Interval<T, Interval_Info> >& lf);
 
   /*! \brief
     Assigns to \p *this the
@@ -2107,32 +2108,32 @@ private:
                                const N& ub_v);
 
   /* \brief
-    Auxiliary function for \ref affine_relation "affine image" that handle
-    the general case: \f$l \equal c\f$
+    Auxiliary function for \ref affine_form_relation "affine form image" that
+    handle the general case: \f$l \equal c\f$
   */
   template <typename Interval_Info>
-  void inhomogeneous_affine_image(const dimension_type& var_id,
-				  const Interval<T, Interval_Info>& b);
+  void inhomogeneous_affine_form_image(const dimension_type& var_id,
+				                       const Interval<T, Interval_Info>& b);
 
   /* \brief
-    Auxiliary function for \ref affine_relation "affine image" that handle
-    the general case: \f$l \equal ax + c\f$
+    Auxiliary function for \ref affine_form_relation "affine form image" that
+    handle the general case: \f$l \equal ax + c\f$
   */
   template <typename Interval_Info>
-  void one_variable_affine_image(const dimension_type& var_id,
-				 const Interval<T, Interval_Info>& b,
-				 const Interval<T, Interval_Info>& w_coeff,
-				 const dimension_type& w_id,
-				 const dimension_type& space_dim);
-
-  /* \brief
-    Auxiliary function for \ref affine_relation "affine image" that handle
-    the general case: \f$l \equal ax + by + c\f$
-  */
-  template <typename Interval_Info>
-  void two_variables_affine_image(const dimension_type& var_id,
-            const Linear_Form< Interval<T,Interval_Info> >& lf,
+  void one_variable_affine_form_image(const dimension_type& var_id,
+                               const Interval<T, Interval_Info>& b,
+                               const Interval<T, Interval_Info>& w_coeff,
+                               const dimension_type& w_id,
                                const dimension_type& space_dim);
+
+  /* \brief
+    Auxiliary function for \ref affine_form_relation "affine form image" that
+    handle the general case: \f$l \equal ax + by + c\f$
+  */
+  template <typename Interval_Info>
+  void two_variables_affine_form_image(const dimension_type& var_id,
+                 const Linear_Form< Interval<T,Interval_Info> >& lf,
+                                   const dimension_type& space_dim);
 
   /* \brief
     Auxiliary function for refine with linear form that handle
@@ -2143,7 +2144,7 @@ private:
 				 const dimension_type& right_w_id,
 		   const Linear_Form< Interval<T, Interval_Info> >& left,
                    const Linear_Form< Interval<T, Interval_Info> >& right);
- 
+
   /* \brief
     Auxiliary function for refine with linear form that handle
     the general case: \f$ax +b \equal cy + d\f$
@@ -2154,7 +2155,7 @@ private:
 			   const dimension_type& right_w_id,
 		   const Linear_Form< Interval<T, Interval_Info> >& left,
                    const Linear_Form< Interval<T, Interval_Info> >& right);
- 
+
 /* \brief
     Auxiliary function for refine with linear form that handle
     the general case.

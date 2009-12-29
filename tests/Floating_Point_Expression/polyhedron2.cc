@@ -186,8 +186,8 @@ test05() {
 
   NNC_Polyhedron ph(2);
   FP_Linear_Form l(tmp0);
-  ph.affine_image(A, l);
-  ph.affine_image(B, l);
+  ph.affine_form_image(A, l);
+  ph.affine_form_image(B, l);
   ph.generalized_refine_with_linear_form_inequality(
     lb, la, GREATER_OR_EQUAL);
   print_constraints(ph, "*** ph ***");

@@ -1,4 +1,4 @@
-/* Test Polyhedron::affine_image on interval linear forms.
+/* Test Polyhedron::affine_form_image on interval linear forms.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// Tests ph.affine_image(B, 3).
+// Tests ph.affine_form_image(B, 3).
 bool
 test01() {
   Variable A(0);
@@ -45,8 +45,8 @@ test01() {
   tmp = 3;
   FP_Linear_Form l(tmp);
 
-  ph.affine_image(B, l);
-  print_constraints(ph, "*** ph.affine_image(B, 3) ***");
+  ph.affine_form_image(B, l);
+  print_constraints(ph, "*** ph.affine_form_image(B, 3) ***");
 
   C_Polyhedron known_result(3, EMPTY);
   known_result.add_generator(point(-2 * A + 3 * B));
@@ -56,7 +56,7 @@ test01() {
   return ok;
 }
 
-// Tests ph.affine_image(A, A + B + 1).
+// Tests ph.affine_form_image(A, A + B + 1).
 bool
 test02() {
   Variable A(0);
@@ -72,8 +72,8 @@ test02() {
   FP_Linear_Form l(A);
   l += B;
   l += tmp;
-  ph.affine_image(A, l);
-  print_constraints(ph, "*** ph.affine_image(A, A + B + 1) ***");
+  ph.affine_form_image(A, l);
+  print_constraints(ph, "*** ph.affine_form_image(A, A + B + 1) ***");
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A - 2*B - 1 >= 0);
@@ -86,7 +86,7 @@ test02() {
   return ok;
 }
 
-// Tests ph.affine_image(A, (A + 1) / 2).
+// Tests ph.affine_form_image(A, (A + 1) / 2).
 bool
 test03() {
   Variable A(0);
@@ -103,8 +103,8 @@ test03() {
   FP_Linear_Form l(A);
   l *= tmp;
   l += tmp;
-  ph.affine_image(A, l);
-  print_constraints(ph, "*** ph.affine_image(A, (A + 1) / 2) ***");
+  ph.affine_form_image(A, l);
+  print_constraints(ph, "*** ph.affine_form_image(A, (A + 1) / 2) ***");
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(2*A >= 1);
@@ -116,7 +116,7 @@ test03() {
   return ok;
 }
 
-// Tests ph.affine_image(A, (B + 2) / (-3)).
+// Tests ph.affine_form_image(A, (B + 2) / (-3)).
 bool
 test04() {
   Variable A(0);
@@ -132,8 +132,8 @@ test04() {
   l *= tmp;
   tmp += tmp;
   l += tmp;
-  ph.affine_image(A, l);
-  print_constraints(ph, "*** ph.affine_image(A, (B + 2) / (-3)) ***");
+  ph.affine_form_image(A, l);
+  print_constraints(ph, "*** ph.affine_form_image(A, (B + 2) / (-3)) ***");
 
   C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(-2*A, 3));
@@ -144,7 +144,7 @@ test04() {
   return ok;
 }
 
-// Tests ph.affine_image(B, (A - B + 2) / (-3)).
+// Tests ph.affine_form_image(B, (A - B + 2) / (-3)).
 bool
 test05() {
   Variable A(0);
@@ -163,9 +163,9 @@ test05() {
   l -= B;
   l /= FP_Interval(-3);
 
-  ph.affine_image(B, l);
+  ph.affine_form_image(B, l);
   print_constraints(ph,
-    "*** ph.affine_image(B, (A - B + 2) / (-3)) ***");
+    "*** ph.affine_form_image(B, (A - B + 2) / (-3)) ***");
 
   C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(2*A));
@@ -179,7 +179,7 @@ test05() {
   return ok;
 }
 
-// Tests ph.affine_image(A, (-A - 1) / (-1)).
+// Tests ph.affine_form_image(A, (-A - 1) / (-1)).
 bool
 test06() {
   Variable A(0);
@@ -197,9 +197,9 @@ test06() {
   gs.insert(point(B));
   gs.insert(point(A + B));
   C_Polyhedron ph(gs);
-  ph.affine_image(A, l);
+  ph.affine_form_image(A, l);
   print_constraints(ph,
-    "*** ph.affine_image(A, (-A - 1) / (-1)) ***");
+    "*** ph.affine_form_image(A, (-A - 1) / (-1)) ***");
 
   Generator_System known_gs;
   known_gs.insert(point(A));
@@ -215,7 +215,7 @@ test06() {
   return ok;
 }
 
-// Tests affine_image on NNC_Polyhedron.
+// Tests affine_form_image on NNC_Polyhedron.
 bool
 test07() {
   Variable A(0);
@@ -234,8 +234,8 @@ test07() {
   p2.add_constraint(B == 0);
   p2.add_constraint(A >= 0);
 
-  p1.affine_image(B, l);
-  print_constraints(p1, "*** p1.affine_image(B, A) ***");
+  p1.affine_form_image(B, l);
+  print_constraints(p1, "*** p1.affine_form_image(B, A) ***");
   NNC_Polyhedron known_result1(2);
   known_result1.add_constraint(A - B == 0);
   known_result1.add_constraint(A < 0);
@@ -243,8 +243,8 @@ test07() {
   bool ok1 = (p1 == known_result1);
 
   l += tmp;
-  p2.affine_image(B, l);
-  print_constraints(p2, "*** p2.affine_image(B, A + 2) ***");
+  p2.affine_form_image(B, l);
+  print_constraints(p2, "*** p2.affine_form_image(B, A + 2) ***");
   NNC_Polyhedron known_result2(2);
   known_result2.add_constraint(A - B == -2);
   known_result2.add_constraint(A >= 0);

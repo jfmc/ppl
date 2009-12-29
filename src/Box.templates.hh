@@ -2680,18 +2680,23 @@ Box<ITV>::affine_image(const Variable var,
 
 template <typename ITV>
 void
-Box<ITV>::affine_image(const Variable var,
-                       const Linear_Form<ITV>& lf) {
+Box<ITV>::affine_form_image(const Variable var,
+                            const Linear_Form<ITV>& lf) {
+
+  // Check that ITV has a floating point boundary type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<typename ITV::boundary_type>
+            ::is_exact, "Box<ITV>::affine_form_image(Variable, Linear_Form):"
+                        "ITV has not a floating point boundary type.");
 
   // Dimension-compatibility checks.
   const dimension_type space_dim = space_dimension();
   const dimension_type lf_space_dim = lf.space_dimension();
   if (space_dim < lf_space_dim)
-    throw_dimension_incompatible("affine_image(var, lf)", "lf", lf);
+    throw_dimension_incompatible("affine_form_image(var, lf)", "lf", lf);
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
   if (space_dim < var_space_dim)
-    throw_dimension_incompatible("affine_image(var, lf)", "var", var);
+    throw_dimension_incompatible("affine_form_image(var, lf)", "var", var);
 
   if (is_empty())
     return;

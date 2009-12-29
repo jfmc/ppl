@@ -1219,9 +1219,10 @@ public:
 		    Coefficient_traits::const_reference denominator
 		      = Coefficient_one());
 
+  // FIXME: To be completed.
   /*!
     Assigns to \p *this the
-    \ref Single_Update_Affine_Functions "affine image"
+    \ref Single_Update_Affine_Form_Functions "affine form image"
     of \p *this under the function mapping variable \p var into the
     affine expression(s) specified by \p lf.
 
@@ -1241,7 +1242,7 @@ public:
     floating point variable represented by \p var.
   */
   template <typename FP_Format, typename Interval_Info>
-  void affine_image(Variable var,
+  void affine_form_image(Variable var,
   const Linear_Form<Interval <FP_Format, Interval_Info> >& lf);
 
   /*! \brief

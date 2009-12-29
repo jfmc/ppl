@@ -4046,12 +4046,12 @@ BD_Shape<T>::affine_image(const Variable var,
 template <typename T>
 template <typename Interval_Info>
 void
-BD_Shape<T>::affine_image(const Variable var,
+BD_Shape<T>::affine_form_image(const Variable var,
                     const Linear_Form< Interval<T, Interval_Info> >& lf) {
 
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
-		    "BD_Shape<T>::affine_image(Variable, Linear_Form):"
+		    "BD_Shape<T>::affine_form_image(Variable, Linear_Form):"
                     " T not a floating point type.");
 
   // Dimension-compatibility checks.
@@ -4060,12 +4060,12 @@ BD_Shape<T>::affine_image(const Variable var,
   const dimension_type space_dim = space_dimension();
   const dimension_type lf_space_dim = lf.space_dimension();
   if (space_dim < lf_space_dim)
-    throw_dimension_incompatible("affine_image(var_id, l)", "l", lf);
+    throw_dimension_incompatible("affine_form_image(var_id, l)", "l", lf);
 
   // `var' should be one of the dimensions of the shape.
   const dimension_type var_id = var.id() + 1;
   if (space_dim < var_id)
-    throw_dimension_incompatible("affine_image(var_id, l)", var.id());
+    throw_dimension_incompatible("affine_form_image(var_id, l)", var.id());
 
   // The image of an empty BDS is empty too.
   shortest_path_closure_assign();
@@ -4097,19 +4097,19 @@ BD_Shape<T>::affine_image(const Variable var,
   // - If t == 2, the linear form 'lf' is of the general form.
 
   if (t == 0) {
-    inhomogeneous_affine_image(var_id, b);
+    inhomogeneous_affine_form_image(var_id, b);
     PPL_ASSERT(OK());
     return;
   }
   else if (t == 1) {
     const FP_Interval_Type& w_coeff = lf.coefficient(Variable(w_id - 1));
     if(w_coeff == 1 || w_coeff == -1) {
-      one_variable_affine_image(var_id, b, w_coeff, w_id, space_dim);
+      one_variable_affine_form_image(var_id, b, w_coeff, w_id, space_dim);
       PPL_ASSERT(OK());
       return;
     }
   }
-  two_variables_affine_image(var_id, lf, space_dim);
+  two_variables_affine_form_image(var_id, lf, space_dim);
   PPL_ASSERT(OK());
 }
 
@@ -4117,8 +4117,8 @@ BD_Shape<T>::affine_image(const Variable var,
 template <typename T>
 template <typename Interval_Info>
 void
-BD_Shape<T>::inhomogeneous_affine_image(const dimension_type& var_id,
-					const Interval<T, Interval_Info>& b) {
+BD_Shape<T>::inhomogeneous_affine_form_image(const dimension_type& var_id,
+					                const Interval<T, Interval_Info>& b) {
   PPL_DIRTY_TEMP(N, b_ub);
   assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
   PPL_DIRTY_TEMP(N, b_mlb);
@@ -4140,7 +4140,7 @@ BD_Shape<T>::inhomogeneous_affine_image(const dimension_type& var_id,
 template <typename T>
 template <typename Interval_Info>
 void BD_Shape<T>
-::one_variable_affine_image(const dimension_type& var_id,
+::one_variable_affine_form_image(const dimension_type& var_id,
 			    const Interval<T, Interval_Info>& b,
 			    const Interval<T, Interval_Info>& w_coeff,
 			    const dimension_type& w_id,
@@ -4233,9 +4233,9 @@ void BD_Shape<T>
 template <typename T>
 template <typename Interval_Info>
 void BD_Shape<T>
-::two_variables_affine_image(const dimension_type& var_id,
-      const Linear_Form< Interval<T, Interval_Info> >& lf,
-                          const dimension_type& space_dim) {
+::two_variables_affine_form_image(const dimension_type& var_id,
+           const Linear_Form< Interval<T, Interval_Info> >& lf,
+                             const dimension_type& space_dim) {
 
   // Remove all constraints on 'var'.
   //forget_all_dbm_constraints(var_id);

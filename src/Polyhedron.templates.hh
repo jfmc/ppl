@@ -363,24 +363,24 @@ Polyhedron::refine_with_linear_form_inequality(
 
 template <typename FP_Format, typename Interval_Info>
 void
-Polyhedron::affine_image(const Variable var,
+Polyhedron::affine_form_image(const Variable var,
 const Linear_Form<Interval <FP_Format, Interval_Info> >& lf) {
 
   // Check that FP_Format is indeed a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
-                         "Polyhedron::affine_image:"
+                         "Polyhedron::affine_form_image:"
                          " FP_Format not a floating point type.");
 
   // Dimension compatibility checks.
   // The dimension of lf should not be greater than the dimension of *this.
   const dimension_type lf_space_dim = lf.space_dimension();
   if (space_dim < lf_space_dim)
-    throw_dimension_incompatible("affine_image(v, l, s)", "l", lf);
+    throw_dimension_incompatible("affine_form_image(v, l, s)", "l", lf);
 
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
-    throw_dimension_incompatible("affine_image(v, l, s)", "v", var);
+    throw_dimension_incompatible("affine_form_image(v, l, s)", "v", var);
 
   // We assume that the analyzer will not perform an unreachable assignment.
   PPL_ASSERT(!marked_empty());

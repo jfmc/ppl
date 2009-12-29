@@ -5065,25 +5065,25 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 template <typename T>
 template <typename Interval_Info>
 void
-Octagonal_Shape<T>::affine_image(const Variable var,
+Octagonal_Shape<T>::affine_form_image(const Variable var,
                     const Linear_Form< Interval<T, Interval_Info> >& lf) {
 
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
-                     "Octagonal_Shape<T>::affine_image(Variable, Linear_Form):"
-                     " T is not a floating point type.");
+    "Octagonal_Shape<T>::affine_form_image(Variable, Linear_Form):"
+    " T is not a floating point type.");
 
   // Dimension-compatibility checks.
   // The dimension of `lf' should not be greater than the dimension
   // of `*this'.
   const dimension_type lf_space_dim = lf.space_dimension();
   if (space_dim < lf_space_dim)
-    throw_dimension_incompatible("affine_image(v, l)", "l", lf);
+    throw_dimension_incompatible("affine_form_image(v, l)", "l", lf);
 
   // `var' should be one of the dimensions of the octagon.
   const dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
-    throw_dimension_incompatible("affine_image(v, l)", var.id()+1);
+    throw_dimension_incompatible("affine_form_image(v, l)", var.id()+1);
 
   strong_closure_assign();
   // The image of an empty octagon is empty too.

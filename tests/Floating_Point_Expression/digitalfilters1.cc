@@ -89,7 +89,7 @@ test01() {
   cs.insert(Y >= -M);
 
   // Y = 0;
-  abstract_store.affine_image(Y, FP_Linear_Form(tmp));
+  abstract_store.affine_form_image(Y, FP_Linear_Form(tmp));
   Box<FP_Interval> box(abstract_store);
 
   for(unsigned short n = 0; y != y_begin; ++n) {
@@ -102,22 +102,22 @@ test01() {
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     tmp.lower() = -128;
     tmp.upper() = 128;
-    abstract_store.affine_image(X, FP_Linear_Form(tmp));
+    abstract_store.affine_form_image(X, FP_Linear_Form(tmp));
 
     tmp.lower() = 0;
     tmp.upper() = 16;
-    abstract_store.affine_image(X, FP_Linear_Form(tmp));
+    abstract_store.affine_form_image(X, FP_Linear_Form(tmp));
 
-    abstract_store.affine_image(S, FP_Linear_Form(Y));
+    abstract_store.affine_form_image(S, FP_Linear_Form(Y));
 
-    abstract_store.affine_image(R, FP_Linear_Form(X - S));
+    abstract_store.affine_form_image(R, FP_Linear_Form(X - S));
 
-    abstract_store.affine_image(Y, FP_Linear_Form(X));
+    abstract_store.affine_form_image(Y, FP_Linear_Form(X));
 
     // if (R <= -D) Y = S - D;
     FP_Interval_Abstract_Store as_then(abstract_store);
     as_then.refine_with_constraint(R <= -D);
-    as_then.affine_image(Y, FP_Linear_Form(S - D));
+    as_then.affine_form_image(Y, FP_Linear_Form(S - D));
     abstract_store.refine_with_constraint(R > -D);
     abstract_store.upper_bound_assign(as_then);
     print_constraints(abstract_store,
@@ -126,7 +126,7 @@ test01() {
     // if (R >= D)  Y = S + D;
     as_then = abstract_store;
     as_then.refine_with_constraint(R >= D);
-    as_then.affine_image(Y, FP_Linear_Form(S + D));
+    as_then.affine_form_image(Y, FP_Linear_Form(S + D));
     abstract_store.refine_with_constraint(R > D);
     abstract_store.upper_bound_assign(as_then);
 
@@ -174,7 +174,7 @@ test02() {
   cs.insert(Y >= -M);
 
   // Y = 0;
-  bd.affine_image(Y, FP_Linear_Form(y));
+  bd.affine_form_image(Y, FP_Linear_Form(y));
   Box<FP_Interval> box(bd);
 
   for(unsigned short n = 0; y != y_begin; ++n) {
@@ -187,21 +187,21 @@ test02() {
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     y.lower() = -128;
     y.upper() = 128;
-    bd.affine_image(X, FP_Linear_Form(y));
+    bd.affine_form_image(X, FP_Linear_Form(y));
 
     y.lower() = 0;
     y.upper() = 16;
-    bd.affine_image(D, FP_Linear_Form(y));
+    bd.affine_form_image(D, FP_Linear_Form(y));
 
-    bd.affine_image(S, FP_Linear_Form(Y));
-    bd.affine_image(R, FP_Linear_Form(X - S));
-    bd.affine_image(Y, FP_Linear_Form(X));
+    bd.affine_form_image(S, FP_Linear_Form(Y));
+    bd.affine_form_image(R, FP_Linear_Form(X - S));
+    bd.affine_form_image(Y, FP_Linear_Form(X));
 
     // if (R <= -D) Y = S - D;
     FP_BD_Shape bd_then(bd);
     bd_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                               -FP_Linear_Form(D));
-    bd_then.affine_image(Y, FP_Linear_Form(S - D));
+    bd_then.affine_form_image(Y, FP_Linear_Form(S - D));
 
     bd.refine_with_linear_form_inequality(-FP_Linear_Form(D),
                                            FP_Linear_Form(R));
@@ -213,7 +213,7 @@ test02() {
     bd_then = bd;
     bd_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
                                                FP_Linear_Form(R));
-    bd_then.affine_image(Y, FP_Linear_Form(S + D));
+    bd_then.affine_form_image(Y, FP_Linear_Form(S + D));
 
     bd.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                           FP_Linear_Form(D));
@@ -269,7 +269,7 @@ test03() {
   cs.insert(Y >= -N);
 
   // Y = 0;
-  oc.affine_image(Y, FP_Linear_Form(y));
+  oc.affine_form_image(Y, FP_Linear_Form(y));
   Box<FP_Interval> box(oc);
 
   for(unsigned short n = 0; y_begin != y; ++n) {
@@ -282,19 +282,19 @@ test03() {
     //X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     y.lower() = -128;
     y.upper() = 128;
-    oc.affine_image(X, FP_Linear_Form(y));
+    oc.affine_form_image(X, FP_Linear_Form(y));
     y.lower() = 0;
     y.upper() = 16;
-    oc.affine_image(D, FP_Linear_Form(y));
-    oc.affine_image(S, FP_Linear_Form(Y));
-    oc.affine_image(R, FP_Linear_Form(X - S));
-    oc.affine_image(Y, FP_Linear_Form(X));
+    oc.affine_form_image(D, FP_Linear_Form(y));
+    oc.affine_form_image(S, FP_Linear_Form(Y));
+    oc.affine_form_image(R, FP_Linear_Form(X - S));
+    oc.affine_form_image(Y, FP_Linear_Form(X));
 
     //if (R <= -D) Y = S - D;
     FP_Octagonal_Shape oc_then(oc);
     oc_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                               -FP_Linear_Form(D));
-    oc_then.affine_image(Y, FP_Linear_Form(S - D));
+    oc_then.affine_form_image(Y, FP_Linear_Form(S - D));
 
     oc.refine_with_linear_form_inequality(-FP_Linear_Form(D),
                                            FP_Linear_Form(R));
@@ -306,7 +306,7 @@ test03() {
     oc_then = oc;
     oc_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
                                                FP_Linear_Form(R));
-    oc_then.affine_image(Y, FP_Linear_Form(S + D));
+    oc_then.affine_form_image(Y, FP_Linear_Form(S + D));
 
     oc.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                           FP_Linear_Form(D));
@@ -355,7 +355,7 @@ test04() {
   cs.insert(Y >= -M);
 
   // Y = 0;
-  ph.affine_image(Y, FP_Linear_Form(y));
+  ph.affine_form_image(Y, FP_Linear_Form(y));
   Box<FP_Interval> box(ph);
 
   for(unsigned short n = 0; y_begin != y; ++n) {
@@ -368,23 +368,23 @@ test04() {
     // X = [-128, 128]; D = [0, 16]; S = Y; R = X - S; Y = X;
     y.lower() = -128;
     y.upper() = 128;
-    ph.affine_image(X, FP_Linear_Form(y));
+    ph.affine_form_image(X, FP_Linear_Form(y));
     y.lower() = 0;
     y.upper() = 16;
-    ph.affine_image(D, FP_Linear_Form(y));
+    ph.affine_form_image(D, FP_Linear_Form(y));
     abstract_store = Box<FP_Interval>(ph);
-    ph.affine_image(S, FP_Linear_Form(Y));
+    ph.affine_form_image(S, FP_Linear_Form(Y));
     abstract_store = Box<FP_Interval>(ph);
-    ph.affine_image(R, FP_Linear_Form(X - S));
+    ph.affine_form_image(R, FP_Linear_Form(X - S));
     abstract_store = Box<FP_Interval>(ph);
-    ph.affine_image(Y, FP_Linear_Form(X));
+    ph.affine_form_image(Y, FP_Linear_Form(X));
 
     // if (R <= -D) Y = S - D;
     NNC_Polyhedron ph_then(ph);
     FP_Interval_Abstract_Store as_then(abstract_store);
     ph_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                               -FP_Linear_Form(D));
-    ph_then.affine_image(Y, FP_Linear_Form(S - D));
+    ph_then.affine_form_image(Y, FP_Linear_Form(S - D));
 
     ph.refine_with_linear_form_inequality(-FP_Linear_Form(D),
                                            FP_Linear_Form(R));
@@ -398,7 +398,7 @@ test04() {
     as_then = abstract_store;
     ph_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
                                                FP_Linear_Form(R));
-    ph_then.affine_image(Y, FP_Linear_Form(S + D));
+    ph_then.affine_form_image(Y, FP_Linear_Form(S + D));
 
     ph.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                           FP_Linear_Form(D));
@@ -459,13 +459,13 @@ test05() {
   // The constant floating point expression con_y is linearized into
   // the interval linear form lk.
   con_y.linearize(abstract_store, lf_abstract_store, lk);
-  // Here we model the assignment Y = 0, invoking affine_image method.
+  // Here we model the assignment Y = 0, invoking affine_form_image method.
   // FIXME: In order to refine the analysis, all the transer function are
   // performed in parallel in the interval domain and in the bounded
   // differences domain.
   // Then, we consider the intersection between these abstract domains.
-  bd.affine_image(Y, lk);
-  abstract_store.affine_image(Y, FP_Linear_Form(tmp));
+  bd.affine_form_image(Y, lk);
+  abstract_store.affine_form_image(Y, FP_Linear_Form(tmp));
 
   // This loop iterate until the value of Y reaches a fixed point.
   for(unsigned short n = 0; y_begin != y; ++n) {
@@ -481,20 +481,20 @@ test05() {
     // X = [-128, 128];
     Con_FP_Expression con_x(-128, 128);
     con_x.linearize(abstract_store, lf_abstract_store, lk);
-    bd.affine_image(X, lk);
-    abstract_store.affine_image(X, FP_Linear_Form(tmp));
+    bd.affine_form_image(X, lk);
+    abstract_store.affine_form_image(X, FP_Linear_Form(tmp));
 
     // D = [0, 16];
     Con_FP_Expression con_d(0, 16);
     con_d.linearize(abstract_store, lf_abstract_store, lk);
-    bd.affine_image(D, lk);
-    abstract_store.affine_image(D, FP_Linear_Form(tmp));
+    bd.affine_form_image(D, lk);
+    abstract_store.affine_form_image(D, FP_Linear_Form(tmp));
 
     // S = Y;
     Var_FP_Expression var_y(Y.id());
     var_y.linearize(abstract_store, lf_abstract_store, ly);
-    bd.affine_image(S, ly);
-    abstract_store.affine_image(S, FP_Linear_Form(tmp));
+    bd.affine_form_image(S, ly);
+    abstract_store.affine_form_image(S, FP_Linear_Form(tmp));
     // Intersection between the values of the variables in
     // the BD_Shape and in the abstract store.
     abstract_store.intersection_assign(Box<FP_Interval>(bd));
@@ -504,15 +504,15 @@ test05() {
     Var_FP_Expression* ps = new Var_FP_Expression(S.id());
     Dif_FP_Expression x_dif_s(px, ps);
     x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
-    bd.affine_image(R, lr);
-    abstract_store.affine_image(R, FP_Linear_Form(X - S));
+    bd.affine_form_image(R, lr);
+    abstract_store.affine_form_image(R, FP_Linear_Form(X - S));
     abstract_store.intersection_assign(Box<FP_Interval>(bd));
 
     // Y = X;
     Var_FP_Expression var_x(X.id());
     var_x.linearize(abstract_store, lf_abstract_store, lx);
-    bd.affine_image(Y, lx);
-    abstract_store.affine_image(Y, FP_Linear_Form(X));
+    bd.affine_form_image(Y, lx);
+    abstract_store.affine_form_image(Y, FP_Linear_Form(X));
     abstract_store.intersection_assign(Box<FP_Interval>(bd));
 
     // if (R <= -D)
@@ -526,8 +526,8 @@ test05() {
     Var_FP_Expression* ps2 = new Var_FP_Expression(S.id());
     Dif_FP_Expression s_dif_d(ps2, pd);
     s_dif_d.linearize(abstract_store, lf_abstract_store, ly);
-    bd_then.affine_image(Y, ly);
-    as_then.affine_image(Y, FP_Linear_Form(S - D));
+    bd_then.affine_form_image(Y, ly);
+    as_then.affine_form_image(Y, FP_Linear_Form(S - D));
     as_then.intersection_assign(Box<FP_Interval>(bd_then));
 
     // else skip;
@@ -551,8 +551,8 @@ test05() {
     Var_FP_Expression* ps3  = new Var_FP_Expression(S.id());
     Sum_FP_Expression s_sum_d(ps3, pd1);
     s_sum_d.linearize(abstract_store, lf_abstract_store, ly);
-    bd_then.affine_image(Y, ly);
-    as_then.affine_image(Y, FP_Linear_Form(S + D));
+    bd_then.affine_form_image(Y, ly);
+    as_then.affine_form_image(Y, FP_Linear_Form(S + D));
     as_then.intersection_assign(Box<FP_Interval>(bd_then));
 
     // else skip;
@@ -630,13 +630,13 @@ test06() {
   // The constant floating point expression con_y is linearized into
   // the interval linear form lk.
   con_y.linearize(abstract_store, lf_abstract_store, lk);
-  // Here we model the assignment Y = 0, invoking affine_image method.
+  // Here we model the assignment Y = 0, invoking affine_form_image method.
   // FIXME: In order to refine the analysis, all the transer function are
   // performed in parallel in the interval domain and in the octagon
   // domain.
   // Then, we consider the intersection between these abstract domains.
-  oc.affine_image(Y, lk);
-  abstract_store.affine_image(Y, FP_Linear_Form(tmp));
+  oc.affine_form_image(Y, lk);
+  abstract_store.affine_form_image(Y, FP_Linear_Form(tmp));
 
   // This loop iterate until the value of Y reaches a fixed point.
   for(unsigned short n = 0; y_begin != y; ++n) {
@@ -652,24 +652,24 @@ test06() {
     // Y = [-128, 128].
     Con_FP_Expression con_x(-128, 128);
     con_x.linearize(abstract_store, lf_abstract_store, lk);
-    oc.affine_image(X, lk);
+    oc.affine_form_image(X, lk);
     tmp.lower() = -128;
     tmp.upper() = 128;
-    abstract_store.affine_image(X, FP_Linear_Form(tmp));
+    abstract_store.affine_form_image(X, FP_Linear_Form(tmp));
 
     // D = [0, 16].
     Con_FP_Expression con_d(0, 16);
     con_d.linearize(abstract_store, lf_abstract_store, lk);
-    oc.affine_image(D, lk);
+    oc.affine_form_image(D, lk);
     tmp.lower() = 0;
     tmp.upper() = 16;
-    abstract_store.affine_image(D, FP_Linear_Form(tmp));
+    abstract_store.affine_form_image(D, FP_Linear_Form(tmp));
 
     // S = Y.
     Var_FP_Expression var_y(Y.id());
     var_y.linearize(abstract_store, lf_abstract_store, ly);
-    oc.affine_image(S, ly);
-    abstract_store.affine_image(S, FP_Linear_Form(Y));
+    oc.affine_form_image(S, ly);
+    abstract_store.affine_form_image(S, FP_Linear_Form(Y));
     // Intersection between the values of the variables in
     // the octagon and in the abstract store.
     abstract_store.intersection_assign(Box<FP_Interval>(oc));
@@ -679,15 +679,15 @@ test06() {
     Var_FP_Expression* ps = new Var_FP_Expression(S.id());
     Dif_FP_Expression x_dif_s(px, ps);
     x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
-    oc.affine_image(R, lr);
-    abstract_store.affine_image(R, FP_Linear_Form(X - S));
+    oc.affine_form_image(R, lr);
+    abstract_store.affine_form_image(R, FP_Linear_Form(X - S));
     abstract_store.intersection_assign(Box<FP_Interval>(oc));
 
     // Y = X;
     Var_FP_Expression var_x(X.id());
     var_x.linearize(abstract_store, lf_abstract_store, lx);
-    oc.affine_image(Y, lx);
-    abstract_store.affine_image(Y, FP_Linear_Form(X));
+    oc.affine_form_image(Y, lx);
+    abstract_store.affine_form_image(Y, FP_Linear_Form(X));
     abstract_store.intersection_assign(Box<FP_Interval>(oc));
 
     // if (R <= -D)
@@ -701,8 +701,8 @@ test06() {
     Var_FP_Expression* ps2 = new Var_FP_Expression(S.id());
     Dif_FP_Expression s_dif_d(ps2, pd);
     s_dif_d.linearize(abstract_store, lf_abstract_store, ly);
-    oc_then.affine_image(Y, ly);
-    as_then.affine_image(Y, FP_Linear_Form(S - D));
+    oc_then.affine_form_image(Y, ly);
+    as_then.affine_form_image(Y, FP_Linear_Form(S - D));
     as_then.intersection_assign(Box<FP_Interval>(oc_then));
 
     // else skip.
@@ -726,8 +726,8 @@ test06() {
     Var_FP_Expression* ps3  = new Var_FP_Expression(S.id());
     Sum_FP_Expression s_sum_d(ps3, pd1);
     s_sum_d.linearize(abstract_store, lf_abstract_store, ly);
-    oc_then.affine_image(Y, ly);
-    as_then.affine_image(Y, FP_Linear_Form(S + D));
+    oc_then.affine_form_image(Y, ly);
+    as_then.affine_form_image(Y, FP_Linear_Form(S + D));
     as_then.intersection_assign(Box<FP_Interval>(oc_then));
 
     // else skip.
@@ -798,12 +798,12 @@ test07() {
   // The constant floating point expression con_y is linearized into
   // the interval linear form lk.
   con_y.linearize(abstract_store, lf_abstract_store, lk);
-  // Here we model the assignment Y = 0, invoking affine_image method.
+  // Here we model the assignment Y = 0, invoking affine_form_image method.
   // FIXME: In order to refine the analysis, all the transer function are
   // performed in parallel in the interval domain and in the poyhedra domain.
   // Then, we consider the intersection between these abstract domains.
-  ph.affine_image(Y, lk);
-  abstract_store.affine_image(Y, FP_Linear_Form(tmp));
+  ph.affine_form_image(Y, lk);
+  abstract_store.affine_form_image(Y, FP_Linear_Form(tmp));
 
   // This loop iterate until the value of Y reaches a fixed point.
   for(unsigned short n = 0; y_begin != y; ++n) {
@@ -819,24 +819,24 @@ test07() {
     // X = [-128, 128];
     Con_FP_Expression con_x(-128, 128);
     con_x.linearize(abstract_store, lf_abstract_store, lk);
-    ph.affine_image(X, lk);
+    ph.affine_form_image(X, lk);
     tmp.lower() = -128;
     tmp.upper() = 128;
-    abstract_store.affine_image(X, FP_Linear_Form(tmp));
+    abstract_store.affine_form_image(X, FP_Linear_Form(tmp));
 
     // D = [0, 16];
     Con_FP_Expression con_d(0, 16);
     con_d.linearize(abstract_store, lf_abstract_store, lk);
-    ph.affine_image(D, lk);
+    ph.affine_form_image(D, lk);
     tmp.lower() = 0;
     tmp.upper() = 16;
-    abstract_store.affine_image(D, FP_Linear_Form(tmp));
+    abstract_store.affine_form_image(D, FP_Linear_Form(tmp));
 
     // S = Y;
     Var_FP_Expression var_y(Y.id());
     var_y.linearize(abstract_store, lf_abstract_store, ly);
-    ph.affine_image(S, ly);
-    abstract_store.affine_image(S, FP_Linear_Form(tmp));
+    ph.affine_form_image(S, ly);
+    abstract_store.affine_form_image(S, FP_Linear_Form(tmp));
     // Intersection between the values of the variables in
     // the polyhedron and in the abstract store.
     abstract_store.intersection_assign(Box<FP_Interval>(ph));
@@ -846,15 +846,15 @@ test07() {
     Var_FP_Expression* ps = new Var_FP_Expression(S.id());
     Dif_FP_Expression x_dif_s(px, ps);
     x_dif_s.linearize(abstract_store, lf_abstract_store, lr);
-    ph.affine_image(R, lr);
-    abstract_store.affine_image(R, FP_Linear_Form(X - S));
+    ph.affine_form_image(R, lr);
+    abstract_store.affine_form_image(R, FP_Linear_Form(X - S));
     abstract_store.intersection_assign(Box<FP_Interval>(ph));
 
     // Y = X;
     Var_FP_Expression var_x(X.id());
     var_x.linearize(abstract_store, lf_abstract_store, lx);
-    ph.affine_image(Y, lx);
-    abstract_store.affine_image(Y, FP_Linear_Form(X));
+    ph.affine_form_image(Y, lx);
+    abstract_store.affine_form_image(Y, FP_Linear_Form(X));
     abstract_store.intersection_assign(Box<FP_Interval>(ph));
 
     // if (R <= -D)
@@ -868,8 +868,8 @@ test07() {
     Var_FP_Expression* ps2 = new Var_FP_Expression(S.id());
     Dif_FP_Expression s_dif_d(ps2, pd);
     s_dif_d.linearize(abstract_store, lf_abstract_store, ly);
-    ph_then.affine_image(Y, ly);
-    as_then.affine_image(Y, FP_Linear_Form(S - D));
+    ph_then.affine_form_image(Y, ly);
+    as_then.affine_form_image(Y, FP_Linear_Form(S - D));
     as_then.intersection_assign(Box<FP_Interval>(ph_then));
 
     // else skip;
@@ -893,8 +893,8 @@ test07() {
     Var_FP_Expression* ps3  = new Var_FP_Expression(S.id());
     Sum_FP_Expression s_sum_d(ps3, pd1);
     s_sum_d.linearize(abstract_store, lf_abstract_store, ly);
-    ph_then.affine_image(Y, ly);
-    as_then.affine_image(Y, FP_Linear_Form(S + D));
+    ph_then.affine_form_image(Y, ly);
+    as_then.affine_form_image(Y, FP_Linear_Form(S + D));
     as_then.intersection_assign(Box<FP_Interval>(ph_then));
 
     // else skip;
