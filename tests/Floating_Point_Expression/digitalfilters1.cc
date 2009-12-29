@@ -52,7 +52,7 @@ set_M(Coefficient& M, int m) {
     if (greater_than(std::numeric_limits<Coefficient>::min(),
                      std::numeric_limits<ANALYZER_FP_FORMAT>::min())
         || less_than(std::numeric_limits<Coefficient>::max(),
-                     std::numeric_limits<ANALYZER_FP_FORMAT>::min())) {
+                     std::numeric_limits<ANALYZER_FP_FORMAT>::max())) {
       // This may still provoke an arithmetic overflow exception:
       // no problem.
       assign_r(M, m, ROUND_DOWN);
