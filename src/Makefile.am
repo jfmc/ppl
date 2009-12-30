@@ -87,7 +87,7 @@ COEFFICIENT_TYPES_INCLUDE_FILES =
 
 COEFFICIENT_DEFS_INCLUDE_FILES =
 
-endif
+endif USE_NATIVE_INTEGERS
 
 if USE_CHECKED_INTEGERS
 
@@ -95,7 +95,7 @@ COEFFICIENT_TYPES_INCLUDE_FILES =
 
 COEFFICIENT_DEFS_INCLUDE_FILES =
 
-endif
+endif USE_CHECKED_INTEGERS
 
 if USE_GMP_INTEGERS
 
@@ -106,7 +106,7 @@ COEFFICIENT_DEFS_INCLUDE_FILES = \
   GMP_Integer.defs.hh \
   GMP_Integer.inlines.hh
 
-endif
+endif USE_GMP_INTEGERS
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
@@ -526,11 +526,11 @@ ppl.hh.gch: ppl.hh
 
 PRECOMPILED = ppl.hh.gch
 
-else
+else !USE_PRECOMPILED_HEADERS
 
 PRECOMPILED =
 
-endif
+endif !USE_PRECOMPILED_HEADERS
 
 BUILT_SOURCES = \
 $(include_HEADERS) \
