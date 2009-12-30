@@ -281,16 +281,16 @@ round_gt_float(To& to, Rounding_Dir dir) {
 template <typename Policy>
 inline void
 prepare_inexact(Rounding_Dir dir) {
-  if (Policy::fpu_check_inexact &&
-      !round_not_needed(dir) && round_strict_relation(dir))
+  if (Policy::fpu_check_inexact
+      && !round_not_needed(dir) && round_strict_relation(dir))
     fpu_reset_inexact();
 }
 
 template <typename Policy>
 inline Result
 result_relation(Rounding_Dir dir) {
-  if (Policy::fpu_check_inexact &&
-      !round_not_needed(dir) && round_strict_relation(dir)) {
+  if (Policy::fpu_check_inexact
+      && !round_not_needed(dir) && round_strict_relation(dir)) {
     switch (fpu_check_inexact()) {
     case 0:
       return V_EQ;
@@ -495,7 +495,8 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 inline Result
 mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_mul_zero
-      && ((x == 0 && is_inf_float<From2_Policy>(y)) ||
+      && ((x == 0 && is_inf_float<From2_Policy>(y))
+          ||
 	  (y == 0 && is_inf_float<From1_Policy>(x)))) {
     return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
   }
@@ -911,7 +912,8 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 inline Result
 add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_mul_zero
-      && ((x == 0 && is_inf_float<From2_Policy>(y)) ||
+      && ((x == 0 && is_inf_float<From2_Policy>(y))
+          ||
 	  (y == 0 && is_inf_float<From1_Policy>(x)))) {
     return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
   }
@@ -943,7 +945,8 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy, type
 inline Result
 sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_mul_zero
-      && ((x == 0 && is_inf_float<From2_Policy>(y)) ||
+      && ((x == 0 && is_inf_float<From2_Policy>(y))
+          ||
 	  (y == 0 && is_inf_float<From1_Policy>(x)))) {
     return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
   }

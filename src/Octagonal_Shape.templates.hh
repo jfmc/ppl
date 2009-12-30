@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
+#include "Interval.defs.hh"
+#include "Linear_Form.defs.hh"
 #include "meta_programming.hh"
 #include "assert.hh"
 #include <vector>
@@ -473,6 +475,397 @@ Octagonal_Shape<T>::add_congruence(const Congruence& cg) {
   PPL_ASSERT(cg.is_equality());
   Constraint c(cg);
   add_constraint(c);
+}
+
+template <typename T>
+template <typename Interval_Info>
+void
+Octagonal_Shape<T>::refine_with_linear_form_inequality(
+		    const Linear_Form< Interval<T, Interval_Info> >& left,
+		    const Linear_Form< Interval<T, Interval_Info> >& right) {
+
+  // Check that T is a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
+                     "Octagonal_Shape<T>::refine_with_linear_form_inequality:"
+                     " T not a floating point type.");
+
+  // We assume that the analyzer will not try to apply an unreachable filter.
+  PPL_ASSERT(!marked_empty());
+
+  // Dimension-compatibility checks.
+  // The dimensions of `left' and `right' should not be greater than the
+  // dimension of `*this'.
+  const dimension_type left_space_dim = left.space_dimension();
+  if (space_dim < left_space_dim)
+    throw_dimension_incompatible(
+          "refine_with_linear_form_inequality(left, right)", "left", left);
+
+  const dimension_type right_space_dim = right.space_dimension();
+  if (space_dim < right_space_dim)
+    throw_dimension_incompatible(
+          "refine_with_linear_form_inequality(left, right)", "right", right);
+
+  // Number of non-zero coefficients in `left': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type left_t = 0;
+  // Variable-index of the last non-zero coefficient in `left', if any.
+  dimension_type left_w_id = 0;
+  // Number of non-zero coefficients in `right': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type right_t = 0;
+  // Variable-index of the last non-zero coefficient in `right', if any.
+  dimension_type right_w_id = 0;
+
+  // Get information about the number of non-zero coefficients in `left'.
+  for (dimension_type i = left_space_dim; i-- > 0; )
+    if (left.coefficient(Variable(i)) != 0) {
+      if (left_t++ == 1)
+        break;
+      else
+        left_w_id = i;
+    }
+
+  // Get information about the number of non-zero coefficients in `right'.
+  for (dimension_type i = right_space_dim; i-- > 0; )
+    if (right.coefficient(Variable(i)) != 0) {
+      if (right_t++ == 1)
+        break;
+      else
+        right_w_id = i;
+    }
+
+  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
+  typedef Interval<T, Interval_Info> FP_Interval_Type;
+
+  // FIXME: there is plenty of duplicate code in the following lines. We could
+  // shorten it at the expense of a bit of efficiency.
+
+  if (left_t == 0) {
+    if (right_t == 0) {
+      // The constraint involves constants only. Ignore it: it is up to
+      // the analyzer to handle it.
+      PPL_ASSERT(OK());
+      return;
+    }
+
+    if (right_t == 1) {
+      // The constraint has the form [a-;a+] <= [b-;b+] + [c-;c+] * x.
+      // Reduce it to the constraint +/-x <= b+ - a- if [c-;c+] = +/-[1;1].
+      const FP_Interval_Type& right_w_coeff =
+	                      right.coefficient(Variable(right_w_id));
+      if (right_w_coeff == 1) {
+        const dimension_type n_right = right_w_id * 2;
+        PPL_DIRTY_TEMP(N, b_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_b = right.inhomogeneous_term();
+        sub_assign_r(b_plus_minus_a_minus, right_b.upper(), left_a.lower(),
+                     ROUND_UP);
+        mul_2exp_assign_r(b_plus_minus_a_minus, b_plus_minus_a_minus, 1,
+                          ROUND_UP);
+        add_octagonal_constraint(n_right, n_right+1, b_plus_minus_a_minus);
+        PPL_ASSERT(OK());
+        return;
+      }
+
+      if (right_w_coeff == -1) {
+        const dimension_type n_right = right_w_id * 2;
+        PPL_DIRTY_TEMP(N, b_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_b = right.inhomogeneous_term();
+        sub_assign_r(b_plus_minus_a_minus, right_b.upper(), left_a.lower(),
+                     ROUND_UP);
+        mul_2exp_assign_r(b_plus_minus_a_minus, b_plus_minus_a_minus, 1,
+                          ROUND_UP);
+        add_octagonal_constraint(n_right+1, n_right, b_plus_minus_a_minus);
+        PPL_ASSERT(OK());
+        return;
+      }
+    }
+  }
+  else if (left_t == 1) {
+    if (right_t == 0) {
+      // The constraint has the form [b-;b+] + [c-;c+] * x <= [a-;a+]
+      // Reduce it to the constraint +/-x <= a+ - b- if [c-;c+] = +/-[1;1].
+      const FP_Interval_Type& left_w_coeff =
+	                      left.coefficient(Variable(left_w_id));
+      if (left_w_coeff == 1) {
+        const dimension_type n_left = left_w_id * 2;
+        PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+        const FP_Interval_Type& left_b = left.inhomogeneous_term();
+        const FP_Interval_Type& right_a = right.inhomogeneous_term();
+        sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                     ROUND_UP);
+        mul_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
+                          ROUND_UP);
+        add_octagonal_constraint(n_left+1, n_left, a_plus_minus_b_minus);
+        PPL_ASSERT(OK());
+        return;
+      }
+
+      if (left_w_coeff == -1) {
+        const dimension_type n_left = left_w_id * 2;
+        PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+        const FP_Interval_Type& left_b = left.inhomogeneous_term();
+        const FP_Interval_Type& right_a = right.inhomogeneous_term();
+        sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                     ROUND_UP);
+        mul_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
+                          ROUND_UP);
+        add_octagonal_constraint(n_left, n_left+1, a_plus_minus_b_minus);
+        PPL_ASSERT(OK());
+        return;
+      }
+    }
+
+    if (right_t == 1) {
+      // The constraint has the form:
+      // [a-;a+] + [b-;b+] * x <= [c-;c+] + [d-;d+] * y.
+      // Reduce it to the constraint +/-x +/-y <= c+ - a-
+      // if [b-;b+] = +/-[1;1] and [d-;d+] = +/-[1;1].
+      const FP_Interval_Type& left_w_coeff =
+                              left.coefficient(Variable(left_w_id));
+      const FP_Interval_Type& right_w_coeff =
+	                      right.coefficient(Variable(right_w_id));
+      bool is_left_coeff_one = (left_w_coeff == 1);
+      bool is_left_coeff_minus_one = (left_w_coeff == -1);
+      bool is_right_coeff_one = (right_w_coeff == 1);
+      bool is_right_coeff_minus_one = (right_w_coeff == -1);
+      if (left_w_id == right_w_id) {
+        if ((is_left_coeff_one && is_right_coeff_one)
+            || (is_left_coeff_minus_one && is_right_coeff_minus_one)) {
+          // Here we have an identity or a constants-only constraint.
+          PPL_ASSERT(OK());
+          return;
+        }
+        if (is_left_coeff_one && is_right_coeff_minus_one) {
+          // We fall back to a previous case
+          // (but we do not need to multiply the result by two).
+          const dimension_type n_left = left_w_id * 2;
+          PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+          const FP_Interval_Type& left_b = left.inhomogeneous_term();
+          const FP_Interval_Type& right_a = right.inhomogeneous_term();
+          sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                       ROUND_UP);
+          add_octagonal_constraint(n_left+1, n_left, a_plus_minus_b_minus);
+          PPL_ASSERT(OK());
+          return;
+        }
+        if (is_left_coeff_minus_one && is_right_coeff_one) {
+          // We fall back to a previous case
+          // (but we do not need to multiply the result by two).
+          const dimension_type n_left = left_w_id * 2;
+          PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+          const FP_Interval_Type& left_b = left.inhomogeneous_term();
+          const FP_Interval_Type& right_a = right.inhomogeneous_term();
+          sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
+                       ROUND_UP);
+          add_octagonal_constraint(n_left, n_left+1, a_plus_minus_b_minus);
+          PPL_ASSERT(OK());
+          return;
+        }
+      }
+      else if (is_left_coeff_one && is_right_coeff_one) {
+        const dimension_type n_left = left_w_id * 2;
+        const dimension_type n_right = right_w_id * 2;
+        PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_c = right.inhomogeneous_term();
+        sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
+                     ROUND_UP);
+        if (left_w_id < right_w_id)
+          add_octagonal_constraint(n_right, n_left, c_plus_minus_a_minus);
+        else
+          add_octagonal_constraint(n_left+1, n_right+1, c_plus_minus_a_minus);
+        PPL_ASSERT(OK());
+        return;
+      }
+      if (is_left_coeff_one && is_right_coeff_minus_one) {
+        const dimension_type n_left = left_w_id * 2;
+        const dimension_type n_right = right_w_id * 2;
+        PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_c = right.inhomogeneous_term();
+        sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
+                     ROUND_UP);
+        if (left_w_id < right_w_id)
+          add_octagonal_constraint(n_right+1, n_left, c_plus_minus_a_minus);
+        else
+          add_octagonal_constraint(n_left+1, n_right, c_plus_minus_a_minus);
+        PPL_ASSERT(OK());
+        return;
+      }
+      if (is_left_coeff_minus_one && is_right_coeff_one) {
+        const dimension_type n_left = left_w_id * 2;
+        const dimension_type n_right = right_w_id * 2;
+        PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_c = right.inhomogeneous_term();
+        sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
+                     ROUND_UP);
+        if (left_w_id < right_w_id)
+          add_octagonal_constraint(n_right, n_left+1, c_plus_minus_a_minus);
+        else
+          add_octagonal_constraint(n_left, n_right+1, c_plus_minus_a_minus);
+        PPL_ASSERT(OK());
+        return;
+      }
+      if (is_left_coeff_minus_one && is_right_coeff_minus_one) {
+        const dimension_type n_left = left_w_id * 2;
+        const dimension_type n_right = right_w_id * 2;
+        PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        const FP_Interval_Type& right_c = right.inhomogeneous_term();
+        sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
+                     ROUND_UP);
+        if (left_w_id < right_w_id)
+          add_octagonal_constraint(n_right+1, n_left+1, c_plus_minus_a_minus);
+        else
+          add_octagonal_constraint(n_left, n_right, c_plus_minus_a_minus);
+        PPL_ASSERT(OK());
+        return;
+      }
+    }
+  }
+
+  // General case.
+
+  // FIRST, update the binary constraints for each pair of DIFFERENT variables
+  // in `left' and `right'.
+
+  // Declare temporaries outside of the loop.
+  PPL_DIRTY_TEMP(N, low_coeff);
+  PPL_DIRTY_TEMP(N, high_coeff);
+  PPL_DIRTY_TEMP(N, upper_bound);
+
+  Linear_Form<FP_Interval_Type> right_minus_left(right);
+  right_minus_left -= left;
+
+  dimension_type max_w_id = std::max(left_w_id, right_w_id);
+  for (dimension_type first_v = 0; first_v < max_w_id; ++first_v) {
+    for (dimension_type second_v = first_v+1;
+         second_v <= max_w_id; ++second_v) {
+      const FP_Interval_Type& lfv_coefficient =
+                        left.coefficient(Variable(first_v));
+      const FP_Interval_Type& lsv_coefficient =
+                        left.coefficient(Variable(second_v));
+      const FP_Interval_Type& rfv_coefficient =
+                        right.coefficient(Variable(first_v));
+      const FP_Interval_Type& rsv_coefficient =
+                        right.coefficient(Variable(second_v));
+      // We update the constraints only when both variables appear in at
+      // least one argument.
+      bool do_update = false;
+      assign_r(low_coeff, lfv_coefficient.lower(), ROUND_NOT_NEEDED);
+      assign_r(high_coeff, lfv_coefficient.upper(), ROUND_NOT_NEEDED);
+      if (low_coeff != 0 || high_coeff != 0) {
+        assign_r(low_coeff, lsv_coefficient.lower(), ROUND_NOT_NEEDED);
+        assign_r(high_coeff, lsv_coefficient.upper(), ROUND_NOT_NEEDED);
+        if (low_coeff != 0 || high_coeff != 0)
+          do_update = true;
+        else {
+          assign_r(low_coeff, rsv_coefficient.lower(), ROUND_NOT_NEEDED);
+          assign_r(high_coeff, rsv_coefficient.upper(), ROUND_NOT_NEEDED);
+          if (low_coeff != 0 || high_coeff != 0)
+            do_update = true;
+        }
+      }
+      else {
+        assign_r(low_coeff, rfv_coefficient.lower(), ROUND_NOT_NEEDED);
+        assign_r(high_coeff, rfv_coefficient.upper(), ROUND_NOT_NEEDED);
+        if (low_coeff != 0 || high_coeff != 0) {
+          assign_r(low_coeff, lsv_coefficient.lower(), ROUND_NOT_NEEDED);
+          assign_r(high_coeff, lsv_coefficient.upper(), ROUND_NOT_NEEDED);
+          if (low_coeff != 0 || high_coeff != 0)
+            do_update = true;
+          else {
+            assign_r(low_coeff, rsv_coefficient.lower(), ROUND_NOT_NEEDED);
+            assign_r(high_coeff, rsv_coefficient.upper(), ROUND_NOT_NEEDED);
+            if (low_coeff != 0 || high_coeff != 0)
+              do_update = true;
+          }
+        }
+      }
+
+      if (do_update) {
+        Variable first(first_v);
+        Variable second(second_v);
+        dimension_type n_first_var = first_v * 2;
+        dimension_type n_second_var = second_v * 2;
+        linear_form_upper_bound(right_minus_left - first + second,
+                                upper_bound);
+        add_octagonal_constraint(n_second_var+1, n_first_var+1, upper_bound);
+        linear_form_upper_bound(right_minus_left + first + second,
+                                upper_bound);
+        add_octagonal_constraint(n_second_var+1, n_first_var, upper_bound);
+        linear_form_upper_bound(right_minus_left - first - second,
+                                upper_bound);
+        add_octagonal_constraint(n_second_var, n_first_var+1, upper_bound);
+        linear_form_upper_bound(right_minus_left + first - second,
+                                upper_bound);
+        add_octagonal_constraint(n_second_var, n_first_var, upper_bound);
+      }
+    }
+  }
+
+  // Finally, update the unary constraints.
+  for (dimension_type v = 0; v <= max_w_id; ++v) {
+    const FP_Interval_Type& lv_coefficient =
+                        left.coefficient(Variable(v));
+    const FP_Interval_Type& rv_coefficient =
+                        right.coefficient(Variable(v));
+    // We update the constraints only if v appears in at least one of the
+    // two arguments.
+    bool do_update = false;
+    assign_r(low_coeff, lv_coefficient.lower(), ROUND_NOT_NEEDED);
+    assign_r(high_coeff, lv_coefficient.upper(), ROUND_NOT_NEEDED);
+    if (low_coeff != 0 || high_coeff != 0)
+      do_update = true;
+    else {
+      assign_r(low_coeff, rv_coefficient.lower(), ROUND_NOT_NEEDED);
+      assign_r(high_coeff, rv_coefficient.upper(), ROUND_NOT_NEEDED);
+      if (low_coeff != 0 || high_coeff != 0)
+        do_update = true;
+    }
+
+    if (do_update) {
+      Variable var(v);
+      dimension_type n_var = 2 * v;
+      /*
+        VERY DIRTY trick: since we need to keep the old unary constraints
+        while computing the new ones, we momentarily keep the new coefficients
+        in the main diagonal of the matrix. They will be moved later.
+      */
+      linear_form_upper_bound(right_minus_left + var, upper_bound);
+      mul_2exp_assign_r(matrix[n_var+1][n_var+1], upper_bound, 1,
+                        ROUND_UP);
+      linear_form_upper_bound(right_minus_left - var, upper_bound);
+      mul_2exp_assign_r(matrix[n_var][n_var], upper_bound, 1,
+                        ROUND_UP);
+    }
+  }
+
+  /*
+    Now move the newly computed coefficients from the main diagonal to
+    their proper place, and restore +infinity on the diagonal.
+  */
+  Row_Iterator m_ite = matrix.row_begin();
+  Row_Iterator m_end = matrix.row_end();
+  for (dimension_type i = 0; m_ite != m_end; i += 2) {
+    Row_Reference upper = *m_ite;
+    N& ul = upper[i];
+    add_octagonal_constraint(i, i+1, ul);
+    assign_r(ul, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    ++m_ite;
+    Row_Reference lower = *m_ite;
+    N& lr = lower[i+1];
+    add_octagonal_constraint(i+1, i, lr);
+    assign_r(lr, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    ++m_ite;
+  }
+  PPL_ASSERT(OK());
 }
 
 template <typename T>
@@ -4670,6 +5063,372 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 }
 
 template <typename T>
+template <typename Interval_Info>
+void
+Octagonal_Shape<T>::affine_form_image(const Variable var,
+                    const Linear_Form< Interval<T, Interval_Info> >& lf) {
+
+  // Check that T is a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
+    "Octagonal_Shape<T>::affine_form_image(Variable, Linear_Form):"
+    " T is not a floating point type.");
+
+  // Dimension-compatibility checks.
+  // The dimension of `lf' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type lf_space_dim = lf.space_dimension();
+  if (space_dim < lf_space_dim)
+    throw_dimension_incompatible("affine_form_image(v, l)", "l", lf);
+
+  // `var' should be one of the dimensions of the octagon.
+  const dimension_type var_id = var.id();
+  if (space_dim < var_id + 1)
+    throw_dimension_incompatible("affine_form_image(v, l)", var.id()+1);
+
+  strong_closure_assign();
+  // The image of an empty octagon is empty too.
+  if (marked_empty())
+    return;
+
+  // Number of non-zero coefficients in `lf': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type t = 0;
+  // Variable-index of the last non-zero coefficient in `lf', if any.
+  dimension_type w_id = 0;
+
+  // Get information about the number of non-zero coefficients in `lf'.
+  for (dimension_type i = lf_space_dim; i-- > 0; )
+    if (lf.coefficient(Variable(i)) != 0) {
+      if (t++ == 1)
+        break;
+      else
+        w_id = i;
+    }
+
+  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
+  typedef Interval<T, Interval_Info> FP_Interval_Type;
+
+  const dimension_type n_var = 2*var_id;
+  const FP_Interval_Type& b = lf.inhomogeneous_term();
+
+  // `w' is the variable with index `w_id'.
+  // Now we know the form of `lf':
+  // - If t == 0, then lf == [lb;ub];
+  // - If t == 1, then lf == a*w + [lb;ub], where `w' can be `v' or another
+  //   variable;
+  // - If t == 2, the `lf' is of the general form.
+
+  PPL_DIRTY_TEMP(N, b_ub);
+  assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, b_mlb);
+  neg_assign_r(b_mlb, b.lower(), ROUND_NOT_NEEDED);
+
+  if (t == 0) {
+    // Case 1: lf = [lb;ub];
+    forget_all_octagonal_constraints(var_id);
+    mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_UP);
+    mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_UP);
+    // Add the constraint `var >= lb && var <= ub'.
+    add_octagonal_constraint(n_var+1, n_var, b_ub);
+    add_octagonal_constraint(n_var, n_var+1, b_mlb);
+    PPL_ASSERT(OK());
+    return;
+  }
+
+  // true if b = [0;0].
+  bool is_b_zero = (b_mlb == 0 && b_ub == 0);
+
+  if (t == 1) {
+    // The one and only non-zero homogeneous coefficient in `lf'.
+    const FP_Interval_Type& w_coeff = lf.coefficient(Variable(w_id));
+    // true if w_coeff = [1;1].
+    bool is_w_coeff_one = (w_coeff == 1);
+    // true if w_coeff = [-1;-1].
+    bool is_w_coeff_minus_one = (w_coeff == -1);
+    if (is_w_coeff_one || is_w_coeff_minus_one) {
+      // Case 2: lf = w_coeff*w + b, with w_coeff = [+/-1;+/-1].
+      if (w_id == var_id) {
+        // Here `lf' is of the form: [+/-1;+/-1]* v + b.
+        if (is_w_coeff_one) {
+          if (is_b_zero)
+            // The transformation is the identity function.
+            return;
+          else {
+            // Translate all the constraints on `var' by adding the value
+            // `b_ub' or subtracting the value `b_lb'.
+            const Row_Iterator m_begin = matrix.row_begin();
+            const Row_Iterator m_end = matrix.row_end();
+            Row_Iterator m_iter = m_begin + n_var;
+            Row_Reference m_v = *m_iter;
+            ++m_iter;
+            Row_Reference m_cv = *m_iter;
+            ++m_iter;
+            // NOTE: delay update of unary constraints on `var'
+            for (dimension_type j = n_var; j-- > 0; ) {
+              N& m_v_j = m_v[j];
+              add_assign_r(m_v_j, m_v_j, b_mlb, ROUND_UP);
+              N& m_cv_j = m_cv[j];
+              add_assign_r(m_cv_j, m_cv_j, b_ub, ROUND_UP);
+            }
+            for ( ; m_iter != m_end; ++m_iter) {
+              Row_Reference m_i = *m_iter;
+              N& m_i_v = m_i[n_var];
+              add_assign_r(m_i_v, m_i_v, b_ub, ROUND_UP);
+              N& m_i_cv = m_i[n_var+1];
+              add_assign_r(m_i_cv, m_i_cv, b_mlb, ROUND_UP);
+            }
+            // Now update unary constraints on var.
+            mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_UP);
+            N& m_cv_v = m_cv[n_var];
+            add_assign_r(m_cv_v, m_cv_v, b_ub, ROUND_UP);
+            mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_UP);
+            N& m_v_cv = m_v[n_var+1];
+            add_assign_r(m_v_cv, m_v_cv, b_mlb, ROUND_UP);
+            reset_strongly_closed();
+          }
+        }
+        else {
+          // Here `w_coeff = [-1;-1].
+          // Remove the binary constraints on `var'.
+          forget_binary_octagonal_constraints(var_id);
+          const Row_Iterator m_begin = matrix.row_begin();
+          Row_Iterator m_iter = m_begin + n_var;
+          N& m_v_cv = (*m_iter)[n_var+1];
+          ++m_iter;
+          N& m_cv_v = (*m_iter)[n_var];
+          // Swap the unary constraints on `var'.
+          std::swap(m_v_cv, m_cv_v);
+          // Strong closure is not preserved.
+          reset_strongly_closed();
+          if (!is_b_zero) {
+            // Translate the unary constraints on `var' by adding the value
+            // `b_ub' or subtracting the value `b_lb'.
+            mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_UP);
+            mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_UP);
+            add_assign_r(m_cv_v, m_cv_v, b_ub, ROUND_UP);
+            add_assign_r(m_v_cv, m_v_cv, b_mlb, ROUND_UP);
+          }
+          incremental_strong_closure_assign(var);
+        }
+      }
+      else {
+        // Here `w != var', so that `lf' is of the form
+        // [+/-1;+/-1] * w + b.
+        // Remove all constraints on `var'.
+        forget_all_octagonal_constraints(var_id);
+        const dimension_type n_w = 2*w_id;
+        if (is_w_coeff_one)
+          // Add the new constraints `var - w >= b_lb'
+          // `and var - w <= b_ub'.
+          if (var_id < w_id) {
+            add_octagonal_constraint(n_w, n_var, b_ub);
+            add_octagonal_constraint(n_w+1, n_var+1, b_mlb);
+          }
+          else {
+            add_octagonal_constraint(n_var+1, n_w+1, b_ub);
+            add_octagonal_constraint(n_var, n_w, b_mlb);
+          }
+        else
+          // Add the new constraints `var + w >= b_lb'
+          // `and var + w <= b_ub'.
+          if (var_id < w_id) {
+            add_octagonal_constraint(n_w+1, n_var, b_ub);
+            add_octagonal_constraint(n_w, n_var+1, b_mlb);
+          }
+          else {
+            add_octagonal_constraint(n_var+1, n_w, b_ub);
+            add_octagonal_constraint(n_var, n_w+1, b_mlb);
+          }
+        incremental_strong_closure_assign(var);
+      }
+      PPL_ASSERT(OK());
+      return;
+    }
+  }
+
+  // General case.
+  // Either t == 2, so that
+  // expr == i_1*x_1 + i_2*x_2 + ... + i_n*x_n + b, where n >= 2,
+  // or t == 1, expr == i*w + b, but i <> [+/-1;+/-1].
+
+  // In the following, strong closure will be definitely lost.
+  reset_strongly_closed();
+
+  Linear_Form<FP_Interval_Type> minus_lf(lf);
+  minus_lf.negate();
+
+  // Declare temporaries outside the loop.
+  PPL_DIRTY_TEMP(N, upper_bound);
+
+  Row_Iterator m_iter = matrix.row_begin();
+  m_iter += n_var;
+  Row_Reference var_ite = *m_iter;
+  ++m_iter;
+  Row_Reference var_cv_ite = *m_iter;
+  ++m_iter;
+  Row_Iterator m_end = matrix.row_end();
+
+  // Update binary constraints on var FIRST.
+  for (dimension_type curr_var = var_id, n_curr_var = n_var - 2;
+       curr_var-- > 0; ) {
+    Variable current(curr_var);
+    linear_form_upper_bound(lf + current, upper_bound);
+    assign_r(var_cv_ite[n_curr_var], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(lf - current, upper_bound);
+    assign_r(var_cv_ite[n_curr_var+1], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(minus_lf + current, upper_bound);
+    assign_r(var_ite[n_curr_var], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(minus_lf - current, upper_bound);
+    assign_r(var_ite[n_curr_var+1], upper_bound, ROUND_NOT_NEEDED);
+    n_curr_var -= 2;
+  }
+  for (dimension_type curr_var = var_id+1; m_iter != m_end; ++m_iter) {
+    Row_Reference m_v_ite = *m_iter;
+    ++m_iter;
+    Row_Reference m_cv_ite = *m_iter;
+    Variable current(curr_var);
+    linear_form_upper_bound(lf + current, upper_bound);
+    assign_r(m_cv_ite[n_var], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(lf - current, upper_bound);
+    assign_r(m_v_ite[n_var], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(minus_lf + current, upper_bound);
+    assign_r(m_cv_ite[n_var+1], upper_bound, ROUND_NOT_NEEDED);
+    linear_form_upper_bound(minus_lf - current, upper_bound);
+    assign_r(m_v_ite[n_var+1], upper_bound, ROUND_NOT_NEEDED);
+    ++curr_var;
+  }
+
+  // Finally, update unary constraints on var.
+  PPL_DIRTY_TEMP(N, lf_ub);
+  linear_form_upper_bound(lf, lf_ub);
+  PPL_DIRTY_TEMP(N, minus_lf_ub);
+  linear_form_upper_bound(minus_lf, minus_lf_ub);
+  mul_2exp_assign_r(lf_ub, lf_ub, 1, ROUND_UP);
+  assign_r(matrix[n_var+1][n_var], lf_ub, ROUND_NOT_NEEDED);
+  mul_2exp_assign_r(minus_lf_ub, minus_lf_ub, 1, ROUND_UP);
+  assign_r(matrix[n_var][n_var+1], minus_lf_ub, ROUND_NOT_NEEDED);
+
+  PPL_ASSERT(OK());
+}
+
+template <typename T>
+template <typename Interval_Info>
+void
+Octagonal_Shape<T>::
+linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
+                        N& result) const {
+
+  // Check that T is a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
+                     "Octagonal_Shape<T>::linear_form_upper_bound:"
+                     " T not a floating point type.");
+
+  const dimension_type lf_space_dimension = lf.space_dimension();
+  PPL_ASSERT(lf_space_dimension <= space_dim);
+
+  typedef Interval<T, Interval_Info> FP_Interval_Type;
+
+  PPL_DIRTY_TEMP(N, curr_lb);
+  PPL_DIRTY_TEMP(N, curr_ub);
+  PPL_DIRTY_TEMP(N, curr_var_ub);
+  PPL_DIRTY_TEMP(N, curr_minus_var_ub);
+
+  PPL_DIRTY_TEMP(N, first_comparison_term);
+  PPL_DIRTY_TEMP(N, second_comparison_term);
+
+  PPL_DIRTY_TEMP(N, negator);
+
+  assign_r(result, lf.inhomogeneous_term().upper(), ROUND_NOT_NEEDED);
+
+  for (dimension_type curr_var = 0, n_var = 0; curr_var < lf_space_dimension;
+       ++curr_var) {
+    const FP_Interval_Type& curr_coefficient =
+                            lf.coefficient(Variable(curr_var));
+    assign_r(curr_lb, curr_coefficient.lower(), ROUND_NOT_NEEDED);
+    assign_r(curr_ub, curr_coefficient.upper(), ROUND_NOT_NEEDED);
+    if (curr_lb != 0 || curr_ub != 0) {
+      assign_r(curr_var_ub, matrix[n_var+1][n_var], ROUND_NOT_NEEDED);
+      div_2exp_assign_r(curr_var_ub, curr_var_ub, 1, ROUND_UP);
+      neg_assign_r(curr_minus_var_ub, matrix[n_var][n_var+1], ROUND_NOT_NEEDED);
+      div_2exp_assign_r(curr_minus_var_ub, curr_minus_var_ub, 1, ROUND_DOWN);
+      // Optimize the most common case: curr = +/-[1;1]
+      if (curr_lb == 1 && curr_ub == 1) {
+        add_assign_r(result, result, std::max(curr_var_ub, curr_minus_var_ub),
+                     ROUND_UP);
+      }
+      else if (curr_lb == -1 && curr_ub == -1) {
+        neg_assign_r(negator, std::min(curr_var_ub, curr_minus_var_ub),
+                     ROUND_NOT_NEEDED);
+        add_assign_r(result, result, negator, ROUND_UP);
+      }
+      else {
+        // Next addend will be the maximum of four quantities.
+        assign_r(first_comparison_term, 0, ROUND_NOT_NEEDED);
+        assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
+        add_mul_assign_r(first_comparison_term, curr_var_ub, curr_ub,
+                         ROUND_UP);
+        add_mul_assign_r(second_comparison_term, curr_var_ub, curr_lb,
+                         ROUND_UP);
+        assign_r(first_comparison_term, std::max(first_comparison_term,
+                                                 second_comparison_term),
+                 ROUND_NOT_NEEDED);
+        assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
+        add_mul_assign_r(second_comparison_term, curr_minus_var_ub, curr_ub,
+                         ROUND_UP);
+        assign_r(first_comparison_term, std::max(first_comparison_term,
+                                                 second_comparison_term),
+                 ROUND_NOT_NEEDED);
+        assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
+        add_mul_assign_r(second_comparison_term, curr_minus_var_ub, curr_lb,
+                         ROUND_UP);
+        assign_r(first_comparison_term, std::max(first_comparison_term,
+                                                 second_comparison_term),
+                 ROUND_NOT_NEEDED);
+
+        add_assign_r(result, result, first_comparison_term, ROUND_UP);
+      }
+    }
+
+    n_var += 2;
+  }
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>::
+interval_coefficient_upper_bound(const N& var_ub, const N& minus_var_ub,
+                                 const N& int_ub, const N& int_lb,
+                                 N& result) {
+
+  // Check that T is a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
+                     "Octagonal_Shape<T>::interval_coefficient_upper_bound:"
+                     " T not a floating point type.");
+
+  // NOTE: we store the first comparison term directly into result.
+  PPL_DIRTY_TEMP(N, second_comparison_term);
+  PPL_DIRTY_TEMP(N, third_comparison_term);
+  PPL_DIRTY_TEMP(N, fourth_comparison_term);
+
+  assign_r(result, 0, ROUND_NOT_NEEDED);
+  assign_r(second_comparison_term, 0, ROUND_NOT_NEEDED);
+  assign_r(third_comparison_term, 0, ROUND_NOT_NEEDED);
+  assign_r(fourth_comparison_term, 0, ROUND_NOT_NEEDED);
+
+  add_mul_assign_r(result, var_ub, int_ub, ROUND_UP);
+  add_mul_assign_r(second_comparison_term, minus_var_ub, int_ub, ROUND_UP);
+  add_mul_assign_r(third_comparison_term, var_ub, int_lb, ROUND_UP);
+  add_mul_assign_r(fourth_comparison_term, minus_var_ub, int_lb, ROUND_UP);
+
+  assign_r(result, std::max(result, second_comparison_term), ROUND_NOT_NEEDED);
+  assign_r(result, std::max(result, third_comparison_term), ROUND_NOT_NEEDED);
+  assign_r(result, std::max(result, fourth_comparison_term), ROUND_NOT_NEEDED);
+}
+
+template <typename T>
 void
 Octagonal_Shape<T>::affine_preimage(const Variable var,
                                     const Linear_Expression& expr,
@@ -7065,6 +7824,20 @@ Octagonal_Shape<T>
   throw std::invalid_argument(s.str());
 }
 
+template <typename T>
+template <typename C>
+void
+Octagonal_Shape<T>
+::throw_dimension_incompatible(const char* method,
+                               const char* name_row,
+                               const Linear_Form<C>& y) const {
+  std::ostringstream s;
+  s << "PPL::Octagonal_Shape::" << method << ":\n"
+    << "this->space_dimension() == " << space_dimension()
+    << ", " << name_row << "->space_dimension() == "
+    << y.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
 
 template <typename T>
 void

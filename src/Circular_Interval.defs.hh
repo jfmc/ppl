@@ -217,8 +217,8 @@ private:
   }
 public:
   bool OK() const {
-    return delta_ < delta_max() ||
-      (delta_ == delta_max() && start_ <= 1);
+    return delta_ < delta_max()
+      || (delta_ == delta_max() && start_ <= 1);
   }
   Circular_Interval() {
   }
@@ -502,7 +502,8 @@ public:
     }
   }
   template <typename C1, typename C2>
-  typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C1>::value &&
+  typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C1>::value
+                     &&
 		     Is_Same_Or_Derived<I_Constraint_Base, C2>::value, I_Result>::type
   build(const C1& c1, const C2& c2) {
     switch (c1.rel()) {
@@ -608,8 +609,8 @@ public:
   I_Result add_assign(const Circular_Interval& x, const Circular_Interval& y) {
     if (x.maybe_check_empty() || y.maybe_check_empty())
       return assign(EMPTY);
-    if (x.is_universe() || y.is_universe() ||
-	add_saturates_unsigned(delta_, x.delta_, y.delta_, Policy::modulo))
+    if (x.is_universe() || y.is_universe()
+        || add_saturates_unsigned(delta_, x.delta_, y.delta_, Policy::modulo))
       return assign(UNIVERSE);
     add_wrap_unsigned(start_, x.start_, y.start_, Policy::modulo);
     return I_NOT_DEGENERATE | I_EXACT;
@@ -617,8 +618,8 @@ public:
   I_Result sub_assign(const Circular_Interval& x, const Circular_Interval& y) {
     if (x.maybe_check_empty() || y.maybe_check_empty())
       return assign(EMPTY);
-    if (x.is_universe() || y.is_universe() ||
-	add_saturates_unsigned(delta_, x.delta_, y.delta_, Policy::modulo))
+    if (x.is_universe() || y.is_universe()
+        || add_saturates_unsigned(delta_, x.delta_, y.delta_, Policy::modulo))
       return assign(UNIVERSE);
     sub_wrap_unsigned(start_, x.start_, y.end(), Policy::modulo);
     return I_NOT_DEGENERATE | I_EXACT;
@@ -628,11 +629,12 @@ public:
       return assign(EMPTY);
     I_Result r;
     delta_type d;
-    if (y.delta_ == 0 ?
-	mul_saturates_unsigned(d, y.start_, x.delta_, Policy::modulo) :
-	(add_saturates_unsigned(d, x.start_, x.delta_, Policy::modulo) ||
-	 mul_saturates_unsigned(d, d, y.delta_, Policy::modulo) ||
-	 add_mul_saturates_unsigned(d, y.start_, x.delta_, Policy::modulo))) {
+    if (y.delta_ == 0
+        ? mul_saturates_unsigned(d, y.start_, x.delta_, Policy::modulo)
+        : (add_saturates_unsigned(d, x.start_, x.delta_, Policy::modulo)
+           || mul_saturates_unsigned(d, d, y.delta_, Policy::modulo)
+           || add_mul_saturates_unsigned(d, y.start_, x.delta_,
+                                         Policy::modulo))) {
       assign(UNIVERSE);
       r = I_UNIVERSE;
     }
@@ -987,8 +989,8 @@ public:
     std::swap(delta_, x.delta_);
   }
   memory_size_type external_memory_in_bytes() const {
-    return Parma_Polyhedra_Library::external_memory_in_bytes(start_) +
-      Parma_Polyhedra_Library::external_memory_in_bytes(delta_);
+    return Parma_Polyhedra_Library::external_memory_in_bytes(start_)
+      + Parma_Polyhedra_Library::external_memory_in_bytes(delta_);
   }
   void ascii_dump(std::ostream& s) const {
     using Parma_Polyhedra_Library::ascii_dump;

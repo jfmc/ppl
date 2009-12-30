@@ -32,6 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "Grid.defs.hh"
+#include "Interval.defs.hh"
+#include "Linear_Form.defs.hh"
 #include "BD_Shape.defs.hh"
 #include "Octagonal_Shape.defs.hh"
 #include "MIP_Problem.defs.hh"
@@ -2678,6 +2680,42 @@ Box<ITV>::affine_image(const Variable var,
 
 template <typename ITV>
 void
+Box<ITV>::affine_form_image(const Variable var,
+                            const Linear_Form<ITV>& lf) {
+
+  // Check that ITV has a floating point boundary type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<typename ITV::boundary_type>
+            ::is_exact, "Box<ITV>::affine_form_image(Variable, Linear_Form):"
+                        "ITV has not a floating point boundary type.");
+
+  // Dimension-compatibility checks.
+  const dimension_type space_dim = space_dimension();
+  const dimension_type lf_space_dim = lf.space_dimension();
+  if (space_dim < lf_space_dim)
+    throw_dimension_incompatible("affine_form_image(var, lf)", "lf", lf);
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("affine_form_image(var, lf)", "var", var);
+
+  if (is_empty())
+    return;
+
+  // Intervalization of 'lf'.
+  ITV result = lf.inhomogeneous_term();
+  for (dimension_type i = 0; i < lf_space_dim; ++i) {
+    ITV current_addend = lf.coefficient(Variable(i));
+    const ITV& curr_int = seq[i];
+    current_addend *= curr_int;
+    result += current_addend;
+  }
+
+  seq[var.id()].assign(result);
+  PPL_ASSERT(OK());
+}
+
+template <typename ITV>
+void
 Box<ITV>::affine_preimage(const Variable var,
                           const Linear_Expression& expr,
                           Coefficient_traits::const_reference
@@ -3976,6 +4014,20 @@ Box<ITV>::throw_dimension_incompatible(const char* method,
     << "this->space_dimension() == " << space_dimension()
     << ", " << name_row << "->space_dimension() == "
     << e.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename ITV>
+template <typename C>
+void
+Box<ITV>::throw_dimension_incompatible(const char* method,
+                                       const char* name_row,
+                                       const Linear_Form<C>& y) const {
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":\n"
+    << "this->space_dimension() == " << space_dimension()
+    << ", " << name_row << "->space_dimension() == "
+    << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 

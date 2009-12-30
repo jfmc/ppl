@@ -55,6 +55,11 @@ struct Is_Singleton : public Is_Native_Or_Checked<T> {};
 template <typename T>
 struct Is_Interval : public Is_Same_Or_Derived<Interval_Base, T> {};
 
+// FIXME: This has been added as a workaraound.
+template <typename From>
+typename Enable_If<Is_Interval<From>::value, I_Result>::type
+neg_assign(From& x);
+
 //! A generic, not necessarily closed, possibly restricted interval.
 /*! \ingroup PPL_CXX_interface
   The class template type parameter \p Boundary represents the type
@@ -234,8 +239,8 @@ public:
   }
 
   bool check_empty(I_Result r) const {
-    return (r & I_ANY) == I_EMPTY ||
-      ((r & I_ANY) != I_NOT_EMPTY && is_empty());
+    return (r & I_ANY) == I_EMPTY
+      || ((r & I_ANY) != I_NOT_EMPTY && is_empty());
   }
 
   bool is_singleton() const {
@@ -373,8 +378,10 @@ public:
   }
 
   template <typename C1, typename C2>
-  typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C1>::value &&
-		     Is_Same_Or_Derived<I_Constraint_Base, C2>::value, I_Result>::type
+  typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C1>::value
+                     &&
+		     Is_Same_Or_Derived<I_Constraint_Base, C2>::value,
+                     I_Result>::type
   build(const C1& c1, const C2& c2) {
     switch (c1.rel()) {
     case V_LGE:

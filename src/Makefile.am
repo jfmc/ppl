@@ -87,7 +87,7 @@ COEFFICIENT_TYPES_INCLUDE_FILES =
 
 COEFFICIENT_DEFS_INCLUDE_FILES =
 
-endif
+endif USE_NATIVE_INTEGERS
 
 if USE_CHECKED_INTEGERS
 
@@ -95,7 +95,7 @@ COEFFICIENT_TYPES_INCLUDE_FILES =
 
 COEFFICIENT_DEFS_INCLUDE_FILES =
 
-endif
+endif USE_CHECKED_INTEGERS
 
 if USE_GMP_INTEGERS
 
@@ -106,7 +106,7 @@ COEFFICIENT_DEFS_INCLUDE_FILES = \
   GMP_Integer.defs.hh \
   GMP_Integer.inlines.hh
 
-endif
+endif USE_GMP_INTEGERS
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
@@ -146,6 +146,7 @@ Variable.types.hh \
 Variables_Set.types.hh \
 Linear_Expression.types.hh \
 Linear_System.types.hh \
+Linear_Form.types.hh \
 Bit_Row.types.hh \
 Bit_Matrix.types.hh \
 Constraint_System.types.hh \
@@ -255,6 +256,9 @@ Grid_Generator_System.defs.hh \
 Congruence_System.defs.hh \
 Linear_Expression.defs.hh \
 Linear_Expression.inlines.hh \
+Linear_Form.defs.hh \
+Linear_Form.inlines.hh \
+Linear_Form.templates.hh \
 Constraint.defs.hh \
 Constraint.inlines.hh \
 Constraint_System.inlines.hh \
@@ -345,7 +349,36 @@ Weight_Profiler.defs.hh \
 max_space_dimension.hh \
 algorithms.hh \
 wrap_assign.hh \
-wrap_string.hh
+wrap_string.hh \
+Floating_Point_Expression.types.hh \
+Floating_Point_Expression.defs.hh \
+Floating_Point_Expression.inlines.hh \
+Floating_Point_Expression.templates.hh \
+Constant_Floating_Point_Expression.types.hh \
+Constant_Floating_Point_Expression.defs.hh \
+Constant_Floating_Point_Expression.inlines.hh \
+Variable_Floating_Point_Expression.types.hh \
+Variable_Floating_Point_Expression.defs.hh \
+Variable_Floating_Point_Expression.inlines.hh \
+Sum_Floating_Point_Expression.types.hh \
+Sum_Floating_Point_Expression.defs.hh \
+Sum_Floating_Point_Expression.inlines.hh \
+Sum_Floating_Point_Expression.templates.hh \
+Difference_Floating_Point_Expression.types.hh \
+Difference_Floating_Point_Expression.defs.hh \
+Difference_Floating_Point_Expression.inlines.hh \
+Difference_Floating_Point_Expression.templates.hh \
+Multiplication_Floating_Point_Expression.types.hh \
+Multiplication_Floating_Point_Expression.defs.hh \
+Multiplication_Floating_Point_Expression.inlines.hh \
+Multiplication_Floating_Point_Expression.templates.hh \
+Division_Floating_Point_Expression.types.hh \
+Division_Floating_Point_Expression.defs.hh \
+Division_Floating_Point_Expression.inlines.hh \
+Division_Floating_Point_Expression.templates.hh \
+Opposite_Floating_Point_Expression.types.hh \
+Opposite_Floating_Point_Expression.defs.hh \
+Opposite_Floating_Point_Expression.inlines.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
@@ -383,6 +416,7 @@ Init.cc \
 Coefficient.cc \
 Linear_Expression.cc \
 Linear_System.cc \
+Linear_Form.cc \
 Matrix.cc \
 Scalar_Products.cc \
 MIP_Problem.cc \
@@ -503,11 +537,11 @@ ppl.hh.gch: ppl.hh
 
 PRECOMPILED = ppl.hh.gch
 
-else
+else !USE_PRECOMPILED_HEADERS
 
 PRECOMPILED =
 
-endif
+endif !USE_PRECOMPILED_HEADERS
 
 BUILT_SOURCES = \
 $(include_HEADERS) \

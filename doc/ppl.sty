@@ -24,6 +24,7 @@
 \ProvidesPackage{ppl}
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
+\RequirePackage{stmaryrd}
 
 %% Calligraphic alphabet
 \newcommand*{\cA}{\ensuremath{\mathcal{A}}}
@@ -176,3 +177,20 @@
 \newcommand*{\entailsP}{\entailss{\smallP}}
 \newcommand*{\NentailsP}{\Nentailss{\smallP}}
 \newcommand*{\sentailsP}{\sentailss{\smallP}}
+
+
+% Interval floating point arithmetics
+
+\newcommand*{\asifp}{\oplus^{\#}}
+\newcommand*{\adifp}{\ominus^{\#}}
+\newcommand*{\adivifp}{\oslash^{\#}}
+\newcommand*{\amifp}{\otimes^{\#}}
+
+% Linear form arithmetics
+
+\newcommand*{\aslf}{\boxplus^{\#}}
+\newcommand*{\adlf}{\boxminus^{\#}}
+\newcommand*{\adivlf}{\boxslash^{\#}}
+\newcommand*{\amlf}{\boxtimes^{\#}}
+\newcommand*{\linexpr}[1]{\llparenthesis #1 \rrparenthesis}
+\newcommand*{\linexprenv}[3]{\llparenthesis #1 \rrparenthesis \left \llbracket #2, #3 \right \rrbracket}

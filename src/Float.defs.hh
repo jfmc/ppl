@@ -41,6 +41,38 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
+struct float_ieee754_half {
+  uint16_t word;
+  static const uint16_t SGN_MASK = 0x8000;
+  static const uint16_t EXP_MASK = 0xfc00;
+  static const uint16_t POS_INF = 0xfc00;
+  static const uint16_t NEG_INF = 0x7c00;
+  static const uint16_t POS_ZERO = 0x0000;
+  static const uint16_t NEG_ZERO = 0x8000;
+  static const unsigned int BASE = 2;
+  static const unsigned int EXPONENT_BITS = 5;
+  static const unsigned int MANTISSA_BITS = 10;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_BIAS = EXPONENT_MAX;
+  static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
+  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
+					- static_cast<int>(MANTISSA_BITS);
+  int is_inf() const;
+  int is_nan() const;
+  int is_zero() const;
+  int sign_bit() const;
+  void negate();
+  void dec();
+  void inc();
+  void set_max(bool negative);
+  void build(bool negative, mpz_t mantissa, int exponent);
+
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+
 struct float_ieee754_single {
   uint32_t word;
   static const uint32_t SGN_MASK = 0x80000000;
@@ -49,6 +81,7 @@ struct float_ieee754_single {
   static const uint32_t NEG_INF = 0xff800000;
   static const uint32_t POS_ZERO = 0x00000000;
   static const uint32_t NEG_ZERO = 0x80000000;
+  static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 8;
   static const unsigned int MANTISSA_BITS = 23;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
@@ -93,6 +126,7 @@ struct float_ieee754_double {
   static const uint32_t LSP_INF = 0;
   static const uint32_t LSP_ZERO = 0;
   static const uint32_t LSP_MAX = 0xffffffff;
+  static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 11;
   static const unsigned int MANTISSA_BITS = 52;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
@@ -109,6 +143,48 @@ struct float_ieee754_double {
   void inc();
   void set_max(bool negative);
   void build(bool negative, mpz_t mantissa, int exponent);
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+
+struct float_ibm_single {
+  uint32_t word;
+  static const uint32_t SGN_MASK = 0x80000000;
+  static const uint32_t EXP_MASK = 0x7f000000;
+  static const uint32_t POS_INF = 0x7f000000;
+  static const uint32_t NEG_INF = 0xff000000;
+  static const uint32_t POS_ZERO = 0x00000000;
+  static const uint32_t NEG_ZERO = 0x80000000;
+  static const unsigned int BASE = 16;
+  static const unsigned int EXPONENT_BITS = 7;
+  static const unsigned int MANTISSA_BITS = 24;
+  static const int EXPONENT_BIAS = 64;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
+  static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
+					- static_cast<int>(MANTISSA_BITS);
+  int is_inf() const;
+  int is_nan() const;
+  int is_zero() const;
+  int sign_bit() const;
+  void negate();
+  void dec();
+  void inc();
+  void set_max(bool negative);
+  void build(bool negative, mpz_t mantissa, int exponent);
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+
+struct float_ibm_double {
+  static const unsigned int BASE = 16;
+  static const unsigned int EXPONENT_BITS = 7;
+  static const unsigned int MANTISSA_BITS = 56;
+  static const int EXPONENT_BIAS = 64;
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -132,6 +208,7 @@ struct float_intel_double_extended {
   static const uint64_t LSP_ZERO = 0;
   static const uint64_t LSP_DMAX = 0x7fffffffffffffffULL;
   static const uint64_t LSP_NMAX = 0xffffffffffffffffULL;
+  static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 15;
   static const unsigned int MANTISSA_BITS = 63;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
@@ -170,6 +247,7 @@ struct float_ieee754_quad {
   static const uint64_t LSP_INF = 0;
   static const uint64_t LSP_ZERO = 0;
   static const uint64_t LSP_MAX = 0xffffffffffffffffULL;
+  static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 15;
   static const unsigned int MANTISSA_BITS = 112;
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
@@ -198,10 +276,14 @@ class Float : public False { };
 template <>
 class Float<float> : public True {
 public:
-#if PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+#if PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_HALF
+  typedef float_ieee754_half Binary;
+#elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
   typedef float_ieee754_single Binary;
 #elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
   typedef float_ieee754_double Binary;
+#elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IBM_SINGLE
+  typedef float_ibm_single Binary;
 #elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
   typedef float_ieee754_quad Binary;
 #elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
@@ -223,10 +305,14 @@ public:
 template <>
 class Float<double> : public True {
 public:
-#if PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+#if PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_HALF
+  typedef float_ieee754_half Binary;
+#elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
   typedef float_ieee754_single Binary;
 #elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
   typedef float_ieee754_double Binary;
+#elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IBM_SINGLE
+  typedef float_ibm_single Binary;
 #elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
   typedef float_ieee754_quad Binary;
 #elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
@@ -248,10 +334,14 @@ public:
 template <>
 class Float<long double> : public True {
 public:
-#if PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+#if PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_HALF
+  typedef float_ieee754_half Binary;
+#elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
   typedef float_ieee754_single Binary;
 #elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
   typedef float_ieee754_double Binary;
+#elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IBM_SINGLE
+  typedef float_ibm_single Binary;
 #elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
   typedef float_ieee754_quad Binary;
 #elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED

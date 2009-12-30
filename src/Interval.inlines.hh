@@ -25,6 +25,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+template <typename From>
+typename Enable_If<Is_Interval<From>::value, I_Result>::type
+neg_assign(From& x) {
+  // FIXME: Avoid the creation of a temporary.
+  From y;
+  typename Enable_If<Is_Interval<From>::value, I_Result>::type res =
+                                                               y.neg_assign(x);
+  x = y;
+  return res;
+}
+
 template <typename Boundary, typename Info>
 inline memory_size_type
 Interval<Boundary, Info>::external_memory_in_bytes() const {
@@ -310,13 +321,13 @@ Interval<Boundary, Info>::can_be_exactly_joined_to(const Type& x) const {
   PPL_DIRTY_TEMP(Boundary, b);
   if (gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x))) {
     b = lower();
-    return info().restrict(round_dir_check(LOWER, true), b, V_LT) == V_EQ &&
-      eq(LOWER, b, info(), UPPER, f_upper(x), f_info(x));
+    return info().restrict(round_dir_check(LOWER, true), b, V_LT) == V_EQ
+      && eq(LOWER, b, info(), UPPER, f_upper(x), f_info(x));
   }
   else if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x))) {
     b = upper();
-    return info().restrict(round_dir_check(UPPER, true), b, V_GT) == V_EQ &&
-      eq(UPPER, b, info(), LOWER, f_lower(x), f_info(x));
+    return info().restrict(round_dir_check(UPPER, true), b, V_GT) == V_EQ
+      && eq(UPPER, b, info(), LOWER, f_lower(x), f_info(x));
   }
   return true;
 }
@@ -370,7 +381,8 @@ inline typename Enable_If<Is_Singleton<From>::value
 Interval<To_Boundary, To_Info>::difference_assign(const From& x) {
   PPL_ASSERT(f_OK(x));
   // FIXME: restrictions
-  if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x)) ||
+  if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x))
+      ||
       gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x)))
     return combine(V_EQ, V_EQ);
   bool nl = ge(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
@@ -405,7 +417,8 @@ Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   // FIXME: restrictions
-  if (lt(UPPER, f_upper(x), f_info(x), LOWER, f_lower(y), f_info(y)) ||
+  if (lt(UPPER, f_upper(x), f_info(x), LOWER, f_lower(y), f_info(y))
+      ||
       gt(LOWER, f_lower(x), f_info(x), UPPER, f_upper(y), f_info(y)))
     return assign(x);
   bool nl = ge(LOWER, f_lower(x), f_info(x), LOWER, f_lower(y), f_info(y));

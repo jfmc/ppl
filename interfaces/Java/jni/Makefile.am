@@ -43,13 +43,19 @@ WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
 
 endif BUILD_WATCHDOG_LIBRARY
 
+if HOST_OS_MINGW
+
+JNI_DEFINE_OPTIONS = -D_JNI_IMPLEMENTATION_
+
+endif HOST_OS_MINGW
+
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
 -I$(top_builddir)/src \
 -I../parma_polyhedra_library \
 -I$(top_srcdir)/src \
 $(WATCHDOG_INCLUDE_OPTIONS) \
-@extra_includes@ @JNIFLAGS@
+@extra_includes@ @JNIFLAGS@ $(JNI_DEFINE_OPTIONS)
 
 BUILT_SOURCES = \
 ppl_java_implementation_domains.cc.stamp
@@ -74,10 +80,22 @@ $(NO_UNDEFINED_FLAG) \
 
 else !HOST_OS_DARWIN
 
+if HOST_OS_MINGW
+
+libppl_java_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
+-module \
+-avoid-version \
+-Wl,--kill-at
+
+else !HOST_OS_MINGW
+
 libppl_java_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version
+
+endif !HOST_OS_MINGW
 
 endif !HOST_OS_DARWIN
 

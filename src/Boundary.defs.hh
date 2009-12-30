@@ -316,8 +316,8 @@ is_boundary_infinity_closed(Boundary_Type type, const T& x, const Info& info) {
 template <typename Info>
 inline bool
 boundary_infinity_is_open(Boundary_Type type, const Info& info) {
-  return !Info::may_contain_infinity ||
-    info.get_boundary_property(type, OPEN);
+  return !Info::may_contain_infinity
+    || info.get_boundary_property(type, OPEN);
 }
 
 template <typename T, typename Info>
@@ -357,8 +357,8 @@ eq(Boundary_Type type1, const T1& x1, const Info1& info1,
     return is_minus_infinity(type2, x2, info2);
   else if (is_plus_infinity(type1, x1, info1))
     return is_plus_infinity(type2, x2, info2);
-  else if (is_minus_infinity(type2, x2, info2) ||
-	   is_plus_infinity(type2, x2, info2))
+  else if (is_minus_infinity(type2, x2, info2)
+           || is_plus_infinity(type2, x2, info2))
     return false;
   else
     return equal(x1, x2);
@@ -580,13 +580,13 @@ add_assign(Boundary_Type to_type, To& to, To_Info& to_info,
   PPL_ASSERT(type1 == type2);
   bool shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
-    shrink = boundary_infinity_is_open(type1, info1) &&
-      !is_boundary_infinity_closed(type2, x2, info2);
+    shrink = boundary_infinity_is_open(type1, info1)
+      && !is_boundary_infinity_closed(type2, x2, info2);
     return set_boundary_infinity(to_type, to, to_info, shrink);
   }
   else if (is_boundary_infinity(type2, x2, info2)) {
-    shrink = boundary_infinity_is_open(type2, info2) &&
-      !is_boundary_infinity_closed(type1, x1, info1);
+    shrink = boundary_infinity_is_open(type2, info2)
+      && !is_boundary_infinity_closed(type1, x1, info1);
     return set_boundary_infinity(to_type, to, to_info, shrink);
   }
   shrink = normal_is_open(type1, x1, info1)
@@ -607,13 +607,13 @@ sub_assign(Boundary_Type to_type, To& to, To_Info& to_info,
   PPL_ASSERT(type1 != type2);
   bool shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
-    shrink = boundary_infinity_is_open(type1, info1) &&
-      !is_boundary_infinity_closed(type2, x2, info2);
+    shrink = boundary_infinity_is_open(type1, info1)
+      && !is_boundary_infinity_closed(type2, x2, info2);
     return set_boundary_infinity(to_type, to, to_info, shrink);
   }
   else if (is_boundary_infinity(type2, x2, info2)) {
-    shrink = boundary_infinity_is_open(type2, info2) &&
-      !is_boundary_infinity_closed(type1, x1, info1);
+    shrink = boundary_infinity_is_open(type2, info2)
+      && !is_boundary_infinity_closed(type1, x1, info1);
     return set_boundary_infinity(to_type, to, to_info, shrink);
   }
   shrink = normal_is_open(type1, x1, info1)
@@ -633,13 +633,13 @@ mul_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type2, const T2& x2, const Info2& info2) {
   bool shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
-    shrink = boundary_infinity_is_open(type1, info1) &&
-      !is_boundary_infinity_closed(type2, x2, info2);
+    shrink = boundary_infinity_is_open(type1, info1)
+      && !is_boundary_infinity_closed(type2, x2, info2);
     return set_boundary_infinity(to_type, to, to_info, shrink);
   }
   else if (is_boundary_infinity(type2, x2, info2)) {
-    shrink = boundary_infinity_is_open(type2, info2) &&
-      !is_boundary_infinity_closed(type1, x1, info1);
+    shrink = boundary_infinity_is_open(type2, info2)
+      && !is_boundary_infinity_closed(type1, x1, info1);
     return set_boundary_infinity(to_type, to, to_info, shrink);
   }
   shrink = normal_is_open(type1, x1, info1)

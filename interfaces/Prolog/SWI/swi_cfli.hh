@@ -52,8 +52,12 @@ Prolog_new_term_ref() {
 */
 inline int
 Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
+#if PLVERSION >= 50800
+  return PL_put_term(t, u);
+#else
   PL_put_term(t, u);
   return 1;
+#endif
 }
 
 /*!
@@ -61,8 +65,12 @@ Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
 */
 inline int
 Prolog_put_long(Prolog_term_ref t, long l) {
+#if PLVERSION >= 50800
+  return PL_put_integer(t, l);
+#else
   PL_put_integer(t, l);
   return 1;
+#endif
 }
 
 static int tmp_mpz_t_initialized = 0;
@@ -89,12 +97,20 @@ Prolog_put_big_ulong(Prolog_term_ref t, unsigned long ul) {
 inline int
 Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
   if (ul <= LONG_MAX) {
+#if PLVERSION >= 50800
+    return PL_put_integer(t, ul);
+#else
     PL_put_integer(t, ul);
     return 1;
+#endif
   }
   else if (ul <= (uint64_t) INT64_MAX) {
+#if PLVERSION >= 50800
+    return PL_put_int64(t, (int64_t) ul);
+#else
     PL_put_int64(t, (int64_t) ul);
     return 1;
+#endif
   }
   else
     return Prolog_put_big_ulong(t, ul);
@@ -106,8 +122,12 @@ Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
 */
 inline int
 Prolog_put_atom_chars(Prolog_term_ref t, const char* s) {
+#if PLVERSION >= 50800
+  return PL_put_atom_chars(t, s);
+#else
   PL_put_atom_chars(t, s);
   return 1;
+#endif
 }
 
 /*!
@@ -115,8 +135,12 @@ Prolog_put_atom_chars(Prolog_term_ref t, const char* s) {
 */
 inline int
 Prolog_put_atom(Prolog_term_ref t, Prolog_atom a) {
+#if PLVERSION >= 50800
+  return PL_put_atom(t, a);
+#else
   PL_put_atom(t, a);
   return 1;
+#endif
 }
 
 /*!
@@ -124,8 +148,12 @@ Prolog_put_atom(Prolog_term_ref t, Prolog_atom a) {
 */
 inline int
 Prolog_put_address(Prolog_term_ref t, void* p) {
+#if PLVERSION >= 50800
+  return PL_put_pointer(t, p);
+#else
   PL_put_pointer(t, p);
   return 1;
+#endif
 }
 
 /*!
@@ -143,8 +171,12 @@ Prolog_atom_from_string(const char* s) {
 inline int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1) {
+#if PLVERSION >= 50800
+  return PL_cons_functor(t, PL_new_functor(f, 1), a1);
+#else
   PL_cons_functor(t, PL_new_functor(f, 1), a1);
   return 1;
+#endif
 }
 
 /*!
@@ -154,8 +186,12 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 inline int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
+#if PLVERSION >= 50800
+  return PL_cons_functor(t, PL_new_functor(f, 2), a1, a2);
+#else
   PL_cons_functor(t, PL_new_functor(f, 2), a1, a2);
   return 1;
+#endif
 }
 
 /*!
@@ -166,8 +202,12 @@ inline int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3) {
+#if PLVERSION >= 50800
+  return PL_cons_functor(t, PL_new_functor(f, 3), a1, a2, a3);
+#else
   PL_cons_functor(t, PL_new_functor(f, 3), a1, a2, a3);
   return 1;
+#endif
 }
 
 /*!
@@ -178,8 +218,12 @@ inline int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
+#if PLVERSION >= 50800
+  return PL_cons_functor(t, PL_new_functor(f, 4), a1, a2, a3, a4);
+#else
   PL_cons_functor(t, PL_new_functor(f, 4), a1, a2, a3, a4);
   return 1;
+#endif
 }
 
 /*!
@@ -188,8 +232,12 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 inline int
 Prolog_construct_cons(Prolog_term_ref c,
 		      Prolog_term_ref h, Prolog_term_ref t) {
+#if PLVERSION >= 50800
+  return PL_cons_list(c, h, t);
+#else
   PL_cons_list(c, h, t);
   return 1;
+#endif
 }
 
 /*!
