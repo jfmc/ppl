@@ -55,10 +55,11 @@ set_M(Coefficient& M, int m) {
                      std::numeric_limits<ANALYZER_FP_FORMAT>::max())) {
       // This may still provoke an arithmetic overflow exception:
       // no problem.
-      assign_r(M, m, ROUND_DOWN);
+      M = m;
       return;
     }
   }
+  // Cannot provoke an overflow.
   assign_r(M, std::numeric_limits<ANALYZER_FP_FORMAT>::max(), ROUND_DOWN);
 }
 
