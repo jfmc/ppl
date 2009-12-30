@@ -491,7 +491,7 @@ x86_64*)
 esac
 
 case "${host_os}" in
-cygwin)
+cygwin*)
   cygwin=yes
   no_undefined=yes
   ;;
@@ -500,6 +500,7 @@ darwin*)
   ;;
 mingw*)
   mingw=yes
+  no_undefined=yes
   ;;
 solaris*)
   solaris=yes
@@ -932,7 +933,7 @@ darwin*)
     java_dir="/Library/Java/Home"
   fi
   ;;
-# On Fedora 9 systems the JDK is usually in /usr/lib/jvm/java .
+# On modern Fedora systems the JDK is usually in /usr/lib/jvm/java .
 linux*)
   if test "x$java_dir" = x
   then
@@ -1368,7 +1369,7 @@ AM_CONDITIONAL(THOROUGH_MAKE_CHECK, test x"$enableval" = xthorough)
 
 # Libtool.
 LT_PREREQ([1.5.24])
-LT_INIT([dlopen])
+LT_INIT([dlopen,win32-dll])
 AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
 AM_CONDITIONAL(ENABLE_STATIC, test x"$enable_static" = xyes)
 
