@@ -1,7 +1,7 @@
 // -*- compile-command: "g++ -c -fPIC -I/usr/include/python2.6 -W -Wall ppl_py.cc -lboost_python -lpython2.6 ; g++ -shared -o ppl.so ppl_py.o -lboost_python -lppl" -*-
 
 /* Proof of concept for a Python interface.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

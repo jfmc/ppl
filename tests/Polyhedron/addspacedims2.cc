@@ -1,6 +1,6 @@
 /* Test Polyhedron::add_space_dimensions_and_project()
    and  Polyhedron::add_space_dimensions_and_embed().
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

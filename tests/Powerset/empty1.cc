@@ -1,6 +1,6 @@
 /* Test Pointset_Powerset<PH>::is_empty(),
         Pointset_Powerset<PH>::empty().
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

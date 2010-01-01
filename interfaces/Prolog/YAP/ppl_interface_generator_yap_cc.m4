@@ -2,7 +2,7 @@ m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
 
 dnl This m4 file generates the file ppl_yap.cc.
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl

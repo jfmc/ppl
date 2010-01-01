@@ -1,6 +1,6 @@
 /* Test Pointset_Powerset<PH>::maximize().
         Pointset_Powerset<PH>::minimize().
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

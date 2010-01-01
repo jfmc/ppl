@@ -1,7 +1,7 @@
 % A toy, non-ground meta-interpreter for CLP(Q)
 % for testing the Parma Polyhedra Library and its Prolog interface.
 %
-% Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+% Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 %
 % This file is part of the Parma Polyhedra Library (PPL).
 %
@@ -1114,7 +1114,7 @@ POSSIBILITY OF SUCH DAMAGES.\n').
 
 common_main :-
   write('\
-Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>\n\
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>\n\
 this program is free software, covered by the GNU General Public License,\n\
 and you are welcome to change it and/or distribute copies of it\n\
 under certain conditions.\n\
