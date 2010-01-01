@@ -1,7 +1,7 @@
 /* Test Octagonal_Shape::congruences(): we compute the system of
    congruences of an octagon  that is defined by a system of
    congruences that contains only a trivially false congruence.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

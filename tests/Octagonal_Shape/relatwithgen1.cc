@@ -1,6 +1,6 @@
 /* Test Octagonal_Shape::relation_with(g): we verify that a generator
    is not subsumed by an empty octagon.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

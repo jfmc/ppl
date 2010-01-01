@@ -3,7 +3,7 @@ m4_divert(-1)
 dnl This m4 file defines the list of the procedures generated
 dnl that are independent of the interface being generated.
 
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl

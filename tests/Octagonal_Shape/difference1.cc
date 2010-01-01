@@ -1,7 +1,7 @@
 /* Test Octagonal_Shape::difference_assign(): if `oct1' is
    contained in `oct2', the result of `oct1.difference_assign(oct2)'
    is an empty octagon.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

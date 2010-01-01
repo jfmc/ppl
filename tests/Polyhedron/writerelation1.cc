@@ -1,6 +1,6 @@
 /* Test operator<<(std::ostream& s, const Poly_Con_Relation& r)
    and operator<<(std::ostream& s, const Poly_Gen_Relation& r).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

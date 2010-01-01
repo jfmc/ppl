@@ -1,7 +1,7 @@
 /* Test Polyhedron::refine_fp_interval_abstract_store,
    Polyhedron::refine_with_linear_form_inequality and
    Polyhedron::generalized_refine_with_linear_form_inequality.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
