@@ -44,7 +44,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_SIMPLEX_USE_MIP_HEURISTIC 1
 #endif
 
-#ifdef PPL_NOISY_SIMPLEX
+#if PPL_NOISY_SIMPLEX
 #include <iostream>
 #endif
 
@@ -237,7 +237,7 @@ PPL::MIP_Problem::is_satisfiable() const {
         relaxed.lp.is_lp_satisfiable();
 #if PPL_NOISY_SIMPLEX
         mip_recursion_level = 0;
-#endif
+#endif // PPL_NOISY_SIMPLEX
         if (is_mip_satisfiable(relaxed.lp, relaxed.i_vars, p)) {
           x.last_generator = p;
           x.status = SATISFIABLE;
@@ -837,7 +837,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   std::cout << "MIP_Problem::process_pending_constraints(): "
             << "1st phase ended at iteration " << num_iterations
             << "." << std::endl;
-#endif
+#endif // PPL_NOISY_SIMPLEX
 
   if (!first_phase_succesful || working_cost[0] != 0) {
     // The feasible region is empty.
@@ -1190,7 +1190,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     if (num_iterations % 200 == 0)
       std::cout << "Primal simplex: iteration " << num_iterations
                 << "." << std::endl;
-#endif
+#endif // PPL_NOISY_SIMPLEX
     // If the following condition fails, probably there's a bug.
     PPL_ASSERT(challenger >= current);
     // If the value of the objective function does not improve,
@@ -1257,7 +1257,7 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
     if (num_iterations % 200 == 0)
       std::cout << "Primal simplex: iteration " << num_iterations
                 << "." << std::endl;
-#endif
+#endif // PPL_NOISY_SIMPLEX
   }
 }
 
@@ -1462,7 +1462,7 @@ PPL::MIP_Problem::second_phase() {
   std::cout << "MIP_Problem::second_phase(): 2nd phase ended at iteration "
 	    << num_iterations
             << "." << std::endl;
-#endif
+#endif // PPL_NOISY_SIMPLEX
   status = second_phase_successful ? OPTIMIZED : UNBOUNDED;
   PPL_ASSERT(OK());
 }
@@ -1500,7 +1500,7 @@ bool
 PPL::MIP_Problem::is_lp_satisfiable() const {
 #if PPL_NOISY_SIMPLEX
   num_iterations = 0;
-#endif
+#endif // PPL_NOISY_SIMPLEX
   switch (status) {
   case UNSATISFIABLE:
     return false;
@@ -1618,7 +1618,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
       std::cout << "MIP_Problem::solve_mip(): "
                 << "new value found: " << num << "/" << den
                 << "." << std::endl;
-#endif
+#endif // PPL_NOISY_SIMPLEX
     }
     return lp_status;
   }
@@ -1640,7 +1640,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
               << "descending with: "
               << (Variable(nonint_dim) <= tmp_coeff1)
               << "." << std::endl;
-#endif
+#endif // PPL_NOISY_SIMPLEX
     solve_mip(have_incumbent_solution, incumbent_solution_value,
 	      incumbent_solution_point, lp_aux, i_vars);
   }
@@ -1652,7 +1652,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
             << "descending with: "
             << (Variable(nonint_dim) >= tmp_coeff2)
             << "." << std::endl;
-#endif
+#endif // PPL_NOISY_SIMPLEX
   solve_mip(have_incumbent_solution, incumbent_solution_value,
 	    incumbent_solution_point, lp, i_vars);
   return have_incumbent_solution ? lp_status : UNFEASIBLE_MIP_PROBLEM;
@@ -1721,7 +1721,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   std::cout << "MIP_Problem::is_mip_satisfiable(): "
             << "entering recursion level " << mip_recursion_level
             << "." << std::endl;
-#endif
+#endif // PPL_NOISY_SIMPLEX
   PPL_ASSERT(lp.integer_space_dimensions().empty());
 
   // Solve the LP problem.
@@ -1731,7 +1731,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
               << "exiting from recursion level " << mip_recursion_level
               << "." << std::endl;
     --mip_recursion_level;
-#endif
+#endif // PPL_NOISY_SIMPLEX
     return false;
   }
 
@@ -1779,14 +1779,14 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
               << "descending with: "
               << (Variable(nonint_dim) <= tmp_coeff1)
               << "." << std::endl;
-#endif
+#endif // PPL_NOISY_SIMPLEX
     if (is_mip_satisfiable(lp_aux, i_vars, p)) {
 #if PPL_NOISY_SIMPLEX
       std::cout << "MIP_Problem::is_mip_satisfiable(): "
                 << "exiting from recursion level " << mip_recursion_level
                 << "." << std::endl;
       --mip_recursion_level;
-#endif
+#endif // PPL_NOISY_SIMPLEX
       return true;
     }
   }
@@ -1797,14 +1797,14 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
             << "descending with: "
             << (Variable(nonint_dim) >= tmp_coeff2)
             << "." << std::endl;
-#endif
+#endif // PPL_NOISY_SIMPLEX
   bool satisfiable = is_mip_satisfiable(lp, i_vars, p);
 #if PPL_NOISY_SIMPLEX
   std::cout << "MIP_Problem::is_mip_satisfiable(): "
             << "exiting from recursion level " << mip_recursion_level
             << "." << std::endl;
   --mip_recursion_level;
-#endif
+#endif // PPL_NOISY_SIMPLEX
   return satisfiable;
 }
 
