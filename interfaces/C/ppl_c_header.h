@@ -2349,6 +2349,11 @@ extern int PPL_PIP_PROBLEM_STATUS_OPTIMIZED;
 extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_CUTTING_STRATEGY;
 
 /*! \relates ppl_PIP_Problem_tag \brief
+  Code for the PIP problem's "pivot row strategy" control parameter name.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_PIVOT_ROW_STRATEGY;
+
+/*! \relates ppl_PIP_Problem_tag \brief
   Code of PIP problem's "first" cutting strategy.
 */
 extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_FIRST;
@@ -2362,6 +2367,16 @@ extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_DEEPEST;
   Code of PIP problem's "all" cutting strategy.
 */
 extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_ALL;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of PIP problem's "first" pivot row strategy.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_FIRST;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of PIP problem's "max column" pivot row strategy.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_MAX_COLUMN;
 
 /*@}*/ /* Symbolic Constants */
 

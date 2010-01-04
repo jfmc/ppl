@@ -183,7 +183,30 @@ find_lexico_minimum_column(const Matrix& tableau,
   return has_positive_coefficient;
 }
 
-
+// Divide all coefficients in row x and denominator y by their GCD.
+void
+row_normalize(Row& x, Coefficient& y) {
+  if (y == 1)
+    return;
+  dimension_type size = x.size();
+  dimension_type j;
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  gcd = y;
+  for (j=0; j<size; ++j) {
+    const Coefficient& c = x[j];
+    if (c != 0) {
+      gcd_assign(gcd, c, gcd);
+      if (gcd == 1)
+        return;
+    }
+  }
+  // Divide the coefficients by the GCD.
+  exact_div_assign(y, y, gcd);
+  for (j=0; j<size; ++j) {
+    Coefficient& c = x[j];
+    exact_div_assign(c, c, gcd);
+  }
+}
 
 } // namespace
 
@@ -679,6 +702,40 @@ PIP_Solution_Node::Tableau::scale(const Coefficient &ratio) {
   denominator *= ratio;
 }
 
+bool
+PIP_Solution_Node::Tableau
+::is_better_pivot(const std::vector<dimension_type>& mapping,
+                  const std::vector<bool>& basis,
+                  const dimension_type i,
+                  const dimension_type j,
+                  const dimension_type i_,
+                  const dimension_type j_) const {
+  dimension_type k;
+  dimension_type num_params = t.num_columns();
+  dimension_type num_rows = s.num_rows();
+  const Row& s_i = s[i];
+  const Row& s_i_ = s[i_];
+  const Row& t_i = t[i];
+  const Row& t_i_ = t[i_];
+  bool columns_are_different = false;
+  for (k=0; k<num_params; ++k) {
+    PPL_DIRTY_TEMP_COEFFICIENT(t_ikXs_i_j_);
+    PPL_DIRTY_TEMP_COEFFICIENT(t_i_kXs_ij);
+    t_ikXs_i_j_ = t_i[k] * s_i_[j_];
+    t_i_kXs_ij = t_i_[k] * s_i[j];
+    for (dimension_type x=0; x<num_rows; ++x) {
+      const Row& s_x = s[x];
+      if (s_x[j] * t_ikXs_i_j_ != s_x[j_] * t_i_kXs_ij) {
+        columns_are_different = true;
+        goto endloop;
+      }
+    }
+  }
+endloop:
+  return columns_are_different
+         && column_lower(s, mapping, basis, s_i, j, s_i_, j_, t_i[k], t_i_[k]);
+}
+
 void
 PIP_Tree_Node::ascii_dump(std::ostream& s) const {
   s << "\nconstraints_\n";
@@ -1121,6 +1178,10 @@ PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
 
     // Now we have a positive s[i][j] pivot
 
+    /* Normalize the tableau before pivoting */
+    for (i_=0; i_<num_rows; ++i_)
+      row_normalize(s[i_], scaling[i_]);
+
     /* update basis */
     var_j = var_column[j];
     var_i = var_row[i];
@@ -1472,31 +1533,46 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
        Either the problem is empty, or a pivoting step is required
     */
     if (i_ != n_a_d) {
+      /* Search for the best pivot row. */
+      dimension_type j_ = n_a_d;
+      for (i=0; i<num_rows; ++i) {
+        if (sign[i] != NEGATIVE)
+          continue;
+
+        if (!find_lexico_minimum_column(tableau.s, mapping, basis,
+                                        tableau.s[i], 0, j)) {
+          /* If no positive S_ij: problem is empty */
 #ifdef NOISY_PIP
-      std::cout << "Found row with negative parameters: " << i_
-                << std::endl;
+          std::cout << "No positive pivot found: Solution = _|_"
+                    << std::endl;
 #endif
-      /* Look for a positive S_ij such as the j^th column/S_ij is
-         lexico-minimal
-      */
-      PPL_DIRTY_TEMP_COEFFICIENT(sij);
-      dimension_type j_;
-      if (!find_lexico_minimum_column(tableau.s, mapping, basis,
-                                      tableau.s[i_], 0, j_)) {
-        /* If no positive S_ij: problem is empty */
-#ifdef NOISY_PIP
-        std::cout << "No positive pivot found: Solution = _|_"
-                  << std::endl;
-#endif
-        parent_ref = 0;
-        delete this;
-        return UNFEASIBLE_PIP_PROBLEM;
+          parent_ref = 0;
+          delete this;
+          return UNFEASIBLE_PIP_PROBLEM;
+        }
+        if (j_ == n_a_d
+            || tableau.is_better_pivot(mapping, basis, i, j, i_, j_)) {
+          // First pivot column found
+          // OR better pivot row/column pair found -> update pivot
+          i_ = i;
+          j_ = j;
+          if (problem.control_parameters[PIP_Problem::PIVOT_ROW_STRATEGY]
+              == PIP_Problem::PIVOT_ROW_STRATEGY_FIRST)
+            // stop at first valid row
+            break;
+        }
       }
-      sij = tableau.s[i_][j_];
+
 #ifdef NOISY_PIP
-      std::cout << "Pivot column: " << j_
+      std::cout << "Pivot row: " << i_ << " pivot column: " << j_
                 << std::endl;
 #endif
+
+      /* Normalize the tableau before pivoting */
+      tableau.normalize();
+
+      PPL_DIRTY_TEMP_COEFFICIENT(sij);
+      sij = tableau.s[i_][j_];
 
       /* ** Perform pivot operation ** */
       PPL_DIRTY_TEMP_COEFFICIENT(c);

@@ -299,6 +299,61 @@ private:
       the matrices and normalizes them and the denominator by the GCD itself.
     */
     void normalize();
+    //!
+    /*! \brief
+      Compares two pivot row and column pairs before pivoting.
+
+      The algorithm searches the first (ie, leftmost) column \f$k\f$ in
+      parameter matrix for which the \f$c=s_{*j}\frac{t_{ik}}{s_{ij}}\f$
+      and \f$c'=s_{*j'}\frac{t_{i'k}}{s_{i'j'}}\f$ columns are different,
+      where \f$s_{*j}\f$ denotes the \f$j\f$<sup>th</sup> column from the
+      \f$s\f$ matrix and \f$s_{*j'}\f$ is the \f$j'\f$<sup>th</sup> column
+      of \f$s\f$.
+
+      \f$c\f$ is the computed column that would be subtracted to column
+      \f$k\f$ in parameter matrix if pivoting is done using the \f$(i,j)\f$
+      row and column pair.
+      \f$c'\f$ is the computed column that would be subtracted to column
+      \f$k\f$ in parameter matrix if pivoting is done using the
+      \f$(i',j')\f$ row and column pair.
+
+      The test is true if the computed \f$-c\f$ column is lexicographically
+      bigger than the \f$-c'\f$ column. Due to the column ordering in the
+      parameter matrix of the tableau, leftmost search will enforce solution
+      increase with respect to the following priority order:
+       - the constant term
+       - the coefficients for the original parameters
+       - the coefficients for the oldest artificial parameters.
+
+      \param mapping
+      the PIP_Solution_Node::mapping vector for the tableau
+
+      \param basis
+      the PIP_Solution_Node::basis vector for the tableau
+
+      \param i
+      the row number for the first pivot row and column pair to be compared
+
+      \param j
+      the column number for the first pivot row and column pair to be
+      compared
+
+      \param i_
+      the row number for the second pivot row and column pair to be compared
+
+      \param j_
+      the column number for the second pivot row and column pair to be
+      compared
+
+      \return \b true if pivot row and column pair \f$(i,j)\f$ is more
+      suitable for pivoting than the \f$(i',j')\f$ pair
+    */
+    bool is_better_pivot(const std::vector<dimension_type>& mapping,
+                         const std::vector<bool>& basis,
+                         const dimension_type i,
+                         const dimension_type j,
+                         const dimension_type i_,
+                         const dimension_type j_) const;
     //! Returns the value of the denominator.
     const Coefficient &get_denominator() const;
 

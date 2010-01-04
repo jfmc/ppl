@@ -77,6 +77,7 @@ PPL::PIP_Problem::~PIP_Problem() {
 void
 PPL::PIP_Problem::control_parameters_init() {
   control_parameters[CUTTING_STRATEGY] = CUTTING_STRATEGY_FIRST;
+  control_parameters[PIVOT_ROW_STRATEGY] = PIVOT_ROW_STRATEGY_FIRST;
 }
 
 void
@@ -234,6 +235,17 @@ PPL::PIP_Problem::OK() const {
 #ifndef NDEBUG
     cerr << "Invalid value for the CUTTING_STRATEGY control parameter."
 	 << endl;
+    ascii_dump(cerr);
+#endif
+    return false;
+  }
+
+  strategy = control_parameters[PIVOT_ROW_STRATEGY];
+  if (strategy < PIVOT_ROW_STRATEGY_FIRST
+      || strategy > PIVOT_ROW_STRATEGY_MAX_COLUMN) {
+#ifndef NDEBUG
+    cerr << "Invalid value for the PIVOT_ROW_STRATEGY control parameter."
+        << endl;
     ascii_dump(cerr);
 #endif
     return false;
@@ -537,6 +549,11 @@ PPL::PIP_Problem::set_control_parameter(Control_Parameter_Value value) {
     // Intentionally fall through.
   case CUTTING_STRATEGY_ALL:
     control_parameters[CUTTING_STRATEGY] = value;
+    break;
+  case PIVOT_ROW_STRATEGY_FIRST:
+    // Intentionally fall through.
+  case PIVOT_ROW_STRATEGY_MAX_COLUMN:
+    control_parameters[PIVOT_ROW_STRATEGY] = value;
     break;
   default:
     throw std::invalid_argument("PPL::PIP_Problem::set_control_parameter(v)"

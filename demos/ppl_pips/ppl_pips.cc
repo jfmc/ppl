@@ -108,6 +108,9 @@ namespace {
 PPL::PIP_Problem::Control_Parameter_Value cutting_strategy
   = PPL::PIP_Problem::CUTTING_STRATEGY_FIRST;
 
+PPL::PIP_Problem::Control_Parameter_Value pivot_row_strategy
+    = PPL::PIP_Problem::PIVOT_ROW_STRATEGY_FIRST;
+
 int loop_iterations = 1;
 
 void
@@ -169,6 +172,7 @@ class PIP_Parser {
 public:
   PIP_Parser() : pip() {
     pip.set_control_parameter(cutting_strategy);
+    pip.set_control_parameter(pivot_row_strategy);
   }
 
   virtual ~PIP_Parser() {
@@ -434,9 +438,11 @@ struct option long_options[] = {
   {"version",        no_argument,       0, 'V'},
   {"check",          required_argument, 0, 'c'},
 #endif
-  {"first",          no_argument,       0, 'f'},
-  {"deepest",        no_argument,       0, 'd'},
-  {"all",            no_argument,       0, 'a'},
+  {"cut-first",      no_argument,       0, 'f'},
+  {"cut-deepest",    no_argument,       0, 'd'},
+  {"cut-all",        no_argument,       0, 'a'},
+  {"row-first",      no_argument,       0, 'F'},
+  {"row-max",        no_argument,       0, 'M'},
   {0, 0, 0, 0}
 };
 #endif
@@ -460,9 +466,12 @@ static const char* usage_string
 "  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n"
 #endif
 "\nCut generation options:\n"
-"  -f, --first             use the first non-integer row (default)\n"
-"  -d, --deepest           try to generate the deepest cut\n"
-"  -a, --all               always generate all possible cuts\n"
+"  -f, --cut-first         use the first non-integer row (default)\n"
+"  -d, --cut-deepest       try to generate the deepest cut\n"
+"  -a, --cut-all           always generate all possible cuts\n"
+"\nPivot row strategy options:\n"
+"  -F, --row-first         use the first row with negative parameter (default)\n"
+"  -M, --row-max           choose row generating the lexico-maximal pivot column\n"
 #ifndef PPL_HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
@@ -471,9 +480,9 @@ static const char* usage_string
 "Report bugs to <ppl-devel@cs.unipr.it>.\n";
 
 #if defined(USE_PPL)
-#define OPTION_LETTERS "R:ho:Pptvi:Vc:fda"
+#define OPTION_LETTERS "R:ho:Pptvi:Vc:fdaFM"
 #else
-#define OPTION_LETTERS "R:ho:Pptvi:fda"
+#define OPTION_LETTERS "R:ho:Pptvi:fdaFM"
 #endif
 
 const char* program_name = 0;
@@ -680,6 +689,14 @@ process_options(int argc, char* argv[]) {
 
     case 'a':
       cutting_strategy = PPL::PIP_Problem::CUTTING_STRATEGY_ALL;
+      break;
+
+    case 'F':
+      pivot_row_strategy = PPL::PIP_Problem::PIVOT_ROW_STRATEGY_FIRST;
+      break;
+
+    case 'M':
+      pivot_row_strategy = PPL::PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN;
       break;
 
     default:

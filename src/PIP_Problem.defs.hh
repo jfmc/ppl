@@ -479,6 +479,8 @@ public:
   enum Control_Parameter_Name {
     //! Cutting strategy
     CUTTING_STRATEGY,
+    //! Pivot row strategy
+    PIVOT_ROW_STRATEGY,
 
     //! Number of different enumeration values.
     CONTROL_PARAMETER_NAME_SIZE
@@ -492,6 +494,11 @@ public:
     CUTTING_STRATEGY_DEEPEST,
     //! Always generate all possible cuts
     CUTTING_STRATEGY_ALL,
+
+    //! Choose the first row with negative parameter sign
+    PIVOT_ROW_STRATEGY_FIRST,
+    //! Choose the row which generates the lexico-maximal pivot column
+    PIVOT_ROW_STRATEGY_MAX_COLUMN,
 
     //! Number of different enumeration values.
     CONTROL_PARAMETER_VALUE_SIZE
