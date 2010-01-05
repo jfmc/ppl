@@ -1319,11 +1319,12 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
     Row var(n_vars, tableau.s_capacity(), Row::Flags());
     Row param(n_params+1, tableau.t_capacity(), Row::Flags());
     Coefficient cnst_term = cst->inhomogeneous_term();
+    dimension_type dim = cst->space_dimension();
     if (cst->is_strict_inequality())
       // convert c > 0  <=>  c-1 >= 0
       cnst_term -= 1;
     param[0] = cnst_term * denom;
-    for (i=0; i<internal_space_dim; i++) {
+    for (i=0; i<dim; i++) {
       if (parameters.count(i) == 1) {
         param[p++] = cst->coefficient(Variable(i)) * denom;
       } else {
