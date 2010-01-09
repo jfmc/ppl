@@ -16,4 +16,6 @@ RHS
     RHS       C1        0
     RHS       r_000002  0
 BOUNDS
+ PL FOO       x1
+ PL FOO       x2
 ENDATA
