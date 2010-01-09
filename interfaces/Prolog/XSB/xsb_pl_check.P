@@ -38,6 +38,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Coefficient_min/1,
 	ppl_initialize/0,
 	ppl_finalize/0,
+        ppl_set_irrational_precision/1,
+        ppl_irrational_precision/1,
 	ppl_set_timeout_exception_atom/1,
 	ppl_timeout_exception_atom/1,
 	ppl_set_timeout/1,
