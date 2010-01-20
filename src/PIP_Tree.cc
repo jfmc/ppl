@@ -1257,7 +1257,8 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
   dimension_type i;
   dimension_type n_params = parameters.size();
   dimension_type n_vars = external_space_dim - n_params;
-  dimension_type internal_space_dim = tableau.t.num_columns()-1;
+  dimension_type internal_space_dim = tableau.s.num_columns()
+                                      + tableau.t.num_columns() - 1;
   Constraint_Sequence::const_iterator cst;
 
   // Create the parameter column, corresponding to the constant term

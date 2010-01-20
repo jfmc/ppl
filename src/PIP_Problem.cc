@@ -524,6 +524,9 @@ PPL::PIP_Problem::add_constraint(const Constraint& c) {
     throw std::invalid_argument(s.str());
   }
   input_cs.push_back(c);
+  // Update problem status.
+  if (status != UNSATISFIABLE)
+    status = PARTIALLY_SATISFIABLE;
 }
 
 void
