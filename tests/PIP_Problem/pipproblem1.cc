@@ -244,6 +244,39 @@ test06() {
   return ok;
 }
 
+bool
+test07() {
+  Variable i(0);
+  Variable j(1);
+  Variable m(2);
+  Variable n(3);
+  Variables_Set params(m, n);
+
+  PIP_Problem pip(4);
+  pip.add_to_parameter_space_dimensions(params);
+
+  pip.add_constraint(3*j >= -2*i+8);
+  pip.add_constraint(j <= 4*i - 4);
+  pip.add_constraint(i <= n);
+  pip.add_constraint(n >= 3);
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    display_solution(solution, params, Variables_Set(i, j),
+                     pip.space_dimension());
+  }
+
+  pip.add_constraint(j <= m);
+  ok &= (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    display_solution(solution, params, Variables_Set(i, j),
+                     pip.space_dimension());
+  }
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -253,4 +286,5 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN
