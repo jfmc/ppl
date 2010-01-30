@@ -243,7 +243,8 @@ namespace IO_Operators {
 
 std::ostream&
 operator<<(std::ostream& os, const PIP_Tree_Node::Artificial_Parameter& x) {
-  os << "(" << ((Linear_Expression)x) << ") div " << x.get_denominator();
+  const Linear_Expression& expr = static_cast<const Linear_Expression&>(x);
+  os << "(" << expr << ") div " << x.get_denominator();
   return os;
 }
 
