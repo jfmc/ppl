@@ -41,7 +41,23 @@ namespace Parma_Polyhedra_Library {
   of PIP problems.
 */
 class PIP_Tree_Node {
+protected:
+  //! Default constructor.
+  PIP_Tree_Node();
+
+  //! Copy constructor.
+  PIP_Tree_Node(const PIP_Tree_Node &x);
+
 public:
+  //! Returns a pointer to a dynamically-allocated copy of \p *this.
+  virtual PIP_Tree_Node* clone() const = 0;
+
+  //! Destructor.
+  virtual ~PIP_Tree_Node();
+
+  //! Returns \c true if and only if \p *this is well formed.
+  virtual bool OK() const;
+
   //! Returns \p this if \p *this is a solution node, 0 otherwise.
   virtual const PIP_Solution_Node* as_solution() const;
 
@@ -53,12 +69,6 @@ public:
 
   //! Returns \p this if \p *this is a decision node, 0 otherwise.
   virtual PIP_Decision_Node* as_decision();
-
-  //! Destructor.
-  virtual ~PIP_Tree_Node();
-
-  //! Returns \c true if and only if \p *this is well formed.
-  bool OK() const;
 
   /*! \brief
     Returns the system of parameter constraints controlling \p *this.
@@ -94,7 +104,7 @@ public:
 
   private:
     Coefficient denominator;
-  };
+  }; // class Artificial_Parameter
 
   //! A type alias for a sequence of Artificial_Parameter's.
   typedef std::vector<Artificial_Parameter> Artificial_Parameter_Sequence;
@@ -111,16 +121,7 @@ public:
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
 
-  //! Returns a pointer to a dynamically-allocated copy of \p *this.
-  virtual PIP_Tree_Node* clone() const = 0;
-
 protected:
-  //! Default constructor.
-  PIP_Tree_Node();
-
-  //! Copy constructor.
-  PIP_Tree_Node(const PIP_Tree_Node &x);
-
   //! A type alias for a sequence of constraints.
   typedef std::vector<Constraint> Constraint_Sequence;
 
@@ -223,7 +224,9 @@ protected:
 
   //! Inserts a new parametric constraint in internal Row format
   void add_constraint(const Row &x, const Variables_Set& parameters);
-};
+
+}; // class PIP_Tree_Node
+
 
 //! A tree node representing part of the space of solutions.
 class PIP_Solution_Node : public PIP_Tree_Node {
@@ -231,8 +234,14 @@ public:
   //! Default constructor.
   PIP_Solution_Node();
 
+  //! Returns a pointer to a dynamically-allocated copy of \p *this.
+  virtual PIP_Tree_Node* clone() const;
+
   //! Destructor.
-  ~PIP_Solution_Node();
+  virtual ~PIP_Solution_Node();
+
+  //! Returns \c true if and only if \p *this is well formed.
+  virtual bool OK() const;
 
   //! Returns \p this.
   virtual const PIP_Solution_Node* as_solution() const;
@@ -262,11 +271,6 @@ public:
 
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
-
-  //! Returns a pointer to a dynamically-allocated copy of \p *this.
-  virtual PIP_Tree_Node* clone() const;
-
-  bool OK() const;
 
 private:
   //! The type for parametric simplex tableau.
@@ -361,7 +365,7 @@ private:
     bool ascii_load(std::istream& s);
 
     //! Returns \c true if and only if \p *this is well formed.
-    bool OK() const;
+    virtual bool OK() const;
   };
 
   //! The parametric simplex tableau.
@@ -571,25 +575,26 @@ protected:
 //! A tree node representing a decision in the space of solutions.
 class PIP_Decision_Node : public PIP_Tree_Node {
 public:
+  //! Returns a pointer to a dynamically-allocated copy of \p *this.
+  virtual PIP_Tree_Node* clone() const;
+
   //! Destructor.
-  ~PIP_Decision_Node();
+  virtual ~PIP_Decision_Node();
+
+  //! Returns \c true if and only if \p *this is well formed.
+  virtual bool OK() const;
 
   //! Returns \p this.
-  const PIP_Decision_Node* as_decision() const;
+  virtual const PIP_Decision_Node* as_decision() const;
 
   //! Returns \p this.
-  PIP_Decision_Node* as_decision();
+  virtual PIP_Decision_Node* as_decision();
 
   //! Returns a const pointer to the \p b (true or false) branch of \p *this.
   const PIP_Tree_Node* child_node(bool b) const;
 
   //! Returns a pointer to the \p v (true or false) branch of \p *this.
   PIP_Tree_Node* child_node(bool v);
-
-  //! Returns a pointer to a dynamically-allocated copy of \p *this.
-  virtual PIP_Tree_Node* clone() const;
-
-  bool OK() const;
 
 private:
   // only PIP_Solution_Node is allowed to use the constructor and methods.
