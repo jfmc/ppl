@@ -18,6 +18,8 @@ class PIP_Solution_Node;
 class PIP_Decision_Node;
 class PIP_Tree_Node;
 
+typedef const PIP_Tree_Node* PIP_Tree;
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_PIP_Tree_types_hh)

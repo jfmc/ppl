@@ -677,8 +677,6 @@ protected:
                                    dimension_type space_dimension);
 };
 
-typedef const PIP_Tree_Node* PIP_Tree;
-
 namespace IO_Operators {
 
 std::ostream& operator<<(std::ostream& os,
