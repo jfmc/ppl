@@ -61,7 +61,7 @@ PIP_Problem::swap(PIP_Problem& y) {
   std::swap(first_pending_constraint, y.first_pending_constraint);
   std::swap(parameters, y.parameters);
   std::swap(initial_context, y.initial_context);
-  for (unsigned i = 0; i < CONTROL_PARAMETER_NAME_SIZE; ++i)
+  for (dimension_type i = CONTROL_PARAMETER_NAME_SIZE; i-- > 0; )
     std::swap(control_parameters[i], y.control_parameters[i]);
   std::swap(big_parameter_dimension, y.big_parameter_dimension);
 }
