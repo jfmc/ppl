@@ -193,35 +193,35 @@ find_lexico_minimum_column(const Matrix& tableau,
                            const std::vector<dimension_type>& mapping,
                            const std::vector<bool>& basis,
                            const Row& pivot_row,
-                           dimension_type start_j,
-                           dimension_type& j) {
-  dimension_type num_cols = tableau.num_columns();
+                           const dimension_type start_j,
+                           dimension_type& j_out) {
+  const dimension_type num_cols = tableau.num_columns();
   bool has_positive_coefficient = false;
 
-  j = num_cols;
-  for (dimension_type j_ = start_j; j_ < num_cols; ++j_) {
-    const Coefficient& c = pivot_row[j_];
+  j_out = num_cols;
+  for (dimension_type j = start_j; j < num_cols; ++j) {
+    const Coefficient& c = pivot_row[j];
     if (c <= 0)
       continue;
     has_positive_coefficient = true;
-    if (j == num_cols
-        || column_lower(tableau, mapping, basis, pivot_row, j_, pivot_row, j))
-      j = j_;
+    if (j_out == num_cols
+        || column_lower(tableau, mapping, basis,
+                        pivot_row, j, pivot_row, j_out))
+      j_out = j;
   }
   return has_positive_coefficient;
 }
 
 // Divide all coefficients in row x and denominator y by their GCD.
 void
-row_normalize(Row& x, Coefficient& y) {
-  if (y == 1)
+row_normalize(Row& x, Coefficient& den) {
+  if (den == 1)
     return;
-  dimension_type size = x.size();
-  dimension_type j;
+  const dimension_type x_size = x.size();
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-  gcd = y;
-  for (j=0; j<size; ++j) {
-    const Coefficient& c = x[j];
+  gcd = den;
+  for (dimension_type i = x_size; i-- > 0; ) {
+    const Coefficient& c = x[i];
     if (c != 0) {
       gcd_assign(gcd, c, gcd);
       if (gcd == 1)
@@ -229,11 +229,12 @@ row_normalize(Row& x, Coefficient& y) {
     }
   }
   // Divide the coefficients by the GCD.
-  exact_div_assign(y, y, gcd);
-  for (j=0; j<size; ++j) {
-    Coefficient& c = x[j];
+  for (dimension_type i = x_size; i-- > 0; ) {
+    Coefficient& c = x[i];
     exact_div_assign(c, c, gcd);
   }
+  // Divide the denominator by the GCD.
+  exact_div_assign(den, den, gcd);
 }
 
 } // namespace
