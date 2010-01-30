@@ -282,8 +282,7 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
   for (dimension_type i = 0; i < input_cs_size; ++i)
     input_cs[i].ascii_dump(s);
 
-  s << "\nfirst_pending_constraint: " <<  first_pending_constraint
-    << std::endl;
+  s << "\nfirst_pending_constraint: " <<  first_pending_constraint << "\n";
 
   s << "\ninitialized: " << (initialized ? "YES" : "NO") << "\n";
 

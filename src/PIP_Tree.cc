@@ -60,21 +60,27 @@ sub_assign(Row& x, const Row& y) {
 void
 merge_assign(Matrix& x,
              const Constraint_System& y,
-             const Variables_Set &parameters) {
-  dimension_type width = x.num_columns();
-  PPL_ASSERT(parameters.size() == width-1);
-  Row row(width, Row::Flags());
-  Variables_Set::iterator param_begin = parameters.begin();
-  Variables_Set::iterator param_end = parameters.end();
-  Variables_Set::iterator pi;
-  dimension_type j;
+             const Variables_Set& parameters) {
+  PPL_ASSERT(parameters.size() == x.num_columns() - 1);
+  const dimension_type new_rows = std::distance(y.begin(), y.end());
+  if (new_rows == 0)
+    return;
+  const dimension_type old_num_rows = x.num_rows();
+  x.add_zero_rows(new_rows, Row::Flags());
+  // Compute once for all.
+  const Variables_Set::const_iterator param_begin = parameters.begin();
+  const Variables_Set::const_iterator param_end = parameters.end();
+
+  dimension_type i = old_num_rows;
   for (Constraint_System::const_iterator y_i = y.begin(),
-         y_end = y.end(); y_i != y_end; ++y_i) {
+         y_end = y.end(); y_i != y_end; ++y_i, ++i) {
     PPL_ASSERT(y_i->is_nonstrict_inequality());
-    row[0] = y_i->inhomogeneous_term();
-    for (pi=param_begin, j=1; pi != param_end; ++pi, ++j)
-      row[j] = y_i->coefficient(Variable(*pi));
-    x.add_row(row);
+    Row& x_i = x[i];
+    x_i[0] = y_i->inhomogeneous_term();
+    Variables_Set::const_iterator pj;
+    dimension_type j = 1;
+    for (pj = param_begin; pj != param_end; ++pj, ++j)
+      x_i[j] = y_i->coefficient(Variable(*pj));
   }
 }
 
