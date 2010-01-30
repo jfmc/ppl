@@ -90,10 +90,11 @@ public:
   class Artificial_Parameter : public Linear_Expression {
   public:
     Artificial_Parameter();
-    Artificial_Parameter(const Linear_Expression &e, const Coefficient &d);
+    Artificial_Parameter(const Linear_Expression &e,
+                         Coefficient_traits::const_reference d);
     Artificial_Parameter(const Artificial_Parameter &x);
 
-    const Coefficient& get_denominator() const;
+    Coefficient_traits::const_reference get_denominator() const;
 
     //! Returns \b true if \p x and \p y are equal.
     friend bool operator==(const Artificial_Parameter& x,
@@ -296,14 +297,14 @@ private:
     //! Tests whether the matrix is integer, \e ie. the denominator is 1.
     bool is_integer() const;
     //! Multiplies all coefficients and denominator with ratio.
-    void scale(const Coefficient &ratio);
+    void scale(Coefficient_traits::const_reference ratio);
     //! Normalizes the modulo of coefficients so that they are mutually prime.
     /*!
       Computes the Greatest Common Divisor (GCD) among the elements of
       the matrices and normalizes them and the denominator by the GCD itself.
     */
     void normalize();
-    //!
+
     /*! \brief
       Compares two pivot row and column pairs before pivoting.
 
@@ -358,15 +359,16 @@ private:
                          const dimension_type j,
                          const dimension_type i_,
                          const dimension_type j_) const;
+
     //! Returns the value of the denominator.
-    const Coefficient &get_denominator() const;
+    Coefficient_traits::const_reference get_denominator() const;
 
     void ascii_dump(std::ostream& s) const;
     bool ascii_load(std::istream& s);
 
     //! Returns \c true if and only if \p *this is well formed.
-    virtual bool OK() const;
-  };
+    bool OK() const;
+  }; // struct Tableau
 
   //! The parametric simplex tableau.
   Tableau tableau;

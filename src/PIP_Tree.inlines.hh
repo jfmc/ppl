@@ -27,16 +27,14 @@ namespace Parma_Polyhedra_Library {
 
 inline
 PIP_Solution_Node::Tableau::Tableau()
-  : s(),
-    t(),
-    denominator(1) {
+  : s(), t(), denominator(1) {
+  PPL_ASSERT(OK());
 }
 
 inline
 PIP_Solution_Node::Tableau::Tableau(const Tableau& y)
-  : s(y.s),
-    t(y.t),
-    denominator(y.denominator) {
+  : s(y.s), t(y.t), denominator(y.denominator) {
+  PPL_ASSERT(OK());
 }
 
 inline
@@ -48,7 +46,7 @@ PIP_Solution_Node::Tableau::is_integer() const {
   return denominator == 1;
 }
 
-inline const Coefficient&
+inline Coefficient_traits::const_reference
 PIP_Solution_Node::Tableau::get_denominator() const {
   return denominator;
 }

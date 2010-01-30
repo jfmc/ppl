@@ -32,9 +32,10 @@ namespace {
 
 // Calculate positive modulo of x % y
 void
-mod_assign(Coefficient &z, Coefficient_traits::const_reference x,
+mod_assign(Coefficient &z,
+           Coefficient_traits::const_reference x,
            Coefficient_traits::const_reference y) {
-  z = x%y;
+  z = x % y;
   if (z < 0)
     z += y;
 }
@@ -79,7 +80,7 @@ merge_assign(Matrix& x,
 
 // Tranform expression "expr" into "-expr-1", using scaling
 void
-negate_assign(Row& x, const Row& y, const Coefficient& sc) {
+negate_assign(Row& x, const Row& y, Coefficient_traits::const_reference sc) {
   PPL_ASSERT(x.size() == y.size());
   for (dimension_type i = x.size(); i-- > 0; )
     x[i] = -y[i];
@@ -125,8 +126,8 @@ column_lower(const Matrix& tableau,
              dimension_type ja,
              const Row& pivot_b,
              dimension_type jb,
-             const Coefficient& cst_a = -1,
-             const Coefficient& cst_b = -1) {
+             Coefficient_traits::const_reference cst_a = -1,
+             Coefficient_traits::const_reference cst_b = -1) {
   PPL_DIRTY_TEMP_COEFFICIENT(cij_a);
   PPL_DIRTY_TEMP_COEFFICIENT(cij_b);
   const Coefficient& sij_a = pivot_a[ja];
@@ -237,7 +238,8 @@ PIP_Tree_Node::Artificial_Parameter::Artificial_Parameter()
 }
 
 PIP_Tree_Node::Artificial_Parameter
-::Artificial_Parameter(const Linear_Expression &e, const Coefficient &d)
+::Artificial_Parameter(const Linear_Expression &e,
+                       Coefficient_traits::const_reference d)
   : Linear_Expression(e), denominator(d) {
 }
 
@@ -424,20 +426,29 @@ PIP_Tree_Node::insert_artificials(Variables_Set &params,
 
 bool
 PIP_Solution_Node::Tableau::OK() const {
+  if (s.num_rows() != t.num_rows()) {
 #ifndef NDEBUG
-  using std::endl;
-  using std::cerr;
-#endif
-
-  const dimension_type num_rows = s.num_rows();
-  if (num_rows != t.num_rows()) {
-#ifndef NDEBUG
-    cerr << "The PIP_Solution_Node::Tableau matrices do not have the "
-         << "same number of rows."
-         << endl;
+    std::cerr << "PIP_Solution_Node::Tableau matrices "
+              << "have a different number of rows.\n";
 #endif
     return false;
   }
+
+  if (!s.OK() || !t.OK()) {
+#ifndef NDEBUG
+    std::cerr << "A PIP_Solution_Node::Tableau matrix is broken.\n";
+#endif
+    return false;
+  }
+
+  if (denominator <= 0) {
+#ifndef NDEBUG
+    std::cerr << "PIP_Solution_Node::Tableau with non-positive denominator.\n";
+#endif
+    return false;
+  }
+
+  // All tests passed.
   return true;
 }
 
@@ -688,7 +699,7 @@ PIP_Solution_Node::Tableau::normalize() {
 }
 
 void
-PIP_Solution_Node::Tableau::scale(const Coefficient &ratio) {
+PIP_Solution_Node::Tableau::scale(Coefficient_traits::const_reference ratio) {
   dimension_type i, j, k;
   dimension_type i_max = s.num_rows();
   dimension_type j_max = s.num_columns();
