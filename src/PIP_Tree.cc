@@ -1605,8 +1605,10 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       var_column[j_] = var_i;
 
       /* create the identity matrix row corresponding to basic variable j_ */
-      Row prs(num_vars, tableau.s_capacity(), Row::Flags());
-      Row prt(num_params, tableau.t_capacity(), Row::Flags());
+      tableau.s.add_zero_rows(1, Row::Flags());
+      Row& prs = tableau.s[num_rows];
+      tableau.t.add_zero_rows(1, Row::Flags());
+      Row& prt = tableau.t[num_rows];
       prs[j_] = tableau.get_denominator();
       /* swap it with pivot row which would become identity after pivoting */
       prs.swap(tableau.s[i_]);
@@ -1680,6 +1682,10 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           }
         }
       }
+
+      // Drop rows previously added at end of tableau.
+      tableau.s.erase_to_end(num_rows);
+      tableau.t.erase_to_end(num_rows);
 
       /* compute column s[*][j_] : s[k][j_] /= sij */
       if (sij != sij_denom) {
