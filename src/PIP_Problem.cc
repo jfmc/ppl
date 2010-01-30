@@ -70,8 +70,7 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
 }
 
 PPL::PIP_Problem::~PIP_Problem() {
-  if (current_solution != 0)
-    delete current_solution;
+  delete current_solution;
 }
 
 void
