@@ -256,10 +256,10 @@ PIP_Tree_Node::PIP_Tree_Node()
     artificial_parameters() {
 }
 
-PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node &x)
-  : parent_(0),
-    constraints_(x.constraints_),
-    artificial_parameters(x.artificial_parameters) {
+PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node& y)
+  : parent_(0), // Parent is not copied.
+    constraints_(y.constraints_),
+    artificial_parameters(y.artificial_parameters) {
 }
 
 PIP_Tree_Node::Artificial_Parameter::Artificial_Parameter()
@@ -273,13 +273,12 @@ PIP_Tree_Node::Artificial_Parameter
 }
 
 PIP_Tree_Node::Artificial_Parameter
-::Artificial_Parameter(const Artificial_Parameter &x)
-  : Linear_Expression(x), denominator(x.denominator) {
+::Artificial_Parameter(const Artificial_Parameter& y)
+  : Linear_Expression(y), denominator(y.denominator) {
 }
 
-const Coefficient&
-PIP_Tree_Node::Artificial_Parameter
-::get_denominator() const {
+Coefficient_traits::const_reference
+PIP_Tree_Node::Artificial_Parameter::get_denominator() const {
   return denominator;
 }
 
@@ -319,8 +318,7 @@ PIP_Tree_Node::Artificial_Parameter::ascii_load(std::istream& s) {
 
 PIP_Decision_Node::~PIP_Decision_Node() {
   delete true_child;
-  if (false_child)
-    delete false_child;
+  delete false_child;
 }
 
 PIP_Solution_Node::~PIP_Solution_Node() {
@@ -340,36 +338,36 @@ PIP_Solution_Node::PIP_Solution_Node()
     solution_valid(false) {
 }
 
-PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x)
-  : PIP_Tree_Node(x),
-    tableau(x.tableau),
-    basis(x.basis),
-    mapping(x.mapping),
-    var_row(x.var_row),
-    var_column(x.var_column),
-    special_equality_row(x.special_equality_row),
-    big_dimension(x.big_dimension),
-    sign(x.sign),
-    solution(x.solution),
-    solution_valid(x.solution_valid) {
+PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node& y)
+  : PIP_Tree_Node(y),
+    tableau(y.tableau),
+    basis(y.basis),
+    mapping(y.mapping),
+    var_row(y.var_row),
+    var_column(y.var_column),
+    special_equality_row(y.special_equality_row),
+    big_dimension(y.big_dimension),
+    sign(y.sign),
+    solution(y.solution),
+    solution_valid(y.solution_valid) {
 }
 
-PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node &x,
+PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node& y,
                                      bool empty_constraints)
   : PIP_Tree_Node(),
-    tableau(x.tableau),
-    basis(x.basis),
-    mapping(x.mapping),
-    var_row(x.var_row),
-    var_column(x.var_column),
-    special_equality_row(x.special_equality_row),
-    big_dimension(x.big_dimension),
-    sign(x.sign),
-    solution(x.solution),
-    solution_valid(x.solution_valid) {
+    tableau(y.tableau),
+    basis(y.basis),
+    mapping(y.mapping),
+    var_row(y.var_row),
+    var_column(y.var_column),
+    special_equality_row(y.special_equality_row),
+    big_dimension(y.big_dimension),
+    sign(y.sign),
+    solution(y.solution),
+    solution_valid(y.solution_valid) {
   if (!empty_constraints) {
-    constraints_ = x.constraints_;
-    artificial_parameters = x.artificial_parameters;
+    constraints_ = y.constraints_;
+    artificial_parameters = y.artificial_parameters;
   }
 }
 
@@ -384,16 +382,16 @@ PIP_Decision_Node::PIP_Decision_Node(PIP_Tree_Node* fcp,
     tcp->set_parent(this);
 }
 
-PIP_Decision_Node ::PIP_Decision_Node(const PIP_Decision_Node& x)
-  : PIP_Tree_Node(x),
+PIP_Decision_Node ::PIP_Decision_Node(const PIP_Decision_Node& y)
+  : PIP_Tree_Node(y),
     true_child(0),
     false_child(0) {
-  if (x.true_child != 0) {
-    true_child = x.true_child->clone();
+  if (y.true_child != 0) {
+    true_child = y.true_child->clone();
     true_child->set_parent(this);
   }
-  if (x.false_child != 0) {
-    false_child = x.false_child->clone();
+  if (y.false_child != 0) {
+    false_child = y.false_child->clone();
     false_child->set_parent(this);
   }
 }
@@ -1053,7 +1051,7 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
 
 const Linear_Expression&
 PIP_Solution_Node
-::parametric_values(const Variable &v,
+::parametric_values(Variable v,
                     const Variables_Set& parameters) const {
   Variables_Set all_parameters(parameters);
   // Complete the parameter set with artificials.

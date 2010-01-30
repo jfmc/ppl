@@ -46,7 +46,7 @@ protected:
   PIP_Tree_Node();
 
   //! Copy constructor.
-  PIP_Tree_Node(const PIP_Tree_Node &x);
+  PIP_Tree_Node(const PIP_Tree_Node& y);
 
 public:
   //! Returns a pointer to a dynamically-allocated copy of \p *this.
@@ -90,9 +90,9 @@ public:
   class Artificial_Parameter : public Linear_Expression {
   public:
     Artificial_Parameter();
-    Artificial_Parameter(const Linear_Expression &e,
+    Artificial_Parameter(const Linear_Expression& e,
                          Coefficient_traits::const_reference d);
-    Artificial_Parameter(const Artificial_Parameter &x);
+    Artificial_Parameter(const Artificial_Parameter& y);
 
     Coefficient_traits::const_reference get_denominator() const;
 
@@ -167,7 +167,7 @@ protected:
     \return
     the number of inserted artificial parameters.
   */
-  dimension_type insert_artificials(Variables_Set &params,
+  dimension_type insert_artificials(Variables_Set& params,
                                     dimension_type space_dimension) const;
 
   /*! \brief
@@ -192,8 +192,8 @@ protected:
   virtual void update_tableau(const PIP_Problem& problem,
                               dimension_type external_space_dim,
                               dimension_type first_pending_constraint,
-                              const Constraint_Sequence &input_cs,
-                              const Variables_Set &parameters) = 0;
+                              const Constraint_Sequence& input_cs,
+                              const Variables_Set& parameters) = 0;
 
   /*! \brief
     Execute a parametric simplex on the tableau, under specified context.
@@ -224,7 +224,7 @@ protected:
                                    dimension_type space_dimension) = 0;
 
   //! Inserts a new parametric constraint in internal Row format
-  void add_constraint(const Row &x, const Variables_Set& parameters);
+  void add_constraint(const Row& x, const Variables_Set& parameters);
 
 }; // class PIP_Tree_Node
 
@@ -267,7 +267,7 @@ public:
     or if \p v is a parameter.
   */
   const Linear_Expression&
-  parametric_values(const Variable &v,
+  parametric_values(Variable v,
                     const Variables_Set& parameters) const;
 
   void ascii_dump(std::ostream& s) const;
@@ -286,7 +286,7 @@ private:
     //! Default constructor.
     Tableau();
     //! Copy constructor.
-    Tableau(const Tableau& x);
+    Tableau(const Tableau& y);
     //! Destructor.
     ~Tableau();
 
@@ -462,7 +462,7 @@ private:
   bool solution_valid;
 
   //! Determines the sign of given Row.
-  static Row_Sign row_sign(const Row &x, dimension_type big_dimension);
+  static Row_Sign row_sign(const Row& x, dimension_type big_dimension);
 
   /*! \brief
     Checks whether a constraint is compatible with a context, ie. does not
@@ -476,17 +476,17 @@ private:
     The algorithm ensures the feasible solutions are integer, by applying a
     cut generation method when intermediate non-integer solutions are found.
   */
-  static bool compatibility_check(const Matrix &ctx, const Row &cnst);
+  static bool compatibility_check(const Matrix& ctx, const Row& cnst);
 
 protected:
   //! Copy constructor.
-  PIP_Solution_Node(const PIP_Solution_Node &x);
+  PIP_Solution_Node(const PIP_Solution_Node& y);
 
   /*! \brief
     Copy constructor, allowing not to copy the constraint system and
     artificial parameters
   */
-  PIP_Solution_Node(const PIP_Solution_Node &x, bool empty_constraints);
+  PIP_Solution_Node(const PIP_Solution_Node& y, bool empty_constraints);
 
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
@@ -628,7 +628,7 @@ private:
 
 protected:
   //! Copy constructor.
-  PIP_Decision_Node(const PIP_Decision_Node &x);
+  PIP_Decision_Node(const PIP_Decision_Node& y);
 
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
@@ -652,8 +652,8 @@ protected:
   virtual void update_tableau(const PIP_Problem& problem,
                               dimension_type external_space_dim,
                               dimension_type first_pending_constraint,
-                              const Constraint_Sequence &input_cs,
-                              const Variables_Set &parameters);
+                              const Constraint_Sequence& input_cs,
+                              const Variables_Set& parameters);
 
   /*! \brief
     Execute a parametric simplex on the tableau, under specified context.
