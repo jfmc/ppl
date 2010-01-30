@@ -99,9 +99,9 @@ negate_assign(Row& x, const Row& y, Coefficient_traits::const_reference sc) {
 
 // Update given context matrix using local artificials
 dimension_type
-update_context(Matrix &context,
-               const PIP_Tree_Node::Artificial_Parameter_Sequence &ap) {
-  dimension_type ap_size = ap.size();
+update_context(Matrix& context,
+               const PIP_Tree_Node::Artificial_Parameter_Sequence& ap) {
+  const dimension_type ap_size = ap.size();
   if (ap_size > 0)
     context.add_zero_columns(ap_size);
   return ap_size;
@@ -109,14 +109,15 @@ update_context(Matrix &context,
 
 // Update given context matrix and parameter set using local artificials
 void
-update_context(Variables_Set &params, Matrix &context,
-                   const PIP_Tree_Node::Artificial_Parameter_Sequence &ap,
-                   dimension_type &space_dimension) {
-  dimension_type ap_size = update_context(context, ap);
-  if (ap_size > 0) {
-    for (dimension_type i = 0; i < ap_size; ++i)
-      params.insert(space_dimension++);
-  }
+update_context(Variables_Set& params, Matrix& context,
+               const PIP_Tree_Node::Artificial_Parameter_Sequence& ap,
+               dimension_type& space_dimension) {
+  const dimension_type ap_size = update_context(context, ap);
+  // Update parameters.
+  for (dimension_type i = 0; i < ap_size; ++i)
+    params.insert(space_dimension + i);
+  // Update space dimension.
+  space_dimension += ap_size;
 }
 
 /* Compares two columns lexicographically in revised simplex tableau
@@ -129,38 +130,58 @@ column_lower(const Matrix& tableau,
              const std::vector<dimension_type>& mapping,
              const std::vector<bool>& basis,
              const Row& pivot_a,
-             dimension_type ja,
+             const dimension_type ja,
              const Row& pivot_b,
-             dimension_type jb,
+             const dimension_type jb,
              Coefficient_traits::const_reference cst_a = -1,
              Coefficient_traits::const_reference cst_b = -1) {
-  PPL_DIRTY_TEMP_COEFFICIENT(cij_a);
-  PPL_DIRTY_TEMP_COEFFICIENT(cij_b);
   const Coefficient& sij_a = pivot_a[ja];
   const Coefficient& sij_b = pivot_b[jb];
   PPL_ASSERT(sij_a > 0);
   PPL_ASSERT(sij_b > 0);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
+  lhs_coeff = cst_a * sij_b;
+  rhs_coeff = cst_b * sij_a;
+
   if (ja == jb) {
     // Same column: just compare the ratios.
     // This works since all columns are lexico-positive.
-    return cst_a * sij_b > cst_b * sij_a;
+    // return cst_a * sij_b > cst_b * sij_a;
+    return lhs_coeff > rhs_coeff;
   }
 
+  PPL_DIRTY_TEMP_COEFFICIENT(cij_a);
+  PPL_DIRTY_TEMP_COEFFICIENT(cij_b);
+  PPL_DIRTY_TEMP_COEFFICIENT(lhs);
+  PPL_DIRTY_TEMP_COEFFICIENT(rhs);
+  const dimension_type num_vars = mapping.size();
   dimension_type k = 0;
-  dimension_type num_vars = mapping.size();
   do {
-    dimension_type mk = mapping[k];
+    const dimension_type mk = mapping[k];
     if (basis[k]) {
       // Reconstitute the identity submatrix part of tableau.
-      cij_a = (mk==ja) ? 1 : 0;
-      cij_b = (mk==jb) ? 1 : 0;
+      cij_a = (mk == ja) ? 1 : 0;
+      cij_b = (mk == jb) ? 1 : 0;
     } else {
-      cij_a = tableau[mk][ja];
-      cij_b = tableau[mk][jb];
+      const Row& t_mk = tableau[mk];
+      cij_a = t_mk[ja];
+      cij_b = t_mk[jb];
     }
     ++k;
-  } while (k < num_vars && cij_a * cst_a * sij_b == cij_b * cst_b * sij_a);
-  return k < num_vars && cij_a * cst_a * sij_b > cij_b * cst_b * sij_a;
+    // Optimizing computation of while guard (and return value):
+    // (k < num_vars && cij_a * cst_a * sij_b == cij_b * cst_b * sij_a)
+    if (k == num_vars)
+      return false;
+    lhs = cij_a * lhs_coeff;
+    rhs = cij_b * rhs_coeff;
+  } while (lhs == rhs);
+
+  // Optimizing computation of return value:
+  // return k < num_vars && cij_a * cst_a * sij_b > cij_b * cst_b * sij_a;
+  assert(k < num_vars);
+  return lhs > rhs;
 }
 
 /* Find the column j in revised simplex tableau such as
