@@ -569,27 +569,31 @@ PIP_Solution_Node::OK() const {
 bool
 PIP_Decision_Node::OK() const {
   /* FIXME: finish me! */
-#ifndef NDEBUG
-  using std::endl;
-  using std::cerr;
-#endif
+
+  // Perform base class well-formedness check on this node.
   if (!PIP_Tree_Node::OK())
     return false;
 
-  // Decision nodes with false child must have exactly one constraint
+  // Recursively check if child nodes are well-formed.
+  if (true_child && !true_child->OK())
+    return false;
+  if (false_child && !false_child->OK())
+    return false;
+
+  // Decision nodes with a false child must have exactly one constraint.
   if (false_child) {
     dimension_type
-        dist = std::distance(constraints_.begin(), constraints_.end());
+      dist = std::distance(constraints_.begin(), constraints_.end());
     if (dist != 1) {
 #ifndef NDEBUG
-      cerr << "The PIP_Decision_Node has a 'false' child but does not "
-           << "have exactly one parametric constraint. (" << dist << ")"
-           << endl;
+      std::cerr << "PIP_Decision_Node with a 'false' child has "
+                << dist << " parametric constraints (should be 1).\n";
 #endif
       return false;
     }
   }
 
+  // All checks passed.
   return true;
 }
 
