@@ -103,6 +103,9 @@ public:
     void ascii_dump(std::ostream& s) const;
     bool ascii_load(std::istream& s);
 
+    //! Returns \c true if and only if the parameter is well-formed.
+    bool OK() const;
+
   private:
     Coefficient denominator;
   }; // class Artificial_Parameter

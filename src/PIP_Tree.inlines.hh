@@ -107,6 +107,45 @@ PIP_Decision_Node::child_node(bool v) {
   return v ? true_child : false_child;
 }
 
+
+inline bool
+PIP_Tree_Node::Artificial_Parameter::OK() const {
+  if (denominator <= 0) {
+#ifndef NDEBUG
+    std::cerr << "PIP_Tree_Node::Artificial_Parameter "
+              << "has a non-positive denominator.\n";
+#endif
+    return false;
+  }
+  return true;
+}
+
+inline
+PIP_Tree_Node::Artificial_Parameter::Artificial_Parameter()
+  : Linear_Expression(), denominator(1) {
+  PPL_ASSERT(OK());
+}
+
+inline
+PIP_Tree_Node::Artificial_Parameter
+::Artificial_Parameter(const Linear_Expression &e,
+                       Coefficient_traits::const_reference d)
+  : Linear_Expression(e), denominator(d) {
+  PPL_ASSERT(OK());
+}
+
+inline
+PIP_Tree_Node::Artificial_Parameter
+::Artificial_Parameter(const Artificial_Parameter& y)
+  : Linear_Expression(y), denominator(y.denominator) {
+  PPL_ASSERT(OK());
+}
+
+inline Coefficient_traits::const_reference
+PIP_Tree_Node::Artificial_Parameter::get_denominator() const {
+  return denominator;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_PIP_Tree_inlines_hh)

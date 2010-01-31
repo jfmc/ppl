@@ -275,30 +275,9 @@ PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node& y)
     artificial_parameters(y.artificial_parameters) {
 }
 
-PIP_Tree_Node::Artificial_Parameter::Artificial_Parameter()
-  : Linear_Expression(), denominator(1) {
-}
-
-PIP_Tree_Node::Artificial_Parameter
-::Artificial_Parameter(const Linear_Expression &e,
-                       Coefficient_traits::const_reference d)
-  : Linear_Expression(e), denominator(d) {
-}
-
-PIP_Tree_Node::Artificial_Parameter
-::Artificial_Parameter(const Artificial_Parameter& y)
-  : Linear_Expression(y), denominator(y.denominator) {
-}
-
-Coefficient_traits::const_reference
-PIP_Tree_Node::Artificial_Parameter::get_denominator() const {
-  return denominator;
-}
-
 bool
 operator==(const PIP_Tree_Node::Artificial_Parameter& x,
            const PIP_Tree_Node::Artificial_Parameter& y) {
-  using namespace IO_Operators;
   if (x.space_dimension() != y.space_dimension())
     return false;
   if (x.denominator != y.denominator)
@@ -326,6 +305,7 @@ PIP_Tree_Node::Artificial_Parameter::ascii_load(std::istream& s) {
     return false;
   if (!Linear_Expression::ascii_load(s))
     return false;
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -2013,59 +1993,67 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
 }
 
 void
-PIP_Solution_Node::generate_cut(dimension_type i,
+PIP_Solution_Node::generate_cut(const dimension_type index,
                                 Variables_Set& parameters,
                                 Matrix& context,
                                 dimension_type& space_dimension) {
-  dimension_type j;
-  PPL_DIRTY_TEMP_COEFFICIENT(mod);
   const dimension_type num_rows = tableau.t.num_rows();
+  PPL_ASSERT(index < num_rows);
   const dimension_type num_vars = tableau.s.num_columns();
   const dimension_type num_params = tableau.t.num_columns();
-  const Coefficient& d = tableau.get_denominator();
+  PPL_ASSERT(num_params == parameters.size());
+  const Coefficient& den = tableau.get_denominator();
+
+  PPL_DIRTY_TEMP_COEFFICIENT(mod);
+
 #ifdef NOISY_PIP
-  std::cout << "Row " << i << " contains non-integer coefficients. "
+  std::cout << "Row " << index << " contains non-integer coefficients. "
             << "Cut generation required."
             << std::endl;
-#endif
-  tableau.s.add_zero_rows(1, Row::Flags());
-  tableau.t.add_zero_rows(1, Row::Flags());
+#endif // #ifdef NOISY_PIP
 
-  // Test if cut to be generated must be parametric or not
-  const Row& row_t1 = tableau.t[i];
-  bool gen_parametric_cut = false;
-  for (j=1; j<num_params; ++j) {
-    if (row_t1[j] % d != 0) {
-      gen_parametric_cut = true;
-      break;
-    }
+  // Test if cut to be generated must be parametric or not.
+  bool generate_parametric_cut = false;
+  {
+    // Limiting the scope of reference row_t (may be later invalidated).
+    const Row& row_t = tableau.t[index];
+    for (dimension_type j = 1; j < num_params; ++j)
+      if (row_t[j] % den != 0) {
+        generate_parametric_cut = true;
+        break;
+      }
   }
 
-  // Column index of already existing Artificial_Parameter
+  // Column index of already existing Artificial_Parameter.
   dimension_type ap_column = not_a_dimension();
   bool reuse_ap = false;
 
-  if (gen_parametric_cut) {
-    // Fractional parameter coefficient found: generate parametric cut
-    // Generate new artificial parameter
-    const Row& row_t = tableau.t[i];
-    Linear_Expression e;
-    Variables_Set::const_iterator p;
-    mod_assign(mod, row_t[0], d);
-    if (mod != 0)
-      e += (d-mod);
-    for (p=parameters.begin(), j=1; j<num_params; ++j, ++p) {
-      mod_assign(mod, row_t[j], d);
-      if (mod != 0)
-        e += (d-mod) * Variable(*p);
-    }
-    Artificial_Parameter ap(e, d);
+  if (generate_parametric_cut) {
+    // Fractional parameter coefficient found: generate parametric cut.
 
-    // Search if the Artificial_Parameter has already been generated
+    // Limiting the scope of reference row_t (may be later invalidated).
+    const Row& row_t = tableau.t[index];
+    mod_assign(mod, row_t[0], den);
+    Linear_Expression expr;
+    if (mod != 0) {
+      expr += den;
+      expr -= mod;
+    }
+    Variables_Set::const_iterator p = parameters.begin();
+    for (dimension_type j = 1; j < num_params; ++j, ++p) {
+      mod_assign(mod, row_t[j], den);
+      // FIXME: find a way to optimize the following.
+      if (mod != 0)
+        expr += (den - mod) * Variable(*p);
+    }
+    // Generate new artificial parameter.
+    Artificial_Parameter ap(expr, den);
+
+    // Search if the Artificial_Parameter has already been generated.
     ap_column = space_dimension;
     const PIP_Tree_Node* node = this;
     do {
-      for (j = node->artificial_parameters.size(); j-- > 0; ) {
+      for (dimension_type j = node->artificial_parameters.size(); j-- > 0; ) {
         --ap_column;
         if (node->artificial_parameters[j] == ap) {
           reuse_ap = true;
@@ -2075,8 +2063,19 @@ PIP_Solution_Node::generate_cut(dimension_type i,
       node = node->parent();
     } while (!reuse_ap && node != 0);
 
-    if (!reuse_ap) {
-      // The Artificial_Parameter does not exist yet
+    if (reuse_ap) {
+      // We can re-use an existing Artificial_Parameter.
+#ifdef NOISY_PIP
+      using namespace IO_Operators;
+      std::cout << "Re-using parameter " << Variable(ap_column)
+                << " = (" << expr << ")/" << den
+                << std::endl;
+#endif // #ifdef NOISY_PIP
+      ap_column = ap_column - num_vars + 1;
+    }
+    else {
+      // Here reuse_ap == false: the Artificial_Parameter does not exist yet.
+      // Beware: possible reallocation invalidates row references.
       tableau.t.add_zero_columns(1);
       context.add_zero_columns(1);
       artificial_parameters.push_back(ap);
@@ -2085,100 +2084,90 @@ PIP_Solution_Node::generate_cut(dimension_type i,
       using namespace IO_Operators;
       std::cout << "Creating new parameter "
                 << Variable(space_dimension)
-                << " = (" << e << ")/" << d
+                << " = (" << expr << ")/" << den
                 << std::endl;
-#endif
+#endif // #ifdef NOISY_PIP
       ++space_dimension;
       ap_column = num_params;
-    } else {
-      // We can re-use the existing Artificial_Parameter
+
+      // Update current context with constraints on the new parameter.
+      const dimension_type ctx_num_rows = context.num_rows();
+      context.add_zero_rows(2, Row::Flags());
+      Row& ctx1 = context[ctx_num_rows];
+      Row& ctx2 = context[ctx_num_rows+1];
+      // Recompute row reference after possible reallocation.
+      const Row& row_t = tableau.t[index];
+      for (dimension_type j = 0; j < num_params; ++j) {
+        mod_assign(mod, row_t[j], den);
+        if (mod != 0) {
+          ctx1[j] = den;
+          ctx1[j] -= mod;
+          neg_assign(ctx2[j], ctx1[j]);
+        }
+      }
+      neg_assign(ctx1[num_params], den);
+      ctx2[num_params] = den;
+      // ctx2[0] += den-1;
+      ctx2[0] += den;
+      --ctx2[0];
 #ifdef NOISY_PIP
-      using namespace IO_Operators;
-      std::cout << "Re-using parameter " << Variable(ap_column)
-                << " = (" << e << ")/" << d
-                << std::endl;
-#endif
-      ap_column = ap_column-num_vars+1;
+      {
+        using namespace IO_Operators;
+        Variables_Set::const_iterator p = parameters.begin();
+        Linear_Expression expr1(ctx1[0]);
+        Linear_Expression expr2(ctx2[0]);
+        for (dimension_type j = 1; j <= num_params; ++j, ++p) {
+          expr1 += ctx1[j] * Variable(*p);
+          expr2 += ctx2[j] * Variable(*p);
+        }
+        std::cout << "Inserting into context: "
+                  << Constraint(expr1 >= 0) << " ; "
+                  << Constraint(expr2 >= 0) << std::endl;
+      }
+#endif // #ifdef NOISY_PIP
     }
   }
 
-  // Get reference to tableau rows after eventual resize
-  const Row& row_t = tableau.t[i];
+  // Generate new cut.
+  tableau.s.add_zero_rows(1, Row::Flags());
+  tableau.t.add_zero_rows(1, Row::Flags());
   Row& cut_s = tableau.s[num_rows];
   Row& cut_t = tableau.t[num_rows];
-
-  if (gen_parametric_cut && !reuse_ap) {
-    // Update current context with constraints on the new parameter
-    Row ctx1(num_params+1, Row::Flags());
-    Row ctx2(num_params+1, Row::Flags());
-    for (j=0; j<num_params; ++j) {
-      mod_assign(mod, row_t[j], d);
-      if (mod != 0) {
-        ctx1[j] = d - mod;
-        ctx2[j] = -ctx1[j];
-      } else {
-        ctx1[j] = 0;
-        ctx2[j] = 0;
-      }
-    }
-    ctx1[num_params] = -d;
-    ctx2[num_params] = d;
-    ctx2[0] += d-1;
-#ifdef NOISY_PIP
-    {
-      using namespace IO_Operators;
-      Variables_Set::const_iterator p = parameters.begin();
-      Linear_Expression e1;
-      Linear_Expression e2;
-      for (j=1; j<=num_params; ++j, ++p) {
-        e1 += ctx1[j] * Variable(*p);
-        e2 += ctx2[j] * Variable(*p);
-      }
-      e1 += ctx1[0];
-      e2 += ctx2[0];
-      std::cout << "Inserting into context: "
-                << Constraint(e1 >= 0) << " ; "
-                << Constraint(e2 >= 0) << std::endl;
-    }
-#endif
-    context.add_row(ctx1);
-    context.add_row(ctx2);
+  // Recompute references after possible reallocation.
+  const Row& row_s = tableau.s[index];
+  const Row& row_t = tableau.t[index];
+  for (dimension_type j = 0; j < num_vars; ++j) {
+    mod_assign(cut_s[j], row_s[j], den);
   }
-
-  // Generate new cut
-  const Row& row_s = tableau.s[i];
-  for (j=0; j<num_vars; ++j) {
-    mod_assign(mod, row_s[j], d);
-    cut_s[j] = mod;
-  }
-  for (j=0; j<num_params; ++j) {
-    mod_assign(mod, row_t[j], d);
-    if (mod != 0)
-      cut_t[j] = mod - d;
-    else
-      cut_t[j] = 0;
+  for (dimension_type j = 0; j < num_params; ++j) {
+    mod_assign(mod, row_t[j], den);
+    if (mod != 0) {
+      cut_t[j] = mod;
+      cut_t[j] -= den;
+    }
   }
   if (ap_column != not_a_dimension())
     // If we re-use an existing Artificial_Parameter
-    cut_t[ap_column] = d;
+    cut_t[ap_column] = den;
 
 #ifdef NOISY_PIP
   {
     using namespace IO_Operators;
-    Linear_Expression e;
+    Linear_Expression expr;
     dimension_type ti = 1;
     dimension_type si = 0;
-    for (j=0; j<space_dimension; ++j) {
+    for (dimension_type j = 0; j < space_dimension; ++j) {
       if (parameters.count(j) == 1)
-        e += cut_t[ti++] * Variable(j);
+        expr += cut_t[ti++] * Variable(j);
       else
-        e += cut_s[si++] * Variable(j);
+        expr += cut_s[si++] * Variable(j);
     }
-    std::cout << "Adding cut: " << Constraint(e + cut_t[0] >= 0)
+    std::cout << "Adding cut: "
+              << Constraint(expr + cut_t[0] >= 0)
               << std::endl;
   }
 #endif
-  var_row.push_back(num_rows+num_vars);
+  var_row.push_back(num_rows + num_vars);
   basis.push_back(false);
   mapping.push_back(num_rows);
   sign.push_back(NEGATIVE);
