@@ -234,17 +234,17 @@ row_normalize(Row& x, Coefficient& den) {
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd = den;
   for (dimension_type i = x_size; i-- > 0; ) {
-    const Coefficient& c = x[i];
-    if (c != 0) {
-      gcd_assign(gcd, c, gcd);
+    const Coefficient& x_i = x[i];
+    if (x_i != 0) {
+      gcd_assign(gcd, x_i, gcd);
       if (gcd == 1)
         return;
     }
   }
   // Divide the coefficients by the GCD.
   for (dimension_type i = x_size; i-- > 0; ) {
-    Coefficient& c = x[i];
-    exact_div_assign(c, c, gcd);
+    Coefficient& x_i = x[i];
+    exact_div_assign(x_i, x_i, gcd);
   }
   // Divide the denominator by the GCD.
   exact_div_assign(den, den, gcd);
@@ -478,12 +478,12 @@ PIP_Tree_Node::OK() const {
   using std::endl;
   using std::cerr;
 #endif
-  Constraint_System::const_iterator begin = constraints_.begin();
-  Constraint_System::const_iterator end = constraints_.end();
+  const Constraint_System::const_iterator begin = constraints_.begin();
+  const Constraint_System::const_iterator end = constraints_.end();
 
   // Parameter constraint system should contain no strict inequalities.
-  for (Constraint_System::const_iterator c = begin; c != end; c++)
-    if (c->is_strict_inequality()) {
+  for (Constraint_System::const_iterator ci = begin; ci != end; ++ci)
+    if (ci->is_strict_inequality()) {
 #ifndef NDEBUG
       cerr << "The feasible region of the PIP_Problem parameter context"
            << "is defined by a constraint system containing strict "
@@ -514,7 +514,6 @@ PIP_Tree_Node
 bool
 PIP_Solution_Node::OK() const {
 #ifndef NDEBUG
-  using std::endl;
   using std::cerr;
 #endif
   if (!PIP_Tree_Node::OK())
@@ -529,8 +528,7 @@ PIP_Solution_Node::OK() const {
   if (basis.size() != mapping.size()) {
 #ifndef NDEBUG
     cerr << "The PIP_Solution_Node::basis and PIP_Solution_Node::mapping "
-         << "vectors do not have the same number of elements."
-         << endl;
+         << "vectors do not have the same number of elements.\n";
 #endif
     return false;
   }
@@ -538,8 +536,7 @@ PIP_Solution_Node::OK() const {
 #ifndef NDEBUG
     cerr << "The sum of number of elements in the PIP_Solution_Node::var_row "
          << "and PIP_Solution_Node::var_column vectors is different from the "
-         << "number of elements in the PIP_Solution_Node::basis vector."
-         << endl;
+         << "number of elements in the PIP_Solution_Node::basis vector.\n";
 #endif
     return false;
   }
@@ -547,8 +544,7 @@ PIP_Solution_Node::OK() const {
 #ifndef NDEBUG
     cerr << "The number of elements in the PIP_Solution_Node::var_column "
          << "vector is different from the number of columns in the "
-         << "PIP_Solution_Node::tableau.s Matrix."
-         << endl;
+         << "PIP_Solution_Node::tableau.s Matrix.\n";
 #endif
     return false;
   }
@@ -556,19 +552,17 @@ PIP_Solution_Node::OK() const {
 #ifndef NDEBUG
     cerr << "The number of elements in the PIP_Solution_Node::var_row "
          << "vector is different from the number of rows in the "
-         << "PIP_Solution_Node::tableau.s Matrix."
-         << endl;
+         << "PIP_Solution_Node::tableau.s Matrix.\n";
 #endif
     return false;
   }
   for (dimension_type i = mapping.size(); i-- > 0; ) {
-    dimension_type rowcol = mapping[i];
+    const dimension_type rowcol = mapping[i];
     if (basis[i] && var_column[rowcol] != i) {
 #ifndef NDEBUG
       cerr << "Variable " << i << " is basic and corresponds to column "
            << rowcol << " but PIP_Solution_Node::var_column[" << rowcol
-           << "] does not correspond to variable " << i << "."
-           << endl;
+           << "] does not correspond to variable " << i << ".\n";
 #endif
       return false;
     }
@@ -576,13 +570,12 @@ PIP_Solution_Node::OK() const {
 #ifndef NDEBUG
       cerr << "Variable " << i << " is nonbasic and corresponds to row "
            << rowcol << " but PIP_Solution_Node::var_row[" << rowcol
-           << "] does not correspond to variable " << i << "."
-           << endl;
+           << "] does not correspond to variable " << i << ".\n";
 #endif
       return false;
     }
   }
-
+  // All checks passed.
   return true;
 }
 
@@ -679,61 +672,62 @@ void
 PIP_Solution_Node::Tableau::normalize() {
   if (denominator == 1)
     return;
-  dimension_type i_max = s.num_rows();
-  dimension_type j_max = s.num_columns();
-  dimension_type k_max = t.num_columns();
-  dimension_type i, j, k;
+
+  const dimension_type num_rows = s.num_rows();
+  const dimension_type s_cols = s.num_columns();
+  const dimension_type t_cols = t.num_columns();
+
+  // Compute global gcd.
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd = denominator;
-
-  for (i=0; i<i_max; ++i) {
-    const Row& row_s = s[i];
-    for (j=0; j<j_max; ++j) {
-      const Coefficient& x = row_s[j];
-      if (x != 0) {
-        gcd_assign(gcd, x, gcd);
+  for (dimension_type i = num_rows; i-- > 0; ) {
+    const Row& s_i = s[i];
+    for (dimension_type j = s_cols; j-- > 0; ) {
+      const Coefficient& s_ij = s_i[j];
+      if (s_ij != 0) {
+        gcd_assign(gcd, s_ij, gcd);
         if (gcd == 1)
           return;
       }
     }
-    const Row& row_t = t[i];
-    for (k=0; k<k_max; ++k) {
-      const Coefficient& x = row_t[k];
-      if (x != 0) {
-        gcd_assign(gcd, x, gcd);
+    const Row& t_i = t[i];
+    for (dimension_type j = t_cols; j-- > 0; ) {
+      const Coefficient& t_ij = t_i[j];
+      if (t_ij != 0) {
+        gcd_assign(gcd, t_ij, gcd);
         if (gcd == 1)
           return;
       }
     }
   }
 
-  // Divide the coefficients by the GCD.
-  for (i=0; i<i_max; ++i) {
-    Row& row_s = s[i];
-    for (j=0; j<j_max; ++j) {
-      Coefficient& x = row_s[j];
-      exact_div_assign(x, x, gcd);
+  PPL_ASSERT(gcd > 1);
+  // Normalize all coefficients.
+  for (dimension_type i = num_rows; i-- > 0; ) {
+    Row& s_i = s[i];
+    for (dimension_type j = s_cols; j-- > 0; ) {
+      Coefficient& s_ij = s_i[j];
+      exact_div_assign(s_ij, s_ij, gcd);
     }
-    Row& row_t = t[i];
-    for (k=0; k<k_max; ++k) {
-      Coefficient& x = row_t[k];
-      exact_div_assign(x, x, gcd);
+    Row& t_i = t[i];
+    for (dimension_type j = t_cols; j-- > 0; ) {
+      Coefficient& t_ij = t_i[j];
+      exact_div_assign(t_ij, t_ij, gcd);
     }
   }
+  // Normalize denominator.
   exact_div_assign(denominator, denominator, gcd);
 }
 
 void
 PIP_Solution_Node::Tableau::scale(Coefficient_traits::const_reference ratio) {
-  dimension_type i, j, k;
-  dimension_type i_max = s.num_rows();
-  dimension_type j_max = s.num_columns();
-  dimension_type k_max = t.num_columns();
-  for (i=0; i<i_max; ++i) {
-    for (j=0; j<j_max; ++j)
-      s[i][j] *= ratio;
-    for (k=0; k<k_max; ++k)
-      t[i][k] *= ratio;
+  for (dimension_type i = s.num_rows(); i-- > 0; ) {
+    Row& s_i = s[i];
+    for (dimension_type j = s.num_columns(); j-- > 0; )
+      s_i[j] *= ratio;
+    Row& t_i = t[i];
+    for (dimension_type j = t.num_columns(); j-- > 0; )
+      t_i[j] *= ratio;
   }
   denominator *= ratio;
 }
