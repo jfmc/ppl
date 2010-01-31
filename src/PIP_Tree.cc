@@ -772,7 +772,7 @@ PIP_Tree_Node::ascii_dump(std::ostream& s) const {
   constraints_.ascii_dump(s);
   dimension_type artificial_parameters_size = artificial_parameters.size();
   s << "\nartificial_parameters( " << artificial_parameters_size << " )\n";
-  for (dimension_type i=0; i<artificial_parameters_size; ++i)
+  for (dimension_type i = 0; i < artificial_parameters_size; ++i)
     artificial_parameters[i].ascii_dump(s);
 }
 
@@ -1039,32 +1039,31 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
 
 const Linear_Expression&
 PIP_Solution_Node
-::parametric_values(Variable v,
+::parametric_values(const Variable var,
                     const Variables_Set& parameters) const {
   Variables_Set all_parameters(parameters);
   // Complete the parameter set with artificials.
   insert_artificials(all_parameters,
                      tableau.s.num_columns() + tableau.t.num_columns() - 1);
-
-  const_cast<PIP_Solution_Node&>(*this).update_solution(all_parameters);
-  dimension_type id = v.id();
-  dimension_type j;
-  Variables_Set::iterator location = all_parameters.lower_bound(id);
-  if (location == all_parameters.end())
-    j = id;
-  else {
-    if (*location == id) {
-#ifndef NDEBUG
-      std::cerr << "PIP_Solution_Node::parametric_values(Variable): "
-                   "Supplied Variable corresponds to a parameter"
-                << std::endl;
-#endif
-      j = not_a_dimension();
-    } else
-      j = id - std::distance(all_parameters.begin(),location);
+  {
+    PIP_Solution_Node& x = const_cast<PIP_Solution_Node&>(*this);
+    x.update_solution(all_parameters);
   }
 
-  return solution[j];
+  const Variables_Set::iterator pos = all_parameters.lower_bound(var.id());
+  if (pos == all_parameters.end())
+    return solution[var.id()];
+  else {
+#ifndef NDEBUG
+    if (*pos == var.id()) {
+      std::cerr << "PIP_Solution_Node::parametric_values(Variable): "
+                << "Supplied Variable corresponds to a parameter.\n";
+      PPL_ASSERT(false);
+    }
+#endif // #ifndef NDEBUG
+    const dimension_type dist = std::distance(all_parameters.begin(), pos);
+    return solution[var.id() - dist];
+  }
 }
 
 PIP_Solution_Node::Row_Sign
