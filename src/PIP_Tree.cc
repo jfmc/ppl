@@ -152,36 +152,49 @@ column_lower(const Matrix& tableau,
     return lhs_coeff > rhs_coeff;
   }
 
-  PPL_DIRTY_TEMP_COEFFICIENT(cij_a);
-  PPL_DIRTY_TEMP_COEFFICIENT(cij_b);
   PPL_DIRTY_TEMP_COEFFICIENT(lhs);
   PPL_DIRTY_TEMP_COEFFICIENT(rhs);
   const dimension_type num_vars = mapping.size();
   dimension_type k = 0;
-  do {
+  // While loop guard is: (k < num_rows && lhs == rhs).
+  // Return value is false, if k >= num_rows; lhs < rhs, otherwise.
+  // Try to optimize the computation of lhs and rhs.
+  while (true) {
     const dimension_type mk = mapping[k];
-    if (basis[k]) {
-      // Reconstitute the identity submatrix part of tableau.
-      cij_a = (mk == ja) ? 1 : 0;
-      cij_b = (mk == jb) ? 1 : 0;
-    } else {
-      const Row& t_mk = tableau[mk];
-      cij_a = t_mk[ja];
-      cij_b = t_mk[jb];
-    }
-    ++k;
-    // Optimizing computation of while guard (and return value):
-    // (k < num_vars && cij_a * cst_a * sij_b == cij_b * cst_b * sij_a)
-    if (k == num_vars)
+    const bool in_base = basis[k];
+    if (++k >= num_vars)
       return false;
-    lhs = cij_a * lhs_coeff;
-    rhs = cij_b * rhs_coeff;
-  } while (lhs == rhs);
-
-  // Optimizing computation of return value:
-  // return k < num_vars && cij_a * cst_a * sij_b > cij_b * cst_b * sij_a;
-  assert(k < num_vars);
-  return lhs > rhs;
+    if (in_base) {
+      // Reconstitute the identity submatrix part of tableau.
+      if (mk == ja) {
+        // Optimizing for: lhs == lhs_coeff && rhs == 0;
+        if (lhs_coeff == 0)
+          continue;
+        else
+          return lhs_coeff > 0;
+      }
+      if (mk == jb) {
+        // Optimizing for: lhs == 0 && rhs == rhs_coeff;
+        if (rhs_coeff == 0)
+          continue;
+        else
+          return 0 > rhs_coeff;
+      }
+      // Optimizing for: lhs == 0 && rhs == 0;
+      continue;
+    } else {
+      // Not in base.
+      const Row& t_mk = tableau[mk];
+      lhs = lhs_coeff * t_mk[ja];
+      rhs = rhs_coeff * t_mk[jb];
+      if (lhs == rhs)
+        continue;
+      else
+        return lhs > rhs;
+    }
+  }
+  // This point should be unreachable.
+  throw std::runtime_error("PPL internal error");
 }
 
 /* Find the column j in revised simplex tableau such as
