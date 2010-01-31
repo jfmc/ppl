@@ -32,7 +32,7 @@ namespace {
 
 // Calculate positive modulo of x % y
 void
-mod_assign(Coefficient &z,
+mod_assign(Coefficient& z,
            Coefficient_traits::const_reference x,
            Coefficient_traits::const_reference y) {
   z = x % y;
@@ -430,16 +430,16 @@ PIP_Decision_Node::as_decision() {
 }
 
 dimension_type
-PIP_Tree_Node::insert_artificials(Variables_Set &params,
-                                  dimension_type space_dimension) const {
-  dimension_type parent_size = 0;
-  dimension_type ap_size = artificial_parameters.size();
-  space_dimension -= ap_size;
-  if (parent_ != 0)
-    parent_size = parent_->insert_artificials(params, space_dimension);
+PIP_Tree_Node::insert_artificials(Variables_Set& params,
+                                  const dimension_type space_dimension) const {
+  const dimension_type ap_size = artificial_parameters.size();
+  PPL_ASSERT(space_dimension >= ap_size);
+  dimension_type sd = space_dimension - ap_size;
+  const dimension_type parent_size
+    = (parent_ == 0) ? 0 : parent_->insert_artificials(params, sd);
   if (ap_size > 0) {
     for (dimension_type i = 0; i < ap_size; ++i)
-      params.insert(space_dimension++);
+      params.insert(sd++);
   }
   return parent_size + ap_size;
 }
@@ -498,17 +498,17 @@ PIP_Tree_Node::OK() const {
 
 void
 PIP_Tree_Node
-::add_constraint(const Row &row, const Variables_Set& parameters) {
-  Linear_Expression e;
-  Variables_Set::const_iterator param_begin = parameters.begin();
-  Variables_Set::const_iterator param_end = parameters.end();
-  Variables_Set::const_iterator pi;
-  dimension_type j;
-  PPL_ASSERT(dimension_type(std::distance(param_begin, param_end))+1
+::add_constraint(const Row& row, const Variables_Set& parameters) {
+  const Variables_Set::const_iterator p_begin = parameters.begin();
+  const Variables_Set::const_iterator p_end = parameters.end();
+  PPL_ASSERT(static_cast<dimension_type>(std::distance(p_begin, p_end)) + 1
              == row.size());
-  for (pi=param_begin, j=1; pi != param_end; ++pi, ++j)
-    e += row[j] * Variable(*pi);
-  constraints_.insert(e + row[0] >= 0);
+  // FIXME: optimize the computation of expr.
+  Linear_Expression expr = Linear_Expression(row[0]);
+  dimension_type j = 1;
+  for (Variables_Set::const_iterator pj = p_begin; pj != p_end; ++pj, ++j)
+    expr += row[j] * Variable(*pj);
+  constraints_.insert(expr >= 0);
 }
 
 bool
@@ -619,10 +619,10 @@ PIP_Decision_Node::OK() const {
 
 void
 PIP_Decision_Node::update_tableau(const PIP_Problem& problem,
-                                  dimension_type external_space_dim,
-                                  dimension_type first_pending_constraint,
-                                  const Constraint_Sequence &input_cs,
-                                  const Variables_Set &parameters) {
+                                  const dimension_type external_space_dim,
+                                  const dimension_type first_pending_constraint,
+                                  const Constraint_Sequence& input_cs,
+                                  const Variables_Set& parameters) {
   true_child->update_tableau(problem,
                              external_space_dim,
                              first_pending_constraint,
@@ -641,37 +641,38 @@ PIP_Problem_Status
 PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref,
                          const PIP_Problem& problem,
                          const Matrix& context,
-                         const Variables_Set &params,
+                         const Variables_Set& params,
                          dimension_type space_dimension) {
-  PIP_Problem_Status return_status;
-  PIP_Problem_Status stt;
-  PIP_Problem_Status stf = UNFEASIBLE_PIP_PROBLEM;
+  PPL_ASSERT(true_child != 0);
   Matrix context_true(context);
   Variables_Set parameters(params);
   update_context(parameters, context_true, artificial_parameters,
                  space_dimension);
   merge_assign(context_true, constraints_, parameters);
-  stt = true_child->solve(true_child, problem, context_true, parameters,
-                          space_dimension);
+  PIP_Problem_Status stt = true_child->solve(true_child, problem,
+                                             context_true, parameters,
+                                             space_dimension);
+
+  PIP_Problem_Status stf = UNFEASIBLE_PIP_PROBLEM;
   if (false_child) {
     // Decision nodes with false child must have exactly one constraint
     PPL_ASSERT(1 == std::distance(constraints_.begin(), constraints_.end()));
     Matrix context_false(context);
     update_context(context_false, artificial_parameters);
     merge_assign(context_false, constraints_, parameters);
-    Row &last = context_false[context_false.num_rows()-1];
+    Row& last = context_false[context_false.num_rows()-1];
     negate_assign(last, last, 1);
     stf = false_child->solve(false_child, problem, context_false, parameters,
                              space_dimension);
   }
 
   if (stt == UNFEASIBLE_PIP_PROBLEM && stf == UNFEASIBLE_PIP_PROBLEM) {
-    return_status = UNFEASIBLE_PIP_PROBLEM;
     parent_ref = 0;
     delete this;
-  } else
-    return_status = OPTIMIZED_PIP_PROBLEM;
-  return return_status;
+    return UNFEASIBLE_PIP_PROBLEM;
+  }
+  else
+    return OPTIMIZED_PIP_PROBLEM;
 }
 
 void
@@ -686,18 +687,18 @@ PIP_Solution_Node::Tableau::normalize() {
   gcd = denominator;
 
   for (i=0; i<i_max; ++i) {
-    const Row &row_s = s[i];
+    const Row& row_s = s[i];
     for (j=0; j<j_max; ++j) {
-      const Coefficient &x = row_s[j];
+      const Coefficient& x = row_s[j];
       if (x != 0) {
         gcd_assign(gcd, x, gcd);
         if (gcd == 1)
           return;
       }
     }
-    const Row &row_t = t[i];
+    const Row& row_t = t[i];
     for (k=0; k<k_max; ++k) {
-      const Coefficient &x = row_t[k];
+      const Coefficient& x = row_t[k];
       if (x != 0) {
         gcd_assign(gcd, x, gcd);
         if (gcd == 1)
@@ -708,14 +709,14 @@ PIP_Solution_Node::Tableau::normalize() {
 
   // Divide the coefficients by the GCD.
   for (i=0; i<i_max; ++i) {
-    Row &row_s = s[i];
+    Row& row_s = s[i];
     for (j=0; j<j_max; ++j) {
-      Coefficient &x = row_s[j];
+      Coefficient& x = row_s[j];
       exact_div_assign(x, x, gcd);
     }
-    Row &row_t = t[i];
+    Row& row_t = t[i];
     for (k=0; k<k_max; ++k) {
-      Coefficient &x = row_t[k];
+      Coefficient& x = row_t[k];
       exact_div_assign(x, x, gcd);
     }
   }
@@ -1073,11 +1074,11 @@ PIP_Solution_Node
 }
 
 PIP_Solution_Node::Row_Sign
-PIP_Solution_Node::row_sign(const Row &x, dimension_type big_dimension) {
+PIP_Solution_Node::row_sign(const Row& x, dimension_type big_dimension) {
   if (big_dimension != not_a_dimension()) {
     /* If a big parameter has been set and its coefficient is not zero,
       just return the sign of the coefficient */
-    const Coefficient &c = x[big_dimension];
+    const Coefficient& c = x[big_dimension];
     if (c > 0)
       return POSITIVE;
     if (c < 0)
@@ -1086,7 +1087,7 @@ PIP_Solution_Node::row_sign(const Row &x, dimension_type big_dimension) {
   }
   PIP_Solution_Node::Row_Sign sign = ZERO;
   for (int i = x.size(); i-- > 0; ) {
-    const Coefficient &c = x[i];
+    const Coefficient& c = x[i];
     switch (sign) {
       case UNKNOWN:
         // cannot happen
@@ -1114,7 +1115,7 @@ PIP_Solution_Node::row_sign(const Row &x, dimension_type big_dimension) {
 }
 
 bool
-PIP_Solution_Node::compatibility_check(const Matrix &ctx, const Row &cnst) {
+PIP_Solution_Node::compatibility_check(const Matrix& ctx, const Row& cnst) {
   Matrix s(ctx);
   s.add_row(cnst);
   dimension_type i, i_, j, k, j_, j__, var_i, var_j;
@@ -1287,8 +1288,8 @@ void
 PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
                                   dimension_type external_space_dim,
                                   dimension_type first_pending_constraint,
-                                  const Constraint_Sequence &input_cs,
-                                  const Variables_Set &parameters) {
+                                  const Constraint_Sequence& input_cs,
+                                  const Variables_Set& parameters) {
   dimension_type i;
   dimension_type n_params = parameters.size();
   dimension_type n_vars = external_space_dim - n_params;
@@ -1364,7 +1365,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
       if (parameters.count(i) == 1) {
         param[p++] = cst->coefficient(Variable(i)) * denom;
       } else {
-        const Coefficient &c = cst->coefficient(Variable(i));
+        const Coefficient& c = cst->coefficient(Variable(i));
         dimension_type idx = mapping[v];
         if (basis[v])
           // Basic variable : add c * x_i
@@ -1428,11 +1429,11 @@ PIP_Solution_Node::update_solution(const Variables_Set& parameters) {
   if (solution.size() != num_vars)
     solution.resize(num_vars);
   for (dimension_type i = num_vars; i-- > 0; ) {
-    Linear_Expression &sol = solution[i];
+    Linear_Expression& sol = solution[i];
     if (basis[i]) {
       sol = Linear_Expression(0);
     } else {
-      Row &row = tableau.t[mapping[i]];
+      Row& row = tableau.t[mapping[i]];
       sol = Linear_Expression(row[0]/d);
       dimension_type k;
       Variables_Set::const_iterator j;
@@ -1448,7 +1449,7 @@ PIP_Problem_Status
 PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
                          const PIP_Problem& problem,
                          const Matrix& ctx,
-                         const Variables_Set &params,
+                         const Variables_Set& params,
                          dimension_type space_dimension) {
   Matrix context(ctx);
   Variables_Set parameters(params);
@@ -1533,7 +1534,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         if (sign[i] != MIXED)
           continue;
         bool found = false;
-        const Row &p = tableau.s[i];
+        const Row& p = tableau.s[i];
         for (j=0; j<num_vars; ++j)
           if (p[j] > 0) {
             found = true;
@@ -1824,7 +1825,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         cs.swap(constraints_);
         aps.swap(artificial_parameters);
         PIP_Tree_Node *fals = this;
-        Row &testf = context[context.num_rows()-1];
+        Row& testf = context[context.num_rows()-1];
         negate_assign(testf, test, 1);
         PIP_Problem_Status status_f = solve(fals, problem, context, parameters,
                                             space_dimension);
