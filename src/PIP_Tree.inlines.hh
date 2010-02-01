@@ -51,16 +51,6 @@ PIP_Solution_Node::Tableau::get_denominator() const {
   return denominator;
 }
 
-inline dimension_type
-PIP_Solution_Node::Tableau::s_capacity() const {
-  return compute_capacity(s.num_columns(), Matrix::max_num_columns());
-}
-
-inline dimension_type
-PIP_Solution_Node::Tableau::t_capacity() const {
-  return compute_capacity(t.num_columns(), Matrix::max_num_columns());
-}
-
 inline
 PIP_Tree_Node::~PIP_Tree_Node() {
 }

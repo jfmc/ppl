@@ -293,14 +293,12 @@ private:
     //! Destructor.
     ~Tableau();
 
-    //! Returns the allocated capacity of each Row of the \p s Matrix.
-    dimension_type s_capacity() const;
-    //! Returns the allocated capacity of each Row of the \p t Matrix.
-    dimension_type t_capacity() const;
     //! Tests whether the matrix is integer, \e ie. the denominator is 1.
     bool is_integer() const;
+
     //! Multiplies all coefficients and denominator with ratio.
     void scale(Coefficient_traits::const_reference ratio);
+
     //! Normalizes the modulo of coefficients so that they are mutually prime.
     /*!
       Computes the Greatest Common Divisor (GCD) among the elements of
