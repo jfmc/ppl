@@ -2342,13 +2342,6 @@ ppl_PIP_Tree_Node_get_constraints(ppl_const_PIP_Tree_Node_t pip_tree,
 CATCH_ALL
 
 int
-ppl_delete_PIP_Tree_Node(ppl_const_PIP_Tree_Node_t pip_tree) try {
-  delete to_const(pip_tree);
-  return 0;
-}
-CATCH_ALL
-
-int
 ppl_PIP_Tree_Node_OK(ppl_const_PIP_Tree_Node_t pip_tree) try {
   return to_const(pip_tree)->OK() ? 1 : 0;
 }
@@ -2405,13 +2398,6 @@ CATCH_ALL
 int
 ppl_PIP_Solution_Node_OK(ppl_const_PIP_Solution_Node_t pip_sol) try {
   return to_const(pip_sol)->OK() ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_delete_PIP_Decision_Node(ppl_const_PIP_Decision_Node_t pip_dec) try {
-  delete to_const(pip_dec);
-  return 0;
 }
 CATCH_ALL
 

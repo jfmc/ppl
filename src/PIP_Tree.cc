@@ -1045,6 +1045,7 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
   return true;
 }
 
+// FIXME: this does not (yet) correspond to specification.
 const Linear_Expression&
 PIP_Solution_Node
 ::parametric_values(const Variable var,
@@ -1062,13 +1063,10 @@ PIP_Solution_Node
   if (pos == all_parameters.end())
     return solution[var.id()];
   else {
-#ifndef NDEBUG
-    if (*pos == var.id()) {
-      std::cerr << "PIP_Solution_Node::parametric_values(Variable): "
-                << "Supplied Variable corresponds to a parameter.\n";
-      PPL_ASSERT(false);
-    }
-#endif // #ifndef NDEBUG
+    if (*pos == var.id())
+      throw std::invalid_argument("PIP_Solution_Node::"
+                                  "parametric_values(v, params): "
+                                  "variable v is a parameter.");
     const dimension_type dist = std::distance(all_parameters.begin(), pos);
     return solution[var.id() - dist];
   }

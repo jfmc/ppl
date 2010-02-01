@@ -697,10 +697,20 @@ PPL_TYPE_DECLARATION(PIP_Problem)
 
 /*! \interface ppl_PIP_Tree_Node_tag
   \brief
-  Types and functions for PIP tree nodes.
+  Types and functions for generic PIP tree nodes.
 */
 PPL_TYPE_DECLARATION(PIP_Tree_Node)
+
+/*! \interface ppl_PIP_Decision_Node_tag
+  \brief
+  Types and functions for PIP decision nodes.
+*/
 PPL_TYPE_DECLARATION(PIP_Decision_Node)
+
+/*! \interface ppl_PIP_Solution_Node_tag
+  \brief
+  Types and functions for PIP solution nodes.
+*/
 PPL_TYPE_DECLARATION(PIP_Solution_Node)
 
 /*! \interface ppl_Artificial_Parameter_tag
@@ -2656,10 +2666,10 @@ PPL_PROTO((ppl_MIP_Problem_t mip, int value));
 
 /*! \relates ppl_PIP_Problem_tag \brief
   Builds a trivial PIP problem of dimension \p d and writes an
-  handle to it at address \p pmip.
+  handle to it at address \p ppip.
 */
 int
-ppl_new_PIP_Problem_from_space_dimension PPL_PROTO((ppl_PIP_Problem_t* pmip,
+ppl_new_PIP_Problem_from_space_dimension PPL_PROTO((ppl_PIP_Problem_t* ppip,
 						    ppl_dimension_type d));
 
 /*! \relates ppl_PIP_Problem_tag \brief
@@ -2744,7 +2754,7 @@ int
 ppl_PIP_Problem_clear PPL_PROTO((ppl_PIP_Problem_t pip));
 
 /*! \relates ppl_PIP_Problem_tag \brief
-  Adds <CODE>m_pip_vars + m_pip_params</CODE> new space dimensions
+  Adds <CODE>pip_vars + pip_params</CODE> new space dimensions
   and embeds the PIP problem \p pip in the new vector space.
 
   \param pip
@@ -2966,8 +2976,8 @@ PPL_PROTO((ppl_const_PIP_Solution_Node_t pip_sol,
            ppl_const_Linear_Expression_t* le));
 
 /*! \relates ppl_PIP_Tree_Node_tag \brief
-  Writes to \p pip_tree a const pointer to the \p b (true or false) branch
-  of \p pip_dec.
+  Writes to \p pip_tree a const pointer to either the true branch
+  (if \p b is not zero) or the false branch (if \p b is zero) of \p pip_dec.
 */
 int
 ppl_PIP_Decision_Node_get_child_node

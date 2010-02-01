@@ -260,10 +260,10 @@ public:
     parameters.
 
     \param v
-    the variable which is queried about
+    The variable which is queried about.
 
     \param parameters
-    a \c std::set of indices of the parameters in the problem constraints
+    A \c std::set of indices of the parameters in the problem constraints.
 
     \exception std::invalid_argument
     Thrown if \p v is dimension-incompatible with \p *this
@@ -406,15 +406,18 @@ private:
   */
   std::vector<dimension_type> mapping;
 
-  /*! \brief A vector of the variable identifiers associated to each row of
-     the simplex tableau. */
+  /*! \brief
+    The variable identifiers associated to the rows of the simplex tableau.
+  */
   std::vector<dimension_type> var_row;
 
-  /*! \brief A vector of the variable identifiers associated to each column
-     of the simplex tableau. */
+  /*! \brief
+    The variable identifiers associated to the columns of the simplex tableau.
+  */
   std::vector<dimension_type> var_column;
 
-  /*! \brief The variable number of the special inequality used for modelling
+  /*! \brief
+    The variable number of the special inequality used for modelling
     equality constraints.
 
     The subset of equality constraints in a specific problem can be expressed
@@ -433,15 +436,14 @@ private:
   dimension_type special_equality_row;
 
   /*! \brief
-    The column number in the parametric part of the simplex tableau
-    which corresponds to the big parameter; \c not_a_dimension()
-    if not set.
+    The column index in the parametric part of the simplex tableau
+    corresponding to the big parameter; \c not_a_dimension() if not set.
   */
   dimension_type big_dimension;
 
   //! The possible values for the sign of a parametric linear expression.
   enum Row_Sign {
-    //! Not computed yet (default)
+    //! Not computed yet (default).
     UNKNOWN,
     //! All row coefficients are zero.
     ZERO,
@@ -449,7 +451,7 @@ private:
     POSITIVE,
     //! All nonzero row coefficients are negative.
     NEGATIVE,
-    //! The row contains positive and negative coefficients.
+    //! The row contains both positive and negative coefficients.
     MIXED
   };
 
@@ -462,12 +464,12 @@ private:
   //! An indicator for solution validity.
   bool solution_valid;
 
-  //! Determines the sign of given Row.
+  //! Returns the sign of row \p x.
   static Row_Sign row_sign(const Row& x, dimension_type big_dimension);
 
   /*! \brief
-    Checks whether a constraint is compatible with a context, ie. does not
-    make the context empty.
+    Checks whether a constraint is compatible with a context,
+    i.e., if it does not make the context unsatisfiable.
 
     The method consists in applying the revised dual simplex algorithm on a
     Matrix consisting in the original matrix with the constraint inserted. If
@@ -518,30 +520,30 @@ protected:
     Update the solution values.
 
     \param parameters
-    a \c std::set of indices of the parameters in the constraints
+    A \c std::set of indices of the parameters in the constraints
   */
-  virtual void update_solution(const Variables_Set& parameters);
+  void update_solution(const Variables_Set& parameters);
 
   /*! \brief
     Execute a parametric simplex on the tableau, under specified context.
 
     \param parent_ref
-    a pointer to the parent reference to \p this
+    A pointer to the parent reference to \p this.
 
     \param problem
-    the containing problem object
+    The containing problem object.
 
     \param context
-    the context, being a set of constraints on the parameters
+    The context, being a set of constraints on the parameters.
 
     \param params
-    local parameter set, including parent artificial parameters
+    The local set of parameters, including parent artificial parameters.
 
     \param space_dimension
-    space dimension of parent, including artificial parameters
+    Space dimension of parent, including artificial parameters.
 
     \return
-    An PIP_Problem_Status flag indicating the outcome of the optimization
+    A PIP_Problem_Status flag indicating the result of the optimization
     attempt (unfeasible or optimized problem).
   */
   virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
@@ -572,8 +574,9 @@ protected:
                     Variables_Set& parameters,
                     Matrix& context,
                     dimension_type& space_dimension);
-  // FIXME: constructors to be decided.
-};
+
+}; // class PIP_Solution_Node
+
 
 //! A tree node representing a decision in the space of solutions.
 class PIP_Decision_Node : public PIP_Tree_Node {

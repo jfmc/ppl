@@ -449,8 +449,7 @@ public:
   //! Returns an optimizing solution for \p *this, if it exists.
   /*!
     \exception std::domain_error
-    Thrown if \p *this does not have an optimizing point, i.e.,
-    if the PIP problem is unbounded or not satisfiable.
+    Thrown if the PIP problem is not satisfiable.
   */
   PIP_Tree optimizing_solution() const;
 
