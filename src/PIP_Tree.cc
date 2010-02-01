@@ -42,7 +42,8 @@ mod_assign(Coefficient& z,
 
 // Compute x += c * y
 void
-add_assign(Row& x, const Row& y, Coefficient_traits::const_reference c) {
+add_mul_assign_row(Row& x,
+                   Coefficient_traits::const_reference c, const Row& y) {
   PPL_ASSERT(x.size() == y.size());
   for (dimension_type i = x.size(); i-- > 0; )
     add_mul_assign(x[i], c, y[i]);
@@ -84,12 +85,19 @@ merge_assign(Matrix& x,
   }
 }
 
-// Tranform expression "expr" into "-expr-1", using scaling
+// Assigns to row x the negation of row y.
 void
-negate_assign(Row& x, const Row& y, Coefficient_traits::const_reference sc) {
+neg_assign_row(Row& x, const Row& y) {
   PPL_ASSERT(x.size() == y.size());
   for (dimension_type i = x.size(); i-- > 0; )
-    x[i] = -y[i];
+    neg_assign(x[i], y[i]);
+}
+
+// FIXME: find better name and improve comment.
+// Tranform expression "expr" into "-expr-1", using scaling
+inline void
+negate_assign(Row& x, const Row& y, Coefficient_traits::const_reference sc) {
+  neg_assign_row(x, y);
   if (sc != 0) {
     PPL_DIRTY_TEMP_COEFFICIENT(mod);
     mod_assign(mod, x[0], sc);
@@ -1290,133 +1298,153 @@ PIP_Solution_Node::compatibility_check(const Matrix& ctx, const Row& cnst) {
 
 void
 PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
-                                  dimension_type external_space_dim,
-                                  dimension_type first_pending_constraint,
+                                  const dimension_type external_space_dim,
+                                  const dimension_type first_pending_constraint,
                                   const Constraint_Sequence& input_cs,
                                   const Variables_Set& parameters) {
-  dimension_type i;
-  dimension_type n_params = parameters.size();
-  dimension_type n_vars = external_space_dim - n_params;
-  dimension_type internal_space_dim = tableau.s.num_columns()
-                                      + tableau.t.num_columns() - 1;
-  Constraint_Sequence::const_iterator cst;
-
-  // Create the parameter column, corresponding to the constant term
-  if (tableau.t.num_columns() == 0) {
+  dimension_type initial_space_dim;
+  if (tableau.t.num_columns() > 0)
+    initial_space_dim = tableau.s.num_columns() + tableau.t.num_columns() - 1;
+  else {
+    // Create parameter column, corresponding to the constant term.
     tableau.t.add_zero_columns(1);
-    internal_space_dim = 0;
+    initial_space_dim = 0;
   }
 
-  // add new columns to the tableau
+  // Add new columns to the tableau.
   /* FIXME: when the node or its parents have artificial parameters, we
     must insert new parameter columns before the columns corresponding to
     the artificial parameters. Meanwhile parameter insertion after a first
     solve (incremental solving) is broken. */
-  for (i=internal_space_dim; i<external_space_dim; ++i) {
+  for (dimension_type i = initial_space_dim; i < external_space_dim; ++i) {
     if (parameters.count(i) == 1)
+      // A new parameter.
       tableau.t.add_zero_columns(1);
     else {
-      dimension_type column = tableau.s.num_columns();
+      // A new variable.
+      const dimension_type new_column = tableau.s.num_columns();
       tableau.s.add_zero_columns(1);
       if (tableau.s.num_rows() == 0) {
         // No rows have been added yet
         basis.push_back(true);
-        mapping.push_back(column);
+        mapping.push_back(new_column);
       } else {
         /* Need to insert the original variable id before the slack variable
           id's to respect variable ordering */
-        dimension_type j;
-        basis.insert(basis.begin()+column, true);
-        mapping.insert(mapping.begin()+column, column);
+        basis.insert(basis.begin() + new_column, true);
+        mapping.insert(mapping.begin() + new_column, new_column);
         // update variable id's of slack variables
-        for (j = var_row.size(); j-- > 0; )
-          if (var_row[j] >= column)
+        for (dimension_type j = var_row.size(); j-- > 0; )
+          if (var_row[j] >= new_column)
             ++var_row[j];
-        for (j = var_column.size(); j-- > 0; )
-          if (var_column[j] >= column)
+        for (dimension_type j = var_column.size(); j-- > 0; )
+          if (var_column[j] >= new_column)
             ++var_column[j];
         if (special_equality_row > 0)
           ++special_equality_row;
       }
-      var_column.push_back(column);
+      var_column.push_back(new_column);
     }
   }
-  internal_space_dim = external_space_dim;
+
   if (big_dimension == not_a_dimension()
       && problem.big_parameter_dimension != not_a_dimension()) {
-    // Compute the column number of big parameter in tableau.t matrix
-    Variables_Set::const_iterator begin = parameters.begin();
+    // Compute the column number of big parameter in tableau.t matrix.
     Variables_Set::const_iterator pos
       = parameters.find(problem.big_parameter_dimension);
-    big_dimension = std::distance(begin, pos) + 1;
+    big_dimension = std::distance(parameters.begin(), pos) + 1;
   }
 
   const Coefficient& denom = tableau.get_denominator();
+  for (Constraint_Sequence::const_iterator
+         c_iter = input_cs.begin() + first_pending_constraint,
+         c_end = input_cs.end(); c_iter != c_end; ++c_iter) {
+    const Constraint& constraint = *c_iter;
 
-  for (cst = input_cs.begin() + first_pending_constraint;
-       cst < input_cs.end(); ++cst) {
-    int v = 0;
-    int p = 1;
-    Row var(n_vars, tableau.s_capacity(), Row::Flags());
-    Row param(n_params+1, tableau.t_capacity(), Row::Flags());
-    Coefficient cnst_term = cst->inhomogeneous_term();
-    dimension_type dim = cst->space_dimension();
-    if (cst->is_strict_inequality())
-      // convert c > 0  <=>  c-1 >= 0
-      cnst_term -= 1;
-    param[0] = cnst_term * denom;
-    for (i=0; i<dim; i++) {
-      if (parameters.count(i) == 1) {
-        param[p++] = cst->coefficient(Variable(i)) * denom;
-      } else {
-        const Coefficient& c = cst->coefficient(Variable(i));
-        dimension_type idx = mapping[v];
-        if (basis[v])
-          // Basic variable : add c * x_i
-          var[idx] += c * denom;
+    // (Tentatively) Add new rows to s and t matrices.
+    // These will be removed at the end if they turn out to be useless.
+    const dimension_type row_id = tableau.s.num_rows();
+    tableau.s.add_zero_rows(1,  Row::Flags());
+    tableau.t.add_zero_rows(1,  Row::Flags());
+    Row& v_row = tableau.s[row_id];
+    Row& p_row = tableau.t[row_id];
+
+    // Setting the inhomogeneus term.
+    p_row[0] = constraint.inhomogeneous_term();
+    if (constraint.is_strict_inequality())
+      // Transform (expr > 0) into (expr - 1 >= 0).
+      --p_row[0];
+    p_row[0] *= denom;
+
+    dimension_type p_index = 1;
+    dimension_type v_index = 0;
+    for (dimension_type i = 0,
+           i_end = constraint.space_dimension(); i != i_end; ++i) {
+      const bool is_parameter = (1 == parameters.count(i));
+      const Coefficient& coeff_i = constraint.coefficient(Variable(i));
+      if (coeff_i == 0) {
+        // Optimize computation below: only update p/v index.
+        if (is_parameter)
+          ++p_index;
+        else
+          ++v_index;
+        // Jump to next iteration.
+        continue;
+      }
+
+      if (is_parameter) {
+        p_row[p_index] = coeff_i * denom;
+        ++p_index;
+      }
+      else {
+        const dimension_type mv = mapping[v_index];
+        if (basis[v_index])
+          // Basic variable : add coeff_i * x_i
+          add_mul_assign(v_row[mv], coeff_i, denom);
         else {
-          // Nonbasic variable : add c * row_i
-          add_assign(var, tableau.s[idx], c);
-          add_assign(param, tableau.t[idx], c);
+          // Non-basic variable : add coeff_i * row_i
+          add_mul_assign_row(v_row, coeff_i, tableau.s[mv]);
+          add_mul_assign_row(p_row, coeff_i, tableau.t[mv]);
         }
-        ++v;
+        ++v_index;
       }
     }
-    if (row_sign(var, not_a_dimension()) != ZERO) {
-      /* parametric-only constraints have already been inserted in initial
-        context, so no need to insert them in the tableau
-      */
-      dimension_type var_id = mapping.size();
-      dimension_type row_id = tableau.s.num_rows();
-      tableau.s.add_row(var);
-      tableau.t.add_row(param);
-      sign.push_back(row_sign(param, big_dimension));
+
+    if (row_sign(v_row, not_a_dimension()) == ZERO) {
+      // Parametric-only constraints have already been inserted in
+      // initial context, so no need to insert them in the tableau.
+      tableau.s.erase_to_end(row_id);
+      tableau.t.erase_to_end(row_id);
+    }
+    else {
+      const dimension_type var_id = mapping.size();
+      sign.push_back(row_sign(p_row, big_dimension));
       basis.push_back(false);
       mapping.push_back(row_id);
       var_row.push_back(var_id);
-      if (cst->is_equality()) {
-        /* Handle equality constraints. After having added the f_i(x,p) >= 0
-          constraint, we must add -f_i(x,p) to the special equality row */
+      if (constraint.is_equality()) {
+        // Handle equality constraints.
+        // After having added the f_i(x,p) >= 0 constraint,
+        // we must add -f_i(x,p) to the special equality row.
         if (special_equality_row == 0 || basis[special_equality_row]) {
           // The special constraint has not been created yet
-          /* FIXME: for now, we don't handle the case where the variable is
-            basic, and create a new row. This might be faster however. */
-          ++var_id;
-          ++row_id;
-          negate_assign(var, var, 0);
-          negate_assign(param, param, 0);
-          tableau.s.add_row(var);
-          tableau.t.add_row(param);
-          sign.push_back(row_sign(param, big_dimension));
+          // FIXME: for now, we don't handle the case where the variable
+          // is basic, and we just create a new row.
+          // This might be faster however.
+          tableau.s.add_zero_rows(1, Row::Flags());
+          tableau.t.add_zero_rows(1, Row::Flags());
+          neg_assign_row(tableau.s[1 + row_id], v_row);
+          neg_assign_row(tableau.t[1 + row_id], p_row);
+          sign.push_back(row_sign(tableau.t[1 + row_id], big_dimension));
           special_equality_row = mapping.size();
           basis.push_back(false);
-          mapping.push_back(row_id);
-          var_row.push_back(var_id);
+          mapping.push_back(1 + row_id);
+          var_row.push_back(1 + var_id);
         } else {
-          // The special constraint already exists and is nonbasic
-          dimension_type row = mapping[special_equality_row];
-          sub_assign(tableau.s[row], var);
-          sub_assign(tableau.t[row], param);
+          // The special constraint already exists and is nonbasic.
+          const dimension_type m_eq = mapping[special_equality_row];
+          sub_assign(tableau.s[m_eq], v_row);
+          sub_assign(tableau.t[m_eq], p_row);
         }
       }
     }
