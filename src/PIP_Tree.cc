@@ -1067,41 +1067,31 @@ PIP_Solution_Node
 }
 
 PIP_Solution_Node::Row_Sign
-PIP_Solution_Node::row_sign(const Row& x, dimension_type big_dimension) {
+PIP_Solution_Node::row_sign(const Row& x,
+                            const dimension_type big_dimension) {
   if (big_dimension != not_a_dimension()) {
-    /* If a big parameter has been set and its coefficient is not zero,
-      just return the sign of the coefficient */
-    const Coefficient& c = x[big_dimension];
-    if (c > 0)
+    // If a big parameter has been set and its coefficient is not zero,
+    // then return the sign of the coefficient.
+    const Coefficient& x_big = x[big_dimension];
+    if (x_big > 0)
       return POSITIVE;
-    if (c < 0)
+    if (x_big < 0)
       return NEGATIVE;
-    // otherwise c == 0, then no big parameter involved
+    // Otherwise x_big == 0, then no big parameter involved.
   }
+
   PIP_Solution_Node::Row_Sign sign = ZERO;
   for (int i = x.size(); i-- > 0; ) {
-    const Coefficient& c = x[i];
-    switch (sign) {
-      case UNKNOWN:
-        // cannot happen
-        break;
-      case ZERO:
-        if (c < 0)
-          sign = NEGATIVE;
-        else if (c > 0)
-          sign = POSITIVE;
-        break;
-      case NEGATIVE:
-        if (c > 0)
-          return MIXED;
-        break;
-      case POSITIVE:
-        if (c < 0)
-          return MIXED;
-        break;
-      case MIXED:
-        // cannot happen
-        break;
+    const Coefficient& x_i = x[i];
+    if (x_i > 0) {
+      if (sign == NEGATIVE)
+        return MIXED;
+      sign = POSITIVE;
+    }
+    else if (x_i < 0) {
+      if (sign == POSITIVE)
+        return MIXED;
+      sign = NEGATIVE;
     }
   }
   return sign;
@@ -1110,171 +1100,192 @@ PIP_Solution_Node::row_sign(const Row& x, dimension_type big_dimension) {
 bool
 PIP_Solution_Node::compatibility_check(const Matrix& ctx, const Row& cnst) {
   Matrix s(ctx);
+  // CHECKME: do ctx and cnst have compatible (row) capacity?
   s.add_row(cnst);
-  dimension_type i, i_, j, k, j_, j__, var_i, var_j;
+  PPL_ASSERT(s.OK());
+
+  // Note: num_rows may increase.
   dimension_type num_rows = s.num_rows();
-  dimension_type num_cols = s.num_columns();
-  dimension_type num_vars = num_cols-1;
+  const dimension_type num_cols = s.num_columns();
+  const dimension_type num_vars = num_cols - 1;
+
   std::vector<Coefficient> scaling(num_rows, 1);
-  PPL_DIRTY_TEMP_COEFFICIENT(sij);
-  PPL_DIRTY_TEMP_COEFFICIENT(mult);
-  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-  PPL_DIRTY_TEMP_COEFFICIENT(scale_factor);
-  PPL_DIRTY_TEMP_COEFFICIENT(scaling_i);
-  std::vector<dimension_type> mapping;
   std::vector<bool> basis;
+  basis.reserve(num_vars + num_rows);
+  std::vector<dimension_type> mapping;
+  mapping.reserve(num_vars + num_rows);
   std::vector<dimension_type> var_row;
+  var_row.reserve(num_rows);
   std::vector<dimension_type> var_column;
+  var_column.reserve(num_cols);
+
   // Column 0 is the constant term, not a variable
   var_column.push_back(not_a_dimension());
-  for (j = 1; j <= num_vars; ++j) {
+  for (dimension_type j = 1; j <= num_vars; ++j) {
     basis.push_back(true);
     mapping.push_back(j);
     var_column.push_back(j-1);
   }
-  for (i = 0; i < num_rows; ++i) {
+  for (dimension_type i = 0; i < num_rows; ++i) {
     basis.push_back(false);
     mapping.push_back(i);
     var_row.push_back(i+num_vars);
   }
-  Row p(num_cols, compute_capacity(num_cols, Matrix::max_num_columns()),
-        Row::Flags());
 
-  /* Perform simplex pivots on the context until we find an empty solution
-   * or an optimum */
-  for (;;) {
-    // Look for a negative RHS (=constant term, stored in matrix column 0)
-    i = num_rows;
-    j = 0;
+  // Scaling factor (i.e., denominator) for pivot coefficients.
+  PPL_DIRTY_TEMP_COEFFICIENT(pivot_den);
+  // Allocate once and for all: short life temporaries.
+  PPL_DIRTY_TEMP_COEFFICIENT(product);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(scale_factor);
 
-    // Find Pivot row i and pivot column j, by maximizing the pivot column
-    for (i_ = 0; i_ < num_rows; ++i_) {
-      if (s[i_][0] >= 0)
-        continue;
-      if (!find_lexico_minimum_column(s, mapping, basis, s[i_], 1, j_)) {
-        // No positive pivot candidate: empty problem
-        return false;
-      }
-      if (j == 0 || column_lower(s, mapping, basis,
-                    s[i], j, s[i_], j_, s[i][0], s[i_][0])) {
-        i = i_;
-        j = j_;
+  // Perform simplex pivots on the context
+  // until we find an empty solution or an optimum.
+  while (true) {
+    dimension_type pi = num_rows; // pi is the pivot's row index.
+    dimension_type pj = 0;        // pj is the pivot's column index.
+
+    // Look for a negative RHS (i.e., constant term, stored in column 0),
+    // maximizing pivot column.
+    for (dimension_type i = 0; i < num_rows; ++i) {
+      const Row& s_i = s[i];
+      if (s_i[0] < 0) {
+        dimension_type j;
+        if (!find_lexico_minimum_column(s, mapping, basis, s_i, 1, j)) {
+          // No positive pivot candidate: unsatisfiable problem.
+          return false;
+        }
+        // Update pair (pi, pj) if they are still unset or
+        // if the challenger pair (i, j) is better in the ordering.
+        if (pj == 0
+            || column_lower(s, mapping, basis,
+                            s[pi], pj, s_i, j,
+                            s[pi][0], s_i[0])) {
+          pi = i;
+          pj = j;
+        }
       }
     }
 
-    if (j == 0) {
-      // No negative RHS: fractional optimum found. If it is integer, then
-      // the test is successful. Otherwise, generate a new cut.
+    if (pj == 0) {
+      // No negative RHS: fractional optimum found.
+      // If it is integer, then the test is successful.
+      // Otherwise, generate a new cut.
       bool all_integer_vars = true;
-      for (i=0; i<num_vars; ++i) {
+      // NOTE: iterating downwards would be correct, but it would change
+      // the ordering of cut generation.
+      for (dimension_type i = 0; i < num_vars; ++i) {
         if (basis[i])
-          // basic variable = 0 -> integer
+          // Basic variable = 0, hence integer.
           continue;
-        // nonbasic variable
-        i_ = mapping[i];
-        if (s[i_][0] % scaling[i_] != 0) {
-          // Constant term is not integer.
-          all_integer_vars = false;
-          break;
-        }
-      }
-      if (all_integer_vars) {
-        // Found an integer solution, thus the check is successful
-        return true;
-      }
-      for (i = 0; i < num_vars; ++i) {
-        if (basis[i])
-          // basic variable = 0 -> integer
+        // Not a basic variable.
+        const dimension_type mi = mapping[i];
+        const Coefficient& den = scaling[mi];
+        if (s[mi][0] % den == 0)
           continue;
-        i_ = mapping[i];
-        const Coefficient& d = scaling[i_];
-        if (s[i_][0] % d == 0)
-          continue;
-        // Constant term is not integer. Generate a new cut.
+        // Here constant term is not integer.
+        all_integer_vars = false;
+        // Generate a new cut.
         var_row.push_back(mapping.size());
         basis.push_back(false);
         mapping.push_back(num_rows);
         s.add_zero_rows(1, Row::Flags());
-        const Row& row = s[i_];
-        Row& cut = s[num_rows++];
-        for (j = 0; j < num_cols; ++j)
-          mod_assign(cut[j], row[j], d);
-        cut[0] -= d;
-        scaling.push_back(d);
+        Row& cut = s[num_rows];
+        ++num_rows;
+        const Row& s_mi = s[mi];
+        for (dimension_type j = num_cols; j-- > 0; )
+          mod_assign(cut[j], s_mi[j], den);
+        cut[0] -= den;
+        scaling.push_back(den);
       }
-      continue;
-    }
-
-    // Now we have a positive s[i][j] pivot
-
-    /* Normalize the tableau before pivoting */
-    for (i_=0; i_<num_rows; ++i_)
-      row_normalize(s[i_], scaling[i_]);
-
-    /* update basis */
-    var_j = var_column[j];
-    var_i = var_row[i];
-    basis[var_j] = false;
-    mapping[var_j] = i;
-    basis[var_i] = true;
-    mapping[var_i] = j;
-    var_column[j] = var_i;
-    var_row[i] = var_j;
-
-    /* create the identity matrix row corresponding to basic variable j */
-    for (j_=0; j_<num_cols; ++j_)
-      p[j_]=0;
-    p[j] = 1;
-    p.swap(s[i]);
-    sij = p[j];
-    scaling_i = scaling[i];
-    scaling[i] = 1;
-
-    // Perform a pivot operation on the matrix
-    for (j_ = 0; j_ < num_cols; ++j_) {
-      if (j_ == j)
+      // Check if an integer solution was found.
+      if (all_integer_vars)
+        return true;
+      else
         continue;
-      const Coefficient& sij_ = p[j_];
-      if (sij_ == 0)
-        // if element j of pivot row is zero, nothing to do for this column
+    }
+
+    // Here we have a positive s[pi][pj] pivot.
+
+    // Normalize the tableau before pivoting.
+    for (dimension_type i = num_rows; i-- > 0; )
+      row_normalize(s[i], scaling[i]);
+
+    // Update basis.
+    {
+      const dimension_type var_pi = var_row[pi];
+      const dimension_type var_pj = var_column[pj];
+      var_row[pi] = var_pj;
+      var_column[pj] = var_pi;
+      basis[var_pj] = false;
+      basis[var_pi] = true;
+      mapping[var_pi] = pj;
+      mapping[var_pj] = pi;
+    }
+
+    // Create an identity row corresponding to basic variable pj.
+    s.add_zero_rows(1, Row::Flags());
+    Row& pivot = s[num_rows];
+    pivot[pj] = 1;
+
+    // Swap identity row with the pivot row previously found.
+    std::swap(pivot, s[pi]);
+    // Save original pivot scaling factor in a temporary,
+    // then reset scaling factor for identity row.
+    pivot_den = scaling[pi];
+    scaling[pi] = 1;
+
+    // Perform a pivot operation on the matrix.
+    const Coefficient& pivot_pj = pivot[pj];
+    for (dimension_type j = num_cols; j-- > 0; ) {
+      if (j == pj)
         continue;
-      for (k = 0; k < num_rows; ++k) {
-        Row& row = s[k];
-        mult = row[j] * sij_;
-        if (mult % sij != 0) {
-          // Must scale row to stay in integer case
-          gcd_assign(gcd, mult, sij);
-          exact_div_assign(scale_factor, sij, gcd);
-          for (j__=0; j__<num_cols; ++j__)
-            row[j__] *= scale_factor;
-          mult *= scale_factor;
-          scaling[k] *= scale_factor;
+      const Coefficient& pivot_j = pivot[j];
+      // Do nothing if the j-th pivot element is zero.
+      if (pivot_j == 0)
+        continue;
+      for (dimension_type i = num_rows; i-- > 0; ) {
+        Row& s_i = s[i];
+        product = s_i[pj] * pivot_j;
+        if (product % pivot_pj != 0) {
+          // Must scale row s_i to stay in integer case.
+          gcd_assign(gcd, product, pivot_pj);
+          exact_div_assign(scale_factor, pivot_pj, gcd);
+          for (dimension_type k = num_cols; k-- > 0; )
+            s_i[k] *= scale_factor;
+          product *= scale_factor;
+          scaling[i] *= scale_factor;
         }
-        row[j_] -= mult / sij;
+        PPL_ASSERT(product % pivot_pj == 0);
+        exact_div_assign(product, product, pivot_pj);
+        s_i[j] -= product;
       }
     }
-    if (sij != scaling_i) {
-      // Update column only if pivot != 1
-      for (k=0; k<num_rows; ++k) {
-        Row& row = s[k];
-        Coefficient& skj = row[j];
-        mult = skj*scaling_i;
-        if (mult % sij != 0) {
-          // as above, we must perform row scaling
-          gcd_assign(gcd, mult, sij);
-          exact_div_assign(scale_factor, sij, gcd);
-          for (j__=0; j__<num_cols; ++j__)
-            row[j__] *= scale_factor;
-          scaling[k] *= scale_factor;
-          mult *= scale_factor;
+    // Update column only if pivot coordinate != 1.
+    if (pivot_pj != pivot_den) {
+      for (dimension_type i = num_rows; i-- > 0; ) {
+        Row& s_i = s[i];
+        Coefficient& s_i_pj = s_i[pj];
+        product = s_i_pj * pivot_den;
+        if (product % pivot_pj != 0) {
+          // As above, perform row scaling.
+          gcd_assign(gcd, product, pivot_pj);
+          exact_div_assign(scale_factor, pivot_pj, gcd);
+          for (dimension_type k = num_cols; k-- > 0; )
+            s_i[k] *= scale_factor;
+          product *= scale_factor;
+          scaling[i] *= scale_factor;
         }
-        exact_div_assign(skj, mult, sij);
+        PPL_ASSERT(product % pivot_pj == 0);
+        exact_div_assign(s_i_pj, product, pivot_pj);
       }
     }
+    // Drop pivot to restore proper matrix size.
+    s.erase_to_end(num_rows);
   }
 
-  // This point is never reached
-  return false;
+  // This point should be unreachable.
+  throw std::runtime_error("PPL internal error");
 }
 
 void
