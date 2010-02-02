@@ -1486,18 +1486,16 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
   update_context(parameters, context, artificial_parameters,
                  space_dimension);
   merge_assign(context, constraints_, parameters);
-  const dimension_type n_a_d = not_a_dimension();
-  Coefficient gcd;
+  const dimension_type not_a_dim = not_a_dimension();
+
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
 
   // Main loop of the simplex algorithm
-  for(;;) {
-    dimension_type i, j;
-    dimension_type i_ = n_a_d;
-    dimension_type i__ = n_a_d;
+  while (true) {
     dimension_type num_rows = tableau.t.num_rows();
     dimension_type num_vars = tableau.s.num_columns();
     dimension_type num_params = tableau.t.num_columns();
-    Row_Sign s;
+    // Row_Sign s;
     PPL_ASSERT(OK());
 
 #ifdef NOISY_PIP
@@ -1506,51 +1504,49 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
     context.ascii_dump(std::cout);
 #endif
 
-    for (i=0; i<num_rows; ++i) {
-      Row_Sign s = sign[i];
-      if (s == UNKNOWN || s == MIXED) {
-        s = row_sign(tableau.t[i], big_dimension);
-        sign[i] = s;
-      }
+    dimension_type i_ = not_a_dim;
+    dimension_type i__ = not_a_dim;
+    for (dimension_type i = 0; i < num_rows; ++i) {
+      Row_Sign& sign_i = sign[i];
+      if (sign_i == UNKNOWN || sign_i == MIXED)
+        sign_i = row_sign(tableau.t[i], big_dimension);
+
       /* Locate first row with negative parameter row */
-      if (s == NEGATIVE && i_ == n_a_d)
+      if (sign_i == NEGATIVE && i_ == not_a_dim)
         i_ = i;
       /* Locate first row with unknown-signed parameter row */
-      if (s == MIXED && i__ == n_a_d)
+      if (sign_i == MIXED && i__ == not_a_dim)
         i__ = i;
     }
 
     /* If no negative parameter row found, try to refine the sign of
        undetermined rows using compatibility checks with the current context
     */
-    if (i_ == n_a_d && i__ != n_a_d) {
-      for (i=i__; i<num_rows; ++i) {
+    if (i_ == not_a_dim && i__ != not_a_dim) {
+      for (dimension_type i = i__; i < num_rows; ++i) {
         if (sign[i] != MIXED)
           continue;
-        s = ZERO;
+        Row_Sign new_sign = ZERO;
         if (compatibility_check(context, tableau.t[i]))
           // constraint t_i(z) >= 0 is compatible with the context
-          s = POSITIVE;
+          new_sign = POSITIVE;
         Row c(num_params, Row::Flags());
         negate_assign(c, tableau.t[i], tableau.get_denominator());
         if (compatibility_check(context, c)) {
           // constraint t_i(z) < 0 <=> -t_i(z)-1 >= 0 is compatible
-          if (s == POSITIVE)
-            s = MIXED;
-          else
-            s = NEGATIVE;
+          new_sign = (new_sign == POSITIVE) ? MIXED : NEGATIVE;
         }
-        if (s == NEGATIVE && i_ == n_a_d)
+        if (new_sign == NEGATIVE && i_ == not_a_dim)
           // first negative row found
           i_ = i;
-        if (s != MIXED) {
+        if (new_sign != MIXED) {
           // clear first mixed-sign row index if row is found to be not mixed
           if (i == i__)
-            i__ = n_a_d;
-        } else if (i__ == n_a_d)
+            i__ = not_a_dim;
+        } else if (i__ == not_a_dim)
           // first mixed-sign row found
           i__ = i;
-        sign[i] = s;
+        sign[i] = new_sign;
       }
     }
 
@@ -1559,13 +1555,13 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
        compatible with the context, the row parameter can be considered
        negative
     */
-    if (i_ == n_a_d && i__ != n_a_d) {
-      for (i=i__; i<num_rows; ++i) {
+    if (i_ == not_a_dim && i__ != not_a_dim) {
+      for (dimension_type i = i__; i < num_rows; ++i) {
         if (sign[i] != MIXED)
           continue;
         bool found = false;
         const Row& p = tableau.s[i];
-        for (j=0; j<num_vars; ++j)
+        for (dimension_type j = 0; j < num_vars; ++j)
           if (p[j] > 0) {
             found = true;
             break;
@@ -1578,47 +1574,47 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         mod_assign(mod, row[0], denom);
         row[0] -= ((mod == 0) ? denom : mod);
         if (compatibility_check(context, row)) {
-          if (i__ == n_a_d)
+          if (i__ == not_a_dim)
             i__ = i;
         } else {
           sign[i] = NEGATIVE;
-          if (i_ == n_a_d)
+          if (i_ == not_a_dim)
             i_ = i;
           if (i__ == i)
-            i__ = n_a_d;
+            i__ = not_a_dim;
         }
       }
     }
 
 #ifdef NOISY_PIP
     std::cout << "sign =";
-    for (i=0; i<sign.size(); ++i)
-      std::cout << " " << "?0+-*"[sign[i]];
-    std::cout << std::endl;
+    for (dimension_type i = 0; i < sign.size(); ++i)
+      std::cerr << " " << "?0+-*"[sign[i]];
+    std::cerr << std::endl;
 #endif
 
     /* If we have found a row i_ with negative parameters :
        Either the problem is empty, or a pivoting step is required
     */
-    if (i_ != n_a_d) {
+    if (i_ != not_a_dim) {
       /* Search for the best pivot row. */
-      dimension_type j_ = n_a_d;
-      for (i=0; i<num_rows; ++i) {
+      dimension_type j_ = not_a_dim;
+      for (dimension_type i = 0; i < num_rows; ++i) {
         if (sign[i] != NEGATIVE)
           continue;
 
+        dimension_type j;
         if (!find_lexico_minimum_column(tableau.s, mapping, basis,
                                         tableau.s[i], 0, j)) {
           /* If no positive S_ij: problem is empty */
 #ifdef NOISY_PIP
-          std::cout << "No positive pivot found: Solution = _|_"
-                    << std::endl;
+          std::cerr << "No positive pivot found: Solution = _|_\n";
 #endif
           parent_ref = 0;
           delete this;
           return UNFEASIBLE_PIP_PROBLEM;
         }
-        if (j_ == n_a_d
+        if (j_ == not_a_dim
             || tableau.is_better_pivot(mapping, basis, i, j, i_, j_)) {
           // First pivot column found
           // OR better pivot row/column pair found -> update pivot
@@ -1632,8 +1628,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       }
 
 #ifdef NOISY_PIP
-      std::cout << "Pivot row: " << i_ << " pivot column: " << j_
-                << std::endl;
+      std::cerr << "Pivot (pi, pj) = (" << pi << ", " << pj << ")\n";
 #endif
 
       /* Normalize the tableau before pivoting */
@@ -1670,15 +1665,14 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       sij_denom = tableau.get_denominator();
       /* Compute columns s[*][j] : s[k][j] -= s[k][j_] * prs[j] / sij */
       PPL_DIRTY_TEMP_COEFFICIENT(scale_factor);
-      dimension_type k;
-      for (j=0; j<num_vars; ++j) {
+      for (dimension_type j = 0; j < num_vars; ++j) {
         if (j==j_)
           continue;
         const Coefficient& prsj = prs[j];
         if (prsj == 0)
           // if element j of pivot row is zero, nothing to do for this column
           continue;
-        for (k=0; k<num_rows; ++k) {
+        for (dimension_type k = 0; k < num_rows; ++k) {
           PPL_DIRTY_TEMP_COEFFICIENT(mult);
           mult = prsj * tableau.s[k][j_];
           if (mult % sij != 0) {
@@ -1693,12 +1687,12 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       }
 
       /* Compute columns t[*][j] : t[k][j] -= t[k][j_] * prt[j] / sij */
-      for (j=0; j<num_params; ++j) {
+      for (dimension_type j = 0; j < num_params; ++j) {
         const Coefficient& prtj = prt[j];
         if (prtj == 0)
           // if element j of pivot row is zero, nothing to do for this column
           continue;
-        for (k=0; k<num_rows; ++k) {
+        for (dimension_type k = 0; k < num_rows; ++k) {
           c = prtj * tableau.s[k][j_];
           if (c % sij != 0) {
             // Must scale matrix to stay in integer case
@@ -1710,22 +1704,22 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           c /= sij;
           tableau.t[k][j] -= c;
 
-          s = sign[k];
-          if (s != MIXED) {
-            switch (s) {
+          Row_Sign& sign_k = sign[k];
+          if (sign_k != MIXED) {
+            switch (sign_k) {
                case ZERO:
                 if (c > 0)
-                  sign[k] = NEGATIVE;
+                  sign_k = NEGATIVE;
                 else if (c < 0)
-                  sign[k] = POSITIVE;
+                  sign_k = POSITIVE;
                 break;
               case POSITIVE:
                 if (c > 0)
-                  sign[k] = MIXED;
+                  sign_k = MIXED;
                 break;
               case NEGATIVE:
                 if (c < 0)
-                  sign[k] = MIXED;
+                  sign_k = MIXED;
                 break;
               default:
                 break;
@@ -1741,7 +1735,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       /* compute column s[*][j_] : s[k][j_] /= sij */
       if (sij != sij_denom) {
         // Update column only if pivot != 1
-        for (k=0; k<num_rows; ++k) {
+        for (dimension_type k = 0; k < num_rows; ++k) {
           Coefficient& c = tableau.s[k][j_];
           PPL_DIRTY_TEMP_COEFFICIENT(numerator);
           numerator = c * sij_denom;
@@ -1759,17 +1753,18 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
     }
 
     /* Otherwise, we have found a row i__ with mixed parameter sign. */
-    else if (i__ != n_a_d) {
-      dimension_type neg = n_a_d;
+    else if (i__ != not_a_dim) {
+      dimension_type neg = not_a_dim;
       PPL_DIRTY_TEMP_COEFFICIENT(ns);
       PPL_DIRTY_TEMP_COEFFICIENT(score);
 
       /* Look for a constraint with mixed parameter sign with no positive
        * variable coefficients */
-      for (i=i__; i<num_rows; ++i) {
+      for (dimension_type i = i__; i < num_rows; ++i) {
         if (sign[i] != MIXED)
           continue;
-        for (j=0; j<num_vars; ++j) {
+        dimension_type j;
+        for (j = 0; j < num_vars; ++j) {
           if (tableau.s[i][j] > 0)
             break;
         }
@@ -1777,20 +1772,19 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
          * implicated tautologies if some exist */
         if (j == num_vars) {
           score = 0;
-          for (j=0; j<num_params; ++j)
+          for (dimension_type j = 0; j < num_params; ++j)
             score += tableau.t[i][j];
-          if (neg == n_a_d || score < ns) {
+          if (neg == not_a_dim || score < ns) {
             neg = i;
             ns = score;
           }
         }
       }
-      if (neg != n_a_d) {
-        i = neg;
+      if (neg != not_a_dim) {
+        dimension_type i = neg;
 #ifdef NOISY_PIP
-        std::cout << "Found row with unknown parameter sign and negative "
-                     "variable coefficients: " << i
-                  << std::endl;
+        std::cerr << "Found row with unknown parameter sign and negative "
+          "variable coefficients: " << i << "\n";
 #endif
         Row r(tableau.t[i]);
         r.normalize();
@@ -1811,15 +1805,15 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         PPL_DIRTY_TEMP_COEFFICIENT(score);
         PPL_DIRTY_TEMP_COEFFICIENT(best);
         best = 0;
-        dimension_type best_i = n_a_d;
-        for (i = i__; i < num_rows; ++i) {
+        dimension_type best_i = not_a_dim;
+        for (dimension_type i = i__; i < num_rows; ++i) {
           if (sign[i] != MIXED)
             continue;
           const Row& row = tableau.t[i];
           score = 0;
-          for (j = 0; j < num_params; ++j)
+          for (dimension_type j = 0; j < num_params; ++j)
             score += row[j];
-          if (best_i == n_a_d || score < best) {
+          if (best_i == not_a_dim || score < best) {
             best = score;
             best_i = i;
           }
@@ -1832,9 +1826,9 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         {
           using namespace IO_Operators;
           Linear_Expression e;
-          Variables_Set::const_iterator p;
-          dimension_type j;
-          for (p = parameters.begin(), j=1; p != parameters.end(); ++p, ++j)
+          dimension_type j = 1;
+          for (Variables_Set::const_iterator p = parameters.begin(),
+                 p_end = parameters.end(); p != p_end; ++p, ++j)
             e += test[j] * Variable(*p);
           e += test[0];
           std::cout << "Found row with mixed parameter sign: " << i__
@@ -1907,12 +1901,13 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
 
       // Look for a row with non integer parameter coefficients (first is okay)
       const Coefficient& d = tableau.get_denominator();
-      for (i=0; i<num_vars; ++i) {
+      dimension_type i;
+      for (i = 0; i < num_vars; ++i) {
         if (basis[i])
           // basic variable = 0 -> integer
           continue;
         const Row& row = tableau.t[mapping[i]];
-        for (j=0; j<num_params; ++j) {
+        for (dimension_type j = 0; j < num_params; ++j) {
           if (row[j] % d != 0)
             goto endsearch;
         }
@@ -1933,8 +1928,8 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         = problem.control_parameters[PIP_Problem::CUTTING_STRATEGY];
       if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_FIRST) {
         // Find the first row with simplest parametric part.
-        dimension_type best_i = n_a_d;
-        dimension_type best_pcount = n_a_d;
+        dimension_type best_i = not_a_dim;
+        dimension_type best_pcount = not_a_dim;
         dimension_type pcount;
         for (i_ = 0; i_ < num_vars; ++i_) {
           if (basis[i_])
@@ -1942,12 +1937,12 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           i = mapping[i_];
           const Row& row_t = tableau.t[i];
           pcount = 0;
-          for (j = 0; j < num_params; ++j) {
+          for (dimension_type j = 0; j < num_params; ++j) {
             mod_assign(mod, row_t[j], d);
             if (mod != 0)
               ++pcount;
           }
-          if (pcount != 0 && (best_i == n_a_d || (pcount < best_pcount))) {
+          if (pcount != 0 && (best_i == not_a_dim || (pcount < best_pcount))) {
             best_pcount = pcount;
             best_i = i;
           }
@@ -1963,8 +1958,8 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         PPL_DIRTY_TEMP_COEFFICIENT(score2);
         PPL_DIRTY_TEMP_COEFFICIENT(best_score);
         best_score = 0;
-        dimension_type best_i = n_a_d;
-        dimension_type best_pcount = n_a_d;
+        dimension_type best_i = not_a_dim;
+        dimension_type best_pcount = not_a_dim;
         dimension_type pcount;
         std::vector<dimension_type> all_best_is;
         for (i_ = 0; i_ < num_vars; ++i_) {
@@ -1975,7 +1970,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           const Row& row_s = tableau.s[i];
           score = 0;
           pcount = 0;
-          for (j = 0; j < num_params; ++j) {
+          for (dimension_type j = 0; j < num_params; ++j) {
             mod_assign(mod, row_t[j], d);
             if (mod != 0) {
               score += d - mod;
@@ -1983,7 +1978,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
             }
           }
           score2 = 0;
-          for (j = 0; j < num_vars; ++j) {
+          for (dimension_type j = 0; j < num_vars; ++j) {
             mod_assign(mod, row_s[j], d);
             score2 += d - mod;
           }
@@ -1998,7 +1993,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
                     better)
           */
           if (pcount != 0
-              && (best_i == n_a_d
+              && (best_i == not_a_dim
                   || (pcount < best_pcount)
                   || (pcount == best_pcount && score > best_score))) {
             if (pcount < best_pcount)
@@ -2017,7 +2012,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
             generate_cut(all_best_is[i], parameters, context, space_dimension);
         }
       }
-    } // if (i__ != n_a_d)
+    } // if (i__ != not_a_dim)
   } // Main loop of the simplex algorithm
 
   return OPTIMIZED_PIP_PROBLEM;
