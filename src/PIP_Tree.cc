@@ -744,34 +744,44 @@ bool
 PIP_Solution_Node::Tableau
 ::is_better_pivot(const std::vector<dimension_type>& mapping,
                   const std::vector<bool>& basis,
-                  const dimension_type i,
-                  const dimension_type j,
-                  const dimension_type i_,
-                  const dimension_type j_) const {
-  dimension_type k;
-  dimension_type num_params = t.num_columns();
-  dimension_type num_rows = s.num_rows();
-  const Row& s_i = s[i];
-  const Row& s_i_ = s[i_];
-  const Row& t_i = t[i];
-  const Row& t_i_ = t[i_];
-  bool columns_are_different = false;
-  for (k=0; k<num_params; ++k) {
-    PPL_DIRTY_TEMP_COEFFICIENT(t_ikXs_i_j_);
-    PPL_DIRTY_TEMP_COEFFICIENT(t_i_kXs_ij);
-    t_ikXs_i_j_ = t_i[k] * s_i_[j_];
-    t_i_kXs_ij = t_i_[k] * s_i[j];
-    for (dimension_type x=0; x<num_rows; ++x) {
-      const Row& s_x = s[x];
-      if (s_x[j] * t_ikXs_i_j_ != s_x[j_] * t_i_kXs_ij) {
-        columns_are_different = true;
-        goto endloop;
+                  const dimension_type row_0,
+                  const dimension_type col_0,
+                  const dimension_type row_1,
+                  const dimension_type col_1) const {
+  const dimension_type num_params = t.num_columns();
+  const dimension_type num_rows = s.num_rows();
+  const Row& s_0 = s[row_0];
+  const Row& s_1 = s[row_1];
+  const Coefficient& s_0_0 = s_0[col_0];
+  const Coefficient& s_1_1 = s_1[col_1];
+  const Row& t_0 = t[row_0];
+  const Row& t_1 = t[row_1];
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff_0);
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff_1);
+  PPL_DIRTY_TEMP_COEFFICIENT(product_0);
+  PPL_DIRTY_TEMP_COEFFICIENT(product_1);
+  // On exit from the loop, if j_mismatch == num_params then
+  // no column mismatch was found.
+  dimension_type j_mismatch = num_params;
+  for (dimension_type j = 0; j < num_params; ++j) {
+    coeff_0 = t_0[j] * s_1_1;
+    coeff_1 = t_1[j] * s_0_0;
+    for (dimension_type i = 0; i < num_rows; ++i) {
+      const Row& s_i = s[i];
+      product_0 = coeff_0 * s_i[col_0];
+      product_1 = coeff_1 * s_i[col_1];
+      if (product_0 != product_1) {
+        // Mismatch found: exit from both loops.
+        j_mismatch = j;
+        goto end_loop;
       }
     }
   }
-endloop:
-  return columns_are_different
-         && column_lower(s, mapping, basis, s_i, j, s_i_, j_, t_i[k], t_i_[k]);
+
+ end_loop:
+  return (j_mismatch != num_params)
+    && column_lower(s, mapping, basis, s_0, col_0, s_1, col_1,
+                    t_0[j_mismatch], t_1[j_mismatch]);
 }
 
 void
