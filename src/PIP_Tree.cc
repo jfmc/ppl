@@ -1168,7 +1168,7 @@ PIP_Solution_Node::compatibility_check(const Matrix& ctx, const Row& cnst) {
       if (s_i[0] < 0) {
         dimension_type j;
         if (!find_lexico_minimum_column(s, mapping, basis, s_i, 1, j)) {
-          // No positive pivot candidate: unsatisfiable problem.
+          // No positive pivot candidate: unfeasible problem.
           return false;
         }
         // Update pair (pi, pj) if they are still unset or
@@ -1233,8 +1233,8 @@ PIP_Solution_Node::compatibility_check(const Matrix& ctx, const Row& cnst) {
       const dimension_type var_pj = var_column[pj];
       var_row[pi] = var_pj;
       var_column[pj] = var_pi;
-      basis[var_pj] = false;
       basis[var_pi] = true;
+      basis[var_pj] = false;
       mapping[var_pi] = pj;
       mapping[var_pj] = pi;
     }
@@ -1493,20 +1493,18 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
                          dimension_type space_dimension) {
   Matrix context(ctx);
   Variables_Set parameters(params);
-  update_context(parameters, context, artificial_parameters,
-                 space_dimension);
+  update_context(parameters, context, artificial_parameters, space_dimension);
   merge_assign(context, constraints_, parameters);
   const dimension_type not_a_dim = not_a_dimension();
 
-  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-
-  // Main loop of the simplex algorithm
+  // Main loop of the simplex algorithm.
   while (true) {
-    dimension_type num_rows = tableau.t.num_rows();
-    dimension_type num_vars = tableau.s.num_columns();
-    dimension_type num_params = tableau.t.num_columns();
-    // Row_Sign s;
     PPL_ASSERT(OK());
+
+    const dimension_type num_rows = tableau.t.num_rows();
+    const dimension_type num_vars = tableau.s.num_columns();
+    const dimension_type num_params = tableau.t.num_columns();
+    const Coefficient& tableau_den = tableau.get_denominator();
 
 #ifdef NOISY_PIP
     tableau.ascii_dump(std::cout);
@@ -1514,84 +1512,96 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
     context.ascii_dump(std::cout);
 #endif
 
-    dimension_type i_ = not_a_dim;
-    dimension_type i__ = not_a_dim;
+    // (Re-) Compute parameter row signs.
+    // While at it, keep track of the first parameter rows
+    // having negative and mixed sign.
+    dimension_type first_negative = not_a_dim;
+    dimension_type first_mixed = not_a_dim;
     for (dimension_type i = 0; i < num_rows; ++i) {
       Row_Sign& sign_i = sign[i];
       if (sign_i == UNKNOWN || sign_i == MIXED)
         sign_i = row_sign(tableau.t[i], big_dimension);
 
-      /* Locate first row with negative parameter row */
-      if (sign_i == NEGATIVE && i_ == not_a_dim)
-        i_ = i;
-      /* Locate first row with unknown-signed parameter row */
-      if (sign_i == MIXED && i__ == not_a_dim)
-        i__ = i;
+      if (sign_i == NEGATIVE && first_negative == not_a_dim)
+        first_negative = i;
+      else if (sign_i == MIXED && first_mixed == not_a_dim)
+        first_mixed = i;
     }
 
-    /* If no negative parameter row found, try to refine the sign of
-       undetermined rows using compatibility checks with the current context
-    */
-    if (i_ == not_a_dim && i__ != not_a_dim) {
-      for (dimension_type i = i__; i < num_rows; ++i) {
+    // If no negative parameter row was found, try to refine the sign of
+    // mixed rows using compatibility checks with the current context.
+    if (first_negative == not_a_dim && first_mixed != not_a_dim) {
+      for (dimension_type i = first_mixed; i < num_rows; ++i) {
+        // Consider mixed sign parameter rows only.
         if (sign[i] != MIXED)
           continue;
+        const Row& t_i = tableau.t[i];
         Row_Sign new_sign = ZERO;
-        if (compatibility_check(context, tableau.t[i]))
-          // constraint t_i(z) >= 0 is compatible with the context
+        // Check compatibility for constraint t_i(z) >= 0.
+        if (compatibility_check(context, t_i))
           new_sign = POSITIVE;
+        // Check compatibility for constraint t_i(z) < 0,
+        // i.e., -t_i(z) - 1 >= 0.
         Row c(num_params, Row::Flags());
-        negate_assign(c, tableau.t[i], tableau.get_denominator());
-        if (compatibility_check(context, c)) {
-          // constraint t_i(z) < 0 <=> -t_i(z)-1 >= 0 is compatible
+        negate_assign(c, t_i, tableau_den);
+        if (compatibility_check(context, c))
           new_sign = (new_sign == POSITIVE) ? MIXED : NEGATIVE;
-        }
-        if (new_sign == NEGATIVE && i_ == not_a_dim)
-          // first negative row found
-          i_ = i;
-        if (new_sign != MIXED) {
-          // clear first mixed-sign row index if row is found to be not mixed
-          if (i == i__)
-            i__ = not_a_dim;
-        } else if (i__ == not_a_dim)
-          // first mixed-sign row found
-          i__ = i;
+        // Update sign for parameter row i.
         sign[i] = new_sign;
+        // Maybe update first_negative and first_mixed.
+        if (new_sign == NEGATIVE && first_negative == not_a_dim) {
+          first_negative = i;
+          if (i == first_mixed)
+            first_mixed = not_a_dim;
+        }
+        else if (new_sign == MIXED) {
+          if (first_mixed == not_a_dim)
+            first_mixed = i;
+        }
+        else if (i == first_mixed)
+          first_mixed = not_a_dim;
       }
     }
 
-    /* If there remains a row i with undetermined sign and at least one
-       positive S_ij coefficient, where constraint t_i(z) > 0 is not
-       compatible with the context, the row parameter can be considered
-       negative
-    */
-    if (i_ == not_a_dim && i__ != not_a_dim) {
-      for (dimension_type i = i__; i < num_rows; ++i) {
+    // If there still is no negative parameter row and a mixed sign
+    // parameter row (first_mixed) such that:
+    //  - it has at least one positive variable coefficient;
+    //  - constraint t_i(z) > 0 is not compatible with the context;
+    // then this parameter row can be considered negative.
+    if (first_negative == not_a_dim && first_mixed != not_a_dim) {
+      for (dimension_type i = first_mixed; i < num_rows; ++i) {
+        // Consider mixed sign parameter rows only.
         if (sign[i] != MIXED)
           continue;
-        bool found = false;
-        const Row& p = tableau.s[i];
-        for (dimension_type j = 0; j < num_vars; ++j)
-          if (p[j] > 0) {
-            found = true;
+        // Check for a positive variable coefficient.
+        const Row& s_i = tableau.s[i];
+        bool has_positive = false;
+        for (dimension_type j = num_vars; j-- > 0; )
+          if (s_i[j] > 0) {
+            has_positive = true;
             break;
           }
-        if (!found)
+        if (!has_positive)
           continue;
+        // Check compatibility of constraint t_i(z) > 0.
         Row row(tableau.t[i]);
-        const Coefficient& denom = tableau.get_denominator();
         PPL_DIRTY_TEMP_COEFFICIENT(mod);
-        mod_assign(mod, row[0], denom);
-        row[0] -= ((mod == 0) ? denom : mod);
-        if (compatibility_check(context, row)) {
-          if (i__ == not_a_dim)
-            i__ = i;
-        } else {
+        mod_assign(mod, row[0], tableau_den);
+        row[0] -= (mod == 0) ? tableau_den : mod;
+        const bool compatible = compatibility_check(context, row);
+        // Maybe update sign (and first_* indices).
+        if (compatible) {
+          // Sign is still mixed.
+          if (first_mixed == not_a_dim)
+            first_mixed = i;
+        }
+        else {
+          // Sign becomes negative (i.e., no longer mixed).
           sign[i] = NEGATIVE;
-          if (i_ == not_a_dim)
-            i_ = i;
-          if (i__ == i)
-            i__ = not_a_dim;
+          if (first_negative == not_a_dim)
+            first_negative = i;
+          if (first_mixed == i)
+            first_mixed = not_a_dim;
         }
       }
     }
@@ -1603,20 +1613,20 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
     std::cerr << std::endl;
 #endif
 
-    /* If we have found a row i_ with negative parameters :
-       Either the problem is empty, or a pivoting step is required
-    */
-    if (i_ != not_a_dim) {
-      /* Search for the best pivot row. */
-      dimension_type j_ = not_a_dim;
-      for (dimension_type i = 0; i < num_rows; ++i) {
+    // If we have found a negative parameter row, then
+    // either the problem is unfeasible, or a pivoting step is required.
+    if (first_negative != not_a_dim) {
+
+      // Search for the best pivot row.
+      dimension_type pi = not_a_dim;
+      dimension_type pj = not_a_dim;
+      for (dimension_type i = first_negative; i < num_rows; ++i) {
         if (sign[i] != NEGATIVE)
           continue;
-
         dimension_type j;
         if (!find_lexico_minimum_column(tableau.s, mapping, basis,
                                         tableau.s[i], 0, j)) {
-          /* If no positive S_ij: problem is empty */
+          // No positive s_ij was found: problem is unfeasible.
 #ifdef NOISY_PIP
           std::cerr << "No positive pivot found: Solution = _|_\n";
 #endif
@@ -1624,15 +1634,14 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           delete this;
           return UNFEASIBLE_PIP_PROBLEM;
         }
-        if (j_ == not_a_dim
-            || tableau.is_better_pivot(mapping, basis, i, j, i_, j_)) {
-          // First pivot column found
-          // OR better pivot row/column pair found -> update pivot
-          i_ = i;
-          j_ = j;
+        if (pj == not_a_dim
+            || tableau.is_better_pivot(mapping, basis, i, j, pi, pj)) {
+          // Update pivot indices.
+          pi = i;
+          pj = j;
           if (problem.control_parameters[PIP_Problem::PIVOT_ROW_STRATEGY]
               == PIP_Problem::PIVOT_ROW_STRATEGY_FIRST)
-            // stop at first valid row
+            // Stop at first valid row.
             break;
         }
       }
@@ -1641,100 +1650,135 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       std::cerr << "Pivot (pi, pj) = (" << pi << ", " << pj << ")\n";
 #endif
 
-      /* Normalize the tableau before pivoting */
+      // Normalize the tableau before pivoting.
       tableau.normalize();
 
-      PPL_DIRTY_TEMP_COEFFICIENT(sij);
-      sij = tableau.s[i_][j_];
+      // Perform pivot operation.
 
-      /* ** Perform pivot operation ** */
-      PPL_DIRTY_TEMP_COEFFICIENT(c);
+      // Update basis.
+      {
+        const dimension_type var_pi = var_row[pi];
+        const dimension_type var_pj = var_column[pj];
+        var_row[pi] = var_pj;
+        var_column[pj] = var_pi;
+        basis[var_pi] = true;
+        basis[var_pj] = false;
+        mapping[var_pi] = pj;
+        mapping[var_pj] = pi;
+      }
 
-      /* update basis */
-      dimension_type var_j = var_column[j_];
-      dimension_type var_i = var_row[i_];
-      basis[var_j] = false;
-      mapping[var_j] = i_;
-      var_row[i_] = var_j;
-      basis[var_i] = true;
-      mapping[var_i] = j_;
-      var_column[j_] = var_i;
-
-      /* create the identity matrix row corresponding to basic variable j_ */
-      tableau.s.add_zero_rows(1, Row::Flags());
-      Row& prs = tableau.s[num_rows];
-      tableau.t.add_zero_rows(1, Row::Flags());
-      Row& prt = tableau.t[num_rows];
-      prs[j_] = tableau.get_denominator();
-      /* swap it with pivot row which would become identity after pivoting */
-      prs.swap(tableau.s[i_]);
-      prt.swap(tableau.t[i_]);
-      sign[i_] = ZERO;
-      /* save current denominator corresponding to sij */
-      PPL_DIRTY_TEMP_COEFFICIENT(sij_denom);
-      sij_denom = tableau.get_denominator();
-      /* Compute columns s[*][j] : s[k][j] -= s[k][j_] * prs[j] / sij */
+      PPL_DIRTY_TEMP_COEFFICIENT(product);
+      PPL_DIRTY_TEMP_COEFFICIENT(gcd);
       PPL_DIRTY_TEMP_COEFFICIENT(scale_factor);
-      for (dimension_type j = 0; j < num_vars; ++j) {
-        if (j==j_)
+
+      // Create identity rows corresponding to basic variable pj.
+      tableau.s.add_zero_rows(1, Row::Flags());
+      tableau.t.add_zero_rows(1, Row::Flags());
+      Row& s_pivot = tableau.s[num_rows];
+      Row& t_pivot = tableau.t[num_rows];
+      // Save current pivot denominator.
+      PPL_DIRTY_TEMP_COEFFICIENT(pivot_den);
+      pivot_den = tableau.get_denominator();
+      // Let the (scaled) pivot coordinate be 1.
+      s_pivot[pj] = pivot_den;
+
+      // Swap identity row with the pivot row previosuly found.
+      s_pivot.swap(tableau.s[pi]);
+      t_pivot.swap(tableau.t[pi]);
+      sign[pi] = ZERO;
+
+      PPL_DIRTY_TEMP_COEFFICIENT(s_pivot_pj);
+      s_pivot_pj = s_pivot[pj];
+
+      // Compute columns s[*][j] :
+      // s[i][j] -= s[i][pj] * s_pivot[j] / s_pivot_pj;
+      for (dimension_type j = num_vars; j-- > 0; ) {
+        if (j == pj)
           continue;
-        const Coefficient& prsj = prs[j];
-        if (prsj == 0)
-          // if element j of pivot row is zero, nothing to do for this column
+        const Coefficient& s_pivot_j = s_pivot[j];
+        // Do nothing if the j-th pivot element is zero.
+        if (s_pivot_j == 0)
           continue;
-        for (dimension_type k = 0; k < num_rows; ++k) {
-          PPL_DIRTY_TEMP_COEFFICIENT(mult);
-          mult = prsj * tableau.s[k][j_];
-          if (mult % sij != 0) {
-            // Must scale matrix to stay in integer case
-            gcd_assign(gcd, mult, sij);
-            scale_factor = sij/gcd;
+        // ENEA: FIXME: why iterating downwards makes a difference?
+        // for (dimension_type i = num_rows; i-- > 0; ) {
+        for (dimension_type i = 0; i < num_rows; ++i) {
+          Row& s_i = tableau.s[i];
+          product = s_pivot_j * s_i[pj];
+          if (product % s_pivot_pj != 0) {
+            // Must scale matrix to stay in integer case.
+            gcd_assign(gcd, product, s_pivot_pj);
+            exact_div_assign(scale_factor, s_pivot_pj, gcd);
             tableau.scale(scale_factor);
-            mult *= scale_factor;
+            product *= scale_factor;
           }
-          tableau.s[k][j] -= mult / sij;
+          PPL_ASSERT(product % s_pivot_pj == 0);
+          exact_div_assign(product, product, s_pivot_pj);
+          s_i[j] -= product;
         }
       }
 
-      /* Compute columns t[*][j] : t[k][j] -= t[k][j_] * prt[j] / sij */
-      for (dimension_type j = 0; j < num_params; ++j) {
-        const Coefficient& prtj = prt[j];
-        if (prtj == 0)
-          // if element j of pivot row is zero, nothing to do for this column
+      // Compute columns t[*][j] :
+      // t[i][j] -= t[i][pj] * t_pivot[j] / s_pivot_pj;
+      // ENEA: FIXME: according to code below, this comment should read:
+      // t[i][j] -= s[i][pj] * t_pivot[j] / s_pivot_pj;
+      for (dimension_type j = num_params; j-- > 0; ) {
+        const Coefficient& t_pivot_j = t_pivot[j];
+        // Do nothing if the j-th pivot element is zero.
+        if (t_pivot_j == 0)
           continue;
-        for (dimension_type k = 0; k < num_rows; ++k) {
-          c = prtj * tableau.s[k][j_];
-          if (c % sij != 0) {
-            // Must scale matrix to stay in integer case
-            gcd_assign(gcd, c, sij);
-            scale_factor = sij/gcd;
+        for (dimension_type i = num_rows; i-- > 0; ) {
+          Row& s_i = tableau.s[i];
+          product = t_pivot_j * s_i[pj];
+          if (product % s_pivot_pj != 0) {
+            // Must scale matrix to stay in integer case.
+            gcd_assign(gcd, product, s_pivot_pj);
+            exact_div_assign(scale_factor, s_pivot_pj, gcd);
             tableau.scale(scale_factor);
-            c *= scale_factor;
+            product *= scale_factor;
           }
-          c /= sij;
-          tableau.t[k][j] -= c;
+          PPL_ASSERT(product % s_pivot_pj == 0);
+          exact_div_assign(product, product, s_pivot_pj);
+          tableau.t[i][j] -= product;
 
-          Row_Sign& sign_k = sign[k];
-          if (sign_k != MIXED) {
-            switch (sign_k) {
-               case ZERO:
-                if (c > 0)
-                  sign_k = NEGATIVE;
-                else if (c < 0)
-                  sign_k = POSITIVE;
-                break;
-              case POSITIVE:
-                if (c > 0)
-                  sign_k = MIXED;
-                break;
-              case NEGATIVE:
-                if (c < 0)
-                  sign_k = MIXED;
-                break;
-              default:
-                break;
-            }
+          // Update row sign.
+          Row_Sign& sign_i = sign[i];
+          switch (sign_i) {
+          case ZERO:
+            if (product > 0)
+              sign_i = NEGATIVE;
+            else if (product < 0)
+              sign_i = POSITIVE;
+            break;
+          case POSITIVE:
+            if (product > 0)
+              sign_i = MIXED;
+            break;
+          case NEGATIVE:
+            if (product < 0)
+              sign_i = MIXED;
+            break;
+          default:
+            break;
           }
+        }
+      }
+
+      // Compute column s[*][pj] : s[i][pj] /= s_pivot_pj;
+      // Update column only if pivot coordinate != 1.
+      if (s_pivot_pj != pivot_den) {
+        for (dimension_type i = num_rows; i-- > 0; ) {
+          Row& s_i = tableau.s[i];
+          Coefficient& s_i_pj = s_i[pj];
+          product = s_i_pj * pivot_den;
+          if (product % s_pivot_pj != 0) {
+            // As above, perform matrix scaling.
+            gcd_assign(gcd, product, s_pivot_pj);
+            exact_div_assign(scale_factor, s_pivot_pj, gcd);
+            tableau.scale(scale_factor);
+            product *= scale_factor;
+          }
+          PPL_ASSERT(product % s_pivot_pj == 0);
+          exact_div_assign(s_i_pj, product, s_pivot_pj);
         }
       }
 
@@ -1742,35 +1786,23 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       tableau.s.erase_to_end(num_rows);
       tableau.t.erase_to_end(num_rows);
 
-      /* compute column s[*][j_] : s[k][j_] /= sij */
-      if (sij != sij_denom) {
-        // Update column only if pivot != 1
-        for (dimension_type k = 0; k < num_rows; ++k) {
-          Coefficient& c = tableau.s[k][j_];
-          PPL_DIRTY_TEMP_COEFFICIENT(numerator);
-          numerator = c * sij_denom;
-          if (numerator % sij != 0) {
-            PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-            gcd_assign(gcd, numerator, sij);
-            scale_factor = sij/gcd;
-            tableau.scale(scale_factor);
-            numerator *= scale_factor;
-          }
-          c = numerator / sij;
-        }
-      }
+      // Pivoting process ended: jump to next iteration.
       solution_valid = false;
-    }
+      continue;
+    } // if (first_negative != not_a_dim)
 
-    /* Otherwise, we have found a row i__ with mixed parameter sign. */
-    else if (i__ != not_a_dim) {
+
+    PPL_ASSERT(first_negative == not_a_dim);
+    // If no negative parameter row was found,
+    // but a mixed parameter row was found ...
+    if (first_mixed != not_a_dim) {
       dimension_type neg = not_a_dim;
       PPL_DIRTY_TEMP_COEFFICIENT(ns);
       PPL_DIRTY_TEMP_COEFFICIENT(score);
 
       /* Look for a constraint with mixed parameter sign with no positive
        * variable coefficients */
-      for (dimension_type i = i__; i < num_rows; ++i) {
+      for (dimension_type i = first_mixed; i < num_rows; ++i) {
         if (sign[i] != MIXED)
           continue;
         dimension_type j;
@@ -1816,7 +1848,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         PPL_DIRTY_TEMP_COEFFICIENT(best);
         best = 0;
         dimension_type best_i = not_a_dim;
-        for (dimension_type i = i__; i < num_rows; ++i) {
+        for (dimension_type i = first_mixed; i < num_rows; ++i) {
           if (sign[i] != MIXED)
             continue;
           const Row& row = tableau.t[i];
@@ -1828,9 +1860,9 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
             best_i = i;
           }
         }
-        i__ = best_i;
+        first_mixed = best_i;
 
-        Row test(tableau.t[i__]);
+        Row test(tableau.t[first_mixed]);
         test.normalize();
 #ifdef NOISY_PIP
         {
@@ -1841,7 +1873,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
                  p_end = parameters.end(); p != p_end; ++p, ++j)
             e += test[j] * Variable(*p);
           e += test[0];
-          std::cout << "Found row with mixed parameter sign: " << i__
+          std::cout << "Found row with mixed parameter sign: " << first_mixed
                     << "\nSolution depends on the sign of parameter " << e
                     << std::endl;
         }
@@ -1896,133 +1928,136 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         parent_ref = parent;
         return OPTIMIZED_PIP_PROBLEM;
       }
-    }
+      // End processing for a mixed parameter row: jump to next iteration.
+      continue;
+    } // if (first_mixed != not_a_dim)
 
-    /* Otherwise, all parameters are positive: we have found a continuous
-     * solution. If the solution happens to be integer, then it is the
-     * solution of the  integer problem. Otherwise, we may need to generate
-     * a new cut to try and get back into the integer case. */
-    else {
+
+    PPL_ASSERT(first_negative == not_a_dim);
+    PPL_ASSERT(first_mixed == not_a_dim);
+    // Here all parameters are positive: we have found a continuous
+    // solution. If the solution happens to be integer, then it is the
+    // solution of the  integer problem. Otherwise, we may need to generate
+    // a new cut to try and get back into the integer case.
 #ifdef NOISY_PIP
-      std::cout << "All parameters are positive."
+    std::cout << "All parameters are positive.\n";
+#endif
+    tableau.normalize();
+
+    // Look for a row with non integer parameter coefficients (first is okay)
+    const Coefficient& d = tableau.get_denominator();
+    dimension_type i;
+    for (i = 0; i < num_vars; ++i) {
+      if (basis[i])
+        // basic variable = 0 -> integer
+        continue;
+      const Row& row = tableau.t[mapping[i]];
+      for (dimension_type j = 0; j < num_params; ++j) {
+        if (row[j] % d != 0)
+          goto endsearch;
+      }
+    }
+  endsearch:
+
+    if (i == num_vars) {
+      /* The solution is integer */
+#ifdef NOISY_PIP
+      std::cout << "Solution found for problem in current node."
                 << std::endl;
 #endif
-      tableau.normalize();
-
-      // Look for a row with non integer parameter coefficients (first is okay)
-      const Coefficient& d = tableau.get_denominator();
-      dimension_type i;
-      for (i = 0; i < num_vars; ++i) {
-        if (basis[i])
-          // basic variable = 0 -> integer
+      return OPTIMIZED_PIP_PROBLEM;
+    }
+    /* The solution is non-integer. We have to generate a cut. */
+    PPL_DIRTY_TEMP_COEFFICIENT(mod);
+    const PIP_Problem::Control_Parameter_Value cutting_strategy
+      = problem.control_parameters[PIP_Problem::CUTTING_STRATEGY];
+    if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_FIRST) {
+      // Find the first row with simplest parametric part.
+      dimension_type best_i = not_a_dim;
+      dimension_type best_pcount = not_a_dim;
+      dimension_type pcount;
+      for (dimension_type k = 0; k < num_vars; ++k) {
+        if (basis[k])
           continue;
-        const Row& row = tableau.t[mapping[i]];
+        i = mapping[k];
+        const Row& row_t = tableau.t[i];
+        pcount = 0;
         for (dimension_type j = 0; j < num_params; ++j) {
-          if (row[j] % d != 0)
-            goto endsearch;
+          mod_assign(mod, row_t[j], d);
+          if (mod != 0)
+            ++pcount;
+        }
+        if (pcount != 0 && (best_i == not_a_dim || (pcount < best_pcount))) {
+          best_pcount = pcount;
+          best_i = i;
         }
       }
-      endsearch:
-
-      if (i == num_vars) {
-        /* The solution is integer */
-#ifdef NOISY_PIP
-        std::cout << "Solution found for problem in current node."
-                  << std::endl;
-#endif
-        return OPTIMIZED_PIP_PROBLEM;
-      }
-      /* The solution is non-integer. We have to generate a cut. */
-      PPL_DIRTY_TEMP_COEFFICIENT(mod);
-      const PIP_Problem::Control_Parameter_Value cutting_strategy
-        = problem.control_parameters[PIP_Problem::CUTTING_STRATEGY];
-      if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_FIRST) {
-        // Find the first row with simplest parametric part.
-        dimension_type best_i = not_a_dim;
-        dimension_type best_pcount = not_a_dim;
-        dimension_type pcount;
-        for (i_ = 0; i_ < num_vars; ++i_) {
-          if (basis[i_])
-            continue;
-          i = mapping[i_];
-          const Row& row_t = tableau.t[i];
-          pcount = 0;
-          for (dimension_type j = 0; j < num_params; ++j) {
-            mod_assign(mod, row_t[j], d);
-            if (mod != 0)
-              ++pcount;
-          }
-          if (pcount != 0 && (best_i == not_a_dim || (pcount < best_pcount))) {
-            best_pcount = pcount;
-            best_i = i;
+      generate_cut(best_i, parameters, context, space_dimension);
+    }
+    else {
+      assert(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST
+             || cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL);
+      /* Find the row with simplest parametric part which will generate
+         the "deepest" cut */
+      PPL_DIRTY_TEMP_COEFFICIENT(score);
+      PPL_DIRTY_TEMP_COEFFICIENT(score2);
+      PPL_DIRTY_TEMP_COEFFICIENT(best_score);
+      best_score = 0;
+      dimension_type best_i = not_a_dim;
+      dimension_type best_pcount = not_a_dim;
+      dimension_type pcount;
+      std::vector<dimension_type> all_best_is;
+      for (dimension_type k = 0; k < num_vars; ++k) {
+        if (basis[k])
+          continue;
+        i = mapping[k];
+        const Row& row_t = tableau.t[i];
+        const Row& row_s = tableau.s[i];
+        score = 0;
+        pcount = 0;
+        for (dimension_type j = 0; j < num_params; ++j) {
+          mod_assign(mod, row_t[j], d);
+          if (mod != 0) {
+            score += d - mod;
+            ++pcount;
           }
         }
+        score2 = 0;
+        for (dimension_type j = 0; j < num_vars; ++j) {
+          mod_assign(mod, row_s[j], d);
+          score2 += d - mod;
+        }
+        score *= score2;
+        /* Choose row i if:
+           row i is non-integer
+           AND (no row has been chosen yet
+           OR row i has number of non-integer parameter
+           coefficients lower than the current best row
+           OR row i has the same number of non-integer parameter
+           coefficients as the current best row, and its score is
+           better)
+        */
+        if (pcount != 0
+            && (best_i == not_a_dim
+                || (pcount < best_pcount)
+                || (pcount == best_pcount && score > best_score))) {
+          if (pcount < best_pcount)
+            all_best_is.clear();
+          best_score = score;
+          best_pcount = pcount;
+          best_i = i;
+        }
+        if (pcount > 0)
+          all_best_is.push_back(i);
+      }
+      if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST)
         generate_cut(best_i, parameters, context, space_dimension);
+      else /* cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL */ {
+        for (i = all_best_is.size(); i-- > 0; )
+          generate_cut(all_best_is[i], parameters, context, space_dimension);
       }
-      else {
-        assert(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST
-               || cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL);
-        /* Find the row with simplest parametric part which will generate
-          the "deepest" cut */
-        PPL_DIRTY_TEMP_COEFFICIENT(score);
-        PPL_DIRTY_TEMP_COEFFICIENT(score2);
-        PPL_DIRTY_TEMP_COEFFICIENT(best_score);
-        best_score = 0;
-        dimension_type best_i = not_a_dim;
-        dimension_type best_pcount = not_a_dim;
-        dimension_type pcount;
-        std::vector<dimension_type> all_best_is;
-        for (i_ = 0; i_ < num_vars; ++i_) {
-          if (basis[i_])
-            continue;
-          i = mapping[i_];
-          const Row& row_t = tableau.t[i];
-          const Row& row_s = tableau.s[i];
-          score = 0;
-          pcount = 0;
-          for (dimension_type j = 0; j < num_params; ++j) {
-            mod_assign(mod, row_t[j], d);
-            if (mod != 0) {
-              score += d - mod;
-              ++pcount;
-            }
-          }
-          score2 = 0;
-          for (dimension_type j = 0; j < num_vars; ++j) {
-            mod_assign(mod, row_s[j], d);
-            score2 += d - mod;
-          }
-          score *= score2;
-          /* Choose row i if:
-            row i is non-integer
-            AND (no row has been chosen yet
-                 OR row i has number of non-integer parameter
-                    coefficients lower than the current best row
-                 OR row i has the same number of non-integer parameter
-                    coefficients as the current best row, and its score is
-                    better)
-          */
-          if (pcount != 0
-              && (best_i == not_a_dim
-                  || (pcount < best_pcount)
-                  || (pcount == best_pcount && score > best_score))) {
-            if (pcount < best_pcount)
-              all_best_is.clear();
-            best_score = score;
-            best_pcount = pcount;
-            best_i = i;
-          }
-          if (pcount > 0)
-            all_best_is.push_back(i);
-        }
-        if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST)
-          generate_cut(best_i, parameters, context, space_dimension);
-        else /* cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL */ {
-          for (i = all_best_is.size(); i-- > 0; )
-            generate_cut(all_best_is[i], parameters, context, space_dimension);
-        }
-      }
-    } // if (i__ != not_a_dim)
+    }
+
   } // Main loop of the simplex algorithm
 
   return OPTIMIZED_PIP_PROBLEM;
