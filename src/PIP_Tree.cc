@@ -1490,10 +1490,10 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
                          const PIP_Problem& problem,
                          const Matrix& ctx,
                          const Variables_Set& params,
-                         dimension_type space_dimension) {
+                         dimension_type space_dim) {
   Matrix context(ctx);
   Variables_Set parameters(params);
-  update_context(parameters, context, artificial_parameters, space_dimension);
+  update_context(parameters, context, artificial_parameters, space_dim);
   merge_assign(context, constraints_, parameters);
   const dimension_type not_a_dim = not_a_dimension();
 
@@ -1507,9 +1507,9 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
     const Coefficient& tableau_den = tableau.get_denominator();
 
 #ifdef NOISY_PIP
-    tableau.ascii_dump(std::cout);
-    std::cout << "context ";
-    context.ascii_dump(std::cout);
+    tableau.ascii_dump(std::cerr);
+    std::cerr << "context ";
+    context.ascii_dump(std::cerr);
 #endif
 
     // (Re-) Compute parameter row signs.
@@ -1607,7 +1607,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
     }
 
 #ifdef NOISY_PIP
-    std::cout << "sign =";
+    std::cerr << "sign =";
     for (dimension_type i = 0; i < sign.size(); ++i)
       std::cerr << " " << "?0+-*"[sign[i]];
     std::cerr << std::endl;
@@ -1796,140 +1796,155 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
     // If no negative parameter row was found,
     // but a mixed parameter row was found ...
     if (first_mixed != not_a_dim) {
-      dimension_type neg = not_a_dim;
-      PPL_DIRTY_TEMP_COEFFICIENT(ns);
+      // Look for a constraint (i_neg):
+      //  - having mixed parameter sign;
+      //  - having no positive variable coefficient;
+      //  - minimizing the score (sum of parameter coefficients).
+      dimension_type i_neg = not_a_dim;
+      PPL_DIRTY_TEMP_COEFFICIENT(best_score);
       PPL_DIRTY_TEMP_COEFFICIENT(score);
+      for (dimension_type i = first_mixed; i < num_rows; ++i) {
+        // Mixed parameter sign.
+        if (sign[i] != MIXED)
+          continue;
+        // No positive variable coefficient.
+        bool has_positive = false;
+        const Row& s_i = tableau.s[i];
+        for (dimension_type j = 0; j < num_vars; ++j)
+          if (s_i[j] > 0) {
+            has_positive = true;
+            break;
+          }
+        if (has_positive)
+          continue;
+        // Minimize parameter coefficient score,
+        // eliminating implicated tautologies (if any).
+        const Row& t_i = tableau.t[i];
+        score = 0;
+        for (dimension_type j = num_params; j-- > 0; )
+          score += t_i[j];
+        if (i_neg == not_a_dim || score < best_score) {
+          i_neg = i;
+          best_score = score;
+        }
+      }
 
-      /* Look for a constraint with mixed parameter sign with no positive
-       * variable coefficients */
+      if (i_neg != not_a_dim) {
+#ifdef NOISY_PIP
+        std::cerr << "Found row (" << i_neg << ") with mixed parameter sign "
+                  << "and negative variable coefficients.\n"
+                  << "==> adding tautology.\n";
+#endif
+        Row copy(tableau.t[i_neg]);
+        copy.normalize();
+        context.add_row(copy);
+        add_constraint(copy, parameters);
+        sign[i_neg] = POSITIVE;
+        // Jump to next iteration.
+        continue;
+      }
+
+      PPL_ASSERT(i_neg == not_a_dim);
+      // Heuristically choose "best" (mixed) pivoting row.
+      dimension_type best_i = not_a_dim;
       for (dimension_type i = first_mixed; i < num_rows; ++i) {
         if (sign[i] != MIXED)
           continue;
-        dimension_type j;
-        for (j = 0; j < num_vars; ++j) {
-          if (tableau.s[i][j] > 0)
-            break;
-        }
-        /* Choose row with lowest score, potentially eliminating
-         * implicated tautologies if some exist */
-        if (j == num_vars) {
-          score = 0;
-          for (dimension_type j = 0; j < num_params; ++j)
-            score += tableau.t[i][j];
-          if (neg == not_a_dim || score < ns) {
-            neg = i;
-            ns = score;
-          }
+        const Row& t_i = tableau.t[i];
+        score = 0;
+        for (dimension_type j = num_params; j-- > 0; )
+          score += t_i[j];
+        if (best_i == not_a_dim || score < best_score) {
+          best_score = score;
+          best_i = i;
         }
       }
-      if (neg != not_a_dim) {
-        dimension_type i = neg;
+
+      Row t_test(tableau.t[best_i]);
+      t_test.normalize();
 #ifdef NOISY_PIP
-        std::cerr << "Found row with unknown parameter sign and negative "
-          "variable coefficients: " << i << "\n";
-#endif
-        Row r(tableau.t[i]);
-        r.normalize();
-        context.add_row(r);
-        add_constraint(r, parameters);
-        sign[i] = POSITIVE;
-#ifdef NOISY_PIP
+      {
+        Linear_Expression expr = Linear_Expression(t_test[0]);
+        dimension_type j = 1;
+        for (Variables_Set::const_iterator p = parameters.begin(),
+               p_end = parameters.end(); p != p_end; ++p, ++j)
+          expr += t_test[j] * Variable(*p);
         using namespace IO_Operators;
-        Constraint_System::const_iterator c = constraints_.begin();
-        Constraint_System::const_iterator c_end = constraints_.end();
-        Constraint_System::const_iterator c1 = c;
-        while (++c1 != constraints_.end())
-          c = c1;
-        std::cout << "Adding tautology: " << *c << std::endl;
-#endif
-      } else {
-        /* Heuristically choose "best" pivoting row. */
-        PPL_DIRTY_TEMP_COEFFICIENT(score);
-        PPL_DIRTY_TEMP_COEFFICIENT(best);
-        best = 0;
-        dimension_type best_i = not_a_dim;
-        for (dimension_type i = first_mixed; i < num_rows; ++i) {
-          if (sign[i] != MIXED)
-            continue;
-          const Row& row = tableau.t[i];
-          score = 0;
-          for (dimension_type j = 0; j < num_params; ++j)
-            score += row[j];
-          if (best_i == not_a_dim || score < best) {
-            best = score;
-            best_i = i;
-          }
-        }
-        first_mixed = best_i;
+        std::cerr << "Found mixed parameter sign row: " << best_i << ".\n"
+                  << "Solution depends on sign of parameter "
+                  << expr << ".\n";
+      }
+#endif // #ifdef NOISY_PIP
 
-        Row test(tableau.t[first_mixed]);
-        test.normalize();
-#ifdef NOISY_PIP
-        {
-          using namespace IO_Operators;
-          Linear_Expression e;
-          dimension_type j = 1;
-          for (Variables_Set::const_iterator p = parameters.begin(),
-                 p_end = parameters.end(); p != p_end; ++p, ++j)
-            e += test[j] * Variable(*p);
-          e += test[0];
-          std::cout << "Found row with mixed parameter sign: " << first_mixed
-                    << "\nSolution depends on the sign of parameter " << e
-                    << std::endl;
-        }
-#endif
+      // Create a solution node for the "true" version of current node.
+      // FIXME: this is not exception safe.
+      PIP_Tree_Node* t_node = new PIP_Solution_Node(*this, true);
+      context.add_row(t_test);
 
-        /* Create a solution Node to become "true" version of current Node */
-        PIP_Tree_Node *tru = new PIP_Solution_Node(*this, true);
-        context.add_row(test);
-        PIP_Problem_Status status_t = tru->solve(tru, problem, context,
-                                                 parameters, space_dimension);
+      // Recusively solve true node.
+      PIP_Problem_Status t_status
+        = t_node->solve(t_node, problem, context, parameters, space_dim);
 
-        /* Modify *this to become "false" version */
-        Constraint_System cs;
-        Artificial_Parameter_Sequence aps;
-        cs.swap(constraints_);
-        aps.swap(artificial_parameters);
-        PIP_Tree_Node *fals = this;
-        Row& testf = context[context.num_rows()-1];
-        negate_assign(testf, test, 1);
-        PIP_Problem_Status status_f = solve(fals, problem, context, parameters,
-                                            space_dimension);
+      // Modify *this in place to become "false" version of current node.
+      PIP_Tree_Node* f_node = this;
+      // Swap aside constraints and artificial parameters
+      // (these could be later restored if needed).
+      Constraint_System cs;
+      Artificial_Parameter_Sequence aps;
+      cs.swap(constraints_);
+      aps.swap(artificial_parameters);
+      // Negate the condition constraint used for the "true" node.
+      Row& f_test = context[context.num_rows()-1];
+      negate_assign(f_test, t_test, 1);
 
-        if (status_t == UNFEASIBLE_PIP_PROBLEM
-            && status_f == UNFEASIBLE_PIP_PROBLEM) {
+      // Recusively solve false node.
+      PIP_Problem_Status f_status
+        = f_node->solve(f_node, problem, context, parameters, space_dim);
+
+      // Case analysis on recursive resolution calls outcome.
+      if (t_status == UNFEASIBLE_PIP_PROBLEM) {
+        if (f_status == UNFEASIBLE_PIP_PROBLEM) {
+          // Both t_node and f_node unfeasible.
           parent_ref = 0;
           return UNFEASIBLE_PIP_PROBLEM;
-        } else if (status_t == UNFEASIBLE_PIP_PROBLEM) {
-          cs.swap(constraints_);
-          aps.swap(artificial_parameters);
-          add_constraint(testf, parameters);
-          return OPTIMIZED_PIP_PROBLEM;
-        } else if (status_f == UNFEASIBLE_PIP_PROBLEM) {
-          cs.swap(tru->constraints_);
-          aps.swap(tru->artificial_parameters);
-          tru->add_constraint(test, parameters);
-          parent_ref = tru;
+        }
+        else {
+          // t_node unfeasible, f_node feasible:
+          // restore cs and aps into *this.
+          constraints_.swap(cs);
+          artificial_parameters.swap(aps);
+          // Add f_test to constraints.
+          add_constraint(f_test, parameters);
           return OPTIMIZED_PIP_PROBLEM;
         }
-
-        /* Create a decision Node to become parent of current Node */
-        PIP_Decision_Node* parent = new PIP_Decision_Node(fals, tru);
-        parent->add_constraint(test, parameters);
-
-        if (!cs.empty()) {
-          /* If node to be solved had tautologies, store them in a new
-             decision node */
-          parent = new PIP_Decision_Node(0, parent);
-          cs.swap(parent->constraints_);
-        }
-        aps.swap(parent->artificial_parameters);
-
-        parent_ref = parent;
+      }
+      else if (f_status == UNFEASIBLE_PIP_PROBLEM) {
+        // t_node feasible, f_node unfeasible:
+        // restore cs and aps into t_node.
+        t_node->constraints_.swap(cs);
+        t_node->artificial_parameters.swap(aps);
+        // Add t_test to t_nodes's constraints.
+        t_node->add_constraint(t_test, parameters);
+        parent_ref = t_node;
         return OPTIMIZED_PIP_PROBLEM;
       }
-      // End processing for a mixed parameter row: jump to next iteration.
-      continue;
+
+      // Here both t_node and f_node are feasible:
+      // create a new decision node.
+      // FIXME: this is not exception safe.
+      PIP_Decision_Node* parent = new PIP_Decision_Node(f_node, t_node);
+      parent->add_constraint(t_test, parameters);
+
+      if (!cs.empty()) {
+        // If node to be solved had tautologies,
+        // store them in a new decision node.
+        // FIXME: this is not exception safe.
+        parent = new PIP_Decision_Node(0, parent);
+        parent->constraints_.swap(cs);
+      }
+      parent->artificial_parameters.swap(aps);
+      parent_ref = parent;
+      return OPTIMIZED_PIP_PROBLEM;
     } // if (first_mixed != not_a_dim)
 
 
@@ -1992,7 +2007,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           best_i = i;
         }
       }
-      generate_cut(best_i, parameters, context, space_dimension);
+      generate_cut(best_i, parameters, context, space_dim);
     }
     else {
       assert(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST
@@ -2051,10 +2066,10 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           all_best_is.push_back(i);
       }
       if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST)
-        generate_cut(best_i, parameters, context, space_dimension);
+        generate_cut(best_i, parameters, context, space_dim);
       else /* cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL */ {
         for (i = all_best_is.size(); i-- > 0; )
-          generate_cut(all_best_is[i], parameters, context, space_dimension);
+          generate_cut(all_best_is[i], parameters, context, space_dim);
       }
     }
 
