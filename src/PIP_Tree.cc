@@ -1959,119 +1959,121 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
 #endif
     tableau.normalize();
 
-    // Look for a row with non integer parameter coefficients (first is okay)
-    const Coefficient& d = tableau.get_denominator();
-    dimension_type i;
-    for (i = 0; i < num_vars; ++i) {
-      if (basis[i])
-        // basic variable = 0 -> integer
+    // Look for any row having non integer parameter coefficients.
+    const Coefficient& den = tableau.get_denominator();
+    for (dimension_type k = 0; k < num_vars; ++k) {
+      if (basis[k])
+        // Basic variable = 0, hence integer.
         continue;
-      const Row& row = tableau.t[mapping[i]];
-      for (dimension_type j = 0; j < num_params; ++j) {
-        if (row[j] % d != 0)
-          goto endsearch;
+      const dimension_type i = mapping[k];
+      const Row& t_i = tableau.t[i];
+      for (dimension_type j = num_params; j-- > 0; ) {
+        if (t_i[j] % den != 0)
+          goto non_integer;
       }
     }
-  endsearch:
-
-    if (i == num_vars) {
-      /* The solution is integer */
+    // The goto was not taken, the solution is integer.
 #ifdef NOISY_PIP
-      std::cout << "Solution found for problem in current node."
-                << std::endl;
+    std::cout << "Solution found for problem in current node.\n";
 #endif
-      return OPTIMIZED_PIP_PROBLEM;
-    }
-    /* The solution is non-integer. We have to generate a cut. */
+    return OPTIMIZED_PIP_PROBLEM;
+
+  non_integer:
+    // The solution is non-integer: generate a cut.
     PPL_DIRTY_TEMP_COEFFICIENT(mod);
+    dimension_type best_i = not_a_dim;
+    dimension_type best_pcount = not_a_dim;
+
     const PIP_Problem::Control_Parameter_Value cutting_strategy
       = problem.control_parameters[PIP_Problem::CUTTING_STRATEGY];
+
     if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_FIRST) {
       // Find the first row with simplest parametric part.
-      dimension_type best_i = not_a_dim;
-      dimension_type best_pcount = not_a_dim;
-      dimension_type pcount;
       for (dimension_type k = 0; k < num_vars; ++k) {
         if (basis[k])
           continue;
-        i = mapping[k];
-        const Row& row_t = tableau.t[i];
-        pcount = 0;
-        for (dimension_type j = 0; j < num_params; ++j) {
-          mod_assign(mod, row_t[j], d);
+        const dimension_type i = mapping[k];
+        const Row& t_i = tableau.t[i];
+        // Count the number of non-integer parameter coefficients.
+        dimension_type pcount = 0;
+        for (dimension_type j = num_params; j-- > 0; ) {
+          mod_assign(mod, t_i[j], den);
           if (mod != 0)
             ++pcount;
         }
-        if (pcount != 0 && (best_i == not_a_dim || (pcount < best_pcount))) {
+        if (pcount > 0 && (best_i == not_a_dim || pcount < best_pcount)) {
           best_pcount = pcount;
           best_i = i;
         }
       }
+      // Generate cut using 'best_i'.
       generate_cut(best_i, parameters, context, space_dim);
     }
     else {
       assert(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST
              || cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL);
-      /* Find the row with simplest parametric part which will generate
-         the "deepest" cut */
-      PPL_DIRTY_TEMP_COEFFICIENT(score);
-      PPL_DIRTY_TEMP_COEFFICIENT(score2);
+      // Find the row with simplest parametric part
+      // which will generate the "deepest" cut.
       PPL_DIRTY_TEMP_COEFFICIENT(best_score);
       best_score = 0;
-      dimension_type best_i = not_a_dim;
-      dimension_type best_pcount = not_a_dim;
-      dimension_type pcount;
+      PPL_DIRTY_TEMP_COEFFICIENT(score);
+      PPL_DIRTY_TEMP_COEFFICIENT(s_score);
       std::vector<dimension_type> all_best_is;
+
       for (dimension_type k = 0; k < num_vars; ++k) {
         if (basis[k])
           continue;
-        i = mapping[k];
-        const Row& row_t = tableau.t[i];
-        const Row& row_s = tableau.s[i];
+        const dimension_type i = mapping[k];
+        // Compute score and pcount.
         score = 0;
-        pcount = 0;
-        for (dimension_type j = 0; j < num_params; ++j) {
-          mod_assign(mod, row_t[j], d);
+        dimension_type pcount = 0;
+        const Row& t_i = tableau.t[i];
+        for (dimension_type j = num_params; j-- > 0; ) {
+          mod_assign(mod, t_i[j], den);
           if (mod != 0) {
-            score += d - mod;
+            score += den;
+            score -= mod;
             ++pcount;
           }
         }
-        score2 = 0;
-        for (dimension_type j = 0; j < num_vars; ++j) {
-          mod_assign(mod, row_s[j], d);
-          score2 += d - mod;
+        // Compute s_score.
+        s_score = 0;
+        const Row& s_i = tableau.s[i];
+        for (dimension_type j = num_vars; j-- > 0; ) {
+          mod_assign(mod, s_i[j], den);
+          s_score += den;
+          s_score -= mod;
         }
-        score *= score2;
-        /* Choose row i if:
-           row i is non-integer
-           AND (no row has been chosen yet
-           OR row i has number of non-integer parameter
-           coefficients lower than the current best row
-           OR row i has the same number of non-integer parameter
-           coefficients as the current best row, and its score is
-           better)
+        // Combine 'score' and 's_score'.
+        score *= s_score;
+        /*
+          Select row i if it is non integer AND
+            - no row has been chosen yet; OR
+            - it has fewer non-integer parameter coefficients; OR
+            - it has the same number of non-integer parameter coefficients,
+              but its score is greater.
         */
         if (pcount != 0
             && (best_i == not_a_dim
-                || (pcount < best_pcount)
+                || pcount < best_pcount
                 || (pcount == best_pcount && score > best_score))) {
           if (pcount < best_pcount)
             all_best_is.clear();
-          best_score = score;
-          best_pcount = pcount;
           best_i = i;
+          best_pcount = pcount;
+          best_score = score;
         }
         if (pcount > 0)
           all_best_is.push_back(i);
       }
       if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST)
         generate_cut(best_i, parameters, context, space_dim);
-      else /* cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL */ {
-        for (i = all_best_is.size(); i-- > 0; )
-          generate_cut(all_best_is[i], parameters, context, space_dim);
+      else {
+        PPL_ASSERT(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL);
+        for (dimension_type k = all_best_is.size(); k-- > 0; )
+          generate_cut(all_best_is[k], parameters, context, space_dim);
       }
-    }
+    } // End of processing for non-integer solutions.
 
   } // Main loop of the simplex algorithm
 
