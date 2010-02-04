@@ -79,36 +79,7 @@ public:
   */
   const Constraint_System& constraints() const;
 
-  /*! \brief
-    A class to store the expession of artificial parameters in solution trees.
-
-    These locally new parameters are of the form of the integer division of a
-    linear expression of the other parameters (constant term included), by a
-    coefficient. Coefficients at indexes corresponding to variables always are
-    zero.
-  */
-  class Artificial_Parameter : public Linear_Expression {
-  public:
-    Artificial_Parameter();
-    Artificial_Parameter(const Linear_Expression& e,
-                         Coefficient_traits::const_reference d);
-    Artificial_Parameter(const Artificial_Parameter& y);
-
-    Coefficient_traits::const_reference get_denominator() const;
-
-    //! Returns \b true if \p x and \p y are equal.
-    friend bool operator==(const Artificial_Parameter& x,
-                           const Artificial_Parameter& y);
-
-    void ascii_dump(std::ostream& s) const;
-    bool ascii_load(std::istream& s);
-
-    //! Returns \c true if and only if the parameter is well-formed.
-    bool OK() const;
-
-  private:
-    Coefficient denominator;
-  }; // class Artificial_Parameter
+  class Artificial_Parameter;
 
   //! A type alias for a sequence of Artificial_Parameter's.
   typedef std::vector<Artificial_Parameter> Artificial_Parameter_Sequence;
@@ -230,6 +201,68 @@ protected:
   void add_constraint(const Row& x, const Variables_Set& parameters);
 
 }; // class PIP_Tree_Node
+
+
+/*! \brief
+  Artificial parameters in PIP solution trees.
+
+  These parameters are built from a linear expression combining other
+  parameters (constant term included) divided by a positive integer
+  denominator. Coefficients at variables indices corresponding to
+  PIP problem variables are always zero.
+*/
+class PIP_Tree_Node::Artificial_Parameter
+  : public Linear_Expression {
+public:
+  //! Default constructor: builds a zero artificial parameter.
+  Artificial_Parameter();
+
+  //! Constructor.
+  /*!
+    Builds artificial parameter \f$\frac{\mathit{expr}}{\mathit{den}}\f$.
+
+    \param expr
+    The expression that, after normalization, will form the numerator of
+    the artificial parameter.
+
+    \param den
+    The integer constant thatm after normalization, will form the
+    denominator of the artificial parameter.
+
+    \exception std::invalid_argument
+    Thrown if \p den is zero.
+
+    Normalization will ensure that the denominator is positive.
+  */
+  Artificial_Parameter(const Linear_Expression& expr,
+                       Coefficient_traits::const_reference den);
+
+  //! Copy constructor.
+  Artificial_Parameter(const Artificial_Parameter& y);
+
+  //! Returns the normalized (i.e., positive) denominator.
+  Coefficient_traits::const_reference get_denominator() const;
+
+  //! Returns \b true if \p x and \p y are equal.
+  friend bool operator==(const Artificial_Parameter& x,
+                         const Artificial_Parameter& y);
+
+  PPL_OUTPUT_DECLARATIONS
+
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+  bool ascii_load(std::istream& s);
+
+  //! Returns \c true if and only if the parameter is well-formed.
+  bool OK() const;
+
+private:
+  //! The normalized (i.e., positive) denominator.
+  Coefficient denominator;
+}; // class PIP_Tree_Node::Artificial_Parameter
 
 
 //! A tree node representing part of the space of solutions.

@@ -300,22 +300,27 @@ operator==(const PIP_Tree_Node::Artificial_Parameter& x,
 
 void
 PIP_Tree_Node::Artificial_Parameter::ascii_dump(std::ostream& s) const {
-  s << "\ndenominator " << denominator << "\n";
+  s << "artificial_parameter ";
   Linear_Expression::ascii_dump(s);
+  s << " / " << denominator << "\n";
 }
 
 bool
 PIP_Tree_Node::Artificial_Parameter::ascii_load(std::istream& s) {
   std::string str;
-  if (!(s >> str) || str != "denominator")
-    return false;
-  if (!(s >> denominator))
+  if (!(s >> str) || str != "artificial_parameter")
     return false;
   if (!Linear_Expression::ascii_load(s))
+    return false;
+  if (!(s >> str) || str != "/")
+    return false;
+  if (!(s >> denominator))
     return false;
   PPL_ASSERT(OK());
   return true;
 }
+
+PPL_OUTPUT_DEFINITIONS(PIP_Tree_Node::Artificial_Parameter)
 
 PIP_Decision_Node::~PIP_Decision_Node() {
   delete true_child;
