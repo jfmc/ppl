@@ -88,17 +88,18 @@ PPL::PIP_Problem::control_parameters_copy(const PIP_Problem& y) {
 PPL::PIP_Problem_Status
 PPL::PIP_Problem::solve() const {
   switch (status) {
+
   case UNSATISFIABLE:
     PPL_ASSERT(OK());
     return UNFEASIBLE_PIP_PROBLEM;
+
   case OPTIMIZED:
     PPL_ASSERT(OK());
     return OPTIMIZED_PIP_PROBLEM;
+
   case PARTIALLY_SATISFIABLE:
     {
       PIP_Problem& x = const_cast<PIP_Problem&>(*this);
-      PIP_Problem_Status return_value;
-
       if (current_solution == 0)
         x.current_solution = new PIP_Solution_Node();
       if (input_cs.empty()) {
@@ -107,50 +108,59 @@ PPL::PIP_Problem::solve() const {
         return OPTIMIZED_PIP_PROBLEM;
       }
 
-      // Look for constraints with only parameter coefficients.
-      const Constraint_Sequence::const_iterator c_begin = input_cs.begin();
-      const Constraint_Sequence::const_iterator c_end = input_cs.end();
-      Constraint_Sequence::const_iterator c;
-      const Variables_Set::iterator param_begin = parameters.begin();
-      const Variables_Set::iterator param_end = parameters.end();
-      Variables_Set::iterator pi;
-      dimension_type i;
-
-      // Resize context matrix properly.
-      dimension_type num_params = parameters.size() + 1;
-      dimension_type num_cols = initial_context.num_columns();
+      // Properly resize context matrix.
+      const dimension_type num_params = parameters.size() + 1;
+      const dimension_type num_cols = initial_context.num_columns();
       if (num_cols < num_params)
         x.initial_context.add_zero_columns(num_params - num_cols);
 
-      for (c = c_begin + first_pending_constraint; c != c_end; ++c) {
-        const dimension_type c_space_dim = c->space_dimension();
-        if (external_space_dim < c_space_dim)
-          x.external_space_dim = c_space_dim;
+      // Computed once for all (to be used inside loop).
+      const Variables_Set::iterator param_begin = parameters.begin();
+      const Variables_Set::iterator param_end = parameters.end();
+
+      // Go through all pending constraints.
+      for (Constraint_Sequence::const_iterator
+             cs_i = input_cs.begin() + first_pending_constraint,
+             cs_end = input_cs.end(); cs_i != cs_end; ++cs_i) {
+        const Constraint& c = *cs_i;
+        const dimension_type c_space_dim = c.space_dimension();
+        PPL_ASSERT(external_space_dim >= c_space_dim);
+
+        // Check if constraint has a non-zero variable coefficient.
         bool has_nonzero_variable_coefficient = false;
-        for (i = 0; i < c_space_dim; ++i) {
-          if (c->coefficient(Variable(i)) != 0 && parameters.count(i) == 0) {
-            /* Constraint should not be inserted in context. */
+        for (dimension_type i = c_space_dim; i-- > 0; ) {
+          if (c.coefficient(Variable(i)) != 0
+              && parameters.count(i) == 0) {
             has_nonzero_variable_coefficient = true;
             break;
           }
         }
-        if (!has_nonzero_variable_coefficient) {
-          // At this point, the constraint must be translated into context row.
-          Row row(num_params, Row::Flags());
-          for (pi = param_begin, i = 1; pi != param_end; ++pi, ++i)
-            row[i] = c->coefficient(Variable(*pi));
-          row[0] = c->inhomogeneous_term();
-          if (c->is_strict_inequality())
-            --row[0];
+        // Constraints having a non-zero variable coefficient
+        // should not be inserted in context.
+        if (has_nonzero_variable_coefficient)
+          continue;
+
+        // Translate constraint into context row.
+        Row row(num_params, Row::Flags());
+        row[0] = c.inhomogeneous_term();
+        dimension_type i = 1;
+        for (Variables_Set::iterator
+               pi = param_begin; pi != param_end; ++pi, ++i)
+          row[i] = c.coefficient(Variable(*pi));
+        // Adjust inhomogenous term if strict.
+        if (c.is_strict_inequality())
+          --row[0];
+        // Insert new row into context.
+        x.initial_context.add_row(row);
+        // If it is an equality, also insert its negation.
+        if (c.is_equality()) {
+          for (dimension_type i = num_params; i-- > 0; )
+            neg_assign(row[i], row[i]);
           x.initial_context.add_row(row);
-          if (c->is_equality()) {
-            for (i = 0; i < num_params; ++i)
-              row[i] = -row[i];
-            x.initial_context.add_row(row);
-          }
         }
       }
 
+      // Update tableau and mark constraints as no longer pending.
       x.current_solution->update_tableau(*this,
                                          external_space_dim,
                                          first_pending_constraint,
@@ -159,11 +169,13 @@ PPL::PIP_Problem::solve() const {
       x.internal_space_dim = external_space_dim;
       x.first_pending_constraint = input_cs.size();
 
-      return_value = x.current_solution->solve(x.current_solution,
-                                               *this,
-                                               initial_context, parameters,
-                                               external_space_dim);
-
+      // Actually solve problem.
+      PIP_Problem_Status return_value
+        = x.current_solution->solve(x.current_solution,
+                                    *this,
+                                    initial_context, parameters,
+                                    external_space_dim);
+      // Update problem status.
       switch (return_value) {
       case UNFEASIBLE_PIP_PROBLEM:
         x.status = UNSATISFIABLE;
@@ -174,8 +186,10 @@ PPL::PIP_Problem::solve() const {
       }
       PPL_ASSERT(OK());
       return return_value;
-    }
-  }
+    } // End of handler for PARTIALLY_SATISFIABLE case.
+
+  } // End of switch.
+
   // We should not be here!
   throw std::runtime_error("PPL internal error");
 }
