@@ -365,7 +365,7 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node& y)
 }
 
 PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node& y,
-                                     bool empty_constraints)
+                                     No_Constraints)
   : PIP_Tree_Node(),
     tableau(y.tableau),
     basis(y.basis),
@@ -377,10 +377,6 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node& y,
     sign(y.sign),
     solution(y.solution),
     solution_valid(y.solution_valid) {
-  if (!empty_constraints) {
-    constraints_ = y.constraints_;
-    artificial_parameters = y.artificial_parameters;
-  }
 }
 
 PIP_Decision_Node::PIP_Decision_Node(PIP_Tree_Node* fcp,
@@ -1887,7 +1883,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
 
       // Create a solution node for the "true" version of current node.
       // FIXME: this is not exception safe.
-      PIP_Tree_Node* t_node = new PIP_Solution_Node(*this, true);
+      PIP_Tree_Node* t_node = new PIP_Solution_Node(*this, No_Constraints());
       context.add_row(t_test);
 
       // Recusively solve true node.

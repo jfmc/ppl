@@ -514,11 +514,15 @@ protected:
   //! Copy constructor.
   PIP_Solution_Node(const PIP_Solution_Node& y);
 
-  /*! \brief
-    Copy constructor, allowing not to copy the constraint system and
-    artificial parameters
+  //! A tag type to select the alternative copy constructor.
+  struct No_Constraints {};
+
+  //! Alternative copy constructor.
+  /*!
+    This constructor differs from the default copy constructor in that
+    it will not copy the constraint system, nor the artificial parameters.
   */
-  PIP_Solution_Node(const PIP_Solution_Node& y, bool empty_constraints);
+  PIP_Solution_Node(const PIP_Solution_Node& y, No_Constraints);
 
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
