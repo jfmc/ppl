@@ -518,15 +518,21 @@ PIP_Tree_Node::OK() const {
 void
 PIP_Tree_Node
 ::add_constraint(const Row& row, const Variables_Set& parameters) {
-  const Variables_Set::const_iterator p_begin = parameters.begin();
-  const Variables_Set::const_iterator p_end = parameters.end();
-  PPL_ASSERT(static_cast<dimension_type>(std::distance(p_begin, p_end)) + 1
-             == row.size());
-  // FIXME: optimize the computation of expr.
+  const dimension_type num_params = parameters.size();
+  PPL_ASSERT(num_params + 1 == row.size());
+
+  // Compute the expression for the parameter constraint.
   Linear_Expression expr = Linear_Expression(row[0]);
-  dimension_type j = 1;
-  for (Variables_Set::const_iterator pj = p_begin; pj != p_end; ++pj, ++j)
-    expr += row[j] * Variable(*pj);
+  // NOTE: iterating downward on parameters to avoid reallocations.
+  Variables_Set::const_reverse_iterator p_j = parameters.rbegin();
+  // NOTE: index j spans [1..num_params] downwards.
+  for (dimension_type j = num_params; j > 0; --j) {
+    add_mul_assign(expr, row[j], Variable(*p_j));
+    // Move to previous parameter.
+    ++p_j;
+  }
+
+  // Add the parameter constraint.
   constraints_.insert(expr >= 0);
 }
 
@@ -1723,8 +1729,6 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
       }
 
       // Compute columns t[*][j] :
-      // t[i][j] -= t[i][pj] * t_pivot[j] / s_pivot_pj;
-      // ENEA: FIXME: according to code below, this comment should read:
       // t[i][j] -= s[i][pj] * t_pivot[j] / s_pivot_pj;
       for (dimension_type j = num_params; j-- > 0; ) {
         const Coefficient& t_pivot_j = t_pivot[j];
@@ -2094,6 +2098,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   const Coefficient& den = tableau.get_denominator();
 
   PPL_DIRTY_TEMP_COEFFICIENT(mod);
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
 
 #ifdef NOISY_PIP
   std::cout << "Row " << index << " contains non-integer coefficients. "
@@ -2125,15 +2130,22 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     mod_assign(mod, row_t[0], den);
     Linear_Expression expr;
     if (mod != 0) {
+      // Optimizing computation: expr += (den - mod);
       expr += den;
       expr -= mod;
     }
-    Variables_Set::const_iterator p = parameters.begin();
-    for (dimension_type j = 1; j < num_params; ++j, ++p) {
+    // NOTE: iterating downwards on parameters to avoid reallocations.
+    Variables_Set::const_reverse_iterator p_j = parameters.rbegin();
+    // NOTE: index j spans [1..num_params-1] downwards.
+    for (dimension_type j = num_params; j-- > 1; ) {
       mod_assign(mod, row_t[j], den);
-      // FIXME: find a way to optimize the following.
-      if (mod != 0)
-        expr += (den - mod) * Variable(*p);
+      if (mod != 0) {
+        // Optimizing computation: expr += (den - mod) * Variable(*p_j);
+        coeff = den - mod;
+        add_mul_assign(expr, coeff, Variable(*p_j));
+      }
+      // Mode to previous parameter.
+      ++p_j;
     }
     // Generate new artificial parameter.
     Artificial_Parameter ap(expr, den);
