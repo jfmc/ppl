@@ -131,15 +131,15 @@ protected:
     solver, local solutions are likely to be expressed in terms of both the
     upper level parameters and the local ones.
 
+    \return
+    The number of inserted artificial parameters.
+
     \param params
-    the Variables_Set to be updated
+    The Variables_Set to be updated
 
     \param space_dimension
-    the space dimension of the simplex tableau (including artificial
-    parameters)
-
-    \return
-    the number of inserted artificial parameters.
+    The space dimension of the simplex tableau (including artificial
+    parameters).
   */
   dimension_type insert_artificials(Variables_Set& params,
                                     dimension_type space_dimension) const;
@@ -172,8 +172,8 @@ protected:
   /*! \brief
     Execute a parametric simplex on the tableau, under specified context.
 
-    \param parent_ref
-    a pointer to the parent reference to \p this
+    \return
+    The root of the PIP tree solution, or 0 if unfeasible.
 
     \param problem
     the containing problem object
@@ -186,16 +186,11 @@ protected:
 
     \param space_dimension
     space dimension of parent, including artificial parameters
-
-    \return
-    An PIP_Problem_Status flag indicating the outcome of the optimization
-    attempt (unfeasible or optimized problem).
   */
-  virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
-                                   const PIP_Problem& problem,
-                                   const Matrix& context,
-                                   const Variables_Set& params,
-                                   dimension_type space_dimension) = 0;
+  virtual PIP_Tree_Node* solve(const PIP_Problem& problem,
+                               const Matrix& context,
+                               const Variables_Set& params,
+                               dimension_type space_dimension) = 0;
 
   //! Inserts a new parametric constraint in internal Row format
   void add_constraint(const Row& x, const Variables_Set& parameters);
@@ -364,6 +359,10 @@ private:
        - the coefficients for the original parameters
        - the coefficients for the oldest artificial parameters.
 
+      \return
+      \c true if pivot row and column pair \f$(i,j)\f$ is more
+      suitable for pivoting than the \f$(i',j')\f$ pair
+
       \param mapping
       the PIP_Solution_Node::mapping vector for the tableau
 
@@ -383,9 +382,6 @@ private:
       \param j_
       the column number for the second pivot row and column pair to be
       compared
-
-      \return \b true if pivot row and column pair \f$(i,j)\f$ is more
-      suitable for pivoting than the \f$(i',j')\f$ pair
     */
     bool is_better_pivot(const std::vector<dimension_type>& mapping,
                          const std::vector<bool>& basis,
@@ -560,8 +556,8 @@ protected:
   /*! \brief
     Execute a parametric simplex on the tableau, under specified context.
 
-    \param parent_ref
-    A pointer to the parent reference to \p this.
+    \return
+    The root of the PIP tree solution, or 0 if unfeasible.
 
     \param problem
     The containing problem object.
@@ -574,16 +570,11 @@ protected:
 
     \param space_dimension
     Space dimension of parent, including artificial parameters.
-
-    \return
-    A PIP_Problem_Status flag indicating the result of the optimization
-    attempt (unfeasible or optimized problem).
   */
-  virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
-                                   const PIP_Problem& problem,
-                                   const Matrix& context,
-                                   const Variables_Set& params,
-                                   dimension_type space_dimension);
+  virtual PIP_Tree_Node* solve(const PIP_Problem& problem,
+                               const Matrix& context,
+                               const Variables_Set& params,
+                               dimension_type space_dimension);
 
   /*! \brief
     Generate a Gomory cut using non-integer tableau row \p i.
@@ -695,8 +686,8 @@ protected:
   /*! \brief
     Execute a parametric simplex on the tableau, under specified context.
 
-    \param parent_ref
-    a pointer to the parent reference to \p this
+    \return
+    The root of the PIP tree solution, or 0 if unfeasible.
 
     \param problem
     the containing problem object
@@ -710,15 +701,11 @@ protected:
     \param space_dimension
     space dimension of parent, including artificial parameters
 
-    \return
-    An PIP_Problem_Status flag indicating the outcome of the optimization
-    attempt (unfeasible or optimized problem).
   */
-  virtual PIP_Problem_Status solve(PIP_Tree_Node*& parent_ref,
-                                   const PIP_Problem& problem,
-                                   const Matrix& context,
-                                   const Variables_Set& params,
-                                   dimension_type space_dimension);
+  virtual PIP_Tree_Node* solve(const PIP_Problem& problem,
+                               const Matrix& context,
+                               const Variables_Set& params,
+                               dimension_type space_dimension);
 };
 
 namespace IO_Operators {

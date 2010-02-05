@@ -643,9 +643,8 @@ PIP_Decision_Node::update_tableau(const PIP_Problem& problem,
   PPL_ASSERT(OK());
 }
 
-PIP_Problem_Status
-PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref,
-                         const PIP_Problem& problem,
+PIP_Tree_Node*
+PIP_Decision_Node::solve(const PIP_Problem& problem,
                          const Matrix& context,
                          const Variables_Set& params,
                          dimension_type space_dimension) {
@@ -655,11 +654,9 @@ PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref,
   update_context(parameters, context_true, artificial_parameters,
                  space_dimension);
   merge_assign(context_true, constraints_, parameters);
-  PIP_Problem_Status stt = true_child->solve(true_child, problem,
-                                             context_true, parameters,
-                                             space_dimension);
+  true_child = true_child->solve(problem, context_true,
+                                 parameters, space_dimension);
 
-  PIP_Problem_Status stf = UNFEASIBLE_PIP_PROBLEM;
   if (false_child) {
     // Decision nodes with false child must have exactly one constraint
     PPL_ASSERT(1 == std::distance(constraints_.begin(), constraints_.end()));
@@ -668,17 +665,16 @@ PIP_Decision_Node::solve(PIP_Tree_Node*& parent_ref,
     merge_assign(context_false, constraints_, parameters);
     Row& last = context_false[context_false.num_rows()-1];
     negate_assign(last, last, 1);
-    stf = false_child->solve(false_child, problem, context_false, parameters,
-                             space_dimension);
+    false_child = false_child->solve(problem, context_false,
+                                     parameters, space_dimension);
   }
 
-  if (stt == UNFEASIBLE_PIP_PROBLEM && stf == UNFEASIBLE_PIP_PROBLEM) {
-    parent_ref = 0;
+  if (true_child != 0 || false_child != 0)
+    return this;
+  else {
     delete this;
-    return UNFEASIBLE_PIP_PROBLEM;
+    return 0;
   }
-  else
-    return OPTIMIZED_PIP_PROBLEM;
 }
 
 void
@@ -1490,9 +1486,8 @@ PIP_Solution_Node::update_solution(const Variables_Set& parameters) {
   solution_valid = true;
 }
 
-PIP_Problem_Status
-PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
-                         const PIP_Problem& problem,
+PIP_Tree_Node*
+PIP_Solution_Node::solve(const PIP_Problem& problem,
                          const Matrix& ctx,
                          const Variables_Set& params,
                          dimension_type space_dim) {
@@ -1635,9 +1630,8 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
 #ifdef NOISY_PIP
           std::cerr << "No positive pivot found: Solution = _|_\n";
 #endif
-          parent_ref = 0;
           delete this;
-          return UNFEASIBLE_PIP_PROBLEM;
+          return 0;
         }
         if (pj == not_a_dim
             || tableau.is_better_pivot(mapping, basis, i, j, pi, pj)) {
@@ -1887,8 +1881,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       context.add_row(t_test);
 
       // Recusively solve true node.
-      PIP_Problem_Status t_status
-        = t_node->solve(t_node, problem, context, parameters, space_dim);
+      t_node = t_node->solve(problem, context, parameters, space_dim);
 
       // Modify *this in place to become "false" version of current node.
       PIP_Tree_Node* f_node = this;
@@ -1903,15 +1896,13 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
       negate_assign(f_test, t_test, 1);
 
       // Recusively solve false node.
-      PIP_Problem_Status f_status
-        = f_node->solve(f_node, problem, context, parameters, space_dim);
+      f_node = f_node->solve(problem, context, parameters, space_dim);
 
       // Case analysis on recursive resolution calls outcome.
-      if (t_status == UNFEASIBLE_PIP_PROBLEM) {
-        if (f_status == UNFEASIBLE_PIP_PROBLEM) {
+      if (t_node == 0) {
+        if (f_node == 0) {
           // Both t_node and f_node unfeasible.
-          parent_ref = 0;
-          return UNFEASIBLE_PIP_PROBLEM;
+          return 0;
         }
         else {
           // t_node unfeasible, f_node feasible:
@@ -1920,18 +1911,18 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
           artificial_parameters.swap(aps);
           // Add f_test to constraints.
           add_constraint(f_test, parameters);
-          return OPTIMIZED_PIP_PROBLEM;
+          PPL_ASSERT(f_node == this);
+          return this;
         }
       }
-      else if (f_status == UNFEASIBLE_PIP_PROBLEM) {
+      else if (f_node == 0) {
         // t_node feasible, f_node unfeasible:
         // restore cs and aps into t_node.
         t_node->constraints_.swap(cs);
         t_node->artificial_parameters.swap(aps);
         // Add t_test to t_nodes's constraints.
         t_node->add_constraint(t_test, parameters);
-        parent_ref = t_node;
-        return OPTIMIZED_PIP_PROBLEM;
+        return t_node;
       }
 
       // Here both t_node and f_node are feasible:
@@ -1948,8 +1939,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
         parent->constraints_.swap(cs);
       }
       parent->artificial_parameters.swap(aps);
-      parent_ref = parent;
-      return OPTIMIZED_PIP_PROBLEM;
+      return parent;
     } // if (first_mixed != not_a_dim)
 
 
@@ -1981,7 +1971,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
 #ifdef NOISY_PIP
     std::cout << "Solution found for problem in current node.\n";
 #endif
-    return OPTIMIZED_PIP_PROBLEM;
+    return this;
 
   non_integer:
     // The solution is non-integer: generate a cut.
@@ -2082,7 +2072,7 @@ PIP_Solution_Node::solve(PIP_Tree_Node*& parent_ref,
 
   } // Main loop of the simplex algorithm
 
-  return OPTIMIZED_PIP_PROBLEM;
+  return this;
 }
 
 void

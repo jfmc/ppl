@@ -170,22 +170,17 @@ PPL::PIP_Problem::solve() const {
       x.first_pending_constraint = input_cs.size();
 
       // Actually solve problem.
-      PIP_Problem_Status return_value
-        = x.current_solution->solve(x.current_solution,
-                                    *this,
-                                    initial_context, parameters,
-                                    external_space_dim);
+      x.current_solution = x.current_solution->solve(*this,
+                                                     initial_context,
+                                                     parameters,
+                                                     external_space_dim);
       // Update problem status.
-      switch (return_value) {
-      case UNFEASIBLE_PIP_PROBLEM:
-        x.status = UNSATISFIABLE;
-        break;
-      case OPTIMIZED_PIP_PROBLEM:
-        x.status = OPTIMIZED;
-        break;
-      }
+      x.status = (x.current_solution) ? OPTIMIZED : UNSATISFIABLE;
+
       PPL_ASSERT(OK());
-      return return_value;
+      return (x.current_solution)
+        ? OPTIMIZED_PIP_PROBLEM
+        : UNFEASIBLE_PIP_PROBLEM;
     } // End of handler for PARTIALLY_SATISFIABLE case.
 
   } // End of switch.
