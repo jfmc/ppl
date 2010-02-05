@@ -93,15 +93,21 @@ neg_assign_row(Row& x, const Row& y) {
     neg_assign(x[i], y[i]);
 }
 
-// FIXME: find better name and improve comment.
-// Tranform expression "expr" into "-expr-1", using scaling
+// Given context row \p y and denominator \p den,
+// to be interpreted as expression expr = y / den,
+// assigns to context row \p x a new value such that
+//     x / den == - expr - 1.
 inline void
-negate_assign(Row& x, const Row& y, Coefficient_traits::const_reference sc) {
+complement_assign(Row& x, const Row& y,
+                  Coefficient_traits::const_reference den) {
+  PPL_ASSERT(den > 0);
   neg_assign_row(x, y);
-  if (sc != 0) {
+  if (den == 1)
+    --x[0];
+  else {
     PPL_DIRTY_TEMP_COEFFICIENT(mod);
-    mod_assign(mod, x[0], sc);
-    x[0] -= ((mod == 0) ? sc : mod);
+    mod_assign(mod, x[0], den);
+    x[0] -= (mod == 0) ? den : mod;
   }
 }
 
@@ -664,7 +670,7 @@ PIP_Decision_Node::solve(const PIP_Problem& problem,
     update_context(context_false, artificial_parameters);
     merge_assign(context_false, constraints_, parameters);
     Row& last = context_false[context_false.num_rows()-1];
-    negate_assign(last, last, 1);
+    complement_assign(last, last, 1);
     false_child = false_child->solve(problem, context_false,
                                      parameters, space_dimension);
   }
@@ -1543,7 +1549,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
         // Check compatibility for constraint t_i(z) < 0,
         // i.e., -t_i(z) - 1 >= 0.
         Row c(num_params, Row::Flags());
-        negate_assign(c, t_i, tableau_den);
+        complement_assign(c, t_i, tableau_den);
         if (compatibility_check(context, c))
           new_sign = (new_sign == POSITIVE) ? MIXED : NEGATIVE;
         // Update sign for parameter row i.
@@ -1893,7 +1899,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
       aps.swap(artificial_parameters);
       // Negate the condition constraint used for the "true" node.
       Row& f_test = context[context.num_rows()-1];
-      negate_assign(f_test, t_test, 1);
+      complement_assign(f_test, t_test, 1);
 
       // Recusively solve false node.
       f_node = f_node->solve(problem, context, parameters, space_dim);
