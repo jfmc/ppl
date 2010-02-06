@@ -277,6 +277,39 @@ test07() {
   return ok;
 }
 
+bool
+test08() {
+  Variable i(0);
+  Variable j(1);
+  Variable m(2);
+  Variable n(3);
+  Variables_Set params(m, n);
+
+  PIP_Problem pip(4);
+  pip.add_to_parameter_space_dimensions(params);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(i <= n);
+  cs.insert(n >= 3);
+  cs.insert(j <= m);
+
+  pip.add_constraints(cs);
+
+  pip.set_control_parameter(PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN);
+
+  bool ok = pip.is_satisfiable();
+  if (ok) {
+    const PIP_Tree solution = pip.optimizing_solution();
+    display_solution(solution, params, Variables_Set(i, j),
+                     pip.space_dimension());
+    pip.clear();
+  }
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -287,4 +320,5 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN

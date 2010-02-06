@@ -121,6 +121,143 @@ test05() {
   return false;
 }
 
+bool
+test06() {
+  PIP_Problem pip;
+  try {
+    // Adding invalid parameter space dimensions.
+    Variable m(4);
+    pip.add_to_parameter_space_dimensions(Variables_Set(m));
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test07() {
+  PIP_Problem pip;
+  try {
+    // Adding space dimension incompatible constraint.
+    Variable x(2);
+    pip.add_constraint(x >= 0);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test08() {
+  PIP_Problem pip;
+  try {
+    // Setting an invalid control parameter value.
+    pip.set_control_parameter(PIP_Problem::CONTROL_PARAMETER_VALUE_SIZE);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test09() {
+  Variable X1(0);
+  Variable X2(1);
+  Variable I0(2);
+  Variable J0(3);
+  Variable N(4);
+  Variables_Set params(I0, N);
+
+  Constraint_System cs;
+  cs.insert(-X1 + N - 1 >= 0);
+  cs.insert(X1 - X2 >= 0);
+  cs.insert(X1 + I0 == N);
+  cs.insert(X2 + J0 - N - 1 >= 0);
+  cs.insert(I0 >= 1);
+  cs.insert(N >= 1);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  (void) pip.is_satisfiable();
+  // Adding 2 additional space dimensions.
+  pip.add_space_dimensions_and_embed(2, 0);
+
+  try {
+    // Trying to mark a problem variable as a parameter.
+    pip.add_to_parameter_space_dimensions(Variables_Set(X1));
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test10() {
+  PIP_Problem pip;
+
+  try {
+    // Trying to set an invalid big parameter dimension.
+    pip.set_big_parameter_dimension(1);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test11() {
+  Variable X1(0);
+  Variable X2(1);
+  Variable I0(2);
+  Variable J0(3);
+  Variable N(4);
+  Variables_Set params(I0, N);
+
+  Constraint_System cs;
+  cs.insert(-X1 + N - 1 >= 0);
+  cs.insert(X1 - X2 >= 0);
+  cs.insert(X1 + I0 == N);
+  cs.insert(X2 + J0 - N - 1 >= 0);
+  cs.insert(I0 >= 1);
+  cs.insert(N >= 1);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  (void) pip.is_satisfiable();
+  // Adding 2 additional space dimensions.
+  pip.add_space_dimensions_and_embed(2, 0);
+
+  try {
+    // Trying to set an invalid big parameter dimension.
+    pip.set_big_parameter_dimension(3);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -129,4 +266,10 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN

@@ -143,6 +143,38 @@ test04() {
   return ok;
 }
 
+bool
+test05() {
+  const char* my_file = "ascii_dump_load1.dat";
+
+  Variable A(0);
+  Variable P(1);
+  Constraint_System cs;
+  cs.insert(A >= 1);
+  cs.insert(A <= 0);
+
+  PIP_Problem pip1(2, cs.begin(), cs.end(), Variables_Set(P));
+  pip1.set_control_parameter(PIP_Problem::CUTTING_STRATEGY_ALL);
+  pip1.set_big_parameter_dimension(1);
+  pip1.solve();
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  pip1.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  PIP_Problem pip2;
+  pip2.ascii_load(f);
+  close(f);
+
+  bool ok = pip1.space_dimension() == pip2.space_dimension()
+    && 2 == std::distance(pip1.constraints_begin(), pip1.constraints_end())
+    && 2 == std::distance(pip2.constraints_begin(), pip2.constraints_end());
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -150,4 +182,5 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN
