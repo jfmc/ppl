@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "PIP_Problem.defs.hh"
 
 #include <algorithm>
+#include <memory>
 
 namespace Parma_Polyhedra_Library {
 
@@ -1882,26 +1883,28 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
 #endif // #ifdef NOISY_PIP
 
       // Create a solution node for the "true" version of current node.
-      // FIXME: this is not exception safe.
       PIP_Tree_Node* t_node = new PIP_Solution_Node(*this, No_Constraints());
-      context.add_row(t_test);
+      // Protect it from exception safety issues via std::auto_ptr.
+      std::auto_ptr<PIP_Tree_Node> wrapped_node(t_node);
 
-      // Recusively solve true node.
+      // Add parametric constraint to context.
+      context.add_row(t_test);
+      // Recusively solve true node wrt updated context.
       t_node = t_node->solve(problem, context, parameters, space_dim);
 
-      // Modify *this in place to become "false" version of current node.
+      // Modify *this in place to become the "false" version of current node.
       PIP_Tree_Node* f_node = this;
       // Swap aside constraints and artificial parameters
-      // (these could be later restored if needed).
+      // (these will be later restored if needed).
       Constraint_System cs;
       Artificial_Parameter_Sequence aps;
-      cs.swap(constraints_);
-      aps.swap(artificial_parameters);
-      // Negate the condition constraint used for the "true" node.
+      cs.swap(f_node->constraints_);
+      aps.swap(f_node->artificial_parameters);
+      // Compute the complement of the constraint used for the "true" node.
       Row& f_test = context[context.num_rows()-1];
       complement_assign(f_test, t_test, 1);
 
-      // Recusively solve false node.
+      // Recusively solve false node wrt updated context.
       f_node = f_node->solve(problem, context, parameters, space_dim);
 
       // Case analysis on recursive resolution calls outcome.
@@ -1912,13 +1915,13 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
         }
         else {
           // t_node unfeasible, f_node feasible:
-          // restore cs and aps into *this.
-          constraints_.swap(cs);
-          artificial_parameters.swap(aps);
-          // Add f_test to constraints.
-          add_constraint(f_test, parameters);
+          // restore cs and aps into f_node (i.e., this).
           PPL_ASSERT(f_node == this);
-          return this;
+          f_node->constraints_.swap(cs);
+          f_node->artificial_parameters.swap(aps);
+          // Add f_test to constraints.
+          f_node->add_constraint(f_test, parameters);
+          return f_node;
         }
       }
       else if (f_node == 0) {
@@ -1928,23 +1931,32 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
         t_node->artificial_parameters.swap(aps);
         // Add t_test to t_nodes's constraints.
         t_node->add_constraint(t_test, parameters);
-        return t_node;
+        // It is now safe to release previously wrapped t_node pointer
+        // and return it to caller.
+        return wrapped_node.release();
       }
 
       // Here both t_node and f_node are feasible:
       // create a new decision node.
-      // FIXME: this is not exception safe.
-      PIP_Decision_Node* parent = new PIP_Decision_Node(f_node, t_node);
+      PIP_Tree_Node* parent = new PIP_Decision_Node(f_node, t_node);
+      // Protect 'parent' from exception safety issues
+      // (previously wrapped t_node is now safe).
+      wrapped_node.release();
+      wrapped_node = std::auto_ptr<PIP_Tree_Node>(parent);
+
+      // Add t_test to the constraints of the new decision node.
       parent->add_constraint(t_test, parameters);
 
       if (!cs.empty()) {
         // If node to be solved had tautologies,
         // store them in a new decision node.
-        // FIXME: this is not exception safe.
+        // NOTE: this is exception safe.
         parent = new PIP_Decision_Node(0, parent);
         parent->constraints_.swap(cs);
       }
       parent->artificial_parameters.swap(aps);
+      // It is now safe to release previously wrapped decision node.
+      wrapped_node.release();
       return parent;
     } // if (first_mixed != not_a_dim)
 
