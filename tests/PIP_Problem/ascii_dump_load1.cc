@@ -155,6 +155,7 @@ test05() {
 
   PIP_Problem pip1(2, cs.begin(), cs.end(), Variables_Set(P));
   pip1.set_control_parameter(PIP_Problem::CUTTING_STRATEGY_ALL);
+  pip1.set_control_parameter(PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN);
   pip1.set_big_parameter_dimension(1);
   pip1.solve();
 
@@ -175,6 +176,19 @@ test05() {
   return ok;
 }
 
+bool
+test06() {
+  // Testing output functions.
+  PIP_Problem pip1;
+
+  using namespace IO_Operators;
+  nout << pip1 << endl;
+
+  pip1.ascii_dump();
+
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -183,4 +197,5 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN

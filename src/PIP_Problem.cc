@@ -328,6 +328,12 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
     case CUTTING_STRATEGY_ALL:
       s << "CUTTING_STRATEGY_ALL";
       break;
+    case PIVOT_ROW_STRATEGY_FIRST:
+      s << "PIVOT_ROW_STRATEGY_FIRST";
+      break;
+    case PIVOT_ROW_STRATEGY_MAX_COLUMN:
+      s << "PIVOT_ROW_STRATEGY_MAX_COLUMN";
+      break;
     default:
       s << "Invalid control parameter value";
     }
@@ -427,10 +433,14 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
     Control_Parameter_Value value;
     if (str == "CUTTING_STRATEGY_FIRST")
       value = CUTTING_STRATEGY_FIRST;
-    if (str == "CUTTING_STRATEGY_DEEPEST")
+    else if (str == "CUTTING_STRATEGY_DEEPEST")
       value = CUTTING_STRATEGY_DEEPEST;
-    if (str == "CUTTING_STRATEGY_ALL")
+    else if (str == "CUTTING_STRATEGY_ALL")
       value = CUTTING_STRATEGY_ALL;
+    else if (str == "PIVOT_ROW_STRATEGY_FIRST")
+      value = PIVOT_ROW_STRATEGY_FIRST;
+    else if (str == "PIVOT_ROW_STRATEGY_MAX_COLUMN")
+      value = PIVOT_ROW_STRATEGY_MAX_COLUMN;
     else
       return false;
     control_parameters[i] = value;
