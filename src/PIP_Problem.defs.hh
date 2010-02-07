@@ -24,13 +24,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_PIP_Problem_defs_hh 1
 
 #include "PIP_Problem.types.hh"
+#include "PIP_Tree.types.hh"
 #include "globals.types.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator.defs.hh"
 #include "Variables_Set.defs.hh"
-#include "PIP_Tree.defs.hh"
 #include <vector>
 #include <deque>
 #include <iosfwd>
@@ -191,7 +191,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   \par Solution tree spanning
   Retrieve the optimized solution decision tree:
   \code
-  const PIP_Tree_Node* node = solution();
+  PIP_Tree node = solution();
   \endcode
   If the pointer designates a \f$\perp\f$ solution (infeasible), its value
   is \c 0.\n

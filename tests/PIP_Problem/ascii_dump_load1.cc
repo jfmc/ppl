@@ -178,15 +178,45 @@ test05() {
 
 bool
 test06() {
-  // Testing output functions.
   PIP_Problem pip1;
-
   using namespace IO_Operators;
   nout << pip1 << endl;
-
-  pip1.ascii_dump();
-
   return true;
+}
+
+bool
+test07() {
+  Variable X1(0);
+  Variable X2(1);
+  Variable I0(2);
+  Variable J0(3);
+  Variable N(4);
+  Variables_Set params(I0, N);
+
+  Constraint_System cs;
+  cs.insert(-X1 + N - 1 >= 0);
+  cs.insert(X1 - X2 >= 0);
+  cs.insert(X1 + I0 == N);
+  cs.insert(X2 + J0 - N - 1 >= 0);
+  cs.insert(I0 >= 1);
+  cs.insert(N >= 1);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  (void) pip.solve();
+
+  std::stringstream ss;
+  pip.ascii_dump(ss);
+
+  PIP_Problem pip2;
+  bool ok = pip2.ascii_load(ss);
+
+  std::stringstream ss2;
+  pip2.ascii_dump(ss2);
+
+  ok &= (ss.str() == ss2.str());
+
+  return ok;
 }
 
 } // namespace
@@ -198,4 +228,5 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN

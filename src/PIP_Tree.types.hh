@@ -14,9 +14,9 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
+class PIP_Tree_Node;
 class PIP_Solution_Node;
 class PIP_Decision_Node;
-class PIP_Tree_Node;
 
 typedef const PIP_Tree_Node* PIP_Tree;
 

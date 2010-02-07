@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 #include "PIP_Problem.defs.hh"
+#include "PIP_Tree.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -282,8 +283,8 @@ PPL::PIP_Problem::OK() const {
 void
 PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
   using namespace IO_Operators;
-  s << "\nexternal_space_dim: " << external_space_dim << " \n";
-  s << "\ninternal_space_dim: " << internal_space_dim << " \n";
+  s << "\nexternal_space_dim: " << external_space_dim << "\n";
+  s << "\ninternal_space_dim: " << internal_space_dim << "\n";
 
   const dimension_type input_cs_size = input_cs.size();
 
@@ -340,9 +341,21 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
     s << "\n";
   }
 
-  s << "\nbig_parameter_dimension: "
-    << big_parameter_dimension
-    << "\n";
+  s << "\nbig_parameter_dimension: " << big_parameter_dimension << "\n";
+
+  s << "\ncurrent_solution: ";
+  if (current_solution == 0)
+    s << "BOTTOM\n";
+  else if (PIP_Decision_Node* dec = current_solution->as_decision()) {
+    s << "DECISION\n";
+    dec->ascii_dump(s);
+  }
+  else {
+    PIP_Solution_Node* sol = current_solution->as_solution();
+    PPL_ASSERT(sol != 0);
+    s << "SOLUTION\n";
+    sol->ascii_dump(s);
+  }
 }
 
 PPL_OUTPUT_DEFINITIONS(PIP_Problem)
@@ -449,6 +462,30 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "big_parameter_dimension:")
     return false;
   if (!(s >> big_parameter_dimension))
+    return false;
+
+  // Release current_solution tree (if any).
+  delete current_solution;
+  current_solution = 0;
+  // Load current_solution (if any).
+  if (!(s >> str) || str != "current_solution:")
+    return false;
+  if (!(s >> str))
+    return false;
+  if (str == "BOTTOM")
+    current_solution = 0;
+  else if (str == "DECISION") {
+    current_solution = new PIP_Decision_Node(0, 0);
+    if (!current_solution->as_decision()->ascii_load(s))
+      return false;
+  }
+  else if (str == "SOLUTION") {
+    current_solution = new PIP_Solution_Node();
+    if (!current_solution->as_solution()->ascii_load(s))
+      return false;
+  }
+  else
+    // Unknown node kind.
     return false;
 
   PPL_ASSERT(OK());

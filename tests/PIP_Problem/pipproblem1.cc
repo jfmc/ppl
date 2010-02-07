@@ -100,6 +100,7 @@ test01() {
   bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
   if (ok) {
     const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
     display_solution(solution, params, Variables_Set(X1, X2),
                      cs.space_dimension());
   }
@@ -127,6 +128,7 @@ test02() {
   bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
   if (ok) {
     const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
     display_solution(solution, params, Variables_Set(i, j),
                      cs.space_dimension());
   }
@@ -153,6 +155,7 @@ test03() {
   bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
   if (ok) {
     const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
     display_solution(solution, params, Variables_Set(i, j),
                      cs.space_dimension());
   }
@@ -179,6 +182,7 @@ test04() {
   bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
   if (ok) {
     const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
     display_solution(solution, params, Variables_Set(i, j),
                      cs.space_dimension());
   }
@@ -189,6 +193,7 @@ test04() {
     // Here we call the destructor of pip_copy
     // and we also destroy the (copied) solution tree of pip_copy.
     const PIP_Tree solution = pip_copy.solution();
+    ok &= solution->OK();
     display_solution(solution, params, Variables_Set(i, j),
                      cs.space_dimension());
   }
@@ -216,6 +221,7 @@ test05() {
   bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
   if (ok) {
     const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
     display_solution(solution, params, Variables_Set(i, j),
                      cs.space_dimension());
   }
@@ -262,6 +268,7 @@ test07() {
   bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
   if (ok) {
     const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
     display_solution(solution, params, Variables_Set(i, j),
                      pip.space_dimension());
   }
@@ -270,6 +277,7 @@ test07() {
   ok &= (pip.solve() == OPTIMIZED_PIP_PROBLEM);
   if (ok) {
     const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
     display_solution(solution, params, Variables_Set(i, j),
                      pip.space_dimension());
   }
@@ -302,6 +310,7 @@ test08() {
   bool ok = pip.is_satisfiable();
   if (ok) {
     const PIP_Tree solution = pip.optimizing_solution();
+    ok &= solution->OK();
     display_solution(solution, params, Variables_Set(i, j),
                      pip.space_dimension());
     pip.clear();

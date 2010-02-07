@@ -329,14 +329,6 @@ PIP_Tree_Node::Artificial_Parameter::ascii_load(std::istream& s) {
 
 PPL_OUTPUT_DEFINITIONS(PIP_Tree_Node::Artificial_Parameter)
 
-PIP_Decision_Node::~PIP_Decision_Node() {
-  delete true_child;
-  delete false_child;
-}
-
-PIP_Solution_Node::~PIP_Solution_Node() {
-}
-
 PIP_Solution_Node::PIP_Solution_Node()
   : PIP_Tree_Node(),
     tableau(),
@@ -380,6 +372,9 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node& y,
     solution_valid(y.solution_valid) {
 }
 
+PIP_Solution_Node::~PIP_Solution_Node() {
+}
+
 PIP_Decision_Node::PIP_Decision_Node(PIP_Tree_Node* fcp,
                                      PIP_Tree_Node* tcp)
   : PIP_Tree_Node(),
@@ -403,6 +398,11 @@ PIP_Decision_Node ::PIP_Decision_Node(const PIP_Decision_Node& y)
     false_child = y.false_child->clone();
     false_child->set_parent(this);
   }
+}
+
+PIP_Decision_Node::~PIP_Decision_Node() {
+  delete true_child;
+  delete false_child;
 }
 
 const PIP_Solution_Node*
@@ -687,6 +687,106 @@ PIP_Decision_Node::solve(const PIP_Problem& problem,
 }
 
 void
+PIP_Decision_Node::ascii_dump(std::ostream& s) const {
+  // Dump base class info.
+  PIP_Tree_Node::ascii_dump(s);
+
+  // Dump true child (if any).
+  s << "\ntrue_child: ";
+  if (true_child == 0)
+    s << "BOTTOM\n";
+  else if (PIP_Decision_Node* dec = true_child->as_decision()) {
+    s << "DECISION\n";
+    dec->ascii_dump(s);
+  }
+  else {
+    PIP_Solution_Node* sol = true_child->as_solution();
+    PPL_ASSERT(sol != 0);
+    s << "SOLUTION\n";
+    sol->ascii_dump(s);
+  }
+
+  // Dump false child (if any).
+  s << "\nfalse_child: ";
+  if (false_child == 0)
+    s << "BOTTOM\n";
+  else if (PIP_Decision_Node* dec = false_child->as_decision()) {
+    s << "DECISION\n";
+    dec->ascii_dump(s);
+  }
+  else {
+    PIP_Solution_Node* sol = false_child->as_solution();
+    PPL_ASSERT(sol != 0);
+    s << "SOLUTION\n";
+    sol->ascii_dump(s);
+  }
+}
+
+bool
+PIP_Decision_Node::ascii_load(std::istream& s) {
+  std::string str;
+
+  // Load base class info.
+  if (!PIP_Tree_Node::ascii_load(s))
+    return false;
+
+  // Release the "true" subtree (if any).
+  delete true_child;
+  true_child = 0;
+
+  // Load true child (if any).
+  if (!(s >> str) || str != "true_child:")
+    return false;
+  if (!(s >> str))
+    return false;
+  if (str == "BOTTOM")
+    true_child = 0;
+  else if (str == "DECISION") {
+    true_child = new PIP_Decision_Node(0, 0);
+    if (!true_child->as_decision()->ascii_load(s))
+      return false;
+  }
+  else if (str == "SOLUTION") {
+    true_child = new PIP_Solution_Node();
+    if (!true_child->as_solution()->ascii_load(s))
+      return false;
+  }
+  else
+    // Unknown node kind.
+    return false;
+
+  // Release the "false" subtree (if any).
+  delete false_child;
+  false_child = 0;
+
+  // Load false child (if any).
+  if (!(s >> str) || str != "false_child:")
+    return false;
+  if (!(s >> str))
+    return false;
+  if (str == "BOTTOM")
+    false_child = 0;
+  else if (str == "DECISION") {
+    false_child = new PIP_Decision_Node(0, 0);
+    if (!false_child->as_decision()->ascii_load(s))
+      return false;
+  }
+  else if (str == "SOLUTION") {
+    false_child = new PIP_Solution_Node();
+    if (!false_child->as_solution()->ascii_load(s))
+      return false;
+  }
+  else
+    // Unknown node kind.
+    return false;
+
+  // Loaded all info.
+  PPL_ASSERT(OK());
+  return true;
+}
+
+
+void
 PIP_Solution_Node::Tableau::normalize() {
   if (denominator == 1)
     return;
@@ -796,7 +896,7 @@ PIP_Solution_Node::Tableau
 
 void
 PIP_Tree_Node::ascii_dump(std::ostream& s) const {
-  s << "\nconstraints_\n";
+  s << "constraints_\n";
   constraints_.ascii_dump(s);
   dimension_type artificial_parameters_size = artificial_parameters.size();
   s << "\nartificial_parameters( " << artificial_parameters_size << " )\n";
@@ -816,8 +916,10 @@ PIP_Tree_Node::ascii_load(std::istream& s) {
   dimension_type artificial_parameters_size;
   if (!(s >> artificial_parameters_size))
     return false;
+  if (!(s >> str) || str != ")")
+    return false;
   Artificial_Parameter ap;
-  for (dimension_type i=0; i<artificial_parameters_size; ++i) {
+  for (dimension_type i = 0; i < artificial_parameters_size; ++i) {
     if (!ap.ascii_load(s))
       return false;
     artificial_parameters.push_back(ap);
@@ -876,25 +978,25 @@ PIP_Solution_Node::ascii_dump(std::ostream& s) const {
   s << "\nbasis ";
   dimension_type basis_size = basis.size();
   s << basis_size;
-  for (dimension_type i=0; i<basis_size; ++i)
+  for (dimension_type i = 0; i < basis_size; ++i)
     s << (basis[i] ? " true" : " false");
 
   s << "\nmapping ";
   dimension_type mapping_size = mapping.size();
   s << mapping_size;
-  for (dimension_type i=0; i<mapping_size; ++i)
+  for (dimension_type i = 0; i < mapping_size; ++i)
     s << " " << mapping[i];
 
   s << "\nvar_row ";
   dimension_type var_row_size = var_row.size();
   s << var_row_size;
-  for (dimension_type i=0; i<var_row_size; ++i)
+  for (dimension_type i = 0; i < var_row_size; ++i)
     s << " " << var_row[i];
 
   s << "\nvar_column ";
   dimension_type var_column_size = var_column.size();
   s << var_column_size;
-  for (dimension_type i=0; i<var_column_size; ++i)
+  for (dimension_type i = 0; i < var_column_size; ++i)
     s << " " << var_column[i];
   s << "\n";
 
@@ -904,7 +1006,7 @@ PIP_Solution_Node::ascii_dump(std::ostream& s) const {
   s << "sign ";
   dimension_type sign_size = sign.size();
   s << sign_size;
-  for (dimension_type i=0; i<sign_size; ++i) {
+  for (dimension_type i = 0; i < sign_size; ++i) {
     s << " ";
     switch (sign[i]) {
     case UNKNOWN:
@@ -928,7 +1030,7 @@ PIP_Solution_Node::ascii_dump(std::ostream& s) const {
 
   dimension_type solution_size = solution.size();
   s << "solution " << solution_size << "\n";
-  for (dimension_type i=0; i<solution_size; ++i)
+  for (dimension_type i = 0; i < solution_size; ++i)
     solution[i].ascii_dump(s);
   s << "\n";
 
@@ -952,7 +1054,7 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
   if (!(s >> basis_size))
     return false;
   basis.clear();
-  for (dimension_type i=0; i<basis_size; ++i) {
+  for (dimension_type i = 0; i < basis_size; ++i) {
     if (!(s >> str))
       return false;
     bool val = false;
@@ -969,7 +1071,7 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
   if (!(s >> mapping_size))
     return false;
   mapping.clear();
-  for (dimension_type i=0; i<mapping_size; ++i) {
+  for (dimension_type i = 0; i < mapping_size; ++i) {
     dimension_type val;
     if (!(s >> val))
       return false;
@@ -982,7 +1084,7 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
   if (!(s >> var_row_size))
     return false;
   var_row.clear();
-  for (dimension_type i=0; i<var_row_size; ++i) {
+  for (dimension_type i = 0; i < var_row_size; ++i) {
     dimension_type val;
     if (!(s >> val))
       return false;
@@ -995,7 +1097,7 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
   if (!(s >> var_column_size))
     return false;
   var_column.clear();
-  for (dimension_type i=0; i<var_column_size; ++i) {
+  for (dimension_type i = 0; i < var_column_size; ++i) {
     dimension_type val;
     if (!(s >> val))
       return false;
@@ -1018,7 +1120,7 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
   if (!(s >> sign_size))
     return false;
   sign.clear();
-  for (dimension_type i=0; i<sign_size; ++i) {
+  for (dimension_type i = 0; i < sign_size; ++i) {
     if (!(s >> str))
       return false;
     Row_Sign val;
@@ -1043,7 +1145,7 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
   if (!(s >> solution_size))
     return false;
   solution.clear();
-  for (dimension_type i=0; i<solution_size; ++i) {
+  for (dimension_type i = 0; i < solution_size; ++i) {
     Linear_Expression val;
     if (!val.ascii_load(s))
       return false;

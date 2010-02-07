@@ -29,10 +29,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "Constraint.defs.hh"
-#include "PIP_Problem.types.hh"
 #include "Matrix.defs.hh"
 #include "Variables_Set.defs.hh"
 #include "globals.defs.hh"
+#include "PIP_Problem.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -630,9 +630,15 @@ public:
   //! Returns a pointer to the \p v (true or false) branch of \p *this.
   PIP_Tree_Node* child_node(bool v);
 
+  void ascii_dump(std::ostream& s) const;
+  bool ascii_load(std::istream& s);
+
 private:
-  // only PIP_Solution_Node is allowed to use the constructor and methods.
+  // PIP_Solution_Node is allowed to use the constructor and methods.
   friend class PIP_Solution_Node;
+
+  // PIP_Problem ascii load method needs access to private constructors.
+  friend bool PIP_Problem::ascii_load(std::istream& s);
 
   //! Pointer to the "true" child of \p *this.
   PIP_Tree_Node* true_child;
