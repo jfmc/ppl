@@ -216,6 +216,11 @@ test07() {
 
   ok &= (ss.str() == ss2.str());
 
+  // This further check is mainly made for coverage purposes.
+  memory_size_type total = pip2.total_memory_in_bytes();
+  memory_size_type external = pip2.external_memory_in_bytes();
+  ok &= (external < total);
+
   return ok;
 }
 

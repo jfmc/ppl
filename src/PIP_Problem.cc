@@ -192,11 +192,15 @@ PPL::PIP_Problem::solve() const {
 
 PPL::PIP_Tree
 PPL::PIP_Problem::solution() const {
+  if (status == PARTIALLY_SATISFIABLE)
+    solve();
   return current_solution;
 }
 
 PPL::PIP_Tree
 PPL::PIP_Problem::optimizing_solution() const {
+  if (status == PARTIALLY_SATISFIABLE)
+    solve();
   return current_solution;
 }
 
@@ -512,15 +516,15 @@ PPL::PIP_Problem::clear() {
 
 void
 PPL::PIP_Problem
-::add_space_dimensions_and_embed(const dimension_type m_pip_vars,
-                                 const dimension_type m_pip_params) {
+::add_space_dimensions_and_embed(const dimension_type m_vars,
+                                 const dimension_type m_params) {
   // The space dimension of the resulting PIP problem should not
   // overflow the maximum allowed space dimension.
   dimension_type available = max_space_dimension() - space_dimension();
-  bool should_throw = (m_pip_vars > available);
+  bool should_throw = (m_vars > available);
   if (!should_throw) {
-    available -= m_pip_vars;
-    should_throw = (m_pip_params > available);
+    available -= m_vars;
+    should_throw = (m_params > available);
   }
   if (should_throw)
     throw std::length_error("PPL::PIP_Problem::"
@@ -528,9 +532,9 @@ PPL::PIP_Problem
 			    "adding m_v+m_p new space dimensions exceeds "
 			    "the maximum allowed space dimension.");
   // First add PIP variables ...
-  external_space_dim += m_pip_vars;
+  external_space_dim += m_vars;
   // ... then add PIP parameters.
-  for (dimension_type i = m_pip_params; i-- > 0; ) {
+  for (dimension_type i = m_params; i-- > 0; ) {
     parameters.insert(Variable(external_space_dim));
     ++external_space_dim;
   }
@@ -551,9 +555,8 @@ PPL::PIP_Problem
   const dimension_type original_size = parameters.size();
   parameters.insert(p_vars.begin(), p_vars.end());
   // Do not allow to turn variables into parameters.
-  Variables_Set::const_iterator p;
-  Variables_Set::const_iterator end = p_vars.end();
-  for (p = p_vars.begin(); p != end; ++p) {
+  for (Variables_Set::const_iterator p = p_vars.begin(),
+         end = p_vars.end(); p != end; ++p) {
     if (*p < internal_space_dim) {
       throw std::invalid_argument("PPL::PIP_Problem::"
 				  "add_to_parameter_space_dimension(p_vars):"
@@ -572,9 +575,8 @@ PPL::PIP_Problem::add_constraint(const Constraint& c) {
   if (c.space_dimension() > external_space_dim) {
     std::ostringstream s;
     s << "PPL::PIP_Problem::add_constraint(c):\n"
-      << "dim == "<< external_space_dim << " and c.space_dimension() =="
-      << " " << c.space_dimension() << " are dimension "
-      "incompatible.";
+      << "dim == "<< external_space_dim << " and c.space_dimension() == "
+      << c.space_dimension() << " are dimension incompatible.";
     throw std::invalid_argument(s.str());
   }
   input_cs.push_back(c);
@@ -630,4 +632,26 @@ PPL::PIP_Problem::set_big_parameter_dimension(dimension_type x) {
                                 "only newly-added parameters can be"
                                 "converted into the big parameter.");
   big_parameter_dimension = x;
+}
+
+PPL::memory_size_type
+PPL::PIP_Problem::external_memory_in_bytes() const {
+  memory_size_type n = initial_context.external_memory_in_bytes();
+  // Adding the external memory for `current_solution'.
+  if (current_solution)
+    n += current_solution->total_memory_in_bytes();
+  // Adding the external memory for `input_cs'.
+  n += input_cs.capacity() * sizeof(Constraint);
+  for (const_iterator i = input_cs.begin(),
+	 i_end = input_cs.end(); i != i_end; ++i)
+    n += (i->external_memory_in_bytes());
+  // FIXME: Adding the external memory for `parameters'.
+  n += parameters.size() * sizeof(dimension_type);
+
+  return n;
+}
+
+PPL::memory_size_type
+PPL::PIP_Problem::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
 }

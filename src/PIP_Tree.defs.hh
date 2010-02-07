@@ -96,6 +96,11 @@ public:
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
 
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  virtual memory_size_type total_memory_in_bytes() const = 0;
+  //! Returns the size in bytes of the memory managed by \p *this.
+  virtual memory_size_type external_memory_in_bytes() const = 0;
+
 protected:
   //! A type alias for a sequence of constraints.
   typedef std::vector<Constraint> Constraint_Sequence;
@@ -251,6 +256,11 @@ public:
   */
   bool ascii_load(std::istream& s);
 
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
   //! Returns \c true if and only if the parameter is well-formed.
   bool OK() const;
 
@@ -304,6 +314,11 @@ public:
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
 
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  virtual memory_size_type total_memory_in_bytes() const;
+  //! Returns the size in bytes of the memory managed by \p *this.
+  virtual memory_size_type external_memory_in_bytes() const;
+
 private:
   //! The type for parametric simplex tableau.
   struct Tableau {
@@ -321,7 +336,7 @@ private:
     //! Destructor.
     ~Tableau();
 
-    //! Tests whether the matrix is integer, \e ie. the denominator is 1.
+    //! Tests whether the matrix is integer, i.e., the denominator is 1.
     bool is_integer() const;
 
     //! Multiplies all coefficients and denominator with ratio.
@@ -395,6 +410,11 @@ private:
 
     void ascii_dump(std::ostream& s) const;
     bool ascii_load(std::istream& s);
+
+    //! Returns the total size in bytes of the memory occupied by \p *this.
+    memory_size_type total_memory_in_bytes() const;
+    //! Returns the size in bytes of the memory managed by \p *this.
+    memory_size_type external_memory_in_bytes() const;
 
     //! Returns \c true if and only if \p *this is well formed.
     bool OK() const;
@@ -627,11 +647,16 @@ public:
   //! Returns a const pointer to the \p b (true or false) branch of \p *this.
   const PIP_Tree_Node* child_node(bool b) const;
 
-  //! Returns a pointer to the \p v (true or false) branch of \p *this.
-  PIP_Tree_Node* child_node(bool v);
+  //! Returns a pointer to the \p b (true or false) branch of \p *this.
+  PIP_Tree_Node* child_node(bool b);
 
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
+
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  virtual memory_size_type total_memory_in_bytes() const;
+  //! Returns the size in bytes of the memory managed by \p *this.
+  virtual memory_size_type external_memory_in_bytes() const;
 
 private:
   // PIP_Solution_Node is allowed to use the constructor and methods.

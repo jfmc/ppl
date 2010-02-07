@@ -108,8 +108,8 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   By exploiting the incremental nature of the solver, it is possible
   to reuse part of the computational work already done when solving
   variants of a given PIP_Problem: currently, incremental resolution
-  supports the addition of space dimensions, the addition of constraints,
-  the change of objective function and the change of optimization mode.
+  supports the addition of space dimensions, the addition of parameters
+  and the addition of constraints.
 
   \par Example problem
   An example PIP problem can be defined the following:
@@ -270,7 +270,6 @@ operator<<(std::ostream& s, const PIP_Problem& p);
 
   FIXME: different uses of the big parameter.
 */
-
 class Parma_Polyhedra_Library::PIP_Problem {
   friend class PIP_Solution_Node;
 public:
@@ -372,33 +371,33 @@ public:
   void clear();
 
   /*! \brief
-    Adds <CODE>m_pip_vars + m_pip_params</CODE> new space dimensions
+    Adds <CODE>m_vars + m_params</CODE> new space dimensions
     and embeds the old PIP problem in the new vector space.
 
-    \param m_pip_vars
+    \param m_vars
     The number of space dimensions to add that are interpreted as
     PIP problem variables (i.e., non parameters). These are added
-    \e before adding the \p m_pip_params parameters.
+    \e before adding the \p m_params parameters.
 
-    \param m_pip_params
+    \param m_params
     The number of space dimensions to add that are interpreted as
     PIP problem parameters. These are added \e after having added the
-    \p m_pip_vars problem variables.
+    \p m_vars problem variables.
 
     \exception std::length_error
-    Thrown if adding <CODE>m_pip_vars + m_pip_params</CODE> new space
+    Thrown if adding <CODE>m_vars + m_params</CODE> new space
     dimensions would cause the vector space to exceed dimension
     <CODE>max_space_dimension()</CODE>.
 
     The new space dimensions will be those having the highest indexes
     in the new PIP problem; they are initially unconstrained.
   */
-  void add_space_dimensions_and_embed(dimension_type m_pip_vars,
-                                      dimension_type m_pip_params);
+  void add_space_dimensions_and_embed(dimension_type m_vars,
+                                      dimension_type m_params);
 
   /*! \brief
-    Sets the space dimensions whose indexes which are in set \p p_vars to be
-    parameter space dimensions.
+    Sets the space dimensions whose indexes which are in set \p p_vars
+    to be parameter space dimensions.
 
     \exception std::invalid_argument
     Thrown if some index in \p p_vars does not correspond to
@@ -427,7 +426,7 @@ public:
   //! Checks satisfiability of \p *this.
   /*!
     \return
-    <CODE>true</CODE> if and only if the PIP problem is satisfiable.
+    \c true if and only if the PIP problem is satisfiable.
   */
   bool is_satisfiable() const;
 
@@ -441,15 +440,13 @@ public:
 
   //! Returns a feasible solution for \p *this, if it exists.
   /*!
-    \exception std::domain_error
-    Thrown if the PIP problem is not satisfiable.
+    A null pointer is returned for an unfeasible PIP problem.
   */
   PIP_Tree solution() const;
 
   //! Returns an optimizing solution for \p *this, if it exists.
   /*!
-    \exception std::domain_error
-    Thrown if the PIP problem is not satisfiable.
+    A null pointer is returned for an unfeasible PIP problem.
   */
   PIP_Tree optimizing_solution() const;
 

@@ -2384,4 +2384,79 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   sign.push_back(NEGATIVE);
 }
 
+
+memory_size_type
+PIP_Tree_Node::Artificial_Parameter::external_memory_in_bytes() const {
+  return Linear_Expression::external_memory_in_bytes()
+    + Parma_Polyhedra_Library::external_memory_in_bytes(denominator);
+}
+
+memory_size_type
+PIP_Tree_Node::Artificial_Parameter::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+memory_size_type
+PIP_Tree_Node::external_memory_in_bytes() const {
+  memory_size_type n = constraints_.external_memory_in_bytes();
+  // Adding the external memory for `artificial_parameters'.
+  n += artificial_parameters.capacity() * sizeof(Artificial_Parameter);
+  for (Artificial_Parameter_Sequence::const_iterator
+         ap = art_parameter_begin(),
+	 ap_end = art_parameter_end(); ap != ap_end; ++ap)
+    n += (ap->external_memory_in_bytes());
+
+  return n;
+}
+
+memory_size_type
+PIP_Decision_Node::external_memory_in_bytes() const {
+  memory_size_type n = PIP_Tree_Node::external_memory_in_bytes();
+  if (true_child)
+    n += true_child->total_memory_in_bytes();
+  if (false_child)
+    n += false_child->total_memory_in_bytes();
+  return n;
+}
+
+memory_size_type
+PIP_Decision_Node::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+memory_size_type
+PIP_Solution_Node::Tableau::external_memory_in_bytes() const {
+  return Parma_Polyhedra_Library::external_memory_in_bytes(denominator)
+    + s.external_memory_in_bytes()
+    + t.external_memory_in_bytes();
+}
+
+memory_size_type
+PIP_Solution_Node::Tableau::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+memory_size_type
+PIP_Solution_Node::external_memory_in_bytes() const {
+  memory_size_type n = PIP_Tree_Node::external_memory_in_bytes();
+  n += tableau.external_memory_in_bytes();
+  // FIXME: size of std::vector<bool> ?
+  n += basis.capacity() * sizeof(bool);
+  n += sizeof(dimension_type)
+    * (mapping.capacity() + var_row.capacity() + var_column.capacity());
+  n += sign.capacity() * sizeof(Row_Sign);
+  // FIXME: Adding the external memory for `solution'.
+  n += solution.capacity() * sizeof(Linear_Expression);
+  for (std::vector<Linear_Expression>::const_iterator
+         i = solution.begin(), i_end = solution.end(); i != i_end; ++i)
+    n += (i->external_memory_in_bytes());
+
+  return n;
+}
+
+memory_size_type
+PIP_Solution_Node::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
 } // namespace Parma_Polyhedra_Library
