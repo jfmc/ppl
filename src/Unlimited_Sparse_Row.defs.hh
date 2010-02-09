@@ -101,6 +101,9 @@ public:
   bool operator==(const Unlimited_Sparse_Row &x) const;
   bool operator!=(const Unlimited_Sparse_Row &x) const;
 
+  //! Checks the invariant.
+  bool OK() const;
+
 private:
   //! The std::list that contains the coefficients
   list_t data;

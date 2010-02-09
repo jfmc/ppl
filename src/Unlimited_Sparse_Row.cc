@@ -143,3 +143,17 @@ bool
 PPL::Unlimited_Sparse_Row::operator!=(const Unlimited_Sparse_Row &x) const {
   return !((*this) == x);
 }
+
+bool
+PPL::Unlimited_Sparse_Row::OK() const {
+  if (begin() == end())
+    return true;
+  const_iterator previous = begin();
+  const_iterator i = begin();
+  ++i;
+  const_iterator i_end = end();
+  for (; i != i_end; ++i,++previous)
+    if (previous->first >= i->first)
+      return false;
+  return true;
+}
