@@ -140,6 +140,8 @@ Grid_Generator.types.hh \
 Congruence.types.hh \
 Init.types.hh \
 Row.types.hh \
+Unlimited_Sparse_Row.types.hh \
+Sparse_Row.types.hh \
 Linear_Row.types.hh \
 Matrix.types.hh \
 Variable.types.hh \
@@ -240,6 +242,9 @@ initializer.hh \
 Topology.hh \
 Row.defs.hh \
 Row.inlines.hh \
+Unlimited_Sparse_Row.defs.hh \
+Unlimited_Sparse_Row.templates.hh \
+Sparse_Row.defs.hh \
 Linear_Row.defs.hh \
 Linear_Row.inlines.hh \
 Matrix.defs.hh \
@@ -445,6 +450,8 @@ Grid_widenings.cc \
 BD_Shape.cc \
 Octagonal_Shape.cc \
 Pointset_Powerset.cc \
+Unlimited_Sparse_Row.cc \
+Sparse_Row.cc \
 Row.cc \
 Linear_Row.cc \
 Bit_Matrix.cc \
