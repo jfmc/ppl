@@ -56,6 +56,18 @@ PPL::Sparse_Matrix::end() const {
   return rows.end();
 }
 
+PPL::Sparse_Matrix_Row
+PPL::Sparse_Matrix::operator[](dimension_type i) {
+  PPL_ASSERT(i < rows.size());
+  return Sparse_Matrix_Row(rows[i],width_);
+}
+
+const PPL::Unlimited_Sparse_Row&
+PPL::Sparse_Matrix::operator[](dimension_type i) const {
+  PPL_ASSERT(i < rows.size());
+  return rows[i];
+}
+
 bool
 PPL::Sparse_Matrix::OK() const {
   for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i) {

@@ -44,6 +44,9 @@ public:
   const_iterator begin() const;
   const_iterator end() const;
 
+  Sparse_Matrix_Row operator[](dimension_type i);
+  const Unlimited_Sparse_Row& operator[](dimension_type i) const;
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
