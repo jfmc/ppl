@@ -29,12 +29,12 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Sparse_Row::Sparse_Row(size_type n,const Unlimited_Sparse_Row &x)
   : row(x), size_(n) {
   row.reset_after(n);
-  PPL_ASSERT(Ok());
+  PPL_ASSERT(OK());
 }
 
 PPL::Sparse_Row::Sparse_Row(std::vector<Coefficient> v)
   : row(v), size_(v.size()) {
-  PPL_ASSERT(Ok());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -42,7 +42,7 @@ PPL::Sparse_Row::resize(size_type n) {
   if (n < size_)
     reset(lower_bound(n),lower_bound(size_));
   size_ = n;
-  PPL_ASSERT(Ok());
+  PPL_ASSERT(OK());
 }
 
 PPL::Sparse_Row::size_type
@@ -53,14 +53,14 @@ PPL::Sparse_Row::size() const {
 PPL::Sparse_Row::iterator
 PPL::Sparse_Row::reset(iterator i) {
   iterator res = row.reset(i);
-  PPL_ASSERT(Ok());
+  PPL_ASSERT(OK());
   return res;
 }
 
 PPL::Sparse_Row::iterator
 PPL::Sparse_Row::reset(iterator first,iterator last) {
   iterator res = row.reset(first,last);
-  PPL_ASSERT(Ok());
+  PPL_ASSERT(OK());
   return res;
 }
 
@@ -115,7 +115,7 @@ PPL::Sparse_Row::upper_bound(const key_type &k) const {
 }
 
 bool
-PPL::Sparse_Row::Ok() const {
+PPL::Sparse_Row::OK() const {
   Unlimited_Sparse_Row row1(row);
   row1.reset_after(size_);
   return (row == row1);

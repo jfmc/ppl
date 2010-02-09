@@ -85,7 +85,7 @@ public:
   const_iterator upper_bound(const key_type &c) const;
 
   //! Checks the invariant.
-  bool Ok() const;
+  bool OK() const;
 };
 
 } // namespace Parma_Polyhedra_Library
