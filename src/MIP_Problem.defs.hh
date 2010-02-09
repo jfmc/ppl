@@ -25,8 +25,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "MIP_Problem.types.hh"
 #include "globals.types.hh"
+
+#ifndef USE_PPL_SPARSE_MATRIX
+
 #include "Row.defs.hh"
-#include "Matrix.defs.hh"
+#include "Dense_Matrix.defs.hh"
+
+#else
+
+#include "Sparse_Matrix.defs.hh"
+#include "Sparse_Row.defs.hh"
+
+#endif
+
 #include "Linear_Expression.defs.hh"
 #include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
@@ -430,11 +441,20 @@ private:
   */
   dimension_type internal_space_dim;
 
+#ifndef USE_PPL_SPARSE_MATRIX
   //! The matrix encoding the current feasible region in tableau form.
-  Matrix tableau;
+  Dense_Matrix tableau;
 
   //! The working cost function.
   Row working_cost;
+#else
+  //! The matrix encoding the current feasible region in tableau form.
+  Sparse_Matrix tableau;
+
+  //! The working cost function.
+  Sparse_Row working_cost;
+#endif
+
 
   //! A map between the variables of `input_cs' and `tableau'.
   /*!
