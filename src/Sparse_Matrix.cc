@@ -68,6 +68,23 @@ PPL::Sparse_Matrix::operator[](dimension_type i) const {
   return rows[i];
 }
 
+void
+PPL::Sparse_Matrix::resize(dimension_type n) {
+  resize(n,n);
+}
+
+void
+PPL::Sparse_Matrix::resize(dimension_type height,dimension_type width) {
+  typedef std::vector<Unlimited_Sparse_Row>::iterator rows_itr_type;
+  rows.resize(height);
+  if (width < width_) {
+    for (rows_itr_type i=rows.begin(),i_end=rows.end(); i!=i_end; ++i)
+      i->reset_after(width);
+  }
+  width_ = width;
+  PPL_ASSERT(OK());
+}
+
 bool
 PPL::Sparse_Matrix::OK() const {
   for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i) {

@@ -47,6 +47,9 @@ public:
   Sparse_Matrix_Row operator[](dimension_type i);
   const Unlimited_Sparse_Row& operator[](dimension_type i) const;
 
+  void resize(dimension_type n);
+  void resize(dimension_type height,dimension_type width);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
