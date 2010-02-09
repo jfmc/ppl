@@ -27,23 +27,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Sparse_Matrix::Sparse_Matrix(dimension_type n)
-  : rows(n), width_(n) {
+  : rows(n), num_columns_(n) {
   PPL_ASSERT(OK());
 }
 
-PPL::Sparse_Matrix::Sparse_Matrix(dimension_type height, dimension_type width)
-  : rows(height), width_(width) {
+PPL::Sparse_Matrix::Sparse_Matrix(dimension_type num_rows,
+                                  dimension_type num_columns)
+  : rows(num_rows), num_columns_(num_columns) {
   PPL_ASSERT(OK());
 }
 
 PPL::Sparse_Matrix::iterator
 PPL::Sparse_Matrix::begin() {
-  return iterator(rows.begin(),width_);
+  return iterator(rows.begin(),num_columns());
 }
 
 PPL::Sparse_Matrix::iterator
 PPL::Sparse_Matrix::end() {
-  return iterator(rows.end(),width_);
+  return iterator(rows.end(),num_columns());
 }
 
 PPL::Sparse_Matrix::const_iterator
@@ -59,7 +60,7 @@ PPL::Sparse_Matrix::end() const {
 PPL::Sparse_Matrix_Row
 PPL::Sparse_Matrix::operator[](dimension_type i) {
   PPL_ASSERT(i < rows.size());
-  return Sparse_Matrix_Row(rows[i],width_);
+  return Sparse_Matrix_Row(rows[i],num_columns());
 }
 
 const PPL::Unlimited_Sparse_Row&
@@ -68,27 +69,38 @@ PPL::Sparse_Matrix::operator[](dimension_type i) const {
   return rows[i];
 }
 
+PPL::dimension_type
+PPL::Sparse_Matrix::num_rows() const {
+  return rows.size();
+}
+
+PPL::dimension_type
+PPL::Sparse_Matrix::num_columns() const {
+  return num_columns_;
+}
+
 void
 PPL::Sparse_Matrix::resize(dimension_type n) {
   resize(n,n);
 }
 
 void
-PPL::Sparse_Matrix::resize(dimension_type height,dimension_type width) {
+PPL::Sparse_Matrix::resize(dimension_type num_rows,
+                           dimension_type num_columns) {
   typedef std::vector<Unlimited_Sparse_Row>::iterator rows_itr_type;
-  rows.resize(height);
-  if (width < width_) {
+  rows.resize(num_rows);
+  if (num_columns < num_columns_) {
     for (rows_itr_type i=rows.begin(),i_end=rows.end(); i!=i_end; ++i)
-      i->reset_after(width);
+      i->reset_after(num_columns);
   }
-  width_ = width;
+  num_columns_ = num_columns;
   PPL_ASSERT(OK());
 }
 
 bool
 PPL::Sparse_Matrix::OK() const {
   for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i) {
-    Sparse_Row row(*i,width_);
+    Sparse_Row row(*i,num_columns_);
     if (static_cast<Unlimited_Sparse_Row>(row) != *i)
       return false;
   }

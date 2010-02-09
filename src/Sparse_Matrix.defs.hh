@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Sparse_Matrix.types.hh"
 #include "Sparse_Row.defs.hh"
+#include "globals.types.hh"
 #include <vector>
 
 class Parma_Polyhedra_Library::Sparse_Matrix {
@@ -37,7 +38,7 @@ public:
   Sparse_Matrix(dimension_type n=0);
 
   //! Constructs a matrix filled with zeroes with the given dimensions.
-  Sparse_Matrix(dimension_type height,dimension_type width);
+  Sparse_Matrix(dimension_type num_rows,dimension_type num_columns);
 
   iterator begin();
   iterator end();
@@ -47,15 +48,18 @@ public:
   Sparse_Matrix_Row operator[](dimension_type i);
   const Unlimited_Sparse_Row& operator[](dimension_type i) const;
 
+  dimension_type num_rows() const;
+  dimension_type num_columns() const;
+
   void resize(dimension_type n);
-  void resize(dimension_type height,dimension_type width);
+  void resize(dimension_type num_rows,dimension_type num_columns);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
 private:
   std::vector<Unlimited_Sparse_Row> rows;
-  dimension_type width_;
+  dimension_type num_columns_;
 };
 
 class Parma_Polyhedra_Library::Sparse_Matrix::iterator {
