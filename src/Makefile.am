@@ -142,6 +142,7 @@ Init.types.hh \
 Row.types.hh \
 Unlimited_Sparse_Row.types.hh \
 Sparse_Row.types.hh \
+Sparse_Matrix.types.hh \
 Linear_Row.types.hh \
 Matrix.types.hh \
 Variable.types.hh \
@@ -245,6 +246,7 @@ Row.inlines.hh \
 Unlimited_Sparse_Row.defs.hh \
 Unlimited_Sparse_Row.templates.hh \
 Sparse_Row.defs.hh \
+Sparse_Matrix.defs.hh \
 Linear_Row.defs.hh \
 Linear_Row.inlines.hh \
 Matrix.defs.hh \
@@ -452,6 +454,7 @@ Octagonal_Shape.cc \
 Pointset_Powerset.cc \
 Unlimited_Sparse_Row.cc \
 Sparse_Row.cc \
+Sparse_Matrix.cc \
 Row.cc \
 Linear_Row.cc \
 Bit_Matrix.cc \
