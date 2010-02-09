@@ -35,10 +35,12 @@ Dense_Matrix::max_num_columns() {
   return Matrix::max_num_columns();
 }
 
+/*
 inline memory_size_type
 Dense_Matrix::total_memory_in_bytes() const {
   return m.total_memory_in_bytes();
 }
+*/
 
 inline bool
 Dense_Matrix::has_no_rows() const {
@@ -187,10 +189,12 @@ operator==(const Dense_Matrix& x, const Dense_Matrix& y) {
   return (x.m == y.m);
 }
 
+/*
 inline memory_size_type
 Dense_Matrix::external_memory_in_bytes() const {
   return m.external_memory_in_bytes();
 }
+*/
 
 inline bool
 Dense_Matrix::OK() const {
