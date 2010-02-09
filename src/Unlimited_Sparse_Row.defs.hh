@@ -101,6 +101,10 @@ public:
   bool operator==(const Unlimited_Sparse_Row &x) const;
   bool operator!=(const Unlimited_Sparse_Row &x) const;
 
+  bool ascii_load(std::istream& s);
+
+  PPL_OUTPUT_DECLARATIONS
+
   //! Checks the invariant.
   bool OK() const;
 
