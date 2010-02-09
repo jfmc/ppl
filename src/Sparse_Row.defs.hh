@@ -45,9 +45,11 @@ public:
   //! Constructs a row from a std::vector.
   Sparse_Row(const std::vector<data_type>& v);
 
-  //! Constructs a row of the specified size from an Unlimited_Sparse_Row
-  Sparse_Row(size_type n=0,
-             const Unlimited_Sparse_Row &x=Unlimited_Sparse_Row());
+  //! Constructs a row of the specified size.
+  Sparse_Row(size_type n=0);
+
+  //! Constructs a row of the specified size from an Unlimited_Sparse_Row.
+  Sparse_Row(const Unlimited_Sparse_Row &x,size_type n);
 
   //! Resizes the row to the specified size.
   void resize(size_type n);

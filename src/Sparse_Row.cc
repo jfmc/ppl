@@ -26,7 +26,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Sparse_Row::Sparse_Row(size_type n,const Unlimited_Sparse_Row &x)
+PPL::Sparse_Row::Sparse_Row(size_type n)
+  : row(), size_(n) {
+  PPL_ASSERT(OK());
+}
+
+PPL::Sparse_Row::Sparse_Row(const Unlimited_Sparse_Row &x,size_type n)
   : row(x), size_(n) {
   row.reset_after(n);
   PPL_ASSERT(OK());
