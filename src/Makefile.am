@@ -145,6 +145,7 @@ Sparse_Row.types.hh \
 Sparse_Matrix.types.hh \
 Linear_Row.types.hh \
 Matrix.types.hh \
+Dense_Matrix.types.hh \
 Variable.types.hh \
 Variables_Set.types.hh \
 Linear_Expression.types.hh \
@@ -251,6 +252,8 @@ Linear_Row.defs.hh \
 Linear_Row.inlines.hh \
 Matrix.defs.hh \
 Matrix.inlines.hh \
+Dense_Matrix.defs.hh \
+Dense_Matrix.inlines.hh \
 Bit_Row.defs.hh \
 Bit_Row.inlines.hh \
 Linear_System.defs.hh \
@@ -429,6 +432,7 @@ Linear_Expression.cc \
 Linear_System.cc \
 Linear_Form.cc \
 Matrix.cc \
+Dense_Matrix.cc \
 Scalar_Products.cc \
 MIP_Problem.cc \
 PIP_Tree.cc \
