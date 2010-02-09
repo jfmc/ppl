@@ -149,6 +149,7 @@ MIP_Problem::clear() {
   swap(tmp);
 }
 
+/*
 inline memory_size_type
 MIP_Problem::external_memory_in_bytes() const {
   memory_size_type n
@@ -172,7 +173,7 @@ inline memory_size_type
 MIP_Problem::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
-
+*/
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
