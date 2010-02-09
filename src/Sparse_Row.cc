@@ -32,7 +32,7 @@ PPL::Sparse_Row::Sparse_Row(size_type n,const Unlimited_Sparse_Row &x)
   PPL_ASSERT(OK());
 }
 
-PPL::Sparse_Row::Sparse_Row(std::vector<Coefficient> v)
+PPL::Sparse_Row::Sparse_Row(const std::vector<Coefficient>& v)
   : row(v), size_(v.size()) {
   PPL_ASSERT(OK());
 }

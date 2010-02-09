@@ -43,7 +43,7 @@ public:
   typedef Unlimited_Sparse_Row::size_type size_type;
 
   //! Constructs a row from a std::vector.
-  Sparse_Row(std::vector<data_type> v);
+  Sparse_Row(const std::vector<data_type>& v);
 
   //! Constructs a row of the specified size from an Unlimited_Sparse_Row
   Sparse_Row(size_type n=0,
