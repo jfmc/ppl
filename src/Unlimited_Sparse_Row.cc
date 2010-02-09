@@ -44,32 +44,32 @@ PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row(const std::vector<data_type>&
 
 PPL::Unlimited_Sparse_Row::iterator
 PPL::Unlimited_Sparse_Row::reset(iterator i) {
-  iterator res = data.erase(i);
+  iterator res = iterator(data.erase(i.itr));
   PPL_ASSERT(OK());
   return res;
 }
 
 PPL::Unlimited_Sparse_Row::iterator
 PPL::Unlimited_Sparse_Row::reset(iterator first,iterator last) {
-  iterator res = data.erase(first,last);
+  iterator res = iterator(data.erase(first.itr,last.itr));
   PPL_ASSERT(OK());
   return res;
 }
 
 void
 PPL::Unlimited_Sparse_Row::reset_after(key_type i) {
-  data.erase(lower_bound(i),end());
+  data.erase(lower_bound(i).itr,data.end());
   PPL_ASSERT(OK());
 }
 
 PPL::Unlimited_Sparse_Row::iterator
 PPL::Unlimited_Sparse_Row::begin() {
-  return data.begin();
+  return iterator(data.begin());
 }
 
 PPL::Unlimited_Sparse_Row::iterator
 PPL::Unlimited_Sparse_Row::end() {
-  return data.end();
+  return iterator(data.end());
 }
 
 PPL::Unlimited_Sparse_Row::const_iterator
@@ -163,4 +163,61 @@ PPL::Unlimited_Sparse_Row::OK() const {
     if (previous->first >= i->first)
       return false;
   return true;
+}
+
+
+PPL::Unlimited_Sparse_Row::iterator::iterator()
+  : itr() {
+}
+
+std::pair<const PPL::Unlimited_Sparse_Row::key_type,
+          PPL::Unlimited_Sparse_Row::data_type&>
+PPL::Unlimited_Sparse_Row::iterator::operator*() {
+  return std::pair<const Unlimited_Sparse_Row::key_type,
+                   Unlimited_Sparse_Row::data_type&>(itr->first,itr->second);
+}
+
+PPL::Unlimited_Sparse_Row::iterator&
+PPL::Unlimited_Sparse_Row::iterator::operator++() {
+  ++itr;
+  return *this;
+}
+
+PPL::Unlimited_Sparse_Row::iterator
+PPL::Unlimited_Sparse_Row::iterator::operator++(int) {
+  iterator x(*this);
+  ++(*this);
+  return x;
+}
+
+PPL::Unlimited_Sparse_Row::iterator&
+PPL::Unlimited_Sparse_Row::iterator::operator--() {
+  --itr;
+  return *this;
+}
+
+PPL::Unlimited_Sparse_Row::iterator
+PPL::Unlimited_Sparse_Row::iterator::operator--(int) {
+  iterator x(*this);
+  --(*this);
+  return x;
+}
+
+bool
+PPL::Unlimited_Sparse_Row::iterator::operator==(const iterator &x) const {
+  return itr == x.itr;
+}
+
+bool
+PPL::Unlimited_Sparse_Row::iterator::operator!=(const iterator &x) const {
+  return !((*this) == x);
+}
+
+PPL::Unlimited_Sparse_Row::iterator::operator
+  Unlimited_Sparse_Row::const_iterator() {
+  return static_cast<Unlimited_Sparse_Row::const_iterator>(itr);
+}
+
+PPL::Unlimited_Sparse_Row::iterator::iterator(list_t::iterator i)
+  : itr(i) {
 }

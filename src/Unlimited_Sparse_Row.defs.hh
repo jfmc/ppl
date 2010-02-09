@@ -62,14 +62,14 @@ public:
   Unlimited_Sparse_Row(const std::vector<data_type> &v);
 
 private:
-  typedef std::list<value_type> list_t;
+  typedef std::list<std::pair<key_type,data_type> > list_t;
 
 public:
   //! A const iterator that may skip some zeros in the sequence.
   typedef list_t::const_iterator const_iterator;
 
   //! An iterator that may skip some zeros in the sequence.
-  typedef list_t::iterator iterator;
+  class iterator;
 
   //! Resets to zero the value pointed to by i.
   iterator reset(iterator i);
@@ -107,6 +107,38 @@ public:
 private:
   //! The std::list that contains the coefficients
   list_t data;
+};
+
+class Unlimited_Sparse_Row::iterator {
+
+public:
+  typedef list_t::iterator::iterator_category iterator_category;
+  typedef std::pair<const key_type,data_type> value_type;
+  typedef ptrdiff_t difference_type;
+  typedef std::pair<const key_type,data_type>* pointer;
+  typedef std::pair<const key_type,data_type&> reference;
+
+  iterator();
+
+  reference operator*();
+
+  iterator& operator++();
+  iterator operator++(int);
+
+  iterator& operator--();
+  iterator operator--(int);
+
+  bool operator==(const iterator &x) const;
+  bool operator!=(const iterator &x) const;
+
+  operator Unlimited_Sparse_Row::const_iterator();
+
+private:
+  iterator(list_t::iterator i);
+
+  list_t::iterator itr;
+
+  friend class Unlimited_Sparse_Row;
 };
 
 template <typename Compare>
