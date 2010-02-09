@@ -120,6 +120,8 @@ PPL::Unlimited_Sparse_Row::operator==(const Unlimited_Sparse_Row &x) const {
 
   while (i != i_end && j != j_end) {
     if (i->first == j->first) {
+      if (i->second != j->second)
+        return false;
       ++i;
       ++j;
     } else
