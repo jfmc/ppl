@@ -54,6 +54,10 @@ public:
   void resize(dimension_type n);
   void resize(dimension_type num_rows,dimension_type num_columns);
 
+  bool ascii_load(std::istream& s);
+
+  PPL_OUTPUT_DECLARATIONS
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 

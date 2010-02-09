@@ -97,6 +97,39 @@ PPL::Sparse_Matrix::resize(dimension_type num_rows,
   PPL_ASSERT(OK());
 }
 
+void
+PPL::Sparse_Matrix::ascii_dump(std::ostream& s) const {
+  s << num_rows() << " x ";
+  s << num_columns() << "\n";
+  for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i)
+    i->ascii_dump(s);
+}
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Sparse_Matrix)
+
+bool
+PPL::Sparse_Matrix::ascii_load(std::istream& s) {
+  std::string str;
+  dimension_type new_num_rows;
+  dimension_type new_num_cols;
+  if (!(s >> new_num_rows))
+    return false;
+  if (!(s >> str) || str != "x")
+    return false;
+  if (!(s >> new_num_cols))
+    return false;
+
+  resize(new_num_rows, new_num_cols);
+
+  for (dimension_type row = 0; row < new_num_rows; ++row)
+    if (!rows[row].ascii_load(s))
+      return false;
+
+  // Check invariants.
+  PPL_ASSERT(OK());
+  return true;
+}
+
 bool
 PPL::Sparse_Matrix::OK() const {
   for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i) {
