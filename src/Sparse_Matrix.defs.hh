@@ -108,7 +108,7 @@ public:
 
   //! Checks the invariant.
   bool OK() const;
-  
+
 private:
   Unlimited_Sparse_Row& row_;
   const dimension_type size_;
