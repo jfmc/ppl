@@ -28,6 +28,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row()
   : data() {
+  PPL_ASSERT(OK());
 }
 
 PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row(const std::vector<data_type>&
@@ -38,21 +39,27 @@ PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row(const std::vector<data_type>&
   for (vec_size_type i=0,n=v.size(); i<n; ++i)
     if (v[i] != 0)
       data.push_back(std::make_pair(i,v[i]));
+  PPL_ASSERT(OK());
 }
 
 PPL::Unlimited_Sparse_Row::iterator
 PPL::Unlimited_Sparse_Row::reset(iterator i) {
-  return data.erase(i);
+  iterator res = data.erase(i);
+  PPL_ASSERT(OK());
+  return res;
 }
 
 PPL::Unlimited_Sparse_Row::iterator
 PPL::Unlimited_Sparse_Row::reset(iterator first,iterator last) {
-  return data.erase(first,last);
+  iterator res = data.erase(first,last);
+  PPL_ASSERT(OK());
+  return res;
 }
 
 void
 PPL::Unlimited_Sparse_Row::reset_after(key_type i) {
   data.erase(lower_bound(i),end());
+  PPL_ASSERT(OK());
 }
 
 PPL::Unlimited_Sparse_Row::iterator
