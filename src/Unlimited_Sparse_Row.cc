@@ -24,11 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Unlimited_Sparse_Row.defs.hh"
 
-// FIXME: Check if these are all needed
-#include <functional>
-//#include <utility>
-#include <algorithm>
-
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row()
