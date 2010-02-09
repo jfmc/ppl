@@ -84,6 +84,8 @@ public:
   const_iterator lower_bound(const key_type &c) const;
   const_iterator upper_bound(const key_type &c) const;
 
+  operator const Unlimited_Sparse_Row&() const;
+
   //! Checks the invariant.
   bool OK() const;
 };

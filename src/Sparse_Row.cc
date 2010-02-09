@@ -114,6 +114,10 @@ PPL::Sparse_Row::upper_bound(const key_type &k) const {
   return row.upper_bound(k);
 }
 
+PPL::Sparse_Row::operator const PPL::Unlimited_Sparse_Row &() const {
+  return row;
+}
+
 bool
 PPL::Sparse_Row::OK() const {
   if (!row.OK())
