@@ -23,10 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Dense_Matrix_inlines_hh
 #define PPL_Dense_Matrix_inlines_hh 1
 
-#include "globals.defs.hh"
-#include <algorithm>
-#include "assert.hh"
-
 namespace Parma_Polyhedra_Library {
 
 inline dimension_type
@@ -213,7 +209,6 @@ swap(Parma_Polyhedra_Library::Dense_Matrix& x,
 }
 
 } // namespace std
-
 
 
 #endif // !defined(PPL_Dense_Matrix_inlines_hh)
