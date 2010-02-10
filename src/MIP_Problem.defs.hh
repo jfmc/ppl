@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifndef USE_PPL_SPARSE_MATRIX
 
-#include "Row.defs.hh"
+#include "Dense_Row.defs.hh"
 #include "Dense_Matrix.defs.hh"
 
 #else
@@ -89,6 +89,19 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
 */
 class Parma_Polyhedra_Library::MIP_Problem {
 public:
+
+#ifndef USE_PPL_SPARSE_MATRIX
+  typedef Dense_Row row_type;
+  typedef Dense_Matrix matrix_type;
+  typedef Dense_Row& matrix_row_reference_type;
+  typedef const Dense_Row& matrix_row_const_reference_type;
+#else
+  typedef Sparse_Row row_type;
+  typedef Sparse_Matrix matrix_type;
+  typedef Sparse_Matrix_Row& matrix_row_reference_type;
+  typedef const Unlimited_Sparse_Row& matrix_row_const_reference_type;
+#endif
+
   //! Builds a trivial MIP problem.
   /*!
     A trivial MIP problem requires to maximize the objective function
@@ -443,20 +456,11 @@ private:
   */
   dimension_type internal_space_dim;
 
-#ifndef USE_PPL_SPARSE_MATRIX
   //! The matrix encoding the current feasible region in tableau form.
-  Dense_Matrix tableau;
+  matrix_type tableau;
 
   //! The working cost function.
-  Row working_cost;
-#else
-  //! The matrix encoding the current feasible region in tableau form.
-  Sparse_Matrix tableau;
-
-  //! The working cost function.
-  Sparse_Row working_cost;
-#endif
-
+  row_type working_cost;
 
   //! A map between the variables of `input_cs' and `tableau'.
   /*!
@@ -634,10 +638,10 @@ private:
   //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
   /*!
     \param x
-    The Row that will be combined with \p y object.
+    The row that will be combined with \p y object.
 
     \param y
-    The Row that will be combined with \p x object.
+    The row that will be combined with \p x object.
 
     \param k
     The position of \p *this that have to be \f$0\f$.
@@ -646,7 +650,7 @@ private:
     the element of index \p k equal to \f$0\f$. Then it assigns
     the resulting Linear_Row to \p x and normalizes it.
   */
-  static void linear_combine(Row& x, const Row& y, const dimension_type k);
+  static void linear_combine(row_type& x, const row_type& y, const dimension_type k);
 
   /*! \brief
     Performs the pivoting operation on the tableau.

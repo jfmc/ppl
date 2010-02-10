@@ -23,53 +23,113 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Dense_Matrix_inlines_hh
 #define PPL_Dense_Matrix_inlines_hh 1
 
+#include "globals.defs.hh"
+#include <algorithm>
+#include "assert.hh"
+
 namespace Parma_Polyhedra_Library {
 
 inline dimension_type
 Dense_Matrix::max_num_rows() {
-  return Matrix::max_num_rows();
+  return std::vector<Dense_Row>().max_size();
 }
 
 inline dimension_type
 Dense_Matrix::max_num_columns() {
-  return Matrix::max_num_columns();
+  return Dense_Row::max_size();
 }
 
-/*
 inline memory_size_type
 Dense_Matrix::total_memory_in_bytes() const {
-  return m.total_memory_in_bytes();
+  return sizeof(*this) + external_memory_in_bytes();
 }
-*/
+
+inline
+Dense_Matrix::const_iterator::const_iterator()
+  : i(Iter()) {
+}
+
+inline
+Dense_Matrix::const_iterator::const_iterator(const Iter& b)
+  : i(b) {
+}
+
+inline
+Dense_Matrix::const_iterator::const_iterator(const const_iterator& y)
+  : i(y.i) {
+}
+
+inline Dense_Matrix::const_iterator&
+Dense_Matrix::const_iterator::operator=(const const_iterator& y) {
+  i = y.i;
+  return *this;
+}
+
+inline Dense_Matrix::const_iterator::reference
+Dense_Matrix::const_iterator::operator*() const {
+  return *i;
+}
+
+inline Dense_Matrix::const_iterator::pointer
+Dense_Matrix::const_iterator::operator->() const {
+  return &*i;
+}
+
+inline Dense_Matrix::const_iterator&
+Dense_Matrix::const_iterator::operator++() {
+  ++i;
+  return *this;
+}
+
+inline Dense_Matrix::const_iterator
+Dense_Matrix::const_iterator::operator++(int) {
+  return const_iterator(i++);
+}
+
+inline bool
+Dense_Matrix::const_iterator::operator==(const const_iterator& y) const {
+  return i == y.i;
+}
+
+inline bool
+Dense_Matrix::const_iterator::operator!=(const const_iterator& y) const {
+  return !operator==(y);
+}
 
 inline bool
 Dense_Matrix::has_no_rows() const {
-  return m.has_no_rows();
+  return rows.empty();
 }
 
-inline Matrix::const_iterator
+inline Dense_Matrix::const_iterator
 Dense_Matrix::begin() const {
-  return m.begin();
+  return const_iterator(rows.begin());
 }
 
 inline Dense_Matrix::const_iterator
 Dense_Matrix::end() const {
-  return m.end();
+  return const_iterator(rows.end());
 }
 
 inline void
 Dense_Matrix::swap(Dense_Matrix& y) {
-  m.swap(y.m);
+  std::swap(rows, y.rows);
+  std::swap(row_size, y.row_size);
+  std::swap(row_capacity, y.row_capacity);
 }
 
 inline
 Dense_Matrix::Dense_Matrix()
-  : m() {
+  : rows(),
+    row_size(0),
+    row_capacity(0) {
 }
 
 inline
 Dense_Matrix::Dense_Matrix(const Dense_Matrix& y)
-  :m(y.m) {
+  : rows(y.rows),
+    row_size(y.row_size),
+    row_capacity(compute_capacity(y.row_size, max_num_columns())) {
 }
 
 inline
@@ -78,33 +138,47 @@ Dense_Matrix::~Dense_Matrix() {
 
 inline Dense_Matrix&
 Dense_Matrix::operator=(const Dense_Matrix& y) {
-  m = y.m;
+  // Without the following guard against auto-assignments we would
+  // recompute the row capacity based on row size, possibly without
+  // actually increasing the capacity of the rows.  This would lead to
+  // an inconsistent state.
+  if (this != &y) {
+    // The following assignment may do nothing on auto-assignments...
+    rows = y.rows;
+    row_size = y.row_size;
+    // ... hence the following assignment must not be done on
+    // auto-assignments.
+    row_capacity = compute_capacity(y.row_size, max_num_columns());
+  }
   return *this;
 }
 
 inline void
-Dense_Matrix::add_row(const Row& y) {
-  m.add_row(y);
+Dense_Matrix::add_row(const Dense_Row& y) {
+  Dense_Row new_row(y, row_capacity);
+  add_recycled_row(new_row);
 }
 
-inline Row&
+inline Dense_Row&
 Dense_Matrix::operator[](const dimension_type k) {
-  return m[k];
+  PPL_ASSERT(k < rows.size());
+  return rows[k];
 }
 
-inline const Row&
+inline const Dense_Row&
 Dense_Matrix::operator[](const dimension_type k) const {
-  return m[k];
+  PPL_ASSERT(k < rows.size());
+  return rows[k];
 }
 
 inline dimension_type
 Dense_Matrix::num_rows() const {
-  return m.num_rows();
+  return rows.size();
 }
 
 inline dimension_type
 Dense_Matrix::num_columns() const {
-  return m.num_columns();
+  return row_size;
 }
 
 /*! \relates Dense_Matrix */
@@ -115,104 +189,17 @@ operator!=(const Dense_Matrix& x, const Dense_Matrix& y) {
 
 inline void
 Dense_Matrix::erase_to_end(const dimension_type first_to_erase) {
-  m.erase_to_end(first_to_erase);
+  PPL_ASSERT(first_to_erase <= rows.size());
+  if (first_to_erase < rows.size())
+    rows.erase(rows.begin() + first_to_erase, rows.end());
 }
 
 inline void
 Dense_Matrix::clear() {
-  m.clear();
-}
-
-inline Dense_Matrix::Dense_Matrix(const dimension_type n_rows,
-        const dimension_type n_columns,
-        Row::Flags row_flags)
-  : m(n_rows,n_columns,row_flags) {
-}
-
-inline void
-Dense_Matrix::add_zero_rows(const dimension_type n, Row::Flags row_flags) {
-  m.add_zero_rows(n,row_flags);
-}
-
-inline void
-Dense_Matrix::add_zero_columns(const dimension_type n) {
-  m.add_zero_columns(n);
-}
-
-inline void
-Dense_Matrix::add_zero_rows_and_columns(const dimension_type n,
-               const dimension_type m1,
-               Row::Flags row_flags) {
-  m.add_zero_rows_and_columns(n,m1,row_flags);
-}
-
-inline void
-Dense_Matrix::add_recycled_row(Row& y) {
-  m.add_recycled_row(y);
-}
-
-inline void
-Dense_Matrix::resize_no_copy(const dimension_type new_n_rows,
-          const dimension_type new_n_columns,
-          Row::Flags row_flags) {
-  m.resize_no_copy(new_n_rows,new_n_columns,row_flags);
-}
-
-inline void
-Dense_Matrix::ascii_dump(std::ostream& s) const {
-  m.ascii_dump(s);
-}
-
-inline bool
-Dense_Matrix::ascii_load(std::istream& s) {
-  return m.ascii_load(s);
-}
-
-inline void
-Dense_Matrix::swap_columns(const dimension_type i, const dimension_type j) {
-  m.swap_columns(i,j);
-}
-
-inline void
-Dense_Matrix::remove_trailing_columns(const dimension_type n) {
-  m.remove_trailing_columns(n);
-}
-
-inline void
-Dense_Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
-  m.permute_columns(cycles);
-}
-
-/*! \relates Parma_Polyhedra_Library::Dense_Matrix */
-inline bool
-operator==(const Dense_Matrix& x, const Dense_Matrix& y) {
-  return (x.m == y.m);
-}
-
-/*
-inline memory_size_type
-Dense_Matrix::external_memory_in_bytes() const {
-  return m.external_memory_in_bytes();
-}
-*/
-
-template <typename Func>
-inline void
-Parma_Polyhedra_Library::Dense_Matrix::for_each_row(Func func) {
-  for (dimension_type i = num_rows(); i-- > 0; )
-    func((*this)[i]);
-}
-
-template <typename Func>
-inline void
-Parma_Polyhedra_Library::Dense_Matrix::for_each_row(Func func) const {
-  for (dimension_type i = num_rows(); i-- > 0; )
-    func((*this)[i]);
-}
-
-inline bool
-Dense_Matrix::OK() const {
-  return m.OK();
+  // Clear `rows' and minimize its capacity.
+  std::vector<Dense_Row>().swap(rows);
+  row_size = 0;
+  row_capacity = 0;
 }
 
 } // namespace Parma_Polyhedra_Library
@@ -227,6 +214,5 @@ swap(Parma_Polyhedra_Library::Dense_Matrix& x,
 }
 
 } // namespace std
-
 
 #endif // !defined(PPL_Dense_Matrix_inlines_hh)

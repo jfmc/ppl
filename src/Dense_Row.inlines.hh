@@ -36,6 +36,22 @@ Dense_Row::size() const {
 }
 
 inline
+Dense_Row::Dense_Row()
+  : row() {
+}
+
+inline void
+Dense_Row::construct(const dimension_type sz,
+         const dimension_type capacity) {
+  row.construct(sz,capacity,Row::Flags());
+}
+
+inline void
+Dense_Row::construct(const dimension_type sz) {
+  row.construct(sz,Row::Flags());
+}
+
+inline
 Dense_Row::Dense_Row(const dimension_type sz,
 	 const dimension_type capacity)
   : row(sz,capacity,Row::Flags()) {
@@ -66,6 +82,11 @@ Dense_Row::Dense_Row(const Dense_Row& y,
 
 inline
 Dense_Row::~Dense_Row() {
+}
+
+inline void
+Dense_Row::expand_within_capacity(dimension_type new_size) {
+  row.expand_within_capacity(new_size);
 }
 
 inline void
@@ -121,6 +142,16 @@ Dense_Row::ascii_load(std::istream& s) {
   return row.ascii_load(s);
 }
 
+inline memory_size_type
+Dense_Row::external_memory_in_bytes() const {
+  return row.external_memory_in_bytes();
+}
+
+inline memory_size_type
+Dense_Row::external_memory_in_bytes(dimension_type capacity) const {
+  return row.external_memory_in_bytes(capacity);
+}
+
 inline bool
 Dense_Row::OK() const {
   return row.OK();
@@ -135,6 +166,16 @@ Dense_Row::OK(const dimension_type row_size,
 inline bool
 Dense_Row::operator==(const Dense_Row& y) const {
   return row == y.row;
+}
+
+inline
+Dense_Row::operator Row&() {
+  return row;
+}
+
+inline
+Dense_Row::operator const Row&() const {
+  return row;
 }
 
 } // namespace Parma_Polyhedra_Library

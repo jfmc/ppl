@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "MIP_Problem.defs.hh"
 #include "globals.defs.hh"
 #include "Checked_Number.defs.hh"
-#include "Row.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Constraint_System.defs.hh"
@@ -65,7 +64,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim)
   : external_space_dim(dim),
     internal_space_dim(0),
     tableau(),
-    working_cost(0, Row::Flags()),
+    working_cost(0),
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
@@ -93,7 +92,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
   : external_space_dim(dim),
     internal_space_dim(0),
     tableau(),
-    working_cost(0, Row::Flags()),
+    working_cost(0),
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
@@ -677,7 +676,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   const dimension_type new_total_columns
     = new_var_columns + new_slacks + artificial_cols;
   if (new_rows > 0)
-    tableau.add_zero_rows(new_rows, Row::Flags());
+    tableau.add_zero_rows(new_rows);
   if (new_total_columns > 0)
     tableau.add_zero_columns(new_total_columns);
   dimension_type tableau_num_rows = tableau.num_rows();
@@ -707,7 +706,7 @@ PPL::MIP_Problem::process_pending_constraints() {
        i-- > first_pending_constraint;  )
     if (is_tableau_constraint[i]) {
       // Copy the original constraint in the tableau.
-      Row& tableau_k = tableau[--k];
+      matrix_row_reference_type tableau_k = tableau[--k];
       const Constraint& cs_i = input_cs[i];
       for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
 	tableau_k[mapping[sd+1].first] = cs_i.coefficient(Variable(sd));
@@ -741,14 +740,14 @@ PPL::MIP_Problem::process_pending_constraints() {
   // This simplifies the insertion of the artificial variables: the value of
   // each artificial variable will be 1.
   for (dimension_type i = tableau_num_rows; i-- > 0 ; ) {
-    Row& tableau_i = tableau[i];
+    matrix_row_reference_type tableau_i = tableau[i];
     if (tableau_i[0] > 0)
       for (dimension_type j = tableau_num_columns; j-- > 0; )
 	neg_assign(tableau_i[j]);
   }
 
   // Set the working cost function with the right size.
-  working_cost = Row(tableau_num_columns, Row::Flags());
+  working_cost = row_type(tableau_num_columns);
 
   // Insert artificial variables for the nonfeasible constraints.
   for (dimension_type i = 0; i < unfeasible_tableau_rows_size; ++i) {
@@ -901,7 +900,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       // of the original formula has to be replaced by `squared_lcm_basis'.
       challenger_den = 1.0;
       for (dimension_type i = tableau_num_rows; i-- > 0; ) {
-	const Row& tableau_i = tableau[i];
+	matrix_row_const_reference_type tableau_i = tableau[i];
 	const Coefficient& tableau_ij = tableau_i[j];
 	if (tableau_ij != 0) {
 	  PPL_ASSERT(tableau_i[base[i]] != 0);
@@ -1022,8 +1021,8 @@ PPL::MIP_Problem::textbook_entering_index() const {
 }
 
 void
-PPL::MIP_Problem::linear_combine(Row& x,
-				 const Row& y,
+PPL::MIP_Problem::linear_combine(row_type& x,
+				 const row_type& y,
 				 const dimension_type k) {
   WEIGHT_BEGIN();
   const dimension_type x_size = x.size();
@@ -1054,10 +1053,10 @@ PPL::MIP_Problem::linear_combine(Row& x,
 void
 PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
 			const dimension_type exiting_base_index) {
-  const Row& tableau_out = tableau[exiting_base_index];
+  matrix_row_const_reference_type tableau_out = tableau[exiting_base_index];
   // Linearly combine the constraints.
   for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
-    Row& tableau_i = tableau[i];
+    matrix_row_reference_type tableau_i = tableau[i];
     if (i != exiting_base_index && tableau_i[entering_var_index] != 0)
       linear_combine(tableau_i, tableau_out, entering_var_index);
   }
@@ -1082,7 +1081,7 @@ PPL::MIP_Problem
   const dimension_type tableau_num_rows = tableau.num_rows();
   dimension_type exiting_base_index = tableau_num_rows;
   for (dimension_type i = 0; i < tableau_num_rows; ++i) {
-    const Row& t_i = tableau[i];
+    matrix_row_const_reference_type t_i = tableau[i];
     const int num_sign = sgn(t_i[entering_var_index]);
     if (num_sign != 0 && num_sign == sgn(t_i[base[i]])) {
       exiting_base_index = i;
@@ -1098,13 +1097,13 @@ PPL::MIP_Problem
   PPL_DIRTY_TEMP_COEFFICIENT(current_min);
   PPL_DIRTY_TEMP_COEFFICIENT(challenger);
   for (dimension_type i = exiting_base_index + 1; i < tableau_num_rows; ++i) {
-    const Row& t_i = tableau[i];
+    matrix_row_const_reference_type t_i = tableau[i];
     const Coefficient& t_ie = t_i[entering_var_index];
     const Coefficient& t_ib = t_i[base[i]];
     const int t_ie_sign = sgn(t_ie);
     if (t_ie_sign != 0 && t_ie_sign == sgn(t_ib)) {
       WEIGHT_BEGIN();
-      const Row& t_e = tableau[exiting_base_index];
+      matrix_row_const_reference_type t_e = tableau[exiting_base_index];
       const Coefficient& t_ee = t_e[entering_var_index];
       lcm_assign(lcm, t_ee, t_ie);
       exact_div_assign(current_min, lcm, t_ee);
@@ -1272,7 +1271,7 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   for (dimension_type i = 0; i < tableau_n_rows; ++i)
     if (begin_artificials <= base[i] && base[i] <= end_artificials) {
       // Search for a non-zero element to enter the base.
-      Row& tableau_i = tableau[i];
+      matrix_row_reference_type tableau_i = tableau[i];
       bool redundant = true;
       for (dimension_type j = end_artificials+1; j-- > 1; )
 	if (!(begin_artificials <= j && j <= end_artificials)
@@ -1343,7 +1342,7 @@ PPL::MIP_Problem::compute_generator() const {
     // (if it is not a basic variable, the value is 0).
     const dimension_type original_var = mapping[i+1].first;
     if (is_in_base(original_var, row)) {
-      const Row& t_row = tableau[row];
+      matrix_row_const_reference_type t_row = tableau[row];
       if (t_row[original_var] > 0) {
 	neg_assign(num_i, t_row[0]);
 	den_i = t_row[original_var];
@@ -1364,7 +1363,7 @@ PPL::MIP_Problem::compute_generator() const {
       // having index mapping[i+1].second .
       // Like before, we he have to check if the variable is in base.
       if (is_in_base(split_var, row)) {
-	const Row& t_row = tableau[row];
+	matrix_row_const_reference_type t_row = tableau[row];
 	if (t_row[split_var] > 0) {
 	  split_num = -t_row[0];
 	  split_den = t_row[split_var];
@@ -1421,7 +1420,7 @@ PPL::MIP_Problem::second_phase() {
   // Build the objective function for the second phase.
   const dimension_type input_obj_function_sd
     = input_obj_function.space_dimension();
-  Row new_cost(input_obj_function_sd + 1, Row::Flags());
+  row_type new_cost(input_obj_function_sd + 1);
   for (dimension_type i = input_obj_function_sd; i-- > 0; )
     new_cost[i+1] = input_obj_function.coefficient(Variable(i));
   new_cost[0] = input_obj_function.inhomogeneous_term();
@@ -1433,7 +1432,7 @@ PPL::MIP_Problem::second_phase() {
 
   // Substitute properly the cost function in the `costs' matrix.
   const dimension_type cost_zero_size = working_cost.size();
-  Row tmp_cost = Row(new_cost, cost_zero_size, cost_zero_size);
+  row_type tmp_cost = row_type(new_cost, cost_zero_size, cost_zero_size);
   tmp_cost.swap(working_cost);
   working_cost[cost_zero_size-1] = 1;
 

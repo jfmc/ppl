@@ -24,13 +24,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Dense_Matrix_defs_hh 1
 
 #include "Dense_Matrix.types.hh"
-#include "Matrix.defs.hh"
+#include "Dense_Row.defs.hh"
+#include "Constraint_System.types.hh"
+#include "Generator_System.types.hh"
+#include "Coefficient.types.hh"
+#include <vector>
+#include <cstddef>
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A 2-dimensional matrix of coefficients.
 /*! \ingroup PPL_CXX_interface
-  A Dense_Matrix object is a sequence of Row objects and is characterized
-  by the matrix dimensions (the number of rows and columns).
+  A Dense_Matrix object is a sequence of Dense_Row objects and is
+  characterized by the matrix dimensions (the number of rows and columns).
   All the rows in a matrix, besides having the same size (corresponding
   to the number of columns of the matrix), are also bound to have the
   same capacity.
@@ -47,7 +52,7 @@ public:
 
   //! Builds an empty matrix.
   /*!
-    Rows' size and capacity are initialized to \f$0\f$.
+    Dense_Rows' size and capacity are initialized to \f$0\f$.
   */
   Dense_Matrix();
 
@@ -63,8 +68,7 @@ public:
     The flags used to build the rows of the matrix;
     by default, the rows will have all flags unset.
   */
-  Dense_Matrix(dimension_type n_rows, dimension_type n_columns,
-	 Row::Flags row_flags = Row::Flags());
+  Dense_Matrix(dimension_type n_rows, dimension_type n_columns);
 
   //! Copy constructor.
   Dense_Matrix(const Dense_Matrix& y);
@@ -75,7 +79,65 @@ public:
   //! Assignment operator.
   Dense_Matrix& operator=(const Dense_Matrix& y);
 
-  typedef Matrix::const_iterator const_iterator;
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! An iterator over a matrix.
+  /*! \ingroup PPL_CXX_interface
+    A const_iterator is used to provide read-only access
+    to each row contained in a Dense_Matrix object.
+  */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+  class const_iterator {
+  private:
+    typedef std::vector<Dense_Row>::const_iterator Iter;
+    //! The const iterator on the rows' vector \p rows.
+    Iter i;
+
+  public:
+    typedef std::forward_iterator_tag iterator_category;
+    typedef std::iterator_traits<Iter>::value_type value_type;
+    typedef std::iterator_traits<Iter>::difference_type difference_type;
+    typedef std::iterator_traits<Iter>::pointer pointer;
+    typedef std::iterator_traits<Iter>::reference reference;
+
+    //! Default constructor.
+    const_iterator();
+
+    /*! \brief
+      Builds a const iterator on the matrix starting from
+      an iterator \p b on the elements of the vector \p rows.
+    */
+    explicit const_iterator(const Iter& b);
+
+    //! Ordinary copy constructor.
+    const_iterator(const const_iterator& y);
+
+    //! Assignment operator.
+    const_iterator& operator=(const const_iterator& y);
+
+    //! Dereference operator.
+    reference operator*() const;
+
+    //! Indirect member selector.
+    pointer operator->() const;
+
+    //! Prefix increment operator.
+    const_iterator& operator++();
+
+    //! Postfix increment operator.
+    const_iterator operator++(int);
+
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are identical.
+    */
+    bool operator==(const const_iterator& y) const;
+
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are different.
+    */
+    bool operator!=(const const_iterator& y) const;
+  };
 
   //! Returns <CODE>true</CODE> if and only if \p *this has no rows.
   /*!
@@ -97,8 +159,16 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
-private:
-  Matrix m;
+  // FIXME: the following section must become private.
+protected:
+  //! Contains the rows of the matrix.
+  std::vector<Dense_Row> rows;
+
+  //! Size of the initialized part of each row.
+  dimension_type row_size;
+
+  //! Capacity allocated for each row.
+  dimension_type row_capacity;
 
 public:
   //! Swaps \p *this with \p y.
@@ -116,7 +186,7 @@ public:
     the \f$(r+n) \times c\f$ matrix \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
-  void add_zero_rows(dimension_type n, Row::Flags row_flags);
+  void add_zero_rows(dimension_type n);
 
   //! Adds \p n columns of zeroes to the matrix.
   /*!
@@ -145,8 +215,7 @@ public:
     \f$\bigl(\genfrac{}{}{0pt}{}{M}{0} \genfrac{}{}{0pt}{}{0}{0}\bigr)\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
-  void add_zero_rows_and_columns(dimension_type n, dimension_type m,
-				 Row::Flags row_flags);
+  void add_zero_rows_and_columns(dimension_type n, dimension_type m);
 
   //! Adds a copy of the row \p y to the matrix.
   /*!
@@ -159,7 +228,7 @@ public:
     \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
-  void add_row(const Row& y);
+  void add_row(const Dense_Row& y);
 
   //! Adds the row \p y to the matrix.
   /*!
@@ -172,7 +241,7 @@ public:
     \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
-  void add_recycled_row(Row& y);
+  void add_recycled_row(Dense_Row& y);
 
   //! Makes the matrix shrink by removing its \p n trailing columns.
   void remove_trailing_columns(dimension_type n);
@@ -192,8 +261,8 @@ public:
     reallocation whenever possible.
     The contents of the original matrix is lost.
   */
-  void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns,
-		      Row::Flags row_flags);
+  void resize_no_copy(dimension_type new_n_rows,
+                      dimension_type new_n_columns);
 
   //! Swaps the columns having indexes \p i and \p j.
   void swap_columns(dimension_type i,  dimension_type j);
@@ -229,10 +298,10 @@ public:
   //! \name Subscript operators
   //@{
   //! Returns a reference to the \p k-th row of the matrix.
-  Row& operator[](dimension_type k);
+  Dense_Row& operator[](dimension_type k);
 
   //! Returns a constant reference to the \p k-th row of the matrix.
-  const Row& operator[](dimension_type k) const;
+  const Dense_Row& operator[](dimension_type k) const;
   //@} // Subscript operators
 
   //! Clears the matrix deallocating all its rows.
@@ -247,13 +316,11 @@ public:
   */
   bool ascii_load(std::istream& s);
 
-/*
   //! Returns the total size in bytes of the memory occupied by \p *this.
   memory_size_type total_memory_in_bytes() const;
 
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
-*/
 
   /*! \brief
     Erases from the matrix all the rows but those having
@@ -261,19 +328,8 @@ public:
   */
   void erase_to_end(dimension_type first_to_erase);
 
-  //! Calls func on each row. func should take a Row& argument.
-  template <typename Func>
-  void for_each_row(Func func);
-
-  //! Calls func on each row. func should take a const Row& argument.
-  template <typename Func>
-  void for_each_row(Func func) const;
-
   //! Checks if all the invariants are satisfied.
   bool OK() const;
-
-  friend bool Parma_Polyhedra_Library::operator==(const Dense_Matrix& x,
-                                                  const Dense_Matrix& y);
 };
 
 namespace std {
@@ -292,13 +348,13 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
-/*! \relates Matrix */
+/*! \relates Dense_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator==(const Dense_Matrix& x, const Dense_Matrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
-/*! \relates Matrix */
+/*! \relates Dense_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Dense_Matrix& x, const Dense_Matrix& y);
 

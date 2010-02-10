@@ -32,17 +32,34 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Dense_Row {
 public:
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    Wrapper class to represent a set of flags with bits in a native
-    unsigned integral type.
-    \ingroup PPL_CXX_interface
-  */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+  //! Pre-constructs a row: construction must be completed by construct().
+  Dense_Row();
 
+  //! \name Post-constructors
+  //@{
+  //! Constructs properly a default-constructed element.
+  /*!
+    Builds a row with size and capacity \p sz.
+  */
+  void construct(dimension_type sz);
+
+  //! Constructs properly a default-constructed element.
+  /*!
+    \param sz
+    The size of the row that will be constructed;
+
+    \param capacity
+    The capacity of the row that will be constructed;
+
+    The row that is constructed has storage for \p capacity elements,
+    \p sz of which are default-constructed now.
+  */
+  void construct(dimension_type sz, dimension_type capacity);
+  //@} // Post-constructors
+  
   //! Tight constructor: resizing may require reallocation.
   /*!
-    Constructs a row with size and capacity \p sz, and flags \p f.
+    Constructs a row with size and capacity \p sz.
   */
   Dense_Row(dimension_type sz);
 
@@ -54,12 +71,8 @@ public:
     \param capacity
     The capacity of the row that will be constructed;
 
-    \param f
-    Flags for the row that will be constructed.
-
     The row that is constructed has storage for \p capacity elements,
     \p sz of which are default-constructed now.
-    The row flags are set to \p f.
   */
   Dense_Row(dimension_type sz, dimension_type capacity);
 
@@ -95,6 +108,15 @@ public:
     or undefined behavior.
   */
   void assign(Dense_Row& y);
+
+  //! Expands the row to size \p new_size.
+  /*!
+    Adds new positions to the implementation of the row
+    obtaining a new row with size \p new_size.
+    It is assumed that \p new_size is between the current size
+    and capacity of the row.
+  */
+  void expand_within_capacity(dimension_type new_size);
 
   //! Shrinks the row by erasing elements at the end.
   /*!
@@ -158,6 +180,9 @@ public:
     provided the capacity of \p *this is given by \p capacity.
   */
   memory_size_type external_memory_in_bytes(dimension_type capacity) const;
+
+  operator Row&();
+  operator const Row&() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
