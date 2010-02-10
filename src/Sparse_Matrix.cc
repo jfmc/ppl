@@ -165,13 +165,13 @@ PPL::Sparse_Matrix::iterator::operator++(int) {
 
 PPL::Sparse_Matrix::iterator::iterator(
   std::vector<Unlimited_Sparse_Row>::iterator i,
-  const dimension_type &size)
+  const dimension_type size)
   : itr(i), size_(size) {
 }
 
 
 PPL::Sparse_Matrix_Row::Sparse_Matrix_Row(Unlimited_Sparse_Row& row,
-                                          const dimension_type& size)
+                                          const dimension_type size)
   : row_(row), size_(size) {
   PPL_ASSERT(OK());
 }
@@ -211,32 +211,32 @@ PPL::Sparse_Matrix_Row::end() const {
 }
 
 PPL::Sparse_Matrix_Row::iterator
-PPL::Sparse_Matrix_Row::find(const key_type &c) {
+PPL::Sparse_Matrix_Row::find(const dimension_type c) {
   return row_.find(c);
 }
 
 PPL::Sparse_Matrix_Row::iterator
-PPL::Sparse_Matrix_Row::lower_bound(const key_type &c) {
+PPL::Sparse_Matrix_Row::lower_bound(const dimension_type c) {
   return row_.lower_bound(c);
 }
 
 PPL::Sparse_Matrix_Row::iterator
-PPL::Sparse_Matrix_Row::upper_bound(const key_type &c) {
+PPL::Sparse_Matrix_Row::upper_bound(const dimension_type c) {
   return row_.upper_bound(c);
 }
 
 PPL::Sparse_Matrix_Row::const_iterator
-PPL::Sparse_Matrix_Row::find(const key_type &c) const {
+PPL::Sparse_Matrix_Row::find(const dimension_type c) const {
   return row_.find(c);
 }
 
 PPL::Sparse_Matrix_Row::const_iterator
-PPL::Sparse_Matrix_Row::lower_bound(const key_type &c) const {
+PPL::Sparse_Matrix_Row::lower_bound(const dimension_type c) const {
   return row_.lower_bound(c);
 }
 
 PPL::Sparse_Matrix_Row::const_iterator
-PPL::Sparse_Matrix_Row::upper_bound(const key_type &c) const {
+PPL::Sparse_Matrix_Row::upper_bound(const dimension_type c) const {
   return row_.upper_bound(c);
 }
 

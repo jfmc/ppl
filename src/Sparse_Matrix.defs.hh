@@ -87,7 +87,7 @@ public:
 
 private:
   iterator(std::vector<Unlimited_Sparse_Row>::iterator,
-           const dimension_type &size);
+           const dimension_type size);
 
   std::vector<Unlimited_Sparse_Row>::iterator itr;
   const dimension_type size_;
@@ -98,9 +98,7 @@ private:
 class Parma_Polyhedra_Library::Sparse_Matrix_Row {
 
 public:
-  typedef Unlimited_Sparse_Row::key_type key_type;
-
-  Sparse_Matrix_Row(Unlimited_Sparse_Row& row,const dimension_type& size);
+  Sparse_Matrix_Row(Unlimited_Sparse_Row& row,const dimension_type size);
 
   //! A const iterator that may skip some zeros in the row.
   typedef Unlimited_Sparse_Row::const_iterator const_iterator;
@@ -119,12 +117,12 @@ public:
   const_iterator begin() const;
   const_iterator end() const;
 
-  iterator find(const key_type &c);
-  iterator lower_bound(const key_type &c);
-  iterator upper_bound(const key_type &c);
-  const_iterator find(const key_type &c) const;
-  const_iterator lower_bound(const key_type &c) const;
-  const_iterator upper_bound(const key_type &c) const;
+  iterator find(const dimension_type c);
+  iterator lower_bound(const dimension_type c);
+  iterator upper_bound(const dimension_type c);
+  const_iterator find(const dimension_type c) const;
+  const_iterator lower_bound(const dimension_type c) const;
+  const_iterator upper_bound(const dimension_type c) const;
 
   operator const Unlimited_Sparse_Row&() const;
   operator Sparse_Row() const;

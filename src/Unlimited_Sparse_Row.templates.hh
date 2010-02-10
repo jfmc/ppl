@@ -41,7 +41,7 @@ template <typename Compare>
 bool
 Unlimited_Sparse_Row::value_key_comparison<Compare>::operator()(
   const Unlimited_Sparse_Row::value_type& x,
-  const Unlimited_Sparse_Row::key_type& y) const {
+  const dimension_type y) const {
   return comp_(x.first,y);
 }
 
@@ -60,7 +60,7 @@ Unlimited_Sparse_Row::key_value_comparison<Compare>::
 template <typename Compare>
 bool
 Unlimited_Sparse_Row::key_value_comparison<Compare>::operator()(
-  const Unlimited_Sparse_Row::key_type& x,
+  const dimension_type x,
   const Unlimited_Sparse_Row::value_type& y) const {
   return comp_(x,y.first);
 }

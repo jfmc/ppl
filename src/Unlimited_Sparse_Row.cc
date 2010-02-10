@@ -31,8 +31,8 @@ PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row()
   PPL_ASSERT(OK());
 }
 
-PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row(const std::vector<data_type>&
-                                                v)
+PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row(const
+                                                std::vector<Coefficient>& v)
   : data() {
   typedef std::vector<Coefficient>::size_type vec_size_type;
 
@@ -57,7 +57,7 @@ PPL::Unlimited_Sparse_Row::reset(iterator first,iterator last) {
 }
 
 void
-PPL::Unlimited_Sparse_Row::reset_after(key_type i) {
+PPL::Unlimited_Sparse_Row::reset_after(dimension_type i) {
   data.erase(lower_bound(i).itr,data.end());
   PPL_ASSERT(OK());
 }
@@ -83,39 +83,39 @@ PPL::Unlimited_Sparse_Row::end() const {
 }
 
 PPL::Unlimited_Sparse_Row::iterator
-PPL::Unlimited_Sparse_Row::find(const key_type &k) {
+PPL::Unlimited_Sparse_Row::find(const dimension_type k) {
   return std::find_if(begin(),end(),std::bind2nd(
-    value_key_compare(std::equal_to<key_type>()),k));
+    value_key_compare(std::equal_to<dimension_type>()),k));
 }
 
 PPL::Unlimited_Sparse_Row::iterator
-PPL::Unlimited_Sparse_Row::lower_bound(const key_type &k) {
+PPL::Unlimited_Sparse_Row::lower_bound(const dimension_type k) {
   return std::lower_bound(begin(),end(),k,
-                          value_key_compare(std::less<key_type>()));
+                          value_key_compare(std::less<dimension_type>()));
 }
 
 PPL::Unlimited_Sparse_Row::iterator
-PPL::Unlimited_Sparse_Row::upper_bound(const key_type &k) {
+PPL::Unlimited_Sparse_Row::upper_bound(const dimension_type k) {
   return std::upper_bound(begin(),end(),k,
-                          key_value_compare(std::less<key_type>()));
+                          key_value_compare(std::less<dimension_type>()));
 }
 
 PPL::Unlimited_Sparse_Row::const_iterator
-PPL::Unlimited_Sparse_Row::find(const key_type &k) const {
+PPL::Unlimited_Sparse_Row::find(const dimension_type k) const {
   return std::find_if(begin(),end(),std::bind2nd(
-    value_key_compare(std::equal_to<key_type>()),k));
+    value_key_compare(std::equal_to<dimension_type>()),k));
 }
 
 PPL::Unlimited_Sparse_Row::const_iterator
-PPL::Unlimited_Sparse_Row::lower_bound(const key_type &k) const {
+PPL::Unlimited_Sparse_Row::lower_bound(const dimension_type k) const {
   return std::lower_bound(begin(),end(),k,
-                          value_key_compare(std::less<key_type>()));
+                          value_key_compare(std::less<dimension_type>()));
 }
 
 PPL::Unlimited_Sparse_Row::const_iterator
-PPL::Unlimited_Sparse_Row::upper_bound(const key_type &k) const {
+PPL::Unlimited_Sparse_Row::upper_bound(const dimension_type k) const {
   return std::upper_bound(begin(),end(),k,
-                          key_value_compare(std::less<key_type>()));
+                          key_value_compare(std::less<dimension_type>()));
 }
 
 bool
@@ -171,8 +171,8 @@ PPL::Unlimited_Sparse_Row::ascii_load(std::istream& s) {
   reset_after(0);
   std::string str;
   dimension_type n_elements;
-  key_type current_key;
-  data_type current_data;
+  dimension_type current_key;
+  Coefficient current_data;
 
   if (!(s >> str) || str!="elements")
     return false;
@@ -213,11 +213,10 @@ PPL::Unlimited_Sparse_Row::iterator::iterator()
   : itr() {
 }
 
-std::pair<const PPL::Unlimited_Sparse_Row::key_type,
-          PPL::Unlimited_Sparse_Row::data_type&>
+std::pair<const PPL::dimension_type,
+          PPL::Coefficient&>
 PPL::Unlimited_Sparse_Row::iterator::operator*() {
-  return std::pair<const Unlimited_Sparse_Row::key_type,
-                   Unlimited_Sparse_Row::data_type&>(itr->first,itr->second);
+  return std::pair<const dimension_type,Coefficient&>(itr->first,itr->second);
 }
 
 PPL::Unlimited_Sparse_Row::iterator&

@@ -34,12 +34,7 @@ namespace Parma_Polyhedra_Library {
 class Unlimited_Sparse_Row {
 
 public:
-  typedef dimension_type key_type;
-  typedef Coefficient data_type;
-  typedef std::pair<const key_type,data_type> value_type;
-  typedef value_type *pointer;
-  typedef value_type &reference;
-  typedef dimension_type size_type;
+  typedef std::pair<const dimension_type,Coefficient> value_type;
 
   template <typename Compare>
   class value_key_comparison;
@@ -59,10 +54,10 @@ public:
   Unlimited_Sparse_Row();
 
   //! Constructs an unlimited row from a std::vector.
-  Unlimited_Sparse_Row(const std::vector<data_type> &v);
+  Unlimited_Sparse_Row(const std::vector<Coefficient> &v);
 
 private:
-  typedef std::list<std::pair<key_type,data_type> > list_t;
+  typedef std::list<std::pair<dimension_type,Coefficient> > list_t;
 
 public:
   //! A const iterator that may skip some zeros in the sequence.
@@ -78,25 +73,25 @@ public:
   iterator reset(iterator first,iterator last);
 
   //! Resets to zero the i-th element.
-  void reset(key_type i);
+  void reset(dimension_type i);
 
   //! Resets to zero the elements in [i,j).
-  void reset(key_type i,key_type j);
+  void reset(dimension_type i,dimension_type j);
 
   //! Resets to zero the elements in [i,+infinity).
-  void reset_after(key_type i);
+  void reset_after(dimension_type i);
 
   iterator begin();
   iterator end();
   const_iterator begin() const;
   const_iterator end() const;
 
-  iterator find(const key_type &c);
-  iterator lower_bound(const key_type &c);
-  iterator upper_bound(const key_type &c);
-  const_iterator find(const key_type &c) const;
-  const_iterator lower_bound(const key_type &c) const;
-  const_iterator upper_bound(const key_type &c) const;
+  iterator find(const dimension_type c);
+  iterator lower_bound(const dimension_type c);
+  iterator upper_bound(const dimension_type c);
+  const_iterator find(const dimension_type c) const;
+  const_iterator lower_bound(const dimension_type c) const;
+  const_iterator upper_bound(const dimension_type c) const;
 
   bool operator==(const Unlimited_Sparse_Row &x) const;
   bool operator!=(const Unlimited_Sparse_Row &x) const;
@@ -117,10 +112,10 @@ class Unlimited_Sparse_Row::iterator {
 
 public:
   typedef list_t::iterator::iterator_category iterator_category;
-  typedef std::pair<const key_type,data_type> value_type;
+  typedef std::pair<const dimension_type,Coefficient> value_type;
   typedef ptrdiff_t difference_type;
-  typedef std::pair<const key_type,data_type>* pointer;
-  typedef std::pair<const key_type,data_type&> reference;
+  typedef std::pair<const dimension_type,Coefficient>* pointer;
+  typedef std::pair<const dimension_type,Coefficient&> reference;
 
   iterator();
 
@@ -148,12 +143,12 @@ private:
 template <typename Compare>
 class Unlimited_Sparse_Row::value_key_comparison
   : public std::binary_function<Unlimited_Sparse_Row::value_type,
-                                Unlimited_Sparse_Row::key_type, bool> {
+                                dimension_type, bool> {
 public:
   value_key_comparison(Compare comp);
 
   bool operator()(const Unlimited_Sparse_Row::value_type& x,
-                  const Unlimited_Sparse_Row::key_type& y) const;
+                  const dimension_type y) const;
 
 private:
   Compare comp_;
@@ -161,12 +156,12 @@ private:
 
 template <typename Compare>
 class Unlimited_Sparse_Row::key_value_comparison
-  : public std::binary_function<Unlimited_Sparse_Row::key_type,
+  : public std::binary_function<dimension_type,
                                 Unlimited_Sparse_Row::value_type, bool> {
 public:
   key_value_comparison(Compare comp);
 
-  bool operator()(const Unlimited_Sparse_Row::key_type& x,
+  bool operator()(const dimension_type x,
                   const Unlimited_Sparse_Row::value_type& y) const;
 
 private:
