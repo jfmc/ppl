@@ -86,6 +86,16 @@ public:
   const_iterator begin() const;
   const_iterator end() const;
 
+  //! Executes func on each non-zero element and may execute it on some zeros.
+  //! func should take a (Coefficient&) or (const Coefficient&) argument.
+  template <typename Func>
+  void for_each_nonzero(Func func);
+
+  //! Executes func on each non-zero element and may execute it on some zeros.
+  //! func should take a (const Coefficient&) argument.
+  template <typename Func>
+  void for_each_nonzero(Func func) const;
+
   iterator find(const dimension_type c);
   iterator lower_bound(const dimension_type c);
   iterator upper_bound(const dimension_type c);

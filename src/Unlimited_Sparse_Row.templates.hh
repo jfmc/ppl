@@ -25,6 +25,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+template <typename Func>
+void
+Unlimited_Sparse_Row::for_each_nonzero(Func func) {
+  std::for_each(begin(),end(),func);
+}
+
+template <typename Func>
+void
+Unlimited_Sparse_Row::for_each_nonzero(Func func) const {
+  std::for_each(begin(),end(),func);
+}
+
 template <typename Compare>
 Unlimited_Sparse_Row::value_key_comparison<Compare>
 Unlimited_Sparse_Row::value_key_compare(Compare comp) {
