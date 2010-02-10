@@ -742,8 +742,8 @@ PPL::MIP_Problem::process_pending_constraints() {
   for (dimension_type i = tableau_num_rows; i-- > 0 ; ) {
     matrix_row_reference_type tableau_i = tableau[i];
     if (tableau_i[0] > 0)
-      for (dimension_type j = tableau_num_columns; j-- > 0; )
-	neg_assign(tableau_i[j]);
+      tableau_i.for_each_nonzero(std::ptr_fun<Coefficient&,void>(neg_assign),
+                                 tableau_num_columns);
   }
 
   // Set the working cost function with the right size.

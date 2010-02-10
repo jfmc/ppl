@@ -184,6 +184,28 @@ public:
   operator Row&();
   operator const Row&() const;
 
+  /*! \brief Executes func on each non-zero element and may execute it on some
+             zeros.
+
+      This signature is needed for compatibility with Unlimited_Sparse_Row.
+      \param func A functor that takes a (Coefficient&) or
+                  (const Coefficient&) argument.
+      \param n    The logical size of this row (ignored)
+  */
+  template <typename Func>
+  void for_each_nonzero(Func func,const dimension_type n);
+
+  /*! \brief Executes func on each non-zero element and may execute it on some
+             zeros.
+
+      This signature is needed for compatibility with Unlimited_Sparse_Row.
+      \param func A functor that takes a (Coefficient&) or
+                  (const Coefficient&) argument.
+      \param n    The logical size of this row (ignored)
+  */
+  template <typename Func>
+  void for_each_nonzero(Func func,const dimension_type n) const;
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 

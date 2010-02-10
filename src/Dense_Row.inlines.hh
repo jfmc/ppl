@@ -152,6 +152,20 @@ Dense_Row::external_memory_in_bytes(dimension_type capacity) const {
   return row.external_memory_in_bytes(capacity);
 }
 
+template <typename Func>
+void
+Dense_Row::for_each_nonzero(Func func,const dimension_type n) {
+  for (dimension_type j = n; j-- > 0; )
+    func((*this)[j]);
+}
+
+template <typename Func>
+void
+Dense_Row::for_each_nonzero(Func func,const dimension_type n) const {
+  for (dimension_type j = n; j-- > 0; )
+    func((*this)[j]);
+}
+
 inline bool
 Dense_Row::OK() const {
   return row.OK();

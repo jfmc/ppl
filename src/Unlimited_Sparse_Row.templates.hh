@@ -27,13 +27,16 @@ namespace Parma_Polyhedra_Library {
 
 template <typename Func>
 void
-Unlimited_Sparse_Row::for_each_nonzero(Func func) {
+Unlimited_Sparse_Row::for_each_nonzero(Func func,const dimension_type n) {
+  (void)n;
   std::for_each(begin(),end(),func);
 }
 
 template <typename Func>
 void
-Unlimited_Sparse_Row::for_each_nonzero(Func func) const {
+Unlimited_Sparse_Row::for_each_nonzero(Func func,const dimension_type n)
+  const {
+  (void)n;
   std::for_each(begin(),end(),func);
 }
 
