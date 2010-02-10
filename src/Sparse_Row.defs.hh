@@ -88,6 +88,10 @@ public:
 
   operator const Unlimited_Sparse_Row&() const;
 
+  PPL_OUTPUT_DECLARATIONS
+
+  bool ascii_load(std::istream& s);
+
   //! Checks the invariant.
   bool OK() const;
 };

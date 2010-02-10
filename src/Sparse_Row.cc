@@ -123,6 +123,25 @@ PPL::Sparse_Row::operator const PPL::Unlimited_Sparse_Row &() const {
   return row;
 }
 
+void
+PPL::Sparse_Row::ascii_dump(std::ostream& s) const {
+  s << "size " << size_ << ' ';
+  row.ascii_dump(s);
+}
+
+bool
+PPL::Sparse_Row::ascii_load(std::istream& s) {
+  std::string str;
+  if (!(s >> str) || str!="size")
+    return false;
+  if (!(s >> size_))
+    return false;
+  if (!row.ascii_load(s))
+    return false;
+  PPL_ASSERT(OK());
+  return true;
+}
+
 bool
 PPL::Sparse_Row::OK() const {
   if (!row.OK())
