@@ -51,6 +51,14 @@ public:
   //! Constructs a row of the specified size from an Unlimited_Sparse_Row.
   Sparse_Row(const Unlimited_Sparse_Row &x,size_type n);
 
+  //! This method, with this signature, is needed for compatibility with
+  //! Dense_Row. It can be called on any row, and it resizes it to \p sz.
+  void construct(dimension_type sz);
+
+  //! This method, with this signature, is needed for compatibility with
+  //! Dense_Row. It can be called on any row, and it resizes it to \p sz.
+  void construct(dimension_type sz, dimension_type capacity);
+
   //! Resizes the row to the specified size.
   void resize(size_type n);
 

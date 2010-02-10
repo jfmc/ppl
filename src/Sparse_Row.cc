@@ -43,6 +43,17 @@ PPL::Sparse_Row::Sparse_Row(const std::vector<Coefficient>& v)
 }
 
 void
+PPL::Sparse_Row::construct(dimension_type sz) {
+  resize(sz);
+}
+
+void
+PPL::Sparse_Row::construct(dimension_type sz, dimension_type capacity) {
+  (void)capacity;
+  resize(sz);
+}
+
+void
 PPL::Sparse_Row::resize(size_type n) {
   if (n < size_)
     reset(lower_bound(n),lower_bound(size_));
