@@ -268,7 +268,7 @@ public:
   void swap_columns(dimension_type i,  dimension_type j);
 
   //! Permutes the columns of the matrix.
-  /*
+  /*!
     \param cycles
     A vector representing the non-trivial cycles of the permutation
     according to which the columns must be rearranged.
