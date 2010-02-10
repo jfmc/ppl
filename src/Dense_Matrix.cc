@@ -321,7 +321,8 @@ PPL::Dense_Matrix::ascii_load(std::istream& s) {
 }
 
 void
-PPL::Dense_Matrix::swap_columns(const dimension_type i, const dimension_type j) {
+PPL::Dense_Matrix::swap_columns(const dimension_type i,
+                                const dimension_type j) {
   PPL_ASSERT(i != j && i < num_columns() && j < num_columns());
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Dense_Row& rows_k = rows[k];
@@ -339,7 +340,8 @@ PPL::Dense_Matrix::remove_trailing_columns(const dimension_type n) {
 }
 
 void
-PPL::Dense_Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
+PPL::Dense_Matrix::permute_columns(const std::vector<dimension_type>&
+                                   cycles) {
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
   const dimension_type n = cycles.size();
   PPL_ASSERT(cycles[n - 1] == 0);
