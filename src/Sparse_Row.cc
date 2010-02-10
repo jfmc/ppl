@@ -26,12 +26,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Sparse_Row::Sparse_Row(size_type n)
+PPL::Sparse_Row::Sparse_Row(const dimension_type n)
   : row(), size_(n) {
   PPL_ASSERT(OK());
 }
 
-PPL::Sparse_Row::Sparse_Row(const Unlimited_Sparse_Row &x,size_type n)
+PPL::Sparse_Row::Sparse_Row(const Unlimited_Sparse_Row &x,
+                            const dimension_type n)
   : row(x), size_(n) {
   row.reset_after(n);
   PPL_ASSERT(OK());
@@ -43,25 +44,26 @@ PPL::Sparse_Row::Sparse_Row(const std::vector<Coefficient>& v)
 }
 
 void
-PPL::Sparse_Row::construct(dimension_type sz) {
+PPL::Sparse_Row::construct(const dimension_type sz) {
   resize(sz);
 }
 
 void
-PPL::Sparse_Row::construct(dimension_type sz, dimension_type capacity) {
+PPL::Sparse_Row::construct(const dimension_type sz,
+                           const dimension_type capacity) {
   (void)capacity;
   resize(sz);
 }
 
 void
-PPL::Sparse_Row::resize(size_type n) {
+PPL::Sparse_Row::resize(const dimension_type n) {
   if (n < size_)
     reset(lower_bound(n),lower_bound(size_));
   size_ = n;
   PPL_ASSERT(OK());
 }
 
-PPL::Sparse_Row::size_type
+PPL::dimension_type
 PPL::Sparse_Row::size() const {
   return size_;
 }
@@ -101,32 +103,32 @@ PPL::Sparse_Row::end() const {
 }
 
 PPL::Sparse_Row::iterator
-PPL::Sparse_Row::find(const key_type &k) {
+PPL::Sparse_Row::find(const dimension_type k) {
   return row.find(k);
 }
 
 PPL::Sparse_Row::iterator
-PPL::Sparse_Row::lower_bound(const key_type &k) {
+PPL::Sparse_Row::lower_bound(const dimension_type k) {
   return row.lower_bound(k);
 }
 
 PPL::Sparse_Row::iterator
-PPL::Sparse_Row::upper_bound(const key_type &k) {
+PPL::Sparse_Row::upper_bound(const dimension_type k) {
   return row.upper_bound(k);
 }
 
 PPL::Sparse_Row::const_iterator
-PPL::Sparse_Row::find(const key_type &k) const {
+PPL::Sparse_Row::find(const dimension_type k) const {
   return row.find(k);
 }
 
 PPL::Sparse_Row::const_iterator
-PPL::Sparse_Row::lower_bound(const key_type &k) const {
+PPL::Sparse_Row::lower_bound(const dimension_type k) const {
   return row.lower_bound(k);
 }
 
 PPL::Sparse_Row::const_iterator
-PPL::Sparse_Row::upper_bound(const key_type &k) const {
+PPL::Sparse_Row::upper_bound(const dimension_type k) const {
   return row.upper_bound(k);
 }
 

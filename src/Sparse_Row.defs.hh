@@ -35,39 +35,32 @@ namespace Parma_Polyhedra_Library {
 class Sparse_Row {
 
 public:
-  typedef Unlimited_Sparse_Row::key_type key_type;
-  typedef Unlimited_Sparse_Row::data_type data_type;
-  typedef Unlimited_Sparse_Row::value_type value_type;
-  typedef Unlimited_Sparse_Row::pointer pointer;
-  typedef Unlimited_Sparse_Row::reference reference;
-  typedef Unlimited_Sparse_Row::size_type size_type;
-
   //! Constructs a row from a std::vector.
-  Sparse_Row(const std::vector<data_type>& v);
+  Sparse_Row(const std::vector<Coefficient>& v);
 
   //! Constructs a row of the specified size.
-  Sparse_Row(size_type n=0);
+  Sparse_Row(const dimension_type n=0);
 
   //! Constructs a row of the specified size from an Unlimited_Sparse_Row.
-  Sparse_Row(const Unlimited_Sparse_Row &x,size_type n);
+  Sparse_Row(const Unlimited_Sparse_Row &x,const dimension_type n);
 
   //! This method, with this signature, is needed for compatibility with
   //! Dense_Row. It can be called on any row, and it resizes it to \p sz.
-  void construct(dimension_type sz);
+  void construct(const dimension_type sz);
 
   //! This method, with this signature, is needed for compatibility with
   //! Dense_Row. It can be called on any row, and it resizes it to \p sz.
-  void construct(dimension_type sz, dimension_type capacity);
+  void construct(const dimension_type sz, const dimension_type capacity);
 
   //! Resizes the row to the specified size.
-  void resize(size_type n);
+  void resize(const dimension_type n);
 
   //! Returns the size of the row.
-  size_type size() const;
+  dimension_type size() const;
 
 private:
   Unlimited_Sparse_Row row;
-  size_type size_;
+  dimension_type size_;
 
 public:
   //! A const iterator that may skip some zeros in the sequence.
@@ -87,12 +80,12 @@ public:
   const_iterator begin() const;
   const_iterator end() const;
 
-  iterator find(const key_type &c);
-  iterator lower_bound(const key_type &c);
-  iterator upper_bound(const key_type &c);
-  const_iterator find(const key_type &c) const;
-  const_iterator lower_bound(const key_type &c) const;
-  const_iterator upper_bound(const key_type &c) const;
+  iterator find(const dimension_type c);
+  iterator lower_bound(const dimension_type c);
+  iterator upper_bound(const dimension_type c);
+  const_iterator find(const dimension_type c) const;
+  const_iterator lower_bound(const dimension_type c) const;
+  const_iterator upper_bound(const dimension_type c) const;
 
   operator const Unlimited_Sparse_Row&() const;
 
