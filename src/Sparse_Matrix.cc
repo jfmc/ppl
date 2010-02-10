@@ -121,6 +121,11 @@ PPL::Sparse_Matrix::add_zero_rows_and_columns(const dimension_type n,
   resize(num_rows()+n,num_columns()+m);
 }
 
+void
+PPL::Sparse_Matrix::remove_trailing_columns(const dimension_type n) {
+  PPL_ASSERT(n <= num_columns());
+  resize(num_rows(),num_columns()-n);
+}
 
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Sparse_Matrix)
 

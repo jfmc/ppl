@@ -80,6 +80,8 @@ public:
 
   //! Adds \p n rows and \p m columns of zeroes to the matrix.
   /*!
+    Provided for compatibility with Dense_Matrix.
+
     \param n
     The number of rows to be added: must be strictly positive.
 
@@ -92,6 +94,10 @@ public:
   */
   void add_zero_rows_and_columns(const dimension_type n,
                                  const dimension_type m);
+
+  //! Makes the matrix shrink by removing its \p n trailing columns.
+  //! Provided for compatibility with Dense_Matrix.
+  void remove_trailing_columns(const dimension_type n);
 
   bool ascii_load(std::istream& s);
 
