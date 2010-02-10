@@ -196,6 +196,20 @@ Dense_Matrix::external_memory_in_bytes() const {
 }
 */
 
+template <typename Func>
+inline void
+Parma_Polyhedra_Library::Dense_Matrix::for_each_row(Func func) {
+  for (dimension_type i = num_rows(); i-- > 0; )
+    func((*this)[i]);
+}
+
+template <typename Func>
+inline void
+Parma_Polyhedra_Library::Dense_Matrix::for_each_row(Func func) const {
+  for (dimension_type i = num_rows(); i-- > 0; )
+    func((*this)[i]);
+}
+
 inline bool
 Dense_Matrix::OK() const {
   return m.OK();

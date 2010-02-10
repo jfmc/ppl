@@ -261,6 +261,14 @@ public:
   */
   void erase_to_end(dimension_type first_to_erase);
 
+  //! Calls func on each row. func should take a Row& argument.
+  template <typename Func>
+  void for_each_row(Func func);
+
+  //! Calls func on each row. func should take a const Row& argument.
+  template <typename Func>
+  void for_each_row(Func func) const;
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
@@ -297,5 +305,6 @@ bool operator!=(const Dense_Matrix& x, const Dense_Matrix& y);
 } // namespace Parma_Polyhedra_Library
 
 #include "Dense_Matrix.inlines.hh"
+#include "Dense_Matrix.templates.hh"
 
 #endif // !defined(PPL_Dense_Matrix_defs_hh)
