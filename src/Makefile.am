@@ -140,6 +140,7 @@ Grid_Generator.types.hh \
 Congruence.types.hh \
 Init.types.hh \
 Row.types.hh \
+Dense_Row.types.hh \
 Unlimited_Sparse_Row.types.hh \
 Sparse_Row.types.hh \
 Sparse_Matrix.types.hh \
@@ -244,6 +245,8 @@ initializer.hh \
 Topology.hh \
 Row.defs.hh \
 Row.inlines.hh \
+Dense_Row.defs.hh \
+Dense_Row.inlines.hh \
 Unlimited_Sparse_Row.defs.hh \
 Unlimited_Sparse_Row.templates.hh \
 Sparse_Row.defs.hh \
@@ -461,6 +464,7 @@ Unlimited_Sparse_Row.cc \
 Sparse_Row.cc \
 Sparse_Matrix.cc \
 Row.cc \
+Dense_Row.cc \
 Linear_Row.cc \
 Bit_Matrix.cc \
 Bit_Row.cc \

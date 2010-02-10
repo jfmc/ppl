@@ -1,0 +1,206 @@
+/* Dense_Row class declaration.
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+#ifndef PPL_Dense_Row_defs_hh
+#define PPL_Dense_Row_defs_hh 1
+
+#include "Dense_Row.types.hh"
+#include "Row.defs.hh"
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A finite sequence of coefficients.
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+class Parma_Polyhedra_Library::Dense_Row {
+public:
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Wrapper class to represent a set of flags with bits in a native
+    unsigned integral type.
+    \ingroup PPL_CXX_interface
+  */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+
+  //! Tight constructor: resizing may require reallocation.
+  /*!
+    Constructs a row with size and capacity \p sz, and flags \p f.
+  */
+  Dense_Row(dimension_type sz);
+
+  //! Sizing constructor with capacity.
+  /*!
+    \param sz
+    The size of the row that will be constructed;
+
+    \param capacity
+    The capacity of the row that will be constructed;
+
+    \param f
+    Flags for the row that will be constructed.
+
+    The row that is constructed has storage for \p capacity elements,
+    \p sz of which are default-constructed now.
+    The row flags are set to \p f.
+  */
+  Dense_Row(dimension_type sz, dimension_type capacity);
+
+  //! Ordinary copy constructor.
+  Dense_Row(const Dense_Row& y);
+
+  //! Copy constructor with specified capacity.
+  /*!
+    It is assumed that \p capacity is greater than or equal to
+    the size of \p y.
+  */
+  Dense_Row(const Dense_Row& y, dimension_type capacity);
+
+  //! Copy constructor with specified size and capacity.
+  /*!
+    It is assumed that \p sz is greater than or equal to the size of \p y
+    and, of course, that \p sz is less than or equal to \p capacity.
+  */
+  Dense_Row(const Dense_Row& y, dimension_type sz, dimension_type capacity);
+
+  //! Destructor.
+  ~Dense_Row();
+
+  //! Assignment operator.
+  Dense_Row& operator=(const Dense_Row& y);
+
+  //! Swaps \p *this with \p y.
+  void swap(Dense_Row& y);
+
+  //! Assigns the implementation of \p y to \p *this.
+  /*!
+    To be used with extra care, since it may easily cause memory leaks
+    or undefined behavior.
+  */
+  void assign(Dense_Row& y);
+
+  //! Shrinks the row by erasing elements at the end.
+  /*!
+    Destroys elements of the row implementation
+    from position \p new_size to the end.
+    It is assumed that \p new_size is not greater than the current size.
+  */
+  void shrink(dimension_type new_size);
+
+  //! Returns the size() of the largest possible Row.
+  static dimension_type max_size();
+
+  //! Gives the number of coefficients currently in use.
+  dimension_type size() const;
+
+  //! \name Subscript operators
+  //@{
+  //! Returns a reference to the element of the row indexed by \p k.
+  Coefficient& operator[](dimension_type k);
+
+  //! Returns a constant reference to the element of the row indexed by \p k.
+  Coefficient_traits::const_reference operator[](dimension_type k) const;
+  //@} // Subscript operators
+
+  //! Normalizes the modulo of coefficients so that they are mutually prime.
+  /*!
+    Computes the Greatest Common Divisor (GCD) among the elements of
+    the row and normalizes them by the GCD itself.
+  */
+  void normalize();
+
+  PPL_OUTPUT_DECLARATIONS
+
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+  bool ascii_load(std::istream& s);
+
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
+  memory_size_type total_memory_in_bytes() const;
+
+  /*! \brief
+    Returns a lower bound to the size in bytes of the memory
+    managed by \p *this.
+  */
+  memory_size_type external_memory_in_bytes() const;
+
+  /*! \brief
+    Returns the total size in bytes of the memory occupied by \p *this,
+    provided the capacity of \p *this is given by \p capacity.
+  */
+  memory_size_type total_memory_in_bytes(dimension_type capacity) const;
+
+  /*! \brief
+    Returns the size in bytes of the memory managed by \p *this,
+    provided the capacity of \p *this is given by \p capacity.
+  */
+  memory_size_type external_memory_in_bytes(dimension_type capacity) const;
+
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
+  /*! \brief
+    Checks if all the invariants are satisfied and that the actual
+    size and capacity match the values provided as arguments.
+  */
+  bool OK(dimension_type row_size, dimension_type row_capacity) const;
+
+  bool operator==(const Dense_Row& y) const;
+
+private:
+  Row row;
+};
+
+namespace Parma_Polyhedra_Library {
+
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
+/*! \relates Dense_Row */
+bool operator!=(const Dense_Row& x, const Dense_Row& y);
+
+} // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Dense_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(Parma_Polyhedra_Library::Dense_Row& x,
+	  Parma_Polyhedra_Library::Dense_Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specializes <CODE>std::iter_swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Dense_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void iter_swap(std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator x,
+	       std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator y);
+
+} // namespace std
+
+
+#include "Dense_Row.inlines.hh"
+
+#endif // !defined(PPL_Dense_Row_defs_hh)
