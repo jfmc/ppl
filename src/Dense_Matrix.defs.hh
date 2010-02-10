@@ -305,6 +305,5 @@ bool operator!=(const Dense_Matrix& x, const Dense_Matrix& y);
 } // namespace Parma_Polyhedra_Library
 
 #include "Dense_Matrix.inlines.hh"
-#include "Dense_Matrix.templates.hh"
 
 #endif // !defined(PPL_Dense_Matrix_defs_hh)

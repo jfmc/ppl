@@ -58,6 +58,15 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
+  //! Calls func on each row. func should take a Sparse_Matrix_Row& argument.
+  template <typename Func>
+  void for_each_row(Func func);
+
+  //! Calls func on each row. func should take a const Unlimited_Sparse_Row&
+  //! argument.
+  template <typename Func>
+  void for_each_row(Func func) const;
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
@@ -128,5 +137,6 @@ private:
   const dimension_type size_;
 };
 
+#include "Sparse_Matrix.inlines.hh"
 
 #endif // !defined(PPL_Sparse_Matrix_defs_hh)

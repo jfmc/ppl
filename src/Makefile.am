@@ -248,6 +248,7 @@ Unlimited_Sparse_Row.defs.hh \
 Unlimited_Sparse_Row.templates.hh \
 Sparse_Row.defs.hh \
 Sparse_Matrix.defs.hh \
+Sparse_Matrix.inlines.hh \
 Linear_Row.defs.hh \
 Linear_Row.inlines.hh \
 Matrix.defs.hh \
