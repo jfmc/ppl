@@ -105,6 +105,23 @@ PPL::Sparse_Matrix::ascii_dump(std::ostream& s) const {
     i->ascii_dump(s);
 }
 
+void
+PPL::Sparse_Matrix::add_zero_rows(const dimension_type n) {
+  resize(num_rows()+n,num_columns());
+}
+
+void
+PPL::Sparse_Matrix::add_zero_columns(const dimension_type n) {
+  resize(num_rows(),num_columns()+n);
+}
+
+void
+PPL::Sparse_Matrix::add_zero_rows_and_columns(const dimension_type n,
+                                              const dimension_type m) {
+  resize(num_rows()+n,num_columns()+m);
+}
+
+
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Sparse_Matrix)
 
 bool

@@ -54,6 +54,45 @@ public:
   void resize(dimension_type n);
   void resize(dimension_type num_rows,dimension_type num_columns);
 
+  //! Adds to the matrix \p n rows of zeroes.
+  /*!
+    Provided for compatibility with Dense_Matrix.
+
+    \param n
+    The number of rows to be added: must be strictly positive.
+
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$(r+n) \times c\f$ matrix \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
+  */
+  void add_zero_rows(const dimension_type n);
+
+  //! Adds \p n columns of zeroes to the matrix.
+  /*!
+    Provided for compatibility with Dense_Matrix.
+
+    \param n
+    The number of columns to be added: must be strictly positive.
+
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
+  */
+  void add_zero_columns(const dimension_type n);
+
+  //! Adds \p n rows and \p m columns of zeroes to the matrix.
+  /*!
+    \param n
+    The number of rows to be added: must be strictly positive.
+
+    \param m
+    The number of columns to be added: must be strictly positive.
+
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$(r+n) \times (c+m)\f$ matrix
+    \f$\bigl(\genfrac{}{}{0pt}{}{M}{0} \genfrac{}{}{0pt}{}{0}{0}\bigr)\f$.
+  */
+  void add_zero_rows_and_columns(const dimension_type n,
+                                 const dimension_type m);
+
   bool ascii_load(std::istream& s);
 
   PPL_OUTPUT_DECLARATIONS
