@@ -78,6 +78,19 @@ public:
   //! Resets to zero the values in the range [first,last).
   iterator reset(iterator first,iterator last);
 
+  //! Sets the i-th element in the sequence to \p value .
+  //! This function is O(n).
+  void set(const dimension_type i,const Coefficient &value);
+
+  //! Gets the i-th element in the sequence.
+  /*!
+    This function is O(n).
+
+    This function must not be called before main(), it relies on
+    a static variable to work.
+  */
+  const Coefficient& get(const dimension_type i) const;
+
   iterator begin();
   iterator end();
   const_iterator begin() const;
