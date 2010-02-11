@@ -98,7 +98,7 @@ public:
 #else
   typedef Sparse_Row row_type;
   typedef Sparse_Matrix matrix_type;
-  typedef Sparse_Matrix_Row& matrix_row_reference_type;
+  typedef Sparse_Matrix_Row matrix_row_reference_type;
   typedef const Unlimited_Sparse_Row& matrix_row_const_reference_type;
 #endif
 
