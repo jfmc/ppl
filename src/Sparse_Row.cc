@@ -63,6 +63,11 @@ PPL::Sparse_Row::resize(const dimension_type n) {
   PPL_ASSERT(OK());
 }
 
+void
+PPL::Sparse_Row::shrink(const dimension_type n) {
+  resize(n);
+}
+
 PPL::dimension_type
 PPL::Sparse_Row::size() const {
   return size_;

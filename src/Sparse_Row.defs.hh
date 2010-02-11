@@ -55,6 +55,9 @@ public:
   //! Resizes the row to the specified size.
   void resize(const dimension_type n);
 
+  //! Provided for compatibility with Dense_Row. It simply calls resize()
+  void shrink(dimension_type new_size);
+
   //! Returns the size of the row.
   dimension_type size() const;
 
