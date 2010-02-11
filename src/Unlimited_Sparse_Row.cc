@@ -26,6 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+const PPL::Coefficient
+PPL::Unlimited_Sparse_Row::zero = 0;
+
 PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row()
   : data() {
   PPL_ASSERT(OK());
@@ -60,6 +63,29 @@ void
 PPL::Unlimited_Sparse_Row::reset_after(dimension_type i) {
   data.erase(lower_bound(i).itr,data.end());
   PPL_ASSERT(OK());
+}
+
+void
+PPL::Unlimited_Sparse_Row::set(const dimension_type i,
+                               const Coefficient &value) {
+  iterator itr = lower_bound(i);
+  if (itr == end()) {
+    data.push_back(std::make_pair(i,value));
+  } else {
+    if ((*itr).first == i)
+      (*itr).second = value;
+    else
+      data.insert(itr.itr,std::make_pair(i,value));
+  }
+}
+
+const PPL::Coefficient&
+PPL::Unlimited_Sparse_Row::get(const dimension_type i) const {
+  const_iterator itr = find(i);
+  if (itr == end())
+    return Unlimited_Sparse_Row::zero;
+  else
+    return (*itr).second;
 }
 
 PPL::Unlimited_Sparse_Row::iterator
@@ -213,8 +239,7 @@ PPL::Unlimited_Sparse_Row::iterator::iterator()
   : itr() {
 }
 
-std::pair<const PPL::dimension_type,
-          PPL::Coefficient&>
+std::pair<const PPL::dimension_type,PPL::Coefficient&>
 PPL::Unlimited_Sparse_Row::iterator::operator*() {
   return std::pair<const dimension_type,Coefficient&>(itr->first,itr->second);
 }

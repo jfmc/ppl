@@ -57,6 +57,8 @@ public:
   Unlimited_Sparse_Row(const std::vector<Coefficient> &v);
 
 private:
+  static const Coefficient zero;
+
   typedef std::list<std::pair<dimension_type,Coefficient> > list_t;
 
 public:
@@ -80,6 +82,19 @@ public:
 
   //! Resets to zero the elements in [i,+infinity).
   void reset_after(dimension_type i);
+
+  //! Sets the i-th element in the sequence to \p value .
+  //! This function is O(n).
+  void set(const dimension_type i,const Coefficient &value);
+
+  //! Gets the i-th element in the sequence.
+  /*!
+    This function is O(n).
+
+    This function must not be called before main(), it relies on
+    a static variable to work.
+  */
+  const Coefficient& get(const dimension_type i) const;
 
   iterator begin();
   iterator end();
