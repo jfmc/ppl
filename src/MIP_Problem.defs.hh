@@ -26,15 +26,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "MIP_Problem.types.hh"
 #include "globals.types.hh"
 
+#include "Dense_Row.defs.hh"
+
 #ifndef USE_PPL_SPARSE_MATRIX
 
-#include "Dense_Row.defs.hh"
 #include "Dense_Matrix.defs.hh"
 
 #else
 
 #include "Sparse_Matrix.defs.hh"
-#include "Sparse_Row.defs.hh"
 
 #endif
 
@@ -90,13 +90,13 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
 class Parma_Polyhedra_Library::MIP_Problem {
 public:
 
-#ifndef USE_PPL_SPARSE_MATRIX
   typedef Dense_Row row_type;
+
+#ifndef USE_PPL_SPARSE_MATRIX
   typedef Dense_Matrix matrix_type;
   typedef Dense_Row& matrix_row_reference_type;
   typedef const Dense_Row& matrix_row_const_reference_type;
 #else
-  typedef Sparse_Row row_type;
   typedef Sparse_Matrix matrix_type;
   typedef Sparse_Matrix_Row matrix_row_reference_type;
   typedef const Unlimited_Sparse_Row& matrix_row_const_reference_type;
