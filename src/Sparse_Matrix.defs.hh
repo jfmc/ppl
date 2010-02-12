@@ -145,6 +145,9 @@ class Parma_Polyhedra_Library::Sparse_Matrix_Row {
 public:
   Sparse_Matrix_Row(Unlimited_Sparse_Row& row,const dimension_type size);
 
+  //! Swaps this row with the row x. The two rows must have the same size.
+  void swap(Sparse_Matrix_Row x);
+
   //! A const iterator that may skip some zeros in the row.
   typedef Unlimited_Sparse_Row::const_iterator const_iterator;
 

@@ -198,6 +198,14 @@ PPL::Sparse_Matrix_Row::Sparse_Matrix_Row(Unlimited_Sparse_Row& row,
   PPL_ASSERT(OK());
 }
 
+void
+PPL::Sparse_Matrix_Row::swap(Sparse_Matrix_Row x) {
+  PPL_ASSERT(size_ == x.size_);
+  row_.swap(x.row_);
+  PPL_ASSERT(OK());
+  PPL_ASSERT(x.OK());
+}
+
 PPL::dimension_type
 PPL::Sparse_Matrix_Row::size() const {
   return size_;
