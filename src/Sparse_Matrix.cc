@@ -247,6 +247,7 @@ PPL::Sparse_Matrix_Row::size() const {
 
 PPL::Sparse_Matrix_Row::iterator
 PPL::Sparse_Matrix_Row::reset(iterator i) {
+  PPL_ASSERT(i != end());
   iterator res = row_.reset(i);
   PPL_ASSERT(OK());
   return res;
