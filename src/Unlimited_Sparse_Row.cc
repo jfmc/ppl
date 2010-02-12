@@ -80,7 +80,8 @@ PPL::Unlimited_Sparse_Row::operator[](const dimension_type i) {
       return itr->second;
 
   data.insert(itr,std::make_pair(i,Coefficient(0)));
-  return data.back().second;
+  --itr;
+  return itr->second;
 }
 
 const PPL::Coefficient&
