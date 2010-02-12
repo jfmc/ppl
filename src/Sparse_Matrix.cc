@@ -303,8 +303,9 @@ PPL::Sparse_Matrix_Row::operator Sparse_Row() const {
 
 bool
 PPL::Sparse_Matrix_Row::OK() const {
-  Sparse_Row row(row_,size_);
-  if (static_cast<Unlimited_Sparse_Row>(row) != row_)
+  if (!row_.OK())
     return false;
-  return true;
+  Unlimited_Sparse_Row row1(row_);
+  row1.reset_after(size_);
+  return (row_ == row1);
 }
