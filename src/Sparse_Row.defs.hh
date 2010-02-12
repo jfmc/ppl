@@ -44,6 +44,9 @@ public:
   //! Constructs a row of the specified size from an Unlimited_Sparse_Row.
   Sparse_Row(const Unlimited_Sparse_Row &x,const dimension_type n);
 
+  //! Swaps (*this) and x.
+  void swap(Sparse_Row& x);
+
   //! This method, with this signature, is needed for compatibility with
   //! Dense_Row. It can be called on any row, and it resizes it to \p sz.
   void construct(const dimension_type sz);
@@ -123,5 +126,17 @@ public:
 };
 
 } // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Sparse_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(Parma_Polyhedra_Library::Sparse_Row& x,
+          Parma_Polyhedra_Library::Sparse_Row& y);
+
+} // namespace std
+
 
 #endif // !defined(PPL_Sparse_Row_defs_hh)

@@ -44,6 +44,14 @@ PPL::Sparse_Row::Sparse_Row(const std::vector<Coefficient>& v)
 }
 
 void
+PPL::Sparse_Row::swap(Sparse_Row& x) {
+  row.swap(x.row);
+  std::swap(size_,x.size_);
+  PPL_ASSERT(OK());
+  PPL_ASSERT(x.OK());
+}
+
+void
 PPL::Sparse_Row::construct(const dimension_type sz) {
   resize(sz);
 }
@@ -184,4 +192,9 @@ PPL::Sparse_Row::OK() const {
   Unlimited_Sparse_Row row1(row);
   row1.reset_after(size_);
   return (row == row1);
+}
+
+void
+std::swap(PPL::Sparse_Row& x,PPL::Sparse_Row& y) {
+  x.swap(y);
 }
