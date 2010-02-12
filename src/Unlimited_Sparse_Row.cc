@@ -45,6 +45,13 @@ PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row(const
   PPL_ASSERT(OK());
 }
 
+void
+PPL::Unlimited_Sparse_Row::swap(Unlimited_Sparse_Row& x) {
+  data.swap(x.data);
+  PPL_ASSERT(OK());
+  PPL_ASSERT(x.OK());
+}
+
 PPL::Unlimited_Sparse_Row::iterator
 PPL::Unlimited_Sparse_Row::reset(iterator i) {
   iterator res = data.erase(i);
@@ -235,4 +242,10 @@ PPL::Unlimited_Sparse_Row::OK() const {
     if (previous->first >= i->first)
       return false;
   return true;
+}
+
+void
+std::swap(PPL::Unlimited_Sparse_Row& x,
+          PPL::Unlimited_Sparse_Row& y) {
+  x.swap(y);
 }

@@ -56,6 +56,9 @@ public:
   //! Constructs an unlimited row from a std::vector.
   Unlimited_Sparse_Row(const std::vector<Coefficient> &v);
 
+  //! Swaps (*this) and x.
+  void swap(Unlimited_Sparse_Row& x);
+
 private:
   static const Coefficient zero;
 
@@ -178,6 +181,18 @@ private:
 };
 
 } // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Unlimited_Sparse_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(Parma_Polyhedra_Library::Unlimited_Sparse_Row& x,
+    Parma_Polyhedra_Library::Unlimited_Sparse_Row& y);
+
+} // namespace std
+
 
 #include "Unlimited_Sparse_Row.templates.hh"
 
