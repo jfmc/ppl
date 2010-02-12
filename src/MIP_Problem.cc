@@ -709,11 +709,11 @@ PPL::MIP_Problem::process_pending_constraints() {
       matrix_row_reference_type tableau_k = tableau[--k];
       const Constraint& cs_i = input_cs[i];
       for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
-        tableau_k[mapping[sd+1].first] = cs_i.coefficient(Variable(sd));
+        Coefficient& tableau_k_map_first = tableau_k[mapping[sd+1].first];
+        tableau_k_map_first = cs_i.coefficient(Variable(sd));
         // Split if needed.
         if (mapping[sd+1].second != 0)
-          neg_assign(tableau_k[mapping[sd+1].second],
-                     tableau_k[mapping[sd+1].first]);
+          neg_assign(tableau_k[mapping[sd+1].second],tableau_k_map_first);
       }
       tableau_k[mapping[0].first] = cs_i.inhomogeneous_term();
       // Split if needed.
@@ -732,7 +732,7 @@ PPL::MIP_Problem::process_pending_constraints() {
         }
       }
       for (dimension_type j = base_size; j-- > 0; )
-        if (k != j && tableau_k[base[j]] != 0 && base[j] != 0)
+        if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0)
           linear_combine(tableau_k, tableau[j], base[j]);
     }
 
@@ -741,7 +741,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   // each artificial variable will be 1.
   for (dimension_type i = tableau_num_rows; i-- > 0 ; ) {
     matrix_row_reference_type tableau_i = tableau[i];
-    if (tableau_i[0] > 0)
+    if (tableau_i.get(0) > 0)
       tableau_i.for_each_nonzero(std::ptr_fun<Coefficient&,void>(neg_assign),
                                  tableau_num_columns);
   }
@@ -901,11 +901,11 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       challenger_den = 1.0;
       for (dimension_type i = tableau_num_rows; i-- > 0; ) {
         matrix_row_const_reference_type tableau_i = tableau[i];
-        const Coefficient& tableau_ij = tableau_i[j];
+        const Coefficient& tableau_ij = tableau_i.get(j);
         if (tableau_ij != 0) {
-          PPL_ASSERT(tableau_i[base[i]] != 0);
+          PPL_ASSERT(tableau_i.get(base[i]) != 0);
           assign(float_tableau_value, tableau_ij);
-          assign(float_tableau_denum, tableau_i[base[i]]);
+          assign(float_tableau_denum, tableau_i.get(base[i]));
           float_tableau_value /= float_tableau_denum;
           challenger_den += float_tableau_value * float_tableau_value;
         }
@@ -937,10 +937,10 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     PPL_DIRTY_TEMP_COEFFICIENT(lcm_basis);
     lcm_basis = 1;
     for (dimension_type i = tableau_num_rows; i-- > 0; )
-      lcm_assign(lcm_basis, lcm_basis, tableau[i][base[i]]);
+      lcm_assign(lcm_basis, lcm_basis, tableau[i].get(base[i]));
     // Compute normalization factors.
     for (dimension_type i = tableau_num_rows; i-- > 0; )
-      exact_div_assign(norm_factor[i], lcm_basis, tableau[i][base[i]]);
+      exact_div_assign(norm_factor[i], lcm_basis, tableau[i].get(base[i]));
     // Compute the square of `lcm_basis', exploiting the fact that
     // `lcm_basis' will no longer be needed.
     lcm_basis *= lcm_basis;
@@ -970,7 +970,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       // of the original formula has to be replaced by `squared_lcm_basis'.
       challenger_den = squared_lcm_basis;
       for (dimension_type i = tableau_num_rows; i-- > 0; ) {
-        const Coefficient& tableau_ij = tableau[i][j];
+        const Coefficient& tableau_ij = tableau[i].get(j);
         // The test against 0 gives rise to a consistent speed up: see
         // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
         if (tableau_ij != 0) {
@@ -1041,7 +1041,7 @@ PPL::MIP_Problem::linear_combine(row_type& x, const row_type& y,
       x_i *= normalized_y_k;
       // The test against 0 gives rise to a consistent speed up: see
       // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
-      const Coefficient& y_i = y[i];
+      const Coefficient& y_i = y.get(i);
       if (y_i != 0)
         sub_mul_assign(x_i, y_i, normalized_x_k);
     }
@@ -1134,7 +1134,7 @@ PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
   // Linearly combine the constraints.
   for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
     matrix_row_reference_type tableau_i = tableau[i];
-    if (i != exiting_base_index && tableau_i[entering_var_index] != 0)
+    if (i != exiting_base_index && tableau_i.get(entering_var_index) != 0)
       linear_combine(tableau_i, tableau_out, entering_var_index);
   }
   // Linearly combine the cost function.
@@ -1159,8 +1159,8 @@ PPL::MIP_Problem
   dimension_type exiting_base_index = tableau_num_rows;
   for (dimension_type i = 0; i < tableau_num_rows; ++i) {
     matrix_row_const_reference_type t_i = tableau[i];
-    const int num_sign = sgn(t_i[entering_var_index]);
-    if (num_sign != 0 && num_sign == sgn(t_i[base[i]])) {
+    const int num_sign = sgn(t_i.get(entering_var_index));
+    if (num_sign != 0 && num_sign == sgn(t_i.get(base[i]))) {
       exiting_base_index = i;
       break;
     }
@@ -1175,13 +1175,13 @@ PPL::MIP_Problem
   PPL_DIRTY_TEMP_COEFFICIENT(challenger);
   for (dimension_type i = exiting_base_index + 1; i < tableau_num_rows; ++i) {
     matrix_row_const_reference_type t_i = tableau[i];
-    const Coefficient& t_ie = t_i[entering_var_index];
-    const Coefficient& t_ib = t_i[base[i]];
+    const Coefficient& t_ie = t_i.get(entering_var_index);
+    const Coefficient& t_ib = t_i.get(base[i]);
     const int t_ie_sign = sgn(t_ie);
     if (t_ie_sign != 0 && t_ie_sign == sgn(t_ib)) {
       WEIGHT_BEGIN();
       matrix_row_const_reference_type t_e = tableau[exiting_base_index];
-      const Coefficient& t_ee = t_e[entering_var_index];
+      const Coefficient& t_ee = t_e.get(entering_var_index);
       lcm_assign(lcm, t_ee, t_ie);
       exact_div_assign(current_min, lcm, t_ee);
       current_min *= t_e[0];
@@ -1352,7 +1352,7 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
       bool redundant = true;
       for (dimension_type j = end_artificials+1; j-- > 1; )
         if (!(begin_artificials <= j && j <= end_artificials)
-            && tableau_i[j] != 0) {
+            && tableau_i.get(j) != 0) {
           pivot(j, i);
           redundant = false;
           break;
@@ -1419,13 +1419,14 @@ PPL::MIP_Problem::compute_generator() const {
     const dimension_type original_var = mapping[i+1].first;
     if (is_in_base(original_var, row)) {
       matrix_row_const_reference_type t_row = tableau[row];
-      if (t_row[original_var] > 0) {
-        neg_assign(num_i, t_row[0]);
-        den_i = t_row[original_var];
+      const Coefficient& t_row_original_var = t_row.get(original_var);
+      if (t_row_original_var > 0) {
+        neg_assign(num_i, t_row.get(0));
+        den_i = t_row_original_var;
       }
       else {
-        num_i = t_row[0];
-        neg_assign(den_i, t_row[original_var]);
+        num_i = t_row.get(0);
+        neg_assign(den_i, t_row_original_var);
       }
     }
     else {
@@ -1440,13 +1441,14 @@ PPL::MIP_Problem::compute_generator() const {
       // Like before, we he have to check if the variable is in base.
       if (is_in_base(split_var, row)) {
         matrix_row_const_reference_type t_row = tableau[row];
-        if (t_row[split_var] > 0) {
-          split_num = -t_row[0];
-          split_den = t_row[split_var];
+        const Coefficient& t_row_split_var = t_row.get(split_var);
+        if (t_row_split_var > 0) {
+          split_num = -t_row.get(0);
+          split_den = t_row_split_var;
         }
         else {
-          split_num = t_row[0];
-          split_den = -t_row[split_var];
+          split_num = t_row.get(0);
+          split_den = -t_row_split_var;
         }
         // We compute the lcm to compute subsequently the difference
         // between the 2 variables.
@@ -2005,14 +2007,14 @@ PPL::MIP_Problem::OK() const {
       // tableau[i][base[i] must be different from zero.
       // tableau[i][base[j], with i different from j, must not be a zero.
       for (dimension_type j = tableau_nrows; j-- > 0; )
-        if (i != j && tableau[j][base[i]] != 0) {
+        if (i != j && tableau[j].get(base[i]) != 0) {
 #ifndef NDEBUG
           cerr << "tableau[i][base[i] must be different from zero" << endl;
           ascii_dump(cerr);
 #endif
           return false;
         }
-      if (tableau[i][base[i]] == 0) {
+      if (tableau[i].get(base[i]) == 0) {
 #ifndef NDEBUG
         cerr << "tableau[i][base[j], with i different from j, must not be "
              << "a zero" << endl;
@@ -2024,7 +2026,7 @@ PPL::MIP_Problem::OK() const {
 
     // The last column of the tableau must contain only zeroes.
     for (dimension_type i = tableau_nrows; i-- > 0; )
-      if (tableau[i][tableau_ncols-1] != 0) {
+      if (tableau[i].get(tableau_ncols-1) != 0) {
 #ifndef NDEBUG
         cerr << "the last column of the tableau must contain only"
           "zeroes"<< endl;
