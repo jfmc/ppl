@@ -169,6 +169,7 @@ PPL::Sparse_Matrix::ascii_load(std::istream& s) {
   if (!(s >> new_num_cols))
     return false;
 
+  resize(0);
   resize(new_num_rows, new_num_cols);
 
   for (dimension_type row = 0; row < new_num_rows; ++row)
