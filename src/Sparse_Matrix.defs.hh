@@ -112,6 +112,15 @@ public:
   template <typename Func>
   void for_each_row(Func func) const;
 
+  /*! \brief
+    Erases from the matrix all the rows but those having
+    an index less than \p first_to_erase.
+
+    Provided for compatibility with Dense_Row.
+    It is equivalent to resize(first_to_erase,num_columns()).
+  */
+  void erase_to_end(dimension_type first_to_erase);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 

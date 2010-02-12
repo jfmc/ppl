@@ -152,6 +152,11 @@ PPL::Sparse_Matrix::ascii_load(std::istream& s) {
   return true;
 }
 
+void
+PPL::Sparse_Matrix::erase_to_end(dimension_type first_to_erase) {
+  resize(first_to_erase,num_columns());
+}
+
 bool
 PPL::Sparse_Matrix::OK() const {
   for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i) {
