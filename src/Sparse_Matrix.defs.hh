@@ -259,9 +259,39 @@ public:
   bool OK() const;
 
 private:
+
+  /** The @c unary_compose functor is constructed from two functions/functors,
+   *  @c f and @c g.
+   *  Calling @c operator() with a single argument @c x returns @c f(g(x)).
+   *  The function @c compose1 takes the two functions and constructs a
+   *  @c unary_compose variable for you.
+   */
+  template <class Operation1, class Operation2>
+  class unary_compose
+    : public std::unary_function<typename Operation2::argument_type,
+          typename Operation1::result_type> {
+  protected:
+    Operation1 f1;
+    Operation2 f2;
+
+  public:
+    unary_compose(const Operation1& x, const Operation2& y);
+
+    typename Operation1::result_type
+      operator()(const typename Operation2::argument_type& x) const;
+  };
+
+  //! Helper function to use unary_compose.
+  template <class Operation1, class Operation2>
+  static unary_compose<Operation1, Operation2>
+    compose1(const Operation1& fn1, const Operation2& __fn2);
+
+private:
+
   Unlimited_Sparse_Row& row_;
   const dimension_type size_;
 };
+
 
 #include "Sparse_Matrix.inlines.hh"
 
