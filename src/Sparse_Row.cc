@@ -66,7 +66,7 @@ PPL::Sparse_Row::construct(const dimension_type sz,
 void
 PPL::Sparse_Row::resize(const dimension_type n) {
   if (n < size_)
-    reset(lower_bound(n),lower_bound(size_));
+    reset(lower_bound(n),end());
   size_ = n;
   PPL_ASSERT(OK());
 }
