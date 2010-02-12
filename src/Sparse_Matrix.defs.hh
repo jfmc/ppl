@@ -260,42 +260,22 @@ public:
 
 private:
 
-  /** The @c unary_compose functor is constructed from two functions/functors,
-   *  @c f and @c g.
-   *  Calling @c operator() with a single argument @c x returns @c f(g(x)).
-   *  The function @c compose1 takes the two functions and constructs a
-   *  @c unary_compose variable for you.
-   */
-  template <typename Operation1, typename Operation2>
-  class unary_compose
-    : public std::unary_function<typename Operation2::argument_type,
-          typename Operation1::result_type> {
-  protected:
-    Operation1 f1;
-    Operation2 f2;
-
-  public:
-    unary_compose(const Operation1& x, const Operation2& y);
-
-    typename Operation1::result_type
-      operator()(const typename Operation2::argument_type& x) const;
-  };
-
-  //! Helper function to use unary_compose.
-  template <typename Operation1, typename Operation2>
-  static unary_compose<Operation1, Operation2>
-    compose1(const Operation1& fn1, const Operation2& __fn2);
-
   /*!
-    @c select1st 's @c operator() takes a @c std::pair as an argument, and
-    returns the first member.
+    @c applier_to_data 's @c operator() applies func to the second element of
+    its argument.
   */
-  template <typename Pair>
-  class select2nd : public std::unary_function<Pair,
-                                               typename Pair::second_type> {
+  template <typename Func>
+  class applier_to_data :
+    public std::unary_function<std::pair<dimension_type,Coefficient>&,void> {
   public:
-    typename Pair::second_type operator()(const Pair& x) const;
+    applier_to_data(Func func);
+    void operator()(std::pair<dimension_type,Coefficient>& x) const;
+  private:
+    Func f;
   };
+
+  template <typename Func>
+  static applier_to_data<Func> apply_to_data(Func func);
 
 private:
 
