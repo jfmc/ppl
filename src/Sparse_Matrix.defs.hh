@@ -151,6 +151,8 @@ public:
   //! An iterator that may skip some zeros in the row.
   typedef Unlimited_Sparse_Row::iterator iterator;
 
+  dimension_type size() const;
+
   //! Resets to zero the value pointed by i.
   iterator reset(iterator i);
 
