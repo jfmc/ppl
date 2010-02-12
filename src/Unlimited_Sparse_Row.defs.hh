@@ -34,7 +34,7 @@ namespace Parma_Polyhedra_Library {
 class Unlimited_Sparse_Row {
 
 public:
-  typedef std::pair<const dimension_type,Coefficient> value_type;
+  typedef std::pair<dimension_type,Coefficient> value_type;
 
   template <typename Compare>
   class value_key_comparison;
@@ -59,14 +59,15 @@ public:
 private:
   static const Coefficient zero;
 
-  typedef std::list<std::pair<dimension_type,Coefficient> > list_t;
+  typedef std::list<value_type> list_t;
 
 public:
   //! A const iterator that may skip some zeros in the sequence.
   typedef list_t::const_iterator const_iterator;
 
+  // FIXME: this allows violating the internal invariant, use with care.
   //! An iterator that may skip some zeros in the sequence.
-  class iterator;
+  typedef list_t::iterator iterator;
 
   //! Resets to zero the value pointed to by i.
   iterator reset(iterator i);
@@ -143,38 +144,6 @@ public:
 private:
   //! The std::list that contains the coefficients
   list_t data;
-};
-
-class Unlimited_Sparse_Row::iterator {
-
-public:
-  typedef list_t::iterator::iterator_category iterator_category;
-  typedef std::pair<const dimension_type,Coefficient> value_type;
-  typedef ptrdiff_t difference_type;
-  typedef std::pair<const dimension_type,Coefficient>* pointer;
-  typedef std::pair<const dimension_type,Coefficient&> reference;
-
-  iterator();
-
-  reference operator*();
-
-  iterator& operator++();
-  iterator operator++(int);
-
-  iterator& operator--();
-  iterator operator--(int);
-
-  bool operator==(const iterator &x) const;
-  bool operator!=(const iterator &x) const;
-
-  operator Unlimited_Sparse_Row::const_iterator();
-
-private:
-  iterator(list_t::iterator i);
-
-  list_t::iterator itr;
-
-  friend class Unlimited_Sparse_Row;
 };
 
 template <typename Compare>
