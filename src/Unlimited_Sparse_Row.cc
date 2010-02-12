@@ -217,6 +217,7 @@ PPL::Unlimited_Sparse_Row::ascii_load(std::istream& s) {
       return false;
     data.push_back(std::make_pair(current_key,current_data));
   }
+  PPL_ASSERT(OK());
   return true;
 }
 
