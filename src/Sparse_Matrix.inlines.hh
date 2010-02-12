@@ -37,6 +37,21 @@ Parma_Polyhedra_Library::Sparse_Matrix::for_each_row(Func func) const {
   std::for_each(begin(),end(),func);
 }
 
+template <typename Func>
+inline void
+Sparse_Matrix_Row::for_each_nonzero(Func func,const dimension_type n) {
+  (void)n;
+  std::for_each(begin(),end(),func);
+}
+
+template <typename Func>
+inline void
+Sparse_Matrix_Row::for_each_nonzero(Func func,const dimension_type n)
+  const {
+  (void)n;
+  std::for_each(begin(),end(),func);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 

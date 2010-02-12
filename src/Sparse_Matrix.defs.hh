@@ -186,6 +186,28 @@ public:
   const_iterator begin() const;
   const_iterator end() const;
 
+  /*! \brief Executes func on each non-zero element and may execute it on some
+             zeros.
+
+      This signature is needed for compatibility with Dense_Row.
+      \param func A functor that takes a (Coefficient&) or
+                  (const Coefficient&) argument.
+      \param n    The logical size of this row (ignored)
+  */
+  template <typename Func>
+  void for_each_nonzero(Func func,const dimension_type n);
+
+  /*! \brief Executes func on each non-zero element and may execute it on some
+             zeros.
+
+      This signature is needed for compatibility with Dense_Row.
+      \param func A functor that takes a (Coefficient&) or
+                  (const Coefficient&) argument.
+      \param n    The logical size of this row (ignored)
+  */
+  template <typename Func>
+  void for_each_nonzero(Func func,const dimension_type n) const;
+
   iterator find(const dimension_type c);
   iterator lower_bound(const dimension_type c);
   iterator upper_bound(const dimension_type c);
