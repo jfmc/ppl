@@ -52,6 +52,12 @@ Sparse_Matrix_Row::for_each_nonzero(Func func,const dimension_type n)
   std::for_each(begin(),end(),func);
 }
 
+template <typename Pair>
+inline typename Pair::second_type
+Sparse_Matrix_Row::select2nd<Pair>::operator()(const Pair& x) const {
+  return x.second;
+};
+
 } // namespace Parma_Polyhedra_Library
 
 

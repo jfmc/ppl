@@ -286,6 +286,17 @@ private:
   static unary_compose<Operation1, Operation2>
     compose1(const Operation1& fn1, const Operation2& __fn2);
 
+  /*!
+    @c select1st 's @c operator() takes a @c std::pair as an argument, and
+    returns the first member.
+  */
+  template <typename Pair>
+  class select2nd : public std::unary_function<Pair,
+                                               typename Pair::second_type> {
+  public:
+    typename Pair::second_type operator()(const Pair& x) const;
+  };
+
 private:
 
   Unlimited_Sparse_Row& row_;
