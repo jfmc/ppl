@@ -65,18 +65,20 @@ PPL::Unlimited_Sparse_Row::reset_after(dimension_type i) {
   PPL_ASSERT(OK());
 }
 
-void
-PPL::Unlimited_Sparse_Row::set(const dimension_type i,
-                               const Coefficient &value) {
+PPL::Coefficient&
+PPL::Unlimited_Sparse_Row::operator[](const dimension_type i) {
   iterator itr = lower_bound(i);
-  if (itr == end()) {
-    data.push_back(std::make_pair(i,value));
-  } else {
+  if (itr != end())
     if (itr->first == i)
-      itr->second = value;
-    else
-      data.insert(itr,std::make_pair(i,value));
-  }
+      return itr->second;
+
+  data.insert(itr,std::make_pair(i,Coefficient(0)));
+  return data.back().second;
+}
+
+const PPL::Coefficient&
+PPL::Unlimited_Sparse_Row::operator[](const dimension_type i) const {
+  return get(i);
 }
 
 const PPL::Coefficient&

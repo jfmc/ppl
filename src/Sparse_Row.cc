@@ -87,10 +87,15 @@ PPL::Sparse_Row::reset(iterator first,iterator last) {
   return res;
 }
 
-void
-PPL::Sparse_Row::set(const dimension_type i,const Coefficient &value) {
+PPL::Coefficient&
+PPL::Sparse_Row::operator[](const dimension_type i) {
   PPL_ASSERT(i < size_);
-  set(i,value);
+  return row[i];
+}
+
+const PPL::Coefficient&
+PPL::Sparse_Row::operator[](const dimension_type i) const {
+  return get(i);
 }
 
 const PPL::Coefficient&
