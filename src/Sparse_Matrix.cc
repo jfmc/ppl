@@ -390,23 +390,3 @@ PPL::Sparse_Matrix_Row::OK() const {
   row1.reset_after(size_);
   return (row_ == row1);
 }
-
-template <class Operation1, class Operation2>
-PPL::Sparse_Matrix_Row::unary_compose<Operation1,Operation2>
-::unary_compose(const Operation1& x,const Operation2& y)
-  : f1(x), f2(y) {
-}
-
-template <class Operation1, class Operation2>
-typename Operation1::result_type
-PPL::Sparse_Matrix_Row::unary_compose<Operation1,Operation2>::operator()(
-  const typename Operation2::argument_type& x) const {
-
-  return f1(f2(x));
-}
-
-template <class Operation1, class Operation2>
-inline PPL::Sparse_Matrix_Row::unary_compose<Operation1, Operation2>
-PPL::Sparse_Matrix_Row::compose1(const Operation1& f1, const Operation2& f2) {
-  return unary_compose<Operation1,Operation2>(f1, f2);
-}

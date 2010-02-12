@@ -266,7 +266,7 @@ private:
    *  The function @c compose1 takes the two functions and constructs a
    *  @c unary_compose variable for you.
    */
-  template <class Operation1, class Operation2>
+  template <typename Operation1, typename Operation2>
   class unary_compose
     : public std::unary_function<typename Operation2::argument_type,
           typename Operation1::result_type> {
@@ -282,7 +282,7 @@ private:
   };
 
   //! Helper function to use unary_compose.
-  template <class Operation1, class Operation2>
+  template <typename Operation1, typename Operation2>
   static unary_compose<Operation1, Operation2>
     compose1(const Operation1& fn1, const Operation2& __fn2);
 

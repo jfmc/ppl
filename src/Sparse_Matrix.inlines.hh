@@ -52,6 +52,28 @@ Sparse_Matrix_Row::for_each_nonzero(Func func,const dimension_type n)
   std::for_each(begin(),end(),func);
 }
 
+template <typename Operation1, typename Operation2>
+inline
+PPL::Sparse_Matrix_Row::unary_compose<Operation1,Operation2>
+::unary_compose(const Operation1& x,const Operation2& y)
+  : f1(x), f2(y) {
+}
+
+template <typename Operation1, typename Operation2>
+inline
+typename Operation1::result_type
+PPL::Sparse_Matrix_Row::unary_compose<Operation1,Operation2>::operator()(
+  const typename Operation2::argument_type& x) const {
+
+  return f1(f2(x));
+}
+
+template <typename Operation1, typename Operation2>
+inline PPL::Sparse_Matrix_Row::unary_compose<Operation1, Operation2>
+PPL::Sparse_Matrix_Row::compose1(const Operation1& f1, const Operation2& f2) {
+  return unary_compose<Operation1,Operation2>(f1, f2);
+}
+
 template <typename Pair>
 inline typename Pair::second_type
 Sparse_Matrix_Row::select2nd<Pair>::operator()(const Pair& x) const {
