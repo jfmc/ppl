@@ -101,7 +101,7 @@ PPL::Sparse_Row::operator[](const dimension_type i) const {
 const PPL::Coefficient&
 PPL::Sparse_Row::get(const dimension_type i) const {
   PPL_ASSERT(i < size_);
-  return get(i);
+  return row.get(i);
 }
 
 PPL::Sparse_Row::iterator
