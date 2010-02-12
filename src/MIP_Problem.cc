@@ -1072,17 +1072,25 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
     matrix_row_const_element_iterator itr_y=y.begin(), itr_y_end=y.end();
     while ((itr_x != itr_x_end) && (itr_y != itr_y_end)) {
       if (itr_y->first < itr_x->first) {
-        sub_mul_assign(x[itr_y->first],itr_y->second,normalized_x_k);
+        if (itr_y->first != k)
+          sub_mul_assign(x[itr_y->first],itr_y->second,normalized_x_k);
         ++itr_y;
       } else {
-        itr_x->second *= normalized_y_k;
-        if (itr_y->first == itr_x->first) {
-          // FIXME: check if comparing itr_y against 0 speeds it up.
-          sub_mul_assign(itr_x->second,itr_y->second,normalized_x_k);
-          ++itr_y;
+        if (itr_x->first != k) {
+          itr_x->second *= normalized_y_k;
+          if (itr_y->first == itr_x->first) {
+            // FIXME: check if comparing itr_y against 0 speeds it up.
+            sub_mul_assign(itr_x->second,itr_y->second,normalized_x_k);
+            ++itr_y;
+          }
         }
         ++itr_x;
       }
+    }
+    while (itr_x != itr_x_end) {
+      if (itr_x->first != k)
+        itr_x->second *= normalized_y_k;
+      ++itr_x;
     }
   }
   x_k = 0;
@@ -1108,13 +1116,26 @@ PPL::MIP_Problem::linear_combine(row_type x,
   {
     dimension_type i=0;
     matrix_row_const_element_iterator itr_y=y.begin(), itr_y_end=y.end();
-    while ((i != x_size) && (itr_y != itr_y_end)) {
-      Coefficient& x_i = x[i];
-      x_i *= normalized_y_k;
-      if (itr_y->first == i) {
-        // FIXME: check if comparing itr_y against 0 speeds it up.
-        sub_mul_assign(x_i,itr_y->second,normalized_x_k);
-        ++itr_y;
+    while (itr_y != itr_y_end) {
+      // If i was at end, itr_y would have been at end too.
+      PPL_ASSERT(i != x_size);
+      if (i != k) {
+        Coefficient& x_i = x[i];
+        x_i *= normalized_y_k;
+        if (itr_y->first == i) {
+          // FIXME: check if comparing itr_y against 0 speeds it up.
+          sub_mul_assign(x_i,itr_y->second,normalized_x_k);
+          ++itr_y;
+        }
+      } else
+        if (itr_y->first == i)
+          ++itr_y;
+      ++i;
+    }
+    while (i != x_size) {
+      if (i != k) {
+        Coefficient& x_i = x[i];
+        x_i *= normalized_y_k;
       }
       ++i;
     }
