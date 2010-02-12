@@ -171,13 +171,23 @@ PPL::Unlimited_Sparse_Row::operator==(const Unlimited_Sparse_Row &x) const {
       if (i->first < j->first) {
         if (i->second != 0)
           return false;
-        i++;
+        ++i;
       } else {
         // i->first > j->first
         if (j->second != 0)
           return false;
-        j++;
+        ++j;
       }
+  }
+  while (i != i_end) {
+    if (i->second != 0)
+      return false;
+    ++i;
+  }
+  while (j != j_end) {
+    if (j->second != 0)
+      return false;
+    ++j;
   }
   return true;
 }
