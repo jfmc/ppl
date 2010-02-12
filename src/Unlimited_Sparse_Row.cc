@@ -245,7 +245,6 @@ PPL::Unlimited_Sparse_Row::OK() const {
 }
 
 void
-std::swap(PPL::Unlimited_Sparse_Row& x,
-          PPL::Unlimited_Sparse_Row& y) {
+std::swap(PPL::Unlimited_Sparse_Row& x, PPL::Unlimited_Sparse_Row& y) {
   x.swap(y);
 }
