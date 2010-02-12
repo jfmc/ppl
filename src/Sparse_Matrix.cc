@@ -217,6 +217,24 @@ PPL::Sparse_Matrix_Row::reset(iterator first,iterator last) {
   return res;
 }
 
+PPL::Coefficient&
+PPL::Sparse_Matrix_Row::operator[](const dimension_type i) {
+  PPL_ASSERT(i < size_);
+  return row_[i];
+}
+
+const PPL::Coefficient&
+PPL::Sparse_Matrix_Row::operator[](const dimension_type i) const {
+  return get(i);
+}
+
+const PPL::Coefficient&
+PPL::Sparse_Matrix_Row::get(const dimension_type i) const {
+  PPL_ASSERT(i < size_);
+  return row_.get(i);
+}
+
+
 PPL::Sparse_Matrix_Row::iterator
 PPL::Sparse_Matrix_Row::begin() {
   return row_.begin();

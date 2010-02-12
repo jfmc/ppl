@@ -159,6 +159,28 @@ public:
   //! Resets to zero the values in the range [first,last).
   iterator reset(iterator first,iterator last);
 
+  /*!
+    \brief Gets the i-th element in the sequence.
+
+    This function is O(n).
+
+    For read-only access it's better to use get(), that avoids allocating
+    space for zeroes. Both methods are O(n).
+  */
+  Coefficient& operator[](const dimension_type i);
+
+  //! Equivalent to get(), provided for convenience.
+  const Coefficient& operator[](const dimension_type i) const;
+
+  //! Gets the i-th element in the sequence.
+  /*!
+    This function is O(n).
+
+    This function must not be called before main(), it relies on
+    a static variable to work.
+  */
+  const Coefficient& get(const dimension_type i) const;
+
   iterator begin();
   iterator end();
   const_iterator begin() const;
