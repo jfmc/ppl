@@ -69,34 +69,6 @@ PPL::Sparse_Matrix::operator[](dimension_type i) const {
   return rows[i];
 }
 
-void
-PPL::Sparse_Matrix::permute_columns(const std::vector<dimension_type>&
-                                    cycles) {
-  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-  const dimension_type n = cycles.size();
-  PPL_ASSERT(cycles[n - 1] == 0);
-  for (dimension_type k = num_rows(); k-- > 0; ) {
-    Sparse_Matrix_Row rows_k = (*this)[k];
-    for (dimension_type i = 0, j = 0; i < n; i = ++j) {
-      // Make `j' be the index of the next cycle terminator.
-      while (cycles[j] != 0)
-        ++j;
-      // Cycles of length less than 2 are not allowed.
-      PPL_ASSERT(j - i >= 2);
-      if (j - i == 2)
-        // For cycles of length 2 no temporary is needed, just a swap.
-        std::swap(rows_k[cycles[i]], rows_k[cycles[i+1]]);
-      else {
-        // Longer cycles need a temporary.
-        std::swap(rows_k[cycles[j-1]], tmp);
-        for (dimension_type l = j-1; l > i; --l)
-          std::swap(rows_k[cycles[l-1]], rows_k[cycles[l]]);
-        std::swap(tmp, rows_k[cycles[i]]);
-      }
-    }
-  }
-}
-
 PPL::dimension_type
 PPL::Sparse_Matrix::num_rows() const {
   return rows.size();
