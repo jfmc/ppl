@@ -1067,32 +1067,16 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
-  {
-    matrix_row_element_iterator itr_x=x.begin(), itr_x_end=x.end();
-    matrix_row_const_element_iterator itr_y=y.begin(), itr_y_end=y.end();
-    while ((itr_x != itr_x_end) && (itr_y != itr_y_end)) {
-      if (itr_y->first < itr_x->first) {
-        if (itr_y->first != k)
-          sub_mul_assign(x[itr_y->first],itr_y->second,normalized_x_k);
-        ++itr_y;
-      } else {
-        if (itr_x->first != k) {
-          itr_x->second *= normalized_y_k;
-          if (itr_y->first == itr_x->first) {
-            // FIXME: check if comparing itr_y against 0 speeds it up.
-            sub_mul_assign(itr_x->second,itr_y->second,normalized_x_k);
-            ++itr_y;
-          }
-        }
-        ++itr_x;
-      }
+  for (dimension_type i = x_size; i-- > 0; )
+    if (i != k) {
+      Coefficient& x_i = x[i];
+      x_i *= normalized_y_k;
+      // The test against 0 gives rise to a consistent speed up: see
+      // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
+      const Coefficient& y_i = y.get(i);
+      if (y_i != 0)
+        sub_mul_assign(x_i, y_i, normalized_x_k);
     }
-    while (itr_x != itr_x_end) {
-      if (itr_x->first != k)
-        itr_x->second *= normalized_y_k;
-      ++itr_x;
-    }
-  }
   x_k = 0;
   x.normalize();
   WEIGHT_ADD_MUL(83, x_size);
@@ -1113,33 +1097,16 @@ PPL::MIP_Problem::linear_combine(row_type x,
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
-  {
-    dimension_type i=0;
-    matrix_row_const_element_iterator itr_y=y.begin(), itr_y_end=y.end();
-    while (itr_y != itr_y_end) {
-      // If i was at end, itr_y would have been at end too.
-      PPL_ASSERT(i != x_size);
-      if (i != k) {
-        Coefficient& x_i = x[i];
-        x_i *= normalized_y_k;
-        if (itr_y->first == i) {
-          // FIXME: check if comparing itr_y against 0 speeds it up.
-          sub_mul_assign(x_i,itr_y->second,normalized_x_k);
-          ++itr_y;
-        }
-      } else
-        if (itr_y->first == i)
-          ++itr_y;
-      ++i;
+  for (dimension_type i = x_size; i-- > 0; )
+    if (i != k) {
+      Coefficient& x_i = x[i];
+      x_i *= normalized_y_k;
+      // The test against 0 gives rise to a consistent speed up: see
+      // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
+      const Coefficient& y_i = y.get(i);
+      if (y_i != 0)
+        sub_mul_assign(x_i, y_i, normalized_x_k);
     }
-    while (i != x_size) {
-      if (i != k) {
-        Coefficient& x_i = x[i];
-        x_i *= normalized_y_k;
-      }
-      ++i;
-    }
-  }
   x_k = 0;
   x.normalize();
   WEIGHT_ADD_MUL(83, x_size);
