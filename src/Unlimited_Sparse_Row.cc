@@ -209,12 +209,10 @@ void
 PPL::Unlimited_Sparse_Row::ascii_dump(std::ostream& s) const {
   dimension_type n_elements=0;
   for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i)
-    if (i->second != 0)
-      ++n_elements;
+    ++n_elements;
   s << "elements " << n_elements << ' ';
   for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i)
-    if (i->second != 0)
-      s << "[ " << i->first << " ]= " << i->second << ' ';
+    s << "[ " << i->first << " ]= " << i->second << ' ';
   s << "\n";
 }
 
