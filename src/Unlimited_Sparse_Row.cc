@@ -120,8 +120,11 @@ PPL::Unlimited_Sparse_Row::end() const {
 
 PPL::Unlimited_Sparse_Row::iterator
 PPL::Unlimited_Sparse_Row::find(const dimension_type k) {
-  return std::find_if(begin(),end(),std::bind2nd(
-    value_key_compare(std::equal_to<dimension_type>()),k));
+  iterator itr = lower_bound(k);
+  if (itr != end())
+    if (itr->first != k)
+      return end();
+  return itr;
 }
 
 PPL::Unlimited_Sparse_Row::iterator
@@ -138,8 +141,11 @@ PPL::Unlimited_Sparse_Row::upper_bound(const dimension_type k) {
 
 PPL::Unlimited_Sparse_Row::const_iterator
 PPL::Unlimited_Sparse_Row::find(const dimension_type k) const {
-  return std::find_if(begin(),end(),std::bind2nd(
-    value_key_compare(std::equal_to<dimension_type>()),k));
+  const_iterator itr = lower_bound(k);
+  if (itr != end())
+    if (itr->first != k)
+      return end();
+  return itr;
 }
 
 PPL::Unlimited_Sparse_Row::const_iterator
