@@ -94,8 +94,10 @@ PPL::Unlimited_Sparse_Row::get(const dimension_type i) const {
   const_iterator itr = find(i);
   if (itr == end())
     return Unlimited_Sparse_Row::zero;
-  else
+  else {
+    PPL_ASSERT(itr->first == i);
     return itr->second;
+  }
 }
 
 PPL::Unlimited_Sparse_Row::iterator
