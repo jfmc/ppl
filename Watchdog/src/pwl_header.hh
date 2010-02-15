@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PWL_pwl_hh 1
 
 #ifdef NDEBUG
-# define PWL_SAVE_NDEBUG 1
+# define PWL_SAVE_NDEBUG NDEBUG
 # undef NDEBUG
 #endif
 
@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PWL_SAVE_NDEBUG
 # ifndef NDEBUG
-#  define NDEBUG 1
+#  define NDEBUG PWL_SAVE_NDEBUG
 # endif
 # undef PWL_SAVE_NDEBUG
 #else
@@ -41,6 +41,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #  undef NDEBUG
 # endif
 #endif
+// Must include <cassert> again in order to make the latest changes to
+// NDEBUG effective.
 #include <cassert>
 
 #endif

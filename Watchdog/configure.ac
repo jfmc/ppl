@@ -49,7 +49,7 @@ ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
 
 AH_BOTTOM([
-#ifdef PWL_NDEBUG
+#if defined(PWL_NDEBUG) && !defined(NDEBUG)
 # define NDEBUG PWL_NDEBUG
 #endif
 ])
@@ -196,7 +196,7 @@ yes)
   ;;
 no)
   AC_MSG_RESULT(no)
-  AC_DEFINE(NDEBUG, 1, [Assertions are disabled when this is defined])
+  AC_DEFINE(PWL_NDEBUG, 1, [Assertions are disabled when this is defined])
   debug_flag="-DNDEBUG=1"
   ;;
 *)
