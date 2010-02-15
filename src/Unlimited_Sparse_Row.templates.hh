@@ -27,14 +27,14 @@ namespace Parma_Polyhedra_Library {
 
 template <typename Func>
 void
-Unlimited_Sparse_Row::for_each_nonzero(Func func,const dimension_type n) {
+Unlimited_Sparse_Row::for_each_nonzero(const Func& func,const dimension_type n) {
   (void)n;
   std::for_each(begin(),end(),func);
 }
 
 template <typename Func>
 void
-Unlimited_Sparse_Row::for_each_nonzero(Func func,const dimension_type n)
+Unlimited_Sparse_Row::for_each_nonzero(const Func& func,const dimension_type n)
   const {
   (void)n;
   std::for_each(begin(),end(),func);
@@ -42,13 +42,13 @@ Unlimited_Sparse_Row::for_each_nonzero(Func func,const dimension_type n)
 
 template <typename Compare>
 Unlimited_Sparse_Row::value_key_comparison<Compare>
-Unlimited_Sparse_Row::value_key_compare(Compare comp) {
+Unlimited_Sparse_Row::value_key_compare(const Compare& comp) {
   return value_key_comparison<Compare>(comp);
 }
 
 template <typename Compare>
 Unlimited_Sparse_Row::value_key_comparison<Compare>::
-  value_key_comparison(Compare comp)
+  value_key_comparison(const Compare& comp)
   : comp_(comp) {
 }
 
@@ -62,13 +62,13 @@ Unlimited_Sparse_Row::value_key_comparison<Compare>::operator()(
 
 template <typename Compare>
 Unlimited_Sparse_Row::key_value_comparison<Compare>
-Unlimited_Sparse_Row::key_value_compare(Compare comp) {
+Unlimited_Sparse_Row::key_value_compare(const Compare& comp) {
   return key_value_comparison<Compare>(comp);
 }
 
 template <typename Compare>
 Unlimited_Sparse_Row::key_value_comparison<Compare>::
-  key_value_comparison(Compare comp)
+  key_value_comparison(const Compare& comp)
   : comp_(comp) {
 }
 

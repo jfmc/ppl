@@ -44,11 +44,11 @@ public:
 
   template <typename Compare>
   static Unlimited_Sparse_Row::value_key_comparison<Compare>
-  value_key_compare(Compare comp);
+  value_key_compare(const Compare& comp);
 
   template <typename Compare>
   static Unlimited_Sparse_Row::key_value_comparison<Compare>
-  key_value_compare(Compare comp);
+  key_value_compare(const Compare& comp);
 
   //! Constructs an unlimited row of zeroes.
   Unlimited_Sparse_Row();
@@ -112,7 +112,7 @@ public:
       \param n    The logical size of this row (ignored)
   */
   template <typename Func>
-  void for_each_nonzero(Func func,const dimension_type n);
+  void for_each_nonzero(const Func& func,const dimension_type n);
 
   /*! \brief Executes func on each non-zero element and may execute it on some
              zeros.
@@ -123,7 +123,7 @@ public:
       \param n    The logical size of this row (ignored)
   */
   template <typename Func>
-  void for_each_nonzero(Func func,const dimension_type n) const;
+  void for_each_nonzero(const Func& func,const dimension_type n) const;
 
   iterator find(const dimension_type c);
   iterator lower_bound(const dimension_type c);
@@ -149,10 +149,10 @@ private:
 
 template <typename Compare>
 class Unlimited_Sparse_Row::value_key_comparison
-  : public std::binary_function<Unlimited_Sparse_Row::value_type,
+  : public std::binary_function<Unlimited_Sparse_Row::value_type&,
                                 dimension_type, bool> {
 public:
-  value_key_comparison(Compare comp);
+  value_key_comparison(const Compare& comp);
 
   bool operator()(const Unlimited_Sparse_Row::value_type& x,
                   const dimension_type y) const;
@@ -164,9 +164,9 @@ private:
 template <typename Compare>
 class Unlimited_Sparse_Row::key_value_comparison
   : public std::binary_function<dimension_type,
-                                Unlimited_Sparse_Row::value_type, bool> {
+                                Unlimited_Sparse_Row::value_type&, bool> {
 public:
-  key_value_comparison(Compare comp);
+  key_value_comparison(const Compare& comp);
 
   bool operator()(const dimension_type x,
                   const Unlimited_Sparse_Row::value_type& y) const;
