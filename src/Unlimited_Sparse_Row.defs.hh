@@ -189,6 +189,6 @@ void swap(Parma_Polyhedra_Library::Unlimited_Sparse_Row& x,
 } // namespace std
 
 
-#include "Unlimited_Sparse_Row.templates.hh"
+#include "Unlimited_Sparse_Row.inlines.hh"
 
 #endif // !defined(PPL_Unlimited_Sparse_Row_defs_hh)

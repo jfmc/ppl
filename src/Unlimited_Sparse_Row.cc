@@ -26,11 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row()
-  : data() {
-  PPL_ASSERT(OK());
-}
-
 PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row(const
                                                 std::vector<Coefficient>& v)
   : data() {
@@ -42,124 +37,6 @@ PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row(const
   PPL_ASSERT(OK());
 }
 
-void
-PPL::Unlimited_Sparse_Row::swap(Unlimited_Sparse_Row& x) {
-  data.swap(x.data);
-  PPL_ASSERT(OK());
-  PPL_ASSERT(x.OK());
-}
-
-PPL::Unlimited_Sparse_Row::iterator
-PPL::Unlimited_Sparse_Row::reset(iterator i) {
-  iterator res = data.erase(i);
-  PPL_ASSERT(OK());
-  return res;
-}
-
-PPL::Unlimited_Sparse_Row::iterator
-PPL::Unlimited_Sparse_Row::reset(iterator first,iterator last) {
-  iterator res = data.erase(first,last);
-  PPL_ASSERT(OK());
-  return res;
-}
-
-void
-PPL::Unlimited_Sparse_Row::reset_after(dimension_type i) {
-  data.erase(lower_bound(i),end());
-  PPL_ASSERT(OK());
-}
-
-PPL::Coefficient&
-PPL::Unlimited_Sparse_Row::operator[](const dimension_type i) {
-  iterator itr = lower_bound(i);
-  if (itr != end())
-    if (itr->first == i)
-      return itr->second;
-
-  data.insert(itr,std::make_pair(i,Coefficient(0)));
-  --itr;
-  return itr->second;
-}
-
-const PPL::Coefficient&
-PPL::Unlimited_Sparse_Row::operator[](const dimension_type i) const {
-  return get(i);
-}
-
-const PPL::Coefficient&
-PPL::Unlimited_Sparse_Row::get(const dimension_type i) const {
-  static const PPL::Coefficient zero = 0;
-
-  const_iterator itr = find(i);
-  if (itr == end())
-    return zero;
-  else {
-    PPL_ASSERT(itr->first == i);
-    return itr->second;
-  }
-}
-
-PPL::Unlimited_Sparse_Row::iterator
-PPL::Unlimited_Sparse_Row::begin() {
-  return data.begin();
-}
-
-PPL::Unlimited_Sparse_Row::iterator
-PPL::Unlimited_Sparse_Row::end() {
-  return data.end();
-}
-
-PPL::Unlimited_Sparse_Row::const_iterator
-PPL::Unlimited_Sparse_Row::begin() const {
-  return data.begin();
-}
-
-PPL::Unlimited_Sparse_Row::const_iterator
-PPL::Unlimited_Sparse_Row::end() const {
-  return data.end();
-}
-
-PPL::Unlimited_Sparse_Row::iterator
-PPL::Unlimited_Sparse_Row::find(const dimension_type k) {
-  iterator itr = lower_bound(k);
-  if (itr != end())
-    if (itr->first != k)
-      return end();
-  return itr;
-}
-
-PPL::Unlimited_Sparse_Row::iterator
-PPL::Unlimited_Sparse_Row::lower_bound(const dimension_type k) {
-  return std::lower_bound(begin(),end(),k,
-                          value_key_compare(std::less<dimension_type>()));
-}
-
-PPL::Unlimited_Sparse_Row::iterator
-PPL::Unlimited_Sparse_Row::upper_bound(const dimension_type k) {
-  return std::upper_bound(begin(),end(),k,
-                          key_value_compare(std::less<dimension_type>()));
-}
-
-PPL::Unlimited_Sparse_Row::const_iterator
-PPL::Unlimited_Sparse_Row::find(const dimension_type k) const {
-  const_iterator itr = lower_bound(k);
-  if (itr != end())
-    if (itr->first != k)
-      return end();
-  return itr;
-}
-
-PPL::Unlimited_Sparse_Row::const_iterator
-PPL::Unlimited_Sparse_Row::lower_bound(const dimension_type k) const {
-  return std::lower_bound(begin(),end(),k,
-                          value_key_compare(std::less<dimension_type>()));
-}
-
-PPL::Unlimited_Sparse_Row::const_iterator
-PPL::Unlimited_Sparse_Row::upper_bound(const dimension_type k) const {
-  return std::upper_bound(begin(),end(),k,
-                          key_value_compare(std::less<dimension_type>()));
-}
 
 bool
 PPL::Unlimited_Sparse_Row::operator==(const Unlimited_Sparse_Row &x) const {
@@ -197,11 +74,6 @@ PPL::Unlimited_Sparse_Row::operator==(const Unlimited_Sparse_Row &x) const {
     ++j;
   }
   return true;
-}
-
-bool
-PPL::Unlimited_Sparse_Row::operator!=(const Unlimited_Sparse_Row &x) const {
-  return !((*this) == x);
 }
 
 void
@@ -258,9 +130,4 @@ PPL::Unlimited_Sparse_Row::OK() const {
     if (previous->first >= i->first)
       return false;
   return true;
-}
-
-void
-std::swap(PPL::Unlimited_Sparse_Row& x, PPL::Unlimited_Sparse_Row& y) {
-  x.swap(y);
 }
