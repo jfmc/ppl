@@ -115,11 +115,6 @@ Dense_Row::get(const dimension_type i) const {
   return (*this)[i];
 }
 
-inline void
-Dense_Row::set(const dimension_type i,const Coefficient& value) {
-  (*this)[i]=value;
-}
-
 inline Coefficient&
 Dense_Row::operator[](const dimension_type k) {
   return row[k];

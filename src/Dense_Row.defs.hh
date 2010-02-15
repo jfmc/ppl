@@ -136,10 +136,6 @@ public:
   //! Provided for compatibility with Sparse_Row.
   const Coefficient& get(const dimension_type i) const;
 
-  //! Sets the i-th element to \p value .
-  //! Provided for compatibility with Sparse_Row.
-  void set(const dimension_type i,const Coefficient& value);
-
   //! \name Subscript operators
   //@{
   //! Returns a reference to the element of the row indexed by \p k.
