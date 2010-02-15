@@ -45,7 +45,7 @@ piplib_pips: piplib_pips.o
 	$(CXXLINK) $< -lpip -lgmpxx -lgmp $(top_builddir)/utils/libppl_utils.a
 
 EXTRA_DIST = \
-expected_mpz
+expected_mpz \
 expected_mpz_a \
 expected_int8 \
 expected_int8_a \
