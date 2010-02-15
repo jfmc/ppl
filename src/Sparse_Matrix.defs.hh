@@ -235,7 +235,6 @@ public:
   const_iterator upper_bound(const dimension_type c) const;
 
   operator const Unlimited_Sparse_Row&() const;
-  operator Sparse_Row() const;
 
   //! Checks the invariant.
   bool OK() const;

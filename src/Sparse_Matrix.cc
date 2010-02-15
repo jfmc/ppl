@@ -352,10 +352,6 @@ PPL::Sparse_Matrix_Row::operator const Unlimited_Sparse_Row&() const {
   return row_;
 }
 
-PPL::Sparse_Matrix_Row::operator Sparse_Row() const {
-  return Sparse_Row(row_,size_);
-}
-
 bool
 PPL::Sparse_Matrix_Row::OK() const {
   if (!row_.OK())
