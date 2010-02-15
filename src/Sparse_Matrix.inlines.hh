@@ -27,26 +27,26 @@ namespace Parma_Polyhedra_Library {
 
 template <typename Func>
 inline void
-Parma_Polyhedra_Library::Sparse_Matrix::for_each_row(Func func) {
+Parma_Polyhedra_Library::Sparse_Matrix::for_each_row(const Func& func) {
   std::for_each(begin(),end(),func);
 }
 
 template <typename Func>
 inline void
-Parma_Polyhedra_Library::Sparse_Matrix::for_each_row(Func func) const {
+Parma_Polyhedra_Library::Sparse_Matrix::for_each_row(const Func& func) const {
   std::for_each(begin(),end(),func);
 }
 
 template <typename Func>
 inline void
-Sparse_Matrix_Row::for_each_nonzero(Func func,const dimension_type n) {
+Sparse_Matrix_Row::for_each_nonzero(const Func& func,const dimension_type n) {
   (void)n;
   std::for_each(begin(),end(),apply_to_data(func));
 }
 
 template <typename Func>
 inline void
-Sparse_Matrix_Row::for_each_nonzero(Func func,const dimension_type n)
+Sparse_Matrix_Row::for_each_nonzero(const Func& func,const dimension_type n)
   const {
   (void)n;
   std::for_each(begin(),end(),apply_to_data(func));
@@ -54,7 +54,7 @@ Sparse_Matrix_Row::for_each_nonzero(Func func,const dimension_type n)
 
 template <typename Func>
 inline
-Sparse_Matrix_Row::applier_to_data<Func>::applier_to_data(Func func)
+Sparse_Matrix_Row::applier_to_data<Func>::applier_to_data(const Func& func)
   : f(func) {
 }
 
@@ -67,7 +67,7 @@ Sparse_Matrix_Row::applier_to_data<Func>::operator()(
 
 template <typename Func>
 inline Sparse_Matrix_Row::applier_to_data<Func>
-Sparse_Matrix_Row::apply_to_data(Func func) {
+Sparse_Matrix_Row::apply_to_data(const Func& func) {
   return applier_to_data<Func>(func);
 }
 

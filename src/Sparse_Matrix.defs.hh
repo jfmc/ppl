@@ -105,12 +105,12 @@ public:
 
   //! Calls func on each row. func should take a Sparse_Matrix_Row& argument.
   template <typename Func>
-  void for_each_row(Func func);
+  void for_each_row(const Func& func);
 
   //! Calls func on each row. func should take a const Unlimited_Sparse_Row&
   //! argument.
   template <typename Func>
-  void for_each_row(Func func) const;
+  void for_each_row(const Func& func) const;
 
   /*! \brief
     Erases from the matrix all the rows but those having
@@ -207,7 +207,7 @@ public:
       \param n    The logical size of this row (ignored)
   */
   template <typename Func>
-  void for_each_nonzero(Func func,const dimension_type n);
+  void for_each_nonzero(const Func& func,const dimension_type n);
 
   /*! \brief Executes func on each non-zero element and may execute it on some
              zeros.
@@ -218,7 +218,7 @@ public:
       \param n    The logical size of this row (ignored)
   */
   template <typename Func>
-  void for_each_nonzero(Func func,const dimension_type n) const;
+  void for_each_nonzero(const Func& func,const dimension_type n) const;
 
   //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!
@@ -249,14 +249,14 @@ private:
   class applier_to_data :
     public std::unary_function<std::pair<dimension_type,Coefficient>&,void> {
   public:
-    applier_to_data(Func func);
+    applier_to_data(const Func& func);
     void operator()(std::pair<dimension_type,Coefficient>& x) const;
   private:
     Func f;
   };
 
   template <typename Func>
-  static applier_to_data<Func> apply_to_data(Func func);
+  static applier_to_data<Func> apply_to_data(const Func& func);
 
 private:
 
