@@ -155,7 +155,7 @@ MIP_Problem::MIP_Problem(dimension_type dim,
 
 template <typename Row>
 void
-MIP_Problem::normalize(Row x) {
+MIP_Problem::normalize(Row &x) {
   // Compute the GCD of all the coefficients.
   const dimension_type sz = x.size();
   dimension_type i = sz;
