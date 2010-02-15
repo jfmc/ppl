@@ -1105,7 +1105,7 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
       if (y_i != 0)
         sub_mul_assign(x_i, y_i, normalized_x_k);
     }
-  x_k = 0;
+  x.reset(k);
   x.normalize();
   WEIGHT_ADD_MUL(83, x_size);
 }
