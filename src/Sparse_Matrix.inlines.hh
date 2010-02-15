@@ -266,9 +266,11 @@ inline bool
 Sparse_Matrix_Row::OK() const {
   if (!row_.OK())
     return false;
-  Unlimited_Sparse_Row row1(row_);
-  row1.reset_after(size_);
-  return (row_ == row1);
+  if (row_.begin() == row_.end())
+    return true;
+  Unlimited_Sparse_Row::const_iterator itr = row_.end();
+  --itr;
+  return (itr->first < size_);
 }
 
 template <typename Func>
