@@ -153,9 +153,9 @@ MIP_Problem::MIP_Problem(dimension_type dim,
   PPL_ASSERT(OK());
 }
 
-template <typename Row>
+template <typename RowT>
 void
-MIP_Problem::normalize(Row &x) {
+MIP_Problem::normalize(RowT &x) {
   // Compute the GCD of all the coefficients.
   const dimension_type sz = x.size();
   dimension_type i = sz;

@@ -312,8 +312,8 @@ public:
     Computes the Greatest Common Divisor (GCD) among the elements of
     the row and normalizes them by the GCD itself.
   */
-  template <typename Row>
-  static void normalize(Row &r);
+  template <typename RowT>
+  static void normalize(RowT &r);
 
   /*! \brief
     Adds \p m new space dimensions and embeds the old MIP problem
