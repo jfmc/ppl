@@ -99,6 +99,14 @@ public:
   //! Assignment operator.
   Dense_Row& operator=(const Dense_Row& y);
 
+  //! Resets the i-th element to 0.
+  //! Provided for compatibility with Sparse_Row
+  void reset(const dimension_type i);
+
+  //! Resets the elements [first,last) to 0.
+  //! Provided for compatibility with Sparse_Row
+  void reset(const dimension_type first,const dimension_type last);
+
   //! Swaps \p *this with \p y.
   void swap(Dense_Row& y);
 

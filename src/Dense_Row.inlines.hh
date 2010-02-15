@@ -41,6 +41,11 @@ Dense_Row::Dense_Row()
 }
 
 inline void
+Dense_Row::reset(const dimension_type i) {
+  (*this)[i] = 0;
+}
+
+inline void
 Dense_Row::construct(const dimension_type sz,
          const dimension_type capacity) {
   row.construct(sz,capacity,Row::Flags());

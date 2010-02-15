@@ -59,6 +59,14 @@ Unlimited_Sparse_Row::reset(iterator first,iterator last) {
 }
 
 inline void
+Unlimited_Sparse_Row::reset(const dimension_type i) {
+  iterator itr = find(i);
+  if (itr != end())
+    reset(itr);
+  PPL_ASSERT(OK());
+}
+
+inline void
 Unlimited_Sparse_Row::reset_after(dimension_type i) {
   data.erase(lower_bound(i),end());
   PPL_ASSERT(OK());

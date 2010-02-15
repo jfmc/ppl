@@ -37,6 +37,20 @@ PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row(const
   PPL_ASSERT(OK());
 }
 
+inline void
+PPL::Unlimited_Sparse_Row::reset(const dimension_type first,
+                            const dimension_type last) {
+  PPL_ASSERT(first <= last);
+  iterator itr = lower_bound(first);
+  iterator itr_end = lower_bound(last);
+  if (itr == itr_end)
+    return;
+  if (itr_end != end() && itr_end->first == last)
+    ++itr_end;
+  reset(itr,itr_end);
+  PPL_ASSERT(OK());
+}
+
 bool
 PPL::Unlimited_Sparse_Row::operator==(const Unlimited_Sparse_Row &x) const {
   const_iterator i = begin();

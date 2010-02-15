@@ -28,3 +28,10 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Dense_Row)
 
+void
+PPL::Dense_Row::reset(const dimension_type first,const dimension_type last) {
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last <= row.size());
+  for (dimension_type i=first; i<last; ++i)
+    (*this)[i] = 0;
+}

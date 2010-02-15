@@ -191,6 +191,21 @@ Sparse_Matrix_Row::reset(iterator first,iterator last) {
 }
 
 inline void
+Sparse_Matrix_Row::reset(const dimension_type i) {
+  PPL_ASSERT(i < size_);
+  row_.reset(i);
+  PPL_ASSERT(OK());
+}
+
+inline void
+Sparse_Matrix_Row::reset(const dimension_type first,
+                              const dimension_type last) {
+  PPL_ASSERT(last <= size_);
+  row_.reset(first,last);
+  PPL_ASSERT(OK());
+}
+
+inline void
 Sparse_Matrix_Row::normalize() {
   row_.normalize();
   PPL_ASSERT(OK());

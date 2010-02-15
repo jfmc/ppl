@@ -171,6 +171,12 @@ public:
   //! Resets to zero the values in the range [first,last).
   iterator reset(iterator first,iterator last);
 
+  //! Resets to zero the i-th element.
+  void reset(dimension_type i);
+
+  //! Resets to zero the elements in [i,j).
+  void reset(dimension_type i,dimension_type j);
+
   //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!
     Computes the Greatest Common Divisor (GCD) among the elements of
