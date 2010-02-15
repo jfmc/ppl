@@ -85,6 +85,13 @@ public:
   //! Resets to zero the elements in [i,+infinity).
   void reset_after(dimension_type i);
 
+  //! Normalizes the modulo of coefficients so that they are mutually prime.
+  /*!
+    Computes the Greatest Common Divisor (GCD) among the elements of
+    the row and normalizes them by the GCD itself.
+  */
+  void normalize();
+
   //! For read-only access it's better to use get(), that avoids allocating
   //! space for zeroes. Both methods are O(n).
   Coefficient& operator[](const dimension_type i);

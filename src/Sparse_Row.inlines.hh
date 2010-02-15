@@ -97,6 +97,12 @@ Sparse_Row::reset(iterator first,iterator last) {
   return res;
 }
 
+inline void
+Sparse_Row::normalize() {
+  row.normalize();
+  PPL_ASSERT(OK());
+}
+
 inline Coefficient&
 Sparse_Row::operator[](const dimension_type i) {
   PPL_ASSERT(i < size_);

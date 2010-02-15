@@ -80,7 +80,7 @@ PPL::Sparse_Matrix::OK() const {
     if (!i->OK())
       return false;
     if (i->begin() != i->end()) {
-      Unlimited_Sparse_Row::const_iterator itr = i->begin();
+      Unlimited_Sparse_Row::const_iterator itr = i->end();
       --itr;
       if (itr->first >= num_columns_)
         return false;

@@ -153,54 +153,6 @@ MIP_Problem::MIP_Problem(dimension_type dim,
   PPL_ASSERT(OK());
 }
 
-template <typename RowT>
-void
-MIP_Problem::normalize(RowT &x) {
-  // Compute the GCD of all the coefficients.
-  const dimension_type sz = x.size();
-  dimension_type i = sz;
-  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-  while (i > 0) {
-    const Coefficient& x_i = x[--i];
-    if (const int x_i_sign = sgn(x_i)) {
-      gcd = x_i;
-      if (x_i_sign < 0)
-        neg_assign(gcd);
-      goto compute_gcd;
-    }
-  }
-  // We reach this point only if all the coefficients were zero.
-  return;
-
- compute_gcd:
-  if (gcd == 1)
-    return;
-  while (i > 0) {
-    const Coefficient& x_i = x[--i];
-    if (x_i != 0) {
-      // Note: we use the ternary version instead of a more concise
-      // gcd_assign(gcd, x_i) to take advantage of the fact that
-      // `gcd' will decrease very rapidly (see D. Knuth, The Art of
-      // Computer Programming, second edition, Section 4.5.2,
-      // Algorithm C, and the discussion following it).  Our
-      // implementation of gcd_assign(x, y, z) for checked numbers is
-      // optimized for the case where `z' is smaller than `y', so that
-      // on checked numbers we gain.  On the other hand, for the
-      // implementation of gcd_assign(x, y, z) on GMP's unbounded
-      // integers we cannot make any assumption, so here we draw.
-      // Overall, we win.
-      gcd_assign(gcd, x_i, gcd);
-      if (gcd == 1)
-        return;
-    }
-  }
-  // Divide the coefficients by the GCD.
-  for (dimension_type j = sz; j-- > 0; ) {
-    Coefficient& x_j = x[j];
-    exact_div_assign(x_j, x_j, gcd);
-  }
-}
-
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_MIP_Problem_templates_hh)

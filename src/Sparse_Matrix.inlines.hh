@@ -190,6 +190,12 @@ Sparse_Matrix_Row::reset(iterator first,iterator last) {
   return res;
 }
 
+inline void
+Sparse_Matrix_Row::normalize() {
+  row_.normalize();
+  PPL_ASSERT(OK());
+}
+
 inline Coefficient&
 Sparse_Matrix_Row::operator[](const dimension_type i) {
   PPL_ASSERT(i < size_);

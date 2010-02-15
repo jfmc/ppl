@@ -171,6 +171,13 @@ public:
   //! Resets to zero the values in the range [first,last).
   iterator reset(iterator first,iterator last);
 
+  //! Normalizes the modulo of coefficients so that they are mutually prime.
+  /*!
+    Computes the Greatest Common Divisor (GCD) among the elements of
+    the row and normalizes them by the GCD itself.
+  */
+  void normalize();
+
   /*!
     \brief Gets the i-th element in the sequence.
 
