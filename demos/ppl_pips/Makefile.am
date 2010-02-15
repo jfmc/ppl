@@ -46,15 +46,15 @@ piplib_pips: piplib_pips.o
 
 EXTRA_DIST = \
 expected_mpz
-# expected_mpz_a \
-# expected_int8 \
-# expected_int8_a \
-# expected_int16 \
-# expected_int16_a \
-# expected_int32 \
-# expected_int32_a \
-# expected_int64 \
-# expected_int64_a
+expected_mpz_a \
+expected_int8 \
+expected_int8_a \
+expected_int16 \
+expected_int16_a \
+expected_int32 \
+expected_int32_a \
+expected_int64 \
+expected_int64_a
 
 if HAVE_MD5SUM
 
