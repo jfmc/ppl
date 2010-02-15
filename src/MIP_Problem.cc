@@ -1111,7 +1111,7 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
 }
 
 void
-PPL::MIP_Problem::linear_combine(row_type x,
+PPL::MIP_Problem::linear_combine(row_type& x,
                                  matrix_row_const_reference_type y,
                                  const dimension_type k) {
   WEIGHT_BEGIN();

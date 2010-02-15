@@ -719,7 +719,7 @@ private:
     the element of index \p k equal to \f$0\f$. Then it assigns
     the resulting Linear_Row to \p x and normalizes it.
   */
-  static void linear_combine(row_type x, matrix_row_const_reference_type y,
+  static void linear_combine(row_type& x, matrix_row_const_reference_type y,
                              const dimension_type k);
 #endif // defined(USE_PPL_SPARSE_MATRIX)
 
