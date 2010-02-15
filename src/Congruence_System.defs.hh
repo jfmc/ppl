@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence.types.hh"
 #include "Grid_Generator.types.hh"
 #include "Matrix.defs.hh"
+#include "Grid.types.hh"
 #include "Grid_Certificate.types.hh"
 #include <iosfwd>
 

@@ -227,7 +227,7 @@ public:
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+1) \times c\f$ matrix
-    \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
+    \f$\genfrac{(}{)}{0pt}{}{M}{y}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_row(const Row& y);
@@ -235,12 +235,13 @@ public:
   //! Adds the row \p y to the matrix.
   /*!
     \param y
-    The row to be added: it must have the same size and capacity as \p
-    *this.
+    The row to be added: it must have the same size and capacity as
+    \p *this. It is not declared <CODE>const</CODE> because its
+    data-structures will recycled to build the new matrix row.
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+1) \times c\f$ matrix
-    \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
+    \f$\genfrac{(}{)}{0pt}{}{M}{y}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_recycled_row(Row& y);
