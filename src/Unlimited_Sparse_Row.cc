@@ -26,9 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-const PPL::Coefficient
-PPL::Unlimited_Sparse_Row::zero = 0;
-
 PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row()
   : data() {
   PPL_ASSERT(OK());
@@ -91,9 +88,11 @@ PPL::Unlimited_Sparse_Row::operator[](const dimension_type i) const {
 
 const PPL::Coefficient&
 PPL::Unlimited_Sparse_Row::get(const dimension_type i) const {
+  static const PPL::Coefficient zero = 0;
+
   const_iterator itr = find(i);
   if (itr == end())
-    return Unlimited_Sparse_Row::zero;
+    return zero;
   else {
     PPL_ASSERT(itr->first == i);
     return itr->second;

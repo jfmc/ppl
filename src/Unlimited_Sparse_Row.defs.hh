@@ -60,8 +60,6 @@ public:
   void swap(Unlimited_Sparse_Row& x);
 
 private:
-  static const Coefficient zero;
-
   typedef std::list<value_type> list_t;
 
 public:
@@ -97,9 +95,6 @@ public:
   //! Gets the i-th element in the sequence.
   /*!
     This function is O(n).
-
-    This function must not be called before main(), it relies on
-    a static variable to work.
   */
   const Coefficient& get(const dimension_type i) const;
 
