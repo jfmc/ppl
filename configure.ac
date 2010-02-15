@@ -1472,6 +1472,7 @@ AC_CHECK_DECLS([getrusage],
 # include <sys/resource.h>
 #endif
 ])
+AC_CHECK_DECLS([sigaction], , , [#include <csignal>])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_TYPES([timeval])

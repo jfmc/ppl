@@ -371,6 +371,7 @@ then
 
   # Checks for the availability of C library functions in C++.
   AC_CHECK_DECLS([getenv], , , [#include <cstdlib>])
+  AC_CHECK_DECLS([sigaction], , , [#include <csignal>])
 
   # Checks for typedefs, structures, and compiler characteristics.
   AC_CHECK_TYPES([siginfo_t], [], [], [[
