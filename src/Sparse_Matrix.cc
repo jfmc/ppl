@@ -26,63 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Sparse_Matrix::Sparse_Matrix(dimension_type n)
-  : rows(n), num_columns_(n) {
-  PPL_ASSERT(OK());
-}
-
-PPL::Sparse_Matrix::Sparse_Matrix(dimension_type num_rows,
-                                  dimension_type num_columns)
-  : rows(num_rows), num_columns_(num_columns) {
-  PPL_ASSERT(OK());
-}
-
-PPL::Sparse_Matrix::iterator
-PPL::Sparse_Matrix::begin() {
-  return iterator(rows.begin(),num_columns());
-}
-
-PPL::Sparse_Matrix::iterator
-PPL::Sparse_Matrix::end() {
-  return iterator(rows.end(),num_columns());
-}
-
-PPL::Sparse_Matrix::const_iterator
-PPL::Sparse_Matrix::begin() const {
-  return rows.begin();
-}
-
-PPL::Sparse_Matrix::const_iterator
-PPL::Sparse_Matrix::end() const {
-  return rows.end();
-}
-
-PPL::Sparse_Matrix_Row
-PPL::Sparse_Matrix::operator[](dimension_type i) {
-  PPL_ASSERT(i < rows.size());
-  return Sparse_Matrix_Row(rows[i],num_columns());
-}
-
-const PPL::Unlimited_Sparse_Row&
-PPL::Sparse_Matrix::operator[](dimension_type i) const {
-  PPL_ASSERT(i < rows.size());
-  return rows[i];
-}
-
-PPL::dimension_type
-PPL::Sparse_Matrix::num_rows() const {
-  return rows.size();
-}
-
-PPL::dimension_type
-PPL::Sparse_Matrix::num_columns() const {
-  return num_columns_;
-}
-
-void
-PPL::Sparse_Matrix::resize(dimension_type n) {
-  resize(n,n);
-}
 
 void
 PPL::Sparse_Matrix::resize(dimension_type num_rows,
@@ -103,28 +46,6 @@ PPL::Sparse_Matrix::ascii_dump(std::ostream& s) const {
   s << num_columns() << "\n";
   for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i)
     i->ascii_dump(s);
-}
-
-void
-PPL::Sparse_Matrix::add_zero_rows(const dimension_type n) {
-  resize(num_rows()+n,num_columns());
-}
-
-void
-PPL::Sparse_Matrix::add_zero_columns(const dimension_type n) {
-  resize(num_rows(),num_columns()+n);
-}
-
-void
-PPL::Sparse_Matrix::add_zero_rows_and_columns(const dimension_type n,
-                                              const dimension_type m) {
-  resize(num_rows()+n,num_columns()+m);
-}
-
-void
-PPL::Sparse_Matrix::remove_trailing_columns(const dimension_type n) {
-  PPL_ASSERT(n <= num_columns());
-  resize(num_rows(),num_columns()-n);
 }
 
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Sparse_Matrix)
@@ -153,11 +74,6 @@ PPL::Sparse_Matrix::ascii_load(std::istream& s) {
   return true;
 }
 
-void
-PPL::Sparse_Matrix::erase_to_end(dimension_type first_to_erase) {
-  resize(first_to_erase,num_columns());
-}
-
 bool
 PPL::Sparse_Matrix::OK() const {
   for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i) {
@@ -166,149 +82,4 @@ PPL::Sparse_Matrix::OK() const {
       return false;
   }
   return true;
-}
-
-
-PPL::Sparse_Matrix::iterator::iterator(const iterator& x)
-  : itr(x.itr), size_(x.size_) {
-}
-
-PPL::Sparse_Matrix_Row
-PPL::Sparse_Matrix::iterator::operator*() {
-  return Sparse_Matrix_Row(*itr,size_);
-}
-
-PPL::Sparse_Matrix::iterator&
-PPL::Sparse_Matrix::iterator::operator++() {
-  ++itr;
-  return *this;
-}
-
-PPL::Sparse_Matrix::iterator
-PPL::Sparse_Matrix::iterator::operator++(int) {
-  iterator x(*this);
-  ++(*this);
-  return x;
-}
-
-PPL::Sparse_Matrix::iterator::iterator(
-  std::vector<Unlimited_Sparse_Row>::iterator i,
-  const dimension_type size)
-  : itr(i), size_(size) {
-}
-
-
-PPL::Sparse_Matrix_Row::Sparse_Matrix_Row(Unlimited_Sparse_Row& row,
-                                          const dimension_type size)
-  : row_(row), size_(size) {
-  PPL_ASSERT(OK());
-}
-
-void
-PPL::Sparse_Matrix_Row::swap(Sparse_Matrix_Row x) {
-  PPL_ASSERT(size_ == x.size_);
-  row_.swap(x.row_);
-  PPL_ASSERT(OK());
-  PPL_ASSERT(x.OK());
-}
-
-PPL::dimension_type
-PPL::Sparse_Matrix_Row::size() const {
-  return size_;
-}
-
-PPL::Sparse_Matrix_Row::iterator
-PPL::Sparse_Matrix_Row::reset(iterator i) {
-  PPL_ASSERT(i != end());
-  iterator res = row_.reset(i);
-  PPL_ASSERT(OK());
-  return res;
-}
-
-PPL::Sparse_Matrix_Row::iterator
-PPL::Sparse_Matrix_Row::reset(iterator first,iterator last) {
-  iterator res = row_.reset(first,last);
-  PPL_ASSERT(OK());
-  return res;
-}
-
-PPL::Coefficient&
-PPL::Sparse_Matrix_Row::operator[](const dimension_type i) {
-  PPL_ASSERT(i < size_);
-  return row_[i];
-}
-
-const PPL::Coefficient&
-PPL::Sparse_Matrix_Row::operator[](const dimension_type i) const {
-  return get(i);
-}
-
-const PPL::Coefficient&
-PPL::Sparse_Matrix_Row::get(const dimension_type i) const {
-  PPL_ASSERT(i < size_);
-  return row_.get(i);
-}
-
-
-PPL::Sparse_Matrix_Row::iterator
-PPL::Sparse_Matrix_Row::begin() {
-  return row_.begin();
-}
-
-PPL::Sparse_Matrix_Row::iterator
-PPL::Sparse_Matrix_Row::end() {
-  return row_.end();
-}
-
-PPL::Sparse_Matrix_Row::const_iterator
-PPL::Sparse_Matrix_Row::begin() const {
-  return row_.begin();
-}
-
-PPL::Sparse_Matrix_Row::const_iterator
-PPL::Sparse_Matrix_Row::end() const {
-  return row_.end();
-}
-
-PPL::Sparse_Matrix_Row::iterator
-PPL::Sparse_Matrix_Row::find(const dimension_type c) {
-  return row_.find(c);
-}
-
-PPL::Sparse_Matrix_Row::iterator
-PPL::Sparse_Matrix_Row::lower_bound(const dimension_type c) {
-  return row_.lower_bound(c);
-}
-
-PPL::Sparse_Matrix_Row::iterator
-PPL::Sparse_Matrix_Row::upper_bound(const dimension_type c) {
-  return row_.upper_bound(c);
-}
-
-PPL::Sparse_Matrix_Row::const_iterator
-PPL::Sparse_Matrix_Row::find(const dimension_type c) const {
-  return row_.find(c);
-}
-
-PPL::Sparse_Matrix_Row::const_iterator
-PPL::Sparse_Matrix_Row::lower_bound(const dimension_type c) const {
-  return row_.lower_bound(c);
-}
-
-PPL::Sparse_Matrix_Row::const_iterator
-PPL::Sparse_Matrix_Row::upper_bound(const dimension_type c) const {
-  return row_.upper_bound(c);
-}
-
-PPL::Sparse_Matrix_Row::operator const Unlimited_Sparse_Row&() const {
-  return row_;
-}
-
-bool
-PPL::Sparse_Matrix_Row::OK() const {
-  if (!row_.OK())
-    return false;
-  Unlimited_Sparse_Row row1(row_);
-  row1.reset_after(size_);
-  return (row_ == row1);
 }
