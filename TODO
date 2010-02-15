@@ -8,6 +8,8 @@ Enhancements for PPL 0.11
 - Lack of perl can cause more problems than explained in the warning
   message given by our configuration procedure.  See, e.g.,
   http://www.cs.unipr.it/pipermail/ppl-devel/2009-November/015758.html
+- Complete the ppl_pips man page.
+
 
 Commits to consider should we release PPL 0.10.3
 ================================================
