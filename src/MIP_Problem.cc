@@ -1125,15 +1125,29 @@ PPL::MIP_Problem::linear_combine(row_type& x,
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
-  for (dimension_type i = x_size; i-- > 0; )
+  matrix_row_const_reference_const_iterator j = y.begin();
+  matrix_row_const_reference_const_iterator j_end = y.end();
+  dimension_type i;
+  for (i = 0; (i < x_size) && (j != j_end); ++i) {
+    PPL_ASSERT(j->first >= i);
     if (i != k) {
       Coefficient& x_i = x[i];
       x_i *= normalized_y_k;
-      // The test against 0 gives rise to a consistent speed up: see
-      // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
-      const Coefficient& y_i = y.get(i);
-      if (y_i != 0)
+      if (j->first == i) {
+        const Coefficient& y_i = j->second;
+        // FIXME: check if adding "if (j->second != 0)" speeds this up.
         sub_mul_assign(x_i, y_i, normalized_x_k);
+        ++j;
+      }
+    } else
+      if (j->first == k)
+        ++j;
+  }
+  PPL_ASSERT(j == j_end);
+  for ( ; i < x_size; ++i)
+    if (i != k) {
+      Coefficient& x_i = x[i];
+      x_i *= normalized_y_k;
     }
   x_k = 0;
   x.normalize();
