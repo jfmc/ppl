@@ -220,13 +220,6 @@ public:
   template <typename Func>
   void for_each_nonzero(const Func& func,const dimension_type n) const;
 
-  //! Normalizes the modulo of coefficients so that they are mutually prime.
-  /*!
-    Computes the Greatest Common Divisor (GCD) among the elements of
-    the row and normalizes them by the GCD itself.
-  */
-  void normalize();
-
   iterator find(const dimension_type c);
   iterator lower_bound(const dimension_type c);
   iterator upper_bound(const dimension_type c);
