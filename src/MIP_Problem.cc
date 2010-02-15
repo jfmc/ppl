@@ -1095,16 +1095,51 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
-  for (dimension_type i = x_size; i-- > 0; )
-    if (i != k) {
-      Coefficient& x_i = x[i];
-      x_i *= normalized_y_k;
-      // The test against 0 gives rise to a consistent speed up: see
-      // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
-      const Coefficient& y_i = y.get(i);
-      if (y_i != 0)
-        sub_mul_assign(x_i, y_i, normalized_x_k);
+
+  matrix_row_reference_iterator i = x.begin();
+  matrix_row_reference_iterator i_end = x.end();
+  matrix_row_const_reference_const_iterator j = y.begin();
+  matrix_row_const_reference_const_iterator j_end = y.end();
+  while ((i != i_end) && (j != j_end)) {
+    if (j->first < i->first) {
+      if (j->first != k) {
+        // FIXME: check if adding "if (j->second != 0)" speeds this up.
+        Coefficient& x_i = x[j->first];
+        PPL_ASSERT(x_i == 0);
+        // FIXME: this can be optimized further
+        sub_mul_assign(x_i, j->second, normalized_x_k);
+      }
+      ++j;
+    } else {
+      if (i->first != k) {
+        Coefficient& x_i = i->second;
+        x_i *= normalized_y_k;
+        if (j->first == i->first) {
+          const Coefficient& y_i = j->second;
+          // FIXME: check if adding "if (j->second != 0)" speeds this up.
+          sub_mul_assign(x_i, y_i, normalized_x_k);
+          ++j;
+        }
+      }
+      ++i;
     }
+  }
+  while (i != i_end) {
+    if (i->first != k)
+      i->second *= normalized_y_k;
+    ++i;
+  }
+  while (j != j_end) {
+    if (j->first != k) {
+      // FIXME: check if adding "if (j->second != 0)" speeds this up.
+      Coefficient& x_i = x[j->first];
+      PPL_ASSERT(x_i == 0);
+      // FIXME: this can be optimized further
+      sub_mul_assign(x_i, j->second, normalized_x_k);
+    }
+    ++j;
+  }
+
   x.reset(k);
   x.normalize();
   WEIGHT_ADD_MUL(83, x_size);
