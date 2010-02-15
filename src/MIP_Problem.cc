@@ -1074,7 +1074,7 @@ PPL::MIP_Problem::linear_combine(row_type& x, const row_type& y,
         sub_mul_assign(x_i, y_i, normalized_x_k);
     }
   x_k = 0;
-  x.normalize();
+  normalize(x);
   WEIGHT_ADD_MUL(83, x_size);
 }
 
@@ -1106,7 +1106,7 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
         sub_mul_assign(x_i, y_i, normalized_x_k);
     }
   x_k = 0;
-  x.normalize();
+  normalize(x);
   WEIGHT_ADD_MUL(83, x_size);
 }
 
@@ -1136,7 +1136,7 @@ PPL::MIP_Problem::linear_combine(row_type x,
         sub_mul_assign(x_i, y_i, normalized_x_k);
     }
   x_k = 0;
-  x.normalize();
+  normalize(x);
   WEIGHT_ADD_MUL(83, x_size);
 }
 

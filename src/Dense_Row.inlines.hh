@@ -132,11 +132,6 @@ operator!=(const Dense_Row& x, const Dense_Row& y) {
 }
 
 inline void
-Dense_Row::normalize() {
-  row.normalize();
-}
-
-inline void
 Dense_Row::ascii_dump(std::ostream& s) const {
   row.ascii_dump(s);
 }
