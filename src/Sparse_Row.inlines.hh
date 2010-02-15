@@ -192,9 +192,11 @@ inline bool
 Sparse_Row::OK() const {
   if (!row.OK())
     return false;
-  Unlimited_Sparse_Row row1(row);
-  row1.reset_after(size_);
-  return (row == row1);
+  if (row.begin() == row.end())
+    return true;
+  Unlimited_Sparse_Row::const_iterator itr=row.end();
+  --itr;
+  return (itr->first < size_);
 }
 
 } // namespace Parma_Polyhedra_Library
