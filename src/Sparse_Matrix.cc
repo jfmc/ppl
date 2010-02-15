@@ -77,9 +77,14 @@ PPL::Sparse_Matrix::ascii_load(std::istream& s) {
 bool
 PPL::Sparse_Matrix::OK() const {
   for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i) {
-    Sparse_Row row(*i,num_columns_);
-    if (static_cast<Unlimited_Sparse_Row>(row) != *i)
+    if (!i->OK())
       return false;
+    if (i->begin() != i->end()) {
+      Unlimited_Sparse_Row::const_iterator itr = i->begin();
+      --itr;
+      if (itr->first >= num_columns_)
+        return false;
+    }
   }
   return true;
 }
