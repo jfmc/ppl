@@ -203,13 +203,21 @@ main(int argc, char **argv) {
   if (ppl_set_error_handler(error_handler) < 0)
     fatal("cannot install the custom error handler");
 
+  mpz_init(mpc);
+
+  /* At least 32-bit coefficients are needed. */
+  if (ppl_Coefficient_max(mpc) > 0 && mpz_fits_sshort_p(mpc)) {
+    mpz_clear(mpc);
+    ppl_finalize();
+    return 0;
+  }
+
   for (i = 0; i < N_PARAMETERS; ++i)
     parameter_dim[i] = i + N_VARS;
 
   ppl_new_PIP_Problem_from_space_dimension(&pip, N_VARS+N_PARAMETERS);
   ppl_PIP_Problem_add_to_parameter_space_dimensions(pip, parameter_dim,
                                                     N_PARAMETERS);
-  mpz_init(mpc);
   ppl_new_Coefficient(&c);
   for (i = 0; i < N_CONSTRAINTS; ++i) {
     ppl_new_Linear_Expression(&le);
