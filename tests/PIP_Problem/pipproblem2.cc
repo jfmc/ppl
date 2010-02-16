@@ -196,6 +196,30 @@ test10() {
   return ok;
 }
 
+bool
+test11() {
+  Variable A(0);
+  Constraint_System cs;
+  cs.insert(A >= 5);
+
+  PIP_Problem pip1(3, cs.begin(), cs.end(), Variables_Set());
+  bool ok = (pip1.solution() != 0);
+
+  return ok;
+}
+
+bool
+test12() {
+  Variable A(0);
+  Constraint_System cs;
+  cs.insert(A >= 5);
+
+  PIP_Problem pip1(3, cs.begin(), cs.end(), Variables_Set());
+  bool ok = (pip1.optimizing_solution() != 0);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -209,4 +233,6 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN
