@@ -43,7 +43,7 @@ uncaught_exception_handler() {
   exit(1);
 }
 
-#ifdef PWL_HAVE_DECL_SIGACTION
+#if PWL_HAVE_DECL_SIGACTION
 
 #if defined(PWL_HAVE_SIGINFO_T) && defined(SA_SIGINFO)
 
@@ -157,7 +157,7 @@ fpe_handler(int sig) {
 
 #endif // !defined(PWL_HAVE_SIGINFO_T) || !defined(SA_SIGINFO)
 
-#endif // defined(PWL_HAVE_DECL_SIGACTION)
+#endif // PWL_HAVE_DECL_SIGACTION
 
 } // namespace
 
@@ -167,7 +167,7 @@ namespace Test {
 
 void
 set_handlers() {
-#ifdef PWL_HAVE_DECL_SIGACTION
+#if PWL_HAVE_DECL_SIGACTION
   struct sigaction action;
   sigemptyset(&action.sa_mask);
 #if defined(PWL_HAVE_SIGINFO_T) && defined(SA_SIGINFO)
@@ -182,7 +182,7 @@ set_handlers() {
 	      << std::endl;
     abort();
   }
-#endif // defined(PWL_HAVE_DECL_SIGACTION)
+#endif // PWL_HAVE_DECL_SIGACTION
 
   std::set_unexpected(unexpected_exception_handler);
   std::set_terminate(uncaught_exception_handler);
