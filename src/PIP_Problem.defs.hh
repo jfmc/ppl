@@ -553,13 +553,6 @@ private:
   //! The current solution decision tree
   PIP_Tree_Node* current_solution;
 
-  /*! \brief
-    A Boolean encoding whether or not internal data structures have
-    already been properly sized and populated: useful to allow for
-    deeper checks in method OK().
-  */
-  bool initialized;
-
   //! The sequence of constraints describing the feasible region.
   Constraint_Sequence input_cs;
 

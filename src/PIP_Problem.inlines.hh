@@ -56,7 +56,6 @@ PIP_Problem::swap(PIP_Problem& y) {
   std::swap(internal_space_dim, y.internal_space_dim);
   std::swap(status, y.status);
   std::swap(current_solution, y.current_solution);
-  std::swap(initialized, y.initialized);
   std::swap(input_cs, y.input_cs);
   std::swap(first_pending_constraint, y.first_pending_constraint);
   std::swap(parameters, y.parameters);

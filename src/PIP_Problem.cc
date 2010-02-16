@@ -38,7 +38,6 @@ PPL::PIP_Problem::PIP_Problem(const dimension_type dim)
     internal_space_dim(0),
     status(PARTIALLY_SATISFIABLE),
     current_solution(0),
-    initialized(false),
     input_cs(),
     first_pending_constraint(0),
     parameters(),
@@ -58,7 +57,6 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
     internal_space_dim(y.internal_space_dim),
     status(y.status),
     current_solution(0),
-    initialized(y.initialized),
     input_cs(y.input_cs),
     first_pending_constraint(y.first_pending_constraint),
     parameters(y.parameters),
@@ -298,8 +296,6 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
 
   s << "\nfirst_pending_constraint: " <<  first_pending_constraint << "\n";
 
-  s << "\ninitialized: " << (initialized ? "YES" : "NO") << "\n";
-
   s << "\nstatus: ";
   switch (status) {
   case UNSATISFIABLE:
@@ -403,17 +399,6 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> first_pending_constraint))
     return false;
 
-  if (!(s >> str) || str != "initialized:")
-    return false;
-  if (!(s >> str))
-    return false;
-  if (str == "YES")
-    initialized = true;
-  else if (str == "NO")
-    initialized = false;
-  else
-    return false;
-
   if (!(s >> str) || str != "status:")
     return false;
 
@@ -505,7 +490,6 @@ PPL::PIP_Problem::clear() {
     delete current_solution;
     current_solution = 0;
   }
-  initialized = false;
   input_cs.clear();
   first_pending_constraint = 0;
   parameters.clear();
