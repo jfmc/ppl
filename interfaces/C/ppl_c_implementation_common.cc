@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 /* Interface for Coefficient. */
 
 #include "ppl_c_implementation_common.defs.hh"
+#include "compiler.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -252,6 +253,7 @@ CATCH_ALL
 int
 ppl_set_timeout(unsigned time) try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  used(time);
   const char* what = "PPL C interface error:\n"
     "ppl_set_timeout: the PPL Watchdog library is not enabled.";
   throw std::runtime_error(what);
@@ -282,6 +284,7 @@ CATCH_ALL
 int
 ppl_set_deterministic_timeout(unsigned weight) try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  used(weight);
   const char* what = "PPL C interface error:\n"
     "ppl_set_deterministic_timeout: the PPL Watchdog library is not enabled.";
   throw std::runtime_error(what);
