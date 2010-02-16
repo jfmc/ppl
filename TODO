@@ -2,6 +2,10 @@
 Enhancements for PPL 0.11
 =========================
 
+- Deterministic timeouts are disabled whenever the PWL is disabled.
+  However, the PWL is disabled when OS support for dealing with
+  real and CPU time are unavailable, which is not relevant for
+  people that want to use deterministic timeouts.
 - Make all the *affine*image() methods uniform as far as the
   specification is concerned.
 - Look carefully at http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42115
