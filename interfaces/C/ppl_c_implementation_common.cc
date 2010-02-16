@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 /* Interface for Coefficient. */
 
 #include "ppl_c_implementation_common.defs.hh"
-#include "compiler.hh"
 
 namespace Parma_Polyhedra_Library {
 
