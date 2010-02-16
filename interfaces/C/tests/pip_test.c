@@ -47,6 +47,12 @@ fatal(const char* format, ...) {
 }
 
 static void
+error_handler(enum ppl_enum_error_code code,
+	      const char* description) {
+  fatal("PPL error code %d: %s", code, description);
+}
+
+static void
 display_solution_i(ppl_const_PIP_Tree_Node_t node,
                    ppl_dimension_type n_vars,
                    ppl_dimension_type n_params,
@@ -139,7 +145,7 @@ display_solution_i(ppl_const_PIP_Tree_Node_t node,
   }
 }
 
-void
+static void
 display_solution(ppl_const_PIP_Tree_Node_t node,
                  ppl_dimension_type n_vars,
                  ppl_dimension_type n_params,
@@ -149,10 +155,9 @@ display_solution(ppl_const_PIP_Tree_Node_t node,
   vars = malloc(n_vars*sizeof(ppl_dimension_type));
   dim = n_vars+n_params;
 
-  /* construct the array of variable space indices. This requires the params
-     array to be sorted in ascending order.
-  */
-  for (i=0, j=0, k=0; i<dim; ++i) {
+  /* Construct the array of variable space indices. This requires the
+     params array to be sorted in ascending order. */
+  for (i = 0, j = 0, k = 0; i < dim; ++i) {
     if (k == n_params || i < params[k])
       vars[j++] = i;
     else
@@ -165,6 +170,7 @@ display_solution(ppl_const_PIP_Tree_Node_t node,
 #define N_VARS 2
 #define N_PARAMETERS 2
 #define N_CONSTRAINTS 4
+
 int
 main(int argc, char **argv) {
   ppl_PIP_Problem_t pip;
@@ -175,32 +181,39 @@ main(int argc, char **argv) {
   mpz_t mpc;
   int ok;
 
+  static ppl_dimension_type parameter_dim[N_PARAMETERS];
+
   static int coef[N_CONSTRAINTS][N_VARS+N_PARAMETERS+1] = {
-    { 2, 3, 0, 0, -8 },
-    { 4, -1, 0, 0, -4 },
-    { 0, -1, 0, 1, 0 },
-    { -1, 0, 1, 0, 0 },
+    {  2,  3,  0,  0, -8 },
+    {  4, -1,  0,  0, -4 },
+    {  0, -1,  0,  1,  0 },
+    { -1,  0,  1,  0,  0 },
   };
-  ppl_dimension_type parameter_dim[N_PARAMETERS];
 
   program_name = argv[0];
+
   if (argc != 1) {
     fprintf(stderr, "usage: %s\n", program_name);
     exit(1);
   }
+
   if (ppl_initialize() < 0)
     fatal("cannot initialize the Parma Polyhedra Library");
 
-  for (i=0; i<N_PARAMETERS; ++i)
+  if (ppl_set_error_handler(error_handler) < 0)
+    fatal("cannot install the custom error handler");
+
+  for (i = 0; i < N_PARAMETERS; ++i)
     parameter_dim[i] = i + N_VARS;
+
   ppl_new_PIP_Problem_from_space_dimension(&pip, N_VARS+N_PARAMETERS);
   ppl_PIP_Problem_add_to_parameter_space_dimensions(pip, parameter_dim,
                                                     N_PARAMETERS);
   mpz_init(mpc);
   ppl_new_Coefficient(&c);
-  for (i=0; i<N_CONSTRAINTS; ++i) {
+  for (i = 0; i < N_CONSTRAINTS; ++i) {
     ppl_new_Linear_Expression(&le);
-    for (j=0; j<N_VARS+N_PARAMETERS; ++j) {
+    for (j = 0; j < N_VARS+N_PARAMETERS; ++j) {
       mpz_set_si(mpc, coef[i][j]);
       ppl_assign_Coefficient_from_mpz_t(c, mpc);
       ppl_Linear_Expression_add_to_coefficient(le, j, c);
@@ -217,6 +230,7 @@ main(int argc, char **argv) {
   mpz_clear(mpc);
 
   ok = (ppl_PIP_Problem_solve(pip) == PPL_PIP_PROBLEM_STATUS_OPTIMIZED);
+
   if (ok) {
     ppl_dimension_type dim;
     ppl_const_PIP_Tree_Node_t solution;
