@@ -605,17 +605,17 @@ PPL::PIP_Problem::set_control_parameter(Control_Parameter_Value value) {
 }
 
 void
-PPL::PIP_Problem::set_big_parameter_dimension(dimension_type x) {
-  if (parameters.count(x) == 0)
+PPL::PIP_Problem::set_big_parameter_dimension(dimension_type big_dim) {
+  if (parameters.count(big_dim) == 0)
     throw std::invalid_argument("PPL::PIP_Problem::"
-                                "set_big_parameter_dimension(x):\n"
-                                "dimension 'x' is not a parameter.");
-  if (x < internal_space_dim)
+                                "set_big_parameter_dimension(big_dim):\n"
+                                "dimension 'big_dim' is not a parameter.");
+  if (big_dim < internal_space_dim)
     throw std::invalid_argument("PPL::PIP_Problem::"
-                                "set_big_parameter_dimension(x):\n"
+                                "set_big_parameter_dimension(big_dim):\n"
                                 "only newly-added parameters can be"
                                 "converted into the big parameter.");
-  big_parameter_dimension = x;
+  big_parameter_dimension = big_dim;
 }
 
 PPL::memory_size_type
