@@ -89,7 +89,7 @@ fpe_sigaction(int sig, siginfo_t* sip, void*) {
   else {
     std::cerr << "SIGFPE caught (unknown si_code " << sip->si_code << ")"
 	      << std::endl;
-#if defined(PWL_HAVE_FENV_H)
+#if defined(PPL_HAVE_FENV_H)
     std::cerr << "Inquire with fetestexcept(): ";
 #ifdef FE_INEXACT
     if (fetestexcept(FE_INEXACT))
@@ -112,7 +112,7 @@ fpe_sigaction(int sig, siginfo_t* sip, void*) {
       std::cerr << "FE_INVALID ";
 #endif
     std::cerr << std::endl;
-#endif
+#endif // defined(PPL_HAVE_FENV_H)
   }
   exit(1);
 }
@@ -128,31 +128,30 @@ fpe_handler(int sig) {
   }
   std::cerr << "SIGFPE caught"
             << std::endl;
-#if defined(PWL_HAVE_FENV_H)
-    std::cerr << "Inquire with fetestexcept(): ";
+#if defined(PPL_HAVE_FENV_H)
+  std::cerr << "Inquire with fetestexcept(): ";
 #ifdef FE_INEXACT
-    if (fetestexcept(FE_INEXACT))
-      std::cerr << "FE_INEXACT ";
+  if (fetestexcept(FE_INEXACT))
+    std::cerr << "FE_INEXACT ";
 #endif
 #ifdef FE_DIVBYZERO
-    if (fetestexcept(FE_DIVBYZERO))
-      std::cerr << "FE_DIVBYZERO ";
+  if (fetestexcept(FE_DIVBYZERO))
+    std::cerr << "FE_DIVBYZERO ";
 #endif
 #ifdef FE_UNDERFLOW
-    if (fetestexcept(FE_UNDERFLOW))
-      std::cerr << "FE_UNDERFLOW ";
+  if (fetestexcept(FE_UNDERFLOW))
+    std::cerr << "FE_UNDERFLOW ";
 #endif
 #ifdef FE_OVERFLOW
-    if (fetestexcept(FE_OVERFLOW))
-      std::cerr << "FE_OVERFLOW ";
+  if (fetestexcept(FE_OVERFLOW))
+    std::cerr << "FE_OVERFLOW ";
 #endif
 #if FE_INVALID
-    if (fetestexcept(FE_INVALID))
-      std::cerr << "FE_INVALID ";
+  if (fetestexcept(FE_INVALID))
+    std::cerr << "FE_INVALID ";
 #endif
-    std::cerr << std::endl;
-#endif
-  }
+  std::cerr << std::endl;
+#endif // defined(PPL_HAVE_FENV_H)
   exit(1);
 }
 
