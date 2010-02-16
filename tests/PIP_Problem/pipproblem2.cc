@@ -220,6 +220,30 @@ test12() {
   return ok;
 }
 
+bool
+test13() {
+  Variable i(0);
+  Variable j(1);
+  Variable k(2);
+  Variable m(3);
+  Variable n(4);
+  Variables_Set params(k, n);
+
+  Constraint_System cs;
+  cs.insert(i <= m);
+  cs.insert(j <= n);
+  cs.insert(2*i+j == 2*m+n-k);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  PIP_Tree pip_tree = pip.solution();
+  const PIP_Solution_Node* sol_node = pip_tree->as_solution();
+  const PIP_Decision_Node* dec_node = pip_tree->as_decision();
+  bool ok = (sol_node == 0 && dec_node != 0);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -235,4 +259,5 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN
