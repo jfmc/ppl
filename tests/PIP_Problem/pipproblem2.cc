@@ -244,6 +244,45 @@ test13() {
   return ok;
 }
 
+bool
+test14() {
+  // Some unit testing on inner class Artificial_Parameter.
+  typedef PIP_Tree_Node::Artificial_Parameter Art_Param;
+
+  Variable A(0);
+
+  Art_Param ap0;
+  Art_Param ap1(3*A + 8, -5);
+  Art_Param ap2(ap1);
+
+  bool ok = ap0.OK() && ap1.OK() && ap2.OK();
+
+  ok &= (ap0 != ap1) && (ap1 == ap2);
+  ok &= (ap0.get_denominator() == 1) && (ap1.get_denominator() == 5);
+
+  ap0.swap(ap2);
+  ok &= (ap0 == ap1) && (ap2.get_denominator() == 1);
+
+  using namespace IO_Operators;
+  nout << ap1;
+
+  ok &= (ap1.external_memory_in_bytes() < ap1.total_memory_in_bytes());
+
+  // Difference found in space dimension.
+  ok &= (ap1 != ap2);
+  // Difference found in denominator.
+  Art_Param ap3(3*A + 8, -6);
+  ok &= (ap1 != ap3);
+  // Difference found in inhomogeneous term.
+  Art_Param ap4(3*A + 7, -5);
+  ok &= (ap1 != ap4);
+  // Difference found in A's coefficient.
+  Art_Param ap5(2*A + 8, -5);
+  ok &= (ap1 != ap5);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -260,4 +299,5 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
 END_MAIN

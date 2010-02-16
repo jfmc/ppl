@@ -224,6 +224,27 @@ test07() {
   return ok;
 }
 
+bool
+test08() {
+  typedef PIP_Tree_Node::Artificial_Parameter Art_Param;
+
+  Variable A(0);
+
+  Art_Param ap1(3*A + 8, -5);
+  std::stringstream ss1;
+  ap1.ascii_dump(ss1);
+
+  Art_Param ap2;
+  bool ok = ap2.ascii_load(ss1);
+
+  std::stringstream ss2;
+  ap2.ascii_dump(ss2);
+
+  ok &= (ap1 == ap2) && (ss1.str() == ss2.str());
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -234,4 +255,5 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN

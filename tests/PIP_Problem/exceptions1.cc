@@ -258,6 +258,24 @@ test11() {
   return false;
 }
 
+bool
+test12() {
+  typedef PIP_Tree_Node::Artificial_Parameter Art_Param;
+  Variable A(0);
+
+  try {
+    // Trying to set an invalid (zero) denominator.
+    Art_Param ap(3*A + 8, 0);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -272,4 +290,5 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN

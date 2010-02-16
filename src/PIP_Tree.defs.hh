@@ -243,9 +243,17 @@ public:
   //! Returns the normalized (i.e., positive) denominator.
   Coefficient_traits::const_reference get_denominator() const;
 
-  //! Returns \b true if \p x and \p y are equal.
-  friend bool operator==(const Artificial_Parameter& x,
-                         const Artificial_Parameter& y);
+  //! Swaps \p *this with \p y.
+  void swap(Artificial_Parameter& y);
+
+  //! Returns \c true if and only if \p *this and \p y are equal.
+  /*!
+    Note that two artificial parameters having different space dimensions
+    are considered to be different.
+  */
+  bool operator==(const Artificial_Parameter& y) const;
+  //! Returns \c true if and only if \p *this and \p y are different.
+  bool operator!=(const Artificial_Parameter& y) const;
 
   PPL_OUTPUT_DECLARATIONS
 

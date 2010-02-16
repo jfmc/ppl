@@ -291,8 +291,9 @@ PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node& y)
 }
 
 bool
-operator==(const PIP_Tree_Node::Artificial_Parameter& x,
-           const PIP_Tree_Node::Artificial_Parameter& y) {
+PIP_Tree_Node::Artificial_Parameter
+::operator==(const PIP_Tree_Node::Artificial_Parameter& y) const {
+  const Artificial_Parameter& x = *this;
   if (x.space_dimension() != y.space_dimension())
     return false;
   if (x.denominator != y.denominator)
@@ -303,6 +304,12 @@ operator==(const PIP_Tree_Node::Artificial_Parameter& x,
     if (x.coefficient(Variable(i)) != y.coefficient(Variable(i)))
       return false;
   return true;
+}
+
+bool
+PIP_Tree_Node::Artificial_Parameter
+::operator!=(const PIP_Tree_Node::Artificial_Parameter& y) const {
+  return !operator==(y);
 }
 
 void
@@ -1809,7 +1816,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
         // Do nothing if the j-th pivot element is zero.
         if (s_pivot_j == 0)
           continue;
-        // ENEA: FIXME: why iterating downwards makes a difference?
+        // FIXME: why iterating downwards makes a difference?
         // for (dimension_type i = num_rows; i-- > 0; ) {
         for (dimension_type i = 0; i < num_rows; ++i) {
           Row& s_i = tableau.s[i];

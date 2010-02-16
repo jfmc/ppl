@@ -145,6 +145,12 @@ PIP_Tree_Node::Artificial_Parameter::get_denominator() const {
   return denominator;
 }
 
+inline void
+PIP_Tree_Node::Artificial_Parameter::swap(Artificial_Parameter& y) {
+  Linear_Expression::swap(y);
+  std::swap(denominator, y.denominator);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_PIP_Tree_inlines_hh)
