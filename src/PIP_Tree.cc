@@ -1788,18 +1788,26 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
       PPL_DIRTY_TEMP_COEFFICIENT(gcd);
       PPL_DIRTY_TEMP_COEFFICIENT(scale_factor);
 
-      // Create identity rows corresponding to basic variable pj.
+      // Creating identity rows corresponding to basic variable pj:
+      // 1. add them to tableau so as to have proper size and capacity;
       tableau.s.add_zero_rows(1, Row::Flags());
       tableau.t.add_zero_rows(1, Row::Flags());
-      Row& s_pivot = tableau.s[num_rows];
-      Row& t_pivot = tableau.t[num_rows];
+      // 2. swap the rows just added with empty ones.
+      Row s_pivot(0, Row::Flags());
+      Row t_pivot(0, Row::Flags());
+      s_pivot.swap(tableau.s[num_rows]);
+      t_pivot.swap(tableau.t[num_rows]);
+      // 3. drop rows previously added at end of tableau.
+      tableau.s.erase_to_end(num_rows);
+      tableau.t.erase_to_end(num_rows);
+
       // Save current pivot denominator.
       PPL_DIRTY_TEMP_COEFFICIENT(pivot_den);
       pivot_den = tableau.get_denominator();
       // Let the (scaled) pivot coordinate be 1.
       s_pivot[pj] = pivot_den;
 
-      // Swap identity row with the pivot row previosuly found.
+      // Swap identity row with the pivot row previously found.
       s_pivot.swap(tableau.s[pi]);
       t_pivot.swap(tableau.t[pi]);
       sign[pi] = ZERO;
@@ -1896,10 +1904,6 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
           exact_div_assign(s_i_pj, product, s_pivot_pj);
         }
       }
-
-      // Drop rows previously added at end of tableau.
-      tableau.s.erase_to_end(num_rows);
-      tableau.t.erase_to_end(num_rows);
 
       // Pivoting process ended: jump to next iteration.
       solution_valid = false;
@@ -2211,7 +2215,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   PPL_ASSERT(index < num_rows);
   const dimension_type num_vars = tableau.s.num_columns();
   const dimension_type num_params = tableau.t.num_columns();
-  PPL_ASSERT(num_params == parameters.size());
+  PPL_ASSERT(num_params == 1 + parameters.size());
   const Coefficient& den = tableau.get_denominator();
 
   PPL_DIRTY_TEMP_COEFFICIENT(mod);
