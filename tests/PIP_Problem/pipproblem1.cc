@@ -319,6 +319,66 @@ test08() {
   return ok;
 }
 
+bool
+test09() {
+  // Same problem as test02, but using CUTTING_STRATEGY_DEEPEST.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  //cs.insert(j >= 0);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  pip.set_control_parameter(PIP_Problem::CUTTING_STRATEGY_DEEPEST);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    display_solution(solution, params, Variables_Set(i, j),
+                     cs.space_dimension());
+  }
+
+  return ok;
+}
+
+bool
+test10() {
+  // Same problem as test02, but using CUTTING_STRATEGY_ALL.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  //cs.insert(j >= 0);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  pip.set_control_parameter(PIP_Problem::CUTTING_STRATEGY_ALL);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    display_solution(solution, params, Variables_Set(i, j),
+                     cs.space_dimension());
+  }
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -330,4 +390,6 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST_F16(test07);
   DO_TEST_F16(test08);
+  DO_TEST_F16(test09);
+  DO_TEST_F16(test10);
 END_MAIN
