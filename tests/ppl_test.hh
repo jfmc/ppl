@@ -588,6 +588,13 @@ typedef Floating_Point_Expression<FP_Interval, ANALYZED_FP_FORMAT>
                                                          FP_Expression;
 
 /*! \brief
+  The incarnation of Cast_Floating_Point_Expression under test for
+  analyzing floating point computations.
+*/
+typedef Cast_Floating_Point_Expression<FP_Interval,
+                                ANALYZED_FP_FORMAT> Cast_FP_Expression;
+
+/*! \brief
   The incarnation of Constant_Floating_Point_Expression under test for
   analyzing floating point computations.
 */
