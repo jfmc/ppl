@@ -61,7 +61,7 @@ public:
   //! Destructor.
   ~Watchdog();
 
-#if HAVE_DECL_SETITIMER
+#if PWL_HAVE_DECL_SETITIMER
 
 private:
   typedef Pending_List<Watchdog_Traits> WD_Pending_List;
@@ -133,7 +133,7 @@ private:
 
   friend void PWL_handle_timeout(int signum);
 
-#endif // HAVE_DECL_SETITIMER
+#endif // PWL_HAVE_DECL_SETITIMER
 };
 
 class Init {
