@@ -38,7 +38,7 @@ class Deterministic_Timeout
     public Parma_Polyhedra_Library::Throwable {
 public:
   const char* what() const throw() {
-    return "Deterministic timeout in weightwatch1.cc";
+    return "deterministic timeout in weightwatch1.cc";
   }
 
   void throw_me() const {

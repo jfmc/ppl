@@ -41,7 +41,7 @@ class Timeout : virtual public std::exception,
 		public Parma_Polyhedra_Library::Throwable {
 public:
   const char* what() const throw() {
-    return "Timeout in watchdog1.cc";
+    return "timeout in watchdog1.cc";
   }
 
   void throw_me() const {
