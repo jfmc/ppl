@@ -332,6 +332,40 @@ test09() {
   return ok1 && ok2 && ok3;
 }
 
+// Tests linearization of cast(X + Y).
+bool
+test10() {
+  Variable X(0);
+  Variable Y(1);
+  FP_Interval_Abstract_Store as(2);
+  FP_Linear_Form_Abstract_Store lf_as;
+  FP_Linear_Form l_con_x;
+  FP_Linear_Form l_con_y;
+  FP_Linear_Form l_cast;
+  Con_FP_Expression* con_x = new Con_FP_Expression(1 / 3.0, 1 / 3.0);
+  con_x->linearize(as, lf_as, l_con_x);
+  Con_FP_Expression* con_y = new Con_FP_Expression(-1 / 2.0, 1 / 2.0);
+  con_y->linearize(as, lf_as, l_con_y);
+  as.affine_form_image(X, l_con_x);
+  as.affine_form_image(Y, l_con_y);
+  Var_FP_Expression* var_x = new Var_FP_Expression(0);
+  Var_FP_Expression* var_y = new Var_FP_Expression(1);
+  Sum_FP_Expression* x_sum_y = new Sum_FP_Expression(var_x, var_y);
+  Cast_FP_Expression cast(x_sum_y);
+  cast.linearize(as, lf_as, l_cast);
+
+  // FIXME: Computed result should over-approximates the known result.
+  FP_Interval result;
+  FP_Expression::intervalize(l_cast, as, result);
+  nout << "*** result ***" << endl << result << endl;
+  FP_Linear_Form l_kr(X);
+  l_kr += FP_Linear_Form(Y);
+  FP_Interval known_result;
+  FP_Expression::intervalize(l_kr, as, known_result);
+  nout << "*** known_result ***" << endl << known_result << endl;
+  return result.contains(known_result);
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -344,4 +378,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

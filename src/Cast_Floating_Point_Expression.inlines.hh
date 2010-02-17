@@ -47,7 +47,7 @@ template <typename FP_Interval_Type, typename FP_Format>
 inline void
 Cast_Floating_Point_Expression<FP_Interval_Type, FP_Format>::swap(
 	 Cast_Floating_Point_Expression& y) {
-  std::swap(value, y.value);
+  std::swap(expr, y.expr);
 }
 
 } // namespace Parma_Polyhedra_Library
