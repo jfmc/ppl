@@ -124,10 +124,13 @@ pip_display_sol(std::ostream& out,
   using namespace Parma_Polyhedra_Library::IO_Operators;
   if (!pip) {
     out << setw(indent*2) << "" << "_|_" << endl;
-  } else {
-    PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator i, i_end;
-    i_end = pip->art_parameter_end();
-    for (i = pip->art_parameter_begin(); i != i_end; ++i) {
+  }
+  else {
+    for (PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator
+           i = pip->art_parameter_begin(),
+           i_end = pip->art_parameter_end();
+         i != i_end;
+         ++i) {
       out << setw(indent*2) << "" << "Parameter "
           << Linear_Expression(Variable(space_dimension++))
           << " = " << *i << endl;
@@ -137,10 +140,10 @@ pip_display_sol(std::ostream& out,
     if (!constraints_empty) {
       out << setw(indent*2) << "" << "if ";
       for (Constraint_System::const_iterator
-             begin = constraints.begin(),
-             end = constraints.end(),
-             i = begin; i != end; ++i)
-        out << ((i == begin) ? "" : " and ") << *i;
+             cs_begin = constraints.begin(),
+             cs_end = constraints.end(),
+             i = cs_begin; i != cs_end; ++i)
+        out << ((i == cs_begin) ? "" : " and ") << *i;
       out << " then" << endl;
     }
     const PIP_Decision_Node* dn = pip->as_decision();
@@ -154,10 +157,10 @@ pip_display_sol(std::ostream& out,
       const PIP_Solution_Node* sn = pip->as_solution();
       out << setw(indent*2 + (constraints_empty ? 0 : 2)) << "" << "{";
       for (Variables_Set::const_iterator
-             begin = vars.begin(),
-             end = vars.end(),
-             i = begin; i != end; ++i)
-        out << ((i == begin) ? "" : " ; ")
+             v_begin = vars.begin(),
+             v_end = vars.end(),
+             i = v_begin; i != v_end; ++i)
+        out << ((i == v_begin) ? "" : " ; ")
             << sn->parametric_values(Variable(*i), parameters);
       out << "}" << endl;
       if (!constraints_empty) {
@@ -265,8 +268,10 @@ public:
     PPL::dimension_type constraint_width;
     std::string line;
     getline_nocomment(in, line);
-    std::istringstream sin(line);
-    sin >> num_ctx_rows >> num_params;
+    {
+      std::istringstream sin(line);
+      sin >> num_ctx_rows >> num_params;
+    }
     num_params -= 2;
     PPL::Coefficient context[num_ctx_rows][num_params+1];
     int ctx_type[num_ctx_rows];
@@ -279,14 +284,19 @@ public:
         sin >> context[i][j];
       }
     }
-    getline_nocomment(in, line);
-    std::istringstream sin2(line);
+    // FIXME: can this variable be given a better name?
     int tmp;
-    sin2 >> tmp;
+    getline_nocomment(in, line);
+    {
+      std::istringstream sin(line);
+      sin >> tmp;
+    }
 
     getline_nocomment(in, line);
-    std::istringstream sin3(line);
-    sin3 >> num_constraints >> constraint_width;
+    {
+      std::istringstream sin(line);
+      sin >> num_constraints >> constraint_width;
+    }
     constraint_width -= 1;
     num_vars = constraint_width - num_params - 1;
     PPL::Coefficient constraints[num_constraints][constraint_width];

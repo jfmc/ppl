@@ -312,24 +312,24 @@ wrap_assign(PSET& pointset,
     quadrants = last_quadrant - first_quadrant + 1;
 
     unsigned extension;
-    Result r = assign_r(extension, quadrants, ROUND_IGNORE);
-    if (result_overflow(r) || extension > complexity_threshold)
+    Result res = assign_r(extension, quadrants, ROUND_IGNORE);
+    if (result_overflow(res) || extension > complexity_threshold)
       goto set_full_range;
 
     if (!wrap_individually && !collective_wrap_too_complex) {
-      r = mul_assign_r(collective_wrap_complexity,
-		       collective_wrap_complexity, extension, ROUND_IGNORE);
-      if (result_overflow(r)
+      res = mul_assign_r(collective_wrap_complexity,
+                         collective_wrap_complexity, extension, ROUND_IGNORE);
+      if (result_overflow(res)
           || collective_wrap_complexity > complexity_threshold)
         collective_wrap_too_complex = true;
       if (collective_wrap_too_complex) {
         // Set all the dimensions in `translations' to full range.
-        for (Wrap_Translations::const_iterator i = translations.begin(),
-               tend = translations.end(); i != tend; ++i) {
-          const Variable& x = i->var;
-          pointset.unconstrain(x);
-          full_range_bounds.insert(min_value <= x);
-          full_range_bounds.insert(x <= max_value);
+        for (Wrap_Translations::const_iterator j = translations.begin(),
+               tend = translations.end(); j != tend; ++j) {
+          const Variable& y = j->var;
+          pointset.unconstrain(y);
+          full_range_bounds.insert(min_value <= y);
+          full_range_bounds.insert(y <= max_value);
         }
       }
     }

@@ -1611,8 +1611,8 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
 	    gr.refine_no_check(le == 1);
 	  else {
 	    Linear_Expression le2;
-	    for (dimension_type i = le.space_dimension(); i-- > 0; )
-	      le2 += 2 * le.coefficient(Variable(i)) * Variable(i);
+	    for (dimension_type j = le.space_dimension(); j-- > 0; )
+	      le2 += 2 * le.coefficient(Variable(j)) * Variable(j);
 	    le2 += 2 * le.inhomogeneous_term();
 	    gr.refine_no_check(le2 == y_modulus_i);
 	  }
