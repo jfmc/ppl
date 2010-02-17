@@ -61,6 +61,8 @@ public:
   //! Destructor.
   ~Watchdog();
 
+#if HAVE_DECL_SETITIMER
+
 private:
   typedef Pending_List<Watchdog_Traits> WD_Pending_List;
   friend class Init;
@@ -130,6 +132,8 @@ private:
   static volatile bool in_critical_section;
 
   friend void PWL_handle_timeout(int signum);
+
+#endif // HAVE_DECL_SETITIMER
 };
 
 class Init {

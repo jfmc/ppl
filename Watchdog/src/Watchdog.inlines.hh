@@ -29,10 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Watchdog_Library {
 
-inline void
-Watchdog::reschedule() {
-  set_timer(reschedule_time);
-}
+#if HAVE_DECL_SETITIMER
 
 template <typename Flag_Base, typename Flag>
 Watchdog::Watchdog(unsigned int units,
@@ -57,6 +54,33 @@ Watchdog::Watchdog(unsigned int units, void (*function)())
   pending_position = new_watchdog_event(units, handler, expired);
   in_critical_section = false;
 }
+
+inline void
+Watchdog::reschedule() {
+  set_timer(reschedule_time);
+}
+
+#else // !HAVE_DECL_SETITIMER
+
+template <typename Flag_Base, typename Flag>
+Watchdog::Watchdog(unsigned int units,
+		   const Flag_Base* volatile& holder, Flag& flag) {
+  used(units);
+  used(holder);
+  used(flag);
+  throw std::runtime_error("PWL::Watchdog objects not supported:"
+                           " system does not provide setitimer()");
+}
+
+inline
+Watchdog::Watchdog(unsigned int units, void (*function)()) {
+  used(units);
+  used(function);
+  throw std::runtime_error("PWL::Watchdog objects not supported:"
+                           " system does not provide setitimer()");
+}
+
+#endif // HAVE_DECL_SETITIMER
 
 inline
 Init::Init() {
