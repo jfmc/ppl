@@ -28,8 +28,18 @@ namespace PPL = Parma_Polyhedra_Library;
 
 /*! \relates Parma_Polyhedra_Library::PIP_Problem */
 std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const PIP_Problem& /*p*/) {
-  // FIXME: to be implemented.
+PPL::IO_Operators::operator<<(std::ostream& s, const PIP_Problem& pip) {
+  s << "Space dimension: " << pip.space_dimension();
+  s << "\nConstraints:";
+  for (PIP_Problem::const_iterator i = pip.constraints_begin(),
+	 i_end = pip.constraints_end(); i != i_end; ++i)
+    s << "\n" << *i;
+  s << "\nProblem parameters: " << pip.parameter_space_dimensions();
+  if (pip.get_big_parameter_dimension() == not_a_dimension())
+    s << "\nNo big-parameter set.\n";
+  else
+    s << "\bBig-parameter: " << Variable(pip.get_big_parameter_dimension());
+  s << "\n";
   return s;
 }
 
@@ -265,9 +275,7 @@ PPL::PIP_Problem::OK() const {
   if (big_parameter_dimension != not_a_dimension()
       && parameters.count(big_parameter_dimension) == 0) {
 #ifndef NDEBUG
-    cerr << "The current value for the big parameter is not a parameter "
-         << "dimension."
-	 << endl;
+    cerr << "The big parameter is set, but it is not a parameter." << endl;
     ascii_dump(cerr);
 #endif
     return false;
