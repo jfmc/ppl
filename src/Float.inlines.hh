@@ -82,7 +82,7 @@ float_ieee754_half::build(bool negative, mpz_t mantissa, int exponent) {
   word = mpz_get_ui(mantissa) & ((1UL << MANTISSA_BITS) - 1);
   if (negative)
     word |= SGN_MASK;
-  word |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << MANTISSA_BITS;
+  word |= static_cast<uint16_t>(exponent + EXPONENT_BIAS) << MANTISSA_BITS;
 }
 
 inline int
