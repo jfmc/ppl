@@ -84,8 +84,17 @@ check-local: ppl_pips$(EXEEXT)
 	  file=`basename $$path`; \
 	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  echo $(ECHO_N) $$file " $(ECHO_C)" >>obtained; \
-	  echo ppl_pips$(EXEEXT) $$path; \
-	  ./ppl_pips$(EXEEXT) $$path | tr -d '\015' | $(TEXT_MD5SUM) \
+	  echo ppl_pips$(EXEEXT) -p $$path; \
+	  ./ppl_pips$(EXEEXT) -p $$path | tr -d '\015' | $(TEXT_MD5SUM) \
+            >>obtained; \
+	done
+	for path in $(srcdir)/examples/*.pip; \
+	do \
+	  file=`basename $$path`; \
+	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
+	  echo $(ECHO_N) $$file " $(ECHO_C)" >>obtained; \
+	  echo ppl_pips$(EXEEXT) -P $$path; \
+	  ./ppl_pips$(EXEEXT) -P $$path | tr -d '\015' | $(TEXT_MD5SUM) \
             >>obtained; \
 	done
 	diff obtained $(srcdir)/$(EXPECTED)
