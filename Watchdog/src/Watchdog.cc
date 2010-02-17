@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Watchdog.defs.hh"
 
+namespace PWL = Parma_Watchdog_Library;
+
 #if PWL_HAVE_DECL_SETITIMER
 
 #include <csignal>
@@ -53,8 +55,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define THE_TIMER  ITIMER_PROF
 #define THE_SIGNAL SIGPROF
 #endif
-
-namespace PWL = Parma_Watchdog_Library;
 
 using std::cerr;
 using std::endl;
@@ -222,11 +222,8 @@ PWL::Watchdog::remove_watchdog_event(WD_Pending_List::Iterator position) {
 
 PWL::Time PWL::Watchdog::reschedule_time(1);
 
-#endif // PWL_HAVE_DECL_SETITIMER
-
 void
 PWL::Watchdog::initialize() {
-#if PWL_HAVE_DECL_SETITIMER
   signal_once.it_interval.tv_sec = 0;
   signal_once.it_interval.tv_usec = 0;
 
@@ -239,11 +236,12 @@ PWL::Watchdog::initialize() {
   s.sa_flags = 0;  // Was SA_ONESHOT: why?
 
   my_sigaction(THE_SIGNAL, &s, 0);
-#endif // PWL_HAVE_DECL_SETITIMER
 }
 
 void
 PWL::Watchdog::finalize() {
 }
+
+#endif // PWL_HAVE_DECL_SETITIMER
 
 unsigned int PWL::Init::count = 0;

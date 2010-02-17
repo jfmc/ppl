@@ -71,6 +71,24 @@ Watchdog::reschedule() {
   set_timer(reschedule_time);
 }
 
+inline
+Init::Init() {
+  // Only when the first Init object is constructed...
+  if (count++ == 0) {
+    // ... the library is initialized.
+    Watchdog::initialize();
+  }
+}
+
+inline
+Init::~Init() {
+  // Only when the last Init object is destroyed...
+  if (--count == 0) {
+    // ... the library is finalized.
+    Watchdog::finalize();
+  }
+}
+
 #else // !PWL_HAVE_DECL_SETITIMER
 
 template <typename Flag_Base, typename Flag>
@@ -91,14 +109,11 @@ inline
 Watchdog::~Watchdog() {
 }
 
-#endif // !PWL_HAVE_DECL_SETITIMER
-
 inline
 Init::Init() {
   // Only when the first Init object is constructed...
   if (count++ == 0) {
     // ... the library is initialized.
-    Watchdog::initialize();
   }
 }
 
@@ -107,9 +122,10 @@ Init::~Init() {
   // Only when the last Init object is destroyed...
   if (--count == 0) {
     // ... the library is finalized.
-    Watchdog::finalize();
   }
 }
+
+#endif // !PWL_HAVE_DECL_SETITIMER
 
 } // namespace Parma_Watchdog_Library
 
