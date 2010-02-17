@@ -1,4 +1,4 @@
-/* Test the PIP_Problem class
+/* Test the PIP_Problem class.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,60 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-void
-display_solution(const PIP_Tree pip, const Variables_Set& parameters,
-                 const Variables_Set& vars, dimension_type space_dimension,
-                 int indent=0) {
-  using namespace std;
-  using namespace Parma_Polyhedra_Library::IO_Operators;
-  if (!pip) {
-    nout << setw(indent*2) << "" << "_|_" << endl;
-  }
-  else {
-    PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator i, i_end;
-    i_end = pip->art_parameter_end();
-    for (i = pip->art_parameter_begin(); i != i_end; ++i) {
-      nout << setw(indent*2) << "" << "Parameter "
-           << Linear_Expression(Variable(space_dimension++))
-           << " = " << *i << endl;
-    }
-    const Constraint_System &constraints = pip->constraints();
-    bool constraints_empty = constraints.empty();
-    if (!constraints_empty) {
-      nout << setw(indent*2) << "" << "if ";
-      for (Constraint_System::const_iterator
-             begin = constraints.begin(),
-             end = constraints.end(),
-             i = begin; i != end; ++i)
-        nout << ((i == begin) ? "" : " and ") << *i;
-      nout << " then" << endl;
-    }
-    const PIP_Decision_Node* dn = pip->as_decision();
-    if (dn) {
-      display_solution(dn->child_node(true), parameters, vars,
-                       space_dimension, indent+1);
-      nout << setw(indent*2) << "" << "else" << endl;
-      display_solution(dn->child_node(false), parameters, vars,
-                       space_dimension, indent+1);
-    }
-    else {
-      const PIP_Solution_Node* sn = pip->as_solution();
-      nout << setw(indent*2 + (constraints_empty ? 0 : 2)) << "" << "{";
-      for (Variables_Set::const_iterator
-             begin = vars.begin(),
-             end = vars.end(),
-             i = begin; i != end; ++i)
-        nout << ((i == begin) ? "" : " ; ")
-             << sn->parametric_values(Variable(*i), parameters);
-      nout << "}" << endl;
-      if (!constraints_empty) {
-        nout << setw(indent*2) << "" << "else" << endl;
-        nout << setw(indent*2+2) << "" << "_|_" << endl;
-      }
-    }
-  }
-}
-
 bool
 test01() {
   Variable X1(0);
@@ -101,8 +47,7 @@ test01() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(X1, X2),
-                     cs.space_dimension());
+    pip.print_solution(nout);
   }
 
   return ok;
@@ -129,8 +74,7 @@ test02() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     cs.space_dimension());
+    pip.print_solution(nout);
   }
 
   return ok;
@@ -156,8 +100,7 @@ test03() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     cs.space_dimension());
+    pip.print_solution(nout);
   }
 
   return ok;
@@ -183,8 +126,7 @@ test04() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     cs.space_dimension());
+    pip.print_solution(nout);
   }
 
   // Copy constructor is no longer buggy.
@@ -194,8 +136,7 @@ test04() {
     // and we also destroy the (copied) solution tree of pip_copy.
     const PIP_Tree solution = pip_copy.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     cs.space_dimension());
+    pip.print_solution(nout);
   }
 
   return ok;
@@ -222,8 +163,7 @@ test05() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     cs.space_dimension());
+    pip.print_solution(nout);
   }
 
   return ok;
@@ -241,11 +181,8 @@ test06() {
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
 
   bool ok = (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
-  if (ok) {
-    const PIP_Tree solution = pip.solution();
-    display_solution(solution, params, Variables_Set(i),
-                     cs.space_dimension());
-  }
+  if (ok)
+    pip.print_solution(nout);
 
   return ok;
 }
@@ -269,8 +206,7 @@ test07() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     pip.space_dimension());
+    pip.print_solution(nout);
   }
 
   pip.add_constraint(j <= m);
@@ -278,8 +214,7 @@ test07() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     pip.space_dimension());
+    pip.print_solution(nout);
   }
 
   return ok;
@@ -311,8 +246,7 @@ test08() {
   if (ok) {
     const PIP_Tree solution = pip.optimizing_solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     pip.space_dimension());
+    pip.print_solution(nout);
     pip.clear();
   }
 
@@ -342,8 +276,7 @@ test09() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     cs.space_dimension());
+    pip.print_solution(nout);
   }
 
   return ok;
@@ -372,8 +305,7 @@ test10() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     cs.space_dimension());
+    pip.print_solution(nout);
   }
 
   return ok;
