@@ -319,8 +319,7 @@ public:
     (resp., the parameter variables) is strictly greater than \p dim.
   */
   template <typename In>
-  PIP_Problem(dimension_type dim,
-	      In first, In last,
+  PIP_Problem(dimension_type dim, In first, In last,
 	      const Variables_Set& p_vars);
 
   //! Ordinary copy-constructor.
@@ -455,6 +454,9 @@ public:
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
+
+  //! Prints on \p s the solution computed for \p *this.
+  void print_solution(std::ostream& s, unsigned indent = 0) const;
 
   PPL_OUTPUT_DECLARATIONS
 

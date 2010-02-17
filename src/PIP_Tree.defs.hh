@@ -1,4 +1,4 @@
-/* PIP_Tree class declaration.
+/* PIP_Tree_Node class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -92,6 +92,30 @@ public:
 
   //! Returns the number of local artificial parameters.
   dimension_type art_parameter_count() const;
+
+  //! Prints on \p s the tree rooted in \p *this.
+  /*!
+    \param s
+    The output stream.
+
+    \param indent
+    The amount of indentation.
+
+    \param space_dim
+    The space dimension of the PIP problem.
+
+    \param first_art_dim
+    The first space dimension corresponding to an artificial parameter
+    that was created in this node (if any).
+
+    \param params
+    The set of PIP problem parameters indices.
+  */
+  virtual void print_tree(std::ostream& s,
+                          unsigned indent,
+                          dimension_type space_dim,
+                          dimension_type first_art_dim,
+                          const Variables_Set& params) const;
 
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
@@ -200,6 +224,10 @@ protected:
   //! Inserts a new parametric constraint in internal Row format
   void add_constraint(const Row& x, const Variables_Set& parameters);
 
+  //! A helper function used when printing PIP trees.
+  static void
+  indent_and_print(std::ostream& s, unsigned indent, const char* str);
+
 }; // class PIP_Tree_Node
 
 
@@ -299,6 +327,13 @@ public:
   //! Returns \p this.
   virtual PIP_Solution_Node* as_solution();
 
+  //! Prints on \p s the tree rooted in \p *this.
+  virtual void print_tree(std::ostream& s,
+                          unsigned indent,
+                          dimension_type space_dim,
+                          dimension_type first_art_dim,
+                          const Variables_Set& params) const;
+
   /*! \brief
     Returns a parametric expression of the values of variable \p v.
 
@@ -319,7 +354,14 @@ public:
   parametric_values(Variable v,
                     const Variables_Set& parameters) const;
 
+  //! Dumps to \p s an ASCII representation of \p *this.
   void ascii_dump(std::ostream& s) const;
+
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -657,6 +699,13 @@ public:
 
   //! Returns a pointer to the \p b (true or false) branch of \p *this.
   PIP_Tree_Node* child_node(bool b);
+
+  //! Prints on \p s the tree rooted in \p *this.
+  virtual void print_tree(std::ostream& s,
+                          unsigned indent,
+                          dimension_type space_dim,
+                          dimension_type first_art_dim,
+                          const Variables_Set& params) const;
 
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);

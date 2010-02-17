@@ -2470,4 +2470,103 @@ PIP_Solution_Node::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
+void
+PIP_Tree_Node::indent_and_print(std::ostream& s,
+                                const unsigned indent,
+                                const char* str) {
+  s << std::setw(2*indent) << "" << str;
+}
+
+void
+PIP_Tree_Node::print_tree(std::ostream& s,
+                          const unsigned indent,
+                          const dimension_type space_dim,
+                          dimension_type first_art_dim,
+                          const Variables_Set& params) const {
+  used(space_dim);
+  used(params);
+
+  using namespace IO_Operators;
+
+  // Print artificial parameters.
+  for (Artificial_Parameter_Sequence::const_iterator
+         api = art_parameter_begin(),
+         api_end = art_parameter_end(); api != api_end; ++api) {
+    indent_and_print(s, indent, "Parameter ");
+    s << Variable(first_art_dim) << " = " << *api << "\n";
+    ++first_art_dim;
+  }
+
+  // Print constraints, if any.
+  if (!constraints_.empty()) {
+    indent_and_print(s, indent, "if ");
+
+    Constraint_System::const_iterator
+      ci = constraints_.begin(),
+      ci_end = constraints_.end();
+    PPL_ASSERT(ci != ci_end);
+    s << *ci;
+    for (++ci; ci != ci_end; ++ci)
+      s << " and " << *ci;
+
+    s << " then\n";
+  }
+}
+
+void
+PIP_Decision_Node::print_tree(std::ostream& s, unsigned indent,
+                              const dimension_type space_dim,
+                              const dimension_type first_art_dim,
+                              const Variables_Set& params) const {
+  // First print info common to decision and solution nodes.
+  PIP_Tree_Node::print_tree(s, indent, space_dim, first_art_dim, params);
+
+  // Then print info specific of decision nodes.
+  dimension_type child_first_art_dim = first_art_dim + art_parameter_count();
+
+  if (true_child)
+    true_child->print_tree(s, indent+1, space_dim,
+                           child_first_art_dim, params);
+  else
+    indent_and_print(s, indent+1, "_|_\n");
+
+  indent_and_print(s, indent, "else\n");
+
+  if (false_child)
+    false_child->print_tree(s, indent+1, space_dim,
+                            child_first_art_dim, params);
+  else
+    indent_and_print(s, indent+1, "_|_\n");
+}
+
+void
+PIP_Solution_Node::print_tree(std::ostream& s, unsigned indent,
+                              const dimension_type space_dim,
+                              const dimension_type first_art_dim,
+                              const Variables_Set& params) const {
+  // First print info common to decision and solution nodes.
+  PIP_Tree_Node::print_tree(s, indent, space_dim, first_art_dim, params);
+
+  // Then print info specific of solution nodes.
+  const bool no_constraints = constraints_.empty();
+  bool printed_first_variable = false;
+  indent_and_print(s, indent + (no_constraints ? 0 : 1), "{");
+  for (dimension_type i = 0; i < space_dim; ++i) {
+    if (params.count(i) != 0)
+      continue;
+    if (printed_first_variable)
+      s << " ; ";
+    else
+      printed_first_variable = true;
+    using namespace IO_Operators;
+    s << parametric_values(Variable(i), params);
+  }
+  s << "}\n";
+
+  if (!no_constraints) {
+    indent_and_print(s, indent, "else\n");
+    indent_and_print(s, indent+1, "_|_\n");
+  }
+}
+
 } // namespace Parma_Polyhedra_Library

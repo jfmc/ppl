@@ -639,3 +639,29 @@ PPL::memory_size_type
 PPL::PIP_Problem::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
+
+void
+PPL::PIP_Problem::print_solution(std::ostream& s, unsigned indent) const {
+  switch (status) {
+
+  case UNSATISFIABLE:
+    PPL_ASSERT(current_solution == 0);
+    PIP_Tree_Node::indent_and_print(s, indent, "_|_\n");
+    break;
+
+  case OPTIMIZED:
+    PPL_ASSERT(current_solution);
+    PPL_ASSERT(internal_space_dim == external_space_dim);
+    current_solution->print_tree(s, indent,
+                                 internal_space_dim,
+                                 // NOTE: first_art_param == space_dim.
+                                 internal_space_dim,
+                                 parameters);
+    break;
+
+  case PARTIALLY_SATISFIABLE:
+    throw std::domain_error("PIP_Problem::print_solution():\n"
+                            "the PIP problem has not been solved.");
+  }
+}
+
