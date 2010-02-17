@@ -383,13 +383,13 @@ test10() {
 
 BEGIN_MAIN
   DO_TEST(test01);
-  DO_TEST_F16(test02);
+  DO_TEST_F8(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST_F16(test05);
+  DO_TEST_F8(test05);
   DO_TEST(test06);
-  DO_TEST_F16(test07);
-  DO_TEST_F16(test08);
-  DO_TEST_F16(test09);
-  DO_TEST_F16(test10);
+  DO_TEST_F8(test07);
+  DO_TEST_F8(test08);
+  DO_TEST_F8(test09);
+  DO_TEST_F8(test10);
 END_MAIN
