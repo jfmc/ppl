@@ -168,8 +168,11 @@ int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_CUTTING_STRATEGY;
 int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_FIRST;
 int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_DEEPEST;
 int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_ALL;
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_PIVOT_ROW_STRATEGY;
 int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_FIRST;
 int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_MAX_COLUMN;
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE;
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_VALUE_SIZE;
 
 int PPL_OPTIMIZATION_MODE_MINIMIZATION;
 int PPL_OPTIMIZATION_MODE_MAXIMIZATION;
@@ -224,10 +227,16 @@ ppl_initialize(void) try {
     = PIP_Problem::CUTTING_STRATEGY_DEEPEST;
   PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_ALL
     = PIP_Problem::CUTTING_STRATEGY_ALL;
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_PIVOT_ROW_STRATEGY
+    = PIP_Problem::PIVOT_ROW_STRATEGY;
   PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_FIRST
     = PIP_Problem::PIVOT_ROW_STRATEGY_FIRST;
   PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_MAX_COLUMN
     = PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN;
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE
+    = PIP_Problem::CONTROL_PARAMETER_NAME_SIZE;
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_VALUE_SIZE
+    = PIP_Problem::CONTROL_PARAMETER_VALUE_SIZE;
 
   PPL_OPTIMIZATION_MODE_MINIMIZATION = MINIMIZATION;
   PPL_OPTIMIZATION_MODE_MAXIMIZATION = MAXIMIZATION;
@@ -2148,6 +2157,23 @@ ppl_new_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t* dpip,
 CATCH_ALL
 
 int
+ppl_new_PIP_Problem_from_constraints
+(ppl_PIP_Problem_t* ppip,
+ ppl_dimension_type d,
+ ppl_Constraint_System_const_iterator_t first,
+ ppl_Constraint_System_const_iterator_t last,
+ size_t n,
+ ppl_dimension_type ds[]) try {
+  Variables_Set p_vars;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    p_vars.insert(ds[i]);
+  *ppip = to_nonconst(new PIP_Problem(d, *to_const(first),
+                                      *to_const(last), p_vars));
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_assign_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t dst,
 					ppl_const_PIP_Problem_t src) try {
   const PIP_Problem& ssrc = *to_const(src);
@@ -2459,6 +2485,31 @@ ppl_Artificial_Parameter_get_Linear_Expression
   return 0;
 }
 CATCH_ALL
+
+int
+ppl_Artificial_Parameter_get_coefficient(ppl_const_Artificial_Parameter_t ap,
+                                         ppl_dimension_type var,
+                                         ppl_const_Coefficient_t* coef) try {
+  const Artificial_Parameter& sap = *to_const(ap);
+  const Linear_Expression& lle = static_cast<const Linear_Expression&>(sap);
+  const Coefficient& ncoef = lle.coefficient(Variable(var));
+  *coef = to_const(&ncoef);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Artificial_Parameter_get_inhomogeneous_term
+(ppl_const_Artificial_Parameter_t ap,
+ ppl_const_Coefficient_t* coef) try {
+  const Artificial_Parameter& sap = *to_const(ap);
+  const Linear_Expression& lle = static_cast<const Linear_Expression&>(sap);
+  const Coefficient& icoef = lle.inhomogeneous_term();
+  *coef = to_const(&icoef);
+  return 0;
+}
+CATCH_ALL
+
 
 int
 ppl_Artificial_Parameter_get_denominator(ppl_const_Artificial_Parameter_t ap,

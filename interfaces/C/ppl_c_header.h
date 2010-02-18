@@ -2388,6 +2388,16 @@ extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_FIRST;
 */
 extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_MAX_COLUMN;
 
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of PIP problem's "name size" control parameter name.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of PIP problem's "value size" control parameter name.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_VALUE_SIZE;
+
 /*@}*/ /* Symbolic Constants */
 
 /*! \brief \name Constructors, Assignment and Destructor */
@@ -2700,6 +2710,21 @@ PPL_PROTO((ppl_PIP_Problem_t* ppip, ppl_const_PIP_Problem_t pip));
 int
 ppl_assign_PIP_Problem_from_PIP_Problem
 PPL_PROTO((ppl_PIP_Problem_t dst, ppl_const_PIP_Problem_t src));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Builds a PIP problem having space dimension \p d from the sequence
+  of constraints in the range \f$[\mathrm{first}, \mathrm{last})\f$;
+  the \p n dimensions whose indices occur in \p ds are interpreted as
+  parameters.
+*/
+int
+ppl_new_PIP_Problem_from_constraints
+PPL_PROTO((ppl_PIP_Problem_t* ppip,
+           ppl_dimension_type d,
+           ppl_Constraint_System_const_iterator_t first,
+           ppl_Constraint_System_const_iterator_t last,
+           size_t n,
+           ppl_dimension_type ds[]));
 
 /*! \relates ppl_PIP_Problem_tag \brief
   Invalidates the handle \p pip: this makes sure the corresponding
@@ -3020,6 +3045,25 @@ int
 ppl_Artificial_Parameter_get_Linear_Expression
 PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
            ppl_const_Linear_Expression_t* le));
+
+/*! \relates ppl_Artificial_Parameter_tag \brief
+  Copies into \p coef the coefficient of variable \p var in
+  the artificial parameter \p ap.
+*/
+int
+ppl_Artificial_Parameter_get_coefficient
+PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
+           ppl_dimension_type var,
+           ppl_const_Coefficient_t* coef));
+
+/*! \relates ppl_Artificial_Parameter_tag \brief
+  Copies into \p coef the inhomogeneous term of the artificial
+  parameter \p ap.
+*/
+int
+ppl_Artificial_Parameter_get_inhomogeneous_term
+PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
+           ppl_const_Coefficient_t* coef));
 
 /*! \relates ppl_Artificial_Parameter_tag \brief
   Writes to \p coeff the denominator in artificial parameter \p ap.

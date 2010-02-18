@@ -232,7 +232,6 @@ main(int argc, char **argv) {
     ppl_Linear_Expression_add_to_inhomogeneous(le, c);
     ppl_new_Constraint(&ct, le, PPL_CONSTRAINT_TYPE_GREATER_OR_EQUAL);
     ppl_PIP_Problem_add_constraint(pip, ct);
-    ppl_delete_Constraint(ct);
     ppl_delete_Linear_Expression(le);
   }
   ppl_delete_Coefficient(c);
@@ -240,13 +239,29 @@ main(int argc, char **argv) {
 
   ppl_PIP_Problem_total_memory_in_bytes(pip, &sz);
   ppl_PIP_Problem_external_memory_in_bytes(pip, &sz);
+
   ok = (ppl_PIP_Problem_solve(pip) == PPL_PIP_PROBLEM_STATUS_OPTIMIZED);
   if (ok) {
     ppl_dimension_type dim;
     ppl_const_PIP_Tree_Node_t solution;
+    ppl_PIP_Problem_t pip0;
+    ppl_Constraint_System_t constraints;
+    ppl_Constraint_System_const_iterator_t begin, end;
+
     ppl_PIP_Problem_space_dimension(pip, &dim);
     ppl_PIP_Problem_solution(pip, &solution);
     display_solution(solution, N_VARS, N_PARAMETERS, parameter_dim);
+    ppl_new_Constraint_System_const_iterator(&begin);
+    ppl_new_Constraint_System_const_iterator(&end);
+    ppl_new_Constraint_System_from_Constraint(&constraints, ct);
+    ppl_Constraint_System_begin(constraints, begin);
+    ppl_Constraint_System_end(constraints, end);
+    ppl_new_PIP_Problem_from_constraints(&pip0, N_VARS+N_PARAMETERS,
+                                         begin, end, N_PARAMETERS,
+                                         parameter_dim);
+    ok = ppl_PIP_Problem_OK(pip0);
+    ppl_delete_Constraint(ct);
+    ppl_delete_Constraint_System(constraints);
   }
 
   ppl_delete_PIP_Problem(pip);
