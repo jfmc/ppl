@@ -1824,9 +1824,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
         // Do nothing if the j-th pivot element is zero.
         if (s_pivot_j == 0)
           continue;
-        // FIXME: why iterating downwards makes a difference?
-        // for (dimension_type i = num_rows; i-- > 0; ) {
-        for (dimension_type i = 0; i < num_rows; ++i) {
+        for (dimension_type i = num_rows; i-- > 0; ) {
           Row& s_i = tableau.s[i];
           product = s_pivot_j * s_i[pj];
           if (product % s_pivot_pj != 0) {
