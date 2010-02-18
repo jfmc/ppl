@@ -1583,23 +1583,28 @@ void
 PIP_Solution_Node::update_solution(const Variables_Set& parameters) {
   if (solution_valid)
     return;
-  dimension_type num_vars = tableau.s.num_columns();
-  const Coefficient& d = tableau.get_denominator();
+
+  const dimension_type num_vars = tableau.s.num_columns();
   if (solution.size() != num_vars)
     solution.resize(num_vars);
+
+  // Compute once for all outside loop.
+  const dimension_type num_params = parameters.size();
+  const Variables_Set::const_reverse_iterator p_rbegin = parameters.rbegin();
+  const Variables_Set::const_reverse_iterator p_rend = parameters.rend();
+
+  const Coefficient& den = tableau.get_denominator();
   for (dimension_type i = num_vars; i-- > 0; ) {
-    Linear_Expression& sol = solution[i];
-    if (basis[i]) {
-      sol = Linear_Expression(0);
-    } else {
-      Row& row = tableau.t[mapping[i]];
-      sol = Linear_Expression(row[0]/d);
-      dimension_type k;
-      Variables_Set::const_iterator j;
-      Variables_Set::const_iterator j_end = parameters.end();
-      for (j = parameters.begin(), k = 1; j != j_end; ++j, ++k)
-        sol += (row[k]/d) * Variable(*j);
-    }
+    Linear_Expression& sol_i = solution[i];
+    sol_i = Linear_Expression(0);
+    if (basis[i])
+      continue;
+    Row& row = tableau.t[mapping[i]];
+    dimension_type k = num_params;
+    for (Variables_Set::const_reverse_iterator
+           pj = p_rbegin; pj != p_rend; ++pj, --k)
+      add_mul_assign(sol_i, row[k]/den, Variable(*pj));
+    sol_i += row[0]/den;
   }
   solution_valid = true;
 }

@@ -311,6 +311,91 @@ test10() {
   return ok;
 }
 
+bool
+test11() {
+  // 0-dimension trivial PIP problem.
+  PIP_Problem pip;
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+  return ok;
+}
+
+bool
+test12() {
+  // Trivial PIP problem, but with 4 parameters.
+  PIP_Problem pip;
+  pip.add_space_dimensions_and_embed(0, 4);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+  return ok;
+}
+
+bool
+test13() {
+  // Trivial PIP problem with 4 variables.
+  PIP_Problem pip;
+  pip.add_space_dimensions_and_embed(4, 0);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+  return ok;
+}
+
+bool
+test14() {
+  // Trivial PIP problem with 4 variables and 4 parameters.
+  PIP_Problem pip;
+  pip.add_space_dimensions_and_embed(4, 4);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+  return ok;
+}
+
+bool
+test15() {
+  PIP_Problem pip;
+  // Adding trivial satisfiable constraint.
+  pip.add_constraint(Linear_Expression(5) == 5);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+  return ok;
+}
+
+bool
+test16() {
+  PIP_Problem pip;
+  // Adding trivial unsatisfiable constraint.
+  pip.add_constraint(Linear_Expression(0) == 1);
+  bool ok = (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
+  if (pip.solution() != 0)
+    pip.print_solution(nout);
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -324,4 +409,10 @@ BEGIN_MAIN
   DO_TEST_F8(test08);
   DO_TEST_F8(test09);
   DO_TEST_F8(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  // DO_TEST(test16);
 END_MAIN

@@ -109,23 +109,19 @@ PPL::PIP_Problem::solve() const {
   case PARTIALLY_SATISFIABLE:
     {
       PIP_Problem& x = const_cast<PIP_Problem&>(*this);
+      // Allocate PIP solution tree root, if needed.
       if (current_solution == 0)
         x.current_solution = new PIP_Solution_Node();
-      if (input_cs.empty()) {
-        // No constraints: solution = {0}.
-        x.status = OPTIMIZED;
-        return OPTIMIZED_PIP_PROBLEM;
-      }
 
       // Properly resize context matrix.
-      const dimension_type num_params = parameters.size() + 1;
-      const dimension_type num_cols = initial_context.num_columns();
-      if (num_cols < num_params)
-        x.initial_context.add_zero_columns(num_params - num_cols);
+      const dimension_type new_num_cols = parameters.size() + 1;
+      const dimension_type old_num_cols = initial_context.num_columns();
+      if (old_num_cols < new_num_cols)
+        x.initial_context.add_zero_columns(new_num_cols - old_num_cols);
 
       // Computed once for all (to be used inside loop).
-      const Variables_Set::iterator param_begin = parameters.begin();
-      const Variables_Set::iterator param_end = parameters.end();
+      const Variables_Set::const_iterator param_begin = parameters.begin();
+      const Variables_Set::const_iterator param_end = parameters.end();
 
       // Go through all pending constraints.
       for (Constraint_Sequence::const_iterator
@@ -150,12 +146,14 @@ PPL::PIP_Problem::solve() const {
           continue;
 
         // Translate constraint into context row.
-        Row row(num_params, Row::Flags());
+        Row row(new_num_cols, Row::Flags());
         row[0] = c.inhomogeneous_term();
-        dimension_type i = 1;
-        for (Variables_Set::iterator
-               pi = param_begin; pi != param_end; ++pi, ++i)
-          row[i] = c.coefficient(Variable(*pi));
+        {
+          dimension_type i = 1;
+          for (Variables_Set::const_iterator
+                 pi = param_begin; pi != param_end; ++pi, ++i)
+            row[i] = c.coefficient(Variable(*pi));
+        }
         // Adjust inhomogenous term if strict.
         if (c.is_strict_inequality())
           --row[0];
@@ -163,7 +161,7 @@ PPL::PIP_Problem::solve() const {
         x.initial_context.add_row(row);
         // If it is an equality, also insert its negation.
         if (c.is_equality()) {
-          for (dimension_type i = num_params; i-- > 0; )
+          for (dimension_type i = new_num_cols; i-- > 0; )
             neg_assign(row[i], row[i]);
           x.initial_context.add_row(row);
         }
