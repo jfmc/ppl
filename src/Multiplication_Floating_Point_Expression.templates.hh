@@ -32,10 +32,13 @@ void Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
             const FP_Linear_Form_Abstract_Store& lf_store,
             FP_Linear_Form& result) const {
   /*
-    FIXME: we currently adopt the Interval-Size Local strategy in order to
+    FIXME: We currently adopt the "Interval-Size Local" strategy in order to
     decide which of the two linear forms must be intervalized, as described
-    in section 6.2.4 of Antoine Mine's thesis. We should also consider more
-    refined strategies.
+    in section 6.2.4 ("Multiplication Strategies") of Antoine Mine's Ph.D.
+    thesis "Weakly Relational Numerical Abstract Domains".
+    In this section are also described other multiplication strategies, such
+    as All-Cases, Relative-Size Local, Relative-Size Local,
+    Simplification-Driven Global and Homogeneity Global.
   */
 
   // Here we choose which of the two linear forms must be intervalized.
