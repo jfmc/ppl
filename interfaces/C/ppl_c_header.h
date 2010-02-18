@@ -2388,16 +2388,6 @@ extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_FIRST;
 */
 extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_MAX_COLUMN;
 
-/*! \relates ppl_PIP_Problem_tag \brief
-  Code of PIP problem's "name size" control parameter name.
-*/
-extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_SIZE;
-
-/*! \relates ppl_PIP_Problem_tag \brief
-  Code of PIP problem's "value size" control parameter name.
-*/
-extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_VALUE_SIZE;
-
 /*@}*/ /* Symbolic Constants */
 
 /*! \brief \name Constructors, Assignment and Destructor */
