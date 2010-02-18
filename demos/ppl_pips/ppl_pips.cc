@@ -48,7 +48,7 @@ ppl_set_GMP_memory_allocation_functions(void) {
 
 #elif defined(USE_PIPLIB)
 
-#error "PIPlib not supported yet"
+#error "PipLib not supported yet"
 
 #endif
 
@@ -153,7 +153,8 @@ pip_display_sol(std::ostream& out,
       out << setw(indent*2) << "" << "else" << endl;
       pip_display_sol(out, dn->child_node(false), parameters, vars,
                       space_dimension, indent+1);
-    } else {
+    }
+    else {
       const PIP_Solution_Node* sn = pip->as_solution();
       out << setw(indent*2 + (constraints_empty ? 0 : 2)) << "" << "{";
       for (Variables_Set::const_iterator
@@ -187,7 +188,7 @@ public:
 
   virtual bool read(std::istream& in) = 0;
 
-  // output the solution in PIPlib-like format
+  // output the solution in PipLib-like format
   /* void output_solution_piplib(std::ostream& out) {
     const PPL::Variables_Set& params = pip.parameter_space_dimensions();
     PPL::Variables_Set vars;
@@ -255,9 +256,9 @@ protected:
   PPL::PIP_Problem pip;
 }; // class PIP_Parser
 
-class PIP_Polylib_Parser : public PIP_Parser {
+class PIP_PolyLib_Parser : public PIP_Parser {
 public:
-  PIP_Polylib_Parser(): PIP_Parser() {
+  PIP_PolyLib_Parser(): PIP_Parser() {
   }
 
   bool read(std::istream& in) {
@@ -323,11 +324,12 @@ protected:
       getline(in, s);
     } while (s.size() == 0 || s[0] == '\r' || s[0] == '#');
   }
-}; // class PIP_Polylib_Parser
+}; // class PIP_PolyLib_Parser
 
-class PIP_Piplib_Parser : public PIP_Parser {
+class PIP_PipLib_Parser : public PIP_Parser {
 public:
-  PIP_Piplib_Parser() : PIP_Parser(), comment() {
+  PIP_PipLib_Parser()
+    : PIP_Parser(), comment() {
   }
 
   bool read(std::istream& in) {
@@ -431,7 +433,7 @@ protected:
 
   // The comment string in the source file
   std::string comment;
-}; // class PIP_Piplib_Parser
+}; // class PIP_PipLib_Parser
 
 #ifdef PPL_HAVE_GETOPT_H
 struct option long_options[] = {
@@ -466,22 +468,22 @@ static const char* usage_string
 "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
-"  -P, --polylib           read problem in Polylib format (default)\n"
-"  -p, --piplib            read problem in PIPlib format\n"
+"  -P, --polylib           reads problem in PolyLib format (default)\n"
+"  -p, --piplib            reads problem in PipLib format\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           produces lots of output\n"
-"  -i, --iterations=N      execute the resolution N times (default=1)\n"
+"  -i, --iterations=N      executes the resolution N times (default=1)\n"
 #if defined(USE_PPL)
 "  -V, --version           prints version information to stdout\n"
 "  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n"
 #endif
 "\nCut generation options:\n"
-"  -f, --cut-first         use the first non-integer row (default)\n"
-"  -d, --cut-deepest       try to generate the deepest cut\n"
-"  -a, --cut-all           always generate all possible cuts\n"
+"  -f, --cut-first         uses the first non-integer row (default)\n"
+"  -d, --cut-deepest       tries to generate the deepest cut\n"
+"  -a, --cut-all           always generates all possible cuts\n"
 "\nPivot row strategy options:\n"
-"  -F, --row-first         use the first row with negative parameter (default)\n"
-"  -M, --row-max           choose row generating the lexico-maximal pivot column\n"
+"  -F, --row-first         uses the first row with negative parameter (default)\n"
+"  -M, --row-max           chooses row generating the lexico-maximal pivot column\n"
 #ifndef PPL_HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
@@ -770,9 +772,9 @@ main(int argc, char* argv[]) try {
 //  Representation rep = read_polyhedron(input(), ph);
   PIP_Parser* parser;
   if (piplib_format)
-    parser = new PIP_Piplib_Parser();
+    parser = new PIP_PipLib_Parser();
   else
-    parser = new PIP_Polylib_Parser();
+    parser = new PIP_PolyLib_Parser();
   if (!parser->read(*input_stream_p))
     return 1;
 
@@ -785,7 +787,8 @@ main(int argc, char* argv[]) try {
     pip.solve();
     // Write the solution.
     parser->output_solution_tree(*output_stream_p);
-  } else {
+  }
+  else {
     // Perform a time benchmark loop executing the resolution several times.
     for (int i = 0; i < loop_iterations; ++i) {
       PPL::PIP_Problem* pipp = new PPL::PIP_Problem(pip);
