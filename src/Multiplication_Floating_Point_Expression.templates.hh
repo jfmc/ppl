@@ -34,11 +34,11 @@ void Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   /*
     FIXME: We currently adopt the "Interval-Size Local" strategy in order to
     decide which of the two linear forms must be intervalized, as described
-    in section 6.2.4 ("Multiplication Strategies") of Antoine Mine's Ph.D.
+    in Section 6.2.4 ("Multiplication Strategies") of Antoine Mine's Ph.D.
     thesis "Weakly Relational Numerical Abstract Domains".
-    In this section are also described other multiplication strategies, such
-    as All-Cases, Relative-Size Local, Relative-Size Local,
-    Simplification-Driven Global and Homogeneity Global.
+    In this Section are also described other multiplication strategies, such
+    as All-Cases, Relative-Size Local, Simplification-Driven Global and
+    Homogeneity Global.
   */
 
   // Here we choose which of the two linear forms must be intervalized.
