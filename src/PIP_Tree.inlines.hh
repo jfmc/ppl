@@ -127,8 +127,8 @@ PIP_Tree_Node::Artificial_Parameter
   // Normalize if needed.
   if (denominator < 0) {
     neg_assign(denominator);
-    Linear_Expression& expr = *this;
-    expr *= -1;
+    Linear_Expression& e = *this;
+    e *= -1;
   }
   PPL_ASSERT(OK());
 }

@@ -2206,7 +2206,8 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
 
   } // Main loop of the simplex algorithm
 
-  return this;
+  // This point should be unreachable.
+  throw std::runtime_error("PPL internal error");
 }
 
 void
