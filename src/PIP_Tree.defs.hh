@@ -269,7 +269,7 @@ public:
   Artificial_Parameter(const Artificial_Parameter& y);
 
   //! Returns the normalized (i.e., positive) denominator.
-  Coefficient_traits::const_reference get_denominator() const;
+  Coefficient_traits::const_reference denominator() const;
 
   //! Swaps \p *this with \p y.
   void swap(Artificial_Parameter& y);
@@ -302,7 +302,7 @@ public:
 
 private:
   //! The normalized (i.e., positive) denominator.
-  Coefficient denominator;
+  Coefficient denom;
 }; // class PIP_Tree_Node::Artificial_Parameter
 
 
@@ -377,7 +377,7 @@ private:
     //! The matrix of parameter coefficients.
     Matrix t;
     //! A common denominator for all matrix elements
-    Coefficient denominator;
+    Coefficient denom;
 
     //! Default constructor.
     Tableau();
@@ -456,7 +456,7 @@ private:
                          const dimension_type j_) const;
 
     //! Returns the value of the denominator.
-    Coefficient_traits::const_reference get_denominator() const;
+    Coefficient_traits::const_reference denominator() const;
 
     void ascii_dump(std::ostream& s) const;
     bool ascii_load(std::istream& s);

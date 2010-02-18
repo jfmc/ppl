@@ -272,7 +272,7 @@ namespace IO_Operators {
 std::ostream&
 operator<<(std::ostream& os, const PIP_Tree_Node::Artificial_Parameter& x) {
   const Linear_Expression& expr = static_cast<const Linear_Expression&>(x);
-  os << "(" << expr << ") div " << x.get_denominator();
+  os << "(" << expr << ") div " << x.denominator();
   return os;
 }
 
@@ -296,7 +296,7 @@ PIP_Tree_Node::Artificial_Parameter
   const Artificial_Parameter& x = *this;
   if (x.space_dimension() != y.space_dimension())
     return false;
-  if (x.denominator != y.denominator)
+  if (x.denom != y.denom)
     return false;
   if (x.inhomogeneous_term() != y.inhomogeneous_term())
     return false;
@@ -316,7 +316,7 @@ void
 PIP_Tree_Node::Artificial_Parameter::ascii_dump(std::ostream& s) const {
   s << "artificial_parameter ";
   Linear_Expression::ascii_dump(s);
-  s << " / " << denominator << "\n";
+  s << " / " << denom << "\n";
 }
 
 bool
@@ -328,7 +328,7 @@ PIP_Tree_Node::Artificial_Parameter::ascii_load(std::istream& s) {
     return false;
   if (!(s >> str) || str != "/")
     return false;
-  if (!(s >> denominator))
+  if (!(s >> denom))
     return false;
   PPL_ASSERT(OK());
   return true;
@@ -484,7 +484,7 @@ PIP_Solution_Node::Tableau::OK() const {
     return false;
   }
 
-  if (denominator <= 0) {
+  if (denom <= 0) {
 #ifndef NDEBUG
     std::cerr << "PIP_Solution_Node::Tableau with non-positive denominator.\n";
 #endif
@@ -795,7 +795,7 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
 
 void
 PIP_Solution_Node::Tableau::normalize() {
-  if (denominator == 1)
+  if (denom == 1)
     return;
 
   const dimension_type num_rows = s.num_rows();
@@ -804,7 +804,7 @@ PIP_Solution_Node::Tableau::normalize() {
 
   // Compute global gcd.
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-  gcd = denominator;
+  gcd = denom;
   for (dimension_type i = num_rows; i-- > 0; ) {
     const Row& s_i = s[i];
     for (dimension_type j = s_cols; j-- > 0; ) {
@@ -841,7 +841,7 @@ PIP_Solution_Node::Tableau::normalize() {
     }
   }
   // Normalize denominator.
-  exact_div_assign(denominator, denominator, gcd);
+  exact_div_assign(denom, denom, gcd);
 }
 
 void
@@ -854,7 +854,7 @@ PIP_Solution_Node::Tableau::scale(Coefficient_traits::const_reference ratio) {
     for (dimension_type j = t.num_columns(); j-- > 0; )
       t_i[j] *= ratio;
   }
-  denominator *= ratio;
+  denom *= ratio;
 }
 
 bool
@@ -948,7 +948,7 @@ PIP_Decision_Node::clone() const {
 
 void
 PIP_Solution_Node::Tableau::ascii_dump(std::ostream& st) const {
-  st << "denominator " << denominator << "\n";
+  st << "denominator " << denom << "\n";
   st << "variables ";
   s.ascii_dump(st);
   st << "parameters ";
@@ -963,7 +963,7 @@ PIP_Solution_Node::Tableau::ascii_load(std::istream& st) {
   Coefficient den;
   if (!(st >> den))
     return false;
-  denominator = den;
+  denom = den;
   if (!(st >> str) || str != "variables")
     return false;
   if (!s.ascii_load(st))
@@ -1482,7 +1482,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
     big_dimension = std::distance(parameters.begin(), pos) + 1;
   }
 
-  const Coefficient& denom = tableau.get_denominator();
+  const Coefficient& denom = tableau.denominator();
   for (Constraint_Sequence::const_iterator
          c_iter = input_cs.begin() + first_pending_constraint,
          c_end = input_cs.end(); c_iter != c_end; ++c_iter) {
@@ -1593,7 +1593,7 @@ PIP_Solution_Node::update_solution(const Variables_Set& parameters) {
   const Variables_Set::const_reverse_iterator p_rbegin = parameters.rbegin();
   const Variables_Set::const_reverse_iterator p_rend = parameters.rend();
 
-  const Coefficient& den = tableau.get_denominator();
+  const Coefficient& den = tableau.denominator();
   for (dimension_type i = num_vars; i-- > 0; ) {
     Linear_Expression& sol_i = solution[i];
     sol_i = Linear_Expression(0);
@@ -1627,7 +1627,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
     const dimension_type num_rows = tableau.t.num_rows();
     const dimension_type num_vars = tableau.s.num_columns();
     const dimension_type num_params = tableau.t.num_columns();
-    const Coefficient& tableau_den = tableau.get_denominator();
+    const Coefficient& tableau_den = tableau.denominator();
 
 #ifdef NOISY_PIP
     tableau.ascii_dump(std::cerr);
@@ -1808,7 +1808,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
 
       // Save current pivot denominator.
       PPL_DIRTY_TEMP_COEFFICIENT(pivot_den);
-      pivot_den = tableau.get_denominator();
+      pivot_den = tableau.denominator();
       // Let the (scaled) pivot coordinate be 1.
       s_pivot[pj] = pivot_den;
 
@@ -2089,7 +2089,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
     tableau.normalize();
 
     // Look for any row having non integer parameter coefficients.
-    const Coefficient& den = tableau.get_denominator();
+    const Coefficient& den = tableau.denominator();
     for (dimension_type k = 0; k < num_vars; ++k) {
       if (basis[k])
         // Basic variable = 0, hence integer.
@@ -2220,7 +2220,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   const dimension_type num_vars = tableau.s.num_columns();
   const dimension_type num_params = tableau.t.num_columns();
   PPL_ASSERT(num_params == 1 + parameters.size());
-  const Coefficient& den = tableau.get_denominator();
+  const Coefficient& den = tableau.denominator();
 
   PPL_DIRTY_TEMP_COEFFICIENT(mod);
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
@@ -2249,28 +2249,30 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
 
   if (generate_parametric_cut) {
     // Fractional parameter coefficient found: generate parametric cut.
+    Linear_Expression expr;
 
     // Limiting the scope of reference row_t (may be later invalidated).
-    const Row& row_t = tableau.t[index];
-    mod_assign(mod, row_t[0], den);
-    Linear_Expression expr;
-    if (mod != 0) {
-      // Optimizing computation: expr += (den - mod);
-      expr += den;
-      expr -= mod;
-    }
-    // NOTE: iterating downwards on parameters to avoid reallocations.
-    Variables_Set::const_reverse_iterator p_j = parameters.rbegin();
-    // NOTE: index j spans [1..num_params-1] downwards.
-    for (dimension_type j = num_params; j-- > 1; ) {
-      mod_assign(mod, row_t[j], den);
+    {
+      const Row& row_t = tableau.t[index];
+      mod_assign(mod, row_t[0], den);
       if (mod != 0) {
-        // Optimizing computation: expr += (den - mod) * Variable(*p_j);
-        coeff = den - mod;
-        add_mul_assign(expr, coeff, Variable(*p_j));
+        // Optimizing computation: expr += (den - mod);
+        expr += den;
+        expr -= mod;
       }
-      // Mode to previous parameter.
-      ++p_j;
+      // NOTE: iterating downwards on parameters to avoid reallocations.
+      Variables_Set::const_reverse_iterator p_j = parameters.rbegin();
+      // NOTE: index j spans [1..num_params-1] downwards.
+      for (dimension_type j = num_params; j-- > 1; ) {
+        mod_assign(mod, row_t[j], den);
+        if (mod != 0) {
+          // Optimizing computation: expr += (den - mod) * Variable(*p_j);
+          coeff = den - mod;
+          add_mul_assign(expr, coeff, Variable(*p_j));
+        }
+        // Mode to previous parameter.
+        ++p_j;
+      }
     }
     // Generate new artificial parameter.
     Artificial_Parameter ap(expr, den);
@@ -2403,7 +2405,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
 memory_size_type
 PIP_Tree_Node::Artificial_Parameter::external_memory_in_bytes() const {
   return Linear_Expression::external_memory_in_bytes()
-    + Parma_Polyhedra_Library::external_memory_in_bytes(denominator);
+    + Parma_Polyhedra_Library::external_memory_in_bytes(denom);
 }
 
 memory_size_type
@@ -2441,7 +2443,7 @@ PIP_Decision_Node::total_memory_in_bytes() const {
 
 memory_size_type
 PIP_Solution_Node::Tableau::external_memory_in_bytes() const {
-  return Parma_Polyhedra_Library::external_memory_in_bytes(denominator)
+  return Parma_Polyhedra_Library::external_memory_in_bytes(denom)
     + s.external_memory_in_bytes()
     + t.external_memory_in_bytes();
 }

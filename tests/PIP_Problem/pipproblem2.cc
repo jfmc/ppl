@@ -258,10 +258,10 @@ test14() {
   bool ok = ap0.OK() && ap1.OK() && ap2.OK();
 
   ok &= (ap0 != ap1) && (ap1 == ap2);
-  ok &= (ap0.get_denominator() == 1) && (ap1.get_denominator() == 5);
+  ok &= (ap0.denominator() == 1) && (ap1.denominator() == 5);
 
   ap0.swap(ap2);
-  ok &= (ap0 == ap1) && (ap2.get_denominator() == 1);
+  ok &= (ap0 == ap1) && (ap2.denominator() == 1);
 
   using namespace IO_Operators;
   nout << ap1;

@@ -27,13 +27,13 @@ namespace Parma_Polyhedra_Library {
 
 inline
 PIP_Solution_Node::Tableau::Tableau()
-  : s(), t(), denominator(1) {
+  : s(), t(), denom(1) {
   PPL_ASSERT(OK());
 }
 
 inline
 PIP_Solution_Node::Tableau::Tableau(const Tableau& y)
-  : s(y.s), t(y.t), denominator(y.denominator) {
+  : s(y.s), t(y.t), denom(y.denom) {
   PPL_ASSERT(OK());
 }
 
@@ -43,12 +43,12 @@ PIP_Solution_Node::Tableau::~Tableau() {
 
 inline bool
 PIP_Solution_Node::Tableau::is_integer() const {
-  return denominator == 1;
+  return denom == 1;
 }
 
 inline Coefficient_traits::const_reference
-PIP_Solution_Node::Tableau::get_denominator() const {
-  return denominator;
+PIP_Solution_Node::Tableau::denominator() const {
+  return denom;
 }
 
 inline
@@ -100,7 +100,7 @@ PIP_Decision_Node::child_node(bool v) {
 
 inline bool
 PIP_Tree_Node::Artificial_Parameter::OK() const {
-  if (denominator <= 0) {
+  if (denom <= 0) {
 #ifndef NDEBUG
     std::cerr << "PIP_Tree_Node::Artificial_Parameter "
               << "has a non-positive denominator.\n";
@@ -112,7 +112,7 @@ PIP_Tree_Node::Artificial_Parameter::OK() const {
 
 inline
 PIP_Tree_Node::Artificial_Parameter::Artificial_Parameter()
-  : Linear_Expression(), denominator(1) {
+  : Linear_Expression(), denom(1) {
   PPL_ASSERT(OK());
 }
 
@@ -120,13 +120,13 @@ inline
 PIP_Tree_Node::Artificial_Parameter
 ::Artificial_Parameter(const Linear_Expression& expr,
                        Coefficient_traits::const_reference den)
-  : Linear_Expression(expr), denominator(den) {
-  if (denominator == 0)
+  : Linear_Expression(expr), denom(den) {
+  if (denom == 0)
     throw std::invalid_argument("PIP_Tree_Node::Artificial_Parameter(e, d): "
                                 "denominator d is zero.");
   // Normalize if needed.
-  if (denominator < 0) {
-    neg_assign(denominator);
+  if (denom < 0) {
+    neg_assign(denom);
     Linear_Expression& e = *this;
     e *= -1;
   }
@@ -136,19 +136,19 @@ PIP_Tree_Node::Artificial_Parameter
 inline
 PIP_Tree_Node::Artificial_Parameter
 ::Artificial_Parameter(const Artificial_Parameter& y)
-  : Linear_Expression(y), denominator(y.denominator) {
+  : Linear_Expression(y), denom(y.denom) {
   PPL_ASSERT(OK());
 }
 
 inline Coefficient_traits::const_reference
-PIP_Tree_Node::Artificial_Parameter::get_denominator() const {
-  return denominator;
+PIP_Tree_Node::Artificial_Parameter::denominator() const {
+  return denom;
 }
 
 inline void
 PIP_Tree_Node::Artificial_Parameter::swap(Artificial_Parameter& y) {
   Linear_Expression::swap(y);
-  std::swap(denominator, y.denominator);
+  std::swap(denom, y.denom);
 }
 
 } // namespace Parma_Polyhedra_Library

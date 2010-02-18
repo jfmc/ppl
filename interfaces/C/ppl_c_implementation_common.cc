@@ -2503,11 +2503,11 @@ CATCH_ALL
 
 
 int
-ppl_Artificial_Parameter_get_denominator(ppl_const_Artificial_Parameter_t ap,
-                                         ppl_const_Coefficient_t* coef) try {
+ppl_Artificial_Parameter_denominator(ppl_const_Artificial_Parameter_t ap,
+                                     ppl_Coefficient_t n) try {
   const Artificial_Parameter& sap = *to_const(ap);
-  const Coefficient& dcoef = sap.get_denominator();
-  *coef = to_const(&dcoef);
+  Coefficient& nn = *to_nonconst(n);
+  nn = sap.denominator();
   return 0;
 }
 CATCH_ALL

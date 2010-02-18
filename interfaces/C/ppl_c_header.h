@@ -3056,12 +3056,12 @@ PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
            ppl_Coefficient_t n));
 
 /*! \relates ppl_Artificial_Parameter_tag \brief
-  Writes to \p coeff the denominator in artificial parameter \p ap.
+  Writes to \p n the denominator in artificial parameter \p ap.
 */
 int
-ppl_Artificial_Parameter_get_denominator
+ppl_Artificial_Parameter_denominator
 PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
-           ppl_const_Coefficient_t* coeff));
+           ppl_Coefficient_t n));
 
 /*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/

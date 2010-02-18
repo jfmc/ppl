@@ -75,8 +75,113 @@ test02() {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
     pip.print_solution(nout);
-  }
 
+    // Programmatically check the expected solution.
+    const PIP_Decision_Node* root = solution->as_decision();
+    if (root == 0)
+      return false;
+    {
+      // Check the root node.
+      if (root->art_parameter_count() != 0)
+        return false;
+      const Constraint_System& cs = root->constraints();
+      if (std::distance(cs.begin(), cs.end()) != 1)
+        return false;
+      const Constraint& c = *cs.begin();
+      if (!(c.is_inequality()
+            && c.coefficient(n) == 7
+            && c.coefficient(m) == 0
+            && c.inhomogeneous_term() == -10))
+        return false;
+    }
+    if (root->child_node(true) == 0 || root->child_node(false) != 0)
+      return false;
+    const PIP_Decision_Node* t_child = root->child_node(true)->as_decision();
+    if (t_child == 0)
+      return false;
+    {
+      // Check t_child node context.
+      if (t_child->art_parameter_count() != 0)
+        return false;
+      const Constraint_System& cs = t_child->constraints();
+      if (std::distance(cs.begin(), cs.end()) != 1)
+        return false;
+      const Constraint& c = *cs.begin();
+      if (!(c.is_inequality()
+            && c.coefficient(n) == 0
+            && c.coefficient(m) == 7
+            && c.inhomogeneous_term() == -12))
+        return false;
+    }
+    if (t_child->child_node(true) == 0 || t_child->child_node(false) == 0)
+      return false;
+    const PIP_Solution_Node* t_t_child
+      = t_child->child_node(true)->as_solution();
+    if (t_t_child == 0)
+      return false;
+    {
+      // Check t_t_child node.
+      if (t_t_child->art_parameter_count() != 0)
+        return false;
+      const Constraint_System& cs = t_t_child->constraints();
+      if (std::distance(cs.begin(), cs.end()) != 0)
+        return false;
+      const Linear_Expression& v_i
+        = t_t_child->parametric_values(i, pip.parameter_space_dimensions());
+      if (!(v_i.coefficient(n) == 0
+            && v_i.coefficient(m) == 0
+            && v_i.inhomogeneous_term() == 2))
+        return false;
+      const Linear_Expression& v_j
+        = t_t_child->parametric_values(j, pip.parameter_space_dimensions());
+      if (!(v_j.coefficient(n) == 0
+            && v_j.coefficient(m) == 0
+            && v_j.inhomogeneous_term() == 2))
+        return false;
+    }
+    const PIP_Solution_Node* t_f_child
+      = t_child->child_node(false)->as_solution();
+    if (t_f_child == 0)
+      return false;
+    {
+      // Check t_f_child node.
+      // Check artificial parameter.
+      if (t_f_child->art_parameter_count() != 1)
+        return false;
+      const PIP_Tree_Node::Artificial_Parameter& ap
+        = *(t_f_child->art_parameter_begin());
+      if (!(ap.coefficient(n) == 0
+            && ap.coefficient(m) == 1
+            && ap.denominator() == 2))
+        return false;
+      // Check context.
+      const Constraint_System& cs = t_f_child->constraints();
+      if (std::distance(cs.begin(), cs.end()) != 1)
+        return false;
+      const Constraint& c = *cs.begin();
+      if (!(c.is_inequality()
+            && c.coefficient(n) == 2
+            && c.coefficient(m) == 3
+            && c.inhomogeneous_term() == -8))
+        return false;
+      // Check parametric values.
+      Variable art_p(4);
+      const Linear_Expression& v_i
+        = t_f_child->parametric_values(i, pip.parameter_space_dimensions());
+      if (!(v_i.coefficient(n) == 0
+            && v_i.coefficient(m) == -1
+            && v_i.coefficient(art_p) == -1
+            && v_i.inhomogeneous_term() == 4))
+        return false;
+      const Linear_Expression& v_j
+        = t_f_child->parametric_values(j, pip.parameter_space_dimensions());
+      if (!(v_j.coefficient(n) == 0
+            && v_j.coefficient(m) == 1
+            && v_j.coefficient(art_p) == 0
+            && v_j.inhomogeneous_term() == 0))
+        return false;
+    }
+  }
   return ok;
 }
 
