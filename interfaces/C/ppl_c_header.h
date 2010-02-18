@@ -2658,6 +2658,20 @@ int
 ppl_MIP_Problem_set_control_parameter
 PPL_PROTO((ppl_MIP_Problem_t mip, int value));
 
+/*! \relates ppl_MIP_Problem_tag \brief
+  Writes into \p *sz the size in bytes of the memory occupied by \p mip.
+*/
+int
+ppl_MIP_Problem_total_memory_in_bytes
+PPL_PROTO((ppl_const_MIP_Problem_t mip, size_t* sz));
+
+/*! \relates ppl_MIP_Problem_tag \brief
+  Writes into \p *sz the size in bytes of the memory managed by \p mip.
+*/
+int
+ppl_MIP_Problem_external_memory_in_bytes
+PPL_PROTO((ppl_const_MIP_Problem_t mip, size_t* sz));
+
 /*@}*/ /* Querying/Setting Control Parameters */
 
 
@@ -2875,6 +2889,20 @@ PPL_PROTO((ppl_const_PIP_Problem_t pip, ppl_dimension_type* pd));
 int
 ppl_PIP_Problem_set_big_parameter_dimension
 PPL_PROTO((ppl_PIP_Problem_t pip, ppl_dimension_type d));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes into \p *sz the size in bytes of the memory occupied by \p pip.
+*/
+int
+ppl_PIP_Problem_total_memory_in_bytes
+PPL_PROTO((ppl_const_PIP_Problem_t pip, size_t* sz));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes into \p *sz the size in bytes of the memory managed by \p pip.
+*/
+int
+ppl_PIP_Problem_external_memory_in_bytes
+PPL_PROTO((ppl_const_PIP_Problem_t pip, size_t* sz));
 
 /*@}*/ /* Querying/Setting Control Parameters */
 

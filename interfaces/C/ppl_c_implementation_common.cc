@@ -2115,6 +2115,22 @@ ppl_MIP_Problem_OK(ppl_const_MIP_Problem_t mip) try {
 CATCH_ALL
 
 int
+ppl_MIP_Problem_total_memory_in_bytes(ppl_const_MIP_Problem_t mip,
+                                      size_t* sz) try {
+  *sz = to_const(mip)->total_memory_in_bytes();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_external_memory_in_bytes(ppl_const_MIP_Problem_t mip,
+                                         size_t* sz) try {
+  *sz = to_const(mip)->external_memory_in_bytes();
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_new_PIP_Problem_from_space_dimension(ppl_PIP_Problem_t* ppip,
                                          ppl_dimension_type d) try {
   *ppip = to_nonconst(new PIP_Problem(d));
@@ -2316,6 +2332,21 @@ ppl_PIP_Problem_set_big_parameter_dimension(ppl_PIP_Problem_t pip,
 }
 CATCH_ALL
 
+int
+ppl_PIP_Problem_total_memory_in_bytes(ppl_const_PIP_Problem_t pip,
+                                      size_t* sz) try {
+  *sz = to_const(pip)->total_memory_in_bytes();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_external_memory_in_bytes(ppl_const_PIP_Problem_t pip,
+                                         size_t* sz) try {
+  *sz = to_const(pip)->external_memory_in_bytes();
+  return 0;
+}
+CATCH_ALL
 
 int
 ppl_PIP_Tree_Node_as_solution(ppl_const_PIP_Tree_Node_t spip_tree,

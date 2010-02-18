@@ -180,6 +180,7 @@ main(int argc, char **argv) {
   ppl_dimension_type i, j;
   mpz_t mpc;
   int ok;
+  size_t sz = 0;
 
   static ppl_dimension_type parameter_dim[N_PARAMETERS];
 
@@ -237,8 +238,9 @@ main(int argc, char **argv) {
   ppl_delete_Coefficient(c);
   mpz_clear(mpc);
 
+  ppl_PIP_Problem_total_memory_in_bytes(pip, &sz);
+  ppl_PIP_Problem_external_memory_in_bytes(pip, &sz);
   ok = (ppl_PIP_Problem_solve(pip) == PPL_PIP_PROBLEM_STATUS_OPTIMIZED);
-
   if (ok) {
     ppl_dimension_type dim;
     ppl_const_PIP_Tree_Node_t solution;
