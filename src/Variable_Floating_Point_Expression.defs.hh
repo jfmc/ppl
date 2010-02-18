@@ -132,6 +132,9 @@ public:
     \param lf_store The linear form abstract store.
     \param result The modified linear form.
 
+    \return <CODE>true</CODE> if the linearization succeeded,
+    <CODE>false</CODE> otherwise.
+
     Note that the variable in the expression MUST have an associated value
     in \p int_store. If this precondition is not met, calling the method
     causes an undefined behavior.
@@ -139,7 +142,7 @@ public:
     See the class description for a detailed explanation of how \p result is
     computed.
   */
-  void linearize(const FP_Interval_Abstract_Store& int_store,
+  bool linearize(const FP_Interval_Abstract_Store& int_store,
                  const FP_Linear_Form_Abstract_Store& lf_store,
                  FP_Linear_Form& result) const;
 

@@ -69,7 +69,7 @@ namespace Parma_Polyhedra_Library {
   \f]
 
   Given a floating point expression \f$\ominus e\f$ and a composite
-  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
   \rrbracket\f$, we construct the interval linear form
   \f$\linexprenv{\ominus e}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
@@ -140,7 +140,6 @@ public:
 
   //@} // Constructors and Destructor
 
-  // FIXME: Modify documentation when exceptions are fixed
   /*! \brief
     Linearizes the expression in a given astract store.
 
@@ -151,18 +150,18 @@ public:
     \param lf_store The linear form abstract store.
     \param result The modified linear form.
 
-    \exception Parma_Polyhedra_Library::Linearization_Failed
-    Thrown if linearization fails for some reason.
+    \return <CODE>true</CODE> if the linearization succeeded,
+    <CODE>false</CODE> otherwise.
 
     Note that all variables occuring in the expression represented
     by \p operand MUST have an associated value in \p int_store.
     If this precondition is not met, calling the method
     causes an undefined behavior.
-    
+
     See the class description for a detailed explanation of how \p result
     is computed.
   */
-  void linearize(const FP_Interval_Abstract_Store& int_store,
+  bool linearize(const FP_Interval_Abstract_Store& int_store,
                  const FP_Linear_Form_Abstract_Store& lf_store,
                  FP_Linear_Form& result) const;
 

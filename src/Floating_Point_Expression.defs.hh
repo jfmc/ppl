@@ -32,9 +32,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-//! Exception class indicating the failure of a linearization attempt.
-class Linearization_Failed {};
-
 /*! \brief
   \ingroup PPL_CXX_Interface
   A floating point expression on a given format.
@@ -99,8 +96,8 @@ public:
     \param lf_store The linear form abstract store.
     \param result Becomes the linearized expression.
 
-    \exception Parma_Polyhedra_Library::Linearization_Failed
-    Thrown if linearization fails for some reason.
+    \return <CODE>true</CODE> if the linearization succeeded,
+    <CODE>false</CODE> otherwise.
 
     Formally, if \p *this represents the expression \f$e\f$,
     \p int_store represents the interval abstract store \f$\rho^{\#}\f$ and
@@ -114,7 +111,7 @@ public:
     If this precondition is not met, calling the method causes an
     undefined behavior.
   */
-  virtual void linearize(const FP_Interval_Abstract_Store& int_store,
+  virtual bool linearize(const FP_Interval_Abstract_Store& int_store,
                          const FP_Linear_Form_Abstract_Store& lf_store,
                          FP_Linear_Form& result) const = 0;
 
@@ -191,15 +188,15 @@ public:
 
 template <typename FP_Interval_Type, typename FP_Format>
 typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
-Floating_Point_Expression<FP_Interval_Type, FP_Format>::absolute_error = 
+Floating_Point_Expression<FP_Interval_Type, FP_Format>::absolute_error =
 std::max(
   static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
-  ::boundary_type>(pow(FP_Format::BASE, static_cast<typename 
+  ::boundary_type>(pow(FP_Format::BASE, static_cast<typename
 		       Floating_Point_Expression<FP_Interval_Type, FP_Format>
 		       ::boundary_type>(1) - FP_Format
 		       ::EXPONENT_BIAS - FP_Format
 		       ::MANTISSA_BITS)),
-  std::numeric_limits<typename 
+  std::numeric_limits<typename
                       Floating_Point_Expression<FP_Interval_Type, FP_Format>
   ::boundary_type>::denorm_min());
 

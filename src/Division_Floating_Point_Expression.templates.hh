@@ -27,23 +27,25 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
-void Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+bool Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::linearize(const FP_Interval_Abstract_Store& int_store,
             const FP_Linear_Form_Abstract_Store& lf_store,
             FP_Linear_Form& result) const {
   FP_Linear_Form linearized_second_operand;
-  second_operand->linearize(int_store, lf_store, linearized_second_operand);
+  if(!second_operand->linearize(int_store, lf_store,
+                                linearized_second_operand))
+    return false;
   FP_Interval_Type intervalized_second_operand;
   this->intervalize(linearized_second_operand, int_store,
                     intervalized_second_operand);
 
   // Check if we may divide by zero.
-  // FIXME: check the assumption that boundary_type is comparable with zero.
   if (intervalized_second_operand.lower() <= 0
       && intervalized_second_operand.upper() >= 0)
-    throw Linearization_Failed();
+    return false;
 
-  first_operand->linearize(int_store, lf_store, result);
+  if(!first_operand->linearize(int_store, lf_store, result))
+    return false;
   FP_Linear_Form rel_error;
   relative_error(result, rel_error);
   result /= intervalized_second_operand;
@@ -53,7 +55,7 @@ void Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   // FIXME: this may be incorrect for some policies.
   abs_error.join_assign(this->absolute_error);
   result += abs_error;
-  return;
+  return !this->overflows(result);
 }
 
 } // namespace Parma_Polyhedra_Library

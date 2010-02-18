@@ -32,12 +32,9 @@ test01() {
   Con_FP_Expression* num = new Con_FP_Expression(3, 5);
   Con_FP_Expression* den = new Con_FP_Expression(-1, 1);
   Div_FP_Expression div(num, den);
-  try {
-    FP_Linear_Form result;
-    div.linearize(FP_Interval_Abstract_Store(0),
-                  FP_Linear_Form_Abstract_Store(), result);
-  }
-  catch (Linearization_Failed e) {
+  FP_Linear_Form result;
+  if(!div.linearize(FP_Interval_Abstract_Store(0),
+                   FP_Linear_Form_Abstract_Store(), result)) {
     nout << "*** Linearization failed due to division by zero. ***" << endl;
     return true;
   }
@@ -57,6 +54,7 @@ test02() {
   Mul_FP_Expression mul(dif, var0);
   FP_Linear_Form result;
   mul.linearize(store, FP_Linear_Form_Abstract_Store(), result);
+
   FP_Interval kr(-FP_Expression::absolute_error);
   kr.join_assign(FP_Expression::absolute_error);
   FP_Linear_Form known_result(kr);
@@ -184,8 +182,7 @@ test06() {
   FP_Interval coeff2(2);
   coeff2 += exp;
   coeff.join_assign(coeff2);
-  FP_Linear_Form known_result =
-  FP_Linear_Form(Variable(0));
+  FP_Linear_Form known_result = FP_Linear_Form(Variable(0));
   known_result *= coeff;
   known_result += tmp;
 
@@ -211,7 +208,7 @@ test07() {
   Div_FP_Expression div(var0, var1);
   FP_Linear_Form result;
   div.linearize(store, FP_Linear_Form_Abstract_Store(), result);
-
+    nout << "result" << endl << result << endl;
   tmp = FP_Interval(-FP_Expression::absolute_error);
   tmp.join_assign(FP_Expression::absolute_error);
   ANALYZER_FP_FORMAT exp = pow(ANALYZED_FP_FORMAT::BASE,
@@ -284,15 +281,8 @@ test09() {
   Con_FP_Expression* con3 = new Con_FP_Expression(0, 0);
   Mul_FP_Expression mul(con3, sum);
   FP_Linear_Form result;
-  bool ok1 = false;
-  try {
-    mul.linearize(FP_Interval_Abstract_Store(),
+  bool ok1 = mul.linearize(FP_Interval_Abstract_Store(),
                   FP_Linear_Form_Abstract_Store(), result);
-  }
-  catch (Linearization_Failed e) {
-    nout << "*** Linearization failed due to overflow. ***" << endl;
-    ok1 = true;
-  }
 
   FP_Linear_Form known_result2 = FP_Linear_Form(min);
   Con_FP_Expression* con4 = new Con_FP_Expression(0, 0);
@@ -301,15 +291,8 @@ test09() {
   Con_FP_Expression* con6 = new Con_FP_Expression(0, 0);
   Mul_FP_Expression mul2(sum2, con6);
   FP_Linear_Form result2;
-  bool ok2 = false;
-  try {
-    mul2.linearize(FP_Interval_Abstract_Store(),
+  bool ok2 = mul2.linearize(FP_Interval_Abstract_Store(),
                    FP_Linear_Form_Abstract_Store(), result2);
-  }
-  catch (Linearization_Failed e) {
-    nout << "*** Linearization failed due to overflow. ***" << endl;
-    ok2 = true;
-  }
 
   Con_FP_Expression* con7 = new Con_FP_Expression(0, 0);
   Con_FP_Expression* con8 = new Con_FP_Expression(0, max);
@@ -319,17 +302,14 @@ test09() {
   Sum_FP_Expression* sum4 = new Sum_FP_Expression(con9, con10);
   Mul_FP_Expression  mul3(sum3, sum4);
 
-  bool ok3 = false;
-  try {
-    mul3.linearize(FP_Interval_Abstract_Store(),
-                   FP_Linear_Form_Abstract_Store(), result2);
-  }
-  catch (Linearization_Failed e) {
-    nout << "*** Linearization failed due to overflow. ***" << endl;
-    ok3 = true;
-  }
+  bool ok3 = mul3.linearize(FP_Interval_Abstract_Store(),
+                            FP_Linear_Form_Abstract_Store(), result2);
 
-  return ok1 && ok2 && ok3;
+  if(ok1 || ok2 || ok3)
+    return false;
+
+  nout << "*** Linearizations failed due to overflow. ***" << endl;
+  return true;
 }
 
 // Tests linearization of cast(X + Y).
