@@ -2472,34 +2472,31 @@ CATCH_ALL
 int
 ppl_Artificial_Parameter_get_Linear_Expression
 (ppl_const_Artificial_Parameter_t ap,
- ppl_const_Linear_Expression_t* le) try {
+ ppl_Linear_Expression_t le) try {
   const Artificial_Parameter& sap = *to_const(ap);
-  const Linear_Expression& lle = static_cast<const Linear_Expression&>(sap);
-  *le = to_const(&lle);
+  Linear_Expression& lle = *to_nonconst(le);
+  lle = sap;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Artificial_Parameter_get_coefficient(ppl_const_Artificial_Parameter_t ap,
-                                         ppl_dimension_type var,
-                                         ppl_const_Coefficient_t* coef) try {
+ppl_Artificial_Parameter_coefficient(ppl_const_Artificial_Parameter_t ap,
+                                     ppl_dimension_type var,
+                                     ppl_Coefficient_t n) try {
   const Artificial_Parameter& sap = *to_const(ap);
-  const Linear_Expression& lle = static_cast<const Linear_Expression&>(sap);
-  const Coefficient& ncoef = lle.coefficient(Variable(var));
-  *coef = to_const(&ncoef);
+  Coefficient& nn = *to_nonconst(n);
+  nn = sap.coefficient(Variable(var));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Artificial_Parameter_get_inhomogeneous_term
-(ppl_const_Artificial_Parameter_t ap,
- ppl_const_Coefficient_t* coef) try {
+ppl_Artificial_Parameter_inhomogeneous_term
+(ppl_const_Artificial_Parameter_t ap, ppl_Coefficient_t n) try {
   const Artificial_Parameter& sap = *to_const(ap);
-  const Linear_Expression& lle = static_cast<const Linear_Expression&>(sap);
-  const Coefficient& icoef = lle.inhomogeneous_term();
-  *coef = to_const(&icoef);
+  Coefficient& nn = *to_nonconst(n);
+  nn = sap.inhomogeneous_term();
   return 0;
 }
 CATCH_ALL

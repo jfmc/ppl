@@ -3034,26 +3034,26 @@ PPL_PROTO((ppl_const_PIP_Decision_Node_t pip_dec,
 int
 ppl_Artificial_Parameter_get_Linear_Expression
 PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
-           ppl_const_Linear_Expression_t* le));
+           ppl_Linear_Expression_t le));
 
 /*! \relates ppl_Artificial_Parameter_tag \brief
-  Copies into \p coef the coefficient of variable \p var in
+  Copies into \p n the coefficient of variable \p var in
   the artificial parameter \p ap.
 */
 int
-ppl_Artificial_Parameter_get_coefficient
+ppl_Artificial_Parameter_coefficient
 PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
            ppl_dimension_type var,
-           ppl_const_Coefficient_t* coef));
+           ppl_Coefficient_t n));
 
 /*! \relates ppl_Artificial_Parameter_tag \brief
-  Copies into \p coef the inhomogeneous term of the artificial
+  Copies into \p n the inhomogeneous term of the artificial
   parameter \p ap.
 */
 int
 ppl_Artificial_Parameter_get_inhomogeneous_term
 PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
-           ppl_const_Coefficient_t* coef));
+           ppl_Coefficient_t n));
 
 /*! \relates ppl_Artificial_Parameter_tag \brief
   Writes to \p coeff the denominator in artificial parameter \p ap.
