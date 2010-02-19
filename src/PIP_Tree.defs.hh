@@ -36,9 +36,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-/*! \brief
-  The base class for the nodes of the trees representing the solutions
-  of PIP problems.
+//! A node of the PIP solution tree.
+/*!
+  This is the base class for the nodes of the binary trees representing
+  the solutions of PIP problems. From this one, two classes are derived:
+    - PIP_Decision_Node, for the internal nodes of the tree;
+    - PIP_Solution_Node, for the leaves of the tree.
 */
 class PIP_Tree_Node {
 protected:

@@ -52,7 +52,7 @@ $(top_builddir)/src/libppl.la \
 TESTS = \
 ascii_dump_load1 \
 exceptions1 \
-pipproblem1 pipproblem2
+pipproblem1 pipproblem2 pipproblem3
 
 XFAIL_TESTS =
 
@@ -68,6 +68,7 @@ exceptions1_SOURCES = exceptions1.cc
 
 pipproblem1_SOURCES = pipproblem1.cc
 pipproblem2_SOURCES = pipproblem2.cc
+pipproblem3_SOURCES = pipproblem3.cc
 
 check_PROGRAMS = \
 $(TESTS) \

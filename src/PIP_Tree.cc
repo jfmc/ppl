@@ -1429,48 +1429,73 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
                                   const dimension_type first_pending_constraint,
                                   const Constraint_Sequence& input_cs,
                                   const Variables_Set& parameters) {
-  dimension_type initial_space_dim;
-  if (tableau.t.num_columns() > 0)
-    initial_space_dim = tableau.s.num_columns() + tableau.t.num_columns() - 1;
-  else {
-    // Create parameter column, corresponding to the constant term.
+  // Make sure a parameter column exists, for the inhomogeneous term.
+  if (tableau.t.num_columns() == 0)
     tableau.t.add_zero_columns(1);
-    initial_space_dim = 0;
+
+  // NOTE: here 'params' stands for problem (i.e., non artificial) parameters.
+  const dimension_type old_num_vars = tableau.s.num_columns();
+  const dimension_type old_num_params
+    = problem.internal_space_dim - old_num_vars;
+  const dimension_type num_added_dims
+    = problem.external_space_dim - problem.internal_space_dim;
+  const dimension_type new_num_params = parameters.size();
+  const dimension_type num_added_params = new_num_params - old_num_params;
+  const dimension_type num_added_vars = num_added_dims - num_added_params;
+
+  const dimension_type old_num_art_params
+    = tableau.t.num_columns() - 1 - old_num_params;
+
+  // Resize the two tableau matrices.
+  if (num_added_vars > 0)
+    tableau.s.add_zero_columns(num_added_vars);
+  if (num_added_params > 0)
+    tableau.t.add_zero_columns(num_added_params);
+
+  if (num_added_params > 0 && old_num_art_params > 0) {
+    // Shift to the right the columns of artificial parameters.
+    std::vector<dimension_type> swaps;
+    swaps.reserve(3*old_num_art_params);
+    const dimension_type first_ap = 1 + old_num_params;
+    for (dimension_type i = 0; i < old_num_art_params; ++i) {
+      dimension_type old_ap = first_ap + i;
+      dimension_type new_ap = old_ap + num_added_params;
+      swaps.push_back(old_ap);
+      swaps.push_back(new_ap);
+      swaps.push_back(0);
+    }
+    tableau.t.permute_columns(swaps);
   }
 
-  // Add new columns to the tableau.
-  /* FIXME: when the node or its parents have artificial parameters, we
-    must insert new parameter columns before the columns corresponding to
-    the artificial parameters. Meanwhile parameter insertion after a first
-    solve (incremental solving) is broken. */
+  dimension_type new_var_column = old_num_vars;
+  const dimension_type initial_space_dim = old_num_vars + old_num_params;
   for (dimension_type i = initial_space_dim; i < external_space_dim; ++i) {
-    if (parameters.count(i) == 1)
-      // A new parameter.
-      tableau.t.add_zero_columns(1);
-    else {
-      // A new variable.
-      const dimension_type new_column = tableau.s.num_columns();
-      tableau.s.add_zero_columns(1);
+    if (parameters.count(i) == 0) {
+      // A new problem variable.
       if (tableau.s.num_rows() == 0) {
         // No rows have been added yet
         basis.push_back(true);
-        mapping.push_back(new_column);
-      } else {
-        /* Need to insert the original variable id before the slack variable
-          id's to respect variable ordering */
-        basis.insert(basis.begin() + new_column, true);
-        mapping.insert(mapping.begin() + new_column, new_column);
-        // update variable id's of slack variables
+        mapping.push_back(new_var_column);
+      }
+      else {
+        /*
+          Need to insert the original variable id
+          before the slack variable id's to respect variable ordering.
+        */
+        basis.insert(basis.begin() + new_var_column, true);
+        mapping.insert(mapping.begin() + new_var_column, new_var_column);
+        // Update variable id's of slack variables.
         for (dimension_type j = var_row.size(); j-- > 0; )
-          if (var_row[j] >= new_column)
+          if (var_row[j] >= new_var_column)
             ++var_row[j];
         for (dimension_type j = var_column.size(); j-- > 0; )
-          if (var_column[j] >= new_column)
+          if (var_column[j] >= new_var_column)
             ++var_column[j];
         if (special_equality_row > 0)
           ++special_equality_row;
       }
-      var_column.push_back(new_column);
+      var_column.push_back(new_var_column);
+      ++new_var_column;
     }
   }
 
@@ -1487,7 +1512,6 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
          c_iter = input_cs.begin() + first_pending_constraint,
          c_end = input_cs.end(); c_iter != c_end; ++c_iter) {
     const Constraint& constraint = *c_iter;
-
     // (Tentatively) Add new rows to s and t matrices.
     // These will be removed at the end if they turn out to be useless.
     const dimension_type row_id = tableau.s.num_rows();
