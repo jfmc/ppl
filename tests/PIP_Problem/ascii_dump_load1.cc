@@ -245,6 +245,37 @@ test08() {
   return ok;
 }
 
+bool
+test09() {
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  (void) pip.solve();
+
+  std::stringstream ss;
+  pip.ascii_dump(ss);
+
+  PIP_Problem pip2;
+  bool ok = pip2.ascii_load(ss);
+
+  std::stringstream ss2;
+  pip2.ascii_dump(ss2);
+
+  ok &= (ss.str() == ss2.str());
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -256,4 +287,5 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN

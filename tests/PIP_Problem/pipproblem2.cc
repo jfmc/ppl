@@ -264,7 +264,7 @@ test14() {
   ok &= (ap0 == ap1) && (ap2.denominator() == 1);
 
   using namespace IO_Operators;
-  nout << ap1;
+  nout << ap1 << endl;
 
   ok &= (ap1.external_memory_in_bytes() < ap1.total_memory_in_bytes());
 
