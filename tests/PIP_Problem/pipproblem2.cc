@@ -106,6 +106,9 @@ test04() {
   pip.set_big_parameter_dimension(5);
   ok &= (pip.get_big_parameter_dimension() == 5);
 
+  using namespace IO_Operators;
+  nout << pip;
+
   return ok;
 }
 
