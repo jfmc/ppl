@@ -69,7 +69,9 @@ merge_assign(Matrix& x,
     return;
   const dimension_type old_num_rows = x.num_rows();
   x.add_zero_rows(new_rows, Row::Flags());
+
   // Compute once for all.
+  const dimension_type cs_space_dim = y.space_dimension();
   const Variables_Set::const_iterator param_begin = parameters.begin();
   const Variables_Set::const_iterator param_end = parameters.end();
 
@@ -81,8 +83,12 @@ merge_assign(Matrix& x,
     x_i[0] = y_i->inhomogeneous_term();
     Variables_Set::const_iterator pj;
     dimension_type j = 1;
-    for (pj = param_begin; pj != param_end; ++pj, ++j)
-      x_i[j] = y_i->coefficient(Variable(*pj));
+    for (pj = param_begin; pj != param_end; ++pj, ++j) {
+      Variable vj(*pj);
+      if (vj.space_dimension() > cs_space_dim)
+        break;
+      x_i[j] = y_i->coefficient(vj);
+    }
   }
 }
 
