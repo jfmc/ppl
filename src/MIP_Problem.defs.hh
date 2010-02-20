@@ -96,17 +96,18 @@ public:
   typedef Dense_Matrix matrix_type;
   typedef Dense_Row& matrix_row_reference_type;
   typedef const Dense_Row& matrix_row_const_reference_type;
+  typedef Dense_Row::const_iterator matrix_const_row_const_iterator;
+  typedef Dense_Row::iterator matrix_row_iterator;
+  typedef Dense_Row::const_iterator matrix_row_const_iterator;
 #else
   typedef Sparse_Matrix matrix_type;
   typedef Sparse_Matrix_Row matrix_row_reference_type;
   typedef Sparse_Matrix_Row::iterator matrix_row_reference_iterator;
   typedef const Unlimited_Sparse_Row& matrix_row_const_reference_type;
   typedef Unlimited_Sparse_Row::const_iterator
-    matrix_row_const_reference_const_iterator;
-  typedef Sparse_Matrix_Row::iterator matrix_row_element_iterator;
-  typedef Unlimited_Sparse_Row::const_iterator
-    matrix_row_const_element_iterator;
-  typedef Sparse_Matrix_Row::const_iterator matrix_row_element_const_iterator;
+    matrix_const_row_const_iterator;
+  typedef Sparse_Matrix_Row::iterator matrix_row_iterator;
+  typedef Sparse_Matrix_Row::const_iterator matrix_row_const_iterator;
 #endif
 
   //! Builds a trivial MIP problem.

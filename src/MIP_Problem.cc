@@ -908,44 +908,61 @@ assign(double& d,
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
+  const dimension_type tableau_num_columns = tableau.num_columns();
   PPL_ASSERT(tableau_num_rows == base.size());
-  double challenger_num = 0.0;
-  double challenger_den = 0.0;
   double current_value = 0.0;
-  double float_tableau_value = 0.0;
-  double float_tableau_denum = 0.0;
+  std::vector<double> challenger_nums(tableau_num_columns, 0.0);
+  std::vector<double> challenger_dens(tableau_num_columns, 0.0);
+  std::vector<double> float_tableau_values(tableau_num_columns, 0.0);
+  std::vector<double> float_tableau_denums(tableau_num_columns, 0.0);
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
     const Coefficient& cost_j = working_cost[j];
     if (sgn(cost_j) == cost_sign) {
-      WEIGHT_BEGIN();
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
-      assign(challenger_num, cost_j);
-      challenger_num = std::abs(challenger_num);
+      assign(challenger_nums[j], cost_j);
+      challenger_nums[j] = std::abs(challenger_nums[j]);
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
-      challenger_den = 1.0;
-      for (dimension_type i = tableau_num_rows; i-- > 0; ) {
-        matrix_row_const_reference_type tableau_i = tableau[i];
-        const Coefficient& tableau_ij = tableau_i.get(j);
+      challenger_dens[j] = 1.0;
+    }
+  }
+  for (dimension_type i = tableau_num_rows; i-- > 0; ) {
+    matrix_row_const_reference_type tableau_i = tableau[i];
+    const Coefficient& tableau_i_base_i = tableau_i.get(base[i]);
+    matrix_const_row_const_iterator j = tableau_i.begin();
+    matrix_const_row_const_iterator j_end = tableau_i.end();
+    if (j != j_end && (*j).first == 0)
+      ++j;
+    for ( ; j != j_end; ++j) {
+      const dimension_type j_index = (*j).first;
+      const Coefficient& cost_j = working_cost[j_index];
+      const Coefficient& tableau_ij = (*j).second;
+      if (sgn(cost_j) == cost_sign) {
+        WEIGHT_BEGIN();
         if (tableau_ij != 0) {
-          PPL_ASSERT(tableau_i.get(base[i]) != 0);
-          assign(float_tableau_value, tableau_ij);
-          assign(float_tableau_denum, tableau_i.get(base[i]));
-          float_tableau_value /= float_tableau_denum;
-          challenger_den += float_tableau_value * float_tableau_value;
+          PPL_ASSERT(tableau_i_base_i != 0);
+          assign(float_tableau_values[j_index], tableau_ij);
+          assign(float_tableau_denums[j_index], tableau_i_base_i);
+          float_tableau_values[j_index] /= float_tableau_denums[j_index];
+          challenger_dens[j_index] += float_tableau_values[j_index] * float_tableau_values[j_index];
         }
+        WEIGHT_ADD_MUL(338, tableau_num_rows);
       }
-      double challenger_value = sqrt(challenger_den);
+    }
+  }
+  for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
+    const Coefficient& cost_j = working_cost[j];
+    if (sgn(cost_j) == cost_sign) {
+      double challenger_value = sqrt(challenger_dens[j]);
       // Initialize `current_value' during the first iteration.
       // Otherwise update if the challenger wins.
       if (entering_index == 0 || challenger_value > current_value) {
         current_value = challenger_value;
         entering_index = j;
       }
-      WEIGHT_ADD_MUL(338, tableau_num_rows);
     }
   }
   return entering_index;
@@ -1096,10 +1113,10 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
 
-  matrix_row_reference_iterator i = x.begin();
-  matrix_row_reference_iterator i_end = x.end();
-  matrix_row_const_reference_const_iterator j = y.begin();
-  matrix_row_const_reference_const_iterator j_end = y.end();
+  matrix_row_iterator i = x.begin();
+  matrix_row_iterator i_end = x.end();
+  matrix_const_row_const_iterator j = y.begin();
+  matrix_const_row_const_iterator j_end = y.end();
   while ((i != i_end) && (j != j_end)) {
     if (j->first < i->first) {
       if (j->first != k) {
@@ -1160,8 +1177,8 @@ PPL::MIP_Problem::linear_combine(row_type& x,
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
-  matrix_row_const_reference_const_iterator j = y.begin();
-  matrix_row_const_reference_const_iterator j_end = y.end();
+  matrix_const_row_const_iterator j = y.begin();
+  matrix_const_row_const_iterator j_end = y.end();
   dimension_type i;
   for (i = 0; (i < x_size) && (j != j_end); ++i) {
     PPL_ASSERT(j->first >= i);

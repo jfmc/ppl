@@ -32,6 +32,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Dense_Row {
 public:
+
+  class iterator;
+  class const_iterator;
+
   //! Pre-constructs a row: construction must be completed by construct().
   Dense_Row();
 
@@ -56,7 +60,7 @@ public:
   */
   void construct(dimension_type sz, dimension_type capacity);
   //@} // Post-constructors
-  
+
   //! Tight constructor: resizing may require reallocation.
   /*!
     Constructs a row with size and capacity \p sz.
@@ -98,6 +102,12 @@ public:
 
   //! Assignment operator.
   Dense_Row& operator=(const Dense_Row& y);
+
+  iterator begin();
+  const_iterator begin() const;
+
+  iterator end();
+  const_iterator end() const;
 
   //! Resets the i-th element to 0.
   //! Provided for compatibility with Sparse_Row
@@ -231,6 +241,59 @@ public:
 
 private:
   Row row;
+};
+
+class Parma_Polyhedra_Library::Dense_Row::iterator {
+public:
+  typedef std::pair<const dimension_type,Coefficient&> value_type;
+  typedef std::pair<const dimension_type,const Coefficient&> const_type;
+
+  iterator(Dense_Row& row1,dimension_type i1);
+
+  value_type operator*();
+  const_type operator*() const;
+
+  iterator& operator++();
+  iterator operator++(int);
+
+  iterator& operator--();
+  iterator operator--(int);
+
+  bool operator==(const iterator& x) const;
+  bool operator!=(const iterator& x) const;
+
+  operator const_iterator() const;
+
+  bool OK() const;
+
+private:
+  Dense_Row& row;
+  dimension_type i;
+};
+
+class Parma_Polyhedra_Library::Dense_Row::const_iterator {
+public:
+
+  typedef std::pair<const dimension_type,const Coefficient&> const_type;
+
+  const_iterator(const Dense_Row& row1,dimension_type i1);
+
+  const_type operator*() const;
+
+  const_iterator& operator++();
+  const_iterator operator++(int);
+
+  const_iterator& operator--();
+  const_iterator operator--(int);
+
+  bool operator==(const const_iterator& x) const;
+  bool operator!=(const const_iterator& x) const;
+
+  bool OK() const;
+
+private:
+  const Dense_Row& row;
+  dimension_type i;
 };
 
 namespace Parma_Polyhedra_Library {
