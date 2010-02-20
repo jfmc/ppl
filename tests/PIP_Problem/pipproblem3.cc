@@ -154,5 +154,5 @@ test03() {
 BEGIN_MAIN
   DO_TEST_F8(test01);
   DO_TEST_F8(test02);
-  // DO_TEST_F8(test03);
+  DO_TEST_F8(test03);
 END_MAIN

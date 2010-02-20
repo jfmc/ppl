@@ -1628,6 +1628,9 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
                          const Matrix& ctx,
                          const Variables_Set& params,
                          dimension_type space_dim) {
+  // Reset current solution as invalid.
+  solution_valid = false;
+
   Matrix context(ctx);
   Variables_Set parameters(params);
   update_context(parameters, context, artificial_parameters, space_dim);
@@ -1923,7 +1926,6 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
       }
 
       // Pivoting process ended: jump to next iteration.
-      solution_valid = false;
       continue;
     } // if (first_negative != not_a_dim)
 
