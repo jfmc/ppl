@@ -1184,7 +1184,7 @@ PPL::MIP_Problem::linear_combine(row_type& x,
       Coefficient& x_i = x[i];
       x_i *= normalized_y_k;
     }
-  x_k = 0;
+  x.reset(k);
   x.normalize();
   WEIGHT_ADD_MUL(83, x_size);
 }
@@ -1450,7 +1450,7 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
 
   // Zero the last column of the tableau.
   for (dimension_type i = tableau_n_rows; i-- > 0; )
-    tableau[i][tableau.num_columns()-1] = 0;
+    tableau[i].reset(tableau.num_columns()-1);
 
   // ... then properly set the element in the (new) last column,
   // encoding the kind of optimization; ...
