@@ -456,7 +456,7 @@ test05() {
   cs.insert(Y <= M);
   cs.insert(Y >= -M);
 
-  Con_FP_Expression con_y(0, 0);
+  Con_FP_Expression con_y("0");
   // The constant floating point expression con_y is linearized into
   // the interval linear form lk. If linearization succeeded, we model
   // the assignment Y = 0, invoking affine_form_image method.
@@ -627,7 +627,7 @@ test06() {
   cs.insert(Y <= N);
   cs.insert(Y >= -N);
 
-  Con_FP_Expression con_y(0, 0);
+  Con_FP_Expression con_y("0");
   // The constant floating point expression con_y is linearized into
   // the interval linear form lk. If linearization succeeded, we model
   // the assignment Y = 0, invoking affine_form_image method.
@@ -795,7 +795,7 @@ test07() {
   cs.insert(Y <= M);
   cs.insert(Y >= -M);
 
-  Con_FP_Expression con_y(0, 0);
+  Con_FP_Expression con_y("0");
   // The constant floating point expression con_y is linearized into
   // the interval linear form lk. If linearization succeeded, we model
   // the assignment Y = 0, invoking affine_form_image method.

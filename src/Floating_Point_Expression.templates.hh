@@ -33,14 +33,16 @@ template<typename FP_Interval_Type, typename FP_Format>
 void
 Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::relative_error(const FP_Linear_Form& lf, FP_Linear_Form& result) {
-  /* FIXME: here we assume that boundary_type can represent
-     (2)^(-FP_Format::MANTISSA_BITS) precisely. */
-  FP_Interval_Type error_propagator(-pow(FP_Format::BASE,
+
+  FP_Interval_Type error_propagator;
+  error_propagator.build(
+  i_constraint(GREATER_OR_EQUAL, -pow(FP_Format::BASE,
   -static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
-  ::boundary_type>(FP_Format::MANTISSA_BITS)));
-  error_propagator.join_assign(FP_Interval_Type(pow(FP_Format::BASE,
+  ::boundary_type>(FP_Format::MANTISSA_BITS))),
+  i_constraint(LESS_OR_EQUAL, pow(FP_Format::BASE,
   -static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
-  ::boundary_type>(FP_Format::MANTISSA_BITS))));
+  ::boundary_type>(FP_Format::MANTISSA_BITS)))
+  );
 
   // Handle the inhomogeneous term.
   const FP_Interval_Type* current_term = &lf.inhomogeneous_term();

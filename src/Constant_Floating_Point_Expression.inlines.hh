@@ -37,11 +37,10 @@ template <typename FP_Interval_Type, typename FP_Format>
 inline
 Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
 Constant_Floating_Point_Expression(const boundary_type lb,
-                                   const boundary_type ub)
-  : value(lb) {
+                                   const boundary_type ub) {
   assert(lb <= ub);
-  // FIXME: this may be incorrect for some policies.
-  value.join_assign(ub);
+  value.build(i_constraint(GREATER_OR_EQUAL, lb),
+              i_constraint(LESS_OR_EQUAL, ub));
 }
 
 template <typename FP_Interval_Type, typename FP_Format>

@@ -151,8 +151,6 @@ public:
 
 private:
 
-  // FIXME: this is a temporary solution: we should find a way to convert
-  // a floating point with an arbitrary format to an interval.
   FP_Interval_Type value;
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

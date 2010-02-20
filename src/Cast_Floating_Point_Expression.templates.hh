@@ -36,9 +36,9 @@ bool Cast_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   FP_Linear_Form rel_error;
   relative_error(result, rel_error);
   result += rel_error;
-  FP_Interval_Type abs_error(-this->absolute_error);
-  // FIXME: this may be incorrect for some policies.
-  abs_error.join_assign(this->absolute_error);
+  FP_Interval_Type abs_error;
+  abs_error.build(i_constraint(GREATER_OR_EQUAL, -this->absolute_error),
+                  i_constraint(LESS_OR_EQUAL, this->absolute_error));
   result += abs_error;
   return !this->overflows(result);
 }
