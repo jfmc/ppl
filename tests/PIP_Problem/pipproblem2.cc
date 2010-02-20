@@ -286,6 +286,18 @@ test14() {
   return ok;
 }
 
+bool
+test15() {
+  PIP_Problem pip;
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  // Adding no space dimension at all is a no-op:
+  // it does not invalidate the solution computed before.
+  pip.add_space_dimensions_and_embed(0, 0);
+  // This would throw an exception if the solution was invalidated.
+  pip.print_solution(nout);
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -303,4 +315,5 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

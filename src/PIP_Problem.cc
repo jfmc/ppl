@@ -510,6 +510,11 @@ void
 PPL::PIP_Problem
 ::add_space_dimensions_and_embed(const dimension_type m_vars,
                                  const dimension_type m_params) {
+  // Adding no space dims at all is a no-op:
+  // this avoids invalidating problem status (if it was optimized).
+  if (m_vars == 0 && m_params == 0)
+    return;
+
   // The space dimension of the resulting PIP problem should not
   // overflow the maximum allowed space dimension.
   dimension_type available = max_space_dimension() - space_dimension();
