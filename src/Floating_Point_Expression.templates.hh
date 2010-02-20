@@ -35,14 +35,11 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::relative_error(const FP_Linear_Form& lf, FP_Linear_Form& result) {
 
   FP_Interval_Type error_propagator;
-  error_propagator.build(
-  i_constraint(GREATER_OR_EQUAL, -pow(FP_Format::BASE,
+  boundary_type lb = -pow(FP_Format::BASE,
   -static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
-  ::boundary_type>(FP_Format::MANTISSA_BITS))),
-  i_constraint(LESS_OR_EQUAL, pow(FP_Format::BASE,
-  -static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
-  ::boundary_type>(FP_Format::MANTISSA_BITS)))
-  );
+  ::boundary_type>(FP_Format::MANTISSA_BITS));
+  error_propagator.build(i_constraint(GREATER_OR_EQUAL, lb),
+                         i_constraint(LESS_OR_EQUAL, -lb));
 
   // Handle the inhomogeneous term.
   const FP_Interval_Type* current_term = &lf.inhomogeneous_term();
@@ -89,6 +86,26 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
   }
 
   return;
+}
+
+template<typename FP_Interval_Type, typename FP_Format>
+FP_Interval_Type
+Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::compute_absolute_error() {
+  boundary_type omega = std::max(
+  static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
+  ::boundary_type>(pow(FP_Format::BASE, static_cast<typename
+		       Floating_Point_Expression<FP_Interval_Type, FP_Format>
+		       ::boundary_type>(1) - FP_Format
+		       ::EXPONENT_BIAS - FP_Format
+		       ::MANTISSA_BITS)),
+  std::numeric_limits<typename
+                      Floating_Point_Expression<FP_Interval_Type, FP_Format>
+  ::boundary_type>::denorm_min());
+  FP_Interval_Type result;
+  result.build(i_constraint(GREATER_OR_EQUAL, -omega),
+               i_constraint(LESS_OR_EQUAL, omega));
+  return result;
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -55,9 +55,7 @@ test02() {
   FP_Linear_Form result;
   mul.linearize(store, FP_Linear_Form_Abstract_Store(), result);
 
-  FP_Interval kr(-FP_Expression::absolute_error);
-  kr.join_assign(FP_Expression::absolute_error);
-  FP_Linear_Form known_result(kr);
+  FP_Linear_Form known_result(FP_Expression::absolute_error);
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
@@ -108,9 +106,7 @@ test04() {
   tmp.join_assign(tmp2);
   known_result *= tmp;
   known_result += tmp * FP_Linear_Form(B);
-  tmp = FP_Interval(-FP_Expression::absolute_error);
-  tmp.join_assign(FP_Expression::absolute_error);
-  known_result += tmp;
+  known_result += FP_Expression::absolute_error;
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
@@ -146,9 +142,7 @@ test05() {
   tmp.join_assign(tmp2);
   known_result *= tmp;
   known_result -= tmp * FP_Linear_Form(B);
-  tmp = FP_Interval(-FP_Expression::absolute_error);
-  tmp.join_assign(FP_Expression::absolute_error);
-  known_result += tmp;
+  known_result += FP_Expression::absolute_error;
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
@@ -173,8 +167,6 @@ test06() {
   FP_Linear_Form result;
   mul.linearize(store, FP_Linear_Form_Abstract_Store(), result);
 
-  tmp = FP_Interval(-FP_Expression::absolute_error);
-  tmp.join_assign(FP_Expression::absolute_error);
   ANALYZER_FP_FORMAT exp = pow(ANALYZED_FP_FORMAT::BASE,
     -static_cast<ANALYZER_FP_FORMAT>((ANALYZED_FP_FORMAT::MANTISSA_BITS-1)));
   FP_Interval coeff = FP_Interval(2);
@@ -184,7 +176,7 @@ test06() {
   coeff.join_assign(coeff2);
   FP_Linear_Form known_result = FP_Linear_Form(Variable(0));
   known_result *= coeff;
-  known_result += tmp;
+  known_result += FP_Expression::absolute_error;
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
@@ -209,8 +201,7 @@ test07() {
   FP_Linear_Form result;
   div.linearize(store, FP_Linear_Form_Abstract_Store(), result);
     nout << "result" << endl << result << endl;
-  tmp = FP_Interval(-FP_Expression::absolute_error);
-  tmp.join_assign(FP_Expression::absolute_error);
+
   ANALYZER_FP_FORMAT exp = pow(ANALYZED_FP_FORMAT::BASE,
     -static_cast<ANALYZER_FP_FORMAT>((ANALYZED_FP_FORMAT::MANTISSA_BITS+1)));
   FP_Interval coeff = FP_Interval(1 / 2.0);
@@ -220,7 +211,7 @@ test07() {
   coeff.join_assign(coeff2);
   FP_Linear_Form known_result = FP_Linear_Form(Variable(0));
   known_result *= coeff;
-  known_result += tmp;
+  known_result += FP_Expression::absolute_error;
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
@@ -255,9 +246,7 @@ test08() {
   tmp2 += exp;
   tmp.join_assign(tmp2);
   known_result *= tmp;
-  tmp = FP_Interval(-FP_Expression::absolute_error);
-  tmp.join_assign(FP_Expression::absolute_error);
-  known_result += tmp;
+  known_result += FP_Expression::absolute_error;
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
@@ -272,8 +261,7 @@ test08() {
 bool
 test09() {
   ANALYZER_FP_FORMAT max = std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  FP_Interval min = FP_Interval(-FP_Expression::absolute_error);
-  min.join_assign(FP_Expression::absolute_error);
+  FP_Interval min = FP_Expression::absolute_error;
   FP_Linear_Form known_result1 = FP_Linear_Form(min);
   Con_FP_Expression* con1 = new Con_FP_Expression(0, 0);
   Con_FP_Expression* con2 = new Con_FP_Expression(0, max);

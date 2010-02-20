@@ -98,10 +98,7 @@ bool Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
     result += linearized_first_operand;
   }
 
-  FP_Interval_Type abs_error;
-  abs_error.build(i_constraint(GREATER_OR_EQUAL, -this->absolute_error),
-                  i_constraint(LESS_OR_EQUAL, this->absolute_error));
-  result += abs_error;
+  result += this->absolute_error;
   return !this->overflows(result);
 }
 

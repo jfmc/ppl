@@ -118,11 +118,12 @@ public:
   /*! \brief
     Absolute error.
 
-    Initialized by computing the smallest non-zero positive
-    number in the less precise floating point format between the
-    analyzer format and the analyzed format.
+    Represents the interval \f$[-\omega; \omega]\f$ where \f$\omega\f$ is the
+    smallest non-zero positive number in the less precise floating point
+    format between the analyzer format and the analyzed format.
+
   */
-  static boundary_type absolute_error;
+  static FP_Interval_Type absolute_error;
 
   // FIXME: this may not be the best place for them.
   /*! \brief
@@ -183,22 +184,25 @@ public:
                           const FP_Interval_Abstract_Store& store,
                           FP_Interval_Type& result);
 
+private:
+
+  /*! \brief
+    Computes the absolute error.
+
+    Static helper method that is used to compute the value of the public
+    static field <CODE>absolute_error</CODE>.
+
+    \return the interval \f$[-\omega; \omega]\f$ corresponding to the value
+    of <CODE>absolute_error</CODE>
+  */
+  static FP_Interval_Type compute_absolute_error();
+
 }; // class Floating_Point_Expression
 
 
 template <typename FP_Interval_Type, typename FP_Format>
-typename Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
-Floating_Point_Expression<FP_Interval_Type, FP_Format>::absolute_error =
-std::max(
-  static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
-  ::boundary_type>(pow(FP_Format::BASE, static_cast<typename
-		       Floating_Point_Expression<FP_Interval_Type, FP_Format>
-		       ::boundary_type>(1) - FP_Format
-		       ::EXPONENT_BIAS - FP_Format
-		       ::MANTISSA_BITS)),
-  std::numeric_limits<typename
-                      Floating_Point_Expression<FP_Interval_Type, FP_Format>
-  ::boundary_type>::denorm_min());
+FP_Interval_Type Floating_Point_Expression<FP_Interval_Type, FP_Format>
+  ::absolute_error = compute_absolute_error();
 
 } // namespace Parma_Polyhedra_Library
 
