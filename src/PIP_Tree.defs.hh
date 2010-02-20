@@ -452,12 +452,22 @@ private:
     //! Returns the value of the denominator.
     Coefficient_traits::const_reference denominator() const;
 
+    //! Dumps to \p s an ASCII representation of \p *this.
     void ascii_dump(std::ostream& s) const;
+
+    /*! \brief
+      Loads from \p s an ASCII representation (as produced by
+      ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+      Returns \c true if successful, \c false otherwise.
+    */
     bool ascii_load(std::istream& s);
 
-    //! Returns the total size in bytes of the memory occupied by \p *this.
-    memory_size_type total_memory_in_bytes() const;
     //! Returns the size in bytes of the memory managed by \p *this.
+    /*!
+      \note
+      No need for a \c total_memory_in_bytes() method, since
+      class Tableau is a private inner class of PIP_Solution_Node.
+    */
     memory_size_type external_memory_in_bytes() const;
 
     //! Returns \c true if and only if \p *this is well formed.

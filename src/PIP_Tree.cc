@@ -2465,11 +2465,6 @@ PIP_Solution_Node::Tableau::external_memory_in_bytes() const {
 }
 
 memory_size_type
-PIP_Solution_Node::Tableau::total_memory_in_bytes() const {
-  return sizeof(*this) + external_memory_in_bytes();
-}
-
-memory_size_type
 PIP_Solution_Node::external_memory_in_bytes() const {
   memory_size_type n = PIP_Tree_Node::external_memory_in_bytes();
   n += tableau.external_memory_in_bytes();

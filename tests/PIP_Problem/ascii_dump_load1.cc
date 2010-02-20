@@ -260,7 +260,10 @@ test09() {
   cs.insert(i <= n);
 
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  // Compute the solution tree.
   (void) pip.solve();
+  // Printing ensures parametric solution values are generated.
+  pip.print_solution(nout);
 
   std::stringstream ss;
   pip.ascii_dump(ss);
