@@ -501,6 +501,20 @@ test16() {
   return ok;
 }
 
+bool
+test17() {
+  PIP_Problem pip;
+  pip.add_space_dimensions_and_embed(0, 1);
+  // Adding unsatisfiable context constraints.
+  Variable n(0);
+  pip.add_constraint(n <= 5);
+  pip.add_constraint(n >= 10);
+  bool ok = (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
+  if (pip.solution() != 0)
+    pip.print_solution(nout);
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -519,5 +533,7 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
-  // DO_TEST(test16);
+  // The following two tests show a bug in the PIP solver.
+  DO_TEST_F(test16);
+  DO_TEST_F(test17);
 END_MAIN
