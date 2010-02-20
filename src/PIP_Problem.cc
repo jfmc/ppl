@@ -352,12 +352,12 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
   s << "\ncurrent_solution: ";
   if (current_solution == 0)
     s << "BOTTOM\n";
-  else if (PIP_Decision_Node* dec = current_solution->as_decision()) {
+  else if (const PIP_Decision_Node* dec = current_solution->as_decision()) {
     s << "DECISION\n";
     dec->ascii_dump(s);
   }
   else {
-    PIP_Solution_Node* sol = current_solution->as_solution();
+    const PIP_Solution_Node* sol = current_solution->as_solution();
     PPL_ASSERT(sol != 0);
     s << "SOLUTION\n";
     sol->ascii_dump(s);
@@ -470,13 +470,15 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
   if (str == "BOTTOM")
     current_solution = 0;
   else if (str == "DECISION") {
-    current_solution = new PIP_Decision_Node(0, 0);
-    if (!current_solution->as_decision()->ascii_load(s))
+    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0);
+    current_solution = dec;
+    if (!dec->ascii_load(s))
       return false;
   }
   else if (str == "SOLUTION") {
-    current_solution = new PIP_Solution_Node();
-    if (!current_solution->as_solution()->ascii_load(s))
+    PIP_Solution_Node* sol = new PIP_Solution_Node;
+    current_solution = sol;
+    if (!sol->ascii_load(s))
       return false;
   }
   else

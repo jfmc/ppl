@@ -64,14 +64,8 @@ public:
   //! Returns \p this if \p *this is a solution node, 0 otherwise.
   virtual const PIP_Solution_Node* as_solution() const;
 
-  //! Returns \p this if \p *this is a solution node, 0 otherwise.
-  virtual PIP_Solution_Node* as_solution();
-
   //! Returns \p this if \p *this is a decision node, 0 otherwise.
   virtual const PIP_Decision_Node* as_decision() const;
-
-  //! Returns \p this if \p *this is a decision node, 0 otherwise.
-  virtual PIP_Decision_Node* as_decision();
 
   /*! \brief
     Returns the system of parameter constraints controlling \p *this.
@@ -326,9 +320,6 @@ public:
 
   //! Returns \p this.
   virtual const PIP_Solution_Node* as_solution() const;
-
-  //! Returns \p this.
-  virtual PIP_Solution_Node* as_solution();
 
   //! Prints on \p s the tree rooted in \p *this.
   virtual void print_tree(std::ostream& s,
@@ -693,9 +684,6 @@ public:
 
   //! Returns \p this.
   virtual const PIP_Decision_Node* as_decision() const;
-
-  //! Returns \p this.
-  virtual PIP_Decision_Node* as_decision();
 
   //! Returns a const pointer to the \p b (true or false) branch of \p *this.
   const PIP_Tree_Node* child_node(bool b) const;

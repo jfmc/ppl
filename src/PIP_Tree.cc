@@ -423,18 +423,8 @@ PIP_Tree_Node::as_solution() const {
   return 0;
 }
 
-PIP_Solution_Node*
-PIP_Tree_Node::as_solution() {
-  return 0;
-}
-
 const PIP_Decision_Node*
 PIP_Tree_Node::as_decision() const {
-  return 0;
-}
-
-PIP_Decision_Node*
-PIP_Tree_Node::as_decision() {
   return 0;
 }
 
@@ -443,18 +433,8 @@ PIP_Solution_Node::as_solution() const {
   return this;
 }
 
-PIP_Solution_Node*
-PIP_Solution_Node::as_solution() {
-  return this;
-}
-
 const PIP_Decision_Node*
 PIP_Decision_Node::as_decision() const {
-  return this;
-}
-
-PIP_Decision_Node*
-PIP_Decision_Node::as_decision() {
   return this;
 }
 
@@ -708,12 +688,12 @@ PIP_Decision_Node::ascii_dump(std::ostream& s) const {
   s << "\ntrue_child: ";
   if (true_child == 0)
     s << "BOTTOM\n";
-  else if (PIP_Decision_Node* dec = true_child->as_decision()) {
+  else if (const PIP_Decision_Node* dec = true_child->as_decision()) {
     s << "DECISION\n";
     dec->ascii_dump(s);
   }
   else {
-    PIP_Solution_Node* sol = true_child->as_solution();
+    const PIP_Solution_Node* sol = true_child->as_solution();
     PPL_ASSERT(sol != 0);
     s << "SOLUTION\n";
     sol->ascii_dump(s);
@@ -723,12 +703,12 @@ PIP_Decision_Node::ascii_dump(std::ostream& s) const {
   s << "\nfalse_child: ";
   if (false_child == 0)
     s << "BOTTOM\n";
-  else if (PIP_Decision_Node* dec = false_child->as_decision()) {
+  else if (const PIP_Decision_Node* dec = false_child->as_decision()) {
     s << "DECISION\n";
     dec->ascii_dump(s);
   }
   else {
-    PIP_Solution_Node* sol = false_child->as_solution();
+    const PIP_Solution_Node* sol = false_child->as_solution();
     PPL_ASSERT(sol != 0);
     s << "SOLUTION\n";
     sol->ascii_dump(s);
@@ -755,13 +735,15 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
   if (str == "BOTTOM")
     true_child = 0;
   else if (str == "DECISION") {
-    true_child = new PIP_Decision_Node(0, 0);
-    if (!true_child->as_decision()->ascii_load(s))
+    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0);
+    true_child = dec;
+    if (!dec->ascii_load(s))
       return false;
   }
   else if (str == "SOLUTION") {
-    true_child = new PIP_Solution_Node();
-    if (!true_child->as_solution()->ascii_load(s))
+    PIP_Solution_Node* sol = new PIP_Solution_Node;
+    true_child = sol;
+    if (!sol->ascii_load(s))
       return false;
   }
   else
@@ -780,13 +762,15 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
   if (str == "BOTTOM")
     false_child = 0;
   else if (str == "DECISION") {
-    false_child = new PIP_Decision_Node(0, 0);
-    if (!false_child->as_decision()->ascii_load(s))
+    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0);
+    false_child = dec;
+    if (!dec->ascii_load(s))
       return false;
   }
   else if (str == "SOLUTION") {
-    false_child = new PIP_Solution_Node();
-    if (!false_child->as_solution()->ascii_load(s))
+    PIP_Solution_Node* sol = new PIP_Solution_Node;
+    false_child = sol;
+    if (!sol->ascii_load(s))
       return false;
   }
   else
