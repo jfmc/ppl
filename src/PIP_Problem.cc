@@ -666,8 +666,8 @@ PPL::PIP_Problem::print_solution(std::ostream& s, unsigned indent) const {
     break;
 
   case PARTIALLY_SATISFIABLE:
-    throw std::domain_error("PIP_Problem::print_solution():\n"
-                            "the PIP problem has not been solved.");
+    throw std::logic_error("PIP_Problem::print_solution():\n"
+                           "the PIP problem has not been solved.");
   }
 }
 

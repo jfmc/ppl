@@ -456,6 +456,17 @@ public:
   bool OK() const;
 
   //! Prints on \p s the solution computed for \p *this.
+  /*!
+    \param s
+    The output stream.
+
+    \param indent
+    An indentation parameter (default value 0).
+
+    \exception std::logic_error
+    Thrown if trying to print the solution when the PIP problem
+    still has to be solved.
+  */
   void print_solution(std::ostream& s, unsigned indent = 0) const;
 
   PPL_OUTPUT_DECLARATIONS

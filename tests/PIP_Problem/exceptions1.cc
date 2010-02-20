@@ -276,6 +276,22 @@ test12() {
   return false;
 }
 
+bool
+test13() {
+  PIP_Problem pip;
+  try {
+    // Printing the solution before trying to solve the problem.
+    pip.print_solution(nout);
+  }
+  catch (std::logic_error& e) {
+    nout << "logic_error: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -291,4 +307,5 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN
