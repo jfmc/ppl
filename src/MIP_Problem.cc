@@ -882,19 +882,14 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   const dimension_type tableau_num_columns = tableau.num_columns();
   PPL_ASSERT(tableau_num_rows == base.size());
   double current_value = 0.0;
-  std::vector<double> challenger_nums(tableau_num_columns, 0.0);
-  std::vector<double> challenger_dens(tableau_num_columns, 0.0);
-  std::vector<double> float_tableau_values(tableau_num_columns, 0.0);
-  std::vector<double> float_tableau_denums(tableau_num_columns, 0.0);
+  std::vector<double> challenger_dens(tableau_num_columns-1, 0.0);
+  std::vector<double> float_tableau_values(tableau_num_columns-1, 0.0);
+  std::vector<double> float_tableau_denums(tableau_num_columns-1, 0.0);
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
     const Coefficient& cost_j = working_cost[j];
     if (sgn(cost_j) == cost_sign) {
-      // We cannot compute the (exact) square root of abs(\Delta x_j).
-      // The workaround is to compute the square of `cost[j]'.
-      assign(challenger_nums[j], cost_j);
-      challenger_nums[j] = std::abs(challenger_nums[j]);
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
       challenger_dens[j] = 1.0;
@@ -905,6 +900,12 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     const Coefficient& tableau_i_base_i = tableau_i.get(base[i]);
     matrix_const_row_const_iterator j = tableau_i.begin();
     matrix_const_row_const_iterator j_end = tableau_i.end();
+    // Skip the last column
+    if (j != j_end) {
+      --j_end;
+      if ((*j_end).first != tableau_num_columns-1)
+        ++j_end;
+    }
     if (j != j_end && (*j).first == 0)
       ++j;
     for ( ; j != j_end; ++j) {
@@ -927,6 +928,13 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
     const Coefficient& cost_j = working_cost[j];
     if (sgn(cost_j) == cost_sign) {
+      // FIXME: do we need challenger_num? If so, uncomment the lines below
+      // and add a declaration.
+      // We cannot compute the (exact) square root of abs(\Delta x_j).
+      // The workaround is to compute the square of `cost[j]'.
+      //
+      // assign(challenger_num, cost_j);
+      // challenger_num = std::abs(challenger_num);
       double challenger_value = sqrt(challenger_dens[j]);
       // Initialize `current_value' during the first iteration.
       // Otherwise update if the challenger wins.
@@ -942,6 +950,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
+  const dimension_type tableau_num_columns = tableau.num_columns();
   PPL_ASSERT(tableau_num_rows == base.size());
   // The square of the lcm of all the coefficients of variables in base.
   PPL_DIRTY_TEMP_COEFFICIENT(squared_lcm_basis);
@@ -964,10 +973,9 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     WEIGHT_ADD_MUL(444, tableau_num_rows);
   }
 
-  // Defined here to avoid repeated (de-)allocations.
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(scalar_value);
-  PPL_DIRTY_TEMP_COEFFICIENT(challenger_den);
+  std::vector<Coefficient> scalar_values(tableau_num_columns-1);
+  std::vector<Coefficient> challenger_dens(tableau_num_columns-1);
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_value);
   PPL_DIRTY_TEMP_COEFFICIENT(current_value);
 
@@ -975,41 +983,65 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   PPL_DIRTY_TEMP_COEFFICIENT(current_den);
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
-  for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
+  for (dimension_type j = tableau_num_columns - 1; j-- > 1; ) {
     const Coefficient& cost_j = working_cost[j];
     if (sgn(cost_j) == cost_sign) {
-      WEIGHT_BEGIN();
-      // We cannot compute the (exact) square root of abs(\Delta x_j).
-      // The workaround is to compute the square of `cost[j]'.
-      challenger_num = cost_j * cost_j;
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
-      challenger_den = squared_lcm_basis;
-      for (dimension_type i = tableau_num_rows; i-- > 0; ) {
-        const Coefficient& tableau_ij = tableau[i].get(j);
+      challenger_dens[j] = squared_lcm_basis;
+    }
+  }
+  for (dimension_type i = tableau_num_rows; i-- > 0; ) {
+    matrix_row_const_reference_type tableau_i = tableau[i];
+    matrix_const_row_const_iterator j = tableau_i.begin();
+    matrix_const_row_const_iterator j_end = tableau_i.end();
+    // Skip the last column
+    if (j != j_end) {
+      --j_end;
+      if ((*j_end).first != tableau_num_columns-1)
+        ++j_end;
+    }
+    if (j != j_end && (*j).first == 0)
+      ++j;
+    for ( ; j != j_end; ++j) {
+      const dimension_type j_index = (*j).first;
+      const Coefficient& tableau_ij = (*j).second;
+      const Coefficient& cost_j = working_cost[j_index];
+      if (sgn(cost_j) == cost_sign) {
+        WEIGHT_BEGIN();
+        // FIXME: Check if the test against zero speeds up the sparse version.
         // The test against 0 gives rise to a consistent speed up: see
         // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
         if (tableau_ij != 0) {
-          scalar_value = tableau_ij * norm_factor[i];
-          add_mul_assign(challenger_den, scalar_value, scalar_value);
+          scalar_values[j_index] = tableau_ij * norm_factor[i];
+          add_mul_assign(challenger_dens[j_index], scalar_values[j_index],
+                         scalar_values[j_index]);
         }
+        WEIGHT_ADD_MUL(47, tableau_num_rows);
       }
+    }
+  }
+  for (dimension_type j = tableau_num_columns - 1; j-- > 1; ) {
+    const Coefficient& cost_j = working_cost[j];
+    if (sgn(cost_j) == cost_sign) {
+      // We cannot compute the (exact) square root of abs(\Delta x_j).
+      // The workaround is to compute the square of `cost[j]'.
+      challenger_num = cost_j * cost_j;
       // Initialization during the first loop.
       if (entering_index == 0) {
         std::swap(current_num, challenger_num);
-        std::swap(current_den, challenger_den);
+        std::swap(current_den, challenger_dens[j]);
         entering_index = j;
         continue;
       }
       challenger_value = challenger_num * current_den;
-      current_value = current_num * challenger_den;
+      current_value = current_num * challenger_dens[j];
       // Update the values, if the challenger wins.
       if (challenger_value > current_value) {
         std::swap(current_num, challenger_num);
-        std::swap(current_den, challenger_den);
+        std::swap(current_den, challenger_dens[j]);
         entering_index = j;
       }
-      WEIGHT_ADD_MUL(47, tableau_num_rows);
     }
   }
   return entering_index;
