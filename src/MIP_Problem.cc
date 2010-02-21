@@ -882,19 +882,13 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   const dimension_type tableau_num_columns = tableau.num_columns();
   PPL_ASSERT(tableau_num_rows == base.size());
   double current_value = 0.0;
-  std::vector<double> challenger_dens(tableau_num_columns-1, 0.0);
+  // Due to our integer implementation, the `1' term in the denominator
+  // of the original formula has to be replaced by `squared_lcm_basis'.
+  std::vector<double> challenger_dens(tableau_num_columns-1, 1.0);
   std::vector<double> float_tableau_values(tableau_num_columns-1, 0.0);
   std::vector<double> float_tableau_denums(tableau_num_columns-1, 0.0);
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
-  for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
-    const Coefficient& cost_j = working_cost[j];
-    if (sgn(cost_j) == cost_sign) {
-      // Due to our integer implementation, the `1' term in the denominator
-      // of the original formula has to be replaced by `squared_lcm_basis'.
-      challenger_dens[j] = 1.0;
-    }
-  }
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     matrix_row_const_reference_type tableau_i = tableau[i];
     const Coefficient& tableau_i_base_i = tableau_i.get(base[i]);
@@ -975,7 +969,8 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
 
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_num);
   std::vector<Coefficient> scalar_values(tableau_num_columns-1);
-  std::vector<Coefficient> challenger_dens(tableau_num_columns-1);
+  std::vector<Coefficient> challenger_dens(tableau_num_columns-1,
+                                           squared_lcm_basis);
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_value);
   PPL_DIRTY_TEMP_COEFFICIENT(current_value);
 
@@ -983,14 +978,6 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   PPL_DIRTY_TEMP_COEFFICIENT(current_den);
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
-  for (dimension_type j = tableau_num_columns - 1; j-- > 1; ) {
-    const Coefficient& cost_j = working_cost[j];
-    if (sgn(cost_j) == cost_sign) {
-      // Due to our integer implementation, the `1' term in the denominator
-      // of the original formula has to be replaced by `squared_lcm_basis'.
-      challenger_dens[j] = squared_lcm_basis;
-    }
-  }
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     matrix_row_const_reference_type tableau_i = tableau[i];
     matrix_const_row_const_iterator j = tableau_i.begin();
