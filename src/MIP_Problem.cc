@@ -700,16 +700,24 @@ PPL::MIP_Problem::process_pending_constraints() {
       matrix_row_reference_type tableau_k = tableau[--k];
       const Constraint& cs_i = input_cs[i];
       for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
-        Coefficient& tableau_k_map_first = tableau_k[mapping[sd+1].first];
-        tableau_k_map_first = cs_i.coefficient(Variable(sd));
-        // Split if needed.
-        if (mapping[sd+1].second != 0)
-          neg_assign(tableau_k[mapping[sd+1].second],tableau_k_map_first);
+        const Coefficient& current_coefficient =
+          cs_i.coefficient(Variable(sd));
+        // The test against 0 is not needed, but improves performance.
+        if (current_coefficient != 0) {
+          tableau_k[mapping[sd+1].first] = current_coefficient;
+          // Split if needed.
+          if (mapping[sd+1].second != 0)
+            neg_assign(tableau_k[mapping[sd+1].second],current_coefficient);
+        }
       }
-      tableau_k[mapping[0].first] = cs_i.inhomogeneous_term();
-      // Split if needed.
-      if (mapping[0].second != 0)
-        tableau_k[mapping[0].second] = -cs_i.inhomogeneous_term();
+      const Coefficient& cs_i_inhomogeneous_term = cs_i.inhomogeneous_term();
+      // The test against 0 is not needed, but improves performance.
+      if (cs_i_inhomogeneous_term != 0) {
+        tableau_k[mapping[0].first] = cs_i_inhomogeneous_term;
+        // Split if needed.
+        if (mapping[0].second != 0)
+          neg_assign(tableau_k[mapping[0].second],cs_i_inhomogeneous_term);
+      }
 
       // Add the slack variable, if needed.
       if (cs_i.is_inequality()) {
