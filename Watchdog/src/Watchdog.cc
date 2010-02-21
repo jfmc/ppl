@@ -242,6 +242,6 @@ void
 PWL::Watchdog::finalize() {
 }
 
-#endif // PWL_HAVE_DECL_SETITIMER
-
 unsigned int PWL::Init::count = 0;
+
+#endif // PWL_HAVE_DECL_SETITIMER

@@ -22,6 +22,40 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_c.h"
 #include <stdlib.h>
+#include <stdarg.h>
+
+static const char* program_name = 0;
+
+static void
+my_exit(int status) {
+  (void) ppl_finalize();
+  exit(status);
+}
+
+static void
+fatal(const char* format, ...) {
+  va_list ap;
+  fprintf(stderr, "%s: ", program_name);
+  va_start(ap, format);
+  vfprintf(stderr, format, ap);
+  va_end(ap);
+  fprintf(stderr, "\n");
+  my_exit(1);
+}
+
+static void
+error_handler(enum ppl_enum_error_code code,
+	      const char* description) {
+#if !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
+  /* If Watchdog objects are not supported, an error will occur:
+     this is normal.
+     FIXME: what is not normal is the use of this error code, which
+     the documentation reserves for PPL bugs. */
+  if (code == PPL_ERROR_INTERNAL_ERROR)
+    my_exit(0);
+#endif
+  fatal("PPL error code %d: %s", code, description);
+}
 
 void
 open_hypercube(int dimension, ppl_Polyhedron_t ph) {
@@ -93,9 +127,22 @@ timed_compute_open_hypercube_generators(int hundredth_secs,
 }
 
 int
-main() {
-  ppl_initialize();
+main(int argc, char **argv) {
+  program_name = argv[0];
+
+  if (argc != 1) {
+    fprintf(stderr, "usage: %s\n", program_name);
+    exit(1);
+  }
+
+  if (ppl_initialize() < 0)
+    fatal("cannot initialize the Parma Polyhedra Library");
+
+  if (ppl_set_error_handler(error_handler) < 0)
+    fatal("cannot install the custom error handler");
+
   timed_compute_open_hypercube_generators(200, 20);
+
   ppl_finalize();
   return 0;
 }

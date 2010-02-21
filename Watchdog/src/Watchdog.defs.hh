@@ -136,6 +136,8 @@ private:
 #endif // PWL_HAVE_DECL_SETITIMER
 };
 
+#if PWL_HAVE_DECL_SETITIMER
+
 class Init {
 private:
   //! Count the number of objects created.
@@ -149,15 +151,21 @@ public:
   ~Init();
 };
 
+#endif // PWL_HAVE_DECL_SETITIMER
+
 } // namespace Parma_Watchdog_Library
 
 #include "Watchdog.inlines.hh"
+
+#if PWL_HAVE_DECL_SETITIMER
 
 namespace {
 
 Parma_Watchdog_Library::Init Parma_Watchdog_Library_initializer;
 
 } // namespace
+
+#endif // PWL_HAVE_DECL_SETITIMER
 
 #endif // !defined(PWL_Watchdog_defs_hh)
 
