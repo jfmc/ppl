@@ -170,6 +170,18 @@ Sparse_Matrix_Row::swap(Sparse_Matrix_Row x) {
   PPL_ASSERT(x.OK());
 }
 
+inline void
+Sparse_Matrix_Row::swap(dimension_type i, dimension_type j) {
+  row_.swap(i,j);
+  assert(OK());
+}
+
+inline void
+Sparse_Matrix_Row::swap(iterator i, iterator j) {
+  row_.swap(i,j);
+  PPL_ASSERT(OK());
+}
+
 inline dimension_type
 Sparse_Matrix_Row::size() const {
   return size_;

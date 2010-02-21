@@ -152,16 +152,25 @@ private:
 class Parma_Polyhedra_Library::Sparse_Matrix_Row {
 
 public:
-  Sparse_Matrix_Row(Unlimited_Sparse_Row& row,const dimension_type size);
-
-  //! Swaps this row with the row x. The two rows must have the same size.
-  void swap(Sparse_Matrix_Row x);
-
   //! A const iterator that may skip some zeros in the row.
   typedef Unlimited_Sparse_Row::const_iterator const_iterator;
 
   //! An iterator that may skip some zeros in the row.
   typedef Unlimited_Sparse_Row::iterator iterator;
+
+  Sparse_Matrix_Row(Unlimited_Sparse_Row& row,const dimension_type size);
+
+  //! Swaps this row with the row x. The two rows must have the same size.
+  void swap(Sparse_Matrix_Row x);
+
+  //! Swaps the i-th element with the j-th element.
+  //! Iterators pointing to these elements are invalidated.
+  void swap(dimension_type i, dimension_type j);
+
+  //! Swaps the element pointed to by i with the element pointed to by j.
+  //! Iterators equal to i and j point to the other index, so keep the same
+  //! value.
+  void swap(iterator i, iterator j);
 
   dimension_type size() const;
 
