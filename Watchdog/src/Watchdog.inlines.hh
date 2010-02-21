@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Watchdog_Library {
 
-#if PWL_HAVE_DECL_SETITIMER
+#if PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
 
 template <typename Flag_Base, typename Flag>
 Watchdog::Watchdog(unsigned int units,
@@ -89,7 +89,7 @@ Init::~Init() {
   }
 }
 
-#else // !PWL_HAVE_DECL_SETITIMER
+#else // !PWL_HAVE_DECL_SETITIMER !! !PWL_HAVE_DECL_SIGACTION
 
 template <typename Flag_Base, typename Flag>
 Watchdog::Watchdog(unsigned int /* units */,
@@ -109,7 +109,7 @@ inline
 Watchdog::~Watchdog() {
 }
 
-#endif // !PWL_HAVE_DECL_SETITIMER
+#endif // !PWL_HAVE_DECL_SETITIMER !! !PWL_HAVE_DECL_SIGACTION
 
 } // namespace Parma_Watchdog_Library
 

@@ -32,7 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "pwl_include_files.hh"
 
 //! Defined to 1 if PWL::Watchdog objects are supported, to 0 otherwise.
-#define PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED PWL_HAVE_DECL_SETITIMER
+#define PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED \
+  (PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION)
 
 #ifdef PWL_SAVE_NDEBUG
 # ifndef NDEBUG

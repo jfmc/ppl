@@ -61,7 +61,7 @@ public:
   //! Destructor.
   ~Watchdog();
 
-#if PWL_HAVE_DECL_SETITIMER
+#if PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
 
 private:
   typedef Pending_List<Watchdog_Traits> WD_Pending_List;
@@ -133,10 +133,10 @@ private:
 
   friend void PWL_handle_timeout(int signum);
 
-#endif // PWL_HAVE_DECL_SETITIMER
+#endif // PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
 };
 
-#if PWL_HAVE_DECL_SETITIMER
+#if PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
 
 class Init {
 private:
@@ -151,13 +151,13 @@ public:
   ~Init();
 };
 
-#endif // PWL_HAVE_DECL_SETITIMER
+#endif // PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
 
 } // namespace Parma_Watchdog_Library
 
 #include "Watchdog.inlines.hh"
 
-#if PWL_HAVE_DECL_SETITIMER
+#if PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
 
 namespace {
 
@@ -165,7 +165,7 @@ Parma_Watchdog_Library::Init Parma_Watchdog_Library_initializer;
 
 } // namespace
 
-#endif // PWL_HAVE_DECL_SETITIMER
+#endif // PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
 
 #endif // !defined(PWL_Watchdog_defs_hh)
 

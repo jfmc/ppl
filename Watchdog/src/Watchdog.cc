@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PWL = Parma_Watchdog_Library;
 
-#if PWL_HAVE_DECL_SETITIMER
+#if PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
 
 #include <csignal>
 #include <iostream>
@@ -244,4 +244,4 @@ PWL::Watchdog::finalize() {
 
 unsigned int PWL::Init::count = 0;
 
-#endif // PWL_HAVE_DECL_SETITIMER
+#endif // PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
