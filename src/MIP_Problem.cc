@@ -137,37 +137,6 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
 }
 
 void
-PPL::MIP_Problem::permute_columns(matrix_type& matrix,
-                                  const std::vector<dimension_type>& cycles) {
-  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-  const dimension_type n = cycles.size();
-  PPL_ASSERT(cycles[n - 1] == 0);
-  for (dimension_type k = matrix.num_rows(); k-- > 0; ) {
-    matrix_row_reference_type rows_k = matrix[k];
-    for (dimension_type i = 0, j = 0; i < n; i = ++j) {
-      // Make `j' be the index of the next cycle terminator.
-      while (cycles[j] != 0)
-        ++j;
-      // Cycles of length less than 2 are not allowed.
-      PPL_ASSERT(j - i >= 2);
-      if (j - i == 2)
-        // For cycles of length 2 no temporary is needed, just a swap.
-        rows_k.swap(cycles[i],cycles[i+1]);
-      else {
-        // Longer cycles need a temporary.
-        tmp = rows_k.get(cycles[j-1]);
-        for (dimension_type l = j-1; l > i; --l)
-          rows_k.swap(cycles[l-1],cycles[l]);
-        if (tmp == 0)
-          rows_k.reset(cycles[i]);
-        else
-          std::swap(tmp, rows_k[cycles[i]]);
-      }
-    }
-  }
-}
-
-void
 PPL::MIP_Problem::add_constraint(const Constraint& c) {
   if (space_dimension() < c.space_dimension()) {
     std::ostringstream s;
@@ -428,16 +397,7 @@ PPL::MIP_Problem::merge_split_variables(dimension_type var_index,
     }
   }
 
-  const dimension_type tableau_cols = tableau.num_columns();
-  // Remove the column.
-  if (column != tableau_cols - 1) {
-    std::vector<dimension_type> cycle;
-    for (dimension_type j = tableau_cols - 1; j >= column; --j)
-      cycle.push_back(j);
-    cycle.push_back(0);
-    permute_columns(tableau,cycle);
-  }
-  tableau.remove_trailing_columns(1);
+  tableau.remove_column(column);
 
   // var_index is no longer split.
   mapping[var_index].second = 0;

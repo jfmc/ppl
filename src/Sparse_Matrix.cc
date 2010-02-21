@@ -26,6 +26,53 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+void
+PPL::Sparse_Matrix::remove_column(dimension_type i) {
+  for (dimension_type j = rows.size(); j-- > 0; ) {
+    Unlimited_Sparse_Row& row = rows[j];
+    Unlimited_Sparse_Row::iterator itr = row.lower_bound(i);
+    Unlimited_Sparse_Row::iterator itr_end = row.end();
+    if (itr != itr_end && itr->first == i)
+      itr = row.reset(itr);
+    while (itr != itr_end) {
+      --(itr->first);
+      ++itr;
+    }
+  }
+  --num_columns_;
+  PPL_ASSERT(OK());
+}
+
+void
+PPL::Sparse_Matrix::permute_columns(const std::vector<dimension_type>&
+                                    cycles) {
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
+  const dimension_type n = cycles.size();
+  PPL_ASSERT(cycles[n - 1] == 0);
+  for (dimension_type k = num_rows(); k-- > 0; ) {
+    Sparse_Matrix_Row rows_k = (*this)[k];
+    for (dimension_type i = 0, j = 0; i < n; i = ++j) {
+      // Make `j' be the index of the next cycle terminator.
+      while (cycles[j] != 0)
+        ++j;
+      // Cycles of length less than 2 are not allowed.
+      PPL_ASSERT(j - i >= 2);
+      if (j - i == 2)
+        // For cycles of length 2 no temporary is needed, just a swap.
+        rows_k.swap(cycles[i],cycles[i+1]);
+      else {
+        // Longer cycles need a temporary.
+        tmp = rows_k.get(cycles[j-1]);
+        for (dimension_type l = j-1; l > i; --l)
+          rows_k.swap(cycles[l-1],cycles[l]);
+        if (tmp == 0)
+          rows_k.reset(cycles[i]);
+        else
+          std::swap(tmp, rows_k[cycles[i]]);
+      }
+    }
+  }
+}
 
 void
 PPL::Sparse_Matrix::resize(dimension_type num_rows,
