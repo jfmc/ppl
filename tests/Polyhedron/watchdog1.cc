@@ -81,7 +81,12 @@ timed_compute_open_hypercube_generators(dimension_type dimension,
     nout << " s" << endl;
     return false;
   }
+  catch (const std::exception& e) {
+    nout << "unexpected std::exception: \n" << e.what() << endl;
+    exit(1);
+  }
   catch (...) {
+    nout << "unexpected unknown exception" << endl;
     exit(1);
   }
   // Should never get here.
