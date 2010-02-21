@@ -1414,6 +1414,7 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
 void
 PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
 				    const dimension_type end_artificials) {
+  PPL_ASSERT(begin_artificials <= end_artificials);
   const dimension_type tableau_last_index = tableau.num_columns() - 1;
   dimension_type tableau_n_rows = tableau.num_rows();
   // Step 1: try to remove from the base all the remaining slack variables.
@@ -1422,10 +1423,14 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
       // Search for a non-zero element to enter the base.
       matrix_row_reference_type tableau_i = tableau[i];
       bool redundant = true;
-      for (dimension_type j = end_artificials+1; j-- > 1; )
-        if (!(begin_artificials <= j && j <= end_artificials)
-            && tableau_i.get(j) != 0) {
-          pivot(j, i);
+      matrix_row_iterator j = tableau_i.begin();
+      matrix_row_iterator j_end = tableau_i.end();
+      // Skip the first element
+      if (j != j_end && (*j).first == 0)
+        ++j;
+      for ( ; (j != j_end) && ((*j).first < begin_artificials); ++j )
+        if ((*j).second != 0) {
+          pivot((*j).first, i);
           redundant = false;
           break;
         }
@@ -1448,12 +1453,8 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   // Step 2: Adjust data structures so as to enter phase 2 of the simplex.
 
   // Compute the dimensions of the new tableau.
-  dimension_type num_artificials = 0;
-  for (dimension_type i = end_artificials + 1; i-- > 1; )
-    if (begin_artificials <= i && i <= end_artificials) {
-      ++num_artificials;
-      tableau.remove_trailing_columns(1);
-    }
+  dimension_type num_artificials = end_artificials - begin_artificials + 1;
+  tableau.remove_trailing_columns(num_artificials);
 
   // Zero the last column of the tableau.
   for (dimension_type i = tableau_n_rows; i-- > 0; )
