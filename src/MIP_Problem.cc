@@ -1256,10 +1256,10 @@ PPL::MIP_Problem
       const Coefficient& t_ee = t_e.get(entering_var_index);
       lcm_assign(lcm, t_ee, t_ie);
       exact_div_assign(current_min, lcm, t_ee);
-      current_min *= t_e[0];
+      current_min *= t_e.get(0);
       abs_assign(current_min);
       exact_div_assign(challenger, lcm, t_ie);
-      challenger *= t_i[0];
+      challenger *= t_i.get(0);
       abs_assign(challenger);
       current_min -= challenger;
       const int sign = sgn(current_min);
