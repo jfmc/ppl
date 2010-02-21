@@ -54,6 +54,18 @@ Sparse_Row::swap(Sparse_Row& x) {
 }
 
 inline void
+Sparse_Row::swap(dimension_type i, dimension_type j) {
+  row.swap(i,j);
+  assert(OK());
+}
+
+inline void
+Sparse_Row::swap(iterator i, iterator j) {
+  row.swap(i,j);
+  PPL_ASSERT(OK());
+}
+
+inline void
 Sparse_Row::construct(const dimension_type sz) {
   resize(sz);
 }

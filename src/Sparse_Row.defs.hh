@@ -35,6 +35,12 @@ namespace Parma_Polyhedra_Library {
 class Sparse_Row {
 
 public:
+  //! A const iterator that may skip some zeros in the sequence.
+  typedef Unlimited_Sparse_Row::const_iterator const_iterator;
+
+  //! An iterator that may skip some zeros in the sequence.
+  typedef Unlimited_Sparse_Row::iterator iterator;
+
   //! Constructs a row from a std::vector.
   Sparse_Row(const std::vector<Coefficient>& v);
 
@@ -46,6 +52,15 @@ public:
 
   //! Swaps (*this) and x.
   void swap(Sparse_Row& x);
+
+  //! Swaps the i-th element with the j-th element.
+  //! Iterators pointing to these elements are invalidated.
+  void swap(dimension_type i, dimension_type j);
+
+  //! Swaps the element pointed to by i with the element pointed to by j.
+  //! Iterators equal to i and j point to the other index, so keep the same
+  //! value.
+  void swap(iterator i, iterator j);
 
   //! This method, with this signature, is needed for compatibility with
   //! Dense_Row. It can be called on any row, and it resizes it to \p sz.
@@ -69,12 +84,6 @@ private:
   dimension_type size_;
 
 public:
-  //! A const iterator that may skip some zeros in the sequence.
-  typedef Unlimited_Sparse_Row::const_iterator const_iterator;
-
-  //! An iterator that may skip some zeros in the sequence.
-  typedef Unlimited_Sparse_Row::iterator iterator;
-
   //! Resets to zero the value pointed by i.
   iterator reset(iterator i);
 
