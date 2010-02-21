@@ -41,6 +41,16 @@ Dense_Row::Dense_Row()
 }
 
 inline void
+Dense_Row::swap(dimension_type i, dimension_type j) {
+  std::swap((*this)[i],(*this)[j]);
+}
+
+inline void
+Dense_Row::swap(iterator i, iterator j) {
+  std::swap((*i).second,(*j).second);
+}
+
+inline void
 Dense_Row::reset(const dimension_type i) {
   (*this)[i] = 0;
 }

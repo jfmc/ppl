@@ -103,6 +103,14 @@ public:
   //! Assignment operator.
   Dense_Row& operator=(const Dense_Row& y);
 
+  //! Swaps the i-th element with the j-th element.
+  //! Provided for compatibility with Sparse_Row
+  void swap(dimension_type i, dimension_type j);
+
+  //! Swaps the element pointed to by i with the element pointed to by j.
+  //! Provided for compatibility with Sparse_Row
+  void swap(iterator i, iterator j);
+
   iterator begin();
   const_iterator begin() const;
 
