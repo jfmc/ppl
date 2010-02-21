@@ -306,6 +306,9 @@ AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
 AC_LANG(C)
 AC_C_CONST
 
+# Use C++ for the remaining checks.
+AC_LANG(C++)
+
 enableval=no
 AC_MSG_CHECKING([whether tests should be run under Valgrind])
 AC_ARG_ENABLE(valgrind-tests,
