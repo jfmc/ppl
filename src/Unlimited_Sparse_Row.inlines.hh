@@ -44,6 +44,55 @@ Unlimited_Sparse_Row::swap(Unlimited_Sparse_Row& x) {
   PPL_ASSERT(x.OK());
 }
 
+inline void
+Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
+  if (i == j)
+    return;
+  iterator i_itr = lower_bound(i);
+  iterator j_itr = lower_bound(j);
+  iterator itr_end = end();
+  if (i_itr != itr_end && i_itr->first == i)
+    if (j_itr != itr_end && j_itr->first == j) {
+      // Both i and j are in the list.
+      Unlimited_Sparse_Row::swap(i_itr,j_itr);
+    } else {
+      if (i_itr != j_itr) {
+        // i is in the list, j isn't
+        data.splice(j_itr,data,i_itr);
+        // j_itr is no longer valid.
+        // i_itr is valid because i_itr != j_itr.
+        --j_itr;
+        j_itr->first = j;
+      } else {
+        j_itr->first=j;
+      }
+    }
+  else
+    if (j_itr != itr_end && j_itr->first == j) {
+      if (i_itr != j_itr) {
+        // j is in the list, i isn't
+        data.splice(i_itr,data,j_itr);
+        // j_itr is no longer valid.
+        // i_itr is valid because i_itr != j_itr.
+        --i_itr;
+        i_itr->first = i;
+      } else {
+        i_itr->first = j;
+      }
+    } else {
+      // Do nothing
+    }
+  assert(OK());
+}
+
+inline void
+Unlimited_Sparse_Row::swap(iterator i, iterator j) {
+  PPL_ASSERT(i != data.end());
+  PPL_ASSERT(j != data.end());
+  std::swap(i->second,j->second);
+  PPL_ASSERT(OK());
+}
+
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::reset(iterator i) {
   iterator res = data.erase(i);

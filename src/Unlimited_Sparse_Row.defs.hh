@@ -56,9 +56,6 @@ public:
   //! Constructs an unlimited row from a std::vector.
   Unlimited_Sparse_Row(const std::vector<Coefficient> &v);
 
-  //! Swaps (*this) and x.
-  void swap(Unlimited_Sparse_Row& x);
-
 private:
   typedef std::list<value_type> list_t;
 
@@ -69,6 +66,18 @@ public:
   // FIXME: this allows violating the internal invariant, use with care.
   //! An iterator that may skip some zeros in the sequence.
   typedef list_t::iterator iterator;
+
+  //! Swaps (*this) and x.
+  void swap(Unlimited_Sparse_Row& x);
+
+  //! Swaps the i-th element with the j-th element.
+  //! Iterators pointing to these elements are invalidated.
+  void swap(dimension_type i, dimension_type j);
+
+  //! Swaps the element pointed to by i with the element pointed to by j.
+  //! Iterators equal to i and j point to the other index, so keep the same
+  //! value.
+  void swap(iterator i, iterator j);
 
   //! Resets to zero the value pointed to by i.
   iterator reset(iterator i);
