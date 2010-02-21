@@ -152,13 +152,16 @@ PPL::MIP_Problem::permute_columns(matrix_type& matrix,
       PPL_ASSERT(j - i >= 2);
       if (j - i == 2)
         // For cycles of length 2 no temporary is needed, just a swap.
-        std::swap(rows_k[cycles[i]], rows_k[cycles[i+1]]);
+        rows_k.swap(cycles[i],cycles[i+1]);
       else {
         // Longer cycles need a temporary.
-        std::swap(rows_k[cycles[j-1]], tmp);
+        tmp = rows_k.get(cycles[j-1]);
         for (dimension_type l = j-1; l > i; --l)
-          std::swap(rows_k[cycles[l-1]], rows_k[cycles[l]]);
-        std::swap(tmp, rows_k[cycles[i]]);
+          rows_k.swap(cycles[l-1],cycles[l]);
+        if (tmp == 0)
+          rows_k.reset(cycles[i]);
+        else
+          std::swap(tmp, rows_k[cycles[i]]);
       }
     }
   }
