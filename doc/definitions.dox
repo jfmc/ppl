@@ -1463,6 +1463,28 @@ is defined as
           \Bigr).
 \f]
 
+\subsection affine_form_relation Affine Form Relations.
+Let \f$\mathbb{F}_{\mathrm{f}}\f$ be the set of floating point numbers 
+representables in a certain 
+format \f$\mathrm{f}\f$ and let \f$\mathbb{I}_\mathrm{f}\f$ be the set of 
+real intervals with bounds in \f$\mathbb{F}_{\mathrm{f}}\f$.
+We can define a <EM>floating-point interval linear form</EM> 
+\f$\langle\vect{\alpha}, \vect{x}\rangle
+ + \beta\f$ 
+as:
+	\f[\left<\vect{\alpha}, \vect{x}\right> + \beta = 
+	\alpha_0x_0 + \ldots + 
+	\alpha_{n-1}x_{n-1} + \beta,\f]
+
+where \f$\beta\f$, \f$\vect{\alpha}_k \in \mathbb{I}_{\mathrm{f}}\f$ 
+for each \f$k = 0, \ldots, n - 1\f$. 
+
+Given a such linear form \f$\mathrm{lf}\f$ and a primed variable \f$x'_k\f$ the 
+<EM>affine form image</EM> operator computes the bounded affine image of a 
+polyhedron \f$\cP\f$ under \f$\mathrm{lb} \leq x'_k \leq \mathrm{ub}\f$, where
+\f$\mathrm{lb}\f$ and \f$\mathrm{ub}\f$ are the upper and lower bound 
+of \f$\mathrm{lf}\f$ respectively.
+
 \subsection Generalized_Affine_Relations Generalized Affine Relations.
 Similarly, the <EM>generalized affine relation</EM>
 \f$\phi = (\mathrm{lhs}' \relsym \mathrm{rhs})\f$, where

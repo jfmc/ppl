@@ -59,7 +59,7 @@ namespace Parma_Polyhedra_Library {
   \par Linearization of floating-point variable expressions
 
   Given a variable expression \f$v\f$ and a composite
-  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
   \rrbracket\f$, we construct the interval
   linear form \f$\linexprenv{v}{\rho^{\#}}{\rho^{\#}_l}\f$ as
   \f$\rho^{\#}_l(v)\f$ if it is defined; otherwise we construct it as
@@ -95,7 +95,7 @@ public:
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Linear_Form_Abstract_Store FP_Linear_Form_Abstract_Store;
 
-  /* \brief
+  /*! \brief
      Alias for the FP_Interval_Type::boundary_type from
      Floating_Point_Expression.
   */
@@ -123,7 +123,7 @@ public:
   //@} // Constructors and Destructor
 
   /*! \brief
-    Linearizes the expression in a given astract store.
+    Linearizes the expression in a given abstract store.
 
     Makes \p result become the linearization of \p *this in the given
     composite abstract store.
@@ -132,6 +132,9 @@ public:
     \param lf_store The linear form abstract store.
     \param result The modified linear form.
 
+    \return <CODE>true</CODE> if the linearization succeeded,
+    <CODE>false</CODE> otherwise.
+
     Note that the variable in the expression MUST have an associated value
     in \p int_store. If this precondition is not met, calling the method
     causes an undefined behavior.
@@ -139,13 +142,23 @@ public:
     See the class description for a detailed explanation of how \p result is
     computed.
   */
-  void linearize(const FP_Interval_Abstract_Store& int_store,
+  bool linearize(const FP_Interval_Abstract_Store& int_store,
                  const FP_Linear_Form_Abstract_Store& lf_store,
                  FP_Linear_Form& result) const;
 
+  /*! \brief
+    Assigns a linear form to the variable with the same index of
+    \p *this in a given linear form abstract store.
 
-  void linear_form_assign(const FP_Linear_Form&,
+    \param lf The linear form assigned to the variable.
+    \param lf_store The linear form abstract store.
+
+    Note that once \p lf is assigned to a variable, all the other entries
+    of \p lf_store which contain that variable are discarded.
+  */
+  void linear_form_assign(const FP_Linear_Form& lf,
                                 FP_Linear_Form_Abstract_Store& lf_store) const;
+
   //! Swaps \p *this with \p y.
   void swap(Variable_Floating_Point_Expression& y);
 

@@ -1,4 +1,4 @@
-/* Opposite_Floating_Point_Expression class implementation: inline functions.
+/* Cast_Floating_Point_Expression class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Opposite_Floating_Point_Expression_inlines_hh
-#define PPL_Opposite_Floating_Point_Expression_inlines_hh 1
+#ifndef PPL_Cast_Floating_Point_Expression_inlines_hh
+#define PPL_Cast_Floating_Point_Expression_inlines_hh 1
 
 #include "globals.defs.hh"
 
@@ -29,55 +29,41 @@ namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline
-Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
-Opposite_Floating_Point_Expression(
-         Floating_Point_Expression<FP_Interval_Type, FP_Format>* const op)
-  : operand(op)
-{
-  assert(op != 0);
+Cast_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
+Cast_Floating_Point_Expression(
+Floating_Point_Expression<FP_Interval_Type, FP_Format>* const e)
+  : expr(e) {
+  assert(e != 0);
 }
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline
-Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
-~Opposite_Floating_Point_Expression() {
-  delete operand;
+Cast_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
+~Cast_Floating_Point_Expression() {
+  delete expr;
 }
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
-Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>::swap(
-	 Opposite_Floating_Point_Expression& y) {
-  std::swap(operand, y.operand);
-}
-
-template <typename FP_Interval_Type, typename FP_Format>
-inline bool
-Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>
-::linearize(const FP_Interval_Abstract_Store& int_store,
-            const FP_Linear_Form_Abstract_Store& lf_store,
-            FP_Linear_Form& result) const {
-  if(!operand->linearize(int_store, lf_store, result))
-    return false;
-
-  result.negate();
-  return true;
+Cast_Floating_Point_Expression<FP_Interval_Type, FP_Format>::swap(
+	 Cast_Floating_Point_Expression& y) {
+  std::swap(expr, y.expr);
 }
 
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
 
-/*! \relates Parma_Polyhedra_Library::Opposite_Floating_Point_Expression */
+/*! \relates Parma_Polyhedra_Library::Cast_Floating_Point_Expression */
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
-swap(Parma_Polyhedra_Library::Opposite_Floating_Point_Expression<
+swap(Parma_Polyhedra_Library::Cast_Floating_Point_Expression<
                               FP_Interval_Type, FP_Format>& x,
-     Parma_Polyhedra_Library::Opposite_Floating_Point_Expression<
+     Parma_Polyhedra_Library::Cast_Floating_Point_Expression<
                               FP_Interval_Type, FP_Format>& y) {
   x.swap(y);
 }
 
 } // namespace std
 
-#endif // !defined(PPL_Opposite_Floating_Point_Expression_inlines_hh)
+#endif // !defined(PPL_Cast_Floating_Point_Expression_inlines_hh)

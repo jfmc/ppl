@@ -79,9 +79,9 @@ namespace Parma_Polyhedra_Library {
   + \sum_{v \in \cV}\left(i_{v} \adifp i'_{v}\right)v.
   \f]
   Given an expression \f$e_{1} \ominus e_{2}\f$ and a composite
-  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
   \rrbracket\f$,  we construct the interval linear form
-  \f$\linexprenv{e_{1} \ominus e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$ 
+  \f$\linexprenv{e_{1} \ominus e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
   on \f$\cV\f$ as follows:
   \f[
   \linexprenv{e_{1} \ominus e_{2}}{\rho^{\#}}{\rho^{\#}_l}
@@ -90,10 +90,10 @@ namespace Parma_Polyhedra_Library {
   \adlf
   \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   \aslf
-  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l} 
+  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
   \right)
   \aslf
-  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l} 
+  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   \right)
   \aslf
   mf_{\mathbf{f}}[-1;1]
@@ -162,7 +162,6 @@ public:
 
   //@} // Constructors and Destructor
 
-  // FIXME: Modify documentation when exceptions are fixed
   /*! \brief
     Linearizes the expression in a given astract store.
 
@@ -173,18 +172,18 @@ public:
     \param lf_store The linear form abstract store.
     \param result The modified linear form.
 
-    \exception Parma_Polyhedra_Library::Linearization_Failed
-    Thrown if linearization fails for some reason.
+    \return <CODE>true</CODE> if the linearization succeeded,
+    <CODE>false</CODE> otherwise.
 
     Note that all variables occuring in the expressions represented
     by \p first_operand and \p second_operand MUST have an associated value in
     \p int_store. If this precondition is not met, calling the method
     causes an undefined behavior.
-    
+
     See the class description for a detailed explanation of how \p result
     is computed.
   */
-  void linearize(const FP_Interval_Abstract_Store& int_store,
+  bool linearize(const FP_Interval_Abstract_Store& int_store,
                  const FP_Linear_Form_Abstract_Store& lf_store,
                  FP_Linear_Form& result) const;
 

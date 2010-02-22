@@ -1222,7 +1222,7 @@ public:
   // FIXME: To be completed.
   /*!
     Assigns to \p *this the
-    \ref Single_Update_Affine_Form_Functions "affine form image"
+    \ref affine_form_relation "affine form image"
     of \p *this under the function mapping variable \p var into the
     affine expression(s) specified by \p lf.
 

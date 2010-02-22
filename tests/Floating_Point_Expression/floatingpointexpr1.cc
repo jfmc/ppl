@@ -32,12 +32,9 @@ test01() {
   Con_FP_Expression* num = new Con_FP_Expression(3, 5);
   Con_FP_Expression* den = new Con_FP_Expression(-1, 1);
   Div_FP_Expression div(num, den);
-  try {
-    FP_Linear_Form result;
-    div.linearize(FP_Interval_Abstract_Store(0),
-                  FP_Linear_Form_Abstract_Store(), result);
-  }
-  catch (Linearization_Failed e) {
+  FP_Linear_Form result;
+  if(!div.linearize(FP_Interval_Abstract_Store(0),
+                   FP_Linear_Form_Abstract_Store(), result)) {
     nout << "*** Linearization failed due to division by zero. ***" << endl;
     return true;
   }
@@ -57,9 +54,8 @@ test02() {
   Mul_FP_Expression mul(dif, var0);
   FP_Linear_Form result;
   mul.linearize(store, FP_Linear_Form_Abstract_Store(), result);
-  FP_Interval kr(-FP_Expression::absolute_error);
-  kr.join_assign(FP_Expression::absolute_error);
-  FP_Linear_Form known_result(kr);
+
+  FP_Linear_Form known_result(FP_Expression::absolute_error);
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
@@ -110,9 +106,7 @@ test04() {
   tmp.join_assign(tmp2);
   known_result *= tmp;
   known_result += tmp * FP_Linear_Form(B);
-  tmp = FP_Interval(-FP_Expression::absolute_error);
-  tmp.join_assign(FP_Expression::absolute_error);
-  known_result += tmp;
+  known_result += FP_Expression::absolute_error;
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
@@ -148,9 +142,7 @@ test05() {
   tmp.join_assign(tmp2);
   known_result *= tmp;
   known_result -= tmp * FP_Linear_Form(B);
-  tmp = FP_Interval(-FP_Expression::absolute_error);
-  tmp.join_assign(FP_Expression::absolute_error);
-  known_result += tmp;
+  known_result += FP_Expression::absolute_error;
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
@@ -175,8 +167,6 @@ test06() {
   FP_Linear_Form result;
   mul.linearize(store, FP_Linear_Form_Abstract_Store(), result);
 
-  tmp = FP_Interval(-FP_Expression::absolute_error);
-  tmp.join_assign(FP_Expression::absolute_error);
   ANALYZER_FP_FORMAT exp = pow(ANALYZED_FP_FORMAT::BASE,
     -static_cast<ANALYZER_FP_FORMAT>((ANALYZED_FP_FORMAT::MANTISSA_BITS-1)));
   FP_Interval coeff = FP_Interval(2);
@@ -184,10 +174,9 @@ test06() {
   FP_Interval coeff2(2);
   coeff2 += exp;
   coeff.join_assign(coeff2);
-  FP_Linear_Form known_result =
-  FP_Linear_Form(Variable(0));
+  FP_Linear_Form known_result = FP_Linear_Form(Variable(0));
   known_result *= coeff;
-  known_result += tmp;
+  known_result += FP_Expression::absolute_error;
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
@@ -211,9 +200,8 @@ test07() {
   Div_FP_Expression div(var0, var1);
   FP_Linear_Form result;
   div.linearize(store, FP_Linear_Form_Abstract_Store(), result);
+    nout << "result" << endl << result << endl;
 
-  tmp = FP_Interval(-FP_Expression::absolute_error);
-  tmp.join_assign(FP_Expression::absolute_error);
   ANALYZER_FP_FORMAT exp = pow(ANALYZED_FP_FORMAT::BASE,
     -static_cast<ANALYZER_FP_FORMAT>((ANALYZED_FP_FORMAT::MANTISSA_BITS+1)));
   FP_Interval coeff = FP_Interval(1 / 2.0);
@@ -223,7 +211,7 @@ test07() {
   coeff.join_assign(coeff2);
   FP_Linear_Form known_result = FP_Linear_Form(Variable(0));
   known_result *= coeff;
-  known_result += tmp;
+  known_result += FP_Expression::absolute_error;
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
@@ -258,9 +246,7 @@ test08() {
   tmp2 += exp;
   tmp.join_assign(tmp2);
   known_result *= tmp;
-  tmp = FP_Interval(-FP_Expression::absolute_error);
-  tmp.join_assign(FP_Expression::absolute_error);
-  known_result += tmp;
+  known_result += FP_Expression::absolute_error;
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
@@ -275,8 +261,7 @@ test08() {
 bool
 test09() {
   ANALYZER_FP_FORMAT max = std::numeric_limits<ANALYZER_FP_FORMAT>::max();
-  FP_Interval min = FP_Interval(-FP_Expression::absolute_error);
-  min.join_assign(FP_Expression::absolute_error);
+  FP_Interval min = FP_Expression::absolute_error;
   FP_Linear_Form known_result1 = FP_Linear_Form(min);
   Con_FP_Expression* con1 = new Con_FP_Expression(0, 0);
   Con_FP_Expression* con2 = new Con_FP_Expression(0, max);
@@ -284,15 +269,8 @@ test09() {
   Con_FP_Expression* con3 = new Con_FP_Expression(0, 0);
   Mul_FP_Expression mul(con3, sum);
   FP_Linear_Form result;
-  bool ok1 = false;
-  try {
-    mul.linearize(FP_Interval_Abstract_Store(),
+  bool ok1 = mul.linearize(FP_Interval_Abstract_Store(),
                   FP_Linear_Form_Abstract_Store(), result);
-  }
-  catch (Linearization_Failed e) {
-    nout << "*** Linearization failed due to overflow. ***" << endl;
-    ok1 = true;
-  }
 
   FP_Linear_Form known_result2 = FP_Linear_Form(min);
   Con_FP_Expression* con4 = new Con_FP_Expression(0, 0);
@@ -301,15 +279,8 @@ test09() {
   Con_FP_Expression* con6 = new Con_FP_Expression(0, 0);
   Mul_FP_Expression mul2(sum2, con6);
   FP_Linear_Form result2;
-  bool ok2 = false;
-  try {
-    mul2.linearize(FP_Interval_Abstract_Store(),
+  bool ok2 = mul2.linearize(FP_Interval_Abstract_Store(),
                    FP_Linear_Form_Abstract_Store(), result2);
-  }
-  catch (Linearization_Failed e) {
-    nout << "*** Linearization failed due to overflow. ***" << endl;
-    ok2 = true;
-  }
 
   Con_FP_Expression* con7 = new Con_FP_Expression(0, 0);
   Con_FP_Expression* con8 = new Con_FP_Expression(0, max);
@@ -319,17 +290,48 @@ test09() {
   Sum_FP_Expression* sum4 = new Sum_FP_Expression(con9, con10);
   Mul_FP_Expression  mul3(sum3, sum4);
 
-  bool ok3 = false;
-  try {
-    mul3.linearize(FP_Interval_Abstract_Store(),
-                   FP_Linear_Form_Abstract_Store(), result2);
-  }
-  catch (Linearization_Failed e) {
-    nout << "*** Linearization failed due to overflow. ***" << endl;
-    ok3 = true;
-  }
+  bool ok3 = mul3.linearize(FP_Interval_Abstract_Store(),
+                            FP_Linear_Form_Abstract_Store(), result2);
 
-  return ok1 && ok2 && ok3;
+  if(ok1 || ok2 || ok3)
+    return false;
+
+  nout << "*** Linearizations failed due to overflow. ***" << endl;
+  return true;
+}
+
+// Tests linearization of cast(X + Y).
+bool
+test10() {
+  Variable X(0);
+  Variable Y(1);
+  FP_Interval_Abstract_Store as(2);
+  FP_Linear_Form_Abstract_Store lf_as;
+  FP_Linear_Form l_con_x;
+  FP_Linear_Form l_con_y;
+  FP_Linear_Form l_cast;
+  Con_FP_Expression* con_x = new Con_FP_Expression(1 / 3.0, 1 / 3.0);
+  con_x->linearize(as, lf_as, l_con_x);
+  Con_FP_Expression* con_y = new Con_FP_Expression(-1 / 2.0, 1 / 2.0);
+  con_y->linearize(as, lf_as, l_con_y);
+  as.affine_form_image(X, l_con_x);
+  as.affine_form_image(Y, l_con_y);
+  Var_FP_Expression* var_x = new Var_FP_Expression(0);
+  Var_FP_Expression* var_y = new Var_FP_Expression(1);
+  Sum_FP_Expression* x_sum_y = new Sum_FP_Expression(var_x, var_y);
+  Cast_FP_Expression cast(x_sum_y);
+  cast.linearize(as, lf_as, l_cast);
+
+  // FIXME: Computed result should over-approximates the known result.
+  FP_Interval result;
+  FP_Expression::intervalize(l_cast, as, result);
+  nout << "*** result ***" << endl << result << endl;
+  FP_Linear_Form l_kr(X);
+  l_kr += FP_Linear_Form(Y);
+  FP_Interval known_result;
+  FP_Expression::intervalize(l_kr, as, known_result);
+  nout << "*** known_result ***" << endl << known_result << endl;
+  return result.contains(known_result);
 }
 
 } // namespace
@@ -344,4 +346,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

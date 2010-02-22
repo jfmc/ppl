@@ -80,7 +80,7 @@ namespace Parma_Polyhedra_Library {
   + \sum_{v \in \cV}\left(i \amifp i'_{v}\right)v.
   \f]
   Given an expression \f$[a;b] \otimes e_{2}\f$ and a composite
-  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
   \rrbracket\f$, we construct the interval linear form
   \f$\linexprenv{[a;b] \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
@@ -100,7 +100,7 @@ namespace Parma_Polyhedra_Library {
   \f].
 
   Given an expression \f$e_{1} \otimes [a;b]\f$ and a composite
-  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
   \rrbracket\f$, we construct the interval linear form
   \f$\linexprenv{e_{1} \otimes [a;b]}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
@@ -111,7 +111,7 @@ namespace Parma_Polyhedra_Library {
   \f]
 
   Given an expression \f$e_{1} \otimes e_{2}\f$ and a composite
-  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right 
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
   \rrbracket\f$, we construct the interval linear form
   \f$\linexprenv{e_{1} \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
@@ -192,7 +192,6 @@ public:
 
   //@} // Constructors and Destructor.
 
-  // FIXME: Modify documentation when exceptions are fixed
   /*! \brief
     Linearizes the expression in a given astract store.
 
@@ -203,20 +202,20 @@ public:
     \param lf_store The linear form abstract store.
     \param result The modified linear form.
 
-    \exception Parma_Polyhedra_Library::Linearization_Failed
-    Thrown if linearization fails for some reason.
+    \return <CODE>true</CODE> if the linearization succeeded,
+    <CODE>false</CODE> otherwise.
 
     Note that all variables occuring in the expressions represented
     by \p first_operand and \p second_operand MUST have an associated value in
     \p int_store. If this precondition is not met, calling the method
     causes an undefined behavior.
-    
+
     See the class description for a detailed explanation of how \p result
     is computed.
   */
-  void linearize(const FP_Interval_Abstract_Store& int_store,
-		 const FP_Linear_Form_Abstract_Store& lf_store,
-                 FP_Linear_Form& result) const;
+  bool linearize(const FP_Interval_Abstract_Store& int_store,
+		         const FP_Linear_Form_Abstract_Store& lf_store,
+                       FP_Linear_Form& result) const;
 
   //! Swaps \p *this with \p y.
   void swap(Multiplication_Floating_Point_Expression<FP_Interval_Type,

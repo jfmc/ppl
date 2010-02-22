@@ -46,19 +46,21 @@ Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>::swap(
 }
 
 template <typename FP_Interval_Type, typename FP_Format>
-inline void
+inline bool
 Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::linearize(const FP_Interval_Abstract_Store&,
             const FP_Linear_Form_Abstract_Store& lf_store,
             FP_Linear_Form& result) const {
   typename FP_Linear_Form_Abstract_Store::const_iterator
            variable_value = lf_store.find(variable_index);
-  if (variable_value == lf_store.end())
-    result = FP_Linear_Form(Variable(variable_index));
-  else
-    result = FP_Linear_Form(variable_value->second);
 
-  return;
+  if (variable_value == lf_store.end()) {
+    result = FP_Linear_Form(Variable(variable_index));
+    return true;
+  }
+
+  result = FP_Linear_Form(variable_value->second);
+  return !this->overflows(result);
 }
 
 template <typename FP_Interval_Type, typename FP_Format>

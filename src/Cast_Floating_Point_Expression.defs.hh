@@ -1,4 +1,4 @@
-/* Declarations for the Opposite_Floating_Point_Expression class and
+/* Declarations for the Cast_Floating_Point_Expression class and
    its constituents.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -21,22 +21,22 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Opposite_Floating_Point_Expression_defs_hh
-#define PPL_Opposite_Floating_Point_Expression_defs_hh 1
+#ifndef PPL_Cast_Floating_Point_Expression_defs_hh
+#define PPL_Cast_Floating_Point_Expression_defs_hh 1
 
 #include "Floating_Point_Expression.defs.hh"
 #include "globals.defs.hh"
-#include "Opposite_Floating_Point_Expression.types.hh"
+#include "Cast_Floating_Point_Expression.types.hh"
 #include <map>
 
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Opposite_Floating_Point_Expression */
+/*! \relates Parma_Polyhedra_Library::Cast_Floating_Point_Expression */
 template<typename FP_Interval_Type, typename FP_Format>
-void swap(Parma_Polyhedra_Library::Opposite_Floating_Point_Expression<
+void swap(Parma_Polyhedra_Library::Cast_Floating_Point_Expression<
                                    FP_Interval_Type, FP_Format>& x,
-          Parma_Polyhedra_Library::Opposite_Floating_Point_Expression<
+          Parma_Polyhedra_Library::Cast_Floating_Point_Expression<
                                    FP_Interval_Type, FP_Format>& y);
 
 } // namespace std
@@ -44,7 +44,7 @@ void swap(Parma_Polyhedra_Library::Opposite_Floating_Point_Expression<
 namespace Parma_Polyhedra_Library {
 
 /*! \brief
-  A generic Opposite Floating Point Expression.
+  A generic Cast Floating Point Expression.
 
   \ingroup PPL_CXX_interface
 
@@ -55,40 +55,48 @@ namespace Parma_Polyhedra_Library {
   - The class template type parameter \p FP_Format represents the floating
   point format used in the concrete domain.
 
-  \par Linearization of opposite floating-point expressions
+  \par Linearization of floating-point cast expressions
 
-  Let \f$i + \sum_{v \in \cV}i_{v}v \f$ be an interval linear form and
-  let \f$\adlf\f$ be a sound unary operator on linear forms such that:
+  Let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
+  \f$i' + \sum_{v \in \cV}i'_{v}v \f$
+  be two linear forms and \f$\aslf\f$ a sound abstract operator on linear
+  forms such that:
 
   \f[
-  \adlf
-  \left(i + \sum_{v \in \cV}i_{v}v\right)
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \aslf
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)
   =
-  \left(\adifp i\right)
-  + \sum_{v \in \cV}\left(\adifp i_{v} \right)v,
+  \left(i \asifp i'\right)
+  + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v} \right)v.
   \f]
 
-  Given a floating point expression \f$\ominus e\f$ and a composite
-  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
-  \rrbracket\f$, we construct the interval linear form
-  \f$\linexprenv{\ominus e}{\rho^{\#}}{\rho^{\#}_l}\f$
-  as follows:
+  Given a floating point expression \f$e\f$ and a composite abstract store
+  \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right \rrbracket\f$,
+  we construct the interval linear form
+  \f$\linexprenv{cast(e)}{\rho^{\#}}{\rho^{\#}_l}\f$ as follows:
   \f[
-  \linexprenv{\ominus e}{\rho^{\#}}{\rho^{\#}_l}
+  \linexprenv{cast(e)}{\rho^{\#}}{\rho^{\#}_l}
   =
-  \adlf
-  \left(
   \linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}
-  \right).
+  \aslf
+  \varepsilon_{\mathbf{f}}\left(\linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}
+  \right)
+  \aslf
+  mf_{\mathbf{f}}[-1;1]
   \f]
+  where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the linear form computed by
+  calling method <CODE>Floating_Point_Expression::relative_error</CODE>
+  on \f$l\f$ and \f$mf_{\mathbf{f}}\f$ is a rounding error defined in
+  <CODE>Floating_Point_Expression::absolute_error</CODE>.
 */
 template <typename FP_Interval_Type, typename FP_Format>
-class Opposite_Floating_Point_Expression
+class Cast_Floating_Point_Expression
   : public Floating_Point_Expression<FP_Interval_Type, FP_Format> {
 
 public:
 
-  /* \brief
+  /*! \brief
      Alias for the Linear_Form<FP_Interval_Type> from
      Floating_Point_Expression
   */
@@ -96,7 +104,7 @@ public:
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Linear_Form FP_Linear_Form;
 
-  /* \brief
+  /*! \brief
      Alias for the std::map<dimension_type, FP_Interval_Type> from
      Floating_Point_Expression.
   */
@@ -104,7 +112,7 @@ public:
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
 
-  /* \brief
+  /*! \brief
      Alias for the std::map<dimension_type, FP_Linear_Form> from
      Floating_Point_Expression.
   */
@@ -112,31 +120,17 @@ public:
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Linear_Form_Abstract_Store FP_Linear_Form_Abstract_Store;
 
-  /* \brief
-     Alias for the FP_Interval_Type::boundary_type from
-     Floating_Point_Expression.
-  */
-  typedef typename
-  Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
-  boundary_type;
-
-  /* \brief
-     Alias for the FP_Interval_Type::info_type from Floating_Point_Expression.
-  */
-  typedef typename
-  Floating_Point_Expression<FP_Interval_Type, FP_Format>::info_type info_type;
-
   //! \name Constructors and Destructor
   //@{
   /*! \brief
-    Constructor with one parameter: builds the opposite floating point
-    expression \f$\ominus\f$ \p op.
+    Builds a cast floating point expression with the value
+    expressed by \p expr.
   */
-  explicit Opposite_Floating_Point_Expression(
-           Floating_Point_Expression<FP_Interval_Type, FP_Format>* const op);
+  Cast_Floating_Point_Expression(
+    Floating_Point_Expression<FP_Interval_Type, FP_Format>* const expr);
 
   //! Destructor.
-  ~Opposite_Floating_Point_Expression();
+  ~Cast_Floating_Point_Expression();
 
   //@} // Constructors and Destructor
 
@@ -153,46 +147,40 @@ public:
     \return <CODE>true</CODE> if the linearization succeeded,
     <CODE>false</CODE> otherwise.
 
-    Note that all variables occuring in the expression represented
-    by \p operand MUST have an associated value in \p int_store.
-    If this precondition is not met, calling the method
-    causes an undefined behavior.
-
-    See the class description for a detailed explanation of how \p result
-    is computed.
+    See the class description for an explanation of how \p result is computed.
   */
   bool linearize(const FP_Interval_Abstract_Store& int_store,
                  const FP_Linear_Form_Abstract_Store& lf_store,
                  FP_Linear_Form& result) const;
 
   //! Swaps \p *this with \p y.
-  void swap(Opposite_Floating_Point_Expression& y);
+  void swap(Cast_Floating_Point_Expression& y);
 
 private:
+
+  //! Pointer to the casted expression.
+  Floating_Point_Expression<FP_Interval_Type, FP_Format>* expr;
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Inhibited copy constructor.
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  Opposite_Floating_Point_Expression(
-			  const Opposite_Floating_Point_Expression& y);
+  Cast_Floating_Point_Expression(
+			  const Cast_Floating_Point_Expression& y);
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Inhibited assignment operator.
   */
-  #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  Opposite_Floating_Point_Expression& operator=(
-			  const Opposite_Floating_Point_Expression& y);
+  #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAIL
+  Cast_Floating_Point_Expression& operator=(
+		          const Cast_Floating_Point_Expression& y);
 
-  //! Pointer to the operand.
-  Floating_Point_Expression<FP_Interval_Type, FP_Format>* operand;
-
-}; // class Opposite_Floating_Point_Expression
+}; // class Cast_Floating_Point_Expression
 
 } // namespace Parma_Polyhedra_Library
 
-#include "Opposite_Floating_Point_Expression.inlines.hh"
+#include "Cast_Floating_Point_Expression.inlines.hh"
 
-#endif // !defined(PPL_Opposite_Floating_Point_Expression_defs_hh)
+#endif // !defined(PPL_Cast_Floating_Point_Expression_defs_hh)

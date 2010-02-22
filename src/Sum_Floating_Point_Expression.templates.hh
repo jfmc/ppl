@@ -27,24 +27,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
-void Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+bool Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::linearize(const FP_Interval_Abstract_Store& int_store,
             const FP_Linear_Form_Abstract_Store& lf_store,
             FP_Linear_Form& result) const {
-  first_operand->linearize(int_store, lf_store, result);
+  if(!first_operand->linearize(int_store, lf_store, result))
+    return false;
   FP_Linear_Form rel_error;
   relative_error(result, rel_error);
   result += rel_error;
   FP_Linear_Form linearized_second_operand;
-  second_operand->linearize(int_store, lf_store, linearized_second_operand);
+  if(!second_operand->linearize(int_store, lf_store,
+                                linearized_second_operand))
+    return false;
   result += linearized_second_operand;
   relative_error(linearized_second_operand, rel_error);
   result += rel_error;
-  FP_Interval_Type abs_error(-this->absolute_error);
-  // FIXME: this may be incorrect for some policies.
-  abs_error.join_assign(this->absolute_error);
-  result += abs_error;
-  return;
+  result += this->absolute_error;
+  return !this->overflows(result);
 }
 
 } // namespace Parma_Polyhedra_Library

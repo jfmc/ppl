@@ -27,15 +27,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type, typename FP_Format>
-void Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+bool Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::linearize(const FP_Interval_Abstract_Store& int_store,
             const FP_Linear_Form_Abstract_Store& lf_store,
             FP_Linear_Form& result) const {
   /*
-    FIXME: we currently adopt the Interval-Size Local strategy in order to
+    FIXME: We currently adopt the "Interval-Size Local" strategy in order to
     decide which of the two linear forms must be intervalized, as described
-    in section 6.2.4 of Antoine Mine's thesis. We should also consider more
-    refined strategies.
+    in Section 6.2.4 ("Multiplication Strategies") of Antoine Mine's Ph.D.
+    thesis "Weakly Relational Numerical Abstract Domains".
+    In this Section are also described other multiplication strategies, such
+    as All-Cases, Relative-Size Local, Simplification-Driven Global and
+    Homogeneity Global.
   */
 
   // Here we choose which of the two linear forms must be intervalized.
@@ -43,12 +46,16 @@ void Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   // true if we intervalize the first form, false if we intervalize the second.
   bool intervalize_first;
   FP_Linear_Form linearized_first_operand;
-  first_operand->linearize(int_store, lf_store, linearized_first_operand);
+  if(!first_operand->linearize(int_store, lf_store,
+                               linearized_first_operand))
+    return false;
   FP_Interval_Type intervalized_first_operand;
   this->intervalize(linearized_first_operand, int_store,
                     intervalized_first_operand);
   FP_Linear_Form linearized_second_operand;
-  second_operand->linearize(int_store, lf_store, linearized_second_operand);
+  if(!second_operand->linearize(int_store, lf_store,
+                                linearized_second_operand))
+    return false;
   FP_Interval_Type intervalized_second_operand;
   this->intervalize(linearized_second_operand, int_store,
                     intervalized_second_operand);
@@ -66,20 +73,14 @@ void Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
       else
         intervalize_first = false;
     }
-    else {
-      if (this->overflows(linearized_second_operand))
-        throw Linearization_Failed();
+    else
       intervalize_first = true;
-    }
   }
   else {
-    if (intervalized_second_operand.is_bounded()) {
-      if (this->overflows(linearized_first_operand))
-        throw Linearization_Failed();
+    if (intervalized_second_operand.is_bounded())
       intervalize_first = false;
-    }
     else
-      throw Linearization_Failed();
+      return false;
   }
 
   // Here we do the actual computation.
@@ -97,11 +98,8 @@ void Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
     result += linearized_first_operand;
   }
 
-  FP_Interval_Type abs_error(-this->absolute_error);
-  // FIXME: this may be incorrect for some policies.
-  abs_error.join_assign(this->absolute_error);
-  result += abs_error;
-  return;
+  result += this->absolute_error;
+  return !this->overflows(result);
 }
 
 } // namespace Parma_Polyhedra_Library

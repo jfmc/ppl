@@ -354,6 +354,10 @@ Floating_Point_Expression.types.hh \
 Floating_Point_Expression.defs.hh \
 Floating_Point_Expression.inlines.hh \
 Floating_Point_Expression.templates.hh \
+Cast_Floating_Point_Expression.types.hh \
+Cast_Floating_Point_Expression.defs.hh \
+Cast_Floating_Point_Expression.inlines.hh \
+Cast_Floating_Point_Expression.templates.hh \
 Constant_Floating_Point_Expression.types.hh \
 Constant_Floating_Point_Expression.defs.hh \
 Constant_Floating_Point_Expression.inlines.hh \
