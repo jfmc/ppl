@@ -292,6 +292,75 @@ test13() {
   return false;
 }
 
+bool
+test14() {
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  (void) pip.solve();
+
+  const PIP_Decision_Node* root = pip.solution()->as_decision();
+  const PIP_Decision_Node* t_child = root->child_node(true)->as_decision();
+  const PIP_Solution_Node* t_t_child = t_child->child_node(true)->as_solution();
+
+  try {
+    // It is illegal to ask for the parametric value of a parameter.
+    (void) t_t_child->parametric_values(n);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test15() {
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  (void) pip.solve();
+
+  const PIP_Decision_Node* root = pip.solution()->as_decision();
+  const PIP_Decision_Node* t_child = root->child_node(true)->as_decision();
+  const PIP_Solution_Node* t_t_child = t_child->child_node(true)->as_solution();
+
+  try {
+    // It is illegal to ask for the parametric value of a variable
+    // having space dimension greater than that o fthe problem.
+    (void) t_t_child->parametric_values(Variable(4));
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -308,4 +377,6 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

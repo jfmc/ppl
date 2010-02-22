@@ -298,6 +298,34 @@ test15() {
   return ok;
 }
 
+bool
+test16() {
+  // NOTE: adopting a strange dimension ordering to increase code coverage.
+  Variable i(2);
+  Variable j(3);
+  Variable n(0);
+  Variable m(1);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  (void) pip.solve();
+
+  const PIP_Decision_Node* root = pip.solution()->as_decision();
+  const PIP_Decision_Node* t_child = root->child_node(true)->as_decision();
+  const PIP_Solution_Node* t_t_child = t_child->child_node(true)->as_solution();
+  const Linear_Expression& v_i = t_t_child->parametric_values(i);
+  bool ok = v_i.coefficient(n) == 0
+    && v_i.coefficient(m) == 0
+    && v_i.inhomogeneous_term() == 2;
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -316,4 +344,5 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST_F8(test16);
 END_MAIN

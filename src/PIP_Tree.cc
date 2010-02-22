@@ -2649,6 +2649,9 @@ PIP_Solution_Node
     norm_coeff = row[0] / den;
     sol_i += norm_coeff;
   }
+
+  // Mark solution as valid.
+  x.solution_valid = true;
 }
 
 } // namespace Parma_Polyhedra_Library
