@@ -41,7 +41,7 @@ class Timeout : virtual public std::exception,
 		public Parma_Polyhedra_Library::Throwable {
 public:
   const char* what() const throw() {
-    return "Timeout in watchdog1.cc";
+    return "timeout in watchdog1.cc";
   }
 
   void throw_me() const {
@@ -81,7 +81,12 @@ timed_compute_open_hypercube_generators(dimension_type dimension,
     nout << " s" << endl;
     return false;
   }
+  catch (const std::exception& e) {
+    nout << "unexpected std::exception: \n" << e.what() << endl;
+    exit(1);
+  }
   catch (...) {
+    nout << "unexpected unknown exception" << endl;
     exit(1);
   }
   // Should never get here.

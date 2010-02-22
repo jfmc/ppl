@@ -168,6 +168,7 @@ int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_CUTTING_STRATEGY;
 int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_FIRST;
 int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_DEEPEST;
 int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_ALL;
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_PIVOT_ROW_STRATEGY;
 int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_FIRST;
 int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_MAX_COLUMN;
 
@@ -224,6 +225,8 @@ ppl_initialize(void) try {
     = PIP_Problem::CUTTING_STRATEGY_DEEPEST;
   PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_ALL
     = PIP_Problem::CUTTING_STRATEGY_ALL;
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_PIVOT_ROW_STRATEGY
+    = PIP_Problem::PIVOT_ROW_STRATEGY;
   PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_FIRST
     = PIP_Problem::PIVOT_ROW_STRATEGY_FIRST;
   PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_MAX_COLUMN
@@ -252,6 +255,7 @@ CATCH_ALL
 int
 ppl_set_timeout(unsigned time) try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  used(time);
   const char* what = "PPL C interface error:\n"
     "ppl_set_timeout: the PPL Watchdog library is not enabled.";
   throw std::runtime_error(what);
@@ -282,6 +286,7 @@ CATCH_ALL
 int
 ppl_set_deterministic_timeout(unsigned weight) try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  used(weight);
   const char* what = "PPL C interface error:\n"
     "ppl_set_deterministic_timeout: the PPL Watchdog library is not enabled.";
   throw std::runtime_error(what);
@@ -2113,6 +2118,22 @@ ppl_MIP_Problem_OK(ppl_const_MIP_Problem_t mip) try {
 CATCH_ALL
 
 int
+ppl_MIP_Problem_total_memory_in_bytes(ppl_const_MIP_Problem_t mip,
+                                      size_t* sz) try {
+  *sz = to_const(mip)->total_memory_in_bytes();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_external_memory_in_bytes(ppl_const_MIP_Problem_t mip,
+                                         size_t* sz) try {
+  *sz = to_const(mip)->external_memory_in_bytes();
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_new_PIP_Problem_from_space_dimension(ppl_PIP_Problem_t* ppip,
                                          ppl_dimension_type d) try {
   *ppip = to_nonconst(new PIP_Problem(d));
@@ -2125,6 +2146,23 @@ ppl_new_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t* dpip,
 				     ppl_const_PIP_Problem_t pip) try {
   const PIP_Problem& spip = *to_const(pip);
   *dpip = to_nonconst(new PIP_Problem(spip));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_PIP_Problem_from_constraints
+(ppl_PIP_Problem_t* ppip,
+ ppl_dimension_type d,
+ ppl_Constraint_System_const_iterator_t first,
+ ppl_Constraint_System_const_iterator_t last,
+ size_t n,
+ ppl_dimension_type ds[]) try {
+  Variables_Set p_vars;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    p_vars.insert(ds[i]);
+  *ppip = to_nonconst(new PIP_Problem(d, *to_const(first),
+                                      *to_const(last), p_vars));
   return 0;
 }
 CATCH_ALL
@@ -2314,6 +2352,21 @@ ppl_PIP_Problem_set_big_parameter_dimension(ppl_PIP_Problem_t pip,
 }
 CATCH_ALL
 
+int
+ppl_PIP_Problem_total_memory_in_bytes(ppl_const_PIP_Problem_t pip,
+                                      size_t* sz) try {
+  *sz = to_const(pip)->total_memory_in_bytes();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_external_memory_in_bytes(ppl_const_PIP_Problem_t pip,
+                                         size_t* sz) try {
+  *sz = to_const(pip)->external_memory_in_bytes();
+  return 0;
+}
+CATCH_ALL
 
 int
 ppl_PIP_Tree_Node_as_solution(ppl_const_PIP_Tree_Node_t spip_tree,
@@ -2419,20 +2472,42 @@ CATCH_ALL
 int
 ppl_Artificial_Parameter_get_Linear_Expression
 (ppl_const_Artificial_Parameter_t ap,
- ppl_const_Linear_Expression_t* le) try {
+ ppl_Linear_Expression_t le) try {
   const Artificial_Parameter& sap = *to_const(ap);
-  const Linear_Expression& lle = static_cast<const Linear_Expression&>(sap);
-  *le = to_const(&lle);
+  Linear_Expression& lle = *to_nonconst(le);
+  lle = sap;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Artificial_Parameter_get_denominator(ppl_const_Artificial_Parameter_t ap,
-                                         ppl_const_Coefficient_t* coef) try {
+ppl_Artificial_Parameter_coefficient(ppl_const_Artificial_Parameter_t ap,
+                                     ppl_dimension_type var,
+                                     ppl_Coefficient_t n) try {
   const Artificial_Parameter& sap = *to_const(ap);
-  const Coefficient& dcoef = sap.get_denominator();
-  *coef = to_const(&dcoef);
+  Coefficient& nn = *to_nonconst(n);
+  nn = sap.coefficient(Variable(var));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Artificial_Parameter_inhomogeneous_term
+(ppl_const_Artificial_Parameter_t ap, ppl_Coefficient_t n) try {
+  const Artificial_Parameter& sap = *to_const(ap);
+  Coefficient& nn = *to_nonconst(n);
+  nn = sap.inhomogeneous_term();
+  return 0;
+}
+CATCH_ALL
+
+
+int
+ppl_Artificial_Parameter_denominator(ppl_const_Artificial_Parameter_t ap,
+                                     ppl_Coefficient_t n) try {
+  const Artificial_Parameter& sap = *to_const(ap);
+  Coefficient& nn = *to_nonconst(n);
+  nn = sap.denominator();
   return 0;
 }
 CATCH_ALL

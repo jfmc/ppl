@@ -1732,7 +1732,7 @@ Manual</A>
 
 The SICStus Prolog interface to the PPL is available
 both as a statically linked module or as a dynamically linked one.
-Only SICStus Prolog versions 3.9.0 and later are supported.
+Only SICStus Prolog versions 3.9.1 and later are supported.
 
 <H3>The Statically Linked <CODE>ppl_sicstus</CODE> Executable</H3>
 

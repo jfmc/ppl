@@ -24,16 +24,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PWL_pwl_hh 1
 
 #ifdef NDEBUG
-# define PWL_SAVE_NDEBUG 1
+# define PWL_SAVE_NDEBUG NDEBUG
 # undef NDEBUG
 #endif
 
 #include "pwl-config.h"
 #include "pwl_include_files.hh"
 
+//! Defined to 1 if PWL::Watchdog objects are supported, to 0 otherwise.
+#define PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED \
+  (PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION)
+
 #ifdef PWL_SAVE_NDEBUG
 # ifndef NDEBUG
-#  define NDEBUG 1
+#  define NDEBUG PWL_SAVE_NDEBUG
 # endif
 # undef PWL_SAVE_NDEBUG
 #else
@@ -41,6 +45,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #  undef NDEBUG
 # endif
 #endif
+// Must include <cassert> again in order to make the latest changes to
+// NDEBUG effective.
 #include <cassert>
 
 #endif

@@ -2658,6 +2658,20 @@ int
 ppl_MIP_Problem_set_control_parameter
 PPL_PROTO((ppl_MIP_Problem_t mip, int value));
 
+/*! \relates ppl_MIP_Problem_tag \brief
+  Writes into \p *sz the size in bytes of the memory occupied by \p mip.
+*/
+int
+ppl_MIP_Problem_total_memory_in_bytes
+PPL_PROTO((ppl_const_MIP_Problem_t mip, size_t* sz));
+
+/*! \relates ppl_MIP_Problem_tag \brief
+  Writes into \p *sz the size in bytes of the memory managed by \p mip.
+*/
+int
+ppl_MIP_Problem_external_memory_in_bytes
+PPL_PROTO((ppl_const_MIP_Problem_t mip, size_t* sz));
+
 /*@}*/ /* Querying/Setting Control Parameters */
 
 
@@ -2686,6 +2700,21 @@ PPL_PROTO((ppl_PIP_Problem_t* ppip, ppl_const_PIP_Problem_t pip));
 int
 ppl_assign_PIP_Problem_from_PIP_Problem
 PPL_PROTO((ppl_PIP_Problem_t dst, ppl_const_PIP_Problem_t src));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Builds a PIP problem having space dimension \p d from the sequence
+  of constraints in the range \f$[\mathrm{first}, \mathrm{last})\f$;
+  the \p n dimensions whose indices occur in \p ds are interpreted as
+  parameters.
+*/
+int
+ppl_new_PIP_Problem_from_constraints
+PPL_PROTO((ppl_PIP_Problem_t* ppip,
+           ppl_dimension_type d,
+           ppl_Constraint_System_const_iterator_t first,
+           ppl_Constraint_System_const_iterator_t last,
+           size_t n,
+           ppl_dimension_type ds[]));
 
 /*! \relates ppl_PIP_Problem_tag \brief
   Invalidates the handle \p pip: this makes sure the corresponding
@@ -2876,6 +2905,20 @@ int
 ppl_PIP_Problem_set_big_parameter_dimension
 PPL_PROTO((ppl_PIP_Problem_t pip, ppl_dimension_type d));
 
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes into \p *sz the size in bytes of the memory occupied by \p pip.
+*/
+int
+ppl_PIP_Problem_total_memory_in_bytes
+PPL_PROTO((ppl_const_PIP_Problem_t pip, size_t* sz));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes into \p *sz the size in bytes of the memory managed by \p pip.
+*/
+int
+ppl_PIP_Problem_external_memory_in_bytes
+PPL_PROTO((ppl_const_PIP_Problem_t pip, size_t* sz));
+
 /*@}*/ /* Querying/Setting Control Parameters */
 
 
@@ -2991,15 +3034,34 @@ PPL_PROTO((ppl_const_PIP_Decision_Node_t pip_dec,
 int
 ppl_Artificial_Parameter_get_Linear_Expression
 PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
-           ppl_const_Linear_Expression_t* le));
+           ppl_Linear_Expression_t le));
 
 /*! \relates ppl_Artificial_Parameter_tag \brief
-  Writes to \p coeff the denominator in artificial parameter \p ap.
+  Copies into \p n the coefficient of variable \p var in
+  the artificial parameter \p ap.
 */
 int
-ppl_Artificial_Parameter_get_denominator
+ppl_Artificial_Parameter_coefficient
 PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
-           ppl_const_Coefficient_t* coeff));
+           ppl_dimension_type var,
+           ppl_Coefficient_t n));
+
+/*! \relates ppl_Artificial_Parameter_tag \brief
+  Copies into \p n the inhomogeneous term of the artificial
+  parameter \p ap.
+*/
+int
+ppl_Artificial_Parameter_get_inhomogeneous_term
+PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
+           ppl_Coefficient_t n));
+
+/*! \relates ppl_Artificial_Parameter_tag \brief
+  Writes to \p n the denominator in artificial parameter \p ap.
+*/
+int
+ppl_Artificial_Parameter_denominator
+PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
+           ppl_Coefficient_t n));
 
 /*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/

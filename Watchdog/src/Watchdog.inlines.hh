@@ -29,14 +29,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Watchdog_Library {
 
-inline void
-Watchdog::reschedule() {
-  set_timer(reschedule_time);
-}
+#if PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
 
 template <typename Flag_Base, typename Flag>
 Watchdog::Watchdog(unsigned int units,
-		   const Flag_Base* volatile& holder, Flag& flag)
+		   const Flag_Base* volatile& holder,
+                   Flag& flag)
   : expired(false),
     handler(*new Handler_Flag<Flag_Base, Flag>(holder, flag)) {
   if (units == 0)
@@ -59,6 +57,21 @@ Watchdog::Watchdog(unsigned int units, void (*function)())
 }
 
 inline
+Watchdog::~Watchdog() {
+  if (!expired) {
+    in_critical_section = true;
+    remove_watchdog_event(pending_position);
+    in_critical_section = false;
+  }
+  delete &handler;
+}
+
+inline void
+Watchdog::reschedule() {
+  set_timer(reschedule_time);
+}
+
+inline
 Init::Init() {
   // Only when the first Init object is constructed...
   if (count++ == 0) {
@@ -75,6 +88,28 @@ Init::~Init() {
     Watchdog::finalize();
   }
 }
+
+#else // !PWL_HAVE_DECL_SETITIMER !! !PWL_HAVE_DECL_SIGACTION
+
+template <typename Flag_Base, typename Flag>
+Watchdog::Watchdog(unsigned int /* units */,
+		   const Flag_Base* volatile& /* holder */,
+                   Flag& /* flag */) {
+  throw std::runtime_error("PWL::Watchdog objects not supported:"
+                           " system does not provide setitimer()");
+}
+
+inline
+Watchdog::Watchdog(unsigned int /* units */, void (* /* function */)()) {
+  throw std::runtime_error("PWL::Watchdog objects not supported:"
+                           " system does not provide setitimer()");
+}
+
+inline
+Watchdog::~Watchdog() {
+}
+
+#endif // !PWL_HAVE_DECL_SETITIMER !! !PWL_HAVE_DECL_SIGACTION
 
 } // namespace Parma_Watchdog_Library
 

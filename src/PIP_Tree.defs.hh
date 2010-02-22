@@ -1,4 +1,4 @@
-/* PIP_Tree class declaration.
+/* PIP_Tree_Node class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -36,9 +36,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-/*! \brief
-  The base class for the nodes of the trees representing the solutions
-  of PIP problems.
+//! A node of the PIP solution tree.
+/*!
+  This is the base class for the nodes of the binary trees representing
+  the solutions of PIP problems. From this one, two classes are derived:
+    - PIP_Decision_Node, for the internal nodes of the tree;
+    - PIP_Solution_Node, for the leaves of the tree.
 */
 class PIP_Tree_Node {
 protected:
@@ -61,14 +64,8 @@ public:
   //! Returns \p this if \p *this is a solution node, 0 otherwise.
   virtual const PIP_Solution_Node* as_solution() const;
 
-  //! Returns \p this if \p *this is a solution node, 0 otherwise.
-  virtual PIP_Solution_Node* as_solution();
-
   //! Returns \p this if \p *this is a decision node, 0 otherwise.
   virtual const PIP_Decision_Node* as_decision() const;
-
-  //! Returns \p this if \p *this is a decision node, 0 otherwise.
-  virtual PIP_Decision_Node* as_decision();
 
   /*! \brief
     Returns the system of parameter constraints controlling \p *this.
@@ -92,6 +89,30 @@ public:
 
   //! Returns the number of local artificial parameters.
   dimension_type art_parameter_count() const;
+
+  //! Prints on \p s the tree rooted in \p *this.
+  /*!
+    \param s
+    The output stream.
+
+    \param indent
+    The amount of indentation.
+
+    \param space_dim
+    The space dimension of the PIP problem.
+
+    \param first_art_dim
+    The first space dimension corresponding to an artificial parameter
+    that was created in this node (if any).
+
+    \param params
+    The set of PIP problem parameters indices.
+  */
+  virtual void print_tree(std::ostream& s,
+                          unsigned indent,
+                          dimension_type space_dim,
+                          dimension_type first_art_dim,
+                          const Variables_Set& params) const;
 
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
@@ -200,6 +221,10 @@ protected:
   //! Inserts a new parametric constraint in internal Row format
   void add_constraint(const Row& x, const Variables_Set& parameters);
 
+  //! A helper function used when printing PIP trees.
+  static void
+  indent_and_print(std::ostream& s, unsigned indent, const char* str);
+
 }; // class PIP_Tree_Node
 
 
@@ -241,11 +266,19 @@ public:
   Artificial_Parameter(const Artificial_Parameter& y);
 
   //! Returns the normalized (i.e., positive) denominator.
-  Coefficient_traits::const_reference get_denominator() const;
+  Coefficient_traits::const_reference denominator() const;
 
-  //! Returns \b true if \p x and \p y are equal.
-  friend bool operator==(const Artificial_Parameter& x,
-                         const Artificial_Parameter& y);
+  //! Swaps \p *this with \p y.
+  void swap(Artificial_Parameter& y);
+
+  //! Returns \c true if and only if \p *this and \p y are equal.
+  /*!
+    Note that two artificial parameters having different space dimensions
+    are considered to be different.
+  */
+  bool operator==(const Artificial_Parameter& y) const;
+  //! Returns \c true if and only if \p *this and \p y are different.
+  bool operator!=(const Artificial_Parameter& y) const;
 
   PPL_OUTPUT_DECLARATIONS
 
@@ -266,7 +299,7 @@ public:
 
 private:
   //! The normalized (i.e., positive) denominator.
-  Coefficient denominator;
+  Coefficient denom;
 }; // class PIP_Tree_Node::Artificial_Parameter
 
 
@@ -288,8 +321,12 @@ public:
   //! Returns \p this.
   virtual const PIP_Solution_Node* as_solution() const;
 
-  //! Returns \p this.
-  virtual PIP_Solution_Node* as_solution();
+  //! Prints on \p s the tree rooted in \p *this.
+  virtual void print_tree(std::ostream& s,
+                          unsigned indent,
+                          dimension_type space_dim,
+                          dimension_type first_art_dim,
+                          const Variables_Set& params) const;
 
   /*! \brief
     Returns a parametric expression of the values of variable \p v.
@@ -311,7 +348,14 @@ public:
   parametric_values(Variable v,
                     const Variables_Set& parameters) const;
 
+  //! Dumps to \p s an ASCII representation of \p *this.
   void ascii_dump(std::ostream& s) const;
+
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -327,7 +371,7 @@ private:
     //! The matrix of parameter coefficients.
     Matrix t;
     //! A common denominator for all matrix elements
-    Coefficient denominator;
+    Coefficient denom;
 
     //! Default constructor.
     Tableau();
@@ -406,14 +450,24 @@ private:
                          const dimension_type j_) const;
 
     //! Returns the value of the denominator.
-    Coefficient_traits::const_reference get_denominator() const;
+    Coefficient_traits::const_reference denominator() const;
 
+    //! Dumps to \p s an ASCII representation of \p *this.
     void ascii_dump(std::ostream& s) const;
+
+    /*! \brief
+      Loads from \p s an ASCII representation (as produced by
+      ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+      Returns \c true if successful, \c false otherwise.
+    */
     bool ascii_load(std::istream& s);
 
-    //! Returns the total size in bytes of the memory occupied by \p *this.
-    memory_size_type total_memory_in_bytes() const;
     //! Returns the size in bytes of the memory managed by \p *this.
+    /*!
+      \note
+      No need for a \c total_memory_in_bytes() method, since
+      class Tableau is a private inner class of PIP_Solution_Node.
+    */
     memory_size_type external_memory_in_bytes() const;
 
     //! Returns \c true if and only if \p *this is well formed.
@@ -641,14 +695,18 @@ public:
   //! Returns \p this.
   virtual const PIP_Decision_Node* as_decision() const;
 
-  //! Returns \p this.
-  virtual PIP_Decision_Node* as_decision();
-
   //! Returns a const pointer to the \p b (true or false) branch of \p *this.
   const PIP_Tree_Node* child_node(bool b) const;
 
   //! Returns a pointer to the \p b (true or false) branch of \p *this.
   PIP_Tree_Node* child_node(bool b);
+
+  //! Prints on \p s the tree rooted in \p *this.
+  virtual void print_tree(std::ostream& s,
+                          unsigned indent,
+                          dimension_type space_dim,
+                          dimension_type first_art_dim,
+                          const Variables_Set& params) const;
 
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);

@@ -28,8 +28,18 @@ namespace PPL = Parma_Polyhedra_Library;
 
 /*! \relates Parma_Polyhedra_Library::PIP_Problem */
 std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const PIP_Problem& /*p*/) {
-  // FIXME: to be implemented.
+PPL::IO_Operators::operator<<(std::ostream& s, const PIP_Problem& pip) {
+  s << "Space dimension: " << pip.space_dimension();
+  s << "\nConstraints:";
+  for (PIP_Problem::const_iterator i = pip.constraints_begin(),
+	 i_end = pip.constraints_end(); i != i_end; ++i)
+    s << "\n" << *i;
+  s << "\nProblem parameters: " << pip.parameter_space_dimensions();
+  if (pip.get_big_parameter_dimension() == not_a_dimension())
+    s << "\nNo big-parameter set.\n";
+  else
+    s << "\bBig-parameter: " << Variable(pip.get_big_parameter_dimension());
+  s << "\n";
   return s;
 }
 
@@ -38,7 +48,6 @@ PPL::PIP_Problem::PIP_Problem(const dimension_type dim)
     internal_space_dim(0),
     status(PARTIALLY_SATISFIABLE),
     current_solution(0),
-    initialized(false),
     input_cs(),
     first_pending_constraint(0),
     parameters(),
@@ -58,7 +67,6 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
     internal_space_dim(y.internal_space_dim),
     status(y.status),
     current_solution(0),
-    initialized(y.initialized),
     input_cs(y.input_cs),
     first_pending_constraint(y.first_pending_constraint),
     parameters(y.parameters),
@@ -101,23 +109,19 @@ PPL::PIP_Problem::solve() const {
   case PARTIALLY_SATISFIABLE:
     {
       PIP_Problem& x = const_cast<PIP_Problem&>(*this);
+      // Allocate PIP solution tree root, if needed.
       if (current_solution == 0)
         x.current_solution = new PIP_Solution_Node();
-      if (input_cs.empty()) {
-        // No constraints: solution = {0}.
-        x.status = OPTIMIZED;
-        return OPTIMIZED_PIP_PROBLEM;
-      }
 
       // Properly resize context matrix.
-      const dimension_type num_params = parameters.size() + 1;
-      const dimension_type num_cols = initial_context.num_columns();
-      if (num_cols < num_params)
-        x.initial_context.add_zero_columns(num_params - num_cols);
+      const dimension_type new_num_cols = parameters.size() + 1;
+      const dimension_type old_num_cols = initial_context.num_columns();
+      if (old_num_cols < new_num_cols)
+        x.initial_context.add_zero_columns(new_num_cols - old_num_cols);
 
       // Computed once for all (to be used inside loop).
-      const Variables_Set::iterator param_begin = parameters.begin();
-      const Variables_Set::iterator param_end = parameters.end();
+      const Variables_Set::const_iterator param_begin = parameters.begin();
+      const Variables_Set::const_iterator param_end = parameters.end();
 
       // Go through all pending constraints.
       for (Constraint_Sequence::const_iterator
@@ -142,12 +146,14 @@ PPL::PIP_Problem::solve() const {
           continue;
 
         // Translate constraint into context row.
-        Row row(num_params, Row::Flags());
+        Row row(new_num_cols, Row::Flags());
         row[0] = c.inhomogeneous_term();
-        dimension_type i = 1;
-        for (Variables_Set::iterator
-               pi = param_begin; pi != param_end; ++pi, ++i)
-          row[i] = c.coefficient(Variable(*pi));
+        {
+          dimension_type i = 1;
+          for (Variables_Set::const_iterator
+                 pi = param_begin; pi != param_end; ++pi, ++i)
+            row[i] = c.coefficient(Variable(*pi));
+        }
         // Adjust inhomogenous term if strict.
         if (c.is_strict_inequality())
           --row[0];
@@ -155,7 +161,7 @@ PPL::PIP_Problem::solve() const {
         x.initial_context.add_row(row);
         // If it is an equality, also insert its negation.
         if (c.is_equality()) {
-          for (dimension_type i = num_params; i-- > 0; )
+          for (dimension_type i = new_num_cols; i-- > 0; )
             neg_assign(row[i], row[i]);
           x.initial_context.add_row(row);
         }
@@ -267,9 +273,7 @@ PPL::PIP_Problem::OK() const {
   if (big_parameter_dimension != not_a_dimension()
       && parameters.count(big_parameter_dimension) == 0) {
 #ifndef NDEBUG
-    cerr << "The current value for the big parameter is not a parameter "
-         << "dimension."
-	 << endl;
+    cerr << "The big parameter is set, but it is not a parameter." << endl;
     ascii_dump(cerr);
 #endif
     return false;
@@ -297,8 +301,6 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
     input_cs[i].ascii_dump(s);
 
   s << "\nfirst_pending_constraint: " <<  first_pending_constraint << "\n";
-
-  s << "\ninitialized: " << (initialized ? "YES" : "NO") << "\n";
 
   s << "\nstatus: ";
   switch (status) {
@@ -350,12 +352,12 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
   s << "\ncurrent_solution: ";
   if (current_solution == 0)
     s << "BOTTOM\n";
-  else if (PIP_Decision_Node* dec = current_solution->as_decision()) {
+  else if (const PIP_Decision_Node* dec = current_solution->as_decision()) {
     s << "DECISION\n";
     dec->ascii_dump(s);
   }
   else {
-    PIP_Solution_Node* sol = current_solution->as_solution();
+    const PIP_Solution_Node* sol = current_solution->as_solution();
     PPL_ASSERT(sol != 0);
     s << "SOLUTION\n";
     sol->ascii_dump(s);
@@ -401,17 +403,6 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
     return false;
 
   if (!(s >> first_pending_constraint))
-    return false;
-
-  if (!(s >> str) || str != "initialized:")
-    return false;
-  if (!(s >> str))
-    return false;
-  if (str == "YES")
-    initialized = true;
-  else if (str == "NO")
-    initialized = false;
-  else
     return false;
 
   if (!(s >> str) || str != "status:")
@@ -479,13 +470,15 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
   if (str == "BOTTOM")
     current_solution = 0;
   else if (str == "DECISION") {
-    current_solution = new PIP_Decision_Node(0, 0);
-    if (!current_solution->as_decision()->ascii_load(s))
+    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0);
+    current_solution = dec;
+    if (!dec->ascii_load(s))
       return false;
   }
   else if (str == "SOLUTION") {
-    current_solution = new PIP_Solution_Node();
-    if (!current_solution->as_solution()->ascii_load(s))
+    PIP_Solution_Node* sol = new PIP_Solution_Node;
+    current_solution = sol;
+    if (!sol->ascii_load(s))
       return false;
   }
   else
@@ -505,7 +498,6 @@ PPL::PIP_Problem::clear() {
     delete current_solution;
     current_solution = 0;
   }
-  initialized = false;
   input_cs.clear();
   first_pending_constraint = 0;
   parameters.clear();
@@ -518,6 +510,11 @@ void
 PPL::PIP_Problem
 ::add_space_dimensions_and_embed(const dimension_type m_vars,
                                  const dimension_type m_params) {
+  // Adding no space dims at all is a no-op:
+  // this avoids invalidating problem status (if it was optimized).
+  if (m_vars == 0 && m_params == 0)
+    return;
+
   // The space dimension of the resulting PIP problem should not
   // overflow the maximum allowed space dimension.
   dimension_type available = max_space_dimension() - space_dimension();
@@ -621,17 +618,17 @@ PPL::PIP_Problem::set_control_parameter(Control_Parameter_Value value) {
 }
 
 void
-PPL::PIP_Problem::set_big_parameter_dimension(dimension_type x) {
-  if (parameters.count(x) == 0)
+PPL::PIP_Problem::set_big_parameter_dimension(dimension_type big_dim) {
+  if (parameters.count(big_dim) == 0)
     throw std::invalid_argument("PPL::PIP_Problem::"
-                                "set_big_parameter_dimension(x):\n"
-                                "dimension 'x' is not a parameter.");
-  if (x < internal_space_dim)
+                                "set_big_parameter_dimension(big_dim):\n"
+                                "dimension 'big_dim' is not a parameter.");
+  if (big_dim < internal_space_dim)
     throw std::invalid_argument("PPL::PIP_Problem::"
-                                "set_big_parameter_dimension(x):\n"
+                                "set_big_parameter_dimension(big_dim):\n"
                                 "only newly-added parameters can be"
                                 "converted into the big parameter.");
-  big_parameter_dimension = x;
+  big_parameter_dimension = big_dim;
 }
 
 PPL::memory_size_type
@@ -655,3 +652,29 @@ PPL::memory_size_type
 PPL::PIP_Problem::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
+
+void
+PPL::PIP_Problem::print_solution(std::ostream& s, unsigned indent) const {
+  switch (status) {
+
+  case UNSATISFIABLE:
+    PPL_ASSERT(current_solution == 0);
+    PIP_Tree_Node::indent_and_print(s, indent, "_|_\n");
+    break;
+
+  case OPTIMIZED:
+    PPL_ASSERT(current_solution);
+    PPL_ASSERT(internal_space_dim == external_space_dim);
+    current_solution->print_tree(s, indent,
+                                 internal_space_dim,
+                                 // NOTE: first_art_param == space_dim.
+                                 internal_space_dim,
+                                 parameters);
+    break;
+
+  case PARTIALLY_SATISFIABLE:
+    throw std::logic_error("PIP_Problem::print_solution():\n"
+                           "the PIP problem has not been solved.");
+  }
+}
+

@@ -106,6 +106,9 @@ test04() {
   pip.set_big_parameter_dimension(5);
   ok &= (pip.get_big_parameter_dimension() == 5);
 
+  using namespace IO_Operators;
+  nout << pip;
+
   return ok;
 }
 
@@ -196,6 +199,105 @@ test10() {
   return ok;
 }
 
+bool
+test11() {
+  Variable A(0);
+  Constraint_System cs;
+  cs.insert(A >= 5);
+
+  PIP_Problem pip1(3, cs.begin(), cs.end(), Variables_Set());
+  bool ok = (pip1.solution() != 0);
+
+  return ok;
+}
+
+bool
+test12() {
+  Variable A(0);
+  Constraint_System cs;
+  cs.insert(A >= 5);
+
+  PIP_Problem pip1(3, cs.begin(), cs.end(), Variables_Set());
+  bool ok = (pip1.optimizing_solution() != 0);
+
+  return ok;
+}
+
+bool
+test13() {
+  Variable i(0);
+  Variable j(1);
+  Variable k(2);
+  Variable m(3);
+  Variable n(4);
+  Variables_Set params(k, n);
+
+  Constraint_System cs;
+  cs.insert(i <= m);
+  cs.insert(j <= n);
+  cs.insert(2*i+j == 2*m+n-k);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  PIP_Tree pip_tree = pip.solution();
+  const PIP_Solution_Node* sol_node = pip_tree->as_solution();
+  const PIP_Decision_Node* dec_node = pip_tree->as_decision();
+  bool ok = (sol_node == 0 && dec_node != 0);
+
+  return ok;
+}
+
+bool
+test14() {
+  // Some unit testing on inner class Artificial_Parameter.
+  typedef PIP_Tree_Node::Artificial_Parameter Art_Param;
+
+  Variable A(0);
+
+  Art_Param ap0;
+  Art_Param ap1(3*A + 8, -5);
+  Art_Param ap2(ap1);
+
+  bool ok = ap0.OK() && ap1.OK() && ap2.OK();
+
+  ok &= (ap0 != ap1) && (ap1 == ap2);
+  ok &= (ap0.denominator() == 1) && (ap1.denominator() == 5);
+
+  ap0.swap(ap2);
+  ok &= (ap0 == ap1) && (ap2.denominator() == 1);
+
+  using namespace IO_Operators;
+  nout << ap1 << endl;
+
+  ok &= (ap1.external_memory_in_bytes() < ap1.total_memory_in_bytes());
+
+  // Difference found in space dimension.
+  ok &= (ap1 != ap2);
+  // Difference found in denominator.
+  Art_Param ap3(3*A + 8, -6);
+  ok &= (ap1 != ap3);
+  // Difference found in inhomogeneous term.
+  Art_Param ap4(3*A + 7, -5);
+  ok &= (ap1 != ap4);
+  // Difference found in A's coefficient.
+  Art_Param ap5(2*A + 8, -5);
+  ok &= (ap1 != ap5);
+
+  return ok;
+}
+
+bool
+test15() {
+  PIP_Problem pip;
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  // Adding no space dimension at all is a no-op:
+  // it does not invalidate the solution computed before.
+  pip.add_space_dimensions_and_embed(0, 0);
+  // This would throw an exception if the solution was invalidated.
+  pip.print_solution(nout);
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -209,4 +311,9 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

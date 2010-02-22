@@ -51,23 +51,24 @@ operator<<(std::ostream& s, const PIP_Problem& p);
 //! A Parametric Integer (linear) Programming problem.
 /*! \ingroup PPL_CXX_interface
   An object of this class encodes a parametric integer (linear)
-  programming problem.
-  The PIP problem is specified by providing:
+  programming problem. The PIP problem is specified by providing:
    - the dimension of the vector space;
    - the subset of those dimensions of the vector space that are
      interpreted as integer parameters (the other space dimensions
      are interpreted as non-parameter integer variables);
-   - the feasible region, by means of a finite set of linear equality
-     and (strict or non-strict) inequality constraints involving both
-     variables and parameters;
-   - optionally, an initial context restricting the definition domain for
-     the parameters, by means of a finite set of linear equality and
-     (strict or non-strict) inequality constraints involving only
-     parameters;
-   - optionally, the dimension of a parameter to be considered arbitrarily
-     big; such a parameter is called the &ldquo;big parameter&rdquo;.
+   - a finite set of linear equality and (strict or non-strict)
+     inequality constraints involving variables and/or parameters;
+     these constraints are used to define:
+       - the <EM>feasible region</EM>, if they involve one or more
+         problem variable (and maybe some parameters);
+       - the <EM>initial context</EM>, if they only involve the
+         parameters;
+   - optionally, the so-called <EM>big parameter</EM>,
+     i.e., a problem parameter to be considered arbitrarily big.
 
-  All variables and parameters are considered non-negative integers.
+  Note that all problem variables and problem parameters are assumed
+  to take non-negative integer values, so that there is no need
+  to specify non-negativity constraints.
 
   The class provides support for the (incremental) solution of the
   PIP problem based on variations of the revised simplex method and
@@ -81,29 +82,31 @@ operator<<(std::ostream& s, const PIP_Problem& p);
 
   As the feasibility and the solution value of a PIP problem depend on the
   values of the parameters, the solution is a binary decision tree,
-  dividing the context parameter set into subsets. The tree nodes are:
-   - decision nodes, encoding one or more linear tests on the parameters;
-     if all the tests are true, then the solution is the node's
-     &ldquo;true&rdquo; child, otherwise the solution is the node's
-     &ldquo;false&rdquo; child;
-   - solution nodes, encoding the solution of the problem in the current
-     context subset, where each variable is defined in terms of a linear
-     expression of the parameters. Solution nodes also embed an optionally
-     not empty set of parameter constraints, meaning if all constraint tests
-     are true, the solution is described by the node, otherwise the problem
-     is empty.
+  dividing the context parameter set into subsets.
+  The tree nodes are of three kinds:
+   - \e Decision nodes.
+     These are internal tree nodes encoding one or more linear tests
+     on the parameters; if all the tests are satisfied, then the solution
+     is the node's \e true child; otherwise, the solution is the node's
+     \e false child;
+   - \e Solution nodes.
+     These are leaf nodes in the tree, encoding the solution of the problem
+     in the current context subset, where each variable is defined in terms
+     of a linear expression of the parameters.
+     Solution nodes also optionally embed a set of parameter constraints:
+     if all these constraints are satisfied, the solution is described by
+     the node, otherwise the problem has no solution.
 
-  Concerning the decision nodes, it may happen that a decision node has no
-  &ldquo;false&rdquo; or &ldquo;true&rdquo; child. This means the
-  corresponding test leads to an unfeasible solution. In addition, decision
-  nodes with two or more linear tests cannot have a &ldquo;false&rdquo;
-  child.
+  It may happen that a decision node has no \e false or \e true child.
+  This means that there is no solution satisfying the corresponding
+  constraints. Decision nodes having two or more linear tests on the
+  parameters cannot have a \e false child.
 
-  Both tree node types may also contain the definition of extra parameters
-  which are artificially introduced by the solver to keep the solution
-  values integer. Such artificial parameters are defined by the integer
-  division of a linear expression on the parameters by an integer
-  coefficient.
+  Both kinds of tree nodes may also contain the definition of extra
+  parameters which are artificially introduced by the solver to enforce
+  an integral solution. Such artificial parameters are defined by
+  the integer division of a linear expression on the parameters
+  by an integer coefficient.
 
   By exploiting the incremental nature of the solver, it is possible
   to reuse part of the computational work already done when solving
@@ -134,12 +137,12 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   else
     _|_
   \endcode
-  The \f$\perp\f$ notation, also called &ldquo;bottom&rdquo;, denotes
-  the lexicographic minimum of an empty set, here meaning the problem is
-  infeasible.\n
-  Also notice that a new parameter is defined after the first \c else. It
-  is only valid inside the block where it is defined, and is used when
-  formulating the value of the <tt>{i,j}</tt> vector.
+  The \f$\perp\f$ notation, also called \e bottom, denotes the
+  lexicographic minimum of an empty set, here meaning the problem is
+  unfeasible. Notice that a new parameter is defined after
+  the first \c else. It is only valid inside the block where it is
+  defined, and it is used when formulating the value of the
+  <tt>{i,j}</tt> vector.
 
   \par Context restriction
   The above solution is correct in an unrestricted original context,
@@ -271,13 +274,13 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   FIXME: different uses of the big parameter.
 */
 class Parma_Polyhedra_Library::PIP_Problem {
-  friend class PIP_Solution_Node;
 public:
   //! Builds a trivial PIP problem.
   /*!
-    A trivial PIP problem requires to minimize the objective function
-    \f$0\f$ on a vector space under no constraints and with no parameters:
-    the origin of the vector space is an optimal solution.
+    A trivial PIP problem requires to compute the lexicographic minimum
+    on a vector space under no constraints and with no parameters:
+    due to the implicit non-negativity constraints, the origin of the
+    vector space is an optimal solution.
 
     \param dim
     The dimension of the vector space enclosing \p *this
@@ -316,8 +319,7 @@ public:
     (resp., the parameter variables) is strictly greater than \p dim.
   */
   template <typename In>
-  PIP_Problem(dimension_type dim,
-	      In first, In last,
+  PIP_Problem(dimension_type dim, In first, In last,
 	      const Variables_Set& p_vars);
 
   //! Ordinary copy-constructor.
@@ -453,6 +455,20 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+  //! Prints on \p s the solution computed for \p *this.
+  /*!
+    \param s
+    The output stream.
+
+    \param indent
+    An indentation parameter (default value 0).
+
+    \exception std::logic_error
+    Thrown if trying to print the solution when the PIP problem
+    still has to be solved.
+  */
+  void print_solution(std::ostream& s, unsigned indent = 0) const;
+
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
@@ -477,8 +493,9 @@ public:
     CUTTING_STRATEGY,
     //! Pivot row strategy
     PIVOT_ROW_STRATEGY,
-
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
     //! Number of different enumeration values.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
     CONTROL_PARAMETER_NAME_SIZE
   };
 
@@ -496,7 +513,9 @@ public:
     //! Choose the row which generates the lexico-maximal pivot column
     PIVOT_ROW_STRATEGY_MAX_COLUMN,
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
     //! Number of different enumeration values.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
     CONTROL_PARAMETER_VALUE_SIZE
   };
 
@@ -507,8 +526,8 @@ public:
   //! Sets control parameter \p value.
   void set_control_parameter(Control_Parameter_Value value);
 
-  //! Sets the dimension for the big parameter
-  void set_big_parameter_dimension(dimension_type x);
+  //! Sets the dimension for the big parameter to \p big_dim.
+  void set_big_parameter_dimension(dimension_type big_dim);
 
   /*! \brief
     Returns the space dimension for the big parameter.
@@ -553,13 +572,6 @@ private:
   //! The current solution decision tree
   PIP_Tree_Node* current_solution;
 
-  /*! \brief
-    A Boolean encoding whether or not internal data structures have
-    already been properly sized and populated: useful to allow for
-    deeper checks in method OK().
-  */
-  bool initialized;
-
   //! The sequence of constraints describing the feasible region.
   Constraint_Sequence input_cs;
 
@@ -588,6 +600,8 @@ private:
     if not set.
   */
   dimension_type big_parameter_dimension;
+
+  friend class PIP_Solution_Node;
 };
 
 namespace std {

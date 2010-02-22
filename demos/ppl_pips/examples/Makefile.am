@@ -21,6 +21,27 @@
 # site: http://www.cs.unipr.it/ppl/ .
 
 DAT_FILES = \
-test02.dat
+invert.dat \
+linear.dat \
+lineri.dat \
+loz.dat \
+max.dat \
+maxb.dat \
+pairi.dat \
+petit.dat \
+rairoi.dat \
+test02.dat \
+test12i.dat
 
-dist_noinst_DATA = $(DAT_FILES)
+PIP_FILES = \
+big.pip \
+brisebarre.pip \
+cg1.pip \
+esced.pip \
+ex2.pip \
+fimmel.pip \
+max.pip \
+sor1d.pip \
+square.pip
+
+dist_noinst_DATA = $(DAT_FILES) $(PIP_FILES)

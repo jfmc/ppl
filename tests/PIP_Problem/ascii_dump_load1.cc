@@ -224,6 +224,61 @@ test07() {
   return ok;
 }
 
+bool
+test08() {
+  typedef PIP_Tree_Node::Artificial_Parameter Art_Param;
+
+  Variable A(0);
+
+  Art_Param ap1(3*A + 8, -5);
+  std::stringstream ss1;
+  ap1.ascii_dump(ss1);
+
+  Art_Param ap2;
+  bool ok = ap2.ascii_load(ss1);
+
+  std::stringstream ss2;
+  ap2.ascii_dump(ss2);
+
+  ok &= (ap1 == ap2) && (ss1.str() == ss2.str());
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  // Compute the solution tree.
+  (void) pip.solve();
+  // Printing ensures parametric solution values are generated.
+  pip.print_solution(nout);
+
+  std::stringstream ss;
+  pip.ascii_dump(ss);
+
+  PIP_Problem pip2;
+  bool ok = pip2.ascii_load(ss);
+
+  std::stringstream ss2;
+  pip2.ascii_dump(ss2);
+
+  ok &= (ss.str() == ss2.str());
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -234,4 +289,6 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST_F8(test09);
 END_MAIN

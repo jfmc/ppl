@@ -23,7 +23,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], [0.11pre10], [ppl-devel@cs.unipr.it], [ppl])
+AC_INIT([the Parma Polyhedra Library], [0.11pre11], [ppl-devel@cs.unipr.it], [ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
@@ -762,26 +762,14 @@ fi
 extra_includes="${extra_includes}${extra_includes:+ }${gmp_includes_option}"
 extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
 
-# setitimer() is a strong requisite for the PWL.
-AC_CHECK_FUNCS([setitimer], [have_setitimer=yes], [have_setitimer=no])
-
-enableval=default
+enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
   AS_HELP_STRING([--enable-watchdog],
                  [build also the Parma Watchdog Library]))
 case "${enableval}" in
 yes)
-  if test x"$have_setitimer" = xyes
-  then
-    build_watchdog_library=yes
-  else
-    AC_MSG_ERROR([CANNOT BUILD THE WATCHDOG LIBRARY
-*** THE SYSTEM DOES NOT PROVIDE THE SETITIMER FUNCTION.])
-  fi
-  ;;
-default)
-  build_watchdog_library=$have_setitimer
+  build_watchdog_library=yes
   ;;
 no)
   build_watchdog_library=no
@@ -1472,6 +1460,7 @@ AC_CHECK_DECLS([getrusage],
 # include <sys/resource.h>
 #endif
 ])
+AC_CHECK_DECLS([sigaction], , , [#include <csignal>])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_TYPES([timeval])

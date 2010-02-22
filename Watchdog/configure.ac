@@ -49,7 +49,7 @@ ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
 
 AH_BOTTOM([
-#ifdef PWL_NDEBUG
+#if defined(PWL_NDEBUG) && !defined(NDEBUG)
 # define NDEBUG PWL_NDEBUG
 #endif
 ])
@@ -196,7 +196,7 @@ yes)
   ;;
 no)
   AC_MSG_RESULT(no)
-  AC_DEFINE(NDEBUG, 1, [Assertions are disabled when this is defined])
+  AC_DEFINE(PWL_NDEBUG, 1, [Assertions are disabled when this is defined])
   debug_flag="-DNDEBUG=1"
   ;;
 *)
@@ -306,6 +306,9 @@ AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
 AC_LANG(C)
 AC_C_CONST
 
+# Use C++ for the remaining checks.
+AC_LANG(C++)
+
 enableval=no
 AC_MSG_CHECKING([whether tests should be run under Valgrind])
 AC_ARG_ENABLE(valgrind-tests,
@@ -332,26 +335,14 @@ no)
 esac
 AM_CONDITIONAL(VALGRIND_TESTS_ENABLED, test x"$enable_valgrind_tests" = xyes)
 
-# setitimer() is a strong requisite for the PWL.
-AC_CHECK_FUNCS([setitimer], [have_setitimer=yes], [have_setitimer=no])
-
-enableval=default
+enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
   AS_HELP_STRING([--enable-watchdog],
                  [build also the Parma Watchdog Library]))
 case "${enableval}" in
 yes)
-  if test x"$have_setitimer" = xyes
-  then
-    build_watchdog_library=yes
-  else
-    AC_MSG_ERROR([CANNOT BUILD THE WATCHDOG LIBRARY
-*** THE SYSTEM DOES NOT PROVIDE THE SETITIMER FUNCTION.])
-  fi
-  ;;
-default)
-  build_watchdog_library=$have_setitimer
+  build_watchdog_library=yes
   ;;
 no)
   build_watchdog_library=no
@@ -371,6 +362,12 @@ then
 
   # Checks for the availability of C library functions in C++.
   AC_CHECK_DECLS([getenv], , , [#include <cstdlib>])
+  AC_CHECK_DECLS([setitimer], [], [], [[
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+  ]])
+  AC_CHECK_DECLS([sigaction], , , [#include <csignal>])
 
   # Checks for typedefs, structures, and compiler characteristics.
   AC_CHECK_TYPES([siginfo_t], [], [], [[

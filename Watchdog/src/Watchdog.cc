@@ -24,6 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Watchdog.defs.hh"
 
+namespace PWL = Parma_Watchdog_Library;
+
+#if PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
+
 #include <csignal>
 #include <iostream>
 #include <stdexcept>
@@ -51,8 +55,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define THE_TIMER  ITIMER_PROF
 #define THE_SIGNAL SIGPROF
 #endif
-
-namespace PWL = Parma_Watchdog_Library;
 
 using std::cerr;
 using std::endl;
@@ -218,14 +220,7 @@ PWL::Watchdog::remove_watchdog_event(WD_Pending_List::Iterator position) {
   pending.erase(position);
 }
 
-PWL::Watchdog::~Watchdog() {
-  if (!expired) {
-    in_critical_section = true;
-    remove_watchdog_event(pending_position);
-    in_critical_section = false;
-  }
-  delete &handler;
-}
+PWL::Time PWL::Watchdog::reschedule_time(1);
 
 void
 PWL::Watchdog::initialize() {
@@ -247,6 +242,6 @@ void
 PWL::Watchdog::finalize() {
 }
 
-PWL::Time PWL::Watchdog::reschedule_time(1);
-
 unsigned int PWL::Init::count = 0;
+
+#endif // PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION

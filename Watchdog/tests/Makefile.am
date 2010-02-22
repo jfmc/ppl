@@ -55,7 +55,7 @@ pwl_test.hh
 EXTRA_DIST = valgrind_suppressions
 
 TESTS = \
-simple1
+watchdog1
 
 XFAIL_TESTS =
 
@@ -63,7 +63,7 @@ XFAIL_TESTS =
 # Sources for the tests
 #
 
-simple1_SOURCES = simple1.cc
+watchdog1_SOURCES = watchdog1.cc
 
 check_PROGRAMS = $(TESTS)
 

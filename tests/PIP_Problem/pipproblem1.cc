@@ -1,4 +1,4 @@
-/* Test the PIP_Problem class
+/* Test the PIP_Problem class.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,60 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-void
-display_solution(const PIP_Tree pip, const Variables_Set& parameters,
-                 const Variables_Set& vars, dimension_type space_dimension,
-                 int indent=0) {
-  using namespace std;
-  using namespace Parma_Polyhedra_Library::IO_Operators;
-  if (!pip) {
-    nout << setw(indent*2) << "" << "_|_" << endl;
-  }
-  else {
-    PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator i, i_end;
-    i_end = pip->art_parameter_end();
-    for (i = pip->art_parameter_begin(); i != i_end; ++i) {
-      nout << setw(indent*2) << "" << "Parameter "
-           << Linear_Expression(Variable(space_dimension++))
-           << " = " << *i << endl;
-    }
-    const Constraint_System &constraints = pip->constraints();
-    bool constraints_empty = constraints.empty();
-    if (!constraints_empty) {
-      nout << setw(indent*2) << "" << "if ";
-      for (Constraint_System::const_iterator
-             begin = constraints.begin(),
-             end = constraints.end(),
-             i = begin; i != end; ++i)
-        nout << ((i == begin) ? "" : " and ") << *i;
-      nout << " then" << endl;
-    }
-    const PIP_Decision_Node* dn = pip->as_decision();
-    if (dn) {
-      display_solution(dn->child_node(true), parameters, vars,
-                       space_dimension, indent+1);
-      nout << setw(indent*2) << "" << "else" << endl;
-      display_solution(dn->child_node(false), parameters, vars,
-                       space_dimension, indent+1);
-    }
-    else {
-      const PIP_Solution_Node* sn = pip->as_solution();
-      nout << setw(indent*2 + (constraints_empty ? 0 : 2)) << "" << "{";
-      for (Variables_Set::const_iterator
-             begin = vars.begin(),
-             end = vars.end(),
-             i = begin; i != end; ++i)
-        nout << ((i == begin) ? "" : " ; ")
-             << sn->parametric_values(Variable(*i), parameters);
-      nout << "}" << endl;
-      if (!constraints_empty) {
-        nout << setw(indent*2) << "" << "else" << endl;
-        nout << setw(indent*2+2) << "" << "_|_" << endl;
-      }
-    }
-  }
-}
-
 bool
 test01() {
   Variable X1(0);
@@ -101,8 +47,7 @@ test01() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(X1, X2),
-                     cs.space_dimension());
+    pip.print_solution(nout);
   }
 
   return ok;
@@ -129,10 +74,114 @@ test02() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     cs.space_dimension());
-  }
+    pip.print_solution(nout);
 
+    // Programmatically check the expected solution.
+    const PIP_Decision_Node* root = solution->as_decision();
+    if (root == 0)
+      return false;
+    {
+      // Check the root node.
+      if (root->art_parameter_count() != 0)
+        return false;
+      const Constraint_System& cs = root->constraints();
+      if (std::distance(cs.begin(), cs.end()) != 1)
+        return false;
+      const Constraint& c = *cs.begin();
+      if (!(c.is_inequality()
+            && c.coefficient(n) == 7
+            && c.coefficient(m) == 0
+            && c.inhomogeneous_term() == -10))
+        return false;
+    }
+    if (root->child_node(true) == 0 || root->child_node(false) != 0)
+      return false;
+    const PIP_Decision_Node* t_child = root->child_node(true)->as_decision();
+    if (t_child == 0)
+      return false;
+    {
+      // Check t_child node context.
+      if (t_child->art_parameter_count() != 0)
+        return false;
+      const Constraint_System& cs = t_child->constraints();
+      if (std::distance(cs.begin(), cs.end()) != 1)
+        return false;
+      const Constraint& c = *cs.begin();
+      if (!(c.is_inequality()
+            && c.coefficient(n) == 0
+            && c.coefficient(m) == 7
+            && c.inhomogeneous_term() == -12))
+        return false;
+    }
+    if (t_child->child_node(true) == 0 || t_child->child_node(false) == 0)
+      return false;
+    const PIP_Solution_Node* t_t_child
+      = t_child->child_node(true)->as_solution();
+    if (t_t_child == 0)
+      return false;
+    {
+      // Check t_t_child node.
+      if (t_t_child->art_parameter_count() != 0)
+        return false;
+      const Constraint_System& cs = t_t_child->constraints();
+      if (std::distance(cs.begin(), cs.end()) != 0)
+        return false;
+      const Linear_Expression& v_i
+        = t_t_child->parametric_values(i, pip.parameter_space_dimensions());
+      if (!(v_i.coefficient(n) == 0
+            && v_i.coefficient(m) == 0
+            && v_i.inhomogeneous_term() == 2))
+        return false;
+      const Linear_Expression& v_j
+        = t_t_child->parametric_values(j, pip.parameter_space_dimensions());
+      if (!(v_j.coefficient(n) == 0
+            && v_j.coefficient(m) == 0
+            && v_j.inhomogeneous_term() == 2))
+        return false;
+    }
+    const PIP_Solution_Node* t_f_child
+      = t_child->child_node(false)->as_solution();
+    if (t_f_child == 0)
+      return false;
+    {
+      // Check t_f_child node.
+      // Check artificial parameter.
+      if (t_f_child->art_parameter_count() != 1)
+        return false;
+      const PIP_Tree_Node::Artificial_Parameter& ap
+        = *(t_f_child->art_parameter_begin());
+      if (!(ap.coefficient(n) == 0
+            && ap.coefficient(m) == 1
+            && ap.denominator() == 2))
+        return false;
+      // Check context.
+      const Constraint_System& cs = t_f_child->constraints();
+      if (std::distance(cs.begin(), cs.end()) != 1)
+        return false;
+      const Constraint& c = *cs.begin();
+      if (!(c.is_inequality()
+            && c.coefficient(n) == 2
+            && c.coefficient(m) == 3
+            && c.inhomogeneous_term() == -8))
+        return false;
+      // Check parametric values.
+      Variable art_p(4);
+      const Linear_Expression& v_i
+        = t_f_child->parametric_values(i, pip.parameter_space_dimensions());
+      if (!(v_i.coefficient(n) == 0
+            && v_i.coefficient(m) == -1
+            && v_i.coefficient(art_p) == -1
+            && v_i.inhomogeneous_term() == 4))
+        return false;
+      const Linear_Expression& v_j
+        = t_f_child->parametric_values(j, pip.parameter_space_dimensions());
+      if (!(v_j.coefficient(n) == 0
+            && v_j.coefficient(m) == 1
+            && v_j.coefficient(art_p) == 0
+            && v_j.inhomogeneous_term() == 0))
+        return false;
+    }
+  }
   return ok;
 }
 
@@ -156,8 +205,7 @@ test03() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     cs.space_dimension());
+    pip.print_solution(nout);
   }
 
   return ok;
@@ -183,8 +231,7 @@ test04() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     cs.space_dimension());
+    pip.print_solution(nout);
   }
 
   // Copy constructor is no longer buggy.
@@ -194,8 +241,7 @@ test04() {
     // and we also destroy the (copied) solution tree of pip_copy.
     const PIP_Tree solution = pip_copy.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     cs.space_dimension());
+    pip.print_solution(nout);
   }
 
   return ok;
@@ -222,8 +268,7 @@ test05() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     cs.space_dimension());
+    pip.print_solution(nout);
   }
 
   return ok;
@@ -241,11 +286,8 @@ test06() {
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
 
   bool ok = (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
-  if (ok) {
-    const PIP_Tree solution = pip.solution();
-    display_solution(solution, params, Variables_Set(i),
-                     cs.space_dimension());
-  }
+  if (ok)
+    pip.print_solution(nout);
 
   return ok;
 }
@@ -269,8 +311,7 @@ test07() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     pip.space_dimension());
+    pip.print_solution(nout);
   }
 
   pip.add_constraint(j <= m);
@@ -278,8 +319,7 @@ test07() {
   if (ok) {
     const PIP_Tree solution = pip.solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     pip.space_dimension());
+    pip.print_solution(nout);
   }
 
   return ok;
@@ -311,11 +351,167 @@ test08() {
   if (ok) {
     const PIP_Tree solution = pip.optimizing_solution();
     ok &= solution->OK();
-    display_solution(solution, params, Variables_Set(i, j),
-                     pip.space_dimension());
+    pip.print_solution(nout);
     pip.clear();
   }
 
+  return ok;
+}
+
+bool
+test09() {
+  // Same problem as test02, but using CUTTING_STRATEGY_DEEPEST.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  //cs.insert(j >= 0);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  pip.set_control_parameter(PIP_Problem::CUTTING_STRATEGY_DEEPEST);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  return ok;
+}
+
+bool
+test10() {
+  // Same problem as test02, but using CUTTING_STRATEGY_ALL.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  //cs.insert(j >= 0);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  pip.set_control_parameter(PIP_Problem::CUTTING_STRATEGY_ALL);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  return ok;
+}
+
+bool
+test11() {
+  // 0-dimension trivial PIP problem.
+  PIP_Problem pip;
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+  return ok;
+}
+
+bool
+test12() {
+  // Trivial PIP problem, but with 4 parameters.
+  PIP_Problem pip;
+  pip.add_space_dimensions_and_embed(0, 4);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+  return ok;
+}
+
+bool
+test13() {
+  // Trivial PIP problem with 4 variables.
+  PIP_Problem pip;
+  pip.add_space_dimensions_and_embed(4, 0);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+  return ok;
+}
+
+bool
+test14() {
+  // Trivial PIP problem with 4 variables and 4 parameters.
+  PIP_Problem pip;
+  pip.add_space_dimensions_and_embed(4, 4);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+  return ok;
+}
+
+bool
+test15() {
+  PIP_Problem pip;
+  // Adding trivial satisfiable constraint.
+  pip.add_constraint(Linear_Expression(5) == 5);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+  return ok;
+}
+
+bool
+test16() {
+  PIP_Problem pip;
+  // Adding trivial unsatisfiable constraint.
+  pip.add_constraint(Linear_Expression(0) == 1);
+  bool ok = (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
+  if (pip.solution() != 0)
+    pip.print_solution(nout);
+  return ok;
+}
+
+bool
+test17() {
+  PIP_Problem pip;
+  pip.add_space_dimensions_and_embed(0, 1);
+  // Adding unsatisfiable context constraints.
+  Variable n(0);
+  pip.add_constraint(n <= 5);
+  pip.add_constraint(n >= 10);
+  bool ok = (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
+  if (pip.solution() != 0)
+    pip.print_solution(nout);
   return ok;
 }
 
@@ -323,11 +519,21 @@ test08() {
 
 BEGIN_MAIN
   DO_TEST(test01);
-  DO_TEST(test02);
+  DO_TEST_F8(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST(test05);
+  DO_TEST_F8(test05);
   DO_TEST(test06);
-  DO_TEST(test07);
-  DO_TEST(test08);
+  DO_TEST_F8(test07);
+  DO_TEST_F8(test08);
+  DO_TEST_F8(test09);
+  DO_TEST_F8(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  // The following two tests show a bug in the PIP solver.
+  DO_TEST_F(test16);
+  DO_TEST_F(test17);
 END_MAIN

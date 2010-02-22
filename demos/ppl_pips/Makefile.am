@@ -35,8 +35,8 @@ $(top_builddir)/src/libppl.la \
 $(top_builddir)/utils/libppl_utils.a \
 @extra_libraries@
 
-#dist_man_MANS = \
-#ppl_pips.1
+dist_man_MANS = \
+ppl_pips.1
 
 piplib_pips.o: $(srcdir)/ppl_pips.cc $(top_builddir)/utils/libppl_utils.a
 	$(CXXCOMPILE) -c -o $@ -DUSE_PIPLIB $(srcdir)/ppl_pips.cc
@@ -45,16 +45,16 @@ piplib_pips: piplib_pips.o
 	$(CXXLINK) $< -lpip -lgmpxx -lgmp $(top_builddir)/utils/libppl_utils.a
 
 EXTRA_DIST = \
-expected_mpz
-# expected_mpz_a \
-# expected_int8 \
-# expected_int8_a \
-# expected_int16 \
-# expected_int16_a \
-# expected_int32 \
-# expected_int32_a \
-# expected_int64 \
-# expected_int64_a
+expected_mpz \
+expected_mpz_a \
+expected_int8 \
+expected_int8_a \
+expected_int16 \
+expected_int16_a \
+expected_int32 \
+expected_int32_a \
+expected_int64 \
+expected_int64_a
 
 if HAVE_MD5SUM
 
@@ -84,8 +84,17 @@ check-local: ppl_pips$(EXEEXT)
 	  file=`basename $$path`; \
 	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  echo $(ECHO_N) $$file " $(ECHO_C)" >>obtained; \
-	  echo ppl_pips$(EXEEXT) $$path; \
-	  ./ppl_pips$(EXEEXT) $$path | tr -d '\015' | $(TEXT_MD5SUM) \
+	  echo ppl_pips$(EXEEXT) -p $$path; \
+	  ./ppl_pips$(EXEEXT) -p $$path | tr -d '\015' | $(TEXT_MD5SUM) \
+            >>obtained; \
+	done
+	for path in $(srcdir)/examples/*.pip; \
+	do \
+	  file=`basename $$path`; \
+	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
+	  echo $(ECHO_N) $$file " $(ECHO_C)" >>obtained; \
+	  echo ppl_pips$(EXEEXT) -P $$path; \
+	  ./ppl_pips$(EXEEXT) -P $$path | tr -d '\015' | $(TEXT_MD5SUM) \
             >>obtained; \
 	done
 	diff obtained $(srcdir)/$(EXPECTED)

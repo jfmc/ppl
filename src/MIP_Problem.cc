@@ -2245,5 +2245,5 @@ PPL::IO_Operators::operator<<(std::ostream& s, const MIP_Problem& lp) {
 	? "MAXIMIZATION"
 	: "MINIMIZATION");
   s << "\nInteger variables: " << lp.integer_space_dimensions();
- return s;
+  return s;
 }

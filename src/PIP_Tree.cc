@@ -69,7 +69,9 @@ merge_assign(Matrix& x,
     return;
   const dimension_type old_num_rows = x.num_rows();
   x.add_zero_rows(new_rows, Row::Flags());
+
   // Compute once for all.
+  const dimension_type cs_space_dim = y.space_dimension();
   const Variables_Set::const_iterator param_begin = parameters.begin();
   const Variables_Set::const_iterator param_end = parameters.end();
 
@@ -81,8 +83,12 @@ merge_assign(Matrix& x,
     x_i[0] = y_i->inhomogeneous_term();
     Variables_Set::const_iterator pj;
     dimension_type j = 1;
-    for (pj = param_begin; pj != param_end; ++pj, ++j)
-      x_i[j] = y_i->coefficient(Variable(*pj));
+    for (pj = param_begin; pj != param_end; ++pj, ++j) {
+      Variable vj(*pj);
+      if (vj.space_dimension() > cs_space_dim)
+        break;
+      x_i[j] = y_i->coefficient(vj);
+    }
   }
 }
 
@@ -272,7 +278,7 @@ namespace IO_Operators {
 std::ostream&
 operator<<(std::ostream& os, const PIP_Tree_Node::Artificial_Parameter& x) {
   const Linear_Expression& expr = static_cast<const Linear_Expression&>(x);
-  os << "(" << expr << ") div " << x.get_denominator();
+  os << "(" << expr << ") div " << x.denominator();
   return os;
 }
 
@@ -291,11 +297,12 @@ PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node& y)
 }
 
 bool
-operator==(const PIP_Tree_Node::Artificial_Parameter& x,
-           const PIP_Tree_Node::Artificial_Parameter& y) {
+PIP_Tree_Node::Artificial_Parameter
+::operator==(const PIP_Tree_Node::Artificial_Parameter& y) const {
+  const Artificial_Parameter& x = *this;
   if (x.space_dimension() != y.space_dimension())
     return false;
-  if (x.denominator != y.denominator)
+  if (x.denom != y.denom)
     return false;
   if (x.inhomogeneous_term() != y.inhomogeneous_term())
     return false;
@@ -305,11 +312,17 @@ operator==(const PIP_Tree_Node::Artificial_Parameter& x,
   return true;
 }
 
+bool
+PIP_Tree_Node::Artificial_Parameter
+::operator!=(const PIP_Tree_Node::Artificial_Parameter& y) const {
+  return !operator==(y);
+}
+
 void
 PIP_Tree_Node::Artificial_Parameter::ascii_dump(std::ostream& s) const {
   s << "artificial_parameter ";
   Linear_Expression::ascii_dump(s);
-  s << " / " << denominator << "\n";
+  s << " / " << denom << "\n";
 }
 
 bool
@@ -321,7 +334,7 @@ PIP_Tree_Node::Artificial_Parameter::ascii_load(std::istream& s) {
     return false;
   if (!(s >> str) || str != "/")
     return false;
-  if (!(s >> denominator))
+  if (!(s >> denom))
     return false;
   PPL_ASSERT(OK());
   return true;
@@ -410,18 +423,8 @@ PIP_Tree_Node::as_solution() const {
   return 0;
 }
 
-PIP_Solution_Node*
-PIP_Tree_Node::as_solution() {
-  return 0;
-}
-
 const PIP_Decision_Node*
 PIP_Tree_Node::as_decision() const {
-  return 0;
-}
-
-PIP_Decision_Node*
-PIP_Tree_Node::as_decision() {
   return 0;
 }
 
@@ -430,18 +433,8 @@ PIP_Solution_Node::as_solution() const {
   return this;
 }
 
-PIP_Solution_Node*
-PIP_Solution_Node::as_solution() {
-  return this;
-}
-
 const PIP_Decision_Node*
 PIP_Decision_Node::as_decision() const {
-  return this;
-}
-
-PIP_Decision_Node*
-PIP_Decision_Node::as_decision() {
   return this;
 }
 
@@ -477,7 +470,7 @@ PIP_Solution_Node::Tableau::OK() const {
     return false;
   }
 
-  if (denominator <= 0) {
+  if (denom <= 0) {
 #ifndef NDEBUG
     std::cerr << "PIP_Solution_Node::Tableau with non-positive denominator.\n";
 #endif
@@ -695,12 +688,12 @@ PIP_Decision_Node::ascii_dump(std::ostream& s) const {
   s << "\ntrue_child: ";
   if (true_child == 0)
     s << "BOTTOM\n";
-  else if (PIP_Decision_Node* dec = true_child->as_decision()) {
+  else if (const PIP_Decision_Node* dec = true_child->as_decision()) {
     s << "DECISION\n";
     dec->ascii_dump(s);
   }
   else {
-    PIP_Solution_Node* sol = true_child->as_solution();
+    const PIP_Solution_Node* sol = true_child->as_solution();
     PPL_ASSERT(sol != 0);
     s << "SOLUTION\n";
     sol->ascii_dump(s);
@@ -710,12 +703,12 @@ PIP_Decision_Node::ascii_dump(std::ostream& s) const {
   s << "\nfalse_child: ";
   if (false_child == 0)
     s << "BOTTOM\n";
-  else if (PIP_Decision_Node* dec = false_child->as_decision()) {
+  else if (const PIP_Decision_Node* dec = false_child->as_decision()) {
     s << "DECISION\n";
     dec->ascii_dump(s);
   }
   else {
-    PIP_Solution_Node* sol = false_child->as_solution();
+    const PIP_Solution_Node* sol = false_child->as_solution();
     PPL_ASSERT(sol != 0);
     s << "SOLUTION\n";
     sol->ascii_dump(s);
@@ -742,13 +735,15 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
   if (str == "BOTTOM")
     true_child = 0;
   else if (str == "DECISION") {
-    true_child = new PIP_Decision_Node(0, 0);
-    if (!true_child->as_decision()->ascii_load(s))
+    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0);
+    true_child = dec;
+    if (!dec->ascii_load(s))
       return false;
   }
   else if (str == "SOLUTION") {
-    true_child = new PIP_Solution_Node();
-    if (!true_child->as_solution()->ascii_load(s))
+    PIP_Solution_Node* sol = new PIP_Solution_Node;
+    true_child = sol;
+    if (!sol->ascii_load(s))
       return false;
   }
   else
@@ -767,13 +762,15 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
   if (str == "BOTTOM")
     false_child = 0;
   else if (str == "DECISION") {
-    false_child = new PIP_Decision_Node(0, 0);
-    if (!false_child->as_decision()->ascii_load(s))
+    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0);
+    false_child = dec;
+    if (!dec->ascii_load(s))
       return false;
   }
   else if (str == "SOLUTION") {
-    false_child = new PIP_Solution_Node();
-    if (!false_child->as_solution()->ascii_load(s))
+    PIP_Solution_Node* sol = new PIP_Solution_Node;
+    false_child = sol;
+    if (!sol->ascii_load(s))
       return false;
   }
   else
@@ -788,7 +785,7 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
 
 void
 PIP_Solution_Node::Tableau::normalize() {
-  if (denominator == 1)
+  if (denom == 1)
     return;
 
   const dimension_type num_rows = s.num_rows();
@@ -797,7 +794,7 @@ PIP_Solution_Node::Tableau::normalize() {
 
   // Compute global gcd.
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-  gcd = denominator;
+  gcd = denom;
   for (dimension_type i = num_rows; i-- > 0; ) {
     const Row& s_i = s[i];
     for (dimension_type j = s_cols; j-- > 0; ) {
@@ -834,7 +831,7 @@ PIP_Solution_Node::Tableau::normalize() {
     }
   }
   // Normalize denominator.
-  exact_div_assign(denominator, denominator, gcd);
+  exact_div_assign(denom, denom, gcd);
 }
 
 void
@@ -847,7 +844,7 @@ PIP_Solution_Node::Tableau::scale(Coefficient_traits::const_reference ratio) {
     for (dimension_type j = t.num_columns(); j-- > 0; )
       t_i[j] *= ratio;
   }
-  denominator *= ratio;
+  denom *= ratio;
 }
 
 bool
@@ -941,7 +938,7 @@ PIP_Decision_Node::clone() const {
 
 void
 PIP_Solution_Node::Tableau::ascii_dump(std::ostream& st) const {
-  st << "denominator " << denominator << "\n";
+  st << "denominator " << denom << "\n";
   st << "variables ";
   s.ascii_dump(st);
   st << "parameters ";
@@ -956,7 +953,7 @@ PIP_Solution_Node::Tableau::ascii_load(std::istream& st) {
   Coefficient den;
   if (!(st >> den))
     return false;
-  denominator = den;
+  denom = den;
   if (!(st >> str) || str != "variables")
     return false;
   if (!s.ascii_load(st))
@@ -1422,48 +1419,73 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
                                   const dimension_type first_pending_constraint,
                                   const Constraint_Sequence& input_cs,
                                   const Variables_Set& parameters) {
-  dimension_type initial_space_dim;
-  if (tableau.t.num_columns() > 0)
-    initial_space_dim = tableau.s.num_columns() + tableau.t.num_columns() - 1;
-  else {
-    // Create parameter column, corresponding to the constant term.
+  // Make sure a parameter column exists, for the inhomogeneous term.
+  if (tableau.t.num_columns() == 0)
     tableau.t.add_zero_columns(1);
-    initial_space_dim = 0;
+
+  // NOTE: here 'params' stands for problem (i.e., non artificial) parameters.
+  const dimension_type old_num_vars = tableau.s.num_columns();
+  const dimension_type old_num_params
+    = problem.internal_space_dim - old_num_vars;
+  const dimension_type num_added_dims
+    = problem.external_space_dim - problem.internal_space_dim;
+  const dimension_type new_num_params = parameters.size();
+  const dimension_type num_added_params = new_num_params - old_num_params;
+  const dimension_type num_added_vars = num_added_dims - num_added_params;
+
+  const dimension_type old_num_art_params
+    = tableau.t.num_columns() - 1 - old_num_params;
+
+  // Resize the two tableau matrices.
+  if (num_added_vars > 0)
+    tableau.s.add_zero_columns(num_added_vars);
+  if (num_added_params > 0)
+    tableau.t.add_zero_columns(num_added_params);
+
+  if (num_added_params > 0 && old_num_art_params > 0) {
+    // Shift to the right the columns of artificial parameters.
+    std::vector<dimension_type> swaps;
+    swaps.reserve(3*old_num_art_params);
+    const dimension_type first_ap = 1 + old_num_params;
+    for (dimension_type i = 0; i < old_num_art_params; ++i) {
+      dimension_type old_ap = first_ap + i;
+      dimension_type new_ap = old_ap + num_added_params;
+      swaps.push_back(old_ap);
+      swaps.push_back(new_ap);
+      swaps.push_back(0);
+    }
+    tableau.t.permute_columns(swaps);
   }
 
-  // Add new columns to the tableau.
-  /* FIXME: when the node or its parents have artificial parameters, we
-    must insert new parameter columns before the columns corresponding to
-    the artificial parameters. Meanwhile parameter insertion after a first
-    solve (incremental solving) is broken. */
+  dimension_type new_var_column = old_num_vars;
+  const dimension_type initial_space_dim = old_num_vars + old_num_params;
   for (dimension_type i = initial_space_dim; i < external_space_dim; ++i) {
-    if (parameters.count(i) == 1)
-      // A new parameter.
-      tableau.t.add_zero_columns(1);
-    else {
-      // A new variable.
-      const dimension_type new_column = tableau.s.num_columns();
-      tableau.s.add_zero_columns(1);
+    if (parameters.count(i) == 0) {
+      // A new problem variable.
       if (tableau.s.num_rows() == 0) {
         // No rows have been added yet
         basis.push_back(true);
-        mapping.push_back(new_column);
-      } else {
-        /* Need to insert the original variable id before the slack variable
-          id's to respect variable ordering */
-        basis.insert(basis.begin() + new_column, true);
-        mapping.insert(mapping.begin() + new_column, new_column);
-        // update variable id's of slack variables
+        mapping.push_back(new_var_column);
+      }
+      else {
+        /*
+          Need to insert the original variable id
+          before the slack variable id's to respect variable ordering.
+        */
+        basis.insert(basis.begin() + new_var_column, true);
+        mapping.insert(mapping.begin() + new_var_column, new_var_column);
+        // Update variable id's of slack variables.
         for (dimension_type j = var_row.size(); j-- > 0; )
-          if (var_row[j] >= new_column)
+          if (var_row[j] >= new_var_column)
             ++var_row[j];
         for (dimension_type j = var_column.size(); j-- > 0; )
-          if (var_column[j] >= new_column)
+          if (var_column[j] >= new_var_column)
             ++var_column[j];
         if (special_equality_row > 0)
           ++special_equality_row;
       }
-      var_column.push_back(new_column);
+      var_column.push_back(new_var_column);
+      ++new_var_column;
     }
   }
 
@@ -1475,12 +1497,11 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
     big_dimension = std::distance(parameters.begin(), pos) + 1;
   }
 
-  const Coefficient& denom = tableau.get_denominator();
+  const Coefficient& denom = tableau.denominator();
   for (Constraint_Sequence::const_iterator
          c_iter = input_cs.begin() + first_pending_constraint,
          c_end = input_cs.end(); c_iter != c_end; ++c_iter) {
     const Constraint& constraint = *c_iter;
-
     // (Tentatively) Add new rows to s and t matrices.
     // These will be removed at the end if they turn out to be useless.
     const dimension_type row_id = tableau.s.num_rows();
@@ -1576,23 +1597,28 @@ void
 PIP_Solution_Node::update_solution(const Variables_Set& parameters) {
   if (solution_valid)
     return;
-  dimension_type num_vars = tableau.s.num_columns();
-  const Coefficient& d = tableau.get_denominator();
+
+  const dimension_type num_vars = tableau.s.num_columns();
   if (solution.size() != num_vars)
     solution.resize(num_vars);
+
+  // Compute once for all outside loop.
+  const dimension_type num_params = parameters.size();
+  const Variables_Set::const_reverse_iterator p_rbegin = parameters.rbegin();
+  const Variables_Set::const_reverse_iterator p_rend = parameters.rend();
+
+  const Coefficient& den = tableau.denominator();
   for (dimension_type i = num_vars; i-- > 0; ) {
-    Linear_Expression& sol = solution[i];
-    if (basis[i]) {
-      sol = Linear_Expression(0);
-    } else {
-      Row& row = tableau.t[mapping[i]];
-      sol = Linear_Expression(row[0]/d);
-      dimension_type k;
-      Variables_Set::const_iterator j;
-      Variables_Set::const_iterator j_end = parameters.end();
-      for (j = parameters.begin(), k = 1; j != j_end; ++j, ++k)
-        sol += (row[k]/d) * Variable(*j);
-    }
+    Linear_Expression& sol_i = solution[i];
+    sol_i = Linear_Expression(0);
+    if (basis[i])
+      continue;
+    Row& row = tableau.t[mapping[i]];
+    dimension_type k = num_params;
+    for (Variables_Set::const_reverse_iterator
+           pj = p_rbegin; pj != p_rend; ++pj, --k)
+      add_mul_assign(sol_i, row[k]/den, Variable(*pj));
+    sol_i += row[0]/den;
   }
   solution_valid = true;
 }
@@ -1602,6 +1628,9 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
                          const Matrix& ctx,
                          const Variables_Set& params,
                          dimension_type space_dim) {
+  // Reset current solution as invalid.
+  solution_valid = false;
+
   Matrix context(ctx);
   Variables_Set parameters(params);
   update_context(parameters, context, artificial_parameters, space_dim);
@@ -1615,7 +1644,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
     const dimension_type num_rows = tableau.t.num_rows();
     const dimension_type num_vars = tableau.s.num_columns();
     const dimension_type num_params = tableau.t.num_columns();
-    const Coefficient& tableau_den = tableau.get_denominator();
+    const Coefficient& tableau_den = tableau.denominator();
 
 #ifdef NOISY_PIP
     tableau.ascii_dump(std::cerr);
@@ -1781,18 +1810,26 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
       PPL_DIRTY_TEMP_COEFFICIENT(gcd);
       PPL_DIRTY_TEMP_COEFFICIENT(scale_factor);
 
-      // Create identity rows corresponding to basic variable pj.
+      // Creating identity rows corresponding to basic variable pj:
+      // 1. add them to tableau so as to have proper size and capacity;
       tableau.s.add_zero_rows(1, Row::Flags());
       tableau.t.add_zero_rows(1, Row::Flags());
-      Row& s_pivot = tableau.s[num_rows];
-      Row& t_pivot = tableau.t[num_rows];
+      // 2. swap the rows just added with empty ones.
+      Row s_pivot(0, Row::Flags());
+      Row t_pivot(0, Row::Flags());
+      s_pivot.swap(tableau.s[num_rows]);
+      t_pivot.swap(tableau.t[num_rows]);
+      // 3. drop rows previously added at end of tableau.
+      tableau.s.erase_to_end(num_rows);
+      tableau.t.erase_to_end(num_rows);
+
       // Save current pivot denominator.
       PPL_DIRTY_TEMP_COEFFICIENT(pivot_den);
-      pivot_den = tableau.get_denominator();
+      pivot_den = tableau.denominator();
       // Let the (scaled) pivot coordinate be 1.
       s_pivot[pj] = pivot_den;
 
-      // Swap identity row with the pivot row previosuly found.
+      // Swap identity row with the pivot row previously found.
       s_pivot.swap(tableau.s[pi]);
       t_pivot.swap(tableau.t[pi]);
       sign[pi] = ZERO;
@@ -1809,9 +1846,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
         // Do nothing if the j-th pivot element is zero.
         if (s_pivot_j == 0)
           continue;
-        // ENEA: FIXME: why iterating downwards makes a difference?
-        // for (dimension_type i = num_rows; i-- > 0; ) {
-        for (dimension_type i = 0; i < num_rows; ++i) {
+        for (dimension_type i = num_rows; i-- > 0; ) {
           Row& s_i = tableau.s[i];
           product = s_pivot_j * s_i[pj];
           if (product % s_pivot_pj != 0) {
@@ -1890,12 +1925,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
         }
       }
 
-      // Drop rows previously added at end of tableau.
-      tableau.s.erase_to_end(num_rows);
-      tableau.t.erase_to_end(num_rows);
-
       // Pivoting process ended: jump to next iteration.
-      solution_valid = false;
       continue;
     } // if (first_negative != not_a_dim)
 
@@ -2075,7 +2105,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
     tableau.normalize();
 
     // Look for any row having non integer parameter coefficients.
-    const Coefficient& den = tableau.get_denominator();
+    const Coefficient& den = tableau.denominator();
     for (dimension_type k = 0; k < num_vars; ++k) {
       if (basis[k])
         // Basic variable = 0, hence integer.
@@ -2192,7 +2222,8 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
 
   } // Main loop of the simplex algorithm
 
-  return this;
+  // This point should be unreachable.
+  throw std::runtime_error("PPL internal error");
 }
 
 void
@@ -2204,8 +2235,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   PPL_ASSERT(index < num_rows);
   const dimension_type num_vars = tableau.s.num_columns();
   const dimension_type num_params = tableau.t.num_columns();
-  PPL_ASSERT(num_params == parameters.size());
-  const Coefficient& den = tableau.get_denominator();
+  PPL_ASSERT(num_params == 1 + parameters.size());
+  const Coefficient& den = tableau.denominator();
 
   PPL_DIRTY_TEMP_COEFFICIENT(mod);
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
@@ -2234,28 +2265,30 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
 
   if (generate_parametric_cut) {
     // Fractional parameter coefficient found: generate parametric cut.
+    Linear_Expression expr;
 
     // Limiting the scope of reference row_t (may be later invalidated).
-    const Row& row_t = tableau.t[index];
-    mod_assign(mod, row_t[0], den);
-    Linear_Expression expr;
-    if (mod != 0) {
-      // Optimizing computation: expr += (den - mod);
-      expr += den;
-      expr -= mod;
-    }
-    // NOTE: iterating downwards on parameters to avoid reallocations.
-    Variables_Set::const_reverse_iterator p_j = parameters.rbegin();
-    // NOTE: index j spans [1..num_params-1] downwards.
-    for (dimension_type j = num_params; j-- > 1; ) {
-      mod_assign(mod, row_t[j], den);
+    {
+      const Row& row_t = tableau.t[index];
+      mod_assign(mod, row_t[0], den);
       if (mod != 0) {
-        // Optimizing computation: expr += (den - mod) * Variable(*p_j);
-        coeff = den - mod;
-        add_mul_assign(expr, coeff, Variable(*p_j));
+        // Optimizing computation: expr += (den - mod);
+        expr += den;
+        expr -= mod;
       }
-      // Mode to previous parameter.
-      ++p_j;
+      // NOTE: iterating downwards on parameters to avoid reallocations.
+      Variables_Set::const_reverse_iterator p_j = parameters.rbegin();
+      // NOTE: index j spans [1..num_params-1] downwards.
+      for (dimension_type j = num_params; j-- > 1; ) {
+        mod_assign(mod, row_t[j], den);
+        if (mod != 0) {
+          // Optimizing computation: expr += (den - mod) * Variable(*p_j);
+          coeff = den - mod;
+          add_mul_assign(expr, coeff, Variable(*p_j));
+        }
+        // Mode to previous parameter.
+        ++p_j;
+      }
     }
     // Generate new artificial parameter.
     Artificial_Parameter ap(expr, den);
@@ -2388,7 +2421,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
 memory_size_type
 PIP_Tree_Node::Artificial_Parameter::external_memory_in_bytes() const {
   return Linear_Expression::external_memory_in_bytes()
-    + Parma_Polyhedra_Library::external_memory_in_bytes(denominator);
+    + Parma_Polyhedra_Library::external_memory_in_bytes(denom);
 }
 
 memory_size_type
@@ -2426,14 +2459,9 @@ PIP_Decision_Node::total_memory_in_bytes() const {
 
 memory_size_type
 PIP_Solution_Node::Tableau::external_memory_in_bytes() const {
-  return Parma_Polyhedra_Library::external_memory_in_bytes(denominator)
+  return Parma_Polyhedra_Library::external_memory_in_bytes(denom)
     + s.external_memory_in_bytes()
     + t.external_memory_in_bytes();
-}
-
-memory_size_type
-PIP_Solution_Node::Tableau::total_memory_in_bytes() const {
-  return sizeof(*this) + external_memory_in_bytes();
 }
 
 memory_size_type
@@ -2457,6 +2485,105 @@ PIP_Solution_Node::external_memory_in_bytes() const {
 memory_size_type
 PIP_Solution_Node::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
+}
+
+void
+PIP_Tree_Node::indent_and_print(std::ostream& s,
+                                const unsigned indent,
+                                const char* str) {
+  s << std::setw(2*indent) << "" << str;
+}
+
+void
+PIP_Tree_Node::print_tree(std::ostream& s,
+                          const unsigned indent,
+                          const dimension_type space_dim,
+                          dimension_type first_art_dim,
+                          const Variables_Set& params) const {
+  used(space_dim);
+  used(params);
+
+  using namespace IO_Operators;
+
+  // Print artificial parameters.
+  for (Artificial_Parameter_Sequence::const_iterator
+         api = art_parameter_begin(),
+         api_end = art_parameter_end(); api != api_end; ++api) {
+    indent_and_print(s, indent, "Parameter ");
+    s << Variable(first_art_dim) << " = " << *api << "\n";
+    ++first_art_dim;
+  }
+
+  // Print constraints, if any.
+  if (!constraints_.empty()) {
+    indent_and_print(s, indent, "if ");
+
+    Constraint_System::const_iterator
+      ci = constraints_.begin(),
+      ci_end = constraints_.end();
+    PPL_ASSERT(ci != ci_end);
+    s << *ci;
+    for (++ci; ci != ci_end; ++ci)
+      s << " and " << *ci;
+
+    s << " then\n";
+  }
+}
+
+void
+PIP_Decision_Node::print_tree(std::ostream& s, unsigned indent,
+                              const dimension_type space_dim,
+                              const dimension_type first_art_dim,
+                              const Variables_Set& params) const {
+  // First print info common to decision and solution nodes.
+  PIP_Tree_Node::print_tree(s, indent, space_dim, first_art_dim, params);
+
+  // Then print info specific of decision nodes.
+  dimension_type child_first_art_dim = first_art_dim + art_parameter_count();
+
+  if (true_child)
+    true_child->print_tree(s, indent+1, space_dim,
+                           child_first_art_dim, params);
+  else
+    indent_and_print(s, indent+1, "_|_\n");
+
+  indent_and_print(s, indent, "else\n");
+
+  if (false_child)
+    false_child->print_tree(s, indent+1, space_dim,
+                            child_first_art_dim, params);
+  else
+    indent_and_print(s, indent+1, "_|_\n");
+}
+
+void
+PIP_Solution_Node::print_tree(std::ostream& s, unsigned indent,
+                              const dimension_type space_dim,
+                              const dimension_type first_art_dim,
+                              const Variables_Set& params) const {
+  // First print info common to decision and solution nodes.
+  PIP_Tree_Node::print_tree(s, indent, space_dim, first_art_dim, params);
+
+  // Then print info specific of solution nodes.
+  const bool no_constraints = constraints_.empty();
+  bool printed_first_variable = false;
+  indent_and_print(s, indent + (no_constraints ? 0 : 1), "{");
+  for (dimension_type i = 0; i < space_dim; ++i) {
+    if (params.count(i) != 0)
+      continue;
+    if (printed_first_variable)
+      s << " ; ";
+    else
+      printed_first_variable = true;
+    using namespace IO_Operators;
+    s << parametric_values(Variable(i), params);
+  }
+  s << "}\n";
+
+  if (!no_constraints) {
+    indent_and_print(s, indent, "else\n");
+    indent_and_print(s, indent+1, "_|_\n");
+  }
 }
 
 } // namespace Parma_Polyhedra_Library
