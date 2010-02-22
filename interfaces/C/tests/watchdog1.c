@@ -20,9 +20,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_c.h"
+#include "ppl_c_test.h"
 #include <stdlib.h>
 #include <stdarg.h>
+#include <stdio.h>
 
 static const char* program_name = 0;
 
@@ -54,7 +55,8 @@ error_handler(enum ppl_enum_error_code code,
   if (code == PPL_ERROR_INTERNAL_ERROR)
     my_exit(0);
 #endif
-  fatal("PPL error code %d: %s", code, description);
+  if (check_noisy() || check_very_noisy())
+    fprintf(stderr, "PPL error code %d: %s\n", code, description);
 }
 
 void
