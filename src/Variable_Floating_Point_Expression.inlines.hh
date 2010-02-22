@@ -73,7 +73,7 @@ Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>
                                                        i != lf_store.end();) {
     typename FP_Linear_Form_Abstract_Store::iterator j = i++;
 
-    if ( (j->second).coefficient(Variable(variable_index)) != 0 ) {
+    if ((j->second).coefficient(Variable(variable_index)) != 0) {
       lf_store.erase(j);
     }
   }
