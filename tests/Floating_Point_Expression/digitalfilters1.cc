@@ -492,29 +492,32 @@ test05() {
     abstract_store.affine_form_image(D, FP_Linear_Form(tmp));
 
     // S = Y;
-    Var_FP_Expression var_y(Y.id());
-    if(var_y.linearize(abstract_store, lf_abstract_store, ly))
-      bd.affine_form_image(S, ly);
     abstract_store.affine_form_image(S, FP_Linear_Form(tmp));
-    // Intersection between the values of the variables in
-    // the BD_Shape and in the abstract store.
-    abstract_store.intersection_assign(Box<FP_Interval>(bd));
+    Var_FP_Expression var_y(Y.id());
+    if(var_y.linearize(abstract_store, lf_abstract_store, ly)) {
+      bd.affine_form_image(S, ly);
+      // Intersection between the values of the variables in
+      // the BD_Shape and in the abstract store.
+      abstract_store.intersection_assign(Box<FP_Interval>(bd));
+    }
 
     // R = X - S;
     Var_FP_Expression* px = new Var_FP_Expression(X.id());
     Var_FP_Expression* ps = new Var_FP_Expression(S.id());
     Dif_FP_Expression x_dif_s(px, ps);
-    if(x_dif_s.linearize(abstract_store, lf_abstract_store, lr))
-      bd.affine_form_image(R, lr);
     abstract_store.affine_form_image(R, FP_Linear_Form(X - S));
-    abstract_store.intersection_assign(Box<FP_Interval>(bd));
+    if(x_dif_s.linearize(abstract_store, lf_abstract_store, lr)) {
+      bd.affine_form_image(R, lr);
+      abstract_store.intersection_assign(Box<FP_Interval>(bd));
+    }
 
     // Y = X;
     Var_FP_Expression var_x(X.id());
-    if(var_x.linearize(abstract_store, lf_abstract_store, lx))
-      bd.affine_form_image(Y, lx);
     abstract_store.affine_form_image(Y, FP_Linear_Form(X));
-    abstract_store.intersection_assign(Box<FP_Interval>(bd));
+    if(var_x.linearize(abstract_store, lf_abstract_store, lx)) {
+      bd.affine_form_image(Y, lx);
+      abstract_store.intersection_assign(Box<FP_Interval>(bd));
+    }
 
     // if (R <= -D)
     FP_BD_Shape bd_then(bd);
@@ -526,10 +529,11 @@ test05() {
     Var_FP_Expression* pd  = new Var_FP_Expression(D.id());
     Var_FP_Expression* ps2 = new Var_FP_Expression(S.id());
     Dif_FP_Expression s_dif_d(ps2, pd);
-    if(s_dif_d.linearize(as_then, lf_abstract_store, ly))
-      bd_then.affine_form_image(Y, ly);
     as_then.affine_form_image(Y, FP_Linear_Form(S - D));
-    as_then.intersection_assign(Box<FP_Interval>(bd_then));
+    if(s_dif_d.linearize(as_then, lf_abstract_store, ly)) {
+      bd_then.affine_form_image(Y, ly);
+      as_then.intersection_assign(Box<FP_Interval>(bd_then));
+    }
 
     // else skip;
     bd.refine_with_linear_form_inequality(-lk, lr);
@@ -551,10 +555,11 @@ test05() {
     Var_FP_Expression* pd1  = new Var_FP_Expression(D.id());
     Var_FP_Expression* ps3  = new Var_FP_Expression(S.id());
     Sum_FP_Expression s_sum_d(ps3, pd1);
-    if(s_sum_d.linearize(as_then, lf_abstract_store, ly))
-      bd_then.affine_form_image(Y, ly);
     as_then.affine_form_image(Y, FP_Linear_Form(S + D));
-    as_then.intersection_assign(Box<FP_Interval>(bd_then));
+    if(s_sum_d.linearize(as_then, lf_abstract_store, ly)) {
+      bd_then.affine_form_image(Y, ly);
+      as_then.intersection_assign(Box<FP_Interval>(bd_then));
+    }
 
     // else skip;
     bd.refine_with_linear_form_inequality(lr, lk);
@@ -668,28 +673,32 @@ test06() {
 
     // S = Y.
     Var_FP_Expression var_y(Y.id());
-    if(var_y.linearize(abstract_store, lf_abstract_store, ly))
-      oc.affine_form_image(S, ly);
     abstract_store.affine_form_image(S, FP_Linear_Form(Y));
-    // Intersection between the values of the variables in
-    // the octagon and in the abstract store.
-    abstract_store.intersection_assign(Box<FP_Interval>(oc));
+    if(var_y.linearize(abstract_store, lf_abstract_store, ly)) {
+      oc.affine_form_image(S, ly);
+      // Intersection between the values of the variables in
+      // the octagon and in the abstract store.
+      abstract_store.intersection_assign(Box<FP_Interval>(oc));
+    }
 
     // R = X - S;
     Var_FP_Expression* px = new Var_FP_Expression(X.id());
     Var_FP_Expression* ps = new Var_FP_Expression(S.id());
     Dif_FP_Expression x_dif_s(px, ps);
-    if(x_dif_s.linearize(abstract_store, lf_abstract_store, lr))
-      oc.affine_form_image(R, lr);
     abstract_store.affine_form_image(R, FP_Linear_Form(X - S));
-    abstract_store.intersection_assign(Box<FP_Interval>(oc));
+    if(x_dif_s.linearize(abstract_store, lf_abstract_store, lr)) {
+      oc.affine_form_image(R, lr);
+      abstract_store.intersection_assign(Box<FP_Interval>(oc));
+    }
 
     // Y = X;
     Var_FP_Expression var_x(X.id());
-    if(var_x.linearize(abstract_store, lf_abstract_store, lx))
-      oc.affine_form_image(Y, lx);
     abstract_store.affine_form_image(Y, FP_Linear_Form(X));
-    abstract_store.intersection_assign(Box<FP_Interval>(oc));
+    if(var_x.linearize(abstract_store, lf_abstract_store, lx)) {
+      oc.affine_form_image(Y, lx);
+      abstract_store.intersection_assign(Box<FP_Interval>(oc));
+    }
+
 
     // if (R <= -D)
     FP_Octagonal_Shape oc_then(oc);
@@ -701,10 +710,11 @@ test06() {
     Var_FP_Expression* pd  = new Var_FP_Expression(D.id());
     Var_FP_Expression* ps2 = new Var_FP_Expression(S.id());
     Dif_FP_Expression s_dif_d(ps2, pd);
-    if(s_dif_d.linearize(as_then, lf_abstract_store, ly))
-      oc_then.affine_form_image(Y, ly);
     as_then.affine_form_image(Y, FP_Linear_Form(S - D));
-    as_then.intersection_assign(Box<FP_Interval>(oc_then));
+    if(s_dif_d.linearize(as_then, lf_abstract_store, ly)) {
+      oc_then.affine_form_image(Y, ly);
+      as_then.intersection_assign(Box<FP_Interval>(oc_then));
+    }
 
     // else skip.
     oc.refine_with_linear_form_inequality(-lk, lr);
@@ -726,10 +736,11 @@ test06() {
     Var_FP_Expression* pd1  = new Var_FP_Expression(D.id());
     Var_FP_Expression* ps3  = new Var_FP_Expression(S.id());
     Sum_FP_Expression s_sum_d(ps3, pd1);
-    if(s_sum_d.linearize(as_then, lf_abstract_store, ly))
-      oc_then.affine_form_image(Y, ly);
     as_then.affine_form_image(Y, FP_Linear_Form(S + D));
-    as_then.intersection_assign(Box<FP_Interval>(oc_then));
+    if(s_sum_d.linearize(as_then, lf_abstract_store, ly)) {
+      oc_then.affine_form_image(Y, ly);
+      as_then.intersection_assign(Box<FP_Interval>(oc_then));
+    }
 
     // else skip.
     oc.refine_with_linear_form_inequality(lr, lk);
@@ -836,28 +847,31 @@ test07() {
 
     // S = Y;
     Var_FP_Expression var_y(Y.id());
-    if(var_y.linearize(abstract_store, lf_abstract_store, ly))
-      ph.affine_form_image(S, ly);
     abstract_store.affine_form_image(S, FP_Linear_Form(tmp));
-    // Intersection between the values of the variables in
-    // the polyhedron and in the abstract store.
-    abstract_store.intersection_assign(Box<FP_Interval>(ph));
+    if(var_y.linearize(abstract_store, lf_abstract_store, ly)) {
+      ph.affine_form_image(S, ly);
+      // Intersection between the values of the variables in
+      // the polyhedron and in the abstract store.
+      abstract_store.intersection_assign(Box<FP_Interval>(ph));
+    }
 
     // R = X - S;
     Var_FP_Expression* px = new Var_FP_Expression(X.id());
     Var_FP_Expression* ps = new Var_FP_Expression(S.id());
     Dif_FP_Expression x_dif_s(px, ps);
-    if(x_dif_s.linearize(abstract_store, lf_abstract_store, lr))
-      ph.affine_form_image(R, lr);
     abstract_store.affine_form_image(R, FP_Linear_Form(X - S));
-    abstract_store.intersection_assign(Box<FP_Interval>(ph));
+    if(x_dif_s.linearize(abstract_store, lf_abstract_store, lr)) {
+      ph.affine_form_image(R, lr);
+      abstract_store.intersection_assign(Box<FP_Interval>(ph));
+    }
 
     // Y = X;
     Var_FP_Expression var_x(X.id());
-    if(var_x.linearize(abstract_store, lf_abstract_store, lx))
-      ph.affine_form_image(Y, lx);
     abstract_store.affine_form_image(Y, FP_Linear_Form(X));
-    abstract_store.intersection_assign(Box<FP_Interval>(ph));
+    if(var_x.linearize(abstract_store, lf_abstract_store, lx)) {
+      ph.affine_form_image(Y, lx);
+      abstract_store.intersection_assign(Box<FP_Interval>(ph));
+    }
 
     // if (R <= -D)
     NNC_Polyhedron ph_then(ph);
@@ -869,10 +883,11 @@ test07() {
     Var_FP_Expression* pd  = new Var_FP_Expression(D.id());
     Var_FP_Expression* ps2 = new Var_FP_Expression(S.id());
     Dif_FP_Expression s_dif_d(ps2, pd);
-    if(s_dif_d.linearize(as_then, lf_abstract_store, ly))
-      ph_then.affine_form_image(Y, ly);
     as_then.affine_form_image(Y, FP_Linear_Form(S - D));
-    as_then.intersection_assign(Box<FP_Interval>(ph_then));
+    if(s_dif_d.linearize(as_then, lf_abstract_store, ly)) {
+      ph_then.affine_form_image(Y, ly);
+      as_then.intersection_assign(Box<FP_Interval>(ph_then));
+    }
 
     // else skip;
     ph.refine_with_linear_form_inequality(-lk, lr);
@@ -894,10 +909,11 @@ test07() {
     Var_FP_Expression* pd1  = new Var_FP_Expression(D.id());
     Var_FP_Expression* ps3  = new Var_FP_Expression(S.id());
     Sum_FP_Expression s_sum_d(ps3, pd1);
-    if(s_sum_d.linearize(as_then, lf_abstract_store, ly))
-      ph_then.affine_form_image(Y, ly);
     as_then.affine_form_image(Y, FP_Linear_Form(S + D));
-    as_then.intersection_assign(Box<FP_Interval>(ph_then));
+    if(s_sum_d.linearize(as_then, lf_abstract_store, ly)) {
+      ph_then.affine_form_image(Y, ly);
+      as_then.intersection_assign(Box<FP_Interval>(ph_then));
+    }
 
     // else skip;
     ph.refine_with_linear_form_inequality(lr, lk);
