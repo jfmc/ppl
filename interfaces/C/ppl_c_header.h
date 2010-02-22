@@ -2996,13 +2996,6 @@ PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
   \param v
   the variable which is queried about
 
-  \param pars
-  a set of indices of the parameters in the constraints, including those for
-  all artificials from the solution tree root to this node (included)
-
-  \param n
-  number of valid elements in \p pars
-
   \param le
   the returned expression of variable \p v
 
@@ -3014,8 +3007,6 @@ int
 ppl_PIP_Solution_Node_get_parametric_values
 PPL_PROTO((ppl_const_PIP_Solution_Node_t pip_sol,
            ppl_dimension_type v,
-           const ppl_dimension_type pars[],
-           size_t n,
            ppl_const_Linear_Expression_t* le));
 
 /*! \relates ppl_PIP_Tree_Node_tag \brief

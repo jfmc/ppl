@@ -126,14 +126,12 @@ test02() {
       const Constraint_System& cs = t_t_child->constraints();
       if (std::distance(cs.begin(), cs.end()) != 0)
         return false;
-      const Linear_Expression& v_i
-        = t_t_child->parametric_values(i, pip.parameter_space_dimensions());
+      const Linear_Expression& v_i = t_t_child->parametric_values(i);
       if (!(v_i.coefficient(n) == 0
             && v_i.coefficient(m) == 0
             && v_i.inhomogeneous_term() == 2))
         return false;
-      const Linear_Expression& v_j
-        = t_t_child->parametric_values(j, pip.parameter_space_dimensions());
+      const Linear_Expression& v_j = t_t_child->parametric_values(j);
       if (!(v_j.coefficient(n) == 0
             && v_j.coefficient(m) == 0
             && v_j.inhomogeneous_term() == 2))
@@ -166,15 +164,13 @@ test02() {
         return false;
       // Check parametric values.
       Variable art_p(4);
-      const Linear_Expression& v_i
-        = t_f_child->parametric_values(i, pip.parameter_space_dimensions());
+      const Linear_Expression& v_i = t_f_child->parametric_values(i);
       if (!(v_i.coefficient(n) == 0
             && v_i.coefficient(m) == -1
             && v_i.coefficient(art_p) == -1
             && v_i.inhomogeneous_term() == 4))
         return false;
-      const Linear_Expression& v_j
-        = t_f_child->parametric_values(j, pip.parameter_space_dimensions());
+      const Linear_Expression& v_j = t_f_child->parametric_values(j);
       if (!(v_j.coefficient(n) == 0
             && v_j.coefficient(m) == 1
             && v_j.coefficient(art_p) == 0
@@ -234,7 +230,7 @@ test04() {
     pip.print_solution(nout);
   }
 
-  // Copy constructor is no longer buggy.
+  // Test copy constructor.
   {
     PIP_Problem pip_copy = pip;
     // Here we call the destructor of pip_copy

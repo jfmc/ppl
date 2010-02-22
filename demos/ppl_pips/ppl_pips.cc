@@ -162,7 +162,7 @@ pip_display_sol(std::ostream& out,
              v_end = vars.end(),
              i = v_begin; i != v_end; ++i)
         out << ((i == v_begin) ? "" : " ; ")
-            << sn->parametric_values(Variable(*i), parameters);
+            << sn->parametric_values(Variable(*i));
       out << "}" << endl;
       if (!constraints_empty) {
         out << setw(indent*2) << "" << "else" << endl;

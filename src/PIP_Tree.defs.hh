@@ -45,11 +45,23 @@ namespace Parma_Polyhedra_Library {
 */
 class PIP_Tree_Node {
 protected:
-  //! Default constructor.
-  PIP_Tree_Node();
+  //! Constructor: builds a node owned by \p *owner.
+  explicit PIP_Tree_Node(const PIP_Problem* owner);
 
   //! Copy constructor.
   PIP_Tree_Node(const PIP_Tree_Node& y);
+
+  //! Returns a pointer to the PIP_Problem owning object.
+  const PIP_Problem* get_owner() const;
+
+  //! Sets the pointer to the PIP_Problem owning object.
+  virtual void set_owner(const PIP_Problem* owner) = 0;
+
+  /*! \brief
+    Returns \c true if and only if all the nodes in the subtree
+    rooted in \p *this is owned by \p *pip.
+  */
+  virtual bool check_ownership(const PIP_Problem* owner) const = 0;
 
 public:
   //! Returns a pointer to a dynamically-allocated copy of \p *this.
@@ -98,23 +110,28 @@ public:
     \param indent
     The amount of indentation.
 
-    \param space_dim
-    The space dimension of the PIP problem.
+    \param pip_dim_is_param
+    A vector of Boolean flags telling which PIP problem dimensions are
+    problem parameters. The size of the vector is equal to the PIP
+    problem internal space dimension (i.e., no artificial parameters).
 
     \param first_art_dim
     The first space dimension corresponding to an artificial parameter
     that was created in this node (if any).
-
-    \param params
-    The set of PIP problem parameters indices.
   */
   virtual void print_tree(std::ostream& s,
                           unsigned indent,
-                          dimension_type space_dim,
-                          dimension_type first_art_dim,
-                          const Variables_Set& params) const;
+                          const std::vector<bool>& pip_dim_is_param,
+                          dimension_type first_art_dim) const;
 
+  //! Dumps to \p s an ASCII representation of \p *this.
   void ascii_dump(std::ostream& s) const;
+
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -132,7 +149,10 @@ protected:
   friend class PIP_Decision_Node;
   friend class PIP_Solution_Node;
 
-  //! A pointer to \p *this 's parent, or 0 if \p *this is the root node.
+  //! A pointer to the PIP_Problem object owning this node.
+  const PIP_Problem* owner_;
+
+  //! A pointer to the parent of \p *this, null if \p *this is the root.
   const PIP_Decision_Node* parent_;
 
   //! The local system of parameter constraints.
@@ -141,34 +161,11 @@ protected:
   //! The local sequence of expressions for local artificial parameters.
   Artificial_Parameter_Sequence artificial_parameters;
 
-  //! Set this node's parent to \p *p.
-  void set_parent(const PIP_Decision_Node* p);
-
   //! Returns a pointer to this node's parent.
   const PIP_Decision_Node* parent() const;
 
-  /*! \brief
-    Inserts in parameter set \p params the parameter indices corresponding
-    to all artificials parameters involved in this node (from the solution
-    tree root to the node included).
-
-    This utility method can typically be used by user programs when spanning
-    a solution tree. As new parameters may be defined in tree nodes by the
-    solver, local solutions are likely to be expressed in terms of both the
-    upper level parameters and the local ones.
-
-    \return
-    The number of inserted artificial parameters.
-
-    \param params
-    The Variables_Set to be updated
-
-    \param space_dimension
-    The space dimension of the simplex tableau (including artificial
-    parameters).
-  */
-  dimension_type insert_artificials(Variables_Set& params,
-                                    dimension_type space_dimension) const;
+  //! Set this node's parent to \p *p.
+  void set_parent(const PIP_Decision_Node* p);
 
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
@@ -306,8 +303,8 @@ private:
 //! A tree node representing part of the space of solutions.
 class PIP_Solution_Node : public PIP_Tree_Node {
 public:
-  //! Default constructor.
-  PIP_Solution_Node();
+  //! Constructor: builds a solution node owned by \p *owner.
+  explicit PIP_Solution_Node(const PIP_Problem* owner);
 
   //! Returns a pointer to a dynamically-allocated copy of \p *this.
   virtual PIP_Tree_Node* clone() const;
@@ -324,29 +321,23 @@ public:
   //! Prints on \p s the tree rooted in \p *this.
   virtual void print_tree(std::ostream& s,
                           unsigned indent,
-                          dimension_type space_dim,
-                          dimension_type first_art_dim,
-                          const Variables_Set& params) const;
+                          const std::vector<bool>& pip_dim_is_param,
+                          dimension_type first_art_dim) const;
 
   /*! \brief
-    Returns a parametric expression of the values of variable \p v.
+    Returns a parametric expression for the values of problem variable \p var.
 
-    The returned linear expression involves original and artificial
-    parameters.
+    The returned linear expression may involve problem parameters
+    as well as artificial parameters.
 
-    \param v
-    The variable which is queried about.
-
-    \param parameters
-    A \c std::set of indices of the parameters in the problem constraints.
+    \param var
+    The problem variable which is queried about.
 
     \exception std::invalid_argument
-    Thrown if \p v is dimension-incompatible with \p *this
-    or if \p v is a parameter.
+    Thrown if \p var is dimension-incompatible with the PIP_Problem
+    owning this solution node, or if \p var is a problem parameter.
   */
-  const Linear_Expression&
-  parametric_values(Variable v,
-                    const Variables_Set& parameters) const;
+  const Linear_Expression& parametric_values(Variable var) const;
 
   //! Dumps to \p s an ASCII representation of \p *this.
   void ascii_dump(std::ostream& s) const;
@@ -598,6 +589,18 @@ protected:
   */
   PIP_Solution_Node(const PIP_Solution_Node& y, No_Constraints);
 
+  // PIP_Problem ascii load method needs access set_owner.
+  friend bool PIP_Problem::ascii_load(std::istream& s);
+
+  //! Sets the pointer to the PIP_Problem owning object.
+  virtual void set_owner(const PIP_Problem* owner);
+
+  /*! \brief
+    Returns \c true if and only if all the nodes in the subtree
+    rooted in \p *this is owned by \p *pip.
+  */
+  virtual bool check_ownership(const PIP_Problem* owner) const;
+
   /*! \brief
     Populates the parametric simplex tableau using external data, if necessary
 
@@ -626,10 +629,15 @@ protected:
   /*! \brief
     Update the solution values.
 
-    \param parameters
-    A \c std::set of indices of the parameters in the constraints
+    \param pip_dim_is_param
+    A vector of Boolean flags telling which PIP problem dimensions are
+    problem parameters. The size of the vector is equal to the PIP
+    problem internal space dimension (i.e., no artificial parameters).
   */
-  void update_solution(const Variables_Set& parameters);
+  void update_solution(const std::vector<bool>& pip_dim_is_param) const;
+
+  //! Helper method.
+  void update_solution() const;
 
   /*! \brief
     Execute a parametric simplex on the tableau, under specified context.
@@ -704,11 +712,17 @@ public:
   //! Prints on \p s the tree rooted in \p *this.
   virtual void print_tree(std::ostream& s,
                           unsigned indent,
-                          dimension_type space_dim,
-                          dimension_type first_art_dim,
-                          const Variables_Set& params) const;
+                          const std::vector<bool>& pip_dim_is_param,
+                          dimension_type first_art_dim) const;
 
+  //! Dumps to \p s an ASCII representation of \p *this.
   void ascii_dump(std::ostream& s) const;
+
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -723,36 +737,53 @@ private:
   // PIP_Problem ascii load method needs access to private constructors.
   friend bool PIP_Problem::ascii_load(std::istream& s);
 
-  //! Pointer to the "true" child of \p *this.
-  PIP_Tree_Node* true_child;
-
   //! Pointer to the "false" child of \p *this.
   PIP_Tree_Node* false_child;
 
-  /*! \brief
-    Constructs "if constraints then \p tcp else \p fcp". Initial constraint
-    set is empty.
+  //! Pointer to the "true" child of \p *this.
+  PIP_Tree_Node* true_child;
 
-    Constructs a decision node,
-    with "true" child \p tcp and "false" child \p fcp.
+  /*! \brief
+    Builds a decision node having \p fcp and \p tcp as child.
+
+    The decision node will encode the structure
+    "if \c cs then \p tcp else \p fcp",
+    where the system of constraints \c cs is initially empty.
+
+    \param owner
+    Pointer to the owning PIP_Problem object; it may be null if and
+    only if both children are null.
 
     \param fcp
-    Pointer to "false" child
+    Pointer to "false" child; it may be null.
 
     \param tcp
-    Pointer to "true" child
+    Pointer to "true" child; it may be null.
 
-    \exception std::invalid_argument
-    Thrown if \p cs contains strict inequalities.
+    \note
+    If any of \p fcp or \p tcp is not null, then \p owner is required
+    to be not null and equal to the owner of its non-null children;
+    otherwise the behavior is undefined.
   */
-  PIP_Decision_Node(PIP_Tree_Node* fcp, PIP_Tree_Node* tcp);
+  explicit PIP_Decision_Node(const PIP_Problem* owner,
+                             PIP_Tree_Node* fcp,
+                             PIP_Tree_Node* tcp);
+
+  //! Sets the pointer to the PIP_Problem owning object.
+  virtual void set_owner(const PIP_Problem* owner);
+
+  /*! \brief
+    Returns \c true if and only if all the nodes in the subtree
+    rooted in \p *this is owned by \p *pip.
+  */
+  virtual bool check_ownership(const PIP_Problem* owner) const;
 
 protected:
   //! Copy constructor.
   PIP_Decision_Node(const PIP_Decision_Node& y);
 
   /*! \brief
-    Populates the parametric simplex tableau using external data, if necessary
+    Populates the parametric simplex tableau using external data, if needed.
 
     \param problem
     the containing problem object

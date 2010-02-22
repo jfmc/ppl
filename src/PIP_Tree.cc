@@ -284,14 +284,16 @@ operator<<(std::ostream& os, const PIP_Tree_Node::Artificial_Parameter& x) {
 
 } // namespace IO_Operators
 
-PIP_Tree_Node::PIP_Tree_Node()
-  : parent_(0),
+PIP_Tree_Node::PIP_Tree_Node(const PIP_Problem* owner)
+  : owner_(owner),
+    parent_(0),
     constraints_(),
     artificial_parameters() {
 }
 
 PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node& y)
-  : parent_(0), // Parent is not copied.
+  : owner_(y.owner_),
+    parent_(0), // NOTE: parent is not copied.
     constraints_(y.constraints_),
     artificial_parameters(y.artificial_parameters) {
 }
@@ -342,8 +344,8 @@ PIP_Tree_Node::Artificial_Parameter::ascii_load(std::istream& s) {
 
 PPL_OUTPUT_DEFINITIONS(PIP_Tree_Node::Artificial_Parameter)
 
-PIP_Solution_Node::PIP_Solution_Node()
-  : PIP_Tree_Node(),
+PIP_Solution_Node::PIP_Solution_Node(const PIP_Problem* owner)
+  : PIP_Tree_Node(owner),
     tableau(),
     basis(),
     mapping(),
@@ -372,7 +374,7 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node& y)
 
 PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node& y,
                                      No_Constraints)
-  : PIP_Tree_Node(),
+  : PIP_Tree_Node(y.owner_), // NOTE: only copy owner.
     tableau(y.tableau),
     basis(y.basis),
     mapping(y.mapping),
@@ -388,34 +390,62 @@ PIP_Solution_Node::PIP_Solution_Node(const PIP_Solution_Node& y,
 PIP_Solution_Node::~PIP_Solution_Node() {
 }
 
-PIP_Decision_Node::PIP_Decision_Node(PIP_Tree_Node* fcp,
+PIP_Decision_Node::PIP_Decision_Node(const PIP_Problem* owner,
+                                     PIP_Tree_Node* fcp,
                                      PIP_Tree_Node* tcp)
-  : PIP_Tree_Node(),
-    true_child(tcp),
-    false_child(fcp) {
-  if (fcp != 0)
-    fcp->set_parent(this);
-  if (tcp != 0)
-    tcp->set_parent(this);
+  : PIP_Tree_Node(owner),
+    false_child(fcp),
+    true_child(tcp) {
+  if (false_child != 0)
+    false_child->set_parent(this);
+  if (true_child != 0)
+    true_child->set_parent(this);
 }
 
-PIP_Decision_Node ::PIP_Decision_Node(const PIP_Decision_Node& y)
+PIP_Decision_Node::PIP_Decision_Node(const PIP_Decision_Node& y)
   : PIP_Tree_Node(y),
-    true_child(0),
-    false_child(0) {
-  if (y.true_child != 0) {
-    true_child = y.true_child->clone();
-    true_child->set_parent(this);
-  }
+    false_child(0),
+    true_child(0) {
+  // FIXME: exception safety?
   if (y.false_child != 0) {
     false_child = y.false_child->clone();
     false_child->set_parent(this);
   }
+  if (y.true_child != 0) {
+    true_child = y.true_child->clone();
+    true_child->set_parent(this);
+  }
 }
 
 PIP_Decision_Node::~PIP_Decision_Node() {
-  delete true_child;
   delete false_child;
+  delete true_child;
+}
+
+void
+PIP_Solution_Node::set_owner(const PIP_Problem* owner) {
+  owner_ = owner;
+}
+
+void
+PIP_Decision_Node::set_owner(const PIP_Problem* owner) {
+  owner_ = owner;
+  if (false_child)
+    false_child->set_owner(owner);
+  if (true_child)
+    true_child->set_owner(owner);
+}
+
+bool
+PIP_Solution_Node::check_ownership(const PIP_Problem* owner) const {
+  return get_owner() == owner;
+}
+
+bool
+PIP_Decision_Node::check_ownership(const PIP_Problem* owner) const {
+  return get_owner() == owner
+    && (!false_child || false_child->check_ownership(owner))
+    && (!true_child || true_child->check_ownership(owner));
 }
 
 const PIP_Solution_Node*
@@ -436,21 +466,6 @@ PIP_Solution_Node::as_solution() const {
 const PIP_Decision_Node*
 PIP_Decision_Node::as_decision() const {
   return this;
-}
-
-dimension_type
-PIP_Tree_Node::insert_artificials(Variables_Set& params,
-                                  const dimension_type space_dimension) const {
-  const dimension_type ap_size = artificial_parameters.size();
-  PPL_ASSERT(space_dimension >= ap_size);
-  dimension_type sd = space_dimension - ap_size;
-  const dimension_type parent_size
-    = (parent_ == 0) ? 0 : parent_->insert_artificials(params, sd);
-  if (ap_size > 0) {
-    for (dimension_type i = 0; i < ap_size; ++i)
-      params.insert(sd++);
-  }
-  return parent_size + ap_size;
 }
 
 bool
@@ -487,6 +502,7 @@ PIP_Tree_Node::OK() const {
   using std::endl;
   using std::cerr;
 #endif
+
   const Constraint_System::const_iterator begin = constraints_.begin();
   const Constraint_System::const_iterator end = constraints_.end();
 
@@ -603,9 +619,9 @@ PIP_Decision_Node::OK() const {
     return false;
 
   // Recursively check if child nodes are well-formed.
-  if (true_child && !true_child->OK())
-    return false;
   if (false_child && !false_child->OK())
+    return false;
+  if (true_child && !true_child->OK())
     return false;
 
   // Decision nodes with a false child must have exactly one constraint.
@@ -735,13 +751,13 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
   if (str == "BOTTOM")
     true_child = 0;
   else if (str == "DECISION") {
-    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0);
+    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0, 0);
     true_child = dec;
     if (!dec->ascii_load(s))
       return false;
   }
   else if (str == "SOLUTION") {
-    PIP_Solution_Node* sol = new PIP_Solution_Node;
+    PIP_Solution_Node* sol = new PIP_Solution_Node(0);
     true_child = sol;
     if (!sol->ascii_load(s))
       return false;
@@ -762,13 +778,13 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
   if (str == "BOTTOM")
     false_child = 0;
   else if (str == "DECISION") {
-    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0);
+    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0, 0);
     false_child = dec;
     if (!dec->ascii_load(s))
       return false;
   }
   else if (str == "SOLUTION") {
-    PIP_Solution_Node* sol = new PIP_Solution_Node;
+    PIP_Solution_Node* sol = new PIP_Solution_Node(0);
     false_child = sol;
     if (!sol->ascii_load(s))
       return false;
@@ -1162,33 +1178,6 @@ PIP_Solution_Node::ascii_load(std::istream& s) {
 
   PPL_ASSERT(OK());
   return true;
-}
-
-// FIXME: this does not (yet) correspond to specification.
-const Linear_Expression&
-PIP_Solution_Node
-::parametric_values(const Variable var,
-                    const Variables_Set& parameters) const {
-  Variables_Set all_parameters(parameters);
-  // Complete the parameter set with artificials.
-  insert_artificials(all_parameters,
-                     tableau.s.num_columns() + tableau.t.num_columns() - 1);
-  {
-    PIP_Solution_Node& x = const_cast<PIP_Solution_Node&>(*this);
-    x.update_solution(all_parameters);
-  }
-
-  const Variables_Set::iterator pos = all_parameters.lower_bound(var.id());
-  if (pos == all_parameters.end())
-    return solution[var.id()];
-  else {
-    if (*pos == var.id())
-      throw std::invalid_argument("PIP_Solution_Node::"
-                                  "parametric_values(v, params): "
-                                  "variable v is a parameter.");
-    const dimension_type dist = std::distance(all_parameters.begin(), pos);
-    return solution[var.id() - dist];
-  }
 }
 
 PIP_Solution_Node::Row_Sign
@@ -1591,36 +1580,6 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
     }
   }
   PPL_ASSERT(OK());
-}
-
-void
-PIP_Solution_Node::update_solution(const Variables_Set& parameters) {
-  if (solution_valid)
-    return;
-
-  const dimension_type num_vars = tableau.s.num_columns();
-  if (solution.size() != num_vars)
-    solution.resize(num_vars);
-
-  // Compute once for all outside loop.
-  const dimension_type num_params = parameters.size();
-  const Variables_Set::const_reverse_iterator p_rbegin = parameters.rbegin();
-  const Variables_Set::const_reverse_iterator p_rend = parameters.rend();
-
-  const Coefficient& den = tableau.denominator();
-  for (dimension_type i = num_vars; i-- > 0; ) {
-    Linear_Expression& sol_i = solution[i];
-    sol_i = Linear_Expression(0);
-    if (basis[i])
-      continue;
-    Row& row = tableau.t[mapping[i]];
-    dimension_type k = num_params;
-    for (Variables_Set::const_reverse_iterator
-           pj = p_rbegin; pj != p_rend; ++pj, --k)
-      add_mul_assign(sol_i, row[k]/den, Variable(*pj));
-    sol_i += row[0]/den;
-  }
-  solution_valid = true;
 }
 
 PIP_Tree_Node*
@@ -2070,7 +2029,8 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
 
       // Here both t_node and f_node are feasible:
       // create a new decision node.
-      PIP_Tree_Node* parent = new PIP_Decision_Node(f_node, t_node);
+      PIP_Tree_Node* parent
+        = new PIP_Decision_Node(f_node->get_owner(), f_node, t_node);
       // Protect 'parent' from exception safety issues
       // (previously wrapped t_node is now safe).
       wrapped_node.release();
@@ -2083,7 +2043,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
         // If node to be solved had tautologies,
         // store them in a new decision node.
         // NOTE: this is exception safe.
-        parent = new PIP_Decision_Node(0, parent);
+        parent = new PIP_Decision_Node(parent->get_owner(), 0, parent);
         parent->constraints_.swap(cs);
       }
       parent->artificial_parameters.swap(aps);
@@ -2495,13 +2455,10 @@ PIP_Tree_Node::indent_and_print(std::ostream& s,
 }
 
 void
-PIP_Tree_Node::print_tree(std::ostream& s,
-                          const unsigned indent,
-                          const dimension_type space_dim,
-                          dimension_type first_art_dim,
-                          const Variables_Set& params) const {
-  used(space_dim);
-  used(params);
+PIP_Tree_Node::print_tree(std::ostream& s, unsigned indent,
+                          const std::vector<bool>& pip_dim_is_param,
+                          dimension_type first_art_dim) const {
+  used(pip_dim_is_param);
 
   using namespace IO_Operators;
 
@@ -2518,9 +2475,8 @@ PIP_Tree_Node::print_tree(std::ostream& s,
   if (!constraints_.empty()) {
     indent_and_print(s, indent, "if ");
 
-    Constraint_System::const_iterator
-      ci = constraints_.begin(),
-      ci_end = constraints_.end();
+    Constraint_System::const_iterator ci = constraints_.begin();
+    Constraint_System::const_iterator ci_end = constraints_.end();
     PPL_ASSERT(ci != ci_end);
     s << *ci;
     for (++ci; ci != ci_end; ++ci)
@@ -2532,57 +2488,163 @@ PIP_Tree_Node::print_tree(std::ostream& s,
 
 void
 PIP_Decision_Node::print_tree(std::ostream& s, unsigned indent,
-                              const dimension_type space_dim,
-                              const dimension_type first_art_dim,
-                              const Variables_Set& params) const {
+                              const std::vector<bool>& pip_dim_is_param,
+                              const dimension_type first_art_dim) const {
   // First print info common to decision and solution nodes.
-  PIP_Tree_Node::print_tree(s, indent, space_dim, first_art_dim, params);
+  PIP_Tree_Node::print_tree(s, indent, pip_dim_is_param, first_art_dim);
 
   // Then print info specific of decision nodes.
   dimension_type child_first_art_dim = first_art_dim + art_parameter_count();
 
   if (true_child)
-    true_child->print_tree(s, indent+1, space_dim,
-                           child_first_art_dim, params);
+    true_child->print_tree(s, indent+1, pip_dim_is_param, child_first_art_dim);
   else
     indent_and_print(s, indent+1, "_|_\n");
 
   indent_and_print(s, indent, "else\n");
 
   if (false_child)
-    false_child->print_tree(s, indent+1, space_dim,
-                            child_first_art_dim, params);
+    false_child->print_tree(s, indent+1, pip_dim_is_param, child_first_art_dim);
   else
     indent_and_print(s, indent+1, "_|_\n");
 }
 
 void
 PIP_Solution_Node::print_tree(std::ostream& s, unsigned indent,
-                              const dimension_type space_dim,
-                              const dimension_type first_art_dim,
-                              const Variables_Set& params) const {
-  // First print info common to decision and solution nodes.
-  PIP_Tree_Node::print_tree(s, indent, space_dim, first_art_dim, params);
+                              const std::vector<bool>& pip_dim_is_param,
+                              const dimension_type first_art_dim) const {
+  // Print info common to decision and solution nodes.
+  PIP_Tree_Node::print_tree(s, indent, pip_dim_is_param, first_art_dim);
 
-  // Then print info specific of solution nodes.
+  // Print info specific of solution nodes:
+  // first update solution if needed ...
+  update_solution(pip_dim_is_param);
+  // ... and then actually print it.
   const bool no_constraints = constraints_.empty();
-  bool printed_first_variable = false;
   indent_and_print(s, indent + (no_constraints ? 0 : 1), "{");
-  for (dimension_type i = 0; i < space_dim; ++i) {
-    if (params.count(i) != 0)
+  const dimension_type pip_space_dim = pip_dim_is_param.size();
+  for (dimension_type i = 0, num_var = 0; i < pip_space_dim; ++i) {
+    if (pip_dim_is_param[i])
       continue;
-    if (printed_first_variable)
+    if (num_var > 0)
       s << " ; ";
-    else
-      printed_first_variable = true;
     using namespace IO_Operators;
-    s << parametric_values(Variable(i), params);
+    s << solution[num_var];
+    ++num_var;
   }
   s << "}\n";
 
   if (!no_constraints) {
     indent_and_print(s, indent, "else\n");
     indent_and_print(s, indent+1, "_|_\n");
+  }
+}
+
+const Linear_Expression&
+PIP_Solution_Node::parametric_values(const Variable var) const {
+  const PIP_Problem* pip = get_owner();
+  PPL_ASSERT(pip);
+
+  const dimension_type space_dim = pip->space_dimension();
+  if (var.space_dimension() > space_dim) {
+    std::ostringstream s;
+    s << "PPL::PIP_Solution_Node::parametric_values(v):\n"
+      << "v.space_dimension() == " << var.space_dimension()
+      << " is incompatible with the owning PIP_Problem "
+      << " (space dim == " << space_dim << ").";
+    throw std::invalid_argument(s.str());
+  }
+
+  dimension_type solution_index = var.id();
+  const Variables_Set& params = pip->parameter_space_dimensions();
+  for (Variables_Set::const_iterator p = params.begin(),
+         p_end = params.end(); p != p_end; ++p) {
+    const dimension_type param_index = *p;
+    if (param_index < var.id())
+      --solution_index;
+    else if (param_index == var.id())
+      throw std::invalid_argument("PPL::PIP_Solution_Node"
+                                  "::parametric_values(v):\n"
+                                  "v is a problem parameter.");
+    else
+      break;
+  }
+
+  update_solution();
+  return solution[solution_index];
+}
+
+
+void
+PIP_Solution_Node::update_solution() const {
+  // Avoid doing useless work.
+  if (solution_valid)
+    return;
+
+  const PIP_Problem* pip = get_owner();
+  PPL_ASSERT(pip);
+  std::vector<bool> pip_dim_is_param(pip->space_dimension());
+  const Variables_Set& params = pip->parameter_space_dimensions();
+  for (Variables_Set::const_iterator p = params.begin(),
+         p_end = params.end(); p != p_end; ++p)
+    pip_dim_is_param[*p] = true;
+
+  update_solution(pip_dim_is_param);
+}
+
+void
+PIP_Solution_Node
+::update_solution(const std::vector<bool>& pip_dim_is_param) const {
+  // Avoid doing useless work.
+  if (solution_valid)
+    return;
+
+  // const_cast required so as to refresh the solution cache.
+  PIP_Solution_Node& x = const_cast<PIP_Solution_Node&>(*this);
+
+  const dimension_type num_pip_dims = pip_dim_is_param.size();
+  const dimension_type num_pip_vars = tableau.s.num_columns();
+  const dimension_type num_pip_params = num_pip_dims - num_pip_vars;
+  const dimension_type num_all_params = tableau.t.num_columns() - 1;
+  const dimension_type num_art_params = num_all_params - num_pip_params;
+
+  if (solution.size() != num_pip_vars)
+    x.solution.resize(num_pip_vars);
+
+  // Compute external "names" (i.e., indices) for all parameters.
+  std::vector<dimension_type> all_param_names(num_all_params);
+
+  // External indices for problem parameters.
+  for (dimension_type i = 0, p_index = 0; i < num_pip_dims; ++i)
+    if (pip_dim_is_param[i]) {
+      all_param_names[p_index] = i;
+      ++p_index;
+    }
+  // External indices for artificial parameters.
+  for (dimension_type i = 0; i < num_art_params; ++i)
+    all_param_names[num_pip_params + i] = num_pip_dims + i;
+
+
+  PPL_DIRTY_TEMP_COEFFICIENT(norm_coeff);
+  const Coefficient& den = tableau.denominator();
+  for (dimension_type i = num_pip_vars; i-- > 0; ) {
+    Linear_Expression& sol_i = x.solution[i];
+    sol_i = Linear_Expression(0);
+    if (basis[i])
+      continue;
+    const Row& row = tableau.t[mapping[i]];
+
+    for (dimension_type j = num_all_params; j-- > 0; ) {
+      // NOTE: add 1 to column index to account for inhomogenous term.
+      const Coefficient& coeff = row[j+1];
+      if (coeff == 0)
+        continue;
+      norm_coeff = coeff / den;
+      if (norm_coeff != 0)
+        add_mul_assign(sol_i, norm_coeff, Variable(all_param_names[j]));
+    }
+    norm_coeff = row[0] / den;
+    sol_i += norm_coeff;
   }
 }
 

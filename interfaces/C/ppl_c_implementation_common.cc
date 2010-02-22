@@ -2435,14 +2435,9 @@ int
 ppl_PIP_Solution_Node_get_parametric_values
   (ppl_const_PIP_Solution_Node_t pip_sol,
    ppl_dimension_type v,
-   const ppl_dimension_type pars[],
-   size_t n,
    ppl_const_Linear_Expression_t* le) try {
   const PIP_Solution_Node& spip_sol = *to_const(pip_sol);
-  Variables_Set vars;
-  for (ppl_dimension_type i = n; i-- > 0; )
-    vars.insert(pars[i]);
-  const Linear_Expression& lle = spip_sol.parametric_values(Variable(v),vars);
+  const Linear_Expression& lle = spip_sol.parametric_values(Variable(v));
   *le = to_const(&lle);
   return 0;
 }
