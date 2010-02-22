@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Unlimited_Sparse_Row_defs_hh 1
 
 #include "Unlimited_Sparse_Row.types.hh"
+#include "Unlimited_Sparse_Row_Std_List_Backend.defs.hh"
 #include "Coefficient.defs.hh"
 #include <list>
 #include <vector>
@@ -57,7 +58,7 @@ public:
   Unlimited_Sparse_Row(const std::vector<Coefficient> &v);
 
 private:
-  typedef std::list<value_type> list_t;
+  typedef Unlimited_Sparse_Row_Std_List_Backend list_t;
 
 public:
   //! A const iterator that may skip some zeros in the sequence.

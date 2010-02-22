@@ -142,6 +142,7 @@ Init.types.hh \
 Row.types.hh \
 Dense_Row.types.hh \
 Unlimited_Sparse_Row.types.hh \
+Unlimited_Sparse_Row_Std_List_Backend.types.hh \
 Sparse_Row.types.hh \
 Sparse_Matrix.types.hh \
 Linear_Row.types.hh \
@@ -249,6 +250,8 @@ Dense_Row.defs.hh \
 Dense_Row.inlines.hh \
 Unlimited_Sparse_Row.defs.hh \
 Unlimited_Sparse_Row.inlines.hh \
+Unlimited_Sparse_Row_Std_List_Backend.defs.hh \
+Unlimited_Sparse_Row_Std_List_Backend.inlines.hh \
 Sparse_Row.defs.hh \
 Sparse_Row.inlines.hh \
 Sparse_Matrix.defs.hh \
@@ -462,6 +465,7 @@ BD_Shape.cc \
 Octagonal_Shape.cc \
 Pointset_Powerset.cc \
 Unlimited_Sparse_Row.cc \
+Unlimited_Sparse_Row_Std_List_Backend.cc \
 Sparse_Row.cc \
 Sparse_Matrix.cc \
 Row.cc \
