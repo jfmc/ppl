@@ -153,19 +153,47 @@ PPL::PIP_Problem::solve() const {
         {
           dimension_type i = 1;
           for (Variables_Set::const_iterator
-                 pi = param_begin; pi != param_end; ++pi, ++i)
-            row[i] = c.coefficient(Variable(*pi));
+                 pi = param_begin; pi != param_end; ++pi, ++i) {
+            if (*pi < c_space_dim)
+              row[i] = c.coefficient(Variable(*pi));
+            else
+              break;
+          }
         }
         // Adjust inhomogenous term if strict.
         if (c.is_strict_inequality())
           --row[0];
-        // Insert new row into context.
-        x.initial_context.add_row(row);
+
+        // Check for compatibility.
+        if (PIP_Solution_Node::compatibility_check(initial_context, row))
+          // Insert new row into initial context.
+          x.initial_context.add_row(row);
+        else {
+          // Problem found to be unfeasible.
+          delete x.current_solution;
+          x.current_solution = 0;
+          x.status = UNSATISFIABLE;
+          PPL_ASSERT(OK());
+          return UNFEASIBLE_PIP_PROBLEM;
+        }
+
         // If it is an equality, also insert its negation.
         if (c.is_equality()) {
           for (dimension_type i = new_num_cols; i-- > 0; )
             neg_assign(row[i], row[i]);
-          x.initial_context.add_row(row);
+
+          // Check for compatibility.
+          if (PIP_Solution_Node::compatibility_check(initial_context, row))
+            // Insert new row into initial context.
+            x.initial_context.add_row(row);
+          else {
+            // Problem found to be unfeasible.
+            delete x.current_solution;
+            x.current_solution = 0;
+            x.status = UNSATISFIABLE;
+            PPL_ASSERT(OK());
+            return UNFEASIBLE_PIP_PROBLEM;
+          }
         }
       }
 

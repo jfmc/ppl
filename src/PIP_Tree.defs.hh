@@ -572,6 +572,10 @@ private:
 
     The algorithm ensures the feasible solutions are integer, by applying a
     cut generation method when intermediate non-integer solutions are found.
+
+    \note
+    It is assumed that matrix \p ctx and row \c cnst have the same
+    size and capacity; otherwise the behavior is undefined.
   */
   static bool compatibility_check(const Matrix& ctx, const Row& cnst);
 
@@ -589,8 +593,10 @@ protected:
   */
   PIP_Solution_Node(const PIP_Solution_Node& y, No_Constraints);
 
-  // PIP_Problem ascii load method needs access set_owner.
+  // PIP_Problem::ascii load() method needs access set_owner().
   friend bool PIP_Problem::ascii_load(std::istream& s);
+  // PIP_Problem::solve() method needs access compatibility_check().
+  friend PIP_Problem_Status PIP_Problem::solve() const;
 
   //! Sets the pointer to the PIP_Problem owning object.
   virtual void set_owner(const PIP_Problem* owner);
