@@ -406,15 +406,18 @@ PIP_Decision_Node::PIP_Decision_Node(const PIP_Decision_Node& y)
   : PIP_Tree_Node(y),
     false_child(0),
     true_child(0) {
-  // FIXME: exception safety?
   if (y.false_child != 0) {
     false_child = y.false_child->clone();
     false_child->set_parent(this);
   }
+  // Protect false_child from exception safety issues via std::auto_ptr.
+  std::auto_ptr<PIP_Tree_Node> wrapped_node(false_child);
   if (y.true_child != 0) {
     true_child = y.true_child->clone();
     true_child->set_parent(this);
   }
+  // It is now safe to release false_child.
+  wrapped_node.release();
 }
 
 PIP_Decision_Node::~PIP_Decision_Node() {
