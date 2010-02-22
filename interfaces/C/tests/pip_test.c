@@ -21,7 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_c_test.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -62,7 +61,8 @@ display_solution_i(ppl_const_PIP_Tree_Node_t node,
   if (!node) {
     /* A null pointer indicates the polyhedron is empty. */
     printf("%*s_|_\n", indent*2, "");
-  } else {
+  }
+  else {
     ppl_dimension_type space_dimension = n_vars + n_params;
     ppl_dimension_type new_params;
     ppl_const_Constraint_System_t constraints;
@@ -122,7 +122,8 @@ display_solution_i(ppl_const_PIP_Tree_Node_t node,
       printf("%*selse\n", indent*2, "");
       ppl_PIP_Decision_Node_get_child_node(dn, 0, &child);
       display_solution_i(child, n_vars, n_params, vars, parameters, indent+1);
-    } else {
+    }
+    else {
       /* The node is a solution Node: display the expression of the vars. */
       int notfirst = 0;
       ppl_const_PIP_Solution_Node_t sn;
@@ -250,7 +251,8 @@ main(int argc, char **argv) {
 
     ppl_PIP_Problem_space_dimension(pip, &dim);
     ppl_PIP_Problem_solution(pip, &solution);
-    display_solution(solution, N_VARS, N_PARAMETERS, parameter_dim);
+    if (check_noisy() || check_very_noisy())
+      display_solution(solution, N_VARS, N_PARAMETERS, parameter_dim);
     ppl_new_Constraint_System_const_iterator(&begin);
     ppl_new_Constraint_System_const_iterator(&end);
     ppl_new_Constraint_System_from_Constraint(&constraints, ct);
