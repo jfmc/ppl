@@ -46,14 +46,14 @@ bool Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   // true if we intervalize the first form, false if we intervalize the second.
   bool intervalize_first;
   FP_Linear_Form linearized_first_operand;
-  if(!first_operand->linearize(int_store, lf_store,
+  if (!first_operand->linearize(int_store, lf_store,
                                linearized_first_operand))
     return false;
   FP_Interval_Type intervalized_first_operand;
   this->intervalize(linearized_first_operand, int_store,
                     intervalized_first_operand);
   FP_Linear_Form linearized_second_operand;
-  if(!second_operand->linearize(int_store, lf_store,
+  if (!second_operand->linearize(int_store, lf_store,
                                 linearized_second_operand))
     return false;
   FP_Interval_Type intervalized_second_operand;

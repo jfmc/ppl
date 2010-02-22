@@ -1087,7 +1087,7 @@ Octagonal_Shape<T>::concatenate_assign(const Octagonal_Shape& y) {
   add_space_dimensions_and_embed(y.space_dim);
   typename OR_Matrix<N>::const_element_iterator
     y_it = y.matrix.element_begin();
-  for(typename OR_Matrix<N>::row_iterator i = matrix.row_begin()+old_num_rows,
+  for (typename OR_Matrix<N>::row_iterator i = matrix.row_begin()+old_num_rows,
         matrix_row_end = matrix.row_end(); i != matrix_row_end; ++i) {
     typename OR_Matrix<N>::row_reference_type r = *i;
     dimension_type rs_i = i.row_size();

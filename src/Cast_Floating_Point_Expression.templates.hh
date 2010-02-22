@@ -31,7 +31,7 @@ bool Cast_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::linearize(const FP_Interval_Abstract_Store& int_store,
             const FP_Linear_Form_Abstract_Store& lf_store,
             FP_Linear_Form& result) const {
-  if(!expr->linearize(int_store, lf_store, result))
+  if (!expr->linearize(int_store, lf_store, result))
     return false;
   FP_Linear_Form rel_error;
   relative_error(result, rel_error);
