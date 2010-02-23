@@ -880,6 +880,7 @@ PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
   const dimension_type tableau_num_columns = tableau.num_columns();
+  const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
   PPL_ASSERT(tableau_num_rows == base.size());
   double current_value = 0.0;
   // Due to our integer implementation, the `1' term in the denominator
@@ -894,15 +895,9 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     const Coefficient& tableau_i_base_i = tableau_i.get(base[i]);
     matrix_const_row_const_iterator j = tableau_i.begin();
     matrix_const_row_const_iterator j_end = tableau_i.end();
-    // Skip the last column
-    if (j != j_end) {
-      --j_end;
-      if ((*j_end).first != tableau_num_columns-1)
-        ++j_end;
-    }
     if (j != j_end && (*j).first == 0)
       ++j;
-    for ( ; j != j_end; ++j) {
+    for ( ; j != j_end && (*j).second < tableau_num_columns_minus_1; ++j) {
       const dimension_type j_index = (*j).first;
       const Coefficient& cost_j = working_cost[j_index];
       const Coefficient& tableau_ij = (*j).second;
@@ -945,6 +940,7 @@ PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
   const dimension_type tableau_num_columns = tableau.num_columns();
+  const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
   PPL_ASSERT(tableau_num_rows == base.size());
   // The square of the lcm of all the coefficients of variables in base.
   PPL_DIRTY_TEMP_COEFFICIENT(squared_lcm_basis);
@@ -982,15 +978,9 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     matrix_row_const_reference_type tableau_i = tableau[i];
     matrix_const_row_const_iterator j = tableau_i.begin();
     matrix_const_row_const_iterator j_end = tableau_i.end();
-    // Skip the last column
-    if (j != j_end) {
-      --j_end;
-      if ((*j_end).first != tableau_num_columns-1)
-        ++j_end;
-    }
     if (j != j_end && (*j).first == 0)
       ++j;
-    for ( ; j != j_end; ++j) {
+    for ( ; j != j_end && (*j).second < tableau_num_columns_minus_1; ++j) {
       const dimension_type j_index = (*j).first;
       const Coefficient& tableau_ij = (*j).second;
       const Coefficient& cost_j = working_cost[j_index];
