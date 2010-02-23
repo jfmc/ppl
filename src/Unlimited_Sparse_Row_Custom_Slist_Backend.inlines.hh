@@ -300,6 +300,17 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::operator!=(
 
 inline
 Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::operator
+  iterator() {
+  PPL_ASSERT(OK());
+  if (p == 0)
+    // This iterator has been default-contructed and not initialized.
+    return iterator();
+  else
+    return iterator(*p);
+}
+
+inline
+Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::operator
   const_iterator() const {
   PPL_ASSERT(OK());
   if (p == 0)
