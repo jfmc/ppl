@@ -527,25 +527,58 @@ test18() {
   return ok;
 }
 
+bool
+test19() {
+  // Same problem as test02, but incrementally adding a parameter constraint
+  // making the problem unfeasible.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  //cs.insert(j >= 0);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  cs.insert(n <= 1);
+  ok &= (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
-  DO_TEST_F8(test02);
-  DO_TEST(test03);
-  DO_TEST(test04);
-  DO_TEST_F8(test05);
-  DO_TEST(test06);
-  DO_TEST_F8(test07);
-  DO_TEST_F8(test08);
-  DO_TEST_F8(test09);
-  DO_TEST_F8(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
+  //DO_TEST(test01);
+  //DO_TEST_F8(test02);
+  //DO_TEST(test03);
+  //DO_TEST(test04);
+  //DO_TEST_F8(test05);
+  //DO_TEST(test06);
+  //DO_TEST_F8(test07);
+  //DO_TEST_F8(test08);
+  //DO_TEST_F8(test09);
+  //DO_TEST_F8(test10);
+  //DO_TEST(test11);
+  //DO_TEST(test12);
+  //DO_TEST(test13);
+  //DO_TEST(test14);
+  //DO_TEST(test15);
+  //DO_TEST(test16);
+  //DO_TEST(test17);
+  //DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN
