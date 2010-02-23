@@ -48,9 +48,9 @@ inline void
 Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
   if (i == j)
     return;
-  iterator i_itr = lower_bound(i);
-  iterator j_itr = lower_bound(j);
-  iterator itr_end = end();
+  dangerous_iterator i_itr = lower_bound(i);
+  dangerous_iterator j_itr = lower_bound(j);
+  dangerous_iterator itr_end = end();
   if (i_itr != itr_end && i_itr->first == i)
     if (j_itr != itr_end && j_itr->first == j) {
       // Both i and j are in the list.
@@ -58,10 +58,9 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
     } else {
       if (i_itr != j_itr) {
         // i is in the list, j isn't
-        data.splice(j_itr,data,i_itr);
-        // j_itr is no longer valid.
-        // i_itr is valid because i_itr != j_itr.
-        --j_itr;
+        j_itr = data.splice(j_itr,data,i_itr);
+        // i_itr is no longer valid.
+        // j_itr now points to the moved element.
         j_itr->first = j;
       } else {
         j_itr->first=j;
@@ -71,10 +70,9 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
     if (j_itr != itr_end && j_itr->first == j) {
       if (i_itr != j_itr) {
         // j is in the list, i isn't
-        data.splice(i_itr,data,j_itr);
+        i_itr = data.splice(i_itr,data,j_itr);
         // j_itr is no longer valid.
-        // i_itr is valid because i_itr != j_itr.
-        --i_itr;
+        // i_itr now points to the moved element.
         i_itr->first = i;
       } else {
         i_itr->first = j;
@@ -93,23 +91,24 @@ Unlimited_Sparse_Row::swap(iterator i, iterator j) {
   PPL_ASSERT(OK());
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::reset(iterator i) {
-  iterator res = data.erase(i);
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::reset(dangerous_iterator i) {
+  dangerous_iterator res = data.erase(i);
   PPL_ASSERT(OK());
   return res;
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::reset(iterator first,iterator last) {
-  iterator res = data.erase(first,last);
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::reset(dangerous_iterator first,
+                            dangerous_iterator last) {
+  dangerous_iterator res = data.erase(first,last);
   PPL_ASSERT(OK());
   return res;
 }
 
 inline void
 Unlimited_Sparse_Row::reset(const dimension_type i) {
-  iterator itr = find(i);
+  dangerous_iterator itr = find(i);
   if (itr != end())
     reset(itr);
   PPL_ASSERT(OK());
@@ -123,13 +122,12 @@ Unlimited_Sparse_Row::reset_after(dimension_type i) {
 
 inline Coefficient&
 Unlimited_Sparse_Row::operator[](const dimension_type i) {
-  iterator itr = lower_bound(i);
+  dangerous_iterator itr = lower_bound(i);
   if (itr != end())
     if (itr->first == i)
       return itr->second;
 
-  data.insert(itr,std::make_pair(i,Coefficient(0)));
-  --itr;
+  itr = data.insert(itr,std::make_pair(i,Coefficient(0)));
   return itr->second;
 }
 
@@ -151,12 +149,12 @@ Unlimited_Sparse_Row::get(const dimension_type i) const {
   }
 }
 
-inline Unlimited_Sparse_Row::iterator
+inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row::begin() {
   return data.begin();
 }
 
-inline Unlimited_Sparse_Row::iterator
+inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row::end() {
   return data.end();
 }
@@ -171,22 +169,22 @@ Unlimited_Sparse_Row::end() const {
   return data.end();
 }
 
-inline Unlimited_Sparse_Row::iterator
+inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row::find(const dimension_type k) {
-  iterator itr = lower_bound(k);
+  dangerous_iterator itr = lower_bound(k);
   if (itr != end())
     if (itr->first != k)
       return end();
   return itr;
 }
 
-inline Unlimited_Sparse_Row::iterator
+inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row::lower_bound(const dimension_type k) {
   return std::lower_bound(begin(),end(),k,
                           value_key_compare(std::less<dimension_type>()));
 }
 
-inline Unlimited_Sparse_Row::iterator
+inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row::upper_bound(const dimension_type k) {
   return std::upper_bound(begin(),end(),k,
                           key_value_compare(std::less<dimension_type>()));
@@ -220,15 +218,16 @@ Unlimited_Sparse_Row::operator!=(const Unlimited_Sparse_Row &x) const {
 
 template <typename Func>
 inline void
-Unlimited_Sparse_Row::for_each_nonzero(const Func& func,const dimension_type n) {
+Unlimited_Sparse_Row::for_each_nonzero(const Func& func,
+                                       const dimension_type n) {
   (void)n;
   std::for_each(begin(),end(),func);
 }
 
 template <typename Func>
 inline void
-Unlimited_Sparse_Row::for_each_nonzero(const Func& func,const dimension_type n)
-  const {
+Unlimited_Sparse_Row::for_each_nonzero(const Func& func,
+                                       const dimension_type n) const {
   (void)n;
   std::for_each(begin(),end(),func);
 }

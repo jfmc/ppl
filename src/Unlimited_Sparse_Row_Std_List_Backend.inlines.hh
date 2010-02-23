@@ -27,23 +27,44 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline Unlimited_Sparse_Row_Std_List_Backend::iterator
-Unlimited_Sparse_Row_Std_List_Backend::splice(iterator position,This& x) {
+Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x) {
+  bool inserting_at_beginning = (position == begin());
+  iterator previous = position;
+  if (inserting_at_beginning)
+    --previous;
   Base::splice(position,x);
-  return position;
+  if (inserting_at_beginning)
+    return begin();
+  ++previous;
+  return previous;
 }
 
 inline Unlimited_Sparse_Row_Std_List_Backend::iterator
-Unlimited_Sparse_Row_Std_List_Backend::splice(iterator position,This& x,
+Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x,
                                               iterator i) {
+  bool inserting_at_beginning = (position == begin());
+  iterator previous = position;
+  if (inserting_at_beginning)
+    --previous;
   Base::splice(position,x,i);
-  return position;
+  if (inserting_at_beginning)
+    return begin();
+  ++previous;
+  return previous;
 }
 
 inline Unlimited_Sparse_Row_Std_List_Backend::iterator
-Unlimited_Sparse_Row_Std_List_Backend::splice(iterator position,This& x,
+Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x,
                                               iterator first,iterator last) {
+  bool inserting_at_beginning = (position == begin());
+  iterator previous = position;
+  if (inserting_at_beginning)
+    --previous;
   Base::splice(position,x,first,last);
-  return position;
+  if (inserting_at_beginning)
+    return begin();
+  ++previous;
+  return previous;
 }
 
 inline bool

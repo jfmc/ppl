@@ -98,10 +98,10 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::insert(dangerous_iterator pos,
   list_elem* elem_after = *(pos.p);
   list_elem* new_elem = new list_elem(x,elem_after);
   *(pos.p) = new_elem;
-  pos.p = &(new_elem->next);
+  // No change needed to pos.p
   if (elem_after == 0)
     // We are inserting at end(), so last changed.
-    last = pos.p;
+    last = &(new_elem->next);
   PPL_ASSERT(OK());
   return pos;
 }
@@ -139,15 +139,14 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator first,
 }
 
 Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::splice(dangerous_iterator position,
-                                                  This& x) {
+Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
+  dangerous_iterator& position,This& x) {
   return splice(position,x,x.begin(),x.end());
 }
 
 Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::splice(dangerous_iterator position,
-                                                  This& x,
-                                                  dangerous_iterator i) {
+Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
+  dangerous_iterator& position,This& x,dangerous_iterator i) {
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
   PPL_ASSERT(position.OK());
@@ -161,23 +160,26 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::splice(dangerous_iterator position,
     x.last = i.p;
   to_move->next = *(position.p);
   *(position.p) = to_move;
+  // i_itr points to the moved element.
+  dangerous_iterator i_itr = position;
   position.p = &(to_move->next);
 #ifndef NDEBUG
   position.q = *(position.p);
 #endif
   if (to_move->next == 0)
     last = position.p;
+  PPL_ASSERT(i_itr.OK());
   PPL_ASSERT(position.OK());
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
-  return position;
+  return i_itr;
 }
 
 Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::splice(dangerous_iterator position,
-                                                  This& x,
-                                                  dangerous_iterator first1,
-                                                  dangerous_iterator last1) {
+Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
+  dangerous_iterator& position,This& x,
+  dangerous_iterator first1,dangerous_iterator last1) {
+
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
   PPL_ASSERT(position.OK());
@@ -196,6 +198,8 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::splice(dangerous_iterator position,
     // We moved some elements from the end of x, so x.last must be updated.
     x.last = first1.p;
   *(last1.p) = tail;
+  // first_itr points to the first added element
+  dangerous_iterator first_itr = position;
   position.p = last1.p;
 #ifndef NDEBUG
   position.q = *(position.p);
@@ -203,10 +207,11 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::splice(dangerous_iterator position,
   if (tail == 0)
     // We moved some elements to the end of *this, so `last' must be updated.
     last = position.p;
+  PPL_ASSERT(first_itr.OK());
   PPL_ASSERT(position.OK());
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
-  return position;
+  return first_itr;
 }
 
 inline void

@@ -94,7 +94,8 @@ namespace Parma_Polyhedra_Library {
   * C::dangerous_iterator must follow all the requirements for C::iterator.
   * C must have a method
     insert(C::dangerous_iterator pos,const C::value_type& x)
-    returning a C::dangerous_iterator. This method inserts x before pos.
+    returning a C::dangerous_iterator. This method inserts x before pos and
+    returns an iterator to the inserted element.
     This operation invalidates all C::dangerous_iterator objects equal to pos.
   * C must have a method erase(C::dangerous_iterator pos) returning a
     C::dangerous_iterator, that erases the element pointed to by pos.
@@ -104,24 +105,27 @@ namespace Parma_Polyhedra_Library {
     erase(C::dangerous_iterator first,C::dangerous_iterator last) that returns
     a C::dangerous_iterator, that erases the element in [first,last).
     This operation invalidates all dangerous_iterators equal to last.
-  * C must have a methods splice(C::dangerous_iterator position,C& x) that
+  * C must have a methods splice(C::dangerous_iterator& position,C& x) that
     returns a C::dangerous_iterator, that moves all elements in x before
     position. This operation invalidates all dangerous_iterators equal to
-    position and all dangerous_iterators pointing to x.
-    The returned iterator is a valid iterator pointing to position.
+    the former position and all dangerous_iterators pointing to x.
+    The returned iterator is a valid iterator pointing to the first inserted
+    element. \p position is modified to keep it valid.
   * C must have a method
-    splice(C::dangerous_iterator position,C& x,C::dangerous_iterator i)
+    splice(C::dangerous_iterator& position,C& x,C::dangerous_iterator i)
     returning a C::dangerous_iterator, that moves element i of x
     before position. This operation invalidates all dangerous_iterators equal
-    to position, i and ++i.
-    The returned iterator is a valid iterator pointing to position.
+    to the former position, i and ++i.
+    The returned iterator is a valid iterator pointing to the inserted
+    element. \p position is modified to keep it valid.
   * C must have a method
-    splice(C::dangerous_iterator position,C& x,
+    splice(C::dangerous_iterator& position,C& x,
            C::dangerous_iterator first,C::dangerous_iterator last)
     returning a C::dangerous_iterator, that moves elements [first,last) in
     x before position. This operation invalidates all dangerous_iterators
-    equal to position, and in [first,last] (note that last is invalidated,
-    too). The returned iterator is a valid iterator pointing to position.
+    equal to the former position, and in [first,last] (note that last is
+    invalidated, too). The returned iterator is a valid iterator pointing to
+    the first moved element. \p position is modified to keep it valid.
 */
 class Unlimited_Sparse_Row {
 
@@ -166,6 +170,12 @@ public:
   //! An iterator that may skip some zeros in the sequence.
   typedef list_t::iterator iterator;
 
+  // FIXME: this allows violating the internal invariant, use with care.
+  //! An iterator that may skip some zeros in the sequence.
+  //! May be invalidated by apparently unrelated operations, use with care.
+  //! See the method documentation for details.
+  typedef list_t::dangerous_iterator dangerous_iterator;
+
   //! Swaps (*this) and x.
   void swap(Unlimited_Sparse_Row& x);
 
@@ -179,15 +189,24 @@ public:
   void swap(iterator i, iterator j);
 
   //! Resets to zero the value pointed to by i.
-  iterator reset(iterator i);
+  //! dangerous_iterator objects equal to i and ++i are invalidated.
+  dangerous_iterator reset(dangerous_iterator i);
 
   //! Resets to zero the values in the range [first,last).
-  iterator reset(iterator first,iterator last);
+  //! All dangerous_iterator objects in [first,last] are invalidated (note
+  //! that last is invalidated, too).
+  dangerous_iterator reset(dangerous_iterator first,
+                           dangerous_iterator last);
 
   //! Resets to zero the i-th element.
+  //! For each dangerous_iterator itr that pointed to i, dangerous_iterator
+  //! objects equal to itr and ++itr are invalidated.
   void reset(dimension_type i);
 
   //! Resets to zero the elements in [i,j).
+  //! For each dangerous_iterator i_itr that pointed to i, and j_itr that
+  //! pointed to j, dangerous_iterator objects in [i_itr,j_itr] are
+  //! invalidated (note that j_itr is invalidated, too).
   void reset(dimension_type i,dimension_type j);
 
   //! Resets to zero the elements in [i,+infinity).
@@ -202,6 +221,8 @@ public:
 
   //! For read-only access it's better to use get(), that avoids allocating
   //! space for zeroes. Both methods are O(n).
+  //! If i was not previously stored, or reset(i) was called, this operation
+  //! invalidates iterator equal to the former lower_bound(i).
   Coefficient& operator[](const dimension_type i);
 
   //! Equivalent to get(), provided for convenience.
@@ -213,8 +234,8 @@ public:
   */
   const Coefficient& get(const dimension_type i) const;
 
-  iterator begin();
-  iterator end();
+  dangerous_iterator begin();
+  dangerous_iterator end();
   const_iterator begin() const;
   const_iterator end() const;
 
@@ -240,9 +261,9 @@ public:
   template <typename Func>
   void for_each_nonzero(const Func& func,const dimension_type n) const;
 
-  iterator find(const dimension_type c);
-  iterator lower_bound(const dimension_type c);
-  iterator upper_bound(const dimension_type c);
+  dangerous_iterator find(const dimension_type c);
+  dangerous_iterator lower_bound(const dimension_type c);
+  dangerous_iterator upper_bound(const dimension_type c);
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
   const_iterator upper_bound(const dimension_type c) const;

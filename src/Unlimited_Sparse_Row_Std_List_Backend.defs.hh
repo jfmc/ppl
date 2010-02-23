@@ -45,15 +45,15 @@ public:
 
   //! Needed to satisfy the backend requirements.
   //! The original splice() methods return void.
-  iterator splice(iterator position,This& x);
+  iterator splice(iterator& position,This& x);
 
   //! Needed to satisfy the backend requirements.
   //! The original splice() methods return void.
-  iterator splice(iterator position,This& x,iterator i);
+  iterator splice(iterator& position,This& x,iterator i);
 
   //! Needed to satisfy the backend requirements.
   //! The original splice() methods return void.
-  iterator splice(iterator position,This& x,iterator first,iterator last);
+  iterator splice(iterator& position,This& x,iterator first,iterator last);
 
   //! Always returns true, provided for compatibility with other backends.
   bool OK() const;

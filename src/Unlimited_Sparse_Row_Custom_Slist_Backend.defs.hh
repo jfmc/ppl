@@ -82,7 +82,8 @@ public:
   const_iterator end() const;
 
   //! Inserts x before pos. Warning: this operation invalidates all
-  //! dangerous_iterators equal to pos.
+  //! dangerous_iterators equal to pos. Returns an iterator to the added
+  //! element.
   dangerous_iterator insert(dangerous_iterator pos,const value_type& x);
 
   //! Erases the element pointed to by pos. Warning: this operation
@@ -96,19 +97,22 @@ public:
   //! Moves all elements of the list x before position. This operation
   //! invalidates all dangerous_iterators equal to position and all
   //! dangerous_iterators pointing to x.
-  //! The returned iterator is a valid iterator pointing to position.
-  dangerous_iterator splice(dangerous_iterator position,This& x);
+  //! Returns an iterator pointing to the first added element.
+  //! \p position is updated to keep it valid.
+  dangerous_iterator splice(dangerous_iterator& position,This& x);
 
   //! Moves element i of the list x before position. This operation
   //! invalidates all dangerous_iterators equal to position, and ++i.
-  //! The returned iterator is a valid iterator pointing to position.
-  dangerous_iterator splice(dangerous_iterator position,This& x,
+  //! Returns an iterator pointing to the added element.
+  //! \p position is updated to keep it valid.
+  dangerous_iterator splice(dangerous_iterator& position,This& x,
                             dangerous_iterator i);
 
   //! Moves element [first,last) of the list x before position. This operation
   //! invalidates all dangerous_iterators equal to position and last.
-  //! The returned iterator is a valid iterator pointing to position.
-  dangerous_iterator splice(dangerous_iterator position,This& x,
+  //! Returns an iterator pointing to the first added element.
+  //! \p position is updated to keep it valid.
+  dangerous_iterator splice(dangerous_iterator& position,This& x,
                             dangerous_iterator first,dangerous_iterator last);
 
   //! Assigns \p x to \p (*this) .

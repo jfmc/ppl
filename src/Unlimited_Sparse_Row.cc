@@ -33,16 +33,18 @@ PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row(const
 
   for (vec_size_type i=0,n=v.size(); i<n; ++i)
     if (v[i] != 0)
-      data.push_back(std::make_pair(i,v[i]));
+      // We can not store data.end(), because it is invalidated by this
+      // operation
+      data.insert(data.end(),std::make_pair(i,v[i]));
   PPL_ASSERT(OK());
 }
 
 inline void
 PPL::Unlimited_Sparse_Row::reset(const dimension_type first,
-                            const dimension_type last) {
+                                 const dimension_type last) {
   PPL_ASSERT(first <= last);
-  iterator itr = lower_bound(first);
-  iterator itr_end = lower_bound(last);
+  dangerous_iterator itr = lower_bound(first);
+  dangerous_iterator itr_end = lower_bound(last);
   if (itr == itr_end)
     return;
   if (itr_end != end() && itr_end->first == last)
