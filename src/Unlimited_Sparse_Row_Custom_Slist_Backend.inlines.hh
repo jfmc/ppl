@@ -103,6 +103,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::insert(dangerous_iterator pos,
     // We are inserting at end(), so last changed.
     last = &(new_elem->next);
   PPL_ASSERT(OK());
+  PPL_ASSERT(pos.OK());
   return pos;
 }
 
@@ -118,6 +119,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator pos) {
     last = pos.p;
   delete to_erase;
   PPL_ASSERT(OK());
+  PPL_ASSERT(pos.OK());
   return pos;
 }
 
@@ -135,6 +137,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator first,
   // Invalidates next, last
   first = erase(first);
   PPL_ASSERT(OK());
+  PPL_ASSERT(first.OK());
   return first;
 }
 
