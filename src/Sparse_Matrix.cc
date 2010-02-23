@@ -29,15 +29,7 @@ namespace PPL = Parma_Polyhedra_Library;
 void
 PPL::Sparse_Matrix::remove_column(dimension_type i) {
   for (dimension_type j = rows.size(); j-- > 0; ) {
-    Unlimited_Sparse_Row& row = rows[j];
-    Unlimited_Sparse_Row::iterator itr = row.lower_bound(i);
-    Unlimited_Sparse_Row::iterator itr_end = row.end();
-    if (itr != itr_end && itr->first == i)
-      itr = row.reset(itr);
-    while (itr != itr_end) {
-      --(itr->first);
-      ++itr;
-    }
+    rows[j].delete_element_and_shift(i);
   }
   --num_columns_;
   PPL_ASSERT(OK());
@@ -127,9 +119,13 @@ PPL::Sparse_Matrix::OK() const {
     if (!i->OK())
       return false;
     if (i->begin() != i->end()) {
-      Unlimited_Sparse_Row::const_iterator itr = i->end();
-      --itr;
-      if (itr->first >= num_columns_)
+      Unlimited_Sparse_Row::const_iterator j=i->begin();
+      Unlimited_Sparse_Row::const_iterator j_end=i->end();
+      Unlimited_Sparse_Row::const_iterator next=j;
+      ++next;
+      while (next != j_end)
+        ++j,++next;
+      if (j->first >= num_columns_)
         return false;
     }
   }
