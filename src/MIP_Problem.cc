@@ -897,7 +897,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     matrix_const_row_const_iterator j_end = tableau_i.end();
     if (j != j_end && (*j).first == 0)
       ++j;
-    for ( ; j != j_end && (*j).second < tableau_num_columns_minus_1; ++j) {
+    for ( ; j != j_end && (*j).first < tableau_num_columns_minus_1; ++j) {
       const dimension_type j_index = (*j).first;
       const Coefficient& cost_j = working_cost[j_index];
       const Coefficient& tableau_ij = (*j).second;
@@ -980,7 +980,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     matrix_const_row_const_iterator j_end = tableau_i.end();
     if (j != j_end && (*j).first == 0)
       ++j;
-    for ( ; j != j_end && (*j).second < tableau_num_columns_minus_1; ++j) {
+    for ( ; j != j_end && (*j).first < tableau_num_columns_minus_1; ++j) {
       const dimension_type j_index = (*j).first;
       const Coefficient& tableau_ij = (*j).second;
       const Coefficient& cost_j = working_cost[j_index];
