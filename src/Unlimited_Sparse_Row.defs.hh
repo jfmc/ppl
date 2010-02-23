@@ -23,6 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Unlimited_Sparse_Row_defs_hh
 #define PPL_Unlimited_Sparse_Row_defs_hh 1
 
+#include "Coefficient.defs.hh"
+#include <list>
+#include <vector>
+
 #include "Unlimited_Sparse_Row.types.hh"
 
 #ifndef USE_PPL_SPARSE_BACKEND_STD_LIST
@@ -45,10 +49,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Unlimited_Sparse_Row_Custom_Slist_Backend.defs.hh"
 #endif
 
-
-#include "Coefficient.defs.hh"
-#include <list>
-#include <vector>
 
 namespace Parma_Polyhedra_Library {
 
