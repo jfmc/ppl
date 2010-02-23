@@ -105,7 +105,7 @@ namespace Parma_Polyhedra_Library {
     erase(C::dangerous_iterator first,C::dangerous_iterator last) that returns
     a C::dangerous_iterator, that erases the element in [first,last).
     This operation invalidates all dangerous_iterators equal to last.
-  * C must have a methods splice(C::dangerous_iterator& position,C& x) that
+  * C must have a method splice(C::dangerous_iterator& position,C& x) that
     returns a C::dangerous_iterator, that moves all elements in x before
     position. This operation invalidates all dangerous_iterators equal to
     the former position and all dangerous_iterators pointing to x.
@@ -220,7 +220,8 @@ public:
   //! For read-only access it's better to use get(), that avoids allocating
   //! space for zeroes. Both methods are O(n).
   //! If i was not previously stored, or reset(i) was called, this operation
-  //! invalidates iterator equal to the former lower_bound(i).
+  //! invalidates dangerous_iterator objects equal to the former
+  //! lower_bound(i).
   Coefficient& operator[](const dimension_type i);
 
   //! Equivalent to get(), provided for convenience.
