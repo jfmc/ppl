@@ -92,7 +92,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::end() const {
   return const_iterator(0);
 }
 
-Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend::insert(dangerous_iterator pos,
                                                   const value_type& x) {
   list_elem* elem_after = *(pos.p);
@@ -106,7 +106,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::insert(dangerous_iterator pos,
   return pos;
 }
 
-Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator pos) {
   // We must not be at end().
   PPL_ASSERT(*(pos.p) != 0);
@@ -121,7 +121,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator pos) {
   return pos;
 }
 
-Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator first,
                                                  dangerous_iterator last) {
   if (first == last)
@@ -138,13 +138,13 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator first,
   return first;
 }
 
-Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
   dangerous_iterator& position,This& x) {
   return splice(position,x,x.begin(),x.end());
 }
 
-Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
   dangerous_iterator& position,This& x,dangerous_iterator i) {
   PPL_ASSERT(OK());
@@ -175,7 +175,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
   return i_itr;
 }
 
-Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
   dangerous_iterator& position,This& x,
   dangerous_iterator first1,dangerous_iterator last1) {
