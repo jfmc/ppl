@@ -24,7 +24,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Unlimited_Sparse_Row_defs_hh 1
 
 #include "Unlimited_Sparse_Row.types.hh"
+
+#ifndef USE_PPL_SPARSE_BACKEND_STD_LIST
+#ifndef USE_PPL_SPARSE_BACKEND_CUSTOM_SLIST
+
+// No sparse backend defined, assuming Std_List backend
+#define USE_PPL_SPARSE_BACKEND_STD_LIST
+
+#endif // !defined(USE_PPL_SPARSE_BACKEND_CUSTOM_SLIST)
+#endif // !defined(USE_PPL_SPARSE_BACKEND_STD_LIST)
+
+#ifdef USE_PPL_SPARSE_BACKEND_STD_LIST
 #include "Unlimited_Sparse_Row_Std_List_Backend.defs.hh"
+
+// If other options are specified, ignore them.
+#undef USE_PPL_SPARSE_BACKEND_CUSTOM_SLIST
+#endif
+
+#ifdef USE_PPL_SPARSE_BACKEND_CUSTOM_SLIST
+#include "Unlimited_Sparse_Row_Custom_Slist_Backend.defs.hh"
+#endif
+
+
 #include "Coefficient.defs.hh"
 #include <list>
 #include <vector>
@@ -58,7 +79,14 @@ public:
   Unlimited_Sparse_Row(const std::vector<Coefficient> &v);
 
 private:
+
+#ifdef USE_PPL_SPARSE_BACKEND_STD_LIST
   typedef Unlimited_Sparse_Row_Std_List_Backend list_t;
+#endif
+
+#ifdef USE_PPL_SPARSE_BACKEND_CUSTOM_SLIST
+  typedef Unlimited_Sparse_Row_Custom_Slist_Backend list_t;
+#endif
 
 public:
   //! A const iterator that may skip some zeros in the sequence.
