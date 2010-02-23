@@ -294,7 +294,9 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::operator++() {
   PPL_ASSERT(*p != 0);
   PPL_ASSERT(OK());
   p = &((*p)->next);
+#ifndef NDEBUG
   q = *p;
+#endif
   PPL_ASSERT(OK());
   return *this;
 }
