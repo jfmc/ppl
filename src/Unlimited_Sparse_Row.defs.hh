@@ -210,6 +210,12 @@ public:
   //! Resets to zero the elements in [i,+infinity).
   void reset_after(dimension_type i);
 
+  //! For each j>i, assigns (*this)[j-1] = (*this)[j].
+  //! Invalidates dangerous_iterators pointing to the i-th and (i+1)-th
+  //! element. Other iterators remain valid and point to the same values, but
+  //! their index will increase by 1 if it was >i+1.
+  void delete_element_and_shift(dimension_type i);
+
   //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!
     Computes the Greatest Common Divisor (GCD) among the elements of

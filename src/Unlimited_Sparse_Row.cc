@@ -53,6 +53,17 @@ PPL::Unlimited_Sparse_Row::reset(const dimension_type first,
   PPL_ASSERT(OK());
 }
 
+void
+PPL::Unlimited_Sparse_Row::delete_element_and_shift(dimension_type i) {
+  dangerous_iterator itr = lower_bound(i);
+  if (itr != end() && itr->first == i)
+    itr = reset(itr);
+  // We can't declare j_end before and keep using it because reset() may have
+  // invalidated end() iterators.
+  for (iterator j=itr,j_end=end(); j!=j_end; ++j)
+    --(j->first);
+}
+
 bool
 PPL::Unlimited_Sparse_Row::operator==(const Unlimited_Sparse_Row &x) const {
   const_iterator i = begin();
