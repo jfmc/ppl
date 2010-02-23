@@ -179,6 +179,11 @@ public:
   //! An iterator that may skip some zeros in the row.
   typedef Unlimited_Sparse_Row::iterator iterator;
 
+  //! An iterator that may skip some zeros in the row.
+  //! May be invalidated by apparently unrelated operations, use with care.
+  //! See the method documentation for details.
+  typedef Unlimited_Sparse_Row::dangerous_iterator dangerous_iterator;
+
   Sparse_Matrix_Row(Unlimited_Sparse_Row& row,const dimension_type size);
 
   //! Swaps this row with the row x. The two rows must have the same size.
@@ -193,16 +198,24 @@ public:
 
   dimension_type size() const;
 
-  //! Resets to zero the value pointed by i.
-  iterator reset(iterator i);
+  //! Resets to zero the value pointed to by i.
+  //! dangerous_iterator objects equal to i and ++i are invalidated.
+  dangerous_iterator reset(dangerous_iterator i);
 
   //! Resets to zero the values in the range [first,last).
-  iterator reset(iterator first,iterator last);
+  //! All dangerous_iterator objects in [first,last] are invalidated (note
+  //! that last is invalidated, too).
+  dangerous_iterator reset(dangerous_iterator first,dangerous_iterator last);
 
   //! Resets to zero the i-th element.
+  //! For each dangerous_iterator itr that pointed to i, dangerous_iterator
+  //! objects equal to itr and ++itr are invalidated.
   void reset(dimension_type i);
 
   //! Resets to zero the elements in [i,j).
+  //! For each dangerous_iterator i_itr that pointed to i, and j_itr that
+  //! pointed to j, dangerous_iterator objects in [i_itr,j_itr] are
+  //! invalidated (note that j_itr is invalidated, too).
   void reset(dimension_type i,dimension_type j);
 
   //! Normalizes the modulo of coefficients so that they are mutually prime.
@@ -212,14 +225,11 @@ public:
   */
   void normalize();
 
-  /*!
-    \brief Gets the i-th element in the sequence.
-
-    This function is O(n).
-
-    For read-only access it's better to use get(), that avoids allocating
-    space for zeroes. Both methods are O(n).
-  */
+  //! For read-only access it's better to use get(), that avoids allocating
+  //! space for zeroes. Both methods are O(n).
+  //! If i was not previously stored, or reset(i) was called, this operation
+  //! invalidates dangerous_iterator objects equal to the former
+  //! lower_bound(i).
   Coefficient& operator[](const dimension_type i);
 
   //! Equivalent to get(), provided for convenience.
@@ -234,8 +244,8 @@ public:
   */
   const Coefficient& get(const dimension_type i) const;
 
-  iterator begin();
-  iterator end();
+  dangerous_iterator begin();
+  dangerous_iterator end();
   const_iterator begin() const;
   const_iterator end() const;
 
@@ -261,9 +271,9 @@ public:
   template <typename Func>
   void for_each_nonzero(const Func& func,const dimension_type n) const;
 
-  iterator find(const dimension_type c);
-  iterator lower_bound(const dimension_type c);
-  iterator upper_bound(const dimension_type c);
+  dangerous_iterator find(const dimension_type c);
+  dangerous_iterator lower_bound(const dimension_type c);
+  dangerous_iterator upper_bound(const dimension_type c);
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
   const_iterator upper_bound(const dimension_type c) const;

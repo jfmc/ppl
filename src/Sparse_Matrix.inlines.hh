@@ -157,7 +157,7 @@ Parma_Polyhedra_Library::Sparse_Matrix::for_each_row(const Func& func) const {
 
 inline
 Sparse_Matrix_Row::Sparse_Matrix_Row(Unlimited_Sparse_Row& row,
-                                          const dimension_type size)
+                                     const dimension_type size)
   : row_(row), size_(size) {
   PPL_ASSERT(OK());
 }
@@ -187,17 +187,17 @@ Sparse_Matrix_Row::size() const {
   return size_;
 }
 
-inline Sparse_Matrix_Row::iterator
-Sparse_Matrix_Row::reset(iterator i) {
+inline Sparse_Matrix_Row::dangerous_iterator
+Sparse_Matrix_Row::reset(dangerous_iterator i) {
   PPL_ASSERT(i != end());
-  iterator res = row_.reset(i);
+  dangerous_iterator res = row_.reset(i);
   PPL_ASSERT(OK());
   return res;
 }
 
-inline Sparse_Matrix_Row::iterator
-Sparse_Matrix_Row::reset(iterator first,iterator last) {
-  iterator res = row_.reset(first,last);
+inline Sparse_Matrix_Row::dangerous_iterator
+Sparse_Matrix_Row::reset(dangerous_iterator first,dangerous_iterator last) {
+  dangerous_iterator res = row_.reset(first,last);
   PPL_ASSERT(OK());
   return res;
 }
@@ -211,7 +211,7 @@ Sparse_Matrix_Row::reset(const dimension_type i) {
 
 inline void
 Sparse_Matrix_Row::reset(const dimension_type first,
-                              const dimension_type last) {
+                         const dimension_type last) {
   PPL_ASSERT(last <= size_);
   row_.reset(first,last);
   PPL_ASSERT(OK());
@@ -240,12 +240,12 @@ Sparse_Matrix_Row::get(const dimension_type i) const {
   return row_.get(i);
 }
 
-inline Sparse_Matrix_Row::iterator
+inline Sparse_Matrix_Row::dangerous_iterator
 Sparse_Matrix_Row::begin() {
   return row_.begin();
 }
 
-inline Sparse_Matrix_Row::iterator
+inline Sparse_Matrix_Row::dangerous_iterator
 Sparse_Matrix_Row::end() {
   return row_.end();
 }
@@ -260,17 +260,17 @@ Sparse_Matrix_Row::end() const {
   return row_.end();
 }
 
-inline Sparse_Matrix_Row::iterator
+inline Sparse_Matrix_Row::dangerous_iterator
 Sparse_Matrix_Row::find(const dimension_type c) {
   return row_.find(c);
 }
 
-inline Sparse_Matrix_Row::iterator
+inline Sparse_Matrix_Row::dangerous_iterator
 Sparse_Matrix_Row::lower_bound(const dimension_type c) {
   return row_.lower_bound(c);
 }
 
-inline Sparse_Matrix_Row::iterator
+inline Sparse_Matrix_Row::dangerous_iterator
 Sparse_Matrix_Row::upper_bound(const dimension_type c) {
   return row_.upper_bound(c);
 }
@@ -301,10 +301,15 @@ Sparse_Matrix_Row::OK() const {
     return false;
   if (row_.begin() == row_.end())
     return true;
-  Unlimited_Sparse_Row::const_iterator itr = row_.end();
-  --itr;
-  return (itr->first < size_);
+  Unlimited_Sparse_Row::const_iterator i=row_.begin();
+  Unlimited_Sparse_Row::const_iterator i_end=row_.end();
+  Unlimited_Sparse_Row::const_iterator next=i;
+  ++next;
+  while (next != i_end)
+    ++i,++next;
+  return (i->first < size_);
 }
+
 
 template <typename Func>
 inline void
