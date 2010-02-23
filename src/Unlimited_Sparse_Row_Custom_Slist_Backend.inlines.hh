@@ -45,6 +45,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::
 inline
 Unlimited_Sparse_Row_Custom_Slist_Backend::
   ~Unlimited_Sparse_Row_Custom_Slist_Backend() {
+  PPL_ASSERT(OK());
   clear();
 }
 
@@ -66,6 +67,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::push_back(const value_type& x) {
 inline void
 Unlimited_Sparse_Row_Custom_Slist_Backend::pop_front() {
   PPL_ASSERT(!empty());
+  PPL_ASSERT(OK());
   list_elem* p = first;
   first = first->next;
   delete p;
