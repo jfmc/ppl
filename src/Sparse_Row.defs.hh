@@ -41,6 +41,11 @@ public:
   //! An iterator that may skip some zeros in the sequence.
   typedef Unlimited_Sparse_Row::iterator iterator;
 
+  //! An iterator that may skip some zeros in the sequence.
+  //! May be invalidated by apparently unrelated operations, use with care.
+  //! See the method documentation for details.
+  typedef Unlimited_Sparse_Row::dangerous_iterator dangerous_iterator;
+
   //! Constructs a row from a std::vector.
   Sparse_Row(const std::vector<Coefficient>& v);
 
@@ -82,11 +87,14 @@ private:
   dimension_type size_;
 
 public:
-  //! Resets to zero the value pointed by i.
-  iterator reset(iterator i);
+  //! Resets to zero the value pointed to by i.
+  //! dangerous_iterator objects equal to i and ++i are invalidated.
+  dangerous_iterator reset(dangerous_iterator i);
 
   //! Resets to zero the values in the range [first,last).
-  iterator reset(iterator first,iterator last);
+  //! All dangerous_iterator objects in [first,last] are invalidated (note
+  //! that last is invalidated, too).
+  dangerous_iterator reset(dangerous_iterator first,dangerous_iterator last);
 
   //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!
@@ -95,14 +103,11 @@ public:
   */
   void normalize();
 
-  /*!
-    \brief Gets the i-th element in the sequence.
-
-    This function is O(n).
-
-    For read-only access it's better to use get(), that avoids allocating
-    space for zeroes. Both methods are O(n).
-  */
+  //! For read-only access it's better to use get(), that avoids allocating
+  //! space for zeroes. Both methods are O(n).
+  //! If i was not previously stored, or reset(i) was called, this operation
+  //! invalidates dangerous_iterator objects equal to the former
+  //! lower_bound(i).
   Coefficient& operator[](const dimension_type i);
 
   //! Equivalent to get(), provided for convenience.
@@ -117,14 +122,14 @@ public:
   */
   const Coefficient& get(const dimension_type i) const;
 
-  iterator begin();
-  iterator end();
+  dangerous_iterator begin();
+  dangerous_iterator end();
   const_iterator begin() const;
   const_iterator end() const;
 
-  iterator find(const dimension_type c);
-  iterator lower_bound(const dimension_type c);
-  iterator upper_bound(const dimension_type c);
+  dangerous_iterator find(const dimension_type c);
+  dangerous_iterator lower_bound(const dimension_type c);
+  dangerous_iterator upper_bound(const dimension_type c);
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
   const_iterator upper_bound(const dimension_type c) const;

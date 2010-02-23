@@ -95,16 +95,16 @@ Sparse_Row::size() const {
   return size_;
 }
 
-inline Sparse_Row::iterator
-Sparse_Row::reset(iterator i) {
-  iterator res = row.reset(i);
+inline Sparse_Row::dangerous_iterator
+Sparse_Row::reset(dangerous_iterator i) {
+  dangerous_iterator res = row.reset(i);
   PPL_ASSERT(OK());
   return res;
 }
 
-inline Sparse_Row::iterator
-Sparse_Row::reset(iterator first,iterator last) {
-  iterator res = row.reset(first,last);
+inline Sparse_Row::dangerous_iterator
+Sparse_Row::reset(dangerous_iterator first,dangerous_iterator last) {
+  dangerous_iterator res = row.reset(first,last);
   PPL_ASSERT(OK());
   return res;
 }
@@ -132,12 +132,12 @@ Sparse_Row::get(const dimension_type i) const {
   return row.get(i);
 }
 
-inline Sparse_Row::iterator
+inline Sparse_Row::dangerous_iterator
 Sparse_Row::begin() {
   return row.begin();
 }
 
-inline Sparse_Row::iterator
+inline Sparse_Row::dangerous_iterator
 Sparse_Row::end() {
   return row.end();
 }
@@ -152,17 +152,17 @@ Sparse_Row::end() const {
   return row.end();
 }
 
-inline Sparse_Row::iterator
+inline Sparse_Row::dangerous_iterator
 Sparse_Row::find(const dimension_type k) {
   return row.find(k);
 }
 
-inline Sparse_Row::iterator
+inline Sparse_Row::dangerous_iterator
 Sparse_Row::lower_bound(const dimension_type k) {
   return row.lower_bound(k);
 }
 
-inline Sparse_Row::iterator
+inline Sparse_Row::dangerous_iterator
 Sparse_Row::upper_bound(const dimension_type k) {
   return row.upper_bound(k);
 }
@@ -212,9 +212,13 @@ Sparse_Row::OK() const {
     return false;
   if (row.begin() == row.end())
     return true;
-  Unlimited_Sparse_Row::const_iterator itr=row.end();
-  --itr;
-  return (itr->first < size_);
+  Unlimited_Sparse_Row::const_iterator i=row.begin();
+  Unlimited_Sparse_Row::const_iterator i_end=row.end();
+  Unlimited_Sparse_Row::const_iterator next=i;
+  ++next;
+  while (next != i_end)
+    ++i,++next;
+  return (i->first < size_);
 }
 
 } // namespace Parma_Polyhedra_Library
