@@ -70,6 +70,9 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::pop_front() {
   PPL_ASSERT(OK());
   list_elem* p = first;
   first = first->next;
+  if (last == &(p->next))
+    // We deleted the only element left in the list.
+    last = &first;
   delete p;
   PPL_ASSERT(OK());
 }
