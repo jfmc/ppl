@@ -95,10 +95,15 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::end() const {
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend::insert(dangerous_iterator pos,
                                                   const value_type& x) {
+  PPL_ASSERT(pos.OK());
+  PPL_ASSERT(OK());
   list_elem* elem_after = *(pos.p);
   list_elem* new_elem = new list_elem(x,elem_after);
   *(pos.p) = new_elem;
   // No change needed to pos.p
+#ifndef NDEBUG
+  pos.q = *(pos.p);
+#endif
   if (elem_after == 0)
     // We are inserting at end(), so last changed.
     last = &(new_elem->next);
@@ -109,11 +114,16 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::insert(dangerous_iterator pos,
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator pos) {
+  PPL_ASSERT(pos.OK());
+  PPL_ASSERT(OK());
   // We must not be at end().
   PPL_ASSERT(*(pos.p) != 0);
   list_elem* to_erase = *(pos.p);
   *(pos.p) = to_erase->next;
   // No change needed to pos.p
+#ifndef NDEBUG
+  pos.q = *(pos.p);
+#endif
   if (to_erase->next == 0)
     // We are erasing the last element, so last changed
     last = pos.p;
@@ -126,6 +136,9 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator pos) {
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator first,
                                                  dangerous_iterator last) {
+  PPL_ASSERT(first.OK());
+  PPL_ASSERT(last.OK());
+  PPL_ASSERT(OK());
   if (first == last)
     return first;
   dangerous_iterator next = first;
