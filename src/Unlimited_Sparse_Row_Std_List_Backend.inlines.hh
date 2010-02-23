@@ -26,6 +26,26 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline Unlimited_Sparse_Row_Std_List_Backend::iterator
+Unlimited_Sparse_Row_Std_List_Backend::splice(iterator position,This& x) {
+  Base::splice(position,x);
+  return position;
+}
+
+inline Unlimited_Sparse_Row_Std_List_Backend::iterator
+Unlimited_Sparse_Row_Std_List_Backend::splice(iterator position,This& x,
+                                              iterator i) {
+  Base::splice(position,x,i);
+  return position;
+}
+
+inline Unlimited_Sparse_Row_Std_List_Backend::iterator
+Unlimited_Sparse_Row_Std_List_Backend::splice(iterator position,This& x,
+                                              iterator first,iterator last) {
+  Base::splice(position,x,first,last);
+  return position;
+}
+
 inline bool
 Unlimited_Sparse_Row_Std_List_Backend::OK() const {
   return true;
