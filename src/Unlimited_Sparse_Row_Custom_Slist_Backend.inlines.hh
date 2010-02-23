@@ -246,7 +246,8 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::
   dangerous_iterator(list_elem** p1)
   : p(p1) {
 #ifndef NDEBUG
-  q = *p;
+  if (p != 0)
+    q = *p;
 #endif
   PPL_ASSERT(OK());
 }
