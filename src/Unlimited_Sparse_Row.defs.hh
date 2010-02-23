@@ -184,8 +184,6 @@ public:
   void swap(dimension_type i, dimension_type j);
 
   //! Swaps the element pointed to by i with the element pointed to by j.
-  //! Iterators equal to i and j point to the other index, so keep the same
-  //! value.
   void swap(iterator i, iterator j);
 
   //! Resets to zero the value pointed to by i.
