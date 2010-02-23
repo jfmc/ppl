@@ -52,7 +52,77 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-//! A finite, but unlimited (i.e. has no size) sparse sequence of coefficients.
+//! A finite, but unlimited (i.e. has no size) sparse sequence of
+//! coefficients.
+/*!
+  The storage backend can be configured at build time by defining the
+  appropriate macro. The default storage backend is std::list.
+
+  Unlimited_Sparse_Row::dangerous_iterator is an iterator provided by the
+  backend, that may be invalidated by some operations. Read the method
+  documentation for more information.
+
+  Other storage backend can be added, if they meet the following requirements.
+  Here, we call C the candidate class to be used as backend.
+
+  * C must have a default constructor, a copy constructor and an assignment
+    operator.
+  * C must have three iterator types: C::const_iterator, C::iterator and
+    C::dangerous_iterator.
+  * Conversion operators must be defined from C::dangerous_iterator to
+    C::iterator, from C::dangerous_iterator to C::const_iterator and from
+    C::iterator to C::const_iterator.
+  * C must have const begin() and end() methods that return a
+    C::const_iterator .
+  * C must have non-const begin() and end() methods that return a
+    C::dangerous_iterator .
+  * C::const_iterator, C::iterator and C::dangerous_iterator must meet the
+    forward-iterator requirements and have typedefs (or nested types) for
+    iterator_category, value_type, difference_type, pointer and reference.
+  * C::value_type should be \p std::pair<dimension_type,Coefficient> .
+  * C must have a swap() method.
+  * C must have a const OK() method, returning bool.
+  * C::const_iterator must have a default constructor
+  * C::const_iterator must define operator*(), operator->(), and operator ==
+    and !=.
+  * C::iterator must have a default constructor
+  * C::iterator must define operator*() returning a C::iterator::reference, a
+    non-const reference.
+  * C::iterator must define operator->() returning a C::iterator::pointer, a
+    non-const pointer.
+  * C::iterator must have operator == and !=.
+  * C::dangerous_iterator must follow all the requirements for C::iterator.
+  * C must have a method
+    insert(C::dangerous_iterator pos,const C::value_type& x)
+    returning a C::dangerous_iterator. This method inserts x before pos.
+    This operation invalidates all C::dangerous_iterator objects equal to pos.
+  * C must have a method erase(C::dangerous_iterator pos) returning a
+    C::dangerous_iterator, that erases the element pointed to by pos.
+    This operation invalidates all C::dangerous_iterators objects equal to
+    pos and ++pos.
+  * C must have a method
+    erase(C::dangerous_iterator first,C::dangerous_iterator last) that returns
+    a C::dangerous_iterator, that erases the element in [first,last).
+    This operation invalidates all dangerous_iterators equal to last.
+  * C must have a methods splice(C::dangerous_iterator position,C& x) that
+    returns a C::dangerous_iterator, that moves all elements in x before
+    position. This operation invalidates all dangerous_iterators equal to
+    position and all dangerous_iterators pointing to x.
+    The returned iterator is a valid iterator pointing to position.
+  * C must have a method
+    splice(C::dangerous_iterator position,C& x,C::dangerous_iterator i)
+    returning a C::dangerous_iterator, that moves element i of x
+    before position. This operation invalidates all dangerous_iterators equal
+    to position, i and ++i.
+    The returned iterator is a valid iterator pointing to position.
+  * C must have a method
+    splice(C::dangerous_iterator position,C& x,
+           C::dangerous_iterator first,C::dangerous_iterator last)
+    returning a C::dangerous_iterator, that moves elements [first,last) in
+    x before position. This operation invalidates all dangerous_iterators
+    equal to position, and in [first,last] (note that last is invalidated,
+    too). The returned iterator is a valid iterator pointing to position.
+*/
 class Unlimited_Sparse_Row {
 
 public:
