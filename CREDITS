@@ -61,6 +61,10 @@ Current Contributors:
                         rational grids and products of grids and
                         polyhedra.
 
+  Marco Poletti         (student of the University of Parma)
+                        is working on an implementation of sparse matrices
+                        to be used in the MIP and PIP solvers of the PPL.
+
   Enric Rodriguez Carbonell [5] (Technical University of Catalonia) is
                         working on the implementation of polynomial spaces.
 
