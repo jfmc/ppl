@@ -261,7 +261,6 @@ test03() {
 
   Constraint_System cs;
   Coefficient M;
-  Coefficient N;
   set_M(M, 136);
   cs.insert(Y <= M);
   cs.insert(Y >= -M);
@@ -328,7 +327,7 @@ test03() {
 
   tmp = (FP_Interval_Abstract_Store(abstract_store)).get_interval(Y);
   nout << "*** Y in " << tmp << " ***" << endl;
-  return (tmp.lower() == -M && tmp.upper() == M);
+  return (tmp.lower() == -136 && tmp.upper() == 136);
 }
 
 // Tests rate limiter using polyhedra and ignoring rounding errors.
@@ -417,7 +416,7 @@ test04() {
 
   tmp = (FP_Interval_Abstract_Store(abstract_store)).get_interval(Y);
   nout << "*** Y in " << tmp << " ***" << endl;
-  return (tmp.lower() == -M && tmp.upper() == M);
+  return (tmp.lower() == -128 && tmp.upper() == 128);
 }
 
 // Tests rate limiter using bounded differences and linearization of
@@ -605,7 +604,7 @@ test05() {
 
   tmp = interval_store.get_interval(Y);
   nout << "*** Y in " << tmp << " ***" << endl;
-  return (tmp.lower() == -M && tmp.upper() == M);
+  return (tmp.lower() == -144 && tmp.upper() == 144);
 }
 
 
@@ -791,7 +790,7 @@ test06() {
 
   tmp = interval_store.get_interval(Y);
   nout << "*** Y in " << tmp << " ***" << endl;
-  return (tmp.lower() == -M && tmp.upper() == M);
+  return (tmp.lower() == -144 && tmp.upper() == 144);
 }
 
 // Tests rate limiter using polyhedra domain and linearization of
@@ -975,7 +974,7 @@ test07() {
 
   tmp = interval_store.get_interval(Y);
   nout << "*** Y in " << tmp << " ***" << endl;
-  return (tmp.lower() == -M && tmp.upper() == M);
+  return (tmp.lower() == -144 && tmp.upper() == 144);
 }
 
 } // namespace
