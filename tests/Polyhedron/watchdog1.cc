@@ -131,4 +131,13 @@ main() TRY {
 
   return 0;
 }
+#if !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
+// If Watchdog objects are not supported, an exception will be thrown:
+// this is normal.
+catch (const std::logic_error& e) {
+  nout << "std::logic_error caught (" << e.what() << ")"
+       << std::endl;
+  exit(0);
+}
+#endif // !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
 CATCH
