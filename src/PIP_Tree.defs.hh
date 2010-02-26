@@ -109,20 +109,8 @@ public:
 
     \param indent
     The amount of indentation.
-
-    \param pip_dim_is_param
-    A vector of Boolean flags telling which PIP problem dimensions are
-    problem parameters. The size of the vector is equal to the PIP
-    problem internal space dimension (i.e., no artificial parameters).
-
-    \param first_art_dim
-    The first space dimension corresponding to an artificial parameter
-    that was created in this node (if any).
   */
-  virtual void print_tree(std::ostream& s,
-                          unsigned indent,
-                          const std::vector<bool>& pip_dim_is_param,
-                          dimension_type first_art_dim) const;
+  void print(std::ostream& s, unsigned indent = 0) const;
 
   //! Dumps to \p s an ASCII representation of \p *this.
   void ascii_dump(std::ostream& s) const;
@@ -217,6 +205,28 @@ protected:
 
   //! Inserts a new parametric constraint in internal Row format
   void add_constraint(const Row& x, const Variables_Set& parameters);
+
+  //! Prints on \p s the tree rooted in \p *this.
+  /*!
+    \param s
+    The output stream.
+
+    \param indent
+    The amount of indentation.
+
+    \param pip_dim_is_param
+    A vector of Boolean flags telling which PIP problem dimensions are
+    problem parameters. The size of the vector is equal to the PIP
+    problem internal space dimension (i.e., no artificial parameters).
+
+    \param first_art_dim
+    The first space dimension corresponding to an artificial parameter
+    that was created in this node (if any).
+  */
+  virtual void print_tree(std::ostream& s,
+                          unsigned indent,
+                          const std::vector<bool>& pip_dim_is_param,
+                          dimension_type first_art_dim) const;
 
   //! A helper function used when printing PIP trees.
   static void
@@ -317,12 +327,6 @@ public:
 
   //! Returns \p this.
   virtual const PIP_Solution_Node* as_solution() const;
-
-  //! Prints on \p s the tree rooted in \p *this.
-  virtual void print_tree(std::ostream& s,
-                          unsigned indent,
-                          const std::vector<bool>& pip_dim_is_param,
-                          dimension_type first_art_dim) const;
 
   /*! \brief
     Returns a parametric expression for the values of problem variable \p var.
@@ -691,6 +695,12 @@ protected:
                     Matrix& context,
                     dimension_type& space_dimension);
 
+  //! Prints on \p s the tree rooted in \p *this.
+  virtual void print_tree(std::ostream& s,
+                          unsigned indent,
+                          const std::vector<bool>& pip_dim_is_param,
+                          dimension_type first_art_dim) const;
+
 }; // class PIP_Solution_Node
 
 
@@ -714,12 +724,6 @@ public:
 
   //! Returns a pointer to the \p b (true or false) branch of \p *this.
   PIP_Tree_Node* child_node(bool b);
-
-  //! Prints on \p s the tree rooted in \p *this.
-  virtual void print_tree(std::ostream& s,
-                          unsigned indent,
-                          const std::vector<bool>& pip_dim_is_param,
-                          dimension_type first_art_dim) const;
 
   //! Dumps to \p s an ASCII representation of \p *this.
   void ascii_dump(std::ostream& s) const;
@@ -836,10 +840,23 @@ protected:
                                const Matrix& context,
                                const Variables_Set& params,
                                dimension_type space_dimension);
-};
+
+  //! Prints on \p s the tree rooted in \p *this.
+  virtual void print_tree(std::ostream& s,
+                          unsigned indent,
+                          const std::vector<bool>& pip_dim_is_param,
+                          dimension_type first_art_dim) const;
+
+}; // class PIP_Decision_Node
 
 namespace IO_Operators {
 
+//! Output operator: prints the solution tree rooted in \p x.
+/*! \relates Parma_Polyhedra_Library::PIP_Tree_Node */
+std::ostream& operator<<(std::ostream& os, const PIP_Tree_Node& x);
+
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::PIP_Tree_Node::Artificial_Parameter */
 std::ostream& operator<<(std::ostream& os,
                          const PIP_Tree_Node::Artificial_Parameter& x);
 

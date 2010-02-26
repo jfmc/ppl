@@ -276,6 +276,12 @@ row_normalize(Row& x, Coefficient& den) {
 namespace IO_Operators {
 
 std::ostream&
+operator<<(std::ostream& os, const PIP_Tree_Node& x) {
+  x.print(os);
+  return os;
+}
+
+std::ostream&
 operator<<(std::ostream& os, const PIP_Tree_Node::Artificial_Parameter& x) {
   const Linear_Expression& expr = static_cast<const Linear_Expression&>(x);
   os << "(" << expr << ") div " << x.denominator();
@@ -2455,6 +2461,23 @@ PIP_Tree_Node::indent_and_print(std::ostream& s,
                                 const unsigned indent,
                                 const char* str) {
   s << std::setw(2*indent) << "" << str;
+}
+
+void
+PIP_Tree_Node::print(std::ostream& s, unsigned indent) const {
+  const dimension_type pip_space_dim = get_owner()->space_dimension();
+  const Variables_Set& pip_params = get_owner()->parameter_space_dimensions();
+
+  std::vector<bool> pip_dim_is_param(pip_space_dim);
+  for (Variables_Set::const_iterator p = pip_params.begin(),
+         p_end = pip_params.end(); p != p_end; ++p)
+    pip_dim_is_param[*p] = true;
+
+  dimension_type first_art_dim = pip_space_dim;
+  for (const PIP_Tree_Node* node = parent(); node != 0; node = node->parent())
+    first_art_dim += node->art_parameter_count();
+
+  print_tree(s, indent, pip_dim_is_param, first_art_dim);
 }
 
 void
