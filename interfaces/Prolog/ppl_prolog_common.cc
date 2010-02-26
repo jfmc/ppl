@@ -1410,12 +1410,6 @@ term_to_complexity_class(Prolog_term_ref t, const char* where) {
 
 using namespace Parma_Polyhedra_Library::Interfaces::Prolog;
 
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-template <> Weightwatch::Initialize
-Weightwatch::init = Weightwatch::Initialize();
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
-
-
 extern "C" Prolog_foreign_return_type
 ppl_version_major(Prolog_term_ref t_v) {
   try {
