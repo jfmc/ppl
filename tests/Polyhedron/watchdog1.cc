@@ -81,12 +81,20 @@ timed_compute_open_hypercube_generators(dimension_type dimension,
     nout << " s" << endl;
     return false;
   }
+#if !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
+  // If Watchdog objects are not supported, an std::logic_error exception
+  // will be thrown: this is normal.
+  catch (const std::logic_error& e) {
+  nout << "std::logic_error exception caught: \n" << e.what() << std::endl;
+  exit(0);
+}
+#endif // !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
   catch (const std::exception& e) {
-    nout << "unexpected std::exception: \n" << e.what() << endl;
+    nout << "unexpected std::exception caught: \n" << e.what() << endl;
     exit(1);
   }
   catch (...) {
-    nout << "unexpected unknown exception" << endl;
+    nout << "unexpected unknown exception caught" << endl;
     exit(1);
   }
   // Should never get here.
@@ -131,13 +139,4 @@ main() TRY {
 
   return 0;
 }
-#if !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
-// If Watchdog objects are not supported, an exception will be thrown:
-// this is normal.
-catch (const std::logic_error& e) {
-  nout << "std::logic_error caught (" << e.what() << ")"
-       << std::endl;
-  exit(0);
-}
-#endif // !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
 CATCH
