@@ -340,7 +340,7 @@ enum ppl_enum_error_code {
     its internal logic.  This happens, for instance, when the client
     attempts to use the timeout facilities on a system that does not
     support them. */
-  PPL_ERROR_LOGIC_ERROR = -12,
+  PPL_ERROR_LOGIC_ERROR = -12
 };
 
 /*! \brief
