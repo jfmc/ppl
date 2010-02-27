@@ -57,8 +57,8 @@ test01() {
     return ok;
   }
 #if !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
-  catch (std::runtime_error& e) {
-    nout << "runtime_error: " << e.what() << endl << endl;
+  catch (const std::logic_error& e) {
+    nout << "std::logic_error caught (" << e.what() << ")" << endl;
     return true;
   }
 #endif // !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED

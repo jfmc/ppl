@@ -754,11 +754,6 @@ unregistered_value_p_MIP_Problem(const MIP_Problem& ph) {
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::OCaml;
 
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-template <> Weightwatch::Initialize
-Weightwatch::init = Weightwatch::Initialize();
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
-
 extern "C"
 CAMLprim value
 ppl_new_MIP_Problem_from_space_dimension(value d) try {

@@ -112,6 +112,10 @@ test02() {
             && c.coefficient(m) == 7
             && c.inhomogeneous_term() == -12))
         return false;
+      // Dummy print of (non-root) tree node to increase code coverage.
+      using namespace IO_Operators;
+      nout << "\nPrinting the root's true child subtree:\n";
+      nout << (*t_child) << endl;
     }
     if (t_child->child_node(true) == 0 || t_child->child_node(false) == 0)
       return false;
@@ -126,14 +130,12 @@ test02() {
       const Constraint_System& cs = t_t_child->constraints();
       if (std::distance(cs.begin(), cs.end()) != 0)
         return false;
-      const Linear_Expression& v_i
-        = t_t_child->parametric_values(i, pip.parameter_space_dimensions());
+      const Linear_Expression& v_i = t_t_child->parametric_values(i);
       if (!(v_i.coefficient(n) == 0
             && v_i.coefficient(m) == 0
             && v_i.inhomogeneous_term() == 2))
         return false;
-      const Linear_Expression& v_j
-        = t_t_child->parametric_values(j, pip.parameter_space_dimensions());
+      const Linear_Expression& v_j = t_t_child->parametric_values(j);
       if (!(v_j.coefficient(n) == 0
             && v_j.coefficient(m) == 0
             && v_j.inhomogeneous_term() == 2))
@@ -166,15 +168,13 @@ test02() {
         return false;
       // Check parametric values.
       Variable art_p(4);
-      const Linear_Expression& v_i
-        = t_f_child->parametric_values(i, pip.parameter_space_dimensions());
+      const Linear_Expression& v_i = t_f_child->parametric_values(i);
       if (!(v_i.coefficient(n) == 0
             && v_i.coefficient(m) == -1
             && v_i.coefficient(art_p) == -1
             && v_i.inhomogeneous_term() == 4))
         return false;
-      const Linear_Expression& v_j
-        = t_f_child->parametric_values(j, pip.parameter_space_dimensions());
+      const Linear_Expression& v_j = t_f_child->parametric_values(j);
       if (!(v_j.coefficient(n) == 0
             && v_j.coefficient(m) == 1
             && v_j.coefficient(art_p) == 0
@@ -234,7 +234,7 @@ test04() {
     pip.print_solution(nout);
   }
 
-  // Copy constructor is no longer buggy.
+  // Test copy constructor.
   {
     PIP_Problem pip_copy = pip;
     // Here we call the destructor of pip_copy
@@ -515,6 +515,54 @@ test17() {
   return ok;
 }
 
+bool
+test18() {
+  PIP_Problem pip;
+  pip.add_space_dimensions_and_embed(0, 2);
+  // Adding unsatisfiable context constraints.
+  Variable n(0);
+  Variable m(1);
+  pip.add_constraint(n == 2);
+  pip.add_constraint(m == 2);
+  pip.add_constraint(n + m == 3);
+  bool ok = (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
+  if (pip.solution() != 0)
+    pip.print_solution(nout);
+  return ok;
+}
+
+bool
+test19() {
+  // Same problem as test02, but incrementally adding a parameter constraint
+  // making the problem unfeasible.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  //cs.insert(j >= 0);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  cs.insert(n <= 1);
+  ok &= (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -533,7 +581,8 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
-  // The following two tests show a bug in the PIP solver.
-  DO_TEST_F(test16);
-  DO_TEST_F(test17);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST_F(test19);
 END_MAIN

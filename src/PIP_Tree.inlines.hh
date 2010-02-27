@@ -65,6 +65,11 @@ PIP_Tree_Node::parent() const {
   return parent_;
 }
 
+inline const PIP_Problem*
+PIP_Tree_Node::get_owner() const {
+  return owner_;
+}
+
 inline const Constraint_System&
 PIP_Tree_Node::constraints() const {
   return constraints_;

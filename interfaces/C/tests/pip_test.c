@@ -134,8 +134,7 @@ display_solution_i(ppl_const_PIP_Tree_Node_t node,
       for (i=0; i<n_vars; ++i) {
         if (notfirst)
           printf(" ; ");
-        ppl_PIP_Solution_Node_get_parametric_values(sn, vars[i], parameters,
-                                                    n_params, &le);
+        ppl_PIP_Solution_Node_get_parametric_values(sn, vars[i], &le);
         ppl_io_print_Linear_Expression(le);
         notfirst = 1;
       }

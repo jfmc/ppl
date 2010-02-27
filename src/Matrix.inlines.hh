@@ -46,7 +46,7 @@ Matrix::total_memory_in_bytes() const {
 
 inline
 Matrix::const_iterator::const_iterator()
-  : i(Iter()) {
+  : i() {
 }
 
 inline

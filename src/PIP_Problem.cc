@@ -38,7 +38,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const PIP_Problem& pip) {
   if (pip.get_big_parameter_dimension() == not_a_dimension())
     s << "\nNo big-parameter set.\n";
   else
-    s << "\bBig-parameter: " << Variable(pip.get_big_parameter_dimension());
+    s << "\nBig-parameter: " << Variable(pip.get_big_parameter_dimension());
   s << "\n";
   return s;
 }
@@ -72,8 +72,10 @@ PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
     parameters(y.parameters),
     initial_context(y.initial_context),
     big_parameter_dimension(y.big_parameter_dimension) {
-  if (y.current_solution != 0)
+  if (y.current_solution != 0) {
     current_solution = y.current_solution->clone();
+    current_solution->set_owner(this);
+  }
   control_parameters_copy(y);
   PPL_ASSERT(OK());
 }
@@ -111,7 +113,7 @@ PPL::PIP_Problem::solve() const {
       PIP_Problem& x = const_cast<PIP_Problem&>(*this);
       // Allocate PIP solution tree root, if needed.
       if (current_solution == 0)
-        x.current_solution = new PIP_Solution_Node();
+        x.current_solution = new PIP_Solution_Node(this);
 
       // Properly resize context matrix.
       const dimension_type new_num_cols = parameters.size() + 1;
@@ -151,19 +153,47 @@ PPL::PIP_Problem::solve() const {
         {
           dimension_type i = 1;
           for (Variables_Set::const_iterator
-                 pi = param_begin; pi != param_end; ++pi, ++i)
-            row[i] = c.coefficient(Variable(*pi));
+                 pi = param_begin; pi != param_end; ++pi, ++i) {
+            if (*pi < c_space_dim)
+              row[i] = c.coefficient(Variable(*pi));
+            else
+              break;
+          }
         }
         // Adjust inhomogenous term if strict.
         if (c.is_strict_inequality())
           --row[0];
-        // Insert new row into context.
-        x.initial_context.add_row(row);
+
+        // Check for compatibility.
+        if (PIP_Solution_Node::compatibility_check(initial_context, row))
+          // Insert new row into initial context.
+          x.initial_context.add_row(row);
+        else {
+          // Problem found to be unfeasible.
+          delete x.current_solution;
+          x.current_solution = 0;
+          x.status = UNSATISFIABLE;
+          PPL_ASSERT(OK());
+          return UNFEASIBLE_PIP_PROBLEM;
+        }
+
         // If it is an equality, also insert its negation.
         if (c.is_equality()) {
           for (dimension_type i = new_num_cols; i-- > 0; )
             neg_assign(row[i], row[i]);
-          x.initial_context.add_row(row);
+
+          // Check for compatibility.
+          if (PIP_Solution_Node::compatibility_check(initial_context, row))
+            // Insert new row into initial context.
+            x.initial_context.add_row(row);
+          else {
+            // Problem found to be unfeasible.
+            delete x.current_solution;
+            x.current_solution = 0;
+            x.status = UNSATISFIABLE;
+            PPL_ASSERT(OK());
+            return UNFEASIBLE_PIP_PROBLEM;
+          }
         }
       }
 
@@ -283,6 +313,26 @@ PPL::PIP_Problem::OK() const {
     return false;
   if (!initial_context.OK())
     return false;
+
+  if (current_solution) {
+    // Check well formedness of the solution tree.
+    if (!current_solution->OK()) {
+#ifndef NDEBUG
+      cerr << "The computed solution tree is broken.\n";
+      ascii_dump(cerr);
+#endif
+      return false;
+    }
+    // Check that all nodes in the solution tree belong to *this.
+    if (!current_solution->check_ownership(this)) {
+#ifndef NDEBUG
+      cerr << "There are nodes in the solution tree "
+           << "that are not owned by *this.\n";
+      ascii_dump(cerr);
+#endif
+      return false;
+    }
+  }
 
   // All checks passed.
   return true;
@@ -470,16 +520,18 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
   if (str == "BOTTOM")
     current_solution = 0;
   else if (str == "DECISION") {
-    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0);
+    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0, 0);
     current_solution = dec;
     if (!dec->ascii_load(s))
       return false;
+    dec->set_owner(this);
   }
   else if (str == "SOLUTION") {
-    PIP_Solution_Node* sol = new PIP_Solution_Node;
+    PIP_Solution_Node* sol = new PIP_Solution_Node(0);
     current_solution = sol;
     if (!sol->ascii_load(s))
       return false;
+    sol->set_owner(this);
   }
   else
     // Unknown node kind.
@@ -663,13 +715,8 @@ PPL::PIP_Problem::print_solution(std::ostream& s, unsigned indent) const {
     break;
 
   case OPTIMIZED:
-    PPL_ASSERT(current_solution);
-    PPL_ASSERT(internal_space_dim == external_space_dim);
-    current_solution->print_tree(s, indent,
-                                 internal_space_dim,
-                                 // NOTE: first_art_param == space_dim.
-                                 internal_space_dim,
-                                 parameters);
+    PPL_ASSERT(current_solution != 0);
+    current_solution->print(s, indent);
     break;
 
   case PARTIALLY_SATISFIABLE:
