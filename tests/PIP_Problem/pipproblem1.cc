@@ -112,6 +112,10 @@ test02() {
             && c.coefficient(m) == 7
             && c.inhomogeneous_term() == -12))
         return false;
+      // Dummy print of (non-root) tree node to increase code coverage.
+      using namespace IO_Operators;
+      nout << "\nPrinting the root's true child subtree:\n";
+      nout << (*t_child) << endl;
     }
     if (t_child->child_node(true) == 0 || t_child->child_node(false) == 0)
       return false;
