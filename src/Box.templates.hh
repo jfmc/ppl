@@ -3553,7 +3553,7 @@ Box<ITV>::CC76_widening_assign(const T& y, Iterator first, Iterator last) {
 
 template <typename ITV>
 template <typename T, typename Iterator>
-typename Enable_If<Is_Same<T, Box<ITV> >::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
+typename Enable_If<Is_Same<T, Box<ITV> >::value, void>::type
 Box<ITV>::CC76_widening_assign(const T& y, Iterator first, Iterator last) {
 }
 
@@ -3587,7 +3587,7 @@ Box<ITV>::CC76_widening_assign(const T& y, unsigned* tp) {
 
 template <typename ITV>
 template <typename T>
-typename Enable_If<Is_Same<T, Box<ITV> >::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
+typename Enable_If<Is_Same<T, Box<ITV> >::value, void>::type
 Box<ITV>::CC76_widening_assign(const T& y, unsigned* tp) {
 }
 
@@ -3720,7 +3720,7 @@ Box<ITV>::CC76_narrowing_assign(const T& y) {
 
 template <typename ITV>
 template <typename T>
-typename Enable_If<Is_Same<T, Box<ITV> >::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
+typename Enable_If<Is_Same<T, Box<ITV> >::value, void>::type
 Box<ITV>::CC76_narrowing_assign(const T& y) {
 }
 

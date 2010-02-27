@@ -223,7 +223,6 @@ Interval_Restriction.defs.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
 Interval.templates.hh \
-Circular_Interval.defs.hh \
 Box.defs.hh \
 Box_Status.inlines.hh \
 Box.inlines.hh \
