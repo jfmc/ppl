@@ -216,7 +216,6 @@ distances.defs.hh \
 distances.inlines.hh \
 Boundary.defs.hh \
 intervals.defs.hh \
-Bool4.defs.hh \
 Interval_Info.defs.hh \
 Interval_Info.inlines.hh \
 Interval_Restriction.defs.hh \

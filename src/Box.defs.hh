@@ -1313,9 +1313,6 @@ public:
   template <typename T>
   typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
   CC76_widening_assign(const T& y, unsigned* tp = 0);
-  template <typename T>
-  typename Enable_If<Is_Same<T, Box>::value, void>::type
-  CC76_widening_assign(const T& y, unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1335,10 +1332,6 @@ public:
   */
   template <typename T, typename Iterator>
   typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
-  CC76_widening_assign(const T& y,
-		       Iterator first, Iterator last);
-  template <typename T, typename Iterator>
-  typename Enable_If<Is_Same<T, Box>::value, void>::type
   CC76_widening_assign(const T& y,
 		       Iterator first, Iterator last);
 

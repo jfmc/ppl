@@ -3552,12 +3552,6 @@ Box<ITV>::CC76_widening_assign(const T& y, Iterator first, Iterator last) {
 }
 
 template <typename ITV>
-template <typename T, typename Iterator>
-typename Enable_If<Is_Same<T, Box<ITV> >::value, void>::type
-Box<ITV>::CC76_widening_assign(const T& y, Iterator first, Iterator last) {
-}
-
-template <typename ITV>
 template <typename T>
 typename Enable_If<Is_Same<T, Box<ITV> >::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
 Box<ITV>::CC76_widening_assign(const T& y, unsigned* tp) {
@@ -3583,12 +3577,6 @@ Box<ITV>::CC76_widening_assign(const T& y, unsigned* tp) {
 			 stop_points,
 			 stop_points
 			 + sizeof(stop_points)/sizeof(stop_points[0]));
-}
-
-template <typename ITV>
-template <typename T>
-typename Enable_If<Is_Same<T, Box<ITV> >::value, void>::type
-Box<ITV>::CC76_widening_assign(const T& y, unsigned* tp) {
 }
 
 template <typename ITV>
