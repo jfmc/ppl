@@ -334,7 +334,7 @@ enum ppl_enum_error_code {
     An exception has been raised by the PPL as a timeout previously set
     by the user has expired.
   */
-  PPL_TIMEOUT_EXCEPTION = -11
+  PPL_TIMEOUT_EXCEPTION = -11,
   /*! \hideinitializer
     The client program attempted to use the PPL in a way that violates
     its internal logic.  This happens, for instance, when the client
