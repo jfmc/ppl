@@ -150,6 +150,13 @@ Dense_Row::get(const dimension_type i) const {
   return (*this)[i];
 }
 
+inline void
+Dense_Row::get2(const dimension_type c1,const dimension_type c2,
+                const Coefficient*& p1,const Coefficient*& p2) const {
+  p1 = &(get(c1));
+  p2 = &(get(c2));
+}
+
 inline Coefficient&
 Dense_Row::operator[](const dimension_type k) {
   return row[k];

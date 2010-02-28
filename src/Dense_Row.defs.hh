@@ -162,6 +162,11 @@ public:
   //! Provided for compatibility with Sparse_Row.
   const Coefficient& get(const dimension_type i) const;
 
+  //! Equivalent to p1 = &(get(c1)); p2 = &(get(c2)); .
+  //! Provided for compatibility with Sparse_Row.
+  void get2(const dimension_type c1,const dimension_type c2,
+            const Coefficient*& p1,const Coefficient*& p2) const;
+
   //! \name Subscript operators
   //@{
   //! Returns a reference to the element of the row indexed by \p k.
