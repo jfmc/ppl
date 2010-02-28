@@ -951,11 +951,14 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     // Compute the lcm of all the coefficients of variables in base.
     PPL_DIRTY_TEMP_COEFFICIENT(lcm_basis);
     lcm_basis = 1;
-    for (dimension_type i = tableau_num_rows; i-- > 0; )
-      lcm_assign(lcm_basis, lcm_basis, tableau[i].get(base[i]));
+    std::vector<const Coefficient*> tableau_base(tableau_num_rows);
+    for (dimension_type i = tableau_num_rows; i-- > 0; ) {
+      tableau_base[i] = &(tableau[i].get(base[i]));
+      lcm_assign(lcm_basis, lcm_basis, *(tableau_base[i]));
+    }
     // Compute normalization factors.
     for (dimension_type i = tableau_num_rows; i-- > 0; )
-      exact_div_assign(norm_factor[i], lcm_basis, tableau[i].get(base[i]));
+      exact_div_assign(norm_factor[i], lcm_basis, *(tableau_base[i]));
     // Compute the square of `lcm_basis', exploiting the fact that
     // `lcm_basis' will no longer be needed.
     lcm_basis *= lcm_basis;
