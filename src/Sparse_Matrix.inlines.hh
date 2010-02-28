@@ -298,6 +298,19 @@ Sparse_Matrix_Row::upper_bound(const dimension_type c) const {
   return row_.upper_bound(c);
 }
 
+inline Sparse_Matrix_Row::iterator
+Sparse_Matrix_Row::find_create(const dimension_type i,const Coefficient& x) {
+  PPL_ASSERT(i < size_);
+  return row_.find_create(i,x);
+}
+
+inline Sparse_Matrix_Row::iterator
+Sparse_Matrix_Row::find_create(const dimension_type i,const Coefficient& x,
+                               iterator itr) {
+  PPL_ASSERT(i < size_);
+  return row_.find_create(i,x,itr);
+}
+
 inline
 Sparse_Matrix_Row::operator const Unlimited_Sparse_Row&() const {
   return row_;

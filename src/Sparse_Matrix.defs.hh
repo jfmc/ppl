@@ -282,6 +282,14 @@ public:
   const_iterator lower_bound(const dimension_type c) const;
   const_iterator upper_bound(const dimension_type c) const;
 
+  //! Equivalent to find_create(i,x,begin()) .
+  iterator find_create(const dimension_type i,const Coefficient& x);
+
+  //! Equivalent to (*this)[i]=x , needs itr to point before the added
+  //! element. If itr points near the added element, this is faster.
+  iterator find_create(const dimension_type i,const Coefficient& x,
+                       iterator itr);
+
   operator const Unlimited_Sparse_Row&() const;
 
   //! Checks the invariant.
