@@ -171,28 +171,60 @@ Unlimited_Sparse_Row::end() const {
 
 inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row::find(const dimension_type k) {
-  dangerous_iterator itr = lower_bound(k);
-  if (itr != end())
-    if (itr->first != k)
-      return end();
-  return itr;
+  return find(k,begin());
 }
 
 inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row::lower_bound(const dimension_type k) {
-  return std::lower_bound(begin(),end(),k,
-                          value_key_compare(std::less<dimension_type>()));
+  return lower_bound(k,begin());
 }
 
 inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row::upper_bound(const dimension_type k) {
-  return std::upper_bound(begin(),end(),k,
-                          key_value_compare(std::less<dimension_type>()));
+  return upper_bound(k,begin());
 }
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::find(const dimension_type k) const {
-  const_iterator itr = lower_bound(k);
+  return find(k,begin());
+}
+
+inline Unlimited_Sparse_Row::const_iterator
+Unlimited_Sparse_Row::lower_bound(const dimension_type k) const {
+  return lower_bound(k,begin());
+}
+
+inline Unlimited_Sparse_Row::const_iterator
+Unlimited_Sparse_Row::upper_bound(const dimension_type k) const {
+  return upper_bound(k,begin());
+}
+
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::find(const dimension_type k,dangerous_iterator itr1) {
+  dangerous_iterator itr = lower_bound(k,itr1);
+  if (itr != end())
+    if (itr->first != k)
+      return end();
+  return itr;
+}
+
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::lower_bound(const dimension_type k,
+                                  dangerous_iterator itr) {
+  return std::lower_bound(itr,end(),k,
+                          value_key_compare(std::less<dimension_type>()));
+}
+
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::upper_bound(const dimension_type k,
+                                  dangerous_iterator itr) {
+  return std::upper_bound(itr,end(),k,
+                          key_value_compare(std::less<dimension_type>()));
+}
+
+inline Unlimited_Sparse_Row::const_iterator
+Unlimited_Sparse_Row::find(const dimension_type k,const_iterator itr1) const {
+  const_iterator itr = lower_bound(k,itr1);
   if (itr != end())
     if (itr->first != k)
       return end();
@@ -200,15 +232,79 @@ Unlimited_Sparse_Row::find(const dimension_type k) const {
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::lower_bound(const dimension_type k) const {
-  return std::lower_bound(begin(),end(),k,
+Unlimited_Sparse_Row::lower_bound(const dimension_type k,
+                                  const_iterator itr1) const {
+  return std::lower_bound(itr1,end(),k,
                           value_key_compare(std::less<dimension_type>()));
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::upper_bound(const dimension_type k) const {
-  return std::upper_bound(begin(),end(),k,
+Unlimited_Sparse_Row::upper_bound(const dimension_type k,
+                                  const_iterator itr1) const {
+  return std::upper_bound(itr1,end(),k,
                           key_value_compare(std::less<dimension_type>()));
+}
+
+inline void
+Unlimited_Sparse_Row::find2(const dimension_type c1,const dimension_type c2,
+                            dangerous_iterator& itr1,
+                            dangerous_iterator& itr2) {
+  if (c1 > c2) {
+    find2(c2,c1,itr2,itr1);
+    return;
+  }
+  itr1 = lower_bound(c1);
+  itr2 = lower_bound(c2,itr1);
+  if (itr1 != end())
+    if (itr1->first != c1)
+      itr1 = end();
+  if (itr2 != end())
+    if (itr2->first != c2)
+      itr2 = end();
+}
+
+inline void
+Unlimited_Sparse_Row::find2(const dimension_type c1,const dimension_type c2,
+                            iterator& itr1,iterator& itr2) {
+  dangerous_iterator i1;
+  dangerous_iterator i2;
+  find2(c1,c2,i1,i2);
+  itr1 = i1;
+  itr2 = i2;
+}
+
+inline void
+Unlimited_Sparse_Row::find2(const dimension_type c1,const dimension_type c2,
+                            const_iterator& itr1,const_iterator& itr2) const {
+  if (c1 > c2) {
+    find2(c2,c1,itr2,itr1);
+    return;
+  }
+  itr1 = lower_bound(c1);
+  itr2 = lower_bound(c2,itr1);
+  if (itr1 != end())
+    if (itr1->first != c1)
+      itr1 = end();
+  if (itr2 != end())
+    if (itr2->first != c2)
+      itr2 = end();
+}
+
+inline void
+Unlimited_Sparse_Row::get2(const dimension_type c1,const dimension_type c2,
+                           const Coefficient*& p1,
+                           const Coefficient*& p2) const {
+  const_iterator i1;
+  const_iterator i2;
+  find2(c1,c2,i1,i2);
+  if (i1 == end())
+    p1 = &(Coefficient_zero());
+  else
+    p1 = &((*i1).second);
+  if (i2 == end())
+    p2 = &(Coefficient_zero());
+  else
+    p2 = &((*i2).second);
 }
 
 inline bool

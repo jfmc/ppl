@@ -273,6 +273,38 @@ public:
   const_iterator lower_bound(const dimension_type c) const;
   const_iterator upper_bound(const dimension_type c) const;
 
+  //! Looks for an element with key c, assuming it is in [itr,end()) .
+  dangerous_iterator find(const dimension_type c,dangerous_iterator itr);
+  //! Lower bound of key c, assuming it is in [itr,end()) .
+  dangerous_iterator lower_bound(const dimension_type c,
+                                 dangerous_iterator itr);
+  //! Upper bound of key c, assuming it is in [itr,end()) .
+  dangerous_iterator upper_bound(const dimension_type c,
+                                 dangerous_iterator itr);
+
+  //! Looks for an element with key c, assuming it is in [itr,end()) .
+  const_iterator find(const dimension_type c,const_iterator itr) const;
+  //! Lower bound of key c, assuming it is in [itr,end()) .
+  const_iterator lower_bound(const dimension_type c,const_iterator itr) const;
+  //! Upper bound of key c, assuming it is in [itr,end()) .
+  const_iterator upper_bound(const dimension_type c,const_iterator itr) const;
+
+  //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
+  void find2(const dimension_type c1,const dimension_type c2,
+             dangerous_iterator& itr1,dangerous_iterator& itr2);
+
+  //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
+  void find2(const dimension_type c1,const dimension_type c2,
+             iterator& itr1,iterator& itr2);
+
+  //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
+  void find2(const dimension_type c1,const dimension_type c2,
+             const_iterator& itr1,const_iterator& itr2) const;
+
+  //! A faster equivalent of p1 = &(get(c1)); p1 = &(get(c2));
+  void get2(const dimension_type c1,const dimension_type c2,
+            const Coefficient*& p1,const Coefficient*& p2) const;
+
   bool operator==(const Unlimited_Sparse_Row &x) const;
   bool operator!=(const Unlimited_Sparse_Row &x) const;
 
