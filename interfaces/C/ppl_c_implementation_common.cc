@@ -136,11 +136,6 @@ reset_deterministic_timeout() {
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::C;
 
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-template <> Weightwatch::Initialize
-Weightwatch::init = Weightwatch::Initialize();
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
-
 unsigned int PPL_POLY_CON_RELATION_IS_DISJOINT;
 unsigned int PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS;
 unsigned int PPL_POLY_CON_RELATION_IS_INCLUDED;
@@ -2434,10 +2429,10 @@ CATCH_ALL
 int
 ppl_PIP_Solution_Node_get_parametric_values
   (ppl_const_PIP_Solution_Node_t pip_sol,
-   ppl_dimension_type v,
+   ppl_dimension_type var,
    ppl_const_Linear_Expression_t* le) try {
   const PIP_Solution_Node& spip_sol = *to_const(pip_sol);
-  const Linear_Expression& lle = spip_sol.parametric_values(Variable(v));
+  const Linear_Expression& lle = spip_sol.parametric_values(Variable(var));
   *le = to_const(&lle);
   return 0;
 }
@@ -2631,6 +2626,12 @@ DEFINE_OUTPUT_FUNCTIONS(Grid_Generator_System)
 DEFINE_OUTPUT_FUNCTIONS(MIP_Problem)
 
 DEFINE_OUTPUT_FUNCTIONS(PIP_Problem)
+
+DEFINE_OUTPUT_FUNCTIONS(PIP_Tree_Node)
+
+DEFINE_OUTPUT_FUNCTIONS(PIP_Decision_Node)
+
+DEFINE_OUTPUT_FUNCTIONS(PIP_Solution_Node)
 
 DEFINE_OUTPUT_FUNCTIONS(Artificial_Parameter)
 

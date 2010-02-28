@@ -138,7 +138,8 @@ public:
       \p *this and \p y are different.
     */
     bool operator!=(const const_iterator& y) const;
-  };
+  }; // class const_iterator
+
 
   //! Returns <CODE>true</CODE> if and only if \p *this has no rows.
   /*!

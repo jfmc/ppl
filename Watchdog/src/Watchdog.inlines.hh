@@ -95,14 +95,14 @@ template <typename Flag_Base, typename Flag>
 Watchdog::Watchdog(unsigned int /* units */,
 		   const Flag_Base* volatile& /* holder */,
                    Flag& /* flag */) {
-  throw std::runtime_error("PWL::Watchdog objects not supported:"
-                           " system does not provide setitimer()");
+  throw std::logic_error("PWL::Watchdog objects not supported:"
+                         " system does not provide setitimer()");
 }
 
 inline
 Watchdog::Watchdog(unsigned int /* units */, void (* /* function */)()) {
-  throw std::runtime_error("PWL::Watchdog objects not supported:"
-                           " system does not provide setitimer()");
+  throw std::logic_error("PWL::Watchdog objects not supported:"
+                         " system does not provide setitimer()");
 }
 
 inline

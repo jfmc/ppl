@@ -76,12 +76,17 @@ formatted_output.c \
 print_to_buffer.h \
 print_to_buffer.c
 
+# Dummy C++ source to cause C++ linking.
+# FIXME: why isn't enough to do this for libppl_c_tests.a?
+nodist_EXTRA_formatted_output_SOURCES = \
+dummy.cc
+
 pip_test_SOURCES = \
 pip_test.c
 
 # Dummy C++ source to cause C++ linking.
 # FIXME: why isn't enough to do this for libppl_c_tests.a?
-nodist_EXTRA_formatted_output_SOURCES = \
+nodist_EXTRA_pip_test_SOURCES = \
 dummy.cc
 
 watchdog1_SRCS = watchdog1.c
@@ -110,9 +115,20 @@ watchdog1_SOURCES = $(watchdog1_SRCS)
 watchdog1_CPPFLAGS = $(WATCHDOG_LIBRARY_CPPFLAGS)
 watchdog1_LDADD = $(WATCHDOG_LIBRARY_LDADD)
 
+# Dummy C++ source to cause C++ linking.
+# FIXME: why isn't enough to do this for libppl_c_tests.a?
+nodist_EXTRA_watchdog1_SOURCES = \
+dummy.cc
+
+
 weightwatch1_SOURCES = $(weightwatch1_SRCS)
 weightwatch1_CPPFLAGS = $(WATCHDOG_LIBRARY_CPPFLAGS)
 weightwatch1_LDADD = $(WATCHDOG_LIBRARY_LDADD)
+
+# Dummy C++ source to cause C++ linking.
+# FIXME: why isn't enough to do this for libppl_c_tests.a?
+nodist_EXTRA_weightwatch1_SOURCES = \
+dummy.cc
 
 endif BUILD_WATCHDOG_LIBRARY
 

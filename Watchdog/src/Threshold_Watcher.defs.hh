@@ -77,7 +77,13 @@ private:
   //! Check threshold reaching.
   static void check();
 
-};
+}; // class Parma_Watchdog_Library::Threshold_Watcher
+
+
+// Templatic initialization of static data member.
+template <typename Traits>
+typename Parma_Watchdog_Library::Threshold_Watcher<Traits>::Initialize
+Parma_Watchdog_Library::Threshold_Watcher<Traits>::init;
 
 #include "Threshold_Watcher.inlines.hh"
 #include "Threshold_Watcher.templates.hh"

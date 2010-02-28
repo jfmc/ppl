@@ -715,20 +715,8 @@ PPL::PIP_Problem::print_solution(std::ostream& s, unsigned indent) const {
     break;
 
   case OPTIMIZED:
-    {
-      PPL_ASSERT(current_solution);
-      PPL_ASSERT(internal_space_dim == external_space_dim);
-      // For convenience, map pip problem vars and params on a vector.
-      std::vector<bool> pip_dim_is_param(internal_space_dim);
-      for (Variables_Set::const_iterator p = parameters.begin(),
-             p_end = parameters.end(); p != p_end; ++p)
-        pip_dim_is_param[*p] = true;
-
-      current_solution->print_tree(s, indent,
-                                   pip_dim_is_param,
-                                   // NOTE: first_art_dim == space_dim.
-                                   internal_space_dim);
-    }
+    PPL_ASSERT(current_solution != 0);
+    current_solution->print(s, indent);
     break;
 
   case PARTIALLY_SATISFIABLE:

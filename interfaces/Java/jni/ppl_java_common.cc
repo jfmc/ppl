@@ -1004,11 +1004,3 @@ build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs) {
 } // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
-
-
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-using namespace Parma_Polyhedra_Library::Interfaces::Java;
-
-template <> Weightwatch::Initialize
-Weightwatch::init = Weightwatch::Initialize();
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
