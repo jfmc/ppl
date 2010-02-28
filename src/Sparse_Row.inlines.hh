@@ -132,6 +132,14 @@ Sparse_Row::get(const dimension_type i) const {
   return row.get(i);
 }
 
+inline void
+Sparse_Row::get2(const dimension_type c1,const dimension_type c2,
+                 const Coefficient*& p1,const Coefficient*& p2) const {
+  PPL_ASSERT(c1 < size_);
+  PPL_ASSERT(c2 < size_);
+  return row.get2(c1,c2,p1,p2);
+}
+
 inline Sparse_Row::dangerous_iterator
 Sparse_Row::begin() {
   return row.begin();

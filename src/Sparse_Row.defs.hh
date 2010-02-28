@@ -122,6 +122,10 @@ public:
   */
   const Coefficient& get(const dimension_type i) const;
 
+  //! A faster equivalent of p1 = &(get(c1)); p1 = &(get(c2));
+  void get2(const dimension_type c1,const dimension_type c2,
+            const Coefficient*& p1,const Coefficient*& p2) const;
+
   dangerous_iterator begin();
   dangerous_iterator end();
   const_iterator begin() const;
