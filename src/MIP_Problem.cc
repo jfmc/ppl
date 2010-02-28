@@ -1221,8 +1221,11 @@ PPL::MIP_Problem
   dimension_type exiting_base_index = tableau_num_rows;
   for (dimension_type i = 0; i < tableau_num_rows; ++i) {
     matrix_row_const_reference_type t_i = tableau[i];
-    const int num_sign = sgn(t_i.get(entering_var_index));
-    if (num_sign != 0 && num_sign == sgn(t_i.get(base[i]))) {
+    const Coefficient* t_i_entering;
+    const Coefficient* t_i_base_i;
+    t_i.get2(entering_var_index,base[i],t_i_entering,t_i_base_i);
+    const int num_sign = sgn(*t_i_entering);
+    if (num_sign != 0 && num_sign == sgn(*t_i_base_i)) {
       exiting_base_index = i;
       break;
     }
@@ -1235,27 +1238,33 @@ PPL::MIP_Problem
   PPL_DIRTY_TEMP_COEFFICIENT(lcm);
   PPL_DIRTY_TEMP_COEFFICIENT(current_min);
   PPL_DIRTY_TEMP_COEFFICIENT(challenger);
+  const Coefficient* t_ie;
+  const Coefficient* t_ib;
+  // These pointers are used instead of references in the following loop, to
+  // improve performance.
+  matrix_row_const_pointer_type t_e = &(tableau[exiting_base_index]);
+  const Coefficient* t_ee = &(t_e->get(entering_var_index));
   for (dimension_type i = exiting_base_index + 1; i < tableau_num_rows; ++i) {
     matrix_row_const_reference_type t_i = tableau[i];
-    const Coefficient& t_ie = t_i.get(entering_var_index);
-    const Coefficient& t_ib = t_i.get(base[i]);
-    const int t_ie_sign = sgn(t_ie);
-    if (t_ie_sign != 0 && t_ie_sign == sgn(t_ib)) {
+    t_i.get2(entering_var_index,base[i],t_ie,t_ib);
+    const int t_ie_sign = sgn(*t_ie);
+    if (t_ie_sign != 0 && t_ie_sign == sgn(*t_ib)) {
       WEIGHT_BEGIN();
-      matrix_row_const_reference_type t_e = tableau[exiting_base_index];
-      const Coefficient& t_ee = t_e.get(entering_var_index);
-      lcm_assign(lcm, t_ee, t_ie);
-      exact_div_assign(current_min, lcm, t_ee);
-      current_min *= t_e.get(0);
+      lcm_assign(lcm, *t_ee, *t_ie);
+      exact_div_assign(current_min, lcm, *t_ee);
+      current_min *= t_e->get(0);
       abs_assign(current_min);
-      exact_div_assign(challenger, lcm, t_ie);
+      exact_div_assign(challenger, lcm, *t_ie);
       challenger *= t_i.get(0);
       abs_assign(challenger);
       current_min -= challenger;
       const int sign = sgn(current_min);
       if (sign > 0
-          || (sign == 0 && base[i] < base[exiting_base_index]))
+          || (sign == 0 && base[i] < base[exiting_base_index])) {
         exiting_base_index = i;
+        t_e = &(tableau[exiting_base_index]);
+        t_ee = &(t_e->get(entering_var_index));
+      }
       WEIGHT_ADD(1044);
     }
   }
