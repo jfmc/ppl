@@ -69,6 +69,8 @@ namespace Parma_Polyhedra_Library {
     operator.
   * C must have three iterator types: C::const_iterator, C::iterator and
     C::dangerous_iterator.
+  * C::const_iterator, C::iterator and C::dangerous_iterator must be different
+    types.
   * Conversion operators must be defined from C::dangerous_iterator to
     C::iterator, from C::dangerous_iterator to C::const_iterator and from
     C::iterator to C::const_iterator.
