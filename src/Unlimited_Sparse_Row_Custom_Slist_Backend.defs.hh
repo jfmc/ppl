@@ -158,6 +158,8 @@ public:
 
   dangerous_iterator(list_elem** p1=NULL);
 
+  static dangerous_iterator next(iterator i);
+
   value_type& operator*();
   value_type* operator->();
 
@@ -210,6 +212,8 @@ private:
   list_elem* p;
 
   friend class Unlimited_Sparse_Row_Custom_Slist_Backend;
+  // For next().
+  friend class Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator;
 };
 
 class Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator {

@@ -273,6 +273,12 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::
   PPL_ASSERT(OK());
 }
 
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::
+  next(iterator i) {
+  return dangerous_iterator(&(i.p->next));
+}
+
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::value_type&
 Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::operator*() {
   return *operator->();
