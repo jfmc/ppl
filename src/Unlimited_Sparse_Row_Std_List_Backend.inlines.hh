@@ -26,6 +26,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline
+Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator::
+  dangerous_iterator(iterator i)
+  : iterator(i) {
+}
+
 inline Unlimited_Sparse_Row_Std_List_Backend::iterator
 Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x) {
   bool inserting_at_beginning = (position == begin());

@@ -41,7 +41,11 @@ private:
 
 public:
   //! Needed to satisfy the backend requirements.
-  typedef iterator dangerous_iterator;
+  //! This is not a typedef to allow overloading of methods with both types.
+  class dangerous_iterator : public iterator {
+  public:
+    dangerous_iterator(iterator i=iterator());
+  };
 
   //! Needed to satisfy the backend requirements.
   //! The original splice() methods return void.
