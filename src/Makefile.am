@@ -223,14 +223,12 @@ distances.defs.hh \
 distances.inlines.hh \
 Boundary.defs.hh \
 intervals.defs.hh \
-Bool4.defs.hh \
 Interval_Info.defs.hh \
 Interval_Info.inlines.hh \
 Interval_Restriction.defs.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
 Interval.templates.hh \
-Circular_Interval.defs.hh \
 Box.defs.hh \
 Box_Status.inlines.hh \
 Box.inlines.hh \

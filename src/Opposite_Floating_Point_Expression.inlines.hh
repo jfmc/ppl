@@ -57,7 +57,7 @@ Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::linearize(const FP_Interval_Abstract_Store& int_store,
             const FP_Linear_Form_Abstract_Store& lf_store,
             FP_Linear_Form& result) const {
-  if(!operand->linearize(int_store, lf_store, result))
+  if (!operand->linearize(int_store, lf_store, result))
     return false;
 
   result.negate();

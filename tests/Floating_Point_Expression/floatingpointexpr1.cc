@@ -33,7 +33,7 @@ test01() {
   Con_FP_Expression* den = new Con_FP_Expression(-1, 1);
   Div_FP_Expression div(num, den);
   FP_Linear_Form result;
-  if(!div.linearize(FP_Interval_Abstract_Store(0),
+  if (!div.linearize(FP_Interval_Abstract_Store(0),
                    FP_Linear_Form_Abstract_Store(), result)) {
     nout << "*** Linearization failed due to division by zero. ***" << endl;
     return true;
@@ -293,7 +293,7 @@ test09() {
   bool ok3 = mul3.linearize(FP_Interval_Abstract_Store(),
                             FP_Linear_Form_Abstract_Store(), result2);
 
-  if(ok1 || ok2 || ok3)
+  if (ok1 || ok2 || ok3)
     return false;
 
   nout << "*** Linearizations failed due to overflow. ***" << endl;

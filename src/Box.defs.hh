@@ -52,7 +52,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 struct Interval_Base;
-struct Circular_Interval_Base;
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are the same box.
 /*! \relates Box
@@ -1314,9 +1313,6 @@ public:
   template <typename T>
   typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
   CC76_widening_assign(const T& y, unsigned* tp = 0);
-  template <typename T>
-  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
-  CC76_widening_assign(const T& y, unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1336,10 +1332,6 @@ public:
   */
   template <typename T, typename Iterator>
   typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
-  CC76_widening_assign(const T& y,
-		       Iterator first, Iterator last);
-  template <typename T, typename Iterator>
-  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
   CC76_widening_assign(const T& y,
 		       Iterator first, Iterator last);
 
@@ -1393,7 +1385,7 @@ public:
   typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
   CC76_narrowing_assign(const T& y);
   template <typename T>
-  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
+  typename Enable_If<Is_Same<T, Box>::value, void>::type
   CC76_narrowing_assign(const T& y);
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]

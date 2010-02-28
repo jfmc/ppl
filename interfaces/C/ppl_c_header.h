@@ -309,38 +309,38 @@ enum ppl_enum_error_code {
     permitted size was attempted. */
   PPL_ERROR_LENGTH_ERROR = -5,
   /*! \hideinitializer
-    The client program attempted to use the PPL in a way that violates
-    its internal logic.  This happens, for instance, when the client
-    attempts to use the timeout facilities on a system that does not
-    support them. */
-  PPL_ERROR_LOGIC_ERROR = -6,
-  /*! \hideinitializer
     An arithmetic overflow occurred and the computation was consequently
     interrupted.  This can <EM>only</EM> happen in library's incarnations
     using bounded integers as coefficients. */
-  PPL_ARITHMETIC_OVERFLOW = -7,
+  PPL_ARITHMETIC_OVERFLOW = -6,
   /*! \hideinitializer
     An error occurred during a C input/output operation.  A more
     precise indication of what went wrong is available via
     <CODE>errno</CODE>. */
-  PPL_STDIO_ERROR = -8,
+  PPL_STDIO_ERROR = -7,
   /*! \hideinitializer
     An internal error that was diagnosed by the PPL itself.
     This indicates a bug in the PPL. */
-  PPL_ERROR_INTERNAL_ERROR = -9,
+  PPL_ERROR_INTERNAL_ERROR = -8,
   /*! \hideinitializer
     A standard exception has been raised by the C++ run-time environment.
     This indicates a bug in the PPL. */
-  PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION = -10,
+  PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION = -9,
   /*! \hideinitializer
     A totally unknown, totally unexpected error happened.
     This indicates a bug in the PPL. */
-  PPL_ERROR_UNEXPECTED_ERROR = -11,
+  PPL_ERROR_UNEXPECTED_ERROR = -10,
   /*! \hideinitializer
     An exception has been raised by the PPL as a timeout previously set
     by the user has expired.
   */
-  PPL_TIMEOUT_EXCEPTION = -12
+  PPL_TIMEOUT_EXCEPTION = -11,
+  /*! \hideinitializer
+    The client program attempted to use the PPL in a way that violates
+    its internal logic.  This happens, for instance, when the client
+    attempts to use the timeout facilities on a system that does not
+    support them. */
+  PPL_ERROR_LOGIC_ERROR = -12
 };
 
 /*! \brief

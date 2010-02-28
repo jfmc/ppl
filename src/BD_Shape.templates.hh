@@ -2890,7 +2890,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
           neg_assign(minus_c_term, c.inhomogeneous_term());
           div_round_up(d1, minus_c_term, coeff);
           if (y <= d1)
-	    if((ls_x >= d && ls_y > d1) || (ls_x > d && ls_y >= d1)) {
+	    if ((ls_x >= d && ls_y > d1) || (ls_x > d && ls_y >= d1)) {
 	      ls_x = d;
 	      ls_y = d1;
 	      changed = true;
@@ -4103,7 +4103,7 @@ BD_Shape<T>::affine_form_image(const Variable var,
   }
   else if (t == 1) {
     const FP_Interval_Type& w_coeff = lf.coefficient(Variable(w_id - 1));
-    if(w_coeff == 1 || w_coeff == -1) {
+    if (w_coeff == 1 || w_coeff == -1) {
       one_variable_affine_form_image(var_id, b, w_coeff, w_id, space_dim);
       PPL_ASSERT(OK());
       return;
@@ -4445,7 +4445,7 @@ BD_Shape<T>
       }
     } // fi right_t == 0
 
-    if(right_t == 1) {
+    if (right_t == 1) {
       // The constraint has the form:
       // [a-;a+] + [b-;b+] * x <= [c-;c+] + [d-;d+] * y.
       // Reduce it to the constraint +/-x +/-y <= c+ - a-
