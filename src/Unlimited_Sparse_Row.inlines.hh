@@ -131,6 +131,31 @@ Unlimited_Sparse_Row::operator[](const dimension_type i) {
   return itr->second;
 }
 
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i,
+                                  const Coefficient& x) {
+  return find_create(i,x,begin());
+}
+
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
+                                  iterator itr) {
+  PPL_ASSERT(itr != end());
+  PPL_ASSERT((*itr).first <= i);
+  if ((*itr).first == i) {
+    (*itr).second = x;
+    return itr;
+  }
+  dangerous_iterator itr2 = dangerous_iterator::next(itr);
+  itr2 = lower_bound(i,itr2);
+  if (itr2 != end() && (*itr2).first == i) {
+    (*itr2).second = x;
+    return itr2;
+  }
+  itr2 = data.insert(itr2,std::make_pair(i,x));
+  return itr2;
+}
+
 inline const Coefficient&
 Unlimited_Sparse_Row::operator[](const dimension_type i) const {
   return get(i);

@@ -94,6 +94,8 @@ namespace Parma_Polyhedra_Library {
     non-const pointer.
   * C::iterator must have operator == and !=.
   * C::dangerous_iterator must follow all the requirements for C::iterator.
+  * C::dangerous_iterator must have a static method next(C::iterator i)
+    that returns a dangerous_iterator pointing to the element after i.
   * C must have a method
     insert(C::dangerous_iterator pos,const C::value_type& x)
     returning a C::dangerous_iterator. This method inserts x before pos and
@@ -231,6 +233,14 @@ public:
   //! invalidates dangerous_iterator objects equal to the former
   //! lower_bound(i).
   Coefficient& operator[](const dimension_type i);
+
+  //! Equivalent to find_create(i,x,begin()) .
+  iterator find_create(const dimension_type i,const Coefficient& x);
+
+  //! Equivalent to (*this)[i]=x , needs itr to point before the added
+  //! element. If itr points near the added element, this is faster.
+  iterator find_create(const dimension_type i,const Coefficient& x,
+                       iterator itr);
 
   //! Equivalent to get(), provided for convenience.
   const Coefficient& operator[](const dimension_type i) const;
