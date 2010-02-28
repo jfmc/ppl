@@ -45,6 +45,8 @@ public:
   class dangerous_iterator : public iterator {
   public:
     dangerous_iterator(iterator i=iterator());
+
+    static dangerous_iterator next(iterator i);
   };
 
   //! Needed to satisfy the backend requirements.

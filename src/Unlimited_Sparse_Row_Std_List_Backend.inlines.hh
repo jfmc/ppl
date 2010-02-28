@@ -32,6 +32,11 @@ Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator::
   : iterator(i) {
 }
 
+inline Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator
+Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator::next(iterator i) {
+  return dangerous_iterator(++i);
+}
+
 inline Unlimited_Sparse_Row_Std_List_Backend::iterator
 Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x) {
   bool inserting_at_beginning = (position == begin());
