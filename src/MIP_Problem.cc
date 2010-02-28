@@ -1097,6 +1097,7 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
 
   matrix_row_iterator i = x.begin();
+  matrix_row_iterator last_i;
   matrix_row_iterator i_end = x.end();
   matrix_const_row_const_iterator j = y.begin();
   matrix_const_row_const_iterator j_end = y.end();
@@ -1105,6 +1106,36 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
       if (j->first != k) {
         // FIXME: check if adding "if (j->second != 0)" speeds this up.
         Coefficient& x_i = x[j->first];
+        last_i = x.find(j->first);
+        PPL_ASSERT(x_i == 0);
+        // FIXME: this can be optimized further
+        sub_mul_assign(x_i, j->second, normalized_x_k);
+        ++j;
+        break;
+      } else
+        ++j;
+    } else {
+      if (i->first != k) {
+        Coefficient& x_i = i->second;
+        x_i *= normalized_y_k;
+        if (j->first == i->first) {
+          const Coefficient& y_i = j->second;
+          // FIXME: check if adding "if (j->second != 0)" speeds this up.
+          sub_mul_assign(x_i, y_i, normalized_x_k);
+          ++j;
+        }
+      }
+      last_i = i;
+      ++i;
+      break;
+    }
+  }
+  while ((i != i_end) && (j != j_end)) {
+    if (j->first < i->first) {
+      if (j->first != k) {
+        // FIXME: check if adding "if (j->second != 0)" speeds this up.
+        last_i = x.find_create(j->first,Coefficient_zero(),last_i);
+        Coefficient& x_i = (*last_i).second;
         PPL_ASSERT(x_i == 0);
         // FIXME: this can be optimized further
         sub_mul_assign(x_i, j->second, normalized_x_k);
@@ -1121,6 +1152,7 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
           ++j;
         }
       }
+      last_i = i;
       ++i;
     }
   }
@@ -1132,7 +1164,8 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
   while (j != j_end) {
     if (j->first != k) {
       // FIXME: check if adding "if (j->second != 0)" speeds this up.
-      Coefficient& x_i = x[j->first];
+      last_i = x.find_create(j->first,Coefficient_zero(),last_i);
+      Coefficient& x_i = (*last_i).second;
       PPL_ASSERT(x_i == 0);
       // FIXME: this can be optimized further
       sub_mul_assign(x_i, j->second, normalized_x_k);
