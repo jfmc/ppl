@@ -190,6 +190,19 @@ Sparse_Row::upper_bound(const dimension_type k) const {
   return row.upper_bound(k);
 }
 
+inline Sparse_Row::iterator
+Sparse_Row::find_create(const dimension_type i,const Coefficient& x) {
+  PPL_ASSERT(i < size_);
+  return row.find_create(i,x);
+}
+
+inline Sparse_Row::iterator
+Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
+                        iterator itr) {
+  PPL_ASSERT(i < size_);
+  return row.find_create(i,x,itr);
+}
+
 inline
 Sparse_Row::operator const Unlimited_Sparse_Row &() const {
   return row;
