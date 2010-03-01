@@ -154,10 +154,7 @@ inline memory_size_type
 MIP_Problem::external_memory_in_bytes() const {
   memory_size_type n
     = working_cost.external_memory_in_bytes()
-// FIXME: add method external_memory_in_bytes() to Sparse_Matrix
-#ifndef USE_PPL_SPARSE_MATRIX
     + tableau.external_memory_in_bytes()
-#endif
     + input_obj_function.external_memory_in_bytes()
     + last_generator.external_memory_in_bytes();
   // Adding the external memory for `input_cs'.
