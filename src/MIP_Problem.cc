@@ -1097,7 +1097,7 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
 
   matrix_row_iterator i = x.begin();
-  matrix_row_iterator last_i;
+  matrix_row_iterator last_i = x.end();
   matrix_row_iterator i_end = x.end();
   matrix_const_row_const_iterator j = y.begin();
   matrix_const_row_const_iterator j_end = y.end();
@@ -1130,6 +1130,7 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
       break;
     }
   }
+  PPL_ASSERT(last_i != x.end());
   while ((i != i_end) && (j != j_end)) {
     if (j->first < i->first) {
       if (j->first != k) {
