@@ -112,6 +112,11 @@ Sparse_Matrix::erase_to_end(dimension_type first_to_erase) {
   resize(first_to_erase,num_columns());
 }
 
+inline memory_size_type
+Sparse_Matrix::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
 inline
 Sparse_Matrix::iterator::iterator(const iterator& x)
   : itr(x.itr), size_(x.size_) {
