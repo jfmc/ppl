@@ -190,6 +190,10 @@ protected:
     \param pip
     The PIP_Problem object containing this node.
 
+    \param check_feasible_context
+    Whether the resolution process should (re-)check feasibility of
+    context (since the initial context may have been modified).
+
     \param context
     The context, being a set of constraints on the parameters.
 
@@ -200,6 +204,7 @@ protected:
     The space dimension of parent, including artificial parameters.
   */
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
+                               bool check_feasible_context,
                                const Matrix& context,
                                const Variables_Set& params,
                                dimension_type space_dim) = 0;
@@ -632,6 +637,7 @@ protected:
 
   //! Implements pure virtual method PIP_Tree_Node::solve.
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
+                               bool check_feasible_context,
                                const Matrix& context,
                                const Variables_Set& params,
                                dimension_type space_dim);
@@ -765,6 +771,7 @@ protected:
 
   //! Implements pure virtual method PIP_Tree_Node::solve.
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
+                               bool check_feasible_context,
                                const Matrix& context,
                                const Variables_Set& params,
                                dimension_type space_dim);

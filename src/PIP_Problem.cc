@@ -207,6 +207,7 @@ PPL::PIP_Problem::solve() const {
 
       // Actually solve problem.
       x.current_solution = x.current_solution->solve(*this,
+                                                     check_feasible_context,
                                                      initial_context,
                                                      parameters,
                                                      external_space_dim);

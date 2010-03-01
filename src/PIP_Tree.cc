@@ -678,6 +678,7 @@ PIP_Decision_Node::update_tableau(const PIP_Problem& pip,
 
 PIP_Tree_Node*
 PIP_Decision_Node::solve(const PIP_Problem& pip,
+                         const bool check_feasible_context,
                          const Matrix& context,
                          const Variables_Set& params,
                          dimension_type space_dim) {
@@ -688,7 +689,8 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
   add_artificial_parameters(context_true, all_params, space_dim,
                             num_art_params);
   merge_assign(context_true, constraints_, all_params);
-  true_child = true_child->solve(pip, context_true, all_params, space_dim);
+  true_child = true_child->solve(pip, check_feasible_context,
+                                 context_true, all_params, space_dim);
 
   if (false_child) {
     // Decision nodes with false child must have exactly one constraint
@@ -697,7 +699,8 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     Matrix& context_false = context_true;
     Row& last = context_false[context_false.num_rows()-1];
     complement_assign(last, last, 1);
-    false_child = false_child->solve(pip, context_false, all_params, space_dim);
+    false_child = false_child->solve(pip, check_feasible_context,
+                                     context_false, all_params, space_dim);
   }
 
   if (true_child != 0 || false_child != 0) {
@@ -1603,6 +1606,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
 
 PIP_Tree_Node*
 PIP_Solution_Node::solve(const PIP_Problem& pip,
+                         const bool check_feasible_context,
                          const Matrix& ctx,
                          const Variables_Set& params,
                          dimension_type space_dim) {
@@ -1614,6 +1618,16 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
   const dimension_type num_art_params = artificial_parameters.size();
   add_artificial_parameters(context, all_params, space_dim, num_art_params);
   merge_assign(context, constraints_, all_params);
+
+  // If needed, (re-)check feasibility of context.
+  if (check_feasible_context) {
+    Matrix ctx_copy(context);
+    if (!compatibility_check(ctx_copy)) {
+      delete this;
+      return 0;
+    }
+  }
+
   const dimension_type not_a_dim = not_a_dimension();
 
   // Main loop of the simplex algorithm.
@@ -2001,7 +2015,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       // Add parametric constraint to context.
       context.add_row(t_test);
       // Recusively solve true node wrt updated context.
-      t_node = t_node->solve(pip, context, all_params, space_dim);
+      t_node = t_node->solve(pip, check_feasible_context,
+                             context, all_params, space_dim);
 
       // Modify *this in place to become the "false" version of current node.
       PIP_Tree_Node* f_node = this;
@@ -2016,7 +2031,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       complement_assign(f_test, t_test, 1);
 
       // Recusively solve false node wrt updated context.
-      f_node = f_node->solve(pip, context, all_params, space_dim);
+      f_node = f_node->solve(pip, check_feasible_context,
+                             context, all_params, space_dim);
 
       // Case analysis on recursive resolution calls outcome.
       if (t_node == 0) {
