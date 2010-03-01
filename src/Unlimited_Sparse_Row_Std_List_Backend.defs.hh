@@ -31,13 +31,15 @@ namespace Parma_Polyhedra_Library {
 
 class Unlimited_Sparse_Row_Std_List_Backend
   : public std::list<std::pair<dimension_type,Coefficient> > {
+public:
+  typedef std::pair<dimension_type,Coefficient> value_type;
 
 private:
   //! To save typing and broken lines.
   typedef Unlimited_Sparse_Row_Std_List_Backend This;
 
   //! To save typing and broken lines.
-  typedef std::list<std::pair<dimension_type,Coefficient> > Base;
+  typedef std::list<value_type> Base;
 
 public:
   //! Needed to satisfy the backend requirements.
@@ -60,6 +62,12 @@ public:
   //! Needed to satisfy the backend requirements.
   //! The original splice() methods return void.
   iterator splice(iterator& position,This& x,iterator first,iterator last);
+
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
 
   //! Always returns true, provided for compatibility with other backends.
   bool OK() const;

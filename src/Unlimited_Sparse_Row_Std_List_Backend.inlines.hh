@@ -78,6 +78,11 @@ Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x,
   return previous;
 }
 
+inline memory_size_type
+Unlimited_Sparse_Row_Std_List_Backend::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
 inline bool
 Unlimited_Sparse_Row_Std_List_Backend::OK() const {
   return true;

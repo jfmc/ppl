@@ -27,3 +27,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+PPL::memory_size_type
+PPL::Unlimited_Sparse_Row_Std_List_Backend::external_memory_in_bytes()
+  const {
+  memory_size_type total=0;
+  for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i) {
+    // Pointers to the previous and next element.
+    total += 2*sizeof(void*);
+    // Index
+    total += sizeof(dimension_type);
+    // Size of the Coefficient.
+    total += PPL::total_memory_in_bytes((*i).second);
+  }
+  // Assume implementation of std::list uses one additional element
+  // at the beginning and at the end of the list.
+  total += 2*(2*sizeof(void*)+sizeof(value_type));
+  return total;
+}
