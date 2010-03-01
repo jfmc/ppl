@@ -1311,7 +1311,9 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   template <typename T>
-  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+  typename Enable_If<Is_Same<T, Box>::value
+                     && Is_Same_Or_Derived<Interval_Base, ITV>::value,
+                     void>::type
   CC76_widening_assign(const T& y, unsigned* tp = 0);
 
   /*! \brief
@@ -1331,7 +1333,9 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   template <typename T, typename Iterator>
-  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+  typename Enable_If<Is_Same<T, Box>::value
+                     && Is_Same_Or_Derived<Interval_Base, ITV>::value,
+                     void>::type
   CC76_widening_assign(const T& y,
 		       Iterator first, Iterator last);
 
@@ -1382,10 +1386,9 @@ public:
     the result of the computation \f$\mathtt{y} \Delta \mathtt{x}\f$.
   */
   template <typename T>
-  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
-  CC76_narrowing_assign(const T& y);
-  template <typename T>
-  typename Enable_If<Is_Same<T, Box>::value, void>::type
+  typename Enable_If<Is_Same<T, Box>::value
+                     && Is_Same_Or_Derived<Interval_Base, ITV>::value,
+                     void>::type
   CC76_narrowing_assign(const T& y);
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
