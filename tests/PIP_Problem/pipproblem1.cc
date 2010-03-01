@@ -545,7 +545,6 @@ test19() {
   cs.insert(3*j >= -2*i+8);
   cs.insert(j <= 4*i - 4);
   cs.insert(j <= m);
-  //cs.insert(j >= 0);
   cs.insert(i <= n);
 
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
@@ -557,7 +556,7 @@ test19() {
     pip.print_solution(nout);
   }
 
-  cs.insert(n <= 1);
+  pip.add_constraint(n <= 1);
   ok &= (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
 
   return ok;
@@ -584,5 +583,5 @@ BEGIN_MAIN
   DO_TEST(test16);
   DO_TEST(test17);
   DO_TEST(test18);
-  DO_TEST_F(test19);
+  DO_TEST_F8(test19);
 END_MAIN
