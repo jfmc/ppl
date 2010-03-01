@@ -156,52 +156,53 @@ protected:
   void set_parent(const PIP_Decision_Node* p);
 
   /*! \brief
-    Populates the parametric simplex tableau using external data, if necessary
+    Populates the parametric simplex tableau using external data.
 
-    \param problem
-    the containing problem object
+    \param pip
+    The PIP_Problem object containing this node.
 
     \param external_space_dim
-    size of constraints (variables and parameters added)
+    The number of all problem variables and problem parameters
+    (excluding artificial parameters).
 
     \param first_pending_constraint
-    first element in \p input_cs to be added to the tableau, which already
-    contains the previous elements
+    The first element in \p input_cs to be added to the tableau,
+    which already contains the previous elements.
 
     \param input_cs
-    all the constraints of the problem
+    All the constraints of the PIP problem.
 
     \param parameters
-    a \c std::set of indices of the parameters in the constraints
+    The set of indices of the problem parameters.
   */
-  virtual void update_tableau(const PIP_Problem& problem,
+  virtual void update_tableau(const PIP_Problem& pip,
                               dimension_type external_space_dim,
                               dimension_type first_pending_constraint,
                               const Constraint_Sequence& input_cs,
                               const Variables_Set& parameters) = 0;
 
   /*! \brief
-    Execute a parametric simplex on the tableau, under specified context.
+    Executes a parametric simplex on the tableau, under specified context.
 
     \return
     The root of the PIP tree solution, or 0 if unfeasible.
 
-    \param problem
-    the containing problem object
+    \param pip
+    The PIP_Problem object containing this node.
 
     \param context
-    the context, being a set of constraints on the parameters
+    The context, being a set of constraints on the parameters.
 
     \param params
-    local parameter set, including parent artificial parameters
+    The local parameter set, including parent's artificial parameters.
 
-    \param space_dimension
-    space dimension of parent, including artificial parameters
+    \param space_dim
+    The space dimension of parent, including artificial parameters.
   */
-  virtual PIP_Tree_Node* solve(const PIP_Problem& problem,
+  virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                const Matrix& context,
                                const Variables_Set& params,
-                               dimension_type space_dimension) = 0;
+                               dimension_type space_dim) = 0;
 
   //! Inserts a new parametric constraint in internal Row format
   void add_constraint(const Row& x, const Variables_Set& parameters);
@@ -566,22 +567,20 @@ private:
   static Row_Sign row_sign(const Row& x, dimension_type big_dimension);
 
   /*! \brief
-    Checks whether a constraint is compatible with a context,
-    i.e., if it does not make the context unsatisfiable.
+    Checks whether a context matrix is satisfiable.
 
-    The method consists in applying the revised dual simplex algorithm on a
-    Matrix consisting in the original matrix with the constraint inserted. If
-    the simplex terminates with a feasible (optimal) solution, then the
-    restrained context is not empty. Otherwise, it is.
-
-    The algorithm ensures the feasible solutions are integer, by applying a
-    cut generation method when intermediate non-integer solutions are found.
-
-    \note
-    It is assumed that matrix \p ctx and row \c cnst have the same
-    size and capacity; otherwise the behavior is undefined.
+    The satisfiability check is implemented by the revised dual simplex
+    algorithm on the context matrix. The algorithm ensures the feasible
+    solution is integer by applying a cut generation method when
+    intermediate non-integer solutions are found.
   */
-  static bool compatibility_check(const Matrix& ctx, const Row& cnst);
+  static bool compatibility_check(Matrix& s);
+
+  /*! \brief
+    Helper method: checks for satisfiability of the restricted context
+    obtained by adding \p row to \p context.
+  */
+  static bool compatibility_check(const Matrix& context, const Row& row);
 
 protected:
   //! Copy constructor.
@@ -611,26 +610,8 @@ protected:
   */
   virtual bool check_ownership(const PIP_Problem* owner) const;
 
-  /*! \brief
-    Populates the parametric simplex tableau using external data, if necessary
-
-    \param problem
-    the containing problem object
-
-    \param external_space_dim
-    size of constraints (variables and parameters added)
-
-    \param first_pending_constraint
-    first element in \p input_cs to be added to the tableau, which already
-    contains the previous elements
-
-    \param input_cs
-    all the constraints of the problem
-
-    \param parameters
-    a \c std::set of indices of the parameters in the constraints
-  */
-  virtual void update_tableau(const PIP_Problem& problem,
+  //! Implements pure virtual method PIP_Tree_Node::update_tableau.
+  virtual void update_tableau(const PIP_Problem& pip,
                               dimension_type external_space_dim,
                               dimension_type first_pending_constraint,
                               const Constraint_Sequence& input_cs,
@@ -649,28 +630,11 @@ protected:
   //! Helper method.
   void update_solution() const;
 
-  /*! \brief
-    Execute a parametric simplex on the tableau, under specified context.
-
-    \return
-    The root of the PIP tree solution, or 0 if unfeasible.
-
-    \param problem
-    The containing problem object.
-
-    \param context
-    The context, being a set of constraints on the parameters.
-
-    \param params
-    The local set of parameters, including parent artificial parameters.
-
-    \param space_dimension
-    Space dimension of parent, including artificial parameters.
-  */
-  virtual PIP_Tree_Node* solve(const PIP_Problem& problem,
+  //! Implements pure virtual method PIP_Tree_Node::solve.
+  virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                const Matrix& context,
                                const Variables_Set& params,
-                               dimension_type space_dimension);
+                               dimension_type space_dim);
 
   /*! \brief
     Generate a Gomory cut using non-integer tableau row \p i.
@@ -792,54 +756,18 @@ protected:
   //! Copy constructor.
   PIP_Decision_Node(const PIP_Decision_Node& y);
 
-  /*! \brief
-    Populates the parametric simplex tableau using external data, if needed.
-
-    \param problem
-    the containing problem object
-
-    \param external_space_dim
-    size of constraints (variables and parameters added)
-
-    \param first_pending_constraint
-    first element in \p input_cs to be added to the tableau, which already
-    contains the previous elements
-
-    \param input_cs
-    all the constraints of the problem
-
-    \param parameters
-    a \c std::set of indices of the parameters in the constraints
-  */
-  virtual void update_tableau(const PIP_Problem& problem,
+  //! Implements pure virtual method PIP_Tree_Node::update_tableau.
+  virtual void update_tableau(const PIP_Problem& pip,
                               dimension_type external_space_dim,
                               dimension_type first_pending_constraint,
                               const Constraint_Sequence& input_cs,
                               const Variables_Set& parameters);
 
-  /*! \brief
-    Execute a parametric simplex on the tableau, under specified context.
-
-    \return
-    The root of the PIP tree solution, or 0 if unfeasible.
-
-    \param problem
-    the containing problem object
-
-    \param context
-    the context, being a set of constraints on the parameters
-
-    \param params
-    local parameter set, including parent artificial parameters
-
-    \param space_dimension
-    space dimension of parent, including artificial parameters
-
-  */
-  virtual PIP_Tree_Node* solve(const PIP_Problem& problem,
+  //! Implements pure virtual method PIP_Tree_Node::solve.
+  virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                const Matrix& context,
                                const Variables_Set& params,
-                               dimension_type space_dimension);
+                               dimension_type space_dim);
 
   //! Prints on \p s the tree rooted in \p *this.
   virtual void print_tree(std::ostream& s,
