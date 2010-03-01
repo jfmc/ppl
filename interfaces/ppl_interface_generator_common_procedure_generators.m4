@@ -91,7 +91,6 @@ ppl_@CLASS@_fold_space_dimensions/3  +all,
 ppl_@CLASS@_map_space_dimensions/2 +all,
 ppl_@CLASS@_ascii_dump/1 +all,
 ppl_@CLASS@_@MEMBYTES@/2 +all,
-ppl_@CLASS@_wrap_assign/8  +simple,
 dnl
 dnl NOTE: The next few schemas provide special widenings and
 dnl       extrapolations that depend on the domains.
