@@ -353,6 +353,16 @@ Unlimited_Sparse_Row::for_each_nonzero(const Func& func,
   std::for_each(begin(),end(),func);
 }
 
+inline memory_size_type
+Unlimited_Sparse_Row::external_memory_in_bytes() const {
+  return data.external_memory_in_bytes();
+}
+
+inline memory_size_type
+Unlimited_Sparse_Row::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
 template <typename Compare>
 inline Unlimited_Sparse_Row::value_key_comparison<Compare>
 Unlimited_Sparse_Row::value_key_compare(const Compare& comp) {
