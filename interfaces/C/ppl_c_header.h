@@ -2299,6 +2299,73 @@ extern unsigned int PPL_POLY_CON_RELATION_SATURATES;
 extern unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
 
 
+/*! \brief \ingroup Datatypes
+  Widths of bounded integer types.
+*/
+enum ppl_enum_Bounded_Integer_Type_Width {
+  /*! \hideinitializer 8 bits. */
+  PPL_BITS_8 = 8,
+  /*! \hideinitializer 16 bits. */
+  PPL_BITS_16 = 16,
+  /*! \hideinitializer 32 bits. */
+  PPL_BITS_32 = 32,
+  /*! \hideinitializer 64 bits. */
+  PPL_BITS_64 = 64,
+  /*! \hideinitializer 128 bits. */
+  PPL_BITS_128 = 128
+};
+
+/*! \brief \ingroup Datatypes
+  Representation of bounded integer types.
+*/
+enum ppl_enum_Bounded_Integer_Type_Representation {
+  /*! Unsigned binary. */
+  PPL_UNSIGNED,
+  /*! \brief
+    Signed binary where negative values are represented by the two's
+    complement of the absolute value.
+  */
+  PPL_SIGNED_2_COMPLEMENT
+};
+
+/*! \brief \ingroup Datatypes
+  Overflow behavior of bounded integer types.
+*/
+enum ppl_enum_Bounded_Integer_Type_Overflow {
+  /*! \brief
+    On overflow, wrapping takes place.
+
+    This means that, for a \f$w\f$-bit bounded integer, the computation
+    happens modulo \f$2^w\f$.
+  */
+  PPL_OVERFLOW_WRAPS,
+
+  /*! \brief
+    On overflow, the result is undefined.
+
+    This simply means that the result of the operation resulting in an
+    overflow can take any value.
+
+    \note
+    Even though something more serious can happen in the system
+    being analyzed ---due to, e.g., C's undefined behavior---, here we
+    are only concerned with the results of arithmetic operations.
+    It is the responsibility of the analyzer to ensure that other
+    manifestations of undefined behavior are conservatively approximated.
+  */
+  PPL_OVERFLOW_UNDEFINED,
+
+  /*! \brief
+    Overflow is impossible.
+
+    This is for the analysis of languages where overflow is trapped
+    before it affects the state, for which, thus, any indication that
+    an overflow may have affected the state is necessarily due to
+    the imprecision of the analysis.
+  */
+  PPL_OVERFLOW_IMPOSSIBLE
+};
+
 /*! \brief \name Symbolic Constants */
 /*@{*/
 
