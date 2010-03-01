@@ -248,6 +248,11 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::operator!=(const This& x) const {
   return !(*this == x);
 }
 
+inline memory_size_type
+Unlimited_Sparse_Row_Custom_Slist_Backend::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
 
 inline
 Unlimited_Sparse_Row_Custom_Slist_Backend::list_elem::

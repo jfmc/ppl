@@ -59,6 +59,15 @@ PPL::Unlimited_Sparse_Row_Custom_Slist_Backend::operator==(const This& x)
   return (i == i_end) && (j == j_end);
 }
 
+PPL::memory_size_type
+PPL::Unlimited_Sparse_Row_Custom_Slist_Backend::external_memory_in_bytes()
+  const {
+  dimension_type count=0;
+  for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i)
+    ++count;
+  return count*sizeof(list_elem);
+}
+
 bool
 PPL::Unlimited_Sparse_Row_Custom_Slist_Backend::OK() const {
   if (last == 0)
