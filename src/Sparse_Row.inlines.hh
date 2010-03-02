@@ -54,6 +54,11 @@ Sparse_Row::swap(Sparse_Row& x) {
 }
 
 inline void
+Sparse_Row::swap(Sparse_Row_Reference x) {
+  std::swap(Sparse_Row_Reference(row,size_),x);
+}
+
+inline void
 Sparse_Row::swap(dimension_type i, dimension_type j) {
   row.swap(i,j);
   assert(OK());
@@ -481,6 +486,18 @@ inline void
 swap(Parma_Polyhedra_Library::Sparse_Row_Reference x,
      Parma_Polyhedra_Library::Sparse_Row_Reference y) {
   x.swap(y);
+}
+
+inline void
+swap(Parma_Polyhedra_Library::Sparse_Row_Reference x,
+     Parma_Polyhedra_Library::Sparse_Row& y) {
+  x.swap(y);
+}
+
+inline void
+swap(Parma_Polyhedra_Library::Sparse_Row& x,
+     Parma_Polyhedra_Library::Sparse_Row_Reference y) {
+  y.swap(x);
 }
 
 } // namespace std

@@ -58,6 +58,9 @@ public:
   //! Swaps (*this) and x.
   void swap(Sparse_Row& x);
 
+  //! Swaps (*this) and x.
+  void swap(Sparse_Row_Reference x);
+
   //! Swaps the i-th element with the j-th element.
   //! Iterators pointing to these elements are invalidated.
   void swap(dimension_type i, dimension_type j);
@@ -177,6 +180,9 @@ public:
 
   //! Swaps this row with the row x. The two rows must have the same size.
   void swap(Sparse_Row_Reference x);
+
+  //! Swaps this row with the row x. The two rows must have the same size.
+  void swap(Sparse_Row& x);
 
   //! Swaps the i-th element with the j-th element.
   //! Iterators pointing to these elements are invalidated.
@@ -326,6 +332,20 @@ void swap(Parma_Polyhedra_Library::Sparse_Row& x,
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Sparse_Row_Reference x,
           Parma_Polyhedra_Library::Sparse_Row_Reference y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps a Sparse_Row with a Sparse_Row_Reference.
+/*! \relates Parma_Polyhedra_Library::Sparse_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(Parma_Polyhedra_Library::Sparse_Row& x,
+          Parma_Polyhedra_Library::Sparse_Row_Reference y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps a Sparse_Row_Reference with a Sparse_Row.
+/*! \relates Parma_Polyhedra_Library::Sparse_Row_Reference */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(Parma_Polyhedra_Library::Sparse_Row_Reference x,
+          Parma_Polyhedra_Library::Sparse_Row& y);
 
 } // namespace std
 
