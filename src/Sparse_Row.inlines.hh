@@ -51,6 +51,12 @@ Sparse_Row::Sparse_Row(const Sparse_Row_Reference& x)
   PPL_ASSERT(OK());
 }
 
+inline Sparse_Row&
+Sparse_Row::operator=(const Sparse_Row_Reference& x) {
+  Sparse_Row_Reference(row,size_) = x;
+  return *this;
+}
+
 inline void
 Sparse_Row::swap(Sparse_Row& x) {
   row.swap(x.row);

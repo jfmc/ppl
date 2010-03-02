@@ -58,6 +58,9 @@ public:
   //! Constructs a Sparse_Row from a Sparse_Row_Reference.
   Sparse_Row(const Sparse_Row_Reference& x);
 
+  //! Assigns a Sparse_Row_Reference to (*this).
+  Sparse_Row& operator=(const Sparse_Row_Reference& x);
+
   //! Swaps (*this) and x.
   void swap(Sparse_Row& x);
 
