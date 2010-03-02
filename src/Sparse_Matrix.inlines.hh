@@ -379,4 +379,20 @@ Sparse_Matrix_Row::apply_to_data(const Func& func) {
 
 } // namespace Parma_Polyhedra_Library
 
+namespace std {
+
+inline void
+swap(Parma_Polyhedra_Library::Sparse_Matrix& x,
+     Parma_Polyhedra_Library::Sparse_Matrix& y) {
+  x.swap(y);
+}
+
+inline void
+swap(Parma_Polyhedra_Library::Sparse_Matrix_Row x,
+     Parma_Polyhedra_Library::Sparse_Matrix_Row y) {
+  x.swap(y);
+}
+
+} // namespace std
+
 #endif // !defined(PPL_Sparse_Matrix_inlines_hh)

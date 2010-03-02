@@ -329,6 +329,24 @@ private:
   const dimension_type size_;
 };
 
+namespace std {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Sparse_Matrix */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(Parma_Polyhedra_Library::Sparse_Matrix& x,
+          Parma_Polyhedra_Library::Sparse_Matrix& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Similar to the standard swap, but doesn't need references.
+/*! \relates Parma_Polyhedra_Library::Sparse_Matrix_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(Parma_Polyhedra_Library::Sparse_Matrix_Row x,
+          Parma_Polyhedra_Library::Sparse_Matrix_Row y);
+
+} // namespace std
+
 
 #include "Sparse_Matrix.inlines.hh"
 
