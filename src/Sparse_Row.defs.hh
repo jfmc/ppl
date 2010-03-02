@@ -305,7 +305,7 @@ private:
 
 private:
 
-  Unlimited_Sparse_Row& row_;
+  Unlimited_Sparse_Row& row;
   const dimension_type size_;
 };
 
