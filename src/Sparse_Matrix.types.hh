@@ -15,7 +15,6 @@ PURPOSE. */
 namespace Parma_Polyhedra_Library {
 
 class Sparse_Matrix;
-class Sparse_Matrix_Row;
 
 } // namespace Parma_Polyhedra_Library
 

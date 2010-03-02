@@ -42,7 +42,7 @@ PPL::Sparse_Matrix::permute_columns(const std::vector<dimension_type>&
   const dimension_type n = cycles.size();
   PPL_ASSERT(cycles[n - 1] == 0);
   for (dimension_type k = num_rows(); k-- > 0; ) {
-    Sparse_Matrix_Row rows_k = (*this)[k];
+    Sparse_Row_Reference rows_k = (*this)[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {
       // Make `j' be the index of the next cycle terminator.
       while (cycles[j] != 0)

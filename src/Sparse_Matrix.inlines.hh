@@ -64,10 +64,10 @@ Sparse_Matrix::end() const {
   return rows.end();
 }
 
-inline Sparse_Matrix_Row
+inline Sparse_Row_Reference
 Sparse_Matrix::operator[](dimension_type i) {
   PPL_ASSERT(i < rows.size());
-  return Sparse_Matrix_Row(rows[i],num_columns());
+  return Sparse_Row_Reference(rows[i],num_columns());
 }
 
 inline const Unlimited_Sparse_Row&
@@ -128,9 +128,9 @@ Sparse_Matrix::iterator::iterator(const iterator& x)
   : itr(x.itr), size_(x.size_) {
 }
 
-inline Sparse_Matrix_Row
+inline Sparse_Row_Reference
 Sparse_Matrix::iterator::operator*() {
-  return Sparse_Matrix_Row(*itr,size_);
+  return Sparse_Row_Reference(*itr,size_);
 }
 
 inline Sparse_Matrix::iterator&
@@ -165,218 +165,6 @@ Parma_Polyhedra_Library::Sparse_Matrix::for_each_row(const Func& func) const {
   std::for_each(begin(),end(),func);
 }
 
-
-inline
-Sparse_Matrix_Row::Sparse_Matrix_Row(Unlimited_Sparse_Row& row,
-                                     const dimension_type size)
-  : row_(row), size_(size) {
-  PPL_ASSERT(OK());
-}
-
-inline void
-Sparse_Matrix_Row::swap(Sparse_Matrix_Row x) {
-  PPL_ASSERT(size_ == x.size_);
-  row_.swap(x.row_);
-  PPL_ASSERT(OK());
-  PPL_ASSERT(x.OK());
-}
-
-inline void
-Sparse_Matrix_Row::swap(dimension_type i, dimension_type j) {
-  row_.swap(i,j);
-  assert(OK());
-}
-
-inline void
-Sparse_Matrix_Row::swap(iterator i, iterator j) {
-  row_.swap(i,j);
-  PPL_ASSERT(OK());
-}
-
-inline dimension_type
-Sparse_Matrix_Row::size() const {
-  return size_;
-}
-
-inline Sparse_Matrix_Row::dangerous_iterator
-Sparse_Matrix_Row::reset(dangerous_iterator i) {
-  PPL_ASSERT(i != end());
-  dangerous_iterator res = row_.reset(i);
-  PPL_ASSERT(OK());
-  return res;
-}
-
-inline Sparse_Matrix_Row::dangerous_iterator
-Sparse_Matrix_Row::reset(dangerous_iterator first,dangerous_iterator last) {
-  dangerous_iterator res = row_.reset(first,last);
-  PPL_ASSERT(OK());
-  return res;
-}
-
-inline void
-Sparse_Matrix_Row::reset(const dimension_type i) {
-  PPL_ASSERT(i < size_);
-  row_.reset(i);
-  PPL_ASSERT(OK());
-}
-
-inline void
-Sparse_Matrix_Row::reset(const dimension_type first,
-                         const dimension_type last) {
-  PPL_ASSERT(last <= size_);
-  row_.reset(first,last);
-  PPL_ASSERT(OK());
-}
-
-inline void
-Sparse_Matrix_Row::normalize() {
-  row_.normalize();
-  PPL_ASSERT(OK());
-}
-
-inline Coefficient&
-Sparse_Matrix_Row::operator[](const dimension_type i) {
-  PPL_ASSERT(i < size_);
-  return row_[i];
-}
-
-inline const Coefficient&
-Sparse_Matrix_Row::operator[](const dimension_type i) const {
-  return get(i);
-}
-
-inline const Coefficient&
-Sparse_Matrix_Row::get(const dimension_type i) const {
-  PPL_ASSERT(i < size_);
-  return row_.get(i);
-}
-
-inline void
-Sparse_Matrix_Row::get2(const dimension_type c1,const dimension_type c2,
-                        const Coefficient*& p1,const Coefficient*& p2) const {
-  PPL_ASSERT(c1 < size_);
-  PPL_ASSERT(c2 < size_);
-  return row_.get2(c1,c2,p1,p2);
-}
-
-inline Sparse_Matrix_Row::dangerous_iterator
-Sparse_Matrix_Row::begin() {
-  return row_.begin();
-}
-
-inline Sparse_Matrix_Row::dangerous_iterator
-Sparse_Matrix_Row::end() {
-  return row_.end();
-}
-
-inline Sparse_Matrix_Row::const_iterator
-Sparse_Matrix_Row::begin() const {
-  return row_.begin();
-}
-
-inline Sparse_Matrix_Row::const_iterator
-Sparse_Matrix_Row::end() const {
-  return row_.end();
-}
-
-inline Sparse_Matrix_Row::dangerous_iterator
-Sparse_Matrix_Row::find(const dimension_type c) {
-  return row_.find(c);
-}
-
-inline Sparse_Matrix_Row::dangerous_iterator
-Sparse_Matrix_Row::lower_bound(const dimension_type c) {
-  return row_.lower_bound(c);
-}
-
-inline Sparse_Matrix_Row::dangerous_iterator
-Sparse_Matrix_Row::upper_bound(const dimension_type c) {
-  return row_.upper_bound(c);
-}
-
-inline Sparse_Matrix_Row::const_iterator
-Sparse_Matrix_Row::find(const dimension_type c) const {
-  return row_.find(c);
-}
-
-inline Sparse_Matrix_Row::const_iterator
-Sparse_Matrix_Row::lower_bound(const dimension_type c) const {
-  return row_.lower_bound(c);
-}
-
-inline Sparse_Matrix_Row::const_iterator
-Sparse_Matrix_Row::upper_bound(const dimension_type c) const {
-  return row_.upper_bound(c);
-}
-
-inline Sparse_Matrix_Row::iterator
-Sparse_Matrix_Row::find_create(const dimension_type i,const Coefficient& x) {
-  PPL_ASSERT(i < size_);
-  return row_.find_create(i,x);
-}
-
-inline Sparse_Matrix_Row::iterator
-Sparse_Matrix_Row::find_create(const dimension_type i,const Coefficient& x,
-                               iterator itr) {
-  PPL_ASSERT(i < size_);
-  return row_.find_create(i,x,itr);
-}
-
-inline
-Sparse_Matrix_Row::operator const Unlimited_Sparse_Row&() const {
-  return row_;
-}
-
-inline bool
-Sparse_Matrix_Row::OK() const {
-  if (!row_.OK())
-    return false;
-  if (row_.begin() == row_.end())
-    return true;
-  Unlimited_Sparse_Row::const_iterator i=row_.begin();
-  Unlimited_Sparse_Row::const_iterator i_end=row_.end();
-  Unlimited_Sparse_Row::const_iterator next=i;
-  ++next;
-  while (next != i_end)
-    ++i,++next;
-  return (i->first < size_);
-}
-
-
-template <typename Func>
-inline void
-Sparse_Matrix_Row::for_each_nonzero(const Func& func,const dimension_type n) {
-  (void)n;
-  std::for_each(begin(),end(),apply_to_data(func));
-}
-
-template <typename Func>
-inline void
-Sparse_Matrix_Row::for_each_nonzero(const Func& func,const dimension_type n)
-  const {
-  (void)n;
-  std::for_each(begin(),end(),apply_to_data(func));
-}
-
-template <typename Func>
-inline
-Sparse_Matrix_Row::applier_to_data<Func>::applier_to_data(const Func& func)
-  : f(func) {
-}
-
-template <typename Func>
-inline void
-Sparse_Matrix_Row::applier_to_data<Func>::operator()(
-  std::pair<dimension_type,Coefficient>& x) const {
-  f(x.second);
-}
-
-template <typename Func>
-inline Sparse_Matrix_Row::applier_to_data<Func>
-Sparse_Matrix_Row::apply_to_data(const Func& func) {
-  return applier_to_data<Func>(func);
-}
-
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
@@ -384,12 +172,6 @@ namespace std {
 inline void
 swap(Parma_Polyhedra_Library::Sparse_Matrix& x,
      Parma_Polyhedra_Library::Sparse_Matrix& y) {
-  x.swap(y);
-}
-
-inline void
-swap(Parma_Polyhedra_Library::Sparse_Matrix_Row x,
-     Parma_Polyhedra_Library::Sparse_Matrix_Row y) {
   x.swap(y);
 }
 
