@@ -40,6 +40,9 @@ public:
   //! Constructs a matrix filled with zeroes with the given dimensions.
   Sparse_Matrix(dimension_type num_rows,dimension_type num_columns);
 
+  //! Swaps (*this) with x.
+  void swap(Sparse_Matrix& x);
+
   iterator begin();
   iterator end();
   const_iterator begin() const;

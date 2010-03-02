@@ -38,6 +38,12 @@ Sparse_Matrix::Sparse_Matrix(dimension_type num_rows,
   PPL_ASSERT(OK());
 }
 
+inline void
+Sparse_Matrix::swap(Sparse_Matrix& x) {
+  std::swap(rows,x.rows);
+  std::swap(num_columns_,x.num_columns_);
+}
+
 inline Sparse_Matrix::iterator
 Sparse_Matrix::begin() {
   return iterator(rows.begin(),num_columns());
