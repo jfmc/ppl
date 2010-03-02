@@ -204,6 +204,11 @@ Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
 }
 
 inline
+Sparse_Row::operator Sparse_Row_Reference() {
+  return Sparse_Row_Reference(row,size_);
+}
+
+inline
 Sparse_Row::operator const Unlimited_Sparse_Row &() const {
   return row;
 }

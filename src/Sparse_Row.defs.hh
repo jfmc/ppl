@@ -146,6 +146,7 @@ public:
   iterator find_create(const dimension_type i,const Coefficient& x,
                        iterator itr);
 
+  operator Sparse_Row_Reference();
   operator const Unlimited_Sparse_Row&() const;
 
   PPL_OUTPUT_DECLARATIONS
