@@ -277,6 +277,7 @@ Sparse_Row_Reference::operator=(const Sparse_Row_Reference& x) {
   PPL_ASSERT(size_ == x.size_);
   row = x.row;
   PPL_ASSERT(OK());
+  return *this;
 }
 
 inline void
