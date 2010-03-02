@@ -280,6 +280,14 @@ Sparse_Row_Reference::operator=(const Sparse_Row_Reference& x) {
   return *this;
 }
 
+inline Sparse_Row_Reference&
+Sparse_Row_Reference::operator=(const Sparse_Row& x) {
+  PPL_ASSERT(size() == x.size());
+  row = static_cast<const Unlimited_Sparse_Row&>(x);
+  PPL_ASSERT(OK());
+  return *this;
+}
+
 inline void
 Sparse_Row_Reference::swap(Sparse_Row_Reference x) {
   PPL_ASSERT(size_ == x.size_);

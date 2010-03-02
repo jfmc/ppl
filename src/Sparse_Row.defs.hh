@@ -184,6 +184,8 @@ public:
 
   Sparse_Row_Reference& operator=(const Sparse_Row_Reference& x);
 
+  Sparse_Row_Reference& operator=(const Sparse_Row& x);
+
   //! Swaps this row with the row x. The two rows must have the same size.
   void swap(Sparse_Row_Reference x);
 
