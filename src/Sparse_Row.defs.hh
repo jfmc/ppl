@@ -55,6 +55,9 @@ public:
   //! Constructs a row of the specified size from an Unlimited_Sparse_Row.
   Sparse_Row(const Unlimited_Sparse_Row &x,const dimension_type n);
 
+  //! Constructs a Sparse_Row from a Sparse_Row_Reference.
+  Sparse_Row(const Sparse_Row_Reference& x);
+
   //! Swaps (*this) and x.
   void swap(Sparse_Row& x);
 
