@@ -704,24 +704,37 @@ PPL_TYPE_DECLARATION(PIP_Problem)
 /*! \interface ppl_PIP_Tree_Node_tag
   \brief
   Types and functions for generic PIP tree nodes.
+
+  The types and functions for tree nodes provide an interface
+  towards \extref{Parma_Polyhedra_Library::PIP_Tree_Node, PIP_Tree_Node}.
 */
 PPL_TYPE_DECLARATION(PIP_Tree_Node)
 
 /*! \interface ppl_PIP_Decision_Node_tag
   \brief
   Types and functions for PIP decision nodes.
+
+  The types and functions for decision nodes provide an interface towards
+  \extref{Parma_Polyhedra_Library::PIP_Decision_Node, PIP_Decision_Node}.
 */
 PPL_TYPE_DECLARATION(PIP_Decision_Node)
 
 /*! \interface ppl_PIP_Solution_Node_tag
   \brief
   Types and functions for PIP solution nodes.
+
+  The types and functions for solution nodes provide an interface towards
+  \extref{Parma_Polyhedra_Library::PIP_Solution_Node, PIP_Solution_Node}.
 */
 PPL_TYPE_DECLARATION(PIP_Solution_Node)
 
 /*! \interface ppl_Artificial_Parameter_tag
   \brief
   Types and functions for PIP artificial parameters.
+
+  The types and functions for PIP artificial parameters provide
+  an interface towards
+  \extref{Parma_Polyhedra_Library::Artificial_Parameter, Artificial_Parameter}.
 */
 PPL_TYPE_DECLARATION(Artificial_Parameter)
 PPL_TYPE_DECLARATION(Artificial_Parameter_Sequence)

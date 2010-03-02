@@ -83,7 +83,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   As the feasibility and the solution value of a PIP problem depend on the
   values of the parameters, the solution is a binary decision tree,
   dividing the context parameter set into subsets.
-  The tree nodes are of three kinds:
+  The tree nodes are of two kinds:
    - \e Decision nodes.
      These are internal tree nodes encoding one or more linear tests
      on the parameters; if all the tests are satisfied, then the solution
@@ -122,27 +122,41 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   i <= n
   j <= m
   \endcode
-  where \c i and \c j are variables, and \c n and \c m are parameters.
-  The resulting solution tree is:
-  \code
+  where \c i and \c j are the problem variables
+  and \c n and \c m are the problem parameters.
+  This problem can be optimized; the resulting solution tree may be
+  represented as follows:
+  \verbatim
   if 7*n >= 10 then
     if 7*m >= 12 then
       {i = 2 ; j = 2}
     else
-      New Parameter P = (m) div 2
+      Parameter P = (m) div 2
       if 2*n + 3*m >= 8 then
         {i = -m - P + 4 ; j = m}
       else
         _|_
   else
     _|_
-  \endcode
+  \endverbatim
+  The solution tree starts with a decision node depending on the
+  context constraint <code>7*n >= 10</code>.
+  If this constraints is satisfied by the values assigned to the
+  problem parameters, then the (textually first) \c then branch is taken,
+  reaching the \e true child of the root node (which in this case
+  is another decision node); otherwise, the (textually last) \c else
+  branch is taken, for which there is no corresponding \e false child.
+  \par
   The \f$\perp\f$ notation, also called \e bottom, denotes the
-  lexicographic minimum of an empty set, here meaning the problem is
-  unfeasible. Notice that a new parameter is defined after
-  the first \c else. It is only valid inside the block where it is
-  defined, and it is used when formulating the value of the
-  <tt>{i,j}</tt> vector.
+  lexicographic minimum of an empty set of solutions,
+  here meaning the corresponding subproblem is unfeasible.
+  \par
+  Notice that a tree node may introduce a new (non-problem) parameter,
+  as is the case for parameter \c P in the (textually first) \c else
+  branch above. These \e artificial parameters are only meaningful
+  inside the subtree where they are defined and are used to define
+  the parametric values of the problem variables in solution nodes
+  (e.g., the <tt>{i,j}</tt> vector in the textually third \c then branch).
 
   \par Context restriction
   The above solution is correct in an unrestricted original context,
@@ -152,14 +166,14 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   m >= n
   n >= 5
   \endcode
-  then the result will simply be:
-  \code
+  then the resulting optimizing tree will be a simple solution node:
+  \verbatim
   {i = 2 ; j = 2}
-  \endcode
+  \endverbatim
 
-  \par Problem object creation
-  The PIP_Problem object correspondind to the above example problem can be
-  created like follows:
+  \par Creating the PIP_Problem object
+  The PIP_Problem object correspondind to the above example can be
+  created as follows:
   \code
   Variable i(0);
   Variable j(1);
@@ -180,27 +194,67 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   cs.insert(n >= 5);
   \endcode
 
-  \par Problem solving
-  Once a PIP_Problem object has been created, you can start the
+  \par Solving the problem
+  Once the PIP_Problem object has been created, you can start the
   resolution of the problem by calling the solve() method:
   \code
-  PIP_Problem_Status status;
-  status = pip.solve();
+  PIP_Problem_Status status = pip.solve();
   \endcode
   where the returned \c status indicates if the problem has been optimized
   or if it is unfeasible for any possible configuration of the parameter
-  values.
-
-  \par Solution tree spanning
-  Retrieve the optimized solution decision tree:
+  values. The resolution process is also started if an attempt is made
+  to get its solution, as follows:
   \code
-  PIP_Tree node = solution();
+  const PIP_Tree_Node* node = pip.solution();
   \endcode
-  If the pointer designates a \f$\perp\f$ solution (infeasible), its value
-  is \c 0.\n
-  To check whether a non-null tree node pointer designates a solution or a
-  decision node, you can call the PIP_Tree_Node::as_decision() and
-  PIP_Tree_Node::as_solution() virtual methods:
+  In this case, an unfeasible problem will result in an empty solution
+  tree, i.e., assigning a null pointer to \c node.
+
+  \par Printing the solution tree
+  A previously computed solution tree may be printed as follows:
+  \code
+  pip.print_solution(std::cout);
+  \endcode
+  This will produce the following output (note: variables and parameters
+  are printed according to the default output function; see
+  <code>Variable::set_output_function</code>):
+  \verbatim
+  if 7*C >= 10 then
+    if 7*D >= 12 then
+      {2 ; 2}
+    else
+      Parameter E = (D) div 2
+      if 2*C + 3*D >= 8 then
+        {-D - E + 4 ; D}
+      else
+        _|_
+  else
+    _|_
+  \endverbatim
+
+  \par Spanning the solution tree
+  A parameter assignment for a PIP problem binds each of the problem
+  parameters to a non-negative integer value. After fixing a parameter
+  assignment, the ``spanning'' of the PIP problem solution tree refers
+  to the process whereby the solution tree is navigated, starting from
+  the root node: the value of artificial parameters is computed according
+  to the parameter assignment and the node's contraints are evaluated,
+  thereby descending in either the true or the false subtree of decision
+  nodes and eventually reaching a solution node or a bottom node.
+  If a solution node is found, each of the problem variables is provided
+  with a parametric expression, which can be evaluated to a fixed value
+  using the given parameter assignment and the computed values for
+  artificial parameters.
+  \par
+  The coding of the spanning process can be done as follows.
+  First, the root of the PIP solution tree is retrieved:
+  \code
+  const PIP_Tree_Node* node = pip.solution();
+  \endcode
+  If \c node represents an unfeasible solution (i.e., \f$\perp\f$),
+  its value will be \c 0. For a non-null tree node, the virtual methods
+  \c PIP_Tree_Node::as_decision() and \c PIP_Tree_Node::as_solution()
+  can be used to check whether the node is a decision or a solution node:
   \code
   const PIP_Solution_Node* sol = node->as_solution();
   if (sol != 0) {
@@ -213,63 +267,53 @@ operator<<(std::ostream& s, const PIP_Problem& p);
     ...
   }
   \endcode
-
   \par
-  To access the two child nodes of a Decision Node, use the
-  PIP_Tree_Node::child_node(bool) method, using \b true or \b false as an
-  argument to access the child node you want.
+  The true (resp., false) child node of a Decision Node may be accessed by
+  using method \c PIP_Decision_Node::child_node(bool), passing \c true
+  (resp., \c false) as the input argument.
 
   \par Artificial parameters
-  The expression of an artificial parameter is stored in an
-  PIP_Tree_Node::Artificial_Parameter object, which encodes the integer
-  division of a Linear_Expression (only expressed in terms of the other
-  parameters, including the previously-defined artificials) by a
-  denominator Coefficient.
-  To get the effective value of an artificial parameter, just divide the
-  result of the Linear_Expression applied to the effective values of the
-  other parameters by the value of the denominator.
-  The dimensions of the artificial parameters in a node can be computed as
-  <tt>dim</tt>, <tt>dim+1</tt>, ... where <tt>dim</tt>'s value is computed
-  the following way:
-   - for the root node \c dim is the maximum space dimension of the
-     original problem, plus one.
-   - for any other node of the tree, it is the sum of the \c dim value
-     computed for the parent node, plus the total number of artificial
-     parameters in the parent node.
+  A PIP_Tree_Node::Artificial_Parameter object represents the result
+  of the integer division of a Linear_Expression (on the other
+  parameters, including the previously-defined artificials)
+  by an integer denominator (a Coefficient object).
+  The dimensions of the artificial parameters (if any) in a tree node
+  have consecutive indices starting from <code>dim+1</code>, where the value
+  of \c dim is computed as follows:
+   - for the tree root node, \c dim is the space dimension of the PIP_Problem;
+   - for any other node of the tree, it is recusrively obtained by adding
+     the value of \c dim computed for the parent node to the number of
+     artificial parameters defined in the parent node.
   \par
-  The definition of artificial parameters' dimension values always follow
-  this rule. If you choose to add a new variable or parameter on a problem
-  which already has a solution (incremental solving), all artificial
-  parameters in the solution will have their dimension values incremented.
+  Since the numbering of dimensions for artificial parameters follows
+  the rule above, the addition of new problem variables and/or new problem
+  parameters to an already solved PIP_Problem object (as done when
+  incrementally solving a problem) will result in the systematic
+  renumbering of all the existing artificial parameters.
 
   \par Node constraints
-  All node types can embed parameter-only constraints. Decision nodes
-  contain at least one of them. You can access the node's constraints set
-  using the PIP_Tree_Node::constraints() method.
-  The signification of the node constraints is the following:
+  All kind of tree nodes can contain context constraints.
+  Decision nodes always contain at least one of them.
+  The node's local constraint system can be obtained using method
+  PIP_Tree_Node::constraints.
+  These constraints only involve parameters, including both the problem
+  parameters and the artificial parameters that have been defined
+  in nodes occurring on the path from the root node to the current node.
+  The meaning of these constraints is as follows:
    - On a decision node, if all tests in the constraints are true, then the
-     solution is the &ldquo;true&rdquo; child; otherwise it is the
-     &ldquo;false&rdquo; child. If the number of constraints is greater than
-     one, the &ldquo;false&rdquo; child is always infeasible.
-   - On a solution node, if the constraint set is empty or all tests in the
-     constraints are true, then the solution is described by the node;
-     otherwise the solution is \f$\perp\f$ (infeasible problem).
-  \par
-  Node constraints always are defined in terms of the parameters, including
-  those from the original problem and any of the artificial parameters
-  defined in nodes which belong to the path from the root to the concerned
-  node.
+     solution is the \e true child; otherwise it is the \e false child.
+   - On a solution node, if the (possibly empty) system of constraints
+     evaluates to true for a given parameter assignment, then the solution
+     is described by the node; otherwise the solution is \f$\perp\f$
+     (i.e., the problem is unfeasible for that parameter assignment).
 
   \par Getting the optimal values for the variables
-  Once having spanned the solution tree using the actual values of the
-  parameters, and having ended at a solution node, you can fetch the
-  parametric expression of any of the variables using the
-  PIP_Solution_Node::parametric_values() method.
-  \par
-  Variable expressions always are defined in terms of the parameters,
-  including those from the original problem and any of the artificial
-  parameters defined in nodes which belong to the path from the root to the
-  concerned node.
+  After spanning the solution tree using the given parameter assignment,
+  if a solution node has been reached, then it is possible to retrieve
+  the parametric expression for each of the problem variables using
+  method PIP_Solution_Node::parametric_values. The retrieved expression
+  will be defined in terms of all the parameters (problem parameters
+  and artificial parameters defined along the path).
 
   FIXME: different uses of the big parameter.
 */
