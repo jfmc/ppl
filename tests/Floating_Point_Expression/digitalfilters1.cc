@@ -984,7 +984,7 @@ BEGIN_MAIN
   DO_TEST_F8(test02);
   DO_TEST_F8(test03);
   DO_TEST_F32A(test04);
-  DO_TEST_F8(test05);
-  DO_TEST_F8(test06);
+  DO_TEST_F64(test05);
+  DO_TEST_F64(test06);
   DO_TEST_F64(test07);
 END_MAIN
