@@ -255,6 +255,13 @@ Sparse_Row_Reference::Sparse_Row_Reference(Unlimited_Sparse_Row& row,
   PPL_ASSERT(OK());
 }
 
+inline Sparse_Row_Reference&
+Sparse_Row_Reference::operator=(const Sparse_Row_Reference& x) {
+  PPL_ASSERT(size_ == x.size_);
+  row_ = x.row_;
+  PPL_ASSERT(OK());
+}
+
 inline void
 Sparse_Row_Reference::swap(Sparse_Row_Reference x) {
   PPL_ASSERT(size_ == x.size_);

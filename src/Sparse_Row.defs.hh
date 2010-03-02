@@ -173,6 +173,8 @@ public:
 
   Sparse_Row_Reference(Unlimited_Sparse_Row& row,const dimension_type size);
 
+  Sparse_Row_Reference& operator=(const Sparse_Row_Reference& x);
+
   //! Swaps this row with the row x. The two rows must have the same size.
   void swap(Sparse_Row_Reference x);
 
