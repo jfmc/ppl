@@ -122,6 +122,12 @@ Sparse_Matrix::add_row(const Sparse_Row_Reference& x) {
 }
 
 inline void
+Sparse_Matrix::add_row(const Unlimited_Sparse_Row& x) {
+  rows.push_back(x);
+  PPL_ASSERT(OK());
+}
+
+inline void
 Sparse_Matrix::remove_trailing_columns(const dimension_type n) {
   PPL_ASSERT(n <= num_columns());
   resize(num_rows(),num_columns()-n);

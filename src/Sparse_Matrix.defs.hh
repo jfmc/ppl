@@ -126,6 +126,9 @@ public:
   //! Adds the row \p x to the matrix.
   void add_row(const Sparse_Row_Reference& x);
 
+  //! Adds the row \p x to the matrix.
+  void add_row(const Unlimited_Sparse_Row& x);
+
   //! Makes the matrix shrink by removing its \p n trailing columns.
   //! Provided for compatibility with Dense_Matrix.
   void remove_trailing_columns(const dimension_type n);
