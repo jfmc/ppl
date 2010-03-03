@@ -238,7 +238,20 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
 inline void
 Unlimited_Sparse_Row_Custom_Slist_Backend::swap(This& x) {
   std::swap(first,x.first);
-  std::swap(last,x.last);
+  if (last == &first)
+    if (x.last == &x.first) {
+      x.last = &x.first;
+      last = &first;
+    } else {
+      last = x.last;
+      x.last = &x.first;
+    }
+  else
+    if (x.last == &x.first) {
+      x.last = last;
+      last = &first;
+    } else
+      std::swap(last,x.last);
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
 }
