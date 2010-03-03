@@ -195,6 +195,8 @@ PPL::Unlimited_Sparse_Row::ascii_load(std::istream& s) {
 
 bool
 PPL::Unlimited_Sparse_Row::OK() const {
+  if (!data.OK())
+    return false;
   if (begin() == end())
     return true;
   const_iterator previous = begin();
