@@ -84,7 +84,7 @@ namespace {
 
 void
 throw_syscall_error(const char* syscall_name) {
-  throw std::runtime_error(std::string(syscall_name) + strerror(errno));
+  throw std::runtime_error(std::string(syscall_name) + ": " + strerror(errno));
 }
 
 void
