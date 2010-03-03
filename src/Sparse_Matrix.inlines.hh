@@ -108,6 +108,18 @@ Sparse_Matrix::add_zero_rows_and_columns(const dimension_type n,
 }
 
 inline void
+Sparse_Matrix::add_row(const Sparse_Row& x) {
+  add_zero_rows(1);
+  (*this)[num_rows()-1] = x;
+}
+
+inline void
+Sparse_Matrix::add_row(const Sparse_Row_Reference& x) {
+  add_zero_rows(1);
+  (*this)[num_rows()-1] = x;
+}
+
+inline void
 Sparse_Matrix::remove_trailing_columns(const dimension_type n) {
   PPL_ASSERT(n <= num_columns());
   resize(num_rows(),num_columns()-n);

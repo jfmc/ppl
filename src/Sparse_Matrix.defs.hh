@@ -120,6 +120,12 @@ public:
   void add_zero_rows_and_columns(const dimension_type n,
                                  const dimension_type m);
 
+  //! Adds the row \p x to the matrix.
+  void add_row(const Sparse_Row& x);
+
+  //! Adds the row \p x to the matrix.
+  void add_row(const Sparse_Row_Reference& x);
+
   //! Makes the matrix shrink by removing its \p n trailing columns.
   //! Provided for compatibility with Dense_Matrix.
   void remove_trailing_columns(const dimension_type n);
