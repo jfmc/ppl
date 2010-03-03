@@ -79,6 +79,9 @@ public:
   void resize(dimension_type n);
   void resize(dimension_type num_rows,dimension_type num_columns);
 
+  //! Equivalent to resize(0,0). Provided for compatibility with Dense_Matrix.
+  void clear();
+
   //! Adds to the matrix \p n rows of zeroes.
   /*!
     Provided for compatibility with Dense_Matrix.

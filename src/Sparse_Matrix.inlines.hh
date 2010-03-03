@@ -92,6 +92,11 @@ Sparse_Matrix::resize(dimension_type n) {
 }
 
 inline void
+Sparse_Matrix::clear() {
+  resize(0,0);
+}
+
+inline void
 Sparse_Matrix::add_zero_rows(const dimension_type n) {
   resize(num_rows()+n,num_columns());
 }
