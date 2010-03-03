@@ -111,12 +111,14 @@ inline void
 Sparse_Matrix::add_row(const Sparse_Row& x) {
   add_zero_rows(1);
   (*this)[num_rows()-1] = x;
+  PPL_ASSERT(OK());
 }
 
 inline void
 Sparse_Matrix::add_row(const Sparse_Row_Reference& x) {
   add_zero_rows(1);
   (*this)[num_rows()-1] = x;
+  PPL_ASSERT(OK());
 }
 
 inline void
