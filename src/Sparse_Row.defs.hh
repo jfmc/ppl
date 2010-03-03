@@ -29,6 +29,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <list>
 #include <vector>
 
+namespace std {
+
+// This is declared here because is friend of both classes.
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps x and y. y should either have the same size of x, or
+//! have size 0. This allows swapping with default-constructed Sparse_Rows.
+/*! \relates Parma_Polyhedra_Library::Sparse_Row_Reference */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(Parma_Polyhedra_Library::Sparse_Row_Reference x,
+          Parma_Polyhedra_Library::Sparse_Row& y);
+
+}
+
 namespace Parma_Polyhedra_Library {
 
 //! A finite sparse sequence of coefficients.
@@ -64,7 +77,8 @@ public:
   //! Swaps (*this) and x.
   void swap(Sparse_Row& x);
 
-  //! Swaps (*this) and x.
+  //! Swaps (*this) and x. (*this) should either have the same size of x, or
+  //! have size 0. This allows swapping with default-constructed Sparse_Rows.
   void swap(Sparse_Row_Reference x);
 
   //! Swaps the i-th element with the j-th element.
@@ -164,6 +178,8 @@ public:
 
   //! Checks the invariant.
   bool OK() const;
+
+  friend void std::swap(Sparse_Row_Reference x,Sparse_Row& y);
 };
 
 class Sparse_Row_Reference {
@@ -189,7 +205,8 @@ public:
   //! Swaps this row with the row x. The two rows must have the same size.
   void swap(Sparse_Row_Reference x);
 
-  //! Swaps this row with the row x. The two rows must have the same size.
+  //! Swaps (*this) and x. x should either have the same size of (*this), or
+  //! have size 0. This allows swapping with default-constructed Sparse_Rows.
   void swap(Sparse_Row& x);
 
   //! Swaps the i-th element with the j-th element.
@@ -321,6 +338,8 @@ private:
 
   Unlimited_Sparse_Row& row;
   const dimension_type size_;
+
+  friend void std::swap(Sparse_Row_Reference x,Sparse_Row& y);
 };
 
 } // namespace Parma_Polyhedra_Library
@@ -347,13 +366,6 @@ void swap(Parma_Polyhedra_Library::Sparse_Row_Reference x,
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Sparse_Row& x,
           Parma_Polyhedra_Library::Sparse_Row_Reference y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Swaps a Sparse_Row_Reference with a Sparse_Row.
-/*! \relates Parma_Polyhedra_Library::Sparse_Row_Reference */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::Sparse_Row_Reference x,
-          Parma_Polyhedra_Library::Sparse_Row& y);
 
 } // namespace std
 

@@ -67,7 +67,7 @@ Sparse_Row::swap(Sparse_Row& x) {
 
 inline void
 Sparse_Row::swap(Sparse_Row_Reference x) {
-  std::swap(Sparse_Row_Reference(row,size_),x);
+  std::swap(x,*this);
 }
 
 inline void
@@ -512,7 +512,12 @@ swap(Parma_Polyhedra_Library::Sparse_Row_Reference x,
 inline void
 swap(Parma_Polyhedra_Library::Sparse_Row_Reference x,
      Parma_Polyhedra_Library::Sparse_Row& y) {
-  x.swap(y);
+  if (y.size() == 0)
+    y.resize(x.size());
+  PPL_ASSERT(x.size() == y.size());
+  x.row.swap(y.row);
+  PPL_ASSERT(x.OK());
+  PPL_ASSERT(y.OK());
 }
 
 inline void
