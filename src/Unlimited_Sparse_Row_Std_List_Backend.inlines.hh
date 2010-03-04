@@ -47,7 +47,7 @@ inline Unlimited_Sparse_Row_Std_List_Backend::iterator
 Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x) {
   bool inserting_at_beginning = (position == begin());
   iterator previous = position;
-  if (inserting_at_beginning)
+  if (!inserting_at_beginning)
     --previous;
   Base::splice(position,x);
   if (inserting_at_beginning)
@@ -61,7 +61,7 @@ Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x,
                                               iterator i) {
   bool inserting_at_beginning = (position == begin());
   iterator previous = position;
-  if (inserting_at_beginning)
+  if (!inserting_at_beginning)
     --previous;
   Base::splice(position,x,i);
   if (inserting_at_beginning)
@@ -75,7 +75,7 @@ Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x,
                                               iterator first,iterator last) {
   bool inserting_at_beginning = (position == begin());
   iterator previous = position;
-  if (inserting_at_beginning)
+  if (!inserting_at_beginning)
     --previous;
   Base::splice(position,x,first,last);
   if (inserting_at_beginning)
