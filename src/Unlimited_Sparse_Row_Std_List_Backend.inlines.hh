@@ -45,13 +45,14 @@ Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator::next(iterator i) {
 
 inline Unlimited_Sparse_Row_Std_List_Backend::iterator
 Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x) {
-  bool inserting_at_beginning = (position == begin());
-  iterator previous = position;
-  if (!inserting_at_beginning)
-    --previous;
-  Base::splice(position,x);
-  if (inserting_at_beginning)
+  PPL_ASSERT(this != &x);
+  if (position == begin()) {
+    Base::splice(position,x);
     return begin();
+  }
+  iterator previous = position;
+  --previous;
+  Base::splice(position,x);
   ++previous;
   return previous;
 }
@@ -59,27 +60,40 @@ Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x) {
 inline Unlimited_Sparse_Row_Std_List_Backend::iterator
 Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x,
                                               iterator i) {
-  bool inserting_at_beginning = (position == begin());
-  iterator previous = position;
-  if (!inserting_at_beginning)
-    --previous;
-  Base::splice(position,x,i);
-  if (inserting_at_beginning)
+  if (position == begin()) {
+    Base::splice(position,x,i);
     return begin();
-  ++previous;
+  }
+  iterator previous = position;
+  --previous;
+  if (previous == i) {
+    Base::splice(position,x,i);
+    // previous is no longer valid because it was equal to i.
+    previous = position;
+    --previous;
+  } else {
+    Base::splice(position,x,i);
+    ++previous;
+  }
   return previous;
 }
 
 inline Unlimited_Sparse_Row_Std_List_Backend::iterator
 Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x,
                                               iterator first,iterator last) {
-  bool inserting_at_beginning = (position == begin());
-  iterator previous = position;
-  if (!inserting_at_beginning)
-    --previous;
-  Base::splice(position,x,first,last);
-  if (inserting_at_beginning)
+  if (position == begin()) {
+    Base::splice(position,x,first,last);
     return begin();
+  }
+  if (first == last)
+    return position;
+  if (last == position)
+    return first;
+  iterator previous = position;
+  --previous;
+  // previous is not in [first,last) because position is not in [first,last)
+  // and position!=last.
+  Base::splice(position,x,first,last);
   ++previous;
   return previous;
 }
