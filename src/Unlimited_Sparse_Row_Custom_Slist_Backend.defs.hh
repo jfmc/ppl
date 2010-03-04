@@ -251,6 +251,20 @@ private:
 
 }
 
+namespace std {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Unlimited_Sparse_Row_Custom_Slist_Backend
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(
+  Parma_Polyhedra_Library::Unlimited_Sparse_Row_Custom_Slist_Backend& x,
+  Parma_Polyhedra_Library::Unlimited_Sparse_Row_Custom_Slist_Backend& y);
+
+} // namespace std
+
+
 #include "Unlimited_Sparse_Row_Custom_Slist_Backend.inlines.hh"
 
 #endif // !defined(PPL_Unlimited_Sparse_Row_Custom_Slist_Backend_defs_hh)

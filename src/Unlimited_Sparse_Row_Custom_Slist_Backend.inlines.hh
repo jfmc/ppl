@@ -477,4 +477,14 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator::
 
 } // namespace Parma_Polyhedra_Library
 
+namespace std {
+
+inline void
+swap(Parma_Polyhedra_Library::Unlimited_Sparse_Row_Custom_Slist_Backend& x,
+     Parma_Polyhedra_Library::Unlimited_Sparse_Row_Custom_Slist_Backend& y) {
+  x.swap(y);
+}
+
+} // namespace std
+
 #endif // !defined(PPL_Unlimited_Sparse_Row_Custom_Slist_Backend_inlines_hh)
