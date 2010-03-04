@@ -58,10 +58,10 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
     } else {
       if (i_itr != j_itr) {
         // i is in the list, j isn't
-        j_itr = data.splice(j_itr,data,i_itr);
-        // i_itr is no longer valid.
-        // j_itr now points to the moved element.
-        j_itr->first = j;
+        i_itr = data.splice(j_itr,data,i_itr);
+        // i_itr was invalidated.
+        // Now i_itr points to the moved element.
+        i_itr->first = j;
       } else {
         j_itr->first=j;
       }
@@ -70,10 +70,10 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
     if (j_itr != itr_end && j_itr->first == j) {
       if (i_itr != j_itr) {
         // j is in the list, i isn't
-        i_itr = data.splice(i_itr,data,j_itr);
-        // j_itr is no longer valid.
-        // i_itr now points to the moved element.
-        i_itr->first = i;
+        j_itr = data.splice(i_itr,data,j_itr);
+        // j_itr was invalidated.
+        // Now j_itr points to the moved element.
+        j_itr->first = i;
       } else {
         i_itr->first = j;
       }
