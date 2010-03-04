@@ -46,7 +46,8 @@ public:
   //! This is not a typedef to allow overloading of methods with both types.
   class dangerous_iterator : public iterator {
   public:
-    dangerous_iterator(iterator i=iterator());
+    dangerous_iterator();
+    dangerous_iterator(iterator i);
 
     static dangerous_iterator next(iterator i);
   };

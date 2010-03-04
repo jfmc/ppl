@@ -28,6 +28,12 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator::
+  dangerous_iterator()
+  : iterator() {
+}
+
+inline
+Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator::
   dangerous_iterator(iterator i)
   : iterator(i) {
 }
