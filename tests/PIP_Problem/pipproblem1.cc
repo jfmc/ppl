@@ -562,6 +562,78 @@ test19() {
   return ok;
 }
 
+bool
+test20() {
+  // Same problem as test02, but incrementally adding a parameter constraint
+  // making the solution tree simpler.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  pip.add_constraint(7*m >= 12);
+  ok &= (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  return ok;
+}
+
+bool
+test21() {
+  // Same problem as test02, but incrementally adding a parameter constraint
+  // making the solution tree simpler.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  pip.add_constraint(7*m < 12);
+  ok &= (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -584,4 +656,6 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST_F8(test19);
+  DO_TEST(test20);
+  DO_TEST(test21);
 END_MAIN
