@@ -634,6 +634,38 @@ test21() {
   return ok;
 }
 
+bool
+test22() {
+  // Same problem as test02, but incrementally adding two parameter constraints
+  // making the problem infeasible.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  pip.add_constraint(7*m < 12);
+  pip.add_constraint(2*n + 3*m < 8);
+  ok &= (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -658,4 +690,5 @@ BEGIN_MAIN
   DO_TEST_F8(test19);
   DO_TEST(test20);
   DO_TEST(test21);
+  DO_TEST(test22);
 END_MAIN
