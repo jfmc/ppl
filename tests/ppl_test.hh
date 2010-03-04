@@ -314,6 +314,16 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
   COND_DO_TEST_MAY_OVERFLOW_IF_INEXACT(COND_F8A, test, shape)
 
+// Encoding floating point formats.
+#define PPL_CPP_FP_FORMAT_float                1
+#define PPL_CPP_FP_FORMAT_double               2
+#define PPL_CPP_FP_FORMAT_long_double          3
+#define PPL_CPP_FP_FORMAT_float_ieee754_single 4
+#define PPL_CPP_FP_FORMAT_float_ieee754_double 5
+#define PPL_CPP_FP_FORMAT_float_ieee754_quad   6
+#define PPL_CPP_FP_FORMAT_(format) PPL_CPP_FP_FORMAT_ ## format
+#define PPL_CPP_FP_FORMAT(format) PPL_CPP_FP_FORMAT_(format)
+
 
 // Turn s into a string: PPL_TEST_STR(x + y) => "x + y".
 #define PPL_TEST_STR(s) #s
