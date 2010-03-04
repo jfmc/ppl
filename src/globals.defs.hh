@@ -82,7 +82,7 @@ swap(T&, T&) {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 dimension_type
 compute_capacity(dimension_type requested_size,
-		 dimension_type maximum_size);
+                 dimension_type maximum_size);
 
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -138,38 +138,38 @@ extern unsigned int in_assert;
 #if defined(NDEBUG)
 #if PPL_PROFILE_ADD_WEIGHT
 #define WEIGHT_BEGIN() Weight_Profiler::begin()
-#define WEIGHT_ADD(delta)				      \
-  do {							      \
+#define WEIGHT_ADD(delta)                                     \
+  do {                                                        \
     static Weight_Profiler wp__(__FILE__, __LINE__, delta);   \
-    wp__.end();						      \
+    wp__.end();                                               \
   } while(0)
-#define WEIGHT_ADD_MUL(delta, factor)					\
-  do {									\
-    static Weight_Profiler wp__(__FILE__, __LINE__, delta);		\
-    wp__.end(factor);							\
+#define WEIGHT_ADD_MUL(delta, factor)                                   \
+  do {                                                                  \
+    static Weight_Profiler wp__(__FILE__, __LINE__, delta);             \
+    wp__.end(factor);                                                   \
   } while(0)
 #else
 #define WEIGHT_BEGIN()
-#define WEIGHT_ADD(delta)			\
-  do {						\
-    Weightwatch_Traits::weight += delta;	\
+#define WEIGHT_ADD(delta)                       \
+  do {                                          \
+    Weightwatch_Traits::weight += delta;        \
   } while(0)
-#define WEIGHT_ADD_MUL(delta, factor)			\
-  do {							\
-    Weightwatch_Traits::weight += delta * factor;	\
+#define WEIGHT_ADD_MUL(delta, factor)                   \
+  do {                                                  \
+    Weightwatch_Traits::weight += delta * factor;       \
   } while(0)
 #endif
 #else
 #define WEIGHT_BEGIN()
-#define WEIGHT_ADD(delta)			\
-  do {						\
-    if (!Implementation::in_assert)		\
-      Weightwatch_Traits::weight += delta;	\
+#define WEIGHT_ADD(delta)                       \
+  do {                                          \
+    if (!Implementation::in_assert)             \
+      Weightwatch_Traits::weight += delta;      \
   } while(0)
-#define WEIGHT_ADD_MUL(delta, factor)			\
-  do {							\
-    if (!Implementation::in_assert)			\
-      Weightwatch_Traits::weight += delta * factor;	\
+#define WEIGHT_ADD_MUL(delta, factor)                   \
+  do {                                                  \
+    if (!Implementation::in_assert)                     \
+      Weightwatch_Traits::weight += delta * factor;     \
   } while(0)
 #endif
 
@@ -237,11 +237,11 @@ struct Recycle_Input {
 // Turn the expansion of s into a string: PPL_XSTR(x) => "x expanded".
 #define PPL_XSTR(s) PPL_STR(s)
 
-#define PPL_OUTPUT_DECLARATIONS						\
+#define PPL_OUTPUT_DECLARATIONS                                         \
   /*! \brief Writes to \c std::cerr an ASCII representation of \p *this. */ \
-  void ascii_dump() const;						\
-  /*! \brief Writes to \p s an ASCII representation of \p *this. */	\
-  void ascii_dump(std::ostream& s) const;				\
+  void ascii_dump() const;                                              \
+  /*! \brief Writes to \p s an ASCII representation of \p *this. */     \
+  void ascii_dump(std::ostream& s) const;                               \
   /*! \brief Prints \p *this to \c std::cerr using \c operator<<. */	\
   void print() const;
 
@@ -253,7 +253,7 @@ struct Recycle_Input {
 								\
   void								\
   Parma_Polyhedra_Library::class_name::print() const {		\
-    using namespace IO_Operators;				\
+    using IO_Operators::operator<<;				\
     std::cerr << *this;						\
   }
 
@@ -279,7 +279,7 @@ struct Recycle_Input {
   template <typename type_symbol>					\
   void									\
   class_prefix::print() const {						\
-    using namespace IO_Operators;					\
+    using IO_Operators::operator<<;					\
     std::cerr << *this;							\
   }
 
@@ -295,7 +295,7 @@ struct Recycle_Input {
   template <typename type_symbol1, typename type_symbol2>		\
   void									\
   class_prefix<type_symbol1, type_symbol2>::print() const {		\
-    using namespace IO_Operators;					\
+    using IO_Operators::operator<<;					\
     std::cerr << *this;							\
   }
 
@@ -316,7 +316,7 @@ struct Recycle_Input {
     void								\
     class_prefix<type_symbol1, type_symbol2, type_symbol3>::print()	\
       const {								\
-      using namespace IO_Operators;					\
+      using IO_Operators::operator<<;					\
       std::cerr << *this;						\
     }
 
