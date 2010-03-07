@@ -81,7 +81,7 @@ assign_all_inequalities_approximation(const C_Polyhedron& ph,
   The allocation of variable indices in the output constraint
   systems \p cs_out1 and \p cs_out2 is as follows:
   - \f$ \mu_1, \ldots, \mu_n \f$ go onto \f$ 0, \ldots, n-1 \f$;
-  - \f$ \mu 0\f$ goes onto \f$ n \f$;
+  - \f$ \mu_0\f$ goes onto \f$ n \f$;
   - \f$ y_1, \ldots, y_m \f$ go onto \f$ n+1, \ldots, n+m \f$;
 
   if we use the same constraint system, that is
@@ -170,7 +170,7 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   The output constraint system, where variables indices are allocated
   as follows:
   - \f$ \mu_1, \ldots, \mu_n \f$ go onto \f$ 0, \ldots, n-1 \f$;
-  - \f$ \mu 0\f$ goes onto \f$ n \f$;
+  - \f$ \mu_0\f$ goes onto \f$ n \f$;
   - \f$ y_1, \ldots, y_m \f$ go onto \f$ n+1, \ldots, n+m \f$;
   - \f$ z_1, ..., z_m, z_{m+1}, z_{m+2} \f$
     go onto \f$ n+m+1, ..., n+2*m+2 \f$.
@@ -211,8 +211,6 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   The space of ranking functions is then spanned by
   \f$ \vect{v}_3^\transpose A_C' \vect x \f$.
 
-  The ranking functions are expressed by L2 * A' * x, 
-
   In contrast, our encoding is of the form
   \f[
     \begin{pmatrix}
@@ -241,7 +239,7 @@ fill_constraint_systems_MS(const Constraint_System& cs,
       \vect{u}_2^\transpose E_B
         + \vect{u}_3^\transpose (E_C+E_C')
           &= \vect{0}^\transpose, \\
-      \vect{u}_2 \vect{b}_B + \vect{u}_3 \vect{b}_C
+      \vect{u}_2 \vect{d}_B + \vect{u}_3 \vect{d}_C
           &> 0,
     \end{aligned}
   \f]
@@ -249,6 +247,12 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   are constrained to be nonpositive.
   The space of ranking functions is then spanned by
   \f$ \vect{u}_3^\transpose E_C' \vect x \f$.
+
+  The allocation of variable indices in the output constraint
+  system \p cs_out is as follows:
+  - \f$ u_3 \f$ goes onto \f$ 0, \ldots, s-1 \f$;
+  - \f$ u_2 \f$ goes onto \f$ s, \ldots, s+r-1 \f$;
+  - \f$ u_1 \f$ goes onto \f$ s+r, \ldots, s+2r-1 \f$.
 */
 void
 fill_constraint_systems_PR(const Constraint_System& cs,
@@ -256,7 +260,7 @@ fill_constraint_systems_PR(const Constraint_System& cs,
 			   const dimension_type m,
 			   Constraint_System& cs_out) {
   // Determine the partitioning of the m rows into the r rows
-  // of E_B and the s rows of E_C|E'_C.
+  // of E_B and the s rows of E'_C|E_C.
   std::deque<bool> in_A_B(m, true);
   dimension_type r = m;
   for (Constraint_System::const_iterator i = cs.begin(),
@@ -270,6 +274,7 @@ fill_constraint_systems_PR(const Constraint_System& cs,
       }
   }
   dimension_type s = m - r;
+
 }
 
 
