@@ -61,7 +61,15 @@ assign_all_inequalities_approximation(const C_Polyhedron& ph,
   The input constraint system, where variables indices are allocated
   as follows:
   - \f$ x'_1, \ldots, x'_n \f$ go onto \f$ 0, \ldots, n-1 \f$;
-  - \f$ x_1, \ldots, x_n \f$ go onto \f$ n, \ldots, 2n-1 \f$;
+  - \f$ x_1, \ldots, x_n \f$ go onto \f$ n, \ldots, 2n-1 \f$.
+  .
+  The system does not contain any equality.
+
+  \param n
+  The number of loop-relevant variables in the analyzed loop.
+
+  \param m
+  The number of inequalities in \p cs.
 
   \param cs_out1
   The first output constraint system.
@@ -149,6 +157,14 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   as follows:
   - \f$ x'_1, \ldots, x'_n \f$ go onto \f$ 0, \ldots, n-1 \f$;
   - \f$ x_1, \ldots, x_n \f$ go onto \f$ n, \ldots, 2n-1 \f$;
+  .
+  The system does not contain any equality.
+
+  \param n
+  The number of loop-relevant variables in the analyzed loop.
+
+  \param m
+  The number of inequalities in \p cs.
 
   \param cs_out
   The output constraint system, where variables indices are allocated
@@ -187,9 +203,15 @@ fill_constraint_systems_MS(const Constraint_System& cs,
         + \vect{v}_3^\transpose (A_C+A_C')
           &= \vect{0}^\transpose, \\
       \vect{v}_2 \vect{b}_B + \vect{v}_3 \vect{b}_C
-          &< 0.
+          &< 0,
     \end{aligned}
   \f]
+  where \f$ \vect{v}_1 \f$, \f$ \vect{v}_2 \f$ and \f$ \vect{v}_3 \f$
+  are constrained to be nonnegative.
+  The space of ranking functions is then spanned by
+  \f$ \vect{v}_3^\transpose A_C' \vect x \f$.
+
+  The ranking functions are expressed by L2 * A' * x, 
 
   In contrast, our encoding is of the form
   \f[
@@ -209,44 +231,24 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   \f]
   where \f$ {E}_B = -{A}_B \f$, \f$ {E}_C = -{A}_C \f$,
   \f$ {E}'_C = -{A}'_C \f$, \f$ \vect{d}_B = \vect{b}_B \f$
-  and \f$ \vect{d}_B = \vect{b}_B \f$.
+  and \f$ \vect{d}_C = \vect{b}_C \f$.
   The corresponding system is:
   \f[
     \begin{aligned}
-      (\vect{v}_1-\vect{v}_2)^\transpose A_B
-        - \vect{v}_3^\transpose A_C
+      (\vect{u}_1-\vect{u}_2)^\transpose E_B
+        - \vect{u}_3^\transpose E_C
           &= \vect{0}^\transpose, \\
-      \vect{v}_2^\transpose A_B
-        + \vect{v}_3^\transpose (A_C+A_C')
+      \vect{u}_2^\transpose E_B
+        + \vect{u}_3^\transpose (E_C+E_C')
           &= \vect{0}^\transpose, \\
-      \vect{v}_2 \vect{b}_B + \vect{v}_3 \vect{b}_C
-          &< 0.
+      \vect{u}_2 \vect{b}_B + \vect{u}_3 \vect{b}_C
+          &> 0,
     \end{aligned}
   \f]
-
-% parts.
-% Loop is encoded as (A|A') * (x|x') <= b and the system is:
-%   L1 * A' = 0, (L1-L2) * A = 0, L2 * (A+A') = 0, L2 * b < 0.
-% Here we reuse as much as possible from the SVG-MS method, so our loop
-% comes in encoded as (C'|C) * (x'|x) + d >= 0
-% where the primed part comes first due to an implementation choice.
-% We then have A' = -C', A = -C, b = d and the system becomes:
-%   L1 * C' = 0, (L1-L2) * C = 0, L2 * (C+C') = 0, L2 * d < 0.
-% Note the change in the last inequality.
-% But, instead of looking for L1 and L2, we look for N1=-L1 and N2=-L2.
-% So the final system becomes
-%   N1 * C' = 0, (N1-N2) * C = 0, N2 * (C+C') = 0, N2 * d > 0.
-% Note the change (again) in the last inequality.
-% In addition to that, nonnegativity constraints on L1 and L2 are now
-% expressed as nonpositivity constraints on N1 and N2.
-
-% The ranking functions are expressed by L2 * A' * x, which
-% becomes L2 * (-C') * x, which becomes N2 * C' * x.
-
-% Variables have numbers between 0 and N-1 included, i.e., we have
-% N duplicate (primed) variables numbered 0, ..., N-1 and N original
-% (unprimed) variables numbered N, ..., 2*N-1.
-
+  where \f$ \vect{u}_1 \f$, \f$ \vect{u}_2 \f$ and \f$ \vect{u}_3 \f$
+  are constrained to be nonpositive.
+  The space of ranking functions is then spanned by
+  \f$ \vect{u}_3^\transpose E_C' \vect x \f$.
 */
 void
 fill_constraint_systems_PR(const Constraint_System& cs,
@@ -254,7 +256,7 @@ fill_constraint_systems_PR(const Constraint_System& cs,
 			   const dimension_type m,
 			   Constraint_System& cs_out) {
   // Determine the partitioning of the m rows into the r rows
-  // of A_B and the s rows of A_C|A'_C (see the paper).
+  // of E_B and the s rows of E_C|E'_C.
   std::deque<bool> in_A_B(m, true);
   dimension_type r = m;
   for (Constraint_System::const_iterator i = cs.begin(),
