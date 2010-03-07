@@ -23,6 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Sparse_Matrix_inlines_hh
 #define PPL_Sparse_Matrix_inlines_hh 1
 
+// FIXME: Remove this.
+// It's needed only to please KDevelop4.
+#include "Sparse_Matrix.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 inline

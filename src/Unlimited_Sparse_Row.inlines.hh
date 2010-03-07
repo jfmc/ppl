@@ -29,6 +29,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <limits>
 #include <algorithm>
 
+// FIXME: Remove this.
+// It's needed only to please KDevelop4.
+#include "Unlimited_Sparse_Row.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 inline

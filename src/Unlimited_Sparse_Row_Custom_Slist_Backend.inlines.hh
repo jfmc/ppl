@@ -23,6 +23,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifndef PPL_Unlimited_Sparse_Row_Custom_Slist_Backend_inlines_hh
 #define PPL_Unlimited_Sparse_Row_Custom_Slist_Backend_inlines_hh 1
+
+// FIXME: Remove this.
+// It's needed only to please KDevelop4.
 #include "Unlimited_Sparse_Row_Custom_Slist_Backend.defs.hh"
 
 namespace Parma_Polyhedra_Library {
