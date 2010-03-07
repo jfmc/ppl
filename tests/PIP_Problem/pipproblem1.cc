@@ -666,6 +666,42 @@ test22() {
   return ok;
 }
 
+bool
+test23() {
+  // Same problem as test02, but incrementally adding a parameter constraint
+  // removing one level in the decision tree.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  pip.add_constraint(7*n >= 10);
+  ok &= (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -691,4 +727,5 @@ BEGIN_MAIN
   DO_TEST_F8(test20);
   DO_TEST_F8(test21);
   DO_TEST_F8(test22);
+  DO_TEST_F8(test23);
 END_MAIN
