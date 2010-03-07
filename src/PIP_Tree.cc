@@ -1644,8 +1644,10 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
           // This might be faster however.
           tableau.s.add_zero_rows(1, Row::Flags());
           tableau.t.add_zero_rows(1, Row::Flags());
-          neg_assign_row(tableau.s[1 + row_id], v_row);
-          neg_assign_row(tableau.t[1 + row_id], p_row);
+          // NOTE: addition of rows invalidates references v_row and p_row
+          // due to possible matrix reallocations: recompute them.
+          neg_assign_row(tableau.s[1 + row_id], tableau.s[row_id]);
+          neg_assign_row(tableau.t[1 + row_id], tableau.t[row_id]);
           sign.push_back(row_sign(tableau.t[1 + row_id], big_dimension));
           special_equality_row = mapping.size();
           basis.push_back(false);
