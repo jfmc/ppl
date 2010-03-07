@@ -1230,7 +1230,7 @@ PIP_Solution_Node::row_sign(const Row& x,
 }
 
 bool
-PIP_Solution_Node::compatibility_check(const Matrix& context, const Row& row) {
+PIP_Tree_Node::compatibility_check(const Matrix& context, const Row& row) {
   // CHECKME: do `context' and `row' have compatible (row) capacity?
   Matrix s(context);
   s.add_row(row);
@@ -1238,7 +1238,7 @@ PIP_Solution_Node::compatibility_check(const Matrix& context, const Row& row) {
 }
 
 bool
-PIP_Solution_Node::compatibility_check(Matrix& s) {
+PIP_Tree_Node::compatibility_check(Matrix& s) {
   PPL_ASSERT(s.OK());
   // Note: num_rows may increase.
   dimension_type num_rows = s.num_rows();

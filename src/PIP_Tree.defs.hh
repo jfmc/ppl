@@ -238,6 +238,22 @@ protected:
   static void
   indent_and_print(std::ostream& s, unsigned indent, const char* str);
 
+  /*! \brief
+    Checks whether a context matrix is satisfiable.
+
+    The satisfiability check is implemented by the revised dual simplex
+    algorithm on the context matrix. The algorithm ensures the feasible
+    solution is integer by applying a cut generation method when
+    intermediate non-integer solutions are found.
+  */
+  static bool compatibility_check(Matrix& s);
+
+  /*! \brief
+    Helper method: checks for satisfiability of the restricted context
+    obtained by adding \p row to \p context.
+  */
+  static bool compatibility_check(const Matrix& context, const Row& row);
+
 }; // class PIP_Tree_Node
 
 
@@ -571,22 +587,6 @@ private:
   //! Returns the sign of row \p x.
   static Row_Sign row_sign(const Row& x, dimension_type big_dimension);
 
-  /*! \brief
-    Checks whether a context matrix is satisfiable.
-
-    The satisfiability check is implemented by the revised dual simplex
-    algorithm on the context matrix. The algorithm ensures the feasible
-    solution is integer by applying a cut generation method when
-    intermediate non-integer solutions are found.
-  */
-  static bool compatibility_check(Matrix& s);
-
-  /*! \brief
-    Helper method: checks for satisfiability of the restricted context
-    obtained by adding \p row to \p context.
-  */
-  static bool compatibility_check(const Matrix& context, const Row& row);
-
 protected:
   //! Copy constructor.
   PIP_Solution_Node(const PIP_Solution_Node& y);
@@ -603,8 +603,6 @@ protected:
 
   // PIP_Problem::ascii load() method needs access set_owner().
   friend bool PIP_Problem::ascii_load(std::istream& s);
-  // PIP_Problem::solve() method needs access compatibility_check().
-  friend PIP_Problem_Status PIP_Problem::solve() const;
 
   //! Sets the pointer to the PIP_Problem owning object.
   virtual void set_owner(const PIP_Problem* owner);
