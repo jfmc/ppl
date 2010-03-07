@@ -346,6 +346,8 @@ Partially_Reduced_Product.templates.hh \
 Weight_Profiler.defs.hh \
 max_space_dimension.hh \
 algorithms.hh \
+termination.defs.hh \
+termination.templates.hh \
 wrap_assign.hh \
 wrap_string.hh \
 Floating_Point_Expression.types.hh \
@@ -465,6 +467,7 @@ version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
 swapping_sort.icc \
+termination.cc \
 wrap_string.cc
 #Pointset_Ask_Tell.cc
 
