@@ -212,6 +212,9 @@ protected:
   //! Inserts a new parametric constraint in internal Row format
   void add_constraint(const Row& x, const Variables_Set& parameters);
 
+  //! Merges parent's artificial parameters into \p *this.
+  void parent_merge();
+
   //! Prints on \p s the tree rooted in \p *this.
   /*!
     \param s

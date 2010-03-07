@@ -557,6 +557,18 @@ PIP_Tree_Node
   constraints_.insert(expr >= 0);
 }
 
+void
+PIP_Tree_Node::parent_merge() {
+  const PIP_Decision_Node& parent = *parent_;
+
+  // Merge the parent's artificial parameters.
+  artificial_parameters.insert(artificial_parameters.begin(),
+                               parent.art_parameter_begin(),
+                               parent.art_parameter_end());
+
+  PPL_ASSERT(OK());
+}
+
 bool
 PIP_Solution_Node::OK() const {
 #ifndef NDEBUG
@@ -689,10 +701,12 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
   add_artificial_parameters(context_true, all_params, space_dim,
                             num_art_params);
   merge_assign(context_true, constraints_, all_params);
+  bool has_false_child = (false_child != 0);
+  bool has_true_child = (true_child != 0);
   true_child = true_child->solve(pip, check_feasible_context,
                                  context_true, all_params, space_dim);
 
-  if (false_child) {
+  if (has_false_child) {
     // Decision nodes with false child must have exactly one constraint
     PPL_ASSERT(1 == std::distance(constraints_.begin(), constraints_.end()));
     // NOTE: modify context_true in place, complementing its last constraint.
@@ -704,8 +718,53 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
   }
 
   if (true_child != 0 || false_child != 0) {
-    PPL_ASSERT(OK());
-    return this;
+    PIP_Tree_Node* node = this;
+    if (has_false_child && false_child == 0) {
+      // False child has become unfeasible: merge this node's artificials with
+      // the true child, while removing the local parameter constraints, which
+      // are no longer discriminative.
+      true_child->parent_merge();
+      true_child->set_parent(parent());
+      node = true_child;
+      true_child = 0;
+      delete this;
+    }
+    else if (has_true_child && true_child == 0) {
+      // True child has become unfeasible: merge this node's artificials
+      // with the false child.
+      false_child->parent_merge();
+      false_child->set_parent(parent());
+      node = false_child;
+      false_child = 0;
+      delete this;
+    }
+    else if (check_feasible_context) {
+      // Test all constraints for redundancy with the context, and eliminate
+      // them if not necessary.
+      Constraint_System cs;
+      cs.swap(constraints_);
+      const Constraint_System::const_iterator end = cs.end();
+      for (Constraint_System::const_iterator ci = cs.begin(); ci != end; ++ci) {
+        Matrix ctx_copy(context);
+        merge_assign(ctx_copy, Constraint_System(*ci), all_params);
+        Row& last = ctx_copy[ctx_copy.num_rows()-1];
+        complement_assign(last, last, 1);
+        if (compatibility_check(ctx_copy)) {
+          // The constraint is not redundant with the context: we must keep it.
+          constraints_.insert(*ci);
+        }
+      }
+      // If the constraints set has become empty, only keep the true child.
+      if (constraints_.empty()) {
+        true_child->parent_merge();
+        true_child->set_parent(parent());
+        node = true_child;
+        true_child = 0;
+        delete this;
+      }
+    }
+    PPL_ASSERT(node->OK());
+    return node;
   }
   else {
     delete this;
