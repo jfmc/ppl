@@ -181,8 +181,11 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
     x.last = i.p;
   to_move->next = *(position.p);
   *(position.p) = to_move;
-  // i_itr points to the moved element.
   dangerous_iterator i_itr = position;
+#ifndef NDEBUG
+  i_itr.q = *(i_itr.p);
+#endif
+  // i_itr points to the moved element.
   position.p = &(to_move->next);
 #ifndef NDEBUG
   position.q = *(position.p);
@@ -219,8 +222,11 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
     // We moved some elements from the end of x, so x.last must be updated.
     x.last = first1.p;
   *(last1.p) = tail;
-  // first_itr points to the first added element
   dangerous_iterator first_itr = position;
+#ifndef NDEBUG
+  first_itr.q = *(first_itr.p);
+#endif
+  // first_itr points to the first added element
   position.p = last1.p;
 #ifndef NDEBUG
   position.q = *(position.p);
