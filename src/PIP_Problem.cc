@@ -154,7 +154,7 @@ PPL::PIP_Problem::solve() const {
         check_feasible_context = true;
 
         // Translate constraint into context row.
-        Row row(new_num_cols, Row::Flags());
+        matrix_row_copy_type row(new_num_cols);
         row[0] = c.inhomogeneous_term();
         {
           dimension_type i = 1;
@@ -185,7 +185,7 @@ PPL::PIP_Problem::solve() const {
 
       if (check_feasible_context) {
         // Check for feasibility of initial context.
-        Matrix ctx_copy(initial_context);
+        matrix_type ctx_copy(initial_context);
         if (!PIP_Solution_Node::compatibility_check(ctx_copy)) {
           // Problem found to be unfeasible.
           delete x.current_solution;

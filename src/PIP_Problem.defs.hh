@@ -35,6 +35,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <deque>
 #include <iosfwd>
 
+// FIXME: this must be put here, because it is used by MIP_Problem.defs.hh
+// and otherwise compilation will fail for ppl-config.o.
+#include "Dense_Row.defs.hh"
+
+#ifndef USE_PPL_SPARSE_MATRIX
+
+#include "Dense_Matrix.defs.hh"
+
+#else
+
+#include "Sparse_Matrix.defs.hh"
+#include "Sparse_Row.defs.hh"
+
+#endif
+
 namespace Parma_Polyhedra_Library {
 
 namespace IO_Operators {
@@ -319,6 +334,25 @@ operator<<(std::ostream& s, const PIP_Problem& p);
 */
 class Parma_Polyhedra_Library::PIP_Problem {
 public:
+#ifndef USE_PPL_SPARSE_MATRIX
+  typedef Dense_Matrix matrix_type;
+  typedef Dense_Row& matrix_row_reference_type;
+  typedef const Dense_Row& matrix_row_const_reference_type;
+  typedef Dense_Row::const_iterator matrix_const_row_const_iterator;
+  typedef Dense_Row::iterator matrix_row_iterator;
+  typedef Dense_Row::const_iterator matrix_row_const_iterator;
+  typedef Dense_Row matrix_row_copy_type;
+#else
+  typedef Sparse_Matrix matrix_type;
+  typedef Sparse_Row_Reference matrix_row_reference_type;
+  typedef const Unlimited_Sparse_Row& matrix_row_const_reference_type;
+  typedef Unlimited_Sparse_Row::const_iterator
+    matrix_const_row_const_iterator;
+  typedef Sparse_Row_Reference::iterator matrix_row_iterator;
+  typedef Sparse_Row_Reference::const_iterator matrix_row_const_iterator;
+  typedef Sparse_Row matrix_row_copy_type;
+#endif
+
   //! Builds a trivial PIP problem.
   /*!
     A trivial PIP problem requires to compute the lexicographic minimum
@@ -633,7 +667,7 @@ private:
 
     Contains problem constraints on parameters only
   */
-  Matrix initial_context;
+  matrix_type initial_context;
 
   //! The control parameters for the problem object.
   Control_Parameter_Value
