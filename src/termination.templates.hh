@@ -353,6 +353,24 @@ termination_test_PR(const PSET& pset) {
   return mip.is_satisfiable();
 }
 
+template <typename PSET>
+bool
+one_affine_ranking_function_PR(const PSET& pset, Generator& mu) {
+  return false;
+}
+
+template <typename PSET>
+void
+all_affine_ranking_functions_PR(const PSET& pset, C_Polyhedron& mu_space) {
+  using namespace Implementation::Termination;
+  Constraint_System cs;
+  dimension_type n;
+  dimension_type m;
+  prepare_input_MS_PR(pset, cs, n, m, "all_affine_ranking_functions_MS");
+
+  mu_space = C_Polyhedron(n+1, EMPTY);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_termination_templates_hh)
