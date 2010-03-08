@@ -232,6 +232,7 @@ termination_test_MS(const PSET& pset) {
 #endif
 
   MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
+
   return mip.is_satisfiable();
 }
 
@@ -260,6 +261,7 @@ one_affine_ranking_function_MS(const PSET& pset, Generator& mu) {
 #endif
 
   MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
+
   if (mip.is_satisfiable()) {
     mu = mip.feasible_point();
     return true;
@@ -337,26 +339,33 @@ termination_test_PR(const PSET& pset) {
   Constraint_System cs_mip;
   fill_constraint_systems_PR(cs, n, m, cs_mip);
 
-#if PRINT_DEBUG_INFO
-  Variable::output_function_type* p_default_output_function
-    = Variable::get_output_function();
-  Variable::set_output_function(output_function_MS);
-
-  std::cout << "*** cs_mip ***" << std::endl;
-  output_function_MS_which = 3;
-  using namespace IO_Operators;
-  std::cout << cs_mip << std::endl;
-  Variable::set_output_function(p_default_output_function);
-#endif
-
   MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
+
   return mip.is_satisfiable();
 }
 
 template <typename PSET>
 bool
 one_affine_ranking_function_PR(const PSET& pset, Generator& mu) {
-  return false;
+  using namespace Implementation::Termination;
+  Constraint_System cs;
+  dimension_type n;
+  dimension_type m;
+  prepare_input_MS_PR(pset, cs, n, m, "one_affine_ranking_function_PR");
+
+  Constraint_System cs_mip;
+  fill_constraint_systems_PR(cs, n, m, cs_mip);
+
+  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
+
+  if (mip.is_satisfiable()) {
+    Generator u3 = mip.feasible_point();
+    // FIXME: must multiply u3 by E'_C and assign the result to mu.
+    //return true;
+    return false;
+  }
+  else
+    return false;
 }
 
 template <typename PSET>
@@ -366,7 +375,10 @@ all_affine_ranking_functions_PR(const PSET& pset, C_Polyhedron& mu_space) {
   Constraint_System cs;
   dimension_type n;
   dimension_type m;
-  prepare_input_MS_PR(pset, cs, n, m, "all_affine_ranking_functions_MS");
+  prepare_input_MS_PR(pset, cs, n, m, "all_affine_ranking_functions_PR");
+
+  Constraint_System cs_out;
+  fill_constraint_systems_PR(cs, n, m, cs_out);
 
   mu_space = C_Polyhedron(n+1, EMPTY);
 }

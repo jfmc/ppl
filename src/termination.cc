@@ -179,7 +179,7 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   - \f$ \mu_1, \ldots, \mu_n \f$ go onto space dimensions
     \f$ 0, \ldots, n-1 \f$;
   - \f$ \mu_0\f$ goes onto space dimension \f$ n \f$;
-  - \f$ y_1, \ldots, y_m \f$ go onto space dimensions 
+  - \f$ y_1, \ldots, y_m \f$ go onto space dimensions
     \f$ n+1, \ldots, n+m \f$;
   - \f$ z_1, ..., z_m, z_{m+1}, z_{m+2} \f$ go onto space dimensions
     \f$ n+m+1, ..., n+2*m+2 \f$.
