@@ -1272,8 +1272,8 @@ m4_define(`ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_code',
       "ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@/2";
   try {
     @CPP_CLASS@* pset = term_to_handle<@CPP_CLASS@ >(t_pset, where);
-    C_Polyhedron ph();
     PPL_CHECK(pset);
+    C_Polyhedron* ph = new C_Polyhedron();
     Parma_Polyhedra_Library
       ::all_affine_ranking_functions_@TERMINATION_ID@(*pset, *ph);
       Prolog_term_ref tmp = Prolog_new_term_ref();
