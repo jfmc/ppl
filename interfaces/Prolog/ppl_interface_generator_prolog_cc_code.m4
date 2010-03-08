@@ -1228,6 +1228,61 @@ m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_termination_test_@TERMINATION_ID@_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_termination_test_@TERMINATION_ID@
+  (Prolog_term_ref t_ph) {
+  static const char* where = "ppl_@CLASS@_termination_test_@TERMINATION_ID@/1";
+  try {
+    @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    PPL_CHECK(ph);
+    if (Parma_Polyhedra_Library::termination_test_@TERMINATION_ID@(*ph))
+        return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@
+  (Prolog_term_ref t_x,
+   Prolog_term_ref t_g) {
+  static const char* where = "ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@/2";
+  try {
+    @CPP_CLASS@* x = term_to_handle<@CPP_CLASS@ >(t_x, where);
+    Generator gg(point());
+    PPL_CHECK(x);
+    if (Parma_Polyhedra_Library::one_affine_ranking_function_@TERMINATION_ID@(*x, gg)
+        && Prolog_unify(t_g, generator_term(gg)))
+        return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@
+  (Prolog_term_ref t_x,
+   Prolog_term_ref t_ph) {
+  static const char* where =
+      "ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@/2";
+  try {
+    @CPP_CLASS@* x = term_to_handle<@CPP_CLASS@ >(t_x, where);
+    C_Polyhedron* ph = term_to_handle<C_Polyhedron >(t_ph, where);
+    PPL_CHECK(x);
+    Parma_Polyhedra_Library::all_affine_ranking_functions_@TERMINATION_ID@(*x,
+                                                                           *ph);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens

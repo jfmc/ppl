@@ -34,6 +34,15 @@ dnl There is no code at present for these procedures in the C interface.
 dnl Remove the macro if its definition is added.
 dnl
 
+m4_define(`ppl_@CLASS@_termination_test_MS_code',
+`dnl
+/*! \relates ppl_@CLASS@_tag */
+int
+ppl_@CLASS@_termination_test_MS
+PPL_PROTO((ppl_const_@CLASS@_t x));
+
+')
+
 m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `dnl
 /*! \relates ppl_@CLASS@_tag */

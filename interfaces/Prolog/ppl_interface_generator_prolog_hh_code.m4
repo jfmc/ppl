@@ -510,3 +510,23 @@ m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 			 Prolog_term_ref t_m);
 
 ')
+
+m4_define(`ppl_@CLASS@_termination_test_MS_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_termination_test_MS(Prolog_term_ref t_x);
+
+')
+
+m4_define(`ppl_@CLASS@_one_affine_ranking_function_MS_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_one_affine_ranking_function_MS(Prolog_term_ref t_x,
+                                             Prolog_term_ref t_g);
+
+')
+
+m4_define(`ppl_@CLASS@_all_affine_ranking_functions_MS_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_all_affine_ranking_functions_MS(Prolog_term_ref t_x,
+                                              Prolog_term_ref t_g);
+
+')

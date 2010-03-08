@@ -1156,6 +1156,18 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_termination_test_MS_code',
+`dnl
+int
+ppl_@CLASS@_termination_test_MS
+(ppl_const_@CLASS@_t x) try {
+  const @CPP_CLASS@& xx = *to_const(x);
+  return termination_test_MS(xx);
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_wrap_assign_code',
 `int
 ppl_@CLASS@_wrap_assign

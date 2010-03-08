@@ -85,4 +85,10 @@ ppl_MIP_Problem_OK/1
 ppl_MIP_Problem_ascii_dump/1`'dnl
 ')
 
-m4_define(`m4_procedure_list', `m4_common_procedure_list')
+m4_define(`m4_procedure_list',
+  `m4_echo_unquoted(`m4_common_procedure_list',
+ppl_@CLASS@_termination_test_MS/1 +simple,
+ppl_@CLASS@_one_affine_ranking_function_MS/2 +simple,
+ppl_@CLASS@_all_affine_ranking_functions_MS/2 +simple,
+)
+')

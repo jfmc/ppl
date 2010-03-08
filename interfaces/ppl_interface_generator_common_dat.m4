@@ -530,7 +530,8 @@ point,
 constrainer,
 disjunct,
 disjunct_topology,
-disjunct_extrapolation')
+disjunct_extrapolation,
+termination_id')
 
 dnl ---------------------------------------------------------------------
 dnl Define the replacement macros for all patterns
@@ -984,3 +985,6 @@ m4_define(`m4_membytes_replacements',
    `external_memory_in_bytes, total_memory_in_bytes')
 m4_define(`m4_Pointset_Powerset_membytes_replacements',
    `m4_membytes_replacements, size')
+
+dnl  The termination algorithms are either sourced from MS or PR.
+m4_define(`m4_termination_id_replacements', `MS, PR')
