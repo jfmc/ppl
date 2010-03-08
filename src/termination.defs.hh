@@ -29,11 +29,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 /*! \brief
-  Termination test using an improvement of the method by Serebrenik
-  and Mesnard.
+  Termination test using an improvement of the method by Mesnard and
+  Serebrenik.
 
   \tparam PSET
-  Any pointset supported by the PPL.
+  Any pointset supported by the PPL that provides the
+  <CODE>minimized_constraints()</CODE> method.
 
   \param pset
   A pointset approximating the behavior of a loop whose termination
@@ -62,10 +63,11 @@ termination_test_MS(const PSET& pset);
 
 /*! \brief
   Termination test with witness ranking function using an improvement
-  of the method by Serebrenik and Mesnard.
+  of the method by Mesnard and Serebrenik.
 
   \tparam PSET
-  Any pointset supported by the PPL.
+  Any pointset supported by the PPL that provides the
+  <CODE>minimized_constraints()</CODE> method.
 
   \param pset
   A pointset approximating the behavior of a loop whose termination
@@ -103,10 +105,11 @@ one_affine_ranking_function_MS(const PSET& pset, Generator& mu);
 
 /*! \brief
   Termination test with ranking function space using an improvement
-  of the method by Serebrenik and Mesnard.
+  of the method by Mesnard and Serebrenik.
 
   \tparam PSET
-  Any pointset supported by the PPL.
+  Any pointset supported by the PPL that provides the
+  <CODE>minimized_constraints()</CODE> method.
 
   \param pset
   A pointset approximating the behavior of a loop whose termination
