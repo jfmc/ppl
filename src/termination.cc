@@ -60,8 +60,10 @@ assign_all_inequalities_approximation(const C_Polyhedron& ph,
   \param cs
   The input constraint system, where variables indices are allocated
   as follows:
-  - \f$ x'_1, \ldots, x'_n \f$ go onto \f$ 0, \ldots, n-1 \f$;
-  - \f$ x_1, \ldots, x_n \f$ go onto \f$ n, \ldots, 2n-1 \f$.
+  - \f$ x'_1, \ldots, x'_n \f$ go onto space dimensions
+    \f$ 0, \ldots, n-1 \f$,
+  - \f$ x_1, \ldots, x_n \f$ go onto space dimensions
+    \f$ n, \ldots, 2n-1 \f$,
   .
   The system does not contain any equality.
 
@@ -80,17 +82,20 @@ assign_all_inequalities_approximation(const C_Polyhedron& ph,
 
   The allocation of variable indices in the output constraint
   systems \p cs_out1 and \p cs_out2 is as follows:
-  - \f$ \mu_1, \ldots, \mu_n \f$ go onto \f$ 0, \ldots, n-1 \f$;
-  - \f$ \mu_0\f$ goes onto \f$ n \f$;
-  - \f$ y_1, \ldots, y_m \f$ go onto \f$ n+1, \ldots, n+m \f$;
-
+  - \f$ \mu_1, \ldots, \mu_n \f$ go onto space dimensions
+    \f$ 0, \ldots, n-1 \f$;
+  - \f$ \mu_0\f$ goes onto space dimension \f$ n \f$;
+  - \f$ y_1, \ldots, y_m \f$ go onto space dimensions
+    \f$ n+1, \ldots, n+m \f$;
+  .
   if we use the same constraint system, that is
   <CODE>&cs_out1 == &cs_out2</CODE>, then
-  - \f$ z_1, ..., z_m, z_{m+1}, z_{m+2} \f$
-    go onto \f$ n+m+1, ..., n+2*m+2 \f$;
-
+  - \f$ z_1, ..., z_m, z_{m+1}, z_{m+2} \f$ go onto space dimensions
+    \f$ n+m+1, ..., n+2*m+2 \f$;
+  .
   otherwise
-  - \f$ z_1, ..., z_m, z_{m+1}, z_{m+2} \f$ go onto \f$ n+1, ..., n+m+2 \f$.
+  - \f$ z_1, ..., z_m, z_{m+1}, z_{m+2} \f$ go onto space dimensions
+    \f$ n+1, ..., n+m+2 \f$.
 */
 void
 fill_constraint_systems_MS(const Constraint_System& cs,
@@ -155,8 +160,10 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   \param cs
   The input constraint system, where variables indices are allocated
   as follows:
-  - \f$ x'_1, \ldots, x'_n \f$ go onto \f$ 0, \ldots, n-1 \f$;
-  - \f$ x_1, \ldots, x_n \f$ go onto \f$ n, \ldots, 2n-1 \f$;
+  - \f$ x'_1, \ldots, x'_n \f$ go onto space dimensions
+    \f$ 0, \ldots, n-1 \f$,
+  - \f$ x_1, \ldots, x_n \f$ go onto space dimensions
+    \f$ n, \ldots, 2n-1 \f$,
   .
   The system does not contain any equality.
 
@@ -169,11 +176,13 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   \param cs_out
   The output constraint system, where variables indices are allocated
   as follows:
-  - \f$ \mu_1, \ldots, \mu_n \f$ go onto \f$ 0, \ldots, n-1 \f$;
-  - \f$ \mu_0\f$ goes onto \f$ n \f$;
-  - \f$ y_1, \ldots, y_m \f$ go onto \f$ n+1, \ldots, n+m \f$;
-  - \f$ z_1, ..., z_m, z_{m+1}, z_{m+2} \f$
-    go onto \f$ n+m+1, ..., n+2*m+2 \f$.
+  - \f$ \mu_1, \ldots, \mu_n \f$ go onto space dimensions
+    \f$ 0, \ldots, n-1 \f$;
+  - \f$ \mu_0\f$ goes onto space dimension \f$ n \f$;
+  - \f$ y_1, \ldots, y_m \f$ go onto space dimensions 
+    \f$ n+1, \ldots, n+m \f$;
+  - \f$ z_1, ..., z_m, z_{m+1}, z_{m+2} \f$ go onto space dimensions
+    \f$ n+m+1, ..., n+2*m+2 \f$.
 
   The improved Podelski-Rybalchenko method described in the paper
   is based on a loop encoding of the form
@@ -250,9 +259,9 @@ fill_constraint_systems_MS(const Constraint_System& cs,
 
   The allocation of variable indices in the output constraint
   system \p cs_out is as follows:
-  - \f$ u_3 \f$ goes onto \f$ 0, \ldots, s-1 \f$;
-  - \f$ u_2 \f$ goes onto \f$ s, \ldots, s+r-1 \f$;
-  - \f$ u_1 \f$ goes onto \f$ s+r, \ldots, s+2r-1 \f$.
+  - \f$ u_3 \f$ goes onto space dimensions \f$ 0, \ldots, s-1 \f$;
+  - \f$ u_2 \f$ goes onto space dimensions \f$ s, \ldots, s+r-1 \f$;
+  - \f$ u_1 \f$ goes onto space dimensions \f$ s+r, \ldots, s+2r-1 \f$.
 */
 void
 fill_constraint_systems_PR(const Constraint_System& cs,
