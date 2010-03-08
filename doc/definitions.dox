@@ -105,7 +105,7 @@ Other semantic GDs, the <EM>compound classes</EM>, can be constructed
 These include:
   - \link Parma_Polyhedra_Library::Pointset_Powerset \c Pointset_Powerset\<PS\> \endlink,
   - \link Parma_Polyhedra_Library::Partially_Reduced_Product <CODE>Partially_Reduced_Product\<D1, D2, R\></CODE> \endlink,
-
+  .
 where \c PS, \c D1 and \c D2 can be any semantic GD classes and \c R is the
 reduction operation to be applied to the component domains of the
 product class.
@@ -2634,28 +2634,20 @@ include the infinities \f$-\infty\f$ and \f$+\infty\f$.
 \subsection interval_linear_forms Linear forms with interval coefficients
 
 Generic concrete <EM>floating point expressions</EM> on \f$\mathbb{F}_t\f$ are
-represented by the \link Parma_Polyhedra_Library::Floating_Point_Expression
-\c Floating_Point_Expression \endlink abstract class. Its concrete derivate
-classes are:
-  - \link Parma_Polyhedra_Library::Constant_Floating_Point_Expression \c
-    Constant_Floating_Point_Expression \endlink,
-  - \link Parma_Polyhedra_Library::Variable_Floating_Point_Expression \c
-    Variable_Floating_Point_Expression \endlink,
-  - \link Parma_Polyhedra_Library::Opposite_Floating_Point_Expression \c
-    Opposite_Floating_Point_Expression \endlink, that is the negation
-    (unary minus) of a floating point expression,
-  - \link Parma_Polyhedra_Library::Sum_Floating_Point_Expression \c
-    Sum_Floating_Point_Expression \endlink, that is the sum of two floating
-    point expressions,
-  - \link Parma_Polyhedra_Library::Difference_Floating_Point_Expression \c
-    Difference_Floating_Point_Expression \endlink, that is the difference of
-    two floating point expressions,
-  - \link Parma_Polyhedra_Library::Multiplication_Floating_Point_Expression \c
-    Multiplication_Floating_Point_Expression \endlink, that is the product of
-    two floating point expressions, and
-  - \link Parma_Polyhedra_Library::Division_Floating_Point_Expression \c
-    Division_Floating_Point_Expression \endlink, that is the division of
-    two floating point expressions.
+represented by the \link Parma_Polyhedra_Library::Floating_Point_Expression \c Floating_Point_Expression \endlink
+abstract class. Its concrete derivate classes are:
+  - \link Parma_Polyhedra_Library::Constant_Floating_Point_Expression \c Constant_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Variable_Floating_Point_Expression \c Variable_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Opposite_Floating_Point_Expression \c Opposite_Floating_Point_Expression \endlink,
+    that is the negation (unary minus) of a floating point expression,
+  - \link Parma_Polyhedra_Library::Sum_Floating_Point_Expression \c Sum_Floating_Point_Expression \endlink,
+    that is the sum of two floating point expressions,
+  - \link Parma_Polyhedra_Library::Difference_Floating_Point_Expression \c Difference_Floating_Point_Expression \endlink,
+    that is the difference of two floating point expressions,
+  - \link Parma_Polyhedra_Library::Multiplication_Floating_Point_Expression \c Multiplication_Floating_Point_Expression \endlink,
+    that is the product of two floating point expressions, and
+  - \link Parma_Polyhedra_Library::Division_Floating_Point_Expression \c Division_Floating_Point_Expression \endlink,
+    that is the division of two floating point expressions.
 
 The set of all the possible values in \f$\mathbb{F}_t\f$ of a floating point
 expression at a given program point in a given abstract store can be
