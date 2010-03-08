@@ -97,10 +97,11 @@ operator<<(std::ostream& s, const PIP_Problem& p);
      if all these constraints are satisfied, the solution is described by
      the node, otherwise the problem has no solution.
 
-  It may happen that a decision node has no \e false or \e true child.
-  This means that there is no solution satisfying the corresponding
-  constraints. Decision nodes having two or more linear tests on the
-  parameters cannot have a \e false child.
+  It may happen that a decision node has no \e false child. This means
+  that there is no solution if at least one of the corresponding
+  constraints is not satisfied. Decision nodes having two or more linear
+  tests on the parameters cannot have a \e false child. Decision nodes
+  always have a \e true child.
 
   Both kinds of tree nodes may also contain the definition of extra
   parameters which are artificially introduced by the solver to enforce
@@ -141,7 +142,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   \endverbatim
   The solution tree starts with a decision node depending on the
   context constraint <code>7*n >= 10</code>.
-  If this constraints is satisfied by the values assigned to the
+  If this constraint is satisfied by the values assigned to the
   problem parameters, then the (textually first) \c then branch is taken,
   reaching the \e true child of the root node (which in this case
   is another decision node); otherwise, the (textually last) \c else
@@ -151,7 +152,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   lexicographic minimum of an empty set of solutions,
   here meaning the corresponding subproblem is unfeasible.
   \par
-  Notice that a tree node may introduce a new (non-problem) parameter,
+  Notice that a tree node may introduce new (non-problem) parameters,
   as is the case for parameter \c P in the (textually first) \c else
   branch above. These \e artificial parameters are only meaningful
   inside the subtree where they are defined and are used to define
@@ -159,7 +160,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   (e.g., the <tt>{i,j}</tt> vector in the textually third \c then branch).
 
   \par Context restriction
-  The above solution is correct in an unrestricted original context,
+  The above solution is correct in an unrestricted initial context,
   meaning all possible values are allowed for the parameters. If we
   restrict the context with the following parameter inequalities:
   \code
@@ -172,7 +173,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   \endverbatim
 
   \par Creating the PIP_Problem object
-  The PIP_Problem object correspondind to the above example can be
+  The PIP_Problem object corresponding to the above example can be
   created as follows:
   \code
   Variable i(0);
@@ -187,7 +188,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   cs.insert(i <= n);
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
   \endcode
-  If you want to restrict the original context, simply add the parameter
+  If you want to restrict the initial context, simply add the parameter
   constraints the same way as for normal constraints.
   \code
   cs.insert(m >= n);
