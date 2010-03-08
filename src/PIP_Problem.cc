@@ -125,6 +125,10 @@ PPL::PIP_Problem::solve() const {
       const Variables_Set::const_iterator param_begin = parameters.begin();
       const Variables_Set::const_iterator param_end = parameters.end();
 
+      // This flag will be set if we insert a pending constraint
+      // in the initial context.
+      bool check_feasible_context = false;
+
       // Go through all pending constraints.
       for (Constraint_Sequence::const_iterator
              cs_i = input_cs.begin() + first_pending_constraint,
@@ -147,6 +151,8 @@ PPL::PIP_Problem::solve() const {
         if (has_nonzero_variable_coefficient)
           continue;
 
+        check_feasible_context = true;
+
         // Translate constraint into context row.
         Row row(new_num_cols, Row::Flags());
         row[0] = c.inhomogeneous_term();
@@ -164,36 +170,29 @@ PPL::PIP_Problem::solve() const {
         if (c.is_strict_inequality())
           --row[0];
 
-        // Check for compatibility.
-        if (PIP_Solution_Node::compatibility_check(initial_context, row))
-          // Insert new row into initial context.
-          x.initial_context.add_row(row);
-        else {
-          // Problem found to be unfeasible.
-          delete x.current_solution;
-          x.current_solution = 0;
-          x.status = UNSATISFIABLE;
-          PPL_ASSERT(OK());
-          return UNFEASIBLE_PIP_PROBLEM;
-        }
+        // Insert new row into initial context.
+        x.initial_context.add_row(row);
 
         // If it is an equality, also insert its negation.
         if (c.is_equality()) {
           for (dimension_type i = new_num_cols; i-- > 0; )
             neg_assign(row[i], row[i]);
 
-          // Check for compatibility.
-          if (PIP_Solution_Node::compatibility_check(initial_context, row))
-            // Insert new row into initial context.
-            x.initial_context.add_row(row);
-          else {
-            // Problem found to be unfeasible.
-            delete x.current_solution;
-            x.current_solution = 0;
-            x.status = UNSATISFIABLE;
-            PPL_ASSERT(OK());
-            return UNFEASIBLE_PIP_PROBLEM;
-          }
+          // Insert new row into initial context.
+          x.initial_context.add_row(row);
+        }
+      }
+
+      if (check_feasible_context) {
+        // Check for feasibility of initial context.
+        Matrix ctx_copy(initial_context);
+        if (!PIP_Solution_Node::compatibility_check(ctx_copy)) {
+          // Problem found to be unfeasible.
+          delete x.current_solution;
+          x.current_solution = 0;
+          x.status = UNSATISFIABLE;
+          PPL_ASSERT(OK());
+          return UNFEASIBLE_PIP_PROBLEM;
         }
       }
 
@@ -208,6 +207,7 @@ PPL::PIP_Problem::solve() const {
 
       // Actually solve problem.
       x.current_solution = x.current_solution->solve(*this,
+                                                     check_feasible_context,
                                                      initial_context,
                                                      parameters,
                                                      external_space_dim);

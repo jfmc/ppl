@@ -105,7 +105,7 @@ Other semantic GDs, the <EM>compound classes</EM>, can be constructed
 These include:
   - \link Parma_Polyhedra_Library::Pointset_Powerset \c Pointset_Powerset\<PS\> \endlink,
   - \link Parma_Polyhedra_Library::Partially_Reduced_Product <CODE>Partially_Reduced_Product\<D1, D2, R\></CODE> \endlink,
-
+  .
 where \c PS, \c D1 and \c D2 can be any semantic GD classes and \c R is the
 reduction operation to be applied to the component domains of the
 product class.
@@ -507,7 +507,7 @@ FIXME(0.11): to be continued.
 
 \subsubsection Wrapping_Operator Wrapping Operator
 
-One possibility to precisely approximate the semantics of programs that
+One possibility for precisely approximating the semantics of programs that
 operate on bounded integer variables is to follow the approach described
 in \ref SK07 "[SK07]".  The idea is to associate space dimensions to the
 <EM>unwrapped values</EM> of bounded variables.  Suppose <CODE>j</CODE>
@@ -517,8 +517,8 @@ labeled by the variable \f$x\f$.  If \f$x\f$ is constrained by some
 numerical abstraction to take values in a set \f$S \sseq \Rset\f$, then
 the program variable <CODE>j</CODE> can only take values in
 \f$\bigl\{\, \mathrm{wrap}^\mathrm{u}_w(z) \bigm| z \in S \,\bigr\}\f$.
-There are two reasons why this is interesting: firstly, this allows
-to retain relational information by using a single numerical abstraction
+There are two reasons why this is interesting: firstly, this allows for
+the retention of relational information by using a single numerical abstraction
 tracking multiple program variables.  Secondly, the integers modulo
 \f$2^w\f$ form a ring of equivalence classes on which addition
 and multiplication are well defined.  This means, e.g., that assignments
@@ -528,14 +528,14 @@ While upper bounds and widening can be used without any precaution,
 anything that can be reconducted to intersection requires a preliminary
 <EM>wrapping</EM> phase, where the dimensions corresponding to bounded
 integer types are brought back to their natural domain.
-This necessity arise naturally for the analysis of conditionals
+This necessity arises naturally for the analysis of conditionals
 and conversion operators, as well as in the realization of domain
 combinations.
 
 The PPL provides a general wrapping operator that is parametric with
 respect to the set of space dimensions (variables) to be wrapped,
 the width, representation and overflow behavior of all these variables.
-An optional constraint system allows, when given, to increase the
+An optional constraint system can, when given, improve the
 precision.  This constraint system, which must only depend on variables
 with respect to which wrapping is performed, is assumed to represent
 the conditional or looping construct guard with respect to which
@@ -543,7 +543,7 @@ wrapping is performed.  Since wrapping requires the computation of
 upper bounds and due to non-distributivity of constraint refinement
 over upper bounds, passing a constraint system in this way can be more
 precise than refining the result of the wrapping operation afterwards.
-The general wrapping operator offered by the PPL also allows to control
+The general wrapping operator offered by the PPL also allows control of
 the complexity/precision ratio by means of two additional parameters:
 an unsigned integer encoding a complexity threshold, with higher values
 resulting in possibly improved precision; and a Boolean controlling
@@ -554,8 +554,8 @@ or collectively.
 Note that the PPL assumes that any space dimension subject to wrapping
 is being used to capture the value of bounded integer values.  As a
 consequence the library is free to drop, from the involved numerical
-abstraction, any point having a non-integer coordinate in correspondence
-of a space dimension subject to wrapping.  It must be stressed that
+abstraction, any point having a non-integer coordinate that corresponds
+to a space dimension subject to wrapping.  It must be stressed that
 freedom to drop such points does not constitute an obligation to remove
 all of them (especially because this would be extraordinarily expensive
 on some numerical abstractions).
@@ -564,7 +564,7 @@ The PPL provides operators for the more systematic
 "removal of points with non-integral coordinates".
 
 The wrapping operator will only remove some of these points
-as a byproduct of its main task and only when this comes at a negligible
+as a by-product of its main task and only when this comes at a negligible
 extra cost.
 
 
@@ -2634,28 +2634,20 @@ include the infinities \f$-\infty\f$ and \f$+\infty\f$.
 \subsection interval_linear_forms Linear forms with interval coefficients
 
 Generic concrete <EM>floating point expressions</EM> on \f$\mathbb{F}_t\f$ are
-represented by the \link Parma_Polyhedra_Library::Floating_Point_Expression
-\c Floating_Point_Expression \endlink abstract class. Its concrete derivate
-classes are:
-  - \link Parma_Polyhedra_Library::Constant_Floating_Point_Expression \c
-    Constant_Floating_Point_Expression \endlink,
-  - \link Parma_Polyhedra_Library::Variable_Floating_Point_Expression \c
-    Variable_Floating_Point_Expression \endlink,
-  - \link Parma_Polyhedra_Library::Opposite_Floating_Point_Expression \c
-    Opposite_Floating_Point_Expression \endlink, that is the negation
-    (unary minus) of a floating point expression,
-  - \link Parma_Polyhedra_Library::Sum_Floating_Point_Expression \c
-    Sum_Floating_Point_Expression \endlink, that is the sum of two floating
-    point expressions,
-  - \link Parma_Polyhedra_Library::Difference_Floating_Point_Expression \c
-    Difference_Floating_Point_Expression \endlink, that is the difference of
-    two floating point expressions,
-  - \link Parma_Polyhedra_Library::Multiplication_Floating_Point_Expression \c
-    Multiplication_Floating_Point_Expression \endlink, that is the product of
-    two floating point expressions, and
-  - \link Parma_Polyhedra_Library::Division_Floating_Point_Expression \c
-    Division_Floating_Point_Expression \endlink, that is the division of
-    two floating point expressions.
+represented by the \link Parma_Polyhedra_Library::Floating_Point_Expression \c Floating_Point_Expression \endlink
+abstract class. Its concrete derivate classes are:
+  - \link Parma_Polyhedra_Library::Constant_Floating_Point_Expression \c Constant_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Variable_Floating_Point_Expression \c Variable_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Opposite_Floating_Point_Expression \c Opposite_Floating_Point_Expression \endlink,
+    that is the negation (unary minus) of a floating point expression,
+  - \link Parma_Polyhedra_Library::Sum_Floating_Point_Expression \c Sum_Floating_Point_Expression \endlink,
+    that is the sum of two floating point expressions,
+  - \link Parma_Polyhedra_Library::Difference_Floating_Point_Expression \c Difference_Floating_Point_Expression \endlink,
+    that is the difference of two floating point expressions,
+  - \link Parma_Polyhedra_Library::Multiplication_Floating_Point_Expression \c Multiplication_Floating_Point_Expression \endlink,
+    that is the product of two floating point expressions, and
+  - \link Parma_Polyhedra_Library::Division_Floating_Point_Expression \c Division_Floating_Point_Expression \endlink,
+    that is the division of two floating point expressions.
 
 The set of all the possible values in \f$\mathbb{F}_t\f$ of a floating point
 expression at a given program point in a given abstract store can be

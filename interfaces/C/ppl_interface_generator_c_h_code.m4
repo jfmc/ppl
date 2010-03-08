@@ -566,6 +566,21 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 
 ')
 
+m4_define(`ppl_@CLASS@_wrap_assign_code',
+`/*! \relates ppl_@CLASS@_tag */
+int
+ppl_@CLASS@_wrap_assign
+PPL_PROTO((ppl_@CLASS@_t ph,
+           ppl_dimension_type ds[],
+           size_t n,
+           enum ppl_enum_Bounded_Integer_Type_Width w,
+           enum ppl_enum_Bounded_Integer_Type_Representation r,
+           enum ppl_enum_Bounded_Integer_Type_Overflow o,
+           const ppl_const_Constraint_System_t* pcs,
+           unsigned complexity_threshold,
+           int wrap_individually));
+')
+
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 `/*! \relates ppl_@CLASS@_tag */
 int

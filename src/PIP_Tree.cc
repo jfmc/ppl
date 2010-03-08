@@ -32,7 +32,7 @@ namespace Parma_Polyhedra_Library {
 namespace {
 
 // Calculate positive modulo of x % y
-void
+inline void
 mod_assign(Coefficient& z,
            Coefficient_traits::const_reference x,
            Coefficient_traits::const_reference y) {
@@ -42,7 +42,7 @@ mod_assign(Coefficient& z,
 }
 
 // Compute x += c * y
-void
+inline void
 add_mul_assign_row(Row& x,
                    Coefficient_traits::const_reference c, const Row& y) {
   PPL_ASSERT(x.size() == y.size());
@@ -51,7 +51,7 @@ add_mul_assign_row(Row& x,
 }
 
 // Compute x -= y
-void
+inline void
 sub_assign(Row& x, const Row& y) {
   PPL_ASSERT(x.size() == y.size());
   for (dimension_type i = x.size(); i-- > 0; )
@@ -93,7 +93,7 @@ merge_assign(Matrix& x,
 }
 
 // Assigns to row x the negation of row y.
-void
+inline void
 neg_assign_row(Row& x, const Row& y) {
   PPL_ASSERT(x.size() == y.size());
   for (dimension_type i = x.size(); i-- > 0; )
@@ -118,27 +118,33 @@ complement_assign(Row& x, const Row& y,
   }
 }
 
-// Update given context matrix using local artificials
-dimension_type
-update_context(Matrix& context,
-               const PIP_Tree_Node::Artificial_Parameter_Sequence& ap) {
-  const dimension_type ap_size = ap.size();
-  if (ap_size > 0)
-    context.add_zero_columns(ap_size);
-  return ap_size;
+// Add to `context' the columns for new artificial parameters.
+inline void
+add_artificial_parameters(Matrix& context,
+                          const dimension_type num_art_params) {
+  if (num_art_params > 0)
+    context.add_zero_columns(num_art_params);
 }
 
-// Update given context matrix and parameter set using local artificials
-void
-update_context(Variables_Set& params, Matrix& context,
-               const PIP_Tree_Node::Artificial_Parameter_Sequence& ap,
-               dimension_type& space_dimension) {
-  const dimension_type ap_size = update_context(context, ap);
-  // Update parameters.
-  for (dimension_type i = 0; i < ap_size; ++i)
-    params.insert(space_dimension + i);
-  // Update space dimension.
-  space_dimension += ap_size;
+// Add to `params' the indices of new artificial parameters.
+inline void
+add_artificial_parameters(Variables_Set& params,
+                          const dimension_type space_dim,
+                          const dimension_type num_art_params) {
+  for (dimension_type i = 0; i < num_art_params; ++i)
+    params.insert(space_dim + i);
+}
+
+// Update `context', `params' and `space_dim' to account for
+// the addition of the new artificial parameters.
+inline void
+add_artificial_parameters(Matrix& context,
+                          Variables_Set& params,
+                          dimension_type& space_dim,
+                          const dimension_type num_art_params) {
+  add_artificial_parameters(context, num_art_params);
+  add_artificial_parameters(params, space_dim, num_art_params);
+  space_dim += num_art_params;
 }
 
 /* Compares two columns lexicographically in revised simplex tableau
@@ -551,6 +557,18 @@ PIP_Tree_Node
   constraints_.insert(expr >= 0);
 }
 
+void
+PIP_Tree_Node::parent_merge() {
+  const PIP_Decision_Node& parent = *parent_;
+
+  // Merge the parent's artificial parameters.
+  artificial_parameters.insert(artificial_parameters.begin(),
+                               parent.art_parameter_begin(),
+                               parent.art_parameter_end());
+
+  PPL_ASSERT(OK());
+}
+
 bool
 PIP_Solution_Node::OK() const {
 #ifndef NDEBUG
@@ -651,18 +669,18 @@ PIP_Decision_Node::OK() const {
 }
 
 void
-PIP_Decision_Node::update_tableau(const PIP_Problem& problem,
+PIP_Decision_Node::update_tableau(const PIP_Problem& pip,
                                   const dimension_type external_space_dim,
                                   const dimension_type first_pending_constraint,
                                   const Constraint_Sequence& input_cs,
                                   const Variables_Set& parameters) {
-  true_child->update_tableau(problem,
+  true_child->update_tableau(pip,
                              external_space_dim,
                              first_pending_constraint,
                              input_cs,
                              parameters);
   if (false_child)
-    false_child->update_tableau(problem,
+    false_child->update_tableau(pip,
                                 external_space_dim,
                                 first_pending_constraint,
                                 input_cs,
@@ -671,33 +689,83 @@ PIP_Decision_Node::update_tableau(const PIP_Problem& problem,
 }
 
 PIP_Tree_Node*
-PIP_Decision_Node::solve(const PIP_Problem& problem,
+PIP_Decision_Node::solve(const PIP_Problem& pip,
+                         const bool check_feasible_context,
                          const Matrix& context,
                          const Variables_Set& params,
-                         dimension_type space_dimension) {
+                         dimension_type space_dim) {
   PPL_ASSERT(true_child != 0);
   Matrix context_true(context);
-  Variables_Set parameters(params);
-  update_context(parameters, context_true, artificial_parameters,
-                 space_dimension);
-  merge_assign(context_true, constraints_, parameters);
-  true_child = true_child->solve(problem, context_true,
-                                 parameters, space_dimension);
+  Variables_Set all_params(params);
+  const dimension_type num_art_params = artificial_parameters.size();
+  add_artificial_parameters(context_true, all_params, space_dim,
+                            num_art_params);
+  merge_assign(context_true, constraints_, all_params);
+  bool has_false_child = (false_child != 0);
+  bool has_true_child = (true_child != 0);
+  true_child = true_child->solve(pip, check_feasible_context,
+                                 context_true, all_params, space_dim);
 
-  if (false_child) {
+  if (has_false_child) {
     // Decision nodes with false child must have exactly one constraint
     PPL_ASSERT(1 == std::distance(constraints_.begin(), constraints_.end()));
-    Matrix context_false(context);
-    update_context(context_false, artificial_parameters);
-    merge_assign(context_false, constraints_, parameters);
+    // NOTE: modify context_true in place, complementing its last constraint.
+    Matrix& context_false = context_true;
     Row& last = context_false[context_false.num_rows()-1];
     complement_assign(last, last, 1);
-    false_child = false_child->solve(problem, context_false,
-                                     parameters, space_dimension);
+    false_child = false_child->solve(pip, check_feasible_context,
+                                     context_false, all_params, space_dim);
   }
 
-  if (true_child != 0 || false_child != 0)
-    return this;
+  if (true_child != 0 || false_child != 0) {
+    PIP_Tree_Node* node = this;
+    if (has_false_child && false_child == 0) {
+      // False child has become unfeasible: merge this node's artificials with
+      // the true child, while removing the local parameter constraints, which
+      // are no longer discriminative.
+      true_child->parent_merge();
+      true_child->set_parent(parent());
+      node = true_child;
+      true_child = 0;
+      delete this;
+    }
+    else if (has_true_child && true_child == 0) {
+      // True child has become unfeasible: merge this node's artificials
+      // with the false child.
+      false_child->parent_merge();
+      false_child->set_parent(parent());
+      node = false_child;
+      false_child = 0;
+      delete this;
+    }
+    else if (check_feasible_context) {
+      // Test all constraints for redundancy with the context, and eliminate
+      // them if not necessary.
+      Constraint_System cs;
+      cs.swap(constraints_);
+      const Constraint_System::const_iterator end = cs.end();
+      for (Constraint_System::const_iterator ci = cs.begin(); ci != end; ++ci) {
+        Matrix ctx_copy(context);
+        merge_assign(ctx_copy, Constraint_System(*ci), all_params);
+        Row& last = ctx_copy[ctx_copy.num_rows()-1];
+        complement_assign(last, last, 1);
+        if (compatibility_check(ctx_copy)) {
+          // The constraint is not redundant with the context: we must keep it.
+          constraints_.insert(*ci);
+        }
+      }
+      // If the constraints set has become empty, only keep the true child.
+      if (constraints_.empty()) {
+        true_child->parent_merge();
+        true_child->set_parent(parent());
+        node = true_child;
+        true_child = 0;
+        delete this;
+      }
+    }
+    PPL_ASSERT(node->OK());
+    return node;
+  }
   else {
     delete this;
     return 0;
@@ -1221,12 +1289,16 @@ PIP_Solution_Node::row_sign(const Row& x,
 }
 
 bool
-PIP_Solution_Node::compatibility_check(const Matrix& ctx, const Row& cnst) {
-  Matrix s(ctx);
-  // CHECKME: do ctx and cnst have compatible (row) capacity?
-  s.add_row(cnst);
-  PPL_ASSERT(s.OK());
+PIP_Tree_Node::compatibility_check(const Matrix& context, const Row& row) {
+  // CHECKME: do `context' and `row' have compatible (row) capacity?
+  Matrix s(context);
+  s.add_row(row);
+  return compatibility_check(s);
+}
 
+bool
+PIP_Tree_Node::compatibility_check(Matrix& s) {
+  PPL_ASSERT(s.OK());
   // Note: num_rows may increase.
   dimension_type num_rows = s.num_rows();
   const dimension_type num_cols = s.num_columns();
@@ -1412,7 +1484,7 @@ PIP_Solution_Node::compatibility_check(const Matrix& ctx, const Row& cnst) {
 }
 
 void
-PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
+PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
                                   const dimension_type external_space_dim,
                                   const dimension_type first_pending_constraint,
                                   const Constraint_Sequence& input_cs,
@@ -1424,9 +1496,9 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
   // NOTE: here 'params' stands for problem (i.e., non artificial) parameters.
   const dimension_type old_num_vars = tableau.s.num_columns();
   const dimension_type old_num_params
-    = problem.internal_space_dim - old_num_vars;
+    = pip.internal_space_dim - old_num_vars;
   const dimension_type num_added_dims
-    = problem.external_space_dim - problem.internal_space_dim;
+    = pip.external_space_dim - pip.internal_space_dim;
   const dimension_type new_num_params = parameters.size();
   const dimension_type num_added_params = new_num_params - old_num_params;
   const dimension_type num_added_vars = num_added_dims - num_added_params;
@@ -1488,10 +1560,10 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
   }
 
   if (big_dimension == not_a_dimension()
-      && problem.big_parameter_dimension != not_a_dimension()) {
+      && pip.big_parameter_dimension != not_a_dimension()) {
     // Compute the column number of big parameter in tableau.t matrix.
     Variables_Set::const_iterator pos
-      = parameters.find(problem.big_parameter_dimension);
+      = parameters.find(pip.big_parameter_dimension);
     big_dimension = std::distance(parameters.begin(), pos) + 1;
   }
 
@@ -1572,8 +1644,10 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
           // This might be faster however.
           tableau.s.add_zero_rows(1, Row::Flags());
           tableau.t.add_zero_rows(1, Row::Flags());
-          neg_assign_row(tableau.s[1 + row_id], v_row);
-          neg_assign_row(tableau.t[1 + row_id], p_row);
+          // NOTE: addition of rows invalidates references v_row and p_row
+          // due to possible matrix reallocations: recompute them.
+          neg_assign_row(tableau.s[1 + row_id], tableau.s[row_id]);
+          neg_assign_row(tableau.t[1 + row_id], tableau.t[row_id]);
           sign.push_back(row_sign(tableau.t[1 + row_id], big_dimension));
           special_equality_row = mapping.size();
           basis.push_back(false);
@@ -1592,7 +1666,8 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& problem,
 }
 
 PIP_Tree_Node*
-PIP_Solution_Node::solve(const PIP_Problem& problem,
+PIP_Solution_Node::solve(const PIP_Problem& pip,
+                         const bool check_feasible_context,
                          const Matrix& ctx,
                          const Variables_Set& params,
                          dimension_type space_dim) {
@@ -1600,9 +1675,20 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
   solution_valid = false;
 
   Matrix context(ctx);
-  Variables_Set parameters(params);
-  update_context(parameters, context, artificial_parameters, space_dim);
-  merge_assign(context, constraints_, parameters);
+  Variables_Set all_params(params);
+  const dimension_type num_art_params = artificial_parameters.size();
+  add_artificial_parameters(context, all_params, space_dim, num_art_params);
+  merge_assign(context, constraints_, all_params);
+
+  // If needed, (re-)check feasibility of context.
+  if (check_feasible_context) {
+    Matrix ctx_copy(context);
+    if (!compatibility_check(ctx_copy)) {
+      delete this;
+      return 0;
+    }
+  }
+
   const dimension_type not_a_dim = not_a_dimension();
 
   // Main loop of the simplex algorithm.
@@ -1650,9 +1736,9 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
           new_sign = POSITIVE;
         // Check compatibility for constraint t_i(z) < 0,
         // i.e., -t_i(z) - 1 >= 0.
-        Row c(num_params, Row::Flags());
-        complement_assign(c, t_i, tableau_den);
-        if (compatibility_check(context, c))
+        Row t_i_compl(num_params, Row::Flags());
+        complement_assign(t_i_compl, t_i, tableau_den);
+        if (compatibility_check(context, t_i_compl))
           new_sign = (new_sign == POSITIVE) ? MIXED : NEGATIVE;
         // Update sign for parameter row i.
         sign[i] = new_sign;
@@ -1746,7 +1832,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
           // Update pivot indices.
           pi = i;
           pj = j;
-          if (problem.control_parameters[PIP_Problem::PIVOT_ROW_STRATEGY]
+          if (pip.control_parameters[PIP_Problem::PIVOT_ROW_STRATEGY]
               == PIP_Problem::PIVOT_ROW_STRATEGY_FIRST)
             // Stop at first valid row.
             break;
@@ -1944,7 +2030,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
         Row copy(tableau.t[i_neg]);
         copy.normalize();
         context.add_row(copy);
-        add_constraint(copy, parameters);
+        add_constraint(copy, all_params);
         sign[i_neg] = POSITIVE;
         // Jump to next iteration.
         continue;
@@ -1972,8 +2058,8 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
       {
         Linear_Expression expr = Linear_Expression(t_test[0]);
         dimension_type j = 1;
-        for (Variables_Set::const_iterator p = parameters.begin(),
-               p_end = parameters.end(); p != p_end; ++p, ++j)
+        for (Variables_Set::const_iterator p = all_params.begin(),
+               p_end = all_params.end(); p != p_end; ++p, ++j)
           expr += t_test[j] * Variable(*p);
         using namespace IO_Operators;
         std::cerr << "Found mixed parameter sign row: " << best_i << ".\n"
@@ -1990,7 +2076,8 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
       // Add parametric constraint to context.
       context.add_row(t_test);
       // Recusively solve true node wrt updated context.
-      t_node = t_node->solve(problem, context, parameters, space_dim);
+      t_node = t_node->solve(pip, check_feasible_context,
+                             context, all_params, space_dim);
 
       // Modify *this in place to become the "false" version of current node.
       PIP_Tree_Node* f_node = this;
@@ -2005,7 +2092,8 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
       complement_assign(f_test, t_test, 1);
 
       // Recusively solve false node wrt updated context.
-      f_node = f_node->solve(problem, context, parameters, space_dim);
+      f_node = f_node->solve(pip, check_feasible_context,
+                             context, all_params, space_dim);
 
       // Case analysis on recursive resolution calls outcome.
       if (t_node == 0) {
@@ -2020,7 +2108,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
           f_node->constraints_.swap(cs);
           f_node->artificial_parameters.swap(aps);
           // Add f_test to constraints.
-          f_node->add_constraint(f_test, parameters);
+          f_node->add_constraint(f_test, all_params);
           return f_node;
         }
       }
@@ -2030,7 +2118,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
         t_node->constraints_.swap(cs);
         t_node->artificial_parameters.swap(aps);
         // Add t_test to t_nodes's constraints.
-        t_node->add_constraint(t_test, parameters);
+        t_node->add_constraint(t_test, all_params);
         // It is now safe to release previously wrapped t_node pointer
         // and return it to caller.
         return wrapped_node.release();
@@ -2046,7 +2134,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
       wrapped_node = std::auto_ptr<PIP_Tree_Node>(parent);
 
       // Add t_test to the constraints of the new decision node.
-      parent->add_constraint(t_test, parameters);
+      parent->add_constraint(t_test, all_params);
 
       if (!cs.empty()) {
         // If node to be solved had tautologies,
@@ -2099,7 +2187,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
     dimension_type best_pcount = not_a_dim;
 
     const PIP_Problem::Control_Parameter_Value cutting_strategy
-      = problem.control_parameters[PIP_Problem::CUTTING_STRATEGY];
+      = pip.control_parameters[PIP_Problem::CUTTING_STRATEGY];
 
     if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_FIRST) {
       // Find the first row with simplest parametric part.
@@ -2121,7 +2209,7 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
         }
       }
       // Generate cut using 'best_i'.
-      generate_cut(best_i, parameters, context, space_dim);
+      generate_cut(best_i, all_params, context, space_dim);
     }
     else {
       assert(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST
@@ -2181,11 +2269,11 @@ PIP_Solution_Node::solve(const PIP_Problem& problem,
           all_best_is.push_back(i);
       }
       if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST)
-        generate_cut(best_i, parameters, context, space_dim);
+        generate_cut(best_i, all_params, context, space_dim);
       else {
         PPL_ASSERT(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL);
         for (dimension_type k = all_best_is.size(); k-- > 0; )
-          generate_cut(all_best_is[k], parameters, context, space_dim);
+          generate_cut(all_best_is[k], all_params, context, space_dim);
       }
     } // End of processing for non-integer solutions.
 

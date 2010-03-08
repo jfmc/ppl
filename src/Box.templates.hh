@@ -3540,7 +3540,9 @@ Box<ITV>::generalized_affine_preimage(const Linear_Expression& lhs,
 
 template <typename ITV>
 template <typename T, typename Iterator>
-typename Enable_If<Is_Same<T, Box<ITV> >::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+typename Enable_If<Is_Same<T, Box<ITV> >::value
+                   && Is_Same_Or_Derived<Interval_Base, ITV>::value,
+                   void>::type
 Box<ITV>::CC76_widening_assign(const T& y, Iterator first, Iterator last) {
   if (y.is_empty())
     return;
@@ -3553,7 +3555,9 @@ Box<ITV>::CC76_widening_assign(const T& y, Iterator first, Iterator last) {
 
 template <typename ITV>
 template <typename T>
-typename Enable_If<Is_Same<T, Box<ITV> >::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+typename Enable_If<Is_Same<T, Box<ITV> >::value
+                   && Is_Same_Or_Derived<Interval_Base, ITV>::value,
+                   void>::type
 Box<ITV>::CC76_widening_assign(const T& y, unsigned* tp) {
   static typename ITV::boundary_type stop_points[] = {
     typename ITV::boundary_type(-2),
@@ -3660,7 +3664,9 @@ Box<ITV>::limited_CC76_extrapolation_assign(const Box& y,
 
 template <typename ITV>
 template <typename T>
-typename Enable_If<Is_Same<T, Box<ITV> >::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+typename Enable_If<Is_Same<T, Box<ITV> >::value
+                   && Is_Same_Or_Derived<Interval_Base, ITV>::value,
+                   void>::type
 Box<ITV>::CC76_narrowing_assign(const T& y) {
   const dimension_type space_dim = space_dimension();
 
@@ -3704,12 +3710,6 @@ Box<ITV>::CC76_narrowing_assign(const T& y) {
       x_i.upper() = y_i.upper();
   }
   PPL_ASSERT(OK());
-}
-
-template <typename ITV>
-template <typename T>
-typename Enable_If<Is_Same<T, Box<ITV> >::value, void>::type
-Box<ITV>::CC76_narrowing_assign(const T& y) {
 }
 
 template <typename ITV>

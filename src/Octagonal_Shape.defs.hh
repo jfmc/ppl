@@ -523,7 +523,7 @@ public:
     The built OS is the most precise OS that includes the box.
 
     \param box
-    The box representing the BDS to be built.
+    The box representing the OS to be built.
 
     \param complexity
     This argument is ignored as the algorithm used has
@@ -1114,8 +1114,8 @@ public:
     \c T is bound to an integer datatype.
 
     \note
-    The integer upper bound of two rational BDS is the smallest
-    rational BDS containing all the integral points in the two arguments.
+    The integer upper bound of two rational OS is the smallest
+    rational OS containing all the integral points in the two arguments.
     In general, the result is \e not an upper bound for the two input
     arguments, as it may cut away non-integral portions of the two
     rational shapes.

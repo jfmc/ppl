@@ -43,5 +43,6 @@ m4_define(`m4_procedure_list',
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s +simple,
 ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@ +simple,
 ppl_@CLASS@_add_recycled_@CLASS_REPRESENT@s +simple,
+ppl_@CLASS@_wrap_assign +simple,
 )
 ')
