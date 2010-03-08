@@ -263,7 +263,14 @@ one_affine_ranking_function_MS(const PSET& pset, Generator& mu) {
   MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
 
   if (mip.is_satisfiable()) {
-    mu = mip.feasible_point();
+    Generator fp = mip.feasible_point();
+    assert(fp.is_point());
+    Linear_Expression le;
+    for (dimension_type i = n+1; i-- > 0; ) {
+      Variable vi(i);
+      le += vi*fp.coefficient(vi);
+    }
+    mu = point(le, fp.divisor());
     return true;
   }
   else
@@ -279,28 +286,28 @@ all_affine_ranking_functions_MS(const PSET& pset, C_Polyhedron& mu_space) {
   dimension_type m;
   prepare_input_MS_PR(pset, cs, n, m, "all_affine_ranking_functions_MS");
 
-  Constraint_System cs1;
-  Constraint_System cs2;
-  fill_constraint_systems_MS(cs, n, m, cs1, cs2);
+  Constraint_System cs_out1;
+  Constraint_System cs_out2;
+  fill_constraint_systems_MS(cs, n, m, cs_out1, cs_out2);
 
 #if PRINT_DEBUG_INFO
   Variable::output_function_type* p_default_output_function
     = Variable::get_output_function();
   Variable::set_output_function(output_function_MS);
 
-  std::cout << "*** cs1 ***" << std::endl;
+  std::cout << "*** cs_out1 ***" << std::endl;
   output_function_MS_which = 1;
   using namespace IO_Operators;
-  std::cout << cs1 << std::endl;
+  std::cout << cs_out1 << std::endl;
 
-  std::cout << "*** cs2 ***" << std::endl;
+  std::cout << "*** cs_out2 ***" << std::endl;
   output_function_MS_which = 2;
   using namespace IO_Operators;
-  std::cout << cs2 << std::endl;
+  std::cout << cs_out2 << std::endl;
 #endif
 
-  C_Polyhedron ph1(cs1);
-  C_Polyhedron ph2(cs2);
+  C_Polyhedron ph1(cs_out1);
+  C_Polyhedron ph2(cs_out2);
   ph1.remove_higher_space_dimensions(n);
   ph1.add_space_dimensions_and_embed(1);
   ph2.remove_higher_space_dimensions(n+1);
@@ -359,8 +366,9 @@ one_affine_ranking_function_PR(const PSET& pset, Generator& mu) {
   MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
 
   if (mip.is_satisfiable()) {
-    Generator u3 = mip.feasible_point();
-    // FIXME: must multiply u3 by E'_C and assign the result to mu.
+    Generator fp = mip.feasible_point();
+    // FIXME: must project fp to obtain 3, then multiply by E'_C
+    // and assign the result to mu.
     //return true;
     return false;
   }
