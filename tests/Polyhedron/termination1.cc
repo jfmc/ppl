@@ -34,7 +34,7 @@ test01() {
   ph.add_constraint(x1 >= 2);
   ph.add_constraint(2*xp1 + 1 >= x1);
   ph.add_constraint(2*xp1 <= x1);
-  ph.add_constraint(xp2 + 1 == x2);
+  ph.add_constraint(xp2 == x2 + 1);
 
   C_Polyhedron mu_space;
   all_affine_ranking_functions_MS(ph, mu_space);
@@ -68,7 +68,7 @@ test02() {
   ph.add_constraint(x1 >= 2);
   ph.add_constraint(2*xp1 + 1 >= x1);
   ph.add_constraint(2*xp1 <= x1);
-  ph.add_constraint(xp2 + 1 == x2);
+  ph.add_constraint(xp2 == x2 + 1);
 
   return termination_test_MS(ph);
 }
