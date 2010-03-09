@@ -118,6 +118,9 @@ public:
   //! All dangerous_iterator objects in [first,last] are invalidated (note
   //! that last is invalidated, too).
   dangerous_iterator reset(dangerous_iterator first,dangerous_iterator last);
+  
+  //! Resets to zero the elements in [i,size()).
+  void reset_after(dimension_type i);
 
   //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!
@@ -237,6 +240,9 @@ public:
   //! pointed to j, dangerous_iterator objects in [i_itr,j_itr] are
   //! invalidated (note that j_itr is invalidated, too).
   void reset(dimension_type i,dimension_type j);
+
+  //! Resets to zero the elements in [i,size()).
+  void reset_after(dimension_type i);
 
   //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!

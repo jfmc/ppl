@@ -131,6 +131,13 @@ Sparse_Row::reset(dangerous_iterator first,dangerous_iterator last) {
 }
 
 inline void
+Sparse_Row::reset_after(dimension_type i) {
+  PPL_ASSERT(i < size_);
+  row.reset_after(i);
+  PPL_ASSERT(OK());
+}
+
+inline void
 Sparse_Row::normalize() {
   row.normalize();
   PPL_ASSERT(OK());
@@ -344,6 +351,13 @@ Sparse_Row_Reference::reset(const dimension_type first,
                          const dimension_type last) {
   PPL_ASSERT(last <= size_);
   row.reset(first,last);
+  PPL_ASSERT(OK());
+}
+
+inline void
+Sparse_Row_Reference::reset_after(dimension_type i) {
+  PPL_ASSERT(i < size_);
+  row.reset_after(i);
   PPL_ASSERT(OK());
 }
 
