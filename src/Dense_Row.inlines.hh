@@ -23,6 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Dense_Row_inlines_hh
 #define PPL_Dense_Row_inlines_hh 1
 
+// FIXME: Remove this.
+// Added to please KDevelop4.
+#include "Dense_Row.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 inline dimension_type
