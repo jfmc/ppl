@@ -200,9 +200,9 @@ fill_constraint_systems_MS(const Constraint_System& cs,
     \end{pmatrix},
   \f]
   where
-  \f$ \mat{A}_B \in \Qset^{r \times n} \f$,
-  \f$ \mat{A}_C \in \Qset^{s \times n} \f$,
-  \f$ \mat{A}'_C \in \Qset^{s \times n} \f$,
+  \f$ A_B \in \Qset^{r \times n} \f$,
+  \f$ A_C \in \Qset^{s \times n} \f$,
+  \f$ A'_C \in \Qset^{s \times n} \f$,
   \f$ \vect{b}_B \in \Qset^r \f$,
   \f$ \vect{b}_C \in \Qset^s \f$.
   The corresponding system is:
