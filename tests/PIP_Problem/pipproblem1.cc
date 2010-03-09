@@ -545,7 +545,6 @@ test19() {
   cs.insert(3*j >= -2*i+8);
   cs.insert(j <= 4*i - 4);
   cs.insert(j <= m);
-  //cs.insert(j >= 0);
   cs.insert(i <= n);
 
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
@@ -557,8 +556,148 @@ test19() {
     pip.print_solution(nout);
   }
 
-  cs.insert(n <= 1);
+  pip.add_constraint(n <= 1);
   ok &= (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
+
+  return ok;
+}
+
+bool
+test20() {
+  // Same problem as test02, but incrementally adding a parameter constraint
+  // making the solution tree simpler.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  pip.add_constraint(7*m >= 12);
+  ok &= (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  return ok;
+}
+
+bool
+test21() {
+  // Same problem as test02, but incrementally adding a parameter constraint
+  // making the solution tree simpler.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  pip.add_constraint(7*m < 12);
+  ok &= (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  return ok;
+}
+
+bool
+test22() {
+  // Same problem as test02, but incrementally adding two parameter constraints
+  // making the problem infeasible.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  pip.add_constraint(7*m < 12);
+  pip.add_constraint(2*n + 3*m < 8);
+  ok &= (pip.solve() == UNFEASIBLE_PIP_PROBLEM);
+
+  return ok;
+}
+
+bool
+test23() {
+  // Same problem as test02, but incrementally adding a parameter constraint
+  // removing one level in the decision tree.
+  Variable i(0);
+  Variable j(1);
+  Variable n(2);
+  Variable m(3);
+  Variables_Set params(n, m);
+
+  Constraint_System cs;
+  cs.insert(3*j >= -2*i+8);
+  cs.insert(j <= 4*i - 4);
+  cs.insert(j <= m);
+  cs.insert(i <= n);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  pip.add_constraint(7*n >= 10);
+  ok &= (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
 
   return ok;
 }
@@ -584,5 +723,9 @@ BEGIN_MAIN
   DO_TEST(test16);
   DO_TEST(test17);
   DO_TEST(test18);
-  DO_TEST_F(test19);
+  DO_TEST_F8(test19);
+  DO_TEST_F8(test20);
+  DO_TEST_F8(test21);
+  DO_TEST_F8(test22);
+  DO_TEST_F8(test23);
 END_MAIN

@@ -47,8 +47,10 @@ namespace PWL = Parma_Watchdog_Library;
 #endif
 
 // Cygwin only supports ITIMER_REAL.
+// Apparently GNU Hurd also only supports ITIMER_REAL
+// (see http://www.cs.unipr.it/pipermail/ppl-devel/2010-March/016072.html).
 // Profiling does not work on programs that use the ITIMER_PROF timer.
-#if defined(__CYGWIN__) || defined(PWL_PROFILING)
+#if defined(__CYGWIN__) || defined(__gnu_hurd__) || defined(PWL_PROFILING)
 #define THE_TIMER  ITIMER_REAL
 #define THE_SIGNAL SIGALRM
 #else
@@ -84,7 +86,7 @@ namespace {
 
 void
 throw_syscall_error(const char* syscall_name) {
-  throw std::runtime_error(std::string(syscall_name) + strerror(errno));
+  throw std::runtime_error(std::string(syscall_name) + ": " + strerror(errno));
 }
 
 void

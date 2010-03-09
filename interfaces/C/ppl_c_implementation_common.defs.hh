@@ -46,6 +46,12 @@ void notify_error(enum ppl_enum_error_code code, const char* description);
 
 Relation_Symbol relation_symbol(enum ppl_enum_Constraint_Type t);
 
+Bounded_Integer_Type_Width
+bounded_integer_type_width(enum ppl_enum_Bounded_Integer_Type_Width w);
+
+Bounded_Integer_Type_Representation
+bounded_integer_type_representation(enum ppl_enum_Bounded_Integer_Type_Representation r);
+
 /*! \brief
   A class to wrap an array of fixed length into a partial function interface
   suitable for the map_space_dimension() methods.
