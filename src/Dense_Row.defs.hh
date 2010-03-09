@@ -280,7 +280,7 @@ public:
   bool OK() const;
 
 private:
-  Dense_Row& row;
+  Dense_Row* row;
   dimension_type i;
 };
 
@@ -305,7 +305,7 @@ public:
   bool OK() const;
 
 private:
-  const Dense_Row& row;
+  const Dense_Row* row;
   dimension_type i;
 };
 

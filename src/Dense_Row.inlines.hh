@@ -246,25 +246,25 @@ Dense_Row::operator const Row&() const {
 
 inline
 Dense_Row::iterator::iterator(Dense_Row& row1,dimension_type i1)
-  : row(row1), i(i1) {
+  : row(&row1), i(i1) {
   PPL_ASSERT(OK());
 }
 
 inline Dense_Row::iterator::value_type
 Dense_Row::iterator::operator*() {
-  PPL_ASSERT(i < row.size());
-  return value_type(i,row[i]);
+  PPL_ASSERT(i < row->size());
+  return value_type(i,(*row)[i]);
 }
 
 inline Dense_Row::iterator::const_type
 Dense_Row::iterator::operator*() const {
-  PPL_ASSERT(i < row.size());
-  return const_type(i,row[i]);
+  PPL_ASSERT(i < row->size());
+  return const_type(i,(*row)[i]);
 }
 
 inline Dense_Row::iterator&
 Dense_Row::iterator::operator++() {
-  PPL_ASSERT(i < row.size());
+  PPL_ASSERT(i < row->size());
   ++i;
   PPL_ASSERT(OK());
   return *this;
@@ -294,7 +294,7 @@ Dense_Row::iterator::operator--(int) {
 
 inline bool
 Dense_Row::iterator::operator==(const iterator& x) const {
-  return (&row == &(x.row)) && (i == x.i);
+  return (row == x.row) && (i == x.i);
 }
 
 inline bool
@@ -304,31 +304,31 @@ Dense_Row::iterator::operator!=(const iterator& x) const {
 
 inline
 Dense_Row::iterator::operator const_iterator() const {
-  return const_iterator(row,i);
+  return const_iterator(*row,i);
 }
 
 inline bool
 Dense_Row::iterator::OK() const {
   // i can be equal to row.size() for past-the-end iterators
-  return (i <= row.size());
+  return (i <= row->size());
 }
 
 
 inline
 Dense_Row::const_iterator::const_iterator(const Dense_Row& row1,dimension_type i1)
-  : row(row1), i(i1) {
+  : row(&row1), i(i1) {
   PPL_ASSERT(OK());
 }
 
 inline Dense_Row::const_iterator::const_type
 Dense_Row::const_iterator::operator*() const {
-  PPL_ASSERT(i < row.size());
-  return const_type(i,row[i]);
+  PPL_ASSERT(i < row->size());
+  return const_type(i,(*row)[i]);
 }
 
 inline Dense_Row::const_iterator&
 Dense_Row::const_iterator::operator++() {
-  PPL_ASSERT(i < row.size());
+  PPL_ASSERT(i < row->size());
   ++i;
   PPL_ASSERT(OK());
   return *this;
@@ -358,7 +358,7 @@ Dense_Row::const_iterator::operator--(int) {
 
 inline bool
 Dense_Row::const_iterator::operator==(const const_iterator& x) const {
-  return (&row == &(x.row)) && (i == x.i);
+  return (row == x.row) && (i == x.i);
 }
 
 inline bool
@@ -369,7 +369,7 @@ Dense_Row::const_iterator::operator!=(const const_iterator& x) const {
 inline bool
 Dense_Row::const_iterator::OK() const {
   // i can be equal to row.size() for past-the-end iterators
-  return (i <= row.size());
+  return (i <= row->size());
 }
 
 } // namespace Parma_Polyhedra_Library
