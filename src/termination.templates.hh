@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BD_Shape.defs.hh"
 #include "Octagonal_Shape.defs.hh"
 
-#define PRINT_DEBUG_INFO 0
+#define PRINT_DEBUG_INFO 1
 
 #if PRINT_DEBUG_INFO
 #include <iostream>
@@ -43,6 +43,7 @@ namespace Termination {
 #if PRINT_DEBUG_INFO
 static dimension_type output_function_MS_n;
 static dimension_type output_function_MS_m;
+
 /* Encodes which object are we printing:
 
    0 means input constraint system;
@@ -109,6 +110,26 @@ output_function_MS(std::ostream& s, const Variable& v) {
     break;
   }
 }
+
+static dimension_type output_function_PR_s;
+static dimension_type output_function_PR_r;
+
+/*
+  Debuggin output function.  See the documentation of
+  fill_constraint_system_PR() for the allocation of variable indices.
+*/
+inline void
+output_function_PR(std::ostream& s, const Variable& v) {
+  dimension_type id = v.id();
+  if (id < output_function_PR_s)
+    s << "u3_" << id + 1;
+  else if (id < output_function_PR_s + output_function_PR_r)
+    s << "u2_" << id - output_function_PR_s + 1;
+  else if (id < output_function_PR_s + 2*output_function_PR_r)
+    s << "u1_" << id - (output_function_PR_s + output_function_PR_r) + 1;
+  else
+    s << "WHAT?";
+}
 #endif
 
 void
@@ -122,7 +143,9 @@ void
 fill_constraint_system_PR(const Constraint_System& cs,
 			  const dimension_type n,
 			  const dimension_type m,
-			  Constraint_System& cs_out);
+			  dimension_type& r,
+			  Constraint_System& cs_out,
+			  Linear_Expression& le_out);
 
 template <typename PSET>
 void
@@ -343,12 +366,47 @@ termination_test_PR(const PSET& pset) {
   dimension_type m;
   prepare_input_MS_PR(pset, cs, n, m, "termination_test_PR");
 
+  dimension_type r;
   Constraint_System cs_mip;
-  fill_constraint_system_PR(cs, n, m, cs_mip);
+  Linear_Expression le_obj;
+  fill_constraint_system_PR(cs, n, m, r, cs_mip, le_obj);
 
-  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
+  const dimension_type s = m - r;
 
-  return mip.is_satisfiable();
+#if PRINT_DEBUG_INFO
+  output_function_PR_r = r;
+  output_function_PR_s = s;
+  Variable::output_function_type* p_default_output_function
+    = Variable::get_output_function();
+  Variable::set_output_function(output_function_PR);
+
+  std::cout << "*** cs_mip ***" << std::endl;
+  using namespace IO_Operators;
+  std::cout << cs_mip << std::endl;
+  std::cout << "*** le_obj ***" << std::endl;
+  std::cout << le_obj << std::endl;
+  Variable::set_output_function(p_default_output_function);
+#endif
+
+  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip,
+				le_obj, MAXIMIZATION);
+  switch (mip.solve()) {
+  case UNFEASIBLE_MIP_PROBLEM:
+    return false;
+  case UNBOUNDED_MIP_PROBLEM:
+    return true;
+  case OPTIMIZED_MIP_PROBLEM:
+    {
+      PPL_DIRTY_TEMP_COEFFICIENT(num);
+      PPL_DIRTY_TEMP_COEFFICIENT(den);
+      mip.optimal_value(num, den);
+      assert(den > 0);
+      return num > 0;
+    }
+  }
+
+  // This point should be unreachable.
+  throw std::runtime_error("PPL internal error");
 }
 
 template <typename PSET>
@@ -360,14 +418,16 @@ one_affine_ranking_function_PR(const PSET& pset, Generator& mu) {
   dimension_type m;
   prepare_input_MS_PR(pset, cs, n, m, "one_affine_ranking_function_PR");
 
+  dimension_type r;
   Constraint_System cs_mip;
-  fill_constraint_system_PR(cs, n, m, cs_mip);
+  Linear_Expression le_ineq;
+  fill_constraint_system_PR(cs, n, m, r, cs_mip, le_ineq);
 
   MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
 
   if (mip.is_satisfiable()) {
     Generator fp = mip.feasible_point();
-    // FIXME: must project fp to obtain 3, then multiply by E'_C
+    // FIXME: must project fp to obtain u3, then multiply by E'_C
     // and assign the result to mu.
     //return true;
     return false;
@@ -385,8 +445,10 @@ all_affine_ranking_functions_PR(const PSET& pset, C_Polyhedron& mu_space) {
   dimension_type m;
   prepare_input_MS_PR(pset, cs, n, m, "all_affine_ranking_functions_PR");
 
+  dimension_type r;
   Constraint_System cs_out;
-  fill_constraint_system_PR(cs, n, m, cs_out);
+  Linear_Expression le_ineq;
+  fill_constraint_system_PR(cs, n, m, r, cs_out, le_ineq);
 
   mu_space = C_Polyhedron(n+1, EMPTY);
 }

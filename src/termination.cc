@@ -260,23 +260,63 @@ void
 fill_constraint_system_PR(const Constraint_System& cs,
 			  const dimension_type n,
 			  const dimension_type m,
-			  Constraint_System& cs_out) {
+			  dimension_type& r,
+			  Constraint_System& cs_out,
+			  Linear_Expression& le_out) {
   // Determine the partitioning of the m rows into the r rows
   // of E_B and the s rows of E'_C|E_C.
-  std::deque<bool> in_A_B(m, true);
-  dimension_type r = m;
+  std::deque<bool> row_of_E_B(m, true);
+  r = m;
+  dimension_type row_index = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i) {
+	 cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
     const Constraint& c_i = *i;
-    for (dimension_type j = 2*n; j-- > n; )
+    for (dimension_type j = n; j-- > 0; )
       if (c_i.coefficient(Variable(j)) != 0) {
-	in_A_B[j] = false;
+	row_of_E_B[row_index] = false;
 	--r;
 	break;
       }
   }
-  dimension_type s = m - r;
+  const dimension_type s = m - r;
 
+  std::vector<Linear_Expression> les_eq(2*n);
+  row_index = 0;
+  dimension_type E_B_row_index = 0;
+  dimension_type E_C_row_index = 0;
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
+    const Constraint& c_i = *i;
+    if (row_of_E_B[row_index]) {
+      assert(E_B_row_index < r);
+      for (dimension_type j = n; j-- > 0; ) {
+	Coefficient_traits::const_reference k
+	  = c_i.coefficient(Variable(j + n));
+	les_eq[j] += k*Variable(m + E_B_row_index);
+	les_eq[j] -= k*Variable(s + E_B_row_index);
+	les_eq[j + n] += k*Variable(s + E_B_row_index);
+      }
+      le_out += c_i.inhomogeneous_term()*Variable(s + E_B_row_index);
+      ++E_B_row_index;
+    }
+    else {
+      assert(E_C_row_index < s);
+      for (dimension_type j = n; j-- > 0; ) {
+	PPL_DIRTY_TEMP_COEFFICIENT(k);
+	k = c_i.coefficient(Variable(j + n));
+	les_eq[j] -= k*Variable(E_C_row_index);
+	k += c_i.coefficient(Variable(j));
+	les_eq[j + n] += k*Variable(E_C_row_index);
+      }
+      le_out += c_i.inhomogeneous_term()*Variable(E_C_row_index);
+      ++E_C_row_index;
+    }
+  }
+
+  // FIXME: iterate backwards once the debuggin phase is over.
+  //for (dimension_type j = 2*n; j-- > 0; )
+  for (dimension_type j = 0; j < 2*n; ++j)
+    cs_out.insert(les_eq[j] == 0);
 }
 
 
