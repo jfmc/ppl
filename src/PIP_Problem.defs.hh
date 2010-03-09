@@ -316,7 +316,40 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   will be defined in terms of all the parameters (problem parameters
   and artificial parameters defined along the path).
 
-  FIXME: different uses of the big parameter.
+  \par Solving maximization problems
+  You can solve a lexicographic maximization problem by reformulating its
+  constraints using variable substitution. Proceed the following steps:
+   - Create a big parameter (see PIP_Problem::set_big_parameter_dimension),
+     which we will call \f$M\f$.
+   - Reformulate each of the maximization problem constraints by
+     substituting each \f$x_i\f$ variable with an expression of the form
+     \f$M-x'_i\f$, where the \f$x'_i\f$ variables are to be minimized.
+   - Solve the lexicographic minimum for the \f$x'\f$ variable vector.
+   - In the solution expressions, substitute each \f$x'_i\f$ variable back
+     to \f$M-x_i\f$.
+
+  You can choose to maximize only a subset of the variables while minimizing
+  the other variables. In that case, just apply the variable substitution
+  method on the variables you want to be maximized. The variable
+  optimization priority will still be in lexicographic order.
+
+  \par Allowing variables to be arbitrarily signed
+  You can deal with arbitrarily signed variables by reformulating the
+  constraints using variable substitution. Proceed the following steps:
+   - Create a big parameter (see PIP_Problem::set_big_parameter_dimension),
+     which we will call \f$M\f$.
+   - Reformulate each of the maximization problem constraints by
+     substituting each \f$x_i\f$ variable with an expression of the form
+     \f$M+x'_i\f$, where the \f$x'_i\f$ variables are positive.
+   - Solve the lexicographic minimum for the \f$x'\f$ variable vector.
+   - In the solution expressions, substitute each \f$x'_i\f$ variable back
+     to \f$x_i-M\f$.
+
+  You can choose to define only a subset of the variables to be
+  sign-unrestricted. In that case, just apply the variable substitution
+  method on the variables you want to be sign-unrestricted.
+
+  FIXME: Solving problems with arbitrarily signed parameters
 */
 class Parma_Polyhedra_Library::PIP_Problem {
 public:
