@@ -56,6 +56,13 @@ Sparse_Row::Sparse_Row(const Sparse_Row_Reference& x)
 }
 
 inline Sparse_Row&
+Sparse_Row::operator=(const Unlimited_Sparse_Row& x) {
+  row = x;
+  PPL_ASSERT(OK());
+  return *this;
+}
+
+inline Sparse_Row&
 Sparse_Row::operator=(const Sparse_Row_Reference& x) {
   Sparse_Row_Reference(row,size_) = x;
   return *this;
@@ -281,6 +288,13 @@ Sparse_Row_Reference::Sparse_Row_Reference(Unlimited_Sparse_Row& row1,
                                      const dimension_type size)
   : row(row1), size_(size) {
   PPL_ASSERT(OK());
+}
+
+inline Sparse_Row_Reference&
+Sparse_Row_Reference::operator=(const Unlimited_Sparse_Row& x) {
+  row = x;
+  PPL_ASSERT(OK());
+  return *this;
 }
 
 inline Sparse_Row_Reference&

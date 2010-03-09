@@ -72,6 +72,10 @@ public:
   Sparse_Row(const Sparse_Row_Reference& x);
 
   //! Assigns a Sparse_Row_Reference to (*this).
+  //! x should have no nonzero elements with index greater than size().
+  Sparse_Row& operator=(const Unlimited_Sparse_Row& x);
+
+  //! Assigns a Sparse_Row_Reference to (*this).
   Sparse_Row& operator=(const Sparse_Row_Reference& x);
 
   //! Swaps (*this) and x.
@@ -201,6 +205,9 @@ public:
 
   Sparse_Row_Reference(Unlimited_Sparse_Row& row,const dimension_type size);
 
+  Sparse_Row_Reference& operator=(const Unlimited_Sparse_Row& x);
+
+  //! x should have no nonzero elements with index greater than size().
   Sparse_Row_Reference& operator=(const Sparse_Row_Reference& x);
 
   Sparse_Row_Reference& operator=(const Sparse_Row& x);
