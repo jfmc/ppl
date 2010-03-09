@@ -176,13 +176,9 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   \param cs_out
   The output constraint system, where variables indices are allocated
   as follows:
-  - \f$ \mu_1, \ldots, \mu_n \f$ go onto space dimensions
-    \f$ 0, \ldots, n-1 \f$;
-  - \f$ \mu_0\f$ goes onto space dimension \f$ n \f$;
-  - \f$ y_1, \ldots, y_m \f$ go onto space dimensions
-    \f$ n+1, \ldots, n+m \f$;
-  - \f$ z_1, ..., z_m, z_{m+1}, z_{m+2} \f$ go onto space dimensions
-    \f$ n+m+1, ..., n+2*m+2 \f$.
+  - \f$ u_3 \f$ goes onto space dimensions \f$ 0, \ldots, s-1 \f$;
+  - \f$ u_2 \f$ goes onto space dimensions \f$ s, \ldots, s+r-1 \f$;
+  - \f$ u_1 \f$ goes onto space dimensions \f$ s+r, \ldots, s+2r-1 \f$.
 
   The improved Podelski-Rybalchenko method described in the paper
   is based on a loop encoding of the form
@@ -259,18 +255,12 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   \f$ \vect{u}_3 \in \Qset_-^s \f$.
   The space of ranking functions is then spanned by
   \f$ \vect{u}_3^\transpose E_C' \vect x \f$.
-
-  The allocation of variable indices in the output constraint
-  system \p cs_out is as follows:
-  - \f$ u_3 \f$ goes onto space dimensions \f$ 0, \ldots, s-1 \f$;
-  - \f$ u_2 \f$ goes onto space dimensions \f$ s, \ldots, s+r-1 \f$;
-  - \f$ u_1 \f$ goes onto space dimensions \f$ s+r, \ldots, s+2r-1 \f$.
 */
 void
-fill_constraint_systems_PR(const Constraint_System& cs,
-			   const dimension_type n,
-			   const dimension_type m,
-			   Constraint_System& cs_out) {
+fill_constraint_system_PR(const Constraint_System& cs,
+			  const dimension_type n,
+			  const dimension_type m,
+			  Constraint_System& cs_out) {
   // Determine the partitioning of the m rows into the r rows
   // of E_B and the s rows of E'_C|E_C.
   std::deque<bool> in_A_B(m, true);

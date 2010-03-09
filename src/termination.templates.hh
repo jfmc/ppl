@@ -119,10 +119,10 @@ fill_constraint_systems_MS(const Constraint_System& cs,
 			   Constraint_System& cs_out2);
 
 void
-fill_constraint_systems_PR(const Constraint_System& cs,
-			   const dimension_type n,
-			   const dimension_type m,
-			   Constraint_System& cs_out);
+fill_constraint_system_PR(const Constraint_System& cs,
+			  const dimension_type n,
+			  const dimension_type m,
+			  Constraint_System& cs_out);
 
 template <typename PSET>
 void
@@ -344,7 +344,7 @@ termination_test_PR(const PSET& pset) {
   prepare_input_MS_PR(pset, cs, n, m, "termination_test_PR");
 
   Constraint_System cs_mip;
-  fill_constraint_systems_PR(cs, n, m, cs_mip);
+  fill_constraint_system_PR(cs, n, m, cs_mip);
 
   MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
 
@@ -361,7 +361,7 @@ one_affine_ranking_function_PR(const PSET& pset, Generator& mu) {
   prepare_input_MS_PR(pset, cs, n, m, "one_affine_ranking_function_PR");
 
   Constraint_System cs_mip;
-  fill_constraint_systems_PR(cs, n, m, cs_mip);
+  fill_constraint_system_PR(cs, n, m, cs_mip);
 
   MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
 
@@ -386,7 +386,7 @@ all_affine_ranking_functions_PR(const PSET& pset, C_Polyhedron& mu_space) {
   prepare_input_MS_PR(pset, cs, n, m, "all_affine_ranking_functions_PR");
 
   Constraint_System cs_out;
-  fill_constraint_systems_PR(cs, n, m, cs_out);
+  fill_constraint_system_PR(cs, n, m, cs_out);
 
   mu_space = C_Polyhedron(n+1, EMPTY);
 }
