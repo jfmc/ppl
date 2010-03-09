@@ -199,9 +199,12 @@ fill_constraint_systems_MS(const Constraint_System& cs,
      \vect{b}_B \\ \vect{b}_C
     \end{pmatrix},
   \f]
-  where \f$ A_B \in \Qset^r_n\f$, \f$ A_C \in \Qset^s_n\f$,
-  \f$ A'_C \in \Qset^s_n\f$, \f$ \vect{b}_B \in \Qset^r\f$,
-  \f$ \vect{b}_C \in \Qset^s\f$.
+  where
+  \f$ \mat{A}_B \in \Qset^{r \times n} \f$,
+  \f$ \mat{A}_C \in \Qset^{s \times n} \f$,
+  \f$ \mat{A}'_C \in \Qset^{s \times n} \f$,
+  \f$ \vect{b}_B \in \Qset^r \f$,
+  \f$ \vect{b}_C \in \Qset^s \f$.
   The corresponding system is:
   \f[
     \begin{aligned}
@@ -215,8 +218,8 @@ fill_constraint_systems_MS(const Constraint_System& cs,
           &< 0,
     \end{aligned}
   \f]
-  where \f$ \vect{v}_1 \f$, \f$ \vect{v}_2 \f$ and \f$ \vect{v}_3 \f$
-  are constrained to be nonnegative.
+  where \f$ \vect{v}_1 \in \Qset_+^r \f$, \f$ \vect{v}_2 \in \Qset_+^r \f$,
+  \f$ \vect{v}_3 \in \Qset_+^s \f$.
   The space of ranking functions is then spanned by
   \f$ \vect{v}_3^\transpose A_C' \vect x \f$.
 
@@ -252,8 +255,8 @@ fill_constraint_systems_MS(const Constraint_System& cs,
           &> 0,
     \end{aligned}
   \f]
-  where \f$ \vect{u}_1 \f$, \f$ \vect{u}_2 \f$ and \f$ \vect{u}_3 \f$
-  are constrained to be nonpositive.
+  where \f$ \vect{u}_1 \in \Qset_-^r \f$, \f$ \vect{u}_2 \in \Qset_-^r \f$,
+  \f$ \vect{u}_3 \in \Qset_-^s \f$.
   The space of ranking functions is then spanned by
   \f$ \vect{u}_3^\transpose E_C' \vect x \f$.
 
