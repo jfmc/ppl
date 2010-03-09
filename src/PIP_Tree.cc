@@ -46,16 +46,108 @@ inline void
 add_mul_assign_row(PIP_Tree_Node::matrix_row_reference_type x,
                    Coefficient_traits::const_reference c,
                    PIP_Tree_Node::matrix_row_const_reference_type y) {
-  for (dimension_type i = x.size(); i-- > 0; )
-    add_mul_assign(x[i], c, y[i]);
+  PIP_Tree_Node::matrix_row_iterator i = x.begin();
+  PIP_Tree_Node::matrix_row_iterator last_i = x.begin();
+  PIP_Tree_Node::matrix_row_iterator i_end = x.end();
+  PIP_Tree_Node::matrix_const_row_const_iterator j = y.begin();
+  PIP_Tree_Node::matrix_const_row_const_iterator j_end = y.end();
+  if (i != i_end && j != j_end) {
+    if ((*i).first == (*j).first) {
+      add_mul_assign((*i).second,c,(*j).second);
+      last_i = i;
+      ++i;
+      ++j;
+    } else
+      if ((*i).first < (*j).first) {
+        // We should do (*i).second += c*0, so do nothing.
+        last_i = i;
+        ++i;
+      } else {
+        last_i = x.find_create((*j).first,(*j).second);
+        (*last_i).second *= c;
+        ++j;
+      }
+  } else
+    if (j != j_end) {
+      last_i = x.find_create((*j).first,(*j).second);
+      neg_assign((*last_i).second);
+      ++j;
+    }
+  while (i != i_end && j != j_end)
+    if ((*i).first == (*j).first) {
+      add_mul_assign((*i).second,c,(*j).second);
+      last_i = i;
+      ++i;
+      ++j;
+    } else
+      if ((*i).first < (*j).first) {
+        // We should do (*i).second += c*0, so do nothing.
+        last_i = i;
+        ++i;
+      } else {
+        last_i = x.find_create((*j).first,(*j).second,last_i);
+        (*last_i).second *= c;
+        ++j;
+      }
+  while (j != j_end) {
+    last_i = x.find_create((*j).first,(*j).second,last_i);
+    (*last_i).second *= c;
+    ++j;
+  }
 }
 
 // Compute x -= y
 inline void
 sub_assign(PIP_Tree_Node::matrix_row_reference_type x,
            PIP_Tree_Node::matrix_row_const_reference_type y) {
-  for (dimension_type i = x.size(); i-- > 0; )
-    x[i] -= y[i];
+  PIP_Tree_Node::matrix_row_iterator i = x.begin();
+  PIP_Tree_Node::matrix_row_iterator last_i = x.begin();
+  PIP_Tree_Node::matrix_row_iterator i_end = x.end();
+  PIP_Tree_Node::matrix_const_row_const_iterator j = y.begin();
+  PIP_Tree_Node::matrix_const_row_const_iterator j_end = y.end();
+  if (i != i_end && j != j_end) {
+    if ((*i).first == (*j).first) {
+      (*i).second -= (*j).second;
+      last_i = i;
+      ++i;
+      ++j;
+    } else
+      if ((*i).first < (*j).first) {
+        // We should do (*i).second -= 0, so do nothing.
+        last_i = i;
+        ++i;
+      } else {
+        last_i = x.find_create((*j).first,(*j).second);
+        neg_assign((*last_i).second);
+        ++j;
+      }
+  } else
+    if (j != j_end) {
+      last_i = x.find_create((*j).first,(*j).second);
+      neg_assign((*last_i).second);
+      ++j;
+    }
+  while (i != i_end && j != j_end)
+    if ((*i).first == (*j).first) {
+      (*i).second -= (*j).second;
+      last_i = i;
+      ++i;
+      ++j;
+    } else
+      if ((*i).first < (*j).first) {
+        // We should do (*i).second += c*0, so do nothing.
+        last_i = i;
+        ++i;
+      } else {
+        last_i = x.find_create((*j).first,(*j).second,last_i);
+        neg_assign((*last_i).second);
+        ++j;
+      }
+  while (j != j_end) {
+    last_i = x.find_create((*j).first,(*j).second,last_i);
+    neg_assign((*last_i).second);
+    ++j;
+  }
 }
 
 // Merge constraint system to a Matrix-form context such as x = x U y
