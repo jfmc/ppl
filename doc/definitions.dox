@@ -2637,6 +2637,7 @@ Generic concrete <EM>floating point expressions</EM> on
 \f$\mathbb{F}_t\f$ are represented by the
 \link Parma_Polyhedra_Library::Floating_Point_Expression \c Floating_Point_Expression \endlink
 abstract class. Its concrete derivate classes are:
+  - \link Parma_Polyhedra_Library::Cast_Floating_Point_Expression \c Cast_Floating_Point_Expression \endlink,
   - \link Parma_Polyhedra_Library::Constant_Floating_Point_Expression \c Constant_Floating_Point_Expression \endlink,
   - \link Parma_Polyhedra_Library::Variable_Floating_Point_Expression \c Variable_Floating_Point_Expression \endlink,
   - \link Parma_Polyhedra_Library::Opposite_Floating_Point_Expression \c Opposite_Floating_Point_Expression \endlink,
