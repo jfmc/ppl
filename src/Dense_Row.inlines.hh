@@ -161,6 +161,31 @@ Dense_Row::get2(const dimension_type c1,const dimension_type c2,
   p2 = &(get(c2));
 }
 
+inline Dense_Row::iterator
+Dense_Row::find(dimension_type i) {
+  return iterator(*this,i);
+}
+
+inline Dense_Row::iterator
+Dense_Row::find(dimension_type i,iterator itr) {
+  PPL_ASSERT((*itr).first < i);
+  return iterator(*this,i);
+}
+
+inline Dense_Row::iterator
+Dense_Row::find_create(dimension_type i,const Coefficient& x) {
+  (*this)[i] = x;
+  return find(i);
+}
+
+inline Dense_Row::iterator
+Dense_Row::find_create(dimension_type i,const Coefficient& x,iterator itr) {
+  PPL_ASSERT(itr != end());
+  PPL_ASSERT((*itr).first < i);
+  (*this)[i] = x;
+  return find(i);
+}
+
 inline Coefficient&
 Dense_Row::operator[](const dimension_type k) {
   return row[k];

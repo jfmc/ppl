@@ -167,6 +167,20 @@ public:
   void get2(const dimension_type c1,const dimension_type c2,
             const Coefficient*& p1,const Coefficient*& p2) const;
 
+  //! Provided for compatibility with Sparse_Row.
+  iterator find(dimension_type i);
+
+  //! Provided for compatibility with Sparse_Row.
+  //! itr must point to an element before the searched one.
+  iterator find(dimension_type i,iterator itr);
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator find_create(dimension_type i,const Coefficient& x);
+
+  //! Provided for compatibility with Sparse_Row.
+  //! itr must point to an element before the modified one.
+  iterator find_create(dimension_type i,const Coefficient& x,iterator itr);
+
   //! \name Subscript operators
   //@{
   //! Returns a reference to the element of the row indexed by \p k.
