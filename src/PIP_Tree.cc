@@ -172,14 +172,33 @@ merge_assign(PIP_Tree_Node::matrix_type& x,
          y_end = y.end(); y_i != y_end; ++y_i, ++i) {
     PPL_ASSERT(y_i->is_nonstrict_inequality());
     PIP_Tree_Node::matrix_row_reference_type x_i = x[i];
-    x_i[0] = y_i->inhomogeneous_term();
+    const Coefficient& inhomogeneous_term = y_i->inhomogeneous_term();
+    if (inhomogeneous_term != 0)
+      x_i[0] = inhomogeneous_term;
     Variables_Set::const_iterator pj;
     dimension_type j = 1;
+    PIP_Tree_Node::matrix_row_iterator last = x_i.begin();
     for (pj = param_begin; pj != param_end; ++pj, ++j) {
       Variable vj(*pj);
       if (vj.space_dimension() > cs_space_dim)
         break;
-      x_i[j] = y_i->coefficient(vj);
+      const Coefficient& c = y_i->coefficient(vj);
+      if (c != 0) {
+        last = x_i.find_create(j,c);
+        ++pj;
+        ++j;
+        break;
+      }
+    }
+    for ( ; pj != param_end; ++pj, ++j) {
+      Variable vj(*pj);
+      if (vj.space_dimension() > cs_space_dim)
+        break;
+      const Coefficient& c = y_i->coefficient(vj);
+      if (c != 0) {
+        last = x_i.find_create(j,c,last);
+        break;
+      }
     }
   }
 }
