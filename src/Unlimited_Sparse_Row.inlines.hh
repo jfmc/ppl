@@ -131,7 +131,7 @@ Unlimited_Sparse_Row::operator[](const dimension_type i) {
     if (itr->first == i)
       return itr->second;
 
-  itr = data.insert(itr,std::make_pair(i,Coefficient(0)));
+  itr = data.insert(itr,std::make_pair(i,Coefficient_zero()));
   return itr->second;
 }
 
