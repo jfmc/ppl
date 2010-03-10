@@ -1,5 +1,5 @@
 /* Powerset class implementation: non-inline template functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.defs.hh"
 #include <algorithm>
-#include <cassert>
+#include "assert.hh"
 #include <iostream>
 
 namespace Parma_Polyhedra_Library {
@@ -33,7 +33,7 @@ namespace Parma_Polyhedra_Library {
 template <typename D>
 void
 Powerset<D>::collapse(const Sequence_iterator sink) {
-  assert(sink != sequence.end());
+  PPL_ASSERT(sink != sequence.end());
   D& d = *sink;
   iterator x_sink = sink;
   iterator next_x_sink = x_sink;
@@ -51,7 +51,7 @@ Powerset<D>::collapse(const Sequence_iterator sink) {
     else
       ++xi;
 
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename D>
@@ -96,13 +96,13 @@ Powerset<D>::omega_reduce() const {
     }
   }
   reduced = true;
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename D>
 void
 Powerset<D>::collapse(const unsigned max_disjuncts) {
-  assert(max_disjuncts > 0);
+  PPL_ASSERT(max_disjuncts > 0);
   // Omega-reduce before counting the number of disjuncts.
   omega_reduce();
   size_type n = size();
@@ -114,8 +114,8 @@ Powerset<D>::collapse(const unsigned max_disjuncts) {
     // all the disjuncts that follow.
     collapse(i.base);
   }
-  assert(OK());
-  assert(is_omega_reduced());
+  PPL_ASSERT_HEAVY(OK());
+  PPL_ASSERT(is_omega_reduced());
 }
 
 template <typename D>
@@ -150,7 +150,7 @@ typename Powerset<D>::iterator
 Powerset<D>::add_non_bottom_disjunct_preserve_reduction(const D& d,
 							iterator first,
 							iterator last) {
-  assert(!d.is_bottom());
+  PPL_ASSERT_HEAVY(!d.is_bottom());
   for (iterator xi = first; xi != last; ) {
     const D& xv = *xi;
     if (d.definitely_entails(xv))
@@ -164,7 +164,7 @@ Powerset<D>::add_non_bottom_disjunct_preserve_reduction(const D& d,
       ++xi;
   }
   sequence.push_back(d);
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
   return first;
 }
 
@@ -226,7 +226,7 @@ Powerset<D>::pairwise_apply_assign(const Powerset& y,
   // Put the new sequence in place.
   std::swap(sequence, new_sequence);
   reduced = false;
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename D>
@@ -241,7 +241,7 @@ Powerset<D>::least_upper_bound_assign(const Powerset& y) {
     old_begin = add_non_bottom_disjunct_preserve_reduction(*i,
 							   old_begin,
 							   old_end);
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 namespace IO_Operators {

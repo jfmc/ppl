@@ -1,6 +1,6 @@
 /* Partially_Reduced_Product class implementation:
    non-inline template functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -254,6 +254,10 @@ Partially_Reduced_Product<D1, D2, R>
 
   if (is_empty())
     return false;
+<<<<<<< HEAD:src/Partially_Reduced_Product.templates.hh
+=======
+  PPL_ASSERT(reduced);
+>>>>>>> master:src/Partially_Reduced_Product.templates.hh
 
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);
@@ -306,6 +310,10 @@ Partially_Reduced_Product<D1, D2, R>
 
   if (is_empty())
     return false;
+<<<<<<< HEAD:src/Partially_Reduced_Product.templates.hh
+=======
+  PPL_ASSERT(reduced);
+>>>>>>> master:src/Partially_Reduced_Product.templates.hh
 
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
@@ -364,6 +372,10 @@ Partially_Reduced_Product<D1, D2, R>
 
   if (is_empty())
     return false;
+<<<<<<< HEAD:src/Partially_Reduced_Product.templates.hh
+=======
+  PPL_ASSERT(reduced);
+>>>>>>> master:src/Partially_Reduced_Product.templates.hh
 
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);

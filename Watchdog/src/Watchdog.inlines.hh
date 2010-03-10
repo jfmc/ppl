@@ -1,5 +1,5 @@
 /* Watchdog and associated classes' implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
@@ -29,16 +29,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Watchdog_Library {
 
-inline void
-Watchdog::reschedule() {
-  set_timer(reschedule_time);
-}
+#if PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
 
 template <typename Flag_Base, typename Flag>
-Watchdog::Watchdog(int units, const Flag_Base* volatile& holder, Flag& flag)
+Watchdog::Watchdog(unsigned int units,
+		   const Flag_Base* volatile& holder,
+                   Flag& flag)
   : expired(false),
     handler(*new Handler_Flag<Flag_Base, Flag>(holder, flag)) {
-  if (units <= 0)
+  if (units == 0)
     throw std::invalid_argument("Watchdog constructor called with a"
 				" non-positive number of time units");
   in_critical_section = true;
@@ -47,14 +46,29 @@ Watchdog::Watchdog(int units, const Flag_Base* volatile& holder, Flag& flag)
 }
 
 inline
-Watchdog::Watchdog(int units, void (*function)())
+Watchdog::Watchdog(unsigned int units, void (*function)())
   : expired(false), handler(*new Handler_Function(function)) {
-  if (units <= 0)
+  if (units == 0)
     throw std::invalid_argument("Watchdog constructor called with a"
 				" non-positive number of time units");
   in_critical_section = true;
   pending_position = new_watchdog_event(units, handler, expired);
   in_critical_section = false;
+}
+
+inline
+Watchdog::~Watchdog() {
+  if (!expired) {
+    in_critical_section = true;
+    remove_watchdog_event(pending_position);
+    in_critical_section = false;
+  }
+  delete &handler;
+}
+
+inline void
+Watchdog::reschedule() {
+  set_timer(reschedule_time);
 }
 
 inline
@@ -74,6 +88,28 @@ Init::~Init() {
     Watchdog::finalize();
   }
 }
+
+#else // !PWL_HAVE_DECL_SETITIMER !! !PWL_HAVE_DECL_SIGACTION
+
+template <typename Flag_Base, typename Flag>
+Watchdog::Watchdog(unsigned int /* units */,
+		   const Flag_Base* volatile& /* holder */,
+                   Flag& /* flag */) {
+  throw std::logic_error("PWL::Watchdog objects not supported:"
+                         " system does not provide setitimer()");
+}
+
+inline
+Watchdog::Watchdog(unsigned int /* units */, void (* /* function */)()) {
+  throw std::logic_error("PWL::Watchdog objects not supported:"
+                         " system does not provide setitimer()");
+}
+
+inline
+Watchdog::~Watchdog() {
+}
+
+#endif // !PWL_HAVE_DECL_SETITIMER !! !PWL_HAVE_DECL_SIGACTION
 
 } // namespace Parma_Watchdog_Library
 

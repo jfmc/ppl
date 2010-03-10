@@ -1,5 +1,5 @@
 /* Polyhedron class implementation (non-inline public functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "MIP_Problem.defs.hh"
 #include "wrap_assign.hh"
 #include <cstdlib>
-#include <cassert>
+#include "assert.hh"
 #include <iostream>
 
 #ifndef ENSURE_SORTEDNESS
@@ -43,8 +43,8 @@ size_t PPL::Polyhedron::simplify_num_saturators_size = 0;
 
 void
 PPL::Polyhedron::initialize() {
-  assert(simplify_num_saturators_p == 0);
-  assert(simplify_num_saturators_size == 0);
+  PPL_ASSERT(simplify_num_saturators_p == 0);
+  PPL_ASSERT(simplify_num_saturators_size == 0);
   simplify_num_saturators_p = new dimension_type[simplify_num_saturators_size];
 }
 
@@ -83,16 +83,16 @@ PPL::Polyhedron::constraints() const {
     }
     else {
       // Checking that `con_sys' contains the right thing.
-      assert(con_sys.space_dimension() == space_dim);
-      assert(con_sys.num_rows() == 1);
-      assert(con_sys[0].is_inconsistent());
+      PPL_ASSERT(con_sys.space_dimension() == space_dim);
+      PPL_ASSERT(con_sys.num_rows() == 1);
+      PPL_ASSERT(con_sys[0].is_inconsistent());
     }
     return con_sys;
   }
 
   if (space_dim == 0) {
     // Zero-dimensional universe.
-    assert(con_sys.num_rows() == 0 && con_sys.num_columns() == 0);
+    PPL_ASSERT(con_sys.num_rows() == 0 && con_sys.num_columns() == 0);
     return con_sys;
   }
 
@@ -128,7 +128,7 @@ PPL::Polyhedron::minimized_constraints() const {
 const PPL::Generator_System&
 PPL::Polyhedron::generators() const {
   if (marked_empty()) {
-    assert(gen_sys.has_no_rows());
+    PPL_ASSERT(gen_sys.has_no_rows());
     // We want `gen_sys' to have the appropriate space dimension,
     // even though it is an empty generator system.
     if (gen_sys.space_dimension() != space_dim) {
@@ -140,7 +140,7 @@ PPL::Polyhedron::generators() const {
   }
 
   if (space_dim == 0) {
-    assert(gen_sys.num_rows() == 0 && gen_sys.num_columns() == 0);
+    PPL_ASSERT(gen_sys.num_rows() == 0 && gen_sys.num_columns() == 0);
     return Generator_System::zero_dim_univ();
   }
 
@@ -150,7 +150,7 @@ PPL::Polyhedron::generators() const {
   if ((has_pending_constraints() && !process_pending_constraints())
       || (!generators_are_up_to_date() && !update_generators())) {
     // We have just discovered that `*this' is empty.
-    assert(gen_sys.has_no_rows());
+    PPL_ASSERT(gen_sys.has_no_rows());
     // We want `gen_sys' to have the appropriate space dimension,
     // even though it is an empty generator system.
     if (gen_sys.space_dimension() != space_dim) {
@@ -342,7 +342,7 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
   Constraint first_halfspace = positive ? (expr >= 0) : (expr <= 0);
 
   Poly_Con_Relation first_rels = relation_with(first_halfspace);
-  assert(!first_rels.implies(Poly_Con_Relation::saturates())
+  PPL_ASSERT(!first_rels.implies(Poly_Con_Relation::saturates())
 	 && !first_rels.implies(Poly_Con_Relation::is_disjoint()));
   if (first_rels.implies(Poly_Con_Relation::strictly_intersects()))
     return Poly_Con_Relation::strictly_intersects();
@@ -354,14 +354,14 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
     expr += modulus;
   Constraint second_halfspace = positive ? (expr <= 0) : (expr >= 0);
 
-  assert(first_rels == Poly_Con_Relation::is_included());
+  PPL_ASSERT(first_rels == Poly_Con_Relation::is_included());
   Poly_Con_Relation second_rels = relation_with(second_halfspace);
-  assert(!second_rels.implies(Poly_Con_Relation::saturates())
+  PPL_ASSERT(!second_rels.implies(Poly_Con_Relation::saturates())
 	 && !second_rels.implies(Poly_Con_Relation::is_disjoint()));
   if (second_rels.implies(Poly_Con_Relation::strictly_intersects()))
     return Poly_Con_Relation::strictly_intersects();
 
-  assert(second_rels == Poly_Con_Relation::is_included());
+  PPL_ASSERT(second_rels == Poly_Con_Relation::is_included());
   return Poly_Con_Relation::is_disjoint();
 }
 
@@ -382,7 +382,7 @@ PPL::Polyhedron::is_universe() const {
     return true;
   }
 
-  assert(!has_pending_constraints() && generators_are_up_to_date());
+  PPL_ASSERT(!has_pending_constraints() && generators_are_up_to_date());
 
   // Try a fast-fail test.
   dimension_type num_lines = 0;
@@ -403,12 +403,12 @@ PPL::Polyhedron::is_universe() const {
   if (has_pending_generators()) {
     // The non-pending part of `gen_sys' was minimized:
     // a success-first test is possible in this case.
-    assert(generators_are_minimized());
+    PPL_ASSERT(generators_are_minimized());
     if (num_lines == space_dim) {
-      assert(num_rays == 0);
+      PPL_ASSERT(num_rays == 0);
       return true;
     }
-    assert(num_lines < space_dim);
+    PPL_ASSERT(num_lines < space_dim);
     // Now scan the pending generators.
     dimension_type num_pending_lines = 0;
     dimension_type num_pending_rays = 0;
@@ -443,7 +443,7 @@ PPL::Polyhedron::is_universe() const {
     // There is nothing pending.
     if (generators_are_minimized()) {
       // The exact test is possible.
-      assert(num_rays == 0 || num_lines < space_dim);
+      PPL_ASSERT(num_rays == 0 || num_lines < space_dim);
       return num_lines == space_dim;
     }
     else
@@ -479,10 +479,10 @@ PPL::Polyhedron::is_universe() const {
       const Constraint& eps_leq_one = con_sys[0];
       const Constraint& eps_geq_zero = con_sys[1];
       const dimension_type eps_index = con_sys.num_columns() - 1;
-      assert(eps_leq_one[0] > 0 && eps_leq_one[eps_index] < 0
+      PPL_ASSERT(eps_leq_one[0] > 0 && eps_leq_one[eps_index] < 0
 	     && eps_geq_zero[0] == 0 && eps_geq_zero[eps_index] > 0);
       for (dimension_type i = 1; i < eps_index; ++i)
-	assert(eps_leq_one[i] == 0 && eps_geq_zero[i] == 0);
+	PPL_ASSERT(eps_leq_one[i] == 0 && eps_geq_zero[i] == 0);
 #endif
       return true;
     }
@@ -521,7 +521,7 @@ PPL::Polyhedron::is_topologically_closed() const {
      return true;
 
   // At this point there are no pending constraints or generators.
-  assert(!has_something_pending());
+  PPL_ASSERT(!has_something_pending());
 
   if (generators_are_minimized()) {
     // A polyhedron is closed if and only if all of its (non-redundant)
@@ -573,7 +573,7 @@ PPL::Polyhedron::contains_integer_point() const {
 
   // FIXME: do also exploit info regarding rays and lines, if possible.
   // Is any integer point already available?
-  assert(!has_pending_constraints());
+  PPL_ASSERT(!has_pending_constraints());
   if (generators_are_up_to_date())
     for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
       if (gen_sys[i].is_point() && gen_sys[i].divisor() == 1)
@@ -611,7 +611,7 @@ PPL::Polyhedron::contains_integer_point() const {
       if (homogeneous_gcd == 0) {
         // NOTE: since tautological constraints are already filtered away
         // by iterators, here we must have an inconsistent constraint.
-        assert(c.is_inconsistent());
+        PPL_ASSERT(c.is_inconsistent());
         return false;
       }
       Linear_Expression le;
@@ -643,7 +643,7 @@ PPL::Polyhedron::contains_integer_point() const {
         if (homogeneous_gcd == 0) {
           // NOTE: since tautological constraints are already filtered away
           // by iterators, here we must have an inconsistent constraint.
-          assert(c.is_inconsistent());
+          PPL_ASSERT(c.is_inconsistent());
           return false;
         }
 	else if (homogeneous_gcd == 1)
@@ -651,14 +651,14 @@ PPL::Polyhedron::contains_integer_point() const {
 	  // add the constraint as-is.
 	  mip.add_constraint(c);
 	else {
-	  assert(homogeneous_gcd > 1);
+	  PPL_ASSERT(homogeneous_gcd > 1);
 	  // Here the normalized inhomogeneous term is rational:
 	  // the constraint has to be tightened.
 #ifndef NDEBUG
 	  // `homogeneous_gcd' does not divide `inhomogeneous'.
 	  // FIXME: add a divisibility test for Coefficient.
 	  gcd_assign(gcd, homogeneous_gcd, inhomogeneous);
-	  assert(gcd == 1);
+	  PPL_ASSERT(gcd == 1);
 #endif
 	  if (c.type() == Constraint::EQUALITY)
 	    return false;
@@ -671,7 +671,7 @@ PPL::Polyhedron::contains_integer_point() const {
 	  assign_r(rational_inhomogeneous.get_den(),
 		   homogeneous_gcd, ROUND_NOT_NEEDED);
 	  // Note: canonicalization is not needed (as gcd == 1).
-	  assert(is_canonical(rational_inhomogeneous));
+	  PPL_ASSERT(is_canonical(rational_inhomogeneous));
 	  assign_r(tightened_inhomogeneous,
 		   rational_inhomogeneous, ROUND_DOWN);
 	  tightened_inhomogeneous *= homogeneous_gcd;
@@ -1289,7 +1289,7 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
 			   "cg is a non-trivial, proper congruence");
   }
 
-  assert(cg.is_equality());
+  PPL_ASSERT(cg.is_equality());
   // Handle empty and 0-dim cases first.
   if (marked_empty())
     return;
@@ -1321,7 +1321,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
   // Dealing with a zero-dimensional space polyhedron first.
   if (space_dim == 0) {
     // It is not possible to create 0-dim rays or lines.
-    assert(g.is_point() || g.is_closure_point());
+    PPL_ASSERT(g.is_point() || g.is_closure_point());
     // Closure points can only be inserted in non-empty polyhedra.
     if (marked_empty()) {
       if (g.type() != Generator::POINT)
@@ -1329,7 +1329,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       else
 	set_zero_dim_univ();
     }
-    assert(OK());
+    PPL_ASSERT_HEAVY(OK());
     return;
   }
 
@@ -1374,7 +1374,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
     set_generators_minimized();
   }
   else {
-    assert(generators_are_up_to_date());
+    PPL_ASSERT(generators_are_up_to_date());
     const bool has_pending = can_have_something_pending();
     if (g.is_necessarily_closed() || !is_necessarily_closed()) {
       // Since `gen_sys' is not empty, the topology and space dimension
@@ -1399,7 +1399,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       }
     }
     else {
-      assert(!g.is_closure_point());
+      PPL_ASSERT(!g.is_closure_point());
       // Note: here we have a _legal_ topology mismatch, because
       // `g' is NOT a closure point.
       // However, by barely invoking `gen_sys.insert(g)' we would
@@ -1439,7 +1439,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       clear_constraints_up_to_date();
     }
   }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -1532,7 +1532,7 @@ PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
   }
   // Note: the constraint system may have become unsatisfiable, thus
   // we do not check for satisfiability.
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -1563,7 +1563,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     if (marked_empty() && !gs.has_points())
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
     set_zero_dim_univ();
-    assert(OK(true));
+    PPL_ASSERT_HEAVY(OK(true));
     return;
   }
 
@@ -1594,7 +1594,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     }
     set_generators_up_to_date();
     clear_empty();
-    assert(OK());
+    PPL_ASSERT_HEAVY(OK());
     return;
   }
 
@@ -1632,7 +1632,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     clear_constraints_up_to_date();
     clear_generators_minimized();
   }
-  assert(OK(true));
+  PPL_ASSERT_HEAVY(OK(true));
 }
 
 void
@@ -1663,7 +1663,7 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
       inserted = true;
     }
     else {
-      assert(cg.is_proper_congruence());
+      PPL_ASSERT(cg.is_proper_congruence());
       if (cg.is_inconsistent()) {
         set_empty();
         return;
@@ -1791,7 +1791,7 @@ PPL::Polyhedron::refine_with_constraints(const Constraint_System& cs) {
 
   // Note: the constraint system may have become unsatisfiable, thus
   // we do not check for satisfiability.
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -1837,7 +1837,7 @@ PPL::Polyhedron::unconstrain(const Variable var) {
     // Empty: do nothing.
     return;
 
-  assert(generators_are_up_to_date());
+  PPL_ASSERT(generators_are_up_to_date());
   // Since `gen_sys' is not empty, the topology and space dimension
   // of the inserted generator are automatically adjusted.
   if (can_have_something_pending()) {
@@ -1851,7 +1851,7 @@ PPL::Polyhedron::unconstrain(const Variable var) {
     clear_generators_minimized();
     clear_constraints_up_to_date();
   }
-  assert(OK(true));
+  PPL_ASSERT_HEAVY(OK(true));
 }
 
 void
@@ -1874,7 +1874,7 @@ PPL::Polyhedron::unconstrain(const Variables_Set& vars) {
     // Empty: do nothing.
     return;
 
-  assert(generators_are_up_to_date());
+  PPL_ASSERT(generators_are_up_to_date());
   // Since `gen_sys' is not empty, the topology and space dimension
   // of the inserted generators are automatically adjusted.
   Variables_Set::const_iterator vsi = vars.begin();
@@ -1892,7 +1892,7 @@ PPL::Polyhedron::unconstrain(const Variables_Set& vars) {
     clear_generators_minimized();
     clear_constraints_up_to_date();
   }
-  assert(OK(true));
+  PPL_ASSERT_HEAVY(OK(true));
 }
 
 void
@@ -1933,8 +1933,8 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
 
   // Here both systems are up-to-date and possibly have pending constraints
   // (but they cannot have pending generators).
-  assert(!x.has_pending_generators() && x.constraints_are_up_to_date());
-  assert(!y.has_pending_generators() && y.constraints_are_up_to_date());
+  PPL_ASSERT(!x.has_pending_generators() && x.constraints_are_up_to_date());
+  PPL_ASSERT(!y.has_pending_generators() && y.constraints_are_up_to_date());
 
   // If `x' can support pending constraints,
   // the constraints of `y' are added as pending constraints of `x'.
@@ -1956,7 +1956,7 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
     x.clear_generators_up_to_date();
     x.clear_constraints_minimized();
   }
-  assert(x.OK() && y.OK());
+  PPL_ASSERT_HEAVY(x.OK() && y.OK());
 }
 
 namespace {
@@ -1977,7 +1977,7 @@ bool
 add_to_system_and_check_independence(PPL::Linear_System& eq_sys,
                                      const PPL::Linear_Row& eq) {
   // Check if equality eqn is linear independent from eq_sys.
-  assert(eq.is_line_or_equality());
+  PPL_ASSERT(eq.is_line_or_equality());
   eq_sys.insert(eq);
   const PPL::dimension_type eq_sys_num_rows = eq_sys.num_rows();
   const PPL::dimension_type rank = eq_sys.gauss(eq_sys_num_rows);
@@ -1986,7 +1986,7 @@ add_to_system_and_check_independence(PPL::Linear_System& eq_sys,
     return true;
   else {
     // eq is not linear independent.
-    assert(rank == eq_sys_num_rows - 1);
+    PPL_ASSERT(rank == eq_sys_num_rows - 1);
     eq_sys.erase_to_end(rank);
     return false;
   }
@@ -2006,10 +2006,10 @@ drop_redundant_inequalities(std::vector<const PPL::Constraint*>& p_ineqs,
                             const PPL::dimension_type rank) {
   using namespace Parma_Polyhedra_Library;
   const dimension_type num_rows = p_ineqs.size();
-  assert(num_rows > 0);
+  PPL_ASSERT(num_rows > 0);
   // `rank' is the rank of the (implicit) system of equalities.
   const dimension_type space_dim = p_ineqs[0]->space_dimension();
-  assert(space_dim > 0 && space_dim >= rank);
+  PPL_ASSERT(space_dim > 0 && space_dim >= rank);
   const dimension_type num_coefficients
     = space_dim + (topology == NECESSARILY_CLOSED ? 0 : 1);
   const dimension_type min_sat = num_coefficients - rank;
@@ -2080,7 +2080,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
   // If `x' is empty, the intersection is empty.
   if (!x.minimize()) {
     // Search for a constraint of `y' that is not a tautology.
-    assert(!y.has_pending_generators() && y.constraints_are_up_to_date());
+    PPL_ASSERT(!y.has_pending_generators() && y.constraints_are_up_to_date());
     for (dimension_type i = y.con_sys.num_rows(); i-- > 0; ) {
       const Constraint& y_con_sys_i = y.con_sys[i];
       if (!y_con_sys_i.is_tautological()) {
@@ -2101,7 +2101,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
           break;
         }
         swap(ph);
-        assert(OK());
+        PPL_ASSERT_HEAVY(OK());
 	return false;
       }
     }
@@ -2109,7 +2109,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
     return false;
   }
 
-  assert(x.constraints_are_minimized()
+  PPL_ASSERT(x.constraints_are_minimized()
          && !x.has_something_pending()
          && y.generators_are_minimized()
          && !y.has_something_pending());
@@ -2275,16 +2275,16 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
           Polyhedron result_ph(x.topology(), x.space_dim, UNIVERSE);
           result_ph.add_constraints(result_cs);
           x.swap(result_ph);
-          assert(x.OK());
+          PPL_ASSERT_HEAVY(x.OK());
           return false;
         }
       }
       // Cannot exit from here.
-      assert(false);
+      PPL_ASSERT(false);
     }
     else {
       // Here `z' is not empty and minimized.
-      assert(z.constraints_are_minimized()
+      PPL_ASSERT(z.constraints_are_minimized()
              && z.generators_are_minimized()
              && !z.has_something_pending());
       const Constraint_System& z_cs = z.con_sys;
@@ -2302,7 +2302,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       dimension_type z_cs_num_eq = 0;
       while (z_cs[z_cs_num_eq].is_equality())
         ++z_cs_num_eq;
-      assert(x_cs_num_eq <= z_cs_num_eq && y_cs_num_eq <= z_cs_num_eq);
+      PPL_ASSERT(x_cs_num_eq <= z_cs_num_eq && y_cs_num_eq <= z_cs_num_eq);
 
       // Identify non-redundant equalities.
       Constraint_System nonred_eq;
@@ -2330,9 +2330,9 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
         // then we haven't found all the needed equalities yet:
         // this means that some inequalities from x actually holds
         // as "masked" equalities in the context of y.
-        assert(eqs.num_rows() <= z_cs_num_eq);
-        assert(num_nonred_eq <= needed_nonred_eq);
-        assert(z_cs_num_eq - eqs.num_rows()
+        PPL_ASSERT(eqs.num_rows() <= z_cs_num_eq);
+        PPL_ASSERT(num_nonred_eq <= needed_nonred_eq);
+        PPL_ASSERT(z_cs_num_eq - eqs.num_rows()
                == needed_nonred_eq - num_nonred_eq);
       }
 
@@ -2363,7 +2363,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
           // `nonred_ineq_i' is actually masking an equality
           // and we are still looking for some masked inequalities.
           // Iteration goes downwards, so the inequality comes from x_cs.
-          assert(i >= y_cs_num_ineq);
+          PPL_ASSERT(i >= y_cs_num_ineq);
           // Check if the equality is independent in eqs.
           Linear_Row masked_eq = Linear_Row(nonred_ineq_i);
           masked_eq.set_is_line_or_equality();
@@ -2376,7 +2376,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
         }
       }
       // Here we have already found all the needed (masked) equalities.
-      assert(num_nonred_eq == needed_nonred_eq);
+      PPL_ASSERT(num_nonred_eq == needed_nonred_eq);
 
       drop_redundant_inequalities(p_nonred_ineq, x.topology(),
                                   sat, z_cs_num_eq);
@@ -2394,7 +2394,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
   Polyhedron result_ph(x.topology(), x.space_dim, UNIVERSE);
   result_ph.add_recycled_constraints(result_cs);
   x.swap(result_ph);
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
   return true;
 }
 
@@ -2437,8 +2437,8 @@ PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
 
   // Here both systems are up-to-date and possibly have pending generators
   // (but they cannot have pending constraints).
-  assert(!x.has_pending_constraints() && x.generators_are_up_to_date());
-  assert(!y.has_pending_constraints() && y.generators_are_up_to_date());
+  PPL_ASSERT(!x.has_pending_constraints() && x.generators_are_up_to_date());
+  PPL_ASSERT(!y.has_pending_constraints() && y.generators_are_up_to_date());
 
   // If `x' can support pending generators,
   // the generators of `y' are added as pending generators of `x'.
@@ -2461,7 +2461,7 @@ PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
     x.clear_generators_minimized();
   }
   // At this point both `x' and `y' are not empty.
-  assert(x.OK(true) && y.OK(true));
+  PPL_ASSERT_HEAVY(x.OK(true) && y.OK(true));
 }
 
 void
@@ -2509,8 +2509,8 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
   for (Constraint_System::const_iterator i = y_cs.begin(),
 	 y_cs_end = y_cs.end(); i != y_cs_end; ++i) {
     const Constraint& c = *i;
-    assert(!c.is_tautological());
-    assert(!c.is_inconsistent());
+    PPL_ASSERT(!c.is_tautological());
+    PPL_ASSERT(!c.is_inconsistent());
     // If the polyhedron `x' is included in the polyhedron defined by
     // `c', then `c' can be skipped, as adding its complement to `x'
     // would result in the empty polyhedron.  Moreover, if we operate
@@ -2548,7 +2548,7 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
   }
   *this = new_polyhedron;
 
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -2627,7 +2627,7 @@ affine_image(const Variable var,
       clear_sat_g_up_to_date();
     }
   }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 
@@ -2704,7 +2704,7 @@ affine_preimage(const Variable var,
     clear_sat_c_up_to_date();
     clear_sat_g_up_to_date();
   }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -2779,7 +2779,7 @@ bounded_affine_image(const Variable var,
     // Remove the temporarily added dimension.
     remove_higher_space_dimensions(space_dim-1);
   }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -2852,7 +2852,7 @@ bounded_affine_preimage(const Variable var,
     // Remove the temporarily added dimension.
     remove_higher_space_dimensions(space_dim-1);
   }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -2911,7 +2911,7 @@ generalized_affine_image(const Variable var,
   case GREATER_THAN:
     {
       // The relation symbol is strict.
-      assert(!is_necessarily_closed());
+      PPL_ASSERT(!is_necessarily_closed());
       // While adding the ray, we minimize the generators
       // in order to avoid adding too many redundant generators later.
       add_generator(ray(relsym == GREATER_THAN ? var : -var));
@@ -2945,7 +2945,7 @@ generalized_affine_image(const Variable var,
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
     throw std::runtime_error("PPL internal error");
   }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -3047,7 +3047,7 @@ generalized_affine_preimage(const Variable var,
     throw std::runtime_error("PPL internal error");
   }
   unconstrain(var);
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -3201,7 +3201,7 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
       throw std::runtime_error("PPL internal error");
     }
   }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -3334,7 +3334,7 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
     // Existentially quantify all the variables occurring in `lhs'.
     add_recycled_generators(new_lines);
   }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -3455,7 +3455,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
     x.clear_constraints_up_to_date();
     x.clear_generators_minimized();
   }
-  assert(x.OK(true) && y.OK(true));
+  PPL_ASSERT_HEAVY(x.OK(true) && y.OK(true));
 }
 
 bool
@@ -3590,7 +3590,7 @@ PPL::Polyhedron::topological_closure_assign() {
   }
   else {
     // Here we use generators, possibly keeping constraints.
-    assert(generators_are_up_to_date());
+    PPL_ASSERT(generators_are_up_to_date());
     // Add the corresponding point to each closure point.
     gen_sys.add_corresponding_points();
     if (can_have_something_pending())
@@ -3605,7 +3605,7 @@ PPL::Polyhedron::topological_closure_assign() {
       clear_generators_minimized();
     }
   }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron */
@@ -3739,7 +3739,7 @@ PPL::Polyhedron::ascii_load(std::istream& s) {
     return false;
 
   // Check invariants.
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
   return true;
 }
 

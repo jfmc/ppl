@@ -1,5 +1,5 @@
 /* Domain-independent part of the Java interface: declarations.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -61,6 +61,9 @@ site: http://www.cs.unipr.it/ppl/ . */
   catch (const timeout_exception& e) { \
     handle_exception(env, e); \
   } \
+  catch (const deterministic_timeout_exception& e) { \
+    handle_exception(env, e); \
+  } \
   catch (...) { \
     handle_exception(env); \
   }
@@ -115,7 +118,8 @@ namespace Java {
 struct Java_ExceptionOccurred : public std::exception {
 };
 
-class timeout_exception : public Parma_Polyhedra_Library::Throwable {
+class timeout_exception
+  : public Parma_Polyhedra_Library::Throwable {
 public:
   void throw_me() const {
     throw *this;
@@ -123,15 +127,32 @@ public:
   int priority() const {
     return 0;
   }
-  timeout_exception() {
+};
+
+class deterministic_timeout_exception
+  : public Parma_Polyhedra_Library::Throwable {
+public:
+  void throw_me() const {
+    throw *this;
+  }
+  int priority() const {
+    return 0;
   }
 };
 
 #ifdef PPL_WATCHDOG_LIBRARY_ENABLED
 extern Parma_Watchdog_Library::Watchdog* p_timeout_object;
+
+typedef
+Parma_Watchdog_Library::Threshold_Watcher
+<Parma_Polyhedra_Library::Weightwatch_Traits> Weightwatch;
+
+extern Weightwatch* p_deterministic_timeout_object;
 #endif // PPL_WATCHDOG_LIBRARY_ENABLED
 
 void reset_timeout();
+
+void reset_deterministic_timeout();
 
 void
 handle_exception(JNIEnv* env, const std::logic_error& e);
@@ -156,6 +177,9 @@ handle_exception(JNIEnv* env, const std::exception& e);
 
 void
 handle_exception(JNIEnv* env, const timeout_exception& e);
+
+void
+handle_exception(JNIEnv* env, const deterministic_timeout_exception& e);
 
 void
 handle_exception(JNIEnv* env);
@@ -302,8 +326,8 @@ struct Java_FMID_Cache {
   jfieldID Linear_Expression_Difference_rhs_ID;
   jfieldID Linear_Expression_Sum_lhs_ID;
   jfieldID Linear_Expression_Sum_rhs_ID;
-  jfieldID Linear_Expression_Times_lhs_ID;
-  jfieldID Linear_Expression_Times_rhs_ID;
+  jfieldID Linear_Expression_Times_coeff_ID;
+  jfieldID Linear_Expression_Times_lin_expr_ID;
   jmethodID Linear_Expression_Times_init_from_coeff_var_ID;
   jfieldID Linear_Expression_Unary_Minus_arg_ID;
   jmethodID Linear_Expression_Variable_init_ID;

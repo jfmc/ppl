@@ -1,5 +1,5 @@
 /* Result enum and supporting function declarations.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -155,7 +155,7 @@ enum Result {
   V_UNKNOWN_POS_OVERFLOW = V_NAN | (11 << 8),
 
   //! \hideinitializer The computed result is not representable.
-  V_UNREPRESENTABLE = 1 << 7,
+  V_UNREPRESENTABLE = 1 << 7
 
 };
 

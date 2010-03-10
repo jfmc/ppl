@@ -1,5 +1,5 @@
 /* Box class implementation: non-inline template functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -32,6 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "Grid.defs.hh"
+#include "Interval.defs.hh"
+#include "Linear_Form.defs.hh"
 #include "BD_Shape.defs.hh"
 #include "Octagonal_Shape.defs.hh"
 #include "MIP_Problem.defs.hh"
@@ -61,7 +63,7 @@ Box<ITV>::Box(dimension_type num_dimensions, Degenerate_Element kind)
   }
   else
     set_empty();
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -111,7 +113,7 @@ Box<ITV>::Box(const Box<Other_ITV>& y, Complexity_Class)
   if (!y.marked_empty())
     for (dimension_type k = y.space_dimension(); k-- > 0; )
       seq[k].assign(y.seq[k]);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -215,7 +217,7 @@ Box<ITV>::Box(const Generator_System& gs)
       break;
     }
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -232,7 +234,7 @@ Box<ITV>::Box(const BD_Shape<T>& bds, Complexity_Class)
   bds.shortest_path_closure_assign();
   if (bds.marked_empty()) {
     set_empty();
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -241,7 +243,7 @@ Box<ITV>::Box(const BD_Shape<T>& bds, Complexity_Class)
 
   const dimension_type space_dim = space_dimension();
   if (space_dim == 0) {
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -267,7 +269,7 @@ Box<ITV>::Box(const BD_Shape<T>& bds, Complexity_Class)
 
     seq_i.build(lower, upper);
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -356,7 +358,7 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
   }
 
   // Here generators are not up-to-date or there are pending constraints.
-  assert(ph.constraints_are_up_to_date());
+  PPL_ASSERT(ph.constraints_are_up_to_date());
 
   if (complexity == POLYNOMIAL_COMPLEXITY) {
     // FIXME: is there a way to avoid this initialization?
@@ -408,7 +410,7 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
 	lp.evaluate_objective_function(g, bound_num, bound_den);
 	assign_r(ubound.get_num(), bound_num, ROUND_NOT_NEEDED);
 	assign_r(ubound.get_den(), bound_den, ROUND_NOT_NEEDED);
-	assert(is_canonical(ubound));
+	PPL_ASSERT(is_canonical(ubound));
 	upper.set(LESS_OR_EQUAL, ubound);
       }
       // Evaluate optimal lower bound.
@@ -418,14 +420,14 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
 	lp.evaluate_objective_function(g, bound_num, bound_den);
 	assign_r(lbound.get_num(), bound_num, ROUND_NOT_NEEDED);
 	assign_r(lbound.get_den(), bound_den, ROUND_NOT_NEEDED);
-	assert(is_canonical(lbound));
+	PPL_ASSERT(is_canonical(lbound));
 	lower.set(GREATER_OR_EQUAL, lbound);
       }
       seq_i.build(lower, upper);
     }
   }
   else {
-    assert(complexity == ANY_COMPLEXITY);
+    PPL_ASSERT(complexity == ANY_COMPLEXITY);
     if (ph.is_empty())
       set_empty();
     else {
@@ -466,7 +468,7 @@ Box<ITV>::Box(const Grid& gr, Complexity_Class)
     return;
   }
 
-  assert(!gr.gen_sys.empty());
+  PPL_ASSERT(!gr.gen_sys.empty());
 
   // For each dimension that is bounded by the grid, set both bounds
   // of the interval to the value of the associated coefficient in a
@@ -513,7 +515,7 @@ Box<ITV>::add_space_dimensions_and_embed(const dimension_type m) {
   // To embed an n-dimension space box in a (n+m)-dimension space,
   // we just add `m' new universe elements to the sequence.
   seq.insert(seq.end(), m, ITV(UNIVERSE));
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -524,7 +526,7 @@ Box<ITV>::add_space_dimensions_and_project(const dimension_type m) {
     return;
   // Add `m' new zero elements to the sequence.
   seq.insert(seq.end(), m, ITV(0));
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -598,7 +600,7 @@ interval_relation(const ITV& i,
   PPL_DIRTY_TEMP0(mpq_class, bound_diff);
   if (constraint_type == Constraint::EQUALITY) {
     if (i.lower_is_boundary_infinity()) {
-      assert(!i.upper_is_boundary_infinity());
+      PPL_ASSERT(!i.upper_is_boundary_infinity());
       assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
       sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
       switch (sgn(bound_diff)) {
@@ -647,10 +649,10 @@ interval_relation(const ITV& i,
     }
   }
 
-  assert(constraint_type != Constraint::EQUALITY);
+  PPL_ASSERT(constraint_type != Constraint::EQUALITY);
   if (is_lower_bound) {
     if (i.lower_is_boundary_infinity()) {
-      assert(!i.upper_is_boundary_infinity());
+      PPL_ASSERT(!i.upper_is_boundary_infinity());
       assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
       sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
       switch (sgn(bound_diff)) {
@@ -681,7 +683,7 @@ interval_relation(const ITV& i,
 	  return result;
 	}
 	else {
-	  assert(constraint_type == Constraint::STRICT_INEQUALITY
+	  PPL_ASSERT(constraint_type == Constraint::STRICT_INEQUALITY
 		 && !i.lower_is_open());
 	  if (i.is_singleton())
 	    return Poly_Con_Relation::is_disjoint()
@@ -730,7 +732,7 @@ interval_relation(const ITV& i,
 	  return result;
 	}
 	else {
-	  assert(constraint_type == Constraint::STRICT_INEQUALITY
+	  PPL_ASSERT(constraint_type == Constraint::STRICT_INEQUALITY
 		 && !i.upper_is_open());
 	  if (i.is_singleton())
 	    return Poly_Con_Relation::is_disjoint()
@@ -939,7 +941,7 @@ Box<ITV>::relation_with(const Generator& g) const {
       return Poly_Gen_Relation::subsumes();
     }
     else {
-      assert(g.is_ray());
+      PPL_ASSERT(g.is_ray());
       for (dimension_type i = g_space_dim; i-- > 0; )
 	switch (sgn(g.coefficient(Variable(i)))) {
 	case 1:
@@ -1058,7 +1060,7 @@ Box<ITV>::max_min(const Linear_Expression& expr,
     }
   }
   // Extract output info.
-  assert(is_canonical(result));
+  PPL_ASSERT(is_canonical(result));
   ext_n = result.get_num();
   ext_d = result.get_den();
   included = is_included;
@@ -1122,7 +1124,7 @@ Box<ITV>::max_min(const Linear_Expression& expr,
       else {
 	// Lower is unbounded, hence upper is bounded
 	// (since we know that 0 does not belong to the interval).
-	assert(!seq_i.upper_is_boundary_infinity());
+	PPL_ASSERT(!seq_i.upper_is_boundary_infinity());
 	assign_r(g_coord, seq_i.upper(), ROUND_NOT_NEEDED);
 	if (seq_i.upper_is_open())
 	  --g_coord;
@@ -1286,7 +1288,7 @@ Box<ITV>::affine_dimension() const {
 template <typename ITV>
 bool
 Box<ITV>::check_empty() const {
-  assert(!marked_empty());
+  PPL_ASSERT(!marked_empty());
   Box<ITV>& x = const_cast<Box<ITV>&>(*this);
   for (dimension_type k = seq.size(); k-- > 0; )
     if (seq[k].is_empty()) {
@@ -1472,7 +1474,7 @@ Box<ITV>::unconstrain(const Variables_Set& vars) {
       break;
     }
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -1548,7 +1550,7 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
     --max_value;
   }
   else {
-    assert(r == SIGNED_2_COMPLEMENT);
+    PPL_ASSERT(r == SIGNED_2_COMPLEMENT);
     mul_2exp_assign(max_value, Coefficient_one(), w-1);
     neg_assign(min_value, max_value);
     --max_value;
@@ -1593,11 +1595,11 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
       reset_empty_up_to_date();
       break;
     }
-    assert(x.OK());
+    PPL_ASSERT(x.OK());
     return;
   }
 
-  assert(pcs != 0);
+  PPL_ASSERT(pcs != 0);
   const Constraint_System& cs = *pcs;
   const dimension_type cs_space_dim = cs.space_dimension();
   // A map associating interval constraints to variable indexes.
@@ -1612,15 +1614,15 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
                                     c_num_vars, c_only_var)) {
       if (c_num_vars == 1) {
         // An interval constraint on variable index `c_only_var'.
-        assert(c_only_var < space_dim);
+        PPL_ASSERT(c_only_var < space_dim);
         // We do care about c if c_only_var is going to be wrapped.
         if (vars.find(c_only_var) != vs_end)
           var_cs_map[c_only_var].push_back(&c);
       }
       else {
-        assert(c_num_vars == 0);
+        PPL_ASSERT(c_num_vars == 0);
         // Note: tautologies have been filtered out by iterators.
-        assert(c.is_inconsistent());
+        PPL_ASSERT(c.is_inconsistent());
         x.set_empty();
         return;
       }
@@ -1661,7 +1663,7 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
       break;
     }
   }
-  assert(x.OK());
+  PPL_ASSERT(x.OK());
 #endif
 }
 
@@ -1722,7 +1724,7 @@ Box<ITV>::intersection_assign(const Box& y) {
   for (dimension_type k = space_dim; k-- > 0; )
     x.seq[k].intersect_assign(y.seq[k]);
 
-  assert(x.OK());
+  PPL_ASSERT(x.OK());
 }
 
 template <typename ITV>
@@ -1745,7 +1747,7 @@ Box<ITV>::upper_bound_assign(const Box& y) {
   for (dimension_type k = x.seq.size(); k-- > 0; )
     x.seq[k].join_assign(y.seq[k]);
 
-  assert(x.OK());
+  PPL_ASSERT(x.OK());
 }
 
 template <typename ITV>
@@ -1771,7 +1773,7 @@ Box<ITV>::concatenate_assign(const Box& y) {
   // the dimension of the vector space.
   if (x.marked_empty()) {
     x.seq.insert(x.seq.end(), y_space_dim, ITV(EMPTY));
-    assert(x.OK());
+    PPL_ASSERT(x.OK());
     return;
   }
 
@@ -1782,7 +1784,7 @@ Box<ITV>::concatenate_assign(const Box& y) {
   if (!y.status.test_empty_up_to_date())
     reset_empty_up_to_date();
 
-  assert(x.OK());
+  PPL_ASSERT(x.OK());
 }
 
 template <typename ITV>
@@ -1841,7 +1843,7 @@ Box<ITV>::difference_assign(const Box& y) {
     }
     break;
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -1891,13 +1893,13 @@ Box<ITV>::simplify_using_context_assign(const Box& y) {
         for (++i; i < num_dims; ++i)
           x.seq[i].assign(UNIVERSE);
         x.set_nonempty();
-        assert(x.OK());
+        PPL_ASSERT(x.OK());
         return false;
       }
     }
     // All intervals in `y' are universe or could not be contradicted:
     // simplification can leave the empty box `x' as is.
-    assert(x.OK() && x.is_empty());
+    PPL_ASSERT(x.OK() && x.is_empty());
     return false;
   }
 
@@ -1905,18 +1907,18 @@ Box<ITV>::simplify_using_context_assign(const Box& y) {
   dimension_type i = 0;
   for ( ; i < num_dims; ++i) {
     if (!x.seq[i].simplify_using_context_assign(y.seq[i])) {
-      assert(!x.seq[i].is_empty());
+      PPL_ASSERT(!x.seq[i].is_empty());
       // The intersection of `x' and `y' is empty due to the i-th interval:
       // reset other intervals to UNIVERSE.
       for (dimension_type j = num_dims; j-- > i; )
         x.seq[j].assign(UNIVERSE);
       for (dimension_type j = i; j-- > 0; )
         x.seq[j].assign(UNIVERSE);
-      assert(x.OK());
+      PPL_ASSERT(x.OK());
       return false;
     }
   }
-  assert(x.OK());
+  PPL_ASSERT(x.OK());
   return true;
 }
 
@@ -1955,7 +1957,7 @@ Box<ITV>::time_elapse_assign(const Box& y) {
       if (y_seq_i.upper_is_boundary_infinity() || y_seq_i.upper() > 0)
 	x_seq_i.upper_extend();
   }
-  assert(x.OK());
+  PPL_ASSERT(x.OK());
 }
 
 template <typename ITV>
@@ -1965,7 +1967,7 @@ Box<ITV>::remove_space_dimensions(const Variables_Set& vars) {
   // Note that this case also captures the only legal removal of
   // space dimensions from a box in a zero-dimensional space.
   if (vars.empty()) {
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -1984,7 +1986,7 @@ Box<ITV>::remove_space_dimensions(const Variables_Set& vars) {
   // dimensions then, again, resizing suffices.
   if (is_empty() || new_space_dim == 0) {
     seq.resize(new_space_dim);
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -2005,10 +2007,10 @@ Box<ITV>::remove_space_dimensions(const Variables_Set& vars) {
   while (src < old_space_dim)
     seq[dst++].swap(seq[src++]);
 
-  assert(dst == new_space_dim);
+  PPL_ASSERT(dst == new_space_dim);
   seq.resize(new_space_dim);
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -2025,12 +2027,12 @@ Box<ITV>::remove_higher_space_dimensions(const dimension_type new_dim) {
   // Note that this case also captures the only legal removal of
   // dimensions from a zero-dim space box.
   if (new_dim == old_dim) {
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
   seq.erase(seq.begin() + new_dim, seq.end());
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -2063,7 +2065,7 @@ Box<ITV>::map_space_dimensions(const Partial_Function& pfunc) {
       seq[i].swap(tmp.seq[new_i]);
   }
   swap(tmp);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -2105,7 +2107,7 @@ template <typename ITV>
 void
 Box<ITV>::add_constraint_no_check(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
-  assert(c_space_dim <= space_dimension());
+  PPL_ASSERT(c_space_dim <= space_dimension());
 
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
@@ -2133,7 +2135,7 @@ Box<ITV>::add_constraint_no_check(const Constraint& c) {
     return;
   }
 
-  assert(c_num_vars == 1);
+  PPL_ASSERT(c_num_vars == 1);
   const Coefficient& d = c.coefficient(Variable(c_only_var));
   add_interval_constraint_no_check(c_only_var, c.type(), n, d);
 }
@@ -2141,21 +2143,21 @@ Box<ITV>::add_constraint_no_check(const Constraint& c) {
 template <typename ITV>
 void
 Box<ITV>::add_constraints_no_check(const Constraint_System& cs) {
-  assert(cs.space_dimension() <= space_dimension());
+  PPL_ASSERT(cs.space_dimension() <= space_dimension());
   // Note: even when the box is known to be empty, we need to go
   // through all the constraints to fulfill the method's contract
   // for what concerns exception throwing.
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
     add_constraint_no_check(*i);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
 void
 Box<ITV>::add_congruence_no_check(const Congruence& cg) {
   const dimension_type cg_space_dim = cg.space_dimension();
-  assert(cg_space_dim <= space_dimension());
+  PPL_ASSERT(cg_space_dim <= space_dimension());
 
   // Set aside the case of proper congruences.
   if (cg.is_proper_congruence()) {
@@ -2171,7 +2173,7 @@ Box<ITV>::add_congruence_no_check(const Congruence& cg) {
                     "cg is a nontrivial proper congruence");
   }
 
-  assert(cg.is_equality());
+  PPL_ASSERT(cg.is_equality());
   dimension_type cg_num_vars = 0;
   dimension_type cg_only_var = 0;
   // Throw an exception if c is not an interval congruence.
@@ -2190,7 +2192,7 @@ Box<ITV>::add_congruence_no_check(const Congruence& cg) {
     return;
   }
 
-  assert(cg_num_vars == 1);
+  PPL_ASSERT(cg_num_vars == 1);
   const Coefficient& d = cg.coefficient(Variable(cg_only_var));
   add_interval_constraint_no_check(cg_only_var, Constraint::EQUALITY, n, d);
 }
@@ -2198,22 +2200,22 @@ Box<ITV>::add_congruence_no_check(const Congruence& cg) {
 template <typename ITV>
 void
 Box<ITV>::add_congruences_no_check(const Congruence_System& cgs) {
-  assert(cgs.space_dimension() <= space_dimension());
+  PPL_ASSERT(cgs.space_dimension() <= space_dimension());
   // Note: even when the box is known to be empty, we need to go
   // through all the congruences to fulfill the method's contract
   // for what concerns exception throwing.
   for (Congruence_System::const_iterator i = cgs.begin(),
 	 cgs_end = cgs.end(); i != cgs_end; ++i)
     add_congruence_no_check(*i);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
 void
 Box<ITV>::refine_no_check(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
-  assert(c_space_dim <= space_dimension());
-  assert(!marked_empty());
+  PPL_ASSERT(c.space_dimension() <= space_dimension());
+  PPL_ASSERT(!marked_empty());
 
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
@@ -2233,7 +2235,7 @@ Box<ITV>::refine_no_check(const Constraint& c) {
     return;
   }
 
-  assert(c_num_vars == 1);
+  PPL_ASSERT(c_num_vars == 1);
   const Coefficient& d = c.coefficient(Variable(c_only_var));
   add_interval_constraint_no_check(c_only_var, c.type(), n, d);
 }
@@ -2241,20 +2243,19 @@ Box<ITV>::refine_no_check(const Constraint& c) {
 template <typename ITV>
 void
 Box<ITV>::refine_no_check(const Constraint_System& cs) {
-  assert(cs.space_dimension() <= space_dimension());
+  PPL_ASSERT(cs.space_dimension() <= space_dimension());
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
     refine_no_check(*i);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
 void
 Box<ITV>::refine_no_check(const Congruence& cg) {
-  assert(!marked_empty());
+  PPL_ASSERT(!marked_empty());
 
-  const dimension_type cg_space_dim = cg.space_dimension();
-  assert(cg_space_dim <= space_dimension());
+  PPL_ASSERT(cg.space_dimension() <= space_dimension());
 
   if (cg.is_proper_congruence()) {
     // FIXME: also deal with the case of interval with restrictions.
@@ -2265,7 +2266,7 @@ Box<ITV>::refine_no_check(const Congruence& cg) {
     return;
   }
 
-  assert(cg.is_equality());
+  PPL_ASSERT(cg.is_equality());
   Constraint c(cg);
   refine_no_check(c);
 }
@@ -2273,11 +2274,11 @@ Box<ITV>::refine_no_check(const Congruence& cg) {
 template <typename ITV>
 void
 Box<ITV>::refine_no_check(const Congruence_System& cgs) {
-  assert(cgs.space_dimension() <= space_dimension());
+  PPL_ASSERT(cgs.space_dimension() <= space_dimension());
   for (Congruence_System::const_iterator i = cgs.begin(),
 	 cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)
     refine_no_check(*i);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 #if 1 // Alternative implementations for propagate_constraint_no_check.
@@ -2302,7 +2303,7 @@ propagate_constraint_check_result(Result r, Ternary& open) {
   case V_EQ:
     return false;
   default:
-    assert(false);
+    PPL_ASSERT(false);
     return true;
   }
 }
@@ -2312,7 +2313,7 @@ propagate_constraint_check_result(Result r, Ternary& open) {
 template <typename ITV>
 void
 Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
-  assert(c.space_dimension() <= space_dimension());
+  PPL_ASSERT(c.space_dimension() <= space_dimension());
 
   typedef
     typename Select_Temp_Boundary_Type<typename ITV::boundary_type>::type
@@ -2340,7 +2341,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   }
 
   // Here constraint c is non-trivial.
-  assert(last_k < c_space_dim);
+  PPL_ASSERT(last_k < c_space_dim);
   Result r;
   Temp_Boundary_Type t_bound;
   Temp_Boundary_Type t_a;
@@ -2385,7 +2386,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
 	    goto maybe_refine_upper_1;
 	}
 	else {
-	  assert(sgn_a_i > 0);
+	  PPL_ASSERT(sgn_a_i > 0);
 	  if (x_i.upper_is_boundary_infinity())
 	    goto maybe_refine_upper_1;
 	  r = assign_r(t_a, a_i, ROUND_UP);
@@ -2449,7 +2450,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
 	    goto next_k;
 	}
 	else {
-	  assert(sgn_a_i > 0);
+	  PPL_ASSERT(sgn_a_i > 0);
 	  if (x_i.lower_is_boundary_infinity())
 	    goto next_k;
 	  r = assign_r(t_a, a_i, ROUND_DOWN);
@@ -2480,7 +2481,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       reset_empty_up_to_date();
     }
     else {
-      assert(sgn_a_k < 0);
+      PPL_ASSERT(sgn_a_k < 0);
       open = (c_type == Constraint::STRICT_INEQUALITY) ? T_YES : T_NO;
       if (open == T_NO)
 	maybe_reset_fpu_inexact<Temp_Boundary_Type>();
@@ -2514,7 +2515,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
 	    goto maybe_refine_upper_2;
 	}
 	else {
-	  assert(sgn_a_i > 0);
+	  PPL_ASSERT(sgn_a_i > 0);
 	  if (x_i.upper_is_boundary_infinity())
 	    goto maybe_refine_upper_2;
 	  r = assign_r(t_a, a_i, ROUND_UP);
@@ -2578,7 +2579,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
 	    goto next_k;
 	}
 	else {
-	  assert(sgn_a_i > 0);
+	  PPL_ASSERT(sgn_a_i > 0);
 	  if (x_i.lower_is_boundary_infinity())
 	    goto next_k;
 	  r = assign_r(t_a, a_i, ROUND_DOWN);
@@ -2618,7 +2619,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
 template <typename ITV>
 void
 Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
-  assert(c.space_dimension() <= space_dimension());
+  PPL_ASSERT(c.space_dimension() <= space_dimension());
 
   dimension_type c_space_dim = c.space_dimension();
   ITV k[c_space_dim];
@@ -2666,7 +2667,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
     }
   }
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 #endif // Alternative implementations for propagate_constraint_no_check.
@@ -2676,18 +2677,25 @@ void
 Box<ITV>
 ::propagate_constraints_no_check(const Constraint_System& cs,
                                  const dimension_type max_iterations) {
-  assert(cs.space_dimension() <= space_dimension());
+  const dimension_type space_dim = space_dimension();
+  PPL_ASSERT(cs.space_dimension() <= space_dim);
+
+  const Constraint_System::const_iterator cs_begin = cs.begin();
+  const Constraint_System::const_iterator cs_end = cs.end();
+  const dimension_type cs_size = std::distance(cs_begin, cs_end);
+  const dimension_type propagation_weight = cs_size * space_dim;
 
   Sequence copy;
   bool changed;
   dimension_type num_iterations = 0;
   do {
+    WEIGHT_BEGIN();
     ++num_iterations;
     copy = seq;
-    for (Constraint_System::const_iterator i = cs.begin(),
-	   cs_end = cs.end(); i != cs_end; ++i)
+    for (Constraint_System::const_iterator i = cs_begin; i != cs_end; ++i)
       propagate_constraint_no_check(*i);
 
+    WEIGHT_ADD_MUL(40, propagation_weight);
     // Check if the client has requested abandoning all expensive
     // computations.  If so, the exception specified by the client
     // is thrown now.
@@ -2741,7 +2749,43 @@ Box<ITV>::affine_image(const Variable var,
   }
   seq[var.id()].assign(expr_value);
 
-  assert(OK());
+  PPL_ASSERT(OK());
+}
+
+template <typename ITV>
+void
+Box<ITV>::affine_form_image(const Variable var,
+                            const Linear_Form<ITV>& lf) {
+
+  // Check that ITV has a floating point boundary type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<typename ITV::boundary_type>
+            ::is_exact, "Box<ITV>::affine_form_image(Variable, Linear_Form):"
+                        "ITV has not a floating point boundary type.");
+
+  // Dimension-compatibility checks.
+  const dimension_type space_dim = space_dimension();
+  const dimension_type lf_space_dim = lf.space_dimension();
+  if (space_dim < lf_space_dim)
+    throw_dimension_incompatible("affine_form_image(var, lf)", "lf", lf);
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("affine_form_image(var, lf)", "var", var);
+
+  if (is_empty())
+    return;
+
+  // Intervalization of 'lf'.
+  ITV result = lf.inhomogeneous_term();
+  for (dimension_type i = 0; i < lf_space_dim; ++i) {
+    ITV current_addend = lf.coefficient(Variable(i));
+    const ITV& curr_int = seq[i];
+    current_addend *= curr_int;
+    result += current_addend;
+  }
+
+  seq[var.id()].assign(result);
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -2802,7 +2846,7 @@ Box<ITV>::affine_preimage(const Variable var,
     inverse += (expr_v + denominator) * var;
     affine_image(var, inverse, expr_v);
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -2938,7 +2982,7 @@ Box<ITV>
       seq_v.assign(UNIVERSE);
     }
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -3102,7 +3146,7 @@ Box<ITV>
       refine_with_constraint(lb_expr >= ub_expr);
   }
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -3167,7 +3211,7 @@ Box<ITV>
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
     throw std::runtime_error("PPL internal error");
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -3312,7 +3356,7 @@ Box<ITV>
     return;
   ITV& seq_v = seq[var.id()];
   seq_v.assign(UNIVERSE);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -3384,7 +3428,7 @@ Box<ITV>
     // highest dimension in the lhs unbounded.
     ITV& seq_var = seq[has_var_id];
     seq_var.assign(UNIVERSE);
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -3518,7 +3562,7 @@ Box<ITV>
       throw std::runtime_error("PPL internal error");
     }
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -3565,12 +3609,14 @@ Box<ITV>::generalized_affine_preimage(const Linear_Expression& lhs,
     }
   }
   generalized_affine_image(revised_lhs, relsym, revised_rhs);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
 template <typename T, typename Iterator>
-typename Enable_If<Is_Same<T, Box<ITV> >::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+typename Enable_If<Is_Same<T, Box<ITV> >::value
+                   && Is_Same_Or_Derived<Interval_Base, ITV>::value,
+                   void>::type
 Box<ITV>::CC76_widening_assign(const T& y, Iterator first, Iterator last) {
   if (y.is_empty())
     return;
@@ -3578,18 +3624,14 @@ Box<ITV>::CC76_widening_assign(const T& y, Iterator first, Iterator last) {
   for (dimension_type i = seq.size(); i-- > 0; )
     seq[i].CC76_widening_assign(y.seq[i], first, last);
 
-  assert(OK());
-}
-
-template <typename ITV>
-template <typename T, typename Iterator>
-typename Enable_If<Is_Same<T, Box<ITV> >::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
-Box<ITV>::CC76_widening_assign(const T& y, Iterator first, Iterator last) {
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
 template <typename T>
-typename Enable_If<Is_Same<T, Box<ITV> >::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+typename Enable_If<Is_Same<T, Box<ITV> >::value
+                   && Is_Same_Or_Derived<Interval_Base, ITV>::value,
+                   void>::type
 Box<ITV>::CC76_widening_assign(const T& y, unsigned* tp) {
   static typename ITV::boundary_type stop_points[] = {
     typename ITV::boundary_type(-2),
@@ -3616,18 +3658,12 @@ Box<ITV>::CC76_widening_assign(const T& y, unsigned* tp) {
 }
 
 template <typename ITV>
-template <typename T>
-typename Enable_If<Is_Same<T, Box<ITV> >::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
-Box<ITV>::CC76_widening_assign(const T& y, unsigned* tp) {
-}
-
-template <typename ITV>
 void
 Box<ITV>::get_limiting_box(const Constraint_System& cs,
                            Box& limiting_box) const {
   const dimension_type cs_space_dim = cs.space_dimension();
   // Private method: the caller has to ensure the following.
-  assert(cs_space_dim <= space_dimension());
+  PPL_ASSERT(cs_space_dim <= space_dimension());
 
   for (Constraint_System::const_iterator cs_i = cs.begin(),
          cs_end = cs.end(); cs_i != cs_end; ++cs_i) {
@@ -3678,7 +3714,7 @@ Box<ITV>::limited_CC76_extrapolation_assign(const Box& y,
     // We assume that `y' is contained in or equal to `*this'.
     const Box x_copy = *this;
     const Box y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT(x_copy.contains(y_copy));
   }
 #endif
 
@@ -3702,7 +3738,9 @@ Box<ITV>::limited_CC76_extrapolation_assign(const Box& y,
 
 template <typename ITV>
 template <typename T>
-typename Enable_If<Is_Same<T, Box<ITV> >::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
+typename Enable_If<Is_Same<T, Box<ITV> >::value
+                   && Is_Same_Or_Derived<Interval_Base, ITV>::value,
+                   void>::type
 Box<ITV>::CC76_narrowing_assign(const T& y) {
   const dimension_type space_dim = space_dimension();
 
@@ -3715,7 +3753,7 @@ Box<ITV>::CC76_narrowing_assign(const T& y) {
     // We assume that `*this' is contained in or equal to `y'.
     const Box x_copy = *this;
     const Box y_copy = y;
-    assert(y_copy.contains(x_copy));
+    PPL_ASSERT(y_copy.contains(x_copy));
   }
 #endif
 
@@ -3745,13 +3783,7 @@ Box<ITV>::CC76_narrowing_assign(const T& y) {
 	&& x_i.upper() != y_i.upper())
       x_i.upper() = y_i.upper();
   }
-  assert(OK());
-}
-
-template <typename ITV>
-template <typename T>
-typename Enable_If<Is_Same<T, Box<ITV> >::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
-Box<ITV>::CC76_narrowing_assign(const T& y) {
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -3932,7 +3964,7 @@ Box<ITV>::ascii_load(std::istream& s) {
   }
 
   // Check invariants.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -4048,6 +4080,20 @@ Box<ITV>::throw_dimension_incompatible(const char* method,
 }
 
 template <typename ITV>
+template <typename C>
+void
+Box<ITV>::throw_dimension_incompatible(const char* method,
+                                       const char* name_row,
+                                       const Linear_Form<C>& y) const {
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":\n"
+    << "this->space_dimension() == " << space_dimension()
+    << ", " << name_row << "->space_dimension() == "
+    << y.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename ITV>
 void
 Box<ITV>::throw_generic(const char* method, const char* reason) {
   std::ostringstream s;
@@ -4127,7 +4173,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 	maybe_assign(tmp2p, tmp2, x_i.lower(), inverse(dir));
       }
       sub_assign_r(tmp1, *tmp1p, *tmp2p, dir);
-      assert(sgn(tmp1) >= 0);
+      PPL_ASSERT(sgn(tmp1) >= 0);
       Specialization::combine(tmp0, tmp1, dir);
     }
     // Dealing with the lower bounds.
@@ -4150,7 +4196,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 	maybe_assign(tmp2p, tmp2, x_i.upper(), inverse(dir));
       }
       sub_assign_r(tmp1, *tmp1p, *tmp2p, dir);
-      assert(sgn(tmp1) >= 0);
+      PPL_ASSERT(sgn(tmp1) >= 0);
       Specialization::combine(tmp0, tmp1, dir);
     }
   }

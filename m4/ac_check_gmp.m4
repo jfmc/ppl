@@ -1,5 +1,5 @@
 dnl A function to check for the existence and usability of GMP.
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -42,8 +42,12 @@ AC_ARG_WITH(gmp-build,
     LDFLAGS="$LDFLAGS -L$gmp_build_dir -L$gmp_build_dir/.libs"
     LDFLAGS="$LDFLAGS -L$gmp_build_dir/tune"
   else
-    AC_MSG_ERROR([cannot use --with-gmp-build and --with-libgmp* together])
+    AC_MSG_ERROR([cannot use --with-gmp-build and --with-gmp-prefix together])
   fi)
+
+dnl Both libgmp and libbmpxx come from the gmp package.
+AC_LIB_FROMPACKAGE([gmp], [gmp])
+AC_LIB_FROMPACKAGE([gmpxx], [gmp])
 
 dnl Check how to link with libgmp.
 AC_LIB_LINKFLAGS([gmp])
@@ -65,6 +69,10 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 
 #if __GNU_MP_VERSION < 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR < 1) || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR == 1 && __GNU_MP_VERSION_PATCHLEVEL < 3)
 #GMP version 4.1.3 or higher is required
+#endif
+
+#ifndef BITS_PER_MP_LIMB
+#define BITS_PER_MP_LIMB GMP_LIMB_BITS
 #endif
 
 int
@@ -93,11 +101,11 @@ main() {
     return 1;
   }
 
-  if (sizeof(mp_limb_t)*CHAR_BIT != GMP_LIMB_BITS
-      || GMP_LIMB_BITS != mp_bits_per_limb) {
+  if (sizeof(mp_limb_t)*CHAR_BIT != BITS_PER_MP_LIMB
+      || BITS_PER_MP_LIMB != mp_bits_per_limb) {
     std::cerr
       << "GMP header (gmp.h) and library (ligmp.*) bits-per-limb mismatch:\n"
-      << "header gives " << __GMP_BITS_PER_MP_LIMB << ";\n"
+      << "header gives " << BITS_PER_MP_LIMB << ";\n"
       << "library gives " << mp_bits_per_limb << ".\n"
       << "This probably means you are on a bi-arch system and\n"
       << "you are compiling with the wrong header or linking with\n"

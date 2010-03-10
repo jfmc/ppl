@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: minimize() and add_and_minimize().
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -71,13 +71,13 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
 			  Linear_System& dest,
 			  Bit_Matrix& sat) {
   // Topologies have to agree.
-  assert(source.topology() == dest.topology());
+  PPL_ASSERT(source.topology() == dest.topology());
   // `source' cannot be empty: even if it is an empty constraint system,
   // representing the universe polyhedron, homogenization has added
   // the positive constraint. It also cannot be an empty generator system,
   // since this function is always called starting from a non-empty
   // polyhedron.
-  assert(!source.has_no_rows());
+  PPL_ASSERT(!source.has_no_rows());
 
   // Sort the source system, if necessary.
   if (!source.is_sorted())
@@ -236,14 +236,14 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
 				  Bit_Matrix& sat,
 				  const Linear_System& source2) {
   // `source1' and `source2' cannot be empty.
-  assert(!source1.has_no_rows() && !source2.has_no_rows());
+  PPL_ASSERT(!source1.has_no_rows() && !source2.has_no_rows());
   // `source1' and `source2' must have the same number of columns
   // to be merged.
-  assert(source1.num_columns() == source2.num_columns());
+  PPL_ASSERT(source1.num_columns() == source2.num_columns());
   // `source1' and `source2' are fully sorted.
-  assert(source1.is_sorted() && source1.num_pending_rows() == 0);
-  assert(source2.is_sorted() && source2.num_pending_rows() == 0);
-  assert(dest.num_pending_rows() == 0);
+  PPL_ASSERT(source1.is_sorted() && source1.num_pending_rows() == 0);
+  PPL_ASSERT(source2.is_sorted() && source2.num_pending_rows() == 0);
+  PPL_ASSERT(dest.num_pending_rows() == 0);
 
   const dimension_type old_source1_num_rows = source1.num_rows();
   // `k1' and `k2' run through the rows of `source1' and `source2', resp.
@@ -335,9 +335,9 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
 				  Linear_System& source,
 				  Linear_System& dest,
 				  Bit_Matrix& sat) {
-  assert(source.num_pending_rows() > 0);
-  assert(source.num_columns() == dest.num_columns());
-  assert(source.is_sorted());
+  PPL_ASSERT(source.num_pending_rows() > 0);
+  PPL_ASSERT(source.num_columns() == dest.num_columns());
+  PPL_ASSERT(source.is_sorted());
 
   // First, pad the saturation matrix with new columns (of zeroes)
   // to accommodate for the pending rows of `source'.

@@ -1,6 +1,6 @@
 /* Grid_Certificate class implementation
    (non-inline member functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Certificate.defs.hh"
 
 #include "Grid.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -35,7 +35,7 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
   : num_equalities(0), num_proper_congruences(0) {
   Grid& gr = const_cast<Grid&>(cgr);
   // As in Polyhedron assume that gr contains at least one point.
-  assert(!gr.marked_empty());
+  PPL_ASSERT(!gr.marked_empty());
   if (gr.space_dimension() == 0)
     return;
   // One of the systems must be in minimal form.
@@ -59,7 +59,7 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
 #else
 	bool contains_points = Grid::simplify(gr.con_sys, gr.dim_kinds);
 	used(contains_points);	// Quiet compiler warning.
-	assert(contains_points);
+	PPL_ASSERT(contains_points);
 #endif
 	gr.set_congruences_minimized();
 
@@ -73,7 +73,7 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
       Grid::simplify(gr.gen_sys, gr.dim_kinds);
       // If gen_sys contained rows before being reduced, it should
       // contain at least a single point afterward.
-      assert(!gr.gen_sys.empty());
+      PPL_ASSERT(!gr.gen_sys.empty());
       gr.set_generators_minimized();
     }
     // Calculate number of congruences from generators.
@@ -86,7 +86,7 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
 
 int
 PPL::Grid_Certificate::compare(const Grid_Certificate& y) const {
-  assert(OK() && y.OK());
+  PPL_ASSERT(OK() && y.OK());
   if (num_equalities == y.num_equalities) {
     if (num_proper_congruences == y.num_proper_congruences)
       return 0;

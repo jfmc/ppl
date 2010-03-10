@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file defines macros needed for generating
 dnl the XSB dependent code for xsb_prolog_generated_test.pl.
 
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl

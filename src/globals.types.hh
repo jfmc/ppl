@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -91,7 +91,7 @@ enum Bounded_Integer_Type_Width {
   BITS_64 = 64,
 
   //! \hideinitializer 128 bits.
-  BITS_128 = 128,
+  BITS_128 = 128
 };
 
 /*! \brief \ingroup PPL_CXX_interface
@@ -151,6 +151,8 @@ enum Bounded_Integer_Type_Overflow {
   */
   OVERFLOW_IMPOSSIBLE
 };
+
+struct Weightwatch_Traits;
 
 } // namespace Parma_Polyhedra_Library
 

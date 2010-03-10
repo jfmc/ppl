@@ -1,5 +1,5 @@
 /* Some simple tests for the basic functionality of the PWL.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
@@ -56,6 +56,12 @@ test01() {
     interrupt = false;
     return ok;
   }
+#if !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
+  catch (const std::logic_error& e) {
+    nout << "std::logic_error caught (" << e.what() << ")" << endl;
+    return true;
+  }
+#endif // !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
   catch (...) {
     return false;
   }

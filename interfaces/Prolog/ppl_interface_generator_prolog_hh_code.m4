@@ -5,7 +5,7 @@ dnl This m4 file contains the program code for generating the
 dnl files ppl_prolog_DOMAIN.hh for each interface domain DOMAIN
 dnl in ppl_interface instantiations.m4.
 
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl

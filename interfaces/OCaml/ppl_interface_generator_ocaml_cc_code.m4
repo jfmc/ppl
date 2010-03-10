@@ -5,7 +5,7 @@ This m4 file contains the program implementation code for generating the
 files ppl_ocaml_DOMAIN.cc for each interface domain DOMAIN
 in ppl_interface instantiations.m4.
 
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl

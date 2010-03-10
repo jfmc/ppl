@@ -1,5 +1,5 @@
 /* Row class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Row_inlines_hh 1
 
 #include "math_utilities.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <cstddef>
 #include <limits>
 #include <algorithm>
@@ -78,7 +78,7 @@ Row_Impl_Handler::Impl::operator new(const size_t fixed_size,
 #if PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   return ::operator new(fixed_size + capacity*sizeof(Coefficient));
 #else
-  assert(capacity >= 1);
+  PPL_ASSERT(capacity >= 1);
   return ::operator new(fixed_size + (capacity-1)*sizeof(Coefficient));
 #endif
 }
@@ -135,13 +135,13 @@ Row_Impl_Handler::Impl::flags() {
 
 inline Coefficient&
 Row_Impl_Handler::Impl::operator[](const dimension_type k) {
-  assert(k < size());
+  PPL_ASSERT(k < size());
   return vec_[k];
 }
 
 inline Coefficient_traits::const_reference
 Row_Impl_Handler::Impl::operator[](const dimension_type k) const {
-  assert(k < size());
+  PPL_ASSERT(k < size());
   return vec_[k];
 }
 
@@ -215,33 +215,33 @@ Row::allocate(
 #endif
 	       dimension_type capacity,
 	       const Flags f) {
-  assert(capacity <= max_size());
+  PPL_ASSERT(capacity <= max_size());
 #if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity == 0)
     ++capacity;
 #endif
-  assert(impl == 0);
+  PPL_ASSERT(impl == 0);
   impl = new (capacity) Impl(f);
 #if PPL_ROW_EXTRA_DEBUG
-  assert(capacity_ == 0);
+  PPL_ASSERT(capacity_ == 0);
   capacity_ = capacity;
 #endif
 }
 
 inline void
 Row::expand_within_capacity(const dimension_type new_size) {
-  assert(impl);
+  PPL_ASSERT(impl);
 #if PPL_ROW_EXTRA_DEBUG
-  assert(new_size <= capacity_);
+  PPL_ASSERT(new_size <= capacity_);
 #endif
   impl->expand_within_capacity(new_size);
 }
 
 inline void
 Row::copy_construct_coefficients(const Row& y) {
-  assert(impl && y.impl);
+  PPL_ASSERT(impl && y.impl);
 #if PPL_ROW_EXTRA_DEBUG
-  assert(y.size() <= capacity_);
+  PPL_ASSERT(y.size() <= capacity_);
 #endif
   impl->copy_construct_coefficients(*(y.impl));
 }
@@ -250,7 +250,7 @@ inline void
 Row::construct(const dimension_type sz,
 	       const dimension_type capacity,
 	       const Flags f) {
-  assert(sz <= capacity && capacity <= max_size());
+  PPL_ASSERT(sz <= capacity && capacity <= max_size());
   allocate(capacity, f);
   expand_within_capacity(sz);
 }
@@ -287,8 +287,8 @@ inline
 Row::Row(const Row& y,
 	 const dimension_type capacity)
   : Row_Impl_Handler() {
-  assert(y.impl);
-  assert(y.size() <= capacity && capacity <= max_size());
+  PPL_ASSERT(y.impl);
+  PPL_ASSERT(y.size() <= capacity && capacity <= max_size());
   allocate(capacity, y.flags());
   copy_construct_coefficients(y);
 }
@@ -298,8 +298,8 @@ Row::Row(const Row& y,
 	 const dimension_type sz,
 	 const dimension_type capacity)
   : Row_Impl_Handler() {
-  assert(y.impl);
-  assert(y.size() <= sz && sz <= capacity && capacity <= max_size());
+  PPL_ASSERT(y.impl);
+  PPL_ASSERT(y.size() <= sz && sz <= capacity && capacity <= max_size());
   allocate(capacity, y.flags());
   copy_construct_coefficients(y);
   expand_within_capacity(sz);
@@ -311,7 +311,7 @@ Row::~Row() {
 
 inline void
 Row::shrink(const dimension_type new_size) {
-  assert(impl);
+  PPL_ASSERT(impl);
   impl->shrink(new_size);
 }
 
@@ -343,13 +343,13 @@ Row::operator=(const Row& y) {
 
 inline Coefficient&
 Row::operator[](const dimension_type k) {
-  assert(impl);
+  PPL_ASSERT(impl);
   return (*impl)[k];
 }
 
 inline Coefficient_traits::const_reference
 Row::operator[](const dimension_type k) const {
-  assert(impl);
+  PPL_ASSERT(impl);
   return (*impl)[k];
 }
 

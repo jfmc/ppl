@@ -1,5 +1,5 @@
 /* PPL Java interface common routines implementation.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -257,6 +257,16 @@ handle_exception(JNIEnv* env, const timeout_exception&) {
 }
 
 void
+handle_exception(JNIEnv* env, const deterministic_timeout_exception&) {
+  reset_deterministic_timeout();
+  jclass newExcCls
+    = env->FindClass("parma_polyhedra_library/Timeout_Exception");
+  CHECK_RESULT_ASSERT(env, newExcCls);
+  jint ret = env->ThrowNew(newExcCls, "PPL deterministic timeout expired");
+  CHECK_RESULT_ABORT(env, (ret == 0));
+}
+
+void
 handle_exception(JNIEnv* env) {
   jclass newExcCls = env->FindClass("java/lang/RuntimeException");
   CHECK_RESULT_ASSERT(env, newExcCls);
@@ -268,6 +278,8 @@ handle_exception(JNIEnv* env) {
 
 Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
 
+Weightwatch* p_deterministic_timeout_object = 0;
+
 #endif // PPL_WATCHDOG_LIBRARY_ENABLED
 
 void
@@ -276,6 +288,17 @@ reset_timeout() {
   if (p_timeout_object) {
     delete p_timeout_object;
     p_timeout_object = 0;
+    abandon_expensive_computations = 0;
+  }
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+}
+
+void
+reset_deterministic_timeout() {
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+  if (p_deterministic_timeout_object) {
+    delete p_deterministic_timeout_object;
+    p_deterministic_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
 #endif // PPL_WATCHDOG_LIBRARY_ENABLED
@@ -616,65 +639,57 @@ build_cxx_constraint(JNIEnv* env, jobject j_constraint) {
 
 Linear_Expression
 build_cxx_linear_expression(JNIEnv* env, jobject j_le) {
+  jfieldID fID;
   jclass current_class = env->GetObjectClass(j_le);
   // LE_Variable
   if (env->IsAssignableFrom(current_class,
                             cached_classes.Linear_Expression_Variable)) {
-    jint var_id
-      = env->CallIntMethod(j_le,
-                           cached_FMIDs.Linear_Expression_Variable_var_id_ID);
+    jmethodID mID = cached_FMIDs.Linear_Expression_Variable_var_id_ID;
+    jint var_id = env->CallIntMethod(j_le, mID);
     return Linear_Expression(Variable(var_id));
   }
   // LE_Coefficient
   if (env->IsAssignableFrom(current_class,
                             cached_classes.Linear_Expression_Coefficient)) {
-    jfieldID fID = cached_FMIDs.Linear_Expression_Coefficient_coeff_ID;
+    fID = cached_FMIDs.Linear_Expression_Coefficient_coeff_ID;
     jobject ppl_coeff = env->GetObjectField(j_le, fID);
     return Linear_Expression(build_cxx_coeff(env, ppl_coeff));
   }
   // LE_Sum
   if (env->IsAssignableFrom(current_class,
                             cached_classes.Linear_Expression_Sum)) {
-    jobject l_value
-      = env->GetObjectField(j_le, cached_FMIDs.Linear_Expression_Sum_lhs_ID);
-    jobject r_value
-      = env->GetObjectField(j_le, cached_FMIDs.Linear_Expression_Sum_rhs_ID);
+    fID = cached_FMIDs.Linear_Expression_Sum_lhs_ID;
+    jobject l_value = env->GetObjectField(j_le, fID);
+    fID = cached_FMIDs.Linear_Expression_Sum_rhs_ID;
+    jobject r_value = env->GetObjectField(j_le, fID);
     return build_cxx_linear_expression(env, l_value)
       + build_cxx_linear_expression(env, r_value);
   }
   // LE_Times
   if (env->IsAssignableFrom(current_class,
                             cached_classes.Linear_Expression_Times)) {
-    jobject le_coeff_value
-      = env->GetObjectField(j_le,
-                            cached_FMIDs.Linear_Expression_Times_lhs_ID);
-    jobject ppl_coeff
-      = env->GetObjectField(le_coeff_value,
-                            cached_FMIDs.Linear_Expression_Coefficient_coeff_ID);
-    jobject le_value
-      = env->GetObjectField(j_le,
-                            cached_FMIDs.Linear_Expression_Times_rhs_ID);
-    return build_cxx_coeff(env, ppl_coeff)
+    fID = cached_FMIDs.Linear_Expression_Times_coeff_ID;
+    jobject coeff_value = env->GetObjectField(j_le, fID);
+    fID = cached_FMIDs.Linear_Expression_Times_lin_expr_ID;
+    jobject le_value = env->GetObjectField(j_le, fID);
+    return build_cxx_coeff(env, coeff_value)
       * build_cxx_linear_expression(env, le_value);
   }
   // LE_Difference
   if (env->IsAssignableFrom(current_class,
                             cached_classes.Linear_Expression_Difference)) {
-    jobject l_value
-      = env->GetObjectField(j_le,
-                            cached_FMIDs.Linear_Expression_Difference_lhs_ID);
-    jobject r_value
-      = env->GetObjectField(j_le,
-                            cached_FMIDs.Linear_Expression_Difference_rhs_ID);
+    fID = cached_FMIDs.Linear_Expression_Difference_lhs_ID;
+    jobject l_value = env->GetObjectField(j_le,fID);
+    fID = cached_FMIDs.Linear_Expression_Difference_rhs_ID;
+    jobject r_value = env->GetObjectField(j_le, fID);
     return build_cxx_linear_expression(env, l_value)
       - build_cxx_linear_expression(env, r_value);
   }
   // LE_Unary_Minus
   if (env->IsAssignableFrom(current_class,
                             cached_classes.Linear_Expression_Unary_Minus)) {
-    jobject le_value
-      = env->GetObjectField(j_le,
-                            cached_FMIDs.Linear_Expression_Unary_Minus_arg_ID);
+    fID = cached_FMIDs.Linear_Expression_Unary_Minus_arg_ID;
+    jobject le_value = env->GetObjectField(j_le, fID);
     return -build_cxx_linear_expression(env, le_value);
   }
   assert(false);

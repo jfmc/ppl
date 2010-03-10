@@ -1,5 +1,5 @@
 /* Linear_Expression class implementation (non-inline functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator.defs.hh"
 #include "Congruence.defs.hh"
 #include <stdexcept>
+#include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -59,13 +60,13 @@ const PPL::Linear_Expression* PPL::Linear_Expression::zero_p = 0;
 
 void
 PPL::Linear_Expression::initialize() {
-  assert(zero_p == 0);
+  PPL_ASSERT(zero_p == 0);
   zero_p = new Linear_Expression(Coefficient_zero());
 }
 
 void
 PPL::Linear_Expression::finalize() {
-  assert(zero_p != 0);
+  PPL_ASSERT(zero_p != 0);
   delete zero_p;
   zero_p = 0;
 }
@@ -285,10 +286,10 @@ PPL::operator+=(Linear_Expression& e1, const Linear_Expression& e2) {
     for (dimension_type i = e2_size; i-- > 0; )
       e1[i] += e2[i];
   else {
-    Linear_Expression e(e2);
+    Linear_Expression new_e(e2);
     for (dimension_type i = e1_size; i-- > 0; )
-      e[i] += e1[i];
-    std::swap(e1, e);
+      new_e[i] += e1[i];
+    e1.swap(new_e);
   }
   return e1;
 }
@@ -304,7 +305,7 @@ PPL::operator+=(Linear_Expression& e, const Variable v) {
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
     Linear_Expression new_e(e, v_space_dim+1);
-    std::swap(e, new_e);
+    e.swap(new_e);
   }
   ++e[v_space_dim];
   return e;
@@ -319,10 +320,10 @@ PPL::operator-=(Linear_Expression& e1, const Linear_Expression& e2) {
     for (dimension_type i = e2_size; i-- > 0; )
       e1[i] -= e2[i];
   else {
-    Linear_Expression e(e1, e2_size);
+    Linear_Expression new_e(e1, e2_size);
     for (dimension_type i = e2_size; i-- > 0; )
-      e[i] -= e2[i];
-    std::swap(e1, e);
+      new_e[i] -= e2[i];
+    e1.swap(new_e);
   }
   return e1;
 }
@@ -338,7 +339,7 @@ PPL::operator-=(Linear_Expression& e, const Variable v) {
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
     Linear_Expression new_e(e, v_space_dim+1);
-    std::swap(e, new_e);
+    e.swap(new_e);
   }
   --e[v_space_dim];
   return e;
@@ -350,6 +351,25 @@ PPL::operator*=(Linear_Expression& e, Coefficient_traits::const_reference n) {
   dimension_type e_size = e.size();
   for (dimension_type i = e_size; i-- > 0; )
     e[i] *= n;
+  return e;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+PPL::Linear_Expression&
+PPL::add_mul_assign(Linear_Expression& e,
+                    Coefficient_traits::const_reference n,
+                    const Variable v) {
+  const dimension_type v_space_dim = v.space_dimension();
+  if (v_space_dim > Linear_Expression::max_space_dimension())
+    throw std::length_error("Linear_Expression& "
+                            "PPL::add_mul_assign(e, n, v):\n"
+			    "v exceeds the maximum allowed space dimension.");
+  const dimension_type e_size = e.size();
+  if (e_size <= v_space_dim) {
+    Linear_Expression new_e(e, v_space_dim+1);
+    e.swap(new_e);
+  }
+  e[v_space_dim] += n;
   return e;
 }
 

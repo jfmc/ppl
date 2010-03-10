@@ -1,5 +1,5 @@
 /* Configuration Independent Documentation for Prolog.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -328,7 +328,7 @@ The specification uses the following grammar rules:
  Control_Parameter_Value                for MIP problems
              --> pricing_steepest_edge_float
             | pricing_steepest_edge_exact
-            | pricing_rextbook
+            | pricing_textbook
 
  Vars_List   --> []    			list of PPL variables
             | [PPL_Var | Vars_List].
@@ -434,6 +434,28 @@ that are included with all instantiations of the Prolog interfaces.
 <P><CODE> ppl_reset_timeout </CODE><BR>
 
    <EM>Resets the timeout time so that the computation is not interrupted.</EM>
+
+<P><CODE> ppl_set_deterministic_timeout(+Weight) </CODE><BR>
+
+   <EM>Computations taking exponential time will be interrupted
+   some time after reaching the <CODE>Weight</CODE> complexity threshold.
+   If the computation is interrupted that way, the current timeout
+   exception atom will be thrown.
+   <CODE>Weight</CODE> must be strictly greater than zero.</EM>
+   <P>
+   <EM>NOTE:</EM> This "timeout" checking functionality is said to be
+   <EM>deterministic</EM> because it is not based on actual elapsed time.
+   Its behavior will only depend on (some of the) computations performed
+   in the PPL library and it will be otherwise independent from the
+   computation environment (CPU, operating system, compiler, etc.).
+   The weight mechanism is under alpha testing: client applications
+   should be ready to reconsider the tuning of these weight thresholds
+   when upgrading to newer version of the PPL.
+
+<P><CODE> ppl_reset_deterministic_timeout </CODE><BR>
+
+   <EM>Resets the deterministic timeout so that the computation is not
+   interrupted.</EM>
 
 <P><CODE> ppl_set_rounding_for_PPL </CODE><BR>
 
@@ -1710,7 +1732,7 @@ Manual</A>
 
 The SICStus Prolog interface to the PPL is available
 both as a statically linked module or as a dynamically linked one.
-Only SICStus Prolog versions 3.9.0 and later are supported.
+Only SICStus Prolog versions 3.9.1 and later are supported.
 
 <H3>The Statically Linked <CODE>ppl_sicstus</CODE> Executable</H3>
 

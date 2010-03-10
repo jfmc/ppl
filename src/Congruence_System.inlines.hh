@@ -1,5 +1,5 @@
 /* Congruence_System class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -41,7 +41,7 @@ inline void
 Congruence_System::insert(const Congruence& cg) {
   insert_verbatim(cg);
   static_cast<Congruence&>(operator[](rows.size()-1)).strong_normalize();
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 inline
@@ -105,7 +105,7 @@ Congruence_System::resize_no_copy(const dimension_type new_num_rows,
 
 inline const Congruence_System&
 Congruence_System::zero_dim_empty() {
-  assert(zero_dim_empty_p != 0);
+  PPL_ASSERT(zero_dim_empty_p != 0);
   return *zero_dim_empty_p;
 }
 

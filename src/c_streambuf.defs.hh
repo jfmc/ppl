@@ -1,5 +1,5 @@
 /* c_streambuf class declaration.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -31,6 +31,8 @@ class Parma_Polyhedra_Library::c_streambuf
 public:
   //! Constructor.
   c_streambuf();
+
+  //! Destructor.
   virtual ~c_streambuf();
 
 protected:

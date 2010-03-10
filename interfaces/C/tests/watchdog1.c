@@ -1,5 +1,5 @@
 /* Test the timeout facility of the PPL C interface library.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -20,8 +20,42 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_c.h"
+#include "ppl_c_test.h"
 #include <stdlib.h>
+#include <stdarg.h>
+#include <stdio.h>
+
+static const char* program_name = 0;
+
+static void
+my_exit(int status) {
+  (void) ppl_finalize();
+  exit(status);
+}
+
+static void
+fatal(const char* format, ...) {
+  va_list ap;
+  fprintf(stderr, "%s: ", program_name);
+  va_start(ap, format);
+  vfprintf(stderr, format, ap);
+  va_end(ap);
+  fprintf(stderr, "\n");
+  my_exit(1);
+}
+
+static void
+error_handler(enum ppl_enum_error_code code,
+	      const char* description) {
+  if (check_noisy() || check_very_noisy())
+    fprintf(stderr, "PPL error code %d: %s\n", code, description);
+#if !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
+  /* If Watchdog objects are not supported, a logic error will occur:
+     this is normal. */
+  if (code == PPL_ERROR_LOGIC_ERROR)
+    my_exit(0);
+#endif
+}
 
 void
 open_hypercube(int dimension, ppl_Polyhedron_t ph) {
@@ -93,9 +127,22 @@ timed_compute_open_hypercube_generators(int hundredth_secs,
 }
 
 int
-main() {
-  ppl_initialize();
+main(int argc, char **argv) {
+  program_name = argv[0];
+
+  if (argc != 1) {
+    fprintf(stderr, "usage: %s\n", program_name);
+    exit(1);
+  }
+
+  if (ppl_initialize() < 0)
+    fatal("cannot initialize the Parma Polyhedra Library");
+
+  if (ppl_set_error_handler(error_handler) < 0)
+    fatal("cannot install the custom error handler");
+
   timed_compute_open_hypercube_generators(200, 20);
+
   ppl_finalize();
   return 0;
 }

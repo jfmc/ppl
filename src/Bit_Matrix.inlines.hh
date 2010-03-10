@@ -1,5 +1,5 @@
 /* Bit_Matrix class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Bit_Matrix_inlines_hh 1
 
 #include <algorithm>
-#include <cassert>
+#include "assert.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -60,19 +60,19 @@ inline void
 Bit_Matrix::rows_erase_to_end(const dimension_type first_to_erase) {
   // The first row to be erased cannot be greater
   // than the actual number of the rows of the matrix.
-  assert(first_to_erase <= rows.size());
+  PPL_ASSERT(first_to_erase <= rows.size());
   if (first_to_erase < rows.size())
     rows.erase(rows.begin() + first_to_erase, rows.end());
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 inline void
 Bit_Matrix::columns_erase_to_end(const dimension_type first_to_erase) {
   // The first column to be erased cannot be greater
   // than the actual number of the columns of the matrix.
-  assert(first_to_erase <= row_size);
+  PPL_ASSERT(first_to_erase <= row_size);
   row_size = first_to_erase;
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 inline void
@@ -83,13 +83,13 @@ Bit_Matrix::swap(Bit_Matrix& y) {
 
 inline Bit_Row&
 Bit_Matrix::operator[](const dimension_type k) {
-  assert(k < rows.size());
+  PPL_ASSERT(k < rows.size());
   return rows[k];
 }
 
 inline const Bit_Row&
 Bit_Matrix::operator[](const dimension_type k) const {
-  assert(k < rows.size());
+  PPL_ASSERT(k < rows.size());
   return rows[k];
 }
 
@@ -123,7 +123,7 @@ operator()(const Bit_Row& x, const Bit_Row& y) const {
 
 inline bool
 Bit_Matrix::sorted_contains(const Bit_Row& row) const {
-  assert(check_sorted());
+  PPL_ASSERT(check_sorted());
   return std::binary_search(rows.begin(), rows.end(), row,
 			    Bit_Row_Less_Than());
 }

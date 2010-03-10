@@ -1,5 +1,5 @@
 /* Bit_Matrix class implementation (non-inline functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -36,7 +36,7 @@ PPL::Bit_Matrix&
 PPL::Bit_Matrix::operator=(const Bit_Matrix& y){
   rows = y.rows;
   row_size = y.row_size;
-  assert(OK());
+  PPL_ASSERT(OK());
   return *this;
 }
 
@@ -51,7 +51,7 @@ PPL::Bit_Matrix::sort_rows() {
   Iter new_last = swapping_unique(first, last);
   // Removing duplicates.
   rows.erase(new_last, last);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -75,7 +75,7 @@ PPL::Bit_Matrix::add_recycled_row(Bit_Row& row) {
     // Reallocation will NOT take place: append an empty row
     // and swap it with the new row.
     rows.insert(rows.end(), Bit_Row())->swap(row);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -88,7 +88,7 @@ PPL::Bit_Matrix::transpose() {
     for (unsigned long j = x[i].last(); j != ULONG_MAX; j = x[i].prev(j))
       tmp[j].set(i);
   swap(tmp);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -100,13 +100,13 @@ PPL::Bit_Matrix::transpose_assign(const Bit_Matrix& y) {
     for (unsigned long j = y[i].last(); j != ULONG_MAX; j = y[i].prev(j))
       tmp[j].set(i);
   swap(tmp);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
 PPL::Bit_Matrix::resize(dimension_type new_n_rows,
 		       dimension_type new_n_columns) {
-  assert(OK());
+  PPL_ASSERT(OK());
   const dimension_type old_num_rows = num_rows();
   if (new_n_columns < row_size) {
     const dimension_type num_preserved_rows
@@ -136,7 +136,7 @@ PPL::Bit_Matrix::resize(dimension_type new_n_rows,
     // Drop some rows.
     rows.erase(rows.begin() + new_n_rows, rows.end());
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -180,7 +180,7 @@ PPL::Bit_Matrix::ascii_load(std::istream& s) {
     }
 
   // Check invariants.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 

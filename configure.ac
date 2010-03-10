@@ -1,5 +1,5 @@
 # Autoconf source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -23,7 +23,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], [0.11pre1], [ppl-devel@cs.unipr.it], [ppl])
+AC_INIT([the Parma Polyhedra Library], [0.11pre13], [ppl-devel@cs.unipr.it], [ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
@@ -39,7 +39,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
 
 # Use Automake.
-AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip tar-ustar 1.9])
+AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip dist-lzma tar-ustar silent-rules 1.11])
 
 AC_SUBST(VERSION)
 
@@ -241,6 +241,7 @@ yes)
   AC_MSG_RESULT(yes)
   OPT_FLAGS="-g"
   COMP_FLAGS="$COMP_FLAGS -fprofile-arcs -ftest-coverage"
+  extra_libraries="${extra_libraries} -lgcov"
   ;;
 no)
   AC_MSG_RESULT(no)
@@ -490,7 +491,7 @@ x86_64*)
 esac
 
 case "${host_os}" in
-cygwin)
+cygwin*)
   cygwin=yes
   no_undefined=yes
   ;;
@@ -499,6 +500,7 @@ darwin*)
   ;;
 mingw*)
   mingw=yes
+  no_undefined=yes
   ;;
 solaris*)
   solaris=yes
@@ -610,22 +612,17 @@ then
   AC_DEFINE(PPL_GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
 fi
 
-# Allow additions to C and C++ compilation flags.
-
+# Allow additions to C compilation flags.
 AC_ARG_WITH(cflags,
   AS_HELP_STRING([--with-cflags=XXX],
                  [add XXX to the options for the C compiler]),
   CFLAGS="$CFLAGS $with_cflags")
 
+# Allow additions to C++ compilation flags.
 AC_ARG_WITH(cxxflags,
   AS_HELP_STRING([--with-cxxflags=XXX],
                  [add XXX to the options for the C++ compiler]),
   CXXFLAGS="$CXXFLAGS $with_cxxflags")
-
-# Check for Perl.
-AC_PATH_PROG([PERL], perl, no)
-AC_SUBST([PERL])
-AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
 
 # Checks for C typedefs, structures, compiler and architecture characteristics.
 AC_LANG(C)
@@ -650,8 +647,16 @@ AC_CHECK_SIZEOF(long double)
 AC_CHECK_SIZEOF([int*])
 AC_CHECK_SIZEOF([fp], [], [typedef int *(*fp)();])
 
+# Check for Perl.
+AC_PATH_PROG([PERL], perl, no)
+AC_SUBST([PERL])
+AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
+
 # Use C++ for the remaining checks.
 AC_LANG(C++)
+
+# The PPL uses <cmath> for sqrt and other functions in several places.
+AC_SEARCH_LIBS([sqrt], [m])
 
 # Check for the possibility to control the FPU.
 AC_CHECK_FPU_CONTROL
@@ -712,10 +717,12 @@ AC_CHECK_DECLS([fma,fmaf,fmal,rintf,rintl], , , [#include <cmath>])
 # Checks for the availability of "fast" integral types.
 AC_CHECK_TYPES([int_fast16_t,int_fast32_t,int_fast64_t,uint_fast16_t,uint_fast32_t,uint_fast64_t])
 
-# Must link everything with libm.
-extra_libraries="${extra_libraries} -lm"
+# Make sure uintptr_t is defined to an unsigned integer type wide enough
+# to hold a pointer, if such a type exists.
+AC_TYPE_UINTPTR_T
 
-# GMP library.
+
+# Checks on the GMP library.
 
 AC_CHECK_GMP
 if test x"$have_gmp" = xno
@@ -755,26 +762,14 @@ fi
 extra_includes="${extra_includes}${extra_includes:+ }${gmp_includes_option}"
 extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
 
-# setitimer() is a strong requisite for the PWL.
-AC_CHECK_FUNCS([setitimer], [have_setitimer=yes], [have_setitimer=no])
-
-enableval=default
+enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
   AS_HELP_STRING([--enable-watchdog],
                  [build also the Parma Watchdog Library]))
 case "${enableval}" in
 yes)
-  if test x"$have_setitimer" = xyes
-  then
-    build_watchdog_library=yes
-  else
-    AC_MSG_ERROR([CANNOT BUILD THE WATCHDOG LIBRARY
-*** THE SYSTEM DOES NOT PROVIDE THE SETITIMER FUNCTION.])
-  fi
-  ;;
-default)
-  build_watchdog_library=$have_setitimer
+  build_watchdog_library=yes
   ;;
 no)
   build_watchdog_library=no
@@ -828,6 +823,24 @@ no)
 esac
 build_ppl_lpsol=$enableval
 AM_CONDITIONAL(BUILD_PPL_LPSOL, test x"$build_ppl_lpsol" = xyes)
+
+enableval=yes
+AC_MSG_CHECKING([whether to build the ppl_pips program])
+AC_ARG_ENABLE(ppl_pips,
+  AS_HELP_STRING([--enable-ppl_pips], [build the ppl_pips program]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-ppl_pips, needs yes or no])
+  ;;
+esac
+build_ppl_pips=$enableval
+AM_CONDITIONAL(BUILD_PPL_PIPS, test x"$build_ppl_pips" = xyes)
 
 # Define lists of available interfaces: lowercase and blank-separated.
 non_prolog_interfaces="cxx c ocaml java"
@@ -926,7 +939,7 @@ darwin*)
     java_dir="/Library/Java/Home"
   fi
   ;;
-# On Fedora 9 systems the JDK is usually in /usr/lib/jvm/java .
+# On modern Fedora systems the JDK is usually in /usr/lib/jvm/java .
 linux*)
   if test "x$java_dir" = x
   then
@@ -1124,17 +1137,11 @@ AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE,
 # Checks for YAP.
 if test x${yap_prolog_interface_enabled} = xyes
 then
-  AC_CHECK_PROG(YAP_PROLOG, yap, yap)
-  if test x"$YAP_PROLOG" = xyap
-  then
-    AC_CHECK_HEADER(Yap/c_interface.h,
-                    [],
-                    YAP_PROLOG="")
-  fi
+  AC_CHECK_YAP_PROLOG
 fi
 
 if test x${yap_prolog_interface_enabled} = xyes \
-&& test x$YAP_PROLOG = xyap
+&& test x$have_yap_prolog = xyes
 then
   build_yap_prolog_interface=yes
 fi
@@ -1368,7 +1375,7 @@ AM_CONDITIONAL(THOROUGH_MAKE_CHECK, test x"$enableval" = xthorough)
 
 # Libtool.
 LT_PREREQ([1.5.24])
-LT_INIT([dlopen])
+LT_INIT([dlopen,win32-dll])
 AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
 AM_CONDITIONAL(ENABLE_STATIC, test x"$enable_static" = xyes)
 
@@ -1453,6 +1460,7 @@ AC_CHECK_DECLS([getrusage],
 # include <sys/resource.h>
 #endif
 ])
+AC_CHECK_DECLS([sigaction], , , [#include <csignal>])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_TYPES([timeval])
@@ -1487,6 +1495,7 @@ then
     CXXFLAGS="$CXXFLAGS -W -Wall"
   fi
 fi
+
 
 AC_SUBST(LIBEXT, [$libext])
 AC_SUBST(SHREXT, [$shrext_cmds])
@@ -1523,10 +1532,12 @@ AC_CONFIG_FILES(Makefile
                 tests/Makefile
                 tests/BD_Shape/Makefile
                 tests/Box/Makefile
+                tests/Floating_Point_Expression/Makefile
                 tests/Grid/Makefile
                 tests/MIP_Problem/Makefile
                 tests/Octagonal_Shape/Makefile
                 tests/Partially_Reduced_Product/Makefile
+                tests/PIP_Problem/Makefile
                 tests/Polyhedron/Makefile
                 tests/Powerset/Makefile
                 utils/Makefile
@@ -1536,6 +1547,8 @@ AC_CONFIG_FILES(Makefile
                 demos/ppl_lcdd/examples/Makefile
                 demos/ppl_lpsol/Makefile
                 demos/ppl_lpsol/examples/Makefile
+                demos/ppl_pips/Makefile
+                demos/ppl_pips/examples/Makefile
                 doc/Makefile
                 doc/user.doxyconf-latex
                 doc/devref.doxyconf-latex

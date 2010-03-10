@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -288,15 +288,15 @@ Polyhedron::clear_generators_up_to_date() {
 
 inline bool
 Polyhedron::process_pending() const {
-  assert(space_dim > 0 && !marked_empty());
-  assert(has_something_pending());
+  PPL_ASSERT(space_dim > 0 && !marked_empty());
+  PPL_ASSERT(has_something_pending());
 
   Polyhedron& x = const_cast<Polyhedron&>(*this);
 
   if (x.has_pending_constraints())
     return x.process_pending_constraints();
 
-  assert(x.has_pending_generators());
+  PPL_ASSERT(x.has_pending_generators());
   x.process_pending_generators();
   return true;
 }
@@ -343,7 +343,7 @@ Polyhedron::minimize(const Linear_Expression& expr,
 
 inline Constraint_System
 Polyhedron::simplified_constraints() const {
-  assert(constraints_are_up_to_date());
+  PPL_ASSERT(constraints_are_up_to_date());
   Constraint_System cs(con_sys);
   if (cs.num_pending_rows() > 0)
     cs.unset_pending_rows();
@@ -370,6 +370,53 @@ Polyhedron::minimized_grid_generators() const {
 inline void
 Polyhedron::add_recycled_congruences(Congruence_System& cgs) {
   add_congruences(cgs);
+}
+
+template <typename FP_Format, typename Interval_Info>
+inline void
+Polyhedron::generalized_refine_with_linear_form_inequality(
+	    const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
+	    const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
+            const Relation_Symbol relsym) {
+  switch (relsym) {
+  case EQUAL:
+    // TODO: see if we can handle this case more efficiently.
+    refine_with_linear_form_inequality(left, right, false);
+    refine_with_linear_form_inequality(right, left, false);
+    break;
+  case LESS_THAN:
+    refine_with_linear_form_inequality(left, right, true);
+    break;
+  case LESS_OR_EQUAL:
+    refine_with_linear_form_inequality(left, right, false);
+    break;
+  case GREATER_THAN:
+    refine_with_linear_form_inequality(right, left, true);
+    break;
+  case GREATER_OR_EQUAL:
+    refine_with_linear_form_inequality(right, left, false);
+    break;
+  case NOT_EQUAL:
+    break;
+  default:
+    throw std::runtime_error("PPL internal error");
+  }
+}
+
+template <typename FP_Format, typename Interval_Info>
+inline void
+Polyhedron::
+refine_fp_interval_abstract_store(
+       Box< Interval<FP_Format, Interval_Info> >& store) const {
+
+  // Check that FP_Format is indeed a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
+                     "Polyhedron::refine_fp_interval_abstract_store:"
+                     " T not a floating point type.");
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  store.intersection_assign(Box<FP_Interval_Type>(*this));
+
 }
 
 /*! \relates Polyhedron */

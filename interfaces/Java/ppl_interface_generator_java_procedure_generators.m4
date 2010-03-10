@@ -4,7 +4,7 @@ dnl This m4 file defines the list of methods
 dnl for the Java interface; this includes:
 dnl - the list in the imported file and any Java specific methods.
 
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl

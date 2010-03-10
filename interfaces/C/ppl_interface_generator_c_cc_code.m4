@@ -5,7 +5,7 @@ This m4 file contains the program implementation code for generating the
 files ppl_c_DOMAIN.cc for each interface domain DOMAIN
 in ppl_interface instantiations.m4.
 
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -1150,6 +1150,35 @@ ppl_@CLASS@_approximate_@PARTITION@
     *p_inters = to_nonconst(&r.first);
     *p_rest = to_nonconst(&r.second);
     *p_finite = finite ? 1 : 0;
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_wrap_assign_code',
+`int
+ppl_@CLASS@_wrap_assign
+(ppl_@CLASS@_t ph,
+ ppl_dimension_type ds[],
+ size_t n,
+ enum ppl_enum_Bounded_Integer_Type_Width w,
+ enum ppl_enum_Bounded_Integer_Type_Representation r,
+ enum ppl_enum_Bounded_Integer_Type_Overflow o,
+ const ppl_const_Constraint_System_t* pcs,
+ unsigned complexity_threshold,
+ int wrap_individually) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  Variables_Set vars;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    vars.insert(ds[i]);
+  const Constraint_System* ccs = to_const(*pcs);
+  bool b = wrap_individually;
+  pph.wrap_assign(vars,
+                  bounded_integer_type_width(w),
+                  bounded_integer_type_representation(r),
+                  bounded_integer_type_overflow(o),
+                  ccs, complexity_threshold, b);
   return 0;
 }
 CATCH_ALL

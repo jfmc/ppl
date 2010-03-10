@@ -1,5 +1,5 @@
 /* Pending_Element class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
@@ -23,38 +23,51 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PWL_Pending_Element_inlines_hh
 #define PWL_Pending_Element_inlines_hh 1
 
+#include <cassert>
+
 namespace Parma_Watchdog_Library {
 
+template <typename Threshold>
+inline bool
+Pending_Element<Threshold>::OK() const {
+  return true;
+}
+
+template <typename Threshold>
 inline
-Pending_Element::Pending_Element(const Time& deadline,
-				 const Handler& handler,
-				 bool& expired_flag)
+Pending_Element<Threshold>::Pending_Element(const Threshold& deadline,
+					    const Handler& handler,
+					    bool& expired_flag)
   : d(deadline), p_h(&handler), p_f(&expired_flag) {
   assert(OK());
 }
 
+template <typename Threshold>
 inline void
-Pending_Element::assign(const Time& deadline,
-			const Handler& handler,
-			bool& expired_flag) {
+Pending_Element<Threshold>::assign(const Threshold& deadline,
+				   const Handler& handler,
+				   bool& expired_flag) {
   d = deadline;
   p_h = &handler;
   p_f = &expired_flag;
   assert(OK());
 }
 
-inline const Time&
-Pending_Element::deadline() const {
+template <typename Threshold>
+inline const Threshold&
+Pending_Element<Threshold>::deadline() const {
   return d;
 }
 
+template <typename Threshold>
 inline const Handler&
-Pending_Element::handler() const {
+Pending_Element<Threshold>::handler() const {
   return *p_h;
 }
 
+template <typename Threshold>
 inline bool&
-Pending_Element::expired_flag() const {
+Pending_Element<Threshold>::expired_flag() const {
   return *p_f;
 }
 

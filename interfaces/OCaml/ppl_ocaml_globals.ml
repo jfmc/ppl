@@ -1,5 +1,5 @@
 (* OCaml interface: domain-independent functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -169,6 +169,12 @@ int -> unit = "ppl_set_timeout"
 
 external ppl_reset_timeout:
 unit -> unit = "ppl_reset_timeout"
+
+external ppl_set_deterministic_timeout:
+int -> unit = "ppl_set_deterministic_timeout"
+
+external ppl_reset_deterministic_timeout:
+unit -> unit = "ppl_reset_deterministic_timeout"
 
 external ppl_new_MIP_Problem_from_space_dimension:
   int -> mip_problem = "ppl_new_MIP_Problem_from_space_dimension"

@@ -1,5 +1,5 @@
 /* Declarations of print_ppl_*_to_buffer() functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -69,6 +69,8 @@ DECLARE_PRINT_TO_BUFFER(Grid_Generator)
 DECLARE_PRINT_TO_BUFFER(Grid_Generator_System)
 
 DECLARE_PRINT_TO_BUFFER(MIP_Problem)
+
+DECLARE_PRINT_TO_BUFFER(PIP_Problem)
 
 #ifdef __cplusplus
 } /* extern "C" */

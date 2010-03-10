@@ -1,5 +1,5 @@
 /* DB_Matrix class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "Checked_Number.defs.hh"
 #include "distances.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <iostream>
 
 namespace Parma_Polyhedra_Library {
@@ -147,14 +147,14 @@ DB_Matrix<T>::~DB_Matrix() {
 template <typename T>
 inline DB_Row<T>&
 DB_Matrix<T>::operator[](const dimension_type k) {
-  assert(k < rows.size());
+  PPL_ASSERT(k < rows.size());
   return rows[k];
 }
 
 template <typename T>
 inline const DB_Row<T>&
 DB_Matrix<T>::operator[](const dimension_type k) const {
-  assert(k < rows.size());
+  PPL_ASSERT(k < rows.size());
   return rows[k];
 }
 
@@ -244,7 +244,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 	maybe_assign(tmp2p, tmp2, x_i_j, inverse(dir));
       }
       sub_assign_r(tmp1, *tmp1p, *tmp2p, dir);
-      assert(sgn(tmp1) >= 0);
+      PPL_ASSERT(sgn(tmp1) >= 0);
       Specialization::combine(tmp0, tmp1, dir);
     }
   }

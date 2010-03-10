@@ -1,5 +1,5 @@
 /* Generator class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,7 +27,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Generator::Generator(Linear_Expression& e, Type type, Topology topology) {
-  assert(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
+  PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
   Linear_Row::swap(e);
   flags() = Flags(topology, (type == LINE
 			     ? LINE_OR_EQUALITY
@@ -147,13 +147,13 @@ Generator::total_memory_in_bytes() const {
 
 inline const Generator&
 Generator::zero_dim_point() {
-  assert(zero_dim_point_p != 0);
+  PPL_ASSERT(zero_dim_point_p != 0);
   return *zero_dim_point_p;
 }
 
 inline const Generator&
 Generator::zero_dim_closure_point() {
-  assert(zero_dim_closure_point_p != 0);
+  PPL_ASSERT(zero_dim_closure_point_p != 0);
   return *zero_dim_closure_point_p;
 }
 
@@ -261,7 +261,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
       maybe_assign(tmp2p, tmp2, x_coord, inverse(dir));
     }
     sub_assign_r(tmp1, *tmp1p, *tmp2p, dir);
-    assert(sgn(tmp1) >= 0);
+    PPL_ASSERT(sgn(tmp1) >= 0);
     Specialization::combine(tmp0, tmp1, dir);
   }
   Specialization::finalize(tmp0, dir);

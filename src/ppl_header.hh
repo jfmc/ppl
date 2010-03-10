@@ -1,5 +1,5 @@
 /* This is the header file of the Parma Polyhedra Library.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -104,7 +104,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #  undef NDEBUG
 # endif
 #endif
+// Must include <cassert> again in order to make the latest changes to
+// NDEBUG effective.
 #include <cassert>
+#include "assert.hh"
 
 #ifdef PPL_NO_AUTOMATIC_INITIALIZATION
  #undef PPL_NO_AUTOMATIC_INITIALIZATION

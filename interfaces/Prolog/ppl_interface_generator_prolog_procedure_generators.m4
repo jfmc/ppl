@@ -6,7 +6,7 @@ dnl - the list in the imported file and any Prolog specific predicates;
 dnl   ppl_interface_generator_common_procedure_generators.m4;
 dnl - the list of library predicates needed for the system dependent files.
 
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -54,6 +54,8 @@ ppl_set_timeout_exception_atom/1 *nofail,
 ppl_timeout_exception_atom/1,
 ppl_set_timeout/1 *nofail,
 ppl_reset_timeout/0 *nofail,
+ppl_set_deterministic_timeout/1 *nofail,
+ppl_reset_deterministic_timeout/0 *nofail,
 ppl_new_MIP_Problem_from_space_dimension/2,
 ppl_new_MIP_Problem/5,
 ppl_new_MIP_Problem_from_MIP_Problem/2,

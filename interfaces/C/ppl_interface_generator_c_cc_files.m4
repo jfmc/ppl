@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file generates the file ppl_c_cc
 dnl using the code in ppl_interface_generator_c_cc_code.m4.
 
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -39,7 +39,8 @@ dnl -----------------------------------------------------------------
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
-%<--%<--%<-- ppl_c_`'m4_current_interface`'.cc
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_c_`'m4_current_interface`'.cc << ___END_OF_FILE___
 /* C m4_current_interface interface code: definitions.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
@@ -63,5 +64,6 @@ dnl Output the main class-dependent code.
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
 m4_all_code`'dnl
+___END_OF_FILE___
 dnl
 dnl End of file generation.

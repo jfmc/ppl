@@ -1,5 +1,5 @@
 /* Specialized "checked" functions for native integer numbers.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -323,7 +323,7 @@ assign_special_int(Type& v, Result_Class c, Rounding_Dir dir) {
     }
     return V_EQ_PLUS_INFINITY | V_UNREPRESENTABLE;
   default:
-    assert(0);
+    PPL_ASSERT(0);
     return V_NAN | V_UNREPRESENTABLE;
   }
 }
@@ -515,7 +515,7 @@ assign_int_float(To& to, const From from, Rounding_Dir dir) {
     return round_lt_int<To_Policy>(to, dir);
   if (from > i_from)
     return round_gt_int<To_Policy>(to, dir);
-  assert(false);
+  PPL_ASSERT(false);
   return V_NAN;
 }
 
@@ -1395,7 +1395,7 @@ add_mul_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     }
     return assign_nan<To_Policy>(to, V_UNKNOWN_POS_OVERFLOW);
   default:
-    assert(false);
+    PPL_ASSERT(false);
     return V_NAN;
   }
 }
@@ -1417,7 +1417,7 @@ sub_mul_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
       return set_neg_overflow_int<To_Policy>(to, dir);
     return V_UNKNOWN_POS_OVERFLOW;
   default:
-    assert(false);
+    PPL_ASSERT(false);
     return V_NAN;
   }
 }

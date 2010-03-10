@@ -1,5 +1,5 @@
 /* Grid class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -47,7 +47,7 @@ Grid::Grid(const Box<Interval>& box,
   if (box.is_empty()) {
     // Empty grid.
     set_empty();
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -101,7 +101,7 @@ Grid::Grid(const Box<Interval>& box,
     gen_sys.set_sorted(false);
   }
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename Partial_Function>
@@ -122,7 +122,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       // Removing all dimensions from a non-empty grid.
       set_zero_dim_univ();
 
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -190,7 +190,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       clear_generators_minimized();
     }
 
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -203,7 +203,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
     // The grid is empty.
     Grid new_grid(new_space_dimension, EMPTY);
     std::swap(*this, new_grid);
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -224,7 +224,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   for (i = old_gensys.begin(); i != old_gensys_end; ++i)
     if (i->is_point())
       break;
-  assert(i != old_gensys_end);
+  PPL_ASSERT(i != old_gensys_end);
   const Coefficient& system_divisor = i->divisor();
   for (i = old_gensys.begin(); i != old_gensys_end; ++i) {
     const Grid_Generator& old_g = *i;
@@ -251,14 +251,14 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       break;
     case Grid_Generator::CLOSURE_POINT:
     default:
-      assert(0);
+      PPL_ASSERT(0);
     }
   }
 
   Grid new_grid(new_gensys);
   std::swap(*this, new_grid);
 
-  assert(OK(true));
+  PPL_ASSERT(OK(true));
 }
 
 // Needed for converting the congruence or grid_generator system

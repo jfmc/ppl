@@ -1,5 +1,5 @@
 /* Test NNC_Polyhedron::upper_bound_assign_if_exact().
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -303,6 +303,154 @@ test09() {
   return ok;
 }
 
+bool
+test10() {
+  Variable x(0);
+  Variable y(1);
+
+  NNC_Polyhedron ph1(2, UNIVERSE);
+  ph1.add_constraint(x > 0);
+  ph1.add_constraint(x < 1);
+  ph1.add_constraint(y > 0);
+  ph1.add_constraint(y < 2);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  NNC_Polyhedron ph2(2, UNIVERSE);
+  ph2.add_constraint(x > 1);
+  ph2.add_constraint(x < 2);
+  ph2.add_constraint(y > 0);
+  ph2.add_constraint(y < 2);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  NNC_Polyhedron known_result(ph1);
+
+  bool ok = !ph1.upper_bound_assign_if_exact(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
+
+  return ok;
+}
+
+bool
+test11() {
+  Variable x(0);
+  Variable y(1);
+
+  NNC_Polyhedron ph1(2, UNIVERSE);
+  ph1.add_constraint(x > 0);
+  ph1.add_constraint(x < 1);
+  ph1.add_constraint(y > 0);
+  ph1.add_constraint(y < 2);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  NNC_Polyhedron ph2(2, UNIVERSE);
+  ph2.add_constraint(x >= 1);
+  ph2.add_constraint(x < 2);
+  ph2.add_constraint(y > 0);
+  ph2.add_constraint(y < 2);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  NNC_Polyhedron known_result(2, UNIVERSE);
+  known_result.add_constraint(x > 0);
+  known_result.add_constraint(x < 2);
+  known_result.add_constraint(y > 0);
+  known_result.add_constraint(y < 2);
+
+  bool ok = ph1.upper_bound_assign_if_exact(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
+
+  return ok;
+}
+
+bool
+test12() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  NNC_Polyhedron ph1(3, UNIVERSE);
+  ph1.add_constraint(x > 0);
+  ph1.add_constraint(x <= 1);
+  ph1.add_constraint(y > 0);
+  ph1.add_constraint(y < 2);
+  ph1.add_constraint(z > 0);
+  ph1.add_constraint(z < 2);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  NNC_Polyhedron ph2(3, UNIVERSE);
+  ph2.add_constraint(x >= 1);
+  ph2.add_constraint(x < 2);
+  ph2.add_constraint(y > 0);
+  ph2.add_constraint(y < 2);
+  ph2.add_constraint(z > 0);
+  ph2.add_constraint(z < 2);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  NNC_Polyhedron known_result(3, UNIVERSE);
+  known_result.add_constraint(x > 0);
+  known_result.add_constraint(x < 2);
+  known_result.add_constraint(y > 0);
+  known_result.add_constraint(y < 2);
+  known_result.add_constraint(z > 0);
+  known_result.add_constraint(z < 2);
+
+  bool ok = ph1.upper_bound_assign_if_exact(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
+
+  return ok;
+}
+
+bool
+test13() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  NNC_Polyhedron ph1(3, UNIVERSE);
+  ph1.add_constraint(x > 0);
+  ph1.add_constraint(x <= 1);
+  ph1.add_constraint(y > 0);
+  ph1.add_constraint(y < 2);
+  ph1.add_constraint(z > 0);
+  ph1.add_constraint(z <= 2);
+  ph1.add_constraint(x + z < 3);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_generators(ph1.minimized_generators(), "*** ph1 ***");
+
+  NNC_Polyhedron ph2(3, UNIVERSE);
+  ph2.add_constraint(x >= 1);
+  ph2.add_constraint(x < 2);
+  ph2.add_constraint(y > 0);
+  ph2.add_constraint(y < 2);
+  ph2.add_constraint(z > 0);
+  ph2.add_constraint(z <= 2);
+  ph1.add_constraint(x - z > -1);
+
+  print_constraints(ph2, "*** ph2 ***");
+  print_generators(ph2.minimized_generators(), "*** ph2 ***");
+
+  NNC_Polyhedron known_result(ph1);
+
+  bool ok = !ph1.upper_bound_assign_if_exact(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -315,4 +463,8 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN

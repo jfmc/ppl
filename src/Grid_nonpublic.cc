@@ -1,6 +1,6 @@
 /* Grid class implementation
    (non-inline private or protected functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid.defs.hh"
 #include "Grid_Generator.defs.hh"
 #include "Scalar_Products.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -64,7 +64,7 @@ PPL::Grid::construct(dimension_type num_dimensions,
     cgs.increase_space_dimension(space_dim);
     const_cast<Congruence_System&>(con_sys).swap(cgs);
 
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -103,12 +103,12 @@ PPL::Grid::construct(dimension_type num_dimensions,
 void
 PPL::Grid::construct(Congruence_System& cgs) {
   // Protecting against space dimension overflow is up to the caller.
-  assert(cgs.space_dimension() <= max_space_dimension());
+  PPL_ASSERT(cgs.space_dimension() <= max_space_dimension());
   // Preparing con_sys and gen_sys is up to the caller.
-  assert(cgs.space_dimension() == con_sys.space_dimension());
-  assert(cgs.space_dimension() == gen_sys.space_dimension());
-  assert(con_sys.has_no_rows());
-  assert(gen_sys.has_no_rows());
+  PPL_ASSERT(cgs.space_dimension() == con_sys.space_dimension());
+  PPL_ASSERT(cgs.space_dimension() == gen_sys.space_dimension());
+  PPL_ASSERT(con_sys.has_no_rows());
+  PPL_ASSERT(gen_sys.has_no_rows());
 
   // Set the space dimension.
   space_dim = cgs.space_dimension();
@@ -130,23 +130,23 @@ PPL::Grid::construct(Congruence_System& cgs) {
 	  // Insert the zero dim false congruence system into `con_sys'.
 	  // `gen_sys' is already in empty form.
 	  con_sys.insert(Congruence::zero_dim_false());
-	  assert(OK());
+	  PPL_ASSERT(OK());
 	  return;
 	}
     set_zero_dim_univ();
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
 PPL::Grid::construct(Grid_Generator_System& ggs) {
   // Protecting against space dimension overflow is up to the caller.
-  assert(ggs.space_dimension() <= max_space_dimension());
+  PPL_ASSERT(ggs.space_dimension() <= max_space_dimension());
   // Preparing con_sys and gen_sys is up to the caller.
-  assert(ggs.space_dimension() == con_sys.space_dimension());
-  assert(ggs.space_dimension() == gen_sys.space_dimension());
-  assert(con_sys.has_no_rows());
-  assert(gen_sys.has_no_rows());
+  PPL_ASSERT(ggs.space_dimension() == con_sys.space_dimension());
+  PPL_ASSERT(ggs.space_dimension() == gen_sys.space_dimension());
+  PPL_ASSERT(con_sys.has_no_rows());
+  PPL_ASSERT(gen_sys.has_no_rows());
 
   // Set the space dimension.
   space_dim = ggs.space_dimension();
@@ -174,14 +174,14 @@ PPL::Grid::construct(Grid_Generator_System& ggs) {
     set_generators_up_to_date();
   }
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 PPL::Grid::Three_Valued_Boolean
 PPL::Grid::quick_equivalence_test(const Grid& y) const {
   // Private method: the caller must ensure the following.
-  assert(space_dim == y.space_dim);
-  assert(!marked_empty() && !y.marked_empty() && space_dim > 0);
+  PPL_ASSERT(space_dim == y.space_dim);
+  PPL_ASSERT(!marked_empty() && !y.marked_empty() && space_dim > 0);
 
   const Grid& x = *this;
 
@@ -236,8 +236,8 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
 bool
 PPL::Grid::is_included_in(const Grid& y) const {
   // Private method: the caller must ensure the following.
-  assert(space_dim == y.space_dim);
-  assert(!marked_empty() && !y.marked_empty() && space_dim > 0);
+  PPL_ASSERT(space_dim == y.space_dim);
+  PPL_ASSERT(!marked_empty() && !y.marked_empty() && space_dim > 0);
 
   const Grid& x = *this;
 
@@ -255,8 +255,8 @@ PPL::Grid::is_included_in(const Grid& y) const {
     y.minimize();
 #endif
 
-  assert(x.OK());
-  assert(y.OK());
+  PPL_ASSERT(x.OK());
+  PPL_ASSERT(y.OK());
 
   const Grid_Generator_System& gs = x.gen_sys;
   const Congruence_System& cgs = y.con_sys;
@@ -292,8 +292,8 @@ PPL::Grid::bounds(const Linear_Expression& expr,
 bool
 PPL::Grid::bounds_no_check(const Linear_Expression& expr) const {
   // The dimension of `expr' must be at most the dimension of *this.
-  assert(space_dim > 0 && space_dim >= expr.space_dimension());
-  assert(generators_are_minimized() && !marked_empty());
+  PPL_ASSERT(space_dim > 0 && space_dim >= expr.space_dimension());
+  PPL_ASSERT(generators_are_minimized() && !marked_empty());
 
   // The generators are up to date and minimized.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
@@ -316,8 +316,8 @@ PPL::Grid::frequency_no_check(const Linear_Expression& expr,
                      Coefficient& val_n, Coefficient& val_d) const {
 
   // The dimension of `expr' must be at most the dimension of *this.
-  assert(space_dim >= expr.space_dimension());
-  assert(generators_are_minimized() && !marked_empty());
+  PPL_ASSERT(space_dim >= expr.space_dimension());
+  PPL_ASSERT(generators_are_minimized() && !marked_empty());
 
   // The generators are up to date and minimized and the grid is non-empty.
 
@@ -356,12 +356,12 @@ PPL::Grid::frequency_no_check(const Linear_Expression& expr,
       continue;
     }
     // `gen' must be a parameter.
-    assert(gen.is_parameter());
+    PPL_ASSERT(gen.is_parameter());
     if (sgn(sp) != 0)
     gcd_assign(freq_n, freq_n, sp);
   }
   const Grid_Generator& point = gen_sys[0];
-  assert(point.is_point());
+  PPL_ASSERT(point.is_point());
 
   // The denominator of the frequency and of the value is
   // the divisor for the generators.
@@ -462,10 +462,10 @@ PPL::Grid::set_empty() {
 void
 PPL::Grid::update_congruences() const {
   // The caller must ensure that the generators are up to date.
-  assert(space_dim > 0);
-  assert(!marked_empty());
-  assert(!gen_sys.has_no_rows());
-  assert(gen_sys.space_dimension() > 0);
+  PPL_ASSERT(space_dim > 0);
+  PPL_ASSERT(!marked_empty());
+  PPL_ASSERT(!gen_sys.has_no_rows());
+  PPL_ASSERT(gen_sys.space_dimension() > 0);
 
   Grid& gr = const_cast<Grid&>(*this);
 
@@ -474,7 +474,7 @@ PPL::Grid::update_congruences() const {
 
   // `gen_sys' contained rows before being reduced, so it should
   // contain at least a single point afterward.
-  assert(!gen_sys.has_no_rows());
+  PPL_ASSERT(!gen_sys.has_no_rows());
 
   // Populate `con_sys' with congruences characterizing the grid
   // described by `gen_sys'.
@@ -487,9 +487,9 @@ PPL::Grid::update_congruences() const {
 
 bool
 PPL::Grid::update_generators() const {
-  assert(space_dim > 0);
-  assert(!marked_empty());
-  assert(congruences_are_up_to_date());
+  PPL_ASSERT(space_dim > 0);
+  PPL_ASSERT(!marked_empty());
+  PPL_ASSERT(congruences_are_up_to_date());
 
   Grid& x = const_cast<Grid&>(*this);
 
@@ -539,7 +539,7 @@ PPL::Grid::minimize() const {
 	// Both systems are up to date, and the empty case is handled
 	// above, so the grid should contain points.
 	bool empty = simplify(gr.con_sys, gr.dim_kinds);
-	assert(!empty);
+	PPL_ASSERT(!empty);
 #else
 	simplify(gr.con_sys, gr.dim_kinds);
 #endif
@@ -554,15 +554,15 @@ PPL::Grid::minimize() const {
     else {
       // Updating the generators may reveal that `*this' is empty.
       const bool ret = update_generators();
-      assert(OK());
+      PPL_ASSERT(OK());
       return ret;
     }
   }
   else {
-    assert(generators_are_up_to_date());
+    PPL_ASSERT(generators_are_up_to_date());
     update_congruences();
   }
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -572,14 +572,14 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 #ifndef NDEBUG
   const dimension_type num_rows = gen_sys.num_rows();
 #endif
-  assert(num_rows > 0);
+  PPL_ASSERT(num_rows > 0);
 
   // Find the first point in gen_sys.
   dimension_type row = 0;
   while (gen_sys[row].is_line_or_parameter()) {
     ++row;
     // gen_sys should have at least one point.
-    assert(row < num_rows);
+    PPL_ASSERT(row < num_rows);
   }
   Grid_Generator& first_point = gen_sys[row];
   const Coefficient& gen_sys_divisor = first_point.divisor();
@@ -589,7 +589,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
   for (dimension_type i = row + 1; i < num_rows; ++i) {
     Grid_Generator& g = gen_sys[i];
     if (g.is_parameter_or_point())
-      assert(gen_sys_divisor == g.divisor());
+      PPL_ASSERT(gen_sys_divisor == g.divisor());
   }
 #endif // !defined(NDEBUG)
 
@@ -610,7 +610,7 @@ void
 PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 			      Coefficient& divisor,
 			      const Grid_Generator* first_point) {
-  assert(divisor >= 0);
+  PPL_ASSERT(divisor >= 0);
   if (sys.space_dimension() > 0 && divisor > 0) {
     dimension_type row = 0;
     dimension_type num_rows = sys.num_rows();
@@ -618,7 +618,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
     if (first_point)
       lcm_assign(divisor, divisor, (*first_point).divisor());
     else {
-      assert(num_rows > 0);
+      PPL_ASSERT(num_rows > 0);
       // Move to the first point or parameter.
       while (sys[row].is_line())
 	if (++row == num_rows)
@@ -644,8 +644,8 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 
 void
 PPL::Grid::add_congruence_no_check(const Congruence& cg) {
-  assert(!marked_empty());
-  assert(space_dim >= cg.space_dimension());
+  PPL_ASSERT(!marked_empty());
+  PPL_ASSERT(space_dim >= cg.space_dimension());
 
   // Dealing with a zero-dimensional space grid first.
   if (space_dim == 0) {
@@ -665,13 +665,13 @@ PPL::Grid::add_congruence_no_check(const Congruence& cg) {
 
   // Note: the congruence system may have become unsatisfiable, thus
   // we do not check for satisfiability.
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
 PPL::Grid::add_constraint_no_check(const Constraint& c) {
-  assert(!marked_empty());
-  assert(space_dim >= c.space_dimension());
+  PPL_ASSERT(!marked_empty());
+  PPL_ASSERT(space_dim >= c.space_dimension());
 
   if (c.is_inequality()) {
     // Only trivial inequalities can be handled.
@@ -685,15 +685,15 @@ PPL::Grid::add_constraint_no_check(const Constraint& c) {
     throw_invalid_constraint("add_constraint(c)", "c");
   }
 
-  assert(c.is_equality());
+  PPL_ASSERT(c.is_equality());
   Congruence cg(c);
   add_congruence_no_check(cg);
 }
 
 void
 PPL::Grid::refine_no_check(const Constraint& c) {
-  assert(!marked_empty());
-  assert(space_dim >= c.space_dimension());
+  PPL_ASSERT(!marked_empty());
+  PPL_ASSERT(space_dim >= c.space_dimension());
 
   if (c.is_equality()) {
     Congruence cg(c);

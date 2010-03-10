@@ -1,4 +1,4 @@
-Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 See below for the copying conditions.
 
 
@@ -99,7 +99,7 @@ is not standard for your compiler and/or for your linker, you will
 have to make sure the configure script of the PPL is invoked with,
 among others, the option
 
-  --with-libgmpxx-prefix=<GMP prefix>
+  --with-gmp-prefix=<GMP prefix>
 
 If you use shared libraries, consult the documentation of your dynamic
 linker/loader (`man ld.so' will do on most Un*x-like systems) to see
@@ -151,7 +151,7 @@ you can configure the PPL with a command like
   CPPFLAGS=-D_GCC_LIMITS_H_ /path/to/ppl-x.y/configure \
     --with-cxx=icpc --with-cc=icc \
     --with-cxxflags=-pch \
-    --with-libgmpxx-prefix=/opt/intel/cce/10.1.018
+    --with-gmp-prefix=/opt/intel/cce/10.1.018
 
 Notice that the `CPPFLAGS=-D_GCC_LIMITS_H_' environment variable
 assignment is required in order to overcome a bug in the Intel C/C++
@@ -170,7 +170,7 @@ Then you can configure the PPL with a command like
   /path/to/ppl/configure --with-cc="como --c" --with-cxx="como -tused" \
     --with-cxxflags="-g++ --remarks --long_long \
     --display_error_number --diag_suppress 340,401,679" \
-    --disable-shared --with-libgmpxx-prefix=/opt/comeau/local
+    --disable-shared --with-gmp-prefix=/opt/comeau/local
 
 Notice the use of the option `--disable-shared' both in the configuration
 of GMP and the configuration of the PPL.  This is due to the fact that
@@ -447,7 +447,7 @@ you cannot explain otherwise, use `autoreconf -f'.
 
 --------
 
-Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

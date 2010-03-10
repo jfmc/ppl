@@ -1,5 +1,5 @@
 /* Test Polyhedron::wrap_assign().
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -587,7 +587,7 @@ test20() {
   ph.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &cs, 16, false);
 
   C_Polyhedron known_result(2);
-  known_result.add_constraint(2*x >= 0);
+  known_result.add_constraint(2*x >= 1);
   known_result.add_constraint(3*x <= 2);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(y <= 1);

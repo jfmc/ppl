@@ -1,5 +1,5 @@
 /* Grid_Generator_System class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -114,14 +114,14 @@ Grid_Generator_System::max_space_dimension() {
 
 inline dimension_type
 Grid_Generator_System::space_dimension() const {
-  assert(Generator_System::space_dimension() > 0);
+  PPL_ASSERT(Generator_System::space_dimension() > 0);
   // Grid generators use an extra column for the parameter divisor.
   return Generator_System::space_dimension() - 1;
 }
 
 inline const Grid_Generator_System&
 Grid_Generator_System::zero_dim_univ() {
-  assert(zero_dim_univ_p != 0);
+  PPL_ASSERT(zero_dim_univ_p != 0);
   return *zero_dim_univ_p;
 }
 

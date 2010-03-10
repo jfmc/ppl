@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -87,7 +87,7 @@ COEFFICIENT_TYPES_INCLUDE_FILES =
 
 COEFFICIENT_DEFS_INCLUDE_FILES =
 
-endif
+endif USE_NATIVE_INTEGERS
 
 if USE_CHECKED_INTEGERS
 
@@ -95,7 +95,7 @@ COEFFICIENT_TYPES_INCLUDE_FILES =
 
 COEFFICIENT_DEFS_INCLUDE_FILES =
 
-endif
+endif USE_CHECKED_INTEGERS
 
 if USE_GMP_INTEGERS
 
@@ -106,12 +106,13 @@ COEFFICIENT_DEFS_INCLUDE_FILES = \
   GMP_Integer.defs.hh \
   GMP_Integer.inlines.hh
 
-endif
+endif USE_GMP_INTEGERS
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
 namespaces.hh \
 compiler.hh \
+assert.hh \
 meta_programming.hh \
 Slow_Copy.hh \
 Has_Assign_Or_Swap.hh \
@@ -145,6 +146,7 @@ Variable.types.hh \
 Variables_Set.types.hh \
 Linear_Expression.types.hh \
 Linear_System.types.hh \
+Linear_Form.types.hh \
 Bit_Row.types.hh \
 Bit_Matrix.types.hh \
 Constraint_System.types.hh \
@@ -152,7 +154,8 @@ Generator_System.types.hh \
 Grid_Generator_System.types.hh \
 Congruence_System.types.hh \
 Scalar_Products.types.hh \
-MIP_Problem.types.hh \
+PIP_Tree.types.hh \
+PIP_Problem.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
@@ -213,14 +216,12 @@ distances.defs.hh \
 distances.inlines.hh \
 Boundary.defs.hh \
 intervals.defs.hh \
-Bool4.defs.hh \
 Interval_Info.defs.hh \
 Interval_Info.inlines.hh \
 Interval_Restriction.defs.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
 Interval.templates.hh \
-Circular_Interval.defs.hh \
 Box.defs.hh \
 Box_Status.inlines.hh \
 Box.inlines.hh \
@@ -253,6 +254,9 @@ Grid_Generator_System.defs.hh \
 Congruence_System.defs.hh \
 Linear_Expression.defs.hh \
 Linear_Expression.inlines.hh \
+Linear_Form.defs.hh \
+Linear_Form.inlines.hh \
+Linear_Form.templates.hh \
 Constraint.defs.hh \
 Constraint.inlines.hh \
 Constraint_System.inlines.hh \
@@ -267,9 +271,17 @@ Grid_Generator_System.inlines.hh \
 Congruence_System.inlines.hh \
 Scalar_Products.defs.hh \
 Scalar_Products.inlines.hh \
+MIP_Problem.types.hh \
 MIP_Problem.defs.hh \
 MIP_Problem.inlines.hh \
 MIP_Problem.templates.hh \
+PIP_Tree.types.hh \
+PIP_Tree.defs.hh \
+PIP_Tree.inlines.hh \
+PIP_Problem.types.hh \
+PIP_Problem.defs.hh \
+PIP_Problem.inlines.hh \
+PIP_Problem.templates.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \
@@ -331,10 +343,44 @@ Partially_Reduced_Product.types.hh \
 Partially_Reduced_Product.defs.hh \
 Partially_Reduced_Product.inlines.hh \
 Partially_Reduced_Product.templates.hh \
+Weight_Profiler.defs.hh \
 max_space_dimension.hh \
 algorithms.hh \
 wrap_assign.hh \
-wrap_string.hh
+wrap_string.hh \
+Floating_Point_Expression.types.hh \
+Floating_Point_Expression.defs.hh \
+Floating_Point_Expression.inlines.hh \
+Floating_Point_Expression.templates.hh \
+Cast_Floating_Point_Expression.types.hh \
+Cast_Floating_Point_Expression.defs.hh \
+Cast_Floating_Point_Expression.inlines.hh \
+Cast_Floating_Point_Expression.templates.hh \
+Constant_Floating_Point_Expression.types.hh \
+Constant_Floating_Point_Expression.defs.hh \
+Constant_Floating_Point_Expression.inlines.hh \
+Variable_Floating_Point_Expression.types.hh \
+Variable_Floating_Point_Expression.defs.hh \
+Variable_Floating_Point_Expression.inlines.hh \
+Sum_Floating_Point_Expression.types.hh \
+Sum_Floating_Point_Expression.defs.hh \
+Sum_Floating_Point_Expression.inlines.hh \
+Sum_Floating_Point_Expression.templates.hh \
+Difference_Floating_Point_Expression.types.hh \
+Difference_Floating_Point_Expression.defs.hh \
+Difference_Floating_Point_Expression.inlines.hh \
+Difference_Floating_Point_Expression.templates.hh \
+Multiplication_Floating_Point_Expression.types.hh \
+Multiplication_Floating_Point_Expression.defs.hh \
+Multiplication_Floating_Point_Expression.inlines.hh \
+Multiplication_Floating_Point_Expression.templates.hh \
+Division_Floating_Point_Expression.types.hh \
+Division_Floating_Point_Expression.defs.hh \
+Division_Floating_Point_Expression.inlines.hh \
+Division_Floating_Point_Expression.templates.hh \
+Opposite_Floating_Point_Expression.types.hh \
+Opposite_Floating_Point_Expression.defs.hh \
+Opposite_Floating_Point_Expression.inlines.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
@@ -372,9 +418,12 @@ Init.cc \
 Coefficient.cc \
 Linear_Expression.cc \
 Linear_System.cc \
+Linear_Form.cc \
 Matrix.cc \
 Scalar_Products.cc \
 MIP_Problem.cc \
+PIP_Tree.cc \
+PIP_Problem.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \
@@ -411,6 +460,7 @@ stdiobuf.cc \
 c_streambuf.cc \
 globals.cc \
 mp_std_bits.cc \
+Weight_Profiler.cc \
 version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
@@ -489,11 +539,11 @@ ppl.hh.gch: ppl.hh
 
 PRECOMPILED = ppl.hh.gch
 
-else
+else !USE_PRECOMPILED_HEADERS
 
 PRECOMPILED =
 
-endif
+endif !USE_PRECOMPILED_HEADERS
 
 BUILT_SOURCES = \
 $(include_HEADERS) \

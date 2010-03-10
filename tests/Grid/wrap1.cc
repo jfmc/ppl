@@ -1,5 +1,5 @@
 /* Test Grid::wrap_assign().
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -86,7 +86,7 @@ test03() {
 
   Grid known_result(2);
   known_result.add_congruence(x %= 0);
-  known_result.add_congruence((x + 24 %= 8*y) / 255);
+  known_result.add_congruence((32*x + 3 %= y) / 255);
 
   bool ok = (gr == known_result);
 
@@ -407,6 +407,108 @@ test15() {
 }
 
 
+bool
+test16() {
+  Variable x(0);
+  Variable y(1);
+
+  Grid gr1(2);
+  gr1.add_congruence((2*x %= 245) / 0);
+  Grid gr2(gr1);
+
+  Variables_Set vars(x);
+
+  gr1.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
+  gr2.wrap_assign(vars, BITS_8, SIGNED_2_COMPLEMENT, OVERFLOW_WRAPS);
+
+  Grid known_result1(2, EMPTY);
+  Grid known_result2(2, EMPTY);
+
+  bool ok = (gr1 == known_result1 && gr2 == known_result2);
+
+  print_congruences(gr1, "*** gr1.wrap_assign(...) ***");
+  print_congruences(gr2, "*** gr2.wrap_assign(...) ***");
+
+  return ok;
+}
+
+bool
+test17() {
+  Variable x(0);
+  Variable y(1);
+
+  Grid gr1(2);
+  gr1.add_congruence((4*x %= 3) / 2);
+  Grid gr2(gr1);
+
+  Variables_Set vars(x);
+
+  gr1.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
+  gr2.wrap_assign(vars, BITS_8, SIGNED_2_COMPLEMENT, OVERFLOW_WRAPS);
+
+  Grid known_result1(2, EMPTY);
+  Grid known_result2(2, EMPTY);
+
+  bool ok = (gr1 == known_result1 && gr2 == known_result2);
+
+  print_congruences(gr1, "*** gr1.wrap_assign(...) ***");
+  print_congruences(gr2, "*** gr2.wrap_assign(...) ***");
+
+  return ok;
+}
+
+bool
+test18() {
+  Variable x(0);
+  Variable y(1);
+
+  Grid gr1(2);
+  gr1.add_congruence((4*x %= 2) / 1);
+  Grid gr2(gr1);
+
+  Variables_Set vars(x);
+
+  gr1.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS);
+  gr2.wrap_assign(vars, BITS_8, SIGNED_2_COMPLEMENT, OVERFLOW_WRAPS);
+
+  Grid known_result1(2);
+  known_result1.add_congruence((x %= 0) / 1);
+  Grid known_result2(2);
+  known_result2.add_congruence((x %= 0) / 1);
+
+  bool ok = (gr1 == known_result1 && gr2 == known_result2);
+
+  print_congruences(gr1, "*** gr1.wrap_assign(...) ***");
+  print_congruences(gr2, "*** gr2.wrap_assign(...) ***");
+
+  return ok;
+}
+
+bool
+test19() {
+  Variable x(0);
+  Variable y(1);
+
+  Grid gr1(2);
+  gr1.add_congruence((2*x %= 245) / 0);
+  Grid gr2(gr1);
+
+  Variables_Set vars(x, y);
+
+  gr1.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_UNDEFINED);
+  gr2.wrap_assign(vars, BITS_8, SIGNED_2_COMPLEMENT, OVERFLOW_UNDEFINED);
+
+  Grid known_result1(2, EMPTY);
+  Grid known_result2(2, EMPTY);
+
+  bool ok = (gr1 == known_result1 && gr2 == known_result2);
+
+  print_congruences(gr1, "*** gr1.wrap_assign(...) ***");
+  print_congruences(gr2, "*** gr2.wrap_assign(...) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -425,4 +527,8 @@ BEGIN_MAIN
   DO_TEST_F8(test13);
   DO_TEST_F8(test14);
   DO_TEST_F8(test15);
+  DO_TEST_F8(test16);
+  DO_TEST_F8(test17);
+  DO_TEST_F8(test18);
+  DO_TEST_F8(test19);
 END_MAIN

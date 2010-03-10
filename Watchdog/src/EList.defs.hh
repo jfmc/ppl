@@ -1,5 +1,5 @@
 /* EList class declaration.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PWL_EList_defs_hh 1
 
 #include "EList.types.hh"
+#include "Doubly_Linked_Object.defs.hh"
 #include "EList_Iterator.defs.hh"
 
 /*! \brief
@@ -31,7 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
   where the links are embedded in the objects themselves).
 */
 template <typename T>
-class Parma_Watchdog_Library::EList : private Doubly_Linked_Object {
+class Parma_Watchdog_Library::EList
+  : private Parma_Watchdog_Library::Doubly_Linked_Object {
 public:
   //! A const iterator to traverse the list.
   typedef EList_Iterator<const T> Const_Iterator;

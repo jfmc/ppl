@@ -22,7 +22,7 @@
 # COPYLEFT
 #
 #   Copyright (c) 2000      Stephane Bortzmeyer <bortzmeyer@pasteur.fr>
-#   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+#   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 #   This program is free software; you can redistribute it and/or
 #   modify it under the terms of the GNU General Public License as
@@ -219,7 +219,7 @@ AC_PROVIDE([$0])dnl
 # COPYLEFT
 #
 #   Copyright (c) 2000      Stephane Bortzmeyer <bortzmeyer@pasteur.fr>
-#   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+#   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 #   This program is free software; you can redistribute it and/or
 #   modify it under the terms of the GNU General Public License as

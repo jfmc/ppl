@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Splits stdin according to cutting markers.
-# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -22,22 +22,12 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-CUTTING_MARKER_PREFIX="%<--%<--%<-- "
+___BEGIN_OF_FILE___() {
+  cat >> $1
+}
 
-open="false"
+___END_OF_FILE___() {
+    :
+}
 
-while IFS= read -r line
-do
-  case "$line" in
-      $CUTTING_MARKER_PREFIX*)
-	  read dummy file <<EOF
-$line
-EOF
-	  exec 3>> "$file"
-	  open="true"
-	  ;;
-      *)
-	  [ $open = "true" ] && echo "$line" >&3
-	  ;;
-  esac
-done
+. $1

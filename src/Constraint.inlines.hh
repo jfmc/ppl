@@ -1,5 +1,5 @@
 /* Constraint class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,7 +29,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology) {
-  assert(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
+  PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
   Linear_Row::swap(e);
   flags() = Flags(topology, (type == EQUALITY
 			     ? LINE_OR_EQUALITY
@@ -326,25 +326,25 @@ operator<(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 inline const Constraint&
 Constraint::zero_dim_false() {
-  assert(zero_dim_false_p != 0);
+  PPL_ASSERT(zero_dim_false_p != 0);
   return *zero_dim_false_p;
 }
 
 inline const Constraint&
 Constraint::zero_dim_positivity() {
-  assert(zero_dim_positivity_p != 0);
+  PPL_ASSERT(zero_dim_positivity_p != 0);
   return *zero_dim_positivity_p;
 }
 
 inline const Constraint&
 Constraint::epsilon_geq_zero() {
-  assert(epsilon_geq_zero_p != 0);
+  PPL_ASSERT(epsilon_geq_zero_p != 0);
   return *epsilon_geq_zero_p;
 }
 
 inline const Constraint&
 Constraint::epsilon_leq_one() {
-  assert(epsilon_leq_one_p != 0);
+  PPL_ASSERT(epsilon_leq_one_p != 0);
   return *epsilon_leq_one_p;
 }
 

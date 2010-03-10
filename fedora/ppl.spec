@@ -2,7 +2,7 @@
 
 Name:           ppl
 Version:        0.10.2
-Release:        1%{?dist}
+Release:        4%{?dist}
 
 Summary:        The Parma Polyhedra Library: a library of numerical abstractions
 Group:          Development/Libraries
@@ -60,7 +60,7 @@ BuildRequires:  glpk-devel >= 4.13
 This package contains the mixed integer linear programming solver ppl_lpsol
 and the program ppl_lcdd for vertex/facet enumeration of convex polyhedra.
 
-%ifnarch ia64 ppc64 s390 s390x
+%ifnarch ia64 ppc64 s390 s390x sparc64 sparcv9
 %package gprolog
 # The `gprolog' package is not available on ppc64:
 # the GNU Prolog interface must thus be disabled for that architecture.
@@ -73,7 +73,7 @@ This package adds GNU Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in GNU Prolog programs.
 %endif
 
-%ifnarch ia64 ppc64 s390 s390x
+%ifnarch ia64 ppc64 s390 s390x sparc64 sparcv9
 %package gprolog-static
 Summary:        The static archive for the GNU Prolog interface of the Parma Polyhedra Library
 Group:          Development/Libraries
@@ -101,6 +101,7 @@ Requires:       %{name}-swiprolog = %{version}-%{release}
 This package contains the static archive for the SWI-Prolog interface
 of the Parma Polyhedra Library.
 
+%ifnarch sparc64 sparcv9
 %package yap
 Summary:        The YAP Prolog interface of the Parma Polyhedra Library
 Group:          Development/Libraries
@@ -110,6 +111,7 @@ Obsoletes:      ppl-yap-static
 %description yap
 This package adds YAP Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in YAP Prolog programs.
+%endif
 
 #%package ocaml
 #Summary:        The OCaml interface of the Parma Polyhedra Library
@@ -204,10 +206,12 @@ Install this package if you want to program with the PWL.
 
 %build
 CPPFLAGS="-I%{_includedir}/glpk"
-%ifnarch ia64 ppc64 s390 s390x
+%ifnarch ia64 ppc64 s390 s390x sparc64 sparcv9
 CPPFLAGS="$CPPFLAGS -I%{_libdir}/gprolog-`gprolog --version 2>&1 | head -1 | sed -e "s/.* \([^ ]*\)$/\1/g"`/include"
 %endif
+%ifnarch sparc64 sparcv9
 CPPFLAGS="$CPPFLAGS -I%{_includedir}/Yap"
+%endif
 %configure --docdir=%{_datadir}/doc/%{name}-%{version} --enable-shared --disable-rpath --enable-interfaces="c++ c gnu_prolog swi_prolog yap_prolog java" CPPFLAGS="$CPPFLAGS"
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -293,7 +297,7 @@ mv \
 %{_mandir}/man1/ppl_lcdd.1.gz
 %{_mandir}/man1/ppl_lpsol.1.gz
 
-%ifnarch ia64 ppc64 s390 s390x
+%ifnarch ia64 ppc64 s390 s390x sparc64 sparcv9
 %files gprolog
 %defattr(-,root,root,-)
 %doc interfaces/Prolog/GNU/README.gprolog
@@ -302,7 +306,7 @@ mv \
 %{_libdir}/%{name}/libppl_gprolog.so
 %endif
 
-%ifnarch ia64 ppc64 s390 s390x
+%ifnarch ia64 ppc64 s390 s390x sparc64 sparcv9
 %files gprolog-static
 %defattr(-,root,root,-)
 %{_libdir}/%{name}/libppl_gprolog.a
@@ -319,11 +323,13 @@ mv \
 %defattr(-,root,root,-)
 %{_libdir}/%{name}/libppl_swiprolog.a
 
+%ifnarch sparc64 sparcv9
 %files yap
 %defattr(-,root,root,-)
 %doc interfaces/Prolog/YAP/README.yap
 %{_libdir}/%{name}/ppl_yap.pl
 %{_libdir}/%{name}/ppl_yap.so
+%endif
 
 #%files ocaml
 #%defattr(-,root,root,-)
@@ -410,6 +416,17 @@ mv \
 rm -rf %{buildroot}
 
 %changelog
+* Sun Jul 12 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10.2-4
+- Force rebuild.
+
+* Fri Jun 19 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10.2-3
+- The `gprolog' and `yap' packages are not available on the sparc64 and
+  sparcv9 architectures: so do `ppl-gprolog', `ppl-gprolog-static' and
+  `ppl-yap'.
+
+* Sat Apr 18 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10.2-2
+- Force rebuild.
+
 * Sat Apr 18 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10.2-1
 - Updated for PPL 0.10.2.
 

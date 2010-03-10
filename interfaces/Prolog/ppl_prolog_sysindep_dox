@@ -262,7 +262,7 @@ The specification uses the following grammar rules:
  Control_Parameter_Value                for MIP problems
              --> pricing_steepest_edge_float
             | pricing_steepest_edge_exact
-            | pricing_rextbook
+            | pricing_textbook
 
  Vars_List   --> []    			list of PPL variables
             | [PPL_Var | Vars_List].

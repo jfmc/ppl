@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file generates the file parma_polyhedra_library_classes.cc
 dnl using the code in ppl_interface_generator_java_classes_cc_code.m4.
 
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -45,7 +45,8 @@ dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', `m4_interface_class$1')`'dnl
-%<--%<--%<-- ppl_java_`'m4_current_interface`'.cc
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_java_`'m4_current_interface`'.cc << ___END_OF_FILE___
 /* Java m4_current_interface interface code.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
@@ -67,5 +68,6 @@ dnl -----------------------------------------------------------------
 m4_divert`'dnl
 dnl Generate the non-fixed part of the file.
 m4_all_code`'dnl
+___END_OF_FILE___
 dnl
 dnl End of file generation.

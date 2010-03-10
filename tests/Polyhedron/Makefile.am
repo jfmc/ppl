@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -378,7 +378,6 @@ polyhullifexact1_SOURCES = polyhullifexact1.cc
 polyhullifexact2_SOURCES = polyhullifexact2.cc
 
 randphull1_SOURCES = randphull1.cc
-randphull1_LDADD = $(LDADD) -lm
 
 refinewithconstraint1_SOURCES = refinewithconstraint1.cc
 refinewithconstraints1_SOURCES = refinewithconstraints1.cc
@@ -609,7 +608,6 @@ nnc_polyhullifexact1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_randphull1_SOURCES = randphull1.cc
 nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_randphull1_LDADD = $(LDADD) -lm
 
 nnc_relations1_SOURCES = relations1.cc
 nnc_relations1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -647,6 +645,8 @@ memory1_SRCS = memory1.cc
 
 watchdog1_SRCS = watchdog1.cc
 
+weightwatch1_SRCS = weightwatch1.cc
+
 if !VALGRIND_TESTS_ENABLED
 VALGRIND_BRITTLE_TESTS = memory1
 
@@ -656,14 +656,27 @@ endif !VALGRIND_TESTS_ENABLED
 
 
 if BUILD_WATCHDOG_LIBRARY
-WATCHDOG_TESTS = watchdog1
 
-watchdog1_SOURCES = $(watchdog1_SRCS)
-watchdog1_CPPFLAGS = \
+WATCHDOG_TESTS = \
+watchdog1 \
+weightwatch1
+
+WATCHDOG_LIBRARY_CPPFLAGS = \
 $(AM_CPPFLAGS) \
 -I$(top_builddir)/Watchdog \
 -I$(top_builddir)/Watchdog/src
-watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
+
+WATCHDOG_LIBRARY_LDADD = \
+$(LDADD) \
+$(top_builddir)/Watchdog/src/libpwl.la
+
+watchdog1_SOURCES = $(watchdog1_SRCS)
+watchdog1_CPPFLAGS = $(WATCHDOG_LIBRARY_CPPFLAGS)
+watchdog1_LDADD = $(WATCHDOG_LIBRARY_LDADD)
+
+weightwatch1_SOURCES = $(weightwatch1_SRCS)
+weightwatch1_CPPFLAGS = $(WATCHDOG_LIBRARY_CPPFLAGS)
+weightwatch1_LDADD = $(WATCHDOG_LIBRARY_LDADD)
 
 endif BUILD_WATCHDOG_LIBRARY
 
@@ -677,7 +690,7 @@ XFAIL_TESTS =
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
-EXTRA_DIST = $(memory1_SRCS) $(watchdog1_SRCS)
+EXTRA_DIST = $(memory1_SRCS) $(watchdog1_SRCS) $(weightwatch1_SRCS)
 
 BUGS =
 

@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: non-inline template functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,6 +25,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Generator.defs.hh"
 #include "MIP_Problem.defs.hh"
+#include "Interval.defs.hh"
+#include "Linear_Form.defs.hh"
+// For static method overflows.
+#include "Floating_Point_Expression.defs.hh"
 #include <algorithm>
 #include <deque>
 
@@ -141,7 +145,7 @@ Polyhedron::Polyhedron(Topology topol,
 
   // Constraints are up-to-date.
   set_constraints_up_to_date();
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename Partial_Function>
@@ -164,7 +168,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
       // Removing all dimensions from a non-empty polyhedron.
       set_zero_dim_univ();
 
-    assert(OK());
+    PPL_ASSERT_HEAVY(OK());
     return;
   }
 
@@ -230,7 +234,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
     if (generators_are_up_to_date())
       gen_sys.permute_columns(cycles);
 
-    assert(OK());
+    PPL_ASSERT_HEAVY(OK());
     return;
   }
 
@@ -244,7 +248,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
     // The polyhedron is empty.
     Polyhedron new_polyhedron(topology(), new_space_dimension, EMPTY);
     std::swap(*this, new_polyhedron);
-    assert(OK());
+    PPL_ASSERT_HEAVY(OK());
     return;
   }
 
@@ -290,7 +294,288 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   }
   Polyhedron new_polyhedron(topology(), new_gensys);
   std::swap(*this, new_polyhedron);
-  assert(OK(true));
+  PPL_ASSERT_HEAVY(OK(true));
+}
+
+template <typename FP_Format, typename Interval_Info>
+void
+Polyhedron::refine_with_linear_form_inequality(
+  const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
+  const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
+  const bool is_strict) {
+
+  // Check that FP_Format is indeed a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
+                         "Polyhedron::refine_with_linear_form_inequality:"
+                         " FP_Format not a floating point type.");
+
+  // Dimension compatibility checks.
+  // The dimensions of left and right should not be greater than the
+  // dimension of *this.
+  const dimension_type left_space_dim = left.space_dimension();
+  if (space_dim < left_space_dim)
+    throw_dimension_incompatible(
+          "refine_with_linear_form_inequality(l1, l2, s)", "l1", left);
+
+  const dimension_type right_space_dim = right.space_dimension();
+  if (space_dim < right_space_dim)
+    throw_dimension_incompatible(
+          "refine_with_linear_form_inequality(l1, l2, s)", "l2", right);
+
+  // We assume that the analyzer will not refine an unreachable test.
+  PPL_ASSERT(!marked_empty());
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
+
+  if (Floating_Point_Expression<FP_Interval_Type, float_ieee754_single>::
+      overflows(left))
+    return;
+
+  if (Floating_Point_Expression<FP_Interval_Type, float_ieee754_single>::
+      overflows(right))
+    return;
+
+  // Overapproximate left - right.
+  FP_Linear_Form left_minus_right(left);
+  left_minus_right -= right;
+  if (Floating_Point_Expression<FP_Interval_Type, float_ieee754_single>::
+      overflows(left_minus_right))
+    return;
+
+  dimension_type lf_space_dim = left_minus_right.space_dimension();
+  FP_Linear_Form lf_approx;
+  overapproximate_linear_form(left_minus_right, lf_space_dim, lf_approx);
+  if (Floating_Point_Expression<FP_Interval_Type, float_ieee754_single>::
+      overflows(lf_approx))
+    return;
+
+  // Normalize left - right.
+  Linear_Expression lf_approx_le;
+  convert_to_integer_expression(lf_approx, lf_space_dim, lf_approx_le);
+
+  // Finally, do the refinement.
+  if (!is_strict || is_necessarily_closed())
+    refine_with_constraint(lf_approx_le <= 0);
+  else
+    refine_with_constraint(lf_approx_le < 0);
+}
+
+template <typename FP_Format, typename Interval_Info>
+void
+Polyhedron::affine_form_image(const Variable var,
+const Linear_Form<Interval <FP_Format, Interval_Info> >& lf) {
+
+  // Check that FP_Format is indeed a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
+                         "Polyhedron::affine_form_image:"
+                         " FP_Format not a floating point type.");
+
+  // Dimension compatibility checks.
+  // The dimension of lf should not be greater than the dimension of *this.
+  const dimension_type lf_space_dim = lf.space_dimension();
+  if (space_dim < lf_space_dim)
+    throw_dimension_incompatible("affine_form_image(v, l, s)", "l", lf);
+
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_id = var.id();
+  if (space_dim < var_id + 1)
+    throw_dimension_incompatible("affine_form_image(v, l, s)", "v", var);
+
+  // We assume that the analyzer will not perform an unreachable assignment.
+  PPL_ASSERT(!marked_empty());
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
+
+  if (Floating_Point_Expression<FP_Interval_Type, float_ieee754_single>::
+      overflows(lf)) {
+    *this = Polyhedron(topology(), space_dim, UNIVERSE);
+    return;
+  }
+
+  // Overapproximate lf.
+  FP_Linear_Form lf_approx;
+  overapproximate_linear_form(lf, lf_space_dim, lf_approx);
+
+  if (Floating_Point_Expression<FP_Interval_Type, float_ieee754_single>::
+      overflows(lf_approx)) {
+    *this = Polyhedron(topology(), space_dim, UNIVERSE);
+    return;
+  }
+
+  // Normalize lf.
+  Linear_Expression lf_approx_le;
+  PPL_DIRTY_TEMP_COEFFICIENT(lo_coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(hi_coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(denominator);
+  convert_to_integer_expressions(lf_approx, lf_space_dim, lf_approx_le,
+                                 lo_coeff, hi_coeff, denominator);
+
+  // Finally, do the assignment.
+  bounded_affine_image(var, lf_approx_le + lo_coeff, lf_approx_le + hi_coeff,
+                       denominator);
+}
+
+template <typename FP_Format, typename Interval_Info>
+void
+Polyhedron::overapproximate_linear_form(
+  const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+  const dimension_type lf_dimension,
+  Linear_Form<Interval <FP_Format, Interval_Info> >& result) {
+
+  // Check that FP_Format is indeed a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
+                         "Polyhedron::overapproximate_linear_form:"
+                         " FP_Format not a floating point type.");
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
+
+  // Build a Box from the Polyhedron so that we can extract upper and
+  // lower bounds of variables easily.
+  Box<FP_Interval_Type> polybox(*this);
+
+  result = FP_Linear_Form(lf.inhomogeneous_term());
+  // FIXME: this may not be policy-neutral.
+  const FP_Interval_Type aux_divisor1(static_cast<FP_Format>(0.5));
+  FP_Interval_Type aux_divisor2(aux_divisor1);
+  aux_divisor2.lower() = static_cast<FP_Format>(-0.5);
+
+  for (dimension_type i = 0; i < lf_dimension; ++i) {
+    Variable curr_var(i);
+    const FP_Interval_Type& curr_coeff = lf.coefficient(curr_var);
+    PPL_ASSERT(curr_coeff.is_bounded());
+    FP_Format curr_lb = curr_coeff.lower();
+    FP_Format curr_ub = curr_coeff.upper();
+    if (curr_lb != 0 || curr_ub != 0) {
+      const FP_Interval_Type& curr_int = polybox.get_interval(curr_var);
+      FP_Interval_Type curr_addend(curr_ub - curr_lb);
+      curr_addend *= aux_divisor2;
+      curr_addend *= curr_int;
+      result += curr_addend;
+      curr_addend = FP_Interval_Type(curr_lb + curr_ub);
+      curr_addend *= aux_divisor1;
+      FP_Linear_Form curr_addend_lf(curr_var);
+      curr_addend_lf *= curr_addend;
+      result += curr_addend_lf;
+    }
+  }
+}
+
+template <typename FP_Format, typename Interval_Info>
+void
+Polyhedron::convert_to_integer_expression(
+                const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+                const dimension_type lf_dimension,
+                Linear_Expression& result) {
+  result = Linear_Expression();
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  std::vector<Coefficient> numerators(lf_dimension+1);
+  std::vector<Coefficient> denominators(lf_dimension+1);
+
+  // Convert each floating point number to a pair <numerator, denominator>
+  // and compute the lcm of all denominators.
+  PPL_DIRTY_TEMP_COEFFICIENT(lcm);
+  lcm = 1;
+  const FP_Interval_Type& b = lf.inhomogeneous_term();
+  // FIXME: are these checks numerator[i] != 0 really necessary?
+  numer_denom(b.lower(), numerators[lf_dimension],
+                         denominators[lf_dimension]);
+  if (numerators[lf_dimension] != 0)
+      lcm_assign(lcm, lcm, denominators[lf_dimension]);
+
+  for (dimension_type i = 0; i < lf_dimension; ++i) {
+    const FP_Interval_Type& curr_int = lf.coefficient(Variable(i));
+    numer_denom(curr_int.lower(), numerators[i], denominators[i]);
+    if (numerators[i] != 0)
+      lcm_assign(lcm, lcm, denominators[i]);
+  }
+
+  for (dimension_type i = 0; i < lf_dimension; ++i) {
+    if (numerators[i] != 0) {
+      exact_div_assign(denominators[i], lcm, denominators[i]);
+      numerators[i] *= denominators[i];
+      result += numerators[i] * Variable(i);
+    }
+  }
+
+  if (numerators[lf_dimension] != 0) {
+    exact_div_assign(denominators[lf_dimension],
+                     lcm, denominators[lf_dimension]);
+    numerators[lf_dimension] *= denominators[lf_dimension];
+    result += numerators[lf_dimension];
+  }
+}
+
+template <typename FP_Format, typename Interval_Info>
+void
+Polyhedron::convert_to_integer_expressions(
+	        const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+                const dimension_type lf_dimension, Linear_Expression& res,
+                Coefficient& res_low_coeff, Coefficient& res_hi_coeff,
+                Coefficient& lcm) {
+  res = Linear_Expression();
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  std::vector<Coefficient> numerators(lf_dimension+2);
+  std::vector<Coefficient> denominators(lf_dimension+2);
+
+  // Convert each floating point number to a pair <numerator, denominator>
+  // and compute the lcm of all denominators.
+  lcm = 1;
+  const FP_Interval_Type& b = lf.inhomogeneous_term();
+  numer_denom(b.lower(), numerators[lf_dimension], denominators[lf_dimension]);
+  // FIXME: are these checks numerator[i] != 0 really necessary?
+  if (numerators[lf_dimension] != 0)
+      lcm_assign(lcm, lcm, denominators[lf_dimension]);
+
+  numer_denom(b.upper(), numerators[lf_dimension+1],
+                         denominators[lf_dimension+1]);
+  if (numerators[lf_dimension+1] != 0)
+      lcm_assign(lcm, lcm, denominators[lf_dimension+1]);
+
+  for (dimension_type i = 0; i < lf_dimension; ++i) {
+    const FP_Interval_Type& curr_int = lf.coefficient(Variable(i));
+    numer_denom(curr_int.lower(), numerators[i], denominators[i]);
+    if (numerators[i] != 0)
+      lcm_assign(lcm, lcm, denominators[i]);
+  }
+
+  for (dimension_type i = 0; i < lf_dimension; ++i) {
+    if (numerators[i] != 0) {
+      exact_div_assign(denominators[i], lcm, denominators[i]);
+      numerators[i] *= denominators[i];
+      res += numerators[i] * Variable(i);
+    }
+  }
+
+  if (numerators[lf_dimension] != 0) {
+    exact_div_assign(denominators[lf_dimension],
+                     lcm, denominators[lf_dimension]);
+    numerators[lf_dimension] *= denominators[lf_dimension];
+    res_low_coeff = numerators[lf_dimension];
+  }
+  else
+    res_low_coeff = Coefficient(0);
+
+  if (numerators[lf_dimension+1] != 0) {
+    exact_div_assign(denominators[lf_dimension+1],
+                     lcm, denominators[lf_dimension+1]);
+    numerators[lf_dimension+1] *= denominators[lf_dimension+1];
+    res_hi_coeff = numerators[lf_dimension+1];
+  }
+  else
+    res_hi_coeff = Coefficient(0);
+}
+
+template <typename C>
+void
+Polyhedron::throw_dimension_incompatible(const char* method,
+				         const char* lf_name,
+				         const Linear_Form<C>& lf) const {
+  throw_dimension_incompatible(method, lf_name, lf.space_dimension());
 }
 
 } // namespace Parma_Polyhedra_Library

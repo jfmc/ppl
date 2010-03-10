@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file generates the file ppl_c_h
 dnl using the code in ppl_interface_generator_c_h_code.m4.
 
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -29,7 +29,8 @@ dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_c_procedure_generators.m4')
 
 m4_divert`'dnl
-%<--%<--%<-- ppl_c_implementation_domains.hh
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_c_implementation_domains.hh << ___END_OF_FILE___
 /* C interface code: inclusion of all the domain-dependent declarations.
 m4_include(`ppl_interface_generator_copyright')dnl
 */
@@ -50,9 +51,11 @@ m4_ifelse(m4_class_group$1, box,
 
 m4_pushdef(`m4_one_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
-%<--%<--%<-- ppl_c_implementation_domains.hh
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_c_implementation_domains.hh << ___END_OF_FILE___
 `#'include "ppl_c_`'m4_current_interface.hh"
-%<--%<--%<-- ppl_c_`'m4_current_interface.hh
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_c_`'m4_current_interface.hh << ___END_OF_FILE___
 /* C m4_current_interface interface code: declarations.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
@@ -76,5 +79,6 @@ m4_undefine(`m4_current_interface')`'dnl
 dnl Generate the non-fixed part of the file.
 m4_divert`'dnl
 m4_all_code`'dnl
+___END_OF_FILE___
 dnl
 dnl End of file generation.

@@ -1,5 +1,5 @@
 /* Pointset_Ask_Tell class implementation: non-inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -38,7 +38,7 @@ PPL::Pointset_Ask_Tell<PPL::NNC_Polyhedron>
     x.sequence.push_back(Pair(nnc_ask, nnc_tell));
   }
   x.normalized = y.normalized;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <>
@@ -58,5 +58,5 @@ PPL::Pointset_Ask_Tell<PPL::C_Polyhedron>
   // normalized, because the constructor of C_Polyhedron, by enforcing
   // topological closure, may have made different elements comparable.
   x.normalized = false;
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }

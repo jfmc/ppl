@@ -1,5 +1,5 @@
 /* Temp_* classes declarations.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -69,8 +69,8 @@ private:
 template <typename T>
 class Temp_Reference_Holder {
 public:
-  //! Constructs an holder holding \p p.
-  Temp_Reference_Holder(Temp_Item<T>& p);
+  //! Constructs an holder holding a dirty temp.
+  Temp_Reference_Holder();
 
   //! Destructor.
   ~Temp_Reference_Holder();
@@ -79,6 +79,12 @@ public:
   T& item();
 
 private:
+  //! Copy constructor: private and intentionally not implemented.
+  Temp_Reference_Holder(const Temp_Reference_Holder&);
+
+  //! Assignment operator: private and intentionally not implemented.
+  Temp_Reference_Holder& operator=(const Temp_Reference_Holder&);
+
   //! The held item, encapsulated.
   Temp_Item<T>& held;
 };
@@ -96,6 +102,12 @@ public:
   T item();
 
 private:
+  //! Copy constructor: private and intentionally not implemented.
+  Temp_Value_Holder(const Temp_Value_Holder&);
+
+  //! Assignment operator: private and intentionally not implemented.
+  Temp_Value_Holder& operator=(const Temp_Value_Holder&);
+
   //! The held item.
   T item_;
 };
@@ -111,8 +123,6 @@ struct Temp_From_Free_List {
   //! The type of the holder.
   typedef Temp_Reference_Holder<T> holder_type;
 
-  //! Obtain the holder for a new temporary.
-  static holder_type obtain_holder();
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -126,8 +136,6 @@ struct Temp_From_Local_Variable {
   //! The type of the holder.
   typedef Temp_Value_Holder<T> holder_type;
 
-  //! Obtain the holder for a new temporary.
-  static holder_type obtain_holder();
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

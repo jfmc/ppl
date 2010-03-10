@@ -1,5 +1,5 @@
 /* Specialized "checked" functions for native floating-point numbers.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -214,7 +214,7 @@ assign_special_float(T& v, Result_Class c, Rounding_Dir) {
     v = PPL_NAN;
     return V_NAN;
   default:
-    assert(false);
+    PPL_ASSERT(false);
     return V_NAN | V_UNREPRESENTABLE;
   }
 }
@@ -223,8 +223,8 @@ template <typename T>
 inline void
 pred_float(T& v) {
   Float<T> f(v);
-  assert(!f.u.binary.is_nan());
-  assert(f.u.binary.is_inf() >= 0);
+  PPL_ASSERT(!f.u.binary.is_nan());
+  PPL_ASSERT(f.u.binary.is_inf() >= 0);
   if (f.u.binary.is_zero() > 0) {
     f.u.binary.negate();
     f.u.binary.inc();
@@ -242,8 +242,8 @@ template <typename T>
 inline void
 succ_float(T& v) {
   Float<T> f(v);
-  assert(!f.u.binary.is_nan());
-  assert(f.u.binary.is_inf() <= 0);
+  PPL_ASSERT(!f.u.binary.is_nan());
+  PPL_ASSERT(f.u.binary.is_inf() <= 0);
   if (f.u.binary.is_zero() < 0) {
     f.u.binary.negate();
     f.u.binary.inc();
@@ -281,16 +281,16 @@ round_gt_float(To& to, Rounding_Dir dir) {
 template <typename Policy>
 inline void
 prepare_inexact(Rounding_Dir dir) {
-  if (Policy::fpu_check_inexact &&
-      !round_not_needed(dir) && round_strict_relation(dir))
+  if (Policy::fpu_check_inexact
+      && !round_not_needed(dir) && round_strict_relation(dir))
     fpu_reset_inexact();
 }
 
 template <typename Policy>
 inline Result
 result_relation(Rounding_Dir dir) {
-  if (Policy::fpu_check_inexact &&
-      !round_not_needed(dir) && round_strict_relation(dir)) {
+  if (Policy::fpu_check_inexact
+      && !round_not_needed(dir) && round_strict_relation(dir)) {
     switch (fpu_check_inexact()) {
     case 0:
       return V_EQ;
@@ -495,7 +495,8 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 inline Result
 mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_mul_zero
-      && ((x == 0 && is_inf_float<From2_Policy>(y)) ||
+      && ((x == 0 && is_inf_float<From2_Policy>(y))
+          ||
 	  (y == 0 && is_inf_float<From1_Policy>(x)))) {
     return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
   }
@@ -567,7 +568,7 @@ idiv_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     return r;
   }
   Result r1 = trunc<To_Policy, To_Policy>(to, temp, ROUND_NOT_NEEDED);
-  assert(r1 == V_EQ);
+  PPL_ASSERT(r1 == V_EQ);
   if (r == V_EQ || to != temp)
     return r1;
   // FIXME: Prove that it's impossibile to return a strict relation
@@ -598,9 +599,9 @@ struct Float_2exp {
 template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 add_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
-  if (To_Policy::check_nan_result && is_nan<From_Policy>(x))
+  if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  assert(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
   return
     add<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
@@ -611,9 +612,9 @@ add_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 sub_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
-  if (To_Policy::check_nan_result && is_nan<From_Policy>(x))
+  if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  assert(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
   return
     sub<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
@@ -626,7 +627,7 @@ inline Result
 mul_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  assert(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
   return
     mul<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
@@ -639,7 +640,7 @@ inline Result
 div_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  assert(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
   return
     div<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
@@ -655,7 +656,7 @@ smod_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::check_inf_mod && is_inf_float<From_Policy>(x)) {
     return assign_nan<To_Policy>(to, V_INF_MOD);
   }
-  assert(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
   Type m = 1ULL << exp;
   rem_float<To_Policy, From_Policy, Float_2exp>(to, x, m, ROUND_IGNORE);
   Type m2 = m / 2;
@@ -674,7 +675,7 @@ umod_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::check_inf_mod && is_inf_float<From_Policy>(x)) {
     return assign_nan<To_Policy>(to, V_INF_MOD);
   }
-  assert(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
   Type m = 1ULL << exp;
   rem_float<To_Policy, From_Policy, Float_2exp>(to, x, m, ROUND_IGNORE);
   if (to < 0)
@@ -911,7 +912,8 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 inline Result
 add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_mul_zero
-      && ((x == 0 && is_inf_float<From2_Policy>(y)) ||
+      && ((x == 0 && is_inf_float<From2_Policy>(y))
+          ||
 	  (y == 0 && is_inf_float<From1_Policy>(x)))) {
     return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
   }
@@ -943,7 +945,8 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy, type
 inline Result
 sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_mul_zero
-      && ((x == 0 && is_inf_float<From2_Policy>(y)) ||
+      && ((x == 0 && is_inf_float<From2_Policy>(y))
+          ||
 	  (y == 0 && is_inf_float<From1_Policy>(x)))) {
     return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
   }

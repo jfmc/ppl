@@ -1,6 +1,6 @@
 /* Polyhedron class implementation
    (non-inline widening-related member functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BHRZ03_Certificate.defs.hh"
 #include "Rational_Box.hh"
 #include "Scalar_Products.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <iostream>
 #include <stdexcept>
 #include <deque>
@@ -39,13 +39,13 @@ PPL::Polyhedron
 ::select_CH78_constraints(const Polyhedron& y,
 			  Constraint_System& cs_selection) const {
   // Private method: the caller must ensure the following conditions.
-  assert(topology() == y.topology()
+  PPL_ASSERT(topology() == y.topology()
 	 && topology() == cs_selection.topology()
 	 && space_dim == y.space_dim);
-  assert(!marked_empty()
+  PPL_ASSERT(!marked_empty()
 	 && !has_pending_constraints()
 	 && generators_are_up_to_date());
-  assert(!y.marked_empty()
+  PPL_ASSERT(!y.marked_empty()
 	 && !y.has_something_pending()
 	 && y.constraints_are_minimized());
 
@@ -68,14 +68,14 @@ PPL::Polyhedron
 			 Constraint_System& cs_not_selected) const {
   // Private method: the caller must ensure the following conditions
   // (beside the inclusion `y <= x').
-  assert(topology() == y.topology()
+  PPL_ASSERT(topology() == y.topology()
 	 && topology() == cs_selected.topology()
 	 && topology() == cs_not_selected.topology());
-  assert(space_dim == y.space_dim);
-  assert(!marked_empty()
+  PPL_ASSERT(space_dim == y.space_dim);
+  PPL_ASSERT(!marked_empty()
 	 && !has_pending_generators()
 	 && constraints_are_up_to_date());
-  assert(!y.marked_empty()
+  PPL_ASSERT(!y.marked_empty()
 	 && !y.has_something_pending()
 	 && y.constraints_are_minimized()
 	 && y.generators_are_up_to_date());
@@ -136,7 +136,7 @@ PPL::Polyhedron
     for (dimension_type j = y.gen_sys.num_rows(); j-- > 0; ) {
       const int sp_sgn = Scalar_Products::sign(ci, y.gen_sys[j]);
       // We are assuming that `y <= x'.
-      assert(sp_sgn >= 0
+      PPL_ASSERT(sp_sgn >= 0
 	     || (!is_necessarily_closed()
 		 && ci.is_strict_inequality()
 		 && y.gen_sys[j].is_point()));
@@ -168,7 +168,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     // We assume that y is contained in or equal to x.
     const Polyhedron x_copy = x;
     const Polyhedron y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT_HEAVY(x_copy.contains(y_copy));
   }
 #endif
 
@@ -231,7 +231,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
       else
 	// No tokens.
 	std::swap(x, CH78);
-      assert(x.OK(true));
+      PPL_ASSERT_HEAVY(x.OK(true));
       return;
     }
   }
@@ -279,7 +279,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     else
       // No tokens.
       std::swap(x, H79);
-    assert(x.OK(true));
+    PPL_ASSERT_HEAVY(x.OK(true));
   }
 }
 
@@ -324,7 +324,7 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
     // We assume that y is contained in or equal to x.
     const Polyhedron x_copy = x;
     const Polyhedron y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT_HEAVY(x_copy.contains(y_copy));
   }
 #endif
 
@@ -364,7 +364,7 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   }
   x.H79_widening_assign(y, tp);
   x.add_recycled_constraints(new_cs);
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void
@@ -387,17 +387,17 @@ PPL::Polyhedron
 			       const Constraint_System& x_minus_H79_cs) {
   Polyhedron& x = *this;
   // It is assumed that `y <= x <= H79'.
-  assert(x.topology() == y.topology()
+  PPL_ASSERT(x.topology() == y.topology()
 	 && x.topology() == H79.topology()
 	 && x.topology() == x_minus_H79_cs.topology());
-  assert(x.space_dim == y.space_dim
+  PPL_ASSERT(x.space_dim == y.space_dim
 	 && x.space_dim == H79.space_dim
 	 && x.space_dim == x_minus_H79_cs.space_dimension());
-  assert(!x.marked_empty() && !x.has_something_pending()
+  PPL_ASSERT(!x.marked_empty() && !x.has_something_pending()
 	 && x.constraints_are_minimized() && x.generators_are_minimized());
-  assert(!y.marked_empty() && !y.has_something_pending()
+  PPL_ASSERT(!y.marked_empty() && !y.has_something_pending()
 	 && y.constraints_are_minimized() && y.generators_are_minimized());
-  assert(!H79.marked_empty() && !H79.has_something_pending()
+  PPL_ASSERT(!H79.marked_empty() && !H79.has_something_pending()
 	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
 
   // We will choose from `x_minus_H79_cs' many subsets of constraints,
@@ -494,7 +494,7 @@ PPL::Polyhedron
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
     std::swap(x, result);
-    assert(x.OK(true));
+    PPL_ASSERT_HEAVY(x.OK(true));
     return true;
   }
   else
@@ -508,15 +508,15 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 					const Polyhedron& H79) {
   Polyhedron& x = *this;
   // It is assumed that `y <= x <= H79'.
-  assert(x.topology() == y.topology()
+  PPL_ASSERT(x.topology() == y.topology()
 	 && x.topology() == H79.topology());
-  assert(x.space_dim == y.space_dim
+  PPL_ASSERT(x.space_dim == y.space_dim
 	 && x.space_dim == H79.space_dim);
-  assert(!x.marked_empty() && !x.has_something_pending()
+  PPL_ASSERT(!x.marked_empty() && !x.has_something_pending()
 	 && x.constraints_are_minimized() && x.generators_are_minimized());
-  assert(!y.marked_empty() && !y.has_something_pending()
+  PPL_ASSERT(!y.marked_empty() && !y.has_something_pending()
 	 && y.constraints_are_minimized() && y.generators_are_minimized());
-  assert(!H79.marked_empty() && !H79.has_something_pending()
+  PPL_ASSERT(!H79.marked_empty() && !H79.has_something_pending()
 	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
 
   // For each point in `x.gen_sys' that is not in `y',
@@ -543,7 +543,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 	const Generator& g2 = y.gen_sys[j];
 	if ((g2.is_point() && closed)
 	    || (g2.is_closure_point() && !closed)) {
-	  assert(compare(g1, g2) != 0);
+	  PPL_ASSERT(compare(g1, g2) != 0);
 	  Generator ray_from_g2_to_g1 = g1;
 	  ray_from_g2_to_g1.linear_combine(g2, 0);
 	  candidate_rays.insert(ray_from_g2_to_g1);
@@ -564,7 +564,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
     std::swap(x, result);
-    assert(x.OK(true));
+    PPL_ASSERT_HEAVY(x.OK(true));
     return true;
   }
   else
@@ -578,15 +578,15 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 				      const Polyhedron& H79) {
   Polyhedron& x = *this;
   // It is assumed that `y <= x <= H79'.
-  assert(x.topology() == y.topology()
+  PPL_ASSERT(x.topology() == y.topology()
 	 && x.topology() == H79.topology());
-  assert(x.space_dim == y.space_dim
+  PPL_ASSERT(x.space_dim == y.space_dim
 	 && x.space_dim == H79.space_dim);
-  assert(!x.marked_empty() && !x.has_something_pending()
+  PPL_ASSERT(!x.marked_empty() && !x.has_something_pending()
 	 && x.constraints_are_minimized() && x.generators_are_minimized());
-  assert(!y.marked_empty() && !y.has_something_pending()
+  PPL_ASSERT(!y.marked_empty() && !y.has_something_pending()
 	 && y.constraints_are_minimized() && y.generators_are_minimized());
-  assert(!H79.marked_empty() && !H79.has_something_pending()
+  PPL_ASSERT(!H79.marked_empty() && !H79.has_something_pending()
 	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
 
   const dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
@@ -653,7 +653,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
     std::swap(x, result);
-    assert(x.OK(true));
+    PPL_ASSERT_HEAVY(x.OK(true));
     return true;
   }
   else
@@ -676,7 +676,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
     // We assume that y is contained in or equal to x.
     const Polyhedron x_copy = x;
     const Polyhedron y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT_HEAVY(x_copy.contains(y_copy));
   }
 #endif
 
@@ -699,7 +699,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // At this point, also check if the two polyhedra are the same
   // (exploiting the knowledge that `y <= x').
   if (y_cert.is_stabilizing(x) || y.contains(x)) {
-    assert(OK());
+    PPL_ASSERT_HEAVY(OK());
     return;
   }
 
@@ -708,7 +708,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // there are tokens available, use one of them and return `x'.
   if (tp != 0 && *tp > 0) {
     --(*tp);
-    assert(OK());
+    PPL_ASSERT_HEAVY(OK());
     return;
   }
 
@@ -722,7 +722,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // We cannot have selected all of the rows, since otherwise
   // the iteration should have been immediately stabilizing.
-  assert(!x_minus_H79_cs.has_no_rows());
+  PPL_ASSERT(!x_minus_H79_cs.has_no_rows());
   // Be careful to obtain the right space dimension
   // (because `H79_cs' may be empty).
   Polyhedron H79(topol, x.space_dim, UNIVERSE);
@@ -735,25 +735,25 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   if (x.BHRZ03_combining_constraints(y, y_cert, H79, x_minus_H79_cs))
     return;
 
-  assert(H79.OK() && x.OK() && y.OK());
+  PPL_ASSERT_HEAVY(H79.OK() && x.OK() && y.OK());
 
   if (x.BHRZ03_evolving_points(y, y_cert, H79))
     return;
 
-  assert(H79.OK() && x.OK() && y.OK());
+  PPL_ASSERT_HEAVY(H79.OK() && x.OK() && y.OK());
 
   if (x.BHRZ03_evolving_rays(y, y_cert, H79))
     return;
 
-  assert(H79.OK() && x.OK() && y.OK());
+  PPL_ASSERT_HEAVY(H79.OK() && x.OK() && y.OK());
 
   // No previous technique was successful: fall back to the H79 widening.
   std::swap(x, H79);
-  assert(x.OK(true));
+  PPL_ASSERT_HEAVY(x.OK(true));
 
 #ifndef NDEBUG
   // The H79 widening is always stabilizing.
-  assert(y_cert.is_stabilizing(x));
+  PPL_ASSERT(y_cert.is_stabilizing(x));
 #endif
 }
 
@@ -798,7 +798,7 @@ PPL::Polyhedron
     // We assume that y is contained in or equal to x.
     const Polyhedron x_copy = x;
     const Polyhedron y_copy = y;
-    assert(x_copy.contains(y_copy));
+    PPL_ASSERT_HEAVY(x_copy.contains(y_copy));
   }
 #endif
 
@@ -838,7 +838,7 @@ PPL::Polyhedron
   }
   x.BHRZ03_widening_assign(y, tp);
   x.add_recycled_constraints(new_cs);
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 void

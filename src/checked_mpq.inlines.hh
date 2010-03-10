@@ -1,5 +1,5 @@
 /* Specialized "checked" functions for GMP's mpq_class numbers.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -123,7 +123,7 @@ assign_special_mpq(mpq_class& v, Result_Class c, Rounding_Dir) {
     }
     return V_EQ_PLUS_INFINITY | V_UNREPRESENTABLE;
   default:
-    assert(false);
+    PPL_ASSERT(false);
     return V_NAN | V_UNREPRESENTABLE;
   }
 }

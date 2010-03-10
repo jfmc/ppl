@@ -1,5 +1,5 @@
 /* Domain-independent part of the OCaml interface: declarations.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -158,7 +158,8 @@ private:
   std::vector<dimension_type> vec;
 };
 
-class timeout_exception : public Parma_Polyhedra_Library::Throwable {
+class timeout_exception
+  : public Parma_Polyhedra_Library::Throwable {
 public:
   void throw_me() const {
     throw *this;
@@ -166,11 +167,22 @@ public:
   int priority() const {
     return 0;
   }
-  timeout_exception() {
+};
+
+class deterministic_timeout_exception
+  : public Parma_Polyhedra_Library::Throwable {
+public:
+  void throw_me() const {
+    throw *this;
+  }
+  int priority() const {
+    return 0;
   }
 };
 
 void reset_timeout();
+
+void reset_deterministic_timeout();
 
 } // namespace OCaml
 
@@ -199,6 +211,10 @@ catch(std::exception& e) {						\
 }									\
 catch(timeout_exception&) {                                             \
   reset_timeout();                                                      \
+  caml_raise_constant(*caml_named_value("PPL_timeout_exception"));      \
+}                                                                       \
+catch(deterministic_timeout_exception&) {                               \
+  reset_deterministic_timeout();                                        \
   caml_raise_constant(*caml_named_value("PPL_timeout_exception"));      \
 }                                                                       \
 catch(...) {								\

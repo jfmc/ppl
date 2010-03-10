@@ -1,5 +1,5 @@
 /* Scalar_Products class implementation (non-inline functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -32,7 +32,7 @@ PPL::Scalar_Products::assign(Coefficient& z,
 			     const Linear_Row& x, const Linear_Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
-  assert(x.size() <= y.size());
+  PPL_ASSERT(x.size() <= y.size());
   z = 0;
   for (dimension_type i = x.size(); i-- > 0; )
     // The following line optimizes the computation of z += x[i] * y[i].
@@ -44,7 +44,7 @@ PPL::Scalar_Products::assign(Coefficient& z,
 			     const Constraint& x, const Generator& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
-  assert(x.size() <= y.size());
+  PPL_ASSERT(x.size() <= y.size());
   z = 0;
   for (dimension_type i = x.size(); i-- > 0; )
     // The following line optimizes the computation of z += x[i] * y[i].
@@ -56,7 +56,7 @@ PPL::Scalar_Products::assign(Coefficient& z,
 			     const Grid_Generator& x, const Congruence& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
-  assert(x.size() <= y.size());
+  PPL_ASSERT(x.size() <= y.size());
   z = 0;
   for (dimension_type i = x.size() - 1 /* parameter divisor */; i-- > 0; )
     // The following line optimizes the computation of z += x[i] *
@@ -70,7 +70,7 @@ PPL::Scalar_Products::assign(Coefficient& z,
 			     const Grid_Generator& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
-  assert(x.size() <= y.size());
+  PPL_ASSERT(x.size() <= y.size());
   z = 0;
   for (dimension_type i = x.size(); i-- > 0; )
     // The following line optimizes the computation of z += x[i] * y[i].
@@ -82,7 +82,7 @@ PPL::Scalar_Products::assign(Coefficient& z,
 			     const Congruence& x, const Grid_Generator& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
-  assert(x.size() <= y.size());
+  PPL_ASSERT(x.size() <= y.size());
   z = 0;
   for (dimension_type i = x.size() - 1; i-- > 0; )
     // The following line optimizes the computation of z += x[i] *
@@ -96,8 +96,8 @@ PPL::Scalar_Products::reduced_assign(Coefficient& z,
 				     const Linear_Row& y) {
   // The reduced scalar product is only defined
   // if the topology of `x' is NNC and `y' has enough coefficients.
-  assert(!x.is_necessarily_closed());
-  assert(x.size() - 1 <= y.size());
+  PPL_ASSERT(!x.is_necessarily_closed());
+  PPL_ASSERT(x.size() - 1 <= y.size());
   z = 0;
   for (dimension_type i = x.size() - 1; i-- > 0; )
     // The following line optimizes the computation of z += x[i] * y[i].
@@ -110,7 +110,7 @@ PPL::Scalar_Products::reduced_assign(Coefficient& z,
 				     const Congruence& y) {
   // The reduced scalar product is only defined if the topology of `x'
   // is NNC and `y' has enough coefficients.
-  assert(x.size() <= y.size());
+  PPL_ASSERT(x.size() <= y.size());
   z = 0;
   for (dimension_type i = x.size() - 1; i-- > 0; )
     // The following line optimizes z += x[i] * y[i].
@@ -123,7 +123,7 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
 					 const Linear_Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
-  assert(x.size() <= y.size());
+  PPL_ASSERT(x.size() <= y.size());
   z = 0;
   // Note the pre-decrement of `i': last iteration should be for `i == 1'.
   for (dimension_type i = x.size(); --i > 0; )
@@ -137,7 +137,7 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
 					 const Congruence& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
-  assert(x.size() <= y.size());
+  PPL_ASSERT(x.size() <= y.size());
   z = 0;
   // Note the pre-decrement of `i': last iteration should be for `i == 1'.
   for (dimension_type i = x.size() - 1; --i > 0; )
@@ -151,7 +151,7 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
 					 const Constraint& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
-  assert(x.size() - 1 <= y.size());
+  PPL_ASSERT(x.size() - 1 <= y.size());
   z = 0;
   // Note the pre-decrement of `i': last iteration should be for `i == 1'.
   for (dimension_type i = x.size() - 1; --i > 0; )

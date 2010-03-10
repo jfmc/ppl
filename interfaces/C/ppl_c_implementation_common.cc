@@ -1,5 +1,5 @@
 /* Implementation of the C interface: variables and non-inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -97,6 +97,12 @@ notify_error(enum ppl_enum_error_code code, const char* description) {
 
 Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
 
+typedef
+Parma_Watchdog_Library::Threshold_Watcher
+<Parma_Polyhedra_Library::Weightwatch_Traits> Weightwatch;
+
+Weightwatch* p_deterministic_timeout_object = 0;
+
 #endif // PPL_WATCHDOG_LIBRARY_ENABLED
 
 void
@@ -105,6 +111,17 @@ reset_timeout() {
   if (p_timeout_object) {
     delete p_timeout_object;
     p_timeout_object = 0;
+    abandon_expensive_computations = 0;
+  }
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+}
+
+void
+reset_deterministic_timeout() {
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+  if (p_deterministic_timeout_object) {
+    delete p_deterministic_timeout_object;
+    p_deterministic_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
 #endif // PPL_WATCHDOG_LIBRARY_ENABLED
@@ -138,6 +155,17 @@ int PPL_MIP_PROBLEM_CONTROL_PARAMETER_NAME_PRICING;
 int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_FLOAT;
 int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_EXACT;
 int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_TEXTBOOK;
+
+int PPL_PIP_PROBLEM_STATUS_UNFEASIBLE;
+int PPL_PIP_PROBLEM_STATUS_OPTIMIZED;
+
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_CUTTING_STRATEGY;
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_FIRST;
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_DEEPEST;
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_ALL;
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_PIVOT_ROW_STRATEGY;
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_FIRST;
+int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_MAX_COLUMN;
 
 int PPL_OPTIMIZATION_MODE_MINIMIZATION;
 int PPL_OPTIMIZATION_MODE_MAXIMIZATION;
@@ -181,6 +209,24 @@ ppl_initialize(void) try {
   PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_TEXTBOOK
     = MIP_Problem::PRICING_TEXTBOOK;
 
+  PPL_PIP_PROBLEM_STATUS_UNFEASIBLE = UNFEASIBLE_PIP_PROBLEM;
+  PPL_PIP_PROBLEM_STATUS_OPTIMIZED = OPTIMIZED_PIP_PROBLEM;
+
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_CUTTING_STRATEGY
+    = PIP_Problem::CUTTING_STRATEGY;
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_FIRST
+    = PIP_Problem::CUTTING_STRATEGY_FIRST;
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_DEEPEST
+    = PIP_Problem::CUTTING_STRATEGY_DEEPEST;
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_ALL
+    = PIP_Problem::CUTTING_STRATEGY_ALL;
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_PIVOT_ROW_STRATEGY
+    = PIP_Problem::PIVOT_ROW_STRATEGY;
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_FIRST
+    = PIP_Problem::PIVOT_ROW_STRATEGY_FIRST;
+  PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_MAX_COLUMN
+    = PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN;
+
   PPL_OPTIMIZATION_MODE_MINIMIZATION = MINIMIZATION;
   PPL_OPTIMIZATION_MODE_MAXIMIZATION = MAXIMIZATION;
 
@@ -204,6 +250,7 @@ CATCH_ALL
 int
 ppl_set_timeout(unsigned time) try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  used(time);
   const char* what = "PPL C interface error:\n"
     "ppl_set_timeout: the PPL Watchdog library is not enabled.";
   throw std::runtime_error(what);
@@ -226,6 +273,37 @@ ppl_reset_timeout(void) try {
   throw std::runtime_error(what);
 #else
   reset_timeout();
+  return 0;
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+}
+CATCH_ALL
+
+int
+ppl_set_deterministic_timeout(unsigned weight) try {
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  used(weight);
+  const char* what = "PPL C interface error:\n"
+    "ppl_set_deterministic_timeout: the PPL Watchdog library is not enabled.";
+  throw std::runtime_error(what);
+#else
+  // In case a deterministic timeout was already set.
+  reset_deterministic_timeout();
+  static timeout_exception e;
+  p_deterministic_timeout_object
+    = new Weightwatch(weight, abandon_expensive_computations, e);
+  return 0;
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+}
+CATCH_ALL
+
+int
+ppl_reset_deterministic_timeout(void) try {
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  const char* what = "PPL C interface error:\n"
+    "ppl_reset_deterministic_timeout: the PPL Watchdog library is not enabled.";
+  throw std::runtime_error(what);
+#else
+  reset_deterministic_timeout();
   return 0;
 #endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
@@ -2035,6 +2113,466 @@ ppl_MIP_Problem_OK(ppl_const_MIP_Problem_t mip) try {
 CATCH_ALL
 
 int
+ppl_MIP_Problem_total_memory_in_bytes(ppl_const_MIP_Problem_t mip,
+                                      size_t* sz) try {
+  *sz = to_const(mip)->total_memory_in_bytes();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_external_memory_in_bytes(ppl_const_MIP_Problem_t mip,
+                                         size_t* sz) try {
+  *sz = to_const(mip)->external_memory_in_bytes();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_PIP_Problem_from_space_dimension(ppl_PIP_Problem_t* ppip,
+                                         ppl_dimension_type d) try {
+  *ppip = to_nonconst(new PIP_Problem(d));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t* dpip,
+				     ppl_const_PIP_Problem_t pip) try {
+  const PIP_Problem& spip = *to_const(pip);
+  *dpip = to_nonconst(new PIP_Problem(spip));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_PIP_Problem_from_constraints
+(ppl_PIP_Problem_t* ppip,
+ ppl_dimension_type d,
+ ppl_Constraint_System_const_iterator_t first,
+ ppl_Constraint_System_const_iterator_t last,
+ size_t n,
+ ppl_dimension_type ds[]) try {
+  Variables_Set p_vars;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    p_vars.insert(ds[i]);
+  *ppip = to_nonconst(new PIP_Problem(d, *to_const(first),
+                                      *to_const(last), p_vars));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t dst,
+					ppl_const_PIP_Problem_t src) try {
+  const PIP_Problem& ssrc = *to_const(src);
+  PIP_Problem& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_PIP_Problem(ppl_const_PIP_Problem_t pip) try {
+  delete to_const(pip);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_space_dimension(ppl_const_PIP_Problem_t pip,
+				ppl_dimension_type* m) try {
+  *m = to_const(pip)->space_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_number_of_parameter_space_dimensions
+(ppl_const_PIP_Problem_t pip, ppl_dimension_type* m) try {
+  const PIP_Problem& ppip = *to_const(pip);
+  *m = ppip.parameter_space_dimensions().size();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_parameter_space_dimensions(ppl_const_PIP_Problem_t pip,
+                                           ppl_dimension_type ds[]) try {
+  const Variables_Set& vars = to_const(pip)->parameter_space_dimensions();
+  ppl_dimension_type* ds_i = ds;
+  for (Variables_Set::const_iterator v_iter = vars.begin(),
+	 v_end = vars.end(); v_iter != v_end; ++v_iter, ++ds_i)
+    *ds_i = *v_iter;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_number_of_constraints(ppl_const_PIP_Problem_t pip,
+				      ppl_dimension_type* m) try {
+  const PIP_Problem& ppip = *to_const(pip);
+  *m = ppip.constraints_end() - ppip.constraints_begin();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_constraint_at_index(ppl_const_PIP_Problem_t pip,
+				    ppl_dimension_type i,
+				    ppl_const_Constraint_t* pc) try {
+#ifndef NDEBUG
+  ppl_dimension_type num_constraints;
+  ppl_PIP_Problem_number_of_constraints(pip, &num_constraints);
+  assert(i < num_constraints);
+#endif
+  const PIP_Problem& ppip = *to_const(pip);
+  const Constraint& c = *(ppip.constraints_begin() + i);
+  *pc = to_const(&c);
+  return 0;
+}
+CATCH_ALL
+int
+ppl_PIP_Problem_clear(ppl_PIP_Problem_t pip) try {
+  to_nonconst(pip)->clear();
+  return 0;
+}
+CATCH_ALL
+int
+ppl_PIP_Problem_add_space_dimensions_and_embed(ppl_PIP_Problem_t pip,
+					       ppl_dimension_type pip_vars,
+					       ppl_dimension_type pip_params)
+  try {
+  PIP_Problem& spip = *to_nonconst(pip);
+  spip.add_space_dimensions_and_embed(pip_vars,pip_params);
+  return 0;
+}
+CATCH_ALL
+int
+ppl_PIP_Problem_add_to_parameter_space_dimensions(ppl_PIP_Problem_t pip,
+					          ppl_dimension_type ds[],
+					          size_t n) try {
+  PIP_Problem& ppip = *to_nonconst(pip);
+  Variables_Set vars;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    vars.insert(ds[i]);
+  ppip.add_to_parameter_space_dimensions(vars);
+  return 0;
+}
+CATCH_ALL
+int
+ppl_PIP_Problem_add_constraint(ppl_PIP_Problem_t pip,
+			       ppl_const_Constraint_t c) try {
+  const Constraint& cc = *to_const(c);
+  PIP_Problem& ppip = *to_nonconst(pip);
+  ppip.add_constraint(cc);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_add_constraints(ppl_PIP_Problem_t pip,
+				ppl_const_Constraint_System_t cs) try {
+  const Constraint_System& ccs = *to_const(cs);
+  PIP_Problem& ppip = *to_nonconst(pip);
+  ppip.add_constraints(ccs);
+  return 0;
+}
+CATCH_ALL
+int
+ppl_PIP_Problem_is_satisfiable(ppl_const_PIP_Problem_t pip) try {
+  return to_const(pip)->is_satisfiable() ? 1 : 0;
+}
+CATCH_ALL
+int
+ppl_PIP_Problem_solve(ppl_const_PIP_Problem_t pip) try {
+  return to_const(pip)->solve();
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_solution(ppl_const_PIP_Problem_t pip,
+                         ppl_const_PIP_Tree_Node_t* ppip_tree) try {
+  *ppip_tree = to_const(to_const(pip)->solution());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_optimizing_solution(ppl_const_PIP_Problem_t pip,
+                                    ppl_const_PIP_Tree_Node_t* ppip_tree) try {
+  *ppip_tree = to_const(to_const(pip)->optimizing_solution());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_OK(ppl_const_PIP_Problem_t pip) try {
+  return to_const(pip)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_get_control_parameter(ppl_const_PIP_Problem_t pip,
+                                      int name) try {
+  PIP_Problem::Control_Parameter_Name n
+    = static_cast<PIP_Problem::Control_Parameter_Name>(name);
+  return to_const(pip)->get_control_parameter(n);
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_set_control_parameter(ppl_PIP_Problem_t pip,
+                                      int value) try {
+  PIP_Problem::Control_Parameter_Value v
+    = static_cast<PIP_Problem::Control_Parameter_Value>(value);
+  to_nonconst(pip)->set_control_parameter(v);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_get_big_parameter_dimension(ppl_const_PIP_Problem_t pip,
+                                            ppl_dimension_type* pd) try {
+  *pd = to_const(pip)->get_big_parameter_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_set_big_parameter_dimension(ppl_PIP_Problem_t pip,
+                                            ppl_dimension_type d) try {
+  to_nonconst(pip)->set_big_parameter_dimension(d);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_total_memory_in_bytes(ppl_const_PIP_Problem_t pip,
+                                      size_t* sz) try {
+  *sz = to_const(pip)->total_memory_in_bytes();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Problem_external_memory_in_bytes(ppl_const_PIP_Problem_t pip,
+                                         size_t* sz) try {
+  *sz = to_const(pip)->external_memory_in_bytes();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Tree_Node_as_solution(ppl_const_PIP_Tree_Node_t spip_tree,
+                              ppl_const_PIP_Solution_Node_t* dpip_tree) try {
+  *dpip_tree = to_const(to_const(spip_tree)->as_solution());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Tree_Node_as_decision(ppl_const_PIP_Tree_Node_t spip_tree,
+                              ppl_const_PIP_Decision_Node_t* dpip_tree) try {
+  *dpip_tree = to_const(to_const(spip_tree)->as_decision());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Tree_Node_get_constraints(ppl_const_PIP_Tree_Node_t pip_tree,
+                                  ppl_const_Constraint_System_t* pcs) try {
+  const PIP_Tree_Node& spip_tree = *to_const(pip_tree);
+  const Constraint_System& cs = spip_tree.constraints();
+  *pcs = to_const(&cs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Tree_Node_OK(ppl_const_PIP_Tree_Node_t pip_tree) try {
+  return to_const(pip_tree)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Tree_Node_number_of_artificials(ppl_const_PIP_Tree_Node_t pip_tree,
+					ppl_dimension_type* m) try {
+  const PIP_Tree_Node& node = *to_const(pip_tree);
+  *m = node.art_parameter_count();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Tree_Node_begin
+(ppl_const_PIP_Tree_Node_t pip_tree,
+ ppl_Artificial_Parameter_Sequence_const_iterator_t pit) try {
+  PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator& spit
+    = *to_nonconst(pit);
+  spit = to_const(pip_tree)->art_parameter_begin();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Tree_Node_end
+(ppl_const_PIP_Tree_Node_t pip_tree,
+ ppl_Artificial_Parameter_Sequence_const_iterator_t pit) try {
+  PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator& spit
+    = *to_nonconst(pit);
+  spit = to_const(pip_tree)->art_parameter_end();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Solution_Node_get_parametric_values
+  (ppl_const_PIP_Solution_Node_t pip_sol,
+   ppl_dimension_type var,
+   ppl_const_Linear_Expression_t* le) try {
+  const PIP_Solution_Node& spip_sol = *to_const(pip_sol);
+  const Linear_Expression& lle = spip_sol.parametric_values(Variable(var));
+  *le = to_const(&lle);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Solution_Node_OK(ppl_const_PIP_Solution_Node_t pip_sol) try {
+  return to_const(pip_sol)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Decision_Node_OK(ppl_const_PIP_Decision_Node_t pip_dec) try {
+  return to_const(pip_dec)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_PIP_Decision_Node_get_child_node(ppl_const_PIP_Decision_Node_t pip_dec,
+                                     int b,
+                                     ppl_const_PIP_Tree_Node_t* pip_tree) try {
+  *pip_tree = to_const(to_const(pip_dec)->child_node(b));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Artificial_Parameter_get_Linear_Expression
+(ppl_const_Artificial_Parameter_t ap,
+ ppl_Linear_Expression_t le) try {
+  const Artificial_Parameter& sap = *to_const(ap);
+  Linear_Expression& lle = *to_nonconst(le);
+  lle = sap;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Artificial_Parameter_coefficient(ppl_const_Artificial_Parameter_t ap,
+                                     ppl_dimension_type var,
+                                     ppl_Coefficient_t n) try {
+  const Artificial_Parameter& sap = *to_const(ap);
+  Coefficient& nn = *to_nonconst(n);
+  nn = sap.coefficient(Variable(var));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Artificial_Parameter_inhomogeneous_term
+(ppl_const_Artificial_Parameter_t ap, ppl_Coefficient_t n) try {
+  const Artificial_Parameter& sap = *to_const(ap);
+  Coefficient& nn = *to_nonconst(n);
+  nn = sap.inhomogeneous_term();
+  return 0;
+}
+CATCH_ALL
+
+
+int
+ppl_Artificial_Parameter_denominator(ppl_const_Artificial_Parameter_t ap,
+                                     ppl_Coefficient_t n) try {
+  const Artificial_Parameter& sap = *to_const(ap);
+  Coefficient& nn = *to_nonconst(n);
+  nn = sap.denominator();
+  return 0;
+}
+CATCH_ALL
+
+
+/* Interface for Artificial_Parameter_Sequence::const_iterator. */
+
+int
+ppl_new_Artificial_Parameter_Sequence_const_iterator
+(ppl_Artificial_Parameter_Sequence_const_iterator_t* papit) try {
+  *papit = to_nonconst(new Artificial_Parameter_Sequence::const_iterator());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Artificial_Parameter_Sequence_const_iterator_from_Artificial_Parameter_Sequence_const_iterator
+(ppl_Artificial_Parameter_Sequence_const_iterator_t* papit,
+ ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit)  try {
+  *papit = to_nonconst(new Artificial_Parameter_Sequence::const_iterator(*to_const(apit)));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Artificial_Parameter_Sequence_const_iterator
+(ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit)
+  try {
+  delete to_const(apit);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Artificial_Parameter_Sequence_const_iterator_from_Artificial_Parameter_Sequence_const_iterator
+(ppl_Artificial_Parameter_Sequence_const_iterator_t dst,
+ ppl_const_Artificial_Parameter_Sequence_const_iterator_t src) try {
+  const Artificial_Parameter_Sequence::const_iterator& ssrc = *to_const(src);
+  Artificial_Parameter_Sequence::const_iterator& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Artificial_Parameter_Sequence_const_iterator_dereference
+(ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit,
+ ppl_const_Artificial_Parameter_t* pap) try {
+  const Artificial_Parameter_Sequence::const_iterator& papit = *to_const(apit);
+  const Artificial_Parameter& ap = *papit;
+  *pap = to_const(&ap);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Artificial_Parameter_Sequence_const_iterator_increment
+(ppl_Artificial_Parameter_Sequence_const_iterator_t apit) try {
+  Artificial_Parameter_Sequence::const_iterator& papit = *to_nonconst(apit);
+  ++papit;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Artificial_Parameter_Sequence_const_iterator_equal_test
+(ppl_const_Artificial_Parameter_Sequence_const_iterator_t x,
+ ppl_const_Artificial_Parameter_Sequence_const_iterator_t y) try {
+  const Artificial_Parameter_Sequence::const_iterator& xx = *to_const(x);
+  const Artificial_Parameter_Sequence::const_iterator& yy = *to_const(y);
+  return (xx == yy) ? 1 : 0;
+}
+CATCH_ALL
+
+int
 ppl_io_print_variable(ppl_dimension_type var) try {
   const char* b = c_variable_output_function(var);
   if (b == 0 || puts(b) < 0)
@@ -2086,6 +2624,16 @@ DEFINE_OUTPUT_FUNCTIONS(Grid_Generator)
 DEFINE_OUTPUT_FUNCTIONS(Grid_Generator_System)
 
 DEFINE_OUTPUT_FUNCTIONS(MIP_Problem)
+
+DEFINE_OUTPUT_FUNCTIONS(PIP_Problem)
+
+DEFINE_OUTPUT_FUNCTIONS(PIP_Tree_Node)
+
+DEFINE_OUTPUT_FUNCTIONS(PIP_Decision_Node)
+
+DEFINE_OUTPUT_FUNCTIONS(PIP_Solution_Node)
+
+DEFINE_OUTPUT_FUNCTIONS(Artificial_Parameter)
 
 char*
 ppl_io_wrap_string(const char* src,

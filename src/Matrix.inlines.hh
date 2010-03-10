@@ -1,5 +1,5 @@
 /* Matrix class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.defs.hh"
 #include <algorithm>
-#include <cassert>
+#include "assert.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -46,7 +46,7 @@ Matrix::total_memory_in_bytes() const {
 
 inline
 Matrix::const_iterator::const_iterator()
-  : i(Iter()) {
+  : i() {
 }
 
 inline
@@ -161,13 +161,13 @@ Matrix::add_row(const Row& y) {
 
 inline Row&
 Matrix::operator[](const dimension_type k) {
-  assert(k < rows.size());
+  PPL_ASSERT(k < rows.size());
   return rows[k];
 }
 
 inline const Row&
 Matrix::operator[](const dimension_type k) const {
-  assert(k < rows.size());
+  PPL_ASSERT(k < rows.size());
   return rows[k];
 }
 
@@ -189,7 +189,7 @@ operator!=(const Matrix& x, const Matrix& y) {
 
 inline void
 Matrix::erase_to_end(const dimension_type first_to_erase) {
-  assert(first_to_erase <= rows.size());
+  PPL_ASSERT(first_to_erase <= rows.size());
   if (first_to_erase < rows.size())
     rows.erase(rows.begin() + first_to_erase, rows.end());
 }

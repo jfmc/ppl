@@ -1,5 +1,5 @@
 /* Determinate class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Determinate_inlines_hh
 #define PPL_Determinate_inlines_hh 1
 
-#include <cassert>
+#include "assert.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -55,7 +55,7 @@ Determinate<PSET>::Rep::Rep(const Congruence_System& cgs)
 template <typename PSET>
 inline
 Determinate<PSET>::Rep::~Rep() {
-  assert(references == 0);
+  PPL_ASSERT(references == 0);
 }
 
 template <typename PSET>

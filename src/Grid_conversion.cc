@@ -1,5 +1,5 @@
 /* Grid class implementation: conversion().
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -112,7 +112,7 @@ Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
     for (dimension_type column = num_dims; column-- > 0; )
       gen[column] *= multiplier;
   else {
-    assert(gen.is_parameter_or_point());
+    PPL_ASSERT(gen.is_parameter_or_point());
     // Multiply every element of every parameter.
     for (dimension_type index = num_rows; index-- > 0; ) {
       Grid_Generator& generator = dest[index];
@@ -139,7 +139,7 @@ Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
 	  congruence[column] *= multiplier;
     }
   else {
-    assert(cg.is_equality());
+    PPL_ASSERT(cg.is_equality());
     // Multiply every element of the equality.
     for (dimension_type column = num_dims; column-- > 0; )
       cg[column] *= multiplier;
@@ -156,7 +156,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // Quite similar to the congruence to generator version below.
   // Changes here may be needed there too.
 
-  assert(upper_triangular(source, dim_kinds));
+  PPL_ASSERT(upper_triangular(source, dim_kinds));
 
   // Initialize matrix row number counters and compute the LCM of the
   // diagonal entries of the parameters in `source'.
@@ -185,7 +185,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       }
       // Lines map to virtual congruences.
     }
-  assert(source_index == 0);
+  PPL_ASSERT(source_index == 0);
 
   // `source' must be regular.
   if (diagonal_lcm == 0)
@@ -214,7 +214,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	cg[dim] = 1;
       }
       else {
-	assert(dim_kinds[dim] == PARAMETER);
+	PPL_ASSERT(dim_kinds[dim] == PARAMETER);
 	--source_index;
 	cg[dims] = 1;		// A proper congruence.
 	exact_div_assign(cg[dim], diagonal_lcm, source[source_index][dim]);
@@ -223,9 +223,9 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     }
   }
 
-  assert(source_index == 0);
-  assert(dest_index == dest_num_rows);
-  assert(lower_triangular(dest, dim_kinds));
+  PPL_ASSERT(source_index == 0);
+  PPL_ASSERT(dest_index == dest_num_rows);
+  PPL_ASSERT(lower_triangular(dest, dim_kinds));
 
   // Convert.
   //
@@ -282,7 +282,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	// row `dest_index', subtract dest[tmp_source_index][dim]
 	// times the entry `dim' from the entry at `dim_prec'.
 	for (dimension_type row = dest_index; row-- > 0; ) {
-	  assert(row < dest_num_rows);
+	  PPL_ASSERT(row < dest_num_rows);
 	  Congruence& cg = dest[row];
 	  sub_mul_assign(cg[dim_prec], source_dim, cg[dim]);
 	}
@@ -298,7 +298,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       cg[dims] = modulus;
   }
 
-  assert(lower_triangular(dest, dim_kinds));
+  PPL_ASSERT(lower_triangular(dest, dim_kinds));
 
   // Since we are reducing the system to "strong minimal form",
   // reduce the coefficients in the congruence system
@@ -316,7 +316,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // Quite similar to the generator to congruence version above.
   // Changes here may be needed there too.
 
-  assert(lower_triangular(source, dim_kinds));
+  PPL_ASSERT(lower_triangular(source, dim_kinds));
 
   // Initialize matrix row number counters and compute the LCM of the
   // diagonal entries of the proper congruences in `source'.
@@ -374,7 +374,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	g[dim] = 1;
       }
       else {
-	assert(dim_kinds[dim] == PROPER_CONGRUENCE);
+	PPL_ASSERT(dim_kinds[dim] == PROPER_CONGRUENCE);
 	g.set_is_parameter_or_point();
 	exact_div_assign(g[dim], diagonal_lcm, source[source_index][dim]);
 	++source_index;
@@ -383,7 +383,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     }
   }
 
-  assert(upper_triangular(dest, dim_kinds));
+  PPL_ASSERT(upper_triangular(dest, dim_kinds));
 
   // Convert.
   //
@@ -441,7 +441,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	// row `dest_index', subtract dest[tmp_source_index][dim]
 	// times the entry `dim' from the entry at `dim_fol'.
 	for (dimension_type row = dest_index; row-- > 0; ) {
-	  assert(row < dest_num_rows);
+	  PPL_ASSERT(row < dest_num_rows);
 	  Grid_Generator& g = dest[row];
 	  sub_mul_assign(g[dim_fol], source_dim, g[dim]);
 	}
@@ -449,7 +449,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     }
   }
 
-  assert(upper_triangular(dest, dim_kinds));
+  PPL_ASSERT(upper_triangular(dest, dim_kinds));
 
   // Since we are reducing the system to "strong minimal form",
   // reduce the coordinates in the grid_generator system

@@ -1,5 +1,5 @@
 /* Congruence_System class implementation (non-inline functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence.defs.hh"
 #include "Grid_Generator.defs.hh"
 #include "Scalar_Products.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -48,7 +48,7 @@ PPL::Congruence_System::Congruence_System(const Constraint_System& cs)
 bool
 PPL::Congruence_System::
 increase_space_dimension(const dimension_type new_space_dim) {
-  assert(space_dimension() <= new_space_dim);
+  PPL_ASSERT(space_dimension() <= new_space_dim);
 
   const dimension_type cols_to_add = new_space_dim - space_dimension();
 
@@ -64,7 +64,7 @@ increase_space_dimension(const dimension_type new_space_dim) {
       add_zero_columns(cols_to_add);
   }
 
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -92,7 +92,7 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
     // Here cg_size == old_num_columns.
     add_row(cg);
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -117,7 +117,7 @@ PPL::Congruence_System::insert(const Constraint& c) {
   }
   operator[](rows.size()-1).strong_normalize();
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -148,7 +148,7 @@ PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
     std::swap(new_cg[mod_index], old_cg[cgs_num_columns]); // Modulus.
   }
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -179,7 +179,7 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
     std::swap(copy[x_mod_index], copy[y_mod_index]);
     std::swap(copy, x[x_num_rows+i]);
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -216,7 +216,7 @@ PPL::Congruence_System::normalize_moduli() {
       operator[](row)[row_size-1] = lcm;
     }
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 bool
@@ -275,7 +275,7 @@ PPL::Congruence_System::num_proper_congruences() const {
 bool
 PPL::Congruence_System::
 satisfies_all_congruences(const Grid_Generator& g) const {
-  assert(g.space_dimension() <= space_dimension());
+  PPL_ASSERT(g.space_dimension() <= space_dimension());
 
   const Congruence_System& cgs = *this;
   PPL_DIRTY_TEMP_COEFFICIENT(sp);
@@ -322,7 +322,7 @@ PPL::Congruence_System::has_a_free_dimension() const {
 	  dimension_type count = 0;
 	  for (dimension_type i = space_dim; i-- > 0; )
 	    count += free_dim[i];
-	  assert(count == free_dims);
+	  PPL_ASSERT(count == free_dims);
 #endif
 	  return true;
 	}
@@ -340,9 +340,9 @@ affine_preimage(dimension_type v,
 		Coefficient_traits::const_reference denominator) {
   // `v' is the index of a column corresponding to a "user" variable
   // (i.e., it cannot be the inhomogeneous term).
-  assert(v > 0 && v <= space_dimension());
-  assert(expr.space_dimension() <= space_dimension());
-  assert(denominator > 0);
+  PPL_ASSERT(v > 0 && v <= space_dimension());
+  PPL_ASSERT(expr.space_dimension() <= space_dimension());
+  PPL_ASSERT(denominator > 0);
 
   const dimension_type num_columns = this->num_columns();
   const dimension_type num_rows = this->num_rows();
@@ -420,7 +420,7 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
       return false;
 
   // Check invariants.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -428,14 +428,14 @@ const PPL::Congruence_System* PPL::Congruence_System::zero_dim_empty_p = 0;
 
 void
 PPL::Congruence_System::initialize() {
-  assert(zero_dim_empty_p == 0);
+  PPL_ASSERT(zero_dim_empty_p == 0);
   zero_dim_empty_p
     = new Congruence_System(Congruence::zero_dim_false());
 }
 
 void
 PPL::Congruence_System::finalize() {
-  assert(zero_dim_empty_p != 0);
+  PPL_ASSERT(zero_dim_empty_p != 0);
   delete zero_dim_empty_p;
   zero_dim_empty_p = 0;
 }
@@ -504,7 +504,7 @@ PPL::operator==(const Congruence_System& x, const Congruence_System& y) {
 
 void
 PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
-  assert(num_columns() > 0);
+  PPL_ASSERT(num_columns() > 0);
   dimension_type col = num_columns() - 1;
   dimension_type old_num_rows = num_rows();
   add_zero_rows_and_columns(dims, dims,
@@ -565,7 +565,7 @@ PPL::Congruence_System
 ::remove_higher_space_dimensions(const dimension_type new_dimension) {
   dimension_type space_dim = space_dimension();
 
-  assert(new_dimension <= space_dim);
+  PPL_ASSERT(new_dimension <= space_dim);
 
   // The removal of no dimensions from any system is a no-op.  Note
   // that this case also captures the only legal removal of dimensions
@@ -578,5 +578,5 @@ PPL::Congruence_System
   swap_columns(new_dimension + 1, space_dim + 1);
 
   remove_trailing_columns(space_dim - new_dimension);
-  assert(OK());
+  PPL_ASSERT(OK());
 }

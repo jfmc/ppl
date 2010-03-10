@@ -1,9 +1,9 @@
 
-The PPL developers encourage you to report any bugs you find to
-ppl-devel@cs.unipr.it.  Here `bug' should be interpreted in its
-broadest sense: outright software errors, misfeatures, bad interfaces,
-missing or unclear documentation... whatever is a subject for possible
-improvement.
+The PPL developers encourage you to report any bugs you find using the
+bug tracking system available at https://www.cs.unipr.it/mantis/ .
+Here `bug' should be interpreted in its broadest sense: outright
+software errors, misfeatures, bad interfaces, missing or unclear
+documentation... whatever is a subject for possible improvement.
 
 As far as software bugs are concerned, the best reports are those that
 are reproducible.  Including (or pointing us to) code that exhibits

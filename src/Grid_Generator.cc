@@ -1,5 +1,5 @@
 /* Grid_Generator class implementation (non-inline functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -118,8 +118,8 @@ PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
     set_is_line();
   else
     set_is_ray_or_point();
-  assert(size() > 0);
-  assert(y.size() > 0);
+  PPL_ASSERT(size() > 0);
+  PPL_ASSERT(y.size() > 0);
   dimension_type sz = size() - 1;
   dimension_type y_sz = y.size() - 1;
   // Swap parameter divisors.
@@ -255,7 +255,7 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
     PPL_DIRTY_TEMP_COEFFICIENT(factor);
     exact_div_assign(factor, d, divisor());
     set_divisor(d);
-    assert(factor > 0);
+    PPL_ASSERT(factor > 0);
     if (factor > 1)
       for (dimension_type col = size() - 2; col >= 1; --col)
 	Generator::operator[](col) *= factor;
@@ -266,14 +266,14 @@ const PPL::Grid_Generator* PPL::Grid_Generator::zero_dim_point_p = 0;
 
 void
 PPL::Grid_Generator::initialize() {
-  assert(zero_dim_point_p == 0);
+  PPL_ASSERT(zero_dim_point_p == 0);
   zero_dim_point_p
     = new Grid_Generator(grid_point());
 }
 
 void
 PPL::Grid_Generator::finalize() {
-  assert(zero_dim_point_p != 0);
+  PPL_ASSERT(zero_dim_point_p != 0);
   delete zero_dim_point_p;
   zero_dim_point_p = 0;
 }

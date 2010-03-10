@@ -1,5 +1,5 @@
 /* Box class declaration.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -44,13 +44,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid.types.hh"
 #include "Partially_Reduced_Product.types.hh"
 #include "intervals.defs.hh"
+#include "Interval.types.hh"
+#include "Linear_Form.types.hh"
 #include <vector>
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
 struct Interval_Base;
-struct Circular_Interval_Base;
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are the same box.
 /*! \relates Box
@@ -1018,6 +1019,30 @@ public:
 		    Coefficient_traits::const_reference denominator
 		      = Coefficient_one());
 
+  // FIXME: To be completed.
+  /*! \brief
+    Assigns to \p *this the \ref affine_form_relation "affine form image"
+    of \p *this under the function mapping variable \p var into the
+    affine expression(s) specified by \p lf.
+
+    \param var
+    The variable to which the affine expression is assigned.
+
+    \param lf
+    The linear form on intervals with floating point boundaries that
+    defines the affine expression(s). ALL of its coefficients MUST be bounded.
+
+    \exception std::invalid_argument
+    Thrown if \p lf and \p *this are dimension-incompatible or if \p var
+    is not a dimension of \p *this.
+
+    This function is used in abstract interpretation to model an assignment
+    of a value that is correctly overapproximated by \p lf to the
+    floating point variable represented by \p var.
+  */
+  void affine_form_image(Variable var,
+                         const Linear_Form<ITV>& lf);
+
   /*! \brief
     Assigns to \p *this the
     \ref Single_Update_Affine_Functions "affine preimage"
@@ -1288,6 +1313,10 @@ public:
     Possibly tightens \p *this by dropping some points with non-integer
     coordinates for the space dimensions corresponding to \p vars.
 
+    \param vars
+    Points with non-integer coordinates for these variables/space-dimensions
+    can be discarded.
+
     \param complexity
     The maximal complexity of any algorithms used.
 
@@ -1315,10 +1344,9 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   template <typename T>
-  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
-  CC76_widening_assign(const T& y, unsigned* tp = 0);
-  template <typename T>
-  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
+  typename Enable_If<Is_Same<T, Box>::value
+                     && Is_Same_Or_Derived<Interval_Base, ITV>::value,
+                     void>::type
   CC76_widening_assign(const T& y, unsigned* tp = 0);
 
   /*! \brief
@@ -1338,11 +1366,9 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   template <typename T, typename Iterator>
-  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
-  CC76_widening_assign(const T& y,
-		       Iterator first, Iterator last);
-  template <typename T, typename Iterator>
-  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
+  typename Enable_If<Is_Same<T, Box>::value
+                     && Is_Same_Or_Derived<Interval_Base, ITV>::value,
+                     void>::type
   CC76_widening_assign(const T& y,
 		       Iterator first, Iterator last);
 
@@ -1393,10 +1419,9 @@ public:
     the result of the computation \f$\mathtt{y} \Delta \mathtt{x}\f$.
   */
   template <typename T>
-  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Interval_Base, ITV>::value, void>::type
-  CC76_narrowing_assign(const T& y);
-  template <typename T>
-  typename Enable_If<Is_Same<T, Box>::value && Is_Same_Or_Derived<Circular_Interval_Base, ITV>::value, void>::type
+  typename Enable_If<Is_Same<T, Box>::value
+                     && Is_Same_Or_Derived<Interval_Base, ITV>::value,
+                     void>::type
   CC76_narrowing_assign(const T& y);
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
@@ -2132,6 +2157,11 @@ private:
   void throw_dimension_incompatible(const char* method,
 				    const char* name_row,
 				    const Linear_Expression& y) const;
+
+  template <typename C>
+  void throw_dimension_incompatible(const char* method,
+                                    const char* name_row,
+                                    const Linear_Form<C>& y) const;
 
   static void throw_space_dimension_overflow(const char* method,
 					     const char* reason);

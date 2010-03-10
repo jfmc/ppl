@@ -1,5 +1,5 @@
 /* Nifty counter object for the initialization of the library.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -54,7 +54,7 @@ initialize() {
 inline void
 finalize() {
 #ifdef PPL_NO_AUTOMATIC_INITIALIZATION
-  assert(Parma_Polyhedra_Library_initializer_p != 0);
+  PPL_ASSERT(Parma_Polyhedra_Library_initializer_p != 0);
   delete Parma_Polyhedra_Library_initializer_p;
   Parma_Polyhedra_Library_initializer_p = 0;
 #endif

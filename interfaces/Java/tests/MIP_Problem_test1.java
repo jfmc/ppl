@@ -1,6 +1,6 @@
 /* Test MIP_Problem Java test class of the Parma Polyhedra Library Java
    interface.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -40,7 +40,7 @@ static {
 }
 
     // This code tests the MIP_Problem methods.
-    public static Boolean test01() {
+    public static boolean test01() {
 	Variable A = new Variable(0);
 	Variable B = new Variable(1);
 	Variable C = new Variable(2);
@@ -70,7 +70,6 @@ static {
         C_Polyhedron ph2 = new C_Polyhedron(4, Degenerate_Element.UNIVERSE);
         ph2.add_constraints(constraints1);
         ph2.add_constraint(constraint2);
-        Boolean ok = true;
 
 	MIP_Problem mip1
           = new MIP_Problem(3, constraints1, le_a,
@@ -85,7 +84,7 @@ static {
         mip2.set_objective_function(mip1_obj);
         mip2.set_optimization_mode(mip1_opt);
 
-        ok = ok && (mip2.space_dimension() == 3)
+        boolean ok = (mip2.space_dimension() == 3)
            && (mip2.optimization_mode() == Optimization_Mode.MAXIMIZATION);
         C_Polyhedron mip2_ph = new C_Polyhedron(3,
                                                 Degenerate_Element.UNIVERSE);
@@ -106,13 +105,13 @@ static {
         C_Polyhedron mip3_ph = new C_Polyhedron(4,
                                                 Degenerate_Element.UNIVERSE);
         mip3_ph.add_constraints(mip3_constraints);
-        ok = ok && new Boolean(mip3_ph.equals(ph2));
+        ok = ok && mip3_ph.equals(ph2);
 
 	return ok;
     }
 
     // This code tests more MIP_Problem methods.
-    public static Boolean test02() {
+    public static boolean test02() {
 	Variable A = new Variable(0);
 	Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
         Coefficient coeff_0 = new Coefficient(0);
@@ -137,8 +136,6 @@ static {
         Variables_Set var_set_A = new Variables_Set();
         var_set_A.add(A);
 
-        Boolean ok = true;
-
 	MIP_Problem mip1
           = new MIP_Problem(1, constraints1, le_a,
                            Optimization_Mode.MAXIMIZATION);
@@ -148,7 +145,7 @@ static {
         Optimization_Mode mip1_opt = mip1.optimization_mode();
 
         Variables_Set var_set = mip1.integer_space_dimensions();
-        ok = ok && (var_set.isEmpty());
+        boolean ok = var_set.isEmpty();
         mip1.add_to_integer_space_dimensions(var_set_A);
         Variables_Set var_set1 = mip1.integer_space_dimensions();
         ok = ok && (var_set1.contains(A));

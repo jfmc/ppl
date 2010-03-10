@@ -1,5 +1,5 @@
 /* Grid Generator class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -76,7 +76,7 @@ Grid_Generator::type() const {
     return LINE;
   case Generator::CLOSURE_POINT:
   default:
-    assert(false);
+    PPL_ASSERT(false);
     return POINT;
   }
 }
@@ -108,7 +108,7 @@ Grid_Generator::is_parameter_or_point() const {
 
 inline void
 Grid_Generator::set_divisor(Coefficient_traits::const_reference d) {
-  assert(!is_line());
+  PPL_ASSERT(!is_line());
   if (is_line_or_parameter())
     Generator::operator[](size() - 1) = d;
   else
@@ -178,7 +178,7 @@ Grid_Generator::external_memory_in_bytes() const {
 
 inline const Grid_Generator&
 Grid_Generator::zero_dim_point() {
-  assert(zero_dim_point_p != 0);
+  PPL_ASSERT(zero_dim_point_p != 0);
   return *zero_dim_point_p;
 }
 

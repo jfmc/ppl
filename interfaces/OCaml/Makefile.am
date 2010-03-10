@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -256,8 +256,8 @@ ppl_ocaml_domains_cc_files.stamp: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_cc_files.m4 \
                 > ppl_ocaml_cc_blob
-	$(top_srcdir)/utils/cm_cleaner.sh < ppl_ocaml_cc_blob
-	$(top_srcdir)/utils/cm_splitter.sh < ppl_ocaml_cc_blob
+	$(top_srcdir)/utils/cm_cleaner.sh ./ppl_ocaml_cc_blob
+	$(top_srcdir)/utils/cm_splitter.sh ./ppl_ocaml_cc_blob
 	rm -f ppl_ocaml_cc_blob
 	echo timestamp >$@
 
@@ -265,8 +265,8 @@ ppl_ocaml_domains.hh: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_hh_files.m4 \
                 > ppl_ocaml_hh_blob
-	$(top_srcdir)/utils/cm_cleaner.sh < ppl_ocaml_hh_blob
-	$(top_srcdir)/utils/cm_splitter.sh < ppl_ocaml_hh_blob
+	$(top_srcdir)/utils/cm_cleaner.sh ./ppl_ocaml_hh_blob
+	$(top_srcdir)/utils/cm_splitter.sh ./ppl_ocaml_hh_blob
 	rm -f ppl_ocaml_hh_blob
 
 MOSTLYCLEANFILES = \

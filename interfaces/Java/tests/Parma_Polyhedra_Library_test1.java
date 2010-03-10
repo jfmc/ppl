@@ -1,6 +1,6 @@
 /* Parma_Polyhedra_Library Java test class of the
    Parma Polyhedra Library Java interface.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -40,7 +40,7 @@ static {
 }
 
     // This code tests the Parma_Polyhedra_Library methods.
-    public static Boolean test01() {
+    public static boolean test01() {
 
     PPL_Test.print_if_noisy("Version Major: ");
     PPL_Test.println_if_noisy(Parma_Polyhedra_Library.version_major());

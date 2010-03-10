@@ -1,5 +1,5 @@
 /* Implementation of the C interface: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -75,7 +75,29 @@ Grid_Generator_System_const_iterator;
 DECLARE_CONVERSIONS(Grid_Generator_System_const_iterator,
                     Grid_Generator_System_const_iterator)
 
+typedef PIP_Tree_Node::Artificial_Parameter
+Artificial_Parameter;
+DECLARE_CONVERSIONS(Artificial_Parameter, Artificial_Parameter)
+
+typedef PIP_Tree_Node::Artificial_Parameter_Sequence
+Artificial_Parameter_Sequence;
+DECLARE_CONVERSIONS(Artificial_Parameter_Sequence,
+                    Artificial_Parameter_Sequence)
+
+typedef PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator
+Artificial_Parameter_Sequence_const_iterator;
+DECLARE_CONVERSIONS(Artificial_Parameter_Sequence_const_iterator,
+                    Artificial_Parameter_Sequence_const_iterator)
+
 DECLARE_CONVERSIONS(MIP_Problem, MIP_Problem)
+
+DECLARE_CONVERSIONS(PIP_Problem, PIP_Problem)
+
+DECLARE_CONVERSIONS(PIP_Tree_Node, PIP_Tree_Node)
+
+DECLARE_CONVERSIONS(PIP_Decision_Node, PIP_Decision_Node)
+
+DECLARE_CONVERSIONS(PIP_Solution_Node, PIP_Solution_Node)
 
 inline Relation_Symbol
 relation_symbol(enum ppl_enum_Constraint_Type t) {
@@ -92,6 +114,50 @@ relation_symbol(enum ppl_enum_Constraint_Type t) {
     return GREATER_THAN;
   default:
     return static_cast<Relation_Symbol>(t);
+  }
+}
+
+inline Bounded_Integer_Type_Width
+bounded_integer_type_width(enum ppl_enum_Bounded_Integer_Type_Width w) {
+  switch (w) {
+  case PPL_BITS_8:
+    return BITS_8;
+  case PPL_BITS_16:
+    return BITS_16;
+  case PPL_BITS_32:
+    return BITS_32;
+  case PPL_BITS_64:
+    return BITS_64;
+  case PPL_BITS_128:
+    return BITS_128;
+  default:
+    return static_cast<Bounded_Integer_Type_Width>(w);
+  }
+}
+
+inline Bounded_Integer_Type_Representation
+bounded_integer_type_representation(enum ppl_enum_Bounded_Integer_Type_Representation r) {
+  switch (r) {
+  case PPL_UNSIGNED:
+    return UNSIGNED;
+  case PPL_SIGNED_2_COMPLEMENT:
+    return SIGNED_2_COMPLEMENT;
+  default:
+    return static_cast<Bounded_Integer_Type_Representation>(r);
+  }
+}
+
+inline Bounded_Integer_Type_Overflow
+bounded_integer_type_overflow(enum ppl_enum_Bounded_Integer_Type_Overflow o) {
+  switch (o) {
+  case PPL_OVERFLOW_WRAPS:
+    return OVERFLOW_WRAPS;
+  case PPL_OVERFLOW_UNDEFINED:
+    return OVERFLOW_UNDEFINED;
+  case PPL_OVERFLOW_IMPOSSIBLE:
+    return OVERFLOW_IMPOSSIBLE;
+  default:
+    return static_cast<Bounded_Integer_Type_Overflow>(o);
   }
 }
 

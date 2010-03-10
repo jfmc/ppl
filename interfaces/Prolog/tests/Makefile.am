@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -72,8 +72,8 @@ ppl_prolog_generated_test.stamp: $(interface_generator_dependencies)
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_prolog_generated_test_pl.m4 \
 			> ppl_prolog_generated_test_blob
-	$(top_srcdir)/utils/cm_cleaner.sh < ppl_prolog_generated_test_blob
-	$(top_srcdir)/utils/cm_splitter.sh < ppl_prolog_generated_test_blob
+	$(top_srcdir)/utils/cm_cleaner.sh ./ppl_prolog_generated_test_blob
+	$(top_srcdir)/utils/cm_splitter.sh ./ppl_prolog_generated_test_blob
 	rm -f ppl_prolog_generated_test_blob
 	echo timestamp >$@
 

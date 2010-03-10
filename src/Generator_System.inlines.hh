@@ -1,5 +1,5 @@
 /* Generator_System class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -175,7 +175,7 @@ Generator_System::end() const {
 
 inline const Generator_System&
 Generator_System::zero_dim_univ() {
-  assert(zero_dim_univ_p != 0);
+  PPL_ASSERT(zero_dim_univ_p != 0);
   return *zero_dim_univ_p;
 }
 

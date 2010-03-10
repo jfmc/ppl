@@ -1,5 +1,5 @@
 /* This is the header file of the C interface of the Parma Polyhedra Library.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -334,7 +334,13 @@ enum ppl_enum_error_code {
     An exception has been raised by the PPL as a timeout previously set
     by the user has expired.
   */
-  PPL_TIMEOUT_EXCEPTION = -11
+  PPL_TIMEOUT_EXCEPTION = -11,
+  /*! \hideinitializer
+    The client program attempted to use the PPL in a way that violates
+    its internal logic.  This happens, for instance, when the client
+    attempts to use the timeout facilities on a system that does not
+    support them. */
+  PPL_ERROR_LOGIC_ERROR = -12
 };
 
 /*! \brief
@@ -381,6 +387,45 @@ ppl_set_timeout PPL_PROTO((unsigned time));
 */
 int
 ppl_reset_timeout PPL_PROTO((void));
+
+/*! \brief
+  Sets a threshold for computations whose completion could require
+  an exponential amount of time.
+
+  \param weight
+  The maximum computational weight allowed.
+  It must be strictly greater than zero.
+
+  Computations taking exponential time will be interrupted some time
+  after reaching the \p weight complexity threshold. If the computation
+  is interrupted that way, the interrupted function will return error code
+  <code>PPL_TIMEOUT_EXCEPTION</code>.
+  Otherwise, if the computation completes without being interrupted,
+  then the deterministic timeout should be reset by calling
+  <code>ppl_reset_deterministic_timeout()</code>.
+
+  \note
+  This "timeout" checking functionality is said to be \e deterministic
+  because it is not based on actual elapsed time. Its behavior will
+  only depend on (some of the) computations performed in the PPL library
+  and it will be otherwise independent from the computation environment
+  (CPU, operating system, compiler, etc.).
+
+  \warning
+  The weight mechanism is under alpha testing. In particular,
+  there is still no clear relation between the weight threshold and
+  the actual computational complexity. As a consequence, client
+  applications should be ready to reconsider the tuning of these
+  weight thresholds when upgrading to newer version of the PPL.
+*/
+int
+ppl_set_deterministic_timeout PPL_PROTO((unsigned weight));
+
+/*! \brief
+  Resets the deterministic timeout so that the computation is not interrupted.
+*/
+int
+ppl_reset_deterministic_timeout PPL_PROTO((void));
 
 /*@}*/ /* Timeout Handling */
 
@@ -646,6 +691,59 @@ PPL_TYPE_DECLARATION(Grid_Generator_System_const_iterator)
   towards \extref{Parma_Polyhedra_Library::MIP_Problem, MIP_Problem}.
 */
 PPL_TYPE_DECLARATION(MIP_Problem)
+
+/*! \interface ppl_PIP_Problem_tag
+  \brief
+  Types and functions for PIP problems.
+
+  The types and functions for PIP problems provide an interface
+  towards \extref{Parma_Polyhedra_Library::PIP_Problem, PIP_Problem}.
+*/
+PPL_TYPE_DECLARATION(PIP_Problem)
+
+/*! \interface ppl_PIP_Tree_Node_tag
+  \brief
+  Types and functions for generic PIP tree nodes.
+
+  The types and functions for tree nodes provide an interface
+  towards \extref{Parma_Polyhedra_Library::PIP_Tree_Node, PIP_Tree_Node}.
+*/
+PPL_TYPE_DECLARATION(PIP_Tree_Node)
+
+/*! \interface ppl_PIP_Decision_Node_tag
+  \brief
+  Types and functions for PIP decision nodes.
+
+  The types and functions for decision nodes provide an interface towards
+  \extref{Parma_Polyhedra_Library::PIP_Decision_Node, PIP_Decision_Node}.
+*/
+PPL_TYPE_DECLARATION(PIP_Decision_Node)
+
+/*! \interface ppl_PIP_Solution_Node_tag
+  \brief
+  Types and functions for PIP solution nodes.
+
+  The types and functions for solution nodes provide an interface towards
+  \extref{Parma_Polyhedra_Library::PIP_Solution_Node, PIP_Solution_Node}.
+*/
+PPL_TYPE_DECLARATION(PIP_Solution_Node)
+
+/*! \interface ppl_Artificial_Parameter_tag
+  \brief
+  Types and functions for PIP artificial parameters.
+
+  The types and functions for PIP artificial parameters provide
+  an interface towards
+  \extref{Parma_Polyhedra_Library::Artificial_Parameter, Artificial_Parameter}.
+*/
+PPL_TYPE_DECLARATION(Artificial_Parameter)
+PPL_TYPE_DECLARATION(Artificial_Parameter_Sequence)
+
+/*! \interface ppl_Artificial_Parameter_Sequence_const_iterator_tag
+  \brief
+  Types and functions for iterating on PIP artificial parameters.
+*/
+PPL_TYPE_DECLARATION(Artificial_Parameter_Sequence_const_iterator)
 
 
 #undef PPL_DECLARE_PRINT_FUNCTIONS
@@ -1216,7 +1314,7 @@ ppl_new_Constraint_System_const_iterator
 PPL_PROTO((ppl_Constraint_System_const_iterator_t* pcit));
 
 /*! \relates ppl_Constraint_System_const_iterator_tag \brief
-  Builds a const iterator that is a copy of \p cit; writes an
+  Builds a const iterator that is a copy of \p cit; writes a
   handle for the newly created const iterator at address \p pcit.
 */
 int
@@ -1521,7 +1619,7 @@ ppl_new_Generator_System_const_iterator
 PPL_PROTO((ppl_Generator_System_const_iterator_t* pgit));
 
 /*! \relates ppl_Generator_System_const_iterator_tag \brief
-  Builds a const iterator that is a copy of \p git; writes an
+  Builds a const iterator that is a copy of \p git; writes a
   handle for the newly created const iterator at address \p pgit.
 */
 int
@@ -1808,7 +1906,7 @@ ppl_new_Congruence_System_const_iterator
 PPL_PROTO((ppl_Congruence_System_const_iterator_t* pcit));
 
 /*! \relates ppl_Congruence_System_const_iterator_tag \brief
-  Builds a const iterator that is a copy of \p cit; writes an
+  Builds a const iterator that is a copy of \p cit; writes a
   handle for the newly created const iterator at address \p pcit.
 */
 int
@@ -2110,7 +2208,7 @@ ppl_new_Grid_Generator_System_const_iterator
 PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t* pgit));
 
 /*! \relates ppl_Grid_Generator_System_const_iterator_tag \brief
-  Builds a const iterator that is a copy of \p git; writes an
+  Builds a const iterator that is a copy of \p git; writes a
   handle for the newly created const iterator at address \p pgit.
 */
 int
@@ -2214,6 +2312,73 @@ extern unsigned int PPL_POLY_CON_RELATION_SATURATES;
 extern unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
 
 
+/*! \brief \ingroup Datatypes
+  Widths of bounded integer types.
+*/
+enum ppl_enum_Bounded_Integer_Type_Width {
+  /*! \hideinitializer 8 bits. */
+  PPL_BITS_8 = 8,
+  /*! \hideinitializer 16 bits. */
+  PPL_BITS_16 = 16,
+  /*! \hideinitializer 32 bits. */
+  PPL_BITS_32 = 32,
+  /*! \hideinitializer 64 bits. */
+  PPL_BITS_64 = 64,
+  /*! \hideinitializer 128 bits. */
+  PPL_BITS_128 = 128
+};
+
+/*! \brief \ingroup Datatypes
+  Representation of bounded integer types.
+*/
+enum ppl_enum_Bounded_Integer_Type_Representation {
+  /*! Unsigned binary. */
+  PPL_UNSIGNED,
+  /*! \brief
+    Signed binary where negative values are represented by the two's
+    complement of the absolute value.
+  */
+  PPL_SIGNED_2_COMPLEMENT
+};
+
+/*! \brief \ingroup Datatypes
+  Overflow behavior of bounded integer types.
+*/
+enum ppl_enum_Bounded_Integer_Type_Overflow {
+  /*! \brief
+    On overflow, wrapping takes place.
+
+    This means that, for a \f$w\f$-bit bounded integer, the computation
+    happens modulo \f$2^w\f$.
+  */
+  PPL_OVERFLOW_WRAPS,
+
+  /*! \brief
+    On overflow, the result is undefined.
+
+    This simply means that the result of the operation resulting in an
+    overflow can take any value.
+
+    \note
+    Even though something more serious can happen in the system
+    being analyzed ---due to, e.g., C's undefined behavior---, here we
+    are only concerned with the results of arithmetic operations.
+    It is the responsibility of the analyzer to ensure that other
+    manifestations of undefined behavior are conservatively approximated.
+  */
+  PPL_OVERFLOW_UNDEFINED,
+
+  /*! \brief
+    Overflow is impossible.
+
+    This is for the analysis of languages where overflow is trapped
+    before it affects the state, for which, thus, any indication that
+    an overflow may have affected the state is necessarily due to
+    the imprecision of the analysis.
+  */
+  PPL_OVERFLOW_IMPOSSIBLE
+};
+
 /*! \brief \name Symbolic Constants */
 /*@{*/
 
@@ -2262,13 +2427,60 @@ extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_EXACT;
 */
 extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_FLOAT;
 
+
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of the "unfeasible PIP problem" status.
+*/
+extern int PPL_PIP_PROBLEM_STATUS_UNFEASIBLE;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of the "optimized PIP problem" status.
+*/
+extern int PPL_PIP_PROBLEM_STATUS_OPTIMIZED;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code for the PIP problem's "cutting strategy" control parameter name.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_CUTTING_STRATEGY;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code for the PIP problem's "pivot row strategy" control parameter name.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_NAME_PIVOT_ROW_STRATEGY;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of PIP problem's "first" cutting strategy.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_FIRST;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of PIP problem's "deepest" cutting strategy.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_DEEPEST;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of PIP problem's "all" cutting strategy.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_CUTTING_STRATEGY_ALL;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of PIP problem's "first" pivot row strategy.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_FIRST;
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Code of PIP problem's "max column" pivot row strategy.
+*/
+extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_MAX_COLUMN;
+
 /*@}*/ /* Symbolic Constants */
 
 /*! \brief \name Constructors, Assignment and Destructor */
 /*@{*/
 
 /*! \relates ppl_MIP_Problem_tag \brief
-  Builds a trivial MIP problem of dimension \p d and writes an
+  Builds a trivial MIP problem of dimension \p d and writes a
   handle to it at address \p pmip.
 */
 int
@@ -2276,7 +2488,7 @@ ppl_new_MIP_Problem_from_space_dimension PPL_PROTO((ppl_MIP_Problem_t* pmip,
 						    ppl_dimension_type d));
 
 /*! \relates ppl_MIP_Problem_tag \brief
-  Builds an MIP problem of space dimension \p d having feasible region \p cs,
+  Builds a MIP problem of space dimension \p d having feasible region \p cs,
   objective function \p le and optimization mode \p m; writes a handle to
   it at address \p pmip.
 */
@@ -2288,7 +2500,7 @@ ppl_new_MIP_Problem PPL_PROTO((ppl_MIP_Problem_t* pmip,
 			       int m));
 
 /*! \relates ppl_MIP_Problem_tag \brief
-  Builds an MIP problem that is a copy of \p mip; writes a handle
+  Builds a MIP problem that is a copy of \p mip; writes a handle
   for the newly created system at address \p pmip.
 */
 int
@@ -2532,9 +2744,491 @@ int
 ppl_MIP_Problem_set_control_parameter
 PPL_PROTO((ppl_MIP_Problem_t mip, int value));
 
+/*! \relates ppl_MIP_Problem_tag \brief
+  Writes into \p *sz the size in bytes of the memory occupied by \p mip.
+*/
+int
+ppl_MIP_Problem_total_memory_in_bytes
+PPL_PROTO((ppl_const_MIP_Problem_t mip, size_t* sz));
+
+/*! \relates ppl_MIP_Problem_tag \brief
+  Writes into \p *sz the size in bytes of the memory managed by \p mip.
+*/
+int
+ppl_MIP_Problem_external_memory_in_bytes
+PPL_PROTO((ppl_const_MIP_Problem_t mip, size_t* sz));
+
 /*@}*/ /* Querying/Setting Control Parameters */
 
+
+/*! \brief \name Constructors, Assignment and Destructor */
+/*@{*/
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Builds a trivial PIP problem of dimension \p d and writes a
+  handle to it at address \p ppip.
+*/
+int
+ppl_new_PIP_Problem_from_space_dimension PPL_PROTO((ppl_PIP_Problem_t* ppip,
+						    ppl_dimension_type d));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Builds a PIP problem that is a copy of \p pip; writes a handle
+  for the newly created problem at address \p ppip.
+*/
+int
+ppl_new_PIP_Problem_from_PIP_Problem
+PPL_PROTO((ppl_PIP_Problem_t* ppip, ppl_const_PIP_Problem_t pip));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Assigns a copy of the PIP problem \p src to \p dst.
+*/
+int
+ppl_assign_PIP_Problem_from_PIP_Problem
+PPL_PROTO((ppl_PIP_Problem_t dst, ppl_const_PIP_Problem_t src));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Builds a PIP problem having space dimension \p d from the sequence
+  of constraints in the range \f$[\mathrm{first}, \mathrm{last})\f$;
+  the \p n dimensions whose indices occur in \p ds are interpreted as
+  parameters.
+*/
+int
+ppl_new_PIP_Problem_from_constraints
+PPL_PROTO((ppl_PIP_Problem_t* ppip,
+           ppl_dimension_type d,
+           ppl_Constraint_System_const_iterator_t first,
+           ppl_Constraint_System_const_iterator_t last,
+           size_t n,
+           ppl_dimension_type ds[]));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Invalidates the handle \p pip: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_PIP_Problem PPL_PROTO((ppl_const_PIP_Problem_t pip));
+
+/*@}*/ /* Constructors, Assignment and Destructor for PIP_Problem */
+
+/*! \brief \name Functions that Do Not Modify the PIP_Problem */
+/*@{*/
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes to \p m the dimension of the vector space enclosing \p pip.
+
+  The vector space dimensions includes both the problem variables
+  and the problem parameters, but they do not include the artificial
+  parameters.
+*/
+int
+ppl_PIP_Problem_space_dimension
+PPL_PROTO((ppl_const_PIP_Problem_t pip, ppl_dimension_type* m));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes to \p m the number of parameter space dimensions of \p pip.
+*/
+int
+ppl_PIP_Problem_number_of_parameter_space_dimensions
+PPL_PROTO((ppl_const_PIP_Problem_t pip, ppl_dimension_type* m));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes in the first positions of the array \p ds all the parameter space
+  dimensions of problem \p pip. If the array is not big enough to hold
+  all of the parameter space dimensions, the behavior is undefined.
+*/
+int
+ppl_PIP_Problem_parameter_space_dimensions
+PPL_PROTO((ppl_const_PIP_Problem_t pip, ppl_dimension_type ds[]));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes into \p *pd the big parameter dimension of PIP problem \p pip.
+*/
+int
+ppl_PIP_Problem_get_big_parameter_dimension
+PPL_PROTO((ppl_const_PIP_Problem_t pip, ppl_dimension_type* pd));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes to \p m the number of constraints defining
+  the feasible region of \p pip.
+*/
+int
+ppl_PIP_Problem_number_of_constraints PPL_PROTO((ppl_const_PIP_Problem_t pip,
+						 ppl_dimension_type* m));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes at address \p pc a const handle to the \p i-th constraint
+  defining the feasible region of the PIP problem \p pip
+*/
+int
+ppl_PIP_Problem_constraint_at_index PPL_PROTO((ppl_const_PIP_Problem_t pip,
+					       ppl_dimension_type i,
+					       ppl_const_Constraint_t* pc));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes into \p *sz the size in bytes of the memory occupied by \p pip.
+*/
+int
+ppl_PIP_Problem_total_memory_in_bytes
+PPL_PROTO((ppl_const_PIP_Problem_t pip, size_t* sz));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes into \p *sz the size in bytes of the memory managed by \p pip.
+*/
+int
+ppl_PIP_Problem_external_memory_in_bytes
+PPL_PROTO((ppl_const_PIP_Problem_t pip, size_t* sz));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Returns a positive integer if \p pip is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p pip is broken.  Useful for debugging purposes.
+*/
+int
+ppl_PIP_Problem_OK PPL_PROTO((ppl_const_PIP_Problem_t pip));
+
+/*@}*/ /* Functions that Do Not Modify the PIP_Problem */
+
+/*! \brief \name Functions that May Modify the PIP_Problem */
+/*@{*/
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Resets the PIP problem to be a trivial problem of space dimension 0.
+*/
+int
+ppl_PIP_Problem_clear PPL_PROTO((ppl_PIP_Problem_t pip));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Adds <CODE>pip_vars + pip_params</CODE> new space dimensions
+  and embeds the PIP problem \p pip in the new vector space.
+
+  \param pip
+  The PIP problem to be embedded in the new vector space.
+
+  \param pip_vars
+  The number of space dimensions to add that are interpreted as
+  PIP problem variables (i.e., non parameters). These are added
+  \e before adding the \p pip_params parameters.
+
+  \param pip_params
+  The number of space dimensions to add that are interpreted as
+  PIP problem parameters. These are added \e after having added the
+  \p pip_vars problem variables.
+
+  The new space dimensions will be those having the highest indexes
+  in the new PIP problem; they are initially unconstrained.
+*/
+int
+ppl_PIP_Problem_add_space_dimensions_and_embed
+PPL_PROTO((ppl_PIP_Problem_t pip,
+           ppl_dimension_type pip_vars,
+           ppl_dimension_type pip_params));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Sets the space dimensions that are specified in first \p n positions
+  of the array \p ds to be parameter dimensions of problem \p pip.
+  The presence of duplicates in \p ds is a waste but an innocuous one.
+*/
+int
+ppl_PIP_Problem_add_to_parameter_space_dimensions
+PPL_PROTO((ppl_PIP_Problem_t pip, ppl_dimension_type ds[], size_t n));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Sets the big parameter dimension of PIP problem \p pip to \p d.
+*/
+int
+ppl_PIP_Problem_set_big_parameter_dimension
+PPL_PROTO((ppl_PIP_Problem_t pip, ppl_dimension_type d));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Modifies the feasible region of the PIP problem \p pip by adding a copy
+  of the constraint \p c.
+*/
+int
+ppl_PIP_Problem_add_constraint PPL_PROTO((ppl_PIP_Problem_t pip,
+					  ppl_const_Constraint_t c));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Modifies the feasible region of the PIP problem \p pip by adding a copy
+  of the constraints in \p cs.
+*/
+int
+ppl_PIP_Problem_add_constraints PPL_PROTO((ppl_PIP_Problem_t pip,
+					   ppl_const_Constraint_System_t cs));
+
+/*@}*/ /* Functions that May Modify the PIP_Problem */
+
+/*! \brief \name Computing and Printing the Solution of the PIP_Problem */
+/*@{*/
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Returns a positive integer if \p pip is satisfiable and an optimal
+  solution can be found; returns 0 otherwise.
+*/
+int
+ppl_PIP_Problem_is_satisfiable PPL_PROTO((ppl_const_PIP_Problem_t pip));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Solves the PIP problem \p pip, returning an exit status.
+
+  \return
+  <CODE>PPL_PIP_PROBLEM_STATUS_UNFEASIBLE</CODE> if the PIP problem
+  is not satisfiable;
+  <CODE>PPL_PIP_PROBLEM_STATUS_OPTIMIZED</CODE> if the PIP problem
+  admits an optimal solution.
+*/
+int
+ppl_PIP_Problem_solve PPL_PROTO((ppl_const_PIP_Problem_t pip));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes to \p pip_tree a solution for \p pip, if it exists.
+*/
+int
+ppl_PIP_Problem_solution PPL_PROTO((ppl_const_PIP_Problem_t pip,
+                                    ppl_const_PIP_Tree_Node_t* pip_tree));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Writes to \p pip_tree an optimizing solution for \p pip, if it exists.
+*/
+int
+ppl_PIP_Problem_optimizing_solution
+PPL_PROTO((ppl_const_PIP_Problem_t pip,
+           ppl_const_PIP_Tree_Node_t* pip_tree));
+
+/*@}*/ /* Computing the Solution of the PIP_Problem */
+
+/*! \brief \name Querying/Setting Control Parameters */
+/*@{*/
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Returns the value of control parameter \p name in problem \p pip.
+*/
+int
+ppl_PIP_Problem_get_control_parameter
+PPL_PROTO((ppl_const_PIP_Problem_t pip, int name));
+
+/*! \relates ppl_PIP_Problem_tag \brief
+  Sets control parameter \p value in problem \p pip.
+*/
+int
+ppl_PIP_Problem_set_control_parameter
+PPL_PROTO((ppl_PIP_Problem_t pip, int value));
+
+/*@}*/ /* Querying/Setting Control Parameters */
+
+
+/*! \relates ppl_PIP_Tree_Node_tag \brief
+  Writes to \p dpip_tree the solution node if \p spip_tree is
+  a solution node, and 0 otherwise.
+*/
+int
+ppl_PIP_Tree_Node_as_solution
+PPL_PROTO((ppl_const_PIP_Tree_Node_t spip_tree,
+           ppl_const_PIP_Solution_Node_t* dpip_tree));
+
+/*! \relates ppl_PIP_Tree_Node_tag \brief
+  Writes to \p dpip_tree the decision node if \p spip_tree
+  is a decision node, and 0 otherwise.
+*/
+int
+ppl_PIP_Tree_Node_as_decision
+PPL_PROTO((ppl_const_PIP_Tree_Node_t spip_tree,
+           ppl_const_PIP_Decision_Node_t* dpip_tree));
+
+/*! \relates ppl_PIP_Tree_Node_tag \brief
+  Writes to \p pcs the local system of parameter constraints
+  at the pip tree node \p pip_tree.
+*/
+int
+ppl_PIP_Tree_Node_get_constraints
+PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
+           ppl_const_Constraint_System_t* pcs));
+
+/*! \relates ppl_PIP_Tree_Node_tag \brief
+  Returns a positive integer if \p pip_tree is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p pip_tree is broken.  Useful for debugging purposes.
+*/
+int
+ppl_PIP_Tree_Node_OK PPL_PROTO((ppl_const_PIP_Tree_Node_t pip));
+
+/*! \relates ppl_PIP_Tree_Node_tag \brief
+  Writes to \p m the number of elements in the artificial parameter sequence
+  in the pip tree node \p pip_tree.
+*/
+int
+ppl_PIP_Tree_Node_number_of_artificials
+PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
+           ppl_dimension_type* m));
+
+/*! \relates ppl_PIP_Tree_Node_tag \brief
+  Assigns to \p pit a const iterator "pointing" to the beginning of
+  the artificial parameter sequence in the pip tree node \p pip_tree.
+*/
+int
+ppl_PIP_Tree_Node_begin
+PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
+           ppl_Artificial_Parameter_Sequence_const_iterator_t pit));
+
+/*! \relates ppl_PIP_Tree_Node_tag \brief
+  Assigns to \p pit a const iterator "pointing" to the end of
+  the artificial parameter sequence in the pip tree node \p pip_tree.
+*/
+int
+ppl_PIP_Tree_Node_end
+PPL_PROTO((ppl_const_PIP_Tree_Node_t pip_tree,
+           ppl_Artificial_Parameter_Sequence_const_iterator_t pit));
+
+/*! \relates ppl_PIP_Solution_Node_tag \brief
+  Writes to \p le a const pointer to the parametric expression of the values
+  of variable \p var in solution node \p pip_sol.
+
+  The linear expression assigned to \p le will only refer to
+  (problem or artificial) parameters.
+
+  \param pip_sol
+  The solution tree node.
+
+  \param var
+  The variable which is queried about.
+
+  \param le
+  The returned expression for variable \p var.
+
+  \return PPL_ERROR_INVALID_ARGUMENT
+  Returned if \p var is dimension-incompatible with \p *this
+  or if \p var is a problem parameter.
+*/
+int
+ppl_PIP_Solution_Node_get_parametric_values
+PPL_PROTO((ppl_const_PIP_Solution_Node_t pip_sol,
+           ppl_dimension_type var,
+           ppl_const_Linear_Expression_t* le));
+
+/*! \relates ppl_PIP_Decision_Node_tag \brief
+  Writes to \p pip_tree a const pointer to either the true branch
+  (if \p b is not zero) or the false branch (if \p b is zero) of \p pip_dec.
+*/
+int
+ppl_PIP_Decision_Node_get_child_node
+PPL_PROTO((ppl_const_PIP_Decision_Node_t pip_dec,
+           int b,
+           ppl_const_PIP_Tree_Node_t* pip_tree));
+
+/*! \relates ppl_Artificial_Parameter_tag \brief
+  Copies into \p le the linear expression in artificial parameter \p ap.
+*/
+int
+ppl_Artificial_Parameter_get_Linear_Expression
+PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
+           ppl_Linear_Expression_t le));
+
+/*! \relates ppl_Artificial_Parameter_tag \brief
+  Copies into \p n the coefficient of variable \p var in
+  the artificial parameter \p ap.
+*/
+int
+ppl_Artificial_Parameter_coefficient
+PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
+           ppl_dimension_type var,
+           ppl_Coefficient_t n));
+
+/*! \relates ppl_Artificial_Parameter_tag \brief
+  Copies into \p n the inhomogeneous term of the artificial
+  parameter \p ap.
+*/
+int
+ppl_Artificial_Parameter_get_inhomogeneous_term
+PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
+           ppl_Coefficient_t n));
+
+/*! \relates ppl_Artificial_Parameter_tag \brief
+  Copies into \p n the denominator in artificial parameter \p ap.
+*/
+int
+ppl_Artificial_Parameter_denominator
+PPL_PROTO((ppl_const_Artificial_Parameter_t ap,
+           ppl_Coefficient_t n));
+
+/*! \brief \name Constructors, Assignment and Destructor */
+/*@{*/
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Builds a new `const iterator' and writes a handle to it at address
+  \p papit.
+*/
+int
+ppl_new_Artificial_Parameter_Sequence_const_iterator
+PPL_PROTO((ppl_Artificial_Parameter_Sequence_const_iterator_t* papit));
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Builds a const iterator that is a copy of \p apit; writes a
+  handle for the newly created const iterator at address \p papit.
+*/
+int
+ppl_new_Artificial_Parameter_Sequence_const_iterator_from_Artificial_Parameter_Sequence_const_iterator
+PPL_PROTO((ppl_Artificial_Parameter_Sequence_const_iterator_t* papit,
+	   ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit));
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Assigns a copy of the const iterator \p src to \p dst.
+*/
+int
+ppl_assign_Artificial_Parameter_Sequence_const_iterator_from_Artificial_Parameter_Sequence_const_iterator
+PPL_PROTO((ppl_Artificial_Parameter_Sequence_const_iterator_t dst,
+	   ppl_const_Artificial_Parameter_Sequence_const_iterator_t src));
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Invalidates the handle \p apit: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Artificial_Parameter_Sequence_const_iterator
+PPL_PROTO((ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit));
+
+/*@}*/ /* Constructors, Assignment and Destructor */
+
+/*! \brief \name Dereferencing, Incrementing and Equality Testing */
+/*@{*/
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Dereference \p apit writing a const handle to the resulting
+  artificial parameter at address \p pap.
+*/
+int
+ppl_Artificial_Parameter_Sequence_const_iterator_dereference
+PPL_PROTO((ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit,
+	   ppl_const_Artificial_Parameter_t* pap));
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Increment \p apit so that it "points" to the next artificial parameter.
+*/
+int
+ppl_Artificial_Parameter_Sequence_const_iterator_increment
+PPL_PROTO((ppl_Artificial_Parameter_Sequence_const_iterator_t apit));
+
+/*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
+  Returns a positive integer if the iterators corresponding to \p x and
+  \p y are equal; returns 0 if they are different.
+*/
+int
+ppl_Artificial_Parameter_Sequence_const_iterator_equal_test
+PPL_PROTO((ppl_const_Artificial_Parameter_Sequence_const_iterator_t x,
+	   ppl_const_Artificial_Parameter_Sequence_const_iterator_t y));
+
+/*@}*/ /* Dereferencing, Incrementing and Equality Testing */
+
 PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(MIP_Problem)
+
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(PIP_Problem)
+
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(PIP_Tree_Node)
+
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(PIP_Solution_Node)
+
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(PIP_Decision_Node)
+
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Artificial_Parameter)
 
 #include "ppl_c_domains.h"
 

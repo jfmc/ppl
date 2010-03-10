@@ -1,5 +1,5 @@
 /* Prolog main program for the toy PPL/CIAO-Prolog predicate checker.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -87,17 +87,11 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_equals_Polyhedron/2,
 	ppl_Polyhedron_OK/1,
 	ppl_Polyhedron_add_constraint/2,
-	ppl_Polyhedron_add_constraint_and_minimize/2,
 	ppl_Polyhedron_add_generator/2,
-	ppl_Polyhedron_add_generator_and_minimize/2,
 	ppl_Polyhedron_add_constraints/2,
-	ppl_Polyhedron_add_constraints_and_minimize/2,
 	ppl_Polyhedron_add_generators/2,
-	ppl_Polyhedron_add_generators_and_minimize/2,
 	ppl_Polyhedron_intersection_assign/2,
-	ppl_Polyhedron_intersection_assign_and_minimize/2,
 	ppl_Polyhedron_poly_hull_assign/2,
-	ppl_Polyhedron_poly_hull_assign_and_minimize/2,
 	ppl_Polyhedron_poly_difference_assign/2,
 	ppl_Polyhedron_affine_image/4,
 	ppl_Polyhedron_affine_preimage/4,

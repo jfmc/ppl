@@ -1,5 +1,5 @@
 /* Grid class declaration.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -1549,6 +1549,12 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
     Variable objects contained in \p vars or with <CODE>*pcs</CODE>.
+
+    \warning
+    It is assumed that variables in \p Vars represent integers.  Thus,
+    where the extra cost is negligible, the integrality of these
+    variables is enforced; possibly causing a non-integral grid to
+    become empty.
   */
   void wrap_assign(const Variables_Set& vars,
                    Bounded_Integer_Type_Width w,
@@ -1575,6 +1581,10 @@ public:
   /*! \brief
     Possibly tightens \p *this by dropping some points with non-integer
     coordinates for the space dimensions corresponding to \p vars.
+
+    \param vars
+    Points with non-integer coordinates for these variables/space-dimensions
+    can be discarded.
 
     \param complexity
     The maximal complexity of any algorithms used.

@@ -1,5 +1,5 @@
 /* Implementation of the C interface: declarations.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -45,6 +45,12 @@ extern error_handler_type user_error_handler;
 void notify_error(enum ppl_enum_error_code code, const char* description);
 
 Relation_Symbol relation_symbol(enum ppl_enum_Constraint_Type t);
+
+Bounded_Integer_Type_Width
+bounded_integer_type_width(enum ppl_enum_Bounded_Integer_Type_Width w);
+
+Bounded_Integer_Type_Representation
+bounded_integer_type_representation(enum ppl_enum_Bounded_Integer_Type_Representation r);
 
 /*! \brief
   A class to wrap an array of fixed length into a partial function interface
@@ -104,11 +110,22 @@ public:
   int priority() const {
     return 0;
   }
-  timeout_exception() {
-  }
 };
 
 void reset_timeout();
+
+class deterministic_timeout_exception
+  : public Parma_Polyhedra_Library::Throwable {
+public:
+  void throw_me() const {
+    throw *this;
+  }
+  int priority() const {
+    return 0;
+  }
+};
+
+void reset_deterministic_timeout();
 
 } // namespace C
 
@@ -128,12 +145,18 @@ CATCH_STD_EXCEPTION(bad_alloc, PPL_ERROR_OUT_OF_MEMORY) \
 CATCH_STD_EXCEPTION(invalid_argument, PPL_ERROR_INVALID_ARGUMENT) \
 CATCH_STD_EXCEPTION(domain_error, PPL_ERROR_DOMAIN_ERROR) \
 CATCH_STD_EXCEPTION(length_error, PPL_ERROR_LENGTH_ERROR) \
+CATCH_STD_EXCEPTION(logic_error, PPL_ERROR_LOGIC_ERROR) \
 CATCH_STD_EXCEPTION(overflow_error, PPL_ARITHMETIC_OVERFLOW) \
 CATCH_STD_EXCEPTION(runtime_error, PPL_ERROR_INTERNAL_ERROR) \
 CATCH_STD_EXCEPTION(exception, PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION) \
 catch (timeout_exception&) { \
   reset_timeout(); \
   notify_error(PPL_TIMEOUT_EXCEPTION, "PPL timeout expired"); \
+  return PPL_TIMEOUT_EXCEPTION; \
+} \
+catch (deterministic_timeout_exception&) { \
+  reset_deterministic_timeout(); \
+  notify_error(PPL_TIMEOUT_EXCEPTION, "PPL deterministic timeout expired"); \
   return PPL_TIMEOUT_EXCEPTION; \
 } \
 catch (...) { \

@@ -4,7 +4,7 @@ dnl This m4 file defines the list of procedures
 dnl for the C interface; this includes:
 dnl - the list in the imported file and any C specific procedures.
 
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -43,5 +43,6 @@ m4_define(`m4_procedure_list',
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s +simple,
 ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@ +simple,
 ppl_@CLASS@_add_recycled_@CLASS_REPRESENT@s +simple,
+ppl_@CLASS@_wrap_assign +simple,
 )
 ')

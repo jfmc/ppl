@@ -1,5 +1,5 @@
 # Automake source file for the Parma Watchdog Library.
-# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
 #
@@ -30,6 +30,7 @@ Pending_Element.types.hh \
 Pending_List.types.hh \
 Time.types.hh \
 Watchdog.types.hh \
+Threshold_Watcher.types.hh \
 Handler.defs.hh \
 Handler.inlines.hh \
 Time.defs.hh \
@@ -44,15 +45,18 @@ Pending_Element.defs.hh \
 Pending_Element.inlines.hh \
 Pending_List.defs.hh \
 Pending_List.inlines.hh \
+Pending_List.templates.hh \
 Watchdog.defs.hh \
-Watchdog.inlines.hh
+Watchdog.inlines.hh \
+Threshold_Watcher.defs.hh \
+Threshold_Watcher.inlines.hh \
+Threshold_Watcher.templates.hh
 
 SOURCE_FILES = \
 $(INCLUDE_FILES) \
-Pending_Element.cc \
-Pending_List.cc \
 Time.cc \
-Watchdog.cc
+Watchdog.cc \
+Threshold_Watcher.cc
 
 EXTRA_DIST = \
 $(SOURCE_FILES) \
@@ -89,9 +93,9 @@ pwl_header.hh
 #	    0.6			0.10		    4:0:0
 #	    0.7			0.10.1		    4:0:0
 #	    0.7			0.10.2		    4:0:0
-#	    0.7			0.11		    4:0:0
+#	    0.8			0.11		    5:0:0
 
-LIBPWL_LT_CURRENT =  4
+LIBPWL_LT_CURRENT =  5
 LIBPWL_LT_REVISION = 0
 LIBPWL_LT_AGE =      0
 

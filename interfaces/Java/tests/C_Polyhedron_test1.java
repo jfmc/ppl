@@ -1,6 +1,6 @@
 /* Test C_Polyhedron Java test class of the Parma Polyhedra Library Java
    interface.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -39,7 +39,7 @@ static {
 }
 
     // This code tests the method `map_space_dimension(pfunc)'.
-    public static Boolean test01() {
+    public static boolean test01() {
 	Test_Partial_Function partial_function = new Test_Partial_Function();
 	partial_function.insert(0, 2);
 	partial_function.insert(2, 0);
@@ -50,22 +50,20 @@ static {
 	Linear_Expression_Variable le_b = new Linear_Expression_Variable(B);
 	Linear_Expression_Variable le_c = new Linear_Expression_Variable(C);
 	Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
-	Linear_Expression_Sum le_a_plus_b = new Linear_Expression_Sum(le_a,
-								      le_b);
-	Linear_Expression_Sum le_a_plus_c = new Linear_Expression_Sum(le_a,
-								      le_c);
-	Linear_Expression_Sum le_c_plus_b = new Linear_Expression_Sum(le_c,
-								      le_b);
-	Linear_Expression_Sum le_c_plus_a = new Linear_Expression_Sum(le_c,
-								      le_a);
+	Linear_Expression_Sum le_a_plus_b
+            = new Linear_Expression_Sum(le_a, le_b);
+	Linear_Expression_Sum le_a_plus_c
+            = new Linear_Expression_Sum(le_a, le_c);
+	Linear_Expression_Sum le_c_plus_b
+            = new Linear_Expression_Sum(le_c, le_b);
+	Linear_Expression_Sum le_c_plus_a
+            = new Linear_Expression_Sum(le_c, le_a);
 	Linear_Expression_Coefficient le_two
 	    = new Linear_Expression_Coefficient(new Coefficient(2));
 	Linear_Expression_Times le_2c
-	    = new Linear_Expression_Times(le_c,
-					  new Coefficient(2));
+	    = new Linear_Expression_Times(le_c, new Coefficient(2));
 	Linear_Expression_Times le_2a
-	    = new Linear_Expression_Times(le_a,
-					  new Coefficient(2));
+	    = new Linear_Expression_Times(le_a, new Coefficient(2));
 
 	Generator_System gs = new Generator_System();
 	gs.add(Generator.point(le_2c, new Coefficient(1)));
@@ -81,11 +79,11 @@ static {
 	known_gs.add(Generator.ray(le_c_plus_a));
 
 	C_Polyhedron known_result = new C_Polyhedron(known_gs);
-	return new Boolean(known_result.equals(poly1));
+	return known_result.equals(poly1);
     }
 
 
-    public static Boolean test02() {
+    public static boolean test02() {
 	// Test if `minimized_constraints' returns an empty Constraint_System
 	// if the Polyhedron is built from universe with a dimension greater
 	// than zero.
@@ -94,7 +92,7 @@ static {
 	Variable Z = new Variable(2);
 	C_Polyhedron ph = new C_Polyhedron(3, Degenerate_Element.UNIVERSE);
 	Constraint_System cs = ph.minimized_constraints();
-	return new Boolean(cs.isEmpty());
+	return cs.isEmpty();
     }
 
     public static void main(String[] args) {

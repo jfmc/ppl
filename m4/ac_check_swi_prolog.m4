@@ -1,5 +1,5 @@
 dnl A function to check for the existence and usability of SWI-Prolog.
-dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -22,16 +22,24 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 AC_DEFUN([AC_CHECK_SWI_PROLOG],
 [
-dnl By default, SWI-Prolog is installed as `pl', though some administrators
-dnl call it `swipl' or `swi-prolog'.  In particular, on Mac OS X `pl' is
-dnl the name of another program.
-AC_PATH_PROG(swi_prolog, swi-prolog)
+dnl By default, old versions of SWI-Prolog were installed as `pl',
+dnl though some administrators called it `swipl' or `swi-prolog'.
+dnl In particular, on Mac OS X `pl' is the name of another program.
+dnl On Windows, the console version of SWI-Prolog was called `plcon'.
+dnl Since SWI-Prolog 5.9.9, by default and on all systems, the
+dnl interpreter is called `swipl' and `plld' is called `swipl-ld'
+
+AC_PATH_PROG(swi_prolog, swipl)
 if test -z $swi_prolog
 then
-  AC_PATH_PROG(swi_prolog, swipl)
+  AC_PATH_PROG(swi_prolog, swi-prolog)
   if test -z $swi_prolog
   then
     AC_PATH_PROG(swi_prolog, pl)
+    if test -z $swi_prolog
+    then
+      AC_PATH_PROG(swi_prolog, plcon)
+    fi
   fi
 fi
 if test x$swi_prolog != x
@@ -43,6 +51,12 @@ then
   swi_prolog_lib=`$swi_prolog -dump-runtime-variables | grep PLLIB= | sed 's/PLLIB="\(.*\)";/\1/'`
 
   dnl Additional version checks could be inserted here, if necessary.
+
+  AC_PATH_PROG(swi_prolog_ld, swipl-ld)
+  if test -z $swi_prolog_ld
+  then
+    AC_PATH_PROG(swi_prolog_ld, plld)
+  fi
 
   # In Fedora, SWI-Prolog.h is installed only in /usr/include/pl, which,
   # IMHO, is a bug (https://bugzilla.redhat.com/show_bug.cgi?id=471071).
@@ -74,7 +88,9 @@ main() {
   AC_LANG_POP(C++)
   CPPFLAGS="$ac_save_CPPFLAGS"
   SWI_PROLOG="$swi_prolog"
+  SWI_PROLOG_LD="$swi_prolog_ld"
   AC_SUBST(SWI_PROLOG)
+  AC_SUBST(SWI_PROLOG_LD)
   AC_SUBST(SWI_PROLOG_INCLUDE_OPTIONS)
   AC_SUBST(SWI_PROLOG_LD_OPTIONS)
 fi

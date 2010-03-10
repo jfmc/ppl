@@ -1,5 +1,5 @@
 /* Watchdog and associated classes' implementation (non-inline functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
@@ -24,6 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Watchdog.defs.hh"
 
+namespace PWL = Parma_Watchdog_Library;
+
+#if PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
+
 #include <csignal>
 #include <iostream>
 #include <stdexcept>
@@ -43,16 +47,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 // Cygwin only supports ITIMER_REAL.
+// Apparently GNU Hurd also only supports ITIMER_REAL
+// (see http://www.cs.unipr.it/pipermail/ppl-devel/2010-March/016072.html).
 // Profiling does not work on programs that use the ITIMER_PROF timer.
-#if defined(__CYGWIN__) || defined(PWL_PROFILING)
+#if defined(__CYGWIN__) || defined(__gnu_hurd__) || defined(PWL_PROFILING)
 #define THE_TIMER  ITIMER_REAL
 #define THE_SIGNAL SIGALRM
 #else
 #define THE_TIMER  ITIMER_PROF
 #define THE_SIGNAL SIGPROF
 #endif
-
-namespace PWL = Parma_Watchdog_Library;
 
 using std::cerr;
 using std::endl;
@@ -70,7 +74,7 @@ PWL::Time PWL::Watchdog::last_time_requested;
 PWL::Time PWL::Watchdog::time_so_far;
 
 // The ordered queue of pending watchdog events.
-PWL::Pending_List PWL::Watchdog::pending;
+PWL::Watchdog::WD_Pending_List PWL::Watchdog::pending;
 
 // Whether the alarm clock is running.
 volatile bool PWL::Watchdog::alarm_clock_running = false;
@@ -82,7 +86,7 @@ namespace {
 
 void
 throw_syscall_error(const char* syscall_name) {
-  throw std::runtime_error(std::string(syscall_name) + strerror(errno));
+  throw std::runtime_error(std::string(syscall_name) + ": " + strerror(errno));
 }
 
 void
@@ -138,7 +142,7 @@ PWL::Watchdog::handle_timeout(int) {
   else {
     time_so_far += last_time_requested;
     if (!pending.empty()) {
-      Pending_List::Iterator i = pending.begin();
+      WD_Pending_List::Iterator i = pending.begin();
       do {
 	i->handler().act();
 	i->expired_flag() = true;
@@ -159,12 +163,12 @@ PWL::PWL_handle_timeout(int signum) {
   PWL::Watchdog::handle_timeout(signum);
 }
 
-PWL::Pending_List::Iterator
-PWL::Watchdog::new_watchdog_event(int units,
+PWL::Watchdog::WD_Pending_List::Iterator
+PWL::Watchdog::new_watchdog_event(unsigned int units,
 				  const Handler& handler,
 				  bool& expired_flag) {
   assert(units > 0);
-  Pending_List::Iterator position;
+  WD_Pending_List::Iterator position;
   Time deadline(units);
   if (!alarm_clock_running) {
     position = pending.insert(deadline, handler, expired_flag);
@@ -191,10 +195,10 @@ PWL::Watchdog::new_watchdog_event(int units,
 }
 
 void
-PWL::Watchdog::remove_watchdog_event(Pending_List::Iterator position) {
+PWL::Watchdog::remove_watchdog_event(WD_Pending_List::Iterator position) {
   assert(!pending.empty());
   if (position == pending.begin()) {
-    Pending_List::Iterator next = position;
+    WD_Pending_List::Iterator next = position;
     ++next;
     if (next != pending.end()) {
       Time first_deadline(position->deadline());
@@ -218,14 +222,7 @@ PWL::Watchdog::remove_watchdog_event(Pending_List::Iterator position) {
   pending.erase(position);
 }
 
-PWL::Watchdog::~Watchdog() {
-  if (!expired) {
-    in_critical_section = true;
-    remove_watchdog_event(pending_position);
-    in_critical_section = false;
-  }
-  delete &handler;
-}
+PWL::Time PWL::Watchdog::reschedule_time(1);
 
 void
 PWL::Watchdog::initialize() {
@@ -247,6 +244,6 @@ void
 PWL::Watchdog::finalize() {
 }
 
-PWL::Time PWL::Watchdog::reschedule_time(1);
-
 unsigned int PWL::Init::count = 0;
+
+#endif // PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION

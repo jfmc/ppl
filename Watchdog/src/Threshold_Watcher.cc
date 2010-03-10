@@ -1,5 +1,6 @@
-/* Pending_Element class implementation (non-inline functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Threshold_Watcher and associated classes' implementation
+   (non-inline functions).
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
@@ -22,11 +23,5 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <pwl-config.h>
 
-#include "Pending_Element.defs.hh"
+#include "Threshold_Watcher.defs.hh"
 
-namespace PWL = Parma_Watchdog_Library;
-
-bool
-PWL::Pending_Element::OK() const {
-  return d.OK();
-}

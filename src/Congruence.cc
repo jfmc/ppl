@@ -1,5 +1,5 @@
 /* Congruence class implementation (non-inline functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence.defs.hh"
 
 #include "Variable.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -53,7 +53,7 @@ PPL::Congruence::Congruence(const Constraint& c,
 	   c),
 	sz,
 	capacity) {
-  assert(sz > 1);
+  PPL_ASSERT(sz > 1);
   (*this)[sz-1] = 0;
 }
 
@@ -272,22 +272,22 @@ const PPL::Congruence* PPL::Congruence::zero_dim_integrality_p = 0;
 
 void
 PPL::Congruence::initialize() {
-  assert(zero_dim_false_p == 0);
+  PPL_ASSERT(zero_dim_false_p == 0);
   zero_dim_false_p
     = new Congruence((Linear_Expression::zero() %= Coefficient(-1)) / 0);
 
-  assert(zero_dim_integrality_p == 0);
+  PPL_ASSERT(zero_dim_integrality_p == 0);
   zero_dim_integrality_p
     = new Congruence(Linear_Expression::zero() %= Coefficient(-1));
 }
 
 void
 PPL::Congruence::finalize() {
-  assert(zero_dim_false_p != 0);
+  PPL_ASSERT(zero_dim_false_p != 0);
   delete zero_dim_false_p;
   zero_dim_false_p = 0;
 
-  assert(zero_dim_integrality_p != 0);
+  PPL_ASSERT(zero_dim_integrality_p != 0);
   delete zero_dim_integrality_p;
   zero_dim_integrality_p = 0;
 }

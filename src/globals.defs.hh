@@ -1,5 +1,5 @@
 /* Declarations of global objects.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -82,7 +82,96 @@ swap(T&, T&) {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 dimension_type
 compute_capacity(dimension_type requested_size,
-		 dimension_type maximum_size);
+                 dimension_type maximum_size);
+
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Traits class for the deterministic timeout mechanism.
+/*! \ingroup PPL_CXX_interface
+  This abstract base class should be instantiated by those users
+  willing to provide a polynomial upper bound to the time spent
+  by any invocation of a library operator.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+struct Weightwatch_Traits {
+  //! The type used to specify thresholds for computational weight.
+  typedef unsigned long long Threshold;
+
+  //! The type used to specify increments of computational weight.
+  typedef unsigned long long Delta;
+
+  //! Returns the current computational weight.
+  static const Threshold& get();
+
+  //! Compares the two weights \p a and \p b.
+  static bool less_than(const Threshold& a, const Threshold& b);
+
+  //! Sets \p threshold to be \p delta units bigger than the current weigth.
+  static void from_delta(Threshold& threshold, const Delta& delta);
+
+  //! The current computational weight.
+  static Threshold weight;
+
+  /*! \brief
+    A pointer to the function that has to be called when checking
+    the reaching of thresholds.
+
+    The pointer can be null if no thresholds are set.
+  */
+  static void (*check_function)(void);
+};
+
+
+#ifndef NDEBUG
+namespace Implementation {
+
+//! Non zero during evaluation of PPL_ASSERT expression.
+extern unsigned int in_assert;
+
+} // namespace Implementation
+#endif
+
+#ifndef PPL_PROFILE_ADD_WEIGHT
+#define PPL_PROFILE_ADD_WEIGHT 0
+#endif
+
+#if defined(NDEBUG)
+#if PPL_PROFILE_ADD_WEIGHT
+#define WEIGHT_BEGIN() Weight_Profiler::begin()
+#define WEIGHT_ADD(delta)                                     \
+  do {                                                        \
+    static Weight_Profiler wp__(__FILE__, __LINE__, delta);   \
+    wp__.end();                                               \
+  } while(0)
+#define WEIGHT_ADD_MUL(delta, factor)                                   \
+  do {                                                                  \
+    static Weight_Profiler wp__(__FILE__, __LINE__, delta);             \
+    wp__.end(factor);                                                   \
+  } while(0)
+#else
+#define WEIGHT_BEGIN()
+#define WEIGHT_ADD(delta)                       \
+  do {                                          \
+    Weightwatch_Traits::weight += delta;        \
+  } while(0)
+#define WEIGHT_ADD_MUL(delta, factor)                   \
+  do {                                                  \
+    Weightwatch_Traits::weight += delta * factor;       \
+  } while(0)
+#endif
+#else
+#define WEIGHT_BEGIN()
+#define WEIGHT_ADD(delta)                       \
+  do {                                          \
+    if (!Implementation::in_assert)             \
+      Weightwatch_Traits::weight += delta;      \
+  } while(0)
+#define WEIGHT_ADD_MUL(delta, factor)                   \
+  do {                                                  \
+    if (!Implementation::in_assert)                     \
+      Weightwatch_Traits::weight += delta * factor;     \
+  } while(0)
+#endif
 
 //! User objects the PPL can throw.
 /*! \ingroup PPL_CXX_interface
@@ -148,11 +237,11 @@ struct Recycle_Input {
 // Turn the expansion of s into a string: PPL_XSTR(x) => "x expanded".
 #define PPL_XSTR(s) PPL_STR(s)
 
-#define PPL_OUTPUT_DECLARATIONS						\
+#define PPL_OUTPUT_DECLARATIONS                                         \
   /*! \brief Writes to \c std::cerr an ASCII representation of \p *this. */ \
-  void ascii_dump() const;						\
-  /*! \brief Writes to \p s an ASCII representation of \p *this. */	\
-  void ascii_dump(std::ostream& s) const;				\
+  void ascii_dump() const;                                              \
+  /*! \brief Writes to \p s an ASCII representation of \p *this. */     \
+  void ascii_dump(std::ostream& s) const;                               \
   /*! \brief Prints \p *this to \c std::cerr using \c operator<<. */	\
   void print() const;
 
@@ -164,7 +253,7 @@ struct Recycle_Input {
 								\
   void								\
   Parma_Polyhedra_Library::class_name::print() const {		\
-    using namespace IO_Operators;				\
+    using IO_Operators::operator<<;				\
     std::cerr << *this;						\
   }
 
@@ -190,7 +279,7 @@ struct Recycle_Input {
   template <typename type_symbol>					\
   void									\
   class_prefix::print() const {						\
-    using namespace IO_Operators;					\
+    using IO_Operators::operator<<;					\
     std::cerr << *this;							\
   }
 
@@ -206,7 +295,7 @@ struct Recycle_Input {
   template <typename type_symbol1, typename type_symbol2>		\
   void									\
   class_prefix<type_symbol1, type_symbol2>::print() const {		\
-    using namespace IO_Operators;					\
+    using IO_Operators::operator<<;					\
     std::cerr << *this;							\
   }
 
@@ -227,7 +316,7 @@ struct Recycle_Input {
     void								\
     class_prefix<type_symbol1, type_symbol2, type_symbol3>::print()	\
       const {								\
-      using namespace IO_Operators;					\
+      using IO_Operators::operator<<;					\
       std::cerr << *this;						\
     }
 
@@ -274,16 +363,16 @@ struct Constant_ : public TConstant<T, v> {
 template <typename T, long long v, bool prefer_signed>
 struct Constant_<T, v, prefer_signed,
 		 typename Enable_If<(Fit<typename C_Integer<T>::smaller_signed_type, v>::value
-				     && (prefer_signed ||
-					 !Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value))>::type>
+				     && (prefer_signed
+                                         || !Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value))>::type>
   : public Constant_<typename C_Integer<T>::smaller_signed_type, v, prefer_signed> {
 };
 
 template <typename T, long long v, bool prefer_signed>
 struct Constant_<T, v, prefer_signed,
 		 typename Enable_If<(Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value
-				     && (!prefer_signed ||
-					 !Fit<typename C_Integer<T>::smaller_signed_type, v>::value))>::type>
+				     && (!prefer_signed
+                                         || !Fit<typename C_Integer<T>::smaller_signed_type, v>::value))>::type>
   : public Constant_<typename C_Integer<T>::smaller_unsigned_type, v, prefer_signed> {
 };
 
@@ -375,6 +464,10 @@ FOK(mpz_class)
 FOK(mpq_class)
 
 } // namespace Parma_Polyhedra_Library
+
+#if defined(NDEBUG) && PPL_PROFILE_ADD_WEIGHT
+#include "Weight_Profiler.defs.hh"
+#endif
 
 #include "globals.inlines.hh"
 

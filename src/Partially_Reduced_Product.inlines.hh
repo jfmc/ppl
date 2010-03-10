@@ -1,5 +1,5 @@
 /* Partially_Reduced_Product class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -179,7 +179,7 @@ Partially_Reduced_Product<D1, D2, R>::total_memory_in_bytes() const {
 template <typename D1, typename D2, typename R>
 inline dimension_type
 Partially_Reduced_Product<D1, D2, R>::space_dimension() const {
-  assert(d1.space_dimension() == d2.space_dimension());
+  PPL_ASSERT(d1.space_dimension() == d2.space_dimension());
   return d1.space_dimension();
 }
 

@@ -1,6 +1,6 @@
 /* Test Polyhedron::maximize(const Linear_Expression&, ...)
    and Polyhedron::minimize(const Linear_Expression&, ...).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -132,7 +132,6 @@ test02() {
 
 bool
 test03() {
-
   C_Polyhedron ph(0);
 
   print_constraints(ph, "*** ph ***");
@@ -172,10 +171,34 @@ test03() {
   return ok;
 }
 
+bool
+test04() {
+  C_Polyhedron ph(2, EMPTY);
+
+  print_constraints(ph, "*** ph ***");
+
+  Coefficient num = 0;
+  Coefficient den = 0;
+  bool included = false;
+  Generator g(point());
+  Linear_Expression LE;
+  bool ok = !ph.maximize(LE, num, den, included, g)
+    && num == 0 && den == 0 && !included
+    && g.is_point()
+    && g.divisor() == 1;
+  ok = ok && !ph.minimize(LE, num, den, included, g)
+    && num == 0 && den == 0 && !included
+    && g.is_point()
+    && g.divisor() == 1;
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST_F8(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN

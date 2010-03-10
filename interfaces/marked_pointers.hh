@@ -1,6 +1,6 @@
 /* Implementation of marked pointers for use in some PPL non-templatic
    language interfaces.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,8 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_marked_pointers_hh 1
 
 namespace Parma_Polyhedra_Library {
-
-#include <stdint.h>
 
 #define PPL_MARKED_POINTERS_MASK ((uintptr_t) 1)
 

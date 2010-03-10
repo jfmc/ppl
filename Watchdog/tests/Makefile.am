@@ -1,5 +1,5 @@
 # Automake source file for the Parma Watchdog Library.
-# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
 #
@@ -47,8 +47,7 @@ pwl_test.cc
 
 LDADD = \
 ../src/libpwl.la \
-libpwl_tests.a \
--lm
+libpwl_tests.a
 
 noinst_HEADERS = \
 pwl_test.hh
@@ -56,7 +55,7 @@ pwl_test.hh
 EXTRA_DIST = valgrind_suppressions
 
 TESTS = \
-simple1
+watchdog1
 
 XFAIL_TESTS =
 
@@ -64,7 +63,7 @@ XFAIL_TESTS =
 # Sources for the tests
 #
 
-simple1_SOURCES = simple1.cc
+watchdog1_SOURCES = watchdog1.cc
 
 check_PROGRAMS = $(TESTS)
 

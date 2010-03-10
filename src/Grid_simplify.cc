@@ -1,5 +1,5 @@
 /* Grid class implementation: simplify().
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,7 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
-#include <cassert>
+#include "assert.hh"
 
 #include "Grid.defs.hh"
 
@@ -58,7 +58,7 @@ Grid::reduce_equality_with_equality(Congruence& row,
 				    const Congruence& pivot,
 				    const dimension_type column) {
   // Assume two equalities.
-  assert(row.modulus() == 0 && pivot.modulus() == 0);
+  PPL_ASSERT(row.modulus() == 0 && pivot.modulus() == 0);
 
   const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
@@ -106,8 +106,8 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   // then add to it a (possibly negative) multiple of row such that
   // the result in pivot[column] is the smallest possible positive
   // integer.
-  assert(pivot.size() > 0);
-  assert(row.size() > 0);
+  PPL_ASSERT(pivot.size() > 0);
+  PPL_ASSERT(row.size() > 0);
   row_column = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(old_pivot_col);
   for (dimension_type col = start; col < end; ++col) {
@@ -184,7 +184,7 @@ Grid::reduce_congruence_with_equality(Congruence& row,
 				      Congruence_System& sys) {
   // Very similar to reduce_parameter_with_line above.  Any change
   // here may be needed there too.
-  assert(row.modulus() > 0 && pivot.modulus() == 0);
+  PPL_ASSERT(row.modulus() > 0 && pivot.modulus() == 0);
 
   const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
@@ -248,9 +248,9 @@ Grid::rows_are_zero(M& system, dimension_type first,
 
 void
 Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
-  assert(!sys.has_no_rows());
+  PPL_ASSERT(!sys.has_no_rows());
   // For reduce_pc_with_pc.
-  assert(sys.num_columns() > 0);
+  PPL_ASSERT(sys.num_columns() > 0);
 
   // Changes here may also be required in the congruence version
   // below.
@@ -299,17 +299,17 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 	  if (pivot_is_line)
 	    reduce_line_with_line(row, pivot, dim);
 	  else {
-	    assert(pivot.is_parameter_or_point());
+	    PPL_ASSERT(pivot.is_parameter_or_point());
 	    std::swap(row, pivot);
 	    pivot_is_line = true;
 	    reduce_parameter_with_line(row, pivot, dim, sys);
 	  }
 	else {
-	  assert(row.is_parameter_or_point());
+	  PPL_ASSERT(row.is_parameter_or_point());
 	  if (pivot_is_line)
 	    reduce_parameter_with_line(row, pivot, dim, sys);
 	  else {
-	    assert(pivot.is_parameter_or_point());
+	    PPL_ASSERT(pivot.is_parameter_or_point());
 	    reduce_pc_with_pc(row, pivot, dim, dim + 1, num_columns);
 	  }
 	}
@@ -318,7 +318,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       if (pivot_is_line)
 	dim_kinds[dim] = LINE;
       else {
-	assert(pivot.is_parameter_or_point());
+	PPL_ASSERT(pivot.is_parameter_or_point());
 	dim_kinds[dim] = PARAMETER;
       }
 
@@ -346,7 +346,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
        sys.num_rows() - 1,
        // row size
        sys.num_columns() - 1);
-    assert(ret == true);
+    PPL_ASSERT(ret == true);
 #endif
     sys.erase_to_end(pivot_index);
   }
@@ -368,12 +368,12 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       break;
     }
 
-  assert(sys.OK());
+  PPL_ASSERT(sys.OK());
 }
 
 bool
 Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
-  assert(sys.num_columns() > 2);
+  PPL_ASSERT(sys.num_columns() > 2);
 
   // Changes here may also be required in the generator version above.
 
@@ -426,17 +426,17 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 	  if (pivot_is_equality)
 	    reduce_equality_with_equality(row, pivot, dim);
 	  else {
-	    assert(pivot.is_proper_congruence());
+	    PPL_ASSERT(pivot.is_proper_congruence());
 	    std::swap(row, pivot);
 	    pivot_is_equality = true;
 	    reduce_congruence_with_equality(row, pivot, dim, sys);
 	  }
 	else {
-	  assert(row.is_proper_congruence());
+	  PPL_ASSERT(row.is_proper_congruence());
 	  if (pivot_is_equality)
 	    reduce_congruence_with_equality(row, pivot, dim, sys);
 	  else {
-	    assert(pivot.is_proper_congruence());
+	    PPL_ASSERT(pivot.is_proper_congruence());
 	    reduce_pc_with_pc(row, pivot, dim, 0, dim);
 	  }
 	}
@@ -445,7 +445,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       if (pivot_is_equality)
 	dim_kinds[dim] = EQUALITY;
       else {
-	assert(pivot.is_proper_congruence());
+	PPL_ASSERT(pivot.is_proper_congruence());
 	dim_kinds[dim] = PROPER_CONGRUENCE;
       }
 
@@ -486,7 +486,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       std::swap(sys.rows[0], sys.rows.back());
       sys.erase_to_end(1);
 
-      assert(sys.OK());
+      PPL_ASSERT(sys.OK());
       return true;
     }
   }
@@ -504,7 +504,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       cg[num_columns] = 1;
       cg[0] = 1;
 
-      assert(sys.OK());
+      PPL_ASSERT(sys.OK());
       return false;
     }
     sys[0][num_columns] = 1;
@@ -524,12 +524,12 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
        num_rows - 1,
        // row size
        num_columns);
-    assert(ret == true);
+    PPL_ASSERT(ret == true);
 #endif
     sys.erase_to_end(reduced_num_rows);
   }
 
-  assert(sys.num_rows() == reduced_num_rows);
+  PPL_ASSERT(sys.num_rows() == reduced_num_rows);
 
   // Ensure that the last row is the integrality congruence.
   const dimension_type mod_index = num_columns;
@@ -565,7 +565,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   reduce_reduced<Congruence_System, Congruence>
     (sys, 0, reduced_num_rows - 1, 0, 0, dim_kinds, false);
 
-  assert(sys.OK());
+  PPL_ASSERT(sys.OK());
   return false;
 }
 

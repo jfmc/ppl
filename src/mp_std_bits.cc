@@ -1,7 +1,7 @@
 /* Definitions of specializations of std::numeric_limits objects for
    multi-precision types.  This will become obsolete when GMP and MPFR
    will provide the specializations by themselves.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

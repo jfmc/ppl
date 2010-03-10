@@ -1,5 +1,5 @@
 /* Generator_System class implementation (non-inline functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Constraint.defs.hh"
 #include "Scalar_Products.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -38,7 +38,7 @@ bool
 PPL::Generator_System::
 adjust_topology_and_space_dimension(const Topology new_topology,
 				    const dimension_type new_space_dim) {
-  assert(space_dimension() <= new_space_dim);
+  PPL_ASSERT(space_dimension() <= new_space_dim);
 
   const dimension_type old_space_dim = space_dimension();
   const Topology old_topology = topology();
@@ -81,7 +81,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	// Here topologies agree.
 	if (cols_to_be_added > 0)
 	  add_zero_columns(cols_to_be_added);
-    assert(OK());
+    PPL_ASSERT(OK());
     return true;
   }
 
@@ -117,7 +117,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	}
 	// We may have identified some closure points.
 	if (num_closure_points > 0) {
-	  assert(num_closure_points == num_rows() - gs_end);
+	  PPL_ASSERT(num_closure_points == num_rows() - gs_end);
 	  erase_to_end(gs_end);
 	}
 	// Remove the epsilon column, re-normalize and, after that,
@@ -174,7 +174,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
       }
     }
   // We successfully adjusted dimensions and topology.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -184,7 +184,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 // perform insertions keeping its sortedness.
 void
 PPL::Generator_System::add_corresponding_closure_points() {
-  assert(!is_necessarily_closed());
+  PPL_ASSERT(!is_necessarily_closed());
   // NOTE: we always add (pending) rows at the end of the generator system.
   // Updating `index_first_pending', if needed, is done by the caller.
   Generator_System& gs = *this;
@@ -201,7 +201,7 @@ PPL::Generator_System::add_corresponding_closure_points() {
       gs.add_pending_row(cp);
     }
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 
@@ -211,7 +211,7 @@ PPL::Generator_System::add_corresponding_closure_points() {
 // perform insertions keeping its sortedness.
 void
 PPL::Generator_System::add_corresponding_points() {
-  assert(!is_necessarily_closed());
+  PPL_ASSERT(!is_necessarily_closed());
   // NOTE: we always add (pending) rows at the end of the generator system.
   // Updating `index_first_pending', if needed, is done by the caller.
   Generator_System& gs = *this;
@@ -227,7 +227,7 @@ PPL::Generator_System::add_corresponding_points() {
       gs.add_pending_row(p);
     }
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 bool
@@ -282,7 +282,7 @@ void
 PPL::Generator_System::insert(const Generator& g) {
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending generator.
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
   if (topology() == g.topology())
     Linear_System::insert(g);
   else
@@ -322,7 +322,7 @@ PPL::Generator_System::insert(const Generator& g) {
       // Inserting the new generator.
       Linear_System::insert(tmp_g);
     }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -366,14 +366,14 @@ PPL::Generator_System::insert_pending(const Generator& g) {
       // Inserting the new generator.
       Linear_System::insert_pending(tmp_g);
     }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 PPL::dimension_type
 PPL::Generator_System::num_lines() const {
   // We are sure that this method is applied only to a matrix
   // that does not contain pending rows.
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
   const Generator_System& gs = *this;
   dimension_type n = 0;
   // If the Linear_System happens to be sorted, take advantage of the fact
@@ -394,7 +394,7 @@ PPL::dimension_type
 PPL::Generator_System::num_rays() const {
   // We are sure that this method is applied only to a matrix
   // that does not contain pending rows.
-  assert(num_pending_rows() == 0);
+  PPL_ASSERT(num_pending_rows() == 0);
   const Generator_System& gs = *this;
   dimension_type n = 0;
   // If the Linear_System happens to be sorted, take advantage of the fact
@@ -417,11 +417,11 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
   // Note: this method is not public and it is the responsibility
   // of the caller to actually test for dimension compatibility.
   // We simply assert it.
-  assert(space_dimension() >= c.space_dimension());
+  PPL_ASSERT(space_dimension() >= c.space_dimension());
   // Number of generators: the case of an empty polyhedron
   // has already been filtered out by the caller.
   const dimension_type n_rows = num_rows();
-  assert(n_rows > 0);
+  PPL_ASSERT(n_rows > 0);
   const Generator_System& gs = *this;
 
   // `result' will keep the relation holding between the generators
@@ -722,7 +722,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 
 bool
 PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
-  assert(c.space_dimension() <= space_dimension());
+  PPL_ASSERT(c.space_dimension() <= space_dimension());
 
   // Setting `sps' to the appropriate scalar product sign operator.
   // This also avoids problems when having _legal_ topology mismatches
@@ -791,9 +791,9 @@ PPL::Generator_System
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).
-  assert(v > 0 && v <= x.space_dimension());
-  assert(expr.space_dimension() <= x.space_dimension());
-  assert(denominator > 0);
+  PPL_ASSERT(v > 0 && v <= x.space_dimension());
+  PPL_ASSERT(expr.space_dimension() <= x.space_dimension());
+  PPL_ASSERT(denominator > 0);
 
   const dimension_type n_columns = x.num_columns();
   const dimension_type n_rows = x.num_rows();
@@ -941,7 +941,7 @@ PPL::Generator_System::ascii_load(std::istream& s) {
   }
 
   // Check invariants.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -973,7 +973,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
     // of the matrix, find the invalid rows in the pending
     // part and then erase the invalid rows that now
     // are in the bottom part of the matrix.
-    assert(num_pending_rows() > 0);
+    PPL_ASSERT(num_pending_rows() > 0);
     dimension_type first_pending = first_pending_row();
     for (dimension_type i = first_pending; i-- > 0; ) {
       Generator& g = gs[i];
@@ -1007,14 +1007,14 @@ const PPL::Generator_System* PPL::Generator_System::zero_dim_univ_p = 0;
 
 void
 PPL::Generator_System::initialize() {
-  assert(zero_dim_univ_p == 0);
+  PPL_ASSERT(zero_dim_univ_p == 0);
   zero_dim_univ_p
     = new Generator_System(Generator::zero_dim_point());
 }
 
 void
 PPL::Generator_System::finalize() {
-  assert(zero_dim_univ_p != 0);
+  PPL_ASSERT(zero_dim_univ_p != 0);
   delete zero_dim_univ_p;
   zero_dim_univ_p = 0;
 }

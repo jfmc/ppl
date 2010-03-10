@@ -1,5 +1,5 @@
 /* Pending_Element class declaration.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Pending_Element.types.hh"
 #include "Doubly_Linked_Object.defs.hh"
-#include "Time.defs.hh"
 #include "Handler.types.hh"
 
 //! A class for pending watchdog events with embedded links.
@@ -35,20 +34,21 @@ site: http://www.cs.unipr.it/ppl/ . */
   expiration, and a Boolean flag that indicates whether the event has already
   expired or not.
 */
+template <typename Threshold>
 class Parma_Watchdog_Library::Pending_Element : public Doubly_Linked_Object {
 public:
   //! Constructs an element with the given attributes.
-  Pending_Element(const Time& deadline,
+  Pending_Element(const Threshold& deadline,
 		  const Handler& handler,
 		  bool& expired_flag);
 
   //! Modifies \p *this so that it has the given attributes.
-  void assign(const Time& deadline,
+  void assign(const Threshold& deadline,
 	      const Handler& handler,
 	      bool& expired_flag);
 
   //! Returns the deadline of the event.
-  const Time& deadline() const;
+  const Threshold& deadline() const;
 
   //! Returns the handler associated to the event.
   const Handler& handler() const;
@@ -61,7 +61,7 @@ public:
 
 private:
   //! The deadline of the event.
-  Time d;
+  Threshold d;
 
   //! A pointer to the handler associated to the event.
   const Handler* p_h;

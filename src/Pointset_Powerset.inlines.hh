@@ -1,5 +1,5 @@
 /* Pointset_Powerset class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -51,25 +51,25 @@ Pointset_Powerset<PSET>::max_space_dimension() {
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(dimension_type num_dimensions,
-					 Degenerate_Element kind)
+					   Degenerate_Element kind)
   : Base(), space_dim(num_dimensions) {
   Pointset_Powerset& x = *this;
   if (kind == UNIVERSE)
     x.sequence.push_back(Determinate<PSET>(PSET(num_dimensions, kind)));
-  assert(x.OK());
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(const Pointset_Powerset& y,
-                                         Complexity_Class)
+					   Complexity_Class)
   : Base(y), space_dim(y.space_dim) {
 }
 
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(const C_Polyhedron& ph,
-                                         Complexity_Class complexity)
+					   Complexity_Class complexity)
   : Base(), space_dim(ph.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (complexity == ANY_COMPLEXITY) {
@@ -80,13 +80,13 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const C_Polyhedron& ph,
     x.reduced = false;
   x.sequence.push_back(Determinate<PSET>(PSET(ph, complexity)));
   x.reduced = false;
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(const NNC_Polyhedron& ph,
-                                         Complexity_Class complexity)
+					   Complexity_Class complexity)
   : Base(), space_dim(ph.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (complexity == ANY_COMPLEXITY) {
@@ -96,19 +96,19 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const NNC_Polyhedron& ph,
   else
     x.reduced = false;
   x.sequence.push_back(Determinate<PSET>(PSET(ph, complexity)));
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(const Grid& gr,
-                                         Complexity_Class)
+					   Complexity_Class)
   : Base(), space_dim(gr.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!gr.is_empty()) {
     x.sequence.push_back(Determinate<PSET>(PSET(gr)));
   }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename PSET>
@@ -127,54 +127,54 @@ Pointset_Powerset<PSET>
     x.reduced = false;
   x.sequence.push_back(Determinate<PSET>(PSET(prp, complexity)));
   x.reduced = false;
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename PSET>
 template <typename Interval>
 Pointset_Powerset<PSET>::Pointset_Powerset(const Box<Interval>& box,
-                                         Complexity_Class)
+					   Complexity_Class)
   : Base(), space_dim(box.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!box.is_empty())
     x.sequence.push_back(Determinate<PSET>(PSET(box)));
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename PSET>
 template <typename T>
 Pointset_Powerset<PSET>::Pointset_Powerset(const Octagonal_Shape<T>& os,
-                                         Complexity_Class)
+					   Complexity_Class)
   : Base(), space_dim(os.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!os.is_empty())
     x.sequence.push_back(Determinate<PSET>(PSET(os)));
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename PSET>
 template <typename T>
 Pointset_Powerset<PSET>::Pointset_Powerset(const BD_Shape<T>& bds,
-                                         Complexity_Class)
+					   Complexity_Class)
   : Base(), space_dim(bds.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!bds.is_empty())
     x.sequence.push_back(Determinate<PSET>(PSET(bds)));
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(const Constraint_System& cs)
   : Base(Determinate<PSET>(cs)), space_dim(cs.space_dimension()) {
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(const Congruence_System& cgs)
   : Base(Determinate<PSET>(cgs)), space_dim(cgs.space_dimension()) {
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename PSET>

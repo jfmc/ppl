@@ -1,5 +1,5 @@
 /* Grid class implementation (non-inline public functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Topology.hh"
 #include "Scalar_Products.defs.hh"
 
-#include <cassert>
+#include "assert.hh"
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -76,11 +76,11 @@ PPL::Grid::Grid(const Constraint_System& cs)
 	// Insert the zero dim false congruence system into `con_sys'.
 	// `gen_sys' is already in empty form.
 	con_sys.insert(Congruence::zero_dim_false());
-	assert(OK());
+	PPL_ASSERT(OK());
 	return;
       }
     set_zero_dim_univ();
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -115,11 +115,11 @@ PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
 	// Insert the zero dim false congruence system into `con_sys'.
 	// `gen_sys' is already in empty form.
 	con_sys.insert(Congruence::zero_dim_false());
-	assert(OK());
+	PPL_ASSERT(OK());
 	return;
       }
     set_zero_dim_univ();
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -173,7 +173,7 @@ PPL::Grid::Grid(const Polyhedron& ph,
 
   if (use_constraints) {
     // Only the equality constraints need be used.
-    assert(ph.constraints_are_up_to_date());
+    PPL_ASSERT(ph.constraints_are_up_to_date());
     const Constraint_System& cs = ph.constraints();
     Congruence_System cgs;
     cgs.insert(0*Variable(space_dim - 1) %= 1);
@@ -187,7 +187,7 @@ PPL::Grid::Grid(const Polyhedron& ph,
     gen_sys = Grid_Generator_System(space_dim);
     // First find a point or closure point and convert it to a
     // grid point and add to the (initially empty) set of grid generators.
-    assert(ph.generators_are_up_to_date());
+    PPL_ASSERT(ph.generators_are_up_to_date());
     const Generator_System& gs = ph.generators();
     Grid_Generator_System ggs(space_dim);
     Linear_Expression point_expr;
@@ -233,7 +233,7 @@ PPL::Grid::Grid(const Polyhedron& ph,
     }
     construct(ggs);
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 PPL::Grid&
@@ -267,7 +267,7 @@ PPL::Grid::affine_dimension() const {
   }
   else
     minimized_congruences();
-  assert(congruences_are_minimized());
+  PPL_ASSERT(congruences_are_minimized());
   dimension_type d = space_dim;
   for (dimension_type i = con_sys.num_rows(); i-- > 0; )
     if (con_sys[i].is_equality())
@@ -282,7 +282,7 @@ PPL::Grid::congruences() const {
 
   if (space_dim == 0) {
     // Zero-dimensional universe.
-    assert(con_sys.num_rows() == 0 && con_sys.num_columns() == 2);
+    PPL_ASSERT(con_sys.num_rows() == 0 && con_sys.num_columns() == 2);
     return con_sys;
   }
 
@@ -308,13 +308,13 @@ PPL::Grid::minimized_congruences() const {
 const PPL::Grid_Generator_System&
 PPL::Grid::grid_generators() const {
   if (space_dim == 0) {
-    assert(gen_sys.space_dimension() == 0
+    PPL_ASSERT(gen_sys.space_dimension() == 0
 	   && gen_sys.num_rows() == (marked_empty() ? 0 : 1));
     return gen_sys;
   }
 
   if (marked_empty()) {
-    assert(gen_sys.has_no_rows());
+    PPL_ASSERT(gen_sys.has_no_rows());
     return gen_sys;
   }
 
@@ -330,13 +330,13 @@ PPL::Grid::grid_generators() const {
 const PPL::Grid_Generator_System&
 PPL::Grid::minimized_grid_generators() const {
   if (space_dim == 0) {
-    assert(gen_sys.space_dimension() == 0
+    PPL_ASSERT(gen_sys.space_dimension() == 0
 	   && gen_sys.num_rows() == (marked_empty() ? 0 : 1));
     return gen_sys;
   }
 
   if (marked_empty()) {
-    assert(gen_sys.has_no_rows());
+    PPL_ASSERT(gen_sys.has_no_rows());
     return gen_sys;
   }
 
@@ -506,7 +506,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
       return Poly_Con_Relation::is_included();
   }
 
-  assert(!known_to_intersect);
+  PPL_ASSERT(!known_to_intersect);
   return Poly_Con_Relation::is_disjoint();
 }
 
@@ -723,7 +723,7 @@ PPL::Grid::is_universe() const {
   for (dimension_type i = space_dim; i-- > 0; )
     if (!con_sys.satisfies_all_congruences(grid_line(Variable(i) + var)))
       return false;
-  assert(con_sys.satisfies_all_congruences(grid_point(0*var)));
+  PPL_ASSERT(con_sys.satisfies_all_congruences(grid_point(0*var)));
   return true;
 }
 
@@ -992,17 +992,22 @@ PPL::Grid::OK(bool check_not_empty) const {
 
 	// Check that dim_kinds corresponds to the row kinds in gen_sys.
 	for (dimension_type dim = space_dim,
-	       row = gen_sys.num_rows(); dim > 0; assert(row <= dim), --dim) {
-	  if (dim_kinds[dim] == GEN_VIRTUAL
-	      || (gen_sys[--row].is_parameter_or_point()
-		  && dim_kinds[dim] == PARAMETER)
-	      || (assert(gen_sys[row].is_line()), dim_kinds[dim] == LINE))
-	    continue;
+	       row = gen_sys.num_rows(); dim > 0; --dim) {
+	  if (dim_kinds[dim] == GEN_VIRTUAL)
+	    goto ok;
+	  if (gen_sys[--row].is_parameter_or_point()
+	      && dim_kinds[dim] == PARAMETER)
+	    goto ok;
+	  PPL_ASSERT(gen_sys[row].is_line());
+	  if (dim_kinds[dim] == LINE)
+	    goto ok;
 #ifndef NDEBUG
 	  cerr << "Kinds in dim_kinds should match those in gen_sys."
 	       << endl;
 #endif
 	  goto fail;
+	ok:
+	  PPL_ASSERT(row <= dim);
 	}
 
 	// A reduced generator system must be the same as a temporary
@@ -1010,11 +1015,11 @@ PPL::Grid::OK(bool check_not_empty) const {
 	Dimension_Kinds dk = dim_kinds;
 	// `gs' is minimized and marked_empty returned false, so `gs'
 	// should contain rows.
-	assert(!gs.has_no_rows());
+	PPL_ASSERT(!gs.has_no_rows());
 	simplify(gs, dk);
 	// gs contained rows before being reduced, so it should
 	// contain at least a single point afterward.
-	assert(!gs.has_no_rows());
+	PPL_ASSERT(!gs.has_no_rows());
 	for (dimension_type row = gen_sys.num_rows(); row-- > 0; ) {
 	  Grid_Generator& g = gs[row];
 	  const Grid_Generator& g_copy = gen_sys[row];
@@ -1095,11 +1100,13 @@ PPL::Grid::OK(bool check_not_empty) const {
 
       // Check that dim_kinds corresponds to the row kinds in con_sys.
       for (dimension_type dim = space_dim, row = 0; dim > 0; --dim) {
-	if (dim_kinds[dim] == CON_VIRTUAL
-	    || (con_sys[row++].is_proper_congruence()
-		&& dim_kinds[dim] == PROPER_CONGRUENCE)
-	    || (assert(con_sys[row-1].is_equality()),
-		dim_kinds[dim] == EQUALITY))
+	if (dim_kinds[dim] == CON_VIRTUAL)
+	    continue;
+	if (con_sys[row++].is_proper_congruence()
+	    && dim_kinds[dim] == PROPER_CONGRUENCE)
+	  continue;
+	PPL_ASSERT(con_sys[row-1].is_equality());
+	if (dim_kinds[dim] == EQUALITY)
 	  continue;
 #ifndef NDEBUG
 	cerr << "Kinds in dim_kinds should match those in con_sys." << endl;
@@ -1151,7 +1158,7 @@ PPL::Grid::add_grid_generator(const Grid_Generator& g) {
 	throw_invalid_generator("add_grid_generator(g)", "g");
       set_zero_dim_univ();
     }
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
@@ -1165,7 +1172,7 @@ PPL::Grid::add_grid_generator(const Grid_Generator& g) {
     clear_empty();
   }
   else {
-    assert(generators_are_up_to_date());
+    PPL_ASSERT(generators_are_up_to_date());
     gen_sys.insert(g);
     if (g.is_parameter_or_point())
       normalize_divisors(gen_sys);
@@ -1176,7 +1183,7 @@ PPL::Grid::add_grid_generator(const Grid_Generator& g) {
 
   clear_generators_minimized();
   set_generators_up_to_date();
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -1216,7 +1223,7 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   clear_generators_up_to_date();
   // Note: the congruence system may have become unsatisfiable, thus
   // we do not check for satisfiability.
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -1235,9 +1242,10 @@ PPL::Grid::add_recycled_grid_generators(Grid_Generator_System& gs) {
   if (space_dim == 0) {
     if (marked_empty())
       set_zero_dim_univ();
-    else
-      assert(gs.has_points());
-    assert(OK(true));
+    else {
+      PPL_ASSERT(gs.has_points());
+    }
+    PPL_ASSERT(OK(true));
     return;
   }
 
@@ -1254,7 +1262,7 @@ PPL::Grid::add_recycled_grid_generators(Grid_Generator_System& gs) {
     clear_congruences_up_to_date();
     clear_generators_minimized();
 
-    assert(OK(true));
+    PPL_ASSERT(OK(true));
     return;
   }
 
@@ -1275,7 +1283,7 @@ PPL::Grid::add_recycled_grid_generators(Grid_Generator_System& gs) {
   set_generators_up_to_date();
   clear_empty();
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -1318,13 +1326,13 @@ PPL::Grid::unconstrain(const Variable var) {
     // Empty: do nothing.
     return;
 
-  assert(generators_are_up_to_date());
+  PPL_ASSERT(generators_are_up_to_date());
   Grid_Generator l = grid_line(var);
   gen_sys.recycling_insert(l);
   // With the added generator, congruences are out of date.
   clear_congruences_up_to_date();
   clear_generators_minimized();
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -1346,7 +1354,7 @@ PPL::Grid::unconstrain(const Variables_Set& vars) {
     // Empty: do nothing.
     return;
 
-  assert(generators_are_up_to_date());
+  PPL_ASSERT(generators_are_up_to_date());
   // Since `gen_sys' is not empty, the space dimension of the inserted
   // generators are automatically adjusted.
   for (Variables_Set::const_iterator vsi = vars.begin(),
@@ -1357,7 +1365,7 @@ PPL::Grid::unconstrain(const Variables_Set& vars) {
   // Constraints are no longer up-to-date.
   clear_generators_minimized();
   clear_congruences_up_to_date();
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -1394,7 +1402,7 @@ PPL::Grid::intersection_assign(const Grid& y) {
     x.clear_congruences_minimized();
   }
 
-  assert(x.OK() && y.OK());
+  PPL_ASSERT(x.OK() && y.OK());
 }
 
 void
@@ -1437,7 +1445,7 @@ PPL::Grid::upper_bound_assign(const Grid& y) {
   x.clear_generators_minimized();
 
   // At this point both `x' and `y' are not empty.
-  assert(x.OK(true) && y.OK(true));
+  PPL_ASSERT(x.OK(true) && y.OK(true));
 }
 
 bool
@@ -1459,7 +1467,7 @@ PPL::Grid::upper_bound_assign_if_exact(const Grid& y) {
 
   // The above test 'x.is_included_in(y)' will ensure the generators of x
   // are up to date.
-  assert(generators_are_up_to_date());
+  PPL_ASSERT(generators_are_up_to_date());
 
   Grid x_copy = x;
   x_copy.upper_bound_assign(y);
@@ -1537,7 +1545,7 @@ PPL::Grid::difference_assign(const Grid& y) {
 
   *this = new_grid;
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 namespace {
@@ -1567,7 +1575,7 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
   if (x.space_dim == 0) {
     if (y.is_empty()) {
       set_zero_dim_univ();
-      assert(OK());
+      PPL_ASSERT(OK());
       return false;
     }
     else
@@ -1584,7 +1592,7 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
   // If `x' is empty, the intersection is empty.
   if (!x.minimize()) {
     // Search for a congruence of `y' that is not a tautology.
-    assert(y.congruences_are_up_to_date());
+    PPL_ASSERT(y.congruences_are_up_to_date());
     Grid gr(x.space_dim, UNIVERSE);
     for (dimension_type i = y.con_sys.num_rows(); i-- > 0; ) {
       const Congruence& y_con_sys_i = y.con_sys[i];
@@ -1603,8 +1611,8 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
 	    gr.refine_no_check(le == 1);
 	  else {
 	    Linear_Expression le2;
-	    for (dimension_type i = le.space_dimension(); i-- > 0; )
-	      le2 += 2 * le.coefficient(Variable(i)) * Variable(i);
+	    for (dimension_type j = le.space_dimension(); j-- > 0; )
+	      le2 += 2 * le.coefficient(Variable(j)) * Variable(j);
 	    le2 += 2 * le.inhomogeneous_term();
 	    gr.refine_no_check(le2 == y_modulus_i);
 	  }
@@ -1613,11 +1621,11 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
       }
     }
     swap(gr);
-    assert(OK());
+    PPL_ASSERT(OK());
     return false;
   }
 
-  assert(x.congruences_are_minimized()
+  PPL_ASSERT(x.congruences_are_minimized()
          && y.generators_are_minimized());
 
   const Congruence_System& x_cs = x.con_sys;
@@ -1729,19 +1737,19 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
 	Grid result_gr(x.space_dim, UNIVERSE);
 	result_gr.add_congruences(result_cs);
 	x.swap(result_gr);
-	assert(x.OK());
+	PPL_ASSERT(x.OK());
 	return !empty_intersection;
       }
     }
       // Cannot exit from here.
-    assert(false);
+    PPL_ASSERT(false);
   }
 
   // All the congruences are redundant so that the simplified grid
   // is the universe.
   Grid result_gr(x.space_dim, UNIVERSE);
   x.swap(result_gr);
-  assert(x.OK());
+  PPL_ASSERT(x.OK());
   return true;
 }
 
@@ -1822,7 +1830,7 @@ PPL::Grid::affine_image(const Variable var,
       normalize_divisors(gen_sys);
     }
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -1896,7 +1904,7 @@ affine_preimage(const Variable var,
     clear_generators_up_to_date();
     clear_congruences_minimized();
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -1946,11 +1954,11 @@ generalized_affine_image(const Variable var,
 
     add_grid_generator(grid_line(var));
 
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
-  assert(relsym == EQUAL);
+  PPL_ASSERT(relsym == EQUAL);
 
   affine_image(var, expr, denominator);
 
@@ -1977,7 +1985,7 @@ generalized_affine_image(const Variable var,
   clear_generators_minimized();
   clear_congruences_up_to_date();
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -2021,11 +2029,11 @@ generalized_affine_preimage(const Variable var,
 
     add_grid_generator(grid_line(var));
 
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
-  assert(relsym == EQUAL);
+  PPL_ASSERT(relsym == EQUAL);
   // Any image of an empty grid is empty.
   if (marked_empty())
     return;
@@ -2070,7 +2078,7 @@ generalized_affine_preimage(const Variable var,
   if (is_empty())
     return;
   add_grid_generator(grid_line(var));
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -2116,11 +2124,11 @@ generalized_affine_image(const Linear_Expression& lhs,
       if (lhs.coefficient(Variable(i)) != 0)
 	add_grid_generator(grid_line(Variable(i)));
 
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
-  assert(relsym == EQUAL);
+  PPL_ASSERT(relsym == EQUAL);
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_modulus);
   tmp_modulus = modulus;
@@ -2204,7 +2212,7 @@ generalized_affine_image(const Linear_Expression& lhs,
     add_congruence_no_check((lhs %= rhs) / tmp_modulus);
   }
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -2248,11 +2256,11 @@ generalized_affine_preimage(const Linear_Expression& lhs,
       if (lhs.coefficient(Variable(i)) != 0)
 	add_grid_generator(grid_line(Variable(i)));
 
-    assert(OK());
+    PPL_ASSERT(OK());
     return;
   }
 
-  assert(relsym == EQUAL);
+  PPL_ASSERT(relsym == EQUAL);
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_modulus);
   tmp_modulus = modulus;
@@ -2335,7 +2343,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
     // Existentially quantify all the variables occurring in `lhs'.
     add_recycled_grid_generators(new_lines);
   }
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -2377,7 +2385,7 @@ bounded_affine_image(const Variable var,
 			   ub_expr,
 			   denominator);
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 
@@ -2420,7 +2428,7 @@ bounded_affine_preimage(const Variable var,
 			      ub_expr,
 			      denominator);
 
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 void
@@ -2472,7 +2480,7 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
   x.clear_congruences_up_to_date();
   x.clear_generators_minimized();
 
-  assert(x.OK(true) && y.OK(true));
+  PPL_ASSERT(x.OK(true) && y.OK(true));
 }
 
 bool
@@ -2654,7 +2662,7 @@ PPL::Grid::ascii_load(std::istream& s) {
   }
 
   // Check invariants.
-  assert(OK());
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -2711,7 +2719,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
     --max_value;
   }
   else {
-    assert(r == SIGNED_2_COMPLEMENT);
+    PPL_ASSERT(r == SIGNED_2_COMPLEMENT);
     mul_2exp_assign(max_value, Coefficient_one(), w-1);
     neg_assign(min_value, max_value);
     --max_value;
@@ -2726,70 +2734,85 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
     PPL_DIRTY_TEMP_COEFFICIENT(f_d);
     PPL_DIRTY_TEMP_COEFFICIENT(v_n);
     PPL_DIRTY_TEMP_COEFFICIENT(v_d);
-    PPL_DIRTY_TEMP_COEFFICIENT(f_d_wrap_frequency);
     for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars.end(); ++i) {
       const Variable x = Variable(*i);
+      // Find the frequency and a value for `x' in `gr'.
       if (!gr.frequency_no_check(x, f_n, f_d, v_n, v_d))
         continue;
       if (f_n == 0) {
 
         // `x' is a constant in `gr'.
-        if ((v_n > max_value * v_d) || (v_n < min_value * v_d)) {
+        if (v_d != 1) {
+          // The value for `x' is not integral (`frequency_no_check()'
+          // ensures that `v_n' and `v_d' have no common divisors).
+          set_empty();
+          return;
+        }
+
+        // `x' is a constant and has an integral value.
+        if ((v_n > max_value) || (v_n < min_value)) {
           // The value is outside the range of the bounded integer type.
           if (o == OVERFLOW_IMPOSSIBLE) {
-            // Then `x' has no possible value and hence `gr' is set empty.
+            // Then `x' has no possible value and hence set empty.
             set_empty();
             return;
           }
-          assert(o == OVERFLOW_WRAPS);
+          PPL_ASSERT(o == OVERFLOW_WRAPS);
           // The value v_n for `x' is wrapped modulo the 'wrap_frequency'.
-          Coefficient& wrap_modulus = f_n;
-          wrap_modulus = v_d * wrap_frequency;
-          v_n %= wrap_modulus;
+          v_n %= wrap_frequency;
           // `v_n' is the value closest to 0 and may be negative.
           if (r == UNSIGNED && v_n < 0)
-            v_n += wrap_modulus;
+            v_n += wrap_frequency;
           unconstrain(x);
-          add_constraint(v_d * x == v_n);
+          add_constraint(x == v_n);
         }
         continue;
       }
 
       // `x' is not a constant in `gr'.
-      assert(f_n != 0);
-      Coefficient& wrap_modulus = f_n;
-      f_d_wrap_frequency = f_d * wrap_frequency;
-      if (o == OVERFLOW_WRAPS && f_n != f_d * wrap_frequency)
+      PPL_ASSERT(f_n != 0);
+
+      if (f_d % v_d != 0) {
+        // Then `x' has no integral value and hence `gr' is set empty.
+        set_empty();
+        return;
+      }
+      if (f_d != 1) {
+        // `x' has non-integral values, so add the integrality
+        // congruence for `x'.
+        add_congruence((x %= 0) / 1);
+      }
+      if (o == OVERFLOW_WRAPS && f_n != wrap_frequency)
         // We know that `x' is not a constant, so, if overflow wraps,
         // `x' may wrap to a value modulo the `wrap_frequency'.
         add_grid_generator(parameter(wrap_frequency * x));
-      else if ((o == OVERFLOW_IMPOSSIBLE && 2*f_n >= f_d_wrap_frequency)
-               || (f_n == f_d_wrap_frequency)) {
+      else if ((o == OVERFLOW_IMPOSSIBLE && 2*f_n >= wrap_frequency)
+               || (f_n == wrap_frequency)) {
         // In these cases, `x' can only take a unique (ie constant)
         // value.
         if (r == UNSIGNED && v_n < 0) {
           // `v_n' is the value closest to 0 and may be negative.
-          v_n *= f_d;
-          add_mul_assign(v_n, f_n, v_d);
-          v_d *= f_d;
+          v_n += f_n;
         }
-        add_constraint(v_d * x == v_n);
+        unconstrain(x);
+        add_constraint(x == v_n);
       }
-      else
+      else {
         // If overflow is impossible but the grid frequency is less than
         // half the wrap frequency, then there is more than one possible
         // value for `x' in the range of the bounded integer type,
         // so the grid is unchanged.
-        assert(o == OVERFLOW_IMPOSSIBLE && 2*f_n < f_d_wrap_frequency);
+        PPL_ASSERT(o == OVERFLOW_IMPOSSIBLE && 2*f_n < wrap_frequency);
+      }
     }
     return;
   }
 
-  assert(o == OVERFLOW_UNDEFINED);
+  PPL_ASSERT(o == OVERFLOW_UNDEFINED);
   // If overflow is undefined, then all we know is that the variable
   // may take any integer within the range of the bounded integer type.
-  const Grid_Generator& point = gen_sys[0];
+  const Grid_Generator& point = gr.gen_sys[0];
   const Coefficient& div = point.divisor();
   max_value *= div;
   min_value *= div;
@@ -2800,11 +2823,26 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
       // `x' is not a constant in `gr'.
       // We know that `x' is not a constant, so `x' may wrap to any
       // value `x + z' where z is an integer.
-      add_grid_generator(parameter(x));
+      if (point.coefficient(x) % div != 0) {
+        // We know that `x' can take non-integral values, so enforce
+        // integrality.
+        unconstrain(x);
+        add_congruence(x %= 0);
+      }
+      else
+        // `x' has at least one integral value.
+        // `x' may also take other non-integral values,
+        // but checking could be costly so we ignore this.
+        add_grid_generator(parameter(x));
     }
     else {
       // `x' is a constant `v' in `gr'.
       const Coefficient& coeff_x = point.coefficient(x);
+      // `x' should be integral.
+      if (coeff_x % div != 0) {
+        set_empty();
+        return;
+      }
       // If the value `v' for `x' is not within the range for the
       // bounded integer type, then `x' may wrap to any value `v + z'
       // where `z' is an integer; otherwise `x' is unchanged.

@@ -1,5 +1,5 @@
 /* MIP_Problem class declaration.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -505,6 +505,24 @@ private:
   */
   Variables_Set i_variables;
 
+  //! A helper class to temporarily relax a MIP problem using RAII.
+  struct RAII_Temporary_Real_Relaxation {
+    MIP_Problem& lp;
+    Variables_Set i_vars;
+
+    RAII_Temporary_Real_Relaxation(MIP_Problem& mip)
+      : lp(mip), i_vars() {
+      // Turn mip into an LP problem (saving i_variables in i_vars).
+      std::swap(i_vars, lp.i_variables);
+    }
+
+    ~RAII_Temporary_Real_Relaxation() {
+      // Restore the original set of integer variables.
+      std::swap(i_vars, lp.i_variables);
+    }
+  };
+  friend class RAII_Temporary_Real_Relaxation;
+
   //! Processes the pending constraints of \p *this.
   /*!
     \return
@@ -753,40 +771,43 @@ private:
 				      MIP_Problem& mip,
 				      const Variables_Set& i_vars);
 
+  /*! \brief
+    Returns \c true if and if only the LP problem is satisfiable.
+  */
   bool is_lp_satisfiable() const;
 
   /*! \brief
-    Used with MIP_Problems with a non empty `i_vars',
-    returns <CODE>true</CODE> if and if only a MIP problem is satisfiable,
-    returns <CODE>false</CODE> otherwise.
+    Returns \c true if and if only the LP problem \p lp is satisfiable
+    when variables in \p i_vars can only take integral values.
 
-    \param mip
-    The problem that has to be solved.
-
-    \param p
-    This will encode the feasible point, only if <CODE>true</CODE> is returned.
+    \param lp
+    The LP problem. This is assumed to have no integral space dimension.
 
     \param i_vars
-    The variables that are constrained to take an integer value.
+    The variables that are constrained to take integral values.
+
+    \param p
+    If \c true is returned, it will encode a feasible point.
   */
-  static bool is_mip_satisfiable(MIP_Problem& mip, Generator& p,
-				 const Variables_Set& i_vars);
+  static bool is_mip_satisfiable(MIP_Problem& lp,
+				 const Variables_Set& i_vars,
+                                 Generator& p);
 
   /*! \brief
-    Returns <CODE>true</CODE> if and if only `last_generator' satisfies all the
-    integrality coditions.
+    Returns \c true if and if only \c mip.last_generator satisfies all the
+    integrality coditions implicitly stated using by \p i_vars.
 
-    \param mip
-    The MIP problem.
+    \param lp
+    The LP problem. This is assumed to have no integral space dimension.
 
     \param i_vars
     The variables that are constrained to take an integer value.
 
     \param branching_index
-    If <CODE>false</CODE> is returned, this will encode the variable index on
-    which must be applied the `branch and bound' algorithm.
+    If \c false is returned, this will encode the non-integral variable
+    index on which the `branch and bound' algorithm should be applied.
   */
-  static bool choose_branching_variable(const MIP_Problem& mip,
+  static bool choose_branching_variable(const MIP_Problem& lp,
 					const Variables_Set& i_vars,
 					dimension_type& branching_index);
 };

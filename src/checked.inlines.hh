@@ -1,5 +1,5 @@
 /* Abstract checked arithmetic functions: fall-backs.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.types.hh"
 #include "meta_programming.hh"
 #include "C_Integer.hh"
-#include <cassert>
+#include "assert.hh"
 
 #if defined(__GNUC__)
 /*! \brief
@@ -506,7 +506,7 @@ eq(const T1& x, const T2& y) {
   // conversion back and forth and then testing equality.  We should
   // code this in checked_float.inlines.hh, probably it's faster also
   // if fpu supports inexact check.
-  assert(r != V_LE && r != V_GE && r != V_LGE);
+  PPL_ASSERT(r != V_LE && r != V_GE && r != V_LGE);
   return r == V_EQ && x == tmp;
 }
 
@@ -551,7 +551,7 @@ le(const T1& x, const T2& y) {
   case VR_GE:
   case VR_LGE:
     // FIXME: See comment above.
-    assert(0);
+    PPL_ASSERT(0);
   default:
     return false;
   }
@@ -611,7 +611,7 @@ input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
   default:
     break;
   }
-  assert(r == V_EQ);
+  PPL_ASSERT(r == V_EQ);
   return assign<Policy, void>(to, q, dir);
 }
 

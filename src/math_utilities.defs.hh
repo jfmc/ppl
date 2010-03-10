@@ -1,5 +1,5 @@
 /* Declarations of some math utility functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -32,17 +32,17 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Extract the numerator and denominator components of \p from.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T, typename Policy>
-void
-numer_denom(const Checked_Number<T, Policy>& from,
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
+numer_denom(const T& from,
 	    Coefficient& num, Coefficient& den);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Divides \p x by \p y into \p to, rounding the result towards plus infinity.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T, typename Policy>
-void
-div_round_up(Checked_Number<T, Policy>& to,
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
+div_round_up(T& to,
 	     Coefficient_traits::const_reference x,
 	     Coefficient_traits::const_reference y);
 
@@ -63,17 +63,16 @@ max_assign(N& x, const N& y);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x is an even number.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T, typename Policy>
-bool
-is_even(const Checked_Number<T, Policy>& x);
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
+is_even(const T& x);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \f$x = -y\f$.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T, typename Policy>
-bool
-is_additive_inverse(const Checked_Number<T, Policy>& x,
-		    const Checked_Number<T, Policy>& y);
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
+is_additive_inverse(const T& x, const T& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief

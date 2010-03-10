@@ -1,5 +1,5 @@
 /* BHRZ03_Certificate class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -30,7 +30,7 @@ BHRZ03_Certificate::BHRZ03_Certificate()
   : affine_dim(0), lin_space_dim(0), num_constraints(0), num_points(1),
     num_rays_null_coord() {
   // This is the certificate for a zero-dim universe polyhedron.
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 inline

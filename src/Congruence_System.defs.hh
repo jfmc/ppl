@@ -1,5 +1,5 @@
 /* Congruence_System class declaration.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence.types.hh"
 #include "Grid_Generator.types.hh"
 #include "Matrix.defs.hh"
+#include "Grid.types.hh"
 #include "Grid_Certificate.types.hh"
 #include <iosfwd>
 

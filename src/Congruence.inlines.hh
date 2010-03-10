@@ -1,5 +1,5 @@
 /* Congruence class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -59,7 +59,7 @@ inline
 Congruence::Congruence(Linear_Expression& le,
 		       Coefficient_traits::const_reference m) {
   Row::swap(static_cast<Row&>(le));
-  assert(m >= 0);
+  PPL_ASSERT(m >= 0);
   (*this)[size()-1] = m;
 }
 
@@ -176,7 +176,7 @@ Congruence::inhomogeneous_term() const {
 
 inline Coefficient_traits::const_reference
 Congruence::modulus() const {
-  assert(size() > 1);
+  PPL_ASSERT(size() > 1);
   return (*this)[size()-1];
 }
 

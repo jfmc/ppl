@@ -1,5 +1,5 @@
 /* Interval_Restriction class declaration.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -178,7 +178,7 @@ public:
     case V_LE:
       return floor_assign_r(x, x, rdir);
     default:
-      assert(false);
+      PPL_ASSERT(false);
       return dir;
     }
   }
@@ -342,16 +342,16 @@ public:
     PPL_DIRTY_TEMP(V, div);
     Result r;
     r = assign_r(div, divisor, ROUND_CHECK);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     int s;
     r = rem_assign_r(n, x, div, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     s = sgn(n);
     switch (dir) {
     case V_GT:
       if (s >= 0) {
 	r = sub_assign_r(n, div, n, ROUND_NOT_NEEDED);
-	assert(r == V_EQ);
+	PPL_ASSERT(r == V_EQ);
 	return add_assign_r(x, x, n, rdir);
       }
       else
@@ -359,7 +359,7 @@ public:
     case V_GE:
       if (s > 0) {
 	r = sub_assign_r(n, div, n, ROUND_NOT_NEEDED);
-	assert(r == V_EQ);
+	PPL_ASSERT(r == V_EQ);
 	return add_assign_r(x, x, n, rdir);
       }
       else if (s < 0)
@@ -369,7 +369,7 @@ public:
     case V_LT:
       if (s <= 0) {
 	r = add_assign_r(n, div, n, ROUND_NOT_NEEDED);
-	assert(r == V_EQ);
+	PPL_ASSERT(r == V_EQ);
 	return sub_assign_r(x, x, n, rdir);
       }
       else
@@ -377,7 +377,7 @@ public:
     case V_LE:
       if (s < 0) {
 	r = add_assign_r(n, div, n, ROUND_NOT_NEEDED);
-	assert(r == V_EQ);
+	PPL_ASSERT(r == V_EQ);
 	return sub_assign_r(x, x, n, rdir);
       }
       else if (s > 0)
@@ -385,7 +385,7 @@ public:
       else
 	return V_EQ;
     default:
-      assert(false);
+      PPL_ASSERT(false);
       return dir;
     }
   }
@@ -490,11 +490,11 @@ contains_restriction(const T1& x, const T2& y) {
   PPL_DIRTY_TEMP(typename T1::modulo_type, v);
   Result r;
   r = rem_assign_r(v, y.divisor, x.divisor, ROUND_NOT_NEEDED);
-  assert(r == V_EQ);
+  PPL_ASSERT(r == V_EQ);
   if (v != 0)
     return false;
   r = rem_assign_r(v, y.remainder, x.divisor, ROUND_NOT_NEEDED);
-  assert(r == V_EQ);
+  PPL_ASSERT(r == V_EQ);
   return v == x.remainder;
 }
 
@@ -633,22 +633,22 @@ addmod(T& to, const T& x, const T& y, const T& to_m, const T& y_m) {
   Result r;
   if (std::numeric_limits<T>::is_bounded) {
     r = sub_assign_r(to, y_m, y, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     if (x <= to) {
       r = add_assign_r(to, x, y, ROUND_NOT_NEEDED);
-      assert(r == V_EQ);
+      PPL_ASSERT(r == V_EQ);
     }
     else {
       r = sub_assign_r(to, x, to, ROUND_NOT_NEEDED);
-      assert(r == V_EQ);
+      PPL_ASSERT(r == V_EQ);
     }
   }
   else {
     r = add_assign_r(to, x, y, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
   }
   r = rem_assign_r(to, to, to_m, ROUND_NOT_NEEDED);
-  assert(r == V_EQ);
+  PPL_ASSERT(r == V_EQ);
 }
 
 template <typename M, typename T>
@@ -692,19 +692,19 @@ add_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
     if (!assign_rem(rem, f_lower(x), ry.divisor))
       return set_integer(to);
     r = assign_r(to.divisor, ry.divisor, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     addmod(to.remainder, rem, ry.remainder, to.divisor, ry.divisor);
   }
   else if (is_singleton(y)) {
     if (!assign_rem(rem, f_lower(y), rx.divisor))
       return set_integer(to);
     r = assign_r(to.divisor, rx.divisor, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     addmod(to.remainder, rx.remainder, rem, to.divisor, to.divisor);
   }
   else {
     r = gcd_assign_r(to.divisor, rx.divisor, ry.divisor, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     addmod(to.remainder, rx.remainder, ry.remainder, to.divisor, ry.divisor);
   }
   return true;
@@ -716,16 +716,16 @@ submod(T& to, const T& x, const T& y, const T& to_m, const T& y_m) {
   Result r;
   if (x >= y) {
     r = sub_assign_r(to, x, y, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
   }
   else {
     r = sub_assign_r(to, y_m, y, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     r = add_assign_r(to, x, to, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
   }
   r = rem_assign_r(to, to, to_m, ROUND_NOT_NEEDED);
-  assert(r == V_EQ);
+  PPL_ASSERT(r == V_EQ);
 }
 
 template <typename T, typename Base, typename From1, typename From2>
@@ -747,19 +747,19 @@ sub_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
     if (!assign_rem(rem, f_lower(x), ry.divisor))
       return set_integer(to);
     r = assign_r(to.divisor, ry.divisor, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     submod(to.remainder, rem, ry.remainder, to.divisor, ry.divisor);
   }
   else if (is_singleton(y)) {
     if (!assign_rem(rem, f_lower(y), rx.divisor))
       return set_integer(to);
     r = assign_r(to.divisor, rx.divisor, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     submod(to.remainder, rx.remainder, rem, to.divisor, to.divisor);
   }
   else {
     r = gcd_assign_r(to.divisor, rx.divisor, ry.divisor, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     submod(to.remainder, rx.remainder, ry.remainder, to.divisor, ry.divisor);
   }
   return true;
@@ -773,23 +773,23 @@ mulmod(T& to, const T& x, const T& y, const T& to_m) {
     PPL_DIRTY_TEMP0(mpz_class, a);
     PPL_DIRTY_TEMP0(mpz_class, b);
     r = assign_r(a, x, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     r = assign_r(b, y, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     r = mul_assign_r(a, a, b, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     r = assign_r(b, to_m, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     r = rem_assign_r(a, a, b, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     r = assign_r(to, a, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
   }
   else {
     r = mul_assign_r(to, x, y, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     r = rem_assign_r(to, to, to_m, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
   }
 }
 
@@ -841,7 +841,7 @@ mul_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
   }
   else {
     r = gcd_assign_r(to.divisor, rx.divisor, ry.divisor, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
+    PPL_ASSERT(r == V_EQ);
     mulmod(to.remainder, rx.remainder, ry.remainder, to.divisor);
   }
   return true;

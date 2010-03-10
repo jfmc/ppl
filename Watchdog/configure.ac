@@ -1,5 +1,5 @@
 # Autoconf source file for the Parma Watchdog Library.
-# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
 #
@@ -23,7 +23,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Watchdog Library],[0.7],[bagnara@cs.unipr.it],[pwl])
+AC_INIT([the Parma Watchdog Library],[0.8],[bagnara@cs.unipr.it],[pwl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
@@ -39,7 +39,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
 
 # Use Automake.
-AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip 1.7.3])
+AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip dist-lzma silent-rules 1.11])
 AC_SUBST(VERSION)
 
 # Generate a configuration header file.
@@ -49,7 +49,7 @@ ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
 
 AH_BOTTOM([
-#ifdef PWL_NDEBUG
+#if defined(PWL_NDEBUG) && !defined(NDEBUG)
 # define NDEBUG PWL_NDEBUG
 #endif
 ])
@@ -196,7 +196,7 @@ yes)
   ;;
 no)
   AC_MSG_RESULT(no)
-  AC_DEFINE(NDEBUG, 1, [Assertions are disabled when this is defined])
+  AC_DEFINE(PWL_NDEBUG, 1, [Assertions are disabled when this is defined])
   debug_flag="-DNDEBUG=1"
   ;;
 *)
@@ -306,6 +306,9 @@ AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
 AC_LANG(C)
 AC_C_CONST
 
+# Use C++ for the remaining checks.
+AC_LANG(C++)
+
 enableval=no
 AC_MSG_CHECKING([whether tests should be run under Valgrind])
 AC_ARG_ENABLE(valgrind-tests,
@@ -332,26 +335,14 @@ no)
 esac
 AM_CONDITIONAL(VALGRIND_TESTS_ENABLED, test x"$enable_valgrind_tests" = xyes)
 
-# setitimer() is a strong requisite for the PWL.
-AC_CHECK_FUNCS([setitimer], [have_setitimer=yes], [have_setitimer=no])
-
-enableval=default
+enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
   AS_HELP_STRING([--enable-watchdog],
                  [build also the Parma Watchdog Library]))
 case "${enableval}" in
 yes)
-  if test x"$have_setitimer" = xyes
-  then
-    build_watchdog_library=yes
-  else
-    AC_MSG_ERROR([CANNOT BUILD THE WATCHDOG LIBRARY
-*** THE SYSTEM DOES NOT PROVIDE THE SETITIMER FUNCTION.])
-  fi
-  ;;
-default)
-  build_watchdog_library=$have_setitimer
+  build_watchdog_library=yes
   ;;
 no)
   build_watchdog_library=no
@@ -371,6 +362,12 @@ then
 
   # Checks for the availability of C library functions in C++.
   AC_CHECK_DECLS([getenv], , , [#include <cstdlib>])
+  AC_CHECK_DECLS([setitimer], [], [], [[
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+  ]])
+  AC_CHECK_DECLS([sigaction], , , [#include <csignal>])
 
   # Checks for typedefs, structures, and compiler characteristics.
   AC_CHECK_TYPES([siginfo_t], [], [], [[

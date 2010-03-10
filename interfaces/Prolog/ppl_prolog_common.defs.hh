@@ -1,5 +1,5 @@
 /* Common part of the Prolog interfaces: declarations.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -421,7 +421,8 @@ handle_exception(const std::exception& e);
 void
 handle_exception();
 
-class timeout_exception : public Parma_Polyhedra_Library::Throwable {
+class timeout_exception
+  : public Parma_Polyhedra_Library::Throwable {
 public:
   void throw_me() const {
     throw *this;
@@ -429,12 +430,24 @@ public:
   int priority() const {
     return 0;
   }
-  timeout_exception() {
-  }
 };
 
 void
 handle_exception(const timeout_exception&);
+
+class deterministic_timeout_exception
+  : public Parma_Polyhedra_Library::Throwable {
+public:
+  void throw_me() const {
+    throw *this;
+  }
+  int priority() const {
+    return 0;
+  }
+};
+
+void
+handle_exception(const deterministic_timeout_exception&);
 
 #define CATCH_ALL \
   catch (const Prolog_unsigned_out_of_range& e) { \
@@ -483,6 +496,9 @@ handle_exception(const timeout_exception&);
     handle_exception(e); \
   } \
   catch (const timeout_exception& e) { \
+    handle_exception(e); \
+  } \
+  catch (const deterministic_timeout_exception& e) { \
     handle_exception(e); \
   } \
   catch(const std::overflow_error& e) { \
@@ -688,6 +704,12 @@ extern "C" Prolog_foreign_return_type
 ppl_reset_timeout();
 
 extern "C" Prolog_foreign_return_type
+ppl_set_deterministic_timeout(Prolog_term_ref t_weight);
+
+extern "C" Prolog_foreign_return_type
+ppl_reset_deterministic_timeout();
+
+extern "C" Prolog_foreign_return_type
 ppl_Coefficient_is_bounded();
 
 extern "C" Prolog_foreign_return_type
@@ -801,6 +823,113 @@ ppl_MIP_Problem_OK(Prolog_term_ref t_mip);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_ascii_dump(Prolog_term_ref t_mip);
+
+
+extern "C" Prolog_foreign_return_type
+ppl_new_PIP_Problem_from_space_dimension
+(Prolog_term_ref t_nd, Prolog_term_ref t_pip);
+
+extern "C" Prolog_foreign_return_type
+ppl_new_PIP_Problem_from_PIP_Problem(Prolog_term_ref t_pip_source,
+				     Prolog_term_ref t_pip);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs);
+
+extern "C" Prolog_foreign_return_type
+ppl_delete_PIP_Problem(Prolog_term_ref t_pip);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_space_dimension(Prolog_term_ref t_pip, Prolog_term_ref t_sd);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_parameter_space_dimensions(Prolog_term_ref t_pip,
+                                           Prolog_term_ref t_vlist);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_constraints(Prolog_term_ref t_pip,
+			    Prolog_term_ref t_clist);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_get_control_parameter(Prolog_term_ref t_pip,
+                                      Prolog_term_ref t_cp_name,
+                                      Prolog_term_ref t_cp_value);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_clear(Prolog_term_ref t_pip);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_add_space_dimensions_and_embed
+(Prolog_term_ref t_pip,
+ Prolog_term_ref t_num_vars,
+ Prolog_term_ref t_num_params);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_add_to_parameter_space_dimensions(Prolog_term_ref t_pip,
+                                                  Prolog_term_ref t_vlist);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_add_constraint(Prolog_term_ref t_pip, Prolog_term_ref t_c);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_add_constraints(Prolog_term_ref t_pip,
+				Prolog_term_ref t_clist);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_set_control_parameter(Prolog_term_ref t_pip,
+                                      Prolog_term_ref t_cp_value);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_is_satisfiable(Prolog_term_ref t_pip);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_solve(Prolog_term_ref t_pip, Prolog_term_ref t_status);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_solution(Prolog_term_ref t_pip,
+                         Prolog_term_ref t_pip_tree);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_optimizing_solution(Prolog_term_ref t_pip,
+                                    Prolog_term_ref t_pip_tree);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_get_big_parameter_dimension(Prolog_term_ref t_pip,
+                                            Prolog_term_ref t_d);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_set_big_parameter_dimension(Prolog_term_ref t_pip,
+                                            Prolog_term_ref t_d);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_OK(Prolog_term_ref t_pip);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_ascii_dump(Prolog_term_ref t_pip);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Tree_Node_get_constraints(Prolog_term_ref t_pip_tree,
+                                  Prolog_term_ref t_clist);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Tree_Node_get_artificials(Prolog_term_ref t_pip_tree,
+                                  Prolog_term_ref t_clist);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Solution_Node_get_parametric_values(Prolog_term_ref t_pip_sol,
+                                            Prolog_term_ref t_pvalue_list);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Decision_Node_get_true_child(Prolog_term_ref t_pip_dec,
+                                     Prolog_term_ref t_pip_tree);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Decision_Node_get_false_child(Prolog_term_ref t_pip_dec,
+                                      Prolog_term_ref t_pip_tree);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Tree_Node_OK(Prolog_term_ref t_pip_tree);
+
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::Prolog;

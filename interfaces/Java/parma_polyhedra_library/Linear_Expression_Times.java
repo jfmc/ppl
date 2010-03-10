@@ -1,5 +1,5 @@
 /* Linear_Expression_Times class definition and implementation.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,37 +27,43 @@ package parma_polyhedra_library;
 public class Linear_Expression_Times
     extends Linear_Expression {
 
-    //! The value of the left hand side of \p this.
-    protected Linear_Expression_Coefficient lhs;
+    //! The value of the coefficient.
+    protected Coefficient coeff;
 
-    //! The value of the left hand side of \p this.
-    protected Linear_Expression rhs;
+    //! The value of the inner linear expression.
+    protected Linear_Expression lin_expr;
 
     //! Builds an object cloning the input arguments.
     public Linear_Expression_Times(Coefficient c, Variable v) {
-	lhs = new Linear_Expression_Coefficient(c);
-	rhs = new Linear_Expression_Variable(v);
+	coeff = new Coefficient(c);
+	lin_expr = new Linear_Expression_Variable(v);
+    }
+
+    //! Builds an object cloning the input arguments.
+    public Linear_Expression_Times(Coefficient c, Linear_Expression l) {
+	coeff = new Coefficient(c);
+	lin_expr = l.clone();
     }
 
     //! Builds an object cloning the input arguments.
     public Linear_Expression_Times(Linear_Expression l, Coefficient c) {
-	lhs = new Linear_Expression_Coefficient(c);
-	rhs = l.clone();
+	coeff = new Coefficient(c);
+	lin_expr = l.clone();
     }
 
-    //! Returns the left hand side of \p this.
-   public Linear_Expression left_hand_side() {
-	return lhs;
+    //! Returns the coefficient of \p this.
+    public Coefficient coefficient() {
+	return coeff;
     }
 
-    //! Returns the right hand side of \p this.
-    public Linear_Expression right_hand_side() {
-	return rhs;
+    //! Returns the linear expression subobject of \p this.
+    public Linear_Expression linear_expression() {
+	return lin_expr;
     }
 
     //! Builds a copy of this.
     public Linear_Expression_Times clone() {
-	return new Linear_Expression_Times(rhs, lhs.argument());
+	return new Linear_Expression_Times(coeff, lin_expr);
     }
 
     private static native void initIDs();

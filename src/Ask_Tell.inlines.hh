@@ -1,5 +1,5 @@
 /* Ask_Tell class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Ask_Tell_inlines_hh 1
 
 #include <algorithm>
-#include <cassert>
+#include "assert.hh"
 
 // Temporary!!!
 #include <iostream>
@@ -176,7 +176,7 @@ Ask_Tell<D>::size() const {
 template <typename D>
 void
 Ask_Tell<D>::pair_insert_good(const D& ask, const D& tell) {
-  assert(!ask.definitely_entails(tell));
+  PPL_ASSERT_HEAVY(!ask.definitely_entails(tell));
   sequence.push_back(Ask_Tell_Pair<D>(ask, tell));
   normalized = false;
 }
@@ -205,7 +205,7 @@ Ask_Tell<D>::normalize() const {
   x.absorb();
   normalized = true;
 
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename D>
@@ -237,7 +237,7 @@ Ask_Tell<D>&
 Ask_Tell<D>::add_pair(const D& ask, const D& tell) {
   if (!ask.definitely_entails(tell))
     pair_insert(ask, tell);
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
   return *this;
 }
 
@@ -285,7 +285,7 @@ Ask_Tell<D>::meet_assign(const Ask_Tell& y) {
     std::copy(y.begin(), y.end(), back_inserter(sequence));
     normalized = false;
   }
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 // Hiding

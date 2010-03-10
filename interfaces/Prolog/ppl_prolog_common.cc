@@ -1,5 +1,5 @@
 /* Common part of the Prolog interfaces: variables and non-inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -142,6 +142,10 @@ Prolog_atom a_pricing_steepest_edge_float;
 Prolog_atom a_pricing_steepest_edge_exact;
 Prolog_atom a_pricing_textbook;
 
+Prolog_atom a_cutting_strategy;
+Prolog_atom a_cutting_strategy_first;
+Prolog_atom a_cutting_strategy_deepest;
+
 // Default timeout exception atom.
 Prolog_atom a_time_out;
 
@@ -226,6 +230,10 @@ const Prolog_Interface_Atom prolog_interface_atoms[] = {
   { &a_pricing_steepest_edge_exact,
                                  "pricing_steepest_edge_exact" },
   { &a_pricing_textbook,          "pricing_textbook" },
+
+  { &a_cutting_strategy,          "cutting_strategy" },
+  { &a_cutting_strategy_first,    "cutting_strategy_first" },
+  { &a_cutting_strategy_deepest,  "cutting_strategy_deepest" },
 
   { &a_time_out,                 "time_out" },
   { &a_out_of_memory,            "out_of_memory" },
@@ -599,6 +607,12 @@ handle_exception() {
 
 Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
 
+typedef
+Parma_Watchdog_Library::Threshold_Watcher
+<Parma_Polyhedra_Library::Weightwatch_Traits> Weightwatch;
+
+Weightwatch* p_deterministic_timeout_object = 0;
+
 void
 reset_timeout() {
   if (p_timeout_object) {
@@ -607,7 +621,16 @@ reset_timeout() {
     abandon_expensive_computations = 0;
   }
 }
-#endif
+
+void
+reset_deterministic_timeout() {
+  if (p_deterministic_timeout_object) {
+    delete p_deterministic_timeout_object;
+    p_deterministic_timeout_object = 0;
+    abandon_expensive_computations = 0;
+  }
+}
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 
 Prolog_atom timeout_exception_atom;
 
@@ -616,6 +639,17 @@ handle_exception(const timeout_exception&) {
 #ifdef PPL_WATCHDOG_LIBRARY_ENABLED
   assert(p_timeout_object);
   reset_timeout();
+#endif
+  Prolog_term_ref et = Prolog_new_term_ref();
+  Prolog_put_atom(et, timeout_exception_atom);
+  Prolog_raise_exception(et);
+}
+
+void
+handle_exception(const deterministic_timeout_exception&) {
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+  assert(p_deterministic_timeout_object);
+  reset_deterministic_timeout();
 #endif
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_put_atom(et, timeout_exception_atom);
@@ -1173,7 +1207,7 @@ term_to_control_parameter_name(Prolog_term_ref t, const char* where) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
-	&& (name == a_pricing))
+	&& (name == a_pricing || name == a_cutting_strategy))
       return name;
   }
   throw not_a_control_parameter_name(t, where);
@@ -1186,7 +1220,9 @@ term_to_control_parameter_value(Prolog_term_ref t, const char* where) {
     if (Prolog_get_atom_name(t, &name)
 	&& (name == a_pricing_steepest_edge_float
             || name == a_pricing_steepest_edge_exact
-            || name == a_pricing_textbook))
+            || name == a_pricing_textbook
+            || name == a_cutting_strategy_first
+            || name == a_cutting_strategy_deepest))
       return name;
   }
   throw not_a_control_parameter_value(t, where);
@@ -1586,6 +1622,40 @@ ppl_reset_timeout() {
   try {
 #ifdef PPL_WATCHDOG_LIBRARY_ENABLED
     reset_timeout();
+    return PROLOG_SUCCESS;
+#else
+    return PROLOG_FAILURE;
+#endif
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_set_deterministic_timeout(Prolog_term_ref t_weight) {
+  try {
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+    // In case a deterministic timeout was already set.
+    reset_deterministic_timeout();
+    static deterministic_timeout_exception e;
+    unsigned weight
+      = term_to_unsigned<unsigned>(t_weight,
+                                   "ppl_set_deterministic_timeout/1");
+    p_deterministic_timeout_object =
+      new Weightwatch(weight, abandon_expensive_computations, e);
+    return PROLOG_SUCCESS;
+#else
+    used(t_weight);
+    return PROLOG_FAILURE;
+#endif
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_reset_deterministic_timeout() {
+  try {
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+    reset_deterministic_timeout();
     return PROLOG_SUCCESS;
 #else
     return PROLOG_FAILURE;
@@ -2126,6 +2196,398 @@ ppl_MIP_Problem_ascii_dump(Prolog_term_ref t_mip) {
     const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     PPL_CHECK(mip);
     mip->ascii_dump(std::cout);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+
+extern "C" Prolog_foreign_return_type
+ppl_new_PIP_Problem_from_space_dimension
+(Prolog_term_ref t_nd, Prolog_term_ref t_pip) {
+  static const char* where = "ppl_PIP_Problem_from_space_dimension/2";
+  try {
+    dimension_type d = term_to_unsigned<dimension_type>(t_nd, where);
+    PIP_Problem* pip = new PIP_Problem(d);
+    Prolog_term_ref tmp = Prolog_new_term_ref();
+    Prolog_put_address(tmp, pip);
+    if (Prolog_unify(t_pip, tmp)) {
+      PPL_REGISTER(pip);
+      return PROLOG_SUCCESS;
+    }
+    else
+      delete pip;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_new_PIP_Problem_from_PIP_Problem(Prolog_term_ref t_pip_source,
+				     Prolog_term_ref t_pip) {
+  static const char* where = "ppl_new_PIP_Problem_from_PIP_Problem/2";
+  try {
+    const PIP_Problem* pip_source
+      = static_cast<const PIP_Problem*>
+      (term_to_handle<PIP_Problem>(t_pip_source, where));
+    PPL_CHECK(pip_source);
+    PIP_Problem* pip = new PIP_Problem(*pip_source);
+    Prolog_term_ref tmp = Prolog_new_term_ref();
+    Prolog_put_address(tmp, pip);
+    if (Prolog_unify(t_pip, tmp)) {
+      PPL_REGISTER(pip);
+      return PROLOG_SUCCESS;
+    }
+    else
+      delete pip;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+  static const char* where = "ppl_PIP_Problem_swap/2";
+  try {
+    PIP_Problem* lhs = term_to_handle<PIP_Problem>(t_lhs, where);
+    PIP_Problem* rhs = term_to_handle<PIP_Problem>(t_rhs, where);
+    PPL_CHECK(lhs);
+    PPL_CHECK(rhs);
+    lhs->swap(*rhs);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_delete_PIP_Problem(Prolog_term_ref t_pip) {
+  static const char* where = "ppl_delete_PIP_Problem/1";
+  try {
+    const PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_UNREGISTER(pip);
+    delete pip;
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_space_dimension(Prolog_term_ref t_pip, Prolog_term_ref t_sd) {
+  static const char* where = "ppl_PIP_Problem_space_dimension/2";
+  try {
+    const PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    if (unify_ulong(t_sd, pip->space_dimension()))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_parameter_space_dimensions(Prolog_term_ref t_pip,
+                                           Prolog_term_ref t_vlist) {
+  static const char* where = "ppl_PIP_Problem_parameter_space_dimensions/2";
+  try {
+    const PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+
+    Prolog_term_ref tail = Prolog_new_term_ref();
+    Prolog_put_atom(tail, a_nil);
+    const Variables_Set& params = pip->parameter_space_dimensions();
+
+    for (Variables_Set::const_iterator i = params.begin(),
+	   i_end = params.end(); i != i_end; ++i)
+      Prolog_construct_cons(tail, variable_term(*i), tail);
+
+    if (Prolog_unify(t_vlist, tail))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_constraints(Prolog_term_ref t_pip,
+			    Prolog_term_ref t_clist) {
+  static const char* where = "ppl_PIP_Problem_constraints/2";
+  try {
+    const PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+
+    Prolog_term_ref tail = Prolog_new_term_ref();
+    Prolog_put_atom(tail, a_nil);
+    for (PIP_Problem::const_iterator i = pip->constraints_begin(),
+	   i_end = pip->constraints_end(); i != i_end; ++i)
+      Prolog_construct_cons(tail, constraint_term(*i), tail);
+
+    if (Prolog_unify(t_clist, tail))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_clear(Prolog_term_ref t_pip) {
+  static const char* where = "ppl_PIP_Problem_clear/1";
+  try {
+    PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    pip->clear();
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_add_space_dimensions_and_embed
+(Prolog_term_ref t_pip,
+ Prolog_term_ref t_num_vars,
+ Prolog_term_ref t_num_params) {
+  static const char* where
+    = "ppl_PIP_Problem_add_space_dimensions_and_embed/3";
+  try {
+    PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    dimension_type nv = term_to_unsigned<dimension_type>(t_num_vars, where);
+    dimension_type np = term_to_unsigned<dimension_type>(t_num_params, where);
+    pip->add_space_dimensions_and_embed(nv, np);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_add_to_parameter_space_dimensions(Prolog_term_ref t_pip,
+                                                  Prolog_term_ref t_vlist) {
+  static const char* where
+    = "ppl_PIP_Problem_add_to_parameter_space_dimensions/2";
+  try {
+    PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    Variables_Set params;
+    Prolog_term_ref v = Prolog_new_term_ref();
+
+    while (Prolog_is_cons(t_vlist)) {
+      Prolog_get_cons(t_vlist, v, t_vlist);
+      params.insert(term_to_Variable(v, where).id());
+    }
+
+    // Check the list is properly terminated.
+    check_nil_terminating(t_vlist, where);
+
+    pip->add_to_parameter_space_dimensions(params);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_add_constraint(Prolog_term_ref t_pip, Prolog_term_ref t_c) {
+  static const char* where = "ppl_PIP_Problem_add_constraint/2";
+  try {
+    PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    pip->add_constraint(build_constraint(t_c, where));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_add_constraints(Prolog_term_ref t_pip,
+				Prolog_term_ref t_clist) {
+  static const char* where = "ppl_PIP_Problem_add_constraints/2";
+  try {
+    PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    Constraint_System cs;
+    Prolog_term_ref c = Prolog_new_term_ref();
+
+    while (Prolog_is_cons(t_clist)) {
+      Prolog_get_cons(t_clist, c, t_clist);
+      cs.insert(build_constraint(c, where));
+    }
+
+    // Check the list is properly terminated.
+    check_nil_terminating(t_clist, where);
+
+    pip->add_constraints(cs);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_get_control_parameter(Prolog_term_ref t_pip,
+                                      Prolog_term_ref t_cp_name,
+                                      Prolog_term_ref t_cp_value) {
+  static const char* where = "ppl_PIP_Problem_get_control_parameter/3";
+  try {
+    PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    Prolog_atom cp_name = term_to_control_parameter_name(t_cp_name, where);
+    PIP_Problem::Control_Parameter_Value ppl_cp_value;
+    if (cp_name == a_cutting_strategy)
+      ppl_cp_value = pip->get_control_parameter(PIP_Problem::CUTTING_STRATEGY);
+    else
+      throw unknown_interface_error("ppl_PIP_Problem_get_control_parameter()");
+
+    Prolog_term_ref t = Prolog_new_term_ref();
+    Prolog_atom a;
+    switch (ppl_cp_value) {
+    case PIP_Problem::CUTTING_STRATEGY_FIRST:
+      a = a_cutting_strategy_first;
+      break;
+    case PIP_Problem::CUTTING_STRATEGY_DEEPEST:
+      a = a_cutting_strategy_deepest;
+      break;
+    default:
+      throw unknown_interface_error("ppl_PIP_Problem_get_control_parameter()");
+    }
+    Prolog_put_atom(t, a);
+    if (Prolog_unify(t_cp_value, t))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_set_control_parameter(Prolog_term_ref t_pip,
+				      Prolog_term_ref t_cp_value) {
+  static const char* where = "ppl_PIP_Problem_set_control_parameter/2";
+  try {
+    PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+
+    Prolog_atom cp_value = term_to_control_parameter_value(t_cp_value, where);
+    if (cp_value == a_cutting_strategy_first)
+      pip->set_control_parameter(PIP_Problem::CUTTING_STRATEGY_FIRST);
+    else if (cp_value == a_cutting_strategy_deepest)
+      pip->set_control_parameter(PIP_Problem::CUTTING_STRATEGY_DEEPEST);
+    else
+      throw unknown_interface_error("ppl_PIP_Problem_set_control_parameter()");
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_get_big_parameter_dimension(Prolog_term_ref t_pip,
+                                            Prolog_term_ref t_d) {
+  static const char* where = "ppl_PIP_Problem_get_big_parameter_dimension/2";
+  try {
+    PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    if (unify_ulong(t_d, pip->get_big_parameter_dimension()))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_set_big_parameter_dimension(Prolog_term_ref t_pip,
+                                            Prolog_term_ref t_d) {
+  static const char* where = "ppl_MIP_Problem_set_big_parameter_dimension/2";
+  try {
+    PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    dimension_type d = term_to_unsigned<dimension_type>(t_d, where);
+    pip->set_big_parameter_dimension(d);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_is_satisfiable(Prolog_term_ref t_pip) {
+  static const char* where = "ppl_PIP_Problem_is_satisfiable/1";
+  try {
+    const PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    if (pip->is_satisfiable())
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_solve(Prolog_term_ref t_pip, Prolog_term_ref t_status) {
+  static const char* where = "ppl_PIP_Problem_solve/2";
+  try {
+    const PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+
+    Prolog_atom a;
+    switch (pip->solve()) {
+    case UNFEASIBLE_PIP_PROBLEM:
+      a = a_unfeasible;
+      break;
+    case OPTIMIZED_PIP_PROBLEM:
+      a = a_optimized;
+      break;
+    default:
+      throw unknown_interface_error("ppl_PIP_Problem_solve()");
+    }
+    Prolog_term_ref t = Prolog_new_term_ref();
+    Prolog_put_atom(t, a);
+    if (Prolog_unify(t_status, t))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_solution(Prolog_term_ref t_pip,
+                         Prolog_term_ref t_pip_tree) {
+  static const char* where = "ppl_PIP_Problem_solution/2";
+  try {
+    const PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    PIP_Tree_Node* sol = const_cast<PIP_Tree_Node*>(pip->solution());
+    Prolog_term_ref t_sol = Prolog_new_term_ref();
+    Prolog_put_address(t_sol, sol);
+    if (Prolog_unify(t_pip_tree, t_sol)) {
+      PPL_WEAK_REGISTER(t_pip_tree);
+      return PROLOG_SUCCESS;
+    }
+ }
+ CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_optimizing_solution(Prolog_term_ref t_pip,
+                                    Prolog_term_ref t_pip_tree) {
+  static const char* where = "ppl_PIP_Problem_optimizing_solution/2";
+  try {
+    const PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    PIP_Tree_Node* sol = const_cast<PIP_Tree_Node*>(pip->optimizing_solution());
+    Prolog_term_ref t_sol = Prolog_new_term_ref();
+    Prolog_put_address(t_sol, sol);
+    if (Prolog_unify(t_pip_tree, t_sol)) {
+      PPL_WEAK_REGISTER(t_pip_tree);
+      return PROLOG_SUCCESS;
+    }
+ }
+ CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_OK(Prolog_term_ref t_pip) {
+  static const char* where = "ppl_PIP_Problem_OK/1";
+  try {
+    const PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    if (pip->OK())
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Problem_ascii_dump(Prolog_term_ref t_pip) {
+  static const char* where = "ppl_PIP_Problem_ascii_dump/1";
+  try {
+    const PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
+    PPL_CHECK(pip);
+    pip->ascii_dump(std::cout);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;

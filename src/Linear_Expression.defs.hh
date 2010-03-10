@@ -1,5 +1,5 @@
 /* Linear_Expression class declaration.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -165,6 +165,12 @@ operator-=(Linear_Expression& e, Coefficient_traits::const_reference n);
 /*! \relates Linear_Expression */
 Linear_Expression&
 operator*=(Linear_Expression& e, Coefficient_traits::const_reference n);
+
+//! Returns the linear expression \p e + \p n * \p v and assigns it to \p e.
+/*! \relates Linear_Expression */
+Linear_Expression&
+add_mul_assign(Linear_Expression& e,
+               Coefficient_traits::const_reference n, Variable v);
 
 namespace IO_Operators {
 
@@ -450,6 +456,10 @@ private:
 
   friend Linear_Expression&
   operator*=(Linear_Expression& e, Coefficient_traits::const_reference n);
+
+  friend Linear_Expression&
+  add_mul_assign(Linear_Expression& e,
+                 Coefficient_traits::const_reference n, Variable v);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators

@@ -1,4 +1,4 @@
-//  Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+//  Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 //
 //  This document describes the Parma Polyhedra Library (PPL).
 //
@@ -71,7 +71,7 @@ The main features of the library are the following:
   GNU General Public License.
 
 In the following section we describe all the domains available to the PPL user.
-More detailed descriptions of these domains andthe operations provided
+More detailed descriptions of these domains and the operations provided
 will be found in subsequent sections.
 
 In the final section of this chapter (Section \ref use_of_library),
@@ -105,7 +105,7 @@ Other semantic GDs, the <EM>compound classes</EM>, can be constructed
 These include:
   - \link Parma_Polyhedra_Library::Pointset_Powerset \c Pointset_Powerset\<PS\> \endlink,
   - \link Parma_Polyhedra_Library::Partially_Reduced_Product <CODE>Partially_Reduced_Product\<D1, D2, R\></CODE> \endlink,
-
+  .
 where \c PS, \c D1 and \c D2 can be any semantic GD classes and \c R is the
 reduction operation to be applied to the component domains of the
 product class.
@@ -334,7 +334,7 @@ descriptors since they are also used in <EM>generic</EM> PPL operations.
   an invalid argument exception is thrown.
 </LI>
 <LI>
-  Other interaction between the semantic GDs and constraint GDs
+  Other interaction between the semantic GDs and constraint GDs.
   <UL>
   <LI>
     <CODE>add_constraint()</CODE>, <CODE>add_constraints()</CODE>,
@@ -356,10 +356,10 @@ descriptors since they are also used in <EM>generic</EM> PPL operations.
     <CODE>refine_with_constraint()</CODE>,
     <CODE>refine_with_constraints()</CODE>,
     <CODE>refine_with_congruence()</CODE>,
-    <CODE>refine_with_congruences()</CODE>
+    <CODE>refine_with_congruences()</CODE>.
 
     If the argument constraint GD is optimally supported by the
-    semantic GD, the the methods behave the same as the corresponding
+    semantic GD, the methods behave the same as the corresponding
     \c add_* methods listed above.  Otherwise the constraint GD
     is used only to a limited extent to refine the semantic GD;
     possibly not at all.  Notice that, while repeating an add operation
@@ -384,20 +384,20 @@ descriptors since they are also used in <EM>generic</EM> PPL operations.
   </LI>
   <LI>
     <CODE>constraints()</CODE>, <CODE>minimized_constraints()</CODE>,
-    <CODE>congruences()</CODE>, <CODE>minimized_congruences()</CODE>
+    <CODE>congruences()</CODE>, <CODE>minimized_congruences()</CODE>.
 
-    returns the indicated system of constraint GDs satisfied by
+    Returns the indicated system of constraint GDs satisfied by
     the semantic GD.
   </LI>
   <LI>
     <CODE>can_recycle_constraint_systems()</CODE>,
-    <CODE>can_recycle_congruence_systems()</CODE>
+    <CODE>can_recycle_congruence_systems()</CODE>.
 
-    return true if and only if the semantic GD can recycle the
+    Return true if and only if the semantic GD can recycle the
     indicated constraint GD.
   </LI>
   <LI>
-    <CODE>relation_with()</CODE>
+    <CODE>relation_with()</CODE>.
 
     This takes a constraint GD as an argument and returns the relations holding
     between the semantic GD and the constraint GD.
@@ -458,7 +458,8 @@ Supported overflow behaviors are:
 <DL>
   <DT>Wrapping:</DT>
   <DD>
-    this means that, for a \f$w\f$-bit bounded integer, the computation
+    this means that, for a \f$w\textrm{-bit}\f$ bounded integer, the
+    computation
     happens modulo \f$2^w\f$.  In turn, this signifies that the computation
     happens <EM>as if</EM> the unbounded arithmetic result was computed
     and then wrapped.  For unsigned integers, the wrapping function is
@@ -506,17 +507,18 @@ FIXME(0.11): to be continued.
 
 \subsubsection Wrapping_Operator Wrapping Operator
 
-One possibility to precisely approximate the semantics of programs that
+One possibility for precisely approximating the semantics of programs that
 operate on bounded integer variables is to follow the approach described
 in \ref SK07 "[SK07]".  The idea is to associate space dimensions to the
 <EM>unwrapped values</EM> of bounded variables.  Suppose <CODE>j</CODE>
-is a \f$w\f$-bit, unsigned program variable associated to a space dimension
+is a \f$w\textrm{-bit}\f$, unsigned program variable associated to a space 
+dimension
 labeled by the variable \f$x\f$.  If \f$x\f$ is constrained by some
 numerical abstraction to take values in a set \f$S \sseq \Rset\f$, then
 the program variable <CODE>j</CODE> can only take values in
 \f$\bigl\{\, \mathrm{wrap}^\mathrm{u}_w(z) \bigm| z \in S \,\bigr\}\f$.
-There are two reasons why this is interesting: firstly, this allows
-to retain relational information by using a single numerical abstraction
+There are two reasons why this is interesting: firstly, this allows for
+the retention of relational information by using a single numerical abstraction
 tracking multiple program variables.  Secondly, the integers modulo
 \f$2^w\f$ form a ring of equivalence classes on which addition
 and multiplication are well defined.  This means, e.g., that assignments
@@ -526,14 +528,14 @@ While upper bounds and widening can be used without any precaution,
 anything that can be reconducted to intersection requires a preliminary
 <EM>wrapping</EM> phase, where the dimensions corresponding to bounded
 integer types are brought back to their natural domain.
-This necessity arise naturally for the analysis of conditionals
+This necessity arises naturally for the analysis of conditionals
 and conversion operators, as well as in the realization of domain
 combinations.
 
 The PPL provides a general wrapping operator that is parametric with
 respect to the set of space dimensions (variables) to be wrapped,
 the width, representation and overflow behavior of all these variables.
-An optional constraint system allows, when given, to increase the
+An optional constraint system can, when given, improve the
 precision.  This constraint system, which must only depend on variables
 with respect to which wrapping is performed, is assumed to represent
 the conditional or looping construct guard with respect to which
@@ -541,7 +543,7 @@ wrapping is performed.  Since wrapping requires the computation of
 upper bounds and due to non-distributivity of constraint refinement
 over upper bounds, passing a constraint system in this way can be more
 precise than refining the result of the wrapping operation afterwards.
-The general wrapping operator offered by the PPL also allows to control
+The general wrapping operator offered by the PPL also allows control of
 the complexity/precision ratio by means of two additional parameters:
 an unsigned integer encoding a complexity threshold, with higher values
 resulting in possibly improved precision; and a Boolean controlling
@@ -552,8 +554,8 @@ or collectively.
 Note that the PPL assumes that any space dimension subject to wrapping
 is being used to capture the value of bounded integer values.  As a
 consequence the library is free to drop, from the involved numerical
-abstraction, any point having a non-integer coordinate in correspondence
-of a space dimension subject to wrapping.  It must be stressed that
+abstraction, any point having a non-integer coordinate that corresponds
+to a space dimension subject to wrapping.  It must be stressed that
 freedom to drop such points does not constitute an obligation to remove
 all of them (especially because this would be extraordinarily expensive
 on some numerical abstractions).
@@ -562,7 +564,7 @@ The PPL provides operators for the more systematic
 "removal of points with non-integral coordinates".
 
 The wrapping operator will only remove some of these points
-as a byproduct of its main task and only when this comes at a negligible
+as a by-product of its main task and only when this comes at a negligible
 extra cost.
 
 
@@ -578,11 +580,11 @@ For more information about the definitions and results stated here see
 
 \subsection Vectors_Matrices_and_Scalar_Products Vectors, Matrices and Scalar Products
 
-We denote by \f$\Rset^n\f$ the \f$n\f$-dimensional vector space on the field
+We denote by \f$\Rset^n\f$ the \f$n\textrm{-dimensional}\f$ vector space on the field
 of real numbers \f$\Rset\f$, endowed with the standard topology.
 The set of all non-negative reals is denoted by \f$\nonnegRset\f$.
 For each \f$i \in \{0, \ldots, n-1\}\f$, \f$v_i\f$ denotes
-the \f$i\f$-th component of the (column) vector
+the \f$i\textrm{-th}\f$ component of the (column) vector
 \f$\vect{v} = (v_0, \ldots, v_{n-1})^\transpose \in \Rset^n\f$.
 We denote by \f$\vect{0}\f$ the vector of \f$\Rset^n\f$,
 called <EM>the origin</EM>, having all components equal to zero.
@@ -681,7 +683,7 @@ increased accuracy.
 \subsection Bounded_Polyhedra Bounded Polyhedra
 
 An NNC polyhedron \f$\cP \in \Pset_n\f$ is <EM>bounded</EM>
-if there exists a \f$\lambda \in \nonnegRset\f$ such that
+if there exists a \f$\lambda \in \nonnegRset\f$ such that:
 \f[
   \cP
     \sseq
@@ -1460,6 +1462,28 @@ is defined as
               w_i = v_i
           \Bigr).
 \f]
+
+\subsection affine_form_relation Affine Form Relations.
+Let \f$\mathbb{F}_{\mathrm{f}}\f$ be the set of floating point numbers 
+representables in a certain 
+format \f$\mathrm{f}\f$ and let \f$\mathbb{I}_\mathrm{f}\f$ be the set of 
+real intervals with bounds in \f$\mathbb{F}_{\mathrm{f}}\f$.
+We can define a <EM>floating-point interval linear form</EM> 
+\f$\langle\vect{\alpha}, \vect{x}\rangle
+ + \beta\f$ 
+as:
+	\f[\left<\vect{\alpha}, \vect{x}\right> + \beta = 
+	\alpha_0x_0 + \ldots + 
+	\alpha_{n-1}x_{n-1} + \beta,\f]
+
+where \f$\beta\f$, \f$\vect{\alpha}_k \in \mathbb{I}_{\mathrm{f}}\f$ 
+for each \f$k = 0, \ldots, n - 1\f$. 
+
+Given a such linear form \f$\mathrm{lf}\f$ and a primed variable \f$x'_k\f$ the 
+<EM>affine form image</EM> operator computes the bounded affine image of a 
+polyhedron \f$\cP\f$ under \f$\mathrm{lb} \leq x'_k \leq \mathrm{ub}\f$, where
+\f$\mathrm{lb}\f$ and \f$\mathrm{ub}\f$ are the upper and lower bound 
+of \f$\mathrm{lf}\f$ respectively.
 
 \subsection Generalized_Affine_Relations Generalized Affine Relations.
 Similarly, the <EM>generalized affine relation</EM>
@@ -2593,6 +2617,151 @@ It is also worth stressing that it is up to the user
 to see that the widening operator is actually compatible with
 a given convergence certificate. If such a requirement is not met,
 then an extrapolation operator will be obtained.
+
+\section floating_point Analysis of floating point computations
+
+This section describes the PPL abstract domains that are used for
+approximating floating point computations in software analysis. We follow
+the approch described in \ref Min04 "[Min04]" and more detailedly in
+\ref Min05 "[Min05]". We will denote by \f$\cV\f$ the set of all floating
+point variables in the analyzed program. We will also denote by
+\f$\mathbb{F}_a\f$ the set of floating point numbers in the format used by the
+analyzer (that is, the machine running the PPL) and by \f$\mathbb{F}_t\f$
+the set of floating point numbers in the format used by the machine that is
+expected to run the analyzed program. Recall that floating point numbers
+include the infinities \f$-\infty\f$ and \f$+\infty\f$.
+
+\subsection interval_linear_forms Linear forms with interval coefficients
+
+Generic concrete <EM>floating point expressions</EM> on
+\f$\mathbb{F}_t\f$ are represented by the
+\link Parma_Polyhedra_Library::Floating_Point_Expression \c Floating_Point_Expression \endlink
+abstract class. Its concrete derivate classes are:
+  - \link Parma_Polyhedra_Library::Cast_Floating_Point_Expression \c Cast_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Constant_Floating_Point_Expression \c Constant_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Variable_Floating_Point_Expression \c Variable_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Opposite_Floating_Point_Expression \c Opposite_Floating_Point_Expression \endlink,
+    that is the negation (unary minus) of a floating point expression,
+  - \link Parma_Polyhedra_Library::Sum_Floating_Point_Expression \c Sum_Floating_Point_Expression \endlink,
+    that is the sum of two floating point expressions,
+  - \link Parma_Polyhedra_Library::Difference_Floating_Point_Expression \c Difference_Floating_Point_Expression \endlink,
+    that is the difference of two floating point expressions,
+  - \link Parma_Polyhedra_Library::Multiplication_Floating_Point_Expression \c Multiplication_Floating_Point_Expression \endlink,
+    that is the product of two floating point expressions, and
+  - \link Parma_Polyhedra_Library::Division_Floating_Point_Expression \c Division_Floating_Point_Expression \endlink,
+    that is the division of two floating point expressions.
+
+The set of all the possible values in \f$\mathbb{F}_t\f$ of a floating point
+expression at a given program point in a given abstract store can be
+overapproximated by a <EM>linear form</EM> with interval coefficients, that is
+a linear expression of this kind:
+
+\f[
+  i + \sum_{v \in \cV}i_{v}v,
+\f]
+
+where all \f$v\f$ are free floating point variables and \f$i\f$ and all
+\f$i_{v}\f$ are elements of \f$\mathbb{I}_a\f$, defined as the set of all
+intervals with boundaries in \f$\mathbb{F}_a\f$. This operation is called
+<EM>linearization</EM> and is performed by the method linearize of floating
+point expression classes.
+
+Even though the intervals may be open, we will always use closed intervals
+in the documentation for the sake of simplicity, with the exception of unbounded
+intervals that have \f$\infty\f$ boundaries. We denote the set of all linear
+forms on \f$\mathbb{F}_a\f$ by \f$\mathbb{L}_a\f$.
+
+The \link Parma_Polyhedra_Library::Linear_Form \c Linear_Form \endlink class
+provides common algebraic operations on linear forms: you can add or
+subtract two linear forms, and multiply or divide a linear form by a scalar.
+We are writing only about interval linear forms in this section, so our
+scalars will always be intervals with floating point boundaries.
+The operations on interval linear forms are intuitively defined as follows:
+
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \aslf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  \defeq
+  \left(i \asifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \asifp i'_{v}\right)v,
+
+\f]
+
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \adlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  \defeq
+  \left(i \adifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \adifp i'_{v}\right)v,
+
+\f]
+
+\f[
+
+  i
+  \amlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  \defeq
+  \left(i \amifp i'\right) +
+  \sum_{v \in V}\left(i \amifp i'_{v}\right)v,
+
+\f]
+
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \adivlf
+  i'
+  \defeq
+  \left(i \adivifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \adivifp i'\right)v.
+
+\f]
+
+Where \f$\asifp, \adifp, \amifp,\f$ and \f$\adivifp\f$ are the corresponding
+operations on intervals. Note that these operations always round the
+interval's lower bound towards \f$-\infty\f$ and the upper bound towards
+\f$+\infty\f$ in order to obtain a correct overapproximation.
+
+A <EM>(composite) floating point abstract store</EM> is used to associate each
+floating point variable with its currently known approximation. The store is
+composed by two parts:
+  - an <EM>interval abstract store</EM>
+    \f$\fund{\rho^{\#}}{\cV}{\mathbb{I}_a}\f$
+    associating each variable with its current approximating interval, and
+  - a <EM>linear form abstract store</EM>
+    \f$\fund{\rho^{\#}_l}{\cV}{\mathbb{L}_a}\f$
+    associating each variable with its current approximating linear form.
+
+An interval abstract store is represented by a
+\link Parma_Polyhedra_Library::Box \c Box \endlink with floating point
+boundaries, while a linear form abstract store is a map
+of the Standard Template Library. The <CODE>linearize</CODE> method requires
+both stores as its arguments. Please see the documentation of floating point
+expression classes for more information.
+
+The linearization of a floating point expression \f$e\f$ in the composite
+abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right \rrbracket\f$ will
+be denoted by \f$\linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}\f$. There are two ways a linearization attempt can fail:
+  - whenever an interval boundary overflows to \f$+\infty\f$ or \f$-\infty\f$,
+    and
+  - when we try to divide by an interval that contains \f$0\f$.
+
+\subsection fp_abstract_domains Use of other abstract domains for floating point analysis
+
+Three of the other abstract domains of the PPL (
+\link Parma_Polyhedra_Library::BD_Shape \c BD_Shape \endlink,
+\link Parma_Polyhedra_Library::Octagonal_Shape \c Octagonal_Shape \endlink,
+and \link Parma_Polyhedra_Library::Polyhedron \c Polyhedron \endlink)
+provide a few optimized methods to be used in the analysis of floating point
+computations. They are recognized by the fact that they take interval
+linear forms and/or an interval abstract stores as their parameters.
+
+Please see the methods' documentation for more information.
 
 \section use_of_library Using the Library
 

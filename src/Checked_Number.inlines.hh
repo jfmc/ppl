@@ -1,5 +1,5 @@
 /* Checked_Number class implementation: inline functions.
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -47,7 +47,7 @@ inline Result
 check_result(Result r, Rounding_Dir dir) {
   if (dir == ROUND_NOT_NEEDED) {
 #ifdef DEBUG_ROUND_NOT_NEEDED
-    assert(result_relation(r) == VR_EQ);
+    PPL_ASSERT(result_relation(r) == VR_EQ);
 #endif
     return r;
   }

@@ -1,6 +1,6 @@
 /* H79_Certificate class implementation
    (non-inline member functions).
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "H79_Certificate.defs.hh"
 
 #include "Polyhedron.defs.hh"
-#include <cassert>
+#include "assert.hh"
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -42,7 +42,7 @@ PPL::H79_Certificate::H79_Certificate(const Polyhedron& ph)
   affine_dim = space_dim;
   const Constraint_System& cs = ph.minimized_constraints();
   // It is assumed that `ph' is not an empty polyhedron.
-  assert(!ph.marked_empty());
+  PPL_ASSERT(!ph.marked_empty());
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     ++num_constraints;
@@ -84,7 +84,7 @@ PPL::H79_Certificate::compare(const Polyhedron& ph) const {
   const Constraint_System& cs = ph.minimized_constraints();
   // It is assumed that `ph' is a polyhedron containing the
   // polyhedron described by `*this': hence, it cannot be empty.
-  assert(!ph.marked_empty());
+  PPL_ASSERT(!ph.marked_empty());
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     ++ph_num_constraints;
@@ -106,7 +106,7 @@ PPL::H79_Certificate::compare(const Polyhedron& ph) const {
     return 1;
 
   // At this point the two polyhedra must have the same affine dimension.
-  assert(ph_affine_dim == affine_dim);
+  PPL_ASSERT(ph_affine_dim == affine_dim);
 
   // If the number of constraints of `ph' is decreasing, then the chain
   // is stabilizing. If it is increasing, the chain is not stabilizing.
