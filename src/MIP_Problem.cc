@@ -1111,6 +1111,10 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
         i = last_i;
         ++i;
         i_end = x.end();
+        if (& static_cast<matrix_row_const_reference_type>(x) == &y) {
+          j = i;
+          j_end = i_end;
+        }
 #endif
         PPL_ASSERT(x_i == 0);
         // FIXME: this can be optimized further
@@ -1146,6 +1150,10 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
         i = last_i;
         ++i;
         i_end = x.end();
+        if (& static_cast<matrix_row_const_reference_type>(x) == &y) {
+          j = i;
+          j_end = i_end;
+        }
 #endif
         PPL_ASSERT(x_i == 0);
         // FIXME: this can be optimized further
