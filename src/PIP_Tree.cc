@@ -429,20 +429,76 @@ find_lexico_minimum_column(const PIP_Tree_Node::matrix_type& tableau,
                            const dimension_type start_j,
                            dimension_type& j_out) {
   const dimension_type num_cols = tableau.num_columns();
-  bool has_positive_coefficient = false;
-
-  j_out = num_cols;
+  const dimension_type num_vars = mapping.size();
+  std::set<dimension_type> candidates;
   for (dimension_type j = start_j; j < num_cols; ++j) {
     const Coefficient& c = pivot_row[j];
-    if (c <= 0)
-      continue;
-    has_positive_coefficient = true;
-    if (j_out == num_cols
-        || column_lower(tableau, mapping, basis,
-                        pivot_row, j, pivot_row, j_out))
-      j_out = j;
+    if (c > 0)
+      candidates.insert(j);
   }
-  return has_positive_coefficient;
+  if (candidates.empty()) {
+    j_out = num_cols;
+    return false;
+  }
+  for (dimension_type var_index=0; var_index<num_vars; ++var_index) {
+    if (basis[var_index])
+      continue;
+    const dimension_type row_index = mapping[var_index];
+    PIP_Tree_Node::matrix_row_const_reference_type row = tableau[row_index];
+    PIP_Tree_Node::matrix_const_row_const_iterator row_end = row.end();
+    std::set<dimension_type>::iterator i = candidates.begin();
+    std::set<dimension_type>::iterator i_end = candidates.end();
+    PPL_ASSERT(i != i_end);
+    dimension_type min_index = *i;
+    ++i;
+    if (i == i_end)
+      // Only one candidate left, so it is the minimum.
+      break;
+    PIP_Tree_Node::matrix_const_row_const_iterator
+      current_itr = row.lower_bound(min_index);
+    if (current_itr == row_end || (*current_itr).first > min_index) {
+      // First candidate has value 0 in row_index.
+      // Remove all candidates with nonzero value in this row.
+      if (current_itr != row_end)
+        for (++current_itr; current_itr!=row_end; ++current_itr)
+          if ((*current_itr).second != 0)
+            candidates.erase((*current_itr).first);
+    } else {
+      PPL_ASSERT((*current_itr).first == min_index);
+      PIP_Tree_Node::matrix_const_row_const_iterator last_itr = current_itr;
+      // last_itr points to row[min_index]
+      PPL_ASSERT(&((*last_itr).second) == &(row.get(min_index)));
+      Coefficient min_value = (*last_itr).second;
+      min_value /= pivot_row[min_index];
+      PPL_DIRTY_TEMP_COEFFICIENT(challenger_value);
+      std::set<dimension_type> new_candidates;
+      new_candidates.insert(min_index);
+      for ( ; i!=i_end; ++i) {
+        current_itr = row.find(*i,last_itr);
+        if (current_itr == row_end)
+          challenger_value = Coefficient_zero();
+        else {
+          last_itr = current_itr;
+          challenger_value = (*current_itr).second;
+          challenger_value /= pivot_row[(*current_itr).first];
+        }
+        if (min_value == challenger_value)
+          new_candidates.insert(*i);
+        else
+          if (min_value > challenger_value) {
+            new_candidates.clear();
+            new_candidates.insert(*i);
+          }
+        // If min_value < challenger_value, we don't add *i to new_candidates,
+        // so it will be ignored in the next pass.
+      }
+      std::swap(candidates,new_candidates);
+    }
+    PPL_ASSERT(!candidates.empty());
+  }
+  PPL_ASSERT(!candidates.empty());
+  j_out = *(candidates.begin());
+  return true;
 }
 
 // Divide all coefficients in row x and denominator y by their GCD.
