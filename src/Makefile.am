@@ -144,6 +144,7 @@ Dense_Row.types.hh \
 Unlimited_Sparse_Row.types.hh \
 Unlimited_Sparse_Row_Std_List_Backend.types.hh \
 Unlimited_Sparse_Row_Custom_Slist_Backend.types.hh \
+Unlimited_Sparse_Row_Std_Vector_Backend.types.hh \
 Sparse_Row.types.hh \
 Sparse_Matrix.types.hh \
 Linear_Row.types.hh \
@@ -253,6 +254,8 @@ Unlimited_Sparse_Row_Std_List_Backend.defs.hh \
 Unlimited_Sparse_Row_Std_List_Backend.inlines.hh \
 Unlimited_Sparse_Row_Custom_Slist_Backend.defs.hh \
 Unlimited_Sparse_Row_Custom_Slist_Backend.inlines.hh \
+Unlimited_Sparse_Row_Std_Vector_Backend.defs.hh \
+Unlimited_Sparse_Row_Std_Vector_Backend.inlines.hh \
 Sparse_Row.defs.hh \
 Sparse_Row.inlines.hh \
 Sparse_Matrix.defs.hh \
@@ -468,6 +471,7 @@ Pointset_Powerset.cc \
 Unlimited_Sparse_Row.cc \
 Unlimited_Sparse_Row_Std_List_Backend.cc \
 Unlimited_Sparse_Row_Custom_Slist_Backend.cc \
+Unlimited_Sparse_Row_Std_Vector_Backend.cc \
 Sparse_Row.cc \
 Sparse_Matrix.cc \
 Row.cc \
