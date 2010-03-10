@@ -65,12 +65,32 @@ add_mul_assign_row(PIP_Tree_Node::matrix_row_reference_type x,
       } else {
         last_i = x.find_create((*j).first,(*j).second);
         (*last_i).second *= c;
+#ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
+        i = last_i;
+        ++i;
+        i_end = x.end();
+        if (& static_cast<PIP_Tree_Node::
+                          matrix_row_const_reference_type>(x) == &y) {
+          j = last_i;
+          j_end = y.end();
+        }
+#endif
         ++j;
       }
   } else
     if (j != j_end) {
       last_i = x.find_create((*j).first,(*j).second);
       neg_assign((*last_i).second);
+#ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
+      i = last_i;
+      ++i;
+      i_end = x.end();
+      if (& static_cast<PIP_Tree_Node::
+                        matrix_row_const_reference_type>(x) == &y) {
+        j = last_i;
+        j_end = y.end();
+      }
+#endif
       ++j;
     }
   while (i != i_end && j != j_end)
@@ -87,6 +107,16 @@ add_mul_assign_row(PIP_Tree_Node::matrix_row_reference_type x,
       } else {
         last_i = x.find_create((*j).first,(*j).second,last_i);
         (*last_i).second *= c;
+#ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
+        i = last_i;
+        ++i;
+        i_end = x.end();
+        if (& static_cast<PIP_Tree_Node::
+                          matrix_row_const_reference_type>(x) == &y) {
+          j = last_i;
+          j_end = y.end();
+        }
+#endif
         ++j;
       }
   while (j != j_end) {
@@ -119,12 +149,32 @@ sub_assign(PIP_Tree_Node::matrix_row_reference_type x,
       } else {
         last_i = x.find_create((*j).first,(*j).second);
         neg_assign((*last_i).second);
+#ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
+        i = last_i;
+        ++i;
+        i_end = x.end();
+        if (& static_cast<PIP_Tree_Node::
+                          matrix_row_const_reference_type>(x) == &y) {
+          j = last_i;
+          j_end = y.end();
+        }
+#endif
         ++j;
       }
   } else
     if (j != j_end) {
       last_i = x.find_create((*j).first,(*j).second);
       neg_assign((*last_i).second);
+#ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
+      i = last_i;
+      ++i;
+      i_end = x.end();
+      if (& static_cast<PIP_Tree_Node::
+                        matrix_row_const_reference_type>(x) == &y) {
+        j = last_i;
+        j_end = y.end();
+      }
+#endif
       ++j;
     }
   while (i != i_end && j != j_end)
@@ -141,6 +191,16 @@ sub_assign(PIP_Tree_Node::matrix_row_reference_type x,
       } else {
         last_i = x.find_create((*j).first,(*j).second,last_i);
         neg_assign((*last_i).second);
+#ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
+        i = last_i;
+        ++i;
+        i_end = x.end();
+        if (& static_cast<PIP_Tree_Node::
+                          matrix_row_const_reference_type>(x) == &y) {
+          j = last_i;
+          j_end = y.end();
+        }
+#endif
         ++j;
       }
   while (j != j_end) {
