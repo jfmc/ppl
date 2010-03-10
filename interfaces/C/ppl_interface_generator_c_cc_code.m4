@@ -1160,9 +1160,9 @@ m4_define(`ppl_@CLASS@_termination_test_@TERMINATION_ID@_code',
 `dnl
 int
 ppl_@CLASS@_termination_test_@TERMINATION_ID@
-(ppl_const_@CLASS@_t x) try {
-  const @CPP_CLASS@& xx = *to_const(x);
-  return termination_test_@TERMINATION_ID@(xx);
+(ppl_const_@CLASS@_t pset) try {
+  const @CPP_CLASS@& ppset = *to_const(pset);
+  return termination_test_@TERMINATION_ID@(ppset);
 }
 CATCH_ALL
 
@@ -1171,11 +1171,11 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_code',
 `int
 ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@
-(ppl_const_@CLASS@_t x,
+(ppl_const_@CLASS@_t pset,
  ppl_Generator_t point) try {
-  const @CPP_CLASS@& xx = *to_const(x);
+  const @CPP_CLASS@& ppset = *to_const(pset);
   Generator& ppoint = *to_nonconst(point);
-  bool ok = one_affine_ranking_function_@TERMINATION_ID@(xx, ppoint);
+  bool ok = one_affine_ranking_function_@TERMINATION_ID@(ppset, ppoint);
   return ok ? 1 : 0;
 }
 CATCH_ALL
@@ -1185,10 +1185,10 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_code',
 `int
 ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@
-(ppl_const_@CLASS@_t x,
+(ppl_const_@CLASS@_t pset,
  ppl_Polyhedron_t ph) try {
-  const @CPP_CLASS@& xx = *to_const(x);
-  all_affine_ranking_functions_@TERMINATION_ID@(xx,
+  const @CPP_CLASS@& ppset = *to_const(pset);
+  all_affine_ranking_functions_@TERMINATION_ID@(ppset,
                                                 *static_cast<C_Polyhedron*>
                                                     (to_nonconst(ph)));
   return 0;

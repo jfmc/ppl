@@ -39,7 +39,7 @@ m4_define(`ppl_@CLASS@_termination_test_@TERMINATION_ID@_code',
 /*! \relates ppl_@CLASS@_tag */
 int
 ppl_@CLASS@_termination_test_@TERMINATION_ID@
-PPL_PROTO((ppl_const_@CLASS@_t x));
+PPL_PROTO((ppl_const_@CLASS@_t pset));
 
 ')
 
@@ -48,7 +48,7 @@ m4_define(`ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_code',
 /*! \relates ppl_@CLASS@_tag */
 int
 ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@
-PPL_PROTO((ppl_const_@CLASS@_t x,
+PPL_PROTO((ppl_const_@CLASS@_t pset,
            ppl_Generator_t point));
 
 ')
@@ -58,7 +58,7 @@ m4_define(`ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_code',
 /*! \relates ppl_@CLASS@_tag */
 int
 ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@
-PPL_PROTO((ppl_const_@CLASS@_t x,
+PPL_PROTO((ppl_const_@CLASS@_t pset,
            ppl_Polyhedron_t ph));
 
 ')
