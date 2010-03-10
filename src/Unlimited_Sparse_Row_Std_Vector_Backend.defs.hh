@@ -52,6 +52,9 @@ public:
     static dangerous_iterator next(iterator i);
   };
 
+  dangerous_iterator begin_dangerous();
+  dangerous_iterator end_dangerous();
+
   iterator splice(iterator& position,This& x);
 
   iterator splice(iterator& position,This& x,iterator i);

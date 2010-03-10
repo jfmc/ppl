@@ -52,6 +52,9 @@ public:
     static dangerous_iterator next(iterator i);
   };
 
+  dangerous_iterator begin_dangerous();
+  dangerous_iterator end_dangerous();
+
   //! Needed to satisfy the backend requirements.
   //! The original splice() methods return void.
   iterator splice(iterator& position,This& x);

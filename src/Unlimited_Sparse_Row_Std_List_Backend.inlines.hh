@@ -43,6 +43,16 @@ Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator::next(iterator i) {
   return dangerous_iterator(++i);
 }
 
+inline Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator
+Unlimited_Sparse_Row_Std_List_Backend::begin_dangerous() {
+  return begin();
+}
+
+inline Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator
+Unlimited_Sparse_Row_Std_List_Backend::end_dangerous() {
+  return end();
+}
+
 inline Unlimited_Sparse_Row_Std_List_Backend::iterator
 Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x) {
   PPL_ASSERT(this != &x);

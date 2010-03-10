@@ -48,6 +48,16 @@ Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator
   return dangerous_iterator(++i);
 }
 
+inline Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator
+Unlimited_Sparse_Row_Std_Vector_Backend::begin_dangerous() {
+  return begin();
+}
+
+inline Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator
+Unlimited_Sparse_Row_Std_Vector_Backend::end_dangerous() {
+  return end();
+}
+
 inline Unlimited_Sparse_Row_Std_Vector_Backend::iterator
 Unlimited_Sparse_Row_Std_Vector_Backend::splice(iterator& position,This& x) {
   PPL_ASSERT(this != &x);

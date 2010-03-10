@@ -156,14 +156,19 @@ public:
   void get2(const dimension_type c1,const dimension_type c2,
             const Coefficient*& p1,const Coefficient*& p2) const;
 
-  dangerous_iterator begin();
-  dangerous_iterator end();
+  dangerous_iterator begin_dangerous();
+  dangerous_iterator end_dangerous();
+  iterator begin();
+  iterator end();
   const_iterator begin() const;
   const_iterator end() const;
 
-  dangerous_iterator find(const dimension_type c);
-  dangerous_iterator lower_bound(const dimension_type c);
-  dangerous_iterator upper_bound(const dimension_type c);
+  dangerous_iterator find_dangerous(const dimension_type c);
+  dangerous_iterator lower_bound_dangerous(const dimension_type c);
+  dangerous_iterator upper_bound_dangerous(const dimension_type c);
+  iterator find(const dimension_type c);
+  iterator lower_bound(const dimension_type c);
+  iterator upper_bound(const dimension_type c);
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
   const_iterator upper_bound(const dimension_type c) const;
@@ -281,8 +286,10 @@ public:
   void get2(const dimension_type c1,const dimension_type c2,
             const Coefficient*& p1,const Coefficient*& p2) const;
 
-  dangerous_iterator begin();
-  dangerous_iterator end();
+  dangerous_iterator begin_dangerous();
+  dangerous_iterator end_dangerous();
+  iterator begin();
+  iterator end();
   const_iterator begin() const;
   const_iterator end() const;
 
@@ -308,9 +315,12 @@ public:
   template <typename Func>
   void for_each_nonzero(const Func& func,const dimension_type n) const;
 
-  dangerous_iterator find(const dimension_type c);
-  dangerous_iterator lower_bound(const dimension_type c);
-  dangerous_iterator upper_bound(const dimension_type c);
+  dangerous_iterator find_dangerous(const dimension_type c);
+  dangerous_iterator lower_bound_dangerous(const dimension_type c);
+  dangerous_iterator upper_bound_dangerous(const dimension_type c);
+  iterator find(const dimension_type c);
+  iterator lower_bound(const dimension_type c);
+  iterator upper_bound(const dimension_type c);
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
   const_iterator upper_bound(const dimension_type c) const;

@@ -35,7 +35,7 @@ PPL::Unlimited_Sparse_Row::
     if (v[i] != 0)
       // We can not store data.end(), because it is invalidated by this
       // operation
-      data.insert(data.end(),std::make_pair(i,v[i]));
+      data.insert(data.end_dangerous(),std::make_pair(i,v[i]));
   PPL_ASSERT(OK());
 }
 
@@ -43,11 +43,11 @@ inline void
 PPL::Unlimited_Sparse_Row::reset(const dimension_type first,
                                  const dimension_type last) {
   PPL_ASSERT(first <= last);
-  dangerous_iterator itr = lower_bound(first);
-  dangerous_iterator itr_end = lower_bound(last);
+  dangerous_iterator itr = lower_bound_dangerous(first);
+  dangerous_iterator itr_end = lower_bound_dangerous(last);
   if (itr == itr_end)
     return;
-  if (itr_end != end() && itr_end->first == last)
+  if (itr_end != end_dangerous() && itr_end->first == last)
     ++itr_end;
   reset(itr,itr_end);
   PPL_ASSERT(OK());
@@ -55,8 +55,8 @@ PPL::Unlimited_Sparse_Row::reset(const dimension_type first,
 
 void
 PPL::Unlimited_Sparse_Row::delete_element_and_shift(dimension_type i) {
-  dangerous_iterator itr = lower_bound(i);
-  if (itr != end() && itr->first == i)
+  dangerous_iterator itr = lower_bound_dangerous(i);
+  if (itr != end_dangerous() && itr->first == i)
     itr = reset(itr);
   // We can't declare j_end before and keep using it because reset() may have
   // invalidated end() iterators.

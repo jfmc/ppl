@@ -107,7 +107,7 @@ Sparse_Row::construct(const dimension_type sz,
 inline void
 Sparse_Row::resize(const dimension_type n) {
   if (n < size_)
-    reset(lower_bound(n),end());
+    reset(lower_bound_dangerous(n),end_dangerous());
   size_ = n;
   PPL_ASSERT(OK());
 }
@@ -175,11 +175,21 @@ Sparse_Row::get2(const dimension_type c1,const dimension_type c2,
 }
 
 inline Sparse_Row::dangerous_iterator
+Sparse_Row::begin_dangerous() {
+  return row.begin_dangerous();
+}
+
+inline Sparse_Row::dangerous_iterator
+Sparse_Row::end_dangerous() {
+  return row.end_dangerous();
+}
+
+inline Sparse_Row::iterator
 Sparse_Row::begin() {
   return row.begin();
 }
 
-inline Sparse_Row::dangerous_iterator
+inline Sparse_Row::iterator
 Sparse_Row::end() {
   return row.end();
 }
@@ -195,16 +205,26 @@ Sparse_Row::end() const {
 }
 
 inline Sparse_Row::dangerous_iterator
+Sparse_Row::find_dangerous(const dimension_type k) {
+  return row.find_dangerous(k);
+}
+
+inline Sparse_Row::dangerous_iterator
+Sparse_Row::lower_bound_dangerous(const dimension_type k) {
+  return row.lower_bound_dangerous(k);
+}
+
+inline Sparse_Row::iterator
 Sparse_Row::find(const dimension_type k) {
   return row.find(k);
 }
 
-inline Sparse_Row::dangerous_iterator
+inline Sparse_Row::iterator
 Sparse_Row::lower_bound(const dimension_type k) {
   return row.lower_bound(k);
 }
 
-inline Sparse_Row::dangerous_iterator
+inline Sparse_Row::iterator
 Sparse_Row::upper_bound(const dimension_type k) {
   return row.upper_bound(k);
 }
@@ -339,7 +359,7 @@ Sparse_Row_Reference::size() const {
 
 inline Sparse_Row_Reference::dangerous_iterator
 Sparse_Row_Reference::reset(dangerous_iterator i) {
-  PPL_ASSERT(i != end());
+  PPL_ASSERT(i != end_dangerous());
   dangerous_iterator res = row.reset(i);
   PPL_ASSERT(OK());
   return res;
@@ -407,11 +427,21 @@ Sparse_Row_Reference::get2(const dimension_type c1,const dimension_type c2,
 }
 
 inline Sparse_Row_Reference::dangerous_iterator
+Sparse_Row_Reference::begin_dangerous() {
+  return row.begin_dangerous();
+}
+
+inline Sparse_Row_Reference::dangerous_iterator
+Sparse_Row_Reference::end_dangerous() {
+  return row.end_dangerous();
+}
+
+inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference::begin() {
   return row.begin();
 }
 
-inline Sparse_Row_Reference::dangerous_iterator
+inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference::end() {
   return row.end();
 }
@@ -427,16 +457,31 @@ Sparse_Row_Reference::end() const {
 }
 
 inline Sparse_Row_Reference::dangerous_iterator
+Sparse_Row_Reference::find_dangerous(const dimension_type c) {
+  return row.find_dangerous(c);
+}
+
+inline Sparse_Row_Reference::dangerous_iterator
+Sparse_Row_Reference::lower_bound_dangerous(const dimension_type c) {
+  return row.lower_bound_dangerous(c);
+}
+
+inline Sparse_Row_Reference::dangerous_iterator
+Sparse_Row_Reference::upper_bound_dangerous(const dimension_type c) {
+  return row.upper_bound_dangerous(c);
+}
+
+inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference::find(const dimension_type c) {
   return row.find(c);
 }
 
-inline Sparse_Row_Reference::dangerous_iterator
+inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference::lower_bound(const dimension_type c) {
   return row.lower_bound(c);
 }
 
-inline Sparse_Row_Reference::dangerous_iterator
+inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference::upper_bound(const dimension_type c) {
   return row.upper_bound(c);
 }

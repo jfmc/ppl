@@ -87,7 +87,9 @@ namespace Parma_Polyhedra_Library {
   * C must have const begin() and end() methods that return a
     C::const_iterator .
   * C must have non-const begin() and end() methods that return a
-    C::dangerous_iterator .
+    C::iterator .
+  * C must have non-const begin_dangerous() and end_dangerous() methods that
+    return a C::dangerous_iterator .
   * C::const_iterator, C::iterator and C::dangerous_iterator must meet the
     forward-iterator requirements and have typedefs (or nested types) for
     iterator_category, value_type, difference_type, pointer and reference.
@@ -269,8 +271,10 @@ public:
   */
   const Coefficient& get(const dimension_type i) const;
 
-  dangerous_iterator begin();
-  dangerous_iterator end();
+  dangerous_iterator begin_dangerous();
+  dangerous_iterator end_dangerous();
+  iterator begin();
+  iterator end();
   const_iterator begin() const;
   const_iterator end() const;
 
@@ -296,21 +300,32 @@ public:
   template <typename Func>
   void for_each_nonzero(const Func& func,const dimension_type n) const;
 
-  dangerous_iterator find(const dimension_type c);
-  dangerous_iterator lower_bound(const dimension_type c);
-  dangerous_iterator upper_bound(const dimension_type c);
+  dangerous_iterator find_dangerous(const dimension_type c);
+  dangerous_iterator lower_bound_dangerous(const dimension_type c);
+  dangerous_iterator upper_bound_dangerous(const dimension_type c);
+  iterator find(const dimension_type c);
+  iterator lower_bound(const dimension_type c);
+  iterator upper_bound(const dimension_type c);
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
   const_iterator upper_bound(const dimension_type c) const;
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  dangerous_iterator find(const dimension_type c,dangerous_iterator itr);
+  dangerous_iterator find_dangerous(const dimension_type c,
+                                    dangerous_iterator itr);
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  dangerous_iterator lower_bound(const dimension_type c,
-                                 dangerous_iterator itr);
+  dangerous_iterator lower_bound_dangerous(const dimension_type c,
+                                           dangerous_iterator itr);
   //! Upper bound of key c, assuming it is in [itr,end()) .
-  dangerous_iterator upper_bound(const dimension_type c,
-                                 dangerous_iterator itr);
+  dangerous_iterator upper_bound_dangerous(const dimension_type c,
+                                           dangerous_iterator itr);
+
+  //! Looks for an element with key c, assuming it is in [itr,end()) .
+  iterator find(const dimension_type c,iterator itr);
+  //! Lower bound of key c, assuming it is in [itr,end()) .
+  iterator lower_bound(const dimension_type c,iterator itr);
+  //! Upper bound of key c, assuming it is in [itr,end()) .
+  iterator upper_bound(const dimension_type c,iterator itr);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
   const_iterator find(const dimension_type c,const_iterator itr) const;
@@ -319,9 +334,10 @@ public:
   //! Upper bound of key c, assuming it is in [itr,end()) .
   const_iterator upper_bound(const dimension_type c,const_iterator itr) const;
 
-  //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
-  void find2(const dimension_type c1,const dimension_type c2,
-             dangerous_iterator& itr1,dangerous_iterator& itr2);
+  //! A faster equivalent of
+  //! itr1=find_dangerous(c1); itr2=find_dangerous(c2); .
+  void find2_dangerous(const dimension_type c1,const dimension_type c2,
+                       dangerous_iterator& itr1,dangerous_iterator& itr2);
 
   //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
   void find2(const dimension_type c1,const dimension_type c2,

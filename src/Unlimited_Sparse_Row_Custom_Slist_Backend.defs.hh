@@ -76,8 +76,10 @@ public:
     */
   void pop_front();
 
-  dangerous_iterator begin();
-  dangerous_iterator end();
+  dangerous_iterator begin_dangerous();
+  dangerous_iterator end_dangerous();
+  iterator begin();
+  iterator end();
   const_iterator begin() const;
   const_iterator end() const;
 

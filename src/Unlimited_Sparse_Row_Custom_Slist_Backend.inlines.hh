@@ -59,12 +59,12 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::empty() const {
 
 inline void
 Unlimited_Sparse_Row_Custom_Slist_Backend::push_front(const value_type& x) {
-  insert(begin(),x);
+  insert(begin_dangerous(),x);
 }
 
 inline void
 Unlimited_Sparse_Row_Custom_Slist_Backend::push_back(const value_type& x) {
-  insert(end(),x);
+  insert(end_dangerous(),x);
 }
 
 inline void
@@ -81,13 +81,23 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::pop_front() {
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::begin() {
+Unlimited_Sparse_Row_Custom_Slist_Backend::begin_dangerous() {
   return dangerous_iterator(&first);
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::end() {
+Unlimited_Sparse_Row_Custom_Slist_Backend::end_dangerous() {
   return dangerous_iterator(last);
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend::begin() {
+  return iterator(first);
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend::end() {
+  return iterator(0);
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator
@@ -165,7 +175,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator first,
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
   dangerous_iterator& position,This& x) {
-  return splice(position,x,x.begin(),x.end());
+  return splice(position,x,x.begin_dangerous(),x.end_dangerous());
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
