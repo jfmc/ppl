@@ -332,6 +332,18 @@ PIP_Tree_Node::Artificial_Parameter
   return !operator==(y);
 }
 
+bool
+PIP_Tree_Node::Artificial_Parameter::OK() const {
+  if (denom <= 0) {
+#ifndef NDEBUG
+    std::cerr << "PIP_Tree_Node::Artificial_Parameter "
+              << "has a non-positive denominator.\n";
+#endif
+    return false;
+  }
+  return true;
+}
+
 void
 PIP_Tree_Node::Artificial_Parameter::ascii_dump(std::ostream& s) const {
   s << "artificial_parameter ";
@@ -639,8 +651,6 @@ PIP_Solution_Node::OK() const {
 
 bool
 PIP_Decision_Node::OK() const {
-  /* FIXME: finish me! */
-
   // Perform base class well-formedness check on this node.
   if (!PIP_Tree_Node::OK())
     return false;
@@ -650,6 +660,14 @@ PIP_Decision_Node::OK() const {
     return false;
   if (true_child && !true_child->OK())
     return false;
+
+  // Decision nodes should always have a true child.
+  if (!true_child) {
+#ifndef NDEBUG
+    std::cerr << "PIP_Decision_Node with no 'true' child.\n";
+#endif
+    return false;
+  }
 
   // Decision nodes with a false child must have exactly one constraint.
   if (false_child) {
@@ -717,59 +735,59 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
                                      context_false, all_params, space_dim);
   }
 
-  if (true_child != 0 || false_child != 0) {
-    PIP_Tree_Node* node = this;
-    if (has_false_child && false_child == 0) {
-      // False child has become unfeasible: merge this node's artificials with
-      // the true child, while removing the local parameter constraints, which
-      // are no longer discriminative.
+  if (true_child == 0 && false_child == 0) {
+    // No childs: the whole subtree is unfeasible.
+    delete this;
+    return 0;
+  }
+
+  PIP_Tree_Node* node = this;
+  if (has_false_child && false_child == 0) {
+    // False child has become unfeasible: merge this node's artificials with
+    // the true child, while removing the local parameter constraints, which
+    // are no longer discriminative.
+    true_child->parent_merge();
+    true_child->set_parent(parent());
+    node = true_child;
+    true_child = 0;
+    delete this;
+  }
+  else if (has_true_child && true_child == 0) {
+    // True child has become unfeasible: merge this node's artificials
+    // with the false child.
+    false_child->parent_merge();
+    false_child->set_parent(parent());
+    node = false_child;
+    false_child = 0;
+    delete this;
+  }
+  else if (check_feasible_context) {
+    // Test all constraints for redundancy with the context, and eliminate
+    // them if not necessary.
+    Constraint_System cs;
+    cs.swap(constraints_);
+    const Constraint_System::const_iterator end = cs.end();
+    for (Constraint_System::const_iterator ci = cs.begin(); ci != end; ++ci) {
+      Matrix ctx_copy(context);
+      merge_assign(ctx_copy, Constraint_System(*ci), all_params);
+      Row& last = ctx_copy[ctx_copy.num_rows()-1];
+      complement_assign(last, last, 1);
+      if (compatibility_check(ctx_copy)) {
+        // The constraint is not redundant with the context: we must keep it.
+        constraints_.insert(*ci);
+      }
+    }
+    // If the constraints set has become empty, only keep the true child.
+    if (constraints_.empty()) {
       true_child->parent_merge();
       true_child->set_parent(parent());
       node = true_child;
       true_child = 0;
       delete this;
     }
-    else if (has_true_child && true_child == 0) {
-      // True child has become unfeasible: merge this node's artificials
-      // with the false child.
-      false_child->parent_merge();
-      false_child->set_parent(parent());
-      node = false_child;
-      false_child = 0;
-      delete this;
-    }
-    else if (check_feasible_context) {
-      // Test all constraints for redundancy with the context, and eliminate
-      // them if not necessary.
-      Constraint_System cs;
-      cs.swap(constraints_);
-      const Constraint_System::const_iterator end = cs.end();
-      for (Constraint_System::const_iterator ci = cs.begin(); ci != end; ++ci) {
-        Matrix ctx_copy(context);
-        merge_assign(ctx_copy, Constraint_System(*ci), all_params);
-        Row& last = ctx_copy[ctx_copy.num_rows()-1];
-        complement_assign(last, last, 1);
-        if (compatibility_check(ctx_copy)) {
-          // The constraint is not redundant with the context: we must keep it.
-          constraints_.insert(*ci);
-        }
-      }
-      // If the constraints set has become empty, only keep the true child.
-      if (constraints_.empty()) {
-        true_child->parent_merge();
-        true_child->set_parent(parent());
-        node = true_child;
-        true_child = 0;
-        delete this;
-      }
-    }
-    PPL_ASSERT(node->OK());
-    return node;
   }
-  else {
-    delete this;
-    return 0;
-  }
+  PPL_ASSERT(node->OK());
+  return node;
 }
 
 void
@@ -779,8 +797,12 @@ PIP_Decision_Node::ascii_dump(std::ostream& s) const {
 
   // Dump true child (if any).
   s << "\ntrue_child: ";
-  if (true_child == 0)
+  if (true_child == 0) {
+    // Note: this branch should normally be unreachable code, since a
+    // well-formed decision node always has a true child. We keep this code
+    // for debugging purposes (since we want to dump broken nodes).
     s << "BOTTOM\n";
+  }
   else if (const PIP_Decision_Node* dec = true_child->as_decision()) {
     s << "DECISION\n";
     dec->ascii_dump(s);
@@ -797,6 +819,11 @@ PIP_Decision_Node::ascii_dump(std::ostream& s) const {
   if (false_child == 0)
     s << "BOTTOM\n";
   else if (const PIP_Decision_Node* dec = false_child->as_decision()) {
+    // Note: this branch should normally be unreachable code.
+    // Since a well-formed decision node having a false child should have
+    // a single context constraint, its false child will have no context
+    // constraints at all, so that no further branch is possible.
+    // We keep this code for debugging purposes.
     s << "DECISION\n";
     dec->ascii_dump(s);
   }
@@ -826,6 +853,7 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
   if (!(s >> str))
     return false;
   if (str == "BOTTOM")
+    // Note: normally unreachable code (see comment on ascii_dump).
     true_child = 0;
   else if (str == "DECISION") {
     PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0, 0);
@@ -855,6 +883,7 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
   if (str == "BOTTOM")
     false_child = 0;
   else if (str == "DECISION") {
+    // Note: normally unreachable code (see comment on ascii_dump).
     PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0, 0);
     false_child = dec;
     if (!dec->ascii_load(s))
@@ -1015,7 +1044,8 @@ PIP_Tree_Node::ascii_load(std::istream& s) {
     artificial_parameters.push_back(ap);
   }
 
-  PPL_ASSERT(OK());
+  // Note: do not assert OK() here.
+  // The node invariants should be checked on derived nodes.
   return true;
 }
 
@@ -1055,6 +1085,7 @@ PIP_Solution_Node::Tableau::ascii_load(std::istream& st) {
     return false;
   if (!t.ascii_load(st))
     return false;
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -2502,8 +2533,8 @@ PIP_Tree_Node::external_memory_in_bytes() const {
 memory_size_type
 PIP_Decision_Node::external_memory_in_bytes() const {
   memory_size_type n = PIP_Tree_Node::external_memory_in_bytes();
-  if (true_child)
-    n += true_child->total_memory_in_bytes();
+  PPL_ASSERT(true_child != 0);
+  n += true_child->total_memory_in_bytes();
   if (false_child)
     n += false_child->total_memory_in_bytes();
   return n;
@@ -2610,10 +2641,8 @@ PIP_Decision_Node::print_tree(std::ostream& s, unsigned indent,
   // Then print info specific of decision nodes.
   dimension_type child_first_art_dim = first_art_dim + art_parameter_count();
 
-  if (true_child)
-    true_child->print_tree(s, indent+1, pip_dim_is_param, child_first_art_dim);
-  else
-    indent_and_print(s, indent+1, "_|_\n");
+  PPL_ASSERT(true_child != 0);
+  true_child->print_tree(s, indent+1, pip_dim_is_param, child_first_art_dim);
 
   indent_and_print(s, indent, "else\n");
 
