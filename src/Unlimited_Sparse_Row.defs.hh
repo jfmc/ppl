@@ -130,6 +130,10 @@ namespace Parma_Polyhedra_Library {
     equal to the former position, and in [first,last] (note that last is
     invalidated, too). The returned iterator is a valid iterator pointing to
     the first moved element. \p position is modified to keep it valid.
+  * As a special exception, if PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES is
+    defined in this file, right after the backend's include, every type of
+    iterator and every reference to an element of the backend is invalidated
+    by operations that add or remove elements in the list.
 */
 class Unlimited_Sparse_Row {
 
