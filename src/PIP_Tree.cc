@@ -297,12 +297,13 @@ complement_assign(PIP_Tree_Node::matrix_row_reference_type x,
                   Coefficient_traits::const_reference den) {
   PPL_ASSERT(den > 0);
   neg_assign_row(x, y);
+  Coefficient& x_0 = x[0];
   if (den == 1)
-    --x[0];
+    --x_0;
   else {
     PPL_DIRTY_TEMP_COEFFICIENT(mod);
-    mod_assign(mod, x[0], den);
-    x[0] -= (mod == 0) ? den : mod;
+    mod_assign(mod, x_0, den);
+    x_0 -= (mod == 0) ? den : mod;
   }
 }
 
