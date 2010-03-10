@@ -184,6 +184,38 @@ test07() {
   return termination_test_MS(bds);
 }
 
+bool
+test10() {
+  Variable xp1(0);
+  Variable xp2(1);
+  Variable x1(2);
+  Variable x2(3);
+  C_Polyhedron ph(4);
+  ph.add_constraint(xp1 - x1 >= 0);
+  ph.add_constraint(-xp1 + x1 >= 0);
+  ph.add_constraint(-xp2 + x2 >= 1);
+  ph.add_constraint(xp2 >= 0);
+  ph.add_constraint(xp1 >= 1);
+
+  return termination_test_MS(ph);
+}
+
+bool
+test11() {
+  Variable xp1(0);
+  Variable xp2(1);
+  Variable x1(2);
+  Variable x2(3);
+  C_Polyhedron ph(4);
+  ph.add_constraint(xp1 - x1 >= 0);
+  ph.add_constraint(-xp1 + x1 >= 0);
+  ph.add_constraint(-xp2 + x2 >= 1);
+  ph.add_constraint(xp2 >= 0);
+  ph.add_constraint(xp1 >= 1);
+
+  return termination_test_PR(ph);
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -194,4 +226,6 @@ BEGIN_MAIN
   //DO_TEST(test05);
   DO_TEST(test06);
   //DO_TEST(test07);
+  DO_TEST(test10);
+  DO_TEST_F(test11);
 END_MAIN
