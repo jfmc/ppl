@@ -164,10 +164,10 @@ public:
   */
   template <typename In>
   MIP_Problem(dimension_type dim,
-	      In first, In last,
-	      const Variables_Set& int_vars,
-	      const Linear_Expression& obj = Linear_Expression::zero(),
-	      Optimization_Mode mode = MAXIMIZATION);
+              In first, In last,
+              const Variables_Set& int_vars,
+              const Linear_Expression& obj = Linear_Expression::zero(),
+              Optimization_Mode mode = MAXIMIZATION);
 
   /*! \brief
     Builds an MIP problem having space dimension \p dim
@@ -232,9 +232,9 @@ public:
     objective function) is strictly greater than \p dim.
   */
   MIP_Problem(dimension_type dim,
-	      const Constraint_System& cs,
-	      const Linear_Expression& obj = Linear_Expression::zero(),
-	      Optimization_Mode mode = MAXIMIZATION);
+              const Constraint_System& cs,
+              const Linear_Expression& obj = Linear_Expression::zero(),
+              Optimization_Mode mode = MAXIMIZATION);
 
   //! Ordinary copy constructor.
   MIP_Problem(const MIP_Problem& y);
@@ -381,8 +381,8 @@ public:
     or if the generator \p evaluating_point is not a point.
   */
   void evaluate_objective_function(const Generator& evaluating_point,
-				   Coefficient& num,
-				   Coefficient& den) const;
+                                   Coefficient& num,
+                                   Coefficient& den) const;
 
   //! Returns a feasible point for \p *this, if it exists.
   /*!
@@ -623,11 +623,11 @@ private:
 
   */
   bool parse_constraints(dimension_type& new_num_rows,
-			 dimension_type& num_slack_variables,
-			 std::deque<bool>& is_tableau_constraint,
-			 std::deque<bool>& nonnegative_variable,
-			 std::vector<dimension_type>& unfeasible_tableau_rows,
-			 std::deque<bool>& satisfied_ineqs);
+                         dimension_type& num_slack_variables,
+                         std::deque<bool>& is_tableau_constraint,
+                         std::deque<bool>& nonnegative_variable,
+                         std::vector<dimension_type>& unfeasible_tableau_rows,
+                         std::deque<bool>& satisfied_ineqs);
 
   /*! \brief
     Computes the row index of the variable exiting the base
@@ -708,7 +708,7 @@ private:
     The index of the row exiting the base.
   */
   void pivot(dimension_type entering_var_index,
-	     dimension_type exiting_base_index);
+             dimension_type exiting_base_index);
 
   /*! \brief
     Computes the column index of the variable entering the base,
@@ -810,7 +810,7 @@ private:
     the computed generator after merging a variable.
   */
   void merge_split_variables(dimension_type var_index,
-			      std::vector<dimension_type>& nonfeasible_cs);
+                             std::vector<dimension_type>& nonfeasible_cs);
 
   //! Returns <CODE>true</CODE> if and only if \p c is satisfied by \p g.
   static bool is_satisfied(const Constraint& c, const Generator& g);
@@ -838,10 +838,10 @@ private:
     The variables that are constrained to take an integer value.
   */
   static MIP_Problem_Status solve_mip(bool& have_incumbent_solution,
-				      mpq_class& incumbent_solution_value,
-				      Generator& incumbent_solution_point,
-				      MIP_Problem& mip,
-				      const Variables_Set& i_vars);
+                                      mpq_class& incumbent_solution_value,
+                                      Generator& incumbent_solution_point,
+                                      MIP_Problem& mip,
+                                      const Variables_Set& i_vars);
 
   /*! \brief
     Returns \c true if and if only the LP problem is satisfiable.
@@ -862,7 +862,7 @@ private:
     If \c true is returned, it will encode a feasible point.
   */
   static bool is_mip_satisfiable(MIP_Problem& lp,
-				 const Variables_Set& i_vars,
+                                 const Variables_Set& i_vars,
                                  Generator& p);
 
   /*! \brief
@@ -880,8 +880,8 @@ private:
     index on which the `branch and bound' algorithm should be applied.
   */
   static bool choose_branching_variable(const MIP_Problem& lp,
-					const Variables_Set& i_vars,
-					dimension_type& branching_index);
+                                        const Variables_Set& i_vars,
+                                        dimension_type& branching_index);
 };
 
 namespace std {
@@ -889,7 +889,7 @@ namespace std {
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::MIP_Problem */
 void swap(Parma_Polyhedra_Library::MIP_Problem& x,
-	  Parma_Polyhedra_Library::MIP_Problem& y);
+          Parma_Polyhedra_Library::MIP_Problem& y);
 
 } // namespace std
 

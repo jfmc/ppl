@@ -793,7 +793,7 @@ PIP_Tree_Node
   const dimension_type num_params = parameters.size();
 
   // Compute the expression for the parameter constraint.
-  Linear_Expression expr = Linear_Expression(row[0]);
+  Linear_Expression expr = Linear_Expression(row.get(0));
   // NOTE: iterating downward on parameters to avoid reallocations.
   Variables_Set::const_reverse_iterator p_j = parameters.rbegin();
   // NOTE: index j spans [1..num_params] downwards.
@@ -2744,8 +2744,8 @@ PIP_Tree_Node::external_memory_in_bytes() const {
   // Adding the external memory for `artificial_parameters'.
   n += artificial_parameters.capacity() * sizeof(Artificial_Parameter);
   for (Artificial_Parameter_Sequence::const_iterator
-         ap = art_parameter_begin(),
-	 ap_end = art_parameter_end(); ap != ap_end; ++ap)
+        ap = art_parameter_begin(),
+        ap_end = art_parameter_end(); ap != ap_end; ++ap)
     n += (ap->external_memory_in_bytes());
 
   return n;

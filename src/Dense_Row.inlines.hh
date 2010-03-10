@@ -61,7 +61,7 @@ Dense_Row::reset(const dimension_type i) {
 
 inline void
 Dense_Row::construct(const dimension_type sz,
-         const dimension_type capacity) {
+                     const dimension_type capacity) {
   row.construct(sz,capacity,Row::Flags());
 }
 
@@ -72,7 +72,7 @@ Dense_Row::construct(const dimension_type sz) {
 
 inline
 Dense_Row::Dense_Row(const dimension_type sz,
-	 const dimension_type capacity)
+	                   const dimension_type capacity)
   : row(sz,capacity,Row::Flags()) {
 }
 
@@ -88,14 +88,13 @@ Dense_Row::Dense_Row(const Dense_Row& y)
 
 inline
 Dense_Row::Dense_Row(const Dense_Row& y,
-	 const dimension_type capacity)
+	                   const dimension_type capacity)
   : row(y.row,capacity) {
 }
 
 inline
-Dense_Row::Dense_Row(const Dense_Row& y,
-	 const dimension_type sz,
-	 const dimension_type capacity)
+Dense_Row::Dense_Row(const Dense_Row& y,const dimension_type sz,
+                     const dimension_type capacity)
   : row(y.row,sz,capacity) {
 }
 
@@ -280,7 +279,7 @@ Dense_Row::OK() const {
 
 inline bool
 Dense_Row::OK(const dimension_type row_size,
-                   const dimension_type row_capacity) const {
+              const dimension_type row_capacity) const {
   return row.OK(row_size,row_capacity);
 }
 
@@ -371,7 +370,8 @@ Dense_Row::iterator::OK() const {
 
 
 inline
-Dense_Row::const_iterator::const_iterator(const Dense_Row& row1,dimension_type i1)
+Dense_Row::const_iterator::const_iterator(const Dense_Row& row1,
+                                          dimension_type i1)
   : row(&row1), i(i1) {
   PPL_ASSERT(OK());
 }
@@ -443,7 +443,7 @@ swap(Parma_Polyhedra_Library::Dense_Row& x,
 /*! \relates Parma_Polyhedra_Library::Dense_Row */
 inline void
 iter_swap(std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator x,
-	  std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator y) {
+          std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator y) {
   swap(*x, *y);
 }
 

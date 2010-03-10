@@ -393,7 +393,7 @@ namespace std {
 /*! \relates Parma_Polyhedra_Library::Unlimited_Sparse_Row */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Unlimited_Sparse_Row& x,
-    Parma_Polyhedra_Library::Unlimited_Sparse_Row& y);
+          Parma_Polyhedra_Library::Unlimited_Sparse_Row& y);
 
 } // namespace std
 

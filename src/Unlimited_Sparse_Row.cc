@@ -26,8 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Unlimited_Sparse_Row::Unlimited_Sparse_Row(const
-                                                std::vector<Coefficient>& v)
+PPL::Unlimited_Sparse_Row::
+  Unlimited_Sparse_Row(const std::vector<Coefficient>& v)
   : data() {
   typedef std::vector<Coefficient>::size_type vec_size_type;
 

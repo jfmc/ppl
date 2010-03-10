@@ -43,7 +43,8 @@ Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator::
 }
 
 inline Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator
-Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator::next(iterator i) {
+Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator
+  ::next(iterator i) {
   return dangerous_iterator(++i);
 }
 

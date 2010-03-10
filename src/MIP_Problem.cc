@@ -908,7 +908,8 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
           assign(float_tableau_values[j_index], tableau_ij);
           assign(float_tableau_denums[j_index], tableau_i_base_i);
           float_tableau_values[j_index] /= float_tableau_denums[j_index];
-          challenger_dens[j_index] += float_tableau_values[j_index] * float_tableau_values[j_index];
+          challenger_dens[j_index] += float_tableau_values[j_index]
+            * float_tableau_values[j_index];
         }
         WEIGHT_ADD_MUL(338, tableau_num_rows);
       }
@@ -1246,7 +1247,7 @@ PPL::MIP_Problem::linear_combine(row_type& x,
 // See pages 42-43 of [PapadimitriouS98].
 void
 PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
-			const dimension_type exiting_base_index) {
+                        const dimension_type exiting_base_index) {
   matrix_row_const_reference_type tableau_out = tableau[exiting_base_index];
   // Linearly combine the constraints.
   for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
@@ -1467,7 +1468,7 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
 // See pages 55-56 of [PapadimitriouS98].
 void
 PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
-				    const dimension_type end_artificials) {
+                                    const dimension_type end_artificials) {
   PPL_ASSERT(begin_artificials <= end_artificials);
   const dimension_type tableau_last_index = tableau.num_columns() - 1;
   dimension_type tableau_n_rows = tableau.num_rows();
@@ -1617,7 +1618,8 @@ PPL::MIP_Problem::compute_generator() const {
 void
 PPL::MIP_Problem::second_phase() {
   // Second_phase requires that *this is satisfiable.
-  PPL_ASSERT(status == SATISFIABLE || status == UNBOUNDED || status == OPTIMIZED);
+  PPL_ASSERT(status == SATISFIABLE || status == UNBOUNDED
+             || status == OPTIMIZED);
   // In the following cases the problem is already solved.
   if (status == UNBOUNDED || status == OPTIMIZED)
     return;
@@ -1864,8 +1866,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 
 bool
 PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& lp,
-					    const Variables_Set& i_vars,
-					    dimension_type& branching_index) {
+                                            const Variables_Set& i_vars,
+                                            dimension_type& branching_index) {
   // Insert here the variables that don't satisfy the integrality condition.
   const Constraint_Sequence& input_cs = lp.input_cs;
   const Generator& last_generator = lp.last_generator;

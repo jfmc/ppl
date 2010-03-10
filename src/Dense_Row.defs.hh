@@ -359,14 +359,14 @@ namespace std {
 /*! \relates Parma_Polyhedra_Library::Dense_Row */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Dense_Row& x,
-	  Parma_Polyhedra_Library::Dense_Row& y);
+          Parma_Polyhedra_Library::Dense_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::iter_swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Dense_Row */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void iter_swap(std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator x,
-	       std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator y);
+               std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator y);
 
 } // namespace std
 

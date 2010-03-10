@@ -342,7 +342,7 @@ namespace std {
   /*! \relates Parma_Polyhedra_Library::Dense_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Dense_Matrix& x,
-	  Parma_Polyhedra_Library::Dense_Matrix& y);
+          Parma_Polyhedra_Library::Dense_Matrix& y);
 
 } // namespace std
 
