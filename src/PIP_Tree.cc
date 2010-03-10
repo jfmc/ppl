@@ -351,8 +351,8 @@ column_lower(const PIP_Tree_Node::matrix_type& tableau,
              const dimension_type jb,
              Coefficient_traits::const_reference cst_a = -1,
              Coefficient_traits::const_reference cst_b = -1) {
-  const Coefficient& sij_a = pivot_a[ja];
-  const Coefficient& sij_b = pivot_b[jb];
+  const Coefficient& sij_a = pivot_a.get(ja);
+  const Coefficient& sij_b = pivot_b.get(jb);
   PPL_ASSERT(sij_a > 0);
   PPL_ASSERT(sij_b > 0);
 
@@ -401,8 +401,11 @@ column_lower(const PIP_Tree_Node::matrix_type& tableau,
     } else {
       // Not in base.
       PIP_Tree_Node::matrix_row_const_reference_type t_mk = tableau[mk];
-      lhs = lhs_coeff * t_mk[ja];
-      rhs = rhs_coeff * t_mk[jb];
+      const Coefficient* t_mk_ja;
+      const Coefficient* t_mk_jb;
+      t_mk.get2(ja,jb,t_mk_ja,t_mk_jb);
+      lhs = lhs_coeff * *t_mk_ja;
+      rhs = rhs_coeff * *t_mk_jb;
       if (lhs == rhs)
         continue;
       else
