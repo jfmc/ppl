@@ -171,8 +171,29 @@ public:
   iterator find(dimension_type i);
 
   //! Provided for compatibility with Sparse_Row.
+  const_iterator find(dimension_type i) const;
+
+  //! Provided for compatibility with Sparse_Row.
   //! itr must point to an element before the searched one.
   iterator find(dimension_type i,iterator itr);
+
+  //! Provided for compatibility with Sparse_Row.
+  //! itr must point to an element before the searched one.
+  const_iterator find(dimension_type i,const_iterator itr) const;
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator lower_bound(dimension_type i);
+
+  //! Provided for compatibility with Sparse_Row.
+  const_iterator lower_bound(dimension_type i) const;
+
+  //! Provided for compatibility with Sparse_Row.
+  //! itr must point to an element before the searched one.
+  iterator lower_bound(dimension_type i,iterator itr);
+
+  //! Provided for compatibility with Sparse_Row.
+  //! itr must point to an element before the searched one.
+  const_iterator lower_bound(dimension_type i,const_iterator itr) const;
 
   //! Provided for compatibility with Sparse_Row.
   iterator find_create(dimension_type i,const Coefficient& x);

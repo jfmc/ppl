@@ -166,10 +166,41 @@ Dense_Row::find(dimension_type i) {
   return iterator(*this,i);
 }
 
+inline Dense_Row::const_iterator
+Dense_Row::find(dimension_type i) const {
+  return const_iterator(*this,i);
+}
+
 inline Dense_Row::iterator
 Dense_Row::find(dimension_type i,iterator itr) {
   PPL_ASSERT((*itr).first < i);
   return iterator(*this,i);
+}
+
+inline Dense_Row::const_iterator
+Dense_Row::find(dimension_type i,const_iterator itr) const {
+  PPL_ASSERT((*itr).first < i);
+  return const_iterator(*this,i);
+}
+
+inline Dense_Row::iterator
+Dense_Row::lower_bound(dimension_type i) {
+  return find(i);
+}
+
+inline Dense_Row::const_iterator
+Dense_Row::lower_bound(dimension_type i) const {
+  return find(i);
+}
+
+inline Dense_Row::iterator
+Dense_Row::lower_bound(dimension_type i,iterator itr) {
+  return find(i,itr);
+}
+
+inline Dense_Row::const_iterator
+Dense_Row::lower_bound(dimension_type i,const_iterator itr) const {
+  return find(i,itr);
 }
 
 inline Dense_Row::iterator
