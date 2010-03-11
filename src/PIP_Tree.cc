@@ -546,10 +546,11 @@ row_normalize(PIP_Tree_Node::matrix_row_reference_type x, Coefficient& den) {
   exact_div_assign(den, den, gcd);
 }
 
-bool compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
-                                    const std::vector<dimension_type>& mapping,
-                                    const std::vector<bool>& basis,
-                                    dimension_type& pi, dimension_type& pj) {
+bool
+compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
+                               const std::vector<dimension_type>& mapping,
+                               const std::vector<bool>& basis,
+                               dimension_type& pi, dimension_type& pj) {
   // Look for a negative RHS (i.e., constant term, stored in column 0),
   // maximizing pivot column.
   const dimension_type num_rows = s.num_rows();
