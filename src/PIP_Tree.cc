@@ -549,6 +549,37 @@ row_normalize(PIP_Tree_Node::matrix_row_reference_type x, Coefficient& den) {
   exact_div_assign(den, den, gcd);
 }
 
+void
+compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
+                                                         dimension_type> >&
+                                        candidates,
+                                      const PIP_Tree_Node::matrix_type& s,
+                                      const std::vector<dimension_type>&
+                                        mapping,
+                                      const std::vector<bool>& basis) {
+  dimension_type pi = s.num_rows(); // pi is the pivot's row index.
+  dimension_type pj = 0;            // pj is the pivot's column index.
+  typedef std::set<std::pair<dimension_type,dimension_type> > candidates_t;
+  candidates_t::iterator i = candidates.begin();
+  candidates_t::iterator i_end = candidates.end();
+  for ( ; i!=i_end; ++i) {
+    PIP_Tree_Node::matrix_row_const_reference_type s_i = s[i->first];
+    // Update pair (pi, pj) if they are still unset or
+    // if the challenger pair (i, j) is better in the ordering.
+    if (pj == 0
+        || column_lower(s, mapping, basis,
+                        s[pi], pj, s_i, i->second,
+                        s[pi].get(0), s_i.get(0))) {
+      pi = i->first;
+      pj = i->second;
+    }
+  }
+  candidates.clear();
+  candidates.insert(std::make_pair(pi,pj));
+}
+
+// Returns false if there isn't a posivive pivot candidate.
+// Otherwise, it sets pi, pj to the coordinates of the pivot in s.
 bool
 compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
                                const std::vector<dimension_type>& mapping,
@@ -570,19 +601,14 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
       candidates.insert(std::make_pair(i,j));
     }
   }
-  candidates_t::iterator i = candidates.begin();
-  candidates_t::iterator i_end = candidates.end();
-  for ( ; i!=i_end; ++i) {
-    PIP_Tree_Node::matrix_row_const_reference_type s_i = s[i->first];
-    // Update pair (pi, pj) if they are still unset or
-    // if the challenger pair (i, j) is better in the ordering.
-    if (pj == 0
-        || column_lower(s, mapping, basis,
-                        s[pi], pj, s_i, i->second,
-                        s[pi].get(0), s_i.get(0))) {
-      pi = i->first;
-      pj = i->second;
-    }
+  if (!candidates.empty()) {
+    compatibility_check_find_pivot_in_set(candidates,s,mapping,basis);
+    PPL_ASSERT(!candidates.empty());
+    pi = candidates.begin()->first;
+    pj = candidates.begin()->second;
+  } else {
+    pi = s.num_rows();
+    pj = 0;
   }
 
   return true;
@@ -1666,8 +1692,8 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
   // Perform simplex pivots on the context
   // until we find an empty solution or an optimum.
   while (true) {
-    dimension_type pi = num_rows; // pi is the pivot's row index.
-    dimension_type pj = 0;        // pj is the pivot's column index.
+    dimension_type pi; // pi is the pivot's row index.
+    dimension_type pj;        // pj is the pivot's column index.
 
     bool found_positive_pivot_candidate
       = compatibility_check_find_pivot(s,mapping,basis,pi,pj);
