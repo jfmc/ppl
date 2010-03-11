@@ -1530,7 +1530,7 @@ PIP_Solution_Node::row_sign(matrix_row_const_reference_type x,
   if (big_dimension != not_a_dimension()) {
     // If a big parameter has been set and its coefficient is not zero,
     // then return the sign of the coefficient.
-    const Coefficient& x_big = x[big_dimension];
+    const Coefficient& x_big = x.get(big_dimension);
     if (x_big > 0)
       return POSITIVE;
     if (x_big < 0)
