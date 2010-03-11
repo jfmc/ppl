@@ -419,30 +419,26 @@ column_lower(const PIP_Tree_Node::matrix_type& tableau,
 /* Find the column j in revised simplex tableau such as
   - j is in candidates
   - (column j) / pivot_row[j] is lexico-minimal
+  When this function returns, candidates contains the minimum(s) column(s)
+  index(es).
 */
-bool
-find_lexico_minimum_column_in_set(const std::set<dimension_type>& candidates,
+void
+find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
                                   const PIP_Tree_Node::matrix_type& tableau,
                                   const std::vector<dimension_type>& mapping,
                                   const std::vector<bool>& basis,
                                   PIP_Tree_Node::
-                                    matrix_row_const_reference_type pivot_row,
-                                  dimension_type& j_out) {
-  const dimension_type num_cols = tableau.num_columns();
+                                  matrix_row_const_reference_type pivot_row) {
   const dimension_type num_vars = mapping.size();
-  if (candidates.empty()) {
-    j_out = num_cols;
-    return false;
-  }
-  std::set<dimension_type> current_candidates = candidates;
+  PPL_ASSERT(!candidates.empty());
   for (dimension_type var_index=0; var_index<num_vars; ++var_index) {
     if (basis[var_index])
       continue;
     const dimension_type row_index = mapping[var_index];
     PIP_Tree_Node::matrix_row_const_reference_type row = tableau[row_index];
     PIP_Tree_Node::matrix_const_row_const_iterator row_end = row.end();
-    std::set<dimension_type>::iterator i = current_candidates.begin();
-    std::set<dimension_type>::iterator i_end = current_candidates.end();
+    std::set<dimension_type>::iterator i = candidates.begin();
+    std::set<dimension_type>::iterator i_end = candidates.end();
     PPL_ASSERT(i != i_end);
     dimension_type min_index = *i;
     ++i;
@@ -457,7 +453,7 @@ find_lexico_minimum_column_in_set(const std::set<dimension_type>& candidates,
       if (current_itr != row_end)
         for (++current_itr; current_itr!=row_end; ++current_itr)
           if ((*current_itr).second != 0)
-            current_candidates.erase((*current_itr).first);
+            candidates.erase((*current_itr).first);
     } else {
       PPL_ASSERT((*current_itr).first == min_index);
       PIP_Tree_Node::matrix_const_row_const_iterator last_itr = current_itr;
@@ -488,13 +484,11 @@ find_lexico_minimum_column_in_set(const std::set<dimension_type>& candidates,
         // If min_value < challenger_value, we don't add *i to new_candidates,
         // so it will be ignored in the next pass.
       }
-      std::swap(current_candidates,new_candidates);
+      std::swap(candidates,new_candidates);
     }
-    PPL_ASSERT(!current_candidates.empty());
+    PPL_ASSERT(!candidates.empty());
   }
-  PPL_ASSERT(!current_candidates.empty());
-  j_out = *(current_candidates.begin());
-  return true;
+  PPL_ASSERT(!candidates.empty());
 }
 
 /* Find the column j in revised simplex tableau such as
@@ -516,8 +510,17 @@ find_lexico_minimum_column(const PIP_Tree_Node::matrix_type& tableau,
     if (c > 0)
       candidates.insert(j);
   }
-  return find_lexico_minimum_column_in_set(candidates,tableau,mapping,basis,
-                                           pivot_row, j_out);
+  if (candidates.empty()) {
+    j_out = num_cols;
+    return false;
+  }
+
+  find_lexico_minimum_column_in_set(candidates,tableau,mapping,basis,
+                                    pivot_row);
+  PPL_ASSERT(!candidates.empty());
+  j_out = *(candidates.begin());
+
+  return true;
 }
 
 // Divide all coefficients in row x and denominator y by their GCD.
