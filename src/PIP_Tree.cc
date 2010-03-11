@@ -1218,20 +1218,25 @@ PIP_Solution_Node::Tableau
   const Coefficient& s_1_1 = s_1[col_1];
   matrix_row_const_reference_type t_0 = t[row_0];
   matrix_row_const_reference_type t_1 = t[row_1];
-  PPL_DIRTY_TEMP_COEFFICIENT(coeff_0);
-  PPL_DIRTY_TEMP_COEFFICIENT(coeff_1);
   PPL_DIRTY_TEMP_COEFFICIENT(product_0);
   PPL_DIRTY_TEMP_COEFFICIENT(product_1);
   // On exit from the loop, if j_mismatch == num_params then
   // no column mismatch was found.
   dimension_type j_mismatch = num_params;
+  std::vector<Coefficient> coeff_0(num_params);
+  std::vector<Coefficient> coeff_1(num_params);
   for (dimension_type j = 0; j < num_params; ++j) {
-    coeff_0 = t_0[j] * s_1_1;
-    coeff_1 = t_1[j] * s_0_0;
-    for (dimension_type i = 0; i < num_rows; ++i) {
-      matrix_row_const_reference_type s_i = s[i];
-      product_0 = coeff_0 * s_i[col_0];
-      product_1 = coeff_1 * s_i[col_1];
+    coeff_0[j] = t_0[j] * s_1_1;
+    coeff_1[j] = t_1[j] * s_0_0;
+  }
+  for (dimension_type i = 0; i < num_rows; ++i) {
+    matrix_row_const_reference_type s_i = s[i];
+    const Coefficient* s_i_col_0;
+    const Coefficient* s_i_col_1;
+    s_i.get2(col_0,col_1,s_i_col_0,s_i_col_1);
+    for (dimension_type j = 0; j < num_params; ++j) {
+      product_0 = coeff_0[j] * *s_i_col_0;
+      product_1 = coeff_1[j] * *s_i_col_1;
       if (product_0 != product_1) {
         // Mismatch found: exit from both loops.
         j_mismatch = j;
