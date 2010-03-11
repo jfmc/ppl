@@ -2229,8 +2229,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       if (s_pivot_pj != pivot_den) {
         for (dimension_type i = num_rows; i-- > 0; ) {
           matrix_row_reference_type s_i = tableau.s[i];
-          Coefficient& s_i_pj = s_i[pj];
-          product = s_i_pj * pivot_den;
+          product = s_i[pj] * pivot_den;
           if (product % s_pivot_pj != 0) {
             // As above, perform matrix scaling.
             gcd_assign(gcd, product, s_pivot_pj);
@@ -2239,7 +2238,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             product *= scale_factor;
           }
           PPL_ASSERT(product % s_pivot_pj == 0);
-          exact_div_assign(s_i_pj, product, s_pivot_pj);
+          exact_div_assign(s_i[pj], product, s_pivot_pj);
         }
       }
 
