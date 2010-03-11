@@ -1139,16 +1139,16 @@ PIP_Solution_Node::Tableau::normalize() {
     return;
 
   const dimension_type num_rows = s.num_rows();
-  const dimension_type s_cols = s.num_columns();
-  const dimension_type t_cols = t.num_columns();
 
   // Compute global gcd.
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd = denom;
   for (dimension_type i = num_rows; i-- > 0; ) {
     matrix_row_const_reference_type s_i = s[i];
-    for (dimension_type j = s_cols; j-- > 0; ) {
-      const Coefficient& s_ij = s_i[j];
+    matrix_const_row_const_iterator j = s_i.begin();
+    matrix_const_row_const_iterator j_end = s_i.end();
+    for ( ; j!=j_end; ++j) {
+      const Coefficient& s_ij = (*j).second;
       if (s_ij != 0) {
         gcd_assign(gcd, s_ij, gcd);
         if (gcd == 1)
@@ -1156,8 +1156,10 @@ PIP_Solution_Node::Tableau::normalize() {
       }
     }
     matrix_row_const_reference_type t_i = t[i];
-    for (dimension_type j = t_cols; j-- > 0; ) {
-      const Coefficient& t_ij = t_i[j];
+    j = t_i.begin();
+    j_end = t_i.end();
+    for ( ; j!=j_end; ++j) {
+      const Coefficient& t_ij = (*j).second;
       if (t_ij != 0) {
         gcd_assign(gcd, t_ij, gcd);
         if (gcd == 1)
@@ -1165,18 +1167,21 @@ PIP_Solution_Node::Tableau::normalize() {
       }
     }
   }
-
   PPL_ASSERT(gcd > 1);
   // Normalize all coefficients.
   for (dimension_type i = num_rows; i-- > 0; ) {
     matrix_row_reference_type s_i = s[i];
-    for (dimension_type j = s_cols; j-- > 0; ) {
-      Coefficient& s_ij = s_i[j];
+    matrix_row_iterator j = s_i.begin();
+    matrix_row_iterator j_end = s_i.end();
+    for ( ; j!=j_end; ++j) {
+      Coefficient& s_ij = (*j).second;
       exact_div_assign(s_ij, s_ij, gcd);
     }
     matrix_row_reference_type t_i = t[i];
-    for (dimension_type j = t_cols; j-- > 0; ) {
-      Coefficient& t_ij = t_i[j];
+    j = t_i.begin();
+    j_end = t_i.end();
+    for ( ; j!=j_end; ++j) {
+      Coefficient& t_ij = (*j).second;
       exact_div_assign(t_ij, t_ij, gcd);
     }
   }
