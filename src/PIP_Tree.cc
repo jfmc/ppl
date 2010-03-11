@@ -488,6 +488,7 @@ find_lexico_minimum_column(const PIP_Tree_Node::matrix_type& tableau,
           if (min_value > challenger_value) {
             new_candidates.clear();
             new_candidates.insert(*i);
+            std::swap(min_value,challenger_value);
           }
         // If min_value < challenger_value, we don't add *i to new_candidates,
         // so it will be ignored in the next pass.
