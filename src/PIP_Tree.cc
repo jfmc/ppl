@@ -1611,22 +1611,32 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
 
     // Look for a negative RHS (i.e., constant term, stored in column 0),
     // maximizing pivot column.
-    for (dimension_type i = 0; i < num_rows; ++i) {
-      matrix_row_const_reference_type s_i = s[i];
-      if (s_i[0] < 0) {
-        dimension_type j;
-        if (!find_lexico_minimum_column(s, mapping, basis, s_i, 1, j)) {
-          // No positive pivot candidate: unfeasible problem.
-          return false;
+    {
+      typedef std::set<std::pair<dimension_type,dimension_type> > candidates_t;
+      candidates_t candidates;
+      for (dimension_type i = 0; i < num_rows; ++i) {
+        matrix_row_const_reference_type s_i = s[i];
+        if (s_i.get(0) < 0) {
+          dimension_type j;
+          if (!find_lexico_minimum_column(s, mapping, basis, s_i, 1, j)) {
+            // No positive pivot candidate: unfeasible problem.
+            return false;
+          }
+          candidates.insert(std::make_pair(i,j));
         }
+      }
+      candidates_t::iterator i = candidates.begin();
+      candidates_t::iterator i_end = candidates.end();
+      for ( ; i!=i_end; ++i) {
+        matrix_row_const_reference_type s_i = s[i->first];
         // Update pair (pi, pj) if they are still unset or
         // if the challenger pair (i, j) is better in the ordering.
         if (pj == 0
             || column_lower(s, mapping, basis,
-                            s[pi], pj, s_i, j,
-                            s[pi][0], s_i[0])) {
-          pi = i;
-          pj = j;
+                            s[pi], pj, s_i, i->second,
+                            s[pi].get(0), s_i.get(0))) {
+          pi = i->first;
+          pj = i->second;
         }
       }
     }
