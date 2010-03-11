@@ -546,6 +546,44 @@ row_normalize(PIP_Tree_Node::matrix_row_reference_type x, Coefficient& den) {
   exact_div_assign(den, den, gcd);
 }
 
+bool compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
+                                    const std::vector<dimension_type>& mapping,
+                                    const std::vector<bool>& basis,
+                                    dimension_type& pi, dimension_type& pj) {
+  // Look for a negative RHS (i.e., constant term, stored in column 0),
+  // maximizing pivot column.
+  const dimension_type num_rows = s.num_rows();
+  typedef std::set<std::pair<dimension_type,dimension_type> > candidates_t;
+  candidates_t candidates;
+  for (dimension_type i = 0; i < num_rows; ++i) {
+    PIP_Tree_Node::matrix_row_const_reference_type s_i = s[i];
+    if (s_i.get(0) < 0) {
+      dimension_type j;
+      if (!find_lexico_minimum_column(s, mapping, basis, s_i, 1, j)) {
+        // No positive pivot candidate: unfeasible problem.
+        return false;
+      }
+      candidates.insert(std::make_pair(i,j));
+    }
+  }
+  candidates_t::iterator i = candidates.begin();
+  candidates_t::iterator i_end = candidates.end();
+  for ( ; i!=i_end; ++i) {
+    PIP_Tree_Node::matrix_row_const_reference_type s_i = s[i->first];
+    // Update pair (pi, pj) if they are still unset or
+    // if the challenger pair (i, j) is better in the ordering.
+    if (pj == 0
+        || column_lower(s, mapping, basis,
+                        s[pi], pj, s_i, i->second,
+                        s[pi].get(0), s_i.get(0))) {
+      pi = i->first;
+      pj = i->second;
+    }
+  }
+
+  return true;
+}
+
 } // namespace
 
 namespace IO_Operators {
@@ -1627,37 +1665,11 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
     dimension_type pi = num_rows; // pi is the pivot's row index.
     dimension_type pj = 0;        // pj is the pivot's column index.
 
-    // Look for a negative RHS (i.e., constant term, stored in column 0),
-    // maximizing pivot column.
-    {
-      typedef std::set<std::pair<dimension_type,dimension_type> > candidates_t;
-      candidates_t candidates;
-      for (dimension_type i = 0; i < num_rows; ++i) {
-        matrix_row_const_reference_type s_i = s[i];
-        if (s_i.get(0) < 0) {
-          dimension_type j;
-          if (!find_lexico_minimum_column(s, mapping, basis, s_i, 1, j)) {
-            // No positive pivot candidate: unfeasible problem.
-            return false;
-          }
-          candidates.insert(std::make_pair(i,j));
-        }
-      }
-      candidates_t::iterator i = candidates.begin();
-      candidates_t::iterator i_end = candidates.end();
-      for ( ; i!=i_end; ++i) {
-        matrix_row_const_reference_type s_i = s[i->first];
-        // Update pair (pi, pj) if they are still unset or
-        // if the challenger pair (i, j) is better in the ordering.
-        if (pj == 0
-            || column_lower(s, mapping, basis,
-                            s[pi], pj, s_i, i->second,
-                            s[pi].get(0), s_i.get(0))) {
-          pi = i->first;
-          pj = i->second;
-        }
-      }
-    }
+    bool found_positive_pivot_candidate
+      = compatibility_check_find_pivot(s,mapping,basis,pi,pj);
+
+    if (!found_positive_pivot_candidate)
+      return false;
 
     if (pj == 0) {
       // No negative RHS: fractional optimum found.
