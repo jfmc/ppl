@@ -630,19 +630,104 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
                                       const std::vector<dimension_type>&
                                         mapping,
                                       const std::vector<bool>& basis) {
-  dimension_type pi = s.num_rows(); // pi is the pivot's row index.
-  dimension_type pj = 0;            // pj is the pivot's column index.
+  dimension_type pi; // pi is the pivot's row index.
+  dimension_type pj; // pj is the pivot's column index.
   typedef std::set<std::pair<dimension_type,dimension_type> > candidates_t;
   candidates_t::iterator i = candidates.begin();
   candidates_t::iterator i_end = candidates.end();
-  for ( ; i!=i_end; ++i) {
+  PPL_ASSERT(i != i_end);
+  pi = i->first;
+  pj = i->second;
+  for (++i; i!=i_end; ++i) {
     PIP_Tree_Node::matrix_row_const_reference_type s_i = s[i->first];
     // Update pair (pi, pj) if they are still unset or
     // if the challenger pair (i, j) is better in the ordering.
-    if (pj == 0
-        || column_lower(s, mapping, basis,
-                        s[pi], pj, s_i, i->second,
-                        s[pi].get(0), s_i.get(0))) {
+    bool found_better_pivot;
+    /*
+    found_better_pivot = column_lower(s, mapping, basis,
+                                      s[pi], pj, s_i, i->second,
+                                      , );
+    */
+
+    PIP_Tree_Node::matrix_row_const_reference_type pivot_a = s[pi];
+    const dimension_type ja = pj;
+    PIP_Tree_Node::matrix_row_const_reference_type pivot_b = s_i;
+    const dimension_type jb = i->second;
+    Coefficient_traits::const_reference cst_a = s[pi].get(0);
+    Coefficient_traits::const_reference cst_b = s_i.get(0);
+
+    const Coefficient& sij_a = pivot_a.get(ja);
+    const Coefficient& sij_b = pivot_b.get(jb);
+    PPL_ASSERT(sij_a > 0);
+    PPL_ASSERT(sij_b > 0);
+
+    PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
+    PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
+    lhs_coeff = cst_a * sij_b;
+    rhs_coeff = cst_b * sij_a;
+
+    if (ja == jb) {
+      // Same column: just compare the ratios.
+      // This works since all columns are lexico-positive.
+      // return cst_a * sij_b > cst_b * sij_a;
+      found_better_pivot = lhs_coeff > rhs_coeff;
+    } else {
+
+      PPL_DIRTY_TEMP_COEFFICIENT(lhs);
+      PPL_DIRTY_TEMP_COEFFICIENT(rhs);
+      const dimension_type num_vars = mapping.size();
+      dimension_type k = 0;
+      // While loop guard is: (k < num_rows && lhs == rhs).
+      // Return value is false, if k >= num_rows; lhs < rhs, otherwise.
+      // Try to optimize the computation of lhs and rhs.
+      while (true) {
+        const dimension_type mk = mapping[k];
+        const bool in_base = basis[k];
+        if (++k >= num_vars) {
+          found_better_pivot = false;
+          break;
+        }
+        if (in_base) {
+          // Reconstitute the identity submatrix part of tableau.
+          if (mk == ja) {
+            // Optimizing for: lhs == lhs_coeff && rhs == 0;
+            if (lhs_coeff == 0)
+              continue;
+            else {
+              found_better_pivot = lhs_coeff > 0;
+              break;
+            }
+          }
+          if (mk == jb) {
+            // Optimizing for: lhs == 0 && rhs == rhs_coeff;
+            if (rhs_coeff == 0)
+              continue;
+            else {
+              found_better_pivot = 0 > rhs_coeff;
+              break;
+            }
+          }
+          // Optimizing for: lhs == 0 && rhs == 0;
+          continue;
+        } else {
+          // Not in base.
+          PIP_Tree_Node::matrix_row_const_reference_type t_mk = s[mk];
+          const Coefficient* t_mk_ja;
+          const Coefficient* t_mk_jb;
+          t_mk.get2(ja,jb,t_mk_ja,t_mk_jb);
+          lhs = lhs_coeff * *t_mk_ja;
+          rhs = rhs_coeff * *t_mk_jb;
+          if (lhs == rhs)
+            continue;
+          else {
+            found_better_pivot = lhs > rhs;
+            break;
+          }
+        }
+      }
+    }
+
+    if (found_better_pivot) {
       pi = i->first;
       pj = i->second;
     }
