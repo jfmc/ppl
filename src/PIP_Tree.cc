@@ -443,14 +443,19 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
     if (i == i_end)
       // Only one candidate left, so it is the minimum.
       break;
-    PIP_Tree_Node::matrix_const_row_const_iterator last_itr
-      = pivot_row.lower_bound(min_column);
-    const Coefficient* sij_b = &(pivot_row.get(min_column));
+    PIP_Tree_Node::matrix_const_row_const_iterator pivot_itr
+      = pivot_row.find(min_column);
+    PIP_Tree_Node::matrix_const_row_const_iterator pivot_end
+      = pivot_row.end();
+    PPL_ASSERT(pivot_itr != pivot_end);
+    const Coefficient* sij_b = &((*pivot_itr).second);
     const dimension_type row_index = mapping[var_index];
     const bool in_base = basis[var_index];
     if (in_base) {
       for ( ; i!=i_end; ++i) {
-        const Coefficient& sij_a = pivot_row.get(*i);
+        pivot_itr = pivot_row.find(*i,pivot_itr);
+        PPL_ASSERT(pivot_itr != pivot_end);
+        const Coefficient& sij_a = (*pivot_itr).second;
         PPL_ASSERT(sij_a > 0);
         PPL_ASSERT(*sij_b > 0);
 
@@ -485,33 +490,73 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
       }
     } else {
       // Not in base.
-      for ( ; i!=i_end; ++i) {
-        const Coefficient& sij_a = pivot_row.get(*i);
-        PPL_ASSERT(sij_a > 0);
-        PPL_ASSERT(*sij_b > 0);
-
-        PPL_DIRTY_TEMP_COEFFICIENT(lhs);
-        PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-        bool found_better_candidate = false;
-        PIP_Tree_Node::matrix_row_const_reference_type t_mk = tableau[row_index];
-        const Coefficient* t_mk_ja;
-        const Coefficient* t_mk_jb;
-        t_mk.get2(*i,min_column,t_mk_ja,t_mk_jb);
-        // lhs is actually the left-hand side with toggled sign.
-        // rhs is actually the left-hand side with toggled sign.
-        lhs = *sij_b * *t_mk_ja;
-        rhs = sij_a * *t_mk_jb;
-        if (lhs == rhs)
-          new_candidates.insert(*i);
-        else {
-          if (lhs < rhs)
-            found_better_candidate = true;
+      PIP_Tree_Node::matrix_row_const_reference_type row = tableau[row_index];
+      PIP_Tree_Node::matrix_const_row_const_iterator row_last_itr
+        = row.find(min_column);
+      PIP_Tree_Node::matrix_const_row_const_iterator row_itr = row_last_itr;
+      PIP_Tree_Node::matrix_const_row_const_iterator row_end = row.end();
+      const Coefficient* row_jb;
+      if (row_itr == row_end) {
+        // Found a zero element, keep only zero elements in the current row.
+        for (++i; i!=i_end; ++i) {
+          row_itr = row.find(*i,row_last_itr);
+          if (row_itr != row_end) {
+            row_last_itr = row_itr;
+            if ((*row_itr).second == 0)
+              new_candidates.insert(*i);
+          } else
+            new_candidates.insert(*i);
         }
-        if (found_better_candidate) {
-          new_candidates.clear();
-          min_column = *i;
-          sij_b = &sij_a;
-          new_candidates.insert(min_column);
+      } else {
+        row_jb = &((*row_itr).second);
+        for ( ; i!=i_end; ++i) {
+          pivot_itr = pivot_row.find(*i,pivot_itr);
+          PPL_ASSERT(pivot_itr != pivot_end);
+          const Coefficient& sij_a = (*pivot_itr).second;
+          PPL_ASSERT(sij_a > 0);
+          PPL_ASSERT(*sij_b > 0);
+
+          PPL_DIRTY_TEMP_COEFFICIENT(lhs);
+          PPL_DIRTY_TEMP_COEFFICIENT(rhs);
+          bool found_better_candidate = false;
+          row_itr = row.find(*i,row_last_itr);
+          const Coefficient* row_ja;
+          if (row_itr != row_end) {
+            row_last_itr = row_itr;
+            row_ja = &((*row_itr).second);
+          } else {
+            // Found a zero element, keep only zero elements in the current
+            // row.
+            new_candidates.clear();
+            new_candidates.insert(*i);
+            for (++i; i!=i_end; ++i) {
+              row_itr = row.find(*i,row_last_itr);
+              if (row_itr != row_end) {
+                row_last_itr = row_itr;
+                if ((*row_itr).second == 0)
+                  new_candidates.insert(*i);
+              } else
+                new_candidates.insert(*i);
+            }
+            break;
+          }
+          // lhs is actually the left-hand side with toggled sign.
+          // rhs is actually the left-hand side with toggled sign.
+          lhs = *sij_b * *row_ja;
+          rhs = sij_a * *row_jb;
+          if (lhs == rhs)
+            new_candidates.insert(*i);
+          else {
+            if (lhs < rhs)
+              found_better_candidate = true;
+          }
+          if (found_better_candidate) {
+            new_candidates.clear();
+            min_column = *i;
+            row_jb = row_ja;
+            sij_b = &sij_a;
+            new_candidates.insert(min_column);
+          }
         }
       }
     }
