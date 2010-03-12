@@ -541,7 +541,7 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
             break;
           }
           // lhs is actually the left-hand side with toggled sign.
-          // rhs is actually the left-hand side with toggled sign.
+          // rhs is actually the right-hand side with toggled sign.
           lhs = *sij_b * *row_ja;
           rhs = sij_a * *row_jb;
           if (lhs == rhs)
