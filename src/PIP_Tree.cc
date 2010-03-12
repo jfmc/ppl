@@ -440,21 +440,23 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
     new_candidates.insert(*i);
     dimension_type min_column = *i;
     ++i;
+    if (i == i_end)
+      // Only one candidate left, so it is the minimum.
+      break;
+    PIP_Tree_Node::matrix_const_row_const_iterator last_itr
+      = pivot_row.lower_bound(min_column);
     const Coefficient* sij_b = &(pivot_row.get(min_column));
-    for ( ; i!=i_end; ++i) {
-      const Coefficient& sij_a = pivot_row.get(*i);
-      PPL_ASSERT(sij_a > 0);
-      PPL_ASSERT(*sij_b > 0);
+    const dimension_type row_index = mapping[var_index];
+    const bool in_base = basis[var_index];
+    if (in_base) {
+      for ( ; i!=i_end; ++i) {
+        const Coefficient& sij_a = pivot_row.get(*i);
+        PPL_ASSERT(sij_a > 0);
+        PPL_ASSERT(*sij_b > 0);
 
-      PPL_DIRTY_TEMP_COEFFICIENT(lhs);
-      PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-      dimension_type k = var_index;
-      const dimension_type mk = mapping[k];
-      const bool in_base = basis[k];
-      bool found_better_candidate = false;
-      if (in_base) {
+        bool found_better_candidate = false;
         // Reconstitute the identity submatrix part of tableau.
-        if (mk == *i) {
+        if (row_index == *i) {
           // Optimizing for: lhs == lhs_coeff && rhs == 0;
           if (*sij_b == 0)
             new_candidates.insert(*i);
@@ -462,21 +464,36 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
             if (*sij_b < 0)
               found_better_candidate = true;
           }
-        }
-        if (mk == min_column) {
-          // Optimizing for: lhs == 0 && rhs == rhs_coeff;
-          if (sij_a == 0)
+        } else
+          if (row_index == min_column) {
+            // Optimizing for: lhs == 0 && rhs == rhs_coeff;
+            if (sij_a == 0)
+              new_candidates.insert(*i);
+            else {
+              if (0 < sij_a)
+                found_better_candidate = true;
+            }
+          } else
+            // Optimizing for: lhs == 0 && rhs == 0;
             new_candidates.insert(*i);
-          else {
-            if (0 < sij_a)
-              found_better_candidate = true;
-          }
+        if (found_better_candidate) {
+          new_candidates.clear();
+          min_column = *i;
+          sij_b = &sij_a;
+          new_candidates.insert(min_column);
         }
-        // Optimizing for: lhs == 0 && rhs == 0;
-        new_candidates.insert(*i);
-      } else {
-        // Not in base.
-        PIP_Tree_Node::matrix_row_const_reference_type t_mk = tableau[mk];
+      }
+    } else {
+      // Not in base.
+      for ( ; i!=i_end; ++i) {
+        const Coefficient& sij_a = pivot_row.get(*i);
+        PPL_ASSERT(sij_a > 0);
+        PPL_ASSERT(*sij_b > 0);
+
+        PPL_DIRTY_TEMP_COEFFICIENT(lhs);
+        PPL_DIRTY_TEMP_COEFFICIENT(rhs);
+        bool found_better_candidate = false;
+        PIP_Tree_Node::matrix_row_const_reference_type t_mk = tableau[row_index];
         const Coefficient* t_mk_ja;
         const Coefficient* t_mk_jb;
         t_mk.get2(*i,min_column,t_mk_ja,t_mk_jb);
@@ -490,12 +507,12 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
           if (lhs < rhs)
             found_better_candidate = true;
         }
-      }
-      if (found_better_candidate) {
-        new_candidates.clear();
-        min_column = *i;
-        sij_b = &sij_a;
-        new_candidates.insert(min_column);
+        if (found_better_candidate) {
+          new_candidates.clear();
+          min_column = *i;
+          sij_b = &sij_a;
+          new_candidates.insert(min_column);
+        }
       }
     }
     std::swap(candidates,new_candidates);
