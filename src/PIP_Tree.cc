@@ -429,81 +429,79 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
                                   const std::vector<bool>& basis,
                                   PIP_Tree_Node::
                                   matrix_row_const_reference_type pivot_row) {
-  std::set<dimension_type>::iterator i = candidates.begin();
-  std::set<dimension_type>::iterator i_end = candidates.end();
+  const dimension_type num_vars = mapping.size();
 
   PPL_ASSERT(!candidates.empty());
-  dimension_type min_index = *i;
-  ++i;
-  for ( ; i!=i_end; ++i) {
-    bool found_better_candidate;
-    const Coefficient& sij_a = pivot_row.get(*i);
-    const Coefficient& sij_b = pivot_row.get(min_index);
-    PPL_ASSERT(sij_a > 0);
-    PPL_ASSERT(sij_b > 0);
+  for (dimension_type var_index = 0; var_index < num_vars; ++var_index) {
+    std::set<dimension_type> new_candidates;
+    std::set<dimension_type>::iterator i = candidates.begin();
+    std::set<dimension_type>::iterator i_end = candidates.end();
+    PPL_ASSERT(!candidates.empty());
+    new_candidates.insert(*i);
+    dimension_type min_column = *i;
+    ++i;
+    for ( ; i!=i_end; ++i) {
+      const Coefficient& sij_a = pivot_row.get(*i);
+      const Coefficient& sij_b = pivot_row.get(min_column);
+      PPL_ASSERT(sij_a > 0);
+      PPL_ASSERT(sij_b > 0);
 
-    PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
-    PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
-    lhs_coeff = -sij_b;
-    rhs_coeff = -sij_a;
+      PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
+      PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
+      lhs_coeff = -sij_b;
+      rhs_coeff = -sij_a;
 
-    PPL_DIRTY_TEMP_COEFFICIENT(lhs);
-    PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-    const dimension_type num_vars = mapping.size();
-    dimension_type k = 0;
-    // While loop guard is: (k < num_rows && lhs == rhs).
-    // Return value is false, if k >= num_rows; lhs < rhs, otherwise.
-    // Try to optimize the computation of lhs and rhs.
-    while (true) {
+      PPL_DIRTY_TEMP_COEFFICIENT(lhs);
+      PPL_DIRTY_TEMP_COEFFICIENT(rhs);
+      dimension_type k = var_index;
       const dimension_type mk = mapping[k];
       const bool in_base = basis[k];
-      if (++k >= num_vars) {
-        found_better_candidate = false;
-        break;
-      }
+      bool found_better_candidate = false;
       if (in_base) {
         // Reconstitute the identity submatrix part of tableau.
         if (mk == *i) {
           // Optimizing for: lhs == lhs_coeff && rhs == 0;
           if (lhs_coeff == 0)
-            continue;
+            new_candidates.insert(*i);
           else {
-            found_better_candidate = lhs_coeff > 0;
-            break;
+            if (lhs_coeff > 0)
+              found_better_candidate = true;
           }
         }
-        if (mk == min_index) {
+        if (mk == min_column) {
           // Optimizing for: lhs == 0 && rhs == rhs_coeff;
           if (rhs_coeff == 0)
-            continue;
+            new_candidates.insert(*i);
           else {
-            found_better_candidate = 0 > rhs_coeff;
-            break;
+            if (0 > rhs_coeff)
+              found_better_candidate = true;
           }
         }
         // Optimizing for: lhs == 0 && rhs == 0;
-        continue;
+        new_candidates.insert(*i);
       } else {
         // Not in base.
         PIP_Tree_Node::matrix_row_const_reference_type t_mk = tableau[mk];
         const Coefficient* t_mk_ja;
         const Coefficient* t_mk_jb;
-        t_mk.get2(*i,min_index,t_mk_ja,t_mk_jb);
+        t_mk.get2(*i,min_column,t_mk_ja,t_mk_jb);
         lhs = lhs_coeff * *t_mk_ja;
         rhs = rhs_coeff * *t_mk_jb;
         if (lhs == rhs)
-          continue;
+          new_candidates.insert(*i);
         else {
-          found_better_candidate = lhs > rhs;
-          break;
+          if (lhs > rhs)
+            found_better_candidate = true;
         }
       }
+      if (found_better_candidate) {
+        new_candidates.clear();
+        min_column = *i;
+        new_candidates.insert(min_column);
+      }
     }
-    if (found_better_candidate)
-      min_index = *i;
+    std::swap(candidates,new_candidates);
   }
-  candidates.clear();
-  candidates.insert(min_index);
 }
 
 /* Find the column j in revised simplex tableau such as
