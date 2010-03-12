@@ -440,16 +440,11 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
     new_candidates.insert(*i);
     dimension_type min_column = *i;
     ++i;
+    const Coefficient* sij_b = &(pivot_row.get(min_column));
     for ( ; i!=i_end; ++i) {
       const Coefficient& sij_a = pivot_row.get(*i);
-      const Coefficient& sij_b = pivot_row.get(min_column);
       PPL_ASSERT(sij_a > 0);
-      PPL_ASSERT(sij_b > 0);
-
-      PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
-      PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
-      lhs_coeff = -sij_b;
-      rhs_coeff = -sij_a;
+      PPL_ASSERT(*sij_b > 0);
 
       PPL_DIRTY_TEMP_COEFFICIENT(lhs);
       PPL_DIRTY_TEMP_COEFFICIENT(rhs);
@@ -461,19 +456,19 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
         // Reconstitute the identity submatrix part of tableau.
         if (mk == *i) {
           // Optimizing for: lhs == lhs_coeff && rhs == 0;
-          if (lhs_coeff == 0)
+          if (*sij_b == 0)
             new_candidates.insert(*i);
           else {
-            if (lhs_coeff > 0)
+            if (*sij_b < 0)
               found_better_candidate = true;
           }
         }
         if (mk == min_column) {
           // Optimizing for: lhs == 0 && rhs == rhs_coeff;
-          if (rhs_coeff == 0)
+          if (sij_a == 0)
             new_candidates.insert(*i);
           else {
-            if (0 > rhs_coeff)
+            if (0 < sij_a)
               found_better_candidate = true;
           }
         }
@@ -485,18 +480,21 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
         const Coefficient* t_mk_ja;
         const Coefficient* t_mk_jb;
         t_mk.get2(*i,min_column,t_mk_ja,t_mk_jb);
-        lhs = lhs_coeff * *t_mk_ja;
-        rhs = rhs_coeff * *t_mk_jb;
+        // lhs is actually the left-hand side with toggled sign.
+        // rhs is actually the left-hand side with toggled sign.
+        lhs = *sij_b * *t_mk_ja;
+        rhs = sij_a * *t_mk_jb;
         if (lhs == rhs)
           new_candidates.insert(*i);
         else {
-          if (lhs > rhs)
+          if (lhs < rhs)
             found_better_candidate = true;
         }
       }
       if (found_better_candidate) {
         new_candidates.clear();
         min_column = *i;
+        sij_b = &sij_a;
         new_candidates.insert(min_column);
       }
     }
