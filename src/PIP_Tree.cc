@@ -2629,26 +2629,26 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 
       // Compute columns s[*][j] :
       // s[i][j] -= s[i][pj] * s_pivot[j] / s_pivot_pj;
-      for (dimension_type j = num_vars; j-- > 0; ) {
-        if (j == pj)
-          continue;
-        const Coefficient& s_pivot_j = s_pivot.get(j);
-        // Do nothing if the j-th pivot element is zero.
-        if (s_pivot_j == 0)
-          continue;
-        for (dimension_type i = num_rows; i-- > 0; ) {
-          matrix_row_reference_type s_i = tableau.s[i];
-          product = s_pivot_j * s_i.get(pj);
-          if (product % s_pivot_pj != 0) {
-            // Must scale matrix to stay in integer case.
-            gcd_assign(gcd, product, s_pivot_pj);
-            exact_div_assign(scale_factor, s_pivot_pj, gcd);
-            tableau.scale(scale_factor);
-            product *= scale_factor;
+      for (dimension_type i = num_rows; i-- > 0; ) {
+        matrix_row_reference_type s_i = tableau.s[i];
+        for (dimension_type j = num_vars; j-- > 0; ) {
+          if (j != pj) {
+            const Coefficient& s_pivot_j = s_pivot.get(j);
+            // Do nothing if the j-th pivot element is zero.
+            if (s_pivot_j != 0) {
+              product = s_pivot_j * s_i.get(pj);
+              if (product % s_pivot_pj != 0) {
+                // Must scale matrix to stay in integer case.
+                gcd_assign(gcd, product, s_pivot_pj);
+                exact_div_assign(scale_factor, s_pivot_pj, gcd);
+                tableau.scale(scale_factor);
+                product *= scale_factor;
+              }
+              PPL_ASSERT(product % s_pivot_pj == 0);
+              exact_div_assign(product, product, s_pivot_pj);
+              s_i[j] -= product;
+            }
           }
-          PPL_ASSERT(product % s_pivot_pj == 0);
-          exact_div_assign(product, product, s_pivot_pj);
-          s_i[j] -= product;
         }
       }
 
