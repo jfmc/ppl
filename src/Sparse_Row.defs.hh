@@ -173,10 +173,10 @@ public:
   const_iterator lower_bound(const dimension_type c) const;
   const_iterator upper_bound(const dimension_type c) const;
 
-  //! Equivalent to find_create(i,x,begin()) .
+  //! Equivalent to find_create(i,x,begin_dangerous()) .
   iterator find_create(const dimension_type i,const Coefficient& x);
 
-  //! Equivalent to find_create(i,begin()) .
+  //! Equivalent to find_create(i,begin_dangerous()) .
   iterator find_create(const dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
@@ -342,10 +342,10 @@ public:
   const_iterator lower_bound(const dimension_type c) const;
   const_iterator upper_bound(const dimension_type c) const;
 
-  //! Equivalent to find_create(i,x,begin()) .
+  //! Equivalent to find_create(i,x,begin_dangerous()) .
   iterator find_create(const dimension_type i,const Coefficient& x);
 
-  //! Equivalent to find_create(i,begin()) .
+  //! Equivalent to find_create(i,begin_dangerous()) .
   iterator find_create(const dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
