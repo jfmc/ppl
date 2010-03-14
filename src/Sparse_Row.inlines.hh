@@ -251,10 +251,35 @@ Sparse_Row::find_create(const dimension_type i,const Coefficient& x) {
 }
 
 inline Sparse_Row::iterator
+Sparse_Row::find_create(const dimension_type i) {
+  PPL_ASSERT(i < size_);
+  return row.find_create(i);
+}
+
+inline Sparse_Row::iterator
 Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
                         iterator itr) {
   PPL_ASSERT(i < size_);
   return row.find_create(i,x,itr);
+}
+
+inline Sparse_Row::iterator
+Sparse_Row::find_create(const dimension_type i,iterator itr) {
+  PPL_ASSERT(i < size_);
+  return row.find_create(i,itr);
+}
+
+inline Sparse_Row::dangerous_iterator
+Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
+                        dangerous_iterator itr) {
+  PPL_ASSERT(i < size_);
+  return row.find_create(i,x,itr);
+}
+
+inline Sparse_Row::dangerous_iterator
+Sparse_Row::find_create(const dimension_type i,dangerous_iterator itr) {
+  PPL_ASSERT(i < size_);
+  return row.find_create(i,itr);
 }
 
 inline
@@ -502,6 +527,12 @@ Sparse_Row_Reference::upper_bound(const dimension_type c) const {
 }
 
 inline Sparse_Row_Reference::iterator
+Sparse_Row_Reference::find_create(const dimension_type i) {
+  PPL_ASSERT(i < size_);
+  return row.find_create(i);
+}
+
+inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference::find_create(const dimension_type i,
                                   const Coefficient& x) {
   PPL_ASSERT(i < size_);
@@ -513,6 +544,26 @@ Sparse_Row_Reference::find_create(const dimension_type i,const Coefficient& x,
                                   iterator itr) {
   PPL_ASSERT(i < size_);
   return row.find_create(i,x,itr);
+}
+
+inline Sparse_Row_Reference::iterator
+Sparse_Row_Reference::find_create(const dimension_type i,iterator itr) {
+  PPL_ASSERT(i < size_);
+  return row.find_create(i,itr);
+}
+
+inline Sparse_Row_Reference::dangerous_iterator
+Sparse_Row_Reference::find_create(const dimension_type i,const Coefficient& x,
+                                  dangerous_iterator itr) {
+  PPL_ASSERT(i < size_);
+  return row.find_create(i,x,itr);
+}
+
+inline Sparse_Row_Reference::dangerous_iterator
+Sparse_Row_Reference::find_create(const dimension_type i,
+                                  dangerous_iterator itr) {
+  PPL_ASSERT(i < size_);
+  return row.find_create(i,itr);
 }
 
 inline
