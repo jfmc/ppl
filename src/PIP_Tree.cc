@@ -646,47 +646,70 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
     const Coefficient* value;
     s[pi].get2(0,pj,cost,value);
     new_candidates.insert(*i);
-    for (++i; i!=i_end; ++i) {
-      bool found_better_pivot = false;
+    if (in_base) {
+      for (++i; i!=i_end; ++i) {
+        bool found_better_pivot = false;
 
-      const dimension_type challenger_i = i->first;
-      const dimension_type challenger_j = i->second;
-      const Coefficient* challenger_cost;
-      const Coefficient* challenger_value;
-      s[challenger_i].get2(0,challenger_j,challenger_cost,challenger_value);
-      PPL_ASSERT(value > 0);
-      PPL_ASSERT(challenger_value > 0);
+        const dimension_type challenger_i = i->first;
+        const dimension_type challenger_j = i->second;
+        const Coefficient* challenger_cost;
+        const Coefficient* challenger_value;
+        s[challenger_i].get2(0,challenger_j,challenger_cost,challenger_value);
+        PPL_ASSERT(value > 0);
+        PPL_ASSERT(challenger_value > 0);
 
-      PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
-      PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
-      lhs_coeff = *cost * *challenger_value;
-      rhs_coeff = *challenger_cost * *value;
+        const int lhs_coeff_sgn = sgn(*cost) * sgn(*challenger_value);
+        const int rhs_coeff_sgn = sgn(*challenger_cost) * sgn(*value);
 
-      PPL_ASSERT(pj != challenger_j);
+        PPL_ASSERT(pj != challenger_j);
 
-      PPL_DIRTY_TEMP_COEFFICIENT(lhs);
-      PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-      if (in_base) {
         // Reconstitute the identity submatrix part of tableau.
         if (row_index == pj) {
           // Optimizing for: lhs == lhs_coeff && rhs == 0;
-          if (lhs_coeff == 0)
+          if (lhs_coeff_sgn == 0)
             new_candidates.insert(*i);
           else
-            found_better_pivot = lhs_coeff > 0;
+            found_better_pivot = lhs_coeff_sgn > 0;
         } else {
           if (row_index == challenger_j) {
             // Optimizing for: lhs == 0 && rhs == rhs_coeff;
-            if (rhs_coeff == 0)
+            if (rhs_coeff_sgn == 0)
               new_candidates.insert(*i);
             else
-              found_better_pivot = 0 > rhs_coeff;
+              found_better_pivot = 0 > rhs_coeff_sgn;
           } else
             // Optimizing for: lhs == 0 && rhs == 0;
             new_candidates.insert(*i);
         }
-      } else {
-        // Not in base.
+        if (found_better_pivot) {
+          pi = challenger_i;
+          pj = challenger_j;
+          cost = challenger_cost;
+          value = challenger_value;
+          new_candidates.clear();
+          new_candidates.insert(*i);
+        }
+      }
+    } else {
+      // Not in base.
+      for (++i; i!=i_end; ++i) {
+        const dimension_type challenger_i = i->first;
+        const dimension_type challenger_j = i->second;
+        const Coefficient* challenger_cost;
+        const Coefficient* challenger_value;
+        s[challenger_i].get2(0,challenger_j,challenger_cost,challenger_value);
+        PPL_ASSERT(value > 0);
+        PPL_ASSERT(challenger_value > 0);
+
+        PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
+        PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
+        lhs_coeff = *cost * *challenger_value;
+        rhs_coeff = *challenger_cost * *value;
+
+        PPL_ASSERT(pj != challenger_j);
+
+        PPL_DIRTY_TEMP_COEFFICIENT(lhs);
+        PPL_DIRTY_TEMP_COEFFICIENT(rhs);
         PIP_Tree_Node::matrix_row_const_reference_type row = s[row_index];
         const Coefficient* t_mk_ja;
         const Coefficient* t_mk_jb;
@@ -696,17 +719,15 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
         if (lhs == rhs)
           new_candidates.insert(*i);
         else {
-          found_better_pivot = lhs > rhs;
+          if (lhs > rhs) {
+            pi = challenger_i;
+            pj = challenger_j;
+            cost = challenger_cost;
+            value = challenger_value;
+            new_candidates.clear();
+            new_candidates.insert(*i);
+          }
         }
-      }
-
-      if (found_better_pivot) {
-        pi = challenger_i;
-        pj = challenger_j;
-        cost = challenger_cost;
-        value = challenger_value;
-        new_candidates.clear();
-        new_candidates.insert(*i);
       }
     }
     std::swap(candidates,new_candidates);
