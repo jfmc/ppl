@@ -199,8 +199,15 @@ public:
   iterator find_create(dimension_type i,const Coefficient& x);
 
   //! Provided for compatibility with Sparse_Row.
+  iterator find_create(dimension_type i);
+
+  //! Provided for compatibility with Sparse_Row.
   //! itr must point to an element before the modified one.
   iterator find_create(dimension_type i,const Coefficient& x,iterator itr);
+
+  //! Provided for compatibility with Sparse_Row.
+  //! itr must point to an element before the modified one.
+  iterator find_create(dimension_type i,iterator itr);
 
   //! \name Subscript operators
   //@{

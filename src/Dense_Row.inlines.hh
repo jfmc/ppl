@@ -209,10 +209,22 @@ Dense_Row::find_create(dimension_type i,const Coefficient& x) {
 }
 
 inline Dense_Row::iterator
+Dense_Row::find_create(dimension_type i) {
+  return find(i);
+}
+
+inline Dense_Row::iterator
 Dense_Row::find_create(dimension_type i,const Coefficient& x,iterator itr) {
   PPL_ASSERT(itr != end());
   PPL_ASSERT((*itr).first < i);
   (*this)[i] = x;
+  return find(i);
+}
+
+inline Dense_Row::iterator
+Dense_Row::find_create(dimension_type i,iterator itr) {
+  PPL_ASSERT(itr != end());
+  PPL_ASSERT((*itr).first < i);
   return find(i);
 }
 
