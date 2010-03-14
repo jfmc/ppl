@@ -710,7 +710,15 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
     } else {
       // Not in base.
       PIP_Tree_Node::matrix_row_const_reference_type row = s[row_index];
-      const Coefficient* row_value = &(row.get(pj));
+      PIP_Tree_Node::matrix_const_row_const_iterator row_itr
+        = row.lower_bound(pj);
+      PIP_Tree_Node::matrix_const_row_const_iterator row_end = row.end();
+      const Coefficient* row_value;
+      if (row_itr != row_end && (*row_itr).first == pj) {
+        row_value = &((*row_itr).second);
+        ++row_itr;
+      } else
+        row_value = &(Coefficient_zero());
       for (++i; i!=i_end; ++i) {
         const dimension_type challenger_i = i->second.row_index;
         const dimension_type challenger_j = i->first;
@@ -727,7 +735,24 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
         rhs = *challenger_cost;
         rhs *= *value;
 
-        const Coefficient* row_challenger_value = &(row.get(challenger_j));
+        const Coefficient* row_challenger_value;
+        // row_challenger_value = &(row.get(challenger_j));
+        if (row_itr != row_end) {
+          if ((*row_itr).first < challenger_j) {
+            row_itr = row.lower_bound(challenger_j,row_itr);
+            if (row_itr != row_end && (*row_itr).first == challenger_j) {
+              row_challenger_value = &((*row_itr).second);
+              ++row_itr;
+            } else
+              row_challenger_value = &(Coefficient_zero());
+          } else {
+            if ((*row_itr).first == challenger_j) {
+              row_challenger_value = &((*row_itr).second);
+              ++row_itr;
+            }
+          }
+        } else
+          row_challenger_value = &(Coefficient_zero());
 
         lhs *= *row_value;
         rhs *= *row_challenger_value;
