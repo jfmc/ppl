@@ -631,80 +631,73 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
                                       const std::vector<dimension_type>&
                                         mapping,
                                       const std::vector<bool>& basis) {
-  dimension_type pi; // pi is the pivot's row index.
-  dimension_type pj; // pj is the pivot's column index.
   typedef std::set<std::pair<dimension_type,dimension_type> > candidates_t;
-  candidates_t::iterator i = candidates.begin();
-  candidates_t::iterator i_end = candidates.end();
-  PPL_ASSERT(i != i_end);
-  pi = i->first;
-  pj = i->second;
-  for (++i; i!=i_end; ++i) {
-    PIP_Tree_Node::matrix_row_const_reference_type s_i = s[i->first];
-    // Update pair (pi, pj) if they are still unset or
-    // if the challenger pair (i, j) is better in the ordering.
-    bool found_better_pivot;
-    /*
-    found_better_pivot = column_lower(s, mapping, basis,
-                                      s[pi], pj, s_i, i->second,
-                                      , );
-    */
+  const dimension_type num_vars = mapping.size();
+  for (dimension_type var_index=0; var_index<num_vars; ++var_index) {
+    candidates_t new_candidates;
+    candidates_t::iterator i = candidates.begin();
+    candidates_t::iterator i_end = candidates.end();
+    PPL_ASSERT(i != i_end);
+    dimension_type pi = i->first;
+    dimension_type pj = i->second;
+    new_candidates.insert(*i);
+    for (++i; i!=i_end; ++i) {
+      PIP_Tree_Node::matrix_row_const_reference_type s_i = s[i->first];
+      // Update pair (pi, pj) if they are still unset or
+      // if the challenger pair (i, j) is better in the ordering.
+      bool found_better_pivot = false;
+      /*
+      found_better_pivot = column_lower(s, mapping, basis,
+                                        s[pi], pj, s_i, i->second,
+                                        , );
+      */
 
-    PIP_Tree_Node::matrix_row_const_reference_type pivot_a = s[pi];
-    const dimension_type ja = pj;
-    PIP_Tree_Node::matrix_row_const_reference_type pivot_b = s_i;
-    const dimension_type jb = i->second;
-    Coefficient_traits::const_reference cst_a = s[pi].get(0);
-    Coefficient_traits::const_reference cst_b = s_i.get(0);
+      PIP_Tree_Node::matrix_row_const_reference_type pivot_a = s[pi];
+      const dimension_type ja = pj;
+      PIP_Tree_Node::matrix_row_const_reference_type pivot_b = s_i;
+      const dimension_type jb = i->second;
+      Coefficient_traits::const_reference cst_a = s[pi].get(0);
+      Coefficient_traits::const_reference cst_b = s_i.get(0);
 
-    const Coefficient& sij_a = pivot_a.get(ja);
-    const Coefficient& sij_b = pivot_b.get(jb);
-    PPL_ASSERT(sij_a > 0);
-    PPL_ASSERT(sij_b > 0);
+      const Coefficient& sij_a = pivot_a.get(ja);
+      const Coefficient& sij_b = pivot_b.get(jb);
+      PPL_ASSERT(sij_a > 0);
+      PPL_ASSERT(sij_b > 0);
 
-    PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
-    PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
-    lhs_coeff = cst_a * sij_b;
-    rhs_coeff = cst_b * sij_a;
+      PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
+      PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
+      lhs_coeff = cst_a * sij_b;
+      rhs_coeff = cst_b * sij_a;
 
-    PPL_ASSERT(ja != jb);
+      PPL_ASSERT(ja != jb);
 
-    PPL_DIRTY_TEMP_COEFFICIENT(lhs);
-    PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-    const dimension_type num_vars = mapping.size();
-    dimension_type k = 0;
-    // While loop guard is: (k < num_rows && lhs == rhs).
-    // Return value is false, if k >= num_rows; lhs < rhs, otherwise.
-    // Try to optimize the computation of lhs and rhs.
-    while (true) {
+      PPL_DIRTY_TEMP_COEFFICIENT(lhs);
+      PPL_DIRTY_TEMP_COEFFICIENT(rhs);
+      dimension_type k = var_index;
       const dimension_type mk = mapping[k];
       const bool in_base = basis[k];
-      if (++k >= num_vars) {
-        found_better_pivot = false;
-        break;
-      }
       if (in_base) {
         // Reconstitute the identity submatrix part of tableau.
         if (mk == ja) {
           // Optimizing for: lhs == lhs_coeff && rhs == 0;
           if (lhs_coeff == 0)
-            continue;
+            new_candidates.insert(*i);
           else {
             found_better_pivot = lhs_coeff > 0;
-            break;
+          }
+        } else {
+          if (mk == jb) {
+            // Optimizing for: lhs == 0 && rhs == rhs_coeff;
+            if (rhs_coeff == 0)
+              new_candidates.insert(*i);
+            else {
+              found_better_pivot = 0 > rhs_coeff;
+            }
+          } else {
+            // Optimizing for: lhs == 0 && rhs == 0;
+            new_candidates.insert(*i);
           }
         }
-        if (mk == jb) {
-          // Optimizing for: lhs == 0 && rhs == rhs_coeff;
-          if (rhs_coeff == 0)
-            continue;
-          else {
-            found_better_pivot = 0 > rhs_coeff;
-            break;
-          }
-        }
-        // Optimizing for: lhs == 0 && rhs == 0;
-        continue;
       } else {
         // Not in base.
         PIP_Tree_Node::matrix_row_const_reference_type t_mk = s[mk];
@@ -714,21 +707,21 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
         lhs = lhs_coeff * *t_mk_ja;
         rhs = rhs_coeff * *t_mk_jb;
         if (lhs == rhs)
-          continue;
+          new_candidates.insert(*i);
         else {
           found_better_pivot = lhs > rhs;
-          break;
         }
       }
-    }
 
-    if (found_better_pivot) {
-      pi = i->first;
-      pj = i->second;
+      if (found_better_pivot) {
+        pi = i->first;
+        pj = i->second;
+        new_candidates.clear();
+        new_candidates.insert(*i);
+      }
     }
+    std::swap(candidates,new_candidates);
   }
-  candidates.clear();
-  candidates.insert(std::make_pair(pi,pj));
 }
 
 // This is here because it is used as a template argument in
