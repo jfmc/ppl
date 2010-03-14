@@ -731,6 +731,16 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
   candidates.insert(std::make_pair(pi,pj));
 }
 
+// This is here because it is used as a template argument in
+// compatibility_check_find_pivot, so it must be a global declaration.
+struct compatibility_check_find_pivot_map_data {
+  dimension_type row_index;
+  // We cache pointers to cost and value to avoid calling get() multiple
+  // times.
+  const Coefficient* cost;
+  const Coefficient* value;
+};
+
 // Returns false if there isn't a posivive pivot candidate.
 // Otherwise, it sets pi, pj to the coordinates of the pivot in s.
 bool
@@ -742,7 +752,8 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
   // maximizing pivot column.
   const dimension_type num_rows = s.num_rows();
   typedef std::set<std::pair<dimension_type,dimension_type> > candidates_t;
-  typedef std::map<dimension_type,dimension_type> candidates_map_t;
+  typedef compatibility_check_find_pivot_map_data map_data;
+  typedef std::map<dimension_type,map_data> candidates_map_t;
   candidates_map_t candidates_map;
   for (dimension_type i = 0; i < num_rows; ++i) {
     PIP_Tree_Node::matrix_row_const_reference_type s_i = s[i];
@@ -753,32 +764,45 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
         return false;
       }
       candidates_map_t::iterator itr = candidates_map.find(j);
-      if (itr == candidates_map.end())
-        candidates_map[j]=i;
-      else {
-        dimension_type& current_i = candidates_map[j];
+      if (itr == candidates_map.end()) {
+        map_data& current_data = candidates_map[j];
+        current_data.row_index = i;
+        current_data.cost = 0;
+        current_data.value = 0;
+      } else {
+        map_data& current_data = candidates_map[j];
 
-        PIP_Tree_Node::matrix_row_const_reference_type row_a = s[current_i];
         PIP_Tree_Node::matrix_row_const_reference_type row_b = s[i];
-        Coefficient_traits::const_reference cst_a = row_a.get(0);
-        Coefficient_traits::const_reference cst_b = row_b.get(0);
 
-        const Coefficient& sij_a = row_a.get(j);
-        const Coefficient& sij_b = row_b.get(j);
-        PPL_ASSERT(sij_a > 0);
-        PPL_ASSERT(sij_b > 0);
+        if (current_data.cost == 0)
+          // This is the first time we need the cost and the value, calculate
+          // and keep them for (possible) later uses.
+          s[current_data.row_index].get2(0,j,current_data.cost,
+                                         current_data.value);
 
-        Coefficient lhs_coeff = cst_a;
-        lhs_coeff *= sij_b;
-        Coefficient rhs_coeff = cst_b;
-        rhs_coeff *= sij_a;
+        PPL_ASSERT(current_data.cost != 0);
+        PPL_ASSERT(current_data.value != 0);
+
+        Coefficient_traits::const_reference cost_b = row_b.get(0);
+        const Coefficient& value_b = row_b.get(j);
+
+        PPL_ASSERT(*(current_data.value) > 0);
+        PPL_ASSERT(value_b > 0);
+
+        Coefficient lhs_coeff = *(current_data.cost);
+        lhs_coeff *= value_b;
+        Coefficient rhs_coeff = cost_b;
+        rhs_coeff *= *(current_data.value);
 
         // Same column: just compare the ratios.
         // This works since all columns are lexico-positive.
         // return cst_a * sij_b > cst_b * sij_a;
-        if (lhs_coeff > rhs_coeff)
+        if (lhs_coeff > rhs_coeff) {
           // Found better pivot
-          current_i = i;
+          current_data.row_index = i;
+          current_data.cost = &(cost_b);
+          current_data.value = &(value_b);
+        }
         // Otherwise, keep current pivot for this column.
       }
     }
@@ -787,7 +811,7 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
   candidates_map_t::iterator i=candidates_map.begin();
   candidates_map_t::iterator i_end=candidates_map.end();
   for ( ; i!=i_end; ++i)
-    candidates.insert(std::make_pair(i->second,i->first));
+    candidates.insert(std::make_pair(i->second.row_index,i->first));
   if (!candidates.empty()) {
     compatibility_check_find_pivot_in_set(candidates,s,mapping,basis);
     PPL_ASSERT(!candidates.empty());
