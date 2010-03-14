@@ -2631,9 +2631,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       // s[i][j] -= s[i][pj] * s_pivot[j] / s_pivot_pj;
       for (dimension_type i = num_rows; i-- > 0; ) {
         matrix_row_reference_type s_i = tableau.s[i];
-        for (dimension_type j = num_vars; j-- > 0; ) {
-          if (j != pj) {
-            const Coefficient& s_pivot_j = s_pivot.get(j);
+        matrix_const_row_const_iterator j = s_pivot.begin();
+        matrix_const_row_const_iterator j_end = s_pivot.end();
+        for ( ; j!=j_end; ++j) {
+          if ((*j).first != pj) {
+            const Coefficient& s_pivot_j = (*j).second;
             // Do nothing if the j-th pivot element is zero.
             if (s_pivot_j != 0) {
               product = s_pivot_j * s_i.get(pj);
@@ -2646,7 +2648,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
               }
               PPL_ASSERT(product % s_pivot_pj == 0);
               exact_div_assign(product, product, s_pivot_pj);
-              s_i[j] -= product;
+              s_i[(*j).first] -= product;
             }
           }
         }
