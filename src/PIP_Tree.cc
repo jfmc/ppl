@@ -709,8 +709,8 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
       }
     } else {
       // Not in base.
-      const Coefficient* row_value;
       PIP_Tree_Node::matrix_row_const_reference_type row = s[row_index];
+      const Coefficient* row_value = &(row.get(pj));
       for (++i; i!=i_end; ++i) {
         const dimension_type challenger_i = i->second.row_index;
         const dimension_type challenger_j = i->first;
@@ -720,17 +720,18 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
         PPL_ASSERT(*challenger_value > 0);
         PPL_ASSERT(pj < challenger_j);
 
-        PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
-        PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
-        lhs_coeff = *cost * *challenger_value;
-        rhs_coeff = *challenger_cost * *value;
-
         PPL_DIRTY_TEMP_COEFFICIENT(lhs);
+        lhs = *cost;
+        lhs *= *challenger_value;
         PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-        const Coefficient* row_challenger_value;
-        row.get2(pj,challenger_j,row_value,row_challenger_value);
-        lhs = lhs_coeff * *row_value;
-        rhs = rhs_coeff * *row_challenger_value;
+        rhs = *challenger_cost;
+        rhs *= *value;
+
+        const Coefficient* row_challenger_value = &(row.get(challenger_j));
+
+        lhs *= *row_value;
+        rhs *= *row_challenger_value;
+
         if (lhs == rhs)
           new_candidates.insert(*i);
         else {
@@ -739,6 +740,7 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
             pj = challenger_j;
             cost = challenger_cost;
             value = challenger_value;
+            row_value = row_challenger_value;
             new_candidates.clear();
             new_candidates.insert(*i);
           }
