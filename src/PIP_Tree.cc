@@ -2684,11 +2684,17 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       // t[i][j] -= s[i][pj] * t_pivot[j] / s_pivot_pj;
       for (dimension_type i = num_rows; i-- > 0; ) {
         matrix_row_reference_type s_i = tableau.s[i];
-        for (dimension_type j = num_params; j-- > 0; ) {
-          const Coefficient& t_pivot_j = t_pivot[j];
+        matrix_row_reference_type t_i = tableau.t[i];
+        const Coefficient& s_i_pj = s_i.get(pj);
+        matrix_const_row_const_iterator j = t_pivot.begin();
+        matrix_const_row_const_iterator j_end = t_pivot.end();
+        matrix_row_iterator k_end = t_i.end();
+        matrix_row_iterator k = k_end;
+        for ( ; j!=j_end; ++j) {
+          const Coefficient& t_pivot_j = (*j).second;
           // Do nothing if the j-th pivot element is zero.
           if (t_pivot_j != 0) {
-            product = t_pivot_j * s_i[pj];
+            product = t_pivot_j * s_i_pj;
             if (product % s_pivot_pj != 0) {
               // Must scale matrix to stay in integer case.
               gcd_assign(gcd, product, s_pivot_pj);
@@ -2698,7 +2704,51 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             }
             PPL_ASSERT(product % s_pivot_pj == 0);
             exact_div_assign(product, product, s_pivot_pj);
-            tableau.t[i][j] -= product;
+            k = t_i.find_create((*j).first);
+            (*k).second -= product;
+
+            // Update row sign.
+            Row_Sign& sign_i = sign[i];
+            switch (sign_i) {
+            case ZERO:
+              if (product > 0)
+                sign_i = NEGATIVE;
+              else if (product < 0)
+                sign_i = POSITIVE;
+              break;
+            case POSITIVE:
+              if (product > 0)
+                sign_i = MIXED;
+              break;
+            case NEGATIVE:
+              if (product < 0)
+                sign_i = MIXED;
+              break;
+            default:
+              break;
+            }
+            // Now k is initialized, so we can use it in the next calls to
+            // find_create().
+            ++j;
+            break;
+          }
+        }
+        for ( ; j!=j_end; ++j) {
+          const Coefficient& t_pivot_j = (*j).second;
+          // Do nothing if the j-th pivot element is zero.
+          if (t_pivot_j != 0) {
+            product = t_pivot_j * s_i_pj;
+            if (product % s_pivot_pj != 0) {
+              // Must scale matrix to stay in integer case.
+              gcd_assign(gcd, product, s_pivot_pj);
+              exact_div_assign(scale_factor, s_pivot_pj, gcd);
+              tableau.scale(scale_factor);
+              product *= scale_factor;
+            }
+            PPL_ASSERT(product % s_pivot_pj == 0);
+            exact_div_assign(product, product, s_pivot_pj);
+            k = t_i.find_create((*j).first,k);
+            (*k).second -= product;
 
             // Update row sign.
             Row_Sign& sign_i = sign[i];
