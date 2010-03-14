@@ -540,7 +540,8 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
           PPL_DIRTY_TEMP_COEFFICIENT(lhs);
           PPL_DIRTY_TEMP_COEFFICIENT(rhs);
           bool found_better_candidate = false;
-          row_itr = row.lower_bound(*i,row_itr);
+          if (row_itr != row_end && (*row_itr).first < *i)
+            row_itr = row.lower_bound(*i,row_itr);
           const Coefficient* row_ja;
           if (row_itr != row_end) {
             row_ja = &((*row_itr).second);
