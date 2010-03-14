@@ -673,6 +673,7 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
         const Coefficient* challenger_value = i->second.value;
         PPL_ASSERT(*value > 0);
         PPL_ASSERT(*challenger_value > 0);
+        PPL_ASSERT(pj < challenger_j);
 
         const int lhs_coeff_sgn = sgn(*cost) * sgn(*challenger_value);
         const int rhs_coeff_sgn = sgn(*challenger_cost) * sgn(*value);
@@ -715,13 +716,12 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
         const Coefficient* challenger_value = i->second.value;
         PPL_ASSERT(*value > 0);
         PPL_ASSERT(*challenger_value > 0);
+        PPL_ASSERT(pj < challenger_j);
 
         PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
         PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
         lhs_coeff = *cost * *challenger_value;
         rhs_coeff = *challenger_cost * *value;
-
-        PPL_ASSERT(pj != challenger_j);
 
         PPL_DIRTY_TEMP_COEFFICIENT(lhs);
         PPL_DIRTY_TEMP_COEFFICIENT(rhs);
