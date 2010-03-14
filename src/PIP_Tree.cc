@@ -3647,16 +3647,19 @@ PIP_Solution_Node
       continue;
     matrix_row_const_reference_type row = tableau.t[mapping[i]];
 
-    for (dimension_type j = num_all_params; j-- > 0; ) {
-      // NOTE: add 1 to column index to account for inhomogenous term.
-      const Coefficient& coeff = row[j+1];
+    // Start from index 1 to skip the inhomogenous term.
+    matrix_const_row_const_iterator j = row.lower_bound(1);
+    matrix_const_row_const_iterator j_end = row.end();
+    for ( ; j!=j_end; ++j) {
+      const Coefficient& coeff = (*j).second;
       if (coeff == 0)
         continue;
       norm_coeff = coeff / den;
       if (norm_coeff != 0)
-        add_mul_assign(sol_i, norm_coeff, Variable(all_param_names[j]));
+        add_mul_assign(sol_i, norm_coeff,
+                       Variable(all_param_names[(*j).first-1]));
     }
-    norm_coeff = row[0] / den;
+    norm_coeff = row.get(0) / den;
     sol_i += norm_coeff;
   }
 
