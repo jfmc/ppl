@@ -148,6 +148,17 @@ Unlimited_Sparse_Row::find_create(const dimension_type i,
 }
 
 inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i) {
+  if (begin() == end())
+    return data.insert(end_dangerous(),std::make_pair(i,Coefficient_zero()));
+  dangerous_iterator itr = begin_dangerous();
+  if ((*itr).first > i)
+    return data.insert(itr,std::make_pair(i,Coefficient_zero()));
+  // Now we can call find_create(i,itr) without triggering asserts.
+  return find_create(i,itr);
+}
+
+inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
                                   iterator itr) {
   PPL_ASSERT(itr != end());
@@ -156,16 +167,43 @@ Unlimited_Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
     (*itr).second = x;
     return itr;
   }
-  dangerous_iterator itr2 = dangerous_iterator::next(itr);
-  // The check is needed to avoid triggering assertions in lower_bound().
-  if (itr2 != end_dangerous() && (*itr2).first < i)
-    itr2 = lower_bound_dangerous(i,itr2);
-  if (itr2 != end_dangerous() && (*itr2).first == i) {
-    (*itr2).second = x;
-    return itr2;
+  return find_create(i,x,dangerous_iterator::next(itr));
+}
+
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i,iterator itr) {
+  PPL_ASSERT(itr != end());
+  PPL_ASSERT((*itr).first <= i);
+  if ((*itr).first == i) {
+    return itr;
   }
-  itr2 = data.insert(itr2,std::make_pair(i,x));
-  return itr2;
+  return find_create(i,dangerous_iterator::next(itr));
+}
+
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i,
+                                  dangerous_iterator itr) {
+  // The check is needed to avoid triggering assertions in lower_bound().
+  if (itr != end_dangerous() && (*itr).first < i)
+    itr = lower_bound_dangerous(i,itr);
+  if (itr != end_dangerous() && (*itr).first == i)
+    return itr;
+  itr = data.insert(itr,std::make_pair(i,Coefficient_zero()));
+  return itr;
+}
+
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
+                                  dangerous_iterator itr) {
+  // The check is needed to avoid triggering assertions in lower_bound().
+  if (itr != end_dangerous() && (*itr).first < i)
+    itr = lower_bound_dangerous(i,itr);
+  if (itr != end_dangerous() && (*itr).first == i) {
+    (*itr).second = x;
+    return itr;
+  }
+  itr = data.insert(itr,std::make_pair(i,x));
+  return itr;
 }
 
 inline const Coefficient&
