@@ -172,13 +172,13 @@ Dense_Row::find(dimension_type i) const {
 
 inline Dense_Row::iterator
 Dense_Row::find(dimension_type i,iterator itr) {
-  PPL_ASSERT((*itr).first < i);
+  PPL_ASSERT((*itr).first <= i);
   return iterator(*this,i);
 }
 
 inline Dense_Row::const_iterator
 Dense_Row::find(dimension_type i,const_iterator itr) const {
-  PPL_ASSERT((*itr).first < i);
+  PPL_ASSERT((*itr).first <= i);
   return const_iterator(*this,i);
 }
 

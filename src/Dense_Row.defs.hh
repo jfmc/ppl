@@ -174,11 +174,11 @@ public:
   const_iterator find(dimension_type i) const;
 
   //! Provided for compatibility with Sparse_Row.
-  //! itr must point to an element before the searched one.
+  //! Looks for an element with key c, assuming it is in [itr,end()) .
   iterator find(dimension_type i,iterator itr);
 
   //! Provided for compatibility with Sparse_Row.
-  //! itr must point to an element before the searched one.
+  //! Looks for an element with key c, assuming it is in [itr,end()) .
   const_iterator find(dimension_type i,const_iterator itr) const;
 
   //! Provided for compatibility with Sparse_Row.
@@ -188,11 +188,11 @@ public:
   const_iterator lower_bound(dimension_type i) const;
 
   //! Provided for compatibility with Sparse_Row.
-  //! itr must point to an element before the searched one.
+  //! Lower bound of key c, assuming it is in [itr,end()) .
   iterator lower_bound(dimension_type i,iterator itr);
 
   //! Provided for compatibility with Sparse_Row.
-  //! itr must point to an element before the searched one.
+  //! Lower bound of key c, assuming it is in [itr,end()) .
   const_iterator lower_bound(dimension_type i,const_iterator itr) const;
 
   //! Provided for compatibility with Sparse_Row.
