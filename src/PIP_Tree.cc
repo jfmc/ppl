@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <algorithm>
 #include <memory>
+#include <map>
 
 namespace Parma_Polyhedra_Library {
 
@@ -666,63 +667,57 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
     lhs_coeff = cst_a * sij_b;
     rhs_coeff = cst_b * sij_a;
 
-    if (ja == jb) {
-      // Same column: just compare the ratios.
-      // This works since all columns are lexico-positive.
-      // return cst_a * sij_b > cst_b * sij_a;
-      found_better_pivot = lhs_coeff > rhs_coeff;
-    } else {
+    PPL_ASSERT(ja != jb);
 
-      PPL_DIRTY_TEMP_COEFFICIENT(lhs);
-      PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-      const dimension_type num_vars = mapping.size();
-      dimension_type k = 0;
-      // While loop guard is: (k < num_rows && lhs == rhs).
-      // Return value is false, if k >= num_rows; lhs < rhs, otherwise.
-      // Try to optimize the computation of lhs and rhs.
-      while (true) {
-        const dimension_type mk = mapping[k];
-        const bool in_base = basis[k];
-        if (++k >= num_vars) {
-          found_better_pivot = false;
-          break;
-        }
-        if (in_base) {
-          // Reconstitute the identity submatrix part of tableau.
-          if (mk == ja) {
-            // Optimizing for: lhs == lhs_coeff && rhs == 0;
-            if (lhs_coeff == 0)
-              continue;
-            else {
-              found_better_pivot = lhs_coeff > 0;
-              break;
-            }
-          }
-          if (mk == jb) {
-            // Optimizing for: lhs == 0 && rhs == rhs_coeff;
-            if (rhs_coeff == 0)
-              continue;
-            else {
-              found_better_pivot = 0 > rhs_coeff;
-              break;
-            }
-          }
-          // Optimizing for: lhs == 0 && rhs == 0;
-          continue;
-        } else {
-          // Not in base.
-          PIP_Tree_Node::matrix_row_const_reference_type t_mk = s[mk];
-          const Coefficient* t_mk_ja;
-          const Coefficient* t_mk_jb;
-          t_mk.get2(ja,jb,t_mk_ja,t_mk_jb);
-          lhs = lhs_coeff * *t_mk_ja;
-          rhs = rhs_coeff * *t_mk_jb;
-          if (lhs == rhs)
+    PPL_DIRTY_TEMP_COEFFICIENT(lhs);
+    PPL_DIRTY_TEMP_COEFFICIENT(rhs);
+    const dimension_type num_vars = mapping.size();
+    dimension_type k = 0;
+    // While loop guard is: (k < num_rows && lhs == rhs).
+    // Return value is false, if k >= num_rows; lhs < rhs, otherwise.
+    // Try to optimize the computation of lhs and rhs.
+    while (true) {
+      const dimension_type mk = mapping[k];
+      const bool in_base = basis[k];
+      if (++k >= num_vars) {
+        found_better_pivot = false;
+        break;
+      }
+      if (in_base) {
+        // Reconstitute the identity submatrix part of tableau.
+        if (mk == ja) {
+          // Optimizing for: lhs == lhs_coeff && rhs == 0;
+          if (lhs_coeff == 0)
             continue;
           else {
-            found_better_pivot = lhs > rhs;
+            found_better_pivot = lhs_coeff > 0;
             break;
           }
+        }
+        if (mk == jb) {
+          // Optimizing for: lhs == 0 && rhs == rhs_coeff;
+          if (rhs_coeff == 0)
+            continue;
+          else {
+            found_better_pivot = 0 > rhs_coeff;
+            break;
+          }
+        }
+        // Optimizing for: lhs == 0 && rhs == 0;
+        continue;
+      } else {
+        // Not in base.
+        PIP_Tree_Node::matrix_row_const_reference_type t_mk = s[mk];
+        const Coefficient* t_mk_ja;
+        const Coefficient* t_mk_jb;
+        t_mk.get2(ja,jb,t_mk_ja,t_mk_jb);
+        lhs = lhs_coeff * *t_mk_ja;
+        rhs = rhs_coeff * *t_mk_jb;
+        if (lhs == rhs)
+          continue;
+        else {
+          found_better_pivot = lhs > rhs;
+          break;
         }
       }
     }
@@ -747,7 +742,8 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
   // maximizing pivot column.
   const dimension_type num_rows = s.num_rows();
   typedef std::set<std::pair<dimension_type,dimension_type> > candidates_t;
-  candidates_t candidates;
+  typedef std::map<dimension_type,dimension_type> candidates_map_t;
+  candidates_map_t candidates_map;
   for (dimension_type i = 0; i < num_rows; ++i) {
     PIP_Tree_Node::matrix_row_const_reference_type s_i = s[i];
     if (s_i.get(0) < 0) {
@@ -756,9 +752,42 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
         // No positive pivot candidate: unfeasible problem.
         return false;
       }
-      candidates.insert(std::make_pair(i,j));
+      candidates_map_t::iterator itr = candidates_map.find(j);
+      if (itr == candidates_map.end())
+        candidates_map[j]=i;
+      else {
+        dimension_type& current_i = candidates_map[j];
+
+        PIP_Tree_Node::matrix_row_const_reference_type row_a = s[current_i];
+        PIP_Tree_Node::matrix_row_const_reference_type row_b = s[i];
+        Coefficient_traits::const_reference cst_a = row_a.get(0);
+        Coefficient_traits::const_reference cst_b = row_b.get(0);
+
+        const Coefficient& sij_a = row_a.get(j);
+        const Coefficient& sij_b = row_b.get(j);
+        PPL_ASSERT(sij_a > 0);
+        PPL_ASSERT(sij_b > 0);
+
+        Coefficient lhs_coeff = cst_a;
+        lhs_coeff *= sij_b;
+        Coefficient rhs_coeff = cst_b;
+        rhs_coeff *= sij_a;
+
+        // Same column: just compare the ratios.
+        // This works since all columns are lexico-positive.
+        // return cst_a * sij_b > cst_b * sij_a;
+        if (lhs_coeff > rhs_coeff)
+          // Found better pivot
+          current_i = i;
+        // Otherwise, keep current pivot for this column.
+      }
     }
   }
+  candidates_t candidates;
+  candidates_map_t::iterator i=candidates_map.begin();
+  candidates_map_t::iterator i_end=candidates_map.end();
+  for ( ; i!=i_end; ++i)
+    candidates.insert(std::make_pair(i->second,i->first));
   if (!candidates.empty()) {
     compatibility_check_find_pivot_in_set(candidates,s,mapping,basis);
     PPL_ASSERT(!candidates.empty());
