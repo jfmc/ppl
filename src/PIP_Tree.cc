@@ -3150,8 +3150,10 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   {
     // Limiting the scope of reference row_t (may be later invalidated).
     matrix_row_const_reference_type row_t = tableau.t[index];
-    for (dimension_type j = 1; j < num_params; ++j)
-      if (row_t[j] % den != 0) {
+    matrix_const_row_const_iterator j = row_t.lower_bound(1);
+    matrix_const_row_const_iterator j_end = row_t.end();
+    for ( ; j!=j_end; ++j)
+      if ((*j).second % den != 0) {
         generate_parametric_cut = true;
         break;
       }
@@ -3168,24 +3170,32 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     // Limiting the scope of reference row_t (may be later invalidated).
     {
       matrix_row_const_reference_type row_t = tableau.t[index];
-      mod_assign(mod, row_t[0], den);
+      mod_assign(mod, row_t.get(0), den);
       if (mod != 0) {
         // Optimizing computation: expr += (den - mod);
         expr += den;
         expr -= mod;
       }
-      // NOTE: iterating downwards on parameters to avoid reallocations.
-      Variables_Set::const_reverse_iterator p_j = parameters.rbegin();
-      // NOTE: index j spans [1..num_params-1] downwards.
-      for (dimension_type j = num_params; j-- > 1; ) {
-        mod_assign(mod, row_t[j], den);
-        if (mod != 0) {
-          // Optimizing computation: expr += (den - mod) * Variable(*p_j);
-          coeff = den - mod;
-          add_mul_assign(expr, coeff, Variable(*p_j));
+      if (!parameters.empty()) {
+        // To avoid reallocations of expr.
+        add_mul_assign(expr, 0, Variable(*(parameters.rbegin())));
+        Variables_Set::const_iterator p_j = parameters.begin();
+        matrix_const_row_const_iterator j = row_t.lower_bound(1);
+        matrix_const_row_const_iterator j_end = row_t.end();
+        dimension_type last_index;
+        if (j!=j_end)
+          last_index = (*j).first;
+        for ( ; j!=j_end; ++j) {
+          mod_assign(mod, (*j).second, den);
+          if (mod != 0) {
+            // Optimizing computation: expr += (den - mod) * Variable(*p_j);
+            coeff = den - mod;
+            PPL_ASSERT(last_index <= (*j).first);
+            std::advance(p_j,(*j).first - last_index);
+            last_index = (*j).first;
+            add_mul_assign(expr, coeff, Variable(*p_j));
+          }
         }
-        // Mode to previous parameter.
-        ++p_j;
       }
     }
     // Generate new artificial parameter.
@@ -3239,28 +3249,58 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       matrix_row_reference_type ctx2 = context[ctx_num_rows+1];
       // Recompute row reference after possible reallocation.
       matrix_row_const_reference_type row_t = tableau.t[index];
-      for (dimension_type j = 0; j < num_params; ++j) {
-        mod_assign(mod, row_t[j], den);
-        if (mod != 0) {
-          ctx1[j] = den;
-          ctx1[j] -= mod;
-          neg_assign(ctx2[j], ctx1[j]);
+      {
+        matrix_const_row_const_iterator j = row_t.begin();
+        matrix_const_row_const_iterator j_end = row_t.end();
+        matrix_row_iterator itr1 = ctx1.end();
+        matrix_row_iterator itr2 = ctx2.end();
+        for ( ; j!=j_end; ++j) {
+          mod_assign(mod, (*j).second, den);
+          if (mod != 0) {
+            const dimension_type j_index = (*j).first;
+            itr1 = ctx1.find_create(j_index,den);
+            (*itr1).second -= mod;
+            itr2 = ctx2.find_create(j_index,(*itr1).second);
+            neg_assign((*itr2).second);
+            // Now itr1 and itr2 are valid, so we can use them in the next
+            // calls to find_create().
+            ++j;
+            break;
+          }
+        }
+        for ( ; j!=j_end; ++j) {
+          mod_assign(mod, (*j).second, den);
+          if (mod != 0) {
+            const dimension_type j_index = (*j).first;
+            itr1 = ctx1.find_create(j_index,den,itr1);
+            (*itr1).second -= mod;
+            itr2 = ctx2.find_create(j_index,(*itr1).second,itr2);
+            neg_assign((*itr2).second);
+          }
+        }
+        if (itr1 != ctx1.end()) {
+          itr1 = ctx1.find_create(num_params,den,itr1);
+          neg_assign((*itr1).second);
+          ctx2.find_create(num_params,den,itr2);
+        } else {
+          itr1 = ctx1.find_create(num_params,den);
+          neg_assign((*itr1).second);
+          ctx2.find_create(num_params,den);
         }
       }
-      neg_assign(ctx1[num_params], den);
-      ctx2[num_params] = den;
       // ctx2[0] += den-1;
-      ctx2[0] += den;
-      --ctx2[0];
+      Coefficient& ctx2_0 = ctx2[0];
+      ctx2_0 += den;
+      --ctx2_0;
 #ifdef NOISY_PIP
       {
         using namespace IO_Operators;
         Variables_Set::const_iterator p = parameters.begin();
-        Linear_Expression expr1(ctx1[0]);
-        Linear_Expression expr2(ctx2[0]);
+        Linear_Expression expr1(ctx1.get(0));
+        Linear_Expression expr2(ctx2_0);
         for (dimension_type j = 1; j <= num_params; ++j, ++p) {
-          expr1 += ctx1[j] * Variable(*p);
-          expr2 += ctx2[j] * Variable(*p);
+          expr1 += ctx1.get(j) * Variable(*p);
+          expr2 += ctx2.get(j) * Variable(*p);
         }
         std::cout << "Inserting into context: "
                   << Constraint(expr1 >= 0) << " ; "
@@ -3278,14 +3318,32 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   // Recompute references after possible reallocation.
   matrix_row_const_reference_type row_s = tableau.s[index];
   matrix_row_const_reference_type row_t = tableau.t[index];
-  for (dimension_type j = 0; j < num_vars; ++j) {
-    mod_assign(cut_s[j], row_s[j], den);
+  {
+    for (dimension_type j = 0; j < num_vars; ++j) {
+      mod_assign(cut_s[j], row_s[j], den);
+    }
   }
-  for (dimension_type j = 0; j < num_params; ++j) {
-    mod_assign(mod, row_t[j], den);
-    if (mod != 0) {
-      cut_t[j] = mod;
-      cut_t[j] -= den;
+  {
+    matrix_const_row_const_iterator j = row_t.begin();
+    matrix_const_row_const_iterator j_end = row_t.end();
+    matrix_row_iterator cut_t_itr = cut_t.end();
+    for ( ; j!=j_end; ++j) {
+      mod_assign(mod, (*j).second, den);
+      if (mod != 0) {
+        cut_t_itr = cut_t.find_create((*j).first,mod);
+        (*cut_t_itr).second -= den;
+        // Now cut_t_itr is valid, so we'll pass it in the next calls to
+        // find_create().
+        ++j;
+        break;
+      }
+    }
+    for ( ; j!=j_end; ++j) {
+      mod_assign(mod, (*j).second, den);
+      if (mod != 0) {
+        cut_t_itr = cut_t.find_create((*j).first,mod,cut_t_itr);
+        (*cut_t_itr).second -= den;
+      }
     }
   }
   if (ap_column != not_a_dimension())
@@ -3300,12 +3358,12 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     dimension_type si = 0;
     for (dimension_type j = 0; j < space_dimension; ++j) {
       if (parameters.count(j) == 1)
-        expr += cut_t[ti++] * Variable(j);
+        expr += cut_t.get(ti++) * Variable(j);
       else
-        expr += cut_s[si++] * Variable(j);
+        expr += cut_s.get(si++) * Variable(j);
     }
     std::cout << "Adding cut: "
-              << Constraint(expr + cut_t[0] >= 0)
+              << Constraint(expr + cut_t.get(0) >= 0)
               << std::endl;
   }
 #endif
