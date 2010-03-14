@@ -2501,18 +2501,23 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         // Check for a positive variable coefficient.
         matrix_row_const_reference_type s_i = tableau.s[i];
         bool has_positive = false;
-        for (dimension_type j = num_vars; j-- > 0; )
-          if (s_i[j] > 0) {
-            has_positive = true;
-            break;
-          }
+        {
+          matrix_const_row_const_iterator j = s_i.begin();
+          matrix_const_row_const_iterator j_end = s_i.end();
+          for ( ; j!=j_end; ++j)
+            if ((*j).second > 0) {
+              has_positive = true;
+              break;
+            }
+        }
         if (!has_positive)
           continue;
         // Check compatibility of constraint t_i(z) > 0.
         matrix_row_copy_type row(tableau.t[i]);
         PPL_DIRTY_TEMP_COEFFICIENT(mod);
-        mod_assign(mod, row[0], tableau_den);
-        row[0] -= (mod == 0) ? tableau_den : mod;
+        Coefficient& row0 = row[0];
+        mod_assign(mod, row0, tableau_den);
+        row0 -= (mod == 0) ? tableau_den : mod;
         const bool compatible = compatibility_check(context, row);
         // Maybe update sign (and first_* indices).
         if (compatible) {
@@ -2620,20 +2625,20 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       sign[pi] = ZERO;
 
       PPL_DIRTY_TEMP_COEFFICIENT(s_pivot_pj);
-      s_pivot_pj = s_pivot[pj];
+      s_pivot_pj = s_pivot.get(pj);
 
       // Compute columns s[*][j] :
       // s[i][j] -= s[i][pj] * s_pivot[j] / s_pivot_pj;
       for (dimension_type j = num_vars; j-- > 0; ) {
         if (j == pj)
           continue;
-        const Coefficient& s_pivot_j = s_pivot[j];
+        const Coefficient& s_pivot_j = s_pivot.get(j);
         // Do nothing if the j-th pivot element is zero.
         if (s_pivot_j == 0)
           continue;
         for (dimension_type i = num_rows; i-- > 0; ) {
           matrix_row_reference_type s_i = tableau.s[i];
-          product = s_pivot_j * s_i[pj];
+          product = s_pivot_j * s_i.get(pj);
           if (product % s_pivot_pj != 0) {
             // Must scale matrix to stay in integer case.
             gcd_assign(gcd, product, s_pivot_pj);
