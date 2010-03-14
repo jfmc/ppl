@@ -450,6 +450,7 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
       = pivot_row.end();
     PPL_ASSERT(pivot_itr != pivot_end);
     const Coefficient* sij_b = &((*pivot_itr).second);
+    ++pivot_itr;
     const dimension_type row_index = mapping[var_index];
     const bool in_base = basis[var_index];
     if (in_base) {
@@ -457,6 +458,7 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
         pivot_itr = pivot_row.find(*i,pivot_itr);
         PPL_ASSERT(pivot_itr != pivot_end);
         const Coefficient& sij_a = (*pivot_itr).second;
+        ++pivot_itr;
         PPL_ASSERT(sij_a > 0);
         PPL_ASSERT(*sij_b > 0);
 
@@ -492,24 +494,42 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
     } else {
       // Not in base.
       PIP_Tree_Node::matrix_row_const_reference_type row = tableau[row_index];
-      PIP_Tree_Node::matrix_const_row_const_iterator row_last_itr
-        = row.find(min_column);
-      PIP_Tree_Node::matrix_const_row_const_iterator row_itr = row_last_itr;
+      PIP_Tree_Node::matrix_const_row_const_iterator row_itr
+        = row.lower_bound(min_column);
       PIP_Tree_Node::matrix_const_row_const_iterator row_end = row.end();
       const Coefficient* row_jb;
-      if (row_itr == row_end) {
+      if (row_itr == row_end || (*row_itr).first > min_column) {
         // Found a zero element, keep only zero elements in the current row.
         for (++i; i!=i_end; ++i) {
-          row_itr = row.find(*i,row_last_itr);
           if (row_itr != row_end) {
-            row_last_itr = row_itr;
-            if ((*row_itr).second == 0)
-              new_candidates.insert(*i);
+            if ((*row_itr).first == *i) {
+              if ((*row_itr).second == 0)
+                new_candidates.insert(*i);
+              ++row_itr;
+            } else {
+              if ((*row_itr).first < *i) {
+                ++row_itr;
+                row_itr = row.lower_bound(*i,row_itr);
+                if (row_itr == row_end || (*row_itr).first > *i)
+                  new_candidates.insert(*i);
+                else {
+                  PPL_ASSERT((*row_itr).first == *i);
+                  if ((*row_itr).second == 0)
+                    new_candidates.insert(*i);
+                  ++row_itr;
+                }
+              } else {
+                PPL_ASSERT((*row_itr).first > *i);
+                new_candidates.insert(*i);
+              }
+            }
           } else
             new_candidates.insert(*i);
         }
       } else {
+        PPL_ASSERT((*row_itr).first == min_column);
         row_jb = &((*row_itr).second);
+        ++row_itr;
         for ( ; i!=i_end; ++i) {
           pivot_itr = pivot_row.find(*i,pivot_itr);
           PPL_ASSERT(pivot_itr != pivot_end);
@@ -520,22 +540,39 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
           PPL_DIRTY_TEMP_COEFFICIENT(lhs);
           PPL_DIRTY_TEMP_COEFFICIENT(rhs);
           bool found_better_candidate = false;
-          row_itr = row.find(*i,row_last_itr);
+          row_itr = row.lower_bound(*i,row_itr);
           const Coefficient* row_ja;
           if (row_itr != row_end) {
-            row_last_itr = row_itr;
             row_ja = &((*row_itr).second);
+            ++row_itr;
           } else {
             // Found a zero element, keep only zero elements in the current
             // row.
             new_candidates.clear();
             new_candidates.insert(*i);
             for (++i; i!=i_end; ++i) {
-              row_itr = row.find(*i,row_last_itr);
               if (row_itr != row_end) {
-                row_last_itr = row_itr;
-                if ((*row_itr).second == 0)
-                  new_candidates.insert(*i);
+                if ((*row_itr).first == *i) {
+                  if ((*row_itr).second == 0)
+                    new_candidates.insert(*i);
+                  ++row_itr;
+                } else {
+                  if ((*row_itr).first < *i) {
+                    ++row_itr;
+                    row_itr = row.lower_bound(*i,row_itr);
+                    if (row_itr == row_end || (*row_itr).first > *i)
+                      new_candidates.insert(*i);
+                    else {
+                      PPL_ASSERT((*row_itr).first == *i);
+                      if ((*row_itr).second == 0)
+                        new_candidates.insert(*i);
+                      ++row_itr;
+                    }
+                  } else {
+                    PPL_ASSERT((*row_itr).first > *i);
+                    new_candidates.insert(*i);
+                  }
+                }
               } else
                 new_candidates.insert(*i);
             }
