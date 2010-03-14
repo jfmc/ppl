@@ -787,6 +787,9 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
             if ((*row_itr).first == challenger_j) {
               row_challenger_value = &((*row_itr).second);
               ++row_itr;
+            } else {
+              PPL_ASSERT((*row_itr).first > challenger_j);
+              row_challenger_value = &(Coefficient_zero());
             }
           }
         } else
