@@ -623,15 +623,33 @@ row_normalize(PIP_Tree_Node::matrix_row_reference_type x, Coefficient& den) {
   exact_div_assign(den, den, gcd);
 }
 
+// This is here because it is used as a template argument in
+// compatibility_check_find_pivot, so it must be a global declaration.
+struct compatibility_check_find_pivot_map_data {
+  dimension_type row_index;
+  // We cache pointers to cost and value to avoid calling get() multiple
+  // times.
+  const Coefficient* cost;
+  const Coefficient* value;
+  bool operator==(const compatibility_check_find_pivot_map_data& x) const {
+    return row_index == x.row_index;
+  }
+  // Needed by std::set to sort the values.
+  bool operator<(const compatibility_check_find_pivot_map_data& x) const {
+    return row_index < x.row_index;
+  }
+};
+
 void
 compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
-                                                         dimension_type> >&
-                                        candidates,
+                                      compatibility_check_find_pivot_map_data
+                                      > >& candidates,
                                       const PIP_Tree_Node::matrix_type& s,
                                       const std::vector<dimension_type>&
                                         mapping,
                                       const std::vector<bool>& basis) {
-  typedef std::set<std::pair<dimension_type,dimension_type> > candidates_t;
+  typedef compatibility_check_find_pivot_map_data map_data;
+  typedef std::set<std::pair<dimension_type,map_data> > candidates_t;
   const dimension_type num_vars = mapping.size();
   for (dimension_type var_index=0; var_index<num_vars; ++var_index) {
     const dimension_type row_index = mapping[var_index];
@@ -640,21 +658,19 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
     candidates_t::iterator i = candidates.begin();
     candidates_t::iterator i_end = candidates.end();
     PPL_ASSERT(i != i_end);
-    dimension_type pi = i->first;
-    dimension_type pj = i->second;
-    const Coefficient* cost;
-    const Coefficient* value;
-    s[pi].get2(0,pj,cost,value);
+    dimension_type pi = i->second.row_index;
+    dimension_type pj = i->first;
+    const Coefficient* cost = i->second.cost;
+    const Coefficient* value = i->second.value;
     new_candidates.insert(*i);
     if (in_base) {
       for (++i; i!=i_end; ++i) {
         bool found_better_pivot = false;
 
-        const dimension_type challenger_i = i->first;
-        const dimension_type challenger_j = i->second;
-        const Coefficient* challenger_cost;
-        const Coefficient* challenger_value;
-        s[challenger_i].get2(0,challenger_j,challenger_cost,challenger_value);
+        const dimension_type challenger_i = i->second.row_index;
+        const dimension_type challenger_j = i->first;
+        const Coefficient* challenger_cost = i->second.cost;
+        const Coefficient* challenger_value = i->second.value;
         PPL_ASSERT(value > 0);
         PPL_ASSERT(challenger_value > 0);
 
@@ -693,11 +709,10 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
     } else {
       // Not in base.
       for (++i; i!=i_end; ++i) {
-        const dimension_type challenger_i = i->first;
-        const dimension_type challenger_j = i->second;
-        const Coefficient* challenger_cost;
-        const Coefficient* challenger_value;
-        s[challenger_i].get2(0,challenger_j,challenger_cost,challenger_value);
+        const dimension_type challenger_i = i->second.row_index;
+        const dimension_type challenger_j = i->first;
+        const Coefficient* challenger_cost = i->second.cost;
+        const Coefficient* challenger_value = i->second.value;
         PPL_ASSERT(value > 0);
         PPL_ASSERT(challenger_value > 0);
 
@@ -734,16 +749,6 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
   }
 }
 
-// This is here because it is used as a template argument in
-// compatibility_check_find_pivot, so it must be a global declaration.
-struct compatibility_check_find_pivot_map_data {
-  dimension_type row_index;
-  // We cache pointers to cost and value to avoid calling get() multiple
-  // times.
-  const Coefficient* cost;
-  const Coefficient* value;
-};
-
 // Returns false if there isn't a posivive pivot candidate.
 // Otherwise, it sets pi, pj to the coordinates of the pivot in s.
 bool
@@ -754,8 +759,8 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
   // Look for a negative RHS (i.e., constant term, stored in column 0),
   // maximizing pivot column.
   const dimension_type num_rows = s.num_rows();
-  typedef std::set<std::pair<dimension_type,dimension_type> > candidates_t;
   typedef compatibility_check_find_pivot_map_data map_data;
+  typedef std::set<std::pair<dimension_type,map_data> > candidates_t;
   typedef std::map<dimension_type,map_data> candidates_map_t;
   candidates_map_t candidates_map;
   for (dimension_type i = 0; i < num_rows; ++i) {
@@ -770,21 +775,11 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
       if (itr == candidates_map.end()) {
         map_data& current_data = candidates_map[j];
         current_data.row_index = i;
-        current_data.cost = 0;
-        current_data.value = 0;
+        s[i].get2(0,j,current_data.cost,current_data.value);
       } else {
         map_data& current_data = candidates_map[j];
 
         PIP_Tree_Node::matrix_row_const_reference_type row_b = s[i];
-
-        if (current_data.cost == 0)
-          // This is the first time we need the cost and the value, calculate
-          // and keep them for (possible) later uses.
-          s[current_data.row_index].get2(0,j,current_data.cost,
-                                         current_data.value);
-
-        PPL_ASSERT(current_data.cost != 0);
-        PPL_ASSERT(current_data.value != 0);
 
         Coefficient_traits::const_reference cost_b = row_b.get(0);
         const Coefficient& value_b = row_b.get(j);
@@ -811,15 +806,15 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
     }
   }
   candidates_t candidates;
-  candidates_map_t::iterator i=candidates_map.begin();
-  candidates_map_t::iterator i_end=candidates_map.end();
+  candidates_map_t::iterator i = candidates_map.begin();
+  candidates_map_t::iterator i_end = candidates_map.end();
   for ( ; i!=i_end; ++i)
-    candidates.insert(std::make_pair(i->second.row_index,i->first));
+    candidates.insert(*i);
   if (!candidates.empty()) {
     compatibility_check_find_pivot_in_set(candidates,s,mapping,basis);
     PPL_ASSERT(!candidates.empty());
-    pi = candidates.begin()->first;
-    pj = candidates.begin()->second;
+    pi = candidates.begin()->second.row_index;
+    pj = candidates.begin()->first;
   } else {
     pi = s.num_rows();
     pj = 0;
