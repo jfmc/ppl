@@ -634,76 +634,63 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
   typedef std::set<std::pair<dimension_type,dimension_type> > candidates_t;
   const dimension_type num_vars = mapping.size();
   for (dimension_type var_index=0; var_index<num_vars; ++var_index) {
+    const dimension_type row_index = mapping[var_index];
+    const bool in_base = basis[var_index];
     candidates_t new_candidates;
     candidates_t::iterator i = candidates.begin();
     candidates_t::iterator i_end = candidates.end();
     PPL_ASSERT(i != i_end);
     dimension_type pi = i->first;
     dimension_type pj = i->second;
+    const Coefficient* cost;
+    const Coefficient* value;
+    s[pi].get2(0,pj,cost,value);
     new_candidates.insert(*i);
     for (++i; i!=i_end; ++i) {
-      PIP_Tree_Node::matrix_row_const_reference_type s_i = s[i->first];
-      // Update pair (pi, pj) if they are still unset or
-      // if the challenger pair (i, j) is better in the ordering.
       bool found_better_pivot = false;
-      /*
-      found_better_pivot = column_lower(s, mapping, basis,
-                                        s[pi], pj, s_i, i->second,
-                                        , );
-      */
 
-      PIP_Tree_Node::matrix_row_const_reference_type pivot_a = s[pi];
-      const dimension_type ja = pj;
-      PIP_Tree_Node::matrix_row_const_reference_type pivot_b = s_i;
-      const dimension_type jb = i->second;
-      Coefficient_traits::const_reference cst_a = s[pi].get(0);
-      Coefficient_traits::const_reference cst_b = s_i.get(0);
-
-      const Coefficient& sij_a = pivot_a.get(ja);
-      const Coefficient& sij_b = pivot_b.get(jb);
-      PPL_ASSERT(sij_a > 0);
-      PPL_ASSERT(sij_b > 0);
+      const dimension_type challenger_i = i->first;
+      const dimension_type challenger_j = i->second;
+      const Coefficient* challenger_cost;
+      const Coefficient* challenger_value;
+      s[challenger_i].get2(0,challenger_j,challenger_cost,challenger_value);
+      PPL_ASSERT(value > 0);
+      PPL_ASSERT(challenger_value > 0);
 
       PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
       PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
-      lhs_coeff = cst_a * sij_b;
-      rhs_coeff = cst_b * sij_a;
+      lhs_coeff = *cost * *challenger_value;
+      rhs_coeff = *challenger_cost * *value;
 
-      PPL_ASSERT(ja != jb);
+      PPL_ASSERT(pj != challenger_j);
 
       PPL_DIRTY_TEMP_COEFFICIENT(lhs);
       PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-      dimension_type k = var_index;
-      const dimension_type mk = mapping[k];
-      const bool in_base = basis[k];
       if (in_base) {
         // Reconstitute the identity submatrix part of tableau.
-        if (mk == ja) {
+        if (row_index == pj) {
           // Optimizing for: lhs == lhs_coeff && rhs == 0;
           if (lhs_coeff == 0)
             new_candidates.insert(*i);
-          else {
+          else
             found_better_pivot = lhs_coeff > 0;
-          }
         } else {
-          if (mk == jb) {
+          if (row_index == challenger_j) {
             // Optimizing for: lhs == 0 && rhs == rhs_coeff;
             if (rhs_coeff == 0)
               new_candidates.insert(*i);
-            else {
+            else
               found_better_pivot = 0 > rhs_coeff;
-            }
-          } else {
+          } else
             // Optimizing for: lhs == 0 && rhs == 0;
             new_candidates.insert(*i);
-          }
         }
       } else {
         // Not in base.
-        PIP_Tree_Node::matrix_row_const_reference_type t_mk = s[mk];
+        PIP_Tree_Node::matrix_row_const_reference_type row = s[row_index];
         const Coefficient* t_mk_ja;
         const Coefficient* t_mk_jb;
-        t_mk.get2(ja,jb,t_mk_ja,t_mk_jb);
+        row.get2(pj,challenger_j,t_mk_ja,t_mk_jb);
         lhs = lhs_coeff * *t_mk_ja;
         rhs = rhs_coeff * *t_mk_jb;
         if (lhs == rhs)
@@ -714,8 +701,10 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
       }
 
       if (found_better_pivot) {
-        pi = i->first;
-        pj = i->second;
+        pi = challenger_i;
+        pj = challenger_j;
+        cost = challenger_cost;
+        value = challenger_value;
         new_candidates.clear();
         new_candidates.insert(*i);
       }
