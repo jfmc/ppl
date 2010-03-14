@@ -254,10 +254,10 @@ public:
   //! lower_bound(i).
   Coefficient& operator[](const dimension_type i);
 
-  //! Equivalent to find_create(i,x,begin()) .
+  //! Equivalent to find_create(i,x,begin_dangerous()) .
   iterator find_create(const dimension_type i,const Coefficient& x);
 
-  //! Equivalent to find_create(i,begin()) .
+  //! Equivalent to find_create(i,begin_dangerous()) .
   iterator find_create(const dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
