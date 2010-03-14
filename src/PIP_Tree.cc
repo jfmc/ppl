@@ -1988,7 +1988,7 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
         // Not a basic variable.
         const dimension_type mi = mapping[i];
         const Coefficient& den = scaling[mi];
-        if (s[mi][0] % den == 0)
+        if (s[mi].get(0) % den == 0)
           continue;
         // Here constant term is not integer.
         all_integer_vars = false;
@@ -2000,8 +2000,18 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
         matrix_row_reference_type cut = s[num_rows];
         ++num_rows;
         matrix_row_const_reference_type s_mi = s[mi];
-        for (dimension_type j = num_cols; j-- > 0; )
-          mod_assign(cut[j], s_mi[j], den);
+        matrix_row_iterator cut_i = cut.begin();
+        matrix_row_iterator cut_end = cut.end();
+        matrix_const_row_const_iterator row_i = s_mi.begin();
+        matrix_const_row_const_iterator row_end = s_mi.end();
+        if (row_i != row_end) {
+          cut_i = cut.find_create((*row_i).first,(*row_i).second);
+          mod_assign((*cut_i).second,(*cut_i).second,den);
+          for (++row_i; row_i != row_end; ++row_i) {
+            cut_i = cut.find_create((*row_i).first,(*row_i).second,cut_i);
+            mod_assign((*cut_i).second,(*cut_i).second,den);
+          }
+        }
         cut[0] -= den;
         scaling.push_back(den);
       }
