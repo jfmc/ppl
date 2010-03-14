@@ -2779,16 +2779,20 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       if (s_pivot_pj != pivot_den) {
         for (dimension_type i = num_rows; i-- > 0; ) {
           matrix_row_reference_type s_i = tableau.s[i];
-          product = s_i[pj] * pivot_den;
-          if (product % s_pivot_pj != 0) {
-            // As above, perform matrix scaling.
-            gcd_assign(gcd, product, s_pivot_pj);
-            exact_div_assign(scale_factor, s_pivot_pj, gcd);
-            tableau.scale(scale_factor);
-            product *= scale_factor;
+          matrix_row_iterator itr = s_i.find(pj);
+          if (itr != s_i.end()) {
+            Coefficient& s_i_pj = (*itr).second;
+            product = s_i_pj * pivot_den;
+            if (product % s_pivot_pj != 0) {
+              // As above, perform matrix scaling.
+              gcd_assign(gcd, product, s_pivot_pj);
+              exact_div_assign(scale_factor, s_pivot_pj, gcd);
+              tableau.scale(scale_factor);
+              product *= scale_factor;
+            }
+            PPL_ASSERT(product % s_pivot_pj == 0);
+            exact_div_assign(s_i_pj, product, s_pivot_pj);
           }
-          PPL_ASSERT(product % s_pivot_pj == 0);
-          exact_div_assign(s_i[pj], product, s_pivot_pj);
         }
       }
 
@@ -2814,20 +2818,28 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           continue;
         // No positive variable coefficient.
         bool has_positive = false;
-        matrix_row_const_reference_type s_i = tableau.s[i];
-        for (dimension_type j = 0; j < num_vars; ++j)
-          if (s_i[j] > 0) {
-            has_positive = true;
-            break;
-          }
+        {
+          matrix_row_const_reference_type s_i = tableau.s[i];
+          matrix_const_row_const_iterator j = s_i.begin();
+          matrix_const_row_const_iterator j_end = s_i.end();
+          for ( ; j!=j_end; ++j)
+            if ((*j).second > 0) {
+              has_positive = true;
+              break;
+            }
+        }
         if (has_positive)
           continue;
         // Minimize parameter coefficient score,
         // eliminating implicated tautologies (if any).
         matrix_row_const_reference_type t_i = tableau.t[i];
         score = 0;
-        for (dimension_type j = num_params; j-- > 0; )
-          score += t_i[j];
+        {
+          matrix_const_row_const_iterator j = t_i.begin();
+          matrix_const_row_const_iterator j_end = t_i.end();
+          for ( ; j!=j_end; ++j)
+            score += (*j).second;
+        }
         if (i_neg == not_a_dim || score < best_score) {
           i_neg = i;
           best_score = score;
@@ -2857,8 +2869,12 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           continue;
         matrix_row_const_reference_type t_i = tableau.t[i];
         score = 0;
-        for (dimension_type j = num_params; j-- > 0; )
-          score += t_i[j];
+        {
+          matrix_const_row_const_iterator j = t_i.begin();
+          matrix_const_row_const_iterator j_end = t_i.end();
+          for ( ; j!=j_end; ++j)
+            score += (*j).second;
+        }
         if (best_i == not_a_dim || score < best_score) {
           best_score = score;
           best_i = i;
@@ -2869,11 +2885,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       t_test.normalize();
 #ifdef NOISY_PIP
       {
-        Linear_Expression expr = Linear_Expression(t_test[0]);
+        Linear_Expression expr = Linear_Expression(t_test.get(0));
         dimension_type j = 1;
         for (Variables_Set::const_iterator p = all_params.begin(),
                p_end = all_params.end(); p != p_end; ++p, ++j)
-          expr += t_test[j] * Variable(*p);
+          expr += t_test.get(j) * Variable(*p);
         using namespace IO_Operators;
         std::cerr << "Found mixed parameter sign row: " << best_i << ".\n"
                   << "Solution depends on sign of parameter "
@@ -2982,8 +2998,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         continue;
       const dimension_type i = mapping[k];
       matrix_row_const_reference_type t_i = tableau.t[i];
-      for (dimension_type j = num_params; j-- > 0; ) {
-        if (t_i[j] % den != 0)
+      matrix_const_row_const_iterator j = t_i.begin();
+      matrix_const_row_const_iterator j_end = t_i.end();
+      for ( ; j!=j_end; ++j) {
+        if ((*j).second % den != 0)
           goto non_integer;
       }
     }
@@ -3011,8 +3029,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         matrix_row_const_reference_type t_i = tableau.t[i];
         // Count the number of non-integer parameter coefficients.
         dimension_type pcount = 0;
-        for (dimension_type j = num_params; j-- > 0; ) {
-          mod_assign(mod, t_i[j], den);
+        matrix_const_row_const_iterator j = t_i.begin();
+        matrix_const_row_const_iterator j_end = t_i.end();
+        for ( ; j!=j_end; ++j) {
+          mod_assign(mod, (*j).second, den);
           if (mod != 0)
             ++pcount;
         }
@@ -3043,21 +3063,29 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         score = 0;
         dimension_type pcount = 0;
         matrix_row_const_reference_type t_i = tableau.t[i];
-        for (dimension_type j = num_params; j-- > 0; ) {
-          mod_assign(mod, t_i[j], den);
-          if (mod != 0) {
-            score += den;
-            score -= mod;
-            ++pcount;
+        {
+          matrix_const_row_const_iterator j = t_i.begin();
+          matrix_const_row_const_iterator j_end = t_i.end();
+          for ( ; j!=j_end; ++j) {
+            mod_assign(mod, (*j).second, den);
+            if (mod != 0) {
+              score += den;
+              score -= mod;
+              ++pcount;
+            }
           }
         }
         // Compute s_score.
         s_score = 0;
         matrix_row_const_reference_type s_i = tableau.s[i];
-        for (dimension_type j = num_vars; j-- > 0; ) {
-          mod_assign(mod, s_i[j], den);
-          s_score += den;
-          s_score -= mod;
+        {
+          matrix_const_row_const_iterator j = s_i.begin();
+          matrix_const_row_const_iterator j_end = s_i.end();
+          for ( ; j!=j_end; ++j) {
+            mod_assign(mod, (*j).second, den);
+            s_score += den;
+            s_score -= mod;
+          }
         }
         // Combine 'score' and 's_score'.
         score *= s_score;
