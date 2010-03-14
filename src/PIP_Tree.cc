@@ -2053,29 +2053,35 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
     scaling[pi] = 1;
 
     // Perform a pivot operation on the matrix.
-    const Coefficient& pivot_pj = pivot[pj];
-    for (dimension_type j = num_cols; j-- > 0; ) {
-      if (j == pj)
-        continue;
-      const Coefficient& pivot_j = pivot[j];
-      // Do nothing if the j-th pivot element is zero.
-      if (pivot_j == 0)
-        continue;
-      for (dimension_type i = num_rows; i-- > 0; ) {
-        matrix_row_reference_type s_i = s[i];
-        product = s_i[pj] * pivot_j;
-        if (product % pivot_pj != 0) {
-          // Must scale row s_i to stay in integer case.
-          gcd_assign(gcd, product, pivot_pj);
-          exact_div_assign(scale_factor, pivot_pj, gcd);
-          for (dimension_type k = num_cols; k-- > 0; )
-            s_i[k] *= scale_factor;
-          product *= scale_factor;
-          scaling[i] *= scale_factor;
+    const Coefficient& pivot_pj = pivot.get(pj);
+    {
+      matrix_const_row_const_iterator j = pivot.begin();
+      matrix_const_row_const_iterator j_end = pivot.end();
+      for ( ; j!=j_end; ++j ) {
+        if ((*j).first == pj)
+          continue;
+        const Coefficient& pivot_j = (*j).second;
+        // Do nothing if the j-th pivot element is zero.
+        if (pivot_j == 0)
+          continue;
+        for (dimension_type i = num_rows; i-- > 0; ) {
+          matrix_row_reference_type s_i = s[i];
+          product = s_i.get(pj) * pivot_j;
+          if (product % pivot_pj != 0) {
+            // Must scale row s_i to stay in integer case.
+            gcd_assign(gcd, product, pivot_pj);
+            exact_div_assign(scale_factor, pivot_pj, gcd);
+            matrix_row_iterator k = s_i.begin();
+            matrix_row_iterator k_end = s_i.end();
+            for ( ; k!=k_end; ++k )
+              (*k).second *= scale_factor;
+            product *= scale_factor;
+            scaling[i] *= scale_factor;
+          }
+          PPL_ASSERT(product % pivot_pj == 0);
+          exact_div_assign(product, product, pivot_pj);
+          s_i[(*j).first] -= product;
         }
-        PPL_ASSERT(product % pivot_pj == 0);
-        exact_div_assign(product, product, pivot_pj);
-        s_i[j] -= product;
       }
     }
     // Update column only if pivot coordinate != 1.
@@ -2088,8 +2094,10 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
           // As above, perform row scaling.
           gcd_assign(gcd, product, pivot_pj);
           exact_div_assign(scale_factor, pivot_pj, gcd);
-          for (dimension_type k = num_cols; k-- > 0; )
-            s_i[k] *= scale_factor;
+          matrix_row_iterator k = s_i.begin();
+          matrix_row_iterator k_end = s_i.end();
+          for ( ; k!=k_end; ++k )
+            (*k).second *= scale_factor;
           product *= scale_factor;
           scaling[i] *= scale_factor;
         }
