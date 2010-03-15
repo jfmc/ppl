@@ -102,19 +102,6 @@ PIP_Decision_Node::child_node(bool v) {
   return v ? true_child : false_child;
 }
 
-
-inline bool
-PIP_Tree_Node::Artificial_Parameter::OK() const {
-  if (denom <= 0) {
-#ifndef NDEBUG
-    std::cerr << "PIP_Tree_Node::Artificial_Parameter "
-              << "has a non-positive denominator.\n";
-#endif
-    return false;
-  }
-  return true;
-}
-
 inline
 PIP_Tree_Node::Artificial_Parameter::Artificial_Parameter()
   : Linear_Expression(), denom(1) {

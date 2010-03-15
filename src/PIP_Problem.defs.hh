@@ -323,33 +323,53 @@ operator<<(std::ostream& s, const PIP_Problem& p);
      which we will call \f$M\f$.
    - Reformulate each of the maximization problem constraints by
      substituting each \f$x_i\f$ variable with an expression of the form
-     \f$M-x'_i\f$, where the \f$x'_i\f$ variables are to be minimized.
+     \f$M-x'_i\f$, where the \f$x'_i\f$ variables are positive variables to
+     be minimized.
    - Solve the lexicographic minimum for the \f$x'\f$ variable vector.
-   - In the solution expressions, substitute each \f$x'_i\f$ variable back
-     to \f$M-x_i\f$.
-
+   - In the solution expressions, the values of the original variables are
+     obtained from the resulting values of the \f$x'_i\f$ variables by
+     applying the equality \f$x_i = M-x'_i\f$.
+  \par
   You can choose to maximize only a subset of the variables while minimizing
   the other variables. In that case, just apply the variable substitution
   method on the variables you want to be maximized. The variable
   optimization priority will still be in lexicographic order.
 
-  \par Allowing variables to be arbitrarily signed
-  You can deal with arbitrarily signed variables by reformulating the
-  constraints using variable substitution. Proceed the following steps:
+  \par Allowing variables and parameters to be arbitrarily signed
+  You can deal with arbitrarily signed variables and/or parameters by
+  reformulating the constraints using variable and/or parameter
+  substitution. Proceed the following steps:
    - Create a big parameter (see PIP_Problem::set_big_parameter_dimension),
      which we will call \f$M\f$.
    - Reformulate each of the maximization problem constraints by
      substituting each \f$x_i\f$ variable with an expression of the form
-     \f$M+x'_i\f$, where the \f$x'_i\f$ variables are positive.
+     \f$x'_i-M\f$, where the \f$x'_i\f$ variables are positive, and/or by
+     substituting each \f$p_i\f$ parameter with an expression of the form
+     \f$p'_i-M\f$, where the \f$p'_i\f$ parameters are positive.
    - Solve the lexicographic minimum for the \f$x'\f$ variable vector.
-   - In the solution expressions, substitute each \f$x'_i\f$ variable back
-     to \f$x_i-M\f$.
+   - In the solution expressions, the values of the original variables
+     and/or parameters are obtained from the resulting values of the
+     \f$x'_i\f$ variables and/or the \f$p'_i\f$ parameters by applying the
+     equalities \f$x_i = M-x'_i\f$ and/or \f$p_i = M-p'_i\f$.
 
+  \par
   You can choose to define only a subset of the variables to be
   sign-unrestricted. In that case, just apply the variable substitution
   method on the variables you want to be sign-unrestricted.
 
-  FIXME: Solving problems with arbitrarily signed parameters
+  \par Minimizing a linear cost function
+  Lexicographic solving can be used to find the parametric minimum of a
+  linear cost function.
+  \par
+  Suppose the variables are named \f$x_1, x_2, \dots, x_n\f$, and the
+  parameters \f$p_1, p_2, \dots, p_m\f$. You can minimize a linear cost
+  function \f$f(x_2, \dots, x_n, p_1, \dots, p_m)\f$ by simply adding the
+  constraint \f$x_1 \geq f(x_2, \dots, x_n, p_1, \dots, p_m)\f$ to the
+  constraint system. As lexicographic minimization ensures \f$x_1\f$ is
+  minimized in priority, and because \f$x_1\f$ is forced by a constraint to
+  be superior or equal to the cost function, optimal solutions of the
+  problem necessarily ensure that the solution value of \f$x_1\f$ is the
+  optimal value of the cost function.
 */
 class Parma_Polyhedra_Library::PIP_Problem {
 public:
