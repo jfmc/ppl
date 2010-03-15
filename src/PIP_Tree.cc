@@ -3184,9 +3184,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         Variables_Set::const_iterator p_j = parameters.begin();
         matrix_const_row_const_iterator j = row_t.lower_bound(1);
         matrix_const_row_const_iterator j_end = row_t.end();
-        dimension_type last_index;
-        if (j!=j_end)
-          last_index = (*j).first;
+        dimension_type last_index = 1;
         for ( ; j!=j_end; ++j) {
           mod_assign(mod, (*j).second, den);
           if (mod != 0) {
