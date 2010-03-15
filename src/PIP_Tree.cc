@@ -1158,20 +1158,22 @@ PIP_Tree_Node
 
   // Compute the expression for the parameter constraint.
   Linear_Expression expr = Linear_Expression(row.get(0));
-  // Needed to avoid reallocations in expr when iterating upward.
-  add_mul_assign(expr, 0, Variable(num_params));
   Variables_Set::const_iterator j = parameters.begin();
-  // The number of increments of j plus one.
-  dimension_type j_index = 1;
-  matrix_const_row_const_iterator i = row.lower_bound(1);
-  matrix_const_row_const_iterator i_end = row.end();
-  // NOTE: iterating in [1..num_params].
-  for ( ; i!=i_end; ++i) {
-    if ((*i).first > num_params)
-      break;
-    std::advance(j,(*i).first-j_index);
-    j_index = (*i).first;
-    add_mul_assign(expr, (*i).second, Variable(*j));
+  if (!parameters.empty()) {
+    // Needed to avoid reallocations in expr when iterating upward.
+    add_mul_assign(expr, 0, Variable(*(parameters.rbegin())));
+    // The number of increments of j plus one.
+    dimension_type j_index = 1;
+    matrix_const_row_const_iterator i = row.lower_bound(1);
+    matrix_const_row_const_iterator i_end = row.end();
+    // NOTE: iterating in [1..num_params].
+    for ( ; i!=i_end; ++i) {
+      if ((*i).first > num_params)
+        break;
+      std::advance(j,(*i).first-j_index);
+      j_index = (*i).first;
+      add_mul_assign(expr, (*i).second, Variable(*j));
+    }
   }
   // Add the parameter constraint.
   constraints_.insert(expr >= 0);
