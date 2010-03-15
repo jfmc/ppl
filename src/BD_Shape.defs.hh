@@ -766,11 +766,11 @@ public:
     The denominator of the maximum frequency of \p expr;
 
     \param val_n
-    The numerator of a value of \p expr at a point in the grid
+    The numerator of a value of \p expr at a point in the bd_shape
     that is closest to zero;
 
     \param val_d
-    The denominator of a value of \p expr at a point in the grid
+    The denominator of a value of \p expr at a point in the bd_shape
     that is closest to zero;
 
     \exception std::invalid_argument

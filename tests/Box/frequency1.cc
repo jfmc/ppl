@@ -180,8 +180,8 @@ test08() {
   TBox box(3);
   box.add_constraint(A == 1);
   box.add_constraint(2*B == -1);
-  box.add_constraint(3*C == 2);
-  box.add_constraint(B <= 2);
+  box.add_constraint(2*C == 1);
+  box.add_constraint(B <= 4);
 
   Coefficient num;
   Coefficient den;
@@ -189,7 +189,7 @@ test08() {
   Coefficient vald;
   bool ok = (box.frequency(Linear_Expression(A - B + C + 1),
                            num, den, valn, vald)
-             && num == 0 && den == 1 && valn == 19 && vald == 6);
+             && num == 0 && den == 1 && valn == 3 && vald == 1);
   print_constraints(box, "*** box ***");
   nout << "valn " << valn << ", vald " << vald << endl;
 
