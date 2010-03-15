@@ -254,10 +254,7 @@ Partially_Reduced_Product<D1, D2, R>
 
   if (is_empty())
     return false;
-<<<<<<< HEAD:src/Partially_Reduced_Product.templates.hh
-=======
   PPL_ASSERT(reduced);
->>>>>>> master:src/Partially_Reduced_Product.templates.hh
 
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);
@@ -310,10 +307,7 @@ Partially_Reduced_Product<D1, D2, R>
 
   if (is_empty())
     return false;
-<<<<<<< HEAD:src/Partially_Reduced_Product.templates.hh
-=======
   PPL_ASSERT(reduced);
->>>>>>> master:src/Partially_Reduced_Product.templates.hh
 
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
@@ -372,10 +366,7 @@ Partially_Reduced_Product<D1, D2, R>
 
   if (is_empty())
     return false;
-<<<<<<< HEAD:src/Partially_Reduced_Product.templates.hh
-=======
   PPL_ASSERT(reduced);
->>>>>>> master:src/Partially_Reduced_Product.templates.hh
 
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);
