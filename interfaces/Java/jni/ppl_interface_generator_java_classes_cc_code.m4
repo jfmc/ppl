@@ -845,6 +845,30 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_wrap_assign_code',
+`dnl
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_@1CLASS@_wrap_assign
+(JNIEnv* env, jobject j_this,
+ jobject j_vars, jobject j_w, jobject j_r, jobject j_o, jobject j_cs,
+         jobject j_cx, jobject j_ind) try {
+  @CPP_CLASS@* this_ptr
+    = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
+  Variables_Set vars = build_cxx_variables_set(env, j_vars);
+  Bounded_Integer_Type_Width w = build_cxx_bounded_width(env, j_w);
+  Bounded_Integer_Type_Representation r = build_cxx_bounded_rep(env, j_r);
+  Bounded_Integer_Type_Overflow o = build_cxx_bounded_overflow(env, j_o);
+  Constraint_System* cs = &build_cxx_constraint_system(env, j_cs);
+  unsigned int cx =
+      jtype_to_unsigned<unsigned int>(j_integer_to_j_int(env, j_cx));
+  bool ind = (j_boolean_to_bool(env, j_ind));
+
+  this_ptr->wrap_assign(vars, w, r, o, cs, cx, ind);
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
 JNIEXPORT void JNICALL

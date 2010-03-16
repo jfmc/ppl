@@ -417,7 +417,7 @@ ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
 				Bounded_Integer_Type_Width w,
 				Bounded_Integer_Type_Representation r,
                                 Bounded_Integer_Type_Overflow o,
-                                By_Reference<Constraint_System> pcs,
+                                Constraint_System cs,
                                 By_Reference<Integer> complexity_threshold,
                                 By_Reference<Boolean> wrap_individually);
 

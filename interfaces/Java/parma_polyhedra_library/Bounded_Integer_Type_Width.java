@@ -26,15 +26,15 @@ package parma_polyhedra_library;
 /*! \ingroup PPL_Java_interface */
 public enum Bounded_Integer_Type_Width {
     //! Minimization is requested.
-    PPL_BITS_8,
+    BITS_8,
     //! \hideinitializer 16 bits.
-    PPL_BITS_16,
+    BITS_16,
     //! \hideinitializer 32 bits.
-    PPL_BITS_32,
+    BITS_32,
     //! \hideinitializer 64 bits.
-    PPL_BITS_64,
+    BITS_64,
     //! \hideinitializer 128 bits.
-    PPL_BITS_128;
+    BITS_128;
 
     private static native void initIDs();
     static {
