@@ -33,6 +33,9 @@ ppl_interface_generator_java_classes_java.m4 \
 ppl_interface_generator_java_classes_java_code.m4
 
 fixed_java_cxx_headers = \
+parma_polyhedra_library.Bounded_Integer_Type_Overflow \
+parma_polyhedra_library.Bounded_Integer_Type_Representation \
+parma_polyhedra_library.Bounded_Integer_Type_Width \
 parma_polyhedra_library.By_Reference \
 parma_polyhedra_library.Coefficient \
 parma_polyhedra_library.Complexity_Class \
@@ -68,6 +71,9 @@ parma_polyhedra_library.Variable \
 parma_polyhedra_library.Variables_Set
 
 fixed_java_cxx_headers_sources = \
+parma_polyhedra_library_Bounded_Integer_Type_Overflow.h \
+parma_polyhedra_library_Bounded_Integer_Type_Representation.h \
+parma_polyhedra_library_Bounded_Integer_Type_Width.h \
 parma_polyhedra_library_By_Reference.h \
 parma_polyhedra_library_Coefficient.h \
 parma_polyhedra_library_Complexity_Class.h \
@@ -104,6 +110,9 @@ parma_polyhedra_library_Variables_Set.h
 
 # NOTE: do _NOT_ add Fake_Class_for_Doxygen.java to this list.
 fixed_java_sources = \
+$(srcdir)/Bounded_Integer_Type_Overflow.java \
+$(srcdir)/Bounded_Integer_Type_Representation.java \
+$(srcdir)/Bounded_Integer_Type_Width.java \
 $(srcdir)/By_Reference.java \
 $(srcdir)/Coefficient.java \
 $(srcdir)/Complexity_Class.java \
