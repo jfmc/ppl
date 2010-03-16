@@ -517,16 +517,44 @@ m4_define(`ppl_@CLASS@_termination_test_@TERMINATION_ID@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_termination_test_@TERMINATION_ID@_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_termination_test_@TERMINATION_ID@_2
+     (Prolog_term_ref t_pset_before,
+      Prolog_term_ref t_pset_after);
+
+')
+
 m4_define(`ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@(Prolog_term_ref t_pset,
-                                             Prolog_term_ref t_g);
+  ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@
+     (Prolog_term_ref t_pset,
+      Prolog_term_ref t_g);
+
+')
+
+m4_define(`ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_2
+     (Prolog_term_ref t_pset_before,
+      Prolog_term_ref t_pset_after,
+      Prolog_term_ref t_g);
 
 ')
 
 m4_define(`ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@(Prolog_term_ref t_pset,
-                                              Prolog_term_ref t_ph);
+  ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@
+     (Prolog_term_ref t_pset,
+      Prolog_term_ref t_ph);
+
+')
+
+m4_define(`ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_2
+     (Prolog_term_ref t_pset_before,
+      Prolog_term_ref t_pset_after,
+      Prolog_term_ref t_ph);
 
 ')
