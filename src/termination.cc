@@ -176,21 +176,25 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   Fill the constraint system(s) for the application of the
   Podelski and Rybalchenko improved termination tests.
 
-  \param cs
-  The input constraint system, where variables indices are allocated
+  \param cs_before
+  The input constraint system describing the state <EM>before</EM>
+  the execution of the loop body, where variables indices are allocated
+  as follows:
+  - \f$ x_1, \ldots, x_n \f$ go onto space dimensions
+    \f$ 0, \ldots, n-1 \f$.
+  .
+  The system does not contain any equality.
+
+  \param cs_after
+  The input constraint system describing the state <EM>after</EM>
+  the execution of the loop body, where variables indices are allocated
   as follows:
   - \f$ x'_1, \ldots, x'_n \f$ go onto space dimensions
     \f$ 0, \ldots, n-1 \f$,
   - \f$ x_1, \ldots, x_n \f$ go onto space dimensions
-    \f$ n, \ldots, 2n-1 \f$,
+    \f$ n, \ldots, 2n-1 \f$.
   .
   The system does not contain any equality.
-
-  \param n
-  The number of loop-relevant variables in the analyzed loop.
-
-  \param m
-  The number of inequalities in \p cs.
 
   \param cs_out
   The output constraint system, where variables indices are allocated
@@ -276,60 +280,47 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   \f$ \vect{u}_3^\transpose E_C' \vect x \f$.
 */
 void
-fill_constraint_system_PR(const Constraint_System& cs,
-			  const dimension_type n,
-			  const dimension_type m,
-			  dimension_type& r,
+fill_constraint_system_PR(const Constraint_System& cs_before,
+			  const Constraint_System& cs_after,
 			  Constraint_System& cs_out,
 			  Linear_Expression& le_out) {
-  // Determine the partitioning of the m rows into the r rows
-  // of E_B and the s rows of E'_C|E_C.
-  std::deque<bool> row_of_E_B(m, true);
-  r = m;
-  dimension_type row_index = 0;
-  for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
-    const Constraint& c_i = *i;
-    for (dimension_type j = n; j-- > 0; )
-      if (c_i.coefficient(Variable(j)) != 0) {
-	row_of_E_B[row_index] = false;
-	--r;
-	break;
-      }
-  }
-  const dimension_type s = m - r;
+  const dimension_type n = cs_before.space_dimension();
+  const dimension_type r = distance(cs_before.begin(), cs_before.end());
+  const dimension_type s = distance(cs_after.begin(), cs_after.end());
+  const dimension_type m = r + s;
 
   std::vector<Linear_Expression> les_eq(2*n);
-  row_index = 0;
-  dimension_type E_B_row_index = 0;
-  dimension_type E_C_row_index = 0;
-  for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
+
+  dimension_type row_index = 0;
+  for (Constraint_System::const_iterator i = cs_before.begin(),
+	 cs_before_end = cs_before.end();
+       i != cs_before_end;
+       ++i, ++row_index) {
     const Constraint& c_i = *i;
-    if (row_of_E_B[row_index]) {
-      assert(E_B_row_index < r);
-      for (dimension_type j = n; j-- > 0; ) {
-	Coefficient_traits::const_reference k
-	  = c_i.coefficient(Variable(j + n));
-	les_eq[j] += k*Variable(m + E_B_row_index);
-	les_eq[j] -= k*Variable(s + E_B_row_index);
-	les_eq[j + n] += k*Variable(s + E_B_row_index);
-      }
-      le_out += c_i.inhomogeneous_term()*Variable(s + E_B_row_index);
-      ++E_B_row_index;
+    for (dimension_type j = n; j-- > 0; ) {
+      Coefficient_traits::const_reference k = c_i.coefficient(Variable(j));
+      les_eq[j] += k*Variable(m + row_index);
+      les_eq[j] -= k*Variable(s + row_index);
+      les_eq[j + n] += k*Variable(s + row_index);
     }
-    else {
-      assert(E_C_row_index < s);
-      for (dimension_type j = n; j-- > 0; ) {
-	PPL_DIRTY_TEMP_COEFFICIENT(k);
-	k = c_i.coefficient(Variable(j + n));
-	les_eq[j] -= k*Variable(E_C_row_index);
-	k += c_i.coefficient(Variable(j));
-	les_eq[j + n] += k*Variable(E_C_row_index);
-      }
-      le_out += c_i.inhomogeneous_term()*Variable(E_C_row_index);
-      ++E_C_row_index;
+    le_out += c_i.inhomogeneous_term()*Variable(s + row_index);
+  }
+
+
+  row_index = 0;
+  for (Constraint_System::const_iterator i = cs_after.begin(),
+	 cs_after_end = cs_after.end();
+       i != cs_after_end;
+       ++i, ++row_index) {
+    const Constraint& c_i = *i;
+    for (dimension_type j = n; j-- > 0; ) {
+      PPL_DIRTY_TEMP_COEFFICIENT(k);
+      k = c_i.coefficient(Variable(j + n));
+      les_eq[j] -= k*Variable(row_index);
+      k += c_i.coefficient(Variable(j));
+      les_eq[j + n] += k*Variable(row_index);
     }
+    le_out += c_i.inhomogeneous_term()*Variable(row_index);
   }
 
   // FIXME: iterate backwards once the debuggin phase is over.
@@ -485,6 +476,51 @@ all_affine_ranking_functions_MS(const Constraint_System& cs,
 #endif
 
   mu_space.swap(ph1);
+}
+
+bool
+termination_test_PR(const Constraint_System& cs_before,
+		    const Constraint_System& cs_after) {
+  Constraint_System cs_mip;
+  Linear_Expression le_obj;
+  fill_constraint_system_PR(cs_before, cs_after, cs_mip, le_obj);
+
+#if PRINT_DEBUG_INFO
+  Variable::output_function_type* p_default_output_function
+    = Variable::get_output_function();
+  Variable::set_output_function(output_function_PR);
+
+  output_function_PR_r = distance(cs_before.begin(), cs_before.end());
+  output_function_PR_s = distance(cs_after.begin(), cs_after.end());
+
+  std::cout << "*** cs_mip ***" << std::endl;
+  using namespace IO_Operators;
+  std::cout << cs_mip << std::endl;
+  std::cout << "*** le_obj ***" << std::endl;
+  std::cout << le_obj << std::endl;
+
+  Variable::set_output_function(p_default_output_function);
+#endif
+
+  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip,
+				le_obj, MAXIMIZATION);
+  switch (mip.solve()) {
+  case UNFEASIBLE_MIP_PROBLEM:
+    return false;
+  case UNBOUNDED_MIP_PROBLEM:
+    return true;
+  case OPTIMIZED_MIP_PROBLEM:
+    {
+      PPL_DIRTY_TEMP_COEFFICIENT(num);
+      PPL_DIRTY_TEMP_COEFFICIENT(den);
+      mip.optimal_value(num, den);
+      assert(den > 0);
+      return num > 0;
+    }
+  }
+
+  // This point should be unreachable.
+  throw std::runtime_error("PPL internal error");
 }
 
 } // namespace Termination

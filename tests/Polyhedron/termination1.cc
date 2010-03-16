@@ -164,18 +164,25 @@ test05() {
 
 bool
 test06() {
-  Variable xp1(0);
-  Variable xp2(1);
-  Variable x1(2);
-  Variable x2(3);
-  C_Polyhedron ph(4);
-  ph.add_constraint(x1 >= 2);
-  ph.add_constraint(2*xp1 + 1 >= x1);
-  ph.add_constraint(2*xp1 <= x1);
-  ph.add_constraint(xp2 == x2 + 1);
-  ph.add_constraint(xp2 >= 1);
+  C_Polyhedron ph_before(2);
+  {
+    Variable x1(0);
+    Variable x2(1);
+    ph_before.add_constraint(-x1     <= -1);
+    ph_before.add_constraint(x1 - x2 <=  0);
+  }
 
-  return termination_test_PR(ph);
+  C_Polyhedron ph_after(4);
+  {
+    Variable xp1(0);
+    Variable xp2(1);
+    Variable x1(2);
+    Variable x2(3);
+    ph_after.add_constraint(x1 - x2 + xp2  <=  0);
+    ph_after.add_constraint(-x1 + x2 - xp2 <=  0);
+  }
+
+  return termination_test_PR_2(ph_before, ph_after);
 }
 
 bool
@@ -224,7 +231,7 @@ BEGIN_MAIN
   DO_TEST(test03);
   //DO_TEST(test04);
   //DO_TEST(test05);
-  //DO_TEST(test06);
+  DO_TEST(test06);
   //DO_TEST(test07);
   DO_TEST(test10);
   DO_TEST_F(test11);
