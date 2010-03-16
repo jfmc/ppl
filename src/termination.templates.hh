@@ -132,20 +132,18 @@ output_function_PR(std::ostream& s, const Variable& v) {
 }
 #endif
 
-void
-fill_constraint_systems_MS(const Constraint_System& cs,
-			   const dimension_type n,
-			   const dimension_type m,
-			   Constraint_System& cs_out1,
-			   Constraint_System& cs_out2);
+void fill_constraint_systems_MS(const Constraint_System& cs,
+				const dimension_type n,
+				const dimension_type m,
+				Constraint_System& cs_out1,
+				Constraint_System& cs_out2);
 
-void
-fill_constraint_system_PR(const Constraint_System& cs,
-			  const dimension_type n,
-			  const dimension_type m,
-			  dimension_type& r,
-			  Constraint_System& cs_out,
-			  Linear_Expression& le_out);
+void fill_constraint_system_PR(const Constraint_System& cs,
+			       const dimension_type n,
+			       const dimension_type m,
+			       dimension_type& r,
+			       Constraint_System& cs_out,
+			       Linear_Expression& le_out);
 
 template <typename PSET>
 void
@@ -192,39 +190,15 @@ assign_all_inequalities_approximation(const Octagonal_Shape<T>& ocs,
   cs = ocs.minimized_constraints();
 }
 
-template <typename PSET>
-void
-prepare_input_MS_PR(const PSET& pset, Constraint_System& cs,
-		    dimension_type& n, dimension_type& m,
-		    const char* function) {
-  dimension_type space_dim = pset.space_dimension();
-  if (space_dim % 2 != 0) {
-    std::ostringstream s;
-    s << "PPL" << function << "(pset, ...):\n"
-      << "pset.space_dimension() == " << space_dim
-      << " is odd.";
-    throw std::invalid_argument(s.str());
-  }
+void shift_unprimed_variables(Constraint_System& cs);
 
-  n = space_dim/2;
-  assign_all_inequalities_approximation(pset, cs);
-  m = std::distance(cs.begin(), cs.end());
+bool termination_test_MS(const Constraint_System& cs);
 
-#if PRINT_DEBUG_INFO
-  output_function_MS_n = n;
-  output_function_MS_m = m;
-  Variable::output_function_type* p_default_output_function
-    = Variable::get_output_function();
-  Variable::set_output_function(output_function_MS);
+bool one_affine_ranking_function_MS(const Constraint_System& cs,
+				    Generator& mu);
 
-  std::cout << "*** cs ***" << std::endl;
-  output_function_MS_which = 0;
-  using namespace IO_Operators;
-  std::cout << cs << std::endl;
-
-  Variable::set_output_function(p_default_output_function);
-#endif
-}
+void all_affine_ranking_functions_MS(const Constraint_System& cs,
+				     C_Polyhedron& mu_space);
 
 } // namespace Termination
 
@@ -233,224 +207,184 @@ prepare_input_MS_PR(const PSET& pset, Constraint_System& cs,
 template <typename PSET>
 bool
 termination_test_MS(const PSET& pset) {
+  const dimension_type space_dim = pset.space_dimension();
+  if (space_dim % 2 != 0) {
+    std::ostringstream s;
+    s << "PPL::termination_test_MS(pset):\n"
+         "pset.space_dimension() == " << space_dim
+      << " is odd.";
+    throw std::invalid_argument(s.str());
+  }
+
   using namespace Implementation::Termination;
   Constraint_System cs;
-  dimension_type n;
-  dimension_type m;
-  prepare_input_MS_PR(pset, cs, n, m, "termination_test_MS");
+  assign_all_inequalities_approximation(pset, cs);
+  return termination_test_MS(cs);
+}
 
-  Constraint_System cs_mip;
-  fill_constraint_systems_MS(cs, n, m, cs_mip, cs_mip);
+template <typename PSET>
+bool
+termination_test_MS_2(const PSET& pset_before, const PSET& pset_after) {
+  const dimension_type before_space_dim = pset_before.space_dimension();
+  const dimension_type after_space_dim = pset_after.space_dimension();
+  if (after_space_dim != 2*before_space_dim) {
+    std::ostringstream s;
+    s << "PPL::termination_test_MS_2(pset_before, pset_after):\n"
+         "pset_before.space_dimension() == " << before_space_dim
+      << ", pset_after.space_dimension() == " << after_space_dim
+      << ";\nthe latter should be twice the former.";
+    throw std::invalid_argument(s.str());
+  }
 
-#if PRINT_DEBUG_INFO
-  Variable::output_function_type* p_default_output_function
-    = Variable::get_output_function();
-  Variable::set_output_function(output_function_MS);
-
-  std::cout << "*** cs_mip ***" << std::endl;
-  output_function_MS_which = 3;
-  using namespace IO_Operators;
-  std::cout << cs_mip << std::endl;
-  Variable::set_output_function(p_default_output_function);
-#endif
-
-  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
-
-  return mip.is_satisfiable();
+  using namespace Implementation::Termination;
+  Constraint_System cs;
+  assign_all_inequalities_approximation(pset_before, cs);
+  shift_unprimed_variables(cs);
+  assign_all_inequalities_approximation(pset_after, cs);
+  return termination_test_MS(cs);
 }
 
 template <typename PSET>
 bool
 one_affine_ranking_function_MS(const PSET& pset, Generator& mu) {
+  const dimension_type space_dim = pset.space_dimension();
+  if (space_dim % 2 != 0) {
+    std::ostringstream s;
+    s << "PPL::one_affine_ranking_function_MS(pset):\n"
+         "pset.space_dimension() == " << space_dim
+      << " is odd.";
+    throw std::invalid_argument(s.str());
+  }
+
   using namespace Implementation::Termination;
   Constraint_System cs;
-  dimension_type n;
-  dimension_type m;
-  prepare_input_MS_PR(pset, cs, n, m, "one_affine_ranking_function_MS");
+  assign_all_inequalities_approximation(pset, cs);
+  return one_affine_ranking_function_MS(cs, mu);
+}
 
-  Constraint_System cs_mip;
-  fill_constraint_systems_MS(cs, n, m, cs_mip, cs_mip);
-
-#if PRINT_DEBUG_INFO
-  Variable::output_function_type* p_default_output_function
-    = Variable::get_output_function();
-  Variable::set_output_function(output_function_MS);
-
-  std::cout << "*** cs_mip ***" << std::endl;
-  output_function_MS_which = 3;
-  using namespace IO_Operators;
-  std::cout << cs_mip << std::endl;
-  Variable::set_output_function(p_default_output_function);
-#endif
-
-  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
-
-  if (mip.is_satisfiable()) {
-    Generator fp = mip.feasible_point();
-    assert(fp.is_point());
-    Linear_Expression le;
-    for (dimension_type i = n+1; i-- > 0; ) {
-      Variable vi(i);
-      le += vi*fp.coefficient(vi);
-    }
-    mu = point(le, fp.divisor());
-    return true;
+template <typename PSET>
+bool
+one_affine_ranking_function_MS_2(const PSET& pset_before,
+				 const PSET& pset_after,
+				 Generator& mu) {
+  const dimension_type before_space_dim = pset_before.space_dimension();
+  const dimension_type after_space_dim = pset_after.space_dimension();
+  if (after_space_dim != 2*before_space_dim) {
+    std::ostringstream s;
+    s << "PPL::one_affine_ranking_function_MS_2(pset_before, pset_after):\n"
+         "pset_before.space_dimension() == " << before_space_dim
+      << ", pset_after.space_dimension() == " << after_space_dim
+      << ";\nthe latter should be twice the former.";
+    throw std::invalid_argument(s.str());
   }
-  else
-    return false;
+
+  using namespace Implementation::Termination;
+  Constraint_System cs;
+  assign_all_inequalities_approximation(pset_before, cs);
+  shift_unprimed_variables(cs);
+  assign_all_inequalities_approximation(pset_after, cs);
+  return one_affine_ranking_function_MS(cs, mu);
 }
 
 template <typename PSET>
 void
 all_affine_ranking_functions_MS(const PSET& pset, C_Polyhedron& mu_space) {
+  const dimension_type space_dim = pset.space_dimension();
+  if (space_dim % 2 != 0) {
+    std::ostringstream s;
+    s << "PPL::all_affine_ranking_functions_MS(pset):\n"
+         "pset.space_dimension() == " << space_dim
+      << " is odd.";
+    throw std::invalid_argument(s.str());
+  }
+
   using namespace Implementation::Termination;
   Constraint_System cs;
-  dimension_type n;
-  dimension_type m;
-  prepare_input_MS_PR(pset, cs, n, m, "all_affine_ranking_functions_MS");
+  assign_all_inequalities_approximation(pset, cs);
+  all_affine_ranking_functions_MS(cs, mu_space);
+}
 
-  Constraint_System cs_out1;
-  Constraint_System cs_out2;
-  fill_constraint_systems_MS(cs, n, m, cs_out1, cs_out2);
+template <typename PSET>
+void
+all_affine_ranking_functions_MS_2(const PSET& pset_before,
+				  const PSET& pset_after,
+				  C_Polyhedron& mu_space) {
+  const dimension_type before_space_dim = pset_before.space_dimension();
+  const dimension_type after_space_dim = pset_after.space_dimension();
+  if (after_space_dim != 2*before_space_dim) {
+    std::ostringstream s;
+    s << "PPL::all_affine_ranking_functions_MS_2(pset_before, pset_after):\n"
+         "pset_before.space_dimension() == " << before_space_dim
+      << ", pset_after.space_dimension() == " << after_space_dim
+      << ";\nthe latter should be twice the former.";
+    throw std::invalid_argument(s.str());
+  }
 
-#if PRINT_DEBUG_INFO
-  Variable::output_function_type* p_default_output_function
-    = Variable::get_output_function();
-  Variable::set_output_function(output_function_MS);
-
-  std::cout << "*** cs_out1 ***" << std::endl;
-  output_function_MS_which = 1;
-  using namespace IO_Operators;
-  std::cout << cs_out1 << std::endl;
-
-  std::cout << "*** cs_out2 ***" << std::endl;
-  output_function_MS_which = 2;
-  using namespace IO_Operators;
-  std::cout << cs_out2 << std::endl;
-#endif
-
-  C_Polyhedron ph1(cs_out1);
-  C_Polyhedron ph2(cs_out2);
-  ph1.remove_higher_space_dimensions(n);
-  ph1.add_space_dimensions_and_embed(1);
-  ph2.remove_higher_space_dimensions(n+1);
-
-#if PRINT_DEBUG_INFO
-  std::cout << "*** ph1 projected ***" << std::endl;
-  output_function_MS_which = 4;
-  using namespace IO_Operators;
-  std::cout << ph1.minimized_constraints() << std::endl;
-
-  std::cout << "*** ph2 projected ***" << std::endl;
-  std::cout << ph2.minimized_constraints() << std::endl;
-#endif
-
-  ph1.intersection_assign(ph2);
-
-#if PRINT_DEBUG_INFO
-  std::cout << "*** intersection ***" << std::endl;
-  using namespace IO_Operators;
-  std::cout << ph1.minimized_constraints() << std::endl;
-  Variable::set_output_function(p_default_output_function);
-#endif
-
-  mu_space.swap(ph1);
+  using namespace Implementation::Termination;
+  Constraint_System cs;
+  assign_all_inequalities_approximation(pset_before, cs);
+  shift_unprimed_variables(cs);
+  assign_all_inequalities_approximation(pset_after, cs);
+  all_affine_ranking_functions_MS(cs, mu_space);
 }
 
 template <typename PSET>
 bool
 termination_test_PR(const PSET& pset) {
-  using namespace Implementation::Termination;
-  Constraint_System cs;
-  dimension_type n;
-  dimension_type m;
-  prepare_input_MS_PR(pset, cs, n, m, "termination_test_PR");
+  used(pset);
+  throw std::runtime_error("PPL::termination_test_PR()"
+			   " not yet implemented.");
+}
 
-  dimension_type r;
-  Constraint_System cs_mip;
-  Linear_Expression le_obj;
-  fill_constraint_system_PR(cs, n, m, r, cs_mip, le_obj);
-
-  const dimension_type s = m - r;
-
-#if PRINT_DEBUG_INFO
-  output_function_PR_r = r;
-  output_function_PR_s = s;
-  Variable::output_function_type* p_default_output_function
-    = Variable::get_output_function();
-  Variable::set_output_function(output_function_PR);
-
-  std::cout << "*** cs_mip ***" << std::endl;
-  using namespace IO_Operators;
-  std::cout << cs_mip << std::endl;
-  std::cout << "*** le_obj ***" << std::endl;
-  std::cout << le_obj << std::endl;
-  Variable::set_output_function(p_default_output_function);
-#endif
-
-  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip,
-				le_obj, MAXIMIZATION);
-  switch (mip.solve()) {
-  case UNFEASIBLE_MIP_PROBLEM:
-    return false;
-  case UNBOUNDED_MIP_PROBLEM:
-    return true;
-  case OPTIMIZED_MIP_PROBLEM:
-    {
-      PPL_DIRTY_TEMP_COEFFICIENT(num);
-      PPL_DIRTY_TEMP_COEFFICIENT(den);
-      mip.optimal_value(num, den);
-      assert(den > 0);
-      return num > 0;
-    }
-  }
-
-  // This point should be unreachable.
-  throw std::runtime_error("PPL internal error");
+template <typename PSET>
+bool
+termination_test_PR_2(const PSET& pset_before, const PSET& pset_after) {
+  used(pset_before);
+  used(pset_after);
+  throw std::runtime_error("PPL::termination_test_PR_2()"
+			   " not yet implemented.");
 }
 
 template <typename PSET>
 bool
 one_affine_ranking_function_PR(const PSET& pset, Generator& mu) {
-  using namespace Implementation::Termination;
-  Constraint_System cs;
-  dimension_type n;
-  dimension_type m;
-  prepare_input_MS_PR(pset, cs, n, m, "one_affine_ranking_function_PR");
+  used(pset);
+  used(mu);
+  throw std::runtime_error("PPL::one_affine_ranking_function_PR()"
+			   " not yet implemented.");
+}
 
-  dimension_type r;
-  Constraint_System cs_mip;
-  Linear_Expression le_ineq;
-  fill_constraint_system_PR(cs, n, m, r, cs_mip, le_ineq);
-
-  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
-
-  if (mip.is_satisfiable()) {
-    Generator fp = mip.feasible_point();
-    // FIXME: must project fp to obtain u3, then multiply by E'_C
-    // and assign the result to mu.
-    //return true;
-    return false;
-  }
-  else
-    return false;
+template <typename PSET>
+bool
+one_affine_ranking_function_PR_2(const PSET& pset_before,
+				 const PSET& pset_after,
+				 Generator& mu) {
+  used(pset_before);
+  used(pset_after);
+  used(mu);
+  throw std::runtime_error("PPL::one_affine_ranking_function_PR_2()"
+			   " not yet implemented.");
 }
 
 template <typename PSET>
 void
 all_affine_ranking_functions_PR(const PSET& pset, C_Polyhedron& mu_space) {
-  using namespace Implementation::Termination;
-  Constraint_System cs;
-  dimension_type n;
-  dimension_type m;
-  prepare_input_MS_PR(pset, cs, n, m, "all_affine_ranking_functions_PR");
+  used(pset);
+  used(mu_space);
+  throw std::runtime_error("PPL::all_affine_ranking_functions_PR()"
+			   " not yet implemented.");
+}
 
-  dimension_type r;
-  Constraint_System cs_out;
-  Linear_Expression le_ineq;
-  fill_constraint_system_PR(cs, n, m, r, cs_out, le_ineq);
-
-  mu_space = C_Polyhedron(n+1, EMPTY);
+template <typename PSET>
+void
+all_affine_ranking_functions_PR_2(const PSET& pset_before,
+				  const PSET& pset_after,
+				  C_Polyhedron& mu_space) {
+  used(pset_before);
+  used(pset_after);
+  used(mu_space);
+  throw std::runtime_error("PPL::all_affine_ranking_functions_PR_2()"
+			   " not yet implemented.");
 }
 
 } // namespace Parma_Polyhedra_Library

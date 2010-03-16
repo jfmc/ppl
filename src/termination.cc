@@ -53,6 +53,25 @@ assign_all_inequalities_approximation(const C_Polyhedron& ph,
   }
 }
 
+void
+shift_unprimed_variables(Constraint_System& cs) {
+  const dimension_type cs_space_dim = cs.space_dimension();
+  Constraint_System cs_shifted;
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i) {
+    const Constraint& c_i = *i;
+    Linear_Expression le_i_shifted;
+    for (dimension_type j = cs_space_dim; j-- > 0; ) {
+      Coefficient_traits::const_reference a_i_j
+	= c_i.coefficient(Variable(j));
+      if (a_i_j != 0)
+	le_i_shifted += a_i_j*Variable(cs_space_dim + j);
+    }
+    cs_shifted.insert(le_i_shifted >= c_i.inhomogeneous_term());
+  }
+  cs.swap(cs_shifted);
+}
+
 /*! \brief
   Fill the constraint system(s) for the application of the
   Mesnard and Serebrenik improved termination tests.
@@ -319,6 +338,154 @@ fill_constraint_system_PR(const Constraint_System& cs,
     cs_out.insert(les_eq[j] == 0);
 }
 
+bool
+termination_test_MS(const Constraint_System& cs) {
+  const dimension_type n = cs.space_dimension()/2;
+  const dimension_type m = distance(cs.begin(), cs.end());
+
+#if PRINT_DEBUG_INFO
+  Variable::output_function_type* p_default_output_function
+    = Variable::get_output_function();
+  Variable::set_output_function(output_function_MS);
+
+  output_function_MS_n = n;
+  output_function_MS_m = m;
+
+  std::cout << "*** cs ***" << std::endl;
+  output_function_MS_which = 0;
+  using namespace IO_Operators;
+  std::cout << cs << std::endl;
+#endif
+
+  Constraint_System cs_mip;
+  fill_constraint_systems_MS(cs, n, m, cs_mip, cs_mip);
+
+#if PRINT_DEBUG_INFO
+  std::cout << "*** cs_mip ***" << std::endl;
+  output_function_MS_which = 3;
+  using namespace IO_Operators;
+  std::cout << cs_mip << std::endl;
+
+  Variable::set_output_function(p_default_output_function);
+#endif
+
+  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
+
+  return mip.is_satisfiable();
+}
+
+bool
+one_affine_ranking_function_MS(const Constraint_System& cs, Generator& mu) {
+  const dimension_type n = cs.space_dimension()/2;
+  const dimension_type m = distance(cs.begin(), cs.end());
+
+#if PRINT_DEBUG_INFO
+  Variable::output_function_type* p_default_output_function
+    = Variable::get_output_function();
+  Variable::set_output_function(output_function_MS);
+
+  output_function_MS_n = n;
+  output_function_MS_m = m;
+
+  std::cout << "*** cs ***" << std::endl;
+  output_function_MS_which = 0;
+  using namespace IO_Operators;
+  std::cout << cs << std::endl;
+#endif
+
+  Constraint_System cs_mip;
+  fill_constraint_systems_MS(cs, n, m, cs_mip, cs_mip);
+
+#if PRINT_DEBUG_INFO
+  std::cout << "*** cs_mip ***" << std::endl;
+  output_function_MS_which = 3;
+  using namespace IO_Operators;
+  std::cout << cs_mip << std::endl;
+
+  Variable::set_output_function(p_default_output_function);
+#endif
+
+  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
+
+  if (mip.is_satisfiable()) {
+    Generator fp = mip.feasible_point();
+    assert(fp.is_point());
+    Linear_Expression le;
+    for (dimension_type i = n+1; i-- > 0; ) {
+      Variable vi(i);
+      le += vi*fp.coefficient(vi);
+    }
+    mu = point(le, fp.divisor());
+    return true;
+  }
+  else
+    return false;
+}
+
+void
+all_affine_ranking_functions_MS(const Constraint_System& cs,
+				C_Polyhedron& mu_space) {
+  const dimension_type n = cs.space_dimension()/2;
+  const dimension_type m = distance(cs.begin(), cs.end());
+
+#if PRINT_DEBUG_INFO
+  Variable::output_function_type* p_default_output_function
+    = Variable::get_output_function();
+  Variable::set_output_function(output_function_MS);
+
+  output_function_MS_n = n;
+  output_function_MS_m = m;
+
+  std::cout << "*** cs ***" << std::endl;
+  output_function_MS_which = 0;
+  using namespace IO_Operators;
+  std::cout << cs << std::endl;
+#endif
+
+  Constraint_System cs_out1;
+  Constraint_System cs_out2;
+  fill_constraint_systems_MS(cs, n, m, cs_out1, cs_out2);
+
+#if PRINT_DEBUG_INFO
+  std::cout << "*** cs_out1 ***" << std::endl;
+  output_function_MS_which = 1;
+  using namespace IO_Operators;
+  std::cout << cs_out1 << std::endl;
+
+  std::cout << "*** cs_out2 ***" << std::endl;
+  output_function_MS_which = 2;
+  using namespace IO_Operators;
+  std::cout << cs_out2 << std::endl;
+#endif
+
+  C_Polyhedron ph1(cs_out1);
+  C_Polyhedron ph2(cs_out2);
+  ph1.remove_higher_space_dimensions(n);
+  ph1.add_space_dimensions_and_embed(1);
+  ph2.remove_higher_space_dimensions(n+1);
+
+#if PRINT_DEBUG_INFO
+  std::cout << "*** ph1 projected ***" << std::endl;
+  output_function_MS_which = 4;
+  using namespace IO_Operators;
+  std::cout << ph1.minimized_constraints() << std::endl;
+
+  std::cout << "*** ph2 projected ***" << std::endl;
+  std::cout << ph2.minimized_constraints() << std::endl;
+#endif
+
+  ph1.intersection_assign(ph2);
+
+#if PRINT_DEBUG_INFO
+  std::cout << "*** intersection ***" << std::endl;
+  using namespace IO_Operators;
+  std::cout << ph1.minimized_constraints() << std::endl;
+
+  Variable::set_output_function(p_default_output_function);
+#endif
+
+  mu_space.swap(ph1);
+}
 
 } // namespace Termination
 

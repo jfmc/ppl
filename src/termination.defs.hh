@@ -62,6 +62,48 @@ bool
 termination_test_MS(const PSET& pset);
 
 /*! \brief
+  Termination test using an improvement of the method by Mesnard and
+  Serebrenik.
+
+  \tparam PSET
+  Any pointset supported by the PPL that provides the
+  <CODE>minimized_constraints()</CODE> method.
+
+  \param pset_before
+  A pointset approximating the values of loop-relevant variables
+  <EM>before</EM> the update performed in the loop body that is being
+  analyzed.  The variables indices are allocated as follows:
+  - \f$ x_1, \ldots, x_n \f$ go onto space dimensions
+    \f$ 0, \ldots, n-1 \f$.
+
+  \param pset_after
+  A pointset approximating the values of loop-relevant variables
+  <EM>after</EM> the update performed in the loop body that is being
+  analyzed.  The variables indices are allocated as follows:
+  - \f$ x'_1, \ldots, x'_n \f$ go onto space dimensions
+    \f$ 0, \ldots, n-1 \f$,
+  - \f$ x_1, \ldots, x_n \f$ go onto space dimensions
+    \f$ n, \ldots, 2n-1 \f$,
+
+  Note that unprimed variables represent the values of the loop-relevant
+  program variables before the update performed in the loop body,
+  and primed variables represent the values of those program variables
+  after the update.  Note also that unprimed variables are assigned
+  to different space dimensions in \p pset_before and \p pset_after.
+
+  \return
+  <CODE>true</CODE> if any loop approximated by \p pset definitely
+  terminates; <CODE>false</CODE> if the test is inconclusive.
+  However, if \p pset <EM>precisely</EM> characterizes the effect
+  of the loop body onto the loop-relevant program variables,
+  then <CODE>true</CODE> is returned <EM>if and only if</EM>
+  the loop terminates.
+*/
+template <typename PSET>
+bool
+termination_test_MS_2(const PSET& pset_before, const PSET& pset_after);
+
+/*! \brief
   Termination test with witness ranking function using an improvement
   of the method by Mesnard and Serebrenik.
 
@@ -102,6 +144,59 @@ termination_test_MS(const PSET& pset);
 template <typename PSET>
 bool
 one_affine_ranking_function_MS(const PSET& pset, Generator& mu);
+
+/*! \brief
+  Termination test with witness ranking function using an improvement
+  of the method by Mesnard and Serebrenik.
+
+  \tparam PSET
+  Any pointset supported by the PPL that provides the
+  <CODE>minimized_constraints()</CODE> method.
+
+  \param pset_before
+  A pointset approximating the values of loop-relevant variables
+  <EM>before</EM> the update performed in the loop body that is being
+  analyzed.  The variables indices are allocated as follows:
+  - \f$ x_1, \ldots, x_n \f$ go onto space dimensions
+    \f$ 0, \ldots, n-1 \f$.
+
+  \param pset_after
+  A pointset approximating the values of loop-relevant variables
+  <EM>after</EM> the update performed in the loop body that is being
+  analyzed.  The variables indices are allocated as follows:
+  - \f$ x'_1, \ldots, x'_n \f$ go onto space dimensions
+    \f$ 0, \ldots, n-1 \f$,
+  - \f$ x_1, \ldots, x_n \f$ go onto space dimensions
+    \f$ n, \ldots, 2n-1 \f$,
+
+  Note that unprimed variables represent the values of the loop-relevant
+  program variables before the update performed in the loop body,
+  and primed variables represent the values of those program variables
+  after the update.  Note also that unprimed variables are assigned
+  to different space dimensions in \p pset_before and \p pset_after.
+
+  \param mu
+  When <CODE>true</CODE> is returned, this is assigned a point
+  of space dimension \f$ n+1 \f$ encoding one (not further specified)
+  affine ranking function for the loop being analyzed.
+  The ranking function is of the form \f$ \mu_0 + \sum_{i=1}^n \mu_i x_i \f$
+  where \f$ \mu_0, \mu_1, \ldots, \mu_n \f$ are the coefficients
+  of \p mu corresponding to the space dimensions \f$ n, 0, \ldots, n-1 \f$,
+  respectively.
+
+  \return
+  <CODE>true</CODE> if any loop approximated by \p pset definitely
+  terminates; <CODE>false</CODE> if the test is inconclusive.
+  However, if \p pset <EM>precisely</EM> characterizes the effect
+  of the loop body onto the loop-relevant program variables,
+  then <CODE>true</CODE> is returned <EM>if and only if</EM>
+  the loop terminates.
+*/
+template <typename PSET>
+bool
+one_affine_ranking_function_MS_2(const PSET& pset_before,
+				 const PSET& pset_after,
+				 Generator& mu);
 
 /*! \brief
   Termination test with ranking function space using an improvement
@@ -146,12 +241,73 @@ void
 all_affine_ranking_functions_MS(const PSET& pset, C_Polyhedron& mu_space);
 
 /*! \brief
+  Termination test with ranking function space using an improvement
+  of the method by Mesnard and Serebrenik.
+
+  \tparam PSET
+  Any pointset supported by the PPL that provides the
+  <CODE>minimized_constraints()</CODE> method.
+
+  \param pset_before
+  A pointset approximating the values of loop-relevant variables
+  <EM>before</EM> the update performed in the loop body that is being
+  analyzed.  The variables indices are allocated as follows:
+  - \f$ x_1, \ldots, x_n \f$ go onto space dimensions
+    \f$ 0, \ldots, n-1 \f$.
+
+  \param pset_after
+  A pointset approximating the values of loop-relevant variables
+  <EM>after</EM> the update performed in the loop body that is being
+  analyzed.  The variables indices are allocated as follows:
+  - \f$ x'_1, \ldots, x'_n \f$ go onto space dimensions
+    \f$ 0, \ldots, n-1 \f$,
+  - \f$ x_1, \ldots, x_n \f$ go onto space dimensions
+    \f$ n, \ldots, 2n-1 \f$,
+
+  Note that unprimed variables represent the values of the loop-relevant
+  program variables before the update performed in the loop body,
+  and primed variables represent the values of those program variables
+  after the update.  Note also that unprimed variables are assigned
+  to different space dimensions in \p pset_before and \p pset_after.
+
+  \param mu_space
+  This is assigned a closed polyhedron of space dimension \f$ n+1 \f$
+  representing the space of all the affine ranking functions for the loops
+  that are precisely characterized by \p pset.
+  These ranking functions are of the form
+  \f$ \mu_0 + \sum_{i=1}^n \mu_i x_i \f$
+  where \f$ \mu_0, \mu_1, \ldots, \mu_n \f$ identify any point of the
+  \p mu_space polyhedron.
+  The variables \f$ \mu_0, \mu_1, \ldots, \mu_n \f$
+  correspond to the space dimensions of \p mu_space
+  \f$ n, 0, \ldots, n-1 \f$, respectively.
+  When \p mu_space is empty, it means that the test is inconclusive.
+  However, if \p pset <EM>precisely</EM> characterizes the effect
+  of the loop body onto the loop-relevant program variables,
+  then \p mu_space is empty <EM>if and only if</EM>
+  the loop does <EM>not</EM> terminate.
+*/
+template <typename PSET>
+void
+all_affine_ranking_functions_MS_2(const PSET& pset_before,
+				  const PSET& pset_after,
+				  C_Polyhedron& mu_space);
+
+/*! \brief
   Like termination_test_MS() but using an improvement
   of the method by Podelski and Rybalchenko.
 */
 template <typename PSET>
 bool
 termination_test_PR(const PSET& pset);
+
+/*! \brief
+  Like termination_test_MS_2() but using an improvement
+  of the method by Podelski and Rybalchenko.
+*/
+template <typename PSET>
+bool
+termination_test_PR_2(const PSET& pset_before, const PSET& pset_after);
 
 /*! \brief
   Like one_affine_ranking_function_MS() but using an improvement
@@ -162,12 +318,32 @@ bool
 one_affine_ranking_function_PR(const PSET& pset, Generator& mu);
 
 /*! \brief
+  Like one_affine_ranking_function_MS_2() but using an improvement
+  of the method by Podelski and Rybalchenko.
+*/
+template <typename PSET>
+bool
+one_affine_ranking_function_PR_2(const PSET& pset_before,
+				 const PSET& pset_after,
+				 Generator& mu);
+
+/*! \brief
   Like all_affine_ranking_functions_MS() but using an improvement
   of the method by Podelski and Rybalchenko.
 */
 template <typename PSET>
 void
 all_affine_ranking_functions_PR(const PSET& pset, C_Polyhedron& mu_space);
+
+/*! \brief
+  Like all_affine_ranking_functions_MS_2() but using an improvement
+  of the method by Podelski and Rybalchenko.
+*/
+template <typename PSET>
+void
+all_affine_ranking_functions_PR_2(const PSET& pset_before,
+				  const PSET& pset_after,
+				  C_Polyhedron& mu_space);
 
 } // namespace Parma_Polyhedra_Library
 
