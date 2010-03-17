@@ -1149,8 +1149,8 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
     if (j->first < i->first) {
       if (j->first != k) {
         // FIXME: check if adding "if (j->second != 0)" speeds this up.
-        Coefficient& x_i = x[j->first];
-        last_i = x.find(j->first);
+        last_i = x.find_create(j->first);
+        Coefficient& x_i = (*last_i).second;
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
         i = last_i;
         ++i;
