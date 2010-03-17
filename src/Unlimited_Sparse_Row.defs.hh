@@ -114,6 +114,11 @@ namespace Parma_Polyhedra_Library {
     returning a C::dangerous_iterator. This method inserts x before pos and
     returns an iterator to the inserted element.
     This operation invalidates all C::dangerous_iterator objects equal to pos.
+  * C must have a method
+    insert(C::dangerous_iterator pos,dimension_type i,const Coefficient& x)
+    returning a C::dangerous_iterator. This method inserts the pair (i,x)
+    before pos and returns an iterator to the inserted element.
+    This operation invalidates all C::dangerous_iterator objects equal to pos.
   * C must have a method erase(C::dangerous_iterator pos) returning a
     C::dangerous_iterator, that erases the element pointed to by pos.
     This operation invalidates all C::dangerous_iterators objects equal to
