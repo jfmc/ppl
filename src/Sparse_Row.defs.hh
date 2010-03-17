@@ -176,12 +176,20 @@ public:
   //! Equivalent to find_create(i,x,begin_dangerous()) .
   iterator find_create(const dimension_type i,const Coefficient& x);
 
+  //! Equivalent to find_create(x,begin_dangerous()) .
+  iterator find_create(const std::pair<dimension_type,Coefficient>& x);
+
   //! Equivalent to find_create(i,begin_dangerous()) .
   iterator find_create(const dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
   iterator find_create(const dimension_type i,const Coefficient& x,
+                       iterator itr);
+
+  //! Equivalent to (*this)[x.first]=x.second , needs itr to point before the
+  //! added element. If itr points near the added element, this is faster.
+  iterator find_create(const std::pair<dimension_type,Coefficient>& x,
                        iterator itr);
 
   //! Equivalent to (*this)[i] , needs itr to point before the added
@@ -191,6 +199,13 @@ public:
   //! Equivalent to (*this)[i]=x , needs itr to point before or to the added
   //! element. If itr points near the added element, this is faster.
   dangerous_iterator find_create(const dimension_type i,const Coefficient& x,
+                                 dangerous_iterator itr);
+
+  //! Equivalent to (*this)[x.first]=x.second , needs itr to point before or
+  //! to the added element. If itr points near the added element, this is
+  //! faster.
+  dangerous_iterator find_create(const std::pair<dimension_type,
+                                                 Coefficient>& x,
                                  dangerous_iterator itr);
 
   //! Equivalent to (*this)[i] , needs itr to point before or to the added
@@ -345,12 +360,20 @@ public:
   //! Equivalent to find_create(i,x,begin_dangerous()) .
   iterator find_create(const dimension_type i,const Coefficient& x);
 
+  //! Equivalent to find_create(x,begin_dangerous()) .
+  iterator find_create(const std::pair<dimension_type,Coefficient>& x);
+
   //! Equivalent to find_create(i,begin_dangerous()) .
   iterator find_create(const dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
   iterator find_create(const dimension_type i,const Coefficient& x,
+                       iterator itr);
+
+  //! Equivalent to (*this)[x.first]=x.second , needs itr to point before the
+  //! added element. If itr points near the added element, this is faster.
+  iterator find_create(const std::pair<dimension_type,Coefficient>& x,
                        iterator itr);
 
   //! Equivalent to (*this)[i] , needs itr to point before the added
@@ -360,6 +383,13 @@ public:
   //! Equivalent to (*this)[i]=x , needs itr to point before or to the added
   //! element. If itr points near the added element, this is faster.
   dangerous_iterator find_create(const dimension_type i,const Coefficient& x,
+                                 dangerous_iterator itr);
+
+  //! Equivalent to (*this)[x.first]=x.second , needs itr to point before or
+  //! to the added element. If itr points near the added element, this is
+  //! faster.
+  dangerous_iterator find_create(const std::pair<dimension_type,
+                                                 Coefficient>& x,
                                  dangerous_iterator itr);
 
   //! Equivalent to (*this)[i] , needs itr to point before or to the added
