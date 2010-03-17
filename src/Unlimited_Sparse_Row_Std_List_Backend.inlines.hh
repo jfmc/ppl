@@ -39,6 +39,13 @@ Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator::
 }
 
 inline Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator
+Unlimited_Sparse_Row_Std_List_Backend
+::insert(dangerous_iterator pos,dimension_type i,const Coefficient& x) {
+  return insert(pos,std::make_pair(i,x));
+}
+
+
+inline Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator::next(iterator i) {
   return dangerous_iterator(++i);
 }
