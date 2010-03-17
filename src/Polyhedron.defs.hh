@@ -52,10 +52,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <iosfwd>
 
-// FIXME: this is only needed to access the copy constructor of
-// class Polyhedron from the termination utility functions.
-#include "C_Polyhedron.types.hh"
-
 namespace Parma_Polyhedra_Library {
 
 namespace IO_Operators {
@@ -2571,17 +2567,6 @@ private:
   friend class Parma_Polyhedra_Library::Grid;
   friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
   friend class Parma_Polyhedra_Library::H79_Certificate;
-
-  // FIXME: these are only needed to access the copy constructor of
-  // class Polyhedron.
-  template <typename PSET>
-  friend bool termination_test_PR(const PSET& pset);
-  template <typename PSET>
-  friend bool one_affine_ranking_function_PR(const PSET& pset,
-					     Generator& mu);
-  template <typename PSET>
-  friend void all_affine_ranking_functions_PR(const PSET& pset,
-					      C_Polyhedron& mu_space);
 
 protected:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
