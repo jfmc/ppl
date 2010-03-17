@@ -342,6 +342,8 @@ public:
   typedef Dense_Row::iterator matrix_row_iterator;
   typedef Dense_Row::const_iterator matrix_row_const_iterator;
   typedef Dense_Row matrix_row_copy_type;
+  typedef Dense_Row::iterator matrix_row_copy_iterator;
+  typedef Dense_Row::const_iterator matrix_row_copy_const_iterator;
 #else
   typedef Sparse_Matrix matrix_type;
   typedef Sparse_Row_Reference matrix_row_reference_type;
@@ -351,6 +353,8 @@ public:
   typedef Sparse_Row_Reference::iterator matrix_row_iterator;
   typedef Sparse_Row_Reference::const_iterator matrix_row_const_iterator;
   typedef Sparse_Row matrix_row_copy_type;
+  typedef Sparse_Row::iterator matrix_row_copy_iterator;
+  typedef Sparse_Row::const_iterator matrix_row_copy_const_iterator;
 #endif
 
   //! Builds a trivial PIP problem.
