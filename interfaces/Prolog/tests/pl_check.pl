@@ -1817,6 +1817,24 @@ ok(T) :-
   ppl_delete_Polyhedron(P3),
   ppl_delete_Polyhedron(P4).
 
+% Tests ppl_Polyhedron_termination_test_MS/2,
+%       ppl_Polyhedron_termination_test_PR/2.
+termination_test :-
+  termination_test(c), termination_test(nnc).
+
+termination_test(T) :-
+  make_vars(4, [A, B, C, D]),
+  clean_ppl_new_Polyhedron_from_constraints(T,
+                                            [A - C >= 0,
+                                             -A + C >= 0;
+                                             -B + D >= 1;
+                                             B >= 0;
+                                             A >= 1], P1),
+  ppl_Polyhedron_termination_test_MS(P1),
+  ppl_Polyhedron_termination_test_PR(P1),
+  !,
+  ppl_delete_Polyhedron(P1).
+
 %%%%%%%%%%%%%%%%%%%%%%%%% Polyhedron Bounding Values %%%%%%%%%%%%%%%%%%%%%%%
 
 % Tests ppl_Polyhedron_bounds_from_above/2.
@@ -3254,6 +3272,8 @@ group_predicates(check_polyhedron,
    ppl_Polyhedron_strictly_contains_Polyhedron/2,
    ppl_Polyhedron_is_disjoint_from_Polyhedron/2,
    ppl_Polyhedron_equals_Polyhedron/2,
+   ppl_Polyhedron_termination_test_MS/2,
+   ppl_Polyhedron_termination_test_PR/2,
    ppl_Polyhedron_OK/1
   ]).
 
