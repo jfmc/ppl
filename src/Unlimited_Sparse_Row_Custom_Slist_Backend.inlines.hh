@@ -112,11 +112,12 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::end() const {
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend::insert(dangerous_iterator pos,
-                                                  const value_type& x) {
+                                                  dimension_type i,
+                                                  const Coefficient& x) {
   PPL_ASSERT(pos.OK());
   PPL_ASSERT(OK());
   list_elem* elem_after = *(pos.p);
-  list_elem* new_elem = new list_elem(x,elem_after);
+  list_elem* new_elem = new list_elem(i,x,elem_after);
   *(pos.p) = new_elem;
   // No change needed to pos.p
 #ifndef NDEBUG
@@ -128,6 +129,13 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::insert(dangerous_iterator pos,
   PPL_ASSERT(OK());
   PPL_ASSERT(pos.OK());
   return pos;
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend
+  ::insert(dangerous_iterator pos,
+           const std::pair<dimension_type,Coefficient>& x) {
+  return insert(pos,x.first,x.second);
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
@@ -294,8 +302,14 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::list_elem::
 
 inline
 Unlimited_Sparse_Row_Custom_Slist_Backend::list_elem::
-  list_elem(const value_type& data1,list_elem* next1)
-  : data(data1), next(next1) {
+  list_elem(dimension_type i,const Coefficient& x,list_elem* next1)
+  : data(i,x), next(next1) {
+}
+
+inline
+Unlimited_Sparse_Row_Custom_Slist_Backend::list_elem::
+  list_elem(const value_type& x,list_elem* next1)
+  : data(x), next(next1) {
 }
 
 

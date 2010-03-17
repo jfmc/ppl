@@ -83,10 +83,17 @@ public:
   const_iterator begin() const;
   const_iterator end() const;
 
-  //! Inserts x before pos. Warning: this operation invalidates all
-  //! dangerous_iterators equal to pos. Returns an iterator to the added
+  //! Inserts the pair (i,x) before pos. Warning: this operation invalidates
+  //! all dangerous_iterators equal to pos. Returns an iterator to the added
   //! element.
-  dangerous_iterator insert(dangerous_iterator pos,const value_type& x);
+  dangerous_iterator insert(dangerous_iterator pos,dimension_type i,
+                            const Coefficient& x);
+
+  //! Inserts the pair x before pos. Warning: this operation invalidates
+  //! all dangerous_iterators equal to pos. Returns an iterator to the added
+  //! element.
+  dangerous_iterator insert(dangerous_iterator pos,
+                            const std::pair<dimension_type,Coefficient>& x);
 
   //! Erases the element pointed to by pos. Warning: this operation
   //! invalidates all dangerous_iterators equal to ++pos.
@@ -140,6 +147,7 @@ private:
   struct list_elem {
     list_elem();
     list_elem(const value_type& data1,list_elem* next1);
+    list_elem(dimension_type i,const Coefficient& x,list_elem* next1);
     value_type data;
     list_elem* next;
   };
