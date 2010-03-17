@@ -1235,7 +1235,7 @@ m4_define(`ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_code',
   static const char* where = "ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@/1";
   try {
     @TOPOLOGY@@CPP_CLASS@* pset = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset, where);
-    PPL_CHECK(ph);
+    PPL_CHECK(pset);
     if (Parma_Polyhedra_Library::termination_test_@TERMINATION_ID@(*pset))
         return PROLOG_SUCCESS;
   }
@@ -1255,7 +1255,8 @@ m4_define(`ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2_code',
        = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_before, where);
     @TOPOLOGY@@CPP_CLASS@* pset_after
        = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_after, where);
-    PPL_CHECK(ph);
+    PPL_CHECK(pset_before);
+    PPL_CHECK(pset_after);
     if (Parma_Polyhedra_Library
         ::termination_test_@TERMINATION_ID@_2(*pset_before, *pset_after))
         return PROLOG_SUCCESS;
@@ -1300,7 +1301,8 @@ m4_define(`ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2_
     @TOPOLOGY@@CPP_CLASS@* pset_after
        = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_after, where);
     Generator gg(point());
-    PPL_CHECK(pset);
+    PPL_CHECK(pset_before);
+    PPL_CHECK(pset_after);
     if (Parma_Polyhedra_Library
        ::one_affine_ranking_function_@TERMINATION_ID@_2(*pset_before,
                                                         *pset_after,
@@ -1353,7 +1355,8 @@ m4_define(`ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2
        = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_before, where);
     @TOPOLOGY@@CPP_CLASS@* pset_after
        = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_after, where);
-    PPL_CHECK(pset);
+    PPL_CHECK(pset_before);
+    PPL_CHECK(pset_after);
     C_Polyhedron* ph = new C_Polyhedron();
     Parma_Polyhedra_Library
       ::all_affine_ranking_functions_@TERMINATION_ID@_2(*pset_before,
