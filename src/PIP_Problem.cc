@@ -155,20 +155,49 @@ PPL::PIP_Problem::solve() const {
 
         // Translate constraint into context row.
         matrix_row_copy_type row(new_num_cols);
-        row[0] = c.inhomogeneous_term();
         {
+          matrix_row_copy_iterator itr = row.end();
+
+          if (c.inhomogeneous_term() != 0) {
+            itr = row.find_create(0,c.inhomogeneous_term());
+            // Adjust inhomogenous term if strict.
+            if (c.is_strict_inequality())
+              --((*itr).second);
+          } else {
+            // Adjust inhomogenous term if strict.
+            if (c.is_strict_inequality())
+              itr = row.find_create(0,-1);
+          }
           dimension_type i = 1;
-          for (Variables_Set::const_iterator
-                 pi = param_begin; pi != param_end; ++pi, ++i) {
-            if (*pi < c_space_dim)
-              row[i] = c.coefficient(Variable(*pi));
-            else
-              break;
+          bool continue_looping = true;
+          Variables_Set::const_iterator pi = param_begin;
+
+          if (itr == row.end())
+            for ( ; pi != param_end; ++pi, ++i) {
+              if (*pi < c_space_dim) {
+                const Coefficient& x = c.coefficient(Variable(*pi));
+                if (x != 0) {
+                  itr = row.find_create(i,x);
+                  // itr is now initialized, use it in the next iterations.
+                  ++pi;
+                  ++i;
+                  break;
+                }
+              } else
+                continue_looping = false;
+            }
+          if (continue_looping) {
+            for ( ; pi != param_end; ++pi, ++i) {
+              PPL_ASSERT(itr != row.end());
+              if (*pi < c_space_dim) {
+                const Coefficient& x = c.coefficient(Variable(*pi));
+                if (x != 0)
+                  itr = row.find_create(i,x);
+              } else
+                break;
+            }
           }
         }
-        // Adjust inhomogenous term if strict.
-        if (c.is_strict_inequality())
-          --row[0];
 
         // Insert new row into initial context.
         x.initial_context.add_row(row);
