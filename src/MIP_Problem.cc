@@ -2177,16 +2177,36 @@ PPL::MIP_Problem::OK() const {
 #endif
         return false;
       }
-      // tableau[i][base[i] must be different from zero.
-      // tableau[i][base[j], with i different from j, must not be a zero.
-      for (dimension_type j = tableau_nrows; j-- > 0; )
-        if (i != j && tableau[j].get(base[i]) != 0) {
+    }
+    {
+      // Needed to sort accesses to tableau_j, improving preformance.
+      std::map<dimension_type,dimension_type> var_in_base;
+      for (dimension_type i = base.size(); i-- > 0; )
+        var_in_base[base[i]] = i;
+
+      for (dimension_type j = tableau_nrows; j-- > 0; ) {
+        matrix_row_const_reference_type tableau_j = tableau[j];
+        std::map<dimension_type,dimension_type>::iterator i = var_in_base.begin();
+        std::map<dimension_type,dimension_type>::iterator i_end = var_in_base.end();
+        matrix_const_row_const_iterator itr = tableau_j.begin();
+        matrix_const_row_const_iterator itr_end = tableau_j.end();
+        for ( ; i!=i_end; ++i) {
+          // tableau[i][base[i] must be different from zero.
+          // tableau[i][base[j], with i different from j, must not be a zero.
+          if ((itr != itr_end) && (*itr).first < i->first)
+            itr = tableau_j.lower_bound((*itr).first,itr);
+          if (i->second != j && (itr != itr_end) && (*itr).first == i->first
+              && (*itr).second != 0) {
 #ifndef NDEBUG
-          cerr << "tableau[i][base[i] must be different from zero" << endl;
-          ascii_dump(cerr);
+            cerr << "tableau[i][base[i] must be different from zero" << endl;
+            ascii_dump(cerr);
 #endif
-          return false;
+            return false;
+          }
         }
+      }
+    }
+    for (dimension_type i = base.size(); i-- > 0; ) {
       if (tableau[i].get(base[i]) == 0) {
 #ifndef NDEBUG
         cerr << "tableau[i][base[j], with i different from j, must not be "
