@@ -808,7 +808,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   for (dimension_type i = num_original_rows; i < tableau_num_rows; ++i) {
     if (worked_out_row[i])
       continue;
-    tableau[i][artificial_index] = 1;
+    tableau[i].find_create(artificial_index, 1);
     working_cost[artificial_index] = -1;
     base[i] = artificial_index;
     ++artificial_index;
