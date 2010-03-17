@@ -41,7 +41,7 @@ PPL::Unlimited_Sparse_Row_Std_Vector_Backend::
   dimension_type k;
   Base::iterator itr = A.begin() + i;
   Base::iterator itr2 = itr + n;
-  while (n==0 || m==0) {
+  while (n==0 && m==0) {
     if (n <= m) {
       for (k=n; k>0; --k,++itr,++itr2)
         std::swap(*itr,*itr2);
