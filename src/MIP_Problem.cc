@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Scalar_Products.defs.hh"
 #include <stdexcept>
 #include <deque>
+#include <map>
 #include <algorithm>
 #include <cmath>
 
@@ -699,29 +700,34 @@ PPL::MIP_Problem::process_pending_constraints() {
       // Copy the original constraint in the tableau.
       matrix_row_reference_type tableau_k = tableau[--k];
       const Constraint& cs_i = input_cs[i];
+      // Used to improve performance, ordering writes to tableau_k.
+      std::map<dimension_type,std::pair<const Coefficient*,bool> > map;
       for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
         const Coefficient& current_coefficient =
           cs_i.coefficient(Variable(sd));
         // The test against 0 is not needed, but improves performance.
         if (current_coefficient != 0) {
-          tableau_k[mapping[sd+1].first] = current_coefficient;
+          map[mapping[sd+1].first] = std::make_pair(&current_coefficient,false);
           // Split if needed.
           if (mapping[sd+1].second != 0)
-            neg_assign(tableau_k[mapping[sd+1].second],current_coefficient);
+            map[mapping[sd+1].second]
+              = std::make_pair(&current_coefficient,true);
         }
       }
       const Coefficient& cs_i_inhomogeneous_term = cs_i.inhomogeneous_term();
       // The test against 0 is not needed, but improves performance.
       if (cs_i_inhomogeneous_term != 0) {
-        tableau_k[mapping[0].first] = cs_i_inhomogeneous_term;
+        map[mapping[0].first]
+          = std::make_pair(&cs_i_inhomogeneous_term,false);
         // Split if needed.
         if (mapping[0].second != 0)
-          neg_assign(tableau_k[mapping[0].second],cs_i_inhomogeneous_term);
+          map[mapping[0].second]
+            = std::make_pair(&cs_i_inhomogeneous_term,true);
       }
 
       // Add the slack variable, if needed.
       if (cs_i.is_inequality()) {
-        tableau_k[--slack_index] = -1;
+        map[--slack_index] = std::make_pair(&Coefficient_one(),true);
         // If the constraint is already satisfied, we will not use artificial
         // variables to compute a feasible base: this to speed up
         // the algorithm.
@@ -729,6 +735,24 @@ PPL::MIP_Problem::process_pending_constraints() {
           base[k] = slack_index;
           worked_out_row[k] = true;
         }
+      }
+      // Dump map content into tableau_k.
+      std::map<dimension_type,std::pair<const Coefficient*,bool> >
+        ::iterator j = map.begin();
+      std::map<dimension_type,std::pair<const Coefficient*,bool> >
+        ::iterator j_end = map.end();
+      if (j != j_end) {
+        matrix_row_iterator itr
+          = tableau_k.find_create(j->first,*(j->second.first));
+        if (j->second.second)
+          neg_assign((*itr).second);
+        ++j;
+        for ( ; j!=j_end; ++j) {
+          itr = tableau_k.find_create(j->first,*(j->second.first),itr);
+          if (j->second.second)
+            neg_assign((*itr).second);
+        }
+        map.clear();
       }
       for (dimension_type j = base_size; j-- > 0; )
         if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0)
