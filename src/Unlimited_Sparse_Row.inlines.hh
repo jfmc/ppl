@@ -148,6 +148,18 @@ Unlimited_Sparse_Row::find_create(const dimension_type i,
 }
 
 inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const std::pair<dimension_type,
+                                                  Coefficient>& x) {
+  if (begin() == end())
+    return data.insert(end_dangerous(),x);
+  dangerous_iterator itr = begin_dangerous();
+  if ((*itr).first > x.first)
+    return data.insert(itr,x);
+  // Now we can call find_create(x,itr) without triggering asserts.
+  return find_create(x,itr);
+}
+
+inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(const dimension_type i) {
   if (begin() == end())
     return data.insert(end_dangerous(),std::make_pair(i,Coefficient_zero()));
@@ -168,6 +180,19 @@ Unlimited_Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
     return itr;
   }
   return find_create(i,x,dangerous_iterator::next(itr));
+}
+
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const std::pair<dimension_type,
+                                                  Coefficient>& x,
+                                  iterator itr) {
+  PPL_ASSERT(itr != end());
+  PPL_ASSERT((*itr).first <= x.first);
+  if ((*itr).first == x.first) {
+    (*itr).second = x.second;
+    return itr;
+  }
+  return find_create(x,dangerous_iterator::next(itr));
 }
 
 inline Unlimited_Sparse_Row::iterator
@@ -203,6 +228,21 @@ Unlimited_Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
     return itr;
   }
   itr = data.insert(itr,std::make_pair(i,x));
+  return itr;
+}
+
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::find_create(const std::pair<dimension_type,
+                                                  Coefficient>& x,
+                                  dangerous_iterator itr) {
+  // The check is needed to avoid triggering assertions in lower_bound().
+  if (itr != end_dangerous() && (*itr).first < x.first)
+    itr = lower_bound_dangerous(x.first,itr);
+  if (itr != end_dangerous() && (*itr).first == x.first) {
+    (*itr).second = x.second;
+    return itr;
+  }
+  itr = data.insert(itr,x);
   return itr;
 }
 
