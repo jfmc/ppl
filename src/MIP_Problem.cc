@@ -2314,7 +2314,7 @@ PPL::MIP_Problem::OK() const {
       }
     }
     {
-      // Needed to sort accesses to tableau_j, improving preformance.
+      // Needed to sort accesses to tableau_j, improving performance.
       std::map<dimension_type,dimension_type> var_in_base;
       for (dimension_type i = base.size(); i-- > 0; )
         var_in_base[base[i]] = i;
