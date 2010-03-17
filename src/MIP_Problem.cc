@@ -793,7 +793,8 @@ PPL::MIP_Problem::process_pending_constraints() {
 
   // Insert artificial variables for the nonfeasible constraints.
   for (dimension_type i = 0; i < unfeasible_tableau_rows_size; ++i) {
-    tableau[unfeasible_tableau_rows[i]][artificial_index] = 1;
+    tableau[unfeasible_tableau_rows[i]].find_create(artificial_index,
+                                                    Coefficient_one());
     working_cost[artificial_index] = -1;
     base[unfeasible_tableau_rows[i]] = artificial_index;
     ++artificial_index;
@@ -808,7 +809,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   for (dimension_type i = num_original_rows; i < tableau_num_rows; ++i) {
     if (worked_out_row[i])
       continue;
-    tableau[i].find_create(artificial_index, 1);
+    tableau[i].find_create(artificial_index, Coefficient_one());
     working_cost[artificial_index] = -1;
     base[i] = artificial_index;
     ++artificial_index;
