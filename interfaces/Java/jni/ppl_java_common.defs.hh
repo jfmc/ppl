@@ -496,7 +496,7 @@ build_cxx_bounded_width(JNIEnv* env, jobject j_bounded_width);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Bounded_Integer_Type_Overflow
-  from C++ MIP_Problem::Bounded_Integer_Type_Overflow \p bounded_overflow.
+  from C++ Bounded_Integer_Type_Overflow \p bounded_overflow.
 */
 jobject
 build_java_bounded_overflow
@@ -504,7 +504,7 @@ build_java_bounded_overflow
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Bounded_Integer_Type_Representation
-  from C++ MIP_Problem::Bounded_Integer_Type_Representation \p bounded_rep.
+  from C++ Bounded_Integer_Type_Representation \p bounded_rep.
 */
 jobject
 build_java_bounded_representation
@@ -512,7 +512,7 @@ build_java_bounded_representation
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Bounded_Integer_Type_Width
-  from C++ MIP_Problem::Bounded_Integer_Type_Width \p bounded_width.
+  from C++ Bounded_Integer_Type_Width \p bounded_width.
 */
 jobject
 build_java_bounded_width

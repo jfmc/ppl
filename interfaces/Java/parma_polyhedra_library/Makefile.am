@@ -212,6 +212,9 @@ $(fixed_java_cxx_headers_sources) \
 java_classes.stamp \
 java_cxx_headers.stamp \
 source_generation.stamp \
+Bounded_Integer_Type_Overflow.class \
+Bounded_Integer_Type_Representation.class \
+Bounded_Integer_Type_Width.class \
 By_Reference.class \
 Coefficient.class \
 Complexity_Class.class \
