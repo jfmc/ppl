@@ -34,60 +34,60 @@ dnl There is no code at present for these procedures in the C interface.
 dnl Remove the macro if its definition is added.
 dnl
 
-m4_define(`ppl_@CLASS@_termination_test_@TERMINATION_ID@_code',
+m4_define(`ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_code',
 `dnl
 /*! \relates ppl_@CLASS@_tag */
 int
-ppl_@CLASS@_termination_test_@TERMINATION_ID@
+ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@
 PPL_PROTO((ppl_const_@CLASS@_t pset));
 
 ')
 
-m4_define(`ppl_@CLASS@_termination_test_@TERMINATION_ID@_2_code',
+m4_define(`ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2_code',
 `dnl
 /*! \relates ppl_@CLASS@_tag */
 int
-ppl_@CLASS@_termination_test_@TERMINATION_ID@_2
+ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2
 PPL_PROTO((ppl_const_@CLASS@_t pset_before, ppl_const_@CLASS@_t pset_after));
 
 ')
 
-m4_define(`ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_code',
+m4_define(`ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_code',
 `dnl
 /*! \relates ppl_@CLASS@_tag */
 int
-ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@
+ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@
 PPL_PROTO((ppl_const_@CLASS@_t pset,
            ppl_Generator_t point));
 
 ')
 
-m4_define(`ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_2_code',
+m4_define(`ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2_code',
 `dnl
 /*! \relates ppl_@CLASS@_tag */
 int
-ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_2
+ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2
 PPL_PROTO((ppl_const_@CLASS@_t pset_before,
            ppl_const_@CLASS@_t pset_after,
            ppl_Generator_t point));
 
 ')
 
-m4_define(`ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_code',
+m4_define(`ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_code',
 `dnl
 /*! \relates ppl_@CLASS@_tag */
 int
-ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@
+ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@
 PPL_PROTO((ppl_const_@CLASS@_t pset,
            ppl_Polyhedron_t ph));
 
 ')
 
-m4_define(`ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_2_code',
+m4_define(`ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2_code',
 `dnl
 /*! \relates ppl_@CLASS@_tag */
 int
-ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_2
+ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2
 PPL_PROTO((ppl_const_@CLASS@_t pset_before,
            ppl_const_@CLASS@_t pset_after,
            ppl_Polyhedron_t ph));

@@ -1817,23 +1817,31 @@ ok(T) :-
   ppl_delete_Polyhedron(P3),
   ppl_delete_Polyhedron(P4).
 
-% Tests ppl_Polyhedron_termination_test_MS/2,
-%       ppl_Polyhedron_termination_test_PR/2.
+% Tests ppl_termination_test_C_Polyhedron_MS/2,
+%       ppl_termination_test_C_Polyhedron_PR/2.
+% T     ppl_termination_test_NNC_Polyhedron_MS/2,
+%       ppl_termination_test_NNC_Polyhedron_PR/2.
 termination_test :-
-  termination_test(c), termination_test(nnc).
-
-termination_test(T) :-
   make_vars(4, [A, B, C, D]),
-  clean_ppl_new_Polyhedron_from_constraints(T,
+  clean_ppl_new_Polyhedron_from_constraints(C,
                                             [A - C >= 0,
                                              -A + C >= 0;
                                              -B + D >= 1;
                                              B >= 0;
                                              A >= 1], P1),
-  ppl_Polyhedron_termination_test_MS(P1),
-  ppl_Polyhedron_termination_test_PR(P1),
+  ppl_termination_test_C_Polyhedron_MS(P1),
+  ppl_termination_test_C_Polyhedron_PR(P1),
+  clean_ppl_new_Polyhedron_from_constraints(NNC,
+                                            [A - C >= 0,
+                                             -A + C >= 0;
+                                             -B + D >= 1;
+                                             B >= 0;
+                                           P2),
+  ppl_termination_test_NNC_Polyhedron_MS(P2),
+  ppl_termination_test_NNC_Polyhedron_PR(P2),
   !,
-  ppl_delete_Polyhedron(P1).
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P2).
 
 %%%%%%%%%%%%%%%%%%%%%%%%% Polyhedron Bounding Values %%%%%%%%%%%%%%%%%%%%%%%
 

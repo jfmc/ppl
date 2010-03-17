@@ -87,11 +87,11 @@ ppl_MIP_Problem_ascii_dump/1`'dnl
 
 m4_define(`m4_procedure_list',
   `m4_echo_unquoted(`m4_common_procedure_list',
-ppl_@CLASS@_termination_test_@TERMINATION_ID@/1 +simple,
-ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@/2 +simple,
-ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@/2 +simple,
-ppl_@CLASS@_termination_test_@TERMINATION_ID@_2/2 +simple,
-ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_2/3 +simple,
-ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_2/3 +simple,
+ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@/1 +simple,
+ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@/2 +simple,
+ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@/2 +simple,
+ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2/2 +simple,
+ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2/3 +simple,
+ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2/3 +simple,
 )
 ')
