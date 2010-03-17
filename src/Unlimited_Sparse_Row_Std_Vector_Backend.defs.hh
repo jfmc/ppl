@@ -55,6 +55,13 @@ public:
   dangerous_iterator begin_dangerous();
   dangerous_iterator end_dangerous();
 
+  // This would be hidden by the next declaration.
+  using Base::insert;
+
+  //! Needed to satisfy the backend requirements.
+  dangerous_iterator insert(dangerous_iterator pos,dimension_type i,
+                            const Coefficient& x);
+
   iterator splice(iterator& position,This& x);
 
   iterator splice(iterator& position,This& x,iterator i);

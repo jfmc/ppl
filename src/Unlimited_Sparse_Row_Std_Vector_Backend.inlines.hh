@@ -58,6 +58,12 @@ Unlimited_Sparse_Row_Std_Vector_Backend::end_dangerous() {
   return end();
 }
 
+inline Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator
+Unlimited_Sparse_Row_Std_Vector_Backend
+::insert(dangerous_iterator pos,dimension_type i,const Coefficient& x) {
+  return insert(pos,std::make_pair(i,x));
+}
+
 inline Unlimited_Sparse_Row_Std_Vector_Backend::iterator
 Unlimited_Sparse_Row_Std_Vector_Backend::splice(iterator& position,This& x) {
   PPL_ASSERT(this != &x);
