@@ -204,8 +204,10 @@ PPL::PIP_Problem::solve() const {
 
         // If it is an equality, also insert its negation.
         if (c.is_equality()) {
-          for (dimension_type i = new_num_cols; i-- > 0; )
-            neg_assign(row[i], row[i]);
+          matrix_row_iterator i = row.begin();
+          matrix_row_iterator i_end = row.end();
+          for ( ; i!=i_end; ++i)
+            neg_assign((*i).second);
 
           // Insert new row into initial context.
           x.initial_context.add_row(row);
