@@ -2109,6 +2109,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       // Recusively solve true node wrt updated context.
       t_node = t_node->solve(pip, check_feasible_context,
                              context, all_params, space_dim);
+      // Resolution may have changed t_node: in case, rewrap it.
+      if (t_node != wrapped_node.get()) {
+        wrapped_node.release();
+        wrapped_node.reset(t_node);
+      }
 
       // Modify *this in place to become the "false" version of current node.
       PIP_Tree_Node* f_node = this;
@@ -2159,10 +2164,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       // create a new decision node.
       PIP_Tree_Node* parent
         = new PIP_Decision_Node(f_node->get_owner(), f_node, t_node);
-      // Protect 'parent' from exception safety issues
-      // (previously wrapped t_node is now safe).
+      // Previously wrapped 't_node' is now safe: release it
+      // and protect new 'parent' node from exception safety issues.
       wrapped_node.release();
-      wrapped_node = std::auto_ptr<PIP_Tree_Node>(parent);
+      wrapped_node.reset(parent);
 
       // Add t_test to the constraints of the new decision node.
       parent->add_constraint(t_test, all_params);
@@ -2170,14 +2175,17 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       if (!cs.empty()) {
         // If node to be solved had tautologies,
         // store them in a new decision node.
-        // NOTE: this is exception safe.
         parent = new PIP_Decision_Node(parent->get_owner(), 0, parent);
+        // Previously wrapped 'parent' node is now safe: release it
+        // and protect new 'parent' node from exception safety issues.
+        wrapped_node.release();
+        wrapped_node.reset(parent);
         parent->constraints_.swap(cs);
       }
       parent->artificial_parameters.swap(aps);
-      // It is now safe to release previously wrapped decision node.
-      wrapped_node.release();
-      return parent;
+      // It is now safe to release previously wrapped decision node
+      // and return it to the caller.
+      return wrapped_node.release();
     } // if (first_mixed != not_a_dim)
 
 
