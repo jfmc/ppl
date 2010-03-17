@@ -58,6 +58,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef USE_PPL_SPARSE_BACKEND_STD_VECTOR
 #include "Unlimited_Sparse_Row_Std_Vector_Backend.defs.hh"
 #define PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
+#define PPL_SPARSE_BACKEND_SLOW_INSERTIONS
 #endif
 
 namespace Parma_Polyhedra_Library {
@@ -146,6 +147,10 @@ namespace Parma_Polyhedra_Library {
     defined in this file, right after the backend's include, every type of
     iterator and every reference to an element of the backend is invalidated
     by operations that add or remove elements in the list.
+  * If PPL_SPARSE_BACKEND_SLOW_INSERTIONS is defined in this file,
+    this means that insertion in the middle is slow. If this is the case,
+    insertion at the end is used, is possible. This is only a suggestion, and
+    doesn't weaken the backend requirements.
 */
 class Unlimited_Sparse_Row {
 
