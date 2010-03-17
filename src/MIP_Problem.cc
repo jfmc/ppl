@@ -736,27 +736,46 @@ PPL::MIP_Problem::process_pending_constraints() {
           worked_out_row[k] = true;
         }
       }
-      // Dump map content into tableau_k.
-      std::map<dimension_type,std::pair<const Coefficient*,bool> >
-        ::iterator j = map.begin();
-      std::map<dimension_type,std::pair<const Coefficient*,bool> >
-        ::iterator j_end = map.end();
-      if (j != j_end) {
-        matrix_row_iterator itr
-          = tableau_k.find_create(j->first,*(j->second.first));
-        if (j->second.second)
-          neg_assign((*itr).second);
-        ++j;
-        for ( ; j!=j_end; ++j) {
-          itr = tableau_k.find_create(j->first,*(j->second.first),itr);
+      {
+        // Dump map content into tableau_k.
+        std::map<dimension_type,std::pair<const Coefficient*,bool> >
+          ::iterator j = map.begin();
+        std::map<dimension_type,std::pair<const Coefficient*,bool> >
+          ::iterator j_end = map.end();
+        if (j != j_end) {
+          matrix_row_iterator itr
+            = tableau_k.find_create(j->first,*(j->second.first));
           if (j->second.second)
             neg_assign((*itr).second);
+          ++j;
+          for ( ; j!=j_end; ++j) {
+            itr = tableau_k.find_create(j->first,*(j->second.first),itr);
+            if (j->second.second)
+              neg_assign((*itr).second);
+          }
+          map.clear();
         }
-        map.clear();
       }
+      // The following loops are equivalent to this simpler (but slower) loop.
+      //
+      // for (dimension_type j = base_size; j-- > 0; )
+      //   if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0)
+      //    linear_combine(tableau_k, tableau[j], base[j]);
+
+      // Used to optimize access to tableau_k below.
+      // We need to sort accesses by base[j], not by j.
+      std::map<dimension_type, dimension_type> vars_in_base;
       for (dimension_type j = base_size; j-- > 0; )
-        if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0)
-          linear_combine(tableau_k, tableau[j], base[j]);
+        if (base[j] != 0 && j != k)
+          vars_in_base[base[j]] = j;
+
+      std::map<dimension_type, dimension_type>::iterator j
+        = vars_in_base.begin();
+      std::map<dimension_type, dimension_type>::iterator j_end
+        = vars_in_base.end();
+      for ( ; j!=j_end; ++j)
+        if (k != j->second && tableau_k.get(j->first) != 0)
+          linear_combine(tableau_k, tableau[j->second], base[j->second]);
     }
 
   // We negate the row if tableau[i][0] <= 0 to get the inhomogeneous term > 0.
