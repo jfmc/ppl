@@ -47,5 +47,8 @@ ppl_@CLASS@_wrap_assign +simple,
 ppl_@CLASS@_termination_test_@TERMINATION_ID@ +simple,
 ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@ +simple,
 ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@ +simple,
+ppl_@CLASS@_termination_test_@TERMINATION_ID@_2 +simple,
+ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_2 +simple,
+ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_2 +simple,
 )
 ')
