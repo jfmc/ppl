@@ -323,6 +323,10 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
     le_out += c_i.inhomogeneous_term()*Variable(row_index);
   }
 
+  // Add the nonpositivity constraints for u_1, u_2 and u_3.
+  for (dimension_type i = s + 2*r; i-- > 0; )
+    cs_out.insert(Variable(i) <= 0);
+
   // FIXME: iterate backwards once the debuggin phase is over.
   //for (dimension_type j = 2*n; j-- > 0; )
   for (dimension_type j = 0; j < 2*n; ++j)
