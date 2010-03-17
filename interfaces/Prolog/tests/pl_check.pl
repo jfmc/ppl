@@ -1823,20 +1823,20 @@ ok(T) :-
 %       ppl_termination_test_NNC_Polyhedron_PR/2.
 termination_test :-
   make_vars(4, [A, B, C, D]),
-  clean_ppl_new_Polyhedron_from_constraints(C,
+  clean_ppl_new_Polyhedron_from_constraints(c,
                                             [A - C >= 0,
-                                             -A + C >= 0;
-                                             -B + D >= 1;
-                                             B >= 0;
+                                             -A + C >= 0,
+                                             -B + D >= 1,
+                                             B >= 0,
                                              A >= 1], P1),
   ppl_termination_test_C_Polyhedron_MS(P1),
   ppl_termination_test_C_Polyhedron_PR(P1),
-  clean_ppl_new_Polyhedron_from_constraints(NNC,
+  clean_ppl_new_Polyhedron_from_constraints(nnc,
                                             [A - C >= 0,
-                                             -A + C >= 0;
-                                             -B + D >= 1;
-                                             B >= 0;
-                                           P2),
+                                             -A + C >= 0,
+                                             -B + D >= 1,
+                                             B >= 0],
+					    P2),
   ppl_termination_test_NNC_Polyhedron_MS(P2),
   ppl_termination_test_NNC_Polyhedron_PR(P2),
   !,
