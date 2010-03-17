@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BD_Shape.defs.hh"
 #include "Octagonal_Shape.defs.hh"
 
-#define PRINT_DEBUG_INFO 1
+#define PRINT_DEBUG_INFO 0
 
 #if PRINT_DEBUG_INFO
 #include <iostream>
@@ -357,22 +357,6 @@ all_affine_ranking_functions_MS_2(const PSET& pset_before,
 
 template <typename PSET>
 bool
-termination_test_PR(const PSET& pset) {
-  const dimension_type space_dim = pset.space_dimension();
-  if (space_dim % 2 != 0) {
-    std::ostringstream s;
-    s << "PPL::termination_test_PR(pset):\n"
-         "pset.space_dimension() == " << space_dim
-      << " is odd.";
-    throw std::invalid_argument(s.str());
-  }
-
-  throw std::runtime_error("PPL::termination_test_PR()"
-			   " not yet implemented.");
-}
-
-template <typename PSET>
-bool
 termination_test_PR_2(const PSET& pset_before, const PSET& pset_after) {
   const dimension_type before_space_dim = pset_before.space_dimension();
   const dimension_type after_space_dim = pset_after.space_dimension();
@@ -391,6 +375,25 @@ termination_test_PR_2(const PSET& pset_before, const PSET& pset_after) {
   assign_all_inequalities_approximation(pset_before, cs_before);
   assign_all_inequalities_approximation(pset_after, cs_after);
   return termination_test_PR(cs_before, cs_after);
+}
+
+template <typename PSET>
+bool
+termination_test_PR(const PSET& pset_after) {
+  const dimension_type space_dim = pset_after.space_dimension();
+  if (space_dim % 2 != 0) {
+    std::ostringstream s;
+    s << "PPL::termination_test_PR(pset):\n"
+         "pset.space_dimension() == " << space_dim
+      << " is odd.";
+    throw std::invalid_argument(s.str());
+  }
+
+  // FIXME: this may be inefficient.
+  PSET pset_before(pset_after);
+  Variables_Set primed_variables(Variable(0), Variable(space_dim/2 - 1));
+  pset_before.remove_space_dimensions(primed_variables);
+  return termination_test_PR_2(pset_before, pset_after);
 }
 
 template <typename PSET>

@@ -300,7 +300,8 @@ test12() {
   {
     Variable x1(0);
     Variable x2(1);
-    // ph_before is universe.
+    ph_before.add_constraint(x1 >= 1);
+    ph_before.add_constraint(x2 <= 0);
   }
 
   C_Polyhedron ph_after(4);
@@ -312,9 +313,7 @@ test12() {
     Variable xp2(1);
 
     ph_after.add_constraint(xp2 == 1);
-    ph_after.add_constraint(x1 >= 1);
     ph_after.add_constraint(x1 - xp1 >= 1);
-    ph_after.add_constraint(x2 <= 0);
   }
 
   return termination_test_MS_2(ph_before, ph_after);
@@ -345,6 +344,26 @@ test13() {
   return termination_test_PR_2(ph_before, ph_after);
 }
 
+bool
+test14() {
+  C_Polyhedron ph(4);
+  {
+    Variable x1(2);
+    Variable x2(3);
+
+    Variable xp1(0);
+    Variable xp2(1);
+
+    ph.add_constraint(xp2 == 1);
+    ph.add_constraint(x1 >= 1);
+    ph.add_constraint(x1 - xp1 >= 1);
+    ph.add_constraint(x2 <= 0);
+  }
+
+  return termination_test_PR(ph);
+}
+
+
 } // namespace
 
 BEGIN_MAIN
@@ -356,9 +375,10 @@ BEGIN_MAIN
   DO_TEST(test06);
   //DO_TEST(test07);
   DO_TEST(test08);
-  DO_TEST_F(test09);
+  DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
 END_MAIN
