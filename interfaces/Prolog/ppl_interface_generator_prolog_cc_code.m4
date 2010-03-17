@@ -1249,7 +1249,7 @@ m4_define(`ppl_@CLASS@_termination_test_@TERMINATION_ID@_2_code',
   ppl_@CLASS@_termination_test_@TERMINATION_ID@_2
   (Prolog_term_ref t_pset_before, Prolog_term_ref t_pset_after) {
   static const char* where
-      = "ppl_@CLASS@_termination_test_@TERMINATION_ID@_2/1";
+      = "ppl_@CLASS@_termination_test_@TERMINATION_ID@_2/2";
   try {
     @CPP_CLASS@* pset_before
        = term_to_handle<@CPP_CLASS@ >(t_pset_before, where);
@@ -1293,7 +1293,7 @@ m4_define(`ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_2_code',
    Prolog_term_ref t_pset_after,
    Prolog_term_ref t_g) {
   static const char* where
-     = "ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_2/2";
+     = "ppl_@CLASS@_one_affine_ranking_function_@TERMINATION_ID@_2/3";
   try {
     @CPP_CLASS@* pset_before
        = term_to_handle<@CPP_CLASS@ >(t_pset_before, where);
@@ -1347,7 +1347,7 @@ m4_define(`ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_2_code',
    Prolog_term_ref t_pset_after,
    Prolog_term_ref t_ph) {
   static const char* where =
-      "ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_2/2";
+      "ppl_@CLASS@_all_affine_ranking_functions_@TERMINATION_ID@_2/3";
   try {
     @CPP_CLASS@* pset_before
        = term_to_handle<@CPP_CLASS@ >(t_pset_before, where);
