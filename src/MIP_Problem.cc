@@ -1125,6 +1125,8 @@ PPL::MIP_Problem::linear_combine(row_type& x, const row_type& y,
 
 #ifdef USE_PPL_SPARSE_MATRIX
 
+#ifndef PPL_SPARSE_BACKEND_SLOW_INSERTIONS
+
 void
 PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
                                  matrix_row_const_reference_type y,
@@ -1241,6 +1243,138 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
   x.normalize();
   WEIGHT_ADD_MUL(83, x_size);
 }
+
+#else // !defined(PPL_SPARSE_BACKEND_SLOW_INSERTIONS)
+
+void
+PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
+                                 matrix_row_const_reference_type y,
+                                 const dimension_type k) {
+  WEIGHT_BEGIN();
+  matrix_row_copy_type row;
+  std::swap(row,x);
+  // row contains the values that were in x.
+  // x is now filled with zeroes.
+  const dimension_type row_size = row.size();
+  const Coefficient& row_k = row[k];
+  const Coefficient& y_k = y.get(k);
+  PPL_ASSERT(y_k != 0 && row_k != 0);
+  // Let g be the GCD between `row[k]' and `y[k]'.
+  // For each i the following computes
+  //   row[i] = row[i]*y[k]/g - y[i]*row[k]/g.
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_row_k);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
+  normalize2(row_k, y_k, normalized_row_k, normalized_y_k);
+
+  matrix_row_iterator i = row.begin();
+  matrix_row_iterator i_end = row.end();
+  matrix_row_copy_iterator itr = x.end();
+  matrix_const_row_const_iterator j = y.begin();
+  matrix_const_row_const_iterator j_end = y.end();
+  while ((i != i_end) && (j != j_end)) {
+    if (j->first < i->first) {
+      if (j->first != k) {
+        // FIXME: check if adding "if (j->second != 0)" speeds this up.
+        itr = x.find_create(j->first);
+        Coefficient& x_i = (*itr).second;
+        PPL_ASSERT(x_i == 0);
+        // FIXME: this can be optimized further
+        sub_mul_assign(x_i, j->second, normalized_row_k);
+        // Now itr has been initialized, so we can use it in next iterations.
+        ++j;
+        break;
+      }
+      ++j;
+    } else {
+      if (i->first != k) {
+        itr = x.find_create(*i);
+        Coefficient& x_i = (*itr).second;
+        x_i *= normalized_y_k;
+        if (j->first == i->first) {
+          const Coefficient& y_i = j->second;
+          // FIXME: check if adding "if (j->second != 0)" speeds this up.
+          sub_mul_assign(x_i, y_i, normalized_row_k);
+          ++j;
+        }
+        // Now itr has been initialized, so we can use it in next iterations.
+        ++i;
+        break;
+      }
+      ++i;
+    }
+  }
+  while ((i != i_end) && (j != j_end)) {
+    if (j->first < i->first) {
+      if (j->first != k) {
+        // FIXME: check if adding "if (j->second != 0)" speeds this up.
+        itr = x.find_create(j->first,itr);
+        Coefficient& x_i = (*itr).second;
+        PPL_ASSERT(x_i == 0);
+        // FIXME: this can be optimized further
+        sub_mul_assign(x_i, j->second, normalized_row_k);
+      }
+      ++j;
+    } else {
+      if (i->first != k) {
+        itr = x.find_create(*i,itr);
+        Coefficient& x_i = (*itr).second;
+        x_i *= normalized_y_k;
+        if (j->first == i->first) {
+          const Coefficient& y_i = j->second;
+          // FIXME: check if adding "if (j->second != 0)" speeds this up.
+          sub_mul_assign(x_i, y_i, normalized_row_k);
+          ++j;
+        }
+      }
+      ++i;
+    }
+  }
+  if (i != i_end && itr == x.end()) {
+    if (i->first != k) {
+      itr = x.find_create(*i);
+      Coefficient& x_i = (*itr).second;
+      x_i *= normalized_y_k;
+    }
+    ++i;
+  }
+  while (i != i_end) {
+    if (i->first != k) {
+      itr = x.find_create(*i,itr);
+      Coefficient& x_i = (*itr).second;
+      x_i *= normalized_y_k;
+    }
+    ++i;
+  }
+  if (j != j_end && itr == x.end()) {
+    if (j->first != k) {
+      // FIXME: check if adding "if (j->second != 0)" speeds this up.
+      itr = x.find_create(j->first);
+      Coefficient& x_i = (*itr).second;
+      PPL_ASSERT(x_i == 0);
+      // FIXME: this can be optimized further
+      sub_mul_assign(x_i, j->second, normalized_row_k);
+    }
+    ++j;
+  }
+  while (j != j_end) {
+    if (j->first != k) {
+      // FIXME: check if adding "if (j->second != 0)" speeds this up.
+      itr = x.find_create(j->first,itr);
+      Coefficient& x_i = (*itr).second;
+      PPL_ASSERT(x_i == 0);
+      // FIXME: this can be optimized further
+      sub_mul_assign(x_i, j->second, normalized_row_k);
+    }
+    ++j;
+  }
+
+  x.normalize();
+  WEIGHT_ADD_MUL(83, row_size);
+
+  // Here `row' will be destroyed.
+}
+
+#endif // !defined(PPL_SPARSE_BACKEND_SLOW_INSERTIONS)
 
 void
 PPL::MIP_Problem::linear_combine(row_type& x,
