@@ -1657,8 +1657,8 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
       // Search for a non-zero element to enter the base.
       matrix_row_reference_type tableau_i = tableau[i];
       bool redundant = true;
-      matrix_row_iterator j = tableau_i.begin();
-      matrix_row_iterator j_end = tableau_i.end();
+      matrix_row_const_iterator j = tableau_i.begin();
+      matrix_row_const_iterator j_end = tableau_i.end();
       // Skip the first element
       if (j != j_end && (*j).first == 0)
         ++j;
