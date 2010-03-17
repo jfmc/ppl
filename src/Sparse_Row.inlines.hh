@@ -385,6 +385,11 @@ Sparse_Row_Reference::swap(Sparse_Row_Reference x) {
 }
 
 inline void
+Sparse_Row_Reference::swap(Sparse_Row& x) {
+  std::swap(*this,x);
+}
+
+inline void
 Sparse_Row_Reference::swap(dimension_type i, dimension_type j) {
   row.swap(i,j);
   assert(OK());
