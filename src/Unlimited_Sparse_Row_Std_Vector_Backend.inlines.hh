@@ -31,20 +31,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator::
-  dangerous_iterator()
+Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator
+::dangerous_iterator()
   : iterator() {
 }
 
 inline
-Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator::
-  dangerous_iterator(iterator i)
+Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator
+::dangerous_iterator(iterator i)
   : iterator(i) {
 }
 
 inline Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator
-  ::next(iterator i) {
+::next(iterator i) {
   return dangerous_iterator(++i);
 }
 
@@ -76,15 +76,14 @@ Unlimited_Sparse_Row_Std_Vector_Backend::splice(iterator& position,This& x) {
 }
 
 inline Unlimited_Sparse_Row_Std_Vector_Backend::iterator
-Unlimited_Sparse_Row_Std_Vector_Backend::splice(iterator& position,This& x,
-                                                iterator i) {
+Unlimited_Sparse_Row_Std_Vector_Backend
+::splice(iterator& position,This& x,iterator i) {
   return splice(position,x,i,i+1);
 }
 
 inline Unlimited_Sparse_Row_Std_Vector_Backend::iterator
-Unlimited_Sparse_Row_Std_Vector_Backend::splice(iterator& position,This& x,
-                                                iterator first,
-                                                iterator last) {
+Unlimited_Sparse_Row_Std_Vector_Backend
+::splice(iterator& position,This& x,iterator first,iterator last) {
   PPL_ASSERT(last - first >= 0);
   dimension_type i,n,m;
   if (this == &x) {

@@ -36,8 +36,8 @@ PPL::Sparse_Matrix::remove_column(dimension_type i) {
 }
 
 void
-PPL::Sparse_Matrix::
-  permute_columns(const std::vector<dimension_type>& cycles) {
+PPL::Sparse_Matrix
+::permute_columns(const std::vector<dimension_type>& cycles) {
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
   const dimension_type n = cycles.size();
   PPL_ASSERT(cycles[n - 1] == 0);
@@ -67,8 +67,8 @@ PPL::Sparse_Matrix::
 }
 
 void
-PPL::Sparse_Matrix::resize(dimension_type num_rows,
-                           dimension_type num_columns) {
+PPL::Sparse_Matrix
+::resize(dimension_type num_rows,dimension_type num_columns) {
   typedef std::vector<Unlimited_Sparse_Row>::iterator rows_itr_type;
   rows.resize(num_rows);
   if (num_columns < num_columns_) {

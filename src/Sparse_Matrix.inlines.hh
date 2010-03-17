@@ -36,8 +36,8 @@ Sparse_Matrix::Sparse_Matrix(dimension_type n)
 }
 
 inline
-Sparse_Matrix::Sparse_Matrix(dimension_type num_rows,
-                             dimension_type num_columns)
+Sparse_Matrix
+::Sparse_Matrix(dimension_type num_rows,dimension_type num_columns)
   : rows(num_rows), num_columns_(num_columns) {
   PPL_ASSERT(OK());
 }
@@ -111,8 +111,8 @@ Sparse_Matrix::add_zero_columns(const dimension_type n) {
 }
 
 inline void
-Sparse_Matrix::add_zero_rows_and_columns(const dimension_type n,
-                                         const dimension_type m) {
+Sparse_Matrix
+::add_zero_rows_and_columns(const dimension_type n,const dimension_type m) {
   resize(num_rows()+n,num_columns()+m);
 }
 

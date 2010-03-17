@@ -26,8 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Unlimited_Sparse_Row::
-  Unlimited_Sparse_Row(const std::vector<Coefficient>& v)
+PPL::Unlimited_Sparse_Row
+::Unlimited_Sparse_Row(const std::vector<Coefficient>& v)
   : data() {
   typedef std::vector<Coefficient>::size_type vec_size_type;
 
@@ -40,8 +40,8 @@ PPL::Unlimited_Sparse_Row::
 }
 
 inline void
-PPL::Unlimited_Sparse_Row::reset(const dimension_type first,
-                                 const dimension_type last) {
+PPL::Unlimited_Sparse_Row
+::reset(const dimension_type first,const dimension_type last) {
   PPL_ASSERT(first <= last);
   dangerous_iterator itr = lower_bound_dangerous(first);
   dangerous_iterator itr_end = lower_bound_dangerous(last);

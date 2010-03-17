@@ -31,23 +31,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Unlimited_Sparse_Row_Custom_Slist_Backend::
-  Unlimited_Sparse_Row_Custom_Slist_Backend()
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::Unlimited_Sparse_Row_Custom_Slist_Backend()
   : first(0), last(&first) {
   PPL_ASSERT(OK());
 }
 
 inline
-Unlimited_Sparse_Row_Custom_Slist_Backend::
-  Unlimited_Sparse_Row_Custom_Slist_Backend(const This& x)
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::Unlimited_Sparse_Row_Custom_Slist_Backend(const This& x)
   : first(0), last(&first) {
   PPL_ASSERT(OK());
   (*this) = x;
 }
 
 inline
-Unlimited_Sparse_Row_Custom_Slist_Backend::
-  ~Unlimited_Sparse_Row_Custom_Slist_Backend() {
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::~Unlimited_Sparse_Row_Custom_Slist_Backend() {
   PPL_ASSERT(OK());
   clear();
 }
@@ -111,9 +111,8 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::end() const {
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::insert(dangerous_iterator pos,
-                                                  dimension_type i,
-                                                  const Coefficient& x) {
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::insert(dangerous_iterator pos,dimension_type i,const Coefficient& x) {
   PPL_ASSERT(pos.OK());
   PPL_ASSERT(OK());
   list_elem* elem_after = *(pos.p);
@@ -133,8 +132,8 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::insert(dangerous_iterator pos,
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend
-  ::insert(dangerous_iterator pos,
-           const std::pair<dimension_type,Coefficient>& x) {
+::insert(dangerous_iterator pos,
+         const std::pair<dimension_type,Coefficient>& x) {
   return insert(pos,x.first,x.second);
 }
 
@@ -160,8 +159,8 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator pos) {
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator first,
-                                                 dangerous_iterator last) {
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::erase(dangerous_iterator first,dangerous_iterator last) {
   PPL_ASSERT(first.OK());
   PPL_ASSERT(last.OK());
   PPL_ASSERT(OK());
@@ -181,14 +180,14 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator first,
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
-  dangerous_iterator& position,This& x) {
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::splice(dangerous_iterator& position,This& x) {
   return splice(position,x,x.begin_dangerous(),x.end_dangerous());
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
-  dangerous_iterator& position,This& x,dangerous_iterator i) {
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::splice(dangerous_iterator& position,This& x,dangerous_iterator i) {
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
   PPL_ASSERT(position.OK());
@@ -221,9 +220,9 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::splice(
-  dangerous_iterator& position,This& x,
-  dangerous_iterator first1,dangerous_iterator last1) {
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::splice(dangerous_iterator& position,This& x,
+         dangerous_iterator first1,dangerous_iterator last1) {
 
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
@@ -295,27 +294,27 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::total_memory_in_bytes() const {
 
 
 inline
-Unlimited_Sparse_Row_Custom_Slist_Backend::list_elem::
-  list_elem()
+Unlimited_Sparse_Row_Custom_Slist_Backend::list_elem
+::list_elem()
   : data(), next(0) {
 }
 
 inline
-Unlimited_Sparse_Row_Custom_Slist_Backend::list_elem::
-  list_elem(dimension_type i,const Coefficient& x,list_elem* next1)
+Unlimited_Sparse_Row_Custom_Slist_Backend::list_elem
+::list_elem(dimension_type i,const Coefficient& x,list_elem* next1)
   : data(i,x), next(next1) {
 }
 
 inline
-Unlimited_Sparse_Row_Custom_Slist_Backend::list_elem::
-  list_elem(const value_type& x,list_elem* next1)
+Unlimited_Sparse_Row_Custom_Slist_Backend::list_elem
+::list_elem(const value_type& x,list_elem* next1)
   : data(x), next(next1) {
 }
 
 
 inline
-Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::
-  dangerous_iterator(list_elem** p1)
+Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+::dangerous_iterator(list_elem** p1)
   : p(p1) {
 #ifndef NDEBUG
   if (p != 0)
@@ -325,8 +324,8 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::
-  next(iterator i) {
+Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+::next(iterator i) {
   return dangerous_iterator(&(i.p->next));
 }
 
@@ -359,29 +358,29 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::operator++() {
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::
-  operator++(int) {
+Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+::operator++(int) {
   dangerous_iterator tmp(*this);
   ++(*this);
   return tmp;
 }
 
 inline bool
-Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::operator==(
-  const dangerous_iterator& x) const {
+Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+::operator==(const dangerous_iterator& x) const {
   PPL_ASSERT(OK());
   return p == x.p;
 }
 
 inline bool
-Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::operator!=(
-  const dangerous_iterator& x) const {
+Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+::operator!=(const dangerous_iterator& x) const {
   return !((*this) == x);
 }
 
 inline
-Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::operator
-  iterator() {
+Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+::operator iterator() {
   PPL_ASSERT(OK());
   if (p == 0)
     // This iterator has been default-contructed and not initialized.
@@ -391,8 +390,8 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::operator
 }
 
 inline
-Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator::operator
-  const_iterator() const {
+Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+::operator const_iterator() const {
   PPL_ASSERT(OK());
   if (p == 0)
     // This iterator has been default-contructed and not initialized.
@@ -438,35 +437,35 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::iterator::operator++() {
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::iterator::
-  operator++(int) {
+Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
+::operator++(int) {
   iterator tmp(*this);
   ++(*this);
   return tmp;
 }
 
 inline bool
-Unlimited_Sparse_Row_Custom_Slist_Backend::iterator::operator==(
-  const iterator& x) const {
+Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
+::operator==(const iterator& x) const {
   return p == x.p;
 }
 
 inline bool
-Unlimited_Sparse_Row_Custom_Slist_Backend::iterator::operator!=(
-  const iterator& x) const {
+Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
+::operator!=(const iterator& x) const {
   return !((*this) == x);
 }
 
 inline
-Unlimited_Sparse_Row_Custom_Slist_Backend::iterator::operator
-  const_iterator() const {
+Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
+::operator const_iterator() const {
   return const_iterator(p);
 }
 
 
 inline
-Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator::
-  const_iterator(list_elem* const p1)
+Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator
+::const_iterator(list_elem* const p1)
   : p(p1) {
 }
 
@@ -476,8 +475,8 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator::operator*() const {
 }
 
 inline const Unlimited_Sparse_Row_Custom_Slist_Backend::value_type*
-Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator::operator->()
-  const {
+Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator
+::operator->() const {
   PPL_ASSERT(p != 0);
   return &(p->data);
 }

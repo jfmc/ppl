@@ -27,14 +27,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator::
-  dangerous_iterator()
+Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator
+::dangerous_iterator()
   : iterator() {
 }
 
 inline
-Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator::
-  dangerous_iterator(iterator i)
+Unlimited_Sparse_Row_Std_List_Backend::dangerous_iterator
+::dangerous_iterator(iterator i)
   : iterator(i) {
 }
 
@@ -75,8 +75,8 @@ Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x) {
 }
 
 inline Unlimited_Sparse_Row_Std_List_Backend::iterator
-Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x,
-                                              iterator i) {
+Unlimited_Sparse_Row_Std_List_Backend
+::splice(iterator& position,This& x,iterator i) {
   if (position == begin()) {
     Base::splice(position,x,i);
     return begin();
@@ -96,8 +96,8 @@ Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x,
 }
 
 inline Unlimited_Sparse_Row_Std_List_Backend::iterator
-Unlimited_Sparse_Row_Std_List_Backend::splice(iterator& position,This& x,
-                                              iterator first,iterator last) {
+Unlimited_Sparse_Row_Std_List_Backend
+::splice(iterator& position,This& x,iterator first,iterator last) {
   if (position == begin()) {
     Base::splice(position,x,first,last);
     return begin();

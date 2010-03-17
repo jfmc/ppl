@@ -28,8 +28,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::memory_size_type
-PPL::Unlimited_Sparse_Row_Std_List_Backend::external_memory_in_bytes()
-  const {
+PPL::Unlimited_Sparse_Row_Std_List_Backend
+::external_memory_in_bytes() const {
   memory_size_type total=0;
   for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i) {
     // Pointers to the previous and next element.

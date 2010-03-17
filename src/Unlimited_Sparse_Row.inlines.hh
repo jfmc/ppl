@@ -103,8 +103,8 @@ Unlimited_Sparse_Row::reset(dangerous_iterator i) {
 }
 
 inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::reset(dangerous_iterator first,
-                            dangerous_iterator last) {
+Unlimited_Sparse_Row
+::reset(dangerous_iterator first,dangerous_iterator last) {
   dangerous_iterator res = data.erase(first,last);
   PPL_ASSERT(OK());
   return res;
@@ -136,8 +136,8 @@ Unlimited_Sparse_Row::operator[](const dimension_type i) {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i,
-                                  const Coefficient& x) {
+Unlimited_Sparse_Row
+::find_create(const dimension_type i,const Coefficient& x) {
   if (begin() == end())
     return data.insert(end_dangerous(),std::make_pair(i,x));
   dangerous_iterator itr = begin_dangerous();
@@ -148,8 +148,8 @@ Unlimited_Sparse_Row::find_create(const dimension_type i,
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const std::pair<dimension_type,
-                                                  Coefficient>& x) {
+Unlimited_Sparse_Row
+::find_create(const std::pair<dimension_type,Coefficient>& x) {
   if (begin() == end())
     return data.insert(end_dangerous(),x);
   dangerous_iterator itr = begin_dangerous();
@@ -171,8 +171,8 @@ Unlimited_Sparse_Row::find_create(const dimension_type i) {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
-                                  iterator itr) {
+Unlimited_Sparse_Row
+::find_create(const dimension_type i,const Coefficient& x,iterator itr) {
   PPL_ASSERT(itr != end());
   PPL_ASSERT((*itr).first <= i);
   if ((*itr).first == i) {
@@ -183,9 +183,8 @@ Unlimited_Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const std::pair<dimension_type,
-                                                  Coefficient>& x,
-                                  iterator itr) {
+Unlimited_Sparse_Row
+::find_create(const std::pair<dimension_type,Coefficient>& x,iterator itr) {
   PPL_ASSERT(itr != end());
   PPL_ASSERT((*itr).first <= x.first);
   if ((*itr).first == x.first) {
@@ -206,8 +205,8 @@ Unlimited_Sparse_Row::find_create(const dimension_type i,iterator itr) {
 }
 
 inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i,
-                                  dangerous_iterator itr) {
+Unlimited_Sparse_Row
+::find_create(const dimension_type i,dangerous_iterator itr) {
   // The check is needed to avoid triggering assertions in lower_bound().
   if (itr != end_dangerous() && (*itr).first < i)
     itr = lower_bound_dangerous(i,itr);
@@ -218,8 +217,9 @@ Unlimited_Sparse_Row::find_create(const dimension_type i,
 }
 
 inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
-                                  dangerous_iterator itr) {
+Unlimited_Sparse_Row
+::find_create(const dimension_type i,const Coefficient& x,
+              dangerous_iterator itr) {
   // The check is needed to avoid triggering assertions in lower_bound().
   if (itr != end_dangerous() && (*itr).first < i)
     itr = lower_bound_dangerous(i,itr);
@@ -232,9 +232,9 @@ Unlimited_Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
 }
 
 inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::find_create(const std::pair<dimension_type,
-                                                  Coefficient>& x,
-                                  dangerous_iterator itr) {
+Unlimited_Sparse_Row
+::find_create(const std::pair<dimension_type,Coefficient>& x,
+              dangerous_iterator itr) {
   // The check is needed to avoid triggering assertions in lower_bound().
   if (itr != end_dangerous() && (*itr).first < x.first)
     itr = lower_bound_dangerous(x.first,itr);
@@ -326,6 +326,7 @@ Unlimited_Sparse_Row::upper_bound_dangerous(const dimension_type k) {
   // Now we can call upper_bound(k,i) without triggering asserts.
   return upper_bound_dangerous(k,i);
 }
+
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find(const dimension_type k) {
   if (begin() == end())
@@ -393,8 +394,8 @@ Unlimited_Sparse_Row::upper_bound(const dimension_type k) const {
 }
 
 inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::find_dangerous(const dimension_type k,
-                                     dangerous_iterator itr1) {
+Unlimited_Sparse_Row
+::find_dangerous(const dimension_type k,dangerous_iterator itr1) {
   PPL_ASSERT(itr1 == end_dangerous() || (*itr1).first <= k);
   dangerous_iterator itr = lower_bound_dangerous(k,itr1);
   if (itr != end_dangerous())
@@ -404,16 +405,16 @@ Unlimited_Sparse_Row::find_dangerous(const dimension_type k,
 }
 
 inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::lower_bound_dangerous(const dimension_type k,
-                                            dangerous_iterator itr) {
+Unlimited_Sparse_Row
+::lower_bound_dangerous(const dimension_type k,dangerous_iterator itr) {
   PPL_ASSERT(itr == end_dangerous() || (*itr).first <= k);
   return std::lower_bound(itr,end_dangerous(),k,
                           value_key_compare(std::less<dimension_type>()));
 }
 
 inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::upper_bound_dangerous(const dimension_type k,
-                                            dangerous_iterator itr) {
+Unlimited_Sparse_Row
+::upper_bound_dangerous(const dimension_type k,dangerous_iterator itr) {
   PPL_ASSERT(itr == end_dangerous() || (*itr).first <= k);
   return std::upper_bound(itr,end_dangerous(),k,
                           key_value_compare(std::less<dimension_type>()));
@@ -437,8 +438,8 @@ Unlimited_Sparse_Row::lower_bound(const dimension_type k, iterator itr) {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::upper_bound(const dimension_type k,
-                                  iterator itr) {
+Unlimited_Sparse_Row
+::upper_bound(const dimension_type k,iterator itr) {
   PPL_ASSERT(itr == end() || (*itr).first <= k);
   return std::upper_bound(itr,end(),k,
                           key_value_compare(std::less<dimension_type>()));
@@ -455,26 +456,25 @@ Unlimited_Sparse_Row::find(const dimension_type k,const_iterator itr1) const {
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::lower_bound(const dimension_type k,
-                                  const_iterator itr1) const {
+Unlimited_Sparse_Row
+::lower_bound(const dimension_type k,const_iterator itr1) const {
   PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
   return std::lower_bound(itr1,end(),k,
                           value_key_compare(std::less<dimension_type>()));
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::upper_bound(const dimension_type k,
-                                  const_iterator itr1) const {
+Unlimited_Sparse_Row
+::upper_bound(const dimension_type k,const_iterator itr1) const {
   PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
   return std::upper_bound(itr1,end(),k,
                           key_value_compare(std::less<dimension_type>()));
 }
 
 inline void
-Unlimited_Sparse_Row::find2_dangerous(const dimension_type c1,
-                                      const dimension_type c2,
-                                      dangerous_iterator& itr1,
-                                      dangerous_iterator& itr2) {
+Unlimited_Sparse_Row
+::find2_dangerous(const dimension_type c1,const dimension_type c2,
+                  dangerous_iterator& itr1,dangerous_iterator& itr2) {
   if (c1 > c2) {
     find2_dangerous(c2,c1,itr2,itr1);
     return;
@@ -517,9 +517,9 @@ Unlimited_Sparse_Row::find2(const dimension_type c1,const dimension_type c2,
 }
 
 inline void
-Unlimited_Sparse_Row::get2(const dimension_type c1,const dimension_type c2,
-                           const Coefficient*& p1,
-                           const Coefficient*& p2) const {
+Unlimited_Sparse_Row
+::get2(const dimension_type c1,const dimension_type c2,
+       const Coefficient*& p1,const Coefficient*& p2) const {
   const_iterator i1;
   const_iterator i2;
   find2(c1,c2,i1,i2);
@@ -544,16 +544,16 @@ Unlimited_Sparse_Row::operator!=(const Unlimited_Sparse_Row &x) const {
 
 template <typename Func>
 inline void
-Unlimited_Sparse_Row::for_each_nonzero(const Func& func,
-                                       const dimension_type n) {
+Unlimited_Sparse_Row
+::for_each_nonzero(const Func& func,const dimension_type n) {
   (void)n;
   std::for_each(begin(),end(),func);
 }
 
 template <typename Func>
 inline void
-Unlimited_Sparse_Row::for_each_nonzero(const Func& func,
-                                       const dimension_type n) const {
+Unlimited_Sparse_Row
+::for_each_nonzero(const Func& func,const dimension_type n) const {
   (void)n;
   std::for_each(begin(),end(),func);
 }
@@ -576,16 +576,16 @@ Unlimited_Sparse_Row::value_key_compare(const Compare& comp) {
 
 template <typename Compare>
 inline
-Unlimited_Sparse_Row::value_key_comparison<Compare>::
-  value_key_comparison(const Compare& comp)
+Unlimited_Sparse_Row::value_key_comparison<Compare>
+::value_key_comparison(const Compare& comp)
   : comp_(comp) {
 }
 
 template <typename Compare>
 inline bool
-Unlimited_Sparse_Row::value_key_comparison<Compare>::operator()(
-  const Unlimited_Sparse_Row::value_type& x,
-  const dimension_type y) const {
+Unlimited_Sparse_Row::value_key_comparison<Compare>
+::operator()(const Unlimited_Sparse_Row::value_type& x,
+             const dimension_type y) const {
   return comp_(x.first,y);
 }
 
@@ -597,16 +597,16 @@ Unlimited_Sparse_Row::key_value_compare(const Compare& comp) {
 
 template <typename Compare>
 inline
-Unlimited_Sparse_Row::key_value_comparison<Compare>::
-  key_value_comparison(const Compare& comp)
+Unlimited_Sparse_Row::key_value_comparison<Compare>
+::key_value_comparison(const Compare& comp)
   : comp_(comp) {
 }
 
 template <typename Compare>
 inline bool
-Unlimited_Sparse_Row::key_value_comparison<Compare>::operator()(
-  const dimension_type x,
-  const Unlimited_Sparse_Row::value_type& y) const {
+Unlimited_Sparse_Row::key_value_comparison<Compare>
+::operator()(const dimension_type x,
+             const Unlimited_Sparse_Row::value_type& y) const {
   return comp_(x,y.first);
 }
 
