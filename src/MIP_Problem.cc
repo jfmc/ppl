@@ -1259,7 +1259,8 @@ PPL::MIP_Problem::linear_combine(row_type& x,
   matrix_const_row_const_iterator j = y.begin();
   matrix_const_row_const_iterator j_end = y.end();
   dimension_type i;
-  for (i = 0; (i < x_size) && (j != j_end); ++i) {
+  for (i = 0; j != j_end; ++i) {
+    PPL_ASSERT(i < x_size);
     PPL_ASSERT(j->first >= i);
     if (i != k) {
       Coefficient& x_i = x[i];
