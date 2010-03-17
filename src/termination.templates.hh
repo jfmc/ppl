@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BD_Shape.defs.hh"
 #include "Octagonal_Shape.defs.hh"
 
-#define PRINT_DEBUG_INFO 0
+#define PRINT_DEBUG_INFO 1
 
 #if PRINT_DEBUG_INFO
 #include <iostream>
@@ -193,20 +193,45 @@ assign_all_inequalities_approximation(const Octagonal_Shape<T>& ocs,
 void
 shift_unprimed_variables(Constraint_System& cs);
 
+template <typename PSET>
+void
+assign_all_inequalities_approximation(const PSET& pset_before,
+				      const PSET& pset_after,
+				      Constraint_System& cs) {
+  assign_all_inequalities_approximation(pset_before, cs);
+  shift_unprimed_variables(cs);
+  Constraint_System cs_after;
+  assign_all_inequalities_approximation(pset_after, cs_after);
+  // FIXME: provide an "append" for constraint systems.
+  for (Constraint_System::const_iterator i = cs_after.begin(),
+	 cs_after_end = cs_after.end(); i != cs_after_end; ++i)
+    cs.insert(*i);
+}
+
 bool
 termination_test_MS(const Constraint_System& cs);
 
 bool
 one_affine_ranking_function_MS(const Constraint_System& cs,
-				    Generator& mu);
+			       Generator& mu);
 
 void
 all_affine_ranking_functions_MS(const Constraint_System& cs,
-				     C_Polyhedron& mu_space);
+				C_Polyhedron& mu_space);
 
 bool
 termination_test_PR(const Constraint_System& cs_before,
 		    const Constraint_System& cs_after);
+
+bool
+one_affine_ranking_function_PR(const Constraint_System& cs_before,
+			       const Constraint_System& cs_after,
+			       Generator& mu);
+
+void
+all_affine_ranking_functions_PR(const Constraint_System& cs_before,
+				const Constraint_System& cs_after,
+				C_Polyhedron& mu_space);
 
 } // namespace Termination
 
@@ -246,9 +271,7 @@ termination_test_MS_2(const PSET& pset_before, const PSET& pset_after) {
 
   using namespace Implementation::Termination;
   Constraint_System cs;
-  assign_all_inequalities_approximation(pset_before, cs);
-  shift_unprimed_variables(cs);
-  assign_all_inequalities_approximation(pset_after, cs);
+  assign_all_inequalities_approximation(pset_before, pset_after, cs);
   return termination_test_MS(cs);
 }
 
@@ -288,9 +311,7 @@ one_affine_ranking_function_MS_2(const PSET& pset_before,
 
   using namespace Implementation::Termination;
   Constraint_System cs;
-  assign_all_inequalities_approximation(pset_before, cs);
-  shift_unprimed_variables(cs);
-  assign_all_inequalities_approximation(pset_after, cs);
+  assign_all_inequalities_approximation(pset_before, pset_after, cs);
   return one_affine_ranking_function_MS(cs, mu);
 }
 
@@ -330,9 +351,7 @@ all_affine_ranking_functions_MS_2(const PSET& pset_before,
 
   using namespace Implementation::Termination;
   Constraint_System cs;
-  assign_all_inequalities_approximation(pset_before, cs);
-  shift_unprimed_variables(cs);
-  assign_all_inequalities_approximation(pset_after, cs);
+  assign_all_inequalities_approximation(pset_before, pset_after, cs);
   all_affine_ranking_functions_MS(cs, mu_space);
 }
 
@@ -407,9 +426,12 @@ one_affine_ranking_function_PR_2(const PSET& pset_before,
     throw std::invalid_argument(s.str());
   }
 
-  used(mu);
-  throw std::runtime_error("PPL::one_affine_ranking_function_PR_2()"
-			   " not yet implemented.");
+  using namespace Implementation::Termination;
+  Constraint_System cs_before;
+  Constraint_System cs_after;
+  assign_all_inequalities_approximation(pset_before, cs_before);
+  assign_all_inequalities_approximation(pset_after, cs_after);
+  return one_affine_ranking_function_PR(cs_before, cs_after, mu);
 }
 
 template <typename PSET>
