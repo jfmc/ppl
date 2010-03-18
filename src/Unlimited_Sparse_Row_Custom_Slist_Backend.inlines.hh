@@ -28,6 +28,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 // It's needed only to please KDevelop4.
 #include "Unlimited_Sparse_Row_Custom_Slist_Backend.defs.hh"
 
+#include <algorithm>
+
 namespace Parma_Polyhedra_Library {
 
 inline
@@ -108,6 +110,180 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::begin() const {
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend::end() const {
   return const_iterator(0);
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::find_dangerous(const dimension_type k) {
+  if (begin() == end())
+    return end_dangerous();
+  dangerous_iterator i = begin_dangerous();
+  if ((*i).first > k)
+    return end_dangerous();
+  // Now we can call find(k,i) without triggering asserts.
+  return find_dangerous(k,i);
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::lower_bound_dangerous(const dimension_type k) {
+  if (begin() == end())
+    return end_dangerous();
+  dangerous_iterator i = begin_dangerous();
+  if ((*i).first > k)
+    return i;
+  // Now we can call lower_bound(k,i) without triggering asserts.
+  return lower_bound_dangerous(k,i);
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend::find(const dimension_type k) {
+  if (begin() == end())
+    return end();
+  iterator i = begin();
+  if ((*i).first > k)
+    return end();
+  // Now we can call find(k,i) without triggering asserts.
+  return find(k,i);
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend::lower_bound(const dimension_type k) {
+  if (begin() == end())
+    return end();
+  iterator i = begin();
+  if ((*i).first > k)
+    return i;
+  // Now we can call lower_bound(k,i) without triggering asserts.
+  return lower_bound(k,i);
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::find(const dimension_type k) const {
+  if (begin() == end())
+    return end();
+  const_iterator i = begin();
+  if ((*i).first > k)
+    return end();
+  // Now we can call find(k,i) without triggering asserts.
+  return find(k,i);
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::lower_bound(const dimension_type k) const {
+  if (begin() == end())
+    return end();
+  const_iterator i = begin();
+  if ((*i).first > k)
+    return i;
+  // Now we can call lower_bound(k,i) without triggering asserts.
+  return lower_bound(k,i);
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::find_dangerous(const dimension_type k,dangerous_iterator itr1) {
+  PPL_ASSERT(itr1 == end_dangerous() || (*itr1).first <= k);
+  dangerous_iterator itr = lower_bound_dangerous(k,itr1);
+  if (itr != end_dangerous())
+    if (itr->first != k)
+      return end_dangerous();
+  return itr;
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::lower_bound_dangerous(const dimension_type k,dangerous_iterator itr) {
+  PPL_ASSERT(itr == end_dangerous() || (*itr).first <= k);
+  return std::lower_bound(itr,end_dangerous(),k,
+                          value_key_compare(std::less<dimension_type>()));
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::find(const dimension_type k,iterator itr1) {
+  PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
+  iterator itr = lower_bound(k,itr1);
+  if (itr != end())
+    if (itr->first != k)
+      return end();
+  return itr;
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::lower_bound(const dimension_type k, iterator itr) {
+  PPL_ASSERT(itr == end() || (*itr).first <= k);
+  return std::lower_bound(itr,end(),k,
+                          value_key_compare(std::less<dimension_type>()));
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::find(const dimension_type k,const_iterator itr1) const {
+  PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
+  const_iterator itr = lower_bound(k,itr1);
+  if (itr != end())
+    if (itr->first != k)
+      return end();
+  return itr;
+}
+
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::lower_bound(const dimension_type k,const_iterator itr1) const {
+  PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
+  return std::lower_bound(itr1,end(),k,
+                          value_key_compare(std::less<dimension_type>()));
+}
+
+inline void
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::find2_dangerous(const dimension_type c1,const dimension_type c2,
+                  dangerous_iterator& itr1,dangerous_iterator& itr2) {
+  if (c1 > c2) {
+    find2_dangerous(c2,c1,itr2,itr1);
+    return;
+  }
+  itr1 = lower_bound_dangerous(c1);
+  itr2 = lower_bound_dangerous(c2,itr1);
+  if (itr1 != end_dangerous())
+    if (itr1->first != c1)
+      itr1 = end_dangerous();
+  if (itr2 != end_dangerous())
+    if (itr2->first != c2)
+      itr2 = end_dangerous();
+}
+
+inline void
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::find2(const dimension_type c1,const dimension_type c2,
+        iterator& itr1,iterator& itr2) {
+  iterator i1;
+  iterator i2;
+  find2(c1,c2,i1,i2);
+  itr1 = i1;
+  itr2 = i2;
+}
+
+inline void
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::find2(const dimension_type c1,const dimension_type c2,
+        const_iterator& itr1,const_iterator& itr2) const {
+  if (c1 > c2) {
+    find2(c2,c1,itr2,itr1);
+    return;
+  }
+  itr1 = lower_bound(c1);
+  itr2 = lower_bound(c2,itr1);
+  if (itr1 != end())
+    if (itr1->first != c1)
+      itr1 = end();
+  if (itr2 != end())
+    if (itr2->first != c2)
+      itr2 = end();
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
@@ -505,6 +681,52 @@ inline bool
 Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator::
   operator!=(const const_iterator& x) const {
   return !(*this == x);
+}
+
+template <typename Compare>
+inline Unlimited_Sparse_Row_Custom_Slist_Backend::value_key_comparison<Compare>
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::value_key_compare(const Compare& comp) {
+  return value_key_comparison<Compare>(comp);
+}
+
+template <typename Compare>
+inline
+Unlimited_Sparse_Row_Custom_Slist_Backend::value_key_comparison<Compare>
+::value_key_comparison(const Compare& comp)
+  : comp_(comp) {
+}
+
+template <typename Compare>
+inline bool
+Unlimited_Sparse_Row_Custom_Slist_Backend::value_key_comparison<Compare>
+::operator()(const Unlimited_Sparse_Row_Custom_Slist_Backend::value_type& x,
+             const dimension_type y) const {
+  return comp_(x.first,y);
+}
+
+template <typename Compare>
+inline
+Unlimited_Sparse_Row_Custom_Slist_Backend::key_value_comparison<Compare>
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::key_value_compare(const Compare& comp) {
+  return key_value_comparison<Compare>(comp);
+}
+
+template <typename Compare>
+inline
+Unlimited_Sparse_Row_Custom_Slist_Backend::key_value_comparison<Compare>
+::key_value_comparison(const Compare& comp)
+  : comp_(comp) {
+}
+
+template <typename Compare>
+inline bool
+Unlimited_Sparse_Row_Custom_Slist_Backend::key_value_comparison<Compare>
+::operator()(const dimension_type x,
+             const Unlimited_Sparse_Row_Custom_Slist_Backend::value_type& y
+             ) const {
+  return comp_(x,y.first);
 }
 
 } // namespace Parma_Polyhedra_Library

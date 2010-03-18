@@ -162,20 +162,6 @@ class Unlimited_Sparse_Row {
 public:
   typedef std::pair<dimension_type,Coefficient> value_type;
 
-  template <typename Compare>
-  class value_key_comparison;
-
-  template <typename Compare>
-  class key_value_comparison;
-
-  template <typename Compare>
-  static Unlimited_Sparse_Row::value_key_comparison<Compare>
-  value_key_compare(const Compare& comp);
-
-  template <typename Compare>
-  static Unlimited_Sparse_Row::key_value_comparison<Compare>
-  key_value_compare(const Compare& comp);
-
   //! Constructs an unlimited row of zeroes.
   Unlimited_Sparse_Row();
 
@@ -401,34 +387,6 @@ public:
 private:
   //! The std::list that contains the coefficients
   list_t data;
-};
-
-template <typename Compare>
-class Unlimited_Sparse_Row::value_key_comparison
-  : public std::binary_function<Unlimited_Sparse_Row::value_type&,
-                                dimension_type, bool> {
-public:
-  value_key_comparison(const Compare& comp);
-
-  bool operator()(const Unlimited_Sparse_Row::value_type& x,
-                  const dimension_type y) const;
-
-private:
-  Compare comp_;
-};
-
-template <typename Compare>
-class Unlimited_Sparse_Row::key_value_comparison
-  : public std::binary_function<dimension_type,
-                                Unlimited_Sparse_Row::value_type&, bool> {
-public:
-  key_value_comparison(const Compare& comp);
-
-  bool operator()(const dimension_type x,
-                  const Unlimited_Sparse_Row::value_type& y) const;
-
-private:
-  Compare comp_;
 };
 
 } // namespace Parma_Polyhedra_Library
