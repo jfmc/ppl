@@ -37,7 +37,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iostream>
 
 #ifndef PROLOG_TRACK_ALLOCATION
-#define PROLOG_TRACK_ALLOCATION 1
+#define PROLOG_TRACK_ALLOCATION 0
 #endif
 #ifndef NOISY_PROLOG_TRACK_ALLOCATION
 #define NOISY_PROLOG_TRACK_ALLOCATION 0

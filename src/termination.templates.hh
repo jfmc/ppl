@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BD_Shape.defs.hh"
 #include "Octagonal_Shape.defs.hh"
 
-#define PRINT_DEBUG_INFO 1
+#define PRINT_DEBUG_INFO 0
 
 #if PRINT_DEBUG_INFO
 #include <iostream>
