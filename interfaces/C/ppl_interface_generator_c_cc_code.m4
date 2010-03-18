@@ -1189,7 +1189,8 @@ m4_define(`ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_co
 ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@
 (ppl_const_@CLASS@_t pset,
  ppl_Generator_t point) try {
-  const @CPP_CLASS@& ppset = *to_const(pset);
+  const @TOPOLOGY@@CPP_CLASS@& ppset
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset));
   Generator& ppoint = *to_nonconst(point);
   bool ok = one_affine_ranking_function_@TERMINATION_ID@(ppset, ppoint);
   return ok ? 1 : 0;
@@ -1204,8 +1205,10 @@ ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2
 (ppl_const_@CLASS@_t pset_before,
  ppl_const_@CLASS@_t pset_after,
  ppl_Generator_t point) try {
-  const @CPP_CLASS@& ppset_before = *to_const(pset_before);
-  const @CPP_CLASS@& ppset_after = *to_const(pset_after);
+  const @TOPOLOGY@@CPP_CLASS@& ppset_before
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_before));
+  const @TOPOLOGY@@CPP_CLASS@& ppset_after
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_after));
   Generator& ppoint = *to_nonconst(point);
   bool ok = one_affine_ranking_function_@TERMINATION_ID@_2(ppset_before,
                                                            ppset_after,
@@ -1221,7 +1224,8 @@ m4_define(`ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_c
 ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@
 (ppl_const_@CLASS@_t pset,
  ppl_Polyhedron_t ph) try {
-  const @CPP_CLASS@& ppset = *to_const(pset);
+  const @TOPOLOGY@@CPP_CLASS@& ppset
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset));
   all_affine_ranking_functions_@TERMINATION_ID@(ppset,
                                                 *static_cast<C_Polyhedron*>
                                                     (to_nonconst(ph)));
@@ -1237,8 +1241,10 @@ ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2
 (ppl_const_@CLASS@_t pset_before,
  ppl_const_@CLASS@_t pset_after,
  ppl_Polyhedron_t ph) try {
-  const @CPP_CLASS@& ppset_before = *to_const(pset_before);
-  const @CPP_CLASS@& ppset_after = *to_const(pset_after);
+  const @TOPOLOGY@@CPP_CLASS@& ppset_before
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_before));
+  const @TOPOLOGY@@CPP_CLASS@& ppset_after
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_after));
   all_affine_ranking_functions_@TERMINATION_ID@_2(ppset_before,
                                                   ppset_after,
                                                 *static_cast<C_Polyhedron*>
