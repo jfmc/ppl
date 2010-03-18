@@ -120,6 +120,8 @@ boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 
 bounds1_SOURCES = bounds1.cc
 
+concatenate1_SOURCES = concatenate1.cc
+
 congruences1_SOURCES = congruences1.cc
 
 congruencesproduct1_SOURCES = congruencesproduct1.cc
