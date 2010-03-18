@@ -226,25 +226,25 @@ public:
                   PPL::dimension_type bignum_column) {
     pip.add_space_dimensions_and_embed(num_vars, num_params);
     for (PPL::dimension_type k = 0, i = 0; i < num_constraints; ++i) {
-      PPL::Linear_Expression e;
+      PPL::Linear_Expression expr;
       for (PPL::dimension_type j = 0; j < num_vars + num_params; ++j)
-        e += constraints[k++] * PPL::Variable(j);
-      e += constraints[k++];
+        add_mul_assign(expr, constraints[k++], PPL::Variable(j));
+      expr += constraints[k++];
       if (constraint_type[i])
-        pip.add_constraint(PPL::Constraint(e >= 0));
+        pip.add_constraint(PPL::Constraint(expr >= 0));
       else
-        pip.add_constraint(PPL::Constraint(e == 0));
+        pip.add_constraint(PPL::Constraint(expr == 0));
     }
     if (num_params > 0) {
       for (PPL::dimension_type k = 0, i = 0; i < num_ctx_rows; ++i) {
-        PPL::Linear_Expression e;
+        PPL::Linear_Expression expr;
         for (PPL::dimension_type j = 0; j < num_params; ++j)
-          e += context[k++] * PPL::Variable(num_vars+j);
-        e += context[k++];
+          add_mul_assign(expr, context[k++], PPL::Variable(num_vars+j));
+        expr += context[k++];
         if (ctx_type[i])
-          pip.add_constraint(PPL::Constraint(e >= 0));
+          pip.add_constraint(PPL::Constraint(expr >= 0));
         else
-          pip.add_constraint(PPL::Constraint(e == 0));
+          pip.add_constraint(PPL::Constraint(expr == 0));
       }
     }
     if (bignum_column != PPL::not_a_dimension())
@@ -263,18 +263,18 @@ public:
   }
 
   bool read(std::istream& in) {
-    PPL::dimension_type num_params;
-    PPL::dimension_type num_ctx_rows;
-    PPL::dimension_type num_vars;
-    PPL::dimension_type num_constraints;
-    PPL::dimension_type constraint_width;
     std::string line;
+
+    PPL::dimension_type num_ctx_rows;
+    PPL::dimension_type num_params;
     getline_nocomment(in, line);
     {
       std::istringstream sin(line);
       sin >> num_ctx_rows >> num_params;
     }
+    PPL_ASSERT(num_params >= 2);
     num_params -= 2;
+
     PPL::Coefficient context[num_ctx_rows][num_params+1];
     int ctx_type[num_ctx_rows];
 
@@ -286,14 +286,17 @@ public:
         sin >> context[i][j];
       }
     }
-    // FIXME: can this variable be given a better name?
-    int tmp;
+
+    int bignum_column_coding;
     getline_nocomment(in, line);
     {
       std::istringstream sin(line);
-      sin >> tmp;
+      sin >> bignum_column_coding;
     }
 
+    PPL::dimension_type num_constraints;
+    PPL::dimension_type constraint_width;
+    PPL::dimension_type num_vars;
     getline_nocomment(in, line);
     {
       std::istringstream sin(line);
@@ -301,6 +304,7 @@ public:
     }
     constraint_width -= 1;
     num_vars = constraint_width - num_params - 1;
+
     PPL::Coefficient constraints[num_constraints][constraint_width];
     int constraint_type[num_constraints];
     for (PPL::dimension_type i = 0; i < num_constraints; ++i) {
@@ -311,11 +315,16 @@ public:
         sin >> constraints[i][j];
       }
     }
-    PPL::dimension_type bignum_column;
-    bignum_column = (tmp == -1) ? PPL::not_a_dimension() : (tmp+num_vars-1);
-    bool result = update_pip(num_vars, num_params, num_constraints,
-                             num_ctx_rows, &constraints[0][0], &context[0][0],
-                             constraint_type, ctx_type, bignum_column);
+
+    PPL::dimension_type bignum_column = (bignum_column_coding == -1)
+      ? PPL::not_a_dimension()
+      : (bignum_column_coding + num_vars - 1);
+
+    bool result = update_pip(num_vars, num_params,
+                             num_constraints, num_ctx_rows,
+                             &constraints[0][0], &context[0][0],
+                             constraint_type, ctx_type,
+                             bignum_column);
     return result;
   }
 
@@ -334,15 +343,6 @@ public:
   }
 
   bool read(std::istream& in) {
-    PPL::dimension_type num_params;
-    PPL::dimension_type num_ctx_rows;
-    PPL::dimension_type num_vars;
-    PPL::dimension_type num_constraints;
-    int tmp;
-    int solve_integer;
-    PPL::dimension_type bignum_column;
-    PPL::dimension_type i;
-
     if (!expect(in, '('))
       return false;
     if (!expect(in, '('))
@@ -350,9 +350,22 @@ public:
     if (!read_comment(in))
       return false;
 
-    in >> num_vars >> num_params >> num_constraints >> num_ctx_rows >> tmp
-       >> solve_integer;
-    bignum_column = (tmp == -1) ? PPL::not_a_dimension() : (tmp-1);
+    PPL::dimension_type num_vars;
+    PPL::dimension_type num_params;
+    in >> num_vars >> num_params;
+
+    PPL::dimension_type num_constraints;
+    PPL::dimension_type num_ctx_rows;
+    in >> num_constraints >> num_ctx_rows;
+
+    int bignum_column_coding;
+    in >> bignum_column_coding;
+    PPL::dimension_type bignum_column = (bignum_column_coding == -1)
+      ? PPL::not_a_dimension()
+      : (bignum_column_coding - 1);
+
+    int solve_integer;
+    in >> solve_integer;
     if (solve_integer != 1) {
       std::cerr << "Can only solve integer problems." << std::endl;
       return false;
@@ -363,23 +376,25 @@ public:
     PPL::dimension_type constraint_width = num_vars+num_params+1;
     PPL::Coefficient constraints[num_constraints][constraint_width];
     int constraint_type[num_constraints];
-    for (i = 0; i < num_constraints; ++i)
+    for (PPL::dimension_type i = 0; i < num_constraints; ++i)
       constraint_type[i] = 1;
-    for (i = 0; i < num_constraints; ++i)
+    for (PPL::dimension_type i = 0; i < num_constraints; ++i)
       if (!read_vector(in, constraint_width, num_vars, constraints[i]))
         return false;
 
     PPL::Coefficient context[num_ctx_rows][num_params+1];
     int ctx_type[num_ctx_rows];
-    for (i = 0; i < num_ctx_rows; ++i)
+    for (PPL::dimension_type i = 0; i < num_ctx_rows; ++i)
       ctx_type[i] = 1;
-    for (i = 0; i < num_ctx_rows; ++i)
+    for (PPL::dimension_type i = 0; i < num_ctx_rows; ++i)
       if (!read_vector(in, num_params+1, num_params, context[i]))
         return false;
 
-    bool result = update_pip(num_vars, num_params, num_constraints,
-                             num_ctx_rows, &constraints[0][0], &context[0][0],
-                             constraint_type, ctx_type, bignum_column);
+    bool result = update_pip(num_vars, num_params,
+                             num_constraints, num_ctx_rows,
+                             &constraints[0][0], &context[0][0],
+                             constraint_type, ctx_type,
+                             bignum_column);
     return result;
   }
 
