@@ -2544,7 +2544,7 @@ ppl_PIP_Problem_solution(Prolog_term_ref t_pip,
     Prolog_term_ref t_sol = Prolog_new_term_ref();
     Prolog_put_address(t_sol, sol);
     if (Prolog_unify(t_pip_tree, t_sol)) {
-      PPL_WEAK_REGISTER(t_pip_tree);
+      PPL_REGISTER(sol);
       return PROLOG_SUCCESS;
     }
  }
@@ -2562,7 +2562,7 @@ ppl_PIP_Problem_optimizing_solution(Prolog_term_ref t_pip,
     Prolog_term_ref t_sol = Prolog_new_term_ref();
     Prolog_put_address(t_sol, sol);
     if (Prolog_unify(t_pip_tree, t_sol)) {
-      PPL_WEAK_REGISTER(t_pip_tree);
+      PPL_REGISTER(sol);
       return PROLOG_SUCCESS;
     }
  }
