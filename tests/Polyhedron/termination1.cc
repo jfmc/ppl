@@ -155,7 +155,7 @@ test05() {
   Variable mu1(0);
   Variable mu2(1);
   Variable mu0(2);
-  Generator known_result(point(0*mu0 + 1*mu1 + 0*mu2));
+  Generator known_result(point(0*mu0 + 2*mu1 + 0*mu2));
 
   print_generator(known_result, "*** known_result ***");
 

@@ -564,29 +564,31 @@ one_affine_ranking_function_PR(const Constraint_System& cs_before,
     // function computed in the feasible point is positive.
   finish:
     {
-      // We can impose that the linear expression is >= 1 because
-      // every positive multiple of the linear expression is
-      // acceptable.
+      // We can impose that the le_ineq is >= 1 because every positive
+      // multiple of the linear expression is acceptable.
       mip.add_constraint(le_ineq >= 1);
       Generator fp = mip.feasible_point();
       PPL_ASSERT(fp.is_point());
-      // u3 corresponds to space dimensions 0, ..., s - 1.
-      //const dimension_type s = distance(cs_after.begin(), cs_after.end());
+
+      // u_3 corresponds to space dimensions 0, ..., s - 1.
       const dimension_type n = cs_before.space_dimension();
       Linear_Expression le;
-      // mu0 is zero: do this first to avoid reallocations.
+      // mu_0 is zero: do this first to avoid reallocations.
       le += 0*Variable(n);
-      // Multiply u3 by E'_C.
+      // Multiply u_3 by E'_C to obtain mu_1, ..., mu_n.
       dimension_type row_index = 0;
+      PPL_DIRTY_TEMP_COEFFICIENT(k);
       for (Constraint_System::const_iterator i = cs_after.begin(),
 	     cs_after_end = cs_after.end();
 	   i != cs_after_end;
 	   ++i, ++row_index) {
 	Variable vi(row_index);
+	Coefficient_traits::const_reference fp_i = fp.coefficient(vi);
 	const Constraint& c_i = *i;
 	for (dimension_type j = n; j-- > 0; ) {
 	  Variable vj(j);
-	  le += vj*(fp.coefficient(vi)*c_i.coefficient(vi)) ;
+	  k = fp_i*c_i.coefficient(vj);
+	  le += k*vj;
 	}
       }
       // Note that we can neglect the divisor of `fp' since it is positive.
