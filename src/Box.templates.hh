@@ -1357,6 +1357,80 @@ Box<ITV>::contains_integer_point() const {
 
 template <typename ITV>
 bool
+Box<ITV>::frequency(const Linear_Expression& expr,
+                  Coefficient& freq_n, Coefficient& freq_d,
+                  Coefficient& val_n, Coefficient& val_d) const {
+  dimension_type space_dim = space_dimension();
+  // The dimension of `expr' must be at most the dimension of *this.
+  if (space_dim < expr.space_dimension())
+    throw_dimension_incompatible("frequency(e, ...)", "e", expr);
+
+  // Check if `expr' has a constant value.
+  // If it is constant, set the frequency `freq_n' to 0
+  // and return true. Otherwise the values for \p expr
+  // are not discrete so return false.
+
+  // Space dimension = 0: if empty, then return false;
+  // otherwise the frequency is 0 and the value is the inhomogeneous term.
+  if (space_dim == 0) {
+    if (is_empty())
+      return false;
+    freq_n = 0;
+    freq_d = 1;
+    val_n = expr.inhomogeneous_term();
+    val_d = 1;
+    return true;
+  }
+
+  // For an empty Box, we simply return false.
+  if (marked_empty())
+    return false;
+
+  // The Box has at least 1 dimension and is not empty.
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(num);
+  PPL_DIRTY_TEMP_COEFFICIENT(den);
+  PPL_DIRTY_TEMP0(mpq_class, tmp);
+  Linear_Expression le = expr;
+
+  PPL_DIRTY_TEMP_COEFFICIENT(val_den);
+  val_den = 1;
+
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    const Variable v(i);
+    coeff = le.coefficient(v);
+    if (coeff == 0) {
+      continue;
+    }
+
+    const ITV& seq_i = seq[i];
+    // Check if `v' is constant in the BD shape.
+    if (seq_i.is_singleton()) {
+      // If `v' is constant, replace it in `le' by the value.
+      assign_r(tmp, seq_i.lower(), ROUND_NOT_NEEDED);
+      num = tmp.get_num();
+      den = tmp.get_den();
+      le -= coeff*v;
+      le *= den;
+      le += num*coeff;
+      val_den *= den;
+      continue;
+    }
+    // The expression `expr' is not constant.
+    return false;
+  }
+
+  // The expression `expr' is constant.
+  freq_n = 0;
+  freq_d = 1;
+
+  // Reduce `val_n' and `val_d'.
+  normalize2(le.inhomogeneous_term(), val_den, val_n, val_d);
+  return true;
+}
+
+template <typename ITV>
+bool
 Box<ITV>::constrains(Variable var) const {
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();

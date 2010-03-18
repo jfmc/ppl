@@ -87,6 +87,7 @@ equals1 \
 exceptions1 exceptions2  exceptions3 \
 expandspacedim1 expandspacedim2 \
 foldspacedims1 foldspacedims2 \
+frequency1 \
 frombdshape1 \
 frombox1 frombox2 \
 fromgrid1 \
@@ -302,6 +303,8 @@ expandspacedim2_SOURCES = expandspacedim2.cc
 
 foldspacedims1_SOURCES = foldspacedims1.cc
 foldspacedims2_SOURCES = foldspacedims2.cc
+
+frequency1_SOURCES = frequency1.cc
 
 frombdshape1_SOURCES = frombdshape1.cc
 

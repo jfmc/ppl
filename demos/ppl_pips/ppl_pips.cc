@@ -68,6 +68,7 @@ ppl_set_GMP_memory_allocation_functions(void) {
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <memory>
 
 #ifdef PPL_HAVE_GETOPT_H
 #include <getopt.h>
@@ -770,11 +771,11 @@ main(int argc, char* argv[]) try {
 
 //  POLYHEDRON_TYPE ph;
 //  Representation rep = read_polyhedron(input(), ph);
-  PIP_Parser* parser;
+  std::auto_ptr<PIP_Parser> parser;
   if (piplib_format)
-    parser = new PIP_PipLib_Parser();
+    parser.reset(new PIP_PipLib_Parser);
   else
-    parser = new PIP_PolyLib_Parser();
+    parser.reset(new PIP_PolyLib_Parser);
   if (!parser->read(*input_stream_p))
     return 1;
 
@@ -789,11 +790,11 @@ main(int argc, char* argv[]) try {
     parser->output_solution_tree(*output_stream_p);
   }
   else {
+    std::auto_ptr<PPL::PIP_Problem> pipp;
     // Perform a time benchmark loop executing the resolution several times.
     for (int i = 0; i < loop_iterations; ++i) {
-      PPL::PIP_Problem* pipp = new PPL::PIP_Problem(pip);
+      pipp.reset(new PPL::PIP_Problem(pip));
       pipp->solve();
-      delete pipp;
     }
   }
 

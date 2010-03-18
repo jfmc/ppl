@@ -97,10 +97,11 @@ operator<<(std::ostream& s, const PIP_Problem& p);
      if all these constraints are satisfied, the solution is described by
      the node, otherwise the problem has no solution.
 
-  It may happen that a decision node has no \e false or \e true child.
-  This means that there is no solution satisfying the corresponding
-  constraints. Decision nodes having two or more linear tests on the
-  parameters cannot have a \e false child.
+  It may happen that a decision node has no \e false child. This means
+  that there is no solution if at least one of the corresponding
+  constraints is not satisfied. Decision nodes having two or more linear
+  tests on the parameters cannot have a \e false child. Decision nodes
+  always have a \e true child.
 
   Both kinds of tree nodes may also contain the definition of extra
   parameters which are artificially introduced by the solver to enforce
@@ -141,7 +142,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   \endverbatim
   The solution tree starts with a decision node depending on the
   context constraint <code>7*n >= 10</code>.
-  If this constraints is satisfied by the values assigned to the
+  If this constraint is satisfied by the values assigned to the
   problem parameters, then the (textually first) \c then branch is taken,
   reaching the \e true child of the root node (which in this case
   is another decision node); otherwise, the (textually last) \c else
@@ -151,7 +152,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   lexicographic minimum of an empty set of solutions,
   here meaning the corresponding subproblem is unfeasible.
   \par
-  Notice that a tree node may introduce a new (non-problem) parameter,
+  Notice that a tree node may introduce new (non-problem) parameters,
   as is the case for parameter \c P in the (textually first) \c else
   branch above. These \e artificial parameters are only meaningful
   inside the subtree where they are defined and are used to define
@@ -159,7 +160,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   (e.g., the <tt>{i,j}</tt> vector in the textually third \c then branch).
 
   \par Context restriction
-  The above solution is correct in an unrestricted original context,
+  The above solution is correct in an unrestricted initial context,
   meaning all possible values are allowed for the parameters. If we
   restrict the context with the following parameter inequalities:
   \code
@@ -172,7 +173,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   \endverbatim
 
   \par Creating the PIP_Problem object
-  The PIP_Problem object correspondind to the above example can be
+  The PIP_Problem object corresponding to the above example can be
   created as follows:
   \code
   Variable i(0);
@@ -187,7 +188,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   cs.insert(i <= n);
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
   \endcode
-  If you want to restrict the original context, simply add the parameter
+  If you want to restrict the initial context, simply add the parameter
   constraints the same way as for normal constraints.
   \code
   cs.insert(m >= n);
@@ -315,7 +316,60 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   will be defined in terms of all the parameters (problem parameters
   and artificial parameters defined along the path).
 
-  FIXME: different uses of the big parameter.
+  \par Solving maximization problems
+  You can solve a lexicographic maximization problem by reformulating its
+  constraints using variable substitution. Proceed the following steps:
+   - Create a big parameter (see PIP_Problem::set_big_parameter_dimension),
+     which we will call \f$M\f$.
+   - Reformulate each of the maximization problem constraints by
+     substituting each \f$x_i\f$ variable with an expression of the form
+     \f$M-x'_i\f$, where the \f$x'_i\f$ variables are positive variables to
+     be minimized.
+   - Solve the lexicographic minimum for the \f$x'\f$ variable vector.
+   - In the solution expressions, the values of the original variables are
+     obtained from the resulting values of the \f$x'_i\f$ variables by
+     applying the equality \f$x_i = M-x'_i\f$.
+  \par
+  You can choose to maximize only a subset of the variables while minimizing
+  the other variables. In that case, just apply the variable substitution
+  method on the variables you want to be maximized. The variable
+  optimization priority will still be in lexicographic order.
+
+  \par Allowing variables and parameters to be arbitrarily signed
+  You can deal with arbitrarily signed variables and/or parameters by
+  reformulating the constraints using variable and/or parameter
+  substitution. Proceed the following steps:
+   - Create a big parameter (see PIP_Problem::set_big_parameter_dimension),
+     which we will call \f$M\f$.
+   - Reformulate each of the maximization problem constraints by
+     substituting each \f$x_i\f$ variable with an expression of the form
+     \f$x'_i-M\f$, where the \f$x'_i\f$ variables are positive, and/or by
+     substituting each \f$p_i\f$ parameter with an expression of the form
+     \f$p'_i-M\f$, where the \f$p'_i\f$ parameters are positive.
+   - Solve the lexicographic minimum for the \f$x'\f$ variable vector.
+   - In the solution expressions, the values of the original variables
+     and/or parameters are obtained from the resulting values of the
+     \f$x'_i\f$ variables and/or the \f$p'_i\f$ parameters by applying the
+     equalities \f$x_i = M-x'_i\f$ and/or \f$p_i = M-p'_i\f$.
+
+  \par
+  You can choose to define only a subset of the variables to be
+  sign-unrestricted. In that case, just apply the variable substitution
+  method on the variables you want to be sign-unrestricted.
+
+  \par Minimizing a linear cost function
+  Lexicographic solving can be used to find the parametric minimum of a
+  linear cost function.
+  \par
+  Suppose the variables are named \f$x_1, x_2, \dots, x_n\f$, and the
+  parameters \f$p_1, p_2, \dots, p_m\f$. You can minimize a linear cost
+  function \f$f(x_2, \dots, x_n, p_1, \dots, p_m)\f$ by simply adding the
+  constraint \f$x_1 \geq f(x_2, \dots, x_n, p_1, \dots, p_m)\f$ to the
+  constraint system. As lexicographic minimization ensures \f$x_1\f$ is
+  minimized in priority, and because \f$x_1\f$ is forced by a constraint to
+  be superior or equal to the cost function, optimal solutions of the
+  problem necessarily ensure that the solution value of \f$x_1\f$ is the
+  optimal value of the cost function.
 */
 class Parma_Polyhedra_Library::PIP_Problem {
 public:

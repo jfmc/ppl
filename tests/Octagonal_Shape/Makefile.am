@@ -78,6 +78,7 @@ discrete1 \
 disjoint1 \
 empty1 \
 expandspacedim1 \
+frequency1 \
 foldspacedims1 \
 frombdshape1 \
 frombox1 \
@@ -220,6 +221,8 @@ empty1_SOURCES = empty1.cc
 expandspacedim1_SOURCES = expandspacedim1.cc
 
 foldspacedims1_SOURCES = foldspacedims1.cc
+
+frequency1_SOURCES = frequency1.cc
 
 frombdshape1_SOURCES = frombdshape1.cc
 

@@ -155,6 +155,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/MIP_Problem.types.hh \
                          @srcdir@/../src/MIP_Problem.defs.hh \
                          @srcdir@/../src/MIP_Problem.inlines.hh \
+                         @srcdir@/../src/MIP_Problem.templates.hh \
                          @srcdir@/../src/MIP_Problem.cc \
                          @srcdir@/../src/Bit_Row.types.hh \
                          @srcdir@/../src/Bit_Row.defs.hh \
@@ -320,14 +321,15 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Octagonal_Shape.inlines.hh \
                          @srcdir@/../src/Octagonal_Shape.templates.hh \
                          @srcdir@/../src/Octagonal_Shape.cc \
-                         @srcdir@/../src/PIP_Problem.cc \
+                         @srcdir@/../src/PIP_Problem.types.hh \
                          @srcdir@/../src/PIP_Problem.defs.hh \
                          @srcdir@/../src/PIP_Problem.inlines.hh \
                          @srcdir@/../src/PIP_Problem.templates.hh \
-                         @srcdir@/../src/PIP_Problem.types.hh \
+                         @srcdir@/../src/PIP_Problem.cc \
+                         @srcdir@/../src/PIP_Tree.types.hh \
                          @srcdir@/../src/PIP_Tree.defs.hh \
                          @srcdir@/../src/PIP_Tree.inlines.hh \
-                         @srcdir@/../src/PIP_Tree.types.hh \
+                         @srcdir@/../src/PIP_Tree.cc \
                          @srcdir@/../src/Floating_Point_Expression.types.hh \
                          @srcdir@/../src/Floating_Point_Expression.defs.hh \
                          @srcdir@/../src/Floating_Point_Expression.inlines.hh \

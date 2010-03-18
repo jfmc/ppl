@@ -734,7 +734,7 @@ PPL_TYPE_DECLARATION(PIP_Solution_Node)
 
   The types and functions for PIP artificial parameters provide
   an interface towards
-  \extref{Parma_Polyhedra_Library::Artificial_Parameter, Artificial_Parameter}.
+  \extref{Parma_Polyhedra_Library::PIP_Tree_Node::Artificial_Parameter, Artificial_Parameter}.
 */
 PPL_TYPE_DECLARATION(Artificial_Parameter)
 PPL_TYPE_DECLARATION(Artificial_Parameter_Sequence)
