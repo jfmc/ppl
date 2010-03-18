@@ -301,7 +301,7 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
-  DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test08, TOctagonal_Shape);
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test08, TOctagonal_Shape);
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
