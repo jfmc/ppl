@@ -360,6 +360,12 @@ public:
   void linear_combine(const Linear_Row& y, dimension_type k);
 
   /*! \brief
+    Returns <CODE>true</CODE> if and only if all the
+    terms of \p *this are \f$0\f$.
+  */
+  bool is_zero() const;
+
+  /*! \brief
     Returns <CODE>true</CODE> if and only if all the homogeneous
     terms of \p *this are \f$0\f$.
   */

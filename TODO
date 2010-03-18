@@ -2,6 +2,9 @@
 Enhancements for PPL 0.11
 =========================
 
+- Interface Linear_Expression::is_zero()
+  and Linear_Expression::all_homogeneous_terms_are_zero()
+  for all the non-C++ interfaces.
 - Handle std::logic_error (now thrown in case watchdogs are not
   available) in all the interfaces.
 - Make all the *affine*image() methods uniform as far as the
