@@ -130,6 +130,12 @@ constraintsproduct1_SOURCES = constraintsproduct1.cc
 
 constraints1_SOURCES = constraints1.cc
 
+contains1_SOURCES = contains1.cc
+
+difference1_SOURCES = difference1.cc
+
+dimension1_SOURCES = dimension1.cc
+
 directproduct1_SOURCES = directproduct1.cc
 
 discrete1_SOURCES = discrete1.cc
@@ -151,6 +157,8 @@ frompolyhedron1_SOURCES = frompolyhedron1.cc
 fromproduct1_SOURCES = fromproduct1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
+
+intersection1_SOURCES = intersection1.cc
 
 isempty1_SOURCES = isempty1.cc
 
@@ -174,6 +182,8 @@ timeelapse1_SOURCES = timeelapse1.cc
 topclosed1_SOURCES = topclosed1.cc
 
 topclosure1_SOURCES = topclosure1.cc
+
+upperbound1_SOURCES = upperbound1.cc
 
 DERIVED_CXXFLAGS = -DREVERSED_TESTS $(AM_CXXFLAGS)
 
