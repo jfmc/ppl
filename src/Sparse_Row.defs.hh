@@ -165,13 +165,10 @@ public:
 
   dangerous_iterator find_dangerous(const dimension_type c);
   dangerous_iterator lower_bound_dangerous(const dimension_type c);
-  dangerous_iterator upper_bound_dangerous(const dimension_type c);
   iterator find(const dimension_type c);
   iterator lower_bound(const dimension_type c);
-  iterator upper_bound(const dimension_type c);
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
-  const_iterator upper_bound(const dimension_type c) const;
 
   //! Equivalent to find_create(i,x,begin_dangerous()) .
   iterator find_create(const dimension_type i,const Coefficient& x);
@@ -349,13 +346,10 @@ public:
 
   dangerous_iterator find_dangerous(const dimension_type c);
   dangerous_iterator lower_bound_dangerous(const dimension_type c);
-  dangerous_iterator upper_bound_dangerous(const dimension_type c);
   iterator find(const dimension_type c);
   iterator lower_bound(const dimension_type c);
-  iterator upper_bound(const dimension_type c);
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
-  const_iterator upper_bound(const dimension_type c) const;
 
   //! Equivalent to find_create(i,x,begin_dangerous()) .
   iterator find_create(const dimension_type i,const Coefficient& x);

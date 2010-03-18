@@ -343,13 +343,10 @@ public:
 
   dangerous_iterator find_dangerous(const dimension_type c);
   dangerous_iterator lower_bound_dangerous(const dimension_type c);
-  dangerous_iterator upper_bound_dangerous(const dimension_type c);
   iterator find(const dimension_type c);
   iterator lower_bound(const dimension_type c);
-  iterator upper_bound(const dimension_type c);
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
-  const_iterator upper_bound(const dimension_type c) const;
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
   dangerous_iterator find_dangerous(const dimension_type c,
@@ -357,23 +354,16 @@ public:
   //! Lower bound of key c, assuming it is in [itr,end()) .
   dangerous_iterator lower_bound_dangerous(const dimension_type c,
                                            dangerous_iterator itr);
-  //! Upper bound of key c, assuming it is in [itr,end()) .
-  dangerous_iterator upper_bound_dangerous(const dimension_type c,
-                                           dangerous_iterator itr);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
   iterator find(const dimension_type c,iterator itr);
   //! Lower bound of key c, assuming it is in [itr,end()) .
   iterator lower_bound(const dimension_type c,iterator itr);
-  //! Upper bound of key c, assuming it is in [itr,end()) .
-  iterator upper_bound(const dimension_type c,iterator itr);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
   const_iterator find(const dimension_type c,const_iterator itr) const;
   //! Lower bound of key c, assuming it is in [itr,end()) .
   const_iterator lower_bound(const dimension_type c,const_iterator itr) const;
-  //! Upper bound of key c, assuming it is in [itr,end()) .
-  const_iterator upper_bound(const dimension_type c,const_iterator itr) const;
 
   //! A faster equivalent of
   //! itr1=find_dangerous(c1); itr2=find_dangerous(c2); .

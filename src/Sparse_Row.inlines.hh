@@ -223,11 +223,6 @@ Sparse_Row::lower_bound(const dimension_type k) {
   return row.lower_bound(k);
 }
 
-inline Sparse_Row::iterator
-Sparse_Row::upper_bound(const dimension_type k) {
-  return row.upper_bound(k);
-}
-
 inline Sparse_Row::const_iterator
 Sparse_Row::find(const dimension_type k) const {
   return row.find(k);
@@ -236,11 +231,6 @@ Sparse_Row::find(const dimension_type k) const {
 inline Sparse_Row::const_iterator
 Sparse_Row::lower_bound(const dimension_type k) const {
   return row.lower_bound(k);
-}
-
-inline Sparse_Row::const_iterator
-Sparse_Row::upper_bound(const dimension_type k) const {
-  return row.upper_bound(k);
 }
 
 inline Sparse_Row::iterator
@@ -516,11 +506,6 @@ Sparse_Row_Reference::lower_bound_dangerous(const dimension_type c) {
   return row.lower_bound_dangerous(c);
 }
 
-inline Sparse_Row_Reference::dangerous_iterator
-Sparse_Row_Reference::upper_bound_dangerous(const dimension_type c) {
-  return row.upper_bound_dangerous(c);
-}
-
 inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference::find(const dimension_type c) {
   return row.find(c);
@@ -531,11 +516,6 @@ Sparse_Row_Reference::lower_bound(const dimension_type c) {
   return row.lower_bound(c);
 }
 
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference::upper_bound(const dimension_type c) {
-  return row.upper_bound(c);
-}
-
 inline Sparse_Row_Reference::const_iterator
 Sparse_Row_Reference::find(const dimension_type c) const {
   return row.find(c);
@@ -544,11 +524,6 @@ Sparse_Row_Reference::find(const dimension_type c) const {
 inline Sparse_Row_Reference::const_iterator
 Sparse_Row_Reference::lower_bound(const dimension_type c) const {
   return row.lower_bound(c);
-}
-
-inline Sparse_Row_Reference::const_iterator
-Sparse_Row_Reference::upper_bound(const dimension_type c) const {
-  return row.upper_bound(c);
 }
 
 inline Sparse_Row_Reference::iterator

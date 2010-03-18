@@ -316,17 +316,6 @@ Unlimited_Sparse_Row::lower_bound_dangerous(const dimension_type k) {
   return lower_bound_dangerous(k,i);
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::upper_bound_dangerous(const dimension_type k) {
-  if (begin() == end())
-    return end_dangerous();
-  dangerous_iterator i = begin_dangerous();
-  if ((*i).first > k)
-    return i;
-  // Now we can call upper_bound(k,i) without triggering asserts.
-  return upper_bound_dangerous(k,i);
-}
-
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find(const dimension_type k) {
   if (begin() == end())
@@ -347,17 +336,6 @@ Unlimited_Sparse_Row::lower_bound(const dimension_type k) {
     return i;
   // Now we can call lower_bound(k,i) without triggering asserts.
   return lower_bound(k,i);
-}
-
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::upper_bound(const dimension_type k) {
-  if (begin() == end())
-    return end();
-  iterator i = begin();
-  if ((*i).first > k)
-    return i;
-  // Now we can call upper_bound(k,i) without triggering asserts.
-  return upper_bound(k,i);
 }
 
 inline Unlimited_Sparse_Row::const_iterator
@@ -382,17 +360,6 @@ Unlimited_Sparse_Row::lower_bound(const dimension_type k) const {
   return lower_bound(k,i);
 }
 
-inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::upper_bound(const dimension_type k) const {
-  if (begin() == end())
-    return end();
-  const_iterator i = begin();
-  if ((*i).first > k)
-    return i;
-  // Now we can call upper_bound(k,i) without triggering asserts.
-  return upper_bound(k,i);
-}
-
 inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row
 ::find_dangerous(const dimension_type k,dangerous_iterator itr1) {
@@ -412,14 +379,6 @@ Unlimited_Sparse_Row
                           value_key_compare(std::less<dimension_type>()));
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row
-::upper_bound_dangerous(const dimension_type k,dangerous_iterator itr) {
-  PPL_ASSERT(itr == end_dangerous() || (*itr).first <= k);
-  return std::upper_bound(itr,end_dangerous(),k,
-                          key_value_compare(std::less<dimension_type>()));
-}
-
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find(const dimension_type k,iterator itr1) {
   PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
@@ -435,14 +394,6 @@ Unlimited_Sparse_Row::lower_bound(const dimension_type k, iterator itr) {
   PPL_ASSERT(itr == end() || (*itr).first <= k);
   return std::lower_bound(itr,end(),k,
                           value_key_compare(std::less<dimension_type>()));
-}
-
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row
-::upper_bound(const dimension_type k,iterator itr) {
-  PPL_ASSERT(itr == end() || (*itr).first <= k);
-  return std::upper_bound(itr,end(),k,
-                          key_value_compare(std::less<dimension_type>()));
 }
 
 inline Unlimited_Sparse_Row::const_iterator
@@ -461,14 +412,6 @@ Unlimited_Sparse_Row
   PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
   return std::lower_bound(itr1,end(),k,
                           value_key_compare(std::less<dimension_type>()));
-}
-
-inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row
-::upper_bound(const dimension_type k,const_iterator itr1) const {
-  PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
-  return std::upper_bound(itr1,end(),k,
-                          key_value_compare(std::less<dimension_type>()));
 }
 
 inline void
