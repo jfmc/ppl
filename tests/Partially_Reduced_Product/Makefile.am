@@ -36,9 +36,13 @@ endif !VALGRIND_TESTS_ENABLED
 
 TESTS_ENVIRONMENT = $(CHECKER)
 
+noinst_HEADERS = \
+partially_reduced_product_test.hh
+
 AM_CPPFLAGS = \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/src -I$(top_srcdir)/tests \
+-I$(top_srcdir)/tests/Partially_Reduced_Product \
 -I$(top_srcdir)/utils \
 @extra_includes@ \
 @debug_flag@
