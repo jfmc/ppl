@@ -859,12 +859,10 @@ Java_parma_1polyhedra_1library_@1CLASS@_wrap_1assign
   Bounded_Integer_Type_Representation r = build_cxx_bounded_rep(env, j_r);
   Bounded_Integer_Type_Overflow o = build_cxx_bounded_overflow(env, j_o);
   Constraint_System cs = build_cxx_constraint_system(env, j_cs);
-  Constraint_System* pcs = &build_cxx_constraint_system(env, j_cs);
-  unsigned int cx =
-      jtype_to_unsigned<unsigned int>(j_integer_to_j_int(env, j_cx));
+  unsigned cx = jtype_to_unsigned<unsigned>(j_integer_to_j_int(env, j_cx));
   bool ind = (j_boolean_to_bool(env, j_ind));
 
-  this_ptr->wrap_assign(vars, w, r, o, pcs, cx, ind);
+  this_ptr->wrap_assign(vars, w, r, o, &cs, cx, ind);
 }
 CATCH_ALL
 
