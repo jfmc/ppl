@@ -1704,6 +1704,30 @@ ppl_Coefficient_max(Prolog_term_ref t_max) {
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_Linear_Expression_is_zero(Prolog_term_ref t_le_expr) {
+  static const char* where = "ppl_Linear_Expression_is_zero/1";
+  try {
+    Linear_Expression le_expr = build_linear_expression(t_le_expr, where);
+    if (le_expr.is_zero())
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Linear_Expression_all_homogeneous_terms_are_zero(Prolog_term_ref t_le_expr)
+{
+  static const char* where
+    = "ppl_Linear_Expression_all_homogeneous_terms_are_zero/1";
+  try {
+    Linear_Expression le_expr = build_linear_expression(t_le_expr, where);
+    if (le_expr.all_homogeneous_terms_are_zero())
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_new_MIP_Problem_from_space_dimension
 (Prolog_term_ref t_nd, Prolog_term_ref t_mip) {
   static const char* where = "ppl_MIP_Problem_from_space_dimension/2";

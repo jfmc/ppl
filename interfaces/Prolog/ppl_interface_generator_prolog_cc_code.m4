@@ -1324,7 +1324,7 @@ m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_c
   try {
     @TOPOLOGY@@CPP_CLASS@* pset = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset, where);
     PPL_CHECK(pset);
-    C_Polyhedron* ph = new C_Polyhedron();
+    @A_TERMINATION_ID@Polyhedron* ph = new @A_TERMINATION_ID@Polyhedron();
     Parma_Polyhedra_Library
       ::all_affine_ranking_functions_@TERMINATION_ID@(*pset, *ph);
       Prolog_term_ref tmp = Prolog_new_term_ref();
@@ -1357,7 +1357,7 @@ m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
        = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_after, where);
     PPL_CHECK(pset_before);
     PPL_CHECK(pset_after);
-    C_Polyhedron* ph = new C_Polyhedron();
+    @A_TERMINATION_ID@Polyhedron* ph = new @A_TERMINATION_ID@Polyhedron();
     Parma_Polyhedra_Library
       ::all_affine_ranking_functions_@TERMINATION_ID@_2(*pset_before,
                                                         *pset_after,

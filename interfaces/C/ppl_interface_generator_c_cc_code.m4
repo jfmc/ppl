@@ -1226,9 +1226,8 @@ ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
  ppl_Polyhedron_t ph) try {
   const @TOPOLOGY@@CPP_CLASS@& ppset
     = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset));
-  all_affine_ranking_functions_@TERMINATION_ID@(ppset,
-                                                *static_cast<C_Polyhedron*>
-                                                    (to_nonconst(ph)));
+  all_affine_ranking_functions_@TERMINATION_ID@
+    (ppset, *static_cast<@A_TERMINATION_ID@Polyhedron*> (to_nonconst(ph)));
   return 0;
 }
 CATCH_ALL
@@ -1245,10 +1244,9 @@ ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
     = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_before));
   const @TOPOLOGY@@CPP_CLASS@& ppset_after
     = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_after));
-  all_affine_ranking_functions_@TERMINATION_ID@_2(ppset_before,
-                                                  ppset_after,
-                                                *static_cast<C_Polyhedron*>
-                                                    (to_nonconst(ph)));
+  all_affine_ranking_functions_@TERMINATION_ID@_2
+    (ppset_before, ppset_after,
+     *static_cast<@A_TERMINATION_ID@Polyhedron*>(to_nonconst(ph)));
   return 0;
 }
 CATCH_ALL

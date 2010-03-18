@@ -988,3 +988,7 @@ m4_define(`m4_Pointset_Powerset_membytes_replacements',
 
 dnl  The termination algorithms are either sourced from MS or PR.
 m4_define(`m4_termination_id_replacements', `MS, PR')
+
+dnl If sourced from MS, the last argument is C_Polyhedron,
+dnl If sourced from PR, the last argument is NNC_Polyhedron.
+m4_define(`m4_a_termination_id_replacements', `C_, NNC_')
