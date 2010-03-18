@@ -333,7 +333,7 @@ one_affine_ranking_function_PR_2(const PSET& pset_before,
 */
 template <typename PSET>
 void
-all_affine_ranking_functions_PR(const PSET& pset, C_Polyhedron& mu_space);
+all_affine_ranking_functions_PR(const PSET& pset, NNC_Polyhedron& mu_space);
 
 /*! \brief
   Like all_affine_ranking_functions_MS_2() but using an improvement
@@ -343,7 +343,7 @@ template <typename PSET>
 void
 all_affine_ranking_functions_PR_2(const PSET& pset_before,
 				  const PSET& pset_after,
-				  C_Polyhedron& mu_space);
+				  NNC_Polyhedron& mu_space);
 
 } // namespace Parma_Polyhedra_Library
 

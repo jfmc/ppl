@@ -112,7 +112,7 @@ test04() {
   ph.add_constraint(xp2 == x2 + 1);
   ph.add_constraint(xp2 >= 1);
 
-  C_Polyhedron mu_space;
+  NNC_Polyhedron mu_space;
   all_affine_ranking_functions_PR(ph, mu_space);
 
   print_constraints(mu_space, "*** mu_space ***");
@@ -120,10 +120,10 @@ test04() {
   Variable mu1(0);
   Variable mu2(1);
   Variable mu0(2);
-  C_Polyhedron known_result(3);
+  NNC_Polyhedron known_result(3);
   known_result.add_constraint(mu1 - mu2 >= 1);
+  known_result.add_constraint(mu0 + 2*mu1 >= 0);
   known_result.add_constraint(mu2 >= 0);
-  known_result.add_constraint(2*mu0 + mu1 + 2*mu2 >= 0);
 
   print_constraints(known_result, "*** known_result ***");
 
@@ -436,7 +436,7 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
-  //DO_TEST(test04);
+  DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);

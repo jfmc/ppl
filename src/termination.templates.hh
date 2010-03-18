@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BD_Shape.defs.hh"
 #include "Octagonal_Shape.defs.hh"
 
-#define PRINT_DEBUG_INFO 0
+#define PRINT_DEBUG_INFO 1
 
 #if PRINT_DEBUG_INFO
 #include <iostream>
@@ -231,7 +231,7 @@ one_affine_ranking_function_PR(const Constraint_System& cs_before,
 void
 all_affine_ranking_functions_PR(const Constraint_System& cs_before,
 				const Constraint_System& cs_after,
-				C_Polyhedron& mu_space);
+				NNC_Polyhedron& mu_space);
 
 } // namespace Termination
 
@@ -437,14 +437,13 @@ one_affine_ranking_function_PR(const PSET& pset_after, Generator& mu) {
   Variables_Set primed_variables(Variable(0), Variable(space_dim/2 - 1));
   pset_before.remove_space_dimensions(primed_variables);
   return one_affine_ranking_function_PR_2(pset_before, pset_after, mu);
-
 }
 
 template <typename PSET>
 void
 all_affine_ranking_functions_PR_2(const PSET& pset_before,
 				  const PSET& pset_after,
-				  C_Polyhedron& mu_space) {
+				  NNC_Polyhedron& mu_space) {
   const dimension_type before_space_dim = pset_before.space_dimension();
   const dimension_type after_space_dim = pset_after.space_dimension();
   if (after_space_dim != 2*before_space_dim) {
@@ -456,15 +455,19 @@ all_affine_ranking_functions_PR_2(const PSET& pset_before,
     throw std::invalid_argument(s.str());
   }
 
-  used(mu_space);
-  throw std::runtime_error("PPL::all_affine_ranking_functions_PR_2()"
-			   " not yet implemented.");
+  using namespace Implementation::Termination;
+  Constraint_System cs_before;
+  Constraint_System cs_after;
+  assign_all_inequalities_approximation(pset_before, cs_before);
+  assign_all_inequalities_approximation(pset_after, cs_after);
+  all_affine_ranking_functions_PR(cs_before, cs_after, mu_space);
 }
 
 template <typename PSET>
 void
-all_affine_ranking_functions_PR(const PSET& pset, C_Polyhedron& mu_space) {
-  const dimension_type space_dim = pset.space_dimension();
+all_affine_ranking_functions_PR(const PSET& pset_after,
+				NNC_Polyhedron& mu_space) {
+  const dimension_type space_dim = pset_after.space_dimension();
   if (space_dim % 2 != 0) {
     std::ostringstream s;
     s << "PPL::all_affine_ranking_functions_PR(pset):\n"
@@ -473,9 +476,11 @@ all_affine_ranking_functions_PR(const PSET& pset, C_Polyhedron& mu_space) {
     throw std::invalid_argument(s.str());
   }
 
-  used(mu_space);
-  throw std::runtime_error("PPL::all_affine_ranking_functions_PR()"
-			   " not yet implemented.");
+  // FIXME: this may be inefficient.
+  PSET pset_before(pset_after);
+  Variables_Set primed_variables(Variable(0), Variable(space_dim/2 - 1));
+  pset_before.remove_space_dimensions(primed_variables);
+  all_affine_ranking_functions_PR_2(pset_before, pset_after, mu_space);
 }
 
 } // namespace Parma_Polyhedra_Library

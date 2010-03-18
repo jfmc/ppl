@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl-config.h>
 
 #include "termination.defs.hh"
+#include "NNC_Polyhedron.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -564,7 +565,7 @@ one_affine_ranking_function_PR(const Constraint_System& cs_before,
     // function computed in the feasible point is positive.
   finish:
     {
-      // We can impose that the le_ineq is >= 1 because every positive
+      // We can impose that le_ineq is >= 1 because every positive
       // multiple of the linear expression is acceptable.
       mip.add_constraint(le_ineq >= 1);
       Generator fp = mip.feasible_point();
@@ -615,7 +616,89 @@ one_affine_ranking_function_PR(const Constraint_System& cs_before,
 void
 all_affine_ranking_functions_PR(const Constraint_System& cs_before,
 				const Constraint_System& cs_after,
-				C_Polyhedron& mu_space);
+				NNC_Polyhedron& mu_space) {
+  Constraint_System cs_eqs;
+  Linear_Expression le_ineq;
+  fill_constraint_system_PR(cs_before, cs_after, cs_eqs, le_ineq);
+
+#if PRINT_DEBUG_INFO
+  Variable::output_function_type* p_default_output_function
+    = Variable::get_output_function();
+  Variable::set_output_function(output_function_PR);
+
+  output_function_PR_r = distance(cs_before.begin(), cs_before.end());
+  output_function_PR_s = distance(cs_after.begin(), cs_after.end());
+
+  std::cout << "*** cs_eqs ***" << std::endl;
+  using namespace IO_Operators;
+  std::cout << cs_eqs << std::endl;
+  std::cout << "*** le_ineq ***" << std::endl;
+  std::cout << le_ineq << std::endl;
+#endif
+
+  NNC_Polyhedron ph(cs_eqs);
+  ph.add_constraint(le_ineq > 0);
+  // u_3 corresponds to space dimensions 0, ..., s - 1.
+  const dimension_type s = distance(cs_after.begin(), cs_after.end());
+  ph.remove_higher_space_dimensions(s);
+
+#if PRINT_DEBUG_INFO
+  std::cout << "*** ph ***" << std::endl;
+  std::cout << ph << std::endl;
+
+  Variable::set_output_function(p_default_output_function);
+#endif
+
+  // FIXME: is this useful?
+  const dimension_type n = cs_before.space_dimension();
+
+  const Generator_System& gs_in = ph.generators();
+  Generator_System gs_out;
+  for (Generator_System::const_iterator r = gs_in.begin(),
+	 gs_in_end = gs_in.end(); r != gs_in_end; ++r) {
+    const Generator& g = *r;
+    Linear_Expression le;
+    // Set le to the multiplication of Linear_Expression(g) by E'_C.
+    dimension_type row_index = 0;
+    PPL_DIRTY_TEMP_COEFFICIENT(k);
+    for (Constraint_System::const_iterator i = cs_after.begin(),
+	   cs_after_end = cs_after.end();
+	 i != cs_after_end;
+	 ++i, ++row_index) {
+      Variable vi(row_index);
+      Coefficient_traits::const_reference g_i = g.coefficient(vi);
+      if (g_i != 0) {
+	const Constraint& c_i = *i;
+	for (dimension_type j = n; j-- > 0; ) {
+	  Variable vj(j);
+	  k = g_i*c_i.coefficient(vj);
+	  le += k*vj;
+	}
+      }
+    }
+
+    // Add to gs_out the transformed generator.
+    switch (g.type()) {
+    case Generator::LINE:
+      gs_out.insert(line(le));
+      break;
+    case Generator::RAY:
+      if (!le.all_homogeneous_terms_are_zero())
+	gs_out.insert(ray(le));
+      break;
+    case Generator::POINT:
+      gs_out.insert(point(le, g.divisor()));
+      break;
+    case Generator::CLOSURE_POINT:
+      gs_out.insert(closure_point(le, g.divisor()));
+      break;
+    }
+  }
+
+  mu_space = NNC_Polyhedron(gs_out);
+  // mu_0 is zero.
+  mu_space.add_space_dimensions_and_embed(1);
+}
 
 } // namespace Termination
 
