@@ -418,8 +418,8 @@ ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
 				Bounded_Integer_Type_Representation r,
                                 Bounded_Integer_Type_Overflow o,
                                 Constraint_System cs,
-                                By_Reference<Integer> complexity_threshold,
-                                By_Reference<Boolean> wrap_individually);
+                                Integer complexity_threshold,
+                                Boolean wrap_individually);
 
 ')
 
