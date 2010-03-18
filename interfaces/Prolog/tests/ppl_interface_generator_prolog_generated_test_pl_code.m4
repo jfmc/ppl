@@ -609,8 +609,12 @@ ppl_@CLASS@_linear_@PARTITION@_4_test :-
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
-     ppl_@CLASS@_linear_partition(PS1, PS2, PS3, _PPS),
-     ppl_@CLASS@_OK(PS3)
+     ppl_@CLASS@_linear_partition(PS1, PS2, PS3, PPS),
+     ppl_@CLASS@_OK(PS3),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS2),
+     ppl_delete_@CLASS@(PS3),
+     ppl_delete_Pointset_Powerset_NNC_Polyhedron(PPS)
    ->
      fail ; (class_@CLASS@ == class_BD_Shape_int8_t -> fail ; true))
   ).
@@ -625,8 +629,12 @@ ppl_@CLASS@_approximate_@PARTITION@_4_test :-
    (
      ppl_@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
      ppl_@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
-     ppl_@CLASS@_approximate_partition(PS1, PS2, PS3, _PPS, _Is_finite),
-     ppl_@CLASS@_OK(PS3)
+     ppl_@CLASS@_approximate_partition(PS1, PS2, PS3, PPS, _Is_finite),
+     ppl_@CLASS@_OK(PS3),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS2),
+     ppl_delete_@CLASS@(PS3),
+     ppl_delete_Pointset_Powerset_NNC_Polyhedron(PPS)
    ->
      fail ; (class_@CLASS@ == class_BD_Shape_int8_t -> fail ; true))
   ).
