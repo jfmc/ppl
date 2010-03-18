@@ -1156,10 +1156,10 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_code',
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
 `dnl
 int
-ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@
+ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
 (ppl_const_@CLASS@_t pset) try {
   const @TOPOLOGY@@CPP_CLASS@& ppset
     = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset));
@@ -1169,10 +1169,10 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2_code',
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
 `dnl
 int
-ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2
+ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
 (ppl_const_@CLASS@_t pset_before, ppl_const_@CLASS@_t pset_after) try {
   const @TOPOLOGY@@CPP_CLASS@& ppset_before
     = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_before));
@@ -1184,9 +1184,9 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_code',
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
 `int
-ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@
+ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
 (ppl_const_@CLASS@_t pset,
  ppl_Generator_t point) try {
   const @TOPOLOGY@@CPP_CLASS@& ppset
@@ -1199,9 +1199,9 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2_code',
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
 `int
-ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2
+ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
 (ppl_const_@CLASS@_t pset_before,
  ppl_const_@CLASS@_t pset_after,
  ppl_Generator_t point) try {
@@ -1219,9 +1219,9 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_code',
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
 `int
-ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@
+ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
 (ppl_const_@CLASS@_t pset,
  ppl_Polyhedron_t ph) try {
   const @TOPOLOGY@@CPP_CLASS@& ppset
@@ -1235,9 +1235,9 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2_code',
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
 `int
-ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2
+ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
 (ppl_const_@CLASS@_t pset_before,
  ppl_const_@CLASS@_t pset_after,
  ppl_Polyhedron_t ph) try {

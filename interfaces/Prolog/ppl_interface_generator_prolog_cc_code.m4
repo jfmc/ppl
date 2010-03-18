@@ -1228,11 +1228,11 @@ m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 
 ')
 
-m4_define(`ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_code',
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@
+  ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
   (Prolog_term_ref t_pset) {
-  static const char* where = "ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@/1";
+  static const char* where = "ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@/1";
   try {
     @TOPOLOGY@@CPP_CLASS@* pset = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset, where);
     PPL_CHECK(pset);
@@ -1244,12 +1244,12 @@ m4_define(`ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_code',
 
 ')
 
-m4_define(`ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2_code',
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2
+  ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
   (Prolog_term_ref t_pset_before, Prolog_term_ref t_pset_after) {
   static const char* where
-      = "ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2/2";
+      = "ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2/2";
   try {
     @TOPOLOGY@@CPP_CLASS@* pset_before
        = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_before, where);
@@ -1266,13 +1266,13 @@ m4_define(`ppl_termination_test_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2_code',
 
 ')
 
-m4_define(`ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_code',
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@
+  ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
   (Prolog_term_ref t_pset,
    Prolog_term_ref t_g) {
   static const char* where
-     = "ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@/2";
+     = "ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@/2";
   try {
     @TOPOLOGY@@CPP_CLASS@* pset = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset, where);
     Generator gg(point());
@@ -1287,14 +1287,14 @@ m4_define(`ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_co
 
 ')
 
-m4_define(`ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2_code',
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2
+  ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
   (Prolog_term_ref t_pset_before,
    Prolog_term_ref t_pset_after,
    Prolog_term_ref t_g) {
   static const char* where
-     = "ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2/3";
+     = "ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2/3";
   try {
     @TOPOLOGY@@CPP_CLASS@* pset_before
        = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_before, where);
@@ -1314,13 +1314,13 @@ m4_define(`ppl_one_affine_ranking_function_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2_
 }
 
 ')
-m4_define(`ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_code',
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@
+  ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
   (Prolog_term_ref t_pset,
    Prolog_term_ref t_ph) {
   static const char* where =
-      "ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@/2";
+      "ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@/2";
   try {
     @TOPOLOGY@@CPP_CLASS@* pset = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset, where);
     PPL_CHECK(pset);
@@ -1342,14 +1342,14 @@ m4_define(`ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_c
 
 ')
 
-m4_define(`ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2_code',
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2
+  ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
   (Prolog_term_ref t_pset_before,
    Prolog_term_ref t_pset_after,
    Prolog_term_ref t_ph) {
   static const char* where =
-      "ppl_all_affine_ranking_functions_@TOPOLOGY@@CLASS@_@TERMINATION_ID@_2/3";
+      "ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2/3";
   try {
     @TOPOLOGY@@CPP_CLASS@* pset_before
        = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_before, where);
