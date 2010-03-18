@@ -3458,6 +3458,93 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   PPL_ASSERT_HEAVY(x.OK(true) && y.OK(true));
 }
 
+bool
+PPL::Polyhedron::frequency(const Linear_Expression& expr,
+                           Coefficient& freq_n, Coefficient& freq_d,
+                           Coefficient& val_n, Coefficient& val_d) const {
+  // The dimension of `expr' must be at most the dimension of *this.
+  if (space_dim < expr.space_dimension())
+    throw_dimension_incompatible("frequency(e, ...)", "e", expr);
+
+  // If the `expr' has a constant value, then the frequency
+  // `freq_n' is 0. Otherwise the values for \p expr are not discrete
+  // and we return false.
+
+  // Space dimension = 0: if empty, then return false;
+  // otherwise the frequency is 1 and the value is 0
+  if (space_dim == 0) {
+    if (is_empty())
+      return false;
+    freq_n = 0;
+    freq_d = 1;
+    val_n = expr.inhomogeneous_term();
+    val_d = 1;
+    return true;
+  }
+
+  // For an empty polyhedron, we simply return false.
+  if (marked_empty()
+      || (has_pending_constraints() && !process_pending_constraints())
+      || (!generators_are_up_to_date() && !update_generators()))
+    return false;
+
+  // The polyhedron has updated, possibly pending generators.
+  // The following loop will iterate through the generator
+  // to see if `expr' has a constant value.
+  PPL_DIRTY_TEMP0(mpq_class, value);
+
+  // True if we have no other candidate value to compare with.
+  bool first_candidate = true;
+
+  PPL_DIRTY_TEMP_COEFFICIENT(sp);
+  PPL_DIRTY_TEMP0(mpq_class, candidate);
+  for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
+    const Generator& gen_sys_i = gen_sys[i];
+    Scalar_Products::homogeneous_assign(sp, expr, gen_sys_i);
+    // Lines and rays in `*this' can cause `expr' to be non-constant.
+    if (gen_sys_i.is_line_or_ray()) {
+      const int sp_sign = sgn(sp);
+      if (sp_sign != 0)
+	// `expr' is unbounded in `*this'.
+	return false;
+    }
+    else {
+      // We have a point or a closure point.
+      assert(gen_sys_i.is_point() || gen_sys_i.is_closure_point());
+      // Notice that we are ignoring the constant term in `expr' here.
+      // We will add it to the value if there is a constant value.
+      assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
+      assign_r(candidate.get_den(), gen_sys_i[0], ROUND_NOT_NEEDED);
+      candidate.canonicalize();
+      if (first_candidate) {
+	// We have a (new) candidate value.
+	first_candidate = false;
+	value = candidate;
+      }
+      else if (candidate != value)
+        return false;
+    }
+  }
+
+  // Add in the constant term in `expr'.
+  PPL_DIRTY_TEMP0(mpz_class, n);
+  assign_r(n, expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
+  value += n;
+  // FIXME: avoid these temporaries, if possible.
+  // This can be done adding an `assign' function working on native
+  // and checked or an operator= that have on one side a checked and
+  // on the other a native or checked.
+  // The reason why now we can't use operator= is the fact that we
+  // still can have Coefficient defined to mpz_class (and not
+  // Checked_Number<mpz_class>).
+  val_n = Coefficient(value.get_num());
+  val_d = Coefficient(value.get_den());
+
+  freq_n = 0;
+  freq_d = 1;
+  return true;
+}
+
 void
 PPL::Polyhedron::topological_closure_assign() {
   // Necessarily closed polyhedra are trivially closed.

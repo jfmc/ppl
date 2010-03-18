@@ -59,7 +59,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
   const Generator_System::const_iterator gs_begin = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
   if (gs_begin == gs_end) {
-    // An empty generator system defines the empty polyhedron.
+    // An empty generator system defines the empty BD shape.
     set_empty();
     return;
   }
@@ -767,13 +767,123 @@ BD_Shape<T>::contains_integer_point() const {
 
 template <typename T>
 bool
+BD_Shape<T>::frequency(const Linear_Expression& expr,
+                       Coefficient& freq_n, Coefficient& freq_d,
+                       Coefficient& val_n, Coefficient& val_d) const {
+  dimension_type space_dim = space_dimension();
+  // The dimension of `expr' must be at most the dimension of *this.
+  if (space_dim < expr.space_dimension())
+    throw_dimension_incompatible("frequency(e, ...)", "e", expr);
+
+  // Check if `expr' has a constant value.
+  // If it is constant, set the frequency `freq_n' to 0
+  // and return true. Otherwise the values for \p expr
+  // are not discrete so return false.
+
+  // Space dimension = 0: if empty, then return false;
+  // otherwise the frequency is 0 and the value is the inhomogeneous term.
+  if (space_dim == 0) {
+    if (is_empty())
+      return false;
+    freq_n = 0;
+    freq_d = 1;
+    val_n = expr.inhomogeneous_term();
+    val_d = 1;
+    return true;
+  }
+
+  shortest_path_closure_assign();
+  // For an empty BD shape, we simply return false.
+  if (marked_empty())
+    return false;
+
+  // The BD shape has at least 1 dimension and is not empty.
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(num);
+  PPL_DIRTY_TEMP_COEFFICIENT(den);
+  PPL_DIRTY_TEMP(N, tmp);
+  Linear_Expression le = expr;
+  // Boolean to keep track of a variable `v' in expression `le'.
+  // If we can replace `v' by an expression using variables other
+  // than `v' and are already in `le', then this is set to true.
+  bool constant_v;
+
+  PPL_DIRTY_TEMP_COEFFICIENT(val_den);
+  val_den = 1;
+
+  for (dimension_type i = dbm.num_rows(); i-- > 1; ) {
+    constant_v = false;
+    const Variable v(i-1);
+    coeff = le.coefficient(v);
+    if (coeff == 0) {
+      constant_v = true;
+      continue;
+    }
+
+    const DB_Row<N>& dbm_i = dbm[i];
+    // Check if `v' is constant in the BD shape.
+    assign_r(tmp, dbm_i[0], ROUND_NOT_NEEDED);
+    if (is_additive_inverse(dbm[0][i], tmp)) {
+      // If `v' is constant, replace it in `le' by the value.
+      numer_denom(tmp, num, den);
+      le -= coeff*v;
+      le *= den;
+      le -= num*coeff;
+      val_den *= den;
+      constant_v = true;
+      continue;
+    }
+    // Check the bounded differences with the other dimensions that
+    // have non-zero coefficient in `le'.
+    else {
+      assert(!constant_v);
+      for (dimension_type j = i; j-- > 1; ) {
+        const Variable vj(j-1);
+        if (le.coefficient(vj) == 0)
+          // The coefficient in `le' is 0, so do nothing.
+          continue;
+        assign_r(tmp, dbm_i[j], ROUND_NOT_NEEDED);
+        if (is_additive_inverse(dbm[j][i], tmp)) {
+          // The coefficient for `vj' in `le' is not 0
+          // and the difference with `v' in the BD shape is constant.
+          // So apply this equality to eliminate `v' in `le'.
+          numer_denom(tmp, num, den);
+          le -= coeff*v - coeff*vj;
+          le *= den;
+          le -= num*coeff;
+          val_den *= den;
+          constant_v = true;
+          break;
+        }
+      }
+      if (!constant_v)
+        // The expression `expr' is not constant.
+        return false;
+    }
+  }
+  if (!constant_v)
+    // The expression `expr' is not constant.
+    return false;
+
+  // The expression `expr' is constant.
+  freq_n = 0;
+  freq_d = 1;
+
+  // Reduce `val_n' and `val_d'.
+  normalize2(le.inhomogeneous_term(), val_den, val_n, val_d);
+  return true;
+}
+
+template <typename T>
+bool
 BD_Shape<T>::constrains(const Variable var) const {
-  // `var' should be one of the dimensions of the polyhedron.
+  // `var' should be one of the dimensions of the BD shape.
   const dimension_type var_space_dim = var.space_dimension();
   if (space_dimension() < var_space_dim)
     throw_dimension_incompatible("constrains(v)", "v", var);
 
-  // A polyhedron known to be empty constrains all variables.
+  shortest_path_closure_assign();
+  // A BD shape known to be empty constrains all variables.
   // (Note: do not force emptiness check _yet_)
   if (marked_empty())
     return true;
@@ -1916,7 +2026,7 @@ BD_Shape<T>::upper_bound_assign(const BD_Shape& y) {
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("upper_bound_assign(y)", y);
 
-  // The poly-hull of a polyhedron `bd' with an empty polyhedron is `bd'.
+  // The upper bound of a BD shape `bd' with an empty shape is `bd'.
   y.shortest_path_closure_assign();
   if (y.marked_empty())
     return;

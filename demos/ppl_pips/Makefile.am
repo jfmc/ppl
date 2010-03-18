@@ -22,6 +22,19 @@
 
 SUBDIRS = examples
 
+if VALGRIND_TESTS_ENABLED
+
+CHECKER = \
+$(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
+--num-callers=100 --leak-resolution=high \
+--suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+else !VALGRIND_TESTS_ENABLED
+
+CHECKER =
+
+endif !VALGRIND_TESTS_ENABLED
+
 AM_CPPFLAGS = \
 -I$(top_builddir) \
 -I$(top_builddir)/src \
@@ -85,8 +98,8 @@ check-local: ppl_pips$(EXEEXT)
 	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  echo $(ECHO_N) $$file " $(ECHO_C)" >>obtained; \
 	  echo ppl_pips$(EXEEXT) -p $$path; \
-	  ./ppl_pips$(EXEEXT) -p $$path | tr -d '\015' | $(TEXT_MD5SUM) \
-            >>obtained; \
+	  $(CHECKER) ./ppl_pips$(EXEEXT) -p $$path \
+            | tr -d '\015' | $(TEXT_MD5SUM) >>obtained; \
 	done
 	for path in $(srcdir)/examples/*.pip; \
 	do \
@@ -94,8 +107,8 @@ check-local: ppl_pips$(EXEEXT)
 	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  echo $(ECHO_N) $$file " $(ECHO_C)" >>obtained; \
 	  echo ppl_pips$(EXEEXT) -P $$path; \
-	  ./ppl_pips$(EXEEXT) -P $$path | tr -d '\015' | $(TEXT_MD5SUM) \
-            >>obtained; \
+	   $(CHECKER) ./ppl_pips$(EXEEXT) -P $$path \
+             | tr -d '\015' | $(TEXT_MD5SUM) >>obtained; \
 	done
 	diff obtained $(srcdir)/$(EXPECTED)
 

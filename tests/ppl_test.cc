@@ -353,6 +353,12 @@ print_constraints(const Polyhedron& ph,
 }
 
 void
+print_constraints(const Affine_Space& affs,
+		  const std::string& intro, std::ostream& s) {
+  print_constraints(affs.constraints(), intro, s);
+}
+
+void
 print_constraints(const Constraint_System& cs,
 		  const std::string& intro, std::ostream& s) {
   if (!intro.empty())

@@ -132,7 +132,7 @@ Java_parma_1polyhedra_1library_Complexity_1Class_initIDs
 }
 
 JNIEXPORT void JNICALL
-Java_parma_1polyhedra_1library_Congruence_initIDs
+_Java_parma_1polyhedra_1library_Congruence_initIDs
 (JNIEnv* env, jclass j_congruence_class) {
   jfieldID fID;
   fID = env->GetFieldID(j_congruence_class, "mod",
@@ -523,6 +523,76 @@ Java_parma_1polyhedra_1library_PPL_1Object_initIDs
   jfieldID fID = env->GetFieldID(j_ppl_object_class, "ptr", "J");
   CHECK_RESULT_ASSERT(env, fID);
   cached_FMIDs.PPL_Object_ptr_ID = fID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Bounded_1Integer_Type_1Representation_initIDs
+(JNIEnv* env, jclass j_bounded_rep_class) {
+  jfieldID fID;
+  fID = env->GetStaticFieldID(j_bounded_rep_class, "UNSIGNED",
+                              "Lparma_polyhedra_library/Bounded_Integer_Type_Representation;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Bounded_Integer_Type_Representation_UNSIGNED_ID = fID;
+  fID = env->GetStaticFieldID(j_bounded_rep_class, "SIGNED_2_COMPLEMENT",
+                              "Lparma_polyhedra_library/Bounded_Integer_Type_Representation;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Bounded_Integer_Type_Representation_SIGNED_2_COMPLEMENT_ID = fID;
+  jmethodID mID;
+  mID = env->GetMethodID(j_bounded_rep_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Bounded_Integer_Type_Representation_ordinal_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Bounded_1Integer_Type_1Overflow_initIDs
+(JNIEnv* env, jclass j_bounded_overflow_class) {
+  jfieldID fID;
+  fID = env->GetStaticFieldID(j_bounded_overflow_class, "OVERFLOW_WRAPS",
+                              "Lparma_polyhedra_library/Bounded_Integer_Type_Overflow;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Bounded_Integer_Type_Overflow_OVERFLOW_WRAPS_ID = fID;
+  fID = env->GetStaticFieldID(j_bounded_overflow_class, "OVERFLOW_UNDEFINED",
+                              "Lparma_polyhedra_library/Bounded_Integer_Type_Overflow;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Bounded_Integer_Type_Overflow_OVERFLOW_UNDEFINED_ID = fID;
+  fID = env->GetStaticFieldID(j_bounded_overflow_class, "OVERFLOW_IMPOSSIBLE",
+                              "Lparma_polyhedra_library/Bounded_Integer_Type_Overflow;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Bounded_Integer_Type_Overflow_OVERFLOW_IMPOSSIBLE_ID = fID;
+  jmethodID mID;
+  mID = env->GetMethodID(j_bounded_overflow_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Bounded_Integer_Type_Overflow_ordinal_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Bounded_1Integer_Type_1Width_initIDs
+(JNIEnv* env, jclass j_bounded_width_class) {
+  jfieldID fID;
+  fID = env->GetStaticFieldID(j_bounded_width_class, "BITS_8",
+                              "Lparma_polyhedra_library/Bounded_Integer_Type_Width;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_8_ID = fID;
+  fID = env->GetStaticFieldID(j_bounded_width_class, "BITS_16",
+                              "Lparma_polyhedra_library/Bounded_Integer_Type_Width;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_16_ID = fID;
+  fID = env->GetStaticFieldID(j_bounded_width_class, "BITS_32",
+                              "Lparma_polyhedra_library/Bounded_Integer_Type_Width;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_32_ID = fID;
+  fID = env->GetStaticFieldID(j_bounded_width_class, "BITS_64",
+                              "Lparma_polyhedra_library/Bounded_Integer_Type_Width;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_64_ID = fID;
+  fID = env->GetStaticFieldID(j_bounded_width_class, "BITS_128",
+                              "Lparma_polyhedra_library/Bounded_Integer_Type_Width;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_128_ID = fID;
+  jmethodID mID;
+  mID = env->GetMethodID(j_bounded_width_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Bounded_Integer_Type_Width_ordinal_ID = mID;
 }
 
 JNIEXPORT void JNICALL

@@ -206,9 +206,9 @@ pl_clpq2_SOURCES = pl_clpq.cc
 
 if HOST_OS_CYGWIN
 
-# Under Cygwin, plld gets the link options wrong: -lpl (PLLIB)
-# comes before -lppl_swiprolog, with the result that all the
-# symbols of the SWI-Prolog foreign interface are undefined.
+# Under Cygwin, $(SWI_PROLOG_LD) gets the link options wrong:
+# -lpl (PLLIB) comes before -lppl_swiprolog, with the result that all
+# the symbols of the SWI-Prolog foreign interface are undefined.
 # Repeating the link options works around this problem.
 EXTRA_LINK_OPTIONS = $(SWI_PROLOG_LD_OPTIONS)
 
@@ -229,14 +229,14 @@ LIBPPL_SWIPROLOG_LINK_OPTIONS = -L.libs -lppl_swiprolog
 endif !ENABLE_STATIC
 
 ppl_pl$(EXEEXT): libppl_swiprolog.la ppl_pl.o
-	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
+	$(SWI_PROLOG_LD) -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ $(LIBPPL_SWIPROLOG_LINK_OPTIONS) ppl_pl.o \
 		-L$(top_builddir)/src/.libs \
 		-lppl $(WATCHDOG_LINK_OPTIONS) @extra_libraries@ $(EXTRA_LINK_OPTIONS)
 
 pl_clpq$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq.pl
-	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
+	$(SWI_PROLOG_LD) -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ $(LIBPPL_SWIPROLOG_LINK_OPTIONS) pl_clpq.o \
                 $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq.pl \
@@ -245,7 +245,7 @@ pl_clpq$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq.pl
 
 
 pl_clpq2$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
-	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
+	$(SWI_PROLOG_LD) -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ $(LIBPPL_SWIPROLOG_LINK_OPTIONS) pl_clpq.o \
                 $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq2.pl \
