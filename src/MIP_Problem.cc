@@ -614,6 +614,29 @@ PPL::MIP_Problem::parse_constraints(dimension_type& tableau_num_rows,
   return true;
 }
 
+namespace {
+
+// This is used as a template argument in process_pending_constraints(),
+// so it must be a global declaration.
+struct process_pending_constraints_helper_struct {
+
+  PPL::dimension_type index;
+  const PPL::Coefficient* data;
+  bool toggle_sign;
+
+  process_pending_constraints_helper_struct(PPL::dimension_type index1,
+                                            const PPL::Coefficient* data1,
+                                            bool toggle_sign1)
+  : index(index1), data(data1), toggle_sign(toggle_sign1) {
+  }
+
+  bool operator<(const process_pending_constraints_helper_struct& x) const {
+    return index < x.index;
+  }
+};
+
+} // namespace
+
 bool
 PPL::MIP_Problem::process_pending_constraints() {
   const dimension_type num_original_rows = tableau.num_rows();
@@ -693,6 +716,10 @@ PPL::MIP_Problem::process_pending_constraints() {
   const dimension_type begin_artificials = artificial_cols > 0
     ? artificial_index : 0;
 
+  typedef process_pending_constraints_helper_struct buffer_element_t;
+  // Used to improve performance, ordering writes to tableau_k.
+  std::vector<buffer_element_t> buffer;
+
   // Proceed with the insertion of the constraints.
   for (dimension_type k = tableau_num_rows, i = input_cs.size();
        i-- > first_pending_constraint;  )
@@ -700,35 +727,34 @@ PPL::MIP_Problem::process_pending_constraints() {
       // Copy the original constraint in the tableau.
       matrix_row_reference_type tableau_k = tableau[--k];
       const Constraint& cs_i = input_cs[i];
-      // Used to improve performance, ordering writes to tableau_k.
-      std::map<dimension_type,std::pair<const Coefficient*,bool> > map;
       for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
         const Coefficient& current_coefficient =
           cs_i.coefficient(Variable(sd));
         // The test against 0 is not needed, but improves performance.
         if (current_coefficient != 0) {
-          map[mapping[sd + 1].first] = std::make_pair(&current_coefficient,
-                                                      false);
+          buffer.push_back(buffer_element_t(mapping[sd + 1].first,
+                                            &current_coefficient, false));
           // Split if needed.
           if (mapping[sd + 1].second != 0)
-            map[mapping[sd + 1].second]
-              = std::make_pair(&current_coefficient, true);
+            buffer.push_back(buffer_element_t(mapping[sd + 1].second,
+                                              &current_coefficient, true));
         }
       }
       const Coefficient& cs_i_inhomogeneous_term = cs_i.inhomogeneous_term();
       // The test against 0 is not needed, but improves performance.
       if (cs_i_inhomogeneous_term != 0) {
-        map[mapping[0].first]
-          = std::make_pair(&cs_i_inhomogeneous_term, false);
+        buffer.push_back(buffer_element_t(mapping[0].first,
+                                          &cs_i_inhomogeneous_term, false));
         // Split if needed.
         if (mapping[0].second != 0)
-          map[mapping[0].second]
-            = std::make_pair(&cs_i_inhomogeneous_term, true);
+          buffer.push_back(buffer_element_t(mapping[0].second,
+                                            &cs_i_inhomogeneous_term, true));
       }
 
       // Add the slack variable, if needed.
       if (cs_i.is_inequality()) {
-        map[--slack_index] = std::make_pair(&(Coefficient_one()), true);
+        buffer.push_back(buffer_element_t(--slack_index, &(Coefficient_one()),
+                                          true));
         // If the constraint is already satisfied, we will not use artificial
         // variables to compute a feasible base: this to speed up
         // the algorithm.
@@ -738,24 +764,23 @@ PPL::MIP_Problem::process_pending_constraints() {
         }
       }
       {
+        std::sort(buffer.begin(), buffer.end());
         // Dump map content into tableau_k.
-        std::map<dimension_type, std::pair<const Coefficient*, bool> >
-          ::iterator j = map.begin();
-        std::map<dimension_type, std::pair<const Coefficient*, bool> >
-          ::iterator j_end = map.end();
+        std::vector<buffer_element_t>::iterator j = buffer.begin();
+        std::vector<buffer_element_t>::iterator j_end = buffer.end();
         if (j != j_end) {
           matrix_row_iterator itr
-            = tableau_k.find_create(j->first, *(j->second.first));
-          if (j->second.second)
+            = tableau_k.find_create(j->index, *(j->data));
+          if (j->toggle_sign)
             neg_assign((*itr).second);
           ++j;
           for ( ; j != j_end; ++j) {
-            itr = tableau_k.find_create(j->first, *(j->second.first), itr);
-            if (j->second.second)
+            itr = tableau_k.find_create(j->index, *(j->data), itr);
+            if (j->toggle_sign)
               neg_assign((*itr).second);
           }
-          map.clear();
         }
+        buffer.clear();
       }
       // The following loops are equivalent to this simpler (but slower) loop.
       //
