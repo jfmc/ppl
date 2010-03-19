@@ -179,6 +179,17 @@ public:
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
 
+  //! Looks for an element with key c, assuming it is in [itr,end()) .
+  iterator find(const dimension_type c, iterator itr);
+  //! Lower bound of key c, assuming it is in [itr,end()) .
+  iterator lower_bound(const dimension_type c, iterator itr);
+
+  //! Looks for an element with key c, assuming it is in [itr,end()) .
+  const_iterator find(const dimension_type c, const_iterator itr) const;
+  //! Lower bound of key c, assuming it is in [itr,end()) .
+  const_iterator lower_bound(const dimension_type c,
+                             const_iterator itr) const;
+
   //! Equivalent to find_create(i, x, begin_dangerous()) .
   iterator find_create(const dimension_type i, const Coefficient& x);
 
@@ -368,6 +379,17 @@ public:
   iterator lower_bound(const dimension_type c);
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
+
+  //! Looks for an element with key c, assuming it is in [itr,end()) .
+  iterator find(const dimension_type c, iterator itr);
+  //! Lower bound of key c, assuming it is in [itr,end()) .
+  iterator lower_bound(const dimension_type c, iterator itr);
+
+  //! Looks for an element with key c, assuming it is in [itr,end()) .
+  const_iterator find(const dimension_type c, const_iterator itr) const;
+  //! Lower bound of key c, assuming it is in [itr,end()) .
+  const_iterator lower_bound(const dimension_type c,
+                             const_iterator itr) const;
 
   //! Equivalent to find_create(i, x, begin_dangerous()) .
   iterator find_create(const dimension_type i, const Coefficient& x);

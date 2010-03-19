@@ -246,6 +246,26 @@ Sparse_Row::lower_bound(const dimension_type k) const {
 }
 
 inline Sparse_Row::iterator
+Sparse_Row::find(const dimension_type c, iterator itr) {
+  return row.find(c, itr);
+}
+
+inline Sparse_Row::iterator
+Sparse_Row::lower_bound(const dimension_type c, iterator itr) {
+  return row.lower_bound(c, itr);
+}
+
+inline Sparse_Row::const_iterator
+Sparse_Row::find(const dimension_type c, const_iterator itr) const {
+  return row.find(c, itr);
+}
+
+inline Sparse_Row::const_iterator
+Sparse_Row::lower_bound(const dimension_type c, const_iterator itr) const {
+  return row.lower_bound(c, itr);
+}
+
+inline Sparse_Row::iterator
 Sparse_Row::find_create(const dimension_type i, const Coefficient& x) {
   PPL_ASSERT(i < size_);
   return row.find_create(i ,x);
@@ -549,6 +569,27 @@ Sparse_Row_Reference::find(const dimension_type c) const {
 inline Sparse_Row_Reference::const_iterator
 Sparse_Row_Reference::lower_bound(const dimension_type c) const {
   return row.lower_bound(c);
+}
+
+inline Sparse_Row_Reference::iterator
+Sparse_Row_Reference::find(const dimension_type c, iterator itr) {
+  return row.find(c, itr);
+}
+
+inline Sparse_Row_Reference::iterator
+Sparse_Row_Reference::lower_bound(const dimension_type c, iterator itr) {
+  return row.lower_bound(c, itr);
+}
+
+inline Sparse_Row_Reference::const_iterator
+Sparse_Row_Reference::find(const dimension_type c, const_iterator itr) const {
+  return row.find(c, itr);
+}
+
+inline Sparse_Row_Reference::const_iterator
+Sparse_Row_Reference
+::lower_bound(const dimension_type c, const_iterator itr) const {
+  return row.lower_bound(c, itr);
 }
 
 inline Sparse_Row_Reference::iterator
