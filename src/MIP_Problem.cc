@@ -720,6 +720,9 @@ PPL::MIP_Problem::process_pending_constraints() {
   // Used to improve performance, ordering writes to tableau_k.
   std::vector<buffer_element_t> buffer;
 
+  // Used to optimize access to tableau_k below.
+  std::vector<std::pair<dimension_type, dimension_type> > vars_in_base;
+
   // Proceed with the insertion of the constraints.
   for (dimension_type k = tableau_num_rows, i = input_cs.size();
        i-- > first_pending_constraint;  )
@@ -788,20 +791,23 @@ PPL::MIP_Problem::process_pending_constraints() {
       //   if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0)
       //    linear_combine(tableau_k, tableau[j], base[j]);
 
-      // Used to optimize access to tableau_k below.
       // We need to sort accesses by base[j], not by j.
-      std::map<dimension_type, dimension_type> vars_in_base;
+
       for (dimension_type j = base_size; j-- > 0; )
         if (base[j] != 0 && j != k)
-          vars_in_base[base[j]] = j;
+          vars_in_base.push_back(std::make_pair(base[j], j));
 
-      std::map<dimension_type, dimension_type>::iterator j
+      std::sort(vars_in_base.begin(), vars_in_base.end());
+
+      std::vector< std::pair<dimension_type, dimension_type> >::iterator j
         = vars_in_base.begin();
-      std::map<dimension_type, dimension_type>::iterator j_end
+      std::vector< std::pair<dimension_type, dimension_type> >::iterator j_end
         = vars_in_base.end();
       for ( ; j != j_end; ++j)
         if (k != j->second && tableau_k.get(j->first) != 0)
           linear_combine(tableau_k, tableau[j->second], base[j->second]);
+
+      vars_in_base.clear();
     }
 
   // We negate the row if tableau[i][0] <= 0 to get the inhomogeneous term > 0.
