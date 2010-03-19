@@ -803,9 +803,26 @@ PPL::MIP_Problem::process_pending_constraints() {
         = vars_in_base.begin();
       std::vector< std::pair<dimension_type, dimension_type> >::iterator j_end
         = vars_in_base.end();
-      for ( ; j != j_end; ++j)
-        if (k != j->second && tableau_k.get(j->first) != 0)
-          linear_combine(tableau_k, tableau[j->second], base[j->second]);
+      matrix_row_const_iterator itr = tableau_k.begin();
+      matrix_row_const_iterator itr_end = tableau_k.end();
+      while (j != j_end && itr != itr_end) {
+        if ((*itr).first < j->first)
+          itr = tableau_k.lower_bound(j->first, itr);
+        else
+          if ((*itr).first > j->first)
+            ++j;
+          else {
+            PPL_ASSERT((*itr).first == j->first);
+            if (k != j->second && (*itr).second != 0) {
+              linear_combine(tableau_k, tableau[j->second], base[j->second]);
+              // linear_combine() invalidates itr and itr_end.
+              itr = tableau_k.lower_bound(j->first);
+              itr_end = tableau_k.end();
+            }
+            ++itr;
+            ++j;
+          }
+      }
 
       vars_in_base.clear();
     }
