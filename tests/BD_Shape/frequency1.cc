@@ -46,7 +46,11 @@ test01() {
   bool ok = (!bds1.frequency(A, num1, den1, valn1, vald1)
              && !bds2.frequency(A, num2, den2, valn2, vald2));
   print_constraints(bds1, "*** bds1 ***");
+  nout << "num1 " << num1 << ", den1 " << den1 << endl;
+  nout << "valn1 " << valn1 << ", vald1 " << vald1 << endl;
   print_constraints(bds2, "*** bds2 ***");
+  nout << "num2 " << num2 << ", den2 " << den2 << endl;
+  nout << "valn2 " << valn2 << ", vald2 " << vald2 << endl;
 
   return ok;
 }
@@ -66,11 +70,16 @@ test02() {
   Coefficient den2;
   Coefficient valn2;
   Coefficient vald2;
-  bool ok = (bds1.frequency(Linear_Expression(3), num1, den1, valn1, vald1)
+  Linear_Expression three(3);
+  bool ok = (bds1.frequency(three, num1, den1, valn1, vald1)
              && num1 == 0 && den1 == 1 && valn1 == 3 && vald1 == 1
-             && !bds2.frequency(Linear_Expression(3), num2, den2, valn2, vald2));
+             && !bds2.frequency(three, num2, den2, valn2, vald2));
   print_constraints(bds1, "*** bds1 ***");
+  nout << "num1 " << num1 << ", den1 " << den1 << endl;
+  nout << "valn1 " << valn1 << ", vald1 " << vald1 << endl;
   print_constraints(bds2, "*** bds2 ***");
+  nout << "num2 " << num2 << ", den2 " << den2 << endl;
+  nout << "valn2 " << valn2 << ", vald2 " << vald2 << endl;
 
   return ok;
 }
@@ -90,6 +99,8 @@ test03() {
   bool ok = (bds.frequency(Linear_Expression(A), num, den, valn, vald)
              && num == 0 && den == 1 && valn == 0 && vald == 1);
   print_constraints(bds, "*** bds ***");
+  nout << "num " << num << ", den " << den << endl;
+  nout << "valn " << valn << ", vald " << vald << endl;
 
   return ok;
 }
@@ -108,6 +119,8 @@ test04() {
   Coefficient vald;
   bool ok = (!bds.frequency(Linear_Expression(A), num, den, valn, vald));
   print_constraints(bds, "*** bds ***");
+  nout << "num " << num << ", den " << den << endl;
+  nout << "valn " << valn << ", vald " << vald << endl;
 
   return ok;
 }
@@ -127,6 +140,8 @@ test05() {
   Coefficient vald;
   bool ok = (!bds.frequency(Linear_Expression(B), num, den, valn, vald));
   print_constraints(bds, "*** bds ***");
+  nout << "num " << num << ", den " << den << endl;
+  nout << "valn " << valn << ", vald " << vald << endl;
 
   return ok;
 }
@@ -137,7 +152,7 @@ test06() {
   Variable B(1);
 
   TBD_Shape bds(2);
-  bds.add_constraint(2*A == 1);
+  bds.add_constraint(A == 1);
   bds.add_constraint(B == 2);
 
   Coefficient num;
@@ -145,8 +160,10 @@ test06() {
   Coefficient valn;
   Coefficient vald;
   bool ok = (bds.frequency(Linear_Expression(A + B - 3), num, den, valn, vald)
-             && num == 0 && den == 1 && valn == -1 && vald == 2);
+             && num == 0 && den == 1 && valn == 0 && vald == 1);
   print_constraints(bds, "*** bds ***");
+  nout << "num " << num << ", den " << den << endl;
+  nout << "valn " << valn << ", vald " << vald << endl;
 
   return ok;
 }
@@ -166,6 +183,8 @@ test07() {
   Coefficient vald;
   bool ok = (!bds.frequency(Linear_Expression(A - B), num, den, valn, vald));
   print_constraints(bds, "*** bds ***");
+  nout << "num " << num << ", den " << den << endl;
+  nout << "valn " << valn << ", vald " << vald << endl;
 
   return ok;
 }
@@ -177,8 +196,8 @@ test08() {
   Variable C(2);
 
   TBD_Shape bds(3);
-  bds.add_constraint(2*A - 2*B == 1);
-  bds.add_constraint(3*C == 2);
+  bds.add_constraint(2*A - 2*B == 2);
+  bds.add_constraint(3*C == 3);
   bds.add_constraint(B <= 2);
 
   Coefficient num;
@@ -187,8 +206,10 @@ test08() {
   Coefficient vald;
   bool ok = (bds.frequency(Linear_Expression(A - B + C + 1),
                            num, den, valn, vald)
-             && num == 0 && den == 1 && valn == 13 && vald == 6);
+             && num == 0 && den == 1 && valn == 3 && vald == 1);
   print_constraints(bds, "*** bds ***");
+  nout << "num " << num << ", den " << den << endl;
+  nout << "valn " << valn << ", vald " << vald << endl;
 
   return ok;
 }
@@ -200,18 +221,24 @@ test09() {
   Variable C(2);
 
   TBD_Shape bds(3);
-  bds.add_constraint(2*A - 2*B == 1);
-  bds.add_constraint(2*C == 1);
+  bds.add_constraint(4*A - 4*B == 1);
+  bds.add_constraint(3*C == 1);
   bds.add_constraint(B <= 2);
 
   Coefficient num;
   Coefficient den;
   Coefficient valn;
   Coefficient vald;
-  bool ok = (bds.frequency(Linear_Expression(A - B + C + 1),
-                           num, den, valn, vald)
-             && num == 0 && den == 1 && valn == 2 && vald == 1);
+  bool discrete = bds.frequency(Linear_Expression(A - B),
+                                num, den, valn, vald);
+  // If the shape is based on an integral coefficient type, then
+  // approximations will induce non discreteness of the linear expression.
+  bool ok = std::numeric_limits<TBD_Shape::coefficient_type_base>::is_integer
+    ? (!discrete && num == 0 && den == 0 && valn == 0 && vald == 0)
+    : (discrete && num == 0 && den == 1 && valn == 1 && vald == 4);
   print_constraints(bds, "*** bds ***");
+  nout << "num " << num << ", den " << den << endl;
+  nout << "valn " << valn << ", vald " << vald << endl;
 
   return ok;
 }
