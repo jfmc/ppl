@@ -498,104 +498,49 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
         = row.lower_bound(min_column);
       PIP_Tree_Node::matrix_const_row_const_iterator row_end = row.end();
       const Coefficient* row_jb;
-      if (row_itr == row_end || (*row_itr).first > min_column) {
-        // Found a zero element, keep only zero elements in the current row.
-        for (++i; i!=i_end; ++i) {
-          if (row_itr != row_end) {
-            if ((*row_itr).first == *i) {
-              if ((*row_itr).second == 0)
-                new_candidates.insert(*i);
-              ++row_itr;
-            } else {
-              if ((*row_itr).first < *i) {
-                ++row_itr;
-                row_itr = row.lower_bound(*i,row_itr);
-                if (row_itr == row_end || (*row_itr).first > *i)
-                  new_candidates.insert(*i);
-                else {
-                  PPL_ASSERT((*row_itr).first == *i);
-                  if ((*row_itr).second == 0)
-                    new_candidates.insert(*i);
-                  ++row_itr;
-                }
-              } else {
-                PPL_ASSERT((*row_itr).first > *i);
-                new_candidates.insert(*i);
-              }
-            }
-          } else
-            new_candidates.insert(*i);
-        }
-      } else {
+      if (row_itr == row_end || (*row_itr).first > min_column)
+        row_jb = &(Coefficient_zero());
+      else {
         PPL_ASSERT((*row_itr).first == min_column);
         row_jb = &((*row_itr).second);
         ++row_itr;
-        for ( ; i!=i_end; ++i) {
-          pivot_itr = pivot_row.find(*i,pivot_itr);
-          PPL_ASSERT(pivot_itr != pivot_end);
-          const Coefficient& sij_a = (*pivot_itr).second;
-          PPL_ASSERT(sij_a > 0);
-          PPL_ASSERT(*sij_b > 0);
+      }
+      for ( ; i!=i_end; ++i) {
+        pivot_itr = pivot_row.find(*i,pivot_itr);
+        PPL_ASSERT(pivot_itr != pivot_end);
+        const Coefficient& sij_a = (*pivot_itr).second;
+        PPL_ASSERT(sij_a > 0);
+        PPL_ASSERT(*sij_b > 0);
 
-          PPL_DIRTY_TEMP_COEFFICIENT(lhs);
-          PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-          bool found_better_candidate = false;
-          if (row_itr != row_end && (*row_itr).first < *i)
-            row_itr = row.lower_bound(*i,row_itr);
-          const Coefficient* row_ja;
-          if (row_itr != row_end) {
-            row_ja = &((*row_itr).second);
-            ++row_itr;
-          } else {
-            // Found a zero element, keep only zero elements in the current
-            // row.
-            new_candidates.clear();
-            new_candidates.insert(*i);
-            for (++i; i!=i_end; ++i) {
-              if (row_itr != row_end) {
-                if ((*row_itr).first == *i) {
-                  if ((*row_itr).second == 0)
-                    new_candidates.insert(*i);
-                  ++row_itr;
-                } else {
-                  if ((*row_itr).first < *i) {
-                    ++row_itr;
-                    row_itr = row.lower_bound(*i,row_itr);
-                    if (row_itr == row_end || (*row_itr).first > *i)
-                      new_candidates.insert(*i);
-                    else {
-                      PPL_ASSERT((*row_itr).first == *i);
-                      if ((*row_itr).second == 0)
-                        new_candidates.insert(*i);
-                      ++row_itr;
-                    }
-                  } else {
-                    PPL_ASSERT((*row_itr).first > *i);
-                    new_candidates.insert(*i);
-                  }
-                }
-              } else
-                new_candidates.insert(*i);
-            }
-            break;
-          }
-          // lhs is actually the left-hand side with toggled sign.
-          // rhs is actually the right-hand side with toggled sign.
-          lhs = *sij_b * *row_ja;
-          rhs = sij_a * *row_jb;
-          if (lhs == rhs)
-            new_candidates.insert(*i);
-          else {
-            if (lhs < rhs)
-              found_better_candidate = true;
-          }
-          if (found_better_candidate) {
-            new_candidates.clear();
-            min_column = *i;
-            row_jb = row_ja;
-            sij_b = &sij_a;
-            new_candidates.insert(min_column);
-          }
+        PPL_DIRTY_TEMP_COEFFICIENT(lhs);
+        PPL_DIRTY_TEMP_COEFFICIENT(rhs);
+        bool found_better_candidate = false;
+        if (row_itr != row_end && (*row_itr).first < *i)
+          row_itr = row.lower_bound(*i,row_itr);
+        const Coefficient* row_ja;
+        if (row_itr == row_end || (*row_itr).first > *i)
+          row_ja = &(Coefficient_zero());
+        else {
+          PPL_ASSERT((*row_itr).first == *i);
+          row_ja = &((*row_itr).second);
+          ++row_itr;
+        }
+        // lhs is actually the left-hand side with toggled sign.
+        // rhs is actually the right-hand side with toggled sign.
+        lhs = *sij_b * *row_ja;
+        rhs = sij_a * *row_jb;
+        if (lhs == rhs)
+          new_candidates.insert(*i);
+        else {
+          if (lhs < rhs)
+            found_better_candidate = true;
+        }
+        if (found_better_candidate) {
+          new_candidates.clear();
+          min_column = *i;
+          row_jb = row_ja;
+          sij_b = &sij_a;
+          new_candidates.insert(min_column);
         }
       }
     }
