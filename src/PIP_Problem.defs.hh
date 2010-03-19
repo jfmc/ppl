@@ -326,36 +326,149 @@ operator<<(std::ostream& s, const PIP_Problem& p);
      \f$M-x'_i\f$, where the \f$x'_i\f$ variables are positive variables to
      be minimized.
    - Solve the lexicographic minimum for the \f$x'\f$ variable vector.
-   - In the solution expressions, the values of the original variables are
-     obtained from the resulting values of the \f$x'_i\f$ variables by
-     applying the equality \f$x_i = M-x'_i\f$.
+   - In the solution expressions, the values of the \f$x'\f$ variables will
+     be expressed in the form: \f$x'_i = M-x_i\f$. To get back the value of
+     the expression of each \f$x_i\f$ variable, just apply the
+     formula: \f$x_i = M-x'_i\f$.
+  \par
+  Note that if the resulting expression of one of the \f$x'_i\f$ variables
+  is not in the \f$x'_i = M-x_i\f$ form, this means that the
+  sign-unrestricted problem is unbounded.
   \par
   You can choose to maximize only a subset of the variables while minimizing
   the other variables. In that case, just apply the variable substitution
   method on the variables you want to be maximized. The variable
   optimization priority will still be in lexicographic order.
 
-  \par Allowing variables and parameters to be arbitrarily signed
-  You can deal with arbitrarily signed variables and/or parameters by
-  reformulating the constraints using variable and/or parameter
-  substitution. Proceed the following steps:
+  \par
+  \b Example: consider you want to find the lexicographic maximum of the
+  \f$(x,y)\f$ vector, under the constraints:
+    \f[\left\{\begin{array}{l}
+      y \geq 2x - 4\\
+      y \leq -x + p
+    \end{array}\right.\f]
+  \par
+  where \f$p\f$ is a parameter.
+  \par
+  After variable substitution, the constraints become:
+    \f[\left\{\begin{array}{l}
+      M - y \geq 2M - 2x - 4\\
+      M - y \leq -M + x + p
+    \end{array}\right.\f]
+  \par
+  The code for creating the corresponding problem object is the following:
+  \code
+  Variable x(0);
+  Variable y(1);
+  Variable p(2);
+  Variable M(3);
+  Variables_Set params(p, M);
+  Constraint_System cs;
+  cs.insert(M - y >= 2*M - 2*x - 4);
+  cs.insert(M - y <= -M + x + p);
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  pip.set_big_parameter_dimension(3);     // M is the big parameter
+  \endcode
+  Solving the problem provides the following solution:
+  \verbatim
+  Parameter E = (C + 1) div 3
+  {D - E - 1 ; -C + D + E + 1}
+  \endverbatim
+  Under the notations above, the solution is:
+  \f[ \left\{\begin{array}{l}
+    x'=M-\left\lfloor\frac{p+1}{3}\right\rfloor-1\\
+    y'=M-p+\left\lfloor\frac{p+1}{3}\right\rfloor+1
+  \end{array}\right.
+  \f]
+  \par
+  Performing substitution again provides us with the values of the original
+  variables:
+  \f[ \left\{\begin{array}{l}
+    x=\left\lfloor\frac{p+1}{3}\right\rfloor+1\\
+    y=p-\left\lfloor\frac{p+1}{3}\right\rfloor-1
+  \end{array}\right.
+  \f]
+
+  \par Allowing variables to be arbitrarily signed
+  You can deal with arbitrarily signed variables by reformulating the
+  constraints using variable substitution. Proceed the following steps:
    - Create a big parameter (see PIP_Problem::set_big_parameter_dimension),
      which we will call \f$M\f$.
    - Reformulate each of the maximization problem constraints by
      substituting each \f$x_i\f$ variable with an expression of the form
-     \f$x'_i-M\f$, where the \f$x'_i\f$ variables are positive, and/or by
-     substituting each \f$p_i\f$ parameter with an expression of the form
-     \f$p'_i-M\f$, where the \f$p'_i\f$ parameters are positive.
+     \f$x'_i-M\f$, where the \f$x'_i\f$ variables are positive.
    - Solve the lexicographic minimum for the \f$x'\f$ variable vector.
-   - In the solution expressions, the values of the original variables
-     and/or parameters are obtained from the resulting values of the
-     \f$x'_i\f$ variables and/or the \f$p'_i\f$ parameters by applying the
-     equalities \f$x_i = M-x'_i\f$ and/or \f$p_i = M-p'_i\f$.
-
+   - The solution expression can be read in the form:
+   - In the solution expressions, the values of the \f$x'\f$ variables will
+     be expressed in the form: \f$x'_i = x_i+M\f$. To get back the value of
+     the expression of each signed \f$x_i\f$ variable, just apply the
+     formula: \f$x_i = x'_i-M\f$.
+  \par
+  Note that if the resulting expression of one of the \f$x'_i\f$ variables
+  is not in the \f$x'_i = x_i+M\f$ form, this means that the
+  sign-unrestricted problem is unbounded.
   \par
   You can choose to define only a subset of the variables to be
   sign-unrestricted. In that case, just apply the variable substitution
   method on the variables you want to be sign-unrestricted.
+
+  \par
+  \b Example: consider you want to find the lexicographic minimum of the
+  \f$(x,y)\f$ vector, where the \f$x\f$ and \f$y\f$ variables are
+  sign-unrestricted, under the constraints:
+    \f[\left\{\begin{array}{l}
+      y \geq -2x - 4\\
+      2y \leq x + 2p
+    \end{array}\right.\f]
+  \par
+  where \f$p\f$ is a parameter.
+  \par
+  After variable substitution, the constraints become:
+    \f[\left\{\begin{array}{l}
+      y' - M \geq -2x' + 2M - 4\\
+      2y' - 2M \leq x' - M + 2p
+    \end{array}\right.\f]
+  \par
+  The code for creating the corresponding problem object is the following:
+  \code
+  Variable x(0);
+  Variable y(1);
+  Variable p(2);
+  Variable M(3);
+  Variables_Set params(p, M);
+  Constraint_System cs;
+  cs.insert(y - M >= -2*x + 2*M - 4);
+  cs.insert(2*y - 2*M <= x - M + 2*p);
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  pip.set_big_parameter_dimension(3);     // M is the big parameter
+  \endcode
+  \par
+  Solving the problem provides the following solution:
+  \verbatim
+  Parameter E = (2*C + 3) div 5
+  {D - E - 1 ; D + 2*E - 2}
+  \endverbatim
+  Under the notations above, the solution is:
+  \f[ \left\{\begin{array}{l}
+    x'=M-\left\lfloor\frac{2p+3}{5}\right\rfloor-1\\
+    y'=M+2\left\lfloor\frac{2p+3}{5}\right\rfloor-2
+  \end{array}\right.
+  \f]
+  \par
+  Performing substitution again provides us with the values of the original
+  variables:
+  \f[ \left\{\begin{array}{l}
+    x=\left\lfloor\frac{2p+3}{5}\right\rfloor-1\\
+    y=2\left\lfloor\frac{2p+3}{5}\right\rfloor-2
+  \end{array}\right.
+  \f]
+
+  \par Allowing parameters to be arbitrarily signed
+  You can consider a parameter \f$p\f$ arbitrarily signed by replacing
+  \f$p\f$ with \f$p^+-p^-\f$, where both \f$p^+\f$ and \f$p^-\f$ are
+  positive parameters. To represent a set of arbitrarily signed parameters,
+  replace each parameter \f$p_i\f$ with \f$p^+_i-p^-\f$, where \f$-p^-\f$ is
+  the minimum negative value of all parameters.
 
   \par Minimizing a linear cost function
   Lexicographic solving can be used to find the parametric minimum of a
