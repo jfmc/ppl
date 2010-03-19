@@ -458,7 +458,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
   Performing substitution again provides us with the values of the original
   variables:
   \f[ \left\{\begin{array}{l}
-    x=\left\lfloor\frac{2p+3}{5}\right\rfloor-1\\
+    x=-\left\lfloor\frac{2p+3}{5}\right\rfloor-1\\
     y=2\left\lfloor\frac{2p+3}{5}\right\rfloor-2
   \end{array}\right.
   \f]
