@@ -403,7 +403,7 @@ PPL::MIP_Problem::merge_split_variables(dimension_type var_index,
   // var_index is no longer split.
   mapping[var_index].second = 0;
 
-  // Adjust data structured, `shifting' the proper columns to the left by 1.
+  // Adjust data structures, `shifting' the proper columns to the left by 1.
   const dimension_type base_size = base.size();
   for (dimension_type i = base_size; i-- > 0; )
     if (base[i] > column)
