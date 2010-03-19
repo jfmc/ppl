@@ -140,6 +140,15 @@ public:
   //! lower_bound(i).
   Coefficient& operator[](const dimension_type i);
 
+  //! After this call, get(i) == x.
+  //! This is slower than <CODE>if (x != 0) find_create(i,x);</CODE> because
+  //! it needs to check whether the element with index i is zero.
+  void assign(dimension_type i, const Coefficient& x);
+
+  //! Equivalent to <CODE>if (x != 0) find_create(i, x);</CODE>, provided
+  //! for convenience. This is faster than assign(i, x).
+  void assign_if_nonzero(dimension_type i, const Coefficient& x);
+
   //! Equivalent to get(), provided for convenience.
   const Coefficient& operator[](const dimension_type i) const;
 
@@ -298,6 +307,15 @@ public:
   //! invalidates dangerous_iterator objects equal to the former
   //! lower_bound(i).
   Coefficient& operator[](const dimension_type i);
+
+  //! After this call, get(i) == x.
+  //! This is slower than <CODE>if (x != 0) find_create(i,x);</CODE> because
+  //! it needs to check whether the element with index i is zero.
+  void assign(dimension_type i, const Coefficient& x);
+
+  //! Equivalent to <CODE>if (x != 0) find_create(i, x);</CODE>, provided
+  //! for convenience. This is faster than assign(i, x).
+  void assign_if_nonzero(dimension_type i, const Coefficient& x);
 
   //! Equivalent to get(), provided for convenience.
   const Coefficient& operator[](const dimension_type i) const;
