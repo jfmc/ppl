@@ -353,7 +353,7 @@ Unlimited_Sparse_Row::find(const dimension_type k, const_iterator itr1) const {
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row
-::lower_bound(const dimension_type k const_iterator itr1) const {
+::lower_bound(const dimension_type k, const_iterator itr1) const {
   return data.lower_bound(k, itr1);
 }
 

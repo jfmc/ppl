@@ -3251,7 +3251,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
           mod_assign(mod, (*j).second, den);
           if (mod != 0) {
             const dimension_type j_index = (*j).first;
-            itr1 = ctx1.find_create(j_index den);
+            itr1 = ctx1.find_create(j_index, den);
             (*itr1).second -= mod;
             itr2 = ctx2.find_create(j_index, (*itr1).second);
             neg_assign((*itr2).second);
