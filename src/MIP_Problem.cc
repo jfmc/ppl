@@ -1165,7 +1165,7 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
                                  const dimension_type k) {
   WEIGHT_BEGIN();
   const dimension_type x_size = x.size();
-  Coefficient& x_k = x[k];
+  const Coefficient& x_k = x.get(k);
   const Coefficient& y_k = y.get(k);
   PPL_ASSERT(y_k != 0 && x_k != 0);
   // Let g be the GCD between `x[k]' and `y[k]'.
