@@ -61,12 +61,12 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::empty() const {
 
 inline void
 Unlimited_Sparse_Row_Custom_Slist_Backend::push_front(const value_type& x) {
-  insert(begin_dangerous(),x);
+  insert(begin_dangerous(), x);
 }
 
 inline void
 Unlimited_Sparse_Row_Custom_Slist_Backend::push_back(const value_type& x) {
-  insert(end_dangerous(),x);
+  insert(end_dangerous(), x);
 }
 
 inline void
@@ -120,8 +120,8 @@ Unlimited_Sparse_Row_Custom_Slist_Backend
   dangerous_iterator i = begin_dangerous();
   if ((*i).first > k)
     return end_dangerous();
-  // Now we can call find(k,i) without triggering asserts.
-  return find_dangerous(k,i);
+  // Now we can call find(k, i) without triggering asserts.
+  return find_dangerous(k, i);
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
@@ -132,8 +132,8 @@ Unlimited_Sparse_Row_Custom_Slist_Backend
   dangerous_iterator i = begin_dangerous();
   if ((*i).first > k)
     return i;
-  // Now we can call lower_bound(k,i) without triggering asserts.
-  return lower_bound_dangerous(k,i);
+  // Now we can call lower_bound(k, i) without triggering asserts.
+  return lower_bound_dangerous(k, i);
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
@@ -143,19 +143,20 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::find(const dimension_type k) {
   iterator i = begin();
   if ((*i).first > k)
     return end();
-  // Now we can call find(k,i) without triggering asserts.
-  return find(k,i);
+  // Now we can call find(k, i) without triggering asserts.
+  return find(k, i);
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
-Unlimited_Sparse_Row_Custom_Slist_Backend::lower_bound(const dimension_type k) {
+Unlimited_Sparse_Row_Custom_Slist_Backend
+::lower_bound(const dimension_type k) {
   if (begin() == end())
     return end();
   iterator i = begin();
   if ((*i).first > k)
     return i;
-  // Now we can call lower_bound(k,i) without triggering asserts.
-  return lower_bound(k,i);
+  // Now we can call lower_bound(k, i) without triggering asserts.
+  return lower_bound(k, i);
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator
@@ -178,15 +179,15 @@ Unlimited_Sparse_Row_Custom_Slist_Backend
   const_iterator i = begin();
   if ((*i).first > k)
     return i;
-  // Now we can call lower_bound(k,i) without triggering asserts.
-  return lower_bound(k,i);
+  // Now we can call lower_bound(k, i) without triggering asserts.
+  return lower_bound(k, i);
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend
-::find_dangerous(const dimension_type k,dangerous_iterator itr1) {
+::find_dangerous(const dimension_type k, dangerous_iterator itr1) {
   PPL_ASSERT(itr1 == end_dangerous() || (*itr1).first <= k);
-  dangerous_iterator itr = lower_bound_dangerous(k,itr1);
+  dangerous_iterator itr = lower_bound_dangerous(k, itr1);
   if (itr != end_dangerous())
     if (itr->first != k)
       return end_dangerous();
@@ -195,17 +196,17 @@ Unlimited_Sparse_Row_Custom_Slist_Backend
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend
-::lower_bound_dangerous(const dimension_type k,dangerous_iterator itr) {
+::lower_bound_dangerous(const dimension_type k, dangerous_iterator itr) {
   PPL_ASSERT(itr == end_dangerous() || (*itr).first <= k);
-  return std::lower_bound(itr,end_dangerous(),k,
+  return std::lower_bound(itr, end_dangerous(), k,
                           value_key_compare(std::less<dimension_type>()));
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend
-::find(const dimension_type k,iterator itr1) {
+::find(const dimension_type k, iterator itr1) {
   PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
-  iterator itr = lower_bound(k,itr1);
+  iterator itr = lower_bound(k, itr1);
   if (itr != end())
     if (itr->first != k)
       return end();
@@ -216,15 +217,15 @@ inline Unlimited_Sparse_Row_Custom_Slist_Backend::iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend
 ::lower_bound(const dimension_type k, iterator itr) {
   PPL_ASSERT(itr == end() || (*itr).first <= k);
-  return std::lower_bound(itr,end(),k,
+  return std::lower_bound(itr, end(), k,
                           value_key_compare(std::less<dimension_type>()));
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend
-::find(const dimension_type k,const_iterator itr1) const {
+::find(const dimension_type k, const_iterator itr1) const {
   PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
-  const_iterator itr = lower_bound(k,itr1);
+  const_iterator itr = lower_bound(k, itr1);
   if (itr != end())
     if (itr->first != k)
       return end();
@@ -233,22 +234,22 @@ Unlimited_Sparse_Row_Custom_Slist_Backend
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::const_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend
-::lower_bound(const dimension_type k,const_iterator itr1) const {
+::lower_bound(const dimension_type k, const_iterator itr1) const {
   PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
-  return std::lower_bound(itr1,end(),k,
+  return std::lower_bound(itr1, end(), k,
                           value_key_compare(std::less<dimension_type>()));
 }
 
 inline void
 Unlimited_Sparse_Row_Custom_Slist_Backend
-::find2_dangerous(const dimension_type c1,const dimension_type c2,
-                  dangerous_iterator& itr1,dangerous_iterator& itr2) {
+::find2_dangerous(const dimension_type c1, const dimension_type c2,
+                  dangerous_iterator& itr1, dangerous_iterator& itr2) {
   if (c1 > c2) {
-    find2_dangerous(c2,c1,itr2,itr1);
+    find2_dangerous(c2, c1, itr2, itr1);
     return;
   }
   itr1 = lower_bound_dangerous(c1);
-  itr2 = lower_bound_dangerous(c2,itr1);
+  itr2 = lower_bound_dangerous(c2, itr1);
   if (itr1 != end_dangerous())
     if (itr1->first != c1)
       itr1 = end_dangerous();
@@ -259,25 +260,25 @@ Unlimited_Sparse_Row_Custom_Slist_Backend
 
 inline void
 Unlimited_Sparse_Row_Custom_Slist_Backend
-::find2(const dimension_type c1,const dimension_type c2,
-        iterator& itr1,iterator& itr2) {
+::find2(const dimension_type c1, const dimension_type c2,
+        iterator& itr1, iterator& itr2) {
   iterator i1;
   iterator i2;
-  find2(c1,c2,i1,i2);
+  find2(c1, c2, i1, i2);
   itr1 = i1;
   itr2 = i2;
 }
 
 inline void
 Unlimited_Sparse_Row_Custom_Slist_Backend
-::find2(const dimension_type c1,const dimension_type c2,
-        const_iterator& itr1,const_iterator& itr2) const {
+::find2(const dimension_type c1, const dimension_type c2,
+        const_iterator& itr1, const_iterator& itr2) const {
   if (c1 > c2) {
-    find2(c2,c1,itr2,itr1);
+    find2(c2, c1, itr2, itr1);
     return;
   }
   itr1 = lower_bound(c1);
-  itr2 = lower_bound(c2,itr1);
+  itr2 = lower_bound(c2, itr1);
   if (itr1 != end())
     if (itr1->first != c1)
       itr1 = end();
@@ -288,11 +289,11 @@ Unlimited_Sparse_Row_Custom_Slist_Backend
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend
-::insert(dangerous_iterator pos,dimension_type i,const Coefficient& x) {
+::insert(dangerous_iterator pos, dimension_type i, const Coefficient& x) {
   PPL_ASSERT(pos.OK());
   PPL_ASSERT(OK());
   list_elem* elem_after = *(pos.p);
-  list_elem* new_elem = new list_elem(i,x,elem_after);
+  list_elem* new_elem = new list_elem(i, x, elem_after);
   *(pos.p) = new_elem;
   // No change needed to pos.p
 #ifndef NDEBUG
@@ -309,8 +310,8 @@ Unlimited_Sparse_Row_Custom_Slist_Backend
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend
 ::insert(dangerous_iterator pos,
-         const std::pair<dimension_type,Coefficient>& x) {
-  return insert(pos,x.first,x.second);
+         const std::pair<dimension_type, Coefficient>& x) {
+  return insert(pos, x.first, x.second);
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
@@ -336,7 +337,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::erase(dangerous_iterator pos) {
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend
-::erase(dangerous_iterator first,dangerous_iterator last) {
+::erase(dangerous_iterator first, dangerous_iterator last) {
   PPL_ASSERT(first.OK());
   PPL_ASSERT(last.OK());
   PPL_ASSERT(OK());
@@ -344,7 +345,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend
     return first;
   dangerous_iterator next = first;
   ++next;
-  for ( ; next!=last; ++next) {
+  for ( ; next != last; ++next) {
     // Next was invalidated by erase() so we must assign it a value.
     next = first = erase(first);
   }
@@ -357,13 +358,13 @@ Unlimited_Sparse_Row_Custom_Slist_Backend
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend
-::splice(dangerous_iterator& position,This& x) {
-  return splice(position,x,x.begin_dangerous(),x.end_dangerous());
+::splice(dangerous_iterator& position, This& x) {
+  return splice(position, x, x.begin_dangerous(), x.end_dangerous());
 }
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend
-::splice(dangerous_iterator& position,This& x,dangerous_iterator i) {
+::splice(dangerous_iterator& position, This& x, dangerous_iterator i) {
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
   PPL_ASSERT(position.OK());
@@ -397,8 +398,8 @@ Unlimited_Sparse_Row_Custom_Slist_Backend
 
 inline Unlimited_Sparse_Row_Custom_Slist_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Custom_Slist_Backend
-::splice(dangerous_iterator& position,This& x,
-         dangerous_iterator first1,dangerous_iterator last1) {
+::splice(dangerous_iterator& position, This& x,
+         dangerous_iterator first1, dangerous_iterator last1) {
 
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
@@ -439,7 +440,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend
 
 inline void
 Unlimited_Sparse_Row_Custom_Slist_Backend::swap(This& x) {
-  std::swap(first,x.first);
+  std::swap(first, x.first);
   if (last == &first)
     if (x.last == &x.first) {
       x.last = &x.first;
@@ -453,7 +454,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::swap(This& x) {
       x.last = last;
       last = &first;
     } else
-      std::swap(last,x.last);
+      std::swap(last, x.last);
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
 }
@@ -477,13 +478,13 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::list_elem
 
 inline
 Unlimited_Sparse_Row_Custom_Slist_Backend::list_elem
-::list_elem(dimension_type i,const Coefficient& x,list_elem* next1)
-  : data(i,x), next(next1) {
+::list_elem(dimension_type i, const Coefficient& x, list_elem* next1)
+  : data(i, x), next(next1) {
 }
 
 inline
 Unlimited_Sparse_Row_Custom_Slist_Backend::list_elem
-::list_elem(const value_type& x,list_elem* next1)
+::list_elem(const value_type& x, list_elem* next1)
   : data(x), next(next1) {
 }
 
@@ -702,7 +703,7 @@ inline bool
 Unlimited_Sparse_Row_Custom_Slist_Backend::value_key_comparison<Compare>
 ::operator()(const Unlimited_Sparse_Row_Custom_Slist_Backend::value_type& x,
              const dimension_type y) const {
-  return comp_(x.first,y);
+  return comp_(x.first, y);
 }
 
 template <typename Compare>
@@ -726,7 +727,7 @@ Unlimited_Sparse_Row_Custom_Slist_Backend::key_value_comparison<Compare>
 ::operator()(const dimension_type x,
              const Unlimited_Sparse_Row_Custom_Slist_Backend::value_type& y
              ) const {
-  return comp_(x,y.first);
+  return comp_(x, y.first);
 }
 
 } // namespace Parma_Polyhedra_Library

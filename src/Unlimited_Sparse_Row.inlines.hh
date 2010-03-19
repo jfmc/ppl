@@ -58,11 +58,11 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
   if (i_itr != itr_end && i_itr->first == i)
     if (j_itr != itr_end && j_itr->first == j) {
       // Both i and j are in the list.
-      Unlimited_Sparse_Row::swap(i_itr,j_itr);
+      Unlimited_Sparse_Row::swap(i_itr, j_itr);
     } else {
       if (i_itr != j_itr) {
         // i is in the list, j isn't
-        i_itr = data.splice(j_itr,data,i_itr);
+        i_itr = data.splice(j_itr, data, i_itr);
         // i_itr was invalidated.
         // Now i_itr points to the moved element.
         i_itr->first = j;
@@ -74,13 +74,12 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
     if (j_itr != itr_end && j_itr->first == j) {
       if (i_itr != j_itr) {
         // j is in the list, i isn't
-        j_itr = data.splice(i_itr,data,j_itr);
+        j_itr = data.splice(i_itr, data, j_itr);
         // j_itr was invalidated.
         // Now j_itr points to the moved element.
         j_itr->first = i;
-      } else {
+      } else
         i_itr->first = j;
-      }
     } else {
       // Do nothing
     }
@@ -91,7 +90,7 @@ inline void
 Unlimited_Sparse_Row::swap(iterator i, iterator j) {
   PPL_ASSERT(i != data.end());
   PPL_ASSERT(j != data.end());
-  std::swap(i->second,j->second);
+  std::swap(i->second, j->second);
   PPL_ASSERT(OK());
 }
 
@@ -104,8 +103,8 @@ Unlimited_Sparse_Row::reset(dangerous_iterator i) {
 
 inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row
-::reset(dangerous_iterator first,dangerous_iterator last) {
-  dangerous_iterator res = data.erase(first,last);
+::reset(dangerous_iterator first, dangerous_iterator last) {
+  dangerous_iterator res = data.erase(first, last);
   PPL_ASSERT(OK());
   return res;
 }
@@ -120,7 +119,7 @@ Unlimited_Sparse_Row::reset(const dimension_type i) {
 
 inline void
 Unlimited_Sparse_Row::reset_after(dimension_type i) {
-  data.erase(lower_bound_dangerous(i),end_dangerous());
+  data.erase(lower_bound_dangerous(i), end_dangerous());
   PPL_ASSERT(OK());
 }
 
@@ -131,118 +130,119 @@ Unlimited_Sparse_Row::operator[](const dimension_type i) {
     if (itr->first == i)
       return itr->second;
 
-  itr = data.insert(itr,std::make_pair(i,Coefficient_zero()));
+  itr = data.insert(itr, std::make_pair(i, Coefficient_zero()));
   return itr->second;
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row
-::find_create(const dimension_type i,const Coefficient& x) {
+::find_create(const dimension_type i, const Coefficient& x) {
   if (begin() == end())
-    return data.insert(end_dangerous(),std::make_pair(i,x));
+    return data.insert(end_dangerous(), std::make_pair(i, x));
   dangerous_iterator itr = begin_dangerous();
   if ((*itr).first > i)
-    return data.insert(itr,std::make_pair(i,x));
-  // Now we can call find_create(i,x,itr) without triggering asserts.
-  return find_create(i,x,itr);
+    return data.insert(itr, std::make_pair(i, x));
+  // Now we can call find_create(i, x, itr) without triggering asserts.
+  return find_create(i, x, itr);
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row
-::find_create(const std::pair<dimension_type,Coefficient>& x) {
+::find_create(const std::pair<dimension_type, Coefficient>& x) {
   if (begin() == end())
-    return data.insert(end_dangerous(),x);
+    return data.insert(end_dangerous(), x);
   dangerous_iterator itr = begin_dangerous();
   if ((*itr).first > x.first)
-    return data.insert(itr,x);
-  // Now we can call find_create(x,itr) without triggering asserts.
-  return find_create(x,itr);
+    return data.insert(itr, x);
+  // Now we can call find_create(x, itr) without triggering asserts.
+  return find_create(x, itr);
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(const dimension_type i) {
   if (begin() == end())
-    return data.insert(end_dangerous(),std::make_pair(i,Coefficient_zero()));
+    return data.insert(end_dangerous(),
+                       std::make_pair(i, Coefficient_zero()));
   dangerous_iterator itr = begin_dangerous();
   if ((*itr).first > i)
-    return data.insert(itr,std::make_pair(i,Coefficient_zero()));
-  // Now we can call find_create(i,itr) without triggering asserts.
-  return find_create(i,itr);
+    return data.insert(itr, std::make_pair(i, Coefficient_zero()));
+  // Now we can call find_create(i, itr) without triggering asserts.
+  return find_create(i, itr);
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row
-::find_create(const dimension_type i,const Coefficient& x,iterator itr) {
+::find_create(const dimension_type i, const Coefficient& x, iterator itr) {
   PPL_ASSERT(itr != end());
   PPL_ASSERT((*itr).first <= i);
   if ((*itr).first == i) {
     (*itr).second = x;
     return itr;
   }
-  return find_create(i,x,dangerous_iterator::next(itr));
+  return find_create(i, x, dangerous_iterator::next(itr));
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row
-::find_create(const std::pair<dimension_type,Coefficient>& x,iterator itr) {
+::find_create(const std::pair<dimension_type, Coefficient>& x, iterator itr) {
   PPL_ASSERT(itr != end());
   PPL_ASSERT((*itr).first <= x.first);
   if ((*itr).first == x.first) {
     (*itr).second = x.second;
     return itr;
   }
-  return find_create(x,dangerous_iterator::next(itr));
+  return find_create(x, dangerous_iterator::next(itr));
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i,iterator itr) {
+Unlimited_Sparse_Row::find_create(const dimension_type i, iterator itr) {
   PPL_ASSERT(itr != end());
   PPL_ASSERT((*itr).first <= i);
   if ((*itr).first == i) {
     return itr;
   }
-  return find_create(i,dangerous_iterator::next(itr));
+  return find_create(i, dangerous_iterator::next(itr));
 }
 
 inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row
-::find_create(const dimension_type i,dangerous_iterator itr) {
+::find_create(const dimension_type i, dangerous_iterator itr) {
   // The check is needed to avoid triggering assertions in lower_bound().
   if (itr != end_dangerous() && (*itr).first < i)
-    itr = lower_bound_dangerous(i,itr);
+    itr = lower_bound_dangerous(i, itr);
   if (itr != end_dangerous() && (*itr).first == i)
     return itr;
-  itr = data.insert(itr,std::make_pair(i,Coefficient_zero()));
+  itr = data.insert(itr, std::make_pair(i, Coefficient_zero()));
   return itr;
 }
 
 inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row
-::find_create(const dimension_type i,const Coefficient& x,
+::find_create(const dimension_type i, const Coefficient& x,
               dangerous_iterator itr) {
   // The check is needed to avoid triggering assertions in lower_bound().
   if (itr != end_dangerous() && (*itr).first < i)
-    itr = lower_bound_dangerous(i,itr);
+    itr = lower_bound_dangerous(i, itr);
   if (itr != end_dangerous() && (*itr).first == i) {
     (*itr).second = x;
     return itr;
   }
-  itr = data.insert(itr,std::make_pair(i,x));
+  itr = data.insert(itr, std::make_pair(i, x));
   return itr;
 }
 
 inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row
-::find_create(const std::pair<dimension_type,Coefficient>& x,
+::find_create(const std::pair<dimension_type, Coefficient>& x,
               dangerous_iterator itr) {
   // The check is needed to avoid triggering assertions in lower_bound().
   if (itr != end_dangerous() && (*itr).first < x.first)
-    itr = lower_bound_dangerous(x.first,itr);
+    itr = lower_bound_dangerous(x.first, itr);
   if (itr != end_dangerous() && (*itr).first == x.first) {
     (*itr).second = x.second;
     return itr;
   }
-  itr = data.insert(itr,x);
+  itr = data.insert(itr, x);
   return itr;
 }
 
@@ -326,48 +326,48 @@ Unlimited_Sparse_Row::lower_bound(const dimension_type k) const {
 
 inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row
-::find_dangerous(const dimension_type k,dangerous_iterator itr1) {
-  return data.find_dangerous(k,itr1);
+::find_dangerous(const dimension_type k, dangerous_iterator itr1) {
+  return data.find_dangerous(k, itr1);
 }
 
 inline Unlimited_Sparse_Row::dangerous_iterator
 Unlimited_Sparse_Row
-::lower_bound_dangerous(const dimension_type k,dangerous_iterator itr) {
-  return data.lower_bound_dangerous(k,itr);
+::lower_bound_dangerous(const dimension_type k, dangerous_iterator itr) {
+  return data.lower_bound_dangerous(k, itr);
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find(const dimension_type k,iterator itr1) {
-  return data.find(k,itr1);
+Unlimited_Sparse_Row::find(const dimension_type k, iterator itr1) {
+  return data.find(k, itr1);
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::lower_bound(const dimension_type k, iterator itr) {
-  return data.lower_bound(k,itr);
+  return data.lower_bound(k, itr);
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::find(const dimension_type k,const_iterator itr1) const {
-  return data.find(k,itr1);
+Unlimited_Sparse_Row::find(const dimension_type k, const_iterator itr1) const {
+  return data.find(k, itr1);
 }
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row
-::lower_bound(const dimension_type k,const_iterator itr1) const {
-  return data.lower_bound(k,itr1);
+::lower_bound(const dimension_type k const_iterator itr1) const {
+  return data.lower_bound(k, itr1);
 }
 
 inline void
 Unlimited_Sparse_Row
-::find2_dangerous(const dimension_type c1,const dimension_type c2,
-                  dangerous_iterator& itr1,dangerous_iterator& itr2) {
-  data.find2_dangerous(c1,c2,itr1,itr2);
+::find2_dangerous(const dimension_type c1, const dimension_type c2,
+                  dangerous_iterator& itr1, dangerous_iterator& itr2) {
+  data.find2_dangerous(c1, c2, itr1, itr2);
 }
 
 inline void
-Unlimited_Sparse_Row::find2(const dimension_type c1,const dimension_type c2,
-                            iterator& itr1,iterator& itr2) {
-  data.find2(c1,c2,itr1,itr2);
+Unlimited_Sparse_Row::find2(const dimension_type c1, const dimension_type c2,
+                            iterator& itr1, iterator& itr2) {
+  data.find2(c1, c2, itr1, itr2);
 }
 
 inline void
@@ -378,11 +378,11 @@ Unlimited_Sparse_Row::find2(const dimension_type c1,const dimension_type c2,
 
 inline void
 Unlimited_Sparse_Row
-::get2(const dimension_type c1,const dimension_type c2,
-       const Coefficient*& p1,const Coefficient*& p2) const {
+::get2(const dimension_type c1, const dimension_type c2,
+       const Coefficient*& p1, const Coefficient*& p2) const {
   const_iterator i1;
   const_iterator i2;
-  find2(c1,c2,i1,i2);
+  find2(c1, c2, i1, i2);
   if (i1 == end())
     p1 = &(Coefficient_zero());
   else {
@@ -405,17 +405,15 @@ Unlimited_Sparse_Row::operator!=(const Unlimited_Sparse_Row &x) const {
 template <typename Func>
 inline void
 Unlimited_Sparse_Row
-::for_each_nonzero(const Func& func,const dimension_type n) {
-  (void)n;
-  std::for_each(begin(),end(),func);
+::for_each_nonzero(const Func& func, const dimension_type /* n */) {
+  std::for_each(begin(), end(), func);
 }
 
 template <typename Func>
 inline void
 Unlimited_Sparse_Row
-::for_each_nonzero(const Func& func,const dimension_type n) const {
-  (void)n;
-  std::for_each(begin(),end(),func);
+::for_each_nonzero(const Func& func,const dimension_type /* n */) const {
+  std::for_each(begin(), end(), func);
 }
 
 inline memory_size_type

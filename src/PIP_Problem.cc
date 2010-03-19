@@ -159,14 +159,14 @@ PPL::PIP_Problem::solve() const {
           matrix_row_copy_iterator itr = row.end();
 
           if (c.inhomogeneous_term() != 0) {
-            itr = row.find_create(0,c.inhomogeneous_term());
+            itr = row.find_create(0, c.inhomogeneous_term());
             // Adjust inhomogenous term if strict.
             if (c.is_strict_inequality())
               --((*itr).second);
           } else {
             // Adjust inhomogenous term if strict.
             if (c.is_strict_inequality())
-              itr = row.find_create(0,-1);
+              itr = row.find_create(0, -1);
           }
           dimension_type i = 1;
           bool continue_looping = true;
@@ -177,7 +177,7 @@ PPL::PIP_Problem::solve() const {
               if (*pi < c_space_dim) {
                 const Coefficient& x = c.coefficient(Variable(*pi));
                 if (x != 0) {
-                  itr = row.find_create(i,x);
+                  itr = row.find_create(i, x);
                   // itr is now initialized, use it in the next iterations.
                   ++pi;
                   ++i;
@@ -192,7 +192,7 @@ PPL::PIP_Problem::solve() const {
               if (*pi < c_space_dim) {
                 const Coefficient& x = c.coefficient(Variable(*pi));
                 if (x != 0)
-                  itr = row.find_create(i,x);
+                  itr = row.find_create(i, x);
               } else
                 break;
             }
@@ -206,7 +206,7 @@ PPL::PIP_Problem::solve() const {
         if (c.is_equality()) {
           matrix_row_iterator i = row.begin();
           matrix_row_iterator i_end = row.end();
-          for ( ; i!=i_end; ++i)
+          for ( ; i != i_end; ++i)
             neg_assign((*i).second);
 
           // Insert new row into initial context.

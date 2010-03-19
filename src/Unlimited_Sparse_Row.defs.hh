@@ -110,13 +110,13 @@ namespace Parma_Polyhedra_Library {
   * C::dangerous_iterator must have a static method next(C::iterator i)
     that returns a dangerous_iterator pointing to the element after i.
   * C must have a method
-    insert(C::dangerous_iterator pos,const C::value_type& x)
+    insert(C::dangerous_iterator pos, const C::value_type& x)
     returning a C::dangerous_iterator. This method inserts x before pos and
     returns an iterator to the inserted element.
     This operation invalidates all C::dangerous_iterator objects equal to pos.
   * C must have a method
-    insert(C::dangerous_iterator pos,dimension_type i,const Coefficient& x)
-    returning a C::dangerous_iterator. This method inserts the pair (i,x)
+    insert(C::dangerous_iterator pos, dimension_type i, const Coefficient& x)
+    returning a C::dangerous_iterator. This method inserts the pair (i, x)
     before pos and returns an iterator to the inserted element.
     This operation invalidates all C::dangerous_iterator objects equal to pos.
   * C must have a method erase(C::dangerous_iterator pos) returning a
@@ -124,25 +124,25 @@ namespace Parma_Polyhedra_Library {
     This operation invalidates all C::dangerous_iterators objects equal to
     pos and ++pos.
   * C must have a method
-    erase(C::dangerous_iterator first,C::dangerous_iterator last) that returns
-    a C::dangerous_iterator, that erases the element in [first,last).
+    erase(C::dangerous_iterator first, C::dangerous_iterator last) that
+    returns a C::dangerous_iterator, that erases the element in [first,last).
     This operation invalidates all dangerous_iterators equal to last.
-  * C must have a method splice(C::dangerous_iterator& position,C& x) that
+  * C must have a method splice(C::dangerous_iterator& position, C& x) that
     returns a C::dangerous_iterator, that moves all elements in x before
     position. This operation invalidates all dangerous_iterators equal to
     the former position and all dangerous_iterators pointing to x.
     The returned iterator is a valid iterator pointing to the first inserted
     element. \p position is modified to keep it valid.
   * C must have a method
-    splice(C::dangerous_iterator& position,C& x,C::dangerous_iterator i)
+    splice(C::dangerous_iterator& position,C& x, C::dangerous_iterator i)
     returning a C::dangerous_iterator, that moves element i of x
     before position. This operation invalidates all dangerous_iterators equal
     to the former position, i and ++i.
     The returned iterator is a valid iterator pointing to the inserted
     element. \p position is modified to keep it valid.
   * C must have a method
-    splice(C::dangerous_iterator& position,C& x,
-           C::dangerous_iterator first,C::dangerous_iterator last)
+    splice(C::dangerous_iterator& position, C& x,
+           C::dangerous_iterator first, C::dangerous_iterator last)
     returning a C::dangerous_iterator, that moves elements [first,last) in
     x before position. This operation invalidates all dangerous_iterators
     equal to the former position, and in [first,last] (note that last is
@@ -160,7 +160,7 @@ namespace Parma_Polyhedra_Library {
 class Unlimited_Sparse_Row {
 
 public:
-  typedef std::pair<dimension_type,Coefficient> value_type;
+  typedef std::pair<dimension_type, Coefficient> value_type;
 
   //! Constructs an unlimited row of zeroes.
   Unlimited_Sparse_Row();
@@ -250,28 +250,28 @@ public:
   //! lower_bound(i).
   Coefficient& operator[](const dimension_type i);
 
-  //! Equivalent to find_create(i,x,begin_dangerous()) .
-  iterator find_create(const dimension_type i,const Coefficient& x);
+  //! Equivalent to find_create(i, x, begin_dangerous()) .
+  iterator find_create(const dimension_type i, const Coefficient& x);
 
-  //! Equivalent to find_create(x.first,x.second,begin_dangerous()) .
-  iterator find_create(const std::pair<dimension_type,Coefficient>& x);
+  //! Equivalent to find_create(x.first, x.second, begin_dangerous()) .
+  iterator find_create(const std::pair<dimension_type, Coefficient>& x);
 
-  //! Equivalent to find_create(i,begin_dangerous()) .
+  //! Equivalent to find_create(i, begin_dangerous()) .
   iterator find_create(const dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(const dimension_type i,const Coefficient& x,
+  iterator find_create(const dimension_type i, const Coefficient& x,
                        iterator itr);
 
   //! Equivalent to (*this)[x.first]=x.second , needs itr to point before the
   //! added element. If itr points near the added element, this is faster.
-  iterator find_create(const std::pair<dimension_type,Coefficient>& x,
+  iterator find_create(const std::pair<dimension_type, Coefficient>& x,
                        iterator itr);
 
   //! Equivalent to (*this)[i] , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(const dimension_type i,iterator itr);
+  iterator find_create(const dimension_type i, iterator itr);
 
   //! Equivalent to (*this)[i] , needs itr to point before or to the added
   //! element. If itr points near the added element, this is faster.
@@ -280,13 +280,13 @@ public:
 
   //! Equivalent to (*this)[i]=x , needs itr to point before or to the added
   //! element. If itr points near the added element, this is faster.
-  dangerous_iterator find_create(const dimension_type i,const Coefficient& x,
+  dangerous_iterator find_create(const dimension_type i, const Coefficient& x,
                                  dangerous_iterator itr);
 
   //! Equivalent to (*this)[x.first]=x.second , needs itr to point before or
   //! to the added element. If itr points near the added element, this is
   //! faster.
-  dangerous_iterator find_create(const std::pair<dimension_type,Coefficient>&
+  dangerous_iterator find_create(const std::pair<dimension_type, Coefficient>&
                                  x, dangerous_iterator itr);
 
   //! Equivalent to get(), provided for convenience.
@@ -314,7 +314,7 @@ public:
       \param n    The logical size of this row (ignored)
   */
   template <typename Func>
-  void for_each_nonzero(const Func& func,const dimension_type n);
+  void for_each_nonzero(const Func& func, const dimension_type n);
 
   /*! \brief Executes func on each non-zero element and may execute it on some
              zeros.
@@ -325,7 +325,7 @@ public:
       \param n    The logical size of this row (ignored)
   */
   template <typename Func>
-  void for_each_nonzero(const Func& func,const dimension_type n) const;
+  void for_each_nonzero(const Func& func, const dimension_type n) const;
 
   dangerous_iterator find_dangerous(const dimension_type c);
   dangerous_iterator lower_bound_dangerous(const dimension_type c);
@@ -342,31 +342,31 @@ public:
                                            dangerous_iterator itr);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  iterator find(const dimension_type c,iterator itr);
+  iterator find(const dimension_type c, iterator itr);
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  iterator lower_bound(const dimension_type c,iterator itr);
+  iterator lower_bound(const dimension_type c, iterator itr);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  const_iterator find(const dimension_type c,const_iterator itr) const;
+  const_iterator find(const dimension_type c, const_iterator itr) const;
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  const_iterator lower_bound(const dimension_type c,const_iterator itr) const;
+  const_iterator lower_bound(const dimension_type c, const_iterator itr) const;
 
   //! A faster equivalent of
   //! itr1=find_dangerous(c1); itr2=find_dangerous(c2); .
-  void find2_dangerous(const dimension_type c1,const dimension_type c2,
-                       dangerous_iterator& itr1,dangerous_iterator& itr2);
+  void find2_dangerous(const dimension_type c1, const dimension_type c2,
+                       dangerous_iterator& itr1, dangerous_iterator& itr2);
 
   //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
-  void find2(const dimension_type c1,const dimension_type c2,
-             iterator& itr1,iterator& itr2);
+  void find2(const dimension_type c1, const dimension_type c2,
+             iterator& itr1, iterator& itr2);
 
   //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
-  void find2(const dimension_type c1,const dimension_type c2,
-             const_iterator& itr1,const_iterator& itr2) const;
+  void find2(const dimension_type c1, const dimension_type c2,
+             const_iterator& itr1, const_iterator& itr2) const;
 
   //! A faster equivalent of p1 = &(get(c1)); p1 = &(get(c2));
-  void get2(const dimension_type c1,const dimension_type c2,
-            const Coefficient*& p1,const Coefficient*& p2) const;
+  void get2(const dimension_type c1, const dimension_type c2,
+            const Coefficient*& p1, const Coefficient*& p2) const;
 
   bool operator==(const Unlimited_Sparse_Row &x) const;
   bool operator!=(const Unlimited_Sparse_Row &x) const;

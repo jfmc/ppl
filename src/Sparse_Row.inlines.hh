@@ -63,32 +63,32 @@ Sparse_Row::operator=(const Unlimited_Sparse_Row& x) {
 
 inline Sparse_Row&
 Sparse_Row::operator=(const Sparse_Row_Reference& x) {
-  Sparse_Row_Reference(row,size_) = x;
+  Sparse_Row_Reference(row, size_) = x;
   return *this;
 }
 
 inline void
 Sparse_Row::swap(Sparse_Row& x) {
   row.swap(x.row);
-  std::swap(size_,x.size_);
+  std::swap(size_, x.size_);
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
 }
 
 inline void
 Sparse_Row::swap(Sparse_Row_Reference x) {
-  std::swap(x,*this);
+  std::swap(x, *this);
 }
 
 inline void
 Sparse_Row::swap(dimension_type i, dimension_type j) {
-  row.swap(i,j);
+  row.swap(i, j);
   assert(OK());
 }
 
 inline void
 Sparse_Row::swap(iterator i, iterator j) {
-  row.swap(i,j);
+  row.swap(i, j);
   PPL_ASSERT(OK());
 }
 
@@ -98,15 +98,15 @@ Sparse_Row::construct(const dimension_type sz) {
 }
 
 inline void
-Sparse_Row::construct(const dimension_type sz,const dimension_type capacity) {
-  (void)capacity;
+Sparse_Row::construct(const dimension_type sz,
+                      const dimension_type /* capacity */) {
   resize(sz);
 }
 
 inline void
 Sparse_Row::resize(const dimension_type n) {
   if (n < size_)
-    reset(lower_bound_dangerous(n),end_dangerous());
+    reset(lower_bound_dangerous(n), end_dangerous());
   size_ = n;
   PPL_ASSERT(OK());
 }
@@ -129,8 +129,8 @@ Sparse_Row::reset(dangerous_iterator i) {
 }
 
 inline Sparse_Row::dangerous_iterator
-Sparse_Row::reset(dangerous_iterator first,dangerous_iterator last) {
-  dangerous_iterator res = row.reset(first,last);
+Sparse_Row::reset(dangerous_iterator first, dangerous_iterator last) {
+  dangerous_iterator res = row.reset(first, last);
   PPL_ASSERT(OK());
   return res;
 }
@@ -166,11 +166,11 @@ Sparse_Row::get(const dimension_type i) const {
 }
 
 inline void
-Sparse_Row::get2(const dimension_type c1,const dimension_type c2,
-                 const Coefficient*& p1,const Coefficient*& p2) const {
+Sparse_Row::get2(const dimension_type c1, const dimension_type c2,
+                 const Coefficient*& p1, const Coefficient*& p2) const {
   PPL_ASSERT(c1 < size_);
   PPL_ASSERT(c2 < size_);
-  return row.get2(c1,c2,p1,p2);
+  return row.get2(c1, c2, p1, p2);
 }
 
 inline Sparse_Row::dangerous_iterator
@@ -234,13 +234,13 @@ Sparse_Row::lower_bound(const dimension_type k) const {
 }
 
 inline Sparse_Row::iterator
-Sparse_Row::find_create(const dimension_type i,const Coefficient& x) {
+Sparse_Row::find_create(const dimension_type i, const Coefficient& x) {
   PPL_ASSERT(i < size_);
-  return row.find_create(i,x);
+  return row.find_create(i ,x);
 }
 
 inline Sparse_Row::iterator
-Sparse_Row::find_create(const std::pair<dimension_type,Coefficient>& x) {
+Sparse_Row::find_create(const std::pair<dimension_type, Coefficient>& x) {
   PPL_ASSERT(x.first < size_);
   return row.find_create(x);
 }
@@ -253,47 +253,47 @@ Sparse_Row::find_create(const dimension_type i) {
 
 inline Sparse_Row::iterator
 Sparse_Row
-::find_create(const dimension_type i,const Coefficient& x,iterator itr) {
+::find_create(const dimension_type i, const Coefficient& x, iterator itr) {
   PPL_ASSERT(i < size_);
-  return row.find_create(i,x,itr);
+  return row.find_create(i, x, itr);
 }
 
 inline Sparse_Row::iterator
 Sparse_Row
-::find_create(const std::pair<dimension_type,Coefficient>& x,iterator itr) {
+::find_create(const std::pair<dimension_type, Coefficient>& x, iterator itr) {
   PPL_ASSERT(x.first < size_);
-  return row.find_create(x,itr);
+  return row.find_create(x, itr);
 }
 
 inline Sparse_Row::iterator
-Sparse_Row::find_create(const dimension_type i,iterator itr) {
+Sparse_Row::find_create(const dimension_type i, iterator itr) {
   PPL_ASSERT(i < size_);
-  return row.find_create(i,itr);
+  return row.find_create(i, itr);
 }
 
 inline Sparse_Row::dangerous_iterator
-Sparse_Row::find_create(const dimension_type i,const Coefficient& x,
+Sparse_Row::find_create(const dimension_type i, const Coefficient& x,
                         dangerous_iterator itr) {
   PPL_ASSERT(i < size_);
-  return row.find_create(i,x,itr);
+  return row.find_create(i, x, itr);
 }
 
 inline Sparse_Row::dangerous_iterator
-Sparse_Row::find_create(const std::pair<dimension_type,Coefficient>& x,
+Sparse_Row::find_create(const std::pair<dimension_type, Coefficient>& x,
                         dangerous_iterator itr) {
   PPL_ASSERT(x.first < size_);
-  return row.find_create(x,itr);
+  return row.find_create(x, itr);
 }
 
 inline Sparse_Row::dangerous_iterator
-Sparse_Row::find_create(const dimension_type i,dangerous_iterator itr) {
+Sparse_Row::find_create(const dimension_type i, dangerous_iterator itr) {
   PPL_ASSERT(i < size_);
-  return row.find_create(i,itr);
+  return row.find_create(i, itr);
 }
 
 inline
 Sparse_Row::operator Sparse_Row_Reference() {
-  return Sparse_Row_Reference(row,size_);
+  return Sparse_Row_Reference(row, size_);
 }
 
 inline
@@ -326,19 +326,19 @@ Sparse_Row::OK() const {
     return false;
   if (row.begin() == row.end())
     return true;
-  Unlimited_Sparse_Row::const_iterator i=row.begin();
-  Unlimited_Sparse_Row::const_iterator i_end=row.end();
-  Unlimited_Sparse_Row::const_iterator next=i;
+  Unlimited_Sparse_Row::const_iterator i = row.begin();
+  Unlimited_Sparse_Row::const_iterator i_end = row.end();
+  Unlimited_Sparse_Row::const_iterator next = i;
   ++next;
   while (next != i_end)
-    ++i,++next;
+    ++i, ++next;
   return (i->first < size_);
 }
 
 
 inline
 Sparse_Row_Reference
-::Sparse_Row_Reference(Unlimited_Sparse_Row& row1,const dimension_type size)
+::Sparse_Row_Reference(Unlimited_Sparse_Row& row1, const dimension_type size)
   : row(row1), size_(size) {
   PPL_ASSERT(OK());
 }
@@ -376,18 +376,18 @@ Sparse_Row_Reference::swap(Sparse_Row_Reference x) {
 
 inline void
 Sparse_Row_Reference::swap(Sparse_Row& x) {
-  std::swap(*this,x);
+  std::swap(*this, x);
 }
 
 inline void
 Sparse_Row_Reference::swap(dimension_type i, dimension_type j) {
-  row.swap(i,j);
+  row.swap(i, j);
   assert(OK());
 }
 
 inline void
 Sparse_Row_Reference::swap(iterator i, iterator j) {
-  row.swap(i,j);
+  row.swap(i, j);
   PPL_ASSERT(OK());
 }
 
@@ -406,8 +406,8 @@ Sparse_Row_Reference::reset(dangerous_iterator i) {
 
 inline Sparse_Row_Reference::dangerous_iterator
 Sparse_Row_Reference
-::reset(dangerous_iterator first,dangerous_iterator last) {
-  dangerous_iterator res = row.reset(first,last);
+::reset(dangerous_iterator first, dangerous_iterator last) {
+  dangerous_iterator res = row.reset(first, last);
   PPL_ASSERT(OK());
   return res;
 }
@@ -421,9 +421,9 @@ Sparse_Row_Reference::reset(const dimension_type i) {
 
 inline void
 Sparse_Row_Reference
-::reset(const dimension_type first,const dimension_type last) {
+::reset(const dimension_type first, const dimension_type last) {
   PPL_ASSERT(last <= size_);
-  row.reset(first,last);
+  row.reset(first, last);
   PPL_ASSERT(OK());
 }
 
@@ -459,11 +459,11 @@ Sparse_Row_Reference::get(const dimension_type i) const {
 
 inline void
 Sparse_Row_Reference
-::get2(const dimension_type c1,const dimension_type c2,
-       const Coefficient*& p1,const Coefficient*& p2) const {
+::get2(const dimension_type c1, const dimension_type c2,
+       const Coefficient*& p1, const Coefficient*& p2) const {
   PPL_ASSERT(c1 < size_);
   PPL_ASSERT(c2 < size_);
-  return row.get2(c1,c2,p1,p2);
+  return row.get2(c1, c2, p1, p2);
 }
 
 inline Sparse_Row_Reference::dangerous_iterator
@@ -536,56 +536,56 @@ inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference::find_create(const dimension_type i,
                                   const Coefficient& x) {
   PPL_ASSERT(i < size_);
-  return row.find_create(i,x);
+  return row.find_create(i, x);
 }
 
 inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference
-::find_create(const std::pair<dimension_type,Coefficient>& x) {
+::find_create(const std::pair<dimension_type, Coefficient>& x) {
   PPL_ASSERT(x.first < size_);
   return row.find_create(x);
 }
 
 inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference
-::find_create(const dimension_type i,const Coefficient& x,iterator itr) {
+::find_create(const dimension_type i, const Coefficient& x, iterator itr) {
   PPL_ASSERT(i < size_);
-  return row.find_create(i,x,itr);
+  return row.find_create(i, x, itr);
 }
 
 inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference
-::find_create(const std::pair<dimension_type,Coefficient>& x,iterator itr) {
+::find_create(const std::pair<dimension_type, Coefficient>& x, iterator itr) {
   PPL_ASSERT(x.first < size_);
-  return row.find_create(x,itr);
+  return row.find_create(x, itr);
 }
 
 inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference::find_create(const dimension_type i,iterator itr) {
+Sparse_Row_Reference::find_create(const dimension_type i, iterator itr) {
   PPL_ASSERT(i < size_);
-  return row.find_create(i,itr);
+  return row.find_create(i, itr);
 }
 
 inline Sparse_Row_Reference::dangerous_iterator
-Sparse_Row_Reference::find_create(const dimension_type i,const Coefficient& x,
+Sparse_Row_Reference::find_create(const dimension_type i, const Coefficient& x,
                                   dangerous_iterator itr) {
   PPL_ASSERT(i < size_);
-  return row.find_create(i,x,itr);
+  return row.find_create(i, x, itr);
 }
 
 inline Sparse_Row_Reference::dangerous_iterator
 Sparse_Row_Reference
-::find_create(const std::pair<dimension_type,Coefficient>& x,
+::find_create(const std::pair<dimension_type, Coefficient>& x,
               dangerous_iterator itr) {
   PPL_ASSERT(x.first < size_);
-  return row.find_create(x,itr);
+  return row.find_create(x, itr);
 }
 
 inline Sparse_Row_Reference::dangerous_iterator
 Sparse_Row_Reference
-::find_create(const dimension_type i,dangerous_iterator itr) {
+::find_create(const dimension_type i, dangerous_iterator itr) {
   PPL_ASSERT(i < size_);
-  return row.find_create(i,itr);
+  return row.find_create(i, itr);
 }
 
 inline
@@ -599,12 +599,12 @@ Sparse_Row_Reference::OK() const {
     return false;
   if (row.begin() == row.end())
     return true;
-  Unlimited_Sparse_Row::const_iterator i=row.begin();
-  Unlimited_Sparse_Row::const_iterator i_end=row.end();
-  Unlimited_Sparse_Row::const_iterator next=i;
+  Unlimited_Sparse_Row::const_iterator i = row.begin();
+  Unlimited_Sparse_Row::const_iterator i_end = row.end();
+  Unlimited_Sparse_Row::const_iterator next = i;
   ++next;
   while (next != i_end)
-    ++i,++next;
+    ++i, ++next;
   return (i->first < size_);
 }
 
@@ -612,17 +612,15 @@ Sparse_Row_Reference::OK() const {
 template <typename Func>
 inline void
 Sparse_Row_Reference
-::for_each_nonzero(const Func& func,const dimension_type n) {
-  (void)n;
-  std::for_each(begin(),end(),apply_to_data(func));
+::for_each_nonzero(const Func& func, const dimension_type /* n */) {
+  std::for_each(begin(), end(), apply_to_data(func));
 }
 
 template <typename Func>
 inline void
 Sparse_Row_Reference
-::for_each_nonzero(const Func& func,const dimension_type n) const {
-  (void)n;
-  std::for_each(begin(),end(),apply_to_data(func));
+::for_each_nonzero(const Func& func, const dimension_type /* n */) const {
+  std::for_each(begin(), end(), apply_to_data(func));
 }
 
 template <typename Func>
@@ -634,7 +632,7 @@ Sparse_Row_Reference::applier_to_data<Func>::applier_to_data(const Func& func)
 template <typename Func>
 inline void
 Sparse_Row_Reference::applier_to_data<Func>
-::operator()(std::pair<dimension_type,Coefficient>& x) const {
+::operator()(std::pair<dimension_type, Coefficient>& x) const {
   f(x.second);
 }
 

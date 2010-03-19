@@ -51,12 +51,12 @@ PPL::Sparse_Matrix
       PPL_ASSERT(j - i >= 2);
       if (j - i == 2)
         // For cycles of length 2 no temporary is needed, just a swap.
-        rows_k.swap(cycles[i],cycles[i+1]);
+        rows_k.swap(cycles[i], cycles[i + 1]);
       else {
         // Longer cycles need a temporary.
-        tmp = rows_k.get(cycles[j-1]);
-        for (dimension_type l = j-1; l > i; --l)
-          rows_k.swap(cycles[l-1],cycles[l]);
+        tmp = rows_k.get(cycles[j - 1]);
+        for (dimension_type l = (j - 1); l > i; --l)
+          rows_k.swap(cycles[l-1], cycles[l]);
         if (tmp == 0)
           rows_k.reset(cycles[i]);
         else
@@ -68,11 +68,11 @@ PPL::Sparse_Matrix
 
 void
 PPL::Sparse_Matrix
-::resize(dimension_type num_rows,dimension_type num_columns) {
+::resize(dimension_type num_rows, dimension_type num_columns) {
   typedef std::vector<Unlimited_Sparse_Row>::iterator rows_itr_type;
   rows.resize(num_rows);
   if (num_columns < num_columns_) {
-    for (rows_itr_type i=rows.begin(),i_end=rows.end(); i!=i_end; ++i)
+    for (rows_itr_type i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
       i->reset_after(num_columns);
   }
   num_columns_ = num_columns;
@@ -83,7 +83,7 @@ void
 PPL::Sparse_Matrix::ascii_dump(std::ostream& s) const {
   s << num_rows() << " x ";
   s << num_columns() << "\n";
-  for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i)
+  for (const_iterator i = begin(), i_end = end(); i !=i_end; ++i)
     i->ascii_dump(s);
 }
 
@@ -124,16 +124,16 @@ PPL::Sparse_Matrix::external_memory_in_bytes() const {
 
 bool
 PPL::Sparse_Matrix::OK() const {
-  for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i) {
+  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i) {
     if (!i->OK())
       return false;
     if (i->begin() != i->end()) {
-      Unlimited_Sparse_Row::const_iterator j=i->begin();
-      Unlimited_Sparse_Row::const_iterator j_end=i->end();
-      Unlimited_Sparse_Row::const_iterator next=j;
+      Unlimited_Sparse_Row::const_iterator j = i->begin();
+      Unlimited_Sparse_Row::const_iterator j_end = i->end();
+      Unlimited_Sparse_Row::const_iterator next = j;
       ++next;
       while (next != j_end)
-        ++j,++next;
+        ++j, ++next;
       if (j->first >= num_columns_)
         return false;
     }

@@ -63,10 +63,10 @@ public:
   Sparse_Row(const std::vector<Coefficient>& v);
 
   //! Constructs a row of the specified size.
-  Sparse_Row(const dimension_type n=0);
+  Sparse_Row(const dimension_type n = 0);
 
   //! Constructs a row of the specified size from an Unlimited_Sparse_Row.
-  Sparse_Row(const Unlimited_Sparse_Row &x,const dimension_type n);
+  Sparse_Row(const Unlimited_Sparse_Row &x, const dimension_type n);
 
   //! Constructs a Sparse_Row from a Sparse_Row_Reference.
   Sparse_Row(const Sparse_Row_Reference& x);
@@ -121,7 +121,7 @@ public:
   //! Resets to zero the values in the range [first,last).
   //! All dangerous_iterator objects in [first,last] are invalidated (note
   //! that last is invalidated, too).
-  dangerous_iterator reset(dangerous_iterator first,dangerous_iterator last);
+  dangerous_iterator reset(dangerous_iterator first, dangerous_iterator last);
   
   //! Resets to zero the elements in [i,size()).
   void reset_after(dimension_type i);
@@ -153,8 +153,8 @@ public:
   const Coefficient& get(const dimension_type i) const;
 
   //! A faster equivalent of p1 = &(get(c1)); p1 = &(get(c2));
-  void get2(const dimension_type c1,const dimension_type c2,
-            const Coefficient*& p1,const Coefficient*& p2) const;
+  void get2(const dimension_type c1, const dimension_type c2,
+            const Coefficient*& p1, const Coefficient*& p2) const;
 
   dangerous_iterator begin_dangerous();
   dangerous_iterator end_dangerous();
@@ -170,32 +170,32 @@ public:
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
 
-  //! Equivalent to find_create(i,x,begin_dangerous()) .
-  iterator find_create(const dimension_type i,const Coefficient& x);
+  //! Equivalent to find_create(i, x, begin_dangerous()) .
+  iterator find_create(const dimension_type i, const Coefficient& x);
 
-  //! Equivalent to find_create(x,begin_dangerous()) .
-  iterator find_create(const std::pair<dimension_type,Coefficient>& x);
+  //! Equivalent to find_create(x, begin_dangerous()) .
+  iterator find_create(const std::pair<dimension_type, Coefficient>& x);
 
-  //! Equivalent to find_create(i,begin_dangerous()) .
+  //! Equivalent to find_create(i, begin_dangerous()) .
   iterator find_create(const dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(const dimension_type i,const Coefficient& x,
+  iterator find_create(const dimension_type i, const Coefficient& x,
                        iterator itr);
 
   //! Equivalent to (*this)[x.first]=x.second , needs itr to point before the
   //! added element. If itr points near the added element, this is faster.
-  iterator find_create(const std::pair<dimension_type,Coefficient>& x,
+  iterator find_create(const std::pair<dimension_type, Coefficient>& x,
                        iterator itr);
 
   //! Equivalent to (*this)[i] , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(const dimension_type i,iterator itr);
+  iterator find_create(const dimension_type i, iterator itr);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before or to the added
   //! element. If itr points near the added element, this is faster.
-  dangerous_iterator find_create(const dimension_type i,const Coefficient& x,
+  dangerous_iterator find_create(const dimension_type i, const Coefficient& x,
                                  dangerous_iterator itr);
 
   //! Equivalent to (*this)[x.first]=x.second , needs itr to point before or
@@ -220,7 +220,7 @@ public:
   //! Checks the invariant.
   bool OK() const;
 
-  friend void std::swap(Sparse_Row_Reference x,Sparse_Row& y);
+  friend void std::swap(Sparse_Row_Reference x, Sparse_Row& y);
 };
 
 class Sparse_Row_Reference {
@@ -237,7 +237,7 @@ public:
   //! See the method documentation for details.
   typedef Unlimited_Sparse_Row::dangerous_iterator dangerous_iterator;
 
-  Sparse_Row_Reference(Unlimited_Sparse_Row& row,const dimension_type size);
+  Sparse_Row_Reference(Unlimited_Sparse_Row& row, const dimension_type size);
 
   Sparse_Row_Reference& operator=(const Unlimited_Sparse_Row& x);
 
@@ -269,7 +269,7 @@ public:
   //! Resets to zero the values in the range [first,last).
   //! All dangerous_iterator objects in [first,last] are invalidated (note
   //! that last is invalidated, too).
-  dangerous_iterator reset(dangerous_iterator first,dangerous_iterator last);
+  dangerous_iterator reset(dangerous_iterator first, dangerous_iterator last);
 
   //! Resets to zero the i-th element.
   //! For each dangerous_iterator itr that pointed to i, dangerous_iterator
@@ -280,7 +280,7 @@ public:
   //! For each dangerous_iterator i_itr that pointed to i, and j_itr that
   //! pointed to j, dangerous_iterator objects in [i_itr,j_itr] are
   //! invalidated (note that j_itr is invalidated, too).
-  void reset(dimension_type i,dimension_type j);
+  void reset(dimension_type i, dimension_type j);
 
   //! Resets to zero the elements in [i,size()).
   void reset_after(dimension_type i);
@@ -312,8 +312,8 @@ public:
   const Coefficient& get(const dimension_type i) const;
 
   //! A faster equivalent of p1 = &(get(c1)); p1 = &(get(c2));
-  void get2(const dimension_type c1,const dimension_type c2,
-            const Coefficient*& p1,const Coefficient*& p2) const;
+  void get2(const dimension_type c1, const dimension_type c2,
+            const Coefficient*& p1, const Coefficient*& p2) const;
 
   dangerous_iterator begin_dangerous();
   dangerous_iterator end_dangerous();
@@ -331,7 +331,7 @@ public:
       \param n    The logical size of this row (ignored)
   */
   template <typename Func>
-  void for_each_nonzero(const Func& func,const dimension_type n);
+  void for_each_nonzero(const Func& func, const dimension_type n);
 
   /*! \brief Executes func on each non-zero element and may execute it on some
              zeros.
@@ -351,32 +351,32 @@ public:
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
 
-  //! Equivalent to find_create(i,x,begin_dangerous()) .
-  iterator find_create(const dimension_type i,const Coefficient& x);
+  //! Equivalent to find_create(i, x, begin_dangerous()) .
+  iterator find_create(const dimension_type i, const Coefficient& x);
 
-  //! Equivalent to find_create(x,begin_dangerous()) .
-  iterator find_create(const std::pair<dimension_type,Coefficient>& x);
+  //! Equivalent to find_create(x, begin_dangerous()) .
+  iterator find_create(const std::pair<dimension_type, Coefficient>& x);
 
   //! Equivalent to find_create(i,begin_dangerous()) .
   iterator find_create(const dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(const dimension_type i,const Coefficient& x,
+  iterator find_create(const dimension_type i, const Coefficient& x,
                        iterator itr);
 
   //! Equivalent to (*this)[x.first]=x.second , needs itr to point before the
   //! added element. If itr points near the added element, this is faster.
-  iterator find_create(const std::pair<dimension_type,Coefficient>& x,
+  iterator find_create(const std::pair<dimension_type, Coefficient>& x,
                        iterator itr);
 
   //! Equivalent to (*this)[i] , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(const dimension_type i,iterator itr);
+  iterator find_create(const dimension_type i, iterator itr);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before or to the added
   //! element. If itr points near the added element, this is faster.
-  dangerous_iterator find_create(const dimension_type i,const Coefficient& x,
+  dangerous_iterator find_create(const dimension_type i, const Coefficient& x,
                                  dangerous_iterator itr);
 
   //! Equivalent to (*this)[x.first]=x.second , needs itr to point before or
@@ -404,10 +404,10 @@ private:
   */
   template <typename Func>
   class applier_to_data :
-    public std::unary_function<std::pair<dimension_type,Coefficient>&,void> {
+    public std::unary_function<std::pair<dimension_type, Coefficient>&,void> {
   public:
     applier_to_data(const Func& func);
-    void operator()(std::pair<dimension_type,Coefficient>& x) const;
+    void operator()(std::pair<dimension_type, Coefficient>& x) const;
   private:
     Func f;
   };
@@ -420,7 +420,7 @@ private:
   Unlimited_Sparse_Row& row;
   const dimension_type size_;
 
-  friend void std::swap(Sparse_Row_Reference x,Sparse_Row& y);
+  friend void std::swap(Sparse_Row_Reference x, Sparse_Row& y);
 };
 
 } // namespace Parma_Polyhedra_Library

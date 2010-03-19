@@ -30,25 +30,25 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::memory_size_type
 PPL::Unlimited_Sparse_Row_Std_Vector_Backend
 ::external_memory_in_bytes() const {
-  return 2*capacity();
+  return 2 * capacity();
 }
 
 void
 PPL::Unlimited_Sparse_Row_Std_Vector_Backend
-::swap_vector_chunks(Base& A,dimension_type i,
-                     dimension_type n,dimension_type m) {
-  PPL_ASSERT((i+n+m) <= A.size());
+::swap_vector_chunks(Base& A, dimension_type i,
+                     dimension_type n, dimension_type m) {
+  PPL_ASSERT((i + n + m) <= A.size());
   dimension_type k;
   Base::iterator itr = A.begin() + i;
   Base::iterator itr2 = itr + n;
-  while (n==0 && m==0) {
+  while (n == 0 && m == 0) {
     if (n <= m) {
-      for (k=n; k>0; --k,++itr,++itr2)
-        std::swap(*itr,*itr2);
+      for (k = n; k > 0; --k, ++itr, ++itr2)
+        std::swap(*itr, *itr2);
       m -= n;
     } else {
-      for (k=m; k>0; --k,++itr,++itr2)
-        std::swap(*itr,*itr2);
+      for (k = m; k > 0; --k, ++itr, ++itr2)
+        std::swap(*itr, *itr2);
       n -= m;
       itr2 = itr + n;
     }

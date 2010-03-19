@@ -31,17 +31,17 @@ PPL::Unlimited_Sparse_Row
   : data() {
   typedef std::vector<Coefficient>::size_type vec_size_type;
 
-  for (vec_size_type i=0,n=v.size(); i<n; ++i)
+  for (vec_size_type i = 0, n = v.size(); i < n; ++i)
     if (v[i] != 0)
       // We can not store data.end(), because it is invalidated by this
       // operation
-      data.insert(data.end_dangerous(),std::make_pair(i,v[i]));
+      data.insert(data.end_dangerous(), std::make_pair(i, v[i]));
   PPL_ASSERT(OK());
 }
 
 inline void
 PPL::Unlimited_Sparse_Row
-::reset(const dimension_type first,const dimension_type last) {
+::reset(const dimension_type first, const dimension_type last) {
   PPL_ASSERT(first <= last);
   dangerous_iterator itr = lower_bound_dangerous(first);
   dangerous_iterator itr_end = lower_bound_dangerous(last);
@@ -49,7 +49,7 @@ PPL::Unlimited_Sparse_Row
     return;
   if (itr_end != end_dangerous() && itr_end->first == last)
     ++itr_end;
-  reset(itr,itr_end);
+  reset(itr, itr_end);
   PPL_ASSERT(OK());
 }
 
@@ -60,7 +60,7 @@ PPL::Unlimited_Sparse_Row::delete_element_and_shift(dimension_type i) {
     itr = reset(itr);
   // We can't declare j_end before and keep using it because reset() may have
   // invalidated end() iterators.
-  for (iterator j=itr,j_end=end(); j!=j_end; ++j)
+  for (iterator j = itr, j_end = end(); j != j_end; ++j)
     --(j->first);
 }
 
@@ -105,10 +105,10 @@ PPL::Unlimited_Sparse_Row::operator==(const Unlimited_Sparse_Row &x) const {
 void
 PPL::Unlimited_Sparse_Row::normalize() {
   // Compute the GCD of all the coefficients.
-  const_iterator i=begin();
-  const const_iterator i_end=end();
+  const_iterator i = begin();
+  const const_iterator i_end = end();
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-  for ( ; i!=i_end; ++i) {
+  for ( ; i != i_end; ++i) {
     const Coefficient& x_i = i->second;
     if (const int x_i_sign = sgn(x_i)) {
       // FIXME: can this be optimized further?
@@ -124,7 +124,7 @@ PPL::Unlimited_Sparse_Row::normalize() {
  compute_gcd:
   if (gcd == 1)
     return;
-  for (++i; i!=i_end; ++i) {
+  for (++i; i != i_end; ++i) {
     const Coefficient& x_i = i->second;
     if (x_i != 0) {
       // Note: we use the ternary version instead of a more concise
@@ -144,7 +144,7 @@ PPL::Unlimited_Sparse_Row::normalize() {
     }
   }
   // Divide the coefficients by the GCD.
-  for (iterator j=begin(), j_end=end(); j!=j_end; ++j) {
+  for (iterator j = begin(), j_end = end(); j != j_end; ++j) {
     Coefficient& x_j = j->second;
     exact_div_assign(x_j, x_j, gcd);
   }
@@ -154,10 +154,10 @@ PPL::Unlimited_Sparse_Row::normalize() {
 void
 PPL::Unlimited_Sparse_Row::ascii_dump(std::ostream& s) const {
   dimension_type n_elements=0;
-  for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i)
+  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
     ++n_elements;
   s << "elements " << n_elements << ' ';
-  for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i)
+  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
     s << "[ " << i->first << " ]= " << i->second << ' ';
   s << "\n";
 }
@@ -187,7 +187,7 @@ PPL::Unlimited_Sparse_Row::ascii_load(std::istream& s) {
       return false;
     if (!(s >> current_data))
       return false;
-    data.push_back(std::make_pair(current_key,current_data));
+    data.push_back(std::make_pair(current_key, current_data));
   }
   PPL_ASSERT(OK());
   return true;
@@ -203,7 +203,7 @@ PPL::Unlimited_Sparse_Row::OK() const {
   const_iterator i = begin();
   ++i;
   const_iterator i_end = end();
-  for (; i != i_end; ++i,++previous)
+  for ( ; i != i_end; ++i, ++previous)
     if (previous->first >= i->first)
       return false;
   return true;

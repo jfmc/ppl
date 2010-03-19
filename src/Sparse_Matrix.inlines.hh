@@ -44,18 +44,18 @@ Sparse_Matrix
 
 inline void
 Sparse_Matrix::swap(Sparse_Matrix& x) {
-  std::swap(rows,x.rows);
-  std::swap(num_columns_,x.num_columns_);
+  std::swap(rows, x.rows);
+  std::swap(num_columns_, x.num_columns_);
 }
 
 inline Sparse_Matrix::iterator
 Sparse_Matrix::begin() {
-  return iterator(rows.begin(),num_columns());
+  return iterator(rows.begin(), num_columns());
 }
 
 inline Sparse_Matrix::iterator
 Sparse_Matrix::end() {
-  return iterator(rows.end(),num_columns());
+  return iterator(rows.end(), num_columns());
 }
 
 inline Sparse_Matrix::const_iterator
@@ -71,7 +71,7 @@ Sparse_Matrix::end() const {
 inline Sparse_Row_Reference
 Sparse_Matrix::operator[](dimension_type i) {
   PPL_ASSERT(i < rows.size());
-  return Sparse_Row_Reference(rows[i],num_columns());
+  return Sparse_Row_Reference(rows[i], num_columns());
 }
 
 inline const Unlimited_Sparse_Row&
@@ -92,41 +92,41 @@ Sparse_Matrix::num_columns() const {
 
 inline void
 Sparse_Matrix::resize(dimension_type n) {
-  resize(n,n);
+  resize(n, n);
 }
 
 inline void
 Sparse_Matrix::clear() {
-  resize(0,0);
+  resize(0, 0);
 }
 
 inline void
 Sparse_Matrix::add_zero_rows(const dimension_type n) {
-  resize(num_rows()+n,num_columns());
+  resize(num_rows() + n, num_columns());
 }
 
 inline void
 Sparse_Matrix::add_zero_columns(const dimension_type n) {
-  resize(num_rows(),num_columns()+n);
+  resize(num_rows(), num_columns() + n);
 }
 
 inline void
 Sparse_Matrix
-::add_zero_rows_and_columns(const dimension_type n,const dimension_type m) {
-  resize(num_rows()+n,num_columns()+m);
+::add_zero_rows_and_columns(const dimension_type n, const dimension_type m) {
+  resize(num_rows() + n, num_columns() + m);
 }
 
 inline void
 Sparse_Matrix::add_row(const Sparse_Row& x) {
   add_zero_rows(1);
-  (*this)[num_rows()-1] = x;
+  (*this)[num_rows() - 1] = x;
   PPL_ASSERT(OK());
 }
 
 inline void
 Sparse_Matrix::add_row(const Sparse_Row_Reference& x) {
   add_zero_rows(1);
-  (*this)[num_rows()-1] = x;
+  (*this)[num_rows() - 1] = x;
   PPL_ASSERT(OK());
 }
 
@@ -139,12 +139,12 @@ Sparse_Matrix::add_row(const Unlimited_Sparse_Row& x) {
 inline void
 Sparse_Matrix::remove_trailing_columns(const dimension_type n) {
   PPL_ASSERT(n <= num_columns());
-  resize(num_rows(),num_columns()-n);
+  resize(num_rows(), num_columns() - n);
 }
 
 inline void
 Sparse_Matrix::erase_to_end(dimension_type first_to_erase) {
-  resize(first_to_erase,num_columns());
+  resize(first_to_erase, num_columns());
 }
 
 inline memory_size_type
@@ -159,7 +159,7 @@ Sparse_Matrix::iterator::iterator(const iterator& x)
 
 inline Sparse_Row_Reference
 Sparse_Matrix::iterator::operator*() {
-  return Sparse_Row_Reference(*itr,size_);
+  return Sparse_Row_Reference(*itr, size_);
 }
 
 inline Sparse_Matrix::iterator&
@@ -185,13 +185,13 @@ Sparse_Matrix::iterator::
 template <typename Func>
 inline void
 Parma_Polyhedra_Library::Sparse_Matrix::for_each_row(const Func& func) {
-  std::for_each(begin(),end(),func);
+  std::for_each(begin(), end(), func);
 }
 
 template <typename Func>
 inline void
 Parma_Polyhedra_Library::Sparse_Matrix::for_each_row(const Func& func) const {
-  std::for_each(begin(),end(),func);
+  std::for_each(begin(), end(), func);
 }
 
 } // namespace Parma_Polyhedra_Library

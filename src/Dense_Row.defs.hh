@@ -123,7 +123,7 @@ public:
 
   //! Resets the elements [first,last) to 0.
   //! Provided for compatibility with Sparse_Row
-  void reset(const dimension_type first,const dimension_type last);
+  void reset(const dimension_type first, const dimension_type last);
 
   //! Swaps \p *this with \p y.
   void swap(Dense_Row& y);
@@ -164,8 +164,8 @@ public:
 
   //! Equivalent to p1 = &(get(c1)); p2 = &(get(c2)); .
   //! Provided for compatibility with Sparse_Row.
-  void get2(const dimension_type c1,const dimension_type c2,
-            const Coefficient*& p1,const Coefficient*& p2) const;
+  void get2(const dimension_type c1, const dimension_type c2,
+            const Coefficient*& p1, const Coefficient*& p2) const;
 
   //! Provided for compatibility with Sparse_Row.
   iterator find(dimension_type i);
@@ -175,11 +175,11 @@ public:
 
   //! Provided for compatibility with Sparse_Row.
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  iterator find(dimension_type i,iterator itr);
+  iterator find(dimension_type i, iterator itr);
 
   //! Provided for compatibility with Sparse_Row.
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  const_iterator find(dimension_type i,const_iterator itr) const;
+  const_iterator find(dimension_type i, const_iterator itr) const;
 
   //! Provided for compatibility with Sparse_Row.
   iterator lower_bound(dimension_type i);
@@ -189,25 +189,25 @@ public:
 
   //! Provided for compatibility with Sparse_Row.
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  iterator lower_bound(dimension_type i,iterator itr);
+  iterator lower_bound(dimension_type i, iterator itr);
 
   //! Provided for compatibility with Sparse_Row.
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  const_iterator lower_bound(dimension_type i,const_iterator itr) const;
+  const_iterator lower_bound(dimension_type i, const_iterator itr) const;
 
   //! Provided for compatibility with Sparse_Row.
-  iterator find_create(dimension_type i,const Coefficient& x);
+  iterator find_create(dimension_type i, const Coefficient& x);
 
   //! Provided for compatibility with Sparse_Row.
   iterator find_create(dimension_type i);
 
   //! Provided for compatibility with Sparse_Row.
   //! itr must point to an element before the modified one.
-  iterator find_create(dimension_type i,const Coefficient& x,iterator itr);
+  iterator find_create(dimension_type i, const Coefficient& x, iterator itr);
 
   //! Provided for compatibility with Sparse_Row.
   //! itr must point to an element before the modified one.
-  iterator find_create(dimension_type i,iterator itr);
+  iterator find_create(dimension_type i, iterator itr);
 
   //! \name Subscript operators
   //@{
@@ -270,7 +270,7 @@ public:
       \param n    The logical size of this row (ignored)
   */
   template <typename Func>
-  void for_each_nonzero(Func func,const dimension_type n);
+  void for_each_nonzero(Func func, const dimension_type n);
 
   /*! \brief Executes func on each non-zero element and may execute it on some
              zeros.
@@ -281,7 +281,7 @@ public:
       \param n    The logical size of this row (ignored)
   */
   template <typename Func>
-  void for_each_nonzero(Func func,const dimension_type n) const;
+  void for_each_nonzero(Func func, const dimension_type n) const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -303,7 +303,7 @@ public:
   typedef std::pair<const dimension_type,Coefficient&> value_type;
   typedef std::pair<const dimension_type,const Coefficient&> const_type;
 
-  iterator(Dense_Row& row1,dimension_type i1);
+  iterator(Dense_Row& row1, dimension_type i1);
 
   value_type operator*();
   const_type operator*() const;
@@ -329,9 +329,9 @@ private:
 class Parma_Polyhedra_Library::Dense_Row::const_iterator {
 public:
 
-  typedef std::pair<const dimension_type,const Coefficient&> const_type;
+  typedef std::pair<const dimension_type, const Coefficient&> const_type;
 
-  const_iterator(const Dense_Row& row1,dimension_type i1);
+  const_iterator(const Dense_Row& row1, dimension_type i1);
 
   const_type operator*() const;
 

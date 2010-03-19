@@ -39,7 +39,7 @@ PPL::Unlimited_Sparse_Row_Custom_Slist_Backend::operator=(const This& x) {
   if (this == &x)
     return *this;
   clear();
-  for (const_iterator i=x.begin(),i_end=x.end(); i!=i_end; ++i)
+  for (const_iterator i = x.begin(), i_end = x.end(); i != i_end; ++i)
     push_back(*i);
   PPL_ASSERT(OK());
   PPL_ASSERT(*this == x);
@@ -53,7 +53,7 @@ PPL::Unlimited_Sparse_Row_Custom_Slist_Backend
   const_iterator i_end = end();
   const_iterator j = x.begin();
   const_iterator j_end = x.end();
-  for ( ; i!=i_end && j!=j_end; ++i,++j)
+  for ( ; i != i_end && j != j_end; ++i, ++j)
     if (*i != *j)
       return false;
   return (i == i_end) && (j == j_end);
@@ -62,10 +62,10 @@ PPL::Unlimited_Sparse_Row_Custom_Slist_Backend
 PPL::memory_size_type
 PPL::Unlimited_Sparse_Row_Custom_Slist_Backend
   ::external_memory_in_bytes() const {
-  dimension_type count=0;
-  for (const_iterator i=begin(),i_end=end(); i!=i_end; ++i)
+  dimension_type count = 0;
+  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
     ++count;
-  return count*sizeof(list_elem);
+  return count * sizeof(list_elem);
 }
 
 bool

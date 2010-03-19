@@ -460,24 +460,24 @@ PPL::MIP_Problem::parse_constraints(dimension_type& tableau_num_rows,
   // Counters determining the dimensions of the tableau:
   // initialized here, they will be updated while examining `cs'.
   tableau_num_rows = cs_num_rows;
-  dimension_type tableau_num_cols = 2*cs_space_dim;
+  dimension_type tableau_num_cols = 2 * cs_space_dim;
   num_slack_variables = 0;
 
   // On exit, `is_tableau_constraint[i]' will be true if and only if
   // `cs[i]' is neither a tautology (e.g., 1 >= 0) nor a non-negativity
   // constraint (e.g., X >= 0).
-  is_tableau_constraint = std::deque<bool> (cs_num_rows, true);
+  is_tableau_constraint = std::deque<bool>(cs_num_rows, true);
 
   // On exit, `nonnegative_variable[j]' will be true if and only if
   // Variable(j) is bound to be nonnegative in `cs'.
-  nonnegative_variable = std::deque<bool> (cs_space_dim, false);
+  nonnegative_variable = std::deque<bool>(cs_space_dim, false);
 
   // Check for already known information about space dimensions and
   // store them in `nonnegative_variable'.
   const dimension_type mapping_size = mapping.size();
-  for (dimension_type i = std::min(mapping_size, cs_space_dim+1); i-- > 1; )
+  for (dimension_type i = std::min(mapping_size, cs_space_dim + 1); i-- > 1; )
     if (mapping[i].second == 0) {
-      nonnegative_variable[i-1] = true;
+      nonnegative_variable[i - 1] = true;
       --tableau_num_cols;
     }
 
@@ -643,14 +643,14 @@ PPL::MIP_Problem::process_pending_constraints() {
       // In the following case the value of the original variable can be
       // negative.
       if (!nonnegative_variable[internal_space_dim+i]) {
-        mapping.push_back(std::make_pair(first_free_tableau_index+j,
-                                         first_free_tableau_index+1+j));
+        mapping.push_back(std::make_pair(first_free_tableau_index + j,
+                                         first_free_tableau_index + j + 1));
         ++j;
         new_var_columns += 2;
       }
       // The variable is nonnegative.
       else {
-        mapping.push_back(std::make_pair(first_free_tableau_index+j, 0));
+        mapping.push_back(std::make_pair(first_free_tableau_index + j, 0));
         ++new_var_columns;
       }
     }
@@ -707,27 +707,28 @@ PPL::MIP_Problem::process_pending_constraints() {
           cs_i.coefficient(Variable(sd));
         // The test against 0 is not needed, but improves performance.
         if (current_coefficient != 0) {
-          map[mapping[sd+1].first] = std::make_pair(&current_coefficient,false);
+          map[mapping[sd + 1].first] = std::make_pair(&current_coefficient,
+                                                      false);
           // Split if needed.
-          if (mapping[sd+1].second != 0)
-            map[mapping[sd+1].second]
-              = std::make_pair(&current_coefficient,true);
+          if (mapping[sd + 1].second != 0)
+            map[mapping[sd + 1].second]
+              = std::make_pair(&current_coefficient, true);
         }
       }
       const Coefficient& cs_i_inhomogeneous_term = cs_i.inhomogeneous_term();
       // The test against 0 is not needed, but improves performance.
       if (cs_i_inhomogeneous_term != 0) {
         map[mapping[0].first]
-          = std::make_pair(&cs_i_inhomogeneous_term,false);
+          = std::make_pair(&cs_i_inhomogeneous_term, false);
         // Split if needed.
         if (mapping[0].second != 0)
           map[mapping[0].second]
-            = std::make_pair(&cs_i_inhomogeneous_term,true);
+            = std::make_pair(&cs_i_inhomogeneous_term, true);
       }
 
       // Add the slack variable, if needed.
       if (cs_i.is_inequality()) {
-        map[--slack_index] = std::make_pair(&Coefficient_one(),true);
+        map[--slack_index] = std::make_pair(&(Coefficient_one()), true);
         // If the constraint is already satisfied, we will not use artificial
         // variables to compute a feasible base: this to speed up
         // the algorithm.
@@ -738,18 +739,18 @@ PPL::MIP_Problem::process_pending_constraints() {
       }
       {
         // Dump map content into tableau_k.
-        std::map<dimension_type,std::pair<const Coefficient*,bool> >
+        std::map<dimension_type, std::pair<const Coefficient*, bool> >
           ::iterator j = map.begin();
-        std::map<dimension_type,std::pair<const Coefficient*,bool> >
+        std::map<dimension_type, std::pair<const Coefficient*, bool> >
           ::iterator j_end = map.end();
         if (j != j_end) {
           matrix_row_iterator itr
-            = tableau_k.find_create(j->first,*(j->second.first));
+            = tableau_k.find_create(j->first, *(j->second.first));
           if (j->second.second)
             neg_assign((*itr).second);
           ++j;
-          for ( ; j!=j_end; ++j) {
-            itr = tableau_k.find_create(j->first,*(j->second.first),itr);
+          for ( ; j != j_end; ++j) {
+            itr = tableau_k.find_create(j->first, *(j->second.first), itr);
             if (j->second.second)
               neg_assign((*itr).second);
           }
@@ -773,7 +774,7 @@ PPL::MIP_Problem::process_pending_constraints() {
         = vars_in_base.begin();
       std::map<dimension_type, dimension_type>::iterator j_end
         = vars_in_base.end();
-      for ( ; j!=j_end; ++j)
+      for ( ; j != j_end; ++j)
         if (k != j->second && tableau_k.get(j->first) != 0)
           linear_combine(tableau_k, tableau[j->second], base[j->second]);
     }
@@ -854,7 +855,7 @@ PPL::MIP_Problem::process_pending_constraints() {
           || (input_obj_function.coefficient(Variable(i)) != 0
               && mapping[i].second != 0)) {
         // Ensure the right space dimension is obtained.
-        last_generator = point(0 * Variable(space_dimension()-1));
+        last_generator = point(0 * Variable(space_dimension() - 1));
         status = UNBOUNDED;
         return true;
       }
@@ -864,7 +865,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     // out which case applies.
     status = OPTIMIZED;
     // Ensure the right space dimension is obtained.
-    last_generator = point(0*Variable(space_dimension()-1));
+    last_generator = point(0 * Variable(space_dimension() - 1));
     PPL_ASSERT(OK());
     return true;
   }
@@ -929,9 +930,9 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   double current_value = 0.0;
   // Due to our integer implementation, the `1' term in the denominator
   // of the original formula has to be replaced by `squared_lcm_basis'.
-  std::vector<double> challenger_dens(tableau_num_columns-1, 1.0);
-  std::vector<double> float_tableau_values(tableau_num_columns-1, 0.0);
-  std::vector<double> float_tableau_denums(tableau_num_columns-1, 0.0);
+  std::vector<double> challenger_dens(tableau_num_columns - 1, 1.0);
+  std::vector<double> float_tableau_values(tableau_num_columns - 1, 0.0);
+  std::vector<double> float_tableau_denums(tableau_num_columns - 1, 0.0);
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
@@ -1012,8 +1013,8 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   }
 
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_num);
-  std::vector<Coefficient> scalar_values(tableau_num_columns-1);
-  std::vector<Coefficient> challenger_dens(tableau_num_columns-1,
+  std::vector<Coefficient> scalar_values(tableau_num_columns - 1);
+  std::vector<Coefficient> challenger_dens(tableau_num_columns - 1,
                                            squared_lcm_basis);
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_value);
   PPL_DIRTY_TEMP_COEFFICIENT(current_value);
@@ -1191,7 +1192,7 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
     if (j->first < i->first) {
       if (j->first != k) {
         // FIXME: check if adding "if (j->second != 0)" speeds this up.
-        last_i = x.find_create(j->first,Coefficient_zero(),last_i);
+        last_i = x.find_create(j->first, Coefficient_zero(), last_i);
         Coefficient& x_i = (*last_i).second;
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
         i = last_i;
@@ -1230,7 +1231,7 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
   while (j != j_end) {
     if (j->first != k) {
       // FIXME: check if adding "if (j->second != 0)" speeds this up.
-      last_i = x.find_create(j->first,Coefficient_zero(),last_i);
+      last_i = x.find_create(j->first, Coefficient_zero(), last_i);
       Coefficient& x_i = (*last_i).second;
       PPL_ASSERT(x_i == 0);
       // FIXME: this can be optimized further
@@ -1307,7 +1308,7 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
     if (j->first < i->first) {
       if (j->first != k) {
         // FIXME: check if adding "if (j->second != 0)" speeds this up.
-        itr = x.find_create(j->first,itr);
+        itr = x.find_create(j->first, itr);
         Coefficient& x_i = (*itr).second;
         PPL_ASSERT(x_i == 0);
         // FIXME: this can be optimized further
@@ -1458,7 +1459,7 @@ PPL::MIP_Problem
     matrix_row_const_reference_type t_i = tableau[i];
     const Coefficient* t_i_entering;
     const Coefficient* t_i_base_i;
-    t_i.get2(entering_var_index,base[i],t_i_entering,t_i_base_i);
+    t_i.get2(entering_var_index, base[i], t_i_entering, t_i_base_i);
     const int num_sign = sgn(*t_i_entering);
     if (num_sign != 0 && num_sign == sgn(*t_i_base_i)) {
       exiting_base_index = i;
@@ -1481,7 +1482,7 @@ PPL::MIP_Problem
   const Coefficient* t_ee = &(t_e->get(entering_var_index));
   for (dimension_type i = exiting_base_index + 1; i < tableau_num_rows; ++i) {
     matrix_row_const_reference_type t_i = tableau[i];
-    t_i.get2(entering_var_index,base[i],t_ie,t_ib);
+    t_i.get2(entering_var_index, base[i], t_ie, t_ib);
     const int t_ie_sign = sgn(*t_ie);
     if (t_ie_sign != 0 && t_ie_sign == sgn(*t_ib)) {
       WEIGHT_BEGIN();
@@ -1520,7 +1521,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
   PPL_DIRTY_TEMP_COEFFICIENT(challenger);
   PPL_DIRTY_TEMP_COEFFICIENT(current);
 
-  cost_sgn_coeff = working_cost[working_cost.size()-1];
+  cost_sgn_coeff = working_cost[working_cost.size() - 1];
   current_num = working_cost[0];
   if (cost_sgn_coeff < 0)
     neg_assign(current_num);
@@ -1559,7 +1560,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     WEIGHT_BEGIN();
     // Now begins the objective function's value check to choose between
     // the `textbook' and the float `steepest-edge' technique.
-    cost_sgn_coeff = working_cost[working_cost.size()-1];
+    cost_sgn_coeff = working_cost[working_cost.size() - 1];
 
     challenger = working_cost[0];
     if (cost_sgn_coeff < 0)
@@ -1692,11 +1693,11 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
 
   // Zero the last column of the tableau.
   for (dimension_type i = tableau_n_rows; i-- > 0; )
-    tableau[i].reset(tableau.num_columns()-1);
+    tableau[i].reset(tableau.num_columns() - 1);
 
   // ... then properly set the element in the (new) last column,
   // encoding the kind of optimization; ...
-  working_cost[tableau.num_columns()-1] = working_cost[tableau_last_index];
+  working_cost[tableau.num_columns() - 1] = working_cost[tableau_last_index];
   // ... and finally remove redundant columns.
   const dimension_type working_cost_new_size
     = working_cost.size() - num_artificials;
@@ -1808,7 +1809,7 @@ PPL::MIP_Problem::second_phase() {
     = input_obj_function.space_dimension();
   row_type new_cost(input_obj_function_sd + 1);
   for (dimension_type i = input_obj_function_sd; i-- > 0; )
-    new_cost[i+1] = input_obj_function.coefficient(Variable(i));
+    new_cost[i + 1] = input_obj_function.coefficient(Variable(i));
   new_cost[0] = input_obj_function.inhomogeneous_term();
 
   // Negate the cost function if we are minimizing.
@@ -1820,7 +1821,7 @@ PPL::MIP_Problem::second_phase() {
   const dimension_type cost_zero_size = working_cost.size();
   row_type tmp_cost = row_type(new_cost, cost_zero_size, cost_zero_size);
   tmp_cost.swap(working_cost);
-  working_cost[cost_zero_size-1] = 1;
+  working_cost[cost_zero_size - 1] = 1;
 
   // Split the variables the cost function.
   for (dimension_type i = new_cost.size(); i-- > 1; ) {
@@ -2321,15 +2322,17 @@ PPL::MIP_Problem::OK() const {
 
       for (dimension_type j = tableau_nrows; j-- > 0; ) {
         matrix_row_const_reference_type tableau_j = tableau[j];
-        std::map<dimension_type,dimension_type>::iterator i = var_in_base.begin();
-        std::map<dimension_type,dimension_type>::iterator i_end = var_in_base.end();
+        std::map<dimension_type,dimension_type>::iterator i
+          = var_in_base.begin();
+        std::map<dimension_type,dimension_type>::iterator i_end
+          = var_in_base.end();
         matrix_const_row_const_iterator itr = tableau_j.begin();
         matrix_const_row_const_iterator itr_end = tableau_j.end();
         for ( ; i!=i_end; ++i) {
           // tableau[i][base[i] must be different from zero.
           // tableau[i][base[j], with i different from j, must not be a zero.
           if ((itr != itr_end) && (*itr).first < i->first)
-            itr = tableau_j.lower_bound((*itr).first,itr);
+            itr = tableau_j.lower_bound((*itr).first, itr);
           if (i->second != j && (itr != itr_end) && (*itr).first == i->first
               && (*itr).second != 0) {
 #ifndef NDEBUG

@@ -194,9 +194,8 @@ PPL::Dense_Matrix::add_zero_rows_and_columns(const dimension_type n,
     // Copy the old rows.
     ++i;
     while (i-- > 0) {
-      Dense_Row new_row(rows[i],
-		  new_matrix.row_size,
-		  new_matrix.row_capacity);
+      Dense_Row new_row(rows[i], new_matrix.row_size,
+                        new_matrix.row_capacity);
       std::swap(new_matrix.rows[i], new_row);
     }
     // Put the new vector into place.

@@ -36,10 +36,10 @@ public:
   typedef std::vector<Unlimited_Sparse_Row>::const_iterator const_iterator;
 
   //! Constructs a square matrix filled with zeroes with the given size.
-  Sparse_Matrix(dimension_type n=0);
+  Sparse_Matrix(dimension_type n = 0);
 
   //! Constructs a matrix filled with zeroes with the given dimensions.
-  Sparse_Matrix(dimension_type num_rows,dimension_type num_columns);
+  Sparse_Matrix(dimension_type num_rows, dimension_type num_columns);
 
   //! Swaps (*this) with x.
   void swap(Sparse_Matrix& x);
@@ -77,7 +77,7 @@ public:
   void permute_columns(const std::vector<dimension_type>& cycles);
 
   void resize(dimension_type n);
-  void resize(dimension_type num_rows,dimension_type num_columns);
+  void resize(dimension_type num_rows, dimension_type num_columns);
 
   //! Equivalent to resize(0,0). Provided for compatibility with Dense_Matrix.
   void clear();

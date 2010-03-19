@@ -663,7 +663,8 @@ private:
     the element of index \p k equal to \f$0\f$. Then it assigns
     the resulting Linear_Row to \p x and normalizes it.
   */
-  static void linear_combine(row_type& x, const row_type& y, const dimension_type k);
+  static void linear_combine(row_type& x, const row_type& y,
+                             const dimension_type k);
 
 #ifdef USE_PPL_SPARSE_MATRIX
   //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
@@ -793,7 +794,7 @@ private:
     for the second phase of the simplex algorithm.
   */
   void erase_artificials(dimension_type begin_artificials,
-			 dimension_type end_artificials);
+                         dimension_type end_artificials);
 
   bool is_in_base(dimension_type var_index,
 		  dimension_type& row_index) const;

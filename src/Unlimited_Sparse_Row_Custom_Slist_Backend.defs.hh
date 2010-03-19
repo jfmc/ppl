@@ -51,7 +51,7 @@ private:
   key_value_compare(const Compare& comp);
 
 public:
-  typedef std::pair<dimension_type,Coefficient> value_type;
+  typedef std::pair<dimension_type, Coefficient> value_type;
 
   //! An iterator on the list's elements. Warning: unlike iterator, operations
   //! that add or remove adjacent elements may invalidate the iterator, see
@@ -114,23 +114,24 @@ public:
                                            dangerous_iterator itr);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  iterator find(const dimension_type c,iterator itr);
+  iterator find(const dimension_type c, iterator itr);
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  iterator lower_bound(const dimension_type c,iterator itr);
+  iterator lower_bound(const dimension_type c, iterator itr);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  const_iterator find(const dimension_type c,const_iterator itr) const;
+  const_iterator find(const dimension_type c, const_iterator itr) const;
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  const_iterator lower_bound(const dimension_type c,const_iterator itr) const;
+  const_iterator lower_bound(const dimension_type c,
+                             const_iterator itr) const;
 
   //! A faster equivalent of
   //! itr1=find_dangerous(c1); itr2=find_dangerous(c2); .
-  void find2_dangerous(const dimension_type c1,const dimension_type c2,
-                       dangerous_iterator& itr1,dangerous_iterator& itr2);
+  void find2_dangerous(const dimension_type c1, const dimension_type c2,
+                       dangerous_iterator& itr1, dangerous_iterator& itr2);
 
   //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
-  void find2(const dimension_type c1,const dimension_type c2,
-             iterator& itr1,iterator& itr2);
+  void find2(const dimension_type c1, const dimension_type c2,
+             iterator& itr1, iterator& itr2);
 
   //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
   void find2(const dimension_type c1,const dimension_type c2,
@@ -139,14 +140,14 @@ public:
   //! Inserts the pair (i,x) before pos. Warning: this operation invalidates
   //! all dangerous_iterators equal to pos. Returns an iterator to the added
   //! element.
-  dangerous_iterator insert(dangerous_iterator pos,dimension_type i,
+  dangerous_iterator insert(dangerous_iterator pos, dimension_type i,
                             const Coefficient& x);
 
   //! Inserts the pair x before pos. Warning: this operation invalidates
   //! all dangerous_iterators equal to pos. Returns an iterator to the added
   //! element.
   dangerous_iterator insert(dangerous_iterator pos,
-                            const std::pair<dimension_type,Coefficient>& x);
+                            const std::pair<dimension_type, Coefficient>& x);
 
   //! Erases the element pointed to by pos. Warning: this operation
   //! invalidates all dangerous_iterators equal to ++pos.
@@ -154,28 +155,29 @@ public:
 
   //! Erases the element in [first,last). This operation invalidates all
   //! dangerous_iterators equal to last.
-  dangerous_iterator erase(dangerous_iterator first,dangerous_iterator last);
+  dangerous_iterator erase(dangerous_iterator first, dangerous_iterator last);
 
   //! Moves all elements of the list x before position. This operation
   //! invalidates all dangerous_iterators equal to position and all
   //! dangerous_iterators pointing to x.
   //! Returns an iterator pointing to the first added element.
   //! \p position is updated to keep it valid.
-  dangerous_iterator splice(dangerous_iterator& position,This& x);
+  dangerous_iterator splice(dangerous_iterator& position, This& x);
 
   //! Moves element i of the list x before position. This operation
   //! invalidates all dangerous_iterators equal to position, and ++i.
   //! Returns an iterator pointing to the added element.
   //! \p position is updated to keep it valid.
-  dangerous_iterator splice(dangerous_iterator& position,This& x,
+  dangerous_iterator splice(dangerous_iterator& position, This& x,
                             dangerous_iterator i);
 
   //! Moves element [first,last) of the list x before position. This operation
   //! invalidates all dangerous_iterators equal to position and last.
   //! Returns an iterator pointing to the first added element.
   //! \p position is updated to keep it valid.
-  dangerous_iterator splice(dangerous_iterator& position,This& x,
-                            dangerous_iterator first,dangerous_iterator last);
+  dangerous_iterator splice(dangerous_iterator& position, This& x,
+                            dangerous_iterator first,
+                            dangerous_iterator last);
 
   //! Assigns \p x to \p (*this) .
   This& operator=(const This& x);
@@ -199,8 +201,8 @@ private:
   //! The last element has \p next==NULL .
   struct list_elem {
     list_elem();
-    list_elem(const value_type& data1,list_elem* next1);
-    list_elem(dimension_type i,const Coefficient& x,list_elem* next1);
+    list_elem(const value_type& data1, list_elem* next1);
+    list_elem(dimension_type i, const Coefficient& x, list_elem* next1);
     value_type data;
     list_elem* next;
   };
@@ -225,7 +227,7 @@ public:
   typedef value_type* pointer;
   typedef value_type& reference;
 
-  dangerous_iterator(list_elem** p1=NULL);
+  dangerous_iterator(list_elem** p1 = NULL);
 
   static dangerous_iterator next(iterator i);
 
@@ -295,7 +297,7 @@ public:
   typedef value_type* pointer;
   typedef value_type& reference;
 
-  const_iterator(list_elem* const p1=NULL);
+  const_iterator(list_elem* const p1 = NULL);
 
   value_type& operator*() const;
   value_type* operator->() const;

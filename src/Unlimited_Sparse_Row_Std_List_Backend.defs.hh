@@ -30,9 +30,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 class Unlimited_Sparse_Row_Std_List_Backend
-  : public std::list<std::pair<dimension_type,Coefficient> > {
+  : public std::list<std::pair<dimension_type, Coefficient> > {
 public:
-  typedef std::pair<dimension_type,Coefficient> value_type;
+  typedef std::pair<dimension_type, Coefficient> value_type;
 
 private:
   //! To save typing and broken lines.
@@ -84,46 +84,47 @@ public:
                                            dangerous_iterator itr);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  iterator find(const dimension_type c,iterator itr);
+  iterator find(const dimension_type c, iterator itr);
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  iterator lower_bound(const dimension_type c,iterator itr);
+  iterator lower_bound(const dimension_type c, iterator itr);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  const_iterator find(const dimension_type c,const_iterator itr) const;
+  const_iterator find(const dimension_type c, const_iterator itr) const;
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  const_iterator lower_bound(const dimension_type c,const_iterator itr) const;
+  const_iterator lower_bound(const dimension_type c,
+                             const_iterator itr) const;
 
   //! A faster equivalent of
   //! itr1=find_dangerous(c1); itr2=find_dangerous(c2); .
-  void find2_dangerous(const dimension_type c1,const dimension_type c2,
-                       dangerous_iterator& itr1,dangerous_iterator& itr2);
+  void find2_dangerous(const dimension_type c1, const dimension_type c2,
+                       dangerous_iterator& itr1, dangerous_iterator& itr2);
 
   //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
-  void find2(const dimension_type c1,const dimension_type c2,
-             iterator& itr1,iterator& itr2);
+  void find2(const dimension_type c1, const dimension_type c2,
+             iterator& itr1, iterator& itr2);
 
   //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
-  void find2(const dimension_type c1,const dimension_type c2,
-             const_iterator& itr1,const_iterator& itr2) const;
+  void find2(const dimension_type c1, const dimension_type c2,
+             const_iterator& itr1, const_iterator& itr2) const;
 
   // This would be hidden by the next declaration.
   using Base::insert;
 
   //! Needed to satisfy the backend requirements.
-  dangerous_iterator insert(dangerous_iterator pos,dimension_type i,
+  dangerous_iterator insert(dangerous_iterator pos, dimension_type i,
                             const Coefficient& x);
 
   //! Needed to satisfy the backend requirements.
   //! The original splice() methods return void.
-  iterator splice(iterator& position,This& x);
+  iterator splice(iterator& position, This& x);
 
   //! Needed to satisfy the backend requirements.
   //! The original splice() methods return void.
-  iterator splice(iterator& position,This& x,iterator i);
+  iterator splice(iterator& position, This& x, iterator i);
 
   //! Needed to satisfy the backend requirements.
   //! The original splice() methods return void.
-  iterator splice(iterator& position,This& x,iterator first,iterator last);
+  iterator splice(iterator& position, This& x, iterator first, iterator last);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
   memory_size_type total_memory_in_bytes() const;
