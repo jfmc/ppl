@@ -123,6 +123,20 @@ Unlimited_Sparse_Row::reset_after(dimension_type i) {
   PPL_ASSERT(OK());
 }
 
+inline void
+Unlimited_Sparse_Row::assign(dimension_type i, const Coefficient& x) {
+  dangerous_iterator itr = lower_bound_dangerous(i);
+  if (x != 0 || (itr != end_dangerous() && (*itr).first == i))
+    find_create(i, x, itr);
+}
+
+inline void
+Unlimited_Sparse_Row
+::assign_if_nonzero(dimension_type i, const Coefficient& x) {
+  if (x != 0)
+    find_create(i, x);
+}
+
 inline Coefficient&
 Unlimited_Sparse_Row::operator[](const dimension_type i) {
   dangerous_iterator itr = lower_bound_dangerous(i);

@@ -243,6 +243,15 @@ public:
   */
   void normalize();
 
+  //! After this call, get(i) == x.
+  //! This is slower than <CODE>if (x != 0) find_create(i,x);</CODE> because
+  //! it needs to check whether the element with index i is zero.
+  void assign(dimension_type i, const Coefficient& x);
+
+  //! Equivalent to <CODE>if (x != 0) find_create(i, x);</CODE>, provided
+  //! for convenience. This is faster than assign(i, x).
+  void assign_if_nonzero(dimension_type i, const Coefficient& x);
+
   //! For read-only access it's better to use get(), that avoids allocating
   //! space for zeroes. Both methods are O(n).
   //! If i was not previously stored, or reset(i) was called, this operation
