@@ -979,8 +979,8 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   // Due to our integer implementation, the `1' term in the denominator
   // of the original formula has to be replaced by `squared_lcm_basis'.
   std::vector<double> challenger_dens(tableau_num_columns - 1, 1.0);
-  std::vector<double> float_tableau_values(tableau_num_columns - 1, 0.0);
-  std::vector<double> float_tableau_denums(tableau_num_columns - 1, 0.0);
+  double float_tableau_value;
+  double float_tableau_denum;
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
@@ -998,11 +998,11 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
         WEIGHT_BEGIN();
         if (tableau_ij != 0) {
           PPL_ASSERT(tableau_i_base_i != 0);
-          assign(float_tableau_values[j_index], tableau_ij);
-          assign(float_tableau_denums[j_index], tableau_i_base_i);
-          float_tableau_values[j_index] /= float_tableau_denums[j_index];
-          challenger_dens[j_index] += float_tableau_values[j_index]
-            * float_tableau_values[j_index];
+          assign(float_tableau_value, tableau_ij);
+          assign(float_tableau_denum, tableau_i_base_i);
+          float_tableau_value /= float_tableau_denum;
+          float_tableau_value *= float_tableau_value;
+          challenger_dens[j_index] += float_tableau_value;
         }
         WEIGHT_ADD_MUL(338, tableau_num_rows);
       }
