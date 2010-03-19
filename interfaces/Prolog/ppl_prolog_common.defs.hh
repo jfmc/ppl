@@ -719,12 +719,6 @@ extern "C" Prolog_foreign_return_type
 ppl_Coefficient_max(Prolog_term_ref t_max);
 
 extern "C" Prolog_foreign_return_type
-ppl_Linear_Expression_is_zero(Prolog_term_ref t_bool);
-
-extern "C" Prolog_foreign_return_type
-ppl_Linear_Expression_all_homogeneous_terms_are_zero(Prolog_term_ref t_bool);
-
-extern "C" Prolog_foreign_return_type
 ppl_new_MIP_Problem_from_space_dimension
 (Prolog_term_ref t_nd, Prolog_term_ref t_mip);
 

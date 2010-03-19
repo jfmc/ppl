@@ -651,3 +651,12 @@ ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
                             @CLASS@ q,
                             By_Reference<Boolean> finite);
 ')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
+    public native boolean
+    termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(@TOPOLOGY@@CLASS@ arg);
+
+')
