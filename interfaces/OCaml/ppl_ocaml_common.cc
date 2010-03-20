@@ -1206,8 +1206,7 @@ extern "C"
 CAMLprim value
 ppl_Linear_Expression_is_zero(value ocaml_le) try {
   CAMLparam1(ocaml_le);
-  Linear_Expression ppl_le = build_ppl_Linear_Expression(ocaml_le);
-  CAMLreturn(ppl_le.is_zero()
+  CAMLreturn(build_ppl_Linear_Expression(ocaml_le).is_zero()
              ? Val_true : Val_false);
 }
 CATCH_ALL
@@ -1216,8 +1215,8 @@ extern "C"
 CAMLprim value
 ppl_Linear_Expression_all_homogeneous_terms_are_zero(value ocaml_le) try {
   CAMLparam1(ocaml_le);
-  Linear_Expression ppl_le = build_ppl_Linear_Expression(ocaml_le);
-  CAMLreturn(ppl_le.all_homogeneous_terms_are_zero()
+  CAMLreturn(build_ppl_Linear_Expression(ocaml_le).
+    all_homogeneous_terms_are_zero()
              ? Val_true : Val_false);
 }
 CATCH_ALL
