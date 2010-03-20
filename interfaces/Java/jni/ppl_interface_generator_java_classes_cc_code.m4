@@ -1285,3 +1285,21 @@ Java_parma_1polyhedra_1library_@1CLASS@_approximate_1@PARTITION@
 }
 
 ')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_termination_1test_1MS_1@TOPOLOGY@1@CLASS@
+(JNIEnv* env, jclass, jobject j_p) {
+  try {
+    @TOPOLOGY@@CLASS@* p_ptr
+      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p));
+    return termination_test_MS(*p_ptr);
+  }
+  CATCH_ALL;
+  return 0;
+}
+')

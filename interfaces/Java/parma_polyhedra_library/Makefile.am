@@ -159,7 +159,8 @@ $(srcdir)/Variables_Set.java
 # NOTE: do _NOT_ add Fake_Class_for_Doxygen.java to this list.
 all_java_sources = \
 $(fixed_java_sources) \
-$(required_instantiations_java_sources)
+$(required_instantiations_java_sources) \
+Termination.java
 
 # NOTE: Fake_Class_for_Doxygen.java should be added here.
 EXTRA_DIST = \
@@ -188,8 +189,8 @@ java_classes.stamp: $(all_java_sources)
 
 java_cxx_headers.stamp: java_classes.stamp
 	$(JAVAH) -classpath .. \
-		$(fixed_java_cxx_headers) \
-		$(required_instantiations_java_cxx_headers)
+                 $(fixed_java_cxx_headers) \
+                 $(required_instantiations_java_cxx_headers)
 	echo timestamp >$@
 
 source_generation.stamp: $(interface_generator_dependencies)
