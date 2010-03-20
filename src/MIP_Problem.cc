@@ -1313,7 +1313,7 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
   // row contains the values that were in x.
   // x is now filled with zeroes.
   const dimension_type row_size = row.size();
-  const Coefficient& row_k = row[k];
+  const Coefficient& row_k = row.get(k);
   const Coefficient& y_k = y.get(k);
   PPL_ASSERT(y_k != 0 && row_k != 0);
   // Let g be the GCD between `row[k]' and `y[k]'.
