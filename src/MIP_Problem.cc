@@ -1238,6 +1238,8 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
       break;
     }
   }
+  // x[k] != 0, therefore x.begin() != x.end().
+  // So last_i has been initialized in the previous loop.
   PPL_ASSERT(last_i != x.end());
   while ((i != i_end) && (j != j_end)) {
     if (j->first < i->first) {
