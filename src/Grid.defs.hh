@@ -863,8 +863,14 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
-    \p expr is discrete in \p *this, in which case the maximum frequency
-    and the value for \p expr that is closest to zero are computed.
+    \p expr intersects with \p *this and \p *this is discrete on the hyperplane
+    defined by \p expr, in which case the frequency of \p *this
+    and the infimum value for \p expr for a point in \p *this are computed.
+
+    If <CODE>true</CODE> is returned then the frequency of a grid \f$\cP\f$
+    with respect to a linear expression \f$e\f$ is the modulus
+    \f$m\f$ such that all the points of the grid \f$\cP\f$ satisfy
+    the congruence \f$e \%= c \pmod{m}\f$ for some value \f$c\f$.
 
     \param expr
     The linear expression for which the frequency is needed;
@@ -876,7 +882,7 @@ public:
     The denominator of the maximum frequency of \p expr;
 
     \param val_n
-    The numerator of a value of \p expr at a point in the grid
+    The numerator of them value of \p expr at a point in the grid
     that is closest to zero;
 
     \param val_d

@@ -806,7 +806,7 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
   // Boolean to keep track of a variable `v' in expression `le'.
   // If we can replace `v' by an expression using variables other
   // than `v' and are already in `le', then this is set to true.
-  bool constant_v;
+  bool constant_v = false;
 
   PPL_DIRTY_TEMP_COEFFICIENT(val_den);
   val_den = 1;

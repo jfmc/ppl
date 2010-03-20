@@ -21,6 +21,9 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_java_common.defs.hh"
+#include "parma_polyhedra_library_Bounded_Integer_Type_Overflow.h"
+#include "parma_polyhedra_library_Bounded_Integer_Type_Representation.h"
+#include "parma_polyhedra_library_Bounded_Integer_Type_Width.h"
 #include "parma_polyhedra_library_By_Reference.h"
 #include "parma_polyhedra_library_Coefficient.h"
 #include "parma_polyhedra_library_Complexity_Class.h"
@@ -132,7 +135,7 @@ Java_parma_1polyhedra_1library_Complexity_1Class_initIDs
 }
 
 JNIEXPORT void JNICALL
-_Java_parma_1polyhedra_1library_Congruence_initIDs
+Java_parma_1polyhedra_1library_Congruence_initIDs
 (JNIEnv* env, jclass j_congruence_class) {
   jfieldID fID;
   fID = env->GetFieldID(j_congruence_class, "mod",
@@ -526,25 +529,29 @@ Java_parma_1polyhedra_1library_PPL_1Object_initIDs
 }
 
 JNIEXPORT void JNICALL
-Java_parma_1polyhedra_1library_Bounded_1Integer_Type_1Representation_initIDs
-(JNIEnv* env, jclass j_bounded_rep_class) {
+Java_parma_1polyhedra_1library_Relation_1Symbol_initIDs
+(JNIEnv* env, jclass j_rel_sym_class) {
   jfieldID fID;
-  fID = env->GetStaticFieldID(j_bounded_rep_class, "UNSIGNED",
-                              "Lparma_polyhedra_library/Bounded_Integer_Type_Representation;");
+  fID = env->GetStaticFieldID(j_rel_sym_class, "EQUAL",
+                              "Lparma_polyhedra_library/Relation_Symbol;");
   CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Bounded_Integer_Type_Representation_UNSIGNED_ID = fID;
-  fID = env->GetStaticFieldID(j_bounded_rep_class, "SIGNED_2_COMPLEMENT",
-                              "Lparma_polyhedra_library/Bounded_Integer_Type_Representation;");
+  cached_FMIDs.Relation_Symbol_EQUAL_ID = fID;
+  fID = env->GetStaticFieldID(j_rel_sym_class, "GREATER_THAN",
+                              "Lparma_polyhedra_library/Relation_Symbol;");
   CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Bounded_Integer_Type_Representation_SIGNED_2_COMPLEMENT_ID = fID;
+  cached_FMIDs.Relation_Symbol_GREATER_THAN_ID = fID;
+  fID = env->GetStaticFieldID(j_rel_sym_class, "GREATER_OR_EQUAL",
+                              "Lparma_polyhedra_library/Relation_Symbol;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Relation_Symbol_GREATER_OR_EQUAL_ID = fID;
   jmethodID mID;
-  mID = env->GetMethodID(j_bounded_rep_class, "ordinal", "()I");
+  mID = env->GetMethodID(j_rel_sym_class, "ordinal", "()I");
   CHECK_RESULT_ASSERT(env, mID);
-  cached_FMIDs.Bounded_Integer_Type_Representation_ordinal_ID = mID;
+  cached_FMIDs.Relation_Symbol_ordinal_ID = mID;
 }
 
 JNIEXPORT void JNICALL
-Java_parma_1polyhedra_1library_Bounded_1Integer_Type_1Overflow_initIDs
+Java_parma_1polyhedra_1library_Bounded_1Integer_1Type_1Overflow_initIDs
 (JNIEnv* env, jclass j_bounded_overflow_class) {
   jfieldID fID;
   fID = env->GetStaticFieldID(j_bounded_overflow_class, "OVERFLOW_WRAPS",
@@ -566,55 +573,51 @@ Java_parma_1polyhedra_1library_Bounded_1Integer_Type_1Overflow_initIDs
 }
 
 JNIEXPORT void JNICALL
-Java_parma_1polyhedra_1library_Bounded_1Integer_Type_1Width_initIDs
+Java_parma_1polyhedra_1library_Bounded_1Integer_1Type_1Representation_initIDs
+(JNIEnv* env, jclass j_bounded_rep_class) {
+  jfieldID fID;
+  fID = env->GetStaticFieldID(j_bounded_rep_class, "UNSIGNED",
+                              "Lparma_polyhedra_library/Bounded_Integer_Type_Representation;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Bounded_Integer_Type_Representation_UNSIGNED_ID = fID;
+  fID = env->GetStaticFieldID(j_bounded_rep_class, "SIGNED_2_COMPLEMENT",
+                              "Lparma_polyhedra_library/Bounded_Integer_Type_Representation;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Bounded_Integer_Type_Representation_SIGNED_2_COMPLEMENT_ID = fID;
+  jmethodID mID;
+  mID = env->GetMethodID(j_bounded_rep_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Bounded_Integer_Type_Representation_ordinal_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Bounded_1Integer_1Type_1Width_initIDs
 (JNIEnv* env, jclass j_bounded_width_class) {
   jfieldID fID;
   fID = env->GetStaticFieldID(j_bounded_width_class, "BITS_8",
                               "Lparma_polyhedra_library/Bounded_Integer_Type_Width;");
   CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_8_ID = fID;
+  cached_FMIDs.Bounded_Integer_Type_Width_BITS_8_ID = fID;
   fID = env->GetStaticFieldID(j_bounded_width_class, "BITS_16",
                               "Lparma_polyhedra_library/Bounded_Integer_Type_Width;");
   CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_16_ID = fID;
+  cached_FMIDs.Bounded_Integer_Type_Width_BITS_16_ID = fID;
   fID = env->GetStaticFieldID(j_bounded_width_class, "BITS_32",
                               "Lparma_polyhedra_library/Bounded_Integer_Type_Width;");
   CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_32_ID = fID;
+  cached_FMIDs.Bounded_Integer_Type_Width_BITS_32_ID = fID;
   fID = env->GetStaticFieldID(j_bounded_width_class, "BITS_64",
                               "Lparma_polyhedra_library/Bounded_Integer_Type_Width;");
   CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_64_ID = fID;
+  cached_FMIDs.Bounded_Integer_Type_Width_BITS_64_ID = fID;
   fID = env->GetStaticFieldID(j_bounded_width_class, "BITS_128",
                               "Lparma_polyhedra_library/Bounded_Integer_Type_Width;");
   CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_128_ID = fID;
+  cached_FMIDs.Bounded_Integer_Type_Width_BITS_128_ID = fID;
   jmethodID mID;
   mID = env->GetMethodID(j_bounded_width_class, "ordinal", "()I");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Bounded_Integer_Type_Width_ordinal_ID = mID;
-}
-
-JNIEXPORT void JNICALL
-Java_parma_1polyhedra_1library_Relation_1Symbol_initIDs
-(JNIEnv* env, jclass j_rel_sym_class) {
-  jfieldID fID;
-  fID = env->GetStaticFieldID(j_rel_sym_class, "EQUAL",
-                              "Lparma_polyhedra_library/Relation_Symbol;");
-  CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Relation_Symbol_EQUAL_ID = fID;
-  fID = env->GetStaticFieldID(j_rel_sym_class, "GREATER_THAN",
-                              "Lparma_polyhedra_library/Relation_Symbol;");
-  CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Relation_Symbol_GREATER_THAN_ID = fID;
-  fID = env->GetStaticFieldID(j_rel_sym_class, "GREATER_OR_EQUAL",
-                              "Lparma_polyhedra_library/Relation_Symbol;");
-  CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Relation_Symbol_GREATER_OR_EQUAL_ID = fID;
-  jmethodID mID;
-  mID = env->GetMethodID(j_rel_sym_class, "ordinal", "()I");
-  CHECK_RESULT_ASSERT(env, mID);
-  cached_FMIDs.Relation_Symbol_ordinal_ID = mID;
 }
 
 JNIEXPORT void JNICALL

@@ -197,10 +197,10 @@ public:
   jclass Long;
   jclass Iterator;
   // PPL types.
-  jclass By_Reference;
   jclass Bounded_Integer_Type_Overflow;
   jclass Bounded_Integer_Type_Representation;
   jclass Bounded_Integer_Type_Width;
+  jclass By_Reference;
   jclass Coefficient;
   jclass Congruence;
   jclass Constraint;
@@ -278,11 +278,11 @@ struct Java_FMID_Cache {
   jfieldID Bounded_Integer_Type_Representation_SIGNED_2_COMPLEMENT_ID;
   jmethodID Bounded_Integer_Type_Representation_ordinal_ID;
   // Bounded_Integer_Type_Width.
-  jfieldID Bounded_Integer_Type_Width_PPL_BITS_8_ID;
-  jfieldID Bounded_Integer_Type_Width_PPL_BITS_16_ID;
-  jfieldID Bounded_Integer_Type_Width_PPL_BITS_32_ID;
-  jfieldID Bounded_Integer_Type_Width_PPL_BITS_64_ID;
-  jfieldID Bounded_Integer_Type_Width_PPL_BITS_128_ID;
+  jfieldID Bounded_Integer_Type_Width_BITS_8_ID;
+  jfieldID Bounded_Integer_Type_Width_BITS_16_ID;
+  jfieldID Bounded_Integer_Type_Width_BITS_32_ID;
+  jfieldID Bounded_Integer_Type_Width_BITS_64_ID;
+  jfieldID Bounded_Integer_Type_Width_BITS_128_ID;
   jmethodID Bounded_Integer_Type_Width_ordinal_ID;
   // By_Reference.
   jfieldID By_Reference_obj_ID;
@@ -481,13 +481,6 @@ Bounded_Integer_Type_Overflow
 build_cxx_bounded_overflow(JNIEnv* env, jobject j_bounded_overflow);
 
 /*! \brief
-  Builds a C++ Bounded_Integer_Type_Representation
-  from Java parma_polyhedra_library::Bounded_Integer_Type_Representation \p j_bounded_rep.
-*/
-Bounded_Integer_Type_Representation
-build_cxx_bounded_rep(JNIEnv* env, jobject j_bounded_rep);
-
-/*! \brief
   Builds a C++ Bounded_Integer_Type_Width
   from Java parma_polyhedra_library::Bounded_Integer_Type_Width \p j_bounded_width.
 */
@@ -495,28 +488,11 @@ Bounded_Integer_Type_Width
 build_cxx_bounded_width(JNIEnv* env, jobject j_bounded_width);
 
 /*! \brief
-  Builds a Java parma_polyhedra_library::Bounded_Integer_Type_Overflow
-  from C++ Bounded_Integer_Type_Overflow \p bounded_overflow.
+  Builds a C++ Bounded_Integer_Type_Representation
+  from Java parma_polyhedra_library::Bounded_Integer_Type_Representation \p j_bounded_rep.
 */
-jobject
-build_java_bounded_overflow
-(JNIEnv* env, const Bounded_Integer_Type_Overflow& bounded_overflow);
-
-/*! \brief
-  Builds a Java parma_polyhedra_library::Bounded_Integer_Type_Representation
-  from C++ Bounded_Integer_Type_Representation \p bounded_rep.
-*/
-jobject
-build_java_bounded_representation
-(JNIEnv* env, const Bounded_Integer_Type_Representation& bounded_rep);
-
-/*! \brief
-  Builds a Java parma_polyhedra_library::Bounded_Integer_Type_Width
-  from C++ Bounded_Integer_Type_Width \p bounded_width.
-*/
-jobject
-build_java_bounded_width
-(JNIEnv* env, const Bounded_Integer_Type_Width& bounded_width);
+Bounded_Integer_Type_Representation
+build_cxx_bounded_rep(JNIEnv* env, jobject j_bounded_rep);
 
 /*! \brief
   Builds a C++ Optimization_Mode

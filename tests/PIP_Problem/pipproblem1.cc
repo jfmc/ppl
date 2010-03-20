@@ -702,6 +702,59 @@ test23() {
   return ok;
 }
 
+bool
+test24() {
+  // Minimization problem, using the big parameter trick to allow the
+  // variables to be negative.
+  Variable x(0);
+  Variable y(1);
+  Variable p(2);
+  Variable M(3);
+  Variables_Set params(p, M);
+
+  Constraint_System cs;
+  cs.insert(y - M >= -2*x + 2*M - 4);     // y >= -2*x - 4
+  cs.insert(2*y - 2*M <= x - M + 2*p);    // 2*y <= x + 2*p
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  pip.set_big_parameter_dimension(3);     // M is the big parameter
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  return ok;
+}
+
+bool
+test25() {
+  // Lexicographical maximization, using variable substitution.
+  Variable x(0);
+  Variable y(1);
+  Variable p(2);
+  Variable M(3);
+  Variables_Set params(p, M);
+
+  Constraint_System cs;
+  cs.insert(M - y >= 2*M - 2*x - 4);      // y >= 2*x - 4
+  cs.insert(M - y <= -M + x + p);         // y <= -x + p
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  pip.set_big_parameter_dimension(3);     // M is the big parameter
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -728,4 +781,6 @@ BEGIN_MAIN
   DO_TEST_F8(test21);
   DO_TEST_F8(test22);
   DO_TEST_F8(test23);
+  DO_TEST(test24);
+  DO_TEST(test25);
 END_MAIN
