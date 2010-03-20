@@ -36,9 +36,13 @@ endif !VALGRIND_TESTS_ENABLED
 
 TESTS_ENVIRONMENT = $(CHECKER)
 
+noinst_HEADERS = \
+partially_reduced_product_test.hh
+
 AM_CPPFLAGS = \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/src -I$(top_srcdir)/tests \
+-I$(top_srcdir)/tests/Partially_Reduced_Product \
 -I$(top_srcdir)/utils \
 @extra_includes@ \
 @debug_flag@
@@ -120,6 +124,8 @@ boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 
 bounds1_SOURCES = bounds1.cc
 
+concatenate1_SOURCES = concatenate1.cc
+
 congruences1_SOURCES = congruences1.cc
 
 congruencesproduct1_SOURCES = congruencesproduct1.cc
@@ -127,6 +133,12 @@ congruencesproduct1_SOURCES = congruencesproduct1.cc
 constraintsproduct1_SOURCES = constraintsproduct1.cc
 
 constraints1_SOURCES = constraints1.cc
+
+contains1_SOURCES = contains1.cc
+
+difference1_SOURCES = difference1.cc
+
+dimension1_SOURCES = dimension1.cc
 
 directproduct1_SOURCES = directproduct1.cc
 
@@ -150,6 +162,8 @@ fromproduct1_SOURCES = fromproduct1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 
+intersection1_SOURCES = intersection1.cc
+
 isempty1_SOURCES = isempty1.cc
 
 isuniverse1_SOURCES = isuniverse1.cc
@@ -172,6 +186,8 @@ timeelapse1_SOURCES = timeelapse1.cc
 topclosed1_SOURCES = topclosed1.cc
 
 topclosure1_SOURCES = topclosure1.cc
+
+upperbound1_SOURCES = upperbound1.cc
 
 DERIVED_CXXFLAGS = -DREVERSED_TESTS $(AM_CXXFLAGS)
 

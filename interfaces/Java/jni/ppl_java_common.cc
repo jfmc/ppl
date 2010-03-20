@@ -480,7 +480,7 @@ build_cxx_bounded_overflow(JNIEnv* env, jobject j_bounded_overflow) {
 }
 
 Bounded_Integer_Type_Representation
-build_cxx_bounded_representation(JNIEnv* env, jobject j_bounded_rep) {
+build_cxx_bounded_rep(JNIEnv* env, jobject j_bounded_rep) {
   jint bounded_rep
     = env->CallIntMethod(j_bounded_rep, cached_FMIDs.Bounded_Integer_Type_Representation_ordinal_ID);
   CHECK_EXCEPTION_ASSERT(env);
@@ -537,69 +537,6 @@ build_cxx_relsym(JNIEnv* env, jobject j_relsym) {
     assert(false);
     throw std::runtime_error("PPL Java interface internal error");
   }
-}
-
-jobject
-build_java_bounded_integer_type_overflow(JNIEnv* env, const Bounded_Integer_Type_Overflow& bounded_overflow) {
-  jfieldID fID;
-  switch (bounded_overflow) {
-  case OVERFLOW_WRAPS:
-    fID = cached_FMIDs.Bounded_Integer_Type_Overflow_OVERFLOW_WRAPS_ID;
-    break;
-  case OVERFLOW_UNDEFINED:
-    fID = cached_FMIDs.Bounded_Integer_Type_Overflow_OVERFLOW_UNDEFINED_ID;
-    break;
-  case OVERFLOW_IMPOSSIBLE:
-    fID = cached_FMIDs.Bounded_Integer_Type_Overflow_OVERFLOW_IMPOSSIBLE_ID;
-    break;
-  default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
-  }
-  return env->GetStaticObjectField(cached_classes.Bounded_Integer_Type_Overflow, fID);
-}
-
-jobject
-build_java_bounded_integer_type_representation(JNIEnv* env, const Bounded_Integer_Type_Representation& bounded_rep) {
-  jfieldID fID;
-  switch (bounded_rep) {
-  case UNSIGNED:
-    fID = cached_FMIDs.Bounded_Integer_Type_Representation_UNSIGNED_ID;
-    break;
-  case SIGNED_2_COMPLEMENT:
-    fID = cached_FMIDs.Bounded_Integer_Type_Representation_SIGNED_2_COMPLEMENT_ID;
-    break;
-  default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
-  }
-  return env->GetStaticObjectField(cached_classes.Bounded_Integer_Type_Representation, fID);
-}
-
-jobject
-build_java_bounded_integer_type_width(JNIEnv* env, const Bounded_Integer_Type_Width& bounded_width) {
-  jfieldID fID;
-  switch (bounded_width) {
-  case BITS_8:
-    fID = cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_8_ID;
-    break;
-  case BITS_16:
-    fID = cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_16_ID;
-    break;
-  case BITS_32:
-    fID = cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_32_ID;
-    break;
-  case BITS_64:
-    fID = cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_64_ID;
-    break;
-  case BITS_128:
-    fID = cached_FMIDs.Bounded_Integer_Type_Width_PPL_BITS_128_ID;
-    break;
-  default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
-  }
-  return env->GetStaticObjectField(cached_classes.Bounded_Integer_Type_Width, fID);
 }
 
 Optimization_Mode

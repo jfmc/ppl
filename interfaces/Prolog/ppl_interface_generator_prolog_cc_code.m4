@@ -479,7 +479,13 @@ ppl_@CLASS@_linear_@PARTITION@(Prolog_term_ref t_ph,
     Prolog_put_address(t_r_second, rsh);
     if (Prolog_unify(t_inters, t_r_first)
         && Prolog_unify(t_pset, t_r_second)) {
+      PPL_REGISTER(rfh);
+      PPL_REGISTER(rsh);
       return PROLOG_SUCCESS;
+    }
+    else {
+      delete rfh;
+      delete rsh;
     }
   }
   CATCH_ALL;
