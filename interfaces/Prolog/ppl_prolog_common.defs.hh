@@ -510,13 +510,13 @@ handle_exception(const deterministic_timeout_exception&);
   catch(const std::length_error& e) { \
     handle_exception(e); \
   } \
+  catch (const std::logic_error& e) { \
+    handle_exception(e); \
+  } \
   catch (const std::bad_alloc& e) { \
     handle_exception(e); \
   } \
   catch (const std::exception& e) { \
-    handle_exception(e); \
-  } \
-  catch (const std::logic_error& e) { \
     handle_exception(e); \
   } \
   catch (...) { \
