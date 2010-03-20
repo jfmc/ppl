@@ -137,6 +137,12 @@ val ppl_Coefficient_max:
 val ppl_Coefficient_min:
   unit -> Z.t
 
+val ppl_Linear_Expression_is_zero:
+  linear_expression -> bool
+
+val ppl_Linear_Expression_all_homogeneous_terms_are_zero:
+  linear_expression -> bool
+
 val ppl_set_rounding_for_PPL:
   unit -> unit
 
