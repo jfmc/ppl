@@ -1062,7 +1062,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   }
 
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_num);
-  std::vector<Coefficient> scalar_values(tableau_num_columns - 1);
+  PPL_DIRTY_TEMP_COEFFICIENT(scalar_value);
   std::vector<Coefficient> challenger_dens(tableau_num_columns - 1,
                                            squared_lcm_basis);
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_value);
@@ -1088,9 +1088,9 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
         // The test against 0 gives rise to a consistent speed up: see
         // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
         if (tableau_ij != 0) {
-          scalar_values[j_index] = tableau_ij * norm_factor[i];
-          add_mul_assign(challenger_dens[j_index], scalar_values[j_index],
-                         scalar_values[j_index]);
+          scalar_value = tableau_ij * norm_factor[i];
+          add_mul_assign(challenger_dens[j_index], scalar_value,
+                         scalar_value);
         }
         WEIGHT_ADD_MUL(47, tableau_num_rows);
       }
