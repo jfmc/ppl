@@ -413,6 +413,9 @@ void
 handle_exception(const std::length_error& e);
 
 void
+handle_exception(const std::logic_error& e);
+
+void
 handle_exception(const std::bad_alloc&);
 
 void

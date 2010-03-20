@@ -267,6 +267,67 @@ test11() {
   return ok && (gr == known_gr);
 }
 
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+
+  Grid gr(2);
+  gr.add_constraint(A == 0);
+  gr.add_congruence(B %= 0);
+
+  Coefficient num;
+  Coefficient den;
+  Coefficient valn;
+  Coefficient vald;
+  bool ok = (gr.frequency(Linear_Expression(A), num, den, valn, vald)
+             && num == 0 && den == 1 && valn == 0 && vald == 1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
+}
+
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+
+  Grid gr(2);
+  gr.add_constraint(A == 0);
+  gr.add_constraint(B == 0);
+
+  Coefficient num;
+  Coefficient den;
+  Coefficient valn;
+  Coefficient vald;
+  bool ok = (gr.frequency(Linear_Expression(A), num, den, valn, vald)
+             && num == 0 && den == 1 && valn == 0 && vald == 1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
+}
+
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+
+  Grid gr(2);
+  gr.add_congruence((A %= 0) / 1);
+  gr.add_congruence((2*A - B %= 0) / 2);
+  print_congruences(gr, "*** gr ***");
+
+  Coefficient num;
+  Coefficient den;
+  Coefficient valn;
+  Coefficient vald;
+  bool ok = (gr.frequency(Linear_Expression(B), num, den, valn, vald)
+             && num == 2 && den == 1 && valn == 0 && vald == 1);
+  print_congruences(gr, "*** gr ***");
+  nout << num << den;
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -281,4 +342,7 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
 END_MAIN
