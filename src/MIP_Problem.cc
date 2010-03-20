@@ -1208,10 +1208,9 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
         i = last_i;
         ++i;
         i_end = x.end();
-        if (& static_cast<matrix_row_const_reference_type>(x) == &y) {
-          j = i;
-          j_end = i_end;
-        }
+        // If &x == &y, then i == j before every loop iteration.
+        // Here we had (j->first < i->first) therefore (&x != &y) .
+        PPL_ASSERT(& static_cast<matrix_row_const_reference_type>(x) != &y);
 #endif
         PPL_ASSERT(x_i == 0);
         // sub_mul_assign(x_i, j->second, normalized_x_k);
@@ -1250,10 +1249,9 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
         i = last_i;
         ++i;
         i_end = x.end();
-        if (& static_cast<matrix_row_const_reference_type>(x) == &y) {
-          j = i;
-          j_end = i_end;
-        }
+        // If &x == &y, then i == j before every loop iteration.
+        // Here we had (j->first < i->first) therefore (&x != &y) .
+        PPL_ASSERT(& static_cast<matrix_row_const_reference_type>(x) != &y);
 #endif
         PPL_ASSERT(x_i == 0);
         // sub_mul_assign(x_i, j->second, normalized_x_k);
