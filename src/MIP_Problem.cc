@@ -975,7 +975,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   const dimension_type tableau_num_columns = tableau.num_columns();
   const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
   PPL_ASSERT(tableau_num_rows == base.size());
-  double current_value = 0.0;
+  double current_value_squared = 0.0;
   // Due to our integer implementation, the `1' term in the denominator
   // of the original formula has to be replaced by `squared_lcm_basis'.
   std::vector<double> challenger_dens(tableau_num_columns - 1, 1.0);
@@ -1018,11 +1018,12 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       //
       // assign(challenger_num, cost_j);
       // challenger_num = std::abs(challenger_num);
-      double challenger_value = sqrt(challenger_dens[j]);
       // Initialize `current_value' during the first iteration.
       // Otherwise update if the challenger wins.
-      if (entering_index == 0 || challenger_value > current_value) {
-        current_value = challenger_value;
+
+      // challenger_dens[j] is the square of the challenger value.
+      if (entering_index == 0 || challenger_dens[j] > current_value_squared) {
+        current_value_squared = challenger_dens[j];
         entering_index = j;
       }
     }
