@@ -765,9 +765,10 @@ public:
 		Generator& g) const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is not empty and
-    \p expr is discrete in \p *this, in which case the maximum frequency
-    and the value for \p expr that is closest to zero are computed.
+    Returns <CODE>true</CODE> if and only if \p *this intersects with
+    the hyperplane defined by \p expr at a single point; in which case
+    the frequency of \p *this and the infimum value for \p expr for a
+    point in \p *this are computed.
 
     \param expr
     The linear expression for which the frequency is needed;
@@ -789,9 +790,13 @@ public:
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
 
-    If \p *this is empty or \p expr can take any real number in \p *this,
-    <CODE>false</CODE> is returned and \p freq_n, \p freq_d,
+    If \p expr has no value in \p *this or can take more than one value
+    in \p *this, <CODE>false</CODE> is returned and \p freq_n, \p freq_d,
     \p val_n and \p val_d are left untouched.
+    If \p expr has a unique value in \p *this, then
+    the frequency of a polyhedron \f$\cP\f$ with respect to a linear expression
+    \f$e\f$ is \f$0\f$ and the value is given by \p val_n and \p val_d.
+
   */
   bool frequency(const Linear_Expression& expr,
                  Coefficient& freq_n, Coefficient& freq_d,

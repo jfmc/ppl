@@ -1969,6 +1969,7 @@ compute_timeout_hypercube(Hsecs, T, Dim_in, Dim_out, CS_out) :-
     ppl_reset_timeout,
     (Catch_Exception == ok ->
         Dim_out = Dim_in,
+        ppl_delete_Polyhedron(P),
         CS_out = CS
     ;
         Dim1 is Dim_in+1,

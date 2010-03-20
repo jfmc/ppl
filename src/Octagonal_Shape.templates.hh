@@ -1324,7 +1324,7 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
   // Boolean to keep track of a variable `v' in expression `le'.
   // If we can replace `v' by an expression using variables other
   // than `v' and are already in `le', then this is set to true.
-  bool constant_v;
+  bool constant_v = false;
 
   typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;

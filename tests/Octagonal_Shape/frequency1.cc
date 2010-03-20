@@ -178,8 +178,8 @@ test08() {
   Variable C(2);
 
   TOctagonal_Shape os(3);
-  os.add_constraint(2*A - 2*B == 1);
-  os.add_constraint(3*C == 2);
+  os.add_constraint(2*A - 2*B == 2);
+  os.add_constraint(2*C == 2);
   os.add_constraint(B <= 2);
 
   Coefficient num;
@@ -188,7 +188,7 @@ test08() {
   Coefficient vald;
   bool ok = (os.frequency(Linear_Expression(A - B + C + 1),
                            num, den, valn, vald)
-             && num == 0 && den == 1 && valn == 13 && vald == 6);
+             && num == 0 && den == 1 && valn == 3 && vald == 1);
   print_constraints(os, "*** os ***");
   nout << "valn " << valn << ", vald " << vald << endl;
 
@@ -202,8 +202,8 @@ test09() {
   Variable C(2);
 
   TOctagonal_Shape os(3);
-  os.add_constraint(2*A - 2*B == 1);
-  os.add_constraint(2*C == 1);
+  os.add_constraint(2*A - 2*B == 2);
+  os.add_constraint(2*C == 2);
   os.add_constraint(B <= 2);
 
   Coefficient num;
@@ -212,7 +212,7 @@ test09() {
   Coefficient vald;
   bool ok = (os.frequency(Linear_Expression(A - B + C + 1),
                            num, den, valn, vald)
-             && num == 0 && den == 1 && valn == 2 && vald == 1);
+             && num == 0 && den == 1 && valn == 3 && vald == 1);
   print_constraints(os, "*** os ***");
   nout << "valn " << valn << ", vald " << vald << endl;
 
@@ -226,8 +226,8 @@ test10() {
   Variable C(2);
 
   TOctagonal_Shape os(3);
-  os.add_constraint(2*A + 2*B == 1);
-  os.add_constraint(2*C == 1);
+  os.add_constraint(2*A + 2*B == 2);
+  os.add_constraint(2*C == 2);
   os.add_constraint(B <= 2);
 
   Coefficient num;
@@ -236,7 +236,7 @@ test10() {
   Coefficient vald;
   bool ok = (os.frequency(Linear_Expression(A + B + C + 1),
                            num, den, valn, vald)
-             && num == 0 && den == 1 && valn == 2 && vald == 1);
+             && num == 0 && den == 1 && valn == 3 && vald == 1);
   print_constraints(os, "*** os ***");
   nout << "valn " << valn << ", vald " << vald << endl;
 
@@ -250,8 +250,8 @@ test11() {
   Variable C(2);
 
   TOctagonal_Shape os(3);
-  os.add_constraint(2*A + 2*B == 1);
-  os.add_constraint(B - C == 1);
+  os.add_constraint(2*A + 2*B == 2);
+  os.add_constraint(B - C == 2);
   os.add_constraint(B <= 2);
 
   Coefficient num;
@@ -260,7 +260,7 @@ test11() {
   Coefficient vald;
   bool ok = (os.frequency(Linear_Expression(A - B + 2*C + 1),
                            num, den, valn, vald)
-             && num == 0 && den == 1 && valn == -1 && vald == 2);
+             && num == 0 && den == 1 && valn == -2 && vald == 1);
   print_constraints(os, "*** os ***");
   nout << "valn " << valn << ", vald " << vald << endl;
 
@@ -274,7 +274,7 @@ test12() {
   Variable C(2);
 
   TOctagonal_Shape os(3);
-  os.add_constraint(2*A - 2*B == 1);
+  os.add_constraint(2*A - 2*B == 2);
   os.add_constraint(B + C == 1);
   os.add_constraint(B <= 2);
 
@@ -284,7 +284,7 @@ test12() {
   Coefficient vald;
   bool ok = (os.frequency(Linear_Expression(A + B + 2*C + 1),
                            num, den, valn, vald)
-             && num == 0 && den == 1 && valn == 7 && vald == 2);
+             && num == 0 && den == 1 && valn == 4 && vald == 1);
   print_constraints(os, "*** os ***");
   nout << "valn " << valn << ", vald " << vald << endl;
 
@@ -301,7 +301,7 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
-  DO_TEST(test08);
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test08, TOctagonal_Shape);
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);

@@ -95,28 +95,6 @@ Macros should be used only if really needed (in many cases, macros can
 be replaced by inline functions).
 
 
-Length of source lines
-----------------------
-
-Avoid, when possible, source lines longer than 78 characters.
-
-
-Trailing whitespace
--------------------
-
-Always avoid trailing whitespace.
-If you use Emacs, then all the trailing whitespace in the current
-buffer can be removed by using the command
-
-  M-x delete-trailing-whitespace
-
-If you keep inserting trailing whitespace when coding, then you may
-want to put the following two lines in your .emacs:
-
-;; Show trailing whitespace.
-(setq-default show-trailing-whitespace t)
-
-
 Block closures
 --------------
 
@@ -147,28 +125,6 @@ extern "C" {
 #endif // !defined(PPL_Class_defs_hh)
 
 
-Namespace indentation
----------------------
-
-The entire library is in its own namespace.  We sometimes specialize
-std::swap() and std::iter_swap().  Other namespaces may be involved
-but only in restricted contexts.  Therefore, we have unindented
-namespace-level declarations, thus saving some precious horizontal
-space.  For example:
-
-namespace Parma_Polyhedra_Library {
-
-non-empty lines here start at column 0;
-
-} // namespace Parma_Polyhedra_Library
-
-If you use Emacs, you may want to put the following two lines in your
-.emacs:
-
-;; Disable indentation when in namespace blocks.
-(c-set-offset 'innamespace 0)
-
-
 Negation
 --------
 
@@ -197,6 +153,83 @@ For example, use
 instead of
 
 	assert(sys.num_rows());
+
+
+Formatting Conventions
+======================
+
+Indent each level using two spaces.
+Insert a space: after each comma, before and after each operator, after
+if/do/while keywords. As an exception to this rule, spaces can be omitted near
+arithmetic multiplication and division operator, if they would harm
+readability.
+Don't insert spaces between the name of a function and the following
+parenthesis.
+Braces should be cuddled on the preceding/following line.
+Avoid, when possible, source lines longer than 78 characters.
+In a function declaration, the return type of a function and the modifiers
+must be placed alone in one line.
+In pointer and reference types, the * and & characters should be followed, but
+not preceded, by a space.
+
+This is bad:
+
+inline void C::f(int *x,int y)
+{
+if( x!=0 )
+{
+    int &z=y;
+    foo (x / 2+y * 3,z/bar(5));
+}
+}
+
+This is good:
+
+inline void
+C::f(int* x, int y) {
+  if (x != 0) {
+    int& z = y;
+    foo(x/2 + y*3, z / bar(5));
+  }
+}
+
+
+Namespace indentation
+---------------------
+
+The entire library is in its own namespace.  We sometimes specialize
+std::swap() and std::iter_swap().  Other namespaces may be involved
+but only in restricted contexts.  Therefore, we have unindented
+namespace-level declarations, thus saving some precious horizontal
+space.  For example:
+
+namespace Parma_Polyhedra_Library {
+
+non-empty lines here start at column 0;
+
+} // namespace Parma_Polyhedra_Library
+
+If you use Emacs, you may want to put the following two lines in your
+.emacs:
+
+;; Disable indentation when in namespace blocks.
+(c-set-offset 'innamespace 0)
+
+
+Trailing whitespace
+-------------------
+
+Always avoid trailing whitespace.
+If you use Emacs, then all the trailing whitespace in the current
+buffer can be removed by using the command
+
+  M-x delete-trailing-whitespace
+
+If you keep inserting trailing whitespace when coding, then you may
+want to put the following two lines in your .emacs:
+
+;; Show trailing whitespace.
+(setq-default show-trailing-whitespace t)
 
 
 Standards for Structuring the Source Code in Files

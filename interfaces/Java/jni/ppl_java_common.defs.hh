@@ -197,6 +197,9 @@ public:
   jclass Long;
   jclass Iterator;
   // PPL types.
+  jclass Bounded_Integer_Type_Overflow;
+  jclass Bounded_Integer_Type_Representation;
+  jclass Bounded_Integer_Type_Width;
   jclass By_Reference;
   jclass Coefficient;
   jclass Congruence;
@@ -258,12 +261,29 @@ private:
 struct Java_FMID_Cache {
   // Non-PPL type method IDs: stored when loading Coefficient.
   jmethodID Boolean_valueOf_ID;
+  jmethodID Boolean_boolValue_ID;
   jmethodID Integer_valueOf_ID;
   jmethodID Integer_intValue_ID;
   jmethodID Long_valueOf_ID;
   jmethodID Long_longValue_ID;
 
   // PPL type field and method IDs.
+  // Bounded_Integer_Type_Overflow.
+  jfieldID Bounded_Integer_Type_Overflow_OVERFLOW_WRAPS_ID;
+  jfieldID Bounded_Integer_Type_Overflow_OVERFLOW_UNDEFINED_ID;
+  jfieldID Bounded_Integer_Type_Overflow_OVERFLOW_IMPOSSIBLE_ID;
+  jmethodID Bounded_Integer_Type_Overflow_ordinal_ID;
+  // Bounded_Integer_Type_Representation.
+  jfieldID Bounded_Integer_Type_Representation_UNSIGNED_ID;
+  jfieldID Bounded_Integer_Type_Representation_SIGNED_2_COMPLEMENT_ID;
+  jmethodID Bounded_Integer_Type_Representation_ordinal_ID;
+  // Bounded_Integer_Type_Width.
+  jfieldID Bounded_Integer_Type_Width_BITS_8_ID;
+  jfieldID Bounded_Integer_Type_Width_BITS_16_ID;
+  jfieldID Bounded_Integer_Type_Width_BITS_32_ID;
+  jfieldID Bounded_Integer_Type_Width_BITS_64_ID;
+  jfieldID Bounded_Integer_Type_Width_BITS_128_ID;
+  jmethodID Bounded_Integer_Type_Width_ordinal_ID;
   // By_Reference.
   jfieldID By_Reference_obj_ID;
   jmethodID By_Reference_init_ID;
@@ -390,6 +410,10 @@ jtype_to_unsigned(const V& value);
 jobject
 bool_to_j_boolean(JNIEnv* env, const bool value);
 
+//! Returns the Java bool stored in Java Boolean \p j_boolean.
+bool
+j_boolean_to_bool(JNIEnv* env, jobject j_boolean);
+
 //! Returns the Java int stored in Java Integer \p j_integer.
 jint
 j_integer_to_j_int(JNIEnv* env, jobject j_integer);
@@ -448,6 +472,27 @@ build_java_variables_set(JNIEnv* env, const Variables_Set& v_set);
 */
 Relation_Symbol
 build_cxx_relsym(JNIEnv* env, jobject j_relsym);
+
+/*! \brief
+  Builds a C++ Bounded_Integer_Type_Overflow
+  from Java parma_polyhedra_library::Bounded_Integer_Type_Overflow \p j_bounded_overflow.
+*/
+Bounded_Integer_Type_Overflow
+build_cxx_bounded_overflow(JNIEnv* env, jobject j_bounded_overflow);
+
+/*! \brief
+  Builds a C++ Bounded_Integer_Type_Width
+  from Java parma_polyhedra_library::Bounded_Integer_Type_Width \p j_bounded_width.
+*/
+Bounded_Integer_Type_Width
+build_cxx_bounded_width(JNIEnv* env, jobject j_bounded_width);
+
+/*! \brief
+  Builds a C++ Bounded_Integer_Type_Representation
+  from Java parma_polyhedra_library::Bounded_Integer_Type_Representation \p j_bounded_rep.
+*/
+Bounded_Integer_Type_Representation
+build_cxx_bounded_rep(JNIEnv* env, jobject j_bounded_rep);
 
 /*! \brief
   Builds a C++ Optimization_Mode

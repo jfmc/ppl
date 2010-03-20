@@ -409,6 +409,20 @@ ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
 
 ')
 
+m4_define(`ppl_@CLASS@_wrap_assign_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
+    public native void wrap_assign(Variables_Set vars,
+				Bounded_Integer_Type_Width w,
+				Bounded_Integer_Type_Representation r,
+                                Bounded_Integer_Type_Overflow o,
+                                Constraint_System cs,
+                                Integer complexity_threshold,
+                                Boolean wrap_individually);
+
+')
+
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
 ___END_OF_FILE___

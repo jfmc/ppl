@@ -39,6 +39,9 @@ Java_Class_Cache::Java_Class_Cache() {
   Long = NULL;
   Iterator = NULL;
   // PPL classes.
+  Bounded_Integer_Type_Overflow = NULL;
+  Bounded_Integer_Type_Representation = NULL;
+  Bounded_Integer_Type_Width = NULL;
   By_Reference = NULL;
   Coefficient = NULL;
   Congruence = NULL;
@@ -90,6 +93,9 @@ Java_Class_Cache::init_cache(JNIEnv* env) {
   init_cache(env, Long, "java/lang/Long");
   init_cache(env, Iterator, "java/util/Iterator");
   // PPL classes.
+  init_cache(env, Bounded_Integer_Type_Overflow, "parma_polyhedra_library/Bounded_Integer_Type_Overflow");
+  init_cache(env, Bounded_Integer_Type_Representation, "parma_polyhedra_library/Bounded_Integer_Type_Representation");
+  init_cache(env, Bounded_Integer_Type_Width, "parma_polyhedra_library/Bounded_Integer_Type_Width");
   init_cache(env, By_Reference, "parma_polyhedra_library/By_Reference");
   init_cache(env, Coefficient, "parma_polyhedra_library/Coefficient");
   init_cache(env, Congruence, "parma_polyhedra_library/Congruence");
@@ -154,6 +160,9 @@ Java_Class_Cache::clear_cache(JNIEnv* env) {
   clear_cache(env, Long);
   clear_cache(env, Iterator);
   // PPL classes.
+  clear_cache(env, Bounded_Integer_Type_Overflow);
+  clear_cache(env, Bounded_Integer_Type_Representation);
+  clear_cache(env, Bounded_Integer_Type_Width);
   clear_cache(env, By_Reference);
   clear_cache(env, Coefficient);
   clear_cache(env, Congruence);
@@ -373,6 +382,13 @@ bool_to_j_boolean(JNIEnv* env, const bool value) {
   return ret;
 }
 
+bool
+j_boolean_to_bool(JNIEnv* env, jobject j_boolean) {
+  bool b = env->CallIntMethod(j_boolean, cached_FMIDs.Boolean_boolValue_ID);
+  CHECK_EXCEPTION_ASSERT(env);
+  return b;
+}
+
 jobject
 j_long_to_j_long_class(JNIEnv* env, jlong jlong_value) {
   jobject ret = env->CallStaticObjectMethod(cached_classes.Long,
@@ -443,6 +459,62 @@ build_java_variables_set(JNIEnv* env, const Variables_Set& v_set) {
     CHECK_EXCEPTION_THROW(env);
   }
   return j_vs;
+}
+
+Bounded_Integer_Type_Overflow
+build_cxx_bounded_overflow(JNIEnv* env, jobject j_bounded_overflow) {
+  jint bounded_overflow
+    = env->CallIntMethod(j_bounded_overflow, cached_FMIDs.Bounded_Integer_Type_Overflow_ordinal_ID);
+  CHECK_EXCEPTION_ASSERT(env);
+  switch (bounded_overflow) {
+  case 0:
+    return OVERFLOW_WRAPS;
+  case 1:
+    return OVERFLOW_UNDEFINED;
+  case 2:
+    return OVERFLOW_IMPOSSIBLE;
+  default:
+    assert(false);
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+}
+
+Bounded_Integer_Type_Representation
+build_cxx_bounded_rep(JNIEnv* env, jobject j_bounded_rep) {
+  jint bounded_rep
+    = env->CallIntMethod(j_bounded_rep, cached_FMIDs.Bounded_Integer_Type_Representation_ordinal_ID);
+  CHECK_EXCEPTION_ASSERT(env);
+  switch (bounded_rep) {
+  case 0:
+    return UNSIGNED;
+  case 1:
+    return SIGNED_2_COMPLEMENT;
+  default:
+    assert(false);
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+}
+
+Bounded_Integer_Type_Width
+build_cxx_bounded_width(JNIEnv* env, jobject j_bounded_width) {
+  jint bounded_width
+    = env->CallIntMethod(j_bounded_width, cached_FMIDs.Bounded_Integer_Type_Width_ordinal_ID);
+  CHECK_EXCEPTION_ASSERT(env);
+  switch (bounded_width) {
+  case 0:
+    return BITS_8;
+  case 1:
+    return BITS_16;
+  case 2:
+    return BITS_32;
+  case 3:
+    return BITS_64;
+  case 4:
+    return BITS_128;
+  default:
+    assert(false);
+    throw std::runtime_error("PPL Java interface internal error");
+  }
 }
 
 Relation_Symbol
