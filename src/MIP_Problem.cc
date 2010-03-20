@@ -1392,13 +1392,20 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
       ++i;
     }
   }
-  if (i != i_end && itr == x.end()) {
-    if (i->first != k) {
-      itr = x.find_create(*i);
-      Coefficient& x_i = (*itr).second;
-      x_i *= normalized_y_k;
+  if (itr == x.end()) {
+    while (i != i_end) {
+      if (i->first != k) {
+        itr = x.find_create(*i);
+        Coefficient& x_i = (*itr).second;
+        x_i *= normalized_y_k;
+
+        // Now itr has been initialized, so use it in next calls to
+        // find_create().
+        ++i;
+        break;
+      }
+      ++i;
     }
-    ++i;
   }
   while (i != i_end) {
     if (i->first != k) {
@@ -1408,18 +1415,25 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
     }
     ++i;
   }
-  if (j != j_end && itr == x.end()) {
-    if (j->first != k) {
-      // FIXME: check if adding "if (j->second != 0)" speeds this up.
-      itr = x.find_create(j->first);
-      Coefficient& x_i = (*itr).second;
-      PPL_ASSERT(x_i == 0);
-      // sub_mul_assign(x_i, j->second, normalized_row_k);
-      x_i = j->second;
-      x_i *= normalized_row_k;
-      neg_assign(x_i);
+  if (itr == x.end()) {
+    while (j != j_end) {
+      if (j->first != k) {
+        // FIXME: check if adding "if (j->second != 0)" speeds this up.
+        itr = x.find_create(j->first);
+        Coefficient& x_i = (*itr).second;
+        PPL_ASSERT(x_i == 0);
+        // sub_mul_assign(x_i, j->second, normalized_row_k);
+        x_i = j->second;
+        x_i *= normalized_row_k;
+        neg_assign(x_i);
+
+        // Now itr has been initialized, so use it in next calls to
+        // find_create().
+        ++j;
+        break;
+      }
+      ++j;
     }
-    ++j;
   }
   while (j != j_end) {
     if (j->first != k) {
