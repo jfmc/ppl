@@ -1214,8 +1214,11 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
         }
 #endif
         PPL_ASSERT(x_i == 0);
-        // FIXME: this can be optimized further
-        sub_mul_assign(x_i, j->second, normalized_x_k);
+        // sub_mul_assign(x_i, j->second, normalized_x_k);
+        x_i = j->second;
+        x_i *= normalized_x_k;
+        neg_assign(x_i);
+
         ++j;
         break;
       } else
@@ -1253,8 +1256,10 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
         }
 #endif
         PPL_ASSERT(x_i == 0);
-        // FIXME: this can be optimized further
-        sub_mul_assign(x_i, j->second, normalized_x_k);
+        // sub_mul_assign(x_i, j->second, normalized_x_k);
+        x_i = j->second;
+        x_i *= normalized_x_k;
+        neg_assign(x_i);
       }
       ++j;
     } else {
@@ -1283,8 +1288,10 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
       last_i = x.find_create(j->first, Coefficient_zero(), last_i);
       Coefficient& x_i = (*last_i).second;
       PPL_ASSERT(x_i == 0);
-      // FIXME: this can be optimized further
-      sub_mul_assign(x_i, j->second, normalized_x_k);
+      // sub_mul_assign(x_i, j->second, normalized_x_k);
+      x_i = j->second;
+      x_i *= normalized_x_k;
+      neg_assign(x_i);
     }
     ++j;
   }
