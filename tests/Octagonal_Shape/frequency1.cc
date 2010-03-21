@@ -299,8 +299,8 @@ test13() {
 
   TOctagonal_Shape os(3);
   os.add_constraint(4*A - 4*B == 1);
-  o.add_constraint(3*C == 1);
-  o.add_constraint(B <= 2);
+  os.add_constraint(3*C == 1);
+  os.add_constraint(B <= 2);
 
   Coefficient num;
   Coefficient den;
