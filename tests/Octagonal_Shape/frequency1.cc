@@ -291,6 +291,36 @@ test12() {
   return ok;
 }
 
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagonal_Shape os(3);
+  os.add_constraint(4*A - 4*B == 1);
+  o.add_constraint(3*C == 1);
+  o.add_constraint(B <= 2);
+
+  Coefficient num;
+  Coefficient den;
+  Coefficient valn;
+  Coefficient vald;
+  bool discrete = os.frequency(Linear_Expression(A - B),
+                                num, den, valn, vald);
+  // If the shape is based on an integral coefficient type, then
+  // approximations will induce non discreteness of the linear expression.
+  bool ok
+    = std::numeric_limits<TOctagonal_Shape::coefficient_type_base>::is_integer
+      ? (!discrete && num == 0 && den == 0 && valn == 0 && vald == 0)
+      : (discrete && num == 0 && den == 1 && valn == 1 && vald == 4);
+  print_constraints(os, "*** os ***");
+  nout << "num " << num << ", den " << den << endl;
+  nout << "valn " << valn << ", vald " << vald << endl;
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -306,4 +336,5 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN

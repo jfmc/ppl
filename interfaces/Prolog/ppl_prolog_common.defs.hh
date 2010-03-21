@@ -413,6 +413,9 @@ void
 handle_exception(const std::length_error& e);
 
 void
+handle_exception(const std::logic_error& e);
+
+void
 handle_exception(const std::bad_alloc&);
 
 void
@@ -505,6 +508,9 @@ handle_exception(const deterministic_timeout_exception&);
     handle_exception(e); \
   } \
   catch(const std::length_error& e) { \
+    handle_exception(e); \
+  } \
+  catch (const std::logic_error& e) { \
     handle_exception(e); \
   } \
   catch (const std::bad_alloc& e) { \
