@@ -2787,7 +2787,8 @@ must_catch(Call, prolog_exception_error) :-
 must_catch(Call, cpp_error) :-
    !,
    catch( Call, Message, format_exception_message( cpp_error(Message) ) ),
-   ( ( \+ var(Message), name(Message, [80,80,76,58,58|_] ) ) ->
+   ( ( \+ var(Message),
+       functor(Message, ppl_logic_error, _) ) ->
        true
    ;
        fail
