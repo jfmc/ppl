@@ -480,3 +480,38 @@ val ppl_@CLASS@_approximate_@PARTITION@:
     @!CLASS@ * pointset_powerset_grid * bool
 
 ')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+val ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
+  @!CLASS@ -> @!CLASS@ -> bool
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+val ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@:
+  @!CLASS@ -> bool * linear_generator
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+val ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
+  @!CLASS@ -> @!CLASS@ -> bool * linear_generator
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+val ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@:
+  @!CLASS@ -> polyhedron
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+val ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
+  @!CLASS@ -> @!CLASS@ -> polyhedron
+
+')
