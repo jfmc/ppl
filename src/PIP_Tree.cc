@@ -377,8 +377,7 @@ merge_assign(PIP_Tree_Node::matrix_type& x,
     PPL_ASSERT(y_i->is_nonstrict_inequality());
     PIP_Tree_Node::matrix_row_reference_type x_i = x[i];
     const Coefficient& inhomogeneous_term = y_i->inhomogeneous_term();
-    if (inhomogeneous_term != 0)
-      x_i[0] = inhomogeneous_term;
+    x_i.assign_if_nonzero(0, inhomogeneous_term);
     Variables_Set::const_iterator pj;
     dimension_type j = 1;
     PIP_Tree_Node::matrix_row_iterator last = x_i.begin();
