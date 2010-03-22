@@ -2788,7 +2788,7 @@ must_catch(Call, cpp_error) :-
    !,
    catch( Call, Message, format_exception_message( cpp_error(Message) ) ),
    ( ( \+ var(Message),
-       functor(Message, ppl_logic_error, _) ) ->
+       functor(Message, ppl_invalid_argument, _) ) ->
        true
    ;
        fail
