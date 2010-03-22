@@ -29,11 +29,10 @@ namespace Parma_Polyhedra_Library {
 
 template <typename In>
 MIP_Problem::MIP_Problem(const dimension_type dim,
-			 In first,
-			 In last,
-			 const Variables_Set& int_vars,
-			 const Linear_Expression& obj,
-			 const Optimization_Mode mode)
+                         In first, In last,
+                         const Variables_Set& int_vars,
+                         const Linear_Expression& obj,
+                         const Optimization_Mode mode)
   : external_space_dim(dim),
     internal_space_dim(0),
     tableau(),
@@ -61,47 +60,47 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
     throw std::invalid_argument(s.str());
   }
 
-   // Check for space dimension overflow.
-   if (dim > max_space_dimension())
-     throw std::length_error("PPL::MIP_Problem:: MIP_Problem(dim, first, "
-			     "last, int_vars, obj, mode):\n"
-			     "dim exceeds the maximum allowed"
-			     "space dimension.");
-   // Check the objective function.
-   if (obj.space_dimension() > dim) {
-     std::ostringstream s;
-     s << "PPL::MIP_Problem::MIP_Problem(dim, first, last,"
-       << "int_vars, obj, mode):\n"
-       << "obj.space_dimension() == "<< obj.space_dimension()
-       << " exceeds d == "<< dim << ".";
-     throw std::invalid_argument(s.str());
-   }
-   // Check the constraints.
-   for (In i = first; i != last; ++i) {
-     if (i->is_strict_inequality())
-       throw std::invalid_argument("PPL::MIP_Problem::"
-				   "MIP_Problem(dim, first, last, int_vars,"
-				   "obj, mode):\nrange [first, last) contains"
-				   "a strict inequality constraint.");
-     if (i->space_dimension() > dim) {
-       std::ostringstream s;
-       s << "PPL::MIP_Problem::"
-	 << "MIP_Problem(dim, first, last, int_vars, obj, mode):\n"
-	 << "range [first, last) contains a constraint having space"
-	 << "dimension  == " << i->space_dimension() << " that exceeds"
-	 "this->space_dimension == " << dim << ".";
-       throw std::invalid_argument(s.str());
-     }
-     input_cs.push_back(*i);
-   }
-   PPL_ASSERT(OK());
+  // Check for space dimension overflow.
+  if (dim > max_space_dimension())
+    throw std::length_error("PPL::MIP_Problem:: MIP_Problem(dim, first, "
+                            "last, int_vars, obj, mode):\n"
+                            "dim exceeds the maximum allowed"
+                            "space dimension.");
+  // Check the objective function.
+  if (obj.space_dimension() > dim) {
+    std::ostringstream s;
+    s << "PPL::MIP_Problem::MIP_Problem(dim, first, last,"
+      << "int_vars, obj, mode):\n"
+      << "obj.space_dimension() == "<< obj.space_dimension()
+      << " exceeds d == "<< dim << ".";
+    throw std::invalid_argument(s.str());
+  }
+  // Check the constraints.
+  for (In i = first; i != last; ++i) {
+    if (i->is_strict_inequality())
+      throw std::invalid_argument("PPL::MIP_Problem::"
+                                  "MIP_Problem(dim, first, last, int_vars,"
+                                  "obj, mode):\nrange [first, last) contains"
+                                  "a strict inequality constraint.");
+    if (i->space_dimension() > dim) {
+      std::ostringstream s;
+      s << "PPL::MIP_Problem::"
+        << "MIP_Problem(dim, first, last, int_vars, obj, mode):\n"
+        << "range [first, last) contains a constraint having space"
+        << "dimension  == " << i->space_dimension() << " that exceeds"
+        "this->space_dimension == " << dim << ".";
+      throw std::invalid_argument(s.str());
+    }
+    input_cs.push_back(*i);
+  }
+  PPL_ASSERT(OK());
 }
 
 template <typename In>
 MIP_Problem::MIP_Problem(dimension_type dim,
-			 In first, In last,
-			 const Linear_Expression& obj,
-			 Optimization_Mode mode)
+                         In first, In last,
+                         const Linear_Expression& obj,
+                         Optimization_Mode mode)
   : external_space_dim(dim),
     internal_space_dim(0),
     tableau(),
@@ -120,9 +119,9 @@ MIP_Problem::MIP_Problem(dimension_type dim,
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
     throw std::length_error("PPL::MIP_Problem::"
-			    "MIP_Problem(dim, first, last, obj, mode):\n"
-			    "dim exceeds the maximum allowed space "
-			    "dimension.");
+                            "MIP_Problem(dim, first, last, obj, mode):\n"
+                            "dim exceeds the maximum allowed space "
+                            "dimension.");
   // Check the objective function.
   if (obj.space_dimension() > dim) {
     std::ostringstream s;
@@ -136,16 +135,17 @@ MIP_Problem::MIP_Problem(dimension_type dim,
   for (In i = first; i != last; ++i) {
     if (i->is_strict_inequality())
       throw std::invalid_argument("PPL::MIP_Problem::"
-				  "MIP_Problem(dim, first, last, obj, mode):\n"
-				  "range [first, last) contains a strict "
-				  "inequality constraint.");
+                                  "MIP_Problem(dim, first, last, obj, mode):"
+                                  "\n"
+                                  "range [first, last) contains a strict "
+                                  "inequality constraint.");
     if (i->space_dimension() > dim) {
       std::ostringstream s;
       s << "PPL::MIP_Problem::"
-	<< "MIP_Problem(dim, first, last, obj, mode):\n"
-	<< "range [first, last) contains a constraint having space"
-	<< "dimension" << " == " << i->space_dimension() << " that exceeds"
-	"this->space_dimension == " << dim << ".";
+        << "MIP_Problem(dim, first, last, obj, mode):\n"
+        << "range [first, last) contains a constraint having space"
+        << "dimension" << " == " << i->space_dimension() << " that exceeds"
+        "this->space_dimension == " << dim << ".";
       throw std::invalid_argument(s.str());
     }
     input_cs.push_back(*i);
