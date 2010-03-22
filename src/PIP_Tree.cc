@@ -150,7 +150,7 @@ add_mul_assign_row(PIP_Tree_Node::matrix_row_reference_type x,
     ++i;
   } else
       if (i == i_end
-          || (j != j_end && (*i).first < (*j).first)) {
+          || (j != j_end && (*i).first > (*j).first)) {
         itr = row.find_create(*j);
         (*itr).second *= c;
         ++j;
