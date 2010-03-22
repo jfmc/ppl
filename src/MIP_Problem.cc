@@ -1518,7 +1518,7 @@ PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
 // See pages 47 and 50 of [PapadimitriouS98].
 PPL::dimension_type
 PPL::MIP_Problem
-::get_exiting_base_index(const dimension_type entering_var_index) const  {
+::get_exiting_base_index(const dimension_type entering_var_index) const {
   // The variable exiting the base should be associated to a tableau
   // constraint such that the ratio
   // tableau[i][entering_var_index] / tableau[i][base[i]]
