@@ -2133,8 +2133,8 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& lp,
   for (Variables_Set::const_iterator v_it = i_vars.begin(),
          v_end = i_vars.end(); v_it != v_end; ++v_it) {
     gcd_assign(gcd,
-	       last_generator.coefficient(Variable(*v_it)),
-	       last_generator_divisor);
+               last_generator.coefficient(Variable(*v_it)),
+               last_generator_divisor);
     if (gcd != last_generator_divisor)
       candidate_variables.insert(*v_it);
   }
@@ -2301,10 +2301,10 @@ PPL::MIP_Problem::OK() const {
   if (external_space_dim < input_obj_function.space_dimension()) {
 #ifndef NDEBUG
     cerr << "The MIP_Problem and the objective function have "
-	 << "incompatible space dimensions ("
-	 << external_space_dim << " < "
-	 << input_obj_function.space_dimension() << ")."
-	 << endl;
+         << "incompatible space dimensions ("
+         << external_space_dim << " < "
+         << input_obj_function.space_dimension() << ")."
+         << endl;
     ascii_dump(cerr);
 #endif
     return false;
@@ -2331,9 +2331,9 @@ PPL::MIP_Problem::OK() const {
         cerr << "The cached feasible point does not belong to "
              << "the feasible region of the MIP_Problem."
              << endl;
-	ascii_dump(cerr);
+        ascii_dump(cerr);
 #endif
-	return false;
+        return false;
       }
 
     // Check that every integer declared variable is really integer.
@@ -2341,7 +2341,7 @@ PPL::MIP_Problem::OK() const {
     if (!i_variables.empty()) {
       PPL_DIRTY_TEMP_COEFFICIENT(gcd);
       for (Variables_Set::const_iterator v_it = i_variables.begin(),
-	     v_end = i_variables.end(); v_it != v_end; ++v_it) {
+            v_end = i_variables.end(); v_it != v_end; ++v_it) {
         gcd_assign(gcd, last_generator.coefficient(Variable(*v_it)),
                    last_generator.divisor());
         if (gcd != last_generator.divisor())
