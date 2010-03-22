@@ -1552,7 +1552,9 @@ PPL::MIP_Problem
   // These pointers are used instead of references in the following loop, to
   // improve performance.
   matrix_row_const_pointer_type t_e = &(tableau[exiting_base_index]);
-  const Coefficient* t_ee = &(t_e->get(entering_var_index));
+  const Coefficient* t_ee;
+  const Coefficient* t_e0;
+  t_e->get2(0,entering_var_index,t_e0,t_ee);
   for (dimension_type i = exiting_base_index + 1; i < tableau_num_rows; ++i) {
     matrix_row_const_reference_type t_i = tableau[i];
     t_i.get2(entering_var_index, base[i], t_ie, t_ib);
@@ -1561,7 +1563,7 @@ PPL::MIP_Problem
       WEIGHT_BEGIN();
       lcm_assign(lcm, *t_ee, *t_ie);
       exact_div_assign(current_min, lcm, *t_ee);
-      current_min *= t_e->get(0);
+      current_min *= *t_e0;
       abs_assign(current_min);
       exact_div_assign(challenger, lcm, *t_ie);
       challenger *= t_i.get(0);
@@ -1572,7 +1574,7 @@ PPL::MIP_Problem
           || (sign == 0 && base[i] < base[exiting_base_index])) {
         exiting_base_index = i;
         t_e = &(tableau[exiting_base_index]);
-        t_ee = &(t_e->get(entering_var_index));
+        t_e->get2(0,entering_var_index,t_e0,t_ee);
       }
       WEIGHT_ADD(1044);
     }
