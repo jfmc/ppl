@@ -1368,6 +1368,11 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
   // Perform simplex pivots on the context
   // until we find an empty solution or an optimum.
   while (true) {
+    // Check if the client has requested abandoning all expensive
+    // computations. If so, the exception specified by the client
+    // is thrown now.
+    maybe_abandon();
+
     dimension_type pi = num_rows; // pi is the pivot's row index.
     dimension_type pj = 0;        // pj is the pivot's column index.
 
@@ -1724,6 +1729,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 
   // Main loop of the simplex algorithm.
   while (true) {
+    // Check if the client has requested abandoning all expensive
+    // computations. If so, the exception specified by the client
+    // is thrown now.
+    maybe_abandon();
+
     PPL_ASSERT(OK());
 
     const dimension_type num_rows = tableau.t.num_rows();
