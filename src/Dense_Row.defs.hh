@@ -225,6 +225,14 @@ public:
   */
   void normalize();
 
+  //! After this call, get(i) == x.
+  //! Provided for compatibility with Sparse_Row.
+  void assign(dimension_type i, const Coefficient& x);
+
+  //! Equivalent to <CODE>if (x != 0) find_create(i, x);</CODE>, provided
+  //! for convenience. Provided for compatibility with Sparse_Row.
+  void assign_if_nonzero(dimension_type i, const Coefficient& x);
+
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief

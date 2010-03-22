@@ -250,6 +250,17 @@ Dense_Row::normalize() {
 }
 
 inline void
+Dense_Row::assign(dimension_type i, const Coefficient& x) {
+  (*this)[i] = x;
+}
+
+inline void
+Dense_Row::assign_if_nonzero(dimension_type i, const Coefficient& x) {
+  if (x != 0)
+    (*this)[i] = x;
+}
+
+inline void
 Dense_Row::ascii_dump(std::ostream& s) const {
   row.ascii_dump(s);
 }
