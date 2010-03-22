@@ -164,10 +164,6 @@ all_java_sources = \
 $(fixed_java_sources) \
 $(required_instantiations_java_sources)
 
-all_java_cxx_headers = \
-$(fixed_java_cxx_headers) \
-$(required_instantiations_java_cxx_headers)
-
 # NOTE: Fake_Class_for_Doxygen.java should be added here.
 EXTRA_DIST = \
 $(interface_generator_files) \
