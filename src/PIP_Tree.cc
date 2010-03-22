@@ -200,6 +200,8 @@ add_mul_assign_row(PIP_Tree_Node::matrix_row_reference_type x,
 
 #endif // !defined(PPL_SPARSE_BACKEND_SLOW_INSERTIONS)
 
+#ifndef PPL_SPARSE_BACKEND_SLOW_INSERTIONS
+
 // Compute x -= y
 inline void
 sub_assign(PIP_Tree_Node::matrix_row_reference_type x,
@@ -283,6 +285,74 @@ sub_assign(PIP_Tree_Node::matrix_row_reference_type x,
     ++j;
   }
 }
+
+#else // !defined(PPL_SPARSE_BACKEND_SLOW_INSERTIONS)
+
+// Compute x -= y
+inline void
+sub_assign(PIP_Tree_Node::matrix_row_reference_type x,
+           PIP_Tree_Node::matrix_row_const_reference_type y) {
+  PIP_Tree_Node::matrix_row_copy_type row(x.size());
+  PIP_Tree_Node::matrix_row_copy_iterator itr = row.end();
+  PIP_Tree_Node::matrix_row_const_iterator i = x.begin();
+  PIP_Tree_Node::matrix_row_const_iterator i_end = x.end();
+  PIP_Tree_Node::matrix_const_row_const_iterator j = y.begin();
+  PIP_Tree_Node::matrix_const_row_const_iterator j_end = y.end();
+  if (i == i_end && j == j_end)
+    return;
+  if (j == j_end
+      || (i != i_end && (*i).first < (*j).first)) {
+    itr = row.find_create(*i);
+    ++i;
+  } else
+      if (i == i_end
+          || (j != j_end && (*i).first > (*j).first)) {
+        itr = row.find_create(*j);
+        neg_assign((*itr).second);
+        ++j;
+      } else {
+        PPL_ASSERT(i != i_end);
+        PPL_ASSERT(j != j_end);
+        PPL_ASSERT((*i).first == (*j).first);
+        itr = row.find_create(*i);
+        (*itr).second -= (*j).second;
+        ++i;
+        ++j;
+      }
+  PPL_ASSERT(itr != row.end());
+  while (i != i_end && j != j_end) {
+    if ((*i).first < (*j).first) {
+      itr = row.find_create(*i,itr);
+      ++i;
+    } else {
+      if ((*i).first > (*j).first) {
+        itr = row.find_create(*j,itr);
+        neg_assign((*itr).second);
+        ++j;
+      } else {
+        PPL_ASSERT((*i).first == (*j).first);
+        itr = row.find_create(*i,itr);
+        (*itr).second -= (*j).second;
+        ++i;
+        ++j;
+      }
+    }
+  }
+  while (i != i_end) {
+    itr = row.find_create(*i,itr);
+    ++i;
+  }
+  PPL_ASSERT(i == i_end);
+  while (j != j_end) {
+    itr = row.find_create(*j,itr);
+    neg_assign((*itr).second);
+    ++j;
+  }
+  PPL_ASSERT(j == j_end);
+  std::swap(row,x);
+}
+
+#endif // !defined(PPL_SPARSE_BACKEND_SLOW_INSERTIONS)
 
 // Merge constraint system to a Matrix-form context such as x = x U y
 void
