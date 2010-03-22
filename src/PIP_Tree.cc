@@ -377,31 +377,31 @@ merge_assign(PIP_Tree_Node::matrix_type& x,
     PPL_ASSERT(y_i->is_nonstrict_inequality());
     PIP_Tree_Node::matrix_row_reference_type x_i = x[i];
     const Coefficient& inhomogeneous_term = y_i->inhomogeneous_term();
-    x_i.assign_if_nonzero(0, inhomogeneous_term);
-    Variables_Set::const_iterator pj;
+    PIP_Tree_Node::matrix_row_iterator itr = x_i.end();
+    Variables_Set::const_iterator pj = parameters.begin();
     dimension_type j = 1;
-    PIP_Tree_Node::matrix_row_iterator last = x_i.begin();
-    for (pj = param_begin; pj != param_end; ++pj, ++j) {
-      Variable vj(*pj);
-      if (vj.space_dimension() > cs_space_dim)
-        break;
-      const Coefficient& c = y_i->coefficient(vj);
-      if (c != 0) {
-        last = x_i.find_create(j, c);
-        ++pj;
-        ++j;
-        break;
+    if (inhomogeneous_term != 0)
+      itr = x_i.find_create(0, inhomogeneous_term);
+    else
+      if (pj != param_end) {
+        Variable vj(*pj);
+        if (vj.space_dimension() <= cs_space_dim) {
+          const Coefficient& c = y_i->coefficient(vj);
+          if (c != 0) {
+            itr = x_i.find_create(j, c);
+            ++pj;
+            ++j;
+          }
+        }
       }
-    }
+    PPL_ASSERT(pj == param_end || itr != x_i.end());
     for ( ; pj != param_end; ++pj, ++j) {
       Variable vj(*pj);
       if (vj.space_dimension() > cs_space_dim)
         break;
       const Coefficient& c = y_i->coefficient(vj);
-      if (c != 0) {
-        last = x_i.find_create(j, c, last);
-        break;
-      }
+      if (c != 0)
+        itr = x_i.find_create(j, c, itr);
     }
   }
 }
