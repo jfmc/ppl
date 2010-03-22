@@ -610,9 +610,9 @@ PPL::PIP_Problem
   }
   if (should_throw)
     throw std::length_error("PPL::PIP_Problem::"
-			    "add_space_dimensions_and_embed(m_v, m_p):\n"
-			    "adding m_v+m_p new space dimensions exceeds "
-			    "the maximum allowed space dimension.");
+                            "add_space_dimensions_and_embed(m_v, m_p):\n"
+                            "adding m_v+m_p new space dimensions exceeds "
+                            "the maximum allowed space dimension.");
   // First add PIP variables ...
   external_space_dim += m_vars;
   // ... then add PIP parameters.
@@ -631,9 +631,9 @@ PPL::PIP_Problem
 ::add_to_parameter_space_dimensions(const Variables_Set& p_vars) {
   if (p_vars.space_dimension() > external_space_dim)
     throw std::invalid_argument("PPL::PIP_Problem::"
-				"add_to_parameter_space_dimension(p_vars):\n"
-				"*this and p_vars are dimension "
-				"incompatible.");
+                                "add_to_parameter_space_dimension(p_vars):\n"
+                                "*this and p_vars are dimension "
+                                "incompatible.");
   const dimension_type original_size = parameters.size();
   parameters.insert(p_vars.begin(), p_vars.end());
   // Do not allow to turn variables into parameters.
@@ -641,8 +641,8 @@ PPL::PIP_Problem
          end = p_vars.end(); p != end; ++p) {
     if (*p < internal_space_dim) {
       throw std::invalid_argument("PPL::PIP_Problem::"
-				  "add_to_parameter_space_dimension(p_vars):"
-				  "p_vars contain variable indices.");
+                                  "add_to_parameter_space_dimension(p_vars):"
+                                  "p_vars contain variable indices.");
     }
   }
 
@@ -725,7 +725,7 @@ PPL::PIP_Problem::external_memory_in_bytes() const {
   // Adding the external memory for `input_cs'.
   n += input_cs.capacity() * sizeof(Constraint);
   for (const_iterator i = input_cs.begin(),
-	 i_end = input_cs.end(); i != i_end; ++i)
+       i_end = input_cs.end(); i != i_end; ++i)
     n += (i->external_memory_in_bytes());
   // FIXME: Adding the external memory for `parameters'.
   n += parameters.size() * sizeof(dimension_type);
