@@ -67,6 +67,7 @@ parma_polyhedra_library.Poly_Con_Relation \
 parma_polyhedra_library.Poly_Gen_Relation \
 parma_polyhedra_library.PPL_Object \
 parma_polyhedra_library.Relation_Symbol \
+parma_polyhedra_library.Termination   \
 parma_polyhedra_library.Variable \
 parma_polyhedra_library.Variables_Set
 
@@ -105,6 +106,7 @@ parma_polyhedra_library_Poly_Con_Relation.h \
 parma_polyhedra_library_Poly_Gen_Relation.h \
 parma_polyhedra_library_PPL_Object.h \
 parma_polyhedra_library_Relation_Symbol.h \
+parma_polyhedra_library_Termination.h \
 parma_polyhedra_library_Variable.h \
 parma_polyhedra_library_Variables_Set.h
 
@@ -153,14 +155,18 @@ $(srcdir)/Poly_Gen_Relation.java \
 $(srcdir)/PPL_Object.java \
 $(srcdir)/Relation_Symbol.java \
 $(srcdir)/Timeout_Exception.java \
+$(builddir)/Termination.java \
 $(srcdir)/Variable.java \
 $(srcdir)/Variables_Set.java
 
 # NOTE: do _NOT_ add Fake_Class_for_Doxygen.java to this list.
 all_java_sources = \
 $(fixed_java_sources) \
-$(required_instantiations_java_sources) \
-Termination.java
+$(required_instantiations_java_sources)
+
+all_java_cxx_headers = \
+$(fixed_java_cxx_headers) \
+$(required_instantiations_java_cxx_headers)
 
 # NOTE: Fake_Class_for_Doxygen.java should be added here.
 EXTRA_DIST = \

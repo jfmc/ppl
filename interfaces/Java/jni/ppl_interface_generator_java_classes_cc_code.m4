@@ -1303,3 +1303,141 @@ Java_parma_1polyhedra_1library_termination_1test_1MS_1@TOPOLOGY@1@CLASS@
   return 0;
 }
 ')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_termination_1test_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@
+(JNIEnv* env, jclass, jobject j_p) {
+  try {
+    @TOPOLOGY@@CLASS@* p_ptr
+      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p));
+    return termination_test_@TERMINATION_ID@(*p_ptr);
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_termination_1test_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@_12
+(JNIEnv* env, jclass, jobject j_p_before, jobject j_p_after) {
+  try {
+    @TOPOLOGY@@CLASS@* p_ptr_before
+      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p_before));
+    @TOPOLOGY@@CLASS@* p_ptr_after
+      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p_after));
+    return termination_test_@TERMINATION_ID@_2(*p_ptr_before, *p_ptr_after);
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_one_1affine_1ranking_1function_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@
+(JNIEnv* env, jclass, jobject j_p, jobject j_g) {
+  try {
+    @TOPOLOGY@@CLASS@* p_ptr
+      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p));
+    Generator g(point());
+    if (one_affine_ranking_function_@TERMINATION_ID@(*p_ptr, g)) {
+      jobject j_g_result = build_java_generator(env, g);;
+      set_generator(env, j_g, j_g_result);
+      return true;
+    }
+    return false;
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_one_1affine_1ranking_1function_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@_12
+(JNIEnv* env, jclass, jobject j_p_before, jobject j_g_after) {
+  try {
+    @TOPOLOGY@@CLASS@* p_ptr_before
+      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p_before));
+    @TOPOLOGY@@CLASS@* p_ptr_after
+      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p_after));
+    Generator g(point());
+    if (one_affine_ranking_function_@TERMINATION_ID@_2(*p_ptr_before, *p_ptr_after, g)) {
+      jobject j_g_result = build_java_generator(env, g);;
+      set_generator(env, j_g, j_g_result);
+      return true;
+    }
+    return false;
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_all_1affine_1ranking_1functions_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@
+(JNIEnv* env, jclass, jobject j_p, jobject j_ph) {
+  try {
+    @TOPOLOGY@@CLASS@* p_ptr
+      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p));
+    @A_TERMINATION_ID@Polyhedron* ph = new @A_TERMINATION_ID@Polyhedron();
+    all_affine_ranking_functions_@TERMINATION_ID@(*p_ptr, *ph) {
+    set_ptr(env, j_p, *ph);
+    return true;
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_all_1affine_1ranking_1functions_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@_12
+(JNIEnv* env, jclass, jobject j_p_before, jobject j_p_after, jobject j_ph) {
+  try {
+    @TOPOLOGY@@CLASS@* p_ptr_before
+      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p_before));
+    @TOPOLOGY@@CLASS@* p_ptr_after
+      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p_after));
+    @A_TERMINATION_ID@Polyhedron* ph = new @A_TERMINATION_ID@Polyhedron();
+    all_affine_ranking_functions_@TERMINATION_ID@_2(*p_ptr_before, *p_ptr_after, *ph) {
+    set_ptr(env, j_p, *ph);
+    return true;
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+')
