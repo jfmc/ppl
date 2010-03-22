@@ -183,8 +183,10 @@ PPL::PIP_Problem::solve() const {
                   ++i;
                   break;
                 }
-              } else
+              } else {
                 continue_looping = false;
+                break;
+              }
             }
           if (continue_looping) {
             for ( ; pi != param_end; ++pi, ++i) {
