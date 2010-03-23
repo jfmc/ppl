@@ -796,8 +796,8 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
     const dimension_type row_index = mapping[var_index];
     const bool in_base = basis[var_index];
     candidates_t new_candidates;
-    candidates_t::iterator i = candidates.begin();
-    candidates_t::iterator i_end = candidates.end();
+    candidates_t::const_iterator i = candidates.begin();
+    candidates_t::const_iterator i_end = candidates.end();
     PPL_ASSERT(i != i_end);
     dimension_type pi = i->second.row_index;
     dimension_type pj = i->first;
