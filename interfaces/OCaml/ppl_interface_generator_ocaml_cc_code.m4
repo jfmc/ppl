@@ -1348,7 +1348,7 @@ ppl_@CLASS@_wrap_assign_native
   build_ppl_bounded_integer_type_overflow(oflow);
   Constraint_System ppl_cs = build_ppl_Constraint_System(cs);
   unsigned ppl_complexity = value_to_unsigned<unsigned>(complexity);
-  bool ppl_wrap_ind = Int_val(wrap_ind);
+  bool ppl_wrap_ind = Bool_val(wrap_ind);
   pph.wrap_assign(ppl_vset,
                   build_ppl_bounded_integer_type_width(width),
                   build_ppl_bounded_integer_type_representation(rep),
