@@ -974,21 +974,37 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
         PPL_ASSERT(*(current_data.value) > 0);
         PPL_ASSERT(value_b > 0);
 
-        Coefficient lhs_coeff = *(current_data.cost);
-        lhs_coeff *= value_b;
-        Coefficient rhs_coeff = s_i0;
-        rhs_coeff *= *(current_data.value);
+        int lhs_coeff_sgn = sgn(*(current_data.cost));
+        int rhs_coeff_sgn = sgn(s_i0);
 
-        // Same column: just compare the ratios.
-        // This works since all columns are lexico-positive.
-        // return cst_a * sij_b > cst_b * sij_a;
-        if (lhs_coeff > rhs_coeff) {
-          // Found better pivot
-          current_data.row_index = i;
-          current_data.cost = &(s_i0);
-          current_data.value = &(s_ij);
+        if (lhs_coeff_sgn != rhs_coeff_sgn) {
+          // Same column: just compare the ratios.
+          // This works since all columns are lexico-positive.
+          // return cst_a * sij_b > cst_b * sij_a;
+          if (lhs_coeff_sgn > rhs_coeff_sgn) {
+            // Found better pivot
+            current_data.row_index = i;
+            current_data.cost = &(s_i0);
+            current_data.value = &(s_ij);
+          }
+        } else {
+
+          Coefficient lhs_coeff = *(current_data.cost);
+          lhs_coeff *= value_b;
+          Coefficient rhs_coeff = s_i0;
+          rhs_coeff *= *(current_data.value);
+
+          // Same column: just compare the ratios.
+          // This works since all columns are lexico-positive.
+          // return cst_a * sij_b > cst_b * sij_a;
+          if (lhs_coeff > rhs_coeff) {
+            // Found better pivot
+            current_data.row_index = i;
+            current_data.cost = &(s_i0);
+            current_data.value = &(s_ij);
+          }
+          // Otherwise, keep current pivot for this column.
         }
-        // Otherwise, keep current pivot for this column.
       }
     }
   }
