@@ -317,6 +317,12 @@ The specification uses the following grammar rules:
  P_Func      --> []    			list of map relations
             | [Vars_Pair | P_Func].
 
+ Width  --> bits_8 | bits_16 | bits_32 | bits_64 | bits_128
+
+ Representation  --> unsigned | signed_2_complement
+
+ Overflow  --> overflow_wraps | overflow_undefined | overflow_impossible
+
  Optimization_Mode --> max | min
 
  MIP_Problem_Status --> unfeasible
