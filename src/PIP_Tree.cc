@@ -1776,12 +1776,51 @@ PIP_Solution_Node::Tableau
     const Coefficient* s_i_col_0;
     const Coefficient* s_i_col_1;
     s_i.get2(col_0, col_1, s_i_col_0, s_i_col_1);
-    for (dimension_type j = 0; j < num_params; ++j) {
-      product_0 = coeff_0[j] * *s_i_col_0;
-      product_1 = coeff_1[j] * *s_i_col_1;
-      if (product_0 != product_1) {
+    matrix_row_const_iterator j0 = t_0.begin();
+    matrix_row_const_iterator j0_end = t_0.end();
+    matrix_row_const_iterator j1 = t_1.begin();
+    matrix_row_const_iterator j1_end = t_1.end();
+    while (j0 != j0_end && j1 != j1_end) {
+      if ((*j0).first == (*j1).first) {
+        product_0 = (*j0).second * s_1_1 * *s_i_col_0;
+        product_1 = (*j1).second * s_0_0 * *s_i_col_1;
+        if (product_0 != product_1) {
+          // Mismatch found: exit from both loops.
+          j_mismatch = (*j0).first;
+          goto end_loop;
+        }
+        ++j0;
+        ++j1;
+      } else
+        if ((*j0).first < (*j1).first) {
+          if ((*j0).second != 0 && s_1_1 != 0 && *s_i_col_0 != 0) {
+            // Mismatch found: exit from both loops.
+            j_mismatch = (*j0).first;
+            goto end_loop;
+          }
+          ++j0;
+        } else {
+          PPL_ASSERT((*j0).first > (*j1).first);
+          if ((*j1).second != 0 && s_0_0 != 0 && *s_i_col_1 != 0) {
+            // Mismatch found: exit from both loops.
+            j_mismatch = (*j1).first;
+            goto end_loop;
+          }
+          ++j1;
+        }
+    }
+    while (j0 != j0_end) {
+      if ((*j0).second != 0 && s_1_1 != 0 && *s_i_col_0 != 0) {
         // Mismatch found: exit from both loops.
-        j_mismatch = j;
+        j_mismatch = (*j0).first;
+        goto end_loop;
+      }
+      ++j0;
+    }
+    while (j1 != j1_end) {
+      if ((*j1).second != 0 && s_0_0 != 0 && *s_i_col_1 != 0) {
+        // Mismatch found: exit from both loops.
+        j_mismatch = (*j1).first;
         goto end_loop;
       }
     }
