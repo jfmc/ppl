@@ -2214,7 +2214,7 @@ where \f$\vect{w} \in \cL\f$ and
     |\mathrm{val}|
        = \min\Bigl\{
                \big|\langle \vect{a}, \vect{v} \rangle + b
-               \big| \Big| \vect{v} \in \cL
+               \bigm| \Big| \vect{v} \in \cL
              \Bigr\}.
 \f]
 
