@@ -133,6 +133,45 @@ public:
   */
   void normalize();
 
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param f should take a Coefficient&.
+    \param g should take a Coefficient& and a const Coefficient&.
+    \param h should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing if both c1 and c2 are zero.
+    f(c1) must be equivalent to g(c1, 0).
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+  */
+  template <typename Func1, typename Func2, typename Func3>
+  void combine(const Unlimited_Sparse_Row& y,
+               const Func1& f, const Func2& g, const Func3& h);
+
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param f should take a Coefficient&.
+    \param g should take a Coefficient& and a const Coefficient&.
+    \param h should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing if both c1 and c2 are zero.
+    f(c1) must be equivalent to g(c1, 0).
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+  */
+  template <typename Func1, typename Func2, typename Func3>
+  void combine(const Sparse_Row& y,
+               const Func1& f, const Func2& g, const Func3& h);
+
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param f should take a Coefficient&.
+    \param g should take a Coefficient& and a const Coefficient&.
+    \param h should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing if both c1 and c2 are zero.
+    f(c1) must be equivalent to g(c1, 0).
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+  */
+  template <typename Func1, typename Func2, typename Func3>
+  void combine(const Sparse_Row_Reference& y,
+               const Func1& f, const Func2& g, const Func3& h);
+
   //! For read-only access it's better to use get(), that avoids allocating
   //! space for zeroes. Both methods are O(n).
   //! If i was not previously stored, or reset(i) was called, this operation
@@ -312,6 +351,45 @@ public:
   */
   void normalize();
 
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param f should take a Coefficient&.
+    \param g should take a Coefficient& and a const Coefficient&.
+    \param h should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing if both c1 and c2 are zero.
+    f(c1) must be equivalent to g(c1, 0).
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+  */
+  template <typename Func1, typename Func2, typename Func3>
+  void combine(const Unlimited_Sparse_Row& y,
+               const Func1& f, const Func2& g, const Func3& h);
+
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param f should take a Coefficient&.
+    \param g should take a Coefficient& and a const Coefficient&.
+    \param h should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing if both c1 and c2 are zero.
+    f(c1) must be equivalent to g(c1, 0).
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+  */
+  template <typename Func1, typename Func2, typename Func3>
+  void combine(const Sparse_Row& y,
+               const Func1& f, const Func2& g, const Func3& h);
+
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param f should take a Coefficient&.
+    \param g should take a Coefficient& and a const Coefficient&.
+    \param h should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing if both c1 and c2 are zero.
+    f(c1) must be equivalent to g(c1, 0).
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+  */
+  template <typename Func1, typename Func2, typename Func3>
+  void combine(const Sparse_Row_Reference& y,
+               const Func1& f, const Func2& g, const Func3& h);
+
   //! For read-only access it's better to use get(), that avoids allocating
   //! space for zeroes. Both methods are O(n).
   //! If i was not previously stored, or reset(i) was called, this operation
@@ -490,6 +568,7 @@ void swap(Parma_Polyhedra_Library::Sparse_Row& x,
 
 } // namespace std
 
+#include "Sparse_Row.templates.hh"
 #include "Sparse_Row.inlines.hh"
 
 #endif // !defined(PPL_Sparse_Row_defs_hh)

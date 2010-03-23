@@ -259,6 +259,7 @@ Unlimited_Sparse_Row_Std_Vector_Backend.defs.hh \
 Unlimited_Sparse_Row_Std_Vector_Backend.inlines.hh \
 Sparse_Row.defs.hh \
 Sparse_Row.inlines.hh \
+Sparse_Row.templates.hh \
 Sparse_Matrix.defs.hh \
 Sparse_Matrix.inlines.hh \
 Linear_Row.defs.hh \
