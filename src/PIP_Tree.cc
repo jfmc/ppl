@@ -93,16 +93,12 @@ add_mul_assign_row(PIP_Tree_Node::matrix_row_reference_type x,
 namespace {
 
 inline void
-sub_assign_helper1(Coefficient& /* x */) {
-}
-
-inline void
-sub_assign_helper2(Coefficient& x, const Coefficient& y) {
+sub_assign_helper1(Coefficient& x, const Coefficient& y) {
   x -= y;
 }
 
 inline void
-sub_assign_helper3(Coefficient& x, const Coefficient& y) {
+sub_assign_helper2(Coefficient& x, const Coefficient& y) {
   x = y;
   neg_assign(x);
 }
@@ -113,7 +109,7 @@ sub_assign_helper3(Coefficient& x, const Coefficient& y) {
 inline void
 sub_assign(PIP_Tree_Node::matrix_row_reference_type x,
            PIP_Tree_Node::matrix_row_const_reference_type y) {
-  x.combine(y, sub_assign_helper1, sub_assign_helper2, sub_assign_helper3);
+  x.combine_needs_second(y, sub_assign_helper1, sub_assign_helper2);
 }
 
 // Merge constraint system to a Matrix-form context such as x = x U y
