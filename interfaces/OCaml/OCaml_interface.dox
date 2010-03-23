@@ -975,6 +975,32 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    Mapping the Dimensions of the Vector Space}
    of the main PPL user manual.
 
+<H2><CODE> ppl_Polyhedron_wrap_assign handle
+                                      list_of_vars
+                                      width
+                                      representation
+                                      overflow
+                                      constraint_system
+                                      complexity_threshold
+                                      wrap_indicator
+</CODE></H2>
+
+    Transforms the polyhedron referenced by <CODE>handle</CODE> by
+    wrapping the dimensions given by <CODE>list_of_vars</CODE> while
+    respecting the specified <CODE>width</CODE>,
+    <CODE>representation</CODE> and <CODE>overflow</CODE> behavior of
+    all these variables. The parameter <CODE>constraint_system</CODE>
+    represents the conditional or looping construct guard with respect
+    to which wrapping is performed.  The non-negative integer
+    <CODE>complexity_threshold</CODE> and Boolean
+    <CODE>wrap_indicator</CODE> allow control of the
+    complexity/precision ratio; higher values for
+    <CODE>complexity_threshold</CODE> will lead to possibly greater
+    precision while a true value for <CODE>wrap_indicator</CODE>
+    indicates that the space dimensions should be wrapped
+    individually.  See Section \extref{Wrapping_Operator, Wrapping
+    Operator} for a more detailed description of this operator.
+
 <H2><CODE>
   ppl_Polyhedron_ascii_dump handle
 </CODE></H2>
