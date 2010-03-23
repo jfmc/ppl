@@ -328,9 +328,50 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
   for (dimension_type i = s + 2*r; i-- > 0; )
     cs_out.insert(Variable(i) <= 0);
 
-  // FIXME: iterate backwards once the debuggin phase is over.
+  // FIXME: iterate backwards once the debugging phase is over.
   //for (dimension_type j = 2*n; j-- > 0; )
   for (dimension_type j = 0; j < 2*n; ++j)
+    cs_out.insert(les_eq[j] == 0);
+}
+
+void
+fill_constraint_system_PR_original(const Constraint_System& cs,
+                                   Constraint_System& cs_out,
+                                   Linear_Expression& le_out) {
+  const dimension_type n = cs.space_dimension() / 2;
+  const dimension_type m = distance(cs.begin(), cs.end());
+
+  std::vector<Linear_Expression> les_eq(3*n);
+
+  dimension_type row_index = 0;
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
+    const Constraint& c_i = *i;
+    const Variable lambda_1(row_index);
+    const Variable lambda_2(m + row_index);
+    for (dimension_type j = n; j-- > 0; ) {
+      Coefficient_traits::const_reference Apj = c_i.coefficient(Variable(j));
+      Coefficient_traits::const_reference Aj = c_i.coefficient(Variable(j+n));
+      // lambda_1 A'
+      les_eq[j] += Apj * lambda_1;
+      // (lambda_1 - lambda_2) A
+      les_eq[j+n] += Aj * lambda_1;
+      les_eq[j+n] -= Aj * lambda_2;
+      // lambda_2 (A + A')
+      les_eq[j+n+n] += Aj  * lambda_2;
+      les_eq[j+n+n] += Apj * lambda_2;
+    }
+    // lambda2 b
+    le_out += c_i.inhomogeneous_term() * lambda_2;
+  }
+
+  // Add the non-negativity constraints for lambda_1 and lambda_2.
+  for (dimension_type i = 2*m; i-- > 0; )
+    cs_out.insert(Variable(i) >= 0);
+
+  // FIXME: iterate backwards once the debugging phase is over.
+  //for (dimension_type j = 3*n; j-- > 0; )
+  for (dimension_type j = 0; j < 3*n; ++j)
     cs_out.insert(les_eq[j] == 0);
 }
 
@@ -484,6 +525,35 @@ all_affine_ranking_functions_MS(const Constraint_System& cs,
 }
 
 bool
+termination_test_PR_original(const Constraint_System& cs) {
+  PPL_ASSERT(cs.space_dimension() % 2 == 0);
+
+  Constraint_System cs_mip;
+  Linear_Expression le_ineq;
+  fill_constraint_system_PR_original(cs, cs_mip, le_ineq);
+
+  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip,
+				le_ineq, MINIMIZATION);
+  switch (mip.solve()) {
+  case UNFEASIBLE_MIP_PROBLEM:
+    return false;
+  case UNBOUNDED_MIP_PROBLEM:
+    return true;
+  case OPTIMIZED_MIP_PROBLEM:
+    {
+      PPL_DIRTY_TEMP_COEFFICIENT(num);
+      PPL_DIRTY_TEMP_COEFFICIENT(den);
+      mip.optimal_value(num, den);
+      PPL_ASSERT(den > 0);
+      return num < 0;
+    }
+  }
+
+  // This point should be unreachable.
+  throw std::runtime_error("PPL internal error");
+}
+
+bool
 termination_test_PR(const Constraint_System& cs_before,
 		    const Constraint_System& cs_after) {
   Constraint_System cs_mip;
@@ -613,6 +683,85 @@ one_affine_ranking_function_PR(const Constraint_System& cs_before,
   throw std::runtime_error("PPL internal error");
 }
 
+bool
+one_affine_ranking_function_PR_original(const Constraint_System& cs,
+                                        Generator& mu) {
+  PPL_ASSERT(cs.space_dimension() % 2 == 0);
+  const dimension_type n = cs.space_dimension() / 2;
+  const dimension_type m = std::distance(cs.begin(), cs.end());
+
+  Constraint_System cs_mip;
+  Linear_Expression le_ineq;
+  fill_constraint_system_PR_original(cs, cs_mip, le_ineq);
+
+#if PRINT_DEBUG_INFO
+  std::cout << "*** cs_mip ***" << std::endl;
+  using namespace IO_Operators;
+  std::cout << cs_mip << std::endl;
+  std::cout << "*** le_ineq ***" << std::endl;
+  std::cout << le_ineq << std::endl;
+#endif
+
+  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip,
+				le_ineq, MINIMIZATION);
+  switch (mip.solve()) {
+  case UNFEASIBLE_MIP_PROBLEM:
+    return false;
+  case UNBOUNDED_MIP_PROBLEM:
+    // We know that the infimum is minus infinity, which would suffice
+    // for a yes/no answer on termination.  But we need to add a constraint
+    // to the LP problem to be sure that the value of the objective
+    // function computed in the feasible point is negative.
+  finish:
+    {
+      // We can impose that le_ineq is <= -1 because every negative
+      // multiple of the linear expression is acceptable.
+      mip.add_constraint(le_ineq <= -1);
+      Generator fp = mip.feasible_point();
+      PPL_ASSERT(fp.is_point());
+
+      Linear_Expression le;
+      // mu_0 is zero: do this first to avoid reallocations.
+      le += 0*Variable(n);
+      // Multiply -lambda_2 by A' to obtain mu_1, ..., mu_n.
+      // lambda_2 corresponds to space dimensions m, ..., 2*m - 1.
+      dimension_type row_index = m;
+      PPL_DIRTY_TEMP_COEFFICIENT(k);
+      for (Constraint_System::const_iterator i = cs.begin(),
+	     cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
+	Variable lambda_2(row_index);
+	Coefficient_traits::const_reference fp_i = fp.coefficient(lambda_2);
+        if (fp_i != 0) {
+          const Constraint& c_i = *i;
+          for (dimension_type j = n; j-- > 0; ) {
+            Variable vj(j);
+            Coefficient_traits::const_reference Ap_j = c_i.coefficient(vj);
+            k = fp_i * Ap_j;
+            le -= k * vj;
+          }
+        }
+      }
+      // Note that we can neglect the divisor of `fp' since it is positive.
+      mu = point(le);
+      return true;
+    }
+  case OPTIMIZED_MIP_PROBLEM:
+    {
+      PPL_DIRTY_TEMP_COEFFICIENT(num);
+      PPL_DIRTY_TEMP_COEFFICIENT(den);
+      mip.optimal_value(num, den);
+      PPL_ASSERT(den > 0);
+      if (num < 0)
+	goto finish;
+      else
+	return false;
+    }
+  }
+
+  // This point should be unreachable.
+  throw std::runtime_error("PPL internal error");
+}
+
 void
 all_affine_ranking_functions_PR(const Constraint_System& cs_before,
 				const Constraint_System& cs_after,
@@ -680,7 +829,81 @@ all_affine_ranking_functions_PR(const Constraint_System& cs_before,
     // Add to gs_out the transformed generator.
     switch (g.type()) {
     case Generator::LINE:
-      gs_out.insert(line(le));
+      if (!le.all_homogeneous_terms_are_zero())
+        gs_out.insert(line(le));
+      break;
+    case Generator::RAY:
+      if (!le.all_homogeneous_terms_are_zero())
+	gs_out.insert(ray(le));
+      break;
+    case Generator::POINT:
+      gs_out.insert(point(le, g.divisor()));
+      break;
+    case Generator::CLOSURE_POINT:
+      gs_out.insert(closure_point(le, g.divisor()));
+      break;
+    }
+  }
+
+  mu_space = NNC_Polyhedron(gs_out);
+  // mu_0 is zero.
+  mu_space.add_space_dimensions_and_embed(1);
+}
+
+void
+all_affine_ranking_functions_PR_original(const Constraint_System& cs,
+                                         NNC_Polyhedron& mu_space) {
+  PPL_ASSERT(cs.space_dimension() % 2 == 0);
+  const dimension_type n = cs.space_dimension() / 2;
+  const dimension_type m = distance(cs.begin(), cs.end());
+
+  Constraint_System cs_eqs;
+  Linear_Expression le_ineq;
+  fill_constraint_system_PR_original(cs, cs_eqs, le_ineq);
+
+  NNC_Polyhedron ph(cs_eqs);
+  ph.add_constraint(le_ineq < 0);
+  // lambda_2 corresponds to space dimensions m, ..., 2*m-1.
+  Variables_Set lambda1(Variable(0), Variable(m-1));
+  ph.remove_space_dimensions(lambda1);
+  //ph.remove_higher_space_dimensions(m);
+
+#if PRINT_DEBUG_INFO
+  std::cout << "*** ph ***" << std::endl;
+  std::cout << ph << std::endl;
+
+  Variable::set_output_function(p_default_output_function);
+#endif
+
+  const Generator_System& gs_in = ph.generators();
+  Generator_System gs_out;
+  for (Generator_System::const_iterator r = gs_in.begin(),
+	 gs_in_end = gs_in.end(); r != gs_in_end; ++r) {
+    const Generator& g = *r;
+    Linear_Expression le;
+    // Set le to the multiplication of Linear_Expression(g) by E'_C.
+    dimension_type row_index = 0;
+    PPL_DIRTY_TEMP_COEFFICIENT(k);
+    for (Constraint_System::const_iterator i = cs.begin(),
+	   cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
+      Variable lambda_2(row_index);
+      Coefficient_traits::const_reference g_i = g.coefficient(lambda_2);
+      if (g_i != 0) {
+	const Constraint& c_i = *i;
+	for (dimension_type j = n; j-- > 0; ) {
+	  Variable vj(j);
+          Coefficient_traits::const_reference Ap_j = c_i.coefficient(vj);
+	  k = g_i * Ap_j;
+	  le -= k * vj;
+	}
+      }
+    }
+
+    // Add to gs_out the transformed generator.
+    switch (g.type()) {
+    case Generator::LINE:
+      if (!le.all_homogeneous_terms_are_zero())
+        gs_out.insert(line(le));
       break;
     case Generator::RAY:
       if (!le.all_homogeneous_terms_are_zero())
