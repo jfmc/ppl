@@ -1686,4 +1686,24 @@ ppl_@CLASS@_map_space_dimensions_2_test :-
 
 ')
 
+m4_define(`ppl_@CLASS@_wrap_assign_code',
+`
+ppl_@CLASS@_wrap_assign_8_test :-
+  (
+   choose_test(TEST_DATA, Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Dim),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_wrap_assign(PS, [], bits_8, unsigned, overflow_wraps,
+                             [], 0, true),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_OK(PS),
+     ppl_delete_@CLASS@(PS),
+     ppl_delete_@CLASS@(PS_Copy)
+   ->
+    fail ; true)
+  ).
+
+')
+
 dnl ppl_@CLASS@_@NARROWING@_narrowing_assign/2,

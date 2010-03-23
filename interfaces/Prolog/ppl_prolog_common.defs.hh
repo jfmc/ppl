@@ -192,6 +192,13 @@ public:
   }
 };
 
+class not_a_boolean : public internal_exception {
+public:
+  not_a_boolean(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
 class not_a_variable : public internal_exception {
 public:
   not_a_variable(Prolog_term_ref term, const char* where)
@@ -202,6 +209,28 @@ public:
 class not_an_optimization_mode : public internal_exception {
 public:
   not_an_optimization_mode(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
+class not_a_bounded_integer_type_width : public internal_exception {
+public:
+  not_a_bounded_integer_type_width(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
+class not_a_bounded_integer_type_representation : public internal_exception {
+public:
+  not_a_bounded_integer_type_representation(Prolog_term_ref term,
+                                            const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
+class not_a_bounded_integer_type_overflow : public internal_exception {
+public:
+  not_a_bounded_integer_type_overflow(Prolog_term_ref term, const char* where)
     : internal_exception(term, where) {
   }
 };
@@ -349,6 +378,22 @@ extern Prolog_atom a_polynomial;
 extern Prolog_atom a_simplex;
 extern Prolog_atom a_any;
 
+// Denote possible widths of bounded integer types.
+extern Prolog_atom a_bits_8;
+extern Prolog_atom a_bits_16;
+extern Prolog_atom a_bits_32;
+extern Prolog_atom a_bits_64;
+extern Prolog_atom a_bits_128;
+
+// Denote possible representations of bounded integer types.
+extern Prolog_atom a_unsigned;
+extern Prolog_atom a_signed_2_complement;
+
+// Denote possible overflow behavior of bounded integer types.
+extern Prolog_atom a_overflow_wraps;
+extern Prolog_atom a_overflow_undefined;
+extern Prolog_atom a_overflow_impossible;
+
 // Boolean constants.
 extern Prolog_atom a_true;
 extern Prolog_atom a_false;
@@ -368,6 +413,9 @@ void
 handle_exception(const not_unsigned_integer& e);
 
 void
+handle_exception(const not_a_boolean& e);
+
+void
 handle_exception(const non_linear& e);
 
 void
@@ -384,6 +432,15 @@ handle_exception(const not_an_optimization_mode& e);
 
 void
 handle_exception(const not_a_complexity_class& e);
+
+void
+handle_exception(const not_a_bounded_integer_type_width& e);
+
+void
+handle_exception(const not_a_bounded_integer_type_representation& e);
+
+void
+handle_exception(const not_a_bounded_integer_type_overflow& e);
 
 void
 handle_exception(const not_a_control_parameter_name& e);
@@ -483,6 +540,15 @@ handle_exception(const deterministic_timeout_exception&);
   catch (const not_a_complexity_class& e) { \
     handle_exception(e); \
   } \
+  catch (const not_a_bounded_integer_type_width& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_bounded_integer_type_representation& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_bounded_integer_type_overflow& e) { \
+    handle_exception(e); \
+  } \
   catch (const not_a_control_parameter_name& e) { \
     handle_exception(e); \
   } \
@@ -572,6 +638,9 @@ term_to_unsigned(Prolog_term_ref t, const char* where) {
 }
 
 Prolog_atom
+term_to_boolean(Prolog_term_ref t, const char* where);
+
+Prolog_atom
 term_to_universe_or_empty(Prolog_term_ref t, const char* where);
 
 Prolog_term_ref
@@ -579,6 +648,16 @@ interval_term(const Parma_Polyhedra_Library::Rational_Box::interval_type& i);
 
 Prolog_atom
 term_to_complexity_class(Prolog_term_ref t, const char* where);
+
+Prolog_atom
+term_to_bounded_integer_type_width(Prolog_term_ref t, const char* where);
+
+Prolog_atom
+term_to_bounded_integer_type_representation(Prolog_term_ref t,
+                                            const char* where);
+
+Prolog_atom
+term_to_bounded_integer_type_overflow(Prolog_term_ref t, const char* where);
 
 template <typename T>
 T*

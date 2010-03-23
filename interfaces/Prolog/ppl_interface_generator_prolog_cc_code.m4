@@ -1853,3 +1853,77 @@ m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 }
 
 ')
+
+m4_define(`ppl_@CLASS@_wrap_assign_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_wrap_assign
+     (Prolog_term_ref t_ph,
+      Prolog_term_ref t_vars,
+      Prolog_term_ref t_w,
+      Prolog_term_ref t_r,
+      Prolog_term_ref t_o,
+      Prolog_term_ref t_cs,
+      Prolog_term_ref t_complexity,
+      Prolog_term_ref t_ind) {
+  static const char* where = "ppl_@CLASS@_wrap_assign/8";
+  try {
+    @CPP_CLASS@* pph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+
+    Variables_Set vars;
+    Prolog_term_ref v = Prolog_new_term_ref();
+    while (Prolog_is_cons(t_vars)) {
+      Prolog_get_cons(t_vars, v, t_vars);
+      vars.insert(term_to_Variable(v, where).id());
+    }
+    // Check the list is properly terminated.
+    check_nil_terminating(t_vars, where);
+
+    Prolog_atom p_w = term_to_bounded_integer_type_width(t_w, where);
+    Bounded_Integer_Type_Width w;
+    if (p_w == a_bits_8)
+      w = BITS_8;
+    else if (p_w == a_bits_16)
+      w = BITS_16;
+    else if (p_w == a_bits_32)
+      w = BITS_32;
+    else if (p_w == a_bits_64)
+      w = BITS_64;
+    else
+      w = BITS_128;
+
+    Prolog_atom p_r = term_to_bounded_integer_type_representation(t_r, where);
+    Bounded_Integer_Type_Representation r;
+    if (p_r == a_unsigned)
+      r = UNSIGNED;
+    else
+      r = SIGNED_2_COMPLEMENT;
+    Prolog_atom p_o = term_to_bounded_integer_type_overflow(t_o, where);
+    Bounded_Integer_Type_Overflow o;
+    if (p_o == a_overflow_wraps)
+      o = OVERFLOW_WRAPS;
+    else if (p_o == a_overflow_undefined)
+      o = OVERFLOW_UNDEFINED;
+    else
+      o = OVERFLOW_IMPOSSIBLE;
+
+    Constraint_System cs;
+    Prolog_term_ref c = Prolog_new_term_ref();
+    while (Prolog_is_cons(t_cs)) {
+      Prolog_get_cons(t_cs, c, t_cs);
+      cs.insert(build_constraint(c, where));
+    }
+    // Check the list is properly terminated.
+    check_nil_terminating(t_cs, where);
+
+    unsigned complexity = term_to_unsigned<unsigned>(t_complexity, where);
+
+    Prolog_atom p_ind = term_to_boolean(t_ind, where);
+    bool ind = (p_ind == a_true) ? true : false;
+
+    pph->wrap_assign(vars, w, r, o, &cs, complexity, ind);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+ }
+
+')

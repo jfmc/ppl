@@ -558,3 +558,17 @@ m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
       Prolog_term_ref t_ph);
 
 ')
+
+m4_define(`ppl_@CLASS@_wrap_assign_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_wrap_assign
+     (Prolog_term_ref t_ph,
+      Prolog_term_ref t_vars,
+      Prolog_term_ref t_w,
+      Prolog_term_ref t_r,
+      Prolog_term_ref t_o,
+      Prolog_term_ref t_cs,
+      Prolog_term_ref t_complexity,
+      Prolog_term_ref t_ind);
+
+')

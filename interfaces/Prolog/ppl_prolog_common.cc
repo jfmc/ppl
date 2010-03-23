@@ -116,6 +116,22 @@ Prolog_atom a_max;
 // Denotes the minimization mode for optimization problems.
 Prolog_atom a_min;
 
+// Denote possible widths of bounded integer types.
+Prolog_atom a_bits_8;
+Prolog_atom a_bits_16;
+Prolog_atom a_bits_32;
+Prolog_atom a_bits_64;
+Prolog_atom a_bits_128;
+
+// Denote possible representations of bounded integer types.
+Prolog_atom a_unsigned;
+Prolog_atom a_signed_2_complement;
+
+// Denote possible overflow behavior of bounded integer types.
+Prolog_atom a_overflow_wraps;
+Prolog_atom a_overflow_undefined;
+Prolog_atom a_overflow_impossible;
+
 // Denote possible outcomes of MIP problems solution attempts.
 Prolog_atom a_unfeasible;
 Prolog_atom a_unbounded;
@@ -210,6 +226,19 @@ const Prolog_Interface_Atom prolog_interface_atoms[] = {
 
   { &a_max,                      "max" },
   { &a_min,                      "min" },
+
+  { &a_bits_8,                   "bits_8" },
+  { &a_bits_16,                  "bits_16" },
+  { &a_bits_32,                  "bits_32" },
+  { &a_bits_64,                  "bits_64" },
+  { &a_bits_128,                 "bits_128" },
+
+  { &a_unsigned,                 "unsigned" },
+  { &a_signed_2_complement,      "signed_2_complement" },
+
+  { &a_overflow_wraps,           "overflow_wraps" },
+  { &a_overflow_undefined,       "overflow_undefined" },
+  { &a_overflow_impossible,      "overflow_impossible" },
 
   { &a_unfeasible,               "unfeasible" },
   { &a_unbounded,                "unbounded" },
@@ -498,6 +527,106 @@ handle_exception(const not_universe_or_empty& e) {
 }
 
 void
+handle_exception(const not_a_boolean& e) {
+  Prolog_term_ref found = Prolog_new_term_ref();
+  Prolog_construct_compound(found, a_found, e.term());
+
+  Prolog_term_ref expected = Prolog_new_term_ref();
+  Prolog_put_atom(expected, a_nil);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("true"), expected);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("false"), expected);
+  Prolog_construct_compound(expected, a_expected, expected);
+
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string(e.where()));
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			    found, expected, where);
+  Prolog_raise_exception(exception_term);
+}
+
+void
+handle_exception(const not_a_bounded_integer_type_width& e) {
+  Prolog_term_ref found = Prolog_new_term_ref();
+  Prolog_construct_compound(found, a_found, e.term());
+
+  Prolog_term_ref expected = Prolog_new_term_ref();
+  Prolog_put_atom(expected, a_nil);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("bits_8"), expected);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("bits_16"), expected);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("bits_32"), expected);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("bits_64"), expected);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("bits_128"), expected);
+  Prolog_construct_compound(expected, a_expected, expected);
+
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string(e.where()));
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			    found, expected, where);
+  Prolog_raise_exception(exception_term);
+}
+
+void
+handle_exception(const not_a_bounded_integer_type_representation& e) {
+  Prolog_term_ref found = Prolog_new_term_ref();
+  Prolog_construct_compound(found, a_found, e.term());
+
+  Prolog_term_ref expected = Prolog_new_term_ref();
+  Prolog_put_atom(expected, a_nil);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("unsigned"), expected);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("signed_2_complement"),
+                        expected);
+  Prolog_construct_compound(expected, a_expected, expected);
+
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string(e.where()));
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			    found, expected, where);
+  Prolog_raise_exception(exception_term);
+}
+
+void
+handle_exception(const not_a_bounded_integer_type_overflow& e) {
+  Prolog_term_ref found = Prolog_new_term_ref();
+  Prolog_construct_compound(found, a_found, e.term());
+
+  Prolog_term_ref expected = Prolog_new_term_ref();
+  Prolog_put_atom(expected, a_nil);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("overflow_wraps"),
+                        expected);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("overflow_undefined"),
+                        expected);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("overflow_impossible"),
+                        expected);
+  Prolog_construct_compound(expected, a_expected, expected);
+
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string(e.where()));
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			    found, expected, where);
+  Prolog_raise_exception(exception_term);
+}
+
+void
 handle_exception(const not_a_relation& e) {
   Prolog_term_ref found = Prolog_new_term_ref();
   Prolog_construct_compound(found, a_found, e.term());
@@ -690,6 +819,17 @@ variable_term(dimension_type varid) {
   Prolog_term_ref t = Prolog_new_term_ref();
   Prolog_construct_compound(t, a_dollar_VAR, v);
   return t;
+}
+
+Prolog_atom
+term_to_boolean(Prolog_term_ref t, const char* where) {
+  if (Prolog_is_atom(t)) {
+    Prolog_atom name;
+    if (Prolog_get_atom_name(t, &name)
+	&& (name == a_true || name == a_false))
+      return name;
+  }
+  throw not_a_boolean(t, where);
 }
 
 Prolog_atom
@@ -1216,6 +1356,45 @@ term_to_Coefficient(Prolog_term_ref t, const char* where) {
     return integer_term_to_Coefficient(t);
   else
     throw not_an_integer(t, where);
+}
+
+Prolog_atom
+term_to_bounded_integer_type_width(Prolog_term_ref t, const char* where) {
+  if (Prolog_is_atom(t)) {
+    Prolog_atom name;
+    if (Prolog_get_atom_name(t, &name)
+	&& (name == a_bits_8 || name == a_bits_16
+            || name == a_bits_32 || name == a_bits_64
+            || name == a_bits_128))
+      return name;
+  }
+  throw not_a_bounded_integer_type_width(t, where);
+}
+
+Prolog_atom
+term_to_bounded_integer_type_representation(Prolog_term_ref t,
+                                            const char* where) {
+  if (Prolog_is_atom(t)) {
+    Prolog_atom name;
+    if (Prolog_get_atom_name(t, &name)
+	&& (name == a_unsigned || name == a_signed_2_complement))
+      return name;
+  }
+  throw not_a_bounded_integer_type_representation(t, where);
+}
+
+Prolog_atom
+term_to_bounded_integer_type_overflow(Prolog_term_ref t,
+                                      const char* where) {
+  if (Prolog_is_atom(t)) {
+    Prolog_atom name;
+    if (Prolog_get_atom_name(t, &name)
+	&& (name == a_overflow_wraps
+            || name == a_overflow_undefined
+            || name == a_overflow_impossible))
+      return name;
+  }
+  throw not_a_bounded_integer_type_overflow(t, where);
 }
 
 Prolog_atom
