@@ -869,13 +869,6 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
         PPL_ASSERT(*challenger_value > 0);
         PPL_ASSERT(pj < challenger_j);
 
-        PPL_DIRTY_TEMP_COEFFICIENT(lhs);
-        lhs = *cost;
-        lhs *= *challenger_value;
-        PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-        rhs = *challenger_cost;
-        rhs *= *value;
-
         const Coefficient* row_challenger_value;
         // row_challenger_value = &(row.get(challenger_j));
         if (row_itr != row_end) {
@@ -898,13 +891,11 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
         } else
           row_challenger_value = &(Coefficient_zero());
 
-        lhs *= *row_value;
-        rhs *= *row_challenger_value;
+        int lhs_sign = sgn(*cost) * sgn(*row_value);
+        int rhs_sign = sgn(*challenger_cost) * sgn(*row_challenger_value);
 
-        if (lhs == rhs)
-          new_candidates.insert(*i);
-        else {
-          if (lhs > rhs) {
+        if (lhs_sign != rhs_sign) {
+          if (lhs_sign > rhs_sign) {
             pi = challenger_i;
             pj = challenger_j;
             cost = challenger_cost;
@@ -912,6 +903,31 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
             row_value = row_challenger_value;
             new_candidates.clear();
             new_candidates.insert(*i);
+          }
+        } else {
+
+          PPL_DIRTY_TEMP_COEFFICIENT(lhs);
+          lhs = *cost;
+          lhs *= *challenger_value;
+          PPL_DIRTY_TEMP_COEFFICIENT(rhs);
+          rhs = *challenger_cost;
+          rhs *= *value;
+
+          lhs *= *row_value;
+          rhs *= *row_challenger_value;
+
+          if (lhs == rhs)
+            new_candidates.insert(*i);
+          else {
+            if (lhs > rhs) {
+              pi = challenger_i;
+              pj = challenger_j;
+              cost = challenger_cost;
+              value = challenger_value;
+              row_value = row_challenger_value;
+              new_candidates.clear();
+              new_candidates.insert(*i);
+            }
           }
         }
       }
