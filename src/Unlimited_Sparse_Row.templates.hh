@@ -37,33 +37,39 @@ Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
   iterator i_end = end();
   const_iterator j = y.begin();
   const_iterator j_end = y.end();
-  if (i != i_end && j != j_end) {
-    if ((*i).first == (*j).first) {
-      g((*i).second, (*j).second);
-      last_i = i;
-      ++i;
-      ++j;
-    } else
-      if ((*i).first < (*j).first) {
-        f((*i).second);
+  if (i != i_end) {
+    if (j != j_end) {
+      if ((*i).first == (*j).first) {
+        g((*i).second, (*j).second);
         last_i = i;
         ++i;
-      } else {
-        last_i = find_create((*j).first);
-        h((*last_i).second, (*j).second);
-#ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
-        i = last_i;
-        ++i;
-        i_end = x.end();
-        if (& static_cast<PIP_Tree_Node::
-                          matrix_row_const_reference_type>(x) == &y) {
-          j = last_i;
-          j_end = y.end();
-        }
-#endif
         ++j;
-      }
-  } else
+      } else
+        if ((*i).first < (*j).first) {
+          f((*i).second);
+          last_i = i;
+          ++i;
+        } else {
+          last_i = find_create((*j).first);
+          h((*last_i).second, (*j).second);
+#ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
+          i = last_i;
+          ++i;
+          i_end = x.end();
+          if (& static_cast<PIP_Tree_Node::
+                            matrix_row_const_reference_type>(x) == &y) {
+            j = last_i;
+            j_end = y.end();
+          }
+#endif
+          ++j;
+        }
+    } else {
+      f((*i).second);
+      last_i = i;
+      ++i;
+    }
+  } else {
     if (j != j_end) {
       last_i = find_create((*j).first);
       h((*last_i).second, (*j).second);
@@ -78,7 +84,14 @@ Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
       }
 #endif
       ++j;
+    } else {
+      PPL_ASSERT(i == i_end);
+      PPL_ASSERT(j == j_end);
+
+      return;
     }
+  }
+  PPL_ASSERT(last_i != i_end);
   while (i != i_end && j != j_end)
     if ((*i).first == (*j).first) {
       g((*i).second, (*j).second);
@@ -105,6 +118,10 @@ Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
 #endif
         ++j;
       }
+  while (i != i_end) {
+    f((*i).second);
+    ++i;
+  }
   while (j != j_end) {
     last_i = find_create((*j).first, last_i);
     h((*last_i).second, (*j).second);
