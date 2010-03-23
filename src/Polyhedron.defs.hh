@@ -765,38 +765,32 @@ public:
 		Generator& g) const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this intersects with
-    the hyperplane defined by \p expr at a single point; in which case
-    the frequency of \p *this and the infimum value for \p expr for a
-    point in \p *this are computed.
+    Returns <CODE>true</CODE> if and only if there exist a
+    unique value \p val such that \p *this
+    saturates the equality <CODE>expr = val</CODE>.
 
     \param expr
     The linear expression for which the frequency is needed;
 
     \param freq_n
-    The numerator of the maximum frequency of \p expr;
+    If <CODE>true</CODE> is returned, the value is set to \f$0\f$;
+    Present for interface compatibility with class Grid, where
+    the \ref Grid_Frequency "frequency" can have a non-zero value;
 
     \param freq_d
-    The denominator of the maximum frequency of \p expr;
+    If <CODE>true</CODE> is returned, the value is set to \f$1\f$;
 
     \param val_n
-    The numerator of a value of \p expr at a point in the polyhedron
-    that is closest to zero;
+    The numerator of \p val;
 
     \param val_d
-    The denominator of a value of \p expr at a point in the polyhedron
-    that is closest to zero;
+    The denominator of \p val;
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
 
-    If \p expr has no value in \p *this or can take more than one value
-    in \p *this, <CODE>false</CODE> is returned and \p freq_n, \p freq_d,
+    If <CODE>false</CODE> is returned, then \p freq_n, \p freq_d,
     \p val_n and \p val_d are left untouched.
-    If \p expr has a unique value in \p *this, then
-    the frequency of a polyhedron \f$\cP\f$ with respect to a linear expression
-    \f$e\f$ is \f$0\f$ and the value is given by \p val_n and \p val_d.
-
   */
   bool frequency(const Linear_Expression& expr,
                  Coefficient& freq_n, Coefficient& freq_d,

@@ -2196,6 +2196,36 @@ is equivalent to the application of the standard affine image
 of \f$\cL\f$ with respect to the variable \f$x_k\f$ and the
 affine expression \f$\mathrm{rhs}\f$.
 
+\subsection Grid_Frequency Frequency Operator
+
+Let \f$\cL \in \Gset_n\f$ be any non-empty grid and
+\f$\mathrm{expr} = \bigl(\langle \vect{a}, \vect{x} \rangle + b\f$\bigr)
+be a linear expression. Then if, for
+some \f$b, f \in \Rset\f$, all the points in \f$\cL\f$ satisfy the
+congruence \f$\cg = ( \mathrm{expr} \equiv_f b )\f$, then the maximum
+\f$f\f$ such that this holds is called the <EM>frequency</EM> of
+\f$\cL\f$ with respect to \f$\mathrm{expr}\f$.
+
+The frequency operator provided by the library returns both
+the frequency \f$f\f$ and a value
+\f$\mathrm{val} = \langle \vect{a}, \vect{w} \rangle + b\f$
+where \f$\vect{w} \in \cL\f$ and
+\f[
+    |\mathrm{val}|
+       = \min\Bigl\{
+               \bigl|\langle \vect{a}, \vect{v} \rangle + b
+               \bigr| \st \vect{v} \in \cL
+             \Bigr\}.
+\f]
+
+Observe that the above definition is also applied to other simple objects in
+the library like polyhedra, octagonal shapes, bd-shapes and boxes
+and in such cases the definition of frequency can be simplified.
+For instance, the frequency for an object \f$\cP \in \Pset_n\f$ is
+defined if and only if there is a unique value \f$b\f$ such that
+\f$\cP\f$ saturates the equality \f$( \mathrm{expr} = b )\f$;
+in this case the frequency is \f$0\f$ and the value returned is \f$b\f$.
+
 \subsection Grid_Time_Elapse Time-Elapse Operator
 
 For any two grids \f$\cL_1, \cL_2 \in \Gset_n\f$,

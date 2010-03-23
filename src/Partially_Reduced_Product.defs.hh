@@ -232,7 +232,7 @@ public:
   This reduction method includes the congruences reduction.
   This class uses the minimized constraints defining each of the components.
   For each of the constraints, it checks the frequency and value for the same
-  linear expression in other component. If the constraint does not satisfy
+  linear expression in the other component. If the constraint does not satisfy
   the implied congruence, the inhomogeneous term is adjusted so that it does.
   Note that unless the congruences reduction adds equalitites
   the shapes of the domains are unaltered.

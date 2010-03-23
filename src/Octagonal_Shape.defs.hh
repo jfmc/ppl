@@ -840,32 +840,31 @@ public:
                 Generator& g) const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is not empty and
-    \p expr is discrete in \p *this, in which case the maximum frequency
-    and the value for \p expr that is closest to zero are computed.
+    Returns <CODE>true</CODE> if and only if there exist a
+    unique value \p val such that \p *this
+    saturates the equality <CODE>expr = val</CODE>.
 
     \param expr
     The linear expression for which the frequency is needed;
 
     \param freq_n
-    The numerator of the maximum frequency of \p expr;
+    If <CODE>true</CODE> is returned, the value is set to \f$0\f$;
+    Present for interface compatibility with class Grid, where
+    the \ref Grid_Frequency "frequency" can have a non-zero value;
 
     \param freq_d
-    The denominator of the maximum frequency of \p expr;
+    If <CODE>true</CODE> is returned, the value is set to \f$1\f$;
 
     \param val_n
-    The numerator of a value of \p expr at a point in the octagonal shape
-    that is closest to zero;
+    The numerator of \p val;
 
     \param val_d
-    The denominator of a value of \p expr at a point in the octagonal shape
-    that is closest to zero;
+    The denominator of \p val;
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
 
-    If \p *this is empty or \p expr can take any real number in \p *this,
-    <CODE>false</CODE> is returned and \p freq_n, \p freq_d,
+    If <CODE>false</CODE> is returned, then \p freq_n, \p freq_d,
     \p val_n and \p val_d are left untouched.
   */
   bool frequency(const Linear_Expression& expr,
