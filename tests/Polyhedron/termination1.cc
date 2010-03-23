@@ -425,6 +425,72 @@ test18() {
   return !termination_test_PR(ph);
 }
 
+bool
+test19() {
+  Variable D(0);
+  Variable E(1);
+  Variable F(2);
+  Variable A(3);
+  Variable B(4);
+  Variable C(5);
+  C_Polyhedron ph(6);
+
+  ph.add_constraint(A == D);
+  ph.add_constraint(B == E);
+  ph.add_constraint(B - F >= 0);
+  ph.add_constraint(A - F >= 0);
+  ph.add_constraint(C >=0);
+  ph.add_constraint(C - F <= -1);
+
+  Generator witness(point());
+  one_affine_ranking_function_PR(ph, witness);
+
+  print_generator(witness, "*** witness ***");
+
+  Variable mu1(0);
+  Variable mu2(1);
+  Variable mu3(2);
+  Variable mu0(3);
+  Generator known_result(point(0*mu0 + 1*mu1 - 1*mu3));
+
+  print_generator(known_result, "*** known_result ***");
+
+  return known_result == witness;
+}
+
+bool
+test20() {
+  Variable D(0);
+  Variable E(1);
+  Variable F(2);
+  Variable A(3);
+  Variable B(4);
+  Variable C(5);
+  C_Polyhedron ph(6);
+
+  ph.add_constraint(A == D);
+  ph.add_constraint(B == E);
+  ph.add_constraint(B - F >= 0);
+  ph.add_constraint(A - F >= 0);
+  ph.add_constraint(C >=0);
+  ph.add_constraint(C - F <= -1);
+
+  Generator witness(point());
+  one_affine_ranking_function_MS(ph, witness);
+
+  print_generator(witness, "*** witness ***");
+
+  Variable mu1(0);
+  Variable mu2(1);
+  Variable mu3(2);
+  Variable mu0(3);
+  Generator known_result(point(-1*mu0 + 1*mu1 - 1*mu3));
+
+  print_generator(known_result, "*** known_result ***");
+
+  return known_result == witness;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -446,4 +512,6 @@ BEGIN_MAIN
   DO_TEST(test16);
   DO_TEST(test17);
   DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN
