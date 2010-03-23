@@ -52,7 +52,7 @@ PPL::Dense_Matrix::
   permute_columns(const std::vector<dimension_type>& cycles) {
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
   const dimension_type n = cycles.size();
-  PPL_ASSERT(cycles[n - 1] == 0);
+  PPL_ASSERT(cycles.empty() || cycles[n - 1] == 0);
   for (dimension_type k = (*this).num_rows(); k-- > 0; ) {
     Dense_Row& rows_k = (*this)[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {
