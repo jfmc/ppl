@@ -155,14 +155,14 @@ $(srcdir)/Poly_Gen_Relation.java \
 $(srcdir)/PPL_Object.java \
 $(srcdir)/Relation_Symbol.java \
 $(srcdir)/Timeout_Exception.java \
-$(builddir)/Termination.java \
 $(srcdir)/Variable.java \
 $(srcdir)/Variables_Set.java
 
 # NOTE: do _NOT_ add Fake_Class_for_Doxygen.java to this list.
 all_java_sources = \
 $(fixed_java_sources) \
-$(required_instantiations_java_sources)
+$(required_instantiations_java_sources) \
+Termination.java
 
 # NOTE: Fake_Class_for_Doxygen.java should be added here.
 EXTRA_DIST = \
@@ -206,6 +206,8 @@ source_generation.stamp: $(interface_generator_dependencies)
 	echo timestamp >$@
 
 $(required_instantiations_java_sources): source_generation.stamp
+
+Termination.java: source_generation.stamp
 
 CLEANFILES = \
 $(required_instantiations_java_sources) \
