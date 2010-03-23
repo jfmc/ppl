@@ -195,11 +195,18 @@ public:
   //! Lower bound of key c, assuming it is in [itr,end()) .
   const_iterator lower_bound(dimension_type i, const_iterator itr) const;
 
+  //! Equivalent to find_create(x.first, x.second, begin_dangerous()) .
+  iterator find_create(const std::pair<dimension_type, Coefficient>& x);
+
   //! Provided for compatibility with Sparse_Row.
   iterator find_create(dimension_type i, const Coefficient& x);
 
   //! Provided for compatibility with Sparse_Row.
   iterator find_create(dimension_type i);
+
+  //! Equivalent to find_create(x.first, x.second, itr).
+  iterator find_create(const std::pair<dimension_type, Coefficient>& x,
+                       iterator itr);
 
   //! Provided for compatibility with Sparse_Row.
   //! itr must point to an element before the modified one.
