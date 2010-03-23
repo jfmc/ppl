@@ -26,6 +26,48 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 
+template <typename Func1, typename Func2>
+void
+Sparse_Row::combine_needs_first(const Unlimited_Sparse_Row& y,
+                                const Func1& f, const Func2& g) {
+  row.combine_needs_first(y, f, g);
+}
+
+template <typename Func1, typename Func2>
+void
+Sparse_Row::combine_needs_first(const Sparse_Row& y,
+                                const Func1& f, const Func2& g) {
+  row.combine_needs_first(y.row, f, g);
+}
+
+template <typename Func1, typename Func2>
+void
+Sparse_Row::combine_needs_first(const Sparse_Row_Reference& y,
+                                const Func1& f, const Func2& g) {
+  row.combine_needs_first(static_cast<const Unlimited_Sparse_Row&>(y), f, g);
+}
+
+template <typename Func1, typename Func2>
+void
+Sparse_Row::combine_needs_second(const Unlimited_Sparse_Row& y,
+                                 const Func1& g, const Func2& h) {
+  row.combine_needs_second(y, g, h);
+}
+
+template <typename Func1, typename Func2>
+void
+Sparse_Row::combine_needs_second(const Sparse_Row& y,
+                                 const Func1& g, const Func2& h) {
+  row.combine_needs_second(y.row, g, h);
+}
+
+template <typename Func1, typename Func2>
+void
+Sparse_Row::combine_needs_second(const Sparse_Row_Reference& y,
+                                 const Func1& g, const Func2& h) {
+  row.combine_needs_second(static_cast<const Unlimited_Sparse_Row&>(y), g, h);
+}
+
 template <typename Func1, typename Func2, typename Func3>
 void
 Sparse_Row::combine(const Unlimited_Sparse_Row& y,
@@ -47,6 +89,48 @@ Sparse_Row::combine(const Sparse_Row_Reference& y,
   row.combine(static_cast<const Unlimited_Sparse_Row&>(y), f, g, h);
 }
 
+
+template <typename Func1, typename Func2>
+void
+Sparse_Row_Reference::combine_needs_first(const Unlimited_Sparse_Row& y,
+                                          const Func1& f, const Func2& g) {
+  row.combine_needs_first(y, f, g);
+}
+
+template <typename Func1, typename Func2>
+void
+Sparse_Row_Reference::combine_needs_first(const Sparse_Row& y,
+                                          const Func1& f, const Func2& g) {
+  row.combine_needs_first(y.row, f, g);
+}
+
+template <typename Func1, typename Func2>
+void
+Sparse_Row_Reference::combine_needs_first(const Sparse_Row_Reference& y,
+                                          const Func1& f, const Func2& g) {
+  row.combine_needs_first(static_cast<const Unlimited_Sparse_Row&>(y), f, g);
+}
+
+template <typename Func1, typename Func2>
+void
+Sparse_Row_Reference::combine_needs_second(const Unlimited_Sparse_Row& y,
+                                           const Func1& g, const Func2& h) {
+  row.combine_needs_second(y, g, h);
+}
+
+template <typename Func1, typename Func2>
+void
+Sparse_Row_Reference::combine_needs_second(const Sparse_Row& y,
+                                           const Func1& g, const Func2& h) {
+  row.combine_needs_second(y.row, g, h);
+}
+
+template <typename Func1, typename Func2>
+void
+Sparse_Row_Reference::combine_needs_second(const Sparse_Row_Reference& y,
+                                           const Func1& g, const Func2& h) {
+  row.combine_needs_second(static_cast<const Unlimited_Sparse_Row&>(y), g, h);
+}
 
 template <typename Func1, typename Func2, typename Func3>
 void
