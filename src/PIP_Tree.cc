@@ -2412,6 +2412,10 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
   }
 
   const Coefficient& denom = tableau.denominator();
+  // Used to minimize the numer of (slow) insertions in v_row that don't
+  // use a iterator as a hint.
+  std::vector<std::pair<dimension_type,Coefficient> > buffer;
+
   for (Constraint_Sequence::const_iterator
          c_iter = input_cs.begin() + first_pending_constraint,
          c_end = input_cs.end(); c_iter != c_end; ++c_iter) {
@@ -2446,9 +2450,6 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
       matrix_row_iterator p_row_itr = p_row.end();
       dimension_type i = 0;
       dimension_type i_end = constraint.space_dimension();
-      // Used to minimize the numer of (slow) insertions in v_row that don't
-      // use a iterator as a hint.
-      std::map<dimension_type,Coefficient> v_row_map;
       for ( ; i != i_end; ++i) {
         const bool is_parameter = (1 == parameters.count(i));
         const Coefficient& coeff_i = constraint.coefficient(Variable(i));
@@ -2470,25 +2471,27 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
         }
         else {
           const dimension_type mv = mapping[v_index];
-          if (basis[v_index])
+          if (basis[v_index]) {
             // Basic variable : add coeff_i * x_i
-            add_mul_assign(v_row_map[mv], coeff_i, denom);
-          else {
-            // Dump v_row_map to v_row.
+            buffer.resize(buffer.size() + 1);
+            buffer.back().first = mv;
+            add_mul_assign(buffer.back().second, coeff_i, denom);
+          } else {
+            // Dump buffer into v_row.
             {
-              std::map<dimension_type,Coefficient>::const_iterator j
-                = v_row_map.begin();
-              std::map<dimension_type,Coefficient>::const_iterator j_end
-                = v_row_map.end();
+              std::sort(buffer.begin(), buffer.end());
+              std::vector<std::pair<dimension_type,Coefficient> >
+                ::const_iterator j = buffer.begin();
+              std::vector<std::pair<dimension_type,Coefficient> >
+                ::const_iterator j_end = buffer.end();
               if (j != j_end) {
-                matrix_row_iterator itr = v_row.find_create(j->first,
-                                                            j->second);
+                matrix_row_iterator itr = v_row.find_create(*j);
                 ++j;
                 for ( ; j != j_end; ++j)
-                  itr = v_row.find_create(j->first, j->second,itr);
+                  itr = v_row.find_create(*j, itr);
               }
             }
-            v_row_map.clear();
+            buffer.clear();
             // Non-basic variable : add coeff_i * row_i
             add_mul_assign_row(v_row, coeff_i, tableau.s[mv]);
             add_mul_assign_row(p_row, coeff_i, tableau.t[mv]);
@@ -2515,25 +2518,27 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
         }
         else {
           const dimension_type mv = mapping[v_index];
-          if (basis[v_index])
+          if (basis[v_index]) {
             // Basic variable : add coeff_i * x_i
-            add_mul_assign(v_row_map[mv], coeff_i, denom);
-          else {
-            // Dump v_row_map to v_row.
+            buffer.resize(buffer.size() + 1);
+            buffer.back().first = mv;
+            add_mul_assign(buffer.back().second, coeff_i, denom);
+          } else {
+            // Dump buffer into v_row.
             {
-              std::map<dimension_type,Coefficient>::const_iterator j
-                = v_row_map.begin();
-              std::map<dimension_type,Coefficient>::const_iterator j_end
-                = v_row_map.end();
+              std::sort(buffer.begin(), buffer.end());
+              std::vector<std::pair<dimension_type,Coefficient> >
+                ::const_iterator j = buffer.begin();
+              std::vector<std::pair<dimension_type,Coefficient> >
+                ::const_iterator j_end = buffer.end();
               if (j != j_end) {
-                matrix_row_iterator itr = v_row.find_create(j->first,
-                                                            j->second);
+                matrix_row_iterator itr = v_row.find_create(*j);
                 ++j;
                 for ( ; j != j_end; ++j)
-                  itr = v_row.find_create(j->first, j->second,itr);
+                  itr = v_row.find_create(*j, itr);
               }
             }
-            v_row_map.clear();
+            buffer.clear();
             // Non-basic variable : add coeff_i * row_i
             add_mul_assign_row(v_row, coeff_i, tableau.s[mv]);
             add_mul_assign_row(p_row, coeff_i, tableau.t[mv]);
@@ -2541,19 +2546,21 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
           ++v_index;
         }
       }
-      // Dump v_row_map to v_row.
+      // Dump buffer into v_row.
       {
-        std::map<dimension_type,Coefficient>::const_iterator j
-          = v_row_map.begin();
-        std::map<dimension_type,Coefficient>::const_iterator j_end
-          = v_row_map.end();
+        std::sort(buffer.begin(), buffer.end());
+        std::vector<std::pair<dimension_type,Coefficient> >
+          ::const_iterator j = buffer.begin();
+        std::vector<std::pair<dimension_type,Coefficient> >
+          ::const_iterator j_end = buffer.end();
         if (j != j_end) {
-          matrix_row_iterator itr = v_row.find_create(j->first, j->second);
+          matrix_row_iterator itr = v_row.find_create(*j);
           ++j;
           for ( ; j != j_end; ++j)
-            itr = v_row.find_create(j->first, j->second,itr);
+            itr = v_row.find_create(*j, itr);
         }
       }
+      buffer.clear();
     }
 
     if (row_sign(v_row, not_a_dimension()) == ZERO) {
