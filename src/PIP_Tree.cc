@@ -2236,10 +2236,10 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
         matrix_const_row_const_iterator row_i = s_mi.begin();
         matrix_const_row_const_iterator row_end = s_mi.end();
         if (row_i != row_end) {
-          cut_i = cut.find_create((*row_i).first,(*row_i).second);
+          cut_i = cut.find_create(*row_i);
           mod_assign((*cut_i).second,(*cut_i).second,den);
           for (++row_i; row_i != row_end; ++row_i) {
-            cut_i = cut.find_create((*row_i).first,(*row_i).second,cut_i);
+            cut_i = cut.find_create(*row_i, cut_i);
             mod_assign((*cut_i).second,(*cut_i).second,den);
           }
         }
