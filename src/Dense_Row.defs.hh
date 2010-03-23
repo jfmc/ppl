@@ -236,6 +236,28 @@ public:
   /*!
     \param f should take a Coefficient&.
     \param g should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing if c1 is zero.
+    f(c1) must be equivalent to g(c1, 0).
+  */
+  template <typename Func1, typename Func2>
+  void combine_needs_first(const Dense_Row& y,
+                           const Func1& f, const Func2& g);
+
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param g should take a Coefficient& and a const Coefficient&.
+    \param h should take a Coefficient& and a const Coefficient&.
+    g(c1, 0) must do nothing.
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+  */
+  template <typename Func1, typename Func2>
+  void combine_needs_second(const Dense_Row& y,
+                            const Func1& g, const Func2& h);
+
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param f should take a Coefficient&.
+    \param g should take a Coefficient& and a const Coefficient&.
     \param h should take a Coefficient& and a const Coefficient&.
     g(c1, c2) must do nothing if both c1 and c2 are zero.
     f(c1) must be equivalent to g(c1, 0).
