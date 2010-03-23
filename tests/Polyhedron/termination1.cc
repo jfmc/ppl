@@ -121,16 +121,11 @@ test04() {
   Variable mu2(1);
   Variable mu0(2);
   NNC_Polyhedron known_result(3);
-  known_result.add_constraint(mu1 - mu2 >= 1);
-  known_result.add_constraint(mu0 + 2*mu1 >= 0);
+  known_result.add_constraint(mu1 - mu2 > 0);
   known_result.add_constraint(mu2 >= 0);
 
   print_constraints(known_result, "*** known_result ***");
 
-  if (known_result.contains(mu_space))
-    std::cout << "->" << endl;
-  if (mu_space.contains(known_result))
-    std::cout << "<-" << endl;
   return known_result == mu_space;
 }
 
