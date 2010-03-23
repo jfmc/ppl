@@ -952,31 +952,31 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
   candidates_map_t candidates_map;
   for (dimension_type i = 0; i < num_rows; ++i) {
     PIP_Tree_Node::matrix_row_const_reference_type s_i = s[i];
-    if (s_i.get(0) < 0) {
+    const Coefficient& s_i0 = s_i.get(0);
+    if (s_i0 < 0) {
       dimension_type j;
       if (!find_lexico_minimum_column(s, mapping, basis, s_i, 1, j)) {
         // No positive pivot candidate: unfeasible problem.
         return false;
       }
+      const Coefficient& s_ij = s_i.get(j);
       candidates_map_t::iterator itr = candidates_map.find(j);
       if (itr == candidates_map.end()) {
         map_data& current_data = candidates_map[j];
         current_data.row_index = i;
-        s[i].get2(0, j, current_data.cost, current_data.value);
+        current_data.cost = &s_i0;
+        current_data.value = &s_ij;
       } else {
         map_data& current_data = candidates_map[j];
 
-        PIP_Tree_Node::matrix_row_const_reference_type row_b = s[i];
-
-        Coefficient_traits::const_reference cost_b = row_b.get(0);
-        const Coefficient& value_b = row_b.get(j);
+        const Coefficient& value_b = s_i.get(j);
 
         PPL_ASSERT(*(current_data.value) > 0);
         PPL_ASSERT(value_b > 0);
 
         Coefficient lhs_coeff = *(current_data.cost);
         lhs_coeff *= value_b;
-        Coefficient rhs_coeff = cost_b;
+        Coefficient rhs_coeff = s_i0;
         rhs_coeff *= *(current_data.value);
 
         // Same column: just compare the ratios.
@@ -985,8 +985,8 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
         if (lhs_coeff > rhs_coeff) {
           // Found better pivot
           current_data.row_index = i;
-          current_data.cost = &(cost_b);
-          current_data.value = &(value_b);
+          current_data.cost = &(s_i0);
+          current_data.value = &(s_ij);
         }
         // Otherwise, keep current pivot for this column.
       }
