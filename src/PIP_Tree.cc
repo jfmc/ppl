@@ -599,8 +599,8 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
   PPL_ASSERT(!candidates.empty());
   for (dimension_type var_index = 0; var_index < num_vars; ++var_index) {
     std::set<dimension_type> new_candidates;
-    std::set<dimension_type>::iterator i = candidates.begin();
-    std::set<dimension_type>::iterator i_end = candidates.end();
+    std::set<dimension_type>::const_iterator i = candidates.begin();
+    std::set<dimension_type>::const_iterator i_end = candidates.end();
     PPL_ASSERT(!candidates.empty());
     new_candidates.insert(*i);
     dimension_type min_column = *i;
