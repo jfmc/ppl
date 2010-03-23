@@ -209,6 +209,59 @@ build_ppl_relsym(value caml_relsym) {
   }
 }
 
+Bounded_Integer_Type_Width
+build_ppl_bounded_integer_type_width(value caml_width) {
+  assert(Is_long(caml_width));
+  switch (Int_val(caml_width)) {
+  case 0:
+    return BITS_8;
+  case 1:
+    return BITS_16;
+  case 2:
+    return BITS_32;
+  case 3:
+    return BITS_64;
+  case 4:
+    return BITS_128;
+  default:
+    // We should not be here!
+    throw std::runtime_error("PPL OCaml interface internal error\n:"
+                             "build_ppl_bounded_integer_type_width(width)");
+  }
+}
+
+Bounded_Integer_Type_Representation
+build_ppl_bounded_integer_type_representation(value caml_rep) {
+  assert(Is_long(caml_rep));
+  switch (Int_val(caml_rep)) {
+  case 0:
+    return UNSIGNED;
+  case 1:
+    return SIGNED_2_COMPLEMENT;
+  default:
+    // We should not be here!
+    throw std::runtime_error("PPL OCaml interface internal error\n:"
+                             "build_ppl_bounded_integer_type_representation(rep)");
+  }
+}
+
+Bounded_Integer_Type_Overflow
+build_ppl_bounded_integer_type_overflow(value caml_oflow) {
+  assert(Is_long(caml_oflow));
+  switch (Int_val(caml_oflow)) {
+  case 0:
+    return OVERFLOW_WRAPS;
+  case 1:
+    return OVERFLOW_UNDEFINED;
+  case 2:
+    return OVERFLOW_IMPOSSIBLE;
+  default:
+    // We should not be here!
+    throw std::runtime_error("PPL OCaml interface internal error\n:"
+                             "build_ppl_bounded_integer_type_overflow(oflow)");
+  }
+}
+
 Optimization_Mode
 build_ppl_opt_mode(value caml_opt_mode) {
   assert(Is_long(caml_opt_mode));

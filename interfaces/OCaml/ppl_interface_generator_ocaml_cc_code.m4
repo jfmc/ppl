@@ -625,7 +625,6 @@ CATCH_ALL
 
 ')
 
-
 m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code',
 `dnl
 extern "C"
@@ -1325,3 +1324,46 @@ CAMLprim value
 CATCH_ALL
 
 ')
+
+m4_define(`ppl_@CLASS@_wrap_assign_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_@CLASS@_wrap_assign_native
+  (value ph, value caml_vset, value width, value rep, value oflow,
+   value cs, value complexity, value wrap_ind) try {
+  CAMLparam5(ph, caml_vset, width, rep, oflow);
+  CAMLxparam3(cs, complexity, wrap_ind);
+  @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
+  Variables_Set ppl_vset;
+  if (Int_val(caml_vset) == 0)
+    CAMLreturn(Val_unit);
+  while (true) {
+    ppl_vset.insert(Int_val(Field(caml_vset, 0)));
+    if (Int_val(Field(caml_vset, 1)) == 0)
+      break;
+    caml_vset = Field(caml_vset, 1);
+  }
+  build_ppl_bounded_integer_type_representation(rep);
+  build_ppl_bounded_integer_type_overflow(oflow);
+  Constraint_System ppl_cs = build_ppl_Constraint_System(cs);
+  unsigned ppl_complexity = value_to_unsigned<unsigned>(complexity);
+  bool ppl_wrap_ind = Int_val(wrap_ind);
+  pph.wrap_assign(ppl_vset,
+                  build_ppl_bounded_integer_type_width(width),
+                  build_ppl_bounded_integer_type_representation(rep),
+                  build_ppl_bounded_integer_type_overflow(oflow),
+                  &ppl_cs, ppl_complexity, ppl_wrap_ind);
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+CAMLprim value
+ppl_@CLASS@_wrap_assign_bytecode(value * argv, int)
+{
+  return ppl_@CLASS@_wrap_assign_native(argv[0], argv[1], argv[2], argv[3],
+                                 argv[4], argv[5], argv[6], argv[7]);
+}
+
+')
+

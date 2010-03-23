@@ -71,6 +71,15 @@ build_ppl_Complexity_Class(value cc);
 Relation_Symbol
 build_ppl_relsym(value caml_relsym);
 
+Bounded_Integer_Type_Overflow
+build_ppl_bounded_integer_type_overflow(value caml_oflow);
+
+Bounded_Integer_Type_Representation
+build_ppl_bounded_integer_type_representation(value caml_rep);
+
+Bounded_Integer_Type_Width
+build_ppl_bounded_integer_type_width(value caml_width);
+
 Coefficient
 build_ppl_Coefficient(value coeff);
 

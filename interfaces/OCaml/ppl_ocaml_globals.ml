@@ -102,6 +102,19 @@ type congruence_system = linear_congruence list
 type relation_symbol = Less_Than_RS | Less_Or_Equal_RS | Equal_RS
                        | Greater_Than_RS | Greater_Or_Equal_RS
 
+type bounded_integer_type_overflow = Overflow_Wraps
+                                     | Overflow_Undefined
+                                     | Overflow_Impossible
+
+type bounded_integer_type_representation = Unsigned
+                                           | Signed_2_Complement
+
+type bounded_integer_type_width = Bits_8
+                                  | Bits_16
+                                  | Bits_32
+                                  | Bits_64
+                                  | Bits_128
+
 type complexity_class = Polynomial_Complexity
                         | Simplex_Complexity
                         | Any_Complexity

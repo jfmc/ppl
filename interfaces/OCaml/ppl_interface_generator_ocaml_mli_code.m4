@@ -515,3 +515,12 @@ val ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
   @!CLASS@ -> @!CLASS@ -> polyhedron
 
 ')
+
+val ppl_@CLASS@_wrap_assign: @!CLASS@
+                             -> bounded_integer_type_width
+                             -> bounded_integer_type_representation
+                             -> bounded_integer_type_overflow
+                             -> constraint_system
+                             -> int list -> int -> int -> unit
+
+')
