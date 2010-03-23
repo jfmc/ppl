@@ -626,21 +626,17 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
         PPL_ASSERT(sij_a > 0);
         PPL_ASSERT(*sij_b > 0);
 
-        bool found_better_candidate = false;
         // Reconstitute the identity submatrix part of tableau.
         if (row_index != *i) {
-          if (row_index == min_column)
+          if (row_index == min_column) {
             // Optimizing for: lhs == 0 && rhs == rhs_coeff;
-            found_better_candidate = true;
-          else
+            new_candidates.clear();
+            min_column = *i;
+            sij_b = &sij_a;
+            new_candidates.insert(min_column);
+          } else
             // Optimizing for: lhs == 0 && rhs == 0;
             new_candidates.insert(*i);
-        }
-        if (found_better_candidate) {
-          new_candidates.clear();
-          min_column = *i;
-          sij_b = &sij_a;
-          new_candidates.insert(min_column);
         }
       }
     } else {
