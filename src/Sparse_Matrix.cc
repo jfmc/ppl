@@ -67,6 +67,15 @@ PPL::Sparse_Matrix
 }
 
 void
+PPL::Sparse_Matrix::add_zero_columns(dimension_type n, dimension_type i) {
+  for (dimension_type j = rows.size(); j-- > 0; ) {
+    rows[j].add_zeroes_and_shift(n, i);
+  }
+  num_columns_ += n;
+  PPL_ASSERT(OK());
+}
+
+void
 PPL::Sparse_Matrix
 ::resize(dimension_type num_rows, dimension_type num_columns) {
   typedef std::vector<Unlimited_Sparse_Row>::iterator rows_itr_type;

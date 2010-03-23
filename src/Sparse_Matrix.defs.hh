@@ -106,6 +106,9 @@ public:
   */
   void add_zero_columns(const dimension_type n);
 
+  //! Adds \p n columns of zeroes to the matrix, starting from column i.
+  void add_zero_columns(dimension_type n, dimension_type i);
+
   //! Adds \p n rows and \p m columns of zeroes to the matrix.
   /*!
     Provided for compatibility with Dense_Matrix.
