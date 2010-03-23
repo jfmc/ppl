@@ -107,6 +107,27 @@ PPL::Dense_Matrix::add_zero_rows(const dimension_type n) {
 }
 
 void
+PPL::Dense_Matrix::add_zero_columns(dimension_type n, dimension_type i) {
+  const dimension_type old_num_columns = num_columns();
+
+  PPL_ASSERT(i <= old_num_columns);
+
+  add_zero_columns(n);
+
+  // Shift to the right the columns between i and old_num_columns.
+  std::vector<dimension_type> swaps;
+  const dimension_type num_columns_to_swap = old_num_columns - i;
+  swaps.reserve(3 * num_columns_to_swap);
+
+  for (dimension_type j = 0; j < num_columns_to_swap; ++j) {
+    swaps.push_back(i + j);
+    swaps.push_back(old_num_columns + j);
+    swaps.push_back(0);
+  }
+  permute_columns(swaps);
+}
+
+void
 PPL::Dense_Matrix::add_zero_columns(const dimension_type n) {
   PPL_ASSERT(n > 0);
   PPL_ASSERT(n <= max_num_columns() - num_columns());
