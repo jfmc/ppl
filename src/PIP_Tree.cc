@@ -816,8 +816,8 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
         PPL_ASSERT(*challenger_value > 0);
         PPL_ASSERT(pj < challenger_j);
 
-        const int lhs_coeff_sgn = sgn(*cost) * sgn(*challenger_value);
-        const int rhs_coeff_sgn = sgn(*challenger_cost) * sgn(*value);
+        const int lhs_coeff_sgn = sgn(*cost);
+        const int rhs_coeff_sgn = sgn(*challenger_cost);
 
         PPL_ASSERT(pj != challenger_j);
 
