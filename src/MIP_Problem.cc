@@ -818,8 +818,8 @@ PPL::MIP_Problem::process_pending_constraints() {
               // linear_combine() invalidates itr and itr_end.
               itr = tableau_k.lower_bound(j->first);
               itr_end = tableau_k.end();
-            }
-            ++itr;
+            } else
+              ++itr;
             ++j;
           }
       }
