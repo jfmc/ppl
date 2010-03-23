@@ -672,20 +672,34 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
           row_ja = &((*row_itr).second);
           ++row_itr;
         }
-        // lhs is actually the left-hand side with toggled sign.
-        // rhs is actually the right-hand side with toggled sign.
-        lhs = *sij_b * *row_ja;
-        rhs = sij_a * *row_jb;
-        if (lhs == rhs)
-          new_candidates.insert(*i);
-        else
-          if (lhs < rhs) {
+        // lhs_sign is actually the opposite of the left-hand side sign.
+        // rhs_sign is actually the opposite of the right-hand side sign.
+        int lhs_sign = sgn(*row_ja);
+        int rhs_sign = sgn(*row_jb);
+        if (lhs_sign != rhs_sign) {
+          if (lhs_sign < rhs_sign) {
             new_candidates.clear();
             min_column = *i;
             row_jb = row_ja;
             sij_b = &sij_a;
             new_candidates.insert(min_column);
           }
+        } else {
+          // lhs is actually the left-hand side with toggled sign.
+          // rhs is actually the right-hand side with toggled sign.
+          lhs = *sij_b * *row_ja;
+          rhs = sij_a * *row_jb;
+          if (lhs == rhs)
+            new_candidates.insert(*i);
+          else
+            if (lhs < rhs) {
+              new_candidates.clear();
+              min_column = *i;
+              row_jb = row_ja;
+              sij_b = &sij_a;
+              new_candidates.insert(min_column);
+            }
+        }
       }
     }
     std::swap(candidates, new_candidates);
