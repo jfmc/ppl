@@ -2364,29 +2364,12 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
   const dimension_type num_added_params = new_num_params - old_num_params;
   const dimension_type num_added_vars = num_added_dims - num_added_params;
 
-  const dimension_type old_num_art_params
-    = tableau.t.num_columns() - 1 - old_num_params;
-
   // Resize the two tableau matrices.
   if (num_added_vars > 0)
     tableau.s.add_zero_columns(num_added_vars);
-  if (num_added_params > 0)
-    tableau.t.add_zero_columns(num_added_params);
 
-  if (num_added_params > 0 && old_num_art_params > 0) {
-    // Shift to the right the columns of artificial parameters.
-    std::vector<dimension_type> swaps;
-    swaps.reserve(3 * old_num_art_params);
-    const dimension_type first_ap = 1 + old_num_params;
-    for (dimension_type i = 0; i < old_num_art_params; ++i) {
-      dimension_type old_ap = first_ap + i;
-      dimension_type new_ap = old_ap + num_added_params;
-      swaps.push_back(old_ap);
-      swaps.push_back(new_ap);
-      swaps.push_back(0);
-    }
-    tableau.t.permute_columns(swaps);
-  }
+  if (num_added_params > 0)
+    tableau.t.add_zero_columns(num_added_params, old_num_params + 1);
 
   dimension_type new_var_column = old_num_vars;
   const dimension_type initial_space_dim = old_num_vars + old_num_params;
