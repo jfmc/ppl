@@ -2199,7 +2199,7 @@ affine expression \f$\mathrm{rhs}\f$.
 \subsection Grid_Frequency Frequency Operator
 
 Let \f$\cL \in \Gset_n\f$ be any non-empty grid and
-\f$\mathrm{expr} = \bigl(\langle \vect{a}, \vect{x} \rangle + b\f$\bigr)
+\f$\mathrm{expr} = \bigl(\langle \vect{a}, \vect{x} \rangle + b\bigr)\f$
 be a linear expression. Then if, for
 some \f$b, f \in \Rset\f$, all the points in \f$\cL\f$ satisfy the
 congruence \f$\cg = ( \mathrm{expr} \equiv_f b )\f$, then the maximum
