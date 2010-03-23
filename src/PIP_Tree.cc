@@ -2426,18 +2426,18 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
 
     // Setting the inhomogeneus term.
     if (constraint.inhomogeneous_term() != 0) {
-      Coefficient& p_row0 = p_row[0];
-      p_row0 = constraint.inhomogeneous_term();
+      matrix_row_iterator itr
+        = p_row.find_create(0,constraint.inhomogeneous_term());
+      Coefficient& p_row0 = (*itr).second;
       if (constraint.is_strict_inequality())
         // Transform (expr > 0) into (expr - 1 >= 0).
         --p_row0;
       p_row0 *= denom;
     } else
       if (constraint.is_strict_inequality()) {
-        Coefficient& p_row0 = p_row[0];
+        matrix_row_iterator itr = p_row.find_create(0,denom);
         // Transform (expr > 0) into (expr - 1 >= 0).
-        --p_row0;
-        p_row0 *= denom;
+        neg_assign((*itr).second);
       }
 
     {
