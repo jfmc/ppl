@@ -987,11 +987,15 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
             current_data.cost = &(s_i0);
             current_data.value = &(s_ij);
           }
+          // Otherwise, keep current pivot for this column.
         } else {
 
-          Coefficient lhs_coeff = *(current_data.cost);
+          PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
+          lhs_coeff = *(current_data.cost);
           lhs_coeff *= value_b;
-          Coefficient rhs_coeff = s_i0;
+
+          PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
+          rhs_coeff = s_i0;
           rhs_coeff *= *(current_data.value);
 
           // Same column: just compare the ratios.
