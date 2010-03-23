@@ -44,15 +44,11 @@ mod_assign(Coefficient& z,
 
 namespace {
 
-inline void
-add_mul_assign_row_helper1(Coefficient& /* x */) {
-}
-
-class add_mul_assign_row_helper2 {
+class add_mul_assign_row_helper1 {
 
 public:
   inline
-  add_mul_assign_row_helper2(const Coefficient& c1)
+  add_mul_assign_row_helper1(const Coefficient& c1)
     : c(c1) {
   }
 
@@ -65,11 +61,11 @@ private:
   Coefficient c;
 };
 
-class add_mul_assign_row_helper3 {
+class add_mul_assign_row_helper2 {
 
 public:
   inline
-  add_mul_assign_row_helper3(const Coefficient& c1)
+  add_mul_assign_row_helper2(const Coefficient& c1)
     : c(c1) {
   }
 
@@ -90,8 +86,8 @@ inline void
 add_mul_assign_row(PIP_Tree_Node::matrix_row_reference_type x,
                    Coefficient_traits::const_reference c,
                    PIP_Tree_Node::matrix_row_const_reference_type y) {
-  x.combine(y, add_mul_assign_row_helper1, add_mul_assign_row_helper2(c),
-            add_mul_assign_row_helper3(c));
+  x.combine_needs_second(y, add_mul_assign_row_helper1(c),
+                         add_mul_assign_row_helper2(c));
 }
 
 namespace {
