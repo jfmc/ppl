@@ -248,6 +248,7 @@ Row.defs.hh \
 Row.inlines.hh \
 Dense_Row.defs.hh \
 Dense_Row.inlines.hh \
+Dense_Row.templates.hh \
 Unlimited_Sparse_Row.defs.hh \
 Unlimited_Sparse_Row.inlines.hh \
 Unlimited_Sparse_Row.templates.hh \

@@ -232,6 +232,19 @@ public:
   */
   void normalize();
 
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param f should take a Coefficient&.
+    \param g should take a Coefficient& and a const Coefficient&.
+    \param h should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing if both c1 and c2 are zero.
+    f(c1) must be equivalent to g(c1, 0).
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+  */
+  template <typename Func1, typename Func2, typename Func3>
+  void combine(const Dense_Row& y,
+               const Func1& f, const Func2& g, const Func3& h);
+
   //! After this call, get(i) == x.
   //! Provided for compatibility with Sparse_Row.
   void assign(dimension_type i, const Coefficient& x);
@@ -393,6 +406,7 @@ void iter_swap(std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator x,
 } // namespace std
 
 
+#include "Dense_Row.templates.hh"
 #include "Dense_Row.inlines.hh"
 
 #endif // !defined(PPL_Dense_Row_defs_hh)
