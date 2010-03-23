@@ -504,6 +504,9 @@ column_lower(const PIP_Tree_Node::matrix_type& tableau,
   lhs_coeff = cst_a * sij_b;
   rhs_coeff = cst_b * sij_a;
 
+  const int lhs_coeff_sign = sgn(lhs_coeff);
+  const int rhs_coeff_sign = sgn(rhs_coeff);
+
   if (ja == jb) {
     // Same column: just compare the ratios.
     // This works since all columns are lexico-positive.
@@ -547,12 +550,31 @@ column_lower(const PIP_Tree_Node::matrix_type& tableau,
       const Coefficient* t_mk_ja;
       const Coefficient* t_mk_jb;
       t_mk.get2(ja, jb, t_mk_ja, t_mk_jb);
-      lhs = lhs_coeff * *t_mk_ja;
-      rhs = rhs_coeff * *t_mk_jb;
-      if (lhs == rhs)
-        continue;
+      if (t_mk_ja == &Coefficient_zero())
+        if (t_mk_jb == &Coefficient_zero())
+          continue;
+        else {
+          const int rhs_sign = rhs_coeff_sign * sgn(*t_mk_jb);
+          if (0 == rhs_sign)
+            continue;
+          else
+            return 0 > rhs_sign;
+        }
       else
-        return lhs > rhs;
+        if (t_mk_jb == &Coefficient_zero()) {
+          const int lhs_sign = lhs_coeff_sign * sgn(*t_mk_ja);
+          if (lhs_sign == 0)
+            continue;
+          else
+            return lhs_sign > 0;
+        } else {
+          lhs = lhs_coeff * *t_mk_ja;
+          rhs = rhs_coeff * *t_mk_jb;
+          if (lhs == rhs)
+            continue;
+          else
+            return lhs > rhs;
+        }
     }
   }
   // This point should be unreachable.
