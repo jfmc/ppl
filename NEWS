@@ -38,6 +38,14 @@ o  The C and Java interfaces now support timeout computation facilities.
 o  New configuration option `--with-gmp-build=DIR' allows to use a
    non-installed build of GMP in DIR.
 
+o  New methods
+
+     bool Linear_Expression::is_zero() const
+     bool Linear_Expression::all_homogeneous_terms_are_zero() const
+
+   return true if and only if `*this' is 0, and if and only if all the
+   homogeneous terms of `*this' are 0, respectively.
+
 
 Deprecated and removed methods
 ------------------------------

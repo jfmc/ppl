@@ -50,6 +50,7 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
+termination1 \
 hybrid \
 addcongruence1 \
 addcongruences1 \
@@ -211,6 +212,8 @@ nnc_writepolyhedron1
 #
 # Sources for the tests
 #
+
+termination1_SOURCES = termination1.cc
 
 hybrid_SOURCES = hybrid.cc
 

@@ -152,6 +152,13 @@ unit -> Z.t = "ppl_Coefficient_max"
 external ppl_Coefficient_min:
 unit -> Z.t = "ppl_Coefficient_min"
 
+external ppl_Linear_Expression_is_zero:
+linear_expression -> bool = "ppl_Linear_Expression_is_zero"
+
+external ppl_Linear_Expression_all_homogeneous_terms_are_zero:
+linear_expression -> bool
+      = "ppl_Linear_Expression_all_homogeneous_terms_are_zero"
+
 external ppl_set_rounding_for_PPL:
 unit -> unit = "ppl_set_rounding_for_PPL"
 

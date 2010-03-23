@@ -1817,6 +1817,32 @@ ok(T) :-
   ppl_delete_Polyhedron(P3),
   ppl_delete_Polyhedron(P4).
 
+% Tests ppl_termination_test_C_Polyhedron_MS/2,
+%       ppl_termination_test_C_Polyhedron_PR/2.
+% T     ppl_termination_test_NNC_Polyhedron_MS/2,
+%       ppl_termination_test_NNC_Polyhedron_PR/2.
+termination_test :-
+  make_vars(4, [A, B, C, D]),
+  clean_ppl_new_Polyhedron_from_constraints(c,
+                                            [A - C >= 0,
+                                             -A + C >= 0,
+                                             -B + D >= 1,
+                                             B >= 0,
+                                             A >= 1], P1),
+  ppl_termination_test_C_Polyhedron_MS(P1),
+  ppl_termination_test_C_Polyhedron_PR(P1),
+  clean_ppl_new_Polyhedron_from_constraints(nnc,
+                                            [A - C >= 0,
+                                             -A + C >= 0,
+                                             -B + D >= 1,
+                                             B >= 0],
+					    P2),
+  ppl_termination_test_NNC_Polyhedron_MS(P2),
+  ppl_termination_test_NNC_Polyhedron_PR(P2),
+  !,
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P2).
+
 %%%%%%%%%%%%%%%%%%%%%%%%% Polyhedron Bounding Values %%%%%%%%%%%%%%%%%%%%%%%
 
 % Tests ppl_Polyhedron_bounds_from_above/2.
@@ -2787,7 +2813,8 @@ must_catch(Call, prolog_exception_error) :-
 must_catch(Call, cpp_error) :-
    !,
    catch( Call, Message, format_exception_message( cpp_error(Message) ) ),
-   ( ( \+ var(Message), name(Message, [80,80,76,58,58|_] ) ) ->
+   ( ( \+ var(Message),
+       functor(Message, ppl_invalid_argument, _) ) ->
        true
    ;
        fail
@@ -3255,6 +3282,8 @@ group_predicates(check_polyhedron,
    ppl_Polyhedron_strictly_contains_Polyhedron/2,
    ppl_Polyhedron_is_disjoint_from_Polyhedron/2,
    ppl_Polyhedron_equals_Polyhedron/2,
+   ppl_Polyhedron_termination_test_MS/2,
+   ppl_Polyhedron_termination_test_PR/2,
    ppl_Polyhedron_OK/1
   ]).
 

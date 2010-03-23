@@ -201,6 +201,18 @@ catch(std::overflow_error& e) {					        \
   caml_raise_with_string(*caml_named_value("PPL_arithmetic_overflow"),  \
                          (const_cast<char*>(e.what())));		\
 }									\
+catch(std::domain_error& e) {					\
+  caml_raise_with_string(*caml_named_value("PPL_domain_error"),  \
+                         (const_cast<char*>(e.what())));		\
+}									\
+catch(std::length_error& e) {					\
+  caml_raise_with_string(*caml_named_value("PPL_length_error"),  \
+                         (const_cast<char*>(e.what())));		\
+}									\
+catch(std::logic_error& e) {						\
+  caml_raise_with_string(*caml_named_value("PPL_logic_error"),		\
+                         (const_cast<char*>(e.what())));		\
+}									\
 catch(std::runtime_error& e) {                                          \
   caml_raise_with_string(*caml_named_value("PPL_internal_error"),	\
                          (const_cast<char*>(e.what())));		\

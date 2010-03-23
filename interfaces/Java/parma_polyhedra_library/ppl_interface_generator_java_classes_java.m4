@@ -33,6 +33,18 @@ dnl Ensure any schematic procedure macro that is not defined
 dnl in the code file outputs a warning message.
 m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
 
+m4_divert
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+/* PPL Java interface: Termination definition.
+m4_include(`ppl_interface_generator_copyright')`'dnl
+*/
+
+package parma_polyhedra_library;
+public class Termination {`'dnl
+
+m4_divert(-1)
+
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
@@ -150,5 +162,10 @@ m4_divert`'dnl
 m4_all_code`'dnl
 ___END_OF_FILE___
 m4_divert(-1)
-
+m4_divert
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+}
+___END_OF_FILE___
+m4_divert(-1)
 dnl End of file generation.

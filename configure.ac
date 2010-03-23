@@ -23,7 +23,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], [0.11pre13], [ppl-devel@cs.unipr.it], [ppl])
+AC_INIT([the Parma Polyhedra Library], [0.11pre16], [ppl-devel@cs.unipr.it], [ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
@@ -1174,7 +1174,7 @@ fi
 # Different instantiations are separated by a '@' character.
 di="        Polyhedron @ Grid"
 di="${di} @ Rational_Box"
-di="${di} @ BD_Shape<mpz_class> @ BD_Shape<mpq_class>"
+di="${di} @ BD_Shape<int8_t> @ BD_Shape<mpz_class> @ BD_Shape<mpq_class>"
 di="${di} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class>"
 di="${di} @ Constraints_Product<C_Polyhedron, Grid>"
 di="${di} @ Pointset_Powerset<C_Polyhedron>"

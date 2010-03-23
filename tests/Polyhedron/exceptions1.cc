@@ -1353,7 +1353,6 @@ test54() {
   return false;
 }
 
-}
 bool
 test55() {
   Variable y(1);
@@ -1400,7 +1399,9 @@ test56() {
   }
   return false;
 }
- // namespace
+
+} // namespace
+
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);

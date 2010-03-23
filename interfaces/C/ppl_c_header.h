@@ -1013,6 +1013,20 @@ PPL_PROTO((ppl_const_Linear_Expression_t le, ppl_Coefficient_t n));
 int
 ppl_Linear_Expression_OK PPL_PROTO((ppl_const_Linear_Expression_t le));
 
+/*! \relates ppl_Linear_Expression_tag \brief
+    Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
+*/
+int
+ppl_Linear_Expression_is_zero PPL_PROTO((ppl_const_Linear_Expression_t le));
+
+/*! \relates ppl_Linear_Expression_tag \brief
+    Returns <CODE>true</CODE> if and only if all the homogeneous
+    terms of \p *this are \f$0\f$.
+*/
+int
+ppl_Linear_Expression_all_homogeneous_terms_are_zero
+PPL_PROTO((ppl_const_Linear_Expression_t le));
+
 /*@}*/ /* Functions that Do Not Modify the Linear Expression */
 
 /*! \brief \name Functions that May Modify the Linear Expression */

@@ -2302,14 +2302,14 @@ overflow behavior.
   \f$v_j\f$ in the grid \f$\cL\f$, the wrapped value can be any value
   \f$a + z \in R\f$ where \f$z \in \Zset\f$.
   Therefore \f$\cL'\f$ is obtained by adding the parameter
-  \f$(0, \ldots, 0, v_j, 0, \dots, 0)\f$,
+  \f$(0, \ldots, 0, v_j, 0, \ldots, 0)\f$,
   where \f$v_j = 1\f$, to the generator system for \f$\cL\f$.
 
 - Overflow wraps. In this case, if \f$\cL\f$ already satisfies the
   congruence \f$v_j = a \mod 2^w\f$, for some \f$a \in \Rset\f$, then
   \f$v_j\f$ is set equal to \f$a'\f$ where \f$a' = a \mod 2^w\f$ and
   \f$a'\in R\f$.  Otherwise, \f$\cL'\f$ is obtained by adding the
-  parameter \f$(0, \ldots, 0, v_j, 0, \dots, 0)\f$, where
+  parameter \f$(0, \ldots, 0, v_j, 0, \ldots, 0)\f$, where
   \f$v_j = 2^w\f$, to the generator system for \f$\cL\f$.
 
 \subsection Grid_Widening Widening Operators

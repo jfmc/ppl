@@ -1204,3 +1204,124 @@ ppl_@CLASS@_approximate_@PARTITION@(value ph1, value ph2) try {
 CATCH_ALL
 
 ')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(value pset) try {
+  CAMLparam1(pset);
+  const @TOPOLOGY@@CPP_CLASS@& ppset
+     = *(reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(p_@CLASS@_val(pset)));
+  CAMLreturn(Val_bool(termination_test_@TERMINATION_ID@(ppset)));
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+extern "C"
+CAMLprim value
+  ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2(value pset_before,
+                                                            value pset_after)
+  try {
+    CAMLparam2(pset_before, pset_after);
+  const @TOPOLOGY@@CPP_CLASS@& ppset_before
+     = *(reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(p_@CLASS@_val(pset_before)));
+  const @TOPOLOGY@@CPP_CLASS@& ppset_after
+     = *(reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(p_@CLASS@_val(pset_after)));
+  CAMLreturn(Val_bool(termination_test_@TERMINATION_ID@_2(ppset_before,
+                                                          ppset_after)));
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+extern "C"
+CAMLprim value
+  ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+    (value pset)
+  try {
+    CAMLparam1(pset);
+    CAMLlocal1(caml_return_value);
+  const @TOPOLOGY@@CPP_CLASS@& ppset
+     = *(reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(p_@CLASS@_val(pset)));
+  Generator g(point());
+  bool ppl_return_value = one_affine_ranking_function_@TERMINATION_ID@
+    (ppset, g);
+  caml_return_value = caml_alloc(2, 0);
+  Store_field(caml_return_value, 0, Val_bool(ppl_return_value));
+  Store_field(caml_return_value, 1, build_ocaml_generator(g));
+  CAMLreturn(caml_return_value);
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+extern "C"
+CAMLprim value
+  ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+  (value pset_before, value pset_after)
+  try {
+    CAMLparam2(pset_before, pset_after);
+    CAMLlocal1(caml_return_value);
+  const @TOPOLOGY@@CPP_CLASS@& ppset_before
+     = *(reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(p_@CLASS@_val(pset_before)));
+  const @TOPOLOGY@@CPP_CLASS@& ppset_after
+     = *(reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(p_@CLASS@_val(pset_after)));
+  Generator g(point());
+  bool ppl_return_value = one_affine_ranking_function_@TERMINATION_ID@_2
+    (ppset_before, ppset_after, g);
+  caml_return_value = caml_alloc(2, 0);
+  Store_field(caml_return_value, 0, Val_bool(ppl_return_value));
+  Store_field(caml_return_value, 1, build_ocaml_generator(g));
+  CAMLreturn(caml_return_value);
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+extern "C"
+CAMLprim value
+  ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+  (value pset)
+  try {
+    CAMLparam1(pset);
+    CAMLlocal1(caml_return_value);
+  const @TOPOLOGY@@CPP_CLASS@& ppset
+     = *(reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(p_@CLASS@_val(pset)));
+  @A_TERMINATION_ID@Polyhedron* ph = new @A_TERMINATION_ID@Polyhedron();
+  all_affine_ranking_functions_@TERMINATION_ID@(ppset, *ph);
+  CAMLreturn(unregistered_value_p_Polyhedron(*ph));
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+extern "C"
+CAMLprim value
+  ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+  (value pset_before, value pset_after)
+  try {
+    CAMLparam2(pset_before, pset_after);
+    CAMLlocal1(caml_return_value);
+  const @TOPOLOGY@@CPP_CLASS@& ppset_before
+     = *(reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(p_@CLASS@_val(pset_before)));
+  const @TOPOLOGY@@CPP_CLASS@& ppset_after
+     = *(reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(p_@CLASS@_val(pset_after)));
+  @A_TERMINATION_ID@Polyhedron* ph = new @A_TERMINATION_ID@Polyhedron();
+  all_affine_ranking_functions_@TERMINATION_ID@_2(ppset_before, ppset_after, *ph);
+  CAMLreturn(unregistered_value_p_Polyhedron(*ph));
+}
+CATCH_ALL
+
+')

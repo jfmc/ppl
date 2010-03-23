@@ -510,3 +510,51 @@ m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 			 Prolog_term_ref t_m);
 
 ')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(Prolog_term_ref t_pset);
+
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+     (Prolog_term_ref t_pset_before,
+      Prolog_term_ref t_pset_after);
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+     (Prolog_term_ref t_pset,
+      Prolog_term_ref t_g);
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+     (Prolog_term_ref t_pset_before,
+      Prolog_term_ref t_pset_after,
+      Prolog_term_ref t_g);
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+     (Prolog_term_ref t_pset,
+      Prolog_term_ref t_ph);
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+     (Prolog_term_ref t_pset_before,
+      Prolog_term_ref t_pset_after,
+      Prolog_term_ref t_ph);
+
+')

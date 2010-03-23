@@ -546,3 +546,50 @@ external ppl_@CLASS@_@MAXMIN@:
   = "ppl_@CLASS@_@MAXMIN@"
 
 ')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+external ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@:
+  @!CLASS@ -> bool = "ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@"
+
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+external ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
+  @!CLASS@ -> @!CLASS@ -> bool
+  = "ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2"
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+external ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@:
+  @!CLASS@ -> bool * linear_generator
+  = "ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@"
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+external ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
+  @!CLASS@ -> @!CLASS@ -> bool * linear_generator
+  = "ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2"
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+external ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@:
+  @!CLASS@ -> polyhedron
+  = "ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@"
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+external ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
+  @!CLASS@ -> @!CLASS@ -> polyhedron
+  = "ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2"
+
+')

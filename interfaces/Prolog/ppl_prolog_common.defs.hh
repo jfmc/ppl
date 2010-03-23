@@ -410,7 +410,16 @@ void
 handle_exception(const std::overflow_error& e);
 
 void
+handle_exception(const std::domain_error& e);
+
+void
 handle_exception(const std::length_error& e);
+
+void
+handle_exception(const std::invalid_argument& e);
+
+void
+handle_exception(const std::logic_error& e);
 
 void
 handle_exception(const std::bad_alloc&);
@@ -504,7 +513,16 @@ handle_exception(const deterministic_timeout_exception&);
   catch(const std::overflow_error& e) { \
     handle_exception(e); \
   } \
+  catch(const std::domain_error& e) { \
+    handle_exception(e); \
+  } \
   catch(const std::length_error& e) { \
+    handle_exception(e); \
+  } \
+  catch(const std::invalid_argument& e) { \
+    handle_exception(e); \
+  } \
+  catch (const std::logic_error& e) { \
     handle_exception(e); \
   } \
   catch (const std::bad_alloc& e) { \

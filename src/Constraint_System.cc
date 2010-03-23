@@ -206,6 +206,16 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 }
 
 bool
+PPL::Constraint_System::has_equalities() const {
+  const Constraint_System& cs = *this;
+  // We verify if the system has equalities also in the pending part.
+  for (dimension_type i = cs.num_rows(); i-- > 0; )
+    if (cs[i].is_equality())
+      return true;
+  return false;
+}
+
+bool
 PPL::Constraint_System::has_strict_inequalities() const {
   if (is_necessarily_closed())
     return false;

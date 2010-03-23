@@ -651,3 +651,51 @@ ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
                             @CLASS@ q,
                             By_Reference<Boolean> finite);
 ')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native boolean
+      ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(@TOPOLOGY@@CLASS@ p);
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native boolean
+      ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2(@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after);
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native boolean
+      ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(@TOPOLOGY@@CLASS@ p, Generator g);
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native boolean
+      ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2(@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after, Generator g);
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native boolean
+      ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(@TOPOLOGY@@CLASS@ p, Polyhedron ph);
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native boolean
+      ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2(@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after, Polyhedron ph);
+')

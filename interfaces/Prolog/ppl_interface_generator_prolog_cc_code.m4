@@ -1234,6 +1234,155 @@ m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 
 ')
 
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+  (Prolog_term_ref t_pset) {
+  static const char* where = "ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@/1";
+  try {
+    @TOPOLOGY@@CPP_CLASS@* pset = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset, where);
+    PPL_CHECK(pset);
+    if (Parma_Polyhedra_Library::termination_test_@TERMINATION_ID@(*pset))
+        return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+  (Prolog_term_ref t_pset_before, Prolog_term_ref t_pset_after) {
+  static const char* where
+      = "ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2/2";
+  try {
+    @TOPOLOGY@@CPP_CLASS@* pset_before
+       = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_before, where);
+    @TOPOLOGY@@CPP_CLASS@* pset_after
+       = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_after, where);
+    PPL_CHECK(pset_before);
+    PPL_CHECK(pset_after);
+    if (Parma_Polyhedra_Library
+        ::termination_test_@TERMINATION_ID@_2(*pset_before, *pset_after))
+        return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+  (Prolog_term_ref t_pset,
+   Prolog_term_ref t_g) {
+  static const char* where
+     = "ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@/2";
+  try {
+    @TOPOLOGY@@CPP_CLASS@* pset = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset, where);
+    Generator gg(point());
+    PPL_CHECK(pset);
+    if (Parma_Polyhedra_Library
+        ::one_affine_ranking_function_@TERMINATION_ID@(*pset, gg)
+            && Prolog_unify(t_g, generator_term(gg)))
+        return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+  (Prolog_term_ref t_pset_before,
+   Prolog_term_ref t_pset_after,
+   Prolog_term_ref t_g) {
+  static const char* where
+     = "ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2/3";
+  try {
+    @TOPOLOGY@@CPP_CLASS@* pset_before
+       = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_before, where);
+    @TOPOLOGY@@CPP_CLASS@* pset_after
+       = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_after, where);
+    Generator gg(point());
+    PPL_CHECK(pset_before);
+    PPL_CHECK(pset_after);
+    if (Parma_Polyhedra_Library
+       ::one_affine_ranking_function_@TERMINATION_ID@_2(*pset_before,
+                                                        *pset_after,
+                                                        gg)
+        && Prolog_unify(t_g, generator_term(gg)))
+        return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+  (Prolog_term_ref t_pset,
+   Prolog_term_ref t_ph) {
+  static const char* where =
+      "ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@/2";
+  try {
+    @TOPOLOGY@@CPP_CLASS@* pset = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset, where);
+    PPL_CHECK(pset);
+    @A_TERMINATION_ID@Polyhedron* ph = new @A_TERMINATION_ID@Polyhedron();
+    Parma_Polyhedra_Library
+      ::all_affine_ranking_functions_@TERMINATION_ID@(*pset, *ph);
+      Prolog_term_ref tmp = Prolog_new_term_ref();
+      Prolog_put_address(tmp, ph);
+      if (Prolog_unify(t_ph, tmp)) {
+                                    PPL_REGISTER(ph);
+                                    return PROLOG_SUCCESS;
+                                    }
+     else
+      delete ph;
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+  (Prolog_term_ref t_pset_before,
+   Prolog_term_ref t_pset_after,
+   Prolog_term_ref t_ph) {
+  static const char* where =
+      "ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2/3";
+  try {
+    @TOPOLOGY@@CPP_CLASS@* pset_before
+       = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_before, where);
+    @TOPOLOGY@@CPP_CLASS@* pset_after
+       = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_pset_after, where);
+    PPL_CHECK(pset_before);
+    PPL_CHECK(pset_after);
+    @A_TERMINATION_ID@Polyhedron* ph = new @A_TERMINATION_ID@Polyhedron();
+    Parma_Polyhedra_Library
+      ::all_affine_ranking_functions_@TERMINATION_ID@_2(*pset_before,
+                                                        *pset_after,
+                                                        *ph);
+      Prolog_term_ref tmp = Prolog_new_term_ref();
+      Prolog_put_address(tmp, ph);
+      if (Prolog_unify(t_ph, tmp)) {
+                                    PPL_REGISTER(ph);
+                                    return PROLOG_SUCCESS;
+                                    }
+     else
+      delete ph;
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens

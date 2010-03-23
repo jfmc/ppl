@@ -157,10 +157,11 @@ Prolog_atom a_true;
 Prolog_atom a_false;
 
 // To build exception terms.
-Prolog_atom a_ppl_invalid_argument;
 Prolog_atom a_ppl_overflow_error;
 Prolog_atom a_ppl_domain_error;
 Prolog_atom a_ppl_length_error;
+Prolog_atom a_ppl_invalid_argument;
+Prolog_atom a_ppl_logic_error;
 Prolog_atom a_ppl_representation_error;
 Prolog_atom a_expected;
 Prolog_atom a_found;
@@ -245,6 +246,8 @@ const Prolog_Interface_Atom prolog_interface_atoms[] = {
   { &a_ppl_overflow_error,       "ppl_overflow_error" },
   { &a_ppl_domain_error,         "ppl_domain_error" },
   { &a_ppl_length_error,         "ppl_length_error" },
+  { &a_ppl_invalid_argument,     "ppl_invalid_argument" },
+  { &a_ppl_logic_error,          "ppl_logic_error" },
   { &a_ppl_representation_error, "ppl_representation_error" },
   { &a_expected,                 "expected" },
   { &a_found,                    "found" },
@@ -575,9 +578,33 @@ handle_exception(const std::overflow_error& e) {
 }
 
 void
+handle_exception(const std::domain_error& e) {
+  Prolog_term_ref et = Prolog_new_term_ref();
+  Prolog_construct_compound(et, a_ppl_domain_error,
+			    Prolog_atom_term_from_string(e.what()));
+  Prolog_raise_exception(et);
+}
+
+void
 handle_exception(const std::length_error& e) {
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_construct_compound(et, a_ppl_length_error,
+			    Prolog_atom_term_from_string(e.what()));
+  Prolog_raise_exception(et);
+}
+
+void
+handle_exception(const std::invalid_argument& e) {
+  Prolog_term_ref et = Prolog_new_term_ref();
+  Prolog_construct_compound(et, a_ppl_invalid_argument,
+			    Prolog_atom_term_from_string(e.what()));
+  Prolog_raise_exception(et);
+}
+
+void
+handle_exception(const std::logic_error& e) {
+  Prolog_term_ref et = Prolog_new_term_ref();
+  Prolog_construct_compound(et, a_ppl_logic_error,
 			    Prolog_atom_term_from_string(e.what()));
   Prolog_raise_exception(et);
 }

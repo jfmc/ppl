@@ -616,6 +616,19 @@ ppl_Linear_Expression_OK(ppl_const_Linear_Expression_t le) try {
 }
 CATCH_ALL
 
+int
+ppl_Linear_Expression_is_zero(ppl_const_Linear_Expression_t le) try {
+  return to_const(le)->is_zero() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Linear_Expression_all_homogeneous_terms_are_zero
+  (ppl_const_Linear_Expression_t le) try {
+  return to_const(le)->all_homogeneous_terms_are_zero() ? 1 : 0;
+}
+CATCH_ALL
+
 /* Interface for Constraint. */
 
 int

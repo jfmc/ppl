@@ -1156,6 +1156,103 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+int
+ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+(ppl_const_@CLASS@_t pset) try {
+  const @TOPOLOGY@@CPP_CLASS@& ppset
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset));
+  return termination_test_@TERMINATION_ID@(ppset);
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+int
+ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+(ppl_const_@CLASS@_t pset_before, ppl_const_@CLASS@_t pset_after) try {
+  const @TOPOLOGY@@CPP_CLASS@& ppset_before
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_before));
+  const @TOPOLOGY@@CPP_CLASS@& ppset_after
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_after));
+  return termination_test_@TERMINATION_ID@_2(ppset_before, ppset_after);
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`int
+ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+(ppl_const_@CLASS@_t pset,
+ ppl_Generator_t point) try {
+  const @TOPOLOGY@@CPP_CLASS@& ppset
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset));
+  Generator& ppoint = *to_nonconst(point);
+  bool ok = one_affine_ranking_function_@TERMINATION_ID@(ppset, ppoint);
+  return ok ? 1 : 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`int
+ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+(ppl_const_@CLASS@_t pset_before,
+ ppl_const_@CLASS@_t pset_after,
+ ppl_Generator_t point) try {
+  const @TOPOLOGY@@CPP_CLASS@& ppset_before
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_before));
+  const @TOPOLOGY@@CPP_CLASS@& ppset_after
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_after));
+  Generator& ppoint = *to_nonconst(point);
+  bool ok = one_affine_ranking_function_@TERMINATION_ID@_2(ppset_before,
+                                                           ppset_after,
+                                                           ppoint);
+  return ok ? 1 : 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`int
+ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+(ppl_const_@CLASS@_t pset,
+ ppl_Polyhedron_t ph) try {
+  const @TOPOLOGY@@CPP_CLASS@& ppset
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset));
+  all_affine_ranking_functions_@TERMINATION_ID@
+    (ppset, *static_cast<@A_TERMINATION_ID@Polyhedron*> (to_nonconst(ph)));
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`int
+ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+(ppl_const_@CLASS@_t pset_before,
+ ppl_const_@CLASS@_t pset_after,
+ ppl_Polyhedron_t ph) try {
+  const @TOPOLOGY@@CPP_CLASS@& ppset_before
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_before));
+  const @TOPOLOGY@@CPP_CLASS@& ppset_after
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_after));
+  all_affine_ranking_functions_@TERMINATION_ID@_2
+    (ppset_before, ppset_after,
+     *static_cast<@A_TERMINATION_ID@Polyhedron*>(to_nonconst(ph)));
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_wrap_assign_code',
 `int
 ppl_@CLASS@_wrap_assign

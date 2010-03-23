@@ -322,6 +322,15 @@ public:
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
+  bool is_zero() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if all the homogeneous
+    terms of \p *this are \f$0\f$.
+  */
+  bool all_homogeneous_terms_are_zero() const;
+
   //! Initializes the class.
   static void initialize();
 
