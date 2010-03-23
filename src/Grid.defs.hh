@@ -863,14 +863,9 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
-    \p expr intersects with \p *this and \p *this is discrete on the hyperplane
-    defined by \p expr, in which case the frequency of \p *this
-    and the infimum value for \p expr for a point in \p *this are computed.
-
-    If <CODE>true</CODE> is returned then the frequency of a grid \f$\cP\f$
-    with respect to a linear expression \f$e\f$ is the modulus
-    \f$m\f$ such that all the points of the grid \f$\cP\f$ satisfy
-    the congruence \f$e \%= c \pmod{m}\f$ for some value \f$c\f$.
+    \ref Grid_Frequency "frequency" for \p *this with respect to \p expr
+    is defined, in which case the frequency and the value for \p expr
+    that is closest to zero are computed.
 
     \param expr
     The linear expression for which the frequency is needed;
@@ -892,8 +887,8 @@ public:
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
 
-    If \p *this is empty or \p expr can take any real number in \p *this,
-    <CODE>false</CODE> is returned and \p freq_n, \p freq_d,
+    If \p *this is empty or frequency is undefined with respect to \p expr,
+    then <CODE>false</CODE> is returned and \p freq_n, \p freq_d,
     \p val_n and \p val_d are left untouched.
   */
   bool frequency(const Linear_Expression& expr,
@@ -2218,8 +2213,9 @@ private:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
-    \p expr is discrete in \p *this, in which case the maximum frequency
-    and the value for \p expr that is closest to zero are computed.
+    \ref Grid_Frequency "frequency" for \p *this with respect to \p expr
+    is defined, in which case the frequency and the value for \p expr
+    that is closest to zero are computed.
 
     \param expr
     The linear expression for which the frequency is needed;
@@ -2238,8 +2234,8 @@ private:
     The denominator of a value of \p expr at a point in the grid
     that is closest to zero;
 
-    If \p *this is empty or \p expr can take any real number in \p *this,
-    <CODE>false</CODE> is returned and \p freq_n, \p freq_d,
+    If \p *this is empty or frequency is undefined with respect to \p expr,
+    then <CODE>false</CODE> is returned and \p freq_n, \p freq_d,
     \p val_n and \p val_d are left untouched.
 
     \warning
