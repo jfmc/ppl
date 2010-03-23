@@ -236,6 +236,10 @@ public:
   //! their index will increase by 1 if it was >i+1.
   void delete_element_and_shift(dimension_type i);
 
+  //! Adds \p n zeroes, beginning from index i. Existing elements with index
+  //! greater than or equal to i are shifted to the right by n positions.
+  void add_zeroes_and_shift(dimension_type n, dimension_type i);
+
   //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!
     Computes the Greatest Common Divisor (GCD) among the elements of

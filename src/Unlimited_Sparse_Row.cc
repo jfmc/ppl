@@ -64,6 +64,16 @@ PPL::Unlimited_Sparse_Row::delete_element_and_shift(dimension_type i) {
     --(j->first);
 }
 
+void
+PPL::Unlimited_Sparse_Row
+::add_zeroes_and_shift(dimension_type n,dimension_type i) {
+  dangerous_iterator j = lower_bound_dangerous(i);
+  dangerous_iterator j_end = end_dangerous();
+  for ( ; j != j_end; ++j)
+    (*j).first += n;
+  PPL_ASSERT(OK());
+}
+
 bool
 PPL::Unlimited_Sparse_Row::operator==(const Unlimited_Sparse_Row &x) const {
   const_iterator i = begin();
