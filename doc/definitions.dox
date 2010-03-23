@@ -2212,10 +2212,10 @@ the frequency \f$f\f$ and a value
 where \f$\vect{w} \in \cL\f$ and
 \f[
     |\mathrm{val}|
-       = \min\Bigl\{
+       = \min\Bigl\{\,
                \big|\langle \vect{a}, \vect{v} \rangle + b
                \big| \Bigm| \vect{v} \in \cL
-             \Bigr\}.
+             \,\Bigr\}.
 \f]
 
 Observe that the above definition is also applied to other simple objects in
