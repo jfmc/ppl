@@ -678,7 +678,6 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
 
         PPL_DIRTY_TEMP_COEFFICIENT(lhs);
         PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-        bool found_better_candidate = false;
         if (row_itr != row_end && (*row_itr).first < *i)
           row_itr = row.lower_bound(*i, row_itr);
         const Coefficient* row_ja;
@@ -695,17 +694,14 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
         rhs = sij_a * *row_jb;
         if (lhs == rhs)
           new_candidates.insert(*i);
-        else {
-          if (lhs < rhs)
-            found_better_candidate = true;
-        }
-        if (found_better_candidate) {
-          new_candidates.clear();
-          min_column = *i;
-          row_jb = row_ja;
-          sij_b = &sij_a;
-          new_candidates.insert(min_column);
-        }
+        else
+          if (lhs < rhs) {
+            new_candidates.clear();
+            min_column = *i;
+            row_jb = row_ja;
+            sij_b = &sij_a;
+            new_candidates.insert(min_column);
+          }
       }
     }
     std::swap(candidates, new_candidates);
