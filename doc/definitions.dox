@@ -2201,8 +2201,8 @@ affine expression \f$\mathrm{rhs}\f$.
 Let \f$\cL \in \Gset_n\f$ be any non-empty grid and
 \f$\mathrm{expr} = \bigl(\langle \vect{a}, \vect{x} \rangle + b\bigr)\f$
 be a linear expression. Then if, for
-some \f$b, f \in \Rset\f$, all the points in \f$\cL\f$ satisfy the
-congruence \f$\cg = ( \mathrm{expr} \equiv_f b )\f$, then the maximum
+some \f$c, f \in \Rset\f$, all the points in \f$\cL\f$ satisfy the
+congruence \f$\cg = ( \mathrm{expr} \equiv_f c )\f$, then the maximum
 \f$f\f$ such that this holds is called the <EM>frequency</EM> of
 \f$\cL\f$ with respect to \f$\mathrm{expr}\f$.
 
@@ -2213,8 +2213,8 @@ where \f$\vect{w} \in \cL\f$ and
 \f[
     |\mathrm{val}|
        = \min\Bigl\{
-               \bigl|\langle \vect{a}, \vect{v} \rangle + b
-               \bigr| \st \vect{v} \in \cL
+               \big|\langle \vect{a}, \vect{v} \rangle + b
+               \big| \Big| \vect{v} \in \cL
              \Bigr\}.
 \f]
 
@@ -2222,9 +2222,9 @@ Observe that the above definition is also applied to other simple objects in
 the library like polyhedra, octagonal shapes, bd-shapes and boxes
 and in such cases the definition of frequency can be simplified.
 For instance, the frequency for an object \f$\cP \in \Pset_n\f$ is
-defined if and only if there is a unique value \f$b\f$ such that
-\f$\cP\f$ saturates the equality \f$( \mathrm{expr} = b )\f$;
-in this case the frequency is \f$0\f$ and the value returned is \f$b\f$.
+defined if and only if there is a unique value \f$c\f$ such that
+\f$\cP\f$ saturates the equality \f$( \mathrm{expr} = c )\f$;
+in this case the frequency is \f$0\f$ and the value returned is \f$c\f$.
 
 \subsection Grid_Time_Elapse Time-Elapse Operator
 
