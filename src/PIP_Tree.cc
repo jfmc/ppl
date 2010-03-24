@@ -3238,6 +3238,28 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         matrix_const_row_const_iterator j_end = row_t.end();
         matrix_row_iterator itr1 = ctx1.end();
         matrix_row_iterator itr2 = ctx2.end();
+        if (j != j_end && (*j).first == 0) {
+          mod_assign(mod, (*j).second, den);
+          if (mod != 0) {
+            itr1 = ctx1.find_create(0, den);
+            (*itr1).second -= mod;
+            itr2 = ctx2.find_create(0, (*itr1).second);
+            neg_assign((*itr2).second);
+            // ctx2[0] += den-1;
+            (*itr2).second += den;
+            --(*itr2).second;
+          } else {
+            // ctx2[0] += den-1;
+            itr2 = ctx2.find_create(0,den);
+            --(*itr2).second;
+          }
+          ++j;
+        } else {
+          // ctx2[0] += den-1;
+          Coefficient& ctx2_0 = ctx2[0];
+          ctx2_0 += den;
+          --ctx2_0;
+        }
         for ( ; j != j_end; ++j) {
           mod_assign(mod, (*j).second, den);
           if (mod != 0) {
@@ -3272,10 +3294,6 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
           ctx2.find_create(num_params ,den);
         }
       }
-      // ctx2[0] += den-1;
-      Coefficient& ctx2_0 = ctx2[0];
-      ctx2_0 += den;
-      --ctx2_0;
 #ifdef NOISY_PIP
       {
         using namespace IO_Operators;
