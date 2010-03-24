@@ -322,6 +322,14 @@ val ppl_@CLASS@_@MAXMIN@_with_point:
 
 ')
 
+m4_define(`ppl_@CLASS@_frequency_code',
+`dnl
+val ppl_@CLASS@_frequency:
+  @!CLASS@ -> linear_expression
+  -> bool * Z.t * Z.t * Z.t * Z.t
+
+')
+
 m4_define(`ppl_@CLASS@_OK_code',
 `dnl
 val ppl_@CLASS@_OK:

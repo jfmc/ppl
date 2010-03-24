@@ -729,6 +729,32 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_frequency_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_@CLASS@_frequency(value ph, value caml_le) try {
+  CAMLparam2(ph, caml_le);
+  CAMLlocal1(caml_return_value);
+  PPL_DIRTY_TEMP_COEFFICIENT(f_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(f_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(v_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(v_den);
+  @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
+  bool ppl_return_value = pph.frequency(build_ppl_Linear_Expression(caml_le),
+				        f_num, f_den, v_num, v_den);
+  caml_return_value = caml_alloc(5, 0);
+  Store_field(caml_return_value, 0, Val_bool(ppl_return_value));
+  Store_field(caml_return_value, 1, build_ocaml_coefficient(f_num));
+  Store_field(caml_return_value, 2, build_ocaml_coefficient(f_den));
+  Store_field(caml_return_value, 3, build_ocaml_coefficient(v_num));
+  Store_field(caml_return_value, 4, build_ocaml_coefficient(v_den));
+  CAMLreturn(caml_return_value);
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_OK_code',
 `dnl
 extern "C"

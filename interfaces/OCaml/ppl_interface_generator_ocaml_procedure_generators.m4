@@ -43,6 +43,7 @@ dnl
 m4_define(`m4_procedure_list',
   `m4_echo_unquoted(ppl_new_@CLASS@_iterator +pointset_powerset,
 `m4_common_procedure_list',
+ppl_@CLASS@_frequency/6 +simple,
 ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@ +simple,
 ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@ +simple,
 ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@ +simple,

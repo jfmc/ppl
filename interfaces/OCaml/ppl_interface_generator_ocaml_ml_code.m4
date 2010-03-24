@@ -360,6 +360,15 @@ external ppl_@CLASS@_@MAXMIN@_with_point:
 
 ')
 
+m4_define(`ppl_@CLASS@_frequency_code',
+`dnl
+external ppl_@CLASS@_frequency:
+  @!CLASS@ -> linear_expression
+  -> bool * Z.t * Z.t * Z.t * Z.t
+  = "ppl_@CLASS@_frequency"
+
+')
+
 m4_define(`ppl_@CLASS@_OK_code',
 `dnl
 external ppl_@CLASS@_OK:
