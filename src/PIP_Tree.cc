@@ -1529,15 +1529,17 @@ PIP_Solution_Node::Tableau
     for ( ; j != j_end; ++j)
       coeff_1[(*j).first] = (*j).second * s_0_0;
   }
+  matrix_row_const_iterator j0 = t_0.end();
+  matrix_row_const_iterator j0_end = t_0.end();
+  matrix_row_const_iterator j1 = t_1.end();
+  matrix_row_const_iterator j1_end = t_1.end();
   for (dimension_type i = 0; i < num_rows; ++i) {
     matrix_row_const_reference_type s_i = s[i];
     const Coefficient* s_i_col_0;
     const Coefficient* s_i_col_1;
     s_i.get2(col_0, col_1, s_i_col_0, s_i_col_1);
-    matrix_row_const_iterator j0 = t_0.begin();
-    matrix_row_const_iterator j0_end = t_0.end();
-    matrix_row_const_iterator j1 = t_1.begin();
-    matrix_row_const_iterator j1_end = t_1.end();
+    j0 = t_0.begin();
+    j1 = t_1.begin();
     while (j0 != j0_end && j1 != j1_end) {
       if ((*j0).first == (*j1).first) {
         product_0 = (*j0).second * s_1_1 * *s_i_col_0;
@@ -1587,7 +1589,7 @@ PIP_Solution_Node::Tableau
  end_loop:
   return (j_mismatch != num_params)
     && column_lower(s, mapping, basis, s_0, col_0, s_1, col_1,
-                    t_0.get(j_mismatch), t_1.get(j_mismatch));
+                    (*j0).second, (*j1).second);
 }
 
 void
