@@ -140,6 +140,7 @@ choose_2_tests(TEST_DATA1, TEST_DATA2, Dim) :-
 :- discontiguous(ppl_property_test_data/4).
 :- discontiguous(ppl_bounds_test_data/5).
 :- discontiguous(ppl_maxmin_test_data/10).
+:- discontiguous(ppl_frequency_test_data/9).
 :- discontiguous(ppl_constrains_test_data/3).
 :- dynamic(all_class_dependent_predicates/1).
 :- discontiguous(all_class_dependent_predicates/1).
@@ -195,6 +196,8 @@ ppl_bounds_test_data(test00, _, 0, _, true).
 
 ppl_maxmin_test_data(test00, _Topology, _, _, 0, _, _, _, _, false).
 
+ppl_frequency_test_data(test00, _Topology, _, 0, _, _, _, _, false).
+
 /* Test data for test test01 (an empty object in 1 dimension) */
 
 ppl_build_test_data(test01, _Topology, constraints, CS) :-
@@ -240,6 +243,8 @@ ppl_bounds_test_data(test01, _, A, _, true) :-
 
 ppl_maxmin_test_data(test01, _Topology, _, _, 0, _, _, _, _, false).
 
+ppl_frequency_test_data(test01, _Topology, _, 0, _, _, _, _, false).
+
 ppl_constrains_test_data(test01, _, true).
 
 /* Test data for test test02 (a universe object in 0 dimensions) */
@@ -272,6 +277,8 @@ ppl_maxmin_test_data(test02, _Topology, constraint, _, 0, 0, 1, true,
                      point(0), true).
 ppl_maxmin_test_data(test02, _Topology, congruence, _, 0, 0, 1, true,
                      grid_point(0), true).
+
+ppl_frequency_test_data(test02, _Topology, _, 0, 0, 1, 0, 1, true).
 
 /* Test data for test test03 (a universe object in 1 dimension) */
 
@@ -306,6 +313,8 @@ ppl_bounds_test_data(test03, _, A, _, false) :-
 
 ppl_maxmin_test_data(test03, _Topology, _, _, A, _, _, _, _, false) :-
    make_vars(1, [A]).
+
+ppl_frequency_test_data(test03, _Topology, _, 0, 0, 1, 0, 1, true).
 
 ppl_constrains_test_data(test03, _, false).
 
@@ -351,6 +360,9 @@ ppl_maxmin_test_data(test04, _Topology, congruence, _, A, 1, 1, true,
              grid_point(A), true) :-
    make_vars(1, [A]).
 
+ppl_frequency_test_data(test04, _Topology, _, A, 0, 1, 1, 1, true) :-
+   make_vars(1, [A]).
+
 ppl_constrains_test_data(test04, _, true).
 
 ppl_build_test_data(test05, _Topology, constraints, CS) :-
@@ -389,6 +401,9 @@ ppl_maxmin_test_data(test05, _Topology, constraint, _, A, -1, 1, true,
    make_vars(1, [A]).
 ppl_maxmin_test_data(test05, _Topology, congruence, _, A, -1, 1, true,
              grid_point(-1*A), true) :-
+   make_vars(1, [A]).
+
+ppl_frequency_test_data(test05, _Topology, _, A, 0, 1, -1, 1, true) :-
    make_vars(1, [A]).
 
 ppl_constrains_test_data(test05, _, true).
@@ -456,6 +471,12 @@ ppl_maxmin_test_data(test06, t_NNC_, constraint, minimize, A, 0, 1, false,
 ppl_maxmin_test_data(test06, _, congruence, _, A, _, _, _, _, false) :-
    make_vars(1, [A]).
 
+ppl_frequency_test_data(test06, _Topology, constraint, A, _, _, _, _, false) :-
+   make_vars(1, [A]).
+
+ppl_frequency_test_data(test06, _Topology, congruence, A, 1, 1, 0, 1, true) :-
+   make_vars(1, [A]).
+
 ppl_constrains_test_data(test06, _, true).
 
 /* Test data for test test07,
@@ -519,6 +540,12 @@ ppl_maxmin_test_data(test07, t_NNC_, constraint, maximize, A, 0, 1, false,
                      closure_point(0), true) :-
    make_vars(1, [A]).
 ppl_maxmin_test_data(test07, _, congruence, _, A, _, _, _, _, false) :-
+   make_vars(1, [A]).
+
+ppl_frequency_test_data(test07, _Topology, constraint, A, _, _, _, _, false) :-
+   make_vars(1, [A]).
+
+ppl_frequency_test_data(test07, _Topology, congruence, A, 1, 1, 0, 1, true) :-
    make_vars(1, [A]).
 
 ppl_constrains_test_data(test07, _, true).
@@ -587,6 +614,12 @@ ppl_maxmin_test_data(test08, t_NNC_, constraint, maximize, A, 5, 1, false,
                      closure_point(5*A), true) :-
    make_vars(1, [A]).
 ppl_maxmin_test_data(test08, _, congruence, _, A, _, _, _, _, false) :-
+   make_vars(1, [A]).
+
+ppl_frequency_test_data(test07, _Topology, constraint, A, _, _, _, _, false) :-
+   make_vars(1, [A]).
+
+ppl_frequency_test_data(test07, _Topology, congruence, A, 7, 2, 3, 2, true) :-
    make_vars(1, [A]).
 
 ppl_constrains_test_data(test08, _, true).

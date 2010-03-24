@@ -1927,3 +1927,31 @@ m4_define(`ppl_@CLASS@_wrap_assign_code',
  }
 
 ')
+
+m4_define(`ppl_@CLASS@_frequency_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_frequency(Prolog_term_ref t_ph,
+                        Prolog_term_ref t_le_expr,
+                        Prolog_term_ref t_freqn, Prolog_term_ref t_freqd,
+                        Prolog_term_ref t_valn, Prolog_term_ref t_vald) {
+  static const char* where = "ppl_@CLASS@_frequency/6";
+  try {
+    const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    PPL_CHECK(ph);
+    const Linear_Expression le = build_linear_expression(t_le_expr, where);
+    PPL_DIRTY_TEMP_COEFFICIENT(freqn);
+    PPL_DIRTY_TEMP_COEFFICIENT(freqd);
+    PPL_DIRTY_TEMP_COEFFICIENT(valn);
+    PPL_DIRTY_TEMP_COEFFICIENT(vald);
+    if (ph->frequency(le, freqn, freqd, valn, vald)) {
+      if (Prolog_unify_Coefficient(t_freqn, freqn)
+          && Prolog_unify_Coefficient(t_freqd, freqd)
+          && Prolog_unify_Coefficient(t_valn, valn)
+          && Prolog_unify_Coefficient(t_vald, vald))
+        return PROLOG_SUCCESS;
+    }
+  }
+  CATCH_ALL;
+}
+
+')

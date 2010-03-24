@@ -572,3 +572,11 @@ m4_define(`ppl_@CLASS@_wrap_assign_code',
       Prolog_term_ref t_ind);
 
 ')
+
+m4_define(`ppl_@CLASS@_frequency_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_frequency(Prolog_term_ref t_ph, Prolog_term_ref t_le_expr,
+		       Prolog_term_ref t_freqn,  Prolog_term_ref t_freqd,
+		       Prolog_term_ref t_valn,  Prolog_term_ref t_vald);
+
+')

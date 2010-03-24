@@ -905,6 +905,31 @@ ppl_@CLASS@_@MAXMIN@_with_point_6_test :-
   ).
 
 ')
+m4_define(`ppl_@CLASS@_frequency_code',
+`
+ppl_@CLASS@_frequency_6_test :-
+  (
+   choose_test(TEST_DATA, Space_Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_frequency_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@,
+                             LE, F_Nexptd, F_Dexptd, V_Nexptd, V_Dexptd,
+                             SuccessFlag),
+     (SuccessFlag == true
+     ->
+       (ppl_@CLASS@_frequency(PS, LE, F_N, F_D, V_N, V_D),
+        F_N == F_Nexptd, F_D == F_Dexptd,
+        V_N == V_Nexptd, V_D == V_Dexptd)
+     ;
+       \+ ppl_@CLASS@_frequency(PS, LE, F_N, F_D, V_N, V_D)
+     ),
+     ppl_@CLASS@_OK(PS),
+     ppl_delete_@CLASS@(PS)
+   ->
+     fail ; true)
+  ).
+
+')
 
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `
