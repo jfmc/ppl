@@ -431,6 +431,19 @@ Polyhedron::strictly_contains(const Polyhedron& y) const {
   return x.contains(y) && !y.contains(x);
 }
 
+inline void
+Polyhedron::drop_some_non_integer_points(Complexity_Class complexity) {
+  drop_some_non_integer_points(static_cast<const Variables_Set*>(0),
+			       complexity);
+}
+
+inline void
+Polyhedron::drop_some_non_integer_points(const Variables_Set& vars,
+					 Complexity_Class complexity) {
+  drop_some_non_integer_points(&vars, complexity);
+}
+
+
 namespace Interfaces {
 
 inline bool

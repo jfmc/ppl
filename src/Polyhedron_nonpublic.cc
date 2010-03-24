@@ -2075,6 +2075,141 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
 }
 
 void
+PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
+					      Complexity_Class complexity) {
+  // There is nothing to do for an empty set of variables.
+  if (pvars != 0 && pvars->empty())
+    return;
+
+  // Any empty polyhedron does not contain integer points.
+  if (marked_empty())
+    return;
+
+  // A zero-dimensional, universe polyhedron has, by convention, an
+  // integer point.
+  if (space_dim == 0)
+    set_empty();
+
+  // The constraints (possibly with pending rows) are required.
+  if (has_pending_generators()) {
+    // Processing of pending generators is exponential in the worst case.
+    if (complexity != ANY_COMPLEXITY)
+      return;
+    else
+      process_pending_generators();
+  }
+  if (!constraints_are_up_to_date()) {
+    // Constraints update is exponential in the worst case.
+    if (complexity != ANY_COMPLEXITY)
+      return;
+    else
+      update_constraints();
+  }
+
+  PPL_ASSERT(!has_pending_generators() && constraints_are_up_to_date());
+
+  bool changed = false;
+  const dimension_type eps_index = space_dim + 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+
+  for (dimension_type j = con_sys.num_rows(); j-- > 0; ) {
+    Constraint& c = con_sys[j];
+    if (c.is_tautological())
+      goto next_constraint;
+
+    if (pvars != 0) {
+      for (dimension_type i = space_dim; i-- > 0; )
+	if (c[i+1] != 0 && pvars->find(i) == pvars->end())
+	  goto next_constraint;
+    }
+
+    if (!is_necessarily_closed()) {
+      // Transform all strict inequalities into non-strict ones,
+      // with the inhomogeneous term incremented by 1.
+      if (c[eps_index] < 0 && !c.is_tautological()) {
+	c[eps_index] = 0;
+	++c[0];
+	changed = true;
+      }
+    }
+
+    {
+      // Compute the GCD of all the homogeneous terms.
+      dimension_type i = space_dim+1;
+      while (i > 1) {
+	const Coefficient& c_i = c[--i];
+	if (const int c_i_sign = sgn(c_i)) {
+	  gcd = c_i;
+	  if (c_i_sign < 0)
+	    neg_assign(gcd);
+	  goto compute_gcd;
+	}
+      }
+      // We reach this point only if all the coefficients were zero.
+      goto maybe_normalize;
+
+    compute_gcd:
+      if (gcd == 1)
+	goto maybe_normalize;
+      while (i > 1) {
+	const Coefficient& c_i = c[--i];
+	if (c_i != 0) {
+	  // See the comment in Row::normalize().
+	  gcd_assign(gcd, c_i, gcd);
+	  if (gcd == 1)
+	    goto maybe_normalize;
+	}
+      }
+      PPL_ASSERT(gcd != 1);
+      PPL_ASSERT(c[0] % gcd != 0);
+
+      // If we have an equality, the polyhedron becomes empty.
+      if (c.is_equality()) {
+	set_empty();
+	return;
+      }
+
+      // Divide the inhomogeneous coefficients by the GCD.
+      for (dimension_type i = space_dim+1; --i > 0; ) {
+	Coefficient& c_i = c[i];
+	exact_div_assign(c_i, c_i, gcd);
+      }
+      Coefficient& c_0 = c[0];
+      const int c_0_sign = sgn(c_0);
+      c_0 /= gcd;
+      if (c_0_sign < 0)
+	--c_0;
+      changed = true;
+    }
+
+  maybe_normalize:
+    if (changed)
+      // Enforce normalization.
+      //c.normalize();
+      ;
+
+  next_constraint:
+    ;
+  }
+
+  if (changed) {
+    if (!is_necessarily_closed()) {
+      con_sys.insert(Constraint::epsilon_leq_one());
+      // FIXME: make sure that the following line really can stay here
+      // and should not be moved below the brace.
+      con_sys.set_sorted(false);
+    }
+
+    // After changing the system of constraints, the generators
+    // are no longer up-to-date and the constraints are no longer
+    // minimized.
+    clear_generators_up_to_date();
+    clear_constraints_minimized();
+  }
+  PPL_ASSERT_HEAVY(OK());
+}
+
+void
 PPL::Polyhedron::throw_runtime_error(const char* method) const {
   std::ostringstream s;
   s << "PPL::";
