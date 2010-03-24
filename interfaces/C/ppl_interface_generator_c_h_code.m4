@@ -256,6 +256,19 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
 
 ')
 
+m4_define(`ppl_@CLASS@_frequency_code',
+`/*! \relates ppl_@CLASS@_tag */
+int
+ppl_@CLASS@_frequency
+PPL_PROTO((ppl_const_@CLASS@_t ph,
+           ppl_const_Linear_Expression_t le,
+           ppl_Coefficient_t ext_fn,
+           ppl_Coefficient_t ext_fd,
+           ppl_Coefficient_t ext_vn,
+           ppl_Coefficient_t ext_vd));
+
+')
+
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `/*! \relates ppl_@CLASS@_tag */
 int

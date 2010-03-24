@@ -258,6 +258,27 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_frequency_code',
+`int
+ppl_@CLASS@_frequency
+(ppl_const_@CLASS@_t ph,
+ ppl_const_Linear_Expression_t le,
+ ppl_Coefficient_t freq_n,
+ ppl_Coefficient_t freq_d,
+ ppl_Coefficient_t val_n,
+ ppl_Coefficient_t val_d) try {
+  const @CPP_CLASS@& pph = *to_const(ph);
+  const Linear_Expression& lle = *to_const(le);
+  Coefficient& pfreq_n = *to_nonconst(freq_n);
+  Coefficient& pfreq_d = *to_nonconst(freq_d);
+  Coefficient& pval_n = *to_nonconst(val_n);
+  Coefficient& pval_d = *to_nonconst(val_d);
+  return pph.frequency(lle, pfreq_n, pfreq_d, pval_n, pval_d);
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `int
 ppl_@CLASS@_@COMPARISON@_@CLASS@
