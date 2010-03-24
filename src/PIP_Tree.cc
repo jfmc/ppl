@@ -540,7 +540,7 @@ struct compatibility_check_find_pivot_map_data {
 };
 
 void
-compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
+compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
                                       compatibility_check_find_pivot_map_data
                                       > >& candidates,
                                       const PIP_Tree_Node::matrix_type& s,
@@ -548,12 +548,13 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
                                         mapping,
                                       const std::vector<bool>& basis) {
   typedef compatibility_check_find_pivot_map_data map_data;
-  typedef std::set<std::pair<dimension_type, map_data> > candidates_t;
+  typedef std::vector<std::pair<dimension_type, map_data> > candidates_t;
+  // This is used as a set, it is always sorted.
+  candidates_t new_candidates;
   const dimension_type num_vars = mapping.size();
   for (dimension_type var_index = 0; var_index < num_vars; ++var_index) {
     const dimension_type row_index = mapping[var_index];
     const bool in_base = basis[var_index];
-    candidates_t new_candidates;
     candidates_t::const_iterator i = candidates.begin();
     candidates_t::const_iterator i_end = candidates.end();
     PPL_ASSERT(i != i_end);
@@ -561,7 +562,8 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
     dimension_type pj = i->first;
     const Coefficient* cost = i->second.cost;
     const Coefficient* value = i->second.value;
-    new_candidates.insert(*i);
+    new_candidates.clear();
+    new_candidates.push_back(*i);
     if (in_base) {
       for (++i; i != i_end; ++i) {
         bool found_better_pivot = false;
@@ -583,19 +585,19 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
         if (row_index == pj) {
           // Optimizing for: lhs == lhs_coeff && rhs == 0;
           if (lhs_coeff_sgn == 0)
-            new_candidates.insert(*i);
+            new_candidates.push_back(*i);
           else
             found_better_pivot = lhs_coeff_sgn > 0;
         } else {
           if (row_index == challenger_j) {
             // Optimizing for: lhs == 0 && rhs == rhs_coeff;
             if (rhs_coeff_sgn == 0)
-              new_candidates.insert(*i);
+              new_candidates.push_back(*i);
             else
               found_better_pivot = 0 > rhs_coeff_sgn;
           } else
             // Optimizing for: lhs == 0 && rhs == 0;
-            new_candidates.insert(*i);
+            new_candidates.push_back(*i);
         }
         if (found_better_pivot) {
           pi = challenger_i;
@@ -603,7 +605,7 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
           cost = challenger_cost;
           value = challenger_value;
           new_candidates.clear();
-          new_candidates.insert(*i);
+          new_candidates.push_back(*i);
         }
       }
     } else {
@@ -660,7 +662,7 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
             value = challenger_value;
             row_value = row_challenger_value;
             new_candidates.clear();
-            new_candidates.insert(*i);
+            new_candidates.push_back(*i);
           }
         } else {
 
@@ -675,7 +677,7 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
           rhs *= *row_challenger_value;
 
           if (lhs == rhs)
-            new_candidates.insert(*i);
+            new_candidates.push_back(*i);
           else {
             if (lhs > rhs) {
               pi = challenger_i;
@@ -684,7 +686,7 @@ compatibility_check_find_pivot_in_set(std::set<std::pair<dimension_type,
               value = challenger_value;
               row_value = row_challenger_value;
               new_candidates.clear();
-              new_candidates.insert(*i);
+              new_candidates.push_back(*i);
             }
           }
         }
@@ -705,7 +707,8 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
   // maximizing pivot column.
   const dimension_type num_rows = s.num_rows();
   typedef compatibility_check_find_pivot_map_data map_data;
-  typedef std::set<std::pair<dimension_type, map_data> > candidates_t;
+  // This is used as a set, it is always sorted.
+  typedef std::vector<std::pair<dimension_type, map_data> > candidates_t;
   typedef std::map<dimension_type,map_data> candidates_map_t;
   candidates_map_t candidates_map;
   for (dimension_type i = 0; i < num_rows; ++i) {
@@ -774,7 +777,7 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
   candidates_map_t::iterator i = candidates_map.begin();
   candidates_map_t::iterator i_end = candidates_map.end();
   for ( ; i != i_end; ++i)
-    candidates.insert(*i);
+    candidates.push_back(*i);
   if (!candidates.empty()) {
     compatibility_check_find_pivot_in_set(candidates, s, mapping, basis);
     PPL_ASSERT(!candidates.empty());
