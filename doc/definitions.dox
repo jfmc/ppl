@@ -2211,11 +2211,12 @@ the frequency \f$f\f$ and a value
 \f$\mathrm{val} = \langle \vect{a}, \vect{w} \rangle + b\f$
 where \f$\vect{w} \in \cL\f$ and
 \f[
-    |\mathrm{val}|
-       = \min\Bigl\{\,
-               \big|\langle \vect{a}, \vect{v} \rangle + b
-               \big| \Bigm| \vect{v} \in \cL
-             \,\Bigr\}.
+  \lvert\mathrm{val}\rvert
+     = \min\Bigl\{\,
+             \bigl\lvert\langle \vect{a}, \vect{v} \rangle + b \bigr\rvert
+           \Bigm|
+             \vect{v} \in \cL
+           \,\Bigr\}.
 \f]
 
 Observe that the above definition is also applied to other simple objects in
@@ -4786,13 +4787,13 @@ For \f$x\f$, \f$y \in \Zset\f$ with \f$y \ne 0\f$, we have
   x \brem y
   =
   \begin{cases}
-       x  \brem |y|,  & \text{if $x \ge 0$;} \\
-    -(|x| \brem |y|), & \text{if $x  <  0$.}
+       x  \brem \abs{y},  & \text{if $x \ge 0$;} \\
+    -(\abs{x} \brem \abs{y}), & \text{if $x  <  0$.}
   \end{cases}
 \f]
 
 <B><EM>Proof</EM></B>
-Throughout the proof we write \f$x_0 = |x|\f$ and \f$y_0 = |y|\f$.
+Throughout the proof we write \f$x_0 = \abs{x}\f$ and \f$y_0 = \abs{y}\f$.
 First, assume that \f$x \ge 0\f$ and that \f$y < 0\f$.
 Let \f$k = \phi(x / y_0) = - \phi(x / y)\f$, by the property above.
 We have
