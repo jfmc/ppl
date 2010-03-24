@@ -78,6 +78,7 @@ contains1 \
 containsintegerpoint1 \
 discrete1 \
 disjoint1 \
+dropnonintegerpoints1 \
 equals1 \
 expandspacedim1 \
 foldspacedims1 \
