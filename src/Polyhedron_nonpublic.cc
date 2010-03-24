@@ -2128,7 +2128,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       // with the inhomogeneous term incremented by 1.
       if (c[eps_index] < 0 && !c.is_tautological()) {
 	c[eps_index] = 0;
-	++c[0];
+	--c[0];
 	changed = true;
       }
     }
