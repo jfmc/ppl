@@ -639,6 +639,28 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+`dnl
+/*! \relates ppl_@CLASS@_tag */
+int
+ppl_@CLASS@_drop_some_non_integer_points
+PPL_PROTO((ppl_@CLASS@_t ph,
+           int complexity));
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+`dnl
+/*! \relates ppl_@CLASS@_tag */
+int
+ppl_@CLASS@_drop_some_non_integer_points_2
+PPL_PROTO((ppl_@CLASS@_t ph,
+           ppl_dimension_type ds[],
+           size_t n,
+           int complexity));
+
+')
+
 m4_define(`ppl_@CLASS@_wrap_assign_code',
 `/*! \relates ppl_@CLASS@_tag */
 int

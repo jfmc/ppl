@@ -387,6 +387,46 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_@CLASS@_drop_some_non_integer_points
+(value ph, value caml_cc) try {
+  CAMLparam1(ph);
+  @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
+  Complexity_Class ppl_cc = build_ppl_Complexity_Class(caml_cc);
+  pph.drop_some_non_integer_points(ppl_cc);
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_@CLASS@_drop_some_non_integer_points_2
+(value ph, value caml_vset, value caml_cc) try {
+  CAMLparam1(ph);
+  @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
+  Variables_Set ppl_vset;
+  if (Int_val(caml_vset) == 0)
+    CAMLreturn(Val_unit);
+  while (true) {
+    ppl_vset.insert(Int_val(Field(caml_vset, 0)));
+    if (Int_val(Field(caml_vset, 1)) == 0)
+      break;
+    caml_vset = Field(caml_vset, 1);
+  }
+  Complexity_Class ppl_cc = build_ppl_Complexity_Class(caml_cc);
+  pph.drop_some_non_integer_points(ppl_vset, ppl_cc);
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+')
 
 m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
 `dnl

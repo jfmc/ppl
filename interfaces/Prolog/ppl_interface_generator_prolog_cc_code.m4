@@ -1821,6 +1821,66 @@ m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_drop_some_non_integer_points
+  (Prolog_term_ref t_ph, Prolog_term_ref t_cc) {
+  static const char* where = "ppl_@CLASS@_drop_some_non_integer_points/2";
+  try {
+    @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    PPL_CHECK(ph);
+    Prolog_atom p_cc = term_to_complexity_class(t_cc, where);
+    Complexity_Class cc;
+    if (p_cc == a_polynomial)
+      cc = POLYNOMIAL_COMPLEXITY;
+    else if (p_cc == a_simplex)
+      cc = SIMPLEX_COMPLEXITY;
+    else
+      cc = ANY_COMPLEXITY;
+
+    ph->drop_some_non_integer_points(cc);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_drop_some_non_integer_points_2
+  (Prolog_term_ref t_ph, Prolog_term_ref t_vlist, Prolog_term_ref t_cc) {
+  static const char* where = "ppl_@CLASS@_drop_some_non_integer_points_2/3";
+  try {
+    @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    PPL_CHECK(ph);
+    Variables_Set variables;
+    Prolog_term_ref v = Prolog_new_term_ref();
+    while (Prolog_is_cons(t_vlist)) {
+      Prolog_get_cons(t_vlist, v, t_vlist);
+      variables.insert(term_to_Variable(v, where).id());
+    }
+
+    // Check the list is properly terminated.
+    check_nil_terminating(t_vlist, where);
+
+    Prolog_atom p_cc = term_to_complexity_class(t_cc, where);
+    Complexity_Class cc;
+    if (p_cc == a_polynomial)
+      cc = POLYNOMIAL_COMPLEXITY;
+    else if (p_cc == a_simplex)
+      cc = SIMPLEX_COMPLEXITY;
+    else
+      cc = ANY_COMPLEXITY;
+
+    ph->drop_some_non_integer_points(variables, cc);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_ascii_dump_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_ascii_dump

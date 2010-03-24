@@ -861,6 +861,57 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+`int
+ppl_@CLASS@_drop_some_non_integer_points
+(ppl_@CLASS@_t ph,
+ int complexity) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  switch (complexity) {
+  case 0:
+    pph.drop_some_non_integer_points(POLYNOMIAL_COMPLEXITY);
+    break;
+  case 1:
+    pph.drop_some_non_integer_points(SIMPLEX_COMPLEXITY);
+    break;
+  case 2:
+    pph.drop_some_non_integer_points(ANY_COMPLEXITY);
+    break;
+  }
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+`int
+ppl_@CLASS@_drop_some_non_integer_points_2
+(ppl_@CLASS@_t ph,
+ ppl_dimension_type ds[],
+ size_t n,
+ int complexity) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  Variables_Set vars;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    vars.insert(ds[i]);
+  switch (complexity) {
+  case 0:
+    pph.drop_some_non_integer_points(vars, POLYNOMIAL_COMPLEXITY);
+    break;
+  case 1:
+    pph.drop_some_non_integer_points(vars, SIMPLEX_COMPLEXITY);
+    break;
+  case 2:
+    pph.drop_some_non_integer_points(vars, ANY_COMPLEXITY);
+    break;
+  }
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 `int
 ppl_@CLASS@_@MEMBYTES@

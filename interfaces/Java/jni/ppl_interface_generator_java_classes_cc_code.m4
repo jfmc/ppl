@@ -1139,6 +1139,65 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+`dnl
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_drop_1some_1non_1integer_1points
+(JNIEnv* env, jobject j_this, jobject j_complexity) try {
+  @CPP_CLASS@* this_ptr
+    = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
+  jint j_complexity_int
+    = env->CallIntMethod(j_complexity,
+                         cached_FMIDs.Complexity_Class_ordinal_ID);
+  CHECK_EXCEPTION_ASSERT(env);
+  switch (j_complexity_int) {
+  case 0:
+    this_ptr->drop_some_non_integer_points(POLYNOMIAL_COMPLEXITY);
+    break;
+  case 1:
+    this_ptr->drop_some_non_integer_points(SIMPLEX_COMPLEXITY);
+    break;
+  case 2:
+    this_ptr->drop_some_non_integer_points(ANY_COMPLEXITY);
+    break;
+  default:
+    assert(false);
+    break;
+  }
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+`dnl
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_drop_1some_1non_1integer_1points_12
+(JNIEnv* env, jobject j_this, jobject j_v_set, jobject j_complexity) try {
+  @CPP_CLASS@* this_ptr
+    = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
+  Variables_Set v_set = build_cxx_variables_set(env, j_v_set);
+  jint j_complexity_int
+    = env->CallIntMethod(j_complexity,
+                         cached_FMIDs.Complexity_Class_ordinal_ID);
+  CHECK_EXCEPTION_ASSERT(env);
+  switch (j_complexity_int) {
+  case 0:
+    this_ptr->drop_some_non_integer_points(v_set, POLYNOMIAL_COMPLEXITY);
+    break;
+  case 1:
+    this_ptr->drop_some_non_integer_points(v_set, SIMPLEX_COMPLEXITY);
+    break;
+  case 2:
+    this_ptr->drop_some_non_integer_points(v_set, ANY_COMPLEXITY);
+    break;
+  default:
+    assert(false);
+    break;
+  }
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_string_code',
 `dnl
 JNIEXPORT jstring JNICALL

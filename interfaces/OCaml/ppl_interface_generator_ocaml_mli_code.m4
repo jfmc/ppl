@@ -178,6 +178,20 @@ val ppl_@CLASS@_expand_space_dimension:
   @!CLASS@ -> int -> int -> unit
 ')
 
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+`dnl
+val ppl_@CLASS@_drop_some_non_integer_points:
+  @!CLASS@ -> complexity_class -> unit
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+`dnl
+val ppl_@CLASS@_drop_some_non_integer_points_2:
+  @!CLASS@ -> int list -> complexity_class -> unit
+
+')
+
 m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
 `dnl
 val ppl_@CLASS@_get_@CLASS_REPRESENT@s:

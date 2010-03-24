@@ -497,6 +497,20 @@ m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_drop_some_non_integer_points
+  (Prolog_term_ref t_ph, Prolog_term_ref t_cc);
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_drop_some_non_integer_points_2
+  (Prolog_term_ref t_ph, Prolog_term_ref t_vlist, Prolog_term_ref t_cc);
+
+')
+
 m4_define(`ppl_@CLASS@_ascii_dump_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_ascii_dump
