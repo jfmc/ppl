@@ -117,8 +117,8 @@ yap_stub_##name() { \
   Prolog_term_ref arg4 = YAP_ARG4; \
   Prolog_term_ref arg5 = YAP_ARG5; \
   Prolog_term_ref arg6 = YAP_ARG6; \
-  Prolog_term_ref arg6 = YAP_ARG7; \
-  Prolog_term_ref arg6 = YAP_ARG8; \
+  Prolog_term_ref arg7 = YAP_ARG7; \
+  Prolog_term_ref arg8 = YAP_ARG8; \
   return name(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
 }
 
