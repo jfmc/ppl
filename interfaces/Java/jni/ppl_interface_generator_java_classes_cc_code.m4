@@ -573,6 +573,39 @@ Java_parma_1polyhedra_1library_@1CLASS@_@1MAXMIN@__Lparma_1polyhedra_1library_Li
 
 ')
 
+m4_define(`ppl_@CLASS@_frequency_code',
+`dnl
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_@1CLASS@_1frequency__Lparma_1polyhedra_1library_Linear_1Expression_2Lparma_1polyhedra_1library_Coefficient_2Lparma_1polyhedra_1library_Coefficient_2Lparma_1polyhedra_1library_Coefficient_2Lparma_1polyhedra_1library_Coefficient_2
+(JNIEnv* env, jobject j_this, jobject j_le,
+ jobject j_freqn, jobject j_freqd, jobject j_valn, jobject j_vald) {
+  try {
+    @CPP_CLASS@* this_ptr
+      = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
+    PPL_DIRTY_TEMP_COEFFICIENT(freqn);
+    PPL_DIRTY_TEMP_COEFFICIENT(freqd);
+    PPL_DIRTY_TEMP_COEFFICIENT(valn);
+    PPL_DIRTY_TEMP_COEFFICIENT(vald);
+    freqn = build_cxx_coeff(env, j_freqn);
+    freqd = build_cxx_coeff(env, j_freqd);
+    valn = build_cxx_coeff(env, j_valn);
+    vald = build_cxx_coeff(env, j_vald);
+    Linear_Expression le = build_cxx_linear_expression(env, j_le);
+    if (this_ptr->frequency(le, freqn, freqd, valn, vald)) {
+      set_coefficient(env, j_freqn, build_java_coeff(env, freqn));
+      set_coefficient(env, j_freqd, build_java_coeff(env, freqd));
+      set_coefficient(env, j_valn, build_java_coeff(env, valn));
+      set_coefficient(env, j_vald, build_java_coeff(env, vald));
+      return true;
+    }
+    return false;
+  }
+  CATCH_ALL;
+  return false;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `dnl
 JNIEXPORT jboolean JNICALL
