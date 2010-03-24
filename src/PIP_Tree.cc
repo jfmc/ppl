@@ -346,7 +346,7 @@ column_lower(const PIP_Tree_Node::matrix_type& tableau,
   index(es).
 */
 void
-find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
+find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
                                   const PIP_Tree_Node::matrix_type& tableau,
                                   const std::vector<dimension_type>& mapping,
                                   const std::vector<bool>& basis,
@@ -355,12 +355,14 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
   const dimension_type num_vars = mapping.size();
 
   PPL_ASSERT(!candidates.empty());
+  // This is used as a set, it is always sorted.
+  std::vector<dimension_type> new_candidates;
   for (dimension_type var_index = 0; var_index < num_vars; ++var_index) {
-    std::set<dimension_type> new_candidates;
-    std::set<dimension_type>::const_iterator i = candidates.begin();
-    std::set<dimension_type>::const_iterator i_end = candidates.end();
+    new_candidates.clear();
+    std::vector<dimension_type>::const_iterator i = candidates.begin();
+    std::vector<dimension_type>::const_iterator i_end = candidates.end();
     PPL_ASSERT(!candidates.empty());
-    new_candidates.insert(*i);
+    new_candidates.push_back(*i);
     dimension_type min_column = *i;
     ++i;
     if (i == i_end)
@@ -391,10 +393,10 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
             new_candidates.clear();
             min_column = *i;
             sij_b = &sij_a;
-            new_candidates.insert(min_column);
+            new_candidates.push_back(min_column);
           } else
             // Optimizing for: lhs == 0 && rhs == 0;
-            new_candidates.insert(*i);
+            new_candidates.push_back(*i);
         }
       }
     } else {
@@ -440,7 +442,7 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
             min_column = *i;
             row_jb = row_ja;
             sij_b = &sij_a;
-            new_candidates.insert(min_column);
+            new_candidates.push_back(min_column);
           }
         } else {
           // lhs is actually the left-hand side with toggled sign.
@@ -448,14 +450,14 @@ find_lexico_minimum_column_in_set(std::set<dimension_type>& candidates,
           lhs = *sij_b * *row_ja;
           rhs = sij_a * *row_jb;
           if (lhs == rhs)
-            new_candidates.insert(*i);
+            new_candidates.push_back(*i);
           else
             if (lhs < rhs) {
               new_candidates.clear();
               min_column = *i;
               row_jb = row_ja;
               sij_b = &sij_a;
-              new_candidates.insert(min_column);
+              new_candidates.push_back(min_column);
             }
         }
       }
@@ -477,11 +479,12 @@ find_lexico_minimum_column(const PIP_Tree_Node::matrix_type& tableau,
                            const dimension_type start_j,
                            dimension_type& j_out) {
   const dimension_type num_cols = tableau.num_columns();
-  std::set<dimension_type> candidates;
+  // This is used as a set, it is always sorted.
+  std::vector<dimension_type> candidates;
   for (dimension_type j = start_j; j < num_cols; ++j) {
     const Coefficient& c = pivot_row[j];
     if (c > 0)
-      candidates.insert(j);
+      candidates.push_back(j);
   }
   if (candidates.empty()) {
     j_out = num_cols;
