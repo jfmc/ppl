@@ -3321,8 +3321,15 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   matrix_row_const_reference_type row_s = tableau.s[index];
   matrix_row_const_reference_type row_t = tableau.t[index];
   {
-    for (dimension_type j = 0; j < num_vars; ++j) {
-      mod_assign(cut_s[j], row_s[j], den);
+    matrix_row_const_iterator j = row_s.begin();
+    matrix_row_const_iterator j_end = row_s.end();
+    if (j != j_end) {
+      matrix_row_iterator itr = cut_s.find_create((*j).first);
+      mod_assign((*itr).second, (*j).second, den);
+      for (++j; j != j_end; ++j) {
+        itr = cut_s.find_create((*j).first, itr);
+        mod_assign((*itr).second, (*j).second, den);
+      }
     }
   }
   {
