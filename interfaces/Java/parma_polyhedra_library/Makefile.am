@@ -217,6 +217,7 @@ $(fixed_java_cxx_headers_sources) \
 java_classes.stamp \
 java_cxx_headers.stamp \
 source_generation.stamp \
+Termination.java \
 Bounded_Integer_Type_Overflow.class \
 Bounded_Integer_Type_Representation.class \
 Bounded_Integer_Type_Width.class \
@@ -259,6 +260,7 @@ Poly_Con_Relation.class \
 Poly_Gen_Relation.class \
 PPL_Object.class \
 Relation_Symbol.class \
+Termination.class \
 Timeout_Exception.class \
 Variable.class \
 Variables_Set.class
