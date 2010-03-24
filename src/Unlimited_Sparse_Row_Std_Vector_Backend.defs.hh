@@ -57,6 +57,11 @@ private:
   Unlimited_Sparse_Row_Std_Vector_Backend::key_value_comparison<Compare>
   key_value_compare(const Compare& comp);
 
+  //! This is the number of sequential comparisons after which binary search
+  //! is performed. This affects performance, but not correctness.
+  //! Some methods do one more comparison.
+  static const dimension_type sequential_search_treshold = 3;
+
 public:
   //! Needed to satisfy the backend requirements.
   //! This is not a typedef to allow overloading of methods with both types.

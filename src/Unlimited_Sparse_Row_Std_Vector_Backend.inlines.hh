@@ -143,6 +143,12 @@ inline Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Std_Vector_Backend
 ::lower_bound_dangerous(const dimension_type k, dangerous_iterator itr) {
   PPL_ASSERT(itr == end_dangerous() || (*itr).first <= k);
+  for (dimension_type i = sequential_search_treshold; i-- > 0; ) {
+    if (itr == end_dangerous() || (*itr).first >= k)
+      return itr;
+    ++itr;
+  }
+  // Now perform binary search.
   return std::lower_bound(itr, end_dangerous(), k,
                           value_key_compare(std::less<dimension_type>()));
 }
@@ -162,6 +168,12 @@ inline Unlimited_Sparse_Row_Std_Vector_Backend::iterator
 Unlimited_Sparse_Row_Std_Vector_Backend
 ::lower_bound(const dimension_type k, iterator itr) {
   PPL_ASSERT(itr == end() || (*itr).first <= k);
+  for (dimension_type i = sequential_search_treshold; i-- > 0; ) {
+    if (itr == end() || (*itr).first >= k)
+      return itr;
+    ++itr;
+  }
+  // Now perform binary search.
   return std::lower_bound(itr, end(), k,
                           value_key_compare(std::less<dimension_type>()));
 }
@@ -181,6 +193,12 @@ inline Unlimited_Sparse_Row_Std_Vector_Backend::const_iterator
 Unlimited_Sparse_Row_Std_Vector_Backend
 ::lower_bound(const dimension_type k, const_iterator itr1) const {
   PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
+  for (dimension_type i = sequential_search_treshold; i-- > 0; ) {
+    if (itr1 == end() || (*itr1).first >= k)
+      return itr1;
+    ++itr1;
+  }
+  // Now perform binary search.
   return std::lower_bound(itr1, end(), k,
                           value_key_compare(std::less<dimension_type>()));
 }
