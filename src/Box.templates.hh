@@ -1383,7 +1383,7 @@ Box<ITV>::frequency(const Linear_Expression& expr,
   }
 
   // For an empty Box, we simply return false.
-  if (marked_empty())
+  if (is_empty())
     return false;
 
   // The Box has at least 1 dimension and is not empty.

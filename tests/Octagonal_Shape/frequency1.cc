@@ -321,6 +321,25 @@ test13() {
   return ok;
 }
 
+// Test of an empty octagonal_shape in 1-dimension.
+bool
+test14() {
+  Variable A(0);
+
+  TOctagonal_Shape os(1);
+  os.add_constraint(A <= 0);
+  os.add_constraint(A >= 1);
+
+  Coefficient num;
+  Coefficient den;
+  Coefficient valn;
+  Coefficient vald;
+  bool ok = (!os.frequency(Linear_Expression(A), num, den, valn, vald));
+  print_constraints(os, "*** os ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -337,4 +356,5 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
 END_MAIN

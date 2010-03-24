@@ -905,7 +905,7 @@ ppl_@CLASS@_@MAXMIN@_with_point_6_test :-
   ).
 
 ')
-m4_define(`ppl_@CLASS@_frequency_codeXXX',
+m4_define(`ppl_@CLASS@_frequency_code',
 `
 ppl_@CLASS@_frequency_6_test :-
   (
