@@ -128,5 +128,7 @@ ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/3 +pointset_powerset \bo
 dnl
 dnl CHECKME: This is not implemented.
 dnl
-ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign/3 -pointset_powerset
+ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign/3 -pointset_powerset,
+ppl_@CLASS@_wrap_assign/8 +simple,
+
 ')
