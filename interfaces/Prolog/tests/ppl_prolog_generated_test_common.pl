@@ -545,7 +545,7 @@ ppl_maxmin_test_data(test07, _, congruence, _, A, _, _, _, _, false) :-
 ppl_frequency_test_data(test07, _Topology, constraint, A, _, _, _, _, false) :-
    make_vars(1, [A]).
 
-ppl_frequency_test_data(test07, _Topology, congruence, A, 1, 1, 0, 1, true) :-
+ppl_frequency_test_data(test07, _Topology, congruence, A, 2, 1, 0, 1, true) :-
    make_vars(1, [A]).
 
 ppl_constrains_test_data(test07, _, true).
