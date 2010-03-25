@@ -66,7 +66,7 @@ shift_unprimed_variables(Constraint_System& cs) {
       Coefficient_traits::const_reference a_i_j
 	= c_i.coefficient(Variable(j));
       if (a_i_j != 0)
-	le_i_shifted += a_i_j*Variable(cs_space_dim + j);
+	add_mul_assign(le_i_shifted, a_i_j, Variable(cs_space_dim + j));
     }
     cs_shifted.insert(le_i_shifted >= c_i.inhomogeneous_term());
   }
@@ -138,15 +138,15 @@ fill_constraint_systems_MS(const Constraint_System& cs,
     Coefficient_traits::const_reference b_i = c_i.inhomogeneous_term();
     // Note that b_i is to the left ot the relation sign, hence here
     // we have -= and not += just to avoid negating b_i.
-    y_le -= b_i*Variable(y);
+    sub_mul_assign(y_le, b_i, Variable(y));
     cs_out1.insert(Variable(y) >= 0);
     // We have -= and not += for the same reason mentioned above.
-    z_le -= b_i*Variable(z);
+    sub_mul_assign(z_le, b_i, Variable(z));
     cs_out2.insert(Variable(z) >= 0);
     for (dimension_type j = 2*n; j-- > 0; ) {
       Coefficient_traits::const_reference a_i_j = c_i.coefficient(Variable(j));
-      y_les[j] += a_i_j*Variable(y);
-      z_les[j] += a_i_j*Variable(z);
+      add_mul_assign(y_les[j], a_i_j, Variable(y));
+      add_mul_assign(z_les[j], a_i_j, Variable(z));
     }
     ++y;
     ++z;
@@ -297,31 +297,41 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
 	 cs_before_end = cs_before.end();
        i != cs_before_end;
        ++i, ++row_index) {
+    Variable u1_i(m + row_index);
+    Variable u2_i(s + row_index);
     const Constraint& c_i = *i;
     for (dimension_type j = n; j-- > 0; ) {
       Coefficient_traits::const_reference k = c_i.coefficient(Variable(j));
-      les_eq[j] += k*Variable(m + row_index);
-      les_eq[j] -= k*Variable(s + row_index);
-      les_eq[j + n] += k*Variable(s + row_index);
+      // (u1 - u2) A_B, in the context of j-th constraint.
+      add_mul_assign(les_eq[j], k, u1_i);
+      sub_mul_assign(les_eq[j], k, u2_i);
+      // u2 A_B, in the context of (j+n)-th constraint.
+      add_mul_assign(les_eq[j + n], k, u2_i);
     }
-    le_out += c_i.inhomogeneous_term()*Variable(s + row_index);
+    // u2 b_B, in the context of the strict inequality constraint.
+    add_mul_assign(le_out, c_i.inhomogeneous_term(), u2_i);
   }
-
 
   row_index = 0;
   for (Constraint_System::const_iterator i = cs_after.begin(),
 	 cs_after_end = cs_after.end();
        i != cs_after_end;
        ++i, ++row_index) {
+    Variable u3_i(row_index);
     const Constraint& c_i = *i;
     for (dimension_type j = n; j-- > 0; ) {
-      PPL_DIRTY_TEMP_COEFFICIENT(k);
-      k = c_i.coefficient(Variable(j + n));
-      les_eq[j] -= k*Variable(row_index);
-      k += c_i.coefficient(Variable(j));
-      les_eq[j + n] += k*Variable(row_index);
+      Coefficient_traits::const_reference
+        A_ij_C = c_i.coefficient(Variable(j + n));
+      Coefficient_traits::const_reference
+        Ap_ij_C = c_i.coefficient(Variable(j));
+      // - u3 A_C, in the context of the j-th constraint.
+      sub_mul_assign(les_eq[j], A_ij_C, u3_i);
+      // u3 (A_C + Ap_C), in the context of the (j+n)-th constraint.
+      add_mul_assign(les_eq[j+n], A_ij_C, u3_i);
+      add_mul_assign(les_eq[j+n], Ap_ij_C, u3_i);
     }
-    le_out += c_i.inhomogeneous_term()*Variable(row_index);
+    // u3 b_C, in the context of the strict inequality constraint.
+    add_mul_assign(le_out, c_i.inhomogeneous_term(), u3_i);
   }
 
   // Add the nonpositivity constraints for u_1, u_2 and u_3.
@@ -347,22 +357,22 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
     const Constraint& c_i = *i;
-    const Variable lambda_1(row_index);
-    const Variable lambda_2(m + row_index);
+    const Variable lambda1_i(row_index);
+    const Variable lambda2_i(m + row_index);
     for (dimension_type j = n; j-- > 0; ) {
-      Coefficient_traits::const_reference Apj = c_i.coefficient(Variable(j));
-      Coefficient_traits::const_reference Aj = c_i.coefficient(Variable(j+n));
+      Coefficient_traits::const_reference Ap_ij = c_i.coefficient(Variable(j));
+      Coefficient_traits::const_reference A_ij = c_i.coefficient(Variable(j+n));
       // lambda_1 A'
-      les_eq[j] += Apj * lambda_1;
+      add_mul_assign(les_eq[j], Ap_ij, lambda1_i);
       // (lambda_1 - lambda_2) A
-      les_eq[j+n] += Aj * lambda_1;
-      les_eq[j+n] -= Aj * lambda_2;
+      add_mul_assign(les_eq[j+n], A_ij, lambda1_i);
+      sub_mul_assign(les_eq[j+n], A_ij, lambda2_i);
       // lambda_2 (A + A')
-      les_eq[j+n+n] += Aj  * lambda_2;
-      les_eq[j+n+n] += Apj * lambda_2;
+      add_mul_assign(les_eq[j+n+n], A_ij, lambda2_i);
+      add_mul_assign(les_eq[j+n+n], Ap_ij, lambda2_i);
     }
     // lambda2 b
-    le_out += c_i.inhomogeneous_term() * lambda_2;
+    add_mul_assign(le_out, c_i.inhomogeneous_term(), lambda2_i);
   }
 
   // Add the non-negativity constraints for lambda_1 and lambda_2.
@@ -450,7 +460,7 @@ one_affine_ranking_function_MS(const Constraint_System& cs, Generator& mu) {
     Linear_Expression le;
     for (dimension_type i = n+1; i-- > 0; ) {
       Variable vi(i);
-      le += vi*fp.coefficient(vi);
+      add_mul_assign(le, fp.coefficient(vi), vi);
     }
     mu = point(le, fp.divisor());
     return true;
@@ -658,8 +668,8 @@ one_affine_ranking_function_PR(const Constraint_System& cs_before,
 	const Constraint& c_i = *i;
 	for (dimension_type j = n; j-- > 0; ) {
 	  Variable vj(j);
-	  k = fp_i*c_i.coefficient(vj);
-	  le += k*vj;
+	  k = fp_i * c_i.coefficient(vj);
+	  add_mul_assign(le, k, vj);
 	}
       }
       // Note that we can neglect the divisor of `fp' since it is positive.
@@ -735,9 +745,9 @@ one_affine_ranking_function_PR_original(const Constraint_System& cs,
           const Constraint& c_i = *i;
           for (dimension_type j = n; j-- > 0; ) {
             Variable vj(j);
-            Coefficient_traits::const_reference Ap_j = c_i.coefficient(vj);
-            k = fp_i * Ap_j;
-            le -= k * vj;
+            Coefficient_traits::const_reference Ap_ij = c_i.coefficient(vj);
+            k = fp_i * Ap_ij;
+            sub_mul_assign(le, k, vj);
           }
         }
       }
@@ -825,8 +835,8 @@ all_affine_ranking_functions_PR(const Constraint_System& cs_before,
 	  const Constraint& c_i = *i;
 	  for (dimension_type j = n; j-- > 0; ) {
 	    Variable vj(j);
-	    k = g_i*c_i.coefficient(vj);
-	    le += k*vj;
+	    k = g_i * c_i.coefficient(vj);
+	    add_mul_assign(le, k, vj);
 	  }
 	}
       }
@@ -897,15 +907,15 @@ all_affine_ranking_functions_PR_original(const Constraint_System& cs,
       PPL_DIRTY_TEMP_COEFFICIENT(k);
       for (Constraint_System::const_iterator i = cs.begin(),
 	     cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
-	Variable lambda_2(row_index);
-	Coefficient_traits::const_reference g_i = g.coefficient(lambda_2);
+	Variable lambda2_i(row_index);
+	Coefficient_traits::const_reference g_i = g.coefficient(lambda2_i);
 	if (g_i != 0) {
 	  const Constraint& c_i = *i;
 	  for (dimension_type j = n; j-- > 0; ) {
 	    Variable vj(j);
-	    Coefficient_traits::const_reference Ap_j = c_i.coefficient(vj);
-	    k = g_i * Ap_j;
-	    le -= k * vj;
+	    Coefficient_traits::const_reference Ap_ij = c_i.coefficient(vj);
+	    k = g_i * Ap_ij;
+	    sub_mul_assign(le, k, vj);
 	  }
 	}
       }
