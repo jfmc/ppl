@@ -2087,8 +2087,10 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
 
   // A zero-dimensional, universe polyhedron has, by convention, an
   // integer point.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     set_empty();
+    return;
+  }
 
   // The constraints (possibly with pending rows) are required.
   if (has_pending_generators()) {
@@ -2105,8 +2107,17 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
     else
       update_constraints();
   }
+  // For NNC polyhedra we need to process any pending constraints.
+  if (!is_necessarily_closed() && has_pending_constraints()) {
+    if (complexity != ANY_COMPLEXITY)
+      return;
+    else if (!process_pending_constraints())
+      // We just discovered the polyhedron is empty.
+      return;
+  }
 
   PPL_ASSERT(!has_pending_generators() && constraints_are_up_to_date());
+  PPL_ASSERT(is_necessarily_closed() || !has_pending_constraints());
 
   bool changed = false;
   const dimension_type eps_index = space_dim + 1;
@@ -2126,9 +2137,12 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
     if (!is_necessarily_closed()) {
       // Transform all strict inequalities into non-strict ones,
       // with the inhomogeneous term incremented by 1.
-      if (c[eps_index] < 0 && !c.is_tautological()) {
+      if (c[eps_index] < 0) {
 	c[eps_index] = 0;
 	--c[0];
+	// Enforce normalization.
+	// FIXME: is this really necessary?
+	c.normalize();
 	changed = true;
       }
     }
@@ -2146,18 +2160,18 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
 	}
       }
       // We reach this point only if all the coefficients were zero.
-      goto maybe_normalize;
+      goto next_constraint;
 
     compute_gcd:
       if (gcd == 1)
-	goto maybe_normalize;
+	goto next_constraint;
       while (i > 1) {
 	const Coefficient& c_i = c[--i];
 	if (c_i != 0) {
 	  // See the comment in Row::normalize().
 	  gcd_assign(gcd, c_i, gcd);
 	  if (gcd == 1)
-	    goto maybe_normalize;
+	    goto next_constraint;
 	}
       }
       PPL_ASSERT(gcd != 1);
@@ -2181,12 +2195,6 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
 	--c_0;
       changed = true;
     }
-
-  maybe_normalize:
-    if (changed)
-      // Enforce normalization.
-      //c.normalize();
-      ;
 
   next_constraint:
     ;
