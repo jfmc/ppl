@@ -803,51 +803,57 @@ all_affine_ranking_functions_PR(const Constraint_System& cs_before,
 
   const Generator_System& gs_in = ph.generators();
   Generator_System gs_out;
-  for (Generator_System::const_iterator r = gs_in.begin(),
-	 gs_in_end = gs_in.end(); r != gs_in_end; ++r) {
-    const Generator& g = *r;
-    Linear_Expression le;
-    // Set le to the multiplication of Linear_Expression(g) by E'_C.
-    dimension_type row_index = 0;
-    PPL_DIRTY_TEMP_COEFFICIENT(k);
-    for (Constraint_System::const_iterator i = cs_after.begin(),
-	   cs_after_end = cs_after.end();
-	 i != cs_after_end;
-	 ++i, ++row_index) {
-      Variable vi(row_index);
-      Coefficient_traits::const_reference g_i = g.coefficient(vi);
-      if (g_i != 0) {
-	const Constraint& c_i = *i;
-	for (dimension_type j = n; j-- > 0; ) {
-	  Variable vj(j);
-	  k = g_i*c_i.coefficient(vj);
-	  le += k*vj;
+  Generator_System::const_iterator gs_in_it = gs_in.begin();
+  Generator_System::const_iterator gs_in_end = gs_in.end();
+  if (gs_in_it == gs_in_end)
+    // The system is unsatisfiable.
+    mu_space = NNC_Polyhedron(n + 1, EMPTY);
+  else {
+    for ( ; gs_in_it != gs_in_end; ++gs_in_it) {
+      const Generator& g = *gs_in_it;
+      Linear_Expression le;
+      // Set le to the multiplication of Linear_Expression(g) by E'_C.
+      dimension_type row_index = 0;
+      PPL_DIRTY_TEMP_COEFFICIENT(k);
+      for (Constraint_System::const_iterator i = cs_after.begin(),
+	     cs_after_end = cs_after.end();
+	   i != cs_after_end;
+	   ++i, ++row_index) {
+	Variable vi(row_index);
+	Coefficient_traits::const_reference g_i = g.coefficient(vi);
+	if (g_i != 0) {
+	  const Constraint& c_i = *i;
+	  for (dimension_type j = n; j-- > 0; ) {
+	    Variable vj(j);
+	    k = g_i*c_i.coefficient(vj);
+	    le += k*vj;
+	  }
 	}
+      }
+
+      // Add to gs_out the transformed generator.
+      switch (g.type()) {
+      case Generator::LINE:
+	if (!le.all_homogeneous_terms_are_zero())
+	  gs_out.insert(line(le));
+	break;
+      case Generator::RAY:
+	if (!le.all_homogeneous_terms_are_zero())
+	  gs_out.insert(ray(le));
+	break;
+      case Generator::POINT:
+	gs_out.insert(point(le, g.divisor()));
+	break;
+      case Generator::CLOSURE_POINT:
+	gs_out.insert(closure_point(le, g.divisor()));
+	break;
       }
     }
 
-    // Add to gs_out the transformed generator.
-    switch (g.type()) {
-    case Generator::LINE:
-      if (!le.all_homogeneous_terms_are_zero())
-        gs_out.insert(line(le));
-      break;
-    case Generator::RAY:
-      if (!le.all_homogeneous_terms_are_zero())
-	gs_out.insert(ray(le));
-      break;
-    case Generator::POINT:
-      gs_out.insert(point(le, g.divisor()));
-      break;
-    case Generator::CLOSURE_POINT:
-      gs_out.insert(closure_point(le, g.divisor()));
-      break;
-    }
+    mu_space = NNC_Polyhedron(gs_out);
+    // mu_0 is zero.
+    mu_space.add_space_dimensions_and_embed(1);
   }
-
-  mu_space = NNC_Polyhedron(gs_out);
-  // mu_0 is zero.
-  mu_space.add_space_dimensions_and_embed(1);
 }
 
 void
@@ -877,50 +883,56 @@ all_affine_ranking_functions_PR_original(const Constraint_System& cs,
 
   const Generator_System& gs_in = ph.generators();
   Generator_System gs_out;
-  for (Generator_System::const_iterator r = gs_in.begin(),
-	 gs_in_end = gs_in.end(); r != gs_in_end; ++r) {
-    const Generator& g = *r;
-    Linear_Expression le;
-    // Set le to the multiplication of Linear_Expression(g) by E'_C.
-    dimension_type row_index = 0;
-    PPL_DIRTY_TEMP_COEFFICIENT(k);
-    for (Constraint_System::const_iterator i = cs.begin(),
-	   cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
-      Variable lambda_2(row_index);
-      Coefficient_traits::const_reference g_i = g.coefficient(lambda_2);
-      if (g_i != 0) {
-	const Constraint& c_i = *i;
-	for (dimension_type j = n; j-- > 0; ) {
-	  Variable vj(j);
-          Coefficient_traits::const_reference Ap_j = c_i.coefficient(vj);
-	  k = g_i * Ap_j;
-	  le -= k * vj;
+  Generator_System::const_iterator gs_in_it = gs_in.begin();
+  Generator_System::const_iterator gs_in_end = gs_in.end();
+  if (gs_in_it == gs_in_end)
+    // The system is unsatisfiable.
+    mu_space = NNC_Polyhedron(n + 1, EMPTY);
+  else {
+    for ( ; gs_in_it != gs_in_end; ++gs_in_it) {
+      const Generator& g = *gs_in_it;
+      Linear_Expression le;
+      // Set le to the multiplication of Linear_Expression(g) by E'_C.
+      dimension_type row_index = 0;
+      PPL_DIRTY_TEMP_COEFFICIENT(k);
+      for (Constraint_System::const_iterator i = cs.begin(),
+	     cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
+	Variable lambda_2(row_index);
+	Coefficient_traits::const_reference g_i = g.coefficient(lambda_2);
+	if (g_i != 0) {
+	  const Constraint& c_i = *i;
+	  for (dimension_type j = n; j-- > 0; ) {
+	    Variable vj(j);
+	    Coefficient_traits::const_reference Ap_j = c_i.coefficient(vj);
+	    k = g_i * Ap_j;
+	    le -= k * vj;
+	  }
 	}
+      }
+
+      // Add to gs_out the transformed generator.
+      switch (g.type()) {
+      case Generator::LINE:
+	if (!le.all_homogeneous_terms_are_zero())
+	  gs_out.insert(line(le));
+	break;
+      case Generator::RAY:
+	if (!le.all_homogeneous_terms_are_zero())
+	  gs_out.insert(ray(le));
+	break;
+      case Generator::POINT:
+	gs_out.insert(point(le, g.divisor()));
+	break;
+      case Generator::CLOSURE_POINT:
+	gs_out.insert(closure_point(le, g.divisor()));
+	break;
       }
     }
 
-    // Add to gs_out the transformed generator.
-    switch (g.type()) {
-    case Generator::LINE:
-      if (!le.all_homogeneous_terms_are_zero())
-        gs_out.insert(line(le));
-      break;
-    case Generator::RAY:
-      if (!le.all_homogeneous_terms_are_zero())
-	gs_out.insert(ray(le));
-      break;
-    case Generator::POINT:
-      gs_out.insert(point(le, g.divisor()));
-      break;
-    case Generator::CLOSURE_POINT:
-      gs_out.insert(closure_point(le, g.divisor()));
-      break;
-    }
+    mu_space = NNC_Polyhedron(gs_out);
+    // mu_0 is zero.
+    mu_space.add_space_dimensions_and_embed(1);
   }
-
-  mu_space = NNC_Polyhedron(gs_out);
-  // mu_0 is zero.
-  mu_space.add_space_dimensions_and_embed(1);
 }
 
 } // namespace Termination
