@@ -2685,7 +2685,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   // Dimension-compatibility check of `*pcs', if any.
   if (pcs != 0) {
    const dimension_type pcs_space_dim  = pcs->space_dimension();
-   if (pcs->space_dimension() != space_dim)
+   if (pcs->space_dimension() > space_dim)
      throw_dimension_incompatible("wrap_assign(vs, ...)", pcs_space_dim);
   }
 
