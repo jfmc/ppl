@@ -30,8 +30,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #define PRINT_DEBUG_INFO 0
 
-#define USE_ORIGINAL_PR_METHOD 1
-
 #if PRINT_DEBUG_INFO
 #include <iostream>
 #endif
@@ -402,18 +400,10 @@ termination_test_PR(const PSET& pset_after) {
     throw std::invalid_argument(s.str());
   }
 
-#if USE_ORIGINAL_PR_METHOD
   using namespace Implementation::Termination;
   Constraint_System cs;
   assign_all_inequalities_approximation(pset_after, cs);
   return termination_test_PR_original(cs);
-#else
-  // FIXME: this may be inefficient.
-  PSET pset_before(pset_after);
-  Variables_Set primed_variables(Variable(0), Variable(space_dim/2 - 1));
-  pset_before.remove_space_dimensions(primed_variables);
-  return termination_test_PR_2(pset_before, pset_after);
-#endif
 }
 
 template <typename PSET>
@@ -452,18 +442,10 @@ one_affine_ranking_function_PR(const PSET& pset_after, Generator& mu) {
     throw std::invalid_argument(s.str());
   }
 
-#if USE_ORIGINAL_PR_METHOD
   using namespace Implementation::Termination;
   Constraint_System cs;
   assign_all_inequalities_approximation(pset_after, cs);
   return one_affine_ranking_function_PR_original(cs, mu);
-#else
-  // FIXME: this may be inefficient.
-  PSET pset_before(pset_after);
-  Variables_Set primed_variables(Variable(0), Variable(space_dim/2 - 1));
-  pset_before.remove_space_dimensions(primed_variables);
-  return one_affine_ranking_function_PR_2(pset_before, pset_after, mu);
-#endif
 }
 
 template <typename PSET>
@@ -503,18 +485,10 @@ all_affine_ranking_functions_PR(const PSET& pset_after,
     throw std::invalid_argument(s.str());
   }
 
-#if USE_ORIGINAL_PR_METHOD
   using namespace Implementation::Termination;
   Constraint_System cs;
   assign_all_inequalities_approximation(pset_after, cs);
   all_affine_ranking_functions_PR_original(cs, mu_space);
-#else
-  // FIXME: this may be inefficient.
-  PSET pset_before(pset_after);
-  Variables_Set primed_variables(Variable(0), Variable(space_dim/2 - 1));
-  pset_before.remove_space_dimensions(primed_variables);
-  all_affine_ranking_functions_PR_2(pset_before, pset_after, mu_space);
-#endif
 }
 
 } // namespace Parma_Polyhedra_Library
