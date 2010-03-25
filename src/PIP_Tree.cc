@@ -2255,14 +2255,19 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
             {
               std::sort(buffer.begin(), buffer.end());
               std::vector<std::pair<dimension_type,Coefficient> >
-                ::const_iterator j = buffer.begin();
+                ::iterator j = buffer.begin();
               std::vector<std::pair<dimension_type,Coefficient> >
-                ::const_iterator j_end = buffer.end();
+                ::iterator j_end = buffer.end();
               if (j != j_end) {
-                matrix_row_iterator itr = v_row.find_create(*j);
+                matrix_row_iterator itr = v_row.find_create(j->first);
+                // We need to do (*itr).second = j->second, this is faster.
+                std::swap((*itr).second, j->second);
                 ++j;
-                for ( ; j != j_end; ++j)
-                  itr = v_row.find_create(*j, itr);
+                for ( ; j != j_end; ++j) {
+                  itr = v_row.find_create(j->first, itr);
+                  // We need to do (*itr).second = j->second, this is faster.
+                  std::swap((*itr).second, j->second);
+                }
               }
             }
             buffer.clear();
@@ -2302,14 +2307,19 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
             {
               std::sort(buffer.begin(), buffer.end());
               std::vector<std::pair<dimension_type,Coefficient> >
-                ::const_iterator j = buffer.begin();
+                ::iterator j = buffer.begin();
               std::vector<std::pair<dimension_type,Coefficient> >
-                ::const_iterator j_end = buffer.end();
+                ::iterator j_end = buffer.end();
               if (j != j_end) {
-                matrix_row_iterator itr = v_row.find_create(*j);
+                matrix_row_iterator itr = v_row.find_create(j->first);
+                // We need to do (*itr).second = j->second, this is faster.
+                std::swap((*itr).second, j->second);
                 ++j;
-                for ( ; j != j_end; ++j)
-                  itr = v_row.find_create(*j, itr);
+                for ( ; j != j_end; ++j) {
+                  itr = v_row.find_create(j->first, itr);
+                  // We need to do (*itr).second = j->second, this is faster.
+                  std::swap((*itr).second, j->second);
+                }
               }
             }
             buffer.clear();
@@ -2324,14 +2334,19 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
       {
         std::sort(buffer.begin(), buffer.end());
         std::vector<std::pair<dimension_type,Coefficient> >
-          ::const_iterator j = buffer.begin();
+          ::iterator j = buffer.begin();
         std::vector<std::pair<dimension_type,Coefficient> >
-          ::const_iterator j_end = buffer.end();
+          ::iterator j_end = buffer.end();
         if (j != j_end) {
-          matrix_row_iterator itr = v_row.find_create(*j);
+          matrix_row_iterator itr = v_row.find_create(j->first);
+          // We need to do (*itr).second = j->second, this is faster.
+          std::swap((*itr).second, j->second);
           ++j;
-          for ( ; j != j_end; ++j)
-            itr = v_row.find_create(*j, itr);
+          for ( ; j != j_end; ++j) {
+            itr = v_row.find_create(j->first, itr);
+            // We need to do (*itr).second = j->second, this is faster.
+            std::swap((*itr).second, j->second);
+          }
         }
       }
       buffer.clear();
