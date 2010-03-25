@@ -373,6 +373,25 @@ PPL::add_mul_assign(Linear_Expression& e,
   return e;
 }
 
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+PPL::Linear_Expression&
+PPL::sub_mul_assign(Linear_Expression& e,
+                    Coefficient_traits::const_reference n,
+                    const Variable v) {
+  const dimension_type v_space_dim = v.space_dimension();
+  if (v_space_dim > Linear_Expression::max_space_dimension())
+    throw std::length_error("Linear_Expression& "
+                            "PPL::sub_mul_assign(e, n, v):\n"
+			    "v exceeds the maximum allowed space dimension.");
+  const dimension_type e_size = e.size();
+  if (e_size <= v_space_dim) {
+    Linear_Expression new_e(e, v_space_dim+1);
+    e.swap(new_e);
+  }
+  e[v_space_dim] -= n;
+  return e;
+}
+
 bool
 PPL::Linear_Expression::OK() const {
   return Linear_Row::OK();
