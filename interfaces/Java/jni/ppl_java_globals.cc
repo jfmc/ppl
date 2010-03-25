@@ -452,19 +452,23 @@ Java_parma_1polyhedra_1library_Linear_1Expression_1Variable_initIDs
 
 JNIEXPORT jboolean JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_is_1zero
-(JNIEnv* env, jobject j_this) try {
-  Linear_Expression* this_ptr = &build_cxx_linear_expression(env, j_this);
-  return this_ptr->is_zero();
+(JNIEnv* env, jobject j_this) {
+  try {
+    return build_cxx_linear_expression(env, j_this).is_zero();
+  }
+  CATCH_ALL
+  return false;
 }
-CATCH_ALL
 
 JNIEXPORT jboolean JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_all_1homogeneous_1terms_1are_1zero
-(JNIEnv* env, jobject j_this) try {
-  Linear_Expression* this_ptr = &build_cxx_linear_expression(env, j_this);
-  return this_ptr->all_homogeneous_terms_are_zero();
+(JNIEnv* env, jobject j_this) {
+  try {
+    return build_cxx_linear_expression(env, j_this).all_homogeneous_terms_are_zero();
+  }
+  CATCH_ALL
+  return false;
 }
-CATCH_ALL
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_1Status_initIDs
