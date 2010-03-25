@@ -625,6 +625,31 @@ Pointset_Powerset<PSET>::is_disjoint_from(const Pointset_Powerset& y) const {
 
 template <typename PSET>
 void
+Pointset_Powerset<PSET>
+::drop_some_non_integer_points(const Variables_Set& vars,
+			       Complexity_Class complexity) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si)
+    si->pointset().drop_some_non_integer_points(vars, complexity);
+  x.reduced = false;
+  PPL_ASSERT_HEAVY(x.OK());
+}
+
+template <typename PSET>
+void
+Pointset_Powerset<PSET>
+::drop_some_non_integer_points(Complexity_Class complexity) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si)
+    si->pointset().drop_some_non_integer_points(complexity);
+  x.reduced = false;
+  PPL_ASSERT_HEAVY(x.OK());
+}
+
+template <typename PSET>
+void
 Pointset_Powerset<PSET>::topological_closure_assign() {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
