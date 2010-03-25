@@ -354,15 +354,17 @@ Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
                               const Func2& g, const Func3& h) {
   Unlimited_Sparse_Row row;
   iterator itr = row.end();
-  const_iterator i = begin();
-  const_iterator i_end = end();
+  iterator i = begin();
+  iterator i_end = end();
   const_iterator j = y.begin();
   const_iterator j_end = y.end();
   if (i == i_end && j == j_end)
     return;
   if (j == j_end
       || (i != i_end && (*i).first < (*j).first)) {
-    itr = row.find_create(*i);
+    itr = row.find_create((*i).first);
+    // We need to do (*itr).second = (*i).second, but this is faster.
+    std::swap((*itr).second, (*i).second);
     f((*itr).second);
     ++i;
   } else
@@ -375,7 +377,9 @@ Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
         PPL_ASSERT(i != i_end);
         PPL_ASSERT(j != j_end);
         PPL_ASSERT((*i).first == (*j).first);
-        itr = row.find_create(*i);
+        itr = row.find_create((*i).first);
+        // We need to do (*itr).second = (*i).second, but this is faster.
+        std::swap((*itr).second, (*i).second);
         g((*itr).second, (*j).second);
         ++i;
         ++j;
@@ -383,17 +387,21 @@ Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
   PPL_ASSERT(itr != row.end());
   while (i != i_end && j != j_end) {
     if ((*i).first < (*j).first) {
-      itr = row.find_create(*i,itr);
+      itr = row.find_create((*i).first, itr);
+      // We need to do (*itr).second = (*i).second, but this is faster.
+      std::swap((*itr).second, (*i).second);
       f((*itr).second);
       ++i;
     } else {
       if ((*i).first > (*j).first) {
-        itr = row.find_create(*j,itr);
+        itr = row.find_create((*j).first, itr);
         h((*itr).second, (*j).second);
         ++j;
       } else {
         PPL_ASSERT((*i).first == (*j).first);
-        itr = row.find_create(*i,itr);
+        itr = row.find_create((*i).first, itr);
+        // We need to do (*itr).second = (*i).second, but this is faster.
+        std::swap((*itr).second, (*i).second);
         g((*itr).second, (*j).second);
         ++i;
         ++j;
@@ -401,7 +409,9 @@ Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
     }
   }
   while (i != i_end) {
-    itr = row.find_create(*i,itr);
+    itr = row.find_create((*i).first, itr);
+    // We need to do (*itr).second = (*i).second, but this is faster.
+    std::swap((*itr).second, (*i).second);
     f((*itr).second);
     ++i;
   }
