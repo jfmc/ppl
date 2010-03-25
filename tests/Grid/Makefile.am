@@ -189,6 +189,8 @@ discrete1_SOURCES = discrete1.cc
 
 disjoint1_SOURCES = disjoint1.cc
 
+dropnonintegerpoints1_SOURCES = dropnonintegerpoints1.cc
+
 equals1_SOURCES = equals1.cc
 
 expandspacedim1_SOURCES = expandspacedim1.cc
