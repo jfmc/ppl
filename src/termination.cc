@@ -301,12 +301,12 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
     Variable u2_i(s + row_index);
     const Constraint& c_i = *i;
     for (dimension_type j = n; j-- > 0; ) {
-      Coefficient_traits::const_reference k = c_i.coefficient(Variable(j));
+      Coefficient_traits::const_reference A_ij_B = c_i.coefficient(Variable(j));
       // (u1 - u2) A_B, in the context of j-th constraint.
-      add_mul_assign(les_eq[j], k, u1_i);
-      sub_mul_assign(les_eq[j], k, u2_i);
+      add_mul_assign(les_eq[j], A_ij_B, u1_i);
+      sub_mul_assign(les_eq[j], A_ij_B, u2_i);
       // u2 A_B, in the context of (j+n)-th constraint.
-      add_mul_assign(les_eq[j + n], k, u2_i);
+      add_mul_assign(les_eq[j + n], A_ij_B, u2_i);
     }
     // u2 b_B, in the context of the strict inequality constraint.
     add_mul_assign(le_out, c_i.inhomogeneous_term(), u2_i);
@@ -334,9 +334,9 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
     add_mul_assign(le_out, c_i.inhomogeneous_term(), u3_i);
   }
 
-  // Add the nonpositivity constraints for u_1, u_2 and u_3.
+  // Add the nonnegativity constraints for u_1, u_2 and u_3.
   for (dimension_type i = s + 2*r; i-- > 0; )
-    cs_out.insert(Variable(i) <= 0);
+    cs_out.insert(Variable(i) >= 0);
 
   // FIXME: iterate backwards once the debugging phase is over.
   //for (dimension_type j = 2*n; j-- > 0; )
@@ -588,7 +588,7 @@ termination_test_PR(const Constraint_System& cs_before,
 #endif
 
   MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip,
-				le_ineq, MAXIMIZATION);
+				le_ineq, MINIMIZATION);
   switch (mip.solve()) {
   case UNFEASIBLE_MIP_PROBLEM:
     return false;
@@ -600,7 +600,7 @@ termination_test_PR(const Constraint_System& cs_before,
       PPL_DIRTY_TEMP_COEFFICIENT(den);
       mip.optimal_value(num, den);
       PPL_ASSERT(den > 0);
-      return num > 0;
+      return num < 0;
     }
   }
 
@@ -634,20 +634,20 @@ one_affine_ranking_function_PR(const Constraint_System& cs_before,
 #endif
 
   MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip,
-				le_ineq, MAXIMIZATION);
+				le_ineq, MINIMIZATION);
   switch (mip.solve()) {
   case UNFEASIBLE_MIP_PROBLEM:
     return false;
   case UNBOUNDED_MIP_PROBLEM:
-    // We know that the supremum is plus infinity, which would suffice
+    // We know that the infimum is minus infinity, which would suffice
     // for a yes/no answer on termination.  But we need to add a constraint
     // to the LP problem to be sure that the value of the objective
-    // function computed in the feasible point is positive.
+    // function computed in the feasible point is negative.
   finish:
     {
-      // We can impose that le_ineq is >= 1 because every positive
+      // We can impose that le_ineq is <= -1 because every positive
       // multiple of the linear expression is acceptable.
-      mip.add_constraint(le_ineq >= 1);
+      mip.add_constraint(le_ineq <= -1);
       Generator fp = mip.feasible_point();
       PPL_ASSERT(fp.is_point());
 
@@ -669,7 +669,7 @@ one_affine_ranking_function_PR(const Constraint_System& cs_before,
 	for (dimension_type j = n; j-- > 0; ) {
 	  Variable vj(j);
 	  k = fp_i * c_i.coefficient(vj);
-	  add_mul_assign(le, k, vj);
+	  sub_mul_assign(le, k, vj);
 	}
       }
       // Note that we can neglect the divisor of `fp' since it is positive.
@@ -682,7 +682,7 @@ one_affine_ranking_function_PR(const Constraint_System& cs_before,
       PPL_DIRTY_TEMP_COEFFICIENT(den);
       mip.optimal_value(num, den);
       PPL_ASSERT(den > 0);
-      if (num > 0)
+      if (num < 0)
 	goto finish;
       else
 	return false;
@@ -724,7 +724,7 @@ one_affine_ranking_function_PR_original(const Constraint_System& cs,
     // function computed in the feasible point is negative.
   finish:
     {
-      // We can impose that le_ineq is <= -1 because every negative
+      // We can impose that le_ineq is <= -1 because every positive
       // multiple of the linear expression is acceptable.
       mip.add_constraint(le_ineq <= -1);
       Generator fp = mip.feasible_point();
@@ -796,7 +796,7 @@ all_affine_ranking_functions_PR(const Constraint_System& cs_before,
 #endif
 
   NNC_Polyhedron ph(cs_eqs);
-  ph.add_constraint(le_ineq > 0);
+  ph.add_constraint(le_ineq < 0);
   // u_3 corresponds to space dimensions 0, ..., s - 1.
   const dimension_type s = distance(cs_after.begin(), cs_after.end());
   ph.remove_higher_space_dimensions(s);
@@ -808,7 +808,6 @@ all_affine_ranking_functions_PR(const Constraint_System& cs_before,
   Variable::set_output_function(p_default_output_function);
 #endif
 
-  // FIXME: is this useful?
   const dimension_type n = cs_before.space_dimension();
 
   const Generator_System& gs_in = ph.generators();
@@ -836,7 +835,7 @@ all_affine_ranking_functions_PR(const Constraint_System& cs_before,
 	  for (dimension_type j = n; j-- > 0; ) {
 	    Variable vj(j);
 	    k = g_i * c_i.coefficient(vj);
-	    add_mul_assign(le, k, vj);
+	    sub_mul_assign(le, k, vj);
 	  }
 	}
       }
