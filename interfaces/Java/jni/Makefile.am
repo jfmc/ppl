@@ -199,6 +199,7 @@ ppl_java_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 
 CLEANFILES = \
 @required_instantiations_java_cxx_sources@ \
+ppl_java_Termination.cc \
 ppl_java_implementation_domains.cc.stamp
 
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4:

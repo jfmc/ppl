@@ -1381,7 +1381,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_approximate_1@PARTITION@
 m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
 `dnl
 ___END_OF_FILE___
-___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 
 JNIEXPORT jboolean JNICALL
 Java_parma_1polyhedra_1library_termination_1test_1MS_1@TOPOLOGY@1@CLASS@
@@ -1399,7 +1399,7 @@ Java_parma_1polyhedra_1library_termination_1test_1MS_1@TOPOLOGY@1@CLASS@
 m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
 `dnl
 ___END_OF_FILE___
-___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 
 JNIEXPORT jboolean JNICALL
 Java_parma_1polyhedra_1library_termination_1test_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@
@@ -1418,7 +1418,7 @@ Java_parma_1polyhedra_1library_termination_1test_1@TERMINATION_ID@_1@TOPOLOGY@1@
 m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
 `dnl
 ___END_OF_FILE___
-___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 
 JNIEXPORT jboolean JNICALL
 Java_parma_1polyhedra_1library_termination_1test_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@_12
@@ -1439,7 +1439,7 @@ Java_parma_1polyhedra_1library_termination_1test_1@TERMINATION_ID@_1@TOPOLOGY@1@
 m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
 `dnl
 ___END_OF_FILE___
-___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 
 JNIEXPORT jboolean JNICALL
 Java_parma_1polyhedra_1library_one_1affine_1ranking_1function_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@
@@ -1464,7 +1464,7 @@ Java_parma_1polyhedra_1library_one_1affine_1ranking_1function_1@TERMINATION_ID@_
 m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
 `dnl
 ___END_OF_FILE___
-___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 
 JNIEXPORT jboolean JNICALL
 Java_parma_1polyhedra_1library_one_1affine_1ranking_1function_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@_12
@@ -1491,7 +1491,7 @@ Java_parma_1polyhedra_1library_one_1affine_1ranking_1function_1@TERMINATION_ID@_
 m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
 `dnl
 ___END_OF_FILE___
-___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 
 JNIEXPORT jboolean JNICALL
 Java_parma_1polyhedra_1library_all_1affine_1ranking_1functions_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@
@@ -1513,7 +1513,7 @@ Java_parma_1polyhedra_1library_all_1affine_1ranking_1functions_1@TERMINATION_ID@
 m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
 `dnl
 ___END_OF_FILE___
-___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 
 JNIEXPORT jboolean JNICALL
 Java_parma_1polyhedra_1library_all_1affine_1ranking_1functions_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@_12
