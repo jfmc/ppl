@@ -85,7 +85,7 @@ shift_unprimed_variables(Constraint_System& cs) {
   - \f$ x'_1, \ldots, x'_n \f$ go onto space dimensions
     \f$ 0, \ldots, n-1 \f$,
   - \f$ x_1, \ldots, x_n \f$ go onto space dimensions
-    \f$ n, \ldots, 2n-1 \f$,
+    \f$ n, \ldots, 2n-1 \f$.
   .
   The system does not contain any equality.
 
