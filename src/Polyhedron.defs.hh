@@ -1621,7 +1621,7 @@ public:
     Currently there is no optimality guarantee, not even if
     \p complexity is <CODE>ANY_COMPLEXITY</CODE>.
   */
-   void drop_some_non_integer_points(Complexity_Class complexity
+  void drop_some_non_integer_points(Complexity_Class complexity
                                     = ANY_COMPLEXITY);
 
   /*! \brief

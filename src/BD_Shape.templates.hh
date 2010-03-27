@@ -6344,7 +6344,7 @@ BD_Shape<T>::fold_space_dimensions(const Variables_Set& vars,
 
 template <typename T>
 void
-BD_Shape<T>::drop_some_non_integer_points(Complexity_Class complexity) {
+BD_Shape<T>::drop_some_non_integer_points(Complexity_Class) {
   if (std::numeric_limits<T>::is_integer)
     return;
 
@@ -6354,7 +6354,7 @@ BD_Shape<T>::drop_some_non_integer_points(Complexity_Class complexity) {
 template <typename T>
 void
 BD_Shape<T>::drop_some_non_integer_points(const Variables_Set& vars,
-                                          Complexity_Class complexity) {
+                                          Complexity_Class) {
   // Dimension-compatibility check.
   const dimension_type min_space_dim = vars.space_dimension();
   if (space_dimension() < min_space_dim)

@@ -1669,7 +1669,7 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
 
 template <typename ITV>
 void
-Box<ITV>::drop_some_non_integer_points(Complexity_Class complexity) {
+Box<ITV>::drop_some_non_integer_points(Complexity_Class) {
   if (std::numeric_limits<typename ITV::boundary_type>::is_integer
       && !ITV::info_type::store_open)
     return;
@@ -1680,7 +1680,7 @@ Box<ITV>::drop_some_non_integer_points(Complexity_Class complexity) {
 template <typename ITV>
 void
 Box<ITV>::drop_some_non_integer_points(const Variables_Set& vars,
-                                       Complexity_Class complexity) {
+                                       Complexity_Class) {
   // Dimension-compatibility check.
   const dimension_type min_space_dim = vars.space_dimension();
   if (space_dimension() < min_space_dim)

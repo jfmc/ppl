@@ -7560,7 +7560,7 @@ Octagonal_Shape<T>
 template <typename T>
 void
 Octagonal_Shape<T>
-::drop_some_non_integer_points(Complexity_Class complexity) {
+::drop_some_non_integer_points(Complexity_Class) {
   if (std::numeric_limits<T>::is_integer)
     return;
 
@@ -7571,7 +7571,7 @@ template <typename T>
 void
 Octagonal_Shape<T>
 ::drop_some_non_integer_points(const Variables_Set& vars,
-                               Complexity_Class complexity) {
+                               Complexity_Class) {
   // Dimension-compatibility check.
   const dimension_type min_space_dim = vars.space_dimension();
   if (space_dimension() < min_space_dim)

@@ -433,8 +433,8 @@ Polyhedron::strictly_contains(const Polyhedron& y) const {
 
 inline void
 Polyhedron::drop_some_non_integer_points(Complexity_Class complexity) {
-  drop_some_non_integer_points(static_cast<const Variables_Set*>(0),
-			       complexity);
+  const Variables_Set* p_vs = 0;
+  drop_some_non_integer_points(p_vs, complexity);
 }
 
 inline void
