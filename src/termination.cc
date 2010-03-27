@@ -35,23 +35,25 @@ template <>
 void
 assign_all_inequalities_approximation(const C_Polyhedron& ph,
 				      Constraint_System& cs) {
-  cs = ph.minimized_constraints();
-  if (cs.has_equalities() > 0) {
-    Constraint_System tmp_cs;
-    for (Constraint_System::const_iterator i = cs.begin(),
-	   cs_end = cs.end(); i != cs_end; ++i) {
+  const Constraint_System& ph_cs = ph.minimized_constraints();
+  if (ph_cs.has_equalities()) {
+    // Translate equalities into inequalities.
+    for (Constraint_System::const_iterator i = ph_cs.begin(),
+	   i_end = ph_cs.end(); i != i_end; ++i) {
       const Constraint& c = *i;
       if (c.is_equality()) {
 	// Insert the two corresponding opposing inequalities.
-	tmp_cs.insert(Linear_Expression(c) >= 0);
-	tmp_cs.insert(Linear_Expression(c) <= 0);
+	cs.insert(Linear_Expression(c) >= 0);
+	cs.insert(Linear_Expression(c) <= 0);
       }
       else
 	// Insert as is.
-	tmp_cs.insert(c);
+	cs.insert(c);
     }
-    cs = tmp_cs;
   }
+  else
+    // No equality constraints (and no strict inequalities).
+    cs = ph_cs;
 }
 
 void

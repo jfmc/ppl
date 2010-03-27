@@ -149,26 +149,29 @@ template <typename PSET>
 void
 assign_all_inequalities_approximation(const PSET& pset,
 				      Constraint_System& cs) {
-  cs = pset.minimized_constraints();
-  if (cs.has_strict_inequalities() || cs.has_equalities() > 0) {
-    Constraint_System tmp_cs;
-    for (Constraint_System::const_iterator i = cs.begin(),
-	   cs_end = cs.end(); i != cs_end; ++i) {
+  const Constraint_System& pset_cs = pset.minimized_constraints();
+  if (pset_cs.has_strict_inequalities() || pset_cs.has_equalities()) {
+    // Here we have some strict inequality and/or equality constraints:
+    // translate them into non-strict inequality constraints.
+    for (Constraint_System::const_iterator i = pset_cs.begin(),
+           i_end = pset_cs.end(); i != i_end; ++i) {
       const Constraint& c = *i;
       if (c.is_equality()) {
-	// Insert the two corresponding opposing inequalities.
-	tmp_cs.insert(Linear_Expression(c) >= 0);
-	tmp_cs.insert(Linear_Expression(c) <= 0);
+        // Insert the two corresponding opposing inequalities.
+        cs.insert(Linear_Expression(c) >= 0);
+        cs.insert(Linear_Expression(c) <= 0);
       }
       else if (c.is_strict_inequality())
-	// Insert the non-strict approximation.
-	tmp_cs.insert(Linear_Expression(c) >= 0);
+        // Insert the non-strict approximation.
+        cs.insert(Linear_Expression(c) >= 0);
       else
-	// Insert as is.
-	tmp_cs.insert(c);
+        // Insert as is.
+        cs.insert(c);
     }
-    cs = tmp_cs;
   }
+  else
+    // No strict inequality and no equality constraints.
+    cs = pset_cs;
 }
 
 template <>
