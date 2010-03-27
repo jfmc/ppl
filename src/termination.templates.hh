@@ -132,19 +132,6 @@ output_function_PR(std::ostream& s, const Variable& v) {
 }
 #endif
 
-void fill_constraint_systems_MS(const Constraint_System& cs,
-				const dimension_type n,
-				const dimension_type m,
-				Constraint_System& cs_out1,
-				Constraint_System& cs_out2);
-
-void fill_constraint_system_PR(const Constraint_System& cs,
-			       const dimension_type n,
-			       const dimension_type m,
-			       dimension_type& r,
-			       Constraint_System& cs_out,
-			       Linear_Expression& le_out);
-
 template <typename PSET>
 void
 assign_all_inequalities_approximation(const PSET& pset,

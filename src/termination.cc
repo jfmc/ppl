@@ -89,12 +89,6 @@ shift_unprimed_variables(Constraint_System& cs) {
   .
   The system does not contain any equality.
 
-  \param n
-  The number of loop-relevant variables in the analyzed loop.
-
-  \param m
-  The number of inequalities in \p cs.
-
   \param cs_out1
   The first output constraint system.
 
@@ -103,7 +97,8 @@ shift_unprimed_variables(Constraint_System& cs) {
   for \p cs_out1.
 
   The allocation of variable indices in the output constraint
-  systems \p cs_out1 and \p cs_out2 is as follows:
+  systems \p cs_out1 and \p cs_out2 is as follows,
+  where \f$m\f$ is the number of constraints in \p cs:
   - \f$ \mu_1, \ldots, \mu_n \f$ go onto space dimensions
     \f$ 0, \ldots, n-1 \f$;
   - \f$ \mu_0\f$ goes onto space dimension \f$ n \f$;
@@ -121,12 +116,28 @@ shift_unprimed_variables(Constraint_System& cs) {
 */
 void
 fill_constraint_systems_MS(const Constraint_System& cs,
-			   const dimension_type n,
-			   const dimension_type m,
 			   Constraint_System& cs_out1,
 			   Constraint_System& cs_out2) {
+  PPL_ASSERT(cs.space_dimension() % 2 == 0);
+  const dimension_type n = cs.space_dimension() / 2;
+  const dimension_type m = std::distance(cs.begin(), cs.end());
+
+#if PRINT_DEBUG_INFO
+  Variable::output_function_type* p_default_output_function
+    = Variable::get_output_function();
+  Variable::set_output_function(output_function_MS);
+
+  output_function_MS_n = n;
+  output_function_MS_m = m;
+
+  std::cout << "*** cs ***" << std::endl;
+  output_function_MS_which = 0;
+  using namespace IO_Operators;
+  std::cout << cs << std::endl;
+#endif
+
   dimension_type y_begin = n+1;
-  dimension_type z_begin = (&cs_out1 == &cs_out2) ? y_begin + m : y_begin;
+  dimension_type z_begin = y_begin + ((&cs_out1 == &cs_out2) ? m : 0);
 
   // Make sure linear expressions are not reallocated multiple times.
   Linear_Expression y_le(0*Variable(y_begin + m - 1));
@@ -180,6 +191,28 @@ fill_constraint_systems_MS(const Constraint_System& cs,
     cs_out2.insert(z_les[j] == 0);
   }
   cs_out2.insert(z_les[2*n] == Variable(n));
+
+#if PRINT_DEBUG_INFO
+  if (&cs_out1 == &cs_out2) {
+    std::cout << "*** cs_mip ***" << std::endl;
+    output_function_MS_which = 3;
+    using namespace IO_Operators;
+    std::cout << cs_mip << std::endl;
+  }
+  else {
+    std::cout << "*** cs_out1 ***" << std::endl;
+    output_function_MS_which = 1;
+    using namespace IO_Operators;
+    std::cout << cs_out1 << std::endl;
+
+    std::cout << "*** cs_out2 ***" << std::endl;
+    output_function_MS_which = 2;
+    using namespace IO_Operators;
+    std::cout << cs_out2 << std::endl;
+  }
+
+  Variable::set_output_function(p_default_output_function);
+#endif
 }
 
 /*! \brief
@@ -294,6 +327,8 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
 			  const Constraint_System& cs_after,
 			  Constraint_System& cs_out,
 			  Linear_Expression& le_out) {
+  PPL_ASSERT(cs_after.space_dimension() % 2 == 0);
+  PPL_ASSERT(2*cs_before.space_dimension() == cs_after.space_dimension());
   const dimension_type n = cs_before.space_dimension();
   const dimension_type r = distance(cs_before.begin(), cs_before.end());
   const dimension_type s = distance(cs_after.begin(), cs_after.end());
@@ -369,6 +404,7 @@ void
 fill_constraint_system_PR_original(const Constraint_System& cs,
                                    Constraint_System& cs_out,
                                    Linear_Expression& le_out) {
+  PPL_ASSERT(cs.space_dimension() % 2 == 0);
   const dimension_type n = cs.space_dimension() / 2;
   const dimension_type m = distance(cs.begin(), cs.end());
 
@@ -417,93 +453,47 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
 
 bool
 termination_test_MS(const Constraint_System& cs) {
-  const dimension_type n = cs.space_dimension()/2;
-  const dimension_type m = distance(cs.begin(), cs.end());
-
-#if PRINT_DEBUG_INFO
-  Variable::output_function_type* p_default_output_function
-    = Variable::get_output_function();
-  Variable::set_output_function(output_function_MS);
-
-  output_function_MS_n = n;
-  output_function_MS_m = m;
-
-  std::cout << "*** cs ***" << std::endl;
-  output_function_MS_which = 0;
-  using namespace IO_Operators;
-  std::cout << cs << std::endl;
-#endif
-
   Constraint_System cs_mip;
-  fill_constraint_systems_MS(cs, n, m, cs_mip, cs_mip);
-
-#if PRINT_DEBUG_INFO
-  std::cout << "*** cs_mip ***" << std::endl;
-  output_function_MS_which = 3;
-  using namespace IO_Operators;
-  std::cout << cs_mip << std::endl;
-
-  Variable::set_output_function(p_default_output_function);
-#endif
+  fill_constraint_systems_MS(cs, cs_mip, cs_mip);
 
   MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
-
   return mip.is_satisfiable();
 }
 
 bool
 one_affine_ranking_function_MS(const Constraint_System& cs, Generator& mu) {
-  const dimension_type n = cs.space_dimension()/2;
-  const dimension_type m = distance(cs.begin(), cs.end());
-
-#if PRINT_DEBUG_INFO
-  Variable::output_function_type* p_default_output_function
-    = Variable::get_output_function();
-  Variable::set_output_function(output_function_MS);
-
-  output_function_MS_n = n;
-  output_function_MS_m = m;
-
-  std::cout << "*** cs ***" << std::endl;
-  output_function_MS_which = 0;
-  using namespace IO_Operators;
-  std::cout << cs << std::endl;
-#endif
-
   Constraint_System cs_mip;
-  fill_constraint_systems_MS(cs, n, m, cs_mip, cs_mip);
-
-#if PRINT_DEBUG_INFO
-  std::cout << "*** cs_mip ***" << std::endl;
-  output_function_MS_which = 3;
-  using namespace IO_Operators;
-  std::cout << cs_mip << std::endl;
-
-  Variable::set_output_function(p_default_output_function);
-#endif
+  fill_constraint_systems_MS(cs, cs_mip, cs_mip);
 
   MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
-
-  if (mip.is_satisfiable()) {
-    Generator fp = mip.feasible_point();
-    PPL_ASSERT(fp.is_point());
-    Linear_Expression le;
-    for (dimension_type i = n+1; i-- > 0; ) {
-      Variable vi(i);
-      add_mul_assign(le, fp.coefficient(vi), vi);
-    }
-    mu = point(le, fp.divisor());
-    return true;
-  }
-  else
+  if (!mip.is_satisfiable())
     return false;
+
+  Generator fp = mip.feasible_point();
+  PPL_ASSERT(fp.is_point());
+  Linear_Expression le;
+  const dimension_type n = cs.space_dimension() / 2;
+  for (dimension_type i = n+1; i-- > 0; ) {
+    Variable vi(i);
+    add_mul_assign(le, fp.coefficient(vi), vi);
+  }
+  mu = point(le, fp.divisor());
+  return true;
 }
 
 void
 all_affine_ranking_functions_MS(const Constraint_System& cs,
 				C_Polyhedron& mu_space) {
-  const dimension_type n = cs.space_dimension()/2;
-  const dimension_type m = distance(cs.begin(), cs.end());
+  Constraint_System cs_out1;
+  Constraint_System cs_out2;
+  fill_constraint_systems_MS(cs, cs_out1, cs_out2);
+
+  C_Polyhedron ph1(cs_out1);
+  C_Polyhedron ph2(cs_out2);
+  const dimension_type n = cs.space_dimension() / 2;
+  ph1.remove_higher_space_dimensions(n);
+  ph1.add_space_dimensions_and_embed(1);
+  ph2.remove_higher_space_dimensions(n+1);
 
 #if PRINT_DEBUG_INFO
   Variable::output_function_type* p_default_output_function
@@ -511,37 +501,8 @@ all_affine_ranking_functions_MS(const Constraint_System& cs,
   Variable::set_output_function(output_function_MS);
 
   output_function_MS_n = n;
-  output_function_MS_m = m;
+  output_function_MS_m = std::distance(cs.begin(), cs.end());
 
-  std::cout << "*** cs ***" << std::endl;
-  output_function_MS_which = 0;
-  using namespace IO_Operators;
-  std::cout << cs << std::endl;
-#endif
-
-  Constraint_System cs_out1;
-  Constraint_System cs_out2;
-  fill_constraint_systems_MS(cs, n, m, cs_out1, cs_out2);
-
-#if PRINT_DEBUG_INFO
-  std::cout << "*** cs_out1 ***" << std::endl;
-  output_function_MS_which = 1;
-  using namespace IO_Operators;
-  std::cout << cs_out1 << std::endl;
-
-  std::cout << "*** cs_out2 ***" << std::endl;
-  output_function_MS_which = 2;
-  using namespace IO_Operators;
-  std::cout << cs_out2 << std::endl;
-#endif
-
-  C_Polyhedron ph1(cs_out1);
-  C_Polyhedron ph2(cs_out2);
-  ph1.remove_higher_space_dimensions(n);
-  ph1.add_space_dimensions_and_embed(1);
-  ph2.remove_higher_space_dimensions(n+1);
-
-#if PRINT_DEBUG_INFO
   std::cout << "*** ph1 projected ***" << std::endl;
   output_function_MS_which = 4;
   using namespace IO_Operators;
@@ -572,25 +533,11 @@ termination_test_PR_original(const Constraint_System& cs) {
   Linear_Expression le_ineq;
   fill_constraint_system_PR_original(cs, cs_mip, le_ineq);
 
-  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip,
-				le_ineq, MINIMIZATION);
-  switch (mip.solve()) {
-  case UNFEASIBLE_MIP_PROBLEM:
-    return false;
-  case UNBOUNDED_MIP_PROBLEM:
-    return true;
-  case OPTIMIZED_MIP_PROBLEM:
-    {
-      PPL_DIRTY_TEMP_COEFFICIENT(num);
-      PPL_DIRTY_TEMP_COEFFICIENT(den);
-      mip.optimal_value(num, den);
-      PPL_ASSERT(den > 0);
-      return num < 0;
-    }
-  }
+  // Turn minimization problem into satisfiability.
+  cs_mip.insert(le_ineq <= -1);
 
-  // This point should be unreachable.
-  throw std::runtime_error("PPL internal error");
+  MIP_Problem mip(cs_mip.space_dimension(), cs_mip);
+  return mip.is_satisfiable();
 }
 
 bool
@@ -617,25 +564,11 @@ termination_test_PR(const Constraint_System& cs_before,
   Variable::set_output_function(p_default_output_function);
 #endif
 
-  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip,
-				le_ineq, MINIMIZATION);
-  switch (mip.solve()) {
-  case UNFEASIBLE_MIP_PROBLEM:
-    return false;
-  case UNBOUNDED_MIP_PROBLEM:
-    return true;
-  case OPTIMIZED_MIP_PROBLEM:
-    {
-      PPL_DIRTY_TEMP_COEFFICIENT(num);
-      PPL_DIRTY_TEMP_COEFFICIENT(den);
-      mip.optimal_value(num, den);
-      PPL_ASSERT(den > 0);
-      return num < 0;
-    }
-  }
+  // Turn minimization problem into satisfiability.
+  cs_mip.insert(le_ineq <= -1);
 
-  // This point should be unreachable.
-  throw std::runtime_error("PPL internal error");
+  MIP_Problem mip(cs_mip.space_dimension(), cs_mip);
+  return mip.is_satisfiable();
 }
 
 bool
@@ -663,64 +596,40 @@ one_affine_ranking_function_PR(const Constraint_System& cs_before,
   Variable::set_output_function(p_default_output_function);
 #endif
 
-  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip,
-				le_ineq, MINIMIZATION);
-  switch (mip.solve()) {
-  case UNFEASIBLE_MIP_PROBLEM:
-    return false;
-  case UNBOUNDED_MIP_PROBLEM:
-    // We know that the infimum is minus infinity, which would suffice
-    // for a yes/no answer on termination.  But we need to add a constraint
-    // to the LP problem to be sure that the value of the objective
-    // function computed in the feasible point is negative.
-  finish:
-    {
-      // We can impose that le_ineq is <= -1 because every positive
-      // multiple of the linear expression is acceptable.
-      mip.add_constraint(le_ineq <= -1);
-      Generator fp = mip.feasible_point();
-      PPL_ASSERT(fp.is_point());
+  // Turn minimization problem into satisfiability.
+  cs_mip.insert(le_ineq <= -1);
 
-      // u_3 corresponds to space dimensions 0, ..., s - 1.
-      const dimension_type n = cs_before.space_dimension();
-      Linear_Expression le;
-      // mu_0 is zero: do this first to avoid reallocations.
-      le += 0*Variable(n);
-      // Multiply u_3 by E'_C to obtain mu_1, ..., mu_n.
-      dimension_type row_index = 0;
-      PPL_DIRTY_TEMP_COEFFICIENT(k);
-      for (Constraint_System::const_iterator i = cs_after.begin(),
-	     cs_after_end = cs_after.end();
-	   i != cs_after_end;
-	   ++i, ++row_index) {
-	Variable vi(row_index);
-	Coefficient_traits::const_reference fp_i = fp.coefficient(vi);
-	const Constraint& c_i = *i;
-	for (dimension_type j = n; j-- > 0; ) {
-	  Variable vj(j);
-	  k = fp_i * c_i.coefficient(vj);
-	  sub_mul_assign(le, k, vj);
-	}
-      }
-      // Note that we can neglect the divisor of `fp' since it is positive.
-      mu = point(le);
-      return true;
-    }
-  case OPTIMIZED_MIP_PROBLEM:
-    {
-      PPL_DIRTY_TEMP_COEFFICIENT(num);
-      PPL_DIRTY_TEMP_COEFFICIENT(den);
-      mip.optimal_value(num, den);
-      PPL_ASSERT(den > 0);
-      if (num < 0)
-	goto finish;
-      else
-	return false;
+  MIP_Problem mip(cs_mip.space_dimension(), cs_mip);
+  if (!mip.is_satisfiable())
+    return false;
+
+  Generator fp = mip.feasible_point();
+  PPL_ASSERT(fp.is_point());
+
+  // u_3 corresponds to space dimensions 0, ..., s - 1.
+  const dimension_type n = cs_before.space_dimension();
+  Linear_Expression le;
+  // mu_0 is zero: do this first to avoid reallocations.
+  le += 0*Variable(n);
+  // Multiply u_3 by E'_C to obtain mu_1, ..., mu_n.
+  dimension_type row_index = 0;
+  PPL_DIRTY_TEMP_COEFFICIENT(k);
+  for (Constraint_System::const_iterator i = cs_after.begin(),
+         cs_after_end = cs_after.end();
+       i != cs_after_end;
+       ++i, ++row_index) {
+    Variable vi(row_index);
+    Coefficient_traits::const_reference fp_i = fp.coefficient(vi);
+    const Constraint& c_i = *i;
+    for (dimension_type j = n; j-- > 0; ) {
+      Variable vj(j);
+      k = fp_i * c_i.coefficient(vj);
+      sub_mul_assign(le, k, vj);
     }
   }
-
-  // This point should be unreachable.
-  throw std::runtime_error("PPL internal error");
+  // Note that we can neglect the divisor of `fp' since it is positive.
+  mu = point(le);
+  return true;
 }
 
 bool
@@ -742,64 +651,39 @@ one_affine_ranking_function_PR_original(const Constraint_System& cs,
   std::cout << le_ineq << std::endl;
 #endif
 
-  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip,
-				le_ineq, MINIMIZATION);
-  switch (mip.solve()) {
-  case UNFEASIBLE_MIP_PROBLEM:
-    return false;
-  case UNBOUNDED_MIP_PROBLEM:
-    // We know that the infimum is minus infinity, which would suffice
-    // for a yes/no answer on termination.  But we need to add a constraint
-    // to the LP problem to be sure that the value of the objective
-    // function computed in the feasible point is negative.
-  finish:
-    {
-      // We can impose that le_ineq is <= -1 because every positive
-      // multiple of the linear expression is acceptable.
-      mip.add_constraint(le_ineq <= -1);
-      Generator fp = mip.feasible_point();
-      PPL_ASSERT(fp.is_point());
+  // Turn minimization problem into satisfiability.
+  cs_mip.insert(le_ineq <= -1);
 
-      Linear_Expression le;
-      // mu_0 is zero: do this first to avoid reallocations.
-      le += 0*Variable(n);
-      // Multiply -lambda_2 by A' to obtain mu_1, ..., mu_n.
-      // lambda_2 corresponds to space dimensions m, ..., 2*m - 1.
-      dimension_type row_index = m;
-      PPL_DIRTY_TEMP_COEFFICIENT(k);
-      for (Constraint_System::const_iterator i = cs.begin(),
-	     cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
-	Variable lambda_2(row_index);
-	Coefficient_traits::const_reference fp_i = fp.coefficient(lambda_2);
-        if (fp_i != 0) {
-          const Constraint& c_i = *i;
-          for (dimension_type j = n; j-- > 0; ) {
-            Variable vj(j);
-            Coefficient_traits::const_reference Ap_ij = c_i.coefficient(vj);
-            k = fp_i * Ap_ij;
-            sub_mul_assign(le, k, vj);
-          }
-        }
+  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
+  if (!mip.is_satisfiable())
+    return false;
+
+  Generator fp = mip.feasible_point();
+  PPL_ASSERT(fp.is_point());
+  Linear_Expression le;
+  // mu_0 is zero: do this first to avoid reallocations.
+  le += 0*Variable(n);
+  // Multiply -lambda_2 by A' to obtain mu_1, ..., mu_n.
+  // lambda_2 corresponds to space dimensions m, ..., 2*m - 1.
+  dimension_type row_index = m;
+  PPL_DIRTY_TEMP_COEFFICIENT(k);
+  for (Constraint_System::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
+    Variable lambda_2(row_index);
+    Coefficient_traits::const_reference fp_i = fp.coefficient(lambda_2);
+    if (fp_i != 0) {
+      const Constraint& c_i = *i;
+      for (dimension_type j = n; j-- > 0; ) {
+        Variable vj(j);
+        Coefficient_traits::const_reference Ap_ij = c_i.coefficient(vj);
+        k = fp_i * Ap_ij;
+        sub_mul_assign(le, k, vj);
       }
-      // Note that we can neglect the divisor of `fp' since it is positive.
-      mu = point(le);
-      return true;
-    }
-  case OPTIMIZED_MIP_PROBLEM:
-    {
-      PPL_DIRTY_TEMP_COEFFICIENT(num);
-      PPL_DIRTY_TEMP_COEFFICIENT(den);
-      mip.optimal_value(num, den);
-      PPL_ASSERT(den > 0);
-      if (num < 0)
-	goto finish;
-      else
-	return false;
     }
   }
-
-  // This point should be unreachable.
-  throw std::runtime_error("PPL internal error");
+  // Note that we can neglect the divisor of `fp' since it is positive.
+  mu = point(le);
+  return true;
 }
 
 void
