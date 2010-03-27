@@ -83,7 +83,8 @@ shift_unprimed_variables(Constraint_System& cs) {
   - \f$ x'_1, \ldots, x'_n \f$ go onto space dimensions
     \f$ 0, \ldots, n-1 \f$,
   - \f$ x_1, \ldots, x_n \f$ go onto space dimensions
-    \f$ n, \ldots, 2n-1 \f$.
+    \f$ n, \ldots, 2n-1 \f$,
+  .
   The system does not contain any equality.
 
   \param n
@@ -124,11 +125,13 @@ fill_constraint_systems_MS(const Constraint_System& cs,
 			   Constraint_System& cs_out2) {
   dimension_type y_begin = n+1;
   dimension_type z_begin = (&cs_out1 == &cs_out2) ? y_begin + m : y_begin;
+
   // Make sure linear expressions are not reallocated multiple times.
   Linear_Expression y_le(0*Variable(y_begin + m - 1));
   Linear_Expression z_le(0*Variable(z_begin + m + 2 - 1));
-  std::vector<Linear_Expression> y_les(2*n);
-  std::vector<Linear_Expression> z_les(2*n + 1);
+  std::vector<Linear_Expression> y_les(2*n, y_le);
+  std::vector<Linear_Expression> z_les(2*n + 1, z_le);
+
   dimension_type y = y_begin;
   dimension_type z = z_begin;
   for (Constraint_System::const_iterator i = cs.begin(),
@@ -294,7 +297,9 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
   const dimension_type s = distance(cs_after.begin(), cs_after.end());
   const dimension_type m = r + s;
 
-  std::vector<Linear_Expression> les_eq(2*n);
+  // Make sure linear expressions are not reallocated multiple times.
+  le_out = 0 * Variable(m + r - 1);
+  std::vector<Linear_Expression> les_eq(2*n, le_out);
 
   dimension_type row_index = 0;
   for (Constraint_System::const_iterator i = cs_before.begin(),
@@ -306,14 +311,18 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
     const Constraint& c_i = *i;
     for (dimension_type j = n; j-- > 0; ) {
       Coefficient_traits::const_reference A_ij_B = c_i.coefficient(Variable(j));
-      // (u1 - u2) A_B, in the context of j-th constraint.
-      add_mul_assign(les_eq[j], A_ij_B, u1_i);
-      sub_mul_assign(les_eq[j], A_ij_B, u2_i);
-      // u2 A_B, in the context of (j+n)-th constraint.
-      add_mul_assign(les_eq[j + n], A_ij_B, u2_i);
+      if (A_ij_B != 0) {
+        // (u1 - u2) A_B, in the context of j-th constraint.
+        add_mul_assign(les_eq[j], A_ij_B, u1_i);
+        sub_mul_assign(les_eq[j], A_ij_B, u2_i);
+        // u2 A_B, in the context of (j+n)-th constraint.
+        add_mul_assign(les_eq[j + n], A_ij_B, u2_i);
+      }
     }
-    // u2 b_B, in the context of the strict inequality constraint.
-    add_mul_assign(le_out, c_i.inhomogeneous_term(), u2_i);
+    Coefficient_traits::const_reference b_B = c_i.inhomogeneous_term();
+    if (b_B != 0)
+      // u2 b_B, in the context of the strict inequality constraint.
+      add_mul_assign(le_out, b_B, u2_i);
   }
 
   row_index = 0;
@@ -326,16 +335,22 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
     for (dimension_type j = n; j-- > 0; ) {
       Coefficient_traits::const_reference
         A_ij_C = c_i.coefficient(Variable(j + n));
+      if (A_ij_C != 0) {
+        // - u3 A_C, in the context of the j-th constraint.
+        sub_mul_assign(les_eq[j], A_ij_C, u3_i);
+        // u3 A_C, in the context of the (j+n)-th constraint.
+        add_mul_assign(les_eq[j+n], A_ij_C, u3_i);
+      }
       Coefficient_traits::const_reference
         Ap_ij_C = c_i.coefficient(Variable(j));
-      // - u3 A_C, in the context of the j-th constraint.
-      sub_mul_assign(les_eq[j], A_ij_C, u3_i);
-      // u3 (A_C + Ap_C), in the context of the (j+n)-th constraint.
-      add_mul_assign(les_eq[j+n], A_ij_C, u3_i);
-      add_mul_assign(les_eq[j+n], Ap_ij_C, u3_i);
+      if (Ap_ij_C != 0)
+        // u3 Ap_C, in the context of the (j+n)-th constraint.
+        add_mul_assign(les_eq[j+n], Ap_ij_C, u3_i);
     }
-    // u3 b_C, in the context of the strict inequality constraint.
-    add_mul_assign(le_out, c_i.inhomogeneous_term(), u3_i);
+    Coefficient_traits::const_reference b_C = c_i.inhomogeneous_term();
+    if (b_C != 0)
+      // u3 b_C, in the context of the strict inequality constraint.
+      add_mul_assign(le_out, b_C, u3_i);
   }
 
   // Add the nonnegativity constraints for u_1, u_2 and u_3.
@@ -355,7 +370,9 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
   const dimension_type n = cs.space_dimension() / 2;
   const dimension_type m = distance(cs.begin(), cs.end());
 
-  std::vector<Linear_Expression> les_eq(3*n);
+  // Make sure linear expressions are not reallocated multiple times.
+  le_out = 0 * Variable(2*m - 1);
+  std::vector<Linear_Expression> les_eq(3*n, le_out);
 
   dimension_type row_index = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
@@ -365,18 +382,25 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
     const Variable lambda2_i(m + row_index);
     for (dimension_type j = n; j-- > 0; ) {
       Coefficient_traits::const_reference Ap_ij = c_i.coefficient(Variable(j));
+      if (Ap_ij != 0) {
+        // lambda_1 A'
+        add_mul_assign(les_eq[j], Ap_ij, lambda1_i);
+        // lambda_2 A'
+        add_mul_assign(les_eq[j+n+n], Ap_ij, lambda2_i);
+      }
       Coefficient_traits::const_reference A_ij = c_i.coefficient(Variable(j+n));
-      // lambda_1 A'
-      add_mul_assign(les_eq[j], Ap_ij, lambda1_i);
-      // (lambda_1 - lambda_2) A
-      add_mul_assign(les_eq[j+n], A_ij, lambda1_i);
-      sub_mul_assign(les_eq[j+n], A_ij, lambda2_i);
-      // lambda_2 (A + A')
-      add_mul_assign(les_eq[j+n+n], A_ij, lambda2_i);
-      add_mul_assign(les_eq[j+n+n], Ap_ij, lambda2_i);
+      if (A_ij != 0) {
+        // (lambda_1 - lambda_2) A
+        add_mul_assign(les_eq[j+n], A_ij, lambda1_i);
+        sub_mul_assign(les_eq[j+n], A_ij, lambda2_i);
+        // lambda_2 A
+        add_mul_assign(les_eq[j+n+n], A_ij, lambda2_i);
+      }
     }
-    // lambda2 b
-    add_mul_assign(le_out, c_i.inhomogeneous_term(), lambda2_i);
+    Coefficient_traits::const_reference b = c_i.inhomogeneous_term();
+    if (b != 0)
+      // lambda2 b
+      add_mul_assign(le_out, b, lambda2_i);
   }
 
   // Add the non-negativity constraints for lambda_1 and lambda_2.
