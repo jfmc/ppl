@@ -573,6 +573,25 @@ m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
 
 ')
 
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@
+     (Prolog_term_ref t_pset,
+      Prolog_term_ref t_ph_decreasing,
+      Prolog_term_ref t_ph_bounded);
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2
+     (Prolog_term_ref t_pset_before,
+      Prolog_term_ref t_pset_after,
+      Prolog_term_ref t_ph_decreasing,
+      Prolog_term_ref t_ph_bounded);
+
+')
+
 m4_define(`ppl_@CLASS@_wrap_assign_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_wrap_assign
