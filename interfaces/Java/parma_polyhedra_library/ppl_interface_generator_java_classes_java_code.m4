@@ -685,7 +685,7 @@ m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
     public static native boolean
-      ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(@TOPOLOGY@@CLASS@ p);
+      termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(@TOPOLOGY@@CLASS@ p);
 ')
 
 m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
@@ -693,7 +693,8 @@ m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
     public static native boolean
-      ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2(@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after);
+      termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+        (@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after);
 ')
 
 m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
@@ -701,7 +702,8 @@ m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_co
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
     public static native boolean
-      ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(@TOPOLOGY@@CLASS@ p, Generator g);
+      one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+        (@TOPOLOGY@@CLASS@ p, Generator g);
 ')
 
 m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
@@ -709,21 +711,43 @@ m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
     public static native boolean
-      ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2(@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after, Generator g);
+      one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+        (@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after, Generator g);
 ')
 
 m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
 `dnl
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
-    public static native boolean
-      ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(@TOPOLOGY@@CLASS@ p, Polyhedron ph);
+    public static native void
+      all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+        (@TOPOLOGY@@CLASS@ p, Polyhedron ph);
 ')
 
 m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
 `dnl
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
-    public static native boolean
-      ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2(@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after, Polyhedron ph);
+    public static native void
+      all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+        (@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after, Polyhedron ph);
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native void
+      all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@
+        (@TOPOLOGY@@CLASS@ p, Polyhedron ph_decreasing, Polyhedron ph_bounded);
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native void
+      all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2
+        (@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after,
+         Polyhedron ph_decreasing, Polyhedron ph_bounded);
 ')

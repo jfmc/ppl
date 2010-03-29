@@ -46,7 +46,9 @@ ppl_@CLASS@_string/1 +all,
 ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@/1 +simple,
 ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@/2 +simple,
 ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@/2 +simple,
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@/3 +simple,
 ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2/2 +simple,
 ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2/3 +simple,
-ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2/3 +simple,)dnl
+ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2/3 +simple,
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2/4 +simple,)dnl
 ')

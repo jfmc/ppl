@@ -1384,25 +1384,7 @@ ___END_OF_FILE___
 ___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 
 JNIEXPORT jboolean JNICALL
-Java_parma_1polyhedra_1library_termination_1test_1MS_1@TOPOLOGY@1@CLASS@
-(JNIEnv* env, jclass, jobject j_p) {
-  try {
-    @TOPOLOGY@@CLASS@* p_ptr
-      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p));
-    return termination_test_MS(*p_ptr);
-  }
-  CATCH_ALL;
-  return 0;
-}
-')
-
-m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
-`dnl
-___END_OF_FILE___
-___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
-
-JNIEXPORT jboolean JNICALL
-Java_parma_1polyhedra_1library_termination_1test_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@
+Java_parma_1polyhedra_1library_Termination_termination_1test_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@
 (JNIEnv* env, jclass, jobject j_p) {
   try {
     @TOPOLOGY@@CLASS@* p_ptr
@@ -1421,7 +1403,7 @@ ___END_OF_FILE___
 ___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 
 JNIEXPORT jboolean JNICALL
-Java_parma_1polyhedra_1library_termination_1test_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@_12
+Java_parma_1polyhedra_1library_Termination_termination_1test_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@_12
 (JNIEnv* env, jclass, jobject j_p_before, jobject j_p_after) {
   try {
     @TOPOLOGY@@CLASS@* p_ptr_before
@@ -1442,7 +1424,7 @@ ___END_OF_FILE___
 ___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 
 JNIEXPORT jboolean JNICALL
-Java_parma_1polyhedra_1library_one_1affine_1ranking_1function_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@
+Java_parma_1polyhedra_1library_Termination_one_1affine_1ranking_1function_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@
 (JNIEnv* env, jclass, jobject j_p, jobject j_g) {
   try {
     @TOPOLOGY@@CLASS@* p_ptr
@@ -1467,7 +1449,7 @@ ___END_OF_FILE___
 ___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 
 JNIEXPORT jboolean JNICALL
-Java_parma_1polyhedra_1library_one_1affine_1ranking_1function_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@_12
+Java_parma_1polyhedra_1library_Termination_one_1affine_1ranking_1function_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@_12
 (JNIEnv* env, jclass, jobject j_p_before, jobject j_g_after) {
   try {
     @TOPOLOGY@@CLASS@* p_ptr_before
@@ -1493,19 +1475,17 @@ m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_c
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 
-JNIEXPORT jboolean JNICALL
-Java_parma_1polyhedra_1library_all_1affine_1ranking_1functions_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Termination_all_1affine_1ranking_1functions_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@
 (JNIEnv* env, jclass, jobject j_p, jobject j_ph) {
   try {
     @TOPOLOGY@@CLASS@* p_ptr
       = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p));
     @A_TERMINATION_ID@Polyhedron* ph = new @A_TERMINATION_ID@Polyhedron();
     all_affine_ranking_functions_@TERMINATION_ID@(*p_ptr, *ph) {
-    set_ptr(env, j_p, *ph);
-    return true;
+    set_ptr(env, j_ph, *ph);
   }
   CATCH_ALL;
-  return 0;
 }
 
 ')
@@ -1515,8 +1495,8 @@ m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 
-JNIEXPORT jboolean JNICALL
-Java_parma_1polyhedra_1library_all_1affine_1ranking_1functions_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@_12
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Termination_all_1affine_1ranking_1functions_1@TERMINATION_ID@_1@TOPOLOGY@1@CLASS@_12
 (JNIEnv* env, jclass, jobject j_p_before, jobject j_p_after, jobject j_ph) {
   try {
     @TOPOLOGY@@CLASS@* p_ptr_before
@@ -1524,12 +1504,59 @@ Java_parma_1polyhedra_1library_all_1affine_1ranking_1functions_1@TERMINATION_ID@
     @TOPOLOGY@@CLASS@* p_ptr_after
       = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p_after));
     @A_TERMINATION_ID@Polyhedron* ph = new @A_TERMINATION_ID@Polyhedron();
-    all_affine_ranking_functions_@TERMINATION_ID@_2(*p_ptr_before, *p_ptr_after, *ph) {
-    set_ptr(env, j_p, *ph);
-    return true;
+    all_affine_ranking_functions_@TERMINATION_ID@_2(*p_ptr_before, *p_ptr_after, *ph);
+    set_ptr(env, j_ph, *ph);
   }
   CATCH_ALL;
-  return 0;
+}
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Termination_all_1affine_1quasi_1ranking_1functions_1MS_1@TOPOLOGY@1@CLASS@
+(JNIEnv* env, jclass, jobject j_p,
+ jobject j_ph_decreasing, jobject j_ph_bounded) {
+  try {
+    @TOPOLOGY@@CLASS@* p_ptr
+      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p));
+    C_Polyhedron* ph_decreasing = new C_Polyhedron();
+    C_Polyhedron* ph_bounded = new C_Polyhedron();
+    all_affine_quasi_ranking_functions_MS(*p_ptr, *ph_decreasing, *ph_bounded);
+    set_ptr(env, j_ph_decreasing, *ph_decreasing);
+    set_ptr(env, j_ph_bounded, *ph_bounded);
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Termination_all_1affine_1quasi_1ranking_1functions_1MS_1@TOPOLOGY@1@CLASS@_12
+(JNIEnv* env, jclass, jobject j_p_before, jobject j_p_after,
+ jobject j_ph_decreasing, jobject j_ph_bounded) {
+  try {
+    @TOPOLOGY@@CLASS@* p_ptr_before
+      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p_before));
+    @TOPOLOGY@@CLASS@* p_ptr_after
+      = reinterpret_cast<@TOPOLOGY@@CLASS@*>(get_ptr(env, j_p_after));
+    C_Polyhedron* ph_decreasing = new C_Polyhedron();
+    C_Polyhedron* ph_bounded = new C_Polyhedron();
+    all_affine_quasi_ranking_functions_MS_2(*p_ptr_before, *p_ptr_after,
+                                            *ph_decreasing, *ph_bounded);
+    set_ptr(env, j_ph_decreasing, *ph_decreasing);
+    set_ptr(env, j_ph_bounded, *ph_bounded);
+  }
+  CATCH_ALL;
 }
 
 ')

@@ -61,7 +61,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 
 ')
 
-    m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
 {
     PPL_Test.print_if_noisy("Testing @TOPOLOGY@@CLASS@ from @FRIEND@: ");
@@ -291,7 +291,7 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 
 ')
 
- m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
     `dnl
 {
     PPL_Test.print_if_noisy("Testing add_@CLASS_REPRESENT@s: ");
@@ -303,7 +303,7 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 
 ')
 
- m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
     `dnl
 {
     PPL_Test.print_if_noisy("Testing refine_with_@REFINE_REPRESENT@s: ");
@@ -315,7 +315,7 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 
 ')
 
- m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
     `dnl
 {
     PPL_Test.print_if_noisy("Testing @UB_EXACT@: ");
