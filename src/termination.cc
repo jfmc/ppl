@@ -525,6 +525,44 @@ all_affine_ranking_functions_MS(const Constraint_System& cs,
   mu_space.swap(ph1);
 }
 
+void
+all_affine_quasi_ranking_functions_MS(const Constraint_System& cs,
+                                      C_Polyhedron& decreasing_mu_space,
+                                      C_Polyhedron& bounded_mu_space) {
+  Constraint_System cs_out1;
+  Constraint_System cs_out2;
+  fill_constraint_systems_MS(cs, cs_out1, cs_out2);
+
+  C_Polyhedron ph1(cs_out1);
+  C_Polyhedron ph2(cs_out2);
+  const dimension_type n = cs.space_dimension() / 2;
+  ph1.remove_higher_space_dimensions(n);
+  ph1.add_space_dimensions_and_embed(1);
+  ph2.remove_higher_space_dimensions(n+1);
+
+#if PRINT_DEBUG_INFO
+  Variable::output_function_type* p_default_output_function
+    = Variable::get_output_function();
+  Variable::set_output_function(output_function_MS);
+
+  output_function_MS_n = n;
+  output_function_MS_m = std::distance(cs.begin(), cs.end());
+
+  std::cout << "*** ph1 projected ***" << std::endl;
+  output_function_MS_which = 4;
+  using namespace IO_Operators;
+  std::cout << ph1.minimized_constraints() << std::endl;
+
+  std::cout << "*** ph2 projected ***" << std::endl;
+  std::cout << ph2.minimized_constraints() << std::endl;
+
+  Variable::set_output_function(p_default_output_function);
+#endif
+
+  decreasing_mu_space.swap(ph1);
+  bounded_mu_space.swap(ph2);
+}
+
 bool
 termination_test_PR_original(const Constraint_System& cs) {
   PPL_ASSERT(cs.space_dimension() % 2 == 0);

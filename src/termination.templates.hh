@@ -209,6 +209,11 @@ void
 all_affine_ranking_functions_MS(const Constraint_System& cs,
 				C_Polyhedron& mu_space);
 
+void
+all_affine_quasi_ranking_functions_MS(const Constraint_System& cs,
+                                      C_Polyhedron& decreasing_mu_space,
+                                      C_Polyhedron& bounded_mu_space);
+
 bool
 termination_test_PR(const Constraint_System& cs_before,
 		    const Constraint_System& cs_after);
@@ -282,7 +287,7 @@ one_affine_ranking_function_MS(const PSET& pset, Generator& mu) {
   const dimension_type space_dim = pset.space_dimension();
   if (space_dim % 2 != 0) {
     std::ostringstream s;
-    s << "PPL::one_affine_ranking_function_MS(pset):\n"
+    s << "PPL::one_affine_ranking_function_MS(pset, mu):\n"
          "pset.space_dimension() == " << space_dim
       << " is odd.";
     throw std::invalid_argument(s.str());
@@ -303,7 +308,7 @@ one_affine_ranking_function_MS_2(const PSET& pset_before,
   const dimension_type after_space_dim = pset_after.space_dimension();
   if (after_space_dim != 2*before_space_dim) {
     std::ostringstream s;
-    s << "PPL::one_affine_ranking_function_MS_2(pset_before, pset_after):\n"
+    s << "PPL::one_affine_ranking_function_MS_2(pset_before, pset_after, mu):\n"
          "pset_before.space_dimension() == " << before_space_dim
       << ", pset_after.space_dimension() == " << after_space_dim
       << ";\nthe latter should be twice the former.";
@@ -322,7 +327,7 @@ all_affine_ranking_functions_MS(const PSET& pset, C_Polyhedron& mu_space) {
   const dimension_type space_dim = pset.space_dimension();
   if (space_dim % 2 != 0) {
     std::ostringstream s;
-    s << "PPL::all_affine_ranking_functions_MS(pset):\n"
+    s << "PPL::all_affine_ranking_functions_MS(pset, mu_space):\n"
          "pset.space_dimension() == " << space_dim
       << " is odd.";
     throw std::invalid_argument(s.str());
@@ -343,8 +348,9 @@ all_affine_ranking_functions_MS_2(const PSET& pset_before,
   const dimension_type after_space_dim = pset_after.space_dimension();
   if (after_space_dim != 2*before_space_dim) {
     std::ostringstream s;
-    s << "PPL::all_affine_ranking_functions_MS_2(pset_before, pset_after):\n"
-         "pset_before.space_dimension() == " << before_space_dim
+    s << "PPL::all_affine_ranking_functions_MS_2"
+      << "(pset_before, pset_after, mu_space):\n"
+      << "pset_before.space_dimension() == " << before_space_dim
       << ", pset_after.space_dimension() == " << after_space_dim
       << ";\nthe latter should be twice the former.";
     throw std::invalid_argument(s.str());
@@ -357,6 +363,55 @@ all_affine_ranking_functions_MS_2(const PSET& pset_before,
 }
 
 template <typename PSET>
+void
+all_affine_quasi_ranking_functions_MS(const PSET& pset,
+                                      C_Polyhedron& decreasing_mu_space,
+                                      C_Polyhedron& bounded_mu_space) {
+  const dimension_type space_dim = pset.space_dimension();
+  if (space_dim % 2 != 0) {
+    std::ostringstream s;
+    s << "PPL::all_affine_quasi_ranking_functions_MS"
+      << "(pset, decr_space, bounded_space):\n"
+      << "pset.space_dimension() == " << space_dim
+      << " is odd.";
+    throw std::invalid_argument(s.str());
+  }
+
+  using namespace Implementation::Termination;
+  Constraint_System cs;
+  assign_all_inequalities_approximation(pset, cs);
+  all_affine_quasi_ranking_functions_MS(cs,
+                                        decreasing_mu_space,
+                                        bounded_mu_space);
+}
+
+template <typename PSET>
+void
+all_affine_quasi_ranking_functions_MS_2(const PSET& pset_before,
+                                        const PSET& pset_after,
+                                        C_Polyhedron& decreasing_mu_space,
+                                        C_Polyhedron& bounded_mu_space) {
+  const dimension_type before_space_dim = pset_before.space_dimension();
+  const dimension_type after_space_dim = pset_after.space_dimension();
+  if (after_space_dim != 2*before_space_dim) {
+    std::ostringstream s;
+    s << "PPL::all_affine_quasi_ranking_functions_MS_2"
+      << "(pset_before, pset_after, decr_space, bounded_space):\n"
+      << "pset_before.space_dimension() == " << before_space_dim
+      << ", pset_after.space_dimension() == " << after_space_dim
+      << ";\nthe latter should be twice the former.";
+    throw std::invalid_argument(s.str());
+  }
+
+  using namespace Implementation::Termination;
+  Constraint_System cs;
+  assign_all_inequalities_approximation(pset_before, pset_after, cs);
+  all_affine_quasi_ranking_functions_MS(cs,
+                                        decreasing_mu_space,
+                                        bounded_mu_space);
+}
+
+template <typename PSET>
 bool
 termination_test_PR_2(const PSET& pset_before, const PSET& pset_after) {
   const dimension_type before_space_dim = pset_before.space_dimension();
@@ -364,7 +419,7 @@ termination_test_PR_2(const PSET& pset_before, const PSET& pset_after) {
   if (after_space_dim != 2*before_space_dim) {
     std::ostringstream s;
     s << "PPL::termination_test_PR_2(pset_before, pset_after):\n"
-         "pset_before.space_dimension() == " << before_space_dim
+      << "pset_before.space_dimension() == " << before_space_dim
       << ", pset_after.space_dimension() == " << after_space_dim
       << ";\nthe latter should be twice the former.";
     throw std::invalid_argument(s.str());
@@ -385,7 +440,7 @@ termination_test_PR(const PSET& pset_after) {
   if (space_dim % 2 != 0) {
     std::ostringstream s;
     s << "PPL::termination_test_PR(pset):\n"
-         "pset.space_dimension() == " << space_dim
+      << "pset.space_dimension() == " << space_dim
       << " is odd.";
     throw std::invalid_argument(s.str());
   }
@@ -405,8 +460,9 @@ one_affine_ranking_function_PR_2(const PSET& pset_before,
   const dimension_type after_space_dim = pset_after.space_dimension();
   if (after_space_dim != 2*before_space_dim) {
     std::ostringstream s;
-    s << "PPL::one_affine_ranking_function_PR_2(pset_before, pset_after):\n"
-         "pset_before.space_dimension() == " << before_space_dim
+    s << "PPL::one_affine_ranking_function_PR_2"
+      << "(pset_before, pset_after, mu):\n"
+      << "pset_before.space_dimension() == " << before_space_dim
       << ", pset_after.space_dimension() == " << after_space_dim
       << ";\nthe latter should be twice the former.";
     throw std::invalid_argument(s.str());
@@ -426,8 +482,8 @@ one_affine_ranking_function_PR(const PSET& pset_after, Generator& mu) {
   const dimension_type space_dim = pset_after.space_dimension();
   if (space_dim % 2 != 0) {
     std::ostringstream s;
-    s << "PPL::one_affine_ranking_function_PR(pset):\n"
-         "pset.space_dimension() == " << space_dim
+    s << "PPL::one_affine_ranking_function_PR(pset, mu):\n"
+      << "pset.space_dimension() == " << space_dim
       << " is odd.";
     throw std::invalid_argument(s.str());
   }
@@ -447,8 +503,9 @@ all_affine_ranking_functions_PR_2(const PSET& pset_before,
   const dimension_type after_space_dim = pset_after.space_dimension();
   if (after_space_dim != 2*before_space_dim) {
     std::ostringstream s;
-    s << "PPL::all_affine_ranking_functions_MS_2(pset_before, pset_after):\n"
-         "pset_before.space_dimension() == " << before_space_dim
+    s << "PPL::all_affine_ranking_functions_MS_2"
+      << "(pset_before, pset_after, mu_space):\n"
+      << "pset_before.space_dimension() == " << before_space_dim
       << ", pset_after.space_dimension() == " << after_space_dim
       << ";\nthe latter should be twice the former.";
     throw std::invalid_argument(s.str());
@@ -469,8 +526,8 @@ all_affine_ranking_functions_PR(const PSET& pset_after,
   const dimension_type space_dim = pset_after.space_dimension();
   if (space_dim % 2 != 0) {
     std::ostringstream s;
-    s << "PPL::all_affine_ranking_functions_PR(pset):\n"
-         "pset.space_dimension() == " << space_dim
+    s << "PPL::all_affine_ranking_functions_PR(pset, mu_space):\n"
+      << "pset.space_dimension() == " << space_dim
       << " is odd.";
     throw std::invalid_argument(s.str());
   }
