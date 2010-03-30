@@ -41,6 +41,10 @@ public class Constraint_System_Iterator extends PPL_Object {
 
   public native boolean equals(Constraint_System_Iterator itr);
 
+  public native void begin();
+
+  public native void end();
+
   public native void next();
 
   public native Constraint get_constraint();

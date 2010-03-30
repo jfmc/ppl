@@ -1474,7 +1474,8 @@ Java_parma_1polyhedra_1library_IO_wrap_1string
  jint preferred_first_line_length, jint preferred_line_length) {
   try {
     unsigned ind = jtype_to_unsigned<unsigned int>(indent_depth);
-    unsigned pfll = jtype_to_unsigned<unsigned int>(preferred_first_line_length);
+    unsigned pfll = jtype_to_unsigned<unsigned int>
+      (preferred_first_line_length);
     unsigned pll = jtype_to_unsigned<unsigned int>(preferred_line_length);
     const char* chars = env->GetStringUTFChars(str, 0);
     CHECK_RESULT_RETURN(env, chars, 0);
@@ -1549,9 +1550,11 @@ Java_parma_1polyhedra_1library_Constraint_1System_1Iterator_equals
 (JNIEnv* env, jobject j_this, jobject j_y) {
   try {
     Constraint_System::const_iterator* this_ptr
-      = reinterpret_cast<Constraint_System::const_iterator*>(get_ptr(env, j_this));
+      = reinterpret_cast<Constraint_System::const_iterator*>
+          (get_ptr(env, j_this));
     Constraint_System::const_iterator* y_ptr
-      = reinterpret_cast<Constraint_System::const_iterator*>(get_ptr(env, j_y));
+      = reinterpret_cast<Constraint_System::const_iterator*>
+          (get_ptr(env, j_y));
     return *this_ptr == *y_ptr;
   }
   CATCH_ALL;
@@ -1562,7 +1565,8 @@ JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Constraint_1System_1Iterator_next
 (JNIEnv* env, jobject j_this) try {
   Constraint_System::const_iterator* this_ptr
-    = reinterpret_cast<Constraint_System::const_iterator*>(get_ptr(env, j_this));
+    = reinterpret_cast<Constraint_System::const_iterator*>
+        (get_ptr(env, j_this));
   ++(*this_ptr);
 }
 CATCH_ALL
@@ -1572,7 +1576,8 @@ Java_parma_1polyhedra_1library_Constraint_1System_1Iterator_get_1constraint
 (JNIEnv* env, jobject j_this) {
   try {
     Constraint_System::const_iterator* this_ptr
-      = reinterpret_cast<Constraint_System::const_iterator*>(get_ptr(env, j_this));
+      = reinterpret_cast<Constraint_System::const_iterator*>
+          (get_ptr(env, j_this));
     jclass j_class = env->FindClass("parma_polyhedra_library/Constraint");
     CHECK_RESULT_ASSERT(env, j_class);
     jmethodID j_ctr_id = env->GetMethodID(j_class, "<init>", "()V");
@@ -1592,7 +1597,8 @@ Java_parma_1polyhedra_1library_Constraint_1System_1Iterator_free
 (JNIEnv* env, jobject j_this) try {
   if (!is_java_marked(env, j_this)) {
     Constraint_System::const_iterator* this_ptr
-      = reinterpret_cast<Constraint_System::const_iterator*>(get_ptr(env, j_this));
+      = reinterpret_cast<Constraint_System::const_iterator*>
+          (get_ptr(env, j_this));
     delete this_ptr;
     void* null_ptr = 0;
     set_ptr(env, j_this, null_ptr);
@@ -1605,7 +1611,8 @@ Java_parma_1polyhedra_1library_Constraint_1System_1Iterator_finalize
 (JNIEnv* env, jobject j_this) try {
   if (!is_java_marked(env, j_this)) {
     Constraint_System::const_iterator* this_ptr
-      = reinterpret_cast<Constraint_System::const_iterator*>(get_ptr(env, j_this));
+      = reinterpret_cast<Constraint_System::const_iterator*>
+          (get_ptr(env, j_this));
     delete this_ptr;
   }
 }
@@ -1622,7 +1629,6 @@ Java_parma_1polyhedra_1library_PIP_1Problem_build_1cpp_1object__J
   CATCH_ALL;
 }
 
-/*
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_PIP_1Problem_build_1cpp_1object__JLparma_1polyhedra_1library_Constraint_1System_1Iterator_2Lparma_1polyhedra_1library_Constraint_1System_1Iterator_2Lparma_1polyhedra_1library_Variables_1Set_2
 (JNIEnv* env , jobject j_this_pip_problem, jlong j_dim,
@@ -1630,16 +1636,17 @@ Java_parma_1polyhedra_1library_PIP_1Problem_build_1cpp_1object__JLparma_1polyhed
   try {
     dimension_type p_dim = jtype_to_unsigned<dimension_type>(j_dim);
     Constraint_System::const_iterator* p_first
-      = reinterpret_cast<Constraint_System::iterator*>(get_ptr(env, j_first));
+      = reinterpret_cast<Constraint_System::const_iterator*>
+          (get_ptr(env, j_first));
     Constraint_System::const_iterator* p_last
-      = reinterpret_cast<Constraint_System::iterator*>(get_ptr(env, j_last));
+      = reinterpret_cast<Constraint_System::const_iterator*>
+          (get_ptr(env, j_last));
     Variables_Set p_vars = build_cxx_variables_set(env, j_vars);
-    PIP_Problem* pip_ptr = new PIP_Problem(p_dim, p_first, p_last, p_vars);
+    PIP_Problem* pip_ptr = new PIP_Problem(p_dim, *p_first, *p_last, p_vars);
     set_ptr(env, j_this_pip_problem, pip_ptr);
   }
   CATCH_ALL;
 }
-*/
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_PIP_1Problem_build_1cpp_1object__Lparma_1polyhedra_1library_PIP_1Problem_2
