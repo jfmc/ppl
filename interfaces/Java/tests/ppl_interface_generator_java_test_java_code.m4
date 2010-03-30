@@ -897,4 +897,30 @@ m4_define(`ppl_free_@CLASS@_code',
 
 ')
 
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_codexxx',
+    `dnl
+{
+    PPL_Test.print_if_noisy("Testing termination_@TERMINATION_ID@_@TOPOLOGY@@CLASS@: ");
+    @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
+    boolean term = Termination.termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(gd1);
+    report_success_or_failure(gd1.OK() && term);
+    gd1.free();
+}
+
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_codexxx',
+    `dnl
+{
+    PPL_Test.print_if_noisy("Testing termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@: ");
+    @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
+    @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s2);
+    boolean term = Termination.termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2(gd1, gd2);
+    report_success_or_failure(gd1.OK() && gd2.OK() && term);
+    gd1.free();
+    gd2.free();
+}
+
+')
+
 m4_divert`'dnl

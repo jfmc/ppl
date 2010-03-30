@@ -82,6 +82,37 @@ static {
 	return cs.isEmpty();
     }
 
+    public static boolean test03() {
+	// Test termination methods.
+	Variable X1 = new Variable(0);
+	Variable X2 = new Variable(1);
+	Variable XP1 = new Variable(2);
+	Variable XP2 = new Variable(3);
+	NNC_Polyhedron ph = new NNC_Polyhedron(4, Degenerate_Element.UNIVERSE);
+        Coefficient coeff_1 = new Coefficient(1);
+        Coefficient coeff_0 = new Coefficient(0);
+	Linear_Expression le_X1 = new Linear_Expression_Variable(X1);
+	Linear_Expression le_X2 = new Linear_Expression_Variable(X2);
+	Linear_Expression le_XP1 = new Linear_Expression_Variable(XP1);
+	Linear_Expression le_XP2 = new Linear_Expression_Variable(XP2);
+	Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
+	Linear_Expression le_0 = new Linear_Expression_Coefficient(coeff_0);
+	Linear_Expression le_X1_difference_XP1 = le_X1.sum(le_XP1);
+	Constraint c_XP2_eq_1
+          = new Constraint(le_XP2, Relation_Symbol.EQUAL, le_1);
+	Constraint c_X1_geq_1
+          = new Constraint(le_X1, Relation_Symbol.GREATER_OR_EQUAL, le_1);
+	Constraint c_X1_minus_XP1_geq_1
+          = new Constraint(le_X1_difference_XP1, Relation_Symbol.GREATER_OR_EQUAL, le_1);
+	Constraint c_X2_leq_0
+          = new Constraint(le_X2, Relation_Symbol.LESS_OR_EQUAL, le_0);
+	ph.add_constraint(c_XP2_eq_1);
+	ph.add_constraint(c_X1_geq_1);
+	ph.add_constraint(c_X1_minus_XP1_geq_1);
+	ph.add_constraint(c_X2_leq_0);
+	return Termination.termination_test_MS_NNC_Polyhedron(ph);
+    }
+
     public static void main(String[] args) {
         Parma_Polyhedra_Library.initialize_library();
 	boolean test_result_ok =
