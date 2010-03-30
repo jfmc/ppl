@@ -132,53 +132,21 @@ output_function_PR(std::ostream& s, const Variable& v) {
 }
 #endif
 
-template <typename PSET>
 void
+assign_all_inequalities_approximation(const Constraint_System& cs_in,
+				      Constraint_System& cs_out);
+
+template <typename PSET>
+inline void
 assign_all_inequalities_approximation(const PSET& pset,
 				      Constraint_System& cs) {
-  const Constraint_System& pset_cs = pset.minimized_constraints();
-  if (pset_cs.has_strict_inequalities() || pset_cs.has_equalities()) {
-    // Here we have some strict inequality and/or equality constraints:
-    // translate them into non-strict inequality constraints.
-    for (Constraint_System::const_iterator i = pset_cs.begin(),
-           i_end = pset_cs.end(); i != i_end; ++i) {
-      const Constraint& c = *i;
-      if (c.is_equality()) {
-        // Insert the two corresponding opposing inequalities.
-        cs.insert(Linear_Expression(c) >= 0);
-        cs.insert(Linear_Expression(c) <= 0);
-      }
-      else if (c.is_strict_inequality())
-        // Insert the non-strict approximation.
-        cs.insert(Linear_Expression(c) >= 0);
-      else
-        // Insert as is.
-        cs.insert(c);
-    }
-  }
-  else
-    // No strict inequality and no equality constraints.
-    cs = pset_cs;
+  assign_all_inequalities_approximation(pset.minimized_constraints(), cs);
 }
 
 template <>
 void
 assign_all_inequalities_approximation(const C_Polyhedron& ph,
 				      Constraint_System& cs);
-
-template <typename T>
-void
-assign_all_inequalities_approximation(const BD_Shape<T>& bds,
-				      Constraint_System& cs) {
-  cs = bds.minimized_constraints();
-}
-
-template <typename T>
-void
-assign_all_inequalities_approximation(const Octagonal_Shape<T>& ocs,
-				      Constraint_System& cs) {
-  cs = ocs.minimized_constraints();
-}
 
 void
 shift_unprimed_variables(Constraint_System& cs);

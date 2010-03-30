@@ -31,6 +31,33 @@ namespace Implementation {
 
 namespace Termination {
 
+void
+assign_all_inequalities_approximation(const Constraint_System& cs_in,
+				      Constraint_System& cs_out) {
+  if (cs_in.has_strict_inequalities() || cs_in.has_equalities()) {
+    // Here we have some strict inequality and/or equality constraints:
+    // translate them into non-strict inequality constraints.
+    for (Constraint_System::const_iterator i = cs_in.begin(),
+           i_end = cs_in.end(); i != i_end; ++i) {
+      const Constraint& c = *i;
+      if (c.is_equality()) {
+        // Insert the two corresponding opposing inequalities.
+        cs_out.insert(Linear_Expression(c) >= 0);
+        cs_out.insert(Linear_Expression(c) <= 0);
+      }
+      else if (c.is_strict_inequality())
+        // Insert the non-strict approximation.
+        cs_out.insert(Linear_Expression(c) >= 0);
+      else
+        // Insert as is.
+        cs_out.insert(c);
+    }
+  }
+  else
+    // No strict inequality and no equality constraints.
+    cs_out = cs_in;
+}
+
 template <>
 void
 assign_all_inequalities_approximation(const C_Polyhedron& ph,
