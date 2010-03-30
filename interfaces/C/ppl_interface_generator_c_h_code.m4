@@ -94,6 +94,29 @@ PPL_PROTO((ppl_const_@CLASS@_t pset_before,
 
 ')
 
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+`dnl
+/*! \relates ppl_@CLASS@_tag */
+int
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@
+PPL_PROTO((ppl_const_@CLASS@_t pset,
+           ppl_Polyhedron_t ph_decreasing,
+           ppl_Polyhedron_t ph_bounded));
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+/*! \relates ppl_@CLASS@_tag */
+int
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2
+PPL_PROTO((ppl_const_@CLASS@_t pset_before,
+           ppl_const_@CLASS@_t pset_after,
+           ppl_Polyhedron_t ph_decreasing,
+           ppl_Polyhedron_t ph_bounded));
+
+')
+
 m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `dnl
 /*! \relates ppl_@CLASS@_tag */

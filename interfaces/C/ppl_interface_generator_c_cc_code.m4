@@ -1325,6 +1325,43 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+`int
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@
+(ppl_const_@CLASS@_t pset,
+ ppl_Polyhedron_t ph_decreasing,
+ ppl_Polyhedron_t ph_bounded) try {
+  const @TOPOLOGY@@CPP_CLASS@& ppset
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset));
+  all_affine_quasi_ranking_functions_MS(ppset,
+    *static_cast<C_Polyhedron*>(to_nonconst(ph_decreasing)),
+    *static_cast<C_Polyhedron*>(to_nonconst(ph_bounded)));
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+`int
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2
+(ppl_const_@CLASS@_t pset_before,
+ ppl_const_@CLASS@_t pset_after,
+ ppl_Polyhedron_t ph_decreasing,
+ ppl_Polyhedron_t ph_bounded) try {
+  const @TOPOLOGY@@CPP_CLASS@& ppset_before
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_before));
+  const @TOPOLOGY@@CPP_CLASS@& ppset_after
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_after));
+  all_affine_quasi_ranking_functions_MS_2(ppset_before, ppset_after,
+    *static_cast<C_Polyhedron*>(to_nonconst(ph_decreasing)),
+    *static_cast<C_Polyhedron*>(to_nonconst(ph_bounded)));
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_wrap_assign_code',
 `int
 ppl_@CLASS@_wrap_assign
