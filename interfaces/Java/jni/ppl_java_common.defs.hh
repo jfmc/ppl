@@ -197,6 +197,8 @@ public:
   jclass Long;
   jclass Iterator;
   // PPL types.
+  jclass Artificial_Parameter;
+  jclass Artificial_Parameter_Sequence;
   jclass Bounded_Integer_Type_Overflow;
   jclass Bounded_Integer_Type_Representation;
   jclass Bounded_Integer_Type_Width;
@@ -222,6 +224,9 @@ public:
   jclass MIP_Problem_Status;
   jclass Optimization_Mode;
   jclass Pair;
+  jclass PIP_Problem_Control_Parameter_Name;
+  jclass PIP_Problem_Control_Parameter_Value;
+  jclass PIP_Problem_Status;
   jclass Poly_Con_Relation;
   jclass Poly_Gen_Relation;
   jclass PPL_Object;
@@ -268,6 +273,10 @@ struct Java_FMID_Cache {
   jmethodID Long_longValue_ID;
 
   // PPL type field and method IDs.
+  // Artificial_Parameter.
+  jmethodID Artificial_Parameter_init_ID;
+  jmethodID Artificial_Parameter_Sequence_init_ID;
+  jmethodID Artificial_Parameter_Sequence_add_ID;
   // Bounded_Integer_Type_Overflow.
   jfieldID Bounded_Integer_Type_Overflow_OVERFLOW_WRAPS_ID;
   jfieldID Bounded_Integer_Type_Overflow_OVERFLOW_UNDEFINED_ID;
@@ -361,6 +370,21 @@ struct Java_FMID_Cache {
   jfieldID Optimization_Mode_MAXIMIZATION_ID;
   jfieldID Optimization_Mode_MINIMIZATION_ID;
   jmethodID Optimization_Mode_ordinal_ID;
+  // PIP_Problem_Control_Parameter_Name.
+  jfieldID PIP_Problem_Control_Parameter_Name_CUTTING_STRATEGY_ID;
+  jfieldID PIP_Problem_Control_Parameter_Name_PIVOT_ROW_STRATEGY;
+  jmethodID PIP_Problem_Control_Parameter_Name_ordinal_ID;
+  // PIP_Problem_Control_Parameter_Value.
+  jfieldID PIP_Problem_Control_Parameter_Value_CUTTING_STRATEGY_FIRST_ID;
+  jfieldID PIP_Problem_Control_Parameter_Value_CUTTING_STRATEGY_DEEPEST_ID;
+  jfieldID PIP_Problem_Control_Parameter_Value_CUTTING_STRATEGY_ALL_ID;
+  jfieldID PIP_Problem_Control_Parameter_Value_PIVOT_ROW_STRATEGY_FIRST_ID;
+  jfieldID PIP_Problem_Control_Parameter_Value_PIVOT_ROW_STRATEGY_MAX_COLUMN_ID;
+  jmethodID PIP_Problem_Control_Parameter_Value_ordinal_ID;
+  // PIP_Problem_Status.
+  jfieldID PIP_Problem_Status_UNFEASIBLE_PIP_PROBLEM_ID;
+  jfieldID PIP_Problem_Status_OPTIMIZED_PIP_PROBLEM_ID;
+  jmethodID PIP_Problem_Status_ordinal_ID;
   // Pair.
   jfieldID Pair_first_ID;
   jfieldID Pair_second_ID;
@@ -539,11 +563,48 @@ build_java_control_parameter_value
 (JNIEnv* env, const MIP_Problem::Control_Parameter_Value& cp_value);
 
 /*! \brief
+  Builds a C++ PIP_Problem::Control_Parameter_Name
+  from Java parma_polyhedra_library::PIP_Problem_Control_Parameter_Name \p j_cp_name.
+*/
+PIP_Problem::Control_Parameter_Name
+build_cxx_pip_problem_control_parameter_name(JNIEnv* env, jobject j_cp_name);
+
+/*! \brief
+  Builds a Java parma_polyhedra_library::PIP_Problem_Control_Parameter_Name
+  from C++ PIP_Problem::Control_Parameter_Name \p cp_name.
+*/
+jobject
+build_java_pip_problem_control_parameter_name
+(JNIEnv* env, const PIP_Problem::Control_Parameter_Name& cp_name);
+
+/*! \brief
+  Builds a C++ PIP_Problem::Control_Parameter_Value
+  from Java parma_polyhedra_library::PIP_Problem_Control_Parameter_Value \p j_cp_value.
+*/
+PIP_Problem::Control_Parameter_Value
+build_cxx_pip_problem_control_parameter_value(JNIEnv* env, jobject j_cp_value);
+
+/*! \brief
+  Builds a Java parma_polyhedra_library::Control_Parameter_Value
+  from C++ PIP_Problem::Control_Parameter_Value \p cp_value.
+*/
+jobject
+build_java_pip_problem_control_parameter_value
+(JNIEnv* env, const PIP_Problem::Control_Parameter_Value& cp_value);
+
+/*! \brief
   Builds a Java parma_polyhedra_library::MIP_Problem_Status
   from C++ MIP_Problem_Status \p mip_status.
 */
 jobject
 build_java_mip_status(JNIEnv* env, const MIP_Problem_Status& mip_status);
+
+/*! \brief
+  Builds a Java parma_polyhedra_library::PIP_Problem_Status
+  from C++ PIP_Problem_Status \p pip_status.
+*/
+jobject
+build_java_pip_status(JNIEnv* env, const PIP_Problem_Status& pip_status);
 
 /*! \brief
   Builds a C++ Variable
@@ -579,6 +640,14 @@ build_java_coeff(JNIEnv* env, const Coefficient& ppl_coeff);
 */
 Constraint
 build_cxx_constraint(JNIEnv* env, jobject j_constraint);
+
+/*! \brief
+  Builds a C++ Artificial_Parameter
+  from Java parma_polyhedra_library::Artificial_Parameter
+  \p j_artificial_parameter.
+*/
+PIP_Tree_Node::Artificial_Parameter
+build_cxx_artificial_parameter(JNIEnv* env, jobject j_ap);
 
 /*! \brief
   Builds a C++ Linear_Expression
@@ -623,6 +692,13 @@ Constraint_System
 build_cxx_constraint_system(JNIEnv* env, jobject j_cs);
 
 /*! \brief
+  Builds a C++ Artificial_Parameter_Sequence
+  from Java parma_polyhedra_library::Artificial_Parameter_Sequence \p j_aps.
+*/
+PIP_Tree_Node::Artificial_Parameter_Sequence
+build_cxx_artificial_parameter_sequence(JNIEnv* env, jobject j_aps);
+
+/*! \brief
   Builds a C++ Generator_System
   from Java parma_polyhedra_library::Generator_System \p j_gs.
 */
@@ -642,6 +718,13 @@ build_cxx_congruence_system(JNIEnv* env, jobject j_cgs);
 */
 jobject
 build_java_constraint(JNIEnv* env, const Constraint& c);
+
+/*! \brief
+  Builds a Java parma_polyhedra_library::Artificial_Parameter
+  from C++ Artificial_Parameter \p ap.
+*/
+jobject
+build_java_artificial_parameter(JNIEnv* env, const PIP_Tree_Node::Artificial_Parameter& ap);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Congruence
@@ -670,6 +753,14 @@ build_java_grid_generator(JNIEnv* env, const Grid_Generator& g);
 */
 jobject
 build_java_constraint_system(JNIEnv* env, const Constraint_System& cs);
+
+/*! \brief
+  Builds a Java parma_polyhedra_library::Artificial_Parameter_Sequence
+  from C++ Artificial_Parameter_Sequence \p aps.
+*/
+jobject
+build_java_artificial_parameter_sequence(JNIEnv* env,
+                                         const PIP_Tree_Node::Artificial_Parameter_Sequence& aps);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Grid_Generator_System

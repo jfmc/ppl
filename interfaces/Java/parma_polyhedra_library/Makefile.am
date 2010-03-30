@@ -33,6 +33,9 @@ ppl_interface_generator_java_classes_java.m4 \
 ppl_interface_generator_java_classes_java_code.m4
 
 fixed_java_cxx_headers = \
+parma_polyhedra_library.Artificial_Parameter \
+parma_polyhedra_library.Artificial_Parameter_Sequence \
+parma_polyhedra_library.Artificial_Parameter_Sequence_Iterator \
 parma_polyhedra_library.Bounded_Integer_Type_Overflow \
 parma_polyhedra_library.Bounded_Integer_Type_Representation \
 parma_polyhedra_library.Bounded_Integer_Type_Width \
@@ -43,6 +46,7 @@ parma_polyhedra_library.Congruence \
 parma_polyhedra_library.Congruence_System \
 parma_polyhedra_library.Constraint \
 parma_polyhedra_library.Constraint_System \
+parma_polyhedra_library.Constraint_System_Iterator \
 parma_polyhedra_library.Degenerate_Element \
 parma_polyhedra_library.Generator \
 parma_polyhedra_library.Generator_System \
@@ -62,6 +66,13 @@ parma_polyhedra_library.MIP_Problem \
 parma_polyhedra_library.MIP_Problem_Status \
 parma_polyhedra_library.Optimization_Mode \
 parma_polyhedra_library.Pair \
+parma_polyhedra_library.PIP_Problem \
+parma_polyhedra_library.PIP_Problem_Control_Parameter_Name \
+parma_polyhedra_library.PIP_Problem_Control_Parameter_Value \
+parma_polyhedra_library.PIP_Problem_Status \
+parma_polyhedra_library.PIP_Decision_Node \
+parma_polyhedra_library.PIP_Solution_Node \
+parma_polyhedra_library.PIP_Tree_Node \
 parma_polyhedra_library.Parma_Polyhedra_Library \
 parma_polyhedra_library.Poly_Con_Relation \
 parma_polyhedra_library.Poly_Gen_Relation \
@@ -72,6 +83,9 @@ parma_polyhedra_library.Variable \
 parma_polyhedra_library.Variables_Set
 
 fixed_java_cxx_headers_sources = \
+parma_polyhedra_library_Artificial_Parameter.h \
+parma_polyhedra_library_Artificial_Parameter_Sequence.h \
+parma_polyhedra_library_Artificial_Parameter_Sequence_Iterator.h \
 parma_polyhedra_library_Bounded_Integer_Type_Overflow.h \
 parma_polyhedra_library_Bounded_Integer_Type_Representation.h \
 parma_polyhedra_library_Bounded_Integer_Type_Width.h \
@@ -82,6 +96,7 @@ parma_polyhedra_library_Congruence.h \
 parma_polyhedra_library_Congruence_System.h \
 parma_polyhedra_library_Constraint.h \
 parma_polyhedra_library_Constraint_System.h \
+parma_polyhedra_library_Constraint_System_Iterator.h \
 parma_polyhedra_library_Degenerate_Element.h \
 parma_polyhedra_library_Generator.h \
 parma_polyhedra_library_Generator_System.h \
@@ -102,6 +117,13 @@ parma_polyhedra_library_MIP_Problem_Status.h \
 parma_polyhedra_library_Optimization_Mode.h \
 parma_polyhedra_library_Pair.h \
 parma_polyhedra_library_Parma_Polyhedra_Library.h \
+parma_polyhedra_library_PIP_Problem.h \
+parma_polyhedra_library_PIP_Problem_Control_Parameter_Name.h \
+parma_polyhedra_library_PIP_Problem_Control_Parameter_Value.h \
+parma_polyhedra_library_PIP_Problem_Status.h \
+parma_polyhedra_library_PIP_Decision_Node.h \
+parma_polyhedra_library_PIP_Solution_Node.h \
+parma_polyhedra_library_PIP_Tree_Node.h \
 parma_polyhedra_library_Poly_Con_Relation.h \
 parma_polyhedra_library_Poly_Gen_Relation.h \
 parma_polyhedra_library_PPL_Object.h \
@@ -112,6 +134,9 @@ parma_polyhedra_library_Variables_Set.h
 
 # NOTE: do _NOT_ add Fake_Class_for_Doxygen.java to this list.
 fixed_java_sources = \
+$(srcdir)/Artificial_Parameter.java \
+$(srcdir)/Artificial_Parameter_Sequence.java \
+$(srcdir)/Artificial_Parameter_Sequence_Iterator.java \
 $(srcdir)/Bounded_Integer_Type_Overflow.java \
 $(srcdir)/Bounded_Integer_Type_Representation.java \
 $(srcdir)/Bounded_Integer_Type_Width.java \
@@ -122,6 +147,7 @@ $(srcdir)/Congruence.java \
 $(srcdir)/Congruence_System.java \
 $(srcdir)/Constraint.java \
 $(srcdir)/Constraint_System.java \
+$(srcdir)/Constraint_System_Iterator.java \
 $(srcdir)/Control_Parameter_Name.java \
 $(srcdir)/Control_Parameter_Value.java \
 $(srcdir)/Degenerate_Element.java \
@@ -148,6 +174,13 @@ $(srcdir)/MIP_Problem_Status.java \
 $(srcdir)/Optimization_Mode.java \
 $(srcdir)/Overflow_Error_Exception.java \
 $(srcdir)/Pair.java \
+$(srcdir)/PIP_Problem.java \
+$(srcdir)/PIP_Problem_Control_Parameter_Name.java \
+$(srcdir)/PIP_Problem_Control_Parameter_Value.java \
+$(srcdir)/PIP_Problem_Status.java \
+$(srcdir)/PIP_Decision_Node.java \
+$(srcdir)/PIP_Solution_Node.java \
+$(srcdir)/PIP_Tree_Node.java \
 $(srcdir)/Parma_Polyhedra_Library.java \
 $(srcdir)/Partial_Function.java \
 $(srcdir)/Poly_Con_Relation.java \
@@ -218,6 +251,9 @@ java_classes.stamp \
 java_cxx_headers.stamp \
 source_generation.stamp \
 Termination.java \
+Artificial_Parameter.class \
+Artificial_Parameter_Sequence.class \
+Artificial_Parameter_Sequence_Iterator.class \
 Bounded_Integer_Type_Overflow.class \
 Bounded_Integer_Type_Representation.class \
 Bounded_Integer_Type_Width.class \
@@ -228,6 +264,7 @@ Congruence.class \
 Congruence_System.class \
 Constraint.class \
 Constraint_System.class \
+Constraint_System_Iterator.class \
 Control_Parameter_Name.class \
 Control_Parameter_Value.class \
 Degenerate_Element.class \
@@ -256,6 +293,13 @@ Overflow_Error_Exception.class \
 Pair.class \
 Parma_Polyhedra_Library.class \
 Partial_Function.class \
+PIP_Problem.class \
+PIP_Problem_Control_Parameter_Name.class \
+PIP_Problem_Control_Parameter_Value.class \
+PIP_Problem_Status.class \
+PIP_Decision_Node.class \
+PIP_Solution_Node.class \
+PIP_Tree_Node.class \
 Poly_Con_Relation.class \
 Poly_Gen_Relation.class \
 PPL_Object.class \
