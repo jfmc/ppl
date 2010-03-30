@@ -46,7 +46,6 @@ parma_polyhedra_library.Congruence \
 parma_polyhedra_library.Congruence_System \
 parma_polyhedra_library.Constraint \
 parma_polyhedra_library.Constraint_System \
-parma_polyhedra_library.Constraint_System_Iterator \
 parma_polyhedra_library.Degenerate_Element \
 parma_polyhedra_library.Generator \
 parma_polyhedra_library.Generator_System \
@@ -96,7 +95,6 @@ parma_polyhedra_library_Congruence.h \
 parma_polyhedra_library_Congruence_System.h \
 parma_polyhedra_library_Constraint.h \
 parma_polyhedra_library_Constraint_System.h \
-parma_polyhedra_library_Constraint_System_Iterator.h \
 parma_polyhedra_library_Degenerate_Element.h \
 parma_polyhedra_library_Generator.h \
 parma_polyhedra_library_Generator_System.h \
@@ -147,7 +145,6 @@ $(srcdir)/Congruence.java \
 $(srcdir)/Congruence_System.java \
 $(srcdir)/Constraint.java \
 $(srcdir)/Constraint_System.java \
-$(srcdir)/Constraint_System_Iterator.java \
 $(srcdir)/Control_Parameter_Name.java \
 $(srcdir)/Control_Parameter_Value.java \
 $(srcdir)/Degenerate_Element.java \
@@ -264,7 +261,6 @@ Congruence.class \
 Congruence_System.class \
 Constraint.class \
 Constraint_System.class \
-Constraint_System_Iterator.class \
 Control_Parameter_Name.class \
 Control_Parameter_Value.class \
 Degenerate_Element.class \

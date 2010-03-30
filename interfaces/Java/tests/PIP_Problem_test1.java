@@ -50,6 +50,7 @@ static {
 	Linear_Expression_Variable le_b = new Linear_Expression_Variable(B);
 	Linear_Expression_Variable le_c = new Linear_Expression_Variable(C);
 	Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
+	Linear_Expression_Variable le_d = new Linear_Expression_Variable(D);
         Coefficient coeff_1 = new Coefficient(1);
         Coefficient coeff_3 = new Coefficient(3);
         Coefficient coeff_5 = new Coefficient(5);
@@ -64,6 +65,8 @@ static {
           = new Constraint(le_a, Relation_Symbol.LESS_OR_EQUAL, le_5);
 	Constraint c_b_geq_3
           = new Constraint(le_b, Relation_Symbol.GREATER_OR_EQUAL, le_3);
+	Constraint c_d_leq_1
+          = new Constraint(le_d, Relation_Symbol.LESS_OR_EQUAL, le_1);
 	Constraint constraint1 = c_a_geq_1;
 	Constraint constraint2 = c_b_geq_3;
 	Constraint_System constraints1 = new Constraint_System();
@@ -100,6 +103,23 @@ static {
                                                 Degenerate_Element.UNIVERSE);
         pip3_ph.add_constraints(pip3_constraints);
         ok = ok && pip3_ph.equals(ph2);
+
+	Constraint constraint4 = c_d_leq_1;
+	Constraint_System constraints4 = new Constraint_System();
+        constraints4.add(constraint1);
+        constraints4.add(constraint4);
+        PIP_Problem pip4 = new PIP_Problem(4, constraints4, var_set_D);
+        ok = ok
+             && (pip4.space_dimension() == 4)
+             && (pip4.number_of_parameter_space_dimensions() == 1);
+        Constraint_System pip4_constraints = pip4.constraints();
+        C_Polyhedron pip4_ph = new C_Polyhedron(4,
+                                                Degenerate_Element.UNIVERSE);
+        C_Polyhedron ph4 = new C_Polyhedron(4, Degenerate_Element.UNIVERSE);
+        ph4.add_constraint(constraint1);
+        ph4.add_constraint(constraint4);
+        pip4_ph.add_constraints(pip4_constraints);
+        ok = ok && pip4_ph.equals(ph4);
 
 	return ok;
     }

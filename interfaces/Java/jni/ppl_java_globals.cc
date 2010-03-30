@@ -1489,136 +1489,6 @@ Java_parma_1polyhedra_1library_IO_wrap_1string
 }
 
 JNIEXPORT void JNICALL
-Java_parma_1polyhedra_1library_Constraint_1System_1Iterator_build_1cpp_1object
-(JNIEnv* env, jobject j_this, jobject j_y) try {
-  Constraint_System::const_iterator* y_ptr
-    = reinterpret_cast<Constraint_System::const_iterator*>(get_ptr(env, j_y));
-  Constraint_System::const_iterator* this_ptr
-    = new Constraint_System::const_iterator(*y_ptr);
-  set_ptr(env, j_this, this_ptr);
-}
-CATCH_ALL
-
-JNIEXPORT jobject JNICALL
-Java_parma_1polyhedra_1library_Constraint_1System_begin_1iterator
-(JNIEnv* env, jobject j_this) {
-  try {
-    Constraint_System* this_ptr
-      = reinterpret_cast<Constraint_System*>(get_ptr(env, j_this));
-    jclass j_it_class
-      = env->FindClass("parma_polyhedra_library/Constraint_System_Iterator");
-    CHECK_RESULT_ASSERT(env, j_it_class);
-    jmethodID j_it_ctr_id = env->GetMethodID(j_it_class, "<init>", "()V");
-    CHECK_RESULT_ASSERT(env, j_it_ctr_id);
-    jobject j_it = env->NewObject(j_it_class, j_it_ctr_id);
-    CHECK_RESULT_RETURN(env, j_it, 0);
-    Constraint_System::const_iterator* ppl_it
-      = new Constraint_System::const_iterator(this_ptr->begin());
-    set_ptr(env, j_it, ppl_it);
-    return j_it;
-  }
-  CATCH_ALL;
-  jobject null = 0;
-  return null;
-}
-
-JNIEXPORT jobject JNICALL
-Java_parma_1polyhedra_1library_Constraint_1System_end_1iterator
-(JNIEnv* env, jobject j_this) {
-  try {
-    Constraint_System* this_ptr
-      = reinterpret_cast<Constraint_System*>(get_ptr(env, j_this));
-    jclass j_it_class
-      = env->FindClass("parma_polyhedra_library/Constraint_System_Iterator");
-    CHECK_RESULT_ASSERT(env, j_it_class);
-    jmethodID j_it_ctr_id = env->GetMethodID(j_it_class, "<init>", "()V");
-    CHECK_RESULT_ASSERT(env, j_it_ctr_id);
-    jobject j_it = env->NewObject(j_it_class, j_it_ctr_id);
-    CHECK_RESULT_RETURN(env, j_it, 0);
-    Constraint_System::const_iterator* ppl_it
-      = new Constraint_System::const_iterator(this_ptr->end());
-    set_ptr(env, j_it, ppl_it);
-    return j_it;
-  }
-  CATCH_ALL;
-  jobject null = 0;
-  return null;
-}
-
-JNIEXPORT jboolean JNICALL
-Java_parma_1polyhedra_1library_Constraint_1System_1Iterator_equals
-(JNIEnv* env, jobject j_this, jobject j_y) {
-  try {
-    Constraint_System::const_iterator* this_ptr
-      = reinterpret_cast<Constraint_System::const_iterator*>
-          (get_ptr(env, j_this));
-    Constraint_System::const_iterator* y_ptr
-      = reinterpret_cast<Constraint_System::const_iterator*>
-          (get_ptr(env, j_y));
-    return *this_ptr == *y_ptr;
-  }
-  CATCH_ALL;
-  return false;
-}
-
-JNIEXPORT void JNICALL
-Java_parma_1polyhedra_1library_Constraint_1System_1Iterator_next
-(JNIEnv* env, jobject j_this) try {
-  Constraint_System::const_iterator* this_ptr
-    = reinterpret_cast<Constraint_System::const_iterator*>
-        (get_ptr(env, j_this));
-  ++(*this_ptr);
-}
-CATCH_ALL
-
-JNIEXPORT jobject JNICALL
-Java_parma_1polyhedra_1library_Constraint_1System_1Iterator_get_1constraint
-(JNIEnv* env, jobject j_this) {
-  try {
-    Constraint_System::const_iterator* this_ptr
-      = reinterpret_cast<Constraint_System::const_iterator*>
-          (get_ptr(env, j_this));
-    jclass j_class = env->FindClass("parma_polyhedra_library/Constraint");
-    CHECK_RESULT_ASSERT(env, j_class);
-    jmethodID j_ctr_id = env->GetMethodID(j_class, "<init>", "()V");
-    CHECK_RESULT_ASSERT(env, j_ctr_id);
-    jobject j_obj = env->NewObject(j_class, j_ctr_id);
-    CHECK_RESULT_RETURN(env, j_obj, 0);
-    set_ptr(env, j_obj, this_ptr);
-    return j_obj;
-  }
-  CATCH_ALL;
-  jobject null = 0;
-  return null;
-}
-
-JNIEXPORT void JNICALL
-Java_parma_1polyhedra_1library_Constraint_1System_1Iterator_free
-(JNIEnv* env, jobject j_this) try {
-  if (!is_java_marked(env, j_this)) {
-    Constraint_System::const_iterator* this_ptr
-      = reinterpret_cast<Constraint_System::const_iterator*>
-          (get_ptr(env, j_this));
-    delete this_ptr;
-    void* null_ptr = 0;
-    set_ptr(env, j_this, null_ptr);
-  }
-}
-CATCH_ALL
-
-JNIEXPORT void JNICALL
-Java_parma_1polyhedra_1library_Constraint_1System_1Iterator_finalize
-(JNIEnv* env, jobject j_this) try {
-  if (!is_java_marked(env, j_this)) {
-    Constraint_System::const_iterator* this_ptr
-      = reinterpret_cast<Constraint_System::const_iterator*>
-          (get_ptr(env, j_this));
-    delete this_ptr;
-  }
-}
-CATCH_ALL
-
-JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_PIP_1Problem_build_1cpp_1object__J
 (JNIEnv* env, jobject j_this_pip_problem, jlong j_dim) {
   try {
@@ -1630,19 +1500,15 @@ Java_parma_1polyhedra_1library_PIP_1Problem_build_1cpp_1object__J
 }
 
 JNIEXPORT void JNICALL
-Java_parma_1polyhedra_1library_PIP_1Problem_build_1cpp_1object__JLparma_1polyhedra_1library_Constraint_1System_1Iterator_2Lparma_1polyhedra_1library_Constraint_1System_1Iterator_2Lparma_1polyhedra_1library_Variables_1Set_2
+Java_parma_1polyhedra_1library_PIP_1Problem_build_1cpp_1object__JLparma_1polyhedra_1library_Constraint_1System_2Lparma_1polyhedra_1library_Variables_1Set_2
 (JNIEnv* env , jobject j_this_pip_problem, jlong j_dim,
- jobject j_first, jobject j_last, jobject j_vars) {
+ jobject j_cs, jobject j_vars) {
   try {
     dimension_type p_dim = jtype_to_unsigned<dimension_type>(j_dim);
-    Constraint_System::const_iterator* p_first
-      = reinterpret_cast<Constraint_System::const_iterator*>
-          (get_ptr(env, j_first));
-    Constraint_System::const_iterator* p_last
-      = reinterpret_cast<Constraint_System::const_iterator*>
-          (get_ptr(env, j_last));
+    Constraint_System p_cs = build_cxx_constraint_system(env, j_cs);
     Variables_Set p_vars = build_cxx_variables_set(env, j_vars);
-    PIP_Problem* pip_ptr = new PIP_Problem(p_dim, *p_first, *p_last, p_vars);
+    PIP_Problem* pip_ptr = new PIP_Problem(p_dim, p_cs.begin(),
+                                           p_cs.end(), p_vars);
     set_ptr(env, j_this_pip_problem, pip_ptr);
   }
   CATCH_ALL;
@@ -1960,6 +1826,30 @@ Java_parma_1polyhedra_1library_PIP_1Problem_constraints
                              j_constraint);
       CHECK_EXCEPTION_RETURN(env, 0);
     }
+    return j_cs;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_constraint_1at_1index
+(JNIEnv* env, jobject j_this_pip_problem, jlong j_dim) {
+  try {
+    jobject j_cs = env->NewObject(cached_classes.Constraint_System,
+                                  cached_FMIDs.Constraint_System_init_ID);
+    CHECK_RESULT_RETURN(env, j_cs, 0);
+
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    dimension_type p_dim = jtype_to_unsigned<dimension_type>(j_dim);
+    jobject j_constraint
+      = build_java_constraint(env, *(pip->constraints_begin() + p_dim));
+    env->CallBooleanMethod(j_cs,
+                           cached_FMIDs.Constraint_System_add_ID,
+                           j_constraint);
+    CHECK_EXCEPTION_RETURN(env, 0);
     return j_cs;
   }
   CATCH_ALL;

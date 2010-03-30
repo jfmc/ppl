@@ -115,15 +115,12 @@ public class PIP_Problem extends PPL_Object {
 
   //! Builds a PIP problem from a sequence of constraints.
   /*!
-    Builds a PIP problem having space dimension \p dim from the sequence
-    of constraints in the range \f$[\mathrm{first}, \mathrm{last})\f$;
-    the dimensions whose indices occur in \p vars are interpreted as
+    Builds a PIP problem having space dimension \p dim from the
+    constraint system cs; the dimensions \p vars are interpreted as
     parameters.
   */
-    public PIP_Problem(long dim, Constraint_System_Iterator first,
-                                 Constraint_System_Iterator last,
-                                 Variables_Set vars) {
-	build_cpp_object(dim, first, last, vars);
+   public PIP_Problem(long dim, Constraint_System cs, Variables_Set params) {
+	build_cpp_object(dim, cs, params);
     }
 
     //! Builds a copy of \p y.
@@ -320,8 +317,7 @@ public class PIP_Problem extends PPL_Object {
 
     //! Builds the underlying C++ object.
     private native void build_cpp_object(long dim,
-					 Constraint_System_Iterator first,
-                                         Constraint_System_Iterator last,
+					 Constraint_System cs,
                                          Variables_Set vars);
 
     //! Builds the underlying C++ object.
