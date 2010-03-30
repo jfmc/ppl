@@ -1153,7 +1153,7 @@ build_java_constraint_system(JNIEnv* env, const Constraint_System& cs) {
                                 cached_FMIDs.Constraint_System_init_ID);
   CHECK_RESULT_THROW(env, j_cs);
   for (Constraint_System::const_iterator v_begin = cs.begin(),
- 	 v_end = cs.end(); v_begin != v_end; ++v_begin) {
+	 v_end = cs.end(); v_begin != v_end; ++v_begin) {
     jobject j_constraint = build_java_constraint(env, *v_begin);
     env->CallBooleanMethod(j_cs,
                            cached_FMIDs.Constraint_System_add_ID,
@@ -1169,7 +1169,7 @@ build_java_generator_system(JNIEnv* env, const Generator_System& gs) {
                                 cached_FMIDs.Generator_System_init_ID);
   CHECK_RESULT_THROW(env, j_gs);
   for (Generator_System::const_iterator v_begin = gs.begin(),
- 	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
+	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
     jobject j_generator = build_java_generator(env, *v_begin);
     env->CallBooleanMethod(j_gs,
                            cached_FMIDs.Generator_System_add_ID,
@@ -1186,7 +1186,7 @@ build_java_grid_generator_system(JNIEnv* env,
                                 cached_FMIDs.Grid_Generator_System_init_ID);
   CHECK_RESULT_THROW(env, j_gs);
   for (Grid_Generator_System::const_iterator v_begin = gs.begin(),
- 	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
+	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
     jobject j_generator = build_java_grid_generator(env, *v_begin);
     env->CallBooleanMethod(j_gs,
                            cached_FMIDs.Grid_Generator_System_add_ID,
@@ -1202,7 +1202,7 @@ build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs) {
                                  cached_FMIDs.Congruence_System_init_ID);
   CHECK_RESULT_THROW(env, j_cgs);
   for (Congruence_System::const_iterator v_begin = cgs.begin(),
-  	 v_end = cgs.end(); v_begin != v_end; ++v_begin) {
+	 v_end = cgs.end(); v_begin != v_end; ++v_begin) {
     jobject j_congruence = build_java_congruence(env,*v_begin);
     env->CallBooleanMethod(j_cgs,
                            cached_FMIDs.Congruence_System_add_ID,
@@ -1217,8 +1217,9 @@ build_java_artificial_parameter_sequence(JNIEnv* env, const PIP_Tree_Node::Artif
   jobject j_aps = env->NewObject(cached_classes.Artificial_Parameter_Sequence,
                                 cached_FMIDs.Artificial_Parameter_Sequence_init_ID);
   CHECK_RESULT_THROW(env, j_aps);
-  for (PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator v_begin = aps.begin(),
- 	 v_end = aps.end(); v_begin != v_end; ++v_begin) {
+  for (PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator v_begin
+    = aps.begin(),
+    v_end = aps.end(); v_begin != v_end; ++v_begin) {
     jobject j_aps = build_java_artificial_parameter(env, *v_begin);
     env->CallBooleanMethod(j_aps,
                            cached_FMIDs.Artificial_Parameter_Sequence_add_ID,
