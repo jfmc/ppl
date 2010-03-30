@@ -34,7 +34,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "parma_polyhedra_library_Congruence_System.h"
 #include "parma_polyhedra_library_Constraint.h"
 #include "parma_polyhedra_library_Constraint_System.h"
-#include "parma_polyhedra_library_Constraint_System_Iterator.h"
 #include "parma_polyhedra_library_Degenerate_Element.h"
 #include "parma_polyhedra_library_Generator.h"
 #include "parma_polyhedra_library_Generator_System.h"
