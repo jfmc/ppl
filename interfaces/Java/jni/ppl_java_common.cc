@@ -815,7 +815,7 @@ build_java_pip_problem_control_parameter_value
     throw std::runtime_error("PPL Java interface internal error");
   }
   jfieldID fID = env->GetStaticFieldID(j_cp_value_class, field_name,
-                                       "Lparma_polyhedra_library/Control_Parameter_Value;");
+                                       "Lparma_polyhedra_library/PIP_Problem_Control_Parameter_Value;");
   CHECK_RESULT_ASSERT(env, fID);
   return env->GetStaticObjectField(j_cp_value_class, fID);
 }

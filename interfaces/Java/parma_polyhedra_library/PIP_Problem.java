@@ -155,10 +155,7 @@ public class PIP_Problem extends PPL_Object {
     public native long number_of_parameter_space_dimensions();
 
     /*! \brief
-      Returns the first positions of the array \p ds all the parameter
-      space dimensions of problem \p pip. If the array is not big enough
-      to hold all of the parameter space dimensions, the behavior is
-      undefined.
+      Returns all the parameter space dimensions of problem \p pip.
     */
     public native Variables_Set parameter_space_dimensions();
 
@@ -176,6 +173,9 @@ public class PIP_Problem extends PPL_Object {
       of the PIP problem \p pip.
     */
     public native Constraint constraint_at_index(long dim);
+
+    //! Returns the constraints .
+    public native Constraint_System constraints();
 
     //! Returns an ascii formatted internal representation of \p this.
     public native String ascii_dump();
@@ -236,9 +236,8 @@ public class PIP_Problem extends PPL_Object {
                                                       long pip_params);
 
     /*! \brief
-      Sets the space dimensions that are specified in first \p n positions
-      of the array \p ds to be parameter dimensions of the PIP problem.
-      The presence of duplicates in \p ds is a waste but an innocuous one.
+      Sets the space dimensions in \p vars to be parameter dimensions of
+      the PIP problem.
     */
     public native void add_to_parameter_space_dimensions(Variables_Set vars);
 

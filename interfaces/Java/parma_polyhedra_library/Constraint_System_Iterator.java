@@ -37,6 +37,9 @@ public class Constraint_System_Iterator extends PPL_Object {
   }
 
   private native void
+      build_cpp_object(Constraint_System y);
+
+  private native void
       build_cpp_object(Constraint_System_Iterator y);
 
   public native boolean equals(Constraint_System_Iterator itr);

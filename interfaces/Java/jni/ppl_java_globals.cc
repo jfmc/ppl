@@ -1773,6 +1773,19 @@ Java_parma_1polyhedra_1library_PIP_1Problem_get_1big_1parameter_1dimension
   return 0;
 }
 
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_parameter_1space_1dimensions
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    return build_java_variables_set(env, pip->parameter_space_dimensions());
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_PIP_1Problem_set_1big_1parameter_1dimension
 (JNIEnv* env , jobject j_this_pip_problem, jlong j_dim) {
@@ -1912,7 +1925,7 @@ Java_parma_1polyhedra_1library_PIP_1Problem_optimizing_1solution
 }
 
 JNIEXPORT jobject JNICALL
-Java_parma_1polyhedra_1library_PIP_1Problem_get_1control_1parameter
+Java_parma_1polyhedra_1library_PIP_1Problem_get_1pip_1problem_1control_1parameter
 (JNIEnv* env , jobject j_this_pip_problem,
  jobject j_cpn) {
   try {
@@ -1929,8 +1942,33 @@ Java_parma_1polyhedra_1library_PIP_1Problem_get_1control_1parameter
   return null;
 }
 
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_constraints
+(JNIEnv* env, jobject j_this_pip_problem) {
+  try {
+    jobject j_cs = env->NewObject(cached_classes.Constraint_System,
+                                  cached_FMIDs.Constraint_System_init_ID);
+    CHECK_RESULT_RETURN(env, j_cs, 0);
+
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    for (PIP_Problem::const_iterator cs_it = pip->constraints_begin(),
+	   cs_end = pip->constraints_end(); cs_it != cs_end; ++cs_it) {
+      jobject j_constraint = build_java_constraint(env, *cs_it);
+      env->CallBooleanMethod(j_cs,
+                             cached_FMIDs.Constraint_System_add_ID,
+                             j_constraint);
+      CHECK_EXCEPTION_RETURN(env, 0);
+    }
+    return j_cs;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
 JNIEXPORT void JNICALL
-Java_parma_1polyhedra_1library_PIP_1Problem_set_1problem_1control_1parameter
+Java_parma_1polyhedra_1library_PIP_1Problem_set_1pip_1problem_1control_1parameter
 (JNIEnv* env , jobject j_this_pip_problem, jobject j_cpv) {
   try {
     PIP_Problem* pip
