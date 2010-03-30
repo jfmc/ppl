@@ -78,7 +78,7 @@ parma_polyhedra_library.Poly_Con_Relation \
 parma_polyhedra_library.Poly_Gen_Relation \
 parma_polyhedra_library.PPL_Object \
 parma_polyhedra_library.Relation_Symbol \
-parma_polyhedra_library.Termination   \
+parma_polyhedra_library.Termination \
 parma_polyhedra_library.Variable \
 parma_polyhedra_library.Variables_Set
 
