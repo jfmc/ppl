@@ -46,6 +46,22 @@ o  New methods
    return true if and only if `*this' is 0, and if and only if all the
    homogeneous terms of `*this' are 0, respectively.
 
+o  For the PPL semantic objects, other than the Pointset_Powerset and
+   Partially_Reduced Product, there is a new method:
+
+     bool frequency(const Linear_Expression& expr,
+                    Coefficient& freq_n, Coefficient& freq_d,
+                    Coefficient& val_n, Coefficient& val_d)
+
+   This operator computes both the "frequency" (f = freq_n/freq_d)
+   and a value (v = val_n/val_d)  closest to zero so that every point
+   in the object satisfies the congruence (expr %= v) / f.
+
+o  New reduction operator "Shape_Preserving_Reduction" has been added to
+   the Partially_Reduced_Product abstraction.
+   This operator is aimed at the product of a grid and a shape domain;
+   allowing the bounds of the shape to shrink to the touch the points
+   of the grid, such that the new bounds are parallel to the old bounds.
 
 Deprecated and removed methods
 ------------------------------
