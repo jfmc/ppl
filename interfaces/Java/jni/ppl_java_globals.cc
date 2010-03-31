@@ -1765,9 +1765,16 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_PIP_1Problem_solution
   try {
     PIP_Problem* pip
       = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
-  jobject j_t;
-  set_ptr(env, j_t, pip->solution());
-  return j_t;
+    const PIP_Tree_Node* solution = pip->solution();
+
+    jclass j_class_s = env->FindClass("parma_polyhedra_library/PIP_Tree_Node");
+    CHECK_RESULT_ASSERT(env, j_class_s);
+    jmethodID j_ctr_id_s = env->GetMethodID(j_class_s, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_s);
+    jobject j_obj_s = env->NewObject(j_class_s, j_ctr_id_s);
+    CHECK_RESULT_RETURN(env, j_obj_s, 0);
+    set_ptr(env, j_obj_s, solution);
+    return j_obj_s;
   }
   CATCH_ALL;
   jobject null = 0;
@@ -1780,9 +1787,16 @@ Java_parma_1polyhedra_1library_PIP_1Problem_optimizing_1solution
   try {
     PIP_Problem* pip
       = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
-  jobject j_t;
-  set_ptr(env, j_t, pip->optimizing_solution());
-  return j_t;
+    const PIP_Tree_Node* solution = pip->optimizing_solution();
+
+    jclass j_class_s = env->FindClass("parma_polyhedra_library/PIP_Tree_Node");
+    CHECK_RESULT_ASSERT(env, j_class_s);
+    jmethodID j_ctr_id_s = env->GetMethodID(j_class_s, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_s);
+    jobject j_obj_s = env->NewObject(j_class_s, j_ctr_id_s);
+    CHECK_RESULT_RETURN(env, j_obj_s, 0);
+    set_ptr(env, j_obj_s, solution);
+    return j_obj_s;
   }
   CATCH_ALL;
   jobject null = 0;
@@ -1836,20 +1850,14 @@ JNIEXPORT jobject JNICALL
 Java_parma_1polyhedra_1library_PIP_1Problem_constraint_1at_1index
 (JNIEnv* env, jobject j_this_pip_problem, jlong j_dim) {
   try {
-    jobject j_cs = env->NewObject(cached_classes.Constraint_System,
-                                  cached_FMIDs.Constraint_System_init_ID);
-    CHECK_RESULT_RETURN(env, j_cs, 0);
+    jobject j_c = env->NewObject(cached_classes.Constraint,
+                                  cached_FMIDs.Constraint_init_ID);
+    CHECK_RESULT_RETURN(env, j_c, 0);
 
     PIP_Problem* pip
       = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
     dimension_type p_dim = jtype_to_unsigned<dimension_type>(j_dim);
-    jobject j_constraint
-      = build_java_constraint(env, *(pip->constraints_begin() + p_dim));
-    env->CallBooleanMethod(j_cs,
-                           cached_FMIDs.Constraint_System_add_ID,
-                           j_constraint);
-    CHECK_EXCEPTION_RETURN(env, 0);
-    return j_cs;
+    return build_java_constraint(env, *(pip->constraints_begin() + p_dim));
   }
   CATCH_ALL;
   jobject null = 0;
@@ -1903,19 +1911,43 @@ Java_parma_1polyhedra_1library_PIP_1Tree_1Node_finalize
 JNIEXPORT jobject JNICALL
 Java_parma_1polyhedra_1library_PIP_1Tree_1Node_as_1solution
 (JNIEnv* env, jobject j_this) {
-  PIP_Tree_Node* pip = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this));
-  jobject j_sol;
-  set_ptr(env, j_sol, pip->as_solution());
-  return j_sol;
+  try {
+    PIP_Tree_Node* pip = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this));
+    const PIP_Solution_Node* solution = pip->as_solution();
+
+    jclass j_class_s = env->FindClass("parma_polyhedra_library/PIP_Solution_Node");
+    CHECK_RESULT_ASSERT(env, j_class_s);
+    jmethodID j_ctr_id_s = env->GetMethodID(j_class_s, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_s);
+    jobject j_obj_s = env->NewObject(j_class_s, j_ctr_id_s);
+    CHECK_RESULT_RETURN(env, j_obj_s, 0);
+    set_ptr(env, j_obj_s, solution);
+    return j_obj_s;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
 }
 
 JNIEXPORT jobject JNICALL
 Java_parma_1polyhedra_1library_PIP_1Tree_1Node_as_1decision
 (JNIEnv* env, jobject j_this) {
-  PIP_Tree_Node* pip = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this));
-  jobject j_dec;
-  set_ptr(env, j_dec, pip->as_decision());
-  return j_dec;
+  try {
+    PIP_Tree_Node* pip = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this));
+    const PIP_Decision_Node* decision = pip->as_decision();
+
+    jclass j_class_d = env->FindClass("parma_polyhedra_library/PIP_Decision_Node");
+    CHECK_RESULT_ASSERT(env, j_class_d);
+    jmethodID j_ctr_id_d = env->GetMethodID(j_class_d, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_d);
+    jobject j_obj_d = env->NewObject(j_class_d, j_ctr_id_d);
+    CHECK_RESULT_RETURN(env, j_obj_d, 0);
+    set_ptr(env, j_obj_d, decision);
+    return j_obj_d;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
 }
 
 JNIEXPORT jlong JNICALL
@@ -2000,7 +2032,7 @@ Java_parma_1polyhedra_1library_PIP_1Solution_1Node_parametric_1values
 }
 
 JNIEXPORT void JNICALL
-Java_parma_1polyhedra_1library_Artificial_Parameter_initIDs
+Java_parma_1polyhedra_1library_Artificial_1Parameter_initIDs
 (JNIEnv* env, jclass j_artificial_parameter_class) {
   jmethodID mID;
   mID = env->GetMethodID(j_artificial_parameter_class, "<init>",

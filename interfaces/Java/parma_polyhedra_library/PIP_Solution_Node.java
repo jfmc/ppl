@@ -26,8 +26,8 @@ package parma_polyhedra_library;
 import java.io.Writer;
 import java.io.IOException;
 
-//! An internal node of the PIP solution tree.
-public class PIP_Solution_Node extends PPL_Object {
+//! A leaf node of the PIP solution tree.
+public class PIP_Solution_Node extends PIP_Tree_Node {
 
     /*! \brief
       Returns the parametric expression of the values of variable

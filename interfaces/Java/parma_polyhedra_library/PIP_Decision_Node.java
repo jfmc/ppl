@@ -27,7 +27,7 @@ import java.io.Writer;
 import java.io.IOException;
 
 //! An internal node of the PIP solution tree.
-public class PIP_Decision_Node extends PPL_Object {
+public class PIP_Decision_Node extends PIP_Tree_Node {
 
     /*! \brief
       Returns a the true branch (if \p b is not zero)
