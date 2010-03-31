@@ -1674,7 +1674,13 @@ Box<ITV>::drop_some_non_integer_points(Complexity_Class) {
       && !ITV::info_type::store_open)
     return;
 
-  // FIXME(0.11): complete.
+  if (marked_empty())
+    return;
+
+  for (dimension_type k = seq.size(); k-- > 0; )
+    seq[k].drop_some_non_integer_points();
+
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
@@ -1691,7 +1697,14 @@ Box<ITV>::drop_some_non_integer_points(const Variables_Set& vars,
       && !ITV::info_type::store_open)
     return;
 
-  // FIXME(0.11): complete.
+  if (marked_empty())
+    return;
+
+  for (Variables_Set::const_iterator v_i = vars.begin(),
+         v_end = vars.end(); v_i != v_end; ++v_i)
+    seq[*v_i].drop_some_non_integer_points();
+
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
