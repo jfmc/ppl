@@ -45,26 +45,25 @@ import java.io.IOException;
   incrementally solving a problem) will result in the systematic
   renumbering of all the existing artificial parameters.
 */
-public class Artificial_Parameter extends PPL_Object {
+public class Artificial_Parameter {
+
+    //! The value of the linear expression of \p this.
+    private Linear_Expression le;
+
+    //! The value of the denominatir of \p this.
+    private Coefficient den;
 
     /*! \brief
       Returns the linear expression in artificial parameter \p this.
     */
-    public native Linear_Expression linear_expression();
-
-    /*! \brief
-      Returns the coefficient of variable \p var in artificial parameter
-      \p this.
-    */
-    public native Coefficient coefficient(long var);
-
-    /*! \brief
-      Returns the inhomogeneous term in artificial parameter \p this.
-    */
-    public native Coefficient inhomogeneous_term();
+    public Linear_Expression linear_expression() {
+	return le;
+    }
 
     /*! \brief
       Returns the denominator in artificial parameter \p this.
     */
-    public native Coefficient denominator();
+    public Coefficient denominator() {
+	return den;
+    }
 }

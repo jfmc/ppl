@@ -35,7 +35,6 @@ ppl_interface_generator_java_classes_java_code.m4
 fixed_java_cxx_headers = \
 parma_polyhedra_library.Artificial_Parameter \
 parma_polyhedra_library.Artificial_Parameter_Sequence \
-parma_polyhedra_library.Artificial_Parameter_Sequence_Iterator \
 parma_polyhedra_library.Bounded_Integer_Type_Overflow \
 parma_polyhedra_library.Bounded_Integer_Type_Representation \
 parma_polyhedra_library.Bounded_Integer_Type_Width \
@@ -84,7 +83,6 @@ parma_polyhedra_library.Variables_Set
 fixed_java_cxx_headers_sources = \
 parma_polyhedra_library_Artificial_Parameter.h \
 parma_polyhedra_library_Artificial_Parameter_Sequence.h \
-parma_polyhedra_library_Artificial_Parameter_Sequence_Iterator.h \
 parma_polyhedra_library_Bounded_Integer_Type_Overflow.h \
 parma_polyhedra_library_Bounded_Integer_Type_Representation.h \
 parma_polyhedra_library_Bounded_Integer_Type_Width.h \
@@ -134,7 +132,6 @@ parma_polyhedra_library_Variables_Set.h
 fixed_java_sources = \
 $(srcdir)/Artificial_Parameter.java \
 $(srcdir)/Artificial_Parameter_Sequence.java \
-$(srcdir)/Artificial_Parameter_Sequence_Iterator.java \
 $(srcdir)/Bounded_Integer_Type_Overflow.java \
 $(srcdir)/Bounded_Integer_Type_Representation.java \
 $(srcdir)/Bounded_Integer_Type_Width.java \
@@ -250,7 +247,6 @@ source_generation.stamp \
 Termination.java \
 Artificial_Parameter.class \
 Artificial_Parameter_Sequence.class \
-Artificial_Parameter_Sequence_Iterator.class \
 Bounded_Integer_Type_Overflow.class \
 Bounded_Integer_Type_Representation.class \
 Bounded_Integer_Type_Width.class \

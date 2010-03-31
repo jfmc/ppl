@@ -268,15 +268,16 @@ static {
         boolean ok = pip1.is_satisfiable();
         if (!ok)
           return false;
-        PIP_Tree_Node ptree = pip1.solution();
-        long num_of_arts = ptree.number_of_artificials();
-//        PIP_Solution_Node psol = ptree.as_solution();
-        Artificial_Parameter_Sequence_Iterator art_it_begin = ptree.begin();
-        Artificial_Parameter_Sequence_Iterator art_it_end = ptree.end();
-        ok = (ptree.OK() && (num_of_arts == 0) && (art_it_begin != art_it_end));
+        PIP_Tree_Node ptree1 = pip1.solution();
+        long num_of_arts1 = ptree1.number_of_artificials();
+//        Artificial_Parameter_Sequence arts1 = ptree1.artificials();
+        ok = (ptree1.OK() && (num_of_arts1 == 0));
         if (!ok)
           return false;
-//        pip1.free();
+        PIP_Solution_Node psol1 = ptree1.as_solution();
+        PIP_Decision_Node pdec1 = ptree1.as_decision();
+        if (psol1 == null || pdec1 != null)
+            return false;
 
 	Constraint constraint2 = c_d_leq_1;
 	Constraint_System constraints2 = new Constraint_System();
@@ -286,15 +287,13 @@ static {
         Constraint_System pip2_constraints = pip2.constraints();
         PIP_Tree_Node ptree2 = pip2.solution();
         long num_of_arts2 = ptree2.number_of_artificials();
-//        PIP_Solution_Node psol2 = ptree2.as_solution();
-        Artificial_Parameter_Sequence_Iterator art_it_begin2 = ptree2.begin();
-        Artificial_Parameter_Sequence_Iterator art_it_end2 = ptree2.end();
-//        art_it_begin.next();
-        ok = (ptree2.OK() && (num_of_arts2 == 0)
-             && (art_it_begin2 != art_it_end2));
-//        ptree2.free();
+        ok = (ptree2.OK() && (num_of_arts2 == 0));
         if (!ok)
           return false;
+        PIP_Solution_Node psol2 = ptree2.as_solution();
+        PIP_Decision_Node pdec2 = ptree2.as_decision();
+        if (psol2 == null || pdec2 != null)
+            return false;
         return true;
    }
     public static void main(String[] args) {

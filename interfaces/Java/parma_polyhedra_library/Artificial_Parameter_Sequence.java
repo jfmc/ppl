@@ -37,6 +37,12 @@ public class Artificial_Parameter_Sequence
     public Artificial_Parameter_Sequence() {
     }
 
+    //! Returns an ascii formatted internal representation of \p this.
+    public native String ascii_dump();
+
+    //! Returns a string representation of \p this.
+    public native String toString();
+
     private static native void initIDs();
     static {
         initIDs();

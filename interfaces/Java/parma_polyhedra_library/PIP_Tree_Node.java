@@ -35,16 +35,6 @@ import java.io.IOException;
 */
 public class PIP_Tree_Node extends PPL_Object {
 
-
-    /*! \brief
-      Releases all resources managed by \p this,
-      also resetting it to a null reference.
-    */
-    public native void free();
-
-    //! Releases all resources managed by \p this.
-    protected native void finalize();
-
     /*! \brief
       Returns the solution node if \p this is a solution node,
       and 0 otherwise.
@@ -65,20 +55,14 @@ public class PIP_Tree_Node extends PPL_Object {
     public native boolean OK();
 
     /*! \brief
-      Returns the number of elements in the artificial parameter sequence
-      in the pip tree node.
+       Returns the number of artificial parameters in the PIP_Tree_Node.
     */
     public native long number_of_artificials();
 
     /*! \brief
-      Rerurns an iterator "pointing" to the beginning of
-      the artificial parameter sequence in the pip tree node.
+       Returns the sequence of (Java) artificial parameters
+       in the PIP_Tree_Node.
     */
-    public native Artificial_Parameter_Sequence_Iterator begin();
+    public native Artificial_Parameter_Sequence artificials();
 
-    /*! \brief
-      Rerurns an iterator "pointing" to the end of
-      the artificial parameter sequence in the pip tree node.
-    */
-    public native Artificial_Parameter_Sequence_Iterator end();
 }

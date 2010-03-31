@@ -1213,6 +1213,17 @@ build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs) {
 }
 
 jobject
+build_java_artificial_parameter(JNIEnv* env, const PIP_Tree_Node::Artificial_Parameter& art) {
+  jobject j_den = build_java_coeff(env, art.denominator());
+  jobject j_art = build_linear_expression(env, art);
+  jobject ret = env->NewObject(cached_classes.Artificial_Parameter,
+                               cached_FMIDs.Artificial_Parameter_init_ID,
+			       j_art, j_den);
+  CHECK_RESULT_THROW(env, ret);
+  return ret;
+}
+
+jobject
 build_java_artificial_parameter_sequence(JNIEnv* env, const PIP_Tree_Node::Artificial_Parameter_Sequence& aps) {
   jobject j_aps = env->NewObject(cached_classes.Artificial_Parameter_Sequence,
                                 cached_FMIDs.Artificial_Parameter_Sequence_init_ID);
