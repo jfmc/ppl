@@ -54,6 +54,15 @@ public class Artificial_Parameter {
     private Coefficient den;
 
     /*! \brief
+      Builds an artificial parameter from a linear expression
+      and a denominator.
+    */
+    public Artificial_Parameter(Linear_Expression e, Coefficient d) {
+	le = e.clone();
+	den = new Coefficient(d);
+    }
+
+    /*! \brief
       Returns the linear expression in artificial parameter \p this.
     */
     public Linear_Expression linear_expression() {
@@ -65,5 +74,16 @@ public class Artificial_Parameter {
     */
     public Coefficient denominator() {
 	return den;
+    }
+
+    //! Returns an ascii formatted internal representation of \p this.
+    public native String ascii_dump();
+
+    //! Returns a string representation of \p this.
+    public native String toString();
+
+    private static native void initIDs();
+    static {
+        initIDs();
     }
 }

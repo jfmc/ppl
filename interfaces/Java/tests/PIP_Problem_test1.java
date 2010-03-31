@@ -270,8 +270,8 @@ static {
           return false;
         PIP_Tree_Node ptree1 = pip1.solution();
         long num_of_arts1 = ptree1.number_of_artificials();
-//        Artificial_Parameter_Sequence arts1 = ptree1.artificials();
-        ok = (ptree1.OK() && (num_of_arts1 == 0));
+        Artificial_Parameter_Sequence arts1 = ptree1.artificials();
+        ok = ptree1.OK() && num_of_arts1 == 0 && arts1.size() == 0;
         if (!ok)
           return false;
         PIP_Solution_Node psol1 = ptree1.as_solution();

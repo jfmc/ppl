@@ -726,7 +726,8 @@ build_java_constraint(JNIEnv* env, const Constraint& c);
   from C++ Artificial_Parameter \p ap.
 */
 jobject
-build_java_artificial_parameter(JNIEnv* env, const PIP_Tree_Node::Artificial_Parameter& ap);
+build_java_artificial_parameter(JNIEnv* env,
+                                const PIP_Tree_Node::Artificial_Parameter& ap);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Congruence
@@ -756,13 +757,6 @@ build_java_grid_generator(JNIEnv* env, const Grid_Generator& g);
 jobject
 build_java_constraint_system(JNIEnv* env, const Constraint_System& cs);
 
-/*! \brief
-  Builds a Java parma_polyhedra_library::Artificial_Parameter
-  from C++ Artificial_Parameter \p ap.
-*/
-jobject
-build_java_artificial_parameter(JNIEnv* env,
-                                const PIP_Tree_Node::Artificial_Parameter& ap);
 /*! \brief
   Builds a Java parma_polyhedra_library::Artificial_Parameter_Sequence
   from C++ Artificial_Parameter_Sequence \p aps.

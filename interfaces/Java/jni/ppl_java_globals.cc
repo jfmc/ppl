@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_java_common.defs.hh"
 #include "parma_polyhedra_library_Artificial_Parameter.h"
 #include "parma_polyhedra_library_Artificial_Parameter_Sequence.h"
-#include "parma_polyhedra_library_Artificial_Parameter_Sequence_Iterator.h"
 #include "parma_polyhedra_library_Bounded_Integer_Type_Overflow.h"
 #include "parma_polyhedra_library_Bounded_Integer_Type_Representation.h"
 #include "parma_polyhedra_library_Bounded_Integer_Type_Width.h"
@@ -1969,20 +1968,19 @@ Java_parma_1polyhedra_1library_PIP_1Tree_1Node_number_1of_1artificials
 
 JNIEXPORT jobject JNICALL
 Java_parma_1polyhedra_1library_PIP_1Tree_1Node_artificials
-(JNIEnv* env, jobject j_this_pip_problem) {
+(JNIEnv* env, jobject j_this_pip_node) {
   try {
     jobject j_arts
       = env->NewObject(cached_classes.Artificial_Parameter_Sequence,
                        cached_FMIDs.Artificial_Parameter_Sequence_init_ID);
     CHECK_RESULT_RETURN(env, j_arts, 0);
 
-    PIP_Tree_Node* pip
-      = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this_pip_problem));
-    for (PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator arts_it
-              = pip->art_parameter_begin(), arts_end = pip->art_parameter_end();
-           arts_it != arts_end;
-           ++arts_it) {
-      jobject j_art = build_java_artificial_parameter(env, *arts_it);
+    const PIP_Tree_Node* pip_node
+      = reinterpret_cast<const PIP_Tree_Node*>(get_ptr(env, j_this_pip_node));
+    for (PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator
+           i = pip_node->art_parameter_begin(),
+           i_end = pip_node->art_parameter_end(); i != i_end; ++i) {
+      jobject j_art = build_java_artificial_parameter(env, *i);
       env->CallBooleanMethod(j_arts,
                              cached_FMIDs.Artificial_Parameter_Sequence_add_ID,
                              j_art);
@@ -2019,14 +2017,14 @@ JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Artificial_1Parameter_initIDs
 (JNIEnv* env, jclass j_artificial_parameter_class) {
   jfieldID fID;
-  fID = env->GetFieldID(j_artificial_parameter_class, "den",
-                        "Lparma_polyhedra_library/Coefficient;");
-  CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Artificial_Parameter_den_ID = fID;
   fID = env->GetFieldID(j_artificial_parameter_class, "le",
                         "Lparma_polyhedra_library/Linear_Expression;");
   CHECK_RESULT_ASSERT(env, fID);
   cached_FMIDs.Artificial_Parameter_le_ID = fID;
+  fID = env->GetFieldID(j_artificial_parameter_class, "den",
+                        "Lparma_polyhedra_library/Coefficient;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Artificial_Parameter_den_ID = fID;
   jmethodID mID;
   mID = env->GetMethodID(j_artificial_parameter_class, "<init>",
                          "(Lparma_polyhedra_library/Linear_Expression;"
@@ -2042,21 +2040,8 @@ Java_parma_1polyhedra_1library_Artificial_1Parameter_1Sequence_initIDs
   jmethodID mID;
   mID = env->GetMethodID(j_aps_class, "<init>", "()V");
   CHECK_RESULT_ASSERT(env, mID);
-  cached_FMIDs.Artificial_Parameter_init_ID = mID;
+  cached_FMIDs.Artificial_Parameter_Sequence_init_ID = mID;
   mID = env->GetMethodID(j_aps_class, "add", "(Ljava/lang/Object;)Z");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Artificial_Parameter_Sequence_add_ID = mID;
-  // NOTE: initialize the iterator method IDs common to all *_System classes.
-  mID = env->GetMethodID(j_aps_class, "iterator",
-                         "()Ljava/util/Iterator;");
-  CHECK_RESULT_ASSERT(env, mID);
-  cached_FMIDs.System_iterator_ID = mID;
-  mID = env->GetMethodID(cached_classes.Iterator, "hasNext", "()Z");
-  CHECK_RESULT_ASSERT(env, mID);
-  cached_FMIDs.System_Iterator_has_next_ID = mID;
-  assert(cached_classes.Iterator != NULL);
-  mID = env->GetMethodID(cached_classes.Iterator, "next",
-                         "()Ljava/lang/Object;");
-  CHECK_RESULT_ASSERT(env, mID);
-  cached_FMIDs.System_Iterator_next_ID = mID;
 }
