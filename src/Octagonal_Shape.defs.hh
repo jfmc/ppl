@@ -2231,6 +2231,8 @@ private:
                Coefficient& ext_n, Coefficient& ext_d, bool& included,
                Generator& g) const;
 
+  void drop_some_non_integer_points_helper(N& elem);
+
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators
   ::operator<<<>(std::ostream& s, const Octagonal_Shape<T>& c);

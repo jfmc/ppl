@@ -7559,12 +7559,20 @@ Octagonal_Shape<T>
 
 template <typename T>
 void
-Octagonal_Shape<T>
-::drop_some_non_integer_points(Complexity_Class) {
+Octagonal_Shape<T>::drop_some_non_integer_points(Complexity_Class) {
   if (std::numeric_limits<T>::is_integer)
     return;
 
-  // FIXME(0.11): complete.
+  const dimension_type space_dim = space_dimension();
+  strong_closure_assign();
+  if (space_dim == 0 || marked_empty())
+    return;
+
+  for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
+         i_end = matrix.element_end(); i != i_end; ++i)
+    drop_some_non_integer_points_helper(*i);
+
+  PPL_ASSERT(OK());
 }
 
 template <typename T>
@@ -7578,10 +7586,36 @@ Octagonal_Shape<T>
     throw_dimension_incompatible("drop_some_non_integer_points(vs, cmpl)",
                                  min_space_dim);
 
-  if (std::numeric_limits<T>::is_integer)
+  if (std::numeric_limits<T>::is_integer || min_space_dim == 0)
     return;
 
-  // FIXME(0.11): complete.
+  strong_closure_assign();
+  if (marked_empty())
+    return;
+
+  const Variables_Set::const_iterator v_begin = vars.begin();
+  const Variables_Set::const_iterator v_end = vars.end();
+  PPL_ASSERT(v_begin != v_end);
+  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  for (Variables_Set::const_iterator v_i = v_begin; v_i != v_end; ++v_i) {
+    const dimension_type i = *v_i;
+    Row_Reference m_i = matrix[i];
+    const dimension_type ci = i + 1;
+    Row_Reference m_ci = matrix[ci];
+    // Unary constaints.
+    drop_some_non_integer_points_helper(m_i[ci]);
+    drop_some_non_integer_points_helper(m_ci[i]);
+    // Binary constraint (note: only consider j < i).
+    for (Variables_Set::const_iterator v_j = v_begin; v_j != v_i; ++v_j) {
+      const dimension_type j = *v_j;
+      const dimension_type cj = j + 1;
+      drop_some_non_integer_points_helper(m_i[j]);
+      drop_some_non_integer_points_helper(m_i[cj]);
+      drop_some_non_integer_points_helper(m_ci[j]);
+      drop_some_non_integer_points_helper(m_ci[cj]);
+    }
+  }
+  PPL_ASSERT(OK());
 }
 
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */

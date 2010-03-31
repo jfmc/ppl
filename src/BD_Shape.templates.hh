@@ -836,7 +836,7 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
     // Check the bounded differences with the other dimensions that
     // have non-zero coefficient in `le'.
     else {
-      assert(!constant_v);
+      PPL_ASSERT(!constant_v);
       for (dimension_type j = i; j-- > 1; ) {
         const Variable vj(j-1);
         if (le.coefficient(vj) == 0)
@@ -6348,7 +6348,18 @@ BD_Shape<T>::drop_some_non_integer_points(Complexity_Class) {
   if (std::numeric_limits<T>::is_integer)
     return;
 
-  // FIXME(0.11): complete.
+  const dimension_type space_dim = space_dimension();
+  shortest_path_closure_assign();
+  if (space_dim == 0 || marked_empty())
+    return;
+
+  for (dimension_type i = space_dim + 1; i-- > 0; ) {
+    DB_Row<N>& dbm_i = dbm[i];
+    for (dimension_type j = space_dim + 1; j-- > 0; )
+      if (i != j)
+        drop_some_non_integer_points_helper(dbm_i[j]);
+  }
+  PPL_ASSERT(OK());
 }
 
 template <typename T>
@@ -6356,15 +6367,41 @@ void
 BD_Shape<T>::drop_some_non_integer_points(const Variables_Set& vars,
                                           Complexity_Class) {
   // Dimension-compatibility check.
+  const dimension_type space_dim = space_dimension();
   const dimension_type min_space_dim = vars.space_dimension();
-  if (space_dimension() < min_space_dim)
+  if (space_dim < min_space_dim)
     throw_dimension_incompatible("drop_some_non_integer_points(vs, cmpl)",
                                  min_space_dim);
 
-  if (std::numeric_limits<T>::is_integer)
+  if (std::numeric_limits<T>::is_integer || min_space_dim == 0)
     return;
 
-  // FIXME(0.11): complete.
+  shortest_path_closure_assign();
+  if (marked_empty())
+    return;
+
+  const Variables_Set::const_iterator v_begin = vars.begin();
+  const Variables_Set::const_iterator v_end = vars.end();
+  PPL_ASSERT(v_begin != v_end);
+  // Unary constraints on a variable occurring in `vars'.
+  DB_Row<N>& dbm_0 = dbm[0];
+  for (Variables_Set::const_iterator v_i = v_begin; v_i != v_end; ++v_i) {
+    const dimension_type i = *v_i + 1;
+    drop_some_non_integer_points_helper(dbm_0[i]);
+    drop_some_non_integer_points_helper(dbm[i][0]);
+  }
+
+  // Binary constraints where both variables occur in `vars'.
+  for (Variables_Set::const_iterator v_i = v_begin; v_i != v_end; ++v_i) {
+    const dimension_type i = *v_i + 1;
+    DB_Row<N>& dbm_i = dbm[i];
+    for (Variables_Set::const_iterator v_j = v_begin; v_j != v_end; ++v_j) {
+      const dimension_type j = *v_j + 1;
+      if (i != j)
+        drop_some_non_integer_points_helper(dbm_i[j]);
+    }
+  }
+  PPL_ASSERT(OK());
 }
 
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
