@@ -694,6 +694,13 @@ Constraint_System
 build_cxx_constraint_system(JNIEnv* env, jobject j_cs);
 
 /*! \brief
+  Builds a C++ Artificial_Parameter
+  from Java parma_polyhedra_library::Artificial_Parameter \p j_art_param.
+*/
+PIP_Tree_Node::Artificial_Parameter
+build_cxx_artificial_parameter(JNIEnv* env, jobject j_art_param);
+
+/*! \brief
   Builds a C++ Artificial_Parameter_Sequence
   from Java parma_polyhedra_library::Artificial_Parameter_Sequence \p j_aps.
 */
@@ -858,7 +865,7 @@ set_ptr(JNIEnv* env, jobject ppl_object,
 	const T* address, bool to_be_marked = false);
 
 /*! \brief
-  Builds a Java parma_polyhedra_library::Linar_Expression
+  Builds a Java parma_polyhedra_library::Linear_Expression
   from the C++ constraint/congruence \p r.
 */
 template <typename R>

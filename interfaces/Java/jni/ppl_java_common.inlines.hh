@@ -235,6 +235,14 @@ build_cxx_grid_generator_system(JNIEnv* env, jobject j_iterable) {
                                                   build_cxx_grid_generator);
 }
 
+/*
+inline PIP_Tree_Node::Artificial_Parameter_Sequence
+build_cxx_artificial_parameter_sequence(JNIEnv* env, jobject j_iterable) {
+  return
+    build_cxx_system<PIP_Tree_Node::Artificial_Parameter_Sequence>
+      (env, j_iterable, build_cxx_artificial_parameter);
+}
+*/
 
 inline
 Partial_Function::Partial_Function(jobject j_p_func, JNIEnv* env)

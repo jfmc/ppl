@@ -391,6 +391,21 @@ build_cxx_congruence(JNIEnv* env, jobject j_congruence) {
   return (lhs %= rhs) / ppl_modulus;
 }
 
+PIP_Tree_Node::Artificial_Parameter
+build_cxx_artificial_parameter(JNIEnv* env, jobject j_artificial_parameter) {
+  jobject j_le
+    = env->GetObjectField(j_artificial_parameter,
+                          cached_FMIDs.Artificial_Parameter_le_ID);
+  jobject j_den
+    = env->GetObjectField(j_artificial_parameter,
+                          cached_FMIDs.Artificial_Parameter_den_ID);
+  PPL_DIRTY_TEMP_COEFFICIENT(ppl_den);
+  ppl_den = build_cxx_coeff(env, j_den);
+  Linear_Expression le = build_cxx_linear_expression(env, j_le);
+  PIP_Tree_Node::Artificial_Parameter art_param(le, ppl_den);
+  return art_param;
+}
+
 jobject
 bool_to_j_boolean(JNIEnv* env, const bool value) {
   jobject ret = env->CallStaticObjectMethod(cached_classes.Boolean,
@@ -400,6 +415,7 @@ bool_to_j_boolean(JNIEnv* env, const bool value) {
   return ret;
 }
 
+/* FIXME: Code is buggy - needs fixing. */
 bool
 j_boolean_to_bool(JNIEnv* env, jobject j_boolean) {
   bool b = env->CallIntMethod(j_boolean, cached_FMIDs.Boolean_boolValue_ID);

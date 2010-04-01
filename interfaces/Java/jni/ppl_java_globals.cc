@@ -1821,31 +1821,6 @@ Java_parma_1polyhedra_1library_PIP_1Problem_get_1pip_1problem_1control_1paramete
 }
 
 JNIEXPORT jobject JNICALL
-Java_parma_1polyhedra_1library_PIP_1Problem_constraints
-(JNIEnv* env, jobject j_this_pip_problem) {
-  try {
-    jobject j_cs = env->NewObject(cached_classes.Constraint_System,
-                                  cached_FMIDs.Constraint_System_init_ID);
-    CHECK_RESULT_RETURN(env, j_cs, 0);
-
-    PIP_Problem* pip
-      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
-    for (PIP_Problem::const_iterator cs_it = pip->constraints_begin(),
-	   cs_end = pip->constraints_end(); cs_it != cs_end; ++cs_it) {
-      jobject j_constraint = build_java_constraint(env, *cs_it);
-      env->CallBooleanMethod(j_cs,
-                             cached_FMIDs.Constraint_System_add_ID,
-                             j_constraint);
-      CHECK_EXCEPTION_RETURN(env, 0);
-    }
-    return j_cs;
-  }
-  CATCH_ALL;
-  jobject null = 0;
-  return null;
-}
-
-JNIEXPORT jobject JNICALL
 Java_parma_1polyhedra_1library_PIP_1Problem_constraint_1at_1index
 (JNIEnv* env, jobject j_this_pip_problem, jlong j_index) {
   try {
@@ -1901,6 +1876,23 @@ Java_parma_1polyhedra_1library_PIP_1Tree_1Node_finalize
   PIP_Tree_Node* pip = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this));
   if (!is_java_marked(env, j_this))
     delete pip;
+}
+
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Tree_1Node_constraints
+(JNIEnv* env, jobject j_this_pip_node) {
+  try {
+    jobject j_cs = env->NewObject(cached_classes.Constraint_System,
+                                  cached_FMIDs.Constraint_System_init_ID);
+    CHECK_RESULT_RETURN(env, j_cs, 0);
+
+    PIP_Tree_Node* pip
+      = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this_pip_node));
+    return build_java_constraint_system(env, pip->constraints());
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
 }
 
 JNIEXPORT jobject JNICALL
@@ -1996,12 +1988,26 @@ Java_parma_1polyhedra_1library_PIP_1Tree_1Node_artificials
 JNIEXPORT jobject JNICALL
 Java_parma_1polyhedra_1library_PIP_1Decision_1Node_child_1node
 (JNIEnv* env, jobject j_this, jobject j_branch) {
-  PIP_Decision_Node* pip
-    = reinterpret_cast<PIP_Decision_Node*>(get_ptr(env, j_this));
-  bool branch = (j_boolean_to_bool(env, j_branch));
-  jobject j_t;
-  set_ptr(env, j_t, pip->child_node(branch));
-  return j_t;
+  try {
+    PIP_Decision_Node* pip
+      = reinterpret_cast<PIP_Decision_Node*>(get_ptr(env, j_this));
+    unsigned u = jtype_to_unsigned<unsigned>(j_integer_to_j_int(env, j_branch));
+    bool b = (u == 0) ? false : true;
+    const PIP_Tree_Node* child
+      = pip->child_node(b);
+
+    jclass j_class_s = env->FindClass("parma_polyhedra_library/PIP_Tree_Node");
+    CHECK_RESULT_ASSERT(env, j_class_s);
+    jmethodID j_ctr_id_s = env->GetMethodID(j_class_s, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_s);
+    jobject j_obj_s = env->NewObject(j_class_s, j_ctr_id_s);
+    CHECK_RESULT_RETURN(env, j_obj_s, 0);
+    set_ptr(env, j_obj_s, child);
+    return j_obj_s;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
 }
 
 JNIEXPORT jobject JNICALL
@@ -2031,6 +2037,31 @@ Java_parma_1polyhedra_1library_Artificial_1Parameter_initIDs
                          "Lparma_polyhedra_library/Coefficient;)V");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Artificial_Parameter_init_ID = mID;
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Artificial_1Parameter_ascii_1dump
+(JNIEnv* env, jobject j_this) {
+  try {
+    std::ostringstream s;
+    PIP_Tree_Node::Artificial_Parameter art
+      = build_cxx_artificial_parameter(env, j_this);
+    art.ascii_dump(s);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Artificial_1Parameter_toString
+(JNIEnv* env, jobject j_this) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  PIP_Tree_Node::Artificial_Parameter ppl_art
+    = build_cxx_artificial_parameter(env, j_this);
+  s << ppl_art;
+  return env->NewStringUTF(s.str().c_str());
 }
 
 

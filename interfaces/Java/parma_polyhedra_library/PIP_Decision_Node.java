@@ -33,5 +33,6 @@ public class PIP_Decision_Node extends PIP_Tree_Node {
       Returns a the true branch (if \p b is not zero)
       or the false branch (if \p b is zero) of \p pip_dec.
     */
-    public native PIP_Tree_Node child_node(Boolean j_branch);
+    /* FIXME: j_branch should be a boolean. */
+    public native PIP_Tree_Node child_node(Integer j_branch);
 }

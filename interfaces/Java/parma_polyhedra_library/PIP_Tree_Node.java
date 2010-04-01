@@ -65,4 +65,14 @@ public class PIP_Tree_Node extends PPL_Object {
     */
     public native Artificial_Parameter_Sequence artificials();
 
+    /*! \brief
+       Returns the system of parameter constraints controlling the
+       PIP_Tree_Node.
+
+       The indices in the constraints are the same as the original
+       variables and parameters. Coefficients in indices corresponding
+       to variables always are zero.
+    */
+    public native Constraint_System constraints();
+
 }
