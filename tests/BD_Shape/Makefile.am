@@ -76,6 +76,7 @@ containsintegerpoint1 \
 difference1 \
 discrete1 \
 disjoint1 \
+dropsomenonintegerpoints1 \
 empty1 \
 equality1 \
 expandspacedim1 \
@@ -211,6 +212,8 @@ difference1_SOURCES = difference1.cc
 discrete1_SOURCES = discrete1.cc
 
 disjoint1_SOURCES = disjoint1.cc
+
+dropsomenonintegerpoints1_SOURCES = dropsomenonintegerpoints1.cc
 
 empty1_SOURCES = empty1.cc
 
