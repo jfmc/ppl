@@ -619,6 +619,22 @@ external ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
 
 ')
 
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+`dnl
+external ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@:
+  @!CLASS@ -> polyhedron * polyhedron
+  = "ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@"
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+external ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2:
+  @!CLASS@ -> @!CLASS@ -> polyhedron * polyhedron
+  = "ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2"
+
+')
+
 m4_define(`ppl_@CLASS@_wrap_assign_code',
 `dnl
 external ppl_@CLASS@_wrap_assign: @!CLASS@

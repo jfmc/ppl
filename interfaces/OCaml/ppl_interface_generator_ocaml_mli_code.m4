@@ -538,6 +538,20 @@ val ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
 
 ')
 
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+`dnl
+val ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@:
+  @!CLASS@ -> polyhedron * polyhedron
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+val ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2:
+  @!CLASS@ -> @!CLASS@ -> polyhedron * polyhedron
+
+')
+
 val ppl_@CLASS@_wrap_assign: @!CLASS@
                              -> bounded_integer_type_width
                              -> bounded_integer_type_representation

@@ -1391,6 +1391,59 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+`dnl
+extern "C"
+CAMLprim value
+  ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@
+  (value pset)
+  try {
+    CAMLparam1(pset);
+    CAMLlocal1(caml_return_value);
+  const @TOPOLOGY@@CPP_CLASS@& ppset
+     = *(reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(p_@CLASS@_val(pset)));
+  C_Polyhedron* ph_decreasing = new C_Polyhedron();
+  C_Polyhedron* ph_bounded = new C_Polyhedron();
+  all_affine_quasi_ranking_functions_MS(ppset, *ph_decreasing, *ph_bounded);
+  caml_return_value = caml_alloc(2, 0);
+  Store_field(caml_return_value, 0,
+              unregistered_value_p_Polyhedron(*ph_decreasing));
+  Store_field(caml_return_value, 1,
+              unregistered_value_p_Polyhedron(*ph_bounded));
+  CAMLreturn(caml_return_value);
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+extern "C"
+CAMLprim value
+  ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2
+  (value pset_before, value pset_after)
+  try {
+    CAMLparam2(pset_before, pset_after);
+    CAMLlocal1(caml_return_value);
+  const @TOPOLOGY@@CPP_CLASS@& ppset_before
+     = *(reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(p_@CLASS@_val(pset_before)));
+  const @TOPOLOGY@@CPP_CLASS@& ppset_after
+     = *(reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(p_@CLASS@_val(pset_after)));
+  C_Polyhedron* ph_decreasing = new C_Polyhedron();
+  C_Polyhedron* ph_bounded = new C_Polyhedron();
+  all_affine_quasi_ranking_functions_MS_2(ppset_before, ppset_after,
+                                          *ph_decreasing, *ph_bounded);
+  caml_return_value = caml_alloc(2, 0);
+  Store_field(caml_return_value, 0,
+              unregistered_value_p_Polyhedron(*ph_decreasing));
+  Store_field(caml_return_value, 1,
+              unregistered_value_p_Polyhedron(*ph_bounded));
+  CAMLreturn(caml_return_value);
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_wrap_assign_code',
 `dnl
 extern "C"
