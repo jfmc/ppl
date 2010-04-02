@@ -116,6 +116,16 @@ type control_parameter_value = Pricing_Steepest_Edge_Float
                                | Pricing_Steepest_Edge_Exact
                                | Pricing_Textbook
 
+type pip_problem_status = Unfeasible_Pip_Problem
+                        | Optimized_Pip_Problem
+
+type pip_problem_control_parameter_name = Cutting_Strategy | Pivot_Row_Strategy
+
+type pip_problem_control_parameter_value = Cutting_Strategy_First
+                                         | Cutting_Strategy_Deepest
+                                         | Cutting_Strategy_All
+                                         | Pivot_Row_Strategy_First
+                                         | Pivot_Row_Strategy_Max_Column
 
 val ppl_version_major:
   unit -> int
@@ -257,3 +267,71 @@ val ppl_MIP_Problem_swap:
 
 val ppl_MIP_Problem_ascii_dump:
   mip_problem -> string
+
+type pip_problem
+
+type pip_tree_node
+
+val ppl_new_PIP_Problem_from_space_dimension:
+  int -> pip_problem
+
+val ppl_new_PIP_Problem:
+  int -> constraint_system -> int list -> pip_problem
+
+val ppl_PIP_Problem_space_dimension:
+  pip_problem -> int
+
+val ppl_PIP_Problem_parameter_space_dimensions:
+  pip_problem -> int list
+
+val ppl_PIP_Problem_constraints:
+  pip_problem -> constraint_system
+
+val ppl_PIP_Problem_add_space_dimensions_and_embed:
+  pip_problem -> int -> int -> unit
+
+val ppl_PIP_Problem_add_to_parameter_space_dimensions:
+  pip_problem -> int list -> unit
+
+val ppl_PIP_Problem_add_constraint:
+  pip_problem -> linear_constraint -> unit
+
+val ppl_PIP_Problem_add_constraints:
+  pip_problem -> constraint_system -> unit
+
+val ppl_PIP_Problem_is_satisfiable:
+  pip_problem -> bool
+
+val ppl_PIP_Problem_solve:
+  pip_problem -> pip_problem_status
+
+val ppl_PIP_Problem_solution:
+  pip_problem -> pip_tree_node
+
+val ppl_PIP_Problem_optimizing_solution:
+  pip_problem -> pip_tree_node
+
+val ppl_PIP_Problem_get_big_parameter_dimension:
+  pip_problem -> int
+
+val ppl_PIP_Problem_set_big_parameter_dimension:
+  pip_problem -> int
+
+val ppl_PIP_Problem_OK:
+  pip_problem -> bool
+
+val ppl_PIP_Problem_clear:
+  pip_problem -> unit
+
+val ppl_PIP_Problem_set_control_parameter:
+  pip_problem -> pip_problem_control_parameter_value -> unit
+
+val ppl_PIP_Problem_get_control_parameter:
+  pip_problem -> pip_problem_control_parameter_name
+              -> pip_problem_control_parameter_value
+
+val ppl_PIP_Problem_swap:
+  pip_problem -> pip_problem -> unit
+
+val ppl_PIP_Problem_ascii_dump:
+  pip_problem -> string
