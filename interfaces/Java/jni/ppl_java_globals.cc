@@ -1834,6 +1834,31 @@ Java_parma_1polyhedra_1library_PIP_1Problem_constraint_1at_1index
   return null;
 }
 
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_constraints
+(JNIEnv* env, jobject j_this_pip_problem) {
+  try {
+    jobject j_cs = env->NewObject(cached_classes.Constraint_System,
+                                  cached_FMIDs.Constraint_System_init_ID);
+    CHECK_RESULT_RETURN(env, j_cs, 0);
+
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    for (PIP_Problem::const_iterator cs_it = pip->constraints_begin(),
+           cs_end = pip->constraints_end(); cs_it != cs_end; ++cs_it) {
+      jobject j_constraint = build_java_constraint(env, *cs_it);
+      env->CallBooleanMethod(j_cs,
+                             cached_FMIDs.Constraint_System_add_ID,
+                             j_constraint);
+      CHECK_EXCEPTION_RETURN(env, 0);
+    }
+    return j_cs;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_PIP_1Problem_set_1pip_1problem_1control_1parameter
 (JNIEnv* env, jobject j_this_pip_problem, jobject j_cpv) {
