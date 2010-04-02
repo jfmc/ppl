@@ -256,6 +256,20 @@ public:
   }
 };
 
+class not_a_pip_problem_control_parameter_name : public internal_exception {
+public:
+  not_a_pip_problem_control_parameter_name(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
+class not_a_pip_problem_control_parameter_value : public internal_exception {
+public:
+  not_a_pip_problem_control_parameter_value(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
 class not_universe_or_empty : public internal_exception {
 public:
   not_universe_or_empty(Prolog_term_ref term, const char* where)
@@ -449,6 +463,12 @@ void
 handle_exception(const not_a_control_parameter_value& e);
 
 void
+handle_exception(const not_a_pip_problem_control_parameter_name& e);
+
+void
+handle_exception(const not_a_pip_problem_control_parameter_value& e);
+
+void
 handle_exception(const not_universe_or_empty& e);
 
 void
@@ -553,6 +573,12 @@ handle_exception(const deterministic_timeout_exception&);
     handle_exception(e); \
   } \
   catch (const not_a_control_parameter_value& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_pip_problem_control_parameter_name& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_pip_problem_control_parameter_value& e) { \
     handle_exception(e); \
   } \
   catch (const not_universe_or_empty& e) { \
@@ -740,6 +766,12 @@ term_to_control_parameter_name(Prolog_term_ref t, const char* where);
 Prolog_atom
 term_to_control_parameter_value(Prolog_term_ref t, const char* where);
 
+Prolog_atom
+term_to_pip_problem_control_parameter_name(Prolog_term_ref t, const char* where);
+
+Prolog_atom
+term_to_pip_problem_control_parameter_value(Prolog_term_ref t, const char* where);
+
 void
 check_nil_terminating(Prolog_term_ref t, const char* where);
 
@@ -923,12 +955,18 @@ ppl_MIP_Problem_ascii_dump(Prolog_term_ref t_mip);
 
 
 extern "C" Prolog_foreign_return_type
-ppl_new_PIP_Problem_from_space_dimension
-(Prolog_term_ref t_nd, Prolog_term_ref t_pip);
+ppl_new_PIP_Problem_from_space_dimension(Prolog_term_ref t_nd,
+                                         Prolog_term_ref t_pip);
 
 extern "C" Prolog_foreign_return_type
 ppl_new_PIP_Problem_from_PIP_Problem(Prolog_term_ref t_pip_source,
 				     Prolog_term_ref t_pip);
+
+extern "C" Prolog_foreign_return_type
+ppl_new_PIP_Problem(Prolog_term_ref t_dim,
+		    Prolog_term_ref t_cs,
+		    Prolog_term_ref t_params,
+		    Prolog_term_ref t_pip);
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Problem_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs);
@@ -944,8 +982,7 @@ ppl_PIP_Problem_parameter_space_dimensions(Prolog_term_ref t_pip,
                                            Prolog_term_ref t_vlist);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Problem_constraints(Prolog_term_ref t_pip,
-			    Prolog_term_ref t_clist);
+ppl_PIP_Problem_constraints(Prolog_term_ref t_pip, Prolog_term_ref t_cs);
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Problem_get_control_parameter(Prolog_term_ref t_pip,
@@ -1005,15 +1042,27 @@ extern "C" Prolog_foreign_return_type
 ppl_PIP_Problem_ascii_dump(Prolog_term_ref t_pip);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Tree_Node_get_constraints(Prolog_term_ref t_pip_tree,
-                                  Prolog_term_ref t_clist);
+ppl_PIP_Tree_Node_constraints(Prolog_term_ref t_tree_node,
+                              Prolog_term_ref t_clist);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Tree_Node_get_artificials(Prolog_term_ref t_pip_tree,
-                                  Prolog_term_ref t_clist);
+ppl_PIP_Tree_Node_as_solution(Prolog_term_ref t_tree_node,
+                              Prolog_term_ref t_sol_node);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Tree_Node_as_decision(Prolog_term_ref t_tree_node,
+                              Prolog_term_ref t_dec_node);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Tree_Node_artificials(Prolog_term_ref t_pip_tree,
+                              Prolog_term_ref t_artlist);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Tree_Node_OK(Prolog_term_ref t_pip_tree);
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Solution_Node_get_parametric_values(Prolog_term_ref t_pip_sol,
+                                            Prolog_term_ref t_var,
                                             Prolog_term_ref t_pvalue_list);
 
 extern "C" Prolog_foreign_return_type
@@ -1023,10 +1072,6 @@ ppl_PIP_Decision_Node_get_true_child(Prolog_term_ref t_pip_dec,
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Decision_Node_get_false_child(Prolog_term_ref t_pip_dec,
                                       Prolog_term_ref t_pip_tree);
-
-extern "C" Prolog_foreign_return_type
-ppl_PIP_Tree_Node_OK(Prolog_term_ref t_pip_tree);
-
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::Prolog;
