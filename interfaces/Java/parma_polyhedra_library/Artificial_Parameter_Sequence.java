@@ -28,7 +28,7 @@ import java.io.IOException;
 //! A sequence of artificial parameters.
 /*! \ingroup PPL_Java_interface
     An object of the class Artificial_Parameter_Sequence is a
-    sequence of atrtificial parameters.
+    sequence of artificial parameters.
 */
 public class Artificial_Parameter_Sequence
   extends java.util.Vector<Artificial_Parameter> {
