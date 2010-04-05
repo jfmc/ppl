@@ -528,7 +528,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_@1MAXMIN@__Lparma_1polyhedra_1library_Li
     if (this_ptr->@MAXMIN@(le, num, den, b_value)) {
       set_coefficient(env, j_num, build_java_coeff(env, num));
       set_coefficient(env, j_den, build_java_coeff(env, den));
-      jobject j_boolean = bool_to_j_boolean(env, b_value);
+      jobject j_boolean = bool_to_j_boolean_class(env, b_value);
       set_by_reference(env, j_ref_boolean, j_boolean);
       return true;
     }
@@ -559,7 +559,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_@1MAXMIN@__Lparma_1polyhedra_1library_Li
     if (this_ptr->@MAXMIN@(le, num, den, b_value, g)) {
       set_coefficient(env, j_num, build_java_coeff(env, num));
       set_coefficient(env, j_den, build_java_coeff(env, den));
-      jobject j_boolean = bool_to_j_boolean(env, b_value);
+      jobject j_boolean = bool_to_j_boolean_class(env, b_value);
       set_by_reference(env, j_ref_boolean, j_boolean);
       jobject j_g_result = build_java_generator(env, g);
       set_generator(env, j_g, j_g_result);
@@ -882,9 +882,9 @@ m4_define(`ppl_@CLASS@_wrap_assign_code',
 `dnl
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_@1CLASS@_wrap_1assign
-(JNIEnv* env, jobject j_this,
- jobject j_vars, jobject j_w, jobject j_r, jobject j_o, jobject j_cs,
-         jobject j_cx, jobject j_ind) try {
+(JNIEnv* env, jobject j_this, jobject j_vars,
+ jobject j_w, jobject j_r, jobject j_o, jobject j_cs,
+ jlong j_cx, jboolean j_wrap_individually) try {
   @CPP_CLASS@* this_ptr
     = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
   Variables_Set vars = build_cxx_variables_set(env, j_vars);
@@ -892,10 +892,8 @@ Java_parma_1polyhedra_1library_@1CLASS@_wrap_1assign
   Bounded_Integer_Type_Representation r = build_cxx_bounded_rep(env, j_r);
   Bounded_Integer_Type_Overflow o = build_cxx_bounded_overflow(env, j_o);
   Constraint_System cs = build_cxx_constraint_system(env, j_cs);
-  unsigned cx = jtype_to_unsigned<unsigned>(j_integer_to_j_int(env, j_cx));
-  bool ind = (j_boolean_to_bool(env, j_ind));
-
-  this_ptr->wrap_assign(vars, w, r, o, &cs, cx, ind);
+  unsigned cx = jtype_to_unsigned<unsigned int>(j_cx);
+  this_ptr->wrap_assign(vars, w, r, o, &cs, cx, j_wrap_individually);
 }
 CATCH_ALL
 
@@ -1368,7 +1366,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_approximate_1@PARTITION@
     set_ptr(env, j_obj_r2, r2);
     set_pair_element(env, j_pair_obj, 0, j_obj_r1);
     set_pair_element(env, j_pair_obj, 1, j_obj_r2);
-    jobject j_finite_bool = bool_to_j_boolean(env, b_finite_val);
+    jobject j_finite_bool = bool_to_j_boolean_class(env, b_finite_val);
     set_by_reference(env, j_ref_finite_bool, j_finite_bool);
     return j_pair_obj;
   }

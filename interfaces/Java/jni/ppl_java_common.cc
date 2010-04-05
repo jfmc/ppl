@@ -407,20 +407,12 @@ build_cxx_artificial_parameter(JNIEnv* env, jobject j_artificial_parameter) {
 }
 
 jobject
-bool_to_j_boolean(JNIEnv* env, const bool value) {
+bool_to_j_boolean_class(JNIEnv* env, const bool value) {
   jobject ret = env->CallStaticObjectMethod(cached_classes.Boolean,
                                             cached_FMIDs.Boolean_valueOf_ID,
                                             value);
   CHECK_EXCEPTION_ASSERT(env);
   return ret;
-}
-
-/* FIXME: Code is buggy - needs fixing. */
-bool
-j_boolean_to_bool(JNIEnv* env, jobject j_boolean) {
-  bool b = env->CallIntMethod(j_boolean, cached_FMIDs.Boolean_boolValue_ID);
-  CHECK_EXCEPTION_ASSERT(env);
-  return b;
 }
 
 jobject

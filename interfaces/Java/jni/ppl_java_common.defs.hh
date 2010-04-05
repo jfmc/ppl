@@ -434,11 +434,7 @@ jtype_to_unsigned(const V& value);
 
 //! Builds a Java Boolean from C++ bool \p value.
 jobject
-bool_to_j_boolean(JNIEnv* env, const bool value);
-
-//! Returns the Java bool stored in Java Boolean \p j_boolean.
-bool
-j_boolean_to_bool(JNIEnv* env, jobject j_boolean);
+bool_to_j_boolean_class(JNIEnv* env, const bool value);
 
 //! Returns the Java int stored in Java Integer \p j_integer.
 jint
