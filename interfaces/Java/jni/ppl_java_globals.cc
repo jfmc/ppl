@@ -2012,15 +2012,15 @@ Java_parma_1polyhedra_1library_PIP_1Tree_1Node_artificials
 
 JNIEXPORT jobject JNICALL
 Java_parma_1polyhedra_1library_PIP_1Decision_1Node_child_1node
-(JNIEnv* env, jobject j_this, jobject j_branch) {
+(JNIEnv* env, jobject j_this, jboolean j_branch) {
   try {
-    PIP_Decision_Node* pip
+    PIP_Decision_Node* dec_node
       = reinterpret_cast<PIP_Decision_Node*>(get_ptr(env, j_this));
-    unsigned u = jtype_to_unsigned<unsigned>(j_integer_to_j_int(env, j_branch));
-    bool b = (u == 0) ? false : true;
-    const PIP_Tree_Node* child
-      = pip->child_node(b);
-
+    const PIP_Tree_Node* child = dec_node->child_node(j_branch);
+    if (child == 0) {
+      jobject null = 0;
+      return null;
+    }
     jclass j_class_s = env->FindClass("parma_polyhedra_library/PIP_Tree_Node");
     CHECK_RESULT_ASSERT(env, j_class_s);
     jmethodID j_ctr_id_s = env->GetMethodID(j_class_s, "<init>", "()V");

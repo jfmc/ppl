@@ -380,7 +380,7 @@ static {
         if (relsym != Relation_Symbol.GREATER_OR_EQUAL
             || (le_left.is_zero()) || (le_right.is_zero()))
           return false;
-        PIP_Tree_Node root_true_branch = root.child_node(1);
+        PIP_Tree_Node root_true_branch = root.child_node(true);
         if (root_true_branch == null)
           return false;
 
@@ -406,9 +406,9 @@ static {
           || (le_left2.is_zero()) || (le_right2.is_zero()))
           return false;
 
-        if (t_child.child_node(1) == null)
+        if (t_child.child_node(true) == null)
           return false;
-        PIP_Solution_Node t_t_child = t_child.child_node(1).as_solution();
+        PIP_Solution_Node t_t_child = t_child.child_node(true).as_solution();
         if (t_t_child == null || !t_t_child.OK())
           return false;
 
@@ -421,7 +421,7 @@ static {
         Linear_Expression v_i = t_t_child.parametric_values(I);
         Linear_Expression v_j = t_t_child.parametric_values(J);
 
-        PIP_Solution_Node t_f_child = t_child.child_node(0).as_solution();
+        PIP_Solution_Node t_f_child = t_child.child_node(false).as_solution();
         if (t_f_child == null || !t_f_child.OK())
           return false;
 

@@ -30,9 +30,8 @@ import java.io.IOException;
 public class PIP_Decision_Node extends PIP_Tree_Node {
 
     /*! \brief
-      Returns a the true branch (if \p b is not zero)
-      or the false branch (if \p b is zero) of \p pip_dec.
+      Returns the true branch (if \p branch is true)
+      or the false branch (if \p branch is false) of \p this.
     */
-    /* FIXME: j_branch should be a boolean. */
-    public native PIP_Tree_Node child_node(Integer j_branch);
+    public native PIP_Tree_Node child_node(boolean branch);
 }
