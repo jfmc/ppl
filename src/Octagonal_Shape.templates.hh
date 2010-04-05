@@ -7572,6 +7572,23 @@ Octagonal_Shape<T>::drop_some_non_integer_points(Complexity_Class) {
          i_end = matrix.element_end(); i != i_end; ++i)
     drop_some_non_integer_points_helper(*i);
 
+  // Unary constraints should have an even integer boundary.
+  PPL_DIRTY_TEMP(N, temp_one);
+  assign_r(temp_one, 1, ROUND_NOT_NEEDED);
+  for (dimension_type i = 0; i < 2*space_dim; i += 2) {
+    const dimension_type ci = i+1;
+    N& mat_i_ci = matrix[i][ci];
+    if (!is_plus_infinity(mat_i_ci) && !is_even(mat_i_ci)) {
+      sub_assign_r(mat_i_ci, mat_i_ci, temp_one, ROUND_UP);
+      reset_strongly_closed();
+    }
+    N& mat_ci_i = matrix[ci][i];
+    if (!is_plus_infinity(mat_ci_i) && !is_even(mat_ci_i)) {
+      sub_assign_r(mat_ci_i, mat_ci_i, temp_one, ROUND_UP);
+      reset_strongly_closed();
+    }
+  }
+
   PPL_ASSERT(OK());
 }
 
@@ -7593,21 +7610,40 @@ Octagonal_Shape<T>
   if (marked_empty())
     return;
 
+  PPL_DIRTY_TEMP(N, temp_one);
+  assign_r(temp_one, 1, ROUND_NOT_NEEDED);
+
   const Variables_Set::const_iterator v_begin = vars.begin();
   const Variables_Set::const_iterator v_end = vars.end();
   PPL_ASSERT(v_begin != v_end);
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
   for (Variables_Set::const_iterator v_i = v_begin; v_i != v_end; ++v_i) {
-    const dimension_type i = *v_i;
-    Row_Reference m_i = matrix[i];
+    const dimension_type i = 2 * (*v_i);
     const dimension_type ci = i + 1;
+    Row_Reference m_i = matrix[i];
     Row_Reference m_ci = matrix[ci];
-    // Unary constaints.
-    drop_some_non_integer_points_helper(m_i[ci]);
-    drop_some_non_integer_points_helper(m_ci[i]);
-    // Binary constraint (note: only consider j < i).
+
+    // Unary constaints: should be even integers.
+    N& m_i_ci = m_i[ci];
+    if (!is_plus_infinity(m_i_ci)) {
+      drop_some_non_integer_points_helper(m_i_ci);
+      if (!is_even(m_i_ci)) {
+        sub_assign_r(m_i_ci, m_i_ci, temp_one, ROUND_UP);
+        reset_strongly_closed();
+      }
+    }
+    N& m_ci_i = m_ci[i];
+    if (!is_plus_infinity(m_ci_i)) {
+      drop_some_non_integer_points_helper(m_ci_i);
+      if (!is_even(m_ci_i)) {
+        sub_assign_r(m_ci_i, m_ci_i, temp_one, ROUND_UP);
+        reset_strongly_closed();
+      }
+    }
+
+    // Binary constraints (note: only consider j < i).
     for (Variables_Set::const_iterator v_j = v_begin; v_j != v_i; ++v_j) {
-      const dimension_type j = *v_j;
+      const dimension_type j = 2 * (*v_j);
       const dimension_type cj = j + 1;
       drop_some_non_integer_points_helper(m_i[j]);
       drop_some_non_integer_points_helper(m_i[cj]);

@@ -154,7 +154,7 @@ test06() {
   Variable A(0);
   Variable B(1);
 
-  Octagonal_Shape<mpq_class>os(2);
+  Octagonal_Shape<mpq_class> os(2);
   os.add_constraint(2*A <= 1);
   os.add_constraint(2*B <= -1);
   os.add_constraint(4*A - 4*B <= 7);
@@ -163,7 +163,12 @@ test06() {
 
   os.drop_some_non_integer_points();
 
-  bool ok = true; //(os1 == os2);
+  Octagonal_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A <= 0);
+  known_result.add_constraint(B <= -1);
+  known_result.add_constraint(A - B <= 1);
+
+  bool ok = (os == known_result);
 
   print_constraints(os, "*** after os.drop_some_non_integer_points() ***");
 
@@ -190,11 +195,12 @@ test07() {
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(2*B >= -1);
-  known_result.add_constraint(2*A + 2*B >= 1);
+  known_result.add_constraint(2*A - 2*B >= 1);
 
   bool ok = (os == known_result);
 
-  print_constraints(os, "*** after os.drop_some_non_integer_points() ***");
+  print_constraints(os,
+                    "*** after os.drop_some_non_integer_points(varset_A) ***");
 
   return ok;
 }
@@ -311,7 +317,7 @@ test12() {
   Variables_Set varset_A;
   varset_A.insert(A);
 
-  Octagonal_Shape<mpq_class>os(2);
+  Octagonal_Shape<mpq_class> os(2);
   os.add_constraint(2*A <= 1);
   os.add_constraint(2*B <= -1);
   os.add_constraint(4*A - 4*B <= 7);
@@ -320,9 +326,15 @@ test12() {
 
   os.drop_some_non_integer_points(varset_A);
 
-  bool ok = true; //(os1 == os2);
+  Octagonal_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A <= 0);
+  known_result.add_constraint(2*B <= -1);
+  known_result.add_constraint(4*A - 4*B <= 7);
 
-  print_constraints(os, "*** after os.drop_some_non_integer_points() ***");
+  bool ok = (os == known_result);
+
+  print_constraints(os,
+                    "*** after os.drop_some_non_integer_points(varset_A) ***");
 
   return ok;
 }
@@ -330,16 +342,16 @@ test12() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST_F(test01);
+  DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST_F(test05);
+  DO_TEST(test05);
   DO_TEST(test06);
-  DO_TEST_F(test07);
+  DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
-//  DO_TEST(test11);
+  DO_TEST(test11);
   DO_TEST(test12);
 END_MAIN
