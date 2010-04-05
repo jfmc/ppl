@@ -824,7 +824,7 @@ assign_float_mpz(T& to, const mpz_class& _from, Rounding_Dir dir)
 		    exponent - Float<T>::Binary::MANTISSA_BITS);
   else
     mpz_mul_2exp(mantissa, from, Float<T>::Binary::MANTISSA_BITS - exponent);
-  Float<T> f(to);
+  Float<T> f;
   f.u.binary.build(sign < 0, mantissa, exponent);
   mpz_clear(mantissa);
   to = f.value();
@@ -898,7 +898,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
     // Denormalized.
     exponent = Float<T>::Binary::EXPONENT_MIN - 1;
   }
-  Float<T> f(to);
+  Float<T> f;
   f.u.binary.build(sign < 0, mantissa, exponent);
   mpz_clear(mantissa);
   to = f.value();
