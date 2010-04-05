@@ -1054,7 +1054,7 @@ ppl_PIP_Tree_Node_as_decision(Prolog_term_ref t_tree_node,
                               Prolog_term_ref t_dec_node);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Tree_Node_artificials(Prolog_term_ref t_pip_tree,
+ppl_PIP_Tree_Node_artificials(Prolog_term_ref t_tree_node,
                               Prolog_term_ref t_artlist);
 
 extern "C" Prolog_foreign_return_type

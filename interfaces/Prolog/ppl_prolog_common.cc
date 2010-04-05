@@ -1405,13 +1405,11 @@ grid_generator_term(const Grid_Generator& g) {
 }
 
 Prolog_term_ref
-  artificial_parameter_term(const PIP_Tree_Node::Artificial_Parameter& art) {
+artificial_parameter_term(const PIP_Tree_Node::Artificial_Parameter& art) {
   Prolog_term_ref t = Prolog_new_term_ref();
-  Prolog_construct_compound
-    (t,
-     a_divided_by,
-     get_linear_expression(art),
-     Coefficient_to_integer_term(art.denominator()));
+  Prolog_construct_compound(t, a_divided_by,
+                            get_linear_expression(art),
+                            Coefficient_to_integer_term(art.denominator()));
   return t;
 }
 
@@ -3036,25 +3034,24 @@ ppl_PIP_Tree_Node_as_decision(Prolog_term_ref t_pip,
   CATCH_ALL;
 }
 
-/* FIXME: (Commented) test in pl_check.pl gives segmentation fault! */
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Tree_Node_artificials(Prolog_term_ref t_pip,
+ppl_PIP_Tree_Node_artificials(Prolog_term_ref t_tree_node,
                               Prolog_term_ref t_artlist) {
   static const char* where = "ppl_PIP_Tree_Node_artificials/2";
   try {
-    const PIP_Tree_Node* pip = term_to_handle<PIP_Tree_Node>(t_pip, where);
-    PPL_CHECK(pip);
+    const PIP_Tree_Node* node
+      = term_to_handle<PIP_Tree_Node>(t_tree_node, where);
+    PPL_CHECK(node);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     for (PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator
-             i = pip->art_parameter_begin(),
-             arts_end = pip->art_parameter_end(); i != arts_end; ++i)
+           i = node->art_parameter_begin(),
+           arts_end = node->art_parameter_end(); i != arts_end; ++i)
       Prolog_construct_cons(tail, artificial_parameter_term(*i), tail);
 
-    if (Prolog_unify(t_artlist, tail)) {
+    if (Prolog_unify(t_artlist, tail))
       return PROLOG_SUCCESS;
-    }
   }
   CATCH_ALL;
 }
