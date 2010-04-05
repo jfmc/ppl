@@ -152,7 +152,7 @@ test06() {
   Variable A(0);
   Variable B(1);
 
-  BD_Shape<mpq_class>bds(2);
+  BD_Shape<mpq_class> bds(2);
   bds.add_constraint(2*A <= 1);
   bds.add_constraint(2*B <= -1);
   bds.add_constraint(4*A - 4*B <= 7);
@@ -161,7 +161,12 @@ test06() {
 
   bds.drop_some_non_integer_points();
 
-  bool ok = true; //(bds1 == bds2);
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A <= 0);
+  known_result.add_constraint(B <= -1);
+  known_result.add_constraint(A - B <= 1);
+
+  bool ok = (bds == known_result);
 
   print_constraints(bds, "*** after bds.drop_some_non_integer_points() ***");
 
@@ -192,7 +197,8 @@ test07() {
 
   bool ok = (bds == known_result);
 
-  print_constraints(bds, "*** after bds.drop_some_non_integer_points() ***");
+  print_constraints(bds,
+                    "*** after bds.drop_some_non_integer_points(varset_A) ***");
 
   return ok;
 }
@@ -309,7 +315,7 @@ test12() {
   Variables_Set varset_A;
   varset_A.insert(A);
 
-  BD_Shape<mpq_class>bds(2);
+  BD_Shape<mpq_class> bds(2);
   bds.add_constraint(2*A <= 1);
   bds.add_constraint(2*B <= -1);
   bds.add_constraint(4*A - 4*B <= 7);
@@ -318,9 +324,15 @@ test12() {
 
   bds.drop_some_non_integer_points(varset_A);
 
-  bool ok = true; //(bds1 == bds2);
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A <= 0);
+  known_result.add_constraint(2*B <= -1);
+  known_result.add_constraint(4*A - 4*B <= 7);
 
-  print_constraints(bds, "*** after bds.drop_some_non_integer_points() ***");
+  bool ok = (bds == known_result);
+
+  print_constraints(bds,
+                    "*** after bds.drop_some_non_integer_points(varset_A) ***");
 
   return ok;
 }
