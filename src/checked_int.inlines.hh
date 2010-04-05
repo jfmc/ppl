@@ -1383,12 +1383,16 @@ add_mul_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   case 0:
     return add<To_Policy, To_Policy, To_Policy>(to, to, z, dir);
   case -1:
-    if (to <= 0)
-      return set_neg_overflow_int<To_Policy>(to, dir);
+    if (to <= 0) {
+      to = z;
+      return r;
+    }
     return assign_nan<To_Policy>(to, V_UNKNOWN_NEG_OVERFLOW);
   case 1:
-    if (to >= 0)
-      return set_pos_overflow_int<To_Policy>(to, dir);
+    if (to >= 0) {
+      to = z;
+      return r;
+    }
     return assign_nan<To_Policy>(to, V_UNKNOWN_POS_OVERFLOW);
   default:
     PPL_ASSERT(false);
@@ -1407,11 +1411,11 @@ sub_mul_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   case -1:
     if (to >= 0)
       return set_pos_overflow_int<To_Policy>(to, dir);
-    return assign_nan<To_Policy>(to, V_UNKNOWN_NEG_OVERFLOW);
+    return V_UNKNOWN_NEG_OVERFLOW;
   case 1:
     if (to <= 0)
       return set_neg_overflow_int<To_Policy>(to, dir);
-    return assign_nan<To_Policy>(to, V_UNKNOWN_POS_OVERFLOW);
+    return V_UNKNOWN_POS_OVERFLOW;
   default:
     PPL_ASSERT(false);
     return V_NAN;
