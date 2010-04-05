@@ -219,6 +219,51 @@ let congruence1 = (e2, e2 , (Z.from_int 1));;
 let congruences1 = [e3, e2 , (Z.from_int 20)];;
 let grid_generator1 = Grid_Point (e3, (Z.from_int 1));;
 
+let pip2 = ppl_new_PIP_Problem 3
+             [e1 >=/ e2; e1 <=/ e2 -/ (linear_expression_of_int 7)] [2];;
+let i = ppl_PIP_Problem_space_dimension pip2;;
+let i = ppl_PIP_Problem_constraints pip2;;
+print_string_if_noisy "\n";;
+List.iter print_constraint i;;
+print_string_if_noisy "\n";;
+let ptree2 = ppl_PIP_Problem_solution pip2;;
+let _pip2_ok = ppl_PIP_Problem_OK pip2;;
+(* let _ptree2_ok = ppl_PIP_Tree_Node_OK ptree2;; *)
+
+let params = [7];;
+let pip1 = ppl_new_PIP_Problem 10 constraints1 params;;
+let i = ppl_PIP_Problem_space_dimension pip1;;
+let i = ppl_PIP_Problem_constraints pip1;;
+print_string_if_noisy "\n";;
+List.iter print_constraint i;;
+print_string_if_noisy "\n";;
+ppl_PIP_Problem_add_constraint pip1 constraint1;;
+ppl_PIP_Problem_add_constraints pip1 constraints1;;
+let i = ppl_PIP_Problem_parameter_space_dimensions pip1;;
+let i = ppl_PIP_Problem_get_control_parameter pip1 Cutting_Strategy;;
+print_string_if_noisy "\n";;
+ppl_PIP_Problem_set_control_parameter pip1 Cutting_Strategy_First;;
+let i = ppl_PIP_Problem_get_control_parameter pip1 Cutting_Strategy;;
+let out = if (i == Cutting_Strategy_First)
+  then "PIP Problem Control Parameter test succeeded"
+  else "PIP Problem Control Parameter test failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+let out = if (ppl_PIP_Problem_is_satisfiable pip1)
+  then "ppl_PIP_Problem_is_satisfiable test succeeded"
+  else "ppl_PIP_Problem_is_satisfiable test failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+print_string_if_noisy "testing ppl_PIP_Problem_ascii_dump: " ;;
+print_string_if_noisy (ppl_PIP_Problem_ascii_dump pip1);;
+print_string_if_noisy "\n";;
+let ptree1 = ppl_PIP_Problem_solution pip1;;
+let _r = ppl_PIP_Problem_OK pip1;;
+(* print_string_if_noisy "testing ppl_PIP_Tree_Node_ascii_dump: " ;;
+print_string_if_noisy (ppl_PIP_Tree_Node_ascii_dump ptree1);;
+print_string_if_noisy "\n";; *)
+(* let _r = ppl_PIP_Tree_Node_OK ptree1;; *)
+
 let mip1 = ppl_new_MIP_Problem 10 constraints1 e3 Maximization;;
 let objective_func = ppl_MIP_Problem_objective_function mip1;;
 print_string_if_noisy "\n";;

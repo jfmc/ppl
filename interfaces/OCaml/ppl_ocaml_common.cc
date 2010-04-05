@@ -890,6 +890,62 @@ unregistered_value_p_PIP_Tree_Node(const PIP_Tree_Node& ph) {
   return v;
 }
 
+//! Give access to the embedded PIP_Solution_Node* in \p v.
+inline PIP_Solution_Node*&
+p_PIP_Solution_Node_val(value v) {
+  return *reinterpret_cast<PIP_Solution_Node**>(Data_custom_val(v));
+}
+
+void
+custom_PIP_Solution_Node_finalize(value v) {
+  delete p_PIP_Solution_Node_val(v);
+}
+
+static struct custom_operations PIP_Solution_Node_custom_operations = {
+  "it.unipr.cs.ppl" "." PPL_VERSION "." "PIP_Solution_Node",
+  custom_PIP_Solution_Node_finalize,
+  custom_compare_default,
+  custom_hash_default,
+  custom_serialize_default,
+  custom_deserialize_default
+};
+
+inline value
+unregistered_value_p_PIP_Solution_Node(const PIP_Solution_Node& ph) {
+  value v = caml_alloc_custom(&PIP_Solution_Node_custom_operations,
+                              sizeof(PIP_Solution_Node*), 0, 1);
+  p_PIP_Solution_Node_val(v) = const_cast<PIP_Solution_Node*>(&ph);
+  return v;
+}
+
+//! Give access to the embedded PIP_Decision_Node* in \p v.
+inline PIP_Decision_Node*&
+p_PIP_Decision_Node_val(value v) {
+  return *reinterpret_cast<PIP_Decision_Node**>(Data_custom_val(v));
+}
+
+void
+custom_PIP_Decision_Node_finalize(value v) {
+  delete p_PIP_Decision_Node_val(v);
+}
+
+static struct custom_operations PIP_Decision_Node_custom_operations = {
+  "it.unipr.cs.ppl" "." PPL_VERSION "." "PIP_Decision_Node",
+  custom_PIP_Decision_Node_finalize,
+  custom_compare_default,
+  custom_hash_default,
+  custom_serialize_default,
+  custom_deserialize_default
+};
+
+inline value
+unregistered_value_p_PIP_Decision_Node(const PIP_Decision_Node& ph) {
+  value v = caml_alloc_custom(&PIP_Decision_Node_custom_operations,
+                              sizeof(PIP_Decision_Node*), 0, 1);
+  p_PIP_Decision_Node_val(v) = const_cast<PIP_Decision_Node*>(&ph);
+  return v;
+}
+
 } // namespace OCaml
 
 } // namespace Interfaces
@@ -1448,16 +1504,6 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_PIP_Problem_optimizing_solution(value caml_pip) try {
-  CAMLparam1(caml_pip);
-  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
-  PIP_Tree_Node* ppl_node = const_cast<PIP_Tree_Node*>(ppl_pip.solution());
-  CAMLreturn(unregistered_value_p_PIP_Tree_Node(*ppl_node));
-}
-CATCH_ALL
-
-extern "C"
-CAMLprim value
 ppl_PIP_Problem_solution(value caml_pip) try {
   CAMLparam1(caml_pip);
   PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
@@ -1468,10 +1514,21 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
+ppl_PIP_Problem_optimizing_solution(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  PIP_Tree_Node* ppl_node
+    = const_cast<PIP_Tree_Node*>(ppl_pip.optimizing_solution());
+  CAMLreturn(unregistered_value_p_PIP_Tree_Node(*ppl_node));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
 ppl_PIP_Problem_OK(value caml_pip) try {
   CAMLparam1(caml_pip);
   PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
-  CAMLreturn(ppl_pip.OK());
+  CAMLreturn(Val_bool(ppl_pip.OK()));
 }
 CATCH_ALL
 
@@ -1504,6 +1561,135 @@ ppl_PIP_Problem_ascii_dump(value caml_pip) try {
   std::ostringstream s;
   pip.ascii_dump(s);
   CAMLreturn(caml_copy_string(s.str().c_str()));
+}
+CATCH_ALL
+
+value
+build_ocaml_artificial_parameter(const PIP_Tree_Node::Artificial_Parameter&
+                                   ppl_artificial_parameter) {
+  CAMLparam0();
+  CAMLlocal1(caml_artificial_parameter);
+  caml_artificial_parameter = caml_alloc(2,0);
+  Store_field(caml_artificial_parameter, 0, get_linear_expression(ppl_artificial_parameter));
+  const Coefficient& deniminator = ppl_artificial_parameter.denominator();
+  Store_field(caml_artificial_parameter, 1,
+              build_ocaml_coefficient(deniminator));
+  CAMLreturn(caml_artificial_parameter);
+}
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_constraints(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Tree_Node& ppl_pip = *p_PIP_Tree_Node_val(caml_pip);
+  const Constraint_System& ppl_cs = ppl_pip.constraints();
+  CAMLreturn(build_ocaml_constraint_system(ppl_cs));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_is_solution(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Tree_Node& ppl_pip = *p_PIP_Tree_Node_val(caml_pip);
+  PIP_Solution_Node* ppl_node
+    = const_cast<PIP_Solution_Node*>(ppl_pip.as_solution());
+  CAMLreturn(Val_bool(ppl_node == 0));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_as_solution(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Tree_Node& ppl_pip = *p_PIP_Tree_Node_val(caml_pip);
+  PIP_Solution_Node* ppl_node
+    = const_cast<PIP_Solution_Node*>(ppl_pip.as_solution());
+  CAMLreturn(unregistered_value_p_PIP_Solution_Node(*ppl_node));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_as_decision(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Tree_Node& ppl_pip = *p_PIP_Tree_Node_val(caml_pip);
+  PIP_Decision_Node* ppl_node
+    = const_cast<PIP_Decision_Node*>(ppl_pip.as_decision());
+  CAMLreturn(unregistered_value_p_PIP_Decision_Node(*ppl_node));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_artificials(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  CAMLlocal2(result, new_tail);
+  PIP_Tree_Node& ppl_pip = *p_PIP_Tree_Node_val(caml_pip);
+  for (PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator v_begin = ppl_pip.art_parameter_begin(),
+  	 v_end = ppl_pip.art_parameter_end(); v_begin != v_end; ++v_begin) {
+    new_tail = caml_alloc_tuple(2);
+    Store_field(new_tail, 0, build_ocaml_artificial_parameter(*v_begin));
+    Store_field(new_tail, 1, result);
+    result = new_tail;
+  }
+  CAMLreturn(result);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_OK(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Tree_Node& ppl_pip = *p_PIP_Tree_Node_val(caml_pip);
+  CAMLreturn(Val_bool(ppl_pip.OK()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_ascii_dump(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Tree_Node& pip = *p_PIP_Tree_Node_val(caml_pip);
+  std::ostringstream s;
+  pip.ascii_dump(s);
+  CAMLreturn(caml_copy_string(s.str().c_str()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Solution_Node_get_parametric_values(value caml_pip, value caml_dim) try {
+  CAMLparam2(caml_pip, caml_dim);
+  PIP_Solution_Node& ppl_pip
+    = *p_PIP_Solution_Node_val(caml_pip);
+  dimension_type ppl_dim = Int_val(caml_dim);
+  const Linear_Expression& ppl_le = ppl_pip.parametric_values(Variable(ppl_dim));
+  CAMLreturn(get_linear_expression(ppl_le));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Decision_Node_get_true_child(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Decision_Node& ppl_pip
+    = *p_PIP_Decision_Node_val(caml_pip);
+  PIP_Tree_Node* ppl_node
+    = const_cast<PIP_Tree_Node*>(ppl_pip.child_node(true));
+  CAMLreturn(unregistered_value_p_PIP_Tree_Node(*ppl_node));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Decision_Node_get_false_child(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Decision_Node& ppl_pip
+    = *p_PIP_Decision_Node_val(caml_pip);
+  PIP_Tree_Node* ppl_node
+    = const_cast<PIP_Tree_Node*>(ppl_pip.child_node(false));
+  CAMLreturn(unregistered_value_p_PIP_Tree_Node(*ppl_node));
 }
 CATCH_ALL
 

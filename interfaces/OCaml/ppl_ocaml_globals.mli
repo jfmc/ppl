@@ -272,6 +272,14 @@ type pip_problem
 
 type pip_tree_node
 
+type pip_solution_node
+
+type pip_decision_node
+
+type artificial_parameter = linear_expression * Z.t
+
+type artificial_parameter_sequence = artificial_parameter list
+
 val ppl_new_PIP_Problem_from_space_dimension:
   int -> pip_problem
 
@@ -335,3 +343,33 @@ val ppl_PIP_Problem_swap:
 
 val ppl_PIP_Problem_ascii_dump:
   pip_problem -> string
+
+val ppl_PIP_Tree_Node_constraints:
+  pip_tree_node -> constraint_system
+
+val ppl_PIP_Tree_Node_is_solution:
+  pip_tree_node -> bool
+
+val ppl_PIP_Tree_Node_as_solution:
+  pip_tree_node -> pip_solution_node
+
+val ppl_PIP_Tree_Node_as_decision:
+  pip_tree_node -> pip_decision_node
+
+val ppl_PIP_Tree_Node_artificials:
+  pip_tree_node -> artificial_parameter_sequence
+
+val ppl_PIP_Tree_Node_ascii_dump:
+  pip_tree_node -> string
+
+val ppl_PIP_Tree_Node_OK:
+  pip_tree_node -> bool
+
+val ppl_PIP_Solution_Node_get_parametric_values:
+  pip_solution_node -> int -> linear_expression
+
+val ppl_PIP_Decision_Node_get_true_child:
+  pip_decision_node -> pip_tree_node
+
+val ppl_PIP_Decision_Node_get_false_child:
+  pip_decision_node -> pip_tree_node
