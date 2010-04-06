@@ -38,13 +38,27 @@ o  The C and Java interfaces now support timeout computation facilities.
 o  New configuration option `--with-gmp-build=DIR' allows to use a
    non-installed build of GMP in DIR.
 
-o  New methods
+o New class PIP_Problem provides a Parametric Integer Programming (PIP)
+  problem solver mainly based on P. Feautrier's specification.
+  The implementation combines a parametric dual simplex algorithm using
+  exact arithmetic with Gomory's cut generation.
+  Still under beta testing.
 
-     bool Linear_Expression::is_zero() const
-     bool Linear_Expression::all_homogeneous_terms_are_zero() const
+o  New Linear_Expression methods
+
+     bool is_zero() const
+     bool all_homogeneous_terms_are_zero() const
 
    return true if and only if `*this' is 0, and if and only if all the
    homogeneous terms of `*this' are 0, respectively.
+
+o  New Linear_Expression methods
+
+     void add_mul_assign(Coefficient_traits::const_reference c, Variable v)
+     void sub_mul_assign(Coefficient_traits::const_reference c, Variable v)
+
+   assign linear expression *this + c * v (resp., *this - c * v) to *this,
+   while avoiding the allocation of a temporary Linear_Expression.
 
 o  For the PPL semantic objects, other than the Pointset_Powerset and
    Partially_Reduced Product, there is a new method:
