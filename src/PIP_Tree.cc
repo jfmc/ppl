@@ -45,17 +45,23 @@ mod_assign(Coefficient& z,
 inline void
 add_mul_assign_row(Row& x,
                    Coefficient_traits::const_reference c, const Row& y) {
-  PPL_ASSERT(x.size() == y.size());
-  for (dimension_type i = x.size(); i-- > 0; )
+  WEIGHT_BEGIN();
+  const dimension_type x_size = x.size();
+  PPL_ASSERT(x_size == y.size());
+  for (dimension_type i = x_size; i-- > 0; )
     add_mul_assign(x[i], c, y[i]);
+  WEIGHT_ADD_MUL(1, x_size);
 }
 
 // Compute x -= y
 inline void
 sub_assign(Row& x, const Row& y) {
-  PPL_ASSERT(x.size() == y.size());
-  for (dimension_type i = x.size(); i-- > 0; )
+  WEIGHT_BEGIN();
+  const dimension_type x_size = x.size();
+  PPL_ASSERT(x_size == y.size());
+  for (dimension_type i = x_size; i-- > 0; )
     x[i] -= y[i];
+  WEIGHT_ADD_MUL(1, x_size);
 }
 
 // Merge constraint system to a Matrix-form context such as x = x U y
@@ -63,7 +69,8 @@ void
 merge_assign(Matrix& x,
              const Constraint_System& y,
              const Variables_Set& parameters) {
-  PPL_ASSERT(parameters.size() == x.num_columns() - 1);
+  const dimension_type params_size = parameters.size();
+  PPL_ASSERT(params_size == x.num_columns() - 1);
   const dimension_type new_rows = std::distance(y.begin(), y.end());
   if (new_rows == 0)
     return;
@@ -78,6 +85,7 @@ merge_assign(Matrix& x,
   dimension_type i = old_num_rows;
   for (Constraint_System::const_iterator y_i = y.begin(),
          y_end = y.end(); y_i != y_end; ++y_i, ++i) {
+    WEIGHT_BEGIN();
     PPL_ASSERT(y_i->is_nonstrict_inequality());
     Row& x_i = x[i];
     x_i[0] = y_i->inhomogeneous_term();
@@ -89,15 +97,19 @@ merge_assign(Matrix& x,
         break;
       x_i[j] = y_i->coefficient(vj);
     }
+    WEIGHT_ADD_MUL(1, params_size);
   }
 }
 
 // Assigns to row x the negation of row y.
 inline void
 neg_assign_row(Row& x, const Row& y) {
-  PPL_ASSERT(x.size() == y.size());
+  WEIGHT_BEGIN();
+  const dimension_type x_size = x.size();
+  PPL_ASSERT(x_size == y.size());
   for (dimension_type i = x.size(); i-- > 0; )
     neg_assign(x[i], y[i]);
+  WEIGHT_ADD_MUL(1, x_size);
 }
 
 // Given context row \p y and denominator \p den,
@@ -186,6 +198,7 @@ column_lower(const Matrix& tableau,
   // While loop guard is: (k < num_rows && lhs == rhs).
   // Return value is false, if k >= num_rows; lhs < rhs, otherwise.
   // Try to optimize the computation of lhs and rhs.
+  WEIGHT_BEGIN();
   while (true) {
     const dimension_type mk = mapping[k];
     const bool in_base = basis[k];
@@ -211,6 +224,7 @@ column_lower(const Matrix& tableau,
       continue;
     } else {
       // Not in base.
+      WEIGHT_ADD(2);
       const Row& t_mk = tableau[mk];
       lhs = lhs_coeff * t_mk[ja];
       rhs = rhs_coeff * t_mk[jb];
@@ -235,6 +249,7 @@ find_lexico_minimum_column(const Matrix& tableau,
                            const Row& pivot_row,
                            const dimension_type start_j,
                            dimension_type& j_out) {
+  WEIGHT_BEGIN();
   const dimension_type num_cols = tableau.num_columns();
   bool has_positive_coefficient = false;
 
@@ -249,6 +264,7 @@ find_lexico_minimum_column(const Matrix& tableau,
                         pivot_row, j, pivot_row, j_out))
       j_out = j;
   }
+  WEIGHT_ADD_MUL(1, num_cols - start_j);
   return has_positive_coefficient;
 }
 
@@ -257,22 +273,26 @@ void
 row_normalize(Row& x, Coefficient& den) {
   if (den == 1)
     return;
+  WEIGHT_BEGIN();
   const dimension_type x_size = x.size();
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd = den;
   for (dimension_type i = x_size; i-- > 0; ) {
     const Coefficient& x_i = x[i];
     if (x_i != 0) {
+      WEIGHT_ADD(1);
       gcd_assign(gcd, x_i, gcd);
       if (gcd == 1)
         return;
     }
   }
   // Divide the coefficients by the GCD.
+  WEIGHT_BEGIN();
   for (dimension_type i = x_size; i-- > 0; ) {
     Coefficient& x_i = x[i];
     exact_div_assign(x_i, x_i, gcd);
   }
+  WEIGHT_ADD_MUL(1, x_size);
   // Divide the denominator by the GCD.
   exact_div_assign(den, den, gcd);
 }
@@ -559,11 +579,13 @@ PIP_Tree_Node
   // NOTE: iterating downward on parameters to avoid reallocations.
   Variables_Set::const_reverse_iterator p_j = parameters.rbegin();
   // NOTE: index j spans [1..num_params] downwards.
+  WEIGHT_BEGIN();
   for (dimension_type j = num_params; j > 0; --j) {
     add_mul_assign(expr, row[j], Variable(*p_j));
     // Move to previous parameter.
     ++p_j;
   }
+  WEIGHT_ADD_MUL(1, num_params);
 
   // Add the parameter constraint.
   constraints_.insert(expr >= 0);
@@ -918,19 +940,23 @@ PIP_Solution_Node::Tableau::normalize() {
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd = denom;
   for (dimension_type i = num_rows; i-- > 0; ) {
+    WEIGHT_BEGIN();
     const Row& s_i = s[i];
     for (dimension_type j = s_cols; j-- > 0; ) {
       const Coefficient& s_ij = s_i[j];
       if (s_ij != 0) {
+        WEIGHT_ADD(1);
         gcd_assign(gcd, s_ij, gcd);
         if (gcd == 1)
           return;
       }
     }
+    WEIGHT_BEGIN();
     const Row& t_i = t[i];
     for (dimension_type j = t_cols; j-- > 0; ) {
       const Coefficient& t_ij = t_i[j];
       if (t_ij != 0) {
+        WEIGHT_ADD(1);
         gcd_assign(gcd, t_ij, gcd);
         if (gcd == 1)
           return;
@@ -940,6 +966,7 @@ PIP_Solution_Node::Tableau::normalize() {
 
   PPL_ASSERT(gcd > 1);
   // Normalize all coefficients.
+  WEIGHT_BEGIN();
   for (dimension_type i = num_rows; i-- > 0; ) {
     Row& s_i = s[i];
     for (dimension_type j = s_cols; j-- > 0; ) {
@@ -952,20 +979,26 @@ PIP_Solution_Node::Tableau::normalize() {
       exact_div_assign(t_ij, t_ij, gcd);
     }
   }
+  WEIGHT_ADD_MUL(s_cols + t_cols, num_rows);
   // Normalize denominator.
   exact_div_assign(denom, denom, gcd);
 }
 
 void
 PIP_Solution_Node::Tableau::scale(Coefficient_traits::const_reference ratio) {
-  for (dimension_type i = s.num_rows(); i-- > 0; ) {
+  WEIGHT_BEGIN();
+  const dimension_type num_rows = s.num_rows();
+  const dimension_type s_cols = s.num_columns();
+  const dimension_type t_cols = t.num_columns();
+  for (dimension_type i = num_rows; i-- > 0; ) {
     Row& s_i = s[i];
-    for (dimension_type j = s.num_columns(); j-- > 0; )
+    for (dimension_type j = s_cols; j-- > 0; )
       s_i[j] *= ratio;
     Row& t_i = t[i];
-    for (dimension_type j = t.num_columns(); j-- > 0; )
+    for (dimension_type j = t_cols; j-- > 0; )
       t_i[j] *= ratio;
   }
+  WEIGHT_ADD_MUL(s_cols + t_cols, num_rows);
   denom *= ratio;
 }
 
@@ -989,16 +1022,19 @@ PIP_Solution_Node::Tableau
   PPL_DIRTY_TEMP_COEFFICIENT(coeff_1);
   PPL_DIRTY_TEMP_COEFFICIENT(product_0);
   PPL_DIRTY_TEMP_COEFFICIENT(product_1);
+  WEIGHT_BEGIN();
   // On exit from the loop, if j_mismatch == num_params then
   // no column mismatch was found.
   dimension_type j_mismatch = num_params;
   for (dimension_type j = 0; j < num_params; ++j) {
     coeff_0 = t_0[j] * s_1_1;
     coeff_1 = t_1[j] * s_0_0;
+    WEIGHT_ADD(2);
     for (dimension_type i = 0; i < num_rows; ++i) {
       const Row& s_i = s[i];
       product_0 = coeff_0 * s_i[col_0];
       product_1 = coeff_1 * s_i[col_1];
+      WEIGHT_ADD(2);
       if (product_0 != product_1) {
         // Mismatch found: exit from both loops.
         j_mismatch = j;
@@ -1405,11 +1441,13 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
       bool all_integer_vars = true;
       // NOTE: iterating downwards would be correct, but it would change
       // the ordering of cut generation.
+      WEIGHT_BEGIN();
       for (dimension_type i = 0; i < num_vars; ++i) {
         if (basis[i])
           // Basic variable = 0, hence integer.
           continue;
         // Not a basic variable.
+        WEIGHT_ADD(1);
         const dimension_type mi = mapping[i];
         const Coefficient& den = scaling[mi];
         if (s[mi][0] % den == 0)
@@ -1426,6 +1464,7 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
         const Row& s_mi = s[mi];
         for (dimension_type j = num_cols; j-- > 0; )
           mod_assign(cut[j], s_mi[j], den);
+        WEIGHT_ADD_MUL(1, num_cols);
         cut[0] -= den;
         scaling.push_back(den);
       }
@@ -1475,40 +1514,48 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
       // Do nothing if the j-th pivot element is zero.
       if (pivot_j == 0)
         continue;
+      WEIGHT_BEGIN();
       for (dimension_type i = num_rows; i-- > 0; ) {
         Row& s_i = s[i];
         product = s_i[pj] * pivot_j;
         if (product % pivot_pj != 0) {
+          WEIGHT_ADD(4);
           // Must scale row s_i to stay in integer case.
           gcd_assign(gcd, product, pivot_pj);
           exact_div_assign(scale_factor, pivot_pj, gcd);
           for (dimension_type k = num_cols; k-- > 0; )
             s_i[k] *= scale_factor;
+          WEIGHT_ADD_MUL(1, num_cols);
           product *= scale_factor;
           scaling[i] *= scale_factor;
         }
         PPL_ASSERT(product % pivot_pj == 0);
         exact_div_assign(product, product, pivot_pj);
         s_i[j] -= product;
+        WEIGHT_ADD(4);
       }
     }
     // Update column only if pivot coordinate != 1.
     if (pivot_pj != pivot_den) {
+      WEIGHT_BEGIN();
       for (dimension_type i = num_rows; i-- > 0; ) {
         Row& s_i = s[i];
         Coefficient& s_i_pj = s_i[pj];
         product = s_i_pj * pivot_den;
         if (product % pivot_pj != 0) {
+          WEIGHT_ADD(4);
           // As above, perform row scaling.
           gcd_assign(gcd, product, pivot_pj);
           exact_div_assign(scale_factor, pivot_pj, gcd);
           for (dimension_type k = num_cols; k-- > 0; )
             s_i[k] *= scale_factor;
+          WEIGHT_ADD_MUL(1, num_cols);
           product *= scale_factor;
           scaling[i] *= scale_factor;
         }
         PPL_ASSERT(product % pivot_pj == 0);
         exact_div_assign(s_i_pj, product, pivot_pj);
+        WEIGHT_ADD(3);
       }
     }
     // Drop pivot to restore proper matrix size.
@@ -1623,6 +1670,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
       --p_row[0];
     p_row[0] *= denom;
 
+    WEIGHT_BEGIN();
     dimension_type p_index = 1;
     dimension_type v_index = 0;
     for (dimension_type i = 0,
@@ -1639,6 +1687,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
         continue;
       }
 
+      WEIGHT_ADD(1);
       if (is_parameter) {
         p_row[p_index] = coeff_i * denom;
         ++p_index;
@@ -1804,6 +1853,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
     //  - constraint t_i(z) > 0 is not compatible with the context;
     // then this parameter row can be considered negative.
     if (first_negative == not_a_dim && first_mixed != not_a_dim) {
+      WEIGHT_BEGIN();
       for (dimension_type i = first_mixed; i < num_rows; ++i) {
         // Consider mixed sign parameter rows only.
         if (sign[i] != MIXED)
@@ -1823,6 +1873,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         PPL_DIRTY_TEMP_COEFFICIENT(mod);
         mod_assign(mod, row[0], tableau_den);
         row[0] -= (mod == 0) ? tableau_den : mod;
+        WEIGHT_ADD(2);
         const bool compatible = compatibility_check(context, row);
         // Maybe update sign (and first_* indices).
         if (compatible) {
@@ -1941,6 +1992,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         // Do nothing if the j-th pivot element is zero.
         if (s_pivot_j == 0)
           continue;
+        WEIGHT_BEGIN();
         for (dimension_type i = num_rows; i-- > 0; ) {
           Row& s_i = tableau.s[i];
           product = s_pivot_j * s_i[pj];
@@ -1950,10 +2002,12 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             exact_div_assign(scale_factor, s_pivot_pj, gcd);
             tableau.scale(scale_factor);
             product *= scale_factor;
+            WEIGHT_ADD(3);
           }
           PPL_ASSERT(product % s_pivot_pj == 0);
           exact_div_assign(product, product, s_pivot_pj);
           s_i[j] -= product;
+          WEIGHT_ADD(4);
         }
       }
 
@@ -1964,6 +2018,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         // Do nothing if the j-th pivot element is zero.
         if (t_pivot_j == 0)
           continue;
+        WEIGHT_BEGIN();
         for (dimension_type i = num_rows; i-- > 0; ) {
           Row& s_i = tableau.s[i];
           product = t_pivot_j * s_i[pj];
@@ -1973,10 +2028,12 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             exact_div_assign(scale_factor, s_pivot_pj, gcd);
             tableau.scale(scale_factor);
             product *= scale_factor;
+            WEIGHT_ADD(3);
           }
           PPL_ASSERT(product % s_pivot_pj == 0);
           exact_div_assign(product, product, s_pivot_pj);
           tableau.t[i][j] -= product;
+          WEIGHT_ADD(4);
 
           // Update row sign.
           Row_Sign& sign_i = sign[i];
@@ -2004,6 +2061,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       // Compute column s[*][pj] : s[i][pj] /= s_pivot_pj;
       // Update column only if pivot coordinate != 1.
       if (s_pivot_pj != pivot_den) {
+        WEIGHT_BEGIN();
         for (dimension_type i = num_rows; i-- > 0; ) {
           Row& s_i = tableau.s[i];
           Coefficient& s_i_pj = s_i[pj];
@@ -2014,9 +2072,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             exact_div_assign(scale_factor, s_pivot_pj, gcd);
             tableau.scale(scale_factor);
             product *= scale_factor;
+            WEIGHT_ADD(3);
           }
           PPL_ASSERT(product % s_pivot_pj == 0);
           exact_div_assign(s_i_pj, product, s_pivot_pj);
+          WEIGHT_ADD(3);
         }
       }
 
@@ -2054,8 +2114,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         // eliminating implicated tautologies (if any).
         const Row& t_i = tableau.t[i];
         score = 0;
+        WEIGHT_BEGIN();
         for (dimension_type j = num_params; j-- > 0; )
           score += t_i[j];
+        WEIGHT_ADD_MUL(1, num_params);
         if (i_neg == not_a_dim || score < best_score) {
           i_neg = i;
           best_score = score;
@@ -2085,8 +2147,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           continue;
         const Row& t_i = tableau.t[i];
         score = 0;
+        WEIGHT_BEGIN();
         for (dimension_type j = num_params; j-- > 0; )
           score += t_i[j];
+        WEIGHT_ADD_MUL(1, num_params);
         if (best_i == not_a_dim || score < best_score) {
           best_score = score;
           best_i = i;
@@ -2218,7 +2282,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         continue;
       const dimension_type i = mapping[k];
       const Row& t_i = tableau.t[i];
+      WEIGHT_BEGIN();
       for (dimension_type j = num_params; j-- > 0; ) {
+        WEIGHT_ADD(1);
         if (t_i[j] % den != 0)
           goto non_integer;
       }
@@ -2246,12 +2312,14 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         const dimension_type i = mapping[k];
         const Row& t_i = tableau.t[i];
         // Count the number of non-integer parameter coefficients.
+        WEIGHT_BEGIN();
         dimension_type pcount = 0;
         for (dimension_type j = num_params; j-- > 0; ) {
           mod_assign(mod, t_i[j], den);
           if (mod != 0)
             ++pcount;
         }
+        WEIGHT_ADD_MUL(1, num_params);
         if (pcount > 0 && (best_i == not_a_dim || pcount < best_pcount)) {
           best_pcount = pcount;
           best_i = i;
@@ -2276,6 +2344,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           continue;
         const dimension_type i = mapping[k];
         // Compute score and pcount.
+        WEIGHT_BEGIN();
         score = 0;
         dimension_type pcount = 0;
         const Row& t_i = tableau.t[i];
@@ -2287,7 +2356,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             ++pcount;
           }
         }
+        WEIGHT_ADD_MUL(3, num_params);
+
         // Compute s_score.
+        WEIGHT_BEGIN();
         s_score = 0;
         const Row& s_i = tableau.s[i];
         for (dimension_type j = num_vars; j-- > 0; ) {
@@ -2295,6 +2367,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           s_score += den;
           s_score -= mod;
         }
+        WEIGHT_ADD_MUL(3, num_vars);
         // Combine 'score' and 's_score'.
         score *= s_score;
         /*
@@ -2358,11 +2431,14 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   {
     // Limiting the scope of reference row_t (may be later invalidated).
     const Row& row_t = tableau.t[index];
-    for (dimension_type j = 1; j < num_params; ++j)
+    WEIGHT_BEGIN();
+    for (dimension_type j = 1; j < num_params; ++j) {
+      WEIGHT_ADD(1);
       if (row_t[j] % den != 0) {
         generate_parametric_cut = true;
         break;
       }
+    }
   }
 
   // Column index of already existing Artificial_Parameter.
@@ -2385,6 +2461,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       // NOTE: iterating downwards on parameters to avoid reallocations.
       Variables_Set::const_reverse_iterator p_j = parameters.rbegin();
       // NOTE: index j spans [1..num_params-1] downwards.
+      WEIGHT_BEGIN();
       for (dimension_type j = num_params; j-- > 1; ) {
         mod_assign(mod, row_t[j], den);
         if (mod != 0) {
@@ -2395,6 +2472,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         // Mode to previous parameter.
         ++p_j;
       }
+      WEIGHT_ADD_MUL(2, num_params);
     }
     // Generate new artificial parameter.
     Artificial_Parameter ap(expr, den);
@@ -2446,6 +2524,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       Row& ctx1 = context[ctx_num_rows];
       Row& ctx2 = context[ctx_num_rows+1];
       // Recompute row reference after possible reallocation.
+      WEIGHT_BEGIN();
       const Row& row_t = tableau.t[index];
       for (dimension_type j = 0; j < num_params; ++j) {
         mod_assign(mod, row_t[j], den);
@@ -2453,13 +2532,16 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
           ctx1[j] = den;
           ctx1[j] -= mod;
           neg_assign(ctx2[j], ctx1[j]);
+          WEIGHT_ADD(3);
         }
       }
+      WEIGHT_ADD_MUL(1, num_params);
       neg_assign(ctx1[num_params], den);
       ctx2[num_params] = den;
       // ctx2[0] += den-1;
       ctx2[0] += den;
       --ctx2[0];
+      WEIGHT_ADD(4);
 #ifdef NOISY_PIP
       {
         using namespace IO_Operators;
@@ -2484,18 +2566,22 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   Row& cut_s = tableau.s[num_rows];
   Row& cut_t = tableau.t[num_rows];
   // Recompute references after possible reallocation.
+  WEIGHT_BEGIN();
   const Row& row_s = tableau.s[index];
   const Row& row_t = tableau.t[index];
   for (dimension_type j = 0; j < num_vars; ++j) {
     mod_assign(cut_s[j], row_s[j], den);
   }
+  WEIGHT_ADD_MUL(1, num_params);
   for (dimension_type j = 0; j < num_params; ++j) {
     mod_assign(mod, row_t[j], den);
     if (mod != 0) {
       cut_t[j] = mod;
       cut_t[j] -= den;
+      WEIGHT_ADD(2);
     }
   }
+  WEIGHT_ADD_MUL(1, num_params);
   if (ap_column != not_a_dimension())
     // If we re-use an existing Artificial_Parameter
     cut_t[ap_column] = den;
