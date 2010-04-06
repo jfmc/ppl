@@ -2846,13 +2846,16 @@ ppl_PIP_Problem_set_control_parameter(Prolog_term_ref t_pip,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Problem_get_big_parameter_dimension(Prolog_term_ref t_pip,
+ppl_PIP_Problem_has_big_parameter_dimension(Prolog_term_ref t_pip,
                                             Prolog_term_ref t_d) {
   static const char* where = "ppl_PIP_Problem_get_big_parameter_dimension/2";
   try {
     PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
     PPL_CHECK(pip);
-    if (unify_ulong(t_d, pip->get_big_parameter_dimension()))
+    dimension_type dim = pip->get_big_parameter_dimension();
+    if (dim == not_a_dimension())
+      return PROLOG_FAILURE;
+    if (unify_ulong(t_d, dim))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;

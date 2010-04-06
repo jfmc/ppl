@@ -1028,7 +1028,7 @@ ppl_PIP_Problem_optimizing_solution(Prolog_term_ref t_pip,
                                     Prolog_term_ref t_pip_tree);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Problem_get_big_parameter_dimension(Prolog_term_ref t_pip,
+ppl_PIP_Problem_has_big_parameter_dimension(Prolog_term_ref t_pip,
                                             Prolog_term_ref t_d);
 
 extern "C" Prolog_foreign_return_type
