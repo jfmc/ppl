@@ -2428,8 +2428,13 @@ pip_set :-
   make_vars(3, [A, B, C]),
   clean_ppl_new_PIP_Problem(
     3, [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], [B], PIP),
-  ppl_PIP_Problem_get_big_parameter_dimension(PIP, _X),
+  pl_check_prolog_flag(bounded, Y),
+  (Y == false ->
+      ppl_PIP_Problem_get_big_parameter_dimension(PIP, _X)
 %  ppl_PIP_Problem_set_big_parameter_dimension(PIP, X),
+  ;
+      true
+  ),
   ppl_PIP_Problem_solve(PIP, optimized),
   !,
   ppl_delete_PIP_Problem(PIP).
