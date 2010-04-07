@@ -311,10 +311,6 @@ type artificial_parameter_sequence = artificial_parameter list
 
 type pip_tree_node
 
-type pip_solution_node
-
-type pip_decision_node
-
 type pip_problem
 
 external ppl_new_PIP_Problem_from_space_dimension:
@@ -400,18 +396,6 @@ external ppl_PIP_Tree_Node_constraints:
   pip_tree_node -> constraint_system
       = "ppl_PIP_Tree_Node_constraints"
 
-external ppl_PIP_Tree_Node_is_solution:
-  pip_tree_node -> bool
-      = "ppl_PIP_Tree_Node_is_solution"
-
-external ppl_PIP_Tree_Node_as_solution:
-  pip_tree_node -> pip_solution_node
-      = "ppl_PIP_Tree_Node_as_solution"
-
-external ppl_PIP_Tree_Node_as_decision:
-  pip_tree_node -> pip_decision_node
-      = "ppl_PIP_Tree_Node_as_decision"
-
 external ppl_PIP_Tree_Node_artificials:
   pip_tree_node -> artificial_parameter_sequence
       = "ppl_PIP_Tree_Node_artificials"
@@ -424,14 +408,26 @@ external ppl_PIP_Tree_Node_ascii_dump:
   pip_tree_node -> string
       = "ppl_PIP_Tree_Node_ascii_dump"
 
-external ppl_PIP_Solution_Node_get_parametric_values:
-  pip_solution_node -> int -> linear_expression
-      = "ppl_PIP_Solution_Node_get_parametric_values"
+external ppl_PIP_Tree_Node_is_bottom:
+  pip_tree_node -> bool
+      = "ppl_PIP_Tree_Node_is_bottom"
 
-external ppl_PIP_Decision_Node_get_true_child:
-  pip_decision_node -> pip_tree_node
-      = "ppl_PIP_Decision_Node_get_true_child"
+external ppl_PIP_Tree_Node_is_solution:
+  pip_tree_node -> bool
+      = "ppl_PIP_Tree_Node_is_solution"
 
-external ppl_PIP_Decision_Node_get_false_child:
-  pip_decision_node -> pip_tree_node
-      = "ppl_PIP_Decision_Node_get_false_child"
+external ppl_PIP_Tree_Node_get_parametric_values:
+  pip_tree_node -> int -> linear_expression
+      = "ppl_PIP_Tree_Node_get_parametric_values"
+
+external ppl_PIP_Tree_Node_is_decision:
+  pip_tree_node -> bool
+      = "ppl_PIP_Tree_Node_is_decision"
+
+external ppl_PIP_Tree_Node_get_true_child:
+  pip_tree_node -> pip_tree_node
+      = "ppl_PIP_Tree_Node_get_true_child"
+
+external ppl_PIP_Tree_Node_get_false_child:
+  pip_tree_node -> pip_tree_node
+      = "ppl_PIP_Tree_Node_get_false_child"
