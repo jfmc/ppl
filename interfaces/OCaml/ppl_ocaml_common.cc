@@ -1386,6 +1386,10 @@ ppl_PIP_Problem_get_big_parameter_dimension(value caml_pip) try {
   CAMLparam1(caml_pip);
   PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
   dimension_type d = ppl_pip.get_big_parameter_dimension();
+  if (d == not_a_dimension())
+    throw std::invalid_argument("ppl_PIP_Problem_get_big_parameter_dimension"
+                                "(pip):\n"
+                                "big parameter dimension has not been set.");
   CAMLreturn(ppl_dimension_to_value(d));
 }
 CATCH_ALL
