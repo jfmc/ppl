@@ -362,8 +362,11 @@ external ppl_PIP_Problem_optimizing_solution:
 external ppl_PIP_Problem_get_big_parameter_dimension:
   pip_problem -> int = "ppl_PIP_Problem_get_big_parameter_dimension"
 
+external ppl_PIP_Problem_has_big_parameter_dimension:
+  pip_problem -> bool = "ppl_PIP_Problem_has_big_parameter_dimension"
+
 external ppl_PIP_Problem_set_big_parameter_dimension:
-  pip_problem -> int = "ppl_PIP_Problem_set_big_parameter_dimension"
+  pip_problem -> int -> unit = "ppl_PIP_Problem_set_big_parameter_dimension"
 
 external ppl_PIP_Problem_OK:
   pip_problem -> bool

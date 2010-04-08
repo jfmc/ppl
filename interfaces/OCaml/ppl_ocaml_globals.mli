@@ -317,7 +317,10 @@ val ppl_PIP_Problem_get_big_parameter_dimension:
   pip_problem -> int
 
 val ppl_PIP_Problem_set_big_parameter_dimension:
-  pip_problem -> int
+  pip_problem -> int -> unit
+
+val ppl_PIP_Problem_has_big_parameter_dimension:
+  pip_problem -> bool
 
 val ppl_PIP_Problem_OK:
   pip_problem -> bool

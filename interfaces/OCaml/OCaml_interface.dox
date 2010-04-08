@@ -531,6 +531,11 @@ defining parametric integer programming problems.
    Exception is thrown if no big parameter dimension has been set.
 
 <H2><CODE>
+  ppl_PIP_Problem_has_big_parameter_dimension handle
+</CODE></H2>
+   Returns true if and only if the dimension for the big parameter has been set.
+
+<H2><CODE>
   ppl_PIP_Problem_is_satisfiable handle
 </CODE></H2>
   Returns true if the PIP Problem referenced by

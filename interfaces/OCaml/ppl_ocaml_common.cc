@@ -1371,7 +1371,7 @@ CATCH_ALL
 extern "C"
 CAMLprim value
 ppl_PIP_Problem_set_big_parameter_dimension(value caml_pip,
-				                  value caml_dim) try {
+				            value caml_dim) try {
   CAMLparam2(caml_pip, caml_dim);
   dimension_type ppl_dim = value_to_ppl_dimension(caml_dim);
   PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
@@ -1391,6 +1391,16 @@ ppl_PIP_Problem_get_big_parameter_dimension(value caml_pip) try {
                                 "(pip):\n"
                                 "big parameter dimension has not been set.");
   CAMLreturn(ppl_dimension_to_value(d));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_has_big_parameter_dimension(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  dimension_type d = ppl_pip.get_big_parameter_dimension();
+  CAMLreturn(Val_bool(d != not_a_dimension()));
 }
 CATCH_ALL
 
