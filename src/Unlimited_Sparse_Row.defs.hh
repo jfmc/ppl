@@ -97,6 +97,9 @@ namespace Parma_Polyhedra_Library {
   * C::value_type should be \p std::pair<dimension_type,Coefficient> .
   * C must have a swap() method.
   * C must have a const OK() method, returning bool.
+  * C must have a const external_memory_in_bytes() method, returning a
+    memory_size_type. This method returns the size in bytes of the memory
+    managed by \p *this.
   * C::const_iterator must have a default constructor
   * C::const_iterator must define operator*(), operator->(), and operator ==
     and !=.
@@ -109,6 +112,73 @@ namespace Parma_Polyhedra_Library {
   * C::dangerous_iterator must follow all the requirements for C::iterator.
   * C::dangerous_iterator must have a static method next(C::iterator i)
     that returns a dangerous_iterator pointing to the element after i.
+  * C must have a method find_dangerous(dimension_type i) returning a
+    C::dangerous_iterator. This method returns a dangerous_iterator pointing
+    to the element with index \p i, or end_dangerous() if there is no such
+    element.
+  * C must have a method
+    find_dangerous(dimension_type i, dangerous_iterator itr) returning a
+    C::dangerous_iterator. This method returns a dangerous_iterator pointing
+    to the element with index \p i, or end_dangerous() if there is no such
+    element. \p itr must be an iterator pointing to an element with index
+    less than i.
+  * C must have a method find(dimension_type i) returning a C::iterator.
+    This method returns a dangerous_iterator pointing to the element with
+    index \p i, or end() if there is no such element.
+  * C must have a method find(dimension_type i, iterator itr) returning a
+    C::iterator. This method returns an iterator pointing to the element with
+    index \p i, or end() if there is no such element. \p itr must be an
+    iterator pointing to an element with index less than i.
+  * C must have a const method find(dimension_type i) returning a
+    C::const_iterator. This method returns a const_iterator pointing to
+    the element with index \p i, or end() if there is no such element.
+  * C must have a const method find(dimension_type i, const_iterator itr)
+    returning a C::const_iterator. This method returns an iterator pointing to
+    the element with index \p i, or end() if there is no such element.
+    \p itr must be an iterator pointing to an element with index less than i.
+  * C must have a method lower_bound_dangerous(dimension_type i) returning a
+    C::dangerous_iterator. This method returns a dangerous_iterator pointing
+    to the element with index \p i, or to the last element with index less
+    than \p i, if there is no such element.
+  * C must have a method
+    lower_bound_dangerous(dimension_type i, dangerous_iterator itr) returning
+    a C::dangerous_iterator. This method returns a dangerous_iterator pointing
+    to the element with index \p i, or to the last element with index less
+    than \p i, if there is no such element.
+    \p itr must be an iterator pointing to an element with index less than i.
+  * C must have a method lower_bound(dimension_type i) returning a C::iterator.
+    This method returns a dangerous_iterator pointing to the element with
+    index \p i, or to the last element with index less than \p i, if there is
+    no such element.
+  * C must have a method lower_bound(dimension_type i, iterator itr) returning a
+    C::iterator. This method returns an iterator pointing to the element with
+    index \p i, or to the last element with index less than \p i, if there is
+    no such element.
+    \p itr must be an iterator pointing to an element with index less than i.
+  * C must have a const method lower_bound(dimension_type i) returning a
+    C::const_iterator. This method returns a const_iterator pointing to
+    the element with index \p i, or to the last element with index less than
+    \p i, if there is no such element.
+  * C must have a const method lower_bound(dimension_type i, const_iterator itr)
+    returning a C::const_iterator. This method returns an iterator pointing to
+    the element with index \p i, or to the last element with index less than
+    \p i, if there is no such element.
+    \p itr must be an iterator pointing to an element with index less than i.
+  * C must have a method
+    find2_dangerous(dimension_type c1, dimension_type c2,
+                    C::dangerous_iterator& itr1, C::dangerous_iterator& itr2)
+    returning void, equivalent to<BR>
+    itr1=find_dangerous(c1); itr2=find_dangerous(c2);
+  * C must have a method
+    find2(dimension_type c1, dimension_type c2,
+          iterator& itr1, iterator& itr2);
+    returning void, equivalent to<BR>
+    itr1=find(c1); itr2=find(c2);
+  * C must have a const method
+    find2(dimension_type c1, dimension_type c2,
+          C::const_iterator& itr1, C::const_iterator& itr2)
+    returning void, equivalent to<BR>
+    itr1=find(c1); itr2=find(c2);
   * C must have a method
     insert(C::dangerous_iterator pos, const C::value_type& x)
     returning a C::dangerous_iterator. This method inserts x before pos and
@@ -119,6 +189,9 @@ namespace Parma_Polyhedra_Library {
     returning a C::dangerous_iterator. This method inserts the pair (i, x)
     before pos and returns an iterator to the inserted element.
     This operation invalidates all C::dangerous_iterator objects equal to pos.
+  * C must have a method push_back(const C::value_type& x) returning void,
+    equivalent to<BR>
+    insert(end_dangerous(), x);
   * C must have a method erase(C::dangerous_iterator pos) returning a
     C::dangerous_iterator, that erases the element pointed to by pos.
     This operation invalidates all C::dangerous_iterators objects equal to
