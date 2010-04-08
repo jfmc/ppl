@@ -7,9 +7,6 @@ Enhancements for PPL 0.11
 - Make all the *affine*image() methods uniform as far as the
   specification is concerned.
 - Look carefully at http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42115
-- Lack of perl can cause more problems than explained in the warning
-  message given by our configuration procedure.  See, e.g.,
-  http://www.cs.unipr.it/pipermail/ppl-devel/2009-November/015758.html
 - Complete the ppl_pips man page.
 
 
