@@ -1046,12 +1046,13 @@ ppl_PIP_Tree_Node_constraints(Prolog_term_ref t_tree_node,
                               Prolog_term_ref t_clist);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Tree_Node_as_solution(Prolog_term_ref t_tree_node,
-                              Prolog_term_ref t_sol_node);
+ppl_PIP_Tree_Node_is_solution(Prolog_term_ref t_tree_node);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Tree_Node_as_decision(Prolog_term_ref t_tree_node,
-                              Prolog_term_ref t_dec_node);
+ppl_PIP_Tree_Node_is_decision(Prolog_term_ref t_tree_node);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Tree_Node_is_bottom(Prolog_term_ref t_tree_node);
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Tree_Node_artificials(Prolog_term_ref t_tree_node,
@@ -1061,17 +1062,17 @@ extern "C" Prolog_foreign_return_type
 ppl_PIP_Tree_Node_OK(Prolog_term_ref t_pip_tree);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Solution_Node_get_parametric_values(Prolog_term_ref t_pip_sol,
-                                            Prolog_term_ref t_var,
-                                            Prolog_term_ref t_pvalue_list);
+ppl_PIP_Tree_Node_parametric_values(Prolog_term_ref t_pip_sol,
+                                    Prolog_term_ref t_var,
+                                    Prolog_term_ref t_pvalue_list);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Decision_Node_get_true_child(Prolog_term_ref t_pip_dec,
-                                     Prolog_term_ref t_pip_tree);
+ppl_PIP_Tree_Node_true_child(Prolog_term_ref t_pip_dec,
+                             Prolog_term_ref t_pip_tree);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Decision_Node_get_false_child(Prolog_term_ref t_pip_dec,
-                                      Prolog_term_ref t_pip_tree);
+ppl_PIP_Tree_Node_false_child(Prolog_term_ref t_pip_dec,
+                              Prolog_term_ref t_pip_tree);
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::Prolog;

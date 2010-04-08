@@ -2996,43 +2996,43 @@ ppl_PIP_Tree_Node_constraints(Prolog_term_ref t_pip,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Tree_Node_as_solution(Prolog_term_ref t_pip,
-                              Prolog_term_ref t_sol) {
+ppl_PIP_Tree_Node_is_solution(Prolog_term_ref t_pip) {
   static const char* where = "ppl_PIP_Tree_Node_as_solution/2";
   try {
     const PIP_Tree_Node* pip = term_to_handle<PIP_Tree_Node>(t_pip, where);
     PPL_CHECK(pip);
 
-    PIP_Solution_Node* sol = const_cast<PIP_Solution_Node*>(pip->as_solution());
-    if (sol == 0)
-      return PROLOG_FAILURE;
-    Prolog_term_ref t_ppl_sol = Prolog_new_term_ref();
-    Prolog_put_address(t_ppl_sol, sol);
-    if (Prolog_unify(t_sol, t_ppl_sol)) {
-      PPL_WEAK_REGISTER(sol);
+    if (pip != 0 && pip->as_solution() != 0)
       return PROLOG_SUCCESS;
-    }
+    return PROLOG_FAILURE;
   }
   CATCH_ALL;
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Tree_Node_as_decision(Prolog_term_ref t_pip,
-                              Prolog_term_ref t_dec) {
+ppl_PIP_Tree_Node_is_decision(Prolog_term_ref t_pip) {
   static const char* where = "ppl_PIP_Tree_Node_as_decision/2";
   try {
     const PIP_Tree_Node* pip = term_to_handle<PIP_Tree_Node>(t_pip, where);
     PPL_CHECK(pip);
 
-    PIP_Decision_Node* dec = const_cast<PIP_Decision_Node*>(pip->as_decision());
-    if (dec == 0)
-      return PROLOG_FAILURE;
-    Prolog_term_ref t_ppl_dec = Prolog_new_term_ref();
-    Prolog_put_address(t_ppl_dec, dec);
-    if (Prolog_unify(t_dec, t_ppl_dec)) {
-      PPL_WEAK_REGISTER(dec);
+    if (pip != 0 && pip->as_decision() != 0)
       return PROLOG_SUCCESS;
-    }
+    return PROLOG_FAILURE;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Tree_Node_is_bottom(Prolog_term_ref t_pip) {
+  static const char* where = "ppl_PIP_Tree_Node_as_decision/2";
+  try {
+    const PIP_Tree_Node* pip = term_to_handle<PIP_Tree_Node>(t_pip, where);
+    PPL_CHECK(pip);
+
+    if (pip == 0)
+      return PROLOG_SUCCESS;
+    return PROLOG_FAILURE;
   }
   CATCH_ALL;
 }
@@ -3060,7 +3060,7 @@ ppl_PIP_Tree_Node_artificials(Prolog_term_ref t_tree_node,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Solution_Node_get_parametric_values(Prolog_term_ref t_pip,
+ppl_PIP_Tree_Node_parametric_values(Prolog_term_ref t_pip,
 			                    Prolog_term_ref t_var,
 			                    Prolog_term_ref t_le) {
   static const char* where = "ppl_PIP_Solution_Node_get_parametric_values/3";
@@ -3076,7 +3076,7 @@ ppl_PIP_Solution_Node_get_parametric_values(Prolog_term_ref t_pip,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Decision_Node_get_true_child(Prolog_term_ref t_pip,
+ppl_PIP_Tree_Node_true_child(Prolog_term_ref t_pip,
 			             Prolog_term_ref t_ptree) {
   static const char* where = "ppl_PIP_Decision_Node_get_true_child/2";
   try {
@@ -3096,7 +3096,7 @@ ppl_PIP_Decision_Node_get_true_child(Prolog_term_ref t_pip,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Decision_Node_get_false_child(Prolog_term_ref t_pip,
+ppl_PIP_Tree_Node_false_child(Prolog_term_ref t_pip,
 			              Prolog_term_ref t_ptree) {
   static const char* where = "ppl_PIP_Decision_Node_get_false_child/2";
   try {

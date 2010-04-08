@@ -107,13 +107,14 @@ ppl_PIP_Problem_optimizing_solution/2,
 ppl_PIP_Problem_OK/1,
 ppl_PIP_Problem_ascii_dump/1,
 ppl_PIP_Tree_Node_constraints/2,
-ppl_PIP_Tree_Node_as_solution/2,
-ppl_PIP_Tree_Node_as_decision/2,
+ppl_PIP_Tree_Node_is_solution/1,
+ppl_PIP_Tree_Node_is_decision/1,
+ppl_PIP_Tree_Node_is_bottom/1,
 ppl_PIP_Tree_Node_artificials/2,
 ppl_PIP_Tree_Node_OK/1,
-ppl_PIP_Solution_Node_get_parametric_values/3,
-ppl_PIP_Decision_Node_get_true_child/2,
-ppl_PIP_Decision_Node_get_false_child/2`'dnl
+ppl_PIP_Tree_Node_parametric_values/3,
+ppl_PIP_Tree_Node_true_child/2,
+ppl_PIP_Tree_Node_false_child/2`'dnl
 ')
 
 m4_define(`m4_procedure_list',
