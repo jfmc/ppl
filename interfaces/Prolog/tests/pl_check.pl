@@ -2472,7 +2472,7 @@ pip_solution :-
   ppl_PIP_Tree_Node_as_decision(Tree_Node, Dec),
   ppl_PIP_Tree_Node_constraints(Dec, _CS1),
   ppl_PIP_Decision_Node_get_true_child(Dec, TChild),
-  ppl_PIP_Decision_Node_get_true_child(Dec, _FChild),
+  ppl_PIP_Decision_Node_get_false_child(Dec, _FChild),
   ppl_PIP_Tree_Node_as_decision(TChild, TChild_Dec),
   ppl_PIP_Decision_Node_get_true_child(TChild_Dec, TTChild),
   \+ ppl_PIP_Tree_Node_as_decision(TTChild, _TTChild_Dec),
