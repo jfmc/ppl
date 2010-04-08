@@ -274,8 +274,6 @@ type pip_tree_node
 
 type artificial_parameter = linear_expression * Z.t
 
-type artificial_parameter_sequence = artificial_parameter list
-
 val ppl_new_PIP_Problem_from_space_dimension:
   int -> pip_problem
 
@@ -344,7 +342,7 @@ val ppl_PIP_Tree_Node_constraints:
   pip_tree_node -> constraint_system
 
 val ppl_PIP_Tree_Node_artificials:
-  pip_tree_node -> artificial_parameter_sequence
+  pip_tree_node -> artificial_parameter list
 
 val ppl_PIP_Tree_Node_ascii_dump:
   pip_tree_node -> string

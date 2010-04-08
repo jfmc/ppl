@@ -145,13 +145,18 @@ let rec print_generator = function
       print_string_if_noisy ", ";;
 
 let print_congruence = function x,y,z ->
-   print_linear_expression x;
+  print_linear_expression x;
   print_string_if_noisy " %= ";
   print_linear_expression y;
   print_string_if_noisy " mod ";
   print_int_if_noisy(Z.to_int z);
   print_string_if_noisy ", ";;
 
+let print_artificial_parameter = function x,y ->
+  print_linear_expression x;
+  print_string_if_noisy " / ";
+  print_int_if_noisy(Z.to_int y);
+  print_string_if_noisy ", ";;
 
 (* Build linear expressions the hard way. *)
 
@@ -218,51 +223,6 @@ let generators1 = [Point (e2, (Z.from_int 1)); Point (e1, (Z.from_int 2))] ;;
 let congruence1 = (e2, e2 , (Z.from_int 1));;
 let congruences1 = [e3, e2 , (Z.from_int 20)];;
 let grid_generator1 = Grid_Point (e3, (Z.from_int 1));;
-
-let pip2 = ppl_new_PIP_Problem 3
-             [e1 >=/ e2; e1 <=/ e2 -/ (linear_expression_of_int 7)] [2];;
-let i = ppl_PIP_Problem_space_dimension pip2;;
-let i = ppl_PIP_Problem_constraints pip2;;
-print_string_if_noisy "\n";;
-List.iter print_constraint i;;
-print_string_if_noisy "\n";;
-let ptree2 = ppl_PIP_Problem_solution pip2;;
-let _pip2_ok = ppl_PIP_Problem_OK pip2;;
-(* let _ptree2_ok = ppl_PIP_Tree_Node_OK ptree2;; *)
-
-let params = [7];;
-let pip1 = ppl_new_PIP_Problem 10 constraints1 params;;
-let i = ppl_PIP_Problem_space_dimension pip1;;
-let i = ppl_PIP_Problem_constraints pip1;;
-print_string_if_noisy "\n";;
-List.iter print_constraint i;;
-print_string_if_noisy "\n";;
-ppl_PIP_Problem_add_constraint pip1 constraint1;;
-ppl_PIP_Problem_add_constraints pip1 constraints1;;
-let i = ppl_PIP_Problem_parameter_space_dimensions pip1;;
-let i = ppl_PIP_Problem_get_control_parameter pip1 Cutting_Strategy;;
-print_string_if_noisy "\n";;
-ppl_PIP_Problem_set_control_parameter pip1 Cutting_Strategy_First;;
-let i = ppl_PIP_Problem_get_control_parameter pip1 Cutting_Strategy;;
-let out = if (i == Cutting_Strategy_First)
-  then "PIP Problem Control Parameter test succeeded"
-  else "PIP Problem Control Parameter test failed"
-    in (print_string_if_noisy out);;
-print_string_if_noisy "\n";;
-let out = if (ppl_PIP_Problem_is_satisfiable pip1)
-  then "ppl_PIP_Problem_is_satisfiable test succeeded"
-  else "ppl_PIP_Problem_is_satisfiable test failed"
-    in (print_string_if_noisy out);;
-print_string_if_noisy "\n";;
-print_string_if_noisy "testing ppl_PIP_Problem_ascii_dump: " ;;
-print_string_if_noisy (ppl_PIP_Problem_ascii_dump pip1);;
-print_string_if_noisy "\n";;
-let ptree1 = ppl_PIP_Problem_solution pip1;;
-let _r = ppl_PIP_Problem_OK pip1;;
-(* print_string_if_noisy "testing ppl_PIP_Tree_Node_ascii_dump: " ;;
-print_string_if_noisy (ppl_PIP_Tree_Node_ascii_dump ptree1);;
-print_string_if_noisy "\n";; *)
-(* let _r = ppl_PIP_Tree_Node_OK ptree1;; *)
 
 let mip1 = ppl_new_MIP_Problem 10 constraints1 e3 Maximization;;
 let objective_func = ppl_MIP_Problem_objective_function mip1;;
@@ -537,7 +497,124 @@ in (
   end
 );;
 
-(* Pointset_Powersed_Grid is not enabled by default, the following code is *)
+
+print_string_if_noisy "\nStarting PIP_Problem \n";;
+
+print_string_if_noisy "PIP_Problem 1 \n";;
+print_string_if_noisy "testing PIP_Problem_solution, ";;
+print_string_if_noisy "PIP_Problem_OK ";;
+print_string_if_noisy "and PIP_Tree_Node_is_bottom \n";;
+let pip = ppl_new_PIP_Problem 3
+             [e1 >=/ e2; e1 <=/ e2 -/ (linear_expression_of_int 7)] [2];;
+let ptree = ppl_PIP_Problem_solution pip;;
+let
+   out = if (ppl_PIP_Problem_OK pip
+             & ppl_PIP_Tree_Node_is_bottom ptree)
+  then "success" else "failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+
+print_string_if_noisy "PIP_Problem 2 \n";;
+let params = [7];;
+let pip2 = ppl_new_PIP_Problem 10 constraints1 params;;
+let i = ppl_PIP_Problem_space_dimension pip2;;
+let i = ppl_PIP_Problem_constraints pip2;;
+print_string_if_noisy "PIP_Problem constraints are \n";;
+List.iter print_constraint i;;
+print_string_if_noisy "\n";;
+ppl_PIP_Problem_add_constraint pip2 constraint1;;
+ppl_PIP_Problem_add_constraints pip2 constraints1;;
+let i = ppl_PIP_Problem_parameter_space_dimensions pip2;;
+let i = ppl_PIP_Problem_get_control_parameter pip2 Cutting_Strategy;;
+ppl_PIP_Problem_set_control_parameter pip2 Cutting_Strategy_First;;
+let i = ppl_PIP_Problem_get_control_parameter pip2 Cutting_Strategy;;
+let out = if (i == Cutting_Strategy_First)
+  then "PIP Problem Control Parameter test succeeded"
+  else "PIP Problem Control Parameter test failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+let out = if (ppl_PIP_Problem_is_satisfiable pip2)
+  then "ppl_PIP_Problem_is_satisfiable test succeeded"
+  else "ppl_PIP_Problem_is_satisfiable test failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+print_string_if_noisy "testing ppl_PIP_Problem_ascii_dump: " ;;
+(* print_string_if_noisy (ppl_PIP_Problem_ascii_dump pip2);; *)
+print_string_if_noisy "\n";;
+let ptree2 = ppl_PIP_Problem_solution pip2;;
+let _r = ppl_PIP_Problem_OK pip2;;
+print_string_if_noisy "\n";;
+let out = if (ppl_PIP_Tree_Node_is_bottom ptree2)
+  then "ppl_PIP_Tree_Node_is_bottom test succeeded"
+  else "ppl_PIP_Tree_Node_is_bottom test failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+
+print_string_if_noisy "\nPIP_Problem 3 \n";;
+let i = Variable 0
+and j = Variable 1
+and n = Variable 2
+and m = Variable 3
+and v2 = Z.from_int 2
+and v3 = Z.from_int 3
+and v4 = Z.from_int 4
+and v8 = Z.from_int 8
+and inhomogeneous n = linear_expression_of_int n
+;;
+
+let pip_c1 = v3 */ j +/ v2 */ i >=/ (inhomogeneous 8);;
+print_constraint pip_c1; print_string_if_noisy "\n" ;;
+let pip_c2 = v4 */ i -/ j >=/ (inhomogeneous 4);;
+print_constraint pip_c2; print_string_if_noisy "\n" ;;
+let pip_c3 = m >=/ j;;
+print_constraint pip_c3; print_string_if_noisy "\n" ;;
+let pip_c4 = n >=/ i;;
+print_constraint pip_c4; print_string_if_noisy "\n" ;;
+let pip_cs = [pip_c1; pip_c2; pip_c3; pip_c4] ;;
+
+let ps = [2; 3];;
+let pip3 = ppl_new_PIP_Problem 4 pip_cs ps;;
+let result = ppl_PIP_Problem_solve pip3;;
+let out = if (result == Optimized_Pip_Problem)
+  then "PIP Problem_solve pip3 test succeeded"
+  else "PIP Problem_solve pip3 test failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+let node = ppl_PIP_Problem_solution pip3;;
+let out = if (ppl_PIP_Tree_Node_OK node)
+  then "ppl_PIP_Tree_Node_OK node test succeeded"
+  else "ppl_PIP_Tree_Node_OK node test failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+let out = if (ppl_PIP_Tree_Node_is_decision node)
+  then "ppl_PIP_Tree_Node_is_decision node test succeeded"
+  else "ppl_PIP_Tree_Node_is_decision node test failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+let out = if (ppl_PIP_Tree_Node_artificials node = [])
+  then "ppl_PIP_Tree_Node_artificials node test succeeded"
+  else "ppl_PIP_Tree_Node_artificials node test failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+let _node_cs = ppl_PIP_Tree_Node_constraints node;;
+let tchild = ppl_PIP_Tree_Node_get_true_child node;;
+let _fchild = ppl_PIP_Tree_Node_get_false_child node;;
+let out = if (ppl_PIP_Tree_Node_is_decision tchild)
+  then "ppl_PIP_Tree_Node_is_decision tchild test succeeded"
+  else "ppl_PIP_Tree_Node_is_decision tchild test failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+let ttchild = ppl_PIP_Tree_Node_get_true_child tchild;;
+let ftchild = ppl_PIP_Tree_Node_get_false_child tchild;;
+let out = if (ppl_PIP_Tree_Node_is_solution ttchild)
+  then "ppl_PIP_Tree_Node_is_decision ttchild test succeeded"
+  else "ppl_PIP_Tree_Node_is_decision ttchild test failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+let _par_vals = ppl_PIP_Tree_Node_get_parametric_values ttchild 0;;
+let _ftchild_arts = ppl_PIP_Tree_Node_artificials ftchild;;
+
+(* Pointset_Powerset_Grid is not enabled by default, the following code is *)
 (* commented *)
 (* let pps = ppl_new_Pointset_Powerset_Grid_from_space_dimension 3;; *)
 (* let space_dim = ppl_Pointset_Powerset_Grid_space_dimension pps;; *)
@@ -558,5 +635,6 @@ in (
 (* print_string_if_noisy "PPS size : ";; *)
 (* let size = ppl_Pointset_Powerset_Grid_size pps;; *)
 (* print_int_if_noisy size;; *)
+
 at_exit Gc.full_major;;
 print_string_if_noisy "\nBye!\n"

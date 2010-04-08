@@ -307,8 +307,6 @@ type pip_problem_control_parameter_value = Cutting_Strategy_First
 
 type artificial_parameter = linear_expression * Z.t
 
-type artificial_parameter_sequence = artificial_parameter list
-
 type pip_tree_node
 
 type pip_problem
@@ -397,7 +395,7 @@ external ppl_PIP_Tree_Node_constraints:
       = "ppl_PIP_Tree_Node_constraints"
 
 external ppl_PIP_Tree_Node_artificials:
-  pip_tree_node -> artificial_parameter_sequence
+  pip_tree_node -> artificial_parameter list
       = "ppl_PIP_Tree_Node_artificials"
 
 external ppl_PIP_Tree_Node_OK:
