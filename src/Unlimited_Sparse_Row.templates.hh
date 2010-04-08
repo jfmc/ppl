@@ -104,9 +104,8 @@ Unlimited_Sparse_Row::combine_needs_second(const Unlimited_Sparse_Row& y,
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
           i = last_i;
           ++i;
-          i_end = x.end();
-          if (& static_cast<PIP_Tree_Node::
-                            matrix_row_const_reference_type>(x) == &y) {
+          i_end = end();
+          if (this == &y) {
             j = last_i;
             j_end = y.end();
           }
@@ -124,9 +123,8 @@ Unlimited_Sparse_Row::combine_needs_second(const Unlimited_Sparse_Row& y,
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
       i = last_i;
       ++i;
-      i_end = x.end();
-      if (& static_cast<PIP_Tree_Node::
-                        matrix_row_const_reference_type>(x) == &y) {
+      i_end = end();
+      if (this == &y) {
         j = last_i;
         j_end = y.end();
       }
@@ -156,9 +154,8 @@ Unlimited_Sparse_Row::combine_needs_second(const Unlimited_Sparse_Row& y,
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
         i = last_i;
         ++i;
-        i_end = x.end();
-        if (& static_cast<PIP_Tree_Node::
-                          matrix_row_const_reference_type>(x) == &y) {
+        i_end = end();
+        if (this == &y) {
           j = last_i;
           j_end = y.end();
         }
@@ -272,9 +269,8 @@ Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
           i = last_i;
           ++i;
-          i_end = x.end();
-          if (& static_cast<PIP_Tree_Node::
-                            matrix_row_const_reference_type>(x) == &y) {
+          i_end = end();
+          if (this == &y) {
             j = last_i;
             j_end = y.end();
           }
@@ -293,9 +289,8 @@ Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
       i = last_i;
       ++i;
-      i_end = x.end();
-      if (& static_cast<PIP_Tree_Node::
-                        matrix_row_const_reference_type>(x) == &y) {
+      i_end = end();
+      if (this == &y) {
         j = last_i;
         j_end = y.end();
       }
@@ -326,9 +321,8 @@ Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
         i = last_i;
         ++i;
-        i_end = x.end();
-        if (& static_cast<PIP_Tree_Node::
-                          matrix_row_const_reference_type>(x) == &y) {
+        i_end = end();
+        if (this == &y) {
           j = last_i;
           j_end = y.end();
         }
