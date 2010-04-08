@@ -1371,7 +1371,7 @@ CATCH_ALL
 extern "C"
 CAMLprim value
 ppl_PIP_Problem_set_big_parameter_dimension(value caml_pip,
-				                  value caml_dim) try {
+				            value caml_dim) try {
   CAMLparam2(caml_pip, caml_dim);
   dimension_type ppl_dim = value_to_ppl_dimension(caml_dim);
   PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
@@ -1386,7 +1386,21 @@ ppl_PIP_Problem_get_big_parameter_dimension(value caml_pip) try {
   CAMLparam1(caml_pip);
   PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
   dimension_type d = ppl_pip.get_big_parameter_dimension();
+  if (d == not_a_dimension())
+    throw std::invalid_argument("ppl_PIP_Problem_get_big_parameter_dimension"
+                                "(pip):\n"
+                                "big parameter dimension has not been set.");
   CAMLreturn(ppl_dimension_to_value(d));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_has_big_parameter_dimension(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  dimension_type d = ppl_pip.get_big_parameter_dimension();
+  CAMLreturn(Val_bool(d != not_a_dimension()));
 }
 CATCH_ALL
 
@@ -1626,7 +1640,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_PIP_Tree_Node_get_parametric_values(value caml_node,
+ppl_PIP_Tree_Node_parametric_values(value caml_node,
                                         value caml_dim) try {
   CAMLparam2(caml_node, caml_dim);
   const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
@@ -1647,7 +1661,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_PIP_Tree_Node_get_true_child(value caml_node) try {
+ppl_PIP_Tree_Node_true_child(value caml_node) try {
   CAMLparam1(caml_node);
   const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
   const PIP_Tree_Node* child = ppl_PIP_Tree_Node_get_child(ppl_node, true);
@@ -1657,7 +1671,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_PIP_Tree_Node_get_false_child(value caml_node) try {
+ppl_PIP_Tree_Node_false_child(value caml_node) try {
   CAMLparam1(caml_node);
   const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
   const PIP_Tree_Node* child = ppl_PIP_Tree_Node_get_child(ppl_node, false);

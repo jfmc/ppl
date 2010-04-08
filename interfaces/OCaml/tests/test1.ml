@@ -533,6 +533,15 @@ let out = if (i == Cutting_Strategy_First)
   else "PIP Problem Control Parameter test failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
+let b0 = ppl_PIP_Problem_has_big_parameter_dimension pip2;;
+ppl_PIP_Problem_set_big_parameter_dimension pip2 7;;
+let big_par = ppl_PIP_Problem_get_big_parameter_dimension pip2;;
+let b1 = ppl_PIP_Problem_has_big_parameter_dimension pip2;;
+let out = if (not b0 & b1 & (big_par = 7))
+  then "ppl_PIP_Problem big parameter dimension tests succeeded"
+  else "ppl_PIP_Problem big parameter dimension tests failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
 let out = if (ppl_PIP_Problem_is_satisfiable pip2)
   then "ppl_PIP_Problem_is_satisfiable test succeeded"
   else "ppl_PIP_Problem_is_satisfiable test failed"
@@ -597,21 +606,21 @@ let out = if (ppl_PIP_Tree_Node_artificials node = [])
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
 let _node_cs = ppl_PIP_Tree_Node_constraints node;;
-let tchild = ppl_PIP_Tree_Node_get_true_child node;;
-let _fchild = ppl_PIP_Tree_Node_get_false_child node;;
+let tchild = ppl_PIP_Tree_Node_true_child node;;
+let _fchild = ppl_PIP_Tree_Node_false_child node;;
 let out = if (ppl_PIP_Tree_Node_is_decision tchild)
   then "ppl_PIP_Tree_Node_is_decision tchild test succeeded"
   else "ppl_PIP_Tree_Node_is_decision tchild test failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
-let ttchild = ppl_PIP_Tree_Node_get_true_child tchild;;
-let ftchild = ppl_PIP_Tree_Node_get_false_child tchild;;
+let ttchild = ppl_PIP_Tree_Node_true_child tchild;;
+let ftchild = ppl_PIP_Tree_Node_false_child tchild;;
 let out = if (ppl_PIP_Tree_Node_is_solution ttchild)
   then "ppl_PIP_Tree_Node_is_decision ttchild test succeeded"
   else "ppl_PIP_Tree_Node_is_decision ttchild test failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
-let _par_vals = ppl_PIP_Tree_Node_get_parametric_values ttchild 0;;
+let _par_vals = ppl_PIP_Tree_Node_parametric_values ttchild 0;;
 let _ftchild_arts = ppl_PIP_Tree_Node_artificials ftchild;;
 
 (* Pointset_Powerset_Grid is not enabled by default, the following code is *)

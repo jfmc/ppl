@@ -430,6 +430,225 @@ defining mixed integer (linear) programming problems.
 
 <BR>
 
+\anchor OCaml_pip_functions
+<H1> PIP Functions </H1>
+Here we describe some functions available for PPL objects
+defining parametric integer programming problems.
+
+<H2><CODE>
+  ppl_new_PIP_Problem_from_space_dimension dimension
+</CODE></H2>
+   Return a handle to a PIP Problem \f$\mathrm{PIP}\f$ with the
+   feasible region the vector space of dimension <CODE>dimension</CODE>,
+   empty constraint_system and empty set of parametric variables.
+
+<H2><CODE>
+  ppl_new_PIP_Problem dimension constraint_system vars_list
+</CODE></H2>
+   Return a handle to a PIP Problem \f$\mathrm{PIP}\f$ having space
+   dimension <CODE>dimension</CODE>, a feasible region represented by
+   <CODE>constraint_system</CODE> and parametric variables represented
+   by <CODE>vars_list</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_get_control_parameter handle param_name
+</CODE></H2>
+   Returns the value of the control parameter named <CODE>param_name</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_set_control_parameter handle param_value
+</CODE></H2>
+   Sets control parameter value <CODE>param_value</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_swap handle_1 handle_2
+</CODE></H2>
+   Swaps the PIP Problem referenced by <CODE>handle_1</CODE>
+   with the one referenced by <CODE>handle_2</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_space_dimension handle
+</CODE></H2>
+   Returns the dimension of the vector space in which the
+   PIP Problem referenced by <CODE>handle</CODE> is embedded.
+
+<H2><CODE>
+  ppl_PIP_Problem_parameter_space_dimensions handle
+</CODE></H2>
+   Returns a list of variables representing
+   representing the parameter space dimensions of the PIP Problem
+   referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_constraints handle
+</CODE></H2>
+   Returns a list of the constraints in the constraints system
+   representing the feasible region for the PIP Problem
+   referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_clear handle
+</CODE></H2>
+  Resets the PIP problem referenced by <CODE>handle</CODE>
+  to be the trivial problem with space dimension \f$0\f$.
+
+<H2><CODE> ppl_PIP_Problem_add_space_dimensions_and_embed
+             handle dimension_0 dimension_1
+ </CODE></H2>
+   Embeds the PIP problem referenced by <CODE>handle</CODE>
+   in a space that is enlarged by <CODE>dimension_0</CODE>
+   non-parameter dimensions and <CODE>dimension_1</CODE> parameter dimensions,
+
+<H2><CODE>
+  ppl_PIP_Problem_add_to_parameter_space_dimensions handle vars_list
+</CODE></H2>
+   Sets the space dimensions whose indexes are in \p vars_list
+   to be parameter space dimensions.
+
+<H2><CODE>
+  ppl_PIP_Problem_add_constraint handle constraint
+</CODE></H2>
+   Updates the PIP Problem referenced by <CODE>handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with the constraint <CODE>constraint</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_add_constraints handle constraint_system
+</CODE></H2>
+   Updates the PIP Problem referenced by <CODE>handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with all the constraints in <CODE>constraint_system</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Problem_set_big_parameter_dimension handle dimension
+</CODE></H2>
+   Sets the dimension for the big parameter to \p dimension.
+
+<H2><CODE>
+  ppl_PIP_Problem_get_big_parameter_dimension handle
+</CODE></H2>
+   Returns the dimension for the big parameter.
+   Exception is thrown if no big parameter dimension has been set.
+
+<H2><CODE>
+  ppl_PIP_Problem_has_big_parameter_dimension handle
+</CODE></H2>
+   Returns true if and only if the dimension for the big parameter has been set.
+
+<H2><CODE>
+  ppl_PIP_Problem_is_satisfiable handle
+</CODE></H2>
+  Returns true if the PIP Problem referenced by
+  <CODE>handle</CODE> is satisfiable and false otherwise.
+
+<H2><CODE>
+  ppl_PIP_Problem_solve handle
+</CODE></H2>
+  Solves the PIP problem  referenced by
+  <CODE>handle</CODE> and returns
+    a status flag indicating the outcome of the optimization attempt:
+  \p Optimized_Pip_Problem if the optimization attempt succeeds;
+  \p Unfeasible_Pip_Problem otherwise.
+
+<H2><CODE>
+  ppl_PIP_Problem_solution handle
+</CODE></H2>
+  Solves the PIP problem referenced by <CODE>handle</CODE> and
+  returns a handle to a PIP_Tree representing a feasible solution,
+  if it exists and bottom otherwise.
+
+<H2><CODE>
+  ppl_PIP_Problem_optimizing_solution handle
+</CODE></H2>
+  Solves the PIP problem referenced by <CODE>handle</CODE> and
+  returns a handle to a PIP_Tree representing an optimizing_solution,
+  if it exists and bottom otherwise.
+
+<H2><CODE>
+  ppl_PIP_Problem_OK handle
+</CODE></H2>
+   Returns true if the PIP Problem referenced by
+   <CODE>handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants and false,
+   otherwise.  Useful for debugging purposes.
+
+<H2><CODE>
+  ppl_PIP_Problem_ascii_dump handle
+</CODE></H2>
+   Returns a string containing an ASCII dump of the internal representation
+   of the PIP_Problem referenced by <CODE>handle</CODE>. Useful for
+   debugging purposes.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_swap handle_1 handle_2
+</CODE></H2>
+   Swaps the PIP tree node referenced by <CODE>handle_1</CODE>
+   with the one referenced by <CODE>handle_2</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_OK handle
+</CODE></H2>
+   Returns true if the PIP tree node referenced by
+   <CODE>handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants and false,
+   otherwise.  Useful for debugging purposes.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_ascii_dump handle
+</CODE></H2>
+   Returns a string containing an ASCII dump of the internal representation
+   of the Pip tree node referenced by <CODE>handle</CODE>. Useful for
+   debugging purposes.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_constraints handle
+</CODE></H2>
+   Returns a list of the parameter constraints in the PIP tree node
+   referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_artificials handle
+</CODE></H2>
+   Returns a list of the artificial parameters in the PIP
+   tree node referenced by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_is_bottom handle
+</CODE></H2>
+   Returns true if and only if <CODE>handle</CODE> represents bottom.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_is_decision handle
+</CODE></H2>
+   Returns true if and only if <CODE>handle</CODE> represents a decision node.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_is_solution handle
+</CODE></H2>
+   Returns true if and only if <CODE>handle</CODE> represents a solution node.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_parametric_values handle var
+</CODE></H2>
+   Returns a linear expression representing the values of problem variable
+   \p var in the solution node represented by <CODE>handle</CODE>.
+   The returned linear expression may involve problem parameters
+   as well as artificial parameters.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_true_child handle var
+</CODE></H2>
+   Returns a handle to the child on the true branch of the
+   PIP tree node represented by <CODE>handle</CODE>.
+
+<H2><CODE>
+  ppl_PIP_Tree_Node_false_child handle var
+</CODE></H2>
+   Returns a handle to the child on the false branch of the
+   PIP tree node represented by <CODE>handle</CODE>.
+
+<BR>
+
 \anchor main_OCaml_C_polyhedron_functions
 <H1> C_Polyhedron Functions </H1>
 Here we describe the main functions available for PPL objects
