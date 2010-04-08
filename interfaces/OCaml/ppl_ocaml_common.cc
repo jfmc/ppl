@@ -1626,7 +1626,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_PIP_Tree_Node_get_parametric_values(value caml_node,
+ppl_PIP_Tree_Node_parametric_values(value caml_node,
                                         value caml_dim) try {
   CAMLparam2(caml_node, caml_dim);
   const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
@@ -1647,7 +1647,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_PIP_Tree_Node_get_true_child(value caml_node) try {
+ppl_PIP_Tree_Node_true_child(value caml_node) try {
   CAMLparam1(caml_node);
   const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
   const PIP_Tree_Node* child = ppl_PIP_Tree_Node_get_child(ppl_node, true);
@@ -1657,7 +1657,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_PIP_Tree_Node_get_false_child(value caml_node) try {
+ppl_PIP_Tree_Node_false_child(value caml_node) try {
   CAMLparam1(caml_node);
   const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
   const PIP_Tree_Node* child = ppl_PIP_Tree_Node_get_child(ppl_node, false);

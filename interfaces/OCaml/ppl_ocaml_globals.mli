@@ -356,14 +356,14 @@ val ppl_PIP_Tree_Node_is_bottom:
 val ppl_PIP_Tree_Node_is_solution:
   pip_tree_node -> bool
 
-val ppl_PIP_Tree_Node_get_parametric_values:
+val ppl_PIP_Tree_Node_parametric_values:
   pip_tree_node -> int -> linear_expression
 
 val ppl_PIP_Tree_Node_is_decision:
   pip_tree_node -> bool
 
-val ppl_PIP_Tree_Node_get_true_child:
+val ppl_PIP_Tree_Node_true_child:
   pip_tree_node -> pip_tree_node
 
-val ppl_PIP_Tree_Node_get_false_child:
+val ppl_PIP_Tree_Node_false_child:
   pip_tree_node -> pip_tree_node

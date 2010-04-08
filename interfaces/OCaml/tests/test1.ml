@@ -597,21 +597,21 @@ let out = if (ppl_PIP_Tree_Node_artificials node = [])
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
 let _node_cs = ppl_PIP_Tree_Node_constraints node;;
-let tchild = ppl_PIP_Tree_Node_get_true_child node;;
-let _fchild = ppl_PIP_Tree_Node_get_false_child node;;
+let tchild = ppl_PIP_Tree_Node_true_child node;;
+let _fchild = ppl_PIP_Tree_Node_false_child node;;
 let out = if (ppl_PIP_Tree_Node_is_decision tchild)
   then "ppl_PIP_Tree_Node_is_decision tchild test succeeded"
   else "ppl_PIP_Tree_Node_is_decision tchild test failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
-let ttchild = ppl_PIP_Tree_Node_get_true_child tchild;;
-let ftchild = ppl_PIP_Tree_Node_get_false_child tchild;;
+let ttchild = ppl_PIP_Tree_Node_true_child tchild;;
+let ftchild = ppl_PIP_Tree_Node_false_child tchild;;
 let out = if (ppl_PIP_Tree_Node_is_solution ttchild)
   then "ppl_PIP_Tree_Node_is_decision ttchild test succeeded"
   else "ppl_PIP_Tree_Node_is_decision ttchild test failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
-let _par_vals = ppl_PIP_Tree_Node_get_parametric_values ttchild 0;;
+let _par_vals = ppl_PIP_Tree_Node_parametric_values ttchild 0;;
 let _ftchild_arts = ppl_PIP_Tree_Node_artificials ftchild;;
 
 (* Pointset_Powerset_Grid is not enabled by default, the following code is *)
