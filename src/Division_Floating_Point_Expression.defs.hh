@@ -134,7 +134,7 @@ public:
   ::FP_Linear_Form FP_Linear_Form;
 
   /*! \brief
-     Alias for the std::map<dimension_type, FP_Interval_Type> from
+     Alias for the Box<FP_Interval_Type> from
      Floating_Point_Expression.
   */
   typedef typename
