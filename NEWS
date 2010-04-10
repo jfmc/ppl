@@ -23,6 +23,16 @@ o  New "deterministic" timeout computation facilities: it is now possible
    from the actual computation environment (CPU, operating system, etc.).
    Still under beta testing.
 
+o  All the PPL semantic objects provide new methods
+
+     void drop_some_non_integer_points(Complexity_Class)
+     void drop_some_non_integer_points(const Variables_Set&,
+                                       Complexity_Class)
+
+   which possibly tighten the object by dropping some points with
+   non-integer coordinates (for the space dimensions corresponding to
+   `vars'), within a certain computational complexity bound.
+
 o  New Linear_Expression methods
 
      bool is_zero() const
