@@ -444,6 +444,16 @@ Partially_Reduced_Product<D1, D2, R>
 }
 
 template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>
+::drop_some_non_integer_points(Complexity_Class complexity) {
+  reduce();
+  d1.drop_some_non_integer_points(complexity);
+  d2.drop_some_non_integer_points(complexity);
+  clear_reduced_flag();
+}
+
+template <typename D1, typename D2, typename R>
 inline Partially_Reduced_Product<D1, D2, R>&
 Partially_Reduced_Product<D1, D2, R>
 ::operator=(const Partially_Reduced_Product& y) {
