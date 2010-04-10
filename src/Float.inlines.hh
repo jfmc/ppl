@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <climits>
 
 namespace Parma_Polyhedra_Library {
- 
+
 inline int
 float_ieee754_half::is_inf() const {
   if (word == NEG_INF)
