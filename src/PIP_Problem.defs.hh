@@ -39,16 +39,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 // and otherwise compilation will fail for ppl-config.o.
 #include "Dense_Row.defs.hh"
 
-#ifndef USE_PPL_SPARSE_MATRIX
-
 #include "Dense_Matrix.defs.hh"
 
-#else
-
 #include "Sparse_Matrix.defs.hh"
-#include "Sparse_Row.defs.hh"
 
-#endif
+
+#include "Sparse_Row.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

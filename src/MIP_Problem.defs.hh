@@ -27,16 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.types.hh"
 
 #include "Dense_Row.defs.hh"
-
-#ifndef USE_PPL_SPARSE_MATRIX
-
 #include "Dense_Matrix.defs.hh"
 
-#else
-
 #include "Sparse_Matrix.defs.hh"
-
-#endif
 
 #include "Linear_Expression.defs.hh"
 #include "Constraint.types.hh"

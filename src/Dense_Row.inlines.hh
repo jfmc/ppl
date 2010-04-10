@@ -173,12 +173,18 @@ Dense_Row::find(dimension_type i) const {
 inline Dense_Row::iterator
 Dense_Row::find(dimension_type i, iterator itr) {
   PPL_ASSERT((*itr).first <= i);
+#ifdef NDEBUG
+  (void) itr;
+#endif
   return iterator(*this, i);
 }
 
 inline Dense_Row::const_iterator
 Dense_Row::find(dimension_type i, const_iterator itr) const {
   PPL_ASSERT((*itr).first <= i);
+#ifdef NDEBUG
+  (void) itr;
+#endif
   return const_iterator(*this, i);
 }
 
@@ -228,6 +234,9 @@ inline Dense_Row::iterator
 Dense_Row::find_create(dimension_type i, const Coefficient& x, iterator itr) {
   PPL_ASSERT(itr != end());
   PPL_ASSERT((*itr).first < i);
+#ifdef NDEBUG
+  (void) itr;
+#endif
   (*this)[i] = x;
   return find(i);
 }
@@ -236,6 +245,9 @@ inline Dense_Row::iterator
 Dense_Row::find_create(dimension_type i, iterator itr) {
   PPL_ASSERT(itr != end());
   PPL_ASSERT((*itr).first < i);
+#ifdef NDEBUG
+  (void) itr;
+#endif
   return find(i);
 }
 

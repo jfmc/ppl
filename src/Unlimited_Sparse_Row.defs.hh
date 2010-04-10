@@ -32,34 +32,48 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef USE_PPL_SPARSE_BACKEND_STD_LIST
 #ifndef USE_PPL_SPARSE_BACKEND_CUSTOM_SLIST
 #ifndef USE_PPL_SPARSE_BACKEND_STD_VECTOR
+#ifndef USE_PPL_SPARSE_BACKEND_CO_TREE
 
 // No sparse backend defined, assuming Std_List backend
 #define USE_PPL_SPARSE_BACKEND_STD_LIST
 
+#endif // !defined(USE_PPL_SPARSE_BACKEND_CO_TREE)
 #endif // !defined(USE_PPL_SPARSE_BACKEND_STD_VECTOR)
 #endif // !defined(USE_PPL_SPARSE_BACKEND_CUSTOM_SLIST)
 #endif // !defined(USE_PPL_SPARSE_BACKEND_STD_LIST)
 
+
 #ifdef USE_PPL_SPARSE_BACKEND_STD_LIST
-#include "Unlimited_Sparse_Row_Std_List_Backend.defs.hh"
 
 // If other options are specified, ignore them.
 #undef USE_PPL_SPARSE_BACKEND_CUSTOM_SLIST
 #undef USE_PPL_SPARSE_BACKEND_STD_VECTOR
+#undef USE_PPL_SPARSE_BACKEND_CO_TREE
 #endif
 
 #ifdef USE_PPL_SPARSE_BACKEND_CUSTOM_SLIST
-#include "Unlimited_Sparse_Row_Custom_Slist_Backend.defs.hh"
 
 // If other options are specified, ignore them.
 #undef USE_PPL_SPARSE_BACKEND_STD_VECTOR
+#undef USE_PPL_SPARSE_BACKEND_CO_TREE
 #endif
 
 #ifdef USE_PPL_SPARSE_BACKEND_STD_VECTOR
-#include "Unlimited_Sparse_Row_Std_Vector_Backend.defs.hh"
 #define PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
 #define PPL_SPARSE_BACKEND_SLOW_INSERTIONS
+
+// If other options are specified, ignore them.
+#undef USE_PPL_SPARSE_BACKEND_CO_TREE
 #endif
+
+#ifdef USE_PPL_SPARSE_BACKEND_CO_TREE
+#define PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
+#endif
+
+#include "Unlimited_Sparse_Row_Std_List_Backend.defs.hh"
+#include "Unlimited_Sparse_Row_Custom_Slist_Backend.defs.hh"
+#include "Unlimited_Sparse_Row_Std_Vector_Backend.defs.hh"
+#include "Unlimited_Sparse_Row_CO_Tree_Backend.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -253,6 +267,10 @@ private:
 
 #ifdef USE_PPL_SPARSE_BACKEND_STD_VECTOR
   typedef Unlimited_Sparse_Row_Std_Vector_Backend list_t;
+#endif
+
+#ifdef USE_PPL_SPARSE_BACKEND_CO_TREE
+  typedef Unlimited_Sparse_Row_CO_Tree_Backend list_t;
 #endif
 
 public:

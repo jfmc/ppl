@@ -141,10 +141,12 @@ Congruence.types.hh \
 Init.types.hh \
 Row.types.hh \
 Dense_Row.types.hh \
+CO_Tree.types.hh \
 Unlimited_Sparse_Row.types.hh \
 Unlimited_Sparse_Row_Std_List_Backend.types.hh \
 Unlimited_Sparse_Row_Custom_Slist_Backend.types.hh \
 Unlimited_Sparse_Row_Std_Vector_Backend.types.hh \
+Unlimited_Sparse_Row_CO_Tree_Backend.types.hh \
 Sparse_Row.types.hh \
 Sparse_Matrix.types.hh \
 Linear_Row.types.hh \
@@ -249,6 +251,8 @@ Row.inlines.hh \
 Dense_Row.defs.hh \
 Dense_Row.inlines.hh \
 Dense_Row.templates.hh \
+CO_Tree.defs.hh \
+CO_Tree.inlines.hh \
 Unlimited_Sparse_Row.defs.hh \
 Unlimited_Sparse_Row.inlines.hh \
 Unlimited_Sparse_Row.templates.hh \
@@ -258,6 +262,10 @@ Unlimited_Sparse_Row_Custom_Slist_Backend.defs.hh \
 Unlimited_Sparse_Row_Custom_Slist_Backend.inlines.hh \
 Unlimited_Sparse_Row_Std_Vector_Backend.defs.hh \
 Unlimited_Sparse_Row_Std_Vector_Backend.inlines.hh \
+Unlimited_Sparse_Row_CO_Tree_Backend.defs.hh \
+Unlimited_Sparse_Row_CO_Tree_Backend.inlines.hh \
+CO_Tree.defs.hh \
+CO_Tree.inlines.hh \
 Sparse_Row.defs.hh \
 Sparse_Row.inlines.hh \
 Sparse_Row.templates.hh \
@@ -473,10 +481,12 @@ Grid_widenings.cc \
 BD_Shape.cc \
 Octagonal_Shape.cc \
 Pointset_Powerset.cc \
+CO_Tree.cc \
 Unlimited_Sparse_Row.cc \
 Unlimited_Sparse_Row_Std_List_Backend.cc \
 Unlimited_Sparse_Row_Custom_Slist_Backend.cc \
 Unlimited_Sparse_Row_Std_Vector_Backend.cc \
+Unlimited_Sparse_Row_CO_Tree_Backend.cc \
 Sparse_Row.cc \
 Sparse_Matrix.cc \
 Row.cc \
