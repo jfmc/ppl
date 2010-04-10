@@ -88,9 +88,44 @@ test02() {
   return ok;
 }
 
+// drop_some_non_integer_points(vars, ANY_COMPLEXITY)
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Variables_Set vars;
+  vars.insert(A);
+
+  Product prp1(3);
+  prp1.refine_with_constraint(A >= 0);
+  prp1.refine_with_constraint(B >= 0);
+  prp1.refine_with_constraint(A + B >= 3);
+  prp1.refine_with_constraint(2*A - B == 0);
+  prp1.refine_with_constraint(3*A + C == 0);
+  prp1.refine_with_congruence(3*A %= 0);
+
+  prp1.drop_some_non_integer_points(vars, ANY_COMPLEXITY);
+
+  Product known_prp(3);
+  known_prp.refine_with_constraint(3*A + C == 0);
+  known_prp.refine_with_constraint(2*A - B == 0);
+  known_prp.refine_with_constraint(A >= 1);
+  known_prp.refine_with_congruence(A %= 0);
+
+  bool ok = (prp1 == known_prp);
+
+  print_congruences(prp1, "*** prp1.time_elapse_assign(prp1) congruences ***");
+  print_constraints(prp1, "*** prp1.time_elapse_assign(prp1) constraints ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST_F8(test01);
   DO_TEST(test02);
+  DO_TEST_F8(test03);
 END_MAIN
