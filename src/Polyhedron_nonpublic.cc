@@ -2184,9 +2184,9 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       }
 
       // Divide the inhomogeneous coefficients by the GCD.
-      for (dimension_type i = space_dim+1; --i > 0; ) {
-	Coefficient& c_i = c[i];
-	exact_div_assign(c_i, c_i, gcd);
+      for (dimension_type k = space_dim+1; --k > 0; ) {
+	Coefficient& c_k = c[k];
+	exact_div_assign(c_k, c_k, gcd);
       }
       Coefficient& c_0 = c[0];
       const int c_0_sign = sgn(c_0);
