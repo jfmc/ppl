@@ -1,4 +1,4 @@
-/* Unlimited_Sparse_Row_CO_Tree_Backend class implementation
+/* Unlimited_Sparse_Row_Over_CO_Tree class implementation
    (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 
-#include "Unlimited_Sparse_Row_CO_Tree_Backend.defs.hh"
+#include "Unlimited_Sparse_Row_Over_CO_Tree.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 

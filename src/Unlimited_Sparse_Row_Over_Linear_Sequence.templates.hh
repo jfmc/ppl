@@ -20,16 +20,17 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Unlimited_Sparse_Row_templates_hh
-#define PPL_Unlimited_Sparse_Row_templates_hh 1
+#ifndef PPL_Unlimited_Sparse_Row_Over_Linear_Sequence_templates_hh
+#define PPL_Unlimited_Sparse_Row_Over_Linear_Sequence_templates_hh 1
 
 
 namespace Parma_Polyhedra_Library {
 
 template <typename Func1, typename Func2>
 void
-Unlimited_Sparse_Row::combine_needs_first(const Unlimited_Sparse_Row& y,
-                                          const Func1& f, const Func2& g) {
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::combine_needs_first(const Unlimited_Sparse_Row_Over_Linear_Sequence& y,
+                      const Func1& f, const Func2& g) {
   iterator i = begin();
   iterator last_i = begin();
   iterator i_end = end();
@@ -80,8 +81,9 @@ Unlimited_Sparse_Row::combine_needs_first(const Unlimited_Sparse_Row& y,
 
 template <typename Func1, typename Func2>
 void
-Unlimited_Sparse_Row::combine_needs_second(const Unlimited_Sparse_Row& y,
-                                           const Func1& g, const Func2& h) {
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::combine_needs_second(const Unlimited_Sparse_Row_Over_Linear_Sequence& y,
+                       const Func1& g, const Func2& h) {
   iterator i = begin();
   iterator last_i = begin();
   iterator i_end = end();
@@ -173,9 +175,10 @@ Unlimited_Sparse_Row::combine_needs_second(const Unlimited_Sparse_Row& y,
 
 template <typename Func1, typename Func2>
 void
-Unlimited_Sparse_Row::combine_needs_second(const Unlimited_Sparse_Row& y,
-                                           const Func1& g, const Func2& h) {
-  Unlimited_Sparse_Row row;
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::combine_needs_second(const Unlimited_Sparse_Row_Over_Linear_Sequence& y,
+                       const Func1& g, const Func2& h) {
+  Unlimited_Sparse_Row_Over_Linear_Sequence row;
   iterator itr = row.end();
   iterator i = begin();
   iterator i_end = end();
@@ -244,8 +247,9 @@ Unlimited_Sparse_Row::combine_needs_second(const Unlimited_Sparse_Row& y,
 
 template <typename Func1, typename Func2, typename Func3>
 void
-Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
-                              const Func2& g, const Func3& h) {
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::combine(const Unlimited_Sparse_Row_Over_Linear_Sequence& y, const Func1& f,
+          const Func2& g, const Func3& h) {
   iterator i = begin();
   iterator last_i = begin();
   iterator i_end = end();
@@ -344,9 +348,10 @@ Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
 
 template <typename Func1, typename Func2, typename Func3>
 void
-Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
-                              const Func2& g, const Func3& h) {
-  Unlimited_Sparse_Row row;
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::combine(const Unlimited_Sparse_Row_Over_Linear_Sequence& y, const Func1& f,
+          const Func2& g, const Func3& h) {
+  Unlimited_Sparse_Row_Over_Linear_Sequence row;
   iterator itr = row.end();
   iterator i = begin();
   iterator i_end = end();
@@ -423,4 +428,4 @@ Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Unlimited_Sparse_Row_templates_hh)
+#endif // !defined(PPL_Unlimited_Sparse_Row_Over_Linear_Sequence_templates_hh)

@@ -1,4 +1,5 @@
-/* Unlimited_Sparse_Row class implementation (non-inline functions).
+/* Unlimited_Sparse_Row_Over_Linear_Sequence class implementation
+   (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,12 +23,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 
-#include "Unlimited_Sparse_Row.defs.hh"
+#include "Unlimited_Sparse_Row_Over_Linear_Sequence.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Unlimited_Sparse_Row
-::Unlimited_Sparse_Row(const std::vector<Coefficient>& v)
+PPL::Unlimited_Sparse_Row_Over_Linear_Sequence
+::Unlimited_Sparse_Row_Over_Linear_Sequence(const std::vector<Coefficient>& v)
   : data() {
   typedef std::vector<Coefficient>::size_type vec_size_type;
 
@@ -40,7 +41,7 @@ PPL::Unlimited_Sparse_Row
 }
 
 inline void
-PPL::Unlimited_Sparse_Row
+PPL::Unlimited_Sparse_Row_Over_Linear_Sequence
 ::reset(const dimension_type first, const dimension_type last) {
   PPL_ASSERT(first <= last);
   dangerous_iterator itr = lower_bound_dangerous(first);
@@ -54,7 +55,8 @@ PPL::Unlimited_Sparse_Row
 }
 
 void
-PPL::Unlimited_Sparse_Row::delete_element_and_shift(dimension_type i) {
+PPL::Unlimited_Sparse_Row_Over_Linear_Sequence
+::delete_element_and_shift(dimension_type i) {
   dangerous_iterator itr = lower_bound_dangerous(i);
   if (itr != end_dangerous() && itr->first == i)
     itr = reset(itr);
@@ -65,7 +67,7 @@ PPL::Unlimited_Sparse_Row::delete_element_and_shift(dimension_type i) {
 }
 
 void
-PPL::Unlimited_Sparse_Row
+PPL::Unlimited_Sparse_Row_Over_Linear_Sequence
 ::add_zeroes_and_shift(dimension_type n,dimension_type i) {
   dangerous_iterator j = lower_bound_dangerous(i);
   dangerous_iterator j_end = end_dangerous();
@@ -75,7 +77,8 @@ PPL::Unlimited_Sparse_Row
 }
 
 bool
-PPL::Unlimited_Sparse_Row::operator==(const Unlimited_Sparse_Row &x) const {
+PPL::Unlimited_Sparse_Row_Over_Linear_Sequence
+::operator==(const Unlimited_Sparse_Row_Over_Linear_Sequence &x) const {
   const_iterator i = begin();
   const_iterator j = x.begin();
   const_iterator i_end = end();
@@ -113,7 +116,7 @@ PPL::Unlimited_Sparse_Row::operator==(const Unlimited_Sparse_Row &x) const {
 }
 
 void
-PPL::Unlimited_Sparse_Row::normalize() {
+PPL::Unlimited_Sparse_Row_Over_Linear_Sequence::normalize() {
   // Compute the GCD of all the coefficients.
   const_iterator i = begin();
   const const_iterator i_end = end();
@@ -162,7 +165,8 @@ PPL::Unlimited_Sparse_Row::normalize() {
 }
 
 void
-PPL::Unlimited_Sparse_Row::ascii_dump(std::ostream& s) const {
+PPL::Unlimited_Sparse_Row_Over_Linear_Sequence
+::ascii_dump(std::ostream& s) const {
   dimension_type n_elements=0;
   for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
     ++n_elements;
@@ -172,10 +176,11 @@ PPL::Unlimited_Sparse_Row::ascii_dump(std::ostream& s) const {
   s << "\n";
 }
 
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Unlimited_Sparse_Row)
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Unlimited_Sparse_Row_Over_Linear_Sequence)
 
 bool
-PPL::Unlimited_Sparse_Row::ascii_load(std::istream& s) {
+PPL::Unlimited_Sparse_Row_Over_Linear_Sequence
+::ascii_load(std::istream& s) {
   reset_after(0);
   std::string str;
   dimension_type n_elements;
@@ -204,7 +209,7 @@ PPL::Unlimited_Sparse_Row::ascii_load(std::istream& s) {
 }
 
 bool
-PPL::Unlimited_Sparse_Row::OK() const {
+PPL::Unlimited_Sparse_Row_Over_Linear_Sequence::OK() const {
   if (!data.OK())
     return false;
   if (begin() == end())

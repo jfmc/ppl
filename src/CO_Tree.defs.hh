@@ -40,6 +40,9 @@ public:
   CO_Tree(dimension_type reserved_size = 5);
   ~CO_Tree();
 
+  //! Returns \p true if the tree has no elements.
+  bool empty() const;
+
   //! Checks the invariants.
   bool OK() const;
 
@@ -55,6 +58,10 @@ public:
   //! Erases the pair with key \p key from the tree.
   //! Returns \p false if there was no pair with key \p key in the tree.
   bool erase(dimension_type key);
+
+  //! Erases from the tree the element pointed to by \p itr .
+  //! \p itr is invalidated, it is passed by reference to improve performance.
+  void erase(inorder_iterator& itr);
 
   //! Swaps x with *this.
   void swap(CO_Tree& x);

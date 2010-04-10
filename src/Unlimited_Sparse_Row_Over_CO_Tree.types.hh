@@ -9,24 +9,13 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_Unlimited_Sparse_Row_types_hh
-#define PPL_Unlimited_Sparse_Row_types_hh 1
-
-#include "Unlimited_Sparse_Row_Over_Linear_Sequence.types.hh"
-#include "Unlimited_Sparse_Row_Over_CO_Tree.types.hh"
+#ifndef PPL_Unlimited_Sparse_Row_Over_CO_Tree_types_hh
+#define PPL_Unlimited_Sparse_Row_Over_CO_Tree_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-#ifdef USE_PPL_SPARSE_BACKEND_CO_TREE
-
-typedef Unlimited_Sparse_Row_Over_CO_Tree Unlimited_Sparse_Row;
-
-#else
-
-typedef Unlimited_Sparse_Row_Over_Linear_Sequence Unlimited_Sparse_Row;
-
-#endif // defined(USE_PPL_SPARSE_BACKEND_CO_TREE)
+class Unlimited_Sparse_Row_Over_CO_Tree;
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Unlimited_Sparse_Row_types_hh)
+#endif // !defined(PPL_Unlimited_Sparse_Row_Over_CO_Tree_types_hh)

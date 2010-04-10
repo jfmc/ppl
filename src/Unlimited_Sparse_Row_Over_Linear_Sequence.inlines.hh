@@ -1,4 +1,4 @@
-/* Unlimited_Sparse_Row class implementation: inline functions.
+/* Unlimited_Sparse_Row_Over_Linear_Sequence class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Unlimited_Sparse_Row_inlines_hh
-#define PPL_Unlimited_Sparse_Row_inlines_hh 1
+#ifndef PPL_Unlimited_Sparse_Row_Over_Linear_Sequence_inlines_hh
+#define PPL_Unlimited_Sparse_Row_Over_Linear_Sequence_inlines_hh 1
 
 #include "math_utilities.defs.hh"
 #include "assert.hh"
@@ -31,25 +31,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 // FIXME: Remove this.
 // It's needed only to please KDevelop4.
-#include "Unlimited_Sparse_Row.defs.hh"
+#include "Unlimited_Sparse_Row_Over_Linear_Sequence.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
 inline
-Unlimited_Sparse_Row::Unlimited_Sparse_Row()
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::Unlimited_Sparse_Row_Over_Linear_Sequence()
   : data() {
   PPL_ASSERT(OK());
 }
 
 inline void
-Unlimited_Sparse_Row::swap(Unlimited_Sparse_Row& x) {
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::swap(Unlimited_Sparse_Row_Over_Linear_Sequence& x) {
   data.swap(x.data);
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
 }
 
 inline void
-Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::swap(dimension_type i, dimension_type j) {
   if (i == j)
     return;
   dangerous_iterator i_itr = lower_bound_dangerous(i);
@@ -58,7 +61,7 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
   if (i_itr != itr_end && i_itr->first == i)
     if (j_itr != itr_end && j_itr->first == j) {
       // Both i and j are in the list.
-      Unlimited_Sparse_Row::swap(i_itr, j_itr);
+      Unlimited_Sparse_Row_Over_Linear_Sequence::swap(i_itr, j_itr);
     } else {
       if (i_itr != j_itr) {
         // i is in the list, j isn't
@@ -87,22 +90,22 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
 }
 
 inline void
-Unlimited_Sparse_Row::swap(iterator i, iterator j) {
+Unlimited_Sparse_Row_Over_Linear_Sequence::swap(iterator i, iterator j) {
   PPL_ASSERT(i != data.end());
   PPL_ASSERT(j != data.end());
   std::swap(i->second, j->second);
   PPL_ASSERT(OK());
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::reset(dangerous_iterator i) {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::dangerous_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence::reset(dangerous_iterator i) {
   dangerous_iterator res = data.erase(i);
   PPL_ASSERT(OK());
   return res;
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::dangerous_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::reset(dangerous_iterator first, dangerous_iterator last) {
   dangerous_iterator res = data.erase(first, last);
   PPL_ASSERT(OK());
@@ -110,7 +113,7 @@ Unlimited_Sparse_Row
 }
 
 inline void
-Unlimited_Sparse_Row::reset(const dimension_type i) {
+Unlimited_Sparse_Row_Over_Linear_Sequence::reset(const dimension_type i) {
   dangerous_iterator itr = find_dangerous(i);
   if (itr != end_dangerous())
     reset(itr);
@@ -118,27 +121,28 @@ Unlimited_Sparse_Row::reset(const dimension_type i) {
 }
 
 inline void
-Unlimited_Sparse_Row::reset_after(dimension_type i) {
+Unlimited_Sparse_Row_Over_Linear_Sequence::reset_after(dimension_type i) {
   data.erase(lower_bound_dangerous(i), end_dangerous());
   PPL_ASSERT(OK());
 }
 
 inline void
-Unlimited_Sparse_Row::assign(dimension_type i, const Coefficient& x) {
+Unlimited_Sparse_Row_Over_Linear_Sequence::assign(dimension_type i,
+                                                  const Coefficient& x) {
   dangerous_iterator itr = lower_bound_dangerous(i);
   if (x != 0 || (itr != end_dangerous() && (*itr).first == i))
     find_create(i, x, itr);
 }
 
 inline void
-Unlimited_Sparse_Row
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::assign_if_nonzero(dimension_type i, const Coefficient& x) {
   if (x != 0)
     find_create(i, x);
 }
 
 inline Coefficient&
-Unlimited_Sparse_Row::operator[](const dimension_type i) {
+Unlimited_Sparse_Row_Over_Linear_Sequence::operator[](const dimension_type i) {
   dangerous_iterator itr = lower_bound_dangerous(i);
   if (itr != end_dangerous())
     if (itr->first == i)
@@ -148,8 +152,8 @@ Unlimited_Sparse_Row::operator[](const dimension_type i) {
   return itr->second;
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::find_create(const dimension_type i, const Coefficient& x) {
   if (begin() == end())
     return data.insert(end_dangerous(), std::make_pair(i, x));
@@ -160,8 +164,8 @@ Unlimited_Sparse_Row
   return find_create(i, x, itr);
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::find_create(const std::pair<dimension_type, Coefficient>& x) {
   if (begin() == end())
     return data.insert(end_dangerous(), x);
@@ -172,8 +176,9 @@ Unlimited_Sparse_Row
   return find_create(x, itr);
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i) {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_create(const dimension_type i) {
   if (begin() == end())
     return data.insert(end_dangerous(),
                        std::make_pair(i, Coefficient_zero()));
@@ -184,8 +189,8 @@ Unlimited_Sparse_Row::find_create(const dimension_type i) {
   return find_create(i, itr);
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::find_create(const dimension_type i, const Coefficient& x, iterator itr) {
   PPL_ASSERT(itr != end());
   PPL_ASSERT((*itr).first <= i);
@@ -196,8 +201,8 @@ Unlimited_Sparse_Row
   return find_create(i, x, dangerous_iterator::next(itr));
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::find_create(const std::pair<dimension_type, Coefficient>& x, iterator itr) {
   PPL_ASSERT(itr != end());
   PPL_ASSERT((*itr).first <= x.first);
@@ -208,8 +213,8 @@ Unlimited_Sparse_Row
   return find_create(x, dangerous_iterator::next(itr));
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i, iterator itr) {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence::find_create(const dimension_type i, iterator itr) {
   PPL_ASSERT(itr != end());
   PPL_ASSERT((*itr).first <= i);
   if ((*itr).first == i) {
@@ -218,8 +223,8 @@ Unlimited_Sparse_Row::find_create(const dimension_type i, iterator itr) {
   return find_create(i, dangerous_iterator::next(itr));
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::dangerous_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::find_create(const dimension_type i, dangerous_iterator itr) {
   // The check is needed to avoid triggering assertions in lower_bound().
   if (itr != end_dangerous() && (*itr).first < i)
@@ -230,8 +235,8 @@ Unlimited_Sparse_Row
   return itr;
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::dangerous_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::find_create(const dimension_type i, const Coefficient& x,
               dangerous_iterator itr) {
   // The check is needed to avoid triggering assertions in lower_bound().
@@ -245,8 +250,8 @@ Unlimited_Sparse_Row
   return itr;
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::dangerous_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::find_create(const std::pair<dimension_type, Coefficient>& x,
               dangerous_iterator itr) {
   // The check is needed to avoid triggering assertions in lower_bound().
@@ -261,12 +266,13 @@ Unlimited_Sparse_Row
 }
 
 inline const Coefficient&
-Unlimited_Sparse_Row::operator[](const dimension_type i) const {
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::operator[](const dimension_type i) const {
   return get(i);
 }
 
 inline const Coefficient&
-Unlimited_Sparse_Row::get(const dimension_type i) const {
+Unlimited_Sparse_Row_Over_Linear_Sequence::get(const dimension_type i) const {
   static const Coefficient zero = 0;
 
   const_iterator itr = find(i);
@@ -278,120 +284,130 @@ Unlimited_Sparse_Row::get(const dimension_type i) const {
   }
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::begin_dangerous() {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::dangerous_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence::begin_dangerous() {
   return data.begin_dangerous();
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::end_dangerous() {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::dangerous_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence::end_dangerous() {
   return data.end_dangerous();
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::begin() {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence::begin() {
   return data.begin();
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::end() {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence::end() {
   return data.end();
 }
 
-inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::begin() const {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::const_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence::begin() const {
   return data.begin();
 }
 
-inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::end() const {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::const_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence::end() const {
   return data.end();
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::find_dangerous(const dimension_type k) {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::dangerous_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_dangerous(const dimension_type k) {
   return data.find_dangerous(k);
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::lower_bound_dangerous(const dimension_type k) {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::dangerous_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::lower_bound_dangerous(const dimension_type k) {
   return data.lower_bound_dangerous(k);
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find(const dimension_type k) {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence::find(const dimension_type k) {
   return data.find(k);
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::lower_bound(const dimension_type k) {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::lower_bound(const dimension_type k) {
   return data.lower_bound(k);
 }
 
-inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::find(const dimension_type k) const {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::const_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find(const dimension_type k) const {
   return data.find(k);
 }
 
-inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::lower_bound(const dimension_type k) const {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::const_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::lower_bound(const dimension_type k) const {
   return data.lower_bound(k);
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::dangerous_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::find_dangerous(const dimension_type k, dangerous_iterator itr1) {
   return data.find_dangerous(k, itr1);
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::dangerous_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::lower_bound_dangerous(const dimension_type k, dangerous_iterator itr) {
   return data.lower_bound_dangerous(k, itr);
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find(const dimension_type k, iterator itr1) {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find(const dimension_type k, iterator itr1) {
   return data.find(k, itr1);
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::lower_bound(const dimension_type k, iterator itr) {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::lower_bound(const dimension_type k, iterator itr) {
   return data.lower_bound(k, itr);
 }
 
-inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::find(const dimension_type k, const_iterator itr1) const {
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::const_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find(const dimension_type k, const_iterator itr1) const {
   return data.find(k, itr1);
 }
 
-inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::const_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::lower_bound(const dimension_type k, const_iterator itr1) const {
   return data.lower_bound(k, itr1);
 }
 
 inline void
-Unlimited_Sparse_Row
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::find2_dangerous(const dimension_type c1, const dimension_type c2,
                   dangerous_iterator& itr1, dangerous_iterator& itr2) {
   data.find2_dangerous(c1, c2, itr1, itr2);
 }
 
 inline void
-Unlimited_Sparse_Row::find2(const dimension_type c1, const dimension_type c2,
-                            iterator& itr1, iterator& itr2) {
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find2(const dimension_type c1, const dimension_type c2,
+        iterator& itr1, iterator& itr2) {
   data.find2(c1, c2, itr1, itr2);
 }
 
 inline void
-Unlimited_Sparse_Row::find2(const dimension_type c1,const dimension_type c2,
-                            const_iterator& itr1,const_iterator& itr2) const {
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find2(const dimension_type c1,const dimension_type c2,
+        const_iterator& itr1,const_iterator& itr2) const {
   data.find2(c1,c2,itr1,itr2);
 }
 
 inline void
-Unlimited_Sparse_Row
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::get2(const dimension_type c1, const dimension_type c2,
        const Coefficient*& p1, const Coefficient*& p2) const {
   const_iterator i1;
@@ -412,31 +428,32 @@ Unlimited_Sparse_Row
 }
 
 inline bool
-Unlimited_Sparse_Row::operator!=(const Unlimited_Sparse_Row &x) const {
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::operator!=(const Unlimited_Sparse_Row_Over_Linear_Sequence &x) const {
   return !((*this) == x);
 }
 
 template <typename Func>
 inline void
-Unlimited_Sparse_Row
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::for_each_nonzero(const Func& func, const dimension_type /* n */) {
   std::for_each(begin(), end(), func);
 }
 
 template <typename Func>
 inline void
-Unlimited_Sparse_Row
+Unlimited_Sparse_Row_Over_Linear_Sequence
 ::for_each_nonzero(const Func& func,const dimension_type /* n */) const {
   std::for_each(begin(), end(), func);
 }
 
 inline memory_size_type
-Unlimited_Sparse_Row::external_memory_in_bytes() const {
+Unlimited_Sparse_Row_Over_Linear_Sequence::external_memory_in_bytes() const {
   return data.external_memory_in_bytes();
 }
 
 inline memory_size_type
-Unlimited_Sparse_Row::total_memory_in_bytes() const {
+Unlimited_Sparse_Row_Over_Linear_Sequence::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
@@ -446,11 +463,11 @@ Unlimited_Sparse_Row::total_memory_in_bytes() const {
 namespace std {
 
 inline void
-swap(Parma_Polyhedra_Library::Unlimited_Sparse_Row& x,
-     Parma_Polyhedra_Library::Unlimited_Sparse_Row& y) {
+swap(Parma_Polyhedra_Library::Unlimited_Sparse_Row_Over_Linear_Sequence& x,
+     Parma_Polyhedra_Library::Unlimited_Sparse_Row_Over_Linear_Sequence& y) {
   x.swap(y);
 }
 
 } // namespace std
 
-#endif // !defined(PPL_Unlimited_Sparse_Row_inlines_hh)
+#endif // !defined(PPL_Unlimited_Sparse_Row_Over_Linear_Sequence_inlines_hh)

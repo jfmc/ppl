@@ -31,6 +31,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline bool
+CO_Tree::empty() const {
+  return size == 0;
+}
+
 inline void
 CO_Tree::dump_tree() const {
   CO_Tree::inorder_const_iterator itr(&*this);

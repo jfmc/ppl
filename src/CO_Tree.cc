@@ -399,10 +399,24 @@ PPL::CO_Tree::erase(dimension_type key) {
   if (itr->first != key)
     return false;
 
+  erase(itr);
+
+  return true;
+}
+
+void
+PPL::CO_Tree::erase(inorder_iterator& itr) {
+  PPL_ASSERT(!itr.is_before_begin());
+  PPL_ASSERT(!itr.is_at_end());
+
+  PPL_ASSERT(size != 0);
+
   if ((size - 1) / (float) (((dimension_type)1 << max_depth) - 1)
       < min_density
       && (size - 1) / (float) (((dimension_type)1 << (max_depth-1)) - 1)
       <= max_density) {
+    const dimension_type key = itr->first;
+
     PPL_ASSERT(size <= (((dimension_type)1 << max_depth) - 1)*max_density);
 
     rebuild_smaller_tree();
@@ -448,8 +462,6 @@ PPL::CO_Tree::erase(dimension_type key) {
   rebalance(itr, 0, data);
 
   PPL_ASSERT(OK());
-
-  return true;
 }
 
 PPL::dimension_type
