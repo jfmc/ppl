@@ -3330,7 +3330,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         using namespace IO_Operators;
         Variables_Set::const_iterator p = parameters.begin();
         Linear_Expression expr1(ctx1.get(0));
-        Linear_Expression expr2(ctx2_0);
+        Linear_Expression expr2(ctx2.get(0));
         for (dimension_type j = 1; j <= num_params; ++j, ++p) {
           expr1 += ctx1.get(j) * Variable(*p);
           expr2 += ctx2.get(j) * Variable(*p);
