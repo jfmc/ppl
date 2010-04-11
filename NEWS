@@ -14,14 +14,22 @@ o  New class PIP_Problem provides a Parametric Integer Programming
    (PIP) problem solver (mainly based on P. Feautrier's
    specification).  The implementation combines a parametric dual
    simplex algorithm using exact arithmetic with Gomory's cut
-   generation.
-   Still under beta testing.
+   generation.  Still under beta testing.
 
-o  New "deterministic" timeout computation facilities: it is now possible
-   to set computational bounds (on the library calls taking exponential time)
-   that do not depend on the actual elapsed time and hence are independent
-   from the actual computation environment (CPU, operating system, etc.).
-   Still under beta testing.
+o  New "deterministic" timeout computation facilities: it is now
+   possible to set computational bounds (on the library calls taking
+   exponential time) that do not depend on the actual elapsed time and
+   hence are independent from the actual computation environment (CPU,
+   operating system, etc.).  Still under beta testing.
+
+o  New support for termination analysis via the automatic synthesis of
+   linear ranking functions.  Given a sound approximation of a loop,
+   the PPL provides methods to decide whether that approximation
+   admits a linear ranking function (possibly obtaining one as a
+   witness for termination) and to compute the space of all such
+   functions.  In addition, methods are provided to obtain the space
+   of all linear quasi-ranking functions, for use in conditional
+   termination analysis.  Still under beta testing.
 
 o  All the PPL semantic objects provide new methods
 
