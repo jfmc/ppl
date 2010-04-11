@@ -266,6 +266,7 @@ Unlimited_Sparse_Row_Std_Vector_Backend.defs.hh \
 Unlimited_Sparse_Row_Std_Vector_Backend.inlines.hh \
 Unlimited_Sparse_Row_Over_CO_Tree.defs.hh \
 Unlimited_Sparse_Row_Over_CO_Tree.inlines.hh \
+Unlimited_Sparse_Row_Over_CO_Tree.templates.hh \
 CO_Tree.defs.hh \
 CO_Tree.inlines.hh \
 Sparse_Row.defs.hh \

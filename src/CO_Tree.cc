@@ -26,7 +26,219 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::CO_Tree::CO_Tree(dimension_type reserved_size1) {
+PPL::CO_Tree::CO_Tree() {
+
+  init(0);
+
+  PPL_ASSERT(OK());
+}
+
+PPL::CO_Tree::CO_Tree(const std::vector<data_type>& v) {
+
+  dimension_type n = 0;
+
+  for (dimension_type i = 0; i < v.size(); ++i)
+    if (v[i] != 0)
+      ++n;
+
+  init(n);
+
+  if (n == 0) {
+    PPL_ASSERT(OK());
+    return;
+  }
+
+  inorder_iterator root(&*this);
+  dimension_type index = 0;
+
+  while (v[index] == 0) {
+    ++index;
+    PPL_ASSERT(index < v.size());
+  }
+
+  // This is static and with static allocation, to improve performance.
+  static std::pair<dimension_type,char> stack[5*8*sizeof(dimension_type)];
+  dimension_type stack_first_empty = 0;
+
+  // A pair (n, operation) in the stack means:
+  //
+  // * Go to the parent, if operation is 0.
+  // * Go to the left child, then fill the current tree with n elements, if
+  //   operation is 1.
+  // * Go to the right child, then visit the current tree with n elements, if
+  //   operation is 2.
+  // * Fill the current tree with n elements, if operation is 4.
+
+  stack[0].first = n;
+  stack[0].second = 4;
+  ++stack_first_empty;
+
+  while (stack_first_empty != 0) {
+
+    // top_n         = stack.top().first;
+    // top_operation = stack.top().second;
+    const dimension_type top_n = stack[stack_first_empty - 1].first;
+    const char top_operation = stack[stack_first_empty - 1].second;
+
+    switch (top_operation) {
+
+    case 0:
+      root.get_parent();
+      --stack_first_empty;
+      continue;
+
+    case 1:
+      root.get_left_child();
+      break;
+
+    case 2:
+      root.get_right_child();
+      break;
+#ifndef NDEBUG
+    case 4:
+      break;
+
+    default:
+      // We should not be here
+      PPL_ASSERT(false);
+#endif
+    }
+
+    // We now visit the current tree
+
+    if (top_n == 0) {
+      --stack_first_empty;
+    } else {
+      if (top_n == 1) {
+        PPL_ASSERT(root->first == unused_index);
+        PPL_ASSERT(index < v.size());
+        root->first = index;
+        root->second = v[index];
+        ++index;
+        while (index < v.size() && v[index] == 0)
+          ++index;
+        --stack_first_empty;
+      } else {
+        PPL_ASSERT(stack_first_empty + 3 < sizeof(stack)/sizeof(stack[0]));
+
+        const dimension_type half = (top_n + 1) / 2;
+        stack[stack_first_empty - 1].second = 0;
+        stack[stack_first_empty    ] = std::make_pair(top_n - half, 2);
+        stack[stack_first_empty + 1] = std::make_pair(1, 4);
+        stack[stack_first_empty + 2].second = 0;
+        stack[stack_first_empty + 3] = std::make_pair(half - 1, 1);
+        stack_first_empty += 4;
+      }
+    }
+  }
+  size = n;
+  PPL_ASSERT(OK());
+}
+
+void
+PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
+
+  PPL_ASSERT(size == 0);
+  PPL_ASSERT(reserved_size >= x.size);
+
+  if (x.size == 0) {
+    PPL_ASSERT(OK());
+    return;
+  }
+
+  inorder_iterator root(&*this);
+  inorder_const_iterator itr = x.before_begin();
+  itr.get_next_value();
+
+  PPL_ASSERT(itr->first != unused_index);
+
+  // This is static and with static allocation, to improve performance.
+  static std::pair<dimension_type,char> stack[5*8*sizeof(dimension_type)];
+  dimension_type stack_first_empty = 0;
+
+  // A pair (n, operation) in the stack means:
+  //
+  // * Go to the parent, if operation is 0.
+  // * Go to the left child, then visit the current tree (with size n), if
+  //   operation is 1.
+  // * Go to the right child, then visit the current tree (with size n), if
+  //   operation is 2.
+  // * Visit the current tree (with size n), if operation is 4.
+
+  stack[0].first = x.size;
+  stack[0].second = 4;
+  ++stack_first_empty;
+
+  while (stack_first_empty != 0) {
+
+    // top_n         = stack.top().first;
+    // top_operation = stack.top().second;
+    const dimension_type top_n = stack[stack_first_empty - 1].first;
+    const char top_operation = stack[stack_first_empty - 1].second;
+
+    switch (top_operation) {
+
+    case 0:
+      root.get_parent();
+      --stack_first_empty;
+      continue;
+
+    case 1:
+      root.get_left_child();
+      break;
+
+    case 2:
+      root.get_right_child();
+      break;
+#ifndef NDEBUG
+    case 4:
+      break;
+
+    default:
+      // We should not be here
+      PPL_ASSERT(false);
+#endif
+    }
+
+    // We now visit the current tree
+
+    if (top_n == 0) {
+      --stack_first_empty;
+    } else {
+      if (top_n == 1) {
+        PPL_ASSERT(root->first == unused_index);
+        root->first = itr->first;
+        root->second = itr->second;
+        itr.get_next_value();
+        --stack_first_empty;
+      } else {
+        PPL_ASSERT(stack_first_empty + 3 < sizeof(stack)/sizeof(stack[0]));
+
+        const dimension_type half = (top_n + 1) / 2;
+        stack[stack_first_empty - 1].second = 0;
+        stack[stack_first_empty    ] = std::make_pair(top_n - half, 2);
+        stack[stack_first_empty + 1] = std::make_pair(1, 4);
+        stack[stack_first_empty + 2].second = 0;
+        stack[stack_first_empty + 3] = std::make_pair(half - 1, 1);
+        stack_first_empty += 4;
+      }
+    }
+  }
+  size = x.size;
+  PPL_ASSERT(OK());
+}
+
+void
+PPL::CO_Tree::init(dimension_type reserved_size1) {
+
+  if (reserved_size1 == 0) {
+    data = NULL;
+    level = NULL;
+    size = 0;
+    reserved_size = 0;
+    max_depth = 0;
+    return;
+  }
 
   dimension_type l = 0;
 
@@ -52,13 +264,18 @@ PPL::CO_Tree::CO_Tree(dimension_type reserved_size1) {
 
   size = 0;
 
-  PPL_ASSERT(OK());
+  PPL_ASSERT(structure_OK());
 }
 
 PPL::CO_Tree::~CO_Tree() {
 
-  delete [] level;
-  delete [] data;
+  PPL_ASSERT(OK());
+
+  if (level != NULL)
+    delete [] level;
+
+  if (data != NULL)
+    delete [] data;
 }
 
 PPL::dimension_type
@@ -76,7 +293,6 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
   PPL_ASSERT(size == 0);
   if (tree.size == 0)
     return;
-
 
   inorder_iterator root(&*this);
   inorder_iterator itr = tree.before_begin();
@@ -138,7 +354,6 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
       --stack_first_empty;
     } else {
       if (top_n == 1) {
-        PPL_ASSERT(root != itr);
         PPL_ASSERT(root->first == unused_index);
         root->first = itr->first;
         move_data_element(root->second, itr->second);
@@ -168,10 +383,10 @@ PPL::CO_Tree::OK() const {
   if (!structure_OK())
     return false;
 
-  if (size > 0) {
+  if (reserved_size > 0) {
     const float density
       = size / (float) (((dimension_type)1 << max_depth) - 1);
-    if (density > max_density)
+    if (density > max_density && density != 3)
       // Found too high density.
       return false;
     if (density < min_density) {
@@ -189,6 +404,33 @@ PPL::CO_Tree::OK() const {
 
 bool
 PPL::CO_Tree::structure_OK() const {
+
+  if (size > reserved_size)
+    return false;
+
+  if (reserved_size == 0) {
+    if (data != NULL)
+      return false;
+    if (level != NULL)
+      return false;
+    if (max_depth != 0)
+      return false;
+
+    return true;
+  }
+
+  if (reserved_size < 3)
+    return false;
+
+  if (data == NULL)
+    return false;
+
+  if (level == NULL)
+    return false;
+
+  if (max_depth == 0)
+    return false;
+
   {
     inorder_const_iterator itr = before_begin();
     inorder_const_iterator itr_end = end();
@@ -257,13 +499,13 @@ PPL::CO_Tree::rebuild_level_data_helper(dimension_type min_depth,
 }
 
 void
-PPL::CO_Tree::insert(dimension_type key1, const data_type& data1) {
+PPL::CO_Tree::insert(dimension_type key1, const data_type& data1,
+                     inorder_iterator& itr) {
   PPL_ASSERT(key1 != unused_index);
 
-  if (size == 0) {
-    if (reserved_size == 1)
-      rebuild_bigger_tree();
-    inorder_iterator itr(&*this);
+  if (empty()) {
+    rebuild_bigger_tree();
+    itr.get_root();
     PPL_ASSERT(itr->first == unused_index);
     itr->first = key1;
     itr->second = data1;
@@ -273,7 +515,7 @@ PPL::CO_Tree::insert(dimension_type key1, const data_type& data1) {
     return;
   }
 
-  inorder_iterator itr(&*this);
+  itr.get_root();
   lower_bound(itr, key1);
 
   if (itr->first == key1) {
@@ -313,7 +555,9 @@ PPL::CO_Tree::insert(dimension_type key1, const data_type& data1) {
 
     rebalance(itr, key1, data1);
 
-    // itr is no longer valid
+    lower_bound(itr, key1);
+
+    PPL_ASSERT(itr->first == key1);
   }
   PPL_ASSERT(OK());
 }
@@ -408,8 +652,17 @@ void
 PPL::CO_Tree::erase(inorder_iterator& itr) {
   PPL_ASSERT(!itr.is_before_begin());
   PPL_ASSERT(!itr.is_at_end());
+  PPL_ASSERT(itr->first != unused_index);
 
   PPL_ASSERT(size != 0);
+
+  if (size == 1) {
+    // Deleting the only element of this tree, now it is empty.
+    delete [] data;
+    delete [] level;
+    init(0);
+    return;
+  }
 
   if ((size - 1) / (float) (((dimension_type)1 << max_depth) - 1)
       < min_density
@@ -525,6 +778,9 @@ PPL::CO_Tree::redistribute_elements_in_subtree(inorder_iterator& itr,
   // Step 1: compact elements of this subtree in the rightmost end, from right
   //         to left.
   inorder_iterator itr2 = itr;
+#ifndef NDEBUG
+  const value_type* const p = &(*itr);
+#endif
   while (!itr2.is_leaf())
     itr2.get_right_child();
   bool added_key = false;
@@ -533,6 +789,7 @@ PPL::CO_Tree::redistribute_elements_in_subtree(inorder_iterator& itr,
     added_key = true;
   compact_elements_in_the_rightmost_end(itr, itr2, n, key, value, added_key,
                                         can_add_key);
+  PPL_ASSERT(p == &(*itr));
   if (!added_key && can_add_key) {
     PPL_ASSERT(itr2->first == unused_index);
     itr2->first = key;
@@ -544,6 +801,8 @@ PPL::CO_Tree::redistribute_elements_in_subtree(inorder_iterator& itr,
   // Step 2: redistribute the elements, from left to right.
   redistribute_elements_in_subtree_helper(itr, n, itr2, key, value,
                                           added_key);
+
+  PPL_ASSERT(p == &(*itr));
 
   if (!deleting)
     size++;

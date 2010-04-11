@@ -24,6 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Unlimited_Sparse_Row_Over_CO_Tree_defs_hh 1
 
 #include "Unlimited_Sparse_Row_Over_CO_Tree.types.hh"
+
+#include "Unlimited_Sparse_Row.types.hh"
+
 #include "CO_Tree.defs.hh"
 
 #include <vector>
@@ -43,10 +46,12 @@ public:
 
   Unlimited_Sparse_Row_Over_CO_Tree(const This& x);
 
-  void swap(This& x);
-
   //! Constructs an unlimited row from an std::vector.
   Unlimited_Sparse_Row_Over_CO_Tree(const std::vector<Coefficient> &v);
+
+  This& operator=(const This& x);
+
+  void swap(This& x);
 
   class dangerous_iterator;
   class iterator;
@@ -276,9 +281,6 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-  //! Returns the total size in bytes of the memory occupied by \p *this.
-  memory_size_type total_memory_in_bytes() const;
-
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
@@ -286,6 +288,13 @@ public:
   bool OK() const;
 
 private:
+
+  //! Equivalent to (*this)[i]=x; itr = tree.lower_bound(i);.
+  void find_create(dimension_type i, const Coefficient& x,
+                   CO_Tree::inorder_iterator& itr);
+
+  //! Equivalent to (*this)[i]; itr = tree.lower_bound(i);.
+  void find_create(dimension_type i, CO_Tree::inorder_iterator& itr);
 
   CO_Tree tree;
 };
@@ -301,7 +310,10 @@ public:
   typedef value_type& reference;
 
   iterator(CO_Tree* x = 0);
+  iterator(const iterator& x);
   iterator(const CO_Tree::inorder_iterator& itr);
+
+  iterator& operator=(const iterator& x);
 
   bool operator==(const iterator& x) const;
   bool operator!=(const iterator& x) const;
@@ -331,6 +343,9 @@ public:
   dangerous_iterator(CO_Tree* x = 0);
   dangerous_iterator(const iterator& itr);
   dangerous_iterator(const CO_Tree::inorder_iterator& itr);
+  dangerous_iterator(const dangerous_iterator& x);
+
+  dangerous_iterator& operator=(const dangerous_iterator& x);
 
   //! Returns a dangerous_iterator pointing to the element after i.
   static dangerous_iterator next(const iterator& i);
@@ -354,8 +369,11 @@ public:
   typedef value_type& reference;
 
   const_iterator(const CO_Tree* x = 0);
+  const_iterator(const const_iterator& x);
   const_iterator(const CO_Tree::inorder_iterator& x);
   const_iterator(const CO_Tree::inorder_const_iterator& x);
+
+  const_iterator& operator=(const const_iterator& x);
 
   const_iterator& operator++();
   const_iterator& operator--();
@@ -386,5 +404,6 @@ void swap(Parma_Polyhedra_Library::Unlimited_Sparse_Row_Over_CO_Tree& x,
 } // namespace std
 
 #include "Unlimited_Sparse_Row_Over_CO_Tree.inlines.hh"
+#include "Unlimited_Sparse_Row_Over_CO_Tree.templates.hh"
 
 #endif // !defined(PPL_Unlimited_Sparse_Row_Over_CO_Tree_defs_hh)

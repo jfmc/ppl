@@ -27,3 +27,46 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+void
+PPL::Unlimited_Sparse_Row_Over_CO_Tree
+::ascii_dump(std::ostream& s) const {
+  dimension_type n_elements=0;
+  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
+    ++n_elements;
+  s << "elements " << n_elements << ' ';
+  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
+    s << "[ " << i->first << " ]= " << i->second << ' ';
+  s << "\n";
+}
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Unlimited_Sparse_Row_Over_CO_Tree)
+
+bool
+PPL::Unlimited_Sparse_Row_Over_CO_Tree
+::ascii_load(std::istream& s) {
+  reset_after(0);
+  std::string str;
+  dimension_type n_elements;
+  dimension_type current_key;
+  Coefficient current_data;
+
+  if (!(s >> str) || str!="elements")
+    return false;
+
+  if (!(s >> n_elements))
+    return false;
+
+  for (dimension_type i = 0; i < n_elements; ++i) {
+    if (!(s >> str) || str!="[")
+      return false;
+    if (!(s >> current_key))
+      return false;
+    if (!(s >> str) || str!="]=")
+      return false;
+    if (!(s >> current_data))
+      return false;
+    tree.insert(current_key, current_data);
+  }
+  PPL_ASSERT(OK());
+  return true;
+}

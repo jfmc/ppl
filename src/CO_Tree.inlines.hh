@@ -31,6 +31,35 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+
+inline
+CO_Tree::CO_Tree(const CO_Tree& x) {
+
+  PPL_ASSERT(x.OK());
+
+  init(x.reserved_size);
+
+  copy_data_from(x);
+}
+
+inline CO_Tree&
+CO_Tree::operator=(const CO_Tree& x) {
+
+  if (this != &x) {
+
+    if (reserved_size != 0) {
+      delete [] data;
+      delete [] level;
+    }
+
+    init(x.reserved_size);
+
+    copy_data_from(x);
+  }
+
+  return *this;
+}
+
 inline bool
 CO_Tree::empty() const {
   return size == 0;
@@ -44,6 +73,10 @@ CO_Tree::dump_tree() const {
 
 inline void
 CO_Tree::dump_subtree(inorder_iterator& itr) {
+  if (itr.get_tree()->empty()) {
+    std::cout << "(empty tree)" << std::endl;
+    return;
+  }
   if (!itr.is_leaf()) {
     itr.get_left_child();
     dump_subtree(itr);
@@ -63,6 +96,10 @@ CO_Tree::dump_subtree(inorder_iterator& itr) {
 
 inline void
 CO_Tree::dump_subtree(inorder_const_iterator& itr) {
+  if (itr.get_tree()->empty()) {
+    std::cout << "(empty tree)" << std::endl;
+    return;
+  }
   if (!itr.is_leaf()) {
     itr.get_left_child();
     dump_subtree(itr);
@@ -78,6 +115,13 @@ CO_Tree::dump_subtree(inorder_const_iterator& itr) {
     dump_subtree(itr);
     itr.get_parent();
   }
+}
+
+inline void
+CO_Tree::insert(dimension_type key, const data_type& value) {
+  inorder_iterator itr(&*this);
+  insert(key, value, itr);
+  PPL_ASSERT(OK());
 }
 
 inline void
@@ -108,6 +152,8 @@ CO_Tree::end() const {
 
 inline void
 CO_Tree::lower_bound(inorder_iterator& itr, dimension_type key) {
+  if (empty())
+    return;
   PPL_ASSERT(key != unused_index);
   PPL_ASSERT(itr->first != unused_index);
   PPL_ASSERT(!itr.is_before_begin());
@@ -127,6 +173,8 @@ CO_Tree::lower_bound(inorder_iterator& itr, dimension_type key) {
 
 inline void
 CO_Tree::lower_bound(inorder_const_iterator& itr, dimension_type key) const {
+  if (empty())
+    return;
   PPL_ASSERT(key != unused_index);
   PPL_ASSERT(itr->first != unused_index);
   PPL_ASSERT(!itr.is_before_begin());
@@ -151,22 +199,34 @@ CO_Tree::move_data_element(data_type& to, data_type& from) {
 
 inline void
 CO_Tree::rebuild_bigger_tree() {
-  dimension_type new_reserved_size = reserved_size*2 + 1;
-  CO_Tree new_tree(new_reserved_size);
-  new_tree.move_data_from(*this);
-  swap(new_tree);
+  if (reserved_size == 0)
+    init(3);
+  else {
+    dimension_type new_reserved_size = reserved_size*2 + 1;
+    CO_Tree new_tree;
+    new_tree.init(new_reserved_size);
+    new_tree.move_data_from(*this);
+    swap(new_tree);
+    PPL_ASSERT(new_tree.OK());
+  }
   PPL_ASSERT(structure_OK());
-  PPL_ASSERT(new_tree.OK());
 }
 
 inline void
 CO_Tree::rebuild_smaller_tree() {
-  dimension_type new_reserved_size = reserved_size / 2;
-  CO_Tree new_tree(new_reserved_size);
-  new_tree.move_data_from(*this);
-  swap(new_tree);
+  if (reserved_size == 3) {
+    delete [] data;
+    delete [] level;
+    init(0);
+  } else {
+    dimension_type new_reserved_size = reserved_size / 2;
+    CO_Tree new_tree;
+    new_tree.init(new_reserved_size);
+    new_tree.move_data_from(*this);
+    swap(new_tree);
+    PPL_ASSERT(new_tree.OK());
+  }
   PPL_ASSERT(structure_OK());
-  PPL_ASSERT(new_tree.OK());
 }
 
 inline void
@@ -176,13 +236,18 @@ CO_Tree::swap(CO_Tree& x) {
   std::swap(data, x.data);
   std::swap(reserved_size, x.reserved_size);
   std::swap(size, x.size);
+  PPL_ASSERT(structure_OK());
+  PPL_ASSERT(x.structure_OK());
 }
 
 inline
 CO_Tree::inorder_iterator::inorder_iterator(CO_Tree* tree1)
   : tree(tree1) {
-  if (tree != 0)
+  if (tree != 0) {
     get_root();
+    if (tree->reserved_size == 0)
+      at_end = true;
+  }
 }
 
 inline
@@ -195,6 +260,7 @@ CO_Tree::inorder_iterator::construct_before_begin(CO_Tree& tree) {
 
   inorder_iterator itr(&tree);
   itr.before_begin = true;
+  itr.at_end = false;
 
   return itr;
 }
@@ -221,6 +287,7 @@ CO_Tree::inorder_iterator::get_root() {
 inline void
 CO_Tree::inorder_iterator::get_left_child() {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
   PPL_ASSERT(tree->max_depth > d);
@@ -234,6 +301,7 @@ CO_Tree::inorder_iterator::get_left_child() {
 inline void
 CO_Tree::inorder_iterator::get_right_child() {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
   PPL_ASSERT(tree->max_depth > d);
@@ -248,6 +316,7 @@ CO_Tree::inorder_iterator::get_right_child() {
 inline void
 CO_Tree::inorder_iterator::get_parent() {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
   PPL_ASSERT(d > 1);
@@ -273,6 +342,7 @@ CO_Tree::inorder_iterator::is_right_child() const {
 
 inline bool
 CO_Tree::inorder_iterator::is_leaf() const {
+  PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
@@ -281,6 +351,7 @@ CO_Tree::inorder_iterator::is_leaf() const {
 
 inline CO_Tree::value_type&
 CO_Tree::inorder_iterator::operator*() {
+  PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
@@ -289,6 +360,7 @@ CO_Tree::inorder_iterator::operator*() {
 
 inline const CO_Tree::value_type&
 CO_Tree::inorder_iterator::operator*() const {
+  PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
@@ -338,6 +410,18 @@ CO_Tree::inorder_iterator::depth() const {
   return d;
 }
 
+inline CO_Tree*
+CO_Tree::inorder_iterator::get_tree() {
+  PPL_ASSERT(tree != 0);
+  return tree;
+}
+
+inline const CO_Tree*
+CO_Tree::inorder_iterator::get_tree() const {
+  PPL_ASSERT(tree != 0);
+  return tree;
+}
+
 inline CO_Tree::inorder_iterator&
 CO_Tree::inorder_iterator::operator++() {
   PPL_ASSERT(tree != 0);
@@ -345,10 +429,14 @@ CO_Tree::inorder_iterator::operator++() {
   if (before_begin) {
 
     get_root();
-    while (!is_leaf())
-      get_left_child();
+    if (tree->reserved_size == 0)
+      at_end = true;
+    else
+      while (!is_leaf())
+        get_left_child();
 
   } else {
+    PPL_ASSERT(tree->reserved_size != 0);
     if (is_leaf()) {
       while (has_parent() && is_right_child())
         get_parent();
@@ -372,10 +460,15 @@ CO_Tree::inorder_iterator::operator--() {
   PPL_ASSERT(!before_begin);
   if (at_end) {
     get_root();
-    while (!is_leaf())
-      get_right_child();
+
+    if (tree->reserved_size == 0)
+      before_begin = true;
+    else
+      while (!is_leaf())
+        get_right_child();
 
   } else {
+    PPL_ASSERT(tree->reserved_size != 0);
     if (is_leaf())
       if (is_right_child())
         get_parent();
@@ -404,6 +497,7 @@ CO_Tree::inorder_iterator::operator--() {
 inline bool
 CO_Tree::inorder_iterator::get_left_child_value() {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   if (is_leaf())
     return false;
   get_left_child();
@@ -417,6 +511,7 @@ CO_Tree::inorder_iterator::get_left_child_value() {
 inline bool
 CO_Tree::inorder_iterator::get_right_child_value() {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   if (is_leaf())
     return false;
   get_right_child();
@@ -433,17 +528,23 @@ CO_Tree::inorder_iterator::get_next_value() {
   PPL_ASSERT(!at_end);
   if (before_begin) {
     get_root();
-    while (get_left_child_value())
-      ;
 
-    if ((*this)->first == unused_index) {
-      PPL_ASSERT(d == 1);
+    if (tree->reserved_size == 0)
       at_end = true;
+    else {
+      while (get_left_child_value())
+        ;
+
+      if ((*this)->first == unused_index) {
+        PPL_ASSERT(d == 1);
+        at_end = true;
+      }
     }
 
     PPL_ASSERT(at_end || (*this)->first != unused_index);
 
   } else {
+    PPL_ASSERT(tree->reserved_size != 0);
 #ifndef NDEBUG
     const dimension_type previous_index = (*this)->first;
 #endif
@@ -474,12 +575,17 @@ CO_Tree::inorder_iterator::get_previous_value() {
   PPL_ASSERT(!before_begin);
   if (at_end) {
     get_root();
-    while (get_right_child_value())
-      ;
+
+    if (tree->reserved_size == 0)
+      before_begin = true;
+    else
+      while (get_right_child_value())
+        ;
 
     PPL_ASSERT(before_begin || (*this)->first != unused_index);
 
   } else {
+    PPL_ASSERT(tree->reserved_size != 0);
     if (!get_left_child_value())
       if (is_right_child())
         get_parent();
@@ -507,8 +613,11 @@ CO_Tree::inorder_iterator::get_previous_value() {
 inline
 CO_Tree::inorder_const_iterator::inorder_const_iterator(const CO_Tree* tree1)
   : tree(tree1) {
-  if (tree != 0)
+  if (tree != 0) {
     get_root();
+    if (tree->reserved_size == 0)
+      at_end = true;
+  }
 }
 
 inline
@@ -528,6 +637,7 @@ CO_Tree::inorder_const_iterator::construct_before_begin(const CO_Tree& tree) {
 
   inorder_const_iterator itr(&tree);
   itr.before_begin = true;
+  itr.at_end = false;
 
   return itr;
 }
@@ -554,6 +664,7 @@ CO_Tree::inorder_const_iterator::get_root() {
 inline void
 CO_Tree::inorder_const_iterator::get_left_child() {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
   PPL_ASSERT(tree->max_depth > d);
@@ -567,6 +678,7 @@ CO_Tree::inorder_const_iterator::get_left_child() {
 inline void
 CO_Tree::inorder_const_iterator::get_right_child() {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
   PPL_ASSERT(tree->max_depth > d);
@@ -581,6 +693,7 @@ CO_Tree::inorder_const_iterator::get_right_child() {
 inline void
 CO_Tree::inorder_const_iterator::get_parent() {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
   PPL_ASSERT(d > 1);
@@ -591,6 +704,7 @@ CO_Tree::inorder_const_iterator::get_parent() {
 inline bool
 CO_Tree::inorder_const_iterator::has_parent() const {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
   return d > 1;
@@ -599,6 +713,7 @@ CO_Tree::inorder_const_iterator::has_parent() const {
 inline bool
 CO_Tree::inorder_const_iterator::is_right_child() const {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
   return (d > 1) && (i & (dimension_type)0x01);
@@ -607,6 +722,7 @@ CO_Tree::inorder_const_iterator::is_right_child() const {
 inline bool
 CO_Tree::inorder_const_iterator::is_leaf() const {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
   return d == tree->max_depth;
@@ -615,6 +731,7 @@ CO_Tree::inorder_const_iterator::is_leaf() const {
 inline const CO_Tree::value_type&
 CO_Tree::inorder_const_iterator::operator*() const {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
   return tree->data[pos[d]];
@@ -657,7 +774,14 @@ CO_Tree::inorder_const_iterator::is_before_begin() const {
 inline dimension_type
 CO_Tree::inorder_const_iterator::depth() const {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   return d;
+}
+
+inline const CO_Tree*
+CO_Tree::inorder_const_iterator::get_tree() const {
+  PPL_ASSERT(tree != 0);
+  return tree;
 }
 
 inline CO_Tree::inorder_const_iterator&
@@ -667,10 +791,15 @@ CO_Tree::inorder_const_iterator::operator++() {
   if (before_begin) {
 
     get_root();
-    while (!is_leaf())
-      get_left_child();
+
+    if (tree->reserved_size == 0)
+      at_end = true;
+    else
+      while (!is_leaf())
+        get_left_child();
 
   } else {
+    PPL_ASSERT(tree->reserved_size != 0);
     if (is_leaf()) {
       while (has_parent() && is_right_child())
         get_parent();
@@ -694,10 +823,15 @@ CO_Tree::inorder_const_iterator::operator--() {
   PPL_ASSERT(!before_begin);
   if (at_end) {
     get_root();
-    while (!is_leaf())
-      get_right_child();
+
+    if (tree->reserved_size == 0)
+      before_begin = true;
+    else
+      while (!is_leaf())
+        get_right_child();
 
   } else {
+    PPL_ASSERT(tree->reserved_size != 0);
     if (is_leaf())
       if (is_right_child())
         get_parent();
@@ -726,6 +860,7 @@ CO_Tree::inorder_const_iterator::operator--() {
 inline bool
 CO_Tree::inorder_const_iterator::get_left_child_value() {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   if (is_leaf())
     return false;
   get_left_child();
@@ -739,6 +874,7 @@ CO_Tree::inorder_const_iterator::get_left_child_value() {
 inline bool
 CO_Tree::inorder_const_iterator::get_right_child_value() {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree->reserved_size != 0);
   if (is_leaf())
     return false;
   get_right_child();
@@ -755,17 +891,23 @@ CO_Tree::inorder_const_iterator::get_next_value() {
   PPL_ASSERT(!at_end);
   if (before_begin) {
     get_root();
-    while (get_left_child_value())
-      ;
 
-    if ((*this)->first == unused_index) {
-      PPL_ASSERT(d == 1);
+    if (tree->reserved_size == 0)
       at_end = true;
+    else {
+      while (get_left_child_value())
+        ;
+
+      if ((*this)->first == unused_index) {
+        PPL_ASSERT(d == 1);
+        at_end = true;
+      }
     }
 
     PPL_ASSERT(at_end || (*this)->first != unused_index);
 
   } else {
+    PPL_ASSERT(tree->reserved_size != 0);
 #ifndef NDEBUG
     const dimension_type previous_index = (*this)->first;
 #endif
@@ -796,12 +938,17 @@ CO_Tree::inorder_const_iterator::get_previous_value() {
   PPL_ASSERT(!before_begin);
   if (at_end) {
     get_root();
-    while (get_right_child_value())
-      ;
+
+    if (tree->reserved_size == 0)
+      before_begin = true;
+    else
+      while (get_right_child_value())
+        ;
 
     PPL_ASSERT(before_begin || (*this)->first != unused_index);
 
   } else {
+    PPL_ASSERT(tree->reserved_size != 0);
     if (!get_left_child_value())
       if (is_right_child())
         get_parent();

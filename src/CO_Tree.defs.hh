@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_CO_Tree_defs_hh 1
 
 #include "Coefficient.defs.hh"
+#include <vector>
 
 namespace Parma_Polyhedra_Library {
 
@@ -37,7 +38,12 @@ public:
   class inorder_iterator;
   class inorder_const_iterator;
 
-  CO_Tree(dimension_type reserved_size = 5);
+  CO_Tree();
+  CO_Tree(const std::vector<data_type>& v);
+  CO_Tree(const CO_Tree& v);
+
+  CO_Tree& operator=(const CO_Tree& x);
+
   ~CO_Tree();
 
   //! Returns \p true if the tree has no elements.
@@ -54,6 +60,11 @@ public:
 
   //! Inserts the pair (key, data) in the tree.
   void insert(dimension_type key, const data_type& data);
+
+  //! Inserts the pair (key, data) in the tree.
+  //! \p itr is modified to point to the inserted element.
+  void insert(dimension_type key, const data_type& data,
+              inorder_iterator& itr);
 
   //! Erases the pair with key \p key from the tree.
   //! Returns \p false if there was no pair with key \p key in the tree.
@@ -176,6 +187,8 @@ public:
     //! Returns the depth of the current node.
     dimension_type depth() const;
 
+    const CO_Tree* get_tree() const;
+
   private:
     //! The depth of the current node in the vEB layout.
     dimension_type d;
@@ -289,6 +302,10 @@ public:
     //! Returns the depth of the current node.
     dimension_type depth() const;
 
+    CO_Tree* get_tree();
+
+    const CO_Tree* get_tree() const;
+
   private:
     //! The depth of the current node in the vEB layout.
     dimension_type d;
@@ -318,6 +335,9 @@ public:
   };
 
 private:
+
+  //! Initializes a tree with reserved size at least \p n .
+  void init(dimension_type n);
 
   //! Checks the invariant, but not the densities.
   bool structure_OK() const;
@@ -349,6 +369,8 @@ private:
   //! Rebalances the tree after an insertions or a deletion.
   //! \p itr points to the inserted (or deleted) node.
   //! For insertions, it adds the pair (key, value).
+  //! After the call, itr is modified so the added node is in the subtree
+  //! pointed to by \p itr.
   void rebalance(inorder_iterator& itr, dimension_type key,
                  const data_type& value);
 
@@ -393,6 +415,11 @@ private:
   //! *this must be empty and big enough to contain all of tree's data
   //! without exceeding max_density.
   void move_data_from(CO_Tree& tree);
+
+  //! Copies all data in the tree \p tree into *this.
+  //! *this must be empty and big enough to contain all of tree's data
+  //! without exceeding max_density.
+  void copy_data_from(const CO_Tree& tree);
 
   //! Counts the number of used elements in the subtree rooted at the node
   //! pointed to by itr.
@@ -442,6 +469,7 @@ private:
   value_type* data;
 
   //! The size of the \p data vector. It is one less than a power of 2.
+  //! If this is 0, data and level are set to NULL.
   dimension_type reserved_size;
 
   //! The number of used elements in \p data .

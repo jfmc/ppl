@@ -31,7 +31,7 @@ namespace {
 bool
 test01() {
 
-  CO_Tree tree(15);
+  CO_Tree tree;
 
   CO_Tree::inorder_iterator itr = tree.before_begin();
   CO_Tree::inorder_iterator end = tree.end();
@@ -61,7 +61,13 @@ test02_helper(CO_Tree::inorder_iterator& itr) {
 bool
 test02() {
 
-  CO_Tree tree(30);
+  CO_Tree tree;
+
+  tree.insert(0, Coefficient_zero());
+  tree.insert(1, Coefficient_zero());
+  tree.insert(2, Coefficient_zero());
+  tree.insert(3, Coefficient_zero());
+  tree.insert(4, Coefficient_zero());
 
   CO_Tree::inorder_iterator itr(&tree);
 
@@ -75,7 +81,7 @@ test03() {
 
   // Sequential insertion, sequential erase.
 
-  CO_Tree tree(1);
+  CO_Tree tree;
 
   for (unsigned n = 0; n < 500; ++n)
     tree.insert(n, n);
@@ -92,7 +98,7 @@ test04() {
 
   // Sequential insertion, backwards erase.
 
-  CO_Tree tree(1);
+  CO_Tree tree;
 
   for (unsigned n = 0; n < 500; ++n)
     tree.insert(n, n);
@@ -109,7 +115,7 @@ test05() {
 
   // Backwards insertion, sequential erase.
 
-  CO_Tree tree(1);
+  CO_Tree tree;
 
   for (unsigned n = 500; n-- > 0; )
     tree.insert(n, n);
@@ -126,7 +132,7 @@ test06() {
 
   // Backwards insertion, backwards erase.
 
-  CO_Tree tree(1);
+  CO_Tree tree;
 
   for (unsigned n = 500; --n > 0; )
     tree.insert(n, n);
@@ -143,7 +149,7 @@ test07() {
 
   // Sequential insertion, pseudo-random erase.
 
-  CO_Tree tree(1);
+  CO_Tree tree;
 
   for (unsigned n = 0; n < 500; ++n)
     tree.insert(n, n);
@@ -1152,36 +1158,11 @@ test07() {
   return true;
 }
 
-void
-test08_helper(CO_Tree::inorder_iterator& itr) {
-  if (itr.get_left_child_value()) {
-    test08_helper(itr);
-    itr.get_parent();
-  }
-  if (itr.get_right_child_value()) {
-    test08_helper(itr);
-    itr.get_parent();
-  }
-}
-
 bool test08() {
-
-  static const dimension_type num_tested_elements = 500;
-
-  CO_Tree tree(num_tested_elements);
-
-  CO_Tree::inorder_iterator itr(&tree);
-
-  test08_helper(itr);
-
-  return true;
-}
-
-bool test09() {
 
   // Pseudo-random insertion, pseudo-random erase (in the same order).
 
-  CO_Tree tree(1);
+  CO_Tree tree;
 
   tree.insert(110, 110);
   tree.insert(290, 290);
@@ -2689,11 +2670,11 @@ bool test09() {
 }
 
 bool
-test10() {
+test09() {
 
   // Pseudo-random insertion and erases, pseudo-randomly interleaved.
 
-  CO_Tree tree(1);
+  CO_Tree tree;
 
   tree.insert(172261, 5);
   tree.insert(690360, 5);
@@ -3211,5 +3192,4 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-  DO_TEST(test10);
 END_MAIN
