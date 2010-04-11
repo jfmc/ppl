@@ -190,10 +190,6 @@ public class Parma_Polyhedra_Library {
       information.
     */
     public static native String banner();
-/*
-    public static native boolean
-      ppl_Termination_MS(C_Polyhedron p);
-*/
 
     //@} // Version Checking
 

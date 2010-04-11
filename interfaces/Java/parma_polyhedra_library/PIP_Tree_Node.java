@@ -75,4 +75,7 @@ public class PIP_Tree_Node extends PPL_Object {
     */
     public native Constraint_System constraints();
 
+    //! Returns a string representation of \p this.
+    public native String toString();
+
 }

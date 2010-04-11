@@ -96,6 +96,11 @@ Java_parma_1polyhedra_1library_By_1Reference_initIDs
   cached_FMIDs.By_Reference_init_ID = mID;
 }
 
+JNIEXPORT jint JNICALL
+Java_parma_1polyhedra_1library_Coefficient_ppl_1bits(JNIEnv*, jclass) {
+  return PPL_COEFFICIENT_BITS;
+}
+
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Coefficient_initIDs
 (JNIEnv* env, jclass j_coeff_class) {
@@ -2008,6 +2013,17 @@ Java_parma_1polyhedra_1library_PIP_1Tree_1Node_artificials
   CATCH_ALL;
   jobject null = 0;
   return null;
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_PIP_1Tree_1Node_toString
+(JNIEnv* env, jobject j_this) {
+  PIP_Tree_Node* this_ptr
+    = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this));
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  s << *this_ptr;
+  return env->NewStringUTF(s.str().c_str());
 }
 
 JNIEXPORT jobject JNICALL

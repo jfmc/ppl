@@ -356,6 +356,19 @@ static {
         cs.add(c_4);
 
 	PIP_Problem pip = new PIP_Problem(4, cs, params);
+
+        // Known to overflow if PPL uses 8-bits checked integers.
+        try {
+            pip.solve();
+        }
+        catch (Overflow_Error_Exception ex) {
+            if (Coefficient.ppl_bits() != 8)
+                throw ex;
+            PPL_Test.println_if_noisy("Expected overflow exception caught:");
+            PPL_Test.println_if_noisy(ex.getMessage());
+            return true;
+        }
+
         PIP_Problem_Status pip_status = pip.solve();
         boolean ok = (pip_status == PIP_Problem_Status.OPTIMIZED_PIP_PROBLEM);
         if (!ok)
@@ -364,6 +377,11 @@ static {
         ok = solution.OK();
         if (!ok)
           return false;
+
+        PPL_Test.println_if_noisy();
+        PPL_Test.println_if_noisy("Testing toString():");
+        PPL_Test.println_if_noisy(solution.toString());
+        PPL_Test.println_if_noisy();
 
         PIP_Decision_Node root = solution.as_decision();
         if (root == null || !root.OK())
