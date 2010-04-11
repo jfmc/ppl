@@ -125,7 +125,7 @@ test03() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST_F8(test01);
+  DO_TEST(test01);
   DO_TEST(test02);
-  DO_TEST_F8(test03);
+  DO_TEST(test03);
 END_MAIN
