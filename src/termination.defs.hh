@@ -30,7 +30,7 @@ namespace Parma_Polyhedra_Library {
 
 /*! \brief
   Termination test using an improvement of the method by Mesnard and
-  Serebrenik.
+  Serebrenik \ref BMPZ10 "[BMPZ10]".
 
   \tparam PSET
   Any pointset supported by the PPL that provides the
@@ -63,7 +63,7 @@ termination_test_MS(const PSET& pset);
 
 /*! \brief
   Termination test using an improvement of the method by Mesnard and
-  Serebrenik.
+  Serebrenik \ref BMPZ10 "[BMPZ10]".
 
   \tparam PSET
   Any pointset supported by the PPL that provides the
@@ -105,7 +105,7 @@ termination_test_MS_2(const PSET& pset_before, const PSET& pset_after);
 
 /*! \brief
   Termination test with witness ranking function using an improvement
-  of the method by Mesnard and Serebrenik.
+  of the method by Mesnard and Serebrenik \ref BMPZ10 "[BMPZ10]".
 
   \tparam PSET
   Any pointset supported by the PPL that provides the
@@ -147,7 +147,7 @@ one_affine_ranking_function_MS(const PSET& pset, Generator& mu);
 
 /*! \brief
   Termination test with witness ranking function using an improvement
-  of the method by Mesnard and Serebrenik.
+  of the method by Mesnard and Serebrenik \ref BMPZ10 "[BMPZ10]".
 
   \tparam PSET
   Any pointset supported by the PPL that provides the
@@ -200,7 +200,7 @@ one_affine_ranking_function_MS_2(const PSET& pset_before,
 
 /*! \brief
   Termination test with ranking function space using an improvement
-  of the method by Mesnard and Serebrenik.
+  of the method by Mesnard and Serebrenik \ref BMPZ10 "[BMPZ10]".
 
   \tparam PSET
   Any pointset supported by the PPL that provides the
@@ -242,7 +242,7 @@ all_affine_ranking_functions_MS(const PSET& pset, C_Polyhedron& mu_space);
 
 /*! \brief
   Termination test with ranking function space using an improvement
-  of the method by Mesnard and Serebrenik.
+  of the method by Mesnard and Serebrenik \ref BMPZ10 "[BMPZ10]".
 
   \tparam PSET
   Any pointset supported by the PPL that provides the
@@ -295,7 +295,8 @@ all_affine_ranking_functions_MS_2(const PSET& pset_before,
 
 /*! \brief
   Computes the spaces of affine \e quasi ranking functions
-  using an improvement of the method by Mesnard and Serebrenik.
+  using an improvement of the method by Mesnard and Serebrenik
+  \ref BMPZ10 "[BMPZ10]".
 
   \tparam PSET
   Any pointset supported by the PPL that provides the
@@ -346,7 +347,8 @@ all_affine_quasi_ranking_functions_MS(const PSET& pset,
 
 /*! \brief
   Computes the spaces of affine \e quasi ranking functions
-  using an improvement of the method by Mesnard and Serebrenik.
+  using an improvement of the method by Mesnard and Serebrenik
+  \ref BMPZ10 "[BMPZ10]".
 
   \tparam PSET
   Any pointset supported by the PPL that provides the
@@ -407,7 +409,7 @@ all_affine_quasi_ranking_functions_MS_2(const PSET& pset_before,
 
 /*! \brief
   Like termination_test_MS() but using an improvement
-  of the method by Podelski and Rybalchenko.
+  of the method by Podelski and Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
 template <typename PSET>
 bool
@@ -415,7 +417,7 @@ termination_test_PR(const PSET& pset);
 
 /*! \brief
   Like termination_test_MS_2() but using an improvement
-  of the method by Podelski and Rybalchenko.
+  of the method by Podelski and Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
 template <typename PSET>
 bool
@@ -423,7 +425,7 @@ termination_test_PR_2(const PSET& pset_before, const PSET& pset_after);
 
 /*! \brief
   Like one_affine_ranking_function_MS() but using an improvement
-  of the method by Podelski and Rybalchenko.
+  of the method by Podelski and Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
 template <typename PSET>
 bool
@@ -431,7 +433,7 @@ one_affine_ranking_function_PR(const PSET& pset, Generator& mu);
 
 /*! \brief
   Like one_affine_ranking_function_MS_2() but using an improvement
-  of the method by Podelski and Rybalchenko.
+  of the method by Podelski and Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
 template <typename PSET>
 bool
@@ -441,7 +443,7 @@ one_affine_ranking_function_PR_2(const PSET& pset_before,
 
 /*! \brief
   Like all_affine_ranking_functions_MS() but using an improvement
-  of the method by Podelski and Rybalchenko.
+  of the method by Podelski and Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
 template <typename PSET>
 void
@@ -449,7 +451,7 @@ all_affine_ranking_functions_PR(const PSET& pset, NNC_Polyhedron& mu_space);
 
 /*! \brief
   Like all_affine_ranking_functions_MS_2() but using an improvement
-  of the method by Podelski and Rybalchenko.
+  of the method by Podelski and Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
 template <typename PSET>
 void
