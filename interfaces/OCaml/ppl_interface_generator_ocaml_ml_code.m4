@@ -638,11 +638,12 @@ external ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2:
 m4_define(`ppl_@CLASS@_wrap_assign_code',
 `dnl
 external ppl_@CLASS@_wrap_assign: @!CLASS@
+                                  -> int list
                                   -> bounded_integer_type_width
                                   -> bounded_integer_type_representation
                                   -> bounded_integer_type_overflow
                                   -> constraint_system
-                                  -> int list -> int -> int -> unit
+                                  -> int -> int -> unit
                         = "ppl_@CLASS@_wrap_assign_bytecode"
                           "ppl_@CLASS@_wrap_assign_native"
 

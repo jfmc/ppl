@@ -503,6 +503,13 @@ val ppl_@CLASS@_approximate_@PARTITION@:
 
 ')
 
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+val ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@:
+  @!CLASS@ -> bool
+
+')
+
 m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
 `dnl
 val ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
@@ -552,11 +559,14 @@ val ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2:
 
 ')
 
+m4_define(`ppl_@CLASS@_wrap_assign_code',
+`dnl
 val ppl_@CLASS@_wrap_assign: @!CLASS@
+                             -> int list
                              -> bounded_integer_type_width
                              -> bounded_integer_type_representation
                              -> bounded_integer_type_overflow
                              -> constraint_system
-                             -> int list -> int -> int -> unit
+                             -> int -> int -> unit
 
 ')

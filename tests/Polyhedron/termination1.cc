@@ -491,6 +491,12 @@ test20() {
   return known_result == witness;
 }
 
+bool
+test21() {
+  C_Polyhedron ph(2);
+  return !termination_test_PR(ph);
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -514,4 +520,5 @@ BEGIN_MAIN
   DO_TEST(test18);
   DO_TEST(test19);
   DO_TEST(test20);
+  DO_TEST(test21);
 END_MAIN

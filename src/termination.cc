@@ -362,7 +362,8 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
   const dimension_type m = r + s;
 
   // Make sure linear expressions are not reallocated multiple times.
-  le_out = 0 * Variable(m + r - 1);
+  if (m > 0)
+    le_out = 0 * Variable(m + r - 1);
   std::vector<Linear_Expression> les_eq(2*n, le_out);
 
   dimension_type row_index = 0;
@@ -436,7 +437,8 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
   const dimension_type m = distance(cs.begin(), cs.end());
 
   // Make sure linear expressions are not reallocated multiple times.
-  le_out = 0 * Variable(2*m - 1);
+  if (m > 0)
+    le_out = 0 * Variable(2*m - 1);
   std::vector<Linear_Expression> les_eq(3*n, le_out);
 
   dimension_type row_index = 0;
