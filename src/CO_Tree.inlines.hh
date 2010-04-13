@@ -31,6 +31,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline
+CO_Tree::CO_Tree() {
+
+  init(0);
+
+  PPL_ASSERT(OK());
+}
 
 inline
 CO_Tree::CO_Tree(const CO_Tree& x) {
@@ -58,6 +65,28 @@ CO_Tree::operator=(const CO_Tree& x) {
   }
 
   return *this;
+}
+
+inline
+CO_Tree::~CO_Tree() {
+
+  PPL_ASSERT(OK());
+
+  if (level != NULL)
+    delete [] level;
+
+  if (data != NULL)
+    delete [] data;
+}
+
+inline dimension_type
+CO_Tree::external_memory_in_bytes() const {
+  dimension_type size = 0;
+  // Adding the size of data[]
+  size += (reserved_size + 1)*sizeof(data[0]);
+  // Adding the size of level[]
+  size += max_depth*sizeof(level[0]);
+  return size;
 }
 
 inline bool
@@ -122,6 +151,24 @@ CO_Tree::insert(dimension_type key, const data_type& value) {
   inorder_iterator itr(&*this);
   insert(key, value, itr);
   PPL_ASSERT(OK());
+}
+
+inline bool
+CO_Tree::erase(dimension_type key) {
+  PPL_ASSERT(key != unused_index);
+
+  if (size == 0)
+    return false;
+
+  inorder_iterator itr(&*this);
+  lower_bound(itr, key);
+
+  if (itr->first != key)
+    return false;
+
+  erase(itr);
+
+  return true;
 }
 
 inline void
@@ -609,6 +656,23 @@ CO_Tree::inorder_iterator::get_previous_value() {
   }
 }
 
+inline CO_Tree::inorder_iterator&
+CO_Tree::inorder_iterator::operator=(const inorder_iterator& itr2) {
+  tree = itr2.tree;
+  if (tree != 0) {
+    at_end = itr2.at_end;
+    before_begin = itr2.before_begin;
+    if (!at_end && !before_begin) {
+      d = itr2.d;
+      i = itr2.i;
+      for (dimension_type i = 1; i <= itr2.d; ++i)
+        pos[i] = itr2.pos[i];
+    }
+  }
+
+  return *this;
+}
+
 
 inline
 CO_Tree::inorder_const_iterator::inorder_const_iterator(const CO_Tree* tree1)
@@ -970,6 +1034,42 @@ CO_Tree::inorder_const_iterator::get_previous_value() {
 
     PPL_ASSERT(before_begin || (*this)->first != unused_index);
   }
+}
+
+inline CO_Tree::inorder_const_iterator&
+CO_Tree::inorder_const_iterator
+::operator=(const inorder_const_iterator& itr2) {
+  tree = itr2.tree;
+  if (tree != 0) {
+    at_end = itr2.at_end;
+    before_begin = itr2.before_begin;
+    if (!at_end && !before_begin) {
+      d = itr2.d;
+      i = itr2.i;
+      for (dimension_type i = 1; i <= itr2.d; ++i)
+        pos[i] = itr2.pos[i];
+    }
+  }
+
+  return *this;
+}
+
+inline CO_Tree::inorder_const_iterator&
+CO_Tree::inorder_const_iterator
+::operator=(const inorder_iterator& itr2) {
+  tree = itr2.tree;
+  if (tree != 0) {
+    at_end = itr2.at_end;
+    before_begin = itr2.before_begin;
+    if (!at_end && !before_begin) {
+      d = itr2.d;
+      i = itr2.i;
+      for (dimension_type i = 1; i <= itr2.d; ++i)
+        pos[i] = itr2.pos[i];
+    }
+  }
+
+  return *this;
 }
 
 } // namespace Parma_Polyhedra_Library

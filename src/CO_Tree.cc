@@ -26,13 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::CO_Tree::CO_Tree() {
-
-  init(0);
-
-  PPL_ASSERT(OK());
-}
-
 PPL::CO_Tree::CO_Tree(const std::vector<data_type>& v) {
 
   dimension_type n = 0;
@@ -265,27 +258,6 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   size = 0;
 
   PPL_ASSERT(structure_OK());
-}
-
-PPL::CO_Tree::~CO_Tree() {
-
-  PPL_ASSERT(OK());
-
-  if (level != NULL)
-    delete [] level;
-
-  if (data != NULL)
-    delete [] data;
-}
-
-PPL::dimension_type
-PPL::CO_Tree::external_memory_in_bytes() const {
-  dimension_type size = 0;
-  // Adding the size of data[]
-  size += (reserved_size + 1)*sizeof(data[0]);
-  // Adding the size of level[]
-  size += max_depth*sizeof(level[0]);
-  return size;
 }
 
 void
@@ -630,24 +602,6 @@ PPL::CO_Tree::rebalance(inorder_iterator& itr, dimension_type key,
   PPL_ASSERT(OK());
 }
 
-bool
-PPL::CO_Tree::erase(dimension_type key) {
-  PPL_ASSERT(key != unused_index);
-
-  if (size == 0)
-    return false;
-
-  inorder_iterator itr(&*this);
-  lower_bound(itr, key);
-
-  if (itr->first != key)
-    return false;
-
-  erase(itr);
-
-  return true;
-}
-
 void
 PPL::CO_Tree::erase(inorder_iterator& itr) {
   PPL_ASSERT(!itr.is_before_begin());
@@ -975,59 +929,4 @@ PPL::CO_Tree
   }
 
   PPL_ASSERT(added_key);
-}
-
-
-PPL::CO_Tree::inorder_iterator&
-PPL::CO_Tree::inorder_iterator::operator=(const inorder_iterator& itr2) {
-  tree = itr2.tree;
-  if (tree != 0) {
-    at_end = itr2.at_end;
-    before_begin = itr2.before_begin;
-    if (!at_end && !before_begin) {
-      d = itr2.d;
-      i = itr2.i;
-      for (dimension_type i = 1; i <= itr2.d; ++i)
-        pos[i] = itr2.pos[i];
-    }
-  }
-
-  return *this;
-}
-
-
-PPL::CO_Tree::inorder_const_iterator&
-PPL::CO_Tree::inorder_const_iterator
-::operator=(const inorder_const_iterator& itr2) {
-  tree = itr2.tree;
-  if (tree != 0) {
-    at_end = itr2.at_end;
-    before_begin = itr2.before_begin;
-    if (!at_end && !before_begin) {
-      d = itr2.d;
-      i = itr2.i;
-      for (dimension_type i = 1; i <= itr2.d; ++i)
-        pos[i] = itr2.pos[i];
-    }
-  }
-
-  return *this;
-}
-
-PPL::CO_Tree::inorder_const_iterator&
-PPL::CO_Tree::inorder_const_iterator
-::operator=(const inorder_iterator& itr2) {
-  tree = itr2.tree;
-  if (tree != 0) {
-    at_end = itr2.at_end;
-    before_begin = itr2.before_begin;
-    if (!at_end && !before_begin) {
-      d = itr2.d;
-      i = itr2.i;
-      for (dimension_type i = 1; i <= itr2.d; ++i)
-        pos[i] = itr2.pos[i];
-    }
-  }
-
-  return *this;
 }
