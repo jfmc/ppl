@@ -97,7 +97,8 @@ shift_unprimed_variables(Constraint_System& cs) {
       if (a_i_j != 0)
 	add_mul_assign(le_i_shifted, a_i_j, Variable(cs_space_dim + j));
     }
-    cs_shifted.insert(le_i_shifted >= c_i.inhomogeneous_term());
+    le_i_shifted += c_i.inhomogeneous_term();
+    cs_shifted.insert(le_i_shifted >= 0);
   }
   cs.swap(cs_shifted);
 }
