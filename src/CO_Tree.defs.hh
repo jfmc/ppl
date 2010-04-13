@@ -339,6 +339,9 @@ private:
   //! Initializes a tree with reserved size at least \p n .
   void init(dimension_type n);
 
+  //! Deallocates the tree. After this call, init() can be called again.
+  void destroy();
+
   //! Checks the invariant, but not the densities.
   bool structure_OK() const;
 

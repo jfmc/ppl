@@ -200,8 +200,9 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
     } else {
       if (top_n == 1) {
         PPL_ASSERT(root->first == unused_index);
+        PPL_ASSERT(itr->first != unused_index);
         root->first = itr->first;
-        root->second = itr->second;
+        new (&(root->second)) data_type(itr->second);
         itr.get_next_value();
         --stack_first_empty;
       } else {
@@ -247,10 +248,11 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   l++;
 
   reserved_size = ((dimension_type)1 << l) - 1;
-  data = new value_type[reserved_size + 1];
+  data = static_cast<value_type *>(operator new(sizeof(value_type)
+                                                *(reserved_size + 1)));
   // Mark all pairs as unused.
   for (dimension_type i = 1; i <= reserved_size; ++i)
-    data[i].first = unused_index;
+    new (&(data[i].first)) dimension_type(unused_index);
 
   max_depth = l;
   rebuild_level_data(l);
@@ -258,6 +260,22 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   size = 0;
 
   PPL_ASSERT(structure_OK());
+}
+
+void
+PPL::CO_Tree::destroy() {
+
+  if (reserved_size != 0) {
+    for (dimension_type i = 1; i <= reserved_size; ++i) {
+      if (data[i].first != unused_index)
+        data[i].second.~data_type();
+      data[i].first.~dimension_type();
+    }
+
+    operator delete(data);
+
+    delete [] level;
+  }
 }
 
 void
@@ -327,7 +345,9 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
     } else {
       if (top_n == 1) {
         PPL_ASSERT(root->first == unused_index);
+        PPL_ASSERT(itr->first != unused_index);
         root->first = itr->first;
+        itr->first = unused_index;
         move_data_element(root->second, itr->second);
         itr.get_next_value();
         --stack_first_empty;
@@ -345,8 +365,8 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
     }
   }
   size = tree.size;
-  PPL_ASSERT(structure_OK());
-  PPL_ASSERT(tree.OK());
+  tree.size = 0;
+  PPL_ASSERT(tree.structure_OK());
 }
 
 bool
@@ -480,7 +500,7 @@ PPL::CO_Tree::insert(dimension_type key1, const data_type& data1,
     itr.get_root();
     PPL_ASSERT(itr->first == unused_index);
     itr->first = key1;
-    itr->second = data1;
+    new (&(itr->second)) data_type(data1);
     size++;
 
     PPL_ASSERT(OK());
@@ -518,7 +538,7 @@ PPL::CO_Tree::insert(dimension_type key1, const data_type& data1,
       itr.get_right_child();
     PPL_ASSERT(itr->first == unused_index);
     itr->first = key1;
-    itr->second = data1;
+    new (&(itr->second)) data_type(data1);
     size++;
 
   } else {
@@ -612,8 +632,7 @@ PPL::CO_Tree::erase(inorder_iterator& itr) {
 
   if (size == 1) {
     // Deleting the only element of this tree, now it is empty.
-    delete [] data;
-    delete [] level;
+    destroy();
     init(0);
     return;
   }
@@ -642,6 +661,7 @@ PPL::CO_Tree::erase(inorder_iterator& itr) {
                  > max_density);
 #endif
 
+  itr->second.~data_type();
   while (1) {
     dimension_type& current_key  = itr->first;
     data_type&      current_data = itr->second;
@@ -747,7 +767,7 @@ PPL::CO_Tree::redistribute_elements_in_subtree(inorder_iterator& itr,
   if (!added_key && can_add_key) {
     PPL_ASSERT(itr2->first == unused_index);
     itr2->first = key;
-    itr2->second = value;
+    new (&(itr2->second)) data_type(value);
     added_key = true;
   } else
     ++itr2;
@@ -795,7 +815,7 @@ PPL::CO_Tree
           PPL_ASSERT(!first_unused.is_before_begin());
           PPL_ASSERT(first_unused->first == unused_index);
           first_unused->first = key;
-          first_unused->second = value;
+          new (&(first_unused->second)) data_type(value);
           added_key = true;
           --first_unused;
           --subtree_size;
@@ -901,9 +921,10 @@ PPL::CO_Tree
       if (top_n == 1) {
         if (!added_key && (itr.is_at_end() || itr->first > key)) {
           PPL_ASSERT(root != itr);
+          PPL_ASSERT(root->first == unused_index);
           added_key = true;
           root->first = key;
-          root->second = value;
+          new (&(root->second)) data_type(value);
         } else {
           if (root != itr) {
             PPL_ASSERT(root->first == unused_index);

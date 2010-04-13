@@ -54,11 +54,7 @@ CO_Tree::operator=(const CO_Tree& x) {
 
   if (this != &x) {
 
-    if (reserved_size != 0) {
-      delete [] data;
-      delete [] level;
-    }
-
+    destroy();
     init(x.reserved_size);
 
     copy_data_from(x);
@@ -70,13 +66,9 @@ CO_Tree::operator=(const CO_Tree& x) {
 inline
 CO_Tree::~CO_Tree() {
 
-  PPL_ASSERT(OK());
+  PPL_ASSERT(structure_OK());
 
-  if (level != NULL)
-    delete [] level;
-
-  if (data != NULL)
-    delete [] data;
+  destroy();
 }
 
 inline dimension_type
@@ -241,7 +233,7 @@ CO_Tree::lower_bound(inorder_const_iterator& itr, dimension_type key) const {
 
 inline void
 CO_Tree::move_data_element(data_type& to, data_type& from) {
-  std::swap(to, from);
+  std::memcpy(&to, &from, sizeof(data_type));
 }
 
 inline void
@@ -254,7 +246,7 @@ CO_Tree::rebuild_bigger_tree() {
     new_tree.init(new_reserved_size);
     new_tree.move_data_from(*this);
     swap(new_tree);
-    PPL_ASSERT(new_tree.OK());
+    PPL_ASSERT(new_tree.structure_OK());
   }
   PPL_ASSERT(structure_OK());
 }
@@ -262,8 +254,7 @@ CO_Tree::rebuild_bigger_tree() {
 inline void
 CO_Tree::rebuild_smaller_tree() {
   if (reserved_size == 3) {
-    delete [] data;
-    delete [] level;
+    destroy();
     init(0);
   } else {
     dimension_type new_reserved_size = reserved_size / 2;
@@ -271,7 +262,7 @@ CO_Tree::rebuild_smaller_tree() {
     new_tree.init(new_reserved_size);
     new_tree.move_data_from(*this);
     swap(new_tree);
-    PPL_ASSERT(new_tree.OK());
+    PPL_ASSERT(new_tree.structure_OK());
   }
   PPL_ASSERT(structure_OK());
 }
@@ -595,7 +586,6 @@ CO_Tree::inorder_iterator::get_next_value() {
 #ifndef NDEBUG
     const dimension_type previous_index = (*this)->first;
 #endif
-    PPL_ASSERT(previous_index != unused_index);
     if (get_right_child_value())
       while (get_left_child_value())
         ;
@@ -610,6 +600,9 @@ CO_Tree::inorder_iterator::get_next_value() {
 
 #ifndef NDEBUG
     if (!at_end)
+      // previous_index could be unused_index because we deleted the current
+      // node, as we do in move_data_from().
+      if (previous_index != unused_index)
       PPL_ASSERT((*this)->first != unused_index
                  && (*this)->first > previous_index);
 #endif
