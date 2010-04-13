@@ -58,7 +58,7 @@ test04() {
   C_Polyhedron ph1(2, EMPTY);
   C_Polyhedron ph2(4);
   bool ok = termination_test_PR_2(ph1, ph2);
-    ok = ok && termination_test_MS_2(ph1, ph2);
+  ok = ok && termination_test_MS_2(ph1, ph2);
   return ok;
 }
 
@@ -92,7 +92,7 @@ test07() {
   C_Polyhedron ph2(4);
   Generator witness(point());
   bool ok = one_affine_ranking_function_PR_2(ph1, ph2, witness);
-  //  ok = ok && one_affine_ranking_function_MS_2(ph1, ph2, witness);
+  ok = ok && one_affine_ranking_function_MS_2(ph1, ph2, witness);
   return ok;
 }
 
@@ -102,7 +102,7 @@ test08() {
   C_Polyhedron ph2(4, EMPTY);
   Generator witness(point());
   bool ok = one_affine_ranking_function_PR_2(ph1, ph2, witness);
-  //  ok = ok && one_affine_ranking_function_MS_2(ph1, ph2, witness);
+  ok = ok && one_affine_ranking_function_MS_2(ph1, ph2, witness);
   return ok;
 }
 
@@ -139,13 +139,14 @@ test10() {
 
   C_Polyhedron c_known_result(2, EMPTY);
   c_known_result.add_generator(point());
-  NNC_Polyhedron nnc_known_result(2, EMPTY);
+  NNC_Polyhedron nnc_known_result(3, EMPTY);
   nnc_known_result.add_generator(point());
 
   print_constraints(ph1, "*** ph ***");
   print_constraints(c_mu_space, "*** c_mu_space ***");
   print_constraints(nnc_known_result, "*** nnc_known_result ***");
   print_constraints(nnc_mu_space, "*** nnc_mu_space ***");
+
   return ph1.OK() && (nnc_mu_space == nnc_known_result);
 }
 
@@ -161,5 +162,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-  DO_TEST(test10);
+  DO_TEST_F(test10);
 END_MAIN
