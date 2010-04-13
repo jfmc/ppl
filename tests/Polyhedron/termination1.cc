@@ -497,6 +497,16 @@ test21() {
   return !termination_test_PR(ph);
 }
 
+bool
+test22() {
+  C_Polyhedron ph(2);
+  NNC_Polyhedron mu_space;
+  all_affine_ranking_functions_PR(ph, mu_space);
+
+  print_constraints(ph, "*** ph ***");
+  return ph.OK();
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -521,4 +531,5 @@ BEGIN_MAIN
   DO_TEST(test19);
   DO_TEST(test20);
   DO_TEST(test21);
+  DO_TEST(test22);
 END_MAIN
