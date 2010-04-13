@@ -853,6 +853,13 @@ all_affine_ranking_functions_PR_original(const Constraint_System& cs,
   const dimension_type n = cs.space_dimension() / 2;
   const dimension_type m = distance(cs.begin(), cs.end());
 
+  if (m == 0) {
+    // If there are no constraints at all, we have non-termination,
+    // i.e., no affine ranking function at all.
+    mu_space = NNC_Polyhedron(n + 1, EMPTY);
+    return;
+  }
+
   Constraint_System cs_eqs;
   Linear_Expression le_ineq;
   fill_constraint_system_PR_original(cs, cs_eqs, le_ineq);
