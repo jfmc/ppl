@@ -1822,7 +1822,7 @@ ok(T) :-
 
 % Tests ppl_termination_test_C_Polyhedron_MS/2,
 %       ppl_termination_test_C_Polyhedron_PR/2.
-% T     ppl_termination_test_NNC_Polyhedron_MS/2,
+%       ppl_termination_test_NNC_Polyhedron_MS/2,
 %       ppl_termination_test_NNC_Polyhedron_PR/2.
 termination_test :-
   make_vars(4, [A, B, C, D]),

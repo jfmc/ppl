@@ -1739,8 +1739,7 @@ ppl_@CLASS@_drop_some_non_integer_points_2_test :-
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Dim),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PS_Copy),
-     ppl_@CLASS@_drop_some_non_integer_points(PS, any_complexity),
-     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_drop_some_non_integer_points(PS, any),
      ppl_@CLASS@_OK(PS),
      ppl_delete_@CLASS@(PS),
      ppl_delete_@CLASS@(PS_Copy)
@@ -1750,20 +1749,47 @@ ppl_@CLASS@_drop_some_non_integer_points_2_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
 `
-ppl_@CLASS@_drop_some_non_integer_points_2_3_test :-
+ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_1_test :-
   (
-   choose_test(TEST_DATA, Dim),
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Dim),
-     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PS_Copy),
-     make_vars(Dim, Var_List),
-     ppl_@CLASS@_drop_some_non_integer_points_2(PS, Var_List, any_complexity),
-     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
-     ppl_@CLASS@_OK(PS),
-     ppl_delete_@CLASS@(PS),
-     ppl_delete_@CLASS@(PS_Copy)
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@CLASS@_concatenate_assign(PS1, PS2),
+     (ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(PS1) ->
+        true
+     ;
+        true
+     ),
+     ppl_@CLASS@_OK(PS1),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS2)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`
+ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_2_test :-
+  (
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@CLASS@_concatenate_assign(PS1, PS2),
+     (ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2(PS2, PS1) ->
+        true
+     ;
+        true
+     ),
+     ppl_@CLASS@_OK(PS1),
+     ppl_@CLASS@_OK(PS2),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS2)
    ->
     fail ; true)
   ).
