@@ -1861,14 +1861,9 @@ ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_concatenate_assign(PS1, PS2),
-     (ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(PS1,
-                                                                          Ph)
-     ->
-        true
-     ;
-        true
-     ),
-     ppl_@CLASS@_OK(Ph),
+     ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(PS1,
+                                                                         Ph),
+     ppl_Polyhedron_OK(Ph),
      ppl_@CLASS@_OK(PS1),
      ppl_@CLASS@_OK(PS2),
      ppl_delete_@CLASS@(PS1),
@@ -1889,15 +1884,10 @@ ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_2_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_concatenate_assign(PS1, PS2),
-     (ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2(PS2,
-                                                                            PS1,
-                                                                            Ph)
-     ->
-        true
-     ;
-        true
-     ),
-     ppl_@CLASS@_OK(Ph),
+     ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2(PS2,
+                                                                           PS1,
+                                                                           Ph),
+     ppl_Polyhedron_OK(Ph),
      ppl_@CLASS@_OK(PS1),
      ppl_@CLASS@_OK(PS2),
      ppl_delete_@CLASS@(PS1),
