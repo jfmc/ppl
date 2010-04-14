@@ -1075,8 +1075,9 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     matrix_row_const_reference_type tableau_i = tableau[i];
-    matrix_const_row_const_iterator j = tableau_i.begin();
-    matrix_const_row_const_iterator j_end = tableau_i.end();
+    matrix_const_row_unordered_const_iterator j = tableau_i.unordered_begin();
+    matrix_const_row_unordered_const_iterator j_end
+      = tableau_i.unordered_end();
     if (j != j_end && (*j).first == 0)
       ++j;
     for ( ; j != j_end && (*j).first < tableau_num_columns_minus_1; ++j) {
