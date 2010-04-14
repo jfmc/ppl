@@ -506,8 +506,8 @@ row_normalize(PIP_Tree_Node::matrix_row_reference_type x, Coefficient& den) {
     return;
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd = den;
-  for (PIP_Tree_Node::matrix_row_const_iterator
-    i = x.begin(), i_end = x.end(); i != i_end; ++i) {
+  for (PIP_Tree_Node::matrix_row_unordered_const_iterator
+    i = x.unordered_begin(), i_end = x.unordered_end(); i != i_end; ++i) {
     const Coefficient& x_i = (*i).second;
     if (x_i != 0) {
       gcd_assign(gcd, x_i, gcd);
@@ -516,8 +516,8 @@ row_normalize(PIP_Tree_Node::matrix_row_reference_type x, Coefficient& den) {
     }
   }
   // Divide the coefficients by the GCD.
-  for (PIP_Tree_Node::matrix_row_iterator
-    i = x.begin(), i_end = x.end(); i != i_end; ++i) {
+  for (PIP_Tree_Node::matrix_row_unordered_iterator
+    i = x.unordered_begin(), i_end = x.unordered_end(); i != i_end; ++i) {
     Coefficient& x_i = (*i).second;
     exact_div_assign(x_i, x_i, gcd);
   }
