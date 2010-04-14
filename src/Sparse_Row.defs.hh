@@ -54,6 +54,15 @@ public:
   //! An iterator that may skip some zeros in the sequence.
   typedef Unlimited_Sparse_Row::iterator iterator;
 
+  //! An iterator that may skip some zeros in the sequence and may not follow
+  //! the trivial order.
+  typedef Unlimited_Sparse_Row::unordered_iterator unordered_iterator;
+
+  //! A const iterator that may skip some zeros in the sequence and may not
+  //! follow the trivial order.
+  typedef Unlimited_Sparse_Row::unordered_const_iterator
+    unordered_const_iterator;
+
   //! An iterator that may skip some zeros in the sequence.
   //! May be invalidated by apparently unrelated operations, use with care.
   //! See the method documentation for details.
@@ -276,6 +285,11 @@ public:
   const_iterator begin() const;
   const_iterator end() const;
 
+  unordered_iterator unordered_begin();
+  unordered_iterator unordered_end();
+  unordered_const_iterator unordered_begin() const;
+  unordered_const_iterator unordered_end() const;
+
   dangerous_iterator find_dangerous(const dimension_type c);
   dangerous_iterator lower_bound_dangerous(const dimension_type c);
   iterator find(const dimension_type c);
@@ -360,6 +374,15 @@ public:
   //! May be invalidated by apparently unrelated operations, use with care.
   //! See the method documentation for details.
   typedef Unlimited_Sparse_Row::dangerous_iterator dangerous_iterator;
+
+  //! An iterator that may skip some zeros in the sequence and may not follow
+  //! the trivial order.
+  typedef Unlimited_Sparse_Row::unordered_iterator unordered_iterator;
+
+  //! A const iterator that may skip some zeros in the sequence and may not
+  //! follow the trivial order.
+  typedef Unlimited_Sparse_Row::unordered_const_iterator
+    unordered_const_iterator;
 
   Sparse_Row_Reference(Unlimited_Sparse_Row& row, const dimension_type size);
 
@@ -558,6 +581,11 @@ public:
   iterator end();
   const_iterator begin() const;
   const_iterator end() const;
+
+  unordered_iterator unordered_begin();
+  unordered_iterator unordered_end();
+  unordered_const_iterator unordered_begin() const;
+  unordered_const_iterator unordered_end() const;
 
   /*! \brief Executes func on each non-zero element and may execute it on some
              zeros.

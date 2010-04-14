@@ -215,6 +215,26 @@ Sparse_Row::end() const {
   return row.end();
 }
 
+inline Sparse_Row::unordered_iterator
+Sparse_Row::unordered_begin() {
+  return row.unordered_begin();
+}
+
+inline Sparse_Row::unordered_iterator
+Sparse_Row::unordered_end() {
+  return row.unordered_end();
+}
+
+inline Sparse_Row::unordered_const_iterator
+Sparse_Row::unordered_begin() const {
+  return row.unordered_begin();
+}
+
+inline Sparse_Row::unordered_const_iterator
+Sparse_Row::unordered_end() const {
+  return row.unordered_end();
+}
+
 inline Sparse_Row::dangerous_iterator
 Sparse_Row::find_dangerous(const dimension_type k) {
   return row.find_dangerous(k);
@@ -539,6 +559,26 @@ Sparse_Row_Reference::begin() const {
 inline Sparse_Row_Reference::const_iterator
 Sparse_Row_Reference::end() const {
   return row.end();
+}
+
+inline Sparse_Row_Reference::unordered_iterator
+Sparse_Row_Reference::unordered_begin() {
+  return row.unordered_begin();
+}
+
+inline Sparse_Row_Reference::unordered_iterator
+Sparse_Row_Reference::unordered_end() {
+  return row.unordered_end();
+}
+
+inline Sparse_Row_Reference::unordered_const_iterator
+Sparse_Row_Reference::unordered_begin() const {
+  return row.unordered_begin();
+}
+
+inline Sparse_Row_Reference::unordered_const_iterator
+Sparse_Row_Reference::unordered_end() const {
+  return row.unordered_end();
 }
 
 inline Sparse_Row_Reference::dangerous_iterator
