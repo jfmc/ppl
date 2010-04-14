@@ -57,6 +57,14 @@ public:
   class iterator;
   class const_iterator;
 
+  //! An iterator over the (key, value) pairs, that scans the pairs
+  //! in the internal order (the pairs are not ordered by key).
+  typedef CO_Tree::unordered_iterator unordered_iterator;
+
+  //! A const iterator over the (key, value) pairs, that scans the pairs
+  //! in the internal order (the pairs are not ordered by key).
+  typedef CO_Tree::unordered_const_iterator unordered_const_iterator;
+
   //! Swaps the i-th element with the j-th element.
   //! Iterators pointing to these elements are invalidated.
   void swap(dimension_type i, dimension_type j);
@@ -210,6 +218,20 @@ public:
   iterator end();
   const_iterator begin() const;
   const_iterator end() const;
+
+  //! Returns an unordered_iterator pointing to the first (key, value) pair,
+  //! in the internal order.
+  unordered_iterator unordered_begin();
+  //! Returns an unordered_iterator pointing after the last pair, in
+  //! the internal order.
+  unordered_iterator unordered_end();
+
+  //! Returns an unordered_const_iterator pointing to the first (key, value)
+  //! pair, in the internal order.
+  unordered_const_iterator unordered_begin() const;
+  //! Returns an unordered_const_iterator pointing after the last pair, in
+  //! the internal order.
+  unordered_const_iterator unordered_end() const;
 
   /*! \brief Executes func on each non-zero element and may execute it on some
              zeros.

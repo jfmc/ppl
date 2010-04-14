@@ -146,6 +146,26 @@ Unlimited_Sparse_Row_Over_CO_Tree::end() const {
   return const_iterator(tree.end());
 }
 
+inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_begin() {
+  return tree.unordered_begin();
+}
+
+inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_end() {
+  return tree.unordered_end();
+}
+
+inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_begin() const {
+  return tree.unordered_begin();
+}
+
+inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_end() const {
+  return tree.unordered_end();
+}
+
 inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
 Unlimited_Sparse_Row_Over_CO_Tree::find_dangerous(const dimension_type c) {
   if (tree.empty())
