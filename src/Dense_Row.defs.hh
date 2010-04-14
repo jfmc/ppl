@@ -36,6 +36,9 @@ public:
   class iterator;
   class const_iterator;
 
+  typedef iterator unordered_iterator;
+  typedef const_iterator unordered_const_iterator;
+
   //! Pre-constructs a row: construction must be completed by construct().
   Dense_Row();
 
@@ -116,6 +119,12 @@ public:
 
   iterator end();
   const_iterator end() const;
+
+  iterator unordered_begin();
+  const_iterator unordered_begin() const;
+
+  iterator unordered_end();
+  const_iterator unordered_end() const;
 
   //! Resets the i-th element to 0.
   //! Provided for compatibility with Sparse_Row
