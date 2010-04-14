@@ -719,14 +719,14 @@ template <typename Func>
 inline void
 Sparse_Row_Reference
 ::for_each_nonzero(const Func& func, const dimension_type /* n */) {
-  std::for_each(begin(), end(), apply_to_data(func));
+  std::for_each(unordered_begin(), unordered_end(), apply_to_data(func));
 }
 
 template <typename Func>
 inline void
 Sparse_Row_Reference
 ::for_each_nonzero(const Func& func, const dimension_type /* n */) const {
-  std::for_each(begin(), end(), apply_to_data(func));
+  std::for_each(unordered_begin(), unordered_end(), apply_to_data(func));
 }
 
 template <typename Func>
