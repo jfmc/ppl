@@ -1492,11 +1492,12 @@ PIP_Solution_Node::Tableau::scale(Coefficient_traits::const_reference ratio) {
   for (dimension_type i = s.num_rows(); i-- > 0; ) {
     matrix_row_reference_type s_i = s[i];
     matrix_row_reference_type t_i = t[i];
-    matrix_row_iterator j = s_i.begin();
-    matrix_row_iterator j_end = s_i.end();
+    matrix_row_unordered_iterator j = s_i.unordered_begin();
+    matrix_row_unordered_iterator j_end = s_i.unordered_end();
     for ( ; j != j_end; ++j)
       (*j).second *= ratio;
-    for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j)
+    for (j = t_i.unordered_begin(), j_end = t_i.unordered_end();
+         j != j_end; ++j)
       (*j).second *= ratio;
   }
   denom *= ratio;
