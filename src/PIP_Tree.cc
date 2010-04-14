@@ -1527,12 +1527,12 @@ PIP_Solution_Node::Tableau
   std::vector<Coefficient> coeff_0(num_params,0);
   std::vector<Coefficient> coeff_1(num_params,0);
   {
-    matrix_row_const_iterator j = t_0.begin();
-    matrix_row_const_iterator j_end = t_0.end();
+    matrix_row_unordered_const_iterator j = t_0.unordered_begin();
+    matrix_row_unordered_const_iterator j_end = t_0.unordered_end();
     for ( ; j != j_end; ++j)
       coeff_0[(*j).first] = (*j).second * s_1_1;
-    j = t_1.begin();
-    j_end = t_1.end();
+    j = t_1.unordered_begin();
+    j_end = t_1.unordered_end();
     for ( ; j != j_end; ++j)
       coeff_1[(*j).first] = (*j).second * s_0_0;
   }
