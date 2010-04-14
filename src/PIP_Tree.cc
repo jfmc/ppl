@@ -2078,8 +2078,8 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
             // Must scale row s_i to stay in integer case.
             gcd_assign(gcd, product, pivot_pj);
             exact_div_assign(scale_factor, pivot_pj, gcd);
-            matrix_row_iterator k = s_i.begin();
-            matrix_row_iterator k_end = s_i.end();
+            matrix_row_unordered_iterator k = s_i.unordered_begin();
+            matrix_row_unordered_iterator k_end = s_i.unordered_end();
             for ( ; k != k_end; ++k )
               (*k).second *= scale_factor;
             product *= scale_factor;
@@ -2101,8 +2101,8 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
           // As above, perform row scaling.
           gcd_assign(gcd, product, pivot_pj);
           exact_div_assign(scale_factor, pivot_pj, gcd);
-          matrix_row_iterator k = s_i.begin();
-          matrix_row_iterator k_end = s_i.end();
+          matrix_row_unordered_iterator k = s_i.unordered_begin();
+          matrix_row_unordered_iterator k_end = s_i.unordered_end();
           for ( ; k != k_end; ++k )
             (*k).second *= scale_factor;
           product *= scale_factor;
