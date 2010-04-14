@@ -3175,10 +3175,10 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   {
     // Limiting the scope of reference row_t (may be later invalidated).
     matrix_row_const_reference_type row_t = tableau.t[index];
-    matrix_const_row_const_iterator j = row_t.lower_bound(1);
-    matrix_const_row_const_iterator j_end = row_t.end();
+    matrix_const_row_unordered_const_iterator j = row_t.unordered_begin();
+    matrix_const_row_unordered_const_iterator j_end = row_t.unordered_end();
     for ( ; j != j_end; ++j)
-      if ((*j).second % den != 0) {
+      if ((*j).first != 0 && (*j).second % den != 0) {
         generate_parametric_cut = true;
         break;
       }
@@ -3205,20 +3205,22 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         // To avoid reallocations of expr.
         add_mul_assign(expr, 0, Variable(*(parameters.rbegin())));
         Variables_Set::const_iterator p_j = parameters.begin();
-        matrix_const_row_const_iterator j = row_t.lower_bound(1);
-        matrix_const_row_const_iterator j_end = row_t.end();
+        matrix_const_row_unordered_const_iterator j = row_t.unordered_begin();
+        matrix_const_row_unordered_const_iterator j_end
+          = row_t.unordered_end();
         dimension_type last_index = 1;
-        for ( ; j != j_end; ++j) {
-          mod_assign(mod, (*j).second, den);
-          if (mod != 0) {
-            // Optimizing computation: expr += (den - mod) * Variable(*p_j);
-            coeff = den - mod;
-            PPL_ASSERT(last_index <= (*j).first);
-            std::advance(p_j,(*j).first - last_index);
-            last_index = (*j).first;
-            add_mul_assign(expr, coeff, Variable(*p_j));
+        for ( ; j != j_end; ++j)
+          if ((*j).first != 0) {
+            mod_assign(mod, (*j).second, den);
+            if (mod != 0) {
+              // Optimizing computation: expr += (den - mod) * Variable(*p_j);
+              coeff = den - mod;
+              PPL_ASSERT(last_index <= (*j).first);
+              std::advance(p_j,(*j).first - last_index);
+              last_index = (*j).first;
+              add_mul_assign(expr, coeff, Variable(*p_j));
+            }
           }
-        }
       }
     }
     // Generate new artificial parameter.
