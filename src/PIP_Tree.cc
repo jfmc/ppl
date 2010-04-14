@@ -1889,8 +1889,9 @@ PIP_Solution_Node::row_sign(matrix_row_const_reference_type x,
   }
 
   PIP_Solution_Node::Row_Sign sign = ZERO;
-  for (matrix_const_row_const_iterator i = x.begin(), i_end = x.end();
-       i != i_end; ++i) {
+  matrix_const_row_unordered_const_iterator i = x.unordered_begin();
+  matrix_const_row_unordered_const_iterator i_end = x.unordered_end();
+  for ( ; i != i_end; ++i) {
     const Coefficient& x_i = (*i).second;
     if (x_i > 0) {
       if (sign == NEGATIVE)
