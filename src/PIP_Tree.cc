@@ -180,8 +180,8 @@ inline void
 neg_assign_row(PIP_Tree_Node::matrix_row_reference_type x,
                PIP_Tree_Node::matrix_row_const_reference_type y) {
   x = y;
-  PIP_Tree_Node::matrix_row_iterator i = x.begin();
-  PIP_Tree_Node::matrix_row_iterator i_end = x.end();
+  PIP_Tree_Node::matrix_row_unordered_iterator i = x.unordered_begin();
+  PIP_Tree_Node::matrix_row_unordered_iterator i_end = x.unordered_end();
   for ( ; i!=i_end; ++i)
     neg_assign((*i).second);
 }
