@@ -106,8 +106,9 @@ on the use of the interface.
     a simple domain.
   - The product domains consist of
     Direct_Product_S_T,
-    Smash_Product_S_T and
-    Constraints_Product_S_T where S
+    Smash_Product_S_T,
+    Constraints_Product_S_T and
+    Shape_Preserving_Product_S_T where S
     and T are simple domains.
 - In the following, any of the above numerical
   abstract domains  is called a PPL <EM>domain</EM>

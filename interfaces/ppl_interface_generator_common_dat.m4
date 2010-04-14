@@ -480,7 +480,8 @@ m4_define(`m4_box_group',
    Uint8_Box, Uint16_Box, Uint32_Box, Uint64_Box')
 m4_define(`m4_pointset_powerset_group', Pointset_Powerset)
 m4_define(`m4_product_group',
-  `Direct_Product, Smash_Product, Constraints_Product')
+  `Direct_Product, Smash_Product, Constraints_Product,
+   Shape_Preserving_Product')
 
 dnl =====================================================================
 dnl ===== The next set of macros define the replacements            =====
