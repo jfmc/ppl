@@ -1443,8 +1443,8 @@ PIP_Solution_Node::Tableau::normalize() {
   gcd = denom;
   for (dimension_type i = num_rows; i-- > 0; ) {
     matrix_row_const_reference_type s_i = s[i];
-    matrix_const_row_const_iterator j = s_i.begin();
-    matrix_const_row_const_iterator j_end = s_i.end();
+    matrix_const_row_unordered_const_iterator j = s_i.unordered_begin();
+    matrix_const_row_unordered_const_iterator j_end = s_i.unordered_end();
     for ( ; j != j_end; ++j) {
       const Coefficient& s_ij = (*j).second;
       if (s_ij != 0) {
@@ -1454,8 +1454,8 @@ PIP_Solution_Node::Tableau::normalize() {
       }
     }
     matrix_row_const_reference_type t_i = t[i];
-    j = t_i.begin();
-    j_end = t_i.end();
+    j = t_i.unordered_begin();
+    j_end = t_i.unordered_end();
     for ( ; j != j_end; ++j) {
       const Coefficient& t_ij = (*j).second;
       if (t_ij != 0) {
@@ -1469,15 +1469,15 @@ PIP_Solution_Node::Tableau::normalize() {
   // Normalize all coefficients.
   for (dimension_type i = num_rows; i-- > 0; ) {
     matrix_row_reference_type s_i = s[i];
-    matrix_row_iterator j = s_i.begin();
-    matrix_row_iterator j_end = s_i.end();
+    matrix_row_unordered_iterator j = s_i.unordered_begin();
+    matrix_row_unordered_iterator j_end = s_i.unordered_end();
     for ( ; j != j_end; ++j) {
       Coefficient& s_ij = (*j).second;
       exact_div_assign(s_ij, s_ij, gcd);
     }
     matrix_row_reference_type t_i = t[i];
-    j = t_i.begin();
-    j_end = t_i.end();
+    j = t_i.unordered_begin();
+    j_end = t_i.unordered_end();
     for ( ; j != j_end; ++j) {
       Coefficient& t_ij = (*j).second;
       exact_div_assign(t_ij, t_ij, gcd);
