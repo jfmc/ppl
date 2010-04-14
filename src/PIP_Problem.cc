@@ -153,10 +153,13 @@ PPL::PIP_Problem::solve() const {
 
         check_feasible_context = true;
 
-        // Translate constraint into context row.
-        matrix_row_copy_type row(new_num_cols);
+        x.initial_context.add_zero_rows(1);
+
+        matrix_row_reference_type row
+          = x.initial_context[x.initial_context.num_rows()-1];
+
         {
-          matrix_row_copy_iterator itr = row.end();
+          matrix_row_iterator itr = row.end();
 
           if (c.inhomogeneous_term() != 0) {
             itr = row.find_create(0, c.inhomogeneous_term());
@@ -201,18 +204,21 @@ PPL::PIP_Problem::solve() const {
           }
         }
 
-        // Insert new row into initial context.
-        x.initial_context.add_row(row);
-
         // If it is an equality, also insert its negation.
         if (c.is_equality()) {
-          matrix_row_iterator i = row.begin();
-          matrix_row_iterator i_end = row.end();
+          x.initial_context.add_zero_rows(1);
+
+          // The reference `row' has been invalidated.
+
+          matrix_row_reference_type last_row
+            = x.initial_context[x.initial_context.num_rows()-1];
+
+          last_row = x.initial_context[x.initial_context.num_rows()-2];
+
+          matrix_row_unordered_iterator i = last_row.unordered_begin();
+          matrix_row_unordered_iterator i_end = last_row.unordered_end();
           for ( ; i != i_end; ++i)
             neg_assign((*i).second);
-
-          // Insert new row into initial context.
-          x.initial_context.add_row(row);
         }
       }
 
