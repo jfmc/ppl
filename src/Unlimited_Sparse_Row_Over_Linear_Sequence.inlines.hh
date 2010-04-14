@@ -314,6 +314,26 @@ Unlimited_Sparse_Row_Over_Linear_Sequence::end() const {
   return data.end();
 }
 
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence::unordered_begin() {
+  return data.begin();
+}
+
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence::unordered_end() {
+  return data.end();
+}
+
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::const_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence::unordered_begin() const {
+  return data.begin();
+}
+
+inline Unlimited_Sparse_Row_Over_Linear_Sequence::const_iterator
+Unlimited_Sparse_Row_Over_Linear_Sequence::unordered_end() const {
+  return data.end();
+}
+
 inline Unlimited_Sparse_Row_Over_Linear_Sequence::dangerous_iterator
 Unlimited_Sparse_Row_Over_Linear_Sequence
 ::find_dangerous(const dimension_type k) {

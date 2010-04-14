@@ -243,6 +243,12 @@ public:
   //! An iterator that may skip some zeros in the sequence.
   typedef list_t::iterator iterator;
 
+  //! Provided for compatibility with Unlimited_Sparse_Row_Over_CO_Tree.
+  typedef iterator unordered_iterator;
+
+  //! Provided for compatibility with Unlimited_Sparse_Row_Over_CO_Tree.
+  typedef const_iterator unordered_const_iterator;
+
   // FIXME: this allows violating the internal invariant, use with care.
   //! An iterator that may skip some zeros in the sequence.
   //! May be invalidated by apparently unrelated operations, use with care.
@@ -405,6 +411,11 @@ public:
   iterator end();
   const_iterator begin() const;
   const_iterator end() const;
+
+  iterator unordered_begin();
+  iterator unordered_end();
+  const_iterator unordered_begin() const;
+  const_iterator unordered_end() const;
 
   /*! \brief Executes func on each non-zero element and may execute it on some
              zeros.
