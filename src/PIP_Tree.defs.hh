@@ -62,6 +62,8 @@ public:
   typedef const Dense_Row& matrix_row_const_reference_type;
   typedef const Dense_Row* matrix_row_const_pointer_type;
   typedef Dense_Row::const_iterator matrix_const_row_const_iterator;
+  typedef Dense_Row::unordered_const_iterator
+    matrix_const_row_unordered_const_iterator;
   typedef Dense_Row::iterator matrix_row_iterator;
   typedef Dense_Row::const_iterator matrix_row_const_iterator;
   typedef Dense_Row::unordered_iterator matrix_row_unordered_iterator;
@@ -80,6 +82,8 @@ public:
   typedef const Unlimited_Sparse_Row* matrix_row_const_pointer_type;
   typedef Unlimited_Sparse_Row::const_iterator
     matrix_const_row_const_iterator;
+  typedef Unlimited_Sparse_Row::unordered_const_iterator
+    matrix_const_row_unordered_const_iterator;
   typedef Sparse_Row_Reference::iterator matrix_row_iterator;
   typedef Sparse_Row_Reference::const_iterator matrix_row_const_iterator;
   typedef Sparse_Row_Reference::unordered_iterator matrix_row_unordered_iterator;
