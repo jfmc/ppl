@@ -37,6 +37,8 @@ public:
 
   class inorder_iterator;
   class inorder_const_iterator;
+  class unordered_iterator;
+  class unordered_const_iterator;
 
   CO_Tree();
   CO_Tree(const std::vector<data_type>& v);
@@ -88,6 +90,20 @@ public:
 
   //! Returns an iterator that points after the last element.
   inorder_const_iterator end() const;
+
+  //! Returns an unordered_iterator pointing to the first (used) element in
+  //! the tree.
+  unordered_iterator unordered_begin();
+  //! Returns an unordered_iterator pointing after the last element in
+  //! the tree.
+  unordered_iterator unordered_end();
+
+  //! Returns an unordered_const_iterator pointing to the first (used) element
+  //! in the tree.
+  unordered_const_iterator unordered_begin() const;
+  //! Returns an unordered_const_iterator pointing after the last element
+  //! in the tree.
+  unordered_const_iterator unordered_end() const;
 
   //! Searches for an element with key \p key in the subtree rooted at \p itr.
   //! \p itr is modified to point to the found node (if it exists) or to the
@@ -334,6 +350,48 @@ public:
       inorder_const_iterator::operator=(const inorder_iterator&);
   };
 
+  class unordered_iterator {
+
+  public:
+
+    unordered_iterator(value_type* p1 = 0);
+
+    value_type& operator*();
+    const value_type& operator*() const;
+
+    value_type* operator->();
+    const value_type* operator->() const;
+
+    unordered_iterator& operator++();
+
+    bool operator==(const unordered_iterator&) const;
+    bool operator!=(const unordered_iterator&) const;
+
+  private:
+
+    value_type* p;
+  };
+
+  class unordered_const_iterator {
+
+  public:
+
+    unordered_const_iterator(const value_type* p1 = 0);
+    unordered_const_iterator(const unordered_iterator& itr);
+
+    const value_type& operator*() const;
+    const value_type* operator->() const;
+
+    unordered_const_iterator& operator++();
+
+    bool operator==(const unordered_const_iterator&) const;
+    bool operator!=(const unordered_const_iterator&) const;
+
+  private:
+
+    const value_type* p;
+  };
+
 private:
 
   //! Initializes a tree with reserved size at least \p n .
@@ -466,9 +524,10 @@ private:
   dimension_type max_depth;
 
   // TODO: don't waste the first element.
-  //! The vector that contains (key + 1, value) pairs.
-  //! If a pair has 0 as first element, it means it is not used.
-  //! Its size is reserved_size + 1, because the first element is not used.
+  //! The vector that contains (key, value) pairs.
+  //! If a pair has \p unused_index as first element, it means it is not used.
+  //! Its size is reserved_size + 2, because the first element is not used,
+  //! and the last element is used as marker for unordered iterators.
   value_type* data;
 
   //! The size of the \p data vector. It is one less than a power of 2.

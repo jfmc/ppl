@@ -249,10 +249,13 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
 
   reserved_size = ((dimension_type)1 << l) - 1;
   data = static_cast<value_type *>(operator new(sizeof(value_type)
-                                                *(reserved_size + 1)));
+                                                *(reserved_size + 2)));
   // Mark all pairs as unused.
   for (dimension_type i = 1; i <= reserved_size; ++i)
     new (&(data[i].first)) dimension_type(unused_index);
+
+  // This is used as a marker by unordered iterators.
+  new (&(data[reserved_size+1].first)) dimension_type(0);
 
   max_depth = l;
   rebuild_level_data(l);
@@ -272,6 +275,7 @@ PPL::CO_Tree::destroy() {
       data[i].first.~dimension_type();
     }
 
+    data[reserved_size+1].first.~dimension_type();
     operator delete(data);
 
     delete [] level;

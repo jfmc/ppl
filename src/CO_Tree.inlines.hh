@@ -189,6 +189,44 @@ CO_Tree::end() const {
   return inorder_const_iterator::construct_end(*this);
 }
 
+inline CO_Tree::unordered_iterator
+CO_Tree::unordered_begin() {
+  if (reserved_size == 0)
+    return unordered_iterator(0);
+  // The first element of data[] is not used.
+  value_type* p = data + 1;
+  while (p->first == unused_index)
+    ++p;
+  return unordered_iterator(p);
+}
+
+inline CO_Tree::unordered_iterator
+CO_Tree::unordered_end() {
+  if (reserved_size == 0)
+    return unordered_iterator(0);
+  PPL_ASSERT(data[reserved_size + 1].first != unused_index);
+  return unordered_iterator(&(data[reserved_size + 1]));
+}
+
+inline CO_Tree::unordered_const_iterator
+CO_Tree::unordered_begin() const {
+  if (reserved_size == 0)
+    return unordered_const_iterator(0);
+  // The first element of data[] is not used.
+  value_type* p = data + 1;
+  while (p->first == unused_index)
+    ++p;
+  return unordered_const_iterator(p);
+}
+
+inline CO_Tree::unordered_const_iterator
+CO_Tree::unordered_end() const {
+  if (reserved_size == 0)
+    return unordered_const_iterator(0);
+  PPL_ASSERT(data[reserved_size + 1].first != unused_index);
+  return unordered_const_iterator(&(data[reserved_size + 1]));
+}
+
 inline void
 CO_Tree::lower_bound(inorder_iterator& itr, dimension_type key) {
   if (empty())
@@ -1064,6 +1102,95 @@ CO_Tree::inorder_const_iterator
 
   return *this;
 }
+
+inline
+CO_Tree::unordered_iterator::unordered_iterator(value_type* p1)
+  : p(p1) {
+}
+
+inline CO_Tree::value_type&
+CO_Tree::unordered_iterator::operator*() {
+  return *p;
+}
+
+inline const CO_Tree::value_type&
+CO_Tree::unordered_iterator::operator*() const {
+  return *p;
+}
+
+inline CO_Tree::value_type*
+CO_Tree::unordered_iterator::operator->() {
+  return p;
+}
+
+inline const CO_Tree::value_type*
+CO_Tree::unordered_iterator::operator->() const {
+  return p;
+}
+
+inline CO_Tree::unordered_iterator&
+CO_Tree::unordered_iterator::operator++() {
+
+  ++p;
+  while (p->first == unused_index)
+    ++p;
+
+  return *this;
+}
+
+inline bool
+CO_Tree::unordered_iterator::operator==(const unordered_iterator& x) const {
+  return p == x.p;
+}
+
+inline bool
+CO_Tree::unordered_iterator::operator!=(const unordered_iterator& x) const {
+  return !(*this == x);
+}
+
+
+inline
+CO_Tree::unordered_const_iterator
+::unordered_const_iterator(const value_type* p1)
+  : p(p1) {
+}
+
+inline
+CO_Tree::unordered_const_iterator
+::unordered_const_iterator(const unordered_iterator& itr)
+  : p(itr.operator->()) {
+}
+
+inline const CO_Tree::value_type&
+CO_Tree::unordered_const_iterator::operator*() const {
+  return *p;
+}
+
+inline const CO_Tree::value_type*
+CO_Tree::unordered_const_iterator::operator->() const {
+  return p;
+}
+
+inline CO_Tree::unordered_const_iterator&
+CO_Tree::unordered_const_iterator::operator++() {
+  ++p;
+  while (p->first == unused_index)
+    ++p;
+  return *this;
+}
+
+inline bool
+CO_Tree::unordered_const_iterator
+::operator==(const unordered_const_iterator& x) const {
+  return p == x.p;
+}
+
+inline bool
+CO_Tree::unordered_const_iterator
+::operator!=(const unordered_const_iterator& x) const {
+  return !(*this == x);
+}
+
 
 } // namespace Parma_Polyhedra_Library
 
