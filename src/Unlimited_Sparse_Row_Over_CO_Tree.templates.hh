@@ -23,6 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Unlimited_Sparse_Row_Over_CO_Tree_templates_hh
 #define PPL_Unlimited_Sparse_Row_Over_CO_Tree_templates_hh 1
 
+// TODO: Remove this.
+// Added to please KDevelop4.
+#include "Unlimited_Sparse_Row_Over_CO_Tree.defs.hh"
+
 
 namespace Parma_Polyhedra_Library {
 
@@ -33,12 +37,10 @@ Unlimited_Sparse_Row_Over_CO_Tree
                       const Func1& f, const Func2& g) {
   iterator i = begin();
   iterator last_i = begin();
-  iterator i_end = end();
   const_iterator j = y.begin();
-  const_iterator j_end = y.end();
-  if (i == i_end)
+  if (i.itr.is_at_end())
     return;
-  if (j != j_end) {
+  if (!j.itr.is_at_end()) {
     if ((*i).first == (*j).first) {
       g((*i).second, (*j).second);
       last_i = i;
@@ -57,8 +59,8 @@ Unlimited_Sparse_Row_Over_CO_Tree
     last_i = i;
     ++i;
   }
-  PPL_ASSERT(last_i != i_end);
-  while (i != i_end && j != j_end)
+  PPL_ASSERT(!last_i.itr.is_at_end());
+  while (!i.itr.is_at_end() && !j.itr.is_at_end())
     if ((*i).first == (*j).first) {
       g((*i).second, (*j).second);
       last_i = i;
@@ -71,7 +73,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
         ++i;
       } else
         j = y.lower_bound((*i).first, j);
-  while (i != i_end) {
+  while (!i.itr.is_at_end()) {
     f((*i).second);
     ++i;
   }
@@ -84,11 +86,9 @@ Unlimited_Sparse_Row_Over_CO_Tree
                        const Func1& g, const Func2& h) {
   iterator i = begin();
   iterator last_i = begin();
-  iterator i_end = end();
   const_iterator j = y.begin();
-  const_iterator j_end = y.end();
-  if (i != i_end) {
-    if (j != j_end) {
+  if (!i.itr.is_at_end()) {
+    if (!j.itr.is_at_end()) {
       if ((*i).first == (*j).first) {
         g((*i).second, (*j).second);
         last_i = i;
@@ -103,11 +103,8 @@ Unlimited_Sparse_Row_Over_CO_Tree
           h((*last_i).second, (*j).second);
           i = last_i;
           ++i;
-          i_end = end();
-          if (this == &y) {
+          if (this == &y)
             j = last_i;
-            j_end = y.end();
-          }
           ++j;
         }
     } else {
@@ -115,26 +112,23 @@ Unlimited_Sparse_Row_Over_CO_Tree
       ++i;
     }
   } else {
-    if (j != j_end) {
+    if (!j.itr.is_at_end()) {
       last_i = find_create((*j).first);
       h((*last_i).second, (*j).second);
       i = last_i;
       ++i;
-      i_end = end();
-      if (this == &y) {
+      if (this == &y)
         j = last_i;
-        j_end = y.end();
-      }
       ++j;
     } else {
-      PPL_ASSERT(i == i_end);
-      PPL_ASSERT(j == j_end);
+      PPL_ASSERT(i.itr.is_at_end());
+      PPL_ASSERT(j.itr.is_at_end());
 
       return;
     }
   }
-  PPL_ASSERT(last_i != i_end);
-  while (i != i_end && j != j_end)
+  PPL_ASSERT(!last_i.itr.is_at_end());
+  while (!i.itr.is_at_end() && !j.itr.is_at_end())
     if ((*i).first == (*j).first) {
       g((*i).second, (*j).second);
       last_i = i;
@@ -149,14 +143,11 @@ Unlimited_Sparse_Row_Over_CO_Tree
         h((*last_i).second, (*j).second);
         i = last_i;
         ++i;
-        i_end = end();
-        if (this == &y) {
+        if (this == &y)
           j = last_i;
-          j_end = y.end();
-        }
         ++j;
       }
-  while (j != j_end) {
+  while (!j.itr.is_at_end()) {
     last_i = find_create((*j).first, last_i);
     h((*last_i).second, (*j).second);
     ++j;
@@ -170,11 +161,9 @@ Unlimited_Sparse_Row_Over_CO_Tree
           const Func2& g, const Func3& h) {
   iterator i = begin();
   iterator last_i = begin();
-  iterator i_end = end();
   const_iterator j = y.begin();
-  const_iterator j_end = y.end();
-  if (i != i_end) {
-    if (j != j_end) {
+  if (!i.itr.is_at_end()) {
+    if (!j.itr.is_at_end()) {
       if ((*i).first == (*j).first) {
         g((*i).second, (*j).second);
         last_i = i;
@@ -190,11 +179,8 @@ Unlimited_Sparse_Row_Over_CO_Tree
           h((*last_i).second, (*j).second);
           i = last_i;
           ++i;
-          i_end = end();
-          if (this == &y) {
+          if (this == &y)
             j = last_i;
-            j_end = y.end();
-          }
           ++j;
         }
     } else {
@@ -203,26 +189,23 @@ Unlimited_Sparse_Row_Over_CO_Tree
       ++i;
     }
   } else {
-    if (j != j_end) {
+    if (!j.itr.is_at_end()) {
       last_i = find_create((*j).first);
       h((*last_i).second, (*j).second);
       i = last_i;
       ++i;
-      i_end = end();
-      if (this == &y) {
+      if (this == &y)
         j = last_i;
-        j_end = y.end();
-      }
       ++j;
     } else {
-      PPL_ASSERT(i == i_end);
-      PPL_ASSERT(j == j_end);
+      PPL_ASSERT(i.itr.is_at_end());
+      PPL_ASSERT(j.itr.is_at_end());
 
       return;
     }
   }
-  PPL_ASSERT(last_i != i_end);
-  while (i != i_end && j != j_end)
+  PPL_ASSERT(!last_i.itr.is_at_end());
+  while (!i.itr.is_at_end() && !j.itr.is_at_end())
     if ((*i).first == (*j).first) {
       g((*i).second, (*j).second);
       last_i = i;
@@ -238,18 +221,15 @@ Unlimited_Sparse_Row_Over_CO_Tree
         h((*last_i).second, (*j).second);
         i = last_i;
         ++i;
-        i_end = end();
-        if (this == &y) {
+        if (this == &y)
           j = last_i;
-          j_end = y.end();
-        }
         ++j;
       }
-  while (i != i_end) {
+  while (!i.itr.is_at_end()) {
     f((*i).second);
     ++i;
   }
-  while (j != j_end) {
+  while (!j.itr.is_at_end()) {
     last_i = find_create((*j).first, last_i);
     h((*last_i).second, (*j).second);
     ++j;
