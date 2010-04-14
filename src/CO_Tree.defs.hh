@@ -354,6 +354,12 @@ public:
 
   public:
 
+    typedef std::forward_iterator_tag iterator_category;
+    typedef CO_Tree::value_type value_type;
+    typedef ptrdiff_t difference_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
+
     unordered_iterator(value_type* p1 = 0);
 
     value_type& operator*();
@@ -375,6 +381,12 @@ public:
   class unordered_const_iterator {
 
   public:
+
+    typedef std::forward_iterator_tag iterator_category;
+    typedef const CO_Tree::value_type value_type;
+    typedef ptrdiff_t difference_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
 
     unordered_const_iterator(const value_type* p1 = 0);
     unordered_const_iterator(const unordered_iterator& itr);
