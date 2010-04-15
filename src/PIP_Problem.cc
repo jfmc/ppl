@@ -159,6 +159,7 @@ PPL::PIP_Problem::solve() const {
           = x.initial_context[x.initial_context.num_rows()-1];
 
         {
+#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
           matrix_row_iterator itr = row.end();
 
           if (c.inhomogeneous_term() != 0) {
@@ -202,6 +203,30 @@ PPL::PIP_Problem::solve() const {
                 break;
             }
           }
+#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
+          if (c.inhomogeneous_term() != 0) {
+            Coefficient& row0 = row[0];
+            row0 = c.inhomogeneous_term();
+            // Adjust inhomogenous term if strict.
+            if (c.is_strict_inequality())
+              --row0;
+          } else {
+            // Adjust inhomogenous term if strict.
+            if (c.is_strict_inequality())
+              neg_assign(row[0], Coefficient_one());
+          }
+          dimension_type i = 1;
+          Variables_Set::const_iterator pi = param_begin;
+
+          for ( ; pi != param_end; ++pi, ++i) {
+            if (*pi < c_space_dim) {
+              const Coefficient& x = c.coefficient(Variable(*pi));
+              if (x != 0)
+                row[i] = x;
+            } else
+              break;
+          }
+#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
         }
 
         // If it is an equality, also insert its negation.
