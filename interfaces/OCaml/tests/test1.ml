@@ -506,12 +506,21 @@ print_string_if_noisy "PIP_Problem_OK ";;
 print_string_if_noisy "and PIP_Tree_Node_is_bottom \n";;
 let pip = ppl_new_PIP_Problem 3
              [e1 >=/ e2; e1 <=/ e2 -/ (linear_expression_of_int 7)] [2];;
-let ptree = ppl_PIP_Problem_solution pip;;
-let
-   out = if (ppl_PIP_Problem_OK pip
-             & ppl_PIP_Tree_Node_is_bottom ptree)
-  then "success" else "failed"
-    in (print_string_if_noisy out);;
+
+begin
+try
+  let ptree = ppl_PIP_Problem_solution pip
+  in let out = if (ppl_PIP_Problem_OK pip & ppl_PIP_Tree_Node_is_bottom ptree)
+                 then "success" else "failed"
+     in (print_string_if_noisy out)
+with PPL_arithmetic_overflow what ->
+  let unexpected = (ppl_Coefficient_bits() != 8)
+  in if (unexpected)
+       then raise (PPL_arithmetic_overflow(what));
+  print_string_if_noisy "Expected overflow exception caught: ";
+  print_string_if_noisy what;
+  print_string_if_noisy "\n"
+end;;
 print_string_if_noisy "\n";;
 
 print_string_if_noisy "PIP_Problem 2 \n";;
@@ -542,22 +551,31 @@ let out = if (not b0 & b1 & (big_par = 7))
   else "ppl_PIP_Problem big parameter dimension tests failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
-let out = if (ppl_PIP_Problem_is_satisfiable pip2)
-  then "ppl_PIP_Problem_is_satisfiable test succeeded"
-  else "ppl_PIP_Problem_is_satisfiable test failed"
-    in (print_string_if_noisy out);;
-print_string_if_noisy "\n";;
-print_string_if_noisy "testing ppl_PIP_Problem_ascii_dump: " ;;
-(* print_string_if_noisy (ppl_PIP_Problem_ascii_dump pip2);; *)
-print_string_if_noisy "\n";;
-let ptree2 = ppl_PIP_Problem_solution pip2;;
-let _r = ppl_PIP_Problem_OK pip2;;
-print_string_if_noisy "\n";;
-let out = if (ppl_PIP_Tree_Node_is_bottom ptree2)
-  then "ppl_PIP_Tree_Node_is_bottom test succeeded"
-  else "ppl_PIP_Tree_Node_is_bottom test failed"
-    in (print_string_if_noisy out);;
-print_string_if_noisy "\n";;
+
+begin
+try
+  let out = if (ppl_PIP_Problem_is_satisfiable pip2)
+    then "ppl_PIP_Problem_is_satisfiable test succeeded"
+    else "ppl_PIP_Problem_is_satisfiable test failed"
+      in (print_string_if_noisy out);
+  print_string_if_noisy "\n";
+  print_string_if_noisy "testing ppl_PIP_Problem_ascii_dump: ";
+  print_string_if_noisy (ppl_PIP_Problem_ascii_dump pip2);
+  print_string_if_noisy "\n";
+  let ptree2 = ppl_PIP_Problem_solution pip2
+  in let out2 = if (ppl_PIP_Tree_Node_is_bottom ptree2)
+    then "ppl_PIP_Tree_Node_is_bottom test succeeded"
+    else "ppl_PIP_Tree_Node_is_bottom test failed"
+      in (print_string_if_noisy out2);
+  print_string_if_noisy "\n"
+with PPL_arithmetic_overflow what ->
+  let unexpected = (ppl_Coefficient_bits() != 8)
+  in if (unexpected)
+       then raise (PPL_arithmetic_overflow(what));
+  print_string_if_noisy "Expected overflow exception caught: ";
+  print_string_if_noisy what;
+  print_string_if_noisy "\n"
+end;;
 
 print_string_if_noisy "\nPIP_Problem 3 \n";;
 let i = Variable 0
@@ -583,45 +601,67 @@ let pip_cs = [pip_c1; pip_c2; pip_c3; pip_c4] ;;
 
 let ps = [2; 3];;
 let pip3 = ppl_new_PIP_Problem 4 pip_cs ps;;
-let result = ppl_PIP_Problem_solve pip3;;
-let out = if (result == Optimized_Pip_Problem)
-  then "PIP Problem_solve pip3 test succeeded"
-  else "PIP Problem_solve pip3 test failed"
-    in (print_string_if_noisy out);;
-print_string_if_noisy "\n";;
-let node = ppl_PIP_Problem_solution pip3;;
-let out = if (ppl_PIP_Tree_Node_OK node)
-  then "ppl_PIP_Tree_Node_OK node test succeeded"
-  else "ppl_PIP_Tree_Node_OK node test failed"
-    in (print_string_if_noisy out);;
-print_string_if_noisy "\n";;
-let out = if (ppl_PIP_Tree_Node_is_decision node)
-  then "ppl_PIP_Tree_Node_is_decision node test succeeded"
-  else "ppl_PIP_Tree_Node_is_decision node test failed"
-    in (print_string_if_noisy out);;
-print_string_if_noisy "\n";;
-let out = if (ppl_PIP_Tree_Node_artificials node = [])
-  then "ppl_PIP_Tree_Node_artificials node test succeeded"
-  else "ppl_PIP_Tree_Node_artificials node test failed"
-    in (print_string_if_noisy out);;
-print_string_if_noisy "\n";;
-let _node_cs = ppl_PIP_Tree_Node_constraints node;;
-let tchild = ppl_PIP_Tree_Node_true_child node;;
-let _fchild = ppl_PIP_Tree_Node_false_child node;;
-let out = if (ppl_PIP_Tree_Node_is_decision tchild)
-  then "ppl_PIP_Tree_Node_is_decision tchild test succeeded"
-  else "ppl_PIP_Tree_Node_is_decision tchild test failed"
-    in (print_string_if_noisy out);;
-print_string_if_noisy "\n";;
-let ttchild = ppl_PIP_Tree_Node_true_child tchild;;
-let ftchild = ppl_PIP_Tree_Node_false_child tchild;;
-let out = if (ppl_PIP_Tree_Node_is_solution ttchild)
-  then "ppl_PIP_Tree_Node_is_decision ttchild test succeeded"
-  else "ppl_PIP_Tree_Node_is_decision ttchild test failed"
-    in (print_string_if_noisy out);;
-print_string_if_noisy "\n";;
-let _par_vals = ppl_PIP_Tree_Node_parametric_values ttchild 0;;
-let _ftchild_arts = ppl_PIP_Tree_Node_artificials ftchild;;
+
+begin
+try
+  let result = ppl_PIP_Problem_solve pip3 in
+  let out = if (result == Optimized_Pip_Problem)
+    then "PIP Problem_solve pip3 test succeeded"
+    else "PIP Problem_solve pip3 test failed"
+      in (print_string_if_noisy out);
+  print_string_if_noisy "\n";
+  let node = ppl_PIP_Problem_solution pip3 in
+  begin
+  let out = if (ppl_PIP_Tree_Node_OK node)
+    then "ppl_PIP_Tree_Node_OK node test succeeded"
+    else "ppl_PIP_Tree_Node_OK node test failed"
+      in (print_string_if_noisy out);
+  print_string_if_noisy "\n";
+  let out = if (ppl_PIP_Tree_Node_is_decision node)
+    then "ppl_PIP_Tree_Node_is_decision node test succeeded"
+    else "ppl_PIP_Tree_Node_is_decision node test failed"
+      in (print_string_if_noisy out);
+  print_string_if_noisy "\n";
+  let out = if (ppl_PIP_Tree_Node_artificials node = [])
+    then "ppl_PIP_Tree_Node_artificials node test succeeded"
+    else "ppl_PIP_Tree_Node_artificials node test failed"
+      in (print_string_if_noisy out);
+  print_string_if_noisy "\n";
+  let _node_cs = ppl_PIP_Tree_Node_constraints node in ();
+  let
+    _fchild = ppl_PIP_Tree_Node_false_child node
+  and
+    tchild = (ppl_PIP_Tree_Node_true_child node)
+  in (
+    let out = if (ppl_PIP_Tree_Node_is_decision tchild)
+      then "ppl_PIP_Tree_Node_is_decision tchild test succeeded"
+      else "ppl_PIP_Tree_Node_is_decision tchild test failed"
+        in (print_string_if_noisy out);
+    print_string_if_noisy "\n";
+    let
+      ttchild = (ppl_PIP_Tree_Node_true_child tchild)
+    and
+      ftchild = (ppl_PIP_Tree_Node_false_child tchild)
+    in (
+      let out = if (ppl_PIP_Tree_Node_is_solution ttchild)
+        then "ppl_PIP_Tree_Node_is_decision ttchild test succeeded"
+        else "ppl_PIP_Tree_Node_is_decision ttchild test failed"
+          in (print_string_if_noisy out);
+      print_string_if_noisy "\n";
+      let _par_vals = ppl_PIP_Tree_Node_parametric_values ttchild 0 in ();
+      let _ftchild_arts = ppl_PIP_Tree_Node_artificials ftchild in ()
+    )
+  );
+  print_string_if_noisy "\n"
+  end
+with PPL_arithmetic_overflow what ->
+  let unexpected = (ppl_Coefficient_bits() != 8)
+  in if (unexpected)
+       then raise (PPL_arithmetic_overflow(what));
+  print_string_if_noisy "Expected overflow exception caught: ";
+  print_string_if_noisy what;
+  print_string_if_noisy "\n"
+end;;
 
 (* Pointset_Powerset_Grid is not enabled by default, the following code is *)
 (* commented *)
