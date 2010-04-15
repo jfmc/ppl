@@ -3505,6 +3505,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   matrix_row_const_reference_type row_s = tableau.s[index];
   matrix_row_const_reference_type row_t = tableau.t[index];
   {
+#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
     matrix_row_const_iterator j = row_s.begin();
     matrix_row_const_iterator j_end = row_s.end();
     if (j != j_end) {
@@ -3515,6 +3516,12 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         mod_assign((*itr).second, (*j).second, den);
       }
     }
+#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
+    matrix_row_unordered_const_iterator j = row_s.unordered_begin();
+    matrix_row_unordered_const_iterator j_end = row_s.unordered_end();
+    for ( ; j != j_end; ++j)
+      mod_assign(cut_s[(*j).first], (*j).second, den);
+#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
   }
   {
     matrix_const_row_const_iterator j = row_t.begin();
