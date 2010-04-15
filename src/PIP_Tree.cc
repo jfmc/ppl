@@ -2771,6 +2771,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         matrix_row_reference_type s_i = tableau.s[i];
         matrix_row_reference_type t_i = tableau.t[i];
         const Coefficient& s_i_pj = s_i.get(pj);
+#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
         matrix_const_row_const_iterator j = t_pivot.begin();
         matrix_const_row_const_iterator j_end = t_pivot.end();
         matrix_row_iterator k_end = t_i.end();
@@ -2857,6 +2858,50 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             }
           }
         }
+#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
+        matrix_const_row_unordered_const_iterator j
+          = t_pivot.unordered_begin();
+        matrix_const_row_unordered_const_iterator j_end
+          = t_pivot.unordered_end();
+        for ( ; j!=j_end; ++j) {
+          const Coefficient& t_pivot_j = (*j).second;
+          // Do nothing if the j-th pivot element is zero.
+          if (t_pivot_j != 0) {
+            product = t_pivot_j * s_i_pj;
+            if (product % s_pivot_pj != 0) {
+              // Must scale matrix to stay in integer case.
+              gcd_assign(gcd, product, s_pivot_pj);
+              exact_div_assign(scale_factor, s_pivot_pj, gcd);
+              tableau.scale(scale_factor);
+              product *= scale_factor;
+            }
+            PPL_ASSERT(product % s_pivot_pj == 0);
+            exact_div_assign(product, product, s_pivot_pj);
+            t_i[(*j).first] -= product;
+
+            // Update row sign.
+            Row_Sign& sign_i = sign[i];
+            switch (sign_i) {
+            case ZERO:
+              if (product > 0)
+                sign_i = NEGATIVE;
+              else if (product < 0)
+                sign_i = POSITIVE;
+              break;
+            case POSITIVE:
+              if (product > 0)
+                sign_i = MIXED;
+              break;
+            case NEGATIVE:
+              if (product < 0)
+                sign_i = MIXED;
+              break;
+            default:
+              break;
+            }
+          }
+        }
+#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
       }
 
       // Compute column s[*][pj] : s[i][pj] /= s_pivot_pj;
