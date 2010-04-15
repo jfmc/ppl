@@ -508,7 +508,7 @@ private:
 
   //! The maximum density of used nodes.
   //! Must be greater than or equal to 0.5 and lower than 1.
-  static const float max_density = 0.5;
+  static const float max_density = 0.9;
 
   //! The minimum density of used nodes.
   //! Must be strictly lower than max_density.
