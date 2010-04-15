@@ -23,10 +23,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_termination_templates_hh
 #define PPL_termination_templates_hh 1
 
+#include "globals.defs.hh"
+#include "Variable.defs.hh"
+#include "Generator.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "C_Polyhedron.defs.hh"
-#include "BD_Shape.defs.hh"
-#include "Octagonal_Shape.defs.hh"
+
+#include <stdexcept>
 
 #define PRINT_DEBUG_INFO 0
 
@@ -301,6 +304,11 @@ all_affine_ranking_functions_MS(const PSET& pset, C_Polyhedron& mu_space) {
     throw std::invalid_argument(s.str());
   }
 
+  if (pset.is_empty()) {
+    mu_space = C_Polyhedron(1 + space_dim/2, UNIVERSE);
+    return;
+  }
+
   using namespace Implementation::Termination;
   Constraint_System cs;
   assign_all_inequalities_approximation(pset, cs);
@@ -324,6 +332,11 @@ all_affine_ranking_functions_MS_2(const PSET& pset_before,
     throw std::invalid_argument(s.str());
   }
 
+  if (pset_before.is_empty()) {
+    mu_space = C_Polyhedron(1 + before_space_dim, UNIVERSE);
+    return;
+  }
+
   using namespace Implementation::Termination;
   Constraint_System cs;
   assign_all_inequalities_approximation(pset_before, pset_after, cs);
@@ -343,6 +356,12 @@ all_affine_quasi_ranking_functions_MS(const PSET& pset,
       << "pset.space_dimension() == " << space_dim
       << " is odd.";
     throw std::invalid_argument(s.str());
+  }
+
+  if (pset.is_empty()) {
+    decreasing_mu_space = C_Polyhedron(1 + space_dim/2, UNIVERSE);
+    bounded_mu_space = decreasing_mu_space;
+    return;
   }
 
   using namespace Implementation::Termination;
@@ -369,6 +388,12 @@ all_affine_quasi_ranking_functions_MS_2(const PSET& pset_before,
       << ", pset_after.space_dimension() == " << after_space_dim
       << ";\nthe latter should be twice the former.";
     throw std::invalid_argument(s.str());
+  }
+
+  if (pset_before.is_empty()) {
+    decreasing_mu_space = C_Polyhedron(1 + before_space_dim, UNIVERSE);
+    bounded_mu_space = decreasing_mu_space;
+    return;
   }
 
   using namespace Implementation::Termination;
@@ -479,6 +504,11 @@ all_affine_ranking_functions_PR_2(const PSET& pset_before,
     throw std::invalid_argument(s.str());
   }
 
+  if (pset_before.is_empty()) {
+    mu_space = NNC_Polyhedron(1 + before_space_dim);
+    return;
+  }
+
   using namespace Implementation::Termination;
   Constraint_System cs_before;
   Constraint_System cs_after;
@@ -498,6 +528,11 @@ all_affine_ranking_functions_PR(const PSET& pset_after,
       << "pset.space_dimension() == " << space_dim
       << " is odd.";
     throw std::invalid_argument(s.str());
+  }
+
+  if (pset_after.is_empty()) {
+    mu_space = NNC_Polyhedron(1 + space_dim/2);
+    return;
   }
 
   using namespace Implementation::Termination;

@@ -128,26 +128,37 @@ test09() {
 
 bool
 test10() {
-  C_Polyhedron ph1(2, EMPTY);
-  C_Polyhedron ph2(4, EMPTY);
+  C_Polyhedron ph_before(2, EMPTY);
+  C_Polyhedron ph_after(4, EMPTY);
   C_Polyhedron c_mu_space;
   NNC_Polyhedron nnc_mu_space;
-  all_affine_ranking_functions_MS(ph1, c_mu_space);
-  all_affine_ranking_functions_MS_2(ph1, ph2, c_mu_space);
-  all_affine_ranking_functions_PR(ph1, nnc_mu_space);
-  all_affine_ranking_functions_PR_2(ph1, ph2, nnc_mu_space);
+  C_Polyhedron c_known_result(3, UNIVERSE);
+  NNC_Polyhedron nnc_known_result(3, UNIVERSE);
+  bool ok = true;
 
-  C_Polyhedron c_known_result(2, EMPTY);
-  c_known_result.add_generator(point());
-  NNC_Polyhedron nnc_known_result(3, EMPTY);
-  nnc_known_result.add_generator(point());
+  all_affine_ranking_functions_MS(ph_after, c_mu_space);
+  ok &= (c_mu_space == c_known_result);
 
-  print_constraints(ph1, "*** ph ***");
-  print_constraints(c_mu_space, "*** c_mu_space ***");
-  print_constraints(nnc_known_result, "*** nnc_known_result ***");
-  print_constraints(nnc_mu_space, "*** nnc_mu_space ***");
+  all_affine_ranking_functions_MS_2(ph_before, ph_after, c_mu_space);
+  ok &= (c_mu_space == c_known_result);
 
-  return ph1.OK() && (nnc_mu_space == nnc_known_result);
+//   all_affine_ranking_functions_PR(ph_after, nnc_mu_space);
+//   ok &= (nnc_mu_space == nnc_known_result);
+
+  all_affine_ranking_functions_PR_2(ph_before, ph_after, nnc_mu_space);
+  ok &= (nnc_mu_space == nnc_known_result);
+
+  print_constraints(ph_after, "*** ph_after ***");
+
+  print_generators(c_known_result.minimized_generators(),
+                   "*** c_known_result ***");
+  print_generators(nnc_known_result.minimized_generators(),
+                   "*** nnc_known_result ***");
+
+  print_generators(c_mu_space.minimized_generators(), "*** c_mu_space ***");
+  print_generators(nnc_mu_space.minimized_generators(), "*** nnc_mu_space ***");
+
+  return ok;
 }
 
 } // namespace
@@ -162,5 +173,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-  DO_TEST_F(test10);
+  DO_TEST(test10);
 END_MAIN

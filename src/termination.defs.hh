@@ -23,8 +23,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_termination_defs_hh
 #define PPL_termination_defs_hh 1
 
-#include "Generator.defs.hh"
-#include "C_Polyhedron.defs.hh"
+#include "Generator.types.hh"
+#include "C_Polyhedron.types.hh"
+#include "NNC_Polyhedron.types.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -408,15 +409,15 @@ all_affine_quasi_ranking_functions_MS_2(const PSET& pset_before,
                                         C_Polyhedron& bounded_mu_space);
 
 /*! \brief
-  Like termination_test_MS() but using an improvement
-  of the method by Podelski and Rybalchenko \ref BMPZ10 "[BMPZ10]".
+  Like termination_test_MS() but using the method by Podelski and
+  Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
 template <typename PSET>
 bool
 termination_test_PR(const PSET& pset);
 
 /*! \brief
-  Like termination_test_MS_2() but using an improvement
+  Like termination_test_MS_2() but using an alternative formalization
   of the method by Podelski and Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
 template <typename PSET>
@@ -424,16 +425,17 @@ bool
 termination_test_PR_2(const PSET& pset_before, const PSET& pset_after);
 
 /*! \brief
-  Like one_affine_ranking_function_MS() but using an improvement
-  of the method by Podelski and Rybalchenko \ref BMPZ10 "[BMPZ10]".
+  Like one_affine_ranking_function_MS() but using the method by Podelski
+  and Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
 template <typename PSET>
 bool
 one_affine_ranking_function_PR(const PSET& pset, Generator& mu);
 
 /*! \brief
-  Like one_affine_ranking_function_MS_2() but using an improvement
-  of the method by Podelski and Rybalchenko \ref BMPZ10 "[BMPZ10]".
+  Like one_affine_ranking_function_MS_2() but using an alternative
+  formalization of the method by Podelski and Rybalchenko
+  \ref BMPZ10 "[BMPZ10]".
 */
 template <typename PSET>
 bool
@@ -442,16 +444,17 @@ one_affine_ranking_function_PR_2(const PSET& pset_before,
 				 Generator& mu);
 
 /*! \brief
-  Like all_affine_ranking_functions_MS() but using an improvement
-  of the method by Podelski and Rybalchenko \ref BMPZ10 "[BMPZ10]".
+  Like all_affine_ranking_functions_MS() but using the method by Podelski
+  and Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
 template <typename PSET>
 void
 all_affine_ranking_functions_PR(const PSET& pset, NNC_Polyhedron& mu_space);
 
 /*! \brief
-  Like all_affine_ranking_functions_MS_2() but using an improvement
-  of the method by Podelski and Rybalchenko \ref BMPZ10 "[BMPZ10]".
+  Like all_affine_ranking_functions_MS_2() but using an alternative
+  formalization of the method by Podelski and Rybalchenko
+  \ref BMPZ10 "[BMPZ10]".
 */
 template <typename PSET>
 void
