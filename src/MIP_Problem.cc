@@ -995,8 +995,8 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       if ((*j).first < tableau_num_columns_minus_1) {
         const dimension_type j_index = (*j).first;
         const Coefficient& cost_j = working_cost[j_index];
-        const Coefficient& tableau_ij = (*j).second;
         if (sgn(cost_j) == cost_sign) {
+          const Coefficient& tableau_ij = (*j).second;
           WEIGHT_BEGIN();
           if (tableau_ij != 0) {
             PPL_ASSERT(tableau_i_base_i != 0);
