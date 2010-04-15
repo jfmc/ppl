@@ -38,12 +38,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #if !PPL_DEBUG_PPL_ASSERT
 #define PPL_ASSERT(cond__) assert(cond__)
 #else
-#define PPL_ASSERT(cond__)				   \
-  do {							   \
-    Parma_Polyhedra_Library::Weightwatch_Traits::Threshold \
-      old_weight__ =					   \
-      Parma_Polyhedra_Library::Weightwatch_Traits::weight; \
-    assert(cond__);					   \
+#define PPL_ASSERT(cond__)				       \
+  do {							       \
+    Parma_Polyhedra_Library::Weightwatch_Traits::Threshold     \
+      old_weight__                                             \
+        = Parma_Polyhedra_Library::Weightwatch_Traits::weight; \
+    assert(cond__);					       \
     assert(old_weight__ == Parma_Polyhedra_Library::Weightwatch_Traits::weight &&   \
 	   "PPL_ASSERT_HEAVY have to be used here");	   \
   } while(0)

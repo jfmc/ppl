@@ -122,6 +122,15 @@ PPL::Linear_Row::linear_combine(const Linear_Row& y, const dimension_type k) {
 }
 
 bool
+PPL::Linear_Row::is_zero() const {
+  const Linear_Row& x = *this;
+  for (dimension_type i = x.size(); i-- > 0; )
+    if (x[i] != 0)
+      return false;
+  return true;
+}
+
+bool
 PPL::Linear_Row::all_homogeneous_terms_are_zero() const {
   const Linear_Row& x = *this;
   for (dimension_type i = x.size(); --i > 0; )

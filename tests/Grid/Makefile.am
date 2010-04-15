@@ -78,6 +78,7 @@ contains1 \
 containsintegerpoint1 \
 discrete1 \
 disjoint1 \
+dropnonintegerpoints1 \
 equals1 \
 expandspacedim1 \
 foldspacedims1 \
@@ -187,6 +188,8 @@ containsintegerpoint1_SOURCES = containsintegerpoint1.cc
 discrete1_SOURCES = discrete1.cc
 
 disjoint1_SOURCES = disjoint1.cc
+
+dropnonintegerpoints1_SOURCES = dropnonintegerpoints1.cc
 
 equals1_SOURCES = equals1.cc
 

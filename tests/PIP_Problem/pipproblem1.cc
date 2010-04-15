@@ -755,6 +755,31 @@ test25() {
   return ok;
 }
 
+bool
+test26() {
+  // Problem generating a solution node with two context constraints.
+  Variable x(0);
+  Variable y(1);
+  Variable p(2);
+  Variable q(3);
+  Variables_Set params(p, q);
+
+  Constraint_System cs;
+  cs.insert(x + p <= 2);
+  cs.insert(y + q <= 1);
+
+  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+
+  bool ok = (pip.solve() == OPTIMIZED_PIP_PROBLEM);
+  if (ok) {
+    const PIP_Tree solution = pip.solution();
+    ok &= solution->OK();
+    pip.print_solution(nout);
+  }
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -783,4 +808,5 @@ BEGIN_MAIN
   DO_TEST_F8(test23);
   DO_TEST(test24);
   DO_TEST(test25);
+  DO_TEST(test26);
 END_MAIN

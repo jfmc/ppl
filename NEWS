@@ -4,11 +4,84 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.11  (released date to be decided)
+NEWS for version 0.11  (to be released on May 8, 2010)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
+
+o  New class PIP_Problem provides a Parametric Integer Programming
+   (PIP) problem solver (mainly based on P. Feautrier's
+   specification).  The implementation combines a parametric dual
+   simplex algorithm using exact arithmetic with Gomory's cut
+   generation.  Still under beta testing.
+
+o  New "deterministic" timeout computation facilities: it is now
+   possible to set computational bounds (on the library calls taking
+   exponential time) that do not depend on the actual elapsed time and
+   hence are independent from the actual computation environment (CPU,
+   operating system, etc.).  Still under beta testing.
+
+o  New support for termination analysis via the automatic synthesis of
+   linear ranking functions.  Given a sound approximation of a loop,
+   the PPL provides methods to decide whether that approximation
+   admits a linear ranking function (possibly obtaining one as a
+   witness for termination) and to compute the space of all such
+   functions.  In addition, methods are provided to obtain the space
+   of all linear quasi-ranking functions, for use in conditional
+   termination analysis.  Still under beta testing.
+
+o  All the PPL semantic objects provide new methods
+
+     void drop_some_non_integer_points(Complexity_Class)
+     void drop_some_non_integer_points(const Variables_Set&,
+                                       Complexity_Class)
+
+   which possibly tighten the object by dropping some points with
+   non-integer coordinates (for the space dimensions corresponding to
+   `vars'), within a certain computational complexity bound.
+
+o  New Linear_Expression methods
+
+     bool is_zero() const
+     bool all_homogeneous_terms_are_zero() const
+
+   return true if and only if `*this' is 0, and if and only if all the
+   homogeneous terms of `*this' are 0, respectively.
+
+o  New Linear_Expression methods
+
+     void add_mul_assign(Coefficient_traits::const_reference c, Variable v)
+     void sub_mul_assign(Coefficient_traits::const_reference c, Variable v)
+
+   assign linear expression *this + c * v (resp., *this - c * v) to *this,
+   while avoiding the allocation of a temporary Linear_Expression.
+
+o  For the PPL semantic objects, other than the Pointset_Powerset and
+   Partially_Reduced Product, there is a new method:
+
+     bool frequency(const Linear_Expression& expr,
+                    Coefficient& freq_n, Coefficient& freq_d,
+                    Coefficient& val_n, Coefficient& val_d)
+
+   This operator computes both the "frequency" (f = freq_n/freq_d)
+   and a value (v = val_n/val_d)  closest to zero so that every point
+   in the object satisfies the congruence (expr %= v) / f.
+
+o  New reduction operator "Shape_Preserving_Reduction" has been added
+   to the Partially_Reduced_Product abstraction.  This operator is
+   aimed at the product of a grid and a shape domain, allowing the
+   bounds of the shape to shrink to touch the points of the grid,
+   such that the new bounds are parallel to the old bounds.
+
+o  The Java interface has to be explicitly initialized before use by
+   calling static method Parma_Polyhedra_Library.initialize_library().
+   Initialization makes more explicit the exact point where PPL
+   floating point rounding mode is set; it also allows for the caching
+   of Java classes and field/method IDs, thereby reducing the overhead
+   of native method callbacks.
+
+o  The C and Java interfaces now support timeout computation facilities.
 
 o  Implementation of general (C and NNC) polyhedra speeded up.
 
@@ -20,27 +93,12 @@ o  When the PPL has been configured with
 o  New configure option --with-gmp-prefix supersedes the (now removed)
    options --with-libgmp-prefix and --with-libgmpxx-prefix.
 
-o  New "deterministic" timeout computation facilities: it is now possible
-   to set computational bounds (on the library calls taking exponential time)
-   that do not depend on the actual elapsed time and hence are independent
-   from the actual computation environment (CPU, operating system, etc.).
-   Still under alpha testing.
-
-o  The Java interface has to be explicitly initialized before use by
-   calling static method Parma_Polyhedra_Library.initialize_library().
-   Initialization makes more explicit the exact point where PPL
-   floating point rounding mode is set; it also allows for the caching
-   of Java classes and field/method IDs, thereby reducing the overhead
-   of native method callbacks.
-
-o  The C and Java interfaces now support timeout computation facilities.
-
 o  New configuration option `--with-gmp-build=DIR' allows to use a
    non-installed build of GMP in DIR.
 
 
-Deprecated and removed methods
-------------------------------
+Deprecated and Removed Methods
+==============================
 
 o  All methods having a name ending in `_and_minimize' (e.g.,
    add_constraints_and_minimize, poly_hull_assign_and_minimize, ...)
@@ -403,8 +461,8 @@ o  The methods
    (i.e., it has no constraints, generators, congruences or grid-generators,
    respectively).
 
-Deprecated and removed methods
-------------------------------
+Deprecated and Removed Methods
+==============================
 
 o  As all PPL semantic objects can now be constructed from boxes,
    the constructors

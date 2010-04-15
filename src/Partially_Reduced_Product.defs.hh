@@ -232,7 +232,7 @@ public:
   This reduction method includes the congruences reduction.
   This class uses the minimized constraints defining each of the components.
   For each of the constraints, it checks the frequency and value for the same
-  linear expression in other component. If the constraint does not satisfy
+  linear expression in the other component. If the constraint does not satisfy
   the implied congruence, the inhomogeneous term is adjusted so that it does.
   Note that unless the congruences reduction adds equalitites
   the shapes of the domains are unaltered.
@@ -1356,6 +1356,39 @@ public:
   */
   void widening_assign(const Partially_Reduced_Product& y,
                        unsigned* tp = NULL);
+
+  /*! \brief
+    Possibly tightens \p *this by dropping some points with non-integer
+    coordinates.
+
+    \param complexity
+    The maximal complexity of any algorithms used.
+
+    \note
+    Currently there is no optimality guarantee, not even if
+    \p complexity is <CODE>ANY_COMPLEXITY</CODE>.
+  */
+  void drop_some_non_integer_points(Complexity_Class complexity
+                                    = ANY_COMPLEXITY);
+
+  /*! \brief
+    Possibly tightens \p *this by dropping some points with non-integer
+    coordinates for the space dimensions corresponding to \p vars.
+
+    \param vars
+    Points with non-integer coordinates for these variables/space-dimensions
+    can be discarded.
+
+    \param complexity
+    The maximal complexity of any algorithms used.
+
+    \note
+    Currently there is no optimality guarantee, not even if
+    \p complexity is <CODE>ANY_COMPLEXITY</CODE>.
+  */
+  void drop_some_non_integer_points(const Variables_Set& vars,
+                                    Complexity_Class complexity
+                                    = ANY_COMPLEXITY);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 

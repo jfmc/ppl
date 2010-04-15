@@ -152,6 +152,12 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
+    contains one or more equality constraints.
+  */
+  bool has_equalities() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
     contains one or more strict inequality constraints.
   */
   bool has_strict_inequalities() const;

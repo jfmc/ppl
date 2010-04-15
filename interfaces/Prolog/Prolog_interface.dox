@@ -50,6 +50,7 @@ The structure of this section is as follows:
     - \ref predicate_descriptions "Predicate Descriptions"
         - \ref di_predicates "Domain Independent Predicates"
         - \ref mip_predicates "MIP Predicates"
+        - \ref pip_predicates "PIP Predicates"
         - \ref Polyhedron_predicates "Predicates for C Polyhedra"
         - \ref other_domains "Ad hoc Predicates for Other Domains"
 - \ref PI_Compilation "Compilation and Installation"
@@ -105,8 +106,9 @@ on the use of the interface.
     a simple domain.
   - The product domains consist of
     Direct_Product_S_T,
-    Smash_Product_S_T and
-    Constraints_Product_S_T where S
+    Smash_Product_S_T,
+    Constraints_Product_S_T and
+    Shape_Preserving_Product_S_T where S
     and T are simple domains.
 - In the following, any of the above numerical
   abstract domains  is called a PPL <EM>domain</EM>
@@ -296,6 +298,11 @@ The specification uses the following grammar rules:
              --> []
 	    | [Grid_Generator | Grid_Generator_System]
 
+ Artificial_Parameter  --> Lin_Expr / Coeff
+
+ Artificial_Parameter_List --> []
+	    | [Artificial_Parameter | Artificial_Parameter_List]
+
  Atom        --> Prolog atom
 
  Universe_or_Empty			PPL object
@@ -317,18 +324,31 @@ The specification uses the following grammar rules:
  P_Func      --> []    			list of map relations
             | [Vars_Pair | P_Func].
 
+ Width  --> bits_8 | bits_16 | bits_32 | bits_64 | bits_128
+
+ Representation  --> unsigned | signed_2_complement
+
+ Overflow  --> overflow_wraps | overflow_undefined | overflow_impossible
+
  Optimization_Mode --> max | min
 
- MIP_Problem_Status --> unfeasible
+ Problem_Status --> unfeasible
             | unbounded
             | optimized
 
- Control_Parameter_Name --> pricing     for MIP problems
+ Control_Parameter_Name --> pricing            for MIP problems
+                        | control_strategy     for PIP problems
+                        | pivot_row_strategy   for PIP problems
 
- Control_Parameter_Value                for MIP problems
+ Control_Parameter_Value
              --> pricing_steepest_edge_float
             | pricing_steepest_edge_exact
             | pricing_textbook
+            | control_strategy_first
+            | control_strategy_deepest
+            | control_strategy_all
+            | pivot_row_strategy_first
+            | pivot_row_strategy_max_column
 
  Vars_List   --> []    			list of PPL variables
             | [PPL_Var | Vars_List].
@@ -368,6 +388,11 @@ that are included with all instantiations of the Prolog interfaces.
   information about the PPL version, the licensing, the lack of any
   warranty whatsoever, the C++ compiler used to build the library,
   where to report bugs and where to look for further information.</EM>
+
+<P><CODE> ppl_Coefficient_bits </CODE><BR>
+
+  <EM>Unifies the argument with the number of bits used to encode a
+  Coefficient in the C++ interface; 0 if unbounded.</EM>
 
 <P><CODE> ppl_Coefficient_is_bounded </CODE><BR>
 
@@ -706,6 +731,244 @@ defining mixed integer (linear) programming problems.
    <CODE>Handle</CODE> is well formed, i.e., if it
    satisfies all its implementation invariants.
    Useful for debugging purposes.</EM>
+
+<BR>
+
+\anchor pip_predicates
+<H3> PIP Predicates </H3>
+Here we describe some functions available for PPL objects
+defining parametric integer programming problems.
+
+<P><CODE>
+  ppl_new_PIP_Problem_from_space_dimension(+Dimension_Type, -Handle)
+</CODE><BR>
+
+   <EM>Creates a PIP Problem \f$\mathrm{PIP}\f$ with the
+   feasible region the vector space of dimension <CODE>dimension</CODE>,
+   empty constraint_system and empty set of parametric variables.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{PIP}\f$.</EM>
+
+<P><CODE>
+  ppl_new_PIP_Problem(+Constraint_System, +Lin_Expr, +Vars_List,
+                      -Handle)
+</CODE><BR>
+
+   <EM>Creates a PIP Problem \f$\mathrm{PIP}\f$ having space
+   dimension <CODE>dimension</CODE>, a feasible region represented by
+   <CODE>constraint_system</CODE> and parametric variables represented
+   by <CODE>Vars_List</CODE>.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{PIP}\f$.</EM>
+
+<P><CODE>
+  ppl_new_PIP_Problem_from_PIP_Problem(+Handle_1, -Handle_2)
+</CODE><BR>
+   <EM>Creates a PIP Problem \f$\mathrm{PIP}\f$ from the PIP Problem
+   referenced by \c Handle_1.
+   \c Handle_2 is unified with the handle for \f$\mathrm{PIP}\f$.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_swap(+Handle_1, +Handle_2)
+</CODE><BR>
+   <EM>Swaps the PIP Problem referenced by <CODE>Handle_1</CODE>
+   with the one referenced by <CODE>Handle_2</CODE>.</EM>
+
+<P><CODE>
+  ppl_delete_PIP_Problem(+Handle)
+</CODE><BR>
+   <EM>Deletes the PIP Problem referenced by <CODE>Handle</CODE>.
+   After execution,
+   <CODE>Handle</CODE> is no longer a valid handle for a PPL PIP Problem.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_space_dimension(+Handle, ?Dimension_Type)
+</CODE><BR>
+   <EM>Unifies the dimension of the vector space in which the
+   PIP Problem referenced by <CODE>Handle</CODE> is embedded
+   with <CODE>Dimension_Type</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_parameter_space_dimensions(+Handle, ?Vars_List)
+</CODE><BR>
+   <EM>Unifies <CODE>Vars_List</CODE> with a list of variables representing
+   the parameter space dimensions of the PIP Problem
+   referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_constraints(+Handle, ?Constraint_System)
+</CODE><BR>
+   <EM>Unifies <CODE>Constraint_System</CODE> with a list of
+   the constraints in the constraints system
+   representing the feasible region for the PIP Problem
+   referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_clear(+Handle)
+</CODE><BR>
+  <EM>Resets the PIP problem referenced by <CODE>Handle</CODE>
+  to be the trivial problem with
+  the feasible region the \f$0\f$-dimensional universe.</EM>
+
+<P><CODE> ppl_PIP_Problem_add_space_dimensions_and_embed(
+             +Handle, +Dimension_Type1, +Dimension_Type2)
+ </CODE><BR>
+   <EM>Embeds the PIP problem referenced by <CODE>handle</CODE>
+   in a space that is enlarged by <CODE>dimension1</CODE> non-parameter
+   dimensions and <CODE>dimension2</CODE> parameter dimensions.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_add_to_parameter_space_dimensions(+Handle, +Vars_List)
+</CODE><BR>
+   <EM>Updates the PIP Problem referenced by <CODE>Handle</CODE>
+   so that the variables in <CODE>Vars_List</CODE> are added to
+   the set of parameter space dimensions.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_add_constraint(+Handle, +Constraint)
+</CODE><BR>
+   <EM>Updates the PIP Problem referenced by <CODE>Handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with the constraint <CODE>Constraint</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_add_constraints(+Handle, +Constraint_System)
+</CODE><BR>
+   <EM>Updates the PIP Problem referenced by <CODE>Handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with all the constraints in
+   <CODE>Constraint_System</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_set_big_parameter_dimension(+Handle, +Dimension_Type)
+</CODE><BR>
+
+   <EM>Updates the PIP Problem referenced by <CODE>Handle</CODE>
+       so that the dimension for the big parameter is \p Dimension_Type.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_has_big_parameter_dimension(+Handle, +Dimension_Type)
+</CODE><BR>
+   <EM>Succeeds if and only if the PIP Problem referenced by
+       <CODE>Handle</CODE> has a dimension \p dim for the big parameter
+       and \p Dimension_Type unifies with \p dim.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_is_satisfiable(+Handle)
+</CODE><BR>
+  <EM>Succeeds if and only if the PIP Problem referenced by
+  <CODE>Handle</CODE> is satisfiable.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_solve(+Handle, ?PIP_Problem_Status)
+</CODE><BR>
+  <EM>Solves the PIP problem  referenced by
+  <CODE>Handle</CODE> and unifies <CODE>PIP_Problem_Status</CODE>
+  with:
+  <CODE>unfeasible</CODE>, if the PIP problem is not satisfiable;
+  <CODE>optimized</CODE>, if the PIP problem admits an optimal solution.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_solution(+Handle1, ?Handle2)
+</CODE><BR>
+  <EM>Solves the PIP problem referenced by <CODE>Handle1</CODE> and
+  creates a PIP tree node \f$\mathrm{Node}\f$ representing this a solution
+  if it exists and bottom otherwise
+  \c Handle_2 is unified with the handle for \f$\mathrm{Sol}\f$.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_optimizing_solution(+Handle, ?PIP_Tree_Node)
+</CODE><BR>
+  <EM>Solves the PIP problem referenced by <CODE>Handle1</CODE> and
+  creates a PIP tree node \f$\mathrm{Node}\f$ representing this an optimizing
+  solution if a solution exists and bottom otherwise
+  \c Handle_2 is unified with the handle for \f$\mathrm{Sol}\f$.</EM>
+
+<P><CODE>ppl_PIP_Problem_ascii_dump(+Handle)</CODE><BR>
+  <EM>Dumps an ascii representation of the PPL internal state for
+  the PIP problem referenced by \c Handle on the standard output.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_OK(+Handle)
+</CODE><BR>
+   <EM>Succeeds only if the PIP Problem referenced by
+   <CODE>Handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants.
+   Useful for debugging purposes.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_swap(+Handle_1, +Handle_2)
+</CODE><BR>
+   <EM>Swaps the PIP tree node referenced by <CODE>Handle_1</CODE>
+   with the one referenced by <CODE>Handle_2</CODE>.</EM>
+
+<P><CODE>ppl_PIP_Tree_Node_ascii_dump(+Handle)</CODE><BR>
+  <EM>Dumps an ascii representation of the PPL internal state for
+  the PIP tree node referenced by \c Handle on the standard output.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_OK(+Handle)
+</CODE><BR>
+   <EM>Succeeds only if the PIP tree node referenced by
+   <CODE>Handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants.
+   Useful for debugging purposes.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_constraints(+Handle, ?Constraint_System)
+</CODE><BR>
+   <EM>Unifies <CODE>Constraint_System</CODE> with a list of
+   the parameter constraints in the PIP tree node
+   referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_artificials(+Handle, ?Artificial_Parameter_List)
+</CODE><BR>
+   <EM>Unifies <CODE>Artificial_Parameter_List</CODE> with a list of
+   the artificial parameters in the PIP tree node
+   referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_is_bottom(+Handle)
+</CODE><BR>
+   <EM>Succeeds if and only if <CODE>handle</CODE> represents bottom.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_is_decision(+Handle)
+</CODE><BR>
+   <EM>Succeeds if and only if <CODE>handle</CODE> represents
+   a decision node.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_is_solution(+Handle)
+</CODE><BR>
+   <EM>Succeeds if and only if <CODE>handle</CODE> represents
+   a solution node.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_parametric_values(+Handle, +Var, ?Lin_Expr)
+</CODE><BR>
+   <EM>Unifies \p Lin_Expr with a linear expression representing
+   the values of problem variable \p Var in the solution node
+   represented by <CODE>Handle</CODE>.
+   The  linear expression may involve problem parameters
+   as well as artificial parameters.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_true_child(+Handle1, ?Handle2)
+</CODE><BR>
+  <EM>If the PIP_Tree_Node represented by \p Handle1 is a decision node
+   unifies the PIP tree node referenced by <CODE>Handle2</CODE>
+   with the child on the true branch of the
+   PIP tree node represented by <CODE>Handle1</CODE>.
+   An exception is thrown if this is not a decision node.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_false_child(+Handle1, ?Handle2)
+</CODE><BR>
+  <EM>If the PIP_Tree_Node represented by \p Handle1 is a decision node
+   unifies the PIP tree node referenced by <CODE>Handle2</CODE>
+   with the child on the false branch of the
+   PIP tree node represented by <CODE>Handle1</CODE>.
+   An exception is thrown if this is not a decision node.</EM>
 
 <BR>
 

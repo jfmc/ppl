@@ -132,6 +132,9 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/stdiobuf.defs.hh \
                          @srcdir@/../src/stdiobuf.inlines.hh \
                          @srcdir@/../src/stdiobuf.cc \
+                         @srcdir@/../src/termination.defs.hh \
+                         @srcdir@/../src/termination.templates.hh \
+                         @srcdir@/../src/termination.cc \
                          @srcdir@/../src/Topology.hh \
                          @srcdir@/../src/Row.types.hh \
                          @srcdir@/../src/Row.defs.hh \

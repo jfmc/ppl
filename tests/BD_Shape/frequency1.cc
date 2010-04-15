@@ -243,6 +243,25 @@ test09() {
   return ok;
 }
 
+// Non-relational test of an empty bd_shape in 1-dimension.
+bool
+test10() {
+  Variable A(0);
+
+  TBD_Shape bds(1);
+  bds.add_constraint(A <= 0);
+  bds.add_constraint(A >= 1);
+
+  Coefficient num;
+  Coefficient den;
+  Coefficient valn;
+  Coefficient vald;
+  bool ok = (!bds.frequency(Linear_Expression(A), num, den, valn, vald));
+  print_constraints(bds, "*** bds ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -255,4 +274,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

@@ -124,6 +124,8 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_constrains/2,
         ppl_Polyhedron_unconstrain_space_dimension/2,
         ppl_Polyhedron_unconstrain_space_dimensions/2,
+        ppl_termination_test_C_Polyhedron_MS/1,
+        ppl_termination_test_C_Polyhedron_PR/1,
 	ppl_new_MIP_Problem_from_space_dimension/2,
 	ppl_new_MIP_Problem/5,
 	ppl_new_MIP_Problem_from_MIP_Problem/2,

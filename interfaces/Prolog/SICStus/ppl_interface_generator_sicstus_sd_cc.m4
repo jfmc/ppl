@@ -139,6 +139,63 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
   return name(arg1, arg2, arg3, arg4, arg5, arg6); \
 }
 
+#define SP_STUB_7(name) \
+extern "C" Prolog_foreign_return_type \
+sp_stub_##name(Prolog_term_ref goal, void*) { \
+  Prolog_term_ref arg1 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(1, goal, arg1)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg2 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(2, goal, arg2)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg3 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(3, goal, arg3)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg4 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(4, goal, arg4)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg5 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(5, goal, arg5)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg6 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(6, goal, arg6)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg7 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(7, goal, arg7)) \
+    return PROLOG_FAILURE; \
+  return name(arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+}
+
+#define SP_STUB_8(name) \
+extern "C" Prolog_foreign_return_type \
+sp_stub_##name(Prolog_term_ref goal, void*) { \
+  Prolog_term_ref arg1 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(1, goal, arg1)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg2 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(2, goal, arg2)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg3 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(3, goal, arg3)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg4 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(4, goal, arg4)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg5 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(5, goal, arg5)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg6 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(6, goal, arg6)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg7 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(7, goal, arg7)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg8 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(8, goal, arg8)) \
+    return PROLOG_FAILURE; \
+  return name(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+}
+
 m4_divert(1)
 #define SP_DEFINE_C_PREDICATE(name, arity) \
   SP_define_c_predicate(#name, arity, "user", sp_stub_##name, NULL)

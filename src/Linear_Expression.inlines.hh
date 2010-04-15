@@ -82,6 +82,16 @@ Linear_Expression::inhomogeneous_term() const {
   return Linear_Row::inhomogeneous_term();
 }
 
+inline bool
+Linear_Expression::is_zero() const {
+  return Linear_Row::is_zero();
+}
+
+inline bool
+Linear_Expression::all_homogeneous_terms_are_zero() const {
+  return Linear_Row::all_homogeneous_terms_are_zero();
+}
+
 inline const Linear_Expression&
 Linear_Expression::zero() {
   PPL_ASSERT(zero_p != 0);

@@ -106,6 +106,7 @@ ppl_java_common.cc \
 ppl_java_globals.cc
 
 nodist_EXTRA_libppl_java_la_SOURCES = \
+ppl_java_Termination.cc \
 ppl_java_Int8_Box.cc \
 ppl_java_Int16_Box.cc \
 ppl_java_Int32_Box.cc \
@@ -179,12 +180,14 @@ ppl_java_Constraints_Product_Grid_C_Polyhedron.cc \
 ppl_java_Constraints_Product_Grid_NNC_Polyhedron.cc
 
 libppl_java_la_LIBADD = \
+ppl_java_Termination.lo \
 @required_instantiations_java_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
 $(WATCHDOG_LIBRARY) \
 @extra_libraries@
 
 libppl_java_la_DEPENDENCIES = \
+ppl_java_Termination.lo \
 @required_instantiations_java_cxx_objects@
 
 ppl_java_implementation_domains.cc.stamp: $(interface_generator_dependencies)
@@ -198,6 +201,7 @@ ppl_java_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 	echo timestamp >$@
 
 CLEANFILES = \
+ppl_java_Termination.cc \
 @required_instantiations_java_cxx_sources@ \
 ppl_java_implementation_domains.cc.stamp
 

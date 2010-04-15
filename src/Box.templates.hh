@@ -1383,7 +1383,7 @@ Box<ITV>::frequency(const Linear_Expression& expr,
   }
 
   // For an empty Box, we simply return false.
-  if (marked_empty())
+  if (is_empty())
     return false;
 
   // The Box has at least 1 dimension and is not empty.
@@ -1669,18 +1669,24 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
 
 template <typename ITV>
 void
-Box<ITV>::drop_some_non_integer_points(Complexity_Class complexity) {
+Box<ITV>::drop_some_non_integer_points(Complexity_Class) {
   if (std::numeric_limits<typename ITV::boundary_type>::is_integer
       && !ITV::info_type::store_open)
     return;
 
-  // FIXME(0.11): complete.
+  if (marked_empty())
+    return;
+
+  for (dimension_type k = seq.size(); k-- > 0; )
+    seq[k].drop_some_non_integer_points();
+
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>
 void
 Box<ITV>::drop_some_non_integer_points(const Variables_Set& vars,
-                                       Complexity_Class complexity) {
+                                       Complexity_Class) {
   // Dimension-compatibility check.
   const dimension_type min_space_dim = vars.space_dimension();
   if (space_dimension() < min_space_dim)
@@ -1691,7 +1697,14 @@ Box<ITV>::drop_some_non_integer_points(const Variables_Set& vars,
       && !ITV::info_type::store_open)
     return;
 
-  // FIXME(0.11): complete.
+  if (marked_empty())
+    return;
+
+  for (Variables_Set::const_iterator v_i = vars.begin(),
+         v_end = vars.end(); v_i != v_end; ++v_i)
+    seq[*v_i].drop_some_non_integer_points();
+
+  PPL_ASSERT(OK());
 }
 
 template <typename ITV>

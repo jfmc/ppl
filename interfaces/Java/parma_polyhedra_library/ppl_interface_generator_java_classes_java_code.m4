@@ -236,6 +236,16 @@ ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
 
 ')
 
+m4_define(`ppl_@CLASS@_frequency_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
+    public native boolean frequency(Linear_Expression expr,
+				   Coefficient freq_n, Coefficient freq_d,
+				   Coefficient val_n, Coefficient val_d);
+
+')
+
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `dnl
 ___END_OF_FILE___
@@ -414,12 +424,12 @@ m4_define(`ppl_@CLASS@_wrap_assign_code',
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
     public native void wrap_assign(Variables_Set vars,
-				Bounded_Integer_Type_Width w,
-				Bounded_Integer_Type_Representation r,
-                                Bounded_Integer_Type_Overflow o,
-                                Constraint_System cs,
-                                Integer complexity_threshold,
-                                Boolean wrap_individually);
+				   Bounded_Integer_Type_Width w,
+				   Bounded_Integer_Type_Representation r,
+                                   Bounded_Integer_Type_Overflow o,
+                                   Constraint_System cs,
+                                   long complexity_threshold,
+                                   boolean wrap_individually);
 
 ')
 
@@ -491,8 +501,7 @@ m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `dnl
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
-    public native void remove_higher_space_dimensions(long
-						      new_dimension);
+    public native void remove_higher_space_dimensions(long new_dimension);
 
 ')
 
@@ -510,6 +519,24 @@ ___END_OF_FILE___
 ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
     public native void fold_space_dimensions(Variables_Set vars,
 					     Variable dest);
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
+    public native void drop_some_non_integer_points
+      (Integer complexity_threshold);
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
+    public native void drop_some_non_integer_points_2
+      (Variables_Set vars, Integer complexity_threshold);
 
 ')
 
@@ -650,4 +677,76 @@ ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
       approximate_@PARTITION@(@CLASS@ p,
                             @CLASS@ q,
                             By_Reference<Boolean> finite);
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native boolean
+      termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(@TOPOLOGY@@CLASS@ p);
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native boolean
+      termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+        (@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after);
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native boolean
+      one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+        (@TOPOLOGY@@CLASS@ p, Generator g);
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native boolean
+      one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+        (@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after, Generator g);
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native void
+      all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
+        (@TOPOLOGY@@CLASS@ p, Polyhedron ph);
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native void
+      all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
+        (@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after, Polyhedron ph);
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native void
+      all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@
+        (@TOPOLOGY@@CLASS@ p, Polyhedron ph_decreasing, Polyhedron ph_bounded);
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ Termination.java << ___END_OF_FILE___
+    public static native void
+      all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2
+        (@TOPOLOGY@@CLASS@ p_before, @TOPOLOGY@@CLASS@ p_after,
+         Polyhedron ph_decreasing, Polyhedron ph_bounded);
 ')

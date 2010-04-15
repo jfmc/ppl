@@ -535,6 +535,25 @@ public:
     return u >= l;
   }
 
+  void drop_some_non_integer_points() {
+    if (is_empty())
+      return;
+    if (lower_is_open() && !lower_is_boundary_infinity()) {
+      add_assign_r(lower(), lower(), Boundary(1), ROUND_DOWN);
+      floor_assign_r(lower(), lower(), ROUND_DOWN);
+      info().set_boundary_property(LOWER, OPEN, false);
+    }
+    else
+      ceil_assign_r(lower(), lower(), ROUND_DOWN);
+    if (upper_is_open() && !upper_is_boundary_infinity()) {
+      sub_assign_r(upper(), upper(), Boundary(1), ROUND_UP);
+      ceil_assign_r(upper(), upper(), ROUND_UP);
+      info().set_boundary_property(UPPER, OPEN, false);
+    }
+    else
+      floor_assign_r(upper(), upper(), ROUND_UP);
+  }
+
   template <typename From>
   typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
   wrap_assign(Bounded_Integer_Type_Width w,

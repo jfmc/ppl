@@ -45,6 +45,7 @@ Test_Executor.java \
 C_Polyhedron_test1.java \
 NNC_Polyhedron_test1.java \
 MIP_Problem_test1.java \
+PIP_Problem_test1.java \
 Parma_Polyhedra_Library_test1.java \
 Parma_Polyhedra_Library_test2.java \
 PPL_Test.java \
@@ -59,6 +60,7 @@ Test_Executor.java \
 C_Polyhedron_test1.java \
 NNC_Polyhedron_test1.java \
 MIP_Problem_test1.java \
+PIP_Problem_test1.java \
 Parma_Polyhedra_Library_test1.java \
 Parma_Polyhedra_Library_test2.java \
 PPL_Test.java
@@ -92,6 +94,7 @@ check-local: ppl_java_generated_tests.java
 	$(java_test_environment) C_Polyhedron_test1
 	$(java_test_environment) NNC_Polyhedron_test1
 	$(java_test_environment) MIP_Problem_test1
+	$(java_test_environment) PIP_Problem_test1
 	$(java_test_environment) Parma_Polyhedra_Library_test1
 	$(java_test_environment) Parma_Polyhedra_Library_test2
 

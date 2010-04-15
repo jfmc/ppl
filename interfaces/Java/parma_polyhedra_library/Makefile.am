@@ -33,6 +33,8 @@ ppl_interface_generator_java_classes_java.m4 \
 ppl_interface_generator_java_classes_java_code.m4
 
 fixed_java_cxx_headers = \
+parma_polyhedra_library.Artificial_Parameter \
+parma_polyhedra_library.Artificial_Parameter_Sequence \
 parma_polyhedra_library.Bounded_Integer_Type_Overflow \
 parma_polyhedra_library.Bounded_Integer_Type_Representation \
 parma_polyhedra_library.Bounded_Integer_Type_Width \
@@ -62,15 +64,25 @@ parma_polyhedra_library.MIP_Problem \
 parma_polyhedra_library.MIP_Problem_Status \
 parma_polyhedra_library.Optimization_Mode \
 parma_polyhedra_library.Pair \
+parma_polyhedra_library.PIP_Problem \
+parma_polyhedra_library.PIP_Problem_Control_Parameter_Name \
+parma_polyhedra_library.PIP_Problem_Control_Parameter_Value \
+parma_polyhedra_library.PIP_Problem_Status \
+parma_polyhedra_library.PIP_Decision_Node \
+parma_polyhedra_library.PIP_Solution_Node \
+parma_polyhedra_library.PIP_Tree_Node \
 parma_polyhedra_library.Parma_Polyhedra_Library \
 parma_polyhedra_library.Poly_Con_Relation \
 parma_polyhedra_library.Poly_Gen_Relation \
 parma_polyhedra_library.PPL_Object \
 parma_polyhedra_library.Relation_Symbol \
+parma_polyhedra_library.Termination \
 parma_polyhedra_library.Variable \
 parma_polyhedra_library.Variables_Set
 
 fixed_java_cxx_headers_sources = \
+parma_polyhedra_library_Artificial_Parameter.h \
+parma_polyhedra_library_Artificial_Parameter_Sequence.h \
 parma_polyhedra_library_Bounded_Integer_Type_Overflow.h \
 parma_polyhedra_library_Bounded_Integer_Type_Representation.h \
 parma_polyhedra_library_Bounded_Integer_Type_Width.h \
@@ -101,15 +113,25 @@ parma_polyhedra_library_MIP_Problem_Status.h \
 parma_polyhedra_library_Optimization_Mode.h \
 parma_polyhedra_library_Pair.h \
 parma_polyhedra_library_Parma_Polyhedra_Library.h \
+parma_polyhedra_library_PIP_Problem.h \
+parma_polyhedra_library_PIP_Problem_Control_Parameter_Name.h \
+parma_polyhedra_library_PIP_Problem_Control_Parameter_Value.h \
+parma_polyhedra_library_PIP_Problem_Status.h \
+parma_polyhedra_library_PIP_Decision_Node.h \
+parma_polyhedra_library_PIP_Solution_Node.h \
+parma_polyhedra_library_PIP_Tree_Node.h \
 parma_polyhedra_library_Poly_Con_Relation.h \
 parma_polyhedra_library_Poly_Gen_Relation.h \
 parma_polyhedra_library_PPL_Object.h \
 parma_polyhedra_library_Relation_Symbol.h \
+parma_polyhedra_library_Termination.h \
 parma_polyhedra_library_Variable.h \
 parma_polyhedra_library_Variables_Set.h
 
 # NOTE: do _NOT_ add Fake_Class_for_Doxygen.java to this list.
 fixed_java_sources = \
+$(srcdir)/Artificial_Parameter.java \
+$(srcdir)/Artificial_Parameter_Sequence.java \
 $(srcdir)/Bounded_Integer_Type_Overflow.java \
 $(srcdir)/Bounded_Integer_Type_Representation.java \
 $(srcdir)/Bounded_Integer_Type_Width.java \
@@ -146,6 +168,13 @@ $(srcdir)/MIP_Problem_Status.java \
 $(srcdir)/Optimization_Mode.java \
 $(srcdir)/Overflow_Error_Exception.java \
 $(srcdir)/Pair.java \
+$(srcdir)/PIP_Problem.java \
+$(srcdir)/PIP_Problem_Control_Parameter_Name.java \
+$(srcdir)/PIP_Problem_Control_Parameter_Value.java \
+$(srcdir)/PIP_Problem_Status.java \
+$(srcdir)/PIP_Decision_Node.java \
+$(srcdir)/PIP_Solution_Node.java \
+$(srcdir)/PIP_Tree_Node.java \
 $(srcdir)/Parma_Polyhedra_Library.java \
 $(srcdir)/Partial_Function.java \
 $(srcdir)/Poly_Con_Relation.java \
@@ -159,7 +188,8 @@ $(srcdir)/Variables_Set.java
 # NOTE: do _NOT_ add Fake_Class_for_Doxygen.java to this list.
 all_java_sources = \
 $(fixed_java_sources) \
-$(required_instantiations_java_sources)
+$(required_instantiations_java_sources) \
+Termination.java
 
 # NOTE: Fake_Class_for_Doxygen.java should be added here.
 EXTRA_DIST = \
@@ -188,8 +218,8 @@ java_classes.stamp: $(all_java_sources)
 
 java_cxx_headers.stamp: java_classes.stamp
 	$(JAVAH) -classpath .. \
-		$(fixed_java_cxx_headers) \
-		$(required_instantiations_java_cxx_headers)
+                 $(fixed_java_cxx_headers) \
+                 $(required_instantiations_java_cxx_headers)
 	echo timestamp >$@
 
 source_generation.stamp: $(interface_generator_dependencies)
@@ -204,6 +234,8 @@ source_generation.stamp: $(interface_generator_dependencies)
 
 $(required_instantiations_java_sources): source_generation.stamp
 
+Termination.java: source_generation.stamp
+
 CLEANFILES = \
 $(required_instantiations_java_sources) \
 $(required_instantiations_java_classes) \
@@ -212,6 +244,9 @@ $(fixed_java_cxx_headers_sources) \
 java_classes.stamp \
 java_cxx_headers.stamp \
 source_generation.stamp \
+Termination.java \
+Artificial_Parameter.class \
+Artificial_Parameter_Sequence.class \
 Bounded_Integer_Type_Overflow.class \
 Bounded_Integer_Type_Representation.class \
 Bounded_Integer_Type_Width.class \
@@ -250,10 +285,18 @@ Overflow_Error_Exception.class \
 Pair.class \
 Parma_Polyhedra_Library.class \
 Partial_Function.class \
+PIP_Problem.class \
+PIP_Problem_Control_Parameter_Name.class \
+PIP_Problem_Control_Parameter_Value.class \
+PIP_Problem_Status.class \
+PIP_Decision_Node.class \
+PIP_Solution_Node.class \
+PIP_Tree_Node.class \
 Poly_Con_Relation.class \
 Poly_Gen_Relation.class \
 PPL_Object.class \
 Relation_Symbol.class \
+Termination.class \
 Timeout_Exception.class \
 Variable.class \
 Variables_Set.class

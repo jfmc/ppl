@@ -71,6 +71,7 @@ dimension1 \
 directproduct1 \
 discrete1 \
 disjoint1 \
+dropsomenonintegerpoints1 \
 equals1 \
 frombdshape1 \
 frombox1 \
@@ -145,6 +146,8 @@ directproduct1_SOURCES = directproduct1.cc
 discrete1_SOURCES = discrete1.cc
 
 disjoint1_SOURCES = disjoint1.cc
+
+dropsomenonintegerpoints1_SOURCES = dropsomenonintegerpoints1.cc
 
 equals1_SOURCES = equals1.cc
 

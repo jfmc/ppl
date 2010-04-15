@@ -480,7 +480,8 @@ m4_define(`m4_box_group',
    Uint8_Box, Uint16_Box, Uint32_Box, Uint64_Box')
 m4_define(`m4_pointset_powerset_group', Pointset_Powerset)
 m4_define(`m4_product_group',
-  `Direct_Product, Smash_Product, Constraints_Product')
+  `Direct_Product, Smash_Product, Constraints_Product,
+   Shape_Preserving_Product')
 
 dnl =====================================================================
 dnl ===== The next set of macros define the replacements            =====
@@ -530,7 +531,8 @@ point,
 constrainer,
 disjunct,
 disjunct_topology,
-disjunct_extrapolation')
+disjunct_extrapolation,
+termination_id')
 
 dnl ---------------------------------------------------------------------
 dnl Define the replacement macros for all patterns
@@ -984,3 +986,10 @@ m4_define(`m4_membytes_replacements',
    `external_memory_in_bytes, total_memory_in_bytes')
 m4_define(`m4_Pointset_Powerset_membytes_replacements',
    `m4_membytes_replacements, size')
+
+dnl  The termination algorithms are either sourced from MS or PR.
+m4_define(`m4_termination_id_replacements', `MS, PR')
+
+dnl If sourced from MS, the last argument is C_Polyhedron,
+dnl If sourced from PR, the last argument is NNC_Polyhedron.
+m4_define(`m4_a_termination_id_replacements', `C_, NNC_')

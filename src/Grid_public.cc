@@ -2685,7 +2685,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   // Dimension-compatibility check of `*pcs', if any.
   if (pcs != 0) {
    const dimension_type pcs_space_dim  = pcs->space_dimension();
-   if (pcs->space_dimension() != space_dim)
+   if (pcs->space_dimension() > space_dim)
      throw_dimension_incompatible("wrap_assign(vs, ...)", pcs_space_dim);
   }
 
@@ -2851,7 +2851,49 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
       }
     }
   }
-  return;
+}
+
+// FIXME(0.11): Check if this is the correct interpretation of the
+//              specification.
+// By adding integral congruences for each dimension to the congruence system,
+// defining \p *this, the grid will keep only those points that have integral
+// coordinates. All points in \p *this with non-integral coordinates are
+// removed.
+void
+PPL::Grid::drop_some_non_integer_points(Complexity_Class) {
+  if (marked_empty() || space_dim == 0)
+    return;
+
+  for (dimension_type i = space_dim; i-- > 0; )
+    add_congruence(Variable(i) %= 0);
+
+  PPL_ASSERT(OK());
+}
+
+// FIXME(0.11): Check if this is the correct interpretation of the
+//              specification.
+// By adding the integral congruences for each dimension in vars
+// to the congruence system defining \p *this, the grid will keep
+// only those points that have integer coordinates for all the
+// dimensions in vars. All points in \p *this with non-integral coordinates
+// for the dimensions in vars are removed.
+void
+PPL::Grid::drop_some_non_integer_points(const Variables_Set& vars,
+                                        Complexity_Class) {
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = vars.space_dimension();
+  if (space_dimension() < min_space_dim)
+    throw_dimension_incompatible("drop_some_non_integer_points(vs, cmpl)",
+                                 min_space_dim);
+
+  if (marked_empty() || min_space_dim == 0)
+    return;
+
+  for (Variables_Set::const_iterator i = vars.begin(),
+         vars_end = vars.end(); i != vars.end(); ++i)
+    add_congruence(Variable(*i) %= 0);
+
+  PPL_ASSERT(OK());
 }
 
 

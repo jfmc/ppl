@@ -172,6 +172,12 @@ Linear_Expression&
 add_mul_assign(Linear_Expression& e,
                Coefficient_traits::const_reference n, Variable v);
 
+//! Returns the linear expression \p e - \p n * \p v and assigns it to \p e.
+/*! \relates Linear_Expression */
+Linear_Expression&
+sub_mul_assign(Linear_Expression& e,
+               Coefficient_traits::const_reference n, Variable v);
+
 namespace IO_Operators {
 
 //! Output operator.
@@ -322,6 +328,15 @@ public:
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
+  bool is_zero() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if all the homogeneous
+    terms of \p *this are \f$0\f$.
+  */
+  bool all_homogeneous_terms_are_zero() const;
+
   //! Initializes the class.
   static void initialize();
 
@@ -459,6 +474,9 @@ private:
 
   friend Linear_Expression&
   add_mul_assign(Linear_Expression& e,
+                 Coefficient_traits::const_reference n, Variable v);
+  friend Linear_Expression&
+  sub_mul_assign(Linear_Expression& e,
                  Coefficient_traits::const_reference n, Variable v);
 
   friend std::ostream&

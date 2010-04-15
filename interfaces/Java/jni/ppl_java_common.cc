@@ -39,6 +39,8 @@ Java_Class_Cache::Java_Class_Cache() {
   Long = NULL;
   Iterator = NULL;
   // PPL classes.
+  Artificial_Parameter = NULL;
+  Artificial_Parameter_Sequence = NULL;
   Bounded_Integer_Type_Overflow = NULL;
   Bounded_Integer_Type_Representation = NULL;
   Bounded_Integer_Type_Width = NULL;
@@ -64,6 +66,9 @@ Java_Class_Cache::Java_Class_Cache() {
   MIP_Problem_Status = NULL;
   Optimization_Mode = NULL;
   Pair = NULL;
+  PIP_Problem_Control_Parameter_Name = NULL;
+  PIP_Problem_Control_Parameter_Value = NULL;
+  PIP_Problem_Status = NULL;
   Poly_Con_Relation = NULL;
   Poly_Gen_Relation = NULL;
   PPL_Object = NULL;
@@ -93,6 +98,10 @@ Java_Class_Cache::init_cache(JNIEnv* env) {
   init_cache(env, Long, "java/lang/Long");
   init_cache(env, Iterator, "java/util/Iterator");
   // PPL classes.
+  init_cache(env, Artificial_Parameter,
+             "parma_polyhedra_library/Artificial_Parameter");
+  init_cache(env, Artificial_Parameter_Sequence,
+             "parma_polyhedra_library/Artificial_Parameter_Sequence");
   init_cache(env, Bounded_Integer_Type_Overflow, "parma_polyhedra_library/Bounded_Integer_Type_Overflow");
   init_cache(env, Bounded_Integer_Type_Representation, "parma_polyhedra_library/Bounded_Integer_Type_Representation");
   init_cache(env, Bounded_Integer_Type_Width, "parma_polyhedra_library/Bounded_Integer_Type_Width");
@@ -132,6 +141,12 @@ Java_Class_Cache::init_cache(JNIEnv* env) {
   init_cache(env, Optimization_Mode,
              "parma_polyhedra_library/Optimization_Mode");
   init_cache(env, Pair, "parma_polyhedra_library/Pair");
+  init_cache(env, PIP_Problem_Control_Parameter_Name,
+             "parma_polyhedra_library/PIP_Problem_Control_Parameter_Name");
+  init_cache(env, PIP_Problem_Control_Parameter_Value,
+             "parma_polyhedra_library/PIP_Problem_Control_Parameter_Value");
+  init_cache(env, PIP_Problem_Status,
+             "parma_polyhedra_library/PIP_Problem_Status");
   init_cache(env, Poly_Con_Relation,
              "parma_polyhedra_library/Poly_Con_Relation");
   init_cache(env, Poly_Gen_Relation,
@@ -160,6 +175,8 @@ Java_Class_Cache::clear_cache(JNIEnv* env) {
   clear_cache(env, Long);
   clear_cache(env, Iterator);
   // PPL classes.
+  clear_cache(env, Artificial_Parameter);
+  clear_cache(env, Artificial_Parameter_Sequence);
   clear_cache(env, Bounded_Integer_Type_Overflow);
   clear_cache(env, Bounded_Integer_Type_Representation);
   clear_cache(env, Bounded_Integer_Type_Width);
@@ -184,6 +201,7 @@ Java_Class_Cache::clear_cache(JNIEnv* env) {
   clear_cache(env, Linear_Expression_Variable);
   clear_cache(env, MIP_Problem_Status);
   clear_cache(env, Optimization_Mode);
+  clear_cache(env, PIP_Problem_Status);
   clear_cache(env, Pair);
   clear_cache(env, Poly_Con_Relation);
   clear_cache(env, Poly_Gen_Relation);
@@ -373,20 +391,28 @@ build_cxx_congruence(JNIEnv* env, jobject j_congruence) {
   return (lhs %= rhs) / ppl_modulus;
 }
 
+PIP_Tree_Node::Artificial_Parameter
+build_cxx_artificial_parameter(JNIEnv* env, jobject j_artificial_parameter) {
+  jobject j_le
+    = env->GetObjectField(j_artificial_parameter,
+                          cached_FMIDs.Artificial_Parameter_le_ID);
+  jobject j_den
+    = env->GetObjectField(j_artificial_parameter,
+                          cached_FMIDs.Artificial_Parameter_den_ID);
+  PPL_DIRTY_TEMP_COEFFICIENT(ppl_den);
+  ppl_den = build_cxx_coeff(env, j_den);
+  Linear_Expression le = build_cxx_linear_expression(env, j_le);
+  PIP_Tree_Node::Artificial_Parameter art_param(le, ppl_den);
+  return art_param;
+}
+
 jobject
-bool_to_j_boolean(JNIEnv* env, const bool value) {
+bool_to_j_boolean_class(JNIEnv* env, const bool value) {
   jobject ret = env->CallStaticObjectMethod(cached_classes.Boolean,
                                             cached_FMIDs.Boolean_valueOf_ID,
                                             value);
   CHECK_EXCEPTION_ASSERT(env);
   return ret;
-}
-
-bool
-j_boolean_to_bool(JNIEnv* env, jobject j_boolean) {
-  bool b = env->CallIntMethod(j_boolean, cached_FMIDs.Boolean_boolValue_ID);
-  CHECK_EXCEPTION_ASSERT(env);
-  return b;
 }
 
 jobject
@@ -576,6 +602,23 @@ build_java_mip_status(JNIEnv* env, const MIP_Problem_Status& mip_status) {
 }
 
 jobject
+build_java_pip_status(JNIEnv* env, const PIP_Problem_Status& pip_status) {
+  jfieldID fID;
+  switch (pip_status) {
+  case UNFEASIBLE_PIP_PROBLEM:
+    fID = cached_FMIDs.PIP_Problem_Status_UNFEASIBLE_PIP_PROBLEM_ID;
+    break;
+  case OPTIMIZED_PIP_PROBLEM:
+    fID = cached_FMIDs.PIP_Problem_Status_OPTIMIZED_PIP_PROBLEM_ID;
+    break;
+  default:
+    assert(false);
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+  return env->GetStaticObjectField(cached_classes.PIP_Problem_Status, fID);
+}
+
+jobject
 build_java_optimization_mode(JNIEnv* env, const Optimization_Mode& opt_mode) {
   jfieldID fID;
   switch (opt_mode) {
@@ -675,6 +718,112 @@ build_java_control_parameter_value
   }
   jfieldID fID = env->GetStaticFieldID(j_cp_value_class, field_name,
                                        "Lparma_polyhedra_library/Control_Parameter_Value;");
+  CHECK_RESULT_ASSERT(env, fID);
+  return env->GetStaticObjectField(j_cp_value_class, fID);
+}
+
+PIP_Problem::Control_Parameter_Name
+build_cxx_pip_problem_control_parameter_name(JNIEnv* env, jobject j_cp_name) {
+  jclass cp_name_class = env->GetObjectClass(j_cp_name);
+  CHECK_RESULT_ASSERT(env, cp_name_class);
+  jmethodID cp_name_ordinal_id
+    = env->GetMethodID(cp_name_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, cp_name_ordinal_id);
+  jint cp_name = env->CallIntMethod(j_cp_name, cp_name_ordinal_id);
+  CHECK_EXCEPTION_ASSERT(env);
+  switch (cp_name) {
+  case 0:
+    return PIP_Problem::CUTTING_STRATEGY;
+  case 1:
+    return PIP_Problem::PIVOT_ROW_STRATEGY;
+  default:
+    assert(false);
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+}
+
+jobject
+build_pip_problem_java_control_parameter_name
+(JNIEnv* env, const PIP_Problem::Control_Parameter_Name& cp_name) {
+  jclass j_cp_name_class
+    = env->FindClass("parma_polyhedra_library/PIP_Problem_Control_Parameter_Name");
+  CHECK_RESULT_ASSERT(env, j_cp_name_class);
+  jfieldID cp_name_cutting_strategy_get_id
+    = env->GetStaticFieldID(j_cp_name_class, "CUTTING_STRATEGY",
+			    "Lparma_polyhedra_library/PIP_Problem_Control_Parameter_Name;");
+  CHECK_RESULT_ASSERT(env, cp_name_cutting_strategy_get_id);
+  jfieldID cp_name_pivot_row_strategy_get_id
+    = env->GetStaticFieldID(j_cp_name_class, "PIVOT_ROW_STRATEGY",
+			    "Lparma_polyhedra_library/PIP_Problem_Control_Parameter_Name;");
+  CHECK_RESULT_ASSERT(env, cp_name_pivot_row_strategy_get_id);
+  switch (cp_name) {
+  case PIP_Problem::CUTTING_STRATEGY:
+    return env->GetStaticObjectField(j_cp_name_class,
+				     cp_name_cutting_strategy_get_id);
+  case PIP_Problem::PIVOT_ROW_STRATEGY:
+    return env->GetStaticObjectField(j_cp_name_class,
+				     cp_name_pivot_row_strategy_get_id);
+  default:
+    assert(false);
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+}
+
+PIP_Problem::Control_Parameter_Value
+build_cxx_pip_problem_control_parameter_value(JNIEnv* env, jobject j_cp_value) {
+  jclass cp_value_class = env->GetObjectClass(j_cp_value);
+  CHECK_RESULT_ASSERT(env, cp_value_class);
+  jmethodID cp_value_ordinal_id
+    = env->GetMethodID(cp_value_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, cp_value_ordinal_id);
+  jint cp_value = env->CallIntMethod(j_cp_value, cp_value_ordinal_id);
+  CHECK_EXCEPTION_ASSERT(env);
+  switch (cp_value) {
+  case 0:
+    return PIP_Problem::CUTTING_STRATEGY_FIRST;
+  case 1:
+    return PIP_Problem::CUTTING_STRATEGY_DEEPEST;
+  case 2:
+    return PIP_Problem::CUTTING_STRATEGY_ALL;
+  case 3:
+    return PIP_Problem::PIVOT_ROW_STRATEGY_FIRST;
+  case 4:
+    return PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN;
+  default:
+    assert(false);
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+}
+
+jobject
+build_java_pip_problem_control_parameter_value
+(JNIEnv* env, const PIP_Problem::Control_Parameter_Value& cp_value) {
+  jclass j_cp_value_class
+    = env->FindClass("parma_polyhedra_library/PIP_Problem_Control_Parameter_Value");
+  CHECK_RESULT_ASSERT(env, j_cp_value_class);
+  const char* field_name;
+  switch (cp_value) {
+  case PIP_Problem::CUTTING_STRATEGY_FIRST:
+    field_name = "CUTTING_STRATEGY_FIRST";
+    break;
+  case PIP_Problem::CUTTING_STRATEGY_DEEPEST:
+    field_name = "CUTTING_STRATEGY_DEEPEST";
+    break;
+  case PIP_Problem::CUTTING_STRATEGY_ALL:
+    field_name = "CUTTING_STRATEGY_ALL";
+    break;
+  case PIP_Problem::PIVOT_ROW_STRATEGY_FIRST:
+    field_name = "PIVOT_ROW_STRATEGY_FIRST";
+    break;
+  case PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN:
+    field_name = "PIVOT_ROW_STRATEGY_MAX_COLUMN";
+    break;
+  default:
+    assert(false);
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+  jfieldID fID = env->GetStaticFieldID(j_cp_value_class, field_name,
+                                       "Lparma_polyhedra_library/PIP_Problem_Control_Parameter_Value;");
   CHECK_RESULT_ASSERT(env, fID);
   return env->GetStaticObjectField(j_cp_value_class, fID);
 }
@@ -1012,7 +1161,7 @@ build_java_constraint_system(JNIEnv* env, const Constraint_System& cs) {
                                 cached_FMIDs.Constraint_System_init_ID);
   CHECK_RESULT_THROW(env, j_cs);
   for (Constraint_System::const_iterator v_begin = cs.begin(),
- 	 v_end = cs.end(); v_begin != v_end; ++v_begin) {
+	 v_end = cs.end(); v_begin != v_end; ++v_begin) {
     jobject j_constraint = build_java_constraint(env, *v_begin);
     env->CallBooleanMethod(j_cs,
                            cached_FMIDs.Constraint_System_add_ID,
@@ -1028,7 +1177,7 @@ build_java_generator_system(JNIEnv* env, const Generator_System& gs) {
                                 cached_FMIDs.Generator_System_init_ID);
   CHECK_RESULT_THROW(env, j_gs);
   for (Generator_System::const_iterator v_begin = gs.begin(),
- 	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
+	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
     jobject j_generator = build_java_generator(env, *v_begin);
     env->CallBooleanMethod(j_gs,
                            cached_FMIDs.Generator_System_add_ID,
@@ -1045,7 +1194,7 @@ build_java_grid_generator_system(JNIEnv* env,
                                 cached_FMIDs.Grid_Generator_System_init_ID);
   CHECK_RESULT_THROW(env, j_gs);
   for (Grid_Generator_System::const_iterator v_begin = gs.begin(),
- 	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
+	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
     jobject j_generator = build_java_grid_generator(env, *v_begin);
     env->CallBooleanMethod(j_gs,
                            cached_FMIDs.Grid_Generator_System_add_ID,
@@ -1061,7 +1210,7 @@ build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs) {
                                  cached_FMIDs.Congruence_System_init_ID);
   CHECK_RESULT_THROW(env, j_cgs);
   for (Congruence_System::const_iterator v_begin = cgs.begin(),
-  	 v_end = cgs.end(); v_begin != v_end; ++v_begin) {
+	 v_end = cgs.end(); v_begin != v_end; ++v_begin) {
     jobject j_congruence = build_java_congruence(env,*v_begin);
     env->CallBooleanMethod(j_cgs,
                            cached_FMIDs.Congruence_System_add_ID,
@@ -1069,6 +1218,18 @@ build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs) {
     CHECK_EXCEPTION_THROW(env);
   }
   return j_cgs;
+}
+
+jobject
+build_java_artificial_parameter
+(JNIEnv* env, const PIP_Tree_Node::Artificial_Parameter& art) {
+  jobject j_le = build_linear_expression(env, art);
+  jobject j_den = build_java_coeff(env, art.denominator());
+  jobject ret = env->NewObject(cached_classes.Artificial_Parameter,
+                               cached_FMIDs.Artificial_Parameter_init_ID,
+			       j_le, j_den);
+  CHECK_RESULT_THROW(env, ret);
+  return ret;
 }
 
 } // namespace Java

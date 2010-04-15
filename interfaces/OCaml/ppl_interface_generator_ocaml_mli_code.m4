@@ -178,6 +178,20 @@ val ppl_@CLASS@_expand_space_dimension:
   @!CLASS@ -> int -> int -> unit
 ')
 
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+`dnl
+val ppl_@CLASS@_drop_some_non_integer_points:
+  @!CLASS@ -> complexity_class -> unit
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+`dnl
+val ppl_@CLASS@_drop_some_non_integer_points_2:
+  @!CLASS@ -> int list -> complexity_class -> unit
+
+')
+
 m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
 `dnl
 val ppl_@CLASS@_get_@CLASS_REPRESENT@s:
@@ -319,6 +333,14 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
 val ppl_@CLASS@_@MAXMIN@_with_point:
   @!CLASS@ -> linear_expression
   -> bool * Z.t * Z.t * bool * linear_generator
+
+')
+
+m4_define(`ppl_@CLASS@_frequency_code',
+`dnl
+val ppl_@CLASS@_frequency:
+  @!CLASS@ -> linear_expression
+  -> bool * Z.t * Z.t * Z.t * Z.t
 
 ')
 
@@ -478,5 +500,73 @@ m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
 val ppl_@CLASS@_approximate_@PARTITION@:
   @!CLASS@ -> @!CLASS@ ->
     @!CLASS@ * pointset_powerset_grid * bool
+
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+val ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@:
+  @!CLASS@ -> bool
+
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+val ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
+  @!CLASS@ -> @!CLASS@ -> bool
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+val ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@:
+  @!CLASS@ -> bool * linear_generator
+
+')
+
+m4_define(`ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+val ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
+  @!CLASS@ -> @!CLASS@ -> bool * linear_generator
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`dnl
+val ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@:
+  @!CLASS@ -> polyhedron
+
+')
+
+m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+val ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
+  @!CLASS@ -> @!CLASS@ -> polyhedron
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+`dnl
+val ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@:
+  @!CLASS@ -> polyhedron * polyhedron
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+val ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2:
+  @!CLASS@ -> @!CLASS@ -> polyhedron * polyhedron
+
+')
+
+m4_define(`ppl_@CLASS@_wrap_assign_code',
+`dnl
+val ppl_@CLASS@_wrap_assign: @!CLASS@
+                             -> int list
+                             -> bounded_integer_type_width
+                             -> bounded_integer_type_representation
+                             -> bounded_integer_type_overflow
+                             -> constraint_system
+                             -> int -> int -> unit
 
 ')

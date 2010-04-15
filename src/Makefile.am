@@ -346,6 +346,8 @@ Partially_Reduced_Product.templates.hh \
 Weight_Profiler.defs.hh \
 max_space_dimension.hh \
 algorithms.hh \
+termination.defs.hh \
+termination.templates.hh \
 wrap_assign.hh \
 wrap_string.hh \
 Floating_Point_Expression.types.hh \
@@ -465,6 +467,7 @@ version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
 swapping_sort.icc \
+termination.cc \
 wrap_string.cc
 #Pointset_Ask_Tell.cc
 
@@ -520,8 +523,20 @@ CREDITS.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
 
 else !HAVE_PERL
 
-ppl.hh:	ppl.hh.dist
-	cp -f $< $@
+ppl.hh.sed: Makefile
+	@echo "/^\/\* BEGIN ppl-config.h \*\/$$/ {"    >$@
+	@echo "  r $(top_builddir)/ppl-config.h"      >>$@
+	@echo "  : loop"                              >>$@
+	@echo "  /\n\/\* END ppl-config.h \*\/$$/ !{" >>$@
+	@echo "    N"                                 >>$@
+	@echo "    b loop"                            >>$@
+	@echo "  }"                                   >>$@
+	@echo "  d"                                   >>$@
+	@echo "}"                                     >>$@
+
+ppl.hh:	ppl.hh.dist ppl.hh.sed
+	$(SED) -f ppl.hh.sed $< >$@
+	rm -f ppl.hh.sed
 
 BUGS.cc:	BUGS.cc.dist
 	cp -f $< $@

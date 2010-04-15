@@ -95,6 +95,33 @@ yap_stub_##name() { \
   return name(arg1, arg2, arg3, arg4, arg5, arg6); \
 }
 
+#define YAP_STUB_7(name) \
+extern "C" Prolog_foreign_return_type \
+yap_stub_##name() { \
+  Prolog_term_ref arg1 = YAP_ARG1; \
+  Prolog_term_ref arg2 = YAP_ARG2; \
+  Prolog_term_ref arg3 = YAP_ARG3; \
+  Prolog_term_ref arg4 = YAP_ARG4; \
+  Prolog_term_ref arg5 = YAP_ARG5; \
+  Prolog_term_ref arg6 = YAP_ARG6; \
+  Prolog_term_ref arg7 = YAP_ARG7; \
+  return name(arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+}
+
+#define YAP_STUB_8(name) \
+extern "C" Prolog_foreign_return_type \
+yap_stub_##name() { \
+  Prolog_term_ref arg1 = YAP_ARG1; \
+  Prolog_term_ref arg2 = YAP_ARG2; \
+  Prolog_term_ref arg3 = YAP_ARG3; \
+  Prolog_term_ref arg4 = YAP_ARG4; \
+  Prolog_term_ref arg5 = YAP_ARG5; \
+  Prolog_term_ref arg6 = YAP_ARG6; \
+  Prolog_term_ref arg7 = YAP_ARG7; \
+  Prolog_term_ref arg8 = YAP_ARG8; \
+  return name(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+}
+
 dnl
 dnl Place here YAP_STUB macros.
 dnl

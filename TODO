@@ -1,41 +1,9 @@
 
-Enhancements for PPL 0.11
-=========================
-
-- Handle std::logic_error (now thrown in case watchdogs are not
-  available) in all the interfaces.
-- Make all the *affine*image() methods uniform as far as the
-  specification is concerned.
-- Look carefully at http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42115
-- Lack of perl can cause more problems than explained in the warning
-  message given by our configuration procedure.  See, e.g.,
-  http://www.cs.unipr.it/pipermail/ppl-devel/2009-November/015758.html
-- Complete the ppl_pips man page.
-
-
-Commits to consider should we release PPL 0.10.3
-================================================
-
-b4dcb2959e3cc7b74aaa9f20c865b848e206818b
-(Fixed PPL_SPECIALIZE_LIMITS_INT.)
-
-9a08d1d3a98ca1af8ff0cb94017888528c6875a7
-(No longer use CS and PS as template parameter names.)
-
-e3460918400e04cf24fda33ff0cf9d18a95840b8
-(Updated from Gnulib.)
-
-b94dc7951129d065d858b6dbd932eac59a643f96
-(We cannot test the Java interface unless ENABLE_SHARED.)
-
-1c8a74aea14bce95dc1916df66995dd5a163eb2b
-(New configuration option `--with-gmp-build=DIR'.
-This allows to use a non-installed build of GMP in DIR.)
-
-
 Enhancements for PPL 0.12 or later versions
 ===========================================
 
+- Make all the *affine*image() methods uniform as far as the
+  specification is concerned.
 - Add the domain of circular linear progressions.
 - Finish the domain of intervals.
 - Intervals are best instantiated with checked numbers with

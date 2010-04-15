@@ -50,6 +50,8 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
+termination1 \
+termination2 \
 hybrid \
 addcongruence1 \
 addcongruences1 \
@@ -80,6 +82,7 @@ constraints1 \
 contains1 contains2 \
 containsintegerpoint1 \
 disjoint1 disjoint2 \
+dropsomenonintegerpoints1 dropsomenonintegerpoints2 \
 dualhypercubes \
 empty1 \
 equals1 \
@@ -168,6 +171,7 @@ nnc_constraints1 \
 nnc_contains1 \
 nnc_containsintegerpoint1 \
 nnc_disjoint1 \
+nnc_dropsomenonintegerpoints1 \
 nnc_empty1 \
 nnc_equals1 \
 nnc_exceptions1 nnc_exceptions3 \
@@ -211,6 +215,10 @@ nnc_writepolyhedron1
 #
 # Sources for the tests
 #
+
+termination1_SOURCES = termination1.cc
+
+termination2_SOURCES = termination2.cc
 
 hybrid_SOURCES = hybrid.cc
 
@@ -284,6 +292,9 @@ containsintegerpoint1_SOURCES = containsintegerpoint1.cc
 
 disjoint1_SOURCES = disjoint1.cc
 disjoint2_SOURCES = disjoint2.cc
+
+dropsomenonintegerpoints1_SOURCES = dropsomenonintegerpoints1.cc
+dropsomenonintegerpoints2_SOURCES = dropsomenonintegerpoints2.cc
 
 dualhypercubes_SOURCES = dualhypercubes.cc
 
@@ -513,6 +524,9 @@ nnc_containsintegerpoint1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_disjoint1_SOURCES = disjoint1.cc
 nnc_disjoint1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_dropsomenonintegerpoints1_SOURCES = dropsomenonintegerpoints1.cc
+nnc_dropsomenonintegerpoints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_empty1_SOURCES = empty1.cc
 nnc_empty1_CXXFLAGS = $(DERIVED_CXXFLAGS)

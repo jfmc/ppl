@@ -102,6 +102,19 @@ type congruence_system = linear_congruence list
 type relation_symbol = Less_Than_RS | Less_Or_Equal_RS | Equal_RS
                        | Greater_Than_RS | Greater_Or_Equal_RS
 
+type bounded_integer_type_overflow = Overflow_Wraps
+                                     | Overflow_Undefined
+                                     | Overflow_Impossible
+
+type bounded_integer_type_representation = Unsigned
+                                           | Signed_2_Complement
+
+type bounded_integer_type_width = Bits_8
+                                  | Bits_16
+                                  | Bits_32
+                                  | Bits_64
+                                  | Bits_128
+
 type complexity_class = Polynomial_Complexity
                         | Simplex_Complexity
                         | Any_Complexity
@@ -114,8 +127,8 @@ type mip_problem_status = Unfeasible_Mip_Problem | Unbounded_Mip_Problem
 type control_parameter_name = Pricing
 
 type control_parameter_value = Pricing_Steepest_Edge_Float
-                               | Pricing_Steepest_Edge_Exact
-                               | Pricing_Textbook
+                             | Pricing_Steepest_Edge_Exact
+                             | Pricing_Textbook
 
 type mip_problem
 
@@ -143,6 +156,9 @@ string -> int -> int -> int -> string = "ppl_io_wrap_string"
 external ppl_max_space_dimension:
 unit -> int = "ppl_max_space_dimension"
 
+external ppl_Coefficient_bits:
+unit -> int = "ppl_Coefficient_bits"
+
 external ppl_Coefficient_is_bounded:
 unit -> bool = "ppl_Coefficient_is_bounded"
 
@@ -151,6 +167,13 @@ unit -> Z.t = "ppl_Coefficient_max"
 
 external ppl_Coefficient_min:
 unit -> Z.t = "ppl_Coefficient_min"
+
+external ppl_Linear_Expression_is_zero:
+linear_expression -> bool = "ppl_Linear_Expression_is_zero"
+
+external ppl_Linear_Expression_all_homogeneous_terms_are_zero:
+linear_expression -> bool
+      = "ppl_Linear_Expression_all_homogeneous_terms_are_zero"
 
 external ppl_set_rounding_for_PPL:
 unit -> unit = "ppl_set_rounding_for_PPL"
@@ -272,3 +295,143 @@ external ppl_MIP_Problem_swap:
 external ppl_MIP_Problem_ascii_dump:
   mip_problem -> string
       = "ppl_MIP_Problem_ascii_dump"
+
+
+type pip_problem_status = Unfeasible_Pip_Problem
+                        | Optimized_Pip_Problem
+
+type pip_problem_control_parameter_name = Cutting_Strategy | Pivot_Row_Strategy
+
+type pip_problem_control_parameter_value = Cutting_Strategy_First
+                                         | Cutting_Strategy_Deepest
+                                         | Cutting_Strategy_All
+                                         | Pivot_Row_Strategy_First
+                                         | Pivot_Row_Strategy_Max_Column
+
+type artificial_parameter = linear_expression * Z.t
+
+type pip_tree_node
+
+type pip_problem
+
+external ppl_new_PIP_Problem_from_space_dimension:
+  int -> pip_problem = "ppl_new_PIP_Problem_from_space_dimension"
+
+external ppl_new_PIP_Problem:
+  int -> constraint_system -> int list -> pip_problem
+    = "ppl_new_PIP_Problem"
+
+external ppl_PIP_Problem_space_dimension:
+  pip_problem -> int = "ppl_PIP_Problem_space_dimension"
+
+external ppl_PIP_Problem_parameter_space_dimensions:
+  pip_problem -> int list = "ppl_PIP_Problem_parameter_space_dimensions"
+
+external ppl_PIP_Problem_constraints:
+  pip_problem -> constraint_system = "ppl_PIP_Problem_constraints"
+
+external ppl_PIP_Problem_add_space_dimensions_and_embed:
+  pip_problem -> int -> int -> unit
+      = "ppl_PIP_Problem_add_space_dimensions_and_embed"
+
+external ppl_PIP_Problem_add_to_parameter_space_dimensions:
+  pip_problem -> int list -> unit
+      = "ppl_PIP_Problem_add_to_parameter_space_dimensions"
+
+external ppl_PIP_Problem_add_constraint:
+  pip_problem -> linear_constraint -> unit
+      = "ppl_PIP_Problem_add_constraint"
+
+external ppl_PIP_Problem_add_constraints:
+  pip_problem -> constraint_system -> unit
+      = "ppl_PIP_Problem_add_constraints"
+
+external ppl_PIP_Problem_is_satisfiable:
+  pip_problem -> bool
+      = "ppl_PIP_Problem_is_satisfiable"
+
+external ppl_PIP_Problem_solve:
+  pip_problem -> pip_problem_status
+      = "ppl_PIP_Problem_solve"
+
+external ppl_PIP_Problem_solution:
+  pip_problem -> pip_tree_node
+      = "ppl_PIP_Problem_solution"
+
+external ppl_PIP_Problem_optimizing_solution:
+  pip_problem -> pip_tree_node
+      = "ppl_PIP_Problem_optimizing_solution"
+
+external ppl_PIP_Problem_get_big_parameter_dimension:
+  pip_problem -> int = "ppl_PIP_Problem_get_big_parameter_dimension"
+
+external ppl_PIP_Problem_has_big_parameter_dimension:
+  pip_problem -> bool = "ppl_PIP_Problem_has_big_parameter_dimension"
+
+external ppl_PIP_Problem_set_big_parameter_dimension:
+  pip_problem -> int -> unit = "ppl_PIP_Problem_set_big_parameter_dimension"
+
+external ppl_PIP_Problem_OK:
+  pip_problem -> bool
+      = "ppl_PIP_Problem_OK"
+
+external ppl_PIP_Problem_clear:
+  pip_problem -> unit
+      = "ppl_PIP_Problem_clear"
+
+external ppl_PIP_Problem_set_control_parameter:
+  pip_problem -> pip_problem_control_parameter_value -> unit
+      = "ppl_PIP_Problem_set_control_parameter"
+
+external ppl_PIP_Problem_get_control_parameter:
+  pip_problem -> pip_problem_control_parameter_name
+              -> pip_problem_control_parameter_value
+      = "ppl_PIP_Problem_get_control_parameter"
+
+external ppl_PIP_Problem_swap:
+  pip_problem -> pip_problem -> unit
+      = "ppl_PIP_Problem_swap"
+
+external ppl_PIP_Problem_ascii_dump:
+  pip_problem -> string
+      = "ppl_PIP_Problem_ascii_dump"
+
+external ppl_PIP_Tree_Node_constraints:
+  pip_tree_node -> constraint_system
+      = "ppl_PIP_Tree_Node_constraints"
+
+external ppl_PIP_Tree_Node_artificials:
+  pip_tree_node -> artificial_parameter list
+      = "ppl_PIP_Tree_Node_artificials"
+
+external ppl_PIP_Tree_Node_OK:
+  pip_tree_node -> bool
+      = "ppl_PIP_Tree_Node_OK"
+
+external ppl_PIP_Tree_Node_ascii_dump:
+  pip_tree_node -> string
+      = "ppl_PIP_Tree_Node_ascii_dump"
+
+external ppl_PIP_Tree_Node_is_bottom:
+  pip_tree_node -> bool
+      = "ppl_PIP_Tree_Node_is_bottom"
+
+external ppl_PIP_Tree_Node_is_solution:
+  pip_tree_node -> bool
+      = "ppl_PIP_Tree_Node_is_solution"
+
+external ppl_PIP_Tree_Node_parametric_values:
+  pip_tree_node -> int -> linear_expression
+      = "ppl_PIP_Tree_Node_parametric_values"
+
+external ppl_PIP_Tree_Node_is_decision:
+  pip_tree_node -> bool
+      = "ppl_PIP_Tree_Node_is_decision"
+
+external ppl_PIP_Tree_Node_true_child:
+  pip_tree_node -> pip_tree_node
+      = "ppl_PIP_Tree_Node_true_child"
+
+external ppl_PIP_Tree_Node_false_child:
+  pip_tree_node -> pip_tree_node
+      = "ppl_PIP_Tree_Node_false_child"
