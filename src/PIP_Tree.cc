@@ -2197,9 +2197,11 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
   }
 
   const Coefficient& denom = tableau.denominator();
+#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
   // Used to minimize the numer of (slow) insertions in v_row that don't
   // use a iterator as a hint.
   std::vector<std::pair<dimension_type,Coefficient> > buffer;
+#endif
 
   for (Constraint_Sequence::const_iterator
          c_iter = input_cs.begin() + first_pending_constraint,
@@ -2232,6 +2234,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
     {
       dimension_type p_index = 1;
       dimension_type v_index = 0;
+#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
       matrix_row_iterator p_row_itr = p_row.end();
       dimension_type i = 0;
       dimension_type i_end = constraint.space_dimension();
@@ -2361,6 +2364,40 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
         }
       }
       buffer.clear();
+#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
+      dimension_type i = 0;
+      dimension_type i_end = constraint.space_dimension();
+      for ( ; i != i_end; ++i) {
+        const bool is_parameter = (1 == parameters.count(i));
+        const Coefficient& coeff_i = constraint.coefficient(Variable(i));
+        if (coeff_i == 0) {
+          // Optimize computation below: only update p/v index.
+          if (is_parameter)
+            ++p_index;
+          else
+            ++v_index;
+          // Jump to next iteration.
+          continue;
+        }
+
+        if (is_parameter) {
+          p_row.find_create(p_index,coeff_i * denom);
+          ++p_index;
+        }
+        else {
+          const dimension_type mv = mapping[v_index];
+          if (basis[v_index]) {
+            // Basic variable : add coeff_i * x_i
+            add_mul_assign(v_row[mv], coeff_i, denom);
+          } else {
+            // Non-basic variable : add coeff_i * row_i
+            add_mul_assign_row(v_row, coeff_i, tableau.s[mv]);
+            add_mul_assign_row(p_row, coeff_i, tableau.t[mv]);
+          }
+          ++v_index;
+        }
+      }      
+#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
     }
 
     if (row_sign(v_row, not_a_dimension()) == ZERO) {
