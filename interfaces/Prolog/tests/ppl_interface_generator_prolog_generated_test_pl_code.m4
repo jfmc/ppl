@@ -1898,4 +1898,51 @@ ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_2_test :-
 
 ')
 
+m4_define(
+  `ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+`
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_3_test :-
+  (
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@CLASS@_concatenate_assign(PS1, PS2),
+     ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@(PS1, Ph1, Ph2),
+     ppl_Polyhedron_OK(Ph1),
+     ppl_Polyhedron_OK(Ph2),
+     ppl_@CLASS@_OK(PS1),
+     ppl_@CLASS@_OK(PS2),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS2)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(
+  `ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+`
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_4_test :-
+  (
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@CLASS@_concatenate_assign(PS1, PS2),
+     ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2(PS2, PS1,
+                                                                   Ph1, Ph2),
+     ppl_Polyhedron_OK(Ph1),
+     ppl_Polyhedron_OK(Ph2),
+     ppl_@CLASS@_OK(PS1),
+     ppl_@CLASS@_OK(PS2),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS2)
+   ->
+    fail ; true)
+  ).
+
+')
+
 dnl ppl_@CLASS@_@NARROWING@_narrowing_assign/2,
