@@ -2084,8 +2084,8 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
     // Perform a pivot operation on the matrix.
     const Coefficient& pivot_pj = pivot.get(pj);
     {
-      matrix_const_row_const_iterator j = pivot.begin();
-      matrix_const_row_const_iterator j_end = pivot.end();
+      matrix_const_row_unordered_const_iterator j = pivot.unordered_begin();
+      matrix_const_row_unordered_const_iterator j_end = pivot.unordered_end();
       for ( ; j!=j_end; ++j ) {
         if ((*j).first == pj)
           continue;
