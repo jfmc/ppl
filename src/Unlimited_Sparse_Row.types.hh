@@ -17,6 +17,14 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
+// PPL_SPARSE_BACKEND_SLOW_INSERTIONS: the backend is slow on insertions, even
+//                                     when using an iterator as hint.
+// PPL_SPARSE_BACKEND_SLOW_RANDOM_READS: the backend is slow on reads, when
+//                                       not using an iterator as hint.
+// PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES: the backend is slow on insertions,
+//                                        when not using an iterator as hint.
+
+
 #ifndef USE_PPL_SPARSE_BACKEND_STD_LIST
 #ifndef USE_PPL_SPARSE_BACKEND_CUSTOM_SLIST
 #ifndef USE_PPL_SPARSE_BACKEND_STD_VECTOR
@@ -33,6 +41,9 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef USE_PPL_SPARSE_BACKEND_STD_LIST
 
+#define PPL_SPARSE_BACKEND_SLOW_RANDOM_READS
+#define PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
+
 // If other options are specified, ignore them.
 #undef USE_PPL_SPARSE_BACKEND_CUSTOM_SLIST
 #undef USE_PPL_SPARSE_BACKEND_STD_VECTOR
@@ -40,6 +51,9 @@ namespace Parma_Polyhedra_Library {
 #endif
 
 #ifdef USE_PPL_SPARSE_BACKEND_CUSTOM_SLIST
+
+#define PPL_SPARSE_BACKEND_SLOW_RANDOM_READS
+#define PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
 
 // If other options are specified, ignore them.
 #undef USE_PPL_SPARSE_BACKEND_STD_VECTOR
@@ -49,6 +63,7 @@ namespace Parma_Polyhedra_Library {
 #ifdef USE_PPL_SPARSE_BACKEND_STD_VECTOR
 #define PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
 
+#define PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
 #define PPL_SPARSE_BACKEND_SLOW_INSERTIONS
 
 // If other options are specified, ignore them.
