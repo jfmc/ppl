@@ -3393,6 +3393,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       // Recompute row reference after possible reallocation.
       matrix_row_const_reference_type row_t = tableau.t[index];
       {
+#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
         matrix_const_row_const_iterator j = row_t.begin();
         matrix_const_row_const_iterator j_end = row_t.end();
         matrix_row_iterator itr1 = ctx1.end();
@@ -3453,6 +3454,30 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
           ctx2.find_create(num_params ,den);
         }
       }
+#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
+        matrix_const_row_unordered_const_iterator j = row_t.unordered_begin();
+        matrix_const_row_unordered_const_iterator
+          j_end = row_t.unordered_end();
+        for ( ; j != j_end; ++j) {
+          mod_assign(mod, (*j).second, den);
+          if (mod != 0) {
+            const dimension_type j_index = (*j).first;
+            Coefficient& ctx1_elem = ctx1[j_index];
+            ctx1_elem = den;
+            ctx1_elem -= mod;
+            ctx2[j_index] -= ctx1_elem;
+          }
+        }
+        Coefficient& ctx2_0 = ctx2[0];
+        ctx2_0 += den;
+        --ctx2_0;
+        Coefficient& ctx1_n = ctx1[num_params];
+        ctx1_n = den;
+        neg_assign(ctx1_n);
+        ctx2[num_params] = den;
+      }
+#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
+
 #ifdef NOISY_PIP
       {
         using namespace IO_Operators;
