@@ -289,7 +289,7 @@ ppl_prolog_generated_test: gnu_prolog_generated_test.pl  ../tests/ppl_prolog_gen
 	echo "['ppl_prolog_generated_test_main.pl', 'gnu_prolog_generated_test.pl']." \
 		>script_pgt
 	echo "main." >>script_pgt
-	GLOBALSZ=65536 $(LIBTOOL) --mode=execute \
+	GLOBALSZ=131072 $(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_gprolog.la \
