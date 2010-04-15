@@ -717,11 +717,14 @@ PPL::MIP_Problem::process_pending_constraints() {
     ? artificial_index : 0;
 
   typedef process_pending_constraints_helper_struct buffer_element_t;
+
+#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_READS
+  // Used to optimize access to tableau_k.
+  std::vector<std::pair<dimension_type, dimension_type> > vars_in_base;
+#endif
+
   // Used to improve performance, ordering writes to tableau_k.
   std::vector<buffer_element_t> buffer;
-
-  // Used to optimize access to tableau_k below.
-  std::vector<std::pair<dimension_type, dimension_type> > vars_in_base;
 
   // Proceed with the insertion of the constraints.
   for (dimension_type k = tableau_num_rows, i = input_cs.size();
@@ -729,6 +732,8 @@ PPL::MIP_Problem::process_pending_constraints() {
     if (is_tableau_constraint[i]) {
       // Copy the original constraint in the tableau.
       matrix_row_reference_type tableau_k = tableau[--k];
+
+#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
       const Constraint& cs_i = input_cs[i];
       for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
         const Coefficient& current_coefficient =
@@ -785,12 +790,44 @@ PPL::MIP_Problem::process_pending_constraints() {
         }
         buffer.clear();
       }
-      // The following loops are equivalent to this simpler (but slower) loop.
-      //
-      // for (dimension_type j = base_size; j-- > 0; )
-      //   if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0)
-      //    linear_combine(tableau_k, tableau[j], base[j]);
+#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
+      const Constraint& cs_i = input_cs[i];
+      for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
+        const Coefficient& current_coefficient =
+          cs_i.coefficient(Variable(sd));
+        // The test against 0 is not needed, but improves performance.
+        if (current_coefficient != 0) {
+          tableau_k[mapping[sd + 1].first] = current_coefficient;
+          // Split if needed.
+          if (mapping[sd + 1].second != 0)
+            neg_assign(tableau_k[mapping[sd + 1].second],
+                       current_coefficient);
+        }
+      }
+      const Coefficient& cs_i_inhomogeneous_term = cs_i.inhomogeneous_term();
+      // The test against 0 is not needed, but improves performance.
+      if (cs_i_inhomogeneous_term != 0) {
+        tableau_k[mapping[0].first] = cs_i_inhomogeneous_term;
+        // Split if needed.
+        if (mapping[0].second != 0)
+          neg_assign(tableau_k[mapping[0].second], cs_i_inhomogeneous_term);
+      }
 
+      // Add the slack variable, if needed.
+      if (cs_i.is_inequality()) {
+        neg_assign(tableau_k[--slack_index], Coefficient_one());
+        // If the constraint is already satisfied, we will not use artificial
+        // variables to compute a feasible base: this to speed up
+        // the algorithm.
+        if (satisfied_ineqs[i]) {
+          base[k] = slack_index;
+          worked_out_row[k] = true;
+        }
+      }
+#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
+
+
+#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_READS
       // We need to sort accesses by base[j], not by j.
 
       for (dimension_type j = base_size; j-- > 0; )
@@ -825,6 +862,12 @@ PPL::MIP_Problem::process_pending_constraints() {
       }
 
       vars_in_base.clear();
+
+#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_READS)
+      for (dimension_type j = base_size; j-- > 0; )
+        if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0)
+         linear_combine(tableau_k, tableau[j], base[j]);
+#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_READS)
     }
 
   // We negate the row if tableau[i][0] <= 0 to get the inhomogeneous term > 0.
