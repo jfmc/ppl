@@ -1999,6 +1999,7 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
         matrix_row_reference_type cut = s[num_rows];
         ++num_rows;
         matrix_row_const_reference_type s_mi = s[mi];
+#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
         matrix_row_iterator cut_i = cut.begin();
         matrix_row_iterator cut_end = cut.end();
         matrix_const_row_const_iterator row_i = s_mi.begin();
@@ -2020,6 +2021,14 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
           }
         } else
           cut[0] -= den;
+#else
+        cut = s_mi;
+        matrix_row_unordered_iterator cut_i = cut.unordered_begin();
+        matrix_row_unordered_iterator cut_end = cut.unordered_end();
+        for ( ; cut_i != cut_end; ++cut_i)
+          mod_assign((*cut_i).second,(*cut_i).second,den);
+        cut[0] -= den;
+#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
         scaling.push_back(den);
       }
       // Check if an integer solution was found.
