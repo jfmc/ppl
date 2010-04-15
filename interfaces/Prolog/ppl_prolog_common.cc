@@ -1977,6 +1977,15 @@ ppl_reset_deterministic_timeout() {
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_Coefficient_bits(Prolog_term_ref t_bits) {
+  try {
+    if (unify_ulong(t_bits, PPL_COEFFICIENT_BITS))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_Coefficient_is_bounded() {
   try {
     if (std::numeric_limits<Coefficient>::is_bounded)

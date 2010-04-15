@@ -97,7 +97,7 @@ Java_parma_1polyhedra_1library_By_1Reference_initIDs
 }
 
 JNIEXPORT jint JNICALL
-Java_parma_1polyhedra_1library_Coefficient_ppl_1bits(JNIEnv*, jclass) {
+Java_parma_1polyhedra_1library_Coefficient_bits(JNIEnv*, jclass) {
   return PPL_COEFFICIENT_BITS;
 }
 

@@ -156,6 +156,9 @@ string -> int -> int -> int -> string = "ppl_io_wrap_string"
 external ppl_max_space_dimension:
 unit -> int = "ppl_max_space_dimension"
 
+external ppl_Coefficient_bits:
+unit -> int = "ppl_Coefficient_bits"
+
 external ppl_Coefficient_is_bounded:
 unit -> bool = "ppl_Coefficient_is_bounded"
 

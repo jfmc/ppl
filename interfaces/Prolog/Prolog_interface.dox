@@ -389,6 +389,11 @@ that are included with all instantiations of the Prolog interfaces.
   warranty whatsoever, the C++ compiler used to build the library,
   where to report bugs and where to look for further information.</EM>
 
+<P><CODE> ppl_Coefficient_bits </CODE><BR>
+
+  <EM>Unifies the argument with the number of bits used to encode a
+  Coefficient in the C++ interface; 0 if unbounded.</EM>
+
 <P><CODE> ppl_Coefficient_is_bounded </CODE><BR>
 
   <EM>Succeeds if and only if the Coefficients in the C++ interface are bounded.</EM>

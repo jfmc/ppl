@@ -839,6 +839,9 @@ extern "C" Prolog_foreign_return_type
 ppl_reset_deterministic_timeout();
 
 extern "C" Prolog_foreign_return_type
+ppl_Coefficient_bits(Prolog_term_ref t_bits);
+
+extern "C" Prolog_foreign_return_type
 ppl_Coefficient_is_bounded();
 
 extern "C" Prolog_foreign_return_type

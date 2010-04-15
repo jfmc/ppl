@@ -1752,6 +1752,14 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
+ppl_Coefficient_bits(value unit) try {
+  CAMLparam1(unit);
+  CAMLreturn(Val_long(PPL_COEFFICIENT_BITS));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
 ppl_Coefficient_is_bounded(value unit) try {
   CAMLparam1(unit);
   CAMLreturn(std::numeric_limits<Coefficient>::is_bounded

@@ -362,7 +362,7 @@ static {
             pip.solve();
         }
         catch (Overflow_Error_Exception ex) {
-            if (Coefficient.ppl_bits() != 8)
+            if (Coefficient.bits() != 8)
                 throw ex;
             PPL_Test.println_if_noisy("Expected overflow exception caught:");
             PPL_Test.println_if_noisy(ex.getMessage());

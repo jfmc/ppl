@@ -177,6 +177,10 @@ included with all instantiations of the OCaml interfaces.
 <H2><CODE> ppl_max_space_dimension </CODE></H2>
   Returns the maximum space dimension the C++ interface can handle.
 
+<H2><CODE> ppl_Coefficient_bits </CODE></H2>
+  Returns the number of bits used in the C++ interface for PPL coefficients;
+  0 if unbounded.
+
 <H2><CODE> ppl_Coefficient_is_bounded </CODE></H2>
   Returns true if and only if the coefficients in the C++ interface
   are bounded.

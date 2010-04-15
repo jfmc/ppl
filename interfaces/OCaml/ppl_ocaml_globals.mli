@@ -151,6 +151,9 @@ val ppl_io_wrap_string:
 val ppl_max_space_dimension:
   unit -> int
 
+val ppl_Coefficient_bits:
+  unit -> int
+
 val ppl_Coefficient_is_bounded:
   unit -> bool
 
