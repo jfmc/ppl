@@ -71,11 +71,11 @@ PPL::Unlimited_Sparse_Row_Over_CO_Tree
   return true;
 }
 
-inline void
+void
 PPL::Unlimited_Sparse_Row_Over_CO_Tree::normalize() {
   // Compute the GCD of all the coefficients.
-  const_iterator i = begin();
-  const const_iterator i_end = end();
+  unordered_const_iterator i = unordered_begin();
+  unordered_const_iterator i_end = unordered_end();
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   for ( ; i != i_end; ++i) {
     const Coefficient& x_i = i->second;
@@ -113,7 +113,8 @@ PPL::Unlimited_Sparse_Row_Over_CO_Tree::normalize() {
     }
   }
   // Divide the coefficients by the GCD.
-  for (iterator j = begin(), j_end = end(); j != j_end; ++j) {
+  for (unordered_iterator j = unordered_begin(), j_end = unordered_end();
+       j != j_end; ++j) {
     Coefficient& x_j = j->second;
     exact_div_assign(x_j, x_j, gcd);
   }
