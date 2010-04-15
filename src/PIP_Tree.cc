@@ -2228,26 +2228,25 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
     matrix_row_reference_type v_row = tableau.s[row_id];
     matrix_row_reference_type p_row = tableau.t[row_id];
 
-    // Setting the inhomogeneus term.
-    if (constraint.inhomogeneous_term() != 0) {
-      matrix_row_iterator itr
-        = p_row.find_create(0,constraint.inhomogeneous_term());
-      Coefficient& p_row0 = (*itr).second;
-      if (constraint.is_strict_inequality())
-        // Transform (expr > 0) into (expr - 1 >= 0).
-        --p_row0;
-      p_row0 *= denom;
-    } else
-      if (constraint.is_strict_inequality()) {
-        matrix_row_iterator itr = p_row.find_create(0,denom);
-        // Transform (expr > 0) into (expr - 1 >= 0).
-        neg_assign((*itr).second);
-      }
-
     {
       dimension_type p_index = 1;
       dimension_type v_index = 0;
 #ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
+      // Setting the inhomogeneus term.
+      if (constraint.inhomogeneous_term() != 0) {
+        matrix_row_iterator itr
+          = p_row.find_create(0,constraint.inhomogeneous_term());
+        Coefficient& p_row0 = (*itr).second;
+        if (constraint.is_strict_inequality())
+          // Transform (expr > 0) into (expr - 1 >= 0).
+          --p_row0;
+        p_row0 *= denom;
+      } else
+        if (constraint.is_strict_inequality()) {
+          matrix_row_iterator itr = p_row.find_create(0,denom);
+          // Transform (expr > 0) into (expr - 1 >= 0).
+          neg_assign((*itr).second);
+        }
       matrix_row_iterator p_row_itr = p_row.end();
       dimension_type i = 0;
       dimension_type i_end = constraint.space_dimension();
@@ -2378,6 +2377,21 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
       }
       buffer.clear();
 #else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
+      // Setting the inhomogeneus term.
+      if (constraint.inhomogeneous_term() != 0) {
+        Coefficient& p_row0 = p_row[0];
+        p_row0 = constraint.inhomogeneous_term();
+        if (constraint.is_strict_inequality())
+          // Transform (expr > 0) into (expr - 1 >= 0).
+          --p_row0;
+        p_row0 *= denom;
+      } else
+        if (constraint.is_strict_inequality()) {
+          Coefficient& p_row0 = p_row[0];
+          p_row0 = denom;
+          // Transform (expr > 0) into (expr - 1 >= 0).
+          neg_assign(p_row0);
+        }
       dimension_type i = 0;
       dimension_type i_end = constraint.space_dimension();
       for ( ; i != i_end; ++i) {
