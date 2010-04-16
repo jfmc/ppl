@@ -139,7 +139,7 @@ PPL::Sparse_Matrix::OK() const {
     if (i->begin() != i->end()) {
       Unlimited_Sparse_Row::const_iterator j = i->begin();
       Unlimited_Sparse_Row::const_iterator j_end = i->end();
-      Unlimited_Sparse_Row::const_iterator next = j;
+      Unlimited_Sparse_Row::const_iterator next = i->begin();
       ++next;
       while (next != j_end)
         ++j, ++next;
