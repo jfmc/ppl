@@ -37,7 +37,7 @@ PPL::Unlimited_Sparse_Row_Std_List_Backend
     // Index
     total += sizeof(dimension_type);
     // Size of the Coefficient.
-    total += PPL::total_memory_in_bytes((*i).second);
+    total += PPL::total_memory_in_bytes(i->second);
   }
   // Assume implementation of std::list uses one additional element
   // at the beginning and at the end of the list.

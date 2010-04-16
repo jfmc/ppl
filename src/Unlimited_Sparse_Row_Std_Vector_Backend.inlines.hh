@@ -65,7 +65,7 @@ Unlimited_Sparse_Row_Std_Vector_Backend
   if (begin() == end())
     return end_dangerous();
   dangerous_iterator i = begin_dangerous();
-  if ((*i).first > k)
+  if (i->first > k)
     return end_dangerous();
   // Now we can call find(k, i) without triggering asserts.
   return find_dangerous(k, i);
@@ -77,7 +77,7 @@ Unlimited_Sparse_Row_Std_Vector_Backend
   if (begin() == end())
     return end_dangerous();
   dangerous_iterator i = begin_dangerous();
-  if ((*i).first > k)
+  if (i->first > k)
     return i;
   // Now we can call lower_bound(k, i) without triggering asserts.
   return lower_bound_dangerous(k, i);
@@ -88,7 +88,7 @@ Unlimited_Sparse_Row_Std_Vector_Backend::find(const dimension_type k) {
   if (begin() == end())
     return end();
   iterator i = begin();
-  if ((*i).first > k)
+  if (i->first > k)
     return end();
   // Now we can call find(k, i) without triggering asserts.
   return find(k, i);
@@ -99,7 +99,7 @@ Unlimited_Sparse_Row_Std_Vector_Backend::lower_bound(const dimension_type k) {
   if (begin() == end())
     return end();
   iterator i = begin();
-  if ((*i).first > k)
+  if (i->first > k)
     return i;
   // Now we can call lower_bound(k, i) without triggering asserts.
   return lower_bound(k, i);
@@ -110,7 +110,7 @@ Unlimited_Sparse_Row_Std_Vector_Backend::find(const dimension_type k) const {
   if (begin() == end())
     return end();
   const_iterator i = begin();
-  if ((*i).first > k)
+  if (i->first > k)
     return end();
   // Now we can call find(k, i) without triggering asserts.
   return find(k, i);
@@ -122,7 +122,7 @@ Unlimited_Sparse_Row_Std_Vector_Backend
   if (begin() == end())
     return end();
   const_iterator i = begin();
-  if ((*i).first > k)
+  if (i->first > k)
     return i;
   // Now we can call lower_bound(k,i) without triggering asserts.
   return lower_bound(k, i);
@@ -131,7 +131,7 @@ Unlimited_Sparse_Row_Std_Vector_Backend
 inline Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Std_Vector_Backend
 ::find_dangerous(const dimension_type k, dangerous_iterator itr1) {
-  PPL_ASSERT(itr1 == end_dangerous() || (*itr1).first <= k);
+  PPL_ASSERT(itr1 == end_dangerous() || itr1->first <= k);
   dangerous_iterator itr = lower_bound_dangerous(k, itr1);
   if (itr != end_dangerous())
     if (itr->first != k)
@@ -142,9 +142,9 @@ Unlimited_Sparse_Row_Std_Vector_Backend
 inline Unlimited_Sparse_Row_Std_Vector_Backend::dangerous_iterator
 Unlimited_Sparse_Row_Std_Vector_Backend
 ::lower_bound_dangerous(const dimension_type k, dangerous_iterator itr) {
-  PPL_ASSERT(itr == end_dangerous() || (*itr).first <= k);
+  PPL_ASSERT(itr == end_dangerous() || itr->first <= k);
   for (dimension_type i = sequential_search_treshold; i-- > 0; ) {
-    if (itr == end_dangerous() || (*itr).first >= k)
+    if (itr == end_dangerous() || itr->first >= k)
       return itr;
     ++itr;
   }
@@ -156,7 +156,7 @@ Unlimited_Sparse_Row_Std_Vector_Backend
 inline Unlimited_Sparse_Row_Std_Vector_Backend::iterator
 Unlimited_Sparse_Row_Std_Vector_Backend
 ::find(const dimension_type k, iterator itr1) {
-  PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
+  PPL_ASSERT(itr1 == end() || itr1->first <= k);
   iterator itr = lower_bound(k, itr1);
   if (itr != end())
     if (itr->first != k)
@@ -167,9 +167,9 @@ Unlimited_Sparse_Row_Std_Vector_Backend
 inline Unlimited_Sparse_Row_Std_Vector_Backend::iterator
 Unlimited_Sparse_Row_Std_Vector_Backend
 ::lower_bound(const dimension_type k, iterator itr) {
-  PPL_ASSERT(itr == end() || (*itr).first <= k);
+  PPL_ASSERT(itr == end() || itr->first <= k);
   for (dimension_type i = sequential_search_treshold; i-- > 0; ) {
-    if (itr == end() || (*itr).first >= k)
+    if (itr == end() || itr->first >= k)
       return itr;
     ++itr;
   }
@@ -181,7 +181,7 @@ Unlimited_Sparse_Row_Std_Vector_Backend
 inline Unlimited_Sparse_Row_Std_Vector_Backend::const_iterator
 Unlimited_Sparse_Row_Std_Vector_Backend
 ::find(const dimension_type k, const_iterator itr1) const {
-  PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
+  PPL_ASSERT(itr1 == end() || itr1->first <= k);
   const_iterator itr = lower_bound(k,itr1);
   if (itr != end())
     if (itr->first != k)
@@ -192,9 +192,9 @@ Unlimited_Sparse_Row_Std_Vector_Backend
 inline Unlimited_Sparse_Row_Std_Vector_Backend::const_iterator
 Unlimited_Sparse_Row_Std_Vector_Backend
 ::lower_bound(const dimension_type k, const_iterator itr1) const {
-  PPL_ASSERT(itr1 == end() || (*itr1).first <= k);
+  PPL_ASSERT(itr1 == end() || itr1->first <= k);
   for (dimension_type i = sequential_search_treshold; i-- > 0; ) {
-    if (itr1 == end() || (*itr1).first >= k)
+    if (itr1 == end() || itr1->first >= k)
       return itr1;
     ++itr1;
   }

@@ -780,12 +780,12 @@ PPL::MIP_Problem::process_pending_constraints() {
           matrix_row_iterator itr
             = tableau_k.find_create(j->index, *(j->data));
           if (j->toggle_sign)
-            neg_assign((*itr).second);
+            neg_assign(itr->second);
           ++j;
           for ( ; j != j_end; ++j) {
             itr = tableau_k.find_create(j->index, *(j->data), itr);
             if (j->toggle_sign)
-              neg_assign((*itr).second);
+              neg_assign(itr->second);
           }
         }
         buffer.clear();
@@ -843,14 +843,14 @@ PPL::MIP_Problem::process_pending_constraints() {
       matrix_row_const_iterator itr = tableau_k.begin();
       matrix_row_const_iterator itr_end = tableau_k.end();
       while (j != j_end && itr != itr_end) {
-        if ((*itr).first < j->first)
+        if (itr->first < j->first)
           itr = tableau_k.lower_bound(j->first, itr);
         else
-          if ((*itr).first > j->first)
+          if (itr->first > j->first)
             ++j;
           else {
-            PPL_ASSERT((*itr).first == j->first);
-            if (k != j->second && (*itr).second != 0) {
+            PPL_ASSERT(itr->first == j->first);
+            if (k != j->second && itr->second != 0) {
               linear_combine(tableau_k, tableau[j->second], base[j->second]);
               // linear_combine() invalidates itr and itr_end.
               itr = tableau_k.lower_bound(j->first);
@@ -1032,14 +1032,14 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     matrix_const_row_unordered_const_iterator j = tableau_i.unordered_begin();
     matrix_const_row_unordered_const_iterator j_end
       = tableau_i.unordered_end();
-    if (j != j_end && (*j).first == 0)
+    if (j != j_end && j->first == 0)
       ++j;
     for ( ; j != j_end; ++j)
-      if ((*j).first < tableau_num_columns_minus_1) {
-        const dimension_type j_index = (*j).first;
+      if (j->first < tableau_num_columns_minus_1) {
+        const dimension_type j_index = j->first;
         const Coefficient& cost_j = working_cost[j_index];
         if (sgn(cost_j) == cost_sign) {
-          const Coefficient& tableau_ij = (*j).second;
+          const Coefficient& tableau_ij = j->second;
           WEIGHT_BEGIN();
           if (tableau_ij != 0) {
             PPL_ASSERT(tableau_i_base_i != 0);
@@ -1122,11 +1122,11 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     matrix_const_row_unordered_const_iterator j = tableau_i.unordered_begin();
     matrix_const_row_unordered_const_iterator j_end
       = tableau_i.unordered_end();
-    if (j != j_end && (*j).first == 0)
+    if (j != j_end && j->first == 0)
       ++j;
-    for ( ; j != j_end && (*j).first < tableau_num_columns_minus_1; ++j) {
-      const dimension_type j_index = (*j).first;
-      const Coefficient& tableau_ij = (*j).second;
+    for ( ; j != j_end && j->first < tableau_num_columns_minus_1; ++j) {
+      const dimension_type j_index = j->first;
+      const Coefficient& tableau_ij = j->second;
       const Coefficient& cost_j = working_cost[j_index];
       if (sgn(cost_j) == cost_sign) {
         WEIGHT_BEGIN();
@@ -1595,11 +1595,11 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
       matrix_row_const_iterator j = tableau_i.begin();
       matrix_row_const_iterator j_end = tableau_i.end();
       // Skip the first element
-      if (j != j_end && (*j).first == 0)
+      if (j != j_end && j->first == 0)
         ++j;
-      for ( ; (j != j_end) && ((*j).first < begin_artificials); ++j )
-        if ((*j).second != 0) {
-          pivot((*j).first, i);
+      for ( ; (j != j_end) && (j->first < begin_artificials); ++j )
+        if (j->second != 0) {
+          pivot(j->first, i);
           redundant = false;
           break;
         }
@@ -2267,10 +2267,10 @@ PPL::MIP_Problem::OK() const {
         for ( ; i!=i_end && itr!=itr_end; ++i) {
           // tableau[i][base[i] must be different from zero.
           // tableau[i][base[j], with i different from j, must not be a zero.
-          if ((*itr).first < i->first)
-            itr = tableau_j.lower_bound((*itr).first, itr);
-          if (i->second != j && (*itr).first == i->first
-              && (*itr).second != 0) {
+          if (itr->first < i->first)
+            itr = tableau_j.lower_bound(itr->first, itr);
+          if (i->second != j && itr->first == i->first
+              && itr->second != 0) {
 #ifndef NDEBUG
             cerr << "tableau[i][base[i] must be different from zero" << endl;
             ascii_dump(cerr);

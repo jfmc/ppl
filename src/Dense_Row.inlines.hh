@@ -51,7 +51,7 @@ Dense_Row::swap(dimension_type i, dimension_type j) {
 
 inline void
 Dense_Row::swap(iterator i, iterator j) {
-  std::swap((*i).second, (*j).second);
+  std::swap(i->second, j->second);
 }
 
 inline void
@@ -192,7 +192,7 @@ Dense_Row::find(dimension_type i) const {
 
 inline Dense_Row::iterator
 Dense_Row::find(dimension_type i, iterator itr) {
-  PPL_ASSERT((*itr).first <= i);
+  PPL_ASSERT(itr->first <= i);
 #ifdef NDEBUG
   (void) itr;
 #endif
@@ -201,7 +201,7 @@ Dense_Row::find(dimension_type i, iterator itr) {
 
 inline Dense_Row::const_iterator
 Dense_Row::find(dimension_type i, const_iterator itr) const {
-  PPL_ASSERT((*itr).first <= i);
+  PPL_ASSERT(itr->first <= i);
 #ifdef NDEBUG
   (void) itr;
 #endif
@@ -253,7 +253,7 @@ Dense_Row::find_create(const std::pair<dimension_type, Coefficient>& x,
 inline Dense_Row::iterator
 Dense_Row::find_create(dimension_type i, const Coefficient& x, iterator itr) {
   PPL_ASSERT(itr != end());
-  PPL_ASSERT((*itr).first < i);
+  PPL_ASSERT(itr->first < i);
 #ifdef NDEBUG
   (void) itr;
 #endif
@@ -264,7 +264,7 @@ Dense_Row::find_create(dimension_type i, const Coefficient& x, iterator itr) {
 inline Dense_Row::iterator
 Dense_Row::find_create(dimension_type i, iterator itr) {
   PPL_ASSERT(itr != end());
-  PPL_ASSERT((*itr).first < i);
+  PPL_ASSERT(itr->first < i);
 #ifdef NDEBUG
   (void) itr;
 #endif

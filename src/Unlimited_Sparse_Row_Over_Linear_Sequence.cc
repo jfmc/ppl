@@ -72,7 +72,7 @@ PPL::Unlimited_Sparse_Row_Over_Linear_Sequence
   dangerous_iterator j = lower_bound_dangerous(i);
   dangerous_iterator j_end = end_dangerous();
   for ( ; j != j_end; ++j)
-    (*j).first += n;
+    j->first += n;
   PPL_ASSERT(OK());
 }
 

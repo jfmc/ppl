@@ -39,40 +39,40 @@ Unlimited_Sparse_Row_Over_Linear_Sequence
   if (i == i_end)
     return;
   if (j != j_end) {
-    if ((*i).first == (*j).first) {
-      g((*i).second, (*j).second);
+    if (i->first == j->first) {
+      g(i->second, j->second);
       last_i = i;
       ++i;
       ++j;
     } else
-      if ((*i).first < (*j).first) {
-        f((*i).second);
+      if (i->first < j->first) {
+        f(i->second);
         last_i = i;
         ++i;
       } else {
         ++j;
       }
   } else {
-    f((*i).second);
+    f(i->second);
     last_i = i;
     ++i;
   }
   PPL_ASSERT(last_i != i_end);
   while (i != i_end && j != j_end)
-    if ((*i).first == (*j).first) {
-      g((*i).second, (*j).second);
+    if (i->first == j->first) {
+      g(i->second, j->second);
       last_i = i;
       ++i;
       ++j;
     } else
-      if ((*i).first < (*j).first) {
-        f((*i).second);
+      if (i->first < j->first) {
+        f(i->second);
         last_i = i;
         ++i;
       } else
-        j = y.lower_bound((*i).first, j);
+        j = y.lower_bound(i->first, j);
   while (i != i_end) {
-    f((*i).second);
+    f(i->second);
     ++i;
   }
 }
@@ -91,18 +91,18 @@ Unlimited_Sparse_Row_Over_Linear_Sequence
   const_iterator j_end = y.end();
   if (i != i_end) {
     if (j != j_end) {
-      if ((*i).first == (*j).first) {
-        g((*i).second, (*j).second);
+      if (i->first == j->first) {
+        g(i->second, j->second);
         last_i = i;
         ++i;
         ++j;
       } else
-        if ((*i).first < (*j).first) {
+        if (i->first < j->first) {
           last_i = i;
           ++i;
         } else {
-          last_i = find_create((*j).first);
-          h((*last_i).second, (*j).second);
+          last_i = find_create(j->first);
+          h(last_i->second, j->second);
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
           i = last_i;
           ++i;
@@ -120,8 +120,8 @@ Unlimited_Sparse_Row_Over_Linear_Sequence
     }
   } else {
     if (j != j_end) {
-      last_i = find_create((*j).first);
-      h((*last_i).second, (*j).second);
+      last_i = find_create(j->first);
+      h(last_i->second, j->second);
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
       i = last_i;
       ++i;
@@ -141,18 +141,18 @@ Unlimited_Sparse_Row_Over_Linear_Sequence
   }
   PPL_ASSERT(last_i != i_end);
   while (i != i_end && j != j_end)
-    if ((*i).first == (*j).first) {
-      g((*i).second, (*j).second);
+    if (i->first == j->first) {
+      g(i->second, j->second);
       last_i = i;
       ++i;
       ++j;
     } else
-      if ((*i).first < (*j).first) {
+      if (i->first < j->first) {
         last_i = i;
-        i = lower_bound((*j).first, i);
+        i = lower_bound(j->first, i);
       } else {
-        last_i = find_create((*j).first, last_i);
-        h((*last_i).second, (*j).second);
+        last_i = find_create(j->first, last_i);
+        h(last_i->second, j->second);
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
         i = last_i;
         ++i;
@@ -165,8 +165,8 @@ Unlimited_Sparse_Row_Over_Linear_Sequence
         ++j;
       }
   while (j != j_end) {
-    last_i = find_create((*j).first, last_i);
-    h((*last_i).second, (*j).second);
+    last_i = find_create(j->first, last_i);
+    h(last_i->second, j->second);
     ++j;
   }
 }
@@ -187,54 +187,54 @@ Unlimited_Sparse_Row_Over_Linear_Sequence
   if (i == i_end && j == j_end)
     return;
   if (j == j_end
-      || (i != i_end && (*i).first < (*j).first)) {
-    itr = row.find_create((*i).first);
-    // We need to do (*itr).second = (*i).second, but this is faster.
-    std::swap((*itr).second, (*i).second);
+      || (i != i_end && i->first < j->first)) {
+    itr = row.find_create(i->first);
+    // We need to do itr->second = i->second, but this is faster.
+    std::swap(itr->second, i->second);
     ++i;
   } else
       if (i == i_end
-          || (j != j_end && (*i).first > (*j).first)) {
-        itr = row.find_create((*j).first);
-        h((*itr).second, (*j).second);
+          || (j != j_end && i->first > j->first)) {
+        itr = row.find_create(j->first);
+        h(itr->second, j->second);
         ++j;
       } else {
         PPL_ASSERT(i != i_end);
         PPL_ASSERT(j != j_end);
-        PPL_ASSERT((*i).first == (*j).first);
-        itr = row.find_create((*i).first);
-        // We need to do (*itr).second = (*i).second, but this is faster.
-        std::swap((*itr).second, (*i).second);
-        g((*itr).second, (*j).second);
+        PPL_ASSERT(i->first == j->first);
+        itr = row.find_create(i->first);
+        // We need to do itr->second = i->second, but this is faster.
+        std::swap(itr->second, i->second);
+        g(itr->second, j->second);
         ++i;
         ++j;
       }
   PPL_ASSERT(itr != row.end());
   while (i != i_end && j != j_end) {
-    if ((*i).first < (*j).first) {
-      itr = row.find_create((*i).first, itr);
-      // We need to do (*itr).second = (*i).second, but this is faster.
-      std::swap((*itr).second, (*i).second);
+    if (i->first < j->first) {
+      itr = row.find_create(i->first, itr);
+      // We need to do itr->second = i->second, but this is faster.
+      std::swap(itr->second, i->second);
       ++i;
     } else {
-      if ((*i).first > (*j).first) {
-        itr = row.find_create((*j).first, itr);
-        h((*itr).second, (*j).second);
+      if (i->first > j->first) {
+        itr = row.find_create(j->first, itr);
+        h(itr->second, j->second);
         ++j;
       } else {
-        PPL_ASSERT((*i).first == (*j).first);
-        itr = row.find_create((*i).first, itr);
-        // We need to do (*itr).second = (*i).second, but this is faster.
-        std::swap((*itr).second, (*i).second);
-        g((*itr).second, (*j).second);
+        PPL_ASSERT(i->first == j->first);
+        itr = row.find_create(i->first, itr);
+        // We need to do itr->second = i->second, but this is faster.
+        std::swap(itr->second, i->second);
+        g(itr->second, j->second);
         ++i;
         ++j;
       }
     }
   }
   while (j != j_end) {
-    itr = row.find_create((*j).first, itr);
-    h((*itr).second, (*j).second);
+    itr = row.find_create(j->first, itr);
+    h(itr->second, j->second);
     ++j;
   }
   PPL_ASSERT(j == j_end);
@@ -257,19 +257,19 @@ Unlimited_Sparse_Row_Over_Linear_Sequence
   const_iterator j_end = y.end();
   if (i != i_end) {
     if (j != j_end) {
-      if ((*i).first == (*j).first) {
-        g((*i).second, (*j).second);
+      if (i->first == j->first) {
+        g(i->second, j->second);
         last_i = i;
         ++i;
         ++j;
       } else
-        if ((*i).first < (*j).first) {
-          f((*i).second);
+        if (i->first < j->first) {
+          f(i->second);
           last_i = i;
           ++i;
         } else {
-          last_i = find_create((*j).first);
-          h((*last_i).second, (*j).second);
+          last_i = find_create(j->first);
+          h(last_i->second, j->second);
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
           i = last_i;
           ++i;
@@ -282,14 +282,14 @@ Unlimited_Sparse_Row_Over_Linear_Sequence
           ++j;
         }
     } else {
-      f((*i).second);
+      f(i->second);
       last_i = i;
       ++i;
     }
   } else {
     if (j != j_end) {
-      last_i = find_create((*j).first);
-      h((*last_i).second, (*j).second);
+      last_i = find_create(j->first);
+      h(last_i->second, j->second);
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
       i = last_i;
       ++i;
@@ -309,19 +309,19 @@ Unlimited_Sparse_Row_Over_Linear_Sequence
   }
   PPL_ASSERT(last_i != i_end);
   while (i != i_end && j != j_end)
-    if ((*i).first == (*j).first) {
-      g((*i).second, (*j).second);
+    if (i->first == j->first) {
+      g(i->second, j->second);
       last_i = i;
       ++i;
       ++j;
     } else
-      if ((*i).first < (*j).first) {
-        f((*i).second);
+      if (i->first < j->first) {
+        f(i->second);
         last_i = i;
         ++i;
       } else {
-        last_i = find_create((*j).first, last_i);
-        h((*last_i).second, (*j).second);
+        last_i = find_create(j->first, last_i);
+        h(last_i->second, j->second);
 #ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
         i = last_i;
         ++i;
@@ -334,12 +334,12 @@ Unlimited_Sparse_Row_Over_Linear_Sequence
         ++j;
       }
   while (i != i_end) {
-    f((*i).second);
+    f(i->second);
     ++i;
   }
   while (j != j_end) {
-    last_i = find_create((*j).first, last_i);
-    h((*last_i).second, (*j).second);
+    last_i = find_create(j->first, last_i);
+    h(last_i->second, j->second);
     ++j;
   }
 }
@@ -360,64 +360,64 @@ Unlimited_Sparse_Row_Over_Linear_Sequence
   if (i == i_end && j == j_end)
     return;
   if (j == j_end
-      || (i != i_end && (*i).first < (*j).first)) {
-    itr = row.find_create((*i).first);
-    // We need to do (*itr).second = (*i).second, but this is faster.
-    std::swap((*itr).second, (*i).second);
-    f((*itr).second);
+      || (i != i_end && i->first < j->first)) {
+    itr = row.find_create(i->first);
+    // We need to do itr->second = i->second, but this is faster.
+    std::swap(itr->second, i->second);
+    f(itr->second);
     ++i;
   } else
       if (i == i_end
-          || (j != j_end && (*i).first > (*j).first)) {
-        itr = row.find_create((*j).first);
-        h((*itr).second, (*j).second);
+          || (j != j_end && i->first > j->first)) {
+        itr = row.find_create(j->first);
+        h(itr->second, j->second);
         ++j;
       } else {
         PPL_ASSERT(i != i_end);
         PPL_ASSERT(j != j_end);
-        PPL_ASSERT((*i).first == (*j).first);
-        itr = row.find_create((*i).first);
-        // We need to do (*itr).second = (*i).second, but this is faster.
-        std::swap((*itr).second, (*i).second);
-        g((*itr).second, (*j).second);
+        PPL_ASSERT(i->first == j->first);
+        itr = row.find_create(i->first);
+        // We need to do itr->second = i->second, but this is faster.
+        std::swap(itr->second, i->second);
+        g(itr->second, j->second);
         ++i;
         ++j;
       }
   PPL_ASSERT(itr != row.end());
   while (i != i_end && j != j_end) {
-    if ((*i).first < (*j).first) {
-      itr = row.find_create((*i).first, itr);
-      // We need to do (*itr).second = (*i).second, but this is faster.
-      std::swap((*itr).second, (*i).second);
-      f((*itr).second);
+    if (i->first < j->first) {
+      itr = row.find_create(i->first, itr);
+      // We need to do itr->second = i->second, but this is faster.
+      std::swap(itr->second, i->second);
+      f(itr->second);
       ++i;
     } else {
-      if ((*i).first > (*j).first) {
-        itr = row.find_create((*j).first, itr);
-        h((*itr).second, (*j).second);
+      if (i->first > j->first) {
+        itr = row.find_create(j->first, itr);
+        h(itr->second, j->second);
         ++j;
       } else {
-        PPL_ASSERT((*i).first == (*j).first);
-        itr = row.find_create((*i).first, itr);
-        // We need to do (*itr).second = (*i).second, but this is faster.
-        std::swap((*itr).second, (*i).second);
-        g((*itr).second, (*j).second);
+        PPL_ASSERT(i->first == j->first);
+        itr = row.find_create(i->first, itr);
+        // We need to do itr->second = i->second, but this is faster.
+        std::swap(itr->second, i->second);
+        g(itr->second, j->second);
         ++i;
         ++j;
       }
     }
   }
   while (i != i_end) {
-    itr = row.find_create((*i).first, itr);
-    // We need to do (*itr).second = (*i).second, but this is faster.
-    std::swap((*itr).second, (*i).second);
-    f((*itr).second);
+    itr = row.find_create(i->first, itr);
+    // We need to do itr->second = i->second, but this is faster.
+    std::swap(itr->second, i->second);
+    f(itr->second);
     ++i;
   }
   PPL_ASSERT(i == i_end);
   while (j != j_end) {
-    itr = row.find_create((*j).first, itr);
-    h((*itr).second, (*j).second);
+    itr = row.find_create(j->first, itr);
+    h(itr->second, j->second);
     ++j;
   }
   PPL_ASSERT(j == j_end);

@@ -80,11 +80,11 @@ public:
   //! Constructs a Sparse_Row from a Sparse_Row_Reference.
   Sparse_Row(const Sparse_Row_Reference& x);
 
-  //! Assigns a Sparse_Row_Reference to (*this).
+  //! Assigns a Sparse_Row_Reference to this->
   //! x should have no nonzero elements with index greater than size().
   Sparse_Row& operator=(const Unlimited_Sparse_Row& x);
 
-  //! Assigns a Sparse_Row_Reference to (*this).
+  //! Assigns a Sparse_Row_Reference to this->
   Sparse_Row& operator=(const Sparse_Row_Reference& x);
 
   //! Swaps (*this) and x.
