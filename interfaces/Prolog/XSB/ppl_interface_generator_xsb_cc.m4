@@ -120,7 +120,7 @@ name() { \
   Prolog_term_ref arg5 = reg_term(5); \
   Prolog_term_ref arg6 = reg_term(6); \
   Prolog_term_ref arg7 = reg_term(7); \
-  Prolog_term_ref arg7 = reg_term(8); \
+  Prolog_term_ref arg8 = reg_term(8); \
   return xsb_stub_##name(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
 }
 
