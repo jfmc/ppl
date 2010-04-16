@@ -310,18 +310,90 @@ inline void
 Unlimited_Sparse_Row_Over_CO_Tree
 ::find2_dangerous(const dimension_type c1, const dimension_type c2,
                   dangerous_iterator& itr1, dangerous_iterator& itr2) {
-  // TODO: consider a faster implementation.
-  itr1 = find_dangerous(c1);
-  itr2 = find_dangerous(c2);
+  if (tree.empty()) {
+    itr1 = end_dangerous();
+    itr2 = itr1;
+    return;
+  }
+
+  itr1.itr = CO_Tree::inorder_iterator(&tree);
+  while (1) {
+    if (itr1.itr->first < c1) {
+      if (itr1.itr->first < c2) {
+        if (!itr1.itr.get_right_child_value()) {
+          ++(itr1.itr);
+          itr2.itr = itr1.itr;
+          break;
+        }
+      } else {
+        itr2.itr = itr1.itr;
+        tree.lower_bound(itr1.itr, c1);
+        tree.lower_bound(itr2.itr, c2);
+        break;
+      }
+    } else {
+      if (itr1.itr->first == c1 || itr1.itr->first <= c2) {
+        itr2.itr = itr1.itr;
+        tree.lower_bound(itr1.itr, c1);
+        tree.lower_bound(itr2.itr, c2);
+        break;
+      } else {
+        if (!itr1.itr.get_left_child_value()) {
+          itr2.itr = itr1.itr;
+          break;
+        }
+      }
+    }
+  }
+  if (itr1.itr->first != c1)
+    itr1 = end_dangerous();
+  if (itr2.itr->first != c2)
+    itr2 = end_dangerous();
 }
 
 inline void
 Unlimited_Sparse_Row_Over_CO_Tree::find2(const dimension_type c1,
                                             const dimension_type c2,
                                             iterator& itr1, iterator& itr2) {
-  // TODO: consider a faster implementation.
-  itr1 = find(c1);
-  itr2 = find(c2);
+  if (tree.empty()) {
+    itr1 = end();
+    itr2 = itr1;
+    return;
+  }
+
+  itr1.itr = CO_Tree::inorder_iterator(&tree);
+  while (1) {
+    if (itr1.itr->first < c1) {
+      if (itr1.itr->first < c2) {
+        if (!itr1.itr.get_right_child_value()) {
+          ++(itr1.itr);
+          itr2.itr = itr1.itr;
+          break;
+        }
+      } else {
+        itr2.itr = itr1.itr;
+        tree.lower_bound(itr1.itr, c1);
+        tree.lower_bound(itr2.itr, c2);
+        break;
+      }
+    } else {
+      if (itr1.itr->first == c1 || itr1.itr->first <= c2) {
+        itr2.itr = itr1.itr;
+        tree.lower_bound(itr1.itr, c1);
+        tree.lower_bound(itr2.itr, c2);
+        break;
+      } else {
+        if (!itr1.itr.get_left_child_value()) {
+          itr2.itr = itr1.itr;
+          break;
+        }
+      }
+    }
+  }
+  if (itr1.itr->first != c1)
+    itr1 = end();
+  if (itr2.itr->first != c2)
+    itr2 = end();
 }
 
 inline void
@@ -329,9 +401,45 @@ Unlimited_Sparse_Row_Over_CO_Tree::find2(const dimension_type c1,
                                          const dimension_type c2,
                                          const_iterator& itr1,
                                          const_iterator& itr2) const {
-  // TODO: consider a faster implementation.
-  itr1 = find(c1);
-  itr2 = find(c2);
+  if (tree.empty()) {
+    itr1 = end();
+    itr2 = itr1;
+    return;
+  }
+
+  itr1.itr = CO_Tree::inorder_const_iterator(&tree);
+  while (1) {
+    if (itr1.itr->first < c1) {
+      if (itr1.itr->first < c2) {
+        if (!itr1.itr.get_right_child_value()) {
+          ++(itr1.itr);
+          itr2.itr = itr1.itr;
+          break;
+        }
+      } else {
+        itr2.itr = itr1.itr;
+        tree.lower_bound(itr1.itr, c1);
+        tree.lower_bound(itr2.itr, c2);
+        break;
+      }
+    } else {
+      if (itr1.itr->first == c1 || itr1.itr->first <= c2) {
+        itr2.itr = itr1.itr;
+        tree.lower_bound(itr1.itr, c1);
+        tree.lower_bound(itr2.itr, c2);
+        break;
+      } else {
+        if (!itr1.itr.get_left_child_value()) {
+          itr2.itr = itr1.itr;
+          break;
+        }
+      }
+    }
+  }
+  if (itr1.itr->first != c1)
+    itr1 = end();
+  if (itr2.itr->first != c2)
+    itr2 = end();
 }
 
 inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
