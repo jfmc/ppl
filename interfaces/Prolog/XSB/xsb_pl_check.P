@@ -33,6 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_version/1,
 	ppl_banner/1,
 	ppl_max_space_dimension/1,
+        ppl_Coefficient_bits/1,
 	ppl_Coefficient_is_bounded/0,
 	ppl_Coefficient_max/1,
 	ppl_Coefficient_min/1,
