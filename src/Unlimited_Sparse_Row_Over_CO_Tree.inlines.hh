@@ -685,8 +685,8 @@ Unlimited_Sparse_Row_Over_CO_Tree::get2(const dimension_type c1,
                                         const dimension_type c2,
                                         const Coefficient*& p1,
                                         const Coefficient*& p2) const {
-  const_iterator itr1;
-  const_iterator itr2;
+  const_iterator itr1 = begin();
+  const_iterator itr2 = begin();
 
   find2(c1, c2, itr1, itr2);
 
