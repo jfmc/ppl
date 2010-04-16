@@ -2679,8 +2679,8 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
                        Bounded_Integer_Type_Representation r,
                        Bounded_Integer_Type_Overflow o,
                        const Constraint_System* pcs,
-                       unsigned,
-                       bool) {
+                       unsigned /* complexity_threshold */,
+                       bool /* wrap_individually */) {
 
   // Dimension-compatibility check of `*pcs', if any.
   if (pcs != 0) {
@@ -2698,7 +2698,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("wrap_assign(vs, ...)", min_space_dim);
 
-  // Wrapping an empty polyhedron is a no-op.
+  // Wrapping an empty grid is a no-op.
   if (marked_empty())
     return;
   if (!generators_are_minimized() && !minimize())
