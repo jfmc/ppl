@@ -253,6 +253,8 @@ public:
     case V_EQ_MINUS_INFINITY:
     case V_EQ:
       return V_LGE;
+    default:
+      break;
     }
     rel1 = assign_r(to1, c.value(), ROUND_DOWN);
     rel1 = result_relation_class(rel1);
