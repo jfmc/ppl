@@ -685,9 +685,20 @@ Unlimited_Sparse_Row_Over_CO_Tree::get2(const dimension_type c1,
                                         const dimension_type c2,
                                         const Coefficient*& p1,
                                         const Coefficient*& p2) const {
-  // TODO: consider a faster impementation.
-  p1 = &(get(c1));
-  p2 = &(get(c2));
+  const_iterator itr1;
+  const_iterator itr2;
+
+  find2(c1, c2, itr1, itr2);
+
+  if (itr1.itr.is_at_end())
+    p1 = &Coefficient_zero();
+  else
+    p1 = &(itr1->second);
+
+  if (itr2.itr.is_at_end())
+    p2 = &Coefficient_zero();
+  else
+    p2 = &(itr2->second);
 }
 
 
