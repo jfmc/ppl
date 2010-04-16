@@ -359,13 +359,43 @@ private:
 
 class Parma_Polyhedra_Library::Dense_Row::iterator {
 public:
+
   typedef std::pair<const dimension_type,Coefficient&> value_type;
   typedef std::pair<const dimension_type,const Coefficient&> const_type;
 
+private:
+
+  class Member_Access_Helper {
+  public:
+
+    Member_Access_Helper(dimension_type index, Coefficient& data);
+
+    value_type* operator->();
+
+  private:
+    value_type value;
+  };
+
+  class Const_Member_Access_Helper {
+  public:
+
+    Const_Member_Access_Helper(dimension_type index,
+                               const Coefficient& data);
+
+    const const_type* operator->() const;
+
+  private:
+    const_type value;
+  };
+
+public:
   iterator(Dense_Row& row1, dimension_type i1);
 
   value_type operator*();
   const_type operator*() const;
+
+  Member_Access_Helper operator->();
+  Const_Member_Access_Helper operator->() const;
 
   iterator& operator++();
   iterator operator++(int);
@@ -387,12 +417,28 @@ private:
 
 class Parma_Polyhedra_Library::Dense_Row::const_iterator {
 public:
-
   typedef std::pair<const dimension_type, const Coefficient&> const_type;
+
+private:
+
+  class Const_Member_Access_Helper {
+  public:
+
+    Const_Member_Access_Helper(dimension_type index,
+                               const Coefficient& data);
+
+    const const_type* operator->() const;
+
+  private:
+    const_type value;
+  };
+
+public:
 
   const_iterator(const Dense_Row& row1, dimension_type i1);
 
   const_type operator*() const;
+  Const_Member_Access_Helper operator->() const;
 
   const_iterator& operator++();
   const_iterator operator++(int);

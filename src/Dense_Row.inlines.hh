@@ -383,6 +383,18 @@ Dense_Row::iterator::operator*() const {
   return const_type(i, (*row)[i]);
 }
 
+inline Dense_Row::iterator::Member_Access_Helper
+Dense_Row::iterator::operator->() {
+  PPL_ASSERT(i < row->size());
+  return Member_Access_Helper(i, (*row)[i]);
+}
+
+inline Dense_Row::iterator::Const_Member_Access_Helper
+Dense_Row::iterator::operator->() const {
+  PPL_ASSERT(i < row->size());
+  return Const_Member_Access_Helper(i, (*row)[i]);
+}
+
 inline Dense_Row::iterator&
 Dense_Row::iterator::operator++() {
   PPL_ASSERT(i < row->size());
@@ -436,6 +448,30 @@ Dense_Row::iterator::OK() const {
 
 
 inline
+Dense_Row::iterator::Member_Access_Helper
+::Member_Access_Helper(dimension_type index, Coefficient& data)
+  : value(index, data) {
+}
+
+inline Dense_Row::iterator::value_type*
+Dense_Row::iterator::Member_Access_Helper::operator->() {
+  return &value;
+}
+
+
+inline
+Dense_Row::iterator::Const_Member_Access_Helper
+::Const_Member_Access_Helper(dimension_type index, const Coefficient& data)
+  : value(index, data) {
+}
+
+inline const Dense_Row::iterator::const_type*
+Dense_Row::iterator::Const_Member_Access_Helper::operator->() const {
+  return &value;
+}
+
+
+inline
 Dense_Row::const_iterator::const_iterator(const Dense_Row& row1,
                                           dimension_type i1)
   : row(&row1), i(i1) {
@@ -446,6 +482,12 @@ inline Dense_Row::const_iterator::const_type
 Dense_Row::const_iterator::operator*() const {
   PPL_ASSERT(i < row->size());
   return const_type(i, (*row)[i]);
+}
+
+inline Dense_Row::const_iterator::Const_Member_Access_Helper
+Dense_Row::const_iterator::operator->() const {
+  PPL_ASSERT(i < row->size());
+  return Const_Member_Access_Helper(i, (*row)[i]);
 }
 
 inline Dense_Row::const_iterator&
@@ -492,6 +534,19 @@ inline bool
 Dense_Row::const_iterator::OK() const {
   // i can be equal to row.size() for past-the-end iterators
   return (i <= row->size());
+}
+
+
+
+inline
+Dense_Row::const_iterator::Const_Member_Access_Helper
+::Const_Member_Access_Helper(dimension_type index, const Coefficient& data)
+  : value(index, data) {
+}
+
+inline const Dense_Row::const_iterator::const_type*
+Dense_Row::const_iterator::Const_Member_Access_Helper::operator->() const {
+  return &value;
 }
 
 } // namespace Parma_Polyhedra_Library
