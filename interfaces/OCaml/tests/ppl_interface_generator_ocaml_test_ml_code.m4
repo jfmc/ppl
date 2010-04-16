@@ -884,3 +884,83 @@ let out
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
 ')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+`
+print_string_if_noisy "testing ppl_@CLASS@_drop_some_non_integer_points: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
+let u = ppl_@CLASS@_drop_some_non_integer_points copy01 Any_Complexity ;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+`
+print_string_if_noisy "testing ppl_@CLASS@_drop_some_non_integer_points: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
+let dimensions_integer = [1];;
+let u = ppl_@CLASS@_drop_some_non_integer_points_2 copy01 dimensions_integer Any_Complexity ;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+')
+
+m4_define(`ppl_@CLASS@_wrap_assign_code',
+`
+print_string_if_noisy "testing ppl_@CLASS@_wrap_assign: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
+let dimensions_integer = [1];;
+let u = ppl_@CLASS@_wrap_assign copy01 [] Bits_8 Unsigned Overflow_Wraps
+                                [] 0 1;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_code',
+`
+print_string_if_noisy
+  "testing ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
+let univ
+  = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension 2 Universe;;
+let u = ppl_@CLASS@_concatenate_assign copy01 @!TOPOLOGY@@!CLASS@01;;
+let result1 = ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@ univ;;
+let result2
+  = ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@ copy01;;
+let out = if (not result1 & not result2 & ppl_@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_code',
+`
+print_string_if_noisy
+  "testing ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
+let copy02
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@02);;
+let u = ppl_@CLASS@_concatenate_assign copy02 @!TOPOLOGY@@!CLASS@02;;
+let result1
+  = ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2 copy01 copy02;;
+let univ01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension 2 Universe;;
+let univ02
+  = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension 4 Universe;;
+let result2
+  = ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2 univ01 univ02;;
+let out = if (not result1 & not result2 & ppl_@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+')

@@ -23,10 +23,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_termination_templates_hh
 #define PPL_termination_templates_hh 1
 
+#include "globals.defs.hh"
+#include "Variable.defs.hh"
+#include "Generator.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "C_Polyhedron.defs.hh"
-#include "BD_Shape.defs.hh"
-#include "Octagonal_Shape.defs.hh"
+
+#include <stdexcept>
 
 #define PRINT_DEBUG_INFO 0
 
@@ -132,63 +135,21 @@ output_function_PR(std::ostream& s, const Variable& v) {
 }
 #endif
 
-void fill_constraint_systems_MS(const Constraint_System& cs,
-				const dimension_type n,
-				const dimension_type m,
-				Constraint_System& cs_out1,
-				Constraint_System& cs_out2);
-
-void fill_constraint_system_PR(const Constraint_System& cs,
-			       const dimension_type n,
-			       const dimension_type m,
-			       dimension_type& r,
-			       Constraint_System& cs_out,
-			       Linear_Expression& le_out);
+void
+assign_all_inequalities_approximation(const Constraint_System& cs_in,
+				      Constraint_System& cs_out);
 
 template <typename PSET>
-void
+inline void
 assign_all_inequalities_approximation(const PSET& pset,
 				      Constraint_System& cs) {
-  cs = pset.minimized_constraints();
-  if (cs.has_strict_inequalities() || cs.has_equalities() > 0) {
-    Constraint_System tmp_cs;
-    for (Constraint_System::const_iterator i = cs.begin(),
-	   cs_end = cs.end(); i != cs_end; ++i) {
-      const Constraint& c = *i;
-      if (c.is_equality()) {
-	// Insert the two corresponding opposing inequalities.
-	tmp_cs.insert(Linear_Expression(c) >= 0);
-	tmp_cs.insert(Linear_Expression(c) <= 0);
-      }
-      else if (c.is_strict_inequality())
-	// Insert the non-strict approximation.
-	tmp_cs.insert(Linear_Expression(c) >= 0);
-      else
-	// Insert as is.
-	tmp_cs.insert(c);
-    }
-    cs = tmp_cs;
-  }
+  assign_all_inequalities_approximation(pset.minimized_constraints(), cs);
 }
 
 template <>
 void
 assign_all_inequalities_approximation(const C_Polyhedron& ph,
 				      Constraint_System& cs);
-
-template <typename T>
-void
-assign_all_inequalities_approximation(const BD_Shape<T>& bds,
-				      Constraint_System& cs) {
-  cs = bds.minimized_constraints();
-}
-
-template <typename T>
-void
-assign_all_inequalities_approximation(const Octagonal_Shape<T>& ocs,
-				      Constraint_System& cs) {
-  cs = ocs.minimized_constraints();
-}
 
 void
 shift_unprimed_variables(Constraint_System& cs);
@@ -219,6 +180,11 @@ void
 all_affine_ranking_functions_MS(const Constraint_System& cs,
 				C_Polyhedron& mu_space);
 
+void
+all_affine_quasi_ranking_functions_MS(const Constraint_System& cs,
+                                      C_Polyhedron& decreasing_mu_space,
+                                      C_Polyhedron& bounded_mu_space);
+
 bool
 termination_test_PR(const Constraint_System& cs_before,
 		    const Constraint_System& cs_after);
@@ -232,6 +198,17 @@ void
 all_affine_ranking_functions_PR(const Constraint_System& cs_before,
 				const Constraint_System& cs_after,
 				NNC_Polyhedron& mu_space);
+
+bool
+termination_test_PR_original(const Constraint_System& cs);
+
+bool
+one_affine_ranking_function_PR_original(const Constraint_System& cs,
+                                        Generator& mu);
+
+void
+all_affine_ranking_functions_PR_original(const Constraint_System& cs,
+                                         NNC_Polyhedron& mu_space);
 
 } // namespace Termination
 
@@ -281,7 +258,7 @@ one_affine_ranking_function_MS(const PSET& pset, Generator& mu) {
   const dimension_type space_dim = pset.space_dimension();
   if (space_dim % 2 != 0) {
     std::ostringstream s;
-    s << "PPL::one_affine_ranking_function_MS(pset):\n"
+    s << "PPL::one_affine_ranking_function_MS(pset, mu):\n"
          "pset.space_dimension() == " << space_dim
       << " is odd.";
     throw std::invalid_argument(s.str());
@@ -302,7 +279,7 @@ one_affine_ranking_function_MS_2(const PSET& pset_before,
   const dimension_type after_space_dim = pset_after.space_dimension();
   if (after_space_dim != 2*before_space_dim) {
     std::ostringstream s;
-    s << "PPL::one_affine_ranking_function_MS_2(pset_before, pset_after):\n"
+    s << "PPL::one_affine_ranking_function_MS_2(pset_before, pset_after, mu):\n"
          "pset_before.space_dimension() == " << before_space_dim
       << ", pset_after.space_dimension() == " << after_space_dim
       << ";\nthe latter should be twice the former.";
@@ -321,10 +298,15 @@ all_affine_ranking_functions_MS(const PSET& pset, C_Polyhedron& mu_space) {
   const dimension_type space_dim = pset.space_dimension();
   if (space_dim % 2 != 0) {
     std::ostringstream s;
-    s << "PPL::all_affine_ranking_functions_MS(pset):\n"
+    s << "PPL::all_affine_ranking_functions_MS(pset, mu_space):\n"
          "pset.space_dimension() == " << space_dim
       << " is odd.";
     throw std::invalid_argument(s.str());
+  }
+
+  if (pset.is_empty()) {
+    mu_space = C_Polyhedron(1 + space_dim/2, UNIVERSE);
+    return;
   }
 
   using namespace Implementation::Termination;
@@ -342,17 +324,84 @@ all_affine_ranking_functions_MS_2(const PSET& pset_before,
   const dimension_type after_space_dim = pset_after.space_dimension();
   if (after_space_dim != 2*before_space_dim) {
     std::ostringstream s;
-    s << "PPL::all_affine_ranking_functions_MS_2(pset_before, pset_after):\n"
-         "pset_before.space_dimension() == " << before_space_dim
+    s << "PPL::all_affine_ranking_functions_MS_2"
+      << "(pset_before, pset_after, mu_space):\n"
+      << "pset_before.space_dimension() == " << before_space_dim
       << ", pset_after.space_dimension() == " << after_space_dim
       << ";\nthe latter should be twice the former.";
     throw std::invalid_argument(s.str());
+  }
+
+  if (pset_before.is_empty()) {
+    mu_space = C_Polyhedron(1 + before_space_dim, UNIVERSE);
+    return;
   }
 
   using namespace Implementation::Termination;
   Constraint_System cs;
   assign_all_inequalities_approximation(pset_before, pset_after, cs);
   all_affine_ranking_functions_MS(cs, mu_space);
+}
+
+template <typename PSET>
+void
+all_affine_quasi_ranking_functions_MS(const PSET& pset,
+                                      C_Polyhedron& decreasing_mu_space,
+                                      C_Polyhedron& bounded_mu_space) {
+  const dimension_type space_dim = pset.space_dimension();
+  if (space_dim % 2 != 0) {
+    std::ostringstream s;
+    s << "PPL::all_affine_quasi_ranking_functions_MS"
+      << "(pset, decr_space, bounded_space):\n"
+      << "pset.space_dimension() == " << space_dim
+      << " is odd.";
+    throw std::invalid_argument(s.str());
+  }
+
+  if (pset.is_empty()) {
+    decreasing_mu_space = C_Polyhedron(1 + space_dim/2, UNIVERSE);
+    bounded_mu_space = decreasing_mu_space;
+    return;
+  }
+
+  using namespace Implementation::Termination;
+  Constraint_System cs;
+  assign_all_inequalities_approximation(pset, cs);
+  all_affine_quasi_ranking_functions_MS(cs,
+                                        decreasing_mu_space,
+                                        bounded_mu_space);
+}
+
+template <typename PSET>
+void
+all_affine_quasi_ranking_functions_MS_2(const PSET& pset_before,
+                                        const PSET& pset_after,
+                                        C_Polyhedron& decreasing_mu_space,
+                                        C_Polyhedron& bounded_mu_space) {
+  const dimension_type before_space_dim = pset_before.space_dimension();
+  const dimension_type after_space_dim = pset_after.space_dimension();
+  if (after_space_dim != 2*before_space_dim) {
+    std::ostringstream s;
+    s << "PPL::all_affine_quasi_ranking_functions_MS_2"
+      << "(pset_before, pset_after, decr_space, bounded_space):\n"
+      << "pset_before.space_dimension() == " << before_space_dim
+      << ", pset_after.space_dimension() == " << after_space_dim
+      << ";\nthe latter should be twice the former.";
+    throw std::invalid_argument(s.str());
+  }
+
+  if (pset_before.is_empty()) {
+    decreasing_mu_space = C_Polyhedron(1 + before_space_dim, UNIVERSE);
+    bounded_mu_space = decreasing_mu_space;
+    return;
+  }
+
+  using namespace Implementation::Termination;
+  Constraint_System cs;
+  assign_all_inequalities_approximation(pset_before, pset_after, cs);
+  all_affine_quasi_ranking_functions_MS(cs,
+                                        decreasing_mu_space,
+                                        bounded_mu_space);
 }
 
 template <typename PSET>
@@ -363,7 +412,7 @@ termination_test_PR_2(const PSET& pset_before, const PSET& pset_after) {
   if (after_space_dim != 2*before_space_dim) {
     std::ostringstream s;
     s << "PPL::termination_test_PR_2(pset_before, pset_after):\n"
-         "pset_before.space_dimension() == " << before_space_dim
+      << "pset_before.space_dimension() == " << before_space_dim
       << ", pset_after.space_dimension() == " << after_space_dim
       << ";\nthe latter should be twice the former.";
     throw std::invalid_argument(s.str());
@@ -384,16 +433,15 @@ termination_test_PR(const PSET& pset_after) {
   if (space_dim % 2 != 0) {
     std::ostringstream s;
     s << "PPL::termination_test_PR(pset):\n"
-         "pset.space_dimension() == " << space_dim
+      << "pset.space_dimension() == " << space_dim
       << " is odd.";
     throw std::invalid_argument(s.str());
   }
 
-  // FIXME: this may be inefficient.
-  PSET pset_before(pset_after);
-  Variables_Set primed_variables(Variable(0), Variable(space_dim/2 - 1));
-  pset_before.remove_space_dimensions(primed_variables);
-  return termination_test_PR_2(pset_before, pset_after);
+  using namespace Implementation::Termination;
+  Constraint_System cs;
+  assign_all_inequalities_approximation(pset_after, cs);
+  return termination_test_PR_original(cs);
 }
 
 template <typename PSET>
@@ -405,8 +453,9 @@ one_affine_ranking_function_PR_2(const PSET& pset_before,
   const dimension_type after_space_dim = pset_after.space_dimension();
   if (after_space_dim != 2*before_space_dim) {
     std::ostringstream s;
-    s << "PPL::one_affine_ranking_function_PR_2(pset_before, pset_after):\n"
-         "pset_before.space_dimension() == " << before_space_dim
+    s << "PPL::one_affine_ranking_function_PR_2"
+      << "(pset_before, pset_after, mu):\n"
+      << "pset_before.space_dimension() == " << before_space_dim
       << ", pset_after.space_dimension() == " << after_space_dim
       << ";\nthe latter should be twice the former.";
     throw std::invalid_argument(s.str());
@@ -426,17 +475,16 @@ one_affine_ranking_function_PR(const PSET& pset_after, Generator& mu) {
   const dimension_type space_dim = pset_after.space_dimension();
   if (space_dim % 2 != 0) {
     std::ostringstream s;
-    s << "PPL::one_affine_ranking_function_PR(pset):\n"
-         "pset.space_dimension() == " << space_dim
+    s << "PPL::one_affine_ranking_function_PR(pset, mu):\n"
+      << "pset.space_dimension() == " << space_dim
       << " is odd.";
     throw std::invalid_argument(s.str());
   }
 
-  // FIXME: this may be inefficient.
-  PSET pset_before(pset_after);
-  Variables_Set primed_variables(Variable(0), Variable(space_dim/2 - 1));
-  pset_before.remove_space_dimensions(primed_variables);
-  return one_affine_ranking_function_PR_2(pset_before, pset_after, mu);
+  using namespace Implementation::Termination;
+  Constraint_System cs;
+  assign_all_inequalities_approximation(pset_after, cs);
+  return one_affine_ranking_function_PR_original(cs, mu);
 }
 
 template <typename PSET>
@@ -448,11 +496,17 @@ all_affine_ranking_functions_PR_2(const PSET& pset_before,
   const dimension_type after_space_dim = pset_after.space_dimension();
   if (after_space_dim != 2*before_space_dim) {
     std::ostringstream s;
-    s << "PPL::all_affine_ranking_functions_MS_2(pset_before, pset_after):\n"
-         "pset_before.space_dimension() == " << before_space_dim
+    s << "PPL::all_affine_ranking_functions_MS_2"
+      << "(pset_before, pset_after, mu_space):\n"
+      << "pset_before.space_dimension() == " << before_space_dim
       << ", pset_after.space_dimension() == " << after_space_dim
       << ";\nthe latter should be twice the former.";
     throw std::invalid_argument(s.str());
+  }
+
+  if (pset_before.is_empty()) {
+    mu_space = NNC_Polyhedron(1 + before_space_dim);
+    return;
   }
 
   using namespace Implementation::Termination;
@@ -470,17 +524,21 @@ all_affine_ranking_functions_PR(const PSET& pset_after,
   const dimension_type space_dim = pset_after.space_dimension();
   if (space_dim % 2 != 0) {
     std::ostringstream s;
-    s << "PPL::all_affine_ranking_functions_PR(pset):\n"
-         "pset.space_dimension() == " << space_dim
+    s << "PPL::all_affine_ranking_functions_PR(pset, mu_space):\n"
+      << "pset.space_dimension() == " << space_dim
       << " is odd.";
     throw std::invalid_argument(s.str());
   }
 
-  // FIXME: this may be inefficient.
-  PSET pset_before(pset_after);
-  Variables_Set primed_variables(Variable(0), Variable(space_dim/2 - 1));
-  pset_before.remove_space_dimensions(primed_variables);
-  all_affine_ranking_functions_PR_2(pset_before, pset_after, mu_space);
+  if (pset_after.is_empty()) {
+    mu_space = NNC_Polyhedron(1 + space_dim/2);
+    return;
+  }
+
+  using namespace Implementation::Termination;
+  Constraint_System cs;
+  assign_all_inequalities_approximation(pset_after, cs);
+  all_affine_ranking_functions_PR_original(cs, mu_space);
 }
 
 } // namespace Parma_Polyhedra_Library

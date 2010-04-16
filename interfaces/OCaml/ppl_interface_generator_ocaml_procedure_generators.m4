@@ -46,9 +46,11 @@ m4_define(`m4_procedure_list',
 ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@ +simple,
 ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@ +simple,
 ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@ +simple,
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@ +simple,
 ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2 +simple,
 ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2 +simple,
 ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2 +simple,
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2 +simple,
 )
 ')
 

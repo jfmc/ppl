@@ -192,6 +192,13 @@ public:
   }
 };
 
+class not_a_boolean : public internal_exception {
+public:
+  not_a_boolean(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
 class not_a_variable : public internal_exception {
 public:
   not_a_variable(Prolog_term_ref term, const char* where)
@@ -202,6 +209,28 @@ public:
 class not_an_optimization_mode : public internal_exception {
 public:
   not_an_optimization_mode(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
+class not_a_bounded_integer_type_width : public internal_exception {
+public:
+  not_a_bounded_integer_type_width(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
+class not_a_bounded_integer_type_representation : public internal_exception {
+public:
+  not_a_bounded_integer_type_representation(Prolog_term_ref term,
+                                            const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
+class not_a_bounded_integer_type_overflow : public internal_exception {
+public:
+  not_a_bounded_integer_type_overflow(Prolog_term_ref term, const char* where)
     : internal_exception(term, where) {
   }
 };
@@ -223,6 +252,20 @@ public:
 class not_a_control_parameter_value : public internal_exception {
 public:
   not_a_control_parameter_value(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
+class not_a_pip_problem_control_parameter_name : public internal_exception {
+public:
+  not_a_pip_problem_control_parameter_name(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
+class not_a_pip_problem_control_parameter_value : public internal_exception {
+public:
+  not_a_pip_problem_control_parameter_value(Prolog_term_ref term, const char* where)
     : internal_exception(term, where) {
   }
 };
@@ -349,6 +392,22 @@ extern Prolog_atom a_polynomial;
 extern Prolog_atom a_simplex;
 extern Prolog_atom a_any;
 
+// Denote possible widths of bounded integer types.
+extern Prolog_atom a_bits_8;
+extern Prolog_atom a_bits_16;
+extern Prolog_atom a_bits_32;
+extern Prolog_atom a_bits_64;
+extern Prolog_atom a_bits_128;
+
+// Denote possible representations of bounded integer types.
+extern Prolog_atom a_unsigned;
+extern Prolog_atom a_signed_2_complement;
+
+// Denote possible overflow behavior of bounded integer types.
+extern Prolog_atom a_overflow_wraps;
+extern Prolog_atom a_overflow_undefined;
+extern Prolog_atom a_overflow_impossible;
+
 // Boolean constants.
 extern Prolog_atom a_true;
 extern Prolog_atom a_false;
@@ -366,6 +425,9 @@ handle_exception(const Prolog_unsigned_out_of_range& e);
 
 void
 handle_exception(const not_unsigned_integer& e);
+
+void
+handle_exception(const not_a_boolean& e);
 
 void
 handle_exception(const non_linear& e);
@@ -386,10 +448,25 @@ void
 handle_exception(const not_a_complexity_class& e);
 
 void
+handle_exception(const not_a_bounded_integer_type_width& e);
+
+void
+handle_exception(const not_a_bounded_integer_type_representation& e);
+
+void
+handle_exception(const not_a_bounded_integer_type_overflow& e);
+
+void
 handle_exception(const not_a_control_parameter_name& e);
 
 void
 handle_exception(const not_a_control_parameter_value& e);
+
+void
+handle_exception(const not_a_pip_problem_control_parameter_name& e);
+
+void
+handle_exception(const not_a_pip_problem_control_parameter_value& e);
 
 void
 handle_exception(const not_universe_or_empty& e);
@@ -483,10 +560,25 @@ handle_exception(const deterministic_timeout_exception&);
   catch (const not_a_complexity_class& e) { \
     handle_exception(e); \
   } \
+  catch (const not_a_bounded_integer_type_width& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_bounded_integer_type_representation& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_bounded_integer_type_overflow& e) { \
+    handle_exception(e); \
+  } \
   catch (const not_a_control_parameter_name& e) { \
     handle_exception(e); \
   } \
   catch (const not_a_control_parameter_value& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_pip_problem_control_parameter_name& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_pip_problem_control_parameter_value& e) { \
     handle_exception(e); \
   } \
   catch (const not_universe_or_empty& e) { \
@@ -572,6 +664,9 @@ term_to_unsigned(Prolog_term_ref t, const char* where) {
 }
 
 Prolog_atom
+term_to_boolean(Prolog_term_ref t, const char* where);
+
+Prolog_atom
 term_to_universe_or_empty(Prolog_term_ref t, const char* where);
 
 Prolog_term_ref
@@ -579,6 +674,16 @@ interval_term(const Parma_Polyhedra_Library::Rational_Box::interval_type& i);
 
 Prolog_atom
 term_to_complexity_class(Prolog_term_ref t, const char* where);
+
+Prolog_atom
+term_to_bounded_integer_type_width(Prolog_term_ref t, const char* where);
+
+Prolog_atom
+term_to_bounded_integer_type_representation(Prolog_term_ref t,
+                                            const char* where);
+
+Prolog_atom
+term_to_bounded_integer_type_overflow(Prolog_term_ref t, const char* where);
 
 template <typename T>
 T*
@@ -661,6 +766,12 @@ term_to_control_parameter_name(Prolog_term_ref t, const char* where);
 Prolog_atom
 term_to_control_parameter_value(Prolog_term_ref t, const char* where);
 
+Prolog_atom
+term_to_pip_problem_control_parameter_name(Prolog_term_ref t, const char* where);
+
+Prolog_atom
+term_to_pip_problem_control_parameter_value(Prolog_term_ref t, const char* where);
+
 void
 check_nil_terminating(Prolog_term_ref t, const char* where);
 
@@ -726,6 +837,9 @@ ppl_set_deterministic_timeout(Prolog_term_ref t_weight);
 
 extern "C" Prolog_foreign_return_type
 ppl_reset_deterministic_timeout();
+
+extern "C" Prolog_foreign_return_type
+ppl_Coefficient_bits(Prolog_term_ref t_bits);
 
 extern "C" Prolog_foreign_return_type
 ppl_Coefficient_is_bounded();
@@ -844,12 +958,18 @@ ppl_MIP_Problem_ascii_dump(Prolog_term_ref t_mip);
 
 
 extern "C" Prolog_foreign_return_type
-ppl_new_PIP_Problem_from_space_dimension
-(Prolog_term_ref t_nd, Prolog_term_ref t_pip);
+ppl_new_PIP_Problem_from_space_dimension(Prolog_term_ref t_nd,
+                                         Prolog_term_ref t_pip);
 
 extern "C" Prolog_foreign_return_type
 ppl_new_PIP_Problem_from_PIP_Problem(Prolog_term_ref t_pip_source,
 				     Prolog_term_ref t_pip);
+
+extern "C" Prolog_foreign_return_type
+ppl_new_PIP_Problem(Prolog_term_ref t_dim,
+		    Prolog_term_ref t_cs,
+		    Prolog_term_ref t_params,
+		    Prolog_term_ref t_pip);
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Problem_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs);
@@ -865,8 +985,7 @@ ppl_PIP_Problem_parameter_space_dimensions(Prolog_term_ref t_pip,
                                            Prolog_term_ref t_vlist);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Problem_constraints(Prolog_term_ref t_pip,
-			    Prolog_term_ref t_clist);
+ppl_PIP_Problem_constraints(Prolog_term_ref t_pip, Prolog_term_ref t_cs);
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Problem_get_control_parameter(Prolog_term_ref t_pip,
@@ -912,7 +1031,7 @@ ppl_PIP_Problem_optimizing_solution(Prolog_term_ref t_pip,
                                     Prolog_term_ref t_pip_tree);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Problem_get_big_parameter_dimension(Prolog_term_ref t_pip,
+ppl_PIP_Problem_has_big_parameter_dimension(Prolog_term_ref t_pip,
                                             Prolog_term_ref t_d);
 
 extern "C" Prolog_foreign_return_type
@@ -926,28 +1045,37 @@ extern "C" Prolog_foreign_return_type
 ppl_PIP_Problem_ascii_dump(Prolog_term_ref t_pip);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Tree_Node_get_constraints(Prolog_term_ref t_pip_tree,
-                                  Prolog_term_ref t_clist);
+ppl_PIP_Tree_Node_constraints(Prolog_term_ref t_tree_node,
+                              Prolog_term_ref t_clist);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Tree_Node_get_artificials(Prolog_term_ref t_pip_tree,
-                                  Prolog_term_ref t_clist);
+ppl_PIP_Tree_Node_is_solution(Prolog_term_ref t_tree_node);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Solution_Node_get_parametric_values(Prolog_term_ref t_pip_sol,
-                                            Prolog_term_ref t_pvalue_list);
+ppl_PIP_Tree_Node_is_decision(Prolog_term_ref t_tree_node);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Decision_Node_get_true_child(Prolog_term_ref t_pip_dec,
-                                     Prolog_term_ref t_pip_tree);
+ppl_PIP_Tree_Node_is_bottom(Prolog_term_ref t_tree_node);
 
 extern "C" Prolog_foreign_return_type
-ppl_PIP_Decision_Node_get_false_child(Prolog_term_ref t_pip_dec,
-                                      Prolog_term_ref t_pip_tree);
+ppl_PIP_Tree_Node_artificials(Prolog_term_ref t_tree_node,
+                              Prolog_term_ref t_artlist);
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Tree_Node_OK(Prolog_term_ref t_pip_tree);
 
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Tree_Node_parametric_values(Prolog_term_ref t_pip_sol,
+                                    Prolog_term_ref t_var,
+                                    Prolog_term_ref t_pvalue_list);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Tree_Node_true_child(Prolog_term_ref t_pip_dec,
+                             Prolog_term_ref t_pip_tree);
+
+extern "C" Prolog_foreign_return_type
+ppl_PIP_Tree_Node_false_child(Prolog_term_ref t_pip_dec,
+                              Prolog_term_ref t_pip_tree);
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::Prolog;

@@ -94,6 +94,29 @@ PPL_PROTO((ppl_const_@CLASS@_t pset_before,
 
 ')
 
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+`dnl
+/*! \relates ppl_@CLASS@_tag */
+int
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@
+PPL_PROTO((ppl_const_@CLASS@_t pset,
+           ppl_Polyhedron_t ph_decreasing,
+           ppl_Polyhedron_t ph_bounded));
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+/*! \relates ppl_@CLASS@_tag */
+int
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2
+PPL_PROTO((ppl_const_@CLASS@_t pset_before,
+           ppl_const_@CLASS@_t pset_after,
+           ppl_Polyhedron_t ph_decreasing,
+           ppl_Polyhedron_t ph_bounded));
+
+')
+
 m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `dnl
 /*! \relates ppl_@CLASS@_tag */
@@ -253,6 +276,19 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
            ppl_Coefficient_t ext_d,
            int* poptimum,
            ppl_Generator_t point));
+
+')
+
+m4_define(`ppl_@CLASS@_frequency_code',
+`/*! \relates ppl_@CLASS@_tag */
+int
+ppl_@CLASS@_frequency
+PPL_PROTO((ppl_const_@CLASS@_t ph,
+           ppl_const_Linear_Expression_t le,
+           ppl_Coefficient_t ext_fn,
+           ppl_Coefficient_t ext_fd,
+           ppl_Coefficient_t ext_vn,
+           ppl_Coefficient_t ext_vd));
 
 ')
 
@@ -623,6 +659,28 @@ PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type ds[],
            size_t n,
            ppl_dimension_type d));
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+`dnl
+/*! \relates ppl_@CLASS@_tag */
+int
+ppl_@CLASS@_drop_some_non_integer_points
+PPL_PROTO((ppl_@CLASS@_t ph,
+           int complexity));
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+`dnl
+/*! \relates ppl_@CLASS@_tag */
+int
+ppl_@CLASS@_drop_some_non_integer_points_2
+PPL_PROTO((ppl_@CLASS@_t ph,
+           ppl_dimension_type ds[],
+           size_t n,
+           int complexity));
 
 ')
 

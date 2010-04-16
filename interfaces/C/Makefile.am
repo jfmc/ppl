@@ -84,15 +84,29 @@ WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
 
 endif BUILD_WATCHDOG_LIBRARY
 
+if HAVE_PERL
+
 ppl_c.h: ppl_c_header.h ppl_c_version.h ppl_c_domains.h Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir)/interfaces/C -I $(top_srcdir)/src \
 		$(top_srcdir)/interfaces/C/ppl_c_header.h >$@
 
+else !HAVE_PERL
+
+ppl_c.h:	ppl_c.h.dist
+	cp -f $< $@
+
+endif !HAVE_PERL
+
 BUILT_SOURCES = \
 ppl_c.h \
 ppl_c_implementation_domains.hh \
 ppl_c_implementation_domains.cc.stamp
+
+# ppl_c.h is not distributed.
+# ppl_c.h.dist, which is distributed, is a copy of ppl_c.h.
+dist-hook:
+	mv -f $(distdir)/ppl_c.h $(distdir)/ppl_c.h.dist
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -231,7 +245,7 @@ libppl_c_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_C_LT_CURRENT):$(LIBPPL_C_LT_REVISION):$(LIBPPL_C_LT_AGE)
 
-nodist_include_HEADERS = ppl_c.h
+include_HEADERS = ppl_c.h
 
 nodist_noinst_HEADERS = \
 ppl_c_domains.h \

@@ -258,6 +258,27 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_frequency_code',
+`int
+ppl_@CLASS@_frequency
+(ppl_const_@CLASS@_t ph,
+ ppl_const_Linear_Expression_t le,
+ ppl_Coefficient_t freq_n,
+ ppl_Coefficient_t freq_d,
+ ppl_Coefficient_t val_n,
+ ppl_Coefficient_t val_d) try {
+  const @CPP_CLASS@& pph = *to_const(ph);
+  const Linear_Expression& lle = *to_const(le);
+  Coefficient& pfreq_n = *to_nonconst(freq_n);
+  Coefficient& pfreq_d = *to_nonconst(freq_d);
+  Coefficient& pval_n = *to_nonconst(val_n);
+  Coefficient& pval_d = *to_nonconst(val_d);
+  return pph.frequency(lle, pfreq_n, pfreq_d, pval_n, pval_d);
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `int
 ppl_@CLASS@_@COMPARISON@_@CLASS@
@@ -840,6 +861,57 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+`int
+ppl_@CLASS@_drop_some_non_integer_points
+(ppl_@CLASS@_t ph,
+ int complexity) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  switch (complexity) {
+  case 0:
+    pph.drop_some_non_integer_points(POLYNOMIAL_COMPLEXITY);
+    break;
+  case 1:
+    pph.drop_some_non_integer_points(SIMPLEX_COMPLEXITY);
+    break;
+  case 2:
+    pph.drop_some_non_integer_points(ANY_COMPLEXITY);
+    break;
+  }
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+`int
+ppl_@CLASS@_drop_some_non_integer_points_2
+(ppl_@CLASS@_t ph,
+ ppl_dimension_type ds[],
+ size_t n,
+ int complexity) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  Variables_Set vars;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    vars.insert(ds[i]);
+  switch (complexity) {
+  case 0:
+    pph.drop_some_non_integer_points(vars, POLYNOMIAL_COMPLEXITY);
+    break;
+  case 1:
+    pph.drop_some_non_integer_points(vars, SIMPLEX_COMPLEXITY);
+    break;
+  case 2:
+    pph.drop_some_non_integer_points(vars, ANY_COMPLEXITY);
+    break;
+  }
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 `int
 ppl_@CLASS@_@MEMBYTES@
@@ -1247,6 +1319,43 @@ ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
   all_affine_ranking_functions_@TERMINATION_ID@_2
     (ppset_before, ppset_after,
      *static_cast<@A_TERMINATION_ID@Polyhedron*>(to_nonconst(ph)));
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+`int
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@
+(ppl_const_@CLASS@_t pset,
+ ppl_Polyhedron_t ph_decreasing,
+ ppl_Polyhedron_t ph_bounded) try {
+  const @TOPOLOGY@@CPP_CLASS@& ppset
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset));
+  all_affine_quasi_ranking_functions_MS(ppset,
+    *static_cast<C_Polyhedron*>(to_nonconst(ph_decreasing)),
+    *static_cast<C_Polyhedron*>(to_nonconst(ph_bounded)));
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+`int
+ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2
+(ppl_const_@CLASS@_t pset_before,
+ ppl_const_@CLASS@_t pset_after,
+ ppl_Polyhedron_t ph_decreasing,
+ ppl_Polyhedron_t ph_bounded) try {
+  const @TOPOLOGY@@CPP_CLASS@& ppset_before
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_before));
+  const @TOPOLOGY@@CPP_CLASS@& ppset_after
+    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_after));
+  all_affine_quasi_ranking_functions_MS_2(ppset_before, ppset_after,
+    *static_cast<C_Polyhedron*>(to_nonconst(ph_decreasing)),
+    *static_cast<C_Polyhedron*>(to_nonconst(ph_bounded)));
   return 0;
 }
 CATCH_ALL

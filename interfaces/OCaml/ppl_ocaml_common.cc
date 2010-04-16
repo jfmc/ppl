@@ -209,6 +209,59 @@ build_ppl_relsym(value caml_relsym) {
   }
 }
 
+Bounded_Integer_Type_Width
+build_ppl_bounded_integer_type_width(value caml_width) {
+  assert(Is_long(caml_width));
+  switch (Int_val(caml_width)) {
+  case 0:
+    return BITS_8;
+  case 1:
+    return BITS_16;
+  case 2:
+    return BITS_32;
+  case 3:
+    return BITS_64;
+  case 4:
+    return BITS_128;
+  default:
+    // We should not be here!
+    throw std::runtime_error("PPL OCaml interface internal error\n:"
+                             "build_ppl_bounded_integer_type_width(width)");
+  }
+}
+
+Bounded_Integer_Type_Representation
+build_ppl_bounded_integer_type_representation(value caml_rep) {
+  assert(Is_long(caml_rep));
+  switch (Int_val(caml_rep)) {
+  case 0:
+    return UNSIGNED;
+  case 1:
+    return SIGNED_2_COMPLEMENT;
+  default:
+    // We should not be here!
+    throw std::runtime_error("PPL OCaml interface internal error\n:"
+                             "build_ppl_bounded_integer_type_representation(rep)");
+  }
+}
+
+Bounded_Integer_Type_Overflow
+build_ppl_bounded_integer_type_overflow(value caml_oflow) {
+  assert(Is_long(caml_oflow));
+  switch (Int_val(caml_oflow)) {
+  case 0:
+    return OVERFLOW_WRAPS;
+  case 1:
+    return OVERFLOW_UNDEFINED;
+  case 2:
+    return OVERFLOW_IMPOSSIBLE;
+  default:
+    // We should not be here!
+    throw std::runtime_error("PPL OCaml interface internal error\n:"
+                             "build_ppl_bounded_integer_type_overflow(oflow)");
+  }
+}
+
 Optimization_Mode
 build_ppl_opt_mode(value caml_opt_mode) {
   assert(Is_long(caml_opt_mode));
@@ -283,6 +336,44 @@ build_ppl_control_parameter_value(value caml_cp_value) {
     // We should not be here!
     throw std::runtime_error("PPL OCaml interface internal error:\n"
                              "build_ppl_control_parameter_value(cpv)");
+  }
+}
+
+PIP_Problem::Control_Parameter_Name
+build_ppl_pip_problem_control_parameter_name(value caml_cp_name) {
+  assert(Is_long(caml_cp_name));
+  switch (Int_val(caml_cp_name)) {
+  case 0:
+    return  PIP_Problem::CUTTING_STRATEGY;
+  case 1:
+    return  PIP_Problem::PIVOT_ROW_STRATEGY;
+  default:
+    // We should not be here!
+    throw std::runtime_error("PPL OCaml interface internal error:\n"
+                             "build_ppl_pip_problem_"
+                             "control_parameter_name(cpn)");
+  }
+}
+
+PIP_Problem::Control_Parameter_Value
+build_ppl_pip_problem_control_parameter_value(value caml_cp_value) {
+  assert(Is_long(caml_cp_value));
+  switch (Int_val(caml_cp_value)) {
+  case 0:
+    return PIP_Problem::CUTTING_STRATEGY_FIRST;
+  case 1:
+    return PIP_Problem::CUTTING_STRATEGY_DEEPEST;
+  case 2:
+    return PIP_Problem::CUTTING_STRATEGY_ALL;
+  case 3:
+    return PIP_Problem::PIVOT_ROW_STRATEGY_FIRST;
+  case 4:
+    return PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN;
+  default:
+    // We should not be here!
+    throw std::runtime_error("PPL OCaml interface internal error:\n"
+                             "build_ppl_pip_problem_"
+                             "control_parameter_value(cpv)");
   }
 }
 
@@ -745,6 +836,74 @@ unregistered_value_p_MIP_Problem(const MIP_Problem& ph) {
   return v;
 }
 
+//! Give access to the embedded PIP_Problem* in \p v.
+inline PIP_Problem*&
+p_PIP_Problem_val(value v) {
+  return *reinterpret_cast<PIP_Problem**>(Data_custom_val(v));
+}
+
+void
+custom_PIP_Problem_finalize(value v) {
+  delete p_PIP_Problem_val(v);
+}
+
+static struct custom_operations PIP_Problem_custom_operations = {
+  "it.unipr.cs.ppl" "." PPL_VERSION "." "PIP_Problem",
+  custom_PIP_Problem_finalize,
+  custom_compare_default,
+  custom_hash_default,
+  custom_serialize_default,
+  custom_deserialize_default
+};
+
+inline value
+unregistered_value_p_PIP_Problem(const PIP_Problem& ph) {
+  value v = caml_alloc_custom(&PIP_Problem_custom_operations,
+                              sizeof(PIP_Problem*), 0, 1);
+  p_PIP_Problem_val(v) = const_cast<PIP_Problem*>(&ph);
+  return v;
+}
+
+// NOTE: the finalization of each PIP_Tree_Node object is delegated
+// to the owning PIP_Problem object, hence we should not provide a custom
+// finalization function (the default one is fine).
+// In principle, we could directly store a PIP_Tree_Node* in a Caml 'value':
+// the use of a Custom_tag block is anyway recommended by Caml manual.
+static struct custom_operations PIP_Tree_Node_custom_operations = {
+  "it.unipr.cs.ppl" "." PPL_VERSION "." "PIP_Tree_Node",
+  custom_finalize_default,
+  custom_compare_default,
+  custom_hash_default,
+  custom_serialize_default,
+  custom_deserialize_default
+};
+
+//! Give access to the embedded const PIP_Tree_Node* in \p v.
+inline const PIP_Tree_Node*&
+p_PIP_Tree_Node_val(value v) {
+  return *reinterpret_cast<const PIP_Tree_Node**>(Data_custom_val(v));
+}
+
+inline value
+unregistered_value_p_PIP_Tree_Node(const PIP_Tree_Node* pip_tree) {
+  value v = caml_alloc_custom(&PIP_Tree_Node_custom_operations,
+                              sizeof(PIP_Tree_Node*), 0, 1);
+  p_PIP_Tree_Node_val(v) = pip_tree;
+  return v;
+}
+
+inline const PIP_Tree_Node*
+ppl_PIP_Tree_Node_get_child(const PIP_Tree_Node* parent, bool branch) {
+  if (parent == 0)
+    throw std::invalid_argument("ppl_PIP_Tree_Node_get_child(node):\n"
+                                "node is bottom.");
+  if (const PIP_Decision_Node* ppl_dec = parent->as_decision())
+    return ppl_dec->child_node(branch);
+  else
+    throw std::invalid_argument("ppl_PIP_Tree_Node_get_child(node):\n"
+                                "node is not a decision node (solution).");
+}
+
 } // namespace OCaml
 
 } // namespace Interfaces
@@ -1089,6 +1248,439 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
+ppl_new_PIP_Problem_from_space_dimension(value d) try {
+  CAMLparam1(d);
+  dimension_type dd = value_to_ppl_dimension(d);
+  PIP_Problem& ppl_pip = *new PIP_Problem(dd);
+  CAMLreturn(unregistered_value_p_PIP_Problem(ppl_pip));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_new_PIP_Problem(value d, value caml_cs, value caml_vset) try {
+  CAMLparam3(d, caml_cs, caml_vset);
+  dimension_type dd = value_to_ppl_dimension(d);
+  Constraint_System ppl_cs = build_ppl_Constraint_System(caml_cs);
+  Variables_Set ppl_vset;
+  if (Int_val(caml_vset) == 0)
+    CAMLreturn(Val_unit);
+  while (true) {
+    ppl_vset.insert(Int_val(Field(caml_vset, 0)));
+    if (Int_val(Field(caml_vset, 1)) == 0)
+      break;
+    caml_vset = Field(caml_vset, 1);
+  }
+  PIP_Problem& ppl_pip = *new PIP_Problem(dd, ppl_cs.begin(), ppl_cs.end(),
+                                          ppl_vset);
+  CAMLreturn(unregistered_value_p_PIP_Problem(ppl_pip));
+}
+CATCH_ALL
+
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_space_dimension(value pip) try {
+  CAMLparam1(pip);
+  const PIP_Problem& ppip = *p_PIP_Problem_val(pip);
+  dimension_type d = ppip.space_dimension();
+  CAMLreturn(ppl_dimension_to_value(d));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_parameter_space_dimensions(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  CAMLlocal2(result, new_tail);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  const Variables_Set& ppl_ivars = ppl_pip.parameter_space_dimensions();
+  result = Val_emptylist;
+  for (Variables_Set::const_reverse_iterator i = ppl_ivars.rbegin(),
+         i_end = ppl_ivars.rend(); i != i_end; ++i) {
+    new_tail = caml_alloc_tuple(2);
+    Store_field(new_tail, 0, ppl_dimension_to_value(*i));
+    Store_field(new_tail, 1, result);
+    result = new_tail;
+  }
+  CAMLreturn(result);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_constraints(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  const PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  Constraint_System cs;
+  for (PIP_Problem::const_iterator cs_it = ppl_pip.constraints_begin(),
+	 cs_end = ppl_pip.constraints_end(); cs_it != cs_end; ++cs_it) {
+    cs.insert(*cs_it);
+  }
+  CAMLreturn(build_ocaml_constraint_system(cs));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_add_space_dimensions_and_embed(value caml_pip,
+                                               value vdim, value pdim) try {
+  CAMLparam3(caml_pip, vdim, pdim);
+  dimension_type ppl_vdim = value_to_ppl_dimension(vdim);
+  dimension_type ppl_pdim = value_to_ppl_dimension(pdim);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  ppl_pip.add_space_dimensions_and_embed(ppl_vdim, ppl_pdim);
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_add_to_parameter_space_dimensions(value caml_pip,
+						  value caml_ivars) try {
+  CAMLparam2(caml_pip, caml_ivars);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  ppl_pip.add_to_parameter_space_dimensions
+    (build_ppl_Variables_Set(caml_ivars));
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_add_constraint(value caml_pip,
+			       value caml_constraint) try {
+  CAMLparam2(caml_pip, caml_constraint);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  ppl_pip.add_constraint(build_ppl_Constraint(caml_constraint));
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_add_constraints(value caml_pip,
+                                value caml_constraints) try {
+  CAMLparam2(caml_pip, caml_constraints);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  ppl_pip.add_constraints(build_ppl_Constraint_System(caml_constraints));
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_set_big_parameter_dimension(value caml_pip,
+				            value caml_dim) try {
+  CAMLparam2(caml_pip, caml_dim);
+  dimension_type ppl_dim = value_to_ppl_dimension(caml_dim);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  ppl_pip.set_big_parameter_dimension(ppl_dim);
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_get_big_parameter_dimension(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  dimension_type d = ppl_pip.get_big_parameter_dimension();
+  if (d == not_a_dimension())
+    throw std::invalid_argument("ppl_PIP_Problem_get_big_parameter_dimension"
+                                "(pip):\n"
+                                "big parameter dimension has not been set.");
+  CAMLreturn(ppl_dimension_to_value(d));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_has_big_parameter_dimension(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  dimension_type d = ppl_pip.get_big_parameter_dimension();
+  CAMLreturn(Val_bool(d != not_a_dimension()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_is_satisfiable(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  CAMLreturn(ppl_pip.is_satisfiable());
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_solve(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  PIP_Problem_Status pip_status = ppl_pip.solve();
+  switch (pip_status) {
+  case UNFEASIBLE_PIP_PROBLEM:
+    CAMLreturn(Val_int(0));
+  case OPTIMIZED_PIP_PROBLEM:
+    CAMLreturn(Val_int(1));
+  default:
+    ;
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL OCaml interface internal error");
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_set_control_parameter(value caml_pip,
+                                      value caml_cp_value) try {
+  CAMLparam2(caml_pip, caml_cp_value);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  PIP_Problem::Control_Parameter_Value ppl_cp_value
+    = build_ppl_pip_problem_control_parameter_value(caml_cp_value);
+  ppl_pip.set_control_parameter(ppl_cp_value);
+  CAMLreturn(Val_unit);
+ }
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_get_control_parameter(value caml_pip,
+                                      value caml_cp_name) try {
+  CAMLparam2(caml_pip, caml_cp_name);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  PIP_Problem::Control_Parameter_Name ppl_cp_name
+    = build_ppl_pip_problem_control_parameter_name(caml_cp_name);
+  PIP_Problem::Control_Parameter_Value ppl_cp_value
+    = ppl_pip.get_control_parameter(ppl_cp_name);
+  switch (ppl_cp_value) {
+  case PIP_Problem::CUTTING_STRATEGY_FIRST:
+    CAMLreturn(Val_int(0));
+  case PIP_Problem::CUTTING_STRATEGY_DEEPEST:
+    CAMLreturn(Val_int(1));
+  case PIP_Problem::CUTTING_STRATEGY_ALL:
+    CAMLreturn(Val_int(2));
+  case PIP_Problem::PIVOT_ROW_STRATEGY_FIRST:
+    CAMLreturn(Val_int(3));
+  case PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN:
+    CAMLreturn(Val_int(4));
+  default:
+    ;
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL OCaml interface internal error");
+ }
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_solution(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  const PIP_Tree_Node* ppl_node = ppl_pip.solution();
+  CAMLreturn(unregistered_value_p_PIP_Tree_Node(ppl_node));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_optimizing_solution(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  const PIP_Tree_Node* ppl_node = ppl_pip.optimizing_solution();
+  CAMLreturn(unregistered_value_p_PIP_Tree_Node(ppl_node));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_OK(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  CAMLreturn(Val_bool(ppl_pip.OK()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_clear(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
+  ppl_pip.clear();
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_swap(value caml_pip1, value caml_pip2) try{
+  CAMLparam2(caml_pip1, caml_pip2);
+  PIP_Problem& ppl_pip1 = *p_PIP_Problem_val(caml_pip1);
+  PIP_Problem& ppl_pip2 = *p_PIP_Problem_val(caml_pip2);
+  ppl_pip1.swap(ppl_pip2);
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Problem_ascii_dump(value caml_pip) try {
+  CAMLparam1(caml_pip);
+  PIP_Problem& pip = *p_PIP_Problem_val(caml_pip);
+  std::ostringstream s;
+  pip.ascii_dump(s);
+  CAMLreturn(caml_copy_string(s.str().c_str()));
+}
+CATCH_ALL
+
+value
+build_ocaml_artificial_parameter(const PIP_Tree_Node::Artificial_Parameter&
+                                 ppl_artificial_parameter) {
+  CAMLparam0();
+  CAMLlocal1(caml_artificial_parameter);
+  caml_artificial_parameter = caml_alloc(2,0);
+  Store_field(caml_artificial_parameter, 0,
+              get_linear_expression(ppl_artificial_parameter));
+  const Coefficient& denominator = ppl_artificial_parameter.denominator();
+  Store_field(caml_artificial_parameter, 1,
+              build_ocaml_coefficient(denominator));
+  CAMLreturn(caml_artificial_parameter);
+}
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_constraints(value caml_node) try {
+  CAMLparam1(caml_node);
+  const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
+  if (ppl_node == 0)
+    throw std::invalid_argument("ppl_PIP_Tree_Node_constraints(node):\n"
+                                "node is bottom.");
+  const Constraint_System& ppl_cs = ppl_node->constraints();
+  CAMLreturn(build_ocaml_constraint_system(ppl_cs));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_is_bottom(value caml_node) try {
+  CAMLparam1(caml_node);
+  const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
+  CAMLreturn(Val_bool(ppl_node == 0));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_is_solution(value caml_node) try {
+  CAMLparam1(caml_node);
+  const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
+  CAMLreturn(Val_bool(ppl_node != 0
+                      && ppl_node->as_solution() != 0));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_is_decision(value caml_node) try {
+  CAMLparam1(caml_node);
+  const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
+  CAMLreturn(Val_bool(ppl_node != 0
+                      && ppl_node->as_decision() != 0));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_artificials(value caml_node) try {
+  CAMLparam1(caml_node);
+  CAMLlocal2(result, new_tail);
+  const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
+  if (ppl_node == 0)
+    throw std::invalid_argument("ppl_PIP_Tree_Node_artificials(node):\n"
+                                "node is bottom.");
+  for (PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator
+         v_begin = ppl_node->art_parameter_begin(),
+  	 v_end = ppl_node->art_parameter_end(); v_begin != v_end; ++v_begin) {
+    new_tail = caml_alloc_tuple(2);
+    Store_field(new_tail, 0, build_ocaml_artificial_parameter(*v_begin));
+    Store_field(new_tail, 1, result);
+    result = new_tail;
+  }
+  CAMLreturn(result);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_OK(value caml_node) try {
+  CAMLparam1(caml_node);
+  const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
+  if (ppl_node == 0)
+    throw std::invalid_argument("ppl_PIP_Tree_Node_OK(node):\n"
+                                "node is bottom.");
+  CAMLreturn(Val_bool(ppl_node->OK()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_ascii_dump(value caml_node) try {
+  CAMLparam1(caml_node);
+  const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
+  if (ppl_node == 0)
+    throw std::invalid_argument("ppl_PIP_Tree_Node_ascii_dump(node):\n"
+                                "node is bottom.");
+  std::ostringstream s;
+  ppl_node->ascii_dump(s);
+  CAMLreturn(caml_copy_string(s.str().c_str()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_parametric_values(value caml_node,
+                                        value caml_dim) try {
+  CAMLparam2(caml_node, caml_dim);
+  const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
+  if (ppl_node == 0)
+    throw std::invalid_argument("ppl_PIP_Tree_Node_get_parametric_values"
+                                "(node, dim):\n"
+                                "node is not a solution node (bottom).");
+  const PIP_Solution_Node* ppl_sol = ppl_node->as_solution();
+  if (ppl_sol == 0)
+    throw std::invalid_argument("ppl_PIP_Tree_Node_get_parametric_values"
+                                "(node, dim):\n"
+                                "node is not a solution node (decision).");
+  Variable var(Int_val(caml_dim));
+  const Linear_Expression& ppl_le = ppl_sol->parametric_values(var);
+  CAMLreturn(get_linear_expression(ppl_le));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_true_child(value caml_node) try {
+  CAMLparam1(caml_node);
+  const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
+  const PIP_Tree_Node* child = ppl_PIP_Tree_Node_get_child(ppl_node, true);
+  CAMLreturn(unregistered_value_p_PIP_Tree_Node(child));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_PIP_Tree_Node_false_child(value caml_node) try {
+  CAMLparam1(caml_node);
+  const PIP_Tree_Node* ppl_node = p_PIP_Tree_Node_val(caml_node);
+  const PIP_Tree_Node* child = ppl_PIP_Tree_Node_get_child(ppl_node, false);
+  CAMLreturn(unregistered_value_p_PIP_Tree_Node(child));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
 ppl_version_major(value unit) try {
   CAMLparam1(unit);
   CAMLreturn(Val_long(version_major()));
@@ -1155,6 +1747,14 @@ ppl_io_wrap_string(value src,
                                           cpp_preferred_first_line_length,
                                           cpp_preferred_line_length
                                           ).c_str()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Coefficient_bits(value unit) try {
+  CAMLparam1(unit);
+  CAMLreturn(Val_long(PPL_COEFFICIENT_BITS));
 }
 CATCH_ALL
 

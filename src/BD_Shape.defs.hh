@@ -2244,6 +2244,8 @@ private:
   */
   void compute_leaders(std::vector<dimension_type>& leaders) const;
 
+  void drop_some_non_integer_points_helper(N& elem);
+
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators
   ::operator<<<>(std::ostream& s, const BD_Shape<T>& c);

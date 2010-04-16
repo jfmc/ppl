@@ -43,7 +43,7 @@ dnl in the code file outputs a warning message.
 m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
 m4_divert
 ___END_OF_FILE___
-___BEGIN_OF_FILE___ Termination.cc << ___END_OF_FILE___
+___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 /* Java Termination interface code.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */

@@ -130,8 +130,8 @@ public:
     Verifies if a given linear form overflows.
     \param lf The linear form to verify.
     \return
-    Returns <CODE>true</CODE> if all coefficients in \p lf are bounded,
-    <CODE>false</CODE> otherwise.
+    Returns <CODE>false</CODE> if all coefficients in \p lf are bounded,
+    <CODE>true</CODE> otherwise.
   */
   static bool overflows(const FP_Linear_Form& lf);
 
@@ -146,7 +146,7 @@ public:
 
     This method makes <CODE>result</CODE> become a linear form
     obtained by evaluating the function \f$\varepsilon_{\mathbf{f}}(l)\f$
-    on the linear form \p lf. This function is defined as:
+    on the linear form \p lf. This function is defined
     such as:
     \f[
     \varepsilon_{\mathbf{f}}\left([a;b]+\sum_{v \in \cV}[a_{v};b_{v}]v\right)
@@ -192,7 +192,7 @@ private:
     Static helper method that is used to compute the value of the public
     static field <CODE>absolute_error</CODE>.
 
-    \return the interval \f$[-\omega; \omega]\f$ corresponding to the value
+    \return The interval \f$[-\omega; \omega]\f$ corresponding to the value
     of <CODE>absolute_error</CODE>
   */
   static FP_Interval_Type compute_absolute_error();

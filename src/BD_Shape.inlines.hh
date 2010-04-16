@@ -852,6 +852,16 @@ BD_Shape<T>::refine_fp_interval_abstract_store(
 
 }
 
+template <typename T>
+inline void
+BD_Shape<T>::drop_some_non_integer_points_helper(N& elem) {
+  if (!is_integer(elem)) {
+    Result r = floor_assign_r(elem, elem, ROUND_DOWN);
+    used(r);
+    PPL_ASSERT(r == V_EQ);
+    reset_shortest_path_closed();
+  }
+}
 
 } // namespace Parma_Polyhedra_Library
 

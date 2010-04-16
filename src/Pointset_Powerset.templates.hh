@@ -625,6 +625,31 @@ Pointset_Powerset<PSET>::is_disjoint_from(const Pointset_Powerset& y) const {
 
 template <typename PSET>
 void
+Pointset_Powerset<PSET>
+::drop_some_non_integer_points(const Variables_Set& vars,
+			       Complexity_Class complexity) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si)
+    si->pointset().drop_some_non_integer_points(vars, complexity);
+  x.reduced = false;
+  PPL_ASSERT_HEAVY(x.OK());
+}
+
+template <typename PSET>
+void
+Pointset_Powerset<PSET>
+::drop_some_non_integer_points(Complexity_Class complexity) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si)
+    si->pointset().drop_some_non_integer_points(complexity);
+  x.reduced = false;
+  PPL_ASSERT_HEAVY(x.OK());
+}
+
+template <typename PSET>
+void
 Pointset_Powerset<PSET>::topological_closure_assign() {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
@@ -1126,6 +1151,24 @@ Pointset_Powerset<PSET>::contains_integer_point() const {
     if (si->pointset().contains_integer_point())
       return true;
   return false;
+}
+
+template <typename PSET>
+void
+Pointset_Powerset<PSET>::wrap_assign(const Variables_Set& vars,
+                                     Bounded_Integer_Type_Width w,
+                                     Bounded_Integer_Type_Representation r,
+                                     Bounded_Integer_Type_Overflow o,
+                                     const Constraint_System* pcs,
+                                     unsigned complexity_threshold,
+                                     bool wrap_individually) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    si->pointset().wrap_assign(vars, w, r, o, pcs,
+                               complexity_threshold, wrap_individually);
+  x.reduced = false;
+  PPL_ASSERT_HEAVY(x.OK());
 }
 
 template <typename PSET>

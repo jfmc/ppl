@@ -1621,7 +1621,7 @@ public:
     Currently there is no optimality guarantee, not even if
     \p complexity is <CODE>ANY_COMPLEXITY</CODE>.
   */
-   void drop_some_non_integer_points(Complexity_Class complexity
+  void drop_some_non_integer_points(Complexity_Class complexity
                                     = ANY_COMPLEXITY);
 
   /*! \brief
@@ -2697,6 +2697,24 @@ protected:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //@} // Exception Throwers
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+
+  /*! \brief
+    Possibly tightens \p *this by dropping some points with non-integer
+    coordinates for the space dimensions corresponding to \p *pvars.
+
+    \param pvars
+    When nonzero, points with non-integer coordinates for the
+    variables/space-dimensions contained in \p *pvars can be discarded.
+
+    \param complexity
+    The maximal complexity of any algorithms used.
+
+    \note
+    Currently there is no optimality guarantee, not even if
+    \p complexity is <CODE>ANY_COMPLEXITY</CODE>.
+  */
+  void drop_some_non_integer_points(const Variables_Set* pvars,
+                                    Complexity_Class complexity);
 
   //! Helper function that overapproximates an interval linear form.
   /*!

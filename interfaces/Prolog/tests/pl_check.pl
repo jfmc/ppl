@@ -249,6 +249,9 @@ run_one(catch_time) :-
 run_one(mip_problem) :-
    mip_problem.
 
+run_one(pip_problem) :-
+   pip_problem.
+
 % Checks how the PPL Prolog system performs with large integers
 % XSB has problems with large numbers - hence tests for XSB disallowed.
 % We catch the exception if it is caused by integer overflow in C++
@@ -1819,7 +1822,7 @@ ok(T) :-
 
 % Tests ppl_termination_test_C_Polyhedron_MS/2,
 %       ppl_termination_test_C_Polyhedron_PR/2.
-% T     ppl_termination_test_NNC_Polyhedron_MS/2,
+%       ppl_termination_test_NNC_Polyhedron_MS/2,
 %       ppl_termination_test_NNC_Polyhedron_PR/2.
 termination_test :-
   make_vars(4, [A, B, C, D]),
@@ -2275,6 +2278,220 @@ mip_eval :-
   ppl_delete_Polyhedron(Expect_PH),
   ppl_delete_Polyhedron(PH).
 
+%%%%%%%%%%%%%%%%% PIP_Problem tests %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+pip_problem :-
+  pip_from_cons,
+  pip_from_pip,
+  pip_swap,
+  pip_control_parameters,
+  pip_clear,
+  pip_satisfiable,
+  pip_add,
+  pip_set,
+  pip_solve,
+  pip_solution.
+
+pip_from_cons :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_PIP_Problem_from_space_dimension(3, PIP1),
+  ppl_PIP_Problem_space_dimension(PIP1, 3),
+  ppl_PIP_Problem_OK(PIP1),
+  clean_ppl_new_PIP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], [C], PIP),
+  ppl_PIP_Problem_space_dimension(PIP, 3),
+  ppl_PIP_Problem_parameter_space_dimensions(PIP, [C]),
+  ppl_PIP_Problem_constraints(PIP, CS),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
+  clean_ppl_new_Polyhedron_from_constraints(c,
+       [A >= -1, B >= 5, C >= 0, C =< 3], Expect_PH),
+  ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
+  !,
+  ppl_delete_Polyhedron(PH),
+  ppl_delete_Polyhedron(Expect_PH),
+  ppl_delete_PIP_Problem(PIP1),
+  ppl_delete_PIP_Problem(PIP).
+
+pip_from_pip :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_PIP_Problem(
+    3, [A >= -1, B >= 5, C >= 0, C =< 3], [C], PIP1),
+  clean_ppl_new_PIP_Problem_from_PIP_Problem(PIP1, PIP),
+  ppl_PIP_Problem_constraints(PIP, CS),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
+  ppl_PIP_Problem_constraints(PIP1, Expect_CS),
+  clean_ppl_new_Polyhedron_from_constraints(c, Expect_CS, Expect_PH),
+  ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
+  !,
+  ppl_delete_Polyhedron(PH),
+  ppl_delete_Polyhedron(Expect_PH),
+  ppl_delete_PIP_Problem(PIP1),
+  ppl_delete_PIP_Problem(PIP).
+
+pip_swap :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_PIP_Problem_from_space_dimension(0, PIP),
+  clean_ppl_new_PIP_Problem(
+    3, [A >= -1, B >= 5, C >= 0, C =< 3], [C], PIP1),
+  ppl_PIP_Problem_swap(PIP, PIP1),
+  ppl_PIP_Problem_constraints(PIP, CS),
+  ppl_PIP_Problem_constraints(PIP1, CS1),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS1, PH1),
+  ppl_Polyhedron_is_universe(PH1),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
+  clean_ppl_new_Polyhedron_from_constraints(c,
+       [A >= -1, B >= 5, C >= 0, C =< 3], Expect_PH),
+  ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
+  !,
+  ppl_delete_Polyhedron(PH),
+  ppl_delete_Polyhedron(PH1),
+  ppl_delete_Polyhedron(Expect_PH),
+  ppl_delete_PIP_Problem(PIP1),
+  ppl_delete_PIP_Problem(PIP).
+
+pip_control_parameters :-
+  make_vars(1, [A]),
+
+  ppl_new_PIP_Problem(3, [], [A], PIP0),
+  clean_ppl_new_PIP_Problem_from_PIP_Problem(PIP0, PIP1),
+  ppl_PIP_Problem_get_control_parameter(PIP0, cutting_strategy, Cp_value0),
+  ppl_PIP_Problem_set_control_parameter(PIP1, Cp_value0),
+  ppl_PIP_Problem_get_control_parameter(PIP1, cutting_strategy, Cp_value1),
+  Cp_value0 == Cp_value1,
+  ppl_PIP_Problem_set_control_parameter(PIP0, cutting_strategy_first),
+  ppl_PIP_Problem_get_control_parameter(PIP0, cutting_strategy, Cp_value2),
+  Cp_value2 == cutting_strategy_first,
+  ppl_PIP_Problem_set_control_parameter(PIP0, cutting_strategy_deepest),
+  ppl_PIP_Problem_get_control_parameter(PIP0, cutting_strategy, Cp_value3),
+  Cp_value3 == cutting_strategy_deepest,
+  ppl_PIP_Problem_set_control_parameter(PIP0, cutting_strategy_all),
+  ppl_PIP_Problem_get_control_parameter(PIP0, cutting_strategy, Cp_value4),
+  Cp_value4 == cutting_strategy_all,
+
+  ppl_PIP_Problem_get_control_parameter(PIP0, pivot_row_strategy, Cp_value5),
+  ppl_PIP_Problem_set_control_parameter(PIP1, Cp_value5),
+  ppl_PIP_Problem_get_control_parameter(PIP1, pivot_row_strategy, Cp_value6),
+  Cp_value5 == Cp_value6,
+  ppl_PIP_Problem_set_control_parameter(PIP0, pivot_row_strategy_first),
+  ppl_PIP_Problem_get_control_parameter(PIP0, pivot_row_strategy, Cp_value7),
+  Cp_value7 == pivot_row_strategy_first,
+  ppl_PIP_Problem_set_control_parameter(PIP0, pivot_row_strategy_max_column),
+  ppl_PIP_Problem_get_control_parameter(PIP0, pivot_row_strategy, Cp_value8),
+  Cp_value8 == pivot_row_strategy_max_column,
+ !,
+  ppl_delete_PIP_Problem(PIP0),
+  ppl_delete_PIP_Problem(PIP1).
+
+pip_clear :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_PIP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], [C], PIP),
+  ppl_PIP_Problem_clear(PIP),
+  ppl_PIP_Problem_space_dimension(PIP, D),
+  D == 0,
+  ppl_PIP_Problem_constraints(PIP, CS),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
+  ppl_Polyhedron_is_universe(PH),
+  !,
+  ppl_delete_Polyhedron(PH),
+  ppl_delete_PIP_Problem(PIP).
+
+pip_satisfiable :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_PIP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], [C], PIP),
+  ppl_PIP_Problem_is_satisfiable(PIP),
+  ppl_PIP_Problem_add_constraint(PIP, A + B =< 0),
+  \+ ppl_PIP_Problem_is_satisfiable(PIP),
+  !,
+  ppl_delete_PIP_Problem(PIP).
+
+pip_add :-
+  make_vars(4, [A, B, C, D]),
+  clean_ppl_new_PIP_Problem_from_space_dimension(0, PIP),
+  ppl_PIP_Problem_add_space_dimensions_and_embed(PIP, 1, 0),
+  ppl_PIP_Problem_add_constraint(PIP, A >= 0),
+  ppl_PIP_Problem_add_space_dimensions_and_embed(PIP, 2, 1),
+  ppl_PIP_Problem_add_constraints(
+    PIP, [A =< 3, A + B + C >= 9, B >= 5, C =< 5]),
+  clean_ppl_new_PIP_Problem(
+    4, [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], [D], PIP1),
+  ppl_PIP_Problem_constraints(PIP, CS),
+  clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
+  ppl_PIP_Problem_constraints(PIP1, Expect_CS),
+  clean_ppl_new_Polyhedron_from_constraints(c, Expect_CS, Expect_PH),
+  ppl_Polyhedron_equals_Polyhedron(PH, Expect_PH),
+  !,
+  ppl_delete_Polyhedron(PH),
+  ppl_delete_Polyhedron(Expect_PH),
+  ppl_delete_PIP_Problem(PIP),
+  ppl_delete_PIP_Problem(PIP1).
+
+pip_set :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_PIP_Problem(
+    3, [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], [B], PIP),
+  \+ ppl_PIP_Problem_has_big_parameter_dimension(PIP, _X),
+  ppl_PIP_Problem_solve(PIP, optimized),
+  !,
+  ppl_delete_PIP_Problem(PIP),
+
+  make_vars(4, [X, Y, P, M]),
+  clean_ppl_new_PIP_Problem(
+    4, [Y - M >= -2*X + 2*M - 4, 2*Y - 2*M =< X - M + 2*P], [P, M], PIP1),
+  ppl_PIP_Problem_set_big_parameter_dimension(PIP1, 3),
+  ppl_PIP_Problem_has_big_parameter_dimension(PIP1, 3),
+  ppl_PIP_Problem_solve(PIP1, optimized),
+  !,
+  ppl_delete_PIP_Problem(PIP1).
+
+pip_solve :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_PIP_Problem(
+    3, [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], [B], PIP),
+  ppl_PIP_Problem_solve(PIP, Status),
+  Status == optimized,
+  clean_ppl_new_PIP_Problem(
+    3, [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], [B,C], PIP1),
+  ppl_PIP_Problem_add_constraint(PIP1, C >= 6),
+  ppl_PIP_Problem_solve(PIP1, Status1),
+  Status1 == unfeasible,
+  ppl_PIP_Problem_add_constraint(PIP, B = 0),
+  ppl_PIP_Problem_solve(PIP, unfeasible),
+  \+ppl_PIP_Problem_solve(PIP, invalid_status),
+  !,
+  ppl_delete_PIP_Problem(PIP),
+  ppl_delete_PIP_Problem(PIP1).
+
+pip_solution :-
+  make_vars(4, [I, J, M, N]),
+  clean_ppl_new_PIP_Problem(
+    4, [3*J >= -2*I + 8, J =< 4*I - 4, J =< M, I =< N], [M,N], PIP),
+  ppl_PIP_Problem_solution(PIP, Node),
+  ppl_PIP_Tree_Node_artificials(Node, Artificials),
+  Artificials = [],
+  \+ ppl_PIP_Tree_Node_is_solution(Node),
+  ppl_PIP_Tree_Node_constraints(Node, _CS),
+  ppl_PIP_Tree_Node_is_decision(Node),
+  ppl_PIP_Tree_Node_constraints(Node, _CS1),
+  ppl_PIP_Tree_Node_true_child(Node, TChild),
+  ppl_PIP_Tree_Node_false_child(Node, _FChild),
+  ppl_PIP_Tree_Node_is_decision(TChild),
+  ppl_PIP_Tree_Node_true_child(TChild, TTChild),
+  \+ ppl_PIP_Tree_Node_is_decision(TTChild),
+  ppl_PIP_Tree_Node_is_solution(TTChild),
+  ppl_PIP_Tree_Node_parametric_values(TTChild, I, _TPV),
+  ppl_PIP_Tree_Node_false_child(TChild, FTChild),
+  ppl_PIP_Tree_Node_artificials(FTChild, FTChild_Artificials),
+  FTChild_Artificials = [Art_LinExpr/Art_Den],
+  compare_lin_expressions(Art_LinExpr, M),
+  Art_Den = 2,
+  ppl_PIP_Tree_Node_is_solution(FTChild),
+  ppl_PIP_Tree_Node_parametric_values(FTChild, I, _FPV),
+  ppl_PIP_Problem_OK(PIP),
+  ppl_PIP_Tree_Node_OK(Node),
+  !,
+  ppl_delete_PIP_Problem(PIP).
+
+%%%%%%%%%%%%%%%% Tool to compare linear expressions %%%%%%%%%%%%%%%%%%%%%%%
+
 % compare_lin_expressions/2 checks if 2 linear expressions
 % are semantically the same.
 %
@@ -2460,7 +2677,7 @@ exception_yap :-
 % It does not check those that are dependent on a specific Prolog system.
 
 exception_prolog(V) :-
-   exception_prolog1(13, V).
+   exception_prolog1(14, V).
 
 exception_prolog1(0, _) :- !.
 exception_prolog1(N, V) :-
@@ -2636,6 +2853,11 @@ exception_prolog(12, [A, B, C]) :-
 exception_prolog(13, _) :-
   must_catch(ppl_MIP_Problem_space_dimension(_, _N), ppl_invalid_argument),
   must_catch(ppl_MIP_Problem_constraints(p, []), ppl_invalid_argument).
+
+%% TEST: not_an_pip_problem_handle
+exception_prolog(14, _) :-
+  must_catch(ppl_PIP_Problem_space_dimension(_, _N), ppl_invalid_argument),
+  must_catch(ppl_PIP_Problem_constraints(p, []), ppl_invalid_argument).
 
 % exception_sys_prolog(+N, +V) checks exceptions thrown by Prolog interfaces
 % that are dependent on a specific Prolog system.
@@ -2876,6 +3098,11 @@ cleanup_ppl_MIP_Problem(MIP) :-
   out(mip, MIP),
   ppl_delete_MIP_Problem(MIP), fail.
 
+cleanup_ppl_PIP_Problem(_).
+cleanup_ppl_PIP_Problem(PIP) :-
+  out(pip, PIP),
+  ppl_delete_PIP_Problem(PIP), fail.
+
 out(cs, P):-
   ((noisy(N), N < 2) -> true ;
     ppl_Polyhedron_get_constraints(P, CS),
@@ -2898,6 +3125,18 @@ out(mip, MIP):-
     write(' constraint system is: '), write(CS), nl,
     write(' objective function is: '), write(Obj), nl,
     write(' optimization mode is: '), write(Opt),
+    write(' control_parameter_value is: '), write(Cp_value),
+    nl
+  ).
+
+out(pip, PIP):-
+  ((noisy(N), N < 2) -> true ;
+    ppl_PIP_Problem_constraints(PIP, CS),
+    ppl_PIP_Problem_parameter_space_dimensions(PIP, Dims),
+    ppl_PIP_Problem_get_control_parameter(PIP, cutting_strategy, Cp_value),
+    nl,
+    write(' constraint system is: '), write(CS), nl,
+    write(' parameter space dimensions are: '), write(Dims), nl,
     write(' control_parameter_value is: '), write(Cp_value),
     nl
   ).
@@ -2997,6 +3236,18 @@ clean_ppl_new_MIP_Problem(Dim, CS, Obj, Opt, MIP) :-
 clean_ppl_new_MIP_Problem_from_MIP_Problem(MIP1, MIP) :-
   ppl_new_MIP_Problem_from_MIP_Problem(MIP1, MIP),
   cleanup_ppl_MIP_Problem(MIP).
+
+clean_ppl_new_PIP_Problem_from_space_dimension(Dim, PIP) :-
+  ppl_new_PIP_Problem_from_space_dimension(Dim, PIP),
+  cleanup_ppl_PIP_Problem(PIP).
+
+clean_ppl_new_PIP_Problem(Dim, CS, Vars, PIP) :-
+  ppl_new_PIP_Problem(Dim, CS, Vars, PIP),
+  cleanup_ppl_PIP_Problem(PIP).
+
+clean_ppl_new_PIP_Problem_from_PIP_Problem(PIP1, PIP) :-
+  ppl_new_PIP_Problem_from_PIP_Problem(PIP1, PIP),
+  cleanup_ppl_PIP_Problem(PIP).
 
 %%%%%%%%%%%% predicates for switching on/off output messages %
 
@@ -3149,6 +3400,7 @@ list_groups( [
    minmax_polyhedron,
    compare_polyhedra,
    mip_problem,
+   pip_problem,
    transform_polyhedron,
    add_to_system,
    catch_time,
@@ -3310,6 +3562,10 @@ group_predicates(catch_time,
 
 group_predicates(mip_problem,
   ['all MIP_Prolog predicates'
+  ]).
+
+group_predicates(pip_problem,
+  ['all PIP_Prolog predicates'
   ]).
 
 group_predicates(large_integers,

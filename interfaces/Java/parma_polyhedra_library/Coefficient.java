@@ -74,6 +74,9 @@ public class Coefficient {
 	return value;
     }
 
+    //! Returns the number of bits of PPL coefficients; 0 if unbounded.
+    public static native int bits();
+
     private static native void initIDs();
     static {
         initIDs();

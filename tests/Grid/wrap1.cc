@@ -509,6 +509,34 @@ test19() {
   return ok;
 }
 
+bool
+test20() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
+
+  Grid gr(4);
+  gr.add_congruence((x %= 1) / 2);
+
+  Constraint_System pcs;
+  pcs.insert(x+y == 2);
+
+  Variables_Set vars(x, w);
+
+  // The constraint system pcs will be ignored.
+  gr.wrap_assign(vars, BITS_8, UNSIGNED, OVERFLOW_WRAPS, &pcs);
+
+  Grid known_result(4);
+  known_result.add_congruence((x %= 1) / 2);
+
+  bool ok = (gr == known_result);
+
+  print_congruences(gr, "*** gr.wrap_assign(...) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -531,4 +559,5 @@ BEGIN_MAIN
   DO_TEST_F8(test17);
   DO_TEST_F8(test18);
   DO_TEST_F8(test19);
+  DO_TEST_F8(test20);
 END_MAIN

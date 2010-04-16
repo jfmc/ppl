@@ -61,7 +61,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 
 ')
 
-    m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
 {
     PPL_Test.print_if_noisy("Testing @TOPOLOGY@@CLASS@ from @FRIEND@: ");
@@ -291,7 +291,7 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 
 ')
 
- m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
     `dnl
 {
     PPL_Test.print_if_noisy("Testing add_@CLASS_REPRESENT@s: ");
@@ -303,7 +303,7 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 
 ')
 
- m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
     `dnl
 {
     PPL_Test.print_if_noisy("Testing refine_with_@REFINE_REPRESENT@s: ");
@@ -315,7 +315,7 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 
 ')
 
- m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
     `dnl
 {
     PPL_Test.print_if_noisy("Testing @UB_EXACT@: ");
@@ -893,6 +893,32 @@ m4_define(`ppl_free_@CLASS@_code',
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(gd);
     gd2 = null;
     report_success_or_failure(true);
+}
+
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_codexxx',
+    `dnl
+{
+    PPL_Test.print_if_noisy("Testing termination_@TERMINATION_ID@_@TOPOLOGY@@CLASS@: ");
+    @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
+    boolean term = Termination.termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@(gd1);
+    report_success_or_failure(gd1.OK() && term);
+    gd1.free();
+}
+
+')
+
+m4_define(`ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2_codexxx',
+    `dnl
+{
+    PPL_Test.print_if_noisy("Testing termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@: ");
+    @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
+    @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s2);
+    boolean term = Termination.termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2(gd1, gd2);
+    report_success_or_failure(gd1.OK() && gd2.OK() && term);
+    gd1.free();
+    gd2.free();
 }
 
 ')

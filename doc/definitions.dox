@@ -2199,10 +2199,10 @@ affine expression \f$\mathrm{rhs}\f$.
 \subsection Grid_Frequency Frequency Operator
 
 Let \f$\cL \in \Gset_n\f$ be any non-empty grid and
-\f$\mathrm{expr} = \bigl(\langle \vect{a}, \vect{x} \rangle + b\f$\bigr)
+\f$\mathrm{expr} = \bigl(\langle \vect{a}, \vect{x} \rangle + b\bigr)\f$
 be a linear expression. Then if, for
-some \f$b, f \in \Rset\f$, all the points in \f$\cL\f$ satisfy the
-congruence \f$\cg = ( \mathrm{expr} \equiv_f b )\f$, then the maximum
+some \f$c, f \in \Rset\f$, all the points in \f$\cL\f$ satisfy the
+congruence \f$\cg = ( \mathrm{expr} \equiv_f c )\f$, then the maximum
 \f$f\f$ such that this holds is called the <EM>frequency</EM> of
 \f$\cL\f$ with respect to \f$\mathrm{expr}\f$.
 
@@ -2211,20 +2211,21 @@ the frequency \f$f\f$ and a value
 \f$\mathrm{val} = \langle \vect{a}, \vect{w} \rangle + b\f$
 where \f$\vect{w} \in \cL\f$ and
 \f[
-    |\mathrm{val}|
-       = \min\Bigl\{
-               \bigl|\langle \vect{a}, \vect{v} \rangle + b
-               \bigr| \st \vect{v} \in \cL
-             \Bigr\}.
+  \lvert\mathrm{val}\rvert
+     = \min\Bigl\{\,
+             \bigl\lvert\langle \vect{a}, \vect{v} \rangle + b \bigr\rvert
+           \Bigm|
+             \vect{v} \in \cL
+           \,\Bigr\}.
 \f]
 
 Observe that the above definition is also applied to other simple objects in
 the library like polyhedra, octagonal shapes, bd-shapes and boxes
 and in such cases the definition of frequency can be simplified.
 For instance, the frequency for an object \f$\cP \in \Pset_n\f$ is
-defined if and only if there is a unique value \f$b\f$ such that
-\f$\cP\f$ saturates the equality \f$( \mathrm{expr} = b )\f$;
-in this case the frequency is \f$0\f$ and the value returned is \f$b\f$.
+defined if and only if there is a unique value \f$c\f$ such that
+\f$\cP\f$ saturates the equality \f$( \mathrm{expr} = c )\f$;
+in this case the frequency is \f$0\f$ and the value returned is \f$c\f$.
 
 \subsection Grid_Time_Elapse Time-Elapse Operator
 
@@ -2979,7 +2980,7 @@ B.&nbsp;Blanchet, P.&nbsp;Cousot, R.&nbsp;Cousot, J.&nbsp;Feret, L.&nbsp;Mauborg
   D.&nbsp;Monniaux, and X.&nbsp;Rival.
  Design and implementation of a special-purpose static program
   analyzer for safety-critical real-time embedded software.
- In T.&nbsp;AE. Mogensen, D.&nbsp;A. Schmidt, and I.&nbsp;Hal Sudborough,
+ In T.&nbsp;&AElig;. Mogensen, D.&nbsp;A. Schmidt, and I.&nbsp;Hal Sudborough,
   editors, <em>The Essence of Computation, Complexity, Analysis,
   Transformation. Essays Dedicated to Neil D. Jones [on occasion of his 60th
   birthday]</em>, volume 2566 of <em>Lecture Notes in Computer Science</em>, pages
@@ -3332,8 +3333,7 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
  Applications of polyhedral computations to the analysis and
   verification of hardware and software systems.
- <em>Theoretical Computer Science</em>, 2009.
- To appear.
+ <em>Theoretical Computer Science</em>, 410(46):4672-4691, 2009.
 
 
 </DD>
@@ -3347,9 +3347,10 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
   abstractions.
  Quaderno 492, Dipartimento di Matematica, Universit&agrave; di Parma,
   Italy, 2009.
- Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>. Also
-  published as <tt>arXiv:cs.CG/0904.1783</tt>, available from
-  <a href="http://arxiv.org/">http://arxiv.org/</a>.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>. A corrected
+  and improved version (corrected an error in the statement of condition (3) of
+  Theorem&nbsp;3.6, typos corrected in statement and proof of Theorem&nbsp;6.8) has been
+  published in \ref BHZ09c "[BHZ09c]".
 
 
 </DD>
@@ -3359,9 +3360,39 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
 <DD>
 \anchor BHZ09c
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Exact join detection for convex polyhedra and other numerical
+  abstractions.
+ Report <tt>arXiv:cs.CG/0904.1783</tt>, 2009.
+ Available at <a href="http://arxiv.org/">http://arxiv.org/</a> and
+  <a href="http://www.cs.unipr.it/ppl/">http://www.cs.unipr.it/ppl/</a>.
+
+
+</DD>
+
+
+<DT>[BHZ09d]</DT>
+<DD>
+\anchor BHZ09d
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
  Weakly-relational shapes for numeric abstractions: Improved
   algorithms and proofs of correctness.
- Submitted for publication, 2009.
+ <em>Formal Methods in System Design</em>, 35(3):279-323, 2009.
+
+
+</DD>
+
+
+<DT>[BHZ10]</DT>
+<DD>
+\anchor BHZ10
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Exact join detection for convex polyhedra and other numerical
+  abstractions.
+ <em>Computational Geometry: Theory and Applications</em>,
+  43(5):453-473, 2010.
+ To appear in print. Available online at
+  <a href="http://dx.doi.org/10.1016/j.comgeo.2009.09.002">http://dx.doi.org/10.1016/j.comgeo.2009.09.002</a>.
+
 
 </DD>
 
@@ -3389,6 +3420,21 @@ V.&nbsp;Balasundaram and K.&nbsp;Kennedy.
   Conference on Programming Language Design and Implementation (PLDI)</em>, volume
   24(7) of <em>ACM SIGPLAN Notices</em>, pages 41-53, Portland, Oregon, USA,
   1989. ACM Press.
+
+</DD>
+
+
+<DT>[BMPZ10]</DT>
+<DD>
+\anchor BMPZ10
+R.&nbsp;Bagnara, F.&nbsp;Mesnard, A.&nbsp;Pescetti, and E.&nbsp;Zaffanella.
+ The automatic synthesis of linear ranking functions: The complete
+  unabridged version.
+ Quaderno 498, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2010.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>. Also
+  published as <tt>arXiv:cs.PL/1004.0944</tt>, available from
+  <a href="http://arxiv.org/">http://arxiv.org/</a>.
 
 </DD>
 
@@ -3534,6 +3580,27 @@ G.&nbsp;B. Dantzig.
 </DD>
 
 
+<DT>[FCB07]</DT>
+<DD>
+\anchor FCB07
+P.&nbsp;Feautrier, J.-F. Collard, and C.&nbsp;Bastoul.
+ <em>PIP/PipLib: A Solver for Parametric Integer Programming
+  Problems</em>, 5.0 edition, July 2007.
+ Distributed with PIP/PipLib 1.4.0.
+
+</DD>
+
+
+<DT>[Fea88]</DT>
+<DD>
+\anchor Fea88
+P.&nbsp;Feautrier.
+ Parametric integer programming.
+ <em>RAIRO Recherche Op&eacute;rationnelle</em>, 22(3):243-268, 1988.
+
+</DD>
+
+
 <DT>[FP96]</DT>
 <DD>
 \anchor FP96
@@ -3654,8 +3721,8 @@ N.&nbsp;Halbwachs.
 N.&nbsp;Halbwachs.
  Delay analysis in synchronous programs.
  In C.&nbsp;Courcoubetis, editor, <em>Computer Aided Verification:
-  Proceedings of the 5th International Conference</em>, volume 697 of <em>Lecture
-  Notes in Computer Science</em>, pages 333-346, Elounda, Greece, 1993.
+  Proceedings of the 5th International Conference (CAV'93)</em>, volume 697 of <em>
+  Lecture Notes in Computer Science</em>, pages 333-346, Elounda, Greece, 1993.
   Springer-Verlag, Berlin.
 
 </DD>
@@ -3798,9 +3865,9 @@ H.&nbsp;W. Kuhn.
 </DD>
 
 
-<DT>[LeV92]</DT>
+<DT>[Le 92]</DT>
 <DD>
-\anchor LeV92
+\anchor Le 92
 H.&nbsp;Le Verge.
  A note on Chernikova's algorithm.
  <em>Publication interne</em> 635, IRISA, Campus de Beaulieu, Rennes,
@@ -4127,15 +4194,26 @@ D.&nbsp;Srivastava.
 </DD>
 
 
-<DT>[SS07]</DT>
+<DT>[SS07a]</DT>
 <DD>
-\anchor SS07
+\anchor SS07a
 R.&nbsp;Sen and Y.&nbsp;N. Srikant.
  Executable analysis using abstract interpretation with circular
   linear progressions.
  In <em>Proceedings of the 5th IEEE/ACM International Conference on
   Formal Methods and Models for Co-Design (MEMOCODE 2007)</em>, pages 39-48, Nice,
   France, 2007. IEEE Computer Society Press.
+
+</DD>
+
+
+<DT>[SS07b]</DT>
+<DD>
+\anchor SS07b
+R.&nbsp;Sen and Y.&nbsp;N. Srikant.
+ Executable analysis with circular linear progressions.
+ Technical Report IISc-CSA-TR-2007-3, Department of Computer Science
+  and Automation, Indian Institute of Science, Bangalore, India, 2007.
 
 </DD>
 
@@ -4786,13 +4864,13 @@ For \f$x\f$, \f$y \in \Zset\f$ with \f$y \ne 0\f$, we have
   x \brem y
   =
   \begin{cases}
-       x  \brem |y|,  & \text{if $x \ge 0$;} \\
-    -(|x| \brem |y|), & \text{if $x  <  0$.}
+       x  \brem \abs{y},  & \text{if $x \ge 0$;} \\
+    -(\abs{x} \brem \abs{y}), & \text{if $x  <  0$.}
   \end{cases}
 \f]
 
 <B><EM>Proof</EM></B>
-Throughout the proof we write \f$x_0 = |x|\f$ and \f$y_0 = |y|\f$.
+Throughout the proof we write \f$x_0 = \abs{x}\f$ and \f$y_0 = \abs{y}\f$.
 First, assume that \f$x \ge 0\f$ and that \f$y < 0\f$.
 Let \f$k = \phi(x / y_0) = - \phi(x / y)\f$, by the property above.
 We have

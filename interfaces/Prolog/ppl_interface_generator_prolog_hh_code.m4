@@ -497,6 +497,20 @@ m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_drop_some_non_integer_points
+  (Prolog_term_ref t_ph, Prolog_term_ref t_cc);
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_drop_some_non_integer_points_2
+  (Prolog_term_ref t_ph, Prolog_term_ref t_vlist, Prolog_term_ref t_cc);
+
+')
+
 m4_define(`ppl_@CLASS@_ascii_dump_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_ascii_dump
@@ -556,5 +570,46 @@ m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
      (Prolog_term_ref t_pset_before,
       Prolog_term_ref t_pset_after,
       Prolog_term_ref t_ph);
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@
+     (Prolog_term_ref t_pset,
+      Prolog_term_ref t_ph_decreasing,
+      Prolog_term_ref t_ph_bounded);
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2
+     (Prolog_term_ref t_pset_before,
+      Prolog_term_ref t_pset_after,
+      Prolog_term_ref t_ph_decreasing,
+      Prolog_term_ref t_ph_bounded);
+
+')
+
+m4_define(`ppl_@CLASS@_wrap_assign_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_wrap_assign
+     (Prolog_term_ref t_ph,
+      Prolog_term_ref t_vars,
+      Prolog_term_ref t_w,
+      Prolog_term_ref t_r,
+      Prolog_term_ref t_o,
+      Prolog_term_ref t_cs,
+      Prolog_term_ref t_complexity,
+      Prolog_term_ref t_ind);
+
+')
+
+m4_define(`ppl_@CLASS@_frequency_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_frequency(Prolog_term_ref t_ph, Prolog_term_ref t_le_expr,
+		       Prolog_term_ref t_freqn,  Prolog_term_ref t_freqd,
+		       Prolog_term_ref t_valn,  Prolog_term_ref t_vald);
 
 ')

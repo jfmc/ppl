@@ -864,6 +864,19 @@ Octagonal_Shape<T>::hash_code() const {
   return space_dimension() & 0x7fffffff;
 }
 
+template <typename T>
+inline void
+Octagonal_Shape<T>::drop_some_non_integer_points_helper(N& elem) {
+  if (!is_integer(elem)) {
+#ifndef NDEBUG
+    Result r =
+#endif
+    floor_assign_r(elem, elem, ROUND_DOWN);
+    PPL_ASSERT(r == V_EQ);
+    reset_strongly_closed();
+  }
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {

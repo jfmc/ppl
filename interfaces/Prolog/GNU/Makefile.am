@@ -138,7 +138,11 @@ nodist_EXTRA_libppl_gprolog_la_SOURCES = \
 ../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
 ../ppl_prolog_Constraints_Product_NNC_Polyhedron_Grid.cc \
 ../ppl_prolog_Constraints_Product_Grid_C_Polyhedron.cc \
-../ppl_prolog_Constraints_Product_Grid_NNC_Polyhedron.cc
+../ppl_prolog_Constraints_Product_Grid_NNC_Polyhedron.cc \
+../ppl_prolog_Shape_Preserving_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Shape_Preserving_Product_NNC_Polyhedron_Grid.cc \
+../ppl_prolog_Shape_Preserving_Product_Grid_C_Polyhedron.cc \
+../ppl_prolog_Shape_Preserving_Product_Grid_NNC_Polyhedron.cc
 
 if NO_UNDEFINED
 
@@ -285,7 +289,7 @@ ppl_prolog_generated_test: gnu_prolog_generated_test.pl  ../tests/ppl_prolog_gen
 	echo "['ppl_prolog_generated_test_main.pl', 'gnu_prolog_generated_test.pl']." \
 		>script_pgt
 	echo "main." >>script_pgt
-	GLOBALSZ=65536 $(LIBTOOL) --mode=execute \
+	GLOBALSZ=131072 $(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_gprolog.la \

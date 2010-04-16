@@ -1491,7 +1491,7 @@ public:
     Currently there is no optimality guarantee, not even if
     \p complexity is <CODE>ANY_COMPLEXITY</CODE>.
   */
-   void drop_some_non_integer_points(Complexity_Class complexity
+  void drop_some_non_integer_points(Complexity_Class complexity
                                     = ANY_COMPLEXITY);
 
   /*! \brief
@@ -2230,6 +2230,8 @@ private:
                bool maximize,
                Coefficient& ext_n, Coefficient& ext_d, bool& included,
                Generator& g) const;
+
+  void drop_some_non_integer_points_helper(N& elem);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators

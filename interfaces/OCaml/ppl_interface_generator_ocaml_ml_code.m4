@@ -200,6 +200,22 @@ external ppl_@CLASS@_expand_space_dimension:
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
+`dnl
+external ppl_@CLASS@_drop_some_non_integer_points:
+  @!CLASS@ -> complexity_class -> unit
+  = "ppl_@CLASS@_drop_some_non_integer_points"
+
+')
+
+m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
+`dnl
+external ppl_@CLASS@_drop_some_non_integer_points_2:
+  @!CLASS@ -> int list -> complexity_class -> unit
+  = "ppl_@CLASS@_drop_some_non_integer_points_2"
+
+')
+
 m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
 `dnl
 external ppl_@CLASS@_get_@CLASS_REPRESENT@s:
@@ -357,6 +373,15 @@ external ppl_@CLASS@_@MAXMIN@_with_point:
   @!CLASS@ -> linear_expression
   -> bool * Z.t * Z.t * bool * linear_generator
   = "ppl_@CLASS@_@MAXMIN@_with_point"
+
+')
+
+m4_define(`ppl_@CLASS@_frequency_code',
+`dnl
+external ppl_@CLASS@_frequency:
+  @!CLASS@ -> linear_expression
+  -> bool * Z.t * Z.t * Z.t * Z.t
+  = "ppl_@CLASS@_frequency"
 
 ')
 
@@ -591,5 +616,35 @@ m4_define(`ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
 external ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2:
   @!CLASS@ -> @!CLASS@ -> polyhedron
   = "ppl_all_affine_ranking_functions_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2"
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_code',
+`dnl
+external ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@:
+  @!CLASS@ -> polyhedron * polyhedron
+  = "ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@"
+
+')
+
+m4_define(`ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2_code',
+`dnl
+external ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2:
+  @!CLASS@ -> @!CLASS@ -> polyhedron * polyhedron
+  = "ppl_all_affine_quasi_ranking_functions_MS_@TOPOLOGY@@CLASS@_2"
+
+')
+
+m4_define(`ppl_@CLASS@_wrap_assign_code',
+`dnl
+external ppl_@CLASS@_wrap_assign: @!CLASS@
+                                  -> int list
+                                  -> bounded_integer_type_width
+                                  -> bounded_integer_type_representation
+                                  -> bounded_integer_type_overflow
+                                  -> constraint_system
+                                  -> int -> int -> unit
+                        = "ppl_@CLASS@_wrap_assign_bytecode"
+                          "ppl_@CLASS@_wrap_assign_native"
 
 ')

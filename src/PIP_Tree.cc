@@ -117,7 +117,8 @@ void
 merge_assign(PIP_Tree_Node::matrix_type& x,
              const Constraint_System& y,
              const Variables_Set& parameters) {
-  PPL_ASSERT(parameters.size() == x.num_columns() - 1);
+  const dimension_type params_size = parameters.size();
+  PPL_ASSERT(params_size == x.num_columns() - 1);
   const dimension_type new_rows = std::distance(y.begin(), y.end());
   if (new_rows == 0)
     return;
@@ -3244,6 +3245,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             }
           }
         }
+
         // Compute s_score.
         s_score = 0;
         matrix_row_const_reference_type s_i = tableau.s[i];

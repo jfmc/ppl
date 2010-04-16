@@ -23,7 +23,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], [0.11pre16], [ppl-devel@cs.unipr.it], [ppl])
+AC_INIT([the Parma Polyhedra Library], [0.11pre20], [ppl-devel@cs.unipr.it], [ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
@@ -78,6 +78,8 @@ ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
 
 AH_TOP([
+/* BEGIN ppl-config.h */
+
 /* Unique (nonzero) code for the IEEE 754 Single Precision
    floating point format.  */
 #define PPL_FLOAT_IEEE754_SINGLE 1
@@ -116,6 +118,8 @@ AH_BOTTOM([
 #ifdef PPL_HAVE_INTTYPES_H
 # include <inttypes.h>
 #endif
+
+/* END ppl-config.h */
 ])
 
 
@@ -908,17 +912,13 @@ xall)
   ;;
 esac
 
-# Perl is needed to build the C++ interface.
-if test x${cxx_interface_enabled} = xyes \
-&& test x"$PERL" != xno
+if test x${cxx_interface_enabled} = xyes
 then
   build_cxx_interface=yes
 fi
 AM_CONDITIONAL(BUILD_CXX_INTERFACE, test x$build_cxx_interface = xyes)
 
-# Perl is needed to build the C interface.
-if test x${c_interface_enabled} = xyes \
-&& test x"$PERL" != xno
+if test x${c_interface_enabled} = xyes
 then
   build_c_interface=yes
 fi
@@ -1593,23 +1593,13 @@ fi
 
 if test x"$PERL" = xno
 then
-  if test x${c_interface_enabled} = xyes
-  then
-    AC_MSG_ERROR([PERL UNAVAILABLE:
-***  CANNOT BUILD THE C_INTERFACE.
-*** Perl could not be found on your system, so that the C interface cannot
-*** be built.  You should either disable the generation of the C interface
-*** (with the `--enable-interfaces' configure option) or add Perl to your
-*** development environment: see http://www.perl.org/ for more information.])
-  else
-    AC_MSG_WARN([PERL UNAVAILABLE:
+  AC_MSG_WARN([PERL UNAVAILABLE:
 ***  CANNOT REBUILD SOME FILES IF SOURCES ARE CHANGED.
 *** Perl could not be found on your system.  This is OK, if you only plan
 *** to build the PPL without modifying the sources and without trying to
 *** build a distribution out of a CVS working copy.  If this is not the case,
 *** then you need to add Perl to your development environment:
 *** see http://www.perl.org/ for more information.])
-  fi
 fi
 
 if test x"$coefficient_kind" = xnative

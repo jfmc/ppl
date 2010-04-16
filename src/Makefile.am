@@ -571,8 +571,20 @@ CREDITS.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
 
 else !HAVE_PERL
 
-ppl.hh:	ppl.hh.dist
-	cp -f $< $@
+ppl.hh.sed: Makefile
+	@echo "/^\/\* BEGIN ppl-config.h \*\/$$/ {"    >$@
+	@echo "  r $(top_builddir)/ppl-config.h"      >>$@
+	@echo "  : loop"                              >>$@
+	@echo "  /\n\/\* END ppl-config.h \*\/$$/ !{" >>$@
+	@echo "    N"                                 >>$@
+	@echo "    b loop"                            >>$@
+	@echo "  }"                                   >>$@
+	@echo "  d"                                   >>$@
+	@echo "}"                                     >>$@
+
+ppl.hh:	ppl.hh.dist ppl.hh.sed
+	$(SED) -f ppl.hh.sed $< >$@
+	rm -f ppl.hh.sed
 
 BUGS.cc:	BUGS.cc.dist
 	cp -f $< $@

@@ -97,6 +97,33 @@ name() { \
   return xsb_stub_##name(arg1, arg2, arg3, arg4, arg5, arg6); \
 }
 
+#define XSB_ENTRY_7(name) \
+extern "C" Prolog_foreign_return_type \
+name() { \
+  Prolog_term_ref arg1 = reg_term(1); \
+  Prolog_term_ref arg2 = reg_term(2); \
+  Prolog_term_ref arg3 = reg_term(3); \
+  Prolog_term_ref arg4 = reg_term(4); \
+  Prolog_term_ref arg5 = reg_term(5); \
+  Prolog_term_ref arg6 = reg_term(6); \
+  Prolog_term_ref arg7 = reg_term(7); \
+  return xsb_stub_##name(arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
+}
+
+#define XSB_ENTRY_8(name) \
+extern "C" Prolog_foreign_return_type \
+name() { \
+  Prolog_term_ref arg1 = reg_term(1); \
+  Prolog_term_ref arg2 = reg_term(2); \
+  Prolog_term_ref arg3 = reg_term(3); \
+  Prolog_term_ref arg4 = reg_term(4); \
+  Prolog_term_ref arg5 = reg_term(5); \
+  Prolog_term_ref arg6 = reg_term(6); \
+  Prolog_term_ref arg7 = reg_term(7); \
+  Prolog_term_ref arg8 = reg_term(8); \
+  return xsb_stub_##name(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
+}
+
 m4_divert(2)dnl
 
 extern "C" void

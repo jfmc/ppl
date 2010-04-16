@@ -21,6 +21,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_java_common.defs.hh"
+#include "parma_polyhedra_library_Artificial_Parameter.h"
+#include "parma_polyhedra_library_Artificial_Parameter_Sequence.h"
 #include "parma_polyhedra_library_Bounded_Integer_Type_Overflow.h"
 #include "parma_polyhedra_library_Bounded_Integer_Type_Representation.h"
 #include "parma_polyhedra_library_Bounded_Integer_Type_Width.h"
@@ -51,6 +53,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "parma_polyhedra_library_Optimization_Mode.h"
 #include "parma_polyhedra_library_Pair.h"
 #include "parma_polyhedra_library_Parma_Polyhedra_Library.h"
+#include "parma_polyhedra_library_PIP_Problem.h"
+#include "parma_polyhedra_library_PIP_Problem_Status.h"
+#include "parma_polyhedra_library_PIP_Decision_Node.h"
+#include "parma_polyhedra_library_PIP_Solution_Node.h"
+#include "parma_polyhedra_library_PIP_Tree_Node.h"
 #include "parma_polyhedra_library_Poly_Con_Relation.h"
 #include "parma_polyhedra_library_Poly_Gen_Relation.h"
 #include "parma_polyhedra_library_PPL_Object.h"
@@ -87,6 +94,11 @@ Java_parma_1polyhedra_1library_By_1Reference_initIDs
   mID = env->GetMethodID(j_by_ref_class, "<init>", "(Ljava/lang/Object;)V");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.By_Reference_init_ID = mID;
+}
+
+JNIEXPORT jint JNICALL
+Java_parma_1polyhedra_1library_Coefficient_bits(JNIEnv*, jclass) {
+  return PPL_COEFFICIENT_BITS;
 }
 
 JNIEXPORT void JNICALL
@@ -452,19 +464,23 @@ Java_parma_1polyhedra_1library_Linear_1Expression_1Variable_initIDs
 
 JNIEXPORT jboolean JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_is_1zero
-(JNIEnv* env, jobject j_this) try {
-  Linear_Expression* this_ptr = &build_cxx_linear_expression(env, j_this);
-  return this_ptr->is_zero();
+(JNIEnv* env, jobject j_this) {
+  try {
+    return build_cxx_linear_expression(env, j_this).is_zero();
+  }
+  CATCH_ALL
+  return false;
 }
-CATCH_ALL
 
 JNIEXPORT jboolean JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_all_1homogeneous_1terms_1are_1zero
-(JNIEnv* env, jobject j_this) try {
-  Linear_Expression* this_ptr = &build_cxx_linear_expression(env, j_this);
-  return this_ptr->all_homogeneous_terms_are_zero();
+(JNIEnv* env, jobject j_this) {
+  try {
+    return build_cxx_linear_expression(env, j_this).all_homogeneous_terms_are_zero();
+  }
+  CATCH_ALL
+  return false;
 }
-CATCH_ALL
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_1Status_initIDs
@@ -486,6 +502,24 @@ Java_parma_1polyhedra_1library_MIP_1Problem_1Status_initIDs
   mID = env->GetMethodID(j_mip_status_class, "ordinal", "()I");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.MIP_Problem_Status_ordinal_ID = mID;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_1Status_initIDs
+(JNIEnv* env, jclass j_mip_status_class) {
+  jfieldID fID;
+  fID = env->GetStaticFieldID(j_mip_status_class, "UNFEASIBLE_PIP_PROBLEM",
+                              "Lparma_polyhedra_library/PIP_Problem_Status;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.PIP_Problem_Status_UNFEASIBLE_PIP_PROBLEM_ID = fID;
+  fID = env->GetStaticFieldID(j_mip_status_class, "OPTIMIZED_PIP_PROBLEM",
+                              "Lparma_polyhedra_library/PIP_Problem_Status;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.PIP_Problem_Status_OPTIMIZED_PIP_PROBLEM_ID = fID;
+  jmethodID mID;
+  mID = env->GetMethodID(j_mip_status_class, "ordinal", "()I");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.PIP_Problem_Status_ordinal_ID = mID;
 }
 
 JNIEXPORT void JNICALL
@@ -1443,7 +1477,8 @@ Java_parma_1polyhedra_1library_IO_wrap_1string
  jint preferred_first_line_length, jint preferred_line_length) {
   try {
     unsigned ind = jtype_to_unsigned<unsigned int>(indent_depth);
-    unsigned pfll = jtype_to_unsigned<unsigned int>(preferred_first_line_length);
+    unsigned pfll = jtype_to_unsigned<unsigned int>
+      (preferred_first_line_length);
     unsigned pll = jtype_to_unsigned<unsigned int>(preferred_line_length);
     const char* chars = env->GetStringUTFChars(str, 0);
     CHECK_RESULT_RETURN(env, chars, 0);
@@ -1454,4 +1489,631 @@ Java_parma_1polyhedra_1library_IO_wrap_1string
   }
   CATCH_ALL;
   return 0;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_build_1cpp_1object__J
+(JNIEnv* env, jobject j_this_pip_problem, jlong j_dim) {
+  try {
+    dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(j_dim);
+    PIP_Problem* pip_ptr = new PIP_Problem(ppl_dim);
+    set_ptr(env, j_this_pip_problem,  pip_ptr);
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_build_1cpp_1object__JLparma_1polyhedra_1library_Constraint_1System_2Lparma_1polyhedra_1library_Variables_1Set_2
+(JNIEnv* env , jobject j_this_pip_problem, jlong j_dim,
+ jobject j_cs, jobject j_vars) {
+  try {
+    dimension_type p_dim = jtype_to_unsigned<dimension_type>(j_dim);
+    Constraint_System p_cs = build_cxx_constraint_system(env, j_cs);
+    Variables_Set p_vars = build_cxx_variables_set(env, j_vars);
+    PIP_Problem* pip_ptr = new PIP_Problem(p_dim, p_cs.begin(),
+                                           p_cs.end(), p_vars);
+    set_ptr(env, j_this_pip_problem, pip_ptr);
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_build_1cpp_1object__Lparma_1polyhedra_1library_PIP_1Problem_2
+(JNIEnv* env, jobject  j_this, jobject j_y)
+{
+  PIP_Problem* y_ptr = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_y));
+  PIP_Problem* this_ptr = new PIP_Problem(*y_ptr);
+  set_ptr(env, j_this, this_ptr);
+}
+
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_OK
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    return pip->OK();
+  }
+  CATCH_ALL;
+  return false;
+}
+
+JNIEXPORT jlong JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_total_1memory_1in_1bytes
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    return pip->total_memory_in_bytes();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_external_1memory_1in_1bytes
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    return pip->external_memory_in_bytes();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_toString
+(JNIEnv* env, jobject j_this) {
+  PIP_Problem* this_ptr
+    = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this));
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  s << *this_ptr;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_ascii_1dump
+(JNIEnv* env, jobject j_this) {
+  try {
+    PIP_Problem* this_ptr
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this));
+    std::ostringstream s;
+    this_ptr->ascii_dump(s);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_free
+(JNIEnv* env, jobject j_this) {
+  PIP_Problem* pip  = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this));
+  if (!is_java_marked(env, j_this)) {
+    delete pip;
+    void* null_ptr = 0;
+    set_ptr(env, j_this, null_ptr);
+  }
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1_problem_finalize
+(JNIEnv* env, jobject j_this) {
+  PIP_Problem* pip = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this));
+  if (!is_java_marked(env, j_this))
+    delete pip;
+}
+
+JNIEXPORT jlong JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_max_1space_1dimension
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    return pip->max_space_dimension();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_space_1dimension
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    return pip->space_dimension();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_get_1big_1parameter_1dimension
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    return pip->get_big_parameter_dimension();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_parameter_1space_1dimensions
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    return build_java_variables_set(env, pip->parameter_space_dimensions());
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_set_1big_1parameter_1dimension
+(JNIEnv* env , jobject j_this_pip_problem, jlong j_dim) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(j_dim);
+    pip->set_big_parameter_dimension(ppl_dim);
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT jlong JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_number_1of_1parameter_1space_1dimensions
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    return pip->parameter_space_dimensions().size();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_add_1space_1dimensions_1and_1embed
+(JNIEnv* env , jobject j_this_pip_problem, jlong j_dim_vars, jlong j_dim_pars) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    dimension_type ppl_dim_vars = jtype_to_unsigned<dimension_type>(j_dim_vars);
+    dimension_type ppl_dim_pars = jtype_to_unsigned<dimension_type>(j_dim_pars);
+    pip->add_space_dimensions_and_embed(ppl_dim_vars, ppl_dim_pars);
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_add_1to_1parameter_1space_1dimensions
+(JNIEnv* env , jobject j_this_pip_problem, jobject j_vars) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    Variables_Set ppl_vars = build_cxx_variables_set(env, j_vars);
+    pip->add_to_parameter_space_dimensions(ppl_vars);
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT jlong JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_number_1of_1constraints
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    return pip->constraints_end() - pip->constraints_begin();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_add_1constraint
+(JNIEnv* env , jobject j_this_pip_problem, jobject j_c) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    Constraint c = build_cxx_constraint(env, j_c);
+    pip->add_constraint(c);
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_add_1constraints
+(JNIEnv* env , jobject j_this_pip_problem, jobject j_cs) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    Constraint_System cs = build_cxx_constraint_system(env, j_cs);
+    pip->add_constraints(cs);
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_is_1satisfiable
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    return pip->is_satisfiable();
+  }
+  CATCH_ALL;
+  return false;
+}
+
+JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_PIP_1Problem_solve
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    return build_java_pip_status(env, pip->solve());
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_PIP_1Problem_solution
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    const PIP_Tree_Node* solution = pip->solution();
+
+    jclass j_class_s = env->FindClass("parma_polyhedra_library/PIP_Tree_Node");
+    CHECK_RESULT_ASSERT(env, j_class_s);
+    jmethodID j_ctr_id_s = env->GetMethodID(j_class_s, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_s);
+    jobject j_obj_s = env->NewObject(j_class_s, j_ctr_id_s);
+    CHECK_RESULT_RETURN(env, j_obj_s, 0);
+    set_ptr(env, j_obj_s, solution);
+    return j_obj_s;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_optimizing_1solution
+(JNIEnv* env , jobject j_this_pip_problem) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    const PIP_Tree_Node* solution = pip->optimizing_solution();
+
+    jclass j_class_s = env->FindClass("parma_polyhedra_library/PIP_Tree_Node");
+    CHECK_RESULT_ASSERT(env, j_class_s);
+    jmethodID j_ctr_id_s = env->GetMethodID(j_class_s, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_s);
+    jobject j_obj_s = env->NewObject(j_class_s, j_ctr_id_s);
+    CHECK_RESULT_RETURN(env, j_obj_s, 0);
+    set_ptr(env, j_obj_s, solution);
+    return j_obj_s;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_get_1pip_1problem_1control_1parameter
+(JNIEnv* env , jobject j_this_pip_problem,
+ jobject j_cpn) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    PIP_Problem::Control_Parameter_Name ppl_cpn
+      = build_cxx_pip_problem_control_parameter_name(env, j_cpn);
+    return
+      build_java_pip_problem_control_parameter_value
+        (env, pip->get_control_parameter(ppl_cpn));
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_constraint_1at_1index
+(JNIEnv* env, jobject j_this_pip_problem, jlong j_index) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    dimension_type p_index = jtype_to_unsigned<dimension_type>(j_index);
+    return build_java_constraint(env, *(pip->constraints_begin() + p_index));
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_constraints
+(JNIEnv* env, jobject j_this_pip_problem) {
+  try {
+    jobject j_cs = env->NewObject(cached_classes.Constraint_System,
+                                  cached_FMIDs.Constraint_System_init_ID);
+    CHECK_RESULT_RETURN(env, j_cs, 0);
+
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    for (PIP_Problem::const_iterator cs_it = pip->constraints_begin(),
+           cs_end = pip->constraints_end(); cs_it != cs_end; ++cs_it) {
+      jobject j_constraint = build_java_constraint(env, *cs_it);
+      env->CallBooleanMethod(j_cs,
+                             cached_FMIDs.Constraint_System_add_ID,
+                             j_constraint);
+      CHECK_EXCEPTION_RETURN(env, 0);
+    }
+    return j_cs;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1Problem_set_1pip_1problem_1control_1parameter
+(JNIEnv* env, jobject j_this_pip_problem, jobject j_cpv) {
+  try {
+    PIP_Problem* pip
+      = reinterpret_cast<PIP_Problem*>(get_ptr(env, j_this_pip_problem));
+    PIP_Problem::Control_Parameter_Value ppl_cpv
+      = build_cxx_pip_problem_control_parameter_value(env, j_cpv);
+    pip->set_control_parameter(ppl_cpv);
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_PIP_1Tree_1Node_OK
+(JNIEnv* env, jobject j_this_pip_tree) {
+  try {
+    PIP_Tree_Node* pip
+      = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this_pip_tree));
+    return pip->OK();
+  }
+  CATCH_ALL;
+  return false;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1Tree_1Node_free
+(JNIEnv* env, jobject j_this) {
+  PIP_Tree_Node* pip  = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this));
+  if (!is_java_marked(env, j_this)) {
+    delete pip;
+    void* null_ptr = 0;
+    set_ptr(env, j_this, null_ptr);
+  }
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_PIP_1Tree_1Node_finalize
+(JNIEnv* env, jobject j_this) {
+  PIP_Tree_Node* pip = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this));
+  if (!is_java_marked(env, j_this))
+    delete pip;
+}
+
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Tree_1Node_constraints
+(JNIEnv* env, jobject j_this_pip_node) {
+  try {
+    jobject j_cs = env->NewObject(cached_classes.Constraint_System,
+                                  cached_FMIDs.Constraint_System_init_ID);
+    CHECK_RESULT_RETURN(env, j_cs, 0);
+
+    PIP_Tree_Node* pip
+      = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this_pip_node));
+    return build_java_constraint_system(env, pip->constraints());
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Tree_1Node_as_1solution
+(JNIEnv* env, jobject j_this) {
+  try {
+    PIP_Tree_Node* pip = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this));
+    const PIP_Solution_Node* solution = pip->as_solution();
+    if (solution == 0) {
+      jobject null = 0;
+      return null;
+    }
+    // Here we have a solution node.
+    jclass j_class_s
+      = env->FindClass("parma_polyhedra_library/PIP_Solution_Node");
+    CHECK_RESULT_ASSERT(env, j_class_s);
+    jmethodID j_ctr_id_s = env->GetMethodID(j_class_s, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_s);
+    jobject j_obj_s = env->NewObject(j_class_s, j_ctr_id_s);
+    CHECK_RESULT_RETURN(env, j_obj_s, 0);
+    set_ptr(env, j_obj_s, solution);
+    return j_obj_s;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Tree_1Node_as_1decision
+(JNIEnv* env, jobject j_this) {
+  try {
+    PIP_Tree_Node* pip = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this));
+    const PIP_Decision_Node* decision = pip->as_decision();
+    if (decision == 0) {
+      jobject null = 0;
+      return null;
+    }
+    // Here we have a decision node.
+    jclass j_class_d
+      = env->FindClass("parma_polyhedra_library/PIP_Decision_Node");
+    CHECK_RESULT_ASSERT(env, j_class_d);
+    jmethodID j_ctr_id_d = env->GetMethodID(j_class_d, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_d);
+    jobject j_obj_d = env->NewObject(j_class_d, j_ctr_id_d);
+    CHECK_RESULT_RETURN(env, j_obj_d, 0);
+    set_ptr(env, j_obj_d, decision);
+    return j_obj_d;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT jlong JNICALL
+Java_parma_1polyhedra_1library_PIP_1Tree_1Node_number_1of_1artificials
+(JNIEnv* env , jobject j_this) {
+  try {
+    PIP_Tree_Node* pip = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this));
+    return pip->art_parameter_count();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Tree_1Node_artificials
+(JNIEnv* env, jobject j_this_pip_node) {
+  try {
+    jobject j_arts
+      = env->NewObject(cached_classes.Artificial_Parameter_Sequence,
+                       cached_FMIDs.Artificial_Parameter_Sequence_init_ID);
+    CHECK_RESULT_RETURN(env, j_arts, 0);
+
+    const PIP_Tree_Node* pip_node
+      = reinterpret_cast<const PIP_Tree_Node*>(get_ptr(env, j_this_pip_node));
+    for (PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator
+           i = pip_node->art_parameter_begin(),
+           i_end = pip_node->art_parameter_end(); i != i_end; ++i) {
+      jobject j_art = build_java_artificial_parameter(env, *i);
+      env->CallBooleanMethod(j_arts,
+                             cached_FMIDs.Artificial_Parameter_Sequence_add_ID,
+                             j_art);
+      CHECK_EXCEPTION_RETURN(env, 0);
+    }
+    return j_arts;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_PIP_1Tree_1Node_toString
+(JNIEnv* env, jobject j_this) {
+  PIP_Tree_Node* this_ptr
+    = reinterpret_cast<PIP_Tree_Node*>(get_ptr(env, j_this));
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  s << *this_ptr;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Decision_1Node_child_1node
+(JNIEnv* env, jobject j_this, jboolean j_branch) {
+  try {
+    PIP_Decision_Node* dec_node
+      = reinterpret_cast<PIP_Decision_Node*>(get_ptr(env, j_this));
+    const PIP_Tree_Node* child = dec_node->child_node(j_branch);
+    if (child == 0) {
+      jobject null = 0;
+      return null;
+    }
+    jclass j_class_s = env->FindClass("parma_polyhedra_library/PIP_Tree_Node");
+    CHECK_RESULT_ASSERT(env, j_class_s);
+    jmethodID j_ctr_id_s = env->GetMethodID(j_class_s, "<init>", "()V");
+    CHECK_RESULT_ASSERT(env, j_ctr_id_s);
+    jobject j_obj_s = env->NewObject(j_class_s, j_ctr_id_s);
+    CHECK_RESULT_RETURN(env, j_obj_s, 0);
+    set_ptr(env, j_obj_s, child);
+    return j_obj_s;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_PIP_1Solution_1Node_parametric_1values
+(JNIEnv* env, jobject j_this, jobject j_var) {
+  PIP_Solution_Node* pip
+    = reinterpret_cast<PIP_Solution_Node*>(get_ptr(env, j_this));
+  Variable v = build_cxx_variable(env, j_var);
+  return build_linear_expression(env, pip->parametric_values(v));
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Artificial_1Parameter_initIDs
+(JNIEnv* env, jclass j_artificial_parameter_class) {
+  jfieldID fID;
+  fID = env->GetFieldID(j_artificial_parameter_class, "le",
+                        "Lparma_polyhedra_library/Linear_Expression;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Artificial_Parameter_le_ID = fID;
+  fID = env->GetFieldID(j_artificial_parameter_class, "den",
+                        "Lparma_polyhedra_library/Coefficient;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Artificial_Parameter_den_ID = fID;
+  jmethodID mID;
+  mID = env->GetMethodID(j_artificial_parameter_class, "<init>",
+                         "(Lparma_polyhedra_library/Linear_Expression;"
+                         "Lparma_polyhedra_library/Coefficient;)V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Artificial_Parameter_init_ID = mID;
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Artificial_1Parameter_ascii_1dump
+(JNIEnv* env, jobject j_this) {
+  try {
+    std::ostringstream s;
+    PIP_Tree_Node::Artificial_Parameter art
+      = build_cxx_artificial_parameter(env, j_this);
+    art.ascii_dump(s);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Artificial_1Parameter_toString
+(JNIEnv* env, jobject j_this) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  PIP_Tree_Node::Artificial_Parameter ppl_art
+    = build_cxx_artificial_parameter(env, j_this);
+  s << ppl_art;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Artificial_1Parameter_1Sequence_initIDs
+(JNIEnv* env, jclass j_aps_class) {
+  jmethodID mID;
+  mID = env->GetMethodID(j_aps_class, "<init>", "()V");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Artificial_Parameter_Sequence_init_ID = mID;
+  mID = env->GetMethodID(j_aps_class, "add", "(Ljava/lang/Object;)Z");
+  CHECK_RESULT_ASSERT(env, mID);
+  cached_FMIDs.Artificial_Parameter_Sequence_add_ID = mID;
 }

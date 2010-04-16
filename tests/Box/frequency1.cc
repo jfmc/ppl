@@ -196,6 +196,25 @@ test08() {
   return ok;
 }
 
+// Non-relational test of an empty box in 1-dimension.
+bool
+test09() {
+  Variable A(0);
+
+  TBox box(1);
+  box.add_constraint(A <= 0);
+  box.add_constraint(A >= 1);
+
+  Coefficient num;
+  Coefficient den;
+  Coefficient valn;
+  Coefficient vald;
+  bool ok = (!box.frequency(Linear_Expression(A), num, den, valn, vald));
+  print_constraints(box, "*** box ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -207,4 +226,5 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN

@@ -161,7 +161,11 @@ nodist_EXTRA_libppl_xsb_la_SOURCES = \
 ../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
 ../ppl_prolog_Constraints_Product_NNC_Polyhedron_Grid.cc \
 ../ppl_prolog_Constraints_Product_Grid_C_Polyhedron.cc \
-../ppl_prolog_Constraints_Product_Grid_NNC_Polyhedron.cc
+../ppl_prolog_Constraints_Product_Grid_NNC_Polyhedron.cc \
+../ppl_prolog_Shape_Preserving_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Shape_Preserving_Product_NNC_Polyhedron_Grid.cc \
+../ppl_prolog_Shape_Preserving_Product_Grid_C_Polyhedron.cc \
+../ppl_prolog_Shape_Preserving_Product_Grid_NNC_Polyhedron.cc
 
 if NO_UNDEFINED
 

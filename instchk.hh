@@ -377,4 +377,12 @@ public:
   }
 };
 
+template <typename D1, typename D2>
+class Shape_Preserving_Product {
+public:
+  static bool valid_instantiation() {
+    return D1::valid_Product_argument() && D2::valid_Product_argument();
+  }
+};
+
 } // namespace Parma_Polyhedra_Library
