@@ -248,7 +248,6 @@ Unlimited_Sparse_Row_Over_CO_Tree::find_dangerous(const dimension_type c,
 #ifdef NDEBUG
   (void) itr;
 #endif
-  // TODO: consider a faster implementation.
   return find_dangerous(c);
 }
 
@@ -260,7 +259,6 @@ Unlimited_Sparse_Row_Over_CO_Tree
 #ifdef NDEBUG
   (void) itr;
 #endif
-  // TODO: consider a faster implementation.
   return lower_bound_dangerous(c);
 }
 
@@ -272,7 +270,6 @@ Unlimited_Sparse_Row_Over_CO_Tree::find(const dimension_type c,
 #ifdef NDEBUG
   (void) itr;
 #endif
-  // TODO: consider a faster implementation.
   return find(c);
 }
 
@@ -284,7 +281,6 @@ Unlimited_Sparse_Row_Over_CO_Tree::lower_bound(const dimension_type c,
 #ifdef NDEBUG
   (void) itr;
 #endif
-  // TODO: consider a faster implementation.
   return lower_bound(c);
 }
 
@@ -296,7 +292,6 @@ Unlimited_Sparse_Row_Over_CO_Tree::find(const dimension_type c,
 #ifdef NDEBUG
   (void) itr;
 #endif
-  // TODO: consider a faster implementation.
   return find(c);
 }
 
@@ -308,7 +303,6 @@ Unlimited_Sparse_Row_Over_CO_Tree::lower_bound(const dimension_type c,
 #ifdef NDEBUG
   (void) itr;
 #endif
-  // TODO: consider a faster implementation.
   return lower_bound(c);
 }
 
