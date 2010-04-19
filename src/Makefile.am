@@ -563,6 +563,7 @@ endif !USE_PRECOMPILED_HEADERS
 BUILT_SOURCES = \
 $(include_HEADERS) \
 $(nodist_noinst_HEADERS) \
+$(noinst_HEADERS) \
 $(PRECOMPILED) \
 BUGS.cc \
 COPYING.cc \
