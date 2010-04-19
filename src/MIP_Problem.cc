@@ -1026,7 +1026,9 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   double float_tableau_denum;
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
-  std::vector<dimension_type> columns;
+  // This is static to improve performance
+  static std::vector<dimension_type> columns;
+  columns.clear();
   // tableau_num_columns - 2 is only an upper bound on the required elements.
   // This helps to reduce the number of calls to new [] and delete [].
   columns.reserve(tableau_num_columns - 2);
