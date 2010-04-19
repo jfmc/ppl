@@ -1026,32 +1026,44 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   double float_tableau_denum;
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
+  std::vector<dimension_type> columns;
+  // tableau_num_columns - 2 is only an upper bound on the required elements.
+  // This helps to reduce the number of calls to new [] and delete [].
+  columns.reserve(tableau_num_columns - 2);
+  for (dimension_type column = 1; column < tableau_num_columns_minus_1; ++column)
+    if (sgn(working_cost[column]) == cost_sign)
+      columns.push_back(column);
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     matrix_row_const_reference_type tableau_i = tableau[i];
     const Coefficient& tableau_i_base_i = tableau_i.get(base[i]);
-    matrix_const_row_unordered_const_iterator j = tableau_i.unordered_begin();
-    matrix_const_row_unordered_const_iterator j_end
-      = tableau_i.unordered_end();
-    if (j != j_end && j->first == 0)
-      ++j;
-    for ( ; j != j_end; ++j)
-      if (j->first < tableau_num_columns_minus_1) {
-        const dimension_type j_index = j->first;
-        const Coefficient& cost_j = working_cost[j_index];
-        if (sgn(cost_j) == cost_sign) {
-          const Coefficient& tableau_ij = j->second;
-          WEIGHT_BEGIN();
-          if (tableau_ij != 0) {
-            PPL_ASSERT(tableau_i_base_i != 0);
-            assign(float_tableau_value, tableau_ij);
-            assign(float_tableau_denum, tableau_i_base_i);
-            float_tableau_value /= float_tableau_denum;
-            float_tableau_value *= float_tableau_value;
-            challenger_dens[j_index] += float_tableau_value;
-          }
-          WEIGHT_ADD_MUL(338, tableau_num_rows);
+    matrix_const_row_const_iterator j = tableau_i.begin();
+    matrix_const_row_const_iterator j_end = tableau_i.end();
+    std::vector<dimension_type>::const_iterator k = columns.begin();
+    std::vector<dimension_type>::const_iterator k_end = columns.end();
+    while (j != j_end) {
+      while (k != k_end && j->first > *k)
+        ++k;
+      if (k == k_end)
+        break;
+      PPL_ASSERT(j->first <= *k);
+      if (j->first < *k)
+        j = tableau_i.lower_bound(*k, j);
+      else {
+        const Coefficient& tableau_ij = j->second;
+        WEIGHT_BEGIN();
+        if (tableau_ij != 0) {
+          PPL_ASSERT(tableau_i_base_i != 0);
+          assign(float_tableau_value, tableau_ij);
+          assign(float_tableau_denum, tableau_i_base_i);
+          float_tableau_value /= float_tableau_denum;
+          float_tableau_value *= float_tableau_value;
+          challenger_dens[j->first] += float_tableau_value;
         }
+        WEIGHT_ADD_MUL(338, tableau_num_rows);
+        ++k;
+        ++j;
       }
+    }
   }
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
     const Coefficient& cost_j = working_cost[j];
