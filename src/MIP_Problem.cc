@@ -1065,24 +1065,13 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       }
     }
   }
-  for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
-    const Coefficient& cost_j = working_cost[j];
-    if (sgn(cost_j) == cost_sign) {
-      // FIXME: do we need challenger_num? If so, uncomment the lines below
-      // and add a declaration.
-      // We cannot compute the (exact) square root of abs(\Delta x_j).
-      // The workaround is to compute the square of `cost[j]'.
-      //
-      // assign(challenger_num, cost_j);
-      // challenger_num = std::abs(challenger_num);
-      // Initialize `current_value' during the first iteration.
-      // Otherwise update if the challenger wins.
-
-      // challenger_dens[j] is the square of the challenger value.
-      if (entering_index == 0 || challenger_dens[j] > current_value_squared) {
-        current_value_squared = challenger_dens[j];
-        entering_index = j;
-      }
+  std::vector<dimension_type>::const_reverse_iterator k = columns.rbegin();
+  std::vector<dimension_type>::const_reverse_iterator k_end = columns.rend();
+  for ( ; k != k_end; ++k) {
+    // challenger_dens[*k] is the square of the challenger value.
+    if (entering_index == 0 || challenger_dens[*k] > current_value_squared) {
+      current_value_squared = challenger_dens[*k];
+      entering_index = *k;
     }
   }
   return entering_index;
