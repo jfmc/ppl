@@ -226,6 +226,7 @@ void
 PPL::CO_Tree::init(dimension_type reserved_size1) {
 
   if (reserved_size1 == 0) {
+    indexes = NULL;
     data = NULL;
     level = NULL;
     size = 0;
@@ -248,14 +249,18 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   l++;
 
   reserved_size = ((dimension_type)1 << l) - 1;
-  data = static_cast<value_type *>(operator new(sizeof(value_type)
-                                                *(reserved_size + 2)));
+  char* p = static_cast<char*>(
+    operator new(sizeof(dimension_type)*(reserved_size + 2)
+                 + sizeof(data_type)*(reserved_size + 1)));
+  indexes = static_cast<dimension_type*>(static_cast<void*>(p));
+  data = static_cast<data_type*>(
+    static_cast<void*>(p + sizeof(dimension_type)*(reserved_size + 2)));
   // Mark all pairs as unused.
   for (dimension_type i = 1; i <= reserved_size; ++i)
-    new (&(data[i].first)) dimension_type(unused_index);
+    new (&(indexes[i])) dimension_type(unused_index);
 
   // This is used as a marker by unordered iterators.
-  new (&(data[reserved_size+1].first)) dimension_type(0);
+  new (&(indexes[reserved_size + 1])) dimension_type(0);
 
   max_depth = l;
   rebuild_level_data(l);
@@ -270,13 +275,14 @@ PPL::CO_Tree::destroy() {
 
   if (reserved_size != 0) {
     for (dimension_type i = 1; i <= reserved_size; ++i) {
-      if (data[i].first != unused_index)
-        data[i].second.~data_type();
-      data[i].first.~dimension_type();
+      if (indexes[i] != unused_index)
+        data[i].~data_type();
+      indexes[i].~dimension_type();
     }
+    indexes[reserved_size + 1].~dimension_type();
 
-    data[reserved_size+1].first.~dimension_type();
-    operator delete(data);
+    // This frees memory used by data, too.
+    operator delete(static_cast<void*>(indexes));
 
     delete [] level;
   }
@@ -405,6 +411,8 @@ PPL::CO_Tree::structure_OK() const {
     return false;
 
   if (reserved_size == 0) {
+    if (indexes != NULL)
+      return false;
     if (data != NULL)
       return false;
     if (level != NULL)
@@ -419,6 +427,9 @@ PPL::CO_Tree::structure_OK() const {
     return false;
 
   if (data == NULL)
+    return false;
+
+  if (indexes == NULL)
     return false;
 
   if (level == NULL)
@@ -757,7 +768,7 @@ PPL::CO_Tree::redistribute_elements_in_subtree(inorder_iterator& itr,
   //         to left.
   inorder_iterator itr2 = itr;
 #ifndef NDEBUG
-  const value_type* const p = &(*itr);
+  const data_type* const p = &(itr->second);
 #endif
   while (!itr2.is_leaf())
     itr2.get_right_child();
@@ -767,7 +778,7 @@ PPL::CO_Tree::redistribute_elements_in_subtree(inorder_iterator& itr,
     added_key = true;
   compact_elements_in_the_rightmost_end(itr, itr2, n, key, value, added_key,
                                         can_add_key);
-  PPL_ASSERT(p == &(*itr));
+  PPL_ASSERT(p == &(itr->second));
   if (!added_key && can_add_key) {
     PPL_ASSERT(itr2->first == unused_index);
     itr2->first = key;
@@ -780,7 +791,7 @@ PPL::CO_Tree::redistribute_elements_in_subtree(inorder_iterator& itr,
   redistribute_elements_in_subtree_helper(itr, n, itr2, key, value,
                                           added_key);
 
-  PPL_ASSERT(p == &(*itr));
+  PPL_ASSERT(p == &(itr->second));
 
   if (!deleting)
     size++;

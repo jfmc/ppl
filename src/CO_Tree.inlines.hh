@@ -76,6 +76,8 @@ CO_Tree::external_memory_in_bytes() const {
   dimension_type size = 0;
   // Adding the size of data[]
   size += (reserved_size + 1)*sizeof(data[0]);
+  // Adding the size of indexes[]
+  size += (reserved_size + 2)*sizeof(indexes[0]);
   // Adding the size of level[]
   size += max_depth*sizeof(level[0]);
   return size;
@@ -192,39 +194,39 @@ CO_Tree::end() const {
 inline CO_Tree::unordered_iterator
 CO_Tree::unordered_begin() {
   if (reserved_size == 0)
-    return unordered_iterator(0);
+    return unordered_iterator();
   // The first element of data[] is not used.
-  value_type* p = data + 1;
-  while (p->first == unused_index)
-    ++p;
-  return unordered_iterator(p);
+  dimension_type i = 1;
+  while (indexes[i] == unused_index)
+    ++i;
+  return unordered_iterator(this, i);
 }
 
 inline CO_Tree::unordered_iterator
 CO_Tree::unordered_end() {
   if (reserved_size == 0)
-    return unordered_iterator(0);
-  PPL_ASSERT(data[reserved_size + 1].first != unused_index);
-  return unordered_iterator(&(data[reserved_size + 1]));
+    return unordered_iterator();
+  PPL_ASSERT(indexes[reserved_size + 1] != unused_index);
+  return unordered_iterator(this, reserved_size + 1);
 }
 
 inline CO_Tree::unordered_const_iterator
 CO_Tree::unordered_begin() const {
   if (reserved_size == 0)
-    return unordered_const_iterator(0);
+    return unordered_const_iterator();
   // The first element of data[] is not used.
-  value_type* p = data + 1;
-  while (p->first == unused_index)
-    ++p;
-  return unordered_const_iterator(p);
+  dimension_type i = 1;
+  while (indexes[i] == unused_index)
+    ++i;
+  return unordered_const_iterator(this, i);
 }
 
 inline CO_Tree::unordered_const_iterator
 CO_Tree::unordered_end() const {
   if (reserved_size == 0)
-    return unordered_const_iterator(0);
-  PPL_ASSERT(data[reserved_size + 1].first != unused_index);
-  return unordered_const_iterator(&(data[reserved_size + 1]));
+    return unordered_const_iterator();
+  PPL_ASSERT(indexes[reserved_size + 1] != unused_index);
+  return unordered_const_iterator(this, reserved_size + 1);
 }
 
 inline void
@@ -309,6 +311,7 @@ inline void
 CO_Tree::swap(CO_Tree& x) {
   std::swap(level, x.level);
   std::swap(max_depth, x.max_depth);
+  std::swap(indexes, x.indexes);
   std::swap(data, x.data);
   std::swap(reserved_size, x.reserved_size);
   std::swap(size, x.size);
@@ -425,32 +428,46 @@ CO_Tree::inorder_iterator::is_leaf() const {
   return d == tree->max_depth;
 }
 
-inline CO_Tree::value_type&
+inline std::pair<dimension_type&, CO_Tree::data_type&>
 CO_Tree::inorder_iterator::operator*() {
   PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
-  return tree->data[pos[d]];
+  const dimension_type index = pos[d];
+  return std::pair<dimension_type&, data_type&>(tree->indexes[index],
+                                                tree->data[index]);
 }
 
-inline const CO_Tree::value_type&
+inline std::pair<const dimension_type, const CO_Tree::data_type&>
 CO_Tree::inorder_iterator::operator*() const {
   PPL_ASSERT(tree->reserved_size != 0);
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
-  return tree->data[pos[d]];
+  const dimension_type index = pos[d];
+  return std::pair<const dimension_type, const data_type&>(tree->indexes[index],
+                                                           tree->data[index]);
 }
 
-inline CO_Tree::value_type*
+inline CO_Tree::inorder_iterator::Member_Access_Helper
 CO_Tree::inorder_iterator::operator->() {
-  return &(**this);
+  PPL_ASSERT(tree->reserved_size != 0);
+  PPL_ASSERT(tree != 0);
+  PPL_ASSERT(!at_end);
+  PPL_ASSERT(!before_begin);
+  const dimension_type index = pos[d];
+  return Member_Access_Helper(tree->indexes[index], tree->data[index]);
 }
 
-inline const CO_Tree::value_type*
+inline CO_Tree::inorder_iterator::Const_Member_Access_Helper
 CO_Tree::inorder_iterator::operator->() const {
-  return &(**this);
+  PPL_ASSERT(tree->reserved_size != 0);
+  PPL_ASSERT(tree != 0);
+  PPL_ASSERT(!at_end);
+  PPL_ASSERT(!before_begin);
+  const dimension_type index = pos[d];
+  return Const_Member_Access_Helper(tree->indexes[index], tree->data[index]);
 }
 
 inline bool
@@ -706,6 +723,32 @@ CO_Tree::inorder_iterator::operator=(const inorder_iterator& itr2) {
 
 
 inline
+CO_Tree::inorder_iterator::Member_Access_Helper
+::Member_Access_Helper(dimension_type& key, data_type& data)
+  : my_pair(key, data) {
+}
+
+inline
+std::pair<dimension_type&, CO_Tree::data_type&>*
+CO_Tree::inorder_iterator::Member_Access_Helper::operator->() {
+  return &my_pair;
+}
+
+
+inline
+CO_Tree::inorder_iterator::Const_Member_Access_Helper
+::Const_Member_Access_Helper(dimension_type key, const data_type& data)
+  : my_pair(key, data) {
+}
+
+inline
+const std::pair<const dimension_type, const CO_Tree::data_type&>*
+CO_Tree::inorder_iterator::Const_Member_Access_Helper::operator->() const {
+  return &my_pair;
+}
+
+
+inline
 CO_Tree::inorder_const_iterator::inorder_const_iterator(const CO_Tree* tree1)
   : tree(tree1) {
   if (tree != 0) {
@@ -823,18 +866,25 @@ CO_Tree::inorder_const_iterator::is_leaf() const {
   return d == tree->max_depth;
 }
 
-inline const CO_Tree::value_type&
+inline std::pair<const dimension_type, const CO_Tree::data_type&>
 CO_Tree::inorder_const_iterator::operator*() const {
-  PPL_ASSERT(tree != 0);
   PPL_ASSERT(tree->reserved_size != 0);
+  PPL_ASSERT(tree != 0);
   PPL_ASSERT(!at_end);
   PPL_ASSERT(!before_begin);
-  return tree->data[pos[d]];
+  const dimension_type index = pos[d];
+  return std::pair<const dimension_type, const data_type&>(tree->indexes[index],
+                                                           tree->data[index]);
 }
 
-inline const CO_Tree::value_type*
+inline CO_Tree::inorder_const_iterator::Const_Member_Access_Helper
 CO_Tree::inorder_const_iterator::operator->() const {
-  return &(**this);
+  PPL_ASSERT(tree->reserved_size != 0);
+  PPL_ASSERT(tree != 0);
+  PPL_ASSERT(!at_end);
+  PPL_ASSERT(!before_begin);
+  const dimension_type index = pos[d];
+  return Const_Member_Access_Helper(tree->indexes[index], tree->data[index]);
 }
 
 inline bool
@@ -1103,44 +1153,76 @@ CO_Tree::inorder_const_iterator
   return *this;
 }
 
+
 inline
-CO_Tree::unordered_iterator::unordered_iterator(value_type* p1)
-  : p(p1) {
+CO_Tree::inorder_const_iterator::Const_Member_Access_Helper
+::Const_Member_Access_Helper(dimension_type key, const data_type& data)
+  : my_pair(key, data) {
 }
 
-inline CO_Tree::value_type&
+inline
+const std::pair<const dimension_type, const CO_Tree::data_type&>*
+CO_Tree::inorder_const_iterator::Const_Member_Access_Helper
+::operator->() const {
+  return &my_pair;
+}
+
+
+inline
+CO_Tree::unordered_iterator::unordered_iterator(CO_Tree* p1,
+                                                dimension_type i1)
+  : p(p1), i(i1) {
+}
+
+inline std::pair<dimension_type&, CO_Tree::data_type&>
 CO_Tree::unordered_iterator::operator*() {
-  return *p;
+  PPL_ASSERT(p != 0);
+  PPL_ASSERT(i != 0);
+  PPL_ASSERT(i <= p->reserved_size);
+  return std::pair<dimension_type&, data_type&>(p->indexes[i], p->data[i]);
 }
 
-inline const CO_Tree::value_type&
+inline std::pair<const dimension_type, const CO_Tree::data_type&>
 CO_Tree::unordered_iterator::operator*() const {
-  return *p;
+  PPL_ASSERT(p != 0);
+  PPL_ASSERT(i != 0);
+  PPL_ASSERT(i <= p->reserved_size);
+  return std::pair<const dimension_type, const data_type&>(p->indexes[i],
+                                                           p->data[i]);
 }
 
-inline CO_Tree::value_type*
+inline CO_Tree::unordered_iterator::Member_Access_Helper
 CO_Tree::unordered_iterator::operator->() {
-  return p;
+  PPL_ASSERT(p != 0);
+  PPL_ASSERT(i != 0);
+  PPL_ASSERT(i <= p->reserved_size);
+  return Member_Access_Helper(p->indexes[i], p->data[i]);
 }
 
-inline const CO_Tree::value_type*
+inline CO_Tree::unordered_iterator::Const_Member_Access_Helper
 CO_Tree::unordered_iterator::operator->() const {
-  return p;
+  PPL_ASSERT(p != 0);
+  PPL_ASSERT(i != 0);
+  PPL_ASSERT(i <= p->reserved_size);
+  return Const_Member_Access_Helper(p->indexes[i], p->data[i]);
 }
 
 inline CO_Tree::unordered_iterator&
 CO_Tree::unordered_iterator::operator++() {
 
-  ++p;
-  while (p->first == unused_index)
-    ++p;
+  ++i;
+  PPL_ASSERT(i <= p->reserved_size + 1);
+  while (p->indexes[i] == unused_index) {
+    PPL_ASSERT(i <= p->reserved_size + 1);
+    ++i;
+  }
 
   return *this;
 }
 
 inline bool
 CO_Tree::unordered_iterator::operator==(const unordered_iterator& x) const {
-  return p == x.p;
+  return (p == x.p) && (i == x.i);
 }
 
 inline bool
@@ -1150,45 +1232,95 @@ CO_Tree::unordered_iterator::operator!=(const unordered_iterator& x) const {
 
 
 inline
-CO_Tree::unordered_const_iterator
-::unordered_const_iterator(const value_type* p1)
-  : p(p1) {
+CO_Tree::unordered_iterator::Member_Access_Helper
+::Member_Access_Helper(dimension_type& key, data_type& data)
+  : my_pair(key, data) {
+}
+
+inline
+std::pair<dimension_type&, CO_Tree::data_type&>*
+CO_Tree::unordered_iterator::Member_Access_Helper::operator->() {
+  return &my_pair;
+}
+
+
+inline
+CO_Tree::unordered_iterator::Const_Member_Access_Helper
+::Const_Member_Access_Helper(dimension_type key, const data_type& data)
+  : my_pair(key, data) {
+}
+
+inline
+const std::pair<const dimension_type, const CO_Tree::data_type&>*
+CO_Tree::unordered_iterator::Const_Member_Access_Helper::operator->() const {
+  return &my_pair;
+}
+
+
+inline
+CO_Tree::unordered_const_iterator::unordered_const_iterator(const CO_Tree* p1,
+                                                            dimension_type i1)
+  : p(p1), i(i1) {
 }
 
 inline
 CO_Tree::unordered_const_iterator
 ::unordered_const_iterator(const unordered_iterator& itr)
-  : p(itr.operator->()) {
+  : p(itr.p), i(itr.i) {
 }
 
-inline const CO_Tree::value_type&
+inline std::pair<const dimension_type, const CO_Tree::data_type&>
 CO_Tree::unordered_const_iterator::operator*() const {
-  return *p;
+  PPL_ASSERT(p != 0);
+  PPL_ASSERT(i != 0);
+  PPL_ASSERT(i <= p->reserved_size);
+  return std::pair<const dimension_type, const data_type&>(p->indexes[i],
+                                                           p->data[i]);
 }
 
-inline const CO_Tree::value_type*
+inline CO_Tree::unordered_const_iterator::Const_Member_Access_Helper
 CO_Tree::unordered_const_iterator::operator->() const {
-  return p;
+  PPL_ASSERT(p != 0);
+  PPL_ASSERT(i != 0);
+  PPL_ASSERT(i <= p->reserved_size);
+  return Const_Member_Access_Helper(p->indexes[i], p->data[i]);
 }
 
 inline CO_Tree::unordered_const_iterator&
 CO_Tree::unordered_const_iterator::operator++() {
-  ++p;
-  while (p->first == unused_index)
-    ++p;
+  ++i;
+  PPL_ASSERT(i <= p->reserved_size + 1);
+  while (p->indexes[i] == unused_index) {
+    PPL_ASSERT(i <= p->reserved_size + 1);
+    ++i;
+  }
   return *this;
 }
 
 inline bool
 CO_Tree::unordered_const_iterator
 ::operator==(const unordered_const_iterator& x) const {
-  return p == x.p;
+  return (p == x.p) && (i == x.i);
 }
 
 inline bool
 CO_Tree::unordered_const_iterator
 ::operator!=(const unordered_const_iterator& x) const {
   return !(*this == x);
+}
+
+
+inline
+CO_Tree::unordered_const_iterator::Const_Member_Access_Helper
+::Const_Member_Access_Helper(dimension_type key, const data_type& data)
+  : my_pair(key, data) {
+}
+
+inline
+const std::pair<const dimension_type, const CO_Tree::data_type&>*
+CO_Tree::unordered_const_iterator::Const_Member_Access_Helper
+::operator->() const {
+  return &my_pair;
 }
 
 

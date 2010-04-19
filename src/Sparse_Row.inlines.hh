@@ -735,12 +735,23 @@ Sparse_Row_Reference::applier_to_data<Func>::applier_to_data(const Func& func)
   : f(func) {
 }
 
+#ifndef USE_PPL_SPARSE_BACKEND_CO_TREE
 template <typename Func>
 inline void
 Sparse_Row_Reference::applier_to_data<Func>
 ::operator()(std::pair<dimension_type, Coefficient>& x) const {
   f(x.second);
 }
+
+#else // !defined(USE_PPL_SPARSE_BACKEND_CO_TREE)
+
+template <typename Func>
+inline void
+Sparse_Row_Reference::applier_to_data<Func>
+::operator()(std::pair<dimension_type, Coefficient&> x) const {
+  f(x.second);
+}
+#endif // !defined(USE_PPL_SPARSE_BACKEND_CO_TREE)
 
 template <typename Func>
 inline Sparse_Row_Reference::applier_to_data<Func>

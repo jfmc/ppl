@@ -119,7 +119,19 @@ public:
 
   class inorder_const_iterator {
   public:
-    // TODO: This should be private
+
+    class Const_Member_Access_Helper {
+
+    public:
+      Const_Member_Access_Helper(dimension_type key, const data_type& data);
+
+      const std::pair<const dimension_type, const data_type&>* operator->()
+        const;
+
+    private:
+      std::pair<const dimension_type, const data_type&> my_pair;
+    };
+
     //! Constructs an iterator pointing to the root node.
     inorder_const_iterator(const CO_Tree* tree = 0);
 
@@ -183,10 +195,10 @@ public:
     void get_previous_value();
 
     //! Returns the value_type of the current node.
-    const value_type& operator*() const;
+    std::pair<const dimension_type, const data_type&> operator*() const;
 
     //! Returns a pointer to the value_type of the current node.
-    const value_type* operator->() const;
+    Const_Member_Access_Helper operator->() const;
 
     //! Compares \p *this with x .
     bool operator==(const inorder_const_iterator& x) const;
@@ -232,7 +244,30 @@ public:
 
   class inorder_iterator {
   public:
-    // TODO: This should be private
+
+    class Member_Access_Helper {
+
+    public:
+      Member_Access_Helper(dimension_type& key, data_type& data);
+
+      std::pair<dimension_type&, data_type&>* operator->();
+
+    private:
+      std::pair<dimension_type&, data_type&> my_pair;
+    };
+
+    class Const_Member_Access_Helper {
+
+    public:
+      Const_Member_Access_Helper(dimension_type key, const data_type& data);
+
+      const std::pair<const dimension_type, const data_type&>* operator->()
+        const;
+
+    private:
+      std::pair<const dimension_type, const data_type&> my_pair;
+    };
+
     //! Constructs an iterator pointing to the root node.
     inorder_iterator(CO_Tree* tree = 0);
 
@@ -292,16 +327,16 @@ public:
     void get_previous_value();
 
     //! Returns the value_type of the current node.
-    value_type& operator*();
+    std::pair<dimension_type&, data_type&> operator*();
 
     //! Returns the value_type of the current node.
-    const value_type& operator*() const;
+    std::pair<const dimension_type, const data_type&> operator*() const;
 
     //! Returns a pointer to the value_type of the current node.
-    value_type* operator->();
+    Member_Access_Helper operator->();
 
     //! Returns a pointer to the value_type of the current node.
-    const value_type* operator->() const;
+    Const_Member_Access_Helper operator->() const;
 
     //! Compares \p *this with x .
     bool operator==(const inorder_iterator& x) const;
@@ -350,6 +385,8 @@ public:
       inorder_const_iterator::operator=(const inorder_iterator&);
   };
 
+  class unordered_const_iterator;
+
   class unordered_iterator {
 
   public:
@@ -360,13 +397,35 @@ public:
     typedef value_type* pointer;
     typedef value_type& reference;
 
-    unordered_iterator(value_type* p1 = 0);
+    class Member_Access_Helper {
 
-    value_type& operator*();
-    const value_type& operator*() const;
+    public:
+      Member_Access_Helper(dimension_type& key, data_type& data);
 
-    value_type* operator->();
-    const value_type* operator->() const;
+      std::pair<dimension_type&, data_type&>* operator->();
+
+    private:
+      std::pair<dimension_type&, data_type&> my_pair;
+    };
+
+    class Const_Member_Access_Helper {
+
+    public:
+      Const_Member_Access_Helper(dimension_type key, const data_type& data);
+
+      const std::pair<const dimension_type, const data_type&>* operator->() const;
+
+    private:
+      std::pair<const dimension_type, const data_type&> my_pair;
+    };
+
+    unordered_iterator(CO_Tree* p1 = 0, dimension_type i = 0);
+
+    std::pair<dimension_type&, data_type&> operator*();
+    std::pair<const dimension_type, const data_type&> operator*() const;
+
+    Member_Access_Helper operator->();
+    Const_Member_Access_Helper operator->() const;
 
     unordered_iterator& operator++();
 
@@ -375,7 +434,10 @@ public:
 
   private:
 
-    value_type* p;
+    CO_Tree* p;
+    dimension_type i;
+
+    friend class unordered_const_iterator;
   };
 
   class unordered_const_iterator {
@@ -388,11 +450,24 @@ public:
     typedef value_type* pointer;
     typedef value_type& reference;
 
-    unordered_const_iterator(const value_type* p1 = 0);
+    class Const_Member_Access_Helper {
+
+    public:
+      Const_Member_Access_Helper(dimension_type key, const data_type& data);
+
+      const std::pair<const dimension_type, const data_type&>* operator->()
+        const;
+
+    private:
+      std::pair<const dimension_type, const data_type&> my_pair;
+    };
+
+    unordered_const_iterator(const CO_Tree* p1 = 0, dimension_type i = 0);
     unordered_const_iterator(const unordered_iterator& itr);
 
-    const value_type& operator*() const;
-    const value_type* operator->() const;
+    std::pair<const dimension_type, const data_type&> operator*() const;
+
+    Const_Member_Access_Helper operator->() const;
 
     unordered_const_iterator& operator++();
 
@@ -401,7 +476,8 @@ public:
 
   private:
 
-    const value_type* p;
+    const CO_Tree* p;
+    dimension_type i;
   };
 
 private:
@@ -536,14 +612,21 @@ private:
   dimension_type max_depth;
 
   // TODO: don't waste the first element.
-  //! The vector that contains (key, value) pairs.
+  //! The vector that contains the keys in the tree.
   //! If a pair has \p unused_index as first element, it means it is not used.
   //! Its size is reserved_size + 2, because the first element is not used,
   //! and the last element is used as marker for unordered iterators.
-  value_type* data;
+  dimension_type* indexes;
 
-  //! The size of the \p data vector. It is one less than a power of 2.
-  //! If this is 0, data and level are set to NULL.
+  //! The vector that contains the data of the keys in the tree.
+  //! If index[i] is \p unused_index, data[i] is unused. Otherwise, data[i]
+  //! contains the data associated to the indexes[i] key.
+  //! Its size is reserved_size + 1, because the first element is not used.
+  data_type* data;
+
+  //! The size of the \p data vector minus one. It is one less than a power of
+  //! 2.
+  //! If this is 0, data, indexes and level are set to NULL.
   dimension_type reserved_size;
 
   //! The number of used elements in \p data .

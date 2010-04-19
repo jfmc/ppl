@@ -753,28 +753,42 @@ Unlimited_Sparse_Row_Over_CO_Tree::iterator::operator--() {
   return *this;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator::value_type&
+inline std::pair<dimension_type, Coefficient&>
 Unlimited_Sparse_Row_Over_CO_Tree::iterator::operator*() {
 
-  return *itr;
+  return std::pair<dimension_type, Coefficient&>(itr->first, itr->second);
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator::value_type*
+inline Unlimited_Sparse_Row_Over_CO_Tree::iterator::Member_Access_Helper
 Unlimited_Sparse_Row_Over_CO_Tree::iterator::operator->() {
 
-  return itr.operator->();
+  return Member_Access_Helper(itr->first, itr->second);
 }
 
-inline const Unlimited_Sparse_Row_Over_CO_Tree::iterator::value_type&
+inline std::pair<dimension_type, const Coefficient&>
 Unlimited_Sparse_Row_Over_CO_Tree::iterator::operator*() const {
 
   return *itr;
 }
 
-inline const Unlimited_Sparse_Row_Over_CO_Tree::iterator::value_type*
+inline CO_Tree::inorder_iterator::Const_Member_Access_Helper
 Unlimited_Sparse_Row_Over_CO_Tree::iterator::operator->() const {
 
   return itr.operator->();
+}
+
+
+inline
+Unlimited_Sparse_Row_Over_CO_Tree::iterator::Member_Access_Helper
+::Member_Access_Helper(dimension_type key, CO_Tree::data_type& data)
+  : my_pair(key, data) {
+}
+
+inline
+std::pair<dimension_type, Coefficient&>*
+Unlimited_Sparse_Row_Over_CO_Tree::iterator::Member_Access_Helper
+::operator->() {
+  return &my_pair;
 }
 
 
@@ -887,17 +901,124 @@ Unlimited_Sparse_Row_Over_CO_Tree::const_iterator::operator--() {
   return *this;
 }
 
-inline const Unlimited_Sparse_Row_Over_CO_Tree::const_iterator::value_type&
+inline std::pair<dimension_type, const Coefficient&>
 Unlimited_Sparse_Row_Over_CO_Tree::const_iterator::operator*() const {
 
   return *itr;
 }
 
-inline const Unlimited_Sparse_Row_Over_CO_Tree::const_iterator::value_type*
+inline CO_Tree::inorder_const_iterator::Const_Member_Access_Helper
 Unlimited_Sparse_Row_Over_CO_Tree::const_iterator::operator->() const {
 
   return itr.operator->();
 }
+
+
+inline
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+::unordered_iterator(const CO_Tree::unordered_iterator& itr)
+  : CO_Tree::unordered_iterator(itr) {
+}
+
+inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+::Member_Access_Helper
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+::operator->() {
+  return Member_Access_Helper(Base::operator->()->first,
+                              Base::operator->()->second);
+}
+
+inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+::Const_Member_Access_Helper
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+::operator->() const {
+  return Const_Member_Access_Helper(Base::operator->()->first,
+                                    Base::operator->()->second);
+}
+
+inline std::pair<dimension_type, Coefficient&>
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator::operator*() {
+  return std::pair<dimension_type, Coefficient&>(Base::operator->()->first,
+                                                 Base::operator->()->second);
+}
+
+inline std::pair<dimension_type, const Coefficient&>
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator::operator*() const {
+  return std::pair<dimension_type, const Coefficient&>(
+    Base::operator->()->first, Base::operator->()->second);
+}
+
+inline
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+::operator unordered_const_iterator() const {
+  return unordered_const_iterator(*static_cast<const Base*>(this));
+}
+
+
+inline
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator::Member_Access_Helper
+::Member_Access_Helper(dimension_type key, Coefficient& data)
+  : my_pair(key, data) {
+}
+
+inline std::pair<dimension_type, Coefficient&>*
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator::Member_Access_Helper
+::operator->() {
+  return &my_pair;
+}
+
+
+inline
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+::Const_Member_Access_Helper
+::Const_Member_Access_Helper(dimension_type key, const Coefficient& data)
+  : my_pair(key, data) {
+}
+
+inline const std::pair<dimension_type, const Coefficient&>*
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+::Const_Member_Access_Helper::operator->() const {
+  return &my_pair;
+}
+
+
+inline
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+::unordered_const_iterator(const CO_Tree::unordered_const_iterator& itr)
+  : CO_Tree::unordered_const_iterator(itr) {
+}
+
+inline std::pair<dimension_type, const Coefficient&>
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+::operator*() const {
+  return std::pair<dimension_type, const Coefficient&>(
+    Base::operator->()->first,Base::operator->()->second);
+}
+
+inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+::Const_Member_Access_Helper
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+::operator->() const {
+  return Const_Member_Access_Helper(
+    CO_Tree::unordered_const_iterator::operator->()->first,
+    CO_Tree::unordered_const_iterator::operator->()->second);
+}
+
+
+inline
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+::Const_Member_Access_Helper
+::Const_Member_Access_Helper(dimension_type key, const Coefficient& data)
+  : my_pair(key, data) {
+}
+
+inline
+const std::pair<dimension_type, const CO_Tree::data_type&>*
+Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+::Const_Member_Access_Helper::operator->() const {
+  return &my_pair;
+}
+
 
 } // namespace Parma_Polyhedra_Library
 
