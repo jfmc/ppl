@@ -274,6 +274,77 @@ public:
   //! Lower bound of key c, assuming it is in [itr,end()) .
   const_iterator lower_bound(const dimension_type c, const_iterator itr) const;
 
+  //! Equivalent to itr = find_create(i, x) .
+  //! This may be faster in some implementations.
+  void find_create_assign(const dimension_type i, const Coefficient& x,
+                          iterator& itr);
+
+  //! Equivalent to itr = find_create(x) .
+  //! This may be faster in some implementations.
+  void find_create_assign(const std::pair<dimension_type, Coefficient>& x,
+                          iterator& itr);
+
+  //! Equivalent to itr = find_create(i) .
+  //! This may be faster in some implementations.
+  void find_create_assign(const dimension_type i, iterator& itr);
+
+  //! Equivalent to itr = find_create(i, x, itr) .
+  //! This may be faster in some implementations.
+  void find_create_hint_assign(const dimension_type i, const Coefficient& x,
+                               iterator& itr);
+
+  //! Equivalent to itr = find_create(x, itr) .
+  //! This may be faster in some implementations.
+  void find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
+                               iterator& itr);
+
+  //! Equivalent to itr = find_create(i, itr) .
+  //! This may be faster in some implementations.
+  void find_create_hint_assign(const dimension_type i, iterator& itr);
+
+  //! Equivalent to itr = find_create(i, itr) .
+  //! This may be faster in some implementations.
+  void find_create_hint_assign(const dimension_type i,
+                               dangerous_iterator& itr);
+
+  //! Equivalent to itr = find_create(i, x, itr) .
+  //! This may be faster in some implementations.
+  void find_create_hint_assign(const dimension_type i, const Coefficient& x,
+                               dangerous_iterator& itr);
+
+  //! Equivalent to itr = find_create(x, itr) .
+  //! This may be faster in some implementations.
+  void find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
+                               dangerous_iterator& itr);
+
+  //! Equivalent to itr = find_dangerous(c).
+  void find_assign(const dimension_type c, dangerous_iterator& itr);
+  //! Equivalent to itr = find(c).
+  void find_assign(const dimension_type c, iterator& itr);
+  //! Equivalent to itr = find(c).
+  void find_assign(const dimension_type c, const_iterator& itr) const;
+
+  //! Equivalent to itr = lower_bound_dangerous(c)
+  void lower_bound_assign(const dimension_type c, dangerous_iterator& itr);
+  //! Equivalent to itr = lower_bound(c)
+  void lower_bound_assign(const dimension_type c, iterator& itr);
+  //! Equivalent to itr = lower_bound(c)
+  void lower_bound_assign(const dimension_type c, const_iterator& itr) const;
+
+  //! Equivalent to itr = find_dangerous(c, itr) .
+  void find_hint_assign(const dimension_type c, dangerous_iterator& itr);
+  //! Equivalent to itr = find(c, itr) .
+  void find_hint_assign(const dimension_type c, iterator& itr);
+  //! Equivalent to itr = find(c, itr) .
+  void find_hint_assign(const dimension_type c, const_iterator& itr) const;
+
+  //! Equivalent to itr = lower_bound_dangerous(c, itr) .
+  void lower_bound_hint_assign(const dimension_type c, dangerous_iterator& itr);
+  //! Equivalent to itr = lower_bound(c, itr) .
+  void lower_bound_hint_assign(const dimension_type c, iterator& itr);
+  //! Equivalent to itr = lower_bound(c, itr) .
+  void lower_bound_hint_assign(const dimension_type c, const_iterator& itr) const;
+
   //! A faster equivalent of
   //! itr1=find_dangerous(c1); itr2=find_dangerous(c2); .
   void find2_dangerous(const dimension_type c1, const dimension_type c2,
@@ -305,6 +376,26 @@ public:
   bool OK() const;
 
 private:
+
+  void lower_bound_hint_assign(dimension_type i,
+                               CO_Tree::inorder_iterator& itr);
+  void lower_bound_hint_assign(dimension_type i,
+                               CO_Tree::inorder_const_iterator& itr) const;
+
+  void find_hint_assign(dimension_type i, CO_Tree::inorder_iterator& itr);
+  void find_hint_assign(dimension_type i,
+                        CO_Tree::inorder_const_iterator& itr) const;
+
+  void find_create_assign(dimension_type i, const Coefficient& x,
+                          CO_Tree::inorder_iterator& itr);
+
+  void find_create_assign(dimension_type i, CO_Tree::inorder_iterator& itr);
+
+  void find_create_hint_assign(dimension_type i, const Coefficient& x,
+                               CO_Tree::inorder_iterator& itr);
+
+  void find_create_hint_assign(dimension_type i,
+                               CO_Tree::inorder_iterator& itr);
 
   //! Equivalent to (*this)[i]=x; itr = tree.lower_bound(i);.
   void find_create(dimension_type i, const Coefficient& x,
