@@ -343,6 +343,138 @@ Sparse_Row::find_create(const dimension_type i, dangerous_iterator itr) {
   return row.find_create(i, itr);
 }
 
+inline void
+Sparse_Row
+::find_create_assign(const dimension_type i, const Coefficient& x,
+                     iterator& itr) {
+  row.find_create_assign(i, x, itr);
+}
+
+inline void
+Sparse_Row
+::find_create_assign(const std::pair<dimension_type, Coefficient>& x,
+                     iterator& itr) {
+  row.find_create_assign(x, itr);
+}
+
+inline void
+Sparse_Row
+::find_create_assign(const dimension_type i, iterator& itr) {
+  row.find_create_assign(i, itr);
+}
+
+inline void
+Sparse_Row
+::find_create_hint_assign(const dimension_type i, const Coefficient& x,
+                          iterator& itr) {
+  row.find_create_hint_assign(i, x, itr);
+}
+
+inline void
+Sparse_Row
+::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
+                          iterator& itr) {
+  row.find_create_hint_assign(x, itr);
+}
+
+inline void
+Sparse_Row
+::find_create_hint_assign(const dimension_type i, iterator& itr) {
+  row.find_create_hint_assign(i, itr);
+}
+
+inline void
+Sparse_Row
+::find_create_hint_assign(const dimension_type i, dangerous_iterator& itr) {
+  row.find_create_hint_assign(i, itr);
+}
+
+inline void
+Sparse_Row
+::find_create_hint_assign(const dimension_type i, const Coefficient& x,
+                          dangerous_iterator& itr) {
+  row.find_create_hint_assign(i, x, itr);
+}
+
+inline void
+Sparse_Row
+::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
+                          dangerous_iterator& itr) {
+  row.find_create_hint_assign(x, itr);
+}
+
+inline void
+Sparse_Row
+::find_assign(const dimension_type c, dangerous_iterator& itr) {
+  row.find_assign(c, itr);
+}
+
+inline void
+Sparse_Row
+::find_assign(const dimension_type c, iterator& itr) {
+  row.find_assign(c, itr);
+}
+
+inline void
+Sparse_Row
+::find_assign(const dimension_type c, const_iterator& itr) const {
+  row.find_assign(c, itr);
+}
+
+inline void
+Sparse_Row
+::lower_bound_assign(const dimension_type c, dangerous_iterator& itr) {
+  row.lower_bound_assign(c, itr);
+}
+
+inline void
+Sparse_Row
+::lower_bound_assign(const dimension_type c, iterator& itr) {
+  row.lower_bound_assign(c, itr);
+}
+
+inline void
+Sparse_Row
+::lower_bound_assign(const dimension_type c, const_iterator& itr) const {
+  row.lower_bound_assign(c, itr);
+}
+
+inline void
+Sparse_Row
+::find_hint_assign(const dimension_type c, dangerous_iterator& itr) {
+  row.find_hint_assign(c, itr);
+}
+
+inline void
+Sparse_Row
+::find_hint_assign(const dimension_type c, iterator& itr) {
+  row.find_hint_assign(c, itr);
+}
+
+inline void
+Sparse_Row
+::find_hint_assign(const dimension_type c, const_iterator& itr) const {
+  row.find_hint_assign(c, itr);
+}
+
+inline void
+Sparse_Row
+::lower_bound_hint_assign(const dimension_type c, dangerous_iterator& itr) {
+  row.lower_bound_hint_assign(c, itr);
+}
+
+inline void
+Sparse_Row
+::lower_bound_hint_assign(const dimension_type c, iterator& itr) {
+  row.lower_bound_hint_assign(c, itr);
+}
+
+inline void
+Sparse_Row
+::lower_bound_hint_assign(const dimension_type c, const_iterator& itr) const {
+  row.lower_bound_hint_assign(c, itr);
+}
+
 inline
 Sparse_Row::operator Sparse_Row_Reference() {
   return Sparse_Row_Reference(row, size_);
@@ -692,6 +824,138 @@ Sparse_Row_Reference
 ::find_create(const dimension_type i, dangerous_iterator itr) {
   PPL_ASSERT(i < size_);
   return row.find_create(i, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_create_assign(const dimension_type i, const Coefficient& x,
+                     iterator& itr) {
+  row.find_create_assign(i, x, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_create_assign(const std::pair<dimension_type, Coefficient>& x,
+                     iterator& itr) {
+  row.find_create_assign(x, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_create_assign(const dimension_type i, iterator& itr) {
+  row.find_create_assign(i, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_create_hint_assign(const dimension_type i, const Coefficient& x,
+                          iterator& itr) {
+  row.find_create_hint_assign(i, x, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
+                          iterator& itr) {
+  row.find_create_hint_assign(x, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_create_hint_assign(const dimension_type i, iterator& itr) {
+  row.find_create_hint_assign(i, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_create_hint_assign(const dimension_type i, dangerous_iterator& itr) {
+  row.find_create_hint_assign(i, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_create_hint_assign(const dimension_type i, const Coefficient& x,
+                          dangerous_iterator& itr) {
+  row.find_create_hint_assign(i, x, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
+                          dangerous_iterator& itr) {
+  row.find_create_hint_assign(x, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_assign(const dimension_type c, dangerous_iterator& itr) {
+  row.find_assign(c, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_assign(const dimension_type c, iterator& itr) {
+  row.find_assign(c, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_assign(const dimension_type c, const_iterator& itr) const {
+  row.find_assign(c, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::lower_bound_assign(const dimension_type c, dangerous_iterator& itr) {
+  row.lower_bound_assign(c, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::lower_bound_assign(const dimension_type c, iterator& itr) {
+  row.lower_bound_assign(c, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::lower_bound_assign(const dimension_type c, const_iterator& itr) const {
+  row.lower_bound_assign(c, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_hint_assign(const dimension_type c, dangerous_iterator& itr) {
+  row.find_hint_assign(c, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_hint_assign(const dimension_type c, iterator& itr) {
+  row.find_hint_assign(c, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::find_hint_assign(const dimension_type c, const_iterator& itr) const {
+  row.find_hint_assign(c, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::lower_bound_hint_assign(const dimension_type c, dangerous_iterator& itr) {
+  row.lower_bound_hint_assign(c, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::lower_bound_hint_assign(const dimension_type c, iterator& itr) {
+  row.lower_bound_hint_assign(c, itr);
+}
+
+inline void
+Sparse_Row_Reference
+::lower_bound_hint_assign(const dimension_type c, const_iterator& itr) const {
+  row.lower_bound_hint_assign(c, itr);
 }
 
 inline
