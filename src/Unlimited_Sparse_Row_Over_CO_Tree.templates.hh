@@ -36,43 +36,36 @@ Unlimited_Sparse_Row_Over_CO_Tree
 ::combine_needs_first(const Unlimited_Sparse_Row_Over_CO_Tree& y,
                       const Func1& f, const Func2& g) {
   iterator i = begin();
-  iterator last_i = begin();
   const_iterator j = y.begin();
   if (i.itr.is_at_end())
     return;
   if (!j.itr.is_at_end()) {
     if (i->first == j->first) {
       g(i->second, j->second);
-      last_i = i;
       ++i;
       ++j;
     } else
       if (i->first < j->first) {
         f(i->second);
-        last_i = i;
         ++i;
       } else {
         ++j;
       }
   } else {
     f(i->second);
-    last_i = i;
     ++i;
   }
-  PPL_ASSERT(!last_i.itr.is_at_end());
   while (!i.itr.is_at_end() && !j.itr.is_at_end())
     if (i->first == j->first) {
       g(i->second, j->second);
-      last_i = i;
       ++i;
       ++j;
     } else
       if (i->first < j->first) {
         f(i->second);
-        last_i = i;
         ++i;
       } else
-        j = y.lower_bound(i->first, j);
+        y.lower_bound_hint_assign(i->first, j);
   while (!i.itr.is_at_end()) {
     f(i->second);
     ++i;
