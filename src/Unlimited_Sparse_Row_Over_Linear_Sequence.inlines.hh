@@ -265,6 +265,66 @@ Unlimited_Sparse_Row_Over_Linear_Sequence
   return itr;
 }
 
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_create_assign(const dimension_type i, const Coefficient& x,
+                     iterator& itr) {
+  itr = find_create(i, x);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_create_assign(const std::pair<dimension_type, Coefficient>& x,
+                     iterator& itr) {
+  itr = find_create(x);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_create_assign(const dimension_type i, iterator& itr) {
+  itr = find_create(i);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_create_hint_assign(const dimension_type i, const Coefficient& x,
+                          iterator& itr) {
+  itr = find_create(i, x, itr);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
+                          iterator& itr) {
+  itr = find_create(x, itr);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_create_hint_assign(const dimension_type i, iterator& itr) {
+  itr = find_create(i, itr);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_create_hint_assign(const dimension_type i, dangerous_iterator& itr) {
+  itr = find_create(i, itr);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_create_hint_assign(const dimension_type i, const Coefficient& x,
+                          dangerous_iterator& itr) {
+  itr = find_create(i, x, itr);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
+                          dangerous_iterator& itr) {
+  itr = find_create(x, itr);
+}
+
 inline const Coefficient&
 Unlimited_Sparse_Row_Over_Linear_Sequence
 ::operator[](const dimension_type i) const {
@@ -403,6 +463,78 @@ inline Unlimited_Sparse_Row_Over_Linear_Sequence::const_iterator
 Unlimited_Sparse_Row_Over_Linear_Sequence
 ::lower_bound(const dimension_type k, const_iterator itr1) const {
   return data.lower_bound(k, itr1);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_assign(const dimension_type c, dangerous_iterator& itr) {
+  itr = find_dangerous(c);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_assign(const dimension_type c, iterator& itr) {
+  itr = find(c);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_assign(const dimension_type c, const_iterator& itr) const {
+  itr = find(c);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::lower_bound_assign(const dimension_type c, dangerous_iterator& itr) {
+  itr = lower_bound_dangerous(c);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::lower_bound_assign(const dimension_type c, iterator& itr) {
+  itr = lower_bound(c);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::lower_bound_assign(const dimension_type c, const_iterator& itr) const {
+  itr = lower_bound(c);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_hint_assign(const dimension_type c, dangerous_iterator& itr) {
+  itr = find_dangerous(c, itr);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_hint_assign(const dimension_type c, iterator& itr) {
+  itr = find(c, itr);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::find_hint_assign(const dimension_type c, const_iterator& itr) const {
+  itr = find(c, itr);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::lower_bound_hint_assign(const dimension_type c, dangerous_iterator& itr) {
+  itr = lower_bound_dangerous(c, itr);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::lower_bound_hint_assign(const dimension_type c, iterator& itr) {
+  itr = lower_bound(c, itr);
+}
+
+inline void
+Unlimited_Sparse_Row_Over_Linear_Sequence
+::lower_bound_hint_assign(const dimension_type c, const_iterator& itr) const {
+  itr = lower_bound(c, itr);
 }
 
 inline void
