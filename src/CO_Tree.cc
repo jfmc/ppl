@@ -506,8 +506,8 @@ PPL::CO_Tree::rebuild_level_data_helper(dimension_type min_depth,
 }
 
 void
-PPL::CO_Tree::insert(dimension_type key1, const data_type& data1,
-                     inorder_iterator& itr) {
+PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
+                             inorder_iterator& itr) {
   PPL_ASSERT(key1 != unused_index);
 
   if (empty()) {
@@ -522,8 +522,11 @@ PPL::CO_Tree::insert(dimension_type key1, const data_type& data1,
     return;
   }
 
-  itr.get_root();
-  lower_bound(itr, key1);
+#ifndef NDEBUG
+  inorder_iterator itr2(this);
+  lower_bound(itr2, key1);
+  PPL_ASSERT(itr == itr2);
+#endif
 
   if (itr->first == key1) {
     itr->second = data1;

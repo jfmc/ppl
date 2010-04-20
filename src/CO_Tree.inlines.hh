@@ -71,6 +71,89 @@ CO_Tree::~CO_Tree() {
   destroy();
 }
 
+inline void
+CO_Tree::insert(dimension_type key1, const data_type& data1,
+                inorder_iterator& itr) {
+  itr = inorder_iterator(this);
+  insert_hint(key1, data1, itr);
+}
+
+inline void
+CO_Tree::insert(dimension_type key1, inorder_iterator& itr) {
+  if (empty())
+    insert(key1, Coefficient_zero(), itr);
+  else {
+    itr = inorder_iterator(this);
+    lower_bound(itr, key1);
+    if (itr->first != key1)
+      insert_precise(key1, Coefficient_zero(), itr);
+  }
+}
+
+inline void
+CO_Tree::insert_hint(dimension_type key1, const data_type& data1,
+                     inorder_iterator& itr) {
+  PPL_ASSERT(key1 != unused_index);
+
+  if (!empty()) {
+    PPL_ASSERT(!itr.is_at_end());
+    PPL_ASSERT(!itr.is_before_begin());
+    PPL_ASSERT(itr->first != unused_index);
+
+    if (itr->first != key1) {
+      if (itr->first > key1)
+        while (itr.has_parent() && itr->first > key1)
+          itr.get_parent();
+      else
+        while (itr.has_parent() && itr->first < key1)
+          itr.get_parent();
+
+      lower_bound(itr, key1);
+
+#ifndef NDEBUG
+      inorder_iterator itr2(this);
+      lower_bound(itr2, key1);
+      PPL_ASSERT(itr == itr2);
+#endif
+    }
+  }
+
+  insert_precise(key1, data1, itr);
+}
+
+inline void
+CO_Tree::insert_hint(dimension_type key1, inorder_iterator& itr) {
+  PPL_ASSERT(key1 != unused_index);
+
+  if (empty())
+    insert(key1, Coefficient_zero(), itr);
+  else {
+    PPL_ASSERT(!itr.is_at_end());
+    PPL_ASSERT(!itr.is_before_begin());
+    PPL_ASSERT(itr->first != unused_index);
+
+    if (itr->first != key1) {
+      if (itr->first > key1)
+        while (itr.has_parent() && itr->first > key1)
+          itr.get_parent();
+      else
+        while (itr.has_parent() && itr->first < key1)
+          itr.get_parent();
+
+      lower_bound(itr, key1);
+
+#ifndef NDEBUG
+      inorder_iterator itr2(this);
+      lower_bound(itr2, key1);
+      PPL_ASSERT(itr == itr2);
+#endif
+    }
+
+    if (itr->first != key1)
+      insert_precise(key1, Coefficient_zero(), itr);
+  }
+}
+
 inline dimension_type
 CO_Tree::external_memory_in_bytes() const {
   dimension_type size = 0;

@@ -63,10 +63,32 @@ public:
   //! Inserts the pair (key, data) in the tree.
   void insert(dimension_type key, const data_type& data);
 
+  //! Inserts a pair with key \p key in the tree and modifies \p itr to point
+  //! to the inserted pair.
+  //! If such a pair already exists, itr is modified to point at that pair.
+  void insert(dimension_type key, inorder_iterator& itr);
+
   //! Inserts the pair (key, data) in the tree.
   //! \p itr is modified to point to the inserted element.
   void insert(dimension_type key, const data_type& data,
               inorder_iterator& itr);
+
+  //! Inserts the pair (key, data) in the tree.
+  //! \p itr is used as hint and then modified to point to the inserted
+  //! element.
+  void insert_hint(dimension_type key, const data_type& data,
+                   inorder_iterator& itr);
+
+  //! Inserts a pair with key \p key in the tree.
+  //! \p itr is used as hint and then modified to point to the inserted
+  //! element.
+  void insert_hint(dimension_type key, inorder_iterator& itr);
+
+  //! Inserts the pair (key1, data1) in the tree.
+  //! \p itr must be the lower bound of \p key in the tree.
+  //! \p itr is modified to point to the inserted element.
+  void insert_precise(dimension_type key1, const data_type& data1,
+                      inorder_iterator& itr);
 
   //! Erases the pair with key \p key from the tree.
   //! Returns \p false if there was no pair with key \p key in the tree.
