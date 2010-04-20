@@ -271,6 +271,54 @@ Dense_Row::find_create(dimension_type i, iterator itr) {
   return find(i);
 }
 
+inline void
+Dense_Row
+::find_assign(const dimension_type c, iterator& itr) {
+  itr = find(c);
+}
+
+inline void
+Dense_Row
+::find_assign(const dimension_type c, const_iterator& itr) const {
+  itr = find(c);
+}
+
+inline void
+Dense_Row
+::lower_bound_assign(const dimension_type c, iterator& itr) {
+  itr = lower_bound(c);
+}
+
+inline void
+Dense_Row
+::lower_bound_assign(const dimension_type c, const_iterator& itr) const {
+  itr = lower_bound(c);
+}
+
+inline void
+Dense_Row
+::find_hint_assign(const dimension_type c, iterator& itr) {
+  itr = find(c, itr);
+}
+
+inline void
+Dense_Row
+::find_hint_assign(const dimension_type c, const_iterator& itr) const {
+  itr = find(c, itr);
+}
+
+inline void
+Dense_Row
+::lower_bound_hint_assign(const dimension_type c, iterator& itr) {
+  itr = lower_bound(c, itr);
+}
+
+inline void
+Dense_Row
+::lower_bound_hint_assign(const dimension_type c, const_iterator& itr) const {
+  itr = lower_bound(c, itr);
+}
+
 inline Coefficient&
 Dense_Row::operator[](const dimension_type k) {
   return row[k];

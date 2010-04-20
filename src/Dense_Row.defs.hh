@@ -204,6 +204,26 @@ public:
   //! Lower bound of key c, assuming it is in [itr,end()) .
   const_iterator lower_bound(dimension_type i, const_iterator itr) const;
 
+  //! Equivalent to itr = find(c).
+  void find_assign(const dimension_type c, iterator& itr);
+  //! Equivalent to itr = find(c).
+  void find_assign(const dimension_type c, const_iterator& itr) const;
+
+  //! Equivalent to itr = lower_bound(c)
+  void lower_bound_assign(const dimension_type c, iterator& itr);
+  //! Equivalent to itr = lower_bound(c)
+  void lower_bound_assign(const dimension_type c, const_iterator& itr) const;
+
+  //! Equivalent to itr = find(c, itr) .
+  void find_hint_assign(const dimension_type c, iterator& itr);
+  //! Equivalent to itr = find(c, itr) .
+  void find_hint_assign(const dimension_type c, const_iterator& itr) const;
+
+  //! Equivalent to itr = lower_bound(c, itr) .
+  void lower_bound_hint_assign(const dimension_type c, iterator& itr);
+  //! Equivalent to itr = lower_bound(c, itr) .
+  void lower_bound_hint_assign(const dimension_type c, const_iterator& itr) const;
+
   //! Equivalent to find_create(x.first, x.second, begin_dangerous()) .
   iterator find_create(const std::pair<dimension_type, Coefficient>& x);
 
