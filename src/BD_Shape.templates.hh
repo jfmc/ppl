@@ -5311,7 +5311,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
                   "*this is a BD_Shape");
 
   if (relsym == EQUAL) {
-    // The relation symbol is "==":
+    // The relation symbol is "=":
     // this is just an affine image computation.
     affine_image(var, expr, denominator);
     return;
@@ -5893,7 +5893,7 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
                   "*this is a BD_Shape");
 
   if (relsym == EQUAL) {
-    // The relation symbol is "==":
+    // The relation symbol is "=":
     // this is just an affine preimage computation.
     affine_preimage(var, expr, denominator);
     return;
@@ -6432,7 +6432,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
             if (i == 0) {
               // We have got a equality constraint with one variable.
               s << Variable(j - 1);
-              s << " == " << c_i_j;
+              s << " = " << c_i_j;
             }
             else {
               // We have got a equality constraint with two variables.
@@ -6440,13 +6440,13 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
                 s << Variable(j - 1);
                 s << " - ";
                 s << Variable(i - 1);
-                s << " == " << c_i_j;
+                s << " = " << c_i_j;
               }
               else {
                 s << Variable(i - 1);
                 s << " - ";
                 s << Variable(j - 1);
-                s << " == " << c_j_i;
+                s << " = " << c_j_i;
               }
             }
           }

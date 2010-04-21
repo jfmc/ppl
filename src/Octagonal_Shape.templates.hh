@@ -5718,7 +5718,7 @@ Octagonal_Shape<T>
                   "*this is an Octagonal_Shape");
 
   if (relsym == EQUAL) {
-    // The relation symbol is "==":
+    // The relation symbol is "=":
     // this is just an affine image computation.
     affine_image(var, expr, denominator);
     return;
@@ -6686,7 +6686,7 @@ Octagonal_Shape<T>
                   "*this is an Octagonal_Shape");
 
   if (relsym == EQUAL) {
-    // The relation symbol is "==":
+    // The relation symbol is "=":
     // this is just an affine preimage computation.
     affine_preimage(var, expr, denominator);
     return;
@@ -7699,11 +7699,11 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
       else
         s << ", ";
       // If the value bound can NOT be divided by 2 exactly,
-      // then we output the constraint `2*v_i == bound'.
+      // then we output the constraint `2*v_i = bound'.
       if (div_2exp_assign_r(half, x_ii_i, 1, ROUND_UP | ROUND_STRICT_RELATION) == V_EQ)
-        s << v_i << " == " << half;
+        s << v_i << " = " << half;
       else
-        s << "2*" << v_i << " == " << x_ii_i;
+        s << "2*" << v_i << " = " << x_ii_i;
     }
     else {
       // We will print unary non-strict inequalities, if any.
@@ -7759,9 +7759,9 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
         else
           s << ", ";
         if (sgn(x_i_j) >= 0)
-          s << v_j << " - " << v_i << " == " << x_i_j;
+          s << v_j << " - " << v_i << " = " << x_i_j;
         else
-          s << v_i << " - " << v_j << " == " << x_ii_jj;
+          s << v_i << " - " << v_j << " = " << x_ii_jj;
       }
       else {
         // We will print non-strict inequalities, if any.
@@ -7801,7 +7801,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
           first = false;
         else
           s << ", ";
-        s << v_j << " + " << v_i << " == " << x_ii_j;
+        s << v_j << " + " << v_i << " = " << x_ii_j;
       }
       else {
         // We will print non-strict inequalities, if any.
