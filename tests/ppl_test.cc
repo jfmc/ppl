@@ -472,7 +472,7 @@ print_generators(const Grid_Generator_System& gs,
 }
 
 void
-print_function(const Parma_Polyhedra_Library::Test::Partial_Function& function,
+print_function(const Parma_Polyhedra_Library::Partial_Function& function,
 	       const std::string& intro, std::ostream& s) {
   if (!intro.empty())
     s << intro << std::endl;

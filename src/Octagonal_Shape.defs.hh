@@ -1725,8 +1725,8 @@ public:
     \param pfunc
     The partial function specifying the destiny of each dimension.
 
-    The template class Partial_Function must provide the following
-    methods.
+    The template type parameter Partial_Function must provide
+    the following methods.
     \code
       bool has_empty_codomain() const
     \endcode

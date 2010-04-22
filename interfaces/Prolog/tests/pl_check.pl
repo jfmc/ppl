@@ -1031,11 +1031,6 @@ map_dim(T) :-
   ppl_delete_Polyhedron(Q),
   clean_ppl_new_Polyhedron_from_space_dimension(T, 4, empty, P0),
   ppl_Polyhedron_add_generators(P0, [point(2*C), line(A+B), ray(A+C)]),
-  \+ppl_Polyhedron_map_space_dimensions(P0, [A+C, C-A, B-B]), % A+C not map
-  \+ppl_Polyhedron_map_space_dimensions(P0, [A, C-A, B-B]),   % A not map
-  \+ppl_Polyhedron_map_space_dimensions(P0, [D-A, C-A, B-B]), % D not dimension
-  \+ppl_Polyhedron_map_space_dimensions(P0, [B-A, C-A, B-B]), % not injective
-  \+ppl_Polyhedron_map_space_dimensions(P0, [B-A, C-A, B-C]), % not function
   ppl_delete_Polyhedron(P0),
   clean_ppl_new_Polyhedron_from_space_dimension(T, 4, empty, P1),
   ppl_Polyhedron_add_generators(P1, [point(2*C), line(A+B), ray(A+C)]),

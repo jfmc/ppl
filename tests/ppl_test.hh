@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_ppl_test_hh 1
 
 #include "ppl_header.hh"
-#include "Partial_Function.defs.hh"
 #include "Random_Number_Generator.defs.hh"
 #include <stdexcept>
 #include <sstream>
@@ -348,12 +347,6 @@ catch (const std::exception& e) {					\
 #define OCTAGONAL_SHAPE_INSTANCE mpq_class
 #endif
 
-// These using directive and declaration are just to avoid the
-// corresponding namespace qualifications in all the tests.
-using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::Test;
-using std::endl;
-
 namespace Parma_Polyhedra_Library {
 
 namespace Test {
@@ -598,7 +591,7 @@ check_result_i(const BD_Shape<T>& computed_result,
 	   << q_computed_result
 	   << "\nknown result is\n"
 	   << known_result
-	   << endl;
+	   << std::endl;
       return false;
     }
     else
@@ -612,7 +605,7 @@ check_result_i(const BD_Shape<T>& computed_result,
 	 << q_computed_result
 	 << "\nknown result is\n"
 	 << known_result
-	 << endl;
+	 << std::endl;
     return false;
   }
 
@@ -632,7 +625,7 @@ check_result_i(const BD_Shape<T>& computed_result,
 	 << q_computed_result
 	 << "\nknown result is\n"
 	 << known_result
-	 << endl;
+	 << std::endl;
   }
   return ok;
 }
@@ -664,7 +657,7 @@ check_result(const BD_Shape<T>& computed_result,
          << computed_result
          << "\nknown result is\n"
          << known_result
-         << endl;
+         << std::endl;
     return false;
   }
 }
@@ -699,7 +692,7 @@ check_result_i(const Octagonal_Shape<T>& computed_result,
            << q_computed_result
 	   << "\nknown result is\n"
            << known_result
-	   << endl;
+	   << std::endl;
       return false;
     }
     else
@@ -713,7 +706,7 @@ check_result_i(const Octagonal_Shape<T>& computed_result,
 	 << q_computed_result
 	 << "\nknown result is\n"
 	 << known_result
-	 << endl;
+	 << std::endl;
     return false;
   }
 
@@ -733,7 +726,7 @@ check_result_i(const Octagonal_Shape<T>& computed_result,
 	 << q_computed_result
 	 << "\nknown result is\n"
 	 << known_result
-	 << endl;
+	 << std::endl;
   }
   return ok;
 }
@@ -790,7 +783,7 @@ check_result_i(const Box<Interval>& computed_result,
 	   << q_computed_result
 	   << "\nknown result is\n"
 	   << known_result
-	   << endl;
+	   << std::endl;
       return false;
     }
     else
@@ -804,7 +797,7 @@ check_result_i(const Box<Interval>& computed_result,
 	 << q_computed_result
 	 << "\nknown result is\n"
 	 << known_result
-	 << endl;
+	 << std::endl;
     nout << "Individual dimensions where containment does not hold"
 	 << "\n(Variable: computed-result known-result):\n";
     for (dimension_type i = 0; i < computed_result.space_dimension(); ++i) {
@@ -815,7 +808,7 @@ check_result_i(const Box<Interval>& computed_result,
 	     << q_computed_result.get_interval(Variable(i))
 	     << ' '
 	     << known_result.get_interval(Variable(i))
-	     << endl;
+	     << std::endl;
       }
     }
     return false;
@@ -837,7 +830,7 @@ check_result_i(const Box<Interval>& computed_result,
 	 << q_computed_result
 	 << "\nknown result is\n"
 	 << known_result
-	 << endl;
+	 << std::endl;
   }
   return ok;
 }
@@ -869,7 +862,7 @@ check_result(const Box<Interval>& computed_result,
          << computed_result
          << "\nknown result is\n"
          << known_result
-         << endl;
+         << std::endl;
     return false;
   }
 }
@@ -1207,12 +1200,18 @@ print_congruences(const Partially_Reduced_Product<D1, D2, R>& pd,
 }
 
 void
-print_function(const Parma_Polyhedra_Library::Test::Partial_Function& function,
+print_function(const Parma_Polyhedra_Library::Partial_Function& function,
 	       const std::string& intro = "",
 	       std::ostream& s = nout);
 
 } // namespace Test
 
 } // namespace Parma_Polyhedra_Library
+
+// These using directive and declaration are just to avoid the
+// corresponding namespace qualifications in all the tests.
+using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::Test;
+using std::endl;
 
 #endif // !defined(PPL_ppl_test_hh)

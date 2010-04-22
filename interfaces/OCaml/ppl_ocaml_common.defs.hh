@@ -149,24 +149,6 @@ build_ocaml_generator_system(const Generator_System& gs);
 value
 build_ocaml_grid_generator_system(const Grid_Generator_System& ggs);
 
-class Partial_Function {
-public:
-  Partial_Function();
-
-  bool has_empty_codomain() const;
-
-  dimension_type max_in_codomain() const;
-
-  bool maps(dimension_type i, dimension_type& j) const;
-
-  bool insert(dimension_type i, dimension_type j);
-
-private:
-  std::set<dimension_type> codomain;
-
-  std::vector<dimension_type> vec;
-};
-
 class timeout_exception
   : public Parma_Polyhedra_Library::Throwable {
 public:

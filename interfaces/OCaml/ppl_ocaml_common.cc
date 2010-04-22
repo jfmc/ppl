@@ -28,57 +28,6 @@ namespace Interfaces {
 
 namespace OCaml {
 
-class PFunc {
- private:
-   std::set<dimension_type> codomain;
-   std::vector<dimension_type> vec;
-
- public:
-   PFunc() {
-   }
-
-  bool has_empty_codomain() const {
-    return codomain.empty();
-   }
-
-  dimension_type max_in_codomain() const {
-    if (codomain.empty())
-      throw std::runtime_error("PFunc::max_in_codomain()");
-    return *codomain.rbegin();
-  }
-
-  bool maps(dimension_type i, dimension_type& j) const {
-    if (i >= vec.size())
-      return false;
-    dimension_type vec_i = vec[i];
-    if (vec_i == not_a_dimension())
-      return false;
-    j = vec_i;
-    return true;
-  }
-
-  bool insert(dimension_type i, dimension_type j) {
-    std::pair<std::set<dimension_type>::iterator, bool> s
-      = codomain.insert(j);
-    if (!s.second)
-      // *this is not injective!
-      return false;
-    if (i > vec.size())
-      vec.insert(vec.end(), i - vec.size(), not_a_dimension());
-    if (i == vec.size()) {
-      vec.insert(vec.end(), j);
-      return true;
-    }
-    dimension_type& vec_i = vec[i];
-    if (vec_i != not_a_dimension())
-      // Already mapped: *this is not a function!
-      return false;
-    vec_i = j;
-    return true;
-  }
-};
-
-
 #ifdef PPL_WATCHDOG_LIBRARY_ENABLED
 
 Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
