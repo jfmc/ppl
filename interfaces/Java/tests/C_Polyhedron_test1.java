@@ -40,7 +40,7 @@ static {
 
     // This code tests the method `map_space_dimension(pfunc)'.
     public static boolean test01() {
-	Test_Partial_Function partial_function = new Test_Partial_Function();
+	Partial_Function partial_function = new Partial_Function();
 	partial_function.insert(0, 2);
 	partial_function.insert(2, 0);
 	partial_function.insert(1, 1);

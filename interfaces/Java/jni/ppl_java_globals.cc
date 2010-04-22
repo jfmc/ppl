@@ -53,6 +53,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "parma_polyhedra_library_Optimization_Mode.h"
 #include "parma_polyhedra_library_Pair.h"
 #include "parma_polyhedra_library_Parma_Polyhedra_Library.h"
+#include "parma_polyhedra_library_Partial_Function.h"
 #include "parma_polyhedra_library_PIP_Problem.h"
 #include "parma_polyhedra_library_PIP_Problem_Status.h"
 #include "parma_polyhedra_library_PIP_Decision_Node.h"
@@ -2105,7 +2106,6 @@ Java_parma_1polyhedra_1library_Artificial_1Parameter_toString
   return env->NewStringUTF(s.str().c_str());
 }
 
-
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Artificial_1Parameter_1Sequence_initIDs
 (JNIEnv* env, jclass j_aps_class) {
@@ -2116,4 +2116,84 @@ Java_parma_1polyhedra_1library_Artificial_1Parameter_1Sequence_initIDs
   mID = env->GetMethodID(j_aps_class, "add", "(Ljava/lang/Object;)Z");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Artificial_Parameter_Sequence_add_ID = mID;
+}
+
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Partial_1Function_build_1cpp_1object
+(JNIEnv* env, jobject j_this_pfunc) {
+  try {
+    Partial_Function* pfunc_ptr = new Partial_Function;
+    set_ptr(env, j_this_pfunc,  pfunc_ptr);
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_Partial_1Function_has_1empty_1codomain
+(JNIEnv* env , jobject j_this_pfunc) {
+  try {
+    Partial_Function* pfunc
+      = reinterpret_cast<Partial_Function*>(get_ptr(env, j_this_pfunc));
+    return pfunc->has_empty_codomain();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL
+Java_parma_1polyhedra_1library_Partial_1Function_max_1in_1codomain
+(JNIEnv* env , jobject j_this_pfunc) {
+  try {
+    Partial_Function* pfunc
+      = reinterpret_cast<Partial_Function*>(get_ptr(env, j_this_pfunc));
+    return pfunc->max_in_codomain();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL
+Java_parma_1polyhedra_1library_Partial_1Function_maps
+(JNIEnv* env, jobject j_this_pfunc, jlong j_i) {
+  Partial_Function* pfunc
+    = reinterpret_cast<Partial_Function*>(get_ptr(env, j_this_pfunc));
+  dimension_type i = jtype_to_unsigned<dimension_type>(j_i);
+  dimension_type j;
+  if (pfunc->maps(i, j))
+    return j;
+  else
+    return -1;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Partial_1Function_insert
+(JNIEnv* env , jobject j_this_pfunc, jlong i, jlong j) {
+  try {
+    Partial_Function* pfunc
+      = reinterpret_cast<Partial_Function*>(get_ptr(env, j_this_pfunc));
+    pfunc->insert(i, j);
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Partial_1Function_free
+(JNIEnv* env, jobject j_this) {
+  Partial_Function* pfunc
+    = reinterpret_cast<Partial_Function*>(get_ptr(env, j_this));
+  if (!is_java_marked(env, j_this)) {
+    delete pfunc;
+    void* null_ptr = 0;
+    set_ptr(env, j_this, null_ptr);
+  }
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Partial_1Function_finalize
+(JNIEnv* env, jobject j_this) {
+  Partial_Function* pfunc
+    = reinterpret_cast<Partial_Function*>(get_ptr(env, j_this));
+  if (!is_java_marked(env, j_this))
+    delete pfunc;
 }

@@ -65,7 +65,7 @@ public class ppl_java_generated_tests {
     static By_Reference<Integer> int_by_ref1;
     static By_Reference<Integer> zero_by_ref1;
 
-    static Test_Partial_Function partial_function;
+    static Partial_Function partial_function;
 
     // Common initialization.
     public static void initialize() {
@@ -181,7 +181,7 @@ public class ppl_java_generated_tests {
         int_by_ref1 = new By_Reference<Integer>(1);
         zero_by_ref1 = new By_Reference<Integer>(0);
 
-        partial_function = new Test_Partial_Function();
+        partial_function = new Partial_Function();
 	partial_function.insert(0, 2);
 	partial_function.insert(2, 0);
 	partial_function.insert(1, 1);

@@ -235,58 +235,85 @@ build_cxx_grid_generator_system(JNIEnv* env, jobject j_iterable) {
                                                   build_cxx_grid_generator);
 }
 
+} // namespace Java
+
+} // namespace Interfaces
+
+} // namespace Parma_Polyhedra_Library
+
+
+
 /*
-inline PIP_Tree_Node::Artificial_Parameter_Sequence
-build_cxx_artificial_parameter_sequence(JNIEnv* env, jobject j_iterable) {
-  return
-    build_cxx_system<PIP_Tree_Node::Artificial_Parameter_Sequence>
-      (env, j_iterable, build_cxx_artificial_parameter);
-}
+  FIXME: the following is a copy of tests/Partial_Function.*
+  (well, almost a copy, we dropped the print method).
+  We should find a better place for and have a single copy of it.
 */
+#include <cstddef>
+#include <map>
+
+namespace Parma_Polyhedra_Library {
+
+namespace Interfaces {
+
+namespace Java {
+
+class Partial_Function {
+private:
+  typedef size_t dim_t;
+
+public:
+  Partial_Function();
+  bool has_empty_codomain() const;
+  dim_t max_in_codomain() const;
+  bool maps(dim_t i, dim_t& j) const;
+  void insert(dim_t x, dim_t y);
+
+private:
+  typedef std::map<dim_t, dim_t, std::less<dim_t> > Map;
+  Map map;
+  dim_t max;
+};
 
 inline
-Partial_Function::Partial_Function(jobject j_p_func, JNIEnv* env)
-  : j_p_func(j_p_func),
-    env(env) {
+Partial_Function::Partial_Function()
+  : max(0) {
 }
 
 inline bool
 Partial_Function::has_empty_codomain() const {
-  jclass j_p_func_class = env->GetObjectClass(j_p_func);
-  CHECK_RESULT_ASSERT(env, j_p_func_class);
-  jmethodID j_has_empty_codomain_id
-    = env->GetMethodID(j_p_func_class, "has_empty_codomain", "()Z");
-  CHECK_RESULT_ASSERT(env, j_has_empty_codomain_id);
-  bool ret = env->CallBooleanMethod(j_p_func, j_has_empty_codomain_id);
-  CHECK_EXCEPTION_THROW(env);
-  return ret;
+  return map.empty();
 }
 
-inline dimension_type
+inline void
+Partial_Function::insert(dim_t x, dim_t y) {
+ std::pair<Map::iterator, bool> stat = map.insert(Map::value_type(x, y));
+ if (!stat.second)
+   throw std::runtime_error("Partial_Function::insert(x, y) called"
+			    " with `x' already in domain");
+ if (y > max)
+   max = y;
+}
+
+inline Partial_Function::dim_t
 Partial_Function::max_in_codomain() const {
-  jclass j_p_func_class = env->GetObjectClass(j_p_func);
-  CHECK_RESULT_ASSERT(env, j_p_func_class);
-  jmethodID j_max_in_codomain_id
-    = env->GetMethodID(j_p_func_class, "max_in_codomain", "()J");
-  CHECK_RESULT_ASSERT(env, j_max_in_codomain_id);
-  jlong value = env->CallLongMethod(j_p_func, j_max_in_codomain_id);
-  CHECK_EXCEPTION_THROW(env);
-  return jtype_to_unsigned<dimension_type>(value);
+  if (has_empty_codomain())
+    throw std::runtime_error("Partial_Function::max_in_codomain() called"
+			     " when has_empty_codomain()");
+  return max;
 }
 
 inline bool
-Partial_Function::maps(dimension_type i, dimension_type& j) const {
-  jclass j_p_func_class = env->GetObjectClass(j_p_func);
-  CHECK_RESULT_ASSERT(env, j_p_func_class);
-  jmethodID j_maps_id = env->GetMethodID(j_p_func_class, "maps", "(J)J");
-  CHECK_RESULT_ASSERT(env, j_maps_id);
-  jlong j_long_value = env->CallLongMethod(j_p_func, j_maps_id, i);
-  CHECK_EXCEPTION_THROW(env);
-  if (j_long_value >= 0) {
-    j = jtype_to_unsigned<dimension_type>(j_long_value);
+Partial_Function::maps(dim_t x, dim_t& y) const {
+  if (has_empty_codomain())
+    throw std::runtime_error("Partial_Function::maps() called"
+			     " when has_empty_codomain()");
+  Map::const_iterator i = map.find(x);
+  if (i != map.end()) {
+    y = (*i).second;
     return true;
   }
-  return false;
+  else
+    return false;
 }
 
 } // namespace Java

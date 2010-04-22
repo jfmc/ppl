@@ -64,6 +64,8 @@ parma_polyhedra_library.MIP_Problem \
 parma_polyhedra_library.MIP_Problem_Status \
 parma_polyhedra_library.Optimization_Mode \
 parma_polyhedra_library.Pair \
+parma_polyhedra_library.Parma_Polyhedra_Library \
+parma_polyhedra_library.Partial_Function \
 parma_polyhedra_library.PIP_Problem \
 parma_polyhedra_library.PIP_Problem_Control_Parameter_Name \
 parma_polyhedra_library.PIP_Problem_Control_Parameter_Value \
@@ -71,7 +73,6 @@ parma_polyhedra_library.PIP_Problem_Status \
 parma_polyhedra_library.PIP_Decision_Node \
 parma_polyhedra_library.PIP_Solution_Node \
 parma_polyhedra_library.PIP_Tree_Node \
-parma_polyhedra_library.Parma_Polyhedra_Library \
 parma_polyhedra_library.Poly_Con_Relation \
 parma_polyhedra_library.Poly_Gen_Relation \
 parma_polyhedra_library.PPL_Object \
@@ -113,6 +114,7 @@ parma_polyhedra_library_MIP_Problem_Status.h \
 parma_polyhedra_library_Optimization_Mode.h \
 parma_polyhedra_library_Pair.h \
 parma_polyhedra_library_Parma_Polyhedra_Library.h \
+parma_polyhedra_library_Partial_Function.h \
 parma_polyhedra_library_PIP_Problem.h \
 parma_polyhedra_library_PIP_Problem_Control_Parameter_Name.h \
 parma_polyhedra_library_PIP_Problem_Control_Parameter_Value.h \
@@ -168,6 +170,8 @@ $(srcdir)/MIP_Problem_Status.java \
 $(srcdir)/Optimization_Mode.java \
 $(srcdir)/Overflow_Error_Exception.java \
 $(srcdir)/Pair.java \
+$(srcdir)/Parma_Polyhedra_Library.java \
+$(srcdir)/Partial_Function.java \
 $(srcdir)/PIP_Problem.java \
 $(srcdir)/PIP_Problem_Control_Parameter_Name.java \
 $(srcdir)/PIP_Problem_Control_Parameter_Value.java \
@@ -175,8 +179,6 @@ $(srcdir)/PIP_Problem_Status.java \
 $(srcdir)/PIP_Decision_Node.java \
 $(srcdir)/PIP_Solution_Node.java \
 $(srcdir)/PIP_Tree_Node.java \
-$(srcdir)/Parma_Polyhedra_Library.java \
-$(srcdir)/Partial_Function.java \
 $(srcdir)/Poly_Con_Relation.java \
 $(srcdir)/Poly_Gen_Relation.java \
 $(srcdir)/PPL_Object.java \

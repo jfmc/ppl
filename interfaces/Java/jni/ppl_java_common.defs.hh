@@ -868,37 +868,6 @@ template <typename R>
 jobject
 build_linear_expression(JNIEnv* env, const R& r);
 
-//! A C++ wrapper for Java parma_polyhedra_library::Partial_Function.
-class Partial_Function {
-public:
-  //! Constructor.
-  Partial_Function(jobject j_p_func, JNIEnv* env);
-
-  /*! \brief
-    Returns \c true if and only if the partial function has
-    an empty codomain (i.e., it is always undefined).
-  */
-  bool has_empty_codomain() const;
-
-  /*! \brief
-    Returns the maximum value that belongs to the codomain
-    of the partial function.
-  */
-  dimension_type max_in_codomain() const;
-
-  /*! \brief
-    Sets \p j to the value (if any) of the partial function on index \p i.
-  */
-  bool maps(dimension_type i, dimension_type& j) const;
-
-private:
-  //! The Java parma_polyhedra_library::Partial_Function object.
-  jobject j_p_func;
-
-  //! The JNI environment pointer.
-  JNIEnv* env;
-};
-
 } // namespace Java
 
 } // namespace Interfaces
