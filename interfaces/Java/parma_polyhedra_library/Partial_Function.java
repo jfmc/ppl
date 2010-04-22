@@ -50,10 +50,10 @@ public interface Partial_Function {
     long max_in_codomain();
 
     /*! \brief
-      Sets \p j to the value (if any) of the partial function on index \p i.
+      If the partial function is defined on index \p i, returns its value.
 
-      The function returns \c true if and only if the partial function
-      is defined on domain value \p i.
+      The function returns a negative value if the partial function
+      is not defined on domain value \p i.
     */
-    boolean maps(Long i, By_Reference<Long> j);
+    long maps(long i);
 }

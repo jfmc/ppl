@@ -37,12 +37,11 @@ public class Test_Partial_Function implements Partial_Function {
 	max  = 0;
     }
 
-    public boolean maps(Long i, By_Reference<Long> j) {
-	if (map.containsKey(i)) {
-	    j.set(map.get(i));
-	    return true;
-	}
-        return false;
+    public long maps(long i) {
+	if (map.containsKey(i))
+	    return map.get(i);
+        else
+            return -1;
     }
 
     public long max_in_codomain() {
