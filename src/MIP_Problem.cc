@@ -1114,8 +1114,6 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
 
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_num);
   PPL_DIRTY_TEMP_COEFFICIENT(scalar_value);
-  std::vector<Coefficient> challenger_dens(tableau_num_columns - 1,
-                                           squared_lcm_basis);
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_value);
   PPL_DIRTY_TEMP_COEFFICIENT(current_value);
 
@@ -1123,52 +1121,76 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   PPL_DIRTY_TEMP_COEFFICIENT(current_den);
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
+
+  // This is static to improve performance.
+  // A pair (i, x) means that sgn(working_cost[i]) == cost_sign and x
+  // is the denominator of the challenger, for the column i.
+  static std::vector<std::pair<dimension_type, Coefficient> > columns;
+  columns.clear();
+  // tableau_num_columns - 2 is only an upper bound on the required elements.
+  // This helps to reduce the number of calls to new [] and delete [].
+  columns.reserve(tableau_num_columns - 2);
+  for (dimension_type column = 1; column < tableau_num_columns_minus_1; ++column)
+    if (sgn(working_cost[column]) == cost_sign) {
+      columns.push_back(std::pair<dimension_type, Coefficient>
+                        (column, Coefficient_zero()));
+      columns.back().second = squared_lcm_basis;
+    }
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     matrix_row_const_reference_type tableau_i = tableau[i];
-    matrix_const_row_unordered_const_iterator j = tableau_i.unordered_begin();
-    matrix_const_row_unordered_const_iterator j_end
-      = tableau_i.unordered_end();
-    if (j != j_end && j->first == 0)
-      ++j;
-    for ( ; j != j_end && j->first < tableau_num_columns_minus_1; ++j) {
-      const dimension_type j_index = j->first;
-      const Coefficient& tableau_ij = j->second;
-      const Coefficient& cost_j = working_cost[j_index];
-      if (sgn(cost_j) == cost_sign) {
+    matrix_const_row_const_iterator j = tableau_i.begin();
+    matrix_const_row_const_iterator j_end = tableau_i.end();
+    std::vector<std::pair<dimension_type, Coefficient> >::iterator
+      k = columns.begin();
+    std::vector<std::pair<dimension_type, Coefficient> >::iterator
+      k_end = columns.end();
+    while (j != j_end) {
+      while (k != k_end && j->first > k->first)
+        ++k;
+      if (k == k_end)
+        break;
+      PPL_ASSERT(j->first <= k->first);
+      if (j->first < k->first)
+        tableau_i.lower_bound_hint_assign(k->first, j);
+      else {
+        const Coefficient& tableau_ij = j->second;
         WEIGHT_BEGIN();
         // FIXME: Check if the test against zero speeds up the sparse version.
         // The test against 0 gives rise to a consistent speed up: see
         // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
         if (tableau_ij != 0) {
           scalar_value = tableau_ij * norm_factor[i];
-          add_mul_assign(challenger_dens[j_index], scalar_value,
-                         scalar_value);
+          add_mul_assign(k->second, scalar_value, scalar_value);
         }
         WEIGHT_ADD_MUL(47, tableau_num_rows);
+        ++k;
+        ++j;
       }
     }
   }
-  for (dimension_type j = tableau_num_columns - 1; j-- > 1; ) {
-    const Coefficient& cost_j = working_cost[j];
-    if (sgn(cost_j) == cost_sign) {
-      // We cannot compute the (exact) square root of abs(\Delta x_j).
-      // The workaround is to compute the square of `cost[j]'.
-      challenger_num = cost_j * cost_j;
-      // Initialization during the first loop.
-      if (entering_index == 0) {
-        std::swap(current_num, challenger_num);
-        std::swap(current_den, challenger_dens[j]);
-        entering_index = j;
-        continue;
-      }
-      challenger_value = challenger_num * current_den;
-      current_value = current_num * challenger_dens[j];
-      // Update the values, if the challenger wins.
-      if (challenger_value > current_value) {
-        std::swap(current_num, challenger_num);
-        std::swap(current_den, challenger_dens[j]);
-        entering_index = j;
-      }
+  std::vector<std::pair<dimension_type, Coefficient> >::reverse_iterator
+    k = columns.rbegin();
+  std::vector<std::pair<dimension_type, Coefficient> >::reverse_iterator
+    k_end = columns.rend();
+  for ( ; k != k_end; ++k) {
+    const Coefficient& cost_j = working_cost[k->first];
+    // We cannot compute the (exact) square root of abs(\Delta x_j).
+    // The workaround is to compute the square of `cost[j]'.
+    challenger_num = cost_j * cost_j;
+    // Initialization during the first loop.
+    if (entering_index == 0) {
+      std::swap(current_num, challenger_num);
+      std::swap(current_den, k->second);
+      entering_index = k->first;
+      continue;
+    }
+    challenger_value = challenger_num * current_den;
+    current_value = current_num * k->second;
+    // Update the values, if the challenger wins.
+    if (challenger_value > current_value) {
+      std::swap(current_num, challenger_num);
+      std::swap(current_den, k->second);
+      entering_index = k->first;
     }
   }
   return entering_index;
