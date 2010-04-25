@@ -245,6 +245,34 @@ public:
   //! itr must point to an element before the modified one.
   iterator find_create(dimension_type i, iterator itr);
 
+  //! Equivalent to itr = find_create(i, x) .
+  //! This may be faster in some implementations.
+  void find_create_assign(const dimension_type i, const Coefficient& x,
+                          iterator& itr);
+
+  //! Equivalent to itr = find_create(x) .
+  //! This may be faster in some implementations.
+  void find_create_assign(const std::pair<dimension_type, Coefficient>& x,
+                          iterator& itr);
+
+  //! Equivalent to itr = find_create(i) .
+  //! This may be faster in some implementations.
+  void find_create_assign(const dimension_type i, iterator& itr);
+
+  //! Equivalent to itr = find_create(i, x, itr) .
+  //! This may be faster in some implementations.
+  void find_create_hint_assign(const dimension_type i, const Coefficient& x,
+                               iterator& itr);
+
+  //! Equivalent to itr = find_create(x, itr) .
+  //! This may be faster in some implementations.
+  void find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
+                               iterator& itr);
+
+  //! Equivalent to itr = find_create(i, itr) .
+  //! This may be faster in some implementations.
+  void find_create_hint_assign(const dimension_type i, iterator& itr);
+
   //! \name Subscript operators
   //@{
   //! Returns a reference to the element of the row indexed by \p k.

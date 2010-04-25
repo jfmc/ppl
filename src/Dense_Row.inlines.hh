@@ -273,6 +273,46 @@ Dense_Row::find_create(dimension_type i, iterator itr) {
 
 inline void
 Dense_Row
+::find_create_assign(const dimension_type i, const Coefficient& x,
+                     iterator& itr) {
+  itr = find_create(i, x);
+}
+
+inline void
+Dense_Row
+::find_create_assign(const std::pair<dimension_type, Coefficient>& x,
+                     iterator& itr) {
+  itr = find_create(x);
+}
+
+inline void
+Dense_Row
+::find_create_assign(const dimension_type i, iterator& itr) {
+  itr = find_create(i);
+}
+
+inline void
+Dense_Row
+::find_create_hint_assign(const dimension_type i, const Coefficient& x,
+                          iterator& itr) {
+  itr = find_create(i, x, itr);
+}
+
+inline void
+Dense_Row
+::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
+                          iterator& itr) {
+  itr = find_create(x, itr);
+}
+
+inline void
+Dense_Row
+::find_create_hint_assign(const dimension_type i, iterator& itr) {
+  itr = find_create(i, itr);
+}
+
+inline void
+Dense_Row
 ::find_assign(const dimension_type c, iterator& itr) {
   itr = find(c);
 }
