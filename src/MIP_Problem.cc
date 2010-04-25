@@ -2298,7 +2298,7 @@ PPL::MIP_Problem::OK() const {
           // tableau[i][base[i] must be different from zero.
           // tableau[i][base[j], with i different from j, must not be a zero.
           if (itr->first < i->first)
-            itr = tableau_j.lower_bound(itr->first, itr);
+            tableau_j.lower_bound_hint_assign(itr->first, itr);
           if (i->second != j && itr->first == i->first
               && itr->second != 0) {
 #ifndef NDEBUG
