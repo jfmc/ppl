@@ -141,14 +141,14 @@ merge_assign(PIP_Tree_Node::matrix_type& x,
 #ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
     PIP_Tree_Node::matrix_row_iterator itr = x_i.end();
     if (inhomogeneous_term != 0)
-      itr = x_i.find_create(0, inhomogeneous_term);
+      x_i.find_create_assign(0, inhomogeneous_term, itr);
     else
       if (pj != param_end) {
         Variable vj(*pj);
         if (vj.space_dimension() <= cs_space_dim) {
           const Coefficient& c = y_i->coefficient(vj);
           if (c != 0) {
-            itr = x_i.find_create(j, c);
+            x_i.find_create_assign(j, c, itr);
             ++pj;
             ++j;
           }
@@ -161,7 +161,7 @@ merge_assign(PIP_Tree_Node::matrix_type& x,
         break;
       const Coefficient& c = y_i->coefficient(vj);
       if (c != 0)
-        itr = x_i.find_create(j, c, itr);
+        x_i.find_create_hint_assign(j, c, itr);
     }
 #else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
     if (inhomogeneous_term != 0)
