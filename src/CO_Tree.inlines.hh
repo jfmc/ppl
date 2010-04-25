@@ -248,12 +248,6 @@ CO_Tree::erase(dimension_type key) {
   return true;
 }
 
-inline void
-CO_Tree::rebuild_level_data(dimension_type max_depth) {
-  level = new level_data[max_depth];
-  rebuild_level_data_helper(1, max_depth);
-}
-
 inline CO_Tree::inorder_iterator
 CO_Tree::before_begin() {
   return inorder_iterator::construct_before_begin(*this);

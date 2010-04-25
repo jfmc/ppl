@@ -504,6 +504,36 @@ public:
 
 private:
 
+  struct level_data {
+    dimension_type bottom_tree_size;
+    dimension_type top_tree_size;
+    dimension_type depth_of_root_of_top_tree;
+  };
+
+  class Level_Data_Cache {
+
+  public:
+
+    static const level_data* get_level_data(dimension_type height);
+
+  private:
+
+    static const dimension_type max_depth = sizeof(dimension_type)*8;
+
+    static void fill_level_data(level_data* p, dimension_type min_depth,
+                                dimension_type max_depth);
+
+    //! cache[0] and cache[1] are not used.
+    //! cache[i] contains NULL if get_level_data(i) has not been called yet,
+    //! otherwise contains a pointer to an array of i elements containing
+    //! the level_data elements for trees of height i (cache[i][0] is not
+    //! used).
+    //! The level data is shared between CO_Tree objects with the same height.
+    //! This memory is never freed.
+    //! This is static, so the compiler initializes the pointers with NULLs.
+    static level_data* cache[max_depth];
+  };
+
   //! Initializes a tree with reserved size at least \p n .
   void init(dimension_type n);
 
@@ -520,14 +550,6 @@ private:
   //! Dumps the subtree rooted at \p itr to stdout, for debugging purposes.
   //! itr is not modified, it is passed by reference to improve performance.
   static void dump_subtree(inorder_const_iterator& itr);
-
-  //! Fills the level vector with data, for a complete van Emde Boas tree with
-  //! maximum depth \p max_depth .
-  void rebuild_level_data(dimension_type max_depth);
-
-  //! A helper method for rebuild_level_data().
-  void rebuild_level_data_helper(dimension_type min_depth,
-                                 dimension_type max_depth);
 
   //! Increases the tree's reserved size. Called when the density is about to
   //! exceed max_density.
@@ -620,15 +642,9 @@ private:
   //! This must not be used as a key.
   static const dimension_type unused_index = -1;
 
-  struct level_data {
-    dimension_type bottom_tree_size;
-    dimension_type top_tree_size;
-    dimension_type depth_of_root_of_top_tree;
-  };
-
   // TODO: don't waste the first element.
   //! level[d] contains data about nodes with depth d.
-  level_data* level;
+  const level_data* level;
 
   //! The depth of the leaves in the static von Emde Boas tree.
   dimension_type max_depth;

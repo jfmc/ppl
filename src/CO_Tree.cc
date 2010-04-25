@@ -263,7 +263,7 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   new (&(indexes[reserved_size + 1])) dimension_type(0);
 
   max_depth = l;
-  rebuild_level_data(l);
+  level = Level_Data_Cache::get_level_data(l);
 
   size = 0;
 
@@ -283,8 +283,6 @@ PPL::CO_Tree::destroy() {
 
     // This frees memory used by data, too.
     operator delete(static_cast<void*>(indexes));
-
-    delete [] level;
   }
 }
 
@@ -487,22 +485,6 @@ PPL::CO_Tree::structure_OK() const {
   }
 
   return true;
-}
-
-void
-PPL::CO_Tree::rebuild_level_data_helper(dimension_type min_depth,
-                                        dimension_type max_depth) {
-  if (min_depth == max_depth)
-    return;
-
-  dimension_type d0 = (min_depth + max_depth) / 2;
-
-  level[d0].depth_of_root_of_top_tree = min_depth;
-  level[d0].bottom_tree_size = ((dimension_type)1 << (max_depth - d0)) - 1;
-  level[d0].top_tree_size = ((dimension_type)1 << (d0 - min_depth + 1)) - 1;
-
-  rebuild_level_data_helper(min_depth, d0);
-  rebuild_level_data_helper(d0 + 1, max_depth);
 }
 
 void
@@ -969,3 +951,33 @@ PPL::CO_Tree
 
   PPL_ASSERT(added_key);
 }
+
+const PPL::CO_Tree::level_data*
+PPL::CO_Tree::Level_Data_Cache::get_level_data(dimension_type height) {
+  PPL_ASSERT(height >= 2);
+  if (cache[height] == NULL) {
+    cache[height] = new level_data[height];
+    fill_level_data(cache[height], 1, height);
+  }
+  return cache[height];
+}
+
+void
+PPL::CO_Tree::Level_Data_Cache
+::fill_level_data(level_data* p,
+                  dimension_type min_depth, dimension_type max_depth) {
+  PPL_ASSERT(p != NULL);
+  if (min_depth == max_depth)
+    return;
+
+  dimension_type d0 = (min_depth + max_depth) / 2;
+
+  p[d0].depth_of_root_of_top_tree = min_depth;
+  p[d0].bottom_tree_size = ((dimension_type)1 << (max_depth - d0)) - 1;
+  p[d0].top_tree_size = ((dimension_type)1 << (d0 - min_depth + 1)) - 1;
+
+  fill_level_data(p, min_depth, d0);
+  fill_level_data(p, d0 + 1, max_depth);
+}
+
+PPL::CO_Tree::level_data* PPL::CO_Tree::Level_Data_Cache::cache[max_depth];
