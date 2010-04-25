@@ -2235,8 +2235,8 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
 #ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
       // Setting the inhomogeneus term.
       if (constraint.inhomogeneous_term() != 0) {
-        matrix_row_iterator itr
-          = p_row.find_create(0,constraint.inhomogeneous_term());
+        matrix_row_iterator itr;
+        p_row.find_create_assign(0,constraint.inhomogeneous_term(), itr);
         Coefficient& p_row0 = itr->second;
         if (constraint.is_strict_inequality())
           // Transform (expr > 0) into (expr - 1 >= 0).
@@ -2244,7 +2244,8 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
         p_row0 *= denom;
       } else
         if (constraint.is_strict_inequality()) {
-          matrix_row_iterator itr = p_row.find_create(0,denom);
+          matrix_row_iterator itr;
+          p_row.find_create_assign(0, denom, itr);
           // Transform (expr > 0) into (expr - 1 >= 0).
           neg_assign(itr->second);
         }
@@ -2265,7 +2266,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
         }
 
         if (is_parameter) {
-          p_row_itr = p_row.find_create(p_index, coeff_i * denom);
+          p_row.find_create_assign(p_index, coeff_i * denom, p_row_itr);
           ++p_index;
           ++i;
           break;
@@ -2286,12 +2287,13 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
               std::vector<std::pair<dimension_type,Coefficient> >
                 ::iterator j_end = buffer.end();
               if (j != j_end) {
-                matrix_row_iterator itr = v_row.find_create(j->first);
+                matrix_row_iterator itr;
+                v_row.find_create_assign(j->first, itr);
                 // We need to do itr->second = j->second, this is faster.
                 std::swap(itr->second, j->second);
                 ++j;
                 for ( ; j != j_end; ++j) {
-                  itr = v_row.find_create(j->first, itr);
+                  v_row.find_create_hint_assign(j->first, itr);
                   // We need to do itr->second = j->second, this is faster.
                   std::swap(itr->second, j->second);
                 }
@@ -2319,7 +2321,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
         }
 
         if (is_parameter) {
-          p_row_itr = p_row.find_create(p_index,coeff_i * denom,p_row_itr);
+          p_row.find_create_hint_assign(p_index, coeff_i * denom, p_row_itr);
           ++p_index;
         }
         else {
@@ -2338,12 +2340,13 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
               std::vector<std::pair<dimension_type,Coefficient> >
                 ::iterator j_end = buffer.end();
               if (j != j_end) {
-                matrix_row_iterator itr = v_row.find_create(j->first);
+                matrix_row_iterator itr;
+                v_row.find_create_assign(j->first, itr);
                 // We need to do itr->second = j->second, this is faster.
                 std::swap(itr->second, j->second);
                 ++j;
                 for ( ; j != j_end; ++j) {
-                  itr = v_row.find_create(j->first, itr);
+                  v_row.find_create_hint_assign(j->first, itr);
                   // We need to do itr->second = j->second, this is faster.
                   std::swap(itr->second, j->second);
                 }
@@ -2365,12 +2368,13 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
         std::vector<std::pair<dimension_type,Coefficient> >
           ::iterator j_end = buffer.end();
         if (j != j_end) {
-          matrix_row_iterator itr = v_row.find_create(j->first);
+          matrix_row_iterator itr;
+          v_row.find_create_assign(j->first, itr);
           // We need to do itr->second = j->second, this is faster.
           std::swap(itr->second, j->second);
           ++j;
           for ( ; j != j_end; ++j) {
-            itr = v_row.find_create(j->first, itr);
+            v_row.find_create_hint_assign(j->first, itr);
             // We need to do itr->second = j->second, this is faster.
             std::swap(itr->second, j->second);
           }
@@ -2409,7 +2413,8 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
         }
 
         if (is_parameter) {
-          p_row.find_create(p_index,coeff_i * denom);
+          matrix_row_iterator p_row_itr;
+          p_row.find_create_assign(p_index, coeff_i * denom, p_row_itr);
           ++p_index;
         }
         else {
