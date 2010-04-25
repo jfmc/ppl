@@ -140,7 +140,6 @@ Unlimited_Sparse_Row_Over_CO_Tree
         f(i->second);
         ++i;
       } else {
-        --i;
         find_create_hint_assign(j->first, i);
         h(i->second, j->second);
         if (this == &y)
@@ -153,7 +152,12 @@ Unlimited_Sparse_Row_Over_CO_Tree
     ++i;
   }
   if (!j.itr.is_at_end()) {
-    --i;
+    if (tree.empty()) {
+      find_create_assign(j->first, i);
+      h(i->second, j->second);
+      ++j;
+    } else
+      --i;
     while (!j.itr.is_at_end()) {
       find_create_hint_assign(j->first, i);
       h(i->second, j->second);
