@@ -3435,16 +3435,16 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         if (j != j_end && j->first == 0) {
           mod_assign(mod, j->second, den);
           if (mod != 0) {
-            itr1 = ctx1.find_create(0, den);
+            ctx1.find_create_assign(0, den, itr1);
             itr1->second -= mod;
-            itr2 = ctx2.find_create(0, itr1->second);
+            ctx2.find_create_assign(0, itr1->second, itr2);
             neg_assign(itr2->second);
             // ctx2[0] += den-1;
             itr2->second += den;
             --itr2->second;
           } else {
             // ctx2[0] += den-1;
-            itr2 = ctx2.find_create(0,den);
+            ctx2.find_create_assign(0, den, itr2);
             --itr2->second;
           }
           ++j;
@@ -3458,9 +3458,9 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
           mod_assign(mod, j->second, den);
           if (mod != 0) {
             const dimension_type j_index = j->first;
-            itr1 = ctx1.find_create(j_index, den);
+            ctx1.find_create_assign(j_index, den, itr1);
             itr1->second -= mod;
-            itr2 = ctx2.find_create(j_index, itr1->second);
+            ctx2.find_create_assign(j_index, itr1->second, itr2);
             neg_assign(itr2->second);
             // Now itr1 and itr2 are valid, so we can use them in the next
             // calls to find_create().
@@ -3472,20 +3472,20 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
           mod_assign(mod, j->second, den);
           if (mod != 0) {
             const dimension_type j_index = j->first;
-            itr1 = ctx1.find_create(j_index, den, itr1);
+            ctx1.find_create_hint_assign(j_index, den, itr1);
             itr1->second -= mod;
-            itr2 = ctx2.find_create(j_index, itr1->second, itr2);
+            ctx2.find_create_hint_assign(j_index, itr1->second, itr2);
             neg_assign(itr2->second);
           }
         }
         if (itr1 != ctx1.end()) {
-          itr1 = ctx1.find_create(num_params, den, itr1);
+          ctx1.find_create_hint_assign(num_params, den, itr1);
           neg_assign(itr1->second);
-          ctx2.find_create(num_params, den, itr2);
+          ctx2.find_create_hint_assign(num_params, den, itr2);
         } else {
-          itr1 = ctx1.find_create(num_params, den);
+          ctx1.find_create_assign(num_params, den, itr1);
           neg_assign(itr1->second);
-          ctx2.find_create(num_params ,den);
+          ctx2.find_create_assign(num_params, den, itr2);
         }
       }
 #else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
@@ -3543,10 +3543,11 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     matrix_row_const_iterator j = row_s.begin();
     matrix_row_const_iterator j_end = row_s.end();
     if (j != j_end) {
-      matrix_row_iterator itr = cut_s.find_create(j->first);
+      matrix_row_iterator itr;
+      cut_s.find_create_assign(j->first, itr);
       mod_assign(itr->second, j->second, den);
       for (++j; j != j_end; ++j) {
-        itr = cut_s.find_create(j->first, itr);
+        cut_s.find_create_hint_assign(j->first, itr);
         mod_assign(itr->second, j->second, den);
       }
     }
@@ -3565,7 +3566,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     for ( ; j != j_end; ++j) {
       mod_assign(mod, j->second, den);
       if (mod != 0) {
-        cut_t_itr = cut_t.find_create(j->first, mod);
+        cut_t.find_create_assign(j->first, mod, cut_t_itr);
         cut_t_itr->second -= den;
         // Now cut_t_itr is valid, so we'll pass it in the next calls to
         // find_create().
@@ -3576,7 +3577,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     for ( ; j!=j_end; ++j) {
       mod_assign(mod, j->second, den);
       if (mod != 0) {
-        cut_t_itr = cut_t.find_create(j->first, mod, cut_t_itr);
+        cut_t.find_create_hint_assign(j->first, mod, cut_t_itr);
         cut_t_itr->second -= den;
       }
     }
