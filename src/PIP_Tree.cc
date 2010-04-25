@@ -2020,17 +2020,17 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
         matrix_const_row_const_iterator row_end = s_mi.end();
         if (row_i != row_end) {
           if (row_i->first == 0) {
-            cut_i = cut.find_create(*row_i);
+            cut.find_create_assign(*row_i, cut_i);
             mod_assign(cut_i->second,cut_i->second,den);
             cut_i->second -= den;
           } else {
-            cut_i = cut.find_create(0, den);
+            cut.find_create_assign(0, den, cut_i);
             neg_assign(cut_i->second);
-            cut_i = cut.find_create(*row_i, cut_i);
+            cut.find_create_hint_assign(*row_i, cut_i);
             mod_assign(cut_i->second,cut_i->second,den);
           }
           for (++row_i; row_i != row_end; ++row_i) {
-            cut_i = cut.find_create(*row_i, cut_i);
+            cut.find_create_hint_assign(*row_i, cut_i);
             mod_assign(cut_i->second,cut_i->second,den);
           }
         } else
