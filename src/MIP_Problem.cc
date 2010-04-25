@@ -1021,35 +1021,36 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   double current_value_squared = 0.0;
   // Due to our integer implementation, the `1' term in the denominator
   // of the original formula has to be replaced by `squared_lcm_basis'.
-  std::vector<double> challenger_dens(tableau_num_columns - 1, 1.0);
   double float_tableau_value;
   double float_tableau_denum;
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
-  // This is static to improve performance
-  static std::vector<dimension_type> columns;
+  // This is static to improve performance.
+  // A pair (i, x) means that sgn(working_cost[i]) == cost_sign and x
+  // is the denominator of the challenger, for the column i.
+  static std::vector<std::pair<dimension_type, double> > columns;
   columns.clear();
   // tableau_num_columns - 2 is only an upper bound on the required elements.
   // This helps to reduce the number of calls to new [] and delete [].
   columns.reserve(tableau_num_columns - 2);
   for (dimension_type column = 1; column < tableau_num_columns_minus_1; ++column)
     if (sgn(working_cost[column]) == cost_sign)
-      columns.push_back(column);
+      columns.push_back(std::pair<dimension_type, double>(column, 1.0));
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     matrix_row_const_reference_type tableau_i = tableau[i];
     const Coefficient& tableau_i_base_i = tableau_i.get(base[i]);
     matrix_const_row_const_iterator j = tableau_i.begin();
     matrix_const_row_const_iterator j_end = tableau_i.end();
-    std::vector<dimension_type>::const_iterator k = columns.begin();
-    std::vector<dimension_type>::const_iterator k_end = columns.end();
+    std::vector<std::pair<dimension_type, double> >::iterator k = columns.begin();
+    std::vector<std::pair<dimension_type, double> >::iterator k_end = columns.end();
     while (j != j_end) {
-      while (k != k_end && j->first > *k)
+      while (k != k_end && j->first > k->first)
         ++k;
       if (k == k_end)
         break;
-      PPL_ASSERT(j->first <= *k);
-      if (j->first < *k)
-        tableau_i.lower_bound_hint_assign(*k, j);
+      PPL_ASSERT(j->first <= k->first);
+      if (j->first < k->first)
+        tableau_i.lower_bound_hint_assign(k->first, j);
       else {
         const Coefficient& tableau_ij = j->second;
         WEIGHT_BEGIN();
@@ -1059,7 +1060,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
           assign(float_tableau_denum, tableau_i_base_i);
           float_tableau_value /= float_tableau_denum;
           float_tableau_value *= float_tableau_value;
-          challenger_dens[j->first] += float_tableau_value;
+          k->second += float_tableau_value;
         }
         WEIGHT_ADD_MUL(338, tableau_num_rows);
         ++k;
@@ -1067,13 +1068,15 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       }
     }
   }
-  std::vector<dimension_type>::const_reverse_iterator k = columns.rbegin();
-  std::vector<dimension_type>::const_reverse_iterator k_end = columns.rend();
+  std::vector<std::pair<dimension_type, double> >::const_reverse_iterator
+    k = columns.rbegin();
+  std::vector<std::pair<dimension_type, double> >::const_reverse_iterator
+    k_end = columns.rend();
   for ( ; k != k_end; ++k) {
     // challenger_dens[*k] is the square of the challenger value.
-    if (entering_index == 0 || challenger_dens[*k] > current_value_squared) {
-      current_value_squared = challenger_dens[*k];
-      entering_index = *k;
+    if (entering_index == 0 || k->second > current_value_squared) {
+      current_value_squared = k->second;
+      entering_index = k->first;
     }
   }
   return entering_index;
