@@ -1093,8 +1093,10 @@ PIP_Tree_Node
     add_mul_assign(expr, 0, Variable(*(parameters.rbegin())));
     // The number of increments of j plus one.
     dimension_type j_index = 1;
-    matrix_const_row_const_iterator i = row.lower_bound(1);
+    matrix_const_row_const_iterator i = row.begin();
     matrix_const_row_const_iterator i_end = row.end();
+    if (i != i_end && i->first == 0)
+      ++i;
     // NOTE: iterating in [1..num_params].
     for ( ; i != i_end; ++i) {
       if (i->first > num_params)
