@@ -1049,7 +1049,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
         break;
       PPL_ASSERT(j->first <= *k);
       if (j->first < *k)
-        j = tableau_i.lower_bound(*k, j);
+        tableau_i.lower_bound_hint_assign(*k, j);
       else {
         const Coefficient& tableau_ij = j->second;
         WEIGHT_BEGIN();
