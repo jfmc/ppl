@@ -777,13 +777,13 @@ PPL::MIP_Problem::process_pending_constraints() {
         std::vector<buffer_element_t>::iterator j = buffer.begin();
         std::vector<buffer_element_t>::iterator j_end = buffer.end();
         if (j != j_end) {
-          matrix_row_iterator itr
-            = tableau_k.find_create(j->index, *(j->data));
+          matrix_row_iterator itr;
+          tableau_k.find_create_assign(j->index, *(j->data), itr);
           if (j->toggle_sign)
             neg_assign(itr->second);
           ++j;
           for ( ; j != j_end; ++j) {
-            itr = tableau_k.find_create(j->index, *(j->data), itr);
+            tableau_k.find_create_hint_assign(j->index, *(j->data), itr);
             if (j->toggle_sign)
               neg_assign(itr->second);
           }
@@ -844,7 +844,7 @@ PPL::MIP_Problem::process_pending_constraints() {
       matrix_row_const_iterator itr_end = tableau_k.end();
       while (j != j_end && itr != itr_end) {
         if (itr->first < j->first)
-          itr = tableau_k.lower_bound(j->first, itr);
+          tableau_k.lower_bound_hint_assign(j->first, itr);
         else
           if (itr->first > j->first)
             ++j;
@@ -853,7 +853,7 @@ PPL::MIP_Problem::process_pending_constraints() {
             if (k != j->second && itr->second != 0) {
               linear_combine(tableau_k, tableau[j->second], base[j->second]);
               // linear_combine() invalidates itr and itr_end.
-              itr = tableau_k.lower_bound(j->first);
+              tableau_k.lower_bound_assign(j->first, itr);
               itr_end = tableau_k.end();
             } else
               ++itr;
@@ -884,9 +884,11 @@ PPL::MIP_Problem::process_pending_constraints() {
   working_cost = row_type(tableau_num_columns);
 
   // Insert artificial variables for the nonfeasible constraints.
+  matrix_row_iterator itr;
   for (dimension_type i = 0; i < unfeasible_tableau_rows_size; ++i) {
-    tableau[unfeasible_tableau_rows[i]].find_create(artificial_index,
-                                                    Coefficient_one());
+    tableau[unfeasible_tableau_rows[i]].find_create_assign(artificial_index,
+                                                           Coefficient_one(),
+                                                           itr);
     working_cost[artificial_index] = -1;
     base[unfeasible_tableau_rows[i]] = artificial_index;
     ++artificial_index;
@@ -901,7 +903,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   for (dimension_type i = num_original_rows; i < tableau_num_rows; ++i) {
     if (worked_out_row[i])
       continue;
-    tableau[i].find_create(artificial_index, Coefficient_one());
+    tableau[i].find_create_assign(artificial_index, Coefficient_one(), itr);
     working_cost[artificial_index] = -1;
     base[i] = artificial_index;
     ++artificial_index;
