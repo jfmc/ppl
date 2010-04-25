@@ -2740,7 +2740,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
               }
               PPL_ASSERT(product % s_pivot_pj == 0);
               exact_div_assign(product, product, s_pivot_pj);
-              itr = s_i.find_create(j->first);
+              s_i.find_create_assign(j->first, itr);
               itr->second -= product;
               // Now itr has been initialized, use it in next calls to
               // find_create().
@@ -2765,7 +2765,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
               }
               PPL_ASSERT(product % s_pivot_pj == 0);
               exact_div_assign(product, product, s_pivot_pj);
-              itr = s_i.find_create(j->first, itr);
+              s_i.find_create_hint_assign(j->first, itr);
               itr->second -= product;
             }
           }
@@ -2823,7 +2823,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             }
             PPL_ASSERT(product % s_pivot_pj == 0);
             exact_div_assign(product, product, s_pivot_pj);
-            k = t_i.find_create(j->first);
+            t_i.find_create_assign(j->first, k);
             k->second -= product;
 
             // Update row sign.
@@ -2866,7 +2866,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             }
             PPL_ASSERT(product % s_pivot_pj == 0);
             exact_div_assign(product, product, s_pivot_pj);
-            k = t_i.find_create(j->first, k);
+            t_i.find_create_hint_assign(j->first, k);
             k->second -= product;
 
             // Update row sign.
