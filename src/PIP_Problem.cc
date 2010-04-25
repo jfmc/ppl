@@ -163,14 +163,14 @@ PPL::PIP_Problem::solve() const {
           matrix_row_iterator itr = row.end();
 
           if (c.inhomogeneous_term() != 0) {
-            itr = row.find_create(0, c.inhomogeneous_term());
+            row.find_create_assign(0, c.inhomogeneous_term(), itr);
             // Adjust inhomogenous term if strict.
             if (c.is_strict_inequality())
               --(itr->second);
           } else {
             // Adjust inhomogenous term if strict.
             if (c.is_strict_inequality())
-              itr = row.find_create(0, -1);
+              row.find_create_assign(0, -1, itr);
           }
           dimension_type i = 1;
           bool continue_looping = true;
@@ -181,7 +181,7 @@ PPL::PIP_Problem::solve() const {
               if (*pi < c_space_dim) {
                 const Coefficient& x = c.coefficient(Variable(*pi));
                 if (x != 0) {
-                  itr = row.find_create(i, x);
+                  row.find_create_assign(i, x, itr);
                   // itr is now initialized, use it in the next iterations.
                   ++pi;
                   ++i;
@@ -198,7 +198,7 @@ PPL::PIP_Problem::solve() const {
               if (*pi < c_space_dim) {
                 const Coefficient& x = c.coefficient(Variable(*pi));
                 if (x != 0)
-                  itr = row.find_create(i, x);
+                  row.find_create_hint_assign(i, x, itr);
               } else
                 break;
             }
