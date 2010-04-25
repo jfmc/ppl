@@ -1068,13 +1068,13 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       }
     }
   }
-  std::vector<std::pair<dimension_type, double> >::const_reverse_iterator
-    k = columns.rbegin();
-  std::vector<std::pair<dimension_type, double> >::const_reverse_iterator
-    k_end = columns.rend();
+  std::vector<std::pair<dimension_type, double> >::const_iterator
+    k = columns.begin();
+  std::vector<std::pair<dimension_type, double> >::const_iterator
+    k_end = columns.end();
   for ( ; k != k_end; ++k) {
     // challenger_dens[*k] is the square of the challenger value.
-    if (entering_index == 0 || k->second > current_value_squared) {
+    if (entering_index == 0 || k->second >= current_value_squared) {
       current_value_squared = k->second;
       entering_index = k->first;
     }
