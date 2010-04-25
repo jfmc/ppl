@@ -628,8 +628,8 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
     } else {
       // Not in base.
       PIP_Tree_Node::matrix_row_const_reference_type row = s[row_index];
-      PIP_Tree_Node::matrix_const_row_const_iterator row_itr
-        = row.lower_bound(pj);
+      PIP_Tree_Node::matrix_const_row_const_iterator row_itr;
+      row.lower_bound_assign(pj, row_itr);
       PIP_Tree_Node::matrix_const_row_const_iterator row_end = row.end();
       const Coefficient* row_value;
       if (row_itr != row_end && row_itr->first == pj) {
@@ -650,7 +650,7 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
         // row_challenger_value = &(row.get(challenger_j));
         if (row_itr != row_end) {
           if (row_itr->first < challenger_j) {
-            row_itr = row.lower_bound(challenger_j,row_itr);
+            row.lower_bound_hint_assign(challenger_j, row_itr);
             if (row_itr != row_end && row_itr->first == challenger_j) {
               row_challenger_value = &(row_itr->second);
               ++row_itr;
