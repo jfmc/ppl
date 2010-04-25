@@ -382,8 +382,8 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
     if (i == i_end)
       // Only one candidate left, so it is the minimum.
       break;
-    PIP_Tree_Node::matrix_const_row_const_iterator pivot_itr
-      = pivot_row.find(min_column);
+    PIP_Tree_Node::matrix_const_row_const_iterator pivot_itr;
+    pivot_row.find_assign(min_column, pivot_itr);
     PIP_Tree_Node::matrix_const_row_const_iterator pivot_end
       = pivot_row.end();
     PPL_ASSERT(pivot_itr != pivot_end);
@@ -393,7 +393,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
     const bool in_base = basis[var_index];
     if (in_base) {
       for ( ; i != i_end; ++i) {
-        pivot_itr = pivot_row.find(*i, pivot_itr);
+        pivot_row.find_hint_assign(*i, pivot_itr);
         PPL_ASSERT(pivot_itr != pivot_end);
         const Coefficient& sij_a = pivot_itr->second;
         ++pivot_itr;
@@ -416,8 +416,8 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
     } else {
       // Not in base.
       PIP_Tree_Node::matrix_row_const_reference_type row = tableau[row_index];
-      PIP_Tree_Node::matrix_const_row_const_iterator row_itr
-        = row.lower_bound(min_column);
+      PIP_Tree_Node::matrix_const_row_const_iterator row_itr;
+      row.lower_bound_assign(min_column, row_itr);
       PIP_Tree_Node::matrix_const_row_const_iterator row_end = row.end();
       const Coefficient* row_jb;
       if (row_itr == row_end || row_itr->first > min_column)
@@ -428,7 +428,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
         ++row_itr;
       }
       for ( ; i != i_end; ++i) {
-        pivot_itr = pivot_row.find(*i, pivot_itr);
+        pivot_row.find_hint_assign(*i, pivot_itr);
         PPL_ASSERT(pivot_itr != pivot_end);
         const Coefficient& sij_a = pivot_itr->second;
         PPL_ASSERT(sij_a > 0);
@@ -437,7 +437,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
         PPL_DIRTY_TEMP_COEFFICIENT(lhs);
         PPL_DIRTY_TEMP_COEFFICIENT(rhs);
         if (row_itr != row_end && row_itr->first < *i)
-          row_itr = row.lower_bound(*i, row_itr);
+          row.lower_bound_hint_assign(*i, row_itr);
         const Coefficient* row_ja;
         if (row_itr == row_end || row_itr->first > *i)
           row_ja = &(Coefficient_zero());
