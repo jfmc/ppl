@@ -409,6 +409,8 @@ private:
   };
 
 public:
+
+  iterator();
   iterator(Dense_Row& row1, dimension_type i1);
 
   value_type operator*();
@@ -455,6 +457,7 @@ private:
 
 public:
 
+  const_iterator();
   const_iterator(const Dense_Row& row1, dimension_type i1);
 
   const_type operator*() const;

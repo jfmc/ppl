@@ -414,6 +414,12 @@ Dense_Row::operator const Row&() const {
 
 
 inline
+Dense_Row::iterator::iterator()
+  : row(NULL), i(0) {
+  PPL_ASSERT(OK());
+}
+
+inline
 Dense_Row::iterator::iterator(Dense_Row& row1,dimension_type i1)
   : row(&row1), i(i1) {
   PPL_ASSERT(OK());
@@ -490,6 +496,8 @@ Dense_Row::iterator::operator const_iterator() const {
 
 inline bool
 Dense_Row::iterator::OK() const {
+  if (row == NULL)
+    return true;
   // i can be equal to row.size() for past-the-end iterators
   return (i <= row->size());
 }
@@ -518,6 +526,12 @@ Dense_Row::iterator::Const_Member_Access_Helper::operator->() const {
   return &value;
 }
 
+
+inline
+Dense_Row::const_iterator::const_iterator()
+  : row(NULL), i(0) {
+  PPL_ASSERT(OK());
+}
 
 inline
 Dense_Row::const_iterator::const_iterator(const Dense_Row& row1,
@@ -580,6 +594,8 @@ Dense_Row::const_iterator::operator!=(const const_iterator& x) const {
 
 inline bool
 Dense_Row::const_iterator::OK() const {
+  if (row == NULL)
+    return true;
   // i can be equal to row.size() for past-the-end iterators
   return (i <= row->size());
 }
