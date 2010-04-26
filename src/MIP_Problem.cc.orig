@@ -1170,10 +1170,10 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       }
     }
   }
-  std::vector<std::pair<dimension_type, Coefficient> >::reverse_iterator
-    k = columns.rbegin();
-  std::vector<std::pair<dimension_type, Coefficient> >::reverse_iterator
-    k_end = columns.rend();
+  std::vector<std::pair<dimension_type, Coefficient> >::iterator
+    k = columns.begin();
+  std::vector<std::pair<dimension_type, Coefficient> >::iterator
+    k_end = columns.end();
   for ( ; k != k_end; ++k) {
     const Coefficient& cost_j = working_cost[k->first];
     // We cannot compute the (exact) square root of abs(\Delta x_j).
@@ -1189,7 +1189,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     challenger_value = challenger_num * current_den;
     current_value = current_num * k->second;
     // Update the values, if the challenger wins.
-    if (challenger_value > current_value) {
+    if (challenger_value >= current_value) {
       std::swap(current_num, challenger_num);
       std::swap(current_den, k->second);
       entering_index = k->first;
