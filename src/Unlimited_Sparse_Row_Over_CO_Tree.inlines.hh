@@ -510,8 +510,14 @@ Unlimited_Sparse_Row_Over_CO_Tree
 
   tree.lower_bound(itr, i);
 
+#ifndef NDEBUG
+  CO_Tree::inorder_iterator itr2(&tree);
+  tree.lower_bound(itr2, i);
+  PPL_ASSERT(itr == itr2);
+#endif
+
   if (itr->first < i)
-    ++itr;
+    itr.get_next_value();
 
 #ifndef NDEBUG
   itr.get_previous_value();
@@ -535,8 +541,14 @@ Unlimited_Sparse_Row_Over_CO_Tree
 
   tree.lower_bound(itr, i);
 
+#ifndef NDEBUG
+  CO_Tree::inorder_const_iterator itr2(&tree);
+  tree.lower_bound(itr2, i);
+  PPL_ASSERT(itr == itr2);
+#endif
+
   if (itr->first < i)
-    ++itr;
+    itr.get_next_value();
 
 #ifndef NDEBUG
   itr.get_previous_value();
