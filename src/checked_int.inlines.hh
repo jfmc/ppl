@@ -1310,8 +1310,8 @@ smod_2exp_signed_int(Type& to, const Type x, unsigned int exp,
   if (exp >= sizeof(Type) * CHAR_BIT)
     to = x;
   else {
-    Type m = -(Type(1) << (exp - 1));
-    to = (x + m) ^ m;
+    Type m = Type(1) << (exp - 1);
+    to = (x & (m - 1)) - (x & m);
   }
   return V_EQ;
 }
