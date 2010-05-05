@@ -228,7 +228,9 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   if (reserved_size1 == 0) {
     indexes = NULL;
     data = NULL;
+#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
     level = NULL;
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
     size = 0;
     reserved_size = 0;
     max_depth = 0;
@@ -263,7 +265,10 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   new (&(indexes[reserved_size + 1])) dimension_type(0);
 
   max_depth = l;
+
+#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
   level = Level_Data_Cache::get_level_data(l);
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
 
   size = 0;
 
@@ -413,8 +418,10 @@ PPL::CO_Tree::structure_OK() const {
       return false;
     if (data != NULL)
       return false;
+#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
     if (level != NULL)
       return false;
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
     if (max_depth != 0)
       return false;
 
@@ -430,8 +437,10 @@ PPL::CO_Tree::structure_OK() const {
   if (indexes == NULL)
     return false;
 
+#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
   if (level == NULL)
     return false;
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
 
   if (max_depth == 0)
     return false;
@@ -952,6 +961,8 @@ PPL::CO_Tree
   PPL_ASSERT(added_key);
 }
 
+#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
+
 const PPL::CO_Tree::level_data*
 PPL::CO_Tree::Level_Data_Cache::get_level_data(dimension_type height) {
   PPL_ASSERT(height >= 2);
@@ -981,3 +992,5 @@ PPL::CO_Tree::Level_Data_Cache
 }
 
 PPL::CO_Tree::level_data* PPL::CO_Tree::Level_Data_Cache::cache[max_depth];
+
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
