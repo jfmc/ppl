@@ -825,11 +825,13 @@ PPL::CO_Tree
   if (root->first == unused_index)
     return;
 
-#ifndef NDEBUG
+#if !defined(NDEBUG) || !defined(USE_PPL_CO_TREE_VEB_LAYOUT)
   inorder_iterator root_copy(root);
 #endif
 
+#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
   const dimension_type depth = root.depth();
+#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 
   while (root.get_right_child_value())
     ;
@@ -879,9 +881,15 @@ PPL::CO_Tree
   }
 
   // Restore the root iterator to the original position in the tree.
+
+#ifndef USE_PPL_CO_TREE_VEB_LAYOUT
+  root = root_copy;
+#else
   ++root;
   while (root.depth() != depth)
     root.get_parent();
+#endif
+
   PPL_ASSERT(root == root_copy);
 }
 
