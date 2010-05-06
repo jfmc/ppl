@@ -160,298 +160,7 @@ public:
   void lower_bound(inorder_const_iterator& itr, dimension_type key) const;
 
   class inorder_iterator;
-
-  class inorder_const_iterator {
-  public:
-
-    class Const_Member_Access_Helper {
-
-    public:
-      Const_Member_Access_Helper(dimension_type key, const data_type& data);
-
-      const std::pair<const dimension_type, const data_type&>* operator->()
-        const;
-
-    private:
-      std::pair<const dimension_type, const data_type&> my_pair;
-    };
-
-    //! Constructs an iterator pointing to the root node.
-    inorder_const_iterator(const CO_Tree* tree = 0);
-
-    inorder_const_iterator(const inorder_const_iterator& itr);
-    inorder_const_iterator(const inorder_iterator& itr);
-
-    //! Returns an iterator that points before the first element.
-    static inorder_const_iterator construct_before_begin(const CO_Tree& tree);
-
-    //! Returns an iterator that points after the last element.
-    static inorder_const_iterator construct_end(const CO_Tree& tree);
-
-    //! Assigns \p itr to *this .
-    inorder_const_iterator& operator=(const inorder_const_iterator& itr);
-
-    //! Assigns \p itr to *this .
-    inorder_const_iterator& operator=(const inorder_iterator& itr);
-
-    //! Makes the iterator point to the root of \p tree.
-    //! The values of all fields (beside root) are overwritten.
-    void get_root();
-
-    //! Makes the iterator point to the left child of the current node.
-    void get_left_child();
-
-    //! Makes the iterator point to the right child of the current node.
-    void get_right_child();
-
-    //! Makes the iterator point to the parent of the current node.
-    void get_parent();
-
-    //! Makes the iterator point to the left child of the current node.
-    //! Returns false if there is no left child or the left child is unused
-    //! (and *this is unchanged).
-    bool get_left_child_value();
-
-    //! Makes the iterator point to the right child of the current node.
-    //! Returns false if there is no right child or the right child is unused
-    //! (and *this is unchanged).
-    bool get_right_child_value();
-
-    //! Returns true if the pointed node has a parent.
-    bool has_parent() const;
-
-    //! Returns true if the pointed node has a parent and is its right child.
-    bool is_right_child() const;
-
-    //! Returns true if the pointed node is a leaf of the complete tree.
-    bool is_leaf() const;
-
-    //! Navigates to the next node in the in-order traversal.
-    inorder_const_iterator& operator++();
-
-    //! Navigates to the previous node in the in-order traversal.
-    inorder_const_iterator& operator--();
-
-    //! Navigates to the next node with a value, in the in-order traversal.
-    void get_next_value();
-
-    //! Navigates to the previous node with a value, in the in-order traversal.
-    void get_previous_value();
-
-    //! Returns the value_type of the current node.
-    std::pair<const dimension_type, const data_type&> operator*() const;
-
-    //! Returns a pointer to the value_type of the current node.
-    Const_Member_Access_Helper operator->() const;
-
-    //! Compares \p *this with x .
-    bool operator==(const inorder_const_iterator& x) const;
-
-    //! Compares \p *this with x .
-    bool operator!=(const inorder_const_iterator& x) const;
-
-    //! Returns true if the iterator is an end() iterator.
-    bool is_at_end() const;
-
-    //! Returns true if the iterator points before the first element.
-    bool is_before_begin() const;
-
-    //! Returns the depth of the current node.
-    dimension_type depth() const;
-
-    const CO_Tree* get_tree() const;
-
-  private:
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-    //! The depth of the current node in the vEB layout.
-    dimension_type d;
-
-    //! Position of the node in a BFS layout.
-    dimension_type i;
-
-    //! A vector of size d + 1.
-    //! pos[0] is not used.
-    //! pos[j], for j>0, is the position in the vEB layout of the node passed
-    //! at depth j.
-    dimension_type pos[8*sizeof(dimension_type)];
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_BFS_LAYOUT
-    //! The index of the current node in the BFS layout.
-    dimension_type i;
-#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-    //! The index of the current node in the DFS layout.
-    dimension_type i;
-#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-    //! When this is true, data fields (except tree) are not valid and
-    //! this is an end iterator.
-    bool at_end;
-
-    //! When this is true, data fields (except tree) are not valid and
-    //! this iterator points to a non-existent node before the beginning.
-    bool before_begin;
-
-    //! The tree the iterator points to.
-    const CO_Tree* tree;
-  };
-
-  class inorder_iterator {
-  public:
-
-    class Member_Access_Helper {
-
-    public:
-      Member_Access_Helper(dimension_type& key, data_type& data);
-
-      std::pair<dimension_type&, data_type&>* operator->();
-
-    private:
-      std::pair<dimension_type&, data_type&> my_pair;
-    };
-
-    class Const_Member_Access_Helper {
-
-    public:
-      Const_Member_Access_Helper(dimension_type key, const data_type& data);
-
-      const std::pair<const dimension_type, const data_type&>* operator->()
-        const;
-
-    private:
-      std::pair<const dimension_type, const data_type&> my_pair;
-    };
-
-    //! Constructs an iterator pointing to the root node.
-    inorder_iterator(CO_Tree* tree = 0);
-
-    inorder_iterator(const inorder_iterator& itr);
-
-    //! Returns an iterator that points before the first element.
-    static inorder_iterator construct_before_begin(CO_Tree& tree);
-
-    //! Returns an iterator that points after the last element.
-    static inorder_iterator construct_end(CO_Tree& tree);
-
-    //! Assigns \p itr to *this .
-    inorder_iterator& operator=(const inorder_iterator& itr);
-
-    //! Makes the iterator point to the root of \p tree.
-    //! The values of all fields (beside root) are overwritten.
-    void get_root();
-
-    //! Makes the iterator point to the left child of the current node.
-    void get_left_child();
-
-    //! Makes the iterator point to the right child of the current node.
-    void get_right_child();
-
-    //! Makes the iterator point to the parent of the current node.
-    void get_parent();
-
-    //! Makes the iterator point to the left child of the current node.
-    //! Returns false if there is no left child or the left child is unused
-    //! (and *this is unchanged).
-    bool get_left_child_value();
-
-    //! Makes the iterator point to the right child of the current node.
-    //! Returns false if there is no right child or the right child is unused
-    //! (and *this is unchanged).
-    bool get_right_child_value();
-
-    //! Returns true if the pointed node has a parent.
-    bool has_parent() const;
-
-    //! Returns true if the pointed node has a parent and is its right child.
-    bool is_right_child() const;
-
-    //! Returns true if the pointed node is a leaf of the complete tree.
-    bool is_leaf() const;
-
-    //! Navigates to the next node in the in-order traversal.
-    inorder_iterator& operator++();
-
-    //! Navigates to the previous node in the in-order traversal.
-    inorder_iterator& operator--();
-
-    //! Navigates to the next node with a value, in the in-order traversal.
-    void get_next_value();
-
-    //! Navigates to the previous node with a value, in the in-order traversal.
-    void get_previous_value();
-
-    //! Returns the value_type of the current node.
-    std::pair<dimension_type&, data_type&> operator*();
-
-    //! Returns the value_type of the current node.
-    std::pair<const dimension_type, const data_type&> operator*() const;
-
-    //! Returns a pointer to the value_type of the current node.
-    Member_Access_Helper operator->();
-
-    //! Returns a pointer to the value_type of the current node.
-    Const_Member_Access_Helper operator->() const;
-
-    //! Compares \p *this with x .
-    bool operator==(const inorder_iterator& x) const;
-
-    //! Compares \p *this with x .
-    bool operator!=(const inorder_iterator& x) const;
-
-    //! Returns true if the iterator is an end() iterator.
-    bool is_at_end() const;
-
-    //! Returns true if the iterator points before the first element.
-    bool is_before_begin() const;
-
-    //! Returns the depth of the current node.
-    dimension_type depth() const;
-
-    CO_Tree* get_tree();
-
-    const CO_Tree* get_tree() const;
-
-  private:
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-    //! The depth of the current node in the vEB layout.
-    dimension_type d;
-
-    //! Position of the node in a BFS layout.
-    dimension_type i;
-
-    //! A vector of size d + 1.
-    //! pos[0] is not used.
-    //! pos[j], for j>0, is the position in the vEB layout of the node passed
-    //! at depth j.
-    dimension_type pos[8*sizeof(dimension_type)];
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_BFS_LAYOUT
-    //! The index of the current node in the BFS layout.
-    dimension_type i;
-#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-    //! The index of the current node in the DFS layout.
-    dimension_type i;
-#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-    //! When this is true, data fields (except tree) are not valid and
-    //! this is an end iterator.
-    bool at_end;
-
-    //! When this is true, data fields (except tree) are not valid and
-    //! this iterator points to a non-existent node before the beginning.
-    bool before_begin;
-
-    //! The tree the iterator points to.
-    CO_Tree* tree;
-
-    friend inorder_const_iterator&
-      inorder_const_iterator::operator=(const inorder_iterator&);
-  };
+  class inorder_const_iterator;
 
   class unordered_const_iterator;
 
@@ -720,6 +429,298 @@ private:
 
   //! The number of used elements in \p data .
   dimension_type size;
+};
+
+class CO_Tree::inorder_const_iterator {
+public:
+
+  class Const_Member_Access_Helper {
+
+  public:
+    Const_Member_Access_Helper(dimension_type key, const data_type& data);
+
+    const std::pair<const dimension_type, const data_type&>* operator->()
+      const;
+
+  private:
+    std::pair<const dimension_type, const data_type&> my_pair;
+  };
+
+  //! Constructs an iterator pointing to the root node.
+  inorder_const_iterator(const CO_Tree* tree = 0);
+
+  inorder_const_iterator(const inorder_const_iterator& itr);
+  inorder_const_iterator(const inorder_iterator& itr);
+
+  //! Returns an iterator that points before the first element.
+  static inorder_const_iterator construct_before_begin(const CO_Tree& tree);
+
+  //! Returns an iterator that points after the last element.
+  static inorder_const_iterator construct_end(const CO_Tree& tree);
+
+  //! Assigns \p itr to *this .
+  inorder_const_iterator& operator=(const inorder_const_iterator& itr);
+
+  //! Assigns \p itr to *this .
+  inorder_const_iterator& operator=(const inorder_iterator& itr);
+
+  //! Makes the iterator point to the root of \p tree.
+  //! The values of all fields (beside root) are overwritten.
+  void get_root();
+
+  //! Makes the iterator point to the left child of the current node.
+  void get_left_child();
+
+  //! Makes the iterator point to the right child of the current node.
+  void get_right_child();
+
+  //! Makes the iterator point to the parent of the current node.
+  void get_parent();
+
+  //! Makes the iterator point to the left child of the current node.
+  //! Returns false if there is no left child or the left child is unused
+  //! (and *this is unchanged).
+  bool get_left_child_value();
+
+  //! Makes the iterator point to the right child of the current node.
+  //! Returns false if there is no right child or the right child is unused
+  //! (and *this is unchanged).
+  bool get_right_child_value();
+
+  //! Returns true if the pointed node has a parent.
+  bool has_parent() const;
+
+  //! Returns true if the pointed node has a parent and is its right child.
+  bool is_right_child() const;
+
+  //! Returns true if the pointed node is a leaf of the complete tree.
+  bool is_leaf() const;
+
+  //! Navigates to the next node in the in-order traversal.
+  inorder_const_iterator& operator++();
+
+  //! Navigates to the previous node in the in-order traversal.
+  inorder_const_iterator& operator--();
+
+  //! Navigates to the next node with a value, in the in-order traversal.
+  void get_next_value();
+
+  //! Navigates to the previous node with a value, in the in-order traversal.
+  void get_previous_value();
+
+  //! Returns the value_type of the current node.
+  std::pair<const dimension_type, const data_type&> operator*() const;
+
+  //! Returns a pointer to the value_type of the current node.
+  Const_Member_Access_Helper operator->() const;
+
+  //! Compares \p *this with x .
+  bool operator==(const inorder_const_iterator& x) const;
+
+  //! Compares \p *this with x .
+  bool operator!=(const inorder_const_iterator& x) const;
+
+  //! Returns true if the iterator is an end() iterator.
+  bool is_at_end() const;
+
+  //! Returns true if the iterator points before the first element.
+  bool is_before_begin() const;
+
+  //! Returns the depth of the current node.
+  dimension_type depth() const;
+
+  const CO_Tree* get_tree() const;
+
+private:
+#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
+  //! The depth of the current node in the vEB layout.
+  dimension_type d;
+
+  //! Position of the node in a BFS layout.
+  dimension_type i;
+
+  //! A vector of size d + 1.
+  //! pos[0] is not used.
+  //! pos[j], for j>0, is the position in the vEB layout of the node passed
+  //! at depth j.
+  dimension_type pos[8*sizeof(dimension_type)];
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_BFS_LAYOUT
+  //! The index of the current node in the BFS layout.
+  dimension_type i;
+#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  //! The index of the current node in the DFS layout.
+  dimension_type i;
+#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+
+  //! When this is true, data fields (except tree) are not valid and
+  //! this is an end iterator.
+  bool at_end;
+
+  //! When this is true, data fields (except tree) are not valid and
+  //! this iterator points to a non-existent node before the beginning.
+  bool before_begin;
+
+  //! The tree the iterator points to.
+  const CO_Tree* tree;
+};
+
+class CO_Tree::inorder_iterator {
+public:
+
+  class Member_Access_Helper {
+
+  public:
+    Member_Access_Helper(dimension_type& key, data_type& data);
+
+    std::pair<dimension_type&, data_type&>* operator->();
+
+  private:
+    std::pair<dimension_type&, data_type&> my_pair;
+  };
+
+  class Const_Member_Access_Helper {
+
+  public:
+    Const_Member_Access_Helper(dimension_type key, const data_type& data);
+
+    const std::pair<const dimension_type, const data_type&>* operator->()
+      const;
+
+  private:
+    std::pair<const dimension_type, const data_type&> my_pair;
+  };
+
+  //! Constructs an iterator pointing to the root node.
+  inorder_iterator(CO_Tree* tree = 0);
+
+  inorder_iterator(const inorder_iterator& itr);
+
+  //! Returns an iterator that points before the first element.
+  static inorder_iterator construct_before_begin(CO_Tree& tree);
+
+  //! Returns an iterator that points after the last element.
+  static inorder_iterator construct_end(CO_Tree& tree);
+
+  //! Assigns \p itr to *this .
+  inorder_iterator& operator=(const inorder_iterator& itr);
+
+  //! Makes the iterator point to the root of \p tree.
+  //! The values of all fields (beside root) are overwritten.
+  void get_root();
+
+  //! Makes the iterator point to the left child of the current node.
+  void get_left_child();
+
+  //! Makes the iterator point to the right child of the current node.
+  void get_right_child();
+
+  //! Makes the iterator point to the parent of the current node.
+  void get_parent();
+
+  //! Makes the iterator point to the left child of the current node.
+  //! Returns false if there is no left child or the left child is unused
+  //! (and *this is unchanged).
+  bool get_left_child_value();
+
+  //! Makes the iterator point to the right child of the current node.
+  //! Returns false if there is no right child or the right child is unused
+  //! (and *this is unchanged).
+  bool get_right_child_value();
+
+  //! Returns true if the pointed node has a parent.
+  bool has_parent() const;
+
+  //! Returns true if the pointed node has a parent and is its right child.
+  bool is_right_child() const;
+
+  //! Returns true if the pointed node is a leaf of the complete tree.
+  bool is_leaf() const;
+
+  //! Navigates to the next node in the in-order traversal.
+  inorder_iterator& operator++();
+
+  //! Navigates to the previous node in the in-order traversal.
+  inorder_iterator& operator--();
+
+  //! Navigates to the next node with a value, in the in-order traversal.
+  void get_next_value();
+
+  //! Navigates to the previous node with a value, in the in-order traversal.
+  void get_previous_value();
+
+  //! Returns the value_type of the current node.
+  std::pair<dimension_type&, data_type&> operator*();
+
+  //! Returns the value_type of the current node.
+  std::pair<const dimension_type, const data_type&> operator*() const;
+
+  //! Returns a pointer to the value_type of the current node.
+  Member_Access_Helper operator->();
+
+  //! Returns a pointer to the value_type of the current node.
+  Const_Member_Access_Helper operator->() const;
+
+  //! Compares \p *this with x .
+  bool operator==(const inorder_iterator& x) const;
+
+  //! Compares \p *this with x .
+  bool operator!=(const inorder_iterator& x) const;
+
+  //! Returns true if the iterator is an end() iterator.
+  bool is_at_end() const;
+
+  //! Returns true if the iterator points before the first element.
+  bool is_before_begin() const;
+
+  //! Returns the depth of the current node.
+  dimension_type depth() const;
+
+  CO_Tree* get_tree();
+
+  const CO_Tree* get_tree() const;
+
+private:
+#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
+  //! The depth of the current node in the vEB layout.
+  dimension_type d;
+
+  //! Position of the node in a BFS layout.
+  dimension_type i;
+
+  //! A vector of size d + 1.
+  //! pos[0] is not used.
+  //! pos[j], for j>0, is the position in the vEB layout of the node passed
+  //! at depth j.
+  dimension_type pos[8*sizeof(dimension_type)];
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_BFS_LAYOUT
+  //! The index of the current node in the BFS layout.
+  dimension_type i;
+#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  //! The index of the current node in the DFS layout.
+  dimension_type i;
+#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+
+  //! When this is true, data fields (except tree) are not valid and
+  //! this is an end iterator.
+  bool at_end;
+
+  //! When this is true, data fields (except tree) are not valid and
+  //! this iterator points to a non-existent node before the beginning.
+  bool before_begin;
+
+  //! The tree the iterator points to.
+  CO_Tree* tree;
+
+  friend inorder_const_iterator&
+    inorder_const_iterator::operator=(const inorder_iterator&);
 };
 
 } // namespace Parma_Polyhedra_Library
