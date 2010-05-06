@@ -181,12 +181,10 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   reserved_size = ((dimension_type)1 << l) - 1;
   // We use malloc() instead of operator new(), because we want to use
   // realloc().
-  char* p = static_cast<char*>(
-    malloc(sizeof(dimension_type)*(reserved_size + 2)
-           + sizeof(data_type)*(reserved_size + 1)));
-  indexes = static_cast<dimension_type*>(static_cast<void*>(p));
-  data = static_cast<data_type*>(
-    static_cast<void*>(p + sizeof(dimension_type)*(reserved_size + 2)));
+  indexes = static_cast<dimension_type*>(malloc(sizeof(dimension_type)
+                                                * (reserved_size + 2)));
+  data = static_cast<data_type*>(malloc(sizeof(data_type)
+                                        * (reserved_size + 1)));
   // Mark all pairs as unused.
   for (dimension_type i = 1; i <= reserved_size; ++i)
     new (&(indexes[i])) dimension_type(unused_index);
@@ -216,10 +214,10 @@ PPL::CO_Tree::destroy() {
     }
     indexes[reserved_size + 1].~dimension_type();
 
-    // This frees memory used by data, too.
     // We use malloc()/free() instead of operator new()/operator delete()
     // because we want to use realloc().
     free(static_cast<void*>(indexes));
+    free(static_cast<void*>(data));
   }
 }
 
