@@ -502,7 +502,8 @@ PPL::CO_Tree::rebalance(inorder_iterator& itr, dimension_type key,
     PPL_ASSERT(!itr.get_right_child_value());
   }
 #endif
-  dimension_type height = max_depth + 1 - itr.depth();
+  dimension_type itr_depth_minus_1 = itr.depth() - 1;
+  dimension_type height = max_depth + itr_depth_minus_1;
   dimension_type subtree_size;
   const bool deleting = itr->first == unused_index;
   PPL_ASSERT(deleting || key != unused_index);
@@ -516,9 +517,9 @@ PPL::CO_Tree::rebalance(inorder_iterator& itr, dimension_type key,
   const float coeff1 = (1 - max_density)/(max_depth - 1);
   const float coeff2 = (min_density - min_leaf_density)/(max_depth - 1);
 
-  while (density > max_density + (itr.depth() - 1)*coeff1
-         || density < min_density - (itr.depth() - 1)*coeff2) {
-    if (itr.depth() == 1) {
+  while (density > max_density + itr_depth_minus_1*coeff1
+         || density < min_density - itr_depth_minus_1*coeff2) {
+    if (itr_depth_minus_1 == 0) {
       // TODO: Check if this is correct
       // We could arrive here because we are using a fake subtree_size.
 #ifndef NDEBUG
@@ -553,6 +554,7 @@ PPL::CO_Tree::rebalance(inorder_iterator& itr, dimension_type key,
     PPL_ASSERT(itr->first != unused_index);
     ++subtree_size;
     ++height;
+    --itr_depth_minus_1;
     density = subtree_size / (float) (((dimension_type)1 << height) - 1);
   };
 
