@@ -995,30 +995,20 @@ inline void
 CO_Tree::inorder_iterator::get_next_value() {
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!is_at_end());
+
+#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
   if (is_before_begin()) {
     get_root();
 
     if (tree->reserved_size == 0)
-#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
       at_end = true;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-      i = tree->reserved_size + 1;
-#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
     else {
       while (get_left_child_value())
         ;
 
       if ((*this)->first == unused_index) {
         PPL_ASSERT(depth() == 1);
-#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-      at_end = true;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-      i = tree->reserved_size + 1;
-#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
+        at_end = true;
       }
     }
 
@@ -1036,26 +1026,26 @@ CO_Tree::inorder_iterator::get_next_value() {
       while (has_parent() && is_right_child())
         get_parent();
       if (!has_parent())
-#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-      at_end = true;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-      i = tree->reserved_size + 1;
-#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
+        at_end = true;
       else
         get_parent();
     }
 
-#ifndef NDEBUG
     if (!is_at_end())
       // previous_index could be unused_index because we deleted the current
       // node, as we do in move_data_from().
       if (previous_index != unused_index)
       PPL_ASSERT((*this)->first != unused_index
                  && (*this)->first > previous_index);
-#endif
   }
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  ++i;
+  if (!tree->empty())
+    while (tree->indexes[i] == unused_index)
+      ++i;
+#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 }
 
 inline void
