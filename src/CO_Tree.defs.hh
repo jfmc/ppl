@@ -551,11 +551,7 @@ private:
   dimension_type i;
 #endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
 
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-  //! The index of the current node in the DFS layout.
-  dimension_type i;
-#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
+#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
   //! When this is true, data fields (except tree) are not valid and
   //! this is an end iterator.
   bool at_end;
@@ -563,6 +559,12 @@ private:
   //! When this is true, data fields (except tree) are not valid and
   //! this iterator points to a non-existent node before the beginning.
   bool before_begin;
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  //! The index of the current node in the DFS layout.
+  dimension_type i;
+#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
 
   //! The tree the iterator points to.
   const CO_Tree* tree;
@@ -711,6 +713,7 @@ private:
   dimension_type i;
 #endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
 
+#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
   //! When this is true, data fields (except tree) are not valid and
   //! this is an end iterator.
   bool at_end;
@@ -718,6 +721,7 @@ private:
   //! When this is true, data fields (except tree) are not valid and
   //! this iterator points to a non-existent node before the beginning.
   bool before_begin;
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
 
   //! The tree the iterator points to.
   CO_Tree* tree;
