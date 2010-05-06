@@ -566,6 +566,9 @@ private:
 
   //! The tree the iterator points to.
   const CO_Tree* tree;
+
+  friend dimension_type
+    CO_Tree::count_used_in_subtree(inorder_const_iterator& itr);
 };
 
 class CO_Tree::inorder_iterator {
@@ -721,6 +724,9 @@ private:
 
   friend inorder_const_iterator&
     inorder_const_iterator::operator=(const inorder_iterator&);
+
+  friend dimension_type
+    CO_Tree::count_used_in_subtree(inorder_iterator& itr);
 };
 
 } // namespace Parma_Polyhedra_Library
