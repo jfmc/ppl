@@ -366,11 +366,73 @@ CO_Tree::rebuild_bigger_tree() {
     init(3);
   else {
     dimension_type new_reserved_size = reserved_size*2 + 1;
+
+#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
     CO_Tree new_tree;
     new_tree.init(new_reserved_size);
     new_tree.move_data_from(*this);
     swap(new_tree);
     PPL_ASSERT(new_tree.structure_OK());
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_BFS_LAYOUT
+    indexes = static_cast<dimension_type*>(realloc(indexes,
+                                                   sizeof(dimension_type)
+                                                   * (new_reserved_size + 2)));
+    data = static_cast<data_type*>(realloc(data,
+                                           sizeof(data_type)
+                                           * (new_reserved_size + 1)));
+
+    // This was previously used as a marker, so it has already been
+    // constructed.
+    indexes[reserved_size + 1] = unused_index;
+
+    for (dimension_type i = reserved_size + 2; i <= new_reserved_size; ++i)
+      new (&(indexes[i])) dimension_type(unused_index);
+
+    // This is used as a marker by unordered iterators.
+    new (&(indexes[new_reserved_size + 1])) dimension_type(0);
+
+    reserved_size = new_reserved_size;
+    ++max_depth;
+#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+    dimension_type* new_indexes
+      = static_cast<dimension_type*>(malloc(sizeof(dimension_type)
+                                            * (new_reserved_size + 2)));
+    data_type* new_data
+      = static_cast<data_type*>(malloc(sizeof(data_type)
+                                       * (new_reserved_size + 1)));
+
+    new (&(new_indexes[1])) dimension_type(unused_index);
+
+    for (dimension_type i = 1, j = 2; i <= reserved_size; ++i, ++j) {
+      if (indexes[i] == unused_index)
+        new (&(new_indexes[j])) dimension_type(unused_index);
+      else {
+        new (&(new_indexes[j])) dimension_type(indexes[i]);
+        move_data_element(new_data[j], data[i]);
+      }
+      indexes[i].~dimension_type();
+      ++j;
+      new (&(new_indexes[j])) dimension_type(unused_index);
+    }
+
+    // This was used as a marker by unordered iterators.
+    indexes[reserved_size + 1].~dimension_type();
+
+    // This is used as a marker by unordered iterators.
+    new (&(new_indexes[new_reserved_size + 1])) dimension_type(0);
+
+    free(indexes);
+    free(data);
+
+    indexes = new_indexes;
+    data = new_data;
+    reserved_size = new_reserved_size;
+    ++max_depth;
+#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
   }
   PPL_ASSERT(structure_OK());
 }
