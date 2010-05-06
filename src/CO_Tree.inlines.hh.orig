@@ -1062,13 +1062,17 @@ inline void
 CO_Tree::inorder_iterator::get_previous_value() {
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!is_before_begin());
-
-#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
   if (is_at_end()) {
     get_root();
 
     if (tree->reserved_size == 0)
+#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
       before_begin = true;
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+      i = 0;
+#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
     else
       while (get_right_child_value())
         ;
@@ -1082,14 +1086,26 @@ CO_Tree::inorder_iterator::get_previous_value() {
         get_parent();
       else {
         if (!has_parent())
-          before_begin = true;
+#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+      before_begin = true;
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+      i = 0;
+#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
         else {
           while (has_parent() && !is_right_child())
             get_parent();
           if (has_parent())
             get_parent();
           else
-            before_begin = true;
+#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+      before_begin = true;
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+      i = 0;
+#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
         }
       }
     else
@@ -1098,13 +1114,6 @@ CO_Tree::inorder_iterator::get_previous_value() {
 
     PPL_ASSERT(is_before_begin() || (*this)->first != unused_index);
   }
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-  --i;
-  while (i != 0 && tree->indexes[i] == unused_index)
-    --i;
-#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 }
 
 inline CO_Tree::inorder_iterator&
