@@ -882,17 +882,12 @@ CO_Tree::inorder_iterator::operator++() {
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!is_at_end());
 
+#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
   if (is_before_begin()) {
 
     get_root();
     if (tree->reserved_size == 0)
-#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
       at_end = true;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-      i = tree->reserved_size + 1;
-#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
     else
       while (!is_leaf())
         get_left_child();
@@ -903,13 +898,7 @@ CO_Tree::inorder_iterator::operator++() {
       while (has_parent() && is_right_child())
         get_parent();
       if (!has_parent())
-#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-      at_end = true;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-      i = tree->reserved_size + 1;
-#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
+        at_end = true;
       else
         get_parent();
     } else {
@@ -918,6 +907,11 @@ CO_Tree::inorder_iterator::operator++() {
         get_left_child();
     }
   }
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  ++i;
+#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 
   return *this;
 }
@@ -927,17 +921,12 @@ CO_Tree::inorder_iterator::operator--() {
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!is_before_begin());
 
+#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
   if (is_at_end()) {
     get_root();
 
     if (tree->reserved_size == 0)
-#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
       before_begin = true;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-      i = 0;
-#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
     else
       while (!is_leaf())
         get_right_child();
@@ -949,26 +938,14 @@ CO_Tree::inorder_iterator::operator--() {
         get_parent();
       else {
         if (!has_parent())
-#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-      before_begin = true;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-      i = 0;
-#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
+          before_begin = true;
         else {
           while (has_parent() && !is_right_child())
             get_parent();
           if (has_parent())
             get_parent();
           else
-#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-      before_begin = true;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-      i = 0;
-#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
+            before_begin = true;
         }
       }
     else {
@@ -977,6 +954,11 @@ CO_Tree::inorder_iterator::operator--() {
         get_right_child();
     }
   }
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  --i;
+#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 
   return *this;
 }
