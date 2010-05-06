@@ -132,92 +132,20 @@ void
 PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
 
   PPL_ASSERT(size == 0);
-  PPL_ASSERT(reserved_size >= x.size);
+  PPL_ASSERT(reserved_size == x.reserved_size);
 
   if (x.size == 0) {
     PPL_ASSERT(OK());
     return;
   }
 
-  inorder_iterator root(&*this);
-  inorder_const_iterator itr = x.before_begin();
-  itr.get_next_value();
+  for (dimension_type i = x.reserved_size; i > 0; --i)
+    if (x.indexes[i] != unused_index) {
+      indexes[i] = x.indexes[i];
+      new (&(data[i])) data_type(x.data[i]);
+    } else
+      PPL_ASSERT(indexes[i] == unused_index);
 
-  PPL_ASSERT(itr->first != unused_index);
-
-  // This is static and with static allocation, to improve performance.
-  static std::pair<dimension_type,char> stack[5*8*sizeof(dimension_type)];
-  dimension_type stack_first_empty = 0;
-
-  // A pair (n, operation) in the stack means:
-  //
-  // * Go to the parent, if operation is 0.
-  // * Go to the left child, then visit the current tree (with size n), if
-  //   operation is 1.
-  // * Go to the right child, then visit the current tree (with size n), if
-  //   operation is 2.
-  // * Visit the current tree (with size n), if operation is 4.
-
-  stack[0].first = x.size;
-  stack[0].second = 4;
-  ++stack_first_empty;
-
-  while (stack_first_empty != 0) {
-
-    // top_n         = stack.top().first;
-    // top_operation = stack.top().second;
-    const dimension_type top_n = stack[stack_first_empty - 1].first;
-    const char top_operation = stack[stack_first_empty - 1].second;
-
-    switch (top_operation) {
-
-    case 0:
-      root.get_parent();
-      --stack_first_empty;
-      continue;
-
-    case 1:
-      root.get_left_child();
-      break;
-
-    case 2:
-      root.get_right_child();
-      break;
-#ifndef NDEBUG
-    case 4:
-      break;
-
-    default:
-      // We should not be here
-      PPL_ASSERT(false);
-#endif
-    }
-
-    // We now visit the current tree
-
-    if (top_n == 0) {
-      --stack_first_empty;
-    } else {
-      if (top_n == 1) {
-        PPL_ASSERT(root->first == unused_index);
-        PPL_ASSERT(itr->first != unused_index);
-        root->first = itr->first;
-        new (&(root->second)) data_type(itr->second);
-        itr.get_next_value();
-        --stack_first_empty;
-      } else {
-        PPL_ASSERT(stack_first_empty + 3 < sizeof(stack)/sizeof(stack[0]));
-
-        const dimension_type half = (top_n + 1) / 2;
-        stack[stack_first_empty - 1].second = 0;
-        stack[stack_first_empty    ] = std::make_pair(top_n - half, 2);
-        stack[stack_first_empty + 1] = std::make_pair(1, 4);
-        stack[stack_first_empty + 2].second = 0;
-        stack[stack_first_empty + 3] = std::make_pair(half - 1, 1);
-        stack_first_empty += 4;
-      }
-    }
-  }
   size = x.size;
   PPL_ASSERT(OK());
 }
