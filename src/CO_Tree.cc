@@ -707,29 +707,13 @@ PPL::CO_Tree::count_used_in_subtree(inorder_const_iterator& itr) {
   PPL_ASSERT(itr->first != unused_index);
   dimension_type n = 0;
 
-
-  #ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-
-  const dimension_type k = itr.i & -itr.i;
-
-  // The complete subtree rooted at itr has 2*k - 1 nodes.
-
-  const dimension_type limit = itr.i + (k - 1);
-
-  PPL_ASSERT(itr.i > (k - 1));
-
-  const dimension_type* const indexes = itr.tree->indexes;
-
-  for (dimension_type j = itr.i - (k - 1); j <= limit; ++j)
-    if (indexes[j] != unused_index)
-      ++n;
-
-#else // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
-
+#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
   const dimension_type depth = itr.depth();
+
 #ifndef NDEBUG
   const dimension_type root_index = itr->first;
 #endif
+
   while (itr.get_left_child_value())
     ;
   while (itr.depth() != depth) {
@@ -745,6 +729,43 @@ PPL::CO_Tree::count_used_in_subtree(inorder_const_iterator& itr) {
   }
 
   PPL_ASSERT(itr->first == root_index);
+#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_BFS_LAYOUT
+
+  inorder_const_iterator itr2 = itr;
+
+  while (itr2.get_left_child_value())
+    ;
+  while (itr2 != itr) {
+    itr2.get_next_value();
+    ++n;
+  }
+  ++n;
+  while (itr2.get_right_child_value())
+    ;
+  while (itr2 != itr) {
+    itr2.get_previous_value();
+    ++n;
+  }
+
+#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
+
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+
+  const dimension_type k = itr.i & -itr.i;
+
+  // The complete subtree rooted at itr has 2*k - 1 nodes.
+
+  const dimension_type limit = itr.i + (k - 1);
+
+  PPL_ASSERT(itr.i > (k - 1));
+
+  const dimension_type* indexes = itr.tree->indexes;
+
+  for (dimension_type j = itr.i - (k - 1); j <= limit; ++j)
+    if (indexes[j] != unused_index)
+      ++n;
 
 #endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 
