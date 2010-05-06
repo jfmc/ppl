@@ -352,6 +352,11 @@ CO_Tree::lower_bound(inorder_const_iterator& itr, dimension_type key) const {
 
 inline void
 CO_Tree::move_data_element(data_type& to, data_type& from) {
+  // The following code is equivalent (but slower):
+  //
+  // new (&to) data_type(from);
+  // from.~data_type();
+
   std::memcpy(&to, &from, sizeof(data_type));
 }
 
