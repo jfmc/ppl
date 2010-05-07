@@ -189,7 +189,8 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   for (dimension_type i = 1; i <= reserved_size; ++i)
     new (&(indexes[i])) dimension_type(unused_index);
 
-  // This is used as a marker by unordered iterators.
+  // These are used as markers by iterators.
+  new (&(indexes[0])) dimension_type(0);
   new (&(indexes[reserved_size + 1])) dimension_type(0);
 
   max_depth = l;
@@ -212,6 +213,7 @@ PPL::CO_Tree::destroy() {
         data[i].~data_type();
       indexes[i].~dimension_type();
     }
+    indexes[0].~dimension_type();
     indexes[reserved_size + 1].~dimension_type();
 
     // We use malloc()/free() instead of operator new()/operator delete()

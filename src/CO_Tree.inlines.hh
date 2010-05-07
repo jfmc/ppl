@@ -419,10 +419,12 @@ CO_Tree::rebuild_bigger_tree() {
       new (&(new_indexes[j])) dimension_type(unused_index);
     }
 
-    // This was used as a marker by unordered iterators.
+    // These were used as markers by iterators.
+    indexes[0].~dimension_type();
     indexes[reserved_size + 1].~dimension_type();
 
-    // This is used as a marker by unordered iterators.
+    // These are used as markers by iterators.
+    new (&(new_indexes[0])) dimension_type(0);
     new (&(new_indexes[new_reserved_size + 1])) dimension_type(0);
 
     free(indexes);
@@ -1094,8 +1096,9 @@ CO_Tree::inorder_iterator::get_previous_value() {
 
 #ifdef USE_PPL_CO_TREE_DFS_LAYOUT
   --i;
-  while (i != 0 && tree->indexes[i] == unused_index)
-    --i;
+  if (!tree->empty())
+    while (tree->indexes[i] == unused_index)
+      --i;
 #endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 }
 
@@ -1743,8 +1746,9 @@ CO_Tree::inorder_const_iterator::get_previous_value() {
 
 #ifdef USE_PPL_CO_TREE_DFS_LAYOUT
   --i;
-  while (i != 0 && tree->indexes[i] == unused_index)
-    --i;
+  if (!tree->empty())
+    while (tree->indexes[i] == unused_index)
+      --i;
 #endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 }
 

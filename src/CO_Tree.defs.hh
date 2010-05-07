@@ -408,11 +408,10 @@ private:
   //! The depth of the leaves in the static tree.
   dimension_type max_depth;
 
-  // TODO: don't waste the first element.
   //! The vector that contains the keys in the tree.
   //! If a pair has \p unused_index as first element, it means it is not used.
-  //! Its size is reserved_size + 2, because the first element is not used,
-  //! and the last element is used as marker for unordered iterators.
+  //! Its size is reserved_size + 2, because the first and the last elements
+  //! are used as markers for iterators.
   dimension_type* indexes;
 
   //! The vector that contains the data of the keys in the tree.
