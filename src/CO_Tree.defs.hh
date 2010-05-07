@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Coefficient.defs.hh"
 #include <vector>
+#include <stdint.h>
 
 #ifndef USE_PPL_CO_TREE_VEB_LAYOUT
 #ifndef USE_PPL_CO_TREE_DFS_LAYOUT
@@ -51,6 +52,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 class CO_Tree {
+
+private:
+  typedef uint_fast8_t height_t;
 
 public:
 
