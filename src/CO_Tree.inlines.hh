@@ -837,7 +837,7 @@ CO_Tree::inorder_iterator::is_before_begin() const {
 #endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 }
 
-inline dimension_type
+inline CO_Tree::height_t
 CO_Tree::inorder_iterator::depth() const {
   PPL_ASSERT(tree != 0);
 
@@ -847,7 +847,7 @@ CO_Tree::inorder_iterator::depth() const {
 
 #ifdef USE_PPL_CO_TREE_BFS_LAYOUT
   dimension_type n = i;
-  dimension_type d = 0;
+  height_t d = 0;
   while (n != 0) {
     n /= 2;
     ++d;
@@ -857,7 +857,7 @@ CO_Tree::inorder_iterator::depth() const {
 
 #ifdef USE_PPL_CO_TREE_DFS_LAYOUT
   dimension_type n = i;
-  dimension_type d = 0;
+  height_t d = 0;
   while ((n & (dimension_type)0x01U) == 0) {
     n /= 2;
     ++d;
@@ -1112,7 +1112,7 @@ CO_Tree::inorder_iterator::operator=(const inorder_iterator& itr2) {
     if (!is_at_end() && !is_before_begin()) {
       d = itr2.d;
       i = itr2.i;
-      for (dimension_type i = 1; i <= itr2.d; ++i)
+      for (height_t i = 1; i <= itr2.d; ++i)
         pos[i] = itr2.pos[i];
     }
 #endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
@@ -1492,7 +1492,7 @@ CO_Tree::inorder_const_iterator::is_before_begin() const {
 #endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 }
 
-inline dimension_type
+inline CO_Tree::height_t
 CO_Tree::inorder_const_iterator::depth() const {
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(tree->reserved_size != 0);
@@ -1503,7 +1503,7 @@ CO_Tree::inorder_const_iterator::depth() const {
 
 #ifdef USE_PPL_CO_TREE_BFS_LAYOUT
   dimension_type n = i;
-  dimension_type d = 0;
+  height_t d = 0;
   while (n != 0) {
     n /= 2;
     ++d;
@@ -1513,7 +1513,7 @@ CO_Tree::inorder_const_iterator::depth() const {
 
 #ifdef USE_PPL_CO_TREE_DFS_LAYOUT
   dimension_type n = i;
-  dimension_type d = 0;
+  height_t d = 0;
   while ((n & (dimension_type)0x01U) == 0) {
     n /= 2;
     ++d;

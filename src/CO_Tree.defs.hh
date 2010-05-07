@@ -266,7 +266,7 @@ private:
   struct level_data {
     dimension_type bottom_tree_size;
     dimension_type top_tree_size;
-    dimension_type depth_of_root_of_top_tree;
+    height_t depth_of_root_of_top_tree;
   };
 
 #ifdef USE_PPL_CO_TREE_VEB_LAYOUT
@@ -274,14 +274,14 @@ private:
 
   public:
 
-    static const level_data* get_level_data(dimension_type height);
+    static const level_data* get_level_data(height_t height);
 
   private:
 
-    static const dimension_type max_depth = sizeof(dimension_type)*CHAR_BIT;
+    static const height_t max_depth = sizeof(dimension_type)*CHAR_BIT;
 
-    static void fill_level_data(level_data* p, dimension_type min_depth,
-                                dimension_type max_depth);
+    static void fill_level_data(level_data* p, height_t min_depth,
+                                height_t max_depth);
 
     //! cache[0] and cache[1] are not used.
     //! cache[i] contains NULL if get_level_data(i) has not been called yet,
@@ -410,7 +410,7 @@ private:
 #endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
 
   //! The depth of the leaves in the static tree.
-  dimension_type max_depth;
+  height_t max_depth;
 
   //! The vector that contains the keys in the tree.
   //! If a pair has \p unused_index as first element, it means it is not used.
@@ -530,14 +530,14 @@ public:
   bool is_before_begin() const;
 
   //! Returns the depth of the current node.
-  dimension_type depth() const;
+  height_t depth() const;
 
   const CO_Tree* get_tree() const;
 
 private:
 #ifdef USE_PPL_CO_TREE_VEB_LAYOUT
   //! The depth of the current node in the vEB layout.
-  dimension_type d;
+  height_t d;
 
   //! Position of the node in a BFS layout.
   dimension_type i;
@@ -685,7 +685,7 @@ public:
   bool is_before_begin() const;
 
   //! Returns the depth of the current node.
-  dimension_type depth() const;
+  height_t depth() const;
 
   CO_Tree* get_tree();
 
@@ -694,7 +694,7 @@ public:
 private:
 #ifdef USE_PPL_CO_TREE_VEB_LAYOUT
   //! The depth of the current node in the vEB layout.
-  dimension_type d;
+  height_t d;
 
   //! Position of the node in a BFS layout.
   dimension_type i;

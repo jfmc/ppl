@@ -165,7 +165,7 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
     return;
   }
 
-  dimension_type l = 0;
+  height_t l = 0;
 
   if (reserved_size1 == 0)
     reserved_size1 = 1;
@@ -504,8 +504,8 @@ PPL::CO_Tree::rebalance(inorder_iterator& itr, dimension_type key,
     PPL_ASSERT(!itr.get_right_child_value());
   }
 #endif
-  dimension_type itr_depth_minus_1 = itr.depth() - 1;
-  dimension_type height = max_depth - itr_depth_minus_1;
+  height_t itr_depth_minus_1 = itr.depth() - 1;
+  height_t height = max_depth - itr_depth_minus_1;
   dimension_type subtree_size;
   const bool deleting = itr->first == unused_index;
   PPL_ASSERT(deleting || key != unused_index);
@@ -641,7 +641,7 @@ PPL::CO_Tree::count_used_in_subtree(inorder_iterator& itr) {
   dimension_type n = 0;
 
 #ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-  const dimension_type depth = itr.depth();
+  const height_t depth = itr.depth();
 
 #ifndef NDEBUG
   const dimension_type root_index = itr->first;
@@ -711,7 +711,7 @@ PPL::CO_Tree::count_used_in_subtree(inorder_const_iterator& itr) {
   dimension_type n = 0;
 
 #ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-  const dimension_type depth = itr.depth();
+  const height_t depth = itr.depth();
 
 #ifndef NDEBUG
   const dimension_type root_index = itr->first;
@@ -833,7 +833,7 @@ PPL::CO_Tree
 #endif
 
 #ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-  const dimension_type depth = root.depth();
+  const height_t depth = root.depth();
 #endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 
   while (root.get_right_child_value())
@@ -995,7 +995,7 @@ PPL::CO_Tree
 #ifdef USE_PPL_CO_TREE_VEB_LAYOUT
 
 const PPL::CO_Tree::level_data*
-PPL::CO_Tree::Level_Data_Cache::get_level_data(dimension_type height) {
+PPL::CO_Tree::Level_Data_Cache::get_level_data(height_t height) {
   PPL_ASSERT(height >= 2);
   if (cache[height] == NULL) {
     cache[height] = new level_data[height];
@@ -1007,12 +1007,12 @@ PPL::CO_Tree::Level_Data_Cache::get_level_data(dimension_type height) {
 void
 PPL::CO_Tree::Level_Data_Cache
 ::fill_level_data(level_data* p,
-                  dimension_type min_depth, dimension_type max_depth) {
+                  height_t min_depth, height_t max_depth) {
   PPL_ASSERT(p != NULL);
   if (min_depth == max_depth)
     return;
 
-  dimension_type d0 = (min_depth + max_depth) / 2;
+  height_t d0 = (min_depth + max_depth) / 2;
 
   p[d0].depth_of_root_of_top_tree = min_depth;
   p[d0].bottom_tree_size = ((dimension_type)1 << (max_depth - d0)) - 1;
