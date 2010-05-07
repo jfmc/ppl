@@ -507,12 +507,10 @@ template <typename To_Policy, typename From_Policy>
 inline Result
 smod_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
 	      Rounding_Dir) {
-  mpz_fdiv_r_2exp(to.get_mpz_t(), x.get_mpz_t(), exp);
-  if (mpz_tstbit(to.get_mpz_t(), exp - 1)) {
-    mpz_class m = 1;
-    mpz_mul_2exp(m.get_mpz_t(), m.get_mpz_t(), exp);
-    to -= m;
-  }
+  if (mpz_tstbit(x.get_mpz_t(), exp - 1))
+    mpz_cdiv_r_2exp(to.get_mpz_t(), x.get_mpz_t(), exp);
+  else
+    mpz_fdiv_r_2exp(to.get_mpz_t(), x.get_mpz_t(), exp);
   return V_EQ;
 }
 
