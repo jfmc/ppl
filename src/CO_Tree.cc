@@ -50,7 +50,7 @@ PPL::CO_Tree::CO_Tree(const std::vector<data_type>& v) {
   }
 
   // This is static and with static allocation, to improve performance.
-  static std::pair<dimension_type,char> stack[5*8*sizeof(dimension_type)];
+  static std::pair<dimension_type,char> stack[5*CHAR_BIT*sizeof(dimension_type)];
   dimension_type stack_first_empty = 0;
 
   // A pair (n, operation) in the stack means:
@@ -236,7 +236,7 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
   PPL_ASSERT(itr->first != unused_index);
 
   // This is static and with static allocation, to improve performance.
-  static std::pair<dimension_type,char> stack[5*8*sizeof(dimension_type)];
+  static std::pair<dimension_type,char> stack[5*CHAR_BIT*sizeof(dimension_type)];
   dimension_type stack_first_empty = 0;
 
   // A pair (n, operation) in the stack means:
@@ -905,7 +905,7 @@ PPL::CO_Tree
                                           const data_type& value,
                                           bool added_key) {
   // This is static and with static allocation, to improve performance.
-  static std::pair<dimension_type,char> stack[5*8*sizeof(dimension_type)];
+  static std::pair<dimension_type,char> stack[5*CHAR_BIT*sizeof(dimension_type)];
   dimension_type stack_first_empty = 0;
 
   // A pair (n, operation) in the stack means:

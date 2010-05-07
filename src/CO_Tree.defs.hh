@@ -274,7 +274,7 @@ private:
 
   private:
 
-    static const dimension_type max_depth = sizeof(dimension_type)*8;
+    static const dimension_type max_depth = sizeof(dimension_type)*CHAR_BIT;
 
     static void fill_level_data(level_data* p, dimension_type min_depth,
                                 dimension_type max_depth);
@@ -542,7 +542,7 @@ private:
   //! pos[0] is not used.
   //! pos[j], for j>0, is the position in the vEB layout of the node passed
   //! at depth j.
-  dimension_type pos[8*sizeof(dimension_type)];
+  dimension_type pos[CHAR_BIT*sizeof(dimension_type)];
 #endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
 
 #ifdef USE_PPL_CO_TREE_BFS_LAYOUT
@@ -699,7 +699,7 @@ private:
   //! pos[0] is not used.
   //! pos[j], for j>0, is the position in the vEB layout of the node passed
   //! at depth j.
-  dimension_type pos[8*sizeof(dimension_type)];
+  dimension_type pos[CHAR_BIT*sizeof(dimension_type)];
 #endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
 
 #ifdef USE_PPL_CO_TREE_BFS_LAYOUT
