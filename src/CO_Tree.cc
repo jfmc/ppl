@@ -555,6 +555,7 @@ PPL::CO_Tree::rebalance(inorder_iterator& itr, dimension_type key,
     ++subtree_size;
     ++height;
     --itr_depth_minus_1;
+    PPL_ASSERT(itr.depth() - 1 == itr_depth_minus_1);
     density = subtree_size / (float) (((dimension_type)1 << height) - 1);
   };
 
