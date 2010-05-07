@@ -1031,12 +1031,14 @@ CO_Tree::inorder_iterator::get_next_value() {
         get_parent();
     }
 
+#ifndef NDEBUG
     if (!is_at_end())
       // previous_index could be unused_index because we deleted the current
       // node, as we do in move_data_from().
       if (previous_index != unused_index)
-      PPL_ASSERT((*this)->first != unused_index
-                 && (*this)->first > previous_index);
+        PPL_ASSERT((*this)->first != unused_index
+                   && (*this)->first > previous_index);
+#endif
   }
 #endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
 
@@ -1678,12 +1680,14 @@ CO_Tree::inorder_const_iterator::get_next_value() {
         get_parent();
     }
 
+#ifndef NDEBUG
     if (!is_at_end())
       // previous_index could be unused_index because we deleted the current
       // node, as we do in move_data_from().
       if (previous_index != unused_index)
-      PPL_ASSERT((*this)->first != unused_index
-                 && (*this)->first > previous_index);
+        PPL_ASSERT((*this)->first != unused_index
+                   && (*this)->first > previous_index);
+#endif
   }
 #endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
 
