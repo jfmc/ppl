@@ -503,7 +503,7 @@ PPL::CO_Tree::rebalance(inorder_iterator& itr, dimension_type key,
   }
 #endif
   dimension_type itr_depth_minus_1 = itr.depth() - 1;
-  dimension_type height = max_depth + itr_depth_minus_1;
+  dimension_type height = max_depth - itr_depth_minus_1;
   dimension_type subtree_size;
   const bool deleting = itr->first == unused_index;
   PPL_ASSERT(deleting || key != unused_index);
