@@ -30,7 +30,7 @@ namespace Parma_Polyhedra_Library {
   No-op macro that allows to avoid unused variable warnings from
   the compiler.
 */
-#endif // defined(ECLAIR_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define used(v) (void)v
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
