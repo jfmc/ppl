@@ -353,7 +353,71 @@ CO_Tree::go_down_searching_key(inorder_const_iterator& itr,
 
 inline void
 CO_Tree::lower_bound(inorder_iterator& itr, dimension_type key) {
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
   PPL_ASSERT(!empty());
+  PPL_ASSERT(itr.is_at_end() || itr->first <= key);
+
+  if (itr.is_before_begin())
+    ++itr;
+
+  PPL_ASSERT(itr.is_at_end() || itr->first <= key);
+
+  if (itr.is_at_end())
+    return;
+
+  dimension_type low_index = itr.i;
+  dimension_type high_index = reserved_size;
+
+  PPL_ASSERT(low_index > 0);
+
+  while (low_index + 1 < high_index) {
+
+    dimension_type avg = (low_index + high_index) / 2;
+    dimension_type index = avg;
+
+    while (indexes[index] == unused_index)
+      ++index;
+
+    if (index > high_index || indexes[index] > key) {
+      high_index = avg;
+    } else {
+      low_index = index;
+    }
+  }
+
+  if (low_index == high_index) {
+    if (indexes[low_index] == unused_index || indexes[low_index] < key)
+      ++low_index;
+    while (indexes[low_index] == unused_index)
+      ++low_index;
+
+  } else {
+    PPL_ASSERT(low_index + 1 == high_index);
+    if (indexes[low_index] == unused_index || indexes[low_index] < key) {
+      ++low_index;
+      if (indexes[low_index] == unused_index || indexes[low_index] < key)
+        ++low_index;
+    }
+    while (indexes[low_index] == unused_index)
+      ++low_index;
+  }
+
+  itr.i = low_index;
+
+#ifndef NDEBUG
+  inorder_iterator itr2 = itr;
+  itr2.get_previous_value();
+  PPL_ASSERT(itr2.is_before_begin() || itr2->first < key);
+  itr2.get_next_value();
+  PPL_ASSERT(itr2 == itr);
+#endif
+
+  PPL_ASSERT(itr.is_at_end() || itr->first >= key);
+
+#else // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
+
+  PPL_ASSERT(!empty());
+  PPL_ASSERT(itr.is_at_end() || itr->first <= key);
   if (itr->first <= key)
     while (itr.has_parent() && itr->first < key)
       itr.get_parent();
@@ -378,11 +442,77 @@ CO_Tree::lower_bound(inorder_iterator& itr, dimension_type key) {
   itr.get_next_value();
 #endif
   PPL_ASSERT(itr.is_at_end() || itr->first >= key);
+
+#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 }
 
 inline void
 CO_Tree::lower_bound(inorder_const_iterator& itr, dimension_type key) const {
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
   PPL_ASSERT(!empty());
+  PPL_ASSERT(itr.is_at_end() || itr->first <= key);
+
+  if (itr.is_before_begin())
+    ++itr;
+
+  PPL_ASSERT(itr.is_at_end() || itr->first <= key);
+
+  if (itr.is_at_end())
+    return;
+
+  dimension_type low_index = itr.i;
+  dimension_type high_index = reserved_size;
+
+  PPL_ASSERT(low_index > 0);
+
+  while (low_index + 1 < high_index) {
+
+    dimension_type avg = (low_index + high_index) / 2;
+    dimension_type index = avg;
+
+    while (indexes[index] == unused_index)
+      ++index;
+
+    if (index > high_index || indexes[index] > key) {
+      high_index = avg;
+    } else {
+      low_index = index;
+    }
+  }
+
+  if (low_index == high_index) {
+    if (indexes[low_index] == unused_index || indexes[low_index] < key)
+      ++low_index;
+    while (indexes[low_index] == unused_index)
+      ++low_index;
+
+  } else {
+    PPL_ASSERT(low_index + 1 == high_index);
+    if (indexes[low_index] == unused_index || indexes[low_index] < key) {
+      ++low_index;
+      if (indexes[low_index] == unused_index || indexes[low_index] < key)
+        ++low_index;
+    }
+    while (indexes[low_index] == unused_index)
+      ++low_index;
+  }
+
+  itr.i = low_index;
+
+#ifndef NDEBUG
+  inorder_const_iterator itr2 = itr;
+  itr2.get_previous_value();
+  PPL_ASSERT(itr2.is_before_begin() || itr2->first < key);
+  itr2.get_next_value();
+  PPL_ASSERT(itr2 == itr);
+#endif
+
+  PPL_ASSERT(itr.is_at_end() || itr->first >= key);
+
+#else // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
+
+  PPL_ASSERT(!empty());
+  PPL_ASSERT(itr.is_at_end() || itr->first <= key);
   if (itr->first <= key)
     while (itr.has_parent() && itr->first < key)
       itr.get_parent();
@@ -407,6 +537,8 @@ CO_Tree::lower_bound(inorder_const_iterator& itr, dimension_type key) const {
   itr.get_next_value();
 #endif
   PPL_ASSERT(itr.is_at_end() || itr->first >= key);
+
+#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 }
 
 inline void
