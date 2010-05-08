@@ -352,6 +352,64 @@ CO_Tree::go_down_searching_key(inorder_const_iterator& itr,
 }
 
 inline void
+CO_Tree::lower_bound(inorder_iterator& itr, dimension_type key) {
+  PPL_ASSERT(!empty());
+  if (itr->first <= key)
+    while (itr.has_parent() && itr->first < key)
+      itr.get_parent();
+  else
+    while (itr.has_parent() && itr->first > key)
+      itr.get_parent();
+
+  go_down_searching_key(itr, key);
+
+#ifndef NDEBUG
+  CO_Tree::inorder_iterator itr2(this);
+  go_down_searching_key(itr2, key);
+  PPL_ASSERT(itr == itr2);
+#endif
+
+  if (itr->first < key)
+    itr.get_next_value();
+
+#ifndef NDEBUG
+  itr.get_previous_value();
+  PPL_ASSERT(itr.is_before_begin() || itr->first < key);
+  itr.get_next_value();
+#endif
+  PPL_ASSERT(itr.is_at_end() || itr->first >= key);
+}
+
+inline void
+CO_Tree::lower_bound(inorder_const_iterator& itr, dimension_type key) const {
+  PPL_ASSERT(!empty());
+  if (itr->first <= key)
+    while (itr.has_parent() && itr->first < key)
+      itr.get_parent();
+  else
+    while (itr.has_parent() && itr->first > key)
+      itr.get_parent();
+
+  go_down_searching_key(itr, key);
+
+#ifndef NDEBUG
+  CO_Tree::inorder_const_iterator itr2(this);
+  go_down_searching_key(itr2, key);
+  PPL_ASSERT(itr == itr2);
+#endif
+
+  if (itr->first < key)
+    itr.get_next_value();
+
+#ifndef NDEBUG
+  itr.get_previous_value();
+  PPL_ASSERT(itr.is_before_begin() || itr->first < key);
+  itr.get_next_value();
+#endif
+  PPL_ASSERT(itr.is_at_end() || itr->first >= key);
+}
+
+inline void
 CO_Tree::move_data_element(data_type& to, data_type& from) {
   // The following code is equivalent (but slower):
   //

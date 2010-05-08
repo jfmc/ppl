@@ -164,6 +164,16 @@ public:
   void go_down_searching_key(inorder_const_iterator& itr,
                              dimension_type key) const;
 
+  //! Searches for an element with key \p key , assuming \p itr->first is less
+  //! than or equal to \p key .
+  //! If there is no element with key \p key , itr will be set to end().
+  void lower_bound(inorder_iterator& itr, dimension_type key);
+
+  //! Searches for an element with key \p key , assuming \p itr->first is less
+  //! than or equal to \p key .
+  //! If there is no element with key \p key , itr will be set to end().
+  void lower_bound(inorder_const_iterator& itr, dimension_type key) const;
+
   class inorder_iterator;
   class inorder_const_iterator;
 

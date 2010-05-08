@@ -500,62 +500,14 @@ inline void
 Unlimited_Sparse_Row_Over_CO_Tree
 ::lower_bound_hint_assign(dimension_type i,
                           CO_Tree::inorder_iterator& itr) {
-  PPL_ASSERT(!tree.empty());
-  if (itr->first <= i)
-    while (itr.has_parent() && itr->first < i)
-      itr.get_parent();
-  else
-    while (itr.has_parent() && itr->first > i)
-      itr.get_parent();
-
-  tree.go_down_searching_key(itr, i);
-
-#ifndef NDEBUG
-  CO_Tree::inorder_iterator itr2(&tree);
-  tree.go_down_searching_key(itr2, i);
-  PPL_ASSERT(itr == itr2);
-#endif
-
-  if (itr->first < i)
-    itr.get_next_value();
-
-#ifndef NDEBUG
-  itr.get_previous_value();
-  PPL_ASSERT(itr.is_before_begin() || itr->first < i);
-  itr.get_next_value();
-#endif
-  PPL_ASSERT(itr.is_at_end() || itr->first >= i);
+  tree.lower_bound(itr, i);
 }
 
 inline void
 Unlimited_Sparse_Row_Over_CO_Tree
 ::lower_bound_hint_assign(dimension_type i,
                           CO_Tree::inorder_const_iterator& itr) const {
-  PPL_ASSERT(!tree.empty());
-  if (itr->first <= i)
-    while (itr.has_parent() && itr->first < i)
-      itr.get_parent();
-  else
-    while (itr.has_parent() && itr->first > i)
-      itr.get_parent();
-
-  tree.go_down_searching_key(itr, i);
-
-#ifndef NDEBUG
-  CO_Tree::inorder_const_iterator itr2(&tree);
-  tree.go_down_searching_key(itr2, i);
-  PPL_ASSERT(itr == itr2);
-#endif
-
-  if (itr->first < i)
-    itr.get_next_value();
-
-#ifndef NDEBUG
-  itr.get_previous_value();
-  PPL_ASSERT(itr.is_before_begin() || itr->first < i);
-  itr.get_next_value();
-#endif
-  PPL_ASSERT(itr.is_at_end() || itr->first >= i);
+  tree.lower_bound(itr, i);
 }
 
 inline void
