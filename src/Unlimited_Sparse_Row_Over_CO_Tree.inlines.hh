@@ -64,8 +64,8 @@ Unlimited_Sparse_Row_Over_CO_Tree::swap(dimension_type i, dimension_type j) {
     return;
   CO_Tree::inorder_iterator itr_i;
   CO_Tree::inorder_iterator itr_j;
-  tree.lower_bound(itr_i, i);
-  tree.lower_bound(itr_j, j);
+  tree.go_down_searching_key(itr_i, i);
+  tree.go_down_searching_key(itr_j, j);
   if (itr_i->first == i)
     if (itr_j->first == j)
       // Both elements are in the tree
@@ -273,15 +273,15 @@ Unlimited_Sparse_Row_Over_CO_Tree
         }
       } else {
         itr2.itr = itr1.itr;
-        tree.lower_bound(itr1.itr, c1);
-        tree.lower_bound(itr2.itr, c2);
+        tree.go_down_searching_key(itr1.itr, c1);
+        tree.go_down_searching_key(itr2.itr, c2);
         break;
       }
     } else {
       if (itr1.itr->first == c1 || itr1.itr->first <= c2) {
         itr2.itr = itr1.itr;
-        tree.lower_bound(itr1.itr, c1);
-        tree.lower_bound(itr2.itr, c2);
+        tree.go_down_searching_key(itr1.itr, c1);
+        tree.go_down_searching_key(itr2.itr, c2);
         break;
       } else {
         if (!itr1.itr.get_left_child_value()) {
@@ -381,7 +381,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
     return;
   }
   itr = dangerous_iterator(&tree);
-  tree.lower_bound(itr.itr, c);
+  tree.go_down_searching_key(itr.itr, c);
   if ((itr.itr)->first != c)
     itr = end_dangerous();
 }
@@ -394,7 +394,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
     return;
   }
   itr = iterator(&tree);
-  tree.lower_bound(itr.itr, c);
+  tree.go_down_searching_key(itr.itr, c);
   if ((itr.itr)->first != c)
     itr = end();
 }
@@ -407,7 +407,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
     return;
   }
   itr = const_iterator(&tree);
-  tree.lower_bound(itr.itr, c);
+  tree.go_down_searching_key(itr.itr, c);
   if ((itr.itr)->first != c)
     itr = end();
 }
@@ -420,7 +420,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
     return;
   }
   itr = dangerous_iterator(&tree);
-  tree.lower_bound(itr.itr, c);
+  tree.go_down_searching_key(itr.itr, c);
   if ((itr.itr)->first < c)
     ++itr;
   PPL_ASSERT(itr.itr.is_at_end() || itr->first >= c);
@@ -434,7 +434,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
     return;
   }
   itr = iterator(&tree);
-  tree.lower_bound(itr.itr, c);
+  tree.go_down_searching_key(itr.itr, c);
   if ((itr.itr)->first < c)
     ++itr;
   PPL_ASSERT(itr.itr.is_at_end() || itr->first >= c);
@@ -448,7 +448,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
     return;
   }
   itr = const_iterator(&tree);
-  tree.lower_bound(itr.itr, c);
+  tree.go_down_searching_key(itr.itr, c);
   if ((itr.itr)->first < c)
     ++itr;
   PPL_ASSERT(itr.itr.is_at_end() || itr->first >= c);
@@ -508,11 +508,11 @@ Unlimited_Sparse_Row_Over_CO_Tree
     while (itr.has_parent() && itr->first > i)
       itr.get_parent();
 
-  tree.lower_bound(itr, i);
+  tree.go_down_searching_key(itr, i);
 
 #ifndef NDEBUG
   CO_Tree::inorder_iterator itr2(&tree);
-  tree.lower_bound(itr2, i);
+  tree.go_down_searching_key(itr2, i);
   PPL_ASSERT(itr == itr2);
 #endif
 
@@ -539,11 +539,11 @@ Unlimited_Sparse_Row_Over_CO_Tree
     while (itr.has_parent() && itr->first > i)
       itr.get_parent();
 
-  tree.lower_bound(itr, i);
+  tree.go_down_searching_key(itr, i);
 
 #ifndef NDEBUG
   CO_Tree::inorder_const_iterator itr2(&tree);
-  tree.lower_bound(itr2, i);
+  tree.go_down_searching_key(itr2, i);
   PPL_ASSERT(itr == itr2);
 #endif
 
@@ -569,11 +569,11 @@ Unlimited_Sparse_Row_Over_CO_Tree
     while (itr.has_parent() && itr->first > i)
       itr.get_parent();
 
-  tree.lower_bound(itr, i);
+  tree.go_down_searching_key(itr, i);
 
 #ifndef NDEBUG
   CO_Tree::inorder_iterator itr2(&tree);
-  tree.lower_bound(itr2, i);
+  tree.go_down_searching_key(itr2, i);
   PPL_ASSERT(itr == itr2);
 #endif
 
@@ -593,11 +593,11 @@ Unlimited_Sparse_Row_Over_CO_Tree
     while (itr.has_parent() && itr->first > i)
       itr.get_parent();
 
-  tree.lower_bound(itr, i);
+  tree.go_down_searching_key(itr, i);
 
 #ifndef NDEBUG
   CO_Tree::inorder_const_iterator itr2(&tree);
-  tree.lower_bound(itr2, i);
+  tree.go_down_searching_key(itr2, i);
   PPL_ASSERT(itr == itr2);
 #endif
 
@@ -626,15 +626,15 @@ Unlimited_Sparse_Row_Over_CO_Tree::find2(const dimension_type c1,
         }
       } else {
         itr2.itr = itr1.itr;
-        tree.lower_bound(itr1.itr, c1);
-        tree.lower_bound(itr2.itr, c2);
+        tree.go_down_searching_key(itr1.itr, c1);
+        tree.go_down_searching_key(itr2.itr, c2);
         break;
       }
     } else {
       if (itr1.itr->first == c1 || itr1.itr->first <= c2) {
         itr2.itr = itr1.itr;
-        tree.lower_bound(itr1.itr, c1);
-        tree.lower_bound(itr2.itr, c2);
+        tree.go_down_searching_key(itr1.itr, c1);
+        tree.go_down_searching_key(itr2.itr, c2);
         break;
       } else {
         if (!itr1.itr.get_left_child_value()) {
@@ -672,15 +672,15 @@ Unlimited_Sparse_Row_Over_CO_Tree::find2(const dimension_type c1,
         }
       } else {
         itr2.itr = itr1.itr;
-        tree.lower_bound(itr1.itr, c1);
-        tree.lower_bound(itr2.itr, c2);
+        tree.go_down_searching_key(itr1.itr, c1);
+        tree.go_down_searching_key(itr2.itr, c2);
         break;
       }
     } else {
       if (itr1.itr->first == c1 || itr1.itr->first <= c2) {
         itr2.itr = itr1.itr;
-        tree.lower_bound(itr1.itr, c1);
-        tree.lower_bound(itr2.itr, c2);
+        tree.go_down_searching_key(itr1.itr, c1);
+        tree.go_down_searching_key(itr2.itr, c2);
         break;
       } else {
         if (!itr1.itr.get_left_child_value()) {
@@ -770,7 +770,7 @@ Unlimited_Sparse_Row_Over_CO_Tree::assign(dimension_type i,
     assign_if_nonzero(i, x);
   else {
     CO_Tree::inorder_iterator itr(&tree);
-    tree.lower_bound(itr, i);
+    tree.go_down_searching_key(itr, i);
     if (itr->first == i)
       itr->second = x;
     else
@@ -845,11 +845,11 @@ Unlimited_Sparse_Row_Over_CO_Tree
     while (itr.has_parent() && itr->first > i)
       itr.get_parent();
 
-  tree.lower_bound(itr, i);
+  tree.go_down_searching_key(itr, i);
 
 #ifndef NDEBUG
   CO_Tree::inorder_iterator itr2(&tree);
-  tree.lower_bound(itr2, i);
+  tree.go_down_searching_key(itr2, i);
   PPL_ASSERT(itr == itr2);
 #endif
 
@@ -877,11 +877,11 @@ Unlimited_Sparse_Row_Over_CO_Tree
     while (itr.has_parent() && itr->first > i)
       itr.get_parent();
 
-  tree.lower_bound(itr, i);
+  tree.go_down_searching_key(itr, i);
 
 #ifndef NDEBUG
   CO_Tree::inorder_iterator itr2(&tree);
-  tree.lower_bound(itr2, i);
+  tree.go_down_searching_key(itr2, i);
   PPL_ASSERT(itr == itr2);
 #endif
 
@@ -932,7 +932,7 @@ Unlimited_Sparse_Row_Over_CO_Tree::get(dimension_type i) const {
   if (tree.empty())
     return Coefficient_zero();
   CO_Tree::inorder_const_iterator itr(&tree);
-  tree.lower_bound(itr, i);
+  tree.go_down_searching_key(itr, i);
   if (itr->first == i)
     return itr->second;
   else

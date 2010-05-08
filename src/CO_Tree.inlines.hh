@@ -84,7 +84,7 @@ CO_Tree::insert(dimension_type key1, inorder_iterator& itr) {
     insert(key1, Coefficient_zero(), itr);
   else {
     itr = inorder_iterator(this);
-    lower_bound(itr, key1);
+    go_down_searching_key(itr, key1);
     if (itr->first != key1)
       insert_precise(key1, Coefficient_zero(), itr);
   }
@@ -108,11 +108,11 @@ CO_Tree::insert_hint(dimension_type key1, const data_type& data1,
         while (itr.has_parent() && itr->first < key1)
           itr.get_parent();
 
-      lower_bound(itr, key1);
+      go_down_searching_key(itr, key1);
 
 #ifndef NDEBUG
       inorder_iterator itr2(this);
-      lower_bound(itr2, key1);
+      go_down_searching_key(itr2, key1);
       PPL_ASSERT(itr == itr2);
 #endif
     }
@@ -140,11 +140,11 @@ CO_Tree::insert_hint(dimension_type key1, inorder_iterator& itr) {
         while (itr.has_parent() && itr->first < key1)
           itr.get_parent();
 
-      lower_bound(itr, key1);
+      go_down_searching_key(itr, key1);
 
 #ifndef NDEBUG
       inorder_iterator itr2(this);
-      lower_bound(itr2, key1);
+      go_down_searching_key(itr2, key1);
       PPL_ASSERT(itr == itr2);
 #endif
     }
@@ -240,7 +240,7 @@ CO_Tree::erase(dimension_type key) {
     return false;
 
   inorder_iterator itr(&*this);
-  lower_bound(itr, key);
+  go_down_searching_key(itr, key);
 
   if (itr->first != key)
     return false;
@@ -309,7 +309,7 @@ CO_Tree::unordered_end() const {
 }
 
 inline void
-CO_Tree::lower_bound(inorder_iterator& itr, dimension_type key) {
+CO_Tree::go_down_searching_key(inorder_iterator& itr, dimension_type key) {
   if (empty())
     return;
   PPL_ASSERT(key != unused_index);
@@ -330,7 +330,8 @@ CO_Tree::lower_bound(inorder_iterator& itr, dimension_type key) {
 }
 
 inline void
-CO_Tree::lower_bound(inorder_const_iterator& itr, dimension_type key) const {
+CO_Tree::go_down_searching_key(inorder_const_iterator& itr,
+                               dimension_type key) const {
   if (empty())
     return;
   PPL_ASSERT(key != unused_index);

@@ -447,7 +447,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
 
 #ifndef NDEBUG
   inorder_iterator itr2(this);
-  lower_bound(itr2, key1);
+  go_down_searching_key(itr2, key1);
   PPL_ASSERT(itr == itr2);
 #endif
 
@@ -464,7 +464,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
 
     // itr was invalidated by the rebuild operation
     itr.get_root();
-    lower_bound(itr, key1);
+    go_down_searching_key(itr, key1);
 
     PPL_ASSERT(itr->first != key1);
   }
@@ -488,7 +488,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
 
     rebalance(itr, key1, data1);
 
-    lower_bound(itr, key1);
+    go_down_searching_key(itr, key1);
 
     PPL_ASSERT(itr->first == key1);
   }
@@ -591,7 +591,7 @@ PPL::CO_Tree::erase(inorder_iterator& itr) {
 
     rebuild_smaller_tree();
     itr.get_root();
-    lower_bound(itr, key);
+    go_down_searching_key(itr, key);
 
     PPL_ASSERT(itr->first == key);
   }

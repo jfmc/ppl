@@ -156,12 +156,13 @@ public:
   //! Searches for an element with key \p key in the subtree rooted at \p itr.
   //! \p itr is modified to point to the found node (if it exists) or to the
   //! node that would be his parent (otherwise).
-  void lower_bound(inorder_iterator& itr, dimension_type key);
+  void go_down_searching_key(inorder_iterator& itr, dimension_type key);
 
   //! Searches for an element with key \p key in the subtree rooted at \p itr.
   //! \p itr is modified to point to the found node (if it exists) or to the
   //! node that would be his parent (otherwise).
-  void lower_bound(inorder_const_iterator& itr, dimension_type key) const;
+  void go_down_searching_key(inorder_const_iterator& itr,
+                             dimension_type key) const;
 
   class inorder_iterator;
   class inorder_const_iterator;
