@@ -366,7 +366,49 @@ CO_Tree::lower_bound(inorder_iterator& itr, dimension_type key) {
     return;
 
   dimension_type low_index = itr.i;
-  dimension_type high_index = reserved_size;
+  dimension_type high_index;
+
+  // Logarithmic search of an interval in which the key will be searched.
+  // Near (and small) intervals are tried first, to exploit the caches.
+  {
+    dimension_type hop = 1;
+    dimension_type last_low_index = low_index;
+
+    while (1) {
+
+      if (low_index > reserved_size)
+        low_index = reserved_size + 1;
+      else
+        while (indexes[low_index] == unused_index)
+          ++low_index;
+
+      PPL_ASSERT(indexes[low_index] != unused_index);
+
+      if (low_index > reserved_size) {
+        PPL_ASSERT(low_index <= reserved_size + 1);
+        high_index = low_index - 1;
+        low_index = last_low_index;
+        break;
+      }
+
+      if (indexes[low_index] == key) {
+        itr.i = low_index;
+        return;
+      }
+
+      if (indexes[low_index] > key) {
+        high_index = low_index - 1;
+        low_index = last_low_index;
+        break;
+      }
+
+      PPL_ASSERT(indexes[low_index] < key);
+
+      last_low_index = low_index;
+      low_index += hop;
+      hop *= 2;
+    }
+  }
 
   PPL_ASSERT(low_index > 0);
 
@@ -461,7 +503,49 @@ CO_Tree::lower_bound(inorder_const_iterator& itr, dimension_type key) const {
     return;
 
   dimension_type low_index = itr.i;
-  dimension_type high_index = reserved_size;
+  dimension_type high_index;
+
+  // Logarithmic search of an interval in which the key will be searched.
+  // Near (and small) intervals are tried first, to exploit the caches.
+  {
+    dimension_type hop = 1;
+    dimension_type last_low_index = low_index;
+
+    while (1) {
+
+      if (low_index > reserved_size)
+        low_index = reserved_size + 1;
+      else
+        while (indexes[low_index] == unused_index)
+          ++low_index;
+
+      PPL_ASSERT(indexes[low_index] != unused_index);
+
+      if (low_index > reserved_size) {
+        PPL_ASSERT(low_index <= reserved_size + 1);
+        high_index = low_index - 1;
+        low_index = last_low_index;
+        break;
+      }
+
+      if (indexes[low_index] == key) {
+        itr.i = low_index;
+        return;
+      }
+
+      if (indexes[low_index] > key) {
+        high_index = low_index - 1;
+        low_index = last_low_index;
+        break;
+      }
+
+      PPL_ASSERT(indexes[low_index] < key);
+
+      last_low_index = low_index;
+      low_index += hop;
+      hop *= 2;
+    }
+  }
 
   PPL_ASSERT(low_index > 0);
 
