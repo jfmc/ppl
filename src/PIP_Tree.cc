@@ -2767,8 +2767,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
               }
               PPL_ASSERT(product % s_pivot_pj == 0);
               exact_div_assign(product, product, s_pivot_pj);
-              s_i.find_create_hint_assign(j->first, itr);
-              itr->second -= product;
+              if (product != 0) {
+                s_i.find_create_hint_assign(j->first, itr);
+                itr->second -= product;
+              }
             }
           }
         }
@@ -2793,7 +2795,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
               }
               PPL_ASSERT(product % s_pivot_pj == 0);
               exact_div_assign(product, product, s_pivot_pj);
-              s_i[j->first] -= product;
+              if (product != 0)
+                s_i[j->first] -= product;
             }
           }
         }
@@ -2868,8 +2871,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             }
             PPL_ASSERT(product % s_pivot_pj == 0);
             exact_div_assign(product, product, s_pivot_pj);
-            t_i.find_create_hint_assign(j->first, k);
-            k->second -= product;
+            if (product != 0) {
+              t_i.find_create_hint_assign(j->first, k);
+              k->second -= product;
+            }
 
             // Update row sign.
             Row_Sign& sign_i = sign[i];
@@ -2912,7 +2917,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             }
             PPL_ASSERT(product % s_pivot_pj == 0);
             exact_div_assign(product, product, s_pivot_pj);
-            t_i[j->first] -= product;
+            if (product != 0)
+              t_i[j->first] -= product;
 
             // Update row sign.
             Row_Sign& sign_i = sign[i];
