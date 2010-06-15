@@ -837,22 +837,6 @@ BD_Shape<T>::hash_code() const {
 }
 
 template <typename T>
-template <typename Interval_Info>
-inline void
-BD_Shape<T>::refine_fp_interval_abstract_store(
-	            Box< Interval<T, Interval_Info> >& store) const {
-
-  // Check that T is a floating point type.
-  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
-                     "BD_Shape<T>::refine_fp_interval_abstract_store:"
-                     " T not a floating point type.");
-
-  typedef Interval<T, Interval_Info> FP_Interval_Type;
-  store.intersection_assign(Box<FP_Interval_Type>(*this));
-
-}
-
-template <typename T>
 inline void
 BD_Shape<T>::drop_some_non_integer_points_helper(N& elem) {
   if (!is_integer(elem)) {
