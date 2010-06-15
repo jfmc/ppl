@@ -1,4 +1,6 @@
-# Automake source file for the Parma Polyhedra Library.
+#!/bin/sh
+
+# Run the Floating_Point_Expression tests.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
@@ -20,38 +22,34 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = \
-. \
-PIP_Problem \
-Floating_Point_Expression \
-Powerset \
-Partially_Reduced_Product \
-Box \
-MIP_Problem \
-Octagonal_Shape \
-BD_Shape \
-Polyhedron \
-Grid
-#Ask_Tell
+mpz_class_XFAIL_TESTS=
+mpq_class_XFAIL_TESTS=
+int8_t_XFAIL_TESTS=
+int16_t_XFAIL_TESTS=
+int32_t_XFAIL_TESTS=
+int64_t_XFAIL_TESTS=
+float_XFAIL_TESTS=
+double_XFAIL_TESTS=
+long_double_XFAIL_TESTS=
 
-AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
+if [ -z "$MAKE" ]
+then
+    MAKE=make
+fi
 
-check_LIBRARIES = libppl_tests.a
+instances=`MAKEFLAGS='' $MAKE -s print_INSTANCES`
 
-libppl_tests_a_SOURCES = \
-files.hh \
-files.cc \
-ppl_test.cc
+check_PROGRAMS=`MAKEFLAGS='' $MAKE -s print_check_PROGRAMS`
 
-LDADD = \
-$(top_builddir)/src/libppl.la \
-libppl_tests.a \
-@extra_libraries@
-
-noinst_HEADERS = \
-ppl_test.hh \
-Random_Number_Generator.defs.hh \
-Random_Number_Generator.inlines.hh \
-Random_Number_Generator.types.hh
-
-EXTRA_DIST = valgrind_suppressions
+for instance in $instances
+do
+  echo "**************************** " $instance " ****************************"
+  eval xfail_tests='"$'$instance'_XFAIL_TESTS"'
+  [ -f dirty_marker ] && $MAKE clean
+  touch dirty_marker
+  analyzer_fp_format=${instance%/*}
+  analyzed_fp_format=${instance#*/}
+  $MAKE check TESTS="$check_PROGRAMS" TESTS_ENVIRONMENT="$CHECKER" TEST_CPPFLAGS="-DANALYZER_FP_FORMAT=$analyzer_fp_format -DANALYZED_FP_FORMAT=$analyzed_fp_format" XFAIL_TESTS=$xfail_tests || exit 1
+  $MAKE clean && rm dirty_marker
+done
+exit 0

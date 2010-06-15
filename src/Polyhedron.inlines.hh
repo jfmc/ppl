@@ -372,6 +372,53 @@ Polyhedron::add_recycled_congruences(Congruence_System& cgs) {
   add_congruences(cgs);
 }
 
+template <typename FP_Format, typename Interval_Info>
+inline void
+Polyhedron::generalized_refine_with_linear_form_inequality(
+	    const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
+	    const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
+            const Relation_Symbol relsym) {
+  switch (relsym) {
+  case EQUAL:
+    // TODO: see if we can handle this case more efficiently.
+    refine_with_linear_form_inequality(left, right, false);
+    refine_with_linear_form_inequality(right, left, false);
+    break;
+  case LESS_THAN:
+    refine_with_linear_form_inequality(left, right, true);
+    break;
+  case LESS_OR_EQUAL:
+    refine_with_linear_form_inequality(left, right, false);
+    break;
+  case GREATER_THAN:
+    refine_with_linear_form_inequality(right, left, true);
+    break;
+  case GREATER_OR_EQUAL:
+    refine_with_linear_form_inequality(right, left, false);
+    break;
+  case NOT_EQUAL:
+    break;
+  default:
+    throw std::runtime_error("PPL internal error");
+  }
+}
+
+template <typename FP_Format, typename Interval_Info>
+inline void
+Polyhedron::
+refine_fp_interval_abstract_store(
+       Box< Interval<FP_Format, Interval_Info> >& store) const {
+
+  // Check that FP_Format is indeed a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
+                     "Polyhedron::refine_fp_interval_abstract_store:"
+                     " T not a floating point type.");
+
+  typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
+  store.intersection_assign(Box<FP_Interval_Type>(*this));
+
+}
+
 /*! \relates Polyhedron */
 inline bool
 operator!=(const Polyhedron& x, const Polyhedron& y) {

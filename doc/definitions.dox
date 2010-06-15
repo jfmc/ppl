@@ -1463,6 +1463,28 @@ is defined as
           \Bigr).
 \f]
 
+\subsection affine_form_relation Affine Form Relations.
+Let \f$\mathbb{F}_{\mathrm{f}}\f$ be the set of floating point numbers 
+representables in a certain 
+format \f$\mathrm{f}\f$ and let \f$\mathbb{I}_\mathrm{f}\f$ be the set of 
+real intervals with bounds in \f$\mathbb{F}_{\mathrm{f}}\f$.
+We can define a <EM>floating-point interval linear form</EM> 
+\f$\langle\vect{\alpha}, \vect{x}\rangle
+ + \beta\f$ 
+as:
+	\f[\left<\vect{\alpha}, \vect{x}\right> + \beta = 
+	\alpha_0x_0 + \ldots + 
+	\alpha_{n-1}x_{n-1} + \beta,\f]
+
+where \f$\beta\f$, \f$\vect{\alpha}_k \in \mathbb{I}_{\mathrm{f}}\f$ 
+for each \f$k = 0, \ldots, n - 1\f$. 
+
+Given a such linear form \f$\mathrm{lf}\f$ and a primed variable \f$x'_k\f$ the 
+<EM>affine form image</EM> operator computes the bounded affine image of a 
+polyhedron \f$\cP\f$ under \f$\mathrm{lb} \leq x'_k \leq \mathrm{ub}\f$, where
+\f$\mathrm{lb}\f$ and \f$\mathrm{ub}\f$ are the upper and lower bound 
+of \f$\mathrm{lf}\f$ respectively.
+
 \subsection Generalized_Affine_Relations Generalized Affine Relations.
 Similarly, the <EM>generalized affine relation</EM>
 \f$\phi = (\mathrm{lhs}' \relsym \mathrm{rhs})\f$, where
@@ -2626,6 +2648,151 @@ It is also worth stressing that it is up to the user
 to see that the widening operator is actually compatible with
 a given convergence certificate. If such a requirement is not met,
 then an extrapolation operator will be obtained.
+
+\section floating_point Analysis of floating point computations
+
+This section describes the PPL abstract domains that are used for
+approximating floating point computations in software analysis. We follow
+the approch described in \ref Min04 "[Min04]" and more detailedly in
+\ref Min05 "[Min05]". We will denote by \f$\cV\f$ the set of all floating
+point variables in the analyzed program. We will also denote by
+\f$\mathbb{F}_a\f$ the set of floating point numbers in the format used by the
+analyzer (that is, the machine running the PPL) and by \f$\mathbb{F}_t\f$
+the set of floating point numbers in the format used by the machine that is
+expected to run the analyzed program. Recall that floating point numbers
+include the infinities \f$-\infty\f$ and \f$+\infty\f$.
+
+\subsection interval_linear_forms Linear forms with interval coefficients
+
+Generic concrete <EM>floating point expressions</EM> on
+\f$\mathbb{F}_t\f$ are represented by the
+\link Parma_Polyhedra_Library::Floating_Point_Expression \c Floating_Point_Expression \endlink
+abstract class. Its concrete derivate classes are:
+  - \link Parma_Polyhedra_Library::Cast_Floating_Point_Expression \c Cast_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Constant_Floating_Point_Expression \c Constant_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Variable_Floating_Point_Expression \c Variable_Floating_Point_Expression \endlink,
+  - \link Parma_Polyhedra_Library::Opposite_Floating_Point_Expression \c Opposite_Floating_Point_Expression \endlink,
+    that is the negation (unary minus) of a floating point expression,
+  - \link Parma_Polyhedra_Library::Sum_Floating_Point_Expression \c Sum_Floating_Point_Expression \endlink,
+    that is the sum of two floating point expressions,
+  - \link Parma_Polyhedra_Library::Difference_Floating_Point_Expression \c Difference_Floating_Point_Expression \endlink,
+    that is the difference of two floating point expressions,
+  - \link Parma_Polyhedra_Library::Multiplication_Floating_Point_Expression \c Multiplication_Floating_Point_Expression \endlink,
+    that is the product of two floating point expressions, and
+  - \link Parma_Polyhedra_Library::Division_Floating_Point_Expression \c Division_Floating_Point_Expression \endlink,
+    that is the division of two floating point expressions.
+
+The set of all the possible values in \f$\mathbb{F}_t\f$ of a floating point
+expression at a given program point in a given abstract store can be
+overapproximated by a <EM>linear form</EM> with interval coefficients, that is
+a linear expression of this kind:
+
+\f[
+  i + \sum_{v \in \cV}i_{v}v,
+\f]
+
+where all \f$v\f$ are free floating point variables and \f$i\f$ and all
+\f$i_{v}\f$ are elements of \f$\mathbb{I}_a\f$, defined as the set of all
+intervals with boundaries in \f$\mathbb{F}_a\f$. This operation is called
+<EM>linearization</EM> and is performed by the method linearize of floating
+point expression classes.
+
+Even though the intervals may be open, we will always use closed intervals
+in the documentation for the sake of simplicity, with the exception of unbounded
+intervals that have \f$\infty\f$ boundaries. We denote the set of all linear
+forms on \f$\mathbb{F}_a\f$ by \f$\mathbb{L}_a\f$.
+
+The \link Parma_Polyhedra_Library::Linear_Form \c Linear_Form \endlink class
+provides common algebraic operations on linear forms: you can add or
+subtract two linear forms, and multiply or divide a linear form by a scalar.
+We are writing only about interval linear forms in this section, so our
+scalars will always be intervals with floating point boundaries.
+The operations on interval linear forms are intuitively defined as follows:
+
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \aslf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  \defeq
+  \left(i \asifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \asifp i'_{v}\right)v,
+
+\f]
+
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \adlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  \defeq
+  \left(i \adifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \adifp i'_{v}\right)v,
+
+\f]
+
+\f[
+
+  i
+  \amlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  \defeq
+  \left(i \amifp i'\right) +
+  \sum_{v \in V}\left(i \amifp i'_{v}\right)v,
+
+\f]
+
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \adivlf
+  i'
+  \defeq
+  \left(i \adivifp i'\right) +
+  \sum_{v \in V}\left(i_{v} \adivifp i'\right)v.
+
+\f]
+
+Where \f$\asifp, \adifp, \amifp,\f$ and \f$\adivifp\f$ are the corresponding
+operations on intervals. Note that these operations always round the
+interval's lower bound towards \f$-\infty\f$ and the upper bound towards
+\f$+\infty\f$ in order to obtain a correct overapproximation.
+
+A <EM>(composite) floating point abstract store</EM> is used to associate each
+floating point variable with its currently known approximation. The store is
+composed by two parts:
+  - an <EM>interval abstract store</EM>
+    \f$\fund{\rho^{\#}}{\cV}{\mathbb{I}_a}\f$
+    associating each variable with its current approximating interval, and
+  - a <EM>linear form abstract store</EM>
+    \f$\fund{\rho^{\#}_l}{\cV}{\mathbb{L}_a}\f$
+    associating each variable with its current approximating linear form.
+
+An interval abstract store is represented by a
+\link Parma_Polyhedra_Library::Box \c Box \endlink with floating point
+boundaries, while a linear form abstract store is a map
+of the Standard Template Library. The <CODE>linearize</CODE> method requires
+both stores as its arguments. Please see the documentation of floating point
+expression classes for more information.
+
+The linearization of a floating point expression \f$e\f$ in the composite
+abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right \rrbracket\f$ will
+be denoted by \f$\linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}\f$. There are two ways a linearization attempt can fail:
+  - whenever an interval boundary overflows to \f$+\infty\f$ or \f$-\infty\f$,
+    and
+  - when we try to divide by an interval that contains \f$0\f$.
+
+\subsection fp_abstract_domains Use of other abstract domains for floating point analysis
+
+Three of the other abstract domains of the PPL (
+\link Parma_Polyhedra_Library::BD_Shape \c BD_Shape \endlink,
+\link Parma_Polyhedra_Library::Octagonal_Shape \c Octagonal_Shape \endlink,
+and \link Parma_Polyhedra_Library::Polyhedron \c Polyhedron \endlink)
+provide a few optimized methods to be used in the analysis of floating point
+computations. They are recognized by the fact that they take interval
+linear forms and/or an interval abstract stores as their parameters.
+
+Please see the methods' documentation for more information.
 
 \section use_of_library Using the Library
 
