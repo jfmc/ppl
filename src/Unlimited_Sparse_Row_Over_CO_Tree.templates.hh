@@ -40,17 +40,31 @@ Unlimited_Sparse_Row_Over_CO_Tree
   while (!i.itr.is_at_end() && !j.itr.is_at_end())
     if (i->first == j->first) {
       g(i->second, j->second);
-      ++i;
-      ++j;
+      if (i->second == 0) {
+        i = reset(i);
+        if (this == &y)
+          j = i;
+        else
+          ++j;
+      } else {
+        ++i;
+        ++j;
+      }
     } else
       if (i->first < j->first) {
         f(i->second);
-        ++i;
+        if (i->second == 0)
+          i = reset(i);
+        else
+          ++i;
       } else
         y.lower_bound_hint_assign(i->first, j);
   while (!i.itr.is_at_end()) {
     f(i->second);
-    ++i;
+    if (i->second == 0)
+      i = reset(i);
+    else
+      ++i;
   }
 }
 
