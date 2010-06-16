@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Unlimited_Sparse_Row_Over_Linear_Sequence_templates_hh
 #define PPL_Unlimited_Sparse_Row_Over_Linear_Sequence_templates_hh 1
 
+// TODO: Remove this. Added to please KDevelop4.
+#include "Unlimited_Sparse_Row_Over_Linear_Sequence.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
