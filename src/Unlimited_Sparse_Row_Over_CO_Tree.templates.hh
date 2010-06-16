@@ -96,40 +96,57 @@ Unlimited_Sparse_Row_Over_CO_Tree
     while (!i.itr.is_at_end() && !j.itr.is_at_end()) {
       if (i->first == j->first) {
         g(i->second, j->second);
-        ++i;
+        if (i->second == 0)
+          i = reset(i);
+        else
+          ++i;
         ++j;
       } else
         if (i->first < j->first) {
           f(i->second);
-          ++i;
+          if (i->second == 0)
+            i = reset(i);
+          else
+            ++i;
         } else {
           PPL_ASSERT(i->first > j->first);
           find_create_hint_assign(j->first, i);
           h(i->second, j->second);
-          ++i;
+          if (i->second == 0)
+            i = reset(i);
+          else
+            ++i;
           ++j;
         }
     }
     PPL_ASSERT(i.itr.is_at_end() || j.itr.is_at_end());
     while (!i.itr.is_at_end()) {
       f(i->second);
-      ++i;
+      if (i->second == 0)
+        i = reset(i);
+      else
+        ++i;
     }
-    if (!j.itr.is_at_end()) {
-      if (tree.empty())
+    while (!j.itr.is_at_end()) {
+      if (tree.empty()) {
         find_create_assign(j->first, i);
-      else {
+      } else {
         --i;
         find_create_hint_assign(j->first, i);
       }
       h(i->second, j->second);
       ++j;
-
-      while (!j.itr.is_at_end()) {
-        find_create_hint_assign(j->first, i);
-        h(i->second, j->second);
-        ++j;
-      }
+      if (i->second == 0)
+        i = reset(i);
+      else
+        break;
+    }
+    while (!j.itr.is_at_end()) {
+      find_create_hint_assign(j->first, i);
+      h(i->second, j->second);
+      if (i->second == 0)
+        i = reset(i);
+      ++j;
     }
   }
 }
