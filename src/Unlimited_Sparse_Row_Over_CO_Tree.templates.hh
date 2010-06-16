@@ -37,24 +37,6 @@ Unlimited_Sparse_Row_Over_CO_Tree
                       const Func1& f, const Func2& g) {
   iterator i = begin();
   const_iterator j = y.begin();
-  if (i.itr.is_at_end())
-    return;
-  if (!j.itr.is_at_end()) {
-    if (i->first == j->first) {
-      g(i->second, j->second);
-      ++i;
-      ++j;
-    } else
-      if (i->first < j->first) {
-        f(i->second);
-        ++i;
-      } else {
-        ++j;
-      }
-  } else {
-    f(i->second);
-    ++i;
-  }
   while (!i.itr.is_at_end() && !j.itr.is_at_end())
     if (i->first == j->first) {
       g(i->second, j->second);
