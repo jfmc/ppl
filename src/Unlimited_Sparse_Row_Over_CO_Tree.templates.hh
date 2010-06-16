@@ -35,36 +35,36 @@ void
 Unlimited_Sparse_Row_Over_CO_Tree
 ::combine_needs_first(const Unlimited_Sparse_Row_Over_CO_Tree& y,
                       const Func1& f, const Func2& g) {
-  iterator i = begin();
-  const_iterator j = y.begin();
-  while (!i.itr.is_at_end() && !j.itr.is_at_end())
-    if (i->first == j->first) {
-      g(i->second, j->second);
-      if (i->second == 0) {
-        i = reset(i);
-        if (this == &y)
-          j = i;
-        else
-          ++j;
-      } else {
-        ++i;
-        ++j;
-      }
-    } else
-      if (i->first < j->first) {
-        f(i->second);
+  if (this == &y) {
+    for (iterator i = begin(); !i.itr.is_at_end(); ++i)
+      g(i->second, i->second);
+  } else {
+    iterator i = begin();
+    const_iterator j = y.begin();
+    while (!i.itr.is_at_end() && !j.itr.is_at_end())
+      if (i->first == j->first) {
+        g(i->second, j->second);
         if (i->second == 0)
           i = reset(i);
         else
           ++i;
+        ++j;
       } else
-        y.lower_bound_hint_assign(i->first, j);
-  while (!i.itr.is_at_end()) {
-    f(i->second);
-    if (i->second == 0)
-      i = reset(i);
-    else
-      ++i;
+        if (i->first < j->first) {
+          f(i->second);
+          if (i->second == 0)
+            i = reset(i);
+          else
+            ++i;
+        } else
+          y.lower_bound_hint_assign(i->first, j);
+    while (!i.itr.is_at_end()) {
+      f(i->second);
+      if (i->second == 0)
+        i = reset(i);
+      else
+        ++i;
+    }
   }
 }
 
