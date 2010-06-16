@@ -87,47 +87,49 @@ void
 Unlimited_Sparse_Row_Over_CO_Tree
 ::combine(const Unlimited_Sparse_Row_Over_CO_Tree& y, const Func1& f,
           const Func2& g, const Func3& h) {
-  iterator i = begin();
-  const_iterator j = y.begin();
-  while (!i.itr.is_at_end() && !j.itr.is_at_end()) {
-    if (i->first == j->first) {
-      g(i->second, j->second);
-      ++i;
-      ++j;
-    } else
-      if (i->first < j->first) {
-        f(i->second);
-        ++i;
-      } else {
-        PPL_ASSERT(i->first > j->first);
-        find_create_hint_assign(j->first, i);
-        if (this == &y)
-          j = i;
-        h(i->second, j->second);
+  if (this == &y) {
+    for (iterator i = begin(); !i.itr.is_at_end(); ++i)
+      g(i->second, i->second);
+  } else {
+    iterator i = begin();
+    const_iterator j = y.begin();
+    while (!i.itr.is_at_end() && !j.itr.is_at_end()) {
+      if (i->first == j->first) {
+        g(i->second, j->second);
         ++i;
         ++j;
-      }
-  }
-  PPL_ASSERT(i.itr.is_at_end() || j.itr.is_at_end());
-  while (!i.itr.is_at_end()) {
-    f(i->second);
-    ++i;
-  }
-  if (!j.itr.is_at_end()) {
-    PPL_ASSERT(this != &y);
-    if (tree.empty())
-      find_create_assign(j->first, i);
-    else {
-      --i;
-      find_create_hint_assign(j->first, i);
+      } else
+        if (i->first < j->first) {
+          f(i->second);
+          ++i;
+        } else {
+          PPL_ASSERT(i->first > j->first);
+          find_create_hint_assign(j->first, i);
+          h(i->second, j->second);
+          ++i;
+          ++j;
+        }
     }
-    h(i->second, j->second);
-    ++j;
-
-    while (!j.itr.is_at_end()) {
-      find_create_hint_assign(j->first, i);
+    PPL_ASSERT(i.itr.is_at_end() || j.itr.is_at_end());
+    while (!i.itr.is_at_end()) {
+      f(i->second);
+      ++i;
+    }
+    if (!j.itr.is_at_end()) {
+      if (tree.empty())
+        find_create_assign(j->first, i);
+      else {
+        --i;
+        find_create_hint_assign(j->first, i);
+      }
       h(i->second, j->second);
       ++j;
+
+      while (!j.itr.is_at_end()) {
+        find_create_hint_assign(j->first, i);
+        h(i->second, j->second);
+        ++j;
+      }
     }
   }
 }
