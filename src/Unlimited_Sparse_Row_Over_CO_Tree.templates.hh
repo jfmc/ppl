@@ -93,44 +93,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
           const Func2& g, const Func3& h) {
   iterator i = begin();
   const_iterator j = y.begin();
-  if (!i.itr.is_at_end()) {
-    if (!j.itr.is_at_end()) {
-      if (i->first == j->first) {
-        g(i->second, j->second);
-        ++i;
-        ++j;
-      } else
-        if (i->first < j->first) {
-          f(i->second);
-          ++i;
-        } else {
-          find_create_assign(j->first, i);
-          h(i->second, j->second);
-          if (this == &y)
-            j = i;
-          ++i;
-          ++j;
-        }
-    } else {
-      f(i->second);
-      ++i;
-    }
-  } else {
-    if (!j.itr.is_at_end()) {
-      find_create_assign(j->first, i);
-      h(i->second, j->second);
-      if (this == &y)
-        j = i;
-      ++i;
-      ++j;
-    } else {
-      PPL_ASSERT(i.itr.is_at_end());
-      PPL_ASSERT(j.itr.is_at_end());
-
-      return;
-    }
-  }
-  while (!i.itr.is_at_end() && !j.itr.is_at_end())
+  while (!i.itr.is_at_end() && !j.itr.is_at_end()) {
     if (i->first == j->first) {
       g(i->second, j->second);
       ++i;
@@ -140,24 +103,31 @@ Unlimited_Sparse_Row_Over_CO_Tree
         f(i->second);
         ++i;
       } else {
+        PPL_ASSERT(i->first > j->first);
         find_create_hint_assign(j->first, i);
-        h(i->second, j->second);
         if (this == &y)
           j = i;
+        h(i->second, j->second);
         ++i;
         ++j;
       }
+  }
+  PPL_ASSERT(i.itr.is_at_end() || j.itr.is_at_end());
   while (!i.itr.is_at_end()) {
     f(i->second);
     ++i;
   }
   if (!j.itr.is_at_end()) {
-    if (tree.empty()) {
+    PPL_ASSERT(this != &y);
+    if (tree.empty())
       find_create_assign(j->first, i);
-      h(i->second, j->second);
-      ++j;
-    } else
+    else {
       --i;
+      find_create_hint_assign(j->first, i);
+    }
+    h(i->second, j->second);
+    ++j;
+
     while (!j.itr.is_at_end()) {
       find_create_hint_assign(j->first, i);
       h(i->second, j->second);
