@@ -253,96 +253,116 @@ Unlimited_Sparse_Row_Over_Linear_Sequence
 ::combine(const Unlimited_Sparse_Row_Over_Linear_Sequence& y, const Func1& f,
           const Func2& g, const Func3& h) {
   iterator i = begin();
-  iterator last_i = begin();
+  iterator last_i = end();
   iterator i_end = end();
   const_iterator j = y.begin();
   const_iterator j_end = y.end();
-  if (i != i_end) {
-    if (j != j_end) {
-      if (i->first == j->first) {
-        g(i->second, j->second);
-        last_i = i;
-        ++i;
-        ++j;
-      } else
-        if (i->first < j->first) {
-          f(i->second);
+  while (i != i_end || j != j_end) {
+    if (i != i_end) {
+      if (j != j_end) {
+        if (i->first == j->first) {
+          g(i->second, j->second);
+          ++j;
+          if (i->second == 0)
+            i = reset(i);
+          else {
+            last_i = i;
+            ++i;
+            break;
+          }
+        } else
+          if (i->first < j->first) {
+            f(i->second);
+            if (i->second == 0)
+              i = reset(i);
+            else {
+              last_i = i;
+              ++i;
+              break;
+            }
+          } else {
+            PPL_ASSERT(this != &y);
+            last_i = find_create(j->first);
+            h(last_i->second, j->second);
+            ++j;
+            if (last_i->second == 0)
+              i = reset(last_i);
+            else {
+#ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
+              i = last_i;
+              ++i;
+              i_end = end();
+#endif
+              break;
+            }
+          }
+      } else {
+        f(i->second);
+        if (i->second == 0)
+          i = reset(i);
+        else {
           last_i = i;
           ++i;
-        } else {
-          last_i = find_create(j->first);
-          h(last_i->second, j->second);
-#ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
-          i = last_i;
-          ++i;
-          i_end = end();
-          if (this == &y) {
-            j = last_i;
-            j_end = y.end();
-          }
-#endif
-          ++j;
+          break;
         }
+      }
     } else {
-      f(i->second);
-      last_i = i;
-      ++i;
-    }
-  } else {
-    if (j != j_end) {
+      PPL_ASSERT(j != j_end);
       last_i = find_create(j->first);
       h(last_i->second, j->second);
-#ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
-      i = last_i;
-      ++i;
-      i_end = end();
-      if (this == &y) {
-        j = last_i;
-        j_end = y.end();
-      }
-#endif
       ++j;
-    } else {
-      PPL_ASSERT(i == i_end);
-      PPL_ASSERT(j == j_end);
-
-      return;
+      if (last_i->second == 0)
+        i = reset(last_i);
+      else
+        break;
     }
   }
   PPL_ASSERT(last_i != i_end);
   while (i != i_end && j != j_end)
     if (i->first == j->first) {
       g(i->second, j->second);
-      last_i = i;
-      ++i;
       ++j;
+      if (i->second == 0)
+        i = reset(i);
+      else {
+        last_i = i;
+        ++i;
+      }
     } else
       if (i->first < j->first) {
         f(i->second);
-        last_i = i;
-        ++i;
-      } else {
-        last_i = find_create(j->first, last_i);
-        h(last_i->second, j->second);
-#ifdef PPL_SPARSE_BACKEND_INVALIDATES_REFERENCES
-        i = last_i;
-        ++i;
-        i_end = end();
-        if (this == &y) {
-          j = last_i;
-          j_end = y.end();
+        if (i->second == 0)
+          i = reset(i);
+        else {
+          last_i = i;
+          ++i;
         }
-#endif
+      } else {
+        i = find_create(j->first, last_i);
+        h(i->second, j->second);
         ++j;
+        if (i->second == 0) {
+          i = reset(i);
+        } else {
+          last_i = i;
+          ++i;
+        }
       }
   while (i != i_end) {
     f(i->second);
-    ++i;
+    if (i->second == 0)
+      i = reset(i);
+    else
+      ++i;
   }
   while (j != j_end) {
-    last_i = find_create(j->first, last_i);
-    h(last_i->second, j->second);
+    i = find_create(j->first, last_i);
+    h(i->second, j->second);
     ++j;
+    if (i->second == 0)
+      reset(i);
+    else
+      last_i = i;
   }
 }
 
