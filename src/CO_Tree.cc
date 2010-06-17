@@ -610,12 +610,10 @@ PPL::CO_Tree::erase(inorder_iterator& itr) {
     dimension_type& current_key  = itr->first;
     data_type&      current_data = itr->second;
     if (itr.get_right_child_value()) {
-      while (itr.get_left_child_value())
-        ;
+      itr.follow_left_childs_with_value();
     } else
       if (itr.get_left_child_value()) {
-        while (itr.get_right_child_value())
-          ;
+        itr.follow_right_childs_with_value();
       } else
         break;
     std::swap(current_key, itr->first);
