@@ -509,6 +509,12 @@ public:
   //! Follows right childs until it arrives at a leaf.
   void follow_right_childs();
 
+  //! Follows left childs with a value, until it arrives at a leaf.
+  void follow_left_childs_with_value();
+
+  //! Follows right childs with a value, until it arrives at a leaf.
+  void follow_right_childs_with_value();
+
   //! Returns true if the pointed node has a parent.
   bool has_parent() const;
 
@@ -652,6 +658,12 @@ public:
 
   //! Follows right childs until it arrives at a leaf.
   void follow_right_childs();
+
+  //! Follows left childs with a value, until it arrives at a leaf.
+  void follow_left_childs_with_value();
+
+  //! Follows right childs with a value, until it arrives at a leaf.
+  void follow_right_childs_with_value();
 
   //! Makes the iterator point to the left child of the current node.
   //! Returns false if there is no left child or the left child is unused

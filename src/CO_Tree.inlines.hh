@@ -943,6 +943,52 @@ CO_Tree::inorder_iterator::follow_right_childs() {
 #endif
 }
 
+inline void
+CO_Tree::inorder_iterator::follow_left_childs_with_value() {
+  PPL_ASSERT(!tree->empty());
+  PPL_ASSERT(!is_before_begin());
+  PPL_ASSERT(!is_at_end());
+  PPL_ASSERT((*this)->first != unused_index);
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  dimension_type offset = i;
+  // This assumes two's complement encoding.
+  offset &= -i;
+  PPL_ASSERT(offset > 0);
+  while (offset != 1 && (*this)->first != unused_index) {
+    offset /= 2;
+    i -= offset;
+  }
+  i += offset;
+  PPL_ASSERT((*this)->first != unused_index);
+#else
+  while (!is_leaf())
+    get_left_child_value();
+#endif
+}
+
+inline void
+CO_Tree::inorder_iterator::follow_right_childs_with_value() {
+  PPL_ASSERT(!tree->empty());
+  PPL_ASSERT(!is_before_begin());
+  PPL_ASSERT(!is_at_end());
+  PPL_ASSERT((*this)->first != unused_index);
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  dimension_type offset = i;
+  // This assumes two's complement encoding.
+  offset &= -i;
+  PPL_ASSERT(offset > 0);
+  while (offset != 1 && (*this)->first != unused_index) {
+    offset /= 2;
+    i += offset;
+  }
+  i -= offset;
+  PPL_ASSERT((*this)->first != unused_index);
+#else
+  while (!is_leaf())
+    get_right_child_value();
+#endif
+}
+
 inline bool
 CO_Tree::inorder_iterator::has_parent() const {
   PPL_ASSERT(tree != 0);
@@ -1691,6 +1737,52 @@ CO_Tree::inorder_const_iterator::follow_right_childs() {
 #else
   while (!is_leaf())
     get_right_child();
+#endif
+}
+
+inline void
+CO_Tree::inorder_const_iterator::follow_left_childs_with_value() {
+  PPL_ASSERT(!tree->empty());
+  PPL_ASSERT(!is_before_begin());
+  PPL_ASSERT(!is_at_end());
+  PPL_ASSERT((*this)->first != unused_index);
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  dimension_type offset = i;
+  // This assumes two's complement encoding.
+  offset &= -i;
+  PPL_ASSERT(offset > 0);
+  while (offset != 1 && (*this)->first != unused_index) {
+    offset /= 2;
+    i -= offset;
+  }
+  i += offset;
+  PPL_ASSERT((*this)->first != unused_index);
+#else
+  while (!is_leaf())
+    get_left_child_value();
+#endif
+}
+
+inline void
+CO_Tree::inorder_const_iterator::follow_right_childs_with_value() {
+  PPL_ASSERT(!tree->empty());
+  PPL_ASSERT(!is_before_begin());
+  PPL_ASSERT(!is_at_end());
+  PPL_ASSERT((*this)->first != unused_index);
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  dimension_type offset = i;
+  // This assumes two's complement encoding.
+  offset &= -i;
+  PPL_ASSERT(offset > 0);
+  while (offset != 1 && (*this)->first != unused_index) {
+    offset /= 2;
+    i += offset;
+  }
+  i -= offset;
+  PPL_ASSERT((*this)->first != unused_index);
+#else
+  while (!is_leaf())
+    get_right_child_value();
 #endif
 }
 
