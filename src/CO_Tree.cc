@@ -833,8 +833,7 @@ PPL::CO_Tree
   const height_t depth = root.depth();
 #endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 
-  while (root.get_right_child_value())
-    ;
+  root.follow_right_childs_with_value();
 
   if (!added_key && can_add_key)
     while (subtree_size != 0) {
