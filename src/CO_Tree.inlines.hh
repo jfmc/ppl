@@ -956,15 +956,15 @@ CO_Tree::inorder_iterator::follow_left_childs_with_value() {
   // This assumes two's complement encoding.
   offset &= -i;
   PPL_ASSERT(offset > 0);
-  while (offset != 1 && (*this)->first != unused_index) {
+  while (offset != 0 && (*this)->first != unused_index) {
     offset /= 2;
     i -= offset;
   }
   i += offset;
   PPL_ASSERT((*this)->first != unused_index);
 #else
-  while (!is_leaf())
-    get_left_child_value();
+  while (get_left_child_value())
+    ;
 #endif
 }
 
@@ -979,15 +979,15 @@ CO_Tree::inorder_iterator::follow_right_childs_with_value() {
   // This assumes two's complement encoding.
   offset &= -i;
   PPL_ASSERT(offset > 0);
-  while (offset != 1 && (*this)->first != unused_index) {
+  while (offset != 0 && (*this)->first != unused_index) {
     offset /= 2;
     i += offset;
   }
   i -= offset;
   PPL_ASSERT((*this)->first != unused_index);
 #else
-  while (!is_leaf())
-    get_right_child_value();
+  while (get_right_child_value())
+    ;
 #endif
 }
 
@@ -1755,15 +1755,15 @@ CO_Tree::inorder_const_iterator::follow_left_childs_with_value() {
   // This assumes two's complement encoding.
   offset &= -i;
   PPL_ASSERT(offset > 0);
-  while (offset != 1 && (*this)->first != unused_index) {
+  while (offset != 0 && (*this)->first != unused_index) {
     offset /= 2;
     i -= offset;
   }
   i += offset;
   PPL_ASSERT((*this)->first != unused_index);
 #else
-  while (!is_leaf())
-    get_left_child_value();
+  while (get_left_child_value())
+    ;
 #endif
 }
 
@@ -1778,15 +1778,15 @@ CO_Tree::inorder_const_iterator::follow_right_childs_with_value() {
   // This assumes two's complement encoding.
   offset &= -i;
   PPL_ASSERT(offset > 0);
-  while (offset != 1 && (*this)->first != unused_index) {
+  while (offset != 0 && (*this)->first != unused_index) {
     offset /= 2;
     i += offset;
   }
   i -= offset;
   PPL_ASSERT((*this)->first != unused_index);
 #else
-  while (!is_leaf())
-    get_right_child_value();
+  while (get_right_child_value())
+    ;
 #endif
 }
 
