@@ -2202,7 +2202,8 @@ CO_Tree::unordered_iterator::operator++() {
 
 inline bool
 CO_Tree::unordered_iterator::operator==(const unordered_iterator& x) const {
-  return (p == x.p) && (i == x.i);
+  PPL_ASSERT(p == x.p);
+  return (i == x.i);
 }
 
 inline bool
