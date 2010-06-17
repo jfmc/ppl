@@ -1274,11 +1274,20 @@ CO_Tree::inorder_iterator::get_right_child_value() {
   PPL_ASSERT(tree->reserved_size != 0);
   if (is_leaf())
     return false;
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  dimension_type j = i;
+  get_right_child();
+  if ((*this)->first == unused_index) {
+    i = j;
+    return false;
+  }
+#else
   get_right_child();
   if ((*this)->first == unused_index) {
     get_parent();
     return false;
   }
+#endif
   return true;
 }
 
