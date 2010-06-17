@@ -787,8 +787,7 @@ PPL::CO_Tree::redistribute_elements_in_subtree(inorder_iterator& itr,
 #ifndef NDEBUG
   const data_type* const p = &(itr->second);
 #endif
-  while (!itr2.is_leaf())
-    itr2.get_right_child();
+  itr2.follow_right_childs();
   bool added_key = false;
   bool can_add_key = true;
   if (deleting)
