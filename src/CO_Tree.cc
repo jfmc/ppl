@@ -894,7 +894,13 @@ PPL::CO_Tree
 
 void
 PPL::CO_Tree
-::redistribute_elements_in_subtree_helper(inorder_iterator& root,
+::redistribute_elements_in_subtree_helper(
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+                                          inorder_iterator& root1,
+#else
+                                          inorder_iterator& root,
+#endif
+
                                           dimension_type subtree_size,
                                           inorder_iterator& itr,
                                           dimension_type key,
@@ -906,9 +912,10 @@ PPL::CO_Tree
 
   // A pair (n, operation) in the stack means:
   //
-  // * Go up, if operation is 0.
-  // * Go left, then visit the current tree (with size n), if operation is 1.
-  // * Go right, then visit the current tree (with size n), if operation is 2.
+  // * Go up from the left child, if operation is 0.
+  // * Go up from the right child, if operation is 1.
+  // * Go left, then visit the current tree (with size n), if operation is 2.
+  // * Go right, then visit the current tree (with size n), if operation is 3.
   // * Visit the current tree (with size n), if operation is 4.
 
   if (subtree_size == 0)
@@ -917,6 +924,12 @@ PPL::CO_Tree
   stack[0].first = subtree_size;
   stack[0].second = 4;
   ++stack_first_empty;
+
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  inorder_iterator root = root1;
+  dimension_type offset = root.i;
+  offset &= -offset;
+#endif
 
   while (stack_first_empty != 0) {
 
@@ -928,16 +941,47 @@ PPL::CO_Tree
     switch (top_operation) {
 
     case 0:
+      PPL_ASSERT(!root.is_right_child());
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+      root.i += offset;
+      offset *= 2;
+#else
       root.get_parent();
+#endif
       --stack_first_empty;
       continue;
 
     case 1:
-      root.get_left_child();
-      break;
+      PPL_ASSERT(root.is_right_child());
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+      root.i -= offset;
+      offset *= 2;
+#else
+      root.get_parent();
+#endif
+      --stack_first_empty;
+      continue;
 
     case 2:
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+      PPL_ASSERT(offset != 0);
+      PPL_ASSERT(offset != 1);
+      offset /= 2;
+      root.i -= offset;
+#else
+      root.get_left_child();
+#endif
+      break;
+
+    case 3:
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+      PPL_ASSERT(offset != 0);
+      PPL_ASSERT(offset != 1);
+      offset /= 2;
+      root.i += offset;
+#else
       root.get_right_child();
+#endif
       break;
 #ifndef NDEBUG
     case 4:
@@ -975,11 +1019,11 @@ PPL::CO_Tree
         PPL_ASSERT(stack_first_empty + 3 < sizeof(stack)/sizeof(stack[0]));
 
         const dimension_type half = (top_n + 1) / 2;
-        stack[stack_first_empty - 1].second = 0;
-        stack[stack_first_empty    ] = std::make_pair(top_n - half, 2);
+        stack[stack_first_empty - 1].second = 1;
+        stack[stack_first_empty    ] = std::make_pair(top_n - half, 3);
         stack[stack_first_empty + 1] = std::make_pair(1, 4);
         stack[stack_first_empty + 2].second = 0;
-        stack[stack_first_empty + 3] = std::make_pair(half - 1, 1);
+        stack[stack_first_empty + 3] = std::make_pair(half - 1, 2);
         stack_first_empty += 4;
       }
     }
