@@ -921,6 +921,7 @@ CO_Tree::inorder_iterator::follow_left_childs() {
   // This assumes two's complement encoding.
   offset &= -i;
   i -= (offset - 1);
+  PPL_ASSERT(is_leaf());
 #else
   while (!is_leaf())
     get_left_child();
@@ -937,6 +938,7 @@ CO_Tree::inorder_iterator::follow_right_childs() {
   // This assumes two's complement encoding.
   offset &= -i;
   i += (offset - 1);
+  PPL_ASSERT(is_leaf());
 #else
   while (!is_leaf())
     get_right_child();
@@ -1718,6 +1720,7 @@ CO_Tree::inorder_const_iterator::follow_left_childs() {
   // This assumes two's complement encoding.
   offset &= -i;
   i -= (offset - 1);
+  PPL_ASSERT(is_leaf());
 #else
   while (!is_leaf())
     get_left_child();
@@ -1734,6 +1737,7 @@ CO_Tree::inorder_const_iterator::follow_right_childs() {
   // This assumes two's complement encoding.
   offset &= -i;
   i += (offset - 1);
+  PPL_ASSERT(is_leaf());
 #else
   while (!is_leaf())
     get_right_child();
