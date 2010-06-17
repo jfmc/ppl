@@ -1073,11 +1073,16 @@ CO_Tree::inorder_iterator::operator->() const {
 inline bool
 CO_Tree::inorder_iterator::operator==(const inorder_iterator& x) const {
   PPL_ASSERT(tree != 0);
+  PPL_ASSERT(tree == x.tree);
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  return (i == x.i);
+#else
   if (is_at_end() || x.is_at_end())
     return is_at_end() == x.is_at_end();
   if (is_before_begin() || x.is_before_begin())
     return is_before_begin() == x.is_before_begin();
-  return (tree == x.tree) && (i == x.i);
+  return (i == x.i);
+#endif
 }
 
 inline bool
