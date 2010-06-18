@@ -895,17 +895,86 @@ PPL::CO_Tree
 void
 PPL::CO_Tree
 ::redistribute_elements_in_subtree_helper(
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-                                          inorder_iterator& root1,
-#else
                                           inorder_iterator& root,
-#endif
-
                                           dimension_type subtree_size,
                                           inorder_iterator& itr,
                                           dimension_type key,
                                           const data_type& value,
                                           bool added_key) {
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  // This is static and with static allocation, to improve performance.
+  static std::pair<dimension_type,dimension_type> stack[2*CHAR_BIT*sizeof(dimension_type)];
+  std::pair<dimension_type,dimension_type>* stack_first_empty = stack;
+
+  // A pair (n, i) in the stack means to visit the subtree with root index i
+  // and size n.
+
+  if (subtree_size == 0)
+    return;
+
+  stack_first_empty->first  = subtree_size;
+  stack_first_empty->second = root.i;
+  ++stack_first_empty;
+
+  inorder_iterator current_root(root.tree);
+  inorder_iterator itr2(itr);
+
+  while (stack_first_empty != stack) {
+
+    --stack_first_empty;
+
+    // top_n          = stack.top().first;
+    // current_root.i = stack.top().second;
+    const dimension_type top_n = stack_first_empty->first;
+    current_root.i             = stack_first_empty->second;
+
+    PPL_ASSERT(top_n != 0);
+    if (top_n == 1) {
+      if (!added_key && (itr2.is_at_end() || itr2->first > key)) {
+        PPL_ASSERT(current_root != itr2);
+        PPL_ASSERT(current_root->first == unused_index);
+        added_key = true;
+        current_root->first = key;
+        new (&(current_root->second)) data_type(value);
+      } else {
+        if (current_root != itr2) {
+          PPL_ASSERT(current_root->first == unused_index);
+          current_root->first = itr2->first;
+          itr2->first = unused_index;
+          move_data_element(current_root->second, itr2->second);
+        }
+        ++itr2;
+      }
+    } else {
+      PPL_ASSERT(stack_first_empty + 2
+                 < stack + sizeof(stack)/sizeof(stack[0]));
+
+      const dimension_type offset = (current_root.i & -current_root.i) / 2;
+      const dimension_type half = (top_n + 1) / 2;
+
+      PPL_ASSERT(half > 0);
+
+      // Right subtree
+      PPL_ASSERT(top_n - half > 0);
+      stack_first_empty->first  = top_n - half;
+      stack_first_empty->second = current_root.i + offset;
+      ++stack_first_empty;
+
+      // Root of the current subtree
+      stack_first_empty->first   = 1;
+      stack_first_empty->second  = current_root.i;
+      ++stack_first_empty;
+
+      // Left subtree
+      if (half - 1 != 0) {
+        stack_first_empty->first   = half - 1;
+        stack_first_empty->second  = current_root.i - offset;
+        ++stack_first_empty;
+      }
+    }
+  }
+  itr = itr2;
+#else
   // This is static and with static allocation, to improve performance.
   static std::pair<dimension_type,char> stack[5*CHAR_BIT*sizeof(dimension_type)];
   dimension_type stack_first_empty = 0;
@@ -925,12 +994,6 @@ PPL::CO_Tree
   stack[0].second = 4;
   ++stack_first_empty;
 
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-  inorder_iterator root = root1;
-  dimension_type offset = root.i;
-  offset &= -offset;
-#endif
-
   while (stack_first_empty != 0) {
 
     // top_n         = stack.top().first;
@@ -942,46 +1005,22 @@ PPL::CO_Tree
 
     case 0:
       PPL_ASSERT(!root.is_right_child());
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-      root.i += offset;
-      offset *= 2;
-#else
       root.get_parent();
-#endif
       --stack_first_empty;
       continue;
 
     case 1:
       PPL_ASSERT(root.is_right_child());
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-      root.i -= offset;
-      offset *= 2;
-#else
       root.get_parent();
-#endif
       --stack_first_empty;
       continue;
 
     case 2:
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-      PPL_ASSERT(offset != 0);
-      PPL_ASSERT(offset != 1);
-      offset /= 2;
-      root.i -= offset;
-#else
       root.get_left_child();
-#endif
       break;
 
     case 3:
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-      PPL_ASSERT(offset != 0);
-      PPL_ASSERT(offset != 1);
-      offset /= 2;
-      root.i += offset;
-#else
       root.get_right_child();
-#endif
       break;
 #ifndef NDEBUG
     case 4:
@@ -1028,6 +1067,7 @@ PPL::CO_Tree
       }
     }
   }
+#endif
 
   PPL_ASSERT(added_key);
 }
