@@ -316,6 +316,30 @@ CO_Tree::go_down_searching_key(inorder_iterator& itr, dimension_type key) {
   PPL_ASSERT(itr->first != unused_index);
   PPL_ASSERT(!itr.is_before_begin());
   PPL_ASSERT(!itr.is_at_end());
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  inorder_iterator itr2(itr);
+  dimension_type offset = (itr2.i & - itr2.i) / 2;
+  while (offset != 0) {
+    if (key == itr2->first)
+      break;
+    if (key < itr2->first) {
+      itr2.i -= offset;
+      if (itr2->first == unused_index) {
+        itr2.i += offset;
+        break;
+      }
+      offset /= 2;
+    } else {
+      itr2.i += offset;
+      if (itr2->first == unused_index) {
+        itr2.i -= offset;
+        break;
+      }
+      offset /= 2;
+    }
+  }
+  itr.i = itr2.i;
+#else
   while (1) {
     if (key == itr->first)
       return;
@@ -327,6 +351,7 @@ CO_Tree::go_down_searching_key(inorder_iterator& itr, dimension_type key) {
         break;
     }
   }
+#endif
 }
 
 inline void
@@ -338,6 +363,30 @@ CO_Tree::go_down_searching_key(inorder_const_iterator& itr,
   PPL_ASSERT(itr->first != unused_index);
   PPL_ASSERT(!itr.is_before_begin());
   PPL_ASSERT(!itr.is_at_end());
+#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
+  inorder_const_iterator itr2(itr);
+  dimension_type offset = (itr2.i & - itr2.i) / 2;
+  while (offset != 0) {
+    if (key == itr2->first)
+      break;
+    if (key < itr2->first) {
+      itr2.i -= offset;
+      if (itr2->first == unused_index) {
+        itr2.i += offset;
+        break;
+      }
+      offset /= 2;
+    } else {
+      itr2.i += offset;
+      if (itr2->first == unused_index) {
+        itr2.i -= offset;
+        break;
+      }
+      offset /= 2;
+    }
+  }
+  itr.i = itr2.i;
+#else
   while (1) {
     if (key == itr->first)
       return;
@@ -349,6 +398,7 @@ CO_Tree::go_down_searching_key(inorder_const_iterator& itr,
         break;
     }
   }
+#endif
 }
 
 inline void
