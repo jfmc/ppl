@@ -557,44 +557,59 @@ private:
     Parses the pending constraints to gather information on
     how to resize the tableau.
 
+    \note
+    All of the method parameters are output parameters; their value
+    is only meaningful when the function exit returning value \c true.
+
     \return
-    <CODE>UNSATISFIABLE</CODE> if is detected a trivially false constraint,
-    <CODE>SATISFIABLE</CODE> otherwise.
+    \c false if a trivially false constraint is detected, \true otherwise.
 
-    \param new_num_rows
-    This will store the number of rows that has to be added to the original
-    tableau.
+    \param additional_tableau_rows
+    On exit, this will store the number of rows that have to be added
+    to the original tableau.
 
-    \param num_slack_variables
-    This will store the number of slack variables that has to be added to
-    the original tableau.
+    \param additional_slack_variables
+    This will store the number of slack variables that have to be added
+    to the original tableau.
 
     \param is_tableau_constraint
-    Every element of this vector will be set to <CODE>true</CODE> if the
-    associated pending constraint has to be inserted in the tableau,
-    <CODE>false</CODE> otherwise.
+    This container of Boolean flags is initially empty. On exit, it size
+    will be equal to the number of pending constraints in \c input_cs.
+    For each pending constraint index \c i, the corresponding element
+    of this container (having index <CODE>i - first_pending_constraint</CODE>)
+    will be set to \c true if and only if the constraint has to be included
+    in the tableau.
 
-    \param nonnegative_variable
-    This will encode for each variable if this one was split or not.
-    Every element of this vector will be set to <CODE>true</CODE> if the
-    associated variable is split, <CODE>false</CODE> otherwise.
+    \param is_satisfied_inequality
+    This container of Boolean flags is initially empty. On exit, its size
+    will be equal to the number of pending constraints in \c input_cs.
+    For each pending constraint index \c i, the corresponding element
+    of this container (having index <CODE>i - first_pending_constraint</CODE>)
+    will be set to \c true if and only if it is an inequality and it
+    is already satisfied by \c last_generator (hence it does not require
+    the introduction of an artificial variable).
 
-    \param unfeasible_tableau_rows
-    This will contain all the row indexes of the tableau that are no more
-    satisfied after adding more constraints to \p *this.
+    \param is_nonnegative_variable
+    This container of Boolean flags is initially empty.
+    On exit, it size is equal to \c external_space_dim.
+    For each variable (index), the corresponding element of this container
+    is \c true if the variable is known to be nonnegative (and hence should
+    not be split into a positive and a negative part).
 
-    \param satisfied_ineqs
-    This will contain all the row indexes of the tableau that are already
-    satisfied by `last_generator' and do not require artificial variables to
-    have a starting feasible base.
-
+    \param is_nonnegative_variable
+    This container of Boolean flags is initially empty.
+    On exit, it size is equal to \c internal_space_dim.
+    For each variable (index), the corresponding element of this container
+    is \c true if the variable was previously split into positive and
+    negative parts that can now be merged back, since it is known
+    that the variable is nonnegative.
   */
-  bool parse_constraints(dimension_type& new_num_rows,
-			 dimension_type& num_slack_variables,
+  bool parse_constraints(dimension_type& additional_tableau_rows,
+			 dimension_type& additional_slack_variables,
 			 std::deque<bool>& is_tableau_constraint,
-			 std::deque<bool>& nonnegative_variable,
-			 std::vector<dimension_type>& unfeasible_tableau_rows,
-			 std::deque<bool>& satisfied_ineqs);
+			 std::deque<bool>& is_satisfied_inequality,
+			 std::deque<bool>& is_nonnegative_variable,
+			 std::deque<bool>& is_remergeable_variable) const;
 
   /*! \brief
     Computes the row index of the variable exiting the base
@@ -727,18 +742,18 @@ private:
   void compute_generator() const;
 
   /*! \brief
-    Merges previously split variables in the tableau if a nonnegativity
-    constraint is detected.
+    Merges back the positive and negative part of a (previously split)
+    variable after detecting a corresponding nonnegativity constraint.
+
+    \return
+    If the negative part of \p var_index was in base, the index of
+    the corresponding tableau row (which has become nonfeasible);
+    otherwise \c not_a_dimension().
 
     \param var_index
     The index of the variable that has to be merged.
-
-    \param nonfeasible_cs
-    This will contain all the row indexes that are no more satisfied by
-    the computed generator after merging a variable.
   */
-  void merge_split_variables(dimension_type var_index,
-			      std::vector<dimension_type>& nonfeasible_cs);
+  dimension_type merge_split_variable(dimension_type var_index);
 
   //! Returns <CODE>true</CODE> if and only if \p c is satisfied by \p g.
   static bool is_satisfied(const Constraint& c, const Generator& g);
