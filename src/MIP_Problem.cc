@@ -456,10 +456,10 @@ PPL::MIP_Problem
                     std::deque<bool>& is_nonnegative_variable,
                     std::deque<bool>& is_remergeable_variable) const {
   // Initially all containers are empty.
-  assert(is_tableau_constraint.empty()
-         && is_satisfied_inequality.empty()
-         && is_nonnegative_variable.empty()
-         && is_remergeable_variable.empty());
+  PPL_ASSERT(is_tableau_constraint.empty()
+             && is_satisfied_inequality.empty()
+             && is_nonnegative_variable.empty()
+             && is_remergeable_variable.empty());
 
   const dimension_type cs_space_dim = external_space_dim;
   const dimension_type cs_num_rows = input_cs.size();
@@ -616,7 +616,7 @@ PPL::MIP_Problem
 	  is_nonnegative_variable[nonzero_var_index] = true;
 	  if (nonzero_coeff_column_index < mapping_size) {
             // Remember to merge back the positive and negative parts.
-            assert(nonzero_var_index < internal_space_dim);
+            PPL_ASSERT(nonzero_var_index < internal_space_dim);
             is_remergeable_variable[nonzero_var_index] = true;
           }
         }
@@ -625,7 +625,7 @@ PPL::MIP_Problem
       }
       // Cases 8-9: apply method A.
       else {
-        assert(cs_i.is_inequality());
+        PPL_ASSERT(cs_i.is_inequality());
 	++additional_slack_variables;
       }
     }
