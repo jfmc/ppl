@@ -832,8 +832,8 @@ PPL::MIP_Problem::process_pending_constraints() {
     base[i] = artificial_index;
     ++artificial_index;
   }
-  // The last column index of the tableau containing an artificial variable.
-  const dimension_type end_artificials = artificial_index - 1;
+  // One past the last tableau column index containing an artificial variable.
+  const dimension_type end_artificials = artificial_index;
 
   // Set the extra-coefficient of the cost functions to record its sign.
   // This is done to keep track of the possible sign's inversion.
@@ -1326,16 +1326,18 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
 void
 PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
 				    const dimension_type end_artificials) {
-  const dimension_type tableau_last_index = tableau.num_columns() - 1;
+  PPL_ASSERT(0 < begin_artificials && begin_artificials < end_artificials);
+
+  const dimension_type old_last_column = tableau.num_columns() - 1;
   dimension_type tableau_n_rows = tableau.num_rows();
   // Step 1: try to remove from the base all the remaining slack variables.
   for (dimension_type i = 0; i < tableau_n_rows; ++i)
-    if (begin_artificials <= base[i] && base[i] <= end_artificials) {
+    if (begin_artificials <= base[i] && base[i] < end_artificials) {
       // Search for a non-zero element to enter the base.
       Row& tableau_i = tableau[i];
       bool redundant = true;
-      for (dimension_type j = end_artificials+1; j-- > 1; )
-	if (!(begin_artificials <= j && j <= end_artificials)
+      for (dimension_type j = end_artificials; j-- > 1; )
+	if (!(begin_artificials <= j && j < end_artificials)
 	    && tableau_i[j] != 0) {
 	  pivot(j, i);
 	  redundant = false;
@@ -1360,21 +1362,18 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
 
   // Step 2: Adjust data structures so as to enter phase 2 of the simplex.
 
-  // Compute the dimensions of the new tableau.
-  dimension_type num_artificials = 0;
-  for (dimension_type i = end_artificials + 1; i-- > 1; )
-    if (begin_artificials <= i && i <= end_artificials) {
-      ++num_artificials;
-      tableau.remove_trailing_columns(1);
-    }
+  // Resize the tableau.
+  const dimension_type num_artificials = end_artificials - begin_artificials;
+  tableau.remove_trailing_columns(num_artificials);
 
   // Zero the last column of the tableau.
+  const dimension_type new_last_column = tableau.num_columns() - 1;
   for (dimension_type i = tableau_n_rows; i-- > 0; )
-    tableau[i][tableau.num_columns()-1] = 0;
+    tableau[i][new_last_column] = 0;
 
   // ... then properly set the element in the (new) last column,
   // encoding the kind of optimization; ...
-  working_cost[tableau.num_columns()-1] = working_cost[tableau_last_index];
+  working_cost[new_last_column] = working_cost[old_last_column];
   // ... and finally remove redundant columns.
   const dimension_type working_cost_new_size
     = working_cost.size() - num_artificials;

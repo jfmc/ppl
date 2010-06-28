@@ -728,6 +728,18 @@ private:
   /*! \brief
     Drop unnecessary artificial variables from the tableau and get ready
     for the second phase of the simplex algorithm.
+
+    \note
+    The two parameters denote a STL-like half-open range.
+    It is assumed that \p begin_artificials is strictly greater than 0
+    and smaller than \p end_artificials.
+
+    \param begin_artificials
+    The start of the tableau column index range for artificial variables.
+
+    \param end_artificials
+    The end of the tableau column index range for artificial variables.
+    Note that column index end_artificial is \e excluded from the range.
   */
   void erase_artificials(dimension_type begin_artificials,
 			 dimension_type end_artificials);
