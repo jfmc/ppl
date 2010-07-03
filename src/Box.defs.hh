@@ -720,7 +720,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p x and \p y are dimension-incompatible.
   */
-  bool contains(const Box&) const;
+  bool contains(const Box& y) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this strictly contains \p y.
@@ -728,7 +728,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p x and \p y are dimension-incompatible.
   */
-  bool strictly_contains(const Box&) const;
+  bool strictly_contains(const Box& y) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
