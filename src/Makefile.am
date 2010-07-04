@@ -119,6 +119,9 @@ Has_Assign_Or_Swap.hh \
 assign_or_swap.hh \
 mp_std_bits.defs.hh \
 mp_std_bits.inlines.hh \
+Proxy.types.hh \
+Proxy.defs.hh \
+Proxy.inlines.hh \
 Temp.defs.hh \
 Temp.inlines.hh \
 Temp.templates.hh \

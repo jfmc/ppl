@@ -1532,7 +1532,7 @@ AC_CONFIG_FILES(Makefile
                 tests/Makefile
                 tests/BD_Shape/Makefile
                 tests/Box/Makefile
-                tests/Floating_Point_Expression/Makefile
+                tests/Concrete_Expression/Makefile
                 tests/Grid/Makefile
                 tests/MIP_Problem/Makefile
                 tests/Octagonal_Shape/Makefile

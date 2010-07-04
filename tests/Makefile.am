@@ -22,8 +22,8 @@
 
 SUBDIRS = \
 . \
+Concrete_Expression \
 PIP_Problem \
-Floating_Point_Expression \
 Powerset \
 Partially_Reduced_Product \
 Box \
