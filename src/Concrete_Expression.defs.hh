@@ -63,6 +63,6 @@ class Approximable_Reference_Base : public Concrete_Expression<Target> {
 
 } // namespace Parma_Polyhedra_Library
 
-#include "Concrete_Expression.inlines.hh"
+//#include "Concrete_Expression.inlines.hh"
 
 #endif // !defined(PPL_Concrete_Expression_defs_hh)

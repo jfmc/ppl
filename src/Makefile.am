@@ -122,6 +122,8 @@ mp_std_bits.inlines.hh \
 Proxy.types.hh \
 Proxy.defs.hh \
 Proxy.inlines.hh \
+Concrete_Expression.types.hh \
+Concrete_Expression.defs.hh \
 Temp.defs.hh \
 Temp.inlines.hh \
 Temp.templates.hh \

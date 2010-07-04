@@ -51,15 +51,16 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
-bdshape1 \
-bdshape2 \
-digitalfilters1 \
-floatingpointexpr1 \
-linearform1 \
-octagonalshape1 \
-octagonalshape2 \
-polyhedron1 \
-polyhedron2
+C_Expr
+#bdshape1 \
+#bdshape2 \
+#digitalfilters1 \
+#floatingpointexpr1 \
+#linearform1 \
+#octagonalshape1 \
+#octagonalshape2 \
+#polyhedron1 \
+#polyhedron2
 
 DERIVED_TESTS =
 
@@ -128,6 +129,8 @@ print_INSTANCES:
 #
 # Sources for the tests
 #
+
+C_Expr_SOURCES = C_Expr.defs.hh C_Expr.inlines.hh C_Expr.cc
 
 bdshape1_SOURCES = bdshape1.cc
 
