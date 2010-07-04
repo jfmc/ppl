@@ -30,6 +30,7 @@ namespace Parma_Polyhedra_Library {
 
 template <typename Target>
 class Concrete_Expression_Base {
+public:
   //! Returns the type of \* this.
   Concrete_Expression_Type type() const;
 
@@ -39,10 +40,25 @@ class Concrete_Expression_Base {
 
 template <typename Target>
 class Binary_Operator_Base : public Concrete_Expression<Target> {
+public:
+  //! Returns a constant identifying the operator of \p *this.
+  int get_bop() const;
+
+  //! Returns the left-hand side of \p *this.
+  const Concrete_Expression<Target>* get_lhs() const;
+
+  //! Returns the right-hand side of \p *this.
+  const Concrete_Expression<Target>* get_rhs() const;
 };
 
 template <typename Target>
 class Unary_Operator_Base : public Concrete_Expression<Target> {
+public:
+  //! Returns a constant identifying the operator of \p *this.
+  int get_uop() const;
+
+  //! Returns the argument \p *this.
+  const Concrete_Expression<Target>* get_arg() const;
 };
 
 template <typename Target>

@@ -39,11 +39,21 @@ class C_Expr {
 
 class Bin_Op : public C_Expr {
 public:
+  //! Constructor from operator, lhs and rhs.
+  Bin_Op(Concrete_Expression_BOP binary_operator,
+         const C_Expr* left_hand_side, const C_Expr* right_hand_side);
+
+  //! Do-nothing destructor.
+  ~Bin_Op();
+
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
 
   //! Returns the kind of \p *this.
   Concrete_Expression_Kind kind() const;
+
+  //! Returns the binary operator of \p *this.
+  Concrete_Expression_BOP binary_operator() const;
 
   //! Returns the left-hand side of \p *this.
   const C_Expr* left_hand_side() const;
@@ -51,7 +61,21 @@ public:
   //! Returns the right-hand side of \p *this.
   const C_Expr* right_hand_side() const;
 
+  static const Concrete_Expression_BOP PLUS   = 0;
+  static const Concrete_Expression_BOP MINUS  = 1;
+  static const Concrete_Expression_BOP TIMES  = 2;
+  static const Concrete_Expression_BOP DIV    = 3;
+  static const Concrete_Expression_BOP REM    = 4;
+  static const Concrete_Expression_BOP BAND   = 5;
+  static const Concrete_Expression_BOP BOR    = 6;
+  static const Concrete_Expression_BOP BXOR   = 7;
+  static const Concrete_Expression_BOP LSHIFT = 8;
+  static const Concrete_Expression_BOP RSHIFT = 9;
+
 private:
+  //! The operator of \p *this.
+  const Concrete_Expression_BOP bop;
+
   //! The left-hand side of \p *this.
   const C_Expr* lhs;
 
@@ -60,6 +84,31 @@ private:
 };
 
 class Un_Op : public C_Expr {
+  //! Constructor from operator, lhs and rhs.
+  Un_Op(Concrete_Expression_UOP unary_operator, const C_Expr* argument);
+
+  //! Do-nothing destructor.
+  ~Un_Op();
+
+  //! Returns the type of \p *this.
+  Concrete_Expression_Type type() const;
+
+  //! Returns the kind of \p *this.
+  Concrete_Expression_Kind kind() const;
+
+  //! Returns the argument of \p *this.
+  const C_Expr* argument() const;
+
+  static const Concrete_Expression_UOP UPLUS  = 0;
+  static const Concrete_Expression_UOP UMINUS = 1;
+  static const Concrete_Expression_UOP BNOT   = 2;
+
+private:
+  //! The operator of \p *this.
+  const Concrete_Expression_UOP uop;
+
+  //! The argument of \p *this.
+  const C_Expr* arg;
 };
 
 class Cast_Op : public C_Expr {
@@ -104,14 +153,6 @@ private:
   typedef Exposed_To_Underlying<PPL_C_Expr,
                                 Concrete_Expression<PPL_C_Expr> >::Type
   Underlying;
-
-public:
-#if 0
-  template <typename T>
-  static bool classof(const T* expr) {
-    return Underlying::classof(underlying(expr));
-  }
-#endif
 };
 
 template <>
@@ -125,6 +166,7 @@ public:
 
 } // namespace Parma_Polyhedra_Library
 
+#include "Concrete_Expression.defs.hh"
 #include "C_Expr.inlines.hh"
 //#include "C_Expr.templates.hh"
 

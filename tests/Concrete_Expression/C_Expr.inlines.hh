@@ -25,6 +25,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline
+Bin_Op::Bin_Op(Concrete_Expression_BOP binary_operator,
+               const C_Expr* left_hand_side, const C_Expr* right_hand_side)
+  : bop(binary_operator),
+    lhs(left_hand_side),
+    rhs(right_hand_side) {
+}
+
+inline
+Bin_Op::~Bin_Op() {
+}
+
+inline Concrete_Expression_BOP
+Bin_Op:: binary_operator() const {
+  return bop;
+}
+
 inline const C_Expr*
 Bin_Op::left_hand_side() const {
   return lhs;

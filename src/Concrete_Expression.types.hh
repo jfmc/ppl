@@ -63,6 +63,23 @@ enum Concrete_Expression_Type  {
 */
 typedef int Concrete_Expression_Kind;
 
+/*! \brief
+  Encodes a binary operator of concrete expressions.
+
+  The values should be uniquely defined by the particular instance and
+  named: PLUS, MINUS, TIMES, DIV, REM, BAND, BOR, BXOR, LSHIFT,
+  RSHIFT.
+*/
+typedef int Concrete_Expression_BOP;
+
+/*! \brief
+  Encodes a unary operator of concrete expressions.
+
+  The values should be uniquely defined by the particular instance and
+  named: UPLUS, UMINUS, BNOT.
+*/
+typedef int Concrete_Expression_UOP;
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Concrete_Expression_types_hh)
