@@ -67,8 +67,7 @@ typedef int Concrete_Expression_Kind;
   Encodes a binary operator of concrete expressions.
 
   The values should be uniquely defined by the particular instance and
-  named: PLUS, MINUS, TIMES, DIV, REM, BAND, BOR, BXOR, LSHIFT,
-  RSHIFT.
+  named: ADD, SUB, MUL, DIV, REM, BAND, BOR, BXOR, LSHIFT, RSHIFT.
 */
 typedef int Concrete_Expression_BOP;
 
@@ -76,7 +75,7 @@ typedef int Concrete_Expression_BOP;
   Encodes a unary operator of concrete expressions.
 
   The values should be uniquely defined by the particular instance and
-  named: UPLUS, UMINUS, BNOT.
+  named: PLUS, MINUS, BNOT.
 */
 typedef int Concrete_Expression_UOP;
 
