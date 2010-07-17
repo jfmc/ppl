@@ -152,6 +152,21 @@ enum Bounded_Integer_Type_Overflow {
   OVERFLOW_IMPOSSIBLE
 };
 
+/*! \brief \ingroup PPL_CXX_interface
+  Floating point formats known to the library.
+
+  See the section on
+  \ref Approximating_Floating_Point_Computations "approximating floating point computations".
+*/
+enum Floating_Point_Format {
+  IEEE754_HALF,
+  IEEE754_SINGLE,
+  IEEE754_DOUBLE,
+  IBM_SINGLE,
+  IEEE754_QUAD,
+  INTEL_DOUBLE_EXTENDED
+};
+
 struct Weightwatch_Traits;
 
 } // namespace Parma_Polyhedra_Library

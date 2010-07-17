@@ -24,9 +24,96 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Concrete_Expression_defs_hh 1
 
 #include "Concrete_Expression.types.hh"
+#include "globals.types.hh"
 
 namespace Parma_Polyhedra_Library {
 
+class Concrete_Expression_Type {
+public:
+  /*! \brief
+    Returns the bounded integer type corresponding to \p width,
+    \p representation and \p overflow.
+  */
+  static Concrete_Expression_Type
+  bounded_integer(Bounded_Integer_Type_Width width,
+                  Bounded_Integer_Type_Representation representation,
+                  Bounded_Integer_Type_Overflow overflow);
+
+  /*! \brief
+    Returns the floating point type corresponding to \p format.
+  */
+  static Concrete_Expression_Type
+  floating_point(Floating_Point_Format format);
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is a bounded
+    integer type.
+  */
+  bool is_bounded_integer() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is a floating
+    point type.
+  */
+  bool is_floating_point() const;
+
+  /*! \brief
+    Returns the width in bits of the bounded integer type encoded by
+    \p *this.
+
+    The behavior is undefined if \p *this does not encode a bounded
+    integer type.
+  */
+  Bounded_Integer_Type_Width
+  bounded_integer_type_width() const;
+
+  /*! \brief
+    Returns the representation of the bounded integer type encoded by
+    \p *this.
+
+    The behavior is undefined if \p *this does not encode a bounded
+    integer type.
+  */
+  Bounded_Integer_Type_Representation
+  bounded_integer_type_representation() const;
+
+  /*! \brief
+    Returns the overflow behavior of the bounded integer type encoded by
+    \p *this.
+
+    The behavior is undefined if \p *this does not encode a bounded
+    integer type.
+  */
+  Bounded_Integer_Type_Overflow
+  bounded_integer_type_overflow() const;
+
+  /*! \brief
+    Returns the format of the floating point type encoded by \p *this.
+
+    The behavior is undefined if \p *this does not encode a floating
+    point type.
+  */
+  Floating_Point_Format floating_point_format() const;
+
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
+private:
+  //! A 32-bit word encoding the type.
+  struct Implementation {
+    unsigned int bounded_integer:1;
+    Bounded_Integer_Type_Width bounded_integer_type_width:23;
+    Bounded_Integer_Type_Representation bounded_integer_type_representation:2;
+    Bounded_Integer_Type_Overflow bounded_integer_type_overflow:2;
+    Floating_Point_Format floating_point_format:4;
+  };
+
+  //! Constructor from \p implementation.
+  Concrete_Expression_Type(Implementation implementation);
+
+  //! The encoding of \p *this.
+  Implementation impl;
+};
 
 template <typename Target>
 class Concrete_Expression_Base {
@@ -79,6 +166,6 @@ class Approximable_Reference_Base : public Concrete_Expression<Target> {
 
 } // namespace Parma_Polyhedra_Library
 
-//#include "Concrete_Expression.inlines.hh"
+#include "Concrete_Expression.inlines.hh"
 
 #endif // !defined(PPL_Concrete_Expression_defs_hh)

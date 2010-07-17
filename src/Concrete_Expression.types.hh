@@ -42,14 +42,8 @@ class Floating_Point_Constant;
 template <typename Target>
 class Approximable_Reference;
 
-enum Concrete_Expression_Type  {
-  // To be defined with all the floating point formats and using
-  // Bounded_Integer_Type_Width, Bounded_Integer_Type_Representation
-  // and Bounded_Integer_Type_Overflow.
-  A,
-  B,
-  C
-};
+//! The type of a concrete expression.
+class Concrete_Expression_Type;
 
 /*! \brief
   Encodes the kind of concrete expression.

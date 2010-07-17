@@ -124,6 +124,7 @@ Proxy.defs.hh \
 Proxy.inlines.hh \
 Concrete_Expression.types.hh \
 Concrete_Expression.defs.hh \
+Concrete_Expression.inlines.hh \
 Temp.defs.hh \
 Temp.inlines.hh \
 Temp.templates.hh \
@@ -416,6 +417,7 @@ checked.cc \
 Checked_Number.cc \
 Float.cc \
 fpu-ia32.cc \
+Concrete_Expression.cc \
 Constraint.cc \
 Constraint_System.cc \
 Congruence.cc \
