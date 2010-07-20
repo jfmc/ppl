@@ -718,11 +718,6 @@ PPL::MIP_Problem::process_pending_constraints() {
 
   typedef process_pending_constraints_helper_struct buffer_element_t;
 
-#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_READS
-  // Used to optimize access to tableau_k.
-  std::vector<std::pair<dimension_type, dimension_type> > vars_in_base;
-#endif
-
   // Used to improve performance, ordering writes to tableau_k.
   std::vector<buffer_element_t> buffer;
 
@@ -733,64 +728,6 @@ PPL::MIP_Problem::process_pending_constraints() {
       // Copy the original constraint in the tableau.
       matrix_row_reference_type tableau_k = tableau[--k];
 
-#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
-      const Constraint& cs_i = input_cs[i];
-      for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
-        const Coefficient& current_coefficient =
-          cs_i.coefficient(Variable(sd));
-        // The test against 0 is not needed, but improves performance.
-        if (current_coefficient != 0) {
-          buffer.push_back(buffer_element_t(mapping[sd + 1].first,
-                                            &current_coefficient, false));
-          // Split if needed.
-          if (mapping[sd + 1].second != 0)
-            buffer.push_back(buffer_element_t(mapping[sd + 1].second,
-                                              &current_coefficient, true));
-        }
-      }
-      const Coefficient& cs_i_inhomogeneous_term = cs_i.inhomogeneous_term();
-      // The test against 0 is not needed, but improves performance.
-      if (cs_i_inhomogeneous_term != 0) {
-        buffer.push_back(buffer_element_t(mapping[0].first,
-                                          &cs_i_inhomogeneous_term, false));
-        // Split if needed.
-        if (mapping[0].second != 0)
-          buffer.push_back(buffer_element_t(mapping[0].second,
-                                            &cs_i_inhomogeneous_term, true));
-      }
-
-      // Add the slack variable, if needed.
-      if (cs_i.is_inequality()) {
-        buffer.push_back(buffer_element_t(--slack_index, &(Coefficient_one()),
-                                          true));
-        // If the constraint is already satisfied, we will not use artificial
-        // variables to compute a feasible base: this to speed up
-        // the algorithm.
-        if (satisfied_ineqs[i]) {
-          base[k] = slack_index;
-          worked_out_row[k] = true;
-        }
-      }
-      {
-        std::sort(buffer.begin(), buffer.end());
-        // Dump map content into tableau_k.
-        std::vector<buffer_element_t>::iterator j = buffer.begin();
-        std::vector<buffer_element_t>::iterator j_end = buffer.end();
-        if (j != j_end) {
-          matrix_row_iterator itr;
-          tableau_k.find_create_assign(j->index, *(j->data), itr);
-          if (j->toggle_sign)
-            neg_assign(itr->second);
-          ++j;
-          for ( ; j != j_end; ++j) {
-            tableau_k.find_create_hint_assign(j->index, *(j->data), itr);
-            if (j->toggle_sign)
-              neg_assign(itr->second);
-          }
-        }
-        buffer.clear();
-      }
-#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
       const Constraint& cs_i = input_cs[i];
       for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
         const Coefficient& current_coefficient =
@@ -824,50 +761,11 @@ PPL::MIP_Problem::process_pending_constraints() {
           worked_out_row[k] = true;
         }
       }
-#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
 
 
-#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_READS
-      // We need to sort accesses by base[j], not by j.
-
-      for (dimension_type j = base_size; j-- > 0; )
-        if (base[j] != 0 && j != k)
-          vars_in_base.push_back(std::make_pair(base[j], j));
-
-      std::sort(vars_in_base.begin(), vars_in_base.end());
-
-      std::vector< std::pair<dimension_type, dimension_type> >::iterator j
-        = vars_in_base.begin();
-      std::vector< std::pair<dimension_type, dimension_type> >::iterator j_end
-        = vars_in_base.end();
-      matrix_row_const_iterator itr = tableau_k.begin();
-      matrix_row_const_iterator itr_end = tableau_k.end();
-      while (j != j_end && itr != itr_end) {
-        if (itr->first < j->first)
-          tableau_k.lower_bound_hint_assign(j->first, itr);
-        else
-          if (itr->first > j->first)
-            ++j;
-          else {
-            PPL_ASSERT(itr->first == j->first);
-            if (k != j->second && itr->second != 0) {
-              linear_combine(tableau_k, tableau[j->second], base[j->second]);
-              // linear_combine() invalidates itr and itr_end.
-              tableau_k.lower_bound_assign(j->first, itr);
-              itr_end = tableau_k.end();
-            } else
-              ++itr;
-            ++j;
-          }
-      }
-
-      vars_in_base.clear();
-
-#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_READS)
       for (dimension_type j = base_size; j-- > 0; )
         if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0)
          linear_combine(tableau_k, tableau[j], base[j]);
-#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_READS)
     }
 
   // We negate the row if tableau[i][0] <= 0 to get the inhomogeneous term > 0.
