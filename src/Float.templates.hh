@@ -68,6 +68,8 @@ FP_Interval_Type compute_absolute_error(
       f_exponent_bias = float_intel_double_extended::EXPONENT_BIAS;
       f_mantissa_bits = float_intel_double_extended::MANTISSA_BITS;
       break;
+    default:
+      throw std::runtime_error("PPL internal error");
   }
 
   analyzer_format omega = std::max(

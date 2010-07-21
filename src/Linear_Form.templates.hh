@@ -412,6 +412,8 @@ Linear_Form<C>::relative_error(
       f_base = float_intel_double_extended::BASE;
       f_mantissa_bits = float_intel_double_extended::MANTISSA_BITS;
       break;
+    default:
+      throw std::runtime_error("PPL internal error");
   }
 
   C error_propagator;
