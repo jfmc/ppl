@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_Form_templates_hh 1
 
 #include "Linear_Expression.defs.hh"
+#include "Box.defs.hh"
 #include <stdexcept>
 #include <iostream>
 
@@ -440,6 +441,22 @@ Linear_Form<C>::relative_error(
     current_result_term *= current_multiplier;
     current_result_term *= error_propagator;
     result += current_result_term;
+  }
+
+  return;
+}
+
+template <typename C>
+void
+Linear_Form<C>::intervalize(const Box<C>& store, C& result) const {
+  result = C(inhomogeneous_term());
+  dimension_type dimension = space_dimension();
+  assert(dimension <= store.space_dimension());
+  for (dimension_type i = 0; i < dimension; ++i) {
+    C current_addend = coefficient(Variable(i));
+    const C& curr_int = store.get_interval(Variable(i));
+    current_addend *= curr_int;
+    result += current_addend;
   }
 
   return;

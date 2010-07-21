@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Form.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Variable.defs.hh"
+#include "Box.types.hh"
 #include <vector>
 
 namespace Parma_Polyhedra_Library {
@@ -328,6 +329,8 @@ public:
 
   void relative_error(Floating_Point_Format analyzed_format,
                       Linear_Form& result) const;
+
+  void intervalize(const Box<C>& store, C& result) const;
 
 private:
   //! The generic coefficient equal to the singleton zero.
