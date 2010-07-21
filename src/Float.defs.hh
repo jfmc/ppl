@@ -364,10 +364,10 @@ template <typename FP_Interval_Type>
 FP_Interval_Type compute_absolute_error(Floating_Point_Format analyzed_format);
 
 template <typename FP_Interval_Type, Floating_Point_Format>
-class absolute_error;
+struct absolute_error;
 
 template <typename FP_Interval_Type>
-class absolute_error<FP_Interval_Type, IEEE754_HALF> {
+struct absolute_error<FP_Interval_Type, IEEE754_HALF> {
   static const FP_Interval_Type value;
 };
 
@@ -376,7 +376,7 @@ const FP_Interval_Type absolute_error<FP_Interval_Type, IEEE754_HALF>::value =
   compute_absolute_error<FP_Interval_Type>(IEEE754_HALF);
 
 template <typename FP_Interval_Type>
-class absolute_error<FP_Interval_Type, IEEE754_SINGLE> {
+struct absolute_error<FP_Interval_Type, IEEE754_SINGLE> {
   static const FP_Interval_Type value;
 };
 
@@ -385,7 +385,7 @@ const FP_Interval_Type absolute_error<FP_Interval_Type, IEEE754_SINGLE>::value =
   compute_absolute_error<FP_Interval_Type>(IEEE754_SINGLE);
 
 template <typename FP_Interval_Type>
-class absolute_error<FP_Interval_Type, IEEE754_DOUBLE> {
+struct absolute_error<FP_Interval_Type, IEEE754_DOUBLE> {
   static const FP_Interval_Type value;
 };
 
@@ -394,7 +394,7 @@ const FP_Interval_Type absolute_error<FP_Interval_Type, IEEE754_DOUBLE>::value =
   compute_absolute_error<FP_Interval_Type>(IEEE754_DOUBLE);
 
 template <typename FP_Interval_Type>
-class absolute_error<FP_Interval_Type, IBM_SINGLE> {
+struct absolute_error<FP_Interval_Type, IBM_SINGLE> {
   static const FP_Interval_Type value;
 };
 
@@ -403,7 +403,7 @@ const FP_Interval_Type absolute_error<FP_Interval_Type, IBM_SINGLE>::value =
   compute_absolute_error<FP_Interval_Type>(IBM_SINGLE);
 
 template <typename FP_Interval_Type>
-class absolute_error<FP_Interval_Type, IEEE754_QUAD> {
+struct absolute_error<FP_Interval_Type, IEEE754_QUAD> {
   static const FP_Interval_Type value;
 };
 
@@ -412,7 +412,7 @@ const FP_Interval_Type absolute_error<FP_Interval_Type, IEEE754_QUAD>::value =
   compute_absolute_error<FP_Interval_Type>(IEEE754_QUAD);
 
 template <typename FP_Interval_Type>
-class absolute_error<FP_Interval_Type, INTEL_DOUBLE_EXTENDED> {
+struct absolute_error<FP_Interval_Type, INTEL_DOUBLE_EXTENDED> {
   static const FP_Interval_Type value;
 };
 
