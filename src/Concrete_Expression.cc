@@ -21,9 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
-#ifndef NDEBUG
-#include <stdio>
-#endif
+#include <iostream>
 
 #include "Concrete_Expression.defs.hh"
 
