@@ -361,8 +361,7 @@ public:
 #endif
 
 template <typename FP_Interval_Type>
-FP_Interval_Type compute_absolute_error(const Floating_Point_Format
-                                        analyzed_format);
+FP_Interval_Type compute_absolute_error(Floating_Point_Format analyzed_format);
 
 template <typename FP_Interval_Type, Floating_Point_Format>
 class absolute_error;
