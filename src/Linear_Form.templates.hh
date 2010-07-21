@@ -375,6 +375,76 @@ Linear_Form<C>::OK() const {
   return true;
 }
 
+// Floating point analysis related methods.
+template <typename C>
+void
+Linear_Form<C>::relative_error(
+		const Floating_Point_Format analyzed_format,
+                Linear_Form& result) const {
+  typedef typename C::boundary_type analyzer_format;
+
+  // Get the necessary information on the analyzed's format.
+  unsigned int f_base;
+  unsigned int f_mantissa_bits;
+  switch (analyzed_format) {
+    case IEEE754_HALF:
+      f_base = float_ieee754_half::BASE;
+      f_mantissa_bits = float_ieee754_half::MANTISSA_BITS;
+      break;
+    case IEEE754_SINGLE:
+      f_base = float_ieee754_single::BASE;
+      f_mantissa_bits = float_ieee754_single::MANTISSA_BITS;
+      break;
+    case IEEE754_DOUBLE:
+      f_base = float_ieee754_double::BASE;
+      f_mantissa_bits = float_ieee754_double::MANTISSA_BITS;
+      break;
+    case IBM_SINGLE:
+      f_base = float_ibm_single::BASE;
+      f_mantissa_bits = float_ibm_single::MANTISSA_BITS;
+      break;
+    case IEEE754_QUAD:
+      f_base = float_ieee754_quad::BASE;
+      f_mantissa_bits = float_ieee754_quad::MANTISSA_BITS;
+      break;
+    case INTEL_DOUBLE_EXTENDED:
+      f_base = float_intel_double_extended::BASE;
+      f_mantissa_bits = float_intel_double_extended::MANTISSA_BITS;
+      break;
+  }
+
+  C error_propagator;
+  analyzer_format lb = -pow(f_base,
+  -static_cast<analyzer_format>(f_mantissa_bits));
+  error_propagator.build(i_constraint(GREATER_OR_EQUAL, lb),
+                         i_constraint(LESS_OR_EQUAL, -lb));
+
+  // Handle the inhomogeneous term.
+  const C* current_term = &inhomogeneous_term();
+  assert(current_term->is_bounded());
+
+  C current_multiplier(std::max(std::abs(current_term->lower()),
+                                std::abs(current_term->upper())));
+  Linear_Form current_result_term(current_multiplier);
+  current_result_term *= error_propagator;
+  result = Linear_Form(current_result_term);
+
+  // Handle the other terms.
+  dimension_type dimension = space_dimension();
+  for (dimension_type i = 0; i < dimension; ++i) {
+    current_term = &coefficient(Variable(i));
+    assert(current_term->is_bounded());
+    current_multiplier = C(std::max(std::abs(current_term->lower()),
+                                    std::abs(current_term->upper())));
+    current_result_term = Linear_Form(Variable(i));
+    current_result_term *= current_multiplier;
+    current_result_term *= error_propagator;
+    result += current_result_term;
+  }
+
+  return;
+}
+
 /*! \relates Parma_Polyhedra_Library::Linear_Form */
 template <typename C>
 std::ostream&

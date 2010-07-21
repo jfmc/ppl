@@ -322,6 +322,13 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Linear_Form& y);
 
+  // Floating point analysis related methods.
+
+  bool overflows() const;
+
+  void relative_error(Floating_Point_Format analyzed_format,
+                      Linear_Form& result) const;
+
 private:
   //! The generic coefficient equal to the singleton zero.
   static C zero;

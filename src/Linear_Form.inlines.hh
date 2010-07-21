@@ -204,6 +204,22 @@ Linear_Form<C>::ascii_load(std::istream& s) {
   return false;
 }
 
+// Floating point analysis related methods.
+template <typename C>
+inline bool
+Linear_Form<C>::overflows() const {
+  if (!inhomogeneous_term().is_bounded())
+    return true;
+
+  dimension_type dimension = space_dimension();
+  for (dimension_type i = 0; i < dimension; ++i) {
+    if (!coefficient(Variable(i)).is_bounded())
+      return true;
+  }
+
+  return false;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 
