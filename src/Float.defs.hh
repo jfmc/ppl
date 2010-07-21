@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Float_defs_hh
 #define PPL_Float_defs_hh 1
 
+#include "globals.types.hh"
 #include "meta_programming.hh"
 #include "compiler.hh"
 #include <gmp.h>
@@ -359,8 +360,19 @@ public:
 };
 #endif
 
+template <typename FP_Interval_Type>
+FP_Interval_Type compute_absolute_error(const Floating_Point_Format
+                                        analyzed_format);
+
+// TODO.
+/*
+template <typename FP_Interval_Type>
+FP_Interval_Type absolute_error = compute_absolute_error();
+*/
+
 } // namespace Parma_Polyhedra_Library
 
 #include "Float.inlines.hh"
+#include "Float.templates.hh"
 
 #endif // !defined(PPL_Float_defs_hh)

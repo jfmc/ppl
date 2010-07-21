@@ -182,6 +182,7 @@ Octagonal_Shape.types.hh \
 fpu.types.hh \
 Float.defs.hh \
 Float.inlines.hh \
+Float.templates.hh \
 C_Integer.hh \
 fpu.defs.hh \
 fpu-c99.inlines.hh \
