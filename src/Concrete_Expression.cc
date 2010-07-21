@@ -21,6 +21,9 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
+#ifdef NDEBUG
+#include <stdio>
+#endif
 
 #include "Concrete_Expression.defs.hh"
 
@@ -34,7 +37,7 @@ PPL::Concrete_Expression_Type::OK() const {
         && impl.bounded_integer_type_width != BITS_32
         && impl.bounded_integer_type_width != BITS_64
         && impl.bounded_integer_type_width != BITS_128) {
-#ifndef NDEBUG
+#ifdef NDEBUG
       std::cerr << "bounded integer type has illegal width "
                 << impl.bounded_integer_type_width
                 << std::endl;
@@ -44,7 +47,7 @@ PPL::Concrete_Expression_Type::OK() const {
 
     if (impl.bounded_integer_type_representation != UNSIGNED
         && impl.bounded_integer_type_representation != SIGNED_2_COMPLEMENT) {
-#ifndef NDEBUG
+#ifdef NDEBUG
       std::cerr << "bounded integer type has illegal representation "
                 << impl.bounded_integer_type_representation
                 << std::endl;
@@ -55,7 +58,7 @@ PPL::Concrete_Expression_Type::OK() const {
     if (impl.bounded_integer_type_overflow != OVERFLOW_WRAPS
         && impl.bounded_integer_type_overflow != OVERFLOW_UNDEFINED
         && impl.bounded_integer_type_overflow != OVERFLOW_IMPOSSIBLE) {
-#ifndef NDEBUG
+#ifdef NDEBUG
       std::cerr << "bounded integer type has illegal overflow "
                 << impl.bounded_integer_type_overflow
                 << std::endl;
@@ -64,7 +67,7 @@ PPL::Concrete_Expression_Type::OK() const {
     }
 
     if (impl.floating_point_format != IEEE754_HALF) {
-#ifndef NDEBUG
+#ifdef NDEBUG
       std::cerr << "bounded integer type has illegal (unused) fp format "
                 << impl.floating_point_format
                 << std::endl;
@@ -80,7 +83,7 @@ PPL::Concrete_Expression_Type::OK() const {
         && impl.floating_point_format != IBM_SINGLE
         && impl.floating_point_format != IEEE754_QUAD
         && impl.floating_point_format != INTEL_DOUBLE_EXTENDED) {
-#ifndef NDEBUG
+#ifdef NDEBUG
       std::cerr << "floating point type has illegal format "
                 << impl.floating_point_format
                 << std::endl;
@@ -89,7 +92,7 @@ PPL::Concrete_Expression_Type::OK() const {
     }
 
     if (impl.bounded_integer_type_width != BITS_128) {
-#ifndef NDEBUG
+#ifdef NDEBUG
       std::cerr << "floating point type has illegal (unused) bi width "
                 << impl.bounded_integer_type_width
                 << std::endl;
@@ -98,7 +101,7 @@ PPL::Concrete_Expression_Type::OK() const {
     }
 
     if (impl.bounded_integer_type_representation != SIGNED_2_COMPLEMENT) {
-#ifndef NDEBUG
+#ifdef NDEBUG
       std::cerr << "floating point type has illegal (unused) bi representation "
                 << impl.bounded_integer_type_representation
                 << std::endl;
@@ -107,7 +110,7 @@ PPL::Concrete_Expression_Type::OK() const {
     }
 
     if (impl.bounded_integer_type_overflow != OVERFLOW_IMPOSSIBLE) {
-#ifndef NDEBUG
+#ifdef NDEBUG
       std::cerr << "floating point type has illegal (unused) bi overflow "
                 << impl.bounded_integer_type_overflow
                 << std::endl;
