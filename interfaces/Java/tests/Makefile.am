@@ -40,7 +40,6 @@ ppl_java_tests_common
 # Even if the Java sources are not really needed, they are built by m4,
 # we need to include them to invoke the Automake Java build system.
 EXTRA_DIST = \
-Test_Partial_Function.java \
 Test_Executor.java \
 C_Polyhedron_test1.java \
 NNC_Polyhedron_test1.java \
@@ -55,7 +54,6 @@ ppl_java_tests_common
 
 check_JAVA = \
 ppl_java_generated_tests.java \
-Test_Partial_Function.java \
 Test_Executor.java \
 C_Polyhedron_test1.java \
 NNC_Polyhedron_test1.java \

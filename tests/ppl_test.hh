@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_ppl_test_hh 1
 
 #include "ppl_header.hh"
-#include "Partial_Function.defs.hh"
 #include "Random_Number_Generator.defs.hh"
 #include <stdexcept>
 #include <sstream>
@@ -348,12 +347,6 @@ catch (const std::exception& e) {					\
 #define OCTAGONAL_SHAPE_INSTANCE mpq_class
 #endif
 
-// These using directive and declaration are just to avoid the
-// corresponding namespace qualifications in all the tests.
-using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::Test;
-using std::endl;
-
 namespace Parma_Polyhedra_Library {
 
 namespace Test {
@@ -472,99 +465,6 @@ typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;
 //! The incarnation of Octagonal_Shape under test.
 typedef Octagonal_Shape<OCTAGONAL_SHAPE_INSTANCE> TOctagonal_Shape;
 
-// For floating point analysis.
-#ifdef ANALYZER_FP_FORMAT
-#ifdef ANALYZED_FP_FORMAT
-//! The type of an interval with floating point boundaries.
-typedef Interval<ANALYZER_FP_FORMAT,
-                 Floating_Real_Open_Interval_Info> FP_Interval;
-
-//! The type of an interval linear form.
-typedef Linear_Form<FP_Interval> FP_Linear_Form;
-
-//! The type of an interval abstract store.
-typedef Box<FP_Interval> FP_Interval_Abstract_Store;
-
-//! The type of a linear form abstract store.
-typedef std::map<dimension_type, FP_Linear_Form>
-                                 FP_Linear_Form_Abstract_Store;
-
-/*! \brief
-  The incarnation of Floating_Point_Expression under test for analyzing
-  floating point computations.
-*/
-typedef Floating_Point_Expression<FP_Interval, ANALYZED_FP_FORMAT>
-                                                         FP_Expression;
-
-/*! \brief
-  The incarnation of Cast_Floating_Point_Expression under test for
-  analyzing floating point computations.
-*/
-typedef Cast_Floating_Point_Expression<FP_Interval,
-                                ANALYZED_FP_FORMAT> Cast_FP_Expression;
-
-/*! \brief
-  The incarnation of Constant_Floating_Point_Expression under test for
-  analyzing floating point computations.
-*/
-typedef Constant_Floating_Point_Expression<FP_Interval,
-                                ANALYZED_FP_FORMAT> Con_FP_Expression;
-
-/*! \brief
-  The incarnation of Variable_Floating_Point_Expression under test for
-  analyzing floating point computations.
-*/
-typedef Variable_Floating_Point_Expression<FP_Interval,
-                                ANALYZED_FP_FORMAT> Var_FP_Expression;
-
-/*! \brief
-  The incarnation of Sum_Floating_Point_Expression under test for
-  analyzing floating point computations.
-*/
-typedef Sum_Floating_Point_Expression<FP_Interval,
-                                      ANALYZED_FP_FORMAT> Sum_FP_Expression;
-
-/*! \brief
-  The incarnation of Difference_Floating_Point_Expression under test for
-  analyzing floating point computations.
-*/
-typedef Difference_Floating_Point_Expression<FP_Interval,
-                                      ANALYZED_FP_FORMAT> Dif_FP_Expression;
-/*! \brief
-  The incarnation of Multiplication_Floating_Point_Expression under test for
-  analyzing floating point computations.
-*/
-typedef Multiplication_Floating_Point_Expression<FP_Interval,
-                                      ANALYZED_FP_FORMAT> Mul_FP_Expression;
-
-/*! \brief
-  The incarnation of Division_Floating_Point_Expression under test for
-  analyzing floating point computations.
-*/
-typedef Division_Floating_Point_Expression<FP_Interval,
-                                      ANALYZED_FP_FORMAT> Div_FP_Expression;
-
-/*! \brief
-  The incarnation of Multiplication_Floating_Point_Expression under test for
-  analyzing floating point computations.
-*/
-typedef Opposite_Floating_Point_Expression<FP_Interval,
-                                      ANALYZED_FP_FORMAT> Opp_FP_Expression;
-
-/*! \brief
-  The incarnation of BD_Shape under test for analyzing
-  floating point computations.
-*/
-typedef BD_Shape<ANALYZER_FP_FORMAT> FP_BD_Shape;
-
-/*! \brief
-  The incarnation of Octagonal_Shape under test for analyzing
-  floating point computations.
-*/
-typedef Octagonal_Shape<ANALYZER_FP_FORMAT> FP_Octagonal_Shape;
-#endif
-#endif
-
 template <typename Shape>
 inline bool
 has_exact_coefficient_type(const Shape&) {
@@ -598,7 +498,7 @@ check_result_i(const BD_Shape<T>& computed_result,
 	   << q_computed_result
 	   << "\nknown result is\n"
 	   << known_result
-	   << endl;
+	   << std::endl;
       return false;
     }
     else
@@ -612,7 +512,7 @@ check_result_i(const BD_Shape<T>& computed_result,
 	 << q_computed_result
 	 << "\nknown result is\n"
 	 << known_result
-	 << endl;
+	 << std::endl;
     return false;
   }
 
@@ -632,7 +532,7 @@ check_result_i(const BD_Shape<T>& computed_result,
 	 << q_computed_result
 	 << "\nknown result is\n"
 	 << known_result
-	 << endl;
+	 << std::endl;
   }
   return ok;
 }
@@ -664,7 +564,7 @@ check_result(const BD_Shape<T>& computed_result,
          << computed_result
          << "\nknown result is\n"
          << known_result
-         << endl;
+         << std::endl;
     return false;
   }
 }
@@ -699,7 +599,7 @@ check_result_i(const Octagonal_Shape<T>& computed_result,
            << q_computed_result
 	   << "\nknown result is\n"
            << known_result
-	   << endl;
+	   << std::endl;
       return false;
     }
     else
@@ -713,7 +613,7 @@ check_result_i(const Octagonal_Shape<T>& computed_result,
 	 << q_computed_result
 	 << "\nknown result is\n"
 	 << known_result
-	 << endl;
+	 << std::endl;
     return false;
   }
 
@@ -733,7 +633,7 @@ check_result_i(const Octagonal_Shape<T>& computed_result,
 	 << q_computed_result
 	 << "\nknown result is\n"
 	 << known_result
-	 << endl;
+	 << std::endl;
   }
   return ok;
 }
@@ -790,7 +690,7 @@ check_result_i(const Box<Interval>& computed_result,
 	   << q_computed_result
 	   << "\nknown result is\n"
 	   << known_result
-	   << endl;
+	   << std::endl;
       return false;
     }
     else
@@ -804,7 +704,7 @@ check_result_i(const Box<Interval>& computed_result,
 	 << q_computed_result
 	 << "\nknown result is\n"
 	 << known_result
-	 << endl;
+	 << std::endl;
     nout << "Individual dimensions where containment does not hold"
 	 << "\n(Variable: computed-result known-result):\n";
     for (dimension_type i = 0; i < computed_result.space_dimension(); ++i) {
@@ -815,7 +715,7 @@ check_result_i(const Box<Interval>& computed_result,
 	     << q_computed_result.get_interval(Variable(i))
 	     << ' '
 	     << known_result.get_interval(Variable(i))
-	     << endl;
+	     << std::endl;
       }
     }
     return false;
@@ -837,7 +737,7 @@ check_result_i(const Box<Interval>& computed_result,
 	 << q_computed_result
 	 << "\nknown result is\n"
 	 << known_result
-	 << endl;
+	 << std::endl;
   }
   return ok;
 }
@@ -869,7 +769,7 @@ check_result(const Box<Interval>& computed_result,
          << computed_result
          << "\nknown result is\n"
          << known_result
-         << endl;
+         << std::endl;
     return false;
   }
 }
@@ -1207,12 +1107,18 @@ print_congruences(const Partially_Reduced_Product<D1, D2, R>& pd,
 }
 
 void
-print_function(const Parma_Polyhedra_Library::Test::Partial_Function& function,
+print_function(const Parma_Polyhedra_Library::Partial_Function& function,
 	       const std::string& intro = "",
 	       std::ostream& s = nout);
 
 } // namespace Test
 
 } // namespace Parma_Polyhedra_Library
+
+// These using directive and declaration are just to avoid the
+// corresponding namespace qualifications in all the tests.
+using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::Test;
+using std::endl;
 
 #endif // !defined(PPL_ppl_test_hh)

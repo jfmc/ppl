@@ -28,26 +28,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Integer.hh"
 #include "assert.hh"
 
-#if defined(__GNUC__)
 /*! \brief
   Performs the test <CODE>a < b</CODE> avoiding the warning about the
   comparison being always false due to limited range of data type.
+  FIXME: we don't have found a working solution. gcc option
+  -Wno-type-limits suppress the warning
 */
-#define PPL_LT_SILENT(a, b)				\
-  ({						\
-      __typeof__(a) _a = (a);			\
-      __typeof__(b) _b = (b);			\
-      _a <= _b && _a != _b;			\
-  })
-/*! \brief
-  Performs the test <CODE>a > b</CODE> avoiding the warning about the
-  comparison being always false due to limited range of data type.
-*/
-#define PPL_GT_SILENT(a, b) PPL_LT_SILENT(b, a)
-#else
 #define PPL_LT_SILENT(a, b) ((a) < (b))
 #define PPL_GT_SILENT(a, b) ((a) > (b))
-#endif
 
 namespace Parma_Polyhedra_Library {
 

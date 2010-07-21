@@ -44,8 +44,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid.types.hh"
 #include "Partially_Reduced_Product.types.hh"
 #include "intervals.defs.hh"
-#include "Interval.types.hh"
-#include "Linear_Form.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -720,7 +718,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p x and \p y are dimension-incompatible.
   */
-  bool contains(const Box&) const;
+  bool contains(const Box& y) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this strictly contains \p y.
@@ -728,7 +726,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p x and \p y are dimension-incompatible.
   */
-  bool strictly_contains(const Box&) const;
+  bool strictly_contains(const Box& y) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
@@ -1017,30 +1015,6 @@ public:
 		    const Linear_Expression& expr,
 		    Coefficient_traits::const_reference denominator
 		      = Coefficient_one());
-
-  // FIXME: To be completed.
-  /*! \brief
-    Assigns to \p *this the \ref affine_form_relation "affine form image"
-    of \p *this under the function mapping variable \p var into the
-    affine expression(s) specified by \p lf.
-
-    \param var
-    The variable to which the affine expression is assigned.
-
-    \param lf
-    The linear form on intervals with floating point boundaries that
-    defines the affine expression(s). ALL of its coefficients MUST be bounded.
-
-    \exception std::invalid_argument
-    Thrown if \p lf and \p *this are dimension-incompatible or if \p var
-    is not a dimension of \p *this.
-
-    This function is used in abstract interpretation to model an assignment
-    of a value that is correctly overapproximated by \p lf to the
-    floating point variable represented by \p var.
-  */
-  void affine_form_image(Variable var,
-                         const Linear_Form<ITV>& lf);
 
   /*! \brief
     Assigns to \p *this the
@@ -1524,8 +1498,8 @@ public:
     \param pfunc
     The partial function specifying the destiny of each dimension.
 
-    The template class Partial_Function must provide the following
-    methods.
+    The template type parameter Partial_Function must provide
+    the following methods.
     \code
       bool has_empty_codomain() const
     \endcode
@@ -2156,11 +2130,6 @@ private:
   void throw_dimension_incompatible(const char* method,
 				    const char* name_row,
 				    const Linear_Expression& y) const;
-
-  template <typename C>
-  void throw_dimension_incompatible(const char* method,
-                                    const char* name_row,
-                                    const Linear_Form<C>& y) const;
 
   static void throw_space_dimension_overflow(const char* method,
 					     const char* reason);

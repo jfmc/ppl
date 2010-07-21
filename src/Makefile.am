@@ -157,7 +157,6 @@ Variable.types.hh \
 Variables_Set.types.hh \
 Linear_Expression.types.hh \
 Linear_System.types.hh \
-Linear_Form.types.hh \
 Bit_Row.types.hh \
 Bit_Matrix.types.hh \
 Constraint_System.types.hh \
@@ -172,6 +171,7 @@ Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
 H79_Certificate.types.hh \
 Grid_Certificate.types.hh \
+Partial_Function.types.hh \
 Affine_Space.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
@@ -292,9 +292,6 @@ Grid_Generator_System.defs.hh \
 Congruence_System.defs.hh \
 Linear_Expression.defs.hh \
 Linear_Expression.inlines.hh \
-Linear_Form.defs.hh \
-Linear_Form.inlines.hh \
-Linear_Form.templates.hh \
 Constraint.defs.hh \
 Constraint.inlines.hh \
 Constraint_System.inlines.hh \
@@ -330,6 +327,8 @@ H79_Certificate.defs.hh \
 H79_Certificate.inlines.hh \
 Grid_Certificate.defs.hh \
 Grid_Certificate.inlines.hh \
+Partial_Function.defs.hh \
+Partial_Function.inlines.hh \
 Affine_Space.defs.hh \
 Affine_Space.inlines.hh \
 Polyhedron.defs.hh \
@@ -387,40 +386,7 @@ algorithms.hh \
 termination.defs.hh \
 termination.templates.hh \
 wrap_assign.hh \
-wrap_string.hh \
-Floating_Point_Expression.types.hh \
-Floating_Point_Expression.defs.hh \
-Floating_Point_Expression.inlines.hh \
-Floating_Point_Expression.templates.hh \
-Cast_Floating_Point_Expression.types.hh \
-Cast_Floating_Point_Expression.defs.hh \
-Cast_Floating_Point_Expression.inlines.hh \
-Cast_Floating_Point_Expression.templates.hh \
-Constant_Floating_Point_Expression.types.hh \
-Constant_Floating_Point_Expression.defs.hh \
-Constant_Floating_Point_Expression.inlines.hh \
-Variable_Floating_Point_Expression.types.hh \
-Variable_Floating_Point_Expression.defs.hh \
-Variable_Floating_Point_Expression.inlines.hh \
-Sum_Floating_Point_Expression.types.hh \
-Sum_Floating_Point_Expression.defs.hh \
-Sum_Floating_Point_Expression.inlines.hh \
-Sum_Floating_Point_Expression.templates.hh \
-Difference_Floating_Point_Expression.types.hh \
-Difference_Floating_Point_Expression.defs.hh \
-Difference_Floating_Point_Expression.inlines.hh \
-Difference_Floating_Point_Expression.templates.hh \
-Multiplication_Floating_Point_Expression.types.hh \
-Multiplication_Floating_Point_Expression.defs.hh \
-Multiplication_Floating_Point_Expression.inlines.hh \
-Multiplication_Floating_Point_Expression.templates.hh \
-Division_Floating_Point_Expression.types.hh \
-Division_Floating_Point_Expression.defs.hh \
-Division_Floating_Point_Expression.inlines.hh \
-Division_Floating_Point_Expression.templates.hh \
-Opposite_Floating_Point_Expression.types.hh \
-Opposite_Floating_Point_Expression.defs.hh \
-Opposite_Floating_Point_Expression.inlines.hh
+wrap_string.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
@@ -458,7 +424,6 @@ Init.cc \
 Coefficient.cc \
 Linear_Expression.cc \
 Linear_System.cc \
-Linear_Form.cc \
 Matrix.cc \
 Dense_Matrix.cc \
 Scalar_Products.cc \
@@ -470,6 +435,7 @@ Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \
 H79_Certificate.cc \
 Grid_Certificate.cc \
+Partial_Function.cc \
 Affine_Space.cc \
 Polyhedron_nonpublic.cc \
 Polyhedron_public.cc \
@@ -611,6 +577,7 @@ endif !USE_PRECOMPILED_HEADERS
 BUILT_SOURCES = \
 $(include_HEADERS) \
 $(nodist_noinst_HEADERS) \
+$(noinst_HEADERS) \
 $(PRECOMPILED) \
 BUGS.cc \
 COPYING.cc \

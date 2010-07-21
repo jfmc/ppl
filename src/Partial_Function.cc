@@ -1,4 +1,4 @@
-/* Floating_Point_Expression class implementation: inline functions.
+/* Implementation of class Partial_Function (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,35 +20,22 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Floating_Point_Expression_inlines_hh
-#define PPL_Floating_Point_Expression_inlines_hh 1
-
-#include "globals.defs.hh"
-#include "Linear_Form.defs.hh"
+#include <ppl-config.h>
+#include "Partial_Function.defs.hh"
+#include "Variable.defs.hh"
+#include <iostream>
 
 namespace Parma_Polyhedra_Library {
 
-template <typename FP_Interval_Type, typename FP_Format>
-inline
-Floating_Point_Expression<FP_Interval_Type, FP_Format>
-::~Floating_Point_Expression() {}
-
-template <typename FP_Interval_Type, typename FP_Format>
-inline bool
-Floating_Point_Expression<FP_Interval_Type, FP_Format>
-::overflows(const FP_Linear_Form& lf) {
-  if (!lf.inhomogeneous_term().is_bounded())
-    return true;
-
-  dimension_type dimension = lf.space_dimension();
-  for (dimension_type i = 0; i < dimension; ++i) {
-    if (!lf.coefficient(Variable(i)).is_bounded())
-      return true;
-  }
-
-  return false;
+void
+Partial_Function::print(std::ostream& s) const {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (has_empty_codomain())
+    s << "empty" << std::endl;
+  else
+    for (dimension_type i = 0, i_end = vec.size(); i < i_end; ++i)
+      if (vec[i] != not_a_dimension())
+        s << Variable(i) << " --> " << Variable(vec[i]) << "\n";
 }
 
 } // namespace Parma_Polyhedra_Library
-
-#endif // !defined(PPL_Floating_Point_Expression_inlines_hh)

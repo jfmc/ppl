@@ -40,7 +40,7 @@ test01() {
 
   nout << "*** s << oc ***" << endl << "`" << s.str() << "'" << endl;
 
-  return s.str() == "A - B == 4, A + B == 3";
+  return s.str() == "A - B = 4, A + B = 3";
 }
 
 bool
@@ -57,7 +57,7 @@ test02() {
 
   nout << "*** s << oc ***" << endl << "`" << s.str() << "'" << endl;
 
-  return s.str() == "A - B == 5, A + B == -1";
+  return s.str() == "A - B = 5, A + B = -1";
 }
 
 bool
@@ -109,7 +109,7 @@ test05() {
 
   nout << "*** s << oc ***" << endl << "`" << s.str() << "'" << endl;
 
-  return s.str() == "A - B == 4";
+  return s.str() == "A - B = 4";
 }
 
 bool
@@ -127,7 +127,7 @@ test06() {
 
   nout << "*** s << oc ***" << endl << "`" << s.str() << "'" << endl;
 
-  return s.str() == "A + B == 3";
+  return s.str() == "A + B = 3";
 }
 
 bool
@@ -171,7 +171,7 @@ test09() {
 
   nout << "*** s << oc ***" << endl << "`" << s.str() << "'" << endl;
 
-  return s.str() == "2*A == 3, 2*B == 1, A - B == 1, A + B == 2";
+  return s.str() == "2*A = 3, 2*B = 1, A - B = 1, A + B = 2";
 }
 
 bool
@@ -191,7 +191,7 @@ test10() {
 
   nout << "*** s << oc ***" << endl << "`" << s.str() << "'" << endl;
 
-  return s.str() == "A == 3/2, B == 1/2, A - B == 1, A + B == 2";
+  return s.str() == "A = 3/2, B = 1/2, A - B = 1, A + B = 2";
 }
 
 } // namespace

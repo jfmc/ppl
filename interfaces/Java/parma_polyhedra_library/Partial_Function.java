@@ -24,15 +24,23 @@ package parma_polyhedra_library;
 
 //! A partial function on space dimension indices.
 /*! \ingroup PPL_Java_interface
-  In order to specify how space dimensions should be mapped by methods
-  named \c map_space_dimensions, the user should implement this
-  interface.
-
-  \note
-  An example of implementation can be found in the PPL test file
-  <CODE>interfaces/Java/tests/Test_Partial_Function.java</CODE>.
+  This class is used in order to specify how space dimensions should
+  be mapped by methods named \c map_space_dimensions.
 */
-public interface Partial_Function {
+public class Partial_Function extends PPL_Object {
+
+    /*! \brief
+      Builds the empty map.
+    */
+    public Partial_Function() {
+	build_cpp_object();
+    }
+
+    /*! \brief
+      Inserts mapping from \p i to \p j.
+    */
+    public native void insert(long i, long j);
+
     /*! \brief
       Returns \c true if and only if the partial function has
       an empty codomain (i.e., it is always undefined).
@@ -41,19 +49,31 @@ public interface Partial_Function {
       of the interface. Moreover, if \c true is returned, then
       none of the other interface methods will be called.
     */
-    boolean has_empty_codomain();
+    public native boolean has_empty_codomain();
 
     /*! \brief
       Returns the maximum value that belongs to the codomain
       of the partial function.
     */
-    long max_in_codomain();
+    public native long max_in_codomain();
 
     /*! \brief
-      Sets \p j to the value (if any) of the partial function on index \p i.
+      If the partial function is defined on index \p i, returns its value.
 
-      The function returns \c true if and only if the partial function
-      is defined on domain value \p i.
+      The function returns a negative value if the partial function
+      is not defined on domain value \p i.
     */
-    boolean maps(Long i, By_Reference<Long> j);
+    public native long maps(long i);
+
+    /*! \brief
+      Releases all resources managed by \p this,
+      also resetting it to a null reference.
+    */
+    public native void free();
+
+    //! Releases all resources managed by \p this.
+    protected native void finalize();
+
+    //! Builds the underlying C++ object.
+    private native void build_cpp_object();
 }

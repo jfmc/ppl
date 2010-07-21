@@ -1130,8 +1130,9 @@ Java_parma_1polyhedra_1library_@1CLASS@_map_1space_1dimensions
 (JNIEnv* env, jobject j_this, jobject j_p_func) try {
   @CPP_CLASS@* this_ptr
     = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
-  Partial_Function ppl_pfunc(j_p_func, env);
-  this_ptr->map_space_dimensions(ppl_pfunc);
+  Partial_Function* p_func_ptr
+    = reinterpret_cast<Partial_Function*>(get_ptr(env, j_p_func));
+  this_ptr->map_space_dimensions(*p_func_ptr);
 }
 CATCH_ALL
 

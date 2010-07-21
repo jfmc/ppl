@@ -72,53 +72,6 @@ build_ppl_Variable(value caml_var) {
   return Variable(value_to_ppl_dimension(caml_var));
 }
 
-inline
-Partial_Function::Partial_Function() {
-}
-
-inline bool
-Partial_Function::has_empty_codomain() const {
-  return codomain.empty();
-}
-
-inline dimension_type
-Partial_Function::max_in_codomain() const {
-  if (codomain.empty())
-    throw std::runtime_error("Partial_Function::max_in_codomain()");
-  return *codomain.rbegin();
-}
-
-inline bool
-Partial_Function::maps(dimension_type i, dimension_type& j) const {
-  if (i >= vec.size())
-    return false;
-  dimension_type vec_i = vec[i];
-  if (vec_i == not_a_dimension())
-    return false;
-  j = vec_i;
-  return true;
-}
-
-inline bool
-Partial_Function::insert(dimension_type i, dimension_type j) {
-  std::pair<std::set<dimension_type>::iterator, bool> s = codomain.insert(j);
-  if (!s.second)
-    // *this is not injective!
-    return false;
-  if (i > vec.size())
-    vec.insert(vec.end(), i - vec.size(), not_a_dimension());
-  if (i == vec.size()) {
-    vec.insert(vec.end(), j);
-    return true;
-  }
-  dimension_type& vec_i = vec[i];
-  if (vec_i != not_a_dimension())
-    // Already mapped: *this is not a function!
-    return false;
-  vec_i = j;
-  return true;
-}
-
 } // namespace OCaml
 
 } // namespace Interfaces

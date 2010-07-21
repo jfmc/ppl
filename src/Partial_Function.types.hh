@@ -9,14 +9,13 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_Division_Floating_Point_Expression_types_hh
-#define PPL_Division_Floating_Point_Expression_types_hh 1
+#ifndef PPL_Partial_Function_types_hh
+#define PPL_Partial_Function_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-template <typename FP_Interval_Type, typename FP_Format>
-class Division_Floating_Point_Expression;
+class Partial_Function;
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Division_Floating_Point_Expression_types_hh)
+#endif // !defined(PPL_Partial_Function_types_hh)

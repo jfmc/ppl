@@ -1882,8 +1882,9 @@ m4_define(`ppl_@CLASS@_map_space_dimensions_code',
       Prolog_get_arg(2, t_pair, t_j);
       dimension_type i = term_to_Variable(t_i, where).id();
       dimension_type j = term_to_Variable(t_j, where).id();
-      if (i >= space_dim || !pfunc.insert(i, j))
+      if (i >= space_dim)
         return PROLOG_FAILURE;
+      pfunc.insert(i, j);
     }
 
     // Check the list is properly terminated.

@@ -56,19 +56,14 @@ Current Contributors:
                         at the implementation of the Parametric Integer
                         Programming solver.
 
-  Katy Dobson           [4] (University of Leeds) is working on the
-                        formalization and definition of algorithms for
-                        rational grids and products of grids and
-                        polyhedra.
-
   Marco Poletti         (student of the University of Parma)
                         is working on an implementation of sparse matrices
                         to be used in the MIP and PIP solvers of the PPL.
 
-  Enric Rodriguez Carbonell [5] (Technical University of Catalonia) is
+  Enric Rodriguez Carbonell [4] (Technical University of Catalonia) is
                         working on the implementation of polynomial spaces.
 
-  Alessandro Zaccagnini [6] (University of Parma) has helped with
+  Alessandro Zaccagnini [5] (University of Parma) has helped with
                         the efficient implementation of GCD and LCM
                         for checked numbers.  He is now working on the
                         definitions of interval arithmetic operations.
@@ -96,6 +91,11 @@ Past Contributors:
   Sara Bonini           (former student of the University of Parma) is
                         one of the four students with which the PPL
                         project started.
+
+  Katy Dobson           [6] (University of Leeds) worked on the
+                        formalization and definition of algorithms for
+                        rational grids and products of grids and
+                        polyhedra.
 
   Giordano Fracasso     (University of Parma) wrote the initial version
                         of the support for native and checked integer
@@ -366,9 +366,9 @@ projects and organizations:
  [2] http://www.comp.leeds.ac.uk/hill/
  [3] http://www.cs.unipr.it/~zaffanella/
  [*] http://www.prism.uvsq.fr/~fgalea/
- [4] http://www.comp.leeds.ac.uk/katyd/
- [5] http://www.lsi.upc.edu/~erodri/
- [6] http://www.math.unipr.it/~zaccagni/
+ [4] http://www.lsi.upc.edu/~erodri/
+ [5] http://www.math.unipr.it/~zaccagni/
+ [6] http://www.comp.leeds.ac.uk/katyd/
  [7] http://www.mundell.ukfsn.org/
  [8] http://www.irisa.fr/lande/fbesson/fbesson.html
  [9] http://www.cs.ucsb.edu/~bultan/

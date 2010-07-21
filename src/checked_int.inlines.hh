@@ -688,6 +688,10 @@ PPL_SPECIALIZE_ASSIGN(assign_int_mpq, unsigned int, mpq_class)
 PPL_SPECIALIZE_ASSIGN(assign_int_mpq, unsigned long, mpq_class)
 PPL_SPECIALIZE_ASSIGN(assign_int_mpq, unsigned long long, mpq_class)
 
+#if ~0 != -1
+#error "Only two's complement is supported"
+#endif
+
 #if UCHAR_MAX == 0xff
 #define CHAR_BITS 8
 #else
