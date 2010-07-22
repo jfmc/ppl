@@ -21,8 +21,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Float_Templates_hh
-#define PPL_Float_Templates_hh 1
+#ifndef PPL_Float_templates_hh
+#define PPL_Float_templates_hh 1
 
 #include <cmath>
 
@@ -121,4 +121,4 @@ const FP_Interval_Type& compute_absolute_error(
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Float_Templates_hh)
+#endif // !defined(PPL_Float_templates_hh)
