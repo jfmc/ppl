@@ -33,6 +33,7 @@ const FP_Interval_Type& compute_absolute_error(
 		        const Floating_Point_Format analyzed_format) {
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
 
+  // FIXME: check if initializing caches with EMPTY is better.
   static const FP_Interval_Type ZERO_INTERVAL = FP_Interval_Type(0);
   // Cached results for each different analyzed format.
   static FP_Interval_Type ieee754_half_result = ZERO_INTERVAL;
