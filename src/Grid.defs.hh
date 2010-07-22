@@ -40,7 +40,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "Grid_Certificate.types.hh"
 #include "Box.types.hh"
-#include "Polyhedron.types.hh"
+#include "Polyhedron.defs.hh"
 #include "BD_Shape.types.hh"
 #include "Octagonal_Shape.types.hh"
 #include <vector>
