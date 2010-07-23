@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <limits>
 
 namespace {
 
@@ -291,6 +292,37 @@ test08() {
   return ok1 && ok2 && ok3 && ok4 && ok5 && ok6;
 }
 
+bool
+test09() {
+  Variable A(0);
+  FP_Linear_Form f;
+  bool ok1 = !f.overflows();
+  f += A;
+  bool ok2 = !f.overflows();
+  FP_Interval max(std::numeric_limits<ANALYZER_FP_FORMAT>::max());
+  f *= max;
+  f *= max;
+  bool ok3 = f.overflows();
+  return ok1 && ok2 && ok3;
+}
+
+bool
+test10() {
+  Variable A(0);
+  FP_Linear_Form f;
+  FP_Interval_Abstract_Store s(2);
+  FP_Interval i(2.0);
+  f += i;
+  f += A;
+  s.set_interval(A, i);
+  FP_Interval result;
+  f.intervalize(s, result);
+  FP_Interval known_result = i+i;
+  nout << "Result: " << result << std::endl;
+  nout << "Known result: " << known_result << std::endl;
+  return result == known_result;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -302,4 +334,6 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

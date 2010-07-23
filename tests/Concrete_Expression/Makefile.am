@@ -51,12 +51,13 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
-C_Expr
+C_Expr \
+float \
+linearform1
 #bdshape1 \
 #bdshape2 \
 #digitalfilters1 \
 #floatingpointexpr1 \
-#linearform1 \
 #octagonalshape1 \
 #octagonalshape2 \
 #polyhedron1 \
@@ -137,6 +138,8 @@ bdshape1_SOURCES = bdshape1.cc
 bdshape2_SOURCES = bdshape2.cc
 
 digitalfilters1_SOURCES = digitalfilters1.cc
+
+float_SOURCES = float.cc
 
 floatingpointexpr1_SOURCES = floatingpointexpr1.cc
 
