@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Linear_Form_templates_hh
 #define PPL_Linear_Form_templates_hh 1
 
+#include "Linear_Form.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Box.defs.hh"
 #include <stdexcept>

@@ -428,6 +428,6 @@ private:
 };
 
 #include "Linear_Form.inlines.hh"
-#include "Linear_Form.templates.hh"
+// Linear_Form.templates.hh is not included here on purpose.
 
 #endif // !defined(PPL_Linear_Form_defs_hh)
