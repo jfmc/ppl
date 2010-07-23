@@ -73,7 +73,7 @@ Concrete_Expression_Type::bounded_integer_type_width() const {
   return impl.bounded_integer_type_width;
 }
 
-Bounded_Integer_Type_Representation
+inline Bounded_Integer_Type_Representation
 Concrete_Expression_Type::bounded_integer_type_representation() const {
   return impl.bounded_integer_type_representation;
 }
