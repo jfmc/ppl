@@ -65,7 +65,9 @@ bnot_linearize(const Unary_Operator<Target>& uop_expr,
   }
   else
     // Here int_r strictly contains 0.
-    return false;
+    result = FP_Interval_Type(0);
+    result.join_assign(1);
+    return true;
 }
 
 template <typename Target, typename FP_Interval_Type>
