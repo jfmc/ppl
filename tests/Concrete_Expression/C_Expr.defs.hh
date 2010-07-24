@@ -61,9 +61,9 @@ public:
   //! Returns the right-hand side of \p *this.
   const C_Expr* right_hand_side() const;
 
-  static const Concrete_Expression_BOP PLUS   = 0;
-  static const Concrete_Expression_BOP MINUS  = 1;
-  static const Concrete_Expression_BOP TIMES  = 2;
+  static const Concrete_Expression_BOP ADD   = 0;
+  static const Concrete_Expression_BOP SUB  = 1;
+  static const Concrete_Expression_BOP MUL  = 2;
   static const Concrete_Expression_BOP DIV    = 3;
   static const Concrete_Expression_BOP REM    = 4;
   static const Concrete_Expression_BOP BAND   = 5;
