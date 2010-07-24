@@ -360,6 +360,22 @@ public:
 };
 #endif
 
+/*! \brief
+  Computes the absolute error of floating point computations.
+
+  \par Template type parameters
+
+  - The class template parameter \p FP_Interval_Type represents the type
+  of the intervals used in the abstract domain. The interval bounds
+  should have a floating point type.
+
+  \param analyzed_format The floating point format used by the analyzed
+  program.
+
+  \return The interval \f$[-\omega; \omega]\f$ where \f$\omega\f$ is the
+  smallest non-zero positive number in the less precise floating point
+  format between the analyzer format and the analyzed format.
+*/
 template <typename FP_Interval_Type>
 const FP_Interval_Type& compute_absolute_error(
                         Floating_Point_Format analyzed_format);

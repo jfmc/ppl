@@ -325,11 +325,66 @@ public:
 
   // Floating point analysis related methods.
 
+  /*! \brief
+    Verifies if the linear form overflows.
+
+    \return
+    Returns <CODE>false</CODE> if all coefficients in \p lf are bounded,
+    <CODE>true</CODE> otherwise.
+
+    \p T must be the type of possibly unbounded quantities.
+  */
   bool overflows() const;
 
+  /*! \brief
+    Computes the relative error associated to floating point computations
+    that operate on a quantity that is overapproximated by \p *this.
+
+    \param analyzed_format The floating point format used by the analyzed
+    program.
+    \param result Becomes the linear form corresponding to the relative
+    error committed.
+
+    This method makes <CODE>result</CODE> become a linear form
+    obtained by evaluating the function \f$\varepsilon_{\mathbf{f}}(l)\f$
+    on the linear form. This function is defined as:
+    \f[
+    \varepsilon_{\mathbf{f}}\left([a;b]+\sum_{v \in \cV}[a_{v};b_{v}]v\right)
+    \defeq
+    (\textrm{max}(|a|,|b|) \amifp [-\beta^{-\textrm{p}};\beta^{-\textrm{p}}])
+    +
+    \sum_{v \in \cV}(\textrm{max}(|a_{v}|,|b_{v}|)
+    \amifp
+    [-\beta^{-\textrm{p}};\beta^{-\textrm{p}}])v
+    \f]
+    where p is the fraction size in bits for the format \f$\mathbf{f}\f$ and
+    \f$\beta\f$ the base.
+
+    The result is undefined if \p T is not the type of an interval with
+    floating point boundaries.
+  */
   void relative_error(Floating_Point_Format analyzed_format,
                       Linear_Form& result) const;
 
+  /*! \brief
+    Makes \p result become an interval that overapproximates all the
+    possible values of \p *this in the interval abstract store \p store.
+
+    \param store The abstract store.
+    \param result The linear form that will store the result.
+
+    This method makes <CODE>result</CODE> become
+    \f$\iota(lf)\rho^{\#}\f$, that is an interval defined as:
+    \f[
+    \iota\left(i + \sum_{v \in \cV}i_{v}v\right)\rho^{\#}
+    \defeq
+    i \asifp \left(\bigoplus_{v \in \cV}{}^{\#}i_{v} \amifp
+    \rho^{\#}(v)\right)
+    \f]
+
+    The result is undefined if \p T is not the type of an interval with
+    floating point boundaries.
+  */
   void intervalize(const Box<C>& store, C& result) const;
 
 private:
