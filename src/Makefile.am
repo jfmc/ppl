@@ -119,9 +119,6 @@ Has_Assign_Or_Swap.hh \
 assign_or_swap.hh \
 mp_std_bits.defs.hh \
 mp_std_bits.inlines.hh \
-Proxy.types.hh \
-Proxy.defs.hh \
-Proxy.inlines.hh \
 Concrete_Expression.types.hh \
 Concrete_Expression.defs.hh \
 Concrete_Expression.inlines.hh \

@@ -26,30 +26,54 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Bin_Op::Bin_Op(Concrete_Expression_BOP binary_operator,
-               const C_Expr* left_hand_side, const C_Expr* right_hand_side)
+Binary_Operator<C_Expr>
+::Binary_Operator(int binary_operator,
+                  const Concrete_Expression<C_Expr>* left_hand_side,
+                  const Concrete_Expression<C_Expr>* right_hand_side)
   : bop(binary_operator),
     lhs(left_hand_side),
     rhs(right_hand_side) {
 }
 
 inline
-Bin_Op::~Bin_Op() {
+Binary_Operator<C_Expr>::~Binary_Operator<C_Expr>() {
 }
 
 inline Concrete_Expression_BOP
-Bin_Op:: binary_operator() const {
+Binary_Operator<C_Expr>::binary_operator() const {
   return bop;
 }
 
-inline const C_Expr*
-Bin_Op::left_hand_side() const {
+inline const Concrete_Expression<C_Expr>*
+Binary_Operator<C_Expr>::left_hand_side() const {
   return lhs;
 }
 
-inline const C_Expr*
-Bin_Op::right_hand_side() const {
+inline const Concrete_Expression<C_Expr>*
+Binary_Operator<C_Expr>::right_hand_side() const {
   return rhs;
+}
+
+inline
+Unary_Operator<C_Expr>
+::Unary_Operator(int unary_operator,
+                 const Concrete_Expression<C_Expr>* argument)
+  : uop(unary_operator),
+    arg(argument) {
+}
+
+inline
+Unary_Operator<C_Expr>::~Unary_Operator<C_Expr>() {
+}
+
+inline Concrete_Expression_BOP
+Unary_Operator<C_Expr>::unary_operator() const {
+  return uop;
+}
+
+inline const Concrete_Expression<C_Expr>*
+Unary_Operator<C_Expr>::argument() const {
+  return arg;
 }
 
 } // namespace Parma_Polyhedra_Library

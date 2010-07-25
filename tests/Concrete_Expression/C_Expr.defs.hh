@@ -23,72 +23,86 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_C_Expr_defs_hh
 #define PPL_C_Expr_defs_hh 1
 
-#include "C_Expr.types.hh"
-#include "Concrete_Expression.types.hh"
-#include "Proxy.defs.hh"
+#include "Concrete_Expression.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
-class C_Expr {
-  //! Returns the type of \p *this.
-  virtual Concrete_Expression_Type type() const = 0;
+struct C_Expr;
 
-  //! Returns the kind of \p *this.
+template <>
+class Concrete_Expression<C_Expr> : public Concrete_Expression_Base<C_Expr> {
+public:
+  //! Returns the type of \* this.
+  Concrete_Expression_Type type() const;
+
+  //! Returns the kind of \* this.
   virtual Concrete_Expression_Kind kind() const = 0;
 };
 
-class Bin_Op : public C_Expr {
+template <>
+class Binary_Operator<C_Expr> : public Binary_Operator_Base<C_Expr> {
 public:
   //! Constructor from operator, lhs and rhs.
-  Bin_Op(Concrete_Expression_BOP binary_operator,
-         const C_Expr* left_hand_side, const C_Expr* right_hand_side);
+  Binary_Operator<C_Expr>(int binary_operator,
+                          const Concrete_Expression<C_Expr>* left_hand_side,
+                          const Concrete_Expression<C_Expr>* right_hand_side);
 
   //! Do-nothing destructor.
-  ~Bin_Op();
+  ~Binary_Operator<C_Expr>();
 
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
 
   //! Returns the kind of \p *this.
-  Concrete_Expression_Kind kind() const;
+  int kind() const;
 
   //! Returns the binary operator of \p *this.
-  Concrete_Expression_BOP binary_operator() const;
+  int binary_operator() const;
 
   //! Returns the left-hand side of \p *this.
-  const C_Expr* left_hand_side() const;
+  const Concrete_Expression<C_Expr>* left_hand_side() const;
 
   //! Returns the right-hand side of \p *this.
-  const C_Expr* right_hand_side() const;
+  const Concrete_Expression<C_Expr>* right_hand_side() const;
 
-  static const Concrete_Expression_BOP ADD   = 0;
-  static const Concrete_Expression_BOP SUB  = 1;
-  static const Concrete_Expression_BOP MUL  = 2;
-  static const Concrete_Expression_BOP DIV    = 3;
-  static const Concrete_Expression_BOP REM    = 4;
-  static const Concrete_Expression_BOP BAND   = 5;
-  static const Concrete_Expression_BOP BOR    = 6;
-  static const Concrete_Expression_BOP BXOR   = 7;
-  static const Concrete_Expression_BOP LSHIFT = 8;
-  static const Concrete_Expression_BOP RSHIFT = 9;
+  //! Constant identifying binary operator nodes.
+  enum {
+    KIND = 1
+  };
+
+  //! Constants encoding the different binary operators.
+  enum {
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+    REM,
+    BAND,
+    BOR,
+    BXOR,
+    LSHIFT,
+    RSHIFT
+  };
 
 private:
   //! The operator of \p *this.
-  const Concrete_Expression_BOP bop;
+  const int bop;
 
   //! The left-hand side of \p *this.
-  const C_Expr* lhs;
+  const Concrete_Expression<C_Expr>* lhs;
 
   //! The right-hand side of \p *this.
-  const C_Expr* rhs;
+  const Concrete_Expression<C_Expr>* rhs;
 };
 
-class Un_Op : public C_Expr {
-  //! Constructor from operator, lhs and rhs.
-  Un_Op(Concrete_Expression_UOP unary_operator, const C_Expr* argument);
+template <>
+class Unary_Operator<C_Expr> : public Unary_Operator_Base<C_Expr> {
+  //! Constructor from operator and argument.
+  Unary_Operator<C_Expr>(int unary_operator,
+                         const Concrete_Expression<C_Expr>* argument);
 
   //! Do-nothing destructor.
-  ~Un_Op();
+  ~Unary_Operator<C_Expr>();
 
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
@@ -96,77 +110,66 @@ class Un_Op : public C_Expr {
   //! Returns the kind of \p *this.
   Concrete_Expression_Kind kind() const;
 
-  //! Returns the argument of \p *this.
-  const C_Expr* argument() const;
+  //! Returns the unary operator of \p *this.
+  int unary_operator() const;
 
-  static const Concrete_Expression_UOP UPLUS  = 0;
-  static const Concrete_Expression_UOP UMINUS = 1;
-  static const Concrete_Expression_UOP BNOT   = 2;
+  //! Returns the argument of \p *this.
+  const Concrete_Expression<C_Expr>* argument() const;
+
+  //! Constant identifying unary operator nodes.
+  enum {
+    KIND = 2
+  };
+
+  //! Constants encoding the different unary operators.
+  enum {
+    UPLUS,
+    UMINUS,
+    BNOT
+  };
 
 private:
   //! The operator of \p *this.
-  const Concrete_Expression_UOP uop;
+  const int uop;
 
   //! The argument of \p *this.
-  const C_Expr* arg;
-};
-
-class Cast_Op : public C_Expr {
-};
-
-class Int_Const : public C_Expr {
-};
-
-class Float_Const : public C_Expr {
-};
-
-class Appr_Ref : public C_Expr {
-};
-
-struct PPL_C_Expr;
-
-template <>
-struct Underlying_To_Exposed<PPL_C_Expr, C_Expr> {
-  typedef Concrete_Expression<PPL_C_Expr> Type;
+  const Concrete_Expression<C_Expr>* arg;
 };
 
 template <>
-struct Underlying_To_Exposed<PPL_C_Expr, Bin_Op> {
-  typedef Binary_Operator<PPL_C_Expr> Type;
-};
-
-template<>
-struct Exposed_To_Underlying<PPL_C_Expr, Concrete_Expression<PPL_C_Expr> > {
-  typedef C_Expr Type;
-};
-
-template<>
-struct Exposed_To_Underlying<PPL_C_Expr, Binary_Operator<PPL_C_Expr> > {
-  typedef Bin_Op Type;
-};
-
-template <>
-class Concrete_Expression<PPL_C_Expr>
-  : public Concrete_Expression_Base<PPL_C_Expr>,
-    public Proxy<PPL_C_Expr> {
-private:
-  typedef Exposed_To_Underlying<PPL_C_Expr,
-                                Concrete_Expression<PPL_C_Expr> >::Type
-  Underlying;
-};
-
-template <>
-class Binary_Operator<PPL_C_Expr>
-  : public Binary_Operator_Base<PPL_C_Expr> {
+class Cast_Operator<C_Expr>
+  : public Cast_Operator_Base<C_Expr> {
 public:
-  const Concrete_Expression<PPL_C_Expr>* get_lhs() {
-    return exposed(underlying(this)->left_hand_side());
-  }
+  //! Constant identifying cast nodes.
+  enum { KIND = 3 };
+};
+
+template <>
+class Integer_Constant<C_Expr>
+  : public Integer_Constant_Base<C_Expr> {
+public:
+  //! Constant identifying integer constant nodes.
+  enum { KIND = 4 };
+};
+
+template <>
+class Floating_Point_Constant<C_Expr>
+  : public Floating_Point_Constant_Base<C_Expr> {
+public:
+  //! Constant identifying floating constant nodes.
+  enum { KIND = 5 };
+};
+
+template <>
+class Approximable_Reference<C_Expr>
+  : public Approximable_Reference_Base<C_Expr> {
+public:
+  //! Constant identifying approximable reference nodes.
+  enum { KIND = 6 };
 };
 
 } // namespace Parma_Polyhedra_Library
 
-#include "Concrete_Expression.defs.hh"
 #include "C_Expr.inlines.hh"
 //#include "C_Expr.templates.hh"
 
