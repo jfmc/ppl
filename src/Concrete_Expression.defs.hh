@@ -162,6 +162,12 @@ class Floating_Point_Constant_Base : public Concrete_Expression<Target> {
 
 template <typename Target>
 class Approximable_Reference_Base : public Concrete_Expression<Target> {
+public:
+  /*! \brief
+    If \p *this is a variable reference, returns the variable's
+    index. Returns <CODE>not_a_dimension()</CODE> otherwise.
+  */
+  dimension_type associated_dimension() const;
 };
 
 } // namespace Parma_Polyhedra_Library

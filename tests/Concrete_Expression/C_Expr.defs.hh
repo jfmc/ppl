@@ -54,10 +54,10 @@ public:
   Concrete_Expression_Type type() const;
 
   //! Returns the kind of \p *this.
-  int kind() const;
+  Concrete_Expression_Kind kind() const;
 
   //! Returns the binary operator of \p *this.
-  int binary_operator() const;
+  Concrete_Expression_BOP binary_operator() const;
 
   //! Returns the left-hand side of \p *this.
   const Concrete_Expression<C_Expr>* left_hand_side() const;
@@ -97,6 +97,7 @@ private:
 
 template <>
 class Unary_Operator<C_Expr> : public Unary_Operator_Base<C_Expr> {
+public:
   //! Constructor from operator and argument.
   Unary_Operator<C_Expr>(int unary_operator,
                          const Concrete_Expression<C_Expr>* argument);
@@ -111,7 +112,7 @@ class Unary_Operator<C_Expr> : public Unary_Operator_Base<C_Expr> {
   Concrete_Expression_Kind kind() const;
 
   //! Returns the unary operator of \p *this.
-  int unary_operator() const;
+  Concrete_Expression_UOP unary_operator() const;
 
   //! Returns the argument of \p *this.
   const Concrete_Expression<C_Expr>* argument() const;
@@ -160,12 +161,35 @@ public:
   enum { KIND = 5 };
 };
 
+// We currently only consider variable references.
 template <>
 class Approximable_Reference<C_Expr>
   : public Approximable_Reference_Base<C_Expr> {
 public:
+  //! Builds a reference to the variable having the given index.
+  Approximable_Reference<C_Expr>(dimension_type var_index);
+
+  //! Do-nothing destructor.
+  ~Approximable_Reference<C_Expr>();
+
+  //! Returns the type of \p *this.
+  Concrete_Expression_Type type() const;
+
+  //! Returns the kind of \p *this.
+  Concrete_Expression_Kind kind() const;
+
+  /*! \brief
+    If \p *this is a variable reference, returns the variable's
+    index. Returns <CODE>not_a_dimension()</CODE> otherwise.
+  */
+  dimension_type associated_dimension() const;
+
   //! Constant identifying approximable reference nodes.
   enum { KIND = 6 };
+
+private:
+  //! The index of the referenced variable.
+  dimension_type var_dimension;
 };
 
 } // namespace Parma_Polyhedra_Library

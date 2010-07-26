@@ -39,6 +39,11 @@ inline
 Binary_Operator<C_Expr>::~Binary_Operator<C_Expr>() {
 }
 
+inline Concrete_Expression_Kind
+Binary_Operator<C_Expr>::kind() const {
+  return KIND;
+}
+
 inline Concrete_Expression_BOP
 Binary_Operator<C_Expr>::binary_operator() const {
   return bop;
@@ -66,6 +71,11 @@ inline
 Unary_Operator<C_Expr>::~Unary_Operator<C_Expr>() {
 }
 
+inline Concrete_Expression_Kind
+Unary_Operator<C_Expr>::kind() const {
+  return KIND;
+}
+
 inline Concrete_Expression_BOP
 Unary_Operator<C_Expr>::unary_operator() const {
   return uop;
@@ -74,6 +84,21 @@ Unary_Operator<C_Expr>::unary_operator() const {
 inline const Concrete_Expression<C_Expr>*
 Unary_Operator<C_Expr>::argument() const {
   return arg;
+}
+
+inline
+Approximable_Reference<C_Expr>::
+Approximable_Reference(dimension_type var_index)
+: var_dimension(var_index) {
+}
+
+inline
+Approximable_Reference<C_Expr>::~Approximable_Reference<C_Expr>() {
+}
+
+inline Concrete_Expression_Kind
+Approximable_Reference<C_Expr>::kind() const {
+  return KIND;
 }
 
 } // namespace Parma_Polyhedra_Library
