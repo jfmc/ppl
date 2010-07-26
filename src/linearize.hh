@@ -619,9 +619,6 @@ linearize(const Concrete_Expression<Target>& expr,
       "linearize<Target, FP_Interval_Type>:"
       " FP_Interval_Type is not the type of an interval with floating point boundaries.");
 
-  // Check that we are dealing with an expression of floating point type.
-  PPL_ASSERT(expr.is_floating_point());
-
   switch(expr.kind()) {
   case Integer_Constant<Target>::KIND:
     throw std::runtime_error("PPL internal error: unimplemented");
