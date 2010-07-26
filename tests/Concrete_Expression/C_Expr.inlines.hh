@@ -101,6 +101,11 @@ Approximable_Reference<C_Expr>::kind() const {
   return KIND;
 }
 
+inline dimension_type
+Approximable_Reference<C_Expr>::associated_dimension() const {
+  return var_dimension;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_C_Expr_inlines_hh)
