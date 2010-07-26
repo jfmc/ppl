@@ -37,14 +37,14 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
               const Box<FP_Interval_Type>& int_store,
               const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
-  PPL_ASSERT(bop_expr.get_bop() == Binary_Operator<Target>::ADD);
+  PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::ADD);
 
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
   typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
   typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
 
-  if (!linearize(*(bop_expr.get_lhs()), int_store, lf_store, result))
+  if (!linearize(*(bop_expr.left_hand_side()), int_store, lf_store, result))
     return false;
 
   Floating_Point_Format analyzed_format = bop_expr.floating_point_format();
@@ -52,7 +52,7 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
   result.relative_error(analyzed_format, rel_error);
   result += rel_error;
   FP_Linear_Form linearized_second_operand;
-  if (!linearize(*(bop_expr.get_rhs()), int_store, lf_store,
+  if (!linearize(*(bop_expr.right_hand_side()), int_store, lf_store,
                  linearized_second_operand))
     return false;
 
@@ -71,14 +71,14 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
               const Box<FP_Interval_Type>& int_store,
               const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
-  PPL_ASSERT(bop_expr.get_bop() == Binary_Operator<Target>::SUB);
+  PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::SUB);
 
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
   typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
   typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
 
-  if (!linearize(*(bop_expr.get_lhs()), int_store, lf_store, result))
+  if (!linearize(*(bop_expr.left_hand_side()), int_store, lf_store, result))
     return false;
 
   Floating_Point_Format analyzed_format = bop_expr.floating_point_format();
@@ -86,7 +86,7 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
   result.relative_error(analyzed_format, rel_error);
   result += rel_error;
   FP_Linear_Form linearized_second_operand;
-  if (!linearize(*(bop_expr.get_rhs()), int_store, lf_store,
+  if (!linearize(*(bop_expr.right_hand_side()), int_store, lf_store,
                  linearized_second_operand))
     return false;
 
@@ -105,7 +105,7 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
               const Box<FP_Interval_Type>& int_store,
               const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
-  PPL_ASSERT(bop_expr.get_bop() == Binary_Operator<Target>::MUL);
+  PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::MUL);
 
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
@@ -127,13 +127,13 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
   // true if we intervalize the first form, false if we intervalize the second.
   bool intervalize_first;
   FP_Linear_Form linearized_first_operand;
-  if (!linearize(*(bop_expr.get_lhs()), int_store, lf_store,
+  if (!linearize(*(bop_expr.left_hand_side()), int_store, lf_store,
                  linearized_first_operand))
     return false;
   FP_Interval_Type intervalized_first_operand;
   linearized_first_operand.intervalize(int_store, intervalized_first_operand);
   FP_Linear_Form linearized_second_operand;
-  if (!linearize(*(bop_expr.get_rhs()), int_store, lf_store,
+  if (!linearize(*(bop_expr.right_hand_side()), int_store, lf_store,
                  linearized_second_operand))
     return false;
   FP_Interval_Type intervalized_second_operand;
@@ -190,7 +190,7 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
               const Box<FP_Interval_Type>& int_store,
               const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
-  PPL_ASSERT(bop_expr.get_bop() == Binary_Operator<Target>::DIV);
+  PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::DIV);
 
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
@@ -198,7 +198,7 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
   typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
 
   FP_Linear_Form linearized_second_operand;
-  if (!linearize(*(bop_expr.get_rhs()), int_store, lf_store,
+  if (!linearize(*(bop_expr.right_hand_side()), int_store, lf_store,
                  linearized_second_operand))
     return false;
   FP_Interval_Type intervalized_second_operand;
@@ -211,7 +211,7 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
        intervalized_second_operand.upper() >= 0))
     return false;
 
-  if (!linearize(*(bop_expr.get_lhs()), int_store, lf_store, result))
+  if (!linearize(*(bop_expr.left_hand_side()), int_store, lf_store, result))
     return false;
 
   Floating_Point_Format analyzed_format = bop_expr.floating_point_format();
@@ -258,12 +258,12 @@ linearize(const Concrete_Expression<Target>& expr,
   case Unary_Operator<Target>::KIND:
     Unary_Operator<Target> uop_expr =
       static_cast<Unary_Operator<Target> >(expr);
-    switch (uop_expr.get_uop()) {
+    switch (uop_expr.unary_operator()) {
     case Unary_Operator<Target>::UPLUS:
-      return linearize(uop_expr.get_arg(), int_store, lf_store, result);
+      return linearize(uop_expr.argument(), int_store, lf_store, result);
       break;
     case Unary_Operator<Target>::UMINUS:
-      if (!linearize(uop_expr.get_arg(), int_store, lf_store, result))
+      if (!linearize(uop_expr.argument(), int_store, lf_store, result))
         return false;
 
       result.negate();
@@ -279,7 +279,7 @@ linearize(const Concrete_Expression<Target>& expr,
   case Binary_Operator<Target>::KIND:
     Binary_Operator<Target> bop_expr =
       static_cast<Binary_Operator<Target> >(expr);
-    switch (bop_expr.get_bop()) {
+    switch (bop_expr.binary_operator()) {
     case Binary_Operator<Target>::ADD:
       return add_linearize(bop_expr, int_store, lf_store, result);
       break;
