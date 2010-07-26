@@ -687,7 +687,7 @@ linearize(const Concrete_Expression<Target>& expr,
     Approximable_Reference<Target> ref_expr =
       static_cast<Approximable_Reference<Target> >(expr);
     /* Variable references are the only that we are currently
-         able to analyze */
+       able to analyze */
     dimension_type variable_index = ref_expr.associated_dimension();
     if (variable_index == not_a_dimension())
       return false;
