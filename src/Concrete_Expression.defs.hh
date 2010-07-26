@@ -129,7 +129,7 @@ template <typename Target>
 class Binary_Operator_Base : public Concrete_Expression<Target> {
 public:
   //! Returns a constant identifying the operator of \p *this.
-  int binary_operator() const;
+  Concrete_Expression_BOP binary_operator() const;
 
   //! Returns the left-hand side of \p *this.
   const Concrete_Expression<Target>* left_hand_side() const;
@@ -142,7 +142,7 @@ template <typename Target>
 class Unary_Operator_Base : public Concrete_Expression<Target> {
 public:
   //! Returns a constant identifying the operator of \p *this.
-  int unary_operator() const;
+  Concrete_Expression_UOP unary_operator() const;
 
   //! Returns the argument \p *this.
   const Concrete_Expression<Target>* argument() const;
