@@ -150,6 +150,8 @@ public:
 
 template <typename Target>
 class Cast_Operator_Base : public Concrete_Expression<Target> {
+  //! Returns the casted expression.
+  const Concrete_Expression<Target>* argument() const;
 };
 
 template <typename Target>
@@ -158,6 +160,11 @@ class Integer_Constant_Base : public Concrete_Expression<Target> {
 
 template <typename Target>
 class Floating_Point_Constant_Base : public Concrete_Expression<Target> {
+  /*! \brief
+    Returns a string for the floating point constant as written
+    in the analyzed program.
+  */
+  const char* get_value_as_string() const;
 };
 
 template <typename Target>

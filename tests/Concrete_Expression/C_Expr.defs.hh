@@ -141,6 +141,10 @@ template <>
 class Cast_Operator<C_Expr>
   : public Cast_Operator_Base<C_Expr> {
 public:
+  //! Constructor from cast type and argument.
+  Cast_Operator<C_Expr>(Concrete_Expression_Type c_type,
+                        const Concrete_Expression<C_Expr>* ar);
+
   //! Do-nothing destructor.
   ~Cast_Operator<C_Expr>();
 
@@ -150,8 +154,18 @@ public:
   //! Returns the kind of \p *this.
   Concrete_Expression_Kind kind() const;
 
+  //! Returns the casted expression.
+  const Concrete_Expression<C_Expr>* argument() const;
+
   //! Constant identifying cast nodes.
   enum { KIND = 3 };
+
+private:
+  //! The type of the cast expression.
+  Concrete_Expression_Type cast_type;
+
+  //! The casted expression.
+  const Concrete_Expression<C_Expr>* arg;
 };
 
 template <>
@@ -175,6 +189,9 @@ template <>
 class Floating_Point_Constant<C_Expr>
   : public Floating_Point_Constant_Base<C_Expr> {
 public:
+  //! Constructor from value.
+  Floating_Point_Constant<C_Expr>(const char* value_string);
+
   //! Do-nothing destructor.
   ~Floating_Point_Constant<C_Expr>();
 
@@ -184,8 +201,18 @@ public:
   //! Returns the kind of \p *this.
   Concrete_Expression_Kind kind() const;
 
+  /*! \brief
+    Returns a string for the floating point constant as written
+    in the analyzed program.
+  */
+  const char* get_value_as_string() const;
+
   //! Constant identifying floating constant nodes.
   enum { KIND = 5 };
+
+private:
+  //! The floating point constant as written.
+  const char* value;
 };
 
 // We currently only consider variable references.

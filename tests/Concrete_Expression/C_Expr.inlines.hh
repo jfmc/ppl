@@ -87,12 +87,30 @@ Unary_Operator<C_Expr>::argument() const {
 }
 
 inline
+Cast_Operator<C_Expr>::
+Cast_Operator(Concrete_Expression_Type c_type,
+              const Concrete_Expression<C_Expr>* ar)
+  : cast_type(c_type),
+    arg(ar) {
+}
+
+inline
 Cast_Operator<C_Expr>::~Cast_Operator<C_Expr>() {
+}
+
+inline Concrete_Expression_Type
+Cast_Operator<C_Expr>::type() const {
+  return cast_type;
 }
 
 inline Concrete_Expression_Kind
 Cast_Operator<C_Expr>::kind() const {
   return KIND;
+}
+
+inline const Concrete_Expression<C_Expr>*
+Cast_Operator<C_Expr>::argument() const {
+  return arg;
 }
 
 inline
@@ -105,12 +123,23 @@ Integer_Constant<C_Expr>::kind() const {
 }
 
 inline
+Floating_Point_Constant<C_Expr>::
+Floating_Point_Constant(const char* value_string)
+  : value(value_string) {
+}
+
+inline
 Floating_Point_Constant<C_Expr>::~Floating_Point_Constant<C_Expr>() {
 }
 
 inline Concrete_Expression_Kind
 Floating_Point_Constant<C_Expr>::kind() const {
   return KIND;
+}
+
+inline const char*
+Floating_Point_Constant<C_Expr>::get_value_as_string() const {
+  return value;
 }
 
 inline
