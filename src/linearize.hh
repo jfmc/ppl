@@ -117,7 +117,8 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
   if (!linearize(*(bop_expr.left_hand_side()), int_store, lf_store, result))
     return false;
 
-  Floating_Point_Format analyzed_format = bop_expr.floating_point_format();
+  Floating_Point_Format analyzed_format =
+    bop_expr.type().floating_point_format();
   FP_Linear_Form rel_error;
   result.relative_error(analyzed_format, rel_error);
   result += rel_error;
@@ -227,7 +228,8 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
   if (!linearize(*(bop_expr.left_hand_side()), int_store, lf_store, result))
     return false;
 
-  Floating_Point_Format analyzed_format = bop_expr.floating_point_format();
+  Floating_Point_Format analyzed_format =
+    bop_expr.type().floating_point_format();
   FP_Linear_Form rel_error;
   result.relative_error(analyzed_format, rel_error);
   result += rel_error;
@@ -415,7 +417,8 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
 
   // Here we do the actual computation.
   // For optimizing, we store the relative error directly into result.
-  Floating_Point_Format analyzed_format = bop_expr.floating_point_format();
+  Floating_Point_Format analyzed_format =
+    bop_expr.type().floating_point_format();
   if (intervalize_first) {
     linearized_second_operand.relative_error(analyzed_format, result);
     linearized_second_operand *= intervalized_first_operand;
@@ -558,7 +561,8 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
   if (!linearize(*(bop_expr.left_hand_side()), int_store, lf_store, result))
     return false;
 
-  Floating_Point_Format analyzed_format = bop_expr.floating_point_format();
+  Floating_Point_Format analyzed_format =
+    bop_expr.type().floating_point_format();
   FP_Linear_Form rel_error;
   result.relative_error(analyzed_format, rel_error);
   result /= intervalized_second_operand;

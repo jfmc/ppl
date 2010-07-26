@@ -141,6 +141,15 @@ template <>
 class Cast_Operator<C_Expr>
   : public Cast_Operator_Base<C_Expr> {
 public:
+  //! Do-nothing destructor.
+  ~Cast_Operator<C_Expr>();
+
+  //! Returns the type of \p *this.
+  Concrete_Expression_Type type() const;
+
+  //! Returns the kind of \p *this.
+  Concrete_Expression_Kind kind() const;
+
   //! Constant identifying cast nodes.
   enum { KIND = 3 };
 };
@@ -149,6 +158,15 @@ template <>
 class Integer_Constant<C_Expr>
   : public Integer_Constant_Base<C_Expr> {
 public:
+  //! Do-nothing destructor.
+  ~Integer_Constant<C_Expr>();
+
+  //! Returns the type of \p *this.
+  Concrete_Expression_Type type() const;
+
+  //! Returns the kind of \p *this.
+  Concrete_Expression_Kind kind() const;
+
   //! Constant identifying integer constant nodes.
   enum { KIND = 4 };
 };
@@ -157,6 +175,15 @@ template <>
 class Floating_Point_Constant<C_Expr>
   : public Floating_Point_Constant_Base<C_Expr> {
 public:
+  //! Do-nothing destructor.
+  ~Floating_Point_Constant<C_Expr>();
+
+  //! Returns the type of \p *this.
+  Concrete_Expression_Type type() const;
+
+  //! Returns the kind of \p *this.
+  Concrete_Expression_Kind kind() const;
+
   //! Constant identifying floating constant nodes.
   enum { KIND = 5 };
 };

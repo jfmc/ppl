@@ -87,6 +87,33 @@ Unary_Operator<C_Expr>::argument() const {
 }
 
 inline
+Cast_Operator<C_Expr>::~Cast_Operator<C_Expr>() {
+}
+
+inline Concrete_Expression_Kind
+Cast_Operator<C_Expr>::kind() const {
+  return KIND;
+}
+
+inline
+Integer_Constant<C_Expr>::~Integer_Constant<C_Expr>() {
+}
+
+inline Concrete_Expression_Kind
+Integer_Constant<C_Expr>::kind() const {
+  return KIND;
+}
+
+inline
+Floating_Point_Constant<C_Expr>::~Floating_Point_Constant<C_Expr>() {
+}
+
+inline Concrete_Expression_Kind
+Floating_Point_Constant<C_Expr>::kind() const {
+  return KIND;
+}
+
+inline
 Approximable_Reference<C_Expr>::
 Approximable_Reference(dimension_type var_index)
 : var_dimension(var_index) {
