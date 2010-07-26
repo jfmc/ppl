@@ -31,6 +31,76 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+/*! \brief
+  Helper function used by <CODE>linearize</CODE> to linearize a
+  sum of floating point expressions.
+
+  \par Template type parameters
+
+  - The class template parameter \p Target specifies the implementation
+  of Concrete_Expression to be used.
+  - The class template parameter \p FP_Interval_Type represents the type
+  of the intervals used in the abstract domain. The interval bounds
+  should have a floating point type.
+
+  Makes \p result become the linearization of \p *this in the given
+  composite abstract store.
+
+  \param expr The binary operator concrete expression to linearize.
+  Its binary operator type must be <CODE>ADD</CODE>.
+  \param int_store The interval abstract store.
+  \param lf_store The linear form abstract store.
+  \param result The modified linear form.
+
+  \return <CODE>true</CODE> if the linearization succeeded,
+  <CODE>false</CODE> otherwise.
+
+  Note that all variables occuring in the expressions represented
+  by \p first_operand and \p second_operand MUST have an associated value in
+  \p int_store. If this precondition is not met, calling the method
+  causes an undefined behavior.
+
+  \par Linearization of sum floating-point expressions
+
+  Let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
+  \f$i' + \sum_{v \in \cV}i'_{v}v \f$
+  be two linear forms and \f$\aslf\f$ a sound abstract operator on linear
+  forms such that:
+
+  \f[
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \aslf
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)
+  =
+  \left(i \asifp i'\right)
+  + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v} \right)v.
+  \f]
+
+  Given an expression \f$e_{1} \oplus e_{2}\f$ and a composite
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
+  \rrbracket\f$, we construct the interval linear form
+  \f$\linexprenv{e_{1} \oplus e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
+  as follows:
+  \f[
+  \linexprenv{e_{1} \oplus e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  =
+  \linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
+  \aslf
+  \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  \aslf
+  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
+  \right)
+  \aslf
+  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  \right)
+  \aslf
+  mf_{\mathbf{f}}[-1;1]
+  \f]
+  where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the relative error
+  associated to \f$l\f$ (see method <CODE>relative_error</CODE> of
+  class Linear_Form) and \f$mf_{\mathbf{f}}\f$ is a rounding
+  error computed by function <CODE>compute_absolute_error</CODE>.
+*/
 template <typename Target, typename FP_Interval_Type>
 static bool
 add_linearize(const Binary_Operator<Target>& bop_expr,
@@ -65,6 +135,82 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
   return !result.overflows();
 }
 
+/*! \brief
+  Helper function used by <CODE>linearize</CODE> to linearize a
+  difference of floating point expressions.
+
+  \par Template type parameters
+
+  - The class template parameter \p Target specifies the implementation
+  of Concrete_Expression to be used.
+  - The class template parameter \p FP_Interval_Type represents the type
+  of the intervals used in the abstract domain. The interval bounds
+  should have a floating point type.
+
+  Makes \p result become the linearization of \p *this in the given
+  composite abstract store.
+
+  \param expr The binary operator concrete expression to linearize.
+  Its binary operator type must be <CODE>SUB</CODE>.
+  \param int_store The interval abstract store.
+  \param lf_store The linear form abstract store.
+  \param result The modified linear form.
+
+  \return <CODE>true</CODE> if the linearization succeeded,
+  <CODE>false</CODE> otherwise.
+
+  Note that all variables occuring in the expressions represented
+  by \p first_operand and \p second_operand MUST have an associated value in
+  \p int_store. If this precondition is not met, calling the method
+  causes an undefined behavior.
+
+  \par Linearization of difference floating-point expressions
+
+  Let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
+  \f$i' + \sum_{v \in \cV}i'_{v}v \f$
+  be two linear forms, \f$\aslf\f$ and \f$\adlf\f$ two sound abstract
+  operators on linear form such that:
+  \f[
+  \left(i + \sum_{v \in \cV}i_{v}v\right)
+  \aslf
+  \left(i' + \sum_{v \in \cV}i'_{v}v\right)
+  =
+  \left(i \asifp i'\right)
+  + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v,
+  \f]
+  \f[
+  \left(i + \sum_{v \in \cV}i_{v}v\right)
+  \adlf
+  \left(i' + \sum_{v \in \cV}i'_{v}v\right)
+  =
+  \left(i \adifp i'\right)
+  + \sum_{v \in \cV}\left(i_{v} \adifp i'_{v}\right)v.
+  \f]
+  Given an expression \f$e_{1} \ominus e_{2}\f$ and a composite
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
+  \rrbracket\f$,  we construct the interval linear form
+  \f$\linexprenv{e_{1} \ominus e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
+  on \f$\cV\f$ as follows:
+  \f[
+  \linexprenv{e_{1} \ominus e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  =
+  \linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
+  \adlf
+  \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  \aslf
+  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
+  \right)
+  \aslf
+  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  \right)
+  \aslf
+  mf_{\mathbf{f}}[-1;1]
+  \f]
+  where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the relative error
+  associated to \f$l\f$ (see method <CODE>relative_error</CODE> of
+  class Linear_Form) and \f$mf_{\mathbf{f}}\f$ is a rounding
+  error computed by function <CODE>compute_absolute_error</CODE>.
+*/
 template <typename Target, typename FP_Interval_Type>
 static bool
 sub_linearize(const Binary_Operator<Target>& bop_expr,
@@ -99,6 +245,111 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
   return !result.overflows();
 }
 
+/*! \brief
+  Helper function used by <CODE>linearize</CODE> to linearize a
+  product of floating point expressions.
+
+  \par Template type parameters
+
+  - The class template parameter \p Target specifies the implementation
+  of Concrete_Expression to be used.
+  - The class template parameter \p FP_Interval_Type represents the type
+  of the intervals used in the abstract domain. The interval bounds
+  should have a floating point type.
+
+  Makes \p result become the linearization of \p *this in the given
+  composite abstract store.
+
+  \param expr The binary operator concrete expression to linearize.
+  Its binary operator type must be <CODE>MUL</CODE>.
+  \param int_store The interval abstract store.
+  \param lf_store The linear form abstract store.
+  \param result The modified linear form.
+
+  \return <CODE>true</CODE> if the linearization succeeded,
+  <CODE>false</CODE> otherwise.
+
+  Note that all variables occuring in the expressions represented
+  by \p first_operand and \p second_operand MUST have an associated value in
+  \p int_store. If this precondition is not met, calling the method
+  causes an undefined behavior.
+
+  \par Linearization of multiplication floating-point expressions
+
+  Let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
+  \f$i' + \sum_{v \in \cV}i'_{v}v \f$
+  be two linear forms, \f$\aslf\f$ and \f$\amlf\f$ two sound abstract
+  operators on linear forms such that:
+  \f[
+  \left(i + \sum_{v \in \cV}i_{v}v\right)
+  \aslf
+  \left(i' + \sum_{v \in \cV}i'_{v}v\right)
+  =
+  \left(i \asifp i'\right)
+  + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v,
+  \f]
+  \f[
+  i
+  \amlf
+  \left(i' + \sum_{v \in \cV}i'_{v}v\right)
+  =
+  \left(i \amifp i'\right)
+  + \sum_{v \in \cV}\left(i \amifp i'_{v}\right)v.
+  \f]
+  Given an expression \f$[a;b] \otimes e_{2}\f$ and a composite
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
+  \rrbracket\f$, we construct the interval linear form
+  \f$\linexprenv{[a;b] \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
+  as follows:
+  \f[
+  \linexprenv{[a;b] \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  =
+  \left([a;b]
+  \amlf
+  \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}\right)
+  \aslf
+  \left([a;b]
+  \amlf
+  \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  \right)\right)
+  \aslf
+  mf_{\mathbf{f}}[-1;1].
+  \f].
+
+  Given an expression \f$e_{1} \otimes [a;b]\f$ and a composite
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
+  \rrbracket\f$, we construct the interval linear form
+  \f$\linexprenv{e_{1} \otimes [a;b]}{\rho^{\#}}{\rho^{\#}_l}\f$
+  as follows:
+  \f[
+  \linexprenv{e_{1} \otimes [a;b]}{\rho^{\#}}{\rho^{\#}_l}
+  =
+  \linexprenv{[a;b] \otimes e_{1}}{\rho^{\#}}{\rho^{\#}_l}.
+  \f]
+
+  Given an expression \f$e_{1} \otimes e_{2}\f$ and a composite
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
+  \rrbracket\f$, we construct the interval linear form
+  \f$\linexprenv{e_{1} \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
+  as follows:
+  \f[
+  \linexprenv{e_{1} \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  =
+  \linexprenv{\iota\left(\linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
+  \right)\rho^{\#}
+  \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l},
+  \f]
+  where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the relative error
+  associated to \f$l\f$ (see method <CODE>relative_error</CODE> of
+  class Linear_Form), \f$\iota(l)\rho^{\#}\f$ is the intervalization
+  of \f$l\f$ (see method <CODE>intervalize</CODE> of class Linear_Form),
+  and \f$mf_{\mathbf{f}}\f$ is a rounding error computed by function
+  <CODE>compute_absolute_error</CODE>.
+
+  Even though we intervalize the first operand in the above example, the
+  actual implementation utilizes an heuristics for choosing which of the two
+  operands must be intervalized in order to obtain the most precise result.
+*/
 template <typename Target, typename FP_Interval_Type>
 static bool
 mul_linearize(const Binary_Operator<Target>& bop_expr,
@@ -184,6 +435,99 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
   return !result.overflows();
 }
 
+/*! \brief
+  Helper function used by <CODE>linearize</CODE> to linearize a
+  division of floating point expressions.
+
+  \par Template type parameters
+
+  - The class template parameter \p Target specifies the implementation
+  of Concrete_Expression to be used.
+  - The class template parameter \p FP_Interval_Type represents the type
+  of the intervals used in the abstract domain. The interval bounds
+  should have a floating point type.
+
+  Makes \p result become the linearization of \p *this in the given
+  composite abstract store.
+
+  \param expr The binary operator concrete expression to linearize.
+  Its binary operator type must be <CODE>DIV</CODE>.
+  \param int_store The interval abstract store.
+  \param lf_store The linear form abstract store.
+  \param result The modified linear form.
+
+  \return <CODE>true</CODE> if the linearization succeeded,
+  <CODE>false</CODE> otherwise.
+
+  Note that all variables occuring in the expressions represented
+  by \p first_operand and \p second_operand MUST have an associated value in
+  \p int_store. If this precondition is not met, calling the method
+  causes an undefined behavior.
+
+  \par Linearization of division floating-point expressions
+
+  Let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
+  \f$i' + \sum_{v \in \cV}i'_{v}v \f$
+  be two linear forms, \f$\aslf\f$ and \f$\adivlf\f$ two sound abstract
+  operator on linear forms such that:
+  \f[
+  \left(i + \sum_{v \in \cV}i_{v}v\right)
+  \aslf
+  \left(i' + \sum_{v \in \cV}i'_{v}v\right)
+  =
+  \left(i \asifp i'\right)
+  + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v,
+  \f]
+  \f[
+  \left(i + \sum_{v \in \cV}i_{v}v\right)
+  \adivlf
+  i'
+  =
+  \left(i \adivifp i'\right)
+  + \sum_{v \in \cV}\left(i_{v} \adivifp i'\right)v.
+  \f]
+  Given an expression \f$e_{1} \oslash [a;b]\f$ and a composite
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
+  \rrbracket\f$,
+  we construct the interval linear form
+  \f$
+  \linexprenv{e_{1} \oslash [a;b]}{\rho^{\#}}{\rho^{\#}_l}
+  \f$
+  as follows:
+  \f[
+  \linexprenv{e_{1} \oslash [a;b]}{\rho^{\#}}{\rho^{\#}_l}
+  =
+  \left(\linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
+  \adivlf
+  [a;b]\right)
+  \aslf
+  \left(\varepsilon_{\mathbf{f}}\left(
+  \linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
+  \right)
+  \adivlf
+  [a;b]\right)
+  \aslf
+  mf_{\mathbf{f}}[-1;1],
+  \f]
+  given an expression \f$e_{1} \oslash e_{2}\f$ and a composite
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
+  \rrbracket\f$, we construct the interval linear form
+  \f$\linexprenv{e_{1} \oslash e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
+  as follows:
+  \f[
+  \linexprenv{e_{1} \oslash e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  =
+  \linexprenv{e_{1} \oslash \iota\left(
+  \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  \right)\rho^{\#}}{\rho^{\#}}{\rho^{\#}_l},
+  \f]
+  where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the relative error
+  associated to \f$l\f$ (see method <CODE>relative_error</CODE> of
+  class Linear_Form), \f$\iota(l)\rho^{\#}\f$ is the intervalization
+  of \f$l\f$ (see method <CODE>intervalize</CODE> of class Linear_Form),
+  and \f$mf_{\mathbf{f}}\f$ is a rounding error computed by function
+  <CODE>compute_absolute_error</CODE>.
+*/
 template <typename Target, typename FP_Interval_Type>
 static bool
 div_linearize(const Binary_Operator<Target>& bop_expr,
@@ -226,6 +570,39 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
   return !result.overflows();
 }
 
+//! Linearizes a floating point expression.
+/*! \brief
+  Makes \p result become a linear form that correctly approximates the
+  value of \p expr in the given composite abstract store.
+
+  \par Template type parameters
+
+  - The class template parameter \p Target specifies the implementation
+  of Concrete_Expression to be used.
+  - The class template parameter \p FP_Interval_Type represents the type
+  of the intervals used in the abstract domain. The interval bounds
+  should have a floating point type.
+
+  \param expr The concrete expression to linearize.
+  \param int_store The interval abstract store.
+  \param lf_store The linear form abstract store.
+  \param result Becomes the linearized expression.
+
+  \return <CODE>true</CODE> if the linearization succeeded,
+  <CODE>false</CODE> otherwise.
+
+  Formally, if \p expr represents the expression \f$e\f$,
+  \p int_store represents the interval abstract store \f$\rho^{\#}\f$ and
+  \p lf_store represents the linear form abstract store \f$\rho^{\#}_l\f$,
+  then \p result will become
+  \f$\linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}\f$
+  if the linearization succeeds.
+
+  All variables occuring in the floating point expression MUST have
+  an associated interval in \p int_store.
+  If this precondition is not met, calling the method causes an
+  undefined behavior.
+*/
 template <typename Target, typename FP_Interval_Type>
 bool
 linearize(const Concrete_Expression<Target>& expr,
