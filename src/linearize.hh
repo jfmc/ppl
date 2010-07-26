@@ -33,50 +33,11 @@ namespace Parma_Polyhedra_Library {
 
 template <typename Target, typename FP_Interval_Type>
 static bool
-bnot_linearize(const Unary_Operator<Target>& uop_expr,
-               const Box<FP_Interval_Type>& int_store,
-               const std::map<dimension_type, Linear_Form<FP_Interval_Type>>& lf_store,
-               Linear_Form<FP_Interval_Type>& result) {
-  PPL_ASSERT(uop_expr.get_uop() == BNOT);
-
-  typedef typename FP_Interval_Type::boundary_type analyzer_format;
-  typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
-  typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
-  typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
-
-  if (!linearize(uop_expr.get_arg(), int_store, lf_store, result))
-    return false;
-
-  FP_Interval_Type int_r;
-  result.intervalize(int_store, int_r);
-  bool lb_is_positive = (!int_r.is_lower_boundary_infinity() &&
-                         int_r.lower() > 0);
-  bool ub_is_negative = (!int_r.is_upper_boundary_infinity() &&
-                         int_r.upper() < 0);
-  if (lb_is_positive || ub_is_negative) {
-    result = FP_Linear_Form(FP_Interval(0));
-    return true;
-  }
-  else if (int_r.is_singleton()) {
-    // Here int_r is the singleton of 0.
-    // FIXME: Check if the negation of 0 MUST be 1.
-    result = FP_Linear_Form(FP_Interval(1));
-    return true;
-  }
-  else
-    // Here int_r strictly contains 0.
-    result = FP_Interval_Type(0);
-    result.join_assign(1);
-    return true;
-}
-
-template <typename Target, typename FP_Interval_Type>
-static bool
 add_linearize(const Binary_Operator<Target>& bop_expr,
               const Box<FP_Interval_Type>& int_store,
-              const std::map<dimension_type, Linear_Form<FP_Interval_Type>>& lf_store,
+              const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
-  PPL_ASSERT(bop_expr.get_bop() == ADD);
+  PPL_ASSERT(bop_expr.get_bop() == Binary_Operator<Target>::ADD);
 
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
@@ -108,9 +69,9 @@ template <typename Target, typename FP_Interval_Type>
 static bool
 sub_linearize(const Binary_Operator<Target>& bop_expr,
               const Box<FP_Interval_Type>& int_store,
-              const std::map<dimension_type, Linear_Form<FP_Interval_Type>>& lf_store,
+              const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
-  PPL_ASSERT(bop_expr.get_bop() == SUB);
+  PPL_ASSERT(bop_expr.get_bop() == Binary_Operator<Target>::SUB);
 
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
@@ -142,9 +103,9 @@ template <typename Target, typename FP_Interval_Type>
 static bool
 mul_linearize(const Binary_Operator<Target>& bop_expr,
               const Box<FP_Interval_Type>& int_store,
-              const std::map<dimension_type, Linear_Form<FP_Interval_Type>>& lf_store,
+              const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
-  PPL_ASSERT(bop_expr.get_bop() == MUL);
+  PPL_ASSERT(bop_expr.get_bop() == Binary_Operator<Target>::MUL);
 
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
@@ -177,7 +138,7 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
     return false;
   FP_Interval_Type intervalized_second_operand;
   linearized_second_operand.intervalize(int_store, intervalized_second_operand);
-  boundary_type first_interval_size, second_interval_size;
+  analyzer_format first_interval_size, second_interval_size;
 
   // FIXME: we are not sure that what we do here is policy-proof.
   if (intervalized_first_operand.is_bounded()) {
@@ -227,9 +188,9 @@ template <typename Target, typename FP_Interval_Type>
 static bool
 div_linearize(const Binary_Operator<Target>& bop_expr,
               const Box<FP_Interval_Type>& int_store,
-              const std::map<dimension_type, Linear_Form<FP_Interval_Type>>& lf_store,
+              const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
-  PPL_ASSERT(bop_expr.get_bop() == DIV);
+  PPL_ASSERT(bop_expr.get_bop() == Binary_Operator<Target>::DIV);
 
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
@@ -269,7 +230,7 @@ template <typename Target, typename FP_Interval_Type>
 bool
 linearize(const Concrete_Expression<Target>& expr,
           const Box<FP_Interval_Type>& int_store,
-          const std::map<dimension_type, Linear_Form<FP_Interval_Type>>& lf_store,
+          const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
           Linear_Form<FP_Interval_Type>& result) {
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
@@ -286,17 +247,17 @@ linearize(const Concrete_Expression<Target>& expr,
 
   switch(expr.kind()) {
   case Integer_Constant<Target>::KIND:
-    // TODO.
+    throw std::runtime_error("PPL internal error: unimplemented");
     break;
   case Floating_Point_Constant<Target>::KIND:
     Floating_Point_Constant<Target> fpc_expr =
-      static_cast<Floating_Point_Constant<Target>>(expr);
+      static_cast<Floating_Point_Constant<Target> >(expr);
     result = FP_Linear_Form(FP_Interval(fpc_expr.get_value_as_string()));
     return true;
     break;
   case Unary_Operator<Target>::KIND:
     Unary_Operator<Target> uop_expr =
-      static_cast<Unary_Operator<Target>>(expr);
+      static_cast<Unary_Operator<Target> >(expr);
     switch (uop_expr.get_uop()) {
     case Unary_Operator<Target>::UPLUS:
       return linearize(uop_expr.get_arg(), int_store, lf_store, result);
@@ -309,7 +270,7 @@ linearize(const Concrete_Expression<Target>& expr,
       return true;
       break;
     case Unary_Operator<Target>::BNOT:
-      return bnot_linearize(uop_expr, int_store, lf_store, result);
+      throw std::runtime_error("PPL internal error: unimplemented");
       break;
     default:
       throw std::runtime_error("PPL internal error");
@@ -317,7 +278,7 @@ linearize(const Concrete_Expression<Target>& expr,
     break;
   case Binary_Operator<Target>::KIND:
     Binary_Operator<Target> bop_expr =
-      static_cast<Binary_Operator<Target>>(expr);
+      static_cast<Binary_Operator<Target> >(expr);
     switch (bop_expr.get_bop()) {
     case Binary_Operator<Target>::ADD:
       return add_linearize(bop_expr, int_store, lf_store, result);
@@ -345,7 +306,29 @@ linearize(const Concrete_Expression<Target>& expr,
     }
     break;
   case Approximable_Reference<Target>::KIND:
-    // TODO.
+    Approximable_Reference<Target> ref_expr =
+      static_cast<Approximable_Reference<Target> >(expr);
+    /* Variable references are the only that we are currently
+         able to analyze */
+    dimension_type variable_index = ref_expr.associated_dimension();
+    if (variable_index == not_a_dimension())
+      return false;
+    else {
+      /* If a linear form associated to the referenced variable
+	 exists in lf_store, return that form. Otherwise, return
+         the simplest linear form. */
+      typename FP_Linear_Form_Abstract_Store::const_iterator
+               variable_value = lf_store.find(variable_index);
+      if (variable_value == lf_store.end()) {
+        result = FP_Linear_Form(Variable(variable_index));
+        return true;
+      }
+
+      result = FP_Linear_Form(variable_value->second);
+      /* FIXME: do we really need to contemplate the possibility
+	 that an unbounded linear form was saved into lf_store? */
+      return !result.overflows();
+    }
     break;
   case Cast_Operator<Target>::KIND:
     // TODO.

@@ -262,6 +262,7 @@ Linear_Expression.inlines.hh \
 Linear_Form.defs.hh \
 Linear_Form.inlines.hh \
 Linear_Form.templates.hh \
+linearize.hh \
 Constraint.defs.hh \
 Constraint.inlines.hh \
 Constraint_System.inlines.hh \
