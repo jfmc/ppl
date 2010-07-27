@@ -29,21 +29,36 @@ namespace Parma_Polyhedra_Library {
 
 struct C_Expr;
 
+enum C_Expr_Kind {
+  BOP,
+  UOP,
+  CAST,
+  INT_CON,
+  FP_CON,
+  APPROX_REF
+};
+
 template <>
 class Concrete_Expression<C_Expr> : public Concrete_Expression_Base<C_Expr> {
 public:
+  //! Builds a concrete expression of the given kind.
+  Concrete_Expression<C_Expr>(C_Expr_Kind KIND);
+
   //! Returns the type of \* this.
   Concrete_Expression_Type type() const;
 
   //! Returns the kind of \* this.
   virtual Concrete_Expression_Kind kind() const = 0;
+private:
+  //! The expression's kind.
+  C_Expr_Kind expr_kind;
 };
 
 template <>
 class Binary_Operator<C_Expr> : public Binary_Operator_Base<C_Expr> {
 public:
   //! Constructor from operator, lhs and rhs.
-  Binary_Operator<C_Expr>(int binary_operator,
+  Binary_Operator<C_Expr>(Concrete_Expression_BOP binary_operator,
                           const Concrete_Expression<C_Expr>* left_hand_side,
                           const Concrete_Expression<C_Expr>* right_hand_side);
 
@@ -67,7 +82,7 @@ public:
 
   //! Constant identifying binary operator nodes.
   enum {
-    KIND = 1
+    KIND = BOP
   };
 
   //! Constants encoding the different binary operators.
@@ -86,7 +101,7 @@ public:
 
 private:
   //! The operator of \p *this.
-  const int bop;
+  const Concrete_Expression_BOP bop;
 
   //! The left-hand side of \p *this.
   const Concrete_Expression<C_Expr>* lhs;
@@ -99,7 +114,7 @@ template <>
 class Unary_Operator<C_Expr> : public Unary_Operator_Base<C_Expr> {
 public:
   //! Constructor from operator and argument.
-  Unary_Operator<C_Expr>(int unary_operator,
+  Unary_Operator<C_Expr>(Concrete_Expression_UOP unary_operator,
                          const Concrete_Expression<C_Expr>* argument);
 
   //! Do-nothing destructor.
@@ -119,7 +134,7 @@ public:
 
   //! Constant identifying unary operator nodes.
   enum {
-    KIND = 2
+    KIND = UOP
   };
 
   //! Constants encoding the different unary operators.
@@ -131,7 +146,7 @@ public:
 
 private:
   //! The operator of \p *this.
-  const int uop;
+  const Concrete_Expression_UOP uop;
 
   //! The argument of \p *this.
   const Concrete_Expression<C_Expr>* arg;
@@ -158,7 +173,7 @@ public:
   const Concrete_Expression<C_Expr>* argument() const;
 
   //! Constant identifying cast nodes.
-  enum { KIND = 3 };
+  enum { KIND = CAST };
 
 private:
   //! The type of the cast expression.
@@ -182,7 +197,7 @@ public:
   Concrete_Expression_Kind kind() const;
 
   //! Constant identifying integer constant nodes.
-  enum { KIND = 4 };
+  enum { KIND = INT_CON };
 };
 
 template <>
@@ -190,7 +205,8 @@ class Floating_Point_Constant<C_Expr>
   : public Floating_Point_Constant_Base<C_Expr> {
 public:
   //! Constructor from value.
-  Floating_Point_Constant<C_Expr>(const char* value_string);
+  Floating_Point_Constant<C_Expr>(const char* value_string,
+                                  unsigned int string_size);
 
   //! Do-nothing destructor.
   ~Floating_Point_Constant<C_Expr>();
@@ -208,11 +224,11 @@ public:
   const char* get_value_as_string() const;
 
   //! Constant identifying floating constant nodes.
-  enum { KIND = 5 };
+  enum { KIND = FP_CON };
 
 private:
   //! The floating point constant as written.
-  const char* value;
+  char* value;
 };
 
 // We currently only consider references to floating point variables.
@@ -239,7 +255,7 @@ public:
   dimension_type associated_dimension() const;
 
   //! Constant identifying approximable reference nodes.
-  enum { KIND = 6 };
+  enum { KIND = APPROX_REF };
 
 private:
   //! The index of the referenced variable.

@@ -25,6 +25,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline
+Concrete_Expression<C_Expr>::
+Concrete_Expression(const C_Expr_Kind KIND)
+  : expr_kind(KIND) {
+}
+
 inline Concrete_Expression_Type
 Concrete_Expression<C_Expr>::type() const {
   return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
@@ -32,7 +38,7 @@ Concrete_Expression<C_Expr>::type() const {
 
 inline
 Binary_Operator<C_Expr>
-::Binary_Operator(int binary_operator,
+::Binary_Operator(Concrete_Expression_BOP binary_operator,
                   const Concrete_Expression<C_Expr>* left_hand_side,
                   const Concrete_Expression<C_Expr>* right_hand_side)
   : bop(binary_operator),
@@ -71,7 +77,7 @@ Binary_Operator<C_Expr>::right_hand_side() const {
 
 inline
 Unary_Operator<C_Expr>
-::Unary_Operator(int unary_operator,
+::Unary_Operator(Concrete_Expression_UOP unary_operator,
                  const Concrete_Expression<C_Expr>* argument)
   : uop(unary_operator),
     arg(argument) {
@@ -139,12 +145,15 @@ Integer_Constant<C_Expr>::kind() const {
 
 inline
 Floating_Point_Constant<C_Expr>::
-Floating_Point_Constant(const char* value_string)
-  : value(value_string) {
+Floating_Point_Constant(const char* value_string,
+                        const unsigned int string_size)
+  : value(new char[string_size]) {
+  strcpy(value, value_string);
 }
 
 inline
 Floating_Point_Constant<C_Expr>::~Floating_Point_Constant<C_Expr>() {
+  delete[] value;
 }
 
 inline Concrete_Expression_Type
