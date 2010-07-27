@@ -109,6 +109,7 @@ const FP_Interval_Type& compute_absolute_error(
 
   PPL_ASSERT(to_compute != NULL);
 
+  // FIXME: the inner cast may be dangerous.
   analyzer_format omega = std::max(
   static_cast<analyzer_format>(pow(f_base,
                                static_cast<analyzer_format>(1) -
