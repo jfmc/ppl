@@ -215,7 +215,7 @@ private:
   const char* value;
 };
 
-// We currently only consider variable references.
+// We currently only consider references to floating point variables.
 template <>
 class Approximable_Reference<C_Expr>
   : public Approximable_Reference_Base<C_Expr> {

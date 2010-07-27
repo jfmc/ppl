@@ -70,15 +70,15 @@ ALL_TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS)
 # This will be overridden by the `run_tests' script.
 if SUPPORTED_FLOAT
 FLOAT_FLAGS = \
--DANALYZER_FP_FORMAT=float -DANALYZED_FP_FORMAT=float_ieee754_single
+-DANALYZER_FP_FORMAT=float -DANALYZED_FP_FORMAT=IEEE754_SINGLE
 else
 if SUPPORTED_DOUBLE
 DOUBLE_FLAGS = \
--DANALYZER_FP_FORMAT=double -DANALYZED_FP_FORMAT=float_ieee754_double
+-DANALYZER_FP_FORMAT=double -DANALYZED_FP_FORMAT=IEEE754_DOUBLE
 else
 if SUPPORTED_LONG_DOUBLE
 LONG_DOUBLE_FLAGS = \
--DANALYZER_FP_FORMAT=long_double -DANALYZED_FP_FORMAT=float_ieee754_quad
+-DANALYZER_FP_FORMAT=long_double -DANALYZED_FP_FORMAT=IEEE754_QUAD
 endif
 endif
 endif
@@ -100,18 +100,18 @@ XFAIL_TESTS =
 # Analyzer format should be less precise or equal than analyzed format.
 if SUPPORTED_FLOAT
 FLOAT_INSTANCES= \
-float/float_ieee754_single \
-float/float_ieee754_double \
-float/float_ieee754_quad
+float/IEEE754_SINGLE \
+float/IEEE754_DOUBLE \
+float/IEEE754_QUAD
 endif
 if SUPPORTED_DOUBLE
 DOUBLE_INSTANCES= \
-double/float_ieee754_double \
-double/float_ieee754_quad
+double/IEEE754_DOUBLE \
+double/IEEE754_QUAD
 endif
 if SUPPORTED_LONG_DOUBLE
 LONG_DOUBLE_INSTANCES= \
-long_double/float_ieee754_quad
+long_double/IEEE754_QUAD
 endif
 
 # Do not change the ordering in what follows.

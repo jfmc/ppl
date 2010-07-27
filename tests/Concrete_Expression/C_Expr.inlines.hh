@@ -25,6 +25,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline Concrete_Expression_Type
+Concrete_Expression<C_Expr>::type() const {
+  return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
+}
+
 inline
 Binary_Operator<C_Expr>
 ::Binary_Operator(int binary_operator,
@@ -37,6 +42,11 @@ Binary_Operator<C_Expr>
 
 inline
 Binary_Operator<C_Expr>::~Binary_Operator<C_Expr>() {
+}
+
+inline Concrete_Expression_Type
+Binary_Operator<C_Expr>::type() const {
+  return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
 }
 
 inline Concrete_Expression_Kind
@@ -69,6 +79,11 @@ Unary_Operator<C_Expr>
 
 inline
 Unary_Operator<C_Expr>::~Unary_Operator<C_Expr>() {
+}
+
+inline Concrete_Expression_Type
+Unary_Operator<C_Expr>::type() const {
+  return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
 }
 
 inline Concrete_Expression_Kind
@@ -132,6 +147,11 @@ inline
 Floating_Point_Constant<C_Expr>::~Floating_Point_Constant<C_Expr>() {
 }
 
+inline Concrete_Expression_Type
+Floating_Point_Constant<C_Expr>::type() const {
+  return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
+}
+
 inline Concrete_Expression_Kind
 Floating_Point_Constant<C_Expr>::kind() const {
   return KIND;
@@ -150,6 +170,11 @@ Approximable_Reference(dimension_type var_index)
 
 inline
 Approximable_Reference<C_Expr>::~Approximable_Reference<C_Expr>() {
+}
+
+inline Concrete_Expression_Type
+Approximable_Reference<C_Expr>::type() const {
+  return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
 }
 
 inline Concrete_Expression_Kind
