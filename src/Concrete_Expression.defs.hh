@@ -116,7 +116,7 @@ private:
 };
 
 template <typename Target>
-class Concrete_Expression_Base {
+class Concrete_Expression_Common {
 public:
   //! Returns the type of \* this.
   Concrete_Expression_Type type() const;
@@ -126,7 +126,7 @@ public:
 };
 
 template <typename Target>
-class Binary_Operator_Base : public Concrete_Expression<Target> {
+class Binary_Operator_Common {
 public:
   //! Returns a constant identifying the operator of \p *this.
   Concrete_Expression_BOP binary_operator() const;
@@ -139,7 +139,7 @@ public:
 };
 
 template <typename Target>
-class Unary_Operator_Base : public Concrete_Expression<Target> {
+class Unary_Operator_Common {
 public:
   //! Returns a constant identifying the operator of \p *this.
   Concrete_Expression_UOP unary_operator() const;
@@ -149,17 +149,17 @@ public:
 };
 
 template <typename Target>
-class Cast_Operator_Base : public Concrete_Expression<Target> {
+class Cast_Operator_Common {
   //! Returns the casted expression.
   const Concrete_Expression<Target>* argument() const;
 };
 
 template <typename Target>
-class Integer_Constant_Base : public Concrete_Expression<Target> {
+class Integer_Constant_Common {
 };
 
 template <typename Target>
-class Floating_Point_Constant_Base : public Concrete_Expression<Target> {
+class Floating_Point_Constant_Common {
   /*! \brief
     Returns a string for the floating point constant as written
     in the analyzed program.
@@ -168,7 +168,7 @@ class Floating_Point_Constant_Base : public Concrete_Expression<Target> {
 };
 
 template <typename Target>
-class Approximable_Reference_Base : public Concrete_Expression<Target> {
+class Approximable_Reference_Common {
 public:
   /*! \brief
     If \p *this is a variable reference, returns the variable's

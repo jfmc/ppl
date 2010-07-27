@@ -39,7 +39,7 @@ enum C_Expr_Kind {
 };
 
 template <>
-class Concrete_Expression<C_Expr> : public Concrete_Expression_Base<C_Expr> {
+class Concrete_Expression<C_Expr> : public Concrete_Expression_Common<C_Expr> {
 public:
   //! Builds a concrete expression of the given kind.
   Concrete_Expression<C_Expr>(C_Expr_Kind KIND);
@@ -48,14 +48,15 @@ public:
   Concrete_Expression_Type type() const;
 
   //! Returns the kind of \* this.
-  virtual Concrete_Expression_Kind kind() const = 0;
+  Concrete_Expression_Kind kind() const;
 private:
   //! The expression's kind.
   C_Expr_Kind expr_kind;
 };
 
 template <>
-class Binary_Operator<C_Expr> : public Binary_Operator_Base<C_Expr> {
+class Binary_Operator<C_Expr> : public Concrete_Expression<C_Expr>,
+                                public Binary_Operator_Common<C_Expr> {
 public:
   //! Constructor from operator, lhs and rhs.
   Binary_Operator<C_Expr>(Concrete_Expression_BOP binary_operator,
@@ -67,9 +68,6 @@ public:
 
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
-
-  //! Returns the kind of \p *this.
-  Concrete_Expression_Kind kind() const;
 
   //! Returns the binary operator of \p *this.
   Concrete_Expression_BOP binary_operator() const;
@@ -111,7 +109,8 @@ private:
 };
 
 template <>
-class Unary_Operator<C_Expr> : public Unary_Operator_Base<C_Expr> {
+class Unary_Operator<C_Expr> : public Concrete_Expression<C_Expr>,
+                               public Unary_Operator_Common<C_Expr> {
 public:
   //! Constructor from operator and argument.
   Unary_Operator<C_Expr>(Concrete_Expression_UOP unary_operator,
@@ -122,9 +121,6 @@ public:
 
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
-
-  //! Returns the kind of \p *this.
-  Concrete_Expression_Kind kind() const;
 
   //! Returns the unary operator of \p *this.
   Concrete_Expression_UOP unary_operator() const;
@@ -154,7 +150,8 @@ private:
 
 template <>
 class Cast_Operator<C_Expr>
-  : public Cast_Operator_Base<C_Expr> {
+  : public Concrete_Expression<C_Expr>,
+    public Cast_Operator_Common<C_Expr> {
 public:
   //! Constructor from cast type and argument.
   Cast_Operator<C_Expr>(Concrete_Expression_Type c_type,
@@ -165,9 +162,6 @@ public:
 
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
-
-  //! Returns the kind of \p *this.
-  Concrete_Expression_Kind kind() const;
 
   //! Returns the casted expression.
   const Concrete_Expression<C_Expr>* argument() const;
@@ -185,7 +179,8 @@ private:
 
 template <>
 class Integer_Constant<C_Expr>
-  : public Integer_Constant_Base<C_Expr> {
+  : public Concrete_Expression<C_Expr>,
+    public Integer_Constant_Common<C_Expr> {
 public:
   //! Do-nothing destructor.
   ~Integer_Constant<C_Expr>();
@@ -193,16 +188,14 @@ public:
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
 
-  //! Returns the kind of \p *this.
-  Concrete_Expression_Kind kind() const;
-
   //! Constant identifying integer constant nodes.
   enum { KIND = INT_CON };
 };
 
 template <>
 class Floating_Point_Constant<C_Expr>
-  : public Floating_Point_Constant_Base<C_Expr> {
+  : public Concrete_Expression<C_Expr>,
+    public Floating_Point_Constant_Common<C_Expr> {
 public:
   //! Constructor from value.
   Floating_Point_Constant<C_Expr>(const char* value_string,
@@ -213,9 +206,6 @@ public:
 
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
-
-  //! Returns the kind of \p *this.
-  Concrete_Expression_Kind kind() const;
 
   /*! \brief
     Returns a string for the floating point constant as written
@@ -234,7 +224,8 @@ private:
 // We currently only consider references to floating point variables.
 template <>
 class Approximable_Reference<C_Expr>
-  : public Approximable_Reference_Base<C_Expr> {
+  : public Concrete_Expression<C_Expr>,
+    public Approximable_Reference_Common<C_Expr> {
 public:
   //! Builds a reference to the variable having the given index.
   Approximable_Reference<C_Expr>(dimension_type var_index);
@@ -244,9 +235,6 @@ public:
 
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
-
-  //! Returns the kind of \p *this.
-  Concrete_Expression_Kind kind() const;
 
   /*! \brief
     If \p *this is a variable reference, returns the variable's

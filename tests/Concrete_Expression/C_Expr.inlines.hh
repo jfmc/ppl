@@ -41,7 +41,8 @@ Binary_Operator<C_Expr>
 ::Binary_Operator(Concrete_Expression_BOP binary_operator,
                   const Concrete_Expression<C_Expr>* left_hand_side,
                   const Concrete_Expression<C_Expr>* right_hand_side)
-  : bop(binary_operator),
+  : Concrete_Expressione<C_Expr>(BOP),
+    bop(binary_operator),
     lhs(left_hand_side),
     rhs(right_hand_side) {
 }
@@ -53,11 +54,6 @@ Binary_Operator<C_Expr>::~Binary_Operator<C_Expr>() {
 inline Concrete_Expression_Type
 Binary_Operator<C_Expr>::type() const {
   return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
-}
-
-inline Concrete_Expression_Kind
-Binary_Operator<C_Expr>::kind() const {
-  return KIND;
 }
 
 inline Concrete_Expression_BOP
@@ -79,7 +75,8 @@ inline
 Unary_Operator<C_Expr>
 ::Unary_Operator(Concrete_Expression_UOP unary_operator,
                  const Concrete_Expression<C_Expr>* argument)
-  : uop(unary_operator),
+  : Concrete_Expressione<C_Expr>(UOP),
+    uop(unary_operator),
     arg(argument) {
 }
 
@@ -90,11 +87,6 @@ Unary_Operator<C_Expr>::~Unary_Operator<C_Expr>() {
 inline Concrete_Expression_Type
 Unary_Operator<C_Expr>::type() const {
   return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
-}
-
-inline Concrete_Expression_Kind
-Unary_Operator<C_Expr>::kind() const {
-  return KIND;
 }
 
 inline Concrete_Expression_BOP
@@ -111,7 +103,8 @@ inline
 Cast_Operator<C_Expr>::
 Cast_Operator(Concrete_Expression_Type c_type,
               const Concrete_Expression<C_Expr>* ar)
-  : cast_type(c_type),
+  : Concrete_Expressione<C_Expr>(CAST),
+    cast_type(c_type),
     arg(ar) {
 }
 
@@ -124,11 +117,6 @@ Cast_Operator<C_Expr>::type() const {
   return cast_type;
 }
 
-inline Concrete_Expression_Kind
-Cast_Operator<C_Expr>::kind() const {
-  return KIND;
-}
-
 inline const Concrete_Expression<C_Expr>*
 Cast_Operator<C_Expr>::argument() const {
   return arg;
@@ -138,16 +126,12 @@ inline
 Integer_Constant<C_Expr>::~Integer_Constant<C_Expr>() {
 }
 
-inline Concrete_Expression_Kind
-Integer_Constant<C_Expr>::kind() const {
-  return KIND;
-}
-
 inline
 Floating_Point_Constant<C_Expr>::
 Floating_Point_Constant(const char* value_string,
                         const unsigned int string_size)
-  : value(new char[string_size]) {
+  : Concrete_Expressione<C_Expr>(FP_CON),
+    value(new char[string_size]) {
   strcpy(value, value_string);
 }
 
@@ -159,11 +143,6 @@ Floating_Point_Constant<C_Expr>::~Floating_Point_Constant<C_Expr>() {
 inline Concrete_Expression_Type
 Floating_Point_Constant<C_Expr>::type() const {
   return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
-}
-
-inline Concrete_Expression_Kind
-Floating_Point_Constant<C_Expr>::kind() const {
-  return KIND;
 }
 
 inline const char*
@@ -184,11 +163,6 @@ Approximable_Reference<C_Expr>::~Approximable_Reference<C_Expr>() {
 inline Concrete_Expression_Type
 Approximable_Reference<C_Expr>::type() const {
   return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
-}
-
-inline Concrete_Expression_Kind
-Approximable_Reference<C_Expr>::kind() const {
-  return KIND;
 }
 
 inline dimension_type
