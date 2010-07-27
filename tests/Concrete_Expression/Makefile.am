@@ -53,7 +53,8 @@ $(top_builddir)/src/libppl.la \
 ORIGINAL_TESTS = \
 C_Expr \
 float \
-linearform1
+linearform1 \
+linearize
 #bdshape1 \
 #bdshape2 \
 #digitalfilters1 \
@@ -144,6 +145,8 @@ float_SOURCES = float.cc
 floatingpointexpr1_SOURCES = floatingpointexpr1.cc
 
 linearform1_SOURCES = linearform1.cc
+
+linearize_SOURCES = linearize.cc
 
 octagonalshape1_SOURCES = octagonalshape1.cc
 
