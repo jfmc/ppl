@@ -552,9 +552,9 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
   linearized_second_operand.intervalize(int_store, intervalized_second_operand);
 
   // Check if we may divide by zero.
-  if ((intervalized_second_operand.is_lower_boundary_infinity() ||
+  if ((intervalized_second_operand.lower_is_boundary_infinity() ||
        intervalized_second_operand.lower() <= 0) &&
-      (intervalized_second_operand.is_upper_boundary_infinity() ||
+      (intervalized_second_operand.upper_is_boundary_infinity() ||
        intervalized_second_operand.upper() >= 0))
     return false;
 
@@ -628,12 +628,15 @@ linearize(const Concrete_Expression<Target>& expr,
     throw std::runtime_error("PPL internal error: unimplemented");
     break;
   case Floating_Point_Constant<Target>::KIND:
+  {
     Floating_Point_Constant<Target> fpc_expr =
       static_cast<Floating_Point_Constant<Target> >(expr);
     result = FP_Linear_Form(FP_Interval(fpc_expr.get_value_as_string()));
     return true;
     break;
+  }
   case Unary_Operator<Target>::KIND:
+  {
     Unary_Operator<Target> uop_expr =
       static_cast<Unary_Operator<Target> >(expr);
     switch (uop_expr.unary_operator()) {
@@ -654,7 +657,9 @@ linearize(const Concrete_Expression<Target>& expr,
       throw std::runtime_error("PPL internal error");
     }
     break;
+  }
   case Binary_Operator<Target>::KIND:
+  {
     Binary_Operator<Target> bop_expr =
       static_cast<Binary_Operator<Target> >(expr);
     switch (bop_expr.binary_operator()) {
@@ -683,7 +688,9 @@ linearize(const Concrete_Expression<Target>& expr,
       throw std::runtime_error("PPL internal error");
     }
     break;
+  }
   case Approximable_Reference<Target>::KIND:
+  {
     Approximable_Reference<Target> ref_expr =
       static_cast<Approximable_Reference<Target> >(expr);
     /* Variable references are the only that we are currently
@@ -708,6 +715,7 @@ linearize(const Concrete_Expression<Target>& expr,
       return !result.overflows();
     }
     break;
+  }
   case Cast_Operator<Target>::KIND:
     // TODO.
     break;
