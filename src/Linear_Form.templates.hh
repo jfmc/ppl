@@ -418,7 +418,7 @@ Linear_Form<C>::relative_error(
   }
 
   C error_propagator;
-  // FIXME: this cast may be dangerous,
+  // FIXME: this cast may be dangerous.
   analyzer_format lb = -pow(f_base,
   -static_cast<analyzer_format>(f_mantissa_bits));
   error_propagator.build(i_constraint(GREATER_OR_EQUAL, lb),
