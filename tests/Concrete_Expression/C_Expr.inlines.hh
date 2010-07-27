@@ -31,6 +31,11 @@ Concrete_Expression(const C_Expr_Kind KIND)
   : expr_kind(KIND) {
 }
 
+inline Concrete_Expression_Kind
+Concrete_Expression<C_Expr>::kind() const {
+  return expr_kind;
+}
+
 inline Concrete_Expression_Type
 Concrete_Expression<C_Expr>::type() const {
   return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);

@@ -32,7 +32,7 @@ bool
 test01() {
   Floating_Point_Constant<C_Expr> num("3", 2);
   Floating_Point_Constant<C_Expr> den("0", 2);
-  Binary_Operator<C_Expr> div(Binary_Operator<C_Expr>::DIV, num, den);
+  Binary_Operator<C_Expr> div(Binary_Operator<C_Expr>::DIV, &num, &den);
   FP_Linear_Form result;
   if (!linearize(div, FP_Interval_Abstract_Store(),
                  FP_Linear_Form_Abstract_Store(), result)) {

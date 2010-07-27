@@ -629,22 +629,22 @@ linearize(const Concrete_Expression<Target>& expr,
     break;
   case Floating_Point_Constant<Target>::KIND:
   {
-    Floating_Point_Constant<Target> fpc_expr =
-      static_cast<Floating_Point_Constant<Target> >(expr);
-    result = FP_Linear_Form(FP_Interval(fpc_expr.get_value_as_string()));
+    const Floating_Point_Constant<Target>* fpc_expr =
+      static_cast<const Floating_Point_Constant<Target>* >(&expr);
+    result = FP_Linear_Form(FP_Interval_Type(fpc_expr->get_value_as_string()));
     return true;
     break;
   }
   case Unary_Operator<Target>::KIND:
   {
-    Unary_Operator<Target> uop_expr =
-      static_cast<Unary_Operator<Target> >(expr);
-    switch (uop_expr.unary_operator()) {
+    const Unary_Operator<Target>* uop_expr =
+      static_cast<const Unary_Operator<Target>* >(&expr);
+    switch (uop_expr->unary_operator()) {
     case Unary_Operator<Target>::UPLUS:
-      return linearize(uop_expr.argument(), int_store, lf_store, result);
+      return linearize(*(uop_expr->argument()), int_store, lf_store, result);
       break;
     case Unary_Operator<Target>::UMINUS:
-      if (!linearize(uop_expr.argument(), int_store, lf_store, result))
+      if (!linearize(*(uop_expr->argument()), int_store, lf_store, result))
         return false;
 
       result.negate();
@@ -660,20 +660,20 @@ linearize(const Concrete_Expression<Target>& expr,
   }
   case Binary_Operator<Target>::KIND:
   {
-    Binary_Operator<Target> bop_expr =
-      static_cast<Binary_Operator<Target> >(expr);
-    switch (bop_expr.binary_operator()) {
+    const Binary_Operator<Target>* bop_expr =
+      static_cast<const Binary_Operator<Target>* >(&expr);
+    switch (bop_expr->binary_operator()) {
     case Binary_Operator<Target>::ADD:
-      return add_linearize(bop_expr, int_store, lf_store, result);
+      return add_linearize(*bop_expr, int_store, lf_store, result);
       break;
     case Binary_Operator<Target>::SUB:
-      return sub_linearize(bop_expr, int_store, lf_store, result);
+      return sub_linearize(*bop_expr, int_store, lf_store, result);
       break;
     case Binary_Operator<Target>::MUL:
-      return mul_linearize(bop_expr, int_store, lf_store, result);
+      return mul_linearize(*bop_expr, int_store, lf_store, result);
       break;
     case Binary_Operator<Target>::DIV:
-      return div_linearize(bop_expr, int_store, lf_store, result);
+      return div_linearize(*bop_expr, int_store, lf_store, result);
       break;
     case Binary_Operator<Target>::REM:
     case Binary_Operator<Target>::BAND:
@@ -691,11 +691,11 @@ linearize(const Concrete_Expression<Target>& expr,
   }
   case Approximable_Reference<Target>::KIND:
   {
-    Approximable_Reference<Target> ref_expr =
-      static_cast<Approximable_Reference<Target> >(expr);
+    const Approximable_Reference<Target>* ref_expr =
+      static_cast<const Approximable_Reference<Target>* >(&expr);
     /* Variable references are the only that we are currently
        able to analyze */
-    dimension_type variable_index = ref_expr.associated_dimension();
+    dimension_type variable_index = ref_expr->associated_dimension();
     if (variable_index == not_a_dimension())
       return false;
     else {
