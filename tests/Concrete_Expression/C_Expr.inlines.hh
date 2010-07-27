@@ -41,7 +41,7 @@ Binary_Operator<C_Expr>
 ::Binary_Operator(Concrete_Expression_BOP binary_operator,
                   const Concrete_Expression<C_Expr>* left_hand_side,
                   const Concrete_Expression<C_Expr>* right_hand_side)
-  : Concrete_Expressione<C_Expr>(BOP),
+  : Concrete_Expression<C_Expr>(BOP),
     bop(binary_operator),
     lhs(left_hand_side),
     rhs(right_hand_side) {
@@ -75,7 +75,7 @@ inline
 Unary_Operator<C_Expr>
 ::Unary_Operator(Concrete_Expression_UOP unary_operator,
                  const Concrete_Expression<C_Expr>* argument)
-  : Concrete_Expressione<C_Expr>(UOP),
+  : Concrete_Expression<C_Expr>(UOP),
     uop(unary_operator),
     arg(argument) {
 }
@@ -103,7 +103,7 @@ inline
 Cast_Operator<C_Expr>::
 Cast_Operator(Concrete_Expression_Type c_type,
               const Concrete_Expression<C_Expr>* ar)
-  : Concrete_Expressione<C_Expr>(CAST),
+  : Concrete_Expression<C_Expr>(CAST),
     cast_type(c_type),
     arg(ar) {
 }
@@ -130,7 +130,7 @@ inline
 Floating_Point_Constant<C_Expr>::
 Floating_Point_Constant(const char* value_string,
                         const unsigned int string_size)
-  : Concrete_Expressione<C_Expr>(FP_CON),
+  : Concrete_Expression<C_Expr>(FP_CON),
     value(new char[string_size]) {
   strcpy(value, value_string);
 }
@@ -153,7 +153,8 @@ Floating_Point_Constant<C_Expr>::get_value_as_string() const {
 inline
 Approximable_Reference<C_Expr>::
 Approximable_Reference(dimension_type var_index)
-: var_dimension(var_index) {
+  : Concrete_Expression<C_Expr>(APPROX_REF),
+    var_dimension(var_index) {
 }
 
 inline
