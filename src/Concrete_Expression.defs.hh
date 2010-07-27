@@ -123,6 +123,24 @@ public:
 
   //! Returns the kind of \* this.
   Concrete_Expression_Kind kind() const;
+
+  template <template <typename T> class Derived>
+  bool is() const {
+    return Concrete_Expression<Target>::kind() == Derived<Target>::KIND;
+  }
+
+  template <template <typename T> class Derived>
+  Derived<Target>* as() {
+    PPL_ASSERT(is<Derived>());
+    return static_cast<Derived<Target>*>(this);
+  }
+
+  template <template <typename T> class Derived>
+  const Derived<Target>* as() const {
+    PPL_ASSERT(is<Derived>());
+    return static_cast<const Derived<Target>*>(this);
+  }
+
 };
 
 template <typename Target>

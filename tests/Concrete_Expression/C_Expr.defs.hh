@@ -49,6 +49,7 @@ public:
 
   //! Returns the kind of \* this.
   Concrete_Expression_Kind kind() const;
+
 private:
   //! The expression's kind.
   C_Expr_Kind expr_kind;

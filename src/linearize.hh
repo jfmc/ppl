@@ -630,7 +630,7 @@ linearize(const Concrete_Expression<Target>& expr,
   case Floating_Point_Constant<Target>::KIND:
   {
     const Floating_Point_Constant<Target>* fpc_expr =
-      static_cast<const Floating_Point_Constant<Target>* >(&expr);
+      expr.template as<Floating_Point_Constant>();
     result = FP_Linear_Form(FP_Interval_Type(fpc_expr->get_value_as_string()));
     return true;
     break;
@@ -638,7 +638,7 @@ linearize(const Concrete_Expression<Target>& expr,
   case Unary_Operator<Target>::KIND:
   {
     const Unary_Operator<Target>* uop_expr =
-      static_cast<const Unary_Operator<Target>* >(&expr);
+      expr.template as<Unary_Operator>();
     switch (uop_expr->unary_operator()) {
     case Unary_Operator<Target>::UPLUS:
       return linearize(*(uop_expr->argument()), int_store, lf_store, result);
@@ -661,7 +661,7 @@ linearize(const Concrete_Expression<Target>& expr,
   case Binary_Operator<Target>::KIND:
   {
     const Binary_Operator<Target>* bop_expr =
-      static_cast<const Binary_Operator<Target>* >(&expr);
+      expr.template as<Binary_Operator>();
     switch (bop_expr->binary_operator()) {
     case Binary_Operator<Target>::ADD:
       return add_linearize(*bop_expr, int_store, lf_store, result);
@@ -692,7 +692,7 @@ linearize(const Concrete_Expression<Target>& expr,
   case Approximable_Reference<Target>::KIND:
   {
     const Approximable_Reference<Target>* ref_expr =
-      static_cast<const Approximable_Reference<Target>* >(&expr);
+      expr.template as<Approximable_Reference>();
     /* Variable references are the only that we are currently
        able to analyze */
     dimension_type variable_index = ref_expr->associated_dimension();
