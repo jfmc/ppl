@@ -42,8 +42,51 @@ test01() {
   return false;
 }
 
+// Tests multiplication by zero.
+bool
+test02() {
+  FP_Interval_Abstract_Store store(2);
+  store.set_interval(Variable(0), FP_Interval(0));
+  store.set_interval(Variable(1), FP_Interval(10));
+  Floating_Point_Constant<C_Expr> con("5.5", 4);
+  Approximable_Reference<C_Expr> var0(0);
+  Approximable_Reference<C_Expr> var1(1);
+  Binary_Operator<C_Expr> dif(Binary_Operator<C_Expr>::SUB, &var1, &con);
+  Binary_Operator<C_Expr> mul(Binary_Operator<C_Expr>::MUL, &dif, &var0);
+  FP_Linear_Form result;
+  linearize(mul, store, FP_Linear_Form_Abstract_Store(), result);
+
+  FP_Linear_Form known_result(compute_absolute_error<FP_Interval>(ANALYZED_FP_FORMAT));
+
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
+  bool ok = (result == known_result);
+
+  return ok;
+}
+
+// Tests linearization of variables in a given linear form abstract store.
+bool
+test03() {
+  FP_Linear_Form_Abstract_Store store;
+  Variable A(0);
+  FP_Linear_Form known_result = FP_Linear_Form(A);
+  store[0] = known_result;
+  Approximable_Reference<C_Expr> var(0);
+  FP_Linear_Form result;
+  linearize(var, FP_Interval_Abstract_Store(0), store, result);
+
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
+  bool ok = (result == known_result);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
 END_MAIN
