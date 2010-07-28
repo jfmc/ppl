@@ -26,13 +26,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
+Concrete_Expression_Type FP_Type =
+  Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
 
 // Tests division by zero.
 bool
 test01() {
   Floating_Point_Constant<C_Expr> num("3", 2);
   Floating_Point_Constant<C_Expr> den("0", 2);
-  Binary_Operator<C_Expr> div(Binary_Operator<C_Expr>::DIV, &num, &den);
+  Binary_Operator<C_Expr> div(FP_Type, Binary_Operator<C_Expr>::DIV, &num, &den);
   FP_Linear_Form result;
   if (!linearize(div, FP_Interval_Abstract_Store(),
                  FP_Linear_Form_Abstract_Store(), result)) {
@@ -49,10 +51,10 @@ test02() {
   store.set_interval(Variable(0), FP_Interval(0));
   store.set_interval(Variable(1), FP_Interval(10));
   Floating_Point_Constant<C_Expr> con("5.5", 4);
-  Approximable_Reference<C_Expr> var0(0);
-  Approximable_Reference<C_Expr> var1(1);
-  Binary_Operator<C_Expr> dif(Binary_Operator<C_Expr>::SUB, &var1, &con);
-  Binary_Operator<C_Expr> mul(Binary_Operator<C_Expr>::MUL, &dif, &var0);
+  Approximable_Reference<C_Expr> var0(FP_Type, 0);
+  Approximable_Reference<C_Expr> var1(FP_Type, 1);
+  Binary_Operator<C_Expr> dif(FP_Type, Binary_Operator<C_Expr>::SUB, &var1, &con);
+  Binary_Operator<C_Expr> mul(FP_Type, Binary_Operator<C_Expr>::MUL, &dif, &var0);
   FP_Linear_Form result;
   linearize(mul, store, FP_Linear_Form_Abstract_Store(), result);
 
@@ -72,7 +74,7 @@ test03() {
   Variable A(0);
   FP_Linear_Form known_result = FP_Linear_Form(A);
   store[0] = known_result;
-  Approximable_Reference<C_Expr> var(0);
+  Approximable_Reference<C_Expr> var(FP_Type, 0);
   FP_Linear_Form result;
   linearize(var, FP_Interval_Abstract_Store(0), store, result);
 
@@ -90,9 +92,9 @@ test04() {
   FP_Interval_Abstract_Store store(2);
   store.set_interval(Variable(0), tmp);
   store.set_interval(Variable(1), tmp);
-  Approximable_Reference<C_Expr> var0(0);
-  Approximable_Reference<C_Expr> var1(1);
-  Binary_Operator<C_Expr> sum(Binary_Operator<C_Expr>::ADD, &var0, &var1);
+  Approximable_Reference<C_Expr> var0(FP_Type, 0);
+  Approximable_Reference<C_Expr> var1(FP_Type, 1);
+  Binary_Operator<C_Expr> sum(FP_Type, Binary_Operator<C_Expr>::ADD, &var0, &var1);
   FP_Linear_Form result;
   linearize(sum, store, FP_Linear_Form_Abstract_Store(), result);
 
@@ -121,9 +123,9 @@ test05() {
   FP_Interval_Abstract_Store store(2);
   store.set_interval(Variable(0), tmp);
   store.set_interval(Variable(1), tmp);
-  Approximable_Reference<C_Expr> var0(0);
-  Approximable_Reference<C_Expr> var1(1);
-  Binary_Operator<C_Expr> dif(Binary_Operator<C_Expr>::SUB, &var0, &var1);
+  Approximable_Reference<C_Expr> var0(FP_Type, 0);
+  Approximable_Reference<C_Expr> var1(FP_Type, 1);
+  Binary_Operator<C_Expr> dif(FP_Type, Binary_Operator<C_Expr>::SUB, &var0, &var1);
   FP_Linear_Form result;
   linearize(dif, store, FP_Linear_Form_Abstract_Store(), result);
 
@@ -154,9 +156,9 @@ test06() {
   FP_Interval_Abstract_Store store(2);
   store.set_interval(Variable(0), tmp);
   store.set_interval(Variable(1), FP_Interval(2));
-  Approximable_Reference<C_Expr> var0(0);
-  Approximable_Reference<C_Expr> var1(1);
-  Binary_Operator<C_Expr> mul(Binary_Operator<C_Expr>::MUL, &var0, &var1);
+  Approximable_Reference<C_Expr> var0(FP_Type, 0);
+  Approximable_Reference<C_Expr> var1(FP_Type, 1);
+  Binary_Operator<C_Expr> mul(FP_Type, Binary_Operator<C_Expr>::MUL, &var0, &var1);
   FP_Linear_Form result;
   linearize(mul, store, FP_Linear_Form_Abstract_Store(), result);
 
@@ -182,9 +184,9 @@ test07() {
   FP_Interval_Abstract_Store store(2);
   store.set_interval(Variable(0), tmp);
   store.set_interval(Variable(1), FP_Interval(2));
-  Approximable_Reference<C_Expr> var0(0);
-  Approximable_Reference<C_Expr> var1(1);
-  Binary_Operator<C_Expr> div(Binary_Operator<C_Expr>::DIV, &var0, &var1);
+  Approximable_Reference<C_Expr> var0(FP_Type, 0);
+  Approximable_Reference<C_Expr> var1(FP_Type, 1);
+  Binary_Operator<C_Expr> div(FP_Type, Binary_Operator<C_Expr>::DIV, &var0, &var1);
   FP_Linear_Form result;
   linearize(div, store, FP_Linear_Form_Abstract_Store(), result);
 

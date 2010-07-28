@@ -27,8 +27,10 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Concrete_Expression<C_Expr>::
-Concrete_Expression(const C_Expr_Kind KIND)
-  : expr_kind(KIND) {
+Concrete_Expression(const Concrete_Expression_Type type,
+                    const C_Expr_Kind KIND)
+  : expr_type(type),
+    expr_kind(KIND) {
 }
 
 inline Concrete_Expression_Kind
@@ -38,15 +40,16 @@ Concrete_Expression<C_Expr>::kind() const {
 
 inline Concrete_Expression_Type
 Concrete_Expression<C_Expr>::type() const {
-  return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
+  return expr_type;
 }
 
 inline
 Binary_Operator<C_Expr>
-::Binary_Operator(Concrete_Expression_BOP binary_operator,
+::Binary_Operator(const Concrete_Expression_Type type,
+                  const Concrete_Expression_BOP binary_operator,
                   const Concrete_Expression<C_Expr>* left_hand_side,
                   const Concrete_Expression<C_Expr>* right_hand_side)
-  : Concrete_Expression<C_Expr>(BOP),
+  : Concrete_Expression<C_Expr>(type, BOP),
     bop(binary_operator),
     lhs(left_hand_side),
     rhs(right_hand_side) {
@@ -58,7 +61,7 @@ Binary_Operator<C_Expr>::~Binary_Operator<C_Expr>() {
 
 inline Concrete_Expression_Type
 Binary_Operator<C_Expr>::type() const {
-  return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
+  return expr_type;
 }
 
 inline Concrete_Expression_BOP
@@ -78,9 +81,10 @@ Binary_Operator<C_Expr>::right_hand_side() const {
 
 inline
 Unary_Operator<C_Expr>
-::Unary_Operator(Concrete_Expression_UOP unary_operator,
+::Unary_Operator(const Concrete_Expression_Type type,
+                 const Concrete_Expression_UOP unary_operator,
                  const Concrete_Expression<C_Expr>* argument)
-  : Concrete_Expression<C_Expr>(UOP),
+  : Concrete_Expression<C_Expr>(type, UOP),
     uop(unary_operator),
     arg(argument) {
 }
@@ -91,7 +95,7 @@ Unary_Operator<C_Expr>::~Unary_Operator<C_Expr>() {
 
 inline Concrete_Expression_Type
 Unary_Operator<C_Expr>::type() const {
-  return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
+  return expr_type;
 }
 
 inline Concrete_Expression_BOP
@@ -106,10 +110,9 @@ Unary_Operator<C_Expr>::argument() const {
 
 inline
 Cast_Operator<C_Expr>::
-Cast_Operator(Concrete_Expression_Type c_type,
+Cast_Operator(const Concrete_Expression_Type type,
               const Concrete_Expression<C_Expr>* ar)
-  : Concrete_Expression<C_Expr>(CAST),
-    cast_type(c_type),
+  : Concrete_Expression<C_Expr>(type, CAST),
     arg(ar) {
 }
 
@@ -119,7 +122,7 @@ Cast_Operator<C_Expr>::~Cast_Operator<C_Expr>() {
 
 inline Concrete_Expression_Type
 Cast_Operator<C_Expr>::type() const {
-  return cast_type;
+  return expr_type;
 }
 
 inline const Concrete_Expression<C_Expr>*
@@ -135,7 +138,7 @@ inline
 Floating_Point_Constant<C_Expr>::
 Floating_Point_Constant(const char* value_string,
                         const unsigned int string_size)
-  : Concrete_Expression<C_Expr>(FP_CON),
+  : Concrete_Expression<C_Expr>(Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT), FP_CON),
     value(new char[string_size]) {
   strcpy(value, value_string);
 }
@@ -147,7 +150,7 @@ Floating_Point_Constant<C_Expr>::~Floating_Point_Constant<C_Expr>() {
 
 inline Concrete_Expression_Type
 Floating_Point_Constant<C_Expr>::type() const {
-  return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
+  return expr_type;
 }
 
 inline const char*
@@ -157,8 +160,9 @@ Floating_Point_Constant<C_Expr>::get_value_as_string() const {
 
 inline
 Approximable_Reference<C_Expr>::
-Approximable_Reference(dimension_type var_index)
-  : Concrete_Expression<C_Expr>(APPROX_REF),
+Approximable_Reference(Concrete_Expression_Type type,
+                       dimension_type var_index)
+  : Concrete_Expression<C_Expr>(type, APPROX_REF),
     var_dimension(var_index) {
 }
 
@@ -168,7 +172,7 @@ Approximable_Reference<C_Expr>::~Approximable_Reference<C_Expr>() {
 
 inline Concrete_Expression_Type
 Approximable_Reference<C_Expr>::type() const {
-  return Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
+  return expr_type;
 }
 
 inline dimension_type

@@ -42,7 +42,7 @@ template <>
 class Concrete_Expression<C_Expr> : public Concrete_Expression_Common<C_Expr> {
 public:
   //! Builds a concrete expression of the given kind.
-  Concrete_Expression<C_Expr>(C_Expr_Kind KIND);
+  Concrete_Expression<C_Expr>(Concrete_Expression_Type type, C_Expr_Kind KIND);
 
   //! Returns the type of \* this.
   Concrete_Expression_Type type() const;
@@ -50,7 +50,10 @@ public:
   //! Returns the kind of \* this.
   Concrete_Expression_Kind kind() const;
 
-private:
+protected:
+  //! The expression's type.
+  Concrete_Expression_Type expr_type;
+
   //! The expression's kind.
   C_Expr_Kind expr_kind;
 };
@@ -60,7 +63,8 @@ class Binary_Operator<C_Expr> : public Concrete_Expression<C_Expr>,
                                 public Binary_Operator_Common<C_Expr> {
 public:
   //! Constructor from operator, lhs and rhs.
-  Binary_Operator<C_Expr>(Concrete_Expression_BOP binary_operator,
+  Binary_Operator<C_Expr>(Concrete_Expression_Type type,
+                          Concrete_Expression_BOP binary_operator,
                           const Concrete_Expression<C_Expr>* left_hand_side,
                           const Concrete_Expression<C_Expr>* right_hand_side);
 
@@ -114,7 +118,8 @@ class Unary_Operator<C_Expr> : public Concrete_Expression<C_Expr>,
                                public Unary_Operator_Common<C_Expr> {
 public:
   //! Constructor from operator and argument.
-  Unary_Operator<C_Expr>(Concrete_Expression_UOP unary_operator,
+  Unary_Operator<C_Expr>(Concrete_Expression_Type type,
+                         Concrete_Expression_UOP unary_operator,
                          const Concrete_Expression<C_Expr>* argument);
 
   //! Do-nothing destructor.
@@ -155,7 +160,7 @@ class Cast_Operator<C_Expr>
     public Cast_Operator_Common<C_Expr> {
 public:
   //! Constructor from cast type and argument.
-  Cast_Operator<C_Expr>(Concrete_Expression_Type c_type,
+  Cast_Operator<C_Expr>(Concrete_Expression_Type type,
                         const Concrete_Expression<C_Expr>* ar);
 
   //! Do-nothing destructor.
@@ -171,9 +176,6 @@ public:
   enum { KIND = CAST };
 
 private:
-  //! The type of the cast expression.
-  Concrete_Expression_Type cast_type;
-
   //! The casted expression.
   const Concrete_Expression<C_Expr>* arg;
 };
@@ -229,7 +231,8 @@ class Approximable_Reference<C_Expr>
     public Approximable_Reference_Common<C_Expr> {
 public:
   //! Builds a reference to the variable having the given index.
-  Approximable_Reference<C_Expr>(dimension_type var_index);
+  Approximable_Reference<C_Expr>(Concrete_Expression_Type type,
+                                 dimension_type var_index);
 
   //! Do-nothing destructor.
   ~Approximable_Reference<C_Expr>();
