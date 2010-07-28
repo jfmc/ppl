@@ -109,12 +109,12 @@ const FP_Interval_Type& compute_absolute_error(
 
   PPL_ASSERT(to_compute != NULL);
 
-  // FIXME: the inner cast may be dangerous.
-  analyzer_format omega = std::max(
-  static_cast<analyzer_format>(pow(f_base,
-                               static_cast<analyzer_format>(1) -
-                               f_exponent_bias - f_mantissa_bits)),
-  std::numeric_limits<analyzer_format>::denorm_min());
+  // We assume that f_base is a power of 2.
+  analyzer_format omega;
+  int power = static_cast<int>(log2(f_base)) *
+              (1 - f_exponent_bias - f_mantissa_bits);
+  omega = std::max(static_cast<analyzer_format>(ldexpl(1.0, power)),
+                   std::numeric_limits<analyzer_format>::denorm_min());
 
   to_compute->build(i_constraint(GREATER_OR_EQUAL, -omega),
                     i_constraint(LESS_OR_EQUAL, omega));

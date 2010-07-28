@@ -418,9 +418,11 @@ Linear_Form<C>::relative_error(
   }
 
   C error_propagator;
-  // FIXME: this cast may be dangerous.
-  analyzer_format lb = -pow(f_base,
-  -static_cast<analyzer_format>(f_mantissa_bits));
+  // We assume that f_base is a power of 2.
+  int power = static_cast<int>(log2(f_base)) *
+              (-f_mantissa_bits);
+  analyzer_format lb = -static_cast<analyzer_format>(ldexpl(1.0, power));
+
   error_propagator.build(i_constraint(GREATER_OR_EQUAL, lb),
                          i_constraint(LESS_OR_EQUAL, -lb));
 
