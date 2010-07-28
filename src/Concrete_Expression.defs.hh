@@ -124,22 +124,23 @@ public:
   //! Returns the kind of \* this.
   Concrete_Expression_Kind kind() const;
 
+  //! Tests if \p *this has the same kind as <CODE>Derived<Target></CODE>.
   template <template <typename T> class Derived>
-  bool is() const {
-    return Concrete_Expression<Target>::kind() == Derived<Target>::KIND;
-  }
+  bool is() const;
 
+  /*! \brief
+    Returns a pointer to \p *this converted to type
+    <CODE>Derived<Target>*</CODE>.
+  */
   template <template <typename T> class Derived>
-  Derived<Target>* as() {
-    PPL_ASSERT(is<Derived>());
-    return static_cast<Derived<Target>*>(this);
-  }
+  Derived<Target>* as();
 
+  /*! \brief
+    Returns a pointer to \p *this converted to type
+    <CODE>const Derived<Target>*</CODE>.
+  */
   template <template <typename T> class Derived>
-  const Derived<Target>* as() const {
-    PPL_ASSERT(is<Derived>());
-    return static_cast<const Derived<Target>*>(this);
-  }
+  const Derived<Target>* as() const;
 
 };
 

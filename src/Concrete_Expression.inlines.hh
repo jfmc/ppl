@@ -88,6 +88,29 @@ Concrete_Expression_Type::floating_point_format() const {
   return impl.floating_point_format;
 }
 
+template <typename Target>
+template <template <typename T> class Derived>
+inline bool
+Concrete_Expression_Common<Target>::is() const {
+  return Concrete_Expression<Target>::kind() == Derived<Target>::KIND;
+}
+
+template <typename Target>
+template <template <typename T> class Derived>
+inline Derived<Target>*
+Concrete_Expression_Common<Target>::as() {
+  PPL_ASSERT(is<Derived>());
+  return static_cast<Derived<Target>*>(this);
+}
+
+template <typename Target>
+template <template <typename T> class Derived>
+inline const Derived<Target>*
+Concrete_Expression_Common<Target>::as() const {
+  PPL_ASSERT(is<Derived>());
+  return static_cast<const Derived<Target>*>(this);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Concrete_Expression_inlines_hh)
