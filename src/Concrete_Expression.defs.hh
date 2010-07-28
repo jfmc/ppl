@@ -24,7 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Concrete_Expression_defs_hh 1
 
 #include "Concrete_Expression.types.hh"
-#include "globals.types.hh"
+#include "globals.defs.hh"
+#include "Interval.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -115,6 +116,23 @@ private:
   Implementation impl;
 };
 
+struct Integer_Interval_Info_Policy {
+  const_bool_nodef(store_special, false);
+  const_bool_nodef(store_open, true);
+  const_bool_nodef(cache_empty, true);
+  const_bool_nodef(cache_singleton, true);
+  const_bool_nodef(cache_normalized, false);
+  const_int_nodef(next_bit, 0);
+  const_bool_nodef(may_be_empty, false);
+  const_bool_nodef(may_contain_infinity, false);
+  const_bool_nodef(check_empty_result, false);
+  const_bool_nodef(check_inexact, false);
+};
+
+typedef Interval_Restriction_None
+<Interval_Info_Bitset<unsigned int, Integer_Interval_Info_Policy> >
+Integer_Interval_Info;
+
 template <typename Target>
 class Concrete_Expression_Common {
 public:
@@ -123,6 +141,13 @@ public:
 
   //! Returns the kind of \* this.
   Concrete_Expression_Kind kind() const;
+
+  /*! \brief
+    Returns an overapproximation of the integer type value of \p *this.
+    Shouldn't be called if the expression has a different type.
+  */
+  Interval<mpz_class, Integer_Interval_Info>
+  get_integer_interval() const;
 
   //! Tests if \p *this has the same kind as <CODE>Derived<Target></CODE>.
   template <template <typename T> class Derived>

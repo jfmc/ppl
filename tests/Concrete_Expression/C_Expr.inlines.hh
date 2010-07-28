@@ -69,6 +69,11 @@ Binary_Operator<C_Expr>::binary_operator() const {
   return bop;
 }
 
+inline Interval<mpz_class, Integer_Interval_Info>
+Binary_Operator<C_Expr>::get_integer_interval() const {
+  throw std::runtime_error("Unimplemented");
+}
+
 inline const Concrete_Expression<C_Expr>*
 Binary_Operator<C_Expr>::left_hand_side() const {
   return lhs;
@@ -108,6 +113,11 @@ Unary_Operator<C_Expr>::argument() const {
   return arg;
 }
 
+inline Interval<mpz_class, Integer_Interval_Info>
+Unary_Operator<C_Expr>::get_integer_interval() const {
+  throw std::runtime_error("Unimplemented");
+}
+
 inline
 Cast_Operator<C_Expr>::
 Cast_Operator(const Concrete_Expression_Type type,
@@ -130,8 +140,26 @@ Cast_Operator<C_Expr>::argument() const {
   return arg;
 }
 
+inline Interval<mpz_class, Integer_Interval_Info>
+Cast_Operator<C_Expr>::get_integer_interval() const {
+  throw std::runtime_error("Unimplemented");
+}
+
+inline
+Integer_Constant<C_Expr>::
+Integer_Constant(Concrete_Expression_Type type,
+                 const Interval<mpz_class, Integer_Interval_Info>& val)
+  : Concrete_Expression<C_Expr>(type, INT_CON),
+    value(val) {
+}
+
 inline
 Integer_Constant<C_Expr>::~Integer_Constant<C_Expr>() {
+}
+
+inline Interval<mpz_class, Integer_Interval_Info>
+Integer_Constant<C_Expr>::get_integer_interval() const {
+  return value;
 }
 
 inline
@@ -158,11 +186,18 @@ Floating_Point_Constant<C_Expr>::get_value_as_string() const {
   return value;
 }
 
+inline Interval<mpz_class, Integer_Interval_Info>
+Floating_Point_Constant<C_Expr>::get_integer_interval() const {
+  throw std::runtime_error("Unimplemented");
+}
+
 inline
 Approximable_Reference<C_Expr>::
 Approximable_Reference(Concrete_Expression_Type type,
+		       const Interval<mpz_class, Integer_Interval_Info>& val,
                        dimension_type var_index)
   : Concrete_Expression<C_Expr>(type, APPROX_REF),
+    value(val),
     var_dimension(var_index) {
 }
 
@@ -178,6 +213,11 @@ Approximable_Reference<C_Expr>::type() const {
 inline dimension_type
 Approximable_Reference<C_Expr>::associated_dimension() const {
   return var_dimension;
+}
+
+inline Interval<mpz_class, Integer_Interval_Info>
+Approximable_Reference<C_Expr>::get_integer_interval() const {
+  return value;
 }
 
 } // namespace Parma_Polyhedra_Library

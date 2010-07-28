@@ -50,6 +50,13 @@ public:
   //! Returns the kind of \* this.
   Concrete_Expression_Kind kind() const;
 
+  /*! \brief
+    Returns an overapproximation of the integer type value of \p *this.
+    Shouldn't be called if the expression has a different type.
+  */
+  virtual Interval<mpz_class, Integer_Interval_Info>
+  get_integer_interval() const = 0;
+
 protected:
   //! The expression's type.
   Concrete_Expression_Type expr_type;
@@ -82,6 +89,13 @@ public:
 
   //! Returns the right-hand side of \p *this.
   const Concrete_Expression<C_Expr>* right_hand_side() const;
+
+  /*! \brief
+    Returns an overapproximation of the integer type value of \p *this.
+    Shouldn't be called if the expression has a different type.
+  */
+  Interval<mpz_class, Integer_Interval_Info>
+  get_integer_interval() const;
 
   //! Constant identifying binary operator nodes.
   enum {
@@ -134,6 +148,13 @@ public:
   //! Returns the argument of \p *this.
   const Concrete_Expression<C_Expr>* argument() const;
 
+  /*! \brief
+    Returns an overapproximation of the integer type value of \p *this.
+    Shouldn't be called if the expression has a different type.
+  */
+  Interval<mpz_class, Integer_Interval_Info>
+  get_integer_interval() const;
+
   //! Constant identifying unary operator nodes.
   enum {
     KIND = UOP
@@ -172,6 +193,13 @@ public:
   //! Returns the casted expression.
   const Concrete_Expression<C_Expr>* argument() const;
 
+  /*! \brief
+    Returns an overapproximation of the integer type value of \p *this.
+    Shouldn't be called if the expression has a different type.
+  */
+  Interval<mpz_class, Integer_Interval_Info>
+  get_integer_interval() const;
+
   //! Constant identifying cast nodes.
   enum { KIND = CAST };
 
@@ -185,14 +213,29 @@ class Integer_Constant<C_Expr>
   : public Concrete_Expression<C_Expr>,
     public Integer_Constant_Common<C_Expr> {
 public:
+  //! Constructor from type and value.
+  Integer_Constant<C_Expr>(Concrete_Expression_Type type,
+                  const Interval<mpz_class, Integer_Interval_Info>& val);
+
   //! Do-nothing destructor.
   ~Integer_Constant<C_Expr>();
 
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
 
+  /*! \brief
+    Returns an overapproximation of the integer type value of \p *this.
+    Shouldn't be called if the expression has a different type.
+  */
+  Interval<mpz_class, Integer_Interval_Info>
+  get_integer_interval() const;
+
   //! Constant identifying integer constant nodes.
   enum { KIND = INT_CON };
+
+private:
+  //! An interval in which the value of the constant falls.
+  Interval<mpz_class, Integer_Interval_Info> value;
 };
 
 template <>
@@ -209,6 +252,13 @@ public:
 
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
+
+  /*! \brief
+    Returns an overapproximation of the integer type value of \p *this.
+    Shouldn't be called on this kind of expression.
+  */
+  Interval<mpz_class, Integer_Interval_Info>
+  get_integer_interval() const;
 
   /*! \brief
     Returns a string for the floating point constant as written
@@ -232,7 +282,8 @@ class Approximable_Reference<C_Expr>
 public:
   //! Builds a reference to the variable having the given index.
   Approximable_Reference<C_Expr>(Concrete_Expression_Type type,
-                                 dimension_type var_index);
+               const Interval<mpz_class, Integer_Interval_Info>& val,
+               dimension_type var_index);
 
   //! Do-nothing destructor.
   ~Approximable_Reference<C_Expr>();
@@ -246,10 +297,20 @@ public:
   */
   dimension_type associated_dimension() const;
 
+  /*! \brief
+    Returns an overapproximation of the integer type value of \p *this.
+    Shouldn't be called if the expression has a different type.
+  */
+  Interval<mpz_class, Integer_Interval_Info>
+  get_integer_interval() const;
+
   //! Constant identifying approximable reference nodes.
   enum { KIND = APPROX_REF };
 
 private:
+  //! An interval in which the variable's value falls.
+  Interval<mpz_class, Integer_Interval_Info> value;
+
   //! The index of the referenced variable.
   dimension_type var_dimension;
 };
