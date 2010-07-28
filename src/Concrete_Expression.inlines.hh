@@ -92,7 +92,8 @@ template <typename Target>
 template <template <typename T> class Derived>
 inline bool
 Concrete_Expression_Common<Target>::is() const {
-  return Concrete_Expression<Target>::kind() == Derived<Target>::KIND;
+  return static_cast<const Concrete_Expression<Target>*>(this)->kind() ==
+         Derived<Target>::KIND;
 }
 
 template <typename Target>
