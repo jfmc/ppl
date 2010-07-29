@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "C_Polyhedron.defs.hh"
+#include "NNC_Polyhedron.defs.hh"
 
 #include <stdexcept>
 
