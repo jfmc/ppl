@@ -39,7 +39,6 @@ DB_Row_Impl_Handler<T>::Impl::construct_upward_approximation(const U& y) {
     bump_size();
   }
 #else // PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  PPL_ASSERT(y_size > 0);
   if (y_size > 0) {
     assign_r(vec_[0], y[0], ROUND_UP);
     bump_size();
@@ -100,7 +99,6 @@ DB_Row_Impl_Handler<T>::Impl::copy_construct_coefficients(const Impl& y) {
     bump_size();
   }
 #else // PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  PPL_ASSERT(y_size > 0);
   if (y_size > 0) {
     vec_[0] = y.vec_[0];
     bump_size();
