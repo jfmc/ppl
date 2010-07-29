@@ -41,7 +41,7 @@ DB_Row_Impl_Handler<T>::Impl::construct_upward_approximation(const U& y) {
 #else // PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   PPL_ASSERT(y_size > 0);
   if (y_size > 0) {
-    vec_[0] = y[0];
+    assign_r(vec_[0], y[0], ROUND_UP);
     bump_size();
     // Construct in direct order: will destroy in reverse order.
     for (dimension_type i = 1; i < y_size; ++i) {
