@@ -69,7 +69,7 @@ Binary_Operator<C_Expr>::binary_operator() const {
   return bop;
 }
 
-inline Interval<mpz_class, Integer_Interval_Info>
+inline Integer_Interval_Type
 Binary_Operator<C_Expr>::get_integer_interval() const {
   throw std::runtime_error("Unimplemented");
 }
@@ -113,7 +113,7 @@ Unary_Operator<C_Expr>::argument() const {
   return arg;
 }
 
-inline Interval<mpz_class, Integer_Interval_Info>
+inline Integer_Interval_Type
 Unary_Operator<C_Expr>::get_integer_interval() const {
   throw std::runtime_error("Unimplemented");
 }
@@ -140,7 +140,7 @@ Cast_Operator<C_Expr>::argument() const {
   return arg;
 }
 
-inline Interval<mpz_class, Integer_Interval_Info>
+inline Integer_Interval_Type
 Cast_Operator<C_Expr>::get_integer_interval() const {
   throw std::runtime_error("Unimplemented");
 }
@@ -148,7 +148,7 @@ Cast_Operator<C_Expr>::get_integer_interval() const {
 inline
 Integer_Constant<C_Expr>::
 Integer_Constant(Concrete_Expression_Type type,
-                 const Interval<mpz_class, Integer_Interval_Info>& val)
+                 const Integer_Interval_Type& val)
   : Concrete_Expression<C_Expr>(type, INT_CON),
     value(val) {
 }
@@ -157,7 +157,7 @@ inline
 Integer_Constant<C_Expr>::~Integer_Constant<C_Expr>() {
 }
 
-inline Interval<mpz_class, Integer_Interval_Info>
+inline Integer_Interval_Type
 Integer_Constant<C_Expr>::get_integer_interval() const {
   return value;
 }
@@ -186,7 +186,7 @@ Floating_Point_Constant<C_Expr>::get_value_as_string() const {
   return value;
 }
 
-inline Interval<mpz_class, Integer_Interval_Info>
+inline Integer_Interval_Type
 Floating_Point_Constant<C_Expr>::get_integer_interval() const {
   throw std::runtime_error("Unimplemented");
 }
@@ -194,7 +194,7 @@ Floating_Point_Constant<C_Expr>::get_integer_interval() const {
 inline
 Approximable_Reference<C_Expr>::
 Approximable_Reference(Concrete_Expression_Type type,
-		       const Interval<mpz_class, Integer_Interval_Info>& val,
+		       const Integer_Interval_Type& val,
                        dimension_type var_index)
   : Concrete_Expression<C_Expr>(type, APPROX_REF),
     value(val),
@@ -215,7 +215,7 @@ Approximable_Reference<C_Expr>::associated_dimension() const {
   return var_dimension;
 }
 
-inline Interval<mpz_class, Integer_Interval_Info>
+inline Integer_Interval_Type
 Approximable_Reference<C_Expr>::get_integer_interval() const {
   return value;
 }

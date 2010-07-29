@@ -133,6 +133,8 @@ typedef Interval_Restriction_None
 <Interval_Info_Bitset<unsigned int, Integer_Interval_Info_Policy> >
 Integer_Interval_Info;
 
+typedef Interval<mpz_class, Integer_Interval_Info> Integer_Interval_Type;
+
 template <typename Target>
 class Concrete_Expression_Common {
 public:
@@ -146,7 +148,7 @@ public:
     Returns an overapproximation of the integer type value of \p *this.
     Shouldn't be called if the expression has a different type.
   */
-  Interval<mpz_class, Integer_Interval_Info>
+  Integer_Interval_Type
   get_integer_interval() const;
 
   //! Tests if \p *this has the same kind as <CODE>Derived<Target></CODE>.

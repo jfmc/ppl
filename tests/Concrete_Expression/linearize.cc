@@ -29,7 +29,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 Concrete_Expression_Type FP_Type =
   Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
 
-typedef Interval<mpz_class, Integer_Interval_Info> Int_Interval;
+typedef Integer_Interval_Type Int_Interval;
 
 // Tests division by zero.
 bool
@@ -206,6 +206,30 @@ test07() {
   return ok;
 }
 
+// Tests linearization of cast expressions.
+bool
+test08() {
+  Int_Interval i(mpz_class(123456789));
+  Integer_Constant<C_Expr> ic_expr(Concrete_Expression_Type::bounded_integer(BITS_32, UNSIGNED, OVERFLOW_WRAPS), i);
+  Cast_Operator<C_Expr> cast(FP_Type, &ic_expr);
+  FP_Linear_Form result;
+  linearize(cast, FP_Interval_Abstract_Store(),
+            FP_Linear_Form_Abstract_Store(), result);
+
+  Int_Interval approx(mpz_class(123456700));
+  approx.join_assign(mpz_class(123456850));
+  bool ok1 = approx.contains(result.inhomogeneous_term());
+
+  Approximable_Reference<C_Expr> var(Concrete_Expression_Type::bounded_integer(BITS_32, UNSIGNED, OVERFLOW_WRAPS), i, 0);
+  Cast_Operator<C_Expr> cast2(FP_Type, &var);
+  linearize(cast2, FP_Interval_Abstract_Store(),
+            FP_Linear_Form_Abstract_Store(), result);
+
+  bool ok2 = approx.contains(result.inhomogeneous_term());
+
+  return ok1 && ok2;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -216,4 +240,5 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN

@@ -55,7 +55,8 @@ namespace Parma_Polyhedra_Library {
   \return <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
 
-  Note that all variables occuring in the expressions represented
+  Note that all floating point variables occuring
+  in the expressions represented
   by \p first_operand and \p second_operand MUST have an associated value in
   \p int_store. If this precondition is not met, calling the method
   causes an undefined behavior.
@@ -160,7 +161,8 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
   \return <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
 
-  Note that all variables occuring in the expressions represented
+  Note that all floating point variables occuring
+  in the expressions represented
   by \p first_operand and \p second_operand MUST have an associated value in
   \p int_store. If this precondition is not met, calling the method
   causes an undefined behavior.
@@ -271,7 +273,8 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
   \return <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
 
-  Note that all variables occuring in the expressions represented
+  Note that all floating point variables occuring
+  in the expressions represented
   by \p first_operand and \p second_operand MUST have an associated value in
   \p int_store. If this precondition is not met, calling the method
   causes an undefined behavior.
@@ -462,7 +465,8 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
   \return <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
 
-  Note that all variables occuring in the expressions represented
+  Note that all floating point variables occuring
+  in the expressions represented
   by \p first_operand and \p second_operand MUST have an associated value in
   \p int_store. If this precondition is not met, calling the method
   causes an undefined behavior.
@@ -567,6 +571,63 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
   result.relative_error(analyzed_format, rel_error);
   result /= intervalized_second_operand;
   rel_error /= intervalized_second_operand;
+  result += rel_error;
+  FP_Interval_Type absolute_error =
+                   compute_absolute_error<FP_Interval_Type>(analyzed_format);
+  result += absolute_error;
+  return !result.overflows();
+}
+
+/*! \brief
+  Helper function used by <CODE>linearize</CODE> to linearize a cast
+  floating point expression.
+
+  \par Template type parameters
+
+  - The class template parameter \p Target specifies the implementation
+  of Concrete_Expression to be used.
+  - The class template parameter \p FP_Interval_Type represents the type
+  of the intervals used in the abstract domain. The interval bounds
+  should have a floating point type.
+
+  Makes \p result become the linearization of \p *this in the given
+  composite abstract store.
+
+  \param expr The cast operator concrete expression to linearize.
+  \param int_store The interval abstract store.
+  \param lf_store The linear form abstract store.
+  \param result The modified linear form.
+
+  \return <CODE>true</CODE> if the linearization succeeded,
+  <CODE>false</CODE> otherwise.
+
+  Note that all floating point variables occuring in the expression represented
+  by \p cast_expr MUST have an associated value in \p int_store. If this
+  precondition is not met, calling the method causes an undefined behavior.
+*/
+template <typename Target, typename FP_Interval_Type>
+static bool
+cast_linearize(const Cast_Operator<Target>& cast_expr,
+               const Box<FP_Interval_Type>& int_store,
+               const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
+               Linear_Form<FP_Interval_Type>& result) {
+  typedef typename FP_Interval_Type::boundary_type analyzer_format;
+  typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
+  typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
+  typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
+
+  const Concrete_Expression<Target>* cast_arg = cast_expr.argument();
+  if (cast_arg->type().is_floating_point()) {
+    if (!linearize(*cast_arg, int_store, lf_store, result))
+      return false;
+  }
+  else
+    result = FP_Linear_Form(FP_Interval_Type(cast_arg->get_integer_interval()));
+
+  Floating_Point_Format analyzed_format =
+    cast_expr.type().floating_point_format();
+  FP_Linear_Form rel_error;
+  result.relative_error(analyzed_format, rel_error);
   result += rel_error;
   FP_Interval_Type absolute_error =
                    compute_absolute_error<FP_Interval_Type>(analyzed_format);
@@ -717,11 +778,17 @@ linearize(const Concrete_Expression<Target>& expr,
     break;
   }
   case Cast_Operator<Target>::KIND:
-    // TODO.
+  {
+    const Cast_Operator<Target>* cast_expr =
+      expr.template as<Cast_Operator>();
+    return cast_linearize(*cast_expr, int_store, lf_store, result);
     break;
+  }
   default:
     throw std::runtime_error("PPL internal error");
   }
+
+  PPL_ASSERT(false);
 }
 
 } // namespace Parma_Polyhedra_Library

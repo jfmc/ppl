@@ -54,7 +54,7 @@ public:
     Returns an overapproximation of the integer type value of \p *this.
     Shouldn't be called if the expression has a different type.
   */
-  virtual Interval<mpz_class, Integer_Interval_Info>
+  virtual Integer_Interval_Type
   get_integer_interval() const = 0;
 
 protected:
@@ -94,7 +94,7 @@ public:
     Returns an overapproximation of the integer type value of \p *this.
     Shouldn't be called if the expression has a different type.
   */
-  Interval<mpz_class, Integer_Interval_Info>
+  Integer_Interval_Type
   get_integer_interval() const;
 
   //! Constant identifying binary operator nodes.
@@ -152,7 +152,7 @@ public:
     Returns an overapproximation of the integer type value of \p *this.
     Shouldn't be called if the expression has a different type.
   */
-  Interval<mpz_class, Integer_Interval_Info>
+  Integer_Interval_Type
   get_integer_interval() const;
 
   //! Constant identifying unary operator nodes.
@@ -197,7 +197,7 @@ public:
     Returns an overapproximation of the integer type value of \p *this.
     Shouldn't be called if the expression has a different type.
   */
-  Interval<mpz_class, Integer_Interval_Info>
+  Integer_Interval_Type
   get_integer_interval() const;
 
   //! Constant identifying cast nodes.
@@ -215,7 +215,7 @@ class Integer_Constant<C_Expr>
 public:
   //! Constructor from type and value.
   Integer_Constant<C_Expr>(Concrete_Expression_Type type,
-                  const Interval<mpz_class, Integer_Interval_Info>& val);
+                  const Integer_Interval_Type& val);
 
   //! Do-nothing destructor.
   ~Integer_Constant<C_Expr>();
@@ -227,7 +227,7 @@ public:
     Returns an overapproximation of the integer type value of \p *this.
     Shouldn't be called if the expression has a different type.
   */
-  Interval<mpz_class, Integer_Interval_Info>
+  Integer_Interval_Type
   get_integer_interval() const;
 
   //! Constant identifying integer constant nodes.
@@ -235,7 +235,7 @@ public:
 
 private:
   //! An interval in which the value of the constant falls.
-  Interval<mpz_class, Integer_Interval_Info> value;
+  Integer_Interval_Type value;
 };
 
 template <>
@@ -257,7 +257,7 @@ public:
     Returns an overapproximation of the integer type value of \p *this.
     Shouldn't be called on this kind of expression.
   */
-  Interval<mpz_class, Integer_Interval_Info>
+  Integer_Interval_Type
   get_integer_interval() const;
 
   /*! \brief
@@ -282,7 +282,7 @@ class Approximable_Reference<C_Expr>
 public:
   //! Builds a reference to the variable having the given index.
   Approximable_Reference<C_Expr>(Concrete_Expression_Type type,
-               const Interval<mpz_class, Integer_Interval_Info>& val,
+               const Integer_Interval_Type& val,
                dimension_type var_index);
 
   //! Do-nothing destructor.
@@ -301,7 +301,7 @@ public:
     Returns an overapproximation of the integer type value of \p *this.
     Shouldn't be called if the expression has a different type.
   */
-  Interval<mpz_class, Integer_Interval_Info>
+  Integer_Interval_Type
   get_integer_interval() const;
 
   //! Constant identifying approximable reference nodes.
@@ -309,7 +309,7 @@ public:
 
 private:
   //! An interval in which the variable's value falls.
-  Interval<mpz_class, Integer_Interval_Info> value;
+  Integer_Interval_Type value;
 
   //! The index of the referenced variable.
   dimension_type var_dimension;
