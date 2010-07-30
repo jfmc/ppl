@@ -616,16 +616,23 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
   typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
   typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
 
+  Floating_Point_Format analyzed_format =
+    cast_expr.type().floating_point_format();
   const Concrete_Expression<Target>* cast_arg = cast_expr.argument();
   if (cast_arg->type().is_floating_point()) {
     if (!linearize(*cast_arg, int_store, lf_store, result))
       return false;
+    if (!is_less_precise_than(analyzed_format,
+                              cast_arg->type().floating_point_format()))
+      // We are casting to a more precise format. Do not add errors.
+      return true;
   }
-  else
+  else {
     result = FP_Linear_Form(FP_Interval_Type(cast_arg->get_integer_interval()));
+    /* FIXME: we can avoid adding errors if FP_Interval_Type::boundary_type
+       is less precise than analyzed_format. */
+  }
 
-  Floating_Point_Format analyzed_format =
-    cast_expr.type().floating_point_format();
   FP_Linear_Form rel_error;
   result.relative_error(analyzed_format, rel_error);
   result += rel_error;

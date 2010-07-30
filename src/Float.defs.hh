@@ -361,6 +361,12 @@ public:
 #endif
 
 /*! \brief
+  Returns <CODE>true</CODE> if and only if there is some floating point
+  number that is representable by \p f2 but not by \p f1.
+*/
+bool is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2);
+
+/*! \brief
   Computes the absolute error of floating point computations.
 
   \par Template type parameters

@@ -444,6 +444,11 @@ float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
     << (MANTISSA_BITS - 64);
 }
 
+inline bool
+is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2) {
+  return f1 < f2;
+}
+
 #if PPL_SUPPORTED_FLOAT
 inline
 Float<float>::Float() {
@@ -491,7 +496,6 @@ Float<long double>::value() {
   return u.number;
 }
 #endif
-
 
 } // namespace Parma_Polyhedra_Library
 
