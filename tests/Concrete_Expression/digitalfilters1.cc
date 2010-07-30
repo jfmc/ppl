@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include "C_Expr.defs.hh"
 
 namespace {
 
@@ -423,7 +424,7 @@ test04() {
   return (tmp.lower() == -128 && tmp.upper() == 128);
 }
 
-/*
+
 // Tests rate limiter using bounded differences and linearization of
 // floating point expressions.
 // In order to improve the analysis, the interval domain is used
@@ -459,22 +460,21 @@ test05() {
   cs.insert(Y <= M);
   cs.insert(Y >= -M);
 
-  Con_FP_Expression con_y("0");
+  Floating_Point_Constant<C_Expr> con_y("0", 2);
   // The constant floating point expression con_y is linearized into
   // the interval linear form lk. If linearization succeeded, we model
   // the assignment Y = 0, invoking affine_form_image method.
-  // FIXME: In order to refine the analysis, all the transer function are
+  // In order to refine the analysis, all the transer function are
   // performed in parallel in the interval domain and in the bounded
   // differences domain.
   // Then, we consider the intersection between these abstract domains.
 
   interval_store.affine_form_image(Y, FP_Linear_Form(tmp));
-  if (con_y.linearize(interval_store, lf_abstract_store, lk))
+  if (linearize(con_y, interval_store, lf_abstract_store, lk))
     bd.affine_form_image(Y, lk);
   else
-    bd.affine_form_image(Y, FP_Linear_Form(interval_store.get_interval(Y)));
+    bd.intersection_assign(FP_BD_Shape(interval_store));
   interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
-
 
   // This loop iterate until a fixed point is reached.
   do {
@@ -489,74 +489,73 @@ test05() {
     tmp.lower() = -128;
     tmp.upper() = 128;
     interval_store.affine_form_image(X, FP_Linear_Form(tmp));
-    Con_FP_Expression con_x(-128, 128);
-    if (con_x.linearize(interval_store, lf_abstract_store, lk))
-      bd.affine_form_image(X, lk);
-    else
-      bd.affine_form_image(X, FP_Linear_Form(interval_store.get_interval(X)));
+    bd.affine_form_image(X, FP_Linear_Form(tmp));
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // D = [0, 16];
     tmp.lower() = 0;
     tmp.upper() = 16;
     interval_store.affine_form_image(D, FP_Linear_Form(tmp));
-    Con_FP_Expression con_d(0, 16);
-    if (con_d.linearize(interval_store, lf_abstract_store, lk))
-      bd.affine_form_image(D, lk);
-    else
-      bd.affine_form_image(D, FP_Linear_Form(interval_store.get_interval(D)));
+    bd.affine_form_image(D, FP_Linear_Form(tmp));    
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // S = Y;
     interval_store.affine_form_image(S, FP_Linear_Form(Y));
-    Var_FP_Expression var_y(Y.id());
-    if (var_y.linearize(interval_store, lf_abstract_store, ly))
+    Approximable_Reference<C_Expr> var_y(FP_Type, Int_Interval(mpz_class(0)),
+                                         Y.id());
+    if (linearize(var_y, interval_store, lf_abstract_store, ly))
       bd.affine_form_image(S, ly);
     else
-      bd.affine_form_image(S, FP_Linear_Form(interval_store.get_interval(S)));
+      bd.intersection_assign(FP_BD_Shape(interval_store));
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // R = X - S;
-    Var_FP_Expression* px = new Var_FP_Expression(X.id());
-    Var_FP_Expression* ps = new Var_FP_Expression(S.id());
-    Dif_FP_Expression x_dif_s(px, ps);
+    Approximable_Reference<C_Expr> px(FP_Type, Int_Interval(mpz_class(0)),
+                                      X.id());
+    Approximable_Reference<C_Expr> ps(FP_Type, Int_Interval(mpz_class(0)),
+                                      S.id());
+    Binary_Operator<C_Expr> x_dif_s(FP_Type, Binary_Operator<C_Expr>::SUB,
+                                    &px, &ps);
     interval_store.affine_form_image(R, FP_Linear_Form(X - S));
-    if (x_dif_s.linearize(interval_store, lf_abstract_store, lr))
+    if (linearize(x_dif_s, interval_store, lf_abstract_store, lr))
       bd.affine_form_image(R, lr);
     else
-      bd.affine_form_image(R, FP_Linear_Form(interval_store.get_interval(R)));
+      bd.intersection_assign(FP_BD_Shape(interval_store));
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // Y = X;
-    Var_FP_Expression var_x(X.id());
     interval_store.affine_form_image(Y, FP_Linear_Form(X));
-    if (var_x.linearize(interval_store, lf_abstract_store, lx))
+    if (linearize(px, interval_store, lf_abstract_store, lx))
       bd.affine_form_image(Y, lx);
     else
-      bd.affine_form_image(Y, FP_Linear_Form(interval_store.get_interval(Y)));
+      bd.intersection_assign(FP_BD_Shape(interval_store));
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // if (R <= -D)
     FP_BD_Shape bd_then(bd);
     FP_Interval_Abstract_Store is_then(interval_store);
     is_then.refine_with_constraint(R <= -D);
-    bd_then.refine_with_linear_form_inequality(lr, -lk);
+    bd_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
+                                               -FP_Linear_Form(D));
     is_then.intersection_assign(FP_Interval_Abstract_Store(bd_then));
 
     // then Y = S - D;
-    Var_FP_Expression* pd  = new Var_FP_Expression(D.id());
-    Var_FP_Expression* ps2 = new Var_FP_Expression(S.id());
-    Dif_FP_Expression s_dif_d(ps2, pd);
+    Approximable_Reference<C_Expr> pd(FP_Type, Int_Interval(mpz_class(0)),
+                                      D.id());
+    Binary_Operator<C_Expr> s_dif_d(FP_Type, Binary_Operator<C_Expr>::SUB,
+                                    &ps, &pd);
     is_then.affine_form_image(Y, FP_Linear_Form(S - D));
-    if (s_dif_d.linearize(is_then, lf_abstract_store, ly))
+    if (linearize(s_dif_d, is_then, lf_abstract_store, ly))
       bd_then.affine_form_image(Y, ly);
     else
-      bd_then.affine_form_image(Y, FP_Linear_Form(is_then.get_interval(Y)));
+      bd_then.intersection_assign(FP_BD_Shape(is_then));
     is_then.intersection_assign(FP_Interval_Abstract_Store(bd_then));
 
     // else skip;
     interval_store.refine_with_constraint(R > -D);
-    bd.refine_with_linear_form_inequality(-lk, lr);
+    bd.refine_with_linear_form_inequality(-FP_Linear_Form(D),
+                                          FP_Linear_Form(R));
+    bd.intersection_assign(FP_BD_Shape(interval_store));
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // LUB between then and else branches.
@@ -568,22 +567,23 @@ test05() {
     bd_then = bd;
     is_then = interval_store;
     is_then.refine_with_constraint(R >= D);
-    bd_then.refine_with_linear_form_inequality(lk, lr);
+    bd_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
+                                               FP_Linear_Form(R));
     is_then.intersection_assign(FP_Interval_Abstract_Store(bd_then));
 
     // then Y = S + D;
-    Var_FP_Expression* pd1  = new Var_FP_Expression(D.id());
-    Var_FP_Expression* ps3  = new Var_FP_Expression(S.id());
-    Sum_FP_Expression s_sum_d(ps3, pd1);
+    Binary_Operator<C_Expr> s_sum_d(FP_Type, Binary_Operator<C_Expr>::ADD,
+                                    &ps, &pd);
     is_then.affine_form_image(Y, FP_Linear_Form(S + D));
-    if (s_sum_d.linearize(is_then, lf_abstract_store, ly))
+    if (linearize(s_sum_d, is_then, lf_abstract_store, ly))
       bd_then.affine_form_image(Y, ly);
     else
-      bd_then.affine_form_image(Y, FP_Linear_Form(is_then.get_interval(Y)));
+      bd_then.intersection_assign(FP_BD_Shape(is_then));
     is_then.intersection_assign(FP_Interval_Abstract_Store(bd_then));
 
     // else skip;
-    bd.refine_with_linear_form_inequality(lr, lk);
+    bd.refine_with_linear_form_inequality(FP_Linear_Form(R),
+                                          FP_Linear_Form(D));
     interval_store.refine_with_constraint(R < D);
     bd.intersection_assign(FP_BD_Shape(interval_store));
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
@@ -612,7 +612,7 @@ test05() {
   return (tmp.lower() == -144 && tmp.upper() == 144);
 }
 
-
+/*
 // Tests rate limiter using octagonal shapes and linearization of
 // floating point expressions.
 // In order to improve the analysis, the interval domain is used
@@ -990,7 +990,7 @@ BEGIN_MAIN
   DO_TEST_F8(test02);
   DO_TEST_F8(test03);
   DO_TEST_F64A(test04);
-/*
+
 #define COND_float  PPL_CPP_EQ(PPL_CPP_FP_FORMAT(ANALYZER_FP_FORMAT), 1)
 #define COND_double PPL_CPP_EQ(PPL_CPP_FP_FORMAT(ANALYZER_FP_FORMAT), 2)
 #define COND_float_or_double PPL_CPP_OR(COND_float, COND_double)
@@ -1002,6 +1002,7 @@ BEGIN_MAIN
   PPL_CPP_OR(COND_F64, PPL_CPP_OR(PPL_CUSTOM_COND_32, PPL_CUSTOM_COND_64))
 
   COND_DO_TEST(PPL_CUSTOM_COND, test05);
+/*
   COND_DO_TEST(PPL_CUSTOM_COND, test06);
 
   DO_TEST_F64(test07);
