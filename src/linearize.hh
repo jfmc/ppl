@@ -629,8 +629,9 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
   }
   else {
     result = FP_Linear_Form(FP_Interval_Type(cast_arg->get_integer_interval()));
-    /* FIXME: we can avoid adding errors if FP_Interval_Type::boundary_type
-       is less precise than analyzed_format. */
+    if (is_less_precise_than(Float<analyzer_format>::Binary::floating_point_format, analyzed_format))
+      // We are rounding to a less precise format. Do not add errors.
+      return true;
   }
 
   FP_Linear_Form rel_error;
