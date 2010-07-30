@@ -25,6 +25,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
+Concrete_Expression_Type FP_Type =
+  Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
+
+typedef Integer_Interval_Type Int_Interval;
 
 /*
 This file tests a rate limiter that, given random input flows of floating
@@ -105,7 +109,7 @@ test01() {
     // D = [0, 16];
     tmp.lower() = 0;
     tmp.upper() = 16;
-    abstract_store.affine_form_image(X, FP_Linear_Form(tmp));
+    abstract_store.affine_form_image(D, FP_Linear_Form(tmp));
 
     // S = Y;
     abstract_store.affine_form_image(S, FP_Linear_Form(Y));
@@ -193,7 +197,7 @@ test02() {
     tmp.upper() = 16;
     abstract_store.affine_form_image(D, FP_Linear_Form(tmp));
 
-    // S = tmp;
+    // S = Y;
     abstract_store.affine_form_image(S, FP_Linear_Form(Y));
 
     // R = X - S;
@@ -419,6 +423,7 @@ test04() {
   return (tmp.lower() == -128 && tmp.upper() == 128);
 }
 
+/*
 // Tests rate limiter using bounded differences and linearization of
 // floating point expressions.
 // In order to improve the analysis, the interval domain is used
@@ -976,6 +981,7 @@ test07() {
   nout << "*** Y in " << tmp << " ***" << endl;
   return (tmp.lower() == -144 && tmp.upper() == 144);
 }
+*/
 
 } // namespace
 
@@ -984,7 +990,7 @@ BEGIN_MAIN
   DO_TEST_F8(test02);
   DO_TEST_F8(test03);
   DO_TEST_F64A(test04);
-
+/*
 #define COND_float  PPL_CPP_EQ(PPL_CPP_FP_FORMAT(ANALYZER_FP_FORMAT), 1)
 #define COND_double PPL_CPP_EQ(PPL_CPP_FP_FORMAT(ANALYZER_FP_FORMAT), 2)
 #define COND_float_or_double PPL_CPP_OR(COND_float, COND_double)
@@ -999,4 +1005,5 @@ BEGIN_MAIN
   COND_DO_TEST(PPL_CUSTOM_COND, test06);
 
   DO_TEST_F64(test07);
+*/
 END_MAIN

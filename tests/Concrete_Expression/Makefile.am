@@ -52,11 +52,11 @@ $(top_builddir)/src/libppl.la \
 
 ORIGINAL_TESTS = \
 C_Expr \
+digitalfilters1 \
 linearform1 \
 linearize
 #bdshape1 \
 #bdshape2 \
-#digitalfilters1 \
 #floatingpointexpr1 \
 #octagonalshape1 \
 #octagonalshape2 \
