@@ -659,7 +659,226 @@ test05() {
 // in parallel with octagons domain.
 bool
 test06() {
-  return true;
+  // Input signal.
+  Variable X(0);
+  // Maximum allowed for |R|.
+  Variable D(1);
+  // Output signal.
+  Variable Y(2);
+  // Last output.
+  Variable S(3);
+  // Actual rate.
+  Variable R(4);
+
+  FP_Interval_Abstract_Store interval_store(5);
+  FP_Interval_Abstract_Store is_begin(5);
+  FP_Linear_Form_Abstract_Store lf_abstract_store;
+  FP_Linear_Form_Abstract_Store ls_begin;
+  FP_Octagonal_Shape oc(5);
+  FP_Octagonal_Shape oc_begin(5);
+  unsigned short n = 0;
+  FP_Interval tmp(0);
+  FP_Linear_Form lx;
+  FP_Linear_Form ly;
+  FP_Linear_Form lr;
+  FP_Linear_Form lk;
+
+  Constraint_System cs;
+  Coefficient M;
+  set_M(M, 144);
+  cs.insert(Y <= M);
+  cs.insert(Y >= -M);
+
+  bool lin_success;
+
+  Floating_Point_Constant<C_Expr> con_y("0", 2);
+  // The constant floating point expression con_y is linearized into
+  // the interval linear form lk. If linearization succeeded, we model
+  // the assignment Y = 0, invoking affine_form_image method.
+  // In order to refine the analysis, all the transer function are
+  // performed in parallel in the interval domain and in the bounded
+  // differences domain.
+  // Then, we consider the intersection between these abstract domains.
+
+  lin_success = linearize(con_y, interval_store, lf_abstract_store, lk);
+  interval_store.affine_form_image(Y, FP_Linear_Form(tmp));
+  if (lin_success) {
+    affine_form_image(lf_abstract_store, Y, lk);
+    oc.affine_form_image(Y, lk);
+  }
+  else {
+    discard_occurrences(lf_abstract_store, Y);
+    oc.intersection_assign(FP_Octagonal_Shape(interval_store));
+  }
+  interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+
+  // This loop iterate until a fixed point is reached.
+  do {
+
+    // Iteration no. n+1.
+    nout << "*** n = " << n << " ***" << endl;
+    ls_begin = lf_abstract_store;
+    oc_begin = oc;
+    is_begin = interval_store;
+    print_constraints(interval_store, "*** before loop ***");
+
+    // X = [-128, 128];
+    tmp.lower() = -128;
+    tmp.upper() = 128;
+    interval_store.affine_form_image(X, FP_Linear_Form(tmp));
+    affine_form_image(lf_abstract_store, X, FP_Linear_Form(tmp));
+    oc.affine_form_image(X, FP_Linear_Form(tmp));
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+
+    // D = [0, 16];
+    tmp.lower() = 0;
+    tmp.upper() = 16;
+    interval_store.affine_form_image(D, FP_Linear_Form(tmp));
+    affine_form_image(lf_abstract_store, D, FP_Linear_Form(tmp));
+    oc.affine_form_image(D, FP_Linear_Form(tmp));    
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+
+    // S = Y;
+    Approximable_Reference<C_Expr> var_y(FP_Type, Int_Interval(mpz_class(0)),
+                                         Y.id());
+    lin_success = linearize(var_y, interval_store, lf_abstract_store, ly);
+    interval_store.affine_form_image(S, FP_Linear_Form(Y));
+    if (lin_success) {
+      affine_form_image(lf_abstract_store, S, ly);
+      oc.affine_form_image(S, ly);
+    }
+    else {
+      discard_occurrences(lf_abstract_store, S);
+      oc.intersection_assign(FP_Octagonal_Shape(interval_store));
+    }
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+
+    // R = X - S;
+    Approximable_Reference<C_Expr> px(FP_Type, Int_Interval(mpz_class(0)),
+                                      X.id());
+    Approximable_Reference<C_Expr> ps(FP_Type, Int_Interval(mpz_class(0)),
+                                      S.id());
+    Binary_Operator<C_Expr> x_dif_s(FP_Type, Binary_Operator<C_Expr>::SUB,
+                                    &px, &ps);
+    lin_success = linearize(x_dif_s, interval_store, lf_abstract_store, lr);
+    interval_store.affine_form_image(R, FP_Linear_Form(X - S));
+    if (lin_success) {
+      affine_form_image(lf_abstract_store, R, lr);
+      oc.affine_form_image(R, lr);
+    }
+    else {
+      discard_occurrences(lf_abstract_store, R);
+      oc.intersection_assign(FP_Octagonal_Shape(interval_store));
+    }
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+
+    // Y = X;
+    lin_success = linearize(px, interval_store, lf_abstract_store, lx);
+    interval_store.affine_form_image(Y, FP_Linear_Form(X));
+    if (lin_success) {
+      affine_form_image(lf_abstract_store, Y, lx);
+      oc.affine_form_image(Y, lx);
+    }
+    else {
+      discard_occurrences(lf_abstract_store, Y);
+      oc.intersection_assign(FP_Octagonal_Shape(interval_store));
+    }
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+
+    // if (R <= -D)
+    FP_Octagonal_Shape oc_then(oc);
+    FP_Interval_Abstract_Store is_then(interval_store);
+    FP_Linear_Form_Abstract_Store ls_then(lf_abstract_store);
+    is_then.refine_with_constraint(R <= -D);
+    oc_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
+                                               -FP_Linear_Form(D));
+    is_then.intersection_assign(FP_Interval_Abstract_Store(oc_then));
+
+    // then Y = S - D;
+    Approximable_Reference<C_Expr> pd(FP_Type, Int_Interval(mpz_class(0)),
+                                      D.id());
+    Binary_Operator<C_Expr> s_dif_d(FP_Type, Binary_Operator<C_Expr>::SUB,
+                                    &ps, &pd);
+    lin_success = linearize(s_dif_d, is_then, ls_then, ly);
+    is_then.affine_form_image(Y, FP_Linear_Form(S - D));
+    if (lin_success) {
+      affine_form_image(ls_then, Y, ly);
+      oc_then.affine_form_image(Y, ly);
+    }
+    else {
+      discard_occurrences(ls_then, Y);
+      oc_then.intersection_assign(FP_Octagonal_Shape(is_then));
+    }
+    is_then.intersection_assign(FP_Interval_Abstract_Store(oc_then));
+
+    // else skip;
+    interval_store.refine_with_constraint(R > -D);
+    oc.refine_with_linear_form_inequality(-FP_Linear_Form(D),
+                                          FP_Linear_Form(R));
+    oc.intersection_assign(FP_Octagonal_Shape(interval_store));
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+
+    // LUB between then and else branches.
+    upper_bound_assign(lf_abstract_store, ls_then);
+    oc.upper_bound_assign(oc_then);
+    interval_store.upper_bound_assign(is_then);
+    print_constraints(interval_store, "*** after if (R <= -D) Y = S - D; ***");
+
+    // if (R >= D)
+    oc_then = oc;
+    is_then = interval_store;
+    ls_then = lf_abstract_store;
+    is_then.refine_with_constraint(R >= D);
+    oc_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
+                                               FP_Linear_Form(R));
+    is_then.intersection_assign(FP_Interval_Abstract_Store(oc_then));
+
+    // then Y = S + D;
+    Binary_Operator<C_Expr> s_sum_d(FP_Type, Binary_Operator<C_Expr>::ADD,
+                                    &ps, &pd);
+    lin_success = linearize(s_sum_d, is_then, ls_then, ly);
+    is_then.affine_form_image(Y, FP_Linear_Form(S + D));
+    if (lin_success) {
+      affine_form_image(ls_then, Y, ly);
+      oc_then.affine_form_image(Y, ly);
+    }
+    else {
+      discard_occurrences(ls_then, Y);
+      oc_then.intersection_assign(FP_Octagonal_Shape(is_then));
+    }
+    is_then.intersection_assign(FP_Interval_Abstract_Store(oc_then));
+
+    // else skip;
+    oc.refine_with_linear_form_inequality(FP_Linear_Form(R),
+                                          FP_Linear_Form(D));
+    interval_store.refine_with_constraint(R < D);
+    oc.intersection_assign(FP_Octagonal_Shape(interval_store));
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+
+    // LUB between then and else branches.
+    upper_bound_assign(lf_abstract_store, ls_then);
+    oc.upper_bound_assign(oc_then);
+    interval_store.upper_bound_assign(is_then);
+    print_constraints(interval_store, "*** after if (R >= D)  Y = S + D; ***");
+
+    // LUB between the actual abstract domains and the corresponding
+    // domains at the beginning of the loop.
+    upper_bound_assign(lf_abstract_store, ls_begin);
+    oc.upper_bound_assign(oc_begin);
+    interval_store.upper_bound_assign(is_begin);
+
+    // Limited extrapolation: we enforce the satisfaction
+    // of the constraint system cs = {Y <= M; Y >= -M}
+    oc.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
+    interval_store.limited_CC76_extrapolation_assign(is_begin, cs);
+    print_constraints(interval_store, "*** end loop ***");
+    ++n;
+
+  } while(is_begin != interval_store);
+
+  tmp = interval_store.get_interval(Y);
+  nout << "*** Y in " << tmp << " ***" << endl;
+  return (tmp.lower() == -144 && tmp.upper() == 144);
 }
 
 // Tests rate limiter using polyhedra domain and linearization of
@@ -668,7 +887,226 @@ test06() {
 // in parallel with poyhedra domain.
 bool
 test07() {
-  return true;
+  // Input signal.
+  Variable X(0);
+  // Maximum allowed for |R|.
+  Variable D(1);
+  // Output signal.
+  Variable Y(2);
+  // Last output.
+  Variable S(3);
+  // Actual rate.
+  Variable R(4);
+
+  FP_Interval_Abstract_Store interval_store(5);
+  FP_Interval_Abstract_Store is_begin(5);
+  FP_Linear_Form_Abstract_Store lf_abstract_store;
+  FP_Linear_Form_Abstract_Store ls_begin;
+  NNC_Polyhedron ph(5);
+  NNC_Polyhedron ph_begin(5);
+  unsigned short n = 0;
+  FP_Interval tmp(0);
+  FP_Linear_Form lx;
+  FP_Linear_Form ly;
+  FP_Linear_Form lr;
+  FP_Linear_Form lk;
+
+  Constraint_System cs;
+  Coefficient M;
+  set_M(M, 144);
+  cs.insert(Y <= M);
+  cs.insert(Y >= -M);
+
+  bool lin_success;
+
+  Floating_Point_Constant<C_Expr> con_y("0", 2);
+  // The constant floating point expression con_y is linearized into
+  // the interval linear form lk. If linearization succeeded, we model
+  // the assignment Y = 0, invoking affine_form_image method.
+  // In order to refine the analysis, all the transer function are
+  // performed in parallel in the interval domain and in the bounded
+  // differences domain.
+  // Then, we consider the intersection between these abstract domains.
+
+  lin_success = linearize(con_y, interval_store, lf_abstract_store, lk);
+  interval_store.affine_form_image(Y, FP_Linear_Form(tmp));
+  if (lin_success) {
+    affine_form_image(lf_abstract_store, Y, lk);
+    ph.affine_form_image(Y, lk);
+  }
+  else {
+    discard_occurrences(lf_abstract_store, Y);
+    ph.intersection_assign(NNC_Polyhedron(interval_store));
+  }
+  interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+
+  // This loop iterate until a fixed point is reached.
+  do {
+
+    // Iteration no. n+1.
+    nout << "*** n = " << n << " ***" << endl;
+    ls_begin = lf_abstract_store;
+    ph_begin = ph;
+    is_begin = interval_store;
+    print_constraints(interval_store, "*** before loop ***");
+
+    // X = [-128, 128];
+    tmp.lower() = -128;
+    tmp.upper() = 128;
+    interval_store.affine_form_image(X, FP_Linear_Form(tmp));
+    affine_form_image(lf_abstract_store, X, FP_Linear_Form(tmp));
+    ph.affine_form_image(X, FP_Linear_Form(tmp));
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+
+    // D = [0, 16];
+    tmp.lower() = 0;
+    tmp.upper() = 16;
+    interval_store.affine_form_image(D, FP_Linear_Form(tmp));
+    affine_form_image(lf_abstract_store, D, FP_Linear_Form(tmp));
+    ph.affine_form_image(D, FP_Linear_Form(tmp));    
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+
+    // S = Y;
+    Approximable_Reference<C_Expr> var_y(FP_Type, Int_Interval(mpz_class(0)),
+                                         Y.id());
+    lin_success = linearize(var_y, interval_store, lf_abstract_store, ly);
+    interval_store.affine_form_image(S, FP_Linear_Form(Y));
+    if (lin_success) {
+      affine_form_image(lf_abstract_store, S, ly);
+      ph.affine_form_image(S, ly);
+    }
+    else {
+      discard_occurrences(lf_abstract_store, S);
+      ph.intersection_assign(NNC_Polyhedron(interval_store));
+    }
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+
+    // R = X - S;
+    Approximable_Reference<C_Expr> px(FP_Type, Int_Interval(mpz_class(0)),
+                                      X.id());
+    Approximable_Reference<C_Expr> ps(FP_Type, Int_Interval(mpz_class(0)),
+                                      S.id());
+    Binary_Operator<C_Expr> x_dif_s(FP_Type, Binary_Operator<C_Expr>::SUB,
+                                    &px, &ps);
+    lin_success = linearize(x_dif_s, interval_store, lf_abstract_store, lr);
+    interval_store.affine_form_image(R, FP_Linear_Form(X - S));
+    if (lin_success) {
+      affine_form_image(lf_abstract_store, R, lr);
+      ph.affine_form_image(R, lr);
+    }
+    else {
+      discard_occurrences(lf_abstract_store, R);
+      ph.intersection_assign(NNC_Polyhedron(interval_store));
+    }
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+
+    // Y = X;
+    lin_success = linearize(px, interval_store, lf_abstract_store, lx);
+    interval_store.affine_form_image(Y, FP_Linear_Form(X));
+    if (lin_success) {
+      affine_form_image(lf_abstract_store, Y, lx);
+      ph.affine_form_image(Y, lx);
+    }
+    else {
+      discard_occurrences(lf_abstract_store, Y);
+      ph.intersection_assign(NNC_Polyhedron(interval_store));
+    }
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+
+    // if (R <= -D)
+    NNC_Polyhedron ph_then(ph);
+    FP_Interval_Abstract_Store is_then(interval_store);
+    FP_Linear_Form_Abstract_Store ls_then(lf_abstract_store);
+    is_then.refine_with_constraint(R <= -D);
+    ph_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
+                                               -FP_Linear_Form(D));
+    is_then.intersection_assign(FP_Interval_Abstract_Store(ph_then));
+
+    // then Y = S - D;
+    Approximable_Reference<C_Expr> pd(FP_Type, Int_Interval(mpz_class(0)),
+                                      D.id());
+    Binary_Operator<C_Expr> s_dif_d(FP_Type, Binary_Operator<C_Expr>::SUB,
+                                    &ps, &pd);
+    lin_success = linearize(s_dif_d, is_then, ls_then, ly);
+    is_then.affine_form_image(Y, FP_Linear_Form(S - D));
+    if (lin_success) {
+      affine_form_image(ls_then, Y, ly);
+      ph_then.affine_form_image(Y, ly);
+    }
+    else {
+      discard_occurrences(ls_then, Y);
+      ph_then.intersection_assign(NNC_Polyhedron(is_then));
+    }
+    is_then.intersection_assign(FP_Interval_Abstract_Store(ph_then));
+
+    // else skip;
+    interval_store.refine_with_constraint(R > -D);
+    ph.refine_with_linear_form_inequality(-FP_Linear_Form(D),
+                                          FP_Linear_Form(R));
+    ph.intersection_assign(NNC_Polyhedron(interval_store));
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+
+    // LUB between then and else branches.
+    upper_bound_assign(lf_abstract_store, ls_then);
+    ph.upper_bound_assign(ph_then);
+    interval_store.upper_bound_assign(is_then);
+    print_constraints(interval_store, "*** after if (R <= -D) Y = S - D; ***");
+
+    // if (R >= D)
+    ph_then = ph;
+    is_then = interval_store;
+    ls_then = lf_abstract_store;
+    is_then.refine_with_constraint(R >= D);
+    ph_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
+                                               FP_Linear_Form(R));
+    is_then.intersection_assign(FP_Interval_Abstract_Store(ph_then));
+
+    // then Y = S + D;
+    Binary_Operator<C_Expr> s_sum_d(FP_Type, Binary_Operator<C_Expr>::ADD,
+                                    &ps, &pd);
+    lin_success = linearize(s_sum_d, is_then, ls_then, ly);
+    is_then.affine_form_image(Y, FP_Linear_Form(S + D));
+    if (lin_success) {
+      affine_form_image(ls_then, Y, ly);
+      ph_then.affine_form_image(Y, ly);
+    }
+    else {
+      discard_occurrences(ls_then, Y);
+      ph_then.intersection_assign(NNC_Polyhedron(is_then));
+    }
+    is_then.intersection_assign(FP_Interval_Abstract_Store(ph_then));
+
+    // else skip;
+    ph.refine_with_linear_form_inequality(FP_Linear_Form(R),
+                                          FP_Linear_Form(D));
+    interval_store.refine_with_constraint(R < D);
+    ph.intersection_assign(NNC_Polyhedron(interval_store));
+    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+
+    // LUB between then and else branches.
+    upper_bound_assign(lf_abstract_store, ls_then);
+    ph.upper_bound_assign(ph_then);
+    interval_store.upper_bound_assign(is_then);
+    print_constraints(interval_store, "*** after if (R >= D)  Y = S + D; ***");
+
+    // LUB between the actual abstract domains and the corresponding
+    // domains at the beginning of the loop.
+    upper_bound_assign(lf_abstract_store, ls_begin);
+    ph.upper_bound_assign(ph_begin);
+    interval_store.upper_bound_assign(is_begin);
+
+    // Limited extrapolation: we enforce the satisfaction
+    // of the constraint system cs = {Y <= M; Y >= -M}
+    ph.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
+    interval_store.limited_CC76_extrapolation_assign(is_begin, cs);
+    print_constraints(interval_store, "*** end loop ***");
+    ++n;
+
+  } while(is_begin != interval_store);
+
+  tmp = interval_store.get_interval(Y);
+  nout << "*** Y in " << tmp << " ***" << endl;
+  return (tmp.lower() == -144 && tmp.upper() == 144);
 }
 
 } // namespace
