@@ -29,6 +29,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <gmp.h>
 #include "assert.hh"
 #include <cmath>
+#include <map>
+#include "Variable.types.hh"
+#include "Linear_Form.types.hh"
 
 #ifdef NAN
 #define PPL_NAN NAN
@@ -391,6 +394,35 @@ bool is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2);
 template <typename FP_Interval_Type>
 const FP_Interval_Type& compute_absolute_error(
                         Floating_Point_Format analyzed_format);
+
+/*! \brief
+  Discards all linear forms containing variable \p var from the
+  linear form abstract store \p lf_store.
+*/
+template <typename FP_Interval_Type>
+void discard_occurrences(std::map<dimension_type,
+                                Linear_Form<FP_Interval_Type> >& lf_store,
+                         Variable var);
+
+/*! \brief
+  Assigns the linear form \p lf to \p var in the linear form abstract
+  store \p lf_store, then discards all occurrences of \p var from it.
+*/
+template <typename FP_Interval_Type>
+void affine_form_image(std::map<dimension_type,
+                                Linear_Form<FP_Interval_Type> >& lf_store,
+                       Variable var,
+                       const Linear_Form<FP_Interval_Type>& lf);
+
+/*! \brief
+  Discards from \p ls1 all linear forms but those that are associated
+  to the same variable in \p ls2.
+*/
+template <typename FP_Interval_Type>
+void upper_bound_assign(std::map<dimension_type,
+			         Linear_Form<FP_Interval_Type> >& ls1,
+                        const std::map<dimension_type,
+			               Linear_Form<FP_Interval_Type> >& ls2);
 
 } // namespace Parma_Polyhedra_Library
 

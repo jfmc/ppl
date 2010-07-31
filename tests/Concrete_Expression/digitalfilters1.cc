@@ -445,6 +445,7 @@ test05() {
   FP_Interval_Abstract_Store interval_store(5);
   FP_Interval_Abstract_Store is_begin(5);
   FP_Linear_Form_Abstract_Store lf_abstract_store;
+  FP_Linear_Form_Abstract_Store ls_begin;
   FP_BD_Shape bd(5);
   FP_BD_Shape bd_begin(5);
   unsigned short n = 0;
@@ -470,10 +471,14 @@ test05() {
   // Then, we consider the intersection between these abstract domains.
 
   interval_store.affine_form_image(Y, FP_Linear_Form(tmp));
-  if (linearize(con_y, interval_store, lf_abstract_store, lk))
+  if (linearize(con_y, interval_store, lf_abstract_store, lk)) {
+    affine_form_image(lf_abstract_store, Y, lk);
     bd.affine_form_image(Y, lk);
-  else
+  }
+  else {
+    discard_occurrences(lf_abstract_store, Y);
     bd.intersection_assign(FP_BD_Shape(interval_store));
+  }
   interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
   // This loop iterate until a fixed point is reached.
@@ -481,6 +486,7 @@ test05() {
 
     // Iteration no. n+1.
     nout << "*** n = " << n << " ***" << endl;
+    ls_begin = lf_abstract_store;
     bd_begin = bd;
     is_begin = interval_store;
     print_constraints(interval_store, "*** before loop ***");
@@ -489,6 +495,7 @@ test05() {
     tmp.lower() = -128;
     tmp.upper() = 128;
     interval_store.affine_form_image(X, FP_Linear_Form(tmp));
+    affine_form_image(lf_abstract_store, X, FP_Linear_Form(tmp));
     bd.affine_form_image(X, FP_Linear_Form(tmp));
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
@@ -496,6 +503,7 @@ test05() {
     tmp.lower() = 0;
     tmp.upper() = 16;
     interval_store.affine_form_image(D, FP_Linear_Form(tmp));
+    affine_form_image(lf_abstract_store, D, FP_Linear_Form(tmp));
     bd.affine_form_image(D, FP_Linear_Form(tmp));    
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
@@ -503,10 +511,14 @@ test05() {
     interval_store.affine_form_image(S, FP_Linear_Form(Y));
     Approximable_Reference<C_Expr> var_y(FP_Type, Int_Interval(mpz_class(0)),
                                          Y.id());
-    if (linearize(var_y, interval_store, lf_abstract_store, ly))
+    if (linearize(var_y, interval_store, lf_abstract_store, ly)) {
+      affine_form_image(lf_abstract_store, S, ly);
       bd.affine_form_image(S, ly);
-    else
+    }
+    else {
+      discard_occurrences(lf_abstract_store, S);
       bd.intersection_assign(FP_BD_Shape(interval_store));
+    }
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // R = X - S;
@@ -517,23 +529,32 @@ test05() {
     Binary_Operator<C_Expr> x_dif_s(FP_Type, Binary_Operator<C_Expr>::SUB,
                                     &px, &ps);
     interval_store.affine_form_image(R, FP_Linear_Form(X - S));
-    if (linearize(x_dif_s, interval_store, lf_abstract_store, lr))
+    if (linearize(x_dif_s, interval_store, lf_abstract_store, lr)) {
+      affine_form_image(lf_abstract_store, R, lr);
       bd.affine_form_image(R, lr);
-    else
+    }
+    else {
+      discard_occurrences(lf_abstract_store, R);
       bd.intersection_assign(FP_BD_Shape(interval_store));
+    }
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // Y = X;
     interval_store.affine_form_image(Y, FP_Linear_Form(X));
-    if (linearize(px, interval_store, lf_abstract_store, lx))
+    if (linearize(px, interval_store, lf_abstract_store, lx)) {
+      affine_form_image(lf_abstract_store, Y, lx);
       bd.affine_form_image(Y, lx);
-    else
+    }
+    else {
+      discard_occurrences(lf_abstract_store, Y);
       bd.intersection_assign(FP_BD_Shape(interval_store));
+    }
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // if (R <= -D)
     FP_BD_Shape bd_then(bd);
     FP_Interval_Abstract_Store is_then(interval_store);
+    FP_Linear_Form_Abstract_Store ls_then(lf_abstract_store);
     is_then.refine_with_constraint(R <= -D);
     bd_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                                -FP_Linear_Form(D));
@@ -545,10 +566,14 @@ test05() {
     Binary_Operator<C_Expr> s_dif_d(FP_Type, Binary_Operator<C_Expr>::SUB,
                                     &ps, &pd);
     is_then.affine_form_image(Y, FP_Linear_Form(S - D));
-    if (linearize(s_dif_d, is_then, lf_abstract_store, ly))
+    if (linearize(s_dif_d, is_then, ls_then, ly)) {
+      affine_form_image(ls_then, Y, ly);
       bd_then.affine_form_image(Y, ly);
-    else
+    }
+    else {
+      discard_occurrences(ls_then, Y);
       bd_then.intersection_assign(FP_BD_Shape(is_then));
+    }
     is_then.intersection_assign(FP_Interval_Abstract_Store(bd_then));
 
     // else skip;
@@ -559,6 +584,7 @@ test05() {
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // LUB between then and else branches.
+    upper_bound_assign(lf_abstract_store, ls_then);
     bd.upper_bound_assign(bd_then);
     interval_store.upper_bound_assign(is_then);
     print_constraints(interval_store, "*** after if (R <= -D) Y = S - D; ***");
@@ -566,6 +592,7 @@ test05() {
     // if (R >= D)
     bd_then = bd;
     is_then = interval_store;
+    ls_then = lf_abstract_store;
     is_then.refine_with_constraint(R >= D);
     bd_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
                                                FP_Linear_Form(R));
@@ -575,10 +602,14 @@ test05() {
     Binary_Operator<C_Expr> s_sum_d(FP_Type, Binary_Operator<C_Expr>::ADD,
                                     &ps, &pd);
     is_then.affine_form_image(Y, FP_Linear_Form(S + D));
-    if (linearize(s_sum_d, is_then, lf_abstract_store, ly))
+    if (linearize(s_sum_d, is_then, ls_then, ly)) {
+      affine_form_image(ls_then, Y, ly);
       bd_then.affine_form_image(Y, ly);
-    else
+    }
+    else {
+      discard_occurrences(ls_then, Y);
       bd_then.intersection_assign(FP_BD_Shape(is_then));
+    }
     is_then.intersection_assign(FP_Interval_Abstract_Store(bd_then));
 
     // else skip;
@@ -589,12 +620,14 @@ test05() {
     interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // LUB between then and else branches.
+    upper_bound_assign(lf_abstract_store, ls_then);
     bd.upper_bound_assign(bd_then);
     interval_store.upper_bound_assign(is_then);
     print_constraints(interval_store, "*** after if (R >= D)  Y = S + D; ***");
 
     // LUB between the actual abstract domains and the corresponding
     // domains at the beginning of the loop.
+    upper_bound_assign(lf_abstract_store, ls_begin);
     bd.upper_bound_assign(bd_begin);
     interval_store.upper_bound_assign(is_begin);
 

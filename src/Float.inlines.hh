@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Float_inlines_hh 1
 
 #include <climits>
+#include "Variable.defs.hh"
+#include "Linear_Form.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -447,6 +449,18 @@ float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
 inline bool
 is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2) {
   return f1 < f2;
+}
+
+template <typename FP_Interval_Type>
+inline void
+affine_form_image(std::map<dimension_type,
+                           Linear_Form<FP_Interval_Type> >& lf_store,
+                  const Variable var,
+                  const Linear_Form<FP_Interval_Type>& lf) {
+  // Assign the new linear form for var.
+  lf_store[var.id()] = lf;
+  // Now invalidate all linear forms in which var occurs.
+  discard_occurrences(lf_store, var);
 }
 
 #if PPL_SUPPORTED_FLOAT
