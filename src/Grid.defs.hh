@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 #include "Variables_Set.types.hh"
 #include "Linear_Expression.defs.hh"
-#include "Constraint.defs.hh"
+#include "Constraint.types.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "Congruence_System.defs.hh"
@@ -40,9 +40,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "Grid_Certificate.types.hh"
 #include "Box.types.hh"
-#include "Polyhedron.defs.hh"
 #include "Polyhedron.types.hh"
-#include "Polyhedron.inlines.hh"
 #include "BD_Shape.types.hh"
 #include "Octagonal_Shape.types.hh"
 #include <vector>

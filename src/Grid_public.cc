@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid.defs.hh"
 #include "Topology.hh"
 #include "Scalar_Products.defs.hh"
-
+#include "Polyhedron.defs.hh"
 #include "assert.hh"
 #include <iostream>
 
