@@ -184,7 +184,6 @@ PPL::Grid::Grid(const Polyhedron& ph,
     construct(cgs);
   }
   else {
-    gen_sys = Grid_Generator_System(space_dim);
     // First find a point or closure point and convert it to a
     // grid point and add to the (initially empty) set of grid generators.
     PPL_ASSERT(ph.generators_are_up_to_date());
