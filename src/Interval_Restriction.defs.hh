@@ -131,7 +131,7 @@ class Interval_Restriction_None : public Interval_Restriction_None_Base,
 				  public Base {
 public:
   Interval_Restriction_None() {
-  };
+  }
   template <typename T>
   Interval_Restriction_None(const T& init)
     : Base(init) {
