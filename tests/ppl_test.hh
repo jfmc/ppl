@@ -972,10 +972,12 @@ print_constraints(const Polyhedron& ph,
 		  const std::string& intro = "",
 		  std::ostream& s = nout);
 
+#if 0
 void
 print_constraints(const Affine_Space& affs,
 		  const std::string& intro = "",
 		  std::ostream& s = nout);
+#endif
 
 template <typename Interval>
 void
