@@ -129,7 +129,7 @@ bool operator!=(const Affine_Space& x, const Affine_Space& y);
   Variable y(1);
   \endcode
 
-  FIXME(0.11): revise the contents below this point of this comment block.
+  FIXME: revise the contents below this point of this comment block.
 
   \par Example 1
   The following code builds an affine space corresponding to the even integer
@@ -686,7 +686,7 @@ public:
   */
   bool bounds_from_below(const Linear_Expression& expr) const;
 
-  // FIXME(0.11): revise all the comment blocks below this one.
+  // FIXME: revise all the comment blocks below this one.
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and

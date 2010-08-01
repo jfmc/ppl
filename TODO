@@ -4,7 +4,7 @@ Enhancements for PPL 0.12 or later versions
 
 - Make all the *affine*image() methods uniform as far as the
   specification is concerned.
-- Add the domain of circular linear progressions.
+- Add the domains of bounded integers and affine spaces.
 - Finish the domain of intervals.
 - Intervals are best instantiated with checked numbers with
   particular policies: review all the interfaced boxes,

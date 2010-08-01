@@ -161,7 +161,6 @@ BHRZ03_Certificate.types.hh \
 H79_Certificate.types.hh \
 Grid_Certificate.types.hh \
 Partial_Function.types.hh \
-Affine_Space.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
@@ -291,8 +290,6 @@ Grid_Certificate.defs.hh \
 Grid_Certificate.inlines.hh \
 Partial_Function.defs.hh \
 Partial_Function.inlines.hh \
-Affine_Space.defs.hh \
-Affine_Space.inlines.hh \
 Polyhedron.defs.hh \
 Ph_Status.inlines.hh \
 Polyhedron.inlines.hh \
@@ -397,7 +394,6 @@ BHRZ03_Certificate.cc \
 H79_Certificate.cc \
 Grid_Certificate.cc \
 Partial_Function.cc \
-Affine_Space.cc \
 Polyhedron_nonpublic.cc \
 Polyhedron_public.cc \
 Polyhedron_chdims.cc \
