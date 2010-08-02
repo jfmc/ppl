@@ -120,17 +120,3 @@ Efficiency Issues
   are concerned.
 - Provide a better implementation of computing squares in MIP_Problem's
   steepest-edge to avoid big numbers.
-
-
-Debian packaging
-================
-
-- Add an interface package for each Prolog as a suitable version of
-  that Prolog appears in Debian.  Control entries for these are in
-  control.prologs.
-- Find out if /usr/lib/pkgconfig entries are required in any packages.
-- libppl-dev is very large.  Consider moving the docs to libppl-doc
-  and the other files into libppl.
-- Verify the Build-Depends and Build-Depends-Indep settings, as per
-  the Debian Developers Reference section 5.10.1 point 1.
-- Consider renaming libppl-pwl to libpwl.
