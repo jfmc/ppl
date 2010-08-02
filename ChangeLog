@@ -1,5 +1,10 @@
 2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
 
+	* NEWS: Announce the new wrapping operator used to approximate
+	machine arithmetic.
+
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
 	* CREDITS, NEWS, TODO, Watchdog/NEWS: Updated.
 
 2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
