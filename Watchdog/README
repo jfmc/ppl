@@ -13,8 +13,8 @@ See the file BUGS for known bugs and how to report new ones.
 See the file CREDITS for a list of people and organizations that
 contributed to the PWL.
 
-Here is the contents of the PWL 0.7 source distribution
-(5 directories, 97 files):
+Here is the contents of the PWL 0.8 source distribution
+(5 directories, 101 files):
 
 pwl-0.8
 |-- BUGS
@@ -52,9 +52,9 @@ pwl-0.8
 |   |-- gpl.ps.gz
 |   |-- gpl.tex
 |   |-- gpl.txt
-|   |-- pwl-user-0.7-html.tar.gz
-|   |-- pwl-user-0.7.pdf
-|   |-- pwl-user-0.7.ps.gz
+|   |-- pwl-user-0.8-html.tar.gz
+|   |-- pwl-user-0.8.pdf
+|   |-- pwl-user-0.8.ps.gz
 |   |-- pwl.sty
 |   |-- user.doxyconf-html.in
 |   |-- user.doxyconf-latex.in
@@ -90,14 +90,18 @@ pwl-0.8
 |   |-- Handler.types.hh
 |   |-- Makefile.am
 |   |-- Makefile.in
-|   |-- Pending_Element.cc
 |   |-- Pending_Element.defs.hh
 |   |-- Pending_Element.inlines.hh
 |   |-- Pending_Element.types.hh
-|   |-- Pending_List.cc
 |   |-- Pending_List.defs.hh
 |   |-- Pending_List.inlines.hh
+|   |-- Pending_List.templates.hh
 |   |-- Pending_List.types.hh
+|   |-- Threshold_Watcher.cc
+|   |-- Threshold_Watcher.defs.hh
+|   |-- Threshold_Watcher.inlines.hh
+|   |-- Threshold_Watcher.templates.hh
+|   |-- Threshold_Watcher.types.hh
 |   |-- Time.cc
 |   |-- Time.defs.hh
 |   |-- Time.inlines.hh
@@ -113,8 +117,8 @@ pwl-0.8
 |   |-- Makefile.in
 |   |-- pwl_test.cc
 |   |-- pwl_test.hh
-|   |-- simple1.cc
-|   `-- valgrind_suppressions
+|   |-- valgrind_suppressions
+|   `-- watchdog1.cc
 `-- utils
     |-- Makefile.am
     |-- Makefile.in
