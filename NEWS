@@ -31,6 +31,13 @@ o  New support for termination analysis via the automatic synthesis of
    of all linear quasi-ranking functions, for use in conditional
    termination analysis.
 
+o  New support for approximating computations involving (bounded)
+   machine integers.  A general wrapping operator is provided that is
+   parametric with respect to the set of space dimensions (variables)
+   to be wrapped, the width, representation and overflow behavior of
+   all these variables.  An optional constraint system can, when
+   given, improve the precision.
+
 o  All the PPL semantic objects provide new methods
 
      void drop_some_non_integer_points(Complexity_Class)
