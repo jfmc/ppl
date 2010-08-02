@@ -2852,30 +2852,21 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   }
 }
 
-// FIXME(0.11): Check if this is the correct interpretation of the
-//              specification.
-// By adding integral congruences for each dimension to the congruence system,
-// defining \p *this, the grid will keep only those points that have integral
-// coordinates. All points in \p *this with non-integral coordinates are
-// removed.
 void
 PPL::Grid::drop_some_non_integer_points(Complexity_Class) {
   if (marked_empty() || space_dim == 0)
     return;
 
+  // By adding integral congruences for each dimension to the
+  // congruence system, defining \p *this, the grid will keep only
+  // those points that have integral coordinates. All points in \p
+  // *this with non-integral coordinates are removed.
   for (dimension_type i = space_dim; i-- > 0; )
     add_congruence(Variable(i) %= 0);
 
   PPL_ASSERT(OK());
 }
 
-// FIXME(0.11): Check if this is the correct interpretation of the
-//              specification.
-// By adding the integral congruences for each dimension in vars
-// to the congruence system defining \p *this, the grid will keep
-// only those points that have integer coordinates for all the
-// dimensions in vars. All points in \p *this with non-integral coordinates
-// for the dimensions in vars are removed.
 void
 PPL::Grid::drop_some_non_integer_points(const Variables_Set& vars,
                                         Complexity_Class) {
@@ -2888,13 +2879,17 @@ PPL::Grid::drop_some_non_integer_points(const Variables_Set& vars,
   if (marked_empty() || min_space_dim == 0)
     return;
 
+  // By adding the integral congruences for each dimension in vars to
+  // the congruence system defining \p *this, the grid will keep only
+  // those points that have integer coordinates for all the dimensions
+  // in vars. All points in \p *this with non-integral coordinates for
+  // the dimensions in vars are removed.
   for (Variables_Set::const_iterator i = vars.begin(),
          vars_end = vars.end(); i != vars.end(); ++i)
     add_congruence(Variable(*i) %= 0);
 
   PPL_ASSERT(OK());
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Grid */
 std::ostream&
