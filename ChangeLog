@@ -1,3 +1,382 @@
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS, NEWS, TODO, Watchdog/NEWS: Updated.
+
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS: Updated.
+
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README, Watchdog/README: Updated.
+
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure: Updated.
+
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lcdd/ppl_lcdd.1, demos/ppl_lpsol/ppl_lpsol.1,
+	demos/ppl_pips/ppl_pips.1, doc/libppl.3, doc/libppl_c.3,
+	doc/ppl-config.1: Updated.
+
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox: Missing sections added.
+
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/config.guess, config.guess: Updated.
+
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Grid.defs.hh, src/Grid_public.cc: FIXMEs resolved.
+
+2010-08-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Partially_Reduced_Product/constraintsproduct1.cc: Commented
+	out code concerning affine spaces.
+
+2010-08-01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* demos/ppl_pips/ppl_pips.cc: Avoid variable length arrays: use a
+	std::vector instead.
+
+2010-08-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/ppl_test.cc: Commented out code concerning affine spaces.
+
+2010-08-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/ppl_test.hh: Commented out code concerning affine spaces.
+
+2010-08-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO, src/Affine_Space.defs.hh, src/Makefile.am: Set aside the
+	domain of affine spaces, for the time being.
+
+2010-08-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Affine_Space.cc, src/Affine_Space.defs.hh,
+	src/Affine_Space.inlines.hh: Implemented the constructors from
+	generator systems.
+
+2010-08-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Grid.defs.hh, src/Grid_public.cc: Inclusions fixed.
+
+2010-08-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Grid_public.cc: Useless assignment removed.
+
+2010-08-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Grid_Generator_System.defs.hh: Comment fixed.
+
+2010-08-01  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/Interval_Restriction.defs.hh: Removed spurious semicolon.
+
+2010-07-30  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/Interval.defs.hh, src/Interval.templates.hh: Moved two methods
+	in the right place.
+
+2010-07-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/DB_Row.templates.hh: Unwanted assertions removed.
+
+2010-07-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/DB_Row.templates.hh: Fixed a bug in
+
+	DB_Row_Impl_Handler<T>::Impl::expand_within_capacity(dimension_type).This affected only compilers not supporting flexible arrays.
+
+2010-07-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/DB_Row.templates.hh: Fixed a bug in
+	DB_Row_Impl_Handler<T>::Impl::construct_upward_approximation(const
+	U&).  This prevented compilation with compilers not supporting
+	flexible arrays.
+
+2010-07-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/termination.templates.hh: Added missing inclusion.
+
+2010-07-03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac: Version number bumped.
+
+2010-06-28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/MIP_Problem.cc, src/MIP_Problem.defs.hh: Improved
+	specification and implementation of erase_artificials().
+
+2010-06-28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/MIP_Problem.cc: Use PPL_ASSERT() instead of plain assert().
+
+2010-06-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/MIP_Problem.cc, src/MIP_Problem.defs.hh: Improved MIP_Problem
+	preprocessing phase and solved an efficiency bug.  Rewritten private methods parse_constraints(),
+	merge_split_variable() and process_pending_constraints():
+	specification clarified and implementation improved to avoid
+	allocating more tableau rows and columns than needed.  This results
+	in an overall speedup, in particular when solving problems
+	incrementally.
+
+2010-06-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/config.guess, Watchdog/config.sub, Watchdog/install-sh,
+	Watchdog/ltmain.sh, Watchdog/m4/libtool.m4,
+	Watchdog/m4/ltoptions.m4, Watchdog/m4/ltversion.m4,
+	Watchdog/m4/lt~obsolete.m4, config.guess, config.sub, install-sh,
+	ltmain.sh, m4/libtool.m4, m4/ltoptions.m4, m4/ltversion.m4,
+	m4/lt~obsolete.m4: Updated from Libtool 2.2.10.
+
+2010-06-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Box.defs.hh: Added missing argument names.
+
+2010-06-15  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* configure.ac, doc/definitions.dox, doc/devref.doxyconf-html.in,
+	doc/devref.doxyconf-latex.in, src/BD_Shape.defs.hh,
+	src/BD_Shape.inlines.hh, src/BD_Shape.templates.hh,
+	src/Box.defs.hh, src/Box.templates.hh,
+	src/Cast_Floating_Point_Expression.defs.hh,
+	src/Cast_Floating_Point_Expression.inlines.hh,
+	src/Cast_Floating_Point_Expression.templates.hh,
+	src/Cast_Floating_Point_Expression.types.hh,
+	src/Constant_Floating_Point_Expression.defs.hh,
+	src/Constant_Floating_Point_Expression.inlines.hh,
+	src/Constant_Floating_Point_Expression.types.hh,
+	src/Difference_Floating_Point_Expression.defs.hh,
+	src/Difference_Floating_Point_Expression.inlines.hh,
+	src/Difference_Floating_Point_Expression.templates.hh,
+	src/Difference_Floating_Point_Expression.types.hh,
+	src/Division_Floating_Point_Expression.defs.hh,
+	src/Division_Floating_Point_Expression.inlines.hh,
+	src/Division_Floating_Point_Expression.templates.hh,
+	src/Division_Floating_Point_Expression.types.hh,
+	src/Floating_Point_Expression.defs.hh,
+	src/Floating_Point_Expression.inlines.hh,
+	src/Floating_Point_Expression.templates.hh,
+	src/Floating_Point_Expression.types.hh, src/Linear_Form.cc,
+	src/Linear_Form.defs.hh, src/Linear_Form.inlines.hh,
+	src/Linear_Form.templates.hh, src/Linear_Form.types.hh,
+	src/Makefile.am,
+	src/Multiplication_Floating_Point_Expression.defs.hh,
+	src/Multiplication_Floating_Point_Expression.inlines.hh,
+	src/Multiplication_Floating_Point_Expression.templates.hh,
+	src/Multiplication_Floating_Point_Expression.types.hh,
+	src/Octagonal_Shape.defs.hh, src/Octagonal_Shape.inlines.hh,
+	src/Octagonal_Shape.templates.hh,
+	src/Opposite_Floating_Point_Expression.defs.hh,
+	src/Opposite_Floating_Point_Expression.inlines.hh,
+	src/Opposite_Floating_Point_Expression.types.hh,
+	src/Polyhedron.defs.hh, src/Polyhedron.inlines.hh,
+	src/Polyhedron.templates.hh, src/Polyhedron_nonpublic.cc,
+	src/Sum_Floating_Point_Expression.defs.hh,
+	src/Sum_Floating_Point_Expression.inlines.hh,
+	src/Sum_Floating_Point_Expression.templates.hh,
+	src/Sum_Floating_Point_Expression.types.hh,
+	src/Variable_Floating_Point_Expression.defs.hh,
+	src/Variable_Floating_Point_Expression.inlines.hh,
+	src/Variable_Floating_Point_Expression.types.hh,
+	tests/Floating_Point_Expression/.gitignore,
+	tests/Floating_Point_Expression/Makefile.am,
+	tests/Floating_Point_Expression/bdshape1.cc,
+	tests/Floating_Point_Expression/bdshape2.cc,
+	tests/Floating_Point_Expression/digitalfilters1.cc,
+	tests/Floating_Point_Expression/floatingpointexpr1.cc,
+	tests/Floating_Point_Expression/linearform1.cc,
+	tests/Floating_Point_Expression/octagonalshape1.cc,
+	tests/Floating_Point_Expression/octagonalshape2.cc,
+	tests/Floating_Point_Expression/polyhedron1.cc,
+	tests/Floating_Point_Expression/polyhedron2.cc,
+	tests/Floating_Point_Expression/run_tests, tests/Makefile.am,
+	tests/ppl_test.hh: Put aside changes related to Floating_Point and
+	Linear_Form classes.  These will not enter release 0.11.
+
+2010-05-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS: Moved Katy Dobson to the list of past contributors.
+
+2010-05-07  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/compiler.hh: Fixed comment.
+
+2010-05-07  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/checked.inlines.hh: Removed current implementation of
+	PPL_{LT,GT}_SILENT: the cure was worse than the disease.
+
+2010-05-07  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/checked_mpq.inlines.hh, src/checked_mpz.inlines.hh: Avoid
+	temporary in smod_2exp.
+
+2010-05-07  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/compiler.hh: Better/canonical way to avoid gcc warning.
+
+2010-05-04  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/checked_int.inlines.hh: Revert "Optimized
+	smod_2exp_signed_int." This reverts commit 21d120a07448821720acd415213f9b08a9a14338.
+
+2010-05-04  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/checked_int.inlines.hh: Optimized smod_2exp_signed_int.
+
+2010-04-17  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/checked_int.inlines.hh: Refuse to compile on (very obsolete)
+	architectures that are not using two's complement.
+
+2010-04-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac: Version number bumped.
+
+2010-04-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Partial_Function.cc, src/Partial_Function.defs.hh,
+	src/Partial_Function.inlines.hh, src/Partial_Function.types.hh: Put
+	under git control.
+
+2010-04-22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/jni/ppl_java_common.inlines.hh,
+	interfaces/OCaml/ppl_ocaml_common.cc,
+	interfaces/OCaml/ppl_ocaml_common.defs.hh,
+	interfaces/OCaml/ppl_ocaml_common.inlines.hh,
+	interfaces/Prolog/ppl_interface_generator_prolog_cc_code.m4,
+	interfaces/Prolog/ppl_prolog_common.defs.hh,
+	interfaces/Prolog/tests/pl_check.pl, src/Affine_Space.defs.hh,
+	src/Any_Pointset.defs.hh, src/BD_Shape.defs.hh, src/Box.defs.hh,
+	src/Grid.defs.hh, src/Makefile.am, src/Octagonal_Shape.defs.hh,
+	src/Polyhedron.defs.hh, tests/Makefile.am,
+	tests/Partial_Function.cc, tests/Partial_Function.defs.hh,
+	tests/Partial_Function.inlines.hh, tests/Partial_Function.types.hh,
+	tests/ppl_test.cc, tests/ppl_test.hh: Added class Partial_Function
+	to the PPL library.  Java, Prolog and OCaml interfaces now use an
+	object of this Partial_Function class when mapping the space
+	dimensions of teh vector space.  Some of the consistency checks that
+	were performed by other variants of Partial_Function are now only
+	done when in debugging mode.
+
+2010-04-22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Octagonal_Shape/writeoctagon1.cc: Fixed expected results for
+	tests/Octagonal_Shape/writeoctagon1.cc
+
+2010-04-22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	, interfaces/Java/jni/ppl_java_common.defs.hh,
+	interfaces/Java/jni/ppl_java_common.inlines.hh,
+	interfaces/Java/jni/ppl_java_globals.cc,
+	interfaces/Java/parma_polyhedra_library/Makefile.am,
+	interfaces/Java/parma_polyhedra_library/Partial_Function.java,
+	interfaces/Java/tests/C_Polyhedron_test1.java,
+	interfaces/Java/tests/Makefile.am,
+	interfaces/Java/tests/Test_Partial_Function.java,
+	interfaces/Java/tests/ppl_java_tests_common: Use a C++ object to
+	encode a Partial_Function in the Java interface.  Current
+	implementation is based on a copy of the Partial_Function type used
+	in C++ tests: we should consider whether or not it would be
+	appropriate to have this Partial_Function type as a first class PPL
+	object.
+
+2010-04-22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac: Version number bumped.
+
+2010-04-22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/jni/ppl_java_common.inlines.hh,
+	interfaces/Java/parma_polyhedra_library/Partial_Function.java,
+	interfaces/Java/tests/Test_Partial_Function.java: Modified signature
+	of method maps() in Java Partial_Function interface.  Modified test
+	implementation in tests/Test_Partial_Function.java accordingly (note
+	though that TreeMap still uses Long objects).
+
+2010-04-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac: Version number bumped.
+
+2010-04-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/BD_Shape.templates.hh, src/Octagonal_Shape.templates.hh: Fixed
+	the printing of equality constraints.
+
+2010-04-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac: Version number bumped.
+
+2010-04-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Makefile.am: Added $(noinst_HEADERS) to BUILT_SOURCES so as to
+	build ppl.hh early when !BUILD_CXX_INTERFACE.  (Thanks to Ralf
+	Wildenhues who identified the problem and to Sebastian Pop who
+	reported a parallel build failure due to it.)
+
+2010-04-16  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox,
+	interfaces/Prolog/XSB/xsb_pl_check.P,
+	interfaces/Prolog/ppl_interface_generator_prolog_procedure_generato
+	rs.m4, interfaces/Prolog/ppl_prolog_sysindep_dox: Properly document
+	ppl_Coefficient_bits/1.
+
+2010-04-16  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/XSB/xsb_pl_check.P: Corrected a few typos.
+
+2010-04-16  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/XSB/ppl_interface_generator_xsb_cc.m4: Corrected
+	typo causing a bug in the XSB Prolog interface.
+
+2010-04-16  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Pointset_Powerset.defs.hh, src/Pointset_Powerset.templates.hh: 
+	Add method wrap_assign() to Pointset_Powerset.
+
+2010-04-16  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Grid_public.cc: A minor stylistic improvement and a typo
+	corrected.
+
+2010-04-16  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/intervals.defs.hh: Silenced warnings.
+
+2010-04-15  Patricia Hill <p.m.hill@leeds.ac.uk>
+
+	* interfaces/Prolog/tests/expected_pchk_int8,
+	interfaces/Prolog/tests/expected_pchk_int8_a: A Prolog PIP_Problem
+	test overflows positively for checked_int8
+
+2010-04-15  Patricia Hill <p.m.hill@leeds.ac.uk>
+
+	*
+	interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_te
+	st_pl_code.m4: Added tests in the Prolog interface for
+	ppl_all_affine_quasi_ranking_functions_MS_*
+
+2010-04-15  Patricia Hill <p.m.hill@leeds.ac.uk>
+
+	* interfaces/Prolog/XSB/xsb_pl_check.P: Added PIP_Problem predicates
+	to list of predicates tested in pl_check.pl.
+
+2010-04-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog: Updated.
+
 2010-04-15  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* configure.ac: Version number bumped.
@@ -1955,7 +2334,7 @@
 	* tests/PIP_Problem/pipproblem1.cc: Added a test illustrating a bug
 	when incrementally inserting a parameter constraint.
 
-2010-02-23  Fabio <Fabio@C1P4.(none)>
+2010-02-23  Fabio Bossi <bossi@cs.unipr.it>
 
 	* tests/Floating_Point_Expression/digitalfilters1.cc: Fixed a test
 	on BDShape.
@@ -2312,7 +2691,7 @@
 	* tests/Polyhedron/watchdog1.cc, tests/Polyhedron/weightwatch1.cc: 
 	Cosmetic changes.
 
-2010-02-17  Fabio <Fabio@C1P4.(none)>
+2010-02-17  Fabio Bossi <bossi@cs.unipr.it>
 
 	* doc/definitions.dox, src/Polyhedron.defs.hh: Added "affine from
 	relation" section into definitions.dox.  Fixed a reference to
@@ -2363,7 +2742,7 @@
 	* Watchdog/configure.ac, configure.ac: Build the PWL unless not
 	explicitly disabled at configuration time.
 
-2010-02-17  Fabio <Fabio@C1P4.(none)>
+2010-02-17  Fabio Bossi <bossi@cs.unipr.it>
 
 	* : commit 3c3188f08c10a1914cd545f35ba10a6ee464c3b9 Author: Roberto
 	Bagnara <bagnara@cs.unipr.it> Date:   Wed Feb 17 10:16:43 2010 +0100
@@ -2373,7 +2752,7 @@
 	* tests/PIP_Problem/pipproblem1.cc: Tests 2, 5, 7, 8, 9 and 10 do
 	not overflow on 16 bit coefficients.
 
-2010-02-17  Fabio <Fabio@C1P4.(none)>
+2010-02-17  Fabio Bossi <bossi@cs.unipr.it>
 
 	* src/Float.inlines.hh: Fixed a type error.
 
@@ -8158,10 +8537,6 @@
 
 2009-04-18  Roberto Bagnara <bagnara@cs.unipr.it>
 
-	* PPL 0.10.2 released.
-
-2009-04-18  Roberto Bagnara <bagnara@cs.unipr.it>
-
 	* configure.ac: Update version.
 
 2009-04-18  Roberto Bagnara <bagnara@cs.unipr.it>
@@ -8322,10 +8697,6 @@
 
 	* doc/README.doc: Updated to refer to git and to mention possible
 	names of TeX config files.
-
-2009-04-14  Roberto Bagnara <bagnara@cs.unipr.it>
-
-	* PPL 0.10.1 released.
 
 2009-04-14  Roberto Bagnara <bagnara@cs.unipr.it>
 

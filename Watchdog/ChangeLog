@@ -1,6 +1,296 @@
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS, NEWS, TODO, Watchdog/NEWS: Updated.
+
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README, Watchdog/README: Updated.
+
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/config.guess, config.guess: Updated.
+
+2010-06-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/config.guess, Watchdog/config.sub, Watchdog/install-sh,
+	Watchdog/ltmain.sh, Watchdog/m4/libtool.m4,
+	Watchdog/m4/ltoptions.m4, Watchdog/m4/ltversion.m4,
+	Watchdog/m4/lt~obsolete.m4, config.guess, config.sub, install-sh,
+	ltmain.sh, m4/libtool.m4, m4/ltoptions.m4, m4/ltversion.m4,
+	m4/lt~obsolete.m4: Updated from Libtool 2.2.10.
+
+2010-03-18  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/src/Threshold_Watcher.defs.hh: Avoid a broken reference
+	to another manual that is built later.
+
+2010-03-03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/src/Watchdog.cc: Apparently GNU Hurd only supports
+	ITIMER_REAL.  (Thanks to Michael Tautschnig:
+	http://www.cs.unipr.it/pipermail/ppl-devel/2010-March/016072.html).
+
+2010-03-03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/src/Watchdog.cc: Proper spacing added to
+	throw_syscall_error().  (Thanks to Michael Tautschnig.)
+
+2010-02-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO, Watchdog/src/Watchdog.inlines.hh,
+	Watchdog/tests/watchdog1.cc, interfaces/C/ppl_c_header.h,
+	interfaces/C/ppl_c_implementation_common.defs.hh,
+	interfaces/C/tests/watchdog1.c, tests/Polyhedron/watchdog1.cc: Throw
+	std::logic_error in case the client asks for watchdogs on a system
+	not supporting them.
+
+2010-02-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/src/Threshold_Watcher.defs.hh,
+	interfaces/C/ppl_c_implementation_common.cc,
+	interfaces/Java/jni/ppl_java_common.cc,
+	interfaces/OCaml/ppl_ocaml_common.cc,
+	interfaces/Prolog/ppl_prolog_common.cc,
+	tests/Polyhedron/weightwatch1.cc: Simplified initialization of
+	Threshold_Watcher<> static data member.
+
+2010-02-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac: Use the C++ compiler to perform the tests
+	meant for C++.
+
+2010-02-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/src/Watchdog.cc, Watchdog/src/Watchdog.defs.hh,
+	Watchdog/src/Watchdog.inlines.hh, Watchdog/src/pwl_header.hh: 
+	sigaction() is also needed, in addition to setitimer() in order to
+	support Watchdog objects.  We could check if signal() is available
+	if there is request for such a feature.
+
+2010-02-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/src/Watchdog.cc, Watchdog/src/Watchdog.defs.hh,
+	Watchdog/src/Watchdog.inlines.hh, interfaces/C/tests/watchdog1.c,
+	interfaces/C/tests/weightwatch1.c: If setitimer() is not available,
+	no initialization is necessary.  This also works around a linking
+	bug in Mingw.  C tests improved with error-handling code.
+
+2010-02-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/tests/Makefile.am, Watchdog/tests/{simple1.cc =>
+	watchdog1.cc}: Test program renamed.
+
+2010-02-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/src/pwl_header.hh, Watchdog/tests/simple1.cc: Cater for
+	systems where setitimer() is not provided (part 4).
+
+2010-02-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/src/Watchdog.cc, Watchdog/src/Watchdog.inlines.hh: Cater
+	for systems where setitimer() is not provided (part 3).
+
+2010-02-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO, Watchdog/pwl-config.sed, Watchdog/src/Watchdog.cc,
+	Watchdog/src/Watchdog.defs.hh, Watchdog/src/Watchdog.inlines.hh: 
+	Cater for systems where setitimer() is not provided (part 2).
+
+2010-02-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/src/Watchdog.defs.hh, Watchdog/src/Watchdog.inlines.hh: 
+	Cater for systems where setitimer() is not provided (part 1).
+
+2010-02-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac, configure.ac: Build the PWL unless not
+	explicitly disabled at configuration time.
+
+2010-02-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/tests/pwl_test.cc, tests/ppl_test.cc: Use the right
+	preprocessor conditionals for PPL_HAVE_DECL_SIGACTION.
+
+2010-02-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/tests/pwl_test.cc, tests/ppl_test.cc: Corrected several
+	problems.
+
+2010-02-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac, Watchdog/src/pwl_header.hh: Improved the
+	NDEBUG machinery.
+
+2010-02-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac, Watchdog/pwl-config.sed,
+	Watchdog/tests/pwl_test.cc, configure.ac, ppl-config.sed,
+	tests/ppl_test.cc: Improve portability to systems that do not
+	(fully) support Posix signal handling.
+
+2009-12-22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* INSTALL, Watchdog/INSTALL, Watchdog/compile,
+	Watchdog/config.guess, Watchdog/config.sub, compile, config.guess,
+	config.sub: Updated.
+
+2009-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/tests/Makefile.am: Do not link with -lm here.
+
+2009-07-30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* INSTALL, Watchdog/INSTALL: Updated from Autoconf 2.64.
+
+2009-07-13  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* Watchdog/src/Threshold_Watcher.defs.hh: Added additional info
+	about Traits template parameter.
+
+2009-07-13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/src/Watchdog.defs.hh: Drafted a few missing comments. To
+	be completed (by the author).
+
+2009-07-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/src/Threshold_Watcher.defs.hh,
+	Watchdog/src/Threshold_Watcher.templates.hh: Private typedef
+	renamed.
+
+2009-07-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/src/Watchdog.defs.hh: Removed spurious blank line.
+
+2009-07-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/NEWS: Drafted the news for PWL 0.8.
+
+2009-07-12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/doc/devref.doxyconf-html.in,
+	Watchdog/doc/devref.doxyconf-latex.in: Fixed INPUT variable in
+	Doxygen configuration for devref.
+
+2009-07-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/README, Watchdog/configure.ac, Watchdog/src/Makefile.am: 
+	Updated for PWL 0.8.
+
+2009-07-12  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* TODO, Watchdog/src/Watchdog.cc, Watchdog/src/Watchdog.defs.hh,
+	Watchdog/src/Watchdog.inlines.hh: Converted watchdog time argument
+	to unsigned.
+
+2009-07-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/m4/lib-link.m4, m4/lib-link.m4: Updated.
+
+2009-07-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac: Require Automake 1.11, enable lzma tar
+	archives and silent rules.
+
+2009-07-12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/src/Threshold_Watcher.defs.hh,
+	Watchdog/src/Threshold_Watcher.templates.hh,
+	tests/Polyhedron/weightwatch1.cc: Avoid dummy parameter in
+	constructor for Threshold_Watcher::Initialize.  Renamed `initialize'
+	to `init' to avoid visual clash with `Initialize'.
+
+2009-07-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* INSTALL, Watchdog/INSTALL, Watchdog/compile,
+	Watchdog/config.guess, Watchdog/config.sub, Watchdog/depcomp,
+	Watchdog/install-sh, Watchdog/missing, Watchdog/mkinstalldirs,
+	compile, config.guess, config.sub, depcomp, install-sh, missing,
+	mkinstalldirs: Updated.
+
+2009-07-12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/src/EList.defs.hh, Watchdog/src/Threshold_Watcher.cc,
+	Watchdog/src/Threshold_Watcher.defs.hh,
+	Watchdog/src/Threshold_Watcher.templates.hh,
+	Watchdog/src/Threshold_Watcher.types.hh: Minor improvements: prefer
+	direct header file inclusions to indirect ones.  Avoid unnecessarily
+	long lines.
+
+2009-07-11  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* Watchdog/src/Makefile.am, Watchdog/src/Pending_List.defs.hh,
+	Watchdog/src/Pending_List.inlines.hh,
+	Watchdog/src/Pending_List.templates.hh,
+	Watchdog/src/Pending_List.types.hh, Watchdog/src/{Weightwatch.cc =>
+	Threshold_Watcher.cc}, Watchdog/src/{Weightwatch.defs.hh =>
+	Threshold_Watcher.defs.hh}, Watchdog/src/{Weightwatch.inlines.hh =>
+	Threshold_Watcher.inlines.hh},
+	Watchdog/src/{Weightwatch.templates.hh =>
+	Threshold_Watcher.templates.hh}, Watchdog/src/{Weightwatch.types.hh
+	=> Threshold_Watcher.types.hh}, Watchdog/src/Watchdog.defs.hh: 
+	Converted Weightwatch in more generic Threshold_Watcher.
+
+2009-07-11  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* Watchdog/src/Weightwatch.inlines.hh: Fixed typo.
+
+2009-07-11  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* Watchdog/src/Weightwatch.cc: Forgotten file.
+
+2009-07-11  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* Watchdog/src/Makefile.am, Watchdog/src/Pending_List.defs.hh,
+	Watchdog/src/Pending_List.inlines.hh,
+	Watchdog/src/Pending_List.templates.hh,
+	Watchdog/src/Pending_List.types.hh, Watchdog/src/Watchdog.defs.hh,
+	Watchdog/src/Weightwatch.cc, Watchdog/src/Weightwatch.defs.hh,
+	Watchdog/src/Weightwatch.inlines.hh,
+	Watchdog/src/Weightwatch.templates.hh,
+	Watchdog/src/Weightwatch.types.hh: Weightwatch are now generic
+	threshold watchdog.
+
+2009-07-11  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* Watchdog/src/Weightwatch.cc, Watchdog/src/Weightwatch.defs.hh,
+	Watchdog/src/Weightwatch.inlines.hh: Weightwatch are now independent
+	from client code.
+
+2009-07-10  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* Watchdog/src/EList.inlines.hh, Watchdog/src/Makefile.am,
+	Watchdog/src/Pending_Element.cc,
+	Watchdog/src/Pending_Element.defs.hh,
+	Watchdog/src/Pending_Element.inlines.hh,
+	Watchdog/src/Pending_Element.types.hh,
+	Watchdog/src/Pending_List.defs.hh,
+	Watchdog/src/Pending_List.inlines.hh, Watchdog/src/{Pending_List.cc
+	=> Pending_List.templates.hh}, Watchdog/src/Pending_List.types.hh,
+	Watchdog/src/Watchdog.cc, Watchdog/src/Watchdog.defs.hh,
+	Watchdog/src/Weightwatch.cc, Watchdog/src/Weightwatch.defs.hh,
+	Watchdog/src/Weightwatch.inlines.hh,
+	Watchdog/src/Weightwatch.types.hh: Added Weightwatch.
+
+2009-04-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README, Watchdog/src/Makefile.am, configure.ac,
+	demos/ppl_lcdd/ppl_lcdd.1, demos/ppl_lpsol/ppl_lpsol.1,
+	doc/libppl.3, doc/libppl_c.3, doc/ppl-config.1,
+	doc/ppl-config_extra_man_text, interfaces/C/Makefile.am,
+	src/Makefile.am: Version number bumped.
+
 2009-04-18  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* PPL 0.10.2 released.
+
+2009-04-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/ChangeLog: Mark ChangeLog.
+
+2009-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, Watchdog/ChangeLog: Updated.
 
 2009-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
 
