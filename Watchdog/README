@@ -14,13 +14,14 @@ See the file CREDITS for a list of people and organizations that
 contributed to the PWL.
 
 Here is the contents of the PWL 0.8 source distribution
-(5 directories, 101 files):
+(5 directories, 102 files):
 
 pwl-0.8
 |-- BUGS
 |-- COPYING
 |-- CREDITS
 |-- ChangeLog
+|-- ChangeLog_2001-2008
 |-- INSTALL
 |-- Makefile.am
 |-- Makefile.in

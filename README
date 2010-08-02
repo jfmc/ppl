@@ -64,19 +64,23 @@ For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.11 source distribution
-(44 directories, 1583 files):
+(44 directories, 1588 files):
 
 ppl-0.11
 |-- BUGS
 |-- COPYING
 |-- CREDITS
 |-- ChangeLog
+|-- ChangeLog_2001-2008
 |-- INSTALL
 |-- Makefile.am
 |-- Makefile.in
 |-- NEWS
 |-- README
+|-- README.alpha
+|-- README.arm
 |-- README.configure
+|-- README.solaris
 |-- STANDARDS
 |-- TODO
 |-- Watchdog
@@ -84,6 +88,7 @@ ppl-0.11
 |   |-- COPYING
 |   |-- CREDITS
 |   |-- ChangeLog
+|   |-- ChangeLog_2001-2008
 |   |-- INSTALL
 |   |-- Makefile.am
 |   |-- Makefile.in
