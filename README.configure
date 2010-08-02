@@ -141,28 +141,26 @@ It should be noted that no version of GCC prior to 4.0.3 is known to
 reliably compile PPL 0.10.
 
 Here is an example of a configuration that uses the Intel C/C++ compiler
-version 10.1.x.  Assuming you have configured GMP with a command like
+version 11.1.x.  Assuming you have configured GMP with a command like
 
-  CC=icc CXX=icpc /path/to/gmp-4.2.4/configure --enable-cxx \
-    --prefix=/opt/intel/cce/10.1.018
+  CC=icc CXX=icpc /path/to/gmp-5.0.1/configure --enable-cxx \
+    --prefix=/opt/intel/Compiler/11.1/072 \
+    --libdir=/opt/intel/Compiler/11.1/072/lib/intel64
 
 you can configure the PPL with a command like
 
-  CPPFLAGS=-D_GCC_LIMITS_H_ /path/to/ppl-x.y/configure \
-    --with-cxx=icpc --with-cc=icc \
+  /path/to/ppl-x.y/configure --with-cxx=icpc --with-cc=icc \
     --with-cxxflags=-pch \
-    --with-gmp-prefix=/opt/intel/cce/10.1.018
+    --with-gmp-prefix=/opt/intel/Compiler/11.1/072
 
-Notice that the `CPPFLAGS=-D_GCC_LIMITS_H_' environment variable
-assignment is required in order to overcome a bug in the Intel C/C++
-compiler version 10.1.x.  Notice also that the `--with-cxxflags' option
-is not essential here and is only included to show how extra
-compiler options can be passed to the configure script.
+Notice that the `--with-cxxflags' option is not essential here and is
+only included to show how extra compiler options can be passed to the
+configure script.
 
 As another example, here is how you can compile the PPL with
 Comeau C/C++ 4.3.10.1.  First configure GMP with a command like
 
-  CXX=como /path/to/gmp-4.2.4/configure --enable-cxx \
+  CXX=como /path/to/gmp-5.0.1/configure --enable-cxx \
     --disable-shared --prefix=/opt/comeau/local
 
 Then you can configure the PPL with a command like
