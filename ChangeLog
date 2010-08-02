@@ -1,5 +1,14 @@
 2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
 
+        * Makefile.am, README, Watchdog/Makefile.am, Watchdog/README: 
+        Distribute all READMEs and ChangeLogs.
+
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+        * ChangeLog: Updated.
+
+2010-08-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
 	* NEWS: Announce the new wrapping operator used to approximate
 	machine arithmetic.
 
