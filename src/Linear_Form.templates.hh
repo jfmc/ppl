@@ -419,8 +419,7 @@ Linear_Form<C>::relative_error(
 
   C error_propagator;
   // We assume that f_base is a power of 2.
-  int power = static_cast<int>(log2(f_base)) *
-              (-f_mantissa_bits);
+  int power = ld2(f_base) * (-f_mantissa_bits);
   analyzer_format lb = -static_cast<analyzer_format>(ldexpl(1.0, power));
 
   error_propagator.build(i_constraint(GREATER_OR_EQUAL, lb),

@@ -369,6 +369,15 @@ public:
 };
 #endif
 
+// FIXME: is this the right place for this function?
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns the position of the most significative bit in \p a.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+unsigned int ld2(unsigned long long a);
+
+/* FIXME: some of the following  documentation should probably be
+   under PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS */
+
 /*! \brief
   Returns <CODE>true</CODE> if and only if there is some floating point
   number that is representable by \p f2 but not by \p f1.
