@@ -58,7 +58,7 @@ Past Contributors:
 ------------------
 
   Roberto Amadini       (student of the University of Parma)
-                        did some working on the PPL support for the
+                        did some work on the PPL support for the
                         approximation of floating point computations.
 
   Irene Bacchi          (former student of the University of Parma) worked
@@ -88,10 +88,10 @@ Past Contributors:
                         solver, and also most of the Java and OCaml
                         interfaces.
 
-  Katy Dobson           [6] (University of Leeds) worked on the
-                        formalization and definition of algorithms for
-                        rational grids and products of grids and
-                        polyhedra.
+  Katy Dobson           [6] (former student of the University of Leeds)
+                        worked on the formalization and definition of
+                        algorithms for rational grids and products
+                        of grids and polyhedra.
 
   Giordano Fracasso     (University of Parma) wrote the initial version
                         of the support for native and checked integer
