@@ -272,12 +272,6 @@ Sparse_Row::find_create(const dimension_type i, const Coefficient& x) {
 }
 
 inline Sparse_Row::iterator
-Sparse_Row::find_create(const std::pair<dimension_type, Coefficient>& x) {
-  PPL_ASSERT(x.first < size_);
-  return row.find_create(x);
-}
-
-inline Sparse_Row::iterator
 Sparse_Row::find_create(const dimension_type i) {
   PPL_ASSERT(i < size_);
   return row.find_create(i);
@@ -288,13 +282,6 @@ Sparse_Row
 ::find_create(const dimension_type i, const Coefficient& x, iterator itr) {
   PPL_ASSERT(i < size_);
   return row.find_create(i, x, itr);
-}
-
-inline Sparse_Row::iterator
-Sparse_Row
-::find_create(const std::pair<dimension_type, Coefficient>& x, iterator itr) {
-  PPL_ASSERT(x.first < size_);
-  return row.find_create(x, itr);
 }
 
 inline Sparse_Row::iterator
@@ -312,13 +299,6 @@ Sparse_Row
 
 inline void
 Sparse_Row
-::find_create_assign(const std::pair<dimension_type, Coefficient>& x,
-                     iterator& itr) {
-  row.find_create_assign(x, itr);
-}
-
-inline void
-Sparse_Row
 ::find_create_assign(const dimension_type i, iterator& itr) {
   row.find_create_assign(i, itr);
 }
@@ -328,13 +308,6 @@ Sparse_Row
 ::find_create_hint_assign(const dimension_type i, const Coefficient& x,
                           iterator& itr) {
   row.find_create_hint_assign(i, x, itr);
-}
-
-inline void
-Sparse_Row
-::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
-                          iterator& itr) {
-  row.find_create_hint_assign(x, itr);
 }
 
 inline void
@@ -675,23 +648,9 @@ Sparse_Row_Reference::find_create(const dimension_type i,
 
 inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference
-::find_create(const std::pair<dimension_type, Coefficient>& x) {
-  PPL_ASSERT(x.first < size_);
-  return row.find_create(x);
-}
-
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference
 ::find_create(const dimension_type i, const Coefficient& x, iterator itr) {
   PPL_ASSERT(i < size_);
   return row.find_create(i, x, itr);
-}
-
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference
-::find_create(const std::pair<dimension_type, Coefficient>& x, iterator itr) {
-  PPL_ASSERT(x.first < size_);
-  return row.find_create(x, itr);
 }
 
 inline Sparse_Row_Reference::iterator
@@ -709,13 +668,6 @@ Sparse_Row_Reference
 
 inline void
 Sparse_Row_Reference
-::find_create_assign(const std::pair<dimension_type, Coefficient>& x,
-                     iterator& itr) {
-  row.find_create_assign(x, itr);
-}
-
-inline void
-Sparse_Row_Reference
 ::find_create_assign(const dimension_type i, iterator& itr) {
   row.find_create_assign(i, itr);
 }
@@ -725,13 +677,6 @@ Sparse_Row_Reference
 ::find_create_hint_assign(const dimension_type i, const Coefficient& x,
                           iterator& itr) {
   row.find_create_hint_assign(i, x, itr);
-}
-
-inline void
-Sparse_Row_Reference
-::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
-                          iterator& itr) {
-  row.find_create_hint_assign(x, itr);
 }
 
 inline void

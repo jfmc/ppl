@@ -229,11 +229,6 @@ Dense_Row::lower_bound(dimension_type i, const_iterator itr) const {
 }
 
 inline Dense_Row::iterator
-Dense_Row::find_create(const std::pair<dimension_type, Coefficient>& x) {
-  return find_create(x.first, x.second);
-}
-
-inline Dense_Row::iterator
 Dense_Row::find_create(dimension_type i, const Coefficient& x) {
   (*this)[i] = x;
   return find(i);
@@ -242,12 +237,6 @@ Dense_Row::find_create(dimension_type i, const Coefficient& x) {
 inline Dense_Row::iterator
 Dense_Row::find_create(dimension_type i) {
   return find(i);
-}
-
-inline Dense_Row::iterator
-Dense_Row::find_create(const std::pair<dimension_type, Coefficient>& x,
-                       iterator itr) {
-  return find_create(x.first, x.second, itr);
 }
 
 inline Dense_Row::iterator
@@ -280,13 +269,6 @@ Dense_Row
 
 inline void
 Dense_Row
-::find_create_assign(const std::pair<dimension_type, Coefficient>& x,
-                     iterator& itr) {
-  itr = find_create(x);
-}
-
-inline void
-Dense_Row
 ::find_create_assign(const dimension_type i, iterator& itr) {
   itr = find_create(i);
 }
@@ -296,13 +278,6 @@ Dense_Row
 ::find_create_hint_assign(const dimension_type i, const Coefficient& x,
                           iterator& itr) {
   itr = find_create(i, x, itr);
-}
-
-inline void
-Dense_Row
-::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
-                          iterator& itr) {
-  itr = find_create(x, itr);
 }
 
 inline void

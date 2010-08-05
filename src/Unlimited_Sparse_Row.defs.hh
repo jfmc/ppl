@@ -158,20 +158,12 @@ public:
   //! Equivalent to find_create(i, x, begin()) .
   iterator find_create(const dimension_type i, const Coefficient& x);
 
-  //! Equivalent to find_create(x.first, x.second, begin()) .
-  iterator find_create(const std::pair<dimension_type, Coefficient>& x);
-
   //! Equivalent to find_create(i, begin()) .
   iterator find_create(const dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
   iterator find_create(const dimension_type i, const Coefficient& x,
-                       iterator itr);
-
-  //! Equivalent to (*this)[x.first]=x.second , needs itr to point before the
-  //! added element. If itr points near the added element, this is faster.
-  iterator find_create(const std::pair<dimension_type, Coefficient>& x,
                        iterator itr);
 
   //! Equivalent to (*this)[i] , needs itr to point before the added
@@ -248,11 +240,6 @@ public:
   void find_create_assign(const dimension_type i, const Coefficient& x,
                           iterator& itr);
 
-  //! Equivalent to itr = find_create(x) .
-  //! This may be faster in some implementations.
-  void find_create_assign(const std::pair<dimension_type, Coefficient>& x,
-                          iterator& itr);
-
   //! Equivalent to itr = find_create(i) .
   //! This may be faster in some implementations.
   void find_create_assign(const dimension_type i, iterator& itr);
@@ -260,11 +247,6 @@ public:
   //! Equivalent to itr = find_create(i, x, itr) .
   //! This may be faster in some implementations.
   void find_create_hint_assign(const dimension_type i, const Coefficient& x,
-                               iterator& itr);
-
-  //! Equivalent to itr = find_create(x, itr) .
-  //! This may be faster in some implementations.
-  void find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
                                iterator& itr);
 
   //! Equivalent to itr = find_create(i, itr) .

@@ -233,13 +233,6 @@ Unlimited_Sparse_Row
 
 inline void
 Unlimited_Sparse_Row
-::find_create_assign(const std::pair<dimension_type, Coefficient>& x,
-                     iterator& itr) {
-  find_create_assign(x.first, x.second, itr);
-}
-
-inline void
-Unlimited_Sparse_Row
 ::find_create_assign(const dimension_type i, iterator& itr) {
   tree.insert(i, itr.itr);
 }
@@ -250,13 +243,6 @@ Unlimited_Sparse_Row
                           iterator& itr) {
   PPL_ASSERT(!itr.itr.is_at_end());
   tree.insert_hint(i, x, itr.itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
-                          iterator& itr) {
-  find_create_hint_assign(x.first, x.second, itr);
 }
 
 inline void
@@ -605,14 +591,6 @@ Unlimited_Sparse_Row::find_create(const dimension_type i,
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row
-::find_create(const std::pair<dimension_type, Coefficient>& x) {
-  iterator itr;
-  find_create_assign(x.first, x.second, itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(const dimension_type i) {
   iterator itr;
   find_create_assign(i, itr);
@@ -624,13 +602,6 @@ Unlimited_Sparse_Row::find_create(const dimension_type i,
                                                const Coefficient& x,
                                                iterator itr) {
   find_create_hint_assign(i, x, itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row
-::find_create(const std::pair<dimension_type, Coefficient>& x, iterator itr) {
-  find_create_hint_assign(x.first, x.second, itr);
   return itr;
 }
 
