@@ -262,39 +262,6 @@ public:
 
 private:
 
-  //! Lower bound of key i, assuming it is in [itr,end()) .
-  CO_Tree::inorder_iterator lower_bound_helper(dimension_type i,
-                                               CO_Tree::inorder_iterator itr);
-  //! Lower bound of key i, assuming it is in [itr,end()) .
-  CO_Tree::inorder_const_iterator lower_bound_helper(dimension_type i,
-                                                     CO_Tree::inorder_const_iterator
-                                                     itr) const;
-
-  //! Looks for an element with key i, assuming it is in [itr,end()) .
-  CO_Tree::inorder_iterator find_helper(dimension_type i,
-                                        CO_Tree::inorder_iterator itr);
-
-  //! Looks for an element with key i, assuming it is in [itr,end()) .
-  CO_Tree::inorder_const_iterator find_helper(dimension_type i,
-                                              CO_Tree::inorder_const_iterator
-                                              itr) const;
-
-  //! Equivalent to (*this)[i]=x; itr = tree.lower_bound(i);.
-  CO_Tree::inorder_iterator find_create_helper(dimension_type i,
-                                               const Coefficient& x);
-
-  //! Equivalent to (*this)[i]; itr = tree.lower_bound(i);.
-  CO_Tree::inorder_iterator find_create_helper(dimension_type i);
-
-  //! Equivalent to (*this)[i]=x; itr = tree.lower_bound(i);.
-  CO_Tree::inorder_iterator find_create_helper(dimension_type i,
-                                               const Coefficient& x,
-                                               CO_Tree::inorder_iterator itr);
-
-  //! Equivalent to (*this)[i]; itr = tree.lower_bound(i);.
-  CO_Tree::inorder_iterator find_create_helper(dimension_type i,
-                                               CO_Tree::inorder_iterator itr);
-
   CO_Tree tree;
 };
 

@@ -231,95 +231,67 @@ Unlimited_Sparse_Row::lower_bound(const dimension_type c) const {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find(const dimension_type c, iterator itr) {
+Unlimited_Sparse_Row::find(const dimension_type i, iterator itr) {
   PPL_ASSERT(!itr.itr.is_at_end());
-  itr.itr = find_helper(c, itr.itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::find(const dimension_type c, const_iterator itr) const {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  itr.itr = find_helper(c, itr.itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::lower_bound(const dimension_type c, iterator itr) {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  itr.itr = lower_bound_helper(c, itr.itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::lower_bound(const dimension_type c,
-                                  const_iterator itr) const {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  itr.itr = lower_bound_helper(c, itr.itr);
-  return itr;
-}
-
-inline CO_Tree::inorder_iterator
-Unlimited_Sparse_Row::lower_bound_helper(dimension_type i,
-                                         CO_Tree::inorder_iterator itr) {
-  tree.lower_bound(itr, i);
-  return itr;
-}
-
-inline CO_Tree::inorder_const_iterator
-Unlimited_Sparse_Row::lower_bound_helper(dimension_type i,
-                                         CO_Tree::inorder_const_iterator itr) const {
-  tree.lower_bound(itr, i);
-  return itr;
-}
-
-inline CO_Tree::inorder_iterator
-Unlimited_Sparse_Row::find_helper(dimension_type i,
-                                  CO_Tree::inorder_iterator itr) {
   PPL_ASSERT(!tree.empty());
-  if (itr->first <= i)
-    while (itr.has_parent() && itr->first < i)
-      itr.get_parent();
+  if (itr.itr->first <= i)
+    while (itr.itr.has_parent() && itr.itr->first < i)
+      itr.itr.get_parent();
   else
-    while (itr.has_parent() && itr->first > i)
-      itr.get_parent();
+    while (itr.itr.has_parent() && itr.itr->first > i)
+      itr.itr.get_parent();
 
-  tree.go_down_searching_key(itr, i);
+  tree.go_down_searching_key(itr.itr, i);
 
 #ifndef NDEBUG
   CO_Tree::inorder_iterator itr2(&tree);
   tree.go_down_searching_key(itr2, i);
-  PPL_ASSERT(itr == itr2);
+  PPL_ASSERT(itr.itr == itr2);
 #endif
 
-  if (itr->first != i)
-    return tree.end();
+  if (itr.itr->first != i)
+    itr.itr = tree.end();
 
   return itr;
 }
 
-inline CO_Tree::inorder_const_iterator
-Unlimited_Sparse_Row::find_helper(dimension_type i,
-                                  CO_Tree::inorder_const_iterator itr) const {
+inline Unlimited_Sparse_Row::const_iterator
+Unlimited_Sparse_Row::find(const dimension_type i, const_iterator itr) const {
+  PPL_ASSERT(!itr.itr.is_at_end());
   PPL_ASSERT(!tree.empty());
-  if (itr->first <= i)
-    while (itr.has_parent() && itr->first < i)
-      itr.get_parent();
+  if (itr.itr->first <= i)
+    while (itr.itr.has_parent() && itr.itr->first < i)
+      itr.itr.get_parent();
   else
-    while (itr.has_parent() && itr->first > i)
-      itr.get_parent();
+    while (itr.itr.has_parent() && itr.itr->first > i)
+      itr.itr.get_parent();
 
-  tree.go_down_searching_key(itr, i);
+  tree.go_down_searching_key(itr.itr, i);
 
 #ifndef NDEBUG
   CO_Tree::inorder_const_iterator itr2(&tree);
   tree.go_down_searching_key(itr2, i);
-  PPL_ASSERT(itr == itr2);
+  PPL_ASSERT(itr.itr == itr2);
 #endif
 
-  if (itr->first != i)
-    return tree.end();
+  if (itr.itr->first != i)
+    itr.itr = tree.end();
 
+  return itr;
+}
+
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::lower_bound(const dimension_type i, iterator itr) {
+  PPL_ASSERT(!itr.itr.is_at_end());
+  tree.lower_bound(itr.itr, i);
+  return itr;
+}
+
+inline Unlimited_Sparse_Row::const_iterator
+Unlimited_Sparse_Row::lower_bound(const dimension_type i,
+                                  const_iterator itr) const {
+  PPL_ASSERT(!itr.itr.is_at_end());
+  tree.lower_bound(itr.itr, i);
   return itr;
 }
 
