@@ -154,21 +154,6 @@ Unlimited_Sparse_Row::unordered_end() const {
   return tree.unordered_end();
 }
 
-inline CO_Tree::inorder_iterator
-Unlimited_Sparse_Row::find_create_helper(dimension_type i,
-                                         const Coefficient& x) {
-  CO_Tree::inorder_iterator itr;
-  tree.insert(i, x, itr);
-  return itr;
-}
-
-inline CO_Tree::inorder_iterator
-Unlimited_Sparse_Row::find_create_helper(dimension_type i) {
-  CO_Tree::inorder_iterator itr;
-  tree.insert(i, itr);
-  return itr;
-}
-
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(const dimension_type i,
                                   const Coefficient& x) {
@@ -523,70 +508,6 @@ inline Coefficient&
 Unlimited_Sparse_Row::operator[](dimension_type i) {
   iterator itr = find_create(i);
   return itr->second;
-}
-
-inline CO_Tree::inorder_iterator
-Unlimited_Sparse_Row::find_create_helper(const dimension_type i,
-                                         const Coefficient& x,
-                                         CO_Tree::inorder_iterator itr) {
-  PPL_ASSERT(!tree.empty());
-  PPL_ASSERT(!itr.is_at_end());
-
-  if (itr->first <= i)
-    while (itr.has_parent() && itr->first < i)
-      itr.get_parent();
-  else
-    while (itr.has_parent() && itr->first > i)
-      itr.get_parent();
-
-  tree.go_down_searching_key(itr, i);
-
-#ifndef NDEBUG
-  CO_Tree::inorder_iterator itr2(&tree);
-  tree.go_down_searching_key(itr2, i);
-  PPL_ASSERT(itr == itr2);
-#endif
-
-  if (itr->first == i)
-    itr->second = x;
-  else
-    tree.insert_precise(i, x, itr);
-
-  PPL_ASSERT(!itr.is_at_end());
-  PPL_ASSERT(itr->first == i);
-  PPL_ASSERT(itr->second == x);
-
-  return itr;
-}
-
-inline CO_Tree::inorder_iterator
-Unlimited_Sparse_Row::find_create_helper(const dimension_type i,
-                                         CO_Tree::inorder_iterator itr) {
-  PPL_ASSERT(!tree.empty());
-  PPL_ASSERT(!itr.is_at_end());
-
-  if (itr->first <= i)
-    while (itr.has_parent() && itr->first < i)
-      itr.get_parent();
-  else
-    while (itr.has_parent() && itr->first > i)
-      itr.get_parent();
-
-  tree.go_down_searching_key(itr, i);
-
-#ifndef NDEBUG
-  CO_Tree::inorder_iterator itr2(&tree);
-  tree.go_down_searching_key(itr2, i);
-  PPL_ASSERT(itr == itr2);
-#endif
-
-  if (itr->first != i)
-    tree.insert_precise(i, Coefficient_zero(), itr);
-
-  PPL_ASSERT(!itr.is_at_end());
-  PPL_ASSERT(itr->first == i);
-
-  return itr;
 }
 
 inline const Coefficient&
