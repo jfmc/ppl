@@ -110,18 +110,6 @@ Unlimited_Sparse_Row::OK() const {
   return tree.OK();
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::begin_dangerous() {
-  dangerous_iterator itr(tree.before_begin());
-  ++itr;
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::end_dangerous() {
-  return dangerous_iterator(tree.end());
-}
-
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::begin() {
   iterator itr(tree.before_begin());
@@ -166,21 +154,6 @@ Unlimited_Sparse_Row::unordered_end() const {
   return tree.unordered_end();
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::find_dangerous(const dimension_type c) {
-  dangerous_iterator itr;
-  find_assign(c, itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row
-::lower_bound_dangerous(const dimension_type c) {
-  dangerous_iterator itr;
-  lower_bound_assign(c, itr);
-  return itr;
-}
-
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find(const dimension_type c) {
   iterator itr;
@@ -210,20 +183,6 @@ Unlimited_Sparse_Row
   return itr;
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::find_dangerous(const dimension_type c,
-                                                  dangerous_iterator itr) {
-  find_hint_assign(c, itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row
-::lower_bound_dangerous(const dimension_type c, dangerous_iterator itr) {
-  lower_bound_hint_assign(c, itr);
-  return itr;
-}
-
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find(const dimension_type c,
                                         iterator itr) {
@@ -250,51 +209,6 @@ Unlimited_Sparse_Row::lower_bound(const dimension_type c,
                                                const_iterator itr) const {
   lower_bound_hint_assign(c, itr);
   return itr;
-}
-
-inline void
-Unlimited_Sparse_Row
-::find2_dangerous(const dimension_type c1, const dimension_type c2,
-                  dangerous_iterator& itr1, dangerous_iterator& itr2) {
-  if (tree.empty()) {
-    itr1 = end_dangerous();
-    itr2 = itr1;
-    return;
-  }
-
-  itr1.itr = CO_Tree::inorder_iterator(&tree);
-  while (1) {
-    if (itr1.itr->first < c1) {
-      if (itr1.itr->first < c2) {
-        if (!itr1.itr.get_right_child_value()) {
-          ++(itr1.itr);
-          itr2.itr = itr1.itr;
-          break;
-        }
-      } else {
-        itr2.itr = itr1.itr;
-        tree.go_down_searching_key(itr1.itr, c1);
-        tree.go_down_searching_key(itr2.itr, c2);
-        break;
-      }
-    } else {
-      if (itr1.itr->first == c1 || itr1.itr->first <= c2) {
-        itr2.itr = itr1.itr;
-        tree.go_down_searching_key(itr1.itr, c1);
-        tree.go_down_searching_key(itr2.itr, c2);
-        break;
-      } else {
-        if (!itr1.itr.get_left_child_value()) {
-          itr2.itr = itr1.itr;
-          break;
-        }
-      }
-    }
-  }
-  if (itr1.itr->first != c1)
-    itr1 = end_dangerous();
-  if (itr2.itr->first != c2)
-    itr2 = end_dangerous();
 }
 
 inline void
@@ -353,41 +267,6 @@ Unlimited_Sparse_Row
 
 inline void
 Unlimited_Sparse_Row
-::find_create_hint_assign(const dimension_type i, dangerous_iterator& itr) {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  tree.insert_hint(i, itr.itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_create_hint_assign(const dimension_type i, const Coefficient& x,
-                          dangerous_iterator& itr) {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  tree.insert_hint(i, x, itr.itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
-                          dangerous_iterator& itr) {
-  find_create_hint_assign(x.first, x.second, itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_assign(const dimension_type c, dangerous_iterator& itr) {
-  if (tree.empty()) {
-    itr = end_dangerous();
-    return;
-  }
-  itr = dangerous_iterator(&tree);
-  tree.go_down_searching_key(itr.itr, c);
-  if ((itr.itr)->first != c)
-    itr = end_dangerous();
-}
-
-inline void
-Unlimited_Sparse_Row
 ::find_assign(const dimension_type c, iterator& itr) {
   if (tree.empty()) {
     itr = end();
@@ -410,20 +289,6 @@ Unlimited_Sparse_Row
   tree.go_down_searching_key(itr.itr, c);
   if ((itr.itr)->first != c)
     itr = end();
-}
-
-inline void
-Unlimited_Sparse_Row
-::lower_bound_assign(const dimension_type c, dangerous_iterator& itr) {
-  if (tree.empty()) {
-    itr = end_dangerous();
-    return;
-  }
-  itr = dangerous_iterator(&tree);
-  tree.go_down_searching_key(itr.itr, c);
-  if ((itr.itr)->first < c)
-    ++itr;
-  PPL_ASSERT(itr.itr.is_at_end() || itr->first >= c);
 }
 
 inline void
@@ -456,13 +321,6 @@ Unlimited_Sparse_Row
 
 inline void
 Unlimited_Sparse_Row
-::find_hint_assign(const dimension_type c, dangerous_iterator& itr) {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  find_hint_assign(c, itr.itr);
-}
-
-inline void
-Unlimited_Sparse_Row
 ::find_hint_assign(const dimension_type c, iterator& itr) {
   PPL_ASSERT(!itr.itr.is_at_end());
   find_hint_assign(c, itr.itr);
@@ -473,13 +331,6 @@ Unlimited_Sparse_Row
 ::find_hint_assign(const dimension_type c, const_iterator& itr) const {
   PPL_ASSERT(!itr.itr.is_at_end());
   find_hint_assign(c, itr.itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::lower_bound_hint_assign(const dimension_type c, dangerous_iterator& itr) {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  lower_bound_hint_assign(c, itr.itr);
 }
 
 inline void
@@ -648,16 +499,16 @@ Unlimited_Sparse_Row::find2(const dimension_type c1,
     itr2 = end();
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::reset(dangerous_iterator pos) {
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::reset(iterator pos) {
   const dimension_type i = pos->first;
   tree.erase(pos.itr);
-  return lower_bound_dangerous(i);
+  return lower_bound(i);
 }
 
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::reset(dangerous_iterator first,
-                                         dangerous_iterator last) {
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::reset(iterator first,
+                                         iterator last) {
   if (first == last)
     return first;
   --last;
@@ -666,7 +517,7 @@ Unlimited_Sparse_Row::reset(dangerous_iterator first,
   PPL_ASSERT(i <= j);
   while (!first.itr.is_at_end() && first->first <= j) {
     tree.erase(first.itr);
-    first = lower_bound_dangerous(i);
+    first = lower_bound(i);
   }
   return first;
 }
@@ -678,21 +529,21 @@ Unlimited_Sparse_Row::reset(dimension_type i) {
 
 inline void
 Unlimited_Sparse_Row::reset(dimension_type i, dimension_type j) {
-  dangerous_iterator itr = lower_bound_dangerous(i);
+  iterator itr = lower_bound(i);
 
   while (!itr.itr.is_at_end() && itr->first < j) {
     reset(itr);
-    itr = lower_bound_dangerous(i);
+    itr = lower_bound(i);
   }
 }
 
 inline void
 Unlimited_Sparse_Row::reset_after(dimension_type i) {
-  dangerous_iterator itr = lower_bound_dangerous(i);
+  iterator itr = lower_bound(i);
 
   while (!itr.itr.is_at_end()) {
     reset(itr);
-    itr = lower_bound_dangerous(i);
+    itr = lower_bound(i);
   }
 }
 
@@ -783,6 +634,13 @@ Unlimited_Sparse_Row
   return itr;
 }
 
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i,
+                                               iterator itr) {
+  find_create_hint_assign(i, itr);
+  return itr;
+}
+
 inline void
 Unlimited_Sparse_Row
 ::find_create_hint_assign(const dimension_type i, const Coefficient& x,
@@ -842,36 +700,6 @@ Unlimited_Sparse_Row
 
   PPL_ASSERT(!itr.is_at_end());
   PPL_ASSERT(itr->first == i);
-}
-
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i,
-                                               iterator itr) {
-  find_create_hint_assign(i, itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i,
-                                               dangerous_iterator itr) {
-  find_create_hint_assign(i, itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i,
-                                               const Coefficient& x,
-                                               dangerous_iterator itr) {
-  find_create_hint_assign(i, x, itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row
-::find_create(const std::pair<dimension_type, Coefficient>& x,
-              dangerous_iterator itr) {
-  find_create_hint_assign(x, itr);
-  return itr;
 }
 
 inline const Coefficient&
@@ -1001,51 +829,6 @@ Unlimited_Sparse_Row::iterator::Member_Access_Helper
 ::operator->() {
   return &my_pair;
 }
-
-
-inline Unlimited_Sparse_Row::dangerous_iterator
-::dangerous_iterator(CO_Tree* x)
-  : iterator(x) {
-}
-
-inline Unlimited_Sparse_Row::dangerous_iterator
-::dangerous_iterator(const iterator& x)
-  : iterator(x) {
-}
-
-inline
-Unlimited_Sparse_Row::dangerous_iterator
-::dangerous_iterator(const CO_Tree::inorder_iterator& x)
-  : iterator(x) {
-}
-
-inline
-Unlimited_Sparse_Row::dangerous_iterator
-::dangerous_iterator(const dangerous_iterator& x)
-  : iterator(x.itr) {
-}
-
-inline
-Unlimited_Sparse_Row::dangerous_iterator&
-Unlimited_Sparse_Row::dangerous_iterator
-::operator=(const dangerous_iterator& x) {
-  itr = x.itr;
-  return *this;
-}
-
-inline Unlimited_Sparse_Row::dangerous_iterator
-Unlimited_Sparse_Row::dangerous_iterator
-::next(const iterator& i) {
-  dangerous_iterator itr(i);
-  ++itr;
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::dangerous_iterator
-::operator const_iterator() const {
-  return iterator::operator const_iterator();
-}
-
 
 inline Unlimited_Sparse_Row::iterator
 ::operator const_iterator() const {

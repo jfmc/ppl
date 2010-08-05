@@ -224,7 +224,7 @@ public:
   //! Equivalent to itr = lower_bound(c, itr) .
   void lower_bound_hint_assign(const dimension_type c, const_iterator& itr) const;
 
-  //! Equivalent to find_create(x.first, x.second, begin_dangerous()) .
+  //! Equivalent to find_create(x.first, x.second, begin()) .
   iterator find_create(const std::pair<dimension_type, Coefficient>& x);
 
   //! Provided for compatibility with Sparse_Row.

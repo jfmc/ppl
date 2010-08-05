@@ -106,7 +106,7 @@ Sparse_Row::construct(const dimension_type sz,
 inline void
 Sparse_Row::resize(const dimension_type n) {
   if (n < size_)
-    reset(lower_bound_dangerous(n), end_dangerous());
+    reset(lower_bound(n), end());
   size_ = n;
   PPL_ASSERT(OK());
 }
@@ -121,16 +121,16 @@ Sparse_Row::size() const {
   return size_;
 }
 
-inline Sparse_Row::dangerous_iterator
-Sparse_Row::reset(dangerous_iterator i) {
-  dangerous_iterator res = row.reset(i);
+inline Sparse_Row::iterator
+Sparse_Row::reset(iterator i) {
+  iterator res = row.reset(i);
   PPL_ASSERT(OK());
   return res;
 }
 
-inline Sparse_Row::dangerous_iterator
-Sparse_Row::reset(dangerous_iterator first, dangerous_iterator last) {
-  dangerous_iterator res = row.reset(first, last);
+inline Sparse_Row::iterator
+Sparse_Row::reset(iterator first, iterator last) {
+  iterator res = row.reset(first, last);
   PPL_ASSERT(OK());
   return res;
 }
@@ -185,16 +185,6 @@ Sparse_Row::get2(const dimension_type c1, const dimension_type c2,
   return row.get2(c1, c2, p1, p2);
 }
 
-inline Sparse_Row::dangerous_iterator
-Sparse_Row::begin_dangerous() {
-  return row.begin_dangerous();
-}
-
-inline Sparse_Row::dangerous_iterator
-Sparse_Row::end_dangerous() {
-  return row.end_dangerous();
-}
-
 inline Sparse_Row::iterator
 Sparse_Row::begin() {
   return row.begin();
@@ -233,16 +223,6 @@ Sparse_Row::unordered_begin() const {
 inline Sparse_Row::unordered_const_iterator
 Sparse_Row::unordered_end() const {
   return row.unordered_end();
-}
-
-inline Sparse_Row::dangerous_iterator
-Sparse_Row::find_dangerous(const dimension_type k) {
-  return row.find_dangerous(k);
-}
-
-inline Sparse_Row::dangerous_iterator
-Sparse_Row::lower_bound_dangerous(const dimension_type k) {
-  return row.lower_bound_dangerous(k);
 }
 
 inline Sparse_Row::iterator
@@ -323,26 +303,6 @@ Sparse_Row::find_create(const dimension_type i, iterator itr) {
   return row.find_create(i, itr);
 }
 
-inline Sparse_Row::dangerous_iterator
-Sparse_Row::find_create(const dimension_type i, const Coefficient& x,
-                        dangerous_iterator itr) {
-  PPL_ASSERT(i < size_);
-  return row.find_create(i, x, itr);
-}
-
-inline Sparse_Row::dangerous_iterator
-Sparse_Row::find_create(const std::pair<dimension_type, Coefficient>& x,
-                        dangerous_iterator itr) {
-  PPL_ASSERT(x.first < size_);
-  return row.find_create(x, itr);
-}
-
-inline Sparse_Row::dangerous_iterator
-Sparse_Row::find_create(const dimension_type i, dangerous_iterator itr) {
-  PPL_ASSERT(i < size_);
-  return row.find_create(i, itr);
-}
-
 inline void
 Sparse_Row
 ::find_create_assign(const dimension_type i, const Coefficient& x,
@@ -385,32 +345,6 @@ Sparse_Row
 
 inline void
 Sparse_Row
-::find_create_hint_assign(const dimension_type i, dangerous_iterator& itr) {
-  row.find_create_hint_assign(i, itr);
-}
-
-inline void
-Sparse_Row
-::find_create_hint_assign(const dimension_type i, const Coefficient& x,
-                          dangerous_iterator& itr) {
-  row.find_create_hint_assign(i, x, itr);
-}
-
-inline void
-Sparse_Row
-::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
-                          dangerous_iterator& itr) {
-  row.find_create_hint_assign(x, itr);
-}
-
-inline void
-Sparse_Row
-::find_assign(const dimension_type c, dangerous_iterator& itr) {
-  row.find_assign(c, itr);
-}
-
-inline void
-Sparse_Row
 ::find_assign(const dimension_type c, iterator& itr) {
   row.find_assign(c, itr);
 }
@@ -419,12 +353,6 @@ inline void
 Sparse_Row
 ::find_assign(const dimension_type c, const_iterator& itr) const {
   row.find_assign(c, itr);
-}
-
-inline void
-Sparse_Row
-::lower_bound_assign(const dimension_type c, dangerous_iterator& itr) {
-  row.lower_bound_assign(c, itr);
 }
 
 inline void
@@ -441,12 +369,6 @@ Sparse_Row
 
 inline void
 Sparse_Row
-::find_hint_assign(const dimension_type c, dangerous_iterator& itr) {
-  row.find_hint_assign(c, itr);
-}
-
-inline void
-Sparse_Row
 ::find_hint_assign(const dimension_type c, iterator& itr) {
   row.find_hint_assign(c, itr);
 }
@@ -455,12 +377,6 @@ inline void
 Sparse_Row
 ::find_hint_assign(const dimension_type c, const_iterator& itr) const {
   row.find_hint_assign(c, itr);
-}
-
-inline void
-Sparse_Row
-::lower_bound_hint_assign(const dimension_type c, dangerous_iterator& itr) {
-  row.lower_bound_hint_assign(c, itr);
 }
 
 inline void
@@ -580,18 +496,18 @@ Sparse_Row_Reference::size() const {
   return size_;
 }
 
-inline Sparse_Row_Reference::dangerous_iterator
-Sparse_Row_Reference::reset(dangerous_iterator i) {
-  PPL_ASSERT(i != end_dangerous());
-  dangerous_iterator res = row.reset(i);
+inline Sparse_Row_Reference::iterator
+Sparse_Row_Reference::reset(iterator i) {
+  PPL_ASSERT(i != end());
+  iterator res = row.reset(i);
   PPL_ASSERT(OK());
   return res;
 }
 
-inline Sparse_Row_Reference::dangerous_iterator
+inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference
-::reset(dangerous_iterator first, dangerous_iterator last) {
-  dangerous_iterator res = row.reset(first, last);
+::reset(iterator first, iterator last) {
+  iterator res = row.reset(first, last);
   PPL_ASSERT(OK());
   return res;
 }
@@ -663,16 +579,6 @@ Sparse_Row_Reference
   return row.get2(c1, c2, p1, p2);
 }
 
-inline Sparse_Row_Reference::dangerous_iterator
-Sparse_Row_Reference::begin_dangerous() {
-  return row.begin_dangerous();
-}
-
-inline Sparse_Row_Reference::dangerous_iterator
-Sparse_Row_Reference::end_dangerous() {
-  return row.end_dangerous();
-}
-
 inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference::begin() {
   return row.begin();
@@ -711,16 +617,6 @@ Sparse_Row_Reference::unordered_begin() const {
 inline Sparse_Row_Reference::unordered_const_iterator
 Sparse_Row_Reference::unordered_end() const {
   return row.unordered_end();
-}
-
-inline Sparse_Row_Reference::dangerous_iterator
-Sparse_Row_Reference::find_dangerous(const dimension_type c) {
-  return row.find_dangerous(c);
-}
-
-inline Sparse_Row_Reference::dangerous_iterator
-Sparse_Row_Reference::lower_bound_dangerous(const dimension_type c) {
-  return row.lower_bound_dangerous(c);
 }
 
 inline Sparse_Row_Reference::iterator
@@ -804,28 +700,6 @@ Sparse_Row_Reference::find_create(const dimension_type i, iterator itr) {
   return row.find_create(i, itr);
 }
 
-inline Sparse_Row_Reference::dangerous_iterator
-Sparse_Row_Reference::find_create(const dimension_type i, const Coefficient& x,
-                                  dangerous_iterator itr) {
-  PPL_ASSERT(i < size_);
-  return row.find_create(i, x, itr);
-}
-
-inline Sparse_Row_Reference::dangerous_iterator
-Sparse_Row_Reference
-::find_create(const std::pair<dimension_type, Coefficient>& x,
-              dangerous_iterator itr) {
-  PPL_ASSERT(x.first < size_);
-  return row.find_create(x, itr);
-}
-
-inline Sparse_Row_Reference::dangerous_iterator
-Sparse_Row_Reference
-::find_create(const dimension_type i, dangerous_iterator itr) {
-  PPL_ASSERT(i < size_);
-  return row.find_create(i, itr);
-}
-
 inline void
 Sparse_Row_Reference
 ::find_create_assign(const dimension_type i, const Coefficient& x,
@@ -868,32 +742,6 @@ Sparse_Row_Reference
 
 inline void
 Sparse_Row_Reference
-::find_create_hint_assign(const dimension_type i, dangerous_iterator& itr) {
-  row.find_create_hint_assign(i, itr);
-}
-
-inline void
-Sparse_Row_Reference
-::find_create_hint_assign(const dimension_type i, const Coefficient& x,
-                          dangerous_iterator& itr) {
-  row.find_create_hint_assign(i, x, itr);
-}
-
-inline void
-Sparse_Row_Reference
-::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
-                          dangerous_iterator& itr) {
-  row.find_create_hint_assign(x, itr);
-}
-
-inline void
-Sparse_Row_Reference
-::find_assign(const dimension_type c, dangerous_iterator& itr) {
-  row.find_assign(c, itr);
-}
-
-inline void
-Sparse_Row_Reference
 ::find_assign(const dimension_type c, iterator& itr) {
   row.find_assign(c, itr);
 }
@@ -902,12 +750,6 @@ inline void
 Sparse_Row_Reference
 ::find_assign(const dimension_type c, const_iterator& itr) const {
   row.find_assign(c, itr);
-}
-
-inline void
-Sparse_Row_Reference
-::lower_bound_assign(const dimension_type c, dangerous_iterator& itr) {
-  row.lower_bound_assign(c, itr);
 }
 
 inline void
@@ -924,12 +766,6 @@ Sparse_Row_Reference
 
 inline void
 Sparse_Row_Reference
-::find_hint_assign(const dimension_type c, dangerous_iterator& itr) {
-  row.find_hint_assign(c, itr);
-}
-
-inline void
-Sparse_Row_Reference
 ::find_hint_assign(const dimension_type c, iterator& itr) {
   row.find_hint_assign(c, itr);
 }
@@ -938,12 +774,6 @@ inline void
 Sparse_Row_Reference
 ::find_hint_assign(const dimension_type c, const_iterator& itr) const {
   row.find_hint_assign(c, itr);
-}
-
-inline void
-Sparse_Row_Reference
-::lower_bound_hint_assign(const dimension_type c, dangerous_iterator& itr) {
-  row.lower_bound_hint_assign(c, itr);
 }
 
 inline void

@@ -63,11 +63,6 @@ public:
   typedef Unlimited_Sparse_Row::unordered_const_iterator
     unordered_const_iterator;
 
-  //! An iterator that may skip some zeros in the sequence.
-  //! May be invalidated by apparently unrelated operations, use with care.
-  //! See the method documentation for details.
-  typedef Unlimited_Sparse_Row::dangerous_iterator dangerous_iterator;
-
   //! Constructs a row from a std::vector.
   Sparse_Row(const std::vector<Coefficient>& v);
 
@@ -124,13 +119,13 @@ private:
 
 public:
   //! Resets to zero the value pointed to by i.
-  //! dangerous_iterator objects equal to i and ++i are invalidated.
-  dangerous_iterator reset(dangerous_iterator i);
+  //! iterator objects equal to i and ++i are invalidated.
+  iterator reset(iterator i);
 
   //! Resets to zero the values in the range [first,last).
-  //! All dangerous_iterator objects in [first,last] are invalidated (note
+  //! All iterator objects in [first,last] are invalidated (note
   //! that last is invalidated, too).
-  dangerous_iterator reset(dangerous_iterator first, dangerous_iterator last);
+  iterator reset(iterator first, iterator last);
   
   //! Resets to zero the elements in [i,size()).
   void reset_after(dimension_type i);
@@ -249,7 +244,7 @@ public:
   //! For read-only access it's better to use get(), that avoids allocating
   //! space for zeroes. Both methods are O(n).
   //! If i was not previously stored, or reset(i) was called, this operation
-  //! invalidates dangerous_iterator objects equal to the former
+  //! invalidates iterator objects equal to the former
   //! lower_bound(i).
   Coefficient& operator[](const dimension_type i);
 
@@ -278,8 +273,6 @@ public:
   void get2(const dimension_type c1, const dimension_type c2,
             const Coefficient*& p1, const Coefficient*& p2) const;
 
-  dangerous_iterator begin_dangerous();
-  dangerous_iterator end_dangerous();
   iterator begin();
   iterator end();
   const_iterator begin() const;
@@ -290,8 +283,6 @@ public:
   unordered_const_iterator unordered_begin() const;
   unordered_const_iterator unordered_end() const;
 
-  dangerous_iterator find_dangerous(const dimension_type c);
-  dangerous_iterator lower_bound_dangerous(const dimension_type c);
   iterator find(const dimension_type c);
   iterator lower_bound(const dimension_type c);
   const_iterator find(const dimension_type c) const;
@@ -308,13 +299,13 @@ public:
   const_iterator lower_bound(const dimension_type c,
                              const_iterator itr) const;
 
-  //! Equivalent to find_create(i, x, begin_dangerous()) .
+  //! Equivalent to find_create(i, x, begin()) .
   iterator find_create(const dimension_type i, const Coefficient& x);
 
-  //! Equivalent to find_create(x, begin_dangerous()) .
+  //! Equivalent to find_create(x, begin()) .
   iterator find_create(const std::pair<dimension_type, Coefficient>& x);
 
-  //! Equivalent to find_create(i, begin_dangerous()) .
+  //! Equivalent to find_create(i, begin()) .
   iterator find_create(const dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
@@ -330,23 +321,6 @@ public:
   //! Equivalent to (*this)[i] , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
   iterator find_create(const dimension_type i, iterator itr);
-
-  //! Equivalent to (*this)[i]=x , needs itr to point before or to the added
-  //! element. If itr points near the added element, this is faster.
-  dangerous_iterator find_create(const dimension_type i, const Coefficient& x,
-                                 dangerous_iterator itr);
-
-  //! Equivalent to (*this)[x.first]=x.second , needs itr to point before or
-  //! to the added element. If itr points near the added element, this is
-  //! faster.
-  dangerous_iterator find_create(const std::pair<dimension_type,
-                                                 Coefficient>& x,
-                                 dangerous_iterator itr);
-
-  //! Equivalent to (*this)[i] , needs itr to point before or to the added
-  //! element. If itr points near the added element, this is faster.
-  dangerous_iterator find_create(const dimension_type i,
-                                 dangerous_iterator itr);
 
   //! Equivalent to itr = find_create(i, x) .
   //! This may be faster in some implementations.
@@ -376,44 +350,21 @@ public:
   //! This may be faster in some implementations.
   void find_create_hint_assign(const dimension_type i, iterator& itr);
 
-  //! Equivalent to itr = find_create(i, itr) .
-  //! This may be faster in some implementations.
-  void find_create_hint_assign(const dimension_type i,
-                               dangerous_iterator& itr);
-
-  //! Equivalent to itr = find_create(i, x, itr) .
-  //! This may be faster in some implementations.
-  void find_create_hint_assign(const dimension_type i, const Coefficient& x,
-                               dangerous_iterator& itr);
-
-  //! Equivalent to itr = find_create(x, itr) .
-  //! This may be faster in some implementations.
-  void find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
-                               dangerous_iterator& itr);
-
-  //! Equivalent to itr = find_dangerous(c).
-  void find_assign(const dimension_type c, dangerous_iterator& itr);
   //! Equivalent to itr = find(c).
   void find_assign(const dimension_type c, iterator& itr);
   //! Equivalent to itr = find(c).
   void find_assign(const dimension_type c, const_iterator& itr) const;
 
-  //! Equivalent to itr = lower_bound_dangerous(c)
-  void lower_bound_assign(const dimension_type c, dangerous_iterator& itr);
   //! Equivalent to itr = lower_bound(c)
   void lower_bound_assign(const dimension_type c, iterator& itr);
   //! Equivalent to itr = lower_bound(c)
   void lower_bound_assign(const dimension_type c, const_iterator& itr) const;
 
-  //! Equivalent to itr = find_dangerous(c, itr) .
-  void find_hint_assign(const dimension_type c, dangerous_iterator& itr);
   //! Equivalent to itr = find(c, itr) .
   void find_hint_assign(const dimension_type c, iterator& itr);
   //! Equivalent to itr = find(c, itr) .
   void find_hint_assign(const dimension_type c, const_iterator& itr) const;
 
-  //! Equivalent to itr = lower_bound_dangerous(c, itr) .
-  void lower_bound_hint_assign(const dimension_type c, dangerous_iterator& itr);
   //! Equivalent to itr = lower_bound(c, itr) .
   void lower_bound_hint_assign(const dimension_type c, iterator& itr);
   //! Equivalent to itr = lower_bound(c, itr) .
@@ -440,11 +391,6 @@ public:
 
   //! An iterator that may skip some zeros in the row.
   typedef Unlimited_Sparse_Row::iterator iterator;
-
-  //! An iterator that may skip some zeros in the row.
-  //! May be invalidated by apparently unrelated operations, use with care.
-  //! See the method documentation for details.
-  typedef Unlimited_Sparse_Row::dangerous_iterator dangerous_iterator;
 
   //! An iterator that may skip some zeros in the sequence and may not follow
   //! the trivial order.
@@ -481,22 +427,22 @@ public:
   dimension_type size() const;
 
   //! Resets to zero the value pointed to by i.
-  //! dangerous_iterator objects equal to i and ++i are invalidated.
-  dangerous_iterator reset(dangerous_iterator i);
+  //! iterator objects equal to i and ++i are invalidated.
+  iterator reset(iterator i);
 
   //! Resets to zero the values in the range [first,last).
-  //! All dangerous_iterator objects in [first,last] are invalidated (note
+  //! All iterator objects in [first,last] are invalidated (note
   //! that last is invalidated, too).
-  dangerous_iterator reset(dangerous_iterator first, dangerous_iterator last);
+  iterator reset(iterator first, iterator last);
 
   //! Resets to zero the i-th element.
-  //! For each dangerous_iterator itr that pointed to i, dangerous_iterator
+  //! For each iterator itr that pointed to i, iterator
   //! objects equal to itr and ++itr are invalidated.
   void reset(dimension_type i);
 
   //! Resets to zero the elements in [i,j).
-  //! For each dangerous_iterator i_itr that pointed to i, and j_itr that
-  //! pointed to j, dangerous_iterator objects in [i_itr,j_itr] are
+  //! For each iterator i_itr that pointed to i, and j_itr that
+  //! pointed to j, iterator objects in [i_itr,j_itr] are
   //! invalidated (note that j_itr is invalidated, too).
   void reset(dimension_type i, dimension_type j);
 
@@ -617,7 +563,7 @@ public:
   //! For read-only access it's better to use get(), that avoids allocating
   //! space for zeroes. Both methods are O(n).
   //! If i was not previously stored, or reset(i) was called, this operation
-  //! invalidates dangerous_iterator objects equal to the former
+  //! invalidates iterator objects equal to the former
   //! lower_bound(i).
   Coefficient& operator[](const dimension_type i);
 
@@ -646,8 +592,6 @@ public:
   void get2(const dimension_type c1, const dimension_type c2,
             const Coefficient*& p1, const Coefficient*& p2) const;
 
-  dangerous_iterator begin_dangerous();
-  dangerous_iterator end_dangerous();
   iterator begin();
   iterator end();
   const_iterator begin() const;
@@ -680,8 +624,6 @@ public:
   template <typename Func>
   void for_each_nonzero(const Func& func,const dimension_type n) const;
 
-  dangerous_iterator find_dangerous(const dimension_type c);
-  dangerous_iterator lower_bound_dangerous(const dimension_type c);
   iterator find(const dimension_type c);
   iterator lower_bound(const dimension_type c);
   const_iterator find(const dimension_type c) const;
@@ -698,13 +640,13 @@ public:
   const_iterator lower_bound(const dimension_type c,
                              const_iterator itr) const;
 
-  //! Equivalent to find_create(i, x, begin_dangerous()) .
+  //! Equivalent to find_create(i, x, begin()) .
   iterator find_create(const dimension_type i, const Coefficient& x);
 
-  //! Equivalent to find_create(x, begin_dangerous()) .
+  //! Equivalent to find_create(x, begin()) .
   iterator find_create(const std::pair<dimension_type, Coefficient>& x);
 
-  //! Equivalent to find_create(i,begin_dangerous()) .
+  //! Equivalent to find_create(i,begin()) .
   iterator find_create(const dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
@@ -720,23 +662,6 @@ public:
   //! Equivalent to (*this)[i] , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
   iterator find_create(const dimension_type i, iterator itr);
-
-  //! Equivalent to (*this)[i]=x , needs itr to point before or to the added
-  //! element. If itr points near the added element, this is faster.
-  dangerous_iterator find_create(const dimension_type i, const Coefficient& x,
-                                 dangerous_iterator itr);
-
-  //! Equivalent to (*this)[x.first]=x.second , needs itr to point before or
-  //! to the added element. If itr points near the added element, this is
-  //! faster.
-  dangerous_iterator find_create(const std::pair<dimension_type,
-                                                 Coefficient>& x,
-                                 dangerous_iterator itr);
-
-  //! Equivalent to (*this)[i] , needs itr to point before or to the added
-  //! element. If itr points near the added element, this is faster.
-  dangerous_iterator find_create(const dimension_type i,
-                                 dangerous_iterator itr);
 
   //! Equivalent to itr = find_create(i, x) .
   //! This may be faster in some implementations.
@@ -766,44 +691,21 @@ public:
   //! This may be faster in some implementations.
   void find_create_hint_assign(const dimension_type i, iterator& itr);
 
-  //! Equivalent to itr = find_create(i, itr) .
-  //! This may be faster in some implementations.
-  void find_create_hint_assign(const dimension_type i,
-                               dangerous_iterator& itr);
-
-  //! Equivalent to itr = find_create(i, x, itr) .
-  //! This may be faster in some implementations.
-  void find_create_hint_assign(const dimension_type i, const Coefficient& x,
-                               dangerous_iterator& itr);
-
-  //! Equivalent to itr = find_create(x, itr) .
-  //! This may be faster in some implementations.
-  void find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
-                               dangerous_iterator& itr);
-
-  //! Equivalent to itr = find_dangerous(c).
-  void find_assign(const dimension_type c, dangerous_iterator& itr);
   //! Equivalent to itr = find(c).
   void find_assign(const dimension_type c, iterator& itr);
   //! Equivalent to itr = find(c).
   void find_assign(const dimension_type c, const_iterator& itr) const;
 
-  //! Equivalent to itr = lower_bound_dangerous(c)
-  void lower_bound_assign(const dimension_type c, dangerous_iterator& itr);
   //! Equivalent to itr = lower_bound(c)
   void lower_bound_assign(const dimension_type c, iterator& itr);
   //! Equivalent to itr = lower_bound(c)
   void lower_bound_assign(const dimension_type c, const_iterator& itr) const;
 
-  //! Equivalent to itr = find_dangerous(c, itr) .
-  void find_hint_assign(const dimension_type c, dangerous_iterator& itr);
   //! Equivalent to itr = find(c, itr) .
   void find_hint_assign(const dimension_type c, iterator& itr);
   //! Equivalent to itr = find(c, itr) .
   void find_hint_assign(const dimension_type c, const_iterator& itr) const;
 
-  //! Equivalent to itr = lower_bound_dangerous(c, itr) .
-  void lower_bound_hint_assign(const dimension_type c, dangerous_iterator& itr);
   //! Equivalent to itr = lower_bound(c, itr) .
   void lower_bound_hint_assign(const dimension_type c, iterator& itr);
   //! Equivalent to itr = lower_bound(c, itr) .

@@ -51,7 +51,6 @@ public:
 
   void swap(This& x);
 
-  class dangerous_iterator;
   class iterator;
   class const_iterator;
 
@@ -66,23 +65,22 @@ public:
   void swap(iterator i, iterator j);
 
   //! Resets to zero the value pointed to by i.
-  //! dangerous_iterator objects equal to i and ++i are invalidated.
-  dangerous_iterator reset(dangerous_iterator i);
+  //! iterator objects equal to i and ++i are invalidated.
+  iterator reset(iterator i);
 
   //! Resets to zero the values in the range [first,last).
-  //! All dangerous_iterator objects in [first,last] are invalidated (note
+  //! All iterator objects in [first,last] are invalidated (note
   //! that last is invalidated, too).
-  dangerous_iterator reset(dangerous_iterator first,
-                           dangerous_iterator last);
+  iterator reset(iterator first, iterator last);
 
   //! Resets to zero the i-th element.
-  //! For each dangerous_iterator itr that pointed to i, dangerous_iterator
+  //! For each iterator itr that pointed to i, iterator
   //! objects equal to itr and ++itr are invalidated.
   void reset(dimension_type i);
 
   //! Resets to zero the elements in [i,j).
-  //! For each dangerous_iterator i_itr that pointed to i, and j_itr that
-  //! pointed to j, dangerous_iterator objects in [i_itr,j_itr] are
+  //! For each iterator i_itr that pointed to i, and j_itr that
+  //! pointed to j, iterator objects in [i_itr,j_itr] are
   //! invalidated (note that j_itr is invalidated, too).
   void reset(dimension_type i,dimension_type j);
 
@@ -90,7 +88,7 @@ public:
   void reset_after(dimension_type i);
 
   //! For each j>i, assigns (*this)[j-1] = (*this)[j].
-  //! Invalidates dangerous_iterators pointing to the i-th and (i+1)-th
+  //! Invalidates iterators pointing to the i-th and (i+1)-th
   //! element. Other iterators remain valid and point to the same values, but
   //! their index will increase by 1 if it was >i+1.
   void delete_element_and_shift(dimension_type i);
@@ -153,17 +151,17 @@ public:
   //! For read-only access it's better to use get(), that avoids allocating
   //! space for zeroes. Both methods are O(n).
   //! If i was not previously stored, or reset(i) was called, this operation
-  //! invalidates dangerous_iterator objects equal to the former
+  //! invalidates iterator objects equal to the former
   //! lower_bound(i).
   Coefficient& operator[](const dimension_type i);
 
-  //! Equivalent to find_create(i, x, begin_dangerous()) .
+  //! Equivalent to find_create(i, x, begin()) .
   iterator find_create(const dimension_type i, const Coefficient& x);
 
-  //! Equivalent to find_create(x.first, x.second, begin_dangerous()) .
+  //! Equivalent to find_create(x.first, x.second, begin()) .
   iterator find_create(const std::pair<dimension_type, Coefficient>& x);
 
-  //! Equivalent to find_create(i, begin_dangerous()) .
+  //! Equivalent to find_create(i, begin()) .
   iterator find_create(const dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
@@ -180,22 +178,6 @@ public:
   //! element. If itr points near the added element, this is faster.
   iterator find_create(const dimension_type i, iterator itr);
 
-  //! Equivalent to (*this)[i] , needs itr to point before or to the added
-  //! element. If itr points near the added element, this is faster.
-  dangerous_iterator find_create(const dimension_type i,
-                                 dangerous_iterator itr);
-
-  //! Equivalent to (*this)[i]=x , needs itr to point before or to the added
-  //! element. If itr points near the added element, this is faster.
-  dangerous_iterator find_create(const dimension_type i, const Coefficient& x,
-                                 dangerous_iterator itr);
-
-  //! Equivalent to (*this)[x.first]=x.second , needs itr to point before or
-  //! to the added element. If itr points near the added element, this is
-  //! faster.
-  dangerous_iterator find_create(const std::pair<dimension_type, Coefficient>&
-                                 x, dangerous_iterator itr);
-
   //! Equivalent to get(), provided for convenience.
   const Coefficient& operator[](const dimension_type i) const;
 
@@ -205,8 +187,6 @@ public:
   */
   const Coefficient& get(const dimension_type i) const;
 
-  dangerous_iterator begin_dangerous();
-  dangerous_iterator end_dangerous();
   iterator begin();
   iterator end();
   const_iterator begin() const;
@@ -248,19 +228,10 @@ public:
   template <typename Func>
   void for_each_nonzero(const Func& func, const dimension_type n) const;
 
-  dangerous_iterator find_dangerous(const dimension_type c);
-  dangerous_iterator lower_bound_dangerous(const dimension_type c);
   iterator find(const dimension_type c);
   iterator lower_bound(const dimension_type c);
   const_iterator find(const dimension_type c) const;
   const_iterator lower_bound(const dimension_type c) const;
-
-  //! Looks for an element with key c, assuming it is in [itr,end()) .
-  dangerous_iterator find_dangerous(const dimension_type c,
-                                    dangerous_iterator itr);
-  //! Lower bound of key c, assuming it is in [itr,end()) .
-  dangerous_iterator lower_bound_dangerous(const dimension_type c,
-                                           dangerous_iterator itr);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
   iterator find(const dimension_type c, iterator itr);
@@ -300,53 +271,25 @@ public:
   //! This may be faster in some implementations.
   void find_create_hint_assign(const dimension_type i, iterator& itr);
 
-  //! Equivalent to itr = find_create(i, itr) .
-  //! This may be faster in some implementations.
-  void find_create_hint_assign(const dimension_type i,
-                               dangerous_iterator& itr);
-
-  //! Equivalent to itr = find_create(i, x, itr) .
-  //! This may be faster in some implementations.
-  void find_create_hint_assign(const dimension_type i, const Coefficient& x,
-                               dangerous_iterator& itr);
-
-  //! Equivalent to itr = find_create(x, itr) .
-  //! This may be faster in some implementations.
-  void find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
-                               dangerous_iterator& itr);
-
-  //! Equivalent to itr = find_dangerous(c).
-  void find_assign(const dimension_type c, dangerous_iterator& itr);
   //! Equivalent to itr = find(c).
   void find_assign(const dimension_type c, iterator& itr);
   //! Equivalent to itr = find(c).
   void find_assign(const dimension_type c, const_iterator& itr) const;
 
-  //! Equivalent to itr = lower_bound_dangerous(c)
-  void lower_bound_assign(const dimension_type c, dangerous_iterator& itr);
   //! Equivalent to itr = lower_bound(c)
   void lower_bound_assign(const dimension_type c, iterator& itr);
   //! Equivalent to itr = lower_bound(c)
   void lower_bound_assign(const dimension_type c, const_iterator& itr) const;
 
-  //! Equivalent to itr = find_dangerous(c, itr) .
-  void find_hint_assign(const dimension_type c, dangerous_iterator& itr);
   //! Equivalent to itr = find(c, itr) .
   void find_hint_assign(const dimension_type c, iterator& itr);
   //! Equivalent to itr = find(c, itr) .
   void find_hint_assign(const dimension_type c, const_iterator& itr) const;
 
-  //! Equivalent to itr = lower_bound_dangerous(c, itr) .
-  void lower_bound_hint_assign(const dimension_type c, dangerous_iterator& itr);
   //! Equivalent to itr = lower_bound(c, itr) .
   void lower_bound_hint_assign(const dimension_type c, iterator& itr);
   //! Equivalent to itr = lower_bound(c, itr) .
   void lower_bound_hint_assign(const dimension_type c, const_iterator& itr) const;
-
-  //! A faster equivalent of
-  //! itr1=find_dangerous(c1); itr2=find_dangerous(c2); .
-  void find2_dangerous(const dimension_type c1, const dimension_type c2,
-                       dangerous_iterator& itr1, dangerous_iterator& itr2);
 
   //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
   void find2(const dimension_type c1, const dimension_type c2,
@@ -448,28 +391,6 @@ public:
 
 private:
   CO_Tree::inorder_iterator itr;
-
-  friend class Unlimited_Sparse_Row;
-};
-
-class Unlimited_Sparse_Row::dangerous_iterator
-  : public Unlimited_Sparse_Row::iterator {
-
-public:
-
-  dangerous_iterator(CO_Tree* x = 0);
-  dangerous_iterator(const iterator& itr);
-  dangerous_iterator(const CO_Tree::inorder_iterator& itr);
-  dangerous_iterator(const dangerous_iterator& x);
-
-  dangerous_iterator& operator=(const dangerous_iterator& x);
-
-  //! Returns a dangerous_iterator pointing to the element after i.
-  static dangerous_iterator next(const iterator& i);
-
-  operator const_iterator() const;
-
-private:
 
   friend class Unlimited_Sparse_Row;
 };
