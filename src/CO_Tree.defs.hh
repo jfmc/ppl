@@ -27,28 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <stdint.h>
 
-#ifndef USE_PPL_CO_TREE_VEB_LAYOUT
-#ifndef USE_PPL_CO_TREE_DFS_LAYOUT
-#ifndef USE_PPL_CO_TREE_BFS_LAYOUT
-
-// The default layout is VeB.
-#define USE_PPL_CO_TREE_VEB_LAYOUT
-
-#endif // !defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-#endif // !defined(USE_PPL_CO_TREE_DFS_LAYOUT)
-#endif // !defined(USE_PPL_CO_TREE_VEB_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-
-#undef USE_PPL_CO_TREE_DFS_LAYOUT
-#undef USE_PPL_CO_TREE_BFS_LAYOUT
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-
-#undef USE_PPL_CO_TREE_BFS_LAYOUT
-#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
-
 namespace Parma_Polyhedra_Library {
 
 class CO_Tree {
@@ -282,32 +260,6 @@ private:
     height_t depth_of_root_of_top_tree;
   };
 
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-  class Level_Data_Cache {
-
-  public:
-
-    static const level_data* get_level_data(height_t height);
-
-  private:
-
-    static const height_t max_depth = sizeof(dimension_type)*CHAR_BIT;
-
-    static void fill_level_data(level_data* p, height_t min_depth,
-                                height_t max_depth);
-
-    //! cache[0] and cache[1] are not used.
-    //! cache[i] contains NULL if get_level_data(i) has not been called yet,
-    //! otherwise contains a pointer to an array of i elements containing
-    //! the level_data elements for trees of height i (cache[i][0] is not
-    //! used).
-    //! The level data is shared between CO_Tree objects with the same height.
-    //! This memory is never freed.
-    //! This is static, so the compiler initializes the pointers with NULLs.
-    static level_data* cache[max_depth];
-  };
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
-
   //! Initializes a tree with reserved size at least \p n .
   void init(dimension_type n);
 
@@ -415,12 +367,6 @@ private:
   //! An index used as a marker for unused nodes in the tree.
   //! This must not be used as a key.
   static const dimension_type unused_index = -1;
-
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-  // TODO: don't waste the first element.
-  //! level[d] contains data about nodes with depth d.
-  const level_data* level;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
 
   //! The depth of the leaves in the static tree.
   height_t max_depth;
@@ -560,39 +506,9 @@ public:
   const CO_Tree* get_tree() const;
 
 private:
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-  //! The depth of the current node in the vEB layout.
-  height_t d;
 
-  //! Position of the node in a BFS layout.
-  dimension_type i;
-
-  //! A vector of size d + 1.
-  //! pos[0] is not used.
-  //! pos[j], for j>0, is the position in the vEB layout of the node passed
-  //! at depth j.
-  dimension_type pos[CHAR_BIT*sizeof(dimension_type)];
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_BFS_LAYOUT
-  //! The index of the current node in the BFS layout.
-  dimension_type i;
-#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-  //! When this is true, data fields (except tree) are not valid and
-  //! this is an end iterator.
-  bool at_end;
-
-  //! When this is true, data fields (except tree) are not valid and
-  //! this iterator points to a non-existent node before the beginning.
-  bool before_begin;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
   //! The index of the current node in the DFS layout.
   dimension_type i;
-#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
 
   //! The tree the iterator points to.
   const CO_Tree* tree;
@@ -728,39 +644,8 @@ public:
   const CO_Tree* get_tree() const;
 
 private:
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-  //! The depth of the current node in the vEB layout.
-  height_t d;
-
-  //! Position of the node in a BFS layout.
-  dimension_type i;
-
-  //! A vector of size d + 1.
-  //! pos[0] is not used.
-  //! pos[j], for j>0, is the position in the vEB layout of the node passed
-  //! at depth j.
-  dimension_type pos[CHAR_BIT*sizeof(dimension_type)];
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_BFS_LAYOUT
-  //! The index of the current node in the BFS layout.
-  dimension_type i;
-#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
   //! The index of the current node in the DFS layout.
   dimension_type i;
-#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#if defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-  //! When this is true, data fields (except tree) are not valid and
-  //! this is an end iterator.
-  bool at_end;
-
-  //! When this is true, data fields (except tree) are not valid and
-  //! this iterator points to a non-existent node before the beginning.
-  bool before_begin;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT) || defined(USE_PPL_CO_TREE_BFS_LAYOUT)
 
   //! The tree the iterator points to.
   CO_Tree* tree;

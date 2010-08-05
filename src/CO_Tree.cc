@@ -156,9 +156,6 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   if (reserved_size1 == 0) {
     indexes = NULL;
     data = NULL;
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-    level = NULL;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
     size = 0;
     reserved_size = 0;
     max_depth = 0;
@@ -194,10 +191,6 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   new (&(indexes[reserved_size + 1])) dimension_type(0);
 
   max_depth = l;
-
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-  level = Level_Data_Cache::get_level_data(l);
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
 
   size = 0;
 
@@ -350,10 +343,6 @@ PPL::CO_Tree::structure_OK() const {
       return false;
     if (data != NULL)
       return false;
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-    if (level != NULL)
-      return false;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
     if (max_depth != 0)
       return false;
 
@@ -368,11 +357,6 @@ PPL::CO_Tree::structure_OK() const {
 
   if (indexes == NULL)
     return false;
-
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-  if (level == NULL)
-    return false;
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
 
   if (max_depth == 0)
     return false;
@@ -638,52 +622,6 @@ PPL::CO_Tree::count_used_in_subtree(inorder_iterator& itr) {
   PPL_ASSERT(itr->first != unused_index);
   dimension_type n = 0;
 
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-  const height_t depth = itr.depth();
-
-#ifndef NDEBUG
-  const dimension_type root_index = itr->first;
-#endif
-
-  while (itr.get_left_child_value())
-    ;
-  while (itr.depth() != depth) {
-    itr.get_next_value();
-    ++n;
-  }
-  ++n;
-  while (itr.get_right_child_value())
-    ;
-  while (itr.depth() != depth) {
-    itr.get_previous_value();
-    ++n;
-  }
-
-  PPL_ASSERT(itr->first == root_index);
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_BFS_LAYOUT
-
-  inorder_iterator itr2 = itr;
-
-  while (itr2.get_left_child_value())
-    ;
-  while (itr2 != itr) {
-    itr2.get_next_value();
-    ++n;
-  }
-  ++n;
-  while (itr2.get_right_child_value())
-    ;
-  while (itr2 != itr) {
-    itr2.get_previous_value();
-    ++n;
-  }
-
-#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-
   const dimension_type k = itr.i & -itr.i;
 
   // The complete subtree rooted at itr has 2*k - 1 nodes.
@@ -697,8 +635,6 @@ PPL::CO_Tree::count_used_in_subtree(inorder_iterator& itr) {
   for (dimension_type j = itr.i - (k - 1); j <= limit; ++j)
     if (indexes[j] != unused_index)
       ++n;
-
-#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 
   return n;
 }
@@ -708,52 +644,6 @@ PPL::CO_Tree::count_used_in_subtree(inorder_const_iterator& itr) {
   PPL_ASSERT(itr->first != unused_index);
   dimension_type n = 0;
 
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-  const height_t depth = itr.depth();
-
-#ifndef NDEBUG
-  const dimension_type root_index = itr->first;
-#endif
-
-  while (itr.get_left_child_value())
-    ;
-  while (itr.depth() != depth) {
-    itr.get_next_value();
-    ++n;
-  }
-  ++n;
-  while (itr.get_right_child_value())
-    ;
-  while (itr.depth() != depth) {
-    itr.get_previous_value();
-    ++n;
-  }
-
-  PPL_ASSERT(itr->first == root_index);
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_BFS_LAYOUT
-
-  inorder_const_iterator itr2 = itr;
-
-  while (itr2.get_left_child_value())
-    ;
-  while (itr2 != itr) {
-    itr2.get_next_value();
-    ++n;
-  }
-  ++n;
-  while (itr2.get_right_child_value())
-    ;
-  while (itr2 != itr) {
-    itr2.get_previous_value();
-    ++n;
-  }
-
-#endif // defined(USE_PPL_CO_TREE_BFS_LAYOUT)
-
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
-
   const dimension_type k = itr.i & -itr.i;
 
   // The complete subtree rooted at itr has 2*k - 1 nodes.
@@ -767,8 +657,6 @@ PPL::CO_Tree::count_used_in_subtree(inorder_const_iterator& itr) {
   for (dimension_type j = itr.i - (k - 1); j <= limit; ++j)
     if (indexes[j] != unused_index)
       ++n;
-
-#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 
   return n;
 }
@@ -825,13 +713,7 @@ PPL::CO_Tree
   if (root->first == unused_index)
     return;
 
-#if !defined(NDEBUG) || !defined(USE_PPL_CO_TREE_VEB_LAYOUT)
   inorder_iterator root_copy(root);
-#endif
-
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-  const height_t depth = root.depth();
-#endif // defined(USE_PPL_CO_TREE_DFS_LAYOUT)
 
   root.follow_right_childs_with_value();
 
@@ -881,13 +763,7 @@ PPL::CO_Tree
 
   // Restore the root iterator to the original position in the tree.
 
-#ifndef USE_PPL_CO_TREE_VEB_LAYOUT
   root = root_copy;
-#else
-  ++root;
-  while (root.depth() != depth)
-    root.get_parent();
-#endif
 
   PPL_ASSERT(root == root_copy);
 }
@@ -901,7 +777,6 @@ PPL::CO_Tree
                                           dimension_type key,
                                           const data_type& value,
                                           bool added_key) {
-#ifdef USE_PPL_CO_TREE_DFS_LAYOUT
   // This is static and with static allocation, to improve performance.
   static std::pair<dimension_type,dimension_type> stack[2*CHAR_BIT*sizeof(dimension_type)];
   std::pair<dimension_type,dimension_type>* stack_first_empty = stack;
@@ -974,134 +849,6 @@ PPL::CO_Tree
     }
   }
   itr = itr2;
-#else
-  // This is static and with static allocation, to improve performance.
-  static std::pair<dimension_type,char> stack[5*CHAR_BIT*sizeof(dimension_type)];
-  dimension_type stack_first_empty = 0;
-
-  // A pair (n, operation) in the stack means:
-  //
-  // * Go up from the left child, if operation is 0.
-  // * Go up from the right child, if operation is 1.
-  // * Go left, then visit the current tree (with size n), if operation is 2.
-  // * Go right, then visit the current tree (with size n), if operation is 3.
-  // * Visit the current tree (with size n), if operation is 4.
-
-  if (subtree_size == 0)
-    return;
-
-  stack[0].first = subtree_size;
-  stack[0].second = 4;
-  ++stack_first_empty;
-
-  while (stack_first_empty != 0) {
-
-    // top_n         = stack.top().first;
-    // top_operation = stack.top().second;
-    const dimension_type top_n = stack[stack_first_empty - 1].first;
-    const char top_operation = stack[stack_first_empty - 1].second;
-
-    switch (top_operation) {
-
-    case 0:
-      PPL_ASSERT(!root.is_right_child());
-      root.get_parent();
-      --stack_first_empty;
-      continue;
-
-    case 1:
-      PPL_ASSERT(root.is_right_child());
-      root.get_parent();
-      --stack_first_empty;
-      continue;
-
-    case 2:
-      root.get_left_child();
-      break;
-
-    case 3:
-      root.get_right_child();
-      break;
-#ifndef NDEBUG
-    case 4:
-      break;
-
-    default:
-      // We should not be here
-      PPL_ASSERT(false);
-#endif
-    }
-
-    // We now visit the current tree
-
-    if (top_n == 0) {
-      --stack_first_empty;
-    } else {
-      if (top_n == 1) {
-        if (!added_key && (itr.is_at_end() || itr->first > key)) {
-          PPL_ASSERT(root != itr);
-          PPL_ASSERT(root->first == unused_index);
-          added_key = true;
-          root->first = key;
-          new (&(root->second)) data_type(value);
-        } else {
-          if (root != itr) {
-            PPL_ASSERT(root->first == unused_index);
-            root->first = itr->first;
-            itr->first = unused_index;
-            move_data_element(root->second, itr->second);
-          }
-          ++itr;
-        }
-        --stack_first_empty;
-      } else {
-        PPL_ASSERT(stack_first_empty + 3 < sizeof(stack)/sizeof(stack[0]));
-
-        const dimension_type half = (top_n + 1) / 2;
-        stack[stack_first_empty - 1].second = 1;
-        stack[stack_first_empty    ] = std::make_pair(top_n - half, 3);
-        stack[stack_first_empty + 1] = std::make_pair(1, 4);
-        stack[stack_first_empty + 2].second = 0;
-        stack[stack_first_empty + 3] = std::make_pair(half - 1, 2);
-        stack_first_empty += 4;
-      }
-    }
-  }
-#endif
 
   PPL_ASSERT(added_key);
 }
-
-#ifdef USE_PPL_CO_TREE_VEB_LAYOUT
-
-const PPL::CO_Tree::level_data*
-PPL::CO_Tree::Level_Data_Cache::get_level_data(height_t height) {
-  PPL_ASSERT(height >= 2);
-  if (cache[height] == NULL) {
-    cache[height] = new level_data[height];
-    fill_level_data(cache[height], 1, height);
-  }
-  return cache[height];
-}
-
-void
-PPL::CO_Tree::Level_Data_Cache
-::fill_level_data(level_data* p,
-                  height_t min_depth, height_t max_depth) {
-  PPL_ASSERT(p != NULL);
-  if (min_depth == max_depth)
-    return;
-
-  height_t d0 = (min_depth + max_depth) / 2;
-
-  p[d0].depth_of_root_of_top_tree = min_depth;
-  p[d0].bottom_tree_size = ((dimension_type)1 << (max_depth - d0)) - 1;
-  p[d0].top_tree_size = ((dimension_type)1 << (d0 - min_depth + 1)) - 1;
-
-  fill_level_data(p, min_depth, d0);
-  fill_level_data(p, d0 + 1, max_depth);
-}
-
-PPL::CO_Tree::level_data* PPL::CO_Tree::Level_Data_Cache::cache[max_depth];
-
-#endif // defined(USE_PPL_CO_TREE_VEB_LAYOUT)
