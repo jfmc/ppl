@@ -1,4 +1,4 @@
-/* Unlimited_Sparse_Row_Over_CO_Tree class implementation: inline
+/* Unlimited_Sparse_Row class implementation: inline
    functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -21,45 +21,45 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Unlimited_Sparse_Row_Over_CO_Tree_inlines_hh
-#define PPL_Unlimited_Sparse_Row_Over_CO_Tree_inlines_hh 1
+#ifndef PPL_Unlimited_Sparse_Row_inlines_hh
+#define PPL_Unlimited_Sparse_Row_inlines_hh 1
 
 // TODO: Remove this.
 // Added to please KDevelop4.
-#include "Unlimited_Sparse_Row_Over_CO_Tree.defs.hh"
+#include "Unlimited_Sparse_Row.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::Unlimited_Sparse_Row_Over_CO_Tree()
+Unlimited_Sparse_Row::Unlimited_Sparse_Row()
   : tree() {
 }
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree
-::Unlimited_Sparse_Row_Over_CO_Tree(const This& x)
+Unlimited_Sparse_Row
+::Unlimited_Sparse_Row(const This& x)
   : tree(x.tree) {
 }
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree
-::Unlimited_Sparse_Row_Over_CO_Tree(const std::vector<Coefficient> &v)
+Unlimited_Sparse_Row
+::Unlimited_Sparse_Row(const std::vector<Coefficient> &v)
   : tree(v) {
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree&
-Unlimited_Sparse_Row_Over_CO_Tree::operator=(const This& x) {
+inline Unlimited_Sparse_Row&
+Unlimited_Sparse_Row::operator=(const This& x) {
   tree = x.tree;
   return *this;
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree::swap(This& x) {
+Unlimited_Sparse_Row::swap(This& x) {
   tree.swap(x.tree);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree::swap(dimension_type i, dimension_type j) {
+Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
   if (tree.empty())
     return;
   CO_Tree::inorder_iterator itr_i;
@@ -92,7 +92,7 @@ Unlimited_Sparse_Row_Over_CO_Tree::swap(dimension_type i, dimension_type j) {
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree::swap(iterator i, iterator j) {
+Unlimited_Sparse_Row::swap(iterator i, iterator j) {
   PPL_ASSERT(!i.itr.is_before_begin());
   PPL_ASSERT(!i.itr.is_at_end());
   PPL_ASSERT(!j.itr.is_before_begin());
@@ -101,159 +101,159 @@ Unlimited_Sparse_Row_Over_CO_Tree::swap(iterator i, iterator j) {
 }
 
 inline memory_size_type
-Unlimited_Sparse_Row_Over_CO_Tree::external_memory_in_bytes() const {
+Unlimited_Sparse_Row::external_memory_in_bytes() const {
   return tree.external_memory_in_bytes();
 }
 
 inline bool
-Unlimited_Sparse_Row_Over_CO_Tree::OK() const {
+Unlimited_Sparse_Row::OK() const {
   return tree.OK();
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::begin_dangerous() {
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::begin_dangerous() {
   dangerous_iterator itr(tree.before_begin());
   ++itr;
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::end_dangerous() {
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::end_dangerous() {
   return dangerous_iterator(tree.end());
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator
-Unlimited_Sparse_Row_Over_CO_Tree::begin() {
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::begin() {
   iterator itr(tree.before_begin());
   ++itr;
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator
-Unlimited_Sparse_Row_Over_CO_Tree::end() {
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::end() {
   return iterator(tree.end());
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::const_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::begin() const {
+inline Unlimited_Sparse_Row::const_iterator
+Unlimited_Sparse_Row::begin() const {
   const_iterator itr(tree.before_begin());
   ++itr;
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::const_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::end() const {
+inline Unlimited_Sparse_Row::const_iterator
+Unlimited_Sparse_Row::end() const {
   return const_iterator(tree.end());
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_begin() {
+inline Unlimited_Sparse_Row::unordered_iterator
+Unlimited_Sparse_Row::unordered_begin() {
   return tree.unordered_begin();
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_end() {
+inline Unlimited_Sparse_Row::unordered_iterator
+Unlimited_Sparse_Row::unordered_end() {
   return tree.unordered_end();
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_begin() const {
+inline Unlimited_Sparse_Row::unordered_const_iterator
+Unlimited_Sparse_Row::unordered_begin() const {
   return tree.unordered_begin();
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_end() const {
+inline Unlimited_Sparse_Row::unordered_const_iterator
+Unlimited_Sparse_Row::unordered_end() const {
   return tree.unordered_end();
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::find_dangerous(const dimension_type c) {
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::find_dangerous(const dimension_type c) {
   dangerous_iterator itr;
   find_assign(c, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
-Unlimited_Sparse_Row_Over_CO_Tree
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row
 ::lower_bound_dangerous(const dimension_type c) {
   dangerous_iterator itr;
   lower_bound_assign(c, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator
-Unlimited_Sparse_Row_Over_CO_Tree::find(const dimension_type c) {
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find(const dimension_type c) {
   iterator itr;
   find_assign(c, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator
-Unlimited_Sparse_Row_Over_CO_Tree::lower_bound(const dimension_type c) {
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::lower_bound(const dimension_type c) {
   iterator itr;
   lower_bound_assign(c, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::const_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::find(const dimension_type c) const {
+inline Unlimited_Sparse_Row::const_iterator
+Unlimited_Sparse_Row::find(const dimension_type c) const {
   const_iterator itr;
   find_assign(c, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::const_iterator
-Unlimited_Sparse_Row_Over_CO_Tree
+inline Unlimited_Sparse_Row::const_iterator
+Unlimited_Sparse_Row
 ::lower_bound(const dimension_type c) const {
   const_iterator itr;
   lower_bound_assign(c, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::find_dangerous(const dimension_type c,
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::find_dangerous(const dimension_type c,
                                                   dangerous_iterator itr) {
   find_hint_assign(c, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
-Unlimited_Sparse_Row_Over_CO_Tree
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row
 ::lower_bound_dangerous(const dimension_type c, dangerous_iterator itr) {
   lower_bound_hint_assign(c, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator
-Unlimited_Sparse_Row_Over_CO_Tree::find(const dimension_type c,
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find(const dimension_type c,
                                         iterator itr) {
   find_hint_assign(c, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator
-Unlimited_Sparse_Row_Over_CO_Tree::lower_bound(const dimension_type c,
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::lower_bound(const dimension_type c,
                                                iterator itr) {
   lower_bound_hint_assign(c, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::const_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::find(const dimension_type c,
+inline Unlimited_Sparse_Row::const_iterator
+Unlimited_Sparse_Row::find(const dimension_type c,
                                         const_iterator itr) const {
   find_hint_assign(c, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::const_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::lower_bound(const dimension_type c,
+inline Unlimited_Sparse_Row::const_iterator
+Unlimited_Sparse_Row::lower_bound(const dimension_type c,
                                                const_iterator itr) const {
   lower_bound_hint_assign(c, itr);
   return itr;
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find2_dangerous(const dimension_type c1, const dimension_type c2,
                   dangerous_iterator& itr1, dangerous_iterator& itr2) {
   if (tree.empty()) {
@@ -298,40 +298,40 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_create_assign(dimension_type i, const Coefficient& x,
                      CO_Tree::inorder_iterator& itr) {
   tree.insert(i, x, itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_create_assign(dimension_type i, CO_Tree::inorder_iterator& itr) {
   tree.insert(i, itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_create_assign(const dimension_type i, const Coefficient& x,
                      iterator& itr) {
   tree.insert(i, x, itr.itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_create_assign(const std::pair<dimension_type, Coefficient>& x,
                      iterator& itr) {
   find_create_assign(x.first, x.second, itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_create_assign(const dimension_type i, iterator& itr) {
   tree.insert(i, itr.itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_create_hint_assign(const dimension_type i, const Coefficient& x,
                           iterator& itr) {
   PPL_ASSERT(!itr.itr.is_at_end());
@@ -339,27 +339,27 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
                           iterator& itr) {
   find_create_hint_assign(x.first, x.second, itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_create_hint_assign(const dimension_type i, iterator& itr) {
   tree.insert_hint(i, itr.itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_create_hint_assign(const dimension_type i, dangerous_iterator& itr) {
   PPL_ASSERT(!itr.itr.is_at_end());
   tree.insert_hint(i, itr.itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_create_hint_assign(const dimension_type i, const Coefficient& x,
                           dangerous_iterator& itr) {
   PPL_ASSERT(!itr.itr.is_at_end());
@@ -367,14 +367,14 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_create_hint_assign(const std::pair<dimension_type, Coefficient>& x,
                           dangerous_iterator& itr) {
   find_create_hint_assign(x.first, x.second, itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_assign(const dimension_type c, dangerous_iterator& itr) {
   if (tree.empty()) {
     itr = end_dangerous();
@@ -387,7 +387,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_assign(const dimension_type c, iterator& itr) {
   if (tree.empty()) {
     itr = end();
@@ -400,7 +400,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_assign(const dimension_type c, const_iterator& itr) const {
   if (tree.empty()) {
     itr = end();
@@ -413,7 +413,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::lower_bound_assign(const dimension_type c, dangerous_iterator& itr) {
   if (tree.empty()) {
     itr = end_dangerous();
@@ -427,7 +427,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::lower_bound_assign(const dimension_type c, iterator& itr) {
   if (tree.empty()) {
     itr = end();
@@ -441,7 +441,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::lower_bound_assign(const dimension_type c, const_iterator& itr) const {
   if (tree.empty()) {
     itr = end();
@@ -455,63 +455,63 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_hint_assign(const dimension_type c, dangerous_iterator& itr) {
   PPL_ASSERT(!itr.itr.is_at_end());
   find_hint_assign(c, itr.itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_hint_assign(const dimension_type c, iterator& itr) {
   PPL_ASSERT(!itr.itr.is_at_end());
   find_hint_assign(c, itr.itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_hint_assign(const dimension_type c, const_iterator& itr) const {
   PPL_ASSERT(!itr.itr.is_at_end());
   find_hint_assign(c, itr.itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::lower_bound_hint_assign(const dimension_type c, dangerous_iterator& itr) {
   PPL_ASSERT(!itr.itr.is_at_end());
   lower_bound_hint_assign(c, itr.itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::lower_bound_hint_assign(const dimension_type c, iterator& itr) {
   PPL_ASSERT(!itr.itr.is_at_end());
   lower_bound_hint_assign(c, itr.itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::lower_bound_hint_assign(const dimension_type c, const_iterator& itr) const {
   PPL_ASSERT(!itr.itr.is_at_end());
   lower_bound_hint_assign(c, itr.itr);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::lower_bound_hint_assign(dimension_type i,
                           CO_Tree::inorder_iterator& itr) {
   tree.lower_bound(itr, i);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::lower_bound_hint_assign(dimension_type i,
                           CO_Tree::inorder_const_iterator& itr) const {
   tree.lower_bound(itr, i);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_hint_assign(dimension_type i, CO_Tree::inorder_iterator& itr) {
   PPL_ASSERT(!tree.empty());
   if (itr->first <= i)
@@ -534,7 +534,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_hint_assign(dimension_type i,
                    CO_Tree::inorder_const_iterator& itr) const {
   PPL_ASSERT(!tree.empty());
@@ -558,7 +558,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree::find2(const dimension_type c1,
+Unlimited_Sparse_Row::find2(const dimension_type c1,
                                             const dimension_type c2,
                                             iterator& itr1, iterator& itr2) {
   if (tree.empty()) {
@@ -603,7 +603,7 @@ Unlimited_Sparse_Row_Over_CO_Tree::find2(const dimension_type c1,
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree::find2(const dimension_type c1,
+Unlimited_Sparse_Row::find2(const dimension_type c1,
                                          const dimension_type c2,
                                          const_iterator& itr1,
                                          const_iterator& itr2) const {
@@ -648,15 +648,15 @@ Unlimited_Sparse_Row_Over_CO_Tree::find2(const dimension_type c1,
     itr2 = end();
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::reset(dangerous_iterator pos) {
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::reset(dangerous_iterator pos) {
   const dimension_type i = pos->first;
   tree.erase(pos.itr);
   return lower_bound_dangerous(i);
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::reset(dangerous_iterator first,
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::reset(dangerous_iterator first,
                                          dangerous_iterator last) {
   if (first == last)
     return first;
@@ -672,12 +672,12 @@ Unlimited_Sparse_Row_Over_CO_Tree::reset(dangerous_iterator first,
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree::reset(dimension_type i) {
+Unlimited_Sparse_Row::reset(dimension_type i) {
   tree.erase(i);
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree::reset(dimension_type i, dimension_type j) {
+Unlimited_Sparse_Row::reset(dimension_type i, dimension_type j) {
   dangerous_iterator itr = lower_bound_dangerous(i);
 
   while (!itr.itr.is_at_end() && itr->first < j) {
@@ -687,7 +687,7 @@ Unlimited_Sparse_Row_Over_CO_Tree::reset(dimension_type i, dimension_type j) {
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree::reset_after(dimension_type i) {
+Unlimited_Sparse_Row::reset_after(dimension_type i) {
   dangerous_iterator itr = lower_bound_dangerous(i);
 
   while (!itr.itr.is_at_end()) {
@@ -697,7 +697,7 @@ Unlimited_Sparse_Row_Over_CO_Tree::reset_after(dimension_type i) {
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::delete_element_and_shift(dimension_type i) {
   reset(i);
   for (iterator itr = lower_bound(i); !itr.itr.is_at_end(); ++itr)
@@ -706,7 +706,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree::add_zeroes_and_shift(dimension_type n,
+Unlimited_Sparse_Row::add_zeroes_and_shift(dimension_type n,
                                                         dimension_type i) {
   CO_Tree::inorder_iterator itr = tree.end();
   itr.get_previous_value();
@@ -716,7 +716,7 @@ Unlimited_Sparse_Row_Over_CO_Tree::add_zeroes_and_shift(dimension_type n,
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree::assign(dimension_type i,
+Unlimited_Sparse_Row::assign(dimension_type i,
                                           const Coefficient& x) {
   if (tree.empty())
     assign_if_nonzero(i, x);
@@ -732,59 +732,59 @@ Unlimited_Sparse_Row_Over_CO_Tree::assign(dimension_type i,
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree::assign_if_nonzero(dimension_type i,
+Unlimited_Sparse_Row::assign_if_nonzero(dimension_type i,
                                                      const Coefficient& x) {
   if (x != 0)
     find_create(i, x);
 }
 
 inline Coefficient&
-Unlimited_Sparse_Row_Over_CO_Tree::operator[](dimension_type i) {
+Unlimited_Sparse_Row::operator[](dimension_type i) {
   iterator itr;
   find_create_assign(i, itr);
   return itr->second;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator
-Unlimited_Sparse_Row_Over_CO_Tree::find_create(const dimension_type i,
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i,
                                                const Coefficient& x) {
   iterator itr;
   find_create_assign(i, x, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator
-Unlimited_Sparse_Row_Over_CO_Tree
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row
 ::find_create(const std::pair<dimension_type, Coefficient>& x) {
   iterator itr;
   find_create_assign(x.first, x.second, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator
-Unlimited_Sparse_Row_Over_CO_Tree::find_create(const dimension_type i) {
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i) {
   iterator itr;
   find_create_assign(i, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator
-Unlimited_Sparse_Row_Over_CO_Tree::find_create(const dimension_type i,
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i,
                                                const Coefficient& x,
                                                iterator itr) {
   find_create_hint_assign(i, x, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator
-Unlimited_Sparse_Row_Over_CO_Tree
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row
 ::find_create(const std::pair<dimension_type, Coefficient>& x, iterator itr) {
   find_create_hint_assign(x.first, x.second, itr);
   return itr;
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_create_hint_assign(const dimension_type i, const Coefficient& x,
                           CO_Tree::inorder_iterator& itr) {
   PPL_ASSERT(!tree.empty());
@@ -816,7 +816,7 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree
+Unlimited_Sparse_Row
 ::find_create_hint_assign(const dimension_type i,
                           CO_Tree::inorder_iterator& itr) {
   PPL_ASSERT(!tree.empty());
@@ -844,30 +844,30 @@ Unlimited_Sparse_Row_Over_CO_Tree
   PPL_ASSERT(itr->first == i);
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator
-Unlimited_Sparse_Row_Over_CO_Tree::find_create(const dimension_type i,
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i,
                                                iterator itr) {
   find_create_hint_assign(i, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::find_create(const dimension_type i,
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i,
                                                dangerous_iterator itr) {
   find_create_hint_assign(i, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::find_create(const dimension_type i,
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i,
                                                const Coefficient& x,
                                                dangerous_iterator itr) {
   find_create_hint_assign(i, x, itr);
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
-Unlimited_Sparse_Row_Over_CO_Tree
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row
 ::find_create(const std::pair<dimension_type, Coefficient>& x,
               dangerous_iterator itr) {
   find_create_hint_assign(x, itr);
@@ -875,12 +875,12 @@ Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 inline const Coefficient&
-Unlimited_Sparse_Row_Over_CO_Tree::operator[](const dimension_type i) const {
+Unlimited_Sparse_Row::operator[](const dimension_type i) const {
   return get(i);
 }
 
 inline const Coefficient&
-Unlimited_Sparse_Row_Over_CO_Tree::get(dimension_type i) const {
+Unlimited_Sparse_Row::get(dimension_type i) const {
   if (tree.empty())
     return Coefficient_zero();
   CO_Tree::inorder_const_iterator itr(&tree);
@@ -892,7 +892,7 @@ Unlimited_Sparse_Row_Over_CO_Tree::get(dimension_type i) const {
 }
 
 inline void
-Unlimited_Sparse_Row_Over_CO_Tree::get2(const dimension_type c1,
+Unlimited_Sparse_Row::get2(const dimension_type c1,
                                         const dimension_type c2,
                                         const Coefficient*& p1,
                                         const Coefficient*& p2) const {
@@ -914,301 +914,301 @@ Unlimited_Sparse_Row_Over_CO_Tree::get2(const dimension_type c1,
 
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::iterator::iterator(CO_Tree* x)
+Unlimited_Sparse_Row::iterator::iterator(CO_Tree* x)
   : itr(x) {
 }
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::iterator
+Unlimited_Sparse_Row::iterator
 ::iterator(const CO_Tree::inorder_iterator& x)
   : itr(x) {
 }
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::iterator::iterator(const iterator& x)
+Unlimited_Sparse_Row::iterator::iterator(const iterator& x)
   : itr(x.itr) {
 }
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::iterator&
-Unlimited_Sparse_Row_Over_CO_Tree::iterator
+Unlimited_Sparse_Row::iterator&
+Unlimited_Sparse_Row::iterator
 ::operator=(const iterator& x) {
   itr = x.itr;
   return *this;
 }
 
 inline bool
-Unlimited_Sparse_Row_Over_CO_Tree::iterator
+Unlimited_Sparse_Row::iterator
 ::operator==(const iterator& x) const {
 
   return itr == x.itr;
 }
 
 inline bool
-Unlimited_Sparse_Row_Over_CO_Tree::iterator
+Unlimited_Sparse_Row::iterator
 ::operator!=(const iterator& x) const {
   return !(*this == x);
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator&
-Unlimited_Sparse_Row_Over_CO_Tree::iterator::operator++() {
+inline Unlimited_Sparse_Row::iterator&
+Unlimited_Sparse_Row::iterator::operator++() {
 
   itr.get_next_value();
   return *this;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator&
-Unlimited_Sparse_Row_Over_CO_Tree::iterator::operator--() {
+inline Unlimited_Sparse_Row::iterator&
+Unlimited_Sparse_Row::iterator::operator--() {
 
   itr.get_previous_value();
   return *this;
 }
 
 inline std::pair<dimension_type, Coefficient&>
-Unlimited_Sparse_Row_Over_CO_Tree::iterator::operator*() {
+Unlimited_Sparse_Row::iterator::operator*() {
 
   return std::pair<dimension_type, Coefficient&>(itr->first, itr->second);
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator::Member_Access_Helper
-Unlimited_Sparse_Row_Over_CO_Tree::iterator::operator->() {
+inline Unlimited_Sparse_Row::iterator::Member_Access_Helper
+Unlimited_Sparse_Row::iterator::operator->() {
 
   return Member_Access_Helper(itr->first, itr->second);
 }
 
 inline std::pair<dimension_type, const Coefficient&>
-Unlimited_Sparse_Row_Over_CO_Tree::iterator::operator*() const {
+Unlimited_Sparse_Row::iterator::operator*() const {
 
   return *itr;
 }
 
 inline CO_Tree::inorder_iterator::Const_Member_Access_Helper
-Unlimited_Sparse_Row_Over_CO_Tree::iterator::operator->() const {
+Unlimited_Sparse_Row::iterator::operator->() const {
 
   return itr.operator->();
 }
 
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::iterator::Member_Access_Helper
+Unlimited_Sparse_Row::iterator::Member_Access_Helper
 ::Member_Access_Helper(dimension_type key, CO_Tree::data_type& data)
   : my_pair(key, data) {
 }
 
 inline
 std::pair<dimension_type, Coefficient&>*
-Unlimited_Sparse_Row_Over_CO_Tree::iterator::Member_Access_Helper
+Unlimited_Sparse_Row::iterator::Member_Access_Helper
 ::operator->() {
   return &my_pair;
 }
 
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
+inline Unlimited_Sparse_Row::dangerous_iterator
 ::dangerous_iterator(CO_Tree* x)
   : iterator(x) {
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
+inline Unlimited_Sparse_Row::dangerous_iterator
 ::dangerous_iterator(const iterator& x)
   : iterator(x) {
 }
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
+Unlimited_Sparse_Row::dangerous_iterator
 ::dangerous_iterator(const CO_Tree::inorder_iterator& x)
   : iterator(x) {
 }
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
+Unlimited_Sparse_Row::dangerous_iterator
 ::dangerous_iterator(const dangerous_iterator& x)
   : iterator(x.itr) {
 }
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator&
-Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
+Unlimited_Sparse_Row::dangerous_iterator&
+Unlimited_Sparse_Row::dangerous_iterator
 ::operator=(const dangerous_iterator& x) {
   itr = x.itr;
   return *this;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
-Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
+inline Unlimited_Sparse_Row::dangerous_iterator
+Unlimited_Sparse_Row::dangerous_iterator
 ::next(const iterator& i) {
   dangerous_iterator itr(i);
   ++itr;
   return itr;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::dangerous_iterator
+inline Unlimited_Sparse_Row::dangerous_iterator
 ::operator const_iterator() const {
   return iterator::operator const_iterator();
 }
 
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::iterator
+inline Unlimited_Sparse_Row::iterator
 ::operator const_iterator() const {
   return const_iterator(itr);
 }
 
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::const_iterator
+Unlimited_Sparse_Row::const_iterator
 ::const_iterator(const CO_Tree* x)
   : itr(x) {
 }
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::const_iterator
+Unlimited_Sparse_Row::const_iterator
 ::const_iterator(const CO_Tree::inorder_iterator& x)
   : itr(x) {
 }
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::const_iterator
+Unlimited_Sparse_Row::const_iterator
 ::const_iterator(const CO_Tree::inorder_const_iterator& x)
   : itr(x) {
 }
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::const_iterator
+Unlimited_Sparse_Row::const_iterator
 ::const_iterator(const const_iterator& x)
   : itr(x.itr) {
 }
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::const_iterator&
-Unlimited_Sparse_Row_Over_CO_Tree::const_iterator
+Unlimited_Sparse_Row::const_iterator&
+Unlimited_Sparse_Row::const_iterator
 ::operator=(const const_iterator& x) {
   itr = x.itr;
   return *this;
 }
 
 inline bool
-Unlimited_Sparse_Row_Over_CO_Tree::const_iterator
+Unlimited_Sparse_Row::const_iterator
 ::operator==(const const_iterator& x) const {
 
   return itr == x.itr;
 }
 
 inline bool
-Unlimited_Sparse_Row_Over_CO_Tree::const_iterator
+Unlimited_Sparse_Row::const_iterator
 ::operator!=(const const_iterator& x) const {
   return !(*this == x);
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::const_iterator&
-Unlimited_Sparse_Row_Over_CO_Tree::const_iterator::operator++() {
+inline Unlimited_Sparse_Row::const_iterator&
+Unlimited_Sparse_Row::const_iterator::operator++() {
 
   itr.get_next_value();
   return *this;
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::const_iterator&
-Unlimited_Sparse_Row_Over_CO_Tree::const_iterator::operator--() {
+inline Unlimited_Sparse_Row::const_iterator&
+Unlimited_Sparse_Row::const_iterator::operator--() {
 
   itr.get_previous_value();
   return *this;
 }
 
 inline std::pair<dimension_type, const Coefficient&>
-Unlimited_Sparse_Row_Over_CO_Tree::const_iterator::operator*() const {
+Unlimited_Sparse_Row::const_iterator::operator*() const {
 
   return *itr;
 }
 
 inline CO_Tree::inorder_const_iterator::Const_Member_Access_Helper
-Unlimited_Sparse_Row_Over_CO_Tree::const_iterator::operator->() const {
+Unlimited_Sparse_Row::const_iterator::operator->() const {
 
   return itr.operator->();
 }
 
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+Unlimited_Sparse_Row::unordered_iterator
 ::unordered_iterator(const CO_Tree::unordered_iterator& itr)
   : CO_Tree::unordered_iterator(itr) {
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+inline Unlimited_Sparse_Row::unordered_iterator
 ::Member_Access_Helper
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+Unlimited_Sparse_Row::unordered_iterator
 ::operator->() {
   return Member_Access_Helper(Base::operator->()->first,
                               Base::operator->()->second);
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+inline Unlimited_Sparse_Row::unordered_iterator
 ::Const_Member_Access_Helper
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+Unlimited_Sparse_Row::unordered_iterator
 ::operator->() const {
   return Const_Member_Access_Helper(Base::operator->()->first,
                                     Base::operator->()->second);
 }
 
 inline std::pair<dimension_type, Coefficient&>
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator::operator*() {
+Unlimited_Sparse_Row::unordered_iterator::operator*() {
   return std::pair<dimension_type, Coefficient&>(Base::operator->()->first,
                                                  Base::operator->()->second);
 }
 
 inline std::pair<dimension_type, const Coefficient&>
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator::operator*() const {
+Unlimited_Sparse_Row::unordered_iterator::operator*() const {
   return std::pair<dimension_type, const Coefficient&>(
     Base::operator->()->first, Base::operator->()->second);
 }
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+Unlimited_Sparse_Row::unordered_iterator
 ::operator unordered_const_iterator() const {
   return unordered_const_iterator(*static_cast<const Base*>(this));
 }
 
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator::Member_Access_Helper
+Unlimited_Sparse_Row::unordered_iterator::Member_Access_Helper
 ::Member_Access_Helper(dimension_type key, Coefficient& data)
   : my_pair(key, data) {
 }
 
 inline std::pair<dimension_type, Coefficient&>*
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator::Member_Access_Helper
+Unlimited_Sparse_Row::unordered_iterator::Member_Access_Helper
 ::operator->() {
   return &my_pair;
 }
 
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+Unlimited_Sparse_Row::unordered_iterator
 ::Const_Member_Access_Helper
 ::Const_Member_Access_Helper(dimension_type key, const Coefficient& data)
   : my_pair(key, data) {
 }
 
 inline const std::pair<dimension_type, const Coefficient&>*
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_iterator
+Unlimited_Sparse_Row::unordered_iterator
 ::Const_Member_Access_Helper::operator->() const {
   return &my_pair;
 }
 
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+Unlimited_Sparse_Row::unordered_const_iterator
 ::unordered_const_iterator(const CO_Tree::unordered_const_iterator& itr)
   : CO_Tree::unordered_const_iterator(itr) {
 }
 
 inline std::pair<dimension_type, const Coefficient&>
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+Unlimited_Sparse_Row::unordered_const_iterator
 ::operator*() const {
   return std::pair<dimension_type, const Coefficient&>(
     Base::operator->()->first,Base::operator->()->second);
 }
 
-inline Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+inline Unlimited_Sparse_Row::unordered_const_iterator
 ::Const_Member_Access_Helper
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+Unlimited_Sparse_Row::unordered_const_iterator
 ::operator->() const {
   return Const_Member_Access_Helper(
     CO_Tree::unordered_const_iterator::operator->()->first,
@@ -1217,7 +1217,7 @@ Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
 
 
 inline
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+Unlimited_Sparse_Row::unordered_const_iterator
 ::Const_Member_Access_Helper
 ::Const_Member_Access_Helper(dimension_type key, const Coefficient& data)
   : my_pair(key, data) {
@@ -1225,7 +1225,7 @@ Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
 
 inline
 const std::pair<dimension_type, const CO_Tree::data_type&>*
-Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
+Unlimited_Sparse_Row::unordered_const_iterator
 ::Const_Member_Access_Helper::operator->() const {
   return &my_pair;
 }
@@ -1233,4 +1233,4 @@ Unlimited_Sparse_Row_Over_CO_Tree::unordered_const_iterator
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Unlimited_Sparse_Row_Over_CO_Tree_inlines_hh)
+#endif // !defined(PPL_Unlimited_Sparse_Row_inlines_hh)

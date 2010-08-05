@@ -1,5 +1,4 @@
-/* Unlimited_Sparse_Row_Over_CO_Tree class implementation
-   (non-inline functions).
+/* Unlimited_Sparse_Row class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,12 +22,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 
-#include "Unlimited_Sparse_Row_Over_CO_Tree.defs.hh"
+#include "Unlimited_Sparse_Row.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Unlimited_Sparse_Row_Over_CO_Tree
+PPL::Unlimited_Sparse_Row
 ::ascii_dump(std::ostream& s) const {
   dimension_type n_elements=0;
   for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
@@ -39,10 +38,10 @@ PPL::Unlimited_Sparse_Row_Over_CO_Tree
   s << "\n";
 }
 
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Unlimited_Sparse_Row_Over_CO_Tree)
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Unlimited_Sparse_Row)
 
 bool
-PPL::Unlimited_Sparse_Row_Over_CO_Tree
+PPL::Unlimited_Sparse_Row
 ::ascii_load(std::istream& s) {
   reset_after(0);
   std::string str;
@@ -72,7 +71,7 @@ PPL::Unlimited_Sparse_Row_Over_CO_Tree
 }
 
 void
-PPL::Unlimited_Sparse_Row_Over_CO_Tree::normalize() {
+PPL::Unlimited_Sparse_Row::normalize() {
   // Compute the GCD of all the coefficients.
   unordered_const_iterator i = unordered_begin();
   unordered_const_iterator i_end = unordered_end();

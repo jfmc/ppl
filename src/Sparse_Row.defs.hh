@@ -816,21 +816,6 @@ public:
 
 private:
 
-#ifndef USE_PPL_SPARSE_BACKEND_CO_TREE
-  /*!
-    @c applier_to_data 's @c operator() applies func to the second element of
-    its argument.
-  */
-  template <typename Func>
-  class applier_to_data :
-    public std::unary_function<std::pair<dimension_type, Coefficient>&,void> {
-  public:
-    applier_to_data(const Func& func);
-    void operator()(std::pair<dimension_type, Coefficient>& x) const;
-  private:
-    Func f;
-  };
-#else // !defined(USE_PPL_SPARSE_BACKEND_CO_TREE)
   /*!
     @c applier_to_data 's @c operator() applies func to the second element of
     its argument.
@@ -844,7 +829,6 @@ private:
   private:
     Func f;
   };
-#endif // !defined(USE_PPL_SPARSE_BACKEND_CO_TREE)
 
   template <typename Func>
   static applier_to_data<Func> apply_to_data(const Func& func);

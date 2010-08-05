@@ -1,4 +1,4 @@
-/* Unlimited_Sparse_Row_Over_CO_Tree class implementation: non-inline template functions.
+/* Unlimited_Sparse_Row class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,20 +20,20 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Unlimited_Sparse_Row_Over_CO_Tree_templates_hh
-#define PPL_Unlimited_Sparse_Row_Over_CO_Tree_templates_hh 1
+#ifndef PPL_Unlimited_Sparse_Row_templates_hh
+#define PPL_Unlimited_Sparse_Row_templates_hh 1
 
 // TODO: Remove this.
 // Added to please KDevelop4.
-#include "Unlimited_Sparse_Row_Over_CO_Tree.defs.hh"
+#include "Unlimited_Sparse_Row.defs.hh"
 
 
 namespace Parma_Polyhedra_Library {
 
 template <typename Func1, typename Func2>
 void
-Unlimited_Sparse_Row_Over_CO_Tree
-::combine_needs_first(const Unlimited_Sparse_Row_Over_CO_Tree& y,
+Unlimited_Sparse_Row
+::combine_needs_first(const Unlimited_Sparse_Row& y,
                       const Func1& f, const Func2& g) {
   if (this == &y) {
     for (iterator i = begin(); !i.itr.is_at_end(); ++i)
@@ -70,8 +70,8 @@ Unlimited_Sparse_Row_Over_CO_Tree
 
 template <typename Func1, typename Func2>
 void
-Unlimited_Sparse_Row_Over_CO_Tree
-::combine_needs_second(const Unlimited_Sparse_Row_Over_CO_Tree& y,
+Unlimited_Sparse_Row
+::combine_needs_second(const Unlimited_Sparse_Row& y,
                        const Func1& g, const Func2& /* h */) {
   iterator i;
   unordered_const_iterator j = y.unordered_begin();
@@ -84,8 +84,8 @@ Unlimited_Sparse_Row_Over_CO_Tree
 
 template <typename Func1, typename Func2, typename Func3>
 void
-Unlimited_Sparse_Row_Over_CO_Tree
-::combine(const Unlimited_Sparse_Row_Over_CO_Tree& y, const Func1& f,
+Unlimited_Sparse_Row
+::combine(const Unlimited_Sparse_Row& y, const Func1& f,
           const Func2& g, const Func3& h) {
   if (this == &y) {
     for (iterator i = begin(); !i.itr.is_at_end(); ++i)
@@ -153,4 +153,4 @@ Unlimited_Sparse_Row_Over_CO_Tree
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Unlimited_Sparse_Row_Over_CO_Tree_templates_hh)
+#endif // !defined(PPL_Unlimited_Sparse_Row_templates_hh)
