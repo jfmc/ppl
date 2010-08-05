@@ -57,7 +57,7 @@ Unlimited_Sparse_Row
           else
             ++i;
         } else
-          y.lower_bound_hint_assign(i->first, j);
+          j = y.lower_bound(i->first, j);
     while (!i.itr.is_at_end()) {
       f(i->second);
       if (i->second == 0)
@@ -77,7 +77,7 @@ Unlimited_Sparse_Row
   unordered_const_iterator j = y.unordered_begin();
   unordered_const_iterator j_end = y.unordered_end();
   for ( ; j != j_end; ++j) {
-    find_create_assign(j->first, i);
+    i = find_create(j->first);
     g(i->second, j->second);
   }
 }
@@ -110,7 +110,7 @@ Unlimited_Sparse_Row
             ++i;
         } else {
           PPL_ASSERT(i->first > j->first);
-          find_create_hint_assign(j->first, i);
+          i = find_create(j->first, i);
           h(i->second, j->second);
           if (i->second == 0)
             i = reset(i);
@@ -129,10 +129,10 @@ Unlimited_Sparse_Row
     }
     while (!j.itr.is_at_end()) {
       if (tree.empty()) {
-        find_create_assign(j->first, i);
+        i = find_create(j->first);
       } else {
         --i;
-        find_create_hint_assign(j->first, i);
+        i = find_create(j->first, i);
       }
       h(i->second, j->second);
       ++j;
@@ -142,7 +142,7 @@ Unlimited_Sparse_Row
         break;
     }
     while (!j.itr.is_at_end()) {
-      find_create_hint_assign(j->first, i);
+      i = find_create(j->first, i);
       h(i->second, j->second);
       if (i->second == 0)
         i = reset(i);

@@ -834,9 +834,8 @@ PPL::MIP_Problem::process_pending_constraints() {
   // due to re-merging of split variables.
   matrix_row_iterator itr;
   for (dimension_type i = 0; i < unfeasible_tableau_rows_size; ++i) {
-    tableau[unfeasible_tableau_rows[i]].find_create_assign(artificial_index,
-                                                           Coefficient_one(),
-                                                           itr);
+    itr = tableau[unfeasible_tableau_rows[i]].find_create(artificial_index,
+                                                          Coefficient_one());
     working_cost[artificial_index] = -1;
     base[unfeasible_tableau_rows[i]] = artificial_index;
     ++artificial_index;
@@ -847,7 +846,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   for (dimension_type i = old_tableau_num_rows; i < tableau_num_rows; ++i) {
     if (worked_out_row[i])
       continue;
-    tableau[i].find_create_assign(artificial_index, Coefficient_one(), itr);
+    itr = tableau[i].find_create(artificial_index, Coefficient_one());
     working_cost[artificial_index] = -1;
     base[i] = artificial_index;
     ++artificial_index;
@@ -996,7 +995,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
         break;
       PPL_ASSERT(j->first <= k->first);
       if (j->first < k->first)
-        tableau_i.lower_bound_hint_assign(k->first, j);
+        j = tableau_i.lower_bound(k->first, j);
       else {
         const Coefficient& tableau_ij = j->second;
         WEIGHT_BEGIN();
@@ -1097,7 +1096,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
         break;
       PPL_ASSERT(j->first <= k->first);
       if (j->first < k->first)
-        tableau_i.lower_bound_hint_assign(k->first, j);
+        j = tableau_i.lower_bound(k->first, j);
       else {
         const Coefficient& tableau_ij = j->second;
         WEIGHT_BEGIN();
@@ -2244,7 +2243,7 @@ PPL::MIP_Problem::OK() const {
           // tableau[i][base[i] must be different from zero.
           // tableau[i][base[j], with i different from j, must not be a zero.
           if (itr->first < i->first)
-            tableau_j.lower_bound_hint_assign(itr->first, itr);
+            itr = tableau_j.lower_bound(itr->first, itr);
           if (i->second != j && itr->first == i->first
               && itr->second != 0) {
 #ifndef NDEBUG

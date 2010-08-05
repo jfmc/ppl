@@ -154,202 +154,143 @@ Unlimited_Sparse_Row::unordered_end() const {
   return tree.unordered_end();
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find(const dimension_type c) {
-  iterator itr;
-  find_assign(c, itr);
+inline CO_Tree::inorder_iterator
+Unlimited_Sparse_Row::find_create_helper(dimension_type i,
+                                         const Coefficient& x) {
+  CO_Tree::inorder_iterator itr;
+  tree.insert(i, x, itr);
+  return itr;
+}
+
+inline CO_Tree::inorder_iterator
+Unlimited_Sparse_Row::find_create_helper(dimension_type i) {
+  CO_Tree::inorder_iterator itr;
+  tree.insert(i, itr);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::lower_bound(const dimension_type c) {
+Unlimited_Sparse_Row::find_create(const dimension_type i,
+                                  const Coefficient& x) {
   iterator itr;
-  lower_bound_assign(c, itr);
+  tree.insert(i, x, itr.itr);
+  return itr;
+}
+
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i) {
+  iterator itr;
+  tree.insert(i, itr.itr);
+  return itr;
+}
+
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i,
+                                  const Coefficient& x, iterator itr) {
+  PPL_ASSERT(!itr.itr.is_at_end());
+  tree.insert_hint(i, x, itr.itr);
+  return itr;
+}
+
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find_create(const dimension_type i, iterator itr) {
+  tree.insert_hint(i, itr.itr);
+  return itr;
+}
+
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::find(const dimension_type c) {
+  if (tree.empty())
+    return end();
+  iterator itr(&tree);
+  tree.go_down_searching_key(itr.itr, c);
+  if ((itr.itr)->first != c)
+    itr = end();
+
   return itr;
 }
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::find(const dimension_type c) const {
-  const_iterator itr;
-  find_assign(c, itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row
-::lower_bound(const dimension_type c) const {
-  const_iterator itr;
-  lower_bound_assign(c, itr);
+  if (tree.empty())
+    return end();
+  const_iterator itr(&tree);
+  tree.go_down_searching_key(itr.itr, c);
+  if ((itr.itr)->first != c)
+    itr = end();
   return itr;
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find(const dimension_type c,
-                                        iterator itr) {
-  find_hint_assign(c, itr);
+Unlimited_Sparse_Row::lower_bound(const dimension_type c) {
+  if (tree.empty())
+    return end();
+  iterator itr(&tree);
+  tree.go_down_searching_key(itr.itr, c);
+  if ((itr.itr)->first < c)
+    ++itr;
+  PPL_ASSERT(itr.itr.is_at_end() || itr->first >= c);
+  return itr;
+}
+
+inline Unlimited_Sparse_Row::const_iterator
+Unlimited_Sparse_Row::lower_bound(const dimension_type c) const {
+  if (tree.empty())
+    return end();
+  const_iterator itr(&tree);
+  tree.go_down_searching_key(itr.itr, c);
+  if ((itr.itr)->first < c)
+    ++itr;
+  PPL_ASSERT(itr.itr.is_at_end() || itr->first >= c);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::lower_bound(const dimension_type c,
-                                               iterator itr) {
-  lower_bound_hint_assign(c, itr);
+Unlimited_Sparse_Row::find(const dimension_type c, iterator itr) {
+  PPL_ASSERT(!itr.itr.is_at_end());
+  itr.itr = find_helper(c, itr.itr);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::find(const dimension_type c,
-                                        const_iterator itr) const {
-  find_hint_assign(c, itr);
+Unlimited_Sparse_Row::find(const dimension_type c, const_iterator itr) const {
+  PPL_ASSERT(!itr.itr.is_at_end());
+  itr.itr = find_helper(c, itr.itr);
+  return itr;
+}
+
+inline Unlimited_Sparse_Row::iterator
+Unlimited_Sparse_Row::lower_bound(const dimension_type c, iterator itr) {
+  PPL_ASSERT(!itr.itr.is_at_end());
+  itr.itr = lower_bound_helper(c, itr.itr);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::lower_bound(const dimension_type c,
-                                               const_iterator itr) const {
-  lower_bound_hint_assign(c, itr);
+                                  const_iterator itr) const {
+  PPL_ASSERT(!itr.itr.is_at_end());
+  itr.itr = lower_bound_helper(c, itr.itr);
   return itr;
 }
 
-inline void
-Unlimited_Sparse_Row
-::find_create_assign(dimension_type i, const Coefficient& x,
-                     CO_Tree::inorder_iterator& itr) {
-  tree.insert(i, x, itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_create_assign(dimension_type i, CO_Tree::inorder_iterator& itr) {
-  tree.insert(i, itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_create_assign(const dimension_type i, const Coefficient& x,
-                     iterator& itr) {
-  tree.insert(i, x, itr.itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_create_assign(const dimension_type i, iterator& itr) {
-  tree.insert(i, itr.itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_create_hint_assign(const dimension_type i, const Coefficient& x,
-                          iterator& itr) {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  tree.insert_hint(i, x, itr.itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_create_hint_assign(const dimension_type i, iterator& itr) {
-  tree.insert_hint(i, itr.itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_assign(const dimension_type c, iterator& itr) {
-  if (tree.empty()) {
-    itr = end();
-    return;
-  }
-  itr = iterator(&tree);
-  tree.go_down_searching_key(itr.itr, c);
-  if ((itr.itr)->first != c)
-    itr = end();
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_assign(const dimension_type c, const_iterator& itr) const {
-  if (tree.empty()) {
-    itr = end();
-    return;
-  }
-  itr = const_iterator(&tree);
-  tree.go_down_searching_key(itr.itr, c);
-  if ((itr.itr)->first != c)
-    itr = end();
-}
-
-inline void
-Unlimited_Sparse_Row
-::lower_bound_assign(const dimension_type c, iterator& itr) {
-  if (tree.empty()) {
-    itr = end();
-    return;
-  }
-  itr = iterator(&tree);
-  tree.go_down_searching_key(itr.itr, c);
-  if ((itr.itr)->first < c)
-    ++itr;
-  PPL_ASSERT(itr.itr.is_at_end() || itr->first >= c);
-}
-
-inline void
-Unlimited_Sparse_Row
-::lower_bound_assign(const dimension_type c, const_iterator& itr) const {
-  if (tree.empty()) {
-    itr = end();
-    return;
-  }
-  itr = const_iterator(&tree);
-  tree.go_down_searching_key(itr.itr, c);
-  if ((itr.itr)->first < c)
-    ++itr;
-  PPL_ASSERT(itr.itr.is_at_end() || itr->first >= c);
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_hint_assign(const dimension_type c, iterator& itr) {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  find_hint_assign(c, itr.itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_hint_assign(const dimension_type c, const_iterator& itr) const {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  find_hint_assign(c, itr.itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::lower_bound_hint_assign(const dimension_type c, iterator& itr) {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  lower_bound_hint_assign(c, itr.itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::lower_bound_hint_assign(const dimension_type c, const_iterator& itr) const {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  lower_bound_hint_assign(c, itr.itr);
-}
-
-inline void
-Unlimited_Sparse_Row
-::lower_bound_hint_assign(dimension_type i,
-                          CO_Tree::inorder_iterator& itr) {
+inline CO_Tree::inorder_iterator
+Unlimited_Sparse_Row::lower_bound_helper(dimension_type i,
+                                         CO_Tree::inorder_iterator itr) {
   tree.lower_bound(itr, i);
+  return itr;
 }
 
-inline void
-Unlimited_Sparse_Row
-::lower_bound_hint_assign(dimension_type i,
-                          CO_Tree::inorder_const_iterator& itr) const {
+inline CO_Tree::inorder_const_iterator
+Unlimited_Sparse_Row::lower_bound_helper(dimension_type i,
+                                         CO_Tree::inorder_const_iterator itr) const {
   tree.lower_bound(itr, i);
+  return itr;
 }
 
-inline void
-Unlimited_Sparse_Row
-::find_hint_assign(dimension_type i, CO_Tree::inorder_iterator& itr) {
+inline CO_Tree::inorder_iterator
+Unlimited_Sparse_Row::find_helper(dimension_type i,
+                                  CO_Tree::inorder_iterator itr) {
   PPL_ASSERT(!tree.empty());
   if (itr->first <= i)
     while (itr.has_parent() && itr->first < i)
@@ -367,13 +308,14 @@ Unlimited_Sparse_Row
 #endif
 
   if (itr->first != i)
-    itr = tree.end();
+    return tree.end();
+
+  return itr;
 }
 
-inline void
-Unlimited_Sparse_Row
-::find_hint_assign(dimension_type i,
-                   CO_Tree::inorder_const_iterator& itr) const {
+inline CO_Tree::inorder_const_iterator
+Unlimited_Sparse_Row::find_helper(dimension_type i,
+                                  CO_Tree::inorder_const_iterator itr) const {
   PPL_ASSERT(!tree.empty());
   if (itr->first <= i)
     while (itr.has_parent() && itr->first < i)
@@ -391,7 +333,9 @@ Unlimited_Sparse_Row
 #endif
 
   if (itr->first != i)
-    itr = tree.end();
+    return tree.end();
+
+  return itr;
 }
 
 inline void
@@ -577,45 +521,14 @@ Unlimited_Sparse_Row::assign_if_nonzero(dimension_type i,
 
 inline Coefficient&
 Unlimited_Sparse_Row::operator[](dimension_type i) {
-  iterator itr;
-  find_create_assign(i, itr);
+  iterator itr = find_create(i);
   return itr->second;
 }
 
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i,
-                                               const Coefficient& x) {
-  iterator itr;
-  find_create_assign(i, x, itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i) {
-  iterator itr;
-  find_create_assign(i, itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i,
-                                               const Coefficient& x,
-                                               iterator itr) {
-  find_create_hint_assign(i, x, itr);
-  return itr;
-}
-
-inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i,
-                                               iterator itr) {
-  find_create_hint_assign(i, itr);
-  return itr;
-}
-
-inline void
-Unlimited_Sparse_Row
-::find_create_hint_assign(const dimension_type i, const Coefficient& x,
-                          CO_Tree::inorder_iterator& itr) {
+inline CO_Tree::inorder_iterator
+Unlimited_Sparse_Row::find_create_helper(const dimension_type i,
+                                         const Coefficient& x,
+                                         CO_Tree::inorder_iterator itr) {
   PPL_ASSERT(!tree.empty());
   PPL_ASSERT(!itr.is_at_end());
 
@@ -642,12 +555,13 @@ Unlimited_Sparse_Row
   PPL_ASSERT(!itr.is_at_end());
   PPL_ASSERT(itr->first == i);
   PPL_ASSERT(itr->second == x);
+
+  return itr;
 }
 
-inline void
-Unlimited_Sparse_Row
-::find_create_hint_assign(const dimension_type i,
-                          CO_Tree::inorder_iterator& itr) {
+inline CO_Tree::inorder_iterator
+Unlimited_Sparse_Row::find_create_helper(const dimension_type i,
+                                         CO_Tree::inorder_iterator itr) {
   PPL_ASSERT(!tree.empty());
   PPL_ASSERT(!itr.is_at_end());
 
@@ -671,6 +585,8 @@ Unlimited_Sparse_Row
 
   PPL_ASSERT(!itr.is_at_end());
   PPL_ASSERT(itr->first == i);
+
+  return itr;
 }
 
 inline const Coefficient&
