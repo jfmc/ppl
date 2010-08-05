@@ -75,7 +75,7 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
       Coefficient tmp;
       std::swap(itr_i->second, tmp);
       tree.erase(itr_i);
-      tree.insert(j, Coefficient_zero(), itr_j);
+      itr_j = tree.insert(j, Coefficient_zero(), itr_j);
       std::swap(itr_j->second, tmp);
     }
   else
@@ -84,7 +84,7 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
       Coefficient tmp;
       std::swap(itr_j->second, tmp);
       tree.erase(itr_j);
-      tree.insert(i, Coefficient_zero(), itr_i);
+      itr_i = tree.insert(i, Coefficient_zero(), itr_i);
       std::swap(itr_i->second, tmp);
     } else {
       // Do nothing, elements are both unstored zeroes.
@@ -157,15 +157,15 @@ Unlimited_Sparse_Row::unordered_end() const {
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(const dimension_type i,
                                   const Coefficient& x) {
-  iterator itr;
-  tree.insert(i, x, itr.itr);
+  iterator itr(&tree);
+  itr.itr = tree.insert(i, x);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(const dimension_type i) {
-  iterator itr;
-  tree.insert(i, itr.itr);
+  iterator itr(&tree);
+  itr.itr = tree.insert(i);
   return itr;
 }
 
@@ -173,13 +173,13 @@ inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(const dimension_type i,
                                   const Coefficient& x, iterator itr) {
   PPL_ASSERT(!itr.itr.is_at_end());
-  tree.insert_hint(i, x, itr.itr);
+  itr.itr = tree.insert(i, x, itr.itr);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(const dimension_type i, iterator itr) {
-  tree.insert_hint(i, itr.itr);
+  itr.itr = tree.insert(i, itr.itr);
   return itr;
 }
 
@@ -283,7 +283,7 @@ Unlimited_Sparse_Row::find(const dimension_type i, const_iterator itr) const {
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::lower_bound(const dimension_type i, iterator itr) {
   PPL_ASSERT(!itr.itr.is_at_end());
-  tree.lower_bound(itr.itr, i);
+  itr.itr = tree.lower_bound(itr.itr, i);
   return itr;
 }
 
@@ -291,7 +291,7 @@ inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::lower_bound(const dimension_type i,
                                   const_iterator itr) const {
   PPL_ASSERT(!itr.itr.is_at_end());
-  tree.lower_bound(itr.itr, i);
+  itr.itr = tree.lower_bound(itr.itr, i);
   return itr;
 }
 
@@ -465,7 +465,7 @@ Unlimited_Sparse_Row::assign(dimension_type i,
       itr->second = x;
     else
       if (x != 0)
-        tree.insert(i, x, itr);
+        tree.insert(i, x);
   }
 }
 

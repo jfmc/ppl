@@ -71,28 +71,28 @@ CO_Tree::~CO_Tree() {
   destroy();
 }
 
-inline void
-CO_Tree::insert(dimension_type key1, const data_type& data1,
-                inorder_iterator& itr) {
-  itr = inorder_iterator(this);
-  insert_hint(key1, data1, itr);
+inline CO_Tree::inorder_iterator
+CO_Tree::insert(dimension_type key1, const data_type& data1) {
+  inorder_iterator itr(this);
+  return insert(key1, data1, itr);
 }
 
-inline void
-CO_Tree::insert(dimension_type key1, inorder_iterator& itr) {
+inline CO_Tree::inorder_iterator
+CO_Tree::insert(dimension_type key1) {
   if (empty())
-    insert(key1, Coefficient_zero(), itr);
+    return insert(key1, Coefficient_zero());
   else {
-    itr = inorder_iterator(this);
+    inorder_iterator itr(this);
     go_down_searching_key(itr, key1);
     if (itr->first != key1)
       insert_precise(key1, Coefficient_zero(), itr);
+    return itr;
   }
 }
 
-inline void
-CO_Tree::insert_hint(dimension_type key1, const data_type& data1,
-                     inorder_iterator& itr) {
+inline CO_Tree::inorder_iterator
+CO_Tree::insert(dimension_type key1, const data_type& data1,
+                inorder_iterator itr) {
   PPL_ASSERT(key1 != unused_index);
 
   if (!empty()) {
@@ -119,14 +119,16 @@ CO_Tree::insert_hint(dimension_type key1, const data_type& data1,
   }
 
   insert_precise(key1, data1, itr);
+
+  return itr;
 }
 
-inline void
-CO_Tree::insert_hint(dimension_type key1, inorder_iterator& itr) {
+inline CO_Tree::inorder_iterator
+CO_Tree::insert(dimension_type key1, inorder_iterator itr) {
   PPL_ASSERT(key1 != unused_index);
 
   if (empty())
-    insert(key1, Coefficient_zero(), itr);
+    return insert(key1, Coefficient_zero(), itr);
   else {
     PPL_ASSERT(!itr.is_at_end());
     PPL_ASSERT(!itr.is_before_begin());
@@ -151,6 +153,8 @@ CO_Tree::insert_hint(dimension_type key1, inorder_iterator& itr) {
 
     if (itr->first != key1)
       insert_precise(key1, Coefficient_zero(), itr);
+
+    return itr;
   }
 }
 
@@ -219,13 +223,6 @@ CO_Tree::dump_subtree(inorder_const_iterator& itr) {
     dump_subtree(itr);
     itr.get_parent();
   }
-}
-
-inline void
-CO_Tree::insert(dimension_type key, const data_type& value) {
-  inorder_iterator itr(&*this);
-  insert(key, value, itr);
-  PPL_ASSERT(OK());
 }
 
 inline bool
@@ -369,8 +366,8 @@ CO_Tree::go_down_searching_key(inorder_const_iterator& itr,
   itr.i = itr2.i;
 }
 
-inline void
-CO_Tree::lower_bound(inorder_iterator& itr, dimension_type key) {
+inline CO_Tree::inorder_iterator
+CO_Tree::lower_bound(inorder_iterator itr, dimension_type key) {
   PPL_ASSERT(!empty());
   PPL_ASSERT(itr.is_at_end() || itr->first <= key);
 
@@ -380,7 +377,7 @@ CO_Tree::lower_bound(inorder_iterator& itr, dimension_type key) {
   PPL_ASSERT(itr.is_at_end() || itr->first <= key);
 
   if (itr.is_at_end())
-    return;
+    return itr;
 
   dimension_type low_index = itr.i;
   dimension_type high_index;
@@ -410,7 +407,7 @@ CO_Tree::lower_bound(inorder_iterator& itr, dimension_type key) {
 
       if (indexes[low_index] == key) {
         itr.i = low_index;
-        return;
+        return itr;
       }
 
       if (indexes[low_index] > key) {
@@ -472,10 +469,12 @@ CO_Tree::lower_bound(inorder_iterator& itr, dimension_type key) {
 #endif
 
   PPL_ASSERT(itr.is_at_end() || itr->first >= key);
+
+  return itr;
 }
 
-inline void
-CO_Tree::lower_bound(inorder_const_iterator& itr, dimension_type key) const {
+inline CO_Tree::inorder_const_iterator
+CO_Tree::lower_bound(inorder_const_iterator itr, dimension_type key) const {
   PPL_ASSERT(!empty());
   PPL_ASSERT(itr.is_at_end() || itr->first <= key);
 
@@ -485,7 +484,7 @@ CO_Tree::lower_bound(inorder_const_iterator& itr, dimension_type key) const {
   PPL_ASSERT(itr.is_at_end() || itr->first <= key);
 
   if (itr.is_at_end())
-    return;
+    return itr;
 
   dimension_type low_index = itr.i;
   dimension_type high_index;
@@ -515,7 +514,7 @@ CO_Tree::lower_bound(inorder_const_iterator& itr, dimension_type key) const {
 
       if (indexes[low_index] == key) {
         itr.i = low_index;
-        return;
+        return itr;
       }
 
       if (indexes[low_index] > key) {
@@ -577,6 +576,8 @@ CO_Tree::lower_bound(inorder_const_iterator& itr, dimension_type key) const {
 #endif
 
   PPL_ASSERT(itr.is_at_end() || itr->first >= key);
+
+  return itr;
 }
 
 inline void

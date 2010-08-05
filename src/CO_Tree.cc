@@ -551,7 +551,7 @@ PPL::CO_Tree::rebalance(inorder_iterator& itr, dimension_type key,
 }
 
 void
-PPL::CO_Tree::erase(inorder_iterator& itr) {
+PPL::CO_Tree::erase(inorder_iterator itr) {
   PPL_ASSERT(!itr.is_before_begin());
   PPL_ASSERT(!itr.is_at_end());
   PPL_ASSERT(itr->first != unused_index);

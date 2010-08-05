@@ -64,29 +64,27 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   dimension_type external_memory_in_bytes() const;
 
-  //! Inserts the pair (key, data) in the tree.
-  void insert(dimension_type key, const data_type& data);
-
-  //! Inserts a pair with key \p key in the tree and modifies \p itr to point
-  //! to the inserted pair.
-  //! If such a pair already exists, itr is modified to point at that pair.
-  void insert(dimension_type key, inorder_iterator& itr);
+  //! Inserts a pair with key \p key in the tree and returns an iterator that
+  //! points to the inserted pair.
+  //! If such a pair already exists, an iterator to that pair is returned.
+  inorder_iterator insert(dimension_type key);
 
   //! Inserts the pair (key, data) in the tree.
-  //! \p itr is modified to point to the inserted element.
-  void insert(dimension_type key, const data_type& data,
-              inorder_iterator& itr);
+  //! Returns an iterator that points to the inserted element.
+  //! If the key \p key is already in the tree, its associated value is set to
+  //! \p data and an iterator pointing to that pair is returned.
+  inorder_iterator insert(dimension_type key, const data_type& data);
 
   //! Inserts the pair (key, data) in the tree.
-  //! \p itr is used as hint and then modified to point to the inserted
-  //! element.
-  void insert_hint(dimension_type key, const data_type& data,
-                   inorder_iterator& itr);
+  //! \p itr is used as hint, this will be faster if \p itr points near to the
+  //! place where the new element will be inserted (or where is already stored).
+  inorder_iterator insert(dimension_type key, const data_type& data,
+                          inorder_iterator itr);
 
   //! Inserts a pair with key \p key in the tree.
-  //! \p itr is used as hint and then modified to point to the inserted
-  //! element.
-  void insert_hint(dimension_type key, inorder_iterator& itr);
+  //! \p itr is used as hint, this will be faster if \p itr points near to the
+  //! place where the new element will be inserted (or where is already stored).
+  inorder_iterator insert(dimension_type key, inorder_iterator itr);
 
   //! Inserts the pair (key1, data1) in the tree.
   //! \p itr must be the lower bound of \p key in the tree.
@@ -99,8 +97,8 @@ public:
   bool erase(dimension_type key);
 
   //! Erases from the tree the element pointed to by \p itr .
-  //! \p itr is invalidated, it is passed by reference to improve performance.
-  void erase(inorder_iterator& itr);
+  //! \p itr is invalidated.
+  void erase(inorder_iterator itr);
 
   //! Swaps x with *this.
   void swap(CO_Tree& x);
@@ -144,15 +142,16 @@ public:
 
   //! Searches for an element with key \p key , assuming \p itr->first is less
   //! than or equal to \p key .
-  //! If there is no element with key \p key , itr will be set to the first
-  //! element with key greater than \p key.
-  void lower_bound(inorder_iterator& itr, dimension_type key);
+  //! This method returns an iterator pointing to the first element with key
+  //! greater than or equal to \p key .
+  inorder_iterator lower_bound(inorder_iterator itr, dimension_type key);
 
   //! Searches for an element with key \p key , assuming \p itr->first is less
   //! than or equal to \p key .
-  //! If there is no element with key \p key , itr will be set to the first
-  //! element with key greater than \p key.
-  void lower_bound(inorder_const_iterator& itr, dimension_type key) const;
+  //! This method returns an iterator pointing to the first element with key
+  //! greater than or equal to \p key .
+  inorder_const_iterator lower_bound(inorder_const_iterator itr,
+                                     dimension_type key) const;
 
   class inorder_iterator;
   class inorder_const_iterator;
@@ -409,7 +408,7 @@ public:
   };
 
   //! Constructs an iterator pointing to the root node.
-  inorder_const_iterator(const CO_Tree* tree = 0);
+  explicit inorder_const_iterator(const CO_Tree* tree = 0);
 
   inorder_const_iterator(const inorder_const_iterator& itr);
   inorder_const_iterator(const inorder_iterator& itr);
@@ -543,7 +542,7 @@ public:
   };
 
   //! Constructs an iterator pointing to the root node.
-  inorder_iterator(CO_Tree* tree = 0);
+  explicit inorder_iterator(CO_Tree* tree = 0);
 
   inorder_iterator(const inorder_iterator& itr);
 
