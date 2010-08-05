@@ -108,7 +108,7 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 package parma_polyhedra_library;
 
 /*! \brief
-  Java class interfacing C++ m4_this_cplusplus_class`'::iterator
+  Java class interfacing C++ m4_this_cplusplus_class`':: iterator
   \ingroup PPL_java_interface
 */
 public class m4_this_class`'_Iterator extends PPL_Object {
