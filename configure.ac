@@ -1274,7 +1274,7 @@ xno | xnone)
     enableval=${available_instantiations}
   fi
   # Avoid extra blanks.
-  required_instantiations=`echo "${enableval}" | sed -e 's/[[	 ]][[	 ]]*/ /g' -e 's/[[ ]]*\([[@<>,]]\)[[ ]]*/\1/g' -e 's/>>/> >/g' -e 's/^[[ ]]//g' -e 's/[[ ]]$//g'`
+  required_instantiations=`echo "${enableval}" | sed -e 's/[[	 ]][[	 ]]*/ /g' -e 's/[[ ]]*\([[@<>,]]\)/\1/g' -e 's/\([[@<>,]]\)[[ ]]*/\1/g' -e 's/>>/> >/g' -e 's/^[[ ]]//g' -e 's/[[ ]]$//g'`
   # Check the specified instantiations for validity.
   ac_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS -I${srcdir}"
