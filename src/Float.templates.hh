@@ -134,11 +134,8 @@ void discard_occurrences(std::map<dimension_type,
   typename FP_Linear_Form_Abstract_Store::iterator i = lf_store.begin();
   typename FP_Linear_Form_Abstract_Store::iterator ls_end = lf_store.end();
   while (i != ls_end) {
-    if((i->second).coefficient(var) != 0) {
-      typename FP_Linear_Form_Abstract_Store::iterator i_old = i;
-      ++i;
-      lf_store.erase(i_old);
-    }
+    if((i->second).coefficient(var) != 0)
+      lf_store.erase(i++);
     else
       ++i;
   }
@@ -162,11 +159,8 @@ void upper_bound_assign(std::map<dimension_type,
   while (i1 != i1_end) {
     typename FP_Linear_Form_Abstract_Store::const_iterator i2 =
                                             ls2.find(i1->first);
-    if ((i2 == i2_end) || (i1->second != i2->second)) {
-      typename FP_Linear_Form_Abstract_Store::iterator i1_old = i1;
-      ++i1;
-      ls1.erase(i1_old);
-    }
+    if ((i2 == i2_end) || (i1->second != i2->second))
+      ls1.erase(i1++);
     else
       ++i1;
   }
