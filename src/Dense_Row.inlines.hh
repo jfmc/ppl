@@ -55,29 +55,27 @@ Dense_Row::swap(iterator i, iterator j) {
 }
 
 inline void
-Dense_Row::reset(const dimension_type i) {
+Dense_Row::reset(dimension_type i) {
   (*this)[i] = 0;
 }
 
 inline void
-Dense_Row::construct(const dimension_type sz,
-                     const dimension_type capacity) {
+Dense_Row::construct(dimension_type sz, dimension_type capacity) {
   row.construct(sz, capacity, Row::Flags());
 }
 
 inline void
-Dense_Row::construct(const dimension_type sz) {
+Dense_Row::construct(dimension_type sz) {
   row.construct(sz, Row::Flags());
 }
 
 inline
-Dense_Row::Dense_Row(const dimension_type sz,
-	                   const dimension_type capacity)
+Dense_Row::Dense_Row(dimension_type sz, dimension_type capacity)
   : row(sz, capacity, Row::Flags()) {
 }
 
 inline
-Dense_Row::Dense_Row(const dimension_type sz)
+Dense_Row::Dense_Row(dimension_type sz)
   : row(sz, Row::Flags()) {
 }
 
@@ -87,14 +85,13 @@ Dense_Row::Dense_Row(const Dense_Row& y)
 }
 
 inline
-Dense_Row::Dense_Row(const Dense_Row& y,
-	                   const dimension_type capacity)
+Dense_Row::Dense_Row(const Dense_Row& y, dimension_type capacity)
   : row(y.row, capacity) {
 }
 
 inline
-Dense_Row::Dense_Row(const Dense_Row& y, const dimension_type sz,
-                     const dimension_type capacity)
+Dense_Row::Dense_Row(const Dense_Row& y, dimension_type sz,
+                     dimension_type capacity)
   : row(y.row, sz, capacity) {
 }
 
@@ -128,7 +125,7 @@ Dense_Row::expand_within_capacity(dimension_type new_size) {
 }
 
 inline void
-Dense_Row::shrink(const dimension_type new_size) {
+Dense_Row::shrink(dimension_type new_size) {
   row.shrink(new_size);
 }
 
@@ -149,12 +146,12 @@ Dense_Row::operator=(const Dense_Row& y) {
 }
 
 inline const Coefficient&
-Dense_Row::get(const dimension_type i) const {
+Dense_Row::get(dimension_type i) const {
   return (*this)[i];
 }
 
 inline void
-Dense_Row::get2(const dimension_type c1, const dimension_type c2,
+Dense_Row::get2(dimension_type c1, dimension_type c2,
                 const Coefficient*& p1, const Coefficient*& p2) const {
   p1 = &(get(c1));
   p2 = &(get(c2));
@@ -241,12 +238,12 @@ Dense_Row::find_create(iterator itr, dimension_type i) {
 }
 
 inline Coefficient&
-Dense_Row::operator[](const dimension_type k) {
+Dense_Row::operator[](dimension_type k) {
   return row[k];
 }
 
 inline Coefficient_traits::const_reference
-Dense_Row::operator[](const dimension_type k) const {
+Dense_Row::operator[](dimension_type k) const {
   return row[k];
 }
 
@@ -295,14 +292,14 @@ Dense_Row::external_memory_in_bytes(dimension_type capacity) const {
 
 template <typename Func>
 void
-Dense_Row::for_each_nonzero(Func func, const dimension_type n) {
+Dense_Row::for_each_nonzero(Func func, dimension_type n) {
   for (dimension_type j = n; j-- > 0; )
     func((*this)[j]);
 }
 
 template <typename Func>
 void
-Dense_Row::for_each_nonzero(Func func, const dimension_type n) const {
+Dense_Row::for_each_nonzero(Func func, dimension_type n) const {
   for (dimension_type j = n; j-- > 0; )
     func((*this)[j]);
 }
@@ -313,8 +310,7 @@ Dense_Row::OK() const {
 }
 
 inline bool
-Dense_Row::OK(const dimension_type row_size,
-              const dimension_type row_capacity) const {
+Dense_Row::OK(dimension_type row_size, dimension_type row_capacity) const {
   return row.OK(row_size, row_capacity);
 }
 

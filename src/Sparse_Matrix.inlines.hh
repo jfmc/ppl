@@ -101,18 +101,18 @@ Sparse_Matrix::clear() {
 }
 
 inline void
-Sparse_Matrix::add_zero_rows(const dimension_type n) {
+Sparse_Matrix::add_zero_rows(dimension_type n) {
   resize(num_rows() + n, num_columns());
 }
 
 inline void
-Sparse_Matrix::add_zero_columns(const dimension_type n) {
+Sparse_Matrix::add_zero_columns(dimension_type n) {
   resize(num_rows(), num_columns() + n);
 }
 
 inline void
 Sparse_Matrix
-::add_zero_rows_and_columns(const dimension_type n, const dimension_type m) {
+::add_zero_rows_and_columns(dimension_type n, dimension_type m) {
   resize(num_rows() + n, num_columns() + m);
 }
 
@@ -137,7 +137,7 @@ Sparse_Matrix::add_row(const Unlimited_Sparse_Row& x) {
 }
 
 inline void
-Sparse_Matrix::remove_trailing_columns(const dimension_type n) {
+Sparse_Matrix::remove_trailing_columns(dimension_type n) {
   PPL_ASSERT(n <= num_columns());
   resize(num_rows(), num_columns() - n);
 }
@@ -178,7 +178,7 @@ Sparse_Matrix::iterator::operator++(int) {
 inline
 Sparse_Matrix::iterator::
   iterator(std::vector<Unlimited_Sparse_Row>::iterator i,
-           const dimension_type size)
+           dimension_type size)
   : itr(i), size_(size) {
 }
 

@@ -92,7 +92,7 @@ public:
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+n) \times c\f$ matrix \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
   */
-  void add_zero_rows(const dimension_type n);
+  void add_zero_rows(dimension_type n);
 
   //! Adds \p n columns of zeroes to the matrix.
   /*!
@@ -104,7 +104,7 @@ public:
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
   */
-  void add_zero_columns(const dimension_type n);
+  void add_zero_columns(dimension_type n);
 
   //! Adds \p n columns of zeroes to the matrix, starting from column i.
   void add_zero_columns(dimension_type n, dimension_type i);
@@ -123,8 +123,7 @@ public:
     the \f$(r+n) \times (c+m)\f$ matrix
     \f$\bigl(\genfrac{}{}{0pt}{}{M}{0} \genfrac{}{}{0pt}{}{0}{0}\bigr)\f$.
   */
-  void add_zero_rows_and_columns(const dimension_type n,
-                                 const dimension_type m);
+  void add_zero_rows_and_columns(dimension_type n, dimension_type m);
 
   //! Adds the row \p x to the matrix.
   void add_row(const Sparse_Row& x);
@@ -137,7 +136,7 @@ public:
 
   //! Makes the matrix shrink by removing its \p n trailing columns.
   //! Provided for compatibility with Dense_Matrix.
-  void remove_trailing_columns(const dimension_type n);
+  void remove_trailing_columns(dimension_type n);
 
   bool ascii_load(std::istream& s);
 
@@ -187,7 +186,7 @@ public:
 
 private:
   iterator(std::vector<Unlimited_Sparse_Row>::iterator,
-           const dimension_type size);
+           dimension_type size);
 
   std::vector<Unlimited_Sparse_Row>::iterator itr;
   const dimension_type size_;

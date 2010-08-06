@@ -58,10 +58,10 @@ public:
   explicit Sparse_Row(const std::vector<Coefficient>& v);
 
   //! Constructs a row of the specified size.
-  explicit Sparse_Row(const dimension_type n = 0);
+  explicit Sparse_Row(dimension_type n = 0);
 
   //! Constructs a row of the specified size from an Unlimited_Sparse_Row.
-  Sparse_Row(const Unlimited_Sparse_Row &x, const dimension_type n);
+  Sparse_Row(const Unlimited_Sparse_Row &x, dimension_type n);
 
   //! Constructs a Sparse_Row from a Sparse_Row_Reference.
   Sparse_Row(const Sparse_Row_Reference& x);
@@ -89,14 +89,14 @@ public:
 
   //! This method, with this signature, is needed for compatibility with
   //! Dense_Row. It can be called on any row, and it resizes it to \p sz.
-  void construct(const dimension_type sz);
+  void construct(dimension_type sz);
 
   //! This method, with this signature, is needed for compatibility with
   //! Dense_Row. It can be called on any row, and it resizes it to \p sz.
-  void construct(const dimension_type sz, const dimension_type capacity);
+  void construct(dimension_type sz, dimension_type capacity);
 
   //! Resizes the row to the specified size.
-  void resize(const dimension_type n);
+  void resize(dimension_type n);
 
   //! Provided for compatibility with Dense_Row. It simply calls resize()
   void shrink(dimension_type new_size);
@@ -237,7 +237,7 @@ public:
   //! If i was not previously stored, or reset(i) was called, this operation
   //! invalidates iterator objects equal to the former
   //! lower_bound(i).
-  Coefficient& operator[](const dimension_type i);
+  Coefficient& operator[](dimension_type i);
 
   //! After this call, get(i) == x.
   //! This is slower than <CODE>if (x != 0) find_create(i,x);</CODE> because
@@ -249,7 +249,7 @@ public:
   void assign_if_nonzero(dimension_type i, const Coefficient& x);
 
   //! Equivalent to get(), provided for convenience.
-  const Coefficient& operator[](const dimension_type i) const;
+  const Coefficient& operator[](dimension_type i) const;
 
   //! Gets the i-th element in the sequence.
   /*!
@@ -258,10 +258,10 @@ public:
     This function must not be called before main(), it relies on
     a static variable to work.
   */
-  const Coefficient& get(const dimension_type i) const;
+  const Coefficient& get(dimension_type i) const;
 
   //! A faster equivalent of p1 = &(get(c1)); p1 = &(get(c2));
-  void get2(const dimension_type c1, const dimension_type c2,
+  void get2(dimension_type c1, dimension_type c2,
             const Coefficient*& p1, const Coefficient*& p2) const;
 
   iterator begin();
@@ -270,33 +270,33 @@ public:
   const_iterator end() const;
 
   iterator find(const dimension_type c);
-  iterator lower_bound(const dimension_type c);
-  const_iterator find(const dimension_type c) const;
-  const_iterator lower_bound(const dimension_type c) const;
+  iterator lower_bound(dimension_type c);
+  const_iterator find(dimension_type c) const;
+  const_iterator lower_bound(dimension_type c) const;
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  iterator find(iterator itr, const dimension_type c);
+  iterator find(iterator itr, dimension_type c);
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  iterator lower_bound(iterator itr, const dimension_type c);
+  iterator lower_bound(iterator itr, dimension_type c);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  const_iterator find(const_iterator itr, const dimension_type c) const;
+  const_iterator find(const_iterator itr, dimension_type c) const;
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  const_iterator lower_bound(const_iterator itr, const dimension_type c) const;
+  const_iterator lower_bound(const_iterator itr, dimension_type c) const;
 
   //! Equivalent to find_create(i, x, begin()) .
-  iterator find_create(const dimension_type i, const Coefficient& x);
+  iterator find_create(dimension_type i, const Coefficient& x);
 
   //! Equivalent to find_create(i, begin()) .
-  iterator find_create(const dimension_type i);
+  iterator find_create(dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(iterator itr, const dimension_type i, const Coefficient& x);
+  iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
 
   //! Equivalent to (*this)[i] , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(iterator itr, const dimension_type i);
+  iterator find_create(iterator itr, dimension_type i);
 
   operator Sparse_Row_Reference();
   operator const Unlimited_Sparse_Row&() const;
@@ -320,7 +320,7 @@ public:
   //! An iterator that may skip some zeros in the row.
   typedef Unlimited_Sparse_Row::iterator iterator;
 
-  Sparse_Row_Reference(Unlimited_Sparse_Row& row, const dimension_type size);
+  Sparse_Row_Reference(Unlimited_Sparse_Row& row, dimension_type size);
 
   Sparse_Row_Reference& operator=(const Unlimited_Sparse_Row& x);
 
@@ -484,7 +484,7 @@ public:
   //! If i was not previously stored, or reset(i) was called, this operation
   //! invalidates iterator objects equal to the former
   //! lower_bound(i).
-  Coefficient& operator[](const dimension_type i);
+  Coefficient& operator[](dimension_type i);
 
   //! After this call, get(i) == x.
   //! This is slower than <CODE>if (x != 0) find_create(i,x);</CODE> because
@@ -496,7 +496,7 @@ public:
   void assign_if_nonzero(dimension_type i, const Coefficient& x);
 
   //! Equivalent to get(), provided for convenience.
-  const Coefficient& operator[](const dimension_type i) const;
+  const Coefficient& operator[](dimension_type i) const;
 
   //! Gets the i-th element in the sequence.
   /*!
@@ -505,10 +505,10 @@ public:
     This function must not be called before main(), it relies on
     a static variable to work.
   */
-  const Coefficient& get(const dimension_type i) const;
+  const Coefficient& get(dimension_type i) const;
 
   //! A faster equivalent of p1 = &(get(c1)); p1 = &(get(c2));
-  void get2(const dimension_type c1, const dimension_type c2,
+  void get2(dimension_type c1, dimension_type c2,
             const Coefficient*& p1, const Coefficient*& p2) const;
 
   iterator begin();
@@ -538,34 +538,34 @@ public:
   template <typename Func>
   void for_each_nonzero(const Func& func,const dimension_type n) const;
 
-  iterator find(const dimension_type c);
-  iterator lower_bound(const dimension_type c);
-  const_iterator find(const dimension_type c) const;
-  const_iterator lower_bound(const dimension_type c) const;
+  iterator find(dimension_type c);
+  iterator lower_bound(dimension_type c);
+  const_iterator find(dimension_type c) const;
+  const_iterator lower_bound(dimension_type c) const;
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  iterator find(iterator itr, const dimension_type c);
+  iterator find(iterator itr, dimension_type c);
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  iterator lower_bound(iterator itr, const dimension_type c);
+  iterator lower_bound(iterator itr, dimension_type c);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  const_iterator find(const_iterator itr, const dimension_type c) const;
+  const_iterator find(const_iterator itr, dimension_type c) const;
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  const_iterator lower_bound(const_iterator itr, const dimension_type c) const;
+  const_iterator lower_bound(const_iterator itr, dimension_type c) const;
 
   //! Equivalent to find_create(i, x, begin()) .
-  iterator find_create(const dimension_type i, const Coefficient& x);
+  iterator find_create(dimension_type i, const Coefficient& x);
 
   //! Equivalent to find_create(i,begin()) .
-  iterator find_create(const dimension_type i);
+  iterator find_create(dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(iterator itr, const dimension_type i, const Coefficient& x);
+  iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
 
   //! Equivalent to (*this)[i] , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(iterator itr, const dimension_type i);
+  iterator find_create(iterator itr, dimension_type i);
 
   operator const Unlimited_Sparse_Row&() const;
 

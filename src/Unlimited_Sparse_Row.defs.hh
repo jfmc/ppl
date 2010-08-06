@@ -150,30 +150,30 @@ public:
   //! If i was not previously stored, or reset(i) was called, this operation
   //! invalidates iterator objects equal to the former
   //! lower_bound(i).
-  Coefficient& operator[](const dimension_type i);
+  Coefficient& operator[](dimension_type i);
 
   //! Equivalent to find_create(i, x, begin()) .
-  iterator find_create(const dimension_type i, const Coefficient& x);
+  iterator find_create(dimension_type i, const Coefficient& x);
 
   //! Equivalent to find_create(i, begin()) .
-  iterator find_create(const dimension_type i);
+  iterator find_create(dimension_type i);
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(iterator itr, const dimension_type i, const Coefficient& x);
+  iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
 
   //! Equivalent to (*this)[i] , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(iterator itr, const dimension_type i);
+  iterator find_create(iterator itr, dimension_type i);
 
   //! Equivalent to get(), provided for convenience.
-  const Coefficient& operator[](const dimension_type i) const;
+  const Coefficient& operator[](dimension_type i) const;
 
   //! Gets the i-th element in the sequence.
   /*!
     This function is O(n).
   */
-  const Coefficient& get(const dimension_type i) const;
+  const Coefficient& get(dimension_type i) const;
 
   iterator begin();
   iterator end();
@@ -200,33 +200,33 @@ public:
       \param n    The logical size of this row (ignored)
   */
   template <typename Func>
-  void for_each_nonzero(const Func& func, const dimension_type n) const;
+  void for_each_nonzero(const Func& func, dimension_type n) const;
 
-  iterator find(const dimension_type c);
-  iterator lower_bound(const dimension_type c);
-  const_iterator find(const dimension_type c) const;
-  const_iterator lower_bound(const dimension_type c) const;
-
-  //! Looks for an element with key c, assuming it is in [itr,end()) .
-  iterator find(iterator itr, const dimension_type c);
-  //! Lower bound of key c, assuming it is in [itr,end()) .
-  iterator lower_bound(iterator itr, const dimension_type c);
+  iterator find(dimension_type c);
+  iterator lower_bound(dimension_type c);
+  const_iterator find(dimension_type c) const;
+  const_iterator lower_bound(dimension_type c) const;
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  const_iterator find(const_iterator itr, const dimension_type c) const;
+  iterator find(iterator itr, dimension_type c);
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  const_iterator lower_bound(const_iterator itr, const dimension_type c) const;
+  iterator lower_bound(iterator itr, dimension_type c);
+
+  //! Looks for an element with key c, assuming it is in [itr,end()) .
+  const_iterator find(const_iterator itr, dimension_type c) const;
+  //! Lower bound of key c, assuming it is in [itr,end()) .
+  const_iterator lower_bound(const_iterator itr, dimension_type c) const;
 
   //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
-  void find2(const dimension_type c1, const dimension_type c2,
+  void find2(dimension_type c1, dimension_type c2,
              iterator& itr1, iterator& itr2);
 
   //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
-  void find2(const dimension_type c1, const dimension_type c2,
+  void find2(dimension_type c1, dimension_type c2,
              const_iterator& itr1, const_iterator& itr2) const;
 
   //! A faster equivalent of p1 = &(get(c1)); p1 = &(get(c2));
-  void get2(const dimension_type c1, const dimension_type c2,
+  void get2(dimension_type c1, dimension_type c2,
             const Coefficient*& p1, const Coefficient*& p2) const;
 
   bool operator==(const This &x) const;

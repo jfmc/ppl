@@ -135,7 +135,7 @@ Unlimited_Sparse_Row::end() const {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i,
+Unlimited_Sparse_Row::find_create(dimension_type i,
                                   const Coefficient& x) {
   iterator itr(&tree);
   itr.itr = tree.insert(i, x);
@@ -143,14 +143,14 @@ Unlimited_Sparse_Row::find_create(const dimension_type i,
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i) {
+Unlimited_Sparse_Row::find_create(dimension_type i) {
   iterator itr(&tree);
   itr.itr = tree.insert(i);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(iterator itr, const dimension_type i,
+Unlimited_Sparse_Row::find_create(iterator itr, dimension_type i,
                                   const Coefficient& x) {
   PPL_ASSERT(!itr.itr.is_at_end());
   itr.itr = tree.insert(itr.itr, i, x);
@@ -158,13 +158,13 @@ Unlimited_Sparse_Row::find_create(iterator itr, const dimension_type i,
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(iterator itr, const dimension_type i) {
+Unlimited_Sparse_Row::find_create(iterator itr, dimension_type i) {
   itr.itr = tree.insert(itr.itr, i);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find(const dimension_type c) {
+Unlimited_Sparse_Row::find(dimension_type c) {
   if (tree.empty())
     return end();
   iterator itr(&tree);
@@ -176,7 +176,7 @@ Unlimited_Sparse_Row::find(const dimension_type c) {
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::find(const dimension_type c) const {
+Unlimited_Sparse_Row::find(dimension_type c) const {
   if (tree.empty())
     return end();
   const_iterator itr(&tree);
@@ -187,7 +187,7 @@ Unlimited_Sparse_Row::find(const dimension_type c) const {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::lower_bound(const dimension_type c) {
+Unlimited_Sparse_Row::lower_bound(dimension_type c) {
   if (tree.empty())
     return end();
   iterator itr(&tree);
@@ -199,7 +199,7 @@ Unlimited_Sparse_Row::lower_bound(const dimension_type c) {
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::lower_bound(const dimension_type c) const {
+Unlimited_Sparse_Row::lower_bound(dimension_type c) const {
   if (tree.empty())
     return end();
   const_iterator itr(&tree);
@@ -211,7 +211,7 @@ Unlimited_Sparse_Row::lower_bound(const dimension_type c) const {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find(iterator itr, const dimension_type i) {
+Unlimited_Sparse_Row::find(iterator itr, dimension_type i) {
   PPL_ASSERT(!itr.itr.is_at_end());
   PPL_ASSERT(!tree.empty());
   if (itr.itr->first <= i)
@@ -236,7 +236,7 @@ Unlimited_Sparse_Row::find(iterator itr, const dimension_type i) {
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::find(const_iterator itr, const dimension_type i) const {
+Unlimited_Sparse_Row::find(const_iterator itr, dimension_type i) const {
   PPL_ASSERT(!itr.itr.is_at_end());
   PPL_ASSERT(!tree.empty());
   if (itr.itr->first <= i)
@@ -261,22 +261,22 @@ Unlimited_Sparse_Row::find(const_iterator itr, const dimension_type i) const {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::lower_bound(iterator itr, const dimension_type i) {
+Unlimited_Sparse_Row::lower_bound(iterator itr, dimension_type i) {
   PPL_ASSERT(!itr.itr.is_at_end());
   itr.itr = tree.lower_bound(itr.itr, i);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::lower_bound(const_iterator itr, const dimension_type i) const {
+Unlimited_Sparse_Row::lower_bound(const_iterator itr, dimension_type i) const {
   PPL_ASSERT(!itr.itr.is_at_end());
   itr.itr = tree.lower_bound(itr.itr, i);
   return itr;
 }
 
 inline void
-Unlimited_Sparse_Row::find2(const dimension_type c1,
-                                            const dimension_type c2,
+Unlimited_Sparse_Row::find2(dimension_type c1,
+                                            dimension_type c2,
                                             iterator& itr1, iterator& itr2) {
   if (tree.empty()) {
     itr1 = end();
@@ -320,8 +320,8 @@ Unlimited_Sparse_Row::find2(const dimension_type c1,
 }
 
 inline void
-Unlimited_Sparse_Row::find2(const dimension_type c1,
-                                         const dimension_type c2,
+Unlimited_Sparse_Row::find2(dimension_type c1,
+                                         dimension_type c2,
                                          const_iterator& itr1,
                                          const_iterator& itr2) const {
   if (tree.empty()) {
@@ -462,7 +462,7 @@ Unlimited_Sparse_Row::operator[](dimension_type i) {
 }
 
 inline const Coefficient&
-Unlimited_Sparse_Row::operator[](const dimension_type i) const {
+Unlimited_Sparse_Row::operator[](dimension_type i) const {
   return get(i);
 }
 
@@ -479,8 +479,8 @@ Unlimited_Sparse_Row::get(dimension_type i) const {
 }
 
 inline void
-Unlimited_Sparse_Row::get2(const dimension_type c1,
-                                        const dimension_type c2,
+Unlimited_Sparse_Row::get2(dimension_type c1,
+                                        dimension_type c2,
                                         const Coefficient*& p1,
                                         const Coefficient*& p2) const {
   const_iterator itr1 = begin();

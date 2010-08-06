@@ -119,11 +119,11 @@ public:
 
   //! Resets the i-th element to 0.
   //! Provided for compatibility with Sparse_Row
-  void reset(const dimension_type i);
+  void reset(dimension_type i);
 
   //! Resets the elements [first,last) to 0.
   //! Provided for compatibility with Sparse_Row
-  void reset(const dimension_type first, const dimension_type last);
+  void reset(dimension_type first, dimension_type last);
 
   //! Swaps \p *this with \p y.
   void swap(Dense_Row& y);
@@ -160,11 +160,11 @@ public:
 
   //! Gets the i-th element.
   //! Provided for compatibility with Sparse_Row.
-  const Coefficient& get(const dimension_type i) const;
+  const Coefficient& get(dimension_type i) const;
 
   //! Equivalent to p1 = &(get(c1)); p2 = &(get(c2)); .
   //! Provided for compatibility with Sparse_Row.
-  void get2(const dimension_type c1, const dimension_type c2,
+  void get2(dimension_type c1, dimension_type c2,
             const Coefficient*& p1, const Coefficient*& p2) const;
 
   //! Provided for compatibility with Sparse_Row.
@@ -313,7 +313,7 @@ public:
       \param n    The logical size of this row (ignored)
   */
   template <typename Func>
-  void for_each_nonzero(Func func, const dimension_type n);
+  void for_each_nonzero(Func func, dimension_type n);
 
   /*! \brief Executes func on each non-zero element and may execute it on some
              zeros.
@@ -324,7 +324,7 @@ public:
       \param n    The logical size of this row (ignored)
   */
   template <typename Func>
-  void for_each_nonzero(Func func, const dimension_type n) const;
+  void for_each_nonzero(Func func, dimension_type n) const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
