@@ -76,8 +76,8 @@ PPL::Sparse_Matrix::add_zero_columns(dimension_type n, dimension_type i) {
 }
 
 void
-PPL::Sparse_Matrix
-::resize(dimension_type num_rows, dimension_type num_columns) {
+PPL::Sparse_Matrix::resize(dimension_type num_rows,
+                           dimension_type num_columns) {
   typedef std::vector<Unlimited_Sparse_Row>::iterator rows_itr_type;
   rows.resize(num_rows);
   if (num_columns < num_columns_) {

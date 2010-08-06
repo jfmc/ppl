@@ -79,7 +79,7 @@ public:
   //! For each iterator i_itr that pointed to i, and j_itr that
   //! pointed to j, iterator objects in [i_itr,j_itr] are
   //! invalidated (note that j_itr is invalidated, too).
-  void reset(dimension_type i,dimension_type j);
+  void reset(dimension_type i, dimension_type j);
 
   //! Resets to zero the elements in [i,+infinity).
   void reset_after(dimension_type i);

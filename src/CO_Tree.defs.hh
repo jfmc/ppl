@@ -120,8 +120,7 @@ public:
   //! Searches for an element with key \p key in the subtree rooted at \p itr.
   //! \p itr is modified to point to the found node (if it exists) or to the
   //! node that would be his parent (otherwise).
-  void go_down_searching_key(const_iterator& itr,
-                             dimension_type key) const;
+  void go_down_searching_key(const_iterator& itr, dimension_type key) const;
 
   //! Searches for an element with key \p key , assuming \p itr->first is less
   //! than or equal to \p key .
@@ -133,8 +132,7 @@ public:
   //! than or equal to \p key .
   //! This method returns an iterator pointing to the first element with key
   //! greater than or equal to \p key .
-  const_iterator lower_bound(const_iterator itr,
-                                     dimension_type key) const;
+  const_iterator lower_bound(const_iterator itr, dimension_type key) const;
 
 private:
 

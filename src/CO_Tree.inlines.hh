@@ -1310,8 +1310,7 @@ CO_Tree::const_iterator::get_previous_value() {
 }
 
 inline CO_Tree::const_iterator&
-CO_Tree::const_iterator
-::operator=(const const_iterator& itr2) {
+CO_Tree::const_iterator::operator=(const const_iterator& itr2) {
   tree = itr2.tree;
   if (tree != 0)
     i = itr2.i;
@@ -1319,8 +1318,7 @@ CO_Tree::const_iterator
 }
 
 inline CO_Tree::const_iterator&
-CO_Tree::const_iterator
-::operator=(const iterator& itr2) {
+CO_Tree::const_iterator::operator=(const iterator& itr2) {
   tree = itr2.tree;
   if (tree != 0)
     i = itr2.i;
@@ -1336,8 +1334,7 @@ CO_Tree::const_iterator::Const_Member_Access_Helper
 
 inline
 const std::pair<const dimension_type, const CO_Tree::data_type&>*
-CO_Tree::const_iterator::Const_Member_Access_Helper
-::operator->() const {
+CO_Tree::const_iterator::Const_Member_Access_Helper::operator->() const {
   return &my_pair;
 }
 

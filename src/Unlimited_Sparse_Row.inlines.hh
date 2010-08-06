@@ -370,8 +370,7 @@ Unlimited_Sparse_Row::reset(iterator pos) {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::reset(iterator first,
-                                         iterator last) {
+Unlimited_Sparse_Row::reset(iterator first, iterator last) {
   if (first == last)
     return first;
   --last;
@@ -421,7 +420,7 @@ Unlimited_Sparse_Row
 
 inline void
 Unlimited_Sparse_Row::add_zeroes_and_shift(dimension_type n,
-                                                        dimension_type i) {
+                                           dimension_type i) {
   CO_Tree::iterator itr = tree.end();
   itr.get_previous_value();
   for ( ; !itr.is_before_begin() && itr->first >= i; itr.get_previous_value())
@@ -430,8 +429,7 @@ Unlimited_Sparse_Row::add_zeroes_and_shift(dimension_type n,
 }
 
 inline void
-Unlimited_Sparse_Row::assign(dimension_type i,
-                                          const Coefficient& x) {
+Unlimited_Sparse_Row::assign(dimension_type i, const Coefficient& x) {
   if (tree.empty())
     assign_if_nonzero(i, x);
   else {
@@ -447,7 +445,7 @@ Unlimited_Sparse_Row::assign(dimension_type i,
 
 inline void
 Unlimited_Sparse_Row::assign_if_nonzero(dimension_type i,
-                                                     const Coefficient& x) {
+                                        const Coefficient& x) {
   if (x != 0)
     find_create(i, x);
 }
