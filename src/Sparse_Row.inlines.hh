@@ -205,26 +205,6 @@ Sparse_Row::end() const {
   return row.end();
 }
 
-inline Sparse_Row::unordered_iterator
-Sparse_Row::unordered_begin() {
-  return row.unordered_begin();
-}
-
-inline Sparse_Row::unordered_iterator
-Sparse_Row::unordered_end() {
-  return row.unordered_end();
-}
-
-inline Sparse_Row::unordered_const_iterator
-Sparse_Row::unordered_begin() const {
-  return row.unordered_begin();
-}
-
-inline Sparse_Row::unordered_const_iterator
-Sparse_Row::unordered_end() const {
-  return row.unordered_end();
-}
-
 inline Sparse_Row::iterator
 Sparse_Row::find(const dimension_type k) {
   return row.find(k);
@@ -498,26 +478,6 @@ Sparse_Row_Reference::end() const {
   return row.end();
 }
 
-inline Sparse_Row_Reference::unordered_iterator
-Sparse_Row_Reference::unordered_begin() {
-  return row.unordered_begin();
-}
-
-inline Sparse_Row_Reference::unordered_iterator
-Sparse_Row_Reference::unordered_end() {
-  return row.unordered_end();
-}
-
-inline Sparse_Row_Reference::unordered_const_iterator
-Sparse_Row_Reference::unordered_begin() const {
-  return row.unordered_begin();
-}
-
-inline Sparse_Row_Reference::unordered_const_iterator
-Sparse_Row_Reference::unordered_end() const {
-  return row.unordered_end();
-}
-
 inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference::find(const dimension_type c) {
   return row.find(c);
@@ -610,14 +570,14 @@ template <typename Func>
 inline void
 Sparse_Row_Reference
 ::for_each_nonzero(const Func& func, const dimension_type /* n */) {
-  std::for_each(unordered_begin(), unordered_end(), apply_to_data(func));
+  std::for_each(begin(), end(), apply_to_data(func));
 }
 
 template <typename Func>
 inline void
 Sparse_Row_Reference
 ::for_each_nonzero(const Func& func, const dimension_type /* n */) const {
-  std::for_each(unordered_begin(), unordered_end(), apply_to_data(func));
+  std::for_each(begin(), end(), apply_to_data(func));
 }
 
 template <typename Func>
