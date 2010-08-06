@@ -142,12 +142,6 @@ public:
 
 private:
 
-  struct level_data {
-    dimension_type bottom_tree_size;
-    dimension_type top_tree_size;
-    height_t depth_of_root_of_top_tree;
-  };
-
   //! Initializes a tree with reserved size at least \p n .
   void init(dimension_type n);
 
