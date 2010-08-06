@@ -74,7 +74,7 @@ CO_Tree::~CO_Tree() {
 inline CO_Tree::iterator
 CO_Tree::insert(dimension_type key1, const data_type& data1) {
   iterator itr(this);
-  return insert(key1, data1, itr);
+  return insert(itr, key1, data1);
 }
 
 inline CO_Tree::iterator
@@ -91,8 +91,7 @@ CO_Tree::insert(dimension_type key1) {
 }
 
 inline CO_Tree::iterator
-CO_Tree::insert(dimension_type key1, const data_type& data1,
-                iterator itr) {
+CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) {
   PPL_ASSERT(key1 != unused_index);
 
   if (!empty()) {
@@ -124,11 +123,11 @@ CO_Tree::insert(dimension_type key1, const data_type& data1,
 }
 
 inline CO_Tree::iterator
-CO_Tree::insert(dimension_type key1, iterator itr) {
+CO_Tree::insert(iterator itr, dimension_type key1) {
   PPL_ASSERT(key1 != unused_index);
 
   if (empty())
-    return insert(key1, Coefficient_zero(), itr);
+    return insert(itr, key1, Coefficient_zero());
   else {
     PPL_ASSERT(!itr.is_at_end());
     PPL_ASSERT(!itr.is_before_begin());

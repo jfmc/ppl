@@ -76,13 +76,12 @@ public:
   //! Inserts the pair (key, data) in the tree.
   //! \p itr is used as hint, this will be faster if \p itr points near to the
   //! place where the new element will be inserted (or where is already stored).
-  iterator insert(dimension_type key, const data_type& data,
-                          iterator itr);
+  iterator insert(iterator itr, dimension_type key, const data_type& data);
 
   //! Inserts a pair with key \p key in the tree.
   //! \p itr is used as hint, this will be faster if \p itr points near to the
   //! place where the new element will be inserted (or where is already stored).
-  iterator insert(dimension_type key, iterator itr);
+  iterator insert(iterator itr, dimension_type key);
 
   //! Inserts the pair (key1, data1) in the tree.
   //! \p itr must be the lower bound of \p key in the tree.

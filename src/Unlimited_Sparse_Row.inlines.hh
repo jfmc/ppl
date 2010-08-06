@@ -75,7 +75,7 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
       Coefficient tmp;
       std::swap(itr_i->second, tmp);
       tree.erase(itr_i);
-      itr_j = tree.insert(j, Coefficient_zero(), itr_j);
+      itr_j = tree.insert(itr_j, j, Coefficient_zero());
       std::swap(itr_j->second, tmp);
     }
   else
@@ -84,7 +84,7 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
       Coefficient tmp;
       std::swap(itr_j->second, tmp);
       tree.erase(itr_j);
-      itr_i = tree.insert(i, Coefficient_zero(), itr_i);
+      itr_i = tree.insert(itr_i, i, Coefficient_zero());
       std::swap(itr_i->second, tmp);
     } else {
       // Do nothing, elements are both unstored zeroes.
@@ -153,13 +153,13 @@ inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(const dimension_type i,
                                   const Coefficient& x, iterator itr) {
   PPL_ASSERT(!itr.itr.is_at_end());
-  itr.itr = tree.insert(i, x, itr.itr);
+  itr.itr = tree.insert(itr.itr, i, x);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(const dimension_type i, iterator itr) {
-  itr.itr = tree.insert(i, itr.itr);
+  itr.itr = tree.insert(itr.itr, i);
   return itr;
 }
 
