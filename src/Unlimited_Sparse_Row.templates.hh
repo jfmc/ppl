@@ -74,9 +74,7 @@ Unlimited_Sparse_Row
 ::combine_needs_second(const Unlimited_Sparse_Row& y,
                        const Func1& g, const Func2& /* h */) {
   iterator i;
-  unordered_const_iterator j = y.unordered_begin();
-  unordered_const_iterator j_end = y.unordered_end();
-  for ( ; j != j_end; ++j) {
+  for (const_iterator j = y.begin(), j_end = y.end(); j != j_end; ++j) {
     i = find_create(j->first);
     g(i->second, j->second);
   }

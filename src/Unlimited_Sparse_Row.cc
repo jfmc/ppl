@@ -73,9 +73,9 @@ PPL::Unlimited_Sparse_Row
 void
 PPL::Unlimited_Sparse_Row::normalize() {
   // Compute the GCD of all the coefficients.
-  unordered_const_iterator i = unordered_begin();
-  unordered_const_iterator i_end = unordered_end();
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  const_iterator i = begin();
+  const_iterator i_end = end();
   for ( ; i != i_end; ++i) {
     const Coefficient& x_i = i->second;
     if (const int x_i_sign = sgn(x_i)) {
@@ -112,7 +112,7 @@ PPL::Unlimited_Sparse_Row::normalize() {
     }
   }
   // Divide the coefficients by the GCD.
-  for (unordered_iterator j = unordered_begin(), j_end = unordered_end();
+  for (iterator j = begin(), j_end = end();
        j != j_end; ++j) {
     Coefficient& x_j = j->second;
     exact_div_assign(x_j, x_j, gcd);

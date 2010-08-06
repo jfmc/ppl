@@ -54,9 +54,6 @@ public:
   class iterator;
   class const_iterator;
 
-  class unordered_iterator;
-  class unordered_const_iterator;
-
   //! Swaps the i-th element with the j-th element.
   //! Iterators pointing to these elements are invalidated.
   void swap(dimension_type i, dimension_type j);
@@ -183,20 +180,6 @@ public:
   iterator end();
   const_iterator begin() const;
   const_iterator end() const;
-
-  //! Returns an unordered_iterator pointing to the first (key, value) pair,
-  //! in the internal order.
-  unordered_iterator unordered_begin();
-  //! Returns an unordered_iterator pointing after the last pair, in
-  //! the internal order.
-  unordered_iterator unordered_end();
-
-  //! Returns an unordered_const_iterator pointing to the first (key, value)
-  //! pair, in the internal order.
-  unordered_const_iterator unordered_begin() const;
-  //! Returns an unordered_const_iterator pointing after the last pair, in
-  //! the internal order.
-  unordered_const_iterator unordered_end() const;
 
   /*! \brief Executes func on each non-zero element and may execute it on some
              zeros.
@@ -344,77 +327,6 @@ private:
   CO_Tree::inorder_const_iterator itr;
 
   friend class Unlimited_Sparse_Row;
-};
-
-//! An iterator over the (key, value) pairs, that scans the pairs
-//! in the internal order (the pairs are not ordered by key).
-class Unlimited_Sparse_Row::unordered_iterator
-  : public CO_Tree::unordered_iterator {
-
-private:
-  typedef CO_Tree::unordered_iterator Base;
-
-public:
-
-  class Member_Access_Helper {
-
-  public:
-    Member_Access_Helper(dimension_type key, Coefficient& data);
-
-    std::pair<dimension_type, Coefficient&>* operator->();
-
-  private:
-    std::pair<dimension_type, Coefficient&> my_pair;
-  };
-
-  class Const_Member_Access_Helper {
-
-  public:
-    Const_Member_Access_Helper(dimension_type key, const Coefficient& data);
-
-    const std::pair<dimension_type, const Coefficient&>* operator->() const;
-
-  private:
-    std::pair<dimension_type, const Coefficient&> my_pair;
-  };
-
-  unordered_iterator(const Base& itr);
-
-  std::pair<dimension_type, Coefficient&> operator*();
-  std::pair<dimension_type, const Coefficient&> operator*() const;
-
-  Member_Access_Helper operator->();
-  Const_Member_Access_Helper operator->() const;
-
-  operator unordered_const_iterator() const;
-};
-
-//! A const iterator over the (key, value) pairs, that scans the pairs
-//! in the internal order (the pairs are not ordered by key).
-class Unlimited_Sparse_Row::unordered_const_iterator
-  : public CO_Tree::unordered_const_iterator {
-
-private:
-  typedef CO_Tree::unordered_const_iterator Base;
-
-public:
-  class Const_Member_Access_Helper {
-
-  public:
-    Const_Member_Access_Helper(dimension_type key, const Coefficient& data);
-
-    const std::pair<dimension_type, const Coefficient&>* operator->()
-      const;
-
-  private:
-    std::pair<dimension_type, const Coefficient&> my_pair;
-  };
-
-  unordered_const_iterator(const Base& itr);
-
-  std::pair<dimension_type, const Coefficient&> operator*() const;
-
-  Const_Member_Access_Helper operator->() const;
 };
 
 } // namespace Parma_Polyhedra_Library
