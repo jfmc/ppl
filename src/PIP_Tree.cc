@@ -194,8 +194,8 @@ inline void
 neg_assign_row(PIP_Tree_Node::matrix_row_reference_type x,
                PIP_Tree_Node::matrix_row_const_reference_type y) {
   x = y;
-  PIP_Tree_Node::matrix_row_unordered_iterator i = x.unordered_begin();
-  PIP_Tree_Node::matrix_row_unordered_iterator i_end = x.unordered_end();
+  PIP_Tree_Node::matrix_row_iterator i = x.begin();
+  PIP_Tree_Node::matrix_row_iterator i_end = x.end();
   for ( ; i!=i_end; ++i)
     neg_assign(i->second);
 }
@@ -520,8 +520,8 @@ row_normalize(PIP_Tree_Node::matrix_row_reference_type x, Coefficient& den) {
     return;
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd = den;
-  for (PIP_Tree_Node::matrix_row_unordered_const_iterator
-    i = x.unordered_begin(), i_end = x.unordered_end(); i != i_end; ++i) {
+  for (PIP_Tree_Node::matrix_row_const_iterator
+    i = x.begin(), i_end = x.end(); i != i_end; ++i) {
     const Coefficient& x_i = i->second;
     if (x_i != 0) {
       gcd_assign(gcd, x_i, gcd);
@@ -530,8 +530,8 @@ row_normalize(PIP_Tree_Node::matrix_row_reference_type x, Coefficient& den) {
     }
   }
   // Divide the coefficients by the GCD.
-  for (PIP_Tree_Node::matrix_row_unordered_iterator
-    i = x.unordered_begin(), i_end = x.unordered_end(); i != i_end; ++i) {
+  for (PIP_Tree_Node::matrix_row_iterator
+    i = x.begin(), i_end = x.end(); i != i_end; ++i) {
     Coefficient& x_i = i->second;
     exact_div_assign(x_i, x_i, gcd);
   }
@@ -1459,8 +1459,8 @@ PIP_Solution_Node::Tableau::normalize() {
   gcd = denom;
   for (dimension_type i = num_rows; i-- > 0; ) {
     matrix_row_const_reference_type s_i = s[i];
-    matrix_const_row_unordered_const_iterator j = s_i.unordered_begin();
-    matrix_const_row_unordered_const_iterator j_end = s_i.unordered_end();
+    matrix_const_row_const_iterator j = s_i.begin();
+    matrix_const_row_const_iterator j_end = s_i.end();
     for ( ; j != j_end; ++j) {
       const Coefficient& s_ij = j->second;
       if (s_ij != 0) {
@@ -1470,8 +1470,8 @@ PIP_Solution_Node::Tableau::normalize() {
       }
     }
     matrix_row_const_reference_type t_i = t[i];
-    j = t_i.unordered_begin();
-    j_end = t_i.unordered_end();
+    j = t_i.begin();
+    j_end = t_i.end();
     for ( ; j != j_end; ++j) {
       const Coefficient& t_ij = j->second;
       if (t_ij != 0) {
@@ -1485,15 +1485,15 @@ PIP_Solution_Node::Tableau::normalize() {
   // Normalize all coefficients.
   for (dimension_type i = num_rows; i-- > 0; ) {
     matrix_row_reference_type s_i = s[i];
-    matrix_row_unordered_iterator j = s_i.unordered_begin();
-    matrix_row_unordered_iterator j_end = s_i.unordered_end();
+    matrix_row_iterator j = s_i.begin();
+    matrix_row_iterator j_end = s_i.end();
     for ( ; j != j_end; ++j) {
       Coefficient& s_ij = j->second;
       exact_div_assign(s_ij, s_ij, gcd);
     }
     matrix_row_reference_type t_i = t[i];
-    j = t_i.unordered_begin();
-    j_end = t_i.unordered_end();
+    j = t_i.begin();
+    j_end = t_i.end();
     for ( ; j != j_end; ++j) {
       Coefficient& t_ij = j->second;
       exact_div_assign(t_ij, t_ij, gcd);
@@ -1508,11 +1508,11 @@ PIP_Solution_Node::Tableau::scale(Coefficient_traits::const_reference ratio) {
   for (dimension_type i = s.num_rows(); i-- > 0; ) {
     matrix_row_reference_type s_i = s[i];
     matrix_row_reference_type t_i = t[i];
-    matrix_row_unordered_iterator j = s_i.unordered_begin();
-    matrix_row_unordered_iterator j_end = s_i.unordered_end();
+    matrix_row_iterator j = s_i.begin();
+    matrix_row_iterator j_end = s_i.end();
     for ( ; j != j_end; ++j)
       j->second *= ratio;
-    for (j = t_i.unordered_begin(), j_end = t_i.unordered_end();
+    for (j = t_i.begin(), j_end = t_i.end();
          j != j_end; ++j)
       j->second *= ratio;
   }
@@ -1543,12 +1543,12 @@ PIP_Solution_Node::Tableau
   std::vector<Coefficient> coeff_0(num_params,0);
   std::vector<Coefficient> coeff_1(num_params,0);
   {
-    matrix_row_unordered_const_iterator j = t_0.unordered_begin();
-    matrix_row_unordered_const_iterator j_end = t_0.unordered_end();
+    matrix_row_const_iterator j = t_0.begin();
+    matrix_row_const_iterator j_end = t_0.end();
     for ( ; j != j_end; ++j)
       coeff_0[j->first] = j->second * s_1_1;
-    j = t_1.unordered_begin();
-    j_end = t_1.unordered_end();
+    j = t_1.begin();
+    j_end = t_1.end();
     for ( ; j != j_end; ++j)
       coeff_1[j->first] = j->second * s_0_0;
   }
@@ -1905,8 +1905,8 @@ PIP_Solution_Node::row_sign(matrix_row_const_reference_type x,
   }
 
   PIP_Solution_Node::Row_Sign sign = ZERO;
-  matrix_const_row_unordered_const_iterator i = x.unordered_begin();
-  matrix_const_row_unordered_const_iterator i_end = x.unordered_end();
+  matrix_const_row_const_iterator i = x.begin();
+  matrix_const_row_const_iterator i_end = x.end();
   for ( ; i != i_end; ++i) {
     const Coefficient& x_i = i->second;
     if (x_i > 0) {
@@ -2039,8 +2039,8 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
           cut[0] -= den;
 #else
         cut = s_mi;
-        matrix_row_unordered_iterator cut_i = cut.unordered_begin();
-        matrix_row_unordered_iterator cut_end = cut.unordered_end();
+        matrix_row_iterator cut_i = cut.begin();
+        matrix_row_iterator cut_end = cut.end();
         for ( ; cut_i != cut_end; ++cut_i)
           mod_assign(cut_i->second,cut_i->second,den);
         cut[0] -= den;
@@ -2087,8 +2087,8 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
     // Perform a pivot operation on the matrix.
     const Coefficient& pivot_pj = pivot.get(pj);
     {
-      matrix_const_row_unordered_const_iterator j = pivot.unordered_begin();
-      matrix_const_row_unordered_const_iterator j_end = pivot.unordered_end();
+      matrix_const_row_const_iterator j = pivot.begin();
+      matrix_const_row_const_iterator j_end = pivot.end();
       for ( ; j!=j_end; ++j ) {
         if (j->first == pj)
           continue;
@@ -2103,8 +2103,8 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
             // Must scale row s_i to stay in integer case.
             gcd_assign(gcd, product, pivot_pj);
             exact_div_assign(scale_factor, pivot_pj, gcd);
-            matrix_row_unordered_iterator k = s_i.unordered_begin();
-            matrix_row_unordered_iterator k_end = s_i.unordered_end();
+            matrix_row_iterator k = s_i.begin();
+            matrix_row_iterator k_end = s_i.end();
             for ( ; k != k_end; ++k )
               k->second *= scale_factor;
             product *= scale_factor;
@@ -2126,8 +2126,8 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
           // As above, perform row scaling.
           gcd_assign(gcd, product, pivot_pj);
           exact_div_assign(scale_factor, pivot_pj, gcd);
-          matrix_row_unordered_iterator k = s_i.unordered_begin();
-          matrix_row_unordered_iterator k_end = s_i.unordered_end();
+          matrix_row_iterator k = s_i.begin();
+          matrix_row_iterator k_end = s_i.end();
           for ( ; k != k_end; ++k )
             k->second *= scale_factor;
           product *= scale_factor;
@@ -2590,9 +2590,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         matrix_row_const_reference_type s_i = tableau.s[i];
         bool has_positive = false;
         {
-          matrix_const_row_unordered_const_iterator j = s_i.unordered_begin();
-          matrix_const_row_unordered_const_iterator j_end
-            = s_i.unordered_end();
+          matrix_const_row_const_iterator j = s_i.begin();
+          matrix_const_row_const_iterator j_end = s_i.end();
           for ( ; j != j_end; ++j)
             if (j->second > 0) {
               has_positive = true;
@@ -2775,10 +2774,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           }
         }
 #else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
-        matrix_const_row_unordered_const_iterator j
-          = s_pivot.unordered_begin();
-        matrix_const_row_unordered_const_iterator j_end
-          = s_pivot.unordered_end();
+        matrix_const_row_const_iterator j
+          = s_pivot.begin();
+        matrix_const_row_const_iterator j_end
+          = s_pivot.end();
         for ( ; j != j_end; ++j) {
           if (j->first != pj) {
             const Coefficient& s_pivot_j = j->second;
@@ -2899,10 +2898,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           }
         }
 #else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
-        matrix_const_row_unordered_const_iterator j
-          = t_pivot.unordered_begin();
-        matrix_const_row_unordered_const_iterator j_end
-          = t_pivot.unordered_end();
+        matrix_const_row_const_iterator j = t_pivot.begin();
+        matrix_const_row_const_iterator j_end = t_pivot.end();
         for ( ; j!=j_end; ++j) {
           const Coefficient& t_pivot_j = j->second;
           // Do nothing if the j-th pivot element is zero.
@@ -2991,9 +2988,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         bool has_positive = false;
         {
           matrix_row_const_reference_type s_i = tableau.s[i];
-          matrix_const_row_unordered_const_iterator j = s_i.unordered_begin();
-          matrix_const_row_unordered_const_iterator j_end
-            = s_i.unordered_end();
+          matrix_const_row_const_iterator j = s_i.begin();
+          matrix_const_row_const_iterator j_end = s_i.end();
           for ( ; j != j_end; ++j)
             if (j->second > 0) {
               has_positive = true;
@@ -3007,9 +3003,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         matrix_row_const_reference_type t_i = tableau.t[i];
         score = 0;
         {
-          matrix_const_row_unordered_const_iterator j = t_i.unordered_begin();
-          matrix_const_row_unordered_const_iterator j_end
-            = t_i.unordered_end();
+          matrix_const_row_const_iterator j = t_i.begin();
+          matrix_const_row_const_iterator j_end = t_i.end();
           for ( ; j != j_end; ++j)
             score += j->second;
         }
@@ -3043,9 +3038,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         matrix_row_const_reference_type t_i = tableau.t[i];
         score = 0;
         {
-          matrix_const_row_unordered_const_iterator j = t_i.unordered_begin();
-          matrix_const_row_unordered_const_iterator j_end
-            = t_i.unordered_end();
+          matrix_const_row_const_iterator j = t_i.begin();
+          matrix_const_row_const_iterator j_end = t_i.end();
           for ( ; j != j_end; ++j)
             score += j->second;
         }
@@ -3180,8 +3174,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         continue;
       const dimension_type i = mapping[k];
       matrix_row_const_reference_type t_i = tableau.t[i];
-      matrix_const_row_unordered_const_iterator j = t_i.unordered_begin();
-      matrix_const_row_unordered_const_iterator j_end = t_i.unordered_end();
+      matrix_const_row_const_iterator j = t_i.begin();
+      matrix_const_row_const_iterator j_end = t_i.end();
       for ( ; j != j_end; ++j) {
         if (j->second % den != 0)
           goto non_integer;
@@ -3211,8 +3205,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         matrix_row_const_reference_type t_i = tableau.t[i];
         // Count the number of non-integer parameter coefficients.
         dimension_type pcount = 0;
-        matrix_const_row_unordered_const_iterator j = t_i.unordered_begin();
-        matrix_const_row_unordered_const_iterator j_end = t_i.unordered_end();
+        matrix_const_row_const_iterator j = t_i.begin();
+        matrix_const_row_const_iterator j_end = t_i.end();
         for ( ; j != j_end; ++j) {
           mod_assign(mod, j->second, den);
           if (mod != 0)
@@ -3246,9 +3240,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         dimension_type pcount = 0;
         matrix_row_const_reference_type t_i = tableau.t[i];
         {
-          matrix_const_row_unordered_const_iterator j = t_i.unordered_begin();
-          matrix_const_row_unordered_const_iterator j_end
-            = t_i.unordered_end();
+          matrix_const_row_const_iterator j = t_i.begin();
+          matrix_const_row_const_iterator j_end = t_i.end();
           for ( ; j != j_end; ++j) {
             mod_assign(mod, j->second, den);
             if (mod != 0) {
@@ -3263,9 +3256,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         s_score = 0;
         matrix_row_const_reference_type s_i = tableau.s[i];
         {
-          matrix_const_row_unordered_const_iterator j = s_i.unordered_begin();
-          matrix_const_row_unordered_const_iterator j_end
-            = s_i.unordered_end();
+          matrix_const_row_const_iterator j = s_i.begin();
+          matrix_const_row_const_iterator j_end = s_i.end();
           for ( ; j != j_end; ++j) {
             mod_assign(mod, j->second, den);
             s_score += den;
@@ -3335,8 +3327,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   {
     // Limiting the scope of reference row_t (may be later invalidated).
     matrix_row_const_reference_type row_t = tableau.t[index];
-    matrix_const_row_unordered_const_iterator j = row_t.unordered_begin();
-    matrix_const_row_unordered_const_iterator j_end = row_t.unordered_end();
+    matrix_const_row_const_iterator j = row_t.begin();
+    matrix_const_row_const_iterator j_end = row_t.end();
     for ( ; j != j_end; ++j)
       if (j->first != 0 && j->second % den != 0) {
         generate_parametric_cut = true;
@@ -3365,9 +3357,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         // To avoid reallocations of expr.
         add_mul_assign(expr, 0, Variable(*(parameters.rbegin())));
         Variables_Set::const_iterator p_j = parameters.begin();
-        matrix_const_row_unordered_const_iterator j = row_t.unordered_begin();
-        matrix_const_row_unordered_const_iterator j_end
-          = row_t.unordered_end();
+        matrix_const_row_const_iterator j = row_t.begin();
+        matrix_const_row_const_iterator j_end = row_t.end();
         dimension_type last_index = 1;
         for ( ; j != j_end; ++j)
           if (j->first != 0) {
@@ -3497,9 +3488,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         }
       }
 #else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
-        matrix_const_row_unordered_const_iterator j = row_t.unordered_begin();
-        matrix_const_row_unordered_const_iterator
-          j_end = row_t.unordered_end();
+        matrix_const_row_const_iterator j = row_t.begin();
+        matrix_const_row_const_iterator j_end = row_t.end();
         for ( ; j != j_end; ++j) {
           mod_assign(mod, j->second, den);
           if (mod != 0) {
@@ -3560,8 +3550,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       }
     }
 #else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
-    matrix_row_unordered_const_iterator j = row_s.unordered_begin();
-    matrix_row_unordered_const_iterator j_end = row_s.unordered_end();
+    matrix_row_const_iterator j = row_s.begin();
+    matrix_row_const_iterator j_end = row_s.end();
     for ( ; j != j_end; ++j)
       mod_assign(cut_s[j->first], j->second, den);
 #endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
@@ -3590,8 +3580,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       }
     }
 #else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
-    matrix_const_row_unordered_const_iterator j = row_t.unordered_begin();
-    matrix_const_row_unordered_const_iterator j_end = row_t.unordered_end();
+    matrix_const_row_const_iterator j = row_t.begin();
+    matrix_const_row_const_iterator j_end = row_t.end();
     for ( ; j!=j_end; ++j) {
       mod_assign(mod, j->second, den);
       if (mod != 0) {
@@ -3902,8 +3892,8 @@ PIP_Solution_Node
     matrix_row_const_reference_type row = tableau.t[mapping[i]];
 
     // Start from index 1 to skip the inhomogenous term.
-    matrix_const_row_unordered_const_iterator j = row.unordered_begin();
-    matrix_const_row_unordered_const_iterator j_end = row.unordered_end();
+    matrix_const_row_const_iterator j = row.begin();
+    matrix_const_row_const_iterator j_end = row.end();
     for ( ; j != j_end; ++j)
       if (j->first != 0) {
         const Coefficient& coeff = j->second;
