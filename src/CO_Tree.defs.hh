@@ -41,8 +41,6 @@ public:
 
   class inorder_iterator;
   class inorder_const_iterator;
-  class unordered_iterator;
-  class unordered_const_iterator;
 
   CO_Tree();
   CO_Tree(const std::vector<data_type>& v);
@@ -115,20 +113,6 @@ public:
   //! Returns an iterator that points after the last element.
   inorder_const_iterator end() const;
 
-  //! Returns an unordered_iterator pointing to the first (used) element in
-  //! the tree.
-  unordered_iterator unordered_begin();
-  //! Returns an unordered_iterator pointing after the last element in
-  //! the tree.
-  unordered_iterator unordered_end();
-
-  //! Returns an unordered_const_iterator pointing to the first (used) element
-  //! in the tree.
-  unordered_const_iterator unordered_begin() const;
-  //! Returns an unordered_const_iterator pointing after the last element
-  //! in the tree.
-  unordered_const_iterator unordered_end() const;
-
   //! Searches for an element with key \p key in the subtree rooted at \p itr.
   //! \p itr is modified to point to the found node (if it exists) or to the
   //! node that would be his parent (otherwise).
@@ -155,101 +139,6 @@ public:
 
   class inorder_iterator;
   class inorder_const_iterator;
-
-  class unordered_const_iterator;
-
-  class unordered_iterator {
-
-  public:
-
-    typedef std::forward_iterator_tag iterator_category;
-    typedef CO_Tree::value_type value_type;
-    typedef ptrdiff_t difference_type;
-    typedef value_type* pointer;
-    typedef value_type& reference;
-
-    class Member_Access_Helper {
-
-    public:
-      Member_Access_Helper(dimension_type& key, data_type& data);
-
-      std::pair<dimension_type&, data_type&>* operator->();
-
-    private:
-      std::pair<dimension_type&, data_type&> my_pair;
-    };
-
-    class Const_Member_Access_Helper {
-
-    public:
-      Const_Member_Access_Helper(dimension_type key, const data_type& data);
-
-      const std::pair<const dimension_type, const data_type&>* operator->() const;
-
-    private:
-      std::pair<const dimension_type, const data_type&> my_pair;
-    };
-
-    unordered_iterator(CO_Tree* p1 = 0, dimension_type i = 0);
-
-    std::pair<dimension_type&, data_type&> operator*();
-    std::pair<const dimension_type, const data_type&> operator*() const;
-
-    Member_Access_Helper operator->();
-    Const_Member_Access_Helper operator->() const;
-
-    unordered_iterator& operator++();
-
-    bool operator==(const unordered_iterator&) const;
-    bool operator!=(const unordered_iterator&) const;
-
-  private:
-
-    CO_Tree* p;
-    dimension_type i;
-
-    friend class unordered_const_iterator;
-  };
-
-  class unordered_const_iterator {
-
-  public:
-
-    typedef std::forward_iterator_tag iterator_category;
-    typedef const CO_Tree::value_type value_type;
-    typedef ptrdiff_t difference_type;
-    typedef value_type* pointer;
-    typedef value_type& reference;
-
-    class Const_Member_Access_Helper {
-
-    public:
-      Const_Member_Access_Helper(dimension_type key, const data_type& data);
-
-      const std::pair<const dimension_type, const data_type&>* operator->()
-        const;
-
-    private:
-      std::pair<const dimension_type, const data_type&> my_pair;
-    };
-
-    unordered_const_iterator(const CO_Tree* p1 = 0, dimension_type i = 0);
-    unordered_const_iterator(const unordered_iterator& itr);
-
-    std::pair<const dimension_type, const data_type&> operator*() const;
-
-    Const_Member_Access_Helper operator->() const;
-
-    unordered_const_iterator& operator++();
-
-    bool operator==(const unordered_const_iterator&) const;
-    bool operator!=(const unordered_const_iterator&) const;
-
-  private:
-
-    const CO_Tree* p;
-    dimension_type i;
-  };
 
 private:
 
