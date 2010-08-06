@@ -122,26 +122,6 @@ Dense_Row::end() const {
   return const_iterator(*this, size());
 }
 
-inline Dense_Row::iterator
-Dense_Row::unordered_begin() {
-  return iterator(*this, 0);
-}
-
-inline Dense_Row::const_iterator
-Dense_Row::unordered_begin() const {
-  return const_iterator(*this, 0);
-}
-
-inline Dense_Row::iterator
-Dense_Row::unordered_end() {
-  return iterator(*this, size());
-}
-
-inline Dense_Row::const_iterator
-Dense_Row::unordered_end() const {
-  return const_iterator(*this, size());
-}
-
 inline void
 Dense_Row::expand_within_capacity(dimension_type new_size) {
   row.expand_within_capacity(new_size);
