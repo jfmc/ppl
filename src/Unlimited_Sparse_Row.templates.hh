@@ -57,7 +57,7 @@ Unlimited_Sparse_Row
           else
             ++i;
         } else
-          j = y.lower_bound(i->first, j);
+          j = y.lower_bound(j, i->first);
     while (!i.itr.is_at_end()) {
       f(i->second);
       if (i->second == 0)
@@ -108,7 +108,7 @@ Unlimited_Sparse_Row
             ++i;
         } else {
           PPL_ASSERT(i->first > j->first);
-          i = find_create(j->first, i);
+          i = find_create(i, j->first);
           h(i->second, j->second);
           if (i->second == 0)
             i = reset(i);
@@ -130,7 +130,7 @@ Unlimited_Sparse_Row
         i = find_create(j->first);
       } else {
         --i;
-        i = find_create(j->first, i);
+        i = find_create(i, j->first);
       }
       h(i->second, j->second);
       ++j;
@@ -140,7 +140,7 @@ Unlimited_Sparse_Row
         break;
     }
     while (!j.itr.is_at_end()) {
-      i = find_create(j->first, i);
+      i = find_create(i, j->first);
       h(i->second, j->second);
       if (i->second == 0)
         i = reset(i);

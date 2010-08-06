@@ -150,15 +150,15 @@ Unlimited_Sparse_Row::find_create(const dimension_type i) {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i,
-                                  const Coefficient& x, iterator itr) {
+Unlimited_Sparse_Row::find_create(iterator itr, const dimension_type i,
+                                  const Coefficient& x) {
   PPL_ASSERT(!itr.itr.is_at_end());
   itr.itr = tree.insert(itr.itr, i, x);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find_create(const dimension_type i, iterator itr) {
+Unlimited_Sparse_Row::find_create(iterator itr, const dimension_type i) {
   itr.itr = tree.insert(itr.itr, i);
   return itr;
 }
@@ -211,7 +211,7 @@ Unlimited_Sparse_Row::lower_bound(const dimension_type c) const {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find(const dimension_type i, iterator itr) {
+Unlimited_Sparse_Row::find(iterator itr, const dimension_type i) {
   PPL_ASSERT(!itr.itr.is_at_end());
   PPL_ASSERT(!tree.empty());
   if (itr.itr->first <= i)
@@ -236,7 +236,7 @@ Unlimited_Sparse_Row::find(const dimension_type i, iterator itr) {
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::find(const dimension_type i, const_iterator itr) const {
+Unlimited_Sparse_Row::find(const_iterator itr, const dimension_type i) const {
   PPL_ASSERT(!itr.itr.is_at_end());
   PPL_ASSERT(!tree.empty());
   if (itr.itr->first <= i)
@@ -261,15 +261,14 @@ Unlimited_Sparse_Row::find(const dimension_type i, const_iterator itr) const {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::lower_bound(const dimension_type i, iterator itr) {
+Unlimited_Sparse_Row::lower_bound(iterator itr, const dimension_type i) {
   PPL_ASSERT(!itr.itr.is_at_end());
   itr.itr = tree.lower_bound(itr.itr, i);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::lower_bound(const dimension_type i,
-                                  const_iterator itr) const {
+Unlimited_Sparse_Row::lower_bound(const_iterator itr, const dimension_type i) const {
   PPL_ASSERT(!itr.itr.is_at_end());
   itr.itr = tree.lower_bound(itr.itr, i);
   return itr;

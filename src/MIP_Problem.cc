@@ -995,7 +995,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
         break;
       PPL_ASSERT(j->first <= k->first);
       if (j->first < k->first)
-        j = tableau_i.lower_bound(k->first, j);
+        j = tableau_i.lower_bound(j, k->first);
       else {
         const Coefficient& tableau_ij = j->second;
         WEIGHT_BEGIN();
@@ -1096,7 +1096,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
         break;
       PPL_ASSERT(j->first <= k->first);
       if (j->first < k->first)
-        j = tableau_i.lower_bound(k->first, j);
+        j = tableau_i.lower_bound(j, k->first);
       else {
         const Coefficient& tableau_ij = j->second;
         WEIGHT_BEGIN();
@@ -2243,7 +2243,7 @@ PPL::MIP_Problem::OK() const {
           // tableau[i][base[i] must be different from zero.
           // tableau[i][base[j], with i different from j, must not be a zero.
           if (itr->first < i->first)
-            itr = tableau_j.lower_bound(itr->first, itr);
+            itr = tableau_j.lower_bound(itr, itr->first);
           if (i->second != j && itr->first == i->first
               && itr->second != 0) {
 #ifndef NDEBUG

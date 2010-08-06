@@ -175,11 +175,11 @@ public:
 
   //! Provided for compatibility with Sparse_Row.
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  iterator find(dimension_type i, iterator itr);
+  iterator find(iterator itr, dimension_type i);
 
   //! Provided for compatibility with Sparse_Row.
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  const_iterator find(dimension_type i, const_iterator itr) const;
+  const_iterator find(const_iterator itr, dimension_type i) const;
 
   //! Provided for compatibility with Sparse_Row.
   iterator lower_bound(dimension_type i);
@@ -189,11 +189,11 @@ public:
 
   //! Provided for compatibility with Sparse_Row.
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  iterator lower_bound(dimension_type i, iterator itr);
+  iterator lower_bound(iterator itr, dimension_type i);
 
   //! Provided for compatibility with Sparse_Row.
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  const_iterator lower_bound(dimension_type i, const_iterator itr) const;
+  const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
   //! Provided for compatibility with Sparse_Row.
   iterator find_create(dimension_type i, const Coefficient& x);
@@ -203,11 +203,11 @@ public:
 
   //! Provided for compatibility with Sparse_Row.
   //! itr must point to an element before the modified one.
-  iterator find_create(dimension_type i, const Coefficient& x, iterator itr);
+  iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
 
   //! Provided for compatibility with Sparse_Row.
   //! itr must point to an element before the modified one.
-  iterator find_create(dimension_type i, iterator itr);
+  iterator find_create(iterator itr, dimension_type i);
 
   //! \name Subscript operators
   //@{

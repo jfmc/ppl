@@ -161,7 +161,7 @@ merge_assign(PIP_Tree_Node::matrix_type& x,
         break;
       const Coefficient& c = y_i->coefficient(vj);
       if (c != 0)
-        itr = x_i.find_create(j, c, itr);
+        itr = x_i.find_create(itr, j, c);
     }
 #else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
     if (inhomogeneous_term != 0)
@@ -393,7 +393,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
     const bool in_base = basis[var_index];
     if (in_base) {
       for ( ; i != i_end; ++i) {
-        pivot_itr = pivot_row.find(*i, pivot_itr);
+        pivot_itr = pivot_row.find(pivot_itr, *i);
         PPL_ASSERT(pivot_itr != pivot_end);
         const Coefficient& sij_a = pivot_itr->second;
         ++pivot_itr;
@@ -428,7 +428,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
         ++row_itr;
       }
       for ( ; i != i_end; ++i) {
-        pivot_itr = pivot_row.find(*i, pivot_itr);
+        pivot_itr = pivot_row.find(pivot_itr, *i);
         PPL_ASSERT(pivot_itr != pivot_end);
         const Coefficient& sij_a = pivot_itr->second;
         PPL_ASSERT(sij_a > 0);
@@ -437,7 +437,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
         PPL_DIRTY_TEMP_COEFFICIENT(lhs);
         PPL_DIRTY_TEMP_COEFFICIENT(rhs);
         if (row_itr != row_end && row_itr->first < *i)
-          row_itr = row.lower_bound(*i, row_itr);
+          row_itr = row.lower_bound(row_itr, *i);
         const Coefficient* row_ja;
         if (row_itr == row_end || row_itr->first > *i)
           row_ja = &(Coefficient_zero());
@@ -650,7 +650,7 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
         // row_challenger_value = &(row.get(challenger_j));
         if (row_itr != row_end) {
           if (row_itr->first < challenger_j) {
-            row_itr = row.lower_bound(challenger_j, row_itr);
+            row_itr = row.lower_bound(row_itr, challenger_j);
             if (row_itr != row_end && row_itr->first == challenger_j) {
               row_challenger_value = &(row_itr->second);
               ++row_itr;
@@ -2022,17 +2022,17 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
         matrix_const_row_const_iterator row_end = s_mi.end();
         if (row_i != row_end) {
           if (row_i->first == 0) {
-            cut_i = cut.find_create(*row_i);
+            cut_i = cut.find_create(row_i->first, row_i->second);
             mod_assign(cut_i->second,cut_i->second,den);
             cut_i->second -= den;
           } else {
             cut_i = cut.find_create(0, den);
             neg_assign(cut_i->second);
-            cut.find_create_hint_assign(*row_i, cut_i);
+            cut_i = cut.find_create(cut_i, row_i->first, row_i->second);
             mod_assign(cut_i->second,cut_i->second,den);
           }
           for (++row_i; row_i != row_end; ++row_i) {
-            cut_i = cut.find_create(*row_i, cut_i);
+            cut_i = cut.find_create(cut_i, row_i->first, row_i->second);
             mod_assign(cut_i->second,cut_i->second,den);
           }
         } else
@@ -2295,7 +2295,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
                 std::swap(itr->second, j->second);
                 ++j;
                 for ( ; j != j_end; ++j) {
-                  itr = v_row.find_create(j->first, itr);
+                  itr = v_row.find_create(itr, j->first);
                   // We need to do itr->second = j->second, this is faster.
                   std::swap(itr->second, j->second);
                 }
@@ -2323,7 +2323,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
         }
 
         if (is_parameter) {
-          p_row_itr = p_row.find_create(p_index, coeff_i * denom, p_row_itr);
+          p_row_itr = p_row.find_create(p_row_itr, p_index, coeff_i * denom);
           ++p_index;
         }
         else {
@@ -2348,7 +2348,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
                 std::swap(itr->second, j->second);
                 ++j;
                 for ( ; j != j_end; ++j) {
-                  itr = v_row.find_create(j->first, itr);
+                  itr = v_row.find_create(itr, j->first);
                   // We need to do itr->second = j->second, this is faster.
                   std::swap(itr->second, j->second);
                 }
@@ -2376,7 +2376,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
           std::swap(itr->second, j->second);
           ++j;
           for ( ; j != j_end; ++j) {
-            itr = v_row.find_create(j->first, itr);
+            itr = v_row.find_create(itr, j->first);
             // We need to do itr->second = j->second, this is faster.
             std::swap(itr->second, j->second);
           }
@@ -2767,7 +2767,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
               PPL_ASSERT(product % s_pivot_pj == 0);
               exact_div_assign(product, product, s_pivot_pj);
               if (product != 0) {
-                itr = s_i.find_create(j->first, itr);
+                itr = s_i.find_create(itr, j->first);
                 itr->second -= product;
               }
             }
@@ -2871,7 +2871,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             PPL_ASSERT(product % s_pivot_pj == 0);
             exact_div_assign(product, product, s_pivot_pj);
             if (product != 0) {
-              k = t_i.find_create(j->first, k);
+              k = t_i.find_create(k, j->first);
               k->second -= product;
             }
 
@@ -3471,16 +3471,16 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
           mod_assign(mod, j->second, den);
           if (mod != 0) {
             const dimension_type j_index = j->first;
-            itr1 = ctx1.find_create(j_index, den, itr1);
+            itr1 = ctx1.find_create(itr1, j_index, den);
             itr1->second -= mod;
-            itr2 = ctx2.find_create(j_index, itr1->second, itr2);
+            itr2 = ctx2.find_create(itr2, j_index, itr1->second);
             neg_assign(itr2->second);
           }
         }
         if (itr1 != ctx1.end()) {
-          itr1 = ctx1.find_create(num_params, den, itr1);
+          itr1 = ctx1.find_create(itr1, num_params, den);
           neg_assign(itr1->second);
-          itr2 = ctx2.find_create(num_params, den, itr2);
+          itr2 = ctx2.find_create(itr2, num_params, den);
         } else {
           itr1 = ctx1.find_create(num_params, den);
           neg_assign(itr1->second);
@@ -3545,7 +3545,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       itr = cut_s.find_create(j->first);
       mod_assign(itr->second, j->second, den);
       for (++j; j != j_end; ++j) {
-        itr = cut_s.find_create(j->first, itr);
+        itr = cut_s.find_create(itr, j->first);
         mod_assign(itr->second, j->second, den);
       }
     }
@@ -3575,7 +3575,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     for ( ; j!=j_end; ++j) {
       mod_assign(mod, j->second, den);
       if (mod != 0) {
-        cut_t_itr = cut_t.find_create(j->first, mod, cut_t_itr);
+        cut_t_itr = cut_t.find_create(cut_t_itr, j->first, mod);
         cut_t_itr->second -= den;
       }
     }

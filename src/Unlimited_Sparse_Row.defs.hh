@@ -160,12 +160,11 @@ public:
 
   //! Equivalent to (*this)[i]=x , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(const dimension_type i, const Coefficient& x,
-                       iterator itr);
+  iterator find_create(iterator itr, const dimension_type i, const Coefficient& x);
 
   //! Equivalent to (*this)[i] , needs itr to point before the added
   //! element. If itr points near the added element, this is faster.
-  iterator find_create(const dimension_type i, iterator itr);
+  iterator find_create(iterator itr, const dimension_type i);
 
   //! Equivalent to get(), provided for convenience.
   const Coefficient& operator[](const dimension_type i) const;
@@ -209,14 +208,14 @@ public:
   const_iterator lower_bound(const dimension_type c) const;
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  iterator find(const dimension_type c, iterator itr);
+  iterator find(iterator itr, const dimension_type c);
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  iterator lower_bound(const dimension_type c, iterator itr);
+  iterator lower_bound(iterator itr, const dimension_type c);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  const_iterator find(const dimension_type c, const_iterator itr) const;
+  const_iterator find(const_iterator itr, const dimension_type c) const;
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  const_iterator lower_bound(const dimension_type c, const_iterator itr) const;
+  const_iterator lower_bound(const_iterator itr, const dimension_type c) const;
 
   //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
   void find2(const dimension_type c1, const dimension_type c2,
