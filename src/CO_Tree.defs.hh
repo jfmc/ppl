@@ -43,7 +43,7 @@ public:
   class inorder_const_iterator;
 
   CO_Tree();
-  CO_Tree(const std::vector<data_type>& v);
+  explicit CO_Tree(const std::vector<data_type>& v);
   CO_Tree(const CO_Tree& v);
 
   CO_Tree& operator=(const CO_Tree& x);

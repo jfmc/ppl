@@ -55,10 +55,10 @@ public:
   typedef Unlimited_Sparse_Row::iterator iterator;
 
   //! Constructs a row from a std::vector.
-  Sparse_Row(const std::vector<Coefficient>& v);
+  explicit Sparse_Row(const std::vector<Coefficient>& v);
 
   //! Constructs a row of the specified size.
-  Sparse_Row(const dimension_type n = 0);
+  explicit Sparse_Row(const dimension_type n = 0);
 
   //! Constructs a row of the specified size from an Unlimited_Sparse_Row.
   Sparse_Row(const Unlimited_Sparse_Row &x, const dimension_type n);

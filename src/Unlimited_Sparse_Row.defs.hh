@@ -45,7 +45,7 @@ public:
   Unlimited_Sparse_Row(const This& x);
 
   //! Constructs an unlimited row from an std::vector.
-  Unlimited_Sparse_Row(const std::vector<Coefficient> &v);
+  explicit Unlimited_Sparse_Row(const std::vector<Coefficient> &v);
 
   This& operator=(const This& x);
 
