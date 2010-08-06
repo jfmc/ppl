@@ -136,9 +136,6 @@ public:
   const_iterator lower_bound(const_iterator itr,
                                      dimension_type key) const;
 
-  class iterator;
-  class const_iterator;
-
 private:
 
   //! Initializes a tree with reserved size at least \p n .
