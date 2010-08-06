@@ -260,8 +260,8 @@ public:
   */
   const Coefficient& get(dimension_type i) const;
 
-  //! A faster equivalent of p1 = &(get(c1)); p1 = &(get(c2));
-  void get2(dimension_type c1, dimension_type c2,
+  //! A faster equivalent of p1 = &(get(i)); p1 = &(get(j));
+  void get2(dimension_type i, dimension_type j,
             const Coefficient*& p1, const Coefficient*& p2) const;
 
   iterator begin();
@@ -269,20 +269,20 @@ public:
   const_iterator begin() const;
   const_iterator end() const;
 
-  iterator find(const dimension_type c);
-  iterator lower_bound(dimension_type c);
-  const_iterator find(dimension_type c) const;
-  const_iterator lower_bound(dimension_type c) const;
+  iterator find(dimension_type i);
+  iterator lower_bound(dimension_type i);
+  const_iterator find(dimension_type i) const;
+  const_iterator lower_bound(dimension_type i) const;
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  iterator find(iterator itr, dimension_type c);
+  iterator find(iterator itr, dimension_type i);
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  iterator lower_bound(iterator itr, dimension_type c);
+  iterator lower_bound(iterator itr, dimension_type i);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  const_iterator find(const_iterator itr, dimension_type c) const;
+  const_iterator find(const_iterator itr, dimension_type i) const;
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  const_iterator lower_bound(const_iterator itr, dimension_type c) const;
+  const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
   //! Equivalent to find_create(i, x, begin()) .
   iterator find_create(dimension_type i, const Coefficient& x);
@@ -507,8 +507,8 @@ public:
   */
   const Coefficient& get(dimension_type i) const;
 
-  //! A faster equivalent of p1 = &(get(c1)); p1 = &(get(c2));
-  void get2(dimension_type c1, dimension_type c2,
+  //! A faster equivalent of p1 = &(get(i)); p1 = &(get(j));
+  void get2(dimension_type i, dimension_type j,
             const Coefficient*& p1, const Coefficient*& p2) const;
 
   iterator begin();
@@ -538,20 +538,20 @@ public:
   template <typename Func>
   void for_each_nonzero(const Func& func,const dimension_type n) const;
 
-  iterator find(dimension_type c);
-  iterator lower_bound(dimension_type c);
-  const_iterator find(dimension_type c) const;
-  const_iterator lower_bound(dimension_type c) const;
+  iterator find(dimension_type i);
+  iterator lower_bound(dimension_type i);
+  const_iterator find(dimension_type i) const;
+  const_iterator lower_bound(dimension_type i) const;
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  iterator find(iterator itr, dimension_type c);
+  iterator find(iterator itr, dimension_type i);
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  iterator lower_bound(iterator itr, dimension_type c);
+  iterator lower_bound(iterator itr, dimension_type i);
 
   //! Looks for an element with key c, assuming it is in [itr,end()) .
-  const_iterator find(const_iterator itr, dimension_type c) const;
+  const_iterator find(const_iterator itr, dimension_type i) const;
   //! Lower bound of key c, assuming it is in [itr,end()) .
-  const_iterator lower_bound(const_iterator itr, dimension_type c) const;
+  const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
   //! Equivalent to find_create(i, x, begin()) .
   iterator find_create(dimension_type i, const Coefficient& x);

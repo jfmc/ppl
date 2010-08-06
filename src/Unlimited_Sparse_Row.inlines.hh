@@ -164,49 +164,49 @@ Unlimited_Sparse_Row::find_create(iterator itr, dimension_type i) {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find(dimension_type c) {
+Unlimited_Sparse_Row::find(dimension_type i) {
   if (tree.empty())
     return end();
   iterator itr(&tree);
-  tree.go_down_searching_key(itr.itr, c);
-  if ((itr.itr)->first != c)
+  tree.go_down_searching_key(itr.itr, i);
+  if ((itr.itr)->first != i)
     itr = end();
 
   return itr;
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::find(dimension_type c) const {
+Unlimited_Sparse_Row::find(dimension_type i) const {
   if (tree.empty())
     return end();
   const_iterator itr(&tree);
-  tree.go_down_searching_key(itr.itr, c);
-  if ((itr.itr)->first != c)
+  tree.go_down_searching_key(itr.itr, i);
+  if ((itr.itr)->first != i)
     itr = end();
   return itr;
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::lower_bound(dimension_type c) {
+Unlimited_Sparse_Row::lower_bound(dimension_type i) {
   if (tree.empty())
     return end();
   iterator itr(&tree);
-  tree.go_down_searching_key(itr.itr, c);
-  if ((itr.itr)->first < c)
+  tree.go_down_searching_key(itr.itr, i);
+  if ((itr.itr)->first < i)
     ++itr;
-  PPL_ASSERT(itr.itr.is_at_end() || itr->first >= c);
+  PPL_ASSERT(itr.itr.is_at_end() || itr->first >= i);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::lower_bound(dimension_type c) const {
+Unlimited_Sparse_Row::lower_bound(dimension_type i) const {
   if (tree.empty())
     return end();
   const_iterator itr(&tree);
-  tree.go_down_searching_key(itr.itr, c);
-  if ((itr.itr)->first < c)
+  tree.go_down_searching_key(itr.itr, i);
+  if ((itr.itr)->first < i)
     ++itr;
-  PPL_ASSERT(itr.itr.is_at_end() || itr->first >= c);
+  PPL_ASSERT(itr.itr.is_at_end() || itr->first >= i);
   return itr;
 }
 
@@ -275,9 +275,8 @@ Unlimited_Sparse_Row::lower_bound(const_iterator itr, dimension_type i) const {
 }
 
 inline void
-Unlimited_Sparse_Row::find2(dimension_type c1,
-                                            dimension_type c2,
-                                            iterator& itr1, iterator& itr2) {
+Unlimited_Sparse_Row::find2(dimension_type i, dimension_type j,
+                            iterator& itr1, iterator& itr2) {
   if (tree.empty()) {
     itr1 = end();
     itr2 = itr1;
@@ -286,8 +285,8 @@ Unlimited_Sparse_Row::find2(dimension_type c1,
 
   itr1.itr = CO_Tree::iterator(&tree);
   while (1) {
-    if (itr1.itr->first < c1) {
-      if (itr1.itr->first < c2) {
+    if (itr1.itr->first < i) {
+      if (itr1.itr->first < j) {
         if (!itr1.itr.get_right_child_value()) {
           ++(itr1.itr);
           itr2.itr = itr1.itr;
@@ -295,15 +294,15 @@ Unlimited_Sparse_Row::find2(dimension_type c1,
         }
       } else {
         itr2.itr = itr1.itr;
-        tree.go_down_searching_key(itr1.itr, c1);
-        tree.go_down_searching_key(itr2.itr, c2);
+        tree.go_down_searching_key(itr1.itr, i);
+        tree.go_down_searching_key(itr2.itr, j);
         break;
       }
     } else {
-      if (itr1.itr->first == c1 || itr1.itr->first <= c2) {
+      if (itr1.itr->first == i || itr1.itr->first <= j) {
         itr2.itr = itr1.itr;
-        tree.go_down_searching_key(itr1.itr, c1);
-        tree.go_down_searching_key(itr2.itr, c2);
+        tree.go_down_searching_key(itr1.itr, i);
+        tree.go_down_searching_key(itr2.itr, j);
         break;
       } else {
         if (!itr1.itr.get_left_child_value()) {
@@ -313,17 +312,15 @@ Unlimited_Sparse_Row::find2(dimension_type c1,
       }
     }
   }
-  if (itr1.itr->first != c1)
+  if (itr1.itr->first != i)
     itr1 = end();
-  if (itr2.itr->first != c2)
+  if (itr2.itr->first != j)
     itr2 = end();
 }
 
 inline void
-Unlimited_Sparse_Row::find2(dimension_type c1,
-                                         dimension_type c2,
-                                         const_iterator& itr1,
-                                         const_iterator& itr2) const {
+Unlimited_Sparse_Row::find2(dimension_type i, dimension_type j,
+                            const_iterator& itr1, const_iterator& itr2) const {
   if (tree.empty()) {
     itr1 = end();
     itr2 = itr1;
@@ -332,8 +329,8 @@ Unlimited_Sparse_Row::find2(dimension_type c1,
 
   itr1.itr = CO_Tree::const_iterator(&tree);
   while (1) {
-    if (itr1.itr->first < c1) {
-      if (itr1.itr->first < c2) {
+    if (itr1.itr->first < i) {
+      if (itr1.itr->first < j) {
         if (!itr1.itr.get_right_child_value()) {
           ++(itr1.itr);
           itr2.itr = itr1.itr;
@@ -341,15 +338,15 @@ Unlimited_Sparse_Row::find2(dimension_type c1,
         }
       } else {
         itr2.itr = itr1.itr;
-        tree.go_down_searching_key(itr1.itr, c1);
-        tree.go_down_searching_key(itr2.itr, c2);
+        tree.go_down_searching_key(itr1.itr, i);
+        tree.go_down_searching_key(itr2.itr, j);
         break;
       }
     } else {
-      if (itr1.itr->first == c1 || itr1.itr->first <= c2) {
+      if (itr1.itr->first == i || itr1.itr->first <= j) {
         itr2.itr = itr1.itr;
-        tree.go_down_searching_key(itr1.itr, c1);
-        tree.go_down_searching_key(itr2.itr, c2);
+        tree.go_down_searching_key(itr1.itr, i);
+        tree.go_down_searching_key(itr2.itr, j);
         break;
       } else {
         if (!itr1.itr.get_left_child_value()) {
@@ -359,9 +356,9 @@ Unlimited_Sparse_Row::find2(dimension_type c1,
       }
     }
   }
-  if (itr1.itr->first != c1)
+  if (itr1.itr->first != i)
     itr1 = end();
-  if (itr2.itr->first != c2)
+  if (itr2.itr->first != j)
     itr2 = end();
 }
 
@@ -479,14 +476,13 @@ Unlimited_Sparse_Row::get(dimension_type i) const {
 }
 
 inline void
-Unlimited_Sparse_Row::get2(dimension_type c1,
-                                        dimension_type c2,
-                                        const Coefficient*& p1,
-                                        const Coefficient*& p2) const {
+Unlimited_Sparse_Row::get2(dimension_type i, dimension_type j,
+                           const Coefficient*& p1,
+                           const Coefficient*& p2) const {
   const_iterator itr1 = begin();
   const_iterator itr2 = begin();
 
-  find2(c1, c2, itr1, itr2);
+  find2(i, j, itr1, itr2);
 
   if (itr1.itr.is_at_end())
     p1 = &Coefficient_zero();

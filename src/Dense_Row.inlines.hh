@@ -151,10 +151,10 @@ Dense_Row::get(dimension_type i) const {
 }
 
 inline void
-Dense_Row::get2(dimension_type c1, dimension_type c2,
+Dense_Row::get2(dimension_type i, dimension_type j,
                 const Coefficient*& p1, const Coefficient*& p2) const {
-  p1 = &(get(c1));
-  p2 = &(get(c2));
+  p1 = &(get(i));
+  p2 = &(get(j));
 }
 
 inline Dense_Row::iterator

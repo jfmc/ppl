@@ -202,31 +202,31 @@ public:
   template <typename Func>
   void for_each_nonzero(const Func& func, dimension_type n) const;
 
-  iterator find(dimension_type c);
-  iterator lower_bound(dimension_type c);
-  const_iterator find(dimension_type c) const;
-  const_iterator lower_bound(dimension_type c) const;
+  iterator find(dimension_type i);
+  iterator lower_bound(dimension_type );
+  const_iterator find(dimension_type i) const;
+  const_iterator lower_bound(dimension_type i) const;
 
-  //! Looks for an element with key c, assuming it is in [itr,end()) .
-  iterator find(iterator itr, dimension_type c);
-  //! Lower bound of key c, assuming it is in [itr,end()) .
-  iterator lower_bound(iterator itr, dimension_type c);
+  //! Looks for an element with key i, assuming it is in [itr,end()) .
+  iterator find(iterator itr, dimension_type i);
+  //! Lower bound of key i, assuming it is in [itr,end()) .
+  iterator lower_bound(iterator itr, dimension_type i);
 
-  //! Looks for an element with key c, assuming it is in [itr,end()) .
-  const_iterator find(const_iterator itr, dimension_type c) const;
-  //! Lower bound of key c, assuming it is in [itr,end()) .
-  const_iterator lower_bound(const_iterator itr, dimension_type c) const;
+  //! Looks for an element with key i, assuming it is in [itr,end()) .
+  const_iterator find(const_iterator itr, dimension_type i) const;
+  //! Lower bound of key i, assuming it is in [itr,end()) .
+  const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
-  //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
-  void find2(dimension_type c1, dimension_type c2,
+  //! A faster equivalent of itr1=find(i); itr2=find(j); .
+  void find2(dimension_type i, dimension_type j,
              iterator& itr1, iterator& itr2);
 
-  //! A faster equivalent of itr1=find(c1); itr2=find(c2); .
-  void find2(dimension_type c1, dimension_type c2,
+  //! A faster equivalent of itr1=find(i); itr2=find(j); .
+  void find2(dimension_type i, dimension_type j,
              const_iterator& itr1, const_iterator& itr2) const;
 
-  //! A faster equivalent of p1 = &(get(c1)); p1 = &(get(c2));
-  void get2(dimension_type c1, dimension_type c2,
+  //! A faster equivalent of p1 = &(get(i)); p1 = &(get(j));
+  void get2(dimension_type i, dimension_type j,
             const Coefficient*& p1, const Coefficient*& p2) const;
 
   bool operator==(const This &x) const;
