@@ -41,7 +41,7 @@ PPL::CO_Tree::CO_Tree(const std::vector<data_type>& v) {
     return;
   }
 
-  inorder_iterator root(&*this);
+  iterator root(&*this);
   dimension_type index = 0;
 
   while (v[index] == 0) {
@@ -222,8 +222,8 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
   if (tree.size == 0)
     return;
 
-  inorder_iterator root(&*this);
-  inorder_iterator itr = tree.before_begin();
+  iterator root(&*this);
+  iterator itr = tree.before_begin();
   itr.get_next_value();
 
   PPL_ASSERT(itr->first != unused_index);
@@ -362,8 +362,8 @@ PPL::CO_Tree::structure_OK() const {
     return false;
 
   {
-    inorder_const_iterator itr = before_begin();
-    inorder_const_iterator itr_end = end();
+    const_iterator itr = before_begin();
+    const_iterator itr_end = end();
     dimension_type real_size = 0;
 
     itr.get_next_value();
@@ -379,12 +379,12 @@ PPL::CO_Tree::structure_OK() const {
 
   if (size == 0) {
 
-    inorder_const_iterator itr(&*this);
+    const_iterator itr(&*this);
     if (itr->first != unused_index)
       return false;
 
   } else {
-    inorder_const_iterator itr(&*this);
+    const_iterator itr(&*this);
     dimension_type real_size = count_used_in_subtree(itr);
     if (real_size != size)
       // There are \p real_size elements in the tree that are reachable by the
@@ -393,8 +393,8 @@ PPL::CO_Tree::structure_OK() const {
   }
 
   if (size != 0) {
-    inorder_const_iterator itr = before_begin();
-    inorder_const_iterator itr_end = end();
+    const_iterator itr = before_begin();
+    const_iterator itr_end = end();
 
     itr.get_next_value();
 
@@ -414,7 +414,7 @@ PPL::CO_Tree::structure_OK() const {
 
 void
 PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
-                             inorder_iterator& itr) {
+                             iterator& itr) {
   PPL_ASSERT(key1 != unused_index);
 
   if (empty()) {
@@ -430,7 +430,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
   }
 
 #ifndef NDEBUG
-  inorder_iterator itr2(this);
+  iterator itr2(this);
   go_down_searching_key(itr2, key1);
   PPL_ASSERT(itr == itr2);
 #endif
@@ -480,7 +480,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
 }
 
 void
-PPL::CO_Tree::rebalance(inorder_iterator& itr, dimension_type key,
+PPL::CO_Tree::rebalance(iterator& itr, dimension_type key,
                         const data_type& value) {
 #ifndef NDEBUG
   if (itr->first != unused_index) {
@@ -551,7 +551,7 @@ PPL::CO_Tree::rebalance(inorder_iterator& itr, dimension_type key,
 }
 
 void
-PPL::CO_Tree::erase(inorder_iterator itr) {
+PPL::CO_Tree::erase(iterator itr) {
   PPL_ASSERT(!itr.is_before_begin());
   PPL_ASSERT(!itr.is_at_end());
   PPL_ASSERT(itr->first != unused_index);
@@ -618,7 +618,7 @@ PPL::CO_Tree::erase(inorder_iterator itr) {
 }
 
 PPL::dimension_type
-PPL::CO_Tree::count_used_in_subtree(inorder_iterator& itr) {
+PPL::CO_Tree::count_used_in_subtree(iterator& itr) {
   PPL_ASSERT(itr->first != unused_index);
   dimension_type n = 0;
 
@@ -640,7 +640,7 @@ PPL::CO_Tree::count_used_in_subtree(inorder_iterator& itr) {
 }
 
 PPL::dimension_type
-PPL::CO_Tree::count_used_in_subtree(inorder_const_iterator& itr) {
+PPL::CO_Tree::count_used_in_subtree(const_iterator& itr) {
   PPL_ASSERT(itr->first != unused_index);
   dimension_type n = 0;
 
@@ -662,14 +662,14 @@ PPL::CO_Tree::count_used_in_subtree(inorder_const_iterator& itr) {
 }
 
 void
-PPL::CO_Tree::redistribute_elements_in_subtree(inorder_iterator& itr,
+PPL::CO_Tree::redistribute_elements_in_subtree(iterator& itr,
                                                dimension_type n,
                                                bool deleting,
                                                dimension_type key,
                                                const data_type& value) {
   // Step 1: compact elements of this subtree in the rightmost end, from right
   //         to left.
-  inorder_iterator itr2 = itr;
+  iterator itr2 = itr;
 #ifndef NDEBUG
   const data_type* const p = &(itr->second);
 #endif
@@ -703,8 +703,8 @@ PPL::CO_Tree::redistribute_elements_in_subtree(inorder_iterator& itr,
 
 void
 PPL::CO_Tree
-::compact_elements_in_the_rightmost_end(inorder_iterator& root,
-                                        inorder_iterator& first_unused,
+::compact_elements_in_the_rightmost_end(iterator& root,
+                                        iterator& first_unused,
                                         dimension_type subtree_size,
                                         dimension_type key,
                                         const data_type& value,
@@ -713,7 +713,7 @@ PPL::CO_Tree
   if (root->first == unused_index)
     return;
 
-  inorder_iterator root_copy(root);
+  iterator root_copy(root);
 
   root.follow_right_childs_with_value();
 
@@ -771,9 +771,9 @@ PPL::CO_Tree
 void
 PPL::CO_Tree
 ::redistribute_elements_in_subtree_helper(
-                                          inorder_iterator& root,
+                                          iterator& root,
                                           dimension_type subtree_size,
-                                          inorder_iterator& itr,
+                                          iterator& itr,
                                           dimension_type key,
                                           const data_type& value,
                                           bool added_key) {
@@ -791,8 +791,8 @@ PPL::CO_Tree
   stack_first_empty->second = root.i;
   ++stack_first_empty;
 
-  inorder_iterator current_root(root.tree);
-  inorder_iterator itr2(itr);
+  iterator current_root(root.tree);
+  iterator itr2(itr);
 
   while (stack_first_empty != stack) {
 

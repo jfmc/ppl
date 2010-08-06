@@ -33,8 +33,8 @@ test01() {
 
   CO_Tree tree;
 
-  CO_Tree::inorder_iterator itr = tree.before_begin();
-  CO_Tree::inorder_iterator end = tree.end();
+  CO_Tree::iterator itr = tree.before_begin();
+  CO_Tree::iterator end = tree.end();
 
   ++itr;
 
@@ -45,7 +45,7 @@ test01() {
 }
 
 void
-test02_helper(CO_Tree::inorder_iterator& itr) {
+test02_helper(CO_Tree::iterator& itr) {
   if (!itr.is_leaf()) {
     itr.get_left_child();
     test02_helper(itr);
@@ -69,7 +69,7 @@ test02() {
   tree.insert(3, Coefficient_zero());
   tree.insert(4, Coefficient_zero());
 
-  CO_Tree::inorder_iterator itr(&tree);
+  CO_Tree::iterator itr(&tree);
 
   test02_helper(itr);
 

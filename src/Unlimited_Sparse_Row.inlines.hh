@@ -62,8 +62,8 @@ inline void
 Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
   if (tree.empty())
     return;
-  CO_Tree::inorder_iterator itr_i;
-  CO_Tree::inorder_iterator itr_j;
+  CO_Tree::iterator itr_i;
+  CO_Tree::iterator itr_j;
   tree.go_down_searching_key(itr_i, i);
   tree.go_down_searching_key(itr_j, j);
   if (itr_i->first == i)
@@ -224,7 +224,7 @@ Unlimited_Sparse_Row::find(const dimension_type i, iterator itr) {
   tree.go_down_searching_key(itr.itr, i);
 
 #ifndef NDEBUG
-  CO_Tree::inorder_iterator itr2(&tree);
+  CO_Tree::iterator itr2(&tree);
   tree.go_down_searching_key(itr2, i);
   PPL_ASSERT(itr.itr == itr2);
 #endif
@@ -249,7 +249,7 @@ Unlimited_Sparse_Row::find(const dimension_type i, const_iterator itr) const {
   tree.go_down_searching_key(itr.itr, i);
 
 #ifndef NDEBUG
-  CO_Tree::inorder_const_iterator itr2(&tree);
+  CO_Tree::const_iterator itr2(&tree);
   tree.go_down_searching_key(itr2, i);
   PPL_ASSERT(itr.itr == itr2);
 #endif
@@ -285,7 +285,7 @@ Unlimited_Sparse_Row::find2(const dimension_type c1,
     return;
   }
 
-  itr1.itr = CO_Tree::inorder_iterator(&tree);
+  itr1.itr = CO_Tree::iterator(&tree);
   while (1) {
     if (itr1.itr->first < c1) {
       if (itr1.itr->first < c2) {
@@ -331,7 +331,7 @@ Unlimited_Sparse_Row::find2(const dimension_type c1,
     return;
   }
 
-  itr1.itr = CO_Tree::inorder_const_iterator(&tree);
+  itr1.itr = CO_Tree::const_iterator(&tree);
   while (1) {
     if (itr1.itr->first < c1) {
       if (itr1.itr->first < c2) {
@@ -426,7 +426,7 @@ Unlimited_Sparse_Row
 inline void
 Unlimited_Sparse_Row::add_zeroes_and_shift(dimension_type n,
                                                         dimension_type i) {
-  CO_Tree::inorder_iterator itr = tree.end();
+  CO_Tree::iterator itr = tree.end();
   itr.get_previous_value();
   for ( ; !itr.is_before_begin() && itr->first >= i; itr.get_previous_value())
     itr->first += n;
@@ -439,7 +439,7 @@ Unlimited_Sparse_Row::assign(dimension_type i,
   if (tree.empty())
     assign_if_nonzero(i, x);
   else {
-    CO_Tree::inorder_iterator itr(&tree);
+    CO_Tree::iterator itr(&tree);
     tree.go_down_searching_key(itr, i);
     if (itr->first == i)
       itr->second = x;
@@ -471,7 +471,7 @@ inline const Coefficient&
 Unlimited_Sparse_Row::get(dimension_type i) const {
   if (tree.empty())
     return Coefficient_zero();
-  CO_Tree::inorder_const_iterator itr(&tree);
+  CO_Tree::const_iterator itr(&tree);
   tree.go_down_searching_key(itr, i);
   if (itr->first == i)
     return itr->second;
@@ -508,7 +508,7 @@ Unlimited_Sparse_Row::iterator::iterator(CO_Tree* x)
 
 inline
 Unlimited_Sparse_Row::iterator
-::iterator(const CO_Tree::inorder_iterator& x)
+::iterator(const CO_Tree::iterator& x)
   : itr(x) {
 }
 
@@ -570,7 +570,7 @@ Unlimited_Sparse_Row::iterator::operator*() const {
   return *itr;
 }
 
-inline CO_Tree::inorder_iterator::Const_Member_Access_Helper
+inline CO_Tree::iterator::Const_Member_Access_Helper
 Unlimited_Sparse_Row::iterator::operator->() const {
 
   return itr.operator->();
@@ -604,13 +604,13 @@ Unlimited_Sparse_Row::const_iterator
 
 inline
 Unlimited_Sparse_Row::const_iterator
-::const_iterator(const CO_Tree::inorder_iterator& x)
+::const_iterator(const CO_Tree::iterator& x)
   : itr(x) {
 }
 
 inline
 Unlimited_Sparse_Row::const_iterator
-::const_iterator(const CO_Tree::inorder_const_iterator& x)
+::const_iterator(const CO_Tree::const_iterator& x)
   : itr(x) {
 }
 
@@ -661,7 +661,7 @@ Unlimited_Sparse_Row::const_iterator::operator*() const {
   return *itr;
 }
 
-inline CO_Tree::inorder_const_iterator::Const_Member_Access_Helper
+inline CO_Tree::const_iterator::Const_Member_Access_Helper
 Unlimited_Sparse_Row::const_iterator::operator->() const {
 
   return itr.operator->();

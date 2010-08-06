@@ -39,8 +39,8 @@ public:
   typedef Coefficient data_type;
   typedef std::pair<dimension_type, data_type> value_type;
 
-  class inorder_iterator;
-  class inorder_const_iterator;
+  class iterator;
+  class const_iterator;
 
   CO_Tree();
   explicit CO_Tree(const std::vector<data_type>& v);
@@ -65,30 +65,30 @@ public:
   //! Inserts a pair with key \p key in the tree and returns an iterator that
   //! points to the inserted pair.
   //! If such a pair already exists, an iterator to that pair is returned.
-  inorder_iterator insert(dimension_type key);
+  iterator insert(dimension_type key);
 
   //! Inserts the pair (key, data) in the tree.
   //! Returns an iterator that points to the inserted element.
   //! If the key \p key is already in the tree, its associated value is set to
   //! \p data and an iterator pointing to that pair is returned.
-  inorder_iterator insert(dimension_type key, const data_type& data);
+  iterator insert(dimension_type key, const data_type& data);
 
   //! Inserts the pair (key, data) in the tree.
   //! \p itr is used as hint, this will be faster if \p itr points near to the
   //! place where the new element will be inserted (or where is already stored).
-  inorder_iterator insert(dimension_type key, const data_type& data,
-                          inorder_iterator itr);
+  iterator insert(dimension_type key, const data_type& data,
+                          iterator itr);
 
   //! Inserts a pair with key \p key in the tree.
   //! \p itr is used as hint, this will be faster if \p itr points near to the
   //! place where the new element will be inserted (or where is already stored).
-  inorder_iterator insert(dimension_type key, inorder_iterator itr);
+  iterator insert(dimension_type key, iterator itr);
 
   //! Inserts the pair (key1, data1) in the tree.
   //! \p itr must be the lower bound of \p key in the tree.
   //! \p itr is modified to point to the inserted element.
   void insert_precise(dimension_type key1, const data_type& data1,
-                      inorder_iterator& itr);
+                      iterator& itr);
 
   //! Erases the pair with key \p key from the tree.
   //! Returns \p false if there was no pair with key \p key in the tree.
@@ -96,49 +96,49 @@ public:
 
   //! Erases from the tree the element pointed to by \p itr .
   //! \p itr is invalidated.
-  void erase(inorder_iterator itr);
+  void erase(iterator itr);
 
   //! Swaps x with *this.
   void swap(CO_Tree& x);
 
   //! Returns an iterator that points before the first element.
-  inorder_iterator before_begin();
+  iterator before_begin();
 
   //! Returns an iterator that points after the last element.
-  inorder_iterator end();
+  iterator end();
 
   //! Returns an iterator that points before the first element.
-  inorder_const_iterator before_begin() const;
+  const_iterator before_begin() const;
 
   //! Returns an iterator that points after the last element.
-  inorder_const_iterator end() const;
+  const_iterator end() const;
 
   //! Searches for an element with key \p key in the subtree rooted at \p itr.
   //! \p itr is modified to point to the found node (if it exists) or to the
   //! node that would be his parent (otherwise).
-  void go_down_searching_key(inorder_iterator& itr, dimension_type key);
+  void go_down_searching_key(iterator& itr, dimension_type key);
 
   //! Searches for an element with key \p key in the subtree rooted at \p itr.
   //! \p itr is modified to point to the found node (if it exists) or to the
   //! node that would be his parent (otherwise).
-  void go_down_searching_key(inorder_const_iterator& itr,
+  void go_down_searching_key(const_iterator& itr,
                              dimension_type key) const;
 
   //! Searches for an element with key \p key , assuming \p itr->first is less
   //! than or equal to \p key .
   //! This method returns an iterator pointing to the first element with key
   //! greater than or equal to \p key .
-  inorder_iterator lower_bound(inorder_iterator itr, dimension_type key);
+  iterator lower_bound(iterator itr, dimension_type key);
 
   //! Searches for an element with key \p key , assuming \p itr->first is less
   //! than or equal to \p key .
   //! This method returns an iterator pointing to the first element with key
   //! greater than or equal to \p key .
-  inorder_const_iterator lower_bound(inorder_const_iterator itr,
+  const_iterator lower_bound(const_iterator itr,
                                      dimension_type key) const;
 
-  class inorder_iterator;
-  class inorder_const_iterator;
+  class iterator;
+  class const_iterator;
 
 private:
 
@@ -153,11 +153,11 @@ private:
 
   //! Dumps the subtree rooted at \p itr to stdout, for debugging purposes.
   //! itr is not modified, it is passed by reference to improve performance.
-  static void dump_subtree(inorder_iterator& itr);
+  static void dump_subtree(iterator& itr);
 
   //! Dumps the subtree rooted at \p itr to stdout, for debugging purposes.
   //! itr is not modified, it is passed by reference to improve performance.
-  static void dump_subtree(inorder_const_iterator& itr);
+  static void dump_subtree(const_iterator& itr);
 
   //! Increases the tree's reserved size. Called when the density is about to
   //! exceed max_density.
@@ -172,7 +172,7 @@ private:
   //! For insertions, it adds the pair (key, value).
   //! After the call, itr is modified so the added node is in the subtree
   //! pointed to by \p itr.
-  void rebalance(inorder_iterator& itr, dimension_type key,
+  void rebalance(iterator& itr, dimension_type key,
                  const data_type& value);
 
   //! Redistributes the elements in the subtree rooted at the node
@@ -180,7 +180,7 @@ private:
   //! (key, value) to the tree.
   //! \p subtree_size is the number of used elements in the subtree at the end
   //! of the call.
-  void redistribute_elements_in_subtree(inorder_iterator& itr,
+  void redistribute_elements_in_subtree(iterator& itr,
                                         dimension_type n,
                                         bool deleting,
                                         dimension_type key,
@@ -196,7 +196,7 @@ private:
   //! \p first_unused is updated, but root isn't. The root iterator is passed
   //! by reference to improve performance.
   static void compact_elements_in_the_rightmost_end(
-    inorder_iterator& root, inorder_iterator& first_unused,
+    iterator& root, iterator& first_unused,
     dimension_type subtree_size, dimension_type key, const data_type& value,
     bool& added_key, bool& can_add_key);
 
@@ -208,8 +208,8 @@ private:
   //! \p root is not modified, is only passed by reference to improve
   //! \performance. \p itr is invalidated.
   static void redistribute_elements_in_subtree_helper(
-    inorder_iterator& root, dimension_type subtree_size,
-    inorder_iterator& itr, dimension_type key, const data_type& value,
+    iterator& root, dimension_type subtree_size,
+    iterator& itr, dimension_type key, const data_type& value,
     bool added_key);
 
   //! Moves all data in the tree \p tree in *this.
@@ -224,11 +224,11 @@ private:
 
   //! Counts the number of used elements in the subtree rooted at the node
   //! pointed to by itr.
-  static dimension_type count_used_in_subtree(inorder_iterator& itr);
+  static dimension_type count_used_in_subtree(iterator& itr);
 
   //! Counts the number of used elements in the subtree rooted at the node
   //! pointed to by itr.
-  static dimension_type count_used_in_subtree(inorder_const_iterator& itr);
+  static dimension_type count_used_in_subtree(const_iterator& itr);
 
   //! Moves the value of \p from in \p to .
   //! The final value of \p from is unspecified.
@@ -275,7 +275,7 @@ private:
   dimension_type size;
 };
 
-class CO_Tree::inorder_const_iterator {
+class CO_Tree::const_iterator {
 public:
 
   class Const_Member_Access_Helper {
@@ -291,22 +291,22 @@ public:
   };
 
   //! Constructs an iterator pointing to the root node.
-  explicit inorder_const_iterator(const CO_Tree* tree = 0);
+  explicit const_iterator(const CO_Tree* tree = 0);
 
-  inorder_const_iterator(const inorder_const_iterator& itr);
-  inorder_const_iterator(const inorder_iterator& itr);
+  const_iterator(const const_iterator& itr);
+  const_iterator(const iterator& itr);
 
   //! Returns an iterator that points before the first element.
-  static inorder_const_iterator construct_before_begin(const CO_Tree& tree);
+  static const_iterator construct_before_begin(const CO_Tree& tree);
 
   //! Returns an iterator that points after the last element.
-  static inorder_const_iterator construct_end(const CO_Tree& tree);
+  static const_iterator construct_end(const CO_Tree& tree);
 
   //! Assigns \p itr to *this .
-  inorder_const_iterator& operator=(const inorder_const_iterator& itr);
+  const_iterator& operator=(const const_iterator& itr);
 
   //! Assigns \p itr to *this .
-  inorder_const_iterator& operator=(const inorder_iterator& itr);
+  const_iterator& operator=(const iterator& itr);
 
   //! Makes the iterator point to the root of \p tree.
   //! The values of all fields (beside root) are overwritten.
@@ -353,10 +353,10 @@ public:
   bool is_leaf() const;
 
   //! Navigates to the next node in the in-order traversal.
-  inorder_const_iterator& operator++();
+  const_iterator& operator++();
 
   //! Navigates to the previous node in the in-order traversal.
-  inorder_const_iterator& operator--();
+  const_iterator& operator--();
 
   //! Navigates to the next node with a value, in the in-order traversal.
   void get_next_value();
@@ -371,10 +371,10 @@ public:
   Const_Member_Access_Helper operator->() const;
 
   //! Compares \p *this with x .
-  bool operator==(const inorder_const_iterator& x) const;
+  bool operator==(const const_iterator& x) const;
 
   //! Compares \p *this with x .
-  bool operator!=(const inorder_const_iterator& x) const;
+  bool operator!=(const const_iterator& x) const;
 
   //! Returns true if the iterator is an end() iterator.
   bool is_at_end() const;
@@ -398,7 +398,7 @@ private:
   friend class CO_Tree;
 };
 
-class CO_Tree::inorder_iterator {
+class CO_Tree::iterator {
 public:
 
   class Member_Access_Helper {
@@ -425,18 +425,18 @@ public:
   };
 
   //! Constructs an iterator pointing to the root node.
-  explicit inorder_iterator(CO_Tree* tree = 0);
+  explicit iterator(CO_Tree* tree = 0);
 
-  inorder_iterator(const inorder_iterator& itr);
+  iterator(const iterator& itr);
 
   //! Returns an iterator that points before the first element.
-  static inorder_iterator construct_before_begin(CO_Tree& tree);
+  static iterator construct_before_begin(CO_Tree& tree);
 
   //! Returns an iterator that points after the last element.
-  static inorder_iterator construct_end(CO_Tree& tree);
+  static iterator construct_end(CO_Tree& tree);
 
   //! Assigns \p itr to *this .
-  inorder_iterator& operator=(const inorder_iterator& itr);
+  iterator& operator=(const iterator& itr);
 
   //! Makes the iterator point to the root of \p tree.
   //! The values of all fields (beside root) are overwritten.
@@ -483,10 +483,10 @@ public:
   bool is_leaf() const;
 
   //! Navigates to the next node in the in-order traversal.
-  inorder_iterator& operator++();
+  iterator& operator++();
 
   //! Navigates to the previous node in the in-order traversal.
-  inorder_iterator& operator--();
+  iterator& operator--();
 
   //! Navigates to the next node with a value, in the in-order traversal.
   void get_next_value();
@@ -507,10 +507,10 @@ public:
   Const_Member_Access_Helper operator->() const;
 
   //! Compares \p *this with x .
-  bool operator==(const inorder_iterator& x) const;
+  bool operator==(const iterator& x) const;
 
   //! Compares \p *this with x .
-  bool operator!=(const inorder_iterator& x) const;
+  bool operator!=(const iterator& x) const;
 
   //! Returns true if the iterator is an end() iterator.
   bool is_at_end() const;
@@ -532,8 +532,8 @@ private:
   //! The tree the iterator points to.
   CO_Tree* tree;
 
-  friend inorder_const_iterator&
-    inorder_const_iterator::operator=(const inorder_iterator&);
+  friend const_iterator&
+    const_iterator::operator=(const iterator&);
 
   friend class CO_Tree;
 };

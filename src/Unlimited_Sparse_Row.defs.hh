@@ -271,7 +271,7 @@ public:
 
   iterator(CO_Tree* x = 0);
   iterator(const iterator& x);
-  iterator(const CO_Tree::inorder_iterator& itr);
+  iterator(const CO_Tree::iterator& itr);
 
   iterator& operator=(const iterator& x);
 
@@ -285,12 +285,12 @@ public:
   Member_Access_Helper operator->();
 
   std::pair<dimension_type, const Coefficient&> operator*() const;
-  CO_Tree::inorder_iterator::Const_Member_Access_Helper operator->() const;
+  CO_Tree::iterator::Const_Member_Access_Helper operator->() const;
 
   operator const_iterator() const;
 
 private:
-  CO_Tree::inorder_iterator itr;
+  CO_Tree::iterator itr;
 
   friend class Unlimited_Sparse_Row;
 };
@@ -308,8 +308,8 @@ public:
 
   const_iterator(const CO_Tree* x = 0);
   const_iterator(const const_iterator& x);
-  const_iterator(const CO_Tree::inorder_iterator& x);
-  const_iterator(const CO_Tree::inorder_const_iterator& x);
+  const_iterator(const CO_Tree::iterator& x);
+  const_iterator(const CO_Tree::const_iterator& x);
 
   const_iterator& operator=(const const_iterator& x);
 
@@ -320,11 +320,11 @@ public:
   bool operator!=(const const_iterator& x) const;
 
   std::pair<dimension_type, const Coefficient&> operator*() const;
-  CO_Tree::inorder_const_iterator::Const_Member_Access_Helper
+  CO_Tree::const_iterator::Const_Member_Access_Helper
     operator->() const;
 
 private:
-  CO_Tree::inorder_const_iterator itr;
+  CO_Tree::const_iterator itr;
 
   friend class Unlimited_Sparse_Row;
 };
