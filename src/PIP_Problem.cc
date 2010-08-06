@@ -240,8 +240,8 @@ PPL::PIP_Problem::solve() const {
 
           last_row = x.initial_context[x.initial_context.num_rows()-2];
 
-          matrix_row_unordered_iterator i = last_row.unordered_begin();
-          matrix_row_unordered_iterator i_end = last_row.unordered_end();
+          matrix_row_iterator i = last_row.begin();
+          matrix_row_iterator i_end = last_row.end();
           for ( ; i != i_end; ++i)
             neg_assign(i->second);
         }
