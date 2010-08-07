@@ -163,14 +163,42 @@ Unlimited_Sparse_Row::find_create(iterator itr, dimension_type i) {
   return itr;
 }
 
+namespace {
+
+  class Unlimited_Sparse_Row__find__helper_functor {
+  public:
+    Unlimited_Sparse_Row__find__helper_functor(dimension_type i1)
+      : i(i1) {
+    }
+
+    inline int operator()(dimension_type index,
+                          const Coefficient& /* data */) const {
+      if (index == i)
+        return 0;
+      else
+        if (i < index)
+          return -1;
+        else
+          return 1;
+    }
+
+  private:
+    dimension_type i;
+  };
+
+}
+
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find(dimension_type i) {
+
   if (tree.empty())
     return end();
-  iterator itr(&tree);
-  tree.go_down_searching_key(itr.itr, i);
-  if ((itr.itr)->first != i)
-    itr = end();
+
+  iterator itr = tree.bisect_in(++(tree.before_begin()), --(tree.end()),
+                                Unlimited_Sparse_Row__find__helper_functor(i));
+
+  if (itr.itr.is_at_end() || (itr.itr)->first != i)
+    return end();
 
   return itr;
 }
