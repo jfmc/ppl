@@ -41,7 +41,7 @@ PPL::CO_Tree::CO_Tree(const std::vector<data_type>& v) {
     return;
   }
 
-  iterator root(&*this);
+  tree_iterator root(*this);
   dimension_type index = 0;
 
   while (v[index] == 0) {
