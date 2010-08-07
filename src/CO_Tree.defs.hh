@@ -144,6 +144,10 @@ private:
   //! Checks the invariant, but not the densities.
   bool structure_OK() const;
 
+  //! Returns the floor of the base-2 logarithm of \p n .
+  //! \p n must be greater than zero.
+  static unsigned integer_log2(dimension_type n);
+
   //! Dumps the subtree rooted at \p itr to stdout, for debugging purposes.
   //! itr is not modified, it is passed by reference to improve performance.
   static void dump_subtree(iterator& itr);

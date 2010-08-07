@@ -172,6 +172,17 @@ CO_Tree::empty() const {
   return size == 0;
 }
 
+inline unsigned
+CO_Tree::integer_log2(dimension_type n) {
+  PPL_ASSERT(n != 0);
+  unsigned result = 0;
+  while (n != 1) {
+    n /= 2;
+    ++result;
+  }
+  return result;
+}
+
 inline void
 CO_Tree::dump_tree() const {
   CO_Tree::const_iterator itr(&*this);

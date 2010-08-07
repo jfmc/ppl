@@ -167,11 +167,7 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   if (reserved_size1 == 0)
     reserved_size1 = 1;
 
-  // Calculate the base-2 log of reserved_size
-  while (reserved_size1 != 1) {
-    reserved_size1 /= 2;
-    l++;
-  }
+  l = integer_log2(reserved_size1);
   // Add 1 to the log.
   l++;
 
