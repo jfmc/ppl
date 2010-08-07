@@ -128,7 +128,34 @@ public:
   //! node that would be his parent (otherwise).
   void go_down_searching_key(iterator& itr, dimension_type key);
 
+  //! Searches in [first, last] using bisection (note that last is included,
+  //! too!).
+  //! func will be applied to a dimension_type and a data_type and should
+  //! return 0 if this is the searched element (ending bisection), a positive
+  //! integer if the searched element is after this, and a negative integer if
+  //! the searched element is before this.
+  //! If the element is found, an iterator pointing to that element is
+  //! returned; otherwise, the returned iterator refers to the immediately
+  //! preceding or succeeding value.
+  //! \p first and \p last must point to existing values.
+  template <typename Func>
+  iterator bisect_in(iterator first, iterator last, const Func &func);
+
 private:
+
+  //! Searches in [first, last] using bisection (note that last is included,
+  //! too!).
+  //! func will be applied to a dimension_type and a data_type and should
+  //! return 0 if this is the searched element (ending bisection), a positive
+  //! integer if the searched element is after this, and a negative integer if
+  //! the searched element is before this.
+  //! If the element is found, the index of that element is returned;
+  //! otherwise, the returned index refers to the immediately preceding or
+  //! succeeding value.
+  //! \p first and \p last must be indexes of existing values.
+  template <typename Func>
+  dimension_type bisect_in(dimension_type first, dimension_type last,
+                           const Func &func);
 
   class tree_iterator;
 

@@ -567,6 +567,15 @@ CO_Tree::go_down_searching_key(iterator& itr, dimension_type key) {
   itr = itr2;
 }
 
+template <typename Func>
+inline CO_Tree::iterator
+CO_Tree::bisect_in(iterator first, iterator last, const Func &func) {
+  dimension_type index = bisect_in(first.i, last.i, func);
+  iterator result(this);
+  result.i = index;
+  return result;
+}
+
 inline void
 CO_Tree::move_data_element(data_type& to, data_type& from) {
   // The following code is equivalent (but slower):
