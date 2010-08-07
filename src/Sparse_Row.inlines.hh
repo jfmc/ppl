@@ -176,14 +176,6 @@ Sparse_Row::get(dimension_type i) const {
   return row.get(i);
 }
 
-inline void
-Sparse_Row::get2(dimension_type i, dimension_type j,
-                 const Coefficient*& p1, const Coefficient*& p2) const {
-  PPL_ASSERT(i < size_);
-  PPL_ASSERT(j < size_);
-  return row.get2(i, j, p1, p2);
-}
-
 inline Sparse_Row::iterator
 Sparse_Row::begin() {
   return row.begin();
@@ -444,15 +436,6 @@ inline const Coefficient&
 Sparse_Row_Reference::get(dimension_type i) const {
   PPL_ASSERT(i < size_);
   return row.get(i);
-}
-
-inline void
-Sparse_Row_Reference::get2(dimension_type i, dimension_type j,
-                           const Coefficient*& p1,
-                           const Coefficient*& p2) const {
-  PPL_ASSERT(i < size_);
-  PPL_ASSERT(j < size_);
-  return row.get2(i, j, p1, p2);
 }
 
 inline Sparse_Row_Reference::iterator

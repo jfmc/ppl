@@ -260,10 +260,6 @@ public:
   */
   const Coefficient& get(dimension_type i) const;
 
-  //! A faster equivalent of p1 = &(get(i)); p1 = &(get(j));
-  void get2(dimension_type i, dimension_type j,
-            const Coefficient*& p1, const Coefficient*& p2) const;
-
   iterator begin();
   iterator end();
   const_iterator begin() const;
@@ -506,10 +502,6 @@ public:
     a static variable to work.
   */
   const Coefficient& get(dimension_type i) const;
-
-  //! A faster equivalent of p1 = &(get(i)); p1 = &(get(j));
-  void get2(dimension_type i, dimension_type j,
-            const Coefficient*& p1, const Coefficient*& p2) const;
 
   iterator begin();
   iterator end();
