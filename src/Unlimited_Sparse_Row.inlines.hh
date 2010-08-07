@@ -389,13 +389,18 @@ Unlimited_Sparse_Row::assign(dimension_type i, const Coefficient& x) {
   if (tree.empty())
     assign_if_nonzero(i, x);
   else {
-    CO_Tree::iterator itr(&tree);
-    tree.go_down_searching_key(itr, i);
+    CO_Tree::iterator first = tree.before_begin();
+    first.get_next_value();
+    CO_Tree::iterator last = tree.end();
+    last.get_previous_value();
+
+    CO_Tree::iterator itr = tree.bisect_in(first, last,
+                                           Unlimited_Sparse_Row__bisect_helper_functor(i));
     if (itr->first == i)
       itr->second = x;
     else
       if (x != 0)
-        tree.insert(i, x);
+        tree.insert(itr, i, x);
   }
 }
 
