@@ -430,7 +430,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
   PPL_ASSERT(!empty());
 
 #ifndef NDEBUG
-  iterator itr2(this);
+  tree_iterator itr2(*this);
   go_down_searching_key(itr2, key1);
   PPL_ASSERT(itr == itr2);
 #endif
