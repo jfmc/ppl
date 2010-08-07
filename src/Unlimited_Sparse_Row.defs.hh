@@ -217,18 +217,6 @@ public:
   //! Lower bound of key i, assuming it is in [itr,end()) .
   const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
-  //! A faster equivalent of itr1=find(i); itr2=find(j); .
-  void find2(dimension_type i, dimension_type j,
-             iterator& itr1, iterator& itr2);
-
-  //! A faster equivalent of itr1=find(i); itr2=find(j); .
-  void find2(dimension_type i, dimension_type j,
-             const_iterator& itr1, const_iterator& itr2) const;
-
-  //! A faster equivalent of p1 = &(get(i)); p1 = &(get(j));
-  void get2(dimension_type i, dimension_type j,
-            const Coefficient*& p1, const Coefficient*& p2) const;
-
   bool operator==(const This &x) const;
   bool operator!=(const This &x) const;
 
