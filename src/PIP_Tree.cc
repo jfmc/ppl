@@ -319,29 +319,28 @@ column_lower(const PIP_Tree_Node::matrix_type& tableau,
     } else {
       // Not in base.
       PIP_Tree_Node::matrix_row_const_reference_type t_mk = tableau[mk];
-      const Coefficient* t_mk_ja;
-      const Coefficient* t_mk_jb;
-      t_mk.get2(ja, jb, t_mk_ja, t_mk_jb);
-      if (t_mk_ja == &Coefficient_zero())
-        if (t_mk_jb == &Coefficient_zero())
+      const Coefficient& t_mk_ja = t_mk.get(ja);
+      const Coefficient& t_mk_jb = t_mk.get(jb);
+      if (&t_mk_ja == &Coefficient_zero())
+        if (&t_mk_jb == &Coefficient_zero())
           continue;
         else {
-          const int rhs_sign = rhs_coeff_sign * sgn(*t_mk_jb);
+          const int rhs_sign = rhs_coeff_sign * sgn(t_mk_jb);
           if (0 == rhs_sign)
             continue;
           else
             return 0 > rhs_sign;
         }
       else
-        if (t_mk_jb == &Coefficient_zero()) {
-          const int lhs_sign = lhs_coeff_sign * sgn(*t_mk_ja);
+        if (&t_mk_jb == &Coefficient_zero()) {
+          const int lhs_sign = lhs_coeff_sign * sgn(t_mk_ja);
           if (lhs_sign == 0)
             continue;
           else
             return lhs_sign > 0;
         } else {
-          lhs = lhs_coeff * *t_mk_ja;
-          rhs = rhs_coeff * *t_mk_jb;
+          lhs = lhs_coeff * t_mk_ja;
+          rhs = rhs_coeff * t_mk_jb;
           if (lhs == rhs)
             continue;
           else
@@ -1558,15 +1557,14 @@ PIP_Solution_Node::Tableau
   matrix_row_const_iterator j1_end = t_1.end();
   for (dimension_type i = 0; i < num_rows; ++i) {
     matrix_row_const_reference_type s_i = s[i];
-    const Coefficient* s_i_col_0;
-    const Coefficient* s_i_col_1;
-    s_i.get2(col_0, col_1, s_i_col_0, s_i_col_1);
+    const Coefficient& s_i_col_0 = s_i.get(col_0);
+    const Coefficient& s_i_col_1 = s_i.get(col_1);
     j0 = t_0.begin();
     j1 = t_1.begin();
     while (j0 != j0_end && j1 != j1_end) {
       if (j0->first == j1->first) {
-        product_0 = j0->second * s_1_1 * *s_i_col_0;
-        product_1 = j1->second * s_0_0 * *s_i_col_1;
+        product_0 = j0->second * s_1_1 * s_i_col_0;
+        product_1 = j1->second * s_0_0 * s_i_col_1;
         if (product_0 != product_1) {
           // Mismatch found: exit from both loops.
           j_mismatch = j0->first;
@@ -1576,7 +1574,7 @@ PIP_Solution_Node::Tableau
         ++j1;
       } else
         if (j0->first < j1->first) {
-          if (j0->second != 0 && s_1_1 != 0 && *s_i_col_0 != 0) {
+          if (j0->second != 0 && s_1_1 != 0 && s_i_col_0 != 0) {
             // Mismatch found: exit from both loops.
             j_mismatch = j0->first;
             goto end_loop;
@@ -1584,7 +1582,7 @@ PIP_Solution_Node::Tableau
           ++j0;
         } else {
           PPL_ASSERT(j0->first > j1->first);
-          if (j1->second != 0 && s_0_0 != 0 && *s_i_col_1 != 0) {
+          if (j1->second != 0 && s_0_0 != 0 && s_i_col_1 != 0) {
             // Mismatch found: exit from both loops.
             j_mismatch = j1->first;
             goto end_loop;
@@ -1593,7 +1591,7 @@ PIP_Solution_Node::Tableau
         }
     }
     while (j0 != j0_end) {
-      if (j0->second != 0 && s_1_1 != 0 && *s_i_col_0 != 0) {
+      if (j0->second != 0 && s_1_1 != 0 && s_i_col_0 != 0) {
         // Mismatch found: exit from both loops.
         j_mismatch = j0->first;
         goto end_loop;
@@ -1601,7 +1599,7 @@ PIP_Solution_Node::Tableau
       ++j0;
     }
     while (j1 != j1_end) {
-      if (j1->second != 0 && s_0_0 != 0 && *s_i_col_1 != 0) {
+      if (j1->second != 0 && s_0_0 != 0 && s_i_col_1 != 0) {
         // Mismatch found: exit from both loops.
         j_mismatch = j1->first;
         goto end_loop;
