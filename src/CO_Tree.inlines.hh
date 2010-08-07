@@ -587,6 +587,22 @@ CO_Tree::bisect_in(const_iterator first, const_iterator last,
 }
 
 template <typename Func>
+inline CO_Tree::iterator
+CO_Tree::bisect_near(iterator hint, const Func &func) {
+  iterator itr(this);
+  itr.i = bisect_near(hint.i, func);
+  return itr;
+}
+
+template <typename Func>
+inline CO_Tree::const_iterator
+CO_Tree::bisect_near(const_iterator hint, const Func &func) const {
+  const_iterator itr(this);
+  itr.i = bisect_near(hint.i, func);
+  return itr;
+}
+
+template <typename Func>
 inline dimension_type
 CO_Tree::bisect_in(dimension_type first, dimension_type last,
                    const Func &func) const {
@@ -629,6 +645,137 @@ CO_Tree::bisect_in(dimension_type first, dimension_type last,
   // may have increased beyond last, even beyond the original value of last
   // at the beginning of this method.
   return last;
+}
+
+template <typename Func>
+inline dimension_type
+CO_Tree::bisect_near(dimension_type hint, const Func &func) const {
+  PPL_ASSERT(hint != 0);
+  PPL_ASSERT(hint <= reserved_size);
+  PPL_ASSERT(indexes[hint] != unused_index);
+
+  int result = func(indexes[hint], data[hint]);
+
+  if (result == 0)
+    return hint;
+  else {
+    dimension_type new_hint;
+    dimension_type offset = 1;
+
+    if (result < 0) {
+      // The searched element is before `hint'.
+
+      while (1) {
+
+        if (hint <= offset) {
+          // The searched element is in (0,hint).
+          new_hint = hint;
+          hint = 1;
+          // The searched element is in [hint,new_hint).
+          while (indexes[hint] == unused_index)
+            ++hint;
+          result = func(indexes[hint], data[hint]);
+          if (result <= 0)
+            return hint;
+          // The searched element is in (hint,new_hint) and both indexes point
+          // to valid elements.
+          break;
+        } else
+          new_hint = hint - offset;
+
+        PPL_ASSERT(new_hint > 0);
+        PPL_ASSERT(new_hint <= reserved_size);
+
+        // Find the element at `new_hint' (or the first after it).
+        while (indexes[new_hint] == unused_index)
+          ++new_hint;
+
+        PPL_ASSERT(new_hint <= hint);
+
+        result = func(indexes[new_hint], data[new_hint]);
+
+        if (result == 0)
+          return new_hint;
+        else
+          if (result > 0) {
+            // The searched element is in (new_hint,hint)
+            std::swap(hint, new_hint);
+            // The searched element is now in (hint,new_hint).
+            break;
+          }
+
+        hint = new_hint;
+        offset *= 2;
+      }
+
+    } else {
+      // The searched element is after `hint'.
+      while (1) {
+
+        if (hint + offset > reserved_size) {
+          // The searched element is in (hint,reserved_size+1).
+          new_hint = reserved_size;
+          // The searched element is in (hint,new_hint].
+          while (indexes[new_hint] == unused_index)
+            --new_hint;
+          result = func(indexes[new_hint], data[new_hint]);
+          if (result >= 0)
+            return new_hint;
+          // The searched element is in (hint,new_hint) and both indexes point
+          // to valid elements.
+          break;
+        } else
+          new_hint = hint + offset;
+
+        PPL_ASSERT(new_hint > 0);
+        PPL_ASSERT(new_hint <= reserved_size);
+
+        // Find the element at `new_hint' (or the first after it).
+        while (indexes[new_hint] == unused_index)
+          --new_hint;
+
+        PPL_ASSERT(hint <= new_hint);
+
+        result = func(indexes[new_hint], data[new_hint]);
+
+        if (result == 0)
+          return new_hint;
+        else
+          if (result < 0)
+            // The searched element is in (hint,new_hint).
+            break;
+
+        hint = new_hint;
+        offset *= 2;
+      }
+    }
+    // The searched element is in (hint,new_hint).
+    PPL_ASSERT(hint > 0);
+    PPL_ASSERT(hint <= new_hint);
+    PPL_ASSERT(new_hint <= reserved_size);
+    PPL_ASSERT(indexes[hint] != unused_index);
+    PPL_ASSERT(indexes[new_hint] != unused_index);
+
+    if (hint == new_hint)
+      return hint;
+
+    ++hint;
+    while (indexes[hint] == unused_index)
+      ++hint;
+
+    if (hint == new_hint)
+      return hint;
+
+    --new_hint;
+    while (indexes[new_hint] == unused_index)
+      --new_hint;
+
+    PPL_ASSERT(hint <= new_hint);
+    PPL_ASSERT(indexes[hint] != unused_index);
+    PPL_ASSERT(indexes[new_hint] != unused_index);
+
+    return bisect_in(hint, new_hint, func);
+  }
 }
 
 inline void
