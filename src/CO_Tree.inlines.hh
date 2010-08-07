@@ -309,48 +309,8 @@ CO_Tree::go_down_searching_key(tree_iterator& itr, dimension_type key) {
 }
 
 inline void
-CO_Tree::go_down_searching_key(const_iterator& itr,
-                               dimension_type key) const {
-  if (empty())
-    return;
-  PPL_ASSERT(key != unused_index);
-  PPL_ASSERT(itr->first != unused_index);
-  PPL_ASSERT(!itr.is_before_begin());
-  PPL_ASSERT(!itr.is_at_end());
-  const_iterator itr2(itr);
-  dimension_type offset = (itr2.i & - itr2.i) / 2;
-  while (offset != 0) {
-    if (key == itr2->first)
-      break;
-    if (key < itr2->first) {
-      itr2.i -= offset;
-      if (itr2->first == unused_index) {
-        itr2.i += offset;
-        break;
-      }
-      offset /= 2;
-    } else {
-      itr2.i += offset;
-      if (itr2->first == unused_index) {
-        itr2.i -= offset;
-        break;
-      }
-      offset /= 2;
-    }
-  }
-  itr.i = itr2.i;
-}
-
-inline void
 CO_Tree::erase(iterator itr) {
   erase(tree_iterator(itr));
-}
-
-inline void
-CO_Tree::go_down_searching_key(iterator& itr, dimension_type key) {
-  tree_iterator itr2(itr);
-  go_down_searching_key(itr2, key);
-  itr = itr2;
 }
 
 template <typename Func>

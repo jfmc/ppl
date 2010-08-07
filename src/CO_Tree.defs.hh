@@ -101,20 +101,9 @@ public:
   //! Returns an iterator that points after the last element.
   const_iterator end() const;
 
-  //! Searches for an element with key \p key in the subtree rooted at \p itr.
-  //! \p itr is modified to point to the found node (if it exists) or to the
-  //! node that would be his parent (otherwise).
-  void go_down_searching_key(const_iterator& itr, dimension_type key) const;
-
   //! Erases from the tree the element pointed to by \p itr .
   //! \p itr is invalidated.
   void erase(iterator itr);
-
-  // TODO: This should be removed.
-  //! Searches for an element with key \p key in the subtree rooted at \p itr.
-  //! \p itr is modified to point to the found node (if it exists) or to the
-  //! node that would be his parent (otherwise).
-  void go_down_searching_key(iterator& itr, dimension_type key);
 
   //! Searches in [first, last] using bisection (note that last is included,
   //! too!).
