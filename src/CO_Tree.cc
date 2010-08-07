@@ -218,7 +218,7 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
   if (tree.size == 0)
     return;
 
-  iterator root(&*this);
+  tree_iterator root(*this);
   iterator itr = tree.before_begin();
   itr.get_next_value();
 
