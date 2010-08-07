@@ -232,9 +232,16 @@ inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::lower_bound(dimension_type i) {
   if (tree.empty())
     return end();
-  iterator itr(&tree);
-  tree.go_down_searching_key(itr.itr, i);
-  if ((itr.itr)->first < i)
+
+  CO_Tree::iterator first = tree.before_begin();
+  first.get_next_value();
+  CO_Tree::iterator last = tree.end();
+  last.get_previous_value();
+
+  iterator itr = tree.bisect_in(first, last,
+                                Unlimited_Sparse_Row__find__helper_functor(i));
+
+  if (itr.itr->first < i)
     ++itr;
   PPL_ASSERT(itr.itr.is_at_end() || itr->first >= i);
   return itr;
@@ -244,9 +251,14 @@ inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::lower_bound(dimension_type i) const {
   if (tree.empty())
     return end();
-  const_iterator itr(&tree);
-  tree.go_down_searching_key(itr.itr, i);
-  if ((itr.itr)->first < i)
+  CO_Tree::const_iterator first = tree.before_begin();
+  first.get_next_value();
+  CO_Tree::const_iterator last = tree.end();
+  last.get_previous_value();
+
+  const_iterator itr = tree.bisect_in(first, last,
+                                      Unlimited_Sparse_Row__find__helper_functor(i));
+  if (itr.itr->first < i)
     ++itr;
   PPL_ASSERT(itr.itr.is_at_end() || itr->first >= i);
   return itr;
