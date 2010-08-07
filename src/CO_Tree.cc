@@ -375,7 +375,9 @@ PPL::CO_Tree::structure_OK() const {
 
   if (size == 0) {
 
-    const_iterator itr(&*this);
+    // This const_cast could be removed by adding a const_tree_iterator,
+    // but it would add much code duplication without a real need.
+    tree_iterator itr(*const_cast<CO_Tree*>(this));
     if (itr->first != unused_index)
       return false;
 
