@@ -375,50 +375,6 @@ public:
   //! Assigns \p itr to *this .
   const_iterator& operator=(const iterator& itr);
 
-  //! Makes the iterator point to the root of \p tree.
-  //! The values of all fields (beside root) are overwritten.
-  void get_root();
-
-  //! Makes the iterator point to the left child of the current node.
-  void get_left_child();
-
-  //! Makes the iterator point to the right child of the current node.
-  void get_right_child();
-
-  //! Makes the iterator point to the parent of the current node.
-  void get_parent();
-
-  //! Makes the iterator point to the left child of the current node.
-  //! Returns false if there is no left child or the left child is unused
-  //! (and *this is unchanged).
-  bool get_left_child_value();
-
-  //! Makes the iterator point to the right child of the current node.
-  //! Returns false if there is no right child or the right child is unused
-  //! (and *this is unchanged).
-  bool get_right_child_value();
-
-  //! Follows left childs until it arrives at a leaf.
-  void follow_left_childs();
-
-  //! Follows right childs until it arrives at a leaf.
-  void follow_right_childs();
-
-  //! Follows left childs with a value, until it arrives at a leaf.
-  void follow_left_childs_with_value();
-
-  //! Follows right childs with a value, until it arrives at a leaf.
-  void follow_right_childs_with_value();
-
-  //! Returns true if the pointed node has a parent.
-  bool has_parent() const;
-
-  //! Returns true if the pointed node has a parent and is its right child.
-  bool is_right_child() const;
-
-  //! Returns true if the pointed node is a leaf of the complete tree.
-  bool is_leaf() const;
-
   //! Navigates to the next node in the in-order traversal.
   const_iterator& operator++();
 
@@ -509,50 +465,6 @@ public:
 
   //! Assigns \p itr to *this .
   iterator& operator=(const tree_iterator& itr);
-
-  //! Makes the iterator point to the root of \p tree.
-  //! The values of all fields (beside root) are overwritten.
-  void get_root();
-
-  //! Makes the iterator point to the left child of the current node.
-  void get_left_child();
-
-  //! Makes the iterator point to the right child of the current node.
-  void get_right_child();
-
-  //! Makes the iterator point to the parent of the current node.
-  void get_parent();
-
-  //! Follows left childs until it arrives at a leaf.
-  void follow_left_childs();
-
-  //! Follows right childs until it arrives at a leaf.
-  void follow_right_childs();
-
-  //! Follows left childs with a value, until it arrives at a leaf.
-  void follow_left_childs_with_value();
-
-  //! Follows right childs with a value, until it arrives at a leaf.
-  void follow_right_childs_with_value();
-
-  //! Makes the iterator point to the left child of the current node.
-  //! Returns false if there is no left child or the left child is unused
-  //! (and *this is unchanged).
-  bool get_left_child_value();
-
-  //! Makes the iterator point to the right child of the current node.
-  //! Returns false if there is no right child or the right child is unused
-  //! (and *this is unchanged).
-  bool get_right_child_value();
-
-  //! Returns true if the pointed node has a parent.
-  bool has_parent() const;
-
-  //! Returns true if the pointed node has a parent and is its right child.
-  bool is_right_child() const;
-
-  //! Returns true if the pointed node is a leaf of the complete tree.
-  bool is_leaf() const;
 
   //! Navigates to the next node in the in-order traversal.
   iterator& operator++();
