@@ -1362,11 +1362,10 @@ PPL::MIP_Problem
   dimension_type exiting_base_index = tableau_num_rows;
   for (dimension_type i = 0; i < tableau_num_rows; ++i) {
     matrix_row_const_reference_type t_i = tableau[i];
-    const Coefficient* t_i_entering;
-    const Coefficient* t_i_base_i;
-    t_i.get2(entering_var_index, base[i], t_i_entering, t_i_base_i);
-    const int num_sign = sgn(*t_i_entering);
-    if (num_sign != 0 && num_sign == sgn(*t_i_base_i)) {
+    const Coefficient& t_i_entering = t_i.get(entering_var_index);
+    const Coefficient& t_i_base_i = t_i.get(base[i]);
+    const int num_sign = sgn(t_i_entering);
+    if (num_sign != 0 && num_sign == sgn(t_i_base_i)) {
       exiting_base_index = i;
       break;
     }
@@ -1379,25 +1378,23 @@ PPL::MIP_Problem
   PPL_DIRTY_TEMP_COEFFICIENT(lcm);
   PPL_DIRTY_TEMP_COEFFICIENT(current_min);
   PPL_DIRTY_TEMP_COEFFICIENT(challenger);
-  const Coefficient* t_ie;
-  const Coefficient* t_ib;
   // These pointers are used instead of references in the following loop, to
   // improve performance.
   matrix_row_const_pointer_type t_e = &(tableau[exiting_base_index]);
-  const Coefficient* t_ee;
-  const Coefficient* t_e0;
-  t_e->get2(0,entering_var_index,t_e0,t_ee);
+  const Coefficient* t_e0 = &(t_e->get(0));
+  const Coefficient* t_ee = &(t_e->get(entering_var_index));
   for (dimension_type i = exiting_base_index + 1; i < tableau_num_rows; ++i) {
     matrix_row_const_reference_type t_i = tableau[i];
-    t_i.get2(entering_var_index, base[i], t_ie, t_ib);
-    const int t_ie_sign = sgn(*t_ie);
-    if (t_ie_sign != 0 && t_ie_sign == sgn(*t_ib)) {
+    const Coefficient& t_ie = t_i.get(entering_var_index);
+    const Coefficient& t_ib = t_i.get(base[i]);
+    const int t_ie_sign = sgn(t_ie);
+    if (t_ie_sign != 0 && t_ie_sign == sgn(t_ib)) {
       WEIGHT_BEGIN();
-      lcm_assign(lcm, *t_ee, *t_ie);
+      lcm_assign(lcm, *t_ee, t_ie);
       exact_div_assign(current_min, lcm, *t_ee);
       current_min *= *t_e0;
       abs_assign(current_min);
-      exact_div_assign(challenger, lcm, *t_ie);
+      exact_div_assign(challenger, lcm, t_ie);
       challenger *= t_i.get(0);
       abs_assign(challenger);
       current_min -= challenger;
@@ -1406,7 +1403,8 @@ PPL::MIP_Problem
           || (sign == 0 && base[i] < base[exiting_base_index])) {
         exiting_base_index = i;
         t_e = &(tableau[exiting_base_index]);
-        t_e->get2(0,entering_var_index,t_e0,t_ee);
+        t_e0 = &(t_e->get(0));
+        t_ee = &(t_e->get(entering_var_index));
       }
       WEIGHT_ADD(1044);
     }
