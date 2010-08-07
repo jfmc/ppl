@@ -652,7 +652,15 @@ PPL::CO_Tree::redistribute_elements_in_subtree(tree_iterator& itr,
 #ifndef NDEBUG
   const data_type* const p = &(itr->second);
 #endif
-  itr2.follow_right_childs();
+
+  // itr2 points to the root of a subtree (in the complete tree).
+  // Make it point to the last node of that subtree, instead.
+  {
+    dimension_type offset = itr2.i;
+    offset &= -offset;
+    itr2.i += offset - 1;
+  }
+
   bool added_key = false;
   bool can_add_key = true;
   if (deleting)
