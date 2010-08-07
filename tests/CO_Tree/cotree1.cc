@@ -44,20 +44,6 @@ test01() {
   return true;
 }
 
-void
-test02_helper(CO_Tree::iterator& itr) {
-  if (!itr.is_leaf()) {
-    itr.get_left_child();
-    test02_helper(itr);
-    itr.get_parent();
-  }
-  if (!itr.is_leaf()) {
-    itr.get_right_child();
-    test02_helper(itr);
-    itr.get_parent();
-  }
-}
-
 bool
 test02() {
 
@@ -68,10 +54,6 @@ test02() {
   tree.insert(2, Coefficient_zero());
   tree.insert(3, Coefficient_zero());
   tree.insert(4, Coefficient_zero());
-
-  CO_Tree::iterator itr(&tree);
-
-  test02_helper(itr);
 
   return true;
 }
