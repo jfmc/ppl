@@ -577,9 +577,19 @@ CO_Tree::bisect_in(iterator first, iterator last, const Func &func) {
 }
 
 template <typename Func>
+inline CO_Tree::const_iterator
+CO_Tree::bisect_in(const_iterator first, const_iterator last,
+                   const Func &func) const {
+  dimension_type index = bisect_in(first.i, last.i, func);
+  const_iterator result(this);
+  result.i = index;
+  return result;
+}
+
+template <typename Func>
 inline dimension_type
 CO_Tree::bisect_in(dimension_type first, dimension_type last,
-                   const Func &func) {
+                   const Func &func) const {
   PPL_ASSERT(first != 0);
   PPL_ASSERT(last <= reserved_size);
   PPL_ASSERT(first <= last);
@@ -595,8 +605,7 @@ CO_Tree::bisect_in(dimension_type first, dimension_type last,
 
     // static_casts are not stricly needed.
     // They are useful to prevent func from modifying of the tree data.
-    int result = func(static_cast<const dimension_type&>(indexes[new_half]),
-                      static_cast<const data_type&>(data[new_half]));
+    int result = func(indexes[new_half], data[new_half]);
 
     if (result == 0)
       return new_half;
@@ -617,6 +626,8 @@ CO_Tree::bisect_in(dimension_type first, dimension_type last,
       first = new_half;
     }
   }
+
+  return first;
 }
 
 inline void
