@@ -73,8 +73,17 @@ CO_Tree::~CO_Tree() {
 
 inline CO_Tree::iterator
 CO_Tree::insert(dimension_type key1, const data_type& data1) {
-  iterator itr(this);
-  return insert(itr, key1, data1);
+  if (empty()) {
+    insert_in_empty_tree(key1, data1);
+    iterator itr(this);
+    itr.i = 2;
+    PPL_ASSERT(indexes[itr.i] != unused_index);
+    return itr;
+  } else {
+    // TODO: Find a better implementation.
+    tree_iterator itr(*this);
+    return iterator(insert(itr, key1, data1));
+  }
 }
 
 inline CO_Tree::iterator
@@ -93,39 +102,43 @@ CO_Tree::insert(dimension_type key1) {
 inline CO_Tree::iterator
 CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) {
   PPL_ASSERT(key1 != unused_index);
-
   if (!empty()) {
     PPL_ASSERT(!itr.is_at_end());
     PPL_ASSERT(!itr.is_before_begin());
-    PPL_ASSERT(itr->first != unused_index);
-
-    tree_iterator itr2(itr);
-
-    if (itr2->first != key1) {
-      if (itr2->first > key1)
-        while (itr2.has_parent() && itr2->first > key1)
-          itr2.get_parent();
-      else
-        while (itr2.has_parent() && itr2->first < key1)
-          itr2.get_parent();
-
-      go_down_searching_key(itr2, key1);
-
-#ifndef NDEBUG
-      tree_iterator itr3(*this);
-      go_down_searching_key(itr3, key1);
-      PPL_ASSERT(itr2 == itr3);
-#endif
-    }
-    insert_precise(key1, data1, itr2);
-
-    return iterator(itr2);
-
+    return iterator(insert(tree_iterator(itr), key1, data1));
   } else {
     insert_in_empty_tree(key1, data1);
-
     return iterator(this);
   }
+}
+
+inline CO_Tree::tree_iterator
+CO_Tree::insert(tree_iterator itr, dimension_type key1, const data_type& data1) {
+  PPL_ASSERT(key1 != unused_index);
+  PPL_ASSERT(!empty());
+  PPL_ASSERT(itr->first != unused_index);
+
+  tree_iterator itr2(itr);
+
+  if (itr2->first != key1) {
+    if (itr2->first > key1)
+      while (itr2.has_parent() && itr2->first > key1)
+        itr2.get_parent();
+    else
+      while (itr2.has_parent() && itr2->first < key1)
+        itr2.get_parent();
+
+    go_down_searching_key(itr2, key1);
+
+#ifndef NDEBUG
+    tree_iterator itr3(*this);
+    go_down_searching_key(itr3, key1);
+    PPL_ASSERT(itr2 == itr3);
+#endif
+  }
+  insert_precise(key1, data1, itr2);
+
+  return itr2;
 }
 
 inline CO_Tree::iterator
@@ -586,9 +599,7 @@ CO_Tree::swap(CO_Tree& x) {
 
 inline
 CO_Tree::iterator::iterator(CO_Tree* tree1)
-  : tree(tree1) {
-  if (tree != 0)
-    get_root();
+  : i(1), tree(tree1) {
 }
 
 inline
@@ -966,9 +977,7 @@ CO_Tree::iterator::Const_Member_Access_Helper::operator->() const {
 
 inline
 CO_Tree::const_iterator::const_iterator(const CO_Tree* tree1)
-  : tree(tree1) {
-  if (tree != 0)
-    get_root();
+  : i(1), tree(tree1) {
 }
 
 inline

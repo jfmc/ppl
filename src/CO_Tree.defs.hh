@@ -191,6 +191,11 @@ private:
 
   class tree_iterator;
 
+  //! Inserts the pair (key, data) in the tree.
+  //! \p itr is used as hint, this will be faster if \p itr points near to the
+  //! place where the new element will be inserted (or where is already stored).
+  tree_iterator insert(tree_iterator itr, dimension_type key, const data_type& data);
+
   //! Inserts the pair (key1, data1) in the tree.
   //! \p itr must be the lower bound of \p key in the tree.
   //! \p itr is modified to point to the inserted element.
