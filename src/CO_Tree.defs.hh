@@ -106,18 +106,6 @@ public:
   //! node that would be his parent (otherwise).
   void go_down_searching_key(const_iterator& itr, dimension_type key) const;
 
-  //! Searches for an element with key \p key , assuming \p itr->first is less
-  //! than or equal to \p key .
-  //! This method returns an iterator pointing to the first element with key
-  //! greater than or equal to \p key .
-  iterator lower_bound(iterator itr, dimension_type key);
-
-  //! Searches for an element with key \p key , assuming \p itr->first is less
-  //! than or equal to \p key .
-  //! This method returns an iterator pointing to the first element with key
-  //! greater than or equal to \p key .
-  const_iterator lower_bound(const_iterator itr, dimension_type key) const;
-
   //! Erases from the tree the element pointed to by \p itr .
   //! \p itr is invalidated.
   void erase(iterator itr);
