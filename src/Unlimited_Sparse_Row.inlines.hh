@@ -265,24 +265,9 @@ Unlimited_Sparse_Row::lower_bound(dimension_type i) const {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::find(iterator itr, dimension_type i) {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  PPL_ASSERT(!tree.empty());
-  if (itr.itr->first <= i)
-    while (itr.itr.has_parent() && itr.itr->first < i)
-      itr.itr.get_parent();
-  else
-    while (itr.itr.has_parent() && itr.itr->first > i)
-      itr.itr.get_parent();
-
-  tree.go_down_searching_key(itr.itr, i);
-
-#ifndef NDEBUG
-  CO_Tree::iterator itr2(&tree);
-  tree.go_down_searching_key(itr2, i);
-  PPL_ASSERT(itr.itr == itr2);
-#endif
-
+Unlimited_Sparse_Row::find(iterator hint, dimension_type i) {
+  iterator itr = tree.bisect_near(hint.itr,
+                                  Unlimited_Sparse_Row__find__helper_functor(i));
   if (itr.itr->first != i)
     itr.itr = tree.end();
 
@@ -290,24 +275,9 @@ Unlimited_Sparse_Row::find(iterator itr, dimension_type i) {
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::find(const_iterator itr, dimension_type i) const {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  PPL_ASSERT(!tree.empty());
-  if (itr.itr->first <= i)
-    while (itr.itr.has_parent() && itr.itr->first < i)
-      itr.itr.get_parent();
-  else
-    while (itr.itr.has_parent() && itr.itr->first > i)
-      itr.itr.get_parent();
-
-  tree.go_down_searching_key(itr.itr, i);
-
-#ifndef NDEBUG
-  CO_Tree::const_iterator itr2(&tree);
-  tree.go_down_searching_key(itr2, i);
-  PPL_ASSERT(itr.itr == itr2);
-#endif
-
+Unlimited_Sparse_Row::find(const_iterator hint, dimension_type i) const {
+  const_iterator itr = tree.bisect_near(hint.itr,
+                                        Unlimited_Sparse_Row__find__helper_functor(i));
   if (itr.itr->first != i)
     itr.itr = tree.end();
 
