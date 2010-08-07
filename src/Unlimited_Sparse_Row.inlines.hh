@@ -194,7 +194,12 @@ Unlimited_Sparse_Row::find(dimension_type i) {
   if (tree.empty())
     return end();
 
-  iterator itr = tree.bisect_in(++(tree.before_begin()), --(tree.end()),
+  CO_Tree::iterator first = tree.before_begin();
+  first.get_next_value();
+  CO_Tree::iterator last = tree.end();
+  last.get_previous_value();
+
+  iterator itr = tree.bisect_in(first, last,
                                 Unlimited_Sparse_Row__find__helper_functor(i));
 
   if (itr.itr.is_at_end() || (itr.itr)->first != i)
