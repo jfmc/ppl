@@ -115,11 +115,15 @@ CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) {
       PPL_ASSERT(itr == itr2);
 #endif
     }
+    insert_precise(key1, data1, itr);
+
+    return itr;
+
+  } else {
+    insert_in_empty_tree(key1, data1);
+
+    return iterator(this);
   }
-
-  insert_precise(key1, data1, itr);
-
-  return itr;
 }
 
 inline CO_Tree::iterator

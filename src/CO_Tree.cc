@@ -409,21 +409,23 @@ PPL::CO_Tree::structure_OK() const {
 }
 
 void
+PPL::CO_Tree::insert_in_empty_tree(dimension_type key1, const data_type& data1) {
+  PPL_ASSERT(empty());
+  rebuild_bigger_tree();
+  iterator itr(this);
+  PPL_ASSERT(itr->first == unused_index);
+  itr->first = key1;
+  new (&(itr->second)) data_type(data1);
+  size++;
+
+  PPL_ASSERT(OK());
+}
+
+void
 PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
                              iterator& itr) {
   PPL_ASSERT(key1 != unused_index);
-
-  if (empty()) {
-    rebuild_bigger_tree();
-    itr.get_root();
-    PPL_ASSERT(itr->first == unused_index);
-    itr->first = key1;
-    new (&(itr->second)) data_type(data1);
-    size++;
-
-    PPL_ASSERT(OK());
-    return;
-  }
+  PPL_ASSERT(!empty());
 
 #ifndef NDEBUG
   iterator itr2(this);
