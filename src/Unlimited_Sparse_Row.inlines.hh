@@ -86,10 +86,16 @@ inline void
 Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
   if (tree.empty())
     return;
-  CO_Tree::iterator itr_i;
-  CO_Tree::iterator itr_j;
-  tree.go_down_searching_key(itr_i, i);
-  tree.go_down_searching_key(itr_j, j);
+
+  CO_Tree::iterator first = tree.before_begin();
+  first.get_next_value();
+  CO_Tree::iterator last = tree.end();
+  last.get_previous_value();
+
+  CO_Tree::iterator itr_i = tree.bisect_in(first, last,
+                                           Unlimited_Sparse_Row__bisect_helper_functor(i));
+  CO_Tree::iterator itr_j = tree.bisect_in(first, last,
+                                           Unlimited_Sparse_Row__bisect_helper_functor(j));
   if (itr_i->first == i)
     if (itr_j->first == j)
       // Both elements are in the tree
