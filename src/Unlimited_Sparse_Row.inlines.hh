@@ -285,16 +285,31 @@ Unlimited_Sparse_Row::find(const_iterator hint, dimension_type i) const {
 }
 
 inline Unlimited_Sparse_Row::iterator
-Unlimited_Sparse_Row::lower_bound(iterator itr, dimension_type i) {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  itr.itr = tree.lower_bound(itr.itr, i);
+Unlimited_Sparse_Row::lower_bound(iterator hint, dimension_type i) {
+  PPL_ASSERT(!hint.itr.is_at_end());
+
+  iterator itr = tree.bisect_near(hint.itr,
+                                  Unlimited_Sparse_Row__find__helper_functor(i));
+
+  if (itr.itr->first < i)
+    ++itr;
+
+  PPL_ASSERT(itr.itr.is_at_end() || itr.itr->first >= i);
+
   return itr;
 }
 
 inline Unlimited_Sparse_Row::const_iterator
-Unlimited_Sparse_Row::lower_bound(const_iterator itr, dimension_type i) const {
-  PPL_ASSERT(!itr.itr.is_at_end());
-  itr.itr = tree.lower_bound(itr.itr, i);
+Unlimited_Sparse_Row::lower_bound(const_iterator hint, dimension_type i) const {
+  PPL_ASSERT(!hint.itr.is_at_end());
+  const_iterator itr = tree.bisect_near(hint.itr,
+                                        Unlimited_Sparse_Row__find__helper_functor(i));
+
+  if (itr.itr->first < i)
+    ++itr;
+
+  PPL_ASSERT(itr.itr.is_at_end() || itr.itr->first >= i);
+
   return itr;
 }
 
