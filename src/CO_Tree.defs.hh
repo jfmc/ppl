@@ -223,12 +223,7 @@ private:
   static unsigned integer_log2(dimension_type n);
 
   //! Dumps the subtree rooted at \p itr to stdout, for debugging purposes.
-  //! itr is not modified, it is passed by reference to improve performance.
-  static void dump_subtree(iterator& itr);
-
-  //! Dumps the subtree rooted at \p itr to stdout, for debugging purposes.
-  //! itr is not modified, it is passed by reference to improve performance.
-  static void dump_subtree(const_iterator& itr);
+  static void dump_subtree(tree_iterator itr);
 
   //! Increases the tree's reserved size. Called when the density is about to
   //! exceed max_density.

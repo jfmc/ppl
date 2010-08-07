@@ -193,39 +193,14 @@ CO_Tree::integer_log2(dimension_type n) {
 
 inline void
 CO_Tree::dump_tree() const {
-  CO_Tree::const_iterator itr(&*this);
-  dump_subtree(itr);
-}
-
-inline void
-CO_Tree::dump_subtree(iterator& itr) {
-  if (itr.get_tree()->empty()) {
+  if (empty())
     std::cout << "(empty tree)" << std::endl;
-    return;
-  }
-  if (!itr.is_leaf()) {
-    itr.get_left_child();
-    dump_subtree(itr);
-    itr.get_parent();
-  }
-  std::cout << "At depth: " << itr.depth();
-  if (itr->first == unused_index)
-    std::cout << " (no data)" << std::endl;
   else
-    std::cout << " pair (" << itr->first << "," << itr->second << ")" << std::endl;
-  if (!itr.is_leaf()) {
-    itr.get_right_child();
-    dump_subtree(itr);
-    itr.get_parent();
-  }
+    dump_subtree(tree_iterator(*const_cast<CO_Tree*>(this)));
 }
 
 inline void
-CO_Tree::dump_subtree(const_iterator& itr) {
-  if (itr.get_tree()->empty()) {
-    std::cout << "(empty tree)" << std::endl;
-    return;
-  }
+CO_Tree::dump_subtree(tree_iterator itr) {
   if (!itr.is_leaf()) {
     itr.get_left_child();
     dump_subtree(itr);
