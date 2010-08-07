@@ -202,7 +202,7 @@ Unlimited_Sparse_Row::find(dimension_type i) {
   iterator itr = tree.bisect_in(first, last,
                                 Unlimited_Sparse_Row__find__helper_functor(i));
 
-  if (itr.itr.is_at_end() || (itr.itr)->first != i)
+  if (itr.itr->first != i)
     return end();
 
   return itr;
@@ -222,7 +222,7 @@ Unlimited_Sparse_Row::find(dimension_type i) const {
   const_iterator itr = tree.bisect_in(first, last,
                                       Unlimited_Sparse_Row__find__helper_functor(i));
 
-  if (itr.itr.is_at_end() || (itr.itr)->first != i)
+  if (itr.itr->first != i)
     return end();
 
   return itr;
