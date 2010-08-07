@@ -426,9 +426,8 @@ inline const Coefficient&
 Unlimited_Sparse_Row::get(dimension_type i) const {
   if (tree.empty())
     return Coefficient_zero();
-  CO_Tree::const_iterator itr(&tree);
-  tree.go_down_searching_key(itr, i);
-  if (itr->first == i)
+  const_iterator itr = find(i);
+  if (!itr.itr.is_at_end())
     return itr->second;
   else
     return Coefficient_zero();
