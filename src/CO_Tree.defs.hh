@@ -135,6 +135,26 @@ public:
 
 private:
 
+  class tree_iterator;
+
+  //! Inserts the pair (key1, data1) in the tree.
+  //! \p itr must be the lower bound of \p key in the tree.
+  //! \p itr is modified to point to the inserted element.
+  void insert_precise(dimension_type key1, const data_type& data1,
+                      tree_iterator& itr);
+
+  //! Inserts the pair (key1, data1) in the tree.
+  void insert_in_empty_tree(dimension_type key1, const data_type& data1);
+
+  //! Erases from the tree the element pointed to by \p itr .
+  //! \p itr is invalidated.
+  void erase(tree_iterator itr);
+
+  //! Searches for an element with key \p key in the subtree rooted at \p itr.
+  //! \p itr is modified to point to the found node (if it exists) or to the
+  //! node that would be his parent (otherwise).
+  void go_down_searching_key(tree_iterator& itr, dimension_type key);
+
   //! Initializes a tree with reserved size at least \p n .
   void init(dimension_type n);
 
@@ -424,6 +444,8 @@ public:
   //! Constructs an iterator pointing to the root node.
   explicit iterator(CO_Tree* tree = 0);
 
+  explicit iterator(const tree_iterator& itr);
+
   iterator(const iterator& itr);
 
   //! Returns an iterator that points before the first element.
@@ -434,6 +456,9 @@ public:
 
   //! Assigns \p itr to *this .
   iterator& operator=(const iterator& itr);
+
+  //! Assigns \p itr to *this .
+  iterator& operator=(const tree_iterator& itr);
 
   //! Makes the iterator point to the root of \p tree.
   //! The values of all fields (beside root) are overwritten.
@@ -534,6 +559,130 @@ private:
 
   friend class CO_Tree;
 };
+
+class CO_Tree::tree_iterator {
+
+public:
+
+  class Member_Access_Helper {
+
+  public:
+    Member_Access_Helper(dimension_type& key, data_type& data);
+
+    std::pair<dimension_type&, data_type&>* operator->();
+
+  private:
+    std::pair<dimension_type&, data_type&> my_pair;
+  };
+
+  class Const_Member_Access_Helper {
+
+  public:
+    Const_Member_Access_Helper(dimension_type key, const data_type& data);
+
+    const std::pair<const dimension_type, const data_type&>* operator->()
+      const;
+
+  private:
+    std::pair<const dimension_type, const data_type&> my_pair;
+  };
+
+  //! Constructs a tree_iterator pointing at the root node of the specified
+  //! tree (assuming the tree is not empty).
+  explicit tree_iterator(CO_Tree& tree);
+
+  explicit tree_iterator(const iterator& itr);
+
+  tree_iterator& operator=(const tree_iterator& itr);
+  tree_iterator& operator=(const iterator& itr);
+
+  bool operator==(const tree_iterator& itr) const;
+  bool operator!=(const tree_iterator& itr) const;
+
+  bool operator==(const iterator& itr) const;
+  bool operator!=(const iterator& itr) const;
+
+  //! Makes the iterator point to the root of \p tree.
+  //! The values of all fields (beside root) are overwritten.
+  void get_root();
+
+  //! Makes the iterator point to the left child of the current node.
+  void get_left_child();
+
+  //! Makes the iterator point to the right child of the current node.
+  void get_right_child();
+
+  //! Makes the iterator point to the parent of the current node.
+  void get_parent();
+
+  //! Follows left childs until it arrives at a leaf.
+  void follow_left_childs();
+
+  //! Follows right childs until it arrives at a leaf.
+  void follow_right_childs();
+
+  //! Follows left childs with a value, until it arrives at a leaf.
+  void follow_left_childs_with_value();
+
+  //! Follows right childs with a value, until it arrives at a leaf.
+  void follow_right_childs_with_value();
+
+  //! Makes the iterator point to the left child of the current node.
+  //! Returns false if there is no left child or the left child is unused
+  //! (and *this is unchanged).
+  bool get_left_child_value();
+
+  //! Makes the iterator point to the right child of the current node.
+  //! Returns false if there is no right child or the right child is unused
+  //! (and *this is unchanged).
+  bool get_right_child_value();
+
+  //! Returns true if the pointed node has a parent.
+  bool has_parent() const;
+
+  //! Returns true if the pointed node has a parent and is its right child.
+  bool is_right_child() const;
+
+  //! Returns true if the pointed node is a leaf of the complete tree.
+  bool is_leaf() const;
+
+  //! Returns the value_type of the current node.
+  std::pair<dimension_type&, data_type&> operator*();
+
+  //! Returns the value_type of the current node.
+  std::pair<const dimension_type, const data_type&> operator*() const;
+
+  //! Returns a pointer to the value_type of the current node.
+  Member_Access_Helper operator->();
+
+  //! Returns a pointer to the value_type of the current node.
+  Const_Member_Access_Helper operator->() const;
+
+  //! The tree containing the element pointed to by this iterator.
+  CO_Tree* const tree;
+
+  //! Returns the index of the current node in the DFS layout of the complete
+  //! tree.
+  dimension_type index() const;
+
+  //! Returns 2^h, with h the height of the current node in the tree,
+  //! counting from 0. Thus leaves have offset 1.
+  dimension_type get_offset() const;
+
+  //! Returns the height of the current node in the complete tree.
+  unsigned depth() const;
+
+private:
+  bool OK() const;
+
+  //! The index of the current node in the DFS layout of the complete tree.
+  dimension_type i;
+
+  //! This is 2^h, with h the height of the current node in the tree,
+  //! counting from 0. Thus leaves have offset 1.
+  dimension_type offset;
+};
+
 
 } // namespace Parma_Polyhedra_Library
 
