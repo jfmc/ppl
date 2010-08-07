@@ -416,7 +416,7 @@ void
 PPL::CO_Tree::insert_in_empty_tree(dimension_type key1, const data_type& data1) {
   PPL_ASSERT(empty());
   rebuild_bigger_tree();
-  iterator itr(this);
+  tree_iterator itr(*this);
   PPL_ASSERT(itr->first == unused_index);
   itr->first = key1;
   new (&(itr->second)) data_type(data1);
