@@ -690,7 +690,18 @@ PPL::CO_Tree
   if (root->first == unused_index)
     return;
 
-  root.follow_right_childs_with_value();
+  // Root points to the root of the subtree.
+  // Make it point to the rightmost element with a value in the subtree.
+  {
+    dimension_type index = root.i;
+    dimension_type offset = index;
+    offset &= - offset;
+    index += offset;
+    --index;
+    while (root.get_tree()->indexes[index] == unused_index)
+      --index;
+    root.i = index;
+  }
 
   if (!added_key && can_add_key)
     while (subtree_size != 0) {
