@@ -82,19 +82,9 @@ public:
   //! place where the new element will be inserted (or where is already stored).
   iterator insert(iterator itr, dimension_type key);
 
-  //! Inserts the pair (key1, data1) in the tree.
-  //! \p itr must be the lower bound of \p key in the tree.
-  //! \p itr is modified to point to the inserted element.
-  void insert_precise(dimension_type key1, const data_type& data1,
-                      iterator& itr);
-
   //! Erases the pair with key \p key from the tree.
   //! Returns \p false if there was no pair with key \p key in the tree.
   bool erase(dimension_type key);
-
-  //! Erases from the tree the element pointed to by \p itr .
-  //! \p itr is invalidated.
-  void erase(iterator itr);
 
   //! Swaps x with *this.
   void swap(CO_Tree& x);
@@ -114,11 +104,6 @@ public:
   //! Searches for an element with key \p key in the subtree rooted at \p itr.
   //! \p itr is modified to point to the found node (if it exists) or to the
   //! node that would be his parent (otherwise).
-  void go_down_searching_key(iterator& itr, dimension_type key);
-
-  //! Searches for an element with key \p key in the subtree rooted at \p itr.
-  //! \p itr is modified to point to the found node (if it exists) or to the
-  //! node that would be his parent (otherwise).
   void go_down_searching_key(const_iterator& itr, dimension_type key) const;
 
   //! Searches for an element with key \p key , assuming \p itr->first is less
@@ -132,6 +117,16 @@ public:
   //! This method returns an iterator pointing to the first element with key
   //! greater than or equal to \p key .
   const_iterator lower_bound(const_iterator itr, dimension_type key) const;
+
+  //! Erases from the tree the element pointed to by \p itr .
+  //! \p itr is invalidated.
+  void erase(iterator itr);
+
+  // TODO: This should be removed.
+  //! Searches for an element with key \p key in the subtree rooted at \p itr.
+  //! \p itr is modified to point to the found node (if it exists) or to the
+  //! node that would be his parent (otherwise).
+  void go_down_searching_key(iterator& itr, dimension_type key);
 
 private:
 
@@ -189,7 +184,7 @@ private:
   //! For insertions, it adds the pair (key, value).
   //! After the call, itr is modified so the added node is in the subtree
   //! pointed to by \p itr.
-  void rebalance(iterator& itr, dimension_type key,
+  void rebalance(tree_iterator& itr, dimension_type key,
                  const data_type& value);
 
   //! Redistributes the elements in the subtree rooted at the node
@@ -197,7 +192,7 @@ private:
   //! (key, value) to the tree.
   //! \p subtree_size is the number of used elements in the subtree at the end
   //! of the call.
-  void redistribute_elements_in_subtree(iterator& itr,
+  void redistribute_elements_in_subtree(tree_iterator& itr,
                                         dimension_type n,
                                         bool deleting,
                                         dimension_type key,
@@ -213,7 +208,7 @@ private:
   //! \p first_unused is updated, but root isn't. The root iterator is passed
   //! by reference to improve performance.
   static void compact_elements_in_the_rightmost_end(
-    iterator& root, iterator& first_unused,
+    iterator root, iterator& first_unused,
     dimension_type subtree_size, dimension_type key, const data_type& value,
     bool& added_key, bool& can_add_key);
 
@@ -225,7 +220,7 @@ private:
   //! \p root is not modified, is only passed by reference to improve
   //! \performance. \p itr is invalidated.
   static void redistribute_elements_in_subtree_helper(
-    iterator& root, dimension_type subtree_size,
+    tree_iterator& root, dimension_type subtree_size,
     iterator& itr, dimension_type key, const data_type& value,
     bool added_key);
 
@@ -241,7 +236,7 @@ private:
 
   //! Counts the number of used elements in the subtree rooted at the node
   //! pointed to by itr.
-  static dimension_type count_used_in_subtree(iterator& itr);
+  static dimension_type count_used_in_subtree(tree_iterator& itr);
 
   //! Counts the number of used elements in the subtree rooted at the node
   //! pointed to by itr.
