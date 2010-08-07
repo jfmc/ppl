@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Coefficient.defs.hh"
 #include <vector>
-#include <stdint.h>
 
 namespace Parma_Polyhedra_Library {
 
