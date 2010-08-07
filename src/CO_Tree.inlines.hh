@@ -596,7 +596,7 @@ CO_Tree::bisect_in(dimension_type first, dimension_type last,
   PPL_ASSERT(indexes[first] != unused_index);
   PPL_ASSERT(indexes[last] != unused_index);
 
-  while (first != last) {
+  while (first < last) {
     dimension_type half = (first + last) / 2;
     dimension_type new_half = half;
 
@@ -625,7 +625,10 @@ CO_Tree::bisect_in(dimension_type first, dimension_type last,
     }
   }
 
-  return first;
+  // It is important that last is returned instead of first, because first
+  // may have increased beyond last, even beyond the original value of last
+  // at the beginning of this method.
+  return last;
 }
 
 inline void
