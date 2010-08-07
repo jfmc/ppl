@@ -576,6 +576,49 @@ CO_Tree::bisect_in(iterator first, iterator last, const Func &func) {
   return result;
 }
 
+template <typename Func>
+inline dimension_type
+CO_Tree::bisect_in(dimension_type first, dimension_type last,
+                   const Func &func) {
+  PPL_ASSERT(first != 0);
+  PPL_ASSERT(last <= reserved_size);
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(indexes[first] != unused_index);
+  PPL_ASSERT(indexes[last] != unused_index);
+
+  while (first != last) {
+    dimension_type half = (first + last) / 2;
+    dimension_type new_half = half;
+
+    while (indexes[new_half] == unused_index)
+      ++new_half;
+
+    // static_casts are not stricly needed.
+    // They are useful to prevent func from modifying of the tree data.
+    int result = func(static_cast<const dimension_type&>(indexes[new_half]),
+                      static_cast<const data_type&>(data[new_half]));
+
+    if (result == 0)
+      return new_half;
+
+    if (result < 0) {
+
+      while (indexes[half] == unused_index)
+        --half;
+
+      last = half;
+
+    } else {
+
+      ++new_half;
+      while (indexes[new_half] == unused_index)
+        ++new_half;
+
+      first = new_half;
+    }
+  }
+}
+
 inline void
 CO_Tree::move_data_element(data_type& to, data_type& from) {
   // The following code is equivalent (but slower):

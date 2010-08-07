@@ -150,46 +150,6 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
   PPL_ASSERT(OK());
 }
 
-template <typename Func>
-PPL::dimension_type
-PPL::CO_Tree::bisect_in(dimension_type first, dimension_type last,
-                        const Func &func) {
-  PPL_ASSERT(first != 0);
-  PPL_ASSERT(last <= reserved_size);
-  PPL_ASSERT(first <= last);
-  PPL_ASSERT(indexes[first] != unused_index);
-  PPL_ASSERT(indexes[last] != unused_index);
-
-  while (first != last) {
-    dimension_type half = (first + last) / 2;
-    dimension_type new_half = half;
-
-    while (indexes[new_half] == unused_index)
-      ++new_half;
-
-    int result = func(indexes[new_half], data[new_half]);
-
-    if (result == 0)
-      return new_half;
-
-    if (result < 0) {
-
-      while (indexes[half] == unused_index)
-        --half;
-
-      last = half;
-
-    } else {
-
-      ++new_half;
-      while (indexes[new_half] == unused_index)
-        ++new_half;
-
-      first = new_half;
-    }
-  }
-}
-
 void
 PPL::CO_Tree::init(dimension_type reserved_size1) {
 
