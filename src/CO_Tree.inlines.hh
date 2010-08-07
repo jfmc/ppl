@@ -603,8 +603,6 @@ CO_Tree::bisect_in(dimension_type first, dimension_type last,
     while (indexes[new_half] == unused_index)
       ++new_half;
 
-    // static_casts are not stricly needed.
-    // They are useful to prevent func from modifying of the tree data.
     int result = func(indexes[new_half], data[new_half]);
 
     if (result == 0)
