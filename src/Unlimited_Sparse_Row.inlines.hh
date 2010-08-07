@@ -30,6 +30,30 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+namespace {
+
+  class Unlimited_Sparse_Row__bisect_helper_functor {
+  public:
+    Unlimited_Sparse_Row__bisect_helper_functor(dimension_type i1)
+      : i(i1) {
+    }
+
+    inline int operator()(dimension_type index,
+                          const Coefficient& /* data */) const {
+      if (index == i)
+        return 0;
+      else
+        if (i < index)
+          return -1;
+        else
+          return 1;
+    }
+
+  private:
+    dimension_type i;
+  };
+}
+
 inline
 Unlimited_Sparse_Row::Unlimited_Sparse_Row()
   : tree() {
@@ -163,31 +187,6 @@ Unlimited_Sparse_Row::find_create(iterator itr, dimension_type i) {
   return itr;
 }
 
-namespace {
-
-  class Unlimited_Sparse_Row__find__helper_functor {
-  public:
-    Unlimited_Sparse_Row__find__helper_functor(dimension_type i1)
-      : i(i1) {
-    }
-
-    inline int operator()(dimension_type index,
-                          const Coefficient& /* data */) const {
-      if (index == i)
-        return 0;
-      else
-        if (i < index)
-          return -1;
-        else
-          return 1;
-    }
-
-  private:
-    dimension_type i;
-  };
-
-}
-
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find(dimension_type i) {
 
@@ -200,7 +199,7 @@ Unlimited_Sparse_Row::find(dimension_type i) {
   last.get_previous_value();
 
   iterator itr = tree.bisect_in(first, last,
-                                Unlimited_Sparse_Row__find__helper_functor(i));
+                                Unlimited_Sparse_Row__bisect_helper_functor(i));
 
   if (itr.itr->first != i)
     return end();
@@ -220,7 +219,7 @@ Unlimited_Sparse_Row::find(dimension_type i) const {
   last.get_previous_value();
 
   const_iterator itr = tree.bisect_in(first, last,
-                                      Unlimited_Sparse_Row__find__helper_functor(i));
+                                      Unlimited_Sparse_Row__bisect_helper_functor(i));
 
   if (itr.itr->first != i)
     return end();
@@ -239,7 +238,7 @@ Unlimited_Sparse_Row::lower_bound(dimension_type i) {
   last.get_previous_value();
 
   iterator itr = tree.bisect_in(first, last,
-                                Unlimited_Sparse_Row__find__helper_functor(i));
+                                Unlimited_Sparse_Row__bisect_helper_functor(i));
 
   if (itr.itr->first < i)
     ++itr;
@@ -257,7 +256,7 @@ Unlimited_Sparse_Row::lower_bound(dimension_type i) const {
   last.get_previous_value();
 
   const_iterator itr = tree.bisect_in(first, last,
-                                      Unlimited_Sparse_Row__find__helper_functor(i));
+                                      Unlimited_Sparse_Row__bisect_helper_functor(i));
   if (itr.itr->first < i)
     ++itr;
   PPL_ASSERT(itr.itr.is_at_end() || itr->first >= i);
@@ -267,7 +266,7 @@ Unlimited_Sparse_Row::lower_bound(dimension_type i) const {
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find(iterator hint, dimension_type i) {
   iterator itr = tree.bisect_near(hint.itr,
-                                  Unlimited_Sparse_Row__find__helper_functor(i));
+                                  Unlimited_Sparse_Row__bisect_helper_functor(i));
   if (itr.itr->first != i)
     itr.itr = tree.end();
 
@@ -277,7 +276,7 @@ Unlimited_Sparse_Row::find(iterator hint, dimension_type i) {
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::find(const_iterator hint, dimension_type i) const {
   const_iterator itr = tree.bisect_near(hint.itr,
-                                        Unlimited_Sparse_Row__find__helper_functor(i));
+                                        Unlimited_Sparse_Row__bisect_helper_functor(i));
   if (itr.itr->first != i)
     itr.itr = tree.end();
 
@@ -289,7 +288,7 @@ Unlimited_Sparse_Row::lower_bound(iterator hint, dimension_type i) {
   PPL_ASSERT(!hint.itr.is_at_end());
 
   iterator itr = tree.bisect_near(hint.itr,
-                                  Unlimited_Sparse_Row__find__helper_functor(i));
+                                  Unlimited_Sparse_Row__bisect_helper_functor(i));
 
   if (itr.itr->first < i)
     ++itr;
@@ -303,7 +302,7 @@ inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::lower_bound(const_iterator hint, dimension_type i) const {
   PPL_ASSERT(!hint.itr.is_at_end());
   const_iterator itr = tree.bisect_near(hint.itr,
-                                        Unlimited_Sparse_Row__find__helper_functor(i));
+                                        Unlimited_Sparse_Row__bisect_helper_functor(i));
 
   if (itr.itr->first < i)
     ++itr;
