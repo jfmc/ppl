@@ -380,7 +380,9 @@ PPL::CO_Tree::structure_OK() const {
       return false;
 
   } else {
-    const_iterator itr(&*this);
+    // This const_cast could be removed by adding a const_tree_iterator,
+    // but it would add much code duplication without a real need.
+    tree_iterator itr(*const_cast<CO_Tree*>(this));
     dimension_type real_size = count_used_in_subtree(itr);
     if (real_size != size)
       // There are \p real_size elements in the tree that are reachable by the
@@ -630,28 +632,6 @@ PPL::CO_Tree::count_used_in_subtree(tree_iterator& itr) {
   const dimension_type* indexes = itr.tree->indexes;
 
   for (dimension_type j = root_index - (k - 1); j <= limit; ++j)
-    if (indexes[j] != unused_index)
-      ++n;
-
-  return n;
-}
-
-PPL::dimension_type
-PPL::CO_Tree::count_used_in_subtree(const_iterator& itr) {
-  PPL_ASSERT(itr->first != unused_index);
-  dimension_type n = 0;
-
-  const dimension_type k = itr.i & -itr.i;
-
-  // The complete subtree rooted at itr has 2*k - 1 nodes.
-
-  const dimension_type limit = itr.i + (k - 1);
-
-  PPL_ASSERT(itr.i > (k - 1));
-
-  const dimension_type* indexes = itr.tree->indexes;
-
-  for (dimension_type j = itr.i - (k - 1); j <= limit; ++j)
     if (indexes[j] != unused_index)
       ++n;
 

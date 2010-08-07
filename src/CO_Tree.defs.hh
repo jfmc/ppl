@@ -238,10 +238,6 @@ private:
   //! pointed to by itr.
   static dimension_type count_used_in_subtree(tree_iterator& itr);
 
-  //! Counts the number of used elements in the subtree rooted at the node
-  //! pointed to by itr.
-  static dimension_type count_used_in_subtree(const_iterator& itr);
-
   //! Moves the value of \p from in \p to .
   //! The final value of \p from is unspecified.
   static void move_data_element(data_type& to, data_type& from);
