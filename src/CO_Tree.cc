@@ -162,16 +162,10 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
     return;
   }
 
-  height_t l = 0;
+  max_depth = integer_log2(reserved_size1) + 1;
 
-  if (reserved_size1 == 0)
-    reserved_size1 = 1;
-
-  l = integer_log2(reserved_size1);
-  // Add 1 to the log.
-  l++;
-
-  reserved_size = ((dimension_type)1 << l) - 1;
+  size = 0;
+  reserved_size = ((dimension_type)1 << max_depth) - 1;
   indexes = new dimension_type[reserved_size + 2];
   data = static_cast<data_type*>(operator new(sizeof(data_type)
                                               * (reserved_size + 1)));
@@ -182,10 +176,6 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   // These are used as markers by iterators.
   indexes[0] = 0;
   indexes[reserved_size + 1] = 0;
-
-  max_depth = l;
-
-  size = 0;
 
   PPL_ASSERT(structure_OK());
 }
