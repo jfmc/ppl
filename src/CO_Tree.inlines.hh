@@ -529,37 +529,30 @@ CO_Tree::rebuild_bigger_tree() {
   else {
     dimension_type new_reserved_size = reserved_size*2 + 1;
 
-    dimension_type* new_indexes
-      = static_cast<dimension_type*>(malloc(sizeof(dimension_type)
-                                            * (new_reserved_size + 2)));
+    dimension_type* new_indexes = new dimension_type[new_reserved_size + 2];
     data_type* new_data
-      = static_cast<data_type*>(malloc(sizeof(data_type)
-                                       * (new_reserved_size + 1)));
+      = static_cast<data_type*>(operator new(sizeof(data_type)
+                                             * (new_reserved_size + 1)));
 
-    new (&(new_indexes[1])) dimension_type(unused_index);
+    new_indexes[1] = unused_index;
 
     for (dimension_type i = 1, j = 2; i <= reserved_size; ++i, ++j) {
       if (indexes[i] == unused_index)
-        new (&(new_indexes[j])) dimension_type(unused_index);
+        new_indexes[j] = unused_index;
       else {
-        new (&(new_indexes[j])) dimension_type(indexes[i]);
+        new_indexes[j] = indexes[i];
         move_data_element(new_data[j], data[i]);
       }
-      indexes[i].~dimension_type();
       ++j;
-      new (&(new_indexes[j])) dimension_type(unused_index);
+      new_indexes[j] = unused_index;
     }
 
-    // These were used as markers by iterators.
-    indexes[0].~dimension_type();
-    indexes[reserved_size + 1].~dimension_type();
-
     // These are used as markers by iterators.
-    new (&(new_indexes[0])) dimension_type(0);
-    new (&(new_indexes[new_reserved_size + 1])) dimension_type(0);
+    new_indexes[0] = 0;
+    new_indexes[new_reserved_size + 1] = 0;
 
-    free(indexes);
-    free(data);
+    delete [] indexes;
+    operator delete(data);
 
     indexes = new_indexes;
     data = new_data;
