@@ -201,10 +201,10 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
     return;
 
   tree_iterator root(*this);
-  iterator itr = tree.before_begin();
-  itr.get_next_value();
 
-  PPL_ASSERT(itr->first != unused_index);
+  dimension_type source_index = 1;
+  while (tree.indexes[source_index] == unused_index)
+    ++source_index;
 
   // This is static and with static allocation, to improve performance.
   static std::pair<dimension_type,char> stack[5*CHAR_BIT*sizeof(dimension_type)];
@@ -261,11 +261,14 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
     } else {
       if (top_n == 1) {
         PPL_ASSERT(root->first == unused_index);
-        PPL_ASSERT(itr->first != unused_index);
-        root->first = itr->first;
-        itr->first = unused_index;
-        move_data_element(root->second, itr->second);
-        itr.get_next_value();
+        PPL_ASSERT(tree.indexes[source_index] != unused_index);
+        root->first = tree.indexes[source_index];
+        tree.indexes[source_index] = unused_index;
+        move_data_element(root->second, tree.data[source_index]);
+        PPL_ASSERT(source_index <= tree.reserved_size);
+        ++source_index;
+        while (tree.indexes[source_index] == unused_index)
+          ++source_index;
         --stack_first_empty;
       } else {
         PPL_ASSERT(stack_first_empty + 3 < sizeof(stack)/sizeof(stack[0]));
