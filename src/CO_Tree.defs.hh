@@ -122,89 +122,62 @@ public:
   //! \p itr is invalidated.
   void erase(iterator itr);
 
-  //! Searches in [first, last] using bisection (note that last is included,
-  //! too!).
-  //! func will be applied to a dimension_type and a data_type and should
-  //! return 0 if this is the searched element (ending bisection), a positive
-  //! integer if the searched element is after this, and a negative integer if
-  //! the searched element is before this.
+  //! Searches an element with key \p key in [first, last] using bisection
+  //! (note that last is included, too!).
   //! If the element is found, an iterator pointing to that element is
   //! returned; otherwise, the returned iterator refers to the immediately
   //! preceding or succeeding value.
   //! \p first and \p last must point to existing values.
-  template <typename Func>
-  iterator bisect_in(iterator first, iterator last, const Func &func);
+  iterator bisect_in(iterator first, iterator last, dimension_type key);
 
-  //! Searches in [first, last] using bisection (note that last is included,
-  //! too!).
-  //! func will be applied to a dimension_type and a data_type and should
-  //! return 0 if this is the searched element (ending bisection), a positive
-  //! integer if the searched element is after this, and a negative integer if
-  //! the searched element is before this.
+  //! Searches an element with key \p key in [first, last] using bisection
+  //! (note that last is included, too!).
   //! If the element is found, an iterator pointing to that element is
   //! returned; otherwise, the returned iterator refers to the immediately
   //! preceding or succeeding value.
   //! \p first and \p last must point to existing values.
-  template <typename Func>
   const_iterator bisect_in(const_iterator first, const_iterator last,
-                           const Func &func) const;
+                           dimension_type key) const;
 
-  //! Searches near \p hint using a binary progression and then a bisection.
+  //! Searches near \p hint an element with key \p key, using a binary
+  //! progression and then a bisection.
   //! This means this method is always O(log(n)), and it is O(1) if the
   //! distance between the searched position and \p hint is O(1).
-  //! func will be applied to a dimension_type and a data_type and should
-  //! return 0 if this is the searched element (ending bisection), a positive
-  //! integer if the searched element is after this, and a negative integer if
-  //! the searched element is before this.
   //! If the element is found, the returned iterator points to that element;
   //! otherwise, it points to the immediately preceding or succeeding value.
   //! \p first and \p last must be indexes of existing values.
-  template <typename Func>
-  iterator bisect_near(iterator hint, const Func &func);
+  iterator bisect_near(iterator hint, dimension_type key);
 
-  //! Searches near \p hint using a binary progression and then a bisection.
+  //! Searches near \p hint an element with key \p key, using a binary
+  //! progression and then a bisection.
   //! This means this method is always O(log(n)), and it is O(1) if the
   //! distance between the searched position and \p hint is O(1).
-  //! func will be applied to a dimension_type and a data_type and should
-  //! return 0 if this is the searched element (ending bisection), a positive
-  //! integer if the searched element is after this, and a negative integer if
-  //! the searched element is before this.
   //! If the element is found, the index of that element is returned;
   //! otherwise, the returned index refers to the immediately preceding or
   //! succeeding value.
   //! \p first and \p last must be indexes of existing values.
-  template <typename Func>
-  const_iterator bisect_near(const_iterator hint, const Func &func) const;
+  const_iterator bisect_near(const_iterator hint, dimension_type key) const;
 
 private:
 
-  //! Searches in [first, last] using bisection (note that last is included,
-  //! too!).
-  //! func will be applied to a dimension_type and a data_type and should
-  //! return 0 if this is the searched element (ending bisection), a positive
-  //! integer if the searched element is after this, and a negative integer if
-  //! the searched element is before this.
+  //! Searches an element with key \p key in [first, last] using bisection
+  //! (note that last is included, too!).
   //! If the element is found, the index of that element is returned;
   //! otherwise, the returned index refers to the immediately preceding or
   //! succeeding value.
   //! \p first and \p last must be indexes of existing values.
-  template <typename Func>
   dimension_type bisect_in(dimension_type first, dimension_type last,
-                           const Func &func) const;
+                           dimension_type key) const;
 
-  //! Searches near \p hint using a binary progression and then a bisection.
+  //! Searches an element with key \p key near \p hint using a binary
+  //! progression and then a bisection.
   //! This means this method is always O(log(n)), and it is O(1) if the
   //! distance between the searched position and \p hint is O(1).
-  //! func will be applied to a dimension_type and a data_type and should
-  //! return 0 if this is the searched element (ending bisection), a positive
-  //! integer if the searched element is after this, and a negative integer if
-  //! the searched element is before this.
   //! If the element is found, the index of that element is returned;
   //! otherwise, the returned index refers to the immediately preceding or
   //! succeeding value.
   //! \p first and \p last must be indexes of existing values.
-  template <typename Func>
-  dimension_type bisect_near(dimension_type hint, const Func &func) const;
+  dimension_type bisect_near(dimension_type hint, dimension_type key) const;
 
   class tree_iterator;
 

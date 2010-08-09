@@ -102,30 +102,6 @@ CO_Tree::insert(dimension_type key1) {
   }
 }
 
-namespace {
-
-  class CO_Tree__bisect_helper_functor {
-  public:
-    CO_Tree__bisect_helper_functor(dimension_type i1)
-      : i(i1) {
-    }
-
-    inline int operator()(dimension_type index,
-                          const Coefficient& /* data */) const {
-      if (index == i)
-        return 0;
-      else
-        if (i < index)
-          return -1;
-        else
-          return 1;
-    }
-
-  private:
-    dimension_type i;
-  };
-}
-
 inline dimension_type
 CO_Tree::external_memory_in_bytes() const {
   dimension_type size = 0;
@@ -204,53 +180,48 @@ CO_Tree::erase(iterator itr) {
   erase(tree_iterator(itr, *this));
 }
 
-template <typename Func>
 inline CO_Tree::iterator
-CO_Tree::bisect_in(iterator first, iterator last, const Func &func) {
+CO_Tree::bisect_in(iterator first, iterator last, dimension_type key) {
   PPL_ASSERT(first != before_begin());
   PPL_ASSERT(first != end());
   PPL_ASSERT(last != before_begin());
   PPL_ASSERT(last != end());
   dimension_type index = bisect_in(&(first->second) - data,
-                                   &(last->second) - data, func);
+                                   &(last->second) - data, key);
   return iterator(*this, index);
 }
 
-template <typename Func>
 inline CO_Tree::const_iterator
 CO_Tree::bisect_in(const_iterator first, const_iterator last,
-                   const Func &func) const {
+                   dimension_type key) const {
   PPL_ASSERT(first != before_begin());
   PPL_ASSERT(first != end());
   PPL_ASSERT(last != before_begin());
   PPL_ASSERT(last != end());
   dimension_type index = bisect_in(&(first->second) - data,
-                                   &(last->second) - data, func);
+                                   &(last->second) - data, key);
   return const_iterator(*this, index);
 }
 
-template <typename Func>
 inline CO_Tree::iterator
-CO_Tree::bisect_near(iterator hint, const Func &func) {
+CO_Tree::bisect_near(iterator hint, dimension_type key) {
   PPL_ASSERT(hint != before_begin());
   PPL_ASSERT(hint != end());
-  dimension_type index = bisect_near(&(hint->second) - data, func);
+  dimension_type index = bisect_near(&(hint->second) - data, key);
   return iterator(*this, index);
 }
 
-template <typename Func>
 inline CO_Tree::const_iterator
-CO_Tree::bisect_near(const_iterator hint, const Func &func) const {
+CO_Tree::bisect_near(const_iterator hint, dimension_type key) const {
   PPL_ASSERT(hint != before_begin());
   PPL_ASSERT(hint != end());
-  dimension_type index = bisect_near(&(hint->second) - data, func);
+  dimension_type index = bisect_near(&(hint->second) - data, key);
   return const_iterator(*this, index);
 }
 
-template <typename Func>
 inline dimension_type
 CO_Tree::bisect_in(dimension_type first, dimension_type last,
-                   const Func &func) const {
+                   dimension_type key) const {
   PPL_ASSERT(first != 0);
   PPL_ASSERT(last <= reserved_size);
   PPL_ASSERT(first <= last);
@@ -264,12 +235,10 @@ CO_Tree::bisect_in(dimension_type first, dimension_type last,
     while (indexes[new_half] == unused_index)
       ++new_half;
 
-    int result = func(indexes[new_half], data[new_half]);
-
-    if (result == 0)
+    if (indexes[new_half] == key)
       return new_half;
 
-    if (result < 0) {
+    if (indexes[new_half] > key) {
 
       while (indexes[half] == unused_index)
         --half;
@@ -292,22 +261,19 @@ CO_Tree::bisect_in(dimension_type first, dimension_type last,
   return last;
 }
 
-template <typename Func>
 inline dimension_type
-CO_Tree::bisect_near(dimension_type hint, const Func &func) const {
+CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
   PPL_ASSERT(hint != 0);
   PPL_ASSERT(hint <= reserved_size);
   PPL_ASSERT(indexes[hint] != unused_index);
 
-  int result = func(indexes[hint], data[hint]);
-
-  if (result == 0)
+  if (indexes[hint] == key)
     return hint;
   else {
     dimension_type new_hint;
     dimension_type offset = 1;
 
-    if (result < 0) {
+    if (indexes[hint] > key) {
       // The searched element is before `hint'.
 
       while (1) {
@@ -319,8 +285,7 @@ CO_Tree::bisect_near(dimension_type hint, const Func &func) const {
           // The searched element is in [hint,new_hint).
           while (indexes[hint] == unused_index)
             ++hint;
-          result = func(indexes[hint], data[hint]);
-          if (result <= 0)
+          if (indexes[hint] >= key)
             return hint;
           // The searched element is in (hint,new_hint) and both indexes point
           // to valid elements.
@@ -337,12 +302,10 @@ CO_Tree::bisect_near(dimension_type hint, const Func &func) const {
 
         PPL_ASSERT(new_hint <= hint);
 
-        result = func(indexes[new_hint], data[new_hint]);
-
-        if (result == 0)
+        if (indexes[new_hint] == key)
           return new_hint;
         else
-          if (result > 0) {
+          if (indexes[new_hint] < key) {
             // The searched element is in (new_hint,hint)
             std::swap(hint, new_hint);
             // The searched element is now in (hint,new_hint).
@@ -363,8 +326,7 @@ CO_Tree::bisect_near(dimension_type hint, const Func &func) const {
           // The searched element is in (hint,new_hint].
           while (indexes[new_hint] == unused_index)
             --new_hint;
-          result = func(indexes[new_hint], data[new_hint]);
-          if (result >= 0)
+          if (indexes[new_hint] <= key)
             return new_hint;
           // The searched element is in (hint,new_hint) and both indexes point
           // to valid elements.
@@ -381,12 +343,10 @@ CO_Tree::bisect_near(dimension_type hint, const Func &func) const {
 
         PPL_ASSERT(hint <= new_hint);
 
-        result = func(indexes[new_hint], data[new_hint]);
-
-        if (result == 0)
+        if (indexes[new_hint] == key)
           return new_hint;
         else
-          if (result < 0)
+          if (indexes[new_hint] > key)
             // The searched element is in (hint,new_hint).
             break;
 
@@ -419,7 +379,7 @@ CO_Tree::bisect_near(dimension_type hint, const Func &func) const {
     PPL_ASSERT(indexes[hint] != unused_index);
     PPL_ASSERT(indexes[new_hint] != unused_index);
 
-    return bisect_in(hint, new_hint, func);
+    return bisect_in(hint, new_hint, key);
   }
 }
 

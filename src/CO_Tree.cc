@@ -135,8 +135,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) 
     if (itr == end() || itr == before_begin())
       return insert(key1, data1);
     else {
-      iterator candidate1 = bisect_near(itr,
-                                        CO_Tree__bisect_helper_functor(key1));
+      iterator candidate1 = bisect_near(itr, key1);
       if (key1 == candidate1->first) {
         candidate1->second = data1;
         return candidate1;
@@ -186,8 +185,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
     if (itr == end() || itr == before_begin())
       return insert(key1);
     else {
-      iterator candidate1 = bisect_near(itr,
-                                        CO_Tree__bisect_helper_functor(key1));
+      iterator candidate1 = bisect_near(itr, key1);
       if (key1 == candidate1->first)
         return candidate1;
       iterator candidate2(candidate1);
@@ -235,7 +233,7 @@ PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
     return;
   iterator last = end();
   --last;
-  iterator itr = bisect_in(begin(), last, CO_Tree__bisect_helper_functor(key));
+  iterator itr = bisect_in(begin(), last, key);
   if (itr->first < key)
     ++itr;
   if (itr == end())
