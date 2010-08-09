@@ -316,7 +316,7 @@ private:
 
   //! An index used as a marker for unused nodes in the tree.
   //! This must not be used as a key.
-  static const dimension_type unused_index = -1;
+  static const dimension_type unused_index = -(dimension_type)1;
 
   //! The depth of the leaves in the static tree.
   height_t max_depth;
