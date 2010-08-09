@@ -87,8 +87,7 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
   if (tree.empty())
     return;
 
-  CO_Tree::iterator first = tree.before_begin();
-  first.get_next_value();
+  CO_Tree::iterator first = tree.begin();
   CO_Tree::iterator last = tree.end();
   last.get_previous_value();
 
@@ -142,9 +141,7 @@ Unlimited_Sparse_Row::OK() const {
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::begin() {
-  iterator itr(tree.before_begin());
-  ++itr;
-  return itr;
+  return iterator(tree.begin());
 }
 
 inline Unlimited_Sparse_Row::iterator
@@ -154,9 +151,7 @@ Unlimited_Sparse_Row::end() {
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::begin() const {
-  const_iterator itr(tree.before_begin());
-  ++itr;
-  return itr;
+  return const_iterator(tree.begin());
 }
 
 inline Unlimited_Sparse_Row::const_iterator
@@ -199,8 +194,7 @@ Unlimited_Sparse_Row::find(dimension_type i) {
   if (tree.empty())
     return end();
 
-  CO_Tree::iterator first = tree.before_begin();
-  first.get_next_value();
+  CO_Tree::iterator first = tree.begin();
   CO_Tree::iterator last = tree.end();
   last.get_previous_value();
 
@@ -219,8 +213,7 @@ Unlimited_Sparse_Row::find(dimension_type i) const {
   if (tree.empty())
     return end();
 
-  CO_Tree::const_iterator first = tree.before_begin();
-  first.get_next_value();
+  CO_Tree::const_iterator first = tree.begin();
   CO_Tree::const_iterator last = tree.end();
   last.get_previous_value();
 
@@ -238,8 +231,7 @@ Unlimited_Sparse_Row::lower_bound(dimension_type i) {
   if (tree.empty())
     return end();
 
-  CO_Tree::iterator first = tree.before_begin();
-  first.get_next_value();
+  CO_Tree::iterator first = tree.begin();
   CO_Tree::iterator last = tree.end();
   last.get_previous_value();
 
@@ -256,8 +248,7 @@ inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::lower_bound(dimension_type i) const {
   if (tree.empty())
     return end();
-  CO_Tree::const_iterator first = tree.before_begin();
-  first.get_next_value();
+  CO_Tree::const_iterator first = tree.begin();
   CO_Tree::const_iterator last = tree.end();
   last.get_previous_value();
 
@@ -389,8 +380,7 @@ Unlimited_Sparse_Row::assign(dimension_type i, const Coefficient& x) {
   if (tree.empty())
     assign_if_nonzero(i, x);
   else {
-    CO_Tree::iterator first = tree.before_begin();
-    first.get_next_value();
+    CO_Tree::iterator first = tree.begin();
     CO_Tree::iterator last = tree.end();
     last.get_previous_value();
 
