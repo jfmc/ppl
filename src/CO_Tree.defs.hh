@@ -404,9 +404,6 @@ public:
   //! Returns true if the iterator points before the first element.
   bool is_before_begin() const;
 
-  //! Returns the depth of the current node.
-  height_t depth() const;
-
   const CO_Tree* get_tree() const;
 
 private:
@@ -500,9 +497,6 @@ public:
 
   //! Returns true if the iterator points before the first element.
   bool is_before_begin() const;
-
-  //! Returns the depth of the current node.
-  height_t depth() const;
 
   CO_Tree* get_tree();
 

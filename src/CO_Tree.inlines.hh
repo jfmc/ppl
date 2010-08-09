@@ -743,19 +743,6 @@ CO_Tree::iterator::is_before_begin() const {
   return i == 0;
 }
 
-inline CO_Tree::height_t
-CO_Tree::iterator::depth() const {
-  PPL_ASSERT(tree != 0);
-  dimension_type n = i;
-  height_t d = 0;
-  while ((n & (dimension_type)0x01U) == 0) {
-    n /= 2;
-    ++d;
-  }
-  d = tree->max_depth - d;
-  return d;
-}
-
 inline CO_Tree*
 CO_Tree::iterator::get_tree() {
   PPL_ASSERT(tree != 0);
@@ -917,20 +904,6 @@ inline bool
 CO_Tree::const_iterator::is_before_begin() const {
   PPL_ASSERT(tree != 0);
   return i == 0;
-}
-
-inline CO_Tree::height_t
-CO_Tree::const_iterator::depth() const {
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(tree->reserved_size != 0);
-  dimension_type n = i;
-  height_t d = 0;
-  while ((n & (dimension_type)0x01U) == 0) {
-    n /= 2;
-    ++d;
-  }
-  d = tree->max_depth - d;
-  return d;
 }
 
 inline const CO_Tree*
