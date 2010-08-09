@@ -294,6 +294,21 @@ PPL::CO_Tree::OK() const {
   if (!structure_OK())
     return false;
 
+  {
+    const_iterator itr = before_begin();
+    const_iterator itr_end = end();
+    dimension_type real_size = 0;
+
+    itr.get_next_value();
+
+    for ( ; itr != itr_end; itr.get_next_value())
+        ++real_size;
+
+    if (real_size != size)
+      // There are \p real_size elements in the tree, but size is \p size.
+      return false;
+  }
+
   if (reserved_size > 0) {
     const float density
       = size / (float) (((dimension_type)1 << max_depth) - 1);
@@ -341,22 +356,6 @@ PPL::CO_Tree::structure_OK() const {
 
   if (max_depth == 0)
     return false;
-
-  {
-    const_iterator itr = before_begin();
-    const_iterator itr_end = end();
-    dimension_type real_size = 0;
-
-    itr.get_next_value();
-
-    for ( ; itr != itr_end; ++itr)
-      if (itr->first != unused_index)
-        ++real_size;
-
-    if (real_size != size)
-      // There are \p real_size elements in the tree, but size is \p size.
-      return false;
-  }
 
   if (size == 0) {
 
