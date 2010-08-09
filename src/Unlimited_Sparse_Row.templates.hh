@@ -36,33 +36,38 @@ Unlimited_Sparse_Row
 ::combine_needs_first(const Unlimited_Sparse_Row& y,
                       const Func1& f, const Func2& g) {
   if (this == &y) {
-    for (iterator i = begin(); !i.itr.is_at_end(); ++i)
+    for (iterator i = begin(), i_end = end(); i != i_end; ++i)
       g(i->second, i->second);
   } else {
     iterator i = begin();
+    iterator i_end = end();
     const_iterator j = y.begin();
-    while (!i.itr.is_at_end() && !j.itr.is_at_end())
+    const_iterator j_end = y.end();
+    while (i != i_end && j != j_end)
       if (i->first == j->first) {
         g(i->second, j->second);
-        if (i->second == 0)
+        if (i->second == 0) {
           i = reset(i);
-        else
+          i_end = end();
+        } else
           ++i;
         ++j;
       } else
         if (i->first < j->first) {
           f(i->second);
-          if (i->second == 0)
+          if (i->second == 0) {
             i = reset(i);
-          else
+            i_end = end();
+          } else
             ++i;
         } else
           j = y.lower_bound(j, i->first);
-    while (!i.itr.is_at_end()) {
+    while (i != i_end) {
       f(i->second);
-      if (i->second == 0)
+      if (i->second == 0) {
         i = reset(i);
-      else
+        i_end = end();
+      } else
         ++i;
     }
   }
@@ -86,29 +91,34 @@ Unlimited_Sparse_Row
 ::combine(const Unlimited_Sparse_Row& y, const Func1& f,
           const Func2& g, const Func3& h) {
   if (this == &y) {
-    for (iterator i = begin(); !i.itr.is_at_end(); ++i)
+    for (iterator i = begin(), i_end = end(); i != i_end; ++i)
       g(i->second, i->second);
   } else {
     iterator i = begin();
+    iterator i_end = end();
     const_iterator j = y.begin();
-    while (!i.itr.is_at_end() && !j.itr.is_at_end()) {
+    const_iterator j_end = y.end();
+    while (i != i_end && j != j_end) {
       if (i->first == j->first) {
         g(i->second, j->second);
-        if (i->second == 0)
+        if (i->second == 0) {
           i = reset(i);
-        else
+          i_end = end();
+        } else
           ++i;
         ++j;
       } else
         if (i->first < j->first) {
           f(i->second);
-          if (i->second == 0)
+          if (i->second == 0) {
             i = reset(i);
-          else
+            i_end = end();
+          } else
             ++i;
         } else {
           PPL_ASSERT(i->first > j->first);
           i = find_create(i, j->first);
+          i_end = end();
           h(i->second, j->second);
           if (i->second == 0)
             i = reset(i);
@@ -117,15 +127,16 @@ Unlimited_Sparse_Row
           ++j;
         }
     }
-    PPL_ASSERT(i.itr.is_at_end() || j.itr.is_at_end());
-    while (!i.itr.is_at_end()) {
+    PPL_ASSERT(i == i_end || j == j_end);
+    while (i != i_end) {
       f(i->second);
-      if (i->second == 0)
+      if (i->second == 0) {
         i = reset(i);
-      else
+        i_end = end();
+      } else
         ++i;
     }
-    while (!j.itr.is_at_end()) {
+    while (j != j_end) {
       if (tree.empty()) {
         i = find_create(j->first);
       } else {
@@ -139,7 +150,7 @@ Unlimited_Sparse_Row
       else
         break;
     }
-    while (!j.itr.is_at_end()) {
+    while (j != j_end) {
       i = find_create(i, j->first);
       h(i->second, j->second);
       if (i->second == 0)

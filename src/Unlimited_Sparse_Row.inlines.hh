@@ -122,10 +122,10 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
 
 inline void
 Unlimited_Sparse_Row::swap(iterator i, iterator j) {
-  PPL_ASSERT(!i.itr.is_before_begin());
-  PPL_ASSERT(!i.itr.is_at_end());
-  PPL_ASSERT(!j.itr.is_before_begin());
-  PPL_ASSERT(!j.itr.is_at_end());
+  PPL_ASSERT(i.itr != tree.before_begin());
+  PPL_ASSERT(i != end());
+  PPL_ASSERT(j.itr != tree.before_begin());
+  PPL_ASSERT(j != end());
   std::swap(i->second, j->second);
 }
 
@@ -177,7 +177,7 @@ Unlimited_Sparse_Row::find_create(dimension_type i) {
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(iterator itr, dimension_type i,
                                   const Coefficient& x) {
-  PPL_ASSERT(!itr.itr.is_at_end());
+  PPL_ASSERT(itr != end());
   itr.itr = tree.insert(itr.itr, i, x);
   return itr;
 }
@@ -240,7 +240,7 @@ Unlimited_Sparse_Row::lower_bound(dimension_type i) {
 
   if (itr.itr->first < i)
     ++itr;
-  PPL_ASSERT(itr.itr.is_at_end() || itr->first >= i);
+  PPL_ASSERT(itr == end() || itr->first >= i);
   return itr;
 }
 
@@ -256,7 +256,7 @@ Unlimited_Sparse_Row::lower_bound(dimension_type i) const {
                                       Unlimited_Sparse_Row__bisect_helper_functor(i));
   if (itr.itr->first < i)
     ++itr;
-  PPL_ASSERT(itr.itr.is_at_end() || itr->first >= i);
+  PPL_ASSERT(itr == end() || itr->first >= i);
   return itr;
 }
 
@@ -282,7 +282,7 @@ Unlimited_Sparse_Row::find(const_iterator hint, dimension_type i) const {
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::lower_bound(iterator hint, dimension_type i) {
-  PPL_ASSERT(!hint.itr.is_at_end());
+  PPL_ASSERT(hint != end());
 
   iterator itr = tree.bisect_near(hint.itr,
                                   Unlimited_Sparse_Row__bisect_helper_functor(i));
@@ -290,21 +290,21 @@ Unlimited_Sparse_Row::lower_bound(iterator hint, dimension_type i) {
   if (itr.itr->first < i)
     ++itr;
 
-  PPL_ASSERT(itr.itr.is_at_end() || itr.itr->first >= i);
+  PPL_ASSERT(itr == end() || itr.itr->first >= i);
 
   return itr;
 }
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::lower_bound(const_iterator hint, dimension_type i) const {
-  PPL_ASSERT(!hint.itr.is_at_end());
+  PPL_ASSERT(hint != end());
   const_iterator itr = tree.bisect_near(hint.itr,
                                         Unlimited_Sparse_Row__bisect_helper_functor(i));
 
   if (itr.itr->first < i)
     ++itr;
 
-  PPL_ASSERT(itr.itr.is_at_end() || itr.itr->first >= i);
+  PPL_ASSERT(itr == end() || itr.itr->first >= i);
 
   return itr;
 }
@@ -324,7 +324,7 @@ Unlimited_Sparse_Row::reset(iterator first, iterator last) {
   const dimension_type i = first->first;
   const dimension_type j = last->first;
   PPL_ASSERT(i <= j);
-  while (!first.itr.is_at_end() && first->first <= j) {
+  while (first != end() && first->first <= j) {
     tree.erase(first.itr);
     first = lower_bound(i);
   }
@@ -340,7 +340,7 @@ inline void
 Unlimited_Sparse_Row::reset(dimension_type i, dimension_type j) {
   iterator itr = lower_bound(i);
 
-  while (!itr.itr.is_at_end() && itr->first < j) {
+  while (itr != end() && itr->first < j) {
     reset(itr);
     itr = lower_bound(i);
   }
@@ -350,7 +350,7 @@ inline void
 Unlimited_Sparse_Row::reset_after(dimension_type i) {
   iterator itr = lower_bound(i);
 
-  while (!itr.itr.is_at_end()) {
+  while (itr != end()) {
     reset(itr);
     itr = lower_bound(i);
   }
@@ -360,7 +360,7 @@ inline void
 Unlimited_Sparse_Row
 ::delete_element_and_shift(dimension_type i) {
   reset(i);
-  for (iterator itr = lower_bound(i); !itr.itr.is_at_end(); ++itr)
+  for (iterator itr = lower_bound(i), itr_end = end(); itr != itr_end; ++itr)
     --(itr.itr->first);
   PPL_ASSERT(OK());
 }
@@ -370,7 +370,7 @@ Unlimited_Sparse_Row::add_zeroes_and_shift(dimension_type n,
                                            dimension_type i) {
   CO_Tree::iterator itr = tree.end();
   --itr;
-  for ( ; !itr.is_before_begin() && itr->first >= i; --itr)
+  for ( ; itr != tree.before_begin() && itr->first >= i; --itr)
     itr->first += n;
   PPL_ASSERT(OK());
 }
@@ -417,7 +417,7 @@ Unlimited_Sparse_Row::get(dimension_type i) const {
   if (tree.empty())
     return Coefficient_zero();
   const_iterator itr = find(i);
-  if (!itr.itr.is_at_end())
+  if (itr != end())
     return itr->second;
   else
     return Coefficient_zero();
