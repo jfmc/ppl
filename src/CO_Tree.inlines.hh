@@ -177,35 +177,6 @@ CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) {
   }
 }
 
-inline CO_Tree::tree_iterator
-CO_Tree::insert(tree_iterator itr, dimension_type key1, const data_type& data1) {
-  PPL_ASSERT(key1 != unused_index);
-  PPL_ASSERT(!empty());
-  PPL_ASSERT(itr->first != unused_index);
-
-  tree_iterator itr2(itr);
-
-  if (itr2->first != key1) {
-    if (itr2->first > key1)
-      while (itr2.has_parent() && itr2->first > key1)
-        itr2.get_parent();
-    else
-      while (itr2.has_parent() && itr2->first < key1)
-        itr2.get_parent();
-
-    go_down_searching_key(itr2, key1);
-
-#ifndef NDEBUG
-    tree_iterator itr3(*this);
-    go_down_searching_key(itr3, key1);
-    PPL_ASSERT(itr2 == itr3);
-#endif
-  }
-  insert_precise(key1, data1, itr2);
-
-  return itr2;
-}
-
 inline CO_Tree::iterator
 CO_Tree::insert(iterator itr, dimension_type key1) {
   PPL_ASSERT(key1 != unused_index);
