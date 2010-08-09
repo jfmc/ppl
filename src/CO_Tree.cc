@@ -128,6 +128,106 @@ PPL::CO_Tree::CO_Tree(const std::vector<data_type>& v) {
   PPL_ASSERT(OK());
 }
 
+PPL::CO_Tree::iterator
+PPL::CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) {
+  PPL_ASSERT(key1 != unused_index);
+  if (!empty()) {
+    if (itr == end() || itr == before_begin())
+      return insert(key1, data1);
+    else {
+      iterator candidate1 = bisect_near(itr,
+                                        CO_Tree__bisect_helper_functor(key1));
+      if (key1 == candidate1->first) {
+        candidate1->second = data1;
+        return candidate1;
+      }
+      iterator candidate2(candidate1);
+      if (key1 < candidate1->first)
+        --candidate2;
+      else
+        ++candidate2;
+      tree_iterator candidate1_node(candidate1, *this);
+      if (candidate2 == before_begin() || candidate2 == end()) {
+        // Use candidate1
+        insert_precise(key1, data1, candidate1_node);
+        return iterator(candidate1_node);
+      }
+      else {
+        tree_iterator candidate2_node(candidate2, *this);
+        // Adjacent nodes in an in-order visit of a tree always have different
+        // heights. This fact can be easily proven by induction on the tree's
+        // height, using the definition of the in-order layout.
+        PPL_ASSERT(candidate1_node.get_offset() != candidate2_node.get_offset());
+        if (candidate1_node.get_offset() < candidate2_node.get_offset()) {
+          PPL_ASSERT(candidate1_node.depth() > candidate2_node.depth());
+          // candidate1_node is deeper in the tree than candidate2_node, so
+          // use candidate1_node.
+          insert_precise(key1, data1, candidate1_node);
+          return iterator(candidate1_node);
+        } else {
+          PPL_ASSERT(candidate1_node.depth() < candidate2_node.depth());
+          // candidate2_node is deeper in the tree than candidate1_node, so
+          // use candidate2_node.
+          insert_precise(key1, data1, candidate2_node);
+          return iterator(candidate2_node);
+        }
+      }
+    }
+  } else {
+    insert_in_empty_tree(key1, data1);
+    return iterator(*this);
+  }
+}
+
+PPL::CO_Tree::iterator
+PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
+  PPL_ASSERT(key1 != unused_index);
+  if (!empty()) {
+    if (itr == end() || itr == before_begin())
+      return insert(key1);
+    else {
+      iterator candidate1 = bisect_near(itr,
+                                        CO_Tree__bisect_helper_functor(key1));
+      if (key1 == candidate1->first)
+        return candidate1;
+      iterator candidate2(candidate1);
+      if (key1 < candidate1->first)
+        --candidate2;
+      else
+        ++candidate2;
+      tree_iterator candidate1_node(candidate1, *this);
+      if (candidate2 == before_begin() || candidate2 == end()) {
+        // Use candidate1
+        insert_precise(key1, Coefficient_zero(), candidate1_node);
+        return iterator(candidate1_node);
+      }
+      else {
+        tree_iterator candidate2_node(candidate2, *this);
+        // Adjacent nodes in an in-order visit of a tree always have different
+        // heights. This fact can be easily proven by induction on the tree's
+        // height, using the definition of the in-order layout.
+        PPL_ASSERT(candidate1_node.get_offset() != candidate2_node.get_offset());
+        if (candidate1_node.get_offset() < candidate2_node.get_offset()) {
+          PPL_ASSERT(candidate1_node.depth() > candidate2_node.depth());
+          // candidate1_node is deeper in the tree than candidate2_node, so
+          // use candidate1_node.
+          insert_precise(key1, Coefficient_zero(), candidate1_node);
+          return iterator(candidate1_node);
+        } else {
+          PPL_ASSERT(candidate1_node.depth() < candidate2_node.depth());
+          // candidate2_node is deeper in the tree than candidate1_node, so
+          // use candidate2_node.
+          insert_precise(key1, Coefficient_zero(), candidate2_node);
+          return iterator(candidate2_node);
+        }
+      }
+    }
+  } else {
+    insert_in_empty_tree(key1, Coefficient_zero());
+    return iterator(*this);
+  }
+}
+
 void
 PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
   erase(key);
@@ -211,6 +311,104 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   indexes[0] = 0;
   indexes[reserved_size + 1] = 0;
 
+  PPL_ASSERT(structure_OK());
+}
+
+unsigned
+PPL::CO_Tree::integer_log2(dimension_type n) {
+  PPL_ASSERT(n != 0);
+  unsigned result = 0;
+  while (n != 1) {
+    n /= 2;
+    ++result;
+  }
+  return result;
+}
+
+void
+PPL::CO_Tree::dump_subtree(tree_iterator itr) {
+  if (!itr.is_leaf()) {
+    itr.get_left_child();
+    dump_subtree(itr);
+    itr.get_parent();
+  }
+  std::cout << "At depth: " << itr.depth();
+  if (itr->first == unused_index)
+    std::cout << " (no data)" << std::endl;
+  else
+    std::cout << " pair (" << itr->first << "," << itr->second << ")" << std::endl;
+  if (!itr.is_leaf()) {
+    itr.get_right_child();
+    dump_subtree(itr);
+    itr.get_parent();
+  }
+}
+
+void
+PPL::CO_Tree::go_down_searching_key(tree_iterator& itr, dimension_type key) {
+  // itr points to a node, so the tree is not empty.
+  PPL_ASSERT(!empty());
+  PPL_ASSERT(key != unused_index);
+  PPL_ASSERT(itr->first != unused_index);
+  // TODO: Check if the copying back and forth improves or hapers performance.
+  tree_iterator itr2(itr);
+  while (!itr2.is_leaf()) {
+    if (key == itr2->first)
+      break;
+    if (key < itr2->first) {
+      itr2.get_left_child();
+      if (itr2->first == unused_index) {
+        itr2.get_parent();
+        break;
+      }
+    } else {
+      itr2.get_right_child();
+      if (itr2->first == unused_index) {
+        itr2.get_parent();
+        break;
+      }
+    }
+  }
+  itr = itr2;
+}
+
+void
+PPL::CO_Tree::rebuild_bigger_tree() {
+  if (reserved_size == 0)
+    init(3);
+  else {
+    dimension_type new_reserved_size = reserved_size*2 + 1;
+
+    dimension_type* new_indexes = new dimension_type[new_reserved_size + 2];
+    data_type* new_data
+      = static_cast<data_type*>(operator new(sizeof(data_type)
+                                             * (new_reserved_size + 1)));
+
+    new_indexes[1] = unused_index;
+
+    for (dimension_type i = 1, j = 2; i <= reserved_size; ++i, ++j) {
+      if (indexes[i] == unused_index)
+        new_indexes[j] = unused_index;
+      else {
+        new_indexes[j] = indexes[i];
+        move_data_element(new_data[j], data[i]);
+      }
+      ++j;
+      new_indexes[j] = unused_index;
+    }
+
+    // These are used as markers by iterators.
+    new_indexes[0] = 0;
+    new_indexes[new_reserved_size + 1] = 0;
+
+    delete [] indexes;
+    operator delete(data);
+
+    indexes = new_indexes;
+    data = new_data;
+    reserved_size = new_reserved_size;
+    ++max_depth;
+  }
   PPL_ASSERT(structure_OK());
 }
 
@@ -828,4 +1026,19 @@ PPL::CO_Tree
   }
 
   PPL_ASSERT(!add_element);
+}
+
+bool
+PPL::CO_Tree::tree_iterator::OK() const {
+  if (i == 0 || i > tree->reserved_size)
+    return false;
+
+  dimension_type correct_offset = i;
+  // This assumes two's complement encoding.
+  correct_offset &= -i;
+
+  if (offset != correct_offset)
+    return false;
+
+  return true;
 }
