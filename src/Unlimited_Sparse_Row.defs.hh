@@ -202,18 +202,23 @@ public:
   template <typename Func>
   void for_each_nonzero(const Func& func, dimension_type n) const;
 
+  //! Looks for an element with key i.
   iterator find(dimension_type i);
-  iterator lower_bound(dimension_type );
-  const_iterator find(dimension_type i) const;
-  const_iterator lower_bound(dimension_type i) const;
-
   //! Looks for an element with key i, assuming it is in [itr,end()) .
   iterator find(iterator itr, dimension_type i);
+
+  //! Looks for an element with key i.
+  const_iterator find(dimension_type i) const;
+  //! Looks for an element with key i, assuming it is in [itr,end()) .
+  const_iterator find(const_iterator itr, dimension_type i) const;
+
+  //! Lower bound of key i.
+  iterator lower_bound(dimension_type );
   //! Lower bound of key i, assuming it is in [itr,end()) .
   iterator lower_bound(iterator itr, dimension_type i);
 
-  //! Looks for an element with key i, assuming it is in [itr,end()) .
-  const_iterator find(const_iterator itr, dimension_type i) const;
+  //! Lower bound of key i.
+  const_iterator lower_bound(dimension_type i) const;
   //! Lower bound of key i, assuming it is in [itr,end()) .
   const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
