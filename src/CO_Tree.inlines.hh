@@ -79,9 +79,13 @@ CO_Tree::insert(dimension_type key1, const data_type& data1) {
     PPL_ASSERT(itr->first != unused_index);
     return iterator(itr);
   } else {
-    // TODO: Find a better implementation.
     tree_iterator itr(*this);
-    return iterator(insert(itr, key1, data1));
+    go_down_searching_key(itr, key1);
+    if (itr->first != key1)
+      insert_precise(key1, data1, itr);
+    else
+      itr->second = data1;
+    return iterator(itr);
   }
 }
 
