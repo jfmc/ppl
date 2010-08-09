@@ -82,6 +82,8 @@ public:
   //! Inserts a pair with key \p key in the tree.
   //! \p itr is used as hint, this will be faster if \p itr points near to the
   //! place where the new element will be inserted (or where is already stored).
+  //! However, the value of \p itr does not affect the correctness of this
+  //! method. \p itr may even be before_begin() or end().
   iterator insert(iterator itr, dimension_type key);
 
   //! Erases the pair with key \p key from the tree.
