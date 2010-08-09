@@ -130,7 +130,7 @@ inline CO_Tree::iterator
 CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) {
   PPL_ASSERT(key1 != unused_index);
   if (!empty()) {
-    if (itr.is_at_end() || itr.is_before_begin())
+    if (itr == end() || itr == before_begin())
       return insert(key1, data1);
     else {
       iterator candidate1 = bisect_near(itr,
@@ -145,7 +145,7 @@ CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) {
       else
         ++candidate2;
       tree_iterator candidate1_node(candidate1, *this);
-      if (candidate2.is_before_begin() || candidate2.is_at_end()) {
+      if (candidate2 == before_begin() || candidate2 == end()) {
         // Use candidate1
         insert_precise(key1, data1, candidate1_node);
         return iterator(candidate1_node);
@@ -181,7 +181,7 @@ inline CO_Tree::iterator
 CO_Tree::insert(iterator itr, dimension_type key1) {
   PPL_ASSERT(key1 != unused_index);
   if (!empty()) {
-    if (itr.is_at_end() || itr.is_before_begin())
+    if (itr == end() || itr == before_begin())
       return insert(key1);
     else {
       iterator candidate1 = bisect_near(itr,
@@ -194,7 +194,7 @@ CO_Tree::insert(iterator itr, dimension_type key1) {
       else
         ++candidate2;
       tree_iterator candidate1_node(candidate1, *this);
-      if (candidate2.is_before_begin() || candidate2.is_at_end()) {
+      if (candidate2 == before_begin() || candidate2 == end()) {
         // Use candidate1
         insert_precise(key1, Coefficient_zero(), candidate1_node);
         return iterator(candidate1_node);
@@ -357,18 +357,18 @@ CO_Tree::go_down_searching_key(tree_iterator& itr, dimension_type key) {
 
 inline void
 CO_Tree::erase(iterator itr) {
-  PPL_ASSERT(!itr.is_before_begin());
-  PPL_ASSERT(!itr.is_at_end());
+  PPL_ASSERT(itr != before_begin());
+  PPL_ASSERT(itr != end());
   erase(tree_iterator(itr, *this));
 }
 
 template <typename Func>
 inline CO_Tree::iterator
 CO_Tree::bisect_in(iterator first, iterator last, const Func &func) {
-  PPL_ASSERT(!first.is_before_begin());
-  PPL_ASSERT(!first.is_at_end());
-  PPL_ASSERT(!last.is_before_begin());
-  PPL_ASSERT(!last.is_at_end());
+  PPL_ASSERT(first != before_begin());
+  PPL_ASSERT(first != end());
+  PPL_ASSERT(last != before_begin());
+  PPL_ASSERT(last != end());
   dimension_type index = bisect_in(&(first->second) - data,
                                    &(last->second) - data, func);
   return iterator(*this, index);
@@ -378,10 +378,10 @@ template <typename Func>
 inline CO_Tree::const_iterator
 CO_Tree::bisect_in(const_iterator first, const_iterator last,
                    const Func &func) const {
-  PPL_ASSERT(!first.is_before_begin());
-  PPL_ASSERT(!first.is_at_end());
-  PPL_ASSERT(!last.is_before_begin());
-  PPL_ASSERT(!last.is_at_end());
+  PPL_ASSERT(first != before_begin());
+  PPL_ASSERT(first != end());
+  PPL_ASSERT(last != before_begin());
+  PPL_ASSERT(last != end());
   dimension_type index = bisect_in(&(first->second) - data,
                                    &(last->second) - data, func);
   return const_iterator(*this, index);
@@ -390,8 +390,8 @@ CO_Tree::bisect_in(const_iterator first, const_iterator last,
 template <typename Func>
 inline CO_Tree::iterator
 CO_Tree::bisect_near(iterator hint, const Func &func) {
-  PPL_ASSERT(!hint.is_before_begin());
-  PPL_ASSERT(!hint.is_at_end());
+  PPL_ASSERT(hint != before_begin());
+  PPL_ASSERT(hint != end());
   dimension_type index = bisect_near(&(hint->second) - data, func);
   return iterator(*this, index);
 }
@@ -399,8 +399,8 @@ CO_Tree::bisect_near(iterator hint, const Func &func) {
 template <typename Func>
 inline CO_Tree::const_iterator
 CO_Tree::bisect_near(const_iterator hint, const Func &func) const {
-  PPL_ASSERT(!hint.is_before_begin());
-  PPL_ASSERT(!hint.is_at_end());
+  PPL_ASSERT(hint != before_begin());
+  PPL_ASSERT(hint != end());
   dimension_type index = bisect_near(&(hint->second) - data, func);
   return const_iterator(*this, index);
 }
@@ -977,8 +977,8 @@ CO_Tree::tree_iterator::operator=(const tree_iterator& itr) {
 
 inline CO_Tree::tree_iterator&
 CO_Tree::tree_iterator::operator=(const iterator& itr) {
-  PPL_ASSERT(!itr.is_before_begin());
-  PPL_ASSERT(!itr.is_at_end());
+  PPL_ASSERT(itr != tree->before_begin());
+  PPL_ASSERT(itr != tree->end());
   i = &(itr->second) - tree->data;
   offset = i;
   // This assumes two's complement encoding.
