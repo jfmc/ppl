@@ -379,12 +379,6 @@ public:
   //! Assigns \p itr to *this .
   const_iterator& operator=(const iterator& itr);
 
-  //! Navigates to the next node in the in-order traversal.
-  const_iterator& operator++();
-
-  //! Navigates to the previous node in the in-order traversal.
-  const_iterator& operator--();
-
   //! Navigates to the next node with a value, in the in-order traversal.
   void get_next_value();
 
@@ -469,12 +463,6 @@ public:
 
   //! Assigns \p itr to *this .
   iterator& operator=(const tree_iterator& itr);
-
-  //! Navigates to the next node in the in-order traversal.
-  iterator& operator++();
-
-  //! Navigates to the previous node in the in-order traversal.
-  iterator& operator--();
 
   //! Navigates to the next node with a value, in the in-order traversal.
   void get_next_value();

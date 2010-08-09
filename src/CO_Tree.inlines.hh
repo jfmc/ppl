@@ -773,22 +773,6 @@ CO_Tree::iterator::get_tree() const {
   return tree;
 }
 
-inline CO_Tree::iterator&
-CO_Tree::iterator::operator++() {
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_at_end());
-  ++i;
-  return *this;
-}
-
-inline CO_Tree::iterator&
-CO_Tree::iterator::operator--() {
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_before_begin());
-  --i;
-  return *this;
-}
-
 inline void
 CO_Tree::iterator::get_next_value() {
   PPL_ASSERT(tree != 0);
@@ -936,22 +920,6 @@ inline const CO_Tree*
 CO_Tree::const_iterator::get_tree() const {
   PPL_ASSERT(tree != 0);
   return tree;
-}
-
-inline CO_Tree::const_iterator&
-CO_Tree::const_iterator::operator++() {
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_at_end());
-  ++i;
-  return *this;
-}
-
-inline CO_Tree::const_iterator&
-CO_Tree::const_iterator::operator--() {
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_before_begin());
-  --i;
-  return *this;
 }
 
 inline void
