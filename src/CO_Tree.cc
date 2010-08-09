@@ -633,6 +633,170 @@ PPL::CO_Tree::insert_in_empty_tree(dimension_type key1, const data_type& data1) 
   PPL_ASSERT(OK());
 }
 
+PPL::dimension_type
+PPL::CO_Tree::bisect_in(dimension_type first, dimension_type last,
+                   dimension_type key) const {
+  PPL_ASSERT(first != 0);
+  PPL_ASSERT(last <= reserved_size);
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(indexes[first] != unused_index);
+  PPL_ASSERT(indexes[last] != unused_index);
+
+  while (first < last) {
+    dimension_type half = (first + last) / 2;
+    dimension_type new_half = half;
+
+    while (indexes[new_half] == unused_index)
+      ++new_half;
+
+    if (indexes[new_half] == key)
+      return new_half;
+
+    if (indexes[new_half] > key) {
+
+      while (indexes[half] == unused_index)
+        --half;
+
+      last = half;
+
+    } else {
+
+      ++new_half;
+      while (indexes[new_half] == unused_index)
+        ++new_half;
+
+      first = new_half;
+    }
+  }
+
+  // It is important that last is returned instead of first, because first
+  // may have increased beyond last, even beyond the original value of last
+  // at the beginning of this method.
+  return last;
+}
+
+PPL::dimension_type
+PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
+  PPL_ASSERT(hint != 0);
+  PPL_ASSERT(hint <= reserved_size);
+  PPL_ASSERT(indexes[hint] != unused_index);
+
+  if (indexes[hint] == key)
+    return hint;
+  else {
+    dimension_type new_hint;
+    dimension_type offset = 1;
+
+    if (indexes[hint] > key) {
+      // The searched element is before `hint'.
+
+      while (1) {
+
+        if (hint <= offset) {
+          // The searched element is in (0,hint).
+          new_hint = hint;
+          hint = 1;
+          // The searched element is in [hint,new_hint).
+          while (indexes[hint] == unused_index)
+            ++hint;
+          if (indexes[hint] >= key)
+            return hint;
+          // The searched element is in (hint,new_hint) and both indexes point
+          // to valid elements.
+          break;
+        } else
+          new_hint = hint - offset;
+
+        PPL_ASSERT(new_hint > 0);
+        PPL_ASSERT(new_hint <= reserved_size);
+
+        // Find the element at `new_hint' (or the first after it).
+        while (indexes[new_hint] == unused_index)
+          ++new_hint;
+
+        PPL_ASSERT(new_hint <= hint);
+
+        if (indexes[new_hint] == key)
+          return new_hint;
+        else
+          if (indexes[new_hint] < key) {
+            // The searched element is in (new_hint,hint)
+            std::swap(hint, new_hint);
+            // The searched element is now in (hint,new_hint).
+            break;
+          }
+
+        hint = new_hint;
+        offset *= 2;
+      }
+
+    } else {
+      // The searched element is after `hint'.
+      while (1) {
+
+        if (hint + offset > reserved_size) {
+          // The searched element is in (hint,reserved_size+1).
+          new_hint = reserved_size;
+          // The searched element is in (hint,new_hint].
+          while (indexes[new_hint] == unused_index)
+            --new_hint;
+          if (indexes[new_hint] <= key)
+            return new_hint;
+          // The searched element is in (hint,new_hint) and both indexes point
+          // to valid elements.
+          break;
+        } else
+          new_hint = hint + offset;
+
+        PPL_ASSERT(new_hint > 0);
+        PPL_ASSERT(new_hint <= reserved_size);
+
+        // Find the element at `new_hint' (or the first after it).
+        while (indexes[new_hint] == unused_index)
+          --new_hint;
+
+        PPL_ASSERT(hint <= new_hint);
+
+        if (indexes[new_hint] == key)
+          return new_hint;
+        else
+          if (indexes[new_hint] > key)
+            // The searched element is in (hint,new_hint).
+            break;
+
+        hint = new_hint;
+        offset *= 2;
+      }
+    }
+    // The searched element is in (hint,new_hint).
+    PPL_ASSERT(hint > 0);
+    PPL_ASSERT(hint <= new_hint);
+    PPL_ASSERT(new_hint <= reserved_size);
+    PPL_ASSERT(indexes[hint] != unused_index);
+    PPL_ASSERT(indexes[new_hint] != unused_index);
+
+    if (hint == new_hint)
+      return hint;
+
+    ++hint;
+    while (indexes[hint] == unused_index)
+      ++hint;
+
+    if (hint == new_hint)
+      return hint;
+
+    --new_hint;
+    while (indexes[new_hint] == unused_index)
+      --new_hint;
+
+    PPL_ASSERT(hint <= new_hint);
+    PPL_ASSERT(indexes[hint] != unused_index);
+    PPL_ASSERT(indexes[new_hint] != unused_index);
+
+    return bisect_in(hint, new_hint, key);
+  }
+}
+
 void
 PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
                              tree_iterator& itr) {
