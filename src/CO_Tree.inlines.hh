@@ -299,7 +299,7 @@ CO_Tree::erase(dimension_type key) {
 
 inline CO_Tree::iterator
 CO_Tree::before_begin() {
-  return iterator::construct_before_begin(*this);
+  return iterator(*this, 0);
 }
 
 inline CO_Tree::iterator
@@ -309,12 +309,12 @@ CO_Tree::begin() {
 
 inline CO_Tree::iterator
 CO_Tree::end() {
-  return iterator::construct_end(*this);
+  return iterator(*this, reserved_size + 1);
 }
 
 inline CO_Tree::const_iterator
 CO_Tree::before_begin() const {
-  return const_iterator::construct_before_begin(*this);
+  return const_iterator(*this, 0);
 }
 
 inline CO_Tree::const_iterator
@@ -324,7 +324,7 @@ CO_Tree::begin() const {
 
 inline CO_Tree::const_iterator
 CO_Tree::end() const {
-  return const_iterator::construct_end(*this);
+  return const_iterator(*this, reserved_size + 1);
 }
 
 inline void
