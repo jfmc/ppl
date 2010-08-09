@@ -778,9 +778,9 @@ CO_Tree::iterator::operator++() {
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!is_at_end());
   ++i;
-  if (!tree->empty())
-    while (tree->indexes[i] == unused_index)
-      ++i;
+  PPL_ASSERT(!tree->empty());
+  while (tree->indexes[i] == unused_index)
+    ++i;
 
   return *this;
 }
@@ -790,9 +790,9 @@ CO_Tree::iterator::operator--() {
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!is_before_begin());
   --i;
-  if (!tree->empty())
-    while (tree->indexes[i] == unused_index)
-      --i;
+  PPL_ASSERT(!tree->empty());
+  while (tree->indexes[i] == unused_index)
+    --i;
 
   return *this;
 }
@@ -931,9 +931,9 @@ CO_Tree::const_iterator::operator++() {
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!is_at_end());
   ++i;
-  if (!tree->empty())
-    while (tree->indexes[i] == unused_index)
-      ++i;
+  PPL_ASSERT(!tree->empty());
+  while (tree->indexes[i] == unused_index)
+    ++i;
   return *this;
 }
 
@@ -942,9 +942,9 @@ CO_Tree::const_iterator::operator--() {
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!is_before_begin());
   --i;
-  if (!tree->empty())
-    while (tree->indexes[i] == unused_index)
-      --i;
+  PPL_ASSERT(!tree->empty());
+  while (tree->indexes[i] == unused_index)
+    --i;
   return *this;
 }
 
