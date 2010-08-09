@@ -75,10 +75,9 @@ inline CO_Tree::iterator
 CO_Tree::insert(dimension_type key1, const data_type& data1) {
   if (empty()) {
     insert_in_empty_tree(key1, data1);
-    iterator itr(this);
-    itr.i = 2;
-    PPL_ASSERT(indexes[itr.i] != unused_index);
-    return itr;
+    tree_iterator itr(*this);
+    PPL_ASSERT(itr->first != unused_index);
+    return iterator(itr);
   } else {
     // TODO: Find a better implementation.
     tree_iterator itr(*this);
