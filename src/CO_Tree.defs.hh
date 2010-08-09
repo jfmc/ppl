@@ -90,6 +90,13 @@ public:
   //! Returns \p false if there was no pair with key \p key in the tree.
   bool erase(dimension_type key);
 
+  //! Removes the element with key \p key (if it exists) and decrements by
+  //! 1 all elements' keys that were greater than \p key.
+  void erase_element_and_shift_left(dimension_type key);
+
+  //! Adds \p n to all keys greater than or equal to \p key.
+  void increase_keys_after(dimension_type key, dimension_type n);
+
   //! Swaps x with *this.
   void swap(CO_Tree& x);
 

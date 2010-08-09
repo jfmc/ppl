@@ -129,6 +129,40 @@ PPL::CO_Tree::CO_Tree(const std::vector<data_type>& v) {
 }
 
 void
+PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
+  erase(key);
+  if (empty())
+    return;
+  iterator last = end();
+  --last;
+  iterator itr = bisect_in(begin(), last, CO_Tree__bisect_helper_functor(key));
+  if (itr->first < key)
+    ++itr;
+  if (itr == end())
+    return;
+  for (dimension_type i = &(itr->second) - data; i <= reserved_size; ++i)
+    if (indexes[i] != unused_index)
+      --indexes[i];
+  PPL_ASSERT(OK());
+}
+
+void
+PPL::CO_Tree::increase_keys_after(dimension_type key, dimension_type n) {
+  if (empty())
+    return;
+  dimension_type i = reserved_size;
+  while (1) {
+    while (indexes[i] == unused_index)
+      --i;
+    if (i < key || i == 0)
+      return;
+    indexes[i] += n;
+    --i;
+  }
+  PPL_ASSERT(OK());
+}
+
+void
 PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
 
   PPL_ASSERT(size == 0);

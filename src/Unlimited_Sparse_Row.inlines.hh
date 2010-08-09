@@ -359,20 +359,13 @@ Unlimited_Sparse_Row::reset_after(dimension_type i) {
 inline void
 Unlimited_Sparse_Row
 ::delete_element_and_shift(dimension_type i) {
-  reset(i);
-  for (iterator itr = lower_bound(i), itr_end = end(); itr != itr_end; ++itr)
-    --(itr.itr->first);
-  PPL_ASSERT(OK());
+  tree.erase_element_and_shift_left(i);
 }
 
 inline void
 Unlimited_Sparse_Row::add_zeroes_and_shift(dimension_type n,
                                            dimension_type i) {
-  CO_Tree::iterator itr = tree.end();
-  --itr;
-  for ( ; itr != tree.before_begin() && itr->first >= i; --itr)
-    itr->first += n;
-  PPL_ASSERT(OK());
+  tree.increase_keys_after(i, n);
 }
 
 inline void
