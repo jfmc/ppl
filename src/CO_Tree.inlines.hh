@@ -319,10 +319,11 @@ CO_Tree::end() const {
 
 inline void
 CO_Tree::go_down_searching_key(tree_iterator& itr, dimension_type key) {
-  if (empty())
-    return;
+  // itr points to a node, so the tree is not empty.
+  PPL_ASSERT(!empty());
   PPL_ASSERT(key != unused_index);
   PPL_ASSERT(itr->first != unused_index);
+  // TODO: Check if the copying back and forth improves or hapers performance.
   tree_iterator itr2(itr);
   while (!itr2.is_leaf()) {
     if (key == itr2->first)
