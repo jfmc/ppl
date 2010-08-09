@@ -87,14 +87,14 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
   if (tree.empty())
     return;
 
-  CO_Tree::iterator first = tree.begin();
-  CO_Tree::iterator last = tree.end();
+  iterator first = begin();
+  iterator last = end();
   --last;
 
-  CO_Tree::iterator itr_i = tree.bisect_in(first, last,
-                                           Unlimited_Sparse_Row__bisect_helper_functor(i));
-  CO_Tree::iterator itr_j = tree.bisect_in(first, last,
-                                           Unlimited_Sparse_Row__bisect_helper_functor(j));
+  iterator itr_i = tree.bisect_in(first, last,
+                                  Unlimited_Sparse_Row__bisect_helper_functor(i));
+  iterator itr_j = tree.bisect_in(first, last,
+                                  Unlimited_Sparse_Row__bisect_helper_functor(j));
   if (itr_i->first == i)
     if (itr_j->first == j)
       // Both elements are in the tree
@@ -122,9 +122,9 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
 
 inline void
 Unlimited_Sparse_Row::swap(iterator i, iterator j) {
-  PPL_ASSERT(i.itr != tree.before_begin());
+  PPL_ASSERT(i != tree.before_begin());
   PPL_ASSERT(i != end());
-  PPL_ASSERT(j.itr != tree.before_begin());
+  PPL_ASSERT(j != tree.before_begin());
   PPL_ASSERT(j != end());
   std::swap(i->second, j->second);
 }
@@ -141,51 +141,44 @@ Unlimited_Sparse_Row::OK() const {
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::begin() {
-  return iterator(tree.begin());
+  return tree.begin();
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::end() {
-  return iterator(tree.end());
+  return tree.end();
 }
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::begin() const {
-  return const_iterator(tree.begin());
+  return tree.begin();
 }
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::end() const {
-  return const_iterator(tree.end());
+  return tree.end();
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(dimension_type i,
                                   const Coefficient& x) {
-  iterator itr(tree);
-  itr.itr = tree.insert(i, x);
-  return itr;
+  return tree.insert(i, x);
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(dimension_type i) {
-  iterator itr(tree);
-  itr.itr = tree.insert(i);
-  return itr;
+  return tree.insert(i);
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(iterator itr, dimension_type i,
                                   const Coefficient& x) {
-  PPL_ASSERT(itr != end());
-  itr.itr = tree.insert(itr.itr, i, x);
-  return itr;
+  return tree.insert(itr, i, x);
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(iterator itr, dimension_type i) {
-  itr.itr = tree.insert(itr.itr, i);
-  return itr;
+  return tree.insert(itr, i);
 }
 
 inline Unlimited_Sparse_Row::iterator
@@ -194,14 +187,14 @@ Unlimited_Sparse_Row::find(dimension_type i) {
   if (tree.empty())
     return end();
 
-  CO_Tree::iterator first = tree.begin();
-  CO_Tree::iterator last = tree.end();
+  iterator first = begin();
+  iterator last = end();
   --last;
 
   iterator itr = tree.bisect_in(first, last,
                                 Unlimited_Sparse_Row__bisect_helper_functor(i));
 
-  if (itr.itr->first != i)
+  if (itr->first != i)
     return end();
 
   return itr;
@@ -213,14 +206,14 @@ Unlimited_Sparse_Row::find(dimension_type i) const {
   if (tree.empty())
     return end();
 
-  CO_Tree::const_iterator first = tree.begin();
-  CO_Tree::const_iterator last = tree.end();
+  const_iterator first = begin();
+  const_iterator last = end();
   --last;
 
   const_iterator itr = tree.bisect_in(first, last,
                                       Unlimited_Sparse_Row__bisect_helper_functor(i));
 
-  if (itr.itr->first != i)
+  if (itr->first != i)
     return end();
 
   return itr;
@@ -231,14 +224,14 @@ Unlimited_Sparse_Row::lower_bound(dimension_type i) {
   if (tree.empty())
     return end();
 
-  CO_Tree::iterator first = tree.begin();
-  CO_Tree::iterator last = tree.end();
+  iterator first = begin();
+  iterator last = end();
   --last;
 
   iterator itr = tree.bisect_in(first, last,
                                 Unlimited_Sparse_Row__bisect_helper_functor(i));
 
-  if (itr.itr->first < i)
+  if (itr->first < i)
     ++itr;
   PPL_ASSERT(itr == end() || itr->first >= i);
   return itr;
@@ -248,13 +241,13 @@ inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::lower_bound(dimension_type i) const {
   if (tree.empty())
     return end();
-  CO_Tree::const_iterator first = tree.begin();
-  CO_Tree::const_iterator last = tree.end();
+  const_iterator first = begin();
+  const_iterator last = end();
   --last;
 
   const_iterator itr = tree.bisect_in(first, last,
                                       Unlimited_Sparse_Row__bisect_helper_functor(i));
-  if (itr.itr->first < i)
+  if (itr->first < i)
     ++itr;
   PPL_ASSERT(itr == end() || itr->first >= i);
   return itr;
@@ -262,20 +255,20 @@ Unlimited_Sparse_Row::lower_bound(dimension_type i) const {
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find(iterator hint, dimension_type i) {
-  iterator itr = tree.bisect_near(hint.itr,
+  iterator itr = tree.bisect_near(hint,
                                   Unlimited_Sparse_Row__bisect_helper_functor(i));
-  if (itr.itr->first != i)
-    itr.itr = tree.end();
+  if (itr->first != i)
+    itr = end();
 
   return itr;
 }
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::find(const_iterator hint, dimension_type i) const {
-  const_iterator itr = tree.bisect_near(hint.itr,
+  const_iterator itr = tree.bisect_near(hint,
                                         Unlimited_Sparse_Row__bisect_helper_functor(i));
-  if (itr.itr->first != i)
-    itr.itr = tree.end();
+  if (itr->first != i)
+    itr = end();
 
   return itr;
 }
@@ -284,13 +277,13 @@ inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::lower_bound(iterator hint, dimension_type i) {
   PPL_ASSERT(hint != end());
 
-  iterator itr = tree.bisect_near(hint.itr,
+  iterator itr = tree.bisect_near(hint,
                                   Unlimited_Sparse_Row__bisect_helper_functor(i));
 
-  if (itr.itr->first < i)
+  if (itr->first < i)
     ++itr;
 
-  PPL_ASSERT(itr == end() || itr.itr->first >= i);
+  PPL_ASSERT(itr == end() || itr->first >= i);
 
   return itr;
 }
@@ -298,13 +291,13 @@ Unlimited_Sparse_Row::lower_bound(iterator hint, dimension_type i) {
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::lower_bound(const_iterator hint, dimension_type i) const {
   PPL_ASSERT(hint != end());
-  const_iterator itr = tree.bisect_near(hint.itr,
+  const_iterator itr = tree.bisect_near(hint,
                                         Unlimited_Sparse_Row__bisect_helper_functor(i));
 
-  if (itr.itr->first < i)
+  if (itr->first < i)
     ++itr;
 
-  PPL_ASSERT(itr == end() || itr.itr->first >= i);
+  PPL_ASSERT(itr == end() || itr->first >= i);
 
   return itr;
 }
@@ -312,7 +305,7 @@ Unlimited_Sparse_Row::lower_bound(const_iterator hint, dimension_type i) const {
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::reset(iterator pos) {
   const dimension_type i = pos->first;
-  tree.erase(pos.itr);
+  tree.erase(pos);
   return lower_bound(i);
 }
 
@@ -325,7 +318,7 @@ Unlimited_Sparse_Row::reset(iterator first, iterator last) {
   const dimension_type j = last->first;
   PPL_ASSERT(i <= j);
   while (first != end() && first->first <= j) {
-    tree.erase(first.itr);
+    tree.erase(first);
     first = lower_bound(i);
   }
   return first;
@@ -373,12 +366,11 @@ Unlimited_Sparse_Row::assign(dimension_type i, const Coefficient& x) {
   if (tree.empty())
     assign_if_nonzero(i, x);
   else {
-    CO_Tree::iterator first = tree.begin();
-    CO_Tree::iterator last = tree.end();
+    iterator last = end();
     --last;
 
-    CO_Tree::iterator itr = tree.bisect_in(first, last,
-                                           Unlimited_Sparse_Row__bisect_helper_functor(i));
+    iterator itr = tree.bisect_in(tree.begin(), last,
+                                  Unlimited_Sparse_Row__bisect_helper_functor(i));
     if (itr->first == i)
       itr->second = x;
     else
@@ -414,182 +406,6 @@ Unlimited_Sparse_Row::get(dimension_type i) const {
     return itr->second;
   else
     return Coefficient_zero();
-}
-
-
-inline
-Unlimited_Sparse_Row::iterator::iterator()
-  : itr() {
-}
-
-inline
-Unlimited_Sparse_Row::iterator::iterator(CO_Tree& x)
-  : itr(x) {
-}
-
-inline
-Unlimited_Sparse_Row::iterator
-::iterator(const CO_Tree::iterator& x)
-  : itr(x) {
-}
-
-inline
-Unlimited_Sparse_Row::iterator::iterator(const iterator& x)
-  : itr(x.itr) {
-}
-
-inline
-Unlimited_Sparse_Row::iterator&
-Unlimited_Sparse_Row::iterator
-::operator=(const iterator& x) {
-  itr = x.itr;
-  return *this;
-}
-
-inline bool
-Unlimited_Sparse_Row::iterator
-::operator==(const iterator& x) const {
-
-  return itr == x.itr;
-}
-
-inline bool
-Unlimited_Sparse_Row::iterator
-::operator!=(const iterator& x) const {
-  return !(*this == x);
-}
-
-inline Unlimited_Sparse_Row::iterator&
-Unlimited_Sparse_Row::iterator::operator++() {
-
-  ++itr;
-  return *this;
-}
-
-inline Unlimited_Sparse_Row::iterator&
-Unlimited_Sparse_Row::iterator::operator--() {
-
-  --itr;
-  return *this;
-}
-
-inline std::pair<dimension_type, Coefficient&>
-Unlimited_Sparse_Row::iterator::operator*() {
-
-  return std::pair<dimension_type, Coefficient&>(itr->first, itr->second);
-}
-
-inline Unlimited_Sparse_Row::iterator::Member_Access_Helper
-Unlimited_Sparse_Row::iterator::operator->() {
-
-  return Member_Access_Helper(itr->first, itr->second);
-}
-
-inline std::pair<dimension_type, const Coefficient&>
-Unlimited_Sparse_Row::iterator::operator*() const {
-
-  return *itr;
-}
-
-inline CO_Tree::iterator::Const_Member_Access_Helper
-Unlimited_Sparse_Row::iterator::operator->() const {
-
-  return itr.operator->();
-}
-
-
-inline
-Unlimited_Sparse_Row::iterator::Member_Access_Helper
-::Member_Access_Helper(dimension_type key, CO_Tree::data_type& data)
-  : my_pair(key, data) {
-}
-
-inline
-std::pair<dimension_type, Coefficient&>*
-Unlimited_Sparse_Row::iterator::Member_Access_Helper
-::operator->() {
-  return &my_pair;
-}
-
-inline Unlimited_Sparse_Row::iterator
-::operator const_iterator() const {
-  return const_iterator(itr);
-}
-
-
-inline
-Unlimited_Sparse_Row::const_iterator::const_iterator()
-  : itr() {
-}
-
-inline
-Unlimited_Sparse_Row::const_iterator::const_iterator(const CO_Tree& x)
-  : itr(x) {
-}
-
-inline
-Unlimited_Sparse_Row::const_iterator
-::const_iterator(const CO_Tree::iterator& x)
-  : itr(x) {
-}
-
-inline
-Unlimited_Sparse_Row::const_iterator
-::const_iterator(const CO_Tree::const_iterator& x)
-  : itr(x) {
-}
-
-inline
-Unlimited_Sparse_Row::const_iterator
-::const_iterator(const const_iterator& x)
-  : itr(x.itr) {
-}
-
-inline
-Unlimited_Sparse_Row::const_iterator&
-Unlimited_Sparse_Row::const_iterator
-::operator=(const const_iterator& x) {
-  itr = x.itr;
-  return *this;
-}
-
-inline bool
-Unlimited_Sparse_Row::const_iterator
-::operator==(const const_iterator& x) const {
-
-  return itr == x.itr;
-}
-
-inline bool
-Unlimited_Sparse_Row::const_iterator
-::operator!=(const const_iterator& x) const {
-  return !(*this == x);
-}
-
-inline Unlimited_Sparse_Row::const_iterator&
-Unlimited_Sparse_Row::const_iterator::operator++() {
-
-  ++itr;
-  return *this;
-}
-
-inline Unlimited_Sparse_Row::const_iterator&
-Unlimited_Sparse_Row::const_iterator::operator--() {
-
-  --itr;
-  return *this;
-}
-
-inline std::pair<dimension_type, const Coefficient&>
-Unlimited_Sparse_Row::const_iterator::operator*() const {
-
-  return *itr;
-}
-
-inline CO_Tree::const_iterator::Const_Member_Access_Helper
-Unlimited_Sparse_Row::const_iterator::operator->() const {
-
-  return itr.operator->();
 }
 
 } // namespace Parma_Polyhedra_Library

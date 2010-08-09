@@ -51,8 +51,8 @@ public:
 
   void swap(This& x);
 
-  class iterator;
-  class const_iterator;
+  typedef CO_Tree::iterator iterator;
+  typedef CO_Tree::const_iterator const_iterator;
 
   //! Swaps the i-th element with the j-th element.
   //! Iterators pointing to these elements are invalidated.
@@ -233,89 +233,6 @@ public:
 private:
 
   CO_Tree tree;
-};
-
-class Unlimited_Sparse_Row::iterator {
-
-public:
-
-  typedef std::bidirectional_iterator_tag iterator_category;
-  typedef Unlimited_Sparse_Row::value_type value_type;
-  typedef ptrdiff_t difference_type;
-  typedef value_type* pointer;
-  typedef value_type& reference;
-
-  class Member_Access_Helper {
-
-  public:
-    Member_Access_Helper(dimension_type key, CO_Tree::data_type& data);
-
-    std::pair<dimension_type, Coefficient&>* operator->();
-
-  private:
-    std::pair<dimension_type, Coefficient&> my_pair;
-  };
-
-  iterator();
-  iterator(CO_Tree& x);
-  iterator(const iterator& x);
-  iterator(const CO_Tree::iterator& itr);
-
-  iterator& operator=(const iterator& x);
-
-  bool operator==(const iterator& x) const;
-  bool operator!=(const iterator& x) const;
-
-  iterator& operator++();
-  iterator& operator--();
-
-  std::pair<dimension_type, Coefficient&> operator*();
-  Member_Access_Helper operator->();
-
-  std::pair<dimension_type, const Coefficient&> operator*() const;
-  CO_Tree::iterator::Const_Member_Access_Helper operator->() const;
-
-  operator const_iterator() const;
-
-private:
-  CO_Tree::iterator itr;
-
-  friend class Unlimited_Sparse_Row;
-};
-
-class Unlimited_Sparse_Row::const_iterator {
-
-public:
-
-  typedef std::bidirectional_iterator_tag iterator_category;
-  typedef const Unlimited_Sparse_Row::value_type
-    value_type;
-  typedef ptrdiff_t difference_type;
-  typedef value_type* pointer;
-  typedef value_type& reference;
-
-  const_iterator();
-  const_iterator(const CO_Tree& x);
-  const_iterator(const const_iterator& x);
-  const_iterator(const CO_Tree::iterator& x);
-  const_iterator(const CO_Tree::const_iterator& x);
-
-  const_iterator& operator=(const const_iterator& x);
-
-  const_iterator& operator++();
-  const_iterator& operator--();
-
-  bool operator==(const const_iterator& x) const;
-  bool operator!=(const const_iterator& x) const;
-
-  std::pair<dimension_type, const Coefficient&> operator*() const;
-  CO_Tree::const_iterator::Const_Member_Access_Helper
-    operator->() const;
-
-private:
-  CO_Tree::const_iterator itr;
-
-  friend class Unlimited_Sparse_Row;
 };
 
 } // namespace Parma_Polyhedra_Library
