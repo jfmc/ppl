@@ -410,8 +410,6 @@ private:
 
   //! The tree the iterator points to.
   const CO_Tree* tree;
-
-  friend class CO_Tree;
 };
 
 class CO_Tree::iterator {
@@ -504,7 +502,7 @@ private:
   friend const_iterator&
     const_iterator::operator=(const iterator&);
 
-  friend class CO_Tree;
+  friend class tree_iterator;
 };
 
 class CO_Tree::tree_iterator {
