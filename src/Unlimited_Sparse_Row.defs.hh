@@ -256,7 +256,8 @@ public:
     std::pair<dimension_type, Coefficient&> my_pair;
   };
 
-  iterator(CO_Tree* x = 0);
+  iterator();
+  iterator(CO_Tree& x);
   iterator(const iterator& x);
   iterator(const CO_Tree::iterator& itr);
 
@@ -293,7 +294,8 @@ public:
   typedef value_type* pointer;
   typedef value_type& reference;
 
-  const_iterator(const CO_Tree* x = 0);
+  const_iterator();
+  const_iterator(const CO_Tree& x);
   const_iterator(const const_iterator& x);
   const_iterator(const CO_Tree::iterator& x);
   const_iterator(const CO_Tree::const_iterator& x);

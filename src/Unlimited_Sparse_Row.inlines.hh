@@ -167,14 +167,14 @@ Unlimited_Sparse_Row::end() const {
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(dimension_type i,
                                   const Coefficient& x) {
-  iterator itr(&tree);
+  iterator itr(tree);
   itr.itr = tree.insert(i, x);
   return itr;
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find_create(dimension_type i) {
-  iterator itr(&tree);
+  iterator itr(tree);
   itr.itr = tree.insert(i);
   return itr;
 }
@@ -435,7 +435,12 @@ Unlimited_Sparse_Row::get(dimension_type i) const {
 
 
 inline
-Unlimited_Sparse_Row::iterator::iterator(CO_Tree* x)
+Unlimited_Sparse_Row::iterator::iterator()
+  : itr() {
+}
+
+inline
+Unlimited_Sparse_Row::iterator::iterator(CO_Tree& x)
   : itr(x) {
 }
 
@@ -530,8 +535,12 @@ inline Unlimited_Sparse_Row::iterator
 
 
 inline
-Unlimited_Sparse_Row::const_iterator
-::const_iterator(const CO_Tree* x)
+Unlimited_Sparse_Row::const_iterator::const_iterator()
+  : itr() {
+}
+
+inline
+Unlimited_Sparse_Row::const_iterator::const_iterator(const CO_Tree& x)
   : itr(x) {
 }
 

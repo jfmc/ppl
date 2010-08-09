@@ -96,11 +96,17 @@ public:
   //! Returns an iterator that points before the first element.
   iterator before_begin();
 
+  //! Returns an iterator that points before the first element.
+  iterator begin();
+
   //! Returns an iterator that points after the last element.
   iterator end();
 
   //! Returns an iterator that points before the first element.
   const_iterator before_begin() const;
+
+  //! Returns an iterator that points before the first element.
+  const_iterator begin() const;
 
   //! Returns an iterator that points after the last element.
   const_iterator end() const;
@@ -352,8 +358,11 @@ public:
     std::pair<const dimension_type, const data_type&> my_pair;
   };
 
+  //! Constructs an invalid const_iterator.
+  explicit const_iterator();
+
   //! Constructs an iterator pointing to the root node.
-  explicit const_iterator(const CO_Tree* tree = 0);
+  explicit const_iterator(const CO_Tree& tree);
 
   const_iterator(const const_iterator& itr);
   const_iterator(const iterator& itr);
@@ -439,8 +448,11 @@ public:
     std::pair<const dimension_type, const data_type&> my_pair;
   };
 
+  //! Constructs an invalid iterator.
+  iterator();
+
   //! Constructs an iterator pointing to the root node.
-  explicit iterator(CO_Tree* tree = 0);
+  explicit iterator(CO_Tree& tree);
 
   explicit iterator(const tree_iterator& itr);
 

@@ -173,7 +173,7 @@ CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) {
     }
   } else {
     insert_in_empty_tree(key1, data1);
-    return iterator(this);
+    return iterator(*this);
   }
 }
 
@@ -222,7 +222,7 @@ CO_Tree::insert(iterator itr, dimension_type key1) {
     }
   } else {
     insert_in_empty_tree(key1, Coefficient_zero());
-    return iterator(this);
+    return iterator(*this);
   }
 }
 
@@ -303,6 +303,11 @@ CO_Tree::before_begin() {
 }
 
 inline CO_Tree::iterator
+CO_Tree::begin() {
+  return iterator(*this);
+}
+
+inline CO_Tree::iterator
 CO_Tree::end() {
   return iterator::construct_end(*this);
 }
@@ -310,6 +315,11 @@ CO_Tree::end() {
 inline CO_Tree::const_iterator
 CO_Tree::before_begin() const {
   return const_iterator::construct_before_begin(*this);
+}
+
+inline CO_Tree::const_iterator
+CO_Tree::begin() const {
+  return const_iterator(*this);
 }
 
 inline CO_Tree::const_iterator
@@ -356,7 +366,7 @@ template <typename Func>
 inline CO_Tree::iterator
 CO_Tree::bisect_in(iterator first, iterator last, const Func &func) {
   dimension_type index = bisect_in(first.i, last.i, func);
-  iterator result(this);
+  iterator result(*this);
   result.i = index;
   return result;
 }
@@ -366,7 +376,7 @@ inline CO_Tree::const_iterator
 CO_Tree::bisect_in(const_iterator first, const_iterator last,
                    const Func &func) const {
   dimension_type index = bisect_in(first.i, last.i, func);
-  const_iterator result(this);
+  const_iterator result(*this);
   result.i = index;
   return result;
 }
@@ -374,7 +384,7 @@ CO_Tree::bisect_in(const_iterator first, const_iterator last,
 template <typename Func>
 inline CO_Tree::iterator
 CO_Tree::bisect_near(iterator hint, const Func &func) {
-  iterator itr(this);
+  iterator itr(*this);
   itr.i = bisect_near(hint.i, func);
   return itr;
 }
@@ -382,7 +392,7 @@ CO_Tree::bisect_near(iterator hint, const Func &func) {
 template <typename Func>
 inline CO_Tree::const_iterator
 CO_Tree::bisect_near(const_iterator hint, const Func &func) const {
-  const_iterator itr(this);
+  const_iterator itr(*this);
   itr.i = bisect_near(hint.i, func);
   return itr;
 }
@@ -642,8 +652,16 @@ CO_Tree::swap(CO_Tree& x) {
 }
 
 inline
-CO_Tree::iterator::iterator(CO_Tree* tree1)
-  : i(1), tree(tree1) {
+CO_Tree::iterator::iterator()
+  : i(0), tree(0) {
+}
+
+inline
+CO_Tree::iterator::iterator(CO_Tree& tree1)
+  : i(1), tree(&tree1) {
+  if (tree->reserved_size != 0)
+    while (tree->indexes[i] == unused_index)
+      ++i;
 }
 
 inline
@@ -660,7 +678,7 @@ CO_Tree::iterator::iterator(const tree_iterator& itr)
 inline CO_Tree::iterator
 CO_Tree::iterator::construct_before_begin(CO_Tree& tree) {
 
-  iterator itr(&tree);
+  iterator itr(tree);
   itr.i = 0;
   return itr;
 }
@@ -668,7 +686,7 @@ CO_Tree::iterator::construct_before_begin(CO_Tree& tree) {
 inline CO_Tree::iterator
 CO_Tree::iterator::construct_end(CO_Tree& tree) {
 
-  iterator itr(&tree);
+  iterator itr(tree);
   itr.i = tree.reserved_size + 1;
   return itr;
 }
@@ -828,8 +846,16 @@ CO_Tree::iterator::Const_Member_Access_Helper::operator->() const {
 
 
 inline
-CO_Tree::const_iterator::const_iterator(const CO_Tree* tree1)
-  : i(1), tree(tree1) {
+CO_Tree::const_iterator::const_iterator()
+  : i(0), tree(0) {
+}
+
+inline
+CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1)
+  : i(1), tree(&tree1) {
+  if (tree->reserved_size != 0)
+    while (tree->indexes[i] == unused_index)
+      ++i;
 }
 
 inline
@@ -847,7 +873,7 @@ CO_Tree::const_iterator
 inline CO_Tree::const_iterator
 CO_Tree::const_iterator::construct_before_begin(const CO_Tree& tree) {
 
-  const_iterator itr(&tree);
+  const_iterator itr(tree);
   itr.i = 0;
   return itr;
 }
@@ -855,7 +881,7 @@ CO_Tree::const_iterator::construct_before_begin(const CO_Tree& tree) {
 inline CO_Tree::const_iterator
 CO_Tree::const_iterator::construct_end(const CO_Tree& tree) {
 
-  const_iterator itr(&tree);
+  const_iterator itr(tree);
   itr.i = tree.reserved_size + 1;
   return itr;
 }
