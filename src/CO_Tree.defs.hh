@@ -268,7 +268,7 @@ private:
   dimension_type compact_elements_in_the_rightmost_end(
     dimension_type last_in_subtree, dimension_type subtree_size,
     dimension_type key, const data_type& value,
-    bool& added_key, bool& can_add_key);
+    bool added_key);
 
   //! Redistributes the elements in the subtree rooted at \p root,
   //! with \p subtree_size used elements, after the elements have been

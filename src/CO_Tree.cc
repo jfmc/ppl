@@ -639,25 +639,14 @@ PPL::CO_Tree::redistribute_elements_in_subtree(tree_iterator& itr,
 
   dimension_type last_index_in_subtree = itr.index() + itr.get_offset() - 1;
 
-  bool added_key = false;
-  bool can_add_key = true;
-  if (deleting)
-    added_key = true;
   dimension_type first_unused
     = compact_elements_in_the_rightmost_end(last_index_in_subtree, n, key,
-                                            value, added_key, can_add_key);
+                                            value, deleting);
   PPL_ASSERT(p == &(itr->second));
-  if (!added_key && can_add_key) {
-    PPL_ASSERT(indexes[first_unused] == unused_index);
-    indexes[first_unused] = key;
-    new (&(data[first_unused])) data_type(value);
-    added_key = true;
-  } else
-    ++first_unused;
 
   // Step 2: redistribute the elements, from left to right.
-  redistribute_elements_in_subtree_helper(itr, n, first_unused, key, value,
-                                          added_key);
+  redistribute_elements_in_subtree_helper(itr, n, first_unused + 1, key, value,
+                                          first_unused == last_index_in_subtree - n);
 
   PPL_ASSERT(p == &(itr->second));
 
@@ -673,18 +662,16 @@ PPL::CO_Tree
                                         dimension_type subtree_size,
                                         dimension_type key,
                                         const data_type& value,
-                                        bool& added_key,
-                                        bool& can_add_key) {
+                                        bool added_key) {
 
   if (subtree_size == 0)
     return last_in_subtree;
 
-  if (subtree_size == 1 && !added_key && can_add_key) {
+  if (subtree_size == 1 && !added_key) {
     // Just add the requested element.
     PPL_ASSERT(indexes[last_in_subtree] == unused_index);
     indexes[last_in_subtree] = key;
     new (&(data[last_in_subtree])) data_type(value);
-    added_key = true;
     return last_in_subtree - 1;
   }
 
@@ -696,18 +683,15 @@ PPL::CO_Tree
   // the subtree and first_unused_index points to the rightmost unused node in
   // the subtree.
 
-  if (!added_key && can_add_key)
+  if (!added_key)
     while (subtree_size != 0) {
       --subtree_size;
       if (last_in_subtree == 0 || key > indexes[last_in_subtree]) {
-        if (last_in_subtree != 0 && last_in_subtree == first_unused_index)
-          can_add_key = false;
-        else {
+        if (last_in_subtree == 0 || last_in_subtree != first_unused_index) {
           PPL_ASSERT(first_unused_index != 0);
           PPL_ASSERT(indexes[first_unused_index] == unused_index);
           indexes[first_unused_index] = key;
           new (&(data[first_unused_index])) data_type(value);
-          added_key = true;
           --first_unused_index;
         }
         break;
