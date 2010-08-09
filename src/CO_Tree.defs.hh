@@ -395,8 +395,6 @@ public:
   //! Compares \p *this with x .
   bool operator!=(const const_iterator& x) const;
 
-  const CO_Tree* get_tree() const;
-
 private:
   //! A pointer to the corresponding element of the tree's indexes[] array.
   const dimension_type* current_index;
