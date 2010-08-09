@@ -353,6 +353,12 @@ private:
 class CO_Tree::const_iterator {
 public:
 
+  typedef std::bidirectional_iterator_tag iterator_category;
+  typedef const CO_Tree::value_type value_type;
+  typedef ptrdiff_t difference_type;
+  typedef value_type* pointer;
+  typedef value_type& reference;
+
   class Const_Member_Access_Helper {
 
   public:
@@ -412,6 +418,12 @@ private:
 
 class CO_Tree::iterator {
 public:
+
+  typedef std::bidirectional_iterator_tag iterator_category;
+  typedef CO_Tree::value_type value_type;
+  typedef ptrdiff_t difference_type;
+  typedef value_type* pointer;
+  typedef value_type& reference;
 
   class Member_Access_Helper {
 
