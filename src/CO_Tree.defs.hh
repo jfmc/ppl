@@ -256,18 +256,18 @@ private:
                                         dimension_type key,
                                         const data_type& value);
 
-  //! When called with a node and its rightmost child, this moves all elements
-  //! of that node's subtree to the rightmost end.
+  //! Moves all elements of a subtree to the rightmost end.
   //! It tries to add an element with key \p key and value \p value in the
   //! process. If it succeeds, sets inserted_value to true.
   //! A boolean with value \p true has to be passed as can_add_key.
   //! If can_add_key remains \p true and inserted_value remains \p false
   //! , this means that \p key is lower than all keys in the tree.
-  //! \p first_unused is updated, but root isn't. The root iterator is passed
-  //! by reference to improve performance.
-  static void compact_elements_in_the_rightmost_end(
-    iterator root, dimension_type& first_unused,
-    dimension_type subtree_size, dimension_type key, const data_type& value,
+  //! \p last_in_subtree is the index of the last element in the subtree.
+  //! This returns the index of the rightmost unused node in the subtree
+  //! after the process.
+  dimension_type compact_elements_in_the_rightmost_end(
+    dimension_type last_in_subtree, dimension_type subtree_size,
+    dimension_type key, const data_type& value,
     bool& added_key, bool& can_add_key);
 
   //! Redistributes the elements in the subtree rooted at \p root,
