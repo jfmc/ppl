@@ -347,6 +347,8 @@ CO_Tree::go_down_searching_key(tree_iterator& itr, dimension_type key) {
 
 inline void
 CO_Tree::erase(iterator itr) {
+  PPL_ASSERT(!itr.is_before_begin());
+  PPL_ASSERT(!itr.is_at_end());
   erase(tree_iterator(itr));
 }
 
