@@ -106,9 +106,10 @@ inline CO_Tree::iterator
 CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) {
   PPL_ASSERT(key1 != unused_index);
   if (!empty()) {
-    PPL_ASSERT(!itr.is_at_end());
-    PPL_ASSERT(!itr.is_before_begin());
-    return iterator(insert(tree_iterator(itr), key1, data1));
+    if (itr.is_at_end() || itr.is_before_begin())
+      return insert(key1, data1);
+    else
+      return iterator(insert(tree_iterator(itr), key1, data1));
   } else {
     insert_in_empty_tree(key1, data1);
     return iterator(this);
