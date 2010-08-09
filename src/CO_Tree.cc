@@ -295,14 +295,11 @@ PPL::CO_Tree::OK() const {
     return false;
 
   {
-    const_iterator itr = before_begin();
-    const_iterator itr_end = end();
     dimension_type real_size = 0;
 
-    itr.get_next_value();
-
-    for ( ; itr != itr_end; itr.get_next_value())
-        ++real_size;
+    for (const_iterator itr = begin(), itr_end = end();
+         itr != itr_end; itr.get_next_value())
+      ++real_size;
 
     if (real_size != size)
       // There are \p real_size elements in the tree, but size is \p size.
@@ -377,10 +374,8 @@ PPL::CO_Tree::structure_OK() const {
   }
 
   if (size != 0) {
-    const_iterator itr = before_begin();
+    const_iterator itr = begin();
     const_iterator itr_end = end();
-
-    itr.get_next_value();
 
     if (itr != itr_end) {
       dimension_type last_index = itr->first;
