@@ -365,36 +365,44 @@ CO_Tree::erase(iterator itr) {
 template <typename Func>
 inline CO_Tree::iterator
 CO_Tree::bisect_in(iterator first, iterator last, const Func &func) {
-  dimension_type index = bisect_in(first.i, last.i, func);
-  iterator result(*this);
-  result.i = index;
-  return result;
+  PPL_ASSERT(!first.is_before_begin());
+  PPL_ASSERT(!first.is_at_end());
+  PPL_ASSERT(!last.is_before_begin());
+  PPL_ASSERT(!last.is_at_end());
+  dimension_type index = bisect_in(&(first->second) - data,
+                                   &(last->second) - data, func);
+  return iterator(*this, index);
 }
 
 template <typename Func>
 inline CO_Tree::const_iterator
 CO_Tree::bisect_in(const_iterator first, const_iterator last,
                    const Func &func) const {
-  dimension_type index = bisect_in(first.i, last.i, func);
-  const_iterator result(*this);
-  result.i = index;
-  return result;
+  PPL_ASSERT(!first.is_before_begin());
+  PPL_ASSERT(!first.is_at_end());
+  PPL_ASSERT(!last.is_before_begin());
+  PPL_ASSERT(!last.is_at_end());
+  dimension_type index = bisect_in(&(first->second) - data,
+                                   &(last->second) - data, func);
+  return const_iterator(*this, index);
 }
 
 template <typename Func>
 inline CO_Tree::iterator
 CO_Tree::bisect_near(iterator hint, const Func &func) {
-  iterator itr(*this);
-  itr.i = bisect_near(hint.i, func);
-  return itr;
+  PPL_ASSERT(!hint.is_before_begin());
+  PPL_ASSERT(!hint.is_at_end());
+  dimension_type index = bisect_near(&(hint->second) - data, func);
+  return iterator(*this, index);
 }
 
 template <typename Func>
 inline CO_Tree::const_iterator
 CO_Tree::bisect_near(const_iterator hint, const Func &func) const {
-  const_iterator itr(*this);
-  itr.i = bisect_near(hint.i, func);
-  return itr;
+  PPL_ASSERT(!hint.is_before_begin());
+  PPL_ASSERT(!hint.is_at_end());
+  dimension_type index = bisect_near(&(hint->second) - data, func);
+  return const_iterator(*this, index);
 }
 
 template <typename Func>
