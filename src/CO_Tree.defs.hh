@@ -501,8 +501,6 @@ private:
 
   friend const_iterator&
     const_iterator::operator=(const iterator&);
-
-  friend class tree_iterator;
 };
 
 class CO_Tree::tree_iterator {
