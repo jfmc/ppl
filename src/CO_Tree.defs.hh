@@ -279,7 +279,7 @@ private:
   //! \performance. \p itr is invalidated.
   static void redistribute_elements_in_subtree_helper(
     tree_iterator& root, dimension_type subtree_size,
-    iterator& itr, dimension_type key, const data_type& value,
+    dimension_type last_used, dimension_type key, const data_type& value,
     bool added_key);
 
   //! Moves all data in the tree \p tree in *this.
