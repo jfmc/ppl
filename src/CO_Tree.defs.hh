@@ -379,11 +379,11 @@ public:
   //! Assigns \p itr to *this .
   const_iterator& operator=(const iterator& itr);
 
-  //! Navigates to the next node with a value, in the in-order traversal.
-  void get_next_value();
+  //! Navigates to the next node with a value.
+  const_iterator& operator++();
 
-  //! Navigates to the previous node with a value, in the in-order traversal.
-  void get_previous_value();
+  //! Navigates to the previous node with a value.
+  const_iterator& operator--();
 
   //! Returns the value_type of the current node.
   std::pair<const dimension_type, const data_type&> operator*() const;
@@ -464,11 +464,11 @@ public:
   //! Assigns \p itr to *this .
   iterator& operator=(const tree_iterator& itr);
 
-  //! Navigates to the next node with a value, in the in-order traversal.
-  void get_next_value();
+  //! Navigates to the next node with a value.
+  iterator& operator++();
 
-  //! Navigates to the previous node with a value, in the in-order traversal.
-  void get_previous_value();
+  //! Navigates to the previous node with a value.
+  iterator& operator--();
 
   //! Returns the value_type of the current node.
   std::pair<dimension_type&, data_type&> operator*();

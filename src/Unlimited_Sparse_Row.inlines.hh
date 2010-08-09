@@ -89,7 +89,7 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
 
   CO_Tree::iterator first = tree.begin();
   CO_Tree::iterator last = tree.end();
-  last.get_previous_value();
+  --last;
 
   CO_Tree::iterator itr_i = tree.bisect_in(first, last,
                                            Unlimited_Sparse_Row__bisect_helper_functor(i));
@@ -196,7 +196,7 @@ Unlimited_Sparse_Row::find(dimension_type i) {
 
   CO_Tree::iterator first = tree.begin();
   CO_Tree::iterator last = tree.end();
-  last.get_previous_value();
+  --last;
 
   iterator itr = tree.bisect_in(first, last,
                                 Unlimited_Sparse_Row__bisect_helper_functor(i));
@@ -215,7 +215,7 @@ Unlimited_Sparse_Row::find(dimension_type i) const {
 
   CO_Tree::const_iterator first = tree.begin();
   CO_Tree::const_iterator last = tree.end();
-  last.get_previous_value();
+  --last;
 
   const_iterator itr = tree.bisect_in(first, last,
                                       Unlimited_Sparse_Row__bisect_helper_functor(i));
@@ -233,7 +233,7 @@ Unlimited_Sparse_Row::lower_bound(dimension_type i) {
 
   CO_Tree::iterator first = tree.begin();
   CO_Tree::iterator last = tree.end();
-  last.get_previous_value();
+  --last;
 
   iterator itr = tree.bisect_in(first, last,
                                 Unlimited_Sparse_Row__bisect_helper_functor(i));
@@ -250,7 +250,7 @@ Unlimited_Sparse_Row::lower_bound(dimension_type i) const {
     return end();
   CO_Tree::const_iterator first = tree.begin();
   CO_Tree::const_iterator last = tree.end();
-  last.get_previous_value();
+  --last;
 
   const_iterator itr = tree.bisect_in(first, last,
                                       Unlimited_Sparse_Row__bisect_helper_functor(i));
@@ -369,8 +369,8 @@ inline void
 Unlimited_Sparse_Row::add_zeroes_and_shift(dimension_type n,
                                            dimension_type i) {
   CO_Tree::iterator itr = tree.end();
-  itr.get_previous_value();
-  for ( ; !itr.is_before_begin() && itr->first >= i; itr.get_previous_value())
+  --itr;
+  for ( ; !itr.is_before_begin() && itr->first >= i; --itr)
     itr->first += n;
   PPL_ASSERT(OK());
 }
@@ -382,7 +382,7 @@ Unlimited_Sparse_Row::assign(dimension_type i, const Coefficient& x) {
   else {
     CO_Tree::iterator first = tree.begin();
     CO_Tree::iterator last = tree.end();
-    last.get_previous_value();
+    --last;
 
     CO_Tree::iterator itr = tree.bisect_in(first, last,
                                            Unlimited_Sparse_Row__bisect_helper_functor(i));
@@ -469,14 +469,14 @@ Unlimited_Sparse_Row::iterator
 inline Unlimited_Sparse_Row::iterator&
 Unlimited_Sparse_Row::iterator::operator++() {
 
-  itr.get_next_value();
+  ++itr;
   return *this;
 }
 
 inline Unlimited_Sparse_Row::iterator&
 Unlimited_Sparse_Row::iterator::operator--() {
 
-  itr.get_previous_value();
+  --itr;
   return *this;
 }
 
@@ -576,14 +576,14 @@ Unlimited_Sparse_Row::const_iterator
 inline Unlimited_Sparse_Row::const_iterator&
 Unlimited_Sparse_Row::const_iterator::operator++() {
 
-  itr.get_next_value();
+  ++itr;
   return *this;
 }
 
 inline Unlimited_Sparse_Row::const_iterator&
 Unlimited_Sparse_Row::const_iterator::operator--() {
 
-  itr.get_previous_value();
+  --itr;
   return *this;
 }
 

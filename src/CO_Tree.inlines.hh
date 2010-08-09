@@ -141,9 +141,9 @@ CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) {
       }
       iterator candidate2(candidate1);
       if (key1 < candidate1->first)
-        candidate2.get_previous_value();
+        --candidate2;
       else
-        candidate2.get_next_value();
+        ++candidate2;
       tree_iterator candidate1_node(candidate1);
       if (candidate2.is_before_begin() || candidate2.is_at_end()) {
         // Use candidate1
@@ -190,9 +190,9 @@ CO_Tree::insert(iterator itr, dimension_type key1) {
         return candidate1;
       iterator candidate2(candidate1);
       if (key1 < candidate1->first)
-        candidate2.get_previous_value();
+        --candidate2;
       else
-        candidate2.get_next_value();
+        ++candidate2;
       tree_iterator candidate1_node(candidate1);
       if (candidate2.is_before_begin() || candidate2.is_at_end()) {
         // Use candidate1
@@ -773,24 +773,28 @@ CO_Tree::iterator::get_tree() const {
   return tree;
 }
 
-inline void
-CO_Tree::iterator::get_next_value() {
+inline CO_Tree::iterator&
+CO_Tree::iterator::operator++() {
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!is_at_end());
   ++i;
   if (!tree->empty())
     while (tree->indexes[i] == unused_index)
       ++i;
+
+  return *this;
 }
 
-inline void
-CO_Tree::iterator::get_previous_value() {
+inline CO_Tree::iterator&
+CO_Tree::iterator::operator--() {
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!is_before_begin());
   --i;
   if (!tree->empty())
     while (tree->indexes[i] == unused_index)
       --i;
+
+  return *this;
 }
 
 inline CO_Tree::iterator&
@@ -922,24 +926,26 @@ CO_Tree::const_iterator::get_tree() const {
   return tree;
 }
 
-inline void
-CO_Tree::const_iterator::get_next_value() {
+inline CO_Tree::const_iterator&
+CO_Tree::const_iterator::operator++() {
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!is_at_end());
   ++i;
   if (!tree->empty())
     while (tree->indexes[i] == unused_index)
       ++i;
+  return *this;
 }
 
-inline void
-CO_Tree::const_iterator::get_previous_value() {
+inline CO_Tree::const_iterator&
+CO_Tree::const_iterator::operator--() {
   PPL_ASSERT(tree != 0);
   PPL_ASSERT(!is_before_begin());
   --i;
   if (!tree->empty())
     while (tree->indexes[i] == unused_index)
       --i;
+  return *this;
 }
 
 inline CO_Tree::const_iterator&

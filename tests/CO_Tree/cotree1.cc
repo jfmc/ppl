@@ -33,8 +33,7 @@ test01() {
 
   CO_Tree tree;
 
-  for (CO_Tree::iterator itr = tree.begin(), itr_end = tree.end();
-       itr != itr_end; itr.get_next_value())
+  for (CO_Tree::iterator i = tree.begin(), i_end = tree.end(); i != i_end; ++i)
     ;
 
   return true;

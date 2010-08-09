@@ -297,8 +297,7 @@ PPL::CO_Tree::OK() const {
   {
     dimension_type real_size = 0;
 
-    for (const_iterator itr = begin(), itr_end = end();
-         itr != itr_end; itr.get_next_value())
+    for (const_iterator itr = begin(), itr_end = end(); itr != itr_end; ++itr)
       ++real_size;
 
     if (real_size != size)
@@ -379,7 +378,7 @@ PPL::CO_Tree::structure_OK() const {
 
     if (itr != itr_end) {
       dimension_type last_index = itr->first;
-      for (itr.get_next_value(); itr != itr_end; itr.get_next_value()) {
+      for (++itr; itr != itr_end; ++itr) {
         if (last_index >= itr->first)
           // Found index \p itr->first after index \p last_index.
           return false;
