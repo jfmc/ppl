@@ -395,21 +395,14 @@ public:
   //! Compares \p *this with x .
   bool operator!=(const const_iterator& x) const;
 
-  //! Returns true if the iterator is an end() iterator.
-  bool is_at_end() const;
-
-  //! Returns true if the iterator points before the first element.
-  bool is_before_begin() const;
-
   const CO_Tree* get_tree() const;
 
 private:
+  //! A pointer to the corresponding element of the tree's indexes[] array.
+  const dimension_type* current_index;
 
-  //! The index of the current node in the DFS layout.
-  dimension_type i;
-
-  //! The tree the iterator points to.
-  const CO_Tree* tree;
+  //! A pointer to the corresponding element of the tree's data[] array.
+  const data_type* current_data;
 };
 
 class CO_Tree::iterator {
@@ -482,18 +475,12 @@ public:
   //! Compares \p *this with x .
   bool operator!=(const iterator& x) const;
 
-  //! Returns true if the iterator is an end() iterator.
-  bool is_at_end() const;
-
-  //! Returns true if the iterator points before the first element.
-  bool is_before_begin() const;
-
 private:
-  //! The index of the current node in the DFS layout.
-  dimension_type i;
+  //! A pointer to the corresponding element of the tree's indexes[] array.
+  dimension_type* current_index;
 
-  //! The tree the iterator points to.
-  CO_Tree* tree;
+  //! A pointer to the corresponding element of the tree's data[] array.
+  data_type* current_data;
 
   friend const_iterator&
     const_iterator::operator=(const iterator&);

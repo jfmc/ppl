@@ -661,22 +661,24 @@ CO_Tree::swap(CO_Tree& x) {
 
 inline
 CO_Tree::iterator::iterator()
-  : i(0), tree(0) {
+  : current_index(0), current_data(0) {
 }
 
 inline
-CO_Tree::iterator::iterator(CO_Tree& tree1)
-  : i(1), tree(&tree1) {
-  if (tree->reserved_size != 0)
-    while (tree->indexes[i] == unused_index)
-      ++i;
+CO_Tree::iterator::iterator(CO_Tree& tree)
+  : current_index(&(tree.indexes[1])), current_data(&(tree.data[1])) {
+  if (tree.reserved_size != 0)
+    while (*current_index == unused_index) {
+      ++current_index;
+      ++current_data;
+    }
 }
 
 inline
-CO_Tree::iterator::iterator(CO_Tree& tree1, dimension_type i1)
-  : i(i1), tree(&tree1) {
-  PPL_ASSERT(i <= tree->reserved_size + 1);
-  PPL_ASSERT(tree->empty() || tree->indexes[i] != unused_index);
+CO_Tree::iterator::iterator(CO_Tree& tree, dimension_type i)
+  : current_index(&(tree.indexes[i])), current_data(&(tree.data[i])) {
+  PPL_ASSERT(i <= tree.reserved_size + 1);
+  PPL_ASSERT(tree.empty() || tree.indexes[i] != unused_index);
 }
 
 inline
@@ -685,61 +687,52 @@ CO_Tree::iterator::iterator(const iterator& itr2) {
 }
 
 inline
-CO_Tree::iterator::iterator(const tree_iterator& itr)
-  : tree(itr.tree) {
+CO_Tree::iterator::iterator(const tree_iterator& itr) {
   *this = itr;
 }
 
 inline CO_Tree::iterator&
 CO_Tree::iterator::operator=(const tree_iterator& itr) {
-  PPL_ASSERT(tree == itr.tree);
-  i = itr.index();
+  current_index = &(itr.tree->indexes[itr.index()]);
+  current_data = &(itr.tree->data[itr.index()]);
   return *this;
 }
 
 inline std::pair<dimension_type&, CO_Tree::data_type&>
 CO_Tree::iterator::operator*() {
-  PPL_ASSERT(tree->reserved_size != 0);
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_at_end());
-  PPL_ASSERT(!is_before_begin());
-  return std::pair<dimension_type&, data_type&>(tree->indexes[i],
-                                                tree->data[i]);
+  PPL_ASSERT(current_index != 0);
+  PPL_ASSERT(current_data != 0);
+  return std::pair<dimension_type&, data_type&>(*current_index,
+                                                *current_data);
 }
 
 inline std::pair<const dimension_type, const CO_Tree::data_type&>
 CO_Tree::iterator::operator*() const {
-  PPL_ASSERT(tree->reserved_size != 0);
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_at_end());
-  PPL_ASSERT(!is_before_begin());
-  return std::pair<const dimension_type&, const data_type&>(tree->indexes[i],
-                                                            tree->data[i]);
+  PPL_ASSERT(current_index != 0);
+  PPL_ASSERT(current_data != 0);
+  return std::pair<const dimension_type&, const data_type&>(*current_index,
+                                                            *current_data);
 }
 
 inline CO_Tree::iterator::Member_Access_Helper
 CO_Tree::iterator::operator->() {
-  PPL_ASSERT(tree->reserved_size != 0);
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_at_end());
-  PPL_ASSERT(!is_before_begin());
-  return Member_Access_Helper(tree->indexes[i], tree->data[i]);
+  PPL_ASSERT(current_index != 0);
+  PPL_ASSERT(current_data != 0);
+  return Member_Access_Helper(*current_index, *current_data);
 }
 
 inline CO_Tree::iterator::Const_Member_Access_Helper
 CO_Tree::iterator::operator->() const {
-  PPL_ASSERT(tree->reserved_size != 0);
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_at_end());
-  PPL_ASSERT(!is_before_begin());
-  return Const_Member_Access_Helper(tree->indexes[i], tree->data[i]);
+  PPL_ASSERT(current_index != 0);
+  PPL_ASSERT(current_data != 0);
+  return Const_Member_Access_Helper(*current_index, *current_data);
 }
 
 inline bool
 CO_Tree::iterator::operator==(const iterator& x) const {
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(tree == x.tree);
-  return (i == x.i);
+  PPL_ASSERT((current_index == x.current_index)
+             == (current_data == x.current_data));
+  return (current_index == x.current_index);
 }
 
 inline bool
@@ -747,48 +740,38 @@ CO_Tree::iterator::operator!=(const iterator& x) const {
   return !(*this == x);
 }
 
-inline bool
-CO_Tree::iterator::is_at_end() const {
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(i <= tree->reserved_size + 1);
-  return i > tree->reserved_size;
-}
-
-inline bool
-CO_Tree::iterator::is_before_begin() const {
-  PPL_ASSERT(tree != 0);
-  return i == 0;
-}
-
 inline CO_Tree::iterator&
 CO_Tree::iterator::operator++() {
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_at_end());
-  ++i;
-  PPL_ASSERT(!tree->empty());
-  while (tree->indexes[i] == unused_index)
-    ++i;
+  PPL_ASSERT(current_index != 0);
+  PPL_ASSERT(current_data != 0);
+  ++current_index;
+  ++current_data;
+  while (*current_index == unused_index) {
+    ++current_index;
+    ++current_data;
+  }
 
   return *this;
 }
 
 inline CO_Tree::iterator&
 CO_Tree::iterator::operator--() {
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_before_begin());
-  --i;
-  PPL_ASSERT(!tree->empty());
-  while (tree->indexes[i] == unused_index)
-    --i;
+  PPL_ASSERT(current_index != 0);
+  PPL_ASSERT(current_data != 0);
+  --current_index;
+  --current_data;
+  while (*current_index == unused_index) {
+    --current_index;
+    --current_data;
+  }
 
   return *this;
 }
 
 inline CO_Tree::iterator&
 CO_Tree::iterator::operator=(const iterator& itr2) {
-  tree = itr2.tree;
-  if (tree != 0)
-    i = itr2.i;
+  current_index = itr2.current_index;
+  current_data = itr2.current_data;
 
   return *this;
 }
@@ -822,23 +805,25 @@ CO_Tree::iterator::Const_Member_Access_Helper::operator->() const {
 
 inline
 CO_Tree::const_iterator::const_iterator()
-  : i(0), tree(0) {
+  : current_index(0), current_data(0) {
 }
 
 inline
-CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1)
-  : i(1), tree(&tree1) {
-  if (tree->reserved_size != 0)
-    while (tree->indexes[i] == unused_index)
-      ++i;
+CO_Tree::const_iterator::const_iterator(const CO_Tree& tree)
+  : current_index(&(tree.indexes[1])), current_data(&(tree.data[1])) {
+  if (tree.reserved_size != 0)
+    while (*current_index == unused_index) {
+      ++current_index;
+      ++current_data;
+    }
 }
 
 inline
-CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1,
-                                        dimension_type i1)
-  : i(i1), tree(&tree1) {
-  PPL_ASSERT(i <= tree->reserved_size + 1);
-  PPL_ASSERT(tree->empty() || tree->indexes[i] != unused_index);
+CO_Tree::const_iterator::const_iterator(const CO_Tree& tree,
+                                        dimension_type i)
+  : current_index(&(tree.indexes[i])), current_data(&(tree.data[i])) {
+  PPL_ASSERT(i <= tree.reserved_size + 1);
+  PPL_ASSERT(tree.empty() || tree.indexes[i] != unused_index);
 }
 
 inline
@@ -855,29 +840,25 @@ CO_Tree::const_iterator
 
 inline std::pair<const dimension_type, const CO_Tree::data_type&>
 CO_Tree::const_iterator::operator*() const {
-  PPL_ASSERT(tree->reserved_size != 0);
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_at_end());
-  PPL_ASSERT(!is_before_begin());
-  return std::pair<const dimension_type&, const data_type&>(tree->indexes[i],
-                                                            tree->data[i]);
+  PPL_ASSERT(current_index != 0);
+  PPL_ASSERT(current_data != 0);
+  return std::pair<const dimension_type&, const data_type&>(*current_index,
+                                                            *current_data);
 }
 
 inline CO_Tree::const_iterator::Const_Member_Access_Helper
 CO_Tree::const_iterator::operator->() const {
-  PPL_ASSERT(tree->reserved_size != 0);
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_at_end());
-  PPL_ASSERT(!is_before_begin());
-  return Const_Member_Access_Helper(tree->indexes[i], tree->data[i]);
+  PPL_ASSERT(current_index != 0);
+  PPL_ASSERT(current_data != 0);
+  return Const_Member_Access_Helper(*current_index, *current_data);
 }
 
 inline bool
 CO_Tree::const_iterator
 ::operator==(const const_iterator& x) const {
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(tree == x.tree);
-  return (i == x.i);
+  PPL_ASSERT((current_index == x.current_index)
+             == (current_data == x.current_data));
+  return (current_index == x.current_index);
 }
 
 inline bool
@@ -886,54 +867,43 @@ CO_Tree::const_iterator
   return !(*this == x);
 }
 
-inline bool
-CO_Tree::const_iterator::is_at_end() const {
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(i <= tree->reserved_size + 1);
-  return i > tree->reserved_size;
-}
-
-inline bool
-CO_Tree::const_iterator::is_before_begin() const {
-  PPL_ASSERT(tree != 0);
-  return i == 0;
-}
-
 inline CO_Tree::const_iterator&
 CO_Tree::const_iterator::operator++() {
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_at_end());
-  ++i;
-  PPL_ASSERT(!tree->empty());
-  while (tree->indexes[i] == unused_index)
-    ++i;
+  PPL_ASSERT(current_index != 0);
+  PPL_ASSERT(current_data != 0);
+  ++current_index;
+  ++current_data;
+  while (*current_index == unused_index) {
+    ++current_index;
+    ++current_data;
+  }
   return *this;
 }
 
 inline CO_Tree::const_iterator&
 CO_Tree::const_iterator::operator--() {
-  PPL_ASSERT(tree != 0);
-  PPL_ASSERT(!is_before_begin());
-  --i;
-  PPL_ASSERT(!tree->empty());
-  while (tree->indexes[i] == unused_index)
-    --i;
+  PPL_ASSERT(current_index != 0);
+  PPL_ASSERT(current_data != 0);
+  --current_index;
+  --current_data;
+  while (*current_index == unused_index) {
+    --current_index;
+    --current_data;
+  }
   return *this;
 }
 
 inline CO_Tree::const_iterator&
 CO_Tree::const_iterator::operator=(const const_iterator& itr2) {
-  tree = itr2.tree;
-  if (tree != 0)
-    i = itr2.i;
+  current_index = itr2.current_index;
+  current_data = itr2.current_data;
   return *this;
 }
 
 inline CO_Tree::const_iterator&
 CO_Tree::const_iterator::operator=(const iterator& itr2) {
-  tree = itr2.tree;
-  if (tree != 0)
-    i = itr2.i;
+  current_index = itr2.current_index;
+  current_data = itr2.current_data;
   return *this;
 }
 
