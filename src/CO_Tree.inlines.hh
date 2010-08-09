@@ -102,14 +102,75 @@ CO_Tree::insert(dimension_type key1) {
   }
 }
 
+namespace {
+
+  class CO_Tree__bisect_helper_functor {
+  public:
+    CO_Tree__bisect_helper_functor(dimension_type i1)
+      : i(i1) {
+    }
+
+    inline int operator()(dimension_type index,
+                          const Coefficient& /* data */) const {
+      if (index == i)
+        return 0;
+      else
+        if (i < index)
+          return -1;
+        else
+          return 1;
+    }
+
+  private:
+    dimension_type i;
+  };
+}
+
 inline CO_Tree::iterator
 CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) {
   PPL_ASSERT(key1 != unused_index);
   if (!empty()) {
     if (itr.is_at_end() || itr.is_before_begin())
       return insert(key1, data1);
-    else
-      return iterator(insert(tree_iterator(itr), key1, data1));
+    else {
+      iterator candidate1 = bisect_near(itr,
+                                        CO_Tree__bisect_helper_functor(key1));
+      if (key1 == candidate1->first) {
+        candidate1->second = data1;
+        return candidate1;
+      }
+      iterator candidate2(candidate1);
+      if (key1 < candidate1->first)
+        candidate2.get_previous_value();
+      else
+        candidate2.get_next_value();
+      tree_iterator candidate1_node(candidate1);
+      if (candidate2.is_before_begin() || candidate2.is_at_end()) {
+        // Use candidate1
+        insert_precise(key1, data1, candidate1_node);
+        return iterator(candidate1_node);
+      }
+      else {
+        tree_iterator candidate2_node(candidate2);
+        // Adjacent nodes in an in-order visit of a tree always have different
+        // heights. This fact can be easily proven by induction on the tree's
+        // height, using the definition of the in-order layout.
+        PPL_ASSERT(candidate1_node.get_offset() != candidate2_node.get_offset());
+        if (candidate1_node.get_offset() < candidate2_node.get_offset()) {
+          PPL_ASSERT(candidate1_node.depth() > candidate2_node.depth());
+          // candidate1_node is deeper in the tree than candidate2_node, so
+          // use candidate1_node.
+          insert_precise(key1, data1, candidate1_node);
+          return iterator(candidate1_node);
+        } else {
+          PPL_ASSERT(candidate1_node.depth() < candidate2_node.depth());
+          // candidate2_node is deeper in the tree than candidate1_node, so
+          // use candidate2_node.
+          insert_precise(key1, data1, candidate2_node);
+          return iterator(candidate2_node);
+        }
+      }
+    }
   } else {
     insert_in_empty_tree(key1, data1);
     return iterator(this);
@@ -148,37 +209,49 @@ CO_Tree::insert(tree_iterator itr, dimension_type key1, const data_type& data1) 
 inline CO_Tree::iterator
 CO_Tree::insert(iterator itr, dimension_type key1) {
   PPL_ASSERT(key1 != unused_index);
-
-  if (empty())
-    return insert(itr, key1, Coefficient_zero());
-  else {
-    PPL_ASSERT(!itr.is_at_end());
-    PPL_ASSERT(!itr.is_before_begin());
-    PPL_ASSERT(itr->first != unused_index);
-
-    tree_iterator itr2(itr);
-
-    if (itr2->first != key1) {
-      if (itr2->first > key1)
-        while (itr2.has_parent() && itr2->first > key1)
-          itr2.get_parent();
+  if (!empty()) {
+    if (itr.is_at_end() || itr.is_before_begin())
+      return insert(key1);
+    else {
+      iterator candidate1 = bisect_near(itr,
+                                        CO_Tree__bisect_helper_functor(key1));
+      if (key1 == candidate1->first)
+        return candidate1;
+      iterator candidate2(candidate1);
+      if (key1 < candidate1->first)
+        candidate2.get_previous_value();
       else
-        while (itr2.has_parent() && itr2->first < key1)
-          itr2.get_parent();
-
-      go_down_searching_key(itr2, key1);
-
-#ifndef NDEBUG
-      tree_iterator itr3(*this);
-      go_down_searching_key(itr3, key1);
-      PPL_ASSERT(itr2 == itr3);
-#endif
+        candidate2.get_next_value();
+      tree_iterator candidate1_node(candidate1);
+      if (candidate2.is_before_begin() || candidate2.is_at_end()) {
+        // Use candidate1
+        insert_precise(key1, Coefficient_zero(), candidate1_node);
+        return iterator(candidate1_node);
+      }
+      else {
+        tree_iterator candidate2_node(candidate2);
+        // Adjacent nodes in an in-order visit of a tree always have different
+        // heights. This fact can be easily proven by induction on the tree's
+        // height, using the definition of the in-order layout.
+        PPL_ASSERT(candidate1_node.get_offset() != candidate2_node.get_offset());
+        if (candidate1_node.get_offset() < candidate2_node.get_offset()) {
+          PPL_ASSERT(candidate1_node.depth() > candidate2_node.depth());
+          // candidate1_node is deeper in the tree than candidate2_node, so
+          // use candidate1_node.
+          insert_precise(key1, Coefficient_zero(), candidate1_node);
+          return iterator(candidate1_node);
+        } else {
+          PPL_ASSERT(candidate1_node.depth() < candidate2_node.depth());
+          // candidate2_node is deeper in the tree than candidate1_node, so
+          // use candidate2_node.
+          insert_precise(key1, Coefficient_zero(), candidate2_node);
+          return iterator(candidate2_node);
+        }
+      }
     }
-
-    if (itr2->first != key1)
-      insert_precise(key1, Coefficient_zero(), itr2);
-
-    return iterator(itr2);
+  } else {
+    insert_in_empty_tree(key1, Coefficient_zero());
+    return iterator(this);
   }
 }
 
