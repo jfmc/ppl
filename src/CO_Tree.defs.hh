@@ -488,10 +488,6 @@ public:
   //! Returns true if the iterator points before the first element.
   bool is_before_begin() const;
 
-  CO_Tree* get_tree();
-
-  const CO_Tree* get_tree() const;
-
 private:
   //! The index of the current node in the DFS layout.
   dimension_type i;
