@@ -633,22 +633,16 @@ PPL::CO_Tree::redistribute_elements_in_subtree(tree_iterator& itr,
                                                const data_type& value) {
   // Step 1: compact elements of this subtree in the rightmost end, from right
   //         to left.
-#ifndef NDEBUG
-  const data_type* const p = &(itr->second);
-#endif
-
   dimension_type last_index_in_subtree = itr.index() + itr.get_offset() - 1;
 
   dimension_type first_unused
     = compact_elements_in_the_rightmost_end(last_index_in_subtree, n, key,
-                                            value, deleting);
-  PPL_ASSERT(p == &(itr->second));
+                                            value, !deleting);
 
   // Step 2: redistribute the elements, from left to right.
-  redistribute_elements_in_subtree_helper(itr, n, first_unused + 1, key, value,
-                                          first_unused == last_index_in_subtree - n);
-
-  PPL_ASSERT(p == &(itr->second));
+  redistribute_elements_in_subtree_helper(itr.index(), n, first_unused + 1,
+                                          key, value,
+                                          first_unused != last_index_in_subtree - n);
 
   if (!deleting)
     size++;
@@ -662,12 +656,12 @@ PPL::CO_Tree
                                         dimension_type subtree_size,
                                         dimension_type key,
                                         const data_type& value,
-                                        bool added_key) {
+                                        bool add_element) {
 
   if (subtree_size == 0)
     return last_in_subtree;
 
-  if (subtree_size == 1 && !added_key) {
+  if (subtree_size == 1 && add_element) {
     // Just add the requested element.
     PPL_ASSERT(indexes[last_in_subtree] == unused_index);
     indexes[last_in_subtree] = key;
@@ -683,7 +677,7 @@ PPL::CO_Tree
   // the subtree and first_unused_index points to the rightmost unused node in
   // the subtree.
 
-  if (!added_key)
+  if (add_element)
     while (subtree_size != 0) {
       --subtree_size;
       if (last_in_subtree == 0 || key > indexes[last_in_subtree]) {
@@ -731,14 +725,12 @@ PPL::CO_Tree
 
 void
 PPL::CO_Tree
-::redistribute_elements_in_subtree_helper(tree_iterator& root,
+::redistribute_elements_in_subtree_helper(dimension_type root_index,
                                           dimension_type subtree_size,
                                           dimension_type last_used,
                                           dimension_type key,
                                           const data_type& value,
-                                          bool added_key) {
-  CO_Tree* const tree = root.tree;
-
+                                          bool add_element) {
   // This is static and with static allocation, to improve performance.
   static std::pair<dimension_type,dimension_type> stack[2*CHAR_BIT*sizeof(dimension_type)];
   std::pair<dimension_type,dimension_type>* stack_first_empty = stack;
@@ -750,7 +742,7 @@ PPL::CO_Tree
     return;
 
   stack_first_empty->first  = subtree_size;
-  stack_first_empty->second = root.index();
+  stack_first_empty->second = root_index;
   ++stack_first_empty;
 
   while (stack_first_empty != stack) {
@@ -764,18 +756,18 @@ PPL::CO_Tree
 
     PPL_ASSERT(top_n != 0);
     if (top_n == 1) {
-      if (!added_key && (last_used > tree->reserved_size || tree->indexes[last_used] > key)) {
+      if (add_element && (last_used > reserved_size || indexes[last_used] > key)) {
         PPL_ASSERT(last_used != top_i);
-        PPL_ASSERT(tree->indexes[top_i] == unused_index);
-        added_key = true;
-        tree->indexes[top_i] = key;
-        new (&(tree->data[top_i])) data_type(value);
+        PPL_ASSERT(indexes[top_i] == unused_index);
+        add_element = false;
+        indexes[top_i] = key;
+        new (&(data[top_i])) data_type(value);
       } else {
         if (last_used != top_i) {
-          PPL_ASSERT(tree->indexes[top_i] == unused_index);
-          tree->indexes[top_i] = tree->indexes[last_used];
-          tree->indexes[last_used] = unused_index;
-          move_data_element(tree->data[top_i], tree->data[last_used]);
+          PPL_ASSERT(indexes[top_i] == unused_index);
+          indexes[top_i] = indexes[last_used];
+          indexes[last_used] = unused_index;
+          move_data_element(data[top_i], data[last_used]);
         }
         ++last_used;
       }
@@ -808,5 +800,5 @@ PPL::CO_Tree
     }
   }
 
-  PPL_ASSERT(added_key);
+  PPL_ASSERT(!add_element);
 }

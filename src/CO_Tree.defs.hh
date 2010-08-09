@@ -257,30 +257,26 @@ private:
                                         const data_type& value);
 
   //! Moves all elements of a subtree to the rightmost end.
-  //! It tries to add an element with key \p key and value \p value in the
-  //! process. If it succeeds, sets inserted_value to true.
-  //! A boolean with value \p true has to be passed as can_add_key.
-  //! If can_add_key remains \p true and inserted_value remains \p false
-  //! , this means that \p key is lower than all keys in the tree.
+  //! If \p add_element is true, it tries to add an element with key \p key
+  //! and value \p value in the process.
   //! \p last_in_subtree is the index of the last element in the subtree.
   //! This returns the index of the rightmost unused node in the subtree
   //! after the process.
   dimension_type compact_elements_in_the_rightmost_end(
     dimension_type last_in_subtree, dimension_type subtree_size,
     dimension_type key, const data_type& value,
-    bool added_key);
+    bool add_element);
 
-  //! Redistributes the elements in the subtree rooted at \p root,
+  //! Redistributes the elements in the subtree rooted at \p root_index,
   //! with \p subtree_size used elements, after the elements have been
   //! compacted to the rightmost end.
-  //! If added_key is false, it tries to add the pair (key, value) to the tree.
-  //! \p itr points to the leftmost element to be moved.
-  //! \p root is not modified, is only passed by reference to improve
-  //! \performance. \p itr is invalidated.
-  static void redistribute_elements_in_subtree_helper(
-    tree_iterator& root, dimension_type subtree_size,
+  //! If add_element is true, it tries to add the pair (key, value) to the
+  //! tree in the process.
+  //! \p last_used points to the leftmost element with a value in the subtree.
+  void redistribute_elements_in_subtree_helper(
+    dimension_type root_index, dimension_type subtree_size,
     dimension_type last_used, dimension_type key, const data_type& value,
-    bool added_key);
+    bool add_element);
 
   //! Moves all data in the tree \p tree in *this.
   //! *this must be empty and big enough to contain all of tree's data
