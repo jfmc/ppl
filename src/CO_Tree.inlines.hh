@@ -995,10 +995,9 @@ CO_Tree::tree_iterator::operator=(const tree_iterator& itr) {
 
 inline CO_Tree::tree_iterator&
 CO_Tree::tree_iterator::operator=(const iterator& itr) {
-  PPL_ASSERT(tree == itr.tree);
   PPL_ASSERT(!itr.is_before_begin());
   PPL_ASSERT(!itr.is_at_end());
-  i = itr.i;
+  i = &(itr->second) - tree->data;
   offset = i;
   // This assumes two's complement encoding.
   offset &= -i;
@@ -1017,12 +1016,12 @@ CO_Tree::tree_iterator::operator!=(const tree_iterator& itr) const {
 
 inline bool
 CO_Tree::tree_iterator::operator==(const iterator& itr) const {
-  return i == itr.i;
+  return tree->data + i == &(itr->second);
 }
 
 inline bool
 CO_Tree::tree_iterator::operator!=(const iterator& itr) const {
-  return i != itr.i;
+  return !(*this == itr);
 }
 
 inline void
