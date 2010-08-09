@@ -536,7 +536,7 @@ public:
   //! tree (assuming the tree is not empty).
   explicit tree_iterator(CO_Tree& tree);
 
-  explicit tree_iterator(const iterator& itr);
+  tree_iterator(const iterator& itr, CO_Tree& tree);
 
   tree_iterator& operator=(const tree_iterator& itr);
   tree_iterator& operator=(const iterator& itr);

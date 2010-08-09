@@ -144,14 +144,14 @@ CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) {
         --candidate2;
       else
         ++candidate2;
-      tree_iterator candidate1_node(candidate1);
+      tree_iterator candidate1_node(candidate1, *this);
       if (candidate2.is_before_begin() || candidate2.is_at_end()) {
         // Use candidate1
         insert_precise(key1, data1, candidate1_node);
         return iterator(candidate1_node);
       }
       else {
-        tree_iterator candidate2_node(candidate2);
+        tree_iterator candidate2_node(candidate2, *this);
         // Adjacent nodes in an in-order visit of a tree always have different
         // heights. This fact can be easily proven by induction on the tree's
         // height, using the definition of the in-order layout.
@@ -193,14 +193,14 @@ CO_Tree::insert(iterator itr, dimension_type key1) {
         --candidate2;
       else
         ++candidate2;
-      tree_iterator candidate1_node(candidate1);
+      tree_iterator candidate1_node(candidate1, *this);
       if (candidate2.is_before_begin() || candidate2.is_at_end()) {
         // Use candidate1
         insert_precise(key1, Coefficient_zero(), candidate1_node);
         return iterator(candidate1_node);
       }
       else {
-        tree_iterator candidate2_node(candidate2);
+        tree_iterator candidate2_node(candidate2, *this);
         // Adjacent nodes in an in-order visit of a tree always have different
         // heights. This fact can be easily proven by induction on the tree's
         // height, using the definition of the in-order layout.
@@ -359,7 +359,7 @@ inline void
 CO_Tree::erase(iterator itr) {
   PPL_ASSERT(!itr.is_before_begin());
   PPL_ASSERT(!itr.is_at_end());
-  erase(tree_iterator(itr));
+  erase(tree_iterator(itr, *this));
 }
 
 template <typename Func>
@@ -978,8 +978,8 @@ CO_Tree::tree_iterator::tree_iterator(CO_Tree& tree1)
 }
 
 inline
-CO_Tree::tree_iterator::tree_iterator(const iterator& itr)
-  : tree(itr.tree) {
+CO_Tree::tree_iterator::tree_iterator(const iterator& itr, CO_Tree& tree1)
+  : tree(&tree1) {
   PPL_ASSERT(tree->reserved_size != 0);
   *this = itr;
   PPL_ASSERT(OK());
