@@ -665,6 +665,13 @@ CO_Tree::iterator::iterator(CO_Tree& tree1)
 }
 
 inline
+CO_Tree::iterator::iterator(CO_Tree& tree1, dimension_type i1)
+  : i(i1), tree(&tree1) {
+  PPL_ASSERT(i <= tree->reserved_size + 1);
+  PPL_ASSERT(tree->empty() || tree->indexes[i] != unused_index);
+}
+
+inline
 CO_Tree::iterator::iterator(const iterator& itr2) {
   (*this) = itr2;
 }
@@ -844,6 +851,14 @@ CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1)
   if (tree->reserved_size != 0)
     while (tree->indexes[i] == unused_index)
       ++i;
+}
+
+inline
+CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1,
+                                        dimension_type i1)
+  : i(i1), tree(&tree1) {
+  PPL_ASSERT(i <= tree->reserved_size + 1);
+  PPL_ASSERT(tree->empty() || tree->indexes[i] != unused_index);
 }
 
 inline

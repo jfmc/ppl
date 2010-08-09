@@ -364,6 +364,10 @@ public:
   //! Constructs an iterator pointing to the root node.
   explicit const_iterator(const CO_Tree& tree);
 
+  //! Constructs a const_iterator pointing to the i-th node.
+  //! The i-th node must be before-begin, end or a node with a value.
+  const_iterator(const CO_Tree& tree, dimension_type i);
+
   const_iterator(const const_iterator& itr);
   const_iterator(const iterator& itr);
 
@@ -447,6 +451,10 @@ public:
 
   //! Constructs an iterator pointing to the root node.
   explicit iterator(CO_Tree& tree);
+
+  //! Constructs an iterator pointing to the i-th node.
+  //! The i-th node must be before-begin, end or a node with a value.
+  iterator(CO_Tree& tree, dimension_type i);
 
   explicit iterator(const tree_iterator& itr);
 
