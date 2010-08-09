@@ -371,12 +371,6 @@ public:
   const_iterator(const const_iterator& itr);
   const_iterator(const iterator& itr);
 
-  //! Returns an iterator that points before the first element.
-  static const_iterator construct_before_begin(const CO_Tree& tree);
-
-  //! Returns an iterator that points after the last element.
-  static const_iterator construct_end(const CO_Tree& tree);
-
   //! Assigns \p itr to *this .
   const_iterator& operator=(const const_iterator& itr);
 
@@ -459,12 +453,6 @@ public:
   explicit iterator(const tree_iterator& itr);
 
   iterator(const iterator& itr);
-
-  //! Returns an iterator that points before the first element.
-  static iterator construct_before_begin(CO_Tree& tree);
-
-  //! Returns an iterator that points after the last element.
-  static iterator construct_end(CO_Tree& tree);
 
   //! Assigns \p itr to *this .
   iterator& operator=(const iterator& itr);

@@ -682,22 +682,6 @@ CO_Tree::iterator::iterator(const tree_iterator& itr)
   *this = itr;
 }
 
-inline CO_Tree::iterator
-CO_Tree::iterator::construct_before_begin(CO_Tree& tree) {
-
-  iterator itr(tree);
-  itr.i = 0;
-  return itr;
-}
-
-inline CO_Tree::iterator
-CO_Tree::iterator::construct_end(CO_Tree& tree) {
-
-  iterator itr(tree);
-  itr.i = tree.reserved_size + 1;
-  return itr;
-}
-
 inline CO_Tree::iterator&
 CO_Tree::iterator::operator=(const tree_iterator& itr) {
   PPL_ASSERT(tree == itr.tree);
@@ -871,22 +855,6 @@ inline
 CO_Tree::const_iterator
 ::const_iterator(const iterator& itr2) {
   (*this) = itr2;
-}
-
-inline CO_Tree::const_iterator
-CO_Tree::const_iterator::construct_before_begin(const CO_Tree& tree) {
-
-  const_iterator itr(tree);
-  itr.i = 0;
-  return itr;
-}
-
-inline CO_Tree::const_iterator
-CO_Tree::const_iterator::construct_end(const CO_Tree& tree) {
-
-  const_iterator itr(tree);
-  itr.i = tree.reserved_size + 1;
-  return itr;
 }
 
 inline std::pair<const dimension_type, const CO_Tree::data_type&>
