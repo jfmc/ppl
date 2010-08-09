@@ -416,12 +416,12 @@ public:
   class Member_Access_Helper {
 
   public:
-    Member_Access_Helper(dimension_type& key, data_type& data);
+    Member_Access_Helper(dimension_type key, data_type& data);
 
-    std::pair<dimension_type&, data_type&>* operator->();
+    std::pair<const dimension_type, data_type&>* operator->();
 
   private:
-    std::pair<dimension_type&, data_type&> my_pair;
+    std::pair<const dimension_type, data_type&> my_pair;
   };
 
   class Const_Member_Access_Helper {
@@ -463,7 +463,7 @@ public:
   iterator& operator--();
 
   //! Returns the value_type of the current node.
-  std::pair<dimension_type&, data_type&> operator*();
+  std::pair<const dimension_type, data_type&> operator*();
 
   //! Returns the value_type of the current node.
   std::pair<const dimension_type, const data_type&> operator*() const;
@@ -482,7 +482,7 @@ public:
 
 private:
   //! A pointer to the corresponding element of the tree's indexes[] array.
-  dimension_type* current_index;
+  const dimension_type* current_index;
 
   //! A pointer to the corresponding element of the tree's data[] array.
   data_type* current_data;

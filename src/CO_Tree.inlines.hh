@@ -698,20 +698,20 @@ CO_Tree::iterator::operator=(const tree_iterator& itr) {
   return *this;
 }
 
-inline std::pair<dimension_type&, CO_Tree::data_type&>
+inline std::pair<const dimension_type, CO_Tree::data_type&>
 CO_Tree::iterator::operator*() {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
-  return std::pair<dimension_type&, data_type&>(*current_index,
-                                                *current_data);
+  return std::pair<const dimension_type, data_type&>(*current_index,
+                                                     *current_data);
 }
 
 inline std::pair<const dimension_type, const CO_Tree::data_type&>
 CO_Tree::iterator::operator*() const {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
-  return std::pair<const dimension_type&, const data_type&>(*current_index,
-                                                            *current_data);
+  return std::pair<const dimension_type, const data_type&>(*current_index,
+                                                           *current_data);
 }
 
 inline CO_Tree::iterator::Member_Access_Helper
@@ -779,12 +779,12 @@ CO_Tree::iterator::operator=(const iterator& itr2) {
 
 inline
 CO_Tree::iterator::Member_Access_Helper
-::Member_Access_Helper(dimension_type& key, data_type& data)
+::Member_Access_Helper(const dimension_type key, data_type& data)
   : my_pair(key, data) {
 }
 
 inline
-std::pair<dimension_type&, CO_Tree::data_type&>*
+std::pair<const dimension_type, CO_Tree::data_type&>*
 CO_Tree::iterator::Member_Access_Helper::operator->() {
   return &my_pair;
 }
