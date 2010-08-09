@@ -266,7 +266,7 @@ private:
   //! \p first_unused is updated, but root isn't. The root iterator is passed
   //! by reference to improve performance.
   static void compact_elements_in_the_rightmost_end(
-    iterator root, iterator& first_unused,
+    iterator root, dimension_type& first_unused,
     dimension_type subtree_size, dimension_type key, const data_type& value,
     bool& added_key, bool& can_add_key);
 

@@ -633,36 +633,32 @@ PPL::CO_Tree::redistribute_elements_in_subtree(tree_iterator& itr,
                                                const data_type& value) {
   // Step 1: compact elements of this subtree in the rightmost end, from right
   //         to left.
-  iterator itr2(itr);
+  dimension_type first_unused = itr.index();
 #ifndef NDEBUG
   const data_type* const p = &(itr->second);
 #endif
 
-  // itr2 points to the root of a subtree (in the complete tree).
+  // first_unused points to the root of a subtree (in the complete tree).
   // Make it point to the last node of that subtree, instead.
-  {
-    dimension_type offset = itr2.i;
-    offset &= -offset;
-    itr2.i += offset - 1;
-  }
+  first_unused += itr.get_offset() - 1;
 
   bool added_key = false;
   bool can_add_key = true;
   if (deleting)
     added_key = true;
-  compact_elements_in_the_rightmost_end(iterator(itr), itr2, n, key, value,
-                                        added_key, can_add_key);
+  compact_elements_in_the_rightmost_end(iterator(itr), first_unused, n, key,
+                                        value, added_key, can_add_key);
   PPL_ASSERT(p == &(itr->second));
   if (!added_key && can_add_key) {
-    PPL_ASSERT(itr2->first == unused_index);
-    itr2->first = key;
-    new (&(itr2->second)) data_type(value);
+    PPL_ASSERT(indexes[first_unused] == unused_index);
+    indexes[first_unused] = key;
+    new (&(data[first_unused])) data_type(value);
     added_key = true;
   } else
-    ++itr2;
+    ++first_unused;
 
   // Step 2: redistribute the elements, from left to right.
-  redistribute_elements_in_subtree_helper(itr, n, itr2.i, key, value,
+  redistribute_elements_in_subtree_helper(itr, n, first_unused, key, value,
                                           added_key);
 
   PPL_ASSERT(p == &(itr->second));
@@ -676,12 +672,15 @@ PPL::CO_Tree::redistribute_elements_in_subtree(tree_iterator& itr,
 void
 PPL::CO_Tree
 ::compact_elements_in_the_rightmost_end(iterator root,
-                                        iterator& first_unused,
+                                        dimension_type& first_unused,
                                         dimension_type subtree_size,
                                         dimension_type key,
                                         const data_type& value,
                                         bool& added_key,
                                         bool& can_add_key) {
+
+  CO_Tree* tree = root.tree;
+
   if (root->first == unused_index)
     return;
 
@@ -701,27 +700,27 @@ PPL::CO_Tree
   if (!added_key && can_add_key)
     while (subtree_size != 0) {
       if (root.is_before_begin() || key > root->first) {
-        if (!root.is_before_begin() && root == first_unused) {
+        if (!root.is_before_begin() && root.i == first_unused) {
           can_add_key = false;
           --subtree_size;
         } else {
-          PPL_ASSERT(!first_unused.is_before_begin());
-          PPL_ASSERT(first_unused->first == unused_index);
-          first_unused->first = key;
-          new (&(first_unused->second)) data_type(value);
+          PPL_ASSERT(first_unused != 0);
+          PPL_ASSERT(tree->indexes[first_unused] == unused_index);
+          tree->indexes[first_unused] = key;
+          new (&(tree->data[first_unused])) data_type(value);
           added_key = true;
           --first_unused;
           --subtree_size;
         }
         break;
       } else {
-        if (root != first_unused) {
-          PPL_ASSERT(!first_unused.is_before_begin());
+        if (root.i != first_unused) {
+          PPL_ASSERT(first_unused != 0);
           PPL_ASSERT(!root.is_before_begin());
-          PPL_ASSERT(first_unused->first == unused_index);
-          first_unused->first = root->first;
+          PPL_ASSERT(tree->indexes[first_unused] == unused_index);
+          tree->indexes[first_unused] = root->first;
           root->first = unused_index;
-          move_data_element(first_unused->second, root->second);
+          move_data_element(tree->data[first_unused], root->second);
         }
         root.get_previous_value();
         --first_unused;
@@ -729,13 +728,13 @@ PPL::CO_Tree
       }
     }
   while (subtree_size != 0) {
-    if (root != first_unused) {
-      PPL_ASSERT(!first_unused.is_before_begin());
+    if (root.i != first_unused) {
+      PPL_ASSERT(first_unused != 0);
       PPL_ASSERT(!root.is_before_begin());
-      PPL_ASSERT(first_unused->first == unused_index);
-      first_unused->first = root->first;
+      PPL_ASSERT(tree->indexes[first_unused] == unused_index);
+      tree->indexes[first_unused] = root->first;
       root->first = unused_index;
-      move_data_element(first_unused->second, root->second);
+      move_data_element(tree->data[first_unused], root->second);
     }
     root.get_previous_value();
     --first_unused;
