@@ -33,13 +33,181 @@ class CO_Tree {
 private:
   typedef unsigned height_t;
 
+  class tree_iterator;
+
 public:
 
   typedef Coefficient data_type;
   typedef std::pair<dimension_type, data_type> value_type;
 
   class iterator;
-  class const_iterator;
+
+  class const_iterator {
+  public:
+
+    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef const CO_Tree::value_type value_type;
+    typedef ptrdiff_t difference_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
+
+    class Const_Member_Access_Helper {
+
+    public:
+      Const_Member_Access_Helper(dimension_type key, const data_type& data);
+
+      const std::pair<const dimension_type, const data_type&>* operator->()
+        const;
+
+    private:
+      std::pair<const dimension_type, const data_type&> my_pair;
+    };
+
+    //! Constructs an invalid const_iterator.
+    explicit const_iterator();
+
+    //! Constructs an iterator pointing to the root node.
+    explicit const_iterator(const CO_Tree& tree);
+
+    //! Constructs a const_iterator pointing to the i-th node.
+    //! The i-th node must be before-begin, end or a node with a value.
+    const_iterator(const CO_Tree& tree, dimension_type i);
+
+    const_iterator(const const_iterator& itr);
+    const_iterator(const iterator& itr);
+
+    //! Assigns \p itr to *this .
+    const_iterator& operator=(const const_iterator& itr);
+
+    //! Assigns \p itr to *this .
+    const_iterator& operator=(const iterator& itr);
+
+    //! Navigates to the next node with a value.
+    const_iterator& operator++();
+
+    //! Navigates to the previous node with a value.
+    const_iterator& operator--();
+
+    //! Returns the value_type of the current node.
+    std::pair<const dimension_type, const data_type&> operator*() const;
+
+    //! Returns a pointer to the value_type of the current node.
+    Const_Member_Access_Helper operator->() const;
+
+    //! Compares \p *this with x .
+    bool operator==(const const_iterator& x) const;
+
+    //! Compares \p *this with x .
+    bool operator!=(const const_iterator& x) const;
+
+  private:
+    bool OK() const;
+
+    //! A pointer to the corresponding element of the tree's indexes[] array.
+    const dimension_type* current_index;
+
+    //! A pointer to the corresponding element of the tree's data[] array.
+    const data_type* current_data;
+
+#ifndef NDEBUG
+    //! A pointer to the corresponding tree, used for debug purposes only.
+    const CO_Tree* tree;
+#endif
+  };
+
+  class iterator {
+  public:
+
+    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef CO_Tree::value_type value_type;
+    typedef ptrdiff_t difference_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
+
+    class Member_Access_Helper {
+
+    public:
+      Member_Access_Helper(dimension_type key, data_type& data);
+
+      std::pair<const dimension_type, data_type&>* operator->();
+
+    private:
+      std::pair<const dimension_type, data_type&> my_pair;
+    };
+
+    class Const_Member_Access_Helper {
+
+    public:
+      Const_Member_Access_Helper(dimension_type key, const data_type& data);
+
+      const std::pair<const dimension_type, const data_type&>* operator->()
+        const;
+
+    private:
+      std::pair<const dimension_type, const data_type&> my_pair;
+    };
+
+    //! Constructs an invalid iterator.
+    iterator();
+
+    //! Constructs an iterator pointing to the root node.
+    explicit iterator(CO_Tree& tree);
+
+    //! Constructs an iterator pointing to the i-th node.
+    //! The i-th node must be before-begin, end or a node with a value.
+    iterator(CO_Tree& tree, dimension_type i);
+
+    explicit iterator(const tree_iterator& itr);
+
+    iterator(const iterator& itr);
+
+    //! Assigns \p itr to *this .
+    iterator& operator=(const iterator& itr);
+
+    //! Assigns \p itr to *this .
+    iterator& operator=(const tree_iterator& itr);
+
+    //! Navigates to the next node with a value.
+    iterator& operator++();
+
+    //! Navigates to the previous node with a value.
+    iterator& operator--();
+
+    //! Returns the value_type of the current node.
+    std::pair<const dimension_type, data_type&> operator*();
+
+    //! Returns the value_type of the current node.
+    std::pair<const dimension_type, const data_type&> operator*() const;
+
+    //! Returns a pointer to the value_type of the current node.
+    Member_Access_Helper operator->();
+
+    //! Returns a pointer to the value_type of the current node.
+    Const_Member_Access_Helper operator->() const;
+
+    //! Compares \p *this with x .
+    bool operator==(const iterator& x) const;
+
+    //! Compares \p *this with x .
+    bool operator!=(const iterator& x) const;
+
+  private:
+    bool OK() const;
+
+    //! A pointer to the corresponding element of the tree's indexes[] array.
+    const dimension_type* current_index;
+
+    //! A pointer to the corresponding element of the tree's data[] array.
+    data_type* current_data;
+
+#ifndef NDEBUG
+    //! A pointer to the corresponding tree, used for debug purposes only.
+    CO_Tree* tree;
+#endif
+
+    friend const_iterator&
+      const_iterator::operator=(const iterator&);
+  };
 
   CO_Tree();
   explicit CO_Tree(const std::vector<data_type>& v);
@@ -181,8 +349,6 @@ private:
   //! succeeding value.
   //! \p first and \p last must be indexes of existing values.
   dimension_type bisect_near(dimension_type hint, dimension_type key) const;
-
-  class tree_iterator;
 
   //! Inserts the pair (key1, data1) in the tree.
   //! \p itr must point to the element with key \p key or, if no such element
@@ -330,173 +496,6 @@ private:
 
   //! The number of used elements in \p data .
   dimension_type size;
-};
-
-class CO_Tree::const_iterator {
-public:
-
-  typedef std::bidirectional_iterator_tag iterator_category;
-  typedef const CO_Tree::value_type value_type;
-  typedef ptrdiff_t difference_type;
-  typedef value_type* pointer;
-  typedef value_type& reference;
-
-  class Const_Member_Access_Helper {
-
-  public:
-    Const_Member_Access_Helper(dimension_type key, const data_type& data);
-
-    const std::pair<const dimension_type, const data_type&>* operator->()
-      const;
-
-  private:
-    std::pair<const dimension_type, const data_type&> my_pair;
-  };
-
-  //! Constructs an invalid const_iterator.
-  explicit const_iterator();
-
-  //! Constructs an iterator pointing to the root node.
-  explicit const_iterator(const CO_Tree& tree);
-
-  //! Constructs a const_iterator pointing to the i-th node.
-  //! The i-th node must be before-begin, end or a node with a value.
-  const_iterator(const CO_Tree& tree, dimension_type i);
-
-  const_iterator(const const_iterator& itr);
-  const_iterator(const iterator& itr);
-
-  //! Assigns \p itr to *this .
-  const_iterator& operator=(const const_iterator& itr);
-
-  //! Assigns \p itr to *this .
-  const_iterator& operator=(const iterator& itr);
-
-  //! Navigates to the next node with a value.
-  const_iterator& operator++();
-
-  //! Navigates to the previous node with a value.
-  const_iterator& operator--();
-
-  //! Returns the value_type of the current node.
-  std::pair<const dimension_type, const data_type&> operator*() const;
-
-  //! Returns a pointer to the value_type of the current node.
-  Const_Member_Access_Helper operator->() const;
-
-  //! Compares \p *this with x .
-  bool operator==(const const_iterator& x) const;
-
-  //! Compares \p *this with x .
-  bool operator!=(const const_iterator& x) const;
-
-private:
-  bool OK() const;
-
-  //! A pointer to the corresponding element of the tree's indexes[] array.
-  const dimension_type* current_index;
-
-  //! A pointer to the corresponding element of the tree's data[] array.
-  const data_type* current_data;
-
-#ifndef NDEBUG
-  //! A pointer to the corresponding tree, used for debug purposes only.
-  const CO_Tree* tree;
-#endif
-};
-
-class CO_Tree::iterator {
-public:
-
-  typedef std::bidirectional_iterator_tag iterator_category;
-  typedef CO_Tree::value_type value_type;
-  typedef ptrdiff_t difference_type;
-  typedef value_type* pointer;
-  typedef value_type& reference;
-
-  class Member_Access_Helper {
-
-  public:
-    Member_Access_Helper(dimension_type key, data_type& data);
-
-    std::pair<const dimension_type, data_type&>* operator->();
-
-  private:
-    std::pair<const dimension_type, data_type&> my_pair;
-  };
-
-  class Const_Member_Access_Helper {
-
-  public:
-    Const_Member_Access_Helper(dimension_type key, const data_type& data);
-
-    const std::pair<const dimension_type, const data_type&>* operator->()
-      const;
-
-  private:
-    std::pair<const dimension_type, const data_type&> my_pair;
-  };
-
-  //! Constructs an invalid iterator.
-  iterator();
-
-  //! Constructs an iterator pointing to the root node.
-  explicit iterator(CO_Tree& tree);
-
-  //! Constructs an iterator pointing to the i-th node.
-  //! The i-th node must be before-begin, end or a node with a value.
-  iterator(CO_Tree& tree, dimension_type i);
-
-  explicit iterator(const tree_iterator& itr);
-
-  iterator(const iterator& itr);
-
-  //! Assigns \p itr to *this .
-  iterator& operator=(const iterator& itr);
-
-  //! Assigns \p itr to *this .
-  iterator& operator=(const tree_iterator& itr);
-
-  //! Navigates to the next node with a value.
-  iterator& operator++();
-
-  //! Navigates to the previous node with a value.
-  iterator& operator--();
-
-  //! Returns the value_type of the current node.
-  std::pair<const dimension_type, data_type&> operator*();
-
-  //! Returns the value_type of the current node.
-  std::pair<const dimension_type, const data_type&> operator*() const;
-
-  //! Returns a pointer to the value_type of the current node.
-  Member_Access_Helper operator->();
-
-  //! Returns a pointer to the value_type of the current node.
-  Const_Member_Access_Helper operator->() const;
-
-  //! Compares \p *this with x .
-  bool operator==(const iterator& x) const;
-
-  //! Compares \p *this with x .
-  bool operator!=(const iterator& x) const;
-
-private:
-  bool OK() const;
-
-  //! A pointer to the corresponding element of the tree's indexes[] array.
-  const dimension_type* current_index;
-
-  //! A pointer to the corresponding element of the tree's data[] array.
-  data_type* current_data;
-
-#ifndef NDEBUG
-  //! A pointer to the corresponding tree, used for debug purposes only.
-  CO_Tree* tree;
-#endif
-
-  friend const_iterator&
-    const_iterator::operator=(const iterator&);
 };
 
 class CO_Tree::tree_iterator {
