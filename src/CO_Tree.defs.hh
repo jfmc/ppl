@@ -196,9 +196,9 @@ private:
   void erase(tree_iterator itr);
 
   //! Searches for an element with key \p key in the subtree rooted at \p itr.
-  //! \p itr is modified to point to the found node (if it exists) or to the
+  //! The returned iterator points to the found node (if it exists) or to the
   //! node that would be his parent (otherwise).
-  void go_down_searching_key(tree_iterator& itr, dimension_type key);
+  tree_iterator go_down_searching_key(tree_iterator itr, dimension_type key);
 
   //! Initializes a tree with reserved size at least \p n .
   void init(dimension_type n);

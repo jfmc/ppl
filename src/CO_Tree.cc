@@ -337,32 +337,30 @@ PPL::CO_Tree::dump_subtree(tree_iterator itr) {
   }
 }
 
-void
-PPL::CO_Tree::go_down_searching_key(tree_iterator& itr, dimension_type key) {
+PPL::CO_Tree::tree_iterator
+PPL::CO_Tree::go_down_searching_key(tree_iterator itr, dimension_type key) {
   // itr points to a node, so the tree is not empty.
   PPL_ASSERT(!empty());
   PPL_ASSERT(key != unused_index);
   PPL_ASSERT(itr->first != unused_index);
-  // TODO: Check if the copying back and forth improves or hapers performance.
-  tree_iterator itr2(itr);
-  while (!itr2.is_leaf()) {
-    if (key == itr2->first)
+  while (!itr.is_leaf()) {
+    if (key == itr->first)
       break;
-    if (key < itr2->first) {
-      itr2.get_left_child();
-      if (itr2->first == unused_index) {
-        itr2.get_parent();
+    if (key < itr->first) {
+      itr.get_left_child();
+      if (itr->first == unused_index) {
+        itr.get_parent();
         break;
       }
     } else {
-      itr2.get_right_child();
-      if (itr2->first == unused_index) {
-        itr2.get_parent();
+      itr.get_right_child();
+      if (itr->first == unused_index) {
+        itr.get_parent();
         break;
       }
     }
   }
-  itr = itr2;
+  return itr;
 }
 
 void
@@ -799,8 +797,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
   PPL_ASSERT(!empty());
 
 #ifndef NDEBUG
-  tree_iterator itr2(*this);
-  go_down_searching_key(itr2, key1);
+  tree_iterator itr2 = go_down_searching_key(tree_iterator(*this), key1);
   PPL_ASSERT(itr == itr2);
 #endif
 
@@ -816,8 +813,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
     rebuild_bigger_tree();
 
     // itr was invalidated by the rebuild operation
-    itr.get_root();
-    go_down_searching_key(itr, key1);
+    itr = go_down_searching_key(tree_iterator(*this), key1);
 
     PPL_ASSERT(itr->first != key1);
   }
@@ -841,7 +837,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
 
     rebalance(itr, key1, data1);
 
-    go_down_searching_key(itr, key1);
+    itr = go_down_searching_key(itr, key1);
 
     PPL_ASSERT(itr->first == key1);
   }
@@ -943,8 +939,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
     PPL_ASSERT(size <= (((dimension_type)1 << max_depth) - 1)*max_density);
 
     rebuild_smaller_tree();
-    itr.get_root();
-    go_down_searching_key(itr, key);
+    itr = go_down_searching_key(tree_iterator(*this), key);
 
     PPL_ASSERT(itr->first == key);
   }
