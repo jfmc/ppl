@@ -1007,7 +1007,7 @@ PPL::CO_Tree::count_used_in_subtree(tree_iterator& itr) {
 }
 
 void
-PPL::CO_Tree::redistribute_elements_in_subtree(tree_iterator& itr,
+PPL::CO_Tree::redistribute_elements_in_subtree(tree_iterator itr,
                                                dimension_type n,
                                                bool deleting,
                                                dimension_type key,

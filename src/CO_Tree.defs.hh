@@ -236,7 +236,7 @@ private:
   //! (key, value) to the tree.
   //! \p subtree_size is the number of used elements in the subtree at the end
   //! of the call.
-  void redistribute_elements_in_subtree(tree_iterator& itr,
+  void redistribute_elements_in_subtree(tree_iterator itr,
                                         dimension_type n,
                                         bool deleting,
                                         dimension_type key,
