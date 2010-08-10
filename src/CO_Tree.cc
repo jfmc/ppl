@@ -971,9 +971,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 
   PPL_ASSERT(OK());
 
-  static const data_type data = data_type();
-
-  itr = rebalance(itr, 0, data);
+  itr = rebalance(itr, 0, Coefficient_zero());
 
   itr = go_down_searching_key(least_common_ancestor(itr, deleted_node),
                               deleted_key);
