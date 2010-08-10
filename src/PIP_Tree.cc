@@ -117,8 +117,7 @@ void
 merge_assign(PIP_Tree_Node::matrix_type& x,
              const Constraint_System& y,
              const Variables_Set& parameters) {
-  const dimension_type params_size = parameters.size();
-  PPL_ASSERT(params_size == x.num_columns() - 1);
+  PPL_ASSERT(parameters.size() == x.num_columns() - 1);
   const dimension_type new_rows = std::distance(y.begin(), y.end());
   if (new_rows == 0)
     return;
