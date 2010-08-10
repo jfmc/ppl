@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 // It's needed only to please KDevelop4.
 #include "Sparse_Row.defs.hh"
 
+#include <algorithm>
+
 namespace Parma_Polyhedra_Library {
 
 inline
