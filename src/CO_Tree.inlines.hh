@@ -125,21 +125,46 @@ CO_Tree::dump_tree() const {
     dump_subtree(tree_iterator(*const_cast<CO_Tree*>(this)));
 }
 
-inline bool
+inline CO_Tree::tree_iterator
+CO_Tree::least_common_ancestor(tree_iterator itr1, tree_iterator itr2) {
+  while (itr1.get_offset() > itr2.get_offset())
+    itr2.get_parent();
+  while (itr2.get_offset() > itr1.get_offset())
+    itr1.get_parent();
+  // Now itr1 and itr2 have the same depth.
+  PPL_ASSERT(itr1.depth() == itr2.depth());
+  while (itr1 != itr2) {
+    itr1.get_parent();
+    itr2.get_parent();
+  }
+  return itr1;
+}
+
+inline CO_Tree::iterator
 CO_Tree::erase(dimension_type key) {
   PPL_ASSERT(key != unused_index);
 
   if (size == 0)
-    return false;
+    return end();
 
   tree_iterator itr = go_down_searching_key(tree_iterator(*this), key);
 
-  if (itr->first != key)
-    return false;
+  if (itr->first != key) {
+    iterator result(itr);
+    if (result->first < key)
+      ++result;
+    PPL_ASSERT(result == end() || result->first > key);
+#ifndef NDEBUG
+    if (!empty()) {
+      iterator last = end();
+      --last;
+      PPL_ASSERT((result == end()) == (last->first < key));
+    }
+#endif
+    return result;
+  }
 
-  erase(itr);
-
-  return true;
+  return erase(itr);
 }
 
 inline CO_Tree::iterator
@@ -172,11 +197,11 @@ CO_Tree::end() const {
   return const_iterator(*this, reserved_size + 1);
 }
 
-inline void
+inline CO_Tree::iterator
 CO_Tree::erase(iterator itr) {
   PPL_ASSERT(itr != before_begin());
   PPL_ASSERT(itr != end());
-  erase(tree_iterator(itr, *this));
+  return erase(tree_iterator(itr, *this));
 }
 
 inline CO_Tree::iterator

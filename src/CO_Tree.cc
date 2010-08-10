@@ -223,14 +223,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
 
 void
 PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
-  erase(key);
-  if (empty())
-    return;
-  iterator last = end();
-  --last;
-  iterator itr = bisect_in(begin(), last, key);
-  if (itr->first < key)
-    ++itr;
+  iterator itr = erase(key);
   if (itr == end())
     return;
   for (dimension_type i = &(itr->second) - data; i <= reserved_size; ++i)
@@ -919,7 +912,7 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
   return itr;
 }
 
-void
+PPL::CO_Tree::iterator
 PPL::CO_Tree::erase(tree_iterator itr) {
   PPL_ASSERT(itr->first != unused_index);
 
@@ -929,7 +922,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
     // Deleting the only element of this tree, now it is empty.
     destroy();
     init(0);
-    return;
+    return end();
   }
 
   if ((size - 1) / (float) (((dimension_type)1 << max_depth) - 1)
@@ -955,6 +948,8 @@ PPL::CO_Tree::erase(tree_iterator itr) {
                  > max_density);
 #endif
 
+  const dimension_type deleted_key = itr->first;
+  tree_iterator deleted_node = itr;
   itr->second.~data_type();
   while (1) {
     dimension_type& current_key  = itr->first;
@@ -978,9 +973,28 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 
   static const data_type data = data_type();
 
-  rebalance(itr, 0, data);
+  itr = rebalance(itr, 0, data);
+
+  itr = go_down_searching_key(least_common_ancestor(itr, deleted_node),
+                              deleted_key);
+
+  iterator result(itr);
+
+  if (result->first < deleted_key)
+    ++result;
 
   PPL_ASSERT(OK());
+  if (!(result == end() || result->first > deleted_key))
+    PPL_ASSERT(false);
+#ifndef NDEBUG
+  if (!empty()) {
+    iterator last = end();
+    --last;
+    PPL_ASSERT((result == end()) == (last->first < deleted_key));
+  }
+#endif
+
+  return result;
 }
 
 PPL::dimension_type

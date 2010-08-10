@@ -87,8 +87,9 @@ public:
   iterator insert(iterator itr, dimension_type key);
 
   //! Erases the pair with key \p key from the tree.
-  //! Returns \p false if there was no pair with key \p key in the tree.
-  bool erase(dimension_type key);
+  //! Returns an iterator to the next element (or end() if there are no
+  //! elements with key greater than \p key ).
+  iterator erase(dimension_type key);
 
   //! Removes the element with key \p key (if it exists) and decrements by
   //! 1 all elements' keys that were greater than \p key.
@@ -120,7 +121,9 @@ public:
 
   //! Erases from the tree the element pointed to by \p itr .
   //! \p itr is invalidated.
-  void erase(iterator itr);
+  //! Returns an iterator to the next element (or end() if there are no
+  //! elements with key greater than \p key ).
+  iterator erase(iterator itr);
 
   //! Searches an element with key \p key in [first, last] using bisection
   //! (note that last is included, too!).
@@ -193,7 +196,9 @@ private:
 
   //! Erases from the tree the element pointed to by \p itr .
   //! \p itr is invalidated.
-  void erase(tree_iterator itr);
+  //! Returns an iterator to the next element (or end() if there are no
+  //! elements with key greater than \p key ).
+  iterator erase(tree_iterator itr);
 
   //! Searches for an element with key \p key in the subtree rooted at \p itr.
   //! The returned iterator points to the found node (if it exists) or to the
@@ -215,6 +220,10 @@ private:
 
   //! Dumps the subtree rooted at \p itr to stdout, for debugging purposes.
   static void dump_subtree(tree_iterator itr);
+
+  //! Returns the least common ancestor of itr1 and itr2.
+  static tree_iterator least_common_ancestor(tree_iterator itr1,
+                                             tree_iterator itr2);
 
   //! Increases the tree's reserved size. Called when the density is about to
   //! exceed max_density.
