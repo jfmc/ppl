@@ -601,7 +601,7 @@ CO_Tree::tree_iterator::get_right_child() {
 
 inline void
 CO_Tree::tree_iterator::get_parent() {
-  PPL_ASSERT(has_parent());
+  PPL_ASSERT(!is_root());
   PPL_ASSERT(offset != 0);
   i &= ~offset;
   offset *= 2;
@@ -668,10 +668,10 @@ CO_Tree::tree_iterator::get_right_child_value() {
 }
 
 inline bool
-CO_Tree::tree_iterator::has_parent() const {
+CO_Tree::tree_iterator::is_root() const {
   // This is implied by OK(), it is here for reference only.
   PPL_ASSERT(offset <= (tree.reserved_size / 2 + 1));
-  return offset != (tree.reserved_size / 2 + 1);
+  return offset == (tree.reserved_size / 2 + 1);
 }
 
 inline bool
@@ -681,8 +681,7 @@ CO_Tree::tree_iterator::is_leaf() const {
 
 inline bool
 CO_Tree::tree_iterator::is_right_child() const {
-  if (!has_parent())
-    // This is the root node.
+  if (is_root())
     return false;
   return ((i & 2*offset) != 0);
 }

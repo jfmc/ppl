@@ -553,8 +553,8 @@ public:
   //! (and *this is unchanged).
   bool get_right_child_value();
 
-  //! Returns true if the pointed node has a parent.
-  bool has_parent() const;
+  //! Returns true if the pointed node is the root node.
+  bool is_root() const;
 
   //! Returns true if the pointed node has a parent and is its right child.
   bool is_right_child() const;
