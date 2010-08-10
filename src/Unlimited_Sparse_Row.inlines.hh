@@ -270,9 +270,7 @@ Unlimited_Sparse_Row::lower_bound(const_iterator hint, dimension_type i) const {
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::reset(iterator pos) {
-  const dimension_type i = pos->first;
-  tree.erase(pos);
-  return lower_bound(i);
+  return tree.erase(pos);
 }
 
 inline Unlimited_Sparse_Row::iterator
@@ -283,10 +281,8 @@ Unlimited_Sparse_Row::reset(iterator first, iterator last) {
   const dimension_type i = first->first;
   const dimension_type j = last->first;
   PPL_ASSERT(i <= j);
-  while (first != end() && first->first <= j) {
-    tree.erase(first);
-    first = lower_bound(i);
-  }
+  while (first != end() && first->first <= j)
+    first = tree.erase(first);
   return first;
 }
 
@@ -299,20 +295,16 @@ inline void
 Unlimited_Sparse_Row::reset(dimension_type i, dimension_type j) {
   iterator itr = lower_bound(i);
 
-  while (itr != end() && itr->first < j) {
-    reset(itr);
-    itr = lower_bound(i);
-  }
+  while (itr != end() && itr->first < j)
+    itr = reset(itr);
 }
 
 inline void
 Unlimited_Sparse_Row::reset_after(dimension_type i) {
   iterator itr = lower_bound(i);
 
-  while (itr != end()) {
-    reset(itr);
-    itr = lower_bound(i);
-  }
+  while (itr != end())
+    itr = reset(itr);
 }
 
 inline void
