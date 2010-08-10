@@ -227,10 +227,9 @@ private:
   //! Rebalances the tree after an insertions or a deletion.
   //! \p itr points to the inserted (or deleted) node.
   //! For insertions, it adds the pair (key, value).
-  //! After the call, itr is modified so the added node is in the subtree
-  //! pointed to by \p itr.
-  void rebalance(tree_iterator& itr, dimension_type key,
-                 const data_type& value);
+  //! The returned iterator is the root of the subtree that was rebalanced.
+  tree_iterator rebalance(tree_iterator itr, dimension_type key,
+                          const data_type& value);
 
   //! Redistributes the elements in the subtree rooted at the node
   //! pointed to by itr. If \p deleting is not \p false, it adds the pair

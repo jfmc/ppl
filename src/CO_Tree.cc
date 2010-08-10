@@ -835,7 +835,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
 
     PPL_ASSERT(OK());
 
-    rebalance(itr, key1, data1);
+    itr = rebalance(itr, key1, data1);
 
     itr = go_down_searching_key(itr, key1);
 
@@ -846,8 +846,8 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
   return itr;
 }
 
-void
-PPL::CO_Tree::rebalance(tree_iterator& itr, dimension_type key,
+PPL::CO_Tree::tree_iterator
+PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
                         const data_type& value) {
 #ifndef NDEBUG
   if (itr->first != unused_index) {
@@ -915,6 +915,8 @@ PPL::CO_Tree::rebalance(tree_iterator& itr, dimension_type key,
   redistribute_elements_in_subtree(itr, subtree_size, deleting, key, value);
 
   PPL_ASSERT(OK());
+
+  return itr;
 }
 
 void
