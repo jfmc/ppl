@@ -984,7 +984,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 }
 
 PPL::dimension_type
-PPL::CO_Tree::count_used_in_subtree(tree_iterator& itr) {
+PPL::CO_Tree::count_used_in_subtree(tree_iterator itr) {
   PPL_ASSERT(itr->first != unused_index);
   dimension_type n = 0;
 
