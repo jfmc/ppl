@@ -64,8 +64,7 @@ test03() {
     tree.insert(n, n);
 
   for (unsigned n = 0; n < 500; ++n)
-    if (!tree.erase(n))
-      return false;
+    tree.erase(n);
 
   return true;
 }
@@ -81,8 +80,7 @@ test04() {
     tree.insert(n, n);
 
   for (unsigned n = 500; n-- > 0; )
-    if (!tree.erase(n))
-      return false;
+    tree.erase(n);
 
   return true;
 }
@@ -98,8 +96,7 @@ test05() {
     tree.insert(n, n);
 
   for (unsigned n = 0; n < 500; ++n)
-    if (!tree.erase(n))
-      return false;
+    tree.erase(n);
 
   return true;
 }
@@ -115,8 +112,7 @@ test06() {
     tree.insert(n, n);
 
   for (unsigned n = 500; --n > 0; )
-    if (!tree.erase(n))
-      return false;
+    tree.erase(n);
 
   return true;
 }
@@ -131,1006 +127,506 @@ test07() {
   for (unsigned n = 0; n < 500; ++n)
     tree.insert(n, n);
 
-  if (!tree.erase(110))
-    return false;
-  if (!tree.erase(290))
-    return false;
-  if (!tree.erase(11))
-    return false;
-  if (!tree.erase(69))
-    return false;
-  if (!tree.erase(209))
-    return false;
-  if (!tree.erase(468))
-    return false;
-  if (!tree.erase(17))
-    return false;
-  if (!tree.erase(293))
-    return false;
-  if (!tree.erase(164))
-    return false;
-  if (!tree.erase(350))
-    return false;
-  if (!tree.erase(115))
-    return false;
-  if (!tree.erase(322))
-    return false;
-  if (!tree.erase(361))
-    return false;
-  if (!tree.erase(2))
-    return false;
-  if (!tree.erase(446))
-    return false;
-  if (!tree.erase(281))
-    return false;
-  if (!tree.erase(400))
-    return false;
-  if (!tree.erase(375))
-    return false;
-  if (!tree.erase(153))
-    return false;
-  if (!tree.erase(116))
-    return false;
-  if (!tree.erase(143))
-    return false;
-  if (!tree.erase(329))
-    return false;
-  if (!tree.erase(420))
-    return false;
-  if (!tree.erase(133))
-    return false;
-  if (!tree.erase(363))
-    return false;
-  if (!tree.erase(192))
-    return false;
-  if (!tree.erase(27))
-    return false;
-  if (!tree.erase(275))
-    return false;
-  if (!tree.erase(104))
-    return false;
-  if (!tree.erase(213))
-    return false;
-  if (!tree.erase(352))
-    return false;
-  if (!tree.erase(427))
-    return false;
-  if (!tree.erase(273))
-    return false;
-  if (!tree.erase(288))
-    return false;
-  if (!tree.erase(396))
-    return false;
-  if (!tree.erase(114))
-    return false;
-  if (!tree.erase(341))
-    return false;
-  if (!tree.erase(413))
-    return false;
-  if (!tree.erase(201))
-    return false;
-  if (!tree.erase(280))
-    return false;
-  if (!tree.erase(66))
-    return false;
-  if (!tree.erase(227))
-    return false;
-  if (!tree.erase(406))
-    return false;
-  if (!tree.erase(79))
-    return false;
-  if (!tree.erase(259))
-    return false;
-  if (!tree.erase(176))
-    return false;
-  if (!tree.erase(106))
-    return false;
-  if (!tree.erase(0))
-    return false;
-  if (!tree.erase(328))
-    return false;
-  if (!tree.erase(270))
-    return false;
-  if (!tree.erase(449))
-    return false;
-  if (!tree.erase(165))
-    return false;
-  if (!tree.erase(163))
-    return false;
-  if (!tree.erase(43))
-    return false;
-  if (!tree.erase(391))
-    return false;
-  if (!tree.erase(202))
-    return false;
-  if (!tree.erase(49))
-    return false;
-  if (!tree.erase(105))
-    return false;
-  if (!tree.erase(149))
-    return false;
-  if (!tree.erase(318))
-    return false;
-  if (!tree.erase(387))
-    return false;
-  if (!tree.erase(389))
-    return false;
-  if (!tree.erase(141))
-    return false;
-  if (!tree.erase(408))
-    return false;
-  if (!tree.erase(486))
-    return false;
-  if (!tree.erase(354))
-    return false;
-  if (!tree.erase(8))
-    return false;
-  if (!tree.erase(33))
-    return false;
-  if (!tree.erase(421))
-    return false;
-  if (!tree.erase(385))
-    return false;
-  if (!tree.erase(25))
-    return false;
-  if (!tree.erase(485))
-    return false;
-  if (!tree.erase(196))
-    return false;
-  if (!tree.erase(31))
-    return false;
-  if (!tree.erase(82))
-    return false;
-  if (!tree.erase(434))
-    return false;
-  if (!tree.erase(423))
-    return false;
-  if (!tree.erase(358))
-    return false;
-  if (!tree.erase(255))
-    return false;
-  if (!tree.erase(287))
-    return false;
-  if (!tree.erase(23))
-    return false;
-  if (!tree.erase(122))
-    return false;
-  if (!tree.erase(489))
-    return false;
-  if (!tree.erase(19))
-    return false;
-  if (!tree.erase(126))
-    return false;
-  if (!tree.erase(44))
-    return false;
-  if (!tree.erase(120))
-    return false;
-  if (!tree.erase(131))
-    return false;
-  if (!tree.erase(332))
-    return false;
-  if (!tree.erase(448))
-    return false;
-  if (!tree.erase(238))
-    return false;
-  if (!tree.erase(264))
-    return false;
-  if (!tree.erase(454))
-    return false;
-  if (!tree.erase(218))
-    return false;
-  if (!tree.erase(157))
-    return false;
-  if (!tree.erase(436))
-    return false;
-  if (!tree.erase(225))
-    return false;
-  if (!tree.erase(437))
-    return false;
-  if (!tree.erase(443))
-    return false;
-  if (!tree.erase(179))
-    return false;
-  if (!tree.erase(265))
-    return false;
-  if (!tree.erase(475))
-    return false;
-  if (!tree.erase(180))
-    return false;
-  if (!tree.erase(487))
-    return false;
-  if (!tree.erase(339))
-    return false;
-  if (!tree.erase(492))
-    return false;
-  if (!tree.erase(395))
-    return false;
-  if (!tree.erase(491))
-    return false;
-  if (!tree.erase(223))
-    return false;
-  if (!tree.erase(113))
-    return false;
-  if (!tree.erase(92))
-    return false;
-  if (!tree.erase(48))
-    return false;
-  if (!tree.erase(61))
-    return false;
-  if (!tree.erase(127))
-    return false;
-  if (!tree.erase(190))
-    return false;
-  if (!tree.erase(67))
-    return false;
-  if (!tree.erase(484))
-    return false;
-  if (!tree.erase(439))
-    return false;
-  if (!tree.erase(355))
-    return false;
-  if (!tree.erase(243))
-    return false;
-  if (!tree.erase(392))
-    return false;
-  if (!tree.erase(159))
-    return false;
-  if (!tree.erase(74))
-    return false;
-  if (!tree.erase(337))
-    return false;
-  if (!tree.erase(151))
-    return false;
-  if (!tree.erase(458))
-    return false;
-  if (!tree.erase(480))
-    return false;
-  if (!tree.erase(334))
-    return false;
-  if (!tree.erase(419))
-    return false;
-  if (!tree.erase(309))
-    return false;
-  if (!tree.erase(301))
-    return false;
-  if (!tree.erase(125))
-    return false;
-  if (!tree.erase(407))
-    return false;
-  if (!tree.erase(496))
-    return false;
-  if (!tree.erase(187))
-    return false;
-  if (!tree.erase(50))
-    return false;
-  if (!tree.erase(368))
-    return false;
-  if (!tree.erase(283))
-    return false;
-  if (!tree.erase(244))
-    return false;
-  if (!tree.erase(170))
-    return false;
-  if (!tree.erase(118))
-    return false;
-  if (!tree.erase(457))
-    return false;
-  if (!tree.erase(181))
-    return false;
-  if (!tree.erase(479))
-    return false;
-  if (!tree.erase(401))
-    return false;
-  if (!tree.erase(494))
-    return false;
-  if (!tree.erase(99))
-    return false;
-  if (!tree.erase(236))
-    return false;
-  if (!tree.erase(240))
-    return false;
-  if (!tree.erase(147))
-    return false;
-  if (!tree.erase(233))
-    return false;
-  if (!tree.erase(172))
-    return false;
-  if (!tree.erase(266))
-    return false;
-  if (!tree.erase(32))
-    return false;
-  if (!tree.erase(210))
-    return false;
-  if (!tree.erase(161))
-    return false;
-  if (!tree.erase(156))
-    return false;
-  if (!tree.erase(178))
-    return false;
-  if (!tree.erase(221))
-    return false;
-  if (!tree.erase(78))
-    return false;
-  if (!tree.erase(85))
-    return false;
-  if (!tree.erase(135))
-    return false;
-  if (!tree.erase(145))
-    return false;
-  if (!tree.erase(356))
-    return false;
-  if (!tree.erase(397))
-    return false;
-  if (!tree.erase(450))
-    return false;
-  if (!tree.erase(276))
-    return false;
-  if (!tree.erase(41))
-    return false;
-  if (!tree.erase(414))
-    return false;
-  if (!tree.erase(14))
-    return false;
-  if (!tree.erase(22))
-    return false;
-  if (!tree.erase(29))
-    return false;
-  if (!tree.erase(34))
-    return false;
-  if (!tree.erase(498))
-    return false;
-  if (!tree.erase(250))
-    return false;
-  if (!tree.erase(36))
-    return false;
-  if (!tree.erase(320))
-    return false;
-  if (!tree.erase(268))
-    return false;
-  if (!tree.erase(195))
-    return false;
-  if (!tree.erase(382))
-    return false;
-  if (!tree.erase(441))
-    return false;
-  if (!tree.erase(235))
-    return false;
-  if (!tree.erase(346))
-    return false;
-  if (!tree.erase(476))
-    return false;
-  if (!tree.erase(217))
-    return false;
-  if (!tree.erase(335))
-    return false;
-  if (!tree.erase(121))
-    return false;
-  if (!tree.erase(94))
-    return false;
-  if (!tree.erase(278))
-    return false;
-  if (!tree.erase(272))
-    return false;
-  if (!tree.erase(207))
-    return false;
-  if (!tree.erase(463))
-    return false;
-  if (!tree.erase(150))
-    return false;
-  if (!tree.erase(432))
-    return false;
-  if (!tree.erase(410))
-    return false;
-  if (!tree.erase(208))
-    return false;
-  if (!tree.erase(70))
-    return false;
-  if (!tree.erase(84))
-    return false;
-  if (!tree.erase(186))
-    return false;
-  if (!tree.erase(6))
-    return false;
-  if (!tree.erase(224))
-    return false;
-  if (!tree.erase(9))
-    return false;
-  if (!tree.erase(60))
-    return false;
-  if (!tree.erase(175))
-    return false;
-  if (!tree.erase(430))
-    return false;
-  if (!tree.erase(128))
-    return false;
-  if (!tree.erase(129))
-    return false;
-  if (!tree.erase(465))
-    return false;
-  if (!tree.erase(459))
-    return false;
-  if (!tree.erase(289))
-    return false;
-  if (!tree.erase(261))
-    return false;
-  if (!tree.erase(26))
-    return false;
-  if (!tree.erase(461))
-    return false;
-  if (!tree.erase(279))
-    return false;
-  if (!tree.erase(245))
-    return false;
-  if (!tree.erase(478))
-    return false;
-  if (!tree.erase(403))
-    return false;
-  if (!tree.erase(45))
-    return false;
-  if (!tree.erase(359))
-    return false;
-  if (!tree.erase(327))
-    return false;
-  if (!tree.erase(393))
-    return false;
-  if (!tree.erase(373))
-    return false;
-  if (!tree.erase(304))
-    return false;
-  if (!tree.erase(83))
-    return false;
-  if (!tree.erase(160))
-    return false;
-  if (!tree.erase(198))
-    return false;
-  if (!tree.erase(103))
-    return false;
-  if (!tree.erase(367))
-    return false;
-  if (!tree.erase(76))
-    return false;
-  if (!tree.erase(73))
-    return false;
-  if (!tree.erase(167))
-    return false;
-  if (!tree.erase(291))
-    return false;
-  if (!tree.erase(215))
-    return false;
-  if (!tree.erase(219))
-    return false;
-  if (!tree.erase(119))
-    return false;
-  if (!tree.erase(456))
-    return false;
-  if (!tree.erase(197))
-    return false;
-  if (!tree.erase(477))
-    return false;
-  if (!tree.erase(222))
-    return false;
-  if (!tree.erase(174))
-    return false;
-  if (!tree.erase(451))
-    return false;
-  if (!tree.erase(214))
-    return false;
-  if (!tree.erase(112))
-    return false;
-  if (!tree.erase(464))
-    return false;
-  if (!tree.erase(262))
-    return false;
-  if (!tree.erase(47))
-    return false;
-  if (!tree.erase(347))
-    return false;
-  if (!tree.erase(111))
-    return false;
-  if (!tree.erase(148))
-    return false;
-  if (!tree.erase(308))
-    return false;
-  if (!tree.erase(340))
-    return false;
-  if (!tree.erase(100))
-    return false;
-  if (!tree.erase(130))
-    return false;
-  if (!tree.erase(323))
-    return false;
-  if (!tree.erase(312))
-    return false;
-  if (!tree.erase(292))
-    return false;
-  if (!tree.erase(35))
-    return false;
-  if (!tree.erase(306))
-    return false;
-  if (!tree.erase(58))
-    return false;
-  if (!tree.erase(353))
-    return false;
-  if (!tree.erase(452))
-    return false;
-  if (!tree.erase(91))
-    return false;
-  if (!tree.erase(319))
-    return false;
-  if (!tree.erase(330))
-    return false;
-  if (!tree.erase(473))
-    return false;
-  if (!tree.erase(488))
-    return false;
-  if (!tree.erase(134))
-    return false;
-  if (!tree.erase(315))
-    return false;
-  if (!tree.erase(253))
-    return false;
-  if (!tree.erase(374))
-    return false;
-  if (!tree.erase(384))
-    return false;
-  if (!tree.erase(95))
-    return false;
-  if (!tree.erase(370))
-    return false;
-  if (!tree.erase(13))
-    return false;
-  if (!tree.erase(183))
-    return false;
-  if (!tree.erase(136))
-    return false;
-  if (!tree.erase(313))
-    return false;
-  if (!tree.erase(307))
-    return false;
-  if (!tree.erase(239))
-    return false;
-  if (!tree.erase(258))
-    return false;
-  if (!tree.erase(405))
-    return false;
-  if (!tree.erase(56))
-    return false;
-  if (!tree.erase(228))
-    return false;
-  if (!tree.erase(455))
-    return false;
-  if (!tree.erase(317))
-    return false;
-  if (!tree.erase(497))
-    return false;
-  if (!tree.erase(102))
-    return false;
-  if (!tree.erase(117))
-    return false;
-  if (!tree.erase(68))
-    return false;
-  if (!tree.erase(234))
-    return false;
-  if (!tree.erase(51))
-    return false;
-  if (!tree.erase(107))
-    return false;
-  if (!tree.erase(349))
-    return false;
-  if (!tree.erase(348))
-    return false;
-  if (!tree.erase(416))
-    return false;
-  if (!tree.erase(88))
-    return false;
-  if (!tree.erase(89))
-    return false;
-  if (!tree.erase(366))
-    return false;
-  if (!tree.erase(109))
-    return false;
-  if (!tree.erase(189))
-    return false;
-  if (!tree.erase(333))
-    return false;
-  if (!tree.erase(3))
-    return false;
-  if (!tree.erase(394))
-    return false;
-  if (!tree.erase(267))
-    return false;
-  if (!tree.erase(269))
-    return false;
-  if (!tree.erase(246))
-    return false;
-  if (!tree.erase(152))
-    return false;
-  if (!tree.erase(173))
-    return false;
-  if (!tree.erase(438))
-    return false;
-  if (!tree.erase(24))
-    return false;
-  if (!tree.erase(15))
-    return false;
-  if (!tree.erase(390))
-    return false;
-  if (!tree.erase(284))
-    return false;
-  if (!tree.erase(360))
-    return false;
-  if (!tree.erase(371))
-    return false;
-  if (!tree.erase(81))
-    return false;
-  if (!tree.erase(65))
-    return false;
-  if (!tree.erase(299))
-    return false;
-  if (!tree.erase(132))
-    return false;
-  if (!tree.erase(98))
-    return false;
-  if (!tree.erase(303))
-    return false;
-  if (!tree.erase(139))
-    return false;
-  if (!tree.erase(453))
-    return false;
-  if (!tree.erase(402))
-    return false;
-  if (!tree.erase(20))
-    return false;
-  if (!tree.erase(54))
-    return false;
-  if (!tree.erase(499))
-    return false;
-  if (!tree.erase(260))
-    return false;
-  if (!tree.erase(285))
-    return false;
-  if (!tree.erase(381))
-    return false;
-  if (!tree.erase(357))
-    return false;
-  if (!tree.erase(248))
-    return false;
-  if (!tree.erase(362))
-    return false;
-  if (!tree.erase(62))
-    return false;
-  if (!tree.erase(203))
-    return false;
-  if (!tree.erase(411))
-    return false;
-  if (!tree.erase(444))
-    return false;
-  if (!tree.erase(388))
-    return false;
-  if (!tree.erase(10))
-    return false;
-  if (!tree.erase(342))
-    return false;
-  if (!tree.erase(229))
-    return false;
-  if (!tree.erase(481))
-    return false;
-  if (!tree.erase(369))
-    return false;
-  if (!tree.erase(378))
-    return false;
-  if (!tree.erase(38))
-    return false;
-  if (!tree.erase(77))
-    return false;
-  if (!tree.erase(415))
-    return false;
-  if (!tree.erase(466))
-    return false;
-  if (!tree.erase(404))
-    return false;
-  if (!tree.erase(90))
-    return false;
-  if (!tree.erase(101))
-    return false;
-  if (!tree.erase(169))
-    return false;
-  if (!tree.erase(435))
-    return false;
-  if (!tree.erase(296))
-    return false;
-  if (!tree.erase(282))
-    return false;
-  if (!tree.erase(63))
-    return false;
-  if (!tree.erase(52))
-    return false;
-  if (!tree.erase(40))
-    return false;
-  if (!tree.erase(231))
-    return false;
-  if (!tree.erase(302))
-    return false;
-  if (!tree.erase(18))
-    return false;
-  if (!tree.erase(383))
-    return false;
-  if (!tree.erase(194))
-    return false;
-  if (!tree.erase(351))
-    return false;
-  if (!tree.erase(254))
-    return false;
-  if (!tree.erase(431))
-    return false;
-  if (!tree.erase(199))
-    return false;
-  if (!tree.erase(80))
-    return false;
-  if (!tree.erase(300))
-    return false;
-  if (!tree.erase(140))
-    return false;
-  if (!tree.erase(324))
-    return false;
-  if (!tree.erase(286))
-    return false;
-  if (!tree.erase(188))
-    return false;
-  if (!tree.erase(386))
-    return false;
-  if (!tree.erase(344))
-    return false;
-  if (!tree.erase(166))
-    return false;
-  if (!tree.erase(4))
-    return false;
-  if (!tree.erase(226))
-    return false;
-  if (!tree.erase(316))
-    return false;
-  if (!tree.erase(158))
-    return false;
-  if (!tree.erase(447))
-    return false;
-  if (!tree.erase(86))
-    return false;
-  if (!tree.erase(398))
-    return false;
-  if (!tree.erase(108))
-    return false;
-  if (!tree.erase(230))
-    return false;
-  if (!tree.erase(310))
-    return false;
-  if (!tree.erase(495))
-    return false;
-  if (!tree.erase(171))
-    return false;
-  if (!tree.erase(380))
-    return false;
-  if (!tree.erase(249))
-    return false;
-  if (!tree.erase(433))
-    return false;
-  if (!tree.erase(16))
-    return false;
-  if (!tree.erase(470))
-    return false;
-  if (!tree.erase(277))
-    return false;
-  if (!tree.erase(21))
-    return false;
-  if (!tree.erase(372))
-    return false;
-  if (!tree.erase(252))
-    return false;
-  if (!tree.erase(424))
-    return false;
-  if (!tree.erase(144))
-    return false;
-  if (!tree.erase(377))
-    return false;
-  if (!tree.erase(59))
-    return false;
-  if (!tree.erase(46))
-    return false;
-  if (!tree.erase(55))
-    return false;
-  if (!tree.erase(429))
-    return false;
-  if (!tree.erase(474))
-    return false;
-  if (!tree.erase(321))
-    return false;
-  if (!tree.erase(399))
-    return false;
-  if (!tree.erase(471))
-    return false;
-  if (!tree.erase(237))
-    return false;
-  if (!tree.erase(442))
-    return false;
-  if (!tree.erase(97))
-    return false;
-  if (!tree.erase(220))
-    return false;
-  if (!tree.erase(445))
-    return false;
-  if (!tree.erase(326))
-    return false;
-  if (!tree.erase(37))
-    return false;
-  if (!tree.erase(336))
-    return false;
-  if (!tree.erase(343))
-    return false;
-  if (!tree.erase(412))
-    return false;
-  if (!tree.erase(409))
-    return false;
-  if (!tree.erase(460))
-    return false;
-  if (!tree.erase(57))
-    return false;
-  if (!tree.erase(168))
-    return false;
-  if (!tree.erase(295))
-    return false;
-  if (!tree.erase(247))
-    return false;
-  if (!tree.erase(482))
-    return false;
-  if (!tree.erase(425))
-    return false;
-  if (!tree.erase(256))
-    return false;
-  if (!tree.erase(96))
-    return false;
-  if (!tree.erase(53))
-    return false;
-  if (!tree.erase(469))
-    return false;
-  if (!tree.erase(162))
-    return false;
-  if (!tree.erase(493))
-    return false;
-  if (!tree.erase(294))
-    return false;
-  if (!tree.erase(177))
-    return false;
-  if (!tree.erase(212))
-    return false;
-  if (!tree.erase(30))
-    return false;
-  if (!tree.erase(5))
-    return false;
-  if (!tree.erase(193))
-    return false;
-  if (!tree.erase(483))
-    return false;
-  if (!tree.erase(124))
-    return false;
-  if (!tree.erase(87))
-    return false;
-  if (!tree.erase(64))
-    return false;
-  if (!tree.erase(490))
-    return false;
-  if (!tree.erase(155))
-    return false;
-  if (!tree.erase(422))
-    return false;
-  if (!tree.erase(191))
-    return false;
-  if (!tree.erase(75))
-    return false;
-  if (!tree.erase(325))
-    return false;
-  if (!tree.erase(1))
-    return false;
-  if (!tree.erase(182))
-    return false;
-  if (!tree.erase(28))
-    return false;
-  if (!tree.erase(364))
-    return false;
-  if (!tree.erase(42))
-    return false;
-  if (!tree.erase(39))
-    return false;
-  if (!tree.erase(376))
-    return false;
-  if (!tree.erase(467))
-    return false;
-  if (!tree.erase(426))
-    return false;
-  if (!tree.erase(205))
-    return false;
-  if (!tree.erase(365))
-    return false;
-  if (!tree.erase(137))
-    return false;
-  if (!tree.erase(297))
-    return false;
-  if (!tree.erase(462))
-    return false;
-  if (!tree.erase(241))
-    return false;
-  if (!tree.erase(123))
-    return false;
-  if (!tree.erase(206))
-    return false;
-  if (!tree.erase(440))
-    return false;
-  if (!tree.erase(216))
-    return false;
-  if (!tree.erase(146))
-    return false;
-  if (!tree.erase(142))
-    return false;
-  if (!tree.erase(72))
-    return false;
-  if (!tree.erase(379))
-    return false;
-  if (!tree.erase(472))
-    return false;
-  if (!tree.erase(305))
-    return false;
-  if (!tree.erase(271))
-    return false;
-  if (!tree.erase(298))
-    return false;
-  if (!tree.erase(232))
-    return false;
-  if (!tree.erase(242))
-    return false;
-  if (!tree.erase(184))
-    return false;
-  if (!tree.erase(138))
-    return false;
-  if (!tree.erase(154))
-    return false;
-  if (!tree.erase(200))
-    return false;
-  if (!tree.erase(71))
-    return false;
-  if (!tree.erase(211))
-    return false;
-  if (!tree.erase(274))
-    return false;
-  if (!tree.erase(263))
-    return false;
-  if (!tree.erase(311))
-    return false;
-  if (!tree.erase(428))
-    return false;
-  if (!tree.erase(331))
-    return false;
-  if (!tree.erase(7))
-    return false;
-  if (!tree.erase(345))
-    return false;
-  if (!tree.erase(185))
-    return false;
-  if (!tree.erase(338))
-    return false;
-  if (!tree.erase(251))
-    return false;
-  if (!tree.erase(417))
-    return false;
-  if (!tree.erase(12))
-    return false;
-  if (!tree.erase(93))
-    return false;
-  if (!tree.erase(204))
-    return false;
-  if (!tree.erase(257))
-    return false;
-  if (!tree.erase(418))
-    return false;
-  if (!tree.erase(314))
-    return false;
+  tree.erase(110);
+  tree.erase(290);
+  tree.erase(11);
+  tree.erase(69);
+  tree.erase(209);
+  tree.erase(468);
+  tree.erase(17);
+  tree.erase(293);
+  tree.erase(164);
+  tree.erase(350);
+  tree.erase(115);
+  tree.erase(322);
+  tree.erase(361);
+  tree.erase(2);
+  tree.erase(446);
+  tree.erase(281);
+  tree.erase(400);
+  tree.erase(375);
+  tree.erase(153);
+  tree.erase(116);
+  tree.erase(143);
+  tree.erase(329);
+  tree.erase(420);
+  tree.erase(133);
+  tree.erase(363);
+  tree.erase(192);
+  tree.erase(27);
+  tree.erase(275);
+  tree.erase(104);
+  tree.erase(213);
+  tree.erase(352);
+  tree.erase(427);
+  tree.erase(273);
+  tree.erase(288);
+  tree.erase(396);
+  tree.erase(114);
+  tree.erase(341);
+  tree.erase(413);
+  tree.erase(201);
+  tree.erase(280);
+  tree.erase(66);
+  tree.erase(227);
+  tree.erase(406);
+  tree.erase(79);
+  tree.erase(259);
+  tree.erase(176);
+  tree.erase(106);
+  tree.erase(0);
+  tree.erase(328);
+  tree.erase(270);
+  tree.erase(449);
+  tree.erase(165);
+  tree.erase(163);
+  tree.erase(43);
+  tree.erase(391);
+  tree.erase(202);
+  tree.erase(49);
+  tree.erase(105);
+  tree.erase(149);
+  tree.erase(318);
+  tree.erase(387);
+  tree.erase(389);
+  tree.erase(141);
+  tree.erase(408);
+  tree.erase(486);
+  tree.erase(354);
+  tree.erase(8);
+  tree.erase(33);
+  tree.erase(421);
+  tree.erase(385);
+  tree.erase(25);
+  tree.erase(485);
+  tree.erase(196);
+  tree.erase(31);
+  tree.erase(82);
+  tree.erase(434);
+  tree.erase(423);
+  tree.erase(358);
+  tree.erase(255);
+  tree.erase(287);
+  tree.erase(23);
+  tree.erase(122);
+  tree.erase(489);
+  tree.erase(19);
+  tree.erase(126);
+  tree.erase(44);
+  tree.erase(120);
+  tree.erase(131);
+  tree.erase(332);
+  tree.erase(448);
+  tree.erase(238);
+  tree.erase(264);
+  tree.erase(454);
+  tree.erase(218);
+  tree.erase(157);
+  tree.erase(436);
+  tree.erase(225);
+  tree.erase(437);
+  tree.erase(443);
+  tree.erase(179);
+  tree.erase(265);
+  tree.erase(475);
+  tree.erase(180);
+  tree.erase(487);
+  tree.erase(339);
+  tree.erase(492);
+  tree.erase(395);
+  tree.erase(491);
+  tree.erase(223);
+  tree.erase(113);
+  tree.erase(92);
+  tree.erase(48);
+  tree.erase(61);
+  tree.erase(127);
+  tree.erase(190);
+  tree.erase(67);
+  tree.erase(484);
+  tree.erase(439);
+  tree.erase(355);
+  tree.erase(243);
+  tree.erase(392);
+  tree.erase(159);
+  tree.erase(74);
+  tree.erase(337);
+  tree.erase(151);
+  tree.erase(458);
+  tree.erase(480);
+  tree.erase(334);
+  tree.erase(419);
+  tree.erase(309);
+  tree.erase(301);
+  tree.erase(125);
+  tree.erase(407);
+  tree.erase(496);
+  tree.erase(187);
+  tree.erase(50);
+  tree.erase(368);
+  tree.erase(283);
+  tree.erase(244);
+  tree.erase(170);
+  tree.erase(118);
+  tree.erase(457);
+  tree.erase(181);
+  tree.erase(479);
+  tree.erase(401);
+  tree.erase(494);
+  tree.erase(99);
+  tree.erase(236);
+  tree.erase(240);
+  tree.erase(147);
+  tree.erase(233);
+  tree.erase(172);
+  tree.erase(266);
+  tree.erase(32);
+  tree.erase(210);
+  tree.erase(161);
+  tree.erase(156);
+  tree.erase(178);
+  tree.erase(221);
+  tree.erase(78);
+  tree.erase(85);
+  tree.erase(135);
+  tree.erase(145);
+  tree.erase(356);
+  tree.erase(397);
+  tree.erase(450);
+  tree.erase(276);
+  tree.erase(41);
+  tree.erase(414);
+  tree.erase(14);
+  tree.erase(22);
+  tree.erase(29);
+  tree.erase(34);
+  tree.erase(498);
+  tree.erase(250);
+  tree.erase(36);
+  tree.erase(320);
+  tree.erase(268);
+  tree.erase(195);
+  tree.erase(382);
+  tree.erase(441);
+  tree.erase(235);
+  tree.erase(346);
+  tree.erase(476);
+  tree.erase(217);
+  tree.erase(335);
+  tree.erase(121);
+  tree.erase(94);
+  tree.erase(278);
+  tree.erase(272);
+  tree.erase(207);
+  tree.erase(463);
+  tree.erase(150);
+  tree.erase(432);
+  tree.erase(410);
+  tree.erase(208);
+  tree.erase(70);
+  tree.erase(84);
+  tree.erase(186);
+  tree.erase(6);
+  tree.erase(224);
+  tree.erase(9);
+  tree.erase(60);
+  tree.erase(175);
+  tree.erase(430);
+  tree.erase(128);
+  tree.erase(129);
+  tree.erase(465);
+  tree.erase(459);
+  tree.erase(289);
+  tree.erase(261);
+  tree.erase(26);
+  tree.erase(461);
+  tree.erase(279);
+  tree.erase(245);
+  tree.erase(478);
+  tree.erase(403);
+  tree.erase(45);
+  tree.erase(359);
+  tree.erase(327);
+  tree.erase(393);
+  tree.erase(373);
+  tree.erase(304);
+  tree.erase(83);
+  tree.erase(160);
+  tree.erase(198);
+  tree.erase(103);
+  tree.erase(367);
+  tree.erase(76);
+  tree.erase(73);
+  tree.erase(167);
+  tree.erase(291);
+  tree.erase(215);
+  tree.erase(219);
+  tree.erase(119);
+  tree.erase(456);
+  tree.erase(197);
+  tree.erase(477);
+  tree.erase(222);
+  tree.erase(174);
+  tree.erase(451);
+  tree.erase(214);
+  tree.erase(112);
+  tree.erase(464);
+  tree.erase(262);
+  tree.erase(47);
+  tree.erase(347);
+  tree.erase(111);
+  tree.erase(148);
+  tree.erase(308);
+  tree.erase(340);
+  tree.erase(100);
+  tree.erase(130);
+  tree.erase(323);
+  tree.erase(312);
+  tree.erase(292);
+  tree.erase(35);
+  tree.erase(306);
+  tree.erase(58);
+  tree.erase(353);
+  tree.erase(452);
+  tree.erase(91);
+  tree.erase(319);
+  tree.erase(330);
+  tree.erase(473);
+  tree.erase(488);
+  tree.erase(134);
+  tree.erase(315);
+  tree.erase(253);
+  tree.erase(374);
+  tree.erase(384);
+  tree.erase(95);
+  tree.erase(370);
+  tree.erase(13);
+  tree.erase(183);
+  tree.erase(136);
+  tree.erase(313);
+  tree.erase(307);
+  tree.erase(239);
+  tree.erase(258);
+  tree.erase(405);
+  tree.erase(56);
+  tree.erase(228);
+  tree.erase(455);
+  tree.erase(317);
+  tree.erase(497);
+  tree.erase(102);
+  tree.erase(117);
+  tree.erase(68);
+  tree.erase(234);
+  tree.erase(51);
+  tree.erase(107);
+  tree.erase(349);
+  tree.erase(348);
+  tree.erase(416);
+  tree.erase(88);
+  tree.erase(89);
+  tree.erase(366);
+  tree.erase(109);
+  tree.erase(189);
+  tree.erase(333);
+  tree.erase(3);
+  tree.erase(394);
+  tree.erase(267);
+  tree.erase(269);
+  tree.erase(246);
+  tree.erase(152);
+  tree.erase(173);
+  tree.erase(438);
+  tree.erase(24);
+  tree.erase(15);
+  tree.erase(390);
+  tree.erase(284);
+  tree.erase(360);
+  tree.erase(371);
+  tree.erase(81);
+  tree.erase(65);
+  tree.erase(299);
+  tree.erase(132);
+  tree.erase(98);
+  tree.erase(303);
+  tree.erase(139);
+  tree.erase(453);
+  tree.erase(402);
+  tree.erase(20);
+  tree.erase(54);
+  tree.erase(499);
+  tree.erase(260);
+  tree.erase(285);
+  tree.erase(381);
+  tree.erase(357);
+  tree.erase(248);
+  tree.erase(362);
+  tree.erase(62);
+  tree.erase(203);
+  tree.erase(411);
+  tree.erase(444);
+  tree.erase(388);
+  tree.erase(10);
+  tree.erase(342);
+  tree.erase(229);
+  tree.erase(481);
+  tree.erase(369);
+  tree.erase(378);
+  tree.erase(38);
+  tree.erase(77);
+  tree.erase(415);
+  tree.erase(466);
+  tree.erase(404);
+  tree.erase(90);
+  tree.erase(101);
+  tree.erase(169);
+  tree.erase(435);
+  tree.erase(296);
+  tree.erase(282);
+  tree.erase(63);
+  tree.erase(52);
+  tree.erase(40);
+  tree.erase(231);
+  tree.erase(302);
+  tree.erase(18);
+  tree.erase(383);
+  tree.erase(194);
+  tree.erase(351);
+  tree.erase(254);
+  tree.erase(431);
+  tree.erase(199);
+  tree.erase(80);
+  tree.erase(300);
+  tree.erase(140);
+  tree.erase(324);
+  tree.erase(286);
+  tree.erase(188);
+  tree.erase(386);
+  tree.erase(344);
+  tree.erase(166);
+  tree.erase(4);
+  tree.erase(226);
+  tree.erase(316);
+  tree.erase(158);
+  tree.erase(447);
+  tree.erase(86);
+  tree.erase(398);
+  tree.erase(108);
+  tree.erase(230);
+  tree.erase(310);
+  tree.erase(495);
+  tree.erase(171);
+  tree.erase(380);
+  tree.erase(249);
+  tree.erase(433);
+  tree.erase(16);
+  tree.erase(470);
+  tree.erase(277);
+  tree.erase(21);
+  tree.erase(372);
+  tree.erase(252);
+  tree.erase(424);
+  tree.erase(144);
+  tree.erase(377);
+  tree.erase(59);
+  tree.erase(46);
+  tree.erase(55);
+  tree.erase(429);
+  tree.erase(474);
+  tree.erase(321);
+  tree.erase(399);
+  tree.erase(471);
+  tree.erase(237);
+  tree.erase(442);
+  tree.erase(97);
+  tree.erase(220);
+  tree.erase(445);
+  tree.erase(326);
+  tree.erase(37);
+  tree.erase(336);
+  tree.erase(343);
+  tree.erase(412);
+  tree.erase(409);
+  tree.erase(460);
+  tree.erase(57);
+  tree.erase(168);
+  tree.erase(295);
+  tree.erase(247);
+  tree.erase(482);
+  tree.erase(425);
+  tree.erase(256);
+  tree.erase(96);
+  tree.erase(53);
+  tree.erase(469);
+  tree.erase(162);
+  tree.erase(493);
+  tree.erase(294);
+  tree.erase(177);
+  tree.erase(212);
+  tree.erase(30);
+  tree.erase(5);
+  tree.erase(193);
+  tree.erase(483);
+  tree.erase(124);
+  tree.erase(87);
+  tree.erase(64);
+  tree.erase(490);
+  tree.erase(155);
+  tree.erase(422);
+  tree.erase(191);
+  tree.erase(75);
+  tree.erase(325);
+  tree.erase(1);
+  tree.erase(182);
+  tree.erase(28);
+  tree.erase(364);
+  tree.erase(42);
+  tree.erase(39);
+  tree.erase(376);
+  tree.erase(467);
+  tree.erase(426);
+  tree.erase(205);
+  tree.erase(365);
+  tree.erase(137);
+  tree.erase(297);
+  tree.erase(462);
+  tree.erase(241);
+  tree.erase(123);
+  tree.erase(206);
+  tree.erase(440);
+  tree.erase(216);
+  tree.erase(146);
+  tree.erase(142);
+  tree.erase(72);
+  tree.erase(379);
+  tree.erase(472);
+  tree.erase(305);
+  tree.erase(271);
+  tree.erase(298);
+  tree.erase(232);
+  tree.erase(242);
+  tree.erase(184);
+  tree.erase(138);
+  tree.erase(154);
+  tree.erase(200);
+  tree.erase(71);
+  tree.erase(211);
+  tree.erase(274);
+  tree.erase(263);
+  tree.erase(311);
+  tree.erase(428);
+  tree.erase(331);
+  tree.erase(7);
+  tree.erase(345);
+  tree.erase(185);
+  tree.erase(338);
+  tree.erase(251);
+  tree.erase(417);
+  tree.erase(12);
+  tree.erase(93);
+  tree.erase(204);
+  tree.erase(257);
+  tree.erase(418);
+  tree.erase(314);
 
   return true;
 }
@@ -1642,1006 +1138,506 @@ bool test08() {
   tree.insert(418, 418);
   tree.insert(314, 314);
 
-  if (!tree.erase(110))
-    return false;
-  if (!tree.erase(290))
-    return false;
-  if (!tree.erase(11))
-    return false;
-  if (!tree.erase(69))
-    return false;
-  if (!tree.erase(209))
-    return false;
-  if (!tree.erase(468))
-    return false;
-  if (!tree.erase(17))
-    return false;
-  if (!tree.erase(293))
-    return false;
-  if (!tree.erase(164))
-    return false;
-  if (!tree.erase(350))
-    return false;
-  if (!tree.erase(115))
-    return false;
-  if (!tree.erase(322))
-    return false;
-  if (!tree.erase(361))
-    return false;
-  if (!tree.erase(2))
-    return false;
-  if (!tree.erase(446))
-    return false;
-  if (!tree.erase(281))
-    return false;
-  if (!tree.erase(400))
-    return false;
-  if (!tree.erase(375))
-    return false;
-  if (!tree.erase(153))
-    return false;
-  if (!tree.erase(116))
-    return false;
-  if (!tree.erase(143))
-    return false;
-  if (!tree.erase(329))
-    return false;
-  if (!tree.erase(420))
-    return false;
-  if (!tree.erase(133))
-    return false;
-  if (!tree.erase(363))
-    return false;
-  if (!tree.erase(192))
-    return false;
-  if (!tree.erase(27))
-    return false;
-  if (!tree.erase(275))
-    return false;
-  if (!tree.erase(104))
-    return false;
-  if (!tree.erase(213))
-    return false;
-  if (!tree.erase(352))
-    return false;
-  if (!tree.erase(427))
-    return false;
-  if (!tree.erase(273))
-    return false;
-  if (!tree.erase(288))
-    return false;
-  if (!tree.erase(396))
-    return false;
-  if (!tree.erase(114))
-    return false;
-  if (!tree.erase(341))
-    return false;
-  if (!tree.erase(413))
-    return false;
-  if (!tree.erase(201))
-    return false;
-  if (!tree.erase(280))
-    return false;
-  if (!tree.erase(66))
-    return false;
-  if (!tree.erase(227))
-    return false;
-  if (!tree.erase(406))
-    return false;
-  if (!tree.erase(79))
-    return false;
-  if (!tree.erase(259))
-    return false;
-  if (!tree.erase(176))
-    return false;
-  if (!tree.erase(106))
-    return false;
-  if (!tree.erase(0))
-    return false;
-  if (!tree.erase(328))
-    return false;
-  if (!tree.erase(270))
-    return false;
-  if (!tree.erase(449))
-    return false;
-  if (!tree.erase(165))
-    return false;
-  if (!tree.erase(163))
-    return false;
-  if (!tree.erase(43))
-    return false;
-  if (!tree.erase(391))
-    return false;
-  if (!tree.erase(202))
-    return false;
-  if (!tree.erase(49))
-    return false;
-  if (!tree.erase(105))
-    return false;
-  if (!tree.erase(149))
-    return false;
-  if (!tree.erase(318))
-    return false;
-  if (!tree.erase(387))
-    return false;
-  if (!tree.erase(389))
-    return false;
-  if (!tree.erase(141))
-    return false;
-  if (!tree.erase(408))
-    return false;
-  if (!tree.erase(486))
-    return false;
-  if (!tree.erase(354))
-    return false;
-  if (!tree.erase(8))
-    return false;
-  if (!tree.erase(33))
-    return false;
-  if (!tree.erase(421))
-    return false;
-  if (!tree.erase(385))
-    return false;
-  if (!tree.erase(25))
-    return false;
-  if (!tree.erase(485))
-    return false;
-  if (!tree.erase(196))
-    return false;
-  if (!tree.erase(31))
-    return false;
-  if (!tree.erase(82))
-    return false;
-  if (!tree.erase(434))
-    return false;
-  if (!tree.erase(423))
-    return false;
-  if (!tree.erase(358))
-    return false;
-  if (!tree.erase(255))
-    return false;
-  if (!tree.erase(287))
-    return false;
-  if (!tree.erase(23))
-    return false;
-  if (!tree.erase(122))
-    return false;
-  if (!tree.erase(489))
-    return false;
-  if (!tree.erase(19))
-    return false;
-  if (!tree.erase(126))
-    return false;
-  if (!tree.erase(44))
-    return false;
-  if (!tree.erase(120))
-    return false;
-  if (!tree.erase(131))
-    return false;
-  if (!tree.erase(332))
-    return false;
-  if (!tree.erase(448))
-    return false;
-  if (!tree.erase(238))
-    return false;
-  if (!tree.erase(264))
-    return false;
-  if (!tree.erase(454))
-    return false;
-  if (!tree.erase(218))
-    return false;
-  if (!tree.erase(157))
-    return false;
-  if (!tree.erase(436))
-    return false;
-  if (!tree.erase(225))
-    return false;
-  if (!tree.erase(437))
-    return false;
-  if (!tree.erase(443))
-    return false;
-  if (!tree.erase(179))
-    return false;
-  if (!tree.erase(265))
-    return false;
-  if (!tree.erase(475))
-    return false;
-  if (!tree.erase(180))
-    return false;
-  if (!tree.erase(487))
-    return false;
-  if (!tree.erase(339))
-    return false;
-  if (!tree.erase(492))
-    return false;
-  if (!tree.erase(395))
-    return false;
-  if (!tree.erase(491))
-    return false;
-  if (!tree.erase(223))
-    return false;
-  if (!tree.erase(113))
-    return false;
-  if (!tree.erase(92))
-    return false;
-  if (!tree.erase(48))
-    return false;
-  if (!tree.erase(61))
-    return false;
-  if (!tree.erase(127))
-    return false;
-  if (!tree.erase(190))
-    return false;
-  if (!tree.erase(67))
-    return false;
-  if (!tree.erase(484))
-    return false;
-  if (!tree.erase(439))
-    return false;
-  if (!tree.erase(355))
-    return false;
-  if (!tree.erase(243))
-    return false;
-  if (!tree.erase(392))
-    return false;
-  if (!tree.erase(159))
-    return false;
-  if (!tree.erase(74))
-    return false;
-  if (!tree.erase(337))
-    return false;
-  if (!tree.erase(151))
-    return false;
-  if (!tree.erase(458))
-    return false;
-  if (!tree.erase(480))
-    return false;
-  if (!tree.erase(334))
-    return false;
-  if (!tree.erase(419))
-    return false;
-  if (!tree.erase(309))
-    return false;
-  if (!tree.erase(301))
-    return false;
-  if (!tree.erase(125))
-    return false;
-  if (!tree.erase(407))
-    return false;
-  if (!tree.erase(496))
-    return false;
-  if (!tree.erase(187))
-    return false;
-  if (!tree.erase(50))
-    return false;
-  if (!tree.erase(368))
-    return false;
-  if (!tree.erase(283))
-    return false;
-  if (!tree.erase(244))
-    return false;
-  if (!tree.erase(170))
-    return false;
-  if (!tree.erase(118))
-    return false;
-  if (!tree.erase(457))
-    return false;
-  if (!tree.erase(181))
-    return false;
-  if (!tree.erase(479))
-    return false;
-  if (!tree.erase(401))
-    return false;
-  if (!tree.erase(494))
-    return false;
-  if (!tree.erase(99))
-    return false;
-  if (!tree.erase(236))
-    return false;
-  if (!tree.erase(240))
-    return false;
-  if (!tree.erase(147))
-    return false;
-  if (!tree.erase(233))
-    return false;
-  if (!tree.erase(172))
-    return false;
-  if (!tree.erase(266))
-    return false;
-  if (!tree.erase(32))
-    return false;
-  if (!tree.erase(210))
-    return false;
-  if (!tree.erase(161))
-    return false;
-  if (!tree.erase(156))
-    return false;
-  if (!tree.erase(178))
-    return false;
-  if (!tree.erase(221))
-    return false;
-  if (!tree.erase(78))
-    return false;
-  if (!tree.erase(85))
-    return false;
-  if (!tree.erase(135))
-    return false;
-  if (!tree.erase(145))
-    return false;
-  if (!tree.erase(356))
-    return false;
-  if (!tree.erase(397))
-    return false;
-  if (!tree.erase(450))
-    return false;
-  if (!tree.erase(276))
-    return false;
-  if (!tree.erase(41))
-    return false;
-  if (!tree.erase(414))
-    return false;
-  if (!tree.erase(14))
-    return false;
-  if (!tree.erase(22))
-    return false;
-  if (!tree.erase(29))
-    return false;
-  if (!tree.erase(34))
-    return false;
-  if (!tree.erase(498))
-    return false;
-  if (!tree.erase(250))
-    return false;
-  if (!tree.erase(36))
-    return false;
-  if (!tree.erase(320))
-    return false;
-  if (!tree.erase(268))
-    return false;
-  if (!tree.erase(195))
-    return false;
-  if (!tree.erase(382))
-    return false;
-  if (!tree.erase(441))
-    return false;
-  if (!tree.erase(235))
-    return false;
-  if (!tree.erase(346))
-    return false;
-  if (!tree.erase(476))
-    return false;
-  if (!tree.erase(217))
-    return false;
-  if (!tree.erase(335))
-    return false;
-  if (!tree.erase(121))
-    return false;
-  if (!tree.erase(94))
-    return false;
-  if (!tree.erase(278))
-    return false;
-  if (!tree.erase(272))
-    return false;
-  if (!tree.erase(207))
-    return false;
-  if (!tree.erase(463))
-    return false;
-  if (!tree.erase(150))
-    return false;
-  if (!tree.erase(432))
-    return false;
-  if (!tree.erase(410))
-    return false;
-  if (!tree.erase(208))
-    return false;
-  if (!tree.erase(70))
-    return false;
-  if (!tree.erase(84))
-    return false;
-  if (!tree.erase(186))
-    return false;
-  if (!tree.erase(6))
-    return false;
-  if (!tree.erase(224))
-    return false;
-  if (!tree.erase(9))
-    return false;
-  if (!tree.erase(60))
-    return false;
-  if (!tree.erase(175))
-    return false;
-  if (!tree.erase(430))
-    return false;
-  if (!tree.erase(128))
-    return false;
-  if (!tree.erase(129))
-    return false;
-  if (!tree.erase(465))
-    return false;
-  if (!tree.erase(459))
-    return false;
-  if (!tree.erase(289))
-    return false;
-  if (!tree.erase(261))
-    return false;
-  if (!tree.erase(26))
-    return false;
-  if (!tree.erase(461))
-    return false;
-  if (!tree.erase(279))
-    return false;
-  if (!tree.erase(245))
-    return false;
-  if (!tree.erase(478))
-    return false;
-  if (!tree.erase(403))
-    return false;
-  if (!tree.erase(45))
-    return false;
-  if (!tree.erase(359))
-    return false;
-  if (!tree.erase(327))
-    return false;
-  if (!tree.erase(393))
-    return false;
-  if (!tree.erase(373))
-    return false;
-  if (!tree.erase(304))
-    return false;
-  if (!tree.erase(83))
-    return false;
-  if (!tree.erase(160))
-    return false;
-  if (!tree.erase(198))
-    return false;
-  if (!tree.erase(103))
-    return false;
-  if (!tree.erase(367))
-    return false;
-  if (!tree.erase(76))
-    return false;
-  if (!tree.erase(73))
-    return false;
-  if (!tree.erase(167))
-    return false;
-  if (!tree.erase(291))
-    return false;
-  if (!tree.erase(215))
-    return false;
-  if (!tree.erase(219))
-    return false;
-  if (!tree.erase(119))
-    return false;
-  if (!tree.erase(456))
-    return false;
-  if (!tree.erase(197))
-    return false;
-  if (!tree.erase(477))
-    return false;
-  if (!tree.erase(222))
-    return false;
-  if (!tree.erase(174))
-    return false;
-  if (!tree.erase(451))
-    return false;
-  if (!tree.erase(214))
-    return false;
-  if (!tree.erase(112))
-    return false;
-  if (!tree.erase(464))
-    return false;
-  if (!tree.erase(262))
-    return false;
-  if (!tree.erase(47))
-    return false;
-  if (!tree.erase(347))
-    return false;
-  if (!tree.erase(111))
-    return false;
-  if (!tree.erase(148))
-    return false;
-  if (!tree.erase(308))
-    return false;
-  if (!tree.erase(340))
-    return false;
-  if (!tree.erase(100))
-    return false;
-  if (!tree.erase(130))
-    return false;
-  if (!tree.erase(323))
-    return false;
-  if (!tree.erase(312))
-    return false;
-  if (!tree.erase(292))
-    return false;
-  if (!tree.erase(35))
-    return false;
-  if (!tree.erase(306))
-    return false;
-  if (!tree.erase(58))
-    return false;
-  if (!tree.erase(353))
-    return false;
-  if (!tree.erase(452))
-    return false;
-  if (!tree.erase(91))
-    return false;
-  if (!tree.erase(319))
-    return false;
-  if (!tree.erase(330))
-    return false;
-  if (!tree.erase(473))
-    return false;
-  if (!tree.erase(488))
-    return false;
-  if (!tree.erase(134))
-    return false;
-  if (!tree.erase(315))
-    return false;
-  if (!tree.erase(253))
-    return false;
-  if (!tree.erase(374))
-    return false;
-  if (!tree.erase(384))
-    return false;
-  if (!tree.erase(95))
-    return false;
-  if (!tree.erase(370))
-    return false;
-  if (!tree.erase(13))
-    return false;
-  if (!tree.erase(183))
-    return false;
-  if (!tree.erase(136))
-    return false;
-  if (!tree.erase(313))
-    return false;
-  if (!tree.erase(307))
-    return false;
-  if (!tree.erase(239))
-    return false;
-  if (!tree.erase(258))
-    return false;
-  if (!tree.erase(405))
-    return false;
-  if (!tree.erase(56))
-    return false;
-  if (!tree.erase(228))
-    return false;
-  if (!tree.erase(455))
-    return false;
-  if (!tree.erase(317))
-    return false;
-  if (!tree.erase(497))
-    return false;
-  if (!tree.erase(102))
-    return false;
-  if (!tree.erase(117))
-    return false;
-  if (!tree.erase(68))
-    return false;
-  if (!tree.erase(234))
-    return false;
-  if (!tree.erase(51))
-    return false;
-  if (!tree.erase(107))
-    return false;
-  if (!tree.erase(349))
-    return false;
-  if (!tree.erase(348))
-    return false;
-  if (!tree.erase(416))
-    return false;
-  if (!tree.erase(88))
-    return false;
-  if (!tree.erase(89))
-    return false;
-  if (!tree.erase(366))
-    return false;
-  if (!tree.erase(109))
-    return false;
-  if (!tree.erase(189))
-    return false;
-  if (!tree.erase(333))
-    return false;
-  if (!tree.erase(3))
-    return false;
-  if (!tree.erase(394))
-    return false;
-  if (!tree.erase(267))
-    return false;
-  if (!tree.erase(269))
-    return false;
-  if (!tree.erase(246))
-    return false;
-  if (!tree.erase(152))
-    return false;
-  if (!tree.erase(173))
-    return false;
-  if (!tree.erase(438))
-    return false;
-  if (!tree.erase(24))
-    return false;
-  if (!tree.erase(15))
-    return false;
-  if (!tree.erase(390))
-    return false;
-  if (!tree.erase(284))
-    return false;
-  if (!tree.erase(360))
-    return false;
-  if (!tree.erase(371))
-    return false;
-  if (!tree.erase(81))
-    return false;
-  if (!tree.erase(65))
-    return false;
-  if (!tree.erase(299))
-    return false;
-  if (!tree.erase(132))
-    return false;
-  if (!tree.erase(98))
-    return false;
-  if (!tree.erase(303))
-    return false;
-  if (!tree.erase(139))
-    return false;
-  if (!tree.erase(453))
-    return false;
-  if (!tree.erase(402))
-    return false;
-  if (!tree.erase(20))
-    return false;
-  if (!tree.erase(54))
-    return false;
-  if (!tree.erase(499))
-    return false;
-  if (!tree.erase(260))
-    return false;
-  if (!tree.erase(285))
-    return false;
-  if (!tree.erase(381))
-    return false;
-  if (!tree.erase(357))
-    return false;
-  if (!tree.erase(248))
-    return false;
-  if (!tree.erase(362))
-    return false;
-  if (!tree.erase(62))
-    return false;
-  if (!tree.erase(203))
-    return false;
-  if (!tree.erase(411))
-    return false;
-  if (!tree.erase(444))
-    return false;
-  if (!tree.erase(388))
-    return false;
-  if (!tree.erase(10))
-    return false;
-  if (!tree.erase(342))
-    return false;
-  if (!tree.erase(229))
-    return false;
-  if (!tree.erase(481))
-    return false;
-  if (!tree.erase(369))
-    return false;
-  if (!tree.erase(378))
-    return false;
-  if (!tree.erase(38))
-    return false;
-  if (!tree.erase(77))
-    return false;
-  if (!tree.erase(415))
-    return false;
-  if (!tree.erase(466))
-    return false;
-  if (!tree.erase(404))
-    return false;
-  if (!tree.erase(90))
-    return false;
-  if (!tree.erase(101))
-    return false;
-  if (!tree.erase(169))
-    return false;
-  if (!tree.erase(435))
-    return false;
-  if (!tree.erase(296))
-    return false;
-  if (!tree.erase(282))
-    return false;
-  if (!tree.erase(63))
-    return false;
-  if (!tree.erase(52))
-    return false;
-  if (!tree.erase(40))
-    return false;
-  if (!tree.erase(231))
-    return false;
-  if (!tree.erase(302))
-    return false;
-  if (!tree.erase(18))
-    return false;
-  if (!tree.erase(383))
-    return false;
-  if (!tree.erase(194))
-    return false;
-  if (!tree.erase(351))
-    return false;
-  if (!tree.erase(254))
-    return false;
-  if (!tree.erase(431))
-    return false;
-  if (!tree.erase(199))
-    return false;
-  if (!tree.erase(80))
-    return false;
-  if (!tree.erase(300))
-    return false;
-  if (!tree.erase(140))
-    return false;
-  if (!tree.erase(324))
-    return false;
-  if (!tree.erase(286))
-    return false;
-  if (!tree.erase(188))
-    return false;
-  if (!tree.erase(386))
-    return false;
-  if (!tree.erase(344))
-    return false;
-  if (!tree.erase(166))
-    return false;
-  if (!tree.erase(4))
-    return false;
-  if (!tree.erase(226))
-    return false;
-  if (!tree.erase(316))
-    return false;
-  if (!tree.erase(158))
-    return false;
-  if (!tree.erase(447))
-    return false;
-  if (!tree.erase(86))
-    return false;
-  if (!tree.erase(398))
-    return false;
-  if (!tree.erase(108))
-    return false;
-  if (!tree.erase(230))
-    return false;
-  if (!tree.erase(310))
-    return false;
-  if (!tree.erase(495))
-    return false;
-  if (!tree.erase(171))
-    return false;
-  if (!tree.erase(380))
-    return false;
-  if (!tree.erase(249))
-    return false;
-  if (!tree.erase(433))
-    return false;
-  if (!tree.erase(16))
-    return false;
-  if (!tree.erase(470))
-    return false;
-  if (!tree.erase(277))
-    return false;
-  if (!tree.erase(21))
-    return false;
-  if (!tree.erase(372))
-    return false;
-  if (!tree.erase(252))
-    return false;
-  if (!tree.erase(424))
-    return false;
-  if (!tree.erase(144))
-    return false;
-  if (!tree.erase(377))
-    return false;
-  if (!tree.erase(59))
-    return false;
-  if (!tree.erase(46))
-    return false;
-  if (!tree.erase(55))
-    return false;
-  if (!tree.erase(429))
-    return false;
-  if (!tree.erase(474))
-    return false;
-  if (!tree.erase(321))
-    return false;
-  if (!tree.erase(399))
-    return false;
-  if (!tree.erase(471))
-    return false;
-  if (!tree.erase(237))
-    return false;
-  if (!tree.erase(442))
-    return false;
-  if (!tree.erase(97))
-    return false;
-  if (!tree.erase(220))
-    return false;
-  if (!tree.erase(445))
-    return false;
-  if (!tree.erase(326))
-    return false;
-  if (!tree.erase(37))
-    return false;
-  if (!tree.erase(336))
-    return false;
-  if (!tree.erase(343))
-    return false;
-  if (!tree.erase(412))
-    return false;
-  if (!tree.erase(409))
-    return false;
-  if (!tree.erase(460))
-    return false;
-  if (!tree.erase(57))
-    return false;
-  if (!tree.erase(168))
-    return false;
-  if (!tree.erase(295))
-    return false;
-  if (!tree.erase(247))
-    return false;
-  if (!tree.erase(482))
-    return false;
-  if (!tree.erase(425))
-    return false;
-  if (!tree.erase(256))
-    return false;
-  if (!tree.erase(96))
-    return false;
-  if (!tree.erase(53))
-    return false;
-  if (!tree.erase(469))
-    return false;
-  if (!tree.erase(162))
-    return false;
-  if (!tree.erase(493))
-    return false;
-  if (!tree.erase(294))
-    return false;
-  if (!tree.erase(177))
-    return false;
-  if (!tree.erase(212))
-    return false;
-  if (!tree.erase(30))
-    return false;
-  if (!tree.erase(5))
-    return false;
-  if (!tree.erase(193))
-    return false;
-  if (!tree.erase(483))
-    return false;
-  if (!tree.erase(124))
-    return false;
-  if (!tree.erase(87))
-    return false;
-  if (!tree.erase(64))
-    return false;
-  if (!tree.erase(490))
-    return false;
-  if (!tree.erase(155))
-    return false;
-  if (!tree.erase(422))
-    return false;
-  if (!tree.erase(191))
-    return false;
-  if (!tree.erase(75))
-    return false;
-  if (!tree.erase(325))
-    return false;
-  if (!tree.erase(1))
-    return false;
-  if (!tree.erase(182))
-    return false;
-  if (!tree.erase(28))
-    return false;
-  if (!tree.erase(364))
-    return false;
-  if (!tree.erase(42))
-    return false;
-  if (!tree.erase(39))
-    return false;
-  if (!tree.erase(376))
-    return false;
-  if (!tree.erase(467))
-    return false;
-  if (!tree.erase(426))
-    return false;
-  if (!tree.erase(205))
-    return false;
-  if (!tree.erase(365))
-    return false;
-  if (!tree.erase(137))
-    return false;
-  if (!tree.erase(297))
-    return false;
-  if (!tree.erase(462))
-    return false;
-  if (!tree.erase(241))
-    return false;
-  if (!tree.erase(123))
-    return false;
-  if (!tree.erase(206))
-    return false;
-  if (!tree.erase(440))
-    return false;
-  if (!tree.erase(216))
-    return false;
-  if (!tree.erase(146))
-    return false;
-  if (!tree.erase(142))
-    return false;
-  if (!tree.erase(72))
-    return false;
-  if (!tree.erase(379))
-    return false;
-  if (!tree.erase(472))
-    return false;
-  if (!tree.erase(305))
-    return false;
-  if (!tree.erase(271))
-    return false;
-  if (!tree.erase(298))
-    return false;
-  if (!tree.erase(232))
-    return false;
-  if (!tree.erase(242))
-    return false;
-  if (!tree.erase(184))
-    return false;
-  if (!tree.erase(138))
-    return false;
-  if (!tree.erase(154))
-    return false;
-  if (!tree.erase(200))
-    return false;
-  if (!tree.erase(71))
-    return false;
-  if (!tree.erase(211))
-    return false;
-  if (!tree.erase(274))
-    return false;
-  if (!tree.erase(263))
-    return false;
-  if (!tree.erase(311))
-    return false;
-  if (!tree.erase(428))
-    return false;
-  if (!tree.erase(331))
-    return false;
-  if (!tree.erase(7))
-    return false;
-  if (!tree.erase(345))
-    return false;
-  if (!tree.erase(185))
-    return false;
-  if (!tree.erase(338))
-    return false;
-  if (!tree.erase(251))
-    return false;
-  if (!tree.erase(417))
-    return false;
-  if (!tree.erase(12))
-    return false;
-  if (!tree.erase(93))
-    return false;
-  if (!tree.erase(204))
-    return false;
-  if (!tree.erase(257))
-    return false;
-  if (!tree.erase(418))
-    return false;
-  if (!tree.erase(314))
-    return false;
+  tree.erase(110);
+  tree.erase(290);
+  tree.erase(11);
+  tree.erase(69);
+  tree.erase(209);
+  tree.erase(468);
+  tree.erase(17);
+  tree.erase(293);
+  tree.erase(164);
+  tree.erase(350);
+  tree.erase(115);
+  tree.erase(322);
+  tree.erase(361);
+  tree.erase(2);
+  tree.erase(446);
+  tree.erase(281);
+  tree.erase(400);
+  tree.erase(375);
+  tree.erase(153);
+  tree.erase(116);
+  tree.erase(143);
+  tree.erase(329);
+  tree.erase(420);
+  tree.erase(133);
+  tree.erase(363);
+  tree.erase(192);
+  tree.erase(27);
+  tree.erase(275);
+  tree.erase(104);
+  tree.erase(213);
+  tree.erase(352);
+  tree.erase(427);
+  tree.erase(273);
+  tree.erase(288);
+  tree.erase(396);
+  tree.erase(114);
+  tree.erase(341);
+  tree.erase(413);
+  tree.erase(201);
+  tree.erase(280);
+  tree.erase(66);
+  tree.erase(227);
+  tree.erase(406);
+  tree.erase(79);
+  tree.erase(259);
+  tree.erase(176);
+  tree.erase(106);
+  tree.erase(0);
+  tree.erase(328);
+  tree.erase(270);
+  tree.erase(449);
+  tree.erase(165);
+  tree.erase(163);
+  tree.erase(43);
+  tree.erase(391);
+  tree.erase(202);
+  tree.erase(49);
+  tree.erase(105);
+  tree.erase(149);
+  tree.erase(318);
+  tree.erase(387);
+  tree.erase(389);
+  tree.erase(141);
+  tree.erase(408);
+  tree.erase(486);
+  tree.erase(354);
+  tree.erase(8);
+  tree.erase(33);
+  tree.erase(421);
+  tree.erase(385);
+  tree.erase(25);
+  tree.erase(485);
+  tree.erase(196);
+  tree.erase(31);
+  tree.erase(82);
+  tree.erase(434);
+  tree.erase(423);
+  tree.erase(358);
+  tree.erase(255);
+  tree.erase(287);
+  tree.erase(23);
+  tree.erase(122);
+  tree.erase(489);
+  tree.erase(19);
+  tree.erase(126);
+  tree.erase(44);
+  tree.erase(120);
+  tree.erase(131);
+  tree.erase(332);
+  tree.erase(448);
+  tree.erase(238);
+  tree.erase(264);
+  tree.erase(454);
+  tree.erase(218);
+  tree.erase(157);
+  tree.erase(436);
+  tree.erase(225);
+  tree.erase(437);
+  tree.erase(443);
+  tree.erase(179);
+  tree.erase(265);
+  tree.erase(475);
+  tree.erase(180);
+  tree.erase(487);
+  tree.erase(339);
+  tree.erase(492);
+  tree.erase(395);
+  tree.erase(491);
+  tree.erase(223);
+  tree.erase(113);
+  tree.erase(92);
+  tree.erase(48);
+  tree.erase(61);
+  tree.erase(127);
+  tree.erase(190);
+  tree.erase(67);
+  tree.erase(484);
+  tree.erase(439);
+  tree.erase(355);
+  tree.erase(243);
+  tree.erase(392);
+  tree.erase(159);
+  tree.erase(74);
+  tree.erase(337);
+  tree.erase(151);
+  tree.erase(458);
+  tree.erase(480);
+  tree.erase(334);
+  tree.erase(419);
+  tree.erase(309);
+  tree.erase(301);
+  tree.erase(125);
+  tree.erase(407);
+  tree.erase(496);
+  tree.erase(187);
+  tree.erase(50);
+  tree.erase(368);
+  tree.erase(283);
+  tree.erase(244);
+  tree.erase(170);
+  tree.erase(118);
+  tree.erase(457);
+  tree.erase(181);
+  tree.erase(479);
+  tree.erase(401);
+  tree.erase(494);
+  tree.erase(99);
+  tree.erase(236);
+  tree.erase(240);
+  tree.erase(147);
+  tree.erase(233);
+  tree.erase(172);
+  tree.erase(266);
+  tree.erase(32);
+  tree.erase(210);
+  tree.erase(161);
+  tree.erase(156);
+  tree.erase(178);
+  tree.erase(221);
+  tree.erase(78);
+  tree.erase(85);
+  tree.erase(135);
+  tree.erase(145);
+  tree.erase(356);
+  tree.erase(397);
+  tree.erase(450);
+  tree.erase(276);
+  tree.erase(41);
+  tree.erase(414);
+  tree.erase(14);
+  tree.erase(22);
+  tree.erase(29);
+  tree.erase(34);
+  tree.erase(498);
+  tree.erase(250);
+  tree.erase(36);
+  tree.erase(320);
+  tree.erase(268);
+  tree.erase(195);
+  tree.erase(382);
+  tree.erase(441);
+  tree.erase(235);
+  tree.erase(346);
+  tree.erase(476);
+  tree.erase(217);
+  tree.erase(335);
+  tree.erase(121);
+  tree.erase(94);
+  tree.erase(278);
+  tree.erase(272);
+  tree.erase(207);
+  tree.erase(463);
+  tree.erase(150);
+  tree.erase(432);
+  tree.erase(410);
+  tree.erase(208);
+  tree.erase(70);
+  tree.erase(84);
+  tree.erase(186);
+  tree.erase(6);
+  tree.erase(224);
+  tree.erase(9);
+  tree.erase(60);
+  tree.erase(175);
+  tree.erase(430);
+  tree.erase(128);
+  tree.erase(129);
+  tree.erase(465);
+  tree.erase(459);
+  tree.erase(289);
+  tree.erase(261);
+  tree.erase(26);
+  tree.erase(461);
+  tree.erase(279);
+  tree.erase(245);
+  tree.erase(478);
+  tree.erase(403);
+  tree.erase(45);
+  tree.erase(359);
+  tree.erase(327);
+  tree.erase(393);
+  tree.erase(373);
+  tree.erase(304);
+  tree.erase(83);
+  tree.erase(160);
+  tree.erase(198);
+  tree.erase(103);
+  tree.erase(367);
+  tree.erase(76);
+  tree.erase(73);
+  tree.erase(167);
+  tree.erase(291);
+  tree.erase(215);
+  tree.erase(219);
+  tree.erase(119);
+  tree.erase(456);
+  tree.erase(197);
+  tree.erase(477);
+  tree.erase(222);
+  tree.erase(174);
+  tree.erase(451);
+  tree.erase(214);
+  tree.erase(112);
+  tree.erase(464);
+  tree.erase(262);
+  tree.erase(47);
+  tree.erase(347);
+  tree.erase(111);
+  tree.erase(148);
+  tree.erase(308);
+  tree.erase(340);
+  tree.erase(100);
+  tree.erase(130);
+  tree.erase(323);
+  tree.erase(312);
+  tree.erase(292);
+  tree.erase(35);
+  tree.erase(306);
+  tree.erase(58);
+  tree.erase(353);
+  tree.erase(452);
+  tree.erase(91);
+  tree.erase(319);
+  tree.erase(330);
+  tree.erase(473);
+  tree.erase(488);
+  tree.erase(134);
+  tree.erase(315);
+  tree.erase(253);
+  tree.erase(374);
+  tree.erase(384);
+  tree.erase(95);
+  tree.erase(370);
+  tree.erase(13);
+  tree.erase(183);
+  tree.erase(136);
+  tree.erase(313);
+  tree.erase(307);
+  tree.erase(239);
+  tree.erase(258);
+  tree.erase(405);
+  tree.erase(56);
+  tree.erase(228);
+  tree.erase(455);
+  tree.erase(317);
+  tree.erase(497);
+  tree.erase(102);
+  tree.erase(117);
+  tree.erase(68);
+  tree.erase(234);
+  tree.erase(51);
+  tree.erase(107);
+  tree.erase(349);
+  tree.erase(348);
+  tree.erase(416);
+  tree.erase(88);
+  tree.erase(89);
+  tree.erase(366);
+  tree.erase(109);
+  tree.erase(189);
+  tree.erase(333);
+  tree.erase(3);
+  tree.erase(394);
+  tree.erase(267);
+  tree.erase(269);
+  tree.erase(246);
+  tree.erase(152);
+  tree.erase(173);
+  tree.erase(438);
+  tree.erase(24);
+  tree.erase(15);
+  tree.erase(390);
+  tree.erase(284);
+  tree.erase(360);
+  tree.erase(371);
+  tree.erase(81);
+  tree.erase(65);
+  tree.erase(299);
+  tree.erase(132);
+  tree.erase(98);
+  tree.erase(303);
+  tree.erase(139);
+  tree.erase(453);
+  tree.erase(402);
+  tree.erase(20);
+  tree.erase(54);
+  tree.erase(499);
+  tree.erase(260);
+  tree.erase(285);
+  tree.erase(381);
+  tree.erase(357);
+  tree.erase(248);
+  tree.erase(362);
+  tree.erase(62);
+  tree.erase(203);
+  tree.erase(411);
+  tree.erase(444);
+  tree.erase(388);
+  tree.erase(10);
+  tree.erase(342);
+  tree.erase(229);
+  tree.erase(481);
+  tree.erase(369);
+  tree.erase(378);
+  tree.erase(38);
+  tree.erase(77);
+  tree.erase(415);
+  tree.erase(466);
+  tree.erase(404);
+  tree.erase(90);
+  tree.erase(101);
+  tree.erase(169);
+  tree.erase(435);
+  tree.erase(296);
+  tree.erase(282);
+  tree.erase(63);
+  tree.erase(52);
+  tree.erase(40);
+  tree.erase(231);
+  tree.erase(302);
+  tree.erase(18);
+  tree.erase(383);
+  tree.erase(194);
+  tree.erase(351);
+  tree.erase(254);
+  tree.erase(431);
+  tree.erase(199);
+  tree.erase(80);
+  tree.erase(300);
+  tree.erase(140);
+  tree.erase(324);
+  tree.erase(286);
+  tree.erase(188);
+  tree.erase(386);
+  tree.erase(344);
+  tree.erase(166);
+  tree.erase(4);
+  tree.erase(226);
+  tree.erase(316);
+  tree.erase(158);
+  tree.erase(447);
+  tree.erase(86);
+  tree.erase(398);
+  tree.erase(108);
+  tree.erase(230);
+  tree.erase(310);
+  tree.erase(495);
+  tree.erase(171);
+  tree.erase(380);
+  tree.erase(249);
+  tree.erase(433);
+  tree.erase(16);
+  tree.erase(470);
+  tree.erase(277);
+  tree.erase(21);
+  tree.erase(372);
+  tree.erase(252);
+  tree.erase(424);
+  tree.erase(144);
+  tree.erase(377);
+  tree.erase(59);
+  tree.erase(46);
+  tree.erase(55);
+  tree.erase(429);
+  tree.erase(474);
+  tree.erase(321);
+  tree.erase(399);
+  tree.erase(471);
+  tree.erase(237);
+  tree.erase(442);
+  tree.erase(97);
+  tree.erase(220);
+  tree.erase(445);
+  tree.erase(326);
+  tree.erase(37);
+  tree.erase(336);
+  tree.erase(343);
+  tree.erase(412);
+  tree.erase(409);
+  tree.erase(460);
+  tree.erase(57);
+  tree.erase(168);
+  tree.erase(295);
+  tree.erase(247);
+  tree.erase(482);
+  tree.erase(425);
+  tree.erase(256);
+  tree.erase(96);
+  tree.erase(53);
+  tree.erase(469);
+  tree.erase(162);
+  tree.erase(493);
+  tree.erase(294);
+  tree.erase(177);
+  tree.erase(212);
+  tree.erase(30);
+  tree.erase(5);
+  tree.erase(193);
+  tree.erase(483);
+  tree.erase(124);
+  tree.erase(87);
+  tree.erase(64);
+  tree.erase(490);
+  tree.erase(155);
+  tree.erase(422);
+  tree.erase(191);
+  tree.erase(75);
+  tree.erase(325);
+  tree.erase(1);
+  tree.erase(182);
+  tree.erase(28);
+  tree.erase(364);
+  tree.erase(42);
+  tree.erase(39);
+  tree.erase(376);
+  tree.erase(467);
+  tree.erase(426);
+  tree.erase(205);
+  tree.erase(365);
+  tree.erase(137);
+  tree.erase(297);
+  tree.erase(462);
+  tree.erase(241);
+  tree.erase(123);
+  tree.erase(206);
+  tree.erase(440);
+  tree.erase(216);
+  tree.erase(146);
+  tree.erase(142);
+  tree.erase(72);
+  tree.erase(379);
+  tree.erase(472);
+  tree.erase(305);
+  tree.erase(271);
+  tree.erase(298);
+  tree.erase(232);
+  tree.erase(242);
+  tree.erase(184);
+  tree.erase(138);
+  tree.erase(154);
+  tree.erase(200);
+  tree.erase(71);
+  tree.erase(211);
+  tree.erase(274);
+  tree.erase(263);
+  tree.erase(311);
+  tree.erase(428);
+  tree.erase(331);
+  tree.erase(7);
+  tree.erase(345);
+  tree.erase(185);
+  tree.erase(338);
+  tree.erase(251);
+  tree.erase(417);
+  tree.erase(12);
+  tree.erase(93);
+  tree.erase(204);
+  tree.erase(257);
+  tree.erase(418);
+  tree.erase(314);
 
   return true;
 }
