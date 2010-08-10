@@ -162,11 +162,6 @@ public:
   //! Provided for compatibility with Sparse_Row.
   const Coefficient& get(dimension_type i) const;
 
-  //! Equivalent to p1 = &(get(i)); p2 = &(get(j)); .
-  //! Provided for compatibility with Sparse_Row.
-  void get2(dimension_type i, dimension_type j,
-            const Coefficient*& p1, const Coefficient*& p2) const;
-
   //! Provided for compatibility with Sparse_Row.
   iterator find(dimension_type i);
 

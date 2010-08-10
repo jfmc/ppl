@@ -150,13 +150,6 @@ Dense_Row::get(dimension_type i) const {
   return (*this)[i];
 }
 
-inline void
-Dense_Row::get2(dimension_type i, dimension_type j,
-                const Coefficient*& p1, const Coefficient*& p2) const {
-  p1 = &(get(i));
-  p2 = &(get(j));
-}
-
 inline Dense_Row::iterator
 Dense_Row::find(dimension_type i) {
   return iterator(*this, i);
