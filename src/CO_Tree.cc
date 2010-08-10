@@ -146,11 +146,9 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) 
       else
         ++candidate2;
       tree_iterator candidate1_node(candidate1, *this);
-      if (candidate2 == before_begin() || candidate2 == end()) {
+      if (candidate2 == before_begin() || candidate2 == end())
         // Use candidate1
-        insert_precise(key1, data1, candidate1_node);
-        return iterator(candidate1_node);
-      }
+        return iterator(insert_precise(key1, data1, candidate1_node));
       else {
         tree_iterator candidate2_node(candidate2, *this);
         // Adjacent nodes in an in-order visit of a tree always have different
@@ -161,14 +159,12 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) 
           PPL_ASSERT(candidate1_node.depth() > candidate2_node.depth());
           // candidate1_node is deeper in the tree than candidate2_node, so
           // use candidate1_node.
-          insert_precise(key1, data1, candidate1_node);
-          return iterator(candidate1_node);
+          return iterator(insert_precise(key1, data1, candidate1_node));
         } else {
           PPL_ASSERT(candidate1_node.depth() < candidate2_node.depth());
           // candidate2_node is deeper in the tree than candidate1_node, so
           // use candidate2_node.
-          insert_precise(key1, data1, candidate2_node);
-          return iterator(candidate2_node);
+          return iterator(insert_precise(key1, data1, candidate2_node));
         }
       }
     }
@@ -194,11 +190,10 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
       else
         ++candidate2;
       tree_iterator candidate1_node(candidate1, *this);
-      if (candidate2 == before_begin() || candidate2 == end()) {
+      if (candidate2 == before_begin() || candidate2 == end())
         // Use candidate1
-        insert_precise(key1, Coefficient_zero(), candidate1_node);
-        return iterator(candidate1_node);
-      }
+        return iterator(insert_precise(key1, Coefficient_zero(),
+                                       candidate1_node));
       else {
         tree_iterator candidate2_node(candidate2, *this);
         // Adjacent nodes in an in-order visit of a tree always have different
@@ -209,14 +204,14 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
           PPL_ASSERT(candidate1_node.depth() > candidate2_node.depth());
           // candidate1_node is deeper in the tree than candidate2_node, so
           // use candidate1_node.
-          insert_precise(key1, Coefficient_zero(), candidate1_node);
-          return iterator(candidate1_node);
+          return iterator(insert_precise(key1, Coefficient_zero(),
+                                         candidate1_node));
         } else {
           PPL_ASSERT(candidate1_node.depth() < candidate2_node.depth());
           // candidate2_node is deeper in the tree than candidate1_node, so
           // use candidate2_node.
-          insert_precise(key1, Coefficient_zero(), candidate2_node);
-          return iterator(candidate2_node);
+          return iterator(insert_precise(key1, Coefficient_zero(),
+                                         candidate2_node));
         }
       }
     }
@@ -797,9 +792,9 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
   }
 }
 
-void
+PPL::CO_Tree::tree_iterator
 PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
-                             tree_iterator& itr) {
+                             tree_iterator itr) {
   PPL_ASSERT(key1 != unused_index);
   PPL_ASSERT(!empty());
 
@@ -812,7 +807,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
   if (itr->first == key1) {
     itr->second = data1;
     PPL_ASSERT(OK());
-    return;
+    return itr;
   }
 
   if ((size + 1) / (float) (((dimension_type)1 << max_depth) - 1)
@@ -851,6 +846,8 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
     PPL_ASSERT(itr->first == key1);
   }
   PPL_ASSERT(OK());
+
+  return itr;
 }
 
 void

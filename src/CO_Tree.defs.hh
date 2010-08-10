@@ -182,10 +182,11 @@ private:
   class tree_iterator;
 
   //! Inserts the pair (key1, data1) in the tree.
-  //! \p itr must be the lower bound of \p key in the tree.
-  //! \p itr is modified to point to the inserted element.
-  void insert_precise(dimension_type key1, const data_type& data1,
-                      tree_iterator& itr);
+  //! \p itr must point to the element with key \p key or, if no such element
+  //! exists, it must point to the node that would be his parent.
+  //! The returned iterator points to the inserted element.
+  tree_iterator insert_precise(dimension_type key1, const data_type& data1,
+                               tree_iterator itr);
 
   //! Inserts the pair (key1, data1) in the tree.
   void insert_in_empty_tree(dimension_type key1, const data_type& data1);
