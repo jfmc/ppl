@@ -586,7 +586,7 @@ public:
   dimension_type get_offset() const;
 
   //! Returns the height of the current node in the complete tree.
-  unsigned depth() const;
+  height_t depth() const;
 
 private:
   bool OK() const;

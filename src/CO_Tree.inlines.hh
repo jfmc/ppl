@@ -719,7 +719,7 @@ CO_Tree::tree_iterator::get_offset() const {
   return offset;
 }
 
-inline unsigned
+inline CO_Tree::height_t
 CO_Tree::tree_iterator::depth() const {
   return integer_log2((tree->reserved_size + 1) / offset);
 }
