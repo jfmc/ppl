@@ -31,7 +31,7 @@ namespace Parma_Polyhedra_Library {
 class CO_Tree {
 
 private:
-  typedef dimension_type height_t;
+  typedef unsigned height_t;
 
 public:
 
