@@ -291,8 +291,8 @@ CO_Tree::iterator::iterator(const tree_iterator& itr) {
 
 inline CO_Tree::iterator&
 CO_Tree::iterator::operator=(const tree_iterator& itr) {
-  current_index = &(itr.tree->indexes[itr.index()]);
-  current_data = &(itr.tree->data[itr.index()]);
+  current_index = &(itr.tree.indexes[itr.index()]);
+  current_data = &(itr.tree.data[itr.index()]);
   return *this;
 }
 
@@ -521,23 +521,23 @@ CO_Tree::const_iterator::Const_Member_Access_Helper::operator->() const {
 
 inline
 CO_Tree::tree_iterator::tree_iterator(CO_Tree& tree1)
-  : tree(&tree1) {
-  PPL_ASSERT(tree->reserved_size != 0);
+  : tree(tree1) {
+  PPL_ASSERT(tree.reserved_size != 0);
   get_root();
   PPL_ASSERT(OK());
 }
 
 inline
 CO_Tree::tree_iterator::tree_iterator(const iterator& itr, CO_Tree& tree1)
-  : tree(&tree1) {
-  PPL_ASSERT(tree->reserved_size != 0);
+  : tree(tree1) {
+  PPL_ASSERT(tree.reserved_size != 0);
   *this = itr;
   PPL_ASSERT(OK());
 }
 
 inline CO_Tree::tree_iterator&
 CO_Tree::tree_iterator::operator=(const tree_iterator& itr) {
-  PPL_ASSERT(tree == itr.tree);
+  PPL_ASSERT(&tree == &(itr.tree));
   i = itr.i;
   offset = itr.offset;
   return *this;
@@ -545,9 +545,9 @@ CO_Tree::tree_iterator::operator=(const tree_iterator& itr) {
 
 inline CO_Tree::tree_iterator&
 CO_Tree::tree_iterator::operator=(const iterator& itr) {
-  PPL_ASSERT(itr != tree->before_begin());
-  PPL_ASSERT(itr != tree->end());
-  i = &(itr->second) - tree->data;
+  PPL_ASSERT(itr != tree.before_begin());
+  PPL_ASSERT(itr != tree.end());
+  i = &(itr->second) - tree.data;
   offset = i;
   // This assumes two's complement encoding.
   offset &= -i;
@@ -566,7 +566,7 @@ CO_Tree::tree_iterator::operator!=(const tree_iterator& itr) const {
 
 inline bool
 CO_Tree::tree_iterator::operator==(const iterator& itr) const {
-  return tree->data + i == &(itr->second);
+  return tree.data + i == &(itr->second);
 }
 
 inline bool
@@ -576,7 +576,7 @@ CO_Tree::tree_iterator::operator!=(const iterator& itr) const {
 
 inline void
 CO_Tree::tree_iterator::get_root() {
-  i = tree->reserved_size / 2 + 1;
+  i = tree.reserved_size / 2 + 1;
   offset = i;
   PPL_ASSERT(OK());
 }
@@ -670,8 +670,8 @@ CO_Tree::tree_iterator::get_right_child_value() {
 inline bool
 CO_Tree::tree_iterator::has_parent() const {
   // This is implied by OK(), it is here for reference only.
-  PPL_ASSERT(offset <= (tree->reserved_size / 2 + 1));
-  return offset != (tree->reserved_size / 2 + 1);
+  PPL_ASSERT(offset <= (tree.reserved_size / 2 + 1));
+  return offset != (tree.reserved_size / 2 + 1);
 }
 
 inline bool
@@ -689,24 +689,24 @@ CO_Tree::tree_iterator::is_right_child() const {
 
 inline std::pair<dimension_type&, CO_Tree::data_type&>
 CO_Tree::tree_iterator::operator*() {
-  return std::pair<dimension_type&, data_type&>(tree->indexes[i],
-                                                tree->data[i]);
+  return std::pair<dimension_type&, data_type&>(tree.indexes[i],
+                                                tree.data[i]);
 }
 
 inline std::pair<const dimension_type, const CO_Tree::data_type&>
 CO_Tree::tree_iterator::operator*() const {
-  return std::pair<const dimension_type&, const data_type&>(tree->indexes[i],
-                                                            tree->data[i]);
+  return std::pair<const dimension_type&, const data_type&>(tree.indexes[i],
+                                                            tree.data[i]);
 }
 
 inline CO_Tree::tree_iterator::Member_Access_Helper
 CO_Tree::tree_iterator::operator->() {
-  return Member_Access_Helper(tree->indexes[i], tree->data[i]);
+  return Member_Access_Helper(tree.indexes[i], tree.data[i]);
 }
 
 inline CO_Tree::tree_iterator::Const_Member_Access_Helper
 CO_Tree::tree_iterator::operator->() const {
-  return Const_Member_Access_Helper(tree->indexes[i], tree->data[i]);
+  return Const_Member_Access_Helper(tree.indexes[i], tree.data[i]);
 }
 
 inline dimension_type
@@ -721,7 +721,7 @@ CO_Tree::tree_iterator::get_offset() const {
 
 inline CO_Tree::height_t
 CO_Tree::tree_iterator::depth() const {
-  return integer_log2((tree->reserved_size + 1) / offset);
+  return integer_log2((tree.reserved_size + 1) / offset);
 }
 
 

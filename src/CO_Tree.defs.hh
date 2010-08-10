@@ -575,7 +575,7 @@ public:
   Const_Member_Access_Helper operator->() const;
 
   //! The tree containing the element pointed to by this iterator.
-  CO_Tree* const tree;
+  CO_Tree& tree;
 
   //! Returns the index of the current node in the DFS layout of the complete
   //! tree.

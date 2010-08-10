@@ -1003,7 +1003,7 @@ PPL::CO_Tree::count_used_in_subtree(tree_iterator& itr) {
 
   PPL_ASSERT(root_index > (k - 1));
 
-  const dimension_type* indexes = itr.tree->indexes;
+  const dimension_type* indexes = itr.tree.indexes;
 
   for (dimension_type j = root_index - (k - 1); j <= limit; ++j)
     if (indexes[j] != unused_index)
@@ -1192,7 +1192,7 @@ PPL::CO_Tree
 
 bool
 PPL::CO_Tree::tree_iterator::OK() const {
-  if (i == 0 || i > tree->reserved_size)
+  if (i == 0 || i > tree.reserved_size)
     return false;
 
   dimension_type correct_offset = i;
