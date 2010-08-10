@@ -382,11 +382,18 @@ public:
   bool operator!=(const const_iterator& x) const;
 
 private:
+  bool OK() const;
+
   //! A pointer to the corresponding element of the tree's indexes[] array.
   const dimension_type* current_index;
 
   //! A pointer to the corresponding element of the tree's data[] array.
   const data_type* current_data;
+
+#ifndef NDEBUG
+  //! A pointer to the corresponding tree, used for debug purposes only.
+  const CO_Tree* tree;
+#endif
 };
 
 class CO_Tree::iterator {
@@ -466,11 +473,18 @@ public:
   bool operator!=(const iterator& x) const;
 
 private:
+  bool OK() const;
+
   //! A pointer to the corresponding element of the tree's indexes[] array.
   const dimension_type* current_index;
 
   //! A pointer to the corresponding element of the tree's data[] array.
   data_type* current_data;
+
+#ifndef NDEBUG
+  //! A pointer to the corresponding tree, used for debug purposes only.
+  CO_Tree* tree;
+#endif
 
   friend const_iterator&
     const_iterator::operator=(const iterator&);

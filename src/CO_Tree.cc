@@ -1185,6 +1185,70 @@ PPL::CO_Tree
 }
 
 bool
+PPL::CO_Tree::iterator::OK() const {
+#ifndef NDEBUG
+  if (tree == 0) {
+    if (current_index != 0)
+      return false;
+    if (current_data != 0)
+      return false;
+  } else
+    if (tree->reserved_size == 0) {
+      if (current_index != 1 + (dimension_type*)0)
+        return false;
+      if (current_data != 1 + (data_type*)0)
+        return false;
+    } else {
+      if (current_index < &(tree->indexes[0]))
+        return false;
+      if (current_index > &(tree->indexes[tree->reserved_size + 1]))
+        return false;
+      if (current_data < &(tree->data[0]))
+        return false;
+      if (current_data > &(tree->data[tree->reserved_size + 1]))
+        return false;
+      if (*current_index == unused_index)
+        return false;
+      if (current_index - tree->indexes != current_data - tree->data)
+        return false;
+    }
+#endif
+  return true;
+}
+
+bool
+PPL::CO_Tree::const_iterator::OK() const {
+#ifndef NDEBUG
+  if (tree == 0) {
+    if (current_index != 0)
+      return false;
+    if (current_data != 0)
+      return false;
+  } else
+    if (tree->reserved_size == 0) {
+      if (current_index != 1 + (dimension_type*)0)
+        return false;
+      if (current_data != 1 + (data_type*)0)
+        return false;
+    } else {
+      if (current_index < &(tree->indexes[0]))
+        return false;
+      if (current_index > &(tree->indexes[tree->reserved_size + 1]))
+        return false;
+      if (current_data < &(tree->data[0]))
+        return false;
+      if (current_data > &(tree->data[tree->reserved_size + 1]))
+        return false;
+      if (*current_index == unused_index)
+        return false;
+      if (current_index - tree->indexes != current_data - tree->data)
+        return false;
+    }
+#endif
+  return true;
+}
+
+bool
 PPL::CO_Tree::tree_iterator::OK() const {
   if (i == 0 || i > tree.reserved_size)
     return false;
