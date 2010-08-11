@@ -40,34 +40,34 @@ Unlimited_Sparse_Row
       g(i->second, i->second);
   } else {
     iterator i = begin();
-    iterator i_end = end();
+    // This is a const reference to an internal iterator, that is kept valid.
+    // If we just stored a copy, that would be invalidated by the calls to
+    // reset().
+    const iterator& i_end = end();
     const_iterator j = y.begin();
     const_iterator j_end = y.end();
     while (i != i_end && j != j_end)
       if (i->first == j->first) {
         g(i->second, j->second);
-        if (i->second == 0) {
+        if (i->second == 0)
           i = reset(i);
-          i_end = end();
-        } else
+        else
           ++i;
         ++j;
       } else
         if (i->first < j->first) {
           f(i->second);
-          if (i->second == 0) {
+          if (i->second == 0)
             i = reset(i);
-            i_end = end();
-          } else
+          else
             ++i;
         } else
           j = y.lower_bound(j, i->first);
     while (i != i_end) {
       f(i->second);
-      if (i->second == 0) {
+      if (i->second == 0)
         i = reset(i);
-        i_end = end();
-      } else
+      else
         ++i;
     }
   }
@@ -95,30 +95,30 @@ Unlimited_Sparse_Row
       g(i->second, i->second);
   } else {
     iterator i = begin();
-    iterator i_end = end();
+    // This is a const reference to an internal iterator, that is kept valid.
+    // If we just stored a copy, that would be invalidated by the calls to
+    // reset() and find_create().
+    const iterator& i_end = end();
     const_iterator j = y.begin();
     const_iterator j_end = y.end();
     while (i != i_end && j != j_end) {
       if (i->first == j->first) {
         g(i->second, j->second);
-        if (i->second == 0) {
+        if (i->second == 0)
           i = reset(i);
-          i_end = end();
-        } else
+        else
           ++i;
         ++j;
       } else
         if (i->first < j->first) {
           f(i->second);
-          if (i->second == 0) {
+          if (i->second == 0)
             i = reset(i);
-            i_end = end();
-          } else
+          else
             ++i;
         } else {
           PPL_ASSERT(i->first > j->first);
           i = find_create(i, j->first);
-          i_end = end();
           h(i->second, j->second);
           if (i->second == 0)
             i = reset(i);
@@ -130,16 +130,15 @@ Unlimited_Sparse_Row
     PPL_ASSERT(i == i_end || j == j_end);
     while (i != i_end) {
       f(i->second);
-      if (i->second == 0) {
+      if (i->second == 0)
         i = reset(i);
-        i_end = end();
-      } else
+      else
         ++i;
     }
     while (j != j_end) {
-      if (tree.empty()) {
+      if (tree.empty())
         i = find_create(j->first);
-      } else {
+      else {
         --i;
         i = find_create(i, j->first);
       }
