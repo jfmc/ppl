@@ -71,7 +71,7 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
       std::swap(itr_i->second, itr_j->second);
     else {
       // i is in the tree, j isn't
-      Coefficient tmp;
+      PPL_DIRTY_TEMP_COEFFICIENT(tmp);
       std::swap(itr_i->second, tmp);
       tree.erase(itr_i);
       itr_j = tree.insert(itr_j, j, Coefficient_zero());
@@ -80,7 +80,7 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
   else
     if (itr_j->first == j) {
       // j is in the tree, i isn't
-      Coefficient tmp;
+      PPL_DIRTY_TEMP_COEFFICIENT(tmp);
       std::swap(itr_j->second, tmp);
       tree.erase(itr_j);
       itr_i = tree.insert(itr_i, i, Coefficient_zero());
