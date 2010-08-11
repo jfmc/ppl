@@ -105,10 +105,12 @@ CO_Tree::insert(dimension_type key1) {
 inline dimension_type
 CO_Tree::external_memory_in_bytes() const {
   dimension_type size = 0;
-  // Adding the size of data[]
-  size += (reserved_size + 1)*sizeof(data[0]);
-  // Adding the size of indexes[]
-  size += (reserved_size + 2)*sizeof(indexes[0]);
+  if (reserved_size != 0) {
+    // Add the size of data[]
+    size += (reserved_size + 1)*sizeof(data[0]);
+    // Add the size of indexes[]
+    size += (reserved_size + 2)*sizeof(indexes[0]);
+  }
   return size;
 }
 
