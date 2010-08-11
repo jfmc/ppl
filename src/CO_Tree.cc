@@ -240,7 +240,7 @@ PPL::CO_Tree::increase_keys_after(dimension_type key, dimension_type n) {
   while (1) {
     while (indexes[i] == unused_index)
       --i;
-    if (i < key || i == 0)
+    if (indexes[i] < key || i == 0)
       return;
     indexes[i] += n;
     --i;
