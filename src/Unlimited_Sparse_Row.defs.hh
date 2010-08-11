@@ -175,13 +175,39 @@ public:
   */
   const Coefficient& get(dimension_type i) const;
 
-  iterator before_begin();
-  iterator begin();
-  iterator end();
+  //! Returns an iterator that points before the first element.
+  //! This method always returns a reference to the same internal iterator,
+  //! that is updated at each operation that modifies the structure.
+  //! Client code can keep a const reference to that iterator instead of
+  //! keep updating a local iterator.
+  const iterator& before_begin();
 
-  const_iterator before_begin() const;
+  //! Returns an iterator that points before the first element.
+  iterator begin();
+
+  //! Returns an iterator that points after the last element.
+  //! This method always returns a reference to the same internal iterator,
+  //! that is updated at each operation that modifies the structure.
+  //! Client code can keep a const reference to that iterator instead of
+  //! keep updating a local iterator.
+  const iterator& end();
+
+  //! Returns an iterator that points before the first element.
+  //! This method always returns a reference to the same internal iterator,
+  //! that is updated at each operation that modifies the structure.
+  //! Client code can keep a const reference to that iterator instead of
+  //! keep updating a local iterator.
+  const const_iterator& before_begin() const;
+
+  //! Returns an iterator that points before the first element.
   const_iterator begin() const;
-  const_iterator end() const;
+
+  //! Returns an iterator that points after the last element.
+  //! This method always returns a reference to the same internal iterator,
+  //! that is updated at each operation that modifies the structure.
+  //! Client code can keep a const reference to that iterator instead of
+  //! keep updating a local iterator.
+  const const_iterator& end() const;
 
   /*! \brief Executes func on each non-zero element and may execute it on some
              zeros.

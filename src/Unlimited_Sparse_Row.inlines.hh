@@ -109,7 +109,7 @@ Unlimited_Sparse_Row::OK() const {
   return tree.OK();
 }
 
-inline Unlimited_Sparse_Row::iterator
+inline const Unlimited_Sparse_Row::iterator&
 Unlimited_Sparse_Row::before_begin() {
   return tree.before_begin();
 }
@@ -119,12 +119,12 @@ Unlimited_Sparse_Row::begin() {
   return tree.begin();
 }
 
-inline Unlimited_Sparse_Row::iterator
+inline const Unlimited_Sparse_Row::iterator&
 Unlimited_Sparse_Row::end() {
   return tree.end();
 }
 
-inline Unlimited_Sparse_Row::const_iterator
+inline const Unlimited_Sparse_Row::const_iterator&
 Unlimited_Sparse_Row::before_begin() const {
   return tree.before_begin();
 }
@@ -134,7 +134,7 @@ Unlimited_Sparse_Row::begin() const {
   return tree.begin();
 }
 
-inline Unlimited_Sparse_Row::const_iterator
+inline const Unlimited_Sparse_Row::const_iterator&
 Unlimited_Sparse_Row::end() const {
   return tree.end();
 }
