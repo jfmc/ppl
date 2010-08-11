@@ -203,14 +203,9 @@ public:
    * valid and end() states. This is useful for iterating backwards.
    */
   class iterator {
-  public:
+  private:
 
-    typedef std::bidirectional_iterator_tag iterator_category;
-    typedef CO_Tree::value_type value_type;
-    typedef ptrdiff_t difference_type;
-    typedef value_type* pointer;
-    typedef value_type& reference;
-
+    //! An helper class used by operator->().
     class Member_Access_Helper {
 
     public:
@@ -222,6 +217,7 @@ public:
       std::pair<const dimension_type, data_type&> my_pair;
     };
 
+    //! An helper class used by the const version of operator->().
     class Const_Member_Access_Helper {
 
     public:
@@ -233,6 +229,14 @@ public:
     private:
       std::pair<const dimension_type, const data_type&> my_pair;
     };
+
+  public:
+
+    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef CO_Tree::value_type value_type;
+    typedef ptrdiff_t difference_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
 
     //! Constructs an invalid iterator.
     iterator();
@@ -887,8 +891,9 @@ private:
 
 class CO_Tree::tree_iterator {
 
-public:
+private:
 
+  //! An helper class used by operator->().
   class Member_Access_Helper {
 
   public:
@@ -900,6 +905,7 @@ public:
     std::pair<dimension_type&, data_type&> my_pair;
   };
 
+  //! An helper class used by the const version of operator->().
   class Const_Member_Access_Helper {
 
   public:
@@ -911,6 +917,8 @@ public:
   private:
     std::pair<const dimension_type, const data_type&> my_pair;
   };
+
+public:
 
   /**
    * \brief Constructs a tree_iterator pointing at the root node of the
