@@ -900,15 +900,13 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
     bool is_right_brother = itr.is_right_child();
     itr.get_parent();
     if (is_right_brother) {
-      if (itr.get_left_child_value()) {
-        subtree_size += count_used_in_subtree(itr);
-        itr.get_parent();
-      }
+      itr.get_left_child();
+      subtree_size += count_used_in_subtree(itr);
+      itr.get_parent();
     } else {
-      if (itr.get_right_child_value()) {
-        subtree_size += count_used_in_subtree(itr);
-        itr.get_parent();
-      }
+      itr.get_right_child();
+      subtree_size += count_used_in_subtree(itr);
+      itr.get_parent();
     }
     PPL_ASSERT(itr->first != unused_index);
     ++subtree_size;
