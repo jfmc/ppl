@@ -146,7 +146,7 @@ inline CO_Tree::iterator
 CO_Tree::erase(dimension_type key) {
   PPL_ASSERT(key != unused_index);
 
-  if (size == 0)
+  if (empty())
     return end();
 
   tree_iterator itr = go_down_searching_key(tree_iterator(*this), key);
