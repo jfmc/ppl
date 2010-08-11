@@ -778,19 +778,25 @@ CO_Tree::tree_iterator::follow_right_childs() {
 inline void
 CO_Tree::tree_iterator::follow_left_childs_with_value() {
   PPL_ASSERT((*this)->first != unused_index);
-  while (!is_leaf() && (*this)->first != unused_index)
-    get_left_child();
-  if ((*this)->first == unused_index)
-    get_parent();
+  dimension_type* p = tree.indexes;
+  p += i;
+  p -= (offset - 1);
+  while (*p == unused_index)
+    ++p;
+  i = p - tree.indexes;
+  offset = i & -i;
 }
 
 inline void
 CO_Tree::tree_iterator::follow_right_childs_with_value() {
   PPL_ASSERT((*this)->first != unused_index);
-  while (!is_leaf() && (*this)->first != unused_index)
-    get_right_child();
-  if ((*this)->first == unused_index)
-    get_parent();
+  dimension_type* p = tree.indexes;
+  p += i;
+  p += (offset - 1);
+  while (*p == unused_index)
+    --p;
+  i = p - tree.indexes;
+  offset = i & -i;
 }
 
 inline bool
