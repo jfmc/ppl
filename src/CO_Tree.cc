@@ -1162,7 +1162,12 @@ PPL::CO_Tree
                                           const data_type& value,
                                           bool add_element) {
   // This is static and with static allocation, to improve performance.
-  static std::pair<dimension_type,dimension_type> stack[2*CHAR_BIT*sizeof(dimension_type)];
+  // CHAR_BIT*sizeof(dimension_type) is the maximum k such that 2^k-1 is a
+  // dimension_type, so it is the maximum tree height.
+  // For each node level, the stack may contain up to two element (one for the
+  // subtree rooted at the right son of a node of that level, and one for the
+  // node itself). An additional element can be at the top of the tree.
+  static std::pair<dimension_type,dimension_type> stack[2*CHAR_BIT*sizeof(dimension_type)+1];
   std::pair<dimension_type,dimension_type>* stack_first_empty = stack;
 
   // A pair (n, i) in the stack means to visit the subtree with root index i
