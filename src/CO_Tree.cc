@@ -432,6 +432,12 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
     ++source_index;
 
   // This is static and with static allocation, to improve performance.
+  // CHAR_BIT*sizeof(dimension_type) is the maximum k such that 2^k-1 is a
+  // dimension_type, so it is the maximum tree height.
+  // For each node level, the stack may contain up to 4 elements: two elements
+  // with operation 0, one element with operation 2 and one element
+  // with operation 3. An additional element with operation 1 can be at the
+  // top of the tree.
   static std::pair<dimension_type,char> stack[5*CHAR_BIT*sizeof(dimension_type)];
   dimension_type stack_first_empty = 0;
 
@@ -442,10 +448,10 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
   //   operation is 1.
   // * Go to the right child, then visit the current tree (with size n), if
   //   operation is 2.
-  // * Visit the current tree (with size n), if operation is 4.
+  // * Visit the current tree (with size n), if operation is 3.
 
   stack[0].first = tree.size;
-  stack[0].second = 4;
+  stack[0].second = 3;
   ++stack_first_empty;
 
   while (stack_first_empty != 0) {
@@ -470,7 +476,7 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
       root.get_right_child();
       break;
 #ifndef NDEBUG
-    case 4:
+    case 3:
       break;
 
     default:
@@ -501,7 +507,7 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
         const dimension_type half = (top_n + 1) / 2;
         stack[stack_first_empty - 1].second = 0;
         stack[stack_first_empty    ] = std::make_pair(top_n - half, 2);
-        stack[stack_first_empty + 1] = std::make_pair(1, 4);
+        stack[stack_first_empty + 1] = std::make_pair(1, 3);
         stack[stack_first_empty + 2].second = 0;
         stack[stack_first_empty + 3] = std::make_pair(half - 1, 1);
         stack_first_empty += 4;
