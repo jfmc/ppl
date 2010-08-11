@@ -112,8 +112,7 @@ PPL::Unlimited_Sparse_Row::normalize() {
     }
   }
   // Divide the coefficients by the GCD.
-  for (iterator j = begin(), j_end = end();
-       j != j_end; ++j) {
+  for (iterator j = begin(), j_end = end(); j != j_end; ++j) {
     Coefficient& x_j = j->second;
     exact_div_assign(x_j, x_j, gcd);
   }
