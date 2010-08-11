@@ -682,118 +682,117 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
 
   if (indexes[hint] == key)
     return hint;
-  else {
-    dimension_type new_hint;
-    dimension_type offset = 1;
 
-    if (indexes[hint] > key) {
-      // The searched element is before `hint'.
+  dimension_type new_hint;
+  dimension_type offset = 1;
 
-      while (1) {
+  if (indexes[hint] > key) {
+    // The searched element is before `hint'.
 
-        if (hint <= offset) {
-          // The searched element is in (0,hint).
-          new_hint = hint;
-          hint = 1;
-          // The searched element is in [hint,new_hint).
-          while (indexes[hint] == unused_index)
-            ++hint;
-          if (indexes[hint] >= key)
-            return hint;
-          // The searched element is in (hint,new_hint) and both indexes point
-          // to valid elements.
+    while (1) {
+
+      if (hint <= offset) {
+        // The searched element is in (0,hint).
+        new_hint = hint;
+        hint = 1;
+        // The searched element is in [hint,new_hint).
+        while (indexes[hint] == unused_index)
+          ++hint;
+        if (indexes[hint] >= key)
+          return hint;
+        // The searched element is in (hint,new_hint) and both indexes point
+        // to valid elements.
+        break;
+      } else
+        new_hint = hint - offset;
+
+      PPL_ASSERT(new_hint > 0);
+      PPL_ASSERT(new_hint <= reserved_size);
+
+      // Find the element at `new_hint' (or the first after it).
+      while (indexes[new_hint] == unused_index)
+        ++new_hint;
+
+      PPL_ASSERT(new_hint <= hint);
+
+      if (indexes[new_hint] == key)
+        return new_hint;
+      else
+        if (indexes[new_hint] < key) {
+          // The searched element is in (new_hint,hint)
+          std::swap(hint, new_hint);
+          // The searched element is now in (hint,new_hint).
           break;
-        } else
-          new_hint = hint - offset;
+        }
 
-        PPL_ASSERT(new_hint > 0);
-        PPL_ASSERT(new_hint <= reserved_size);
+      hint = new_hint;
+      offset *= 2;
+    }
 
-        // Find the element at `new_hint' (or the first after it).
-        while (indexes[new_hint] == unused_index)
-          ++new_hint;
+  } else {
+    // The searched element is after `hint'.
+    while (1) {
 
-        PPL_ASSERT(new_hint <= hint);
-
-        if (indexes[new_hint] == key)
-          return new_hint;
-        else
-          if (indexes[new_hint] < key) {
-            // The searched element is in (new_hint,hint)
-            std::swap(hint, new_hint);
-            // The searched element is now in (hint,new_hint).
-            break;
-          }
-
-        hint = new_hint;
-        offset *= 2;
-      }
-
-    } else {
-      // The searched element is after `hint'.
-      while (1) {
-
-        if (hint + offset > reserved_size) {
-          // The searched element is in (hint,reserved_size+1).
-          new_hint = reserved_size;
-          // The searched element is in (hint,new_hint].
-          while (indexes[new_hint] == unused_index)
-            --new_hint;
-          if (indexes[new_hint] <= key)
-            return new_hint;
-          // The searched element is in (hint,new_hint) and both indexes point
-          // to valid elements.
-          break;
-        } else
-          new_hint = hint + offset;
-
-        PPL_ASSERT(new_hint > 0);
-        PPL_ASSERT(new_hint <= reserved_size);
-
-        // Find the element at `new_hint' (or the first after it).
+      if (hint + offset > reserved_size) {
+        // The searched element is in (hint,reserved_size+1).
+        new_hint = reserved_size;
+        // The searched element is in (hint,new_hint].
         while (indexes[new_hint] == unused_index)
           --new_hint;
-
-        PPL_ASSERT(hint <= new_hint);
-
-        if (indexes[new_hint] == key)
+        if (indexes[new_hint] <= key)
           return new_hint;
-        else
-          if (indexes[new_hint] > key)
-            // The searched element is in (hint,new_hint).
-            break;
+        // The searched element is in (hint,new_hint) and both indexes point
+        // to valid elements.
+        break;
+      } else
+        new_hint = hint + offset;
 
-        hint = new_hint;
-        offset *= 2;
-      }
+      PPL_ASSERT(new_hint > 0);
+      PPL_ASSERT(new_hint <= reserved_size);
+
+      // Find the element at `new_hint' (or the first after it).
+      while (indexes[new_hint] == unused_index)
+        --new_hint;
+
+      PPL_ASSERT(hint <= new_hint);
+
+      if (indexes[new_hint] == key)
+        return new_hint;
+      else
+        if (indexes[new_hint] > key)
+          // The searched element is in (hint,new_hint).
+          break;
+
+      hint = new_hint;
+      offset *= 2;
     }
-    // The searched element is in (hint,new_hint).
-    PPL_ASSERT(hint > 0);
-    PPL_ASSERT(hint <= new_hint);
-    PPL_ASSERT(new_hint <= reserved_size);
-    PPL_ASSERT(indexes[hint] != unused_index);
-    PPL_ASSERT(indexes[new_hint] != unused_index);
-
-    if (hint == new_hint)
-      return hint;
-
-    ++hint;
-    while (indexes[hint] == unused_index)
-      ++hint;
-
-    if (hint == new_hint)
-      return hint;
-
-    --new_hint;
-    while (indexes[new_hint] == unused_index)
-      --new_hint;
-
-    PPL_ASSERT(hint <= new_hint);
-    PPL_ASSERT(indexes[hint] != unused_index);
-    PPL_ASSERT(indexes[new_hint] != unused_index);
-
-    return bisect_in(hint, new_hint, key);
   }
+  // The searched element is in (hint,new_hint).
+  PPL_ASSERT(hint > 0);
+  PPL_ASSERT(hint <= new_hint);
+  PPL_ASSERT(new_hint <= reserved_size);
+  PPL_ASSERT(indexes[hint] != unused_index);
+  PPL_ASSERT(indexes[new_hint] != unused_index);
+
+  if (hint == new_hint)
+    return hint;
+
+  ++hint;
+  while (indexes[hint] == unused_index)
+    ++hint;
+
+  if (hint == new_hint)
+    return hint;
+
+  --new_hint;
+  while (indexes[new_hint] == unused_index)
+    --new_hint;
+
+  PPL_ASSERT(hint <= new_hint);
+  PPL_ASSERT(indexes[hint] != unused_index);
+  PPL_ASSERT(indexes[new_hint] != unused_index);
+
+  return bisect_in(hint, new_hint, key);
 }
 
 PPL::CO_Tree::tree_iterator
