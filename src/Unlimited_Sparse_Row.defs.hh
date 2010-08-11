@@ -175,8 +175,11 @@ public:
   */
   const Coefficient& get(dimension_type i) const;
 
+  iterator before_begin();
   iterator begin();
   iterator end();
+
+  const_iterator before_begin() const;
   const_iterator begin() const;
   const_iterator end() const;
 
