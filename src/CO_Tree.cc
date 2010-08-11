@@ -965,13 +965,25 @@ PPL::CO_Tree::erase(tree_iterator itr) {
   while (1) {
     dimension_type& current_key  = itr->first;
     data_type&      current_data = itr->second;
-    if (itr.get_right_child_value()) {
-      itr.follow_left_childs_with_value();
-    } else
-      if (itr.get_left_child_value()) {
-        itr.follow_right_childs_with_value();
-      } else
+    if (itr.is_leaf())
+      break;
+    itr.get_left_child();
+    if (itr->first != unused_index)
+      // The left child has a value.
+      itr.follow_right_childs_with_value();
+    else {
+      // The left child hasn't a value, try the right child.
+      itr.get_parent();
+      itr.get_right_child();
+      if (itr->first != unused_index)
+        // The right child has a value.
+        itr.follow_left_childs_with_value();
+      else {
+        // The right child hasn't a value, too.
+        itr.get_parent();
         break;
+      }
+    }
     std::swap(current_key, itr->first);
     move_data_element(current_data, itr->second);
   }
