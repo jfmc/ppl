@@ -46,14 +46,8 @@ public:
   class iterator;
 
   class const_iterator {
-  public:
-
-    typedef std::bidirectional_iterator_tag iterator_category;
-    typedef const CO_Tree::value_type value_type;
-    typedef ptrdiff_t difference_type;
-    typedef value_type* pointer;
-    typedef value_type& reference;
-
+  private:
+    //! This is an helper class used by operator->().
     class Const_Member_Access_Helper {
 
     public:
@@ -65,6 +59,14 @@ public:
     private:
       std::pair<const dimension_type, const data_type&> my_pair;
     };
+
+  public:
+
+    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef const CO_Tree::value_type value_type;
+    typedef ptrdiff_t difference_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
 
     //! Constructs an invalid const_iterator.
     explicit const_iterator();
