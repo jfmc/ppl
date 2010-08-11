@@ -167,9 +167,9 @@ CO_Tree::erase(dimension_type key) {
   return erase(itr);
 }
 
-inline CO_Tree::iterator
+inline const CO_Tree::iterator&
 CO_Tree::before_begin() {
-  return iterator(*this, 0);
+  return cached_before_begin;
 }
 
 inline CO_Tree::iterator
@@ -177,14 +177,14 @@ CO_Tree::begin() {
   return iterator(*this);
 }
 
-inline CO_Tree::iterator
+inline const CO_Tree::iterator&
 CO_Tree::end() {
-  return iterator(*this, reserved_size + 1);
+  return cached_end;
 }
 
-inline CO_Tree::const_iterator
+inline const CO_Tree::const_iterator&
 CO_Tree::before_begin() const {
-  return const_iterator(*this, 0);
+  return cached_const_before_begin;
 }
 
 inline CO_Tree::const_iterator
@@ -192,9 +192,9 @@ CO_Tree::begin() const {
   return const_iterator(*this);
 }
 
-inline CO_Tree::const_iterator
+inline const CO_Tree::const_iterator&
 CO_Tree::end() const {
-  return const_iterator(*this, reserved_size + 1);
+  return cached_const_end;
 }
 
 inline CO_Tree::iterator
@@ -270,6 +270,15 @@ CO_Tree::rebuild_smaller_tree() {
 }
 
 inline void
+CO_Tree::refresh_cached_iterators() {
+
+  cached_before_begin = iterator(*this, 0);
+  cached_end = iterator(*this, reserved_size + 1);
+  cached_const_before_begin = const_iterator(*this, 0);
+  cached_const_end = const_iterator(*this, reserved_size + 1);
+}
+
+inline void
 CO_Tree::swap(CO_Tree& x) {
 
   std::swap(max_depth, x.max_depth);
@@ -277,6 +286,10 @@ CO_Tree::swap(CO_Tree& x) {
   std::swap(data, x.data);
   std::swap(reserved_size, x.reserved_size);
   std::swap(size, x.size);
+  // Cached iterators have been invalidated by the swap, they must be
+  // refreshed here.
+  refresh_cached_iterators();
+  x.refresh_cached_iterators();
   PPL_ASSERT(structure_OK());
   PPL_ASSERT(x.structure_OK());
 }

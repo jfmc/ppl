@@ -270,22 +270,38 @@ public:
   void swap(CO_Tree& x);
 
   //! Returns an iterator that points before the first element.
-  iterator before_begin();
+  //! This method always returns a reference to the same internal iterator,
+  //! that is updated at each operation that modifies the structure.
+  //! Client code can keep a const reference to that iterator instead of
+  //! keep updating a local iterator.
+  const iterator& before_begin();
 
   //! Returns an iterator that points before the first element.
   iterator begin();
 
   //! Returns an iterator that points after the last element.
-  iterator end();
+  //! This method always returns a reference to the same internal iterator,
+  //! that is updated at each operation that modifies the structure.
+  //! Client code can keep a const reference to that iterator instead of
+  //! keep updating a local iterator.
+  const iterator& end();
 
   //! Returns an iterator that points before the first element.
-  const_iterator before_begin() const;
+  //! This method always returns a reference to the same internal iterator,
+  //! that is updated at each operation that modifies the structure.
+  //! Client code can keep a const reference to that iterator instead of
+  //! keep updating a local iterator.
+  const const_iterator& before_begin() const;
 
   //! Returns an iterator that points before the first element.
   const_iterator begin() const;
 
   //! Returns an iterator that points after the last element.
-  const_iterator end() const;
+  //! This method always returns a reference to the same internal iterator,
+  //! that is updated at each operation that modifies the structure.
+  //! Client code can keep a const reference to that iterator instead of
+  //! keep updating a local iterator.
+  const const_iterator& end() const;
 
   //! Erases from the tree the element pointed to by \p itr .
   //! \p itr is invalidated.
@@ -399,6 +415,10 @@ private:
   //! become less than min_density.
   void rebuild_smaller_tree();
 
+  //! Re-initializes the cached iterators. This method is called internally
+  //! when needed.
+  void refresh_cached_iterators();
+
   //! Rebalances the tree after an insertions or a deletion.
   //! \p itr points to the inserted (or deleted) node.
   //! For insertions, it adds the pair (key, value).
@@ -472,6 +492,19 @@ private:
   //! An index used as a marker for unused nodes in the tree.
   //! This must not be used as a key.
   static const dimension_type unused_index = -(dimension_type)1;
+
+  //! This iterator is returned by before_begin(), and it is updated when
+  //! needed, to keep it valid.
+  iterator cached_before_begin;
+  //! This iterator is returned by end(), and it is updated when
+  //! needed, to keep it valid.
+  iterator cached_end;
+  //! This iterator is returned by the const version of before_begin(), and it
+  //! is updated when needed, to keep it valid.
+  const_iterator cached_const_before_begin;
+  //! This iterator is returned by the const version of end(), and it
+  //! is updated when needed, to keep it valid.
+  const_iterator cached_const_end;
 
   //! The depth of the leaves in the static tree.
   height_t max_depth;

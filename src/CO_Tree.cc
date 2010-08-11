@@ -279,23 +279,24 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
     size = 0;
     reserved_size = 0;
     max_depth = 0;
-    return;
+  } else {
+    max_depth = integer_log2(reserved_size1) + 1;
+
+    size = 0;
+    reserved_size = ((dimension_type)1 << max_depth) - 1;
+    indexes = new dimension_type[reserved_size + 2];
+    data = static_cast<data_type*>(operator new(sizeof(data_type)
+                                                * (reserved_size + 1)));
+    // Mark all pairs as unused.
+    for (dimension_type i = 1; i <= reserved_size; ++i)
+      indexes[i] = unused_index;
+
+    // These are used as markers by iterators.
+    indexes[0] = 0;
+    indexes[reserved_size + 1] = 0;
   }
 
-  max_depth = integer_log2(reserved_size1) + 1;
-
-  size = 0;
-  reserved_size = ((dimension_type)1 << max_depth) - 1;
-  indexes = new dimension_type[reserved_size + 2];
-  data = static_cast<data_type*>(operator new(sizeof(data_type)
-                                              * (reserved_size + 1)));
-  // Mark all pairs as unused.
-  for (dimension_type i = 1; i <= reserved_size; ++i)
-    indexes[i] = unused_index;
-
-  // These are used as markers by iterators.
-  indexes[0] = 0;
-  indexes[reserved_size + 1] = 0;
+  refresh_cached_iterators();
 
   PPL_ASSERT(structure_OK());
 }
@@ -392,6 +393,8 @@ PPL::CO_Tree::rebuild_bigger_tree() {
     data = new_data;
     reserved_size = new_reserved_size;
     ++max_depth;
+
+    refresh_cached_iterators();
   }
   PPL_ASSERT(structure_OK());
 }
@@ -602,6 +605,15 @@ PPL::CO_Tree::structure_OK() const {
       }
     }
   }
+
+  if (const_iterator(cached_before_begin) != const_iterator(*this, 0))
+    return false;
+  if (const_iterator(cached_end) != const_iterator(*this, reserved_size + 1))
+    return false;
+  if (cached_const_before_begin != const_iterator(*this, 0))
+    return false;
+  if (cached_const_end != const_iterator(*this, reserved_size + 1))
+    return false;
 
   return true;
 }
@@ -1206,9 +1218,9 @@ PPL::CO_Tree::iterator::OK() const {
       return false;
   } else
     if (tree->reserved_size == 0) {
-      if (current_index != 1 + (dimension_type*)0)
-        return false;
-      if (current_data != 1 + (data_type*)0)
+      if (!((current_index == 0 && current_data == 0)
+            || (current_index == 1 + (dimension_type*)0
+                && current_data == 1 + (data_type*)0)))
         return false;
     } else {
       if (current_index < &(tree->indexes[0]))
@@ -1238,9 +1250,9 @@ PPL::CO_Tree::const_iterator::OK() const {
       return false;
   } else
     if (tree->reserved_size == 0) {
-      if (current_index != 1 + (dimension_type*)0)
-        return false;
-      if (current_data != 1 + (data_type*)0)
+      if (!((current_index == 0 && current_data == 0)
+            || (current_index == 1 + (dimension_type*)0
+                && current_data == 1 + (data_type*)0)))
         return false;
     } else {
       if (current_index < &(tree->indexes[0]))
