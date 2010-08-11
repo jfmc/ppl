@@ -340,6 +340,17 @@ CO_Tree::iterator::iterator(const tree_iterator& itr) {
   PPL_ASSERT(OK());
 }
 
+inline void
+CO_Tree::iterator::swap(iterator& itr) {
+  std::swap(current_data, itr.current_data);
+  std::swap(current_index, itr.current_index);
+#ifndef NDEBUG
+  std::swap(tree, itr.tree);
+#endif
+  PPL_ASSERT(OK());
+  PPL_ASSERT(itr.OK());
+}
+
 inline CO_Tree::iterator&
 CO_Tree::iterator::operator=(const tree_iterator& itr) {
   current_index = &(itr.tree.indexes[itr.index()]);
@@ -535,6 +546,17 @@ CO_Tree::const_iterator
 ::const_iterator(const iterator& itr2) {
   (*this) = itr2;
   PPL_ASSERT(OK());
+}
+
+inline void
+CO_Tree::const_iterator::swap(const_iterator& itr) {
+  std::swap(current_data, itr.current_data);
+  std::swap(current_index, itr.current_index);
+#ifndef NDEBUG
+  std::swap(tree, itr.tree);
+#endif
+  PPL_ASSERT(OK());
+  PPL_ASSERT(itr.OK());
 }
 
 inline std::pair<const dimension_type, const CO_Tree::data_type&>
@@ -878,5 +900,29 @@ CO_Tree::tree_iterator::Const_Member_Access_Helper::operator->() const {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+
+namespace std {
+
+inline void
+swap(Parma_Polyhedra_Library::CO_Tree& x,
+     Parma_Polyhedra_Library::CO_Tree& y) {
+  x.swap(y);
+}
+
+inline void
+swap(Parma_Polyhedra_Library::CO_Tree::const_iterator& x,
+     Parma_Polyhedra_Library::CO_Tree::const_iterator& y) {
+  x.swap(y);
+}
+
+inline void
+swap(Parma_Polyhedra_Library::CO_Tree::iterator& x,
+     Parma_Polyhedra_Library::CO_Tree::iterator& y) {
+  x.swap(y);
+}
+
+} // namespace std
+
 
 #endif // !defined(PPL_CO_Tree_inlines_hh)
