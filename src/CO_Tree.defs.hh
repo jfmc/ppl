@@ -319,12 +319,14 @@ public:
   //! If the element is found, an iterator pointing to that element is
   //! returned; otherwise, the returned iterator refers to the immediately
   //! preceding or succeeding value.
+  //! If the tree is empty, end() is returned.
   iterator bisect(dimension_type key);
 
   //! Searches an element with key \p key using bisection.
   //! If the element is found, an iterator pointing to that element is
   //! returned; otherwise, the returned iterator refers to the immediately
   //! preceding or succeeding value.
+  //! If the tree is empty, end() is returned.
   const_iterator bisect(dimension_type key) const;
 
   //! Searches an element with key \p key in [first, last] using bisection
