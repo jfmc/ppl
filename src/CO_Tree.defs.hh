@@ -604,16 +604,6 @@ public:
   //! Follows right childs with a value, until it arrives at a leaf.
   void follow_right_childs_with_value();
 
-  //! Makes the iterator point to the left child of the current node.
-  //! Returns false if there is no left child or the left child is unused
-  //! (and *this is unchanged).
-  bool get_left_child_value();
-
-  //! Makes the iterator point to the right child of the current node.
-  //! Returns false if there is no right child or the right child is unused
-  //! (and *this is unchanged).
-  bool get_right_child_value();
-
   //! Returns true if the pointed node is the root node.
   bool is_root() const;
 

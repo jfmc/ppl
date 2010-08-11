@@ -794,30 +794,6 @@ CO_Tree::tree_iterator::follow_right_childs_with_value() {
 }
 
 inline bool
-CO_Tree::tree_iterator::get_left_child_value() {
-  if (is_leaf())
-    return false;
-  get_left_child();
-  if ((*this)->first == unused_index) {
-    get_parent();
-    return false;
-  }
-  return true;
-}
-
-inline bool
-CO_Tree::tree_iterator::get_right_child_value() {
-  if (is_leaf())
-    return false;
-  get_right_child();
-  if ((*this)->first == unused_index) {
-    get_parent();
-    return false;
-  }
-  return true;
-}
-
-inline bool
 CO_Tree::tree_iterator::is_root() const {
   // This is implied by OK(), it is here for reference only.
   PPL_ASSERT(offset <= (tree.reserved_size / 2 + 1));
