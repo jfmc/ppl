@@ -63,12 +63,8 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
   if (tree.empty())
     return;
 
-  iterator first = begin();
-  iterator last = end();
-  --last;
-
-  iterator itr_i = tree.bisect_in(first, last, i);
-  iterator itr_j = tree.bisect_in(first, last, j);
+  iterator itr_i = tree.bisect(i);
+  iterator itr_j = tree.bisect(j);
   if (itr_i->first == i)
     if (itr_j->first == j)
       // Both elements are in the tree
@@ -161,11 +157,7 @@ Unlimited_Sparse_Row::find(dimension_type i) {
   if (tree.empty())
     return end();
 
-  iterator first = begin();
-  iterator last = end();
-  --last;
-
-  iterator itr = tree.bisect_in(first, last, i);
+  iterator itr = tree.bisect(i);
 
   if (itr->first != i)
     return end();
@@ -188,11 +180,7 @@ Unlimited_Sparse_Row::find(dimension_type i) const {
   if (tree.empty())
     return end();
 
-  const_iterator first = begin();
-  const_iterator last = end();
-  --last;
-
-  const_iterator itr = tree.bisect_in(first, last, i);
+  const_iterator itr = tree.bisect(i);
 
   if (itr->first != i)
     return end();
@@ -214,11 +202,7 @@ Unlimited_Sparse_Row::lower_bound(dimension_type i) {
   if (tree.empty())
     return end();
 
-  iterator first = begin();
-  iterator last = end();
-  --last;
-
-  iterator itr = tree.bisect_in(first, last, i);
+  iterator itr = tree.bisect(i);
 
   if (itr->first < i)
     ++itr;
@@ -244,11 +228,8 @@ inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::lower_bound(dimension_type i) const {
   if (tree.empty())
     return end();
-  const_iterator first = begin();
-  const_iterator last = end();
-  --last;
 
-  const_iterator itr = tree.bisect_in(first, last, i);
+  const_iterator itr = tree.bisect(i);
   if (itr->first < i)
     ++itr;
   PPL_ASSERT(itr == end() || itr->first >= i);
@@ -324,10 +305,7 @@ Unlimited_Sparse_Row::assign(dimension_type i, const Coefficient& x) {
   if (tree.empty())
     assign_if_nonzero(i, x);
   else {
-    iterator last = end();
-    --last;
-
-    iterator itr = tree.bisect_in(tree.begin(), last, i);
+    iterator itr = tree.bisect(i);
     if (itr->first == i)
       itr->second = x;
     else
