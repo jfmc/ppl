@@ -856,9 +856,13 @@ PPL::CO_Tree::tree_iterator
 PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
                         const data_type& value) {
 #ifndef NDEBUG
-  if (itr->first != unused_index) {
-    PPL_ASSERT(!itr.get_left_child_value());
-    PPL_ASSERT(!itr.get_right_child_value());
+  if (itr->first != unused_index && !itr.is_leaf()) {
+    tree_iterator itr_left = itr;
+    itr_left.get_left_child();
+    PPL_ASSERT(itr_left->first == unused_index);
+    tree_iterator itr_right = itr;
+    itr_right.get_right_child();
+    PPL_ASSERT(itr_right->first == unused_index);
   }
 #endif
   height_t itr_depth_minus_1 = itr.depth() - 1;
