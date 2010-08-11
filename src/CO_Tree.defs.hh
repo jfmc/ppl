@@ -241,7 +241,8 @@ public:
     //! Constructs an invalid iterator.
     iterator();
 
-    //! Constructs an iterator pointing to the root node.
+    //! Constructs an iterator pointing to first node with a value in the
+    //! tree.
     explicit iterator(CO_Tree& tree);
 
     //! Constructs an iterator pointing to the i-th node.
@@ -268,10 +269,10 @@ public:
     //! Assigns \p itr to *this .
     iterator& operator=(const tree_iterator& itr);
 
-    //! Navigates to the next node with a value.
+    //! Navigates to the next element in the tree.
     iterator& operator++();
 
-    //! Navigates to the previous node with a value.
+    //! Navigates to the previous element in the tree.
     iterator& operator--();
 
     //! Returns the value_type of the current node.
