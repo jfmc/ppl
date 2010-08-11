@@ -350,7 +350,8 @@ public:
   //! distance between the searched position and \p hint is O(1).
   //! If the element is found, the returned iterator points to that element;
   //! otherwise, it points to the immediately preceding or succeeding value.
-  //! \p first and \p last must be indexes of existing values.
+  //! \p hint may even be before_begin() or end(), in such cases it is
+  //! ignored.
   iterator bisect_near(iterator hint, dimension_type key);
 
   //! Searches near \p hint an element with key \p key, using a binary
@@ -360,7 +361,8 @@ public:
   //! If the element is found, the index of that element is returned;
   //! otherwise, the returned index refers to the immediately preceding or
   //! succeeding value.
-  //! \p first and \p last must be indexes of existing values.
+  //! \p hint may even be before_begin() or end(), in such cases it is
+  //! ignored.
   const_iterator bisect_near(const_iterator hint, dimension_type key) const;
 
 private:

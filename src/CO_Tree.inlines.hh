@@ -247,16 +247,16 @@ CO_Tree::bisect_in(const_iterator first, const_iterator last,
 
 inline CO_Tree::iterator
 CO_Tree::bisect_near(iterator hint, dimension_type key) {
-  PPL_ASSERT(hint != before_begin());
-  PPL_ASSERT(hint != end());
+  if (hint == before_begin() || hint == end())
+    return bisect(key);
   dimension_type index = bisect_near(&(hint->second) - data, key);
   return iterator(*this, index);
 }
 
 inline CO_Tree::const_iterator
 CO_Tree::bisect_near(const_iterator hint, dimension_type key) const {
-  PPL_ASSERT(hint != before_begin());
-  PPL_ASSERT(hint != end());
+  if (hint == before_begin() || hint == end())
+    return bisect(key);
   dimension_type index = bisect_near(&(hint->second) - data, key);
   return const_iterator(*this, index);
 }
