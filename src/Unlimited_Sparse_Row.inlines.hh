@@ -268,12 +268,20 @@ inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::reset(iterator first, iterator last) {
   if (first == last)
     return first;
+  PPL_ASSERT(first != before_begin());
+  PPL_ASSERT(last != end());
   --last;
-  const dimension_type i = first->first;
+  PPL_ASSERT(last != before_begin());
   const dimension_type j = last->first;
-  PPL_ASSERT(i <= j);
-  while (first != end() && first->first <= j)
-    first = tree.erase(first);
+  PPL_ASSERT(first->first <= j);
+  // This is a const reference to an internal iterator, that is kept valid.
+  // If we just stored a copy, that would be invalidated by the calls to
+  // reset().
+  const iterator& itr_end = end();
+  // We can't just compare first and last at each iteration, because last will
+  // be invalidated by the first erase.
+  while (first != itr_end && first->first <= j)
+    first = reset(first);
   return first;
 }
 
@@ -285,16 +293,24 @@ Unlimited_Sparse_Row::reset(dimension_type i) {
 inline void
 Unlimited_Sparse_Row::reset(dimension_type i, dimension_type j) {
   iterator itr = lower_bound(i);
+  // This is a const reference to an internal iterator, that is kept valid.
+  // If we just stored a copy, that would be invalidated by the calls to
+  // reset().
+  const iterator& itr_end = end();
 
-  while (itr != end() && itr->first < j)
+  while (itr != itr_end && itr->first < j)
     itr = reset(itr);
 }
 
 inline void
 Unlimited_Sparse_Row::reset_after(dimension_type i) {
   iterator itr = lower_bound(i);
+  // This is a const reference to an internal iterator, that is kept valid.
+  // If we just stored a copy, that would be invalidated by the calls to
+  // reset().
+  const iterator& itr_end = end();
 
-  while (itr != end())
+  while (itr != itr_end)
     itr = reset(itr);
 }
 
