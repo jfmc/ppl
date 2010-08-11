@@ -157,11 +157,9 @@ CO_Tree::erase(dimension_type key) {
       ++result;
     PPL_ASSERT(result == end() || result->first > key);
 #ifndef NDEBUG
-    if (!empty()) {
-      iterator last = end();
-      --last;
-      PPL_ASSERT((result == end()) == (last->first < key));
-    }
+    iterator last = end();
+    --last;
+    PPL_ASSERT((result == end()) == (last->first < key));
 #endif
     return result;
   }
