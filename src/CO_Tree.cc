@@ -505,6 +505,7 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
   size = tree.size;
   tree.size = 0;
   PPL_ASSERT(tree.structure_OK());
+  PPL_ASSERT(structure_OK());
 }
 
 bool
