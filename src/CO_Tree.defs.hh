@@ -33,6 +33,9 @@ class CO_Tree {
 private:
   typedef unsigned height_t;
 
+  PPL_COMPILE_TIME_CHECK(-(height_t)1 >= CHAR_BITS*sizeof(dimension_type),
+                         "height_t is too small to store depths.");
+
   class tree_iterator;
 
 public:
