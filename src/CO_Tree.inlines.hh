@@ -205,6 +205,24 @@ CO_Tree::erase(iterator itr) {
 }
 
 inline CO_Tree::iterator
+CO_Tree::bisect(dimension_type key) {
+  if (empty())
+    return end();
+  iterator last = end();
+  --last;
+  return bisect_in(begin(), last, key);
+}
+
+inline CO_Tree::const_iterator
+CO_Tree::bisect(dimension_type key) const {
+  if (empty())
+    return end();
+  const_iterator last = end();
+  --last;
+  return bisect_in(begin(), last, key);
+}
+
+inline CO_Tree::iterator
 CO_Tree::bisect_in(iterator first, iterator last, dimension_type key) {
   PPL_ASSERT(first != before_begin());
   PPL_ASSERT(first != end());

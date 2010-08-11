@@ -315,6 +315,18 @@ public:
   //! elements with key greater than \p key ).
   iterator erase(iterator itr);
 
+  //! Searches an element with key \p key using bisection.
+  //! If the element is found, an iterator pointing to that element is
+  //! returned; otherwise, the returned iterator refers to the immediately
+  //! preceding or succeeding value.
+  iterator bisect(dimension_type key);
+
+  //! Searches an element with key \p key using bisection.
+  //! If the element is found, an iterator pointing to that element is
+  //! returned; otherwise, the returned iterator refers to the immediately
+  //! preceding or succeeding value.
+  const_iterator bisect(dimension_type key) const;
+
   //! Searches an element with key \p key in [first, last] using bisection
   //! (note that last is included, too!).
   //! If the element is found, an iterator pointing to that element is
