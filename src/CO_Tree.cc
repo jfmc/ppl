@@ -257,13 +257,13 @@ PPL::CO_Tree::increase_keys_after(dimension_type key, dimension_type n) {
   if (empty())
     return;
   dimension_type* p = indexes + reserved_size;
-  while (1) {
-    while (*p == unused_index)
-      --p;
-    if (p == indexes || *p < key)
-      return;
+  while (*p == unused_index)
+    --p;
+  while (p != indexes && *p >= key) {
     *p += n;
     --p;
+    while (*p == unused_index)
+      --p;
   }
   PPL_ASSERT(OK());
 }
