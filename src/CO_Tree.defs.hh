@@ -770,10 +770,12 @@ private:
    * \param last_used points to the leftmost element with a value in the
    *                  subtree.
    */
-  void redistribute_elements_in_subtree_helper(
-    dimension_type root_index, dimension_type subtree_size,
-    dimension_type last_used, dimension_type key, const data_type& value,
-    bool add_element);
+  void redistribute_elements_in_subtree(dimension_type root_index,
+                                        dimension_type subtree_size,
+                                        dimension_type last_used,
+                                        dimension_type key,
+                                        const data_type& value,
+                                        bool add_element);
 
   /**
    * \brief Moves all data in the tree \p tree into *this.

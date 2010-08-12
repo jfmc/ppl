@@ -909,10 +909,10 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
                                             key, value, !deleting);
 
   // Step 2: redistribute the elements, from left to right.
-  redistribute_elements_in_subtree_helper(itr.index(), subtree_size,
-                                          first_unused + 1, key, value,
-                                          first_unused != last_index_in_subtree
-                                                          - subtree_size);
+  redistribute_elements_in_subtree(itr.index(), subtree_size,
+                                   first_unused + 1, key, value,
+                                   first_unused != last_index_in_subtree
+                                                   - subtree_size);
 
   if (!deleting)
     size++;
@@ -996,13 +996,12 @@ PPL::CO_Tree
 }
 
 void
-PPL::CO_Tree
-::redistribute_elements_in_subtree_helper(dimension_type root_index,
-                                          dimension_type subtree_size,
-                                          dimension_type last_used,
-                                          dimension_type key,
-                                          const data_type& value,
-                                          bool add_element) {
+PPL::CO_Tree::redistribute_elements_in_subtree(dimension_type root_index,
+                                               dimension_type subtree_size,
+                                               dimension_type last_used,
+                                               dimension_type key,
+                                               const data_type& value,
+                                               bool add_element) {
   // This is static and with static allocation, to improve performance.
   // CHAR_BIT*sizeof(dimension_type) is the maximum k such that 2^k-1 is a
   // dimension_type, so it is the maximum tree height.
