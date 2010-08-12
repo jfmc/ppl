@@ -859,7 +859,9 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
                                /(max_depth - 1))) {
     if (itr_depth_minus_1 == 0) {
       // TODO: Check if this is correct
-      // We could arrive here because we are using a fake subtree_size.
+      // We may arrive here, because we are using a fake subtree_size (it
+      // isn't the real tree size, because the inserted/deleted element is
+      // already taken into account).
 #ifndef NDEBUG
       dimension_type real_subtree_size = subtree_size;
       if (!deleting)
