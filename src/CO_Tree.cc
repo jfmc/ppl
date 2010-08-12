@@ -897,36 +897,29 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
     PPL_ASSERT(itr.depth() - 1 == itr_depth_minus_1);
   };
 
-  redistribute_elements_in_subtree(itr, subtree_size, deleting, key, value);
+  // Now the subtree to be rebalanced has been chosen.
+  // It is the subtree rooted at itr.
 
-  PPL_ASSERT(OK());
-
-  return itr;
-}
-
-void
-PPL::CO_Tree::redistribute_elements_in_subtree(tree_iterator itr,
-                                               dimension_type n,
-                                               bool deleting,
-                                               dimension_type key,
-                                               const data_type& value) {
   // Step 1: compact elements of this subtree in the rightmost end, from right
   //         to left.
   dimension_type last_index_in_subtree = itr.index() + itr.get_offset() - 1;
 
   dimension_type first_unused
-    = compact_elements_in_the_rightmost_end(last_index_in_subtree, n, key,
-                                            value, !deleting);
+    = compact_elements_in_the_rightmost_end(last_index_in_subtree, subtree_size,
+                                            key, value, !deleting);
 
   // Step 2: redistribute the elements, from left to right.
-  redistribute_elements_in_subtree_helper(itr.index(), n, first_unused + 1,
-                                          key, value,
-                                          first_unused != last_index_in_subtree - n);
+  redistribute_elements_in_subtree_helper(itr.index(), subtree_size,
+                                          first_unused + 1, key, value,
+                                          first_unused != last_index_in_subtree
+                                                          - subtree_size);
 
   if (!deleting)
     size++;
 
-  PPL_ASSERT(structure_OK());
+  PPL_ASSERT(OK());
+
+  return itr;
 }
 
 PPL::dimension_type

@@ -742,18 +742,6 @@ private:
   tree_iterator rebalance(tree_iterator itr, dimension_type key,
                           const data_type& value);
 
-  // TODO: Merge this method with rebalance().
-  //! Redistributes the elements in the subtree rooted at the node
-  //! pointed to by itr. If \p deleting is not \p false, it adds the pair
-  //! (key, value) to the tree.
-  //! \p subtree_size is the number of used elements in the subtree at the end
-  //! of the call.
-  void redistribute_elements_in_subtree(tree_iterator itr,
-                                        dimension_type n,
-                                        bool deleting,
-                                        dimension_type key,
-                                        const data_type& value);
-
   /**
    * \brief Moves all elements of a subtree to the rightmost end.
    *
