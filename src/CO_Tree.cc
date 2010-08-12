@@ -30,8 +30,9 @@ PPL::CO_Tree::CO_Tree(const std::vector<data_type>& v) {
 
   dimension_type n = 0;
 
-  for (dimension_type i = 0; i < v.size(); ++i)
-    if (v[i] != 0)
+  for (std::vector<data_type>::const_iterator i = v.begin(), i_end = v.end();
+       i != i_end; ++i)
+    if (*i != 0)
       ++n;
 
   init(n);
