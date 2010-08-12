@@ -339,219 +339,6 @@ CO_Tree::move_data_element(data_type& to, data_type& from) {
 
 
 inline
-CO_Tree::tree_iterator::tree_iterator(CO_Tree& tree1)
-  : tree(tree1) {
-  PPL_ASSERT(tree.reserved_size != 0);
-  get_root();
-  PPL_ASSERT(OK());
-}
-
-inline
-CO_Tree::tree_iterator::tree_iterator(const iterator& itr, CO_Tree& tree1)
-  : tree(tree1) {
-  PPL_ASSERT(tree.reserved_size != 0);
-  *this = itr;
-  PPL_ASSERT(OK());
-}
-
-inline CO_Tree::tree_iterator&
-CO_Tree::tree_iterator::operator=(const tree_iterator& itr) {
-  PPL_ASSERT(&tree == &(itr.tree));
-  i = itr.i;
-  offset = itr.offset;
-  return *this;
-}
-
-inline CO_Tree::tree_iterator&
-CO_Tree::tree_iterator::operator=(const iterator& itr) {
-  PPL_ASSERT(itr != tree.before_begin());
-  PPL_ASSERT(itr != tree.end());
-  i = &(itr->second) - tree.data;
-  offset = i;
-  // This assumes two's complement encoding.
-  offset &= -i;
-  return *this;
-}
-
-inline bool
-CO_Tree::tree_iterator::operator==(const tree_iterator& itr) const {
-  return i == itr.i;
-}
-
-inline bool
-CO_Tree::tree_iterator::operator!=(const tree_iterator& itr) const {
-  return i != itr.i;
-}
-
-inline bool
-CO_Tree::tree_iterator::operator==(const iterator& itr) const {
-  return tree.data + i == &(itr->second);
-}
-
-inline bool
-CO_Tree::tree_iterator::operator!=(const iterator& itr) const {
-  return !(*this == itr);
-}
-
-inline void
-CO_Tree::tree_iterator::get_root() {
-  i = tree.reserved_size / 2 + 1;
-  offset = i;
-  PPL_ASSERT(OK());
-}
-
-inline void
-CO_Tree::tree_iterator::get_left_child() {
-  PPL_ASSERT(offset != 0);
-  PPL_ASSERT(offset != 1);
-  offset /= 2;
-  i -= offset;
-  PPL_ASSERT(OK());
-}
-
-inline void
-CO_Tree::tree_iterator::get_right_child() {
-  PPL_ASSERT(offset != 0);
-  PPL_ASSERT(offset != 1);
-  offset /= 2;
-  i += offset;
-  PPL_ASSERT(OK());
-}
-
-inline void
-CO_Tree::tree_iterator::get_parent() {
-  PPL_ASSERT(!is_root());
-  PPL_ASSERT(offset != 0);
-  i &= ~offset;
-  offset *= 2;
-  i |= offset;
-  PPL_ASSERT(OK());
-}
-
-inline void
-CO_Tree::tree_iterator::follow_left_childs() {
-  i -= (offset - 1);
-  offset = 1;
-  PPL_ASSERT(is_leaf());
-  PPL_ASSERT(OK());
-}
-
-inline void
-CO_Tree::tree_iterator::follow_right_childs() {
-  i += (offset - 1);
-  offset = 1;
-  PPL_ASSERT(is_leaf());
-  PPL_ASSERT(OK());
-}
-
-inline void
-CO_Tree::tree_iterator::follow_left_childs_with_value() {
-  PPL_ASSERT((*this)->first != unused_index);
-  dimension_type* p = tree.indexes;
-  p += i;
-  p -= (offset - 1);
-  while (*p == unused_index)
-    ++p;
-  i = p - tree.indexes;
-  offset = i & -i;
-}
-
-inline void
-CO_Tree::tree_iterator::follow_right_childs_with_value() {
-  PPL_ASSERT((*this)->first != unused_index);
-  dimension_type* p = tree.indexes;
-  p += i;
-  p += (offset - 1);
-  while (*p == unused_index)
-    --p;
-  i = p - tree.indexes;
-  offset = i & -i;
-}
-
-inline bool
-CO_Tree::tree_iterator::is_root() const {
-  // This is implied by OK(), it is here for reference only.
-  PPL_ASSERT(offset <= (tree.reserved_size / 2 + 1));
-  return offset == (tree.reserved_size / 2 + 1);
-}
-
-inline bool
-CO_Tree::tree_iterator::is_right_child() const {
-  if (is_root())
-    return false;
-  return ((i & 2*offset) != 0);
-}
-
-inline bool
-CO_Tree::tree_iterator::is_leaf() const {
-  return offset == 1;
-}
-
-inline std::pair<dimension_type&, CO_Tree::data_type&>
-CO_Tree::tree_iterator::operator*() {
-  return std::pair<dimension_type&, data_type&>(tree.indexes[i],
-                                                tree.data[i]);
-}
-
-inline std::pair<const dimension_type, const CO_Tree::data_type&>
-CO_Tree::tree_iterator::operator*() const {
-  return std::pair<const dimension_type&, const data_type&>(tree.indexes[i],
-                                                            tree.data[i]);
-}
-
-inline CO_Tree::tree_iterator::Member_Access_Helper
-CO_Tree::tree_iterator::operator->() {
-  return Member_Access_Helper(tree.indexes[i], tree.data[i]);
-}
-
-inline CO_Tree::tree_iterator::Const_Member_Access_Helper
-CO_Tree::tree_iterator::operator->() const {
-  return Const_Member_Access_Helper(tree.indexes[i], tree.data[i]);
-}
-
-inline dimension_type
-CO_Tree::tree_iterator::index() const {
-  return i;
-}
-
-inline dimension_type
-CO_Tree::tree_iterator::get_offset() const {
-  return offset;
-}
-
-inline CO_Tree::height_t
-CO_Tree::tree_iterator::depth() const {
-  return integer_log2((tree.reserved_size + 1) / offset);
-}
-
-
-inline
-CO_Tree::tree_iterator::Member_Access_Helper
-::Member_Access_Helper(dimension_type& key, data_type& data)
-  : my_pair(key, data) {
-}
-
-inline
-std::pair<dimension_type&, CO_Tree::data_type&>*
-CO_Tree::tree_iterator::Member_Access_Helper::operator->() {
-  return &my_pair;
-}
-
-
-inline
-CO_Tree::tree_iterator::Const_Member_Access_Helper
-::Const_Member_Access_Helper(dimension_type key, const data_type& data)
-  : my_pair(key, data) {
-}
-
-inline
-const std::pair<const dimension_type, const CO_Tree::data_type&>*
-CO_Tree::tree_iterator::Const_Member_Access_Helper::operator->() const {
-  return &my_pair;
-}
-
-
-inline
 CO_Tree::const_iterator::const_iterator()
   : current_index(0), current_data(0) {
 #ifndef NDEBUG
@@ -950,6 +737,219 @@ CO_Tree::iterator::Const_Member_Access_Helper
 inline
 const std::pair<const dimension_type, const CO_Tree::data_type&>*
 CO_Tree::iterator::Const_Member_Access_Helper::operator->() const {
+  return &my_pair;
+}
+
+
+inline
+CO_Tree::tree_iterator::tree_iterator(CO_Tree& tree1)
+  : tree(tree1) {
+  PPL_ASSERT(tree.reserved_size != 0);
+  get_root();
+  PPL_ASSERT(OK());
+}
+
+inline
+CO_Tree::tree_iterator::tree_iterator(const iterator& itr, CO_Tree& tree1)
+  : tree(tree1) {
+  PPL_ASSERT(tree.reserved_size != 0);
+  *this = itr;
+  PPL_ASSERT(OK());
+}
+
+inline CO_Tree::tree_iterator&
+CO_Tree::tree_iterator::operator=(const tree_iterator& itr) {
+  PPL_ASSERT(&tree == &(itr.tree));
+  i = itr.i;
+  offset = itr.offset;
+  return *this;
+}
+
+inline CO_Tree::tree_iterator&
+CO_Tree::tree_iterator::operator=(const iterator& itr) {
+  PPL_ASSERT(itr != tree.before_begin());
+  PPL_ASSERT(itr != tree.end());
+  i = &(itr->second) - tree.data;
+  offset = i;
+  // This assumes two's complement encoding.
+  offset &= -i;
+  return *this;
+}
+
+inline bool
+CO_Tree::tree_iterator::operator==(const tree_iterator& itr) const {
+  return i == itr.i;
+}
+
+inline bool
+CO_Tree::tree_iterator::operator!=(const tree_iterator& itr) const {
+  return i != itr.i;
+}
+
+inline bool
+CO_Tree::tree_iterator::operator==(const iterator& itr) const {
+  return tree.data + i == &(itr->second);
+}
+
+inline bool
+CO_Tree::tree_iterator::operator!=(const iterator& itr) const {
+  return !(*this == itr);
+}
+
+inline void
+CO_Tree::tree_iterator::get_root() {
+  i = tree.reserved_size / 2 + 1;
+  offset = i;
+  PPL_ASSERT(OK());
+}
+
+inline void
+CO_Tree::tree_iterator::get_left_child() {
+  PPL_ASSERT(offset != 0);
+  PPL_ASSERT(offset != 1);
+  offset /= 2;
+  i -= offset;
+  PPL_ASSERT(OK());
+}
+
+inline void
+CO_Tree::tree_iterator::get_right_child() {
+  PPL_ASSERT(offset != 0);
+  PPL_ASSERT(offset != 1);
+  offset /= 2;
+  i += offset;
+  PPL_ASSERT(OK());
+}
+
+inline void
+CO_Tree::tree_iterator::get_parent() {
+  PPL_ASSERT(!is_root());
+  PPL_ASSERT(offset != 0);
+  i &= ~offset;
+  offset *= 2;
+  i |= offset;
+  PPL_ASSERT(OK());
+}
+
+inline void
+CO_Tree::tree_iterator::follow_left_childs() {
+  i -= (offset - 1);
+  offset = 1;
+  PPL_ASSERT(is_leaf());
+  PPL_ASSERT(OK());
+}
+
+inline void
+CO_Tree::tree_iterator::follow_right_childs() {
+  i += (offset - 1);
+  offset = 1;
+  PPL_ASSERT(is_leaf());
+  PPL_ASSERT(OK());
+}
+
+inline void
+CO_Tree::tree_iterator::follow_left_childs_with_value() {
+  PPL_ASSERT((*this)->first != unused_index);
+  dimension_type* p = tree.indexes;
+  p += i;
+  p -= (offset - 1);
+  while (*p == unused_index)
+    ++p;
+  i = p - tree.indexes;
+  offset = i & -i;
+}
+
+inline void
+CO_Tree::tree_iterator::follow_right_childs_with_value() {
+  PPL_ASSERT((*this)->first != unused_index);
+  dimension_type* p = tree.indexes;
+  p += i;
+  p += (offset - 1);
+  while (*p == unused_index)
+    --p;
+  i = p - tree.indexes;
+  offset = i & -i;
+}
+
+inline bool
+CO_Tree::tree_iterator::is_root() const {
+  // This is implied by OK(), it is here for reference only.
+  PPL_ASSERT(offset <= (tree.reserved_size / 2 + 1));
+  return offset == (tree.reserved_size / 2 + 1);
+}
+
+inline bool
+CO_Tree::tree_iterator::is_right_child() const {
+  if (is_root())
+    return false;
+  return ((i & 2*offset) != 0);
+}
+
+inline bool
+CO_Tree::tree_iterator::is_leaf() const {
+  return offset == 1;
+}
+
+inline std::pair<dimension_type&, CO_Tree::data_type&>
+CO_Tree::tree_iterator::operator*() {
+  return std::pair<dimension_type&, data_type&>(tree.indexes[i],
+                                                tree.data[i]);
+}
+
+inline std::pair<const dimension_type, const CO_Tree::data_type&>
+CO_Tree::tree_iterator::operator*() const {
+  return std::pair<const dimension_type&, const data_type&>(tree.indexes[i],
+                                                            tree.data[i]);
+}
+
+inline CO_Tree::tree_iterator::Member_Access_Helper
+CO_Tree::tree_iterator::operator->() {
+  return Member_Access_Helper(tree.indexes[i], tree.data[i]);
+}
+
+inline CO_Tree::tree_iterator::Const_Member_Access_Helper
+CO_Tree::tree_iterator::operator->() const {
+  return Const_Member_Access_Helper(tree.indexes[i], tree.data[i]);
+}
+
+inline dimension_type
+CO_Tree::tree_iterator::index() const {
+  return i;
+}
+
+inline dimension_type
+CO_Tree::tree_iterator::get_offset() const {
+  return offset;
+}
+
+inline CO_Tree::height_t
+CO_Tree::tree_iterator::depth() const {
+  return integer_log2((tree.reserved_size + 1) / offset);
+}
+
+
+inline
+CO_Tree::tree_iterator::Member_Access_Helper
+::Member_Access_Helper(dimension_type& key, data_type& data)
+  : my_pair(key, data) {
+}
+
+inline
+std::pair<dimension_type&, CO_Tree::data_type&>*
+CO_Tree::tree_iterator::Member_Access_Helper::operator->() {
+  return &my_pair;
+}
+
+
+inline
+CO_Tree::tree_iterator::Const_Member_Access_Helper
+::Const_Member_Access_Helper(dimension_type key, const data_type& data)
+  : my_pair(key, data) {
+}
+
+inline
+const std::pair<const dimension_type, const CO_Tree::data_type&>*
+CO_Tree::tree_iterator::Const_Member_Access_Helper::operator->() const {
   return &my_pair;
 }
 

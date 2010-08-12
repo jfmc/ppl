@@ -1204,46 +1204,6 @@ PPL::CO_Tree::count_used_in_subtree(tree_iterator itr) {
 }
 
 bool
-PPL::CO_Tree::tree_iterator::OK() const {
-  if (i == 0 || i > tree.reserved_size)
-    return false;
-
-  dimension_type correct_offset = i;
-  // This assumes two's complement encoding.
-  correct_offset &= -i;
-
-  if (offset != correct_offset)
-    return false;
-
-  return true;
-}
-
-void
-PPL::CO_Tree::tree_iterator::go_down_searching_key(dimension_type key) {
-  // *this points to a node, so the tree is not empty.
-  PPL_ASSERT(!tree.empty());
-  PPL_ASSERT(key != unused_index);
-  PPL_ASSERT((*this)->first != unused_index);
-  while (!is_leaf()) {
-    if (key == (*this)->first)
-      break;
-    if (key < (*this)->first) {
-      get_left_child();
-      if ((*this)->first == unused_index) {
-        get_parent();
-        break;
-      }
-    } else {
-      get_right_child();
-      if ((*this)->first == unused_index) {
-        get_parent();
-        break;
-      }
-    }
-  }
-}
-
-bool
 PPL::CO_Tree::const_iterator::OK() const {
 #ifndef NDEBUG
   if (tree == 0) {
@@ -1305,4 +1265,44 @@ PPL::CO_Tree::iterator::OK() const {
     }
 #endif
   return true;
+}
+
+bool
+PPL::CO_Tree::tree_iterator::OK() const {
+  if (i == 0 || i > tree.reserved_size)
+    return false;
+
+  dimension_type correct_offset = i;
+  // This assumes two's complement encoding.
+  correct_offset &= -i;
+
+  if (offset != correct_offset)
+    return false;
+
+  return true;
+}
+
+void
+PPL::CO_Tree::tree_iterator::go_down_searching_key(dimension_type key) {
+  // *this points to a node, so the tree is not empty.
+  PPL_ASSERT(!tree.empty());
+  PPL_ASSERT(key != unused_index);
+  PPL_ASSERT((*this)->first != unused_index);
+  while (!is_leaf()) {
+    if (key == (*this)->first)
+      break;
+    if (key < (*this)->first) {
+      get_left_child();
+      if ((*this)->first == unused_index) {
+        get_parent();
+        break;
+      }
+    } else {
+      get_right_child();
+      if ((*this)->first == unused_index) {
+        get_parent();
+        break;
+      }
+    }
+  }
 }
