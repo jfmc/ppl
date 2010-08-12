@@ -74,12 +74,12 @@ Unlimited_Sparse_Row::combine_needs_first(const Unlimited_Sparse_Row& y,
 
 template <typename Func1, typename Func2>
 void
-Unlimited_Sparse_Row
-::combine_needs_second(const Unlimited_Sparse_Row& y,
-                       const Func1& g, const Func2& /* h */) {
-  iterator i;
+Unlimited_Sparse_Row::combine_needs_second(const Unlimited_Sparse_Row& y,
+                                           const Func1& g,
+                                           const Func2& /* h */) {
+  iterator i = begin();
   for (const_iterator j = y.begin(), j_end = y.end(); j != j_end; ++j) {
-    i = find_create(j->first);
+    i = find_create(i, j->first);
     g(i->second, j->second);
   }
 }
