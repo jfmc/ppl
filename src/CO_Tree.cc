@@ -65,7 +65,7 @@ PPL::CO_Tree::CO_Tree(const std::vector<data_type>& v) {
   // * Go to the parent, if operation is 0.
   // * Go to the left child, then fill the current tree with n elements, if
   //   operation is 1.
-  // * Go to the right child, then visit the current tree with n elements, if
+  // * Go to the right child, then fill the current tree with n elements, if
   //   operation is 2.
   // * Fill the current tree with n elements, if operation is 3.
 
