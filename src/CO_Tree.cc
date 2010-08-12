@@ -1285,9 +1285,8 @@ PPL::CO_Tree::tree_iterator::OK() const {
   if (i == 0 || i > tree.reserved_size)
     return false;
 
-  dimension_type correct_offset = i;
   // This assumes two's complement encoding.
-  correct_offset &= -i;
+  dimension_type correct_offset = i & -i;
 
   if (offset != correct_offset)
     return false;

@@ -143,20 +143,21 @@ CO_Tree::erase(dimension_type key) {
   tree_iterator itr(*this);
   itr.go_down_searching_key(key);
 
-  if (itr->first != key) {
-    iterator result(itr);
-    if (result->first < key)
-      ++result;
-    PPL_ASSERT(result == end() || result->first > key);
-#ifndef NDEBUG
-    iterator last = end();
-    --last;
-    PPL_ASSERT((result == end()) == (last->first < key));
-#endif
-    return result;
-  }
+  if (itr->first == key)
+    return erase(itr);
 
-  return erase(itr);
+  iterator result(itr);
+  if (result->first < key)
+    ++result;
+
+  PPL_ASSERT(result == end() || result->first > key);
+#ifndef NDEBUG
+  iterator last = end();
+  --last;
+  PPL_ASSERT((result == end()) == (last->first < key));
+#endif
+
+  return result;
 }
 
 inline CO_Tree::iterator
@@ -308,9 +309,8 @@ CO_Tree::rebuild_smaller_tree() {
     destroy();
     init(0);
   } else {
-    dimension_type new_reserved_size = reserved_size / 2;
     CO_Tree new_tree;
-    new_tree.init(new_reserved_size);
+    new_tree.init(reserved_size / 2);
     new_tree.move_data_from(*this);
     swap(new_tree);
     PPL_ASSERT(new_tree.structure_OK());
@@ -353,7 +353,7 @@ CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1)
 #ifndef NDEBUG
   tree = &tree1;
 #endif
-  if (tree1.reserved_size != 0)
+  if (!tree->empty())
     while (*current_index == unused_index) {
       ++current_index;
       ++current_data;
@@ -537,7 +537,7 @@ CO_Tree::iterator::iterator(CO_Tree& tree1)
 #ifndef NDEBUG
   tree = &tree1;
 #endif
-  if (tree1.reserved_size != 0)
+  if (!tree->empty())
     while (*current_index == unused_index) {
       ++current_index;
       ++current_data;
@@ -783,7 +783,7 @@ CO_Tree::tree_iterator::operator==(const tree_iterator& itr) const {
 
 inline bool
 CO_Tree::tree_iterator::operator!=(const tree_iterator& itr) const {
-  return i != itr.i;
+  return !(*this == itr);
 }
 
 inline bool
