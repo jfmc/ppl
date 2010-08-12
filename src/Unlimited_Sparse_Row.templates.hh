@@ -134,20 +134,6 @@ Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
         ++i;
     }
     while (j != j_end) {
-      if (tree.empty())
-        i = find_create(j->first);
-      else {
-        --i;
-        i = find_create(i, j->first);
-      }
-      h(i->second, j->second);
-      ++j;
-      if (i->second == 0)
-        i = reset(i);
-      else
-        break;
-    }
-    while (j != j_end) {
       i = find_create(i, j->first);
       h(i->second, j->second);
       if (i->second == 0)
