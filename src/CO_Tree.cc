@@ -21,8 +21,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
+
 #include "CO_Tree.defs.hh"
-#include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
 
