@@ -32,7 +32,7 @@ namespace Parma_Polyhedra_Library {
  * \brief A cache-oblivious binary search tree of pairs.
  * 
  * This class implements a bynary search tree with keys of dimension_type type
- * and data of Coefficient type,, layed out in a dynamic-sized array.
+ * and data of Coefficient type, layed out in a dynamic-sized array.
  * 
  * The array-based layout saves calls to new/delete (for n inserted elements,
  * only O(log(n)) allocations are performed) and, more importantly, is much
