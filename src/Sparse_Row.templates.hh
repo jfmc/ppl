@@ -23,6 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Sparse_Row_templates_hh
 #define PPL_Sparse_Row_templates_hh 1
 
+// TODO: Remove this.
+// Added to please KDevelop4.
+#include "Sparse_Row.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 
