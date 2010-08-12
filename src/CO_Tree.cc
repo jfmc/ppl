@@ -784,43 +784,43 @@ PPL::CO_Tree::least_common_ancestor(tree_iterator itr1, tree_iterator itr2) {
 
 void
 PPL::CO_Tree::rebuild_bigger_tree() {
-  if (reserved_size == 0)
+  if (reserved_size == 0) {
     init(3);
-  else {
-    dimension_type new_reserved_size = reserved_size*2 + 1;
-
-    dimension_type* new_indexes = new dimension_type[new_reserved_size + 2];
-    data_type* new_data
-      = static_cast<data_type*>(operator new(sizeof(data_type)
-                                             * (new_reserved_size + 1)));
-
-    new_indexes[1] = unused_index;
-
-    for (dimension_type i = 1, j = 2; i <= reserved_size; ++i, ++j) {
-      if (indexes[i] == unused_index)
-        new_indexes[j] = unused_index;
-      else {
-        new_indexes[j] = indexes[i];
-        move_data_element(new_data[j], data[i]);
-      }
-      ++j;
-      new_indexes[j] = unused_index;
-    }
-
-    // These are used as markers by iterators.
-    new_indexes[0] = 0;
-    new_indexes[new_reserved_size + 1] = 0;
-
-    delete [] indexes;
-    operator delete(data);
-
-    indexes = new_indexes;
-    data = new_data;
-    reserved_size = new_reserved_size;
-    ++max_depth;
-
-    refresh_cached_iterators();
+    PPL_ASSERT(structure_OK());
+    return;
   }
+
+  dimension_type new_reserved_size = reserved_size*2 + 1;
+
+  dimension_type* new_indexes = new dimension_type[new_reserved_size + 2];
+  data_type* new_data
+    = static_cast<data_type*>(operator new(sizeof(data_type)
+                                            * (new_reserved_size + 1)));
+
+  new_indexes[1] = unused_index;
+
+  for (dimension_type i = 1, j = 2; i <= reserved_size; ++i, ++j) {
+    new_indexes[j] = indexes[i];
+    if (indexes[i] != unused_index)
+      move_data_element(new_data[j], data[i]);
+    ++j;
+    new_indexes[j] = unused_index;
+  }
+
+  // These are used as markers by iterators.
+  new_indexes[0] = 0;
+  new_indexes[new_reserved_size + 1] = 0;
+
+  delete [] indexes;
+  operator delete(data);
+
+  indexes = new_indexes;
+  data = new_data;
+  reserved_size = new_reserved_size;
+  ++max_depth;
+
+  refresh_cached_iterators();
+
   PPL_ASSERT(structure_OK());
 }
 
