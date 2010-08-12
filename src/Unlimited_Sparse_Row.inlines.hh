@@ -72,7 +72,8 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
       PPL_DIRTY_TEMP_COEFFICIENT(tmp);
       std::swap(itr_i->second, tmp);
       tree.erase(itr_i);
-      itr_j = tree.insert(itr_j, j, Coefficient_zero());
+      // Now both iterators have been invalidated.
+      itr_j = tree.insert(j);
       std::swap(itr_j->second, tmp);
     }
   else
@@ -80,8 +81,9 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
       // j is in the tree, i isn't
       PPL_DIRTY_TEMP_COEFFICIENT(tmp);
       std::swap(itr_j->second, tmp);
+      // Now both iterators have been invalidated.
       tree.erase(itr_j);
-      itr_i = tree.insert(itr_i, i, Coefficient_zero());
+      itr_i = tree.insert(i);
       std::swap(itr_i->second, tmp);
     } else {
       // Do nothing, elements are both unstored zeroes.
