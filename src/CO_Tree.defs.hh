@@ -348,9 +348,6 @@ public:
   //! Returns \p true if the tree has no elements.
   bool empty() const;
 
-  //! Checks the internal invariants.
-  bool OK() const;
-
   //! Dumps the tree to stdout, for debugging purposes.
   void dump_tree() const;
 
@@ -667,6 +664,9 @@ private:
 
   //! Checks the internal invariants, but not the densities.
   bool structure_OK() const;
+
+  //! Checks the internal invariants.
+  bool OK() const;
 
   /**
    * \brief Returns the floor of the base-2 logarithm of \p n .

@@ -134,37 +134,6 @@ PPL::CO_Tree::CO_Tree(const std::vector<data_type>& v) {
   PPL_ASSERT(OK());
 }
 
-bool
-PPL::CO_Tree::OK() const {
-
-  if (!structure_OK())
-    return false;
-
-  {
-    dimension_type real_size = 0;
-
-    for (const_iterator itr = begin(), itr_end = end(); itr != itr_end; ++itr)
-      ++real_size;
-
-    if (real_size != size)
-      // There are \p real_size elements in the tree, but size is \p size.
-      return false;
-  }
-
-  if (reserved_size > 0) {
-    if (is_greater_than_ratio(size, reserved_size, max_density_percent)
-        && reserved_size != 3)
-      // Found too high density.
-      return false;
-    if (is_less_than_ratio(size, reserved_size, min_density_percent)
-        && !is_greater_than_ratio(size, reserved_size/2, max_density_percent))
-      // Found too low density
-      return false;
-  }
-
-  return true;
-}
-
 PPL::CO_Tree::iterator
 PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
   PPL_ASSERT(key1 != unused_index);
@@ -755,6 +724,37 @@ PPL::CO_Tree::structure_OK() const {
     return false;
   if (cached_const_end != const_iterator(*this, reserved_size + 1))
     return false;
+
+  return true;
+}
+
+bool
+PPL::CO_Tree::OK() const {
+
+  if (!structure_OK())
+    return false;
+
+  {
+    dimension_type real_size = 0;
+
+    for (const_iterator itr = begin(), itr_end = end(); itr != itr_end; ++itr)
+      ++real_size;
+
+    if (real_size != size)
+      // There are \p real_size elements in the tree, but size is \p size.
+      return false;
+  }
+
+  if (reserved_size > 0) {
+    if (is_greater_than_ratio(size, reserved_size, max_density_percent)
+        && reserved_size != 3)
+      // Found too high density.
+      return false;
+    if (is_less_than_ratio(size, reserved_size, min_density_percent)
+        && !is_greater_than_ratio(size, reserved_size/2, max_density_percent))
+      // Found too low density
+      return false;
+  }
 
   return true;
 }
