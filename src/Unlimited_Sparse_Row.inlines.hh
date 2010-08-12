@@ -296,6 +296,9 @@ Unlimited_Sparse_Row::reset(dimension_type i) {
 
 inline void
 Unlimited_Sparse_Row::reset(dimension_type i, dimension_type j) {
+  if (i == j)
+    return;
+  PPL_ASSERT(i <= j);
   iterator itr = lower_bound(i);
   // This is a const reference to an internal iterator, that is kept valid.
   // If we just stored a copy, that would be invalidated by the calls to
