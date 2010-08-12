@@ -243,9 +243,12 @@ PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
   iterator itr = erase(key);
   if (itr == end())
     return;
-  for (dimension_type i = &(itr->second) - data; i <= reserved_size; ++i)
-    if (indexes[i] != unused_index)
-      --indexes[i];
+  dimension_type i = &(itr->second) - data;
+  dimension_type* p = indexes + i;
+  dimension_type* p_end = indexes + reserved_size + 1;
+  for ( ; p != p_end; ++p)
+    if (*p != unused_index)
+      --(*p);
   PPL_ASSERT(OK());
 }
 
