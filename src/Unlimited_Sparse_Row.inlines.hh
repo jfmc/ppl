@@ -159,67 +159,70 @@ Unlimited_Sparse_Row::find_create(iterator itr, dimension_type i) {
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find(dimension_type i) {
 
-  if (tree.empty())
-    return end();
-
   iterator itr = tree.bisect(i);
 
-  if (itr->first != i)
-    return end();
+  if (itr != end() && itr->first == i)
+    return itr;
 
-  return itr;
+  return end();
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::find(iterator hint, dimension_type i) {
-  iterator itr = tree.bisect_near(hint, i);
-  if (itr->first != i)
-    itr = end();
 
-  return itr;
+  iterator itr = tree.bisect_near(hint, i);
+
+  if (itr != end() && itr->first == i)
+    return itr;
+
+  return end();
 }
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::find(dimension_type i) const {
 
-  if (tree.empty())
-    return end();
-
   const_iterator itr = tree.bisect(i);
 
-  if (itr->first != i)
-    return end();
+  if (itr != end() && itr->first == i)
+    return itr;
 
-  return itr;
+  return end();
 }
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::find(const_iterator hint, dimension_type i) const {
-  const_iterator itr = tree.bisect_near(hint, i);
-  if (itr->first != i)
-    itr = end();
 
-  return itr;
+  const_iterator itr = tree.bisect_near(hint, i);
+
+  if (itr != end() && itr->first == i)
+    return itr;
+
+  return end();
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::lower_bound(dimension_type i) {
-  if (tree.empty())
-    return end();
 
   iterator itr = tree.bisect(i);
 
+  if (itr == end())
+    return end();
+
   if (itr->first < i)
     ++itr;
+
   PPL_ASSERT(itr == end() || itr->first >= i);
+
   return itr;
 }
 
 inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::lower_bound(iterator hint, dimension_type i) {
-  PPL_ASSERT(hint != end());
 
   iterator itr = tree.bisect_near(hint, i);
+
+  if (itr == end())
+    return end();
 
   if (itr->first < i)
     ++itr;
@@ -231,20 +234,27 @@ Unlimited_Sparse_Row::lower_bound(iterator hint, dimension_type i) {
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::lower_bound(dimension_type i) const {
-  if (tree.empty())
-    return end();
 
   const_iterator itr = tree.bisect(i);
+
+  if (itr == end())
+    return end();
+
   if (itr->first < i)
     ++itr;
+
   PPL_ASSERT(itr == end() || itr->first >= i);
+
   return itr;
 }
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::lower_bound(const_iterator hint, dimension_type i) const {
-  PPL_ASSERT(hint != end());
+
   const_iterator itr = tree.bisect_near(hint, i);
+
+  if (itr == end())
+    return end();
 
   if (itr->first < i)
     ++itr;
