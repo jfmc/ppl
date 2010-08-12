@@ -32,9 +32,8 @@ namespace Parma_Polyhedra_Library {
 
 template <typename Func1, typename Func2>
 void
-Unlimited_Sparse_Row
-::combine_needs_first(const Unlimited_Sparse_Row& y,
-                      const Func1& f, const Func2& g) {
+Unlimited_Sparse_Row::combine_needs_first(const Unlimited_Sparse_Row& y,
+                                          const Func1& f, const Func2& g) {
   if (this == &y) {
     for (iterator i = begin(), i_end = end(); i != i_end; ++i)
       g(i->second, i->second);
@@ -87,9 +86,8 @@ Unlimited_Sparse_Row
 
 template <typename Func1, typename Func2, typename Func3>
 void
-Unlimited_Sparse_Row
-::combine(const Unlimited_Sparse_Row& y, const Func1& f,
-          const Func2& g, const Func3& h) {
+Unlimited_Sparse_Row::combine(const Unlimited_Sparse_Row& y, const Func1& f,
+                              const Func2& g, const Func3& h) {
   if (this == &y) {
     for (iterator i = begin(), i_end = end(); i != i_end; ++i)
       g(i->second, i->second);
