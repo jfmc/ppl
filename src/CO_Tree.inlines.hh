@@ -853,6 +853,7 @@ CO_Tree::tree_iterator::follow_left_childs_with_value() {
     ++p;
   i = p - tree.indexes;
   offset = i & -i;
+  PPL_ASSERT(OK());
 }
 
 inline void
@@ -865,6 +866,7 @@ CO_Tree::tree_iterator::follow_right_childs_with_value() {
     --p;
   i = p - tree.indexes;
   offset = i & -i;
+  PPL_ASSERT(OK());
 }
 
 inline bool
