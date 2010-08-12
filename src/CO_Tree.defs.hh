@@ -707,14 +707,16 @@ private:
   /**
    * \brief Increases the tree's reserved size.
    *
-   * This is called when the density is about to exceed max_density.
+   * This is called when the density is about to exceed the maximum density
+   * (specified by max_density_percent).
    */
   void rebuild_bigger_tree();
 
   /**
    * \brief Decreases the tree's reserved size.
    * 
-   * This is called when the density is about to become less than min_density.
+   * This is called when the density is about to become less than the minimum
+   * allowed density (specified by min_density_percent).
    */
   void rebuild_smaller_tree();
 
