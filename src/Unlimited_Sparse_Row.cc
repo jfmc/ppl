@@ -66,7 +66,6 @@ PPL::Unlimited_Sparse_Row
       return false;
     tree.insert(current_key, current_data);
   }
-  PPL_ASSERT(OK());
   return true;
 }
 
@@ -116,6 +115,5 @@ PPL::Unlimited_Sparse_Row::normalize() {
     Coefficient& x_j = j->second;
     exact_div_assign(x_j, x_j, gcd);
   }
-  PPL_ASSERT(OK());
 }
 

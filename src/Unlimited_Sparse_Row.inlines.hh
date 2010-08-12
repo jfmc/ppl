@@ -104,11 +104,6 @@ Unlimited_Sparse_Row::external_memory_in_bytes() const {
   return tree.external_memory_in_bytes();
 }
 
-inline bool
-Unlimited_Sparse_Row::OK() const {
-  return tree.OK();
-}
-
 inline const Unlimited_Sparse_Row::iterator&
 Unlimited_Sparse_Row::before_begin() {
   return tree.before_begin();
