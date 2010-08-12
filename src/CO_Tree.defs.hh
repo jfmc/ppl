@@ -858,7 +858,7 @@ private:
    */
   const_iterator cached_const_end;
 
-  //! The depth of the leaves in the static tree.
+  //! The depth of the leaves in the complete tree.
   height_t max_depth;
 
   /**
