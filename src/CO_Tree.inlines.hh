@@ -423,7 +423,7 @@ CO_Tree::const_iterator::operator++() {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
 #ifndef NDEBUG
-  PPL_ASSERT(current_index != &(tree->indexes[0]));
+  PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
 #endif
   ++current_index;
   ++current_data;
