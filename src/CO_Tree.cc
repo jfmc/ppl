@@ -576,6 +576,9 @@ PPL::CO_Tree::structure_OK() const {
   if (reserved_size < 3)
     return false;
 
+  if (reserved_size != ((dimension_type)1 << max_depth) - 1)
+    return false;
+
   if (data == NULL)
     return false;
 
