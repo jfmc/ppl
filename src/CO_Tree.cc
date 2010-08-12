@@ -113,7 +113,7 @@ PPL::CO_Tree::CO_Tree(const std::vector<data_type>& v) {
         PPL_ASSERT(root->first == unused_index);
         PPL_ASSERT(index < v.size());
         root->first = index;
-        root->second = v[index];
+        new (&(root->second)) data_type(v[index]);
         ++index;
         while (index < v.size() && v[index] == 0)
           ++index;
