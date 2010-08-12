@@ -337,14 +337,8 @@ inline void
 Unlimited_Sparse_Row::assign(dimension_type i, const Coefficient& x) {
   if (tree.empty())
     assign_if_nonzero(i, x);
-  else {
-    iterator itr = tree.bisect(i);
-    if (itr->first == i)
-      itr->second = x;
-    else
-      if (x != 0)
-        tree.insert(itr, i, x);
-  }
+  else
+    tree.insert(i, x);
 }
 
 inline void
