@@ -88,7 +88,7 @@ public:
   //! implementation have to be replaced with consts of the correct type.
   typedef Coefficient data_type;
 
-  typedef std::pair<dimension_type, data_type> value_type;
+  typedef std::pair<const dimension_type, data_type&> value_type;
 
   class iterator;
 
@@ -120,7 +120,7 @@ public:
   public:
 
     typedef std::bidirectional_iterator_tag iterator_category;
-    typedef const CO_Tree::value_type value_type;
+    typedef std::pair<const dimension_type, const data_type&> value_type;
     typedef ptrdiff_t difference_type;
     typedef value_type* pointer;
     typedef value_type& reference;
