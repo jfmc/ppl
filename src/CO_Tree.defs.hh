@@ -69,6 +69,10 @@ namespace Parma_Polyhedra_Library {
  * associated data.
  * The indexes and values are stored in different arrays to reduce
  * cache-misses during key queries.
+ *
+ * The tree can store up to (-(dimension_type)1)/100 elements.
+ * This limit allows faster density computations, but could be removed if
+ * needed.
  */
 class CO_Tree {
 
