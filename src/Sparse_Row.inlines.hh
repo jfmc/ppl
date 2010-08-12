@@ -294,8 +294,6 @@ Sparse_Row::ascii_load(std::istream& s) {
 
 inline bool
 Sparse_Row::OK() const {
-  if (!row.OK())
-    return false;
   if (row.begin() == row.end())
     return true;
   Unlimited_Sparse_Row::const_iterator i = row.begin();
@@ -534,8 +532,6 @@ Sparse_Row_Reference::operator const Unlimited_Sparse_Row&() const {
 
 inline bool
 Sparse_Row_Reference::OK() const {
-  if (!row.OK())
-    return false;
   if (row.begin() == row.end())
     return true;
   Unlimited_Sparse_Row::const_iterator i = row.begin();
