@@ -158,7 +158,7 @@ public:
     //! Navigates to the previous element.
     const_iterator& operator--();
 
-    //! Returns the value_type of the current node.
+    //! Returns the current element.
     std::pair<const dimension_type, const data_type&> operator*() const;
 
     /**
@@ -275,10 +275,10 @@ public:
     //! Navigates to the previous element in the tree.
     iterator& operator--();
 
-    //! Returns the value_type of the current node.
+    //! Returns the current element.
     std::pair<const dimension_type, data_type&> operator*();
 
-    //! Returns the value_type of the current node.
+    //! Returns the current element.
     std::pair<const dimension_type, const data_type&> operator*() const;
 
     /**
