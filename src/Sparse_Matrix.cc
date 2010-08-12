@@ -134,8 +134,6 @@ PPL::Sparse_Matrix::external_memory_in_bytes() const {
 bool
 PPL::Sparse_Matrix::OK() const {
   for (const_iterator i = begin(), i_end = end(); i != i_end; ++i) {
-    if (!i->OK())
-      return false;
     if (i->begin() != i->end()) {
       Unlimited_Sparse_Row::const_iterator j = i->begin();
       Unlimited_Sparse_Row::const_iterator j_end = i->end();
