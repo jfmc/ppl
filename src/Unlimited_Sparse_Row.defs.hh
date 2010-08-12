@@ -27,8 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "CO_Tree.defs.hh"
 
-#include <vector>
-
 namespace Parma_Polyhedra_Library {
 
 class Unlimited_Sparse_Row {
