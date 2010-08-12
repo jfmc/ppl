@@ -266,6 +266,26 @@ CO_Tree::bisect_near(const_iterator hint, dimension_type key) const {
   return const_iterator(*this, index);
 }
 
+inline bool
+CO_Tree::is_less_than_ratio(dimension_type num, dimension_type den,
+                            dimension_type ratio) {
+  PPL_ASSERT(ratio <= 100);
+  // If this are true, no overflows are possible.
+  PPL_ASSERT(den <= (-(dimension_type)1)/100);
+  PPL_ASSERT(num <= (-(dimension_type)1)/100);
+  return 100*num < ratio*den;
+}
+
+inline bool
+CO_Tree::is_greater_than_ratio(dimension_type num, dimension_type den,
+                               dimension_type ratio) {
+  PPL_ASSERT(ratio <= 100);
+  // If this are true, no overflows are possible.
+  PPL_ASSERT(den <= (-(dimension_type)1)/100);
+  PPL_ASSERT(num <= (-(dimension_type)1)/100);
+  return 100*num > ratio*den;
+}
+
 inline CO_Tree::tree_iterator
 CO_Tree::least_common_ancestor(tree_iterator itr1, tree_iterator itr2) {
   while (itr1.get_offset() > itr2.get_offset())

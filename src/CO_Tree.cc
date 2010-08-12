@@ -152,19 +152,14 @@ PPL::CO_Tree::OK() const {
   }
 
   if (reserved_size > 0) {
-    const float density
-      = size / (float) (((dimension_type)1 << max_depth) - 1);
-    if (density > max_density && density != 3)
+    if (is_greater_than_ratio(size, reserved_size, max_density_percent)
+        && reserved_size != 3)
       // Found too high density.
       return false;
-    if (density < min_density) {
-      // This is the density we could achieve by calling rebuild_bigger_tree.
-      const float candidate_density
-        = size / (float) (((dimension_type)1 << (max_depth-1)) - 1);
-      if (candidate_density <= max_density)
-        // Found too low density
-        return false;
-    }
+    if (is_less_than_ratio(size, reserved_size, min_density_percent)
+        && !is_greater_than_ratio(size, reserved_size/2, max_density_percent))
+      // Found too low density
+      return false;
   }
 
   return true;
@@ -470,8 +465,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
     return itr;
   }
 
-  if ((size + 1) / (float) (((dimension_type)1 << max_depth) - 1)
-    > max_density) {
+  if (is_greater_than_ratio(size + 1, reserved_size, max_density_percent)) {
 
     rebuild_bigger_tree();
 
@@ -481,8 +475,8 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
     PPL_ASSERT(itr->first != key1);
   }
 
-  PPL_ASSERT((size + 1) / (float) (((dimension_type)1 << max_depth)-1)
-         <= max_density);
+  PPL_ASSERT(!is_greater_than_ratio(size + 1, reserved_size,
+                                    max_density_percent));
 
   if (!itr.is_leaf()) {
     if (key1 < itr->first)
@@ -535,13 +529,13 @@ PPL::CO_Tree::erase(tree_iterator itr) {
     return end();
   }
 
-  if ((size - 1) / (float) (((dimension_type)1 << max_depth) - 1)
-      < min_density
-      && (size - 1) / (float) (((dimension_type)1 << (max_depth-1)) - 1)
-      <= max_density) {
+  if (is_less_than_ratio(size - 1, reserved_size, min_density_percent)
+      && !is_greater_than_ratio(size - 1, reserved_size/2,
+                                max_density_percent)) {
+
     const dimension_type key = itr->first;
 
-    PPL_ASSERT(size <= (((dimension_type)1 << max_depth) - 1)*max_density);
+    PPL_ASSERT(!is_greater_than_ratio(size, reserved_size, max_density_percent));
 
     rebuild_smaller_tree();
     itr = go_down_searching_key(tree_iterator(*this), key);
@@ -551,11 +545,10 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 
 #ifndef NDEBUG
   if (size > 1)
-    if ((size - 1) / (float) (((dimension_type)1 << max_depth) - 1)
-        < min_density)
-      PPL_ASSERT((size - 1)
-                 / (float) (((dimension_type)1 << (max_depth-1)) - 1)
-                 > max_density);
+    PPL_ASSERT(!is_less_than_ratio(size - 1, reserved_size,
+                                   min_density_percent)
+               || is_greater_than_ratio(size - 1, reserved_size/2,
+                                        max_density_percent));
 #endif
 
   const dimension_type deleted_key = itr->first;
@@ -854,6 +847,7 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
   height_t itr_depth_minus_1 = itr.depth() - 1;
   height_t height = max_depth - itr_depth_minus_1;
   dimension_type subtree_size;
+  dimension_type subtree_reserved_size = ((dimension_type)1 << height) - 1;
   const bool deleting = itr->first == unused_index;
   PPL_ASSERT(deleting || key != unused_index);
   if (deleting)
@@ -862,12 +856,14 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
     // The existing element and the element with index key we want to add.
     subtree_size = 2;
 
-  float density = subtree_size / (float) (((dimension_type)1 << height) - 1);
-  const float coeff1 = (1 - max_density)/(max_depth - 1);
-  const float coeff2 = (min_density - min_leaf_density)/(max_depth - 1);
-
-  while (density > max_density + itr_depth_minus_1*coeff1
-         || density < min_density - itr_depth_minus_1*coeff2) {
+  while (is_greater_than_ratio(subtree_size, subtree_reserved_size,
+                               max_density_percent + itr_depth_minus_1
+                               *(100 - max_density_percent)
+                               /(max_depth - 1))
+         || is_less_than_ratio(subtree_size, subtree_reserved_size,
+                               min_density_percent - itr_depth_minus_1
+                               *(min_density_percent - min_leaf_density_percent)
+                               /(max_depth - 1))) {
     if (itr_depth_minus_1 == 0) {
       // TODO: Check if this is correct
       // We could arrive here because we are using a fake subtree_size.
@@ -875,15 +871,14 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
       dimension_type real_subtree_size = subtree_size;
       if (!deleting)
         --real_subtree_size;
-      float real_density
-        = real_subtree_size / (float) (((dimension_type)1 << height) - 1);
-      PPL_ASSERT(real_density <= max_density);
-      if (real_density > min_density) {
-        const float candidate_density
-          = real_subtree_size
-            / (float) (((dimension_type)1 << (height-1)) - 1);
-        PPL_ASSERT(candidate_density > max_density);
-      }
+      PPL_ASSERT(!is_greater_than_ratio(real_subtree_size,
+                                        subtree_reserved_size,
+                                        max_density_percent));
+      if (is_greater_than_ratio(real_subtree_size, subtree_reserved_size,
+                                min_density_percent))
+        PPL_ASSERT(is_greater_than_ratio(real_subtree_size,
+                                         subtree_reserved_size/2,
+                                         max_density_percent));
 #endif
       break;
     }
@@ -900,10 +895,9 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
     }
     PPL_ASSERT(itr->first != unused_index);
     ++subtree_size;
-    ++height;
+    subtree_reserved_size = 2*subtree_reserved_size + 1;
     --itr_depth_minus_1;
     PPL_ASSERT(itr.depth() - 1 == itr_depth_minus_1);
-    density = subtree_size / (float) (((dimension_type)1 << height) - 1);
   };
 
   redistribute_elements_in_subtree(itr, subtree_size, deleting, key, value);

@@ -675,6 +675,28 @@ private:
    */
   static unsigned integer_log2(dimension_type n);
 
+  /**
+   * \brief Compares the fractions num/den with ratio/100.
+   *
+   * \p ratio must be less than or equal to 100.
+   *
+   * \returns true if the fraction num/den is less than the fraction
+   *          ratio/100.
+   */
+  static bool is_less_than_ratio(dimension_type num, dimension_type den,
+                                 dimension_type ratio);
+
+  /**
+   * \brief Compares the fractions num/den with ratio/100.
+   *
+   * \p ratio must be less than or equal to 100.
+   *
+   * \returns true if the fraction num/den is greater than the fraction
+   *          ratio/100.
+   */
+  static bool is_greater_than_ratio(dimension_type num, dimension_type den,
+                                    dimension_type ratio);
+
   //! Dumps the subtree rooted at \p itr to stdout, for debugging purposes.
   static void dump_subtree(tree_iterator itr);
 
@@ -799,23 +821,23 @@ private:
   /**
    * \brief The maximum density of used nodes.
    * 
-   * This must be greater than or equal to 0.5 and lower than 1.
+   * This must be greater than or equal to 50 and lower than 100.
    */
-  static const float max_density = 0.9;
+  static const dimension_type max_density_percent = 90;
 
   /**
    * \brief The minimum density of used nodes.
    *
-   * Must be strictly lower than max_density.
+   * Must be strictly lower than max_density_percent.
    */
-  static const float min_density = 0.35;
+  static const dimension_type min_density_percent = 35;
 
   /**
    * \brief The minimum density at the leaves' depth.
    *
-   * Must be strictly lower than min_density.
+   * Must be strictly lower than min_density_percent..
    */
-  static const float min_leaf_density = 0.3;
+  static const dimension_type min_leaf_density_percent = 30;
 
   /**
    * \brief An index used as a marker for unused nodes in the tree.
