@@ -279,14 +279,13 @@ Unlimited_Sparse_Row::reset(iterator first, iterator last) {
   PPL_ASSERT(last != before_begin());
   const dimension_type j = last->first;
   PPL_ASSERT(first->first <= j);
-  // This is a const reference to an internal iterator, that is kept valid.
-  // If we just stored a copy, that would be invalidated by the calls to
-  // reset().
-  const iterator& itr_end = end();
   // We can't just compare first and last at each iteration, because last will
   // be invalidated by the first erase.
-  while (first != itr_end && first->first <= j)
+  while (first->first < j)
     first = reset(first);
+
+  first = reset(first);
+
   return first;
 }
 
