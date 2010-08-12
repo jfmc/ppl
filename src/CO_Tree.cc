@@ -474,19 +474,6 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
   return itr;
 }
 
-void
-PPL::CO_Tree::insert_in_empty_tree(dimension_type key1, const data_type& data1) {
-  PPL_ASSERT(empty());
-  rebuild_bigger_tree();
-  tree_iterator itr(*this);
-  PPL_ASSERT(itr->first == unused_index);
-  itr->first = key1;
-  new (&(itr->second)) data_type(data1);
-  size++;
-
-  PPL_ASSERT(OK());
-}
-
 PPL::CO_Tree::iterator
 PPL::CO_Tree::erase(tree_iterator itr) {
   PPL_ASSERT(itr->first != unused_index);
@@ -764,6 +751,21 @@ PPL::CO_Tree::dump_subtree(tree_iterator itr) {
     dump_subtree(itr);
     itr.get_parent();
   }
+}
+
+PPL::CO_Tree::tree_iterator
+PPL::CO_Tree::least_common_ancestor(tree_iterator itr1, tree_iterator itr2) {
+  while (itr1.get_offset() > itr2.get_offset())
+    itr2.get_parent();
+  while (itr2.get_offset() > itr1.get_offset())
+    itr1.get_parent();
+  // Now itr1 and itr2 have the same depth.
+  PPL_ASSERT(itr1.depth() == itr2.depth());
+  while (itr1 != itr2) {
+    itr1.get_parent();
+    itr2.get_parent();
+  }
+  return itr1;
 }
 
 void

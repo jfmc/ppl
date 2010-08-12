@@ -269,6 +269,19 @@ CO_Tree::bisect_near(const_iterator hint, dimension_type key) const {
   return const_iterator(*this, index);
 }
 
+inline void
+CO_Tree::insert_in_empty_tree(dimension_type key1, const data_type& data1) {
+  PPL_ASSERT(empty());
+  rebuild_bigger_tree();
+  tree_iterator itr(*this);
+  PPL_ASSERT(itr->first == unused_index);
+  itr->first = key1;
+  new (&(itr->second)) data_type(data1);
+  size++;
+
+  PPL_ASSERT(OK());
+}
+
 inline bool
 CO_Tree::is_less_than_ratio(dimension_type num, dimension_type den,
                             dimension_type ratio) {
@@ -287,21 +300,6 @@ CO_Tree::is_greater_than_ratio(dimension_type num, dimension_type den,
   PPL_ASSERT(den <= (-(dimension_type)1)/100);
   PPL_ASSERT(num <= (-(dimension_type)1)/100);
   return 100*num > ratio*den;
-}
-
-inline CO_Tree::tree_iterator
-CO_Tree::least_common_ancestor(tree_iterator itr1, tree_iterator itr2) {
-  while (itr1.get_offset() > itr2.get_offset())
-    itr2.get_parent();
-  while (itr2.get_offset() > itr1.get_offset())
-    itr1.get_parent();
-  // Now itr1 and itr2 have the same depth.
-  PPL_ASSERT(itr1.depth() == itr2.depth());
-  while (itr1 != itr2) {
-    itr1.get_parent();
-    itr2.get_parent();
-  }
-  return itr1;
 }
 
 inline void
