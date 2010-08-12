@@ -374,15 +374,13 @@ CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1,
 }
 
 inline
-CO_Tree::const_iterator
-::const_iterator(const const_iterator& itr2) {
+CO_Tree::const_iterator::const_iterator(const const_iterator& itr2) {
   (*this) = itr2;
   PPL_ASSERT(OK());
 }
 
 inline
-CO_Tree::const_iterator
-::const_iterator(const iterator& itr2) {
+CO_Tree::const_iterator::const_iterator(const iterator& itr2) {
   (*this) = itr2;
   PPL_ASSERT(OK());
 }
@@ -494,8 +492,7 @@ CO_Tree::const_iterator::operator->() const {
 }
 
 inline bool
-CO_Tree::const_iterator
-::operator==(const const_iterator& x) const {
+CO_Tree::const_iterator::operator==(const const_iterator& x) const {
   PPL_ASSERT((current_index == x.current_index)
              == (current_data == x.current_data));
   PPL_ASSERT(OK());
@@ -503,8 +500,7 @@ CO_Tree::const_iterator
 }
 
 inline bool
-CO_Tree::const_iterator
-::operator!=(const const_iterator& x) const {
+CO_Tree::const_iterator::operator!=(const const_iterator& x) const {
   return !(*this == x);
 }
 
