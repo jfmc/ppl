@@ -105,7 +105,8 @@ CO_Tree::insert(dimension_type key1) {
   if (empty())
     return insert(key1, Coefficient_zero());
   else {
-    tree_iterator itr = go_down_searching_key(tree_iterator(*this), key1);
+    tree_iterator itr(*this);
+    itr.go_down_searching_key(key1);
     if (itr->first == key1)
       return iterator(itr);
     else
@@ -121,7 +122,8 @@ CO_Tree::insert(dimension_type key1, const data_type& data1) {
     PPL_ASSERT(itr->first != unused_index);
     return iterator(itr);
   } else {
-    tree_iterator itr = go_down_searching_key(tree_iterator(*this), key1);
+    tree_iterator itr(*this);
+    itr.go_down_searching_key(key1);
     if (itr->first != key1)
       return iterator(insert_precise(key1, data1, itr));
     else {
@@ -138,7 +140,8 @@ CO_Tree::erase(dimension_type key) {
   if (empty())
     return end();
 
-  tree_iterator itr = go_down_searching_key(tree_iterator(*this), key);
+  tree_iterator itr(*this);
+  itr.go_down_searching_key(key);
 
   if (itr->first != key) {
     iterator result(itr);

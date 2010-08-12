@@ -643,14 +643,6 @@ private:
    */
   iterator erase(tree_iterator itr);
 
-  /**
-   * \brief Searches for an element with key \p key in the subtree rooted at \p itr.
-   *
-   * \returns an iterator that points to the found node (if it exists) or to
-   *          the node that would be his parent (otherwise).
-   */
-  tree_iterator go_down_searching_key(tree_iterator itr, dimension_type key);
-
   //! Initializes a tree with reserved size at least \p n .
   void init(dimension_type n);
 
@@ -983,6 +975,15 @@ public:
 
   //! Makes the iterator point to the parent of the current node.
   void get_parent();
+
+  /**
+   * \brief Searches for an element with key \p key in the subtree rooted at
+   *        \p *this.
+   *
+   * After this method, *this points to the found node (if it exists) or to
+   * the node that would be his parent (otherwise).
+   */
+  void go_down_searching_key(dimension_type key);
 
   //! Follows left childs until it arrives at a leaf.
   void follow_left_childs();
