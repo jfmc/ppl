@@ -667,6 +667,20 @@ CO_Tree::const_iterator::operator--() {
   return *this;
 }
 
+inline CO_Tree::const_iterator
+CO_Tree::const_iterator::operator++(int) {
+  const_iterator itr(*this);
+  ++(*this);
+  return itr;
+}
+
+inline CO_Tree::const_iterator
+CO_Tree::const_iterator::operator--(int) {
+  const_iterator itr(*this);
+  --(*this);
+  return itr;
+}
+
 inline std::pair<const dimension_type, const CO_Tree::data_type&>
 CO_Tree::const_iterator::operator*() const {
   PPL_ASSERT(current_index != 0);
@@ -834,6 +848,20 @@ CO_Tree::iterator::operator--() {
 
   PPL_ASSERT(OK());
   return *this;
+}
+
+inline CO_Tree::iterator
+CO_Tree::iterator::operator++(int) {
+  iterator itr(*this);
+  ++(*this);
+  return itr;
+}
+
+inline CO_Tree::iterator
+CO_Tree::iterator::operator--(int) {
+  iterator itr(*this);
+  --(*this);
+  return itr;
 }
 
 inline std::pair<const dimension_type, CO_Tree::data_type&>
