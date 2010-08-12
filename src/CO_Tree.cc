@@ -463,19 +463,19 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
   PPL_ASSERT(!is_greater_than_ratio(size + 1, reserved_size,
                                     max_density_percent));
 
+  size++;
+
   if (!itr.is_leaf()) {
     if (key1 < itr->first)
       itr.get_left_child();
     else
       itr.get_right_child();
     PPL_ASSERT(itr->first == unused_index);
+
     itr->first = key1;
     new (&(itr->second)) data_type(data1);
-    size++;
 
   } else {
-
-    PPL_ASSERT(OK());
 
     itr = rebalance(itr, key1, data1);
 
@@ -908,9 +908,6 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
                                    first_unused + 1, key, value,
                                    first_unused != last_index_in_subtree
                                                    - subtree_size);
-
-  if (!deleting)
-    size++;
 
   PPL_ASSERT(OK());
 
