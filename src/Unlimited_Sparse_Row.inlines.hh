@@ -52,6 +52,11 @@ Unlimited_Sparse_Row::operator=(const Unlimited_Sparse_Row& x) {
 }
 
 inline void
+Unlimited_Sparse_Row::clear() {
+  tree.clear();
+}
+
+inline void
 Unlimited_Sparse_Row::swap(Unlimited_Sparse_Row& x) {
   tree.swap(x.tree);
 }

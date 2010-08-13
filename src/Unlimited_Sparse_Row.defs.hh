@@ -55,6 +55,12 @@ public:
   //! The assignment operator.
   Unlimited_Sparse_Row& operator=(const Unlimited_Sparse_Row& x);
 
+  //! Resets all the elements of this row.
+  /*!
+    This method takes O(n) time.
+  */
+  void clear();
+
   //! Swaps x with *this.
   void swap(Unlimited_Sparse_Row& x);
 
