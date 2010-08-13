@@ -345,7 +345,7 @@ public:
   const Coefficient& get(dimension_type i) const;
 
   /**
-   * \brief Returns an iterator that points before the first element.
+   * \brief Returns an iterator that points before the first stored element.
    *
    * This method always returns a reference to the same internal iterator,
    * that is kept valid.
@@ -354,11 +354,11 @@ public:
    */
   const iterator& before_begin();
 
-  //! Returns an iterator that points at the first element.
+  //! Returns an iterator that points at the first stored element.
   iterator begin();
 
   /**
-   * \brief Returns an iterator that points after the last element.
+   * \brief Returns an iterator that points after the last stored element.
    *
    * This method always returns a reference to the same internal iterator,
    * that is kept valid.
@@ -368,7 +368,7 @@ public:
   const iterator& end();
 
   /**
-   * \brief Returns an iterator that points before the first element.
+   * \brief Returns an iterator that points before the first stored element.
    *
    * This method always returns a reference to the same internal iterator,
    * that is kept valid.
@@ -377,11 +377,11 @@ public:
    */
   const const_iterator& before_begin() const;
 
-  //! Returns an iterator that points at the first element.
+  //! Returns an iterator that points at the first stored element.
   const_iterator begin() const;
 
   /**
-   * \brief Returns an iterator that points after the last element.
+   * \brief Returns an iterator that points after the last stored element.
    *
    * This method always returns a reference to the same internal iterator,
    * that is kept valid.
