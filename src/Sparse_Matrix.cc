@@ -108,7 +108,10 @@ PPL::Sparse_Matrix::ascii_load(std::istream& s) {
   if (!(s >> new_num_cols))
     return false;
 
-  resize(0);
+  for (std::vector<Unlimited_Sparse_Row>::iterator
+       i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
+    i->clear();
+
   resize(new_num_rows, new_num_cols);
 
   for (dimension_type row = 0; row < new_num_rows; ++row)
