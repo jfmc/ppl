@@ -186,7 +186,8 @@ complement_assign(PIP_Tree_Node::matrix_type::row_reference_type x,
                   Coefficient_traits::const_reference den) {
   PPL_ASSERT(den > 0);
   neg_assign_row(x, y);
-  Coefficient& x_0 = x[0];
+  PIP_Tree_Node::matrix_type::row_iterator itr = x.find_create(0);
+  Coefficient& x_0 = itr->second;
   if (den == 1)
     --x_0;
   else {
@@ -194,6 +195,8 @@ complement_assign(PIP_Tree_Node::matrix_type::row_reference_type x,
     mod_assign(mod, x_0, den);
     x_0 -= (mod == 0) ? den : mod;
   }
+  if (x_0 == 0)
+    x.reset(itr);
 }
 
 // Add to `context' the columns for new artificial parameters.
