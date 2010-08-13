@@ -703,10 +703,10 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
   // Look for a negative RHS (i.e., constant term, stored in column 0),
   // maximizing pivot column.
   const dimension_type num_rows = s.num_rows();
-  typedef compatibility_check_find_pivot_in_set_data map_data;
+  typedef compatibility_check_find_pivot_in_set_data data_struct;
   // This is used as a set, it is always sorted.
-  typedef std::vector<std::pair<dimension_type, map_data> > candidates_t;
-  typedef std::map<dimension_type,map_data> candidates_map_t;
+  typedef std::vector<std::pair<dimension_type, data_struct> > candidates_t;
+  typedef std::map<dimension_type,data_struct> candidates_map_t;
   candidates_map_t candidates_map;
   for (dimension_type i = 0; i < num_rows; ++i) {
     PIP_Tree_Node::matrix_type::row_const_reference_type s_i = s[i];
@@ -720,12 +720,12 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
       const Coefficient& s_ij = s_i.get(j);
       candidates_map_t::iterator itr = candidates_map.find(j);
       if (itr == candidates_map.end()) {
-        map_data& current_data = candidates_map[j];
+        data_struct& current_data = candidates_map[j];
         current_data.row_index = i;
         current_data.cost = &s_i0;
         current_data.value = &s_ij;
       } else {
-        map_data& current_data = candidates_map[j];
+        data_struct& current_data = candidates_map[j];
 
         const Coefficient& value_b = s_i.get(j);
 
