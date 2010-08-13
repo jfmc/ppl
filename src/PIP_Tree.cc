@@ -361,9 +361,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
       break;
     PIP_Tree_Node::matrix_type::const_row_const_iterator pivot_itr;
     pivot_itr = pivot_row.find(min_column);
-    PIP_Tree_Node::matrix_type::const_row_const_iterator pivot_end
-      = pivot_row.end();
-    PPL_ASSERT(pivot_itr != pivot_end);
+    PPL_ASSERT(pivot_itr != pivot_row.end());
     const Coefficient* sij_b = &(pivot_itr->second);
     ++pivot_itr;
     const dimension_type row_index = mapping[var_index];
@@ -371,7 +369,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
     if (in_base) {
       for ( ; i != i_end; ++i) {
         pivot_itr = pivot_row.find(pivot_itr, *i);
-        PPL_ASSERT(pivot_itr != pivot_end);
+        PPL_ASSERT(pivot_itr != pivot_row.end());
         const Coefficient& sij_a = pivot_itr->second;
         ++pivot_itr;
         PPL_ASSERT(sij_a > 0);
@@ -408,7 +406,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
       }
       for ( ; i != i_end; ++i) {
         pivot_itr = pivot_row.find(pivot_itr, *i);
-        PPL_ASSERT(pivot_itr != pivot_end);
+        PPL_ASSERT(pivot_itr != pivot_row.end());
         const Coefficient& sij_a = pivot_itr->second;
         PPL_ASSERT(sij_a > 0);
         PPL_ASSERT(*sij_b > 0);
