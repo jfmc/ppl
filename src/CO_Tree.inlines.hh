@@ -353,7 +353,7 @@ CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1)
 #ifndef NDEBUG
   tree = &tree1;
 #endif
-  if (!tree->empty())
+  if (!tree1.empty())
     while (*current_index == unused_index) {
       ++current_index;
       ++current_data;
@@ -533,7 +533,7 @@ CO_Tree::iterator::iterator(CO_Tree& tree1)
 #ifndef NDEBUG
   tree = &tree1;
 #endif
-  if (!tree->empty())
+  if (!tree1.empty())
     while (*current_index == unused_index) {
       ++current_index;
       ++current_data;
