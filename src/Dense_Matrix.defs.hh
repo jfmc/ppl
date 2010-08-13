@@ -44,6 +44,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 class Parma_Polyhedra_Library::Dense_Matrix {
 public:
+
+  typedef Dense_Row& row_reference_type;
+  typedef const Dense_Row& row_const_reference_type;
+  typedef const Dense_Row* row_const_pointer_type;
+  typedef Dense_Row::iterator row_iterator;
+  typedef Dense_Row::const_iterator row_const_iterator;
+  typedef Dense_Row::const_iterator const_row_const_iterator;
+  typedef Dense_Row row_copy_type;
+
   //! Returns the maximum number of rows of a Dense_Matrix.
   static dimension_type max_num_rows();
 

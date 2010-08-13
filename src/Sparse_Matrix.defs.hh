@@ -33,6 +33,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 class Parma_Polyhedra_Library::Sparse_Matrix {
 
 public:
+  typedef Sparse_Row_Reference row_reference_type;
+  typedef const Unlimited_Sparse_Row& row_const_reference_type;
+  typedef const Unlimited_Sparse_Row* row_const_pointer_type;
+  typedef Sparse_Row_Reference::iterator row_iterator;
+  typedef Sparse_Row_Reference::const_iterator row_const_iterator;
+  typedef Unlimited_Sparse_Row::const_iterator const_row_const_iterator;
+  typedef Sparse_Row row_copy_type;
+
   class iterator;
   typedef std::vector<Unlimited_Sparse_Row>::const_iterator const_iterator;
 

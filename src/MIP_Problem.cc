@@ -777,7 +777,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     if (!is_tableau_constraint[i])
       continue;
     // Copy the original constraint in the tableau.
-    matrix_row_reference_type tableau_k = tableau[--k];
+    matrix_type::row_reference_type tableau_k = tableau[--k];
 
     const Constraint& c = input_cs[i + first_pending_constraint];
     for (dimension_type sd = c.space_dimension(); sd-- > 0; ) {
@@ -817,7 +817,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   // so as to simplify the insertion of artificial variables
   // (the coefficient of each artificial variable will be 1).
   for (dimension_type i = tableau_num_rows; i-- > 0 ; ) {
-    matrix_row_reference_type tableau_i = tableau[i];
+    matrix_type::row_reference_type tableau_i = tableau[i];
     if (tableau_i.get(0) > 0)
       tableau_i.for_each_nonzero(std::ptr_fun<Coefficient&,void>(neg_assign),
                                  tableau_num_cols);
@@ -832,7 +832,7 @@ PPL::MIP_Problem::process_pending_constraints() {
 
   // First go through nonpending constraints that became unfeasible
   // due to re-merging of split variables.
-  matrix_row_iterator itr;
+  matrix_type::row_iterator itr;
   for (dimension_type i = 0; i < unfeasible_tableau_rows_size; ++i) {
     itr = tableau[unfeasible_tableau_rows[i]].find_create(artificial_index,
                                                           Coefficient_one());
@@ -982,10 +982,10 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     if (sgn(working_cost[column]) == cost_sign)
       columns.push_back(std::pair<dimension_type, double>(column, 1.0));
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
-    matrix_row_const_reference_type tableau_i = tableau[i];
+    matrix_type::row_const_reference_type tableau_i = tableau[i];
     const Coefficient& tableau_i_base_i = tableau_i.get(base[i]);
-    matrix_const_row_const_iterator j = tableau_i.begin();
-    matrix_const_row_const_iterator j_end = tableau_i.end();
+    matrix_type::const_row_const_iterator j = tableau_i.begin();
+    matrix_type::const_row_const_iterator j_end = tableau_i.end();
     std::vector<std::pair<dimension_type, double> >::iterator k = columns.begin();
     std::vector<std::pair<dimension_type, double> >::iterator k_end = columns.end();
     while (j != j_end) {
@@ -1082,9 +1082,9 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       columns.back().second = squared_lcm_basis;
     }
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
-    matrix_row_const_reference_type tableau_i = tableau[i];
-    matrix_const_row_const_iterator j = tableau_i.begin();
-    matrix_const_row_const_iterator j_end = tableau_i.end();
+    matrix_type::row_const_reference_type tableau_i = tableau[i];
+    matrix_type::const_row_const_iterator j = tableau_i.begin();
+    matrix_type::const_row_const_iterator j_end = tableau_i.end();
     std::vector<std::pair<dimension_type, Coefficient> >::iterator
       k = columns.begin();
     std::vector<std::pair<dimension_type, Coefficient> >::iterator
@@ -1257,8 +1257,8 @@ PPL::MIP_Problem::linear_combine(row_type& x, const row_type& y,
 #ifdef USE_PPL_SPARSE_MATRIX
 
 void
-PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
-                                 matrix_row_const_reference_type y,
+PPL::MIP_Problem::linear_combine(matrix_type::row_reference_type x,
+                                 matrix_type::row_const_reference_type y,
                                  const dimension_type k) {
   WEIGHT_BEGIN();
   const dimension_type x_size = x.size();
@@ -1284,7 +1284,7 @@ PPL::MIP_Problem::linear_combine(matrix_row_reference_type x,
 
 void
 PPL::MIP_Problem::linear_combine(row_type& x,
-                                 matrix_row_const_reference_type y,
+                                 matrix_type::row_const_reference_type y,
                                  const dimension_type k) {
   WEIGHT_BEGIN();
   const dimension_type x_size = x.size();
@@ -1297,8 +1297,8 @@ PPL::MIP_Problem::linear_combine(row_type& x,
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
-  matrix_const_row_const_iterator j = y.begin();
-  matrix_const_row_const_iterator j_end = y.end();
+  matrix_type::const_row_const_iterator j = y.begin();
+  matrix_type::const_row_const_iterator j_end = y.end();
   dimension_type i;
   for (i = 0; j != j_end; ++i) {
     PPL_ASSERT(i < x_size);
@@ -1333,10 +1333,10 @@ PPL::MIP_Problem::linear_combine(row_type& x,
 void
 PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
                         const dimension_type exiting_base_index) {
-  matrix_row_const_reference_type tableau_out = tableau[exiting_base_index];
+  matrix_type::row_const_reference_type tableau_out = tableau[exiting_base_index];
   // Linearly combine the constraints.
   for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
-    matrix_row_reference_type tableau_i = tableau[i];
+    matrix_type::row_reference_type tableau_i = tableau[i];
     if (i != exiting_base_index && tableau_i.get(entering_var_index) != 0)
       linear_combine(tableau_i, tableau_out, entering_var_index);
   }
@@ -1361,7 +1361,7 @@ PPL::MIP_Problem
   const dimension_type tableau_num_rows = tableau.num_rows();
   dimension_type exiting_base_index = tableau_num_rows;
   for (dimension_type i = 0; i < tableau_num_rows; ++i) {
-    matrix_row_const_reference_type t_i = tableau[i];
+    matrix_type::row_const_reference_type t_i = tableau[i];
     const Coefficient& t_i_entering = t_i.get(entering_var_index);
     const Coefficient& t_i_base_i = t_i.get(base[i]);
     const int num_sign = sgn(t_i_entering);
@@ -1380,11 +1380,11 @@ PPL::MIP_Problem
   PPL_DIRTY_TEMP_COEFFICIENT(challenger);
   // These pointers are used instead of references in the following loop, to
   // improve performance.
-  matrix_row_const_pointer_type t_e = &(tableau[exiting_base_index]);
+  matrix_type::row_const_pointer_type t_e = &(tableau[exiting_base_index]);
   const Coefficient* t_e0 = &(t_e->get(0));
   const Coefficient* t_ee = &(t_e->get(entering_var_index));
   for (dimension_type i = exiting_base_index + 1; i < tableau_num_rows; ++i) {
-    matrix_row_const_reference_type t_i = tableau[i];
+    matrix_type::row_const_reference_type t_i = tableau[i];
     const Coefficient& t_ie = t_i.get(entering_var_index);
     const Coefficient& t_ib = t_i.get(base[i]);
     const int t_ie_sign = sgn(t_ie);
@@ -1562,10 +1562,10 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   for (dimension_type i = 0; i < tableau_n_rows; ++i)
     if (begin_artificials <= base[i] && base[i] < end_artificials) {
       // Search for a non-zero element to enter the base.
-      matrix_row_reference_type tableau_i = tableau[i];
+      matrix_type::row_reference_type tableau_i = tableau[i];
       bool redundant = true;
-      matrix_row_const_iterator j = tableau_i.begin();
-      matrix_row_const_iterator j_end = tableau_i.end();
+      matrix_type::row_const_iterator j = tableau_i.begin();
+      matrix_type::row_const_iterator j_end = tableau_i.end();
       // Skip the first element
       if (j != j_end && j->first == 0)
         ++j;
@@ -1633,7 +1633,7 @@ PPL::MIP_Problem::compute_generator() const {
     // (if it is not a basic variable, the value is 0).
     const dimension_type original_var = mapping[i+1].first;
     if (is_in_base(original_var, row)) {
-      matrix_row_const_reference_type t_row = tableau[row];
+      matrix_type::row_const_reference_type t_row = tableau[row];
       const Coefficient& t_row_original_var = t_row.get(original_var);
       if (t_row_original_var > 0) {
         neg_assign(num_i, t_row.get(0));
@@ -1655,7 +1655,7 @@ PPL::MIP_Problem::compute_generator() const {
       // having index mapping[i+1].second .
       // Like before, we he have to check if the variable is in base.
       if (is_in_base(split_var, row)) {
-        matrix_row_const_reference_type t_row = tableau[row];
+        matrix_type::row_const_reference_type t_row = tableau[row];
         const Coefficient& t_row_split_var = t_row.get(split_var);
         if (t_row_split_var > 0) {
           split_num = -t_row.get(0);
@@ -2232,11 +2232,11 @@ PPL::MIP_Problem::OK() const {
       std::sort(vars_in_base.begin(),vars_in_base.end());
 
       for (dimension_type j = tableau_nrows; j-- > 0; ) {
-        matrix_row_const_reference_type tableau_j = tableau[j];
+        matrix_type::row_const_reference_type tableau_j = tableau[j];
         pair_vector_t::iterator i = vars_in_base.begin();
         pair_vector_t::iterator i_end = vars_in_base.end();
-        matrix_const_row_const_iterator itr = tableau_j.begin();
-        matrix_const_row_const_iterator itr_end = tableau_j.end();
+        matrix_type::const_row_const_iterator itr = tableau_j.begin();
+        matrix_type::const_row_const_iterator itr_end = tableau_j.end();
         for ( ; i!=i_end && itr!=itr_end; ++i) {
           // tableau[i][base[i] must be different from zero.
           // tableau[i][base[j], with i different from j, must not be a zero.
