@@ -107,7 +107,7 @@ Sparse_Row::construct(dimension_type sz, dimension_type /* capacity */) {
 inline void
 Sparse_Row::resize(dimension_type n) {
   if (n < size_)
-    reset(lower_bound(n), end());
+    reset_after(n);
   size_ = n;
   PPL_ASSERT(OK());
 }
