@@ -36,7 +36,7 @@ Unlimited_Sparse_Row::Unlimited_Sparse_Row()
 }
 
 inline
-Unlimited_Sparse_Row::Unlimited_Sparse_Row(const This& x)
+Unlimited_Sparse_Row::Unlimited_Sparse_Row(const Unlimited_Sparse_Row& x)
   : tree(x.tree) {
 }
 
@@ -46,13 +46,13 @@ Unlimited_Sparse_Row::Unlimited_Sparse_Row(const std::vector<Coefficient> &v)
 }
 
 inline Unlimited_Sparse_Row&
-Unlimited_Sparse_Row::operator=(const This& x) {
+Unlimited_Sparse_Row::operator=(const Unlimited_Sparse_Row& x) {
   tree = x.tree;
   return *this;
 }
 
 inline void
-Unlimited_Sparse_Row::swap(This& x) {
+Unlimited_Sparse_Row::swap(Unlimited_Sparse_Row& x) {
   tree.swap(x.tree);
 }
 
@@ -337,8 +337,7 @@ Unlimited_Sparse_Row::reset_after(dimension_type i) {
 }
 
 inline void
-Unlimited_Sparse_Row
-::delete_element_and_shift(dimension_type i) {
+Unlimited_Sparse_Row::delete_element_and_shift(dimension_type i) {
   tree.erase_element_and_shift_left(i);
 }
 

@@ -37,9 +37,6 @@ namespace Parma_Polyhedra_Library {
  */
 class Unlimited_Sparse_Row {
 
-private:
-  typedef Unlimited_Sparse_Row This;
-
 public:
 
   typedef CO_Tree::value_type value_type;
@@ -48,7 +45,7 @@ public:
   Unlimited_Sparse_Row();
 
   //! The copy constructor.
-  Unlimited_Sparse_Row(const This& x);
+  Unlimited_Sparse_Row(const Unlimited_Sparse_Row& x);
 
   /**
    * \brief Constructs an unlimited row from an std::vector.
@@ -58,10 +55,10 @@ public:
   explicit Unlimited_Sparse_Row(const std::vector<Coefficient> &v);
 
   //! The assignment operator.
-  This& operator=(const This& x);
+  Unlimited_Sparse_Row& operator=(const Unlimited_Sparse_Row& x);
 
   //! Swaps x with *this.
-  void swap(This& x);
+  void swap(Unlimited_Sparse_Row& x);
 
   /**
    * \brief An iterator on the row elements
@@ -206,7 +203,8 @@ public:
    * This method is O(n).
    */
   template <typename Func1, typename Func2>
-  void combine_needs_first(const This& y, const Func1& f, const Func2& g);
+  void combine_needs_first(const Unlimited_Sparse_Row& y,
+                           const Func1& f, const Func2& g);
 
   /**
    * \brief Calls g(x[i],y[i]), for each i.
@@ -219,7 +217,8 @@ public:
    * This method is O(n).
    */
   template <typename Func1, typename Func2>
-  void combine_needs_second(const This& y, const Func1& g, const Func2& h);
+  void combine_needs_second(const Unlimited_Sparse_Row& y,
+                            const Func1& g, const Func2& h);
 
   /**
    * \brief Calls g(x[i],y[i]), for each i.
@@ -234,7 +233,8 @@ public:
    * This method is O(n).
    */
   template <typename Func1, typename Func2, typename Func3>
-  void combine(const This& y, const Func1& f, const Func2& g, const Func3& h);
+  void combine(const Unlimited_Sparse_Row& y,
+               const Func1& f, const Func2& g, const Func3& h);
 
   /**
    * \brief After this call, get(i) == x.
@@ -540,14 +540,14 @@ public:
    *
    * Stored zeroes and considered equal to non-stored elements.
    */
-  bool operator==(const This &x) const;
+  bool operator==(const Unlimited_Sparse_Row& x) const;
 
   /**
    * \brief Compares x with *this.
    *
    * Stored zeroes and considered equal to non-stored elements.
    */
-  bool operator!=(const This &x) const;
+  bool operator!=(const Unlimited_Sparse_Row& x) const;
 
   //! Loads the row from an ASCII representation generated using ascii_dump().
   bool ascii_load(std::istream& s);

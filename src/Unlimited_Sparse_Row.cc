@@ -27,8 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Unlimited_Sparse_Row
-::ascii_dump(std::ostream& s) const {
+PPL::Unlimited_Sparse_Row::ascii_dump(std::ostream& s) const {
   dimension_type n_elements=0;
   for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
     ++n_elements;
@@ -41,8 +40,7 @@ PPL::Unlimited_Sparse_Row
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Unlimited_Sparse_Row)
 
 bool
-PPL::Unlimited_Sparse_Row
-::ascii_load(std::istream& s) {
+PPL::Unlimited_Sparse_Row::ascii_load(std::istream& s) {
   reset_after(0);
   std::string str;
   dimension_type n_elements;
