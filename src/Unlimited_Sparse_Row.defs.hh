@@ -367,28 +367,37 @@ public:
    */
   const iterator& end();
 
-  /**
-   * \brief Returns an iterator that points before the first stored element.
-   *
-   * This method always returns a reference to the same internal iterator,
-   * that is kept valid.
-   * Client code can keep a const reference to that iterator instead of
-   * keep updating a local iterator.
-   */
+  //! Equivalent to before_cbegin().
   const const_iterator& before_begin() const;
 
-  //! Returns an iterator that points at the first stored element.
+  //! Equivalent to cbegin().
   const_iterator begin() const;
 
+  //! Equivalent to cend().
+  const const_iterator& end() const;
+
   /**
-   * \brief Returns an iterator that points after the last stored element.
+   * \brief Returns an iterator that points before the first element.
    *
    * This method always returns a reference to the same internal iterator,
-   * that is kept valid.
+   * that is updated at each operation that modifies the structure.
    * Client code can keep a const reference to that iterator instead of
    * keep updating a local iterator.
    */
-  const const_iterator& end() const;
+  const const_iterator& before_cbegin() const;
+
+  //! Returns an iterator that points at the first element.
+  const_iterator cbegin() const;
+
+  /**
+   * \brief Returns an iterator that points after the last element.
+   *
+   * This method always returns a reference to the same internal iterator,
+   * that is updated at each operation that modifies the structure.
+   * Client code can keep a const reference to that iterator instead of
+   * keep updating a local iterator.
+   */
+  const const_iterator& cend() const;
 
   /**
    * \brief Calls func on every stored value.

@@ -121,17 +121,32 @@ Unlimited_Sparse_Row::end() {
 
 inline const Unlimited_Sparse_Row::const_iterator&
 Unlimited_Sparse_Row::before_begin() const {
-  return tree.before_begin();
+  return tree.before_cbegin();
 }
 
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::begin() const {
-  return tree.begin();
+  return tree.cbegin();
 }
 
 inline const Unlimited_Sparse_Row::const_iterator&
 Unlimited_Sparse_Row::end() const {
-  return tree.end();
+  return tree.cend();
+}
+
+inline const Unlimited_Sparse_Row::const_iterator&
+Unlimited_Sparse_Row::before_cbegin() const {
+  return tree.before_cbegin();
+}
+
+inline Unlimited_Sparse_Row::const_iterator
+Unlimited_Sparse_Row::cbegin() const {
+  return tree.cbegin();
+}
+
+inline const Unlimited_Sparse_Row::const_iterator&
+Unlimited_Sparse_Row::cend() const {
+  return tree.cend();
 }
 
 inline Unlimited_Sparse_Row::iterator
