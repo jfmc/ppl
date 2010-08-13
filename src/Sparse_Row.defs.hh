@@ -410,31 +410,60 @@ public:
    */
   const Coefficient& get(dimension_type i) const;
 
-  //! Returns an iterator that points at the first element.
+  /**
+   * \brief Returns an iterator that points before the first stored element.
+   *
+   * This method always returns a reference to the same internal iterator,
+   * that is kept valid.
+   * Client code can keep a const reference to that iterator instead of
+   * keep updating a local iterator.
+   */
+  const iterator& before_begin();
+
+  //! Returns an iterator that points at the first stored element.
   iterator begin();
 
   /**
-   * \brief Returns an iterator that points after the last element.
+   * \brief Returns an iterator that points after the last stored element.
    *
    * This method always returns a reference to the same internal iterator,
    * that is kept valid.
    * Client code can keep a const reference to that iterator instead of
    * keep updating a local iterator.
    */
-  iterator end();
+  const iterator& end();
+
+  //! Equivalent to before_cbegin().
+  const const_iterator& before_begin() const;
+
+  //! Equivalent to cbegin().
+  const_iterator begin() const;
+
+  //! Equivalent to cend().
+  const const_iterator& end() const;
+
+  /**
+   * \brief Returns an iterator that points before the first element.
+   *
+   * This method always returns a reference to the same internal iterator,
+   * that is updated at each operation that modifies the structure.
+   * Client code can keep a const reference to that iterator instead of
+   * keep updating a local iterator.
+   */
+  const const_iterator& before_cbegin() const;
 
   //! Returns an iterator that points at the first element.
-  const_iterator begin() const;
+  const_iterator cbegin() const;
 
   /**
    * \brief Returns an iterator that points after the last element.
    *
    * This method always returns a reference to the same internal iterator,
-   * that is kept valid.
+   * that is updated at each operation that modifies the structure.
    * Client code can keep a const reference to that iterator instead of
    * keep updating a local iterator.
    */
-  const_iterator end() const;
+  const const_iterator& cend() const;
 
   /**
    * \brief Looks for an element with key i.
@@ -965,6 +994,16 @@ public:
    */
   const Coefficient& get(dimension_type i) const;
 
+  /**
+   * \brief Returns an iterator that points before the first stored element.
+   *
+   * This method always returns a reference to the same internal iterator,
+   * that is kept valid.
+   * Client code can keep a const reference to that iterator instead of
+   * keep updating a local iterator.
+   */
+  const iterator& before_begin();
+
   //! Returns an iterator that points at the first stored element.
   iterator begin();
 
@@ -976,20 +1015,39 @@ public:
    * Client code can keep a const reference to that iterator instead of
    * keep updating a local iterator.
    */
-  iterator end();
+  const iterator& end();
 
-  //! Returns an iterator that points at the first stored element.
+  //! Equivalent to before_cbegin().
+  const const_iterator& before_begin() const;
+
+  //! Equivalent to cbegin().
   const_iterator begin() const;
 
+  //! Equivalent to cend().
+  const const_iterator& end() const;
+
   /**
-   * \brief Returns an iterator that points after the last stored element.
+   * \brief Returns an iterator that points before the first element.
    *
    * This method always returns a reference to the same internal iterator,
-   * that is kept valid.
+   * that is updated at each operation that modifies the structure.
    * Client code can keep a const reference to that iterator instead of
    * keep updating a local iterator.
    */
-  const_iterator end() const;
+  const const_iterator& before_cbegin() const;
+
+  //! Returns an iterator that points at the first element.
+  const_iterator cbegin() const;
+
+  /**
+   * \brief Returns an iterator that points after the last element.
+   *
+   * This method always returns a reference to the same internal iterator,
+   * that is updated at each operation that modifies the structure.
+   * Client code can keep a const reference to that iterator instead of
+   * keep updating a local iterator.
+   */
+  const const_iterator& cend() const;
 
   /*! \brief Executes func on each non-zero element and may execute it on some
              zeros.
