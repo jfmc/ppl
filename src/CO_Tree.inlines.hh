@@ -213,6 +213,21 @@ CO_Tree::end() const {
   return cached_const_end;
 }
 
+inline const CO_Tree::const_iterator&
+CO_Tree::before_cbegin() const {
+  return cached_const_before_begin;
+}
+
+inline CO_Tree::const_iterator
+CO_Tree::cbegin() const {
+  return const_iterator(*this);
+}
+
+inline const CO_Tree::const_iterator&
+CO_Tree::cend() const {
+  return cached_const_end;
+}
+
 inline CO_Tree::iterator
 CO_Tree::bisect(dimension_type key) {
   if (empty())
