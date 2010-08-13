@@ -4,6 +4,22 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.11  (release date to be decided)
+--------------------------------------------------------------------------
+
+Bugfixes
+========
+
+o  Corrected a bug affecting methods
+
+     Box::CC76_widening_assign(const T&, Iterator, Iterator)
+     Interval::CC76_widening_assign(const From&, Iterator, Iterator)
+
+   whereby a lower bound would not be computed correctly when the two
+   iterators specify an empty list of stop points.
+
+
+--------------------------------------------------------------------------
 NEWS for version 0.11  (released on August 2, 2010)
 --------------------------------------------------------------------------
 

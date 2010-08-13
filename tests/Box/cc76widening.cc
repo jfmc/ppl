@@ -78,9 +78,42 @@ test02() {
   return ok;
 }
 
+bool
+test03() {
+  typedef TBox::interval_type::boundary_type tbt;
+  // No stop point indeed.
+  tbt stop_points;
+
+  Variable x(0);
+  Variable y(1);
+
+  TBox box1(2);
+  box1.add_constraint(x >= 1);
+  box1.add_constraint(x <= 4);
+
+  TBox box2(2);
+  box2.add_constraint(x >= 3);
+  box2.add_constraint(x <= 4);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  box1.CC76_widening_assign(box2, &stop_points, &stop_points);
+
+  Rational_Box known_result(2);
+  known_result.add_constraint(x <= 4);
+
+  bool ok = check_result(box1, known_result);
+
+  print_constraints(box1, "*** box1.CC76_widening_assign(box2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
+  DO_TEST(test03);
 END_MAIN

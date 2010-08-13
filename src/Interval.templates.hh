@@ -120,8 +120,12 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
 	    x.lower_extend();
 	}
       }
-      else
-	x_lb = *--k;
+      else {
+        if (k != first)
+          x_lb = *--k;
+        else
+          x.lower_extend();
+      }
     }
   }
 }
