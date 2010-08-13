@@ -521,31 +521,31 @@ row_normalize(PIP_Tree_Node::matrix_type::row_reference_type x,
 
 // This is here because it is used as a template argument in
 // compatibility_check_find_pivot, so it must be a global declaration.
-struct compatibility_check_find_pivot_map_data {
+struct compatibility_check_find_pivot_in_set_data {
   dimension_type row_index;
   // We cache pointers to cost and value to avoid calling get() multiple
   // times.
   const Coefficient* cost;
   const Coefficient* value;
-  bool operator==(const compatibility_check_find_pivot_map_data& x) const {
+  bool operator==(const compatibility_check_find_pivot_in_set_data& x) const {
     return row_index == x.row_index;
   }
-  // Needed by std::set to sort the values.
-  bool operator<(const compatibility_check_find_pivot_map_data& x) const {
+  // Needed by std::vector to sort the values.
+  bool operator<(const compatibility_check_find_pivot_in_set_data& x) const {
     return row_index < x.row_index;
   }
 };
 
 void
 compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
-                                      compatibility_check_find_pivot_map_data
+                                      compatibility_check_find_pivot_in_set_data
                                       > >& candidates,
                                       const PIP_Tree_Node::matrix_type& s,
                                       const std::vector<dimension_type>&
                                         mapping,
                                       const std::vector<bool>& basis) {
-  typedef compatibility_check_find_pivot_map_data map_data;
-  typedef std::vector<std::pair<dimension_type, map_data> > candidates_t;
+  typedef compatibility_check_find_pivot_in_set_data data_struct;
+  typedef std::vector<std::pair<dimension_type, data_struct> > candidates_t;
   // This is used as a set, it is always sorted.
   candidates_t new_candidates;
   const dimension_type num_vars = mapping.size();
@@ -703,7 +703,7 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
   // Look for a negative RHS (i.e., constant term, stored in column 0),
   // maximizing pivot column.
   const dimension_type num_rows = s.num_rows();
-  typedef compatibility_check_find_pivot_map_data map_data;
+  typedef compatibility_check_find_pivot_in_set_data map_data;
   // This is used as a set, it is always sorted.
   typedef std::vector<std::pair<dimension_type, map_data> > candidates_t;
   typedef std::map<dimension_type,map_data> candidates_map_t;
