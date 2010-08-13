@@ -67,6 +67,11 @@ CO_Tree::operator=(const CO_Tree& x) {
   return *this;
 }
 
+inline void
+CO_Tree::clear() {
+  *this = CO_Tree();
+}
+
 inline
 CO_Tree::~CO_Tree() {
 

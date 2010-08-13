@@ -357,6 +357,12 @@ public:
   //! The assignment operator.
   CO_Tree& operator=(const CO_Tree& x);
 
+  //! Removes all elements from the tree.
+  /*!
+    This method takes O(n) time.
+  */
+  void clear();
+
   //! The destructor.
   ~CO_Tree();
 
