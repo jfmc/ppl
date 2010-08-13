@@ -28,9 +28,8 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Sparse_Matrix::remove_column(dimension_type i) {
-  for (dimension_type j = rows.size(); j-- > 0; ) {
+  for (dimension_type j = rows.size(); j-- > 0; )
     rows[j].delete_element_and_shift(i);
-  }
   --num_columns_;
   PPL_ASSERT(OK());
 }
@@ -68,9 +67,8 @@ PPL::Sparse_Matrix
 
 void
 PPL::Sparse_Matrix::add_zero_columns(dimension_type n, dimension_type i) {
-  for (dimension_type j = rows.size(); j-- > 0; ) {
+  for (dimension_type j = rows.size(); j-- > 0; )
     rows[j].add_zeroes_and_shift(n, i);
-  }
   num_columns_ += n;
   PPL_ASSERT(OK());
 }
