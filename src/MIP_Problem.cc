@@ -2217,11 +2217,11 @@ PPL::MIP_Problem::OK() const {
     }
     {
       // Needed to sort accesses to tableau_j, improving performance.
-      typedef std::vector<std::pair<dimension_type,dimension_type> >
+      typedef std::vector<std::pair<dimension_type, dimension_type> >
         pair_vector_t;
       pair_vector_t vars_in_base;
       for (dimension_type i = base.size(); i-- > 0; )
-        vars_in_base.push_back(std::make_pair(base[i],i));
+        vars_in_base.push_back(std::make_pair(base[i], i));
 
       std::sort(vars_in_base.begin(),vars_in_base.end());
 
@@ -2231,13 +2231,12 @@ PPL::MIP_Problem::OK() const {
         pair_vector_t::iterator i_end = vars_in_base.end();
         matrix_type::const_row_const_iterator itr = tableau_j.begin();
         matrix_type::const_row_const_iterator itr_end = tableau_j.end();
-        for ( ; i!=i_end && itr!=itr_end; ++i) {
+        for ( ; i != i_end && itr != itr_end; ++i) {
           // tableau[i][base[i] must be different from zero.
           // tableau[i][base[j], with i different from j, must not be a zero.
           if (itr->first < i->first)
             itr = tableau_j.lower_bound(itr, itr->first);
-          if (i->second != j && itr->first == i->first
-              && itr->second != 0) {
+          if (i->second != j && itr->first == i->first && itr->second != 0) {
 #ifndef NDEBUG
             cerr << "tableau[i][base[i] must be different from zero" << endl;
             ascii_dump(cerr);
