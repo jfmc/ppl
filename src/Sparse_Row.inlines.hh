@@ -292,19 +292,6 @@ Sparse_Row::ascii_load(std::istream& s) {
   return true;
 }
 
-inline bool
-Sparse_Row::OK() const {
-  if (row.begin() == row.end())
-    return true;
-  Unlimited_Sparse_Row::const_iterator i = row.begin();
-  Unlimited_Sparse_Row::const_iterator i_end = row.end();
-  Unlimited_Sparse_Row::const_iterator next = i;
-  ++next;
-  while (next != i_end)
-    ++i, ++next;
-  return (i->first < size_);
-}
-
 
 inline
 Sparse_Row_Reference::Sparse_Row_Reference(Unlimited_Sparse_Row& row1,
@@ -528,19 +515,6 @@ Sparse_Row_Reference::find_create(iterator itr, dimension_type i) {
 inline
 Sparse_Row_Reference::operator const Unlimited_Sparse_Row&() const {
   return row;
-}
-
-inline bool
-Sparse_Row_Reference::OK() const {
-  if (row.begin() == row.end())
-    return true;
-  Unlimited_Sparse_Row::const_iterator i = row.begin();
-  Unlimited_Sparse_Row::const_iterator i_end = row.end();
-  Unlimited_Sparse_Row::const_iterator next = i;
-  ++next;
-  while (next != i_end)
-    ++i, ++next;
-  return (i->first < size_);
 }
 
 

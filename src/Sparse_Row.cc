@@ -26,3 +26,29 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+bool
+PPL::Sparse_Row::OK() const {
+  if (row.begin() == row.end())
+    return true;
+  Unlimited_Sparse_Row::const_iterator i = row.begin();
+  Unlimited_Sparse_Row::const_iterator i_end = row.end();
+  Unlimited_Sparse_Row::const_iterator next = i;
+  ++next;
+  while (next != i_end)
+    ++i, ++next;
+  return (i->first < size_);
+}
+
+
+bool
+PPL::Sparse_Row_Reference::OK() const {
+  if (row.begin() == row.end())
+    return true;
+  Unlimited_Sparse_Row::const_iterator i = row.begin();
+  Unlimited_Sparse_Row::const_iterator i_end = row.end();
+  Unlimited_Sparse_Row::const_iterator next = i;
+  ++next;
+  while (next != i_end)
+    ++i, ++next;
+  return (i->first < size_);
+}
