@@ -137,23 +137,10 @@ merge_assign(PIP_Tree_Node::matrix_type& x,
     const Coefficient& inhomogeneous_term = y_i->inhomogeneous_term();
     Variables_Set::const_iterator pj = parameters.begin();
     dimension_type j = 1;
-#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
-    PIP_Tree_Node::matrix_row_iterator itr = x_i.end();
+    PIP_Tree_Node::matrix_type::row_iterator itr = x_i.end();
     if (inhomogeneous_term != 0)
       itr = x_i.find_create(0, inhomogeneous_term);
-    else
-      if (pj != param_end) {
-        Variable vj(*pj);
-        if (vj.space_dimension() <= cs_space_dim) {
-          const Coefficient& c = y_i->coefficient(vj);
-          if (c != 0) {
-            itr = x_i.find_create(j, c);
-            ++pj;
-            ++j;
-          }
-        }
-      }
-    PPL_ASSERT(pj == param_end || itr != x_i.end());
+    // itr may still be end() but it can still be used as a hint.
     for ( ; pj != param_end; ++pj, ++j) {
       Variable vj(*pj);
       if (vj.space_dimension() > cs_space_dim)
@@ -162,18 +149,6 @@ merge_assign(PIP_Tree_Node::matrix_type& x,
       if (c != 0)
         itr = x_i.find_create(itr, j, c);
     }
-#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
-    if (inhomogeneous_term != 0)
-      x_i[0] = inhomogeneous_term;
-    for ( ; pj != param_end; ++pj, ++j) {
-      Variable vj(*pj);
-      if (vj.space_dimension() <= cs_space_dim) {
-        const Coefficient& c = y_i->coefficient(vj);
-        if (c != 0)
-          x_i[j] = c;
-      }
-    }
-#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
   }
 }
 
