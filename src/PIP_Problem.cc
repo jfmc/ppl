@@ -159,8 +159,7 @@ PPL::PIP_Problem::solve() const {
           = x.initial_context[x.initial_context.num_rows()-1];
 
         {
-#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
-          matrix_row_iterator itr = row.end();
+          matrix_type::row_iterator itr = row.end();
 
           if (c.inhomogeneous_term() != 0) {
             itr = row.find_create(0, c.inhomogeneous_term());
@@ -173,60 +172,17 @@ PPL::PIP_Problem::solve() const {
               itr = row.find_create(0, -1);
           }
           dimension_type i = 1;
-          bool continue_looping = true;
           Variables_Set::const_iterator pi = param_begin;
 
-          if (itr == row.end())
-            for ( ; pi != param_end; ++pi, ++i) {
-              if (*pi < c_space_dim) {
-                const Coefficient& x = c.coefficient(Variable(*pi));
-                if (x != 0) {
-                  itr = row.find_create(i, x);
-                  // itr is now initialized, use it in the next iterations.
-                  ++pi;
-                  ++i;
-                  break;
-                }
-              } else {
-                continue_looping = false;
-                break;
-              }
-            }
-          if (continue_looping) {
-            for ( ; pi != param_end; ++pi, ++i) {
-              PPL_ASSERT(itr != row.end());
-              if (*pi < c_space_dim) {
-                const Coefficient& x = c.coefficient(Variable(*pi));
-                if (x != 0)
-                  itr = row.find_create(i, x, itr);
-              } else
-                break;
-            }
-          }
-#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
-          if (c.inhomogeneous_term() != 0) {
-            Coefficient& row0 = row[0];
-            row0 = c.inhomogeneous_term();
-            // Adjust inhomogenous term if strict.
-            if (c.is_strict_inequality())
-              --row0;
-          } else {
-            // Adjust inhomogenous term if strict.
-            if (c.is_strict_inequality())
-              neg_assign(row[0], Coefficient_one());
-          }
-          dimension_type i = 1;
-          Variables_Set::const_iterator pi = param_begin;
-
+          // itr may still be end(), but it can still be used as hint.
           for ( ; pi != param_end; ++pi, ++i) {
             if (*pi < c_space_dim) {
               const Coefficient& x = c.coefficient(Variable(*pi));
               if (x != 0)
-                row[i] = x;
+                itr = row.find_create(itr, i, x);
             } else
               break;
           }
-#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
         }
 
         // If it is an equality, also insert its negation.
