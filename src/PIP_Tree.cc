@@ -1079,8 +1079,7 @@ PIP_Tree_Node
       ++i;
     // NOTE: iterating in [1..num_params].
     for ( ; i != i_end; ++i) {
-      if (i->first > num_params)
-        break;
+      PPL_ASSERT(i->first <= num_params);
       std::advance(j, i->first - j_index);
       j_index = i->first;
       add_mul_assign(expr, i->second, Variable(*j));
