@@ -613,6 +613,16 @@ public:
   friend void std::swap(Sparse_Row_Reference x, Sparse_Row& y);
 };
 
+/**
+ * \brief A reference to a finite sparse sequence of coefficients.
+ *
+ * This class is implemented using a reference to an Unlimited_Sparse_Row,
+ * that is implemented using a CO_Tree.
+ * See the documentation of those classes for more details.
+ *
+ * This class is useful to wrap an Unlimited_Sparse_Row reference and provide
+ * the same interface as Sparse_Row.
+ */
 class Sparse_Row_Reference {
 
 public:
