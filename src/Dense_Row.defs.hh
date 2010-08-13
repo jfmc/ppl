@@ -125,6 +125,10 @@ public:
   //! Provided for compatibility with Sparse_Row
   void reset(dimension_type first, dimension_type last);
 
+  //! Resets the element pointed to by itr to 0.
+  //! Provided for compatibility with Sparse_Row.
+  iterator reset(iterator itr);
+
   //! Swaps \p *this with \p y.
   void swap(Dense_Row& y);
 

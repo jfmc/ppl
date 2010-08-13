@@ -59,6 +59,13 @@ Dense_Row::reset(dimension_type i) {
   (*this)[i] = 0;
 }
 
+inline Dense_Row::iterator
+Dense_Row::reset(iterator itr) {
+  itr->second = 0;
+  ++itr;
+  return itr;
+}
+
 inline void
 Dense_Row::construct(dimension_type sz, dimension_type capacity) {
   row.construct(sz, capacity, Row::Flags());
