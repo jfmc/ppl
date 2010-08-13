@@ -133,13 +133,9 @@ bool
 PPL::Sparse_Matrix::OK() const {
   for (const_iterator i = begin(), i_end = end(); i != i_end; ++i) {
     if (i->begin() != i->end()) {
-      Unlimited_Sparse_Row::const_iterator j = i->begin();
-      Unlimited_Sparse_Row::const_iterator j_end = i->end();
-      Unlimited_Sparse_Row::const_iterator next = i->begin();
-      ++next;
-      while (next != j_end)
-        ++j, ++next;
-      if (j->first >= num_columns_)
+      Unlimited_Sparse_Row::const_iterator last = i->end();
+      --last;
+      if (last->first >= num_columns_)
         return false;
     }
   }
