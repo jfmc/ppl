@@ -1191,11 +1191,6 @@ public:
   }
 
   inline void
-  operator()(PPL::Coefficient& x) const {
-    (*this)(x, 0);
-  }
-
-  inline void
   operator()(PPL::Coefficient& x, const PPL::Coefficient& y) const {
     x *= normalized_y_k;
     PPL::sub_mul_assign(x, y, normalized_x_k);
