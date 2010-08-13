@@ -102,6 +102,12 @@ public:
   //! Assigns a Sparse_Row_Reference to *this.
   Sparse_Row& operator=(const Sparse_Row_Reference& x);
 
+  //! Resets all the elements of this row.
+  /*!
+    This method takes O(n) time.
+  */
+  void clear();
+
   //! Swaps *this and x.
   void swap(Sparse_Row& x);
 
@@ -652,6 +658,12 @@ public:
     x.size() must be equal to size().
   */
   Sparse_Row_Reference& operator=(const Sparse_Row& x);
+
+  //! Resets all the elements of this row.
+  /*!
+    This method takes O(n) time.
+  */
+  void clear();
 
   //! Swaps this row referenced by *this with the row referenced by x.
   /*!

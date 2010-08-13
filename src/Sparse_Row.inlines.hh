@@ -70,6 +70,11 @@ Sparse_Row::operator=(const Sparse_Row_Reference& x) {
 }
 
 inline void
+Sparse_Row::clear() {
+  row.clear();
+}
+
+inline void
 Sparse_Row::swap(Sparse_Row& x) {
   row.swap(x.row);
   std::swap(size_, x.size_);
@@ -346,6 +351,11 @@ Sparse_Row_Reference::operator=(const Sparse_Row& x) {
   row = static_cast<const Unlimited_Sparse_Row&>(x);
   PPL_ASSERT(OK());
   return *this;
+}
+
+inline void
+Sparse_Row_Reference::clear() {
+  row.clear();
 }
 
 inline void
