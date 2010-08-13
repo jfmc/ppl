@@ -44,261 +44,567 @@ void swap(Parma_Polyhedra_Library::Sparse_Row_Reference x,
 
 namespace Parma_Polyhedra_Library {
 
-//! A finite sparse sequence of coefficients.
+/**
+ * \brief A finite sparse sequence of coefficients.
+ *
+ * This class is implemented using an Unlimited_Sparse_Row, that is
+ * implemented using a CO_Tree.
+ * See the documentation of those classes for more details.
+ */
 class Sparse_Row {
 
 public:
-  //! A const iterator that may skip some zeros in the sequence.
+  /**
+   * \brief A const iterator on the row elements
+   *
+   * This iterator skips non-stored zeroes.
+   * \see CO_Tree::const_iterator
+   */
   typedef Unlimited_Sparse_Row::const_iterator const_iterator;
 
-  //! An iterator that may skip some zeros in the sequence.
+  /**
+   * \brief An iterator on the row elements
+   *
+   * This iterator skips non-stored zeroes.
+   * \see CO_Tree::iterator
+   */
   typedef Unlimited_Sparse_Row::iterator iterator;
 
-  //! Constructs a row from a std::vector.
+  /**
+   * \brief Constructs a row from an std::vector.
+   *
+   * Zero elements in the vector are not stored.
+   */
   explicit Sparse_Row(const std::vector<Coefficient>& v);
 
-  //! Constructs a row of the specified size.
+  /**
+   * \brief Constructs a row with the specified size.
+   *
+   * The row will contain only non-stored zeroes.
+   */
   explicit Sparse_Row(dimension_type n = 0);
 
-  //! Constructs a row of the specified size from an Unlimited_Sparse_Row.
+  /**
+   * \brief Constructs a row of the specified size from an Unlimited_Sparse_Row.
+   *
+   * The elements of the unlimited sparse row with indexes greater than or
+   * equal to n are ignored.
+   */
   Sparse_Row(const Unlimited_Sparse_Row &x, dimension_type n);
 
   //! Constructs a Sparse_Row from a Sparse_Row_Reference.
   Sparse_Row(const Sparse_Row_Reference& x);
 
-  //! Assigns a Sparse_Row_Reference to this->
-  //! x should have no nonzero elements with index greater than size().
+  /**
+   * \brief Assigns a Sparse_Row_Reference to *this.
+   *
+   * All stored elements in \p x must have index lower than size().
+   */
   Sparse_Row& operator=(const Unlimited_Sparse_Row& x);
 
-  //! Assigns a Sparse_Row_Reference to this->
+  //! Assigns a Sparse_Row_Reference to *this.
   Sparse_Row& operator=(const Sparse_Row_Reference& x);
 
-  //! Swaps (*this) and x.
+  //! Swaps *this and x.
   void swap(Sparse_Row& x);
 
-  //! Swaps (*this) and x. (*this) should either have the same size of x, or
-  //! have size 0. This allows swapping with default-constructed Sparse_Rows.
+  /**
+   * \brief Swaps (*this) and x.
+   *
+   * (*this) should either have the same size of x, or have size 0.
+   * This allows swapping with default-constructed Sparse_Rows.
+   */
   void swap(Sparse_Row_Reference x);
 
-  //! Swaps the i-th element with the j-th element.
-  //! Iterators pointing to these elements are invalidated.
+  /**
+   * \brief Swaps the i-th element with the j-th element.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method takes O(log(n)) time.
+   */
   void swap(dimension_type i, dimension_type j);
 
-  //! Swaps the element pointed to by i with the element pointed to by j.
+  /**
+   * \brief Swaps the element pointed to by i with the element pointed to by j.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method takes O(log(n)) time.
+   */
   void swap(iterator i, iterator j);
 
-  //! This method, with this signature, is needed for compatibility with
-  //! Dense_Row. It can be called on any row, and it resizes it to \p sz.
-  void construct(dimension_type sz);
+  /**
+   * \brief Resizes the row to size \p n.
+   *
+   * This method, with this signature, is needed for compatibility with
+   * Dense_Row.
+   */
+  void construct(dimension_type n);
 
-  //! This method, with this signature, is needed for compatibility with
-  //! Dense_Row. It can be called on any row, and it resizes it to \p sz.
-  void construct(dimension_type sz, dimension_type capacity);
+  /**
+   * \brief Resizes the row to size \p n.
+   *
+   * \param capacity is ignored.
+   *
+   * This method, with this signature, is needed for compatibility with
+   * Dense_Row.
+   */
+  void construct(dimension_type n, dimension_type capacity);
 
   //! Resizes the row to the specified size.
   void resize(dimension_type n);
 
-  //! Provided for compatibility with Dense_Row. It simply calls resize()
-  void shrink(dimension_type new_size);
+  /**
+   * \brief Resizes the row to size \p n.
+   *
+   * This method, with this signature, is needed for compatibility with
+   * Dense_Row.
+   */
+  void shrink(dimension_type n);
 
   //! Returns the size of the row.
   dimension_type size() const;
 
 private:
+  //! The Unlimited_Sparse_Row that stores the row's elements.
   Unlimited_Sparse_Row row;
+
+  /**
+   * \brief The size of the row.
+   *
+   * The elements contained in this row have indexes that are less than size_.
+   */
   dimension_type size_;
 
 public:
-  //! Resets to zero the value pointed to by i.
-  //! iterator objects equal to i and ++i are invalidated.
+  /**
+   * \brief Resets to zero the value pointed to by i.
+   *
+   * By calling this method instead of getting a reference to the value and
+   * setting it to zero, the element will no longer be stored.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method takes O(log(n)) time.
+   */
   iterator reset(iterator i);
 
-  //! Resets to zero the values in the range [first,last).
-  //! All iterator objects in [first,last] are invalidated (note
-  //! that last is invalidated, too).
+  /**
+   * \brief Resets to zero the values in the range [first,last).
+   *
+   * By calling this method instead of getting a reference to the values and
+   * setting them to zero, the elements will no longer be stored.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method takes O(k*log(n)) time, with k the number of elements in
+   * [first,last).
+   */
   iterator reset(iterator first, iterator last);
-  
-  //! Resets to zero the elements in [i,size()).
+
+  /**
+   * \brief Resets to zero the elements with index greater than or equal to i.
+   *
+   * By calling this method instead of getting a reference to the values and
+   * setting them to zero, the elements will no longer be stored.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method takes O(k*log(n)) time, with k the number of elements with
+   * index greater than or equal to i.
+   */
   void reset_after(dimension_type i);
 
-  //! Normalizes the modulo of coefficients so that they are mutually prime.
-  /*!
-    Computes the Greatest Common Divisor (GCD) among the elements of
-    the row and normalizes them by the GCD itself.
-  */
+  /**
+   * \brief Normalizes the modulo of coefficients so that they are mutually prime.
+   *
+   * Computes the Greatest Common Divisor (GCD) among the elements of the row
+   * and normalizes them by the GCD itself.
+   *
+   * This method is O(n).
+   */
   void normalize();
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if c1 is zero.
-    f(c1) must be equivalent to g(c1, 0).
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param f should take a Coefficient&.
+   *          f(c1) must be equivalent to g(c1, 0).
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, c2) must do nothing if c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Unlimited_Sparse_Row& y,
                            const Func1& f, const Func2& g);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if c1 is zero.
-    f(c1) must be equivalent to g(c1, 0).
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param f should take a Coefficient&.
+   *          f(c1) must be equivalent to g(c1, 0).
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, c2) must do nothing if c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Sparse_Row& y,
                            const Func1& f, const Func2& g);
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if c1 is zero.
-    f(c1) must be equivalent to g(c1, 0).
-  */
+
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param f should take a Coefficient&.
+   *          f(c1) must be equivalent to g(c1, 0).
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, c2) must do nothing if c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Sparse_Row_Reference& y,
                            const Func1& f, const Func2& g);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, 0) must do nothing.
-    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, 0) must do nothing, for every c1.
+   * \param h should take a Coefficient& and a const Coefficient&.
+   *          h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Unlimited_Sparse_Row& y,
                             const Func1& g, const Func2& h);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, 0) must do nothing.
-    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, 0) must do nothing, for every c1.
+   * \param h should take a Coefficient& and a const Coefficient&.
+   *          h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Sparse_Row& y,
                             const Func1& g, const Func2& h);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, 0) must do nothing.
-    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, 0) must do nothing, for every c1.
+   * \param h should take a Coefficient& and a const Coefficient&.
+   *          h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Sparse_Row_Reference& y,
                             const Func1& g, const Func2& h);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if both c1 and c2 are zero.
-    f(c1) must be equivalent to g(c1, 0).
-    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param f should take a Coefficient&.
+   *          f(c1) must be equivalent to g(c1, 0).
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, c2) must do nothing when both c1 and c2 are zero.
+   * \param h should take a Coefficient& and a const Coefficient&.
+   *          h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Unlimited_Sparse_Row& y,
                const Func1& f, const Func2& g, const Func3& h);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if both c1 and c2 are zero.
-    f(c1) must be equivalent to g(c1, 0).
-    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param f should take a Coefficient&.
+   *          f(c1) must be equivalent to g(c1, 0).
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, c2) must do nothing when both c1 and c2 are zero.
+   * \param h should take a Coefficient& and a const Coefficient&.
+   *          h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Sparse_Row& y,
                const Func1& f, const Func2& g, const Func3& h);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if both c1 and c2 are zero.
-    f(c1) must be equivalent to g(c1, 0).
-    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param f should take a Coefficient&.
+   *          f(c1) must be equivalent to g(c1, 0).
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, c2) must do nothing when both c1 and c2 are zero.
+   * \param h should take a Coefficient& and a const Coefficient&.
+   *          h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Sparse_Row_Reference& y,
                const Func1& f, const Func2& g, const Func3& h);
 
-  //! For read-only access it's better to use get(), that avoids allocating
-  //! space for zeroes. Both methods are O(n).
-  //! If i was not previously stored, or reset(i) was called, this operation
-  //! invalidates iterator objects equal to the former
-  //! lower_bound(i).
+  /**
+   * \brief Gets a reference to the i-th element.
+   *
+   * For read-only access it's better to use get(), that avoids allocating
+   * space for zeroes.
+   *
+   * If possible, use the find_create(), find() or lower_bound() methods with
+   * a hint instead of this, to improve performance.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(log(n)).
+   */
   Coefficient& operator[](dimension_type i);
 
-  //! After this call, get(i) == x.
-  //! This is slower than <CODE>if (x != 0) find_create(i,x);</CODE> because
-  //! it needs to check whether the element with index i is zero.
+  /**
+   * \brief After this call, get(i) == x.
+   *
+   * This is slower than assign_if_nonzero() because it needs to check whether
+   * the element with index i is zero.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(log(n)).
+   */
   void assign(dimension_type i, const Coefficient& x);
 
-  //! Equivalent to <CODE>if (x != 0) find_create(i, x);</CODE>, provided
-  //! for convenience. This is faster than assign(i, x).
+  /**
+   * \brief Equivalent to <CODE>if (x != 0) find_create(i, x);</CODE>.
+   *
+   * This is faster than assign(i, x), and yields the same result when the
+   * element with index i is zero.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(log(n)).
+   */
   void assign_if_nonzero(dimension_type i, const Coefficient& x);
 
-  //! Equivalent to get(), provided for convenience.
+  //! Equivalent to get(i), provided for convenience.
   const Coefficient& operator[](dimension_type i) const;
 
-  //! Gets the i-th element in the sequence.
-  /*!
-    This function is O(n).
-
-    This function must not be called before main(), it relies on
-    a static variable to work.
-  */
+  /**
+   * \brief Gets the i-th element in the sequence.
+   *
+   * If possible, use the find_create(), find() or lower_bound() methods with
+   * a hint instead of this, to improve performance.
+   *
+   * This method is O(log(n)).
+   */
   const Coefficient& get(dimension_type i) const;
 
+  //! Returns an iterator that points at the first element.
   iterator begin();
+
+  /**
+   * \brief Returns an iterator that points after the last element.
+   *
+   * This method always returns a reference to the same internal iterator,
+   * that is kept valid.
+   * Client code can keep a const reference to that iterator instead of
+   * keep updating a local iterator.
+   */
   iterator end();
+
+  //! Returns an iterator that points at the first element.
   const_iterator begin() const;
+
+  /**
+   * \brief Returns an iterator that points after the last element.
+   *
+   * This method always returns a reference to the same internal iterator,
+   * that is kept valid.
+   * Client code can keep a const reference to that iterator instead of
+   * keep updating a local iterator.
+   */
   const_iterator end() const;
 
+  /**
+   * \brief Looks for an element with key i.
+   *
+   * If possible, use the find() method that takes a hint iterator, to improve
+   * performance.
+   *
+   * This method is O(log(n)).
+   */
   iterator find(dimension_type i);
+
+  /**
+   * \brief Lower bound of key i.
+   *
+   * \returns an iterator to the first element with index greater than or
+   *          equal to i.
+   *          If there are no such elements, returns end().
+   *
+   * If possible, use the find() method that takes a hint iterator, to improve
+   * performance.
+   *
+   * This method is O(log(n)).
+   */
   iterator lower_bound(dimension_type i);
+
+  /**
+   * \brief Looks for an element with key i.
+   *
+   * If possible, use the find() method that takes a hint iterator, to improve
+   * performance.
+   *
+   * This method is O(log(n)).
+   */
   const_iterator find(dimension_type i) const;
+
+  /**
+   * \brief Lower bound of key i.
+   *
+   * \returns an iterator to the first element with index greater than or
+   *          equal to i.
+   *          If there are no such elements, returns end().
+   *
+   * If possible, use the find() method that takes a hint iterator, to improve
+   * performance.
+   *
+   * This method is O(log(n)).
+   */
   const_iterator lower_bound(dimension_type i) const;
 
-  //! Looks for an element with key c, assuming it is in [itr,end()) .
+  /**
+   * \brief Looks for an element with key i.
+   *
+   * \p itr is used as a hint. This method will be faster if the searched
+   * element is near to \p itr.
+   *
+   * The value of \p itr does not change the result. \p itr may even be
+   * before_begin() or end().
+   *
+   * This method is O(1) if the distance between \p itr and the searched
+   * element is O(1), otherwise it is O(log(n)).
+   */
   iterator find(iterator itr, dimension_type i);
-  //! Lower bound of key c, assuming it is in [itr,end()) .
+
+  /**
+   * \brief Lower bound of key i.
+   *
+   * \returns an iterator to the first element with index greater than or
+   *          equal to i.
+   *          If there are no such elements, returns end().
+   *
+   * If possible, use the find() method that takes a hint iterator, to improve
+   * performance.
+   *
+   * This method is O(log(n)).
+   */
   iterator lower_bound(iterator itr, dimension_type i);
 
-  //! Looks for an element with key c, assuming it is in [itr,end()) .
+  /**
+   * \brief Looks for an element with key i.
+   *
+   * \p itr is used as a hint. This method will be faster if the searched
+   * element is near to \p itr.
+   *
+   * The value of \p itr does not change the result. \p itr may even be
+   * before_begin() or end().
+   *
+   * This method is O(1) if the distance between \p itr and the searched
+   * element is O(1), otherwise it is O(log(n)).
+   */
   const_iterator find(const_iterator itr, dimension_type i) const;
-  //! Lower bound of key c, assuming it is in [itr,end()) .
+
+  /**
+   * \brief Lower bound of key i.
+   *
+   * \returns an iterator to the first element with index greater than or
+   *          equal to i.
+   *          If there are no such elements, returns end().
+   *
+   * If possible, use the find() method that takes a hint iterator, to improve
+   * performance.
+   *
+   * This method is O(log(n)).
+   */
   const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
-  //! Equivalent to find_create(i, x, begin()) .
+  /**
+   * \brief Equivalent to (*this)[i] = x; find(i); , but faster.
+   *
+   * If possible, use versions of this method that take a hint, to improve
+   * performance.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(log(n)).
+   */
   iterator find_create(dimension_type i, const Coefficient& x);
 
-  //! Equivalent to find_create(i, begin()) .
+  /**
+   * \brief Equivalent to (*this)[i]; find(i); , but faster.
+   *
+   * If possible, use versions of this method that take a hint, to improve
+   * performance.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(log(n)).
+   */
   iterator find_create(dimension_type i);
 
-  //! Equivalent to (*this)[i]=x , needs itr to point before the added
-  //! element. If itr points near the added element, this is faster.
+  /**
+   * \brief Equivalent to (*this)[i]=x; find(i); , but faster.
+   *
+   * If \p itr points near the added element, this is faster, even faster than
+   * <CODE>(*this)[i]=x;</CODE>.
+   *
+   * The value of \p itr does not change the result. \p itr may even be
+   * before_begin() or end().
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(1) if the distance between \p itr and the searched
+   * element is O(1), otherwise it is O(log(n)).
+   */
   iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
 
-  //! Equivalent to (*this)[i] , needs itr to point before the added
-  //! element. If itr points near the added element, this is faster.
+  /**
+   * \brief Equivalent to (*this)[i]; find(i); , but faster.
+   *
+   * If \p itr points near the added element, this is faster, even faster than
+   * <CODE>(*this)[i];</CODE>.
+   *
+   * The value of \p itr does not change the result. \p itr may even be
+   * before_begin() or end().
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(1) if the distance between \p itr and the searched
+   * element is O(1), otherwise it is O(log(n)).
+   */
   iterator find_create(iterator itr, dimension_type i);
 
+  //! Returns a Sparse_Row_Reference that refers to this row.
   operator Sparse_Row_Reference();
+
+  //! Returns the underlying Unlimited_Sparse_Row.
   operator const Unlimited_Sparse_Row&() const;
 
   PPL_OUTPUT_DECLARATIONS
 
+  //! Loads the row from an ASCII representation generated using ascii_dump().
   bool ascii_load(std::istream& s);
 
   //! Checks the invariant.
@@ -310,202 +616,369 @@ public:
 class Sparse_Row_Reference {
 
 public:
-  //! A const iterator that may skip some zeros in the row.
+  /**
+   * \brief A const iterator on the row elements
+   *
+   * This iterator skips non-stored zeroes.
+   * \see CO_Tree::const_iterator
+   */
   typedef Unlimited_Sparse_Row::const_iterator const_iterator;
 
-  //! An iterator that may skip some zeros in the row.
+  /**
+   * \brief An iterator on the row elements
+   *
+   * This iterator skips non-stored zeroes.
+   * \see CO_Tree::iterator
+   */
   typedef Unlimited_Sparse_Row::iterator iterator;
 
+  /**
+   * \brief Constructs a Sparse_Row_Reference of size \p size that references
+   *        \p row.
+   *
+   * \p row must not contain stored elements with index greater than or equal
+   * to \p size.
+   */
   Sparse_Row_Reference(Unlimited_Sparse_Row& row, dimension_type size);
 
+  /**
+   * \brief Copies \p x into the row referenced by *this.
+   *
+   * \p x must not contain stored elements with index greater than or equal
+   * to size().
+   */
   Sparse_Row_Reference& operator=(const Unlimited_Sparse_Row& x);
 
-  //! x should have no nonzero elements with index greater than size().
+  /**
+   * \brief Copies the row referenced by \p x into the row referenced by *this.
+   *
+   * x.size() must be equal to size().
+   */
   Sparse_Row_Reference& operator=(const Sparse_Row_Reference& x);
 
+  /**
+   * \brief Copies \p x into the row referenced by *this.
+   *
+   * x.size() must be equal to size().
+   */
   Sparse_Row_Reference& operator=(const Sparse_Row& x);
 
-  //! Swaps this row with the row x. The two rows must have the same size.
+  /**
+   * \brief Swaps this row referenced by *this with the row referenced by x.
+   *
+   * x.size() must be equal to size().
+   */
   void swap(Sparse_Row_Reference x);
 
-  //! Swaps (*this) and x. x should either have the same size of (*this), or
-  //! have size 0. This allows swapping with default-constructed Sparse_Rows.
+  /**
+   * \brief Swaps x with the row referenced by *this.
+   * 
+   * x should either have the same size of (*this), or have size 0.
+   * This allows swapping with default-constructed Sparse_Rows.
+   */
   void swap(Sparse_Row& x);
 
-  //! Swaps the i-th element with the j-th element.
-  //! Iterators pointing to these elements are invalidated.
+  /**
+   * \brief Swaps the i-th element with the j-th element.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method takes O(log(n)) time.
+   */
   void swap(dimension_type i, dimension_type j);
 
-  //! Swaps the element pointed to by i with the element pointed to by j.
+  /**
+   * \brief Swaps the element pointed to by i with the element pointed to by j.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method takes O(log(n)) time.
+   */
   void swap(iterator i, iterator j);
 
+  //! Returns the size of the referenced row.
   dimension_type size() const;
 
-  //! Resets to zero the value pointed to by i.
-  //! iterator objects equal to i and ++i are invalidated.
+  /**
+   * \brief Resets to zero the value pointed to by i.
+   *
+   * By calling this method instead of getting a reference to the value and
+   * setting it to zero, the element will no longer be stored.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method takes O(log(n)) time.
+   */
   iterator reset(iterator i);
 
-  //! Resets to zero the values in the range [first,last).
-  //! All iterator objects in [first,last] are invalidated (note
-  //! that last is invalidated, too).
+  /**
+   * \brief Resets to zero the values in the range [first,last).
+   *
+   * By calling this method instead of getting a reference to the values and
+   * setting them to zero, the elements will no longer be stored.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method takes O(k*log(n)) time, with k the number of elements in
+   * [first,last).
+   */
   iterator reset(iterator first, iterator last);
 
-  //! Resets to zero the i-th element.
-  //! For each iterator itr that pointed to i, iterator
-  //! objects equal to itr and ++itr are invalidated.
+  /**
+   * \brief Resets to zero the i-th element.
+   *
+   * By calling this method instead of getting a reference to the value and
+   * setting it to zero, the element will no longer be stored.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method takes O(log(n)) time.
+   */
   void reset(dimension_type i);
 
-  //! Resets to zero the elements in [i,j).
-  //! For each iterator i_itr that pointed to i, and j_itr that
-  //! pointed to j, iterator objects in [i_itr,j_itr] are
-  //! invalidated (note that j_itr is invalidated, too).
+  /**
+   * \brief Resets to zero the elements with indexes in [i,j).
+   *
+   * By calling this method instead of getting a reference to the values and
+   * setting them to zero, the elements will no longer be stored.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method takes O((j-i)*log(n)) time.
+   */
   void reset(dimension_type i, dimension_type j);
 
-  //! Resets to zero the elements in [i,size()).
+  /**
+   * \brief Resets to zero the elements with index greater than or equal to i.
+   *
+   * By calling this method instead of getting a reference to the values and
+   * setting them to zero, the elements will no longer be stored.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method takes O(k*log(n)) time, with k the number of elements with
+   * index greater than or equal to i.
+   */
   void reset_after(dimension_type i);
 
-  //! Normalizes the modulo of coefficients so that they are mutually prime.
-  /*!
-    Computes the Greatest Common Divisor (GCD) among the elements of
-    the row and normalizes them by the GCD itself.
-  */
+  /**
+   * \brief Normalizes the modulo of coefficients so that they are mutually prime.
+   *
+   * Computes the Greatest Common Divisor (GCD) among the elements of the row
+   * and normalizes them by the GCD itself.
+   *
+   * This method is O(n).
+   */
   void normalize();
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if c1 is zero.
-    f(c1) must be equivalent to g(c1, 0).
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param f should take a Coefficient&.
+   *          f(c1) must be equivalent to g(c1, 0).
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, c2) must do nothing if c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Unlimited_Sparse_Row& y,
                            const Func1& f, const Func2& g);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if c1 is zero.
-    f(c1) must be equivalent to g(c1, 0).
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param f should take a Coefficient&.
+   *          f(c1) must be equivalent to g(c1, 0).
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, c2) must do nothing if c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Sparse_Row& y,
                            const Func1& f, const Func2& g);
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if c1 is zero.
-    f(c1) must be equivalent to g(c1, 0).
-  */
+
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param f should take a Coefficient&.
+   *          f(c1) must be equivalent to g(c1, 0).
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, c2) must do nothing if c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Sparse_Row_Reference& y,
                            const Func1& f, const Func2& g);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, 0) must do nothing.
-    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, 0) must do nothing, for every c1.
+   * \param h should take a Coefficient& and a const Coefficient&.
+   *          h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Unlimited_Sparse_Row& y,
                             const Func1& g, const Func2& h);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, 0) must do nothing.
-    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, 0) must do nothing, for every c1.
+   * \param h should take a Coefficient& and a const Coefficient&.
+   *          h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Sparse_Row& y,
                             const Func1& g, const Func2& h);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, 0) must do nothing.
-    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, 0) must do nothing, for every c1.
+   * \param h should take a Coefficient& and a const Coefficient&.
+   *          h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Sparse_Row_Reference& y,
                             const Func1& g, const Func2& h);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if both c1 and c2 are zero.
-    f(c1) must be equivalent to g(c1, 0).
-    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param f should take a Coefficient&.
+   *          f(c1) must be equivalent to g(c1, 0).
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, c2) must do nothing when both c1 and c2 are zero.
+   * \param h should take a Coefficient& and a const Coefficient&.
+   *          h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Unlimited_Sparse_Row& y,
                const Func1& f, const Func2& g, const Func3& h);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if both c1 and c2 are zero.
-    f(c1) must be equivalent to g(c1, 0).
-    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param f should take a Coefficient&.
+   *          f(c1) must be equivalent to g(c1, 0).
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, c2) must do nothing when both c1 and c2 are zero.
+   * \param h should take a Coefficient& and a const Coefficient&.
+   *          h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Sparse_Row& y,
                const Func1& f, const Func2& g, const Func3& h);
 
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if both c1 and c2 are zero.
-    f(c1) must be equivalent to g(c1, 0).
-    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-  */
+  /**
+   * \brief Calls g(x[i],y[i]), for each i.
+   *
+   * \param f should take a Coefficient&.
+   *          f(c1) must be equivalent to g(c1, 0).
+   * \param g should take a Coefficient& and a const Coefficient&.
+   *          g(c1, c2) must do nothing when both c1 and c2 are zero.
+   * \param h should take a Coefficient& and a const Coefficient&.
+   *          h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+   *
+   * This method is O(n).
+   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Sparse_Row_Reference& y,
                const Func1& f, const Func2& g, const Func3& h);
 
-  //! For read-only access it's better to use get(), that avoids allocating
-  //! space for zeroes. Both methods are O(n).
-  //! If i was not previously stored, or reset(i) was called, this operation
-  //! invalidates iterator objects equal to the former
-  //! lower_bound(i).
+  /**
+   * \brief Gets a reference to the i-th element.
+   *
+   * For read-only access it's better to use get(), that avoids allocating
+   * space for zeroes.
+   *
+   * If possible, use the find_create(), find() or lower_bound() methods with
+   * a hint instead of this, to improve performance.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(log(n)).
+   */
   Coefficient& operator[](dimension_type i);
 
-  //! After this call, get(i) == x.
-  //! This is slower than <CODE>if (x != 0) find_create(i,x);</CODE> because
-  //! it needs to check whether the element with index i is zero.
+  /**
+   * \brief After this call, get(i) == x.
+   *
+   * This is slower than assign_if_nonzero() because it needs to check whether
+   * the element with index i is zero.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(log(n)).
+   */
   void assign(dimension_type i, const Coefficient& x);
 
-  //! Equivalent to <CODE>if (x != 0) find_create(i, x);</CODE>, provided
-  //! for convenience. This is faster than assign(i, x).
+  /**
+   * \brief Equivalent to <CODE>if (x != 0) find_create(i, x);</CODE>.
+   *
+   * This is faster than assign(i, x), and yields the same result when the
+   * element with index i is zero.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(log(n)).
+   */
   void assign_if_nonzero(dimension_type i, const Coefficient& x);
 
-  //! Equivalent to get(), provided for convenience.
+  //! Equivalent to get(i), provided for convenience.
   const Coefficient& operator[](dimension_type i) const;
 
-  //! Gets the i-th element in the sequence.
-  /*!
-    This function is O(n).
-
-    This function must not be called before main(), it relies on
-    a static variable to work.
-  */
+  /**
+   * \brief Gets the i-th element in the sequence.
+   *
+   * If possible, use the find_create(), find() or lower_bound() methods with
+   * a hint instead of this, to improve performance.
+   *
+   * This method is O(log(n)).
+   */
   const Coefficient& get(dimension_type i) const;
 
+  //! Returns an iterator that points at the first stored element.
   iterator begin();
+
+  /**
+   * \brief Returns an iterator that points after the last stored element.
+   *
+   * This method always returns a reference to the same internal iterator,
+   * that is kept valid.
+   * Client code can keep a const reference to that iterator instead of
+   * keep updating a local iterator.
+   */
   iterator end();
+
+  //! Returns an iterator that points at the first stored element.
   const_iterator begin() const;
+
+  /**
+   * \brief Returns an iterator that points after the last stored element.
+   *
+   * This method always returns a reference to the same internal iterator,
+   * that is kept valid.
+   * Client code can keep a const reference to that iterator instead of
+   * keep updating a local iterator.
+   */
   const_iterator end() const;
 
   /*! \brief Executes func on each non-zero element and may execute it on some
@@ -530,46 +1003,176 @@ public:
   template <typename Func>
   void for_each_nonzero(const Func& func,const dimension_type n) const;
 
+  /**
+   * \brief Looks for an element with key i.
+   *
+   * If possible, use the find() method that takes a hint iterator, to improve
+   * performance.
+   *
+   * This method is O(log(n)).
+   */
   iterator find(dimension_type i);
+
+  /**
+   * \brief Lower bound of key i.
+   *
+   * \returns an iterator to the first element with index greater than or
+   *          equal to i.
+   *          If there are no such elements, returns end().
+   *
+   * If possible, use the find() method that takes a hint iterator, to improve
+   * performance.
+   *
+   * This method is O(log(n)).
+   */
   iterator lower_bound(dimension_type i);
+
+  /**
+   * \brief Looks for an element with key i.
+   *
+   * If possible, use the find() method that takes a hint iterator, to improve
+   * performance.
+   *
+   * This method is O(log(n)).
+   */
   const_iterator find(dimension_type i) const;
+
+  /**
+   * \brief Lower bound of key i.
+   *
+   * \returns an iterator to the first element with index greater than or
+   *          equal to i.
+   *          If there are no such elements, returns end().
+   *
+   * If possible, use the find() method that takes a hint iterator, to improve
+   * performance.
+   *
+   * This method is O(log(n)).
+   */
   const_iterator lower_bound(dimension_type i) const;
 
-  //! Looks for an element with key c, assuming it is in [itr,end()) .
+  /**
+   * \brief Looks for an element with key i.
+   *
+   * \p itr is used as a hint. This method will be faster if the searched
+   * element is near to \p itr.
+   *
+   * The value of \p itr does not change the result. \p itr may even be
+   * before_begin() or end().
+   *
+   * This method is O(1) if the distance between \p itr and the searched
+   * element is O(1), otherwise it is O(log(n)).
+   */
   iterator find(iterator itr, dimension_type i);
-  //! Lower bound of key c, assuming it is in [itr,end()) .
+
+  /**
+   * \brief Lower bound of key i.
+   *
+   * \returns an iterator to the first element with index greater than or
+   *          equal to i.
+   *          If there are no such elements, returns end().
+   *
+   * If possible, use the find() method that takes a hint iterator, to improve
+   * performance.
+   *
+   * This method is O(log(n)).
+   */
   iterator lower_bound(iterator itr, dimension_type i);
 
-  //! Looks for an element with key c, assuming it is in [itr,end()) .
+  /**
+   * \brief Looks for an element with key i.
+   *
+   * \p itr is used as a hint. This method will be faster if the searched
+   * element is near to \p itr.
+   *
+   * The value of \p itr does not change the result. \p itr may even be
+   * before_begin() or end().
+   *
+   * This method is O(1) if the distance between \p itr and the searched
+   * element is O(1), otherwise it is O(log(n)).
+   */
   const_iterator find(const_iterator itr, dimension_type i) const;
-  //! Lower bound of key c, assuming it is in [itr,end()) .
+
+  /**
+   * \brief Lower bound of key i.
+   *
+   * \returns an iterator to the first element with index greater than or
+   *          equal to i.
+   *          If there are no such elements, returns end().
+   *
+   * If possible, use the find() method that takes a hint iterator, to improve
+   * performance.
+   *
+   * This method is O(log(n)).
+   */
   const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
-  //! Equivalent to find_create(i, x, begin()) .
+  /**
+   * \brief Equivalent to (*this)[i] = x; find(i); , but faster.
+   *
+   * If possible, use versions of this method that take a hint, to improve
+   * performance.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(log(n)).
+   */
   iterator find_create(dimension_type i, const Coefficient& x);
 
-  //! Equivalent to find_create(i,begin()) .
+  /**
+   * \brief Equivalent to (*this)[i]; find(i); , but faster.
+   *
+   * If possible, use versions of this method that take a hint, to improve
+   * performance.
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(log(n)).
+   */
   iterator find_create(dimension_type i);
 
-  //! Equivalent to (*this)[i]=x , needs itr to point before the added
-  //! element. If itr points near the added element, this is faster.
+  /**
+   * \brief Equivalent to (*this)[i]=x; find(i); , but faster.
+   *
+   * If \p itr points near the added element, this is faster, even faster than
+   * <CODE>(*this)[i]=x;</CODE>.
+   *
+   * The value of \p itr does not change the result. \p itr may even be
+   * before_begin() or end().
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(1) if the distance between \p itr and the searched
+   * element is O(1), otherwise it is O(log(n)).
+   */
   iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
 
-  //! Equivalent to (*this)[i] , needs itr to point before the added
-  //! element. If itr points near the added element, this is faster.
+  /**
+   * \brief Equivalent to (*this)[i]; find(i); , but faster.
+   *
+   * If \p itr points near the added element, this is faster, even faster than
+   * <CODE>(*this)[i];</CODE>.
+   *
+   * The value of \p itr does not change the result. \p itr may even be
+   * before_begin() or end().
+   *
+   * This operation invalidates existing iterators.
+   *
+   * This method is O(1) if the distance between \p itr and the searched
+   * element is O(1), otherwise it is O(log(n)).
+   */
   iterator find_create(iterator itr, dimension_type i);
 
+  //! Returns the underlying Unlimited_Sparse_Row.
   operator const Unlimited_Sparse_Row&() const;
 
-  //! Checks the invariant.
+  //! Checks the internal invariant.
   bool OK() const;
 
 private:
 
-  /*!
-    @c applier_to_data 's @c operator() applies func to the second element of
-    its argument.
-  */
+  //! A functor class that applies a functor to the second element of
+  //! its argument.
   template <typename Func>
   class applier_to_data :
     public std::unary_function<std::pair<dimension_type, Coefficient&>,void> {
@@ -585,7 +1188,10 @@ private:
 
 private:
 
+  //! A reference to the row used to store the elements.
   Unlimited_Sparse_Row& row;
+
+  //! The size of the row.
   const dimension_type size_;
 
   friend void std::swap(Sparse_Row_Reference x, Sparse_Row& y);
