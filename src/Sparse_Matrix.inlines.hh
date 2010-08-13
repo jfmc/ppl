@@ -152,6 +152,14 @@ Sparse_Matrix::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
+
+inline
+Sparse_Matrix::iterator
+::iterator(std::vector<Unlimited_Sparse_Row>::iterator i,
+           dimension_type size)
+  : itr(i), size_(size) {
+}
+
 inline
 Sparse_Matrix::iterator::iterator(const iterator& x)
   : itr(x.itr), size_(x.size_) {
@@ -175,12 +183,6 @@ Sparse_Matrix::iterator::operator++(int) {
   return x;
 }
 
-inline
-Sparse_Matrix::iterator::
-  iterator(std::vector<Unlimited_Sparse_Row>::iterator i,
-           dimension_type size)
-  : itr(i), size_(size) {
-}
 
 template <typename Func>
 inline void
