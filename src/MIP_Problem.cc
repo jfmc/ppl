@@ -768,9 +768,6 @@ PPL::MIP_Problem::process_pending_constraints() {
 
   typedef process_pending_constraints_helper_struct buffer_element_t;
 
-  // Used to improve performance, ordering writes to tableau_k.
-  std::vector<buffer_element_t> buffer;
-
   // Proceed with the insertion of the constraints.
   for (dimension_type k = tableau_num_rows,
        i = input_cs.size() - first_pending_constraint; i-- > 0; ) {
