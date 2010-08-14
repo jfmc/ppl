@@ -2162,22 +2162,26 @@ test10() {
 
   itr = tree.insert(itr, 1, Coefficient(10));
 
+  itr = tree.end();
+
+  itr = tree.insert(itr, 2, 0);
   itr = tree.insert(itr, 2, 0);
   itr = tree.insert(itr, 4, 0);
   itr = tree.insert(itr, 6, 0);
+  itr = tree.insert(itr, 8, 0);
+  itr = tree.insert(itr, 10, 0);
+  itr = tree.insert(itr, 12, 0);
 
-  if (itr->first != 6)
+  if (itr->first != 12)
     return false;
+
+  --itr;
+  --itr;
 
   itr = tree.insert(itr, 5, 0);
   itr = tree.erase(itr);
 
   if (itr->first != 6)
-    return false;
-
-  --itr;
-
-  if (itr->first != 4)
     return false;
 
   itr = tree.insert(itr, 5, 0);
@@ -2206,6 +2210,38 @@ test11() {
   if (!tree.empty())
     return false;
 
+  tree.insert(1, 0);
+  tree.insert(2, 0);
+  tree.insert(3, 0);
+  tree.insert(4, 0);
+
+  tree.increase_keys_after(2, 5);
+
+  CO_Tree::iterator itr = tree.begin();
+
+  if (itr->first != 1)
+    return false;
+
+  ++itr;
+
+  if (itr->first != 7)
+    return false;
+
+  ++itr;
+
+  if (itr->first != 8)
+    return false;
+
+  ++itr;
+
+  if (itr->first != 9)
+    return false;
+
+  ++itr;
+
+  if (itr != tree.end())
+    return false;
+
   return true;
 }
 
@@ -2221,6 +2257,57 @@ test12() {
   tree.clear();
 
   if (!tree.empty())
+    return false;
+
+  if (tree.erase(1) != tree.end())
+    return false;
+
+  CO_Tree::iterator itr = tree.end();
+
+  if (tree.bisect_near(itr, 1) != tree.end())
+    return false;
+
+  CO_Tree::const_iterator citr = tree.cend();
+
+  if (tree.bisect_near(citr, 1) != tree.cend())
+    return false;
+
+  if (static_cast<const CO_Tree&>(tree).bisect(1) != tree.end())
+    return false;
+
+  return true;
+}
+
+bool
+test13() {
+
+  CO_Tree tree;
+
+  tree.insert(2, 10);
+  tree.insert(2, 10);
+  tree.insert(4, 10);
+  tree.insert(6, 10);
+  tree.insert(8, 10);
+  tree.insert(10, 10);
+  tree.insert(12, 10);
+  tree.insert(14, 10);
+
+  CO_Tree::iterator itr;
+
+  itr = tree.bisect(12);
+
+  if (itr->first != 12)
+    return false;
+
+  itr = tree.bisect_near(itr, 4);
+
+  if (itr->first != 4)
+    return false;
+
+  itr = tree.bisect(12);
+  itr = tree.bisect_near(itr, 10);
+
+  if (itr->first != 10)
     return false;
 
   return true;
@@ -2241,4 +2328,5 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN
