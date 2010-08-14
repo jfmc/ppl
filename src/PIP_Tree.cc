@@ -3154,24 +3154,13 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   matrix_type::row_const_reference_type row_s = tableau.s[index];
   matrix_type::row_const_reference_type row_t = tableau.t[index];
   {
-#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
-    matrix_type::row_const_iterator j = row_s.begin();
-    matrix_type::row_const_iterator j_end = row_s.end();
-    if (j != j_end) {
-      matrix_type::row_iterator itr;
-      itr = cut_s.find_create(j->first);
-      mod_assign(itr->second, j->second, den);
-      for (++j; j != j_end; ++j) {
-        itr = cut_s.find_create(itr, j->first);
-        mod_assign(itr->second, j->second, den);
-      }
+    matrix_type::row_const_iterator j;
+    matrix_type::row_const_iterator j_end;
+    matrix_type::row_iterator itr = cut_s.end();
+    for (j = row_s.begin(), j_end = row_s.end(); j != j_end; ++j) {
+      itr = cut_s.find_create(itr, j->first, j->second);
+      itr->second %= den;
     }
-#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
-    matrix_type::row_const_iterator j = row_s.begin();
-    matrix_type::row_const_iterator j_end = row_s.end();
-    for ( ; j != j_end; ++j)
-      mod_assign(cut_s[j->first], j->second, den);
-#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
   }
   {
 #ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
