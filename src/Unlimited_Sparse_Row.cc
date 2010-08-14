@@ -76,7 +76,6 @@ PPL::Unlimited_Sparse_Row::normalize() {
   for ( ; i != i_end; ++i) {
     const Coefficient& x_i = i->second;
     if (const int x_i_sign = sgn(x_i)) {
-      // FIXME: can this be optimized further?
       gcd = x_i;
       if (x_i_sign < 0)
         neg_assign(gcd);
