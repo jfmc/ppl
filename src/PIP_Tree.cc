@@ -1063,8 +1063,6 @@ void
 PIP_Tree_Node
 ::add_constraint(matrix_type::row_const_reference_type row,
                  const Variables_Set& parameters) {
-  const dimension_type num_params = parameters.size();
-
   // Compute the expression for the parameter constraint.
   Linear_Expression expr = Linear_Expression(row.get(0));
   Variables_Set::const_iterator j = parameters.begin();
@@ -1079,7 +1077,7 @@ PIP_Tree_Node
       ++i;
     // NOTE: iterating in [1..num_params].
     for ( ; i != i_end; ++i) {
-      PPL_ASSERT(i->first <= num_params);
+      PPL_ASSERT(i->first <= parameters.size());
       std::advance(j, i->first - j_index);
       j_index = i->first;
       add_mul_assign(expr, i->second, Variable(*j));
