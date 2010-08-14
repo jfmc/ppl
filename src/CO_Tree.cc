@@ -702,16 +702,7 @@ PPL::CO_Tree::rebuild_bigger_tree() {
 PPL::CO_Tree::tree_iterator
 PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
                         const data_type& value) {
-#ifndef NDEBUG
-  if (itr->first != unused_index && !itr.is_leaf()) {
-    tree_iterator itr_left = itr;
-    itr_left.get_left_child();
-    PPL_ASSERT(itr_left->first == unused_index);
-    tree_iterator itr_right = itr;
-    itr_right.get_right_child();
-    PPL_ASSERT(itr_right->first == unused_index);
-  }
-#endif
+  PPL_ASSERT(itr->first == unused_index || itr.is_leaf());
   height_t itr_depth_minus_1 = itr.depth() - 1;
   height_t height = max_depth - itr_depth_minus_1;
   dimension_type subtree_size;
