@@ -2153,6 +2153,79 @@ test09() {
   return true;
 }
 
+bool
+test10() {
+
+  CO_Tree tree;
+
+  CO_Tree::iterator itr = tree.end();
+
+  itr = tree.insert(itr, 1, Coefficient(10));
+
+  itr = tree.insert(itr, 2, 0);
+  itr = tree.insert(itr, 4, 0);
+  itr = tree.insert(itr, 6, 0);
+
+  if (itr->first != 6)
+    return false;
+
+  itr = tree.insert(itr, 5, 0);
+  itr = tree.erase(itr);
+
+  if (itr->first != 6)
+    return false;
+
+  --itr;
+
+  if (itr->first != 4)
+    return false;
+
+  itr = tree.insert(itr, 5, 0);
+  itr = tree.erase(itr);
+
+  if (itr->first != 6)
+    return false;
+
+  return true;
+}
+
+bool
+test11() {
+
+  CO_Tree tree;
+
+  tree.insert(1, 10);
+
+  tree.erase_element_and_shift_left(1);
+
+  if (!tree.empty())
+    return false;
+
+  tree.increase_keys_after(1, 5);
+
+  if (!tree.empty())
+    return false;
+
+  return true;
+}
+
+bool
+test12() {
+
+  CO_Tree tree;
+
+  tree.insert(1, 10);
+  tree.insert(2, 10);
+  tree.insert(3, 10);
+
+  tree.clear();
+
+  if (!tree.empty())
+    return false;
+
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -2165,4 +2238,7 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN
