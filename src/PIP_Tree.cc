@@ -2600,9 +2600,13 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       // Compute column s[*][pj] : s[i][pj] /= s_pivot_pj;
       // Update column only if pivot coordinate != 1.
       if (s_pivot_pj != pivot_den) {
+        matrix_type::row_iterator itr;
         for (dimension_type i = num_rows; i-- > 0; ) {
           matrix_type::row_reference_type s_i = tableau.s[i];
-          product = s_i.get(pj) * pivot_den;
+          itr = s_i.find(pj);
+          if (itr == s_i.end())
+            continue;
+          product = itr->second * pivot_den;
           if (product % s_pivot_pj != 0) {
             // As above, perform matrix scaling.
             gcd_assign(gcd, product, s_pivot_pj);
@@ -2611,11 +2615,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             product *= scale_factor;
           }
           PPL_ASSERT(product % s_pivot_pj == 0);
-          if (product != 0 || s_i.get(pj) != 0) {
-            Coefficient x = Coefficient_zero();
-            exact_div_assign(x, product, s_pivot_pj);
-            s_i[pj] = x;
-          }
+          if (product != 0 || itr->second != 0)
+            exact_div_assign(itr->second, product, s_pivot_pj);
         }
       }
 
