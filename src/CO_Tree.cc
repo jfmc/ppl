@@ -570,8 +570,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
     ++result;
 
   PPL_ASSERT(OK());
-  if (!(result == end() || result->first > deleted_key))
-    PPL_ASSERT(false);
+  PPL_ASSERT(result == end() || result->first > deleted_key);
 #ifndef NDEBUG
   if (!empty()) {
     iterator last = end();
@@ -1187,8 +1186,9 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
     if (x.indexes[i] != unused_index) {
       indexes[i] = x.indexes[i];
       new (&(data[i])) data_type(x.data[i]);
-    } else
+    } else {
       PPL_ASSERT(indexes[i] == unused_index);
+    }
 
   size = x.size;
   PPL_ASSERT(OK());
