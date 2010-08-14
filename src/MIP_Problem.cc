@@ -775,23 +775,28 @@ PPL::MIP_Problem::process_pending_constraints() {
       continue;
     // Copy the original constraint in the tableau.
     matrix_type::row_reference_type tableau_k = tableau[--k];
+    matrix_type::row_iterator itr = tableau_k.end();
 
     const Constraint& c = input_cs[i + first_pending_constraint];
     for (dimension_type sd = c.space_dimension(); sd-- > 0; ) {
       const Coefficient& coeff_sd = c.coefficient(Variable(sd));
       if (coeff_sd != 0) {
-        tableau_k[mapping[sd+1].first] = coeff_sd;
+        itr = tableau_k.find_create(itr, mapping[sd+1].first, coeff_sd);
         // Split if needed.
-        if (mapping[sd+1].second != 0)
-          neg_assign(tableau_k[mapping[sd+1].second], coeff_sd);
+        if (mapping[sd+1].second != 0) {
+          itr = tableau_k.find_create(itr, mapping[sd+1].second);
+          neg_assign(itr->second, coeff_sd);
+        }
       }
     }
     const Coefficient& inhomo = c.inhomogeneous_term();
     if (inhomo != 0) {
-      tableau_k[mapping[0].first] = inhomo;
+      tableau_k.find_create(itr, mapping[0].first, inhomo);
       // Split if needed.
-      if (mapping[0].second != 0)
-        neg_assign(tableau_k[mapping[0].second], inhomo);
+      if (mapping[0].second != 0) {
+        itr = tableau_k.find_create(itr, mapping[0].second);
+        neg_assign(itr->second, inhomo);
+      }
     }
 
     // Add the slack variable, if needed.
