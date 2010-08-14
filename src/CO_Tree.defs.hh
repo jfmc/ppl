@@ -728,6 +728,8 @@ private:
     value \p value in the process.
 
     \param last_in_subtree is the index of the last element in the subtree.
+    \param subtree_size is the number of valid elements in the subtree.
+                        It must be greater than zero.
     \returns the index of the rightmost unused node in the subtree after the
              process.
   */

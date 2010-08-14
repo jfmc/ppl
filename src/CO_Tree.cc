@@ -788,16 +788,9 @@ PPL::CO_Tree
                                         const data_type& value,
                                         bool add_element) {
 
-  if (subtree_size == 0)
-    return last_in_subtree;
+  PPL_ASSERT(subtree_size != 0);
 
-  if (subtree_size == 1 && add_element) {
-    // Just add the requested element.
-    PPL_ASSERT(indexes[last_in_subtree] == unused_index);
-    indexes[last_in_subtree] = key;
-    new (&(data[last_in_subtree])) data_type(value);
-    return last_in_subtree - 1;
-  }
+  PPL_ASSERT(subtree_size != 1 || !add_element);
 
   dimension_type first_unused_index = last_in_subtree;
   while (indexes[last_in_subtree] == unused_index)
