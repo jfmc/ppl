@@ -297,13 +297,10 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
   }
   // The searched element is in (hint,new_hint).
   PPL_ASSERT(hint > 0);
-  PPL_ASSERT(hint <= new_hint);
+  PPL_ASSERT(hint < new_hint);
   PPL_ASSERT(new_hint <= reserved_size);
   PPL_ASSERT(indexes[hint] != unused_index);
   PPL_ASSERT(indexes[new_hint] != unused_index);
-
-  if (hint == new_hint)
-    return hint;
 
   ++hint;
   while (indexes[hint] == unused_index)
