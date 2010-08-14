@@ -2985,8 +2985,11 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     matrix_type::row_const_reference_type row_t = tableau.t[index];
     matrix_type::const_row_const_iterator j = row_t.begin();
     matrix_type::const_row_const_iterator j_end = row_t.end();
+    // Skip the element with index 0.
+    if (j != j_end && j->first == 0)
+      ++j;
     for ( ; j != j_end; ++j)
-      if (j->first != 0 && j->second % den != 0) {
+      if (j->second % den != 0) {
         generate_parametric_cut = true;
         break;
       }
