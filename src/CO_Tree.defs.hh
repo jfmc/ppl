@@ -686,10 +686,6 @@ private:
   //! Dumps the subtree rooted at \p itr to stdout, for debugging purposes.
   static void dump_subtree(tree_iterator itr);
 
-  //! Returns the least common ancestor of itr1 and itr2.
-  static tree_iterator least_common_ancestor(tree_iterator itr1,
-                                             tree_iterator itr2);
-
   //! Increases the tree's reserved size.
   /*!
     This is called when the density is about to exceed the maximum density

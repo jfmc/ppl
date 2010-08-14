@@ -657,21 +657,6 @@ PPL::CO_Tree::dump_subtree(tree_iterator itr) {
   }
 }
 
-PPL::CO_Tree::tree_iterator
-PPL::CO_Tree::least_common_ancestor(tree_iterator itr1, tree_iterator itr2) {
-  while (itr1.get_offset() > itr2.get_offset())
-    itr2.get_parent();
-  while (itr2.get_offset() > itr1.get_offset())
-    itr1.get_parent();
-  // Now itr1 and itr2 have the same depth.
-  PPL_ASSERT(itr1.depth() == itr2.depth());
-  while (itr1 != itr2) {
-    itr1.get_parent();
-    itr2.get_parent();
-  }
-  return itr1;
-}
-
 void
 PPL::CO_Tree::rebuild_bigger_tree() {
   if (reserved_size == 0) {
