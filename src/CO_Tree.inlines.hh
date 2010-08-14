@@ -129,12 +129,7 @@ CO_Tree::insert(dimension_type key1, const data_type& data1) {
   } else {
     tree_iterator itr(*this);
     itr.go_down_searching_key(key1);
-    if (itr->first != key1)
-      return iterator(insert_precise(key1, data1, itr));
-    else {
-      itr->second = data1;
-      return iterator(itr);
-    }
+    return iterator(insert_precise(key1, data1, itr));
   }
 }
 
