@@ -697,6 +697,9 @@ private:
   /*!
     This is called when the density is about to become less than the minimum
     allowed density (specified by min_density_percent).
+
+    \p reserved_size must be greater than 3 (otherwise the tree can just be
+    cleared).
   */
   void rebuild_smaller_tree();
 

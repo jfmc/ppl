@@ -325,16 +325,12 @@ CO_Tree::is_greater_than_ratio(dimension_type num, dimension_type den,
 
 inline void
 CO_Tree::rebuild_smaller_tree() {
-  if (reserved_size == 3) {
-    destroy();
-    init(0);
-  } else {
-    CO_Tree new_tree;
-    new_tree.init(reserved_size / 2);
-    new_tree.move_data_from(*this);
-    swap(new_tree);
-    PPL_ASSERT(new_tree.structure_OK());
-  }
+  PPL_ASSERT(reserved_size > 3);
+  CO_Tree new_tree;
+  new_tree.init(reserved_size / 2);
+  new_tree.move_data_from(*this);
+  swap(new_tree);
+  PPL_ASSERT(new_tree.structure_OK());
   PPL_ASSERT(structure_OK());
 }
 
