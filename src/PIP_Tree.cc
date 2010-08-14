@@ -3163,21 +3163,9 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     }
   }
   {
-#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
     matrix_type::const_row_const_iterator j = row_t.begin();
     matrix_type::const_row_const_iterator j_end = row_t.end();
     matrix_type::row_iterator cut_t_itr = cut_t.end();
-    for ( ; j != j_end; ++j) {
-      mod_assign(mod, j->second, den);
-      if (mod != 0) {
-        cut_t_itr = cut_t.find_create(j->first, mod);
-        cut_t_itr->second -= den;
-        // Now cut_t_itr is valid, so we'll pass it in the next calls to
-        // find_create().
-        ++j;
-        break;
-      }
-    }
     for ( ; j!=j_end; ++j) {
       mod_assign(mod, j->second, den);
       if (mod != 0) {
@@ -3185,18 +3173,6 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         cut_t_itr->second -= den;
       }
     }
-#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
-    matrix_type::const_row_const_iterator j = row_t.begin();
-    matrix_type::const_row_const_iterator j_end = row_t.end();
-    for ( ; j!=j_end; ++j) {
-      mod_assign(mod, j->second, den);
-      if (mod != 0) {
-        Coefficient& cut_t_elem = cut_t[j->first];
-        cut_t_elem = mod;
-        cut_t_elem -= den;
-      }
-    }
-#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
   }
   if (ap_column != not_a_dimension())
     // If we re-use an existing Artificial_Parameter
