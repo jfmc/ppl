@@ -3006,31 +3006,33 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     // Limiting the scope of reference row_t (may be later invalidated).
     {
       matrix_type::row_const_reference_type row_t = tableau.t[index];
-      mod_assign(mod, row_t.get(0), den);
-      if (mod != 0) {
-        // Optimizing computation: expr += (den - mod);
-        expr += den;
-        expr -= mod;
+      matrix_type::const_row_const_iterator j = row_t.begin();
+      matrix_type::const_row_const_iterator j_end = row_t.end();
+      if (j != j_end && j->first == 0) {
+        mod_assign(mod, j->second, den);
+        ++j;
+        if (mod != 0) {
+          // Optimizing computation: expr += (den - mod);
+          expr += den;
+          expr -= mod;
+        }
       }
       if (!parameters.empty()) {
         // To avoid reallocations of expr.
         add_mul_assign(expr, 0, Variable(*(parameters.rbegin())));
         Variables_Set::const_iterator p_j = parameters.begin();
-        matrix_type::const_row_const_iterator j = row_t.begin();
-        matrix_type::const_row_const_iterator j_end = row_t.end();
         dimension_type last_index = 1;
-        for ( ; j != j_end; ++j)
-          if (j->first != 0) {
-            mod_assign(mod, j->second, den);
-            if (mod != 0) {
-              // Optimizing computation: expr += (den - mod) * Variable(*p_j);
-              coeff = den - mod;
-              PPL_ASSERT(last_index <= j->first);
-              std::advance(p_j,j->first - last_index);
-              last_index = j->first;
-              add_mul_assign(expr, coeff, Variable(*p_j));
-            }
+        for ( ; j != j_end; ++j) {
+          mod_assign(mod, j->second, den);
+          if (mod != 0) {
+            // Optimizing computation: expr += (den - mod) * Variable(*p_j);
+            coeff = den - mod;
+            PPL_ASSERT(last_index <= j->first);
+            std::advance(p_j, j->first - last_index);
+            last_index = j->first;
+            add_mul_assign(expr, coeff, Variable(*p_j));
           }
+        }
       }
     }
     // Generate new artificial parameter.
