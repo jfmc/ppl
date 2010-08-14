@@ -385,8 +385,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 
   if (size == 1) {
     // Deleting the only element of this tree, now it is empty.
-    destroy();
-    init(0);
+    clear();
     return end();
   }
 
