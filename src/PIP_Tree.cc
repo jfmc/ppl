@@ -1521,14 +1521,18 @@ PIP_Solution_Node::Tableau
   std::vector<Coefficient> coeff_0(num_params,0);
   std::vector<Coefficient> coeff_1(num_params,0);
   {
-    matrix_type::row_const_iterator j = t_0.begin();
-    matrix_type::row_const_iterator j_end = t_0.end();
-    for ( ; j != j_end; ++j)
-      coeff_0[j->first] = j->second * s_1_1;
-    j = t_1.begin();
-    j_end = t_1.end();
-    for ( ; j != j_end; ++j)
-      coeff_1[j->first] = j->second * s_0_0;
+    matrix_type::row_const_iterator j;
+    matrix_type::row_const_iterator j_end;
+    for (j = t_0.begin(), j_end = t_0.end(); j != j_end; ++j) {
+      Coefficient& coeff = coeff_0[j->first];
+      coeff = j->second;
+      coeff *= s_1_1;
+    }
+    for (j = t_1.begin(), j_end = t_1.end(); j != j_end; ++j) {
+      Coefficient& coeff = coeff_1[j->first];
+      coeff = j->second;
+      coeff *= s_0_0;
+    }
   }
   matrix_type::row_const_iterator j0 = t_0.end();
   matrix_type::row_const_iterator j0_end = t_0.end();
