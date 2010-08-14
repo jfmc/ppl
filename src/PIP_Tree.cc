@@ -2644,9 +2644,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         bool has_positive = false;
         {
           matrix_type::row_const_reference_type s_i = tableau.s[i];
-          matrix_type::const_row_const_iterator j = s_i.begin();
-          matrix_type::const_row_const_iterator j_end = s_i.end();
-          for ( ; j != j_end; ++j)
+          matrix_type::const_row_const_iterator j;
+          matrix_type::const_row_const_iterator j_end;
+          for (j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
             if (j->second > 0) {
               has_positive = true;
               break;
@@ -2656,12 +2656,12 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           continue;
         // Minimize parameter coefficient score,
         // eliminating implicated tautologies (if any).
-        matrix_type::row_const_reference_type t_i = tableau.t[i];
         score = 0;
         {
-          matrix_type::const_row_const_iterator j = t_i.begin();
-          matrix_type::const_row_const_iterator j_end = t_i.end();
-          for ( ; j != j_end; ++j)
+          matrix_type::row_const_reference_type t_i = tableau.t[i];
+          matrix_type::const_row_const_iterator j;
+          matrix_type::const_row_const_iterator j_end;
+          for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j)
             score += j->second;
         }
         if (i_neg == not_a_dim || score < best_score) {
@@ -2691,12 +2691,12 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       for (dimension_type i = first_mixed; i < num_rows; ++i) {
         if (sign[i] != MIXED)
           continue;
-        matrix_type::row_const_reference_type t_i = tableau.t[i];
         score = 0;
         {
-          matrix_type::const_row_const_iterator j = t_i.begin();
-          matrix_type::const_row_const_iterator j_end = t_i.end();
-          for ( ; j != j_end; ++j)
+          matrix_type::row_const_reference_type t_i = tableau.t[i];
+          matrix_type::const_row_const_iterator j;
+          matrix_type::const_row_const_iterator j_end;
+          for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j)
             score += j->second;
         }
         if (best_i == not_a_dim || score < best_score) {
@@ -2830,9 +2830,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         continue;
       const dimension_type i = mapping[k];
       matrix_type::row_const_reference_type t_i = tableau.t[i];
-      matrix_type::const_row_const_iterator j = t_i.begin();
-      matrix_type::const_row_const_iterator j_end = t_i.end();
-      for ( ; j != j_end; ++j) {
+      matrix_type::const_row_const_iterator j;
+      matrix_type::const_row_const_iterator j_end;
+      for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
         if (j->second % den != 0)
           goto non_integer;
       }
@@ -2858,12 +2858,12 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         if (basis[k])
           continue;
         const dimension_type i = mapping[k];
-        matrix_type::row_const_reference_type t_i = tableau.t[i];
         // Count the number of non-integer parameter coefficients.
         dimension_type pcount = 0;
-        matrix_type::const_row_const_iterator j = t_i.begin();
-        matrix_type::const_row_const_iterator j_end = t_i.end();
-        for ( ; j != j_end; ++j) {
+        matrix_type::row_const_reference_type t_i = tableau.t[i];
+        matrix_type::const_row_const_iterator j;
+        matrix_type::const_row_const_iterator j_end;
+        for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
           mod_assign(mod, j->second, den);
           if (mod != 0)
             ++pcount;
@@ -2894,11 +2894,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         // Compute score and pcount.
         score = 0;
         dimension_type pcount = 0;
-        matrix_type::row_const_reference_type t_i = tableau.t[i];
         {
-          matrix_type::const_row_const_iterator j = t_i.begin();
-          matrix_type::const_row_const_iterator j_end = t_i.end();
-          for ( ; j != j_end; ++j) {
+          matrix_type::row_const_reference_type t_i = tableau.t[i];
+          matrix_type::const_row_const_iterator j;
+          matrix_type::const_row_const_iterator j_end;
+          for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
             mod_assign(mod, j->second, den);
             if (mod != 0) {
               score += den;
@@ -2910,11 +2910,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 
         // Compute s_score.
         s_score = 0;
-        matrix_type::row_const_reference_type s_i = tableau.s[i];
         {
-          matrix_type::const_row_const_iterator j = s_i.begin();
-          matrix_type::const_row_const_iterator j_end = s_i.end();
-          for ( ; j != j_end; ++j) {
+          matrix_type::row_const_reference_type s_i = tableau.s[i];
+          matrix_type::const_row_const_iterator j;
+          matrix_type::const_row_const_iterator j_end;
+          for (j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
             mod_assign(mod, j->second, den);
             s_score += den;
             s_score -= mod;
