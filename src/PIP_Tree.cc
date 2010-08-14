@@ -2000,7 +2000,7 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
         matrix_type::row_iterator cut_i = cut.begin();
         matrix_type::row_iterator cut_end = cut.end();
         for ( ; cut_i != cut_end; ++cut_i)
-          mod_assign(cut_i->second,cut_i->second,den);
+          mod_assign(cut_i->second, cut_i->second, den);
         cut[0] -= den;
         scaling.push_back(den);
       }
@@ -2044,9 +2044,9 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
     // Perform a pivot operation on the matrix.
     const Coefficient& pivot_pj = pivot.get(pj);
     {
-      matrix_type::const_row_const_iterator j = pivot.begin();
-      matrix_type::const_row_const_iterator j_end = pivot.end();
-      for ( ; j!=j_end; ++j ) {
+      matrix_type::const_row_const_iterator j;
+      matrix_type::const_row_const_iterator j_end;
+      for (j = pivot.begin(), j_end = pivot.end(); j != j_end; ++j) {
         if (j->first == pj)
           continue;
         const Coefficient& pivot_j = j->second;
@@ -2060,9 +2060,9 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
             // Must scale row s_i to stay in integer case.
             gcd_assign(gcd, product, pivot_pj);
             exact_div_assign(scale_factor, pivot_pj, gcd);
-            matrix_type::row_iterator k = s_i.begin();
-            matrix_type::row_iterator k_end = s_i.end();
-            for ( ; k != k_end; ++k )
+            matrix_type::row_iterator k;
+            matrix_type::row_iterator k_end;
+            for (k = s_i.begin(), k_end = s_i.end(); k != k_end; ++k)
               k->second *= scale_factor;
             product *= scale_factor;
             scaling[i] *= scale_factor;
@@ -2083,9 +2083,9 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
           // As above, perform row scaling.
           gcd_assign(gcd, product, pivot_pj);
           exact_div_assign(scale_factor, pivot_pj, gcd);
-          matrix_type::row_iterator k = s_i.begin();
-          matrix_type::row_iterator k_end = s_i.end();
-          for ( ; k != k_end; ++k )
+          matrix_type::row_iterator k;
+          matrix_type::row_iterator k_end;
+          for (k = s_i.begin(), k_end = s_i.end(); k != k_end; ++k)
             k->second *= scale_factor;
           product *= scale_factor;
           scaling[i] *= scale_factor;
