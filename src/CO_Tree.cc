@@ -449,7 +449,10 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 
   itr = rebalance(itr, 0, Coefficient_zero());
 
-  itr = least_common_ancestor(itr, deleted_node);
+  if (itr.get_offset() < deleted_node.get_offset())
+    // deleted_node is an ancestor of itr
+    itr = deleted_node;
+
   itr.go_down_searching_key(deleted_key);
 
   iterator result(itr);
