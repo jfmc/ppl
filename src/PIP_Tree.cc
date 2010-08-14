@@ -3087,7 +3087,6 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       // Recompute row reference after possible reallocation.
       matrix_type::row_const_reference_type row_t = tableau.t[index];
       {
-#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
         matrix_type::const_row_const_iterator j = row_t.begin();
         matrix_type::const_row_const_iterator j_end = row_t.end();
         matrix_type::row_iterator itr1 = ctx1.end();
@@ -3101,32 +3100,17 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
             neg_assign(itr2->second);
             // ctx2[0] += den-1;
             itr2->second += den;
-            --itr2->second;
+            --(itr2->second);
           } else {
             // ctx2[0] += den-1;
-            itr2 = ctx2.find_create_assign(0, den);
-            --itr2->second;
+            itr2 = ctx2.find_create(0, den);
+            --(itr2->second);
           }
           ++j;
         } else {
           // ctx2[0] += den-1;
-          Coefficient& ctx2_0 = ctx2[0];
-          ctx2_0 += den;
-          --ctx2_0;
-        }
-        for ( ; j != j_end; ++j) {
-          mod_assign(mod, j->second, den);
-          if (mod != 0) {
-            const dimension_type j_index = j->first;
-            itr1 = ctx1.find_create(j_index, den);
-            itr1->second -= mod;
-            itr2 = ctx2.find_create(j_index, itr1->second);
-            neg_assign(itr2->second);
-            // Now itr1 and itr2 are valid, so we can use them in the next
-            // calls to find_create().
-            ++j;
-            break;
-          }
+          itr2 = ctx2.find_create(0, den);
+          --(itr2->second);
         }
         for ( ; j != j_end; ++j) {
           mod_assign(mod, j->second, den);
@@ -3138,38 +3122,10 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
             neg_assign(itr2->second);
           }
         }
-        if (itr1 != ctx1.end()) {
-          itr1 = ctx1.find_create(itr1, num_params, den);
-          neg_assign(itr1->second);
-          itr2 = ctx2.find_create(itr2, num_params, den);
-        } else {
-          itr1 = ctx1.find_create(num_params, den);
-          neg_assign(itr1->second);
-          itr2 = ctx2.find_create(num_params, den);
-        }
+        itr1 = ctx1.find_create(itr1, num_params, den);
+        neg_assign(itr1->second);
+        itr2 = ctx2.find_create(itr2, num_params, den);
       }
-#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
-        matrix_type::const_row_const_iterator j = row_t.begin();
-        matrix_type::const_row_const_iterator j_end = row_t.end();
-        for ( ; j != j_end; ++j) {
-          mod_assign(mod, j->second, den);
-          if (mod != 0) {
-            const dimension_type j_index = j->first;
-            Coefficient& ctx1_elem = ctx1[j_index];
-            ctx1_elem = den;
-            ctx1_elem -= mod;
-            ctx2[j_index] -= ctx1_elem;
-          }
-        }
-        Coefficient& ctx2_0 = ctx2[0];
-        ctx2_0 += den;
-        --ctx2_0;
-        Coefficient& ctx1_n = ctx1[num_params];
-        ctx1_n = den;
-        neg_assign(ctx1_n);
-        ctx2[num_params] = den;
-      }
-#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
 
 #ifdef NOISY_PIP
       {
