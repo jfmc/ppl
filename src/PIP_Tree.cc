@@ -1485,14 +1485,13 @@ PIP_Solution_Node::Tableau::normalize() {
 void
 PIP_Solution_Node::Tableau::scale(Coefficient_traits::const_reference ratio) {
   for (dimension_type i = s.num_rows(); i-- > 0; ) {
+    matrix_type::row_iterator j;
+    matrix_type::row_iterator j_end;
     matrix_type::row_reference_type s_i = s[i];
-    matrix_type::row_reference_type t_i = t[i];
-    matrix_type::row_iterator j = s_i.begin();
-    matrix_type::row_iterator j_end = s_i.end();
-    for ( ; j != j_end; ++j)
+    for (j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
       j->second *= ratio;
-    for (j = t_i.begin(), j_end = t_i.end();
-         j != j_end; ++j)
+    matrix_type::row_reference_type t_i = t[i];
+    for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j)
       j->second *= ratio;
   }
   denom *= ratio;
