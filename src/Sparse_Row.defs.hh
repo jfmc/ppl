@@ -599,6 +599,7 @@ public:
   //! Loads the row from an ASCII representation generated using ascii_dump().
   bool ascii_load(std::istream& s);
 
+private:
   //! Checks the invariant.
   bool OK() const;
 
@@ -1160,10 +1161,10 @@ public:
   //! Returns the underlying Unlimited_Sparse_Row.
   operator const Unlimited_Sparse_Row&() const;
 
+private:
+
   //! Checks the internal invariant.
   bool OK() const;
-
-private:
 
   /*!
     \brief A functor class that applies a functor to the second element of its
