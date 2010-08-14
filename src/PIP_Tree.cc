@@ -2386,9 +2386,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         matrix_type::row_const_reference_type s_i = tableau.s[i];
         bool has_positive = false;
         {
-          matrix_type::const_row_const_iterator j = s_i.begin();
-          matrix_type::const_row_const_iterator j_end = s_i.end();
-          for ( ; j != j_end; ++j)
+          matrix_type::const_row_const_iterator j;
+          matrix_type::const_row_const_iterator j_end;
+          for (j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
             if (j->second > 0) {
               has_positive = true;
               break;
