@@ -45,12 +45,6 @@ Sparse_Row::Sparse_Row(const Unlimited_Sparse_Row &x, dimension_type n)
 }
 
 inline
-Sparse_Row::Sparse_Row(const std::vector<Coefficient>& v)
-  : row(v), size_(v.size()) {
-  PPL_ASSERT(OK());
-}
-
-inline
 Sparse_Row::Sparse_Row(const Sparse_Row_Reference& x)
   : row(static_cast<const Unlimited_Sparse_Row&>(x)), size_(x.size()) {
   PPL_ASSERT(OK());

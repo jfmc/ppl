@@ -26,8 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Sparse_Row.types.hh"
 #include "Unlimited_Sparse_Row.defs.hh"
 #include "Coefficient.defs.hh"
-#include <list>
-#include <vector>
 
 namespace std {
 
@@ -70,12 +68,6 @@ public:
     \see CO_Tree::iterator
   */
   typedef Unlimited_Sparse_Row::iterator iterator;
-
-  //! Constructs a row from an std::vector.
-  /*!
-    Zero elements in the vector are not stored.
-  */
-  explicit Sparse_Row(const std::vector<Coefficient>& v);
 
   //! Constructs a row with the specified size.
   /*!
