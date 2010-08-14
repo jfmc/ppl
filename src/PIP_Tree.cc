@@ -3476,16 +3476,18 @@ PIP_Solution_Node
     // Start from index 1 to skip the inhomogenous term.
     matrix_type::const_row_const_iterator j = row.begin();
     matrix_type::const_row_const_iterator j_end = row.end();
-    for ( ; j != j_end; ++j)
-      if (j->first != 0) {
-        const Coefficient& coeff = j->second;
-        if (coeff == 0)
-          continue;
-        norm_coeff = coeff / den;
-        if (norm_coeff != 0)
-          add_mul_assign(sol_i, norm_coeff,
-                        Variable(all_param_names[j->first - 1]));
-      }
+    // Skip the element with index 0.
+    if (j != j_end && j->first == 0)
+      ++j;
+    for ( ; j != j_end; ++j) {
+      const Coefficient& coeff = j->second;
+      if (coeff == 0)
+        continue;
+      norm_coeff = coeff / den;
+      if (norm_coeff != 0)
+        add_mul_assign(sol_i, norm_coeff,
+                      Variable(all_param_names[j->first - 1]));
+    }
     norm_coeff = row.get(0) / den;
     sol_i += norm_coeff;
   }
