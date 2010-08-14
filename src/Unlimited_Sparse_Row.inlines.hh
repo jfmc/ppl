@@ -40,11 +40,6 @@ Unlimited_Sparse_Row::Unlimited_Sparse_Row(const Unlimited_Sparse_Row& x)
   : tree(x.tree) {
 }
 
-inline
-Unlimited_Sparse_Row::Unlimited_Sparse_Row(const std::vector<Coefficient> &v)
-  : tree(v) {
-}
-
 inline Unlimited_Sparse_Row&
 Unlimited_Sparse_Row::operator=(const Unlimited_Sparse_Row& x) {
   tree = x.tree;

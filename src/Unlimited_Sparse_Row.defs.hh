@@ -46,12 +46,6 @@ public:
   //! The copy constructor.
   Unlimited_Sparse_Row(const Unlimited_Sparse_Row& x);
 
-  //! Constructs an unlimited row from an std::vector.
-  /*!
-    Zero elements in the vector are not stored.
-  */
-  explicit Unlimited_Sparse_Row(const std::vector<Coefficient> &v);
-
   //! The assignment operator.
   Unlimited_Sparse_Row& operator=(const Unlimited_Sparse_Row& x);
 
