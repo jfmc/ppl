@@ -2170,11 +2170,6 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
   }
 
   const Coefficient& denom = tableau.denominator();
-#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
-  // Used to minimize the numer of (slow) insertions in v_row that don't
-  // use a iterator as a hint.
-  std::vector<std::pair<dimension_type,Coefficient> > buffer;
-#endif
 
   for (Constraint_Sequence::const_iterator
          c_iter = input_cs.begin() + first_pending_constraint,
@@ -2191,156 +2186,6 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
     {
       dimension_type p_index = 1;
       dimension_type v_index = 0;
-#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
-      // Setting the inhomogeneus term.
-      if (constraint.inhomogeneous_term() != 0) {
-        matrix_type::row_iterator itr
-          = p_row.find_create(0,constraint.inhomogeneous_term());
-        Coefficient& p_row0 = itr->second;
-        if (constraint.is_strict_inequality())
-          // Transform (expr > 0) into (expr - 1 >= 0).
-          --p_row0;
-        p_row0 *= denom;
-      } else
-        if (constraint.is_strict_inequality()) {
-          matrix_type::row_iterator itr
-            = p_row.find_create(0, denom);
-          // Transform (expr > 0) into (expr - 1 >= 0).
-          neg_assign(itr->second);
-        }
-      matrix_type::row_iterator p_row_itr = p_row.end();
-      dimension_type i = 0;
-      dimension_type i_end = constraint.space_dimension();
-      for ( ; i != i_end; ++i) {
-        const bool is_parameter = (1 == parameters.count(i));
-        const Coefficient& coeff_i = constraint.coefficient(Variable(i));
-        if (coeff_i == 0) {
-          // Optimize computation below: only update p/v index.
-          if (is_parameter)
-            ++p_index;
-          else
-            ++v_index;
-          // Jump to next iteration.
-          continue;
-        }
-
-        if (is_parameter) {
-          p_row_itr = p_row.find_create(p_index, coeff_i * denom);
-          ++p_index;
-          ++i;
-          break;
-        }
-        else {
-          const dimension_type mv = mapping[v_index];
-          if (basis[v_index]) {
-            // Basic variable : add coeff_i * x_i
-            buffer.resize(buffer.size() + 1);
-            buffer.back().first = mv;
-            add_mul_assign(buffer.back().second, coeff_i, denom);
-          } else {
-            // Dump buffer into v_row.
-            {
-              std::sort(buffer.begin(), buffer.end());
-              std::vector<std::pair<dimension_type,Coefficient> >
-                ::iterator j = buffer.begin();
-              std::vector<std::pair<dimension_type,Coefficient> >
-                ::iterator j_end = buffer.end();
-              if (j != j_end) {
-                matrix_row_iterator itr;
-                itr = v_row.find_create(j->first);
-                // We need to do itr->second = j->second, this is faster.
-                std::swap(itr->second, j->second);
-                ++j;
-                for ( ; j != j_end; ++j) {
-                  itr = v_row.find_create(itr, j->first);
-                  // We need to do itr->second = j->second, this is faster.
-                  std::swap(itr->second, j->second);
-                }
-              }
-            }
-            buffer.clear();
-            // Non-basic variable : add coeff_i * row_i
-            add_mul_assign_row(v_row, coeff_i, tableau.s[mv]);
-            add_mul_assign_row(p_row, coeff_i, tableau.t[mv]);
-          }
-          ++v_index;
-        }
-      }
-      for ( ; i != i_end; ++i) {
-        const bool is_parameter = (1 == parameters.count(i));
-        const Coefficient& coeff_i = constraint.coefficient(Variable(i));
-        if (coeff_i == 0) {
-          // Optimize computation below: only update p/v index.
-          if (is_parameter)
-            ++p_index;
-          else
-            ++v_index;
-          // Jump to next iteration.
-          continue;
-        }
-
-        if (is_parameter) {
-          p_row_itr = p_row.find_create(p_row_itr, p_index, coeff_i * denom);
-          ++p_index;
-        }
-        else {
-          const dimension_type mv = mapping[v_index];
-          if (basis[v_index]) {
-            // Basic variable : add coeff_i * x_i
-            buffer.resize(buffer.size() + 1);
-            buffer.back().first = mv;
-            add_mul_assign(buffer.back().second, coeff_i, denom);
-          } else {
-            // Dump buffer into v_row.
-            {
-              std::sort(buffer.begin(), buffer.end());
-              std::vector<std::pair<dimension_type,Coefficient> >
-                ::iterator j = buffer.begin();
-              std::vector<std::pair<dimension_type,Coefficient> >
-                ::iterator j_end = buffer.end();
-              if (j != j_end) {
-                matrix_row_iterator itr;
-                itr = v_row.find_create(j->first);
-                // We need to do itr->second = j->second, this is faster.
-                std::swap(itr->second, j->second);
-                ++j;
-                for ( ; j != j_end; ++j) {
-                  itr = v_row.find_create(itr, j->first);
-                  // We need to do itr->second = j->second, this is faster.
-                  std::swap(itr->second, j->second);
-                }
-              }
-            }
-            buffer.clear();
-            // Non-basic variable : add coeff_i * row_i
-            add_mul_assign_row(v_row, coeff_i, tableau.s[mv]);
-            add_mul_assign_row(p_row, coeff_i, tableau.t[mv]);
-          }
-          ++v_index;
-        }
-      }
-      // Dump buffer into v_row.
-      {
-        std::sort(buffer.begin(), buffer.end());
-        std::vector<std::pair<dimension_type,Coefficient> >
-          ::iterator j = buffer.begin();
-        std::vector<std::pair<dimension_type,Coefficient> >
-          ::iterator j_end = buffer.end();
-        if (j != j_end) {
-          matrix_row_iterator itr
-            = v_row.find_create(j->first);
-          // We need to do itr->second = j->second, this is faster.
-          std::swap(itr->second, j->second);
-          ++j;
-          for ( ; j != j_end; ++j) {
-            itr = v_row.find_create(itr, j->first);
-            // We need to do itr->second = j->second, this is faster.
-            std::swap(itr->second, j->second);
-          }
-        }
-      }
-      buffer.clear();
-#else // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
       // Setting the inhomogeneus term.
       if (constraint.inhomogeneous_term() != 0) {
         Coefficient& p_row0 = p_row[0];
@@ -2350,15 +2195,11 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
           --p_row0;
         p_row0 *= denom;
       } else
-        if (constraint.is_strict_inequality()) {
-          Coefficient& p_row0 = p_row[0];
-          p_row0 = denom;
+        if (constraint.is_strict_inequality())
           // Transform (expr > 0) into (expr - 1 >= 0).
-          neg_assign(p_row0);
-        }
-      dimension_type i = 0;
-      dimension_type i_end = constraint.space_dimension();
-      for ( ; i != i_end; ++i) {
+          neg_assign(p_row[0], denom);
+      for (dimension_type i = 0, i_end = constraint.space_dimension();
+           i != i_end; ++i) {
         const bool is_parameter = (1 == parameters.count(i));
         const Coefficient& coeff_i = constraint.coefficient(Variable(i));
         if (coeff_i == 0) {
@@ -2372,8 +2213,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
         }
 
         if (is_parameter) {
-          matrix_type::row_iterator p_row_itr;
-          p_row_itr = p_row.find_create(p_index, coeff_i * denom);
+          p_row.find_create(p_index, coeff_i * denom);
           ++p_index;
         }
         else {
@@ -2389,7 +2229,6 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
           ++v_index;
         }
       }      
-#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
     }
 
     if (row_sign(v_row, not_a_dimension()) == ZERO) {
