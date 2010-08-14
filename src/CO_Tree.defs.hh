@@ -563,6 +563,7 @@ public:
   /*!
     If the element is found, the returned iterator points to that element;
     otherwise, it points to the immediately preceding or succeeding value.
+    If the tree is empty, end() is returned.
 
     This uses a binary progression and then a bisection, so this method is
     O(log(n)), and it is O(1) if the distance between the returned position
@@ -577,6 +578,7 @@ public:
   /*!
     If the element is found, the returned iterator points to that element;
     otherwise, it points to the immediately preceding or succeeding value.
+    If the tree is empty, end() is returned.
 
     This uses a binary progression and then a bisection, so this method is
     O(log(n)), and it is O(1) if the distance between the returned position
