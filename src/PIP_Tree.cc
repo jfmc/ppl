@@ -1996,36 +1996,12 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
         matrix_type::row_reference_type cut = s[num_rows];
         ++num_rows;
         matrix_type::row_const_reference_type s_mi = s[mi];
-#ifdef PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES
-        matrix_type::row_iterator cut_i = cut.begin();
-        matrix_type::row_iterator cut_end = cut.end();
-        matrix_type::const_row_const_iterator row_i = s_mi.begin();
-        matrix_type::const_row_const_iterator row_end = s_mi.end();
-        if (row_i != row_end) {
-          if (row_i->first == 0) {
-            cut_i = cut.find_create(row_i->first, row_i->second);
-            mod_assign(cut_i->second,cut_i->second,den);
-            cut_i->second -= den;
-          } else {
-            cut_i = cut.find_create(0, den);
-            neg_assign(cut_i->second);
-            cut_i = cut.find_create(cut_i, row_i->first, row_i->second);
-            mod_assign(cut_i->second,cut_i->second,den);
-          }
-          for (++row_i; row_i != row_end; ++row_i) {
-            cut_i = cut.find_create(cut_i, row_i->first, row_i->second);
-            mod_assign(cut_i->second,cut_i->second,den);
-          }
-        } else
-          cut[0] -= den;
-#else
         cut = s_mi;
         matrix_type::row_iterator cut_i = cut.begin();
         matrix_type::row_iterator cut_end = cut.end();
         for ( ; cut_i != cut_end; ++cut_i)
           mod_assign(cut_i->second,cut_i->second,den);
         cut[0] -= den;
-#endif // defined(PPL_SPARSE_BACKEND_SLOW_RANDOM_WRITES)
         scaling.push_back(den);
       }
       // Check if an integer solution was found.
