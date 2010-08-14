@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_CO_Tree_defs_hh 1
 
 #include "Coefficient.defs.hh"
-#include <vector>
 
 namespace Parma_Polyhedra_Library {
 
@@ -341,15 +340,6 @@ public:
 
   //! Constructs an empty tree.
   CO_Tree();
-
-  //! Copies the data from a vector into the tree.
-  /*!
-    This uses the array indexes as keys and the array elements as the data
-    for those keys, skipping zero elements.
-    This is faster than jus creating a tree with the default constructor and
-    inserting all of the non-zero elements.
-  */
-  explicit CO_Tree(const std::vector<data_type>& v);
 
   //! The copy constructor.
   CO_Tree(const CO_Tree& v);
