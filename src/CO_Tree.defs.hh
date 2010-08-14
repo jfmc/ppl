@@ -743,6 +743,7 @@ private:
     The subtree's elements must be compacted to the rightmost end.
 
     \param subtree_size the number of used elements in the subtree.
+                        It must be greater than zero.
     \param add_element if it is true, it tries to add an element with the
                        specified key and value in the process.
     \param last_used points to the leftmost element with a value in the

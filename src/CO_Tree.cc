@@ -865,8 +865,7 @@ PPL::CO_Tree::redistribute_elements_in_subtree(dimension_type root_index,
   // A pair (n, i) in the stack means to visit the subtree with root index i
   // and size n.
 
-  if (subtree_size == 0)
-    return;
+  PPL_ASSERT(subtree_size != 0);
 
   stack_first_empty->first  = subtree_size;
   stack_first_empty->second = root_index;
