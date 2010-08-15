@@ -891,9 +891,8 @@ public:
   */
   tree_iterator(CO_Tree& tree, dimension_type i);
 
+  //! Constructs a tree_iterator from an iterator.
   /*!
-    \brief Constructs a tree_iterator from an iterator.
-
     \p itr must not be end().
   */
   tree_iterator(const iterator& itr, CO_Tree& tree);
