@@ -282,8 +282,7 @@ public:
     If \p itr points near the added element, this is faster, even faster than
     <CODE>(*this)[i]=x;</CODE>.
 
-    The value of \p itr does not change the result. \p itr may even be
-    before_begin() or end().
+    The value of \p itr does not change the result. \p itr may even be end().
 
     This operation invalidates existing iterators.
 
@@ -297,8 +296,7 @@ public:
     If \p itr points near the added element, this is faster, even faster than
     <CODE>(*this)[i];</CODE>.
 
-    The value of \p itr does not change the result. \p itr may even be
-    before_begin() or end().
+    The value of \p itr does not change the result. \p itr may even be end().
 
     This operation invalidates existing iterators.
 
@@ -319,15 +317,6 @@ public:
   */
   const Coefficient& get(dimension_type i) const;
 
-  //! Returns an iterator that points before the first stored element.
-  /*!
-    This method always returns a reference to the same internal iterator,
-    that is kept valid.
-    Client code can keep a const reference to that iterator instead of
-    keep updating a local iterator.
-  */
-  const iterator& before_begin();
-
   //! Returns an iterator that points at the first stored element.
   iterator begin();
 
@@ -340,23 +329,11 @@ public:
   */
   const iterator& end();
 
-  //! Equivalent to before_cbegin().
-  const const_iterator& before_begin() const;
-
   //! Equivalent to cbegin().
   const_iterator begin() const;
 
   //! Equivalent to cend().
   const const_iterator& end() const;
-
-  //! Returns an iterator that points before the first element.
-  /*!
-    This method always returns a reference to the same internal iterator,
-    that is updated at each operation that modifies the structure.
-    Client code can keep a const reference to that iterator instead of
-    keep updating a local iterator.
-  */
-  const const_iterator& before_cbegin() const;
 
   //! Returns an iterator that points at the first element.
   const_iterator cbegin() const;
@@ -406,8 +383,7 @@ public:
     \p itr is used as a hint. This method will be faster if the searched
     element is near to \p itr.
 
-    The value of \p itr does not change the result. \p itr may even be
-    before_begin() or end().
+    The value of \p itr does not change the result. \p itr may even be end().
 
     This method is O(1) if the distance between \p itr and the searched
     element is O(1), otherwise it is O(log(n)).
@@ -428,8 +404,7 @@ public:
     \p itr is used as a hint. This method will be faster if the searched
     element is near to \p itr.
 
-    The value of \p itr does not change the result. \p itr may even be
-    before_begin() or end().
+    The value of \p itr does not change the result. \p itr may even be end().
 
     This method is O(1) if the distance between \p itr and the searched
     element is O(1), otherwise it is O(log(n)).
@@ -458,8 +433,7 @@ public:
     \p itr is used as a hint. This method will be faster if the searched
     element is near to \p itr.
 
-    The value of \p itr does not change the result. \p itr may even be
-    before_begin() or end().
+    The value of \p itr does not change the result. \p itr may even be end().
 
     This method is O(1) if the distance between \p itr and the searched
     element is O(1), otherwise it is O(log(n)).
@@ -488,8 +462,7 @@ public:
     \p itr is used as a hint. This method will be faster if the searched
     element is near to \p itr.
 
-    The value of \p itr does not change the result. \p itr may even be
-    before_begin() or end().
+    The value of \p itr does not change the result. \p itr may even be end().
 
     This method is O(1) if the distance between \p itr and the searched
     element is O(1), otherwise it is O(log(n)).

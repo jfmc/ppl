@@ -92,9 +92,7 @@ Unlimited_Sparse_Row::swap(dimension_type i, dimension_type j) {
 
 inline void
 Unlimited_Sparse_Row::swap(iterator i, iterator j) {
-  PPL_ASSERT(i != tree.before_begin());
   PPL_ASSERT(i != end());
-  PPL_ASSERT(j != tree.before_begin());
   PPL_ASSERT(j != end());
   std::swap(i->second, j->second);
 }
@@ -102,11 +100,6 @@ Unlimited_Sparse_Row::swap(iterator i, iterator j) {
 inline memory_size_type
 Unlimited_Sparse_Row::external_memory_in_bytes() const {
   return tree.external_memory_in_bytes();
-}
-
-inline const Unlimited_Sparse_Row::iterator&
-Unlimited_Sparse_Row::before_begin() {
-  return tree.before_begin();
 }
 
 inline Unlimited_Sparse_Row::iterator
@@ -119,11 +112,6 @@ Unlimited_Sparse_Row::end() {
   return tree.end();
 }
 
-inline const Unlimited_Sparse_Row::const_iterator&
-Unlimited_Sparse_Row::before_begin() const {
-  return tree.before_cbegin();
-}
-
 inline Unlimited_Sparse_Row::const_iterator
 Unlimited_Sparse_Row::begin() const {
   return tree.cbegin();
@@ -132,11 +120,6 @@ Unlimited_Sparse_Row::begin() const {
 inline const Unlimited_Sparse_Row::const_iterator&
 Unlimited_Sparse_Row::end() const {
   return tree.cend();
-}
-
-inline const Unlimited_Sparse_Row::const_iterator&
-Unlimited_Sparse_Row::before_cbegin() const {
-  return tree.before_cbegin();
 }
 
 inline Unlimited_Sparse_Row::const_iterator
@@ -288,10 +271,8 @@ inline Unlimited_Sparse_Row::iterator
 Unlimited_Sparse_Row::reset(iterator first, iterator last) {
   if (first == last)
     return first;
-  PPL_ASSERT(first != before_begin());
   PPL_ASSERT(last != end());
   --last;
-  PPL_ASSERT(last != before_begin());
   const dimension_type j = last->first;
   PPL_ASSERT(first->first <= j);
   // We can't just compare first and last at each iteration, because last will
