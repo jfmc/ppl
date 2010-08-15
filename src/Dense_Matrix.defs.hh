@@ -269,13 +269,17 @@ public:
 
     The \p cycles vector contains, one after the other, the
     non-trivial cycles (i.e., the cycles of length greater than one)
-    of a permutation of non-zero column indexes.  Each cycle is
-    terminated by zero.  For example, assuming the matrix has 6
+    of a permutation of \e non-zero column indexes.  Each cycle is
+    terminated by zero.  For example, assuming the matrix has 7
     columns, the permutation \f$ \{ 1 \mapsto 3, 2 \mapsto 4,
     3 \mapsto 6, 4 \mapsto 2, 5 \mapsto 5, 6 \mapsto 1 \}\f$ can be
     represented by the non-trivial cycles \f$(1 3 6)(2 4)\f$ that, in
     turn can be represented by a vector of 6 elements containing 1, 3,
     6, 0, 2, 4, 0.
+
+    \note
+    The first column of the matrix, having index zero, is never involved
+    in a permutation.
   */
   void permute_columns(const std::vector<dimension_type>& cycles);
 
