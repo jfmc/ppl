@@ -378,13 +378,6 @@ Sparse_Row_Reference::reset(dimension_type i) {
 }
 
 inline void
-Sparse_Row_Reference::reset(dimension_type first, dimension_type last) {
-  PPL_ASSERT(last <= size_);
-  row.reset(first, last);
-  PPL_ASSERT(OK());
-}
-
-inline void
 Sparse_Row_Reference::reset_after(dimension_type i) {
   PPL_ASSERT(i < size_);
   row.reset_after(i);

@@ -677,17 +677,6 @@ public:
   */
   void reset(dimension_type i);
 
-  //! Resets to zero the elements with indexes in [i,j).
-  /*!
-    By calling this method instead of getting a reference to the values and
-    setting them to zero, the elements will no longer be stored.
-
-    This operation invalidates existing iterators.
-
-    This method takes O((j-i)*log(n)) time.
-  */
-  void reset(dimension_type i, dimension_type j);
-
   //! Resets to zero the elements with index greater than or equal to i.
   /*!
     By calling this method instead of getting a reference to the values and
