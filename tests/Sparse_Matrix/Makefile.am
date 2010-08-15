@@ -20,39 +20,58 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = \
-. \
-CO_Tree \
-Sparse_Matrix \
-PIP_Problem \
-Powerset \
-Partially_Reduced_Product \
-Box \
-MIP_Problem \
-Octagonal_Shape \
-BD_Shape \
-Polyhedron \
-Grid
-#Ask_Tell
+if VALGRIND_TESTS_ENABLED
 
-AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
+CHECKER = \
+$(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
+--num-callers=100 --leak-resolution=high \
+--suppressions=$(top_srcdir)/tests/valgrind_suppressions
 
-check_LIBRARIES = libppl_tests.a
+else !VALGRIND_TESTS_ENABLED
 
-libppl_tests_a_SOURCES = \
-files.hh \
-files.cc \
-ppl_test.cc
+CHECKER =
+
+endif !VALGRIND_TESTS_ENABLED
+
+TESTS_ENVIRONMENT = $(CHECKER)
+
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src \
+-I$(top_builddir)/src \
+-I$(top_srcdir)/utils \
+-I$(top_srcdir)/tests \
+@extra_includes@ \
+@debug_flag@
 
 LDADD = \
+$(top_builddir)/utils/libppl_utils.a \
+$(top_builddir)/tests/libppl_tests.a \
 $(top_builddir)/src/libppl.la \
-libppl_tests.a \
 @extra_libraries@
 
-noinst_HEADERS = \
-ppl_test.hh \
-Random_Number_Generator.defs.hh \
-Random_Number_Generator.inlines.hh \
-Random_Number_Generator.types.hh
+TESTS = \
+sparsematrix1
 
-EXTRA_DIST = valgrind_suppressions
+XFAIL_TESTS =
+
+BUGS =
+
+#
+# Sources for the tests
+#
+
+sparsematrix1_SOURCES = sparsematrix1.cc
+
+check_PROGRAMS = \
+$(TESTS) \
+$(WATCHDOG_TESTS) \
+$(BUGS)
+
+$(top_builddir)/utils/libppl_utils.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
+
+$(top_builddir)/tests/libppl_tests.a:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/tests libppl_tests.a
+
+$(top_builddir)/src/libppl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la

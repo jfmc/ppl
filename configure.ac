@@ -1540,6 +1540,7 @@ AC_CONFIG_FILES(Makefile
                 tests/PIP_Problem/Makefile
                 tests/Polyhedron/Makefile
                 tests/Powerset/Makefile
+                tests/Sparse_Matrix/Makefile
                 utils/Makefile
                 m4/Makefile
                 demos/Makefile
