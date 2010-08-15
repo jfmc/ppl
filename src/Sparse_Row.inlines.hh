@@ -177,11 +177,6 @@ Sparse_Row::get(dimension_type i) const {
   return row.get(i);
 }
 
-inline const Sparse_Row::iterator&
-Sparse_Row::before_begin() {
-  return row.before_begin();
-}
-
 inline Sparse_Row::iterator
 Sparse_Row::begin() {
   return row.begin();
@@ -192,11 +187,6 @@ Sparse_Row::end() {
   return row.end();
 }
 
-inline const Sparse_Row::const_iterator&
-Sparse_Row::before_begin() const {
-  return row.before_cbegin();
-}
-
 inline Sparse_Row::const_iterator
 Sparse_Row::begin() const {
   return row.cbegin();
@@ -205,11 +195,6 @@ Sparse_Row::begin() const {
 inline const Sparse_Row::const_iterator&
 Sparse_Row::end() const {
   return row.cend();
-}
-
-inline const Sparse_Row::const_iterator&
-Sparse_Row::before_cbegin() const {
-  return row.before_cbegin();
 }
 
 inline Sparse_Row::const_iterator
@@ -454,11 +439,6 @@ Sparse_Row_Reference::get(dimension_type i) const {
   return row.get(i);
 }
 
-inline const Sparse_Row_Reference::iterator&
-Sparse_Row_Reference::before_begin() {
-  return row.before_begin();
-}
-
 inline Sparse_Row_Reference::iterator
 Sparse_Row_Reference::begin() {
   return row.begin();
@@ -469,11 +449,6 @@ Sparse_Row_Reference::end() {
   return row.end();
 }
 
-inline const Sparse_Row_Reference::const_iterator&
-Sparse_Row_Reference::before_begin() const {
-  return row.before_cbegin();
-}
-
 inline Sparse_Row_Reference::const_iterator
 Sparse_Row_Reference::begin() const {
   return row.cbegin();
@@ -482,11 +457,6 @@ Sparse_Row_Reference::begin() const {
 inline const Sparse_Row_Reference::const_iterator&
 Sparse_Row_Reference::end() const {
   return row.cend();
-}
-
-inline const Sparse_Row_Reference::const_iterator&
-Sparse_Row_Reference::before_cbegin() const {
-  return row.before_cbegin();
 }
 
 inline Sparse_Row_Reference::const_iterator
