@@ -251,16 +251,16 @@ public:
     The following code prints the system of generators
     of the grid <CODE>gr</CODE>:
     \code
-  const Grid_Generator_System& gs = gr.generators();
-  for (Grid_Generator_System::const_iterator i = gs.begin(),
-        gs_end = gs.end(); i != gs_end; ++i)
+  const Grid_Generator_System& ggs = gr.generators();
+  for (Grid_Generator_System::const_iterator i = ggs.begin(),
+        ggs_end = ggs.end(); i != ggs_end; ++i)
     cout << *i << endl;
     \endcode
     The same effect can be obtained more concisely by using
     more features of the STL:
     \code
-  const Generator_System& gs = gr.generators();
-  copy(gs.begin(), gs.end(), ostream_iterator<Grid_Generator>(cout, "\n"));
+  const Grid_Generator_System& ggs = gr.generators();
+  copy(ggs.begin(), ggs.end(), ostream_iterator<Grid_Generator>(cout, "\n"));
     \endcode
   */
   class const_iterator

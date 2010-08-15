@@ -70,7 +70,11 @@ ppl-config.sed \
 ppl.lsm.in \
 BUGS \
 CREDITS \
+ChangeLog_2001-2008 \
+README.alpha \
+README.arm \
 README.configure \
+README.solaris \
 STANDARDS
 
 DISTCLEANFILES = \

@@ -37,16 +37,31 @@ Affine_Space::Affine_Space(dimension_type num_dimensions,
 }
 
 inline
-Affine_Space::Affine_Space(const Generator_System& /*gs*/) {
-  // FIXME(0.11): implement by building the grid generators.
-  // Throw std::invalid_argument if `gs' contains rays.
-  abort();
+Affine_Space::Affine_Space(const Affine_Space& y,
+                           Complexity_Class complexity)
+  : gr(y.gr, complexity) {
 }
 
 inline
-Affine_Space::Affine_Space(Generator_System& /*gs*/, Recycle_Input) {
-  // FIXME(0.11): implement by building the grid generators.
-  abort();
+Affine_Space::Affine_Space(const Constraint_System& cs)
+  : gr(cs) {
+}
+
+inline
+Affine_Space::Affine_Space(Constraint_System& cs, Recycle_Input ri)
+  : gr(cs, ri) {
+}
+
+inline
+Affine_Space::Affine_Space(const Polyhedron& ph,
+                           Complexity_Class complexity)
+  : gr(ph, complexity) {
+}
+
+inline
+Affine_Space::Affine_Space(Generator_System& gs, Recycle_Input)
+  : gr(EMPTY) {
+  Affine_Space(gs).swap(*this);
 }
 
 template <typename U>

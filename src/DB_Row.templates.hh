@@ -39,9 +39,8 @@ DB_Row_Impl_Handler<T>::Impl::construct_upward_approximation(const U& y) {
     bump_size();
   }
 #else // PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  PPL_ASSERT(y_size > 0);
   if (y_size > 0) {
-    vec_[0] = y[0];
+    assign_r(vec_[0], y[0], ROUND_UP);
     bump_size();
     // Construct in direct order: will destroy in reverse order.
     for (dimension_type i = 1; i < y_size; ++i) {
@@ -58,9 +57,11 @@ DB_Row_Impl_Handler<T>::
 Impl::expand_within_capacity(const dimension_type new_size) {
   PPL_ASSERT(size() <= new_size && new_size <= max_size());
 #if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  // vec_[0] is already constructed.
-  if (size() == 0 && new_size > 0)
+  if (size() == 0 && new_size > 0) {
+    // vec_[0] is already constructed: we just need to assign +infinity.
+    assign_r(vec_[0], PLUS_INFINITY, ROUND_NOT_NEEDED);
     bump_size();
+  }
 #endif
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = size(); i < new_size; ++i) {
@@ -98,7 +99,6 @@ DB_Row_Impl_Handler<T>::Impl::copy_construct_coefficients(const Impl& y) {
     bump_size();
   }
 #else // PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  PPL_ASSERT(y_size > 0);
   if (y_size > 0) {
     vec_[0] = y.vec_[0];
     bump_size();

@@ -1178,7 +1178,8 @@ add_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
   }
   if (exp >= sizeof(Type) * CHAR_BIT)
     return set_pos_overflow_int<To_Policy>(to, dir);
-  return add_unsigned_int<To_Policy, From_Policy, void>(to, x, Type(1) << exp, dir);
+  Type n = Type(1) << exp;
+  return add_unsigned_int<To_Policy, From_Policy, void>(to, x, n, dir);
 }
 
 template <typename To_Policy, typename From_Policy, typename Type>
@@ -1191,9 +1192,14 @@ add_2exp_signed_int(Type& to, const Type x, unsigned int exp,
   }
   if (exp >= sizeof(Type) * CHAR_BIT)
     return set_pos_overflow_int<To_Policy>(to, dir);
-  if (exp == sizeof(Type) * CHAR_BIT - 1)
-    return sub_signed_int<To_Policy, From_Policy, void>(to, x, -2 * (Type(1) << (exp - 1)), dir);
-  return add_signed_int<To_Policy, From_Policy, void>(to, x, Type(1) << exp, dir);
+  if (exp == sizeof(Type) * CHAR_BIT - 1) {
+    Type n = -2 * (Type(1) << (exp - 1));
+    return sub_signed_int<To_Policy, From_Policy, void>(to, x, n, dir);
+  }
+  else {
+    Type n = Type(1) << exp;
+    return add_signed_int<To_Policy, From_Policy, void>(to, x, n, dir);
+  }
 }
 
 template <typename To_Policy, typename From_Policy, typename Type>
@@ -1206,7 +1212,8 @@ sub_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
   }
   if (exp >= sizeof(Type) * CHAR_BIT)
     return set_neg_overflow_int<To_Policy>(to, dir);
-  return sub_unsigned_int<To_Policy, From_Policy, void>(to, x, Type(1) << exp, dir);
+  Type n = Type(1) << exp;
+  return sub_unsigned_int<To_Policy, From_Policy, void>(to, x, n, dir);
 }
 
 template <typename To_Policy, typename From_Policy, typename Type>
@@ -1219,9 +1226,14 @@ sub_2exp_signed_int(Type& to, const Type x, unsigned int exp,
   }
   if (exp >= sizeof(Type) * CHAR_BIT)
     return set_neg_overflow_int<To_Policy>(to, dir);
-  if (exp == sizeof(Type) * CHAR_BIT - 1)
-    return add_signed_int<To_Policy, From_Policy, void>(to, x, -2 * (Type(1) << (exp - 1)), dir);
-  return sub_signed_int<To_Policy, From_Policy, void>(to, x, Type(1) << exp, dir);
+  if (exp == sizeof(Type) * CHAR_BIT - 1) {
+    Type n = -2 * (Type(1) << (exp - 1));
+    return add_signed_int<To_Policy, From_Policy, void>(to, x, n, dir);
+  }
+  else {
+    Type n = Type(1) << exp;
+    return sub_signed_int<To_Policy, From_Policy, void>(to, x, n, dir);
+  }
 }
 
 template <typename To_Policy, typename From_Policy, typename Type>

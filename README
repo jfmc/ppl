@@ -64,19 +64,23 @@ For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.11 source distribution
-(41 directories, 1446 files):
+(44 directories, 1588 files):
 
 ppl-0.11
 |-- BUGS
 |-- COPYING
 |-- CREDITS
 |-- ChangeLog
+|-- ChangeLog_2001-2008
 |-- INSTALL
 |-- Makefile.am
 |-- Makefile.in
 |-- NEWS
 |-- README
+|-- README.alpha
+|-- README.arm
 |-- README.configure
+|-- README.solaris
 |-- STANDARDS
 |-- TODO
 |-- Watchdog
@@ -84,6 +88,7 @@ ppl-0.11
 |   |-- COPYING
 |   |-- CREDITS
 |   |-- ChangeLog
+|   |-- ChangeLog_2001-2008
 |   |-- INSTALL
 |   |-- Makefile.am
 |   |-- Makefile.in
@@ -115,9 +120,9 @@ ppl-0.11
 |   |   |-- gpl.ps.gz
 |   |   |-- gpl.tex
 |   |   |-- gpl.txt
-|   |   |-- pwl-user-0.5-html.tar.gz
-|   |   |-- pwl-user-0.5.pdf
-|   |   |-- pwl-user-0.5.ps.gz
+|   |   |-- pwl-user-0.8-html.tar.gz
+|   |   |-- pwl-user-0.8.pdf
+|   |   |-- pwl-user-0.8.ps.gz
 |   |   |-- pwl.sty
 |   |   |-- user.doxyconf-html.in
 |   |   |-- user.doxyconf-latex.in
@@ -153,14 +158,18 @@ ppl-0.11
 |   |   |-- Handler.types.hh
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
-|   |   |-- Pending_Element.cc
 |   |   |-- Pending_Element.defs.hh
 |   |   |-- Pending_Element.inlines.hh
 |   |   |-- Pending_Element.types.hh
-|   |   |-- Pending_List.cc
 |   |   |-- Pending_List.defs.hh
 |   |   |-- Pending_List.inlines.hh
+|   |   |-- Pending_List.templates.hh
 |   |   |-- Pending_List.types.hh
+|   |   |-- Threshold_Watcher.cc
+|   |   |-- Threshold_Watcher.defs.hh
+|   |   |-- Threshold_Watcher.inlines.hh
+|   |   |-- Threshold_Watcher.templates.hh
+|   |   |-- Threshold_Watcher.types.hh
 |   |   |-- Time.cc
 |   |   |-- Time.defs.hh
 |   |   |-- Time.inlines.hh
@@ -176,8 +185,8 @@ ppl-0.11
 |   |   |-- Makefile.in
 |   |   |-- pwl_test.cc
 |   |   |-- pwl_test.hh
-|   |   |-- simple1.cc
-|   |   `-- valgrind_suppressions
+|   |   |-- valgrind_suppressions
+|   |   `-- watchdog1.cc
 |   `-- utils
 |       |-- Makefile.am
 |       |-- Makefile.in
@@ -320,42 +329,81 @@ ppl-0.11
 |   |   |-- expected_mpz_a
 |   |   |-- ppl_lcdd.1
 |   |   `-- ppl_lcdd.cc
-|   `-- ppl_lpsol
+|   |-- ppl_lpsol
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- dummy.cc
+|   |   |-- examples
+|   |   |   |-- Makefile.am
+|   |   |   |-- Makefile.in
+|   |   |   |-- README
+|   |   |   |-- adlittle.mps
+|   |   |   |-- afiro.mps
+|   |   |   |-- bgprtr.mps
+|   |   |   |-- blend.mps
+|   |   |   |-- boeing1.mps
+|   |   |   |-- boeing2.mps
+|   |   |   |-- egout.mps
+|   |   |   |-- ex1.mps
+|   |   |   |-- ex12.mps
+|   |   |   |-- kb2.mps
+|   |   |   |-- lseu.mps
+|   |   |   |-- markshare1.mps
+|   |   |   |-- markshare2.mps
+|   |   |   |-- mas74.mps
+|   |   |   |-- mas76.mps
+|   |   |   |-- mip.mps
+|   |   |   |-- modglob.mps
+|   |   |   |-- noswot.mps
+|   |   |   |-- opt1217.mps
+|   |   |   |-- p0033.mps
+|   |   |   |-- pk1.mps
+|   |   |   |-- rout.mps
+|   |   |   |-- sample.mps
+|   |   |   |-- sc105.mps
+|   |   |   |-- sc50a.mps
+|   |   |   |-- sc50b.mps
+|   |   |   |-- ship08l.mps
+|   |   |   `-- unboundedmin.mps
+|   |   |-- expected_int16
+|   |   |-- expected_int16_a
+|   |   |-- expected_int32
+|   |   |-- expected_int32_a
+|   |   |-- expected_int64
+|   |   |-- expected_int64_a
+|   |   |-- expected_int8
+|   |   |-- expected_int8_a
+|   |   |-- expected_mpz
+|   |   |-- expected_mpz_a
+|   |   |-- ppl_lpsol.1
+|   |   `-- ppl_lpsol.c
+|   `-- ppl_pips
 |       |-- Makefile.am
 |       |-- Makefile.in
-|       |-- dummy.cc
 |       |-- examples
 |       |   |-- Makefile.am
 |       |   |-- Makefile.in
 |       |   |-- README
-|       |   |-- adlittle.mps
-|       |   |-- afiro.mps
-|       |   |-- bgprtr.mps
-|       |   |-- blend.mps
-|       |   |-- boeing1.mps
-|       |   |-- boeing2.mps
-|       |   |-- egout.mps
-|       |   |-- ex1.mps
-|       |   |-- ex12.mps
-|       |   |-- kb2.mps
-|       |   |-- lseu.mps
-|       |   |-- markshare1.mps
-|       |   |-- markshare2.mps
-|       |   |-- mas74.mps
-|       |   |-- mas76.mps
-|       |   |-- mip.mps
-|       |   |-- modglob.mps
-|       |   |-- noswot.mps
-|       |   |-- opt1217.mps
-|       |   |-- p0033.mps
-|       |   |-- pk1.mps
-|       |   |-- rout.mps
-|       |   |-- sample.mps
-|       |   |-- sc105.mps
-|       |   |-- sc50a.mps
-|       |   |-- sc50b.mps
-|       |   |-- ship08l.mps
-|       |   `-- unboundedmin.mps
+|       |   |-- big.pip
+|       |   |-- brisebarre.pip
+|       |   |-- cg1.pip
+|       |   |-- esced.pip
+|       |   |-- ex2.pip
+|       |   |-- fimmel.pip
+|       |   |-- invert.dat
+|       |   |-- linear.dat
+|       |   |-- lineri.dat
+|       |   |-- loz.dat
+|       |   |-- max.dat
+|       |   |-- max.pip
+|       |   |-- maxb.dat
+|       |   |-- pairi.dat
+|       |   |-- petit.dat
+|       |   |-- rairoi.dat
+|       |   |-- sor1d.pip
+|       |   |-- square.pip
+|       |   |-- test02.dat
+|       |   `-- test12i.dat
 |       |-- expected_int16
 |       |-- expected_int16_a
 |       |-- expected_int32
@@ -366,8 +414,8 @@ ppl-0.11
 |       |-- expected_int8_a
 |       |-- expected_mpz
 |       |-- expected_mpz_a
-|       |-- ppl_lpsol.1
-|       `-- ppl_lpsol.c
+|       |-- ppl_pips.1
+|       `-- ppl_pips.cc
 |-- depcomp
 |-- doc
 |   |-- Makefile.am
@@ -394,21 +442,21 @@ ppl-0.11
 |   |-- libppl.3
 |   |-- libppl_c.3
 |   |-- ppl-config.1
-|   |-- ppl-user-0.11-html.tar.gz
-|   |-- ppl-user-0.11.pdf
-|   |-- ppl-user-0.11.ps.gz
-|   |-- ppl-user-c-interface-0.11-html.tar.gz
-|   |-- ppl-user-c-interface-0.11.pdf
-|   |-- ppl-user-c-interface-0.11.ps.gz
-|   |-- ppl-user-java-interface-0.11-html.tar.gz
-|   |-- ppl-user-java-interface-0.11.pdf
-|   |-- ppl-user-java-interface-0.11.ps.gz
-|   |-- ppl-user-ocaml-interface-0.11-html.tar.gz
-|   |-- ppl-user-ocaml-interface-0.11.pdf
-|   |-- ppl-user-ocaml-interface-0.11.ps.gz
-|   |-- ppl-user-prolog-interface-0.11-html.tar.gz
-|   |-- ppl-user-prolog-interface-0.11.pdf
-|   |-- ppl-user-prolog-interface-0.11.ps.gz
+|   |-- ppl-user-0.11pre25-html.tar.gz
+|   |-- ppl-user-0.11pre25.pdf
+|   |-- ppl-user-0.11pre25.ps.gz
+|   |-- ppl-user-c-interface-0.11pre25-html.tar.gz
+|   |-- ppl-user-c-interface-0.11pre25.pdf
+|   |-- ppl-user-c-interface-0.11pre25.ps.gz
+|   |-- ppl-user-java-interface-0.11pre25-html.tar.gz
+|   |-- ppl-user-java-interface-0.11pre25.pdf
+|   |-- ppl-user-java-interface-0.11pre25.ps.gz
+|   |-- ppl-user-ocaml-interface-0.11pre25-html.tar.gz
+|   |-- ppl-user-ocaml-interface-0.11pre25.pdf
+|   |-- ppl-user-ocaml-interface-0.11pre25.ps.gz
+|   |-- ppl-user-prolog-interface-0.11pre25-html.tar.gz
+|   |-- ppl-user-prolog-interface-0.11pre25.pdf
+|   |-- ppl-user-prolog-interface-0.11pre25.ps.gz
 |   |-- ppl.sty
 |   |-- user-language-interface.doxyconf.in
 |   |-- user-language-interface.tex
@@ -422,6 +470,7 @@ ppl-0.11
 |   |   |-- C_interface.dox
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
+|   |   |-- ppl_c.h.dist
 |   |   |-- ppl_c_header.h
 |   |   |-- ppl_c_implementation_common.cc
 |   |   |-- ppl_c_implementation_common.defs.hh
@@ -437,10 +486,13 @@ ppl-0.11
 |   |       |-- Makefile.am
 |   |       |-- Makefile.in
 |   |       |-- formatted_output.c
+|   |       |-- pip_test.c
 |   |       |-- ppl_c_test.cc
 |   |       |-- ppl_c_test.h
 |   |       |-- print_to_buffer.c
-|   |       `-- print_to_buffer.h
+|   |       |-- print_to_buffer.h
+|   |       |-- watchdog1.c
+|   |       `-- weightwatch1.c
 |   |-- Java
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
@@ -455,6 +507,11 @@ ppl-0.11
 |   |   |   |-- ppl_java_common.inlines.hh
 |   |   |   `-- ppl_java_globals.cc
 |   |   |-- parma_polyhedra_library
+|   |   |   |-- Artificial_Parameter.java
+|   |   |   |-- Artificial_Parameter_Sequence.java
+|   |   |   |-- Bounded_Integer_Type_Overflow.java
+|   |   |   |-- Bounded_Integer_Type_Representation.java
+|   |   |   |-- Bounded_Integer_Type_Width.java
 |   |   |   |-- By_Reference.java
 |   |   |   |-- Coefficient.java
 |   |   |   |-- Complexity_Class.java
@@ -490,6 +547,13 @@ ppl-0.11
 |   |   |   |-- Makefile.in
 |   |   |   |-- Optimization_Mode.java
 |   |   |   |-- Overflow_Error_Exception.java
+|   |   |   |-- PIP_Decision_Node.java
+|   |   |   |-- PIP_Problem.java
+|   |   |   |-- PIP_Problem_Control_Parameter_Name.java
+|   |   |   |-- PIP_Problem_Control_Parameter_Value.java
+|   |   |   |-- PIP_Problem_Status.java
+|   |   |   |-- PIP_Solution_Node.java
+|   |   |   |-- PIP_Tree_Node.java
 |   |   |   |-- PPL_Object.java
 |   |   |   |-- Pair.java
 |   |   |   |-- Parma_Polyhedra_Library.java
@@ -497,6 +561,7 @@ ppl-0.11
 |   |   |   |-- Poly_Con_Relation.java
 |   |   |   |-- Poly_Gen_Relation.java
 |   |   |   |-- Relation_Symbol.java
+|   |   |   |-- Timeout_Exception.java
 |   |   |   |-- Variable.java
 |   |   |   |-- Variables_Set.java
 |   |   |   |-- ppl_interface_generator_java_classes_java.m4
@@ -508,10 +573,11 @@ ppl-0.11
 |   |       |-- Makefile.am
 |   |       |-- Makefile.in
 |   |       |-- NNC_Polyhedron_test1.java
+|   |       |-- PIP_Problem_test1.java
 |   |       |-- PPL_Test.java
 |   |       |-- Parma_Polyhedra_Library_test1.java
+|   |       |-- Parma_Polyhedra_Library_test2.java
 |   |       |-- Test_Executor.java
-|   |       |-- Test_Partial_Function.java
 |   |       |-- ppl_interface_generator_java_test_java.m4
 |   |       |-- ppl_interface_generator_java_test_java_code.m4
 |   |       `-- ppl_java_tests_common
@@ -710,6 +776,7 @@ ppl-0.11
 |   |-- ac_check_sicstus_prolog.m4
 |   |-- ac_check_swi_prolog.m4
 |   |-- ac_check_xsb_prolog.m4
+|   |-- ac_check_yap.m4
 |   |-- ac_cxx_attribute_weak.m4
 |   |-- ac_cxx_double_binary_format.m4
 |   |-- ac_cxx_double_exact_output.m4
@@ -736,6 +803,7 @@ ppl-0.11
 |   |-- ltversion.m4
 |   |-- lt~obsolete.m4
 |   |-- m4.m4
+|   |-- ocaml.m4
 |   |-- ppl.m4
 |   `-- ppl_c.m4
 |-- missing
@@ -911,6 +979,19 @@ ppl-0.11
 |   |-- Octagonal_Shape.types.hh
 |   |-- Og_Status.idefs.hh
 |   |-- Og_Status.inlines.hh
+|   |-- PIP_Problem.cc
+|   |-- PIP_Problem.defs.hh
+|   |-- PIP_Problem.inlines.hh
+|   |-- PIP_Problem.templates.hh
+|   |-- PIP_Problem.types.hh
+|   |-- PIP_Tree.cc
+|   |-- PIP_Tree.defs.hh
+|   |-- PIP_Tree.inlines.hh
+|   |-- PIP_Tree.types.hh
+|   |-- Partial_Function.cc
+|   |-- Partial_Function.defs.hh
+|   |-- Partial_Function.inlines.hh
+|   |-- Partial_Function.types.hh
 |   |-- Partially_Reduced_Product.defs.hh
 |   |-- Partially_Reduced_Product.inlines.hh
 |   |-- Partially_Reduced_Product.templates.hh
@@ -973,10 +1054,15 @@ ppl-0.11
 |   |-- Variables_Set.defs.hh
 |   |-- Variables_Set.inlines.hh
 |   |-- Variables_Set.types.hh
+|   |-- WRD_coefficient_types.defs.hh
+|   |-- WRD_coefficient_types.inlines.hh
+|   |-- Weight_Profiler.cc
+|   |-- Weight_Profiler.defs.hh
 |   |-- Widening_Function.defs.hh
 |   |-- Widening_Function.inlines.hh
 |   |-- Widening_Function.types.hh
 |   |-- algorithms.hh
+|   |-- assert.hh
 |   |-- assign_or_swap.hh
 |   |-- c_streambuf.cc
 |   |-- c_streambuf.defs.hh
@@ -1008,6 +1094,7 @@ ppl-0.11
 |   |-- globals.inlines.hh
 |   |-- globals.types.hh
 |   |-- initializer.hh
+|   |-- intervals.defs.hh
 |   |-- iterator_to_const.defs.hh
 |   |-- iterator_to_const.inlines.hh
 |   |-- iterator_to_const.types.hh
@@ -1029,10 +1116,14 @@ ppl-0.11
 |   |-- stdiobuf.inlines.hh
 |   |-- stdiobuf.types.hh
 |   |-- swapping_sort.icc
+|   |-- termination.cc
+|   |-- termination.defs.hh
+|   |-- termination.templates.hh
 |   |-- version.cc
 |   |-- version.hh.in
-|   |-- wrap.cc
-|   `-- wrap.hh
+|   |-- wrap_assign.hh
+|   |-- wrap_string.cc
+|   `-- wrap_string.hh
 |-- tests
 |   |-- BD_Shape
 |   |   |-- Makefile.am
@@ -1063,10 +1154,12 @@ ppl-0.11
 |   |   |-- difference1.cc
 |   |   |-- discrete1.cc
 |   |   |-- disjoint1.cc
+|   |   |-- dropsomenonintegerpoints1.cc
 |   |   |-- empty1.cc
 |   |   |-- equality1.cc
 |   |   |-- expandspacedim1.cc
 |   |   |-- foldspacedims1.cc
+|   |   |-- frequency1.cc
 |   |   |-- frombdshape1.cc
 |   |   |-- frombox1.cc
 |   |   |-- fromgensys1.cc
@@ -1081,6 +1174,7 @@ ppl-0.11
 |   |   |-- generalizedaffinepreimage3.cc
 |   |   |-- geomcovers1.cc
 |   |   |-- h79widening1.cc
+|   |   |-- integerupperboundifexact1.cc
 |   |   |-- intersection1.cc
 |   |   |-- limitedbhmz05extrapolation1.cc
 |   |   |-- limitedcc76extrapolation1.cc
@@ -1103,6 +1197,7 @@ ppl-0.11
 |   |   |-- universe1.cc
 |   |   |-- upperbound1.cc
 |   |   |-- upperboundifexact1.cc
+|   |   |-- wrap1.cc
 |   |   `-- writebdshape1.cc
 |   |-- Box
 |   |   |-- Makefile.am
@@ -1133,6 +1228,7 @@ ppl-0.11
 |   |   |-- equality1.cc
 |   |   |-- expandspacedim1.cc
 |   |   |-- foldspacedims1.cc
+|   |   |-- frequency1.cc
 |   |   |-- frombdshape1.cc
 |   |   |-- frombox1.cc
 |   |   |-- fromgensys1.cc
@@ -1155,6 +1251,7 @@ ppl-0.11
 |   |   |-- minconstraints1.cc
 |   |   |-- propagateconstraints1.cc
 |   |   |-- propagateconstraints2.cc
+|   |   |-- refinewithcongruence1.cc
 |   |   |-- refinewithcongruences1.cc
 |   |   |-- refinewithconstraint1.cc
 |   |   |-- refinewithconstraint2.cc
@@ -1173,6 +1270,7 @@ ppl-0.11
 |   |   |-- universe1.cc
 |   |   |-- upperbound1.cc
 |   |   |-- upperboundifexact1.cc
+|   |   |-- wrap1.cc
 |   |   `-- writebox1.cc
 |   |-- Grid
 |   |   |-- Makefile.am
@@ -1209,13 +1307,13 @@ ppl-0.11
 |   |   |-- constraints1.cc
 |   |   |-- contains1.cc
 |   |   |-- containsintegerpoint1.cc
-|   |   |-- coveringbox1.cc
-|   |   |-- coveringbox2.cc
 |   |   |-- discrete1.cc
 |   |   |-- disjoint1.cc
+|   |   |-- dropnonintegerpoints1.cc
 |   |   |-- equals1.cc
 |   |   |-- expandspacedim1.cc
 |   |   |-- foldspacedims1.cc
+|   |   |-- frequency1.cc
 |   |   |-- frombdshape1.cc
 |   |   |-- frombox1.cc
 |   |   |-- fromgrid1.cc
@@ -1269,6 +1367,7 @@ ppl-0.11
 |   |   |-- widening1.cc
 |   |   |-- widening2.cc
 |   |   |-- widening3.cc
+|   |   |-- wrap1.cc
 |   |   `-- writecongruencesystem.cc
 |   |-- MIP_Problem
 |   |   |-- Makefile.am
@@ -1308,9 +1407,11 @@ ppl-0.11
 |   |   |-- difference1.cc
 |   |   |-- discrete1.cc
 |   |   |-- disjoint1.cc
+|   |   |-- dropsomenonintegerpoints1.cc
 |   |   |-- empty1.cc
 |   |   |-- expandspacedim1.cc
 |   |   |-- foldspacedims1.cc
+|   |   |-- frequency1.cc
 |   |   |-- frombdshape1.cc
 |   |   |-- frombox1.cc
 |   |   |-- fromgensys1.cc
@@ -1327,6 +1428,7 @@ ppl-0.11
 |   |   |-- generalizedaffinepreimage2.cc
 |   |   |-- generalizedaffinepreimage3.cc
 |   |   |-- generalizedaffinepreimage4.cc
+|   |   |-- integerupperboundifexact1.cc
 |   |   |-- intersection1.cc
 |   |   |-- limitedbhmz05extrapolation1.cc
 |   |   |-- limitedcc76extrapolation1.cc
@@ -1348,25 +1450,60 @@ ppl-0.11
 |   |   |-- universe1.cc
 |   |   |-- upperbound1.cc
 |   |   |-- upperboundifexact1.cc
+|   |   |-- wrap1.cc
 |   |   `-- writeoctagon1.cc
-|   |-- Partial_Function.cc
-|   |-- Partial_Function.defs.hh
-|   |-- Partial_Function.inlines.hh
-|   |-- Partial_Function.types.hh
+|   |-- PIP_Problem
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- ascii_dump_load1.cc
+|   |   |-- exceptions1.cc
+|   |   |-- pipproblem1.cc
+|   |   |-- pipproblem2.cc
+|   |   `-- pipproblem3.cc
 |   |-- Partially_Reduced_Product
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
+|   |   |-- addcongruences1.cc
+|   |   |-- affineimage1.cc
 |   |   |-- asciidumpload1.cc
+|   |   |-- bounded1.cc
+|   |   |-- boundedaffineimage1.cc
+|   |   |-- bounds1.cc
+|   |   |-- concatenate1.cc
+|   |   |-- congruences1.cc
+|   |   |-- congruencesproduct1.cc
+|   |   |-- constraints1.cc
+|   |   |-- constraintsproduct1.cc
+|   |   |-- contains1.cc
+|   |   |-- difference1.cc
+|   |   |-- dimension1.cc
 |   |   |-- directproduct1.cc
-|   |   |-- directproduct2.cc
-|   |   |-- directproduct3.cc
-|   |   |-- directproduct4.cc
-|   |   |-- directproduct5.cc
-|   |   |-- directproduct6.cc
-|   |   |-- partiallyreducedproduct1.cc
-|   |   |-- partiallyreducedproduct2.cc
-|   |   |-- partiallyreducedproduct3.cc
-|   |   `-- partiallyreducedproduct4.cc
+|   |   |-- discrete1.cc
+|   |   |-- disjoint1.cc
+|   |   |-- dropsomenonintegerpoints1.cc
+|   |   |-- equals1.cc
+|   |   |-- frombdshape1.cc
+|   |   |-- frombox1.cc
+|   |   |-- fromgrid1.cc
+|   |   |-- fromoctagonalshape1.cc
+|   |   |-- frompolyhedron1.cc
+|   |   |-- fromproduct1.cc
+|   |   |-- generalizedaffineimage1.cc
+|   |   |-- intersection1.cc
+|   |   |-- isempty1.cc
+|   |   |-- isuniverse1.cc
+|   |   |-- maxmin1.cc
+|   |   |-- partially_reduced_product_test.hh
+|   |   |-- refinewithcongruences1.cc
+|   |   |-- refinewithconstraints1.cc
+|   |   |-- relations1.cc
+|   |   |-- shapepreservingproduct1.cc
+|   |   |-- smashproduct1.cc
+|   |   |-- spacedims1.cc
+|   |   |-- timeelapse1.cc
+|   |   |-- topclosed1.cc
+|   |   |-- topclosure1.cc
+|   |   `-- upperbound1.cc
 |   |-- Polyhedron
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
@@ -1412,6 +1549,8 @@ ppl-0.11
 |   |   |-- containsintegerpoint1.cc
 |   |   |-- disjoint1.cc
 |   |   |-- disjoint2.cc
+|   |   |-- dropsomenonintegerpoints1.cc
+|   |   |-- dropsomenonintegerpoints2.cc
 |   |   |-- dualhypercubes.cc
 |   |   |-- empty1.cc
 |   |   |-- equals1.cc
@@ -1422,6 +1561,7 @@ ppl-0.11
 |   |   |-- expandspacedim2.cc
 |   |   |-- foldspacedims1.cc
 |   |   |-- foldspacedims2.cc
+|   |   |-- frequency1.cc
 |   |   |-- frombdshape1.cc
 |   |   |-- frombox1.cc
 |   |   |-- frombox2.cc
@@ -1477,6 +1617,8 @@ ppl-0.11
 |   |   |-- removespacedims2.cc
 |   |   |-- simplifyusingcontext1.cc
 |   |   |-- smm1.cc
+|   |   |-- termination1.cc
+|   |   |-- termination2.cc
 |   |   |-- timeelapse1.cc
 |   |   |-- timeelapse2.cc
 |   |   |-- topclosed1.cc
@@ -1486,6 +1628,9 @@ ppl-0.11
 |   |   |-- universe2.cc
 |   |   |-- variablesset1.cc
 |   |   |-- watchdog1.cc
+|   |   |-- weightwatch1.cc
+|   |   |-- wrap1.cc
+|   |   |-- wrap2.cc
 |   |   |-- writeconsys1.cc
 |   |   |-- writegensys1.cc
 |   |   |-- writepolyhedron1.cc

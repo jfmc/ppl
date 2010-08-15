@@ -28,6 +28,58 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename Boundary, typename Info>
+template <typename C>
+typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C>::value, I_Result>::type
+Interval<Boundary, Info>::lower_extend(const C& c) {
+  PPL_ASSERT(OK());
+  bool open;
+  switch (c.rel()) {
+  case V_LGE:
+    return lower_extend();
+  case V_NAN:
+    return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
+  case V_GT:
+    open = true;
+    break;
+  case V_GE:
+  case V_EQ:
+    open = false;
+    break;
+  default:
+    PPL_ASSERT(false);
+  }
+  min_assign(LOWER, lower(), info(), LOWER, c.value(), f_info(c.value(), open));
+  PPL_ASSERT(OK());
+  return I_ANY;
+}
+
+template <typename Boundary, typename Info>
+template <typename C>
+typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C>::value, I_Result>::type
+Interval<Boundary, Info>::upper_extend(const C& c) {
+  PPL_ASSERT(OK());
+  bool open;
+  switch (c.rel()) {
+  case V_LGE:
+    return lower_extend();
+  case V_NAN:
+    return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
+  case V_LT:
+    open = true;
+    break;
+  case V_LE:
+  case V_EQ:
+    open = false;
+    break;
+  default:
+    PPL_ASSERT(false);
+  }
+  max_assign(UPPER, upper(), info(), UPPER, c.value(), f_info(c.value(), open));
+  PPL_ASSERT(OK());
+  return I_ANY;
+}
+
+template <typename Boundary, typename Info>
 template <typename From, typename Iterator>
 typename Enable_If<Is_Interval<From>::value, void>::type
 Interval<Boundary, Info>::CC76_widening_assign(const From& y,
@@ -68,8 +120,12 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
 	    x.lower_extend();
 	}
       }
-      else
-	x_lb = *--k;
+      else {
+        if (k != first)
+          x_lb = *--k;
+        else
+          x.lower_extend();
+      }
     }
   }
 }

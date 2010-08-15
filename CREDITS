@@ -35,22 +35,9 @@ Current Contributors:
                         intervals.  He also helps on several other
                         design and implementation issues.
 
-  Roberto Amadini       (student of the University of Parma)
-                        is working on the PPL support for the approximation
-                        of floating point computations.
-
-  Fabio Biselli         (student of the University of Parma)
-                        is working on the PPL support for the approximation
-                        of floating point computations.
-
   Fabio Bossi           (student of the University of Parma)
                         is working on the PPL support for the approximation
                         of floating point computations.
-
-  Andrea Cimino         (former student of the University of Parma)
-                        wrote most of the mixed integer programming
-                        solver, and also most of the Java and OCaml
-                        interfaces.
 
   Francois Galea        [*] (University of Versailles) is working
                         at the implementation of the Parametric Integer
@@ -74,11 +61,19 @@ Current Contributors:
 Past Contributors:
 ------------------
 
+  Roberto Amadini       (student of the University of Parma)
+                        did some work on the PPL support for the
+                        approximation of floating point computations.
+
   Irene Bacchi          (former student of the University of Parma) worked
                         on a development branch where she implemented
                         several variants of algorithms, checking
                         whether or not the set-union of two polyhedra
                         is the same as their poly-hull.
+
+  Fabio Biselli         (student of the University of Parma)
+                        did some work on the PPL support for the
+                        approximation of floating point computations.
 
   Danilo Bonardi        (former student of the University of Parma) worked
                         on a development branch where he experimented
@@ -92,10 +87,15 @@ Past Contributors:
                         one of the four students with which the PPL
                         project started.
 
-  Katy Dobson           [6] (University of Leeds) worked on the
-                        formalization and definition of algorithms for
-                        rational grids and products of grids and
-                        polyhedra.
+  Andrea Cimino         (former student of the University of Parma)
+                        wrote most of the mixed integer programming
+                        solver, and also most of the Java and OCaml
+                        interfaces.
+
+  Katy Dobson           [6] (former student of the University of Leeds)
+                        worked on the formalization and definition of
+                        algorithms for rational grids and products
+                        of grids and polyhedra.
 
   Giordano Fracasso     (University of Parma) wrote the initial version
                         of the support for native and checked integer

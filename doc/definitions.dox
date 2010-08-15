@@ -439,12 +439,24 @@ that are consistent with respect to the desired results.
 
 \section Approximating_Integers Approximating Integers
 
-FIXME(0.11): to be written.
+The Parma Polyhedra Library provides support for approximating
+integer computations using the geometric descriptors it provides.
+In this section we briefly explain these facilities.
 
 
 \subsection Dropping_Non_Integer_Points Dropping Non-Integer Points
 
-FIXME(0.11): to be written.
+When a geometric descriptor is used to approximate integer quantities,
+all the points with non-integral coordinates represent an imprecision
+of the description.  Of course, removing all these points may be
+impossible (because of convexity) or too expensive.  The PPL provides
+the operator <CODE>drop_some_non_integer_points</CODE> to possibly
+tighten a descriptor by dropping some points with non-integer
+coordinates, using algorithms whose complexity is bounded by
+a parameter.  The set of dimensions that represent integer quantities
+can be optionally specified.  It is worth to stress the role of
+<EM>some</EM> in the operator name: in general no optimality guarantee
+is provided.
 
 
 \subsection Approximating_Bounded_Integers Approximating Bounded Integers
@@ -501,8 +513,6 @@ Supported overflow behaviors are:
     the imprecision of the analysis.
   </DD>
 </DL>
-
-FIXME(0.11): to be continued.
 
 
 \subsubsection Wrapping_Operator Wrapping Operator
