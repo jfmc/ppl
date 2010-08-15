@@ -173,7 +173,6 @@ CO_Tree::erase(dimension_type key) {
 
 inline CO_Tree::iterator
 CO_Tree::erase(iterator itr) {
-  PPL_ASSERT(itr != before_begin());
   PPL_ASSERT(itr != end());
   return erase(tree_iterator(itr, *this));
 }
@@ -194,11 +193,6 @@ CO_Tree::swap(CO_Tree& x) {
   PPL_ASSERT(x.structure_OK());
 }
 
-inline const CO_Tree::iterator&
-CO_Tree::before_begin() {
-  return cached_before_begin;
-}
-
 inline CO_Tree::iterator
 CO_Tree::begin() {
   return iterator(*this);
@@ -209,11 +203,6 @@ CO_Tree::end() {
   return cached_end;
 }
 
-inline const CO_Tree::const_iterator&
-CO_Tree::before_begin() const {
-  return cached_const_before_begin;
-}
-
 inline CO_Tree::const_iterator
 CO_Tree::begin() const {
   return const_iterator(*this);
@@ -222,11 +211,6 @@ CO_Tree::begin() const {
 inline const CO_Tree::const_iterator&
 CO_Tree::end() const {
   return cached_const_end;
-}
-
-inline const CO_Tree::const_iterator&
-CO_Tree::before_cbegin() const {
-  return cached_const_before_begin;
 }
 
 inline CO_Tree::const_iterator
@@ -259,9 +243,7 @@ CO_Tree::bisect(dimension_type key) const {
 
 inline CO_Tree::iterator
 CO_Tree::bisect_in(iterator first, iterator last, dimension_type key) {
-  PPL_ASSERT(first != before_begin());
   PPL_ASSERT(first != end());
-  PPL_ASSERT(last != before_begin());
   PPL_ASSERT(last != end());
   dimension_type index = bisect_in(&(first->second) - data,
                                    &(last->second) - data, key);
@@ -271,9 +253,7 @@ CO_Tree::bisect_in(iterator first, iterator last, dimension_type key) {
 inline CO_Tree::const_iterator
 CO_Tree::bisect_in(const_iterator first, const_iterator last,
                    dimension_type key) const {
-  PPL_ASSERT(first != before_begin());
   PPL_ASSERT(first != end());
-  PPL_ASSERT(last != before_begin());
   PPL_ASSERT(last != end());
   dimension_type index = bisect_in(&(first->second) - data,
                                    &(last->second) - data, key);
@@ -282,7 +262,7 @@ CO_Tree::bisect_in(const_iterator first, const_iterator last,
 
 inline CO_Tree::iterator
 CO_Tree::bisect_near(iterator hint, dimension_type key) {
-  if (hint == before_begin() || hint == end())
+  if (hint == end())
     return bisect(key);
   dimension_type index = bisect_near(&(hint->second) - data, key);
   return iterator(*this, index);
@@ -290,7 +270,7 @@ CO_Tree::bisect_near(iterator hint, dimension_type key) {
 
 inline CO_Tree::const_iterator
 CO_Tree::bisect_near(const_iterator hint, dimension_type key) const {
-  if (hint == before_begin() || hint == end())
+  if (hint == end())
     return bisect(key);
   dimension_type index = bisect_near(&(hint->second) - data, key);
   return const_iterator(*this, index);
@@ -342,10 +322,7 @@ CO_Tree::rebuild_smaller_tree() {
 
 inline void
 CO_Tree::refresh_cached_iterators() {
-
-  cached_before_begin = iterator(*this, 0);
   cached_end = iterator(*this, reserved_size + 1);
-  cached_const_before_begin = const_iterator(*this, 0);
   cached_const_end = const_iterator(*this, reserved_size + 1);
 }
 
@@ -390,6 +367,7 @@ CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1,
 #ifndef NDEBUG
   tree = &tree1;
 #endif
+  PPL_ASSERT(i != 0);
   PPL_ASSERT(i <= tree1.reserved_size + 1);
   PPL_ASSERT(tree1.empty() || tree1.indexes[i] != unused_index);
   PPL_ASSERT(OK());
@@ -461,9 +439,6 @@ inline CO_Tree::const_iterator&
 CO_Tree::const_iterator::operator--() {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
-#ifndef NDEBUG
-  PPL_ASSERT(current_index != &(tree->indexes[0]));
-#endif
   --current_index;
   --current_data;
   while (*current_index == unused_index) {
@@ -493,10 +468,7 @@ CO_Tree::const_iterator::operator*() const {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
-#ifndef NDEBUG
-  PPL_ASSERT(current_index != &(tree->indexes[0]));
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
-#endif
   return std::pair<const dimension_type&, const data_type&>(*current_index,
                                                             *current_data);
 }
@@ -506,10 +478,7 @@ CO_Tree::const_iterator::operator->() const {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
-#ifndef NDEBUG
-  PPL_ASSERT(current_index != &(tree->indexes[0]));
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
-#endif
   return Const_Member_Access_Helper(*current_index, *current_data);
 }
 
@@ -569,6 +538,7 @@ CO_Tree::iterator::iterator(CO_Tree& tree1, dimension_type i)
 #ifndef NDEBUG
   tree = &tree1;
 #endif
+  PPL_ASSERT(i != 0);
   PPL_ASSERT(i <= tree1.reserved_size + 1);
   PPL_ASSERT(tree1.empty() || tree1.indexes[i] != unused_index);
   PPL_ASSERT(OK());
@@ -641,9 +611,6 @@ inline CO_Tree::iterator&
 CO_Tree::iterator::operator--() {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
-#ifndef NDEBUG
-  PPL_ASSERT(current_index != &(tree->indexes[0]));
-#endif
   --current_index;
   --current_data;
   while (*current_index == unused_index) {
@@ -674,10 +641,7 @@ CO_Tree::iterator::operator*() {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
-#ifndef NDEBUG
-  PPL_ASSERT(current_index != &(tree->indexes[0]));
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
-#endif
   return std::pair<const dimension_type, data_type&>(*current_index,
                                                      *current_data);
 }
@@ -687,10 +651,7 @@ CO_Tree::iterator::operator*() const {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
-#ifndef NDEBUG
-  PPL_ASSERT(current_index != &(tree->indexes[0]));
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
-#endif
   return std::pair<const dimension_type, const data_type&>(*current_index,
                                                            *current_data);
 }
@@ -700,10 +661,7 @@ CO_Tree::iterator::operator->() {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
-#ifndef NDEBUG
-  PPL_ASSERT(current_index != &(tree->indexes[0]));
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
-#endif
   return Member_Access_Helper(*current_index, *current_data);
 }
 
@@ -712,10 +670,7 @@ CO_Tree::iterator::operator->() const {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
-#ifndef NDEBUG
-  PPL_ASSERT(current_index != &(tree->indexes[0]));
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
-#endif
   return Const_Member_Access_Helper(*current_index, *current_data);
 }
 
@@ -795,7 +750,6 @@ CO_Tree::tree_iterator::operator=(const tree_iterator& itr) {
 
 inline CO_Tree::tree_iterator&
 CO_Tree::tree_iterator::operator=(const iterator& itr) {
-  PPL_ASSERT(itr != tree.before_begin());
   PPL_ASSERT(itr != tree.end());
   i = &(itr->second) - tree.data;
   offset = i;

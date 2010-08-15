@@ -40,7 +40,7 @@ namespace Parma_Polyhedra_Library {
   The downside of this representation is that all iterators are invalidated
   when an element is added or removed, because the array could have been
   enlarged or shrunk. This is partially addressed by providing references to
-  internal before-begin and end iterators that are updated when needed.
+  internal and end iterators that are updated when needed.
 
   B-trees are cache-friendly too, but the cache size is fixed (usually at
   compile-time). This raises two problems: firstly the cache size must be
@@ -112,8 +112,6 @@ public:
     are not constant time.
     These iterators are invalidated by operations that add or remove elements
     from the tree.
-    Iterators may be in a before-beginning state, in addition to the usual
-    valid and end() states. This is useful for iterating backwards.
   */
   class const_iterator {
   private:
@@ -146,7 +144,7 @@ public:
 
     //! Constructs a const_iterator pointing to the i-th node of the tree.
     /*!
-      The i-th node must be before-begin, end or a node with a value.
+      The i-th node must be a node with a value or end().
     */
     const_iterator(const CO_Tree& tree, dimension_type i);
 
@@ -220,8 +218,6 @@ public:
     are not constant time.
     These iterators are invalidated by operations that add or remove elements
     from the tree.
-    Iterators may be in a before-beginning state, in addition to the usual
-    valid and end() states. This is useful for iterating backwards.
   */
   class iterator {
   private:
@@ -267,7 +263,7 @@ public:
 
     //! Constructs an iterator pointing to the i-th node.
     /*!
-      The i-th node must be before-begin, end or a node with a value.
+      The i-th node must be a node with a value or end().
     */
     iterator(CO_Tree& tree, dimension_type i);
 
@@ -407,7 +403,7 @@ public:
     This will be faster if \p itr points near to the place where the new
     element will be inserted (or where is already stored).
     However, the value of \p itr does not affect the result of this
-    method. \p itr may even be before_begin() or end().
+    method. \p itr may even be end().
 
     If an element with the specified key already exists, an iterator to that
     pair is returned.
@@ -424,7 +420,7 @@ public:
     This will be faster if \p itr points near to the place where the new
     element will be inserted (or where is already stored).
     However, the value of \p itr does not affect the result of this
-    method. \p itr may even be before_begin() or end().
+    method. \p itr may even be end().
 
     If an element with the specified key already exists, its associated data
     is set to \p data and an iterator pointing to that pair is returned.
@@ -468,15 +464,6 @@ public:
   */
   void swap(CO_Tree& x);
 
-  //! Returns an iterator that points before the first element.
-  /*!
-    This method always returns a reference to the same internal iterator,
-    that is updated at each operation that modifies the structure.
-    Client code can keep a const reference to that iterator instead of
-    keep updating a local iterator.
-  */
-  const iterator& before_begin();
-
   //! Returns an iterator that points at the first element.
   iterator begin();
 
@@ -489,23 +476,11 @@ public:
   */
   const iterator& end();
 
-  //! Equivalent to before_cbegin().
-  const const_iterator& before_begin() const;
-
   //! Equivalent to cbegin().
   const_iterator begin() const;
 
   //! Equivalent to cend().
   const const_iterator& end() const;
-
-  //! Returns an iterator that points before the first element.
-  /*!
-    This method always returns a reference to the same internal iterator,
-    that is updated at each operation that modifies the structure.
-    Client code can keep a const reference to that iterator instead of
-    keep updating a local iterator.
-  */
-  const const_iterator& before_cbegin() const;
 
   //! Returns an iterator that points at the first element.
   const_iterator cbegin() const;
@@ -542,7 +517,7 @@ public:
     If the element is found, an iterator pointing to that element is
     returned; otherwise, the returned iterator refers to the immediately
     preceding or succeeding value.
-    \p first and \p last must not be before_begin() or end().
+    \p first and \p last must not be end().
     If the tree is empty, end() is returned.
 
     \note last is included in the search, too.
@@ -554,7 +529,7 @@ public:
     If the element is found, an iterator pointing to that element is
     returned; otherwise, the returned iterator refers to the immediately
     preceding or succeeding value.
-    \p first and \p last must not be before_begin() or end().
+    \p first and \p last must not be end().
     If the tree is empty, end() is returned.
 
     \note last is included in the search, too.
@@ -572,8 +547,7 @@ public:
     O(log(n)), and it is O(1) if the distance between the returned position
     and \p hint is O(1).
 
-    \p hint may even be before_begin() or end(), in such cases it is
-    ignored.
+    \p hint may even be end(), in such cases it is ignored.
   */
   iterator bisect_near(iterator hint, dimension_type key);
 
@@ -587,8 +561,7 @@ public:
     O(log(n)), and it is O(1) if the distance between the returned position
     and \p hint is O(1).
 
-    \p hint may even be before_begin() or end(), in such cases it is
-    ignored.
+    \p hint may even be end(), in such cases it is ignored.
   */
   const_iterator bisect_near(const_iterator hint, dimension_type key) const;
 
@@ -601,7 +574,7 @@ private:
     preceding or succeeding value.
 
     \p first and \p last must be indexes of existing values in the indexes[]
-    and data[] arrays. They must not be before-begin nor end.
+    and data[] arrays. They must not be end().
     If the tree is empty, end() is returned.
 
     \note last is included in the search, too.
@@ -826,23 +799,11 @@ private:
   */
   static const dimension_type unused_index = -(dimension_type)1;
 
-  //! The iterator returned by before_begin().
-  /*!
-    It is updated when needed, to keep it valid.
-  */
-  iterator cached_before_begin;
-
   //! The iterator returned by end().
   /*!
     It is updated when needed, to keep it valid.
   */
   iterator cached_end;
-
-  //! The iterator returned by the const version of before_begin().
-  /*!
-    It is updated when needed, to keep it valid.
-  */
-  const_iterator cached_const_before_begin;
 
   //! The iterator returned by the const version of end().
   /*!
@@ -933,7 +894,7 @@ public:
   /*!
     \brief Constructs a tree_iterator from an iterator.
 
-    \p itr must not be before_begin() nor end().
+    \p itr must not be end().
   */
   tree_iterator(const iterator& itr, CO_Tree& tree);
 

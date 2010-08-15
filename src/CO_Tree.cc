@@ -36,7 +36,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
     return iterator(*this);
   }
 
-  if (itr == end() || itr == before_begin())
+  if (itr == end())
     return insert(key1);
 
   iterator candidate1 = bisect_near(itr, key1);
@@ -44,20 +44,29 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
   if (key1 == candidate1->first)
     return candidate1;
 
-  iterator candidate2 = candidate1;
-  if (key1 < candidate1->first)
-    --candidate2;
-  else
-    ++candidate2;
+  // `&(candidate1->second) - data' is the index of candidate1.
+  dimension_type candidate2_index = &(candidate1->second) - data;
+
+  if (key1 < candidate1->first) {
+    --candidate2_index;
+    while (indexes[candidate2_index] == unused_index)
+      --candidate2_index;
+  } else {
+    ++candidate2_index;
+    while (indexes[candidate2_index] == unused_index)
+      ++candidate2_index;
+  }
 
   tree_iterator candidate1_node(candidate1, *this);
 
-  if (candidate2 == before_begin() || candidate2 == end())
+  PPL_ASSERT(candidate2_index <= reserved_size + 1);
+
+  if (candidate2_index == 0 || candidate2_index > reserved_size)
     // Use candidate1
     return iterator(insert_precise(key1, Coefficient_zero(),
                                    candidate1_node));
 
-  tree_iterator candidate2_node(candidate2, *this);
+  tree_iterator candidate2_node(*this, candidate2_index);
 
   // Adjacent nodes in an in-order visit of a tree always have different
   // heights. This fact can be easily proven by induction on the tree's
@@ -88,7 +97,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) 
     return iterator(*this);
   }
 
-  if (itr == end() || itr == before_begin())
+  if (itr == end())
     return insert(key1, data1);
 
   iterator candidate1 = bisect_near(itr, key1);
@@ -98,19 +107,26 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) 
     return candidate1;
   }
 
-  iterator candidate2(candidate1);
-  if (key1 < candidate1->first)
-    --candidate2;
-  else
-    ++candidate2;
+  // `&(candidate1->second) - data' is the index of candidate1.
+  dimension_type candidate2_index = &(candidate1->second) - data;
+
+  if (key1 < candidate1->first) {
+    --candidate2_index;
+    while (indexes[candidate2_index] == unused_index)
+      --candidate2_index;
+  } else {
+    ++candidate2_index;
+    while (indexes[candidate2_index] == unused_index)
+      ++candidate2_index;
+  }
 
   tree_iterator candidate1_node(candidate1, *this);
 
-  if (candidate2 == before_begin() || candidate2 == end())
+  if (candidate2_index == 0 || candidate2_index > reserved_size)
     // Use candidate1
     return iterator(insert_precise(key1, data1, candidate1_node));
 
-  tree_iterator candidate2_node(candidate2, *this);
+  tree_iterator candidate2_node(*this, candidate2_index);
 
   // Adjacent nodes in an in-order visit of a tree always have different
   // heights. This fact can be easily proven by induction on the tree's
@@ -584,11 +600,7 @@ PPL::CO_Tree::structure_OK() const {
     }
   }
 
-  if (const_iterator(cached_before_begin) != const_iterator(*this, 0))
-    return false;
   if (const_iterator(cached_end) != const_iterator(*this, reserved_size + 1))
-    return false;
-  if (cached_const_before_begin != const_iterator(*this, 0))
     return false;
   if (cached_const_end != const_iterator(*this, reserved_size + 1))
     return false;
@@ -1085,16 +1097,15 @@ PPL::CO_Tree::const_iterator::OK() const {
       return false;
   } else
     if (tree->reserved_size == 0) {
-      if (!((current_index == 0 && current_data == 0)
-            || (current_index == 1 + (dimension_type*)0
-                && current_data == 1 + (data_type*)0)))
+      if (current_index != 1 + (dimension_type*)0
+          || current_data != 1 + (data_type*)0)
         return false;
     } else {
-      if (current_index < &(tree->indexes[0]))
+      if (current_index <= &(tree->indexes[0]))
         return false;
       if (current_index > &(tree->indexes[tree->reserved_size + 1]))
         return false;
-      if (current_data < &(tree->data[0]))
+      if (current_data <= &(tree->data[0]))
         return false;
       if (current_data > &(tree->data[tree->reserved_size + 1]))
         return false;
@@ -1117,16 +1128,15 @@ PPL::CO_Tree::iterator::OK() const {
       return false;
   } else
     if (tree->reserved_size == 0) {
-      if (!((current_index == 0 && current_data == 0)
-            || (current_index == 1 + (dimension_type*)0
-                && current_data == 1 + (data_type*)0)))
+      if (current_index != 1 + (dimension_type*)0
+          || current_data != 1 + (data_type*)0)
         return false;
     } else {
-      if (current_index < &(tree->indexes[0]))
+      if (current_index <= &(tree->indexes[0]))
         return false;
       if (current_index > &(tree->indexes[tree->reserved_size + 1]))
         return false;
-      if (current_data < &(tree->data[0]))
+      if (current_data <= &(tree->data[0]))
         return false;
       if (current_data > &(tree->data[tree->reserved_size + 1]))
         return false;
