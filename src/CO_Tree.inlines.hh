@@ -768,16 +768,6 @@ CO_Tree::tree_iterator::operator!=(const tree_iterator& itr) const {
   return !(*this == itr);
 }
 
-inline bool
-CO_Tree::tree_iterator::operator==(const iterator& itr) const {
-  return tree.data + i == &(itr->second);
-}
-
-inline bool
-CO_Tree::tree_iterator::operator!=(const iterator& itr) const {
-  return !(*this == itr);
-}
-
 inline void
 CO_Tree::tree_iterator::get_root() {
   i = tree.reserved_size / 2 + 1;

@@ -909,12 +909,6 @@ public:
   //! Compares *this with \p itr.
   bool operator!=(const tree_iterator& itr) const;
 
-  //! Compares *this with \p itr.
-  bool operator==(const iterator& itr) const;
-
-  //! Compares *this with \p itr.
-  bool operator!=(const iterator& itr) const;
-
   //! Makes the iterator point to the root of \p tree.
   /*!
     The values of all fields (beside tree) are overwritten.
