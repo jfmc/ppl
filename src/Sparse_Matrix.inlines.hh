@@ -125,8 +125,10 @@ Sparse_Matrix::add_row(const Sparse_Row& x) {
 
 inline void
 Sparse_Matrix::add_row(const Sparse_Row_Reference& x) {
+  Unlimited_Sparse_Row row(x);
   add_zero_rows(1);
-  (*this)[num_rows() - 1] = x;
+  // Now x may have been invalidated, if it was a row of this matrix.
+  rows.back().swap(row);
   PPL_ASSERT(OK());
 }
 
