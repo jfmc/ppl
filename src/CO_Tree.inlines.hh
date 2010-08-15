@@ -768,6 +768,16 @@ CO_Tree::tree_iterator::tree_iterator(CO_Tree& tree1)
 }
 
 inline
+CO_Tree::tree_iterator::tree_iterator(CO_Tree& tree1, dimension_type i1)
+  : tree(tree1) {
+  PPL_ASSERT(tree.reserved_size != 0);
+  PPL_ASSERT(i1 <= tree.reserved_size + 1);
+  i = i1;
+  offset = i & -i;
+  PPL_ASSERT(OK());
+}
+
+inline
 CO_Tree::tree_iterator::tree_iterator(const iterator& itr, CO_Tree& tree1)
   : tree(tree1) {
   PPL_ASSERT(tree.reserved_size != 0);

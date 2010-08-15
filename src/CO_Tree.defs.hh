@@ -924,6 +924,12 @@ public:
   */
   explicit tree_iterator(CO_Tree& tree);
 
+  //! Constructs a tree_iterator pointing at the specified node of the tree.
+  /*!
+    \p tree must not be empty.
+  */
+  tree_iterator(CO_Tree& tree, dimension_type i);
+
   /*!
     \brief Constructs a tree_iterator from an iterator.
 
