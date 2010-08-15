@@ -804,22 +804,6 @@ CO_Tree::tree_iterator::get_parent() {
 }
 
 inline void
-CO_Tree::tree_iterator::follow_left_childs() {
-  i -= (offset - 1);
-  offset = 1;
-  PPL_ASSERT(is_leaf());
-  PPL_ASSERT(OK());
-}
-
-inline void
-CO_Tree::tree_iterator::follow_right_childs() {
-  i += (offset - 1);
-  offset = 1;
-  PPL_ASSERT(is_leaf());
-  PPL_ASSERT(OK());
-}
-
-inline void
 CO_Tree::tree_iterator::follow_left_childs_with_value() {
   PPL_ASSERT((*this)->first != unused_index);
   dimension_type* p = tree.indexes;

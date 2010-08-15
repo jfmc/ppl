@@ -933,12 +933,6 @@ public:
   */
   void go_down_searching_key(dimension_type key);
 
-  //! Follows left childs until it arrives at a leaf.
-  void follow_left_childs();
-
-  //! Follows right childs until it arrives at a leaf.
-  void follow_right_childs();
-
   /*!
     \brief Follows left childs with a value, until it arrives at a leaf or at
            a node with no value.
