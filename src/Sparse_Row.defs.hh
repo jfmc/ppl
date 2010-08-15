@@ -347,28 +347,6 @@ public:
   */
   Coefficient& operator[](dimension_type i);
 
-  //! After this call, get(i) == x.
-  /*!
-    This is slower than assign_if_nonzero() because it needs to check whether
-    the element with index i is zero.
-
-    This operation invalidates existing iterators.
-
-    This method is O(log(n)).
-  */
-  void assign(dimension_type i, const Coefficient& x);
-
-  //! Equivalent to <CODE>if (x != 0) find_create(i, x);</CODE>.
-  /*!
-    This is faster than assign(i, x), and yields the same result when the
-    element with index i is zero.
-
-    This operation invalidates existing iterators.
-
-    This method is O(log(n)).
-  */
-  void assign_if_nonzero(dimension_type i, const Coefficient& x);
-
   //! Equivalent to get(i), provided for convenience.
   const Coefficient& operator[](dimension_type i) const;
 
@@ -867,28 +845,6 @@ public:
     This method is O(log(n)).
   */
   Coefficient& operator[](dimension_type i);
-
-  //! After this call, get(i) == x.
-  /*!
-    This is slower than assign_if_nonzero() because it needs to check whether
-    the element with index i is zero.
-
-    This operation invalidates existing iterators.
-
-    This method is O(log(n)).
-  */
-  void assign(dimension_type i, const Coefficient& x);
-
-  //! Equivalent to <CODE>if (x != 0) find_create(i, x);</CODE>.
-  /*!
-    This is faster than assign(i, x), and yields the same result when the
-    element with index i is zero.
-
-    This operation invalidates existing iterators.
-
-    This method is O(log(n)).
-  */
-  void assign_if_nonzero(dimension_type i, const Coefficient& x);
 
   //! Equivalent to get(i), provided for convenience.
   const Coefficient& operator[](dimension_type i) const;

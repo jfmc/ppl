@@ -154,18 +154,6 @@ Sparse_Row::operator[](dimension_type i) {
   return row[i];
 }
 
-inline void
-Sparse_Row::assign(dimension_type i, const Coefficient& x) {
-  PPL_ASSERT(i < size_);
-  row.assign(i,x);
-}
-
-inline void
-Sparse_Row::assign_if_nonzero(dimension_type i, const Coefficient& x) {
-  PPL_ASSERT(i < size_);
-  row.assign_if_nonzero(i,x);
-}
-
 inline const Coefficient&
 Sparse_Row::operator[](dimension_type i) const {
   return get(i);
@@ -413,19 +401,6 @@ inline Coefficient&
 Sparse_Row_Reference::operator[](dimension_type i) {
   PPL_ASSERT(i < size_);
   return row[i];
-}
-
-inline void
-Sparse_Row_Reference::assign(dimension_type i, const Coefficient& x) {
-  PPL_ASSERT(i < size_);
-  row.assign(i,x);
-}
-
-inline void
-Sparse_Row_Reference::assign_if_nonzero(dimension_type i,
-                                        const Coefficient& x) {
-  PPL_ASSERT(i < size_);
-  row.assign_if_nonzero(i,x);
 }
 
 inline const Coefficient&
