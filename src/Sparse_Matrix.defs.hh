@@ -282,6 +282,15 @@ public:
   //! The copy constructor.
   iterator(const iterator&);
 
+  //! Assigns itr into *this.
+  iterator& operator=(const iterator& itr);
+
+  //! Compares itr with *this.
+  bool operator==(const iterator& itr) const;
+
+  //! Compares itr with *this.
+  bool operator!=(const iterator& itr) const;
+
   //! Returns a reference to the pointed row.
   Sparse_Row_Reference operator*();
 

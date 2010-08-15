@@ -165,6 +165,22 @@ Sparse_Matrix::iterator::iterator(const iterator& x)
   : itr(x.itr), size_(x.size_) {
 }
 
+inline Sparse_Matrix::iterator&
+Sparse_Matrix::iterator::operator=(const iterator& x) {
+  itr = x.itr;
+  return *this;
+}
+
+inline bool
+Sparse_Matrix::iterator::operator==(const iterator& x) const {
+  return itr == x.itr;
+}
+
+inline bool
+Sparse_Matrix::iterator::operator!=(const iterator& x) const {
+  return !(*this == x);
+}
+
 inline Sparse_Row_Reference
 Sparse_Matrix::iterator::operator*() {
   return Sparse_Row_Reference(*itr, size_);
