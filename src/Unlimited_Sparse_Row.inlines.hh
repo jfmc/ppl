@@ -328,21 +328,6 @@ Unlimited_Sparse_Row::add_zeroes_and_shift(dimension_type n,
   tree.increase_keys_after(i, n);
 }
 
-inline void
-Unlimited_Sparse_Row::assign(dimension_type i, const Coefficient& x) {
-  if (tree.empty())
-    assign_if_nonzero(i, x);
-  else
-    tree.insert(i, x);
-}
-
-inline void
-Unlimited_Sparse_Row::assign_if_nonzero(dimension_type i,
-                                        const Coefficient& x) {
-  if (x != 0)
-    find_create(i, x);
-}
-
 inline Coefficient&
 Unlimited_Sparse_Row::operator[](dimension_type i) {
   iterator itr = find_create(i);

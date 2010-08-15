@@ -219,28 +219,6 @@ public:
   void combine(const Unlimited_Sparse_Row& y,
                const Func1& f, const Func2& g, const Func3& h);
 
-  //! After this call, get(i) == x.
-  /*!
-    This is slower than assign_if_nonzero() because it needs to check whether
-    the element with index i is zero.
-
-    This operation invalidates existing iterators.
-
-    This method is O(log(n)).
-  */
-  void assign(dimension_type i, const Coefficient& x);
-
-  //! Equivalent to <CODE>if (x != 0) find_create(i, x);</CODE>.
-  /*!
-    This is faster than assign(i, x), and yields the same result when the
-    element with index i is zero.
-
-    This operation invalidates existing iterators.
-
-    This method is O(log(n)).
-  */
-  void assign_if_nonzero(dimension_type i, const Coefficient& x);
-
   //! Gets a reference to the i-th element.
   /*!
     For read-only access it's better to use get(), that avoids allocating
