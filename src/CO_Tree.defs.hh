@@ -403,7 +403,8 @@ public:
     This will be faster if \p itr points near to the place where the new
     element will be inserted (or where is already stored).
     However, the value of \p itr does not affect the result of this
-    method. \p itr may even be end().
+    method, as long it is a valid iterator for this tree. \p itr may even be
+    end().
 
     If an element with the specified key already exists, an iterator to that
     pair is returned.
@@ -420,7 +421,8 @@ public:
     This will be faster if \p itr points near to the place where the new
     element will be inserted (or where is already stored).
     However, the value of \p itr does not affect the result of this
-    method. \p itr may even be end().
+    method, as long it is a valid iterator for this tree. \p itr may even be
+    end().
 
     If an element with the specified key already exists, its associated data
     is set to \p data and an iterator pointing to that pair is returned.
@@ -547,7 +549,8 @@ public:
     O(log(n)), and it is O(1) if the distance between the returned position
     and \p hint is O(1).
 
-    \p hint may even be end(), in such cases it is ignored.
+    The value of \p itr does not affect the result of this method, as long it
+    is a valid iterator for this tree. \p itr may even be end().
   */
   iterator bisect_near(iterator hint, dimension_type key);
 
@@ -561,7 +564,8 @@ public:
     O(log(n)), and it is O(1) if the distance between the returned position
     and \p hint is O(1).
 
-    \p hint may even be end(), in such cases it is ignored.
+    The value of \p itr does not affect the result of this method, as long it
+    is a valid iterator for this tree. \p itr may even be end().
   */
   const_iterator bisect_near(const_iterator hint, dimension_type key) const;
 

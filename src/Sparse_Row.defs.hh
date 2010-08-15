@@ -438,7 +438,8 @@ public:
     \p itr is used as a hint. This method will be faster if the searched
     element is near to \p itr.
 
-    The value of \p itr does not change the result. \p itr may even be end().
+    The value of \p itr does not affect the result of this method, as long it
+    is a valid iterator for this row. \p itr may even be end().
 
     This method is O(1) if the distance between \p itr and the searched
     element is O(1), otherwise it is O(log(n)).
@@ -463,7 +464,8 @@ public:
     \p itr is used as a hint. This method will be faster if the searched
     element is near to \p itr.
 
-    The value of \p itr does not change the result. \p itr may even be end().
+    The value of \p itr does not affect the result of this method, as long it
+    is a valid iterator for this row. \p itr may even be end().
 
     This method is O(1) if the distance between \p itr and the searched
     element is O(1), otherwise it is O(log(n)).
@@ -950,7 +952,8 @@ public:
     \p itr is used as a hint. This method will be faster if the searched
     element is near to \p itr.
 
-    The value of \p itr does not change the result. \p itr may even be end().
+    The value of \p itr does not affect the result of this method, as long it
+    is a valid iterator for this row. \p itr may even be end().
 
     This method is O(1) if the distance between \p itr and the searched
     element is O(1), otherwise it is O(log(n)).
@@ -975,7 +978,8 @@ public:
     \p itr is used as a hint. This method will be faster if the searched
     element is near to \p itr.
 
-    The value of \p itr does not change the result. \p itr may even be end().
+    The value of \p itr does not affect the result of this method, as long it
+    is a valid iterator for this row. \p itr may even be end().
 
     This method is O(1) if the distance between \p itr and the searched
     element is O(1), otherwise it is O(log(n)).
