@@ -66,6 +66,9 @@ test03() {
   for (unsigned n = 0; n < 500; ++n)
     tree.erase(n);
 
+  if (!tree.empty())
+    return false;
+
   return true;
 }
 
@@ -81,6 +84,9 @@ test04() {
 
   for (unsigned n = 500; n-- > 0; )
     tree.erase(n);
+
+  if (!tree.empty())
+    return false;
 
   return true;
 }
@@ -98,6 +104,9 @@ test05() {
   for (unsigned n = 0; n < 500; ++n)
     tree.erase(n);
 
+  if (!tree.empty())
+    return false;
+
   return true;
 }
 
@@ -113,6 +122,9 @@ test06() {
 
   for (unsigned n = 500; --n > 0; )
     tree.erase(n);
+
+  if (!tree.empty())
+    return false;
 
   return true;
 }
@@ -627,6 +639,9 @@ test07() {
   tree.erase(257);
   tree.erase(418);
   tree.erase(314);
+
+  if (!tree.empty())
+    return false;
 
   return true;
 }
@@ -1639,6 +1654,9 @@ bool test08() {
   tree.erase(418);
   tree.erase(314);
 
+  if (!tree.empty())
+    return false;
+
   return true;
 }
 
@@ -2313,6 +2331,133 @@ test13() {
   return true;
 }
 
+bool
+test14() {
+
+  // Iterating on an empty tree.
+
+  CO_Tree tree;
+
+  if (tree.begin() != tree.end())
+    return false;
+
+  if (tree.cbegin() != tree.cend())
+    return false;
+
+  tree.erase(1);
+  tree.bisect(1);
+  static_cast<const CO_Tree&>(tree).bisect(1);
+
+  return true;
+}
+
+bool
+test15() {
+
+  // Test iterator::swap(), const_iterator::swap(),
+  // iterator::operator*() and const_iterator::operator*().
+
+  CO_Tree tree;
+
+  tree.insert(1, 1);
+  tree.insert(2, 2);
+
+  CO_Tree::iterator itr1 = tree.bisect(1);
+  CO_Tree::iterator itr2 = tree.bisect(2);
+
+  itr1.swap(itr2);
+
+  if ((*itr2).first != 1)
+    return false;
+
+  if ((*itr2).second != 1)
+    return false;
+
+  if ((*itr1).first != 2)
+    return false;
+
+  if ((*itr1).second != 2)
+    return false;
+
+  CO_Tree::const_iterator itr3 = tree.bisect(1);
+  CO_Tree::const_iterator itr4 = tree.bisect(2);
+
+  itr3.swap(itr4);
+
+  if ((*itr4).first != 1)
+    return false;
+
+  if ((*itr4).second != 1)
+    return false;
+
+  if ((*itr3).first != 2)
+    return false;
+
+  if ((*itr3).second != 2)
+    return false;
+
+  return true;
+}
+
+bool
+test16() {
+
+  // Test iterators' and const_iterators' postfix increment and decrement
+  // operators.
+
+  CO_Tree tree;
+
+  tree.insert(1, 0);
+  tree.insert(2, 0);
+  tree.insert(3, 0);
+
+  CO_Tree::iterator itr = tree.bisect(1);
+
+  itr++;
+
+  if (itr->first != 2)
+    return false;
+
+  itr++;
+
+  if (itr->first != 3)
+    return false;
+
+  itr--;
+
+  if (itr->first != 2)
+    return false;
+
+  itr--;
+
+  if (itr->first != 1)
+    return false;
+
+  CO_Tree::const_iterator itr2 = tree.bisect(1);
+
+  itr2++;
+
+  if (itr2->first != 2)
+    return false;
+
+  itr2++;
+
+  if (itr2->first != 3)
+    return false;
+
+  itr2--;
+
+  if (itr2->first != 2)
+    return false;
+
+  itr2--;
+
+  if (itr2->first != 1)
+    return false;
+
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -2329,4 +2474,7 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN
