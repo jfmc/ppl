@@ -820,9 +820,12 @@ PPL::MIP_Problem::process_pending_constraints() {
   // (the coefficient of each artificial variable will be 1).
   for (dimension_type i = tableau_num_rows; i-- > 0 ; ) {
     matrix_type::row_reference_type tableau_i = tableau[i];
-    if (tableau_i.get(0) > 0)
-      tableau_i.for_each_nonzero(std::ptr_fun<Coefficient&,void>(neg_assign),
-                                 tableau_num_cols);
+    if (tableau_i.get(0) > 0) {
+      matrix_type::row_iterator j;
+      matrix_type::row_iterator j_end;
+      for (j = tableau_i.begin(), j_end = tableau_i.end(); j != j_end; ++j)
+        neg_assign(j->second);
+    }
   }
 
   // Reset the working cost function to have the right size.
