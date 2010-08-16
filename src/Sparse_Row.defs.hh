@@ -72,6 +72,8 @@ public:
   //! Constructs a row with the specified size.
   /*!
     The row will contain only non-stored zeroes.
+
+    This constructor takes $O(1)$ time.
   */
   explicit Sparse_Row(dimension_type n = 0);
 
@@ -79,34 +81,49 @@ public:
   /*!
     The elements of the unlimited sparse row with indexes greater than or
     equal to n are ignored.
+
+    This constructor takes $O(n)$ time.
   */
   Sparse_Row(const Unlimited_Sparse_Row &x, dimension_type n);
 
   //! Constructs a Sparse_Row from a Sparse_Row_Reference.
+  /*!
+    This constructor takes $O(n)$ time.
+  */
   Sparse_Row(const Sparse_Row_Reference& x);
 
   //! Assigns a Sparse_Row_Reference to *this.
   /*!
     All stored elements in \p x must have index lower than size().
+
+    This method takes $O(n)$ time.
   */
   Sparse_Row& operator=(const Unlimited_Sparse_Row& x);
 
   //! Assigns a Sparse_Row_Reference to *this.
+  /*!
+    This method takes $O(n)$ time.
+  */
   Sparse_Row& operator=(const Sparse_Row_Reference& x);
 
   //! Resets all the elements of this row.
   /*!
-    This method takes O(n) time.
+    This method takes $O(n)$ time.
   */
   void clear();
 
   //! Swaps *this and x.
+  /*!
+    This method takes $O(1)$ time.
+  */
   void swap(Sparse_Row& x);
 
   //! Swaps (*this) and x.
   /*!
     (*this) should either have the same size of x, or have size 0.
     This allows swapping with default-constructed Sparse_Rows.
+
+    This method takes $O(1)$ time.
   */
   void swap(Sparse_Row_Reference x);
 
@@ -114,7 +131,7 @@ public:
   /*!
     This operation invalidates existing iterators.
 
-    This method takes O(log(n)) time.
+    This method takes $O(log(n))$ amortized time.
   */
   void swap(dimension_type i, dimension_type j);
 
@@ -122,7 +139,7 @@ public:
   /*!
     This operation invalidates existing iterators.
 
-    This method takes O(log(n)) time.
+    This method takes O(log(n)) amortized time.
   */
   void swap(iterator i, iterator j);
 
@@ -130,6 +147,10 @@ public:
   /*!
     This method, with this signature, is needed for compatibility with
     Dense_Row.
+
+    This method takes $O(k*log(n))$ amortized time when shrinking the row
+    and removing the trailing k elements. This method takes $O(1)$ time
+    when enlarging the row.
   */
   void construct(dimension_type n);
 
@@ -139,20 +160,35 @@ public:
 
     This method, with this signature, is needed for compatibility with
     Dense_Row.
+
+    This method takes $O(k*log(n))$ amortized time when shrinking the row
+    and removing the trailing k elements. This method takes $O(1)$ time
+    when enlarging the row.
   */
   void construct(dimension_type n, dimension_type capacity);
 
   //! Resizes the row to the specified size.
+  /*!
+    This method takes $O(k*log(n))$ amortized time when shrinking the row
+    and removing the trailing k elements. This method takes $O(1)$ time
+    when enlarging the row.
+  */
   void resize(dimension_type n);
 
   //! Resizes the row to size \p n.
   /*!
     This method, with this signature, is needed for compatibility with
     Dense_Row.
+
+    This method takes $O(k*log(n))$ amortized time where k is the number of
+    removed elements.
   */
   void shrink(dimension_type n);
 
   //! Returns the size of the row.
+  /*!
+    This method takes $O(1)$ time.
+  */
   dimension_type size() const;
 
 private:
@@ -173,7 +209,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes O(log(n)) time.
+    This method takes $O(log(n))$ amortized time.
   */
   iterator reset(iterator i);
 
@@ -184,8 +220,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes O(k*log(n)) time, with k the number of elements in
-    [first,last).
+    This method takes $O(k*log(n))$ amortized time, with k the number of
+    elements in [first,last).
   */
   iterator reset(iterator first, iterator last);
 
@@ -196,8 +232,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes O(k*log(n)) time, with k the number of elements with
-    index greater than or equal to i.
+    This method takes $O(k*log(n))$ amortized time, with k the number of
+    elements with index greater than or equal to i.
   */
   void reset_after(dimension_type i);
 
@@ -206,7 +242,7 @@ public:
     Computes the Greatest Common Divisor (GCD) among the elements of the row
     and normalizes them by the GCD itself.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   void normalize();
 
@@ -217,7 +253,7 @@ public:
     \param g should take a Coefficient& and a const Coefficient&.
              g(c1, c2) must do nothing if c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Unlimited_Sparse_Row& y,
@@ -230,7 +266,7 @@ public:
     \param g should take a Coefficient& and a const Coefficient&.
              g(c1, c2) must do nothing if c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Sparse_Row& y,
@@ -243,7 +279,7 @@ public:
     \param g should take a Coefficient& and a const Coefficient&.
              g(c1, c2) must do nothing if c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Sparse_Row_Reference& y,
@@ -256,7 +292,7 @@ public:
     \param h should take a Coefficient& and a const Coefficient&.
              h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Unlimited_Sparse_Row& y,
@@ -269,7 +305,7 @@ public:
     \param h should take a Coefficient& and a const Coefficient&.
              h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Sparse_Row& y,
@@ -282,7 +318,7 @@ public:
     \param h should take a Coefficient& and a const Coefficient&.
              h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Sparse_Row_Reference& y,
@@ -297,7 +333,7 @@ public:
     \param h should take a Coefficient& and a const Coefficient&.
              h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Unlimited_Sparse_Row& y,
@@ -312,7 +348,7 @@ public:
     \param h should take a Coefficient& and a const Coefficient&.
              h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Sparse_Row& y,
@@ -327,7 +363,7 @@ public:
     \param h should take a Coefficient& and a const Coefficient&.
              h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Sparse_Row_Reference& y,
@@ -343,11 +379,14 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ amortized time.
   */
   Coefficient& operator[](dimension_type i);
 
   //! Equivalent to get(i), provided for convenience.
+  /*!
+    This method takes $O(log(n))$ time.
+  */
   const Coefficient& operator[](dimension_type i) const;
 
   //! Gets the i-th element in the sequence.
@@ -355,11 +394,14 @@ public:
     If possible, use the find_create(), find() or lower_bound() methods with
     a hint instead of this, to improve performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ time.
   */
   const Coefficient& get(dimension_type i) const;
 
   //! Returns an iterator that points at the first stored element.
+  /*!
+    This method takes $O(1)$ expected time.
+  */
   iterator begin();
 
   //! Returns an iterator that points after the last stored element.
@@ -368,6 +410,8 @@ public:
     that is kept valid.
     Client code can keep a const reference to that iterator instead of
     keep updating a local iterator.
+
+    This method takes $O(1)$ time.
   */
   const iterator& end();
 
@@ -378,6 +422,9 @@ public:
   const const_iterator& end() const;
 
   //! Returns an iterator that points at the first element.
+  /*!
+    This method takes $O(1)$ expected time.
+  */
   const_iterator cbegin() const;
 
   //! Returns an iterator that points after the last element.
@@ -386,6 +433,8 @@ public:
     that is updated at each operation that modifies the structure.
     Client code can keep a const reference to that iterator instead of
     keep updating a local iterator.
+
+    This method takes $O(1)$ time.
   */
   const const_iterator& cend() const;
 
@@ -394,7 +443,7 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   iterator find(dimension_type i);
 
@@ -407,7 +456,7 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   iterator lower_bound(dimension_type i);
 
@@ -416,7 +465,7 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   const_iterator find(dimension_type i) const;
 
@@ -429,7 +478,7 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   const_iterator lower_bound(dimension_type i) const;
 
@@ -441,8 +490,8 @@ public:
     The value of \p itr does not affect the result of this method, as long it
     is a valid iterator for this row. \p itr may even be end().
 
-    This method is O(1) if the distance between \p itr and the searched
-    element is O(1), otherwise it is O(log(n)).
+    This method takes $O(log(n))$ expected time. If the distance between
+    \p itr and the searched position is $O(1)$, this method takes $O(1)$ time.
   */
   iterator find(iterator itr, dimension_type i);
 
@@ -455,7 +504,7 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   iterator lower_bound(iterator itr, dimension_type i);
 
@@ -467,8 +516,8 @@ public:
     The value of \p itr does not affect the result of this method, as long it
     is a valid iterator for this row. \p itr may even be end().
 
-    This method is O(1) if the distance between \p itr and the searched
-    element is O(1), otherwise it is O(log(n)).
+    This method takes $O(log(n))$ expected time. If the distance between
+    \p itr and the searched position is $O(1)$, this method takes $O(1)$ time.
   */
   const_iterator find(const_iterator itr, dimension_type i) const;
 
@@ -481,7 +530,7 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
@@ -492,7 +541,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ amortized time.
   */
   iterator find_create(dimension_type i, const Coefficient& x);
 
@@ -503,7 +552,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ amortized time.
   */
   iterator find_create(dimension_type i);
 
@@ -516,8 +565,9 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method is O(1) if the distance between \p itr and the searched
-    element is O(1), otherwise it is O(log(n)).
+    This method takes $O(log(n))$ expected time. If the distance between
+    \p itr and the searched position is $O(1)$ and the row already contains
+    an element with this index, this method takes $O(1)$ time.
   */
   iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
 
@@ -530,15 +580,22 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method is O(1) if the distance between \p itr and the searched
-    element is O(1), otherwise it is O(log(n)).
+    This method takes $O(log(n))$ expected time. If the distance between
+    \p itr and the searched position is $O(1)$ and the row already contains
+    an element with this index, this method takes $O(1)$ time.
   */
   iterator find_create(iterator itr, dimension_type i);
 
   //! Returns a Sparse_Row_Reference that refers to this row.
+  /*!
+    This method takes $O(1)$ time.
+  */
   operator Sparse_Row_Reference();
 
   //! Returns the underlying Unlimited_Sparse_Row.
+  /*!
+    This method takes $O(1)$ time.
+  */
   operator const Unlimited_Sparse_Row&() const;
 
   PPL_OUTPUT_DECLARATIONS
@@ -585,6 +642,8 @@ public:
 
     \p row must not contain stored elements with index greater than or equal
     to \p size.
+
+    This constructor takes $O(n)$ time.
   */
   Sparse_Row_Reference(Unlimited_Sparse_Row& row, dimension_type size);
 
@@ -592,30 +651,38 @@ public:
   /*!
     \p x must not contain stored elements with index greater than or equal
     to size().
+
+    This method takes $O(n)$ time.
   */
   Sparse_Row_Reference& operator=(const Unlimited_Sparse_Row& x);
 
   //! Copies the row referenced by \p x into the row referenced by *this.
   /*!
     x.size() must be equal to size().
+
+    This method takes $O(n)$ time.
   */
   Sparse_Row_Reference& operator=(const Sparse_Row_Reference& x);
 
   //! Copies \p x into the row referenced by *this.
   /*!
     x.size() must be equal to size().
+
+    This method takes $O(n)$ time.
   */
   Sparse_Row_Reference& operator=(const Sparse_Row& x);
 
   //! Resets all the elements of this row.
   /*!
-    This method takes O(n) time.
+    This method takes $O(n)$ time.
   */
   void clear();
 
   //! Swaps this row referenced by *this with the row referenced by x.
   /*!
     x.size() must be equal to size().
+
+    This method takes $O(1)$ time.
   */
   void swap(Sparse_Row_Reference x);
 
@@ -623,6 +690,8 @@ public:
   /*!
     x should either have the same size of (*this), or have size 0.
     This allows swapping with default-constructed Sparse_Rows.
+
+    This method takes $O(1)$ time.
   */
   void swap(Sparse_Row& x);
 
@@ -630,7 +699,7 @@ public:
   /*!
     This operation invalidates existing iterators.
 
-    This method takes O(log(n)) time.
+    This method takes $O(log(n))$ expected time.
   */
   void swap(dimension_type i, dimension_type j);
 
@@ -638,11 +707,14 @@ public:
   /*!
     This operation invalidates existing iterators.
 
-    This method takes O(log(n)) time.
+    This method takes $O(log(n))$ amortized time.
   */
   void swap(iterator i, iterator j);
 
   //! Returns the size of the referenced row.
+  /*!
+    This method takes $O(1)$ time.
+  */
   dimension_type size() const;
 
   //! Resets to zero the value pointed to by i.
@@ -652,7 +724,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes O(log(n)) time.
+    This method takes $O(log(n))$ expected time.
   */
   iterator reset(iterator i);
 
@@ -663,8 +735,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes O(k*log(n)) time, with k the number of elements in
-    [first,last).
+    This method takes $O(k*log(n))$ expected time, with k the number of
+    elements in [first,last).
   */
   iterator reset(iterator first, iterator last);
 
@@ -675,7 +747,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes O(log(n)) time.
+    This method takes $O(log(n))$ amortized time.
   */
   void reset(dimension_type i);
 
@@ -686,8 +758,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes O(k*log(n)) time, with k the number of elements with
-    index greater than or equal to i.
+    This method takes $O(k*log(n))$ expected time, with k the number of
+    elements with index greater than or equal to i.
   */
   void reset_after(dimension_type i);
 
@@ -696,7 +768,7 @@ public:
     Computes the Greatest Common Divisor (GCD) among the elements of the row
     and normalizes them by the GCD itself.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   void normalize();
 
@@ -707,7 +779,7 @@ public:
     \param g should take a Coefficient& and a const Coefficient&.
              g(c1, c2) must do nothing if c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Unlimited_Sparse_Row& y,
@@ -720,7 +792,7 @@ public:
     \param g should take a Coefficient& and a const Coefficient&.
              g(c1, c2) must do nothing if c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Sparse_Row& y,
@@ -733,7 +805,7 @@ public:
     \param g should take a Coefficient& and a const Coefficient&.
              g(c1, c2) must do nothing if c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Sparse_Row_Reference& y,
@@ -746,7 +818,7 @@ public:
     \param h should take a Coefficient& and a const Coefficient&.
              h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Unlimited_Sparse_Row& y,
@@ -759,7 +831,7 @@ public:
     \param h should take a Coefficient& and a const Coefficient&.
              h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Sparse_Row& y,
@@ -772,7 +844,7 @@ public:
     \param h should take a Coefficient& and a const Coefficient&.
              h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Sparse_Row_Reference& y,
@@ -787,7 +859,7 @@ public:
     \param h should take a Coefficient& and a const Coefficient&.
              h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Unlimited_Sparse_Row& y,
@@ -802,7 +874,7 @@ public:
     \param h should take a Coefficient& and a const Coefficient&.
              h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Sparse_Row& y,
@@ -817,7 +889,7 @@ public:
     \param h should take a Coefficient& and a const Coefficient&.
              h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
-    This method is O(n).
+    This method takes $O(n)$ time.
   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Sparse_Row_Reference& y,
@@ -833,7 +905,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   Coefficient& operator[](dimension_type i);
 
@@ -845,11 +917,14 @@ public:
     If possible, use the find_create(), find() or lower_bound() methods with
     a hint instead of this, to improve performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   const Coefficient& get(dimension_type i) const;
 
   //! Returns an iterator that points at the first stored element.
+  /*!
+    This method takes $O(1)$ expected time.
+  */
   iterator begin();
 
   //! Returns an iterator that points after the last stored element.
@@ -858,6 +933,8 @@ public:
     that is kept valid.
     Client code can keep a const reference to that iterator instead of
     keep updating a local iterator.
+
+    This method takes $O(1)$ time.
   */
   const iterator& end();
 
@@ -868,6 +945,9 @@ public:
   const const_iterator& end() const;
 
   //! Returns an iterator that points at the first element.
+  /*!
+    This method takes $O(1)$ expected time.
+  */
   const_iterator cbegin() const;
 
   //! Returns an iterator that points after the last element.
@@ -876,6 +956,8 @@ public:
     that is updated at each operation that modifies the structure.
     Client code can keep a const reference to that iterator instead of
     keep updating a local iterator.
+
+    This method takes $O(1)$ time.
   */
   const const_iterator& cend() const;
 
@@ -887,6 +969,8 @@ public:
     \param func A functor that takes a (Coefficient&) or
                 (const Coefficient&) argument.
     \param n    The logical size of this row (ignored)
+
+    This method takes $O(n)$ time.
   */
   template <typename Func>
   void for_each_nonzero(const Func& func, const dimension_type n);
@@ -899,6 +983,8 @@ public:
     \param func A functor that takes a (Coefficient&) or
                 (const Coefficient&) argument.
     \param n    The logical size of this row (ignored)
+
+    This method takes $O(n)$ time.
   */
   template <typename Func>
   void for_each_nonzero(const Func& func,const dimension_type n) const;
@@ -908,7 +994,7 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   iterator find(dimension_type i);
 
@@ -921,7 +1007,7 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   iterator lower_bound(dimension_type i);
 
@@ -930,7 +1016,7 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   const_iterator find(dimension_type i) const;
 
@@ -943,7 +1029,7 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   const_iterator lower_bound(dimension_type i) const;
 
@@ -955,8 +1041,8 @@ public:
     The value of \p itr does not affect the result of this method, as long it
     is a valid iterator for this row. \p itr may even be end().
 
-    This method is O(1) if the distance between \p itr and the searched
-    element is O(1), otherwise it is O(log(n)).
+    This method takes $O(log(n))$ expected time. If the distance between
+    \p itr and the searched position is $O(1)$, this method takes $O(1)$ time.
   */
   iterator find(iterator itr, dimension_type i);
 
@@ -969,7 +1055,7 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   iterator lower_bound(iterator itr, dimension_type i);
 
@@ -981,8 +1067,8 @@ public:
     The value of \p itr does not affect the result of this method, as long it
     is a valid iterator for this row. \p itr may even be end().
 
-    This method is O(1) if the distance between \p itr and the searched
-    element is O(1), otherwise it is O(log(n)).
+    This method takes $O(log(n))$ expected time. If the distance between
+    \p itr and the searched position is $O(1)$, this method takes $O(1)$ time.
   */
   const_iterator find(const_iterator itr, dimension_type i) const;
 
@@ -995,7 +1081,7 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ expected time.
   */
   const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
@@ -1006,7 +1092,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ amortized time.
   */
   iterator find_create(dimension_type i, const Coefficient& x);
 
@@ -1017,7 +1103,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method is O(log(n)).
+    This method takes $O(log(n))$ amortized time.
   */
   iterator find_create(dimension_type i);
 
@@ -1030,8 +1116,9 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method is O(1) if the distance between \p itr and the searched
-    element is O(1), otherwise it is O(log(n)).
+    This method takes $O(log(n))$ expected time. If the distance between
+    \p itr and the searched position is $O(1)$ and the row already contains
+    an element with this index, this method takes $O(1)$ time.
   */
   iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
 
@@ -1044,8 +1131,9 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method is O(1) if the distance between \p itr and the searched
-    element is O(1), otherwise it is O(log(n)).
+    This method takes $O(log(n))$ expected time. If the distance between
+    \p itr and the searched position is $O(1)$ and the row already contains
+    an element with this index, this method takes $O(1)$ time.
   */
   iterator find_create(iterator itr, dimension_type i);
 

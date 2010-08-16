@@ -137,42 +137,77 @@ public:
     typedef value_type& reference;
 
     //! Constructs an invalid const_iterator.
+    /*!
+      This constructor takes $O(1)$ time.
+    */
     explicit const_iterator();
 
     //! Constructs an iterator pointing to the first element of the tree.
+    /*!
+      This constructor takes $O(1)$ expected time.
+    */
     explicit const_iterator(const CO_Tree& tree);
 
     //! Constructs a const_iterator pointing to the i-th node of the tree.
     /*!
       The i-th node must be a node with a value or end().
+
+      This constructor takes $O(1)$ time.
     */
     const_iterator(const CO_Tree& tree, dimension_type i);
 
     //! The copy constructor.
+    /*!
+      This constructor takes $O(1)$ time.
+    */
     const_iterator(const const_iterator& itr);
 
     //! Converts an iterator into a const_iterator.
+    /*!
+      This constructor takes $O(1)$ time.
+    */
     const_iterator(const iterator& itr);
 
     //! Swaps itr with *this.
+    /*!
+      This method takes $O(1)$ time.
+    */
     void swap(const_iterator& itr);
 
     //! Assigns \p itr to *this .
+    /*!
+      This method takes $O(1)$ time.
+    */
     const_iterator& operator=(const const_iterator& itr);
 
     //! Assigns \p itr to *this .
+    /*!
+      This method takes $O(1)$ time.
+    */
     const_iterator& operator=(const iterator& itr);
 
     //! Navigates to the next element.
+    /*!
+      This method takes $O(n)$ amortized time.
+    */
     const_iterator& operator++();
 
     //! Navigates to the previous element.
+    /*!
+      This method takes $O(n)$ amortized time.
+    */
     const_iterator& operator--();
 
     //! Navigates to the next element.
+    /*!
+      This method takes $O(n)$ amortized time.
+    */
     const_iterator operator++(int);
 
     //! Navigates to the previous element.
+    /*!
+      This method takes $O(n)$ amortized time.
+    */
     const_iterator operator--(int);
 
     //! Returns the current element.
@@ -256,14 +291,22 @@ public:
     typedef value_type& reference;
 
     //! Constructs an invalid iterator.
+    /*!
+      This constructor takes $O(1)$ time.
+    */
     iterator();
 
     //! Constructs an iterator pointing to first element of the tree.
+    /*!
+      This constructor takes $O(1)$ expected time.
+    */
     explicit iterator(CO_Tree& tree);
 
     //! Constructs an iterator pointing to the i-th node.
     /*!
       The i-th node must be a node with a value or end().
+
+      This constructor takes $O(1)$ time.
     */
     iterator(CO_Tree& tree, dimension_type i);
 
@@ -271,31 +314,57 @@ public:
     /*!
       This is meant for use by CO_Tree only.
       This is not private to avoid the friend declaration.
+
+      This constructor takes $O(1)$ time.
     */
     explicit iterator(const tree_iterator& itr);
 
     //! The copy contructor.
+    /*!
+      This constructor takes $O(1)$ time.
+    */
     iterator(const iterator& itr);
 
     //! Swaps itr with *this.
+    /*!
+      This method takes $O(1)$ time.
+    */
     void swap(iterator&itr);
 
     //! Assigns \p itr to *this .
+    /*!
+      This method takes $O(1)$ time.
+    */
     iterator& operator=(const iterator& itr);
 
     //! Assigns \p itr to *this .
+    /*!
+      This method takes $O(1)$ time.
+    */
     iterator& operator=(const tree_iterator& itr);
 
     //! Navigates to the next element in the tree.
+    /*!
+      This method takes $O(n)$ amortized time.
+    */
     iterator& operator++();
 
     //! Navigates to the previous element in the tree.
+    /*!
+      This method takes $O(n)$ amortized time.
+    */
     iterator& operator--();
 
     //! Navigates to the next element in the tree.
+    /*!
+      This method takes $O(n)$ amortized time.
+    */
     iterator operator++(int);
 
     //! Navigates to the previous element in the tree.
+    /*!
+      This method takes $O(n)$ amortized time.
+    */
     iterator operator--(int);
 
     //! Returns the current element.
@@ -348,30 +417,48 @@ public:
   };
 
   //! Constructs an empty tree.
+  /*!
+    This constructor takes $O(1)$ time.
+  */
   CO_Tree();
 
   //! The copy constructor.
+  /*!
+    This constructor takes $O(n)$ time.
+  */
   CO_Tree(const CO_Tree& v);
 
   //! The assignment operator.
+  /*!
+    This method takes $O(n)$ time.
+  */
   CO_Tree& operator=(const CO_Tree& x);
 
   //! Removes all elements from the tree.
   /*!
-    This method takes O(n) time.
+    This method takes $O(n)$ time.
   */
   void clear();
 
   //! The destructor.
+  /*!
+    This destructor takes $O(n)$ time.
+  */
   ~CO_Tree();
 
   //! Returns \p true if the tree has no elements.
+  /*!
+    This method takes $O(1)$ time.
+  */
   bool empty() const;
 
   //! Dumps the tree to stdout, for debugging purposes.
   void dump_tree() const;
 
   //! Returns the size in bytes of the memory managed by \p *this.
+  /*!
+    This method takes $O(n)$ time.
+  */
   dimension_type external_memory_in_bytes() const;
 
   //! Inserts an element in the tree.
@@ -381,6 +468,8 @@ public:
     If such a pair already exists, an iterator to that pair is returned.
 
     This operation invalidates existing iterators.
+
+    This method takes $O(log(n))$ amortized time.
   */
   iterator insert(dimension_type key);
 
@@ -392,6 +481,8 @@ public:
     is set to \p data and an iterator pointing to that pair is returned.
 
     This operation invalidates existing iterators.
+
+    This method takes $O(log(n))$ amortized time.
   */
   iterator insert(dimension_type key, const data_type& data);
 
@@ -410,6 +501,8 @@ public:
     pair is returned.
 
     This operation invalidates existing iterators.
+
+    This method takes $O(log(n))$ amortized time.
   */
   iterator insert(iterator itr, dimension_type key);
 
@@ -428,6 +521,8 @@ public:
     is set to \p data and an iterator pointing to that pair is returned.
 
     This operation invalidates existing iterators.
+
+    This method takes $O(log(n))$ amortized time.
   */
   iterator insert(iterator itr, dimension_type key, const data_type& data);
 
@@ -437,6 +532,8 @@ public:
 
     \returns an iterator to the next element (or end() if there are no
              elements with key greater than \p key ).
+
+    This method takes $O(log(n))$ amortized time.
   */
   iterator erase(dimension_type key);
 
@@ -446,6 +543,8 @@ public:
 
     \returns an iterator to the next element (or end() if there are no
              elements with key greater than \p key ).
+
+    This method takes $O(log(n))$ amortized time.
   */
   iterator erase(iterator itr);
 
@@ -454,19 +553,31 @@ public:
            by 1 all elements' keys that were greater than \p key.
 
     This operation invalidates existing iterators.
+
+    This method takes $O(log(n) + k)$ expected time, with k the number of
+    elements with keys greater than \p key.
   */
   void erase_element_and_shift_left(dimension_type key);
 
   //! Adds \p n to all keys greater than or equal to \p key.
+  /*!
+    This method takes $O(log(n) + k)$ expected time, with k the number of
+    elements with keys greater than or equal to \p key.
+  */
   void increase_keys_after(dimension_type key, dimension_type n);
 
   //! Swaps x with *this.
   /*!
     This operation invalidates existing iterators.
+
+    This method takes $O(1)$ time.
   */
   void swap(CO_Tree& x);
 
   //! Returns an iterator that points at the first element.
+  /*!
+    This method takes $O(1)$ expected time.
+  */
   iterator begin();
 
   //! Returns an iterator that points after the last element.
@@ -475,6 +586,8 @@ public:
     that is updated at each operation that modifies the structure.
     Client code can keep a const reference to that iterator instead of
     keep updating a local iterator.
+
+    This method takes $O(1)$ time.
   */
   const iterator& end();
 
@@ -485,6 +598,9 @@ public:
   const const_iterator& end() const;
 
   //! Returns an iterator that points at the first element.
+  /*!
+    This method takes $O(1)$ expected time.
+  */
   const_iterator cbegin() const;
 
   //! Returns an iterator that points after the last element.
@@ -493,6 +609,8 @@ public:
     that is updated at each operation that modifies the structure.
     Client code can keep a const reference to that iterator instead of
     keep updating a local iterator.
+
+    This method takes $O(1)$ time.
   */
   const const_iterator& cend() const;
 
@@ -502,6 +620,8 @@ public:
     returned; otherwise, the returned iterator refers to the immediately
     preceding or succeeding value.
     If the tree is empty, end() is returned.
+
+    This method takes $O(log(n))$ expected time.
   */
   iterator bisect(dimension_type key);
 
@@ -511,6 +631,8 @@ public:
     returned; otherwise, the returned iterator refers to the immediately
     preceding or succeeding value.
     If the tree is empty, end() is returned.
+
+    This method takes $O(log(n))$ expected time.
   */
   const_iterator bisect(dimension_type key) const;
 
@@ -523,6 +645,8 @@ public:
     If the tree is empty, end() is returned.
 
     \note last is included in the search, too.
+
+    This method takes $O(log(last - first + 1))$ expected time.
   */
   iterator bisect_in(iterator first, iterator last, dimension_type key);
 
@@ -535,6 +659,8 @@ public:
     If the tree is empty, end() is returned.
 
     \note last is included in the search, too.
+
+    This method takes $O(log(last - first + 1))$ expected time.
   */
   const_iterator bisect_in(const_iterator first, const_iterator last,
                            dimension_type key) const;
@@ -545,12 +671,11 @@ public:
     otherwise, it points to the immediately preceding or succeeding value.
     If the tree is empty, end() is returned.
 
-    This uses a binary progression and then a bisection, so this method is
-    O(log(n)), and it is O(1) if the distance between the returned position
-    and \p hint is O(1).
-
     The value of \p itr does not affect the result of this method, as long it
     is a valid iterator for this tree. \p itr may even be end().
+
+    This method takes $O(log(n))$ expected time. If the distance between the
+    returned position and \p hint is $O(1)$ it takes $O(1)$ expected time.
   */
   iterator bisect_near(iterator hint, dimension_type key);
 
@@ -560,12 +685,11 @@ public:
     otherwise, it points to the immediately preceding or succeeding value.
     If the tree is empty, end() is returned.
 
-    This uses a binary progression and then a bisection, so this method is
-    O(log(n)), and it is O(1) if the distance between the returned position
-    and \p hint is O(1).
-
     The value of \p itr does not affect the result of this method, as long it
     is a valid iterator for this tree. \p itr may even be end().
+
+    This method takes $O(log(n))$ expected time. If the distance between the
+    returned position and \p hint is $O(1)$ it takes $O(1)$ expected time.
   */
   const_iterator bisect_near(const_iterator hint, dimension_type key) const;
 
@@ -582,6 +706,8 @@ private:
     If the tree is empty, end() is returned.
 
     \note last is included in the search, too.
+
+    This method takes $O(log(n))$ expected time.
   */
   dimension_type bisect_in(dimension_type first, dimension_type last,
                            dimension_type key) const;
@@ -596,6 +722,9 @@ private:
     and \p hint is O(1).
 
     \p hint must be the index of a valid element.
+
+    This method takes $O(log(n))$ expected time. If the distance between the
+    returned position and \p hint is $O(1)$ it takes $O(1)$ expected time.
   */
   dimension_type bisect_near(dimension_type hint, dimension_type key) const;
 
@@ -610,6 +739,8 @@ private:
                no such element exists, it must point to the node that would
                be his parent.
     \return an iterator that points to the inserted element.
+
+    This method takes $O(log(n))$ amortized time.
   */
   tree_iterator insert_precise(dimension_type key, const data_type& data,
                                tree_iterator itr);
@@ -619,6 +750,8 @@ private:
     The tree must be empty.
 
     This operation invalidates existing iterators.
+
+    This method takes $O(1)$ time.
   */
   void insert_in_empty_tree(dimension_type key1, const data_type& data1);
 
@@ -628,16 +761,23 @@ private:
 
     \returns an iterator to the next element (or end() if there are no
              elements with key greater than \p key ).
+
+    This method takes $O(log(n))$ amortized time.
   */
   iterator erase(tree_iterator itr);
 
   //! Initializes a tree with reserved size at least \p n .
+  /*!
+    This method takes $O(n)$ time.
+  */
   void init(dimension_type n);
 
   //! Deallocates the tree's dynamic arrays.
   /*!
     After this call, the tree fields are uninitialized, so init() must be
     called again before using the tree.
+
+    This method takes $O(n)$ time.
   */
   void destroy();
 
@@ -650,6 +790,8 @@ private:
   //! Returns the floor of the base-2 logarithm of \p n .
   /*!
     \p n must be greater than zero.
+
+    This method takes $O(log(n))$ time.
   */
   static unsigned integer_log2(dimension_type n);
 
@@ -659,6 +801,8 @@ private:
 
     \returns true if the fraction num/den is less than the fraction
              ratio/100.
+
+    This method takes $O(1)$ time.
   */
   static bool is_less_than_ratio(dimension_type num, dimension_type den,
                                  dimension_type ratio);
@@ -669,6 +813,8 @@ private:
 
     \returns true if the fraction num/den is greater than the fraction
              ratio/100.
+
+    This method takes $O(1)$ time.
   */
   static bool is_greater_than_ratio(dimension_type num, dimension_type den,
                                     dimension_type ratio);
@@ -680,6 +826,8 @@ private:
   /*!
     This is called when the density is about to exceed the maximum density
     (specified by max_density_percent).
+
+    This method takes $O(n)$ time.
   */
   void rebuild_bigger_tree();
 
@@ -690,6 +838,8 @@ private:
 
     \p reserved_size must be greater than 3 (otherwise the tree can just be
     cleared).
+
+    This method takes $O(n)$ time.
   */
   void rebuild_smaller_tree();
 
@@ -697,6 +847,8 @@ private:
   /*!
     This method must be called when the indexes[] and data[] vector are
     reallocated.
+
+    This method takes $O(1)$ time.
   */
   void refresh_cached_iterators();
 
@@ -711,6 +863,8 @@ private:
 
     \returns an iterator pointing to the root of the subtree that was
              rebalanced.
+
+    This method takes $O(1)$ amortized time.
   */
   tree_iterator rebalance(tree_iterator itr, dimension_type key,
                           const data_type& value);
@@ -725,6 +879,8 @@ private:
                         It must be greater than zero.
     \returns the index of the rightmost unused node in the subtree after the
              process.
+
+    This method takes $O(k)$ time, where k is \p subtree_size.
   */
   dimension_type compact_elements_in_the_rightmost_end(
     dimension_type last_in_subtree, dimension_type subtree_size,
@@ -741,6 +897,8 @@ private:
                        specified key and value in the process.
     \param last_used points to the leftmost element with a value in the
                      subtree.
+
+    This method takes $O(k)$ time, where k is \p subtree_size.
   */
   void redistribute_elements_in_subtree(dimension_type root_index,
                                         dimension_type subtree_size,
@@ -753,6 +911,8 @@ private:
   /*!
     *this must be empty and big enough to contain all of tree's data without
     exceeding max_density.
+
+    This method takes $O(n)$ time.
   */
   void move_data_from(CO_Tree& tree);
 
@@ -760,10 +920,16 @@ private:
   /*!
     *this must be empty and big enough to contain all of tree's data without
     exceeding max_density.
+
+    This method takes $O(n)$ time.
   */
   void copy_data_from(const CO_Tree& tree);
 
   //! Counts the number of used elements in the subtree rooted at itr.
+  /*!
+    This method takes $O(k)$ time, where k is the number of elements in the
+    subtree.
+  */
   static dimension_type count_used_in_subtree(tree_iterator itr);
 
   //! Moves the value of \p from in \p to .
@@ -776,6 +942,8 @@ private:
 
     The implementation of this method assumes that data_type values don't
     keep pointers to themselves nor to their fields.
+
+    This method takes $O(1)$ time.
   */
   static void move_data_element(data_type& to, data_type& from);
 
@@ -916,16 +1084,27 @@ public:
   //! Makes the iterator point to the root of \p tree.
   /*!
     The values of all fields (beside tree) are overwritten.
+
+    This method takes $O(1)$ time.
   */
   void get_root();
 
   //! Makes the iterator point to the left child of the current node.
+  /*!
+    This method takes $O(1)$ time.
+  */
   void get_left_child();
 
   //! Makes the iterator point to the right child of the current node.
+  /*!
+    This method takes $O(1)$ time.
+  */
   void get_right_child();
 
   //! Makes the iterator point to the parent of the current node.
+  /*!
+    This method takes $O(1)$ time.
+  */
   void get_parent();
 
   /*!
@@ -934,28 +1113,43 @@ public:
 
     After this method, *this points to the found node (if it exists) or to
     the node that would be his parent (otherwise).
+
+    This method takes $O(log(n))$ time.
   */
   void go_down_searching_key(dimension_type key);
 
   /*!
     \brief Follows left childs with a value, until it arrives at a leaf or at
            a node with no value.
+
+    This method takes $O(1)$ expected time.
   */
   void follow_left_childs_with_value();
 
   /*!
     \brief Follows right childs with a value, until it arrives at a leaf or at
            a node with no value.
+
+    This method takes $O(1)$ expected time.
   */
   void follow_right_childs_with_value();
 
   //! Returns true if the pointed node is the root node.
+  /*!
+    This method takes $O(1)$ time.
+  */
   bool is_root() const;
 
   //! Returns true if the pointed node has a parent and is its right child.
+  /*!
+    This method takes $O(1)$ time.
+  */
   bool is_right_child() const;
 
   //! Returns true if the pointed node is a leaf of the complete tree.
+  /*!
+    This method takes $O(1)$ time.
+  */
   bool is_leaf() const;
 
   //! Returns the key and value of the current node.
@@ -985,10 +1179,15 @@ public:
 
     Thus leaves have offset 1.
     This is faster than depth(), so it is useful for comparing node depths.
+
+    This method takes $O(1)$ time.
   */
   dimension_type get_offset() const;
 
   //! Returns the depth of the current node in the complete tree.
+  /*!
+    This method takes $O(log(n))$ time.
+  */
   height_t depth() const;
 
 private:
