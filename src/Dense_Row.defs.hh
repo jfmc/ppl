@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 //! A finite sequence of coefficients.
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-class Parma_Polyhedra_Library::Dense_Row {
+class Parma_Polyhedra_Library::Dense_Row : public Row {
 public:
 
   class iterator;
@@ -38,28 +38,6 @@ public:
 
   //! Pre-constructs a row: construction must be completed by construct().
   Dense_Row();
-
-  //! \name Post-constructors
-  //@{
-  //! Constructs properly a default-constructed element.
-  /*!
-    Builds a row with size and capacity \p sz.
-  */
-  void construct(dimension_type sz);
-
-  //! Constructs properly a default-constructed element.
-  /*!
-    \param sz
-    The size of the row that will be constructed;
-
-    \param capacity
-    The capacity of the row that will be constructed;
-
-    The row that is constructed has storage for \p capacity elements,
-    \p sz of which are default-constructed now.
-  */
-  void construct(dimension_type sz, dimension_type capacity);
-  //@} // Post-constructors
 
   //! Tight constructor: resizing may require reallocation.
   /*!
@@ -97,12 +75,6 @@ public:
   */
   Dense_Row(const Dense_Row& y, dimension_type sz, dimension_type capacity);
 
-  //! Destructor.
-  ~Dense_Row();
-
-  //! Assignment operator.
-  Dense_Row& operator=(const Dense_Row& y);
-
   //! Swaps the i-th element with the j-th element.
   //! Provided for compatibility with Sparse_Row
   void swap(dimension_type i, dimension_type j);
@@ -131,36 +103,6 @@ public:
 
   //! Swaps \p *this with \p y.
   void swap(Dense_Row& y);
-
-  //! Assigns the implementation of \p y to \p *this.
-  /*!
-    To be used with extra care, since it may easily cause memory leaks
-    or undefined behavior.
-  */
-  void assign(Dense_Row& y);
-
-  //! Expands the row to size \p new_size.
-  /*!
-    Adds new positions to the implementation of the row
-    obtaining a new row with size \p new_size.
-    It is assumed that \p new_size is between the current size
-    and capacity of the row.
-  */
-  void expand_within_capacity(dimension_type new_size);
-
-  //! Shrinks the row by erasing elements at the end.
-  /*!
-    Destroys elements of the row implementation
-    from position \p new_size to the end.
-    It is assumed that \p new_size is not greater than the current size.
-  */
-  void shrink(dimension_type new_size);
-
-  //! Returns the size() of the largest possible Row.
-  static dimension_type max_size();
-
-  //! Gives the number of coefficients currently in use.
-  dimension_type size() const;
 
   //! Gets the i-th element.
   //! Provided for compatibility with Sparse_Row.
@@ -202,22 +144,6 @@ public:
   //! Provided for compatibility with Sparse_Row.
   iterator find_create(iterator itr, dimension_type i);
 
-  //! \name Subscript operators
-  //@{
-  //! Returns a reference to the element of the row indexed by \p k.
-  Coefficient& operator[](dimension_type k);
-
-  //! Returns a constant reference to the element of the row indexed by \p k.
-  Coefficient_traits::const_reference operator[](dimension_type k) const;
-  //@} // Subscript operators
-
-  //! Normalizes the modulo of coefficients so that they are mutually prime.
-  /*!
-    Computes the Greatest Common Divisor (GCD) among the elements of
-    the row and normalizes them by the GCD itself.
-  */
-  void normalize();
-
   //! Calls g(x[i],y[i]), for each i.
   /*!
     \param f should take a Coefficient&.
@@ -252,64 +178,6 @@ public:
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Dense_Row& y,
                const Func1& f, const Func2& g, const Func3& h);
-
-  //! After this call, get(i) == x.
-  //! Provided for compatibility with Sparse_Row.
-  void assign(dimension_type i, const Coefficient& x);
-
-  //! Equivalent to <CODE>if (x != 0) find_create(i, x);</CODE>, provided
-  //! for convenience. Provided for compatibility with Sparse_Row.
-  void assign_if_nonzero(dimension_type i, const Coefficient& x);
-
-  PPL_OUTPUT_DECLARATIONS
-
-  /*! \brief
-    Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
-    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-  */
-  bool ascii_load(std::istream& s);
-
-  /*! \brief
-    Returns a lower bound to the total size in bytes of the memory
-    occupied by \p *this.
-  */
-  memory_size_type total_memory_in_bytes() const;
-
-  /*! \brief
-    Returns a lower bound to the size in bytes of the memory
-    managed by \p *this.
-  */
-  memory_size_type external_memory_in_bytes() const;
-
-  /*! \brief
-    Returns the total size in bytes of the memory occupied by \p *this,
-    provided the capacity of \p *this is given by \p capacity.
-  */
-  memory_size_type total_memory_in_bytes(dimension_type capacity) const;
-
-  /*! \brief
-    Returns the size in bytes of the memory managed by \p *this,
-    provided the capacity of \p *this is given by \p capacity.
-  */
-  memory_size_type external_memory_in_bytes(dimension_type capacity) const;
-
-  operator Row&();
-  operator const Row&() const;
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
-
-  /*! \brief
-    Checks if all the invariants are satisfied and that the actual
-    size and capacity match the values provided as arguments.
-  */
-  bool OK(dimension_type row_size, dimension_type row_capacity) const;
-
-  bool operator==(const Dense_Row& y) const;
-
-private:
-  Row row;
 };
 
 class Parma_Polyhedra_Library::Dense_Row::iterator {
@@ -413,14 +281,6 @@ private:
   const Dense_Row* row;
   dimension_type i;
 };
-
-namespace Parma_Polyhedra_Library {
-
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
-/*! \relates Dense_Row */
-bool operator!=(const Dense_Row& x, const Dense_Row& y);
-
-} // namespace Parma_Polyhedra_Library
 
 namespace std {
 

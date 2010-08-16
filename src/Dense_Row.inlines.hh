@@ -29,19 +29,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline dimension_type
-Dense_Row::max_size() {
-  return Row::max_size();
-}
-
-inline dimension_type
-Dense_Row::size() const {
-  return row.size();
-}
-
 inline
 Dense_Row::Dense_Row()
-  : row() {
+  : Row() {
 }
 
 inline void
@@ -66,44 +56,30 @@ Dense_Row::reset(iterator itr) {
   return itr;
 }
 
-inline void
-Dense_Row::construct(dimension_type sz, dimension_type capacity) {
-  row.construct(sz, capacity, Row::Flags());
-}
-
-inline void
-Dense_Row::construct(dimension_type sz) {
-  row.construct(sz, Row::Flags());
-}
-
 inline
 Dense_Row::Dense_Row(dimension_type sz, dimension_type capacity)
-  : row(sz, capacity, Row::Flags()) {
+  : Row(sz, capacity, Row::Flags()) {
 }
 
 inline
 Dense_Row::Dense_Row(dimension_type sz)
-  : row(sz, Row::Flags()) {
+  : Row(sz, Row::Flags()) {
 }
 
 inline
 Dense_Row::Dense_Row(const Dense_Row& y)
-  : row(y.row) {
+  : Row(y) {
 }
 
 inline
 Dense_Row::Dense_Row(const Dense_Row& y, dimension_type capacity)
-  : row(y.row, capacity) {
+  : Row(y, capacity) {
 }
 
 inline
 Dense_Row::Dense_Row(const Dense_Row& y, dimension_type sz,
                      dimension_type capacity)
-  : row(y.row, sz, capacity) {
-}
-
-inline
-Dense_Row::~Dense_Row() {
+  : Row(y, sz, capacity) {
 }
 
 inline Dense_Row::iterator
@@ -127,29 +103,8 @@ Dense_Row::end() const {
 }
 
 inline void
-Dense_Row::expand_within_capacity(dimension_type new_size) {
-  row.expand_within_capacity(new_size);
-}
-
-inline void
-Dense_Row::shrink(dimension_type new_size) {
-  row.shrink(new_size);
-}
-
-inline void
 Dense_Row::swap(Dense_Row& y) {
-  row.swap(y.row);
-}
-
-inline void
-Dense_Row::assign(Dense_Row& y) {
-  row.assign(y.row);
-}
-
-inline Dense_Row&
-Dense_Row::operator=(const Dense_Row& y) {
-  row = y.row;
-  return *this;
+  Row::swap(y);
 }
 
 inline const Coefficient&
@@ -221,84 +176,6 @@ inline Dense_Row::iterator
 Dense_Row::find_create(iterator itr, dimension_type i) {
   (void)itr;
   return find(i);
-}
-
-inline Coefficient&
-Dense_Row::operator[](dimension_type k) {
-  return row[k];
-}
-
-inline Coefficient_traits::const_reference
-Dense_Row::operator[](dimension_type k) const {
-  return row[k];
-}
-
-/*! \relates Dense_Row */
-inline bool
-operator!=(const Dense_Row& x, const Dense_Row& y) {
-  return !(x == y);
-}
-
-inline void
-Dense_Row::normalize() {
-  row.normalize();
-}
-
-inline void
-Dense_Row::assign(dimension_type i, const Coefficient& x) {
-  (*this)[i] = x;
-}
-
-inline void
-Dense_Row::assign_if_nonzero(dimension_type i, const Coefficient& x) {
-  if (x != 0)
-    (*this)[i] = x;
-}
-
-inline void
-Dense_Row::ascii_dump(std::ostream& s) const {
-  row.ascii_dump(s);
-}
-
-
-inline bool
-Dense_Row::ascii_load(std::istream& s) {
-  return row.ascii_load(s);
-}
-
-inline memory_size_type
-Dense_Row::external_memory_in_bytes() const {
-  return row.external_memory_in_bytes();
-}
-
-inline memory_size_type
-Dense_Row::external_memory_in_bytes(dimension_type capacity) const {
-  return row.external_memory_in_bytes(capacity);
-}
-
-inline bool
-Dense_Row::OK() const {
-  return row.OK();
-}
-
-inline bool
-Dense_Row::OK(dimension_type row_size, dimension_type row_capacity) const {
-  return row.OK(row_size, row_capacity);
-}
-
-inline bool
-Dense_Row::operator==(const Dense_Row& y) const {
-  return row == y.row;
-}
-
-inline
-Dense_Row::operator Row&() {
-  return row;
-}
-
-inline
-Dense_Row::operator const Row&() const {
-  return row;
 }
 
 

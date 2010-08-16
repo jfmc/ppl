@@ -43,7 +43,7 @@ PPL::Dense_Matrix::Dense_Matrix(const dimension_type n_rows,
   PPL_ASSERT(n_rows <= max_num_rows());
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0; i < n_rows; ++i)
-    rows[i].construct(n_columns, row_capacity);
+    rows[i].construct(n_columns, row_capacity, Row::Flags());
   PPL_ASSERT(OK());
 }
 
@@ -90,7 +90,7 @@ PPL::Dense_Matrix::add_zero_rows(const dimension_type n) {
     // Construct the new rows.
     dimension_type i = new_num_rows;
     while (i-- > old_num_rows)
-      new_rows[i].construct(row_size, row_capacity);
+      new_rows[i].construct(row_size, row_capacity, Row::Flags());
     // Steal the old rows.
     ++i;
     while (i-- > 0)
@@ -102,7 +102,7 @@ PPL::Dense_Matrix::add_zero_rows(const dimension_type n) {
     // Reallocation will NOT take place.
     rows.insert(rows.end(), n, Dense_Row());
     for (dimension_type i = new_num_rows; i-- > old_num_rows; )
-      rows[i].construct(row_size, row_capacity);
+      rows[i].construct(row_size, row_capacity, Row::Flags());
   }
 }
 
@@ -175,7 +175,7 @@ PPL::Dense_Matrix::add_zero_rows_and_columns(const dimension_type n,
       // Construct the new rows.
       dimension_type i = new_num_rows;
       while (i-- > old_num_rows)
-        new_rows[i].construct(new_num_columns, row_capacity);
+        new_rows[i].construct(new_num_columns, row_capacity, Row::Flags());
       // Expand and steal the old rows.
       ++i;
       while (i-- > 0) {
@@ -191,7 +191,7 @@ PPL::Dense_Matrix::add_zero_rows_and_columns(const dimension_type n,
       // Construct the new rows.
       dimension_type i = new_num_rows;
       while (i-- > old_num_rows)
-        rows[i].construct(new_num_columns, row_capacity);
+        rows[i].construct(new_num_columns, row_capacity, Row::Flags());
       // Expand the old rows.
       ++i;
       while (i-- > 0)
@@ -211,7 +211,8 @@ PPL::Dense_Matrix::add_zero_rows_and_columns(const dimension_type n,
     dimension_type i = new_num_rows;
     while (i-- > old_num_rows)
       new_matrix.rows[i].construct(new_matrix.row_size,
-                                   new_matrix.row_capacity);
+                                   new_matrix.row_capacity,
+                                   Row::Flags());
     // Copy the old rows.
     ++i;
     while (i-- > 0) {
@@ -274,7 +275,7 @@ PPL::Dense_Matrix::resize_no_copy(const dimension_type new_n_rows,
         // the same capacity as each one of the old rows).
         dimension_type i = new_n_rows;
         while (i-- > old_n_rows)
-          new_rows[i].construct(new_n_columns, row_capacity);
+          new_rows[i].construct(new_n_columns, row_capacity, Row::Flags());
         // Steal the old rows.
         ++i;
         while (i-- > 0)
@@ -288,7 +289,7 @@ PPL::Dense_Matrix::resize_no_copy(const dimension_type new_n_rows,
         // Be careful: each new row must have
         // the same capacity as each one of the old rows.
         for (dimension_type i = new_n_rows; i-- > old_n_rows; )
-          rows[i].construct(new_n_columns, row_capacity);
+          rows[i].construct(new_n_columns, row_capacity, Row::Flags());
       }
     }
     else {
