@@ -201,19 +201,6 @@ Sparse_Matrix::iterator::operator++(int) {
   return x;
 }
 
-
-template <typename Func>
-inline void
-Parma_Polyhedra_Library::Sparse_Matrix::for_each_row(const Func& func) {
-  std::for_each(begin(), end(), func);
-}
-
-template <typename Func>
-inline void
-Parma_Polyhedra_Library::Sparse_Matrix::for_each_row(const Func& func) const {
-  std::for_each(begin(), end(), func);
-}
-
 } // namespace Parma_Polyhedra_Library
 
 namespace std {

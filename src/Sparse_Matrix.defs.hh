@@ -304,26 +304,6 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-  //! Calls func on each row.
-  /*!
-    func should take a Sparse_Row_Reference& argument.
-
-    This method takes $O(\sum_{j=1}^r T(n_j))$ time, where r is the number of
-    rows and $T(n_j)$ is the time spent by the call \p func on row j.
-  */
-  template <typename Func>
-  void for_each_row(const Func& func);
-
-  //! Calls func on each row.
-  /*!
-    func should take a const Unlimited_Sparse_Row& argument.
-
-    This method takes $O(\sum_{j=1}^r T(n_j))$ time, where r is the number of
-    rows and $T(n_j)$ is the time spent by the call \p func on row j.
-  */
-  template <typename Func>
-  void for_each_row(const Func& func) const;
-
   /*! \brief
     Erases from the matrix all the rows but those having
     an index less than \p first_to_erase.
