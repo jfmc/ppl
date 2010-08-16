@@ -329,28 +329,6 @@ public:
   */
   const const_iterator& cend() const;
 
-  //! Calls func on every stored value.
-  /*!
-    \param func A functor that takes a (Coefficient&) or
-                (const Coefficient&) argument.
-    \param n ignored, needed for compatibility with Dense_Row.
-
-    This method takes $O(n)$ time.
-  */
-  template <typename Func>
-  void for_each_nonzero(const Func& func, const dimension_type n);
-
-  //! Calls func on every stored value.
-  /*!
-    \param func A functor that takes a (Coefficient&) or
-                (const Coefficient&) argument.
-    \param n ignored, needed for compatibility with Dense_Row.
-
-    This method takes $O(n)$ time.
-  */
-  template <typename Func>
-  void for_each_nonzero(const Func& func, dimension_type n) const;
-
   //! Looks for an element with key i.
   /*!
     If possible, use the find() method that takes a hint iterator, to improve
