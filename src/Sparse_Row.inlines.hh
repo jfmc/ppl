@@ -509,40 +509,6 @@ Sparse_Row_Reference::operator const Unlimited_Sparse_Row&() const {
   return row;
 }
 
-
-template <typename Func>
-inline void
-Sparse_Row_Reference::for_each_nonzero(const Func& func,
-                                       dimension_type /* n */) {
-  std::for_each(begin(), end(), apply_to_data(func));
-}
-
-template <typename Func>
-inline void
-Sparse_Row_Reference::for_each_nonzero(const Func& func,
-                                       dimension_type /* n */) const {
-  std::for_each(begin(), end(), apply_to_data(func));
-}
-
-template <typename Func>
-inline
-Sparse_Row_Reference::applier_to_data<Func>::applier_to_data(const Func& func)
-  : f(func) {
-}
-
-template <typename Func>
-inline void
-Sparse_Row_Reference::applier_to_data<Func>
-::operator()(std::pair<dimension_type, Coefficient&> x) const {
-  f(x.second);
-}
-
-template <typename Func>
-inline Sparse_Row_Reference::applier_to_data<Func>
-Sparse_Row_Reference::apply_to_data(const Func& func) {
-  return applier_to_data<Func>(func);
-}
-
 } // namespace Parma_Polyhedra_Library
 
 

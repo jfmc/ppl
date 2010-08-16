@@ -961,34 +961,6 @@ public:
   */
   const const_iterator& cend() const;
 
-  /*!
-    \brief Executes func on each non-zero element and may execute it on some
-           zeroes.
-
-    This signature is needed for compatibility with Dense_Row.
-    \param func A functor that takes a (Coefficient&) or
-                (const Coefficient&) argument.
-    \param n    The logical size of this row (ignored)
-
-    This method takes $O(n)$ time.
-  */
-  template <typename Func>
-  void for_each_nonzero(const Func& func, const dimension_type n);
-
-  /*!
-    \brief Executes func on each non-zero element and may execute it on some
-           zeros.
-
-    This signature is needed for compatibility with Dense_Row.
-    \param func A functor that takes a (Coefficient&) or
-                (const Coefficient&) argument.
-    \param n    The logical size of this row (ignored)
-
-    This method takes $O(n)$ time.
-  */
-  template <typename Func>
-  void for_each_nonzero(const Func& func,const dimension_type n) const;
-
   //! Looks for an element with key i.
   /*!
     If possible, use the find() method that takes a hint iterator, to improve
@@ -1144,25 +1116,6 @@ private:
 
   //! Checks the internal invariant.
   bool OK() const;
-
-  /*!
-    \brief A functor class that applies a functor to the second element of its
-           argument.
-  */
-  template <typename Func>
-  class applier_to_data :
-    public std::unary_function<std::pair<dimension_type, Coefficient&>,void> {
-  public:
-    applier_to_data(const Func& func);
-    void operator()(std::pair<dimension_type, Coefficient&> x) const;
-  private:
-    Func f;
-  };
-
-  template <typename Func>
-  static applier_to_data<Func> apply_to_data(const Func& func);
-
-private:
 
   //! A reference to the row used to store the elements.
   Unlimited_Sparse_Row& row;
