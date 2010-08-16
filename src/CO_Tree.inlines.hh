@@ -104,18 +104,6 @@ CO_Tree::dump_tree() const {
     dump_subtree(tree_iterator(*const_cast<CO_Tree*>(this)));
 }
 
-inline dimension_type
-CO_Tree::external_memory_in_bytes() const {
-  dimension_type size = 0;
-  if (reserved_size != 0) {
-    // Add the size of data[]
-    size += (reserved_size + 1)*sizeof(data[0]);
-    // Add the size of indexes[]
-    size += (reserved_size + 2)*sizeof(indexes[0]);
-  }
-  return size;
-}
-
 inline CO_Tree::iterator
 CO_Tree::insert(dimension_type key1) {
   if (empty())

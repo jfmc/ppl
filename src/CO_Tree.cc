@@ -26,6 +26,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+PPL::dimension_type
+PPL::CO_Tree::external_memory_in_bytes() const {
+  dimension_type size = 0;
+  if (reserved_size != 0) {
+    // Add the size of data[]
+    size += (reserved_size + 1)*sizeof(data[0]);
+    // Add the size of indexes[]
+    size += (reserved_size + 2)*sizeof(indexes[0]);
+    for (const_iterator itr = begin(), itr_end = end(); itr != itr_end; ++itr)
+      size += PPL::external_memory_in_bytes(itr->second);
+  }
+  return size;
+}
 
 PPL::CO_Tree::iterator
 PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
