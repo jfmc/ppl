@@ -220,7 +220,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(k*log(n))$ amortized time, with k the number of
+    This method takes $O(k*log(n))$ amortized time, where k is the number of
     elements in [first,last).
   */
   iterator reset(iterator first, iterator last);
@@ -232,7 +232,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(k*log(n))$ amortized time, with k the number of
+    This method takes $O(k*log(n))$ amortized time, where k is the number of
     elements with index greater than or equal to i.
   */
   void reset_after(dimension_type i);
@@ -735,7 +735,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(k*log(n))$ expected time, with k the number of
+    This method takes $O(k*log(n))$ expected time, where k is the number of
     elements in [first,last).
   */
   iterator reset(iterator first, iterator last);
@@ -758,7 +758,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(k*log(n))$ expected time, with k the number of
+    This method takes $O(k*log(n))$ expected time, where k is the number of
     elements with index greater than or equal to i.
   */
   void reset_after(dimension_type i);

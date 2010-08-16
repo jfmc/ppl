@@ -57,9 +57,9 @@ namespace Parma_Polyhedra_Library {
   -Insertions/Queries/Deletions: O(log(n)) time, O(log(n/B)) cache misses.
   -Tree traversal from begin() to end(), using an iterator: O(n) time, O(n/B)
    cache misses.
-  -Queries with a hint: O(log(k)) time and O(log(k/B)), with k the distance
-   between the given iterator and the searched element (or the position where
-   it would have been).
+  -Queries with a hint: O(log(k)) time and O(log(k/B)), where k is the
+   distance between the given iterator and the searched element (or the
+   position where it would have been).
 
   The binary search tree is embedded in a (slightly bigger) complete tree,
   that is enlarged and shrunk when needed. The complete tree is layed out
@@ -554,14 +554,14 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(log(n) + k)$ expected time, with k the number of
+    This method takes $O(log(n) + k)$ expected time, where k is the number of
     elements with keys greater than \p key.
   */
   void erase_element_and_shift_left(dimension_type key);
 
   //! Adds \p n to all keys greater than or equal to \p key.
   /*!
-    This method takes $O(log(n) + k)$ expected time, with k the number of
+    This method takes $O(log(n) + k)$ expected time, where k is the number of
     elements with keys greater than or equal to \p key.
   */
   void increase_keys_after(dimension_type key, dimension_type n);
