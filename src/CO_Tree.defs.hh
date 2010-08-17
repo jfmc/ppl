@@ -33,8 +33,8 @@ namespace Parma_Polyhedra_Library {
   and data of Coefficient type, layed out in a dynamic-sized array.
 
   The array-based layout saves calls to new/delete (for n inserted elements,
-  only O(log(n)) allocations are performed) and, more importantly, is much
-  more cache-friendly than a standard (pointer-based) tree, because the
+  only \f$O(\log n)\f$ allocations are performed) and, more importantly, is
+  much more cache-friendly than a standard (pointer-based) tree, because the
   elements are stored sequentially in memory (leaving some holes to allow
   fast insertion of new elements).
   The downside of this representation is that all iterators are invalidated
@@ -54,12 +54,13 @@ namespace Parma_Polyhedra_Library {
   Assuming \p n is the number of elements in the tree and \p B is the number
   of &lt;dimension_type,Coefficient&gt; pairs that fit in cache, the time and
   cache misses complexities are the following:
-  -Insertions/Queries/Deletions: O(log(n)) time, O(log(n/B)) cache misses.
-  -Tree traversal from begin() to end(), using an iterator: O(n) time, O(n/B)
-   cache misses.
-  -Queries with a hint: O(log(k)) time and O(log(k/B)), where k is the
-   distance between the given iterator and the searched element (or the
-   position where it would have been).
+  -Insertions/Queries/Deletions: \f$O(\log n)\f$ time,
+                                 \f$O(\log \frac{n}{B}))\f$ cache misses.
+  -Tree traversal from begin() to end(), using an iterator: \f$O(n)\f$ time,
+        \f$O(\frac{n}{B})\f$  cache misses.
+  -Queries with a hint: \f$O(\log k)\f$ time and \f$O(\log \frac{k}{B})\f$,
+   where k is the distance between the given iterator and the searched element
+   (or the position where it would have been).
 
   The binary search tree is embedded in a (slightly bigger) complete tree,
   that is enlarged and shrunk when needed. The complete tree is layed out
@@ -108,8 +109,8 @@ public:
 
   //! A const iterator on the tree elements, ordered by key.
   /*!
-    Iterator increment and decrement operations are O(1) amortized time, but
-    are not constant time.
+    Iterator increment and decrement operations are \f$O(1)\f$ amortized time,
+    but are not constant time.
     These iterators are invalidated by operations that add or remove elements
     from the tree.
   */
@@ -138,13 +139,13 @@ public:
 
     //! Constructs an invalid const_iterator.
     /*!
-      This constructor takes $O(1)$ time.
+      This constructor takes \f$O(1)\f$ time.
     */
     explicit const_iterator();
 
     //! Constructs an iterator pointing to the first element of the tree.
     /*!
-      This constructor takes $O(1)$ expected time.
+      This constructor takes \f$O(1)\f$ expected time.
     */
     explicit const_iterator(const CO_Tree& tree);
 
@@ -152,61 +153,61 @@ public:
     /*!
       The i-th node must be a node with a value or end().
 
-      This constructor takes $O(1)$ time.
+      This constructor takes \f$O(1)\f$ time.
     */
     const_iterator(const CO_Tree& tree, dimension_type i);
 
     //! The copy constructor.
     /*!
-      This constructor takes $O(1)$ time.
+      This constructor takes \f$O(1)\f$ time.
     */
     const_iterator(const const_iterator& itr);
 
     //! Converts an iterator into a const_iterator.
     /*!
-      This constructor takes $O(1)$ time.
+      This constructor takes \f$O(1)\f$ time.
     */
     const_iterator(const iterator& itr);
 
     //! Swaps itr with *this.
     /*!
-      This method takes $O(1)$ time.
+      This method takes \f$O(1)\f$ time.
     */
     void swap(const_iterator& itr);
 
     //! Assigns \p itr to *this .
     /*!
-      This method takes $O(1)$ time.
+      This method takes \f$O(1)\f$ time.
     */
     const_iterator& operator=(const const_iterator& itr);
 
     //! Assigns \p itr to *this .
     /*!
-      This method takes $O(1)$ time.
+      This method takes \f$O(1)\f$ time.
     */
     const_iterator& operator=(const iterator& itr);
 
     //! Navigates to the next element.
     /*!
-      This method takes $O(n)$ amortized time.
+      This method takes \f$O(n)\f$ amortized time.
     */
     const_iterator& operator++();
 
     //! Navigates to the previous element.
     /*!
-      This method takes $O(n)$ amortized time.
+      This method takes \f$O(n)\f$ amortized time.
     */
     const_iterator& operator--();
 
     //! Navigates to the next element.
     /*!
-      This method takes $O(n)$ amortized time.
+      This method takes \f$O(n)\f$ amortized time.
     */
     const_iterator operator++(int);
 
     //! Navigates to the previous element.
     /*!
-      This method takes $O(n)$ amortized time.
+      This method takes \f$O(n)\f$ amortized time.
     */
     const_iterator operator--(int);
 
@@ -249,8 +250,8 @@ public:
 
   //! An iterator on the tree elements, ordered by key.
   /*!
-    Iterator increment and decrement operations are O(1) amortized time, but
-    are not constant time.
+    Iterator increment and decrement operations are \f$O(1)\f$ amortized time,
+    but are not constant time.
     These iterators are invalidated by operations that add or remove elements
     from the tree.
   */
@@ -292,13 +293,13 @@ public:
 
     //! Constructs an invalid iterator.
     /*!
-      This constructor takes $O(1)$ time.
+      This constructor takes \f$O(1)\f$ time.
     */
     iterator();
 
     //! Constructs an iterator pointing to first element of the tree.
     /*!
-      This constructor takes $O(1)$ expected time.
+      This constructor takes \f$O(1)\f$ expected time.
     */
     explicit iterator(CO_Tree& tree);
 
@@ -306,7 +307,7 @@ public:
     /*!
       The i-th node must be a node with a value or end().
 
-      This constructor takes $O(1)$ time.
+      This constructor takes \f$O(1)\f$ time.
     */
     iterator(CO_Tree& tree, dimension_type i);
 
@@ -315,55 +316,55 @@ public:
       This is meant for use by CO_Tree only.
       This is not private to avoid the friend declaration.
 
-      This constructor takes $O(1)$ time.
+      This constructor takes \f$O(1)\f$ time.
     */
     explicit iterator(const tree_iterator& itr);
 
     //! The copy contructor.
     /*!
-      This constructor takes $O(1)$ time.
+      This constructor takes \f$O(1)\f$ time.
     */
     iterator(const iterator& itr);
 
     //! Swaps itr with *this.
     /*!
-      This method takes $O(1)$ time.
+      This method takes \f$O(1)\f$ time.
     */
     void swap(iterator&itr);
 
     //! Assigns \p itr to *this .
     /*!
-      This method takes $O(1)$ time.
+      This method takes \f$O(1)\f$ time.
     */
     iterator& operator=(const iterator& itr);
 
     //! Assigns \p itr to *this .
     /*!
-      This method takes $O(1)$ time.
+      This method takes \f$O(1)\f$ time.
     */
     iterator& operator=(const tree_iterator& itr);
 
     //! Navigates to the next element in the tree.
     /*!
-      This method takes $O(n)$ amortized time.
+      This method takes \f$O(n)\f$ amortized time.
     */
     iterator& operator++();
 
     //! Navigates to the previous element in the tree.
     /*!
-      This method takes $O(n)$ amortized time.
+      This method takes \f$O(n)\f$ amortized time.
     */
     iterator& operator--();
 
     //! Navigates to the next element in the tree.
     /*!
-      This method takes $O(n)$ amortized time.
+      This method takes \f$O(n)\f$ amortized time.
     */
     iterator operator++(int);
 
     //! Navigates to the previous element in the tree.
     /*!
-      This method takes $O(n)$ amortized time.
+      This method takes \f$O(n)\f$ amortized time.
     */
     iterator operator--(int);
 
@@ -418,37 +419,37 @@ public:
 
   //! Constructs an empty tree.
   /*!
-    This constructor takes $O(1)$ time.
+    This constructor takes \f$O(1)\f$ time.
   */
   CO_Tree();
 
   //! The copy constructor.
   /*!
-    This constructor takes $O(n)$ time.
+    This constructor takes \f$O(n)\f$ time.
   */
   CO_Tree(const CO_Tree& v);
 
   //! The assignment operator.
   /*!
-    This method takes $O(n)$ time.
+    This method takes \f$O(n)\f$ time.
   */
   CO_Tree& operator=(const CO_Tree& x);
 
   //! Removes all elements from the tree.
   /*!
-    This method takes $O(n)$ time.
+    This method takes \f$O(n)\f$ time.
   */
   void clear();
 
   //! The destructor.
   /*!
-    This destructor takes $O(n)$ time.
+    This destructor takes \f$O(n)\f$ time.
   */
   ~CO_Tree();
 
   //! Returns \p true if the tree has no elements.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   bool empty() const;
 
@@ -457,7 +458,7 @@ public:
 
   //! Returns the size in bytes of the memory managed by \p *this.
   /*!
-    This method takes $O(n)$ time.
+    This method takes \f$O(n)\f$ time.
   */
   dimension_type external_memory_in_bytes() const;
 
@@ -469,7 +470,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(log(n))$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time.
   */
   iterator insert(dimension_type key);
 
@@ -482,7 +483,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(log(n))$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time.
   */
   iterator insert(dimension_type key, const data_type& data);
 
@@ -502,7 +503,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(log(n))$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time.
   */
   iterator insert(iterator itr, dimension_type key);
 
@@ -522,7 +523,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(log(n))$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time.
   */
   iterator insert(iterator itr, dimension_type key, const data_type& data);
 
@@ -533,7 +534,7 @@ public:
     \returns an iterator to the next element (or end() if there are no
              elements with key greater than \p key ).
 
-    This method takes $O(log(n))$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time.
   */
   iterator erase(dimension_type key);
 
@@ -544,7 +545,7 @@ public:
     \returns an iterator to the next element (or end() if there are no
              elements with key greater than \p key ).
 
-    This method takes $O(log(n))$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time.
   */
   iterator erase(iterator itr);
 
@@ -554,15 +555,15 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(log(n) + k)$ expected time, where k is the number of
-    elements with keys greater than \p key.
+    This method takes \f$O(k+\log n)\f$ expected time, where k is the number
+    of elements with keys greater than \p key.
   */
   void erase_element_and_shift_left(dimension_type key);
 
   //! Adds \p n to all keys greater than or equal to \p key.
   /*!
-    This method takes $O(log(n) + k)$ expected time, where k is the number of
-    elements with keys greater than or equal to \p key.
+    This method takes \f$O(k+\log n)\f$ expected time, where k is the number
+    of elements with keys greater than or equal to \p key.
   */
   void increase_keys_after(dimension_type key, dimension_type n);
 
@@ -570,13 +571,13 @@ public:
   /*!
     This operation invalidates existing iterators.
 
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   void swap(CO_Tree& x);
 
   //! Returns an iterator that points at the first element.
   /*!
-    This method takes $O(1)$ expected time.
+    This method takes \f$O(1)\f$ expected time.
   */
   iterator begin();
 
@@ -587,7 +588,7 @@ public:
     Client code can keep a const reference to that iterator instead of
     keep updating a local iterator.
 
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   const iterator& end();
 
@@ -599,7 +600,7 @@ public:
 
   //! Returns an iterator that points at the first element.
   /*!
-    This method takes $O(1)$ expected time.
+    This method takes \f$O(1)\f$ expected time.
   */
   const_iterator cbegin() const;
 
@@ -610,7 +611,7 @@ public:
     Client code can keep a const reference to that iterator instead of
     keep updating a local iterator.
 
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   const const_iterator& cend() const;
 
@@ -621,7 +622,7 @@ public:
     preceding or succeeding value.
     If the tree is empty, end() is returned.
 
-    This method takes $O(log(n))$ expected time.
+    This method takes \f$O(\log n)\f$ expected time.
   */
   iterator bisect(dimension_type key);
 
@@ -632,7 +633,7 @@ public:
     preceding or succeeding value.
     If the tree is empty, end() is returned.
 
-    This method takes $O(log(n))$ expected time.
+    This method takes \f$O(\log n)\f$ expected time.
   */
   const_iterator bisect(dimension_type key) const;
 
@@ -646,7 +647,7 @@ public:
 
     \note last is included in the search, too.
 
-    This method takes $O(log(last - first + 1))$ expected time.
+    This method takes \f$O(\log(last - first + 1))\f$ expected time.
   */
   iterator bisect_in(iterator first, iterator last, dimension_type key);
 
@@ -660,7 +661,7 @@ public:
 
     \note last is included in the search, too.
 
-    This method takes $O(log(last - first + 1))$ expected time.
+    This method takes \f$O(\log(last - first + 1))\f$ expected time.
   */
   const_iterator bisect_in(const_iterator first, const_iterator last,
                            dimension_type key) const;
@@ -674,8 +675,9 @@ public:
     The value of \p itr does not affect the result of this method, as long it
     is a valid iterator for this tree. \p itr may even be end().
 
-    This method takes $O(log(n))$ expected time. If the distance between the
-    returned position and \p hint is $O(1)$ it takes $O(1)$ expected time.
+    This method takes \f$O(\log n)\f$ expected time. If the distance between
+    the returned position and \p hint is \f$O(1)\f$ it takes \f$O(1)\f$
+    expected time.
   */
   iterator bisect_near(iterator hint, dimension_type key);
 
@@ -688,8 +690,9 @@ public:
     The value of \p itr does not affect the result of this method, as long it
     is a valid iterator for this tree. \p itr may even be end().
 
-    This method takes $O(log(n))$ expected time. If the distance between the
-    returned position and \p hint is $O(1)$ it takes $O(1)$ expected time.
+    This method takes \f$O(\log n)\f$ expected time. If the distance between
+    the returned position and \p hint is \f$O(1)\f$ it takes \f$O(1)\f$
+    expected time.
   */
   const_iterator bisect_near(const_iterator hint, dimension_type key) const;
 
@@ -707,7 +710,7 @@ private:
 
     \note last is included in the search, too.
 
-    This method takes $O(log(n))$ expected time.
+    This method takes \f$O(\log n)\f$ expected time.
   */
   dimension_type bisect_in(dimension_type first, dimension_type last,
                            dimension_type key) const;
@@ -718,13 +721,14 @@ private:
     otherwise, it points to the immediately preceding or succeeding value.
 
     This uses a binary progression and then a bisection, so this method is
-    O(log(n)), and it is O(1) if the distance between the returned position
-    and \p hint is O(1).
+    \f$O(\log n)\f$, and it is \f$O(1)\f$ if the distance between the returned
+    position and \p hint is \f$O(1)\f$.
 
     \p hint must be the index of a valid element.
 
-    This method takes $O(log(n))$ expected time. If the distance between the
-    returned position and \p hint is $O(1)$ it takes $O(1)$ expected time.
+    This method takes \f$O(\log n)\f$ expected time. If the distance between
+    the returned position and \p hint is \f$O(1)\f$ it takes \f$O(1)\f$
+    expected time.
   */
   dimension_type bisect_near(dimension_type hint, dimension_type key) const;
 
@@ -740,7 +744,7 @@ private:
                be his parent.
     \return an iterator that points to the inserted element.
 
-    This method takes $O(log(n))$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time.
   */
   tree_iterator insert_precise(dimension_type key, const data_type& data,
                                tree_iterator itr);
@@ -751,7 +755,7 @@ private:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   void insert_in_empty_tree(dimension_type key1, const data_type& data1);
 
@@ -762,13 +766,13 @@ private:
     \returns an iterator to the next element (or end() if there are no
              elements with key greater than \p key ).
 
-    This method takes $O(log(n))$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time.
   */
   iterator erase(tree_iterator itr);
 
   //! Initializes a tree with reserved size at least \p n .
   /*!
-    This method takes $O(n)$ time.
+    This method takes \f$O(n)\f$ time.
   */
   void init(dimension_type n);
 
@@ -777,7 +781,7 @@ private:
     After this call, the tree fields are uninitialized, so init() must be
     called again before using the tree.
 
-    This method takes $O(n)$ time.
+    This method takes \f$O(n)\f$ time.
   */
   void destroy();
 
@@ -791,7 +795,7 @@ private:
   /*!
     \p n must be greater than zero.
 
-    This method takes $O(log(n))$ time.
+    This method takes \f$O(\log n)\f$ time.
   */
   static unsigned integer_log2(dimension_type n);
 
@@ -802,7 +806,7 @@ private:
     \returns true if the fraction num/den is less than the fraction
              ratio/100.
 
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   static bool is_less_than_ratio(dimension_type num, dimension_type den,
                                  dimension_type ratio);
@@ -814,7 +818,7 @@ private:
     \returns true if the fraction num/den is greater than the fraction
              ratio/100.
 
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   static bool is_greater_than_ratio(dimension_type num, dimension_type den,
                                     dimension_type ratio);
@@ -827,7 +831,7 @@ private:
     This is called when the density is about to exceed the maximum density
     (specified by max_density_percent).
 
-    This method takes $O(n)$ time.
+    This method takes \f$O(n)\f$ time.
   */
   void rebuild_bigger_tree();
 
@@ -839,7 +843,7 @@ private:
     \p reserved_size must be greater than 3 (otherwise the tree can just be
     cleared).
 
-    This method takes $O(n)$ time.
+    This method takes \f$O(n)\f$ time.
   */
   void rebuild_smaller_tree();
 
@@ -848,7 +852,7 @@ private:
     This method must be called when the indexes[] and data[] vector are
     reallocated.
 
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   void refresh_cached_iterators();
 
@@ -864,7 +868,7 @@ private:
     \returns an iterator pointing to the root of the subtree that was
              rebalanced.
 
-    This method takes $O(1)$ amortized time.
+    This method takes \f$O(1)\f$ amortized time.
   */
   tree_iterator rebalance(tree_iterator itr, dimension_type key,
                           const data_type& value);
@@ -880,7 +884,7 @@ private:
     \returns the index of the rightmost unused node in the subtree after the
              process.
 
-    This method takes $O(k)$ time, where k is \p subtree_size.
+    This method takes \f$O(k)\f$ time, where k is \p subtree_size.
   */
   dimension_type compact_elements_in_the_rightmost_end(
     dimension_type last_in_subtree, dimension_type subtree_size,
@@ -898,7 +902,7 @@ private:
     \param last_used points to the leftmost element with a value in the
                      subtree.
 
-    This method takes $O(k)$ time, where k is \p subtree_size.
+    This method takes \f$O(k)\f$ time, where k is \p subtree_size.
   */
   void redistribute_elements_in_subtree(dimension_type root_index,
                                         dimension_type subtree_size,
@@ -912,7 +916,7 @@ private:
     *this must be empty and big enough to contain all of tree's data without
     exceeding max_density.
 
-    This method takes $O(n)$ time.
+    This method takes \f$O(n)\f$ time.
   */
   void move_data_from(CO_Tree& tree);
 
@@ -921,13 +925,13 @@ private:
     *this must be empty and big enough to contain all of tree's data without
     exceeding max_density.
 
-    This method takes $O(n)$ time.
+    This method takes \f$O(n)\f$ time.
   */
   void copy_data_from(const CO_Tree& tree);
 
   //! Counts the number of used elements in the subtree rooted at itr.
   /*!
-    This method takes $O(k)$ time, where k is the number of elements in the
+    This method takes \f$O(k)\f$ time, where k is the number of elements in the
     subtree.
   */
   static dimension_type count_used_in_subtree(tree_iterator itr);
@@ -943,7 +947,7 @@ private:
     The implementation of this method assumes that data_type values don't
     keep pointers to themselves nor to their fields.
 
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   static void move_data_element(data_type& to, data_type& from);
 
@@ -1085,25 +1089,25 @@ public:
   /*!
     The values of all fields (beside tree) are overwritten.
 
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   void get_root();
 
   //! Makes the iterator point to the left child of the current node.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   void get_left_child();
 
   //! Makes the iterator point to the right child of the current node.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   void get_right_child();
 
   //! Makes the iterator point to the parent of the current node.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   void get_parent();
 
@@ -1114,7 +1118,7 @@ public:
     After this method, *this points to the found node (if it exists) or to
     the node that would be his parent (otherwise).
 
-    This method takes $O(log(n))$ time.
+    This method takes \f$O(\log n)\f$ time.
   */
   void go_down_searching_key(dimension_type key);
 
@@ -1122,7 +1126,7 @@ public:
     \brief Follows left childs with a value, until it arrives at a leaf or at
            a node with no value.
 
-    This method takes $O(1)$ expected time.
+    This method takes \f$O(1)\f$ expected time.
   */
   void follow_left_childs_with_value();
 
@@ -1130,25 +1134,25 @@ public:
     \brief Follows right childs with a value, until it arrives at a leaf or at
            a node with no value.
 
-    This method takes $O(1)$ expected time.
+    This method takes \f$O(1)\f$ expected time.
   */
   void follow_right_childs_with_value();
 
   //! Returns true if the pointed node is the root node.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   bool is_root() const;
 
   //! Returns true if the pointed node has a parent and is its right child.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   bool is_right_child() const;
 
   //! Returns true if the pointed node is a leaf of the complete tree.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   bool is_leaf() const;
 
@@ -1180,13 +1184,13 @@ public:
     Thus leaves have offset 1.
     This is faster than depth(), so it is useful for comparing node depths.
 
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   dimension_type get_offset() const;
 
   //! Returns the depth of the current node in the complete tree.
   /*!
-    This method takes $O(log(n))$ time.
+    This method takes \f$O(\log n)\f$ time.
   */
   height_t depth() const;
 

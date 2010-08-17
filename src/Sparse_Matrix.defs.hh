@@ -48,7 +48,7 @@ public:
     \brief Constructs a square matrix with the given size, filled with
            unstored zeroes.
 
-    This method takes $O(n)$ time.
+    This method takes \f$O(n)\f$ time.
   */
   explicit Sparse_Matrix(dimension_type n = 0);
 
@@ -56,61 +56,61 @@ public:
     \brief Constructs a matrix with the given dimensions, filled with unstored
            zeroes.
 
-    This method takes $O(n)$ time, where n is \p num_rows.
+    This method takes \f$O(n)\f$ time, where n is \p num_rows.
   */
   Sparse_Matrix(dimension_type num_rows, dimension_type num_columns);
 
   //! Swaps (*this) with x.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   void swap(Sparse_Matrix& x);
 
   //! Returns an iterator pointing to the first row.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   iterator begin();
 
   //! Returns an iterator pointing after the last row.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   iterator end();
 
   //! Returns an iterator pointing to the first row.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   const_iterator begin() const;
 
   //! Returns an iterator pointing after the last row.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   const_iterator end() const;
 
   //! Returns a reference to the i-th row.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   Sparse_Row_Reference operator[](dimension_type i);
 
   //! Returns a const reference to the i-th row.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   const Unlimited_Sparse_Row& operator[](dimension_type i) const;
 
   //! Returns the number of rows in the matrix.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   dimension_type num_rows() const;
 
   //! Returns the number of columns in the matrix.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   dimension_type num_columns() const;
 
@@ -118,11 +118,11 @@ public:
   /*!
     This operation invalidates existing iterators on rows' elements.
 
-    This method takes $O(k + \sum_{j=1}^{r} log(n_j))$ expected time, where k
+    This method takes \f$O(k + \sum_{j=1}^{r} \log n_j)\f$ expected time, where k
     is the number of stored elements with column index greater than i, r the
-    number of rows in this matrix and $n_j$ the number of stored elements in
+    number of rows in this matrix and \f$n_j\f$ the number of stored elements in
     row j.
-    A weaker (but simpler) bound is $O(r*(c-i+log(c)))$, where r is the
+    A weaker (but simpler) bound is \f$O(r*(c-i+\log c))\f$, where r is the
     number of rows, c is the number of columns and i is the parameter passed
     to this method.
   */
@@ -147,10 +147,10 @@ public:
     turn can be represented by a vector of 6 elements containing 1, 3,
     6, 0, 2, 4, 0.
 
-    This method takes $O(k*\sum_{j=1}^{r} log(n_j))$ expected time, where k is
-    the size of the \p cycles vector, r the number of rows and $n_j$ the
+    This method takes \f$O(k*\sum_{j=1}^{r} \log n_j)\f$ expected time, where k is
+    the size of the \p cycles vector, r the number of rows and \f$n_j\f$ the
     number of stored elements in row j.
-    A weaker (but simpler) bound is $O(k*r*log(c))$, where k is the size of
+    A weaker (but simpler) bound is \f$O(k*r*\log c )\f$, where k is the size of
     the \p cycles vector, r is the number of rows and c is the number of
     columns.
 
@@ -169,18 +169,18 @@ public:
 
     This operation invalidates existing iterators.
 
-    Adding n rows takes $O(n)$ amortized time.
+    Adding n rows takes \f$O(n)\f$ amortized time.
 
-    Adding n columns takes $O(1)$ time.
+    Adding n columns takes \f$O(1)\f$ time.
 
-    Removing n rows takes $O(n+k)$ amortized time, where k is the total number
+    Removing n rows takes \f$O(n+k)\f$ amortized time, where k is the total number
     of stored elements in the removed rows.
 
-    Removing n columns takes $O(\sum_{j=1}^{r} k_j*log(n_j))$ time, where r
-    is the number of rows, $k_j$ is the number of stored elements in the
-    columns of the j-th row that must be removed and $n_j$ is the number of
+    Removing n columns takes \f$O(\sum_{j=1}^{r} k_j*\log n_j)\f$ time, where r
+    is the number of rows, \f$k_j\f$ is the number of stored elements in the
+    columns of the j-th row that must be removed and \f$n_j\f$ is the number of
     stored elements in the j-th row.
-    A weaker (but simpler) bound is $O(k*log(c))$, where k is the number of
+    A weaker (but simpler) bound is \f$O(k*\log c)\f$, where k is the number of
     elements that have to be removed and c is the number of columns.
   */
   void resize(dimension_type num_rows, dimension_type num_columns);
@@ -203,7 +203,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(n)$ amortized time.
+    This method takes \f$O(n)\f$ amortized time.
   */
   void add_zero_rows(dimension_type n);
 
@@ -219,7 +219,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   void add_zero_columns(dimension_type n);
 
@@ -227,11 +227,11 @@ public:
   /*!
     This operation invalidates existing iterators.
 
-    This method takes $O(\sum_{j=1}^{r} k_j+log(n_j))$ expected time, where r
-    is the number of rows, $k_j$ is the number of stored elements in the
-    columns of the j-th row that must be shifted and $n_j$ is the number of
+    This method takes \f$O(\sum_{j=1}^{r} k_j+\log n_j)\f$ expected time, where r
+    is the number of rows, \f$k_j\f$ is the number of stored elements in the
+    columns of the j-th row that must be shifted and \f$n_j\f$ is the number of
     stored elements in the j-th row.
-    A weaker (but simpler) bound is $O(k+r*log(c))$ time, where k is the
+    A weaker (but simpler) bound is \f$O(k+r*\log c)\f$ time, where k is the
     number of elements that must be shifted, r is the number of the rows and c
     is the number of the columns.
   */
@@ -253,7 +253,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(n)$ amortized time.
+    This method takes \f$O(n)\f$ amortized time.
   */
   void add_zero_rows_and_columns(dimension_type n, dimension_type m);
 
@@ -261,7 +261,7 @@ public:
   /*!
     This operation invalidates existing iterators.
 
-    This method takes $O(n)$ amortized time.
+    This method takes \f$O(n)\f$ amortized time.
   */
   void add_row(const Sparse_Row& x);
 
@@ -269,7 +269,7 @@ public:
   /*!
     This operation invalidates existing iterators.
 
-    This method takes $O(n)$ amortized time.
+    This method takes \f$O(n)\f$ amortized time.
   */
   void add_row(const Sparse_Row_Reference& x);
 
@@ -277,7 +277,7 @@ public:
   /*!
     This operation invalidates existing iterators.
 
-    This method takes $O(n)$ amortized time.
+    This method takes \f$O(n)\f$ amortized time.
   */
   void add_row(const Unlimited_Sparse_Row& x);
 
@@ -287,18 +287,18 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes $O(\sum_{j=1}^r k_j*log(n_j))$ amortized time, where r
-    is the number of rows, $k_j$ is the number of elements that have to be
-    removed from row j and $n_j$ is the total number of elements stored in
+    This method takes \f$O(\sum_{j=1}^r k_j*\log n_j)\f$ amortized time, where r
+    is the number of rows, \f$k_j\f$ is the number of elements that have to be
+    removed from row j and \f$n_j\f$ is the total number of elements stored in
     row j.
-    A weaker (but simpler) bound is $O(r*n*log(c))$, where r is the number of
+    A weaker (but simpler) bound is \f$O(r*n*\log c)\f$, where r is the number of
     rows, c the number of columns and n the parameter passed to this method.
   */
   void remove_trailing_columns(dimension_type n);
 
   //! Loads the row from an ASCII representation generated using ascii_dump().
   /*!
-    This method takes $O(n*log(n))$ time.
+    This method takes \f$O(n*\log n)\f$ time.
   */
   bool ascii_load(std::istream& s);
 
@@ -311,7 +311,7 @@ public:
     Provided for compatibility with Dense_Row.
     It is equivalent to resize(first_to_erase,num_columns()).
 
-    This method takes $O(n+k)$ amortized time, where k is the total number
+    This method takes \f$O(n+k)\f$ amortized time, where k is the total number
     of stored elements in the removed rows and n is the number of removed
     rows.
   */
@@ -319,14 +319,14 @@ public:
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
   /*!
-    This method is $O(r+k)$, where r is the number of rows and k is the number
+    This method is \f$O(r+k)\f$, where r is the number of rows and k is the number
     of stored elements in the matrix.
   */
   memory_size_type total_memory_in_bytes() const;
 
   //! Returns the size in bytes of the memory managed by \p *this.
   /*!
-    This method is $O(r+k)$, where r is the number of rows and k is the number
+    This method is \f$O(r+k)\f$, where r is the number of rows and k is the number
     of stored elements in the matrix.
   */
   memory_size_type external_memory_in_bytes() const;
@@ -348,43 +348,43 @@ class Parma_Polyhedra_Library::Sparse_Matrix::iterator {
 public:
   //! The copy constructor.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   iterator(const iterator&);
 
   //! Assigns itr into *this.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   iterator& operator=(const iterator& itr);
 
   //! Compares itr with *this.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   bool operator==(const iterator& itr) const;
 
   //! Compares itr with *this.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   bool operator!=(const iterator& itr) const;
 
   //! Returns a reference to the pointed row.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   Sparse_Row_Reference operator*();
 
   //! Advances to the next row.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   iterator& operator++();
 
   //! Advances to the next row.
   /*!
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   iterator operator++(int);
 
@@ -395,7 +395,7 @@ private:
 
     This is private so only Sparse_Matrix can access this.
 
-    This method takes $O(1)$ time.
+    This method takes \f$O(1)\f$ time.
   */
   iterator(std::vector<Unlimited_Sparse_Row>::iterator,
            dimension_type size);
