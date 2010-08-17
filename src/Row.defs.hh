@@ -149,8 +149,6 @@ public:
   private:
     //! The integer encoding \p *this.
     base_type bits;
-
-    friend class Row;
   };
 
   //! Pre-constructs a row: construction must be completed by construct().
