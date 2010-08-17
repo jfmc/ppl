@@ -44,21 +44,32 @@ public:
   class iterator;
   typedef std::vector<Unlimited_Sparse_Row>::const_iterator const_iterator;
 
+  typedef Sparse_Row::Flags Flags;
+
   /*!
     \brief Constructs a square matrix with the given size, filled with
            unstored zeroes.
 
+    \param row_flags
+    The flags used to build the rows of the matrix;
+    by default, the rows will have all flags unset.
+
     This method takes \f$O(n)\f$ time.
   */
-  explicit Sparse_Matrix(dimension_type n = 0);
+  explicit Sparse_Matrix(dimension_type n = 0, Flags row_flags = Flags());
 
   /*!
     \brief Constructs a matrix with the given dimensions, filled with unstored
            zeroes.
 
+    \param row_flags
+    The flags used to build the rows of the matrix;
+    by default, the rows will have all flags unset.
+
     This method takes \f$O(n)\f$ time, where n is \p num_rows.
   */
-  Sparse_Matrix(dimension_type num_rows, dimension_type num_columns);
+  Sparse_Matrix(dimension_type num_rows, dimension_type num_columns,
+                Flags flags = Flags());
 
   //! Swaps (*this) with x.
   /*!
@@ -160,8 +171,8 @@ public:
   */
   void permute_columns(const std::vector<dimension_type>& cycles);
 
-  //! Equivalent to resize(n, n).
-  void resize(dimension_type n);
+  //! Equivalent to resize(n, n, row_flags).
+  void resize(dimension_type n, Flags row_flags = Flags());
 
   //! Resizes this matrix to the specified dimensions.
   /*!
@@ -183,7 +194,8 @@ public:
     A weaker (but simpler) bound is \f$O(k*\log c)\f$, where k is the number of
     elements that have to be removed and c is the number of columns.
   */
-  void resize(dimension_type num_rows, dimension_type num_columns);
+  void resize(dimension_type num_rows, dimension_type num_columns,
+              Flags row_flags = Flags());
 
   //! Equivalent to resize(0,0).
   /*!
@@ -191,35 +203,32 @@ public:
   */
   void clear();
 
-  //! Adds to the matrix \p n rows of zeroes.
+  //! Adds to the matrix \p n rows of zeroes with flags set to \p row_flags.
   /*!
-    Provided for compatibility with Dense_Matrix.
+    Provided for compatibilty with Dense_Matrix.
 
     \param n
     The number of rows to be added: must be strictly positive.
 
+    \param row_flags
+    Flags for the newly added rows.
+
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+n) \times c\f$ matrix \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
-
-    This operation invalidates existing iterators.
-
-    This method takes \f$O(n)\f$ amortized time.
+    The matrix is expanded avoiding reallocation whenever possible.
   */
-  void add_zero_rows(dimension_type n);
+  void add_zero_rows(dimension_type n, Flags row_flags);
 
   //! Adds \p n columns of zeroes to the matrix.
   /*!
-    Provided for compatibility with Dense_Matrix.
+    Provided for compatibilty with Dense_Matrix.
 
     \param n
     The number of columns to be added: must be strictly positive.
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
-
-    This operation invalidates existing iterators.
-
-    This method takes \f$O(1)\f$ time.
+    The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_zero_columns(dimension_type n);
 
@@ -239,23 +248,22 @@ public:
 
   //! Adds \p n rows and \p m columns of zeroes to the matrix.
   /*!
-    Provided for compatibility with Dense_Matrix.
-
     \param n
     The number of rows to be added: must be strictly positive.
 
     \param m
     The number of columns to be added: must be strictly positive.
 
+    \param row_flags
+    Flags for the newly added rows.
+
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+n) \times (c+m)\f$ matrix
     \f$\bigl(\genfrac{}{}{0pt}{}{M}{0} \genfrac{}{}{0pt}{}{0}{0}\bigr)\f$.
-
-    This operation invalidates existing iterators.
-
-    This method takes \f$O(n)\f$ amortized time.
+    The matrix is expanded avoiding reallocation whenever possible.
   */
-  void add_zero_rows_and_columns(dimension_type n, dimension_type m);
+  void add_zero_rows_and_columns(dimension_type n, dimension_type m,
+         Flags row_flags);
 
   //! Adds a copy of the row \p x to the matrix.
   /*!

@@ -107,6 +107,30 @@ PPL::Matrix::add_zero_columns(const dimension_type n) {
 }
 
 void
+PPL::Matrix::add_zero_columns(dimension_type n, dimension_type i) {
+  const dimension_type old_num_columns = num_columns();
+
+  PPL_ASSERT(i <= old_num_columns);
+
+  add_zero_columns(n);
+
+  if (i == old_num_columns)
+    return;
+
+  // Shift to the right the columns between i and old_num_columns.
+  std::vector<dimension_type> swaps;
+  const dimension_type num_columns_to_swap = old_num_columns - i;
+  swaps.reserve(3 * num_columns_to_swap);
+
+  for (dimension_type j = 0; j < num_columns_to_swap; ++j) {
+    swaps.push_back(i + j);
+    swaps.push_back(old_num_columns + j);
+    swaps.push_back(0);
+  }
+  permute_columns(swaps);
+}
+
+void
 PPL::Matrix::add_zero_rows_and_columns(const dimension_type n,
 				       const dimension_type m,
 				       Row::Flags row_flags) {
@@ -340,6 +364,20 @@ PPL::Matrix::remove_trailing_columns(const dimension_type n) {
   row_size -= n;
   for (dimension_type i = num_rows(); i-- > 0; )
     rows[i].shrink(row_size);
+}
+
+void
+PPL::Matrix::remove_column(const dimension_type i) {
+  PPL_ASSERT(i < row_size);
+  const dimension_type n_cols = num_columns();
+  if (i != n_cols - 1) {
+    std::vector<dimension_type> cycle;
+    for (dimension_type j = n_cols - 1; j >= i; --j)
+      cycle.push_back(j);
+    cycle.push_back(0);
+    permute_columns(cycle);
+  }
+  remove_trailing_columns(1);
 }
 
 void

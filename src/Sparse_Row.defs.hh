@@ -55,6 +55,9 @@ namespace Parma_Polyhedra_Library {
 class Sparse_Row {
 
 public:
+
+  typedef Unlimited_Sparse_Row::Flags Flags;
+
   //! A const iterator on the row elements
   /*!
     This iterator skips non-stored zeroes.
@@ -75,7 +78,7 @@ public:
 
     This constructor takes \f$O(1)\f$ time.
   */
-  explicit Sparse_Row(dimension_type n = 0);
+  explicit Sparse_Row(dimension_type n = 0, Flags flags = Flags());
 
   //! Constructs a row of the specified size from an Unlimited_Sparse_Row.
   /*!
@@ -126,6 +129,12 @@ public:
     This method takes \f$O(1)\f$ time.
   */
   void swap(Sparse_Row_Reference x);
+
+  //! Returns the flags associated with this row.
+  const Flags& flags() const;
+
+  //! Returns a reference to the flags associated with this row.
+  Flags& flags();
 
   //! Swaps the i-th element with the j-th element.
   /*!
@@ -624,6 +633,9 @@ private:
 class Sparse_Row_Reference {
 
 public:
+
+  typedef Unlimited_Sparse_Row::Flags Flags;
+
   //! A const iterator on the row elements
   /*!
     This iterator skips non-stored zeroes.

@@ -140,14 +140,12 @@ Grid_Generator.types.hh \
 Congruence.types.hh \
 Init.types.hh \
 Row.types.hh \
-Dense_Row.types.hh \
 CO_Tree.types.hh \
 Unlimited_Sparse_Row.types.hh \
 Sparse_Row.types.hh \
 Sparse_Matrix.types.hh \
 Linear_Row.types.hh \
 Matrix.types.hh \
-Dense_Matrix.types.hh \
 Variable.types.hh \
 Variables_Set.types.hh \
 Linear_Expression.types.hh \
@@ -243,9 +241,7 @@ initializer.hh \
 Topology.hh \
 Row.defs.hh \
 Row.inlines.hh \
-Dense_Row.defs.hh \
-Dense_Row.inlines.hh \
-Dense_Row.templates.hh \
+Row.templates.hh \
 CO_Tree.defs.hh \
 CO_Tree.inlines.hh \
 Unlimited_Sparse_Row.defs.hh \
@@ -262,8 +258,6 @@ Linear_Row.defs.hh \
 Linear_Row.inlines.hh \
 Matrix.defs.hh \
 Matrix.inlines.hh \
-Dense_Matrix.defs.hh \
-Dense_Matrix.inlines.hh \
 Bit_Row.defs.hh \
 Bit_Row.inlines.hh \
 Linear_System.defs.hh \
@@ -407,7 +401,6 @@ Coefficient.cc \
 Linear_Expression.cc \
 Linear_System.cc \
 Matrix.cc \
-Dense_Matrix.cc \
 Scalar_Products.cc \
 MIP_Problem.cc \
 PIP_Tree.cc \
@@ -436,7 +429,6 @@ Unlimited_Sparse_Row.cc \
 Sparse_Row.cc \
 Sparse_Matrix.cc \
 Row.cc \
-Dense_Row.cc \
 Linear_Row.cc \
 Bit_Matrix.cc \
 Bit_Row.cc \

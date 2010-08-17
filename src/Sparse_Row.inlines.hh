@@ -32,8 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Sparse_Row::Sparse_Row(dimension_type n)
-  : row(), size_(n) {
+Sparse_Row::Sparse_Row(dimension_type n, Flags flags)
+  : row(flags), size_(n) {
   PPL_ASSERT(OK());
 }
 
@@ -79,6 +79,16 @@ Sparse_Row::swap(Sparse_Row& x) {
 inline void
 Sparse_Row::swap(Sparse_Row_Reference x) {
   std::swap(x, *this);
+}
+
+inline const Sparse_Row::Flags&
+Sparse_Row::flags() const {
+  return row.flags();
+}
+
+inline Sparse_Row::Flags&
+Sparse_Row::flags() {
+  return row.flags();
 }
 
 inline void

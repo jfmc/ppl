@@ -353,6 +353,119 @@ Row::operator[](const dimension_type k) const {
   return (*impl)[k];
 }
 
+inline void
+Row::swap(dimension_type i, dimension_type j) {
+  std::swap((*this)[i], (*this)[j]);
+}
+
+inline void
+Row::swap(iterator i, iterator j) {
+  std::swap(i->second, j->second);
+}
+
+inline void
+Row::reset(dimension_type i) {
+  (*this)[i] = 0;
+}
+
+inline Row::iterator
+Row::reset(iterator itr) {
+  itr->second = 0;
+  ++itr;
+  return itr;
+}
+
+inline Row::iterator
+Row::begin() {
+  return iterator(*this, 0);
+}
+
+inline Row::const_iterator
+Row::begin() const {
+  return const_iterator(*this, 0);
+}
+
+inline Row::iterator
+Row::end() {
+  return iterator(*this, size());
+}
+
+inline Row::const_iterator
+Row::end() const {
+  return const_iterator(*this, size());
+}
+
+inline const Coefficient&
+Row::get(dimension_type i) const {
+  return (*this)[i];
+}
+
+inline Row::iterator
+Row::find(dimension_type i) {
+  return iterator(*this, i);
+}
+
+inline Row::const_iterator
+Row::find(dimension_type i) const {
+  return const_iterator(*this, i);
+}
+
+inline Row::iterator
+Row::find(iterator itr, dimension_type i) {
+  (void)itr;
+  return iterator(*this, i);
+}
+
+inline Row::const_iterator
+Row::find(const_iterator itr, dimension_type i) const {
+  (void)itr;
+  return const_iterator(*this, i);
+}
+
+inline Row::iterator
+Row::lower_bound(dimension_type i) {
+  return find(i);
+}
+
+inline Row::const_iterator
+Row::lower_bound(dimension_type i) const {
+  return find(i);
+}
+
+inline Row::iterator
+Row::lower_bound(iterator itr, dimension_type i) {
+  return find(itr, i);
+}
+
+inline Row::const_iterator
+Row::lower_bound(const_iterator itr, dimension_type i) const {
+  return find(itr, i);
+}
+
+inline Row::iterator
+Row::find_create(dimension_type i, const Coefficient& x) {
+  (*this)[i] = x;
+  return find(i);
+}
+
+inline Row::iterator
+Row::find_create(dimension_type i) {
+  return find(i);
+}
+
+inline Row::iterator
+Row::find_create(iterator itr, dimension_type i, const Coefficient& x) {
+  (void)itr;
+  (*this)[i] = x;
+  return find(i);
+}
+
+inline Row::iterator
+Row::find_create(iterator itr, dimension_type i) {
+  (void)itr;
+  return find(i);
+}
+
 inline memory_size_type
 Row::external_memory_in_bytes(dimension_type capacity) const {
   return impl->total_memory_in_bytes(capacity);
@@ -381,6 +494,207 @@ Row::total_memory_in_bytes() const {
 inline bool
 operator!=(const Row& x, const Row& y) {
   return !(x == y);
+}
+
+
+inline
+Row::iterator::iterator()
+  : row(NULL), i(0) {
+  PPL_ASSERT(OK());
+}
+
+inline
+Row::iterator::iterator(Row& row1,dimension_type i1)
+  : row(&row1), i(i1) {
+  PPL_ASSERT(OK());
+}
+
+inline Row::iterator::value_type
+Row::iterator::operator*() {
+  PPL_ASSERT(i < row->size());
+  return value_type(i, (*row)[i]);
+}
+
+inline Row::iterator::const_type
+Row::iterator::operator*() const {
+  PPL_ASSERT(i < row->size());
+  return const_type(i, (*row)[i]);
+}
+
+inline Row::iterator::Member_Access_Helper
+Row::iterator::operator->() {
+  PPL_ASSERT(i < row->size());
+  return Member_Access_Helper(i, (*row)[i]);
+}
+
+inline Row::iterator::Const_Member_Access_Helper
+Row::iterator::operator->() const {
+  PPL_ASSERT(i < row->size());
+  return Const_Member_Access_Helper(i, (*row)[i]);
+}
+
+inline Row::iterator&
+Row::iterator::operator++() {
+  PPL_ASSERT(i < row->size());
+  ++i;
+  PPL_ASSERT(OK());
+  return *this;
+}
+
+inline Row::iterator
+Row::iterator::operator++(int) {
+  iterator tmp(*this);
+  ++(*this);
+  return tmp;
+}
+
+inline Row::iterator&
+Row::iterator::operator--() {
+  PPL_ASSERT(i > 0);
+  --i;
+  PPL_ASSERT(OK());
+  return *this;
+}
+
+inline Row::iterator
+Row::iterator::operator--(int) {
+  iterator tmp(*this);
+  --(*this);
+  return tmp;
+}
+
+inline bool
+Row::iterator::operator==(const iterator& x) const {
+  return (row == x.row) && (i == x.i);
+}
+
+inline bool
+Row::iterator::operator!=(const iterator& x) const {
+  return !(*this == x);
+}
+
+inline
+Row::iterator::operator const_iterator() const {
+  return const_iterator(*row, i);
+}
+
+inline bool
+Row::iterator::OK() const {
+  if (row == NULL)
+    return true;
+  // i can be equal to row.size() for past-the-end iterators
+  return (i <= row->size());
+}
+
+
+inline
+Row::iterator::Member_Access_Helper
+::Member_Access_Helper(dimension_type index, Coefficient& data)
+  : value(index, data) {
+}
+
+inline Row::iterator::value_type*
+Row::iterator::Member_Access_Helper::operator->() {
+  return &value;
+}
+
+
+inline
+Row::iterator::Const_Member_Access_Helper
+::Const_Member_Access_Helper(dimension_type index, const Coefficient& data)
+  : value(index, data) {
+}
+
+inline const Row::iterator::const_type*
+Row::iterator::Const_Member_Access_Helper::operator->() const {
+  return &value;
+}
+
+
+inline
+Row::const_iterator::const_iterator()
+  : row(NULL), i(0) {
+  PPL_ASSERT(OK());
+}
+
+inline
+Row::const_iterator::const_iterator(const Row& row1,
+                                          dimension_type i1)
+  : row(&row1), i(i1) {
+  PPL_ASSERT(OK());
+}
+
+inline Row::const_iterator::const_type
+Row::const_iterator::operator*() const {
+  PPL_ASSERT(i < row->size());
+  return const_type(i, (*row)[i]);
+}
+
+inline Row::const_iterator::Const_Member_Access_Helper
+Row::const_iterator::operator->() const {
+  PPL_ASSERT(i < row->size());
+  return Const_Member_Access_Helper(i, (*row)[i]);
+}
+
+inline Row::const_iterator&
+Row::const_iterator::operator++() {
+  PPL_ASSERT(i < row->size());
+  ++i;
+  PPL_ASSERT(OK());
+  return *this;
+}
+
+inline Row::const_iterator
+Row::const_iterator::operator++(int) {
+  const_iterator tmp(*this);
+  ++(*this);
+  return tmp;
+}
+
+inline Row::const_iterator&
+Row::const_iterator::operator--() {
+  PPL_ASSERT(i > 0);
+  --i;
+  PPL_ASSERT(OK());
+  return *this;
+}
+
+inline Row::const_iterator
+Row::const_iterator::operator--(int) {
+  const_iterator tmp(*this);
+  --(*this);
+  return tmp;
+}
+
+inline bool
+Row::const_iterator::operator==(const const_iterator& x) const {
+  return (row == x.row) && (i == x.i);
+}
+
+inline bool
+Row::const_iterator::operator!=(const const_iterator& x) const {
+  return !(*this == x);
+}
+
+inline bool
+Row::const_iterator::OK() const {
+  if (row == NULL)
+    return true;
+  // i can be equal to row.size() for past-the-end iterators
+  return (i <= row->size());
+}
+
+
+
+inline
+Row::const_iterator::Const_Member_Access_Helper
+::Const_Member_Access_Helper(dimension_type index, const Coefficient& data)
+  : value(index, data) {
+}
+
+inline const Row::const_iterator::const_type*
+Row::const_iterator::Const_Member_Access_Helper::operator->() const {
+  return &value;
 }
 
 } // namespace Parma_Polyhedra_Library

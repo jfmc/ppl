@@ -35,8 +35,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifndef USE_PPL_SPARSE_MATRIX
 
-#include "Dense_Matrix.defs.hh"
-#include "Dense_Row.defs.hh"
+#include "Matrix.defs.hh"
+#include "Row.defs.hh"
 
 #else
 
@@ -57,7 +57,7 @@ namespace Parma_Polyhedra_Library {
 class PIP_Tree_Node {
 public:
 #ifndef USE_PPL_SPARSE_MATRIX
-  typedef Dense_Matrix matrix_type;
+  typedef Matrix matrix_type;
 #else
   typedef Sparse_Matrix matrix_type;
 #endif

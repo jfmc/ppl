@@ -132,6 +132,14 @@ PPL::Row::normalize() {
 }
 
 void
+PPL::Row::reset(dimension_type first, dimension_type last) {
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last <= size());
+  for (dimension_type i = first; i < last; ++i)
+    (*this)[i] = 0;
+}
+
+void
 PPL::Row::Flags::ascii_dump(std::ostream& s) const {
   s << "0x";
   std::istream::fmtflags f = s.setf(std::istream::hex);

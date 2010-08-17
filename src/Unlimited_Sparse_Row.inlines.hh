@@ -31,8 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Unlimited_Sparse_Row::Unlimited_Sparse_Row()
-  : tree() {
+Unlimited_Sparse_Row::Unlimited_Sparse_Row(Flags flags1)
+  : tree(), flags_(flags1) {
 }
 
 inline
@@ -54,6 +54,16 @@ Unlimited_Sparse_Row::clear() {
 inline void
 Unlimited_Sparse_Row::swap(Unlimited_Sparse_Row& x) {
   tree.swap(x.tree);
+}
+
+inline const Unlimited_Sparse_Row::Flags&
+Unlimited_Sparse_Row::flags() const {
+  return flags_;
+}
+
+inline Unlimited_Sparse_Row::Flags&
+Unlimited_Sparse_Row::flags() {
+  return flags_;
 }
 
 inline void

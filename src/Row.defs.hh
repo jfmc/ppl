@@ -151,6 +151,9 @@ public:
     base_type bits;
   };
 
+  class iterator;
+  class const_iterator;
+
   //! Pre-constructs a row: construction must be completed by construct().
   Row();
 
@@ -291,6 +294,107 @@ public:
   */
   void normalize();
 
+  //! Swaps the i-th element with the j-th element.
+  //! Provided for compatibility with Sparse_Row
+  void swap(dimension_type i, dimension_type j);
+
+  //! Swaps the element pointed to by i with the element pointed to by j.
+  //! Provided for compatibility with Sparse_Row
+  void swap(iterator i, iterator j);
+
+  iterator begin();
+  const_iterator begin() const;
+
+  iterator end();
+  const_iterator end() const;
+
+  //! Resets the i-th element to 0.
+  //! Provided for compatibility with Sparse_Row
+  void reset(dimension_type i);
+
+  //! Resets the elements [first,last) to 0.
+  //! Provided for compatibility with Sparse_Row
+  void reset(dimension_type first, dimension_type last);
+
+  //! Resets the element pointed to by itr to 0.
+  //! Provided for compatibility with Sparse_Row.
+  iterator reset(iterator itr);
+
+  //! Gets the i-th element.
+  //! Provided for compatibility with Sparse_Row.
+  const Coefficient& get(dimension_type i) const;
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator find(dimension_type i);
+
+  //! Provided for compatibility with Sparse_Row.
+  const_iterator find(dimension_type i) const;
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator find(iterator itr, dimension_type i);
+
+  //! Provided for compatibility with Sparse_Row.
+  const_iterator find(const_iterator itr, dimension_type i) const;
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator lower_bound(dimension_type i);
+
+  //! Provided for compatibility with Sparse_Row.
+  const_iterator lower_bound(dimension_type i) const;
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator lower_bound(iterator itr, dimension_type i);
+
+  //! Provided for compatibility with Sparse_Row.
+  const_iterator lower_bound(const_iterator itr, dimension_type i) const;
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator find_create(dimension_type i, const Coefficient& x);
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator find_create(dimension_type i);
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator find_create(iterator itr, dimension_type i);
+
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param f should take a Coefficient&.
+    \param g should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing if c1 is zero.
+    f(c1) must be equivalent to g(c1, 0).
+  */
+  template <typename Func1, typename Func2>
+  void combine_needs_first(const Row& y,
+                           const Func1& f, const Func2& g);
+
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param g should take a Coefficient& and a const Coefficient&.
+    \param h should take a Coefficient& and a const Coefficient&.
+    g(c1, 0) must do nothing.
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+  */
+  template <typename Func1, typename Func2>
+  void combine_needs_second(const Row& y,
+                            const Func1& g, const Func2& h);
+
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param f should take a Coefficient&.
+    \param g should take a Coefficient& and a const Coefficient&.
+    \param h should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing if both c1 and c2 are zero.
+    f(c1) must be equivalent to g(c1, 0).
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+  */
+  template <typename Func1, typename Func2, typename Func3>
+  void combine(const Row& y,
+               const Func1& f, const Func2& g, const Func3& h);
+
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
@@ -342,6 +446,109 @@ private:
   dimension_type capacity() const;
 #endif // PPL_ROW_EXTRA_DEBUG
 };
+
+class Parma_Polyhedra_Library::Row::iterator {
+public:
+
+  typedef std::pair<const dimension_type,Coefficient&> value_type;
+  typedef std::pair<const dimension_type,const Coefficient&> const_type;
+
+private:
+
+  class Member_Access_Helper {
+  public:
+
+    Member_Access_Helper(dimension_type index, Coefficient& data);
+
+    value_type* operator->();
+
+  private:
+    value_type value;
+  };
+
+  class Const_Member_Access_Helper {
+  public:
+
+    Const_Member_Access_Helper(dimension_type index,
+                               const Coefficient& data);
+
+    const const_type* operator->() const;
+
+  private:
+    const_type value;
+  };
+
+public:
+
+  iterator();
+  iterator(Row& row1, dimension_type i1);
+
+  value_type operator*();
+  const_type operator*() const;
+
+  Member_Access_Helper operator->();
+  Const_Member_Access_Helper operator->() const;
+
+  iterator& operator++();
+  iterator operator++(int);
+
+  iterator& operator--();
+  iterator operator--(int);
+
+  bool operator==(const iterator& x) const;
+  bool operator!=(const iterator& x) const;
+
+  operator const_iterator() const;
+
+  bool OK() const;
+
+private:
+  Row* row;
+  dimension_type i;
+};
+
+class Parma_Polyhedra_Library::Row::const_iterator {
+public:
+  typedef std::pair<const dimension_type, const Coefficient&> const_type;
+
+private:
+
+  class Const_Member_Access_Helper {
+  public:
+
+    Const_Member_Access_Helper(dimension_type index,
+                               const Coefficient& data);
+
+    const const_type* operator->() const;
+
+  private:
+    const_type value;
+  };
+
+public:
+
+  const_iterator();
+  const_iterator(const Row& row1, dimension_type i1);
+
+  const_type operator*() const;
+  Const_Member_Access_Helper operator->() const;
+
+  const_iterator& operator++();
+  const_iterator operator++(int);
+
+  const_iterator& operator--();
+  const_iterator operator--(int);
+
+  bool operator==(const const_iterator& x) const;
+  bool operator!=(const const_iterator& x) const;
+
+  bool OK() const;
+
+private:
+  const Row* row;
+  dimension_type i;
+};
+
 
 namespace Parma_Polyhedra_Library {
 
@@ -515,5 +722,6 @@ private:
 };
 
 #include "Row.inlines.hh"
+#include "Row.templates.hh"
 
 #endif // !defined(PPL_Row_defs_hh)

@@ -30,15 +30,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Sparse_Matrix::Sparse_Matrix(dimension_type n)
+Sparse_Matrix::Sparse_Matrix(dimension_type n, Flags row_flags)
   : rows(n), num_columns_(n) {
+  for (dimension_type i = 0; i < rows.size(); ++i)
+    rows[i].flags() = row_flags;
   PPL_ASSERT(OK());
 }
 
 inline
 Sparse_Matrix::Sparse_Matrix(dimension_type num_rows,
-                             dimension_type num_columns)
+                             dimension_type num_columns,
+                             Flags row_flags)
   : rows(num_rows), num_columns_(num_columns) {
+  for (dimension_type i = 0; i < rows.size(); ++i)
+    rows[i].flags() = row_flags;
   PPL_ASSERT(OK());
 }
 
@@ -91,8 +96,8 @@ Sparse_Matrix::num_columns() const {
 }
 
 inline void
-Sparse_Matrix::resize(dimension_type n) {
-  resize(n, n);
+Sparse_Matrix::resize(dimension_type n, Flags row_flags) {
+  resize(n, n, row_flags);
 }
 
 inline void
@@ -101,8 +106,8 @@ Sparse_Matrix::clear() {
 }
 
 inline void
-Sparse_Matrix::add_zero_rows(dimension_type n) {
-  resize(num_rows() + n, num_columns());
+Sparse_Matrix::add_zero_rows(dimension_type n, Flags row_flags) {
+  resize(num_rows() + n, num_columns(), row_flags);
 }
 
 inline void
@@ -112,13 +117,14 @@ Sparse_Matrix::add_zero_columns(dimension_type n) {
 
 inline void
 Sparse_Matrix::add_zero_rows_and_columns(dimension_type n,
-                                         dimension_type m) {
-  resize(num_rows() + n, num_columns() + m);
+                                         dimension_type m,
+                                         Flags row_flags) {
+  resize(num_rows() + n, num_columns() + m, row_flags);
 }
 
 inline void
 Sparse_Matrix::add_row(const Sparse_Row& x) {
-  add_zero_rows(1);
+  add_zero_rows(1, Flags());
   (*this)[num_rows() - 1] = x;
   PPL_ASSERT(OK());
 }
@@ -126,7 +132,7 @@ Sparse_Matrix::add_row(const Sparse_Row& x) {
 inline void
 Sparse_Matrix::add_row(const Sparse_Row_Reference& x) {
   Unlimited_Sparse_Row row(x);
-  add_zero_rows(1);
+  add_zero_rows(1, Flags());
   // Now x may have been invalidated, if it was a row of this matrix.
   rows.back().swap(row);
   PPL_ASSERT(OK());

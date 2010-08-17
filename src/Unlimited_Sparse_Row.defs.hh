@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Unlimited_Sparse_Row.types.hh"
 
 #include "CO_Tree.defs.hh"
+#include "Row.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -38,10 +39,12 @@ class Unlimited_Sparse_Row {
 
 public:
 
+  typedef Row::Flags Flags;
+
   typedef CO_Tree::value_type value_type;
 
   //! Constructs an unlimited row of non-stored zeroes.
-  Unlimited_Sparse_Row();
+  Unlimited_Sparse_Row(Flags flags = Flags());
 
   //! The copy constructor.
   Unlimited_Sparse_Row(const Unlimited_Sparse_Row& x);
@@ -60,6 +63,12 @@ public:
     This method takes \f$O(1)\f$ time.
   */
   void swap(Unlimited_Sparse_Row& x);
+
+  //! Returns the flags associated with this row.
+  const Flags& flags() const;
+
+  //! Returns a reference to the flags associated with this row.
+  Flags& flags();
 
   //! An iterator on the row elements
   /*!
@@ -470,6 +479,9 @@ public:
 private:
   //! The tree used to store the elements.
   CO_Tree tree;
+
+  //! The flags of this row.
+  Flags flags_;
 };
 
 } // namespace Parma_Polyhedra_Library

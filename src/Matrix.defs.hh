@@ -44,6 +44,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 class Parma_Polyhedra_Library::Matrix {
 public:
+  typedef Row& row_reference_type;
+  typedef const Row& row_const_reference_type;
+  typedef const Row* row_const_pointer_type;
+  typedef Row::iterator row_iterator;
+  typedef Row::const_iterator row_const_iterator;
+  typedef Row::const_iterator const_row_const_iterator;
+  typedef Row row_copy_type;
+
   //! Returns the maximum number of rows of a Matrix.
   static dimension_type max_num_rows();
 
@@ -201,6 +209,18 @@ public:
   */
   void add_zero_columns(dimension_type n);
 
+  //! Adds \p n columns of zeroes to the matrix before the i-th column.
+  /*!
+    \param n
+    The number of columns to be added: must be strictly positive.
+
+    \param i
+    The column before which the new columns have to be added.
+
+    The matrix is expanded avoiding reallocation whenever possible.
+  */
+  void add_zero_columns(dimension_type n, dimension_type i);
+
   //! Adds \p n rows and \p m columns of zeroes to the matrix.
   /*!
     \param n
@@ -249,6 +269,9 @@ public:
 
   //! Makes the matrix shrink by removing its \p n trailing columns.
   void remove_trailing_columns(dimension_type n);
+
+  //! Makes the matrix shrink by removing its i-th column.
+  void remove_column(dimension_type i);
 
   //! Resizes the matrix without worrying about the old contents.
   /*!
