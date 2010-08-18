@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Sparse_Matrix.types.hh"
 #include "Sparse_Row.defs.hh"
-#include "Unlimited_Sparse_Row.defs.hh"
 #include "globals.types.hh"
 #include <vector>
 

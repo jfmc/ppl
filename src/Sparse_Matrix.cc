@@ -137,7 +137,7 @@ PPL::Sparse_Matrix::ascii_load(std::istream& s) {
 PPL::memory_size_type
 PPL::Sparse_Matrix::external_memory_in_bytes() const {
   // Estimate the size of vector.
-  memory_size_type n = rows.capacity() * sizeof(Unlimited_Sparse_Row);
+  memory_size_type n = rows.capacity() * sizeof(Sparse_Row);
   for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
     n += i->external_memory_in_bytes();
   return n;
