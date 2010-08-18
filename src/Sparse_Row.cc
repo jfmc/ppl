@@ -34,13 +34,3 @@ PPL::Sparse_Row::OK() const {
   --last;
   return (last->first < size_);
 }
-
-
-bool
-PPL::Sparse_Row_Reference::OK() const {
-  if (row.begin() == row.end())
-    return true;
-  Unlimited_Sparse_Row::const_iterator last = row.end();
-  --last;
-  return (last->first < size_);
-}

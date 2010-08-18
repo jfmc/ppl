@@ -44,22 +44,10 @@ Sparse_Row::Sparse_Row(const Unlimited_Sparse_Row &x, dimension_type n)
   PPL_ASSERT(OK());
 }
 
-inline
-Sparse_Row::Sparse_Row(const Sparse_Row_Reference& x)
-  : row(static_cast<const Unlimited_Sparse_Row&>(x)), size_(x.size()) {
-  PPL_ASSERT(OK());
-}
-
 inline Sparse_Row&
 Sparse_Row::operator=(const Unlimited_Sparse_Row& x) {
   row = x;
   PPL_ASSERT(OK());
-  return *this;
-}
-
-inline Sparse_Row&
-Sparse_Row::operator=(const Sparse_Row_Reference& x) {
-  Sparse_Row_Reference(row, size_) = x;
   return *this;
 }
 
@@ -74,11 +62,6 @@ Sparse_Row::swap(Sparse_Row& x) {
   std::swap(size_, x.size_);
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
-}
-
-inline void
-Sparse_Row::swap(Sparse_Row_Reference x) {
-  std::swap(x, *this);
 }
 
 inline const Sparse_Row::Flags&
@@ -293,11 +276,6 @@ Sparse_Row::find_create(iterator itr, dimension_type i) {
 }
 
 inline
-Sparse_Row::operator Sparse_Row_Reference() {
-  return Sparse_Row_Reference(row, size_);
-}
-
-inline
 Sparse_Row::operator const Unlimited_Sparse_Row &() const {
   return row;
 }
@@ -326,225 +304,6 @@ Sparse_Row::external_memory_in_bytes() const {
   return row.external_memory_in_bytes();
 }
 
-inline
-Sparse_Row_Reference::Sparse_Row_Reference(Unlimited_Sparse_Row& row1,
-                                           dimension_type size)
-  : row(row1), size_(size) {
-  PPL_ASSERT(OK());
-}
-
-inline Sparse_Row_Reference&
-Sparse_Row_Reference::operator=(const Unlimited_Sparse_Row& x) {
-  row = x;
-  PPL_ASSERT(OK());
-  return *this;
-}
-
-inline Sparse_Row_Reference&
-Sparse_Row_Reference::operator=(const Sparse_Row_Reference& x) {
-  PPL_ASSERT(size_ == x.size_);
-  row = x.row;
-  PPL_ASSERT(OK());
-  return *this;
-}
-
-inline Sparse_Row_Reference&
-Sparse_Row_Reference::operator=(const Sparse_Row& x) {
-  PPL_ASSERT(size() == x.size());
-  row = static_cast<const Unlimited_Sparse_Row&>(x);
-  PPL_ASSERT(OK());
-  return *this;
-}
-
-inline void
-Sparse_Row_Reference::clear() {
-  row.clear();
-}
-
-inline void
-Sparse_Row_Reference::swap(Sparse_Row_Reference x) {
-  PPL_ASSERT(size_ == x.size_);
-  row.swap(x.row);
-  PPL_ASSERT(OK());
-  PPL_ASSERT(x.OK());
-}
-
-inline void
-Sparse_Row_Reference::swap(Sparse_Row& x) {
-  std::swap(*this, x);
-}
-
-inline void
-Sparse_Row_Reference::swap(dimension_type i, dimension_type j) {
-  row.swap(i, j);
-  assert(OK());
-}
-
-inline void
-Sparse_Row_Reference::swap(iterator i, iterator j) {
-  row.swap(i, j);
-  PPL_ASSERT(OK());
-}
-
-inline dimension_type
-Sparse_Row_Reference::size() const {
-  return size_;
-}
-
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference::reset(iterator i) {
-  PPL_ASSERT(i != end());
-  iterator res = row.reset(i);
-  PPL_ASSERT(OK());
-  return res;
-}
-
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference::reset(iterator first, iterator last) {
-  iterator res = row.reset(first, last);
-  PPL_ASSERT(OK());
-  return res;
-}
-
-inline void
-Sparse_Row_Reference::reset(dimension_type i) {
-  PPL_ASSERT(i < size_);
-  row.reset(i);
-  PPL_ASSERT(OK());
-}
-
-inline void
-Sparse_Row_Reference::reset_after(dimension_type i) {
-  PPL_ASSERT(i < size_);
-  row.reset_after(i);
-  PPL_ASSERT(OK());
-}
-
-inline void
-Sparse_Row_Reference::normalize() {
-  row.normalize();
-  PPL_ASSERT(OK());
-}
-
-inline Coefficient&
-Sparse_Row_Reference::operator[](dimension_type i) {
-  PPL_ASSERT(i < size_);
-  return row[i];
-}
-
-inline const Coefficient&
-Sparse_Row_Reference::operator[](dimension_type i) const {
-  return get(i);
-}
-
-inline const Coefficient&
-Sparse_Row_Reference::get(dimension_type i) const {
-  PPL_ASSERT(i < size_);
-  return row.get(i);
-}
-
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference::begin() {
-  return row.begin();
-}
-
-inline const Sparse_Row_Reference::iterator&
-Sparse_Row_Reference::end() {
-  return row.end();
-}
-
-inline Sparse_Row_Reference::const_iterator
-Sparse_Row_Reference::begin() const {
-  return row.cbegin();
-}
-
-inline const Sparse_Row_Reference::const_iterator&
-Sparse_Row_Reference::end() const {
-  return row.cend();
-}
-
-inline Sparse_Row_Reference::const_iterator
-Sparse_Row_Reference::cbegin() const {
-  return row.cbegin();
-}
-
-inline const Sparse_Row_Reference::const_iterator&
-Sparse_Row_Reference::cend() const {
-  return row.cend();
-}
-
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference::find(dimension_type i) {
-  return row.find(i);
-}
-
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference::lower_bound(dimension_type i) {
-  return row.lower_bound(i);
-}
-
-inline Sparse_Row_Reference::const_iterator
-Sparse_Row_Reference::find(dimension_type i) const {
-  return row.find(i);
-}
-
-inline Sparse_Row_Reference::const_iterator
-Sparse_Row_Reference::lower_bound(dimension_type i) const {
-  return row.lower_bound(i);
-}
-
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference::find(iterator itr, dimension_type i) {
-  return row.find(itr, i);
-}
-
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference::lower_bound(iterator itr, dimension_type i) {
-  return row.lower_bound(itr, i);
-}
-
-inline Sparse_Row_Reference::const_iterator
-Sparse_Row_Reference::find(const_iterator itr, dimension_type i) const {
-  return row.find(itr, i);
-}
-
-inline Sparse_Row_Reference::const_iterator
-Sparse_Row_Reference::lower_bound(const_iterator itr,
-                                  dimension_type i) const {
-  return row.lower_bound(itr, i);
-}
-
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference::find_create(dimension_type i) {
-  PPL_ASSERT(i < size_);
-  return row.find_create(i);
-}
-
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference::find_create(dimension_type i,
-                                  const Coefficient& x) {
-  PPL_ASSERT(i < size_);
-  return row.find_create(i, x);
-}
-
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference::find_create(iterator itr, dimension_type i,
-                                  const Coefficient& x) {
-  PPL_ASSERT(i < size_);
-  return row.find_create(itr, i, x);
-}
-
-inline Sparse_Row_Reference::iterator
-Sparse_Row_Reference::find_create(iterator itr, dimension_type i) {
-  PPL_ASSERT(i < size_);
-  return row.find_create(itr, i);
-}
-
-inline
-Sparse_Row_Reference::operator const Unlimited_Sparse_Row&() const {
-  return row;
-}
-
 } // namespace Parma_Polyhedra_Library
 
 
@@ -554,29 +313,6 @@ inline void
 swap(Parma_Polyhedra_Library::Sparse_Row& x,
      Parma_Polyhedra_Library::Sparse_Row& y) {
   x.swap(y);
-}
-
-inline void
-swap(Parma_Polyhedra_Library::Sparse_Row_Reference x,
-     Parma_Polyhedra_Library::Sparse_Row_Reference y) {
-  x.swap(y);
-}
-
-inline void
-swap(Parma_Polyhedra_Library::Sparse_Row_Reference x,
-     Parma_Polyhedra_Library::Sparse_Row& y) {
-  if (y.size() == 0)
-    y.resize(x.size());
-  PPL_ASSERT(x.size() == y.size());
-  x.row.swap(y.row);
-  PPL_ASSERT(x.OK());
-  PPL_ASSERT(y.OK());
-}
-
-inline void
-swap(Parma_Polyhedra_Library::Sparse_Row& x,
-     Parma_Polyhedra_Library::Sparse_Row_Reference y) {
-  y.swap(x);
 }
 
 } // namespace std
