@@ -44,13 +44,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 class Parma_Polyhedra_Library::Matrix {
 public:
-  typedef Row& row_reference_type;
-  typedef const Row& row_const_reference_type;
-  typedef const Row* row_const_pointer_type;
-  typedef Row::iterator row_iterator;
-  typedef Row::const_iterator row_const_iterator;
-  typedef Row::const_iterator const_row_const_iterator;
-  typedef Row row_copy_type;
+  typedef Row row_type;
 
   //! Returns the maximum number of rows of a Matrix.
   static dimension_type max_num_rows();

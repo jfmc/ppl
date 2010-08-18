@@ -671,8 +671,8 @@ private:
     the element of index \p k equal to \f$0\f$. Then it assigns
     the resulting Linear_Row to \p x and normalizes it.
   */
-  static void linear_combine(matrix_type::row_reference_type x,
-                             matrix_type::row_const_reference_type y,
+  static void linear_combine(matrix_type::row_type& x,
+                             const matrix_type::row_type& y,
                              const dimension_type k);
 
   //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
@@ -691,7 +691,7 @@ private:
     the resulting Linear_Row to \p x and normalizes it.
   */
   static void linear_combine(row_type& x,
-                             matrix_type::row_const_reference_type y,
+                             const matrix_type::row_type& y,
                              const dimension_type k);
 #endif // defined(USE_PPL_SPARSE_MATRIX)
 

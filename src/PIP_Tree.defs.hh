@@ -228,7 +228,7 @@ protected:
                                dimension_type space_dim) = 0;
 
   //! Inserts a new parametric constraint in internal Row format
-  void add_constraint(matrix_type::row_const_reference_type x,
+  void add_constraint(const matrix_type::row_type& x,
                       const Variables_Set& parameters);
 
   //! Merges parent's artificial parameters into \p *this.
@@ -275,7 +275,7 @@ protected:
     obtained by adding \p row to \p context.
   */
   static bool compatibility_check(const matrix_type& context,
-                                  matrix_type::row_const_reference_type row);
+                                  const matrix_type::row_type& row);
 
 }; // class PIP_Tree_Node
 
@@ -609,7 +609,7 @@ private:
   bool solution_valid;
 
   //! Returns the sign of row \p x.
-  static Row_Sign row_sign(matrix_type::row_const_reference_type x,
+  static Row_Sign row_sign(const matrix_type::row_type& x,
                            dimension_type big_dimension);
 
 protected:

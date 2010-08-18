@@ -155,11 +155,11 @@ PPL::PIP_Problem::solve() const {
 
         x.initial_context.add_zero_rows(1, Row::Flags());
 
-        matrix_type::row_reference_type row
+        matrix_type::row_type& row
           = x.initial_context[x.initial_context.num_rows()-1];
 
         {
-          matrix_type::row_iterator itr = row.end();
+          matrix_type::row_type::iterator itr = row.end();
 
           if (c.inhomogeneous_term() != 0) {
             itr = row.find_create(0, c.inhomogeneous_term());
@@ -191,13 +191,13 @@ PPL::PIP_Problem::solve() const {
 
           // The reference `row' has been invalidated.
 
-          matrix_type::row_reference_type last_row
+          matrix_type::row_type& last_row
             = x.initial_context[x.initial_context.num_rows()-1];
 
           last_row = x.initial_context[x.initial_context.num_rows()-2];
 
-          matrix_type::row_iterator i = last_row.begin();
-          matrix_type::row_iterator i_end = last_row.end();
+          matrix_type::row_type::iterator i = last_row.begin();
+          matrix_type::row_type::iterator i_end = last_row.end();
           for ( ; i != i_end; ++i)
             neg_assign(i->second);
         }
