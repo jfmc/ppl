@@ -32,44 +32,115 @@ namespace Parma_Polyhedra_Library {
 
 template <typename Func1, typename Func2>
 void
-Sparse_Row::combine_needs_first(const Unlimited_Sparse_Row& y,
-                                const Func1& f, const Func2& g) {
-  row.combine_needs_first(y, f, g);
-}
-
-template <typename Func1, typename Func2>
-void
 Sparse_Row::combine_needs_first(const Sparse_Row& y,
                                 const Func1& f, const Func2& g) {
-  row.combine_needs_first(y.row, f, g);
-}
-
-template <typename Func1, typename Func2>
-void
-Sparse_Row::combine_needs_second(const Unlimited_Sparse_Row& y,
-                                 const Func1& g, const Func2& h) {
-  row.combine_needs_second(y, g, h);
+  if (this == &y) {
+    for (iterator i = begin(), i_end = end(); i != i_end; ++i)
+      g(i->second, i->second);
+  } else {
+    iterator i = begin();
+    // This is a const reference to an internal iterator, that is kept valid.
+    // If we just stored a copy, that would be invalidated by the calls to
+    // reset().
+    const iterator& i_end = end();
+    const_iterator j = y.begin();
+    const_iterator j_end = y.end();
+    while (i != i_end && j != j_end)
+      if (i->first == j->first) {
+        g(i->second, j->second);
+        if (i->second == 0)
+          i = reset(i);
+        else
+          ++i;
+        ++j;
+      } else
+        if (i->first < j->first) {
+          f(i->second);
+          if (i->second == 0)
+            i = reset(i);
+          else
+            ++i;
+        } else
+          j = y.lower_bound(j, i->first);
+    while (i != i_end) {
+      f(i->second);
+      if (i->second == 0)
+        i = reset(i);
+      else
+        ++i;
+    }
+  }
 }
 
 template <typename Func1, typename Func2>
 void
 Sparse_Row::combine_needs_second(const Sparse_Row& y,
-                                 const Func1& g, const Func2& h) {
-  row.combine_needs_second(y.row, g, h);
+                                 const Func1& g,
+                                 const Func2& /* h */) {
+  iterator i = begin();
+  for (const_iterator j = y.begin(), j_end = y.end(); j != j_end; ++j) {
+    i = find_create(i, j->first);
+    g(i->second, j->second);
+  }
 }
 
 template <typename Func1, typename Func2, typename Func3>
 void
-Sparse_Row::combine(const Unlimited_Sparse_Row& y,
-                    const Func1& f, const Func2& g, const Func3& h) {
-  row.combine(y, f, g, h);
-}
-
-template <typename Func1, typename Func2, typename Func3>
-void
-Sparse_Row::combine(const Sparse_Row& y,
-                    const Func1& f, const Func2& g, const Func3& h) {
-  row.combine(y.row, f, g, h);
+Sparse_Row::combine(const Sparse_Row& y, const Func1& f,
+                    const Func2& g, const Func3& h) {
+  if (this == &y) {
+    for (iterator i = begin(), i_end = end(); i != i_end; ++i)
+      g(i->second, i->second);
+  } else {
+    iterator i = begin();
+    // This is a const reference to an internal iterator, that is kept valid.
+    // If we just stored a copy, that would be invalidated by the calls to
+    // reset() and find_create().
+    const iterator& i_end = end();
+    const_iterator j = y.begin();
+    const_iterator j_end = y.end();
+    while (i != i_end && j != j_end) {
+      if (i->first == j->first) {
+        g(i->second, j->second);
+        if (i->second == 0)
+          i = reset(i);
+        else
+          ++i;
+        ++j;
+      } else
+        if (i->first < j->first) {
+          f(i->second);
+          if (i->second == 0)
+            i = reset(i);
+          else
+            ++i;
+        } else {
+          PPL_ASSERT(i->first > j->first);
+          i = find_create(i, j->first);
+          h(i->second, j->second);
+          if (i->second == 0)
+            i = reset(i);
+          else
+            ++i;
+          ++j;
+        }
+    }
+    PPL_ASSERT(i == i_end || j == j_end);
+    while (i != i_end) {
+      f(i->second);
+      if (i->second == 0)
+        i = reset(i);
+      else
+        ++i;
+    }
+    while (j != j_end) {
+      i = find_create(i, j->first);
+      h(i->second, j->second);
+      if (i->second == 0)
+        i = reset(i);
+      ++j;
+    }
+  }
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -24,36 +24,39 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Sparse_Row_defs_hh 1
 
 #include "Sparse_Row.types.hh"
-#include "Unlimited_Sparse_Row.defs.hh"
+
+// TODO: Remove this, it is needed for Row::Flags only.
+#include "Row.defs.hh"
+
+#include "CO_Tree.defs.hh"
 #include "Coefficient.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
 //! A finite sparse sequence of coefficients.
 /*!
-  This class is implemented using an Unlimited_Sparse_Row, that is
-  implemented using a CO_Tree.
-  See the documentation of those classes for more details.
+  This class is implemented using a CO_Tree. See the documentation of CO_Tree
+  for details on the implementation and the performance.
 */
 class Sparse_Row {
 
 public:
 
-  typedef Unlimited_Sparse_Row::Flags Flags;
-
-  //! A const iterator on the row elements
-  /*!
-    This iterator skips non-stored zeroes.
-    \see CO_Tree::const_iterator
-  */
-  typedef Unlimited_Sparse_Row::const_iterator const_iterator;
+  typedef Row::Flags Flags;
 
   //! An iterator on the row elements
   /*!
     This iterator skips non-stored zeroes.
     \see CO_Tree::iterator
   */
-  typedef Unlimited_Sparse_Row::iterator iterator;
+  typedef CO_Tree::iterator iterator;
+
+  //! A const iterator on the row elements
+  /*!
+    This iterator skips non-stored zeroes.
+    \see CO_Tree::const_iterator
+  */
+  typedef CO_Tree::const_iterator const_iterator;
 
   //! Constructs a row with the specified size.
   /*!
@@ -62,23 +65,6 @@ public:
     This constructor takes \f$O(1)\f$ time.
   */
   explicit Sparse_Row(dimension_type n = 0, Flags flags = Flags());
-
-  //! Constructs a row of the specified size from an Unlimited_Sparse_Row.
-  /*!
-    The elements of the unlimited sparse row with indexes greater than or
-    equal to n are ignored.
-
-    This constructor takes \f$O(n)\f$ time.
-  */
-  Sparse_Row(const Unlimited_Sparse_Row &x, dimension_type n);
-
-  //! Assigns an Unlimited_Sparse_Row to *this.
-  /*!
-    All stored elements in \p x must have index lower than size().
-
-    This method takes \f$O(n)\f$ time.
-  */
-  Sparse_Row& operator=(const Unlimited_Sparse_Row& x);
 
   //! Resets all the elements of this row.
   /*!
@@ -162,17 +148,6 @@ public:
   */
   dimension_type size() const;
 
-private:
-  //! The Unlimited_Sparse_Row that stores the row's elements.
-  Unlimited_Sparse_Row row;
-
-  //! The size of the row.
-  /*!
-    The elements contained in this row have indexes that are less than size_.
-  */
-  dimension_type size_;
-
-public:
   //! Resets to zero the value pointed to by i.
   /*!
     By calling this method instead of getting a reference to the value and
@@ -266,19 +241,6 @@ public:
     This method takes \f$O(n)\f$ time.
   */
   template <typename Func1, typename Func2>
-  void combine_needs_first(const Unlimited_Sparse_Row& y,
-                           const Func1& f, const Func2& g);
-
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-             f(c1) must be equivalent to g(c1, 0).
-    \param g should take a Coefficient& and a const Coefficient&.
-             g(c1, c2) must do nothing if c1 is zero.
-
-    This method takes \f$O(n)\f$ time.
-  */
-  template <typename Func1, typename Func2>
   void combine_needs_first(const Sparse_Row& y,
                            const Func1& f, const Func2& g);
 
@@ -292,36 +254,8 @@ public:
     This method takes \f$O(n)\f$ time.
   */
   template <typename Func1, typename Func2>
-  void combine_needs_second(const Unlimited_Sparse_Row& y,
-                            const Func1& g, const Func2& h);
-
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param g should take a Coefficient& and a const Coefficient&.
-             g(c1, 0) must do nothing, for every c1.
-    \param h should take a Coefficient& and a const Coefficient&.
-             h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-
-    This method takes \f$O(n)\f$ time.
-  */
-  template <typename Func1, typename Func2>
   void combine_needs_second(const Sparse_Row& y,
                             const Func1& g, const Func2& h);
-
-  //! Calls g(x[i],y[i]), for each i.
-  /*!
-    \param f should take a Coefficient&.
-             f(c1) must be equivalent to g(c1, 0).
-    \param g should take a Coefficient& and a const Coefficient&.
-             g(c1, c2) must do nothing when both c1 and c2 are zero.
-    \param h should take a Coefficient& and a const Coefficient&.
-             h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
-
-    This method takes \f$O(n)\f$ time.
-  */
-  template <typename Func1, typename Func2, typename Func3>
-  void combine(const Unlimited_Sparse_Row& y,
-               const Func1& f, const Func2& g, const Func3& h);
 
   //! Calls g(x[i],y[i]), for each i.
   /*!
@@ -557,12 +491,6 @@ public:
   */
   iterator find_create(iterator itr, dimension_type i);
 
-  //! Returns the underlying Unlimited_Sparse_Row.
-  /*!
-    This method takes \f$O(1)\f$ time.
-  */
-  operator const Unlimited_Sparse_Row&() const;
-
   PPL_OUTPUT_DECLARATIONS
 
   //! Loads the row from an ASCII representation generated using ascii_dump().
@@ -577,6 +505,18 @@ public:
 private:
   //! Checks the invariant.
   bool OK() const;
+
+  //! The tree used to store the elements.
+  CO_Tree tree;
+
+  //! The size of the row.
+  /*!
+    The elements contained in this row have indexes that are less than size_.
+  */
+  dimension_type size_;
+
+  //! The flags of this row.
+  Flags flags_;
 };
 
 } // namespace Parma_Polyhedra_Library

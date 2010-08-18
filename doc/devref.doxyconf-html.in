@@ -149,11 +149,6 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Sparse_Row.inlines.hh \
                          @srcdir@/../src/Sparse_Row.templates.hh \
                          @srcdir@/../src/Sparse_Row.cc \
-                         @srcdir@/../src/Unlimited_Sparse_Row.types.hh \
-                         @srcdir@/../src/Unlimited_Sparse_Row.defs.hh \
-                         @srcdir@/../src/Unlimited_Sparse_Row.inlines.hh \
-                         @srcdir@/../src/Unlimited_Sparse_Row.templates.hh \
-                         @srcdir@/../src/Unlimited_Sparse_Row.cc \
                          @srcdir@/../src/Dense_Row.types.hh \
                          @srcdir@/../src/Dense_Row.defs.hh \
                          @srcdir@/../src/Dense_Row.inlines.hh \

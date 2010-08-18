@@ -141,7 +141,6 @@ Congruence.types.hh \
 Init.types.hh \
 Row.types.hh \
 CO_Tree.types.hh \
-Unlimited_Sparse_Row.types.hh \
 Sparse_Row.types.hh \
 Sparse_Matrix.types.hh \
 Linear_Row.types.hh \
@@ -244,9 +243,6 @@ Row.inlines.hh \
 Row.templates.hh \
 CO_Tree.defs.hh \
 CO_Tree.inlines.hh \
-Unlimited_Sparse_Row.defs.hh \
-Unlimited_Sparse_Row.inlines.hh \
-Unlimited_Sparse_Row.templates.hh \
 CO_Tree.defs.hh \
 CO_Tree.inlines.hh \
 Sparse_Row.defs.hh \
@@ -425,7 +421,6 @@ BD_Shape.cc \
 Octagonal_Shape.cc \
 Pointset_Powerset.cc \
 CO_Tree.cc \
-Unlimited_Sparse_Row.cc \
 Sparse_Row.cc \
 Sparse_Matrix.cc \
 Row.cc \
