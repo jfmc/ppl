@@ -321,6 +321,10 @@ Sparse_Row::ascii_load(std::istream& s) {
   return true;
 }
 
+inline memory_size_type
+Sparse_Row::external_memory_in_bytes() const {
+  return row.external_memory_in_bytes();
+}
 
 inline
 Sparse_Row_Reference::Sparse_Row_Reference(Unlimited_Sparse_Row& row1,

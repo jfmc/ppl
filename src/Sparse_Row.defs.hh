@@ -653,6 +653,12 @@ public:
   //! Loads the row from an ASCII representation generated using ascii_dump().
   bool ascii_load(std::istream& s);
 
+  //! Returns the size in bytes of the memory managed by \p *this.
+  /*!
+    This method takes \f$O(1)\f$ time.
+  */
+  memory_size_type external_memory_in_bytes() const;
+
 private:
   //! Checks the invariant.
   bool OK() const;
