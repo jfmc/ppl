@@ -975,59 +975,55 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
   // This is static to improve performance.
-  // A pair (i, x) means that sgn(working_cost[i]) == cost_sign and x
-  // is the denominator of the challenger, for the column i.
-  static std::vector<std::pair<dimension_type, double> > columns;
-  columns.clear();
-  // tableau_num_columns - 2 is only an upper bound on the required elements.
-  // This helps to reduce the number of calls to new [] and delete [].
-  columns.reserve(tableau_num_columns - 2);
+  // A pair (true, y) at position i means that
+  // sgn(working_cost[i]) == cost_sign and y is the denominator of the
+  // challenger, for the column i.
+  // A pair (false, y) at position i means that
+  // sgn(working_cost[i]) != cost_sign, and y is unused.
+  static std::vector<std::pair<bool, double> > columns;
+  // The first element is not used.
+  columns.resize(tableau_num_columns - 1);
   for (dimension_type column = 1; column < tableau_num_columns_minus_1; ++column)
-    if (sgn(working_cost[column]) == cost_sign)
-      columns.push_back(std::pair<dimension_type, double>(column, 1.0));
+    if (sgn(working_cost[column]) == cost_sign) {
+      columns[column].first = true;
+      columns[column].second = 1.0;
+    } else
+      columns[column].first = false;
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     const matrix_type::row_type& tableau_i = tableau[i];
     const Coefficient& tableau_i_base_i = tableau_i.get(base[i]);
+    assign(float_tableau_denum, tableau_i_base_i);
     matrix_type::row_type::const_iterator j = tableau_i.begin();
     matrix_type::row_type::const_iterator j_end = tableau_i.end();
-    std::vector<std::pair<dimension_type, double> >::iterator k = columns.begin();
-    std::vector<std::pair<dimension_type, double> >::iterator k_end = columns.end();
     while (j != j_end) {
-      while (k != k_end && j->first > k->first)
-        ++k;
-      if (k == k_end)
+      if (j->first >= tableau_num_columns_minus_1)
         break;
-      PPL_ASSERT(j->first <= k->first);
-      if (j->first < k->first)
-        j = tableau_i.lower_bound(j, k->first);
-      else {
-        const Coefficient& tableau_ij = j->second;
-        WEIGHT_BEGIN();
-        if (tableau_ij != 0) {
-          PPL_ASSERT(tableau_i_base_i != 0);
-          assign(float_tableau_value, tableau_ij);
-          assign(float_tableau_denum, tableau_i_base_i);
-          float_tableau_value /= float_tableau_denum;
-          float_tableau_value *= float_tableau_value;
-          k->second += float_tableau_value;
-        }
-        WEIGHT_ADD_MUL(338, tableau_num_rows);
-        ++k;
+      std::pair<bool, double>& current_data = columns[j->first];
+      if (!current_data.first) {
         ++j;
+        continue;
+      }
+      const Coefficient& tableau_ij = j->second;
+      WEIGHT_BEGIN();
+      if (tableau_ij != 0) {
+        PPL_ASSERT(tableau_i_base_i != 0);
+        assign(float_tableau_value, tableau_ij);
+        float_tableau_value /= float_tableau_denum;
+        float_tableau_value *= float_tableau_value;
+        current_data.second += float_tableau_value;
+      }
+      WEIGHT_ADD_MUL(338, tableau_num_rows);
+      ++j;
+    }
+  }
+  for (dimension_type i = tableau_num_columns_minus_1; i-- > 1; )
+    if (columns[i].first) {
+      // challenger_dens[*k] is the square of the challenger value.
+      if (entering_index == 0 || columns[i].second > current_value_squared) {
+        current_value_squared = columns[i].second;
+        entering_index = i;
       }
     }
-  }
-  std::vector<std::pair<dimension_type, double> >::const_reverse_iterator
-    k = columns.rbegin();
-  std::vector<std::pair<dimension_type, double> >::const_reverse_iterator
-    k_end = columns.rend();
-  for ( ; k != k_end; ++k) {
-    // challenger_dens[*k] is the square of the challenger value.
-    if (entering_index == 0 || k->second > current_value_squared) {
-      current_value_squared = k->second;
-      entering_index = k->first;
-    }
-  }
   return entering_index;
 }
 
