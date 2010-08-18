@@ -257,6 +257,34 @@ public:
   */
   void reset_after(dimension_type i);
 
+  /*!
+    \brief Deletes the i-th element from the row, shifting the next elements
+           to the left.
+
+    The size of the row is decreased by 1.
+
+    This operation invalidates existing iterators.
+
+    This method takes \f$O(k+\log n)\f$ amortized time, where k is the number
+    of elements with index greater than i.
+  */
+  void delete_element_and_shift(dimension_type i);
+
+  //! Adds \p n zeroes before index i.
+  /*!
+    Existing elements with index greater than or equal to i are shifted to
+    the right by n positions. The size is increased by \p n.
+
+    Existing iterators are not invalidated, but are shifted to the right by n
+    if they pointed at or after index i (i.e. they point to the same,
+    possibly shifted, values as before).
+
+    This method takes \f$O(k+\log n)\f$ expected time, where k is the number of
+    elements with index greater than or equal to i and n the number of stored
+    elements (not the parameter to this method).
+  */
+  void add_zeroes_and_shift(dimension_type n, dimension_type i);
+
   //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!
     Computes the Greatest Common Divisor (GCD) among the elements of the row

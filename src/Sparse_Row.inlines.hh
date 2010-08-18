@@ -159,6 +159,22 @@ Sparse_Row::reset_after(dimension_type i) {
 }
 
 inline void
+Sparse_Row::delete_element_and_shift(dimension_type i) {
+  PPL_ASSERT(i < size_);
+  row.delete_element_and_shift(i);
+  --size_;
+  PPL_ASSERT(OK());
+}
+
+inline void
+Sparse_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
+  PPL_ASSERT(i <= size_);
+  row.add_zeroes_and_shift(n, i);
+  size_ += n;
+  PPL_ASSERT(OK());
+}
+
+inline void
 Sparse_Row::normalize() {
   row.normalize();
   PPL_ASSERT(OK());
