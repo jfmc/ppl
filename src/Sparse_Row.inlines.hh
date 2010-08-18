@@ -146,6 +146,12 @@ Sparse_Row::reset(iterator first, iterator last) {
 }
 
 inline void
+Sparse_Row::reset(dimension_type i) {
+  row.reset(i);
+  PPL_ASSERT(OK());
+}
+
+inline void
 Sparse_Row::reset_after(dimension_type i) {
   PPL_ASSERT(i < size_);
   row.reset_after(i);

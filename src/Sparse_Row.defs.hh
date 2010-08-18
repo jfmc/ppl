@@ -234,6 +234,17 @@ public:
   */
   iterator reset(iterator first, iterator last);
 
+  //! Resets to zero the i-th element.
+  /*!
+    By calling this method instead of getting a reference to the value and
+    setting it to zero, the element will no longer be stored.
+
+    This operation invalidates existing iterators.
+
+    This method takes \f$O(\log n)\f$ amortized time.
+  */
+  void reset(dimension_type i);
+
   //! Resets to zero the elements with index greater than or equal to i.
   /*!
     By calling this method instead of getting a reference to the values and
