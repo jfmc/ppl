@@ -909,8 +909,9 @@ private:
 
   //! Copies all data in the tree \p tree into *this.
   /*!
-    *this must be empty and big enough to contain all of tree's data without
-    exceeding max_density.
+    *this must be empty andhave the same reserved size of \p tree.
+    this->OK() may return false before this method is called, but
+    this->structure_OK() must return true.
 
     This method takes \f$O(n)\f$ time.
   */
