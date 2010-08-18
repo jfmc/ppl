@@ -27,12 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 // Added to please KDevelop4.
 #include "CO_Tree.defs.hh"
 
-#ifndef NDEBUG
-
-#include <iostream>
-
-#endif // !defined(NDEBUG)
-
 namespace Parma_Polyhedra_Library {
 
 
